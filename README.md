@@ -2,7 +2,7 @@
 [![uiharness](https://user-images.githubusercontent.com/185555/52255812-f5e8cd80-2978-11e9-8baf-2d4b82b5f02c.png)](https://platform.uiharness.com)
 
 
-### Philosophy
+## Philosophy
 
 As quoted on [@isaacs](https://www.npmjs.com/~isaacs) post ["Unix Philosophy and Node.js"](https://blog.izs.me/2013/04/unix-philosophy-and-nodejs), [Doug McIlroy's](https://en.wikipedia.org/wiki/Douglas_McIlroy) 4-point formulation of the [Unix Philosophy](http://www.catb.org/esr/writings/taoup/html/ch01s06.html):
 
