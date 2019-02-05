@@ -1,3 +1,8 @@
 #!/bin/bash
 
-cd code/ts && yarn test
+function test() {
+  cd $1
+  yarn test
+}
+
+test code/ts
