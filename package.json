@@ -4,6 +4,6 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "test": "sh sh/test/sh"
+    "test": "sh sh/test.sh"
   }
 }
