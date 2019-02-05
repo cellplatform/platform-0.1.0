@@ -22,7 +22,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 4. **Use tools in preference to unskilled help to lighten a programming task**,  
    even if you have to detour to build the tools and expect to throw some of them out after you’ve finished using them.
 
-and [@isaacs](https://www.npmjs.com/~isaacs) then casts this into [nodejs](https://nodejs.org) centric terms. The [whole post](https://blog.izs.me/2013/04/unix-philosophy-and-nodejs) is worth the read, but here's a distillation:
+[@isaacs](https://www.npmjs.com/~isaacs) then casts this into [nodejs](https://nodejs.org) centric terms. The [whole post](https://blog.izs.me/2013/04/unix-philosophy-and-nodejs) is worth the read, but here's a distillation:
 
 - **Working** is better than perfect.
 - **Focus** is better than features.
