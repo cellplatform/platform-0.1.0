@@ -4,6 +4,6 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "test": "echo no-op"
+    "test": "sh sh/test/sh"
   }
 }
