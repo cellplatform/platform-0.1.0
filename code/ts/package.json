@@ -1,0 +1,27 @@
+{
+  "name": "@platform/ts",
+  "version": "3.3.0",
+  "description": "Common TypesScript and linter configuration.",
+  "scripts": {
+    "test": "echo no-op",
+    "build": "sh ./sh/build.sh",
+    "lint": "sh ./sh/lint.sh"
+  },
+  "dependencies": {
+    "@types/node": "10.12.21",
+    "prettier": "1.16.4",
+    "ts-node": "8.0.2",
+    "tslib": "1.9.3",
+    "tslint": "5.12.1",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-react": "3.6.0",
+    "typescript": "3.3.1"
+  },
+  "files": [
+    "sh",
+    "tsconfig.json",
+    "tslint.json"
+  ],
+  "repository": "github.com/uiharness/platform",
+  "license": "MIT"
+}
