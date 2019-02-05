@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cd code/test && yarn test
+cd code/ts && yarn test
