@@ -1,4 +1,5 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/uiharness/platform.svg?branch=master)](https://travis-ci.org/uiharness/platform)
 [![uiharness](https://user-images.githubusercontent.com/185555/52255812-f5e8cd80-2978-11e9-8baf-2d4b82b5f02c.png)](https://platform.uiharness.com)
 
 
@@ -28,7 +29,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - **Focus** is better than features.
 - **Compatibility** is better than purity.
 - **Simplicity** is better than anything.
-
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
