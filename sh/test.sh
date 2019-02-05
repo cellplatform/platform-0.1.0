@@ -1,8 +1,8 @@
 #!/bin/bash
 
-function test() {
-  cd $1
+function test () {
+  cd code/$1
   yarn test
 }
 
-test code/ts
+test ts
