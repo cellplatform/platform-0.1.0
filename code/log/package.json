@@ -1,0 +1,33 @@
+{
+  "name": "@platform/log",
+  "version": "0.0.5",
+  "description": "Client and server logging.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "yarn run example",
+    "example": "node lib/examples",
+    "test": "sh node_modules/@platform/test/test.sh",
+    "tdd": "yarn run test --reporter min --watch",
+    "lint": "sh node_modules/@platform/ts/lint.sh",
+    "build": "ts build",
+    "prepare__": "yarn run lint && yarn test && yarn run build",
+    "chmod": "chmod 777 ./node_modules/.bin/ts",
+    "tmp": "yarn chmod && cd src/client && ts $@"
+  },
+  "dependencies": {
+    "@platform/libs": "0.0.0",
+    "chalk": "2.4.2",
+    "cli-table": "0.3.1"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.0",
+    "@platform/ts": "3.3.17",
+    "@types/chalk": "2.2.0"
+  },
+  "files": [
+    "**/*"
+  ],
+  "repository": "github.com/uiharness/platform",
+  "license": "MIT"
+}
