@@ -17,8 +17,6 @@
     "max-classes-per-file": false,
     "no-submodule-imports": false,
     "no-implicit-dependencies": false,
-    "variable-name": [true, "allow-leading-underscore", "allow-pascal-case"],
-
-    "no-console": false
+    "variable-name": [true, "allow-leading-underscore", "allow-pascal-case"]
   }
 }
