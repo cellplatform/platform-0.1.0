@@ -7,4 +7,6 @@ test () {
   cd $cwd
 }
 
+test fs
 test ts
+test test
