@@ -8,5 +8,6 @@ test () {
 }
 
 test fs
+test libs
 test ts
 test test
