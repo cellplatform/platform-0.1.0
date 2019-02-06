@@ -1,6 +1,6 @@
 import * as yargs from 'yargs';
-import { log } from '../common';
 
+import { log } from '../common';
 import * as cmd from './cmd';
 
 /**
@@ -19,6 +19,8 @@ const CMD = {
   LINT_L: 'l',
   TEST: 'test',
   TEST_T: 't',
+  PREPARE: 'prepare',
+  PREPARE_P: 'p',
 };
 const CMDS = Object.keys(CMD)
   .map(key => CMD[key])
@@ -39,14 +41,20 @@ const program = yargs
     [CMD.BUILD, CMD.BUILD_B],
     'Transpile typescript.',
     e =>
-      e.option('silent', {
-        alias: 's',
-        describe: 'Suppress console output.',
-        boolean: true,
-      }),
+      e
+        .option('silent', {
+          alias: 's',
+          describe: 'Suppress console output.',
+          boolean: true,
+        })
+        .option('watch', {
+          alias: 'w',
+          describe: 'Watch for changes.',
+          boolean: true,
+        }),
     async e => {
-      const { silent } = e;
-      const res = await cmd.build({ silent });
+      const { silent, watch } = e;
+      const res = await cmd.build({ silent, watch });
       if (res.error) {
         fail(1, res.error);
       }
@@ -101,6 +109,27 @@ const program = yargs
     },
   )
 
+  /**
+   * `prepare`
+   */
+  .command(
+    [CMD.PREPARE, CMD.PREPARE_P],
+    `Prepare for publish.`,
+    e =>
+      e.option('silent', {
+        alias: 's',
+        describe: 'Suppress console output.',
+        boolean: true,
+      }),
+    async e => {
+      const { silent } = e;
+      const res = await cmd.prepare({ silent });
+      if (res.error) {
+        fail(1, res.error);
+      }
+    },
+  )
+
   .help('h')
   .alias('h', 'help')
   .alias('v', 'version');
@@ -116,7 +145,6 @@ if (!CMDS.includes(program.argv._[0])) {
 
 function fail(code: number, error: string | Error) {
   const message = typeof error === 'string' ? error : error.message;
-  log.info(`😞  ${message}`);
-  log.info();
+  log.info(`\n😞  ${message}\n`);
   process.exit(code);
 }

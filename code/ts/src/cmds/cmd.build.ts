@@ -9,10 +9,10 @@ export type IBuildResult = {
  * Runs a TSC build.
  */
 export async function build(
-  args: { silent?: boolean; reset?: boolean } = {},
+  args: { silent?: boolean; remove?: boolean; watch?: boolean } = {},
 ): Promise<IBuildResult> {
-  const { silent } = args;
-  const reset = args.reset === undefined ? true : args.reset;
+  const { silent, watch } = args;
+  const reset = args.remove === undefined ? true : args.remove;
 
   // Retrieve paths.
   const dir = paths.closestParentOf('node_modules');
@@ -37,22 +37,23 @@ export async function build(
     return { success: false, error };
   }
 
-  // Execute the build commands.
+  // Prepare the command.
   const tsc = 'node_modules/typescript/bin/tsc';
-  const cmd = {
-    rm: `rm -rf ${join(dir, outDir)}`,
-    tsc: `node ${join(dir, tsc)}`,
-  };
+  let cmd = '';
+  if (reset) {
+    cmd += `rm -rf ${join(dir, outDir)}\n`;
+  }
+  cmd += `node ${join(dir, tsc)} ${watch ? '--watch' : ''}\n`;
+
+  // Execute command.
   try {
-    const run = (cmd: string) => exec.run(cmd, { silent, dir });
-    if (reset) {
-      await run(cmd.rm);
+    let error: Error | undefined;
+    const res = await exec.run(cmd, { silent, dir });
+    if (res.code !== 0) {
+      error = new Error(`Tests failed.`);
     }
-    await run(cmd.tsc);
+    return { success: !error, error };
   } catch (error) {
     return { success: false, error };
   }
-
-  // Finish up.
-  return { success: true };
 }
