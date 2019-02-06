@@ -1,16 +1,15 @@
 {
   "name": "@platform/ts",
-  "version": "3.3.17",
+  "version": "3.3.18",
   "description": "Common TypesScript and linter configuration.",
   "bin": {
     "ts": "lib/bin.js"
   },
   "scripts": {
     "test": "echo no-op",
-    "build": "sh ./build.sh",
-    "lint": "sh ./lint.sh",
-    "prepare": "yarn run build && yarn run lint && yarn test",
-    "tmp": ""
+    "lint": "node lib/bin lint",
+    "build": "node lib/bin build",
+    "prepare": "yarn run build && yarn run lint && yarn test"
   },
   "dependencies": {
     "@types/node": "10.12.21",

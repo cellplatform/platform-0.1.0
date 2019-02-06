@@ -19,7 +19,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "lib": ["dom", "dom.iterable", "esnext"]
   }
 }
