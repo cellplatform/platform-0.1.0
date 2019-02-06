@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "File system tools.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -9,7 +9,7 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "yarn run build && yarn run lint && yarn test"
+    "prepare": "ts prepare"
   },
   "dependencies": {
     "@types/fs-extra": "^5.0.4",
@@ -17,8 +17,8 @@
     "fs-extra": "^7.0.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.0",
-    "@platform/ts": "3.3.17"
+    "@platform/test": "0.0.2",
+    "@platform/ts": "3.3.20"
   },
   "files": [
     "lib",
