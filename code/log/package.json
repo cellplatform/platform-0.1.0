@@ -7,11 +7,11 @@
   "scripts": {
     "start": "yarn run example",
     "example": "node lib/examples",
-    "test": "sh node_modules/@platform/test/test.sh",
-    "tdd": "yarn run test --reporter min --watch",
-    "lint": "sh node_modules/@platform/ts/lint.sh",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
     "build": "ts build",
-    "prepare__": "yarn run lint && yarn test && yarn run build",
+    "prepare": "yarn lint && yarn test && yarn run build",
     "chmod": "chmod 777 ./node_modules/.bin/ts",
     "tmp": "yarn chmod && cd src/client && ts $@"
   },

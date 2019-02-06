@@ -17,10 +17,10 @@ export async function lint(
     return { success: false, error };
   }
 
-  const nodeModules = join(dir, 'node_modules');
+  const modules = join(dir, 'node_modules');
   const path = {
-    prettier: join(nodeModules, 'prettier/bin-prettier'),
-    tslint: join(nodeModules, 'tslint/bin/tslint'),
+    prettier: join(modules, 'prettier/bin-prettier'),
+    tslint: join(modules, 'tslint/bin/tslint'),
   };
 
   const cmd = {

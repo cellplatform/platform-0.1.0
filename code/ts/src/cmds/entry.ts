@@ -17,6 +17,8 @@ const CMD = {
   BUILD_B: 'b',
   LINT: 'lint',
   LINT_L: 'l',
+  TEST: 'test',
+  TEST_T: 't',
 };
 const CMDS = Object.keys(CMD)
   .map(key => CMD[key])
@@ -35,7 +37,7 @@ const program = yargs
    */
   .command(
     [CMD.BUILD, CMD.BUILD_B],
-    'Transpile the typescript.',
+    'Transpile typescript.',
     e =>
       e.option('silent', {
         alias: 's',
@@ -46,9 +48,7 @@ const program = yargs
       const { silent } = e;
       const res = await cmd.build({ silent });
       if (res.error) {
-        log.info(`FAIL: ${res.error.message}`);
-        log.info();
-        process.exit(1);
+        fail(1, res.error);
       }
     },
   )
@@ -58,7 +58,7 @@ const program = yargs
    */
   .command(
     [CMD.LINT, CMD.LINT_L],
-    'Run the typescript linter.',
+    'Run linter.',
     e =>
       e.option('silent', {
         alias: 's',
@@ -68,12 +68,35 @@ const program = yargs
     async e => {
       const { silent } = e;
       const res = await cmd.lint({ silent });
-
-      // console.log('res', res);
       if (res.error) {
-        log.info(`FAIL: ${res.error.message}`);
-        log.info();
-        process.exit(1);
+        fail(1, res.error);
+      }
+    },
+  )
+
+  /**
+   * `test`
+   */
+  .command(
+    [CMD.TEST, CMD.TEST_T],
+    `Run tests.`,
+    e =>
+      e
+        .option('silent', {
+          alias: 's',
+          describe: 'Suppress console output.',
+          boolean: true,
+        })
+        .option('watch', {
+          alias: 'w',
+          describe: 'Watch for changes.',
+          boolean: true,
+        }),
+    async e => {
+      const { silent, watch } = e;
+      const res = await cmd.test({ silent, watch });
+      if (res.error) {
+        fail(1, res.error);
       }
     },
   )
@@ -89,4 +112,11 @@ if (!CMDS.includes(program.argv._[0])) {
   program.showHelp();
   log.info();
   process.exit(0);
+}
+
+function fail(code: number, error: string | Error) {
+  const message = typeof error === 'string' ? error : error.message;
+  log.info(`😞  ${message}`);
+  log.info();
+  process.exit(code);
 }
