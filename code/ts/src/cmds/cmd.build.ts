@@ -50,7 +50,7 @@ export async function build(
     let error: Error | undefined;
     const res = await exec.run(cmd, { silent, dir });
     if (res.code !== 0) {
-      error = new Error(`Tests failed.`);
+      error = new Error(`Build failed.`);
     }
     return { success: !error, error };
   } catch (error) {

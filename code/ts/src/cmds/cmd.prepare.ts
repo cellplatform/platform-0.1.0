@@ -1,7 +1,4 @@
-import { log, paths } from '../common';
-import { build } from './cmd.build';
-import { lint } from './cmd.lint';
-import { test } from './cmd.test';
+import { exec, log, paths } from '../common';
 
 export type IPrepareResult = {
   success: boolean;
@@ -33,29 +30,18 @@ export async function prepare(
   info();
   info('prepare:');
 
-  const fail = (code: number, error: Error) => {
-    return { success: false, error };
-  };
-
   try {
-    let error: Error | undefined;
+    // TODO 🐷   use NPM when Yarn not installed
 
-    info(` • build`);
-    error = (await build({ silent: true })).error;
-    if (error) {
-      return fail(1, error);
-    }
+    const cmds = ['yarn build', 'yarn lint', 'yarn test'];
 
-    info(` • test`);
-    error = (await test({ silent: true })).error;
-    if (error) {
-      return fail(1, error);
-    }
-
-    info(` • lint`);
-    error = (await lint({ silent: true })).error;
-    if (error) {
-      return fail(1, error);
+    for (const cmd of cmds) {
+      info(` • ${cmd}`);
+      const res = await exec.run(cmd, { silent: true });
+      if (res.code !== 0) {
+        const error = new Error(`Failed while running '${cmd}'.`);
+        return { success: false, error };
+      }
     }
 
     info();

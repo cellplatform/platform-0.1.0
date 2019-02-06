@@ -33,7 +33,7 @@ export async function lint(
     const run = async (cmd: string, name: string, silent?: boolean) => {
       const res = await exec.run(cmd, { silent: silent || args.silent, dir });
       if (res.code !== 0) {
-        error = new Error(`Failed running '${name}'`);
+        error = new Error(`'${name}' failed.`);
       }
     };
     await run(cmd.prettier, 'prettier', true);

@@ -12,20 +12,20 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/test@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.2.tgz#aa0366347098b88152ae3e5f9df5330c618b1453"
-  integrity sha512-FsmhbMals4eWD+qbjpIgFdNa5LInEfOFw68m54D5GllxewqJ1dNUv4SliNYdu87JfRxu6eSqQK/HXeIpBumDKg==
+"@platform/test@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.6.tgz#412b2c6728b29cc7e2852f92dd3997869a2f97a3"
+  integrity sha512-JKVS/2UxbgHPUGbcLyHK1U0Z3VKAaYRxo/RbqkxAHUregDVxHpkqQS5AP1OGdyUDuz1T2A5+ABNan21QAe3uWA==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.5"
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts@3.3.20":
-  version "3.3.20"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.20.tgz#e0f8542de10c90cfb372d217891bff7fa5b9903c"
-  integrity sha512-QGgrkHo7xgoRudhsMfYmSRXBItnHb1HoksugBPy/2m86lI079MoWzYF0h7kdhZbR0wxgYj69Yi8KjLlNQWYN5Q==
+"@platform/ts@3.3.25":
+  version "3.3.25"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.25.tgz#cd6272775387a0dab7b09b7513939d1dee94d04c"
+  integrity sha512-PRCrifSa2kt7j9+OIwOwSJEd+leTEU38ixCnKD0/Hh5/AkcLrWu6dWFdAv/dc7iT5cPoFOGHVosgEtiZ4hn3vQ==
   dependencies:
     "@types/node" "10.12.21"
     prettier "1.16.4"
