@@ -1,0 +1,20 @@
+import { expect } from './libs';
+
+/**
+ * Checks for an error within an async function.
+ */
+export async function expectError(fn: () => Promise<any>, message?: string) {
+  try {
+    await fn();
+  } catch (error) {
+    if (message) {
+      return expect(error.message || '').to.contain(message);
+    } else {
+      return error;
+    }
+  }
+  const msg = message
+    ? `Should fail with error message '${message || ''}'`
+    : 'Should fail with error';
+  return expect(undefined).to.be.a('Error', msg);
+}

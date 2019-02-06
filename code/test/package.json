@@ -1,0 +1,31 @@
+{
+  "name": "@platform/test",
+  "version": "0.0.0",
+  "description": "Configuration module containing test related modules.",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "watch": "nodemon . -e js --ignore src",
+    "test": "sh test.sh",
+    "tdd": "yarn run test -- --reporter min --watch",
+    "lint": "sh ./node_modules/@platform/ts/lint.sh",
+    "build": "sh ./node_modules/@platform/ts/build.sh",
+    "prepare": "yarn run lint && yarn test && yarn run build"
+  },
+  "dependencies": {
+    "@types/chai": "4.1.7",
+    "@types/mocha": "5.2.5",
+    "chai": "4.2.0",
+    "mocha": "5.2.0"
+  },
+  "devDependencies": {
+    "@platform/ts": "3.3.4"
+  },
+  "files": [
+    "lib",
+    "src",
+    "test.sh"
+  ],
+  "repository": "github.com/uiharness/platform",
+  "license": "MIT"
+}

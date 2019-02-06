@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts",
-  "version": "3.3.0",
+  "version": "3.3.4",
   "description": "Common TypesScript and linter configuration.",
   "scripts": {
     "test": "echo no-op",
@@ -18,7 +18,7 @@
     "typescript": "3.3.1"
   },
   "files": [
-    "sh",
+    "*.sh",
     "tsconfig.json",
     "tslint.json"
   ],
