@@ -1,4 +1,4 @@
-import { exec, paths, join } from '../common';
+import { exec, paths, join, fs, log } from '../common';
 
 export type ITestResult = {
   success: boolean;
@@ -12,6 +12,12 @@ export async function test(
   args: { silent?: boolean; watch?: boolean } = {},
 ): Promise<ITestResult> {
   const { silent, watch } = args;
+  const info = (msg: string = '') => {
+    if (!silent) {
+      log.info(msg);
+    }
+  };
+
   const dir = paths.closestParentOf('package.json');
   if (!dir) {
     const error = new Error(
@@ -22,6 +28,11 @@ export async function test(
 
   const modules = join(dir, 'node_modules');
   const mocha = join(modules, 'mocha/bin/mocha');
+
+  if (!fs.existsSync(mocha)) {
+    info('No test runner installed.\n');
+    return { success: true };
+  }
 
   let flags = '';
   flags += `--require ts-node/register \\`;

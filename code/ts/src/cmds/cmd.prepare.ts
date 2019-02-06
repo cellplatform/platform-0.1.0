@@ -15,6 +15,7 @@ export async function prepare(
   args: { silent?: boolean } = {},
 ): Promise<IPrepareResult> {
   const { silent } = args;
+
   const info = (msg: string = '') => {
     if (!silent) {
       log.info(msg);
@@ -45,14 +46,14 @@ export async function prepare(
       return fail(1, error);
     }
 
-    info(` • lint`);
-    error = (await lint({ silent: true })).error;
+    info(` • test`);
+    error = (await test({ silent: true })).error;
     if (error) {
       return fail(1, error);
     }
 
-    info(` • test`);
-    error = (await test({ silent: true })).error;
+    info(` • lint`);
+    error = (await lint({ silent: true })).error;
     if (error) {
       return fail(1, error);
     }

@@ -1,5 +1,4 @@
-import { resolve, join, dirname } from 'path';
-import * as fs from 'fs';
+import { resolve, join, dirname, fs } from './libs';
 import { ITypescriptConfig } from '../types';
 
 /**
