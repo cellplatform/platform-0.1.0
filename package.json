@@ -1,9 +1,10 @@
 {
   "name": "platform",
   "version": "0.0.0",
-  "license": "MIT",
-  "private": true,
   "scripts": {
     "test": "sh sh/test.sh"
-  }
+  },
+  "repository": "github.com/uiharness/platform",
+  "license": "MIT",
+  "private": true
 }

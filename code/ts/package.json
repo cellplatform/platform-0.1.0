@@ -1,11 +1,16 @@
 {
   "name": "@platform/ts",
-  "version": "3.3.6",
+  "version": "3.3.17",
   "description": "Common TypesScript and linter configuration.",
+  "bin": {
+    "ts": "lib/bin.js"
+  },
   "scripts": {
     "test": "echo no-op",
-    "build": "sh ./sh/build.sh",
-    "lint": "sh ./sh/lint.sh"
+    "build": "sh ./build.sh",
+    "lint": "sh ./lint.sh",
+    "prepare": "yarn run build && yarn run lint && yarn test",
+    "tmp": ""
   },
   "dependencies": {
     "@types/node": "10.12.21",
@@ -15,13 +20,17 @@
     "tslint": "5.12.1",
     "tslint-config-prettier": "1.18.0",
     "tslint-react": "3.6.0",
-    "typescript": "3.3.1"
+    "typescript": "3.3.1",
+    "yargs": "^12.0.5"
   },
   "files": [
+    "lib",
     "*.sh",
-    "tsconfig.json",
-    "tslint.json"
+    "*.json"
   ],
   "repository": "github.com/uiharness/platform",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/yargs": "^12.0.8"
+  }
 }

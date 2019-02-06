@@ -19,7 +19,7 @@
     "mocha": "5.2.0"
   },
   "devDependencies": {
-    "@platform/ts": "3.3.6"
+    "@platform/ts": "3.3.17"
   },
   "files": [
     "lib",
