@@ -15,6 +15,8 @@ process.on('unhandledRejection', err => {
 const CMD = {
   BUILD: 'build',
   BUILD_B: 'b',
+  LINT: 'lint',
+  LINT_L: 'l',
 };
 const CMDS = Object.keys(CMD)
   .map(key => CMD[key])
@@ -33,11 +35,11 @@ const program = yargs
    */
   .command(
     [CMD.BUILD, CMD.BUILD_B],
-    'Transpiles the typescript.',
+    'Transpile the typescript.',
     e =>
       e.option('silent', {
         alias: 's',
-        describe: 'Supress console output.',
+        describe: 'Suppress console output.',
         boolean: true,
       }),
     async e => {
@@ -45,6 +47,32 @@ const program = yargs
       const res = await cmd.build({ silent });
       if (res.error) {
         log.info(`FAIL: ${res.error.message}`);
+        log.info();
+        process.exit(1);
+      }
+    },
+  )
+
+  /**
+   * `lint`
+   */
+  .command(
+    [CMD.LINT, CMD.LINT_L],
+    'Run the typescript linter.',
+    e =>
+      e.option('silent', {
+        alias: 's',
+        describe: 'Suppress console output.',
+        boolean: true,
+      }),
+    async e => {
+      const { silent } = e;
+      const res = await cmd.lint({ silent });
+
+      // console.log('res', res);
+      if (res.error) {
+        log.info(`FAIL: ${res.error.message}`);
+        log.info();
         process.exit(1);
       }
     },

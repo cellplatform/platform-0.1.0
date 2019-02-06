@@ -25,7 +25,7 @@ export async function build(
 
   const tsconfig = paths.tsconfig();
   if (!tsconfig.success) {
-    const error = new Error(`A 'tsconfig.json' could not be found.`);
+    const error = new Error(`A 'tsconfig.json' file could not be found.`);
     return { success: false, error };
   }
 
@@ -38,16 +38,17 @@ export async function build(
   }
 
   // Execute the build commands.
+  const tsc = 'node_modules/typescript/bin/tsc';
+  const cmd = {
+    rm: `rm -rf ${join(dir, outDir)}`,
+    tsc: `node ${join(dir, tsc)}`,
+  };
   try {
-    const tsc = 'node_modules/typescript/bin/tsc';
-    const cmd = {
-      rm: `rm -rf ${join(dir, outDir)}`,
-      tsc: `node ${join(dir, tsc)}`,
-    };
+    const run = (cmd: string) => exec.run(cmd, { silent, dir });
     if (reset) {
-      await exec.run(cmd.rm, { silent, dir });
+      await run(cmd.rm);
     }
-    await exec.run(cmd.tsc, { silent, dir });
+    await run(cmd.tsc);
   } catch (error) {
     return { success: false, error };
   }
