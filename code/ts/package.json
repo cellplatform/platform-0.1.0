@@ -9,18 +9,22 @@
     "test": "node lib/bin test",
     "lint": "node lib/bin lint",
     "build": "sh build.sh",
-    "prepare": "yarn build && yarn lint && yarn test"
+    "prepare": "yarn build && yarn lint && yarn test",
+    "tmp": "node lib/bin.js $@"
   },
   "dependencies": {
-    "@types/node": "10.12.21",
+    "@types/node": "10.12.23",
     "prettier": "1.16.4",
     "ts-node": "8.0.2",
     "tslib": "1.9.3",
     "tslint": "5.12.1",
     "tslint-config-prettier": "1.18.0",
     "tslint-react": "3.6.0",
-    "typescript": "3.3.1",
-    "yargs": "^12.0.5"
+    "typescript": "3.3.3",
+    "yargs": "12.0.5"
+  },
+  "devDependencies": {
+    "@types/yargs": "12.0.8"
   },
   "files": [
     "lib",
@@ -28,8 +32,5 @@
     "*.json"
   ],
   "repository": "github.com/uiharness/platform",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/yargs": "^12.0.8"
-  }
+  "license": "MIT"
 }

@@ -132,7 +132,8 @@ const program = yargs
 
   .help('h')
   .alias('h', 'help')
-  .alias('v', 'version');
+  .alias('v', 'version')
+  .recommendCommands();
 
 /**
  * Show full list of commands if none was provided.
