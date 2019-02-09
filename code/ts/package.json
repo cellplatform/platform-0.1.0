@@ -8,9 +8,8 @@
   "scripts": {
     "test": "node bin test",
     "lint": "node bin lint",
-    "build": "node bin build",
+    "build": "sh sh/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test",
-    "tsc": "sh sh/build.sh $@",
     "tmp": "node bin $@",
     "example-build": "node bin build --outDir tmp/dist"
   },

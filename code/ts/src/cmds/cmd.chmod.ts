@@ -1,4 +1,4 @@
-import { exec, paths, join, fs } from '../common';
+import { exec, paths, join, fs, log } from '../common';
 
 export type IChmodResult = {
   success: boolean;
@@ -24,11 +24,19 @@ export async function chmod(
   const bin = join(dir, 'node_modules/.bin');
   const files = fs.readdirSync(bin).map(name => join(bin, name));
 
+  const info = (msg: string = '') => {
+    if (!silent) {
+      log.info(msg);
+    }
+  };
+
   // Change permissions.
   for (const path of files) {
     const cmd = `chmod ${permissions} ${path}`;
     try {
-      const res = await exec.run(cmd, { silent });
+      info(` • ${cmd}`);
+      const res = await exec.run(cmd, { silent: true });
+
       if (res.code !== 0) {
         return { success: false };
       }
@@ -38,5 +46,6 @@ export async function chmod(
   }
 
   // Finish up.
+  info();
   return { success: true };
 }
