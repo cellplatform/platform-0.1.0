@@ -806,6 +806,22 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@platform/electron@0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.0.tgz#24b668d8d4c9362adfba2b4ea9584d27bb89edd7"
+  integrity sha512-8ETQxzxTdzVtUfoTwfn03kwR4xAWiR9MPhoS4tdJiTzo6P/brfdoe7KCtDEzVZiFbj+8Cxc8wvc6rVkgvbnA/g==
+  dependencies:
+    "@platform/fs" "0.0.7"
+    "@platform/log" "0.0.12"
+    "@tdb/util" "1.9.38"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.1.0"
+    electron-is "3.0.0"
+    electron-log "2.2.17"
+    electron-store "2.0.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+
 "@platform/fs@0.0.7":
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.7.tgz#6036fe4cd91620a8521b0a8fe1676ab8123a6132"
@@ -814,6 +830,25 @@
     "@types/fs-extra" "^5.0.4"
     fast-glob "^2.2.6"
     fs-extra "^7.0.1"
+
+"@platform/libs@0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.0.tgz#c90cabee2753690ac10671a628a12eef18d5e290"
+  integrity sha512-KbldYgIkew9HMKYFAOFQtIdX4qcb6YghFl39md7eFvTBjcf5zhSMmIBETNMftD+pxEPfsJm+BNkqXDRjVhMzPQ==
+  dependencies:
+    "@types/ramda" "0.25.47"
+    ramda "0.26.1"
+    rxjs "6.4.0"
+    tslib "1.9.3"
+
+"@platform/log@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.12.tgz#f8c07e698b954a5cea1270b1baee0f8e67407991"
+  integrity sha512-pzOM4/FpUrmGsdK5za/aEOk8rBLbolkALiKbBQhXdZGrcaZ/HjTWvK3u92kJUS0lDFl9w92LXf8rgw3AhcXMmw==
+  dependencies:
+    "@platform/libs" "0.0.0"
+    chalk "2.4.2"
+    cli-table "0.3.1"
 
 "@platform/ts@3.3.25":
   version "3.3.25"
@@ -837,10 +872,10 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@tdb/electron@0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@tdb/electron/-/electron-0.0.33.tgz#3d1dc7191d22663dfc1e5bdbb3969baaaab948ae"
-  integrity sha512-akCjvjagAQnMETrhqd0hDDorwo/yfIEG10WJ80achaVshvVSzxe9KVdk2x9E61hcL/uW6eke7soL79KeqkIsDA==
+"@tdb/electron@0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@tdb/electron/-/electron-0.0.34.tgz#70c6c536880d1adc37ad28d75787e826ab5a6b15"
+  integrity sha512-v9PoPd3HG8VYMjRDh/QaOUQ1IV5J2UXWOjp9yv7/dGGBB/4iJA3/ZkNvttXu/Acmoi2rm6agZ3TMSs+aGOkZPA==
   dependencies:
     "@tdb/log" "1.2.1"
     "@tdb/util" "1.9.38"
@@ -1106,20 +1141,20 @@
   resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.8.9.tgz#fef41f800cd23db1b4f262ddefe49cd952d82323"
   integrity sha512-vfzZGgZKRFy7KEWcBGfIFk+h6B+thDCLfkD1exMBMRlUsx2icA+J6y4kAbZs/TjSTeY1duw89QUU133TSzr60Q==
 
-"@uiharness/dev@0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.0.19.tgz#b82c2faaa9a636fc792b64c54aa744edd4047779"
-  integrity sha512-NrA8/Ggwx0x7n5uSOvdf3SxbPl1ympLy4x/Gbc7mo+CiRU6H36tFjMogXLdymu1TQ4n6K3/8r57vw7UehzsfUw==
+"@uiharness/dev@0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.0.20.tgz#c17e4af1e76bc00316383940e480d6f308177bf2"
+  integrity sha512-NGLnHLdTv+n7X6vkJdcpyZcl0KXgjAkPsy6A6/F63EzLEr4L1LrIlaaBtZk24M0ewOUgy0LwesCsJESWSYUoCQ==
   dependencies:
     "@babel/core" "7.2.2"
     "@babel/preset-env" "7.2.3"
     "@babel/preset-react" "7.0.0"
     "@babel/preset-typescript" "7.1.0"
     "@platform/fs" "0.0.7"
-    "@tdb/electron" "0.0.33"
+    "@tdb/electron" "0.0.34"
     "@tdb/log" "1.2.1"
     "@tdb/util" "1.9.38"
-    "@uiharness/electron" "0.3.78"
+    "@uiharness/electron" "0.3.79"
     "@uiharness/types" "0.0.28"
     create-tmpl "0.1.14"
     electron "4.0.3"
@@ -1130,12 +1165,12 @@
     serve "10.1.1"
     yargs "12.0.5"
 
-"@uiharness/electron@0.3.78":
-  version "0.3.78"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.78.tgz#69180792d19b6c1c8a9a23c0904e564d5831a06d"
-  integrity sha512-OPdVmCoqg0/56KtLudaliCIrdi2HyNdtH45XPdUjsisdjMpQi2PSP/gffgABbWp8Il701BWArm0dmvDFuX35Ew==
+"@uiharness/electron@0.3.79":
+  version "0.3.79"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.79.tgz#15a5d152fec925723f4d88d3391bac174d569248"
+  integrity sha512-bKgzdzAYToKZUEsulIn30iDxX1Dsh8FVjqw31Y1w+6WaJEpZEzShjxAZwa/6GiSy0godofdasbMezPyXWW48wg==
   dependencies:
-    "@tdb/electron" "0.0.33"
+    "@tdb/electron" "0.0.34"
     "@tdb/log" "1.2.1"
     "@tdb/util" "1.9.38"
     "@types/app-root-path" "1.2.4"

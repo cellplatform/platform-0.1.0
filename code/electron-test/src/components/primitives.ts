@@ -1,1 +1,1 @@
-export * from '../../node_modules/@tdb/electron/lib/components/Button';
+export * from '../../node_modules/@platform/electron/lib/components/Button';

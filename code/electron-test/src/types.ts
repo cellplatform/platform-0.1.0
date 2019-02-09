@@ -1,4 +1,4 @@
-import { SystemEvents } from '@tdb/electron';
+import { SystemEvents } from '@platform/electron';
 
 export type MyEvents =
   | SystemEvents

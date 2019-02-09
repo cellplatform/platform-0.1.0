@@ -11,7 +11,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/fs": "^0.0.7",
+    "@platform/fs": "0.0.7",
     "@platform/log": "0.0.12",
     "@tdb/util": "1.9.38",
     "@types/app-root-path": "1.2.4",
