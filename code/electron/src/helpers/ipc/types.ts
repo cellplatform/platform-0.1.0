@@ -83,7 +83,7 @@ export type IpcClient<M extends IpcMessage = any> = {
 
 export type IpcClientSendOptions = {
   target?: number | number[]; // Target window-id, or `0` for MAIN process.
-  timeout?: number; // Msecs.  Default taken from `client.timeout`.
+  timeout?: number; // Msecs. Default taken from `client.timeout`.
 };
 
 /**

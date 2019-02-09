@@ -13,32 +13,13 @@ export type IIpcTestProps = {
 };
 
 export class IpcTest extends React.PureComponent<IIpcTestProps> {
-  public windowId: number;
+  public id: number;
   private unmounted$ = new Subject();
 
   constructor(props: IIpcTestProps) {
     super(props);
-    this.windowId = renderer.id;
-
-    /**
-     * Log out events.
-     */
-    ipc.events$.pipe(takeUntil(this.unmounted$)).subscribe(e => {
-      const from = e.sender.id;
-      // log.info('from:', from, e);
-    });
-
-    // ipc.filter<IMessageEvent>('MESSAGE').subscribe(e => {
-    //   log.info('filtered event', e);
-    // });
-
-    /**
-     * Provide a response-handler for a specific event.
-     */
-    ipc.handle<types.IFooEvent>('FOO', async e => {
-      await time.wait(1000);
-      return `response FOO after delay (${this.windowId}) 🌼`;
-    });
+    this.id = renderer.id;
+    this.startTestHandlers();
   }
 
   public componentWillUnmount() {
@@ -56,7 +37,7 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     };
     return (
       <div {...styles.base}>
-        <h2>IPC ({this.windowId})</h2>
+        <h2>IPC ({this.id})</h2>
         <div {...styles.buttons}>
           <Button label={'new window'} onClick={this.newWindow} />
           <Button label={'send: foo (response)'} onClick={this.sendFoo} />
@@ -78,6 +59,28 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
       </div>
     );
   }
+
+  private startTestHandlers = () => {
+    /**
+     * Log out events.
+     */
+    ipc.events$.pipe(takeUntil(this.unmounted$)).subscribe(e => {
+      const from = e.sender.id;
+      log.info('⚡️ from:', from, e);
+    });
+
+    // ipc.filter<IMessageEvent>('MESSAGE').subscribe(e => {
+    //   log.info('filtered event', e);
+    // });
+
+    /**
+     * Provide a response-handler for a specific event.
+     */
+    ipc.handle<types.IFooEvent>('FOO', async e => {
+      await time.wait(1000);
+      return `response FOO after delay (${this.id}) 🌼`;
+    });
+  };
 
   private newWindow = () => {
     ipc.send<types.INewWindowEvent>('NEW_WINDOW', {}, { target: ipc.MAIN });
@@ -102,6 +105,9 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     );
     // res.cancel();
 
+    // log.info(res);
+    console.log('res', res);
+
     res.results$.subscribe({
       next: e => log.info('🤘 res$.next:', e),
       complete: () => {
@@ -118,7 +124,7 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
 
   private logInfo = () => {
     this.logCount++;
-    log.info(`Hello from renderer (${this.windowId}) - ${this.logCount}`);
+    log.info(`Hello from renderer (${this.id}) - ${this.logCount}`);
   };
   private logCount = 0;
 }
