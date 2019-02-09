@@ -40,7 +40,11 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
         <h2>IPC ({this.id})</h2>
         <div {...styles.buttons}>
           <Button label={'new window'} onClick={this.newWindow} />
-          <Button label={'send: foo (response)'} onClick={this.sendFoo} />
+          <Button
+            label={'send: FOO (response handlers)'}
+            onClick={this.sendFoo}
+          />
+          <Button label={'send: BAR (no handlers)'} onClick={this.sendBar} />
           <Button label={'send: message (all)'} onClick={this.sendMessage} />
           <Button
             label={'send: message (to 1)'}
@@ -107,6 +111,7 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
 
     // log.info(res);
     console.log('res', res);
+    console.log('res.elapsed', res.elapsed);
 
     res.results$.subscribe({
       next: e => log.info('🤘 res$.next:', e),
@@ -114,6 +119,7 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
         log.group('🌳 COMPLETE');
         res.results.forEach(result => log.info(result));
         // log.info('results', res.results);
+        log.info('elapsed', res.elapsed);
 
         log.groupEnd();
       },
@@ -121,6 +127,11 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     });
   };
   private count = 0;
+
+  private sendBar = () => {
+    const res = ipc.send<types.IBarEvent, string>('BAR', {});
+    console.log('res', res);
+  };
 
   private logInfo = () => {
     this.logCount++;

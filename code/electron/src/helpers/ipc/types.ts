@@ -92,21 +92,31 @@ export type IpcClientSendOptions = {
 export type IpcSending<M extends IpcMessage, D = any> = {
   eid: string; // The unique event-id.
   type: M['type'];
-  results$: Observable<ISendResponse<M, D>>;
+  elapsed: number;
+  results$: Observable<IpcSendResponse<M, D>>;
   timeout$: Observable<{}>;
   cancel$: Observable<{}>;
-  results: Array<{ sender: IpcIdentifier; data?: D; elapsed: number }>;
+  results: Array<IpcHandlerResult<D>>;
   cancel: () => IpcSending<M, D>;
   isCancelled: boolean;
+  isComplete: boolean;
 };
 
 /**
  * Response data sent from an event handler.
  */
-export type ISendResponse<M extends IpcMessage, D = any> = {
+export type IpcSendResponse<M extends IpcMessage, D = any> = {
   elapsed: number;
+  eid: string; // The initial event-id that the response pertains to.
   data: D;
   type: M['type'];
+  sender: IpcIdentifier;
+};
+
+export type IpcHandlerResult<D> = {
+  data?: D;
+  elapsed: number;
+  eid: string; // The initial event-id that the response pertains to.
   sender: IpcIdentifier;
 };
 

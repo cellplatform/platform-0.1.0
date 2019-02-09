@@ -1,4 +1,4 @@
-import { time } from '@tdb/util';
+import { time, ITimer, value as valueUtil } from '@tdb/util';
 import * as R from 'ramda';
 import { Observable, Subject, timer as ObservableTimer } from 'rxjs';
 import { filter, map, share, takeUntil, takeWhile } from 'rxjs/operators';
@@ -12,7 +12,8 @@ import {
   IpcIdentifier,
   IpcMessage,
   IpcSending,
-  ISendResponse,
+  IpcSendResponse,
+  IpcHandlerResult,
 } from './types';
 
 export type SendHandler = { type: IpcEvent['type']; handler: IpcEventHandler };
@@ -26,11 +27,13 @@ type SendResponseInit<M extends IpcMessage> = {
 };
 
 type Ref<D> = SendResponseInit<any> & {
-  results$: Observable<ISendResponse<any, D>>;
+  results$: Observable<IpcSendResponse<any, D>>;
   cancel$: Subject<any>;
   complete$: Subject<any>;
   timeout$: Subject<any>;
-  results: Array<{ sender: IpcIdentifier; data?: D; elapsed: number }>;
+  results: Array<IpcHandlerResult<D>>;
+  timer: ITimer;
+  elapsed?: number;
 };
 
 /**
@@ -43,6 +46,7 @@ export class SendResponse<M extends IpcMessage = any, D = any>
    */
   private readonly _: Ref<D>;
   public isCancelled = false;
+  public isComplete = false;
 
   /**
    * [Constructor].
@@ -62,25 +66,21 @@ export class SendResponse<M extends IpcMessage = any, D = any>
      * Setup timeout.
      */
     const timeout$ = new Subject();
-    timeout$.subscribe(() => {
-      const err = `Send operation '${this.type}' timed out.`;
-      response$.error(new Error(err));
-    });
-
     ObservableTimer(args.timeout)
       .pipe(
-        takeWhile(() => registeredClients.length > 0),
         takeUntil(cancel$),
         takeUntil(complete$),
+        takeWhile(() => registeredClients.length > 0),
       )
       .subscribe(() => timeout$.next());
 
     /**
      * Store state.
      */
-    const response$ = new Subject<ISendResponse<M, D>>();
+    const response$ = new Subject<IpcSendResponse<M, D>>();
     this._ = {
       ...args,
+      timer,
       results: [],
       complete$,
       cancel$,
@@ -105,6 +105,7 @@ export class SendResponse<M extends IpcMessage = any, D = any>
       )
       .subscribe(e => {
         response$.next({
+          eid: this.eid,
           data: e.payload.data,
           elapsed: timer.elapsed(),
           type: this.type,
@@ -116,10 +117,16 @@ export class SendResponse<M extends IpcMessage = any, D = any>
      * Monitor for [complete] status.
      */
     let completed: number[] = [];
+    complete$.subscribe(() => {
+      this.isComplete = true;
+      this._.elapsed = timer.elapsed();
+      response$.complete();
+    });
     this.results$.subscribe(e => {
       // Store result.
-      const { sender, data, elapsed } = e;
-      this._.results = [...this._.results, { data, sender, elapsed }];
+      const { sender, data, elapsed, eid } = e;
+      const result: IpcHandlerResult<D> = { data, sender, elapsed, eid };
+      this._.results = [...this._.results, result];
 
       // Check for completeness.
       completed = [...completed, sender.id];
@@ -128,8 +135,17 @@ export class SendResponse<M extends IpcMessage = any, D = any>
         complete$.next();
       }
     });
+    if (registeredClients.length === 0) {
+      complete$.next();
+    }
 
-    complete$.subscribe(() => response$.complete());
+    /**
+     * Monitor for [timeout].
+     */
+    this.timeout$.subscribe(() => {
+      const err = `Send operation '${this.type}' timed out (${this.eid}).`;
+      response$.error(new Error(err));
+    });
   }
 
   /**
@@ -156,11 +172,19 @@ export class SendResponse<M extends IpcMessage = any, D = any>
   }
 
   public get timeout$() {
-    return this._.timeout$.pipe(share());
+    return this._.timeout$.pipe(
+      takeUntil(this.cancel$),
+      takeUntil(this.complete$),
+      share(),
+    );
   }
 
   public get complete$() {
     return this._.complete$.pipe(share());
+  }
+
+  public get elapsed() {
+    return valueUtil.defaultValue(this._.elapsed, this._.timer.elapsed());
   }
 
   /**
