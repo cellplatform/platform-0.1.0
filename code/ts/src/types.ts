@@ -11,4 +11,8 @@ export type IPackageJson = {
   description?: string;
   main?: string;
   types?: string;
+  dependencies?: IPackageFieldMap;
+  devDependencies?: IPackageFieldMap;
 };
+
+export type IPackageFieldMap = { [key: string]: string };

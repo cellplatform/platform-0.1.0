@@ -137,6 +137,7 @@ async function copyPackageJson(args: { rootDir: string; outDir: string }) {
     pkg.types = pkg.types ? toParent(pkg.types) : pkg.types;
     pkg.main = pkg.main ? toParent(pkg.main) : pkg.main;
     pkg.main = pkg.main ? removeExtension(pkg.main) : pkg.main;
+    delete pkg.devDependencies;
 
     // Save.
     const json = `${JSON.stringify(pkg, null, '  ')}\n`;
