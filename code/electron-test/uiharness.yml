@@ -1,0 +1,17 @@
+#
+# https://uiharness.com/docs/config
+#
+
+name: tdb.electron
+
+electron:
+  port: 8050
+  entry:
+    main: test/main.ts
+    renderer: test/renderer.tsx
+
+sourcemaps:
+  strip:
+    - node_modules/rxjs
+
+
