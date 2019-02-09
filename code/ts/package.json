@@ -1,19 +1,20 @@
 {
   "name": "@platform/ts",
-  "version": "3.3.25",
+  "version": "3.3.29",
   "description": "Common TypesScript and linter configuration.",
   "bin": {
-    "ts": "lib/bin.js"
+    "ts": "bin.js"
   },
   "scripts": {
-    "test": "node lib/bin test",
-    "lint": "node lib/bin lint",
-    "build": "sh build.sh",
+    "test": "node bin test",
+    "lint": "node bin lint",
+    "build": "sh sh/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test",
-    "tmp": "node lib/bin.js $@"
+    "tmp": "node bin $@",
+    "example-build": "node bin build --outDir tmp/dist"
   },
   "dependencies": {
-    "@types/node": "10.12.23",
+    "@types/node": "10.12.24",
     "prettier": "1.16.4",
     "ts-node": "8.0.2",
     "tslib": "1.9.3",
@@ -28,9 +29,9 @@
   },
   "files": [
     "lib",
-    "*.sh",
+    "bin.js",
     "*.json"
   ],
-  "repository": "github.com/uiharness/platform",
+  "repository": "uiharness/platform",
   "license": "MIT"
 }

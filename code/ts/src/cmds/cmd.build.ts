@@ -1,4 +1,13 @@
-import { exec, paths, join } from '../common';
+import { changeExtensions, exec, join, paths } from '../common';
+
+export type BuildFormat = 'COMMON_JS' | 'ES_MODULE';
+
+export type IBuildArgs = {
+  silent?: boolean;
+  remove?: boolean;
+  watch?: boolean;
+  outDir?: string;
+};
 
 export type IBuildResult = {
   success: boolean;
@@ -6,12 +15,28 @@ export type IBuildResult = {
 };
 
 /**
+ * Builds to a set of differing target-formats.
+ */
+export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}) {
+  let index = 0;
+  for (const as of formats) {
+    const remove = index === 0;
+    const res = await build({ ...args, as, remove });
+    if (!res.success) {
+      return res;
+    }
+    index++;
+  }
+  return { success: true };
+}
+
+/**
  * Runs a TSC build.
  */
 export async function build(
-  args: { silent?: boolean; remove?: boolean; watch?: boolean } = {},
+  args: IBuildArgs & { as?: BuildFormat } = {},
 ): Promise<IBuildResult> {
-  const { silent, watch } = args;
+  const { silent, watch, as = 'COMMON_JS' } = args;
   const reset = args.remove === undefined ? true : args.remove;
 
   // Retrieve paths.
@@ -29,7 +54,7 @@ export async function build(
     return { success: false, error };
   }
 
-  const outDir = tsconfig.outDir;
+  const outDir = args.outDir || tsconfig.outDir;
   if (!outDir) {
     const error = new Error(
       `An 'outDir' is not specified within 'tsconfig.json'.`,
@@ -41,9 +66,24 @@ export async function build(
   const tsc = 'node_modules/typescript/bin/tsc';
   let cmd = '';
   if (reset) {
-    cmd += `rm -rf ${join(dir, outDir)}\n`;
+    cmd += `rm -rf ${join(dir, outDir)}`;
+    cmd += '\n';
   }
-  cmd += `node ${join(dir, tsc)} ${watch ? '--watch' : ''}\n`;
+  cmd += `node ${join(dir, tsc)}`;
+  cmd += ` --outDir ${outDir}`;
+  cmd = watch ? `${cmd} --watch` : cmd;
+  switch (as) {
+    case 'COMMON_JS':
+      cmd += ` --module commonjs`;
+      cmd += ` --target es5`;
+      cmd += ` --declaration`;
+      break;
+    case 'ES_MODULE':
+      cmd += ` --module es2015`;
+      cmd += ` --target ES2017`;
+      break;
+  }
+  cmd += '\n';
 
   // Execute command.
   try {
@@ -51,9 +91,17 @@ export async function build(
     const res = await exec.run(cmd, { silent, dir });
     if (res.code !== 0) {
       error = new Error(`Build failed.`);
+      return { success: false, error };
     }
-    return { success: !error, error };
   } catch (error) {
     return { success: false, error };
   }
+
+  // Change ESM (ES Module) file extensions.
+  if (as === 'ES_MODULE') {
+    changeExtensions({ dir: outDir, from: 'js', to: 'mjs' });
+  }
+
+  // Finish up.
+  return { success: true };
 }

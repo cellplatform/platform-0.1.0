@@ -17,3 +17,12 @@ Adds the `ts` command to your module's bin. You can optionally use the following
   }
 }
 ```
+
+
+## References:
+
+- **ECMAScript Modules** (ESM)
+  - [Using JavaScript modules on the web](https://developers.google.com/web/fundamentals/primers/modules) - Google/Primer
+  - [ECMAScript modules in Node.js: the new plan](http://2ality.com/2018/12/nodejs-esm-phases.html) - December 2018
+  - [ES6 Modules Today With TypeScript](https://www.ceriously.com/blog/post.php?id=2017-10-16-es6-modules-today-with-typescript.md) - recipe used.
+
