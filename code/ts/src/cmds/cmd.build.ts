@@ -1,13 +1,4 @@
-import {
-  fs,
-  changeExtensions,
-  exec,
-  join,
-  resolve,
-  paths,
-  IPackageJson,
-  extname,
-} from '../common';
+import { changeExtensions, exec, join, paths } from '../common';
 
 export type BuildFormat = 'COMMON_JS' | 'ES_MODULE';
 
@@ -112,10 +103,10 @@ export async function build(
   }
 
   // Make a copy of the package.json file to the distribution older for publishing.
-  const pkgResult = await copyPackageJson({ rootDir: dir, outDir });
-  if (!pkgResult.success) {
-    return pkgResult;
-  }
+  // const pkgResult = await copyPackageJson({ rootDir: dir, outDir });
+  // if (!pkgResult.success) {
+  //   return pkgResult;
+  // }
 
   // Finish up.
   return { success: true };
@@ -125,36 +116,41 @@ export async function build(
  * INTERNAL
  */
 
-async function copyPackageJson(args: { rootDir: string; outDir: string }) {
-  try {
-    // Prepare paths.
-    const toPackagePath = (dir: string) => resolve(join(dir, 'package.json'));
-    const source = toPackagePath(args.rootDir);
-    const target = toPackagePath(args.outDir);
+// async function copyPackageJson(args: { rootDir: string; outDir: string }) {
+//   try {
+//     // Prepare paths.
+//     const toPackagePath = (dir: string) => resolve(join(dir, 'package.json'));
+//     const source = toPackagePath(args.rootDir);
+//     const target = toPackagePath(args.outDir);
 
-    // Update [package.json] file.
-    const pkg = JSON.parse(fs.readFileSync(source, 'utf8')) as IPackageJson;
-    pkg.types = pkg.types ? toParent(pkg.types) : pkg.types;
-    pkg.main = pkg.main ? toParent(pkg.main) : pkg.main;
-    pkg.main = pkg.main ? removeExtension(pkg.main) : pkg.main;
-    delete pkg.devDependencies;
+//     // Update [package.json] file.
+//     const pkg = JSON.parse(fs.readFileSync(source, 'utf8')) as IPackageJson;
+//     pkg.types = pkg.types ? toParent(pkg.types) : pkg.types;
+//     pkg.main = pkg.main ? toParent(pkg.main) : pkg.main;
+//     pkg.main = pkg.main ? removeExtension(pkg.main) : pkg.main;
+//     delete pkg.devDependencies;
+//     if (pkg.scripts) {
+//       delete pkg.scripts.prepare;
+//     }
+//     delete pkg.files
 
-    // Save.
-    const json = `${JSON.stringify(pkg, null, '  ')}\n`;
-    fs.writeFileSync(target, json);
+//     // Save.
+//     const json = `${JSON.stringify(pkg, null, '  ')}\n`;
+//     fs.writeFileSync(target, json);
 
-    // Finish up.
-    return { success: true, source, target };
-  } catch (error) {
-    return { success: false, error };
-  }
-}
+//     // Finish up.
+//     return { success: true, source, target };
+//   } catch (error) {
+//     return { success: false, error };
+//   }
+// }
 
-const toParent = (path: string) =>
-  path
-    .split('/')
-    .slice(1)
-    .join('/');
+// const toParent = (path: string) =>
+//   path
+//     .replace(/^\.\//, '')
+//     .split('/')
+//     .slice(1)
+//     .join('/');
 
-const removeExtension = (path: string) =>
-  path.substr(0, path.length - extname(path).length);
+// const removeExtension = (path: string) =>
+//   path.substr(0, path.length - extname(path).length);
