@@ -11,7 +11,7 @@ import {
   IpcHandlerResponseEvent,
   IpcIdentifier,
   IpcMessage,
-  IpcSend,
+  IpcSending,
   ISendResponse,
 } from './types';
 
@@ -37,7 +37,7 @@ type Ref<D> = SendResponseInit<any> & {
  * A send response with methods for managing callbacks from handlers.
  */
 export class SendResponse<M extends IpcMessage = any, D = any>
-  implements IpcSend<M, D> {
+  implements IpcSending<M, D> {
   /**
    * [Fields]
    */

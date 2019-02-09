@@ -73,7 +73,7 @@ export type IpcClient<M extends IpcMessage = any> = {
     type: T['type'],
     payload: T['payload'],
     options?: IpcClientSendOptions,
-  ) => IpcSend<T, D>;
+  ) => IpcSending<T, D>;
 
   handle: <T extends M>(
     type: T['type'],
@@ -89,14 +89,14 @@ export type IpcClientSendOptions = {
 /**
  * The response object returned by a `send` operation.
  */
-export type IpcSend<M extends IpcMessage, D = any> = {
+export type IpcSending<M extends IpcMessage, D = any> = {
   eid: string; // The unique event-id.
   type: M['type'];
   results$: Observable<ISendResponse<M, D>>;
   timeout$: Observable<{}>;
   cancel$: Observable<{}>;
   results: Array<{ sender: IpcIdentifier; data?: D; elapsed: number }>;
-  cancel: () => IpcSend<M, D>;
+  cancel: () => IpcSending<M, D>;
   isCancelled: boolean;
 };
 
