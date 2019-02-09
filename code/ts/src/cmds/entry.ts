@@ -21,6 +21,7 @@ const CMD = {
   TEST_T: 't',
   PREPARE: 'prepare',
   PREPARE_P: 'p',
+  CHMOD: 'chmod',
 };
 const CMDS = Object.keys(CMD)
   .map(key => CMD[key])
@@ -39,25 +40,25 @@ const program = yargs
    */
   .command(
     [CMD.BUILD, CMD.BUILD_B],
-    'Transpile typescript.',
+    'Transpile typescript',
     e =>
       e
         .option('silent', {
           alias: 's',
-          describe: 'Suppress console output.',
+          describe: 'Suppress console output',
           boolean: true,
         })
         .option('watch', {
           alias: 'w',
-          describe: 'Watch for changes.',
+          describe: 'Watch for changes',
           boolean: true,
         })
         .option('outDir', {
-          describe: 'Redirect output structure to the directory.',
+          describe: 'Redirect output structure to the directory',
           string: true,
         })
         .option('--no-esm', {
-          describe: 'Do not include ESModule output (.jsm).',
+          describe: 'Do not include ESModule output (.jsm)',
           boolean: true,
         }),
     async e => {
@@ -83,11 +84,11 @@ const program = yargs
    */
   .command(
     [CMD.LINT, CMD.LINT_L],
-    'Run linter.',
+    'Run linter',
     e =>
       e.option('silent', {
         alias: 's',
-        describe: 'Suppress console output.',
+        describe: 'Suppress console output',
         boolean: true,
       }),
     async e => {
@@ -109,12 +110,12 @@ const program = yargs
       e
         .option('silent', {
           alias: 's',
-          describe: 'Suppress console output.',
+          describe: 'Suppress console output',
           boolean: true,
         })
         .option('watch', {
           alias: 'w',
-          describe: 'Watch for changes.',
+          describe: 'Watch for changes',
           boolean: true,
         }),
     async e => {
@@ -135,12 +136,39 @@ const program = yargs
     e =>
       e.option('silent', {
         alias: 's',
-        describe: 'Suppress console output.',
+        describe: 'Suppress console output',
         boolean: true,
       }),
     async e => {
       const { silent } = e;
       const res = await cmd.prepare({ silent });
+      if (res.error) {
+        fail(1, res.error);
+      }
+    },
+  )
+
+  /**
+   * `chmod`
+   */
+  .command(
+    [CMD.CHMOD],
+    `Change permissions on [node_modules/.bin] files.`,
+    e =>
+      e
+        .positional('permissions', {
+          type: 'string',
+          default: '777',
+          describe: 'The permissions to apply',
+        })
+        .option('silent', {
+          alias: 's',
+          describe: 'Suppress console output',
+          boolean: true,
+        }),
+    async e => {
+      const { silent, permissions = '777' } = e;
+      const res = await cmd.chmod({ silent, permissions });
       if (res.error) {
         fail(1, res.error);
       }
