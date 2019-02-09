@@ -2,6 +2,8 @@
   "name": "@platform/ts",
   "version": "3.3.29",
   "description": "Common TypesScript and linter configuration.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "bin": {
     "ts": "bin.js"
   },
