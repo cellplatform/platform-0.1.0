@@ -1,0 +1,36 @@
+{
+  "name": "@platform/electron",
+  "version": "0.0.0",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "echo no-op",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/fs": "^0.0.7",
+    "@platform/log": "0.0.12",
+    "@tdb/util": "1.9.38",
+    "@types/app-root-path": "1.2.4",
+    "app-root-path": "2.1.0",
+    "electron-is": "3.0.0",
+    "electron-log": "2.2.17",
+    "electron-store": "2.0.0",
+    "electron-window-state": "5.0.3",
+    "is-electron": "2.2.0"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.6",
+    "@platform/ts": "3.3.25",
+    "electron": "4.0.3"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "repository": "github.com/uiharness/platform",
+  "license": "MIT"
+}
