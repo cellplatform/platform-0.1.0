@@ -1,5 +1,4 @@
 export const FOO = 123;
-
 export const Foo = 456;
 
 const foo = { number: 123 };
@@ -11,7 +10,7 @@ export class Thing {
   constructor() {
     this._hidden = 1;
   }
-  public foo() {
+  public get foo() {
     return this._hidden;
   }
 }

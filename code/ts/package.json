@@ -8,7 +8,7 @@
   "scripts": {
     "test": "node lib/bin test",
     "lint": "node lib/bin lint",
-    "build": "sh build.sh",
+    "build": "sh sh/build.sh",
     "prepare": "yarn build && yarn lint && yarn test",
     "tmp": "node lib/bin.js $@"
   },
@@ -28,9 +28,8 @@
   },
   "files": [
     "lib",
-    "*.sh",
     "*.json"
   ],
-  "repository": "github.com/uiharness/platform",
+  "repository": "uiharness/platform",
   "license": "MIT"
 }
