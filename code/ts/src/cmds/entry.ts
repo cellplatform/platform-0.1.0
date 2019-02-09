@@ -1,7 +1,7 @@
 import * as yargs from 'yargs';
 
 import { log } from '../common';
-import * as cmd from './cmd';
+import * as cmds from './cmds';
 
 /**
  * Makes the script crash on unhandled rejections instead of silently
@@ -64,11 +64,11 @@ const program = yargs
     async e => {
       const { silent, watch, outDir, esm } = e;
 
-      let formats: cmd.BuildFormat[] = [];
+      let formats: cmds.BuildFormat[] = [];
       formats = esm !== false ? [...formats, 'ES_MODULE'] : formats;
       formats = [...formats, 'COMMON_JS'];
 
-      const res = await cmd.buildAs(formats, {
+      const res = await cmds.buildAs(formats, {
         silent,
         watch,
         outDir,
@@ -93,7 +93,7 @@ const program = yargs
       }),
     async e => {
       const { silent } = e;
-      const res = await cmd.lint({ silent });
+      const res = await cmds.lint({ silent });
       if (res.error) {
         fail(1, res.error);
       }
@@ -120,7 +120,7 @@ const program = yargs
         }),
     async e => {
       const { silent, watch } = e;
-      const res = await cmd.test({ silent, watch });
+      const res = await cmds.test({ silent, watch });
       if (res.error) {
         fail(1, res.error);
       }
@@ -141,7 +141,7 @@ const program = yargs
       }),
     async e => {
       const { silent } = e;
-      const res = await cmd.prepare({ silent });
+      const res = await cmds.prepare({ silent });
       if (res.error) {
         fail(1, res.error);
       }
@@ -168,7 +168,7 @@ const program = yargs
         }),
     async e => {
       const { silent, permissions = '777' } = e;
-      const res = await cmd.chmod({ silent, permissions });
+      const res = await cmds.chmod({ silent, permissions });
       if (res.error) {
         fail(1, res.error);
       }
