@@ -50,6 +50,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - [@platform/fs](/code/fs)
 - [@platform/test](/code/test)
 - [@platform/log](/code/log)
+- [@platform/electron](/code/electron)
 
 
 <p>&nbsp;</p>
@@ -61,5 +62,3 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_large" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=large"/></a>
 
-<p>&nbsp;</p>
-<p>&nbsp;</p>
