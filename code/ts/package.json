@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts",
-  "version": "3.3.27",
+  "version": "3.3.28",
   "description": "Common TypesScript and linter configuration.",
   "bin": {
     "ts": "bin.js"

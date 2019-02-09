@@ -15,20 +15,20 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/test@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.8.tgz#1b1fbb7b3d3f2d8eed7aed70734ad891bc3ca040"
-  integrity sha512-FRrM0GuO8ozSU8EZ59ktqw4hrTj+bZz6+HIwEGaNtXjOFKDO8TZ/9eOkVBFzGyaHYOCX5G2EVb6oEBEhNMHYeA==
+"@platform/test@0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.10.tgz#f70fc58a686896622c5cd4d879f80d3e9816e067"
+  integrity sha512-tGiU9NbgtyBNR1xerTOqjcQbs9bf95iaUEuMOLMP2WCmJBbRCZvhSAEaOc7E2rQpNx1tvnscDxxAcU2wJC5LdA==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.5"
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts@3.3.27":
-  version "3.3.27"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.27.tgz#b15e81f06468304eed6e6d32493ee770ca575c9d"
-  integrity sha512-RRHuuQPaegZez/O7uPG3Wdz9RjqqaIofKthid9Rapicn+lOwFm44GhJw0y4THLrW0wYl7OUa8wFP/Mma1bfmbg==
+"@platform/ts@3.3.28":
+  version "3.3.28"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.28.tgz#c790df91ad14014cdaa5698420fe3a9208372822"
+  integrity sha512-51q33lumhv6kFzNDXLuA2Gh8XdzSVjv7ZyRzmwk1pkMkl7wsZq2dpURH2krCWOol8DifzU8bXSappByJyXIwZg==
   dependencies:
     "@types/node" "10.12.24"
     prettier "1.16.4"

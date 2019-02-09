@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@platform/ts@3.3.27":
-  version "3.3.27"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.27.tgz#b15e81f06468304eed6e6d32493ee770ca575c9d"
-  integrity sha512-RRHuuQPaegZez/O7uPG3Wdz9RjqqaIofKthid9Rapicn+lOwFm44GhJw0y4THLrW0wYl7OUa8wFP/Mma1bfmbg==
+"@platform/ts@3.3.28":
+  version "3.3.28"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.28.tgz#c790df91ad14014cdaa5698420fe3a9208372822"
+  integrity sha512-51q33lumhv6kFzNDXLuA2Gh8XdzSVjv7ZyRzmwk1pkMkl7wsZq2dpURH2krCWOol8DifzU8bXSappByJyXIwZg==
   dependencies:
     "@types/node" "10.12.24"
     prettier "1.16.4"
