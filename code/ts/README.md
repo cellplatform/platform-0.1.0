@@ -1,10 +1,17 @@
 # @platform/ts
 Common [TypesScript](https://www.typescriptlang.org) and [linter](https://palantir.github.io/tslint/) configuration with command-line tools.
 
+Provides:
+
+- Command line for building, linting, preparing for publish and ultimately publishing.
+- Produces CommonJS and modern ESM transpiled builds.
+- Publishes to NPM from the distribution older, removing unnecesary pathing into the module from consumers (eg. '@my-modules/lib/...` is avoided).
+
+
 
 
 ## Commands
-Adds the `ts` command to your module's bin. You can optionally use the following scripts in you `package.json`:
+Adds the `ts` command to your module's `bin`. You can optionally use the following scripts in you `package.json`:
 
 ```json
 {
@@ -17,6 +24,19 @@ Adds the `ts` command to your module's bin. You can optionally use the following
   }
 }
 ```
+
+## ESModules
+When setting the `main` of package.json make sure to not include the `.js` file extensions allowing environments that as using [ESModule's](https://developers.google.com/web/fundamentals/primers/modules) to infer the `.msj` version.
+
+```json
+{
+  "name": "my-module",
+  "main": "index",
+  "types": "index.d.ts"
+}
+```
+
+
 
 
 ## References:
