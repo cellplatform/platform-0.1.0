@@ -3,14 +3,16 @@
   "version": "3.3.25",
   "description": "Common TypesScript and linter configuration.",
   "bin": {
-    "ts": "lib/bin.js"
+    "ts": "bin.js"
   },
   "scripts": {
-    "test": "node lib/bin test",
-    "lint": "node lib/bin lint",
-    "build": "sh sh/build.sh",
+    "test": "node bin test",
+    "lint": "node bin lint",
+    "build": "node bin build",
     "prepare": "yarn build && yarn lint && yarn test",
-    "tmp": "node lib/bin.js $@"
+    "tsc": "sh sh/build.sh $@",
+    "tmp": "node bin $@",
+    "example-build": "node bin build --outDir tmp/dist"
   },
   "dependencies": {
     "@types/node": "10.12.23",

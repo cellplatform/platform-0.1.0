@@ -51,10 +51,27 @@ const program = yargs
           alias: 'w',
           describe: 'Watch for changes.',
           boolean: true,
+        })
+        .option('outDir', {
+          describe: 'Redirect output structure to the directory.',
+          string: true,
+        })
+        .option('--no-esm', {
+          describe: 'Do not include ESModule output (.jsm).',
+          boolean: true,
         }),
     async e => {
-      const { silent, watch } = e;
-      const res = await cmd.build({ silent, watch });
+      const { silent, watch, outDir, esm } = e;
+
+      let formats: cmd.BuildFormat[] = [];
+      formats = esm !== false ? [...formats, 'ES_MODULE'] : formats;
+      formats = [...formats, 'COMMON_JS'];
+
+      const res = await cmd.buildAs(formats, {
+        silent,
+        watch,
+        outDir,
+      });
       if (res.error) {
         fail(1, res.error);
       }
