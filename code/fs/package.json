@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs",
-  "version": "0.0.12",
+  "version": "0.0.20",
   "description": "File system tools.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -12,13 +12,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@types/fs-extra": "^5.0.4",
-    "fast-glob": "^2.2.6",
-    "fs-extra": "^7.0.1"
+    "@types/fs-extra": "5.0.4",
+    "fast-glob": "2.2.6",
+    "fs-extra": "7.0.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.11",
-    "@platform/ts": "3.3.29"
+    "@platform/test": "0.0.15",
+    "@platform/ts": "3.3.33"
   },
   "files": [
     "lib",

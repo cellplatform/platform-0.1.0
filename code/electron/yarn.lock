@@ -15,10 +15,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/fs@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.12.tgz#60a20bceb1fa326c674fc204f441ad35b96bede3"
-  integrity sha512-pZXDxXzN9WYOXvN0DE3+KeahBB1Ygeu9vRJt6TTeCZN1+zXPyHVAIrX8qGBNIMYZUPQMBfmIX4WHpA8y/qWxPA==
+"@platform/fs@0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.20.tgz#c3a39c73eed738923db644f166878be839d2a261"
+  integrity sha512-hw06hLSadjksIZSCZh03IrxnCqPrFVxJobobkGWlZFN4D5M2WZm3IBhu1V0fV7PMhkvBdffeZ8jGejgBnZP3XQ==
   dependencies:
     "@types/fs-extra" "^5.0.4"
     fast-glob "^2.2.6"
@@ -34,29 +34,29 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/log@0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.17.tgz#3a448e265a3630a89727c398114e2bc9d9cb404d"
-  integrity sha512-dzCxT6cPTJRlZSgvD3Z9gfAF8SI16TsKa2+ULgIkH4uXE8URbcvBkNpbwTt7UOQbtSAdaN8Rco7tyhYGwQMK7Q==
+"@platform/log@0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.21.tgz#ce6befef6da2dce66c506dcdad4ae887ee2b4d98"
+  integrity sha512-c3QLfaiXYElGexgyxet2MHXAa2xJJal7SID6ki6olB0llk5ANv0zBBoeN7XvUlrtLIzwlZc5kr1UyEP/hQHA1g==
   dependencies:
     "@platform/libs" "0.0.0"
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/test@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.11.tgz#b2946c83ef7684057f4e2c0adb538e70f1664bd5"
-  integrity sha512-P9I9iPxrwAed//R9ZyQbk8S81qiCjYtSts1FH2elM+RQ/v7Y3SB9VkWjisKrjzZ46yZMenci5VaKitqPGcId6g==
+"@platform/test@0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.15.tgz#2a9e61c62406c1ac60a18c7edfef97fe7558ce22"
+  integrity sha512-gJBmR4pSjM+OjSWQj7tCvw+f9V23IcGIemKGx1aeoUJEInW44Hz9rZSHwTRKgJ25EKrNEgiySKXgHQk7Zdd4dQ==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.5"
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts@3.3.29":
-  version "3.3.29"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.29.tgz#678f06393361b16dcc5a9971ac1529294fee735d"
-  integrity sha512-pOBKAyY7bKTSoRhZOi4Zj8tnnoXAFR5zLLEsIrGlIO4GHFjV9c07BZmZXsE8G/JLyPkZNNydVloIWIupkNOLnQ==
+"@platform/ts@3.3.33":
+  version "3.3.33"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.33.tgz#72a93c170ed4cd4ba86ed39fd4174b777b710ad8"
+  integrity sha512-Y5bmK38M3VkMNdCn5O4TCWBHpqx7DkPm+CK7eSOq3Y+p7FWKTMsRYs7KY65CDPg5iCrmFDgVR0iyolet0/SxJA==
   dependencies:
     "@types/node" "10.12.24"
     prettier "1.16.4"
