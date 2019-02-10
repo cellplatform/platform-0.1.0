@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs",
-  "version": "0.0.20",
+  "version": "0.0.22",
   "description": "File system tools.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -17,8 +17,8 @@
     "fs-extra": "7.0.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.17",
-    "@platform/ts": "3.3.36"
+    "@platform/test": "0.0.18",
+    "@platform/ts": "3.3.37"
   },
   "files": [
     "lib"

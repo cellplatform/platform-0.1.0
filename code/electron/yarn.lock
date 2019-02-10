@@ -15,14 +15,14 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/fs@0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.20.tgz#c3a39c73eed738923db644f166878be839d2a261"
-  integrity sha512-hw06hLSadjksIZSCZh03IrxnCqPrFVxJobobkGWlZFN4D5M2WZm3IBhu1V0fV7PMhkvBdffeZ8jGejgBnZP3XQ==
+"@platform/fs@0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.22.tgz#192bc11e67287884d50aa2cdb95df20a26eb7aaf"
+  integrity sha512-7XDoCbJJPCldfcrYJ1CtdXOJ55d7US0zjcY1xj4MPmTAr6FS9IDLjc8hbgbAa/hxS24whrkjq+9lPsJCJNaciw==
   dependencies:
-    "@types/fs-extra" "^5.0.4"
-    fast-glob "^2.2.6"
-    fs-extra "^7.0.1"
+    "@types/fs-extra" "5.0.4"
+    fast-glob "2.2.6"
+    fs-extra "7.0.1"
 
 "@platform/libs@0.0.0":
   version "0.0.0"
@@ -34,38 +34,38 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/log@0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.21.tgz#ce6befef6da2dce66c506dcdad4ae887ee2b4d98"
-  integrity sha512-c3QLfaiXYElGexgyxet2MHXAa2xJJal7SID6ki6olB0llk5ANv0zBBoeN7XvUlrtLIzwlZc5kr1UyEP/hQHA1g==
+"@platform/log@0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.23.tgz#1ef61d38d6fd1946fdf95fb617b285024e7a0359"
+  integrity sha512-8v1iRGl0iKRFOlrA25QYcXSnA+UXhcS+4+nkyNIRLU3XkneTMJTN0iokd+X6sh4oHTKjhQVpj6Uiqn41wz3s5Q==
   dependencies:
     "@platform/libs" "0.0.0"
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/test@0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.17.tgz#11c46acb6523e5cda258348bb38610621cde4c10"
-  integrity sha512-GZM4j4s2OFQXQ4OYMGO1PzwXMTI4CeRuosIGx58rZakp5ZzkP6aggKGm9UIB9OV4ICYaQkqa2kqqLnvUx4hl+g==
+"@platform/test@0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.18.tgz#d794c2745b7ea369255787d04aaa130cc3231af8"
+  integrity sha512-ems3Ad4hKYCozgCi+8S1UfwkOp1Yqd5dU67jx1Omrh0OfJlBfgq0Da7bWf9C3Fzk0tJHViyOF+04fZ/4kEZL7g==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.5"
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts.cli@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.1.tgz#7b4ec871de190fe05d8c373fabc484220c6e7de3"
-  integrity sha512-gip1+2s1W/B+9+PDcj1jUCJWj7v11oY4lkONgp/qtcC/vULF5A4V9skBNm7k4IDHOIuqPIVk6qJKNhUNfqk6/w==
+"@platform/ts.cli@3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.3.tgz#0d9a3135b13d32cb50a04abe9dc687f1ca37693f"
+  integrity sha512-NZMx5qnKAZ/VcyzQz3fWylA2a7yDRMDDYfbFbH+VDIMW0l7gooxzlWGGXgaTx8yau6hAGgogjbdMJ4yDBoPHBQ==
   dependencies:
-    "@platform/fs" "0.0.20"
-    "@platform/ts" "3.3.36"
+    "@platform/fs" "0.0.22"
+    "@platform/ts" "3.3.37"
     yargs "12.0.5"
 
-"@platform/ts@3.3.36":
-  version "3.3.36"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.36.tgz#35b335b4a9812b09263b70f6479b99d66cfd8f72"
-  integrity sha512-ZZGnfLI9KNntfNktsH17XiJmNUF93IsRDzsyLEGNidY2/fDJ2OhzQKPjuJypDBbaZFRAk++pLZ/m4ImenShEUQ==
+"@platform/ts@3.3.37":
+  version "3.3.37"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.37.tgz#c149cb74738715ad40349c8be41943516b89b0a6"
+  integrity sha512-udhb5SgiaQCAK6eDujHsum6UGmocYGZafLKUSv76coWk7zmLZh2KWerLcP926E1QNN2JmBhMMhGPxkK/zdSBow==
   dependencies:
     "@types/node" "10.12.24"
     prettier "1.16.4"
@@ -123,7 +123,7 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.7.tgz#1b8e33b61a8c09cbe1f85133071baa0dbf9fa71a"
   integrity sha512-2Y8uPt0/jwjhQ6EiluT0XCri1Dbplr0ZxfFXUz+ye13gaqE8u5gL5ppao1JrUYr9cIip5S6MvQzBS7Kke7U9VA==
 
-"@types/fs-extra@^5.0.4":
+"@types/fs-extra@5.0.4":
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-5.0.4.tgz#b971134d162cc0497d221adde3dbb67502225599"
   integrity sha512-DsknoBvD8s+RFfSGjmERJ7ZOP1HI0UZRA3FSI+Zakhrc/Gy26YQsLI+m5V5DHxroHRJqCDLKJp7Hixn8zyaF7g==
@@ -924,7 +924,7 @@ fast-deep-equal@^2.0.1:
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
   integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
 
-fast-glob@^2.2.6:
+fast-glob@2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-2.2.6.tgz#a5d5b697ec8deda468d85a74035290a025a95295"
   integrity sha512-0BvMaZc1k9F+MeWWMe8pL6YltFzZYcJsYU7D4JyDA6PAczaXvxqQQ/z+mDF7/4Mw01DeUc+i3CTKajnkANkV4w==
@@ -1024,19 +1024,19 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
-fs-extra@^4.0.1:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.3.tgz#0d852122e5bc5beb453fb028e9c0c9bf36340c94"
-  integrity sha512-q6rbdDd1o2mAnQreO7YADIxf/Whx4AHBiRf6d+/cVT8h44ss+lHgxf1FemcqDnQt9X3ct4McHr+JMGlYSsK7Cg==
+fs-extra@7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-7.0.1.tgz#4f189c44aa123b895f722804f55ea23eadc348e9"
+  integrity sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^4.0.0"
     universalify "^0.1.0"
 
-fs-extra@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-7.0.1.tgz#4f189c44aa123b895f722804f55ea23eadc348e9"
-  integrity sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==
+fs-extra@^4.0.1:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.3.tgz#0d852122e5bc5beb453fb028e9c0c9bf36340c94"
+  integrity sha512-q6rbdDd1o2mAnQreO7YADIxf/Whx4AHBiRf6d+/cVT8h44ss+lHgxf1FemcqDnQt9X3ct4McHr+JMGlYSsK7Cg==
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^4.0.0"
