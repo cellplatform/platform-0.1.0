@@ -1,4 +1,4 @@
-import main from '@tdb/electron/lib/main';
+import main from '@platform/electron/lib/main';
 import { time } from '@tdb/util';
 import * as uiharness from '@uiharness/electron/lib/main';
 import { BrowserWindow } from 'electron';
@@ -12,7 +12,7 @@ const config = require('../.uiharness/config.json');
  * Initialize the default [main] window process with the [UIHarness].
  */
 (async () => {
-  const store = main.store.create();
+  // const store = main.store.create();
 
   // NOTE:  You could also get [log, ipc] from `uiharness.init`.
   //        Calling these here as this is about testing the module
@@ -23,11 +23,11 @@ const config = require('../.uiharness/config.json');
     config,
     log,
     ipc,
-    // devTools: false,
+    // devTools: true,
   });
 
   log.info.blue('started');
-  log.info('store.count', log.cyan(store.get('count') || 0));
+  // log.info('store.count', log.cyan(store.get('count') || 0));
 
   /**
    * Filter (new window).
@@ -36,7 +36,7 @@ const config = require('../.uiharness/config.json');
     const all = BrowserWindow.getAllWindows();
     if (e.type === 'NEW_WINDOW') {
       const name = `New Window (${all.length})`;
-      newWindow({ name });
+      newWindow({ name, devTools: true });
     }
   });
 
