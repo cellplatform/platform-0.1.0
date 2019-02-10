@@ -1,19 +1,11 @@
-import { Foo } from './Foo';
-export const FOO = 123;
+import { exec, fs } from '../common';
 
-const foo = { number: 123 };
-const bar = { text: 'hello' };
-export const baz = { ...foo, ...bar };
+(async () => {
+  const argv = process.argv;
+  const dir = 'example/pkg-1';
+  const outDir = fs.resolve('tmp/dist');
+  const options = `--dir=${dir} --outDir=${outDir} ${argv.slice(3).join(' ')}`;
 
-export class Thing {
-  private readonly _hidden: number;
-  constructor() {
-    this._hidden = 1;
-  }
-  public get foo() {
-    return this._hidden;
-  }
-}
-
-const instance = new Foo();
-console.log(instance); // tslint:disable-line
+  const cmd = `node bin ${argv[2]} ${options}`;
+  await exec.run(cmd);
+})();

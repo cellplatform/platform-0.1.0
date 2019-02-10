@@ -9,9 +9,9 @@ export type ILintResult = {
  * Runs the typescript linter.
  */
 export async function lint(
-  args: { silent?: boolean } = {},
+  args: { dir?: string; silent?: boolean } = {},
 ): Promise<ILintResult> {
-  const dir = paths.closestParentOf('tslint.json');
+  const dir = args.dir || paths.closestParentOf('tslint.json');
   if (!dir) {
     const error = new Error(`A 'tslint.json' file could not be found.`);
     return { success: false, error };

@@ -59,6 +59,10 @@ const program = yargs
           describe: 'Watch for changes',
           boolean: true,
         })
+        .option('dir', {
+          describe: 'The directory of the module',
+          string: true,
+        })
         .option('outDir', {
           describe: 'Redirect output structure to the directory',
           string: true,
@@ -68,7 +72,7 @@ const program = yargs
           boolean: true,
         }),
     async e => {
-      const { silent, watch, outDir, esm } = e;
+      const { silent, watch, dir, outDir, esm } = e;
 
       let formats: cmds.BuildFormat[] = [];
       formats = esm !== false ? [...formats, 'ES_MODULE'] : formats;
@@ -77,6 +81,7 @@ const program = yargs
       const res = await cmds.buildAs(formats, {
         silent,
         watch,
+        dir,
         outDir,
       });
       if (res.error) {

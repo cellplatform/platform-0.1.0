@@ -9,14 +9,14 @@ export type IPublishResult = {
  * Runs an NPM publish.
  */
 export async function publish(
-  args: { silent?: boolean; outDir?: string } = {},
+  args: { silent?: boolean; dir?: string; outDir?: string } = {},
 ): Promise<IPublishResult> {
   const fail = (err: string) => {
     const error = new Error(err);
     return { success: false, error };
   };
 
-  const dir = paths.closestParentOf('tsconfig.json');
+  const dir = args.dir || paths.closestParentOf('tsconfig.json');
   if (!dir) {
     return fail(`A 'tsconfig.json' file could not be found.`);
   }

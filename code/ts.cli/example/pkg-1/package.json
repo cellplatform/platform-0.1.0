@@ -1,0 +1,17 @@
+{
+  "name": "@scratchpad/ts.cli-pkg-1",
+  "version": "1.0.0",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "devDependencies": {
+    "@platform/ts.cli": "^3.3.6"
+  },
+  "license": "MIT"
+}

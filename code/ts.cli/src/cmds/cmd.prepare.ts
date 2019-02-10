@@ -1,4 +1,4 @@
-import { exec, log, paths } from '../common';
+import { exec, log, paths, fs } from '../common';
 
 export type IPrepareResult = {
   success: boolean;
@@ -9,7 +9,7 @@ export type IPrepareResult = {
  * Prepares the module for publishing to NPM.
  */
 export async function prepare(
-  args: { silent?: boolean } = {},
+  args: { dir?: string; silent?: boolean } = {},
 ): Promise<IPrepareResult> {
   const { silent } = args;
 
@@ -19,7 +19,7 @@ export async function prepare(
     }
   };
 
-  const dir = paths.closestParentOf('package.json');
+  const dir = args.dir || paths.closestParentOf('package.json');
   if (!dir) {
     const error = new Error(
       `A module root with [package.json] could not be found.`,
@@ -37,7 +37,8 @@ export async function prepare(
 
     for (const cmd of cmds) {
       info(` • ${cmd}`);
-      const res = await exec.run(cmd, { silent: true });
+      const cd = `cd ${fs.resolve(dir)}\n`;
+      const res = await exec.run(`${cd}${cmd}`, { silent: true });
       if (res.code !== 0) {
         const error = new Error(`Failed while running '${cmd}'.`);
         return { success: false, error };
