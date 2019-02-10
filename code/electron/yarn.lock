@@ -35,10 +35,10 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/log@0.0.25":
-  version "0.0.25"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.25.tgz#ba1960e3a9c745be34cd6062940dfed34447e175"
-  integrity sha512-MkkhfMsM0cFZ6WC5BpMclUFiDMDYKt8osb16b+oN595jopugaRCT3+9gRaudH28ynMuMpvHrMmuRub7zZXirkg==
+"@platform/log@0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.26.tgz#4ab8071799662da0e9097d2067529811358f4834"
+  integrity sha512-Yae6waRvRFFnZ8qZm7agJu/o2nLk0COQR2EuKtT9bBx2iUe0SAYIKXTo6NpsYeM8DcZxbdP//V25YBjBWnpqmA==
   dependencies:
     "@platform/libs" "0.0.1"
     chalk "2.4.2"
@@ -54,10 +54,10 @@
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts.cli@3.3.4":
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.4.tgz#ead7d3c5b3e562e7a57b779917a6ef9a613b4737"
-  integrity sha512-D8HZZ5HBfDJYm4g5v/DLiUyr5rMY6gCpBZakFFme3+AJdtXJ81BawAWCihn94Qxn2j6msEXVa4yoIXJrJQ5fhg==
+"@platform/ts.cli@3.3.5":
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.5.tgz#d2a69929cb964f90f4baffae52a16374b2269aae"
+  integrity sha512-x566VkP1dHzUS//LcjNSRNz4pfng/c63cqVyEHNvSyi3atjO4SjKDC6Pc1rmDO0e2yoEtTrUSQaFudB+v8LEGQ==
   dependencies:
     "@platform/fs" "0.0.23"
     "@platform/ts" "3.3.37"
