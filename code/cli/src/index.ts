@@ -1,1 +1,1 @@
-// Entry point.
+export { exec } from './common';

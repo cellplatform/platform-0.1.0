@@ -1,4 +1,4 @@
-import { exec, paths, join } from '../common';
+import { exec, paths, fs } from '../common';
 
 export type ILintResult = {
   success: boolean;
@@ -17,10 +17,10 @@ export async function lint(
     return { success: false, error };
   }
 
-  const modules = join(dir, 'node_modules');
+  const modules = fs.join(dir, 'node_modules');
   const path = {
-    prettier: join(modules, 'prettier/bin-prettier'),
-    tslint: join(modules, 'tslint/bin/tslint'),
+    prettier: fs.join(modules, 'prettier/bin-prettier'),
+    tslint: fs.join(modules, 'tslint/bin/tslint'),
   };
 
   const cmd = {

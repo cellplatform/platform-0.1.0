@@ -1,4 +1,4 @@
-import { changeExtensions, exec, join, paths } from '../common';
+import { changeExtensions, exec, fs, paths } from '../common';
 
 export type BuildFormat = 'COMMON_JS' | 'ES_MODULE';
 
@@ -66,10 +66,10 @@ export async function build(
   const tsc = 'node_modules/typescript/bin/tsc';
   let cmd = '';
   if (reset) {
-    cmd += `rm -rf ${join(dir, outDir)}`;
+    cmd += `rm -rf ${fs.join(dir, outDir)}`;
     cmd += '\n';
   }
-  cmd += `node ${join(dir, tsc)}`;
+  cmd += `node ${fs.join(dir, tsc)}`;
   cmd += ` --outDir ${outDir}`;
   cmd = watch ? `${cmd} --watch` : cmd;
   switch (as) {

@@ -2,7 +2,7 @@
   "name": "@platform/ts.cli",
   "version": "3.3.5",
   "description": "TypesScript tools.",
-  "main": "lib/index.js",
+  "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
     "ts": "bin.js"
@@ -13,11 +13,12 @@
     "build": "sh sh/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test",
     "tmp": "node bin $@",
-    "example-build": "node bin build --outDir tmp/dist",
+    "example-b": "node bin build --outDir tmp/dist",
     "example-pub": "node bin publish --outDir tmp/dist",
     "clean": "rm -rf .publish && rm -rf tmp"
   },
   "dependencies": {
+    "@platform/cli": "0.0.21",
     "@platform/fs": "0.0.23",
     "@platform/ts": "3.3.37",
     "yargs": "12.0.5"

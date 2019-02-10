@@ -1,11 +1,4 @@
-import {
-  // exec,
-  paths,
-  join,
-  IPackageJson,
-  resolve,
-  fs,
-} from '../common';
+import { paths, IPackageJson, fs } from '../common';
 
 export type IPublishResult = {
   success: boolean;
@@ -39,8 +32,8 @@ export async function publish(
   }
   outDir = fs.resolve(outDir);
 
-  const modules = join(dir, 'node_modules');
-  // const outDir = resolve('.publish');
+  const modules = fs.join(dir, 'node_modules');
+  // const outDir = fs.resolve('.publish');
   console.log('modules', modules);
   console.log('tsconfig', tsconfig);
 
@@ -69,7 +62,8 @@ async function copyPackageJson(args: { rootDir: string; target: string }) {
     fs.ensureDirSync(args.target);
 
     // Prepare paths.
-    const toPackagePath = (dir: string) => resolve(join(dir, 'package.json'));
+    const toPackagePath = (dir: string) =>
+      fs.resolve(fs.join(dir, 'package.json'));
     const source = toPackagePath(args.rootDir);
     const target = toPackagePath(args.target);
 

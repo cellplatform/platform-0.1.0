@@ -1,4 +1,4 @@
-import { exec, paths, join, fs, log } from '../common';
+import { exec, paths, fs, log } from '../common';
 
 export type ITestResult = {
   success: boolean;
@@ -26,8 +26,8 @@ export async function test(
     return { success: false, error };
   }
 
-  const modules = join(dir, 'node_modules');
-  const mocha = join(modules, 'mocha/bin/mocha');
+  const modules = fs.join(dir, 'node_modules');
+  const mocha = fs.join(modules, 'mocha/bin/mocha');
 
   if (!fs.existsSync(mocha)) {
     info('No test runner installed.\n');
