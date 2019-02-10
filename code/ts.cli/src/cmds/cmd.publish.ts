@@ -16,23 +16,43 @@ export type IPublishResult = {
  * Runs an NPM publish.
  */
 export async function publish(
-  args: { silent?: boolean } = {},
+  args: { silent?: boolean; outDir?: string } = {},
 ): Promise<IPublishResult> {
-  const dir = paths.closestParentOf('package.json');
-  if (!dir) {
-    const error = new Error(`A 'package.json' file could not be found.`);
+  const fail = (err: string) => {
+    const error = new Error(err);
     return { success: false, error };
+  };
+
+  const dir = paths.closestParentOf('tsconfig.json');
+  if (!dir) {
+    return fail(`A 'tsconfig.json' file could not be found.`);
   }
+
+  const tsconfig = paths.tsconfig(dir);
+  if (!tsconfig.success) {
+    return fail(`Failed to load the 'tsconig.json' file.`);
+  }
+
+  let outDir = args.outDir || tsconfig.outDir;
+  if (!outDir) {
+    return fail(`The 'tsconfig.json' does not contain an 'outDir'.`);
+  }
+  outDir = fs.resolve(outDir);
 
   const modules = join(dir, 'node_modules');
   // const outDir = resolve('.publish');
   console.log('modules', modules);
+  console.log('tsconfig', tsconfig);
 
   try {
-    const rootDir = '.';
-    const outDir = '.publish';
+    const tmp = fs.resolve('.publish');
+    // const rootDir = fs;
 
-    await copyPackageJson({ rootDir, outDir });
+    await copyPackageJson({ rootDir: dir, target: tmp });
+
+    await fs.copy(outDir, tmp);
+
+    console.log('outDir', outDir);
 
     return { success: true };
   } catch (error) {
@@ -43,16 +63,15 @@ export async function publish(
 /**
  * INTERNAL
  */
-
-async function copyPackageJson(args: { rootDir: string; outDir: string }) {
+async function copyPackageJson(args: { rootDir: string; target: string }) {
   try {
     // Setup initial conditions.
-    fs.ensureDirSync(args.outDir);
+    fs.ensureDirSync(args.target);
 
     // Prepare paths.
     const toPackagePath = (dir: string) => resolve(join(dir, 'package.json'));
     const source = toPackagePath(args.rootDir);
-    const target = toPackagePath(args.outDir);
+    const target = toPackagePath(args.target);
 
     // Update [package.json] file.
     const pkg = JSON.parse(fs.readFileSync(source, 'utf8')) as IPackageJson;

@@ -13,7 +13,9 @@
     "build": "sh sh/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test",
     "tmp": "node bin $@",
-    "example-build": "node bin build --outDir tmp/dist"
+    "example-build": "node bin build --outDir tmp/dist",
+    "example-pub": "node bin publish --outDir tmp/dist",
+    "clean": "rm -rf .publish && rm -rf tmp"
   },
   "dependencies": {
     "@platform/fs": "0.0.23",

@@ -161,14 +161,20 @@ const program = yargs
     [CMD.PUBLISH, CMD.PUBLISH_PUB],
     `Publish to NPM`,
     e =>
-      e.option('silent', {
-        alias: 's',
-        describe: DESCRIPTION.SILENT,
-        boolean: true,
-      }),
+      e
+        .option('silent', {
+          alias: 's',
+          describe: DESCRIPTION.SILENT,
+          boolean: true,
+        })
+        .option('outDir', {
+          describe: 'The dir typescript has been transpiled to',
+          string: true,
+        }),
+
     async e => {
-      const { silent } = e;
-      const res = await cmds.publish({ silent });
+      const { silent, outDir } = e;
+      const res = await cmds.publish({ silent, outDir });
       if (res.error) {
         fail(1, res.error);
       }
