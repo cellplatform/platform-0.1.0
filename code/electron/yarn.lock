@@ -43,20 +43,29 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/test@0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.15.tgz#2a9e61c62406c1ac60a18c7edfef97fe7558ce22"
-  integrity sha512-gJBmR4pSjM+OjSWQj7tCvw+f9V23IcGIemKGx1aeoUJEInW44Hz9rZSHwTRKgJ25EKrNEgiySKXgHQk7Zdd4dQ==
+"@platform/test@0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.17.tgz#11c46acb6523e5cda258348bb38610621cde4c10"
+  integrity sha512-GZM4j4s2OFQXQ4OYMGO1PzwXMTI4CeRuosIGx58rZakp5ZzkP6aggKGm9UIB9OV4ICYaQkqa2kqqLnvUx4hl+g==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.5"
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts@3.3.33":
-  version "3.3.33"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.33.tgz#72a93c170ed4cd4ba86ed39fd4174b777b710ad8"
-  integrity sha512-Y5bmK38M3VkMNdCn5O4TCWBHpqx7DkPm+CK7eSOq3Y+p7FWKTMsRYs7KY65CDPg5iCrmFDgVR0iyolet0/SxJA==
+"@platform/ts.cli@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.1.tgz#7b4ec871de190fe05d8c373fabc484220c6e7de3"
+  integrity sha512-gip1+2s1W/B+9+PDcj1jUCJWj7v11oY4lkONgp/qtcC/vULF5A4V9skBNm7k4IDHOIuqPIVk6qJKNhUNfqk6/w==
+  dependencies:
+    "@platform/fs" "0.0.20"
+    "@platform/ts" "3.3.36"
+    yargs "12.0.5"
+
+"@platform/ts@3.3.36":
+  version "3.3.36"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.36.tgz#35b335b4a9812b09263b70f6479b99d66cfd8f72"
+  integrity sha512-ZZGnfLI9KNntfNktsH17XiJmNUF93IsRDzsyLEGNidY2/fDJ2OhzQKPjuJypDBbaZFRAk++pLZ/m4ImenShEUQ==
   dependencies:
     "@types/node" "10.12.24"
     prettier "1.16.4"
@@ -66,7 +75,6 @@
     tslint-config-prettier "1.18.0"
     tslint-react "3.6.0"
     typescript "3.3.3"
-    yargs "12.0.5"
 
 "@tdb/log@1.2.1":
   version "1.2.1"

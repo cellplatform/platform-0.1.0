@@ -1,4 +1,4 @@
-import { resolve, join, dirname, fs } from './libs';
+import { fs } from './libs';
 import { ITypescriptConfig } from '../types';
 
 /**
@@ -8,13 +8,13 @@ export function closestParentOf(
   child: string,
   cwd: string = '.',
 ): string | undefined {
-  cwd = resolve(cwd);
+  cwd = fs.resolve(cwd);
 
   if (fs.readdirSync(cwd).includes(child)) {
     return cwd;
   }
 
-  cwd = dirname(cwd);
+  cwd = fs.dirname(cwd);
   if (!cwd || cwd === '/') {
     return undefined;
   }
@@ -33,7 +33,7 @@ export function tsconfig(cwd: string = '.') {
       return { success: false };
     }
 
-    const path = join(dir, file);
+    const path = fs.join(dir, file);
     const text = fs.readFileSync(path, 'utf8');
     const data: ITypescriptConfig = JSON.parse(text);
     const outDir =

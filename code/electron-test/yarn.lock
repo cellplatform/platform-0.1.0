@@ -884,10 +884,19 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/ts@3.3.33":
-  version "3.3.33"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.33.tgz#72a93c170ed4cd4ba86ed39fd4174b777b710ad8"
-  integrity sha512-Y5bmK38M3VkMNdCn5O4TCWBHpqx7DkPm+CK7eSOq3Y+p7FWKTMsRYs7KY65CDPg5iCrmFDgVR0iyolet0/SxJA==
+"@platform/ts.cli@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.1.tgz#7b4ec871de190fe05d8c373fabc484220c6e7de3"
+  integrity sha512-gip1+2s1W/B+9+PDcj1jUCJWj7v11oY4lkONgp/qtcC/vULF5A4V9skBNm7k4IDHOIuqPIVk6qJKNhUNfqk6/w==
+  dependencies:
+    "@platform/fs" "0.0.20"
+    "@platform/ts" "3.3.36"
+    yargs "12.0.5"
+
+"@platform/ts@3.3.36":
+  version "3.3.36"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.36.tgz#35b335b4a9812b09263b70f6479b99d66cfd8f72"
+  integrity sha512-ZZGnfLI9KNntfNktsH17XiJmNUF93IsRDzsyLEGNidY2/fDJ2OhzQKPjuJypDBbaZFRAk++pLZ/m4ImenShEUQ==
   dependencies:
     "@types/node" "10.12.24"
     prettier "1.16.4"
@@ -897,7 +906,6 @@
     tslint-config-prettier "1.18.0"
     tslint-react "3.6.0"
     typescript "3.3.3"
-    yargs "12.0.5"
 
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"

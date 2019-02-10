@@ -1,11 +1,10 @@
 import {
-  exec,
+  // exec,
   paths,
   join,
   IPackageJson,
   resolve,
   fs,
-  extname,
 } from '../common';
 
 export type IPublishResult = {
@@ -87,4 +86,4 @@ const toParent = (path: string) =>
     .join('/');
 
 const removeExtension = (path: string) =>
-  path.substr(0, path.length - extname(path).length);
+  path.substr(0, path.length - fs.extname(path).length);

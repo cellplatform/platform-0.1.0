@@ -21,12 +21,12 @@
     "cli-table": "0.3.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.15",
-    "@platform/ts": "3.3.33",
+    "@platform/test": "0.0.17",
+    "@platform/ts.cli": "3.3.1",
     "@types/chalk": "2.2.0"
   },
   "files": [
-    "**/*"
+    "lib"
   ],
   "repository": "github.com/uiharness/platform",
   "license": "MIT"

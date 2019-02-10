@@ -1,4 +1,4 @@
-import { fs, join } from './libs';
+import { fs } from './libs';
 
 /**
  * Changes all file-extensions in the given directory.
@@ -19,14 +19,14 @@ export function changeExtensions(args: {
   };
 
   for (const name of fs.readdirSync(args.dir)) {
-    const path = join(dir, name);
+    const path = fs.join(dir, name);
     const info = fs.lstatSync(path);
     const isFile = info.isFile();
     if (isFile && name.endsWith(from)) {
       rename(path);
     }
     if (!isFile && info.isDirectory()) {
-      changeExtensions({ dir: join(dir, name), from, to }); // <== RECURSION
+      changeExtensions({ dir: fs.join(dir, name), from, to }); // <== RECURSION
     }
   }
 }
