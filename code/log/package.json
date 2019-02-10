@@ -1,6 +1,6 @@
 {
   "name": "@platform/log",
-  "version": "0.0.26",
+  "version": "0.0.28",
   "description": "Client and server logging.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,13 +16,13 @@
     "tmp": "yarn chmod && cd src/client && ts $@"
   },
   "dependencies": {
-    "@platform/libs": "0.0.1",
+    "@platform/libs": "0.0.2",
     "chalk": "2.4.2",
     "cli-table": "0.3.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.19",
-    "@platform/ts.cli": "3.3.5",
+    "@platform/test": "0.0.20",
+    "@platform/ts.cli": "3.3.6",
     "@types/chalk": "2.2.0"
   },
   "files": [
