@@ -1,0 +1,17 @@
+jobs:
+ - name: A
+   - schedule: "0 0/5 * 1/1 * ? *"
+   - type: mongodb.cluster
+    - config:
+       - host: mongodb://localhost:27017/admin?replicaSet=rs
+       - minSecondaries: 2
+       - minOplogHours: 100
+       - maxSecondaryDelay: 120
+ - name: B
+   - schedule: "0 0/5 * 1/1 * ? *"
+   - type: mongodb.cluster
+    - config:
+       - host: mongodb://localhost:27017/admin?replicaSet=rs
+       - minSecondaries: 2
+       - minOplogHours: 100
+       - maxSecondaryDelay: 120

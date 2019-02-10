@@ -46,10 +46,8 @@ export async function publish(
 
 async function copyPackageJson(args: { rootDir: string; outDir: string }) {
   try {
-    // Ensure dir.
-    if (!fs.existsSync(args.outDir)) {
-      fs.mkdirSync(args.outDir);
-    }
+    // Setup initial conditions.
+    fs.ensureDirSync(args.outDir);
 
     // Prepare paths.
     const toPackagePath = (dir: string) => resolve(join(dir, 'package.json'));

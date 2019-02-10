@@ -1,3 +1,4 @@
+import { File } from '../file';
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import { glob } from '../glob';
@@ -12,6 +13,11 @@ export const fs = {
    * Helpers for searching for glob patterns.
    */
   glob,
+
+  /**
+   * Helpers for working with file content.
+   */
+  file: File,
 
   /**
    * Helpers for working with paths.

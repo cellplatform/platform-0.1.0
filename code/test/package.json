@@ -1,6 +1,6 @@
 {
   "name": "@platform/test",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Configuration module containing test related modules.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
