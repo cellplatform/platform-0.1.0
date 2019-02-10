@@ -13,6 +13,8 @@ export type IPackageJson = {
   types?: string;
   dependencies?: IPackageFieldMap;
   devDependencies?: IPackageFieldMap;
+  scripts?: IPackageFieldMap;
+  files?: string[];
 };
 
 export type IPackageFieldMap = { [key: string]: string };
