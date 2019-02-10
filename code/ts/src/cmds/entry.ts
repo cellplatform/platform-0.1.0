@@ -21,11 +21,17 @@ const CMD = {
   TEST_T: 't',
   PREPARE: 'prepare',
   PREPARE_P: 'p',
+  PUBLISH: 'publish',
+  PUBLISH_PUB: 'pub',
   CHMOD: 'chmod',
 };
 const CMDS = Object.keys(CMD)
   .map(key => CMD[key])
   .map(cmd => cmd.split(' ')[0]);
+
+const DESCRIPTION = {
+  SILENT: 'Suppress console output',
+};
 
 /**
  * Cheat sheet.
@@ -45,7 +51,7 @@ const program = yargs
       e
         .option('silent', {
           alias: 's',
-          describe: 'Suppress console output',
+          describe: DESCRIPTION.SILENT,
           boolean: true,
         })
         .option('watch', {
@@ -88,7 +94,7 @@ const program = yargs
     e =>
       e.option('silent', {
         alias: 's',
-        describe: 'Suppress console output',
+        describe: DESCRIPTION.SILENT,
         boolean: true,
       }),
     async e => {
@@ -105,12 +111,12 @@ const program = yargs
    */
   .command(
     [CMD.TEST, CMD.TEST_T],
-    `Run tests.`,
+    `Run tests`,
     e =>
       e
         .option('silent', {
           alias: 's',
-          describe: 'Suppress console output',
+          describe: DESCRIPTION.SILENT,
           boolean: true,
         })
         .option('watch', {
@@ -132,16 +138,37 @@ const program = yargs
    */
   .command(
     [CMD.PREPARE, CMD.PREPARE_P],
-    `Prepare for publish.`,
+    `Prepare for publish`,
     e =>
       e.option('silent', {
         alias: 's',
-        describe: 'Suppress console output',
+        describe: DESCRIPTION.SILENT,
         boolean: true,
       }),
     async e => {
       const { silent } = e;
       const res = await cmds.prepare({ silent });
+      if (res.error) {
+        fail(1, res.error);
+      }
+    },
+  )
+
+  /**
+   * `publish`
+   */
+  .command(
+    [CMD.PUBLISH, CMD.PUBLISH_PUB],
+    `Publish to NPM`,
+    e =>
+      e.option('silent', {
+        alias: 's',
+        describe: DESCRIPTION.SILENT,
+        boolean: true,
+      }),
+    async e => {
+      const { silent } = e;
+      const res = await cmds.publish({ silent });
       if (res.error) {
         fail(1, res.error);
       }
@@ -163,7 +190,7 @@ const program = yargs
         })
         .option('silent', {
           alias: 's',
-          describe: 'Suppress console output',
+          describe: DESCRIPTION.SILENT,
           boolean: true,
         }),
     async e => {
