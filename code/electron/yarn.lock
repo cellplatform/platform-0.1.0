@@ -15,50 +15,51 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/fs@0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.22.tgz#192bc11e67287884d50aa2cdb95df20a26eb7aaf"
-  integrity sha512-7XDoCbJJPCldfcrYJ1CtdXOJ55d7US0zjcY1xj4MPmTAr6FS9IDLjc8hbgbAa/hxS24whrkjq+9lPsJCJNaciw==
+"@platform/fs@0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.23.tgz#05d7847df568616e66e705ed1fe89dfb81c92d78"
+  integrity sha512-Wxqu40sQBbFDTJksTh1groZPeqpgfvJz7qYfmbgUlc5MjBr3aIna0RypgK3HRpof5L/DxhvYX8VaArXFCArJYA==
   dependencies:
     "@types/fs-extra" "5.0.4"
     fast-glob "2.2.6"
     fs-extra "7.0.1"
+    js-yaml "^3.12.1"
 
-"@platform/libs@0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.0.tgz#c90cabee2753690ac10671a628a12eef18d5e290"
-  integrity sha512-KbldYgIkew9HMKYFAOFQtIdX4qcb6YghFl39md7eFvTBjcf5zhSMmIBETNMftD+pxEPfsJm+BNkqXDRjVhMzPQ==
+"@platform/libs@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.1.tgz#c532f3c70032e61f41f987dd11a758021db6b0bf"
+  integrity sha512-nM1xaeYHcHPgUvYxkNPOLoRh3uJzzH4/nNPGcM3kxKUP3T/8NciBQE8r9bXd7GlUMoU4qHZBVo2OiJafKNjjYw==
   dependencies:
-    "@types/ramda" "0.25.47"
+    "@types/ramda" "0.25.48"
     ramda "0.26.1"
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/log@0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.23.tgz#1ef61d38d6fd1946fdf95fb617b285024e7a0359"
-  integrity sha512-8v1iRGl0iKRFOlrA25QYcXSnA+UXhcS+4+nkyNIRLU3XkneTMJTN0iokd+X6sh4oHTKjhQVpj6Uiqn41wz3s5Q==
+"@platform/log@0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.25.tgz#ba1960e3a9c745be34cd6062940dfed34447e175"
+  integrity sha512-MkkhfMsM0cFZ6WC5BpMclUFiDMDYKt8osb16b+oN595jopugaRCT3+9gRaudH28ynMuMpvHrMmuRub7zZXirkg==
   dependencies:
-    "@platform/libs" "0.0.0"
+    "@platform/libs" "0.0.1"
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/test@0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.18.tgz#d794c2745b7ea369255787d04aaa130cc3231af8"
-  integrity sha512-ems3Ad4hKYCozgCi+8S1UfwkOp1Yqd5dU67jx1Omrh0OfJlBfgq0Da7bWf9C3Fzk0tJHViyOF+04fZ/4kEZL7g==
+"@platform/test@0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.19.tgz#f816b5f9f4c8f91363264b7c3e4cf1705a5fda79"
+  integrity sha512-O7PbqRqRolmWcrCHvV9KWAvMF1oVBFPN+UUAFg06MyfYGuFb6cOVeQc7TQpqCkU7Bs738eyKxLvxFIyuPFGYww==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.5"
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts.cli@3.3.3":
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.3.tgz#0d9a3135b13d32cb50a04abe9dc687f1ca37693f"
-  integrity sha512-NZMx5qnKAZ/VcyzQz3fWylA2a7yDRMDDYfbFbH+VDIMW0l7gooxzlWGGXgaTx8yau6hAGgogjbdMJ4yDBoPHBQ==
+"@platform/ts.cli@3.3.4":
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.4.tgz#ead7d3c5b3e562e7a57b779917a6ef9a613b4737"
+  integrity sha512-D8HZZ5HBfDJYm4g5v/DLiUyr5rMY6gCpBZakFFme3+AJdtXJ81BawAWCihn94Qxn2j6msEXVa4yoIXJrJQ5fhg==
   dependencies:
-    "@platform/fs" "0.0.22"
+    "@platform/fs" "0.0.23"
     "@platform/ts" "3.3.37"
     yargs "12.0.5"
 
@@ -154,6 +155,11 @@
   version "0.25.47"
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.47.tgz#904f2ee46149af42902fe7dc01867e32798e8b37"
   integrity sha512-+ffSU83+PR4/cZtNTkUcFkg70sK4GePle7p5h05bQ37ycPumOx/TBpU52bt36GKDlds6tCqXheqPvgC52MMLug==
+
+"@types/ramda@0.25.48":
+  version "0.25.48"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.48.tgz#775fc56ae469394146edfff5996b201851bc39b6"
+  integrity sha512-tsNbe/ov4iweH8ADzQF0UN7TApU8iofYeZDZvfSyXQhfiZ2C2hUC3CN9EK0nYGIVqN+Ll5XelKHATDc50t3dlA==
 
 "@types/react-dom@16.0.11":
   version "16.0.11"
@@ -1479,7 +1485,7 @@ js-tokens@^3.0.2:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
 
-js-yaml@^3.7.0:
+js-yaml@^3.12.1, js-yaml@^3.7.0:
   version "3.12.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.12.1.tgz#295c8632a18a23e054cf5c9d3cecafe678167600"
   integrity sha512-um46hB9wNOKlwkHgiuyEVAybXBjwFUV0Z/RaHJblRd9DXltue9FTYvzCr9ErQrK9Adz5MU4gHWVaNUfdmrC8qA==
