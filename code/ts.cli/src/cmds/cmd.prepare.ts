@@ -8,12 +8,14 @@ export async function prepare(
 ): Promise<IResult> {
   const { silent } = args;
   const log = getLog(args.silent);
-
-  const dir = args.dir || paths.closestParentOf('package.json');
+  const dir = args.dir || (await paths.closestParentOf('package.json'));
   if (!dir) {
     return result.fail(`A module root with [package.json] could not be found.`);
   }
 
+  /**
+   * Run commands.
+   */
   try {
     // TODO 🐷   use NPM when Yarn not installed
 

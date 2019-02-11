@@ -7,7 +7,7 @@ export async function lint(
   args: { dir?: string; silent?: boolean } = {},
 ): Promise<IResult> {
   const { silent } = args;
-  const dir = args.dir || paths.closestParentOf('tslint.json');
+  const dir = args.dir || (await paths.closestParentOf('tslint.json'));
   if (!dir) {
     return result.fail(`A 'tslint.json' file could not be found.`);
   }
