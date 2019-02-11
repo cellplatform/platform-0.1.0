@@ -14,13 +14,11 @@ export async function prepare(
     return fail(`A module root with [package.json] could not be found.`);
   }
 
-  log.info();
-  log.info('prepare:');
-
   try {
     // TODO 🐷   use NPM when Yarn not installed
 
     const cmds = ['yarn build', 'yarn lint', 'yarn test'];
+    log.info();
     const res = await runCommands(cmds, {
       dir: fs.resolve(dir),
       silent,

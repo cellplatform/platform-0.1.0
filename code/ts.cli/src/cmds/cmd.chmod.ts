@@ -1,12 +1,11 @@
 import {
   fail,
-  exec,
-  paths,
   fs,
-  IResult,
-  ICommand,
-  runCommands,
   getLog,
+  ICommand,
+  IResult,
+  paths,
+  runCommands,
 } from '../common';
 
 /**
