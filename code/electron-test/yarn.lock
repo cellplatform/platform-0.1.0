@@ -806,6 +806,15 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@platform/cli@0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.22.tgz#781c15f5a01593ed8a872a735bd3bc735be62164"
+  integrity sha512-o+UMwrFfbAI22eXR/6l6xegFwY9Gcz9WbEPsRwuukcEPb006t6hfsuLMDtqD87sw21+63Ll/rXXmo2g4/xR1CQ==
+  dependencies:
+    "@types/listr" "^0.13.0"
+    listr "^0.14.3"
+    yargs "12.0.5"
+
 "@platform/electron@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.1.tgz#38073a55b679663c970a8c6fb2112eb2b610ae0e"
@@ -822,13 +831,13 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/electron@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.12.tgz#49004a5a7a09f5559df8dc2f08a29e8b335a814f"
-  integrity sha512-LtOY4F8h5FbnBoppXUCtbREDz9HnZ4wU3V7xlbFWpulglyR39DPLYK7HDBU/aXz9vQjpelDrSvu313QCkRY/ww==
+"@platform/electron@0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.20.tgz#183d02efdad50ed0d3ab6bdfd8f556d5a065e590"
+  integrity sha512-wIJFM2bCJEDjbkrUoF5+9he584gWooJES9hl/dJPZ0APszYo8bHImwBI4qbmuGa4BbMBLLqiBoGsZnfXJKQfbw==
   dependencies:
-    "@platform/fs" "0.0.20"
-    "@platform/log" "0.0.21"
+    "@platform/fs" "0.0.24"
+    "@platform/log" "0.0.29"
     "@tdb/util" "1.9.38"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.1.0"
@@ -838,14 +847,15 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/fs@0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.20.tgz#c3a39c73eed738923db644f166878be839d2a261"
-  integrity sha512-hw06hLSadjksIZSCZh03IrxnCqPrFVxJobobkGWlZFN4D5M2WZm3IBhu1V0fV7PMhkvBdffeZ8jGejgBnZP3XQ==
+"@platform/fs@0.0.24":
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.24.tgz#8ff51902eae665b5a8a5a6490094f9cc430c9c8a"
+  integrity sha512-T1pt5aAMY87Sad/A9xB1ji7xPzJlbx09KUMhCtwWI5bohzNNU8eBP5qnw/+TR/sIKpbKPT639Ys5I1E5o618QA==
   dependencies:
-    "@types/fs-extra" "^5.0.4"
-    fast-glob "^2.2.6"
-    fs-extra "^7.0.1"
+    "@types/fs-extra" "5.0.4"
+    fast-glob "2.2.6"
+    fs-extra "7.0.1"
+    js-yaml "3.12.1"
 
 "@platform/fs@0.0.7":
   version "0.0.7"
@@ -866,6 +876,16 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
+"@platform/libs@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.2.tgz#56cb00380197db066e35bdf26576dde19290ed43"
+  integrity sha512-SK5NunmpaM/RdIgGj5d2zRCHA+2ld2HGQwOu5F/tuqszln18Y0lQpQojpEUfZpnA5j0FrJbsjC4bxEQ6wHhRgA==
+  dependencies:
+    "@types/ramda" "0.25.48"
+    ramda "0.26.1"
+    rxjs "6.4.0"
+    tslib "1.9.3"
+
 "@platform/log@0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.12.tgz#f8c07e698b954a5cea1270b1baee0f8e67407991"
@@ -875,28 +895,29 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/log@0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.21.tgz#ce6befef6da2dce66c506dcdad4ae887ee2b4d98"
-  integrity sha512-c3QLfaiXYElGexgyxet2MHXAa2xJJal7SID6ki6olB0llk5ANv0zBBoeN7XvUlrtLIzwlZc5kr1UyEP/hQHA1g==
+"@platform/log@0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.29.tgz#102d8d09d98eb2734cded10f59e407c237242096"
+  integrity sha512-ou4bkKposYU5nfbp0AD8KBsT6v5tt4JGn45ARdAV0bW8ImqM2IB+lEkDjrOrSSOrLfGWW/9qxDOy+iyHQRAtvw==
   dependencies:
-    "@platform/libs" "0.0.0"
+    "@platform/libs" "0.0.2"
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/ts.cli@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.1.tgz#7b4ec871de190fe05d8c373fabc484220c6e7de3"
-  integrity sha512-gip1+2s1W/B+9+PDcj1jUCJWj7v11oY4lkONgp/qtcC/vULF5A4V9skBNm7k4IDHOIuqPIVk6qJKNhUNfqk6/w==
+"@platform/ts.cli@3.3.7":
+  version "3.3.7"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.7.tgz#9db41804fc3aff42ee3cff91dde91da579b0bf4b"
+  integrity sha512-agrvejq41zzhWZd+N7Ul+daSZDLAP47Yde1QJygrTXmbAgHnQvXhQsyysL12P35hJllxyqs4WBtWvwy1P3zBJg==
   dependencies:
-    "@platform/fs" "0.0.20"
-    "@platform/ts" "3.3.36"
+    "@platform/cli" "0.0.22"
+    "@platform/fs" "0.0.24"
+    "@platform/ts" "3.3.38"
     yargs "12.0.5"
 
-"@platform/ts@3.3.36":
-  version "3.3.36"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.36.tgz#35b335b4a9812b09263b70f6479b99d66cfd8f72"
-  integrity sha512-ZZGnfLI9KNntfNktsH17XiJmNUF93IsRDzsyLEGNidY2/fDJ2OhzQKPjuJypDBbaZFRAk++pLZ/m4ImenShEUQ==
+"@platform/ts@3.3.38":
+  version "3.3.38"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.38.tgz#fe7e71eaa679e8bd72395d05fa2c396e7bf874ed"
+  integrity sha512-ZkZ7hxgpvHhgEqj68uYHEOBQ1qbdAKrNW1Qq6z1R3vIUAEnUN2bpApekE/xHy32I75N3AeSrKr3i102amh0Dag==
   dependencies:
     "@types/node" "10.12.24"
     prettier "1.16.4"
@@ -990,7 +1011,7 @@
   resolved "https://registry.yarnpkg.com/@types/js-yaml/-/js-yaml-3.12.0.tgz#3494ce97358e2675e24e97a747ec23478eeaf8b6"
   integrity sha512-UGEe/6RsNAxgWdknhzFZbCxuYc5I7b/YEKlfKbo+76SM8CJzGs7XKCj7zyugXViRbKYpXhSXhCYVQZL5tmDbpQ==
 
-"@types/listr@0.13.0":
+"@types/listr@0.13.0", "@types/listr@^0.13.0":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@types/listr/-/listr-0.13.0.tgz#6250bc4a04123cafa24fc73d1b880653a6ae6721"
   integrity sha512-8DOy0JCGwwAf76xmU0sRzSZCWKSPPA9djRcTYTsyqBPnMdGOjZ5tjmNswC4J9mgKZudte2tuTo1l14R1/t5l/g==
@@ -1021,6 +1042,11 @@
   version "0.25.47"
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.47.tgz#904f2ee46149af42902fe7dc01867e32798e8b37"
   integrity sha512-+ffSU83+PR4/cZtNTkUcFkg70sK4GePle7p5h05bQ37ycPumOx/TBpU52bt36GKDlds6tCqXheqPvgC52MMLug==
+
+"@types/ramda@0.25.48":
+  version "0.25.48"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.48.tgz#775fc56ae469394146edfff5996b201851bc39b6"
+  integrity sha512-tsNbe/ov4iweH8ADzQF0UN7TApU8iofYeZDZvfSyXQhfiZ2C2hUC3CN9EK0nYGIVqN+Ll5XelKHATDc50t3dlA==
 
 "@types/react-dom@16.0.11":
   version "16.0.11"
@@ -4543,7 +4569,7 @@ listr-verbose-renderer@^0.5.0:
     date-fns "^1.27.2"
     figures "^2.0.0"
 
-listr@0.14.3:
+listr@0.14.3, listr@^0.14.3:
   version "0.14.3"
   resolved "https://registry.yarnpkg.com/listr/-/listr-0.14.3.tgz#2fea909604e434be464c50bddba0d496928fa586"
   integrity sha512-RmAl7su35BFd/xoMamRjpIE4j3v+L28o8CT5YhAXQJm1fD+1l9ngXY8JAQRJ+tFK2i5njvi0iRUKV09vPwA0iA==
