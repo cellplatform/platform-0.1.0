@@ -15,13 +15,14 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/cli@0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.23.tgz#1bc9ece3eb925bc73d4756f09502169f5e36cf5d"
-  integrity sha512-93HagtON4snBWb5UcXnWdbFcaVCrMHB+TBx97Gqefmq2j8Wsv9+W8bpHRE4c64kkWCVzgbW7RqxA4phqbVyF5A==
+"@platform/cli@0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.26.tgz#24b8dbf01d04718aea59f06c358494b2d45690e1"
+  integrity sha512-/hLt3TQIVTZJUvvtWRmDFpY+bzAYajdSXRn6hEJBd+s6fOk1s+fK7kxm5+0/j9H/dcsLLz+3T5GqQZId/hwjtQ==
   dependencies:
-    "@types/listr" "^0.13.0"
-    listr "^0.14.3"
+    "@platform/fs" "0.0.25"
+    "@types/listr" "0.13.0"
+    listr "0.14.3"
     yargs "12.0.5"
 
 "@platform/fs@0.0.25":
@@ -34,7 +35,7 @@
     fs-extra "7.0.1"
     js-yaml "3.12.1"
 
-"@platform/libs@^0.0.2":
+"@platform/libs@0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.2.tgz#56cb00380197db066e35bdf26576dde19290ed43"
   integrity sha512-SK5NunmpaM/RdIgGj5d2zRCHA+2ld2HGQwOu5F/tuqszln18Y0lQpQojpEUfZpnA5j0FrJbsjC4bxEQ6wHhRgA==
@@ -72,7 +73,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/listr@^0.13.0":
+"@types/listr@0.13.0":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@types/listr/-/listr-0.13.0.tgz#6250bc4a04123cafa24fc73d1b880653a6ae6721"
   integrity sha512-8DOy0JCGwwAf76xmU0sRzSZCWKSPPA9djRcTYTsyqBPnMdGOjZ5tjmNswC4J9mgKZudte2tuTo1l14R1/t5l/g==
@@ -910,7 +911,7 @@ listr-verbose-renderer@^0.5.0:
     date-fns "^1.27.2"
     figures "^2.0.0"
 
-listr@^0.14.3:
+listr@0.14.3:
   version "0.14.3"
   resolved "https://registry.yarnpkg.com/listr/-/listr-0.14.3.tgz#2fea909604e434be464c50bddba0d496928fa586"
   integrity sha512-RmAl7su35BFd/xoMamRjpIE4j3v+L28o8CT5YhAXQJm1fD+1l9ngXY8JAQRJ+tFK2i5njvi0iRUKV09vPwA0iA==
