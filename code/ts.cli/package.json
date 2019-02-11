@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts.cli",
-  "version": "3.3.21",
+  "version": "3.3.22",
   "description": "TypesScript tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
