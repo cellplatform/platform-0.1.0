@@ -1,4 +1,4 @@
-productName: tdb.electron
+productName: My Test App
 appId: team.db.lib.electron
 publish:
   provider: github
