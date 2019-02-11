@@ -2,7 +2,7 @@
 # https://uiharness.com/docs/config
 #
 
-name: tdb.electron
+name: My Test App
 
 electron:
   port: 8050

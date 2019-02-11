@@ -6,18 +6,19 @@ import { map } from 'rxjs/operators';
 
 import * as types from '../src/types';
 
-const config = require('../.uiharness/config.json');
+const config = require('../.uiharness/config.json') as uiharness.IUIHarnessRuntimeConfig;
 
 /**
  * Initialize the default [main] window process with the [UIHarness].
  */
 (async () => {
   // const store = main.store.create();
+  const appName = config.name;
 
   // NOTE:  You could also get [log, ipc] from `uiharness.init`.
   //        Calling these here as this is about testing the module
   //        that contains [log] and [ipc].
-  const { log, ipc } = main.init<types.MyEvents>();
+  const { log, ipc } = main.init<types.MyEvents>({ appName });
 
   const { newWindow } = await uiharness.init({
     config,

@@ -1,6 +1,15 @@
-import { ILogEvent, LogLevel } from '@platform/log/lib/client';
-export { ILogEvent, LogLevel };
+import { ILogEvent, LogLevel, ILog } from '@platform/log/lib/client/types';
+import { IServerLog } from '@platform/log/lib/server/types';
+export { ILogEvent, LogLevel, ILog };
 export { ProcessType } from '../../types';
+
+export type IMainLog = IServerLog & {
+  paths: {
+    dir: string;
+    dev: string;
+    prod: string;
+  };
+};
 
 /**
  * IPC Events.
