@@ -7,6 +7,7 @@ import {
   IResult,
   ITask,
   getLog,
+  IPackageJson,
 } from '../common';
 
 export type BuildFormat = 'COMMON_JS' | 'ES_MODULE';
@@ -25,13 +26,17 @@ export async function buildAs(
   formats: BuildFormat[],
   args: IBuildArgs = {},
 ): Promise<IResult> {
-  const { silent, outDir = '', code, error } = await processArgs(args);
+  const { silent, outDir = '', code, error, dir = '' } = await processArgs(
+    args,
+  );
   const log = getLog(silent);
 
   if (code !== 0) {
     return result.format({ code, error });
   }
+
   await fs.remove(outDir);
+  await ensureMainHasNoExtension(dir, { silent });
 
   const tasks: ITask[] = formats.map(format => {
     const title = format === 'ES_MODULE' ? '.mjs ESModule' : '.js  CommonJS';
@@ -114,7 +119,7 @@ export async function buildTask(args: IArgs): Promise<IResult> {
 
   // Change ESM (ES Module) file extensions.
   if (as === 'ES_MODULE') {
-    changeExtensions({ dir: outDir, from: 'js', to: 'mjs' });
+    await changeExtensions({ dir: outDir, from: 'js', to: 'mjs' });
   }
 
   // Finish up.
@@ -155,4 +160,42 @@ export async function processArgs(args: IArgs) {
 
   // Finish up.
   return { code: 0, dir, outDir, silent, watch, as };
+}
+
+/**
+ * Remove the `.js` file extension from the main entry point
+ * on a `package.json` file.
+ *
+ * NOTE:
+ *    This is to prevent inference errors because the module ships
+ *    with both `.js` and `.mjs` files.
+ */
+
+async function ensureMainHasNoExtension(
+  dir: string,
+  options: { silent?: boolean } = {},
+) {
+  const path = fs.join(dir, 'package.json');
+  const pkg = await fs.file.loadAndParse<IPackageJson>(path);
+  if (!pkg.main) {
+    return false;
+  }
+
+  const ext = fs.extname(pkg.main);
+  if (['.js', '.mjs'].includes(ext)) {
+    const log = getLog(options.silent);
+    const from = pkg.main;
+    const to = pkg.main.substr(0, pkg.main.length - ext.length);
+    log.info();
+    log.info(`Removed extension (${ext}) from [package.json].main`);
+    log.info(`• from: ${from}`);
+    log.info(`• to:   ${to}`);
+    log.info();
+
+    pkg.main = to;
+    await fs.file.stringifyAndSave<IPackageJson>(path, pkg);
+    return true;
+  }
+
+  return false;
 }
