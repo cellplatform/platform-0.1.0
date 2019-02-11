@@ -15,29 +15,29 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/cli@^0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.21.tgz#d53f94c1122a19d6d92792c77d3ccd51433d61c9"
-  integrity sha512-3+05fKQp6AoeXNwzoi9Pfpn6E088QTWKg+nxf0tLupvWGw3tsKnsuDBRi+51PPm+4KVauXGHPbyXTUpfWTgBjw==
+"@platform/cli@0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.22.tgz#781c15f5a01593ed8a872a735bd3bc735be62164"
+  integrity sha512-o+UMwrFfbAI22eXR/6l6xegFwY9Gcz9WbEPsRwuukcEPb006t6hfsuLMDtqD87sw21+63Ll/rXXmo2g4/xR1CQ==
   dependencies:
     "@types/listr" "^0.13.0"
     listr "^0.14.3"
     yargs "12.0.5"
 
-"@platform/fs@0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.23.tgz#05d7847df568616e66e705ed1fe89dfb81c92d78"
-  integrity sha512-Wxqu40sQBbFDTJksTh1groZPeqpgfvJz7qYfmbgUlc5MjBr3aIna0RypgK3HRpof5L/DxhvYX8VaArXFCArJYA==
+"@platform/fs@0.0.24":
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.24.tgz#8ff51902eae665b5a8a5a6490094f9cc430c9c8a"
+  integrity sha512-T1pt5aAMY87Sad/A9xB1ji7xPzJlbx09KUMhCtwWI5bohzNNU8eBP5qnw/+TR/sIKpbKPT639Ys5I1E5o618QA==
   dependencies:
     "@types/fs-extra" "5.0.4"
     fast-glob "2.2.6"
     fs-extra "7.0.1"
-    js-yaml "^3.12.1"
+    js-yaml "3.12.1"
 
-"@platform/ts@3.3.37":
-  version "3.3.37"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.37.tgz#c149cb74738715ad40349c8be41943516b89b0a6"
-  integrity sha512-udhb5SgiaQCAK6eDujHsum6UGmocYGZafLKUSv76coWk7zmLZh2KWerLcP926E1QNN2JmBhMMhGPxkK/zdSBow==
+"@platform/ts@3.3.38":
+  version "3.3.38"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.38.tgz#fe7e71eaa679e8bd72395d05fa2c396e7bf874ed"
+  integrity sha512-ZkZ7hxgpvHhgEqj68uYHEOBQ1qbdAKrNW1Qq6z1R3vIUAEnUN2bpApekE/xHy32I75N3AeSrKr3i102amh0Dag==
   dependencies:
     "@types/node" "10.12.24"
     prettier "1.16.4"
@@ -820,7 +820,7 @@ js-tokens@^3.0.2:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
 
-js-yaml@^3.12.1, js-yaml@^3.7.0:
+js-yaml@3.12.1, js-yaml@^3.7.0:
   version "3.12.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.12.1.tgz#295c8632a18a23e054cf5c9d3cecafe678167600"
   integrity sha512-um46hB9wNOKlwkHgiuyEVAybXBjwFUV0Z/RaHJblRd9DXltue9FTYvzCr9ErQrK9Adz5MU4gHWVaNUfdmrC8qA==
