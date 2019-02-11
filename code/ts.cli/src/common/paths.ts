@@ -4,13 +4,13 @@ import { ITypescriptConfig } from '../types';
 /**
  * Finds the cloest directory that contains the given child folder/file.
  */
-export function closestParentOf(
+export async function closestParentOf(
   child: string,
   cwd: string = '.',
-): string | undefined {
+): Promise<string | undefined> {
   cwd = fs.resolve(cwd);
 
-  if (fs.readdirSync(cwd).includes(child)) {
+  if ((await fs.readdir(cwd)).includes(child)) {
     return cwd;
   }
 
@@ -25,17 +25,17 @@ export function closestParentOf(
 /**
  * Reads out a TS config file for the given dir.
  */
-export function tsconfig(cwd: string = '.') {
+export async function tsconfig(cwd: string = '.') {
   const file = 'tsconfig.json';
   try {
-    const dir = closestParentOf(file, cwd);
+    const dir = await closestParentOf(file, cwd);
     if (!dir) {
       return { success: false };
     }
 
     const path = fs.join(dir, file);
-    const text = fs.readFileSync(path, 'utf8');
-    const data: ITypescriptConfig = JSON.parse(text);
+    const data = await fs.file.loadAndParse<ITypescriptConfig>(path);
+
     const outDir =
       (data && data.compilerOptions && data.compilerOptions.outDir) ||
       undefined;

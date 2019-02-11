@@ -8,7 +8,7 @@ import { exec, fs, getLog, ICommand, IResult, paths, result } from '../common';
 export async function chmod(
   args: { silent?: boolean; permissions?: string } = {},
 ): Promise<IResult> {
-  const dir = paths.closestParentOf('node_modules');
+  const dir = await paths.closestParentOf('node_modules');
   if (!dir) {
     return result.fail(`A module 'package.json' could not be found`);
   }
@@ -18,7 +18,7 @@ export async function chmod(
 
   // Prepare paths.
   const bin = fs.join(dir, 'node_modules/.bin');
-  const files = fs.readdirSync(bin).map(name => fs.join(bin, name));
+  const files = (await fs.readdir(bin)).map(name => fs.join(bin, name));
 
   // Change permissions.
   const cmds: ICommand[] = files.map(path => {

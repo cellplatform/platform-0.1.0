@@ -134,7 +134,7 @@ export async function processArgs(args: IArgs) {
   const { silent, watch, as = 'COMMON_JS' } = args;
 
   // Retrieve paths.
-  const dir = args.dir || paths.closestParentOf('node_modules');
+  const dir = args.dir || (await paths.closestParentOf('node_modules'));
   if (!dir) {
     const error = new Error(
       `The root directory containing 'node_modules' was not found.`,
@@ -143,7 +143,7 @@ export async function processArgs(args: IArgs) {
   }
 
   // Retrieve the TSConfig.
-  const tsconfig = paths.tsconfig(dir);
+  const tsconfig = await paths.tsconfig(dir);
   if (!tsconfig.success) {
     const error = new Error(`A 'tsconfig.json' file could not be found.`);
     return { code: 1, error };

@@ -3,7 +3,7 @@ import { fs } from './libs';
 /**
  * Changes all file-extensions in the given directory.
  */
-export function changeExtensions(args: {
+export async function changeExtensions(args: {
   dir: string;
   from: string;
   to: string;
@@ -13,20 +13,20 @@ export function changeExtensions(args: {
   const from = formatExtension(args.from);
   const to = formatExtension(args.to);
 
-  const rename = (before: string) => {
+  const rename = async (before: string) => {
     const after = `${before.substr(0, before.length - from.length)}${to}`;
-    fs.renameSync(before, after);
+    await fs.rename(before, after);
   };
 
-  for (const name of fs.readdirSync(args.dir)) {
+  for (const name of await fs.readdir(args.dir)) {
     const path = fs.join(dir, name);
-    const info = fs.lstatSync(path);
+    const info = await fs.lstat(path);
     const isFile = info.isFile();
     if (isFile && name.endsWith(from)) {
-      rename(path);
+      await rename(path);
     }
     if (!isFile && info.isDirectory()) {
-      changeExtensions({ dir: fs.join(dir, name), from, to }); // <== RECURSION
+      await changeExtensions({ dir: fs.join(dir, name), from, to }); // <== RECURSION
     }
   }
 }

@@ -6,12 +6,12 @@ import { fs, IPackageJson, IResult, paths, result } from '../common';
 export async function publish(
   args: { silent?: boolean; dir?: string; outDir?: string } = {},
 ): Promise<IResult> {
-  const dir = args.dir || paths.closestParentOf('tsconfig.json');
+  const dir = args.dir || (await paths.closestParentOf('tsconfig.json'));
   if (!dir) {
     return result.fail(`A 'tsconfig.json' file could not be found.`);
   }
 
-  const tsconfig = paths.tsconfig(dir);
+  const tsconfig = await paths.tsconfig(dir);
   if (!tsconfig.success) {
     return result.fail(`Failed to load the 'tsconig.json' file.`);
   }
@@ -24,8 +24,13 @@ export async function publish(
 
   const modules = fs.join(dir, 'node_modules');
   // const outDir = fs.resolve('.publish');
+
+  console.group('\n\n🐷  TODO publish\n');
   console.log('modules', modules);
   console.log('tsconfig', tsconfig);
+  console.log('outDir', outDir);
+  console.log('\n\n');
+  console.groupEnd();
 
   try {
     const tmp = fs.resolve('.publish');
@@ -34,8 +39,6 @@ export async function publish(
     await copyPackageJson({ rootDir: dir, target: tmp });
 
     await fs.copy(outDir, tmp);
-
-    console.log('outDir', outDir);
 
     return result.success();
   } catch (error) {
@@ -49,16 +52,16 @@ export async function publish(
 async function copyPackageJson(args: { rootDir: string; target: string }) {
   try {
     // Setup initial conditions.
-    fs.ensureDirSync(args.target);
+    await fs.ensureDir(args.target);
 
     // Prepare paths.
-    const toPackagePath = (dir: string) =>
+    const packagePath = (dir: string) =>
       fs.resolve(fs.join(dir, 'package.json'));
-    const source = toPackagePath(args.rootDir);
-    const target = toPackagePath(args.target);
+    const source = packagePath(args.rootDir);
+    const target = packagePath(args.target);
 
     // Update [package.json] file.
-    const pkg = JSON.parse(fs.readFileSync(source, 'utf8')) as IPackageJson;
+    const pkg = await fs.file.loadAndParse<IPackageJson>(source);
     pkg.types = pkg.types ? toParent(pkg.types) : pkg.types;
     pkg.main = pkg.main ? toParent(pkg.main) : pkg.main;
     pkg.main = pkg.main ? removeExtension(pkg.main) : pkg.main;
@@ -70,7 +73,7 @@ async function copyPackageJson(args: { rootDir: string; target: string }) {
 
     // Save.
     const json = `${JSON.stringify(pkg, null, '  ')}\n`;
-    fs.writeFileSync(target, json);
+    await fs.writeFile(target, json);
 
     // Finish up.
     return { success: true, source, target };
