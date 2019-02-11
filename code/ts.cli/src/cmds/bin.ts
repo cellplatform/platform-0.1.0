@@ -74,18 +74,23 @@ const program = yargs
     async e => {
       const { silent, watch, dir, outDir, esm } = e;
 
-      let formats: cmds.BuildFormat[] = [];
-      formats = esm !== false ? [...formats, 'ES_MODULE'] : formats;
-      formats = [...formats, 'COMMON_JS'];
-
-      const res = await cmds.buildAs(formats, {
-        silent,
-        watch,
-        dir,
-        outDir,
-      });
-      if (res.error) {
-        fail(1, res.error);
+      if (watch) {
+        // Watching (build as common-js)
+        await cmds.build({ silent, dir, outDir, watch: true, as: 'COMMON_JS' });
+      } else {
+        // Build all formats (ESM and common-js)
+        let formats: cmds.BuildFormat[] = [];
+        formats = esm !== false ? [...formats, 'ES_MODULE'] : formats;
+        formats = [...formats, 'COMMON_JS'];
+        const res = await cmds.buildAs(formats, {
+          silent,
+          watch,
+          dir,
+          outDir,
+        });
+        if (res.error) {
+          fail(1, res.error);
+        }
       }
     },
   )
