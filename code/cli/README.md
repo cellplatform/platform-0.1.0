@@ -1,2 +1,2 @@
-# @platform/test
-Configuration module containing test related modules.
+# @platform/cli
+Tools for building CLI (command-line-interfaces).

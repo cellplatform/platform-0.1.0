@@ -1,10 +1,5 @@
 import { spawn } from 'child_process';
-
-export type IExecResult = {
-  code: number;
-  // info: string[];
-  // errors: string[];
-};
+import { IResult, result } from '../common';
 
 /**
  * Invokes a shell command.
@@ -13,11 +8,10 @@ export function run(
   cmd: string,
   options: { dir?: string; silent?: boolean } = {},
 ) {
-  return new Promise<IExecResult>(async (resolve, reject) => {
+  return new Promise<IResult>(async (resolve, reject) => {
     const { dir: cwd, silent } = options;
 
     // Spwan the shell process.
-    let result: IExecResult = { code: 0 };
     const stdio = silent ? undefined : 'inherit';
     const child = spawn(cmd, { cwd, shell: true, stdio });
 
@@ -39,9 +33,10 @@ export function run(
     // Listen for end.
     child.on('exit', e => {
       // const code = e !== null ? e : result.errors.length === 0 ? 0 : 1;
-      result = { ...result, code: e || 0 };
-      resolve(result);
+      const code = e || 0;
+      // const result = {  code: e || 0 };
+      resolve(result.format({ code }));
     });
-    child.on('error', err => reject(err));
+    child.once('error', err => reject(err));
   });
 }
