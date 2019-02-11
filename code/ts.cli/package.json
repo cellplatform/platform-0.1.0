@@ -16,7 +16,7 @@
     "example": "node lib/example",
     "e": "yarn example $@",
     "example-pub": "node bin publish --outDir tmp/dist",
-    "clean": "rm -rf .publish && rm -rf tmp"
+    "clean": "sh sh/clean.sh"
   },
   "dependencies": {
     "@platform/cli": "0.0.22",
