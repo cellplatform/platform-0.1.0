@@ -1,7 +1,7 @@
 {
   "name": "electron-test",
   "description": "External testing module for [@tdb/election].",
-  "version": "0.0.34",
+  "version": "0.0.36",
   "scripts": {
     "postinstall": "ui init",
     "ui": "yarn chmod && ui $@",
@@ -14,12 +14,12 @@
     "tmp-strip": "node lib/scripts/strip.js"
   },
   "dependencies": {
-    "@platform/electron": "0.0.33",
+    "@platform/electron": "0.0.35",
     "@tdb/util": "1.9.38",
     "@uiharness/electron": "0.3.88"
   },
   "devDependencies": {
-    "@platform/ts.cli": "3.3.19",
+    "@platform/ts.cli": "3.3.21",
     "@uiharness/dev": "0.0.30"
   },
   "resolutions": {
