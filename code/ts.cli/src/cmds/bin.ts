@@ -97,14 +97,19 @@ const program = yargs
     [CMD.LINT, CMD.LINT_L],
     'Run linter',
     e =>
-      e.option('silent', {
-        alias: 's',
-        describe: DESCRIPTION.SILENT,
-        boolean: true,
-      }),
+      e
+        .option('silent', {
+          alias: 's',
+          describe: DESCRIPTION.SILENT,
+          boolean: true,
+        })
+        .option('dir', {
+          describe: 'The directory of the module',
+          string: true,
+        }),
     async e => {
-      const { silent } = e;
-      const res = await cmds.lint({ silent });
+      const { silent, dir } = e;
+      const res = await cmds.lint({ silent, dir });
       if (res.error) {
         fail(1, res.error);
       }
@@ -124,14 +129,18 @@ const program = yargs
           describe: DESCRIPTION.SILENT,
           boolean: true,
         })
+        .option('dir', {
+          describe: 'The directory of the module',
+          string: true,
+        })
         .option('watch', {
           alias: 'w',
           describe: 'Watch for changes',
           boolean: true,
         }),
     async e => {
-      const { silent, watch } = e;
-      const res = await cmds.test({ silent, watch });
+      const { silent, watch, dir } = e;
+      const res = await cmds.test({ silent, watch, dir });
       if (res.error) {
         fail(1, res.error);
       }
@@ -145,14 +154,19 @@ const program = yargs
     [CMD.PREPARE, CMD.PREPARE_P],
     `Prepare for publish`,
     e =>
-      e.option('silent', {
-        alias: 's',
-        describe: DESCRIPTION.SILENT,
-        boolean: true,
-      }),
+      e
+        .option('silent', {
+          alias: 's',
+          describe: DESCRIPTION.SILENT,
+          boolean: true,
+        })
+        .option('dir', {
+          describe: 'The directory of the module',
+          string: true,
+        }),
     async e => {
-      const { silent } = e;
-      const res = await cmds.prepare({ silent });
+      const { silent, dir } = e;
+      const res = await cmds.prepare({ silent, dir });
       if (res.error) {
         fail(1, res.error);
       }
@@ -172,14 +186,18 @@ const program = yargs
           describe: DESCRIPTION.SILENT,
           boolean: true,
         })
+        .option('dir', {
+          describe: 'The directory of the module',
+          string: true,
+        })
         .option('outDir', {
           describe: 'The dir typescript has been transpiled to',
           string: true,
         }),
 
     async e => {
-      const { silent, outDir } = e;
-      const res = await cmds.publish({ silent, outDir });
+      const { silent, dir, outDir } = e;
+      const res = await cmds.publish({ silent, dir, outDir });
       if (res.error) {
         fail(1, res.error);
       }

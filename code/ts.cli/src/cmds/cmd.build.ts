@@ -1,4 +1,5 @@
 import {
+  fail,
   changeExtensions,
   exec,
   fs,
@@ -102,14 +103,12 @@ export async function buildTask(args: IArgs): Promise<IResult> {
 
   // Execute command.
   try {
-    let error: Error | undefined;
     const res = await exec.run(cmd, { silent, dir });
     if (res.code !== 0) {
-      error = new Error(`Build failed.`);
-      return { code: 1, error };
+      return fail(`Build failed.`, res.code);
     }
   } catch (error) {
-    return { code: 1, error };
+    return fail(error);
   }
 
   // Change ESM (ES Module) file extensions.

@@ -1,21 +1,18 @@
-import { exec, paths, fs } from '../common';
-
-export type ILintResult = {
-  success: boolean;
-  error?: Error;
-};
+import { fail, getLog, paths, fs, IResult, runCommands } from '../common';
 
 /**
  * Runs the typescript linter.
  */
 export async function lint(
   args: { dir?: string; silent?: boolean } = {},
-): Promise<ILintResult> {
+): Promise<IResult> {
+  const { silent } = args;
   const dir = args.dir || paths.closestParentOf('tslint.json');
   if (!dir) {
-    const error = new Error(`A 'tslint.json' file could not be found.`);
-    return { success: false, error };
+    return fail(`A 'tslint.json' file could not be found.`);
   }
+
+  const log = getLog(silent);
 
   const modules = fs.join(dir, 'node_modules');
   const path = {
@@ -23,23 +20,28 @@ export async function lint(
     tslint: fs.join(modules, 'tslint/bin/tslint'),
   };
 
-  const cmd = {
-    prettier: `node ${path.prettier} all --write 'src/**/*.ts{,x}'`,
-    tslint: `node ${path.tslint} 'src/**/*.ts{,x}' --format verbose --fix`,
-  };
-
   try {
-    let error: Error | undefined;
-    const run = async (cmd: string, name: string, silent?: boolean) => {
-      const res = await exec.run(cmd, { silent: silent || args.silent, dir });
-      if (res.code !== 0) {
-        error = new Error(`'${name}' failed.`);
-      }
-    };
-    await run(cmd.prettier, 'prettier', true);
-    await run(cmd.tslint, 'tslint');
-    return { success: !error, error };
+    log.info();
+    const res = await runCommands(
+      [
+        {
+          title: 'prettier',
+          cmd: `node ${path.prettier} all --write 'src/**/*.ts{,x}'`,
+        },
+        {
+          title: 'tslint',
+          cmd: `node ${path.tslint} 'src/**/*.ts{,x}' --format verbose --fix`,
+        },
+      ],
+      {
+        concurrent: true,
+        silent,
+      },
+    );
+
+    log.info();
+    return res;
   } catch (error) {
-    return { success: false, error };
+    return fail(error);
   }
 }

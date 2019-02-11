@@ -1,21 +1,11 @@
-import { paths, IPackageJson, fs } from '../common';
-
-export type IPublishResult = {
-  success: boolean;
-  error?: Error;
-};
+import { fail, paths, IPackageJson, fs, IResult } from '../common';
 
 /**
  * Runs an NPM publish.
  */
 export async function publish(
   args: { silent?: boolean; dir?: string; outDir?: string } = {},
-): Promise<IPublishResult> {
-  const fail = (err: string) => {
-    const error = new Error(err);
-    return { success: false, error };
-  };
-
+): Promise<IResult> {
   const dir = args.dir || paths.closestParentOf('tsconfig.json');
   if (!dir) {
     return fail(`A 'tsconfig.json' file could not be found.`);
@@ -47,9 +37,9 @@ export async function publish(
 
     console.log('outDir', outDir);
 
-    return { success: true };
+    return { code: 0 };
   } catch (error) {
-    return { success: false, error };
+    return fail(error);
   }
 }
 

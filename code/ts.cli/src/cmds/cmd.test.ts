@@ -1,37 +1,29 @@
-import { exec, paths, fs, log } from '../common';
-
-export type ITestResult = {
-  success: boolean;
-  error?: Error;
-};
+import { fail, fs, getLog, IResult, paths, runCommands } from '../common';
 
 /**
  * Runs tests.
  */
 export async function test(
-  args: { silent?: boolean; watch?: boolean } = {},
-): Promise<ITestResult> {
+  args: { dir?: string; silent?: boolean; watch?: boolean } = {},
+): Promise<IResult> {
   const { silent, watch } = args;
-  const info = (msg: string = '') => {
-    if (!silent) {
-      log.info(msg);
-    }
-  };
+  const log = getLog(silent);
 
-  const dir = paths.closestParentOf('package.json');
+  const dir = args.dir || paths.closestParentOf('package.json');
   if (!dir) {
-    const error = new Error(
-      `A module root with [package.json] could not be found.`,
-    );
-    return { success: false, error };
+    return fail(`A module root with [package.json] could not be found.`);
   }
 
   const modules = fs.join(dir, 'node_modules');
   const mocha = fs.join(modules, 'mocha/bin/mocha');
 
   if (!fs.existsSync(mocha)) {
-    info('No test runner installed.\n');
-    return { success: true };
+    log.info();
+    log.info('No test runner installed.');
+    log.info('Run:');
+    log.info(`     yarn add -D @platform/test`);
+    log.info();
+    return { code: 0 };
   }
 
   let flags = '';
@@ -53,13 +45,9 @@ export async function test(
   `;
 
   try {
-    let error: Error | undefined;
-    const res = await exec.run(cmd, { silent, dir });
-    if (res.code !== 0) {
-      error = new Error(`Tests failed.`);
-    }
-    return { success: !error, error };
+    const res = await runCommands(cmd, { silent, dir });
+    return res.code === 0 ? res : fail(`Tests failed.`, res.code);
   } catch (error) {
-    return { success: false, error };
+    return fail(error);
   }
 }

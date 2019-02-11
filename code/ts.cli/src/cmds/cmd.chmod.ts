@@ -1,9 +1,13 @@
-import { exec, paths, fs, log } from '../common';
-
-export type IChmodResult = {
-  success: boolean;
-  error?: Error;
-};
+import {
+  fail,
+  exec,
+  paths,
+  fs,
+  IResult,
+  ICommand,
+  runCommands,
+  getLog,
+} from '../common';
 
 /**
  * Change permissions on [node_modules/.bin] files.
@@ -12,40 +16,29 @@ export type IChmodResult = {
  */
 export async function chmod(
   args: { silent?: boolean; permissions?: string } = {},
-): Promise<IChmodResult> {
+): Promise<IResult> {
   const dir = paths.closestParentOf('node_modules');
   if (!dir) {
-    const error = new Error(`A root package could not be found`);
-    return { success: false, error };
+    return fail(`A root package could not be found`);
   }
 
-  // Prepare paths.
   const { permissions, silent } = args;
+  const log = getLog(silent);
+
+  // Prepare paths.
   const bin = fs.join(dir, 'node_modules/.bin');
   const files = fs.readdirSync(bin).map(name => fs.join(bin, name));
 
-  const info = (msg: string = '') => {
-    if (!silent) {
-      log.info(msg);
-    }
-  };
-
   // Change permissions.
-  for (const path of files) {
-    const cmd = `chmod ${permissions} ${path}`;
-    try {
-      info(` • ${cmd}`);
-      const res = await exec.run(cmd, { silent: true });
-
-      if (res.code !== 0) {
-        return { success: false };
-      }
-    } catch (error) {
-      return { success: false, error };
-    }
-  }
+  const cmds: ICommand[] = files.map(path => {
+    return {
+      title: `chmod ${permissions} .bin/${fs.basename(path)}`,
+      cmd: `chmod ${permissions} ${path}`,
+    };
+  });
+  const res = await runCommands(cmds, { silent, concurrent: true });
 
   // Finish up.
-  info();
-  return { success: true };
+  log.info();
+  return res;
 }
