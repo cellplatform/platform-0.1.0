@@ -16,11 +16,11 @@
   "dependencies": {
     "@platform/electron": "0.0.33",
     "@tdb/util": "1.9.38",
-    "@uiharness/electron": "0.3.87"
+    "@uiharness/electron": "0.3.88"
   },
   "devDependencies": {
     "@platform/ts.cli": "3.3.19",
-    "@uiharness/dev": "0.0.28"
+    "@uiharness/dev": "0.0.30"
   },
   "resolutions": {
     "@types/react": "16.7.17"
