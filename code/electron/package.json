@@ -1,20 +1,20 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.0.37",
+  "version": "0.0.39",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo no-op",
-    "tdd": "ts test --watch",
-    "lint": "ts lint",
-    "build": "ts build",
-    "prepare": "ts prepare",
+    "tdd": "yarn chmod && ts test --watch",
+    "lint": "yarn chmod && ts lint",
+    "build": "yarn chmod && ts build",
+    "prepare": "yarn chmod && ts prepare",
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
     "@platform/fs": "0.0.31",
-    "@platform/log": "0.0.47",
+    "@platform/log": "0.0.49",
     "@tdb/util": "1.9.38",
     "@types/app-root-path": "1.2.4",
     "app-root-path": "2.1.0",
@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.25",
-    "@platform/ts.cli": "3.3.23",
+    "@platform/ts.cli": "3.3.24",
     "electron": "4.0.4"
   },
   "files": [
