@@ -1,4 +1,4 @@
-import { SystemEvents } from '@platform/electron';
+import { SystemEvents } from '@platform/electron/lib/types';
 
 export type MyEvents =
   | SystemEvents

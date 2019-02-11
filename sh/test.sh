@@ -7,7 +7,9 @@ test () {
   cd $cwd
 }
 
-test fs
-test libs
 test ts
+test ts.cli
+test fs
 test test
+test log
+test electron

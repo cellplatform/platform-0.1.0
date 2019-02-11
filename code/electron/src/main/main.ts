@@ -1,10 +1,10 @@
 import * as devTools from '../helpers/devTools/main';
 import { init as initIpc, IpcClient, IpcMessage } from '../helpers/ipc/main';
 import * as logger from '../helpers/logger/main';
-import * as store from '../helpers/store';
+// import * as store from '../helpers/store';
 import { ILog } from '../types';
 
-export { devTools, logger, store };
+export { devTools, logger };
 
 /**
  * Initializes [Main] process systems (safely).

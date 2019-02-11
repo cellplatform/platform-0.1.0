@@ -1,8 +1,8 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.0.6",
-  "main": "lib/index.js",
+  "version": "0.0.33",
+  "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo no-op",
@@ -12,8 +12,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/fs": "0.0.12",
-    "@platform/log": "0.0.17",
+    "@platform/fs": "0.0.29",
+    "@platform/log": "0.0.43",
     "@tdb/util": "1.9.38",
     "@types/app-root-path": "1.2.4",
     "app-root-path": "2.1.0",
@@ -24,8 +24,8 @@
     "is-electron": "2.2.0"
   },
   "devDependencies": {
-    "@platform/test": "0.0.11",
-    "@platform/ts": "3.3.29",
+    "@platform/test": "0.0.25",
+    "@platform/ts.cli": "3.3.19",
     "electron": "4.0.3"
   },
   "files": [

@@ -1,28 +1,29 @@
 {
   "name": "@platform/fs",
-  "version": "0.0.12",
+  "version": "0.0.29",
   "description": "File system tools.",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "test": "ts test",
-    "tdd": "ts test --watch",
-    "lint": "ts lint",
-    "build": "ts build",
-    "prepare": "ts prepare"
+    "test": "sh node_modules/@platform/test/test.sh $@",
+    "tdd": "yarn test --watch",
+    "lint": "sh node_modules/@platform/ts/lint.sh $@",
+    "build": "sh node_modules/@platform/ts/build.sh $@",
+    "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
-    "@types/fs-extra": "^5.0.4",
-    "fast-glob": "^2.2.6",
-    "fs-extra": "^7.0.1"
+    "@types/fs-extra": "5.0.4",
+    "fast-glob": "2.2.6",
+    "fs-extra": "7.0.1",
+    "js-yaml": "3.12.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.11",
-    "@platform/ts": "3.3.29"
+    "@platform/test": "0.0.25",
+    "@platform/ts": "3.3.40",
+    "@types/js-yaml": "^3.12.0"
   },
   "files": [
-    "lib",
-    "src"
+    "lib"
   ],
   "license": "MIT"
 }

@@ -1,8 +1,17 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import // takeUntil
+'rxjs/operators';
 
-import { css, GlamorValue, ipc, log, renderer, types, time } from '../common';
+import {
+  css,
+  GlamorValue,
+  ipc,
+  log,
+  renderer,
+  // types,
+  // time,
+} from '../common';
 import { Button } from './primitives';
 
 /**
@@ -20,6 +29,12 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     super(props);
     this.id = renderer.id;
     this.startTestHandlers();
+
+    console.log('ipc', ipc);
+    console.log(
+      'NOTE',
+      'handlers commented out while deugging - prod build failing with IPC',
+    );
   }
 
   public componentWillUnmount() {
@@ -68,69 +83,66 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     /**
      * Log out events.
      */
-    ipc.events$.pipe(takeUntil(this.unmounted$)).subscribe(e => {
-      const from = e.sender.id;
-      log.info('⚡️ from:', from, e);
-    });
-
+    // ipc.events$.pipe(takeUntil(this.unmounted$)).subscribe(e => {
+    //   const from = e.sender.id;
+    //   log.info('⚡️ from:', from, e);
+    // });
     // ipc.filter<IMessageEvent>('MESSAGE').subscribe(e => {
     //   log.info('filtered event', e);
     // });
-
     /**
      * Provide a response-handler for a specific event.
      */
-    ipc.handle<types.IFooEvent>('FOO', async e => {
-      await time.wait(1000);
-      return `response FOO after delay (${this.id}) 🌼`;
-    });
+    // ipc.handle<types.IFooEvent>('FOO', async e => {
+    //   await time.wait(1000);
+    //   return `response FOO after delay (${this.id}) 🌼`;
+    // });
   };
 
   private newWindow = () => {
-    ipc.send<types.INewWindowEvent>('NEW_WINDOW', {}, { target: ipc.MAIN });
+    // ipc.send<types.INewWindowEvent>('NEW_WINDOW', {}, { target: ipc.MAIN });
   };
 
   private sendMessage = () => {
-    ipc.send<types.IMessageEvent>('MESSAGE', { text: 'Hello' });
+    // ipc.send<types.IMessageEvent>('MESSAGE', { text: 'Hello' });
   };
 
   private sendToHandler = (...target: number[]) => {
     return () => {
-      ipc.send<types.IMessageEvent>('MESSAGE', { text: 'Hello' }, { target });
+      // ipc.send<types.IMessageEvent>('MESSAGE', { text: 'Hello' }, { target });
     };
   };
 
   private sendFoo = () => {
     const count = this.count++;
-    const res = ipc.send<types.IFooEvent, string>(
-      'FOO',
-      { count },
-      // { timeout: 100 },
-    );
+    // const res = ipc.send<types.IFooEvent, string>(
+    //   'FOO',
+    //   { count },
+    //   // { timeout: 100 },
+    // );
     // res.cancel();
 
-    // log.info(res);
-    console.log('res', res);
-    console.log('res.elapsed', res.elapsed);
+    // console.log('res', res);
+    // console.log('res.elapsed', res.elapsed);
 
-    res.results$.subscribe({
-      next: e => log.info('🤘 res$.next:', e),
-      complete: () => {
-        log.group('🌳 COMPLETE');
-        res.results.forEach(result => log.info(result));
-        // log.info('results', res.results);
-        log.info('elapsed', res.elapsed);
+    // res.results$.subscribe({
+    //   next: e => log.info('🤘 res$.next:', e),
+    //   complete: () => {
+    //     log.group('🌳 COMPLETE');
+    //     res.results.forEach(result => log.info(result));
+    //     // log.info('results', res.results);
+    //     log.info('elapsed', res.elapsed);
 
-        log.groupEnd();
-      },
-      error: err => log.error('😡  ERROR', err),
-    });
+    //     log.groupEnd();
+    //   },
+    //   error: err => log.error('😡  ERROR', err),
+    // });
   };
   private count = 0;
 
   private sendBar = () => {
-    const res = ipc.send<types.IBarEvent, string>('BAR', {});
-    console.log('res', res);
+    // const res = ipc.send<types.IBarEvent, string>('BAR', {});
+    // console.log('res', res);
   };
 
   private logInfo = () => {

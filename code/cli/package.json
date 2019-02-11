@@ -1,0 +1,30 @@
+{
+  "name": "@platform/cli",
+  "version": "0.0.30",
+  "description": "Tools for building CLI (command-line-interfaces).",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "sh node_modules/@platform/test/test.sh $@",
+    "tdd": "yarn test --watch",
+    "lint": "sh node_modules/@platform/ts/lint.sh $@",
+    "build": "sh node_modules/@platform/ts/build.sh $@",
+    "prepare": "yarn build && yarn lint && yarn test"
+  },
+  "dependencies": {
+    "@platform/fs": "0.0.29",
+    "@types/listr": "0.13.0",
+    "listr": "0.14.3",
+    "yargs": "12.0.5"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.25",
+    "@platform/ts": "3.3.40",
+    "@types/yargs": "12.0.8"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": "github.com/uiharness/platform",
+  "license": "MIT"
+}
