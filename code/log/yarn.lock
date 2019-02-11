@@ -55,10 +55,10 @@
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts.cli@3.3.18":
-  version "3.3.18"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.18.tgz#ef773ddc800710f88442e64a931d4958b3303a9f"
-  integrity sha512-mp264im0BCcqGjVPgMHSD0KjJIuVinReEGPeSgSW5Dn1prHExbleuetTJAzRBjzbv5F+QUAVbiUtFFrCXFl9kg==
+"@platform/ts.cli@3.3.19":
+  version "3.3.19"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.19.tgz#8231211862692070844f0597327f12217bc50be1"
+  integrity sha512-xn5K6PehXdVaokoxUSWqPPk/rXBvPyy0SyA67vpZA53GlNaNI7RL32Pey/1t6XgwDE5pVD5QpdJcUnSfV1pnGw==
   dependencies:
     "@platform/cli" "0.0.30"
     "@platform/fs" "0.0.29"
