@@ -1,3 +1,11 @@
+/**
+ * Commands.
+ */
+export { IResult, ITask, ICommand } from '@platform/cli';
+
+/**
+ * Configuration files.
+ */
 export type ITypescriptConfig = {
   extends?: string;
   compilerOptions?: {
@@ -18,21 +26,3 @@ export type IPackageJson = {
 };
 
 export type IPackageFieldMap = { [key: string]: string };
-
-/**
- * Commands
- */
-export type IResult = {
-  code: number;
-  error?: Error;
-};
-
-export type ITask = {
-  title: string;
-  task: () => Promise<IResult>;
-};
-
-export type ICommand = {
-  title: string;
-  cmd: string;
-};

@@ -1,4 +1,4 @@
-import { fail, paths, IPackageJson, fs, IResult } from '../common';
+import { fs, IPackageJson, IResult, paths, result } from '../common';
 
 /**
  * Runs an NPM publish.
@@ -8,17 +8,17 @@ export async function publish(
 ): Promise<IResult> {
   const dir = args.dir || paths.closestParentOf('tsconfig.json');
   if (!dir) {
-    return fail(`A 'tsconfig.json' file could not be found.`);
+    return result.fail(`A 'tsconfig.json' file could not be found.`);
   }
 
   const tsconfig = paths.tsconfig(dir);
   if (!tsconfig.success) {
-    return fail(`Failed to load the 'tsconig.json' file.`);
+    return result.fail(`Failed to load the 'tsconig.json' file.`);
   }
 
   let outDir = args.outDir || tsconfig.outDir;
   if (!outDir) {
-    return fail(`The 'tsconfig.json' does not contain an 'outDir'.`);
+    return result.fail(`The 'tsconfig.json' does not contain an 'outDir'.`);
   }
   outDir = fs.resolve(outDir);
 
@@ -37,9 +37,9 @@ export async function publish(
 
     console.log('outDir', outDir);
 
-    return { code: 0 };
+    return result.success();
   } catch (error) {
-    return fail(error);
+    return result.fail(error);
   }
 }
 

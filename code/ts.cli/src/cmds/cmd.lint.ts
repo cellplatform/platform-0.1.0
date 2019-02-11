@@ -1,4 +1,4 @@
-import { fail, getLog, paths, fs, IResult, runCommands } from '../common';
+import { exec, fs, getLog, IResult, paths, result } from '../common';
 
 /**
  * Runs the typescript linter.
@@ -9,7 +9,7 @@ export async function lint(
   const { silent } = args;
   const dir = args.dir || paths.closestParentOf('tslint.json');
   if (!dir) {
-    return fail(`A 'tslint.json' file could not be found.`);
+    return result.fail(`A 'tslint.json' file could not be found.`);
   }
 
   const log = getLog(silent);
@@ -22,7 +22,7 @@ export async function lint(
 
   try {
     log.info();
-    const res = await runCommands(
+    const res = await exec.runCommands(
       [
         {
           title: 'prettier',
@@ -42,6 +42,6 @@ export async function lint(
     log.info();
     return res;
   } catch (error) {
-    return fail(error);
+    return result.fail(error);
   }
 }

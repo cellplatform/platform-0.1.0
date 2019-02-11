@@ -1,4 +1,4 @@
-import { fail, fs, IResult, getLog, paths, runCommands } from '../common';
+import { exec, fs, getLog, IResult, paths, result } from '../common';
 
 /**
  * Prepares the module for publishing to NPM.
@@ -11,7 +11,7 @@ export async function prepare(
 
   const dir = args.dir || paths.closestParentOf('package.json');
   if (!dir) {
-    return fail(`A module root with [package.json] could not be found.`);
+    return result.fail(`A module root with [package.json] could not be found.`);
   }
 
   try {
@@ -19,7 +19,7 @@ export async function prepare(
 
     const cmds = ['yarn build', 'yarn lint', 'yarn test'];
     log.info();
-    const res = await runCommands(cmds, {
+    const res = await exec.runCommands(cmds, {
       dir: fs.resolve(dir),
       silent,
       concurrent: true,
@@ -28,6 +28,6 @@ export async function prepare(
     log.info();
     return res;
   } catch (error) {
-    return fail(error);
+    return result.fail(error);
   }
 }

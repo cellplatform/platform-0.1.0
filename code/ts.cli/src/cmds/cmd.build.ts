@@ -1,12 +1,12 @@
 import {
-  fail,
+  result,
   changeExtensions,
   exec,
   fs,
   paths,
-  runTasks,
   IResult,
   ITask,
+  getLog,
 } from '../common';
 
 export type BuildFormat = 'COMMON_JS' | 'ES_MODULE';
@@ -27,8 +27,10 @@ export async function buildAs(
   args: IBuildArgs = {},
 ): Promise<IResult> {
   const { silent, outDir = '', reset, code, error } = await processArgs(args);
+  const log = getLog(silent);
+
   if (code !== 0) {
-    return { code, error };
+    return result.format({ code, error });
   }
   if (reset) {
     await fs.remove(outDir);
@@ -42,7 +44,14 @@ export async function buildAs(
       },
     };
   });
-  return runTasks(tasks, { silent, concurrent: true });
+
+  // Run tasks.
+  log.info();
+  const res = await exec.runTasks(tasks, { silent, concurrent: true });
+
+  // Finish up.
+  log.info();
+  return res;
 }
 
 type IArgs = IBuildArgs & { as?: BuildFormat };
@@ -53,7 +62,7 @@ type IArgs = IBuildArgs & { as?: BuildFormat };
 export async function build(args: IArgs): Promise<IResult> {
   const { silent } = args;
   const task: ITask = { title: 'build', task: () => buildTask(args) };
-  return runTasks(task, { silent });
+  return exec.runTasks(task, { silent });
 }
 
 /**
@@ -72,7 +81,7 @@ export async function buildTask(args: IArgs): Promise<IResult> {
   } = await processArgs(args);
 
   if (code !== 0) {
-    return { code, error };
+    return result.format({ code, error });
   }
 
   // Prepare the command.
@@ -105,10 +114,10 @@ export async function buildTask(args: IArgs): Promise<IResult> {
   try {
     const res = await exec.run(cmd, { silent, dir });
     if (res.code !== 0) {
-      return fail(`Build failed.`, res.code);
+      return result.fail(`Build failed.`, res.code);
     }
   } catch (error) {
-    return fail(error);
+    return result.fail(error);
   }
 
   // Change ESM (ES Module) file extensions.
@@ -117,7 +126,7 @@ export async function buildTask(args: IArgs): Promise<IResult> {
   }
 
   // Finish up.
-  return { code: 0 };
+  return result.success();
 }
 
 /**
@@ -137,12 +146,14 @@ export async function processArgs(args: IArgs) {
     return { code: 1, error };
   }
 
+  // Retrieve the TSConfig.
   const tsconfig = paths.tsconfig(dir);
   if (!tsconfig.success) {
     const error = new Error(`A 'tsconfig.json' file could not be found.`);
     return { code: 1, error };
   }
 
+  // Directory code is transpiled to.
   const outDir = args.outDir || tsconfig.outDir;
   if (!outDir) {
     const error = new Error(
@@ -151,5 +162,6 @@ export async function processArgs(args: IArgs) {
     return { code: 1, error };
   }
 
+  // Finish up.
   return { code: 0, dir, outDir, reset, silent, watch, as };
 }

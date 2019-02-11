@@ -1,12 +1,4 @@
-import {
-  fail,
-  fs,
-  getLog,
-  ICommand,
-  IResult,
-  paths,
-  runCommands,
-} from '../common';
+import { exec, fs, getLog, ICommand, IResult, paths, result } from '../common';
 
 /**
  * Change permissions on [node_modules/.bin] files.
@@ -18,7 +10,7 @@ export async function chmod(
 ): Promise<IResult> {
   const dir = paths.closestParentOf('node_modules');
   if (!dir) {
-    return fail(`A root package could not be found`);
+    return result.fail(`A root package could not be found`);
   }
 
   const { permissions, silent } = args;
@@ -35,7 +27,9 @@ export async function chmod(
       cmd: `chmod ${permissions} ${path}`,
     };
   });
-  const res = await runCommands(cmds, { silent, concurrent: true });
+
+  log.info();
+  const res = await exec.runCommands(cmds, { silent, concurrent: true });
 
   // Finish up.
   log.info();

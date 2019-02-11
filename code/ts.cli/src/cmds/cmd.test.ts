@@ -1,4 +1,4 @@
-import { fail, fs, getLog, IResult, paths, runCommands } from '../common';
+import { exec, fs, getLog, IResult, paths, result } from '../common';
 
 /**
  * Runs tests.
@@ -11,7 +11,7 @@ export async function test(
 
   const dir = args.dir || paths.closestParentOf('package.json');
   if (!dir) {
-    return fail(`A module root with [package.json] could not be found.`);
+    return result.fail(`A module root with [package.json] could not be found.`);
   }
 
   const modules = fs.join(dir, 'node_modules');
@@ -23,7 +23,7 @@ export async function test(
     log.info('Run:');
     log.info(`     yarn add -D @platform/test`);
     log.info();
-    return { code: 0 };
+    return result.success();
   }
 
   let flags = '';
@@ -45,9 +45,9 @@ export async function test(
   `;
 
   try {
-    const res = await runCommands(cmd, { silent, dir });
-    return res.code === 0 ? res : fail(`Tests failed.`, res.code);
+    const res = await exec.runCommands(cmd, { silent, dir });
+    return res.code === 0 ? res : result.fail(`Tests failed.`, res.code);
   } catch (error) {
-    return fail(error);
+    return result.fail(error);
   }
 }
