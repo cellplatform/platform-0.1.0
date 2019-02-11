@@ -13,7 +13,6 @@ export type BuildFormat = 'COMMON_JS' | 'ES_MODULE';
 
 export type IBuildArgs = {
   silent?: boolean;
-  remove?: boolean;
   watch?: boolean;
   dir?: string;
   outDir?: string;
@@ -26,28 +25,27 @@ export async function buildAs(
   formats: BuildFormat[],
   args: IBuildArgs = {},
 ): Promise<IResult> {
-  const { silent, outDir = '', reset, code, error } = await processArgs(args);
+  const { silent, outDir = '', code, error } = await processArgs(args);
   const log = getLog(silent);
 
   if (code !== 0) {
     return result.format({ code, error });
   }
-  if (reset) {
-    await fs.remove(outDir);
-  }
+  await fs.remove(outDir);
+
   const tasks: ITask[] = formats.map(format => {
     const title = format === 'ES_MODULE' ? '.mjs ESModule' : '.js  CommonJS';
     return {
       title: `build ${title}`,
       task: async () => {
-        return build({ ...args, as: format, remove: false, silent: true });
+        return build({ ...args, as: format, silent: true });
       },
     };
   });
 
   // Run tasks.
   log.info();
-  const res = await exec.runTasks(tasks, { silent, concurrent: true });
+  const res = await exec.runTasks(tasks, { silent, concurrent: false });
 
   // Finish up.
   log.info();
@@ -72,7 +70,6 @@ export async function buildTask(args: IArgs): Promise<IResult> {
   const {
     dir = '',
     outDir = '',
-    reset,
     silent,
     watch,
     as,
@@ -87,11 +84,6 @@ export async function buildTask(args: IArgs): Promise<IResult> {
   // Prepare the command.
   const tsc = 'node_modules/typescript/bin/tsc';
   let cmd = `cd ${fs.resolve(dir)}\n`;
-
-  if (reset) {
-    cmd += `rm -rf ${fs.join(outDir)}`;
-    cmd += '\n';
-  }
 
   cmd += `node ${fs.join(tsc)}`;
   cmd += ` --outDir ${outDir}`;
@@ -135,7 +127,6 @@ export async function buildTask(args: IArgs): Promise<IResult> {
 
 export async function processArgs(args: IArgs) {
   const { silent, watch, as = 'COMMON_JS' } = args;
-  const reset = args.remove === undefined ? true : args.remove;
 
   // Retrieve paths.
   const dir = args.dir || paths.closestParentOf('node_modules');
@@ -163,5 +154,5 @@ export async function processArgs(args: IArgs) {
   }
 
   // Finish up.
-  return { code: 0, dir, outDir, reset, silent, watch, as };
+  return { code: 0, dir, outDir, silent, watch, as };
 }

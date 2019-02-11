@@ -10,7 +10,7 @@ export async function chmod(
 ): Promise<IResult> {
   const dir = paths.closestParentOf('node_modules');
   if (!dir) {
-    return result.fail(`A root package could not be found`);
+    return result.fail(`A module 'package.json' could not be found`);
   }
 
   const { permissions, silent } = args;

@@ -45,7 +45,7 @@ export async function test(
   `;
 
   try {
-    const res = await exec.runCommands(cmd, { silent, dir });
+    const res = await exec.run(cmd, { silent, dir: fs.resolve(dir) });
     return res.code === 0 ? res : result.fail(`Tests failed.`, res.code);
   } catch (error) {
     return result.fail(error);

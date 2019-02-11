@@ -18,6 +18,7 @@ export async function prepare(
     // TODO 🐷   use NPM when Yarn not installed
 
     const cmds = ['yarn build', 'yarn lint', 'yarn test'];
+
     log.info();
     const res = await exec.runCommands(cmds, {
       dir: fs.resolve(dir),
