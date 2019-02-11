@@ -16,7 +16,7 @@
   "dependencies": {
     "@platform/electron": "0.0.37",
     "@tdb/util": "1.9.38",
-    "@uiharness/electron": "0.3.90"
+    "@uiharness/electron": "0.3.91"
   },
   "devDependencies": {
     "@platform/ts.cli": "3.3.23",

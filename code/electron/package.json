@@ -9,7 +9,8 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
     "@platform/fs": "0.0.31",
@@ -26,7 +27,7 @@
   "devDependencies": {
     "@platform/test": "0.0.25",
     "@platform/ts.cli": "3.3.23",
-    "electron": "4.0.3"
+    "electron": "4.0.4"
   },
   "files": [
     "lib",
