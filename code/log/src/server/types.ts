@@ -1,21 +1,23 @@
 export * from '../types';
-
 import { ILog } from '../types';
 
-export type ServerLog = ILog & {
-  table(options?: LogTableOptions): LogTable;
+/**
+ * A version of the log that runs on the server.
+ */
+export type IServerLog = ILog & {
+  table(options?: ILogTableOptions): ILogTable;
 };
 
 /**
  * Table
  */
-export type LogTableOptions = {
+export type ILogTableOptions = {
   head?: Array<string | number | undefined>;
   colWidths?: number[];
 };
 
-export type LogTable = {
-  add: (columns: Array<string | number | undefined>) => LogTable;
-  log: () => LogTable;
+export type ILogTable = {
+  add: (columns: Array<string | number | undefined>) => ILogTable;
+  log: () => ILogTable;
   toString: () => string;
 };

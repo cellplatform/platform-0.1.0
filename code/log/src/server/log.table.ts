@@ -1,17 +1,17 @@
 const Table = require('cli-table');
 import { compact } from '../common';
-import { ILog, LogTable, LogTableOptions } from './types';
+import { ILog, ILogTable, ILogTableOptions } from './types';
 
 /**
  * Creates a new table builder.
  */
-export function table(log: ILog, options: LogTableOptions = {}) {
+export function table(log: ILog, options: ILogTableOptions = {}) {
   const { head = [], colWidths = [] } = options;
   const t = new Table({
     head: compact(head),
     colWidths,
   });
-  const api: LogTable = {
+  const api: ILogTable = {
     /**
      * Adds a new row to the table.
      */
