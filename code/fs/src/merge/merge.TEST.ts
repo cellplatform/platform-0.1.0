@@ -17,7 +17,7 @@ const expectExists = async (path: string, includesText?: string) => {
   }
 };
 
-describe.only('fs.merge', () => {
+describe('fs.merge', () => {
   beforeEach(async () => fs.remove('tmp'));
   after(async () => fs.remove('tmp'));
 

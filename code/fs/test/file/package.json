@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
-    "semver": "1.0.0",
-    "express": "^0.0.1"
+    "semver": "latest",
+    "express": "latest"
   },
   "devDependencies": {
     "mocha": "latest"
