@@ -3,14 +3,13 @@ import { is } from '.';
 
 describe('is', () => {
   it('is a directory', async () => {
-    expect(await is.directory('src')).to.eql(true);
     expect(await is.dir('src')).to.eql(true);
   });
 
   it('is not directory', async () => {
-    expect(await is.directory('src/index.ts')).to.eql(false);
-    expect(await is.directory('')).to.eql(false);
-    expect(await is.directory('/NO_EXIST')).to.eql(false);
+    expect(await is.dir('src/index.ts')).to.eql(false);
+    expect(await is.dir('')).to.eql(false);
+    expect(await is.dir('/NO_EXIST')).to.eql(false);
   });
 
   it('is a file', async () => {

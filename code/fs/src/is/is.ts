@@ -3,18 +3,10 @@ import { fs } from '../common';
 /**
  * Determines if the given path is a directory
  */
-export async function directory(path: string) {
+export async function dir(path: string) {
   return (await fs.pathExists(path))
     ? (await fs.lstat(path)).isDirectory()
     : false;
-}
-
-/**
- * Shorter alias to `directory`.
- */
-
-export async function dir(path: string) {
-  return directory(path);
 }
 
 /**
