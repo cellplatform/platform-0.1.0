@@ -25,29 +25,31 @@ export function init<T extends t.StoreJson>(args: {
   const change$ = new Subject<t.IStoreChange>();
 
   const getValues: t.GetStoreValues<T> = async keys => {
-    // Fire the event requesting data.
-    const payload = { keys: keys as string[] };
-    const res = ipc.send<t.IStoreGetValuesEvent, t.IStoreGetValuesResponse>(
-      '@platform/STORE/get',
-      payload,
-      { target: 0 },
-    );
-
     try {
-      await res.$.toPromise();
-      const result = res.resultFrom('MAIN');
-      const data = result ? result.data : undefined;
+      // Fire the event requesting data.
+      const payload = { keys: keys as string[] };
+      const res = await ipc.send<
+        t.IStoreGetValuesEvent,
+        t.IStoreGetValuesResponse
+      >('@platform/STORE/get', payload, { target: 0 }).promise;
+
+      // Extract details from the response from MAIN.
+      const main = res.resultFrom('MAIN');
+      const data = main ? main.data : undefined;
+
+      // Ensure main responded with data.
       if (data && (!data.ok || data.error)) {
         const message =
-          data.error || `Failed while getting store values for keys [${keys}].`;
+          data.error || `Failed while getting store values for [${keys}].`;
         throw new Error(message);
       }
-      if (!data || !data.exists) {
-        return {};
-      }
-      return data.body;
+
+      // Finish up.
+      return !data || !data.exists ? {} : data.body;
     } catch (error) {
-      throw error;
+      let msg = `Failed while getting store values for [${keys}]. `;
+      msg += error.message;
+      throw new Error(msg);
     }
   };
 
@@ -55,29 +57,32 @@ export function init<T extends t.StoreJson>(args: {
     values: t.IStoreKeyValue[],
     action: t.StoreSetAction,
   ) => {
-    // Fire the event requesting data.
-    const payload: t.IStoreSetValuesEvent['payload'] = {
-      values,
-      action,
-    };
-    const res = ipc.send<t.IStoreSetValuesEvent, t.IStoreSetValuesResponse<T>>(
-      '@platform/STORE/set',
-      payload,
-      { target: 0 },
-    );
+    const keys = values.map(({ key }) => key);
+    try {
+      // Fire the event requesting data.
+      const payload: t.IStoreSetValuesEvent['payload'] = {
+        values,
+        action,
+      };
+      const res = await ipc.send<
+        t.IStoreSetValuesEvent,
+        t.IStoreSetValuesResponse<T>
+      >('@platform/STORE/set', payload, { target: 0 }).promise;
 
-    // Wait for the response.
-    await res.$.toPromise();
-    const result = res.resultFrom('MAIN');
+      // Wait for the response.
+      const result = res.resultFrom('MAIN');
+      if (!result || !result.data) {
+        const message = `Failed while setting values for [${keys}]. No response from [main].`;
+        throw new Error(message);
+      }
 
-    if (!result || !result.data) {
-      const keys = values.map(({ key }) => key);
-      const message = `Failed while setting values for [${keys}]. No response from [main].`;
-      throw new Error(message);
+      // Finish up.
+      return result.data;
+    } catch (error) {
+      let msg = `Failed while settings store values for [${keys}]. `;
+      msg += error.message;
+      throw new Error(msg);
     }
-
-    // Finish up.
-    return result.data;
   };
 
   const getKeys: t.GetStoreKeys<T> = async () => {
@@ -85,12 +90,9 @@ export function init<T extends t.StoreJson>(args: {
       '@platform/STORE/keys',
       {},
       { target: 0 },
-    );
-
-    await res.$.toPromise();
-    const result = res.resultFrom('MAIN');
-
-    return result && result.data ? result.data : [];
+    ).promise;
+    const main = res.resultFrom('MAIN');
+    return main && main.data ? main.data : [];
   };
 
   ipc

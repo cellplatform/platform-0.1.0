@@ -87,6 +87,7 @@ export type IpcSending<M extends IpcMessage, D = any> = {
   type: M['type'];
   elapsed: number;
   $: Observable<IpcSendResponse<M, D>>;
+  promise: Promise<IpcSending<M, D>>;
   timeout$: Observable<{}>;
   cancel$: Observable<{}>;
   results: Array<IpcHandlerResult<D>>;

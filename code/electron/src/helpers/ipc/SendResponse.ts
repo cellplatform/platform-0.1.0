@@ -1,4 +1,4 @@
-import { time, ITimer, value as valueUtil } from '@tdb/util';
+import { ITimer, time, value as valueUtil } from '@tdb/util';
 import * as R from 'ramda';
 import { Observable, Subject, timer as ObservableTimer } from 'rxjs';
 import { filter, map, share, takeUntil, takeWhile } from 'rxjs/operators';
@@ -9,11 +9,11 @@ import {
   IpcEventHandler,
   IpcEventObservable,
   IpcHandlerResponseEvent,
+  IpcHandlerResult,
   IpcIdentifier,
   IpcMessage,
   IpcSending,
   IpcSendResponse,
-  IpcHandlerResult,
   ProcessType,
 } from './types';
 
@@ -35,6 +35,7 @@ type Ref<D> = SendResponseInit<any> & {
   results: Array<IpcHandlerResult<D>>;
   timer: ITimer;
   elapsed?: number;
+  promise?: Promise<IpcSending<any, any>>;
 };
 
 /**
@@ -162,6 +163,21 @@ export class SendResponse<M extends IpcMessage = any, D = any>
 
   public get $() {
     return this._.$;
+  }
+
+  public get promise() {
+    const promise =
+      this._.promise ||
+      new Promise<IpcSending<M, D>>(async (resolve, reject) => {
+        try {
+          await this.$.toPromise();
+          resolve(this);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    this._.promise = promise;
+    return promise;
   }
 
   public get results() {
