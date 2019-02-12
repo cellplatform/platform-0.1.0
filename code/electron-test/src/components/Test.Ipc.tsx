@@ -107,26 +107,29 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
   };
 
   private sendFoo = () => {
-    // const count = this.count++;
-    // const res = ipc.send<types.IFooEvent, string>(
-    //   'FOO',
-    //   { count },
-    //   // { timeout: 100 },
-    // );
-    // // res.cancel();
-    // console.log('res', res);
-    // console.log('res.elapsed', res.elapsed);
-    // res.results$.subscribe({
-    //   next: e => log.info('🤘 res$.next:', e),
-    //   complete: () => {
-    //     log.group('🌳 COMPLETE');
-    //     res.results.forEach(result => log.info(result));
-    //     // log.info('results', res.results);
-    //     log.info('elapsed', res.elapsed);
-    //     log.groupEnd();
-    //   },
-    //   error: err => log.error('😡  ERROR', err),
-    // });
+    const count = this.count++;
+    const res = ipc.send<types.IFooEvent, string>(
+      'FOO',
+      { count },
+      // { timeout: 100 },
+    );
+    // res.cancel();
+
+    console.log('res', res);
+    console.log('res.elapsed', res.elapsed);
+
+    res.results$.subscribe({
+      next: e => log.info('🤘 res$.next:', e),
+      complete: () => {
+        log.group('🌳 COMPLETE');
+        res.results.forEach(result => log.info(result));
+        // log.info('results', res.results);
+        log.info('elapsed', res.elapsed);
+
+        log.groupEnd();
+      },
+      error: err => log.error('😡  ERROR', err),
+    });
   };
   private count = 0;
 
