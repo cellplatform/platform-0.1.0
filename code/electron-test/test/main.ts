@@ -18,7 +18,9 @@ const config = require('../.uiharness/config.json') as uiharness.IUIHarnessRunti
   // NOTE:  You could also get [log, ipc] from `uiharness.init`.
   //        Calling these here as this is about testing the module
   //        that contains [log] and [ipc].
-  const { log, ipc } = main.init<types.MyEvents>({ appName });
+  const { log, ipc, store } = main.init<types.MyEvents>({ appName });
+
+  console.log('store', store, '\n\n');
 
   const { newWindow } = await uiharness.init({
     config,
@@ -45,7 +47,7 @@ const config = require('../.uiharness/config.json') as uiharness.IUIHarnessRunti
    * Subscribe to all events.
    */
   ipc
-    .filter(e => e.type !== 'LOG/write')
+    .filter(e => e.type !== '.SYS/LOG/write')
     .subscribe(e => {
       const { targets, sender } = e;
       const type = log.yellow(e.type);

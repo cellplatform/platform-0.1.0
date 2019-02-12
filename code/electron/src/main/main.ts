@@ -4,40 +4,51 @@ import { app } from 'electron';
 import * as devTools from '../helpers/devTools/main';
 import { init as initIpc, IpcClient, IpcMessage } from '../helpers/ipc/main';
 import * as logger from '../helpers/logger/main';
-import { IMainLog } from '../types';
+import { init as initStore } from '../helpers/store/main';
+import { IMainLog, IStoreClient, IStoreObject } from '../types';
 
-// import * as store from '../helpers/store';
 export * from '../types';
 
 export { devTools, logger };
 
-export type IMainInitResponse<M extends IpcMessage> = {
+export type IMainInitResponse<M extends IpcMessage, S extends IStoreObject> = {
   ipc: IpcClient<M>;
   log: IMainLog;
+  store: IStoreClient<S>;
 };
 
 /**
  * Initializes [Main] process systems (safely).
  */
-export function init<M extends IpcMessage>(
-  args: { ipc?: IpcClient<M>; log?: IMainLog | string; appName?: string } = {},
-): IMainInitResponse<M> {
-  const ipc = args.ipc || initIpc<M>();
+export function init<M extends IpcMessage = any, S extends IStoreObject = any>(
+  args: {
+    appName?: string;
+    ipc?: IpcClient<M>;
+    log?: IMainLog | string;
+    store?: IStoreClient<S>;
+  } = {},
+): IMainInitResponse<M, S> {
+  const { appName } = args;
 
-  /**
-   * Logging.
-   */
-  const initLog = (dir?: string) => {
-    let appName = args.appName || app.getName();
-    appName = appName.replace(/\s/g, '-').toLowerCase();
-    dir = dir || fs.join(fs.dirname(app.getPath('logs')), appName);
-    return logger.init({ ipc, dir });
-  };
+  // Initiaize modules.
+  const ipc = args.ipc || initIpc<M>();
+  const store = args.store || initStore<S>({});
   const log =
     typeof args.log === 'object'
       ? args.log // Logger already exists and was provided.
-      : initLog(args.log); // Initialize a new log.
+      : initLog({ ipc, dir: args.log, appName }); // Initialize a new log.
 
   // Finish up.
-  return { ipc, log };
+  return { ipc, log, store };
+}
+
+/**
+ * INTERNAL
+ */
+function initLog(args: { ipc: IpcClient; dir?: string; appName?: string }) {
+  const { ipc } = args;
+  let appName = args.appName || app.getName();
+  appName = appName.replace(/\s/g, '-').toLowerCase();
+  const dir = args.dir || fs.join(fs.dirname(app.getPath('logs')), appName);
+  return logger.init({ ipc, dir });
 }
