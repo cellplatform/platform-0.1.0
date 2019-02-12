@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-
 import * as is from 'electron-is';
 import { id as idUtil, value as valueUtil } from '@tdb/util';
 import { Observable, Subject } from 'rxjs';

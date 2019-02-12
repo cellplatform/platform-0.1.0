@@ -1,6 +1,5 @@
-import { DevToolEvents } from './helpers/devTools/types';
-import { IpcClient } from './helpers/ipc';
-import { ILog, IMainLog, LoggerEvents } from './helpers/logger/types';
+import { IpcClient } from './helpers/types';
+import { ILog, IMainLog } from './helpers/logger/types';
 
 export { ILog, IMainLog };
 export type ProcessType = 'MAIN' | 'RENDERER';
@@ -13,5 +12,4 @@ export type IContext = {
 /**
  * Events
  */
-export { LoggerEvents, DevToolEvents };
-export type SystemEvents = LoggerEvents | DevToolEvents;
+export { SystemEvents } from './helpers/types';

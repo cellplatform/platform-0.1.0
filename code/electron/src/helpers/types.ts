@@ -1,9 +1,10 @@
 import { LoggerEvents } from './logger/types';
 import { DevToolEvents } from './devTools/types';
-import { IpcClient } from './ipc';
-
-export { IContext } from '../types';
+import { StoreEvents } from './store/types';
+import { IpcClient } from './ipc/types';
 
 export { IpcClient };
-export type InternalEvents = LoggerEvents | DevToolEvents;
-export type IpcInternal = IpcClient<InternalEvents>;
+export { IContext } from '../types';
+
+export type SystemEvents = LoggerEvents | DevToolEvents | StoreEvents;
+export type IpcInternal = IpcClient<SystemEvents>;
