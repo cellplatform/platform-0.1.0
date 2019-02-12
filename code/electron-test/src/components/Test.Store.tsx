@@ -53,6 +53,7 @@ export class StoreTest extends React.PureComponent<
       <div {...styles.base}>
         <h2>Store {this.state.count}</h2>
         <div {...styles.buttons}>
+          <Button label={'keys'} onClick={this.keys} />
           <Button label={'read'} onClick={this.read} />
           <Button label={'read (all)'} onClick={this.readAll} />
           <Button label={'change (count)'} onClick={this.changeCount} />
@@ -72,6 +73,11 @@ export class StoreTest extends React.PureComponent<
     const { count } = await store.read('count', 'foo');
     this.setState({ count });
   }
+
+  private keys = async () => {
+    const res = await store.keys();
+    log.info('🌳 keys:', res);
+  };
 
   private read = async () => {
     const res = await store.read('count', 'foo');

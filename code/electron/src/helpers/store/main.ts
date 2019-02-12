@@ -120,10 +120,16 @@ export function init<T extends t.StoreJson>(args: {
     }
   };
 
+  const getKeys: t.GetStoreKeys<T> = async () => {
+    const file = await getFile();
+    return file.exists ? Object.keys(file.data.body) : [];
+  };
+
   // Create the client.
   const client = (new Client<T>({
     getValues,
     setValues,
+    getKeys,
   }) as unknown) as IClientMain;
 
   // Store the path to the settings file.
@@ -138,6 +144,11 @@ export function init<T extends t.StoreJson>(args: {
     const data: t.IStoreFile = exists ? file : { version: -1, body: {} };
     return { exists, data };
   };
+
+  /**
+   * Handle GET keys requests.
+   */
+  ipc.handle<t.IStoreGetKeysEvent>('@platform/STORE/keys', e => getKeys());
 
   /**
    * Handle GET value requests.

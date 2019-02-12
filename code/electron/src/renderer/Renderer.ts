@@ -15,7 +15,7 @@ export { log };
 
 type Refs = {
   ipc?: IpcClient;
-  store?: IStoreClient;
+  store?: IStoreClient<any>;
 };
 
 /**

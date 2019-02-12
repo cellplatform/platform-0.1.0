@@ -21,6 +21,7 @@ export class Client<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
   /**
    * [Fields]
    */
+  private readonly _getKeys: t.GetStoreKeys<T>;
   private readonly _getValues: t.GetStoreValues<T>;
   private readonly _setValues: t.SetStoreValues<T>;
 
@@ -38,9 +39,11 @@ export class Client<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
    * [Constructor]
    */
   constructor(args: {
+    getKeys: t.GetStoreKeys<T>;
     getValues: t.GetStoreValues<T>;
     setValues: t.SetStoreValues<T>;
   }) {
+    this._getKeys = args.getKeys;
     this._getValues = args.getValues;
     this._setValues = args.setValues;
     this.dispose$.subscribe(() => (this.isDisposed = true));
@@ -67,6 +70,13 @@ export class Client<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
   public async write(...values: Array<t.IStoreKeyValue<T>>) {
     const res = await this._setValues(values, 'UPDATE');
     return res as t.IStoreSetValuesResponse<T>;
+  }
+
+  /**
+   * Retrieves all available keys.
+   */
+  public async keys(): Promise<Array<keyof T>> {
+    return this._getKeys();
   }
 
   /**

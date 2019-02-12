@@ -74,10 +74,20 @@ export function init<T extends t.StoreJson>(args: {
     return result.data;
   };
 
+  const getKeys: t.GetStoreKeys<T> = async () => {
+    const res = await ipc.send<t.IStoreGetKeysEvent, Array<keyof T>>(
+      '@platform/STORE/keys',
+      {},
+    );
+    await res.results$.toPromise();
+    const result = res.results.find(m => m.sender.process === 'MAIN');
+    return result && result.data ? result.data : [];
+  };
+
   /**
    * Create the client.
    */
-  const client = new Client<T>({ getValues, setValues });
+  const client = new Client<T>({ getKeys, getValues, setValues });
 
   // Finish up.
   global[GLOBAL.STORE_REF] = client;

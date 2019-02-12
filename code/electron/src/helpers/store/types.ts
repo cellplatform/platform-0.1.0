@@ -3,7 +3,7 @@
  * An abstract representation of the configuration store
  * that works on either the [main] or [renderer] processes.
  */
-export type IStoreClient<T extends StoreJson = {}> = {
+export type IStoreClient<T extends StoreJson = any> = {
   // events$: Observable<StoreEvents>;
 
   read: (...keys: Array<keyof T>) => Promise<Partial<T>>;
@@ -11,6 +11,7 @@ export type IStoreClient<T extends StoreJson = {}> = {
     ...values: Array<IStoreKeyValue<T>>
   ) => Promise<IStoreSetValuesResponse>;
 
+  keys: () => Promise<Array<keyof T>>;
   get: <V extends StoreValue>(key: keyof T, defaultValue?: V) => Promise<V>;
   set: <K extends keyof T>(key: K, value: T[K]) => Promise<T[K]>;
   delete: <K extends keyof T>(...keys: K[]) => Promise<{}>;
@@ -34,7 +35,7 @@ export type IStoreFile = {
 /**
  * The store client with extended [main] properties.
  */
-export type IMainStoreClient<T extends StoreJson = {}> = IStoreClient<T> & {
+export type IMainStoreClient<T extends StoreJson = any> = IStoreClient<T> & {
   path: string;
 };
 
@@ -51,16 +52,22 @@ export type SetStoreValues<T extends StoreJson> = (
   action: StoreSetAction,
 ) => Promise<IStoreSetValuesResponse>;
 
+export type GetStoreKeys<T extends StoreJson> = () => Promise<Array<keyof T>>;
+
 /**
  * [Events].
  */
 export type StoreEvents =
-  | IStoreChangeEvent
-  | IStoreGetValuesEvent
-  | IStoreSetValuesEvent;
+  // | IStoreChangeEvent
+  IStoreGetKeysEvent | IStoreGetValuesEvent | IStoreSetValuesEvent;
 
-export type IStoreChangeEvent = {
-  type: '@platform/STORE/change';
+// export type IStoreChangeEvent = {
+//   type: '@platform/STORE/change';
+//   payload: {};
+// };
+
+export type IStoreGetKeysEvent = {
+  type: '@platform/STORE/keys';
   payload: {};
 };
 
@@ -83,7 +90,7 @@ export type IStoreSetValuesEvent = {
     action: StoreSetAction;
   };
 };
-export type IStoreSetValuesResponse<T extends StoreJson = {}> = {
+export type IStoreSetValuesResponse<T extends StoreJson = any> = {
   ok: boolean;
   error?: string;
 };
