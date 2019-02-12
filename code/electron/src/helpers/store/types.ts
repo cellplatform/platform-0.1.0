@@ -25,6 +25,13 @@ export type StoreJson = {
 };
 
 /**
+ * The store client with extended [main] properties.
+ */
+export type IMainStoreClient<T extends StoreJson = {}> = IStoreClient<T> & {
+  path: string;
+};
+
+/**
  * [Deletages]
  */
 export type GetStoreValues<T extends StoreJson> = (
@@ -34,15 +41,19 @@ export type GetStoreValues<T extends StoreJson> = (
 /**
  * [Events].
  */
-export type StoreEvents = StoreChangeEvent | StoreGetEvent;
-export type StoreChangeEvent = {
+export type StoreEvents = IStoreChangeEvent | IStoreGetValuesEvent;
+export type IStoreChangeEvent = {
   type: '@platform/STORE/change';
   payload: {};
 };
 
-export type StoreGetEvent = {
+export type IStoreGetValuesEvent = {
   type: '@platform/STORE/get';
   payload: {
-    key: string;
+    keys: string[];
   };
+};
+export type IStoreGetResponse = {
+  exists: boolean;
+  json: StoreJson;
 };

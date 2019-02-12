@@ -225,7 +225,10 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
 
         // Fire the response data through an event.
         const e: IpcHandlerResponseEvent['payload'] = { eid, data };
-        this._send<IpcHandlerResponseEvent>('./SYS/IPC/handler/response', e);
+        this._send<IpcHandlerResponseEvent>(
+          '@platform/IPC/handler/response',
+          e,
+        );
         return { args, data };
       });
 

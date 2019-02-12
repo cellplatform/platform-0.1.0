@@ -7,5 +7,5 @@ type EventTypes = {
 };
 
 export const EVENT: EventTypes = {
-  HANDLER: './SYS/IPC/handler/response',
+  HANDLER: '@platform/IPC/handler/response',
 };

@@ -16,7 +16,6 @@ import { GLOBAL } from '../constants';
 const electron = (window as any).require('electron');
 const ipcRenderer = electron.ipcRenderer as Electron.IpcRenderer;
 const remote = electron.remote as Electron.Remote;
-const global: any = window;
 
 /**
  * Observable wrapper for the electron IPC [Renderer].
@@ -26,6 +25,7 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
    * HACK:  Ensure multiple clients are not initialized on HMR (hot-module-reloads).
    *        This will only happen during development.
    */
+  const global: any = window;
   if (global[GLOBAL.IPC_REF]) {
     return global[GLOBAL.IPC_REF];
   }
@@ -37,7 +37,7 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
    * Store references to event-handlers as they are registered.
    */
   const onHandlerRegistered: HandlerRegistered = args => {
-    client.send<IpcRegisterHandlerEvent>('./SYS/IPC/register-handler', {
+    client.send<IpcRegisterHandlerEvent>('@platform/IPC/register-handler', {
       type: args.type,
       stage: 'CREATE',
     });

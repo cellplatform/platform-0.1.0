@@ -136,7 +136,7 @@ export type IpcEventHandler<M extends IpcMessage = any> = (
  * The response fired back from a registered handler.
  */
 export type IpcHandlerResponseEvent = {
-  type: './SYS/IPC/handler/response';
+  type: '@platform/IPC/handler/response';
   payload: {
     eid: string;
     data?: any;
@@ -147,7 +147,7 @@ export type IpcHandlerResponseEvent = {
  * A notification that an event-handler has been registered.
  */
 export type IpcRegisterHandlerEvent = {
-  type: './SYS/IPC/register-handler';
+  type: '@platform/IPC/register-handler';
   payload: {
     type: IpcMessage['type'];
     stage: 'CREATE' | 'DISPOSE';

@@ -5,27 +5,27 @@ import * as devTools from '../helpers/devTools/main';
 import { init as initIpc, IpcClient, IpcMessage } from '../helpers/ipc/main';
 import * as logger from '../helpers/logger/main';
 import { init as initStore } from '../helpers/store/main';
-import { IMainLog, IStoreClient, StoreJson } from '../types';
+import * as t from '../types';
 
 export * from '../types';
 
 export { devTools, logger };
 
-export type IMainInitResponse<M extends IpcMessage, S extends StoreJson> = {
-  ipc: IpcClient<M>;
-  log: IMainLog;
-  store: IStoreClient<S>;
+export type IMainInitResponse<M extends t.IpcMessage, S extends t.StoreJson> = {
+  ipc: t.IpcClient<M>;
+  log: t.IMainLog;
+  store: t.IMainStoreClient<S>;
 };
 
 /**
  * Initializes [Main] process systems (safely).
  */
-export function init<M extends IpcMessage = any, S extends StoreJson = any>(
+export function init<M extends IpcMessage = any, S extends t.StoreJson = any>(
   args: {
     appName?: string;
-    ipc?: IpcClient<M>;
-    log?: IMainLog | string;
-    store?: IStoreClient<S>;
+    ipc?: t.IpcClient<M>;
+    log?: t.IMainLog | string;
+    store?: t.IMainStoreClient<S>;
   } = {},
 ): IMainInitResponse<M, S> {
   const { appName } = args;

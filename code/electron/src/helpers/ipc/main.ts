@@ -96,7 +96,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
    * then onto the global registration manager.
    */
   client
-    .on<IpcRegisterHandlerEvent>('./SYS/IPC/register-handler')
+    .on<IpcRegisterHandlerEvent>('@platform/IPC/register-handler')
     .subscribe(e => {
       const type = e.payload.type;
       const client = e.sender;
