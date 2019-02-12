@@ -2,7 +2,7 @@ import { BrowserWindow, ipcMain } from 'electron';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { Windows } from '../windows';
+import { WindowsMain } from '../windows';
 import {
   Client,
   HandlerRegistered,
@@ -106,7 +106,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   /**
    * Monitor browser-windows.
    */
-  const windows = new Windows();
+  const windows = new WindowsMain();
   windows.change$
     // Listen for browser-windows closing and unregister their handlers.
     .pipe(filter(e => e.type === 'CLOSED'))

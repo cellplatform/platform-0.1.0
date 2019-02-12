@@ -4,9 +4,7 @@ import { IpcClient } from '../ipc/Client';
 
 export * from './types';
 
-type Refs = {
-  client?: t.IStoreClient;
-};
+type Refs = { client?: t.IStoreClient };
 const refs: Refs = {};
 
 /**

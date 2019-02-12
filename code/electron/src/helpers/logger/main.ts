@@ -6,21 +6,14 @@ import * as elog from 'electron-log';
 import { filter, map } from 'rxjs/operators';
 
 import { IpcClient } from '../ipc/Client';
-import {
-  ILog,
-  ILogEvent,
-  IMainLog,
-  LoggerEvents,
-  LogLevel,
-  ProcessType,
-} from './types';
+import * as t from './types';
 
 export { moment, id } from '@tdb/util';
 
 type ILogMetadata = { start: { dev: number; prod: number } };
 type Env = 'prod' | 'dev';
 
-type Ref = { log?: IMainLog };
+type Ref = { log?: t.IMainLog };
 const ref: Ref = {};
 
 /**
@@ -30,7 +23,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
   if (ref.log) {
     return ref.log;
   }
-  const ipc = args.ipc as IpcClient<LoggerEvents>;
+  const ipc = args.ipc as IpcClient<t.LoggerEvents>;
 
   // Derive log location and store it.
   const paths = getPaths({ dir: args.dir });
@@ -38,7 +31,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
   fs.ensureDirSync(dir);
 
   // Create the logger.
-  const log = createLog() as IMainLog;
+  const log = createLog() as t.IMainLog;
   log.paths = {
     dir,
     dev: paths.dev.path,
@@ -76,7 +69,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
   }
 
   // Write events to logs.
-  const write = (process: ProcessType, level: LogLevel, output: string) => {
+  const write = (process: t.ProcessType, level: t.LogLevel, output: string) => {
     const prefix = toPrefix(log, process);
     elog[level](prefix, output);
     if (is.dev() && process === 'MAIN') {
@@ -91,7 +84,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
     .pipe(
       filter(() => !log.silent),
       filter(e => e.type === 'LOG'),
-      map(e => e.payload as ILogEvent),
+      map(e => e.payload as t.ILogEvent),
     )
     .subscribe(e => write('MAIN', e.level, e.output));
 
@@ -168,7 +161,7 @@ function increment(args: { dir: string; env: 'dev' | 'prod' }) {
   return data.start[env];
 }
 
-const toPrefix = (log: ILog, process: ProcessType) => {
+const toPrefix = (log: t.ILog, process: t.ProcessType) => {
   const isMain = process === 'MAIN';
   let prefix = isMain ? 'MAIN' : 'VIEW';
   prefix = `${prefix} ‣`;

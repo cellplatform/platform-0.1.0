@@ -15,7 +15,7 @@ export type IWindowRef = {
 /**
  * Keeps a set of reference to global windows.
  */
-export class Windows {
+export class WindowsMain {
   private _refs: IWindowRef[] = [];
 
   private readonly _dispose$ = new Subject();

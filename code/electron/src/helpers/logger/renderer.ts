@@ -1,10 +1,10 @@
-import { filter, map } from 'rxjs/operators';
 import { log } from '@platform/log/lib/client';
+import { filter, map } from 'rxjs/operators';
+
+import { IpcClient } from '../ipc/Client';
+import * as t from './types';
 
 export { log };
-import { IpcClient } from '../ipc/Client';
-import { LoggerEvents, ILogEvent } from './types';
-
 let isInitialized = false;
 
 /**
@@ -15,14 +15,14 @@ export function init(args: { ipc: IpcClient }) {
     return log;
   }
   isInitialized = true;
-  const ipc = args.ipc as IpcClient<LoggerEvents>;
+  const ipc = args.ipc as IpcClient<t.LoggerEvents>;
 
   // Fire events through IPC to the main process.
   log.events$
     .pipe(
       filter(() => !log.silent),
       filter(e => e.type === 'LOG'),
-      map(e => e.payload as ILogEvent),
+      map(e => e.payload as t.ILogEvent),
     )
     .subscribe(e => ipc.send('@platform/LOG/write', e, { target: ipc.MAIN }));
 
