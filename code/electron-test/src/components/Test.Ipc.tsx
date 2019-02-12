@@ -1,17 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import // takeUntil
-'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
-import {
-  css,
-  GlamorValue,
-  ipc,
-  log,
-  renderer,
-  // types,
-  // time,
-} from '../common';
+import { css, GlamorValue, ipc, log, renderer, time, types } from '../common';
 import { Button } from './primitives';
 
 /**
@@ -31,8 +22,8 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     this.startTestHandlers();
 
     console.log('ipc', ipc);
-    console.log(
-      'NOTE',
+    console.warn(
+      '🐷🐷🐷  NOTE',
       'handlers commented out while deugging - prod build failing with IPC',
     );
   }
@@ -83,16 +74,18 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     /**
      * Log out events.
      */
-    // ipc.events$.pipe(takeUntil(this.unmounted$)).subscribe(e => {
-    //   const from = e.sender.id;
-    //   log.info('⚡️ from:', from, e);
-    // });
-    // ipc.filter<IMessageEvent>('MESSAGE').subscribe(e => {
-    //   log.info('filtered event', e);
-    // });
+    ipc.events$.pipe(takeUntil(this.unmounted$)).subscribe(e => {
+      const from = e.sender.id;
+      log.info('⚡️ from:', from, e);
+    });
+    ipc.filter<types.IMessageEvent>('MESSAGE').subscribe(e => {
+      log.info('filtered event', e);
+    });
+
     /**
      * Provide a response-handler for a specific event.
      */
+    console.log('Causes fail here');
     // ipc.handle<types.IFooEvent>('FOO', async e => {
     //   await time.wait(1000);
     //   return `response FOO after delay (${this.id}) 🌼`;
