@@ -1,3 +1,5 @@
+import { Subject } from 'rxjs';
+
 import { GLOBAL } from '../constants';
 import { IpcClient } from '../ipc/Client';
 import { Client } from './Client';
@@ -20,6 +22,7 @@ export function init<T extends t.StoreJson>(args: {
     return global[GLOBAL.STORE_REF] as t.IStoreClient<T>;
   }
   const ipc = args.ipc as IpcClient<t.StoreEvents>;
+  const change$ = new Subject<t.IStoreChange>();
 
   const getValues: t.GetStoreValues<T> = async keys => {
     // Fire the event requesting data.
@@ -27,6 +30,7 @@ export function init<T extends t.StoreJson>(args: {
     const res = ipc.send<t.IStoreGetValuesEvent, t.IStoreGetValuesResponse>(
       '@platform/STORE/get',
       payload,
+      { target: 0 },
     );
 
     try {
@@ -59,6 +63,7 @@ export function init<T extends t.StoreJson>(args: {
     const res = ipc.send<t.IStoreSetValuesEvent, t.IStoreSetValuesResponse<T>>(
       '@platform/STORE/set',
       payload,
+      { target: 0 },
     );
 
     // Wait for the response.
@@ -78,16 +83,21 @@ export function init<T extends t.StoreJson>(args: {
     const res = await ipc.send<t.IStoreGetKeysEvent, Array<keyof T>>(
       '@platform/STORE/keys',
       {},
+      { target: 0 },
     );
     await res.results$.toPromise();
     const result = res.results.find(m => m.sender.process === 'MAIN');
     return result && result.data ? result.data : [];
   };
 
+  ipc
+    .on<t.IStoreChangeEvent>('@platform/STORE/change')
+    .subscribe(e => change$.next(e.payload));
+
   /**
    * Create the client.
    */
-  const client = new Client<T>({ getKeys, getValues, setValues });
+  const client = new Client<T>({ getKeys, getValues, setValues, change$ });
 
   // Finish up.
   global[GLOBAL.STORE_REF] = client;

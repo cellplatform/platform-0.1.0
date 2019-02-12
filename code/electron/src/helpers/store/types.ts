@@ -1,10 +1,12 @@
+import { Observable } from 'rxjs';
+
 /**
  * [Client]
  * An abstract representation of the configuration store
  * that works on either the [main] or [renderer] processes.
  */
 export type IStoreClient<T extends StoreJson = any> = {
-  // events$: Observable<StoreEvents>;
+  change$: Observable<IStoreChange>;
 
   read: (...keys: Array<keyof T>) => Promise<Partial<T>>;
   write: (
@@ -59,13 +61,20 @@ export type GetStoreKeys<T extends StoreJson> = () => Promise<Array<keyof T>>;
  * [Events].
  */
 export type StoreEvents =
-  // | IStoreChangeEvent
-  IStoreGetKeysEvent | IStoreGetValuesEvent | IStoreSetValuesEvent;
+  | IStoreChangeEvent
+  | IStoreGetKeysEvent
+  | IStoreGetValuesEvent
+  | IStoreSetValuesEvent;
 
-// export type IStoreChangeEvent = {
-//   type: '@platform/STORE/change';
-//   payload: {};
-// };
+export type IStoreChange = {
+  keys: string[];
+  values: StoreJson;
+  action: StoreSetAction;
+};
+export type IStoreChangeEvent = {
+  type: '@platform/STORE/change';
+  payload: IStoreChange;
+};
 
 export type IStoreGetKeysEvent = {
   type: '@platform/STORE/keys';
@@ -86,10 +95,7 @@ export type IStoreGetValuesResponse = {
 
 export type IStoreSetValuesEvent = {
   type: '@platform/STORE/set';
-  payload: {
-    values: IStoreKeyValue[];
-    action: StoreSetAction;
-  };
+  payload: { values: IStoreKeyValue[]; action: StoreSetAction };
 };
 export type IStoreSetValuesResponse<T extends StoreJson = any> = {
   ok: boolean;

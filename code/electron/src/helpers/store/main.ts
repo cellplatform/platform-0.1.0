@@ -1,8 +1,10 @@
-import * as t from './types';
-import { Client } from './Client';
-import { IpcClient } from '../ipc/Client';
-import { app } from 'electron';
 import { fs } from '@platform/fs';
+import { app } from 'electron';
+import { Subject } from 'rxjs';
+
+import { IpcClient } from '../ipc/Client';
+import { Client } from './Client';
+import * as t from './types';
 
 export * from './types';
 
@@ -27,6 +29,7 @@ export function init<T extends t.StoreJson>(args: {
     return refs.client as IClientMain;
   }
   const ipc = args.ipc as IpcClient<t.StoreEvents>;
+  const change$ = new Subject<t.IStoreChange>();
 
   /**
    * Read values from storage.
@@ -74,6 +77,7 @@ export function init<T extends t.StoreJson>(args: {
     action: t.StoreSetAction,
   ) => {
     const res: t.IStoreSetValuesResponse = { ok: true };
+    const keys = values.map(({ key }) => key.toString());
 
     try {
       // Ensure the file exists.
@@ -109,11 +113,23 @@ export function init<T extends t.StoreJson>(args: {
       // Perform the save operation.
       await fs.file.stringifyAndSave(path, data);
 
+      // Alert listeners.
+      const change: t.IStoreChange = {
+        action,
+        keys,
+        values: values.reduce(
+          (acc, next) => ({ ...acc, [next.key]: next.value }),
+          {},
+        ),
+      };
+      ipc.send<t.IStoreChangeEvent>('@platform/STORE/change', change);
+      change$.next(change);
+
       // Finish up.
       res.ok = true;
       return res;
     } catch (error) {
-      // Failed
+      // Failed.
       res.ok = false;
       res.error = error.message;
       return res;
@@ -130,6 +146,7 @@ export function init<T extends t.StoreJson>(args: {
     getValues,
     setValues,
     getKeys,
+    change$,
   }) as unknown) as IClientMain;
 
   // Store the path to the settings file.

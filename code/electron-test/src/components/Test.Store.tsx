@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { css, GlamorValue, log, store } from '../common';
-import { Button } from './primitives';
 import * as t from '../types';
+import { Button } from './primitives';
 
 /**
  * Test component.
@@ -22,16 +23,18 @@ export class StoreTest extends React.PureComponent<
 > {
   public state: IStoreTestState = {};
   private readonly unmounted$ = new Subject();
-  // private count = this.store.get('count') || 0;
 
   public componentDidMount() {
     this.read();
 
-    // const events$ = this.store.events$.pipe(takeUntil(this.unmounted$));
-    // events$.subscribe(e => {
-    //   log.info('events$: ', e);
-    //   this.updateState();
-    // });
+    const events$ = store.change$.pipe(takeUntil(this.unmounted$));
+    events$.subscribe(e => {
+      log.info('change$: ', e);
+      if (e.keys.includes('count')) {
+        const count = (e.values.count || 0) as number;
+        this.setState({ count });
+      }
+    });
     this.updateState();
   }
 
@@ -94,7 +97,6 @@ export class StoreTest extends React.PureComponent<
     const value = (this.state.count || 0) + 1;
     const res = await store.write({ key: 'count', value });
     log.info('🌼  change count:', res);
-    this.read();
   };
 
   private changeFoo = async () => {
@@ -102,18 +104,15 @@ export class StoreTest extends React.PureComponent<
     const foo = await store.get<F>('foo', { bar: false });
     foo.bar = !foo.bar;
     await store.set('foo', foo);
-    this.read();
   };
 
   private deleteHandler = (key: string) => {
     return async () => {
       await store.delete(key as any);
-      this.read();
     };
   };
 
   private clear = async () => {
     await store.clear();
-    this.read();
   };
 }

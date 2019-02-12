@@ -1,5 +1,5 @@
-import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { share, takeUntil } from 'rxjs/operators';
 
 import * as t from './types';
 
@@ -10,8 +10,6 @@ import * as t from './types';
  *    electron.shell.openItem(this.path);
  *
  */
-
-type Refs = {};
 
 /**
  * An abstract representation of the configuration store
@@ -28,12 +26,7 @@ export class Client<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
   public isDisposed = false;
-
-  // private readonly _events$ = new Subject<types.StoreEvents>();
-  // public readonly events$ = this._events$.pipe(
-  //   takeUntil(this.dispose$),
-  //   share(),
-  // );
+  public readonly change$: Observable<t.IStoreChange>;
 
   /**
    * [Constructor]
@@ -42,11 +35,16 @@ export class Client<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
     getKeys: t.GetStoreKeys<T>;
     getValues: t.GetStoreValues<T>;
     setValues: t.SetStoreValues<T>;
+    change$: Subject<t.IStoreChange>;
   }) {
     this._getKeys = args.getKeys;
     this._getValues = args.getValues;
     this._setValues = args.setValues;
     this.dispose$.subscribe(() => (this.isDisposed = true));
+    this.change$ = args.change$.pipe(
+      takeUntil(this.dispose$),
+      share(),
+    );
   }
 
   /**
