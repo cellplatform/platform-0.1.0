@@ -112,8 +112,8 @@ export class StoreTest extends React.PureComponent<
     };
   };
 
-  private clear = () => {
-    // this.store.clear();
-    // this.read();
+  private clear = async () => {
+    await store.clear();
+    this.read();
   };
 }

@@ -104,4 +104,15 @@ export class Client<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
     await this._setValues(values, 'DELETE');
     return {};
   }
+
+  /**
+   * Clears all keys.
+   */
+  public async clear() {
+    const keys = await this.keys();
+    if (keys.length > 0) {
+      await this.delete(...keys);
+    }
+    return {};
+  }
 }

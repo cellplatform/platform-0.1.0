@@ -15,6 +15,7 @@ export type IStoreClient<T extends StoreJson = any> = {
   get: <V extends StoreValue>(key: keyof T, defaultValue?: V) => Promise<V>;
   set: <K extends keyof T>(key: K, value: T[K]) => Promise<T[K]>;
   delete: <K extends keyof T>(...keys: K[]) => Promise<{}>;
+  clear: () => Promise<{}>;
 };
 
 export type IStoreKeyValue<T extends StoreJson = any> = {
