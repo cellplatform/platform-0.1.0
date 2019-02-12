@@ -1,7 +1,7 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.0.42",
+  "version": "0.0.46",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -13,12 +13,12 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
+    "@babel/polyfill": "7.2.5",
     "@platform/fs": "0.0.31",
     "@platform/log": "0.0.52",
     "@tdb/util": "1.9.38",
     "@types/app-root-path": "1.2.4",
     "app-root-path": "2.1.0",
-    "babel-polyfill": "6.26.0",
     "electron-is": "3.0.0",
     "electron-log": "2.2.17",
     "electron-store": "2.0.0",
