@@ -34,7 +34,7 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
       <div {...styles.base}>
         <h2>DevTools</h2>
         <div {...styles.buttons}>
-          <Button label={'create'} onClick={this.newWindow} />
+          <Button label={'show (create)'} onClick={this.newWindow} />
           <Button label={'clearConsoles'} onClick={this.clearConsoles} />
         </div>
       </div>
