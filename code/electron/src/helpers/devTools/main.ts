@@ -2,8 +2,7 @@ import { BrowserWindow } from 'electron';
 import * as WindowState from 'electron-window-state';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { IContext, IpcInternal } from './types';
-import { time } from '@tdb/util';
+import * as t from './types';
 
 const OPACITY = {
   FULL: 1,
@@ -21,10 +20,10 @@ const OPACITY = {
  *
  */
 export function create(
-  args: IContext & { parent: BrowserWindow; title?: string },
+  args: t.IContext & { parent: BrowserWindow; title?: string },
 ) {
   const { parent, title = 'DevTools' } = args;
-  const ipc: IpcInternal = args.ipc;
+  const ipc: t.IpcInternal = args.ipc;
 
   const file = `[window].${parent
     .getTitle()
