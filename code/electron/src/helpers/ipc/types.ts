@@ -72,6 +72,11 @@ export type IpcClient<M extends IpcMessage = any> = {
     type: T['type'],
     handler: IpcEventHandler<T>,
   ) => IpcClient<M>;
+
+  handlers: (
+    type: M['type'],
+    options?: { exclude?: number | number[] },
+  ) => IpcIdentifier[];
 };
 
 export type IpcClientSendOptions = {

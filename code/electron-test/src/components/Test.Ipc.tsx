@@ -116,6 +116,7 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
 
     console.log('res', res);
     log.info('isComplete', res.isComplete);
+    log.info('handlers (FOO)', ipc.handlers('FOO'));
 
     res.$.subscribe({
       next: e => log.info('🤘 res$.next:', e),

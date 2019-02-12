@@ -166,11 +166,11 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
     const data: IpcEvent<T> = { eid, type, payload, sender, targets };
     const handlers = this._.handlers;
     const events$ = this.events$;
-    const registeredClients = this.registeredClientHandlers({
-      type,
-      exclude: [id],
-    }).filter(c => c.id !== id);
     const timeout = valueUtil.defaultValue(options.timeout, this.timeout);
+    const registeredClients = this
+      // Clients handling the event, not including this one.
+      .handlers(type, { exclude: id })
+      .filter(c => c.id !== id);
 
     // Prepare the send response.
     const res = new SendResponse<T, D>({
@@ -245,13 +245,24 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
     return getHandlerRefs();
   }
 
-  private registeredClientHandlers(args: {
-    type: M['type'];
-    exclude?: number[];
-  }): IpcIdentifier[] {
-    const { type, exclude = [] } = args;
+  /**
+   * Get a list of clients from all windows/processes that are
+   * handling a particular event.
+   */
+  public handlers(
+    type: M['type'],
+    options: { exclude?: number | number[] } = {},
+  ): IpcIdentifier[] {
+    const exclude =
+      options.exclude === undefined
+        ? []
+        : Array.isArray(options.exclude)
+        ? options.exclude
+        : [options.exclude];
     const ref = this.handlerRefs[type];
-    return (ref ? ref.clients : []).filter(c => !exclude.includes(c.id));
+    return (ref ? ref.clients : [])
+      .filter(c => !exclude.includes(c.id))
+      .map(({ id, process }) => ({ id, process }));
   }
 
   /**
