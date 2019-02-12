@@ -1,25 +1,24 @@
-import * as is from 'electron-is';
 import { id as idUtil, value as valueUtil } from '@tdb/util';
+import * as is from 'electron-is';
 import { Observable, Subject } from 'rxjs';
-import { filter, share, takeUntil, map } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
+import { EVENT, GLOBAL } from './constants';
+import { SendHandler, SendResponse } from './SendResponse';
 import {
-  IpcEvent,
-  IpcMessage,
-  ProcessType,
-  IpcFilter,
   IpcClient,
+  IpcClientSendOptions,
+  IpcEvent,
   IpcEventHandler,
   IpcEventHandlerArgs,
   IpcEventObservable,
-  IpcHandlerResponseEvent,
-  IpcRegisterHandlerEvent,
-  IpcIdentifier,
+  IpcFilter,
   IpcHandlerRefs,
-  IpcClientSendOptions,
+  IpcHandlerResponseEvent,
+  IpcIdentifier,
+  IpcMessage,
+  ProcessType,
 } from './types';
-import { SendResponse, SendHandler } from './SendResponse';
-import { EVENT, GLOBAL } from './constants';
 
 export * from './types';
 
