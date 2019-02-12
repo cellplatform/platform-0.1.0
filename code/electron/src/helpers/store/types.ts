@@ -4,6 +4,6 @@
 export type StoreEvents = StoreChangeEvent;
 
 export type StoreChangeEvent = {
-  type: 'STORE/change';
+  type: '.SYS/STORE/change';
   payload: {};
 };

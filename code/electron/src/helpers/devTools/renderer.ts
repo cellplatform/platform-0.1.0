@@ -21,7 +21,7 @@ export class DevToolsRenderer {
   public clearConsoles() {
     clearConsole();
     if (this.ipc) {
-      this.ipc.send('DEV_TOOLS/clearConsole', {});
+      this.ipc.send('.SYS/DEV_TOOLS/clearConsole', {});
     }
   }
 }

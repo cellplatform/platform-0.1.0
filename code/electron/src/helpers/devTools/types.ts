@@ -6,6 +6,6 @@ export { IContext, IpcInternal, IpcClient } from '../types';
 export type DevToolEvents = ClearConsoleEvent;
 
 export type ClearConsoleEvent = {
-  type: 'DEV_TOOLS/clearConsole';
+  type: '.SYS/DEV_TOOLS/clearConsole';
   payload: {};
 };

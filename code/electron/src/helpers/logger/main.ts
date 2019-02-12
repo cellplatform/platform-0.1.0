@@ -99,7 +99,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
   // and write them to the log.
   ipc.events$
     .pipe(
-      filter(e => e.type === 'LOG/write'),
+      filter(e => e.type === '.SYS/LOG/write'),
       filter(e => e.sender.process === 'RENDERER'),
       map(e => e.payload),
     )
