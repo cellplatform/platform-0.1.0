@@ -20,12 +20,6 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     super(props);
     this.id = renderer.id;
     this.startTestHandlers();
-
-    console.log('ipc', ipc);
-    console.warn(
-      '🐷🐷🐷  NOTE',
-      'handlers commented out while deugging - prod build failing with IPC',
-    );
   }
 
   public componentWillUnmount() {
@@ -85,11 +79,10 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     /**
      * Provide a response-handler for a specific event.
      */
-    console.log('Causes fail here');
-    // ipc.handle<types.IFooEvent>('FOO', async e => {
-    //   await time.wait(1000);
-    //   return `response FOO after delay (${this.id}) 🌼`;
-    // });
+    ipc.handle<types.IFooEvent>('FOO', async e => {
+      await time.wait(1000);
+      return `response FOO after delay (${this.id}) 🌼`;
+    });
   };
 
   private newWindow = () => {

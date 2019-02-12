@@ -17,6 +17,9 @@
     "@tdb/util": "1.9.38",
     "@uiharness/electron": "0.3.94"
   },
+  "browserslist": [
+    "electron >= 4"
+  ],
   "devDependencies": {
     "@platform/ts.cli": "3.3.24",
     "@uiharness/dev": "0.0.35"
