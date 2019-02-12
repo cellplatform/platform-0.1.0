@@ -35,7 +35,7 @@ export function init<T extends t.StoreJson>(args: {
 
     try {
       await res.$.toPromise();
-      const result = res.results.find(m => m.sender.process === 'MAIN');
+      const result = res.resultFrom('MAIN');
       const data = result ? result.data : undefined;
       if (data && (!data.ok || data.error)) {
         const message =
@@ -68,7 +68,8 @@ export function init<T extends t.StoreJson>(args: {
 
     // Wait for the response.
     await res.$.toPromise();
-    const result = res.results.find(m => m.sender.process === 'MAIN');
+    const result = res.resultFrom('MAIN');
+
     if (!result || !result.data) {
       const keys = values.map(({ key }) => key);
       const message = `Failed while setting values for [${keys}]. No response from [main].`;
@@ -86,24 +87,8 @@ export function init<T extends t.StoreJson>(args: {
       { target: 0 },
     );
 
-    res.$.subscribe({
-      complete: () => {
-        console.log('COMPLETE', res);
-      },
-    });
-
     await res.$.toPromise();
-
-    /**
-     * [TODO]
-     * - open in editor
-     * - promise
-     * -
-     */
-
-    console.log('res.results', res.results);
     const result = res.resultFrom('MAIN');
-    console.log('result', result);
 
     return result && result.data ? result.data : [];
   };
