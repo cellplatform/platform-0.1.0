@@ -93,31 +93,29 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
   };
 
   private newWindow = () => {
-    // ipc.send<types.INewWindowEvent>('NEW_WINDOW', {}, { target: ipc.MAIN });
+    ipc.send<types.INewWindowEvent>('NEW_WINDOW', {}, { target: ipc.MAIN });
   };
 
   private sendMessage = () => {
-    // ipc.send<types.IMessageEvent>('MESSAGE', { text: 'Hello' });
+    ipc.send<types.IMessageEvent>('MESSAGE', { text: 'Hello' });
   };
 
   private sendToHandler = (...target: number[]) => {
     return () => {
-      // ipc.send<types.IMessageEvent>('MESSAGE', { text: 'Hello' }, { target });
+      ipc.send<types.IMessageEvent>('MESSAGE', { text: 'Hello' }, { target });
     };
   };
 
   private sendFoo = () => {
-    const count = this.count++;
+    // const count = this.count++;
     // const res = ipc.send<types.IFooEvent, string>(
     //   'FOO',
     //   { count },
     //   // { timeout: 100 },
     // );
-    // res.cancel();
-
+    // // res.cancel();
     // console.log('res', res);
     // console.log('res.elapsed', res.elapsed);
-
     // res.results$.subscribe({
     //   next: e => log.info('🤘 res$.next:', e),
     //   complete: () => {
@@ -125,7 +123,6 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     //     res.results.forEach(result => log.info(result));
     //     // log.info('results', res.results);
     //     log.info('elapsed', res.elapsed);
-
     //     log.groupEnd();
     //   },
     //   error: err => log.error('😡  ERROR', err),
@@ -134,8 +131,8 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
   private count = 0;
 
   private sendBar = () => {
-    // const res = ipc.send<types.IBarEvent, string>('BAR', {});
-    // console.log('res', res);
+    const res = ipc.send<types.IBarEvent, string>('BAR', {});
+    console.log('res', res);
   };
 
   private logInfo = () => {
