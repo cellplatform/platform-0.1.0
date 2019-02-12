@@ -1,26 +1,7 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-} from 'rxjs/operators';
-
 import * as React from 'react';
+import { Subject } from 'rxjs';
 
-import {
-  css,
-  GlamorValue,
-  ICreateDevToolsEvent,
-  ipc,
-  renderer,
-  log,
-  store,
-} from '../common';
+import { css, GlamorValue, log, store } from '../common';
 import { Button } from './primitives';
 
 /**

@@ -51,11 +51,11 @@ export function init<T extends t.StoreJson>(args: {
     console.log('setValues', values);
 
     // Fire the event requesting data.
-    type E = t.IStoreSetValuesEvent;
-    type R = t.IStoreSetValuesResponse;
-    const res = ipc.send<E, R>('@platform/STORE/set', {
-      values,
-    });
+    const payload = { values };
+    const res = ipc.send<t.IStoreSetValuesEvent, t.IStoreSetValuesResponse>(
+      '@platform/STORE/set',
+      payload,
+    );
 
     console.log('set', res);
 
