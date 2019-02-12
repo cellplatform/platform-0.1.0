@@ -1,18 +1,13 @@
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IpcClient, Client, HandlerRegistered, GetHandlerRefs } from './Client';
+import { Client, GetHandlerRefs, HandlerRegistered, IpcClient } from './Client';
 import {
   IpcEvent,
+  IpcGlobalMainRefs,
   IpcMessage,
   IpcRegisterHandlerEvent,
-  IpcEventHandler,
-  ProcessType,
-  IpcHandlerRefs,
-  IpcGlobalMainRefs,
 } from './types';
-
-import { time } from '@tdb/util';
 
 export * from './types';
 export { IpcClient };
@@ -22,12 +17,12 @@ const ipcRenderer = electron.ipcRenderer as Electron.IpcRenderer;
 const remote = electron.remote as Electron.Remote;
 
 const global: any = window;
-const KEY = '__TDB/IPC_CLIENT__';
+const KEY = '__SYS/PLATFORM/IPC_CLIENT__';
 
 /**
  * Observable wrapper for the electron IPC [Renderer].
  */
-export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
+export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
   /**
    * HACK:  Ensure multiple clients are not initialized on HMR (hot-module-reloads).
    *        This will only happen during development.
@@ -85,4 +80,4 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   // Finish up.
   global[KEY] = client;
   return client;
-};
+}

@@ -19,6 +19,7 @@ import {
   ipc,
   renderer,
   log,
+  store,
 } from '../common';
 import { Button } from './primitives';
 
@@ -39,17 +40,16 @@ export class StoreTest extends React.PureComponent<
 > {
   public state: IStoreTestState = {};
   private readonly unmounted$ = new Subject();
-  private readonly store = renderer.store.create<IMyStore>();
-  private count = this.store.get('count') || 0;
+  // private count = this.store.get('count') || 0;
 
   public componentDidMount() {
     this.read();
 
-    const events$ = this.store.events$.pipe(takeUntil(this.unmounted$));
-    events$.subscribe(e => {
-      log.info('events$: ', e);
-      this.updateState();
-    });
+    // const events$ = this.store.events$.pipe(takeUntil(this.unmounted$));
+    // events$.subscribe(e => {
+    //   log.info('events$: ', e);
+    //   this.updateState();
+    // });
     this.updateState();
   }
 
@@ -66,9 +66,13 @@ export class StoreTest extends React.PureComponent<
         paddingLeft: 15,
       }),
     };
+
+    // store.get('')
+    console.log('this.store', store);
+
     return (
       <div {...styles.base}>
-        <h2>Store (count: {this.state.count || 0})</h2>
+        <h2>Store </h2>
         <div {...styles.buttons}>
           <Button label={'read'} onClick={this.read} />
           <Button
@@ -91,57 +95,47 @@ export class StoreTest extends React.PureComponent<
   }
 
   private updateState() {
-    const store = this.store;
-    const count = store.get('count');
-    this.setState({ count });
+    // const count = store.get('count');
+    // this.setState({ count });
   }
 
   private read = () => {
-    const store = this.store;
-
     log.group('🌳 store');
-    console.log('this.store.changes$', this.store.changes$);
-    log.info('store', store);
-    log.info('store.path', store.path);
-    log.info('store.size', store.size);
-    log.info('store.store', JSON.stringify(store.store));
+    // console.log('this.store.changes$', this.store.changes$);
+    // log.info('store', store);
+    // log.info('store.path', store.path);
+    // log.info('store.size', store.size);
+    // log.info('store.store', JSON.stringify(store.store));
 
-    const count = store.get('count');
-    const bar = store.get('foo.bar');
-    log.info('- count', count);
-    log.info('- foo.bar', bar);
+    // const count = store.get('count');
+    // const bar = store.get('foo.bar');
+    // log.info('- count', count);
+    // log.info('- foo.bar', bar);
 
     log.groupEnd();
   };
 
   private changeAndSave = () => {
-    this.count++;
-    const store = this.store;
-    store.set('count', this.count);
-    store.set('foo.bar', !store.get('foo.bar', true));
-    this.read();
+    // this.count++;
+    // const store = this.store;
+    // store.set('count', this.count);
+    // store.set('foo.bar', !store.get('foo.bar', true));
+    // this.read();
   };
 
   private deleteHandler = (key: string) => {
     return () => {
-      this.store.delete(key);
-      this.read();
+      // this.store.delete(key);
+      // this.read();
     };
   };
 
   private open = () => {
-    this.store.openInEditor();
+    // this.store.openInEditor();
   };
 
   private clear = () => {
-    this.store.clear();
-    this.read();
+    // this.store.clear();
+    // this.read();
   };
 }
-
-export type IMyStore = {
-  count: number;
-  foo: {
-    bar: boolean;
-  };
-};

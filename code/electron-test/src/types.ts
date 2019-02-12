@@ -1,5 +1,18 @@
 import { SystemEvents } from '@platform/electron/lib/types';
 
+/**
+ * Store
+ */
+export type IMyStore = {
+  count: number;
+  foo: {
+    bar: boolean;
+  };
+};
+
+/**
+ * EVENTS
+ */
 export type MyEvents =
   | SystemEvents
   | INewWindowEvent
