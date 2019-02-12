@@ -7,7 +7,7 @@ import {
 import { init as initLog, log } from '../helpers/logger/renderer';
 import {
   init as initStore,
-  IStoreObject,
+  StoreJson,
   IStoreClient,
 } from '../helpers/store/renderer';
 
@@ -31,7 +31,7 @@ class Renderer {
   /**
    * Initializes [Renderer] systems (safely).
    */
-  public init<M extends IpcMessage = any, S extends IStoreObject = any>(
+  public init<M extends IpcMessage = any, S extends StoreJson = any>(
     args: {} = {},
   ) {
     if (!this.isInitialized) {
@@ -41,7 +41,7 @@ class Renderer {
       this._.ipc = ipc;
 
       // Store.
-      const store = initStore<S>();
+      const store = initStore<S>({ ipc });
       this._.store = store;
 
       // Dev tools.
@@ -78,14 +78,14 @@ class Renderer {
     return this._.ipc as IpcClient<M>;
   }
 
-  public store<S extends IStoreObject = any>() {
+  public store<S extends StoreJson = any>() {
     return this._.store as IStoreClient<S>;
   }
 
   /**
    * Converts the class to a simple object.
    */
-  public toObject<M extends IpcMessage, S extends IStoreObject = any>() {
+  public toObject<M extends IpcMessage, S extends StoreJson = any>() {
     const ipc = this.ipc<M>();
     const store = this.store<S>();
     const log = this.log();

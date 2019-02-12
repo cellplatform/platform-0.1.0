@@ -1,18 +1,18 @@
+import { fs } from '@platform/fs';
 import { create as createLog, format } from '@platform/log/lib/server';
 import { moment } from '@tdb/util';
 import * as is from 'electron-is';
 import * as elog from 'electron-log';
-import { fs } from '@platform/fs';
 import { filter, map } from 'rxjs/operators';
 
 import { IpcClient } from '../ipc/Client';
 import {
+  ILog,
   ILogEvent,
+  IMainLog,
   LoggerEvents,
   LogLevel,
   ProcessType,
-  IMainLog,
-  ILog,
 } from './types';
 
 export { moment, id } from '@tdb/util';

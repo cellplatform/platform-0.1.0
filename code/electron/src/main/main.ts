@@ -5,13 +5,13 @@ import * as devTools from '../helpers/devTools/main';
 import { init as initIpc, IpcClient, IpcMessage } from '../helpers/ipc/main';
 import * as logger from '../helpers/logger/main';
 import { init as initStore } from '../helpers/store/main';
-import { IMainLog, IStoreClient, IStoreObject } from '../types';
+import { IMainLog, IStoreClient, StoreJson } from '../types';
 
 export * from '../types';
 
 export { devTools, logger };
 
-export type IMainInitResponse<M extends IpcMessage, S extends IStoreObject> = {
+export type IMainInitResponse<M extends IpcMessage, S extends StoreJson> = {
   ipc: IpcClient<M>;
   log: IMainLog;
   store: IStoreClient<S>;
@@ -20,7 +20,7 @@ export type IMainInitResponse<M extends IpcMessage, S extends IStoreObject> = {
 /**
  * Initializes [Main] process systems (safely).
  */
-export function init<M extends IpcMessage = any, S extends IStoreObject = any>(
+export function init<M extends IpcMessage = any, S extends StoreJson = any>(
   args: {
     appName?: string;
     ipc?: IpcClient<M>;
@@ -32,7 +32,7 @@ export function init<M extends IpcMessage = any, S extends IStoreObject = any>(
 
   // Initiaize modules.
   const ipc = args.ipc || initIpc<M>();
-  const store = args.store || initStore<S>({});
+  const store = args.store || initStore<S>({ ipc });
   const log =
     typeof args.log === 'object'
       ? args.log // Logger already exists and was provided.

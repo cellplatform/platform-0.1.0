@@ -1,6 +1,6 @@
 import { IpcClient } from './helpers/types';
 import { ILog, IMainLog } from './helpers/logger/types';
-export { IStoreObject, IStoreClient } from './helpers/store/types';
+export { IStoreClient, StoreJson } from './helpers/store/types';
 
 export { ILog, IMainLog };
 export type ProcessType = 'MAIN' | 'RENDERER';

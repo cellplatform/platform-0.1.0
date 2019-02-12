@@ -67,9 +67,6 @@ export class StoreTest extends React.PureComponent<
       }),
     };
 
-    // store.get('')
-    console.log('this.store', store);
-
     return (
       <div {...styles.base}>
         <h2>Store </h2>
@@ -99,8 +96,11 @@ export class StoreTest extends React.PureComponent<
     // this.setState({ count });
   }
 
-  private read = () => {
+  private read = async () => {
     log.group('🌳 store');
+
+    const s = await store.values('count', 'foo');
+
     // console.log('this.store.changes$', this.store.changes$);
     // log.info('store', store);
     // log.info('store.path', store.path);
