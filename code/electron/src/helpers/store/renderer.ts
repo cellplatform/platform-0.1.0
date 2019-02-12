@@ -48,18 +48,24 @@ export function init<T extends t.StoreJson>(args: {
   };
 
   const setValues: t.SetStoreValues<T> = async (values: t.IStoreKeyValue[]) => {
-    console.log('setValues', values);
-
     // Fire the event requesting data.
     const payload = { values };
-    const res = ipc.send<t.IStoreSetValuesEvent, t.IStoreSetValuesResponse>(
+    const res = ipc.send<t.IStoreSetValuesEvent, t.IStoreSetValuesResponse<T>>(
       '@platform/STORE/set',
       payload,
     );
 
-    console.log('set', res);
+    // Wait for the response.
+    await res.results$.toPromise();
+    const result = res.results.find(m => m.sender.process === 'MAIN');
+    if (!result || !result.data) {
+      const keys = values.map(({ key }) => key);
+      const message = `Failed while setting values for [${keys}]. No response from [main].`;
+      throw new Error(message);
+    }
 
-    return {};
+    // Finish up.
+    return result.data;
   };
 
   /**
