@@ -12,25 +12,20 @@ import {
   IpcRegisterHandlerEvent,
   SendDelegate,
 } from './Client';
-import { IpcIdentifier, IpcGlobalMainRefs } from './types';
+import { Global } from './main.Global';
+import { IpcHandlerRef, IpcIdentifier } from './types';
 
-export { IpcClient };
 export * from './types';
-type HandlerRef = {
-  type: IpcMessage['type'];
-  clients: IpcIdentifier[];
-};
 
-type Refs = IpcGlobalMainRefs['_ipcRefs'];
-const refs: Refs = { handlers: {} };
-((global as unknown) as IpcGlobalMainRefs)._ipcRefs = refs;
+type Refs = { main?: IpcClient };
+const refs: Refs = {};
 
 /**
  * Observable wrapper for the electron IPC [main] process.
  */
 export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
-  if (refs.client) {
-    return refs.client; // Already initialized.
+  if (refs.main) {
+    return refs.main; // Already initialized.
   }
 
   const stop$ = new Subject();
@@ -46,30 +41,30 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   };
 
   // Construct the [Main] client.
-  const client = new Client({
+  const main = new Client({
     process: 'MAIN',
     onSend: sendHandler,
     events$: events$.pipe(takeUntil(stop$)),
     onHandlerRegistered,
-    getHandlerRefs: () => refs.handlers,
+    getHandlerRefs: () => Global.handlerRefs,
   });
-  refs.client = client;
+  refs.main = main;
 
   // Ferry IPC events into the client.
   const listener = (sys: Electron.Event, e: IpcEvent) => events$.next(e);
-  ipcMain.on(client.channel, listener);
+  ipcMain.on(main.channel, listener);
 
   // Unwire events when client is diposed.
-  client.disposed$.subscribe(() => stop());
+  main.disposed$.subscribe(() => stop());
   const stop = () => {
     stop$.next();
-    ipcMain.removeListener(client.channel, listener);
+    ipcMain.removeListener(main.channel, listener);
   };
 
   /**
    * Listen for messages coming in on the [main] IPC channel.
    */
-  ipcMain.on(client.channel, (sys: Electron.Event, e: IpcEvent) => {
+  ipcMain.on(main.channel, (sys: Electron.Event, e: IpcEvent) => {
     sendToWindows(sys.sender.id, e);
   });
 
@@ -87,7 +82,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
         target.length === 0 ? true : target.includes(window.id),
       )
       .forEach(window => {
-        window.webContents.send(client.channel, e);
+        window.webContents.send(main.channel, e);
       });
   };
 
@@ -95,7 +90,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
    * Listen for handler registrations on client-windows and ferry
    * then onto the global registration manager.
    */
-  client
+  main
     .on<IpcRegisterHandlerEvent>('@platform/IPC/register-handler')
     .subscribe(e => {
       const type = e.payload.type;
@@ -113,7 +108,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
     .subscribe(e => removeHandlerRef(e.window.id));
 
   // Finish up.
-  return client;
+  return main;
 };
 
 /**
@@ -125,17 +120,20 @@ function addHandlerRef(args: {
   client: IpcIdentifier;
 }) {
   const { type, client } = args;
-  const handlerRef: HandlerRef = refs.handlers[type] || { type, clients: [] };
+  const handlerRef: IpcHandlerRef = Global.handlerRefs[type] || {
+    type,
+    clients: [],
+  };
   const exists = handlerRef.clients.find(c => c.id === client.id);
   if (!exists) {
     handlerRef.clients = [...handlerRef.clients, client];
   }
-  refs.handlers = { ...refs.handlers, [type]: handlerRef };
+  Global.setHandlerRef(handlerRef);
 }
 
 function removeHandlerRef(id: number) {
   let changed = false;
-  let handlers = { ...refs.handlers };
+  let handlers = { ...Global.handlerRefs };
 
   Object.keys(handlers).forEach(type => {
     const ref = { ...handlers[type] };
@@ -147,6 +145,6 @@ function removeHandlerRef(id: number) {
     }
   });
 
-  refs.handlers = handlers;
+  Global.handlerRefs = handlers;
   return changed;
 }

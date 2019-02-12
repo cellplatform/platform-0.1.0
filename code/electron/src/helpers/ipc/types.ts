@@ -10,13 +10,6 @@ export type IpcHandlerRef = {
   clients: IpcIdentifier[];
 };
 export type IpcHandlerRefs = { [key: string]: IpcHandlerRef };
-export type IpcGlobalMainRefs = {
-  // NB: Internal use only. DO NOT TOUCH THESE.
-  _ipcRefs: {
-    client?: IpcClient;
-    handlers: IpcHandlerRefs;
-  };
-};
 
 /**
  * Message types/events.
@@ -93,10 +86,11 @@ export type IpcSending<M extends IpcMessage, D = any> = {
   eid: string; // The unique event-id.
   type: M['type'];
   elapsed: number;
-  results$: Observable<IpcSendResponse<M, D>>;
+  $: Observable<IpcSendResponse<M, D>>;
   timeout$: Observable<{}>;
   cancel$: Observable<{}>;
   results: Array<IpcHandlerResult<D>>;
+  resultFrom: (sender: number | ProcessType) => IpcHandlerResult<D> | undefined;
   cancel: () => IpcSending<M, D>;
   isCancelled: boolean;
   isComplete: boolean;

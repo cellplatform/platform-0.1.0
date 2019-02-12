@@ -100,6 +100,8 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
   };
 
   private sendFoo = () => {
+    console.group('🌳 Send Foo');
+
     const count = this.count++;
     const res = ipc.send<types.IFooEvent, string>(
       'FOO',
@@ -108,21 +110,26 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     );
     // res.cancel();
 
-    console.log('res', res);
-    console.log('res.elapsed', res.elapsed);
+    console.log(
+      `\nTODO 🐷   if res is sent through IPC log it hangs renderer process - convert to safe JSON?\n`,
+    );
 
-    res.results$.subscribe({
+    console.log('res', res);
+    log.info('isComplete', res.isComplete);
+
+    res.$.subscribe({
       next: e => log.info('🤘 res$.next:', e),
       complete: () => {
-        log.group('🌳 COMPLETE');
+        log.group('🚀 COMPLETE');
         res.results.forEach(result => log.info(result));
-        // log.info('results', res.results);
         log.info('elapsed', res.elapsed);
-
+        log.info('isComplete', res.isComplete);
         log.groupEnd();
       },
       error: err => log.error('😡  ERROR', err),
     });
+
+    console.groupEnd();
   };
   private count = 0;
 

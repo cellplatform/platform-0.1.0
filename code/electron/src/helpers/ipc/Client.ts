@@ -13,11 +13,11 @@ import {
   IpcEventHandlerArgs,
   IpcEventObservable,
   IpcFilter,
-  IpcHandlerRefs,
   IpcHandlerResponseEvent,
   IpcIdentifier,
   IpcMessage,
   ProcessType,
+  IpcHandlerRefs,
 } from './types';
 
 export * from './types';
@@ -166,11 +166,13 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
     const data: IpcEvent<T> = { eid, type, payload, sender, targets };
     const handlers = this._.handlers;
     const events$ = this.events$;
-    const registeredClients = this.registeredClients({
+    const registeredClients = this.registeredClientHandlers({
       type,
       exclude: [id],
     }).filter(c => c.id !== id);
     const timeout = valueUtil.defaultValue(options.timeout, this.timeout);
+
+    // Prepare the send response.
     const res = new SendResponse<T, D>({
       data,
       events$,
@@ -231,17 +233,6 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
         );
         return { args, data };
       });
-
-    /**
-     * TODO 🐷
-     *
-     * - wait for all handlers to respond
-     * - call 'complete' on observable
-     * - set reasonable (and configurable) timeout - and fail
-     * - `.complete` promise (error on timeout)
-     * - `.timeout$`
-     *
-     */
   }
 
   private get handlerRefs() {
@@ -254,7 +245,7 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
     return getHandlerRefs();
   }
 
-  private registeredClients(args: {
+  private registeredClientHandlers(args: {
     type: M['type'];
     exclude?: number[];
   }): IpcIdentifier[] {

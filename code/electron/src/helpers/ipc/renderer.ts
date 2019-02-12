@@ -1,18 +1,12 @@
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { GLOBAL } from '../constants';
 import { Client, GetHandlerRefs, HandlerRegistered, IpcClient } from './Client';
-import {
-  IpcEvent,
-  IpcGlobalMainRefs,
-  IpcMessage,
-  IpcRegisterHandlerEvent,
-} from './types';
+import { IpcEvent, IpcMessage, IpcRegisterHandlerEvent } from './types';
 
 export * from './types';
 export { IpcClient };
-import { GLOBAL } from '../constants';
-
 const electron = (window as any).require('electron');
 const ipcRenderer = electron.ipcRenderer as Electron.IpcRenderer;
 const remote = electron.remote as Electron.Remote;
@@ -26,8 +20,8 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
    *        This will only happen during development.
    */
   const global: any = window;
-  if (global[GLOBAL.IPC_REF]) {
-    return global[GLOBAL.IPC_REF];
+  if (global[GLOBAL.IPC_CLIENT]) {
+    return global[GLOBAL.IPC_CLIENT];
   }
 
   const stop$ = new Subject();
@@ -44,10 +38,7 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
   };
 
   const getHandlerRefs: GetHandlerRefs = () => {
-    type Refs = IpcGlobalMainRefs['_ipcRefs'];
-    const DEFAULT: Refs = { handlers: {} };
-    const refs: Refs = remote.getGlobal('_ipcRefs') || DEFAULT;
-    return refs.handlers;
+    return remote.getGlobal(GLOBAL.IPC_HANDLERS) || {};
   };
 
   /**
@@ -77,6 +68,6 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
   };
 
   // Finish up.
-  global[GLOBAL.IPC_REF] = client;
+  global[GLOBAL.IPC_CLIENT] = client;
   return client;
 }

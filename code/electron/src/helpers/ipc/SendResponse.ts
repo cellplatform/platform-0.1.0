@@ -14,6 +14,7 @@ import {
   IpcSending,
   IpcSendResponse,
   IpcHandlerResult,
+  ProcessType,
 } from './types';
 
 export type SendHandler = { type: IpcEvent['type']; handler: IpcEventHandler };
@@ -27,7 +28,7 @@ type SendResponseInit<M extends IpcMessage> = {
 };
 
 type Ref<D> = SendResponseInit<any> & {
-  results$: Observable<IpcSendResponse<any, D>>;
+  $: Observable<IpcSendResponse<any, D>>;
   cancel$: Subject<any>;
   complete$: Subject<any>;
   timeout$: Subject<any>;
@@ -85,7 +86,7 @@ export class SendResponse<M extends IpcMessage = any, D = any>
       complete$,
       cancel$,
       timeout$,
-      results$: response$.pipe(
+      $: response$.pipe(
         takeUntil(timeout$),
         takeUntil(cancel$),
         share(),
@@ -122,7 +123,7 @@ export class SendResponse<M extends IpcMessage = any, D = any>
       this._.elapsed = timer.elapsed();
       response$.complete();
     });
-    this.results$.subscribe(e => {
+    this.$.subscribe(e => {
       // Store result.
       const { sender, data, elapsed, eid } = e;
       const result: IpcHandlerResult<D> = { data, sender, elapsed, eid };
@@ -159,12 +160,20 @@ export class SendResponse<M extends IpcMessage = any, D = any>
     return this._.data.type;
   }
 
-  public get results$() {
-    return this._.results$;
+  public get $() {
+    return this._.$;
   }
 
   public get results() {
     return this._.results;
+  }
+
+  public resultFrom(sender: number | ProcessType) {
+    return this.results.find(item =>
+      typeof sender === 'number'
+        ? item.sender.id === sender
+        : item.sender.process === sender,
+    );
   }
 
   public get cancel$() {

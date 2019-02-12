@@ -18,8 +18,8 @@ export function init<T extends t.StoreJson>(args: {
    *        This will only happen during development.
    */
   const global: any = window;
-  if (global[GLOBAL.STORE_REF]) {
-    return global[GLOBAL.STORE_REF] as t.IStoreClient<T>;
+  if (global[GLOBAL.STORE_CLIENT]) {
+    return global[GLOBAL.STORE_CLIENT] as t.IStoreClient<T>;
   }
   const ipc = args.ipc as IpcClient<t.StoreEvents>;
   const change$ = new Subject<t.IStoreChange>();
@@ -34,7 +34,7 @@ export function init<T extends t.StoreJson>(args: {
     );
 
     try {
-      await res.results$.toPromise();
+      await res.$.toPromise();
       const result = res.results.find(m => m.sender.process === 'MAIN');
       const data = result ? result.data : undefined;
       if (data && (!data.ok || data.error)) {
@@ -67,7 +67,7 @@ export function init<T extends t.StoreJson>(args: {
     );
 
     // Wait for the response.
-    await res.results$.toPromise();
+    await res.$.toPromise();
     const result = res.results.find(m => m.sender.process === 'MAIN');
     if (!result || !result.data) {
       const keys = values.map(({ key }) => key);
@@ -85,8 +85,26 @@ export function init<T extends t.StoreJson>(args: {
       {},
       { target: 0 },
     );
-    await res.results$.toPromise();
-    const result = res.results.find(m => m.sender.process === 'MAIN');
+
+    res.$.subscribe({
+      complete: () => {
+        console.log('COMPLETE', res);
+      },
+    });
+
+    await res.$.toPromise();
+
+    /**
+     * [TODO]
+     * - open in editor
+     * - promise
+     * -
+     */
+
+    console.log('res.results', res.results);
+    const result = res.resultFrom('MAIN');
+    console.log('result', result);
+
     return result && result.data ? result.data : [];
   };
 
@@ -100,6 +118,6 @@ export function init<T extends t.StoreJson>(args: {
   const client = new Client<T>({ getKeys, getValues, setValues, change$ });
 
   // Finish up.
-  global[GLOBAL.STORE_REF] = client;
+  global[GLOBAL.STORE_CLIENT] = client;
   return client;
 }
