@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 
 import { css, GlamorValue, log, store } from '../common';
 import { Button } from './primitives';
+import * as t from '../types';
 
 /**
  * Test component.
@@ -53,18 +54,14 @@ export class StoreTest extends React.PureComponent<
         <h2>Store {this.state.count}</h2>
         <div {...styles.buttons}>
           <Button label={'read'} onClick={this.read} />
-          <Button
-            label={'change and save (increment)'}
-            onClick={this.changeAndSave}
-          />
+          <Button label={'read (all)'} onClick={this.readAll} />
+          <Button label={'change (count)'} onClick={this.changeCount} />
+          <Button label={'change (foo)'} onClick={this.changeFoo} />
           <Button
             label={'delete: count'}
             onClick={this.deleteHandler('count')}
           />
-          <Button
-            label={'delete: foo.bar'}
-            onClick={this.deleteHandler('foo.bar')}
-          />
+          <Button label={'delete: foo'} onClick={this.deleteHandler('foo')} />
           <Button label={'clear'} onClick={this.clear} />
         </div>
       </div>
@@ -72,51 +69,40 @@ export class StoreTest extends React.PureComponent<
   }
 
   private async updateState() {
-    const { count, foo } = await store.read('count', 'foo');
-
+    const { count } = await store.read('count', 'foo');
     this.setState({ count });
   }
 
   private read = async () => {
-    log.group('🌳 store');
-
     const res = await store.read('count', 'foo');
-    console.log('-------------------------------------------');
-    console.log('read res:', res);
-
-    this.setState({ count: res.count || this.state.count });
-    // console.log('this.store.changes$', this.store.changes$);
-    // log.info('store', store);
-    // log.info('store.path', store.path);
-    // log.info('store.size', store.size);
-    // log.info('store.store', JSON.stringify(store.store));
-
-    // const count = store.get('count');
-    // const bar = store.get('foo.bar');
-    // log.info('- count', count);
-    // log.info('- foo.bar', bar);
-
-    log.groupEnd();
+    log.info('🌳 read:', res);
+    this.setState({ count: res.count || 0 });
   };
 
-  private changeAndSave = async () => {
+  private readAll = async () => {
+    const res = await store.read();
+    log.info('🌳 read (all):', res);
+  };
+
+  private changeCount = async () => {
     const value = (this.state.count || 0) + 1;
-
     const res = await store.write({ key: 'count', value });
-    // const result = await
-    console.log('write res:', res);
-    this.setState({ count: value || this.state.count });
+    log.info('🌼  change count:', res);
+    this.read();
+  };
 
-    // const store = this.store;
-    // store.set('count', this.count);
-    // store.set('foo.bar', !store.get('foo.bar', true));
-    // this.read();
+  private changeFoo = async () => {
+    type F = t.IMyStore['foo'];
+    const foo = await store.get<F>('foo', { bar: false });
+    foo.bar = !foo.bar;
+    await store.set('foo', foo);
+    this.read();
   };
 
   private deleteHandler = (key: string) => {
-    return () => {
-      // this.store.delete(key);
-      // this.read();
+    return async () => {
+      await store.delete(key as any);
+      this.read();
     };
   };
 

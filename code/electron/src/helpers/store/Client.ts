@@ -65,27 +65,33 @@ export class Client<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
    * Writes values to disk.
    */
   public async write(...values: Array<t.IStoreKeyValue<T>>) {
-    return (await this._setValues(values)) as t.IStoreSetValuesResponse<T>;
+    const res = await this._setValues(values, 'UPDATE');
+    return res as t.IStoreSetValuesResponse<T>;
   }
 
   /**
    * Retrieves the value at the given key from storage.
    */
-  public async get<K extends keyof T>(key: K, defaultValue?: T[K]) {
-    return undefined;
+  public async get<V extends t.StoreValue>(key: keyof T, defaultValue?: V) {
+    const res = await this.read(key);
+    const value = res[key] === undefined ? defaultValue : res[key];
+    return value as V;
   }
 
   /**
    * Saves the given value.
    */
-  public set<K extends keyof T>(key: K, value: T[K]) {
-    return this;
+  public async set<K extends keyof T>(key: K, value: T[K]) {
+    await this.write({ key, value });
+    return value;
   }
 
   /**
-   * Deletes the given key.
+   * Deletes the given key(s).
    */
-  public delete<K extends keyof T>(key: K) {
-    return this;
+  public async delete<K extends keyof T>(...keys: K[]) {
+    const values = keys.map(key => ({ key, value: undefined }));
+    await this._setValues(values, 'DELETE');
+    return {};
   }
 }

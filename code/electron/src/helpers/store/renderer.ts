@@ -47,9 +47,15 @@ export function init<T extends t.StoreJson>(args: {
     }
   };
 
-  const setValues: t.SetStoreValues<T> = async (values: t.IStoreKeyValue[]) => {
+  const setValues: t.SetStoreValues<T> = async (
+    values: t.IStoreKeyValue[],
+    action: t.StoreSetAction,
+  ) => {
     // Fire the event requesting data.
-    const payload = { values };
+    const payload: t.IStoreSetValuesEvent['payload'] = {
+      values,
+      action,
+    };
     const res = ipc.send<t.IStoreSetValuesEvent, t.IStoreSetValuesResponse<T>>(
       '@platform/STORE/set',
       payload,

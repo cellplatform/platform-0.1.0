@@ -46,9 +46,14 @@ export function init<T extends t.StoreJson>(args: {
 
       // Read data into response.
       res.version = typeof data.version === 'number' ? data.version : -1;
-      keys
-        .map(key => key.toString())
-        .forEach(key => (res.body[key] = data.body[key]));
+      if (keys.length > 0) {
+        keys
+          .map(key => key.toString())
+          .forEach(key => (res.body[key] = data.body[key]));
+      } else {
+        // NB: When no keys specified the entire data-set is being requested.
+        res.body = data.body;
+      }
 
       // Finish up.
       res.ok = true;
@@ -64,7 +69,10 @@ export function init<T extends t.StoreJson>(args: {
   /**
    * Save values to storage.
    */
-  const setValues: t.SetStoreValues<T> = async (values: t.IStoreKeyValue[]) => {
+  const setValues: t.SetStoreValues<T> = async (
+    values: t.IStoreKeyValue[],
+    action: t.StoreSetAction,
+  ) => {
     const res: t.IStoreSetValuesResponse = { ok: true };
 
     try {
@@ -75,10 +83,24 @@ export function init<T extends t.StoreJson>(args: {
       }
 
       // Update values.
-      // const { values = [] } = e.payload;
-      values.forEach(({ key, value }) => (data.body[key.toString()] = value));
+      const body = data.body;
+      switch (action) {
+        case 'UPDATE':
+          values.forEach(({ key, value }) => (body[key.toString()] = value));
+          break;
 
-      // Increment write versino.
+        case 'DELETE':
+          values.forEach(({ key }) => {
+            delete body[key.toString()];
+          });
+
+          break;
+
+        default:
+          throw new Error(`Action '${action}' not supported.`);
+      }
+
+      // Increment the file's version number.
       // NOTE:
       //    In the future we may want to check an incoming version prior to write
       //    and fail if the version has changed since the request was issued.
@@ -128,7 +150,7 @@ export function init<T extends t.StoreJson>(args: {
    * Handle SET value requests.
    */
   ipc.handle<t.IStoreSetValuesEvent>('@platform/STORE/set', e =>
-    setValues(e.payload.values),
+    setValues(e.payload.values, e.payload.action),
   );
 
   // Finish up.

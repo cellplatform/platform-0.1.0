@@ -11,18 +11,14 @@ export type IStoreClient<T extends StoreJson = {}> = {
     ...values: Array<IStoreKeyValue<T>>
   ) => Promise<IStoreSetValuesResponse>;
 
-  get: <K extends keyof T>(
-    key: K,
-    defaultValue?: T[K],
-  ) => Promise<T[K] | undefined>;
-
-  set: <K extends keyof T>(key: K, value: T[K]) => IStoreClient<T>;
-  delete: <K extends keyof T>(key: K) => IStoreClient<T>;
+  get: <V extends StoreValue>(key: keyof T, defaultValue?: V) => Promise<V>;
+  set: <K extends keyof T>(key: K, value: T[K]) => Promise<T[K]>;
+  delete: <K extends keyof T>(...keys: K[]) => Promise<{}>;
 };
 
 export type IStoreKeyValue<T extends StoreJson = any> = {
   key: keyof T;
-  value: T[keyof T];
+  value: T[keyof T] | undefined;
 };
 
 export type StoreValue = boolean | number | string | object | StoreJson;
@@ -49,8 +45,10 @@ export type GetStoreValues<T extends StoreJson> = (
   keys: Array<keyof T>,
 ) => Promise<StoreJson>;
 
+export type StoreSetAction = 'UPDATE' | 'DELETE';
 export type SetStoreValues<T extends StoreJson> = (
   keys: Array<IStoreKeyValue<T>>,
+  action: StoreSetAction,
 ) => Promise<IStoreSetValuesResponse>;
 
 /**
@@ -80,7 +78,10 @@ export type IStoreGetValuesResponse = {
 
 export type IStoreSetValuesEvent = {
   type: '@platform/STORE/set';
-  payload: { values: IStoreKeyValue[] };
+  payload: {
+    values: IStoreKeyValue[];
+    action: StoreSetAction;
+  };
 };
 export type IStoreSetValuesResponse<T extends StoreJson = {}> = {
   ok: boolean;
