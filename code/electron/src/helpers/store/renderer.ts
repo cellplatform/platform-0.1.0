@@ -22,39 +22,50 @@ export function init<T extends t.StoreJson>(args: {
   const ipc = args.ipc as IpcClient<t.StoreEvents>;
 
   const getValues: t.GetStoreValues<T> = async keys => {
-    console.log('GET', keys);
-    const res = ipc.send<t.IStoreGetValuesEvent, t.IStoreGetResponse>(
+    // Fire the event requesting data.
+    const payload = { keys: keys as string[] };
+    const res = ipc.send<t.IStoreGetValuesEvent, t.IStoreGetValuesResponse>(
       '@platform/STORE/get',
-      {
-        keys: keys as string[],
-      },
+      payload,
     );
 
-    // const results = await res.results
+    try {
+      await res.results$.toPromise();
+      const result = res.results.find(m => m.sender.process === 'MAIN');
+      const data = result ? result.data : undefined;
+      if (data && (!data.ok || data.error)) {
+        const message =
+          data.error || `Failed while getting store values for keys [${keys}].`;
+        throw new Error(message);
+      }
+      if (!data || !data.exists) {
+        return {};
+      }
+      return data.body;
+    } catch (error) {
+      throw error;
+    }
+  };
 
-    res.results$.subscribe({
-      complete: () => {
-        const result = res.results.find(m => m.sender.process === 'MAIN');
-        const data = result ? result.data : undefined;
-        if (data) {
-          console.log('data.exists', data.exists);
-        }
-        console.log('result', result);
-        console.log('data', data);
-      },
-      error: err => {
-        throw err;
-      },
+  const setValues: t.SetStoreValues<T> = async (values: t.IStoreKeyValue[]) => {
+    console.log('setValues', values);
+
+    // Fire the event requesting data.
+    type E = t.IStoreSetValuesEvent;
+    type R = t.IStoreSetValuesResponse;
+    const res = ipc.send<E, R>('@platform/STORE/set', {
+      values,
     });
 
-    console.log('res', res);
-    return { foo: 123 };
+    console.log('set', res);
+
+    return {};
   };
 
   /**
    * Create the client.
    */
-  const client = new Client<T>({ getValues });
+  const client = new Client<T>({ getValues, setValues });
 
   // Finish up.
   global[GLOBAL.STORE_REF] = client;

@@ -1,5 +1,3 @@
-import { Observable } from 'rxjs';
-
 /**
  * [Client]
  * An abstract representation of the configuration store
@@ -8,7 +6,10 @@ import { Observable } from 'rxjs';
 export type IStoreClient<T extends StoreJson = {}> = {
   // events$: Observable<StoreEvents>;
 
-  values: <K extends keyof T>(...keys: K[]) => Promise<Partial<T>>;
+  read: (...keys: Array<keyof T>) => Promise<Partial<T>>;
+  write: (
+    ...values: Array<IStoreKeyValue<T>>
+  ) => Promise<IStoreSetValuesResponse>;
 
   get: <K extends keyof T>(
     key: K,
@@ -19,9 +20,19 @@ export type IStoreClient<T extends StoreJson = {}> = {
   delete: <K extends keyof T>(key: K) => IStoreClient<T>;
 };
 
+export type IStoreKeyValue<T extends StoreJson = any> = {
+  key: keyof T;
+  value: T[keyof T];
+};
+
 export type StoreValue = boolean | number | string | object | StoreJson;
 export type StoreJson = {
   [key: string]: StoreValue | StoreValue[] | undefined;
+};
+
+export type IStoreFile = {
+  version: number;
+  body: StoreJson;
 };
 
 /**
@@ -38,10 +49,18 @@ export type GetStoreValues<T extends StoreJson> = (
   keys: Array<keyof T>,
 ) => Promise<StoreJson>;
 
+export type SetStoreValues<T extends StoreJson> = (
+  keys: Array<IStoreKeyValue<T>>,
+) => Promise<IStoreSetValuesResponse>;
+
 /**
  * [Events].
  */
-export type StoreEvents = IStoreChangeEvent | IStoreGetValuesEvent;
+export type StoreEvents =
+  | IStoreChangeEvent
+  | IStoreGetValuesEvent
+  | IStoreSetValuesEvent;
+
 export type IStoreChangeEvent = {
   type: '@platform/STORE/change';
   payload: {};
@@ -49,11 +68,21 @@ export type IStoreChangeEvent = {
 
 export type IStoreGetValuesEvent = {
   type: '@platform/STORE/get';
-  payload: {
-    keys: string[];
-  };
+  payload: { keys: string[] };
 };
-export type IStoreGetResponse = {
+export type IStoreGetValuesResponse = {
+  ok: boolean;
   exists: boolean;
-  json: StoreJson;
+  version: number;
+  body: StoreJson;
+  error?: string;
+};
+
+export type IStoreSetValuesEvent = {
+  type: '@platform/STORE/set';
+  payload: { values: IStoreKeyValue[] };
+};
+export type IStoreSetValuesResponse<T extends StoreJson = {}> = {
+  ok: boolean;
+  error?: string;
 };

@@ -21,7 +21,9 @@ export class Client<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
   /**
    * [Fields]
    */
-  private _getValues: t.GetStoreValues<T>;
+  private readonly _getValues: t.GetStoreValues<T>;
+  private readonly _setValues: t.SetStoreValues<T>;
+
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
   public isDisposed = false;
@@ -35,8 +37,12 @@ export class Client<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
   /**
    * [Constructor]
    */
-  constructor(args: { getValues: t.GetStoreValues<T> }) {
+  constructor(args: {
+    getValues: t.GetStoreValues<T>;
+    setValues: t.SetStoreValues<T>;
+  }) {
     this._getValues = args.getValues;
+    this._setValues = args.setValues;
     this.dispose$.subscribe(() => (this.isDisposed = true));
   }
 
@@ -51,8 +57,15 @@ export class Client<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
    * Retrieves an object with values for the given keys.
    * Pass no keys to retrieve all values.
    */
-  public async values<K extends keyof T>(...keys: K[]) {
+  public async read(...keys: Array<keyof T>) {
     return (await this._getValues(keys)) as Partial<T>;
+  }
+
+  /**
+   * Writes values to disk.
+   */
+  public async write(...values: Array<t.IStoreKeyValue<T>>) {
+    return (await this._setValues(values)) as t.IStoreSetValuesResponse<T>;
   }
 
   /**

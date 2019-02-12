@@ -69,7 +69,7 @@ export class StoreTest extends React.PureComponent<
 
     return (
       <div {...styles.base}>
-        <h2>Store </h2>
+        <h2>Store {this.state.count}</h2>
         <div {...styles.buttons}>
           <Button label={'read'} onClick={this.read} />
           <Button
@@ -85,22 +85,25 @@ export class StoreTest extends React.PureComponent<
             onClick={this.deleteHandler('foo.bar')}
           />
           <Button label={'clear'} onClick={this.clear} />
-          <Button label={'open in editor'} onClick={this.open} />
         </div>
       </div>
     );
   }
 
-  private updateState() {
-    // const count = store.get('count');
-    // this.setState({ count });
+  private async updateState() {
+    const { count, foo } = await store.read('count', 'foo');
+
+    this.setState({ count });
   }
 
   private read = async () => {
     log.group('🌳 store');
 
-    const s = await store.values('count', 'foo');
+    const res = await store.read('count', 'foo');
+    console.log('-------------------------------------------');
+    console.log('read res:', res);
 
+    this.setState({ count: res.count || this.state.count });
     // console.log('this.store.changes$', this.store.changes$);
     // log.info('store', store);
     // log.info('store.path', store.path);
@@ -115,8 +118,14 @@ export class StoreTest extends React.PureComponent<
     log.groupEnd();
   };
 
-  private changeAndSave = () => {
-    // this.count++;
+  private changeAndSave = async () => {
+    const value = (this.state.count || 0) + 1;
+
+    const res = await store.write({ key: 'count', value });
+    // const result = await
+    console.log('write res:', res);
+    this.setState({ count: value || this.state.count });
+
     // const store = this.store;
     // store.set('count', this.count);
     // store.set('foo.bar', !store.get('foo.bar', true));
@@ -128,10 +137,6 @@ export class StoreTest extends React.PureComponent<
       // this.store.delete(key);
       // this.read();
     };
-  };
-
-  private open = () => {
-    // this.store.openInEditor();
   };
 
   private clear = () => {

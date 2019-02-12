@@ -28,12 +28,81 @@ export function init<T extends t.StoreJson>(args: {
   }
   const ipc = args.ipc as IpcClient<t.StoreEvents>;
 
+  /**
+   * Read values from storage.
+   */
   const getValues: t.GetStoreValues<T> = async keys => {
-    return { foo: 'MAIN' };
+    const res: t.IStoreGetValuesResponse = {
+      ok: true,
+      exists: true,
+      version: -1,
+      body: {},
+    };
+    try {
+      const { exists, data } = await getFile();
+      if (!exists) {
+        return { ...res, exists };
+      }
+
+      // Read data into response.
+      res.version = typeof data.version === 'number' ? data.version : -1;
+      keys
+        .map(key => key.toString())
+        .forEach(key => (res.body[key] = data.body[key]));
+
+      // Finish up.
+      res.ok = true;
+      return res;
+    } catch (error) {
+      // Failed
+      res.ok = false;
+      res.error = error.message;
+      return res;
+    }
+  };
+
+  /**
+   * Save values to storage.
+   */
+  const setValues: t.SetStoreValues<T> = async (values: t.IStoreKeyValue[]) => {
+    const res: t.IStoreSetValuesResponse = { ok: true };
+
+    try {
+      // Ensure the file exists.
+      const { exists, data } = await getFile();
+      if (!exists) {
+        await fs.ensureDir(dir);
+      }
+
+      // Update values.
+      // const { values = [] } = e.payload;
+      values.forEach(({ key, value }) => (data.body[key.toString()] = value));
+
+      // Increment write versino.
+      // NOTE:
+      //    In the future we may want to check an incoming version prior to write
+      //    and fail if the version has changed since the request was issued.
+      data.version = typeof data.version === 'number' ? data.version + 1 : 0;
+
+      // Perform the save operation.
+      await fs.file.stringifyAndSave(path, data);
+
+      // Finish up.
+      res.ok = true;
+      return res;
+    } catch (error) {
+      // Failed
+      res.ok = false;
+      res.error = error.message;
+      return res;
+    }
   };
 
   // Create the client.
-  const client = (new Client<T>({ getValues }) as unknown) as IClientMain;
+  const client = (new Client<T>({
+    getValues,
+    setValues,
+  }) as unknown) as IClientMain;
 
   // Store the path to the settings file.
   const name = (args.name || 'settings').replace(/\.json$/, '') + '.json';
@@ -41,19 +110,26 @@ export function init<T extends t.StoreJson>(args: {
   const path = fs.join(dir, name);
   client.path = path;
 
+  const getFile = async () => {
+    const file = await fs.file.loadAndParse<t.IStoreFile>(path);
+    const exists = Boolean(file);
+    const data: t.IStoreFile = exists ? file : { version: -1, body: {} };
+    return { exists, data };
+  };
+
   /**
    * Handle GET value requests.
    */
-  ipc.handle<t.IStoreGetValuesEvent>('@platform/STORE/get', async e => {
-    const res: t.IStoreGetResponse = { exists: true, json: {} };
-    const file = await fs.file.loadAndParse(path);
-    if (!file) {
-      return { ...res, exists: false };
-    }
+  ipc.handle<t.IStoreGetValuesEvent>('@platform/STORE/get', e =>
+    getValues(e.payload.keys),
+  );
 
-    console.log('TODO - read value', e);
-    return res;
-  });
+  /**
+   * Handle SET value requests.
+   */
+  ipc.handle<t.IStoreSetValuesEvent>('@platform/STORE/set', e =>
+    setValues(e.payload.values),
+  );
 
   // Finish up.
   refs.client = client;
