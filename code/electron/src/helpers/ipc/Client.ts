@@ -19,7 +19,7 @@ import {
   IpcClientSendOptions,
 } from './types';
 import { SendResponse, SendHandler } from './SendResponse';
-import { EVENT, CHANNEL } from './constants';
+import { EVENT, GLOBAL } from './constants';
 
 export * from './types';
 
@@ -82,7 +82,7 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
    * Fields.
    */
   public readonly process: ProcessType;
-  public readonly channel = CHANNEL.EVENTS;
+  public readonly channel = GLOBAL.IPC_CHANNEL;
   public disposed$ = this._.disposed$.pipe(share());
   public isDisposed = false;
   public timeout = 5000;

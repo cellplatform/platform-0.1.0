@@ -11,7 +11,7 @@ import {
 
 export * from './types';
 export { IpcClient };
-import { GLOBAL } from '../common/constants';
+import { GLOBAL } from '../constants';
 
 const electron = (window as any).require('electron');
 const ipcRenderer = electron.ipcRenderer as Electron.IpcRenderer;
@@ -26,8 +26,8 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
    * HACK:  Ensure multiple clients are not initialized on HMR (hot-module-reloads).
    *        This will only happen during development.
    */
-  if (global[GLOBAL.IPC]) {
-    return global[GLOBAL.IPC];
+  if (global[GLOBAL.IPC_REF]) {
+    return global[GLOBAL.IPC_REF];
   }
 
   const stop$ = new Subject();
@@ -77,6 +77,6 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
   };
 
   // Finish up.
-  global[GLOBAL.IPC] = client;
+  global[GLOBAL.IPC_REF] = client;
   return client;
 }

@@ -17,6 +17,6 @@ export type IMainLog = IServerLog & {
 export type LoggerEvents = LogWriteEvent;
 
 export type LogWriteEvent = {
-  type: '.SYS/LOG/write';
+  type: '@platform/LOG/write';
   payload: ILogEvent;
 };

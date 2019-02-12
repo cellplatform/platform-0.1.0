@@ -24,7 +24,7 @@ export function init(args: { ipc: IpcClient }) {
       filter(e => e.type === 'LOG'),
       map(e => e.payload as ILogEvent),
     )
-    .subscribe(e => ipc.send('.SYS/LOG/write', e, { target: ipc.MAIN }));
+    .subscribe(e => ipc.send('@platform/LOG/write', e, { target: ipc.MAIN }));
 
   return log;
 }

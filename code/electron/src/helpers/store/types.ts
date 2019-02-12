@@ -36,12 +36,12 @@ export type GetStoreValues<T extends StoreJson> = (
  */
 export type StoreEvents = StoreChangeEvent | StoreGetEvent;
 export type StoreChangeEvent = {
-  type: '.SYS/STORE/change';
+  type: '@platform/STORE/change';
   payload: {};
 };
 
 export type StoreGetEvent = {
-  type: '.SYS/STORE/get';
+  type: '@platform/STORE/get';
   payload: {
     key: string;
   };

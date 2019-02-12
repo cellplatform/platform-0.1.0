@@ -1,7 +1,7 @@
 import { IpcClient } from '../ipc/Client';
 import { Client } from './Client';
 import * as t from './types';
-import { GLOBAL } from '../common/constants';
+import { GLOBAL } from '../constants';
 
 const global: any = window;
 
@@ -17,8 +17,8 @@ export function init<T extends t.StoreJson>(args: {
    * HACK:  Ensure multiple clients are not initialized on HMR (hot-module-reloads).
    *        This will only happen during development.
    */
-  if (global[GLOBAL.STORE]) {
-    return global[GLOBAL.STORE] as t.IStoreClient<T>;
+  if (global[GLOBAL.STORE_REF]) {
+    return global[GLOBAL.STORE_REF] as t.IStoreClient<T>;
   }
   const ipc = args.ipc as IpcClient<t.StoreEvents>;
 
@@ -33,6 +33,6 @@ export function init<T extends t.StoreJson>(args: {
   const client = new Client<T>({ getValues });
 
   // Finish up.
-  global[GLOBAL.STORE] = client;
+  global[GLOBAL.STORE_REF] = client;
   return client;
 }

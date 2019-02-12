@@ -1,11 +1,11 @@
 import { IpcHandlerResponseEvent } from './types';
 
-export const CHANNEL = {
-  EVENTS: '.SYS/IPC/events',
+export * from '../constants';
+
+type EventTypes = {
+  HANDLER: IpcHandlerResponseEvent['type'];
 };
 
-export const EVENT: {
-  HANDLER: IpcHandlerResponseEvent['type'];
-} = {
+export const EVENT: EventTypes = {
   HANDLER: './SYS/IPC/handler/response',
 };

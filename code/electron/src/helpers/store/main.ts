@@ -36,7 +36,7 @@ export function init<T extends t.StoreJson>(args: {
   /**
    * Handle GET value requests.
    */
-  ipc.handle<t.StoreGetEvent>('.SYS/STORE/get', async e => {
+  ipc.handle<t.StoreGetEvent>('@platform/STORE/get', async e => {
     console.log('handle', e);
   });
 
