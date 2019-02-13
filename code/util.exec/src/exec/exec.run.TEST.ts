@@ -1,16 +1,6 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-} from 'rxjs/operators';
 import { fs } from '@platform/fs';
 import { expect } from 'chai';
+import { Subject } from 'rxjs';
 
 import { exec } from '.';
 

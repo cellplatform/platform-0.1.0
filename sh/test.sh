@@ -18,6 +18,7 @@ test electron
 
 test util
 test util.css
+test util.exec
 test util.is
 test util.react
 test util.string
