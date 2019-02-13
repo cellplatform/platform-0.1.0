@@ -24,7 +24,7 @@ export class Test extends React.PureComponent<ITestProps> {
     return (
       <div {...css(styles.base, this.props.style)}>
         <DevToolsTest />
-        {/* <IpcTest /> */}
+        <IpcTest />
         {/* <StoreTest /> */}
       </div>
     );

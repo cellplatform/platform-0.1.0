@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, log, store } from '../common';
+import { css, GlamorValue, renderer } from '../common';
 import * as t from '../types';
 import { Button } from './primitives';
 
@@ -21,6 +21,9 @@ export class StoreTest extends React.PureComponent<
   IStoreTestProps,
   IStoreTestState
 > {
+  public static contextType = renderer.Context;
+  public context!: renderer.ReactContext;
+
   public state: IStoreTestState = {};
   private readonly unmounted$ = new Subject();
 
