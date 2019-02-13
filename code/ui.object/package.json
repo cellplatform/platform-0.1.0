@@ -12,10 +12,12 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@platform/util.react": "^0.0.12",
-    "@uiharness/electron": "0.3.106"
+    "@platform/util.react": "0.0.12",
+    "@uiharness/electron": "0.3.106",
+    "react-inspector": "2.3.1"
   },
   "devDependencies": {
+    "@platform/electron": "0.0.59",
     "@platform/ts.cli": "3.3.32",
     "@uiharness/dev": "0.1.3"
   },

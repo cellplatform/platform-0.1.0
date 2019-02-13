@@ -121,18 +121,20 @@ export function hasWhitespace(text: string) {
  * Determines whether the given value is a Promise.
  */
 export function isPromise(value?: any) {
-  return R.is(Object, value) && R.is(Function, value.then);
+  return value
+    ? typeof value === 'object' && typeof value.then === 'function'
+    : false;
 }
 
 /**
  * Determines whether the given value is a JSON string.
  */
 export function isJson(value?: any) {
-  if (!R.is(String, value)) {
+  if (typeof value !== 'string') {
     return false;
   }
   const text = (value as string).trim();
-  return R.startsWith('{', text) || R.startsWith('[', text);
+  return text.startsWith('{') || text.startsWith('[');
 }
 
 /**

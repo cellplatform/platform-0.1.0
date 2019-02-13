@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@platform/electron": "0.0.59",
+    "@platform/util.react": "^0.0.12",
+    "@platform/util.value": "^0.0.10",
     "@uiharness/electron": "0.3.105"
   },
   "browserslist": [

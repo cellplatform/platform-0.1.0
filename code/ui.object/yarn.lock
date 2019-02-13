@@ -777,7 +777,7 @@
     "@types/yargs" "12.0.8"
     yargs "13.1.0"
 
-"@platform/electron@0.0.59":
+"@platform/electron@0.0.59", "@platform/electron@^0.0.59":
   version "0.0.59"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.59.tgz#1dddc13c175055eb87c5025c9192d534be505da0"
   integrity sha512-vDbfMWsUNlfZ4x4ewDZI7VDHvHuCrbbbRfmv/24jD/YQrXs7sBXPNXYuw46tK40Ur0oYeXwg4X9n7z/jVHwrDw==
@@ -874,7 +874,7 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.9.tgz#d205b7682e0ac87530f9bb116462b0cb1c0db86d"
   integrity sha512-3tzAAEYszqp56rAdLATQAOhajRC84UIyl1m9LWJOlu2zw5Wjy6rGYJphBI90Zg5FD7Lc2yhXmhl1h4t232vVDA==
 
-"@platform/util.react@^0.0.12":
+"@platform/util.react@0.0.12", "@platform/util.react@^0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@platform/util.react/-/util.react-0.0.12.tgz#c99853fbf96e31469f628e5f5908ecf31bb14820"
   integrity sha512-LkcpbASWpRA/8lH3y+0qwpuT/857j4rE8xeDXI/qwwRsQyQsAhb1RRidb0GlEAjc6AY347WmzNP3SrlPx3+wEw==
