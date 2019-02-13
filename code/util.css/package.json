@@ -1,27 +1,28 @@
 {
   "name": "@platform/util.css",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "Helpers for working with inline CSS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "ts test",
-    "tdd": "ts test --watch",
-    "lint": "ts lint",
-    "build": "ts build",
-    "prepare": "ts prepare"
+    "test": "yarn chmod && ts test",
+    "tdd": "yarn chmod && ts test --watch",
+    "lint": "yarn chmod && ts lint",
+    "build": "yarn chmod && ts build",
+    "prepare": "yarn chmod && ts prepare",
+    "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
     "@platform/libs": "0.0.3",
-    "@platform/util.is": "0.0.4",
-    "@platform/util.value": "0.0.4",
+    "@platform/util.is": "0.0.5",
+    "@platform/util.value": "0.0.6",
     "@types/tinycolor2": "^1.4.1",
     "glamor": "2.20.40",
     "tinycolor2": "^1.4.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.26",
-    "@platform/ts.cli": "3.3.27",
+    "@platform/ts.cli": "3.3.28",
     "@types/react": "16.8.2"
   },
   "files": [

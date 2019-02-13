@@ -1,5 +1,5 @@
 export * from '../types';
-export { color, GlamorValue, css, mouse } from '@tdb/util';
+export { color, GlamorValue, css, mouse } from '@platform/util.react';
 export { log } from '../helpers/logger/renderer';
 
 export const COLORS = {

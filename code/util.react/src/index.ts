@@ -1,4 +1,4 @@
-export { css, color } from '@platform/util.css';
+export * from '@platform/util.css';
 export * from './util';
 export * from './events';
 export * from './mouse';

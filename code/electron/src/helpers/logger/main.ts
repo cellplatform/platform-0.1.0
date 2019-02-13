@@ -1,6 +1,5 @@
 import { fs } from '@platform/fs';
 import { create as createLog, format } from '@platform/log/lib/server';
-import { moment } from '@tdb/util';
 import * as is from 'electron-is';
 import * as elog from 'electron-log';
 import { filter, map } from 'rxjs/operators';
@@ -8,7 +7,7 @@ import { filter, map } from 'rxjs/operators';
 import { IpcClient } from '../ipc/Client';
 import * as t from './types';
 
-export { moment, id } from '@tdb/util';
+import { time } from '@platform/util.value';
 
 type ILogMetadata = { start: { dev: number; prod: number } };
 type Env = 'prod' | 'dev';
@@ -107,7 +106,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
     return msg;
   };
   elog.info('');
-  elog.info(log.gray(`${moment().format('D MMM YYYY')} [${env}]`));
+  elog.info(log.gray(`${time.day().format('D MMM YYYY')} [${env}]`));
   elog.info(div());
   elog.info('');
 

@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import * as moment from 'moment';
-
-import { wait, delay } from '.';
+import { wait, delay } from './delay';
 
 describe('delay', () => {
   it('delays then executes', async () => {

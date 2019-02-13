@@ -1,20 +1,21 @@
 {
   "name": "@platform/util.is",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Environment flags.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "ts test",
-    "tdd": "ts test --watch",
-    "lint": "ts lint",
-    "build": "ts build",
-    "prepare": "ts prepare"
+    "test": "yarn chmod && ts test",
+    "tdd": "yarn chmod && ts test --watch",
+    "lint": "yarn chmod && ts lint",
+    "build": "yarn chmod && ts build",
+    "prepare": "yarn chmod && ts prepare",
+    "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {},
   "devDependencies": {
     "@platform/test": "0.0.26",
-    "@platform/ts.cli": "3.3.27"
+    "@platform/ts.cli": "3.3.28"
   },
   "files": [
     "lib"
