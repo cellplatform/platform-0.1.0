@@ -2,7 +2,12 @@ import { fs } from '@platform/fs';
 import { app } from 'electron';
 
 import * as devTools from '../helpers/devTools/main';
-import { init as initIpc, IpcClient, IpcMessage } from '../helpers/ipc/main';
+import {
+  init as initIpc,
+  IpcClient,
+  IpcMessage,
+  MAIN_ID,
+} from '../helpers/ipc/main';
 import * as logger from '../helpers/logger/main';
 import { init as initStore } from '../helpers/store/main';
 import * as t from '../types';
@@ -10,12 +15,6 @@ import * as t from '../types';
 export * from '../types';
 
 export { devTools, logger };
-
-export type IInitMainResponse<M extends t.IpcMessage, S extends t.StoreJson> = {
-  ipc: t.IpcClient<M>;
-  log: t.IMainLog;
-  store: t.IMainStoreClient<S>;
-};
 
 /**
  * Initializes [Main] process systems (safely).
@@ -30,8 +29,9 @@ export async function init<
     log?: t.IMainLog | string;
     store?: t.IMainStoreClient<S>;
   } = {},
-): Promise<IInitMainResponse<M, S>> {
+): Promise<t.IMain<M, S>> {
   const { appName } = args;
+  const id = MAIN_ID;
 
   // Initiaize modules.
   const ipc = args.ipc || initIpc<M>();
@@ -42,7 +42,8 @@ export async function init<
       : initLog({ ipc, dir: args.log, appName }); // Initialize a new log.
 
   // Finish up.
-  return { ipc, log, store };
+  const res: t.IMain<M, S> = { id, ipc, log, store };
+  return res;
 }
 
 /**

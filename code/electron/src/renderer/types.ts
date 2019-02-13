@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { IpcMessage, StoreJson, IContext } from '../types';
+import { IpcMessage, StoreJson, IRendererContext } from '../types';
 
 export type IRenderer<
   M extends IpcMessage = any,
   S extends StoreJson = any
-> = IContext & {
+> = IRendererContext & {
   Provider: React.FunctionComponent;
 };

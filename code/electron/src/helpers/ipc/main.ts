@@ -18,6 +18,8 @@ import { GLOBAL } from '../constants';
 
 export * from './types';
 
+export const MAIN_ID = IPC.MAIN;
+
 type Refs = { main?: IpcClient };
 const refs: Refs = {};
 
@@ -43,7 +45,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
 
   // Construct the [Main] client.
   const main = new IPC({
-    id: IPC.MAIN,
+    id: MAIN_ID,
     process: 'MAIN',
     onSend: sendHandler,
     events$: events$.pipe(takeUntil(stop$)),

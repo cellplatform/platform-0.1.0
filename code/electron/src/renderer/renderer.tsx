@@ -42,11 +42,11 @@ export async function init<
   const devTools = new DevTools({ ipc });
 
   // React <Provider>.
-  const context: t.IContext = { id, ipc, store, log, devTools };
+  const context: t.IRendererContext = { id, ipc, store, log, devTools };
   const Provider = createProvider(context);
 
   // Finish up.
-  refs.renderer = { ...context, Provider };
+  refs.renderer = { ...context, Provider, devTools };
   return refs.renderer;
 }
 

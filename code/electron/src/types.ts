@@ -4,6 +4,7 @@ import { IStoreClient, StoreJson } from './helpers/store/types';
 import { DevTools } from './helpers/devTools/renderer';
 
 export * from './renderer/types';
+export * from './main/types';
 
 export {
   IStoreClient,
@@ -21,6 +22,12 @@ export type IContext<M extends IpcMessage = any, S extends StoreJson = any> = {
   ipc: IpcClient<M>;
   store: IStoreClient<S>;
   log: ILog;
+};
+
+export type IRendererContext<
+  M extends IpcMessage = any,
+  S extends StoreJson = any
+> = IContext<M, S> & {
   devTools: DevTools;
 };
 

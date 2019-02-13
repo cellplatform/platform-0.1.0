@@ -75,8 +75,9 @@ const config = require('../.uiharness/config.json') as uiharness.IUIHarnessRunti
     .on<t.ICreateDevToolsEvent>('DEVTOOLS/create')
     .pipe(map(e => e.payload))
     .subscribe(e => {
+      const id = e.windowId;
       const all = BrowserWindow.getAllWindows();
-      const parent = all.find(window => window.id === e.windowId);
+      const parent = all.find(window => window.id === id);
       main.devTools.create({ parent, ipc, log });
     });
 })();
