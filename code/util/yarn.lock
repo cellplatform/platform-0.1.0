@@ -80,6 +80,36 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
+"@platform/util.css@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.css/-/util.css-0.0.0.tgz#6a246338dddfe60f0927f22e6ab6d1ef536701a4"
+  integrity sha512-lunDi+/IqpjRyZzt1l6eYKOx9ozFBk7Nx6zocUPDAFUi5ypA7IPGCgHQyw6C1u7MUfUZKbEP65Wb0dshciBCAg==
+  dependencies:
+    "@types/react" "16.8.2"
+    "@types/react-dom" "16.8.0"
+    react "16.8.1"
+    react-dom "16.8.1"
+
+"@platform/util.react@0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.react/-/util.react-0.0.0.tgz#b5fc38bbfb965f7eb06f260b70d921a337c0fa39"
+  integrity sha512-SzZdjH2YE9R6mg332AF7Jabbmyu+cHPC3xtIlldrK4XKyd5bWgNrGu58mXTCHH6lYLrLtkP6ulAiN0s7A9uvdw==
+  dependencies:
+    "@types/react" "16.8.2"
+    "@types/react-dom" "16.8.0"
+    react "16.8.1"
+    react-dom "16.8.1"
+
+"@platform/util.value@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.0.tgz#01025548d837fcea12e126d79e7c28c5428f2ab4"
+  integrity sha512-TjDizGv0/CFN6Tttw1RlOVeSDoUUVpy0YhamwilIYMEUXctpB4DB1lucrAcsut6+tAOnUAeEkuAmdieAd9Nzdg==
+  dependencies:
+    "@types/react" "16.8.2"
+    "@types/react-dom" "16.8.0"
+    react "16.8.1"
+    react-dom "16.8.1"
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"

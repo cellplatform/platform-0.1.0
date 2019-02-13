@@ -1,0 +1,28 @@
+{
+  "name": "@platform/util.css",
+  "version": "0.0.0",
+  "description": "Helpers for working with inline CSS.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@types/react": "16.8.2",
+    "@types/react-dom": "16.8.0",
+    "react": "16.8.1",
+    "react-dom": "16.8.1"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.0",
+    "@platform/ts.cli": "3.3.26"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@platform/util",
+  "version": "0.0.0",
+  "description": "Roll-up of all util modules.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/util.css": "^0.0.0",
+    "@platform/util.react": "0.0.0",
+    "@platform/util.value": "^0.0.0"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.0",
+    "@platform/ts.cli": "3.3.26"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

@@ -13,3 +13,5 @@ test fs
 test test
 test log
 test electron
+test util
+test util.react
