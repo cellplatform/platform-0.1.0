@@ -1,7 +1,7 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.0.48",
+  "version": "0.0.51",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {

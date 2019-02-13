@@ -103,6 +103,14 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
     });
 
   /**
+   * Echo's the ID of the sender of an event.
+   */
+  ipcMain.on(GLOBAL.IPC.ID.REQUEST, async (e: Electron.Event) => {
+    const id = e.sender.id;
+    e.sender.send(GLOBAL.IPC.ID.RESPONSE, { id });
+  });
+
+  /**
    * Monitor browser-windows.
    */
   const windows = new WindowsMain();
@@ -118,14 +126,6 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
 /**
  * INTERNAL
  */
-
-/**
- * Echo's the ID of the sender of an event.
- */
-ipcMain.on(GLOBAL.IPC.ID.REQUEST, async (e: Electron.Event) => {
-  const id = e.sender.id;
-  e.sender.send(GLOBAL.IPC.ID.RESPONSE, { id });
-});
 
 /**
  * Adds a reference to a handler to the global object.
