@@ -79,6 +79,7 @@ export class StoreTest extends React.PureComponent<
           />
           <Button label={'delete: foo'} onClick={this.deleteHandler('foo')} />
           <Button label={'clear'} onClick={this.clear} />
+          <Button label={'open in editor'} onClick={this.openInEditor} />
         </div>
       </div>
     );
@@ -126,5 +127,9 @@ export class StoreTest extends React.PureComponent<
 
   private clear = async () => {
     await this.store.clear();
+  };
+
+  private openInEditor = () => {
+    this.store.openInEditor();
   };
 }

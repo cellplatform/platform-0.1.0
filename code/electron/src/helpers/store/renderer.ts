@@ -95,6 +95,10 @@ export function init<T extends t.StoreJson>(args: {
     return main && main.data ? main.data : [];
   };
 
+  const openInEditor: t.OpenStoreInEditor = () => {
+    ipc.send<t.IOpenStoreFileInEditorEvent>('@platform/STORE/openInEditor', {});
+  };
+
   ipc
     .on<t.IStoreChangeEvent>('@platform/STORE/change')
     .subscribe(e => change$.next(e.payload));
@@ -102,7 +106,13 @@ export function init<T extends t.StoreJson>(args: {
   /**
    * Create the client.
    */
-  const client = new Store<T>({ getKeys, getValues, setValues, change$ });
+  const client = new Store<T>({
+    getKeys,
+    getValues,
+    setValues,
+    change$,
+    openInEditor,
+  });
 
   // Finish up.
   global[GLOBAL.STORE_CLIENT] = client;

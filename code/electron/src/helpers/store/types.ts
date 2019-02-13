@@ -18,6 +18,7 @@ export type IStoreClient<T extends StoreJson = any> = {
   set: <K extends keyof T>(key: K, value: T[K]) => Promise<T[K]>;
   delete: <K extends keyof T>(...keys: K[]) => Promise<{}>;
   clear: () => Promise<{}>;
+  openInEditor: () => IStoreClient<T>;
 };
 
 export type IStoreKeyValue<T extends StoreJson = any> = {
@@ -45,17 +46,20 @@ export type IMainStoreClient<T extends StoreJson = any> = IStoreClient<T> & {
 /**
  * [Deletages]
  */
+export type StoreSetAction = 'UPDATE' | 'DELETE';
+
 export type GetStoreValues<T extends StoreJson> = (
   keys: Array<keyof T>,
 ) => Promise<StoreJson>;
 
-export type StoreSetAction = 'UPDATE' | 'DELETE';
 export type SetStoreValues<T extends StoreJson> = (
   keys: Array<IStoreKeyValue<T>>,
   action: StoreSetAction,
 ) => Promise<IStoreSetValuesResponse>;
 
 export type GetStoreKeys<T extends StoreJson> = () => Promise<Array<keyof T>>;
+
+export type OpenStoreInEditor = () => void;
 
 /**
  * [Events].
@@ -64,7 +68,8 @@ export type StoreEvents =
   | IStoreChangeEvent
   | IStoreGetKeysEvent
   | IStoreGetValuesEvent
-  | IStoreSetValuesEvent;
+  | IStoreSetValuesEvent
+  | IOpenStoreFileInEditorEvent;
 
 export type IStoreChange = {
   keys: string[];
@@ -100,4 +105,9 @@ export type IStoreSetValuesEvent = {
 export type IStoreSetValuesResponse<T extends StoreJson = any> = {
   ok: boolean;
   error?: string;
+};
+
+export type IOpenStoreFileInEditorEvent = {
+  type: '@platform/STORE/openInEditor';
+  payload: {};
 };

@@ -1,5 +1,5 @@
 import { fs } from '@platform/fs';
-import { app } from 'electron';
+import { app, shell } from 'electron';
 import { Subject } from 'rxjs';
 
 import { IpcClient } from '../ipc/Client';
@@ -141,12 +141,17 @@ export function init<T extends t.StoreJson>(args: {
     return file.exists ? Object.keys(file.data.body) : [];
   };
 
+  const openInEditor: t.OpenStoreInEditor = () => {
+    shell.openItem(path);
+  };
+
   // Create the client.
   const client = (new Store<T>({
+    change$,
     getValues,
     setValues,
     getKeys,
-    change$,
+    openInEditor,
   }) as unknown) as IClientMain;
 
   // Store the path to the settings file.
@@ -179,6 +184,14 @@ export function init<T extends t.StoreJson>(args: {
    */
   ipc.handle<t.IStoreSetValuesEvent>('@platform/STORE/set', e =>
     setValues(e.payload.values, e.payload.action),
+  );
+
+  /**
+   * Handle `open in editor` requests.
+   */
+  ipc.handle<t.IOpenStoreFileInEditorEvent>(
+    '@platform/STORE/openInEditor',
+    async e => openInEditor(),
   );
 
   // Finish up.

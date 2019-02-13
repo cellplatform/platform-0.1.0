@@ -19,9 +19,10 @@ export class Store<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
   /**
    * [Fields]
    */
-  private readonly _getKeys: t.GetStoreKeys<T>;
-  private readonly _getValues: t.GetStoreValues<T>;
-  private readonly _setValues: t.SetStoreValues<T>;
+  private readonly _getKeys!: t.GetStoreKeys<T>;
+  private readonly _getValues!: t.GetStoreValues<T>;
+  private readonly _setValues!: t.SetStoreValues<T>;
+  private readonly _openInEditor!: t.OpenStoreInEditor;
 
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -32,14 +33,16 @@ export class Store<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
    * [Constructor]
    */
   constructor(args: {
+    change$: Subject<t.IStoreChange>;
     getKeys: t.GetStoreKeys<T>;
     getValues: t.GetStoreValues<T>;
     setValues: t.SetStoreValues<T>;
-    change$: Subject<t.IStoreChange>;
+    openInEditor: t.OpenStoreInEditor;
   }) {
     this._getKeys = args.getKeys;
     this._getValues = args.getValues;
     this._setValues = args.setValues;
+    this._openInEditor = args.openInEditor;
     this.dispose$.subscribe(() => (this.isDisposed = true));
     this.change$ = args.change$.pipe(
       takeUntil(this.dispose$),
@@ -112,5 +115,13 @@ export class Store<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
       await this.delete(...keys);
     }
     return {};
+  }
+
+  /**
+   * Opens the settings JSON in an external editor.
+   */
+  public openInEditor() {
+    this._openInEditor();
+    return this;
   }
 }
