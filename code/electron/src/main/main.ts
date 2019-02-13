@@ -20,14 +20,17 @@ export type IInitMainResponse<M extends t.IpcMessage, S extends t.StoreJson> = {
 /**
  * Initializes [Main] process systems (safely).
  */
-export function init<M extends IpcMessage = any, S extends t.StoreJson = any>(
+export async function init<
+  M extends IpcMessage = any,
+  S extends t.StoreJson = any
+>(
   args: {
     appName?: string;
     ipc?: t.IpcClient<M>;
     log?: t.IMainLog | string;
     store?: t.IMainStoreClient<S>;
   } = {},
-): IInitMainResponse<M, S> {
+): Promise<IInitMainResponse<M, S>> {
   const { appName } = args;
 
   // Initiaize modules.

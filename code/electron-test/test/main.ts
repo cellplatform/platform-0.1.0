@@ -18,7 +18,7 @@ const config = require('../.uiharness/config.json') as uiharness.IUIHarnessRunti
   // NOTE:  You could also get [log, ipc] from `uiharness.init`.
   //        Calling these here as this is about testing the module
   //        that contains [log] and [ipc].
-  const { log, ipc, store } = main.init<t.MyEvents>({ appName });
+  const { log, ipc, store } = await main.init<t.MyEvents>({ appName });
 
   const { newWindow } = await uiharness.init({
     config,
