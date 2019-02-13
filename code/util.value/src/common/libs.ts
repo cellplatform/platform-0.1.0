@@ -1,2 +1,4 @@
 import * as R from './R';
-export { R };
+import * as semver from 'semver';
+
+export { R, semver };

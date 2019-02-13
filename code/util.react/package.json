@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.react",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,8 +13,8 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@platform/util.css": "0.0.7",
-    "@platform/util.is": "0.0.6",
+    "@platform/util.css": "0.0.8",
+    "@platform/util.is": "0.0.7",
     "@types/react": "16.7.17",
     "@types/react-dom": "16.8.0",
     "react": "16.8.1",
@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.26",
-    "@platform/ts.cli": "3.3.29"
+    "@platform/ts.cli": "3.3.30"
   },
   "files": [
     "lib"
