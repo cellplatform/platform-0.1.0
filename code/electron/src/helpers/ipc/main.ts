@@ -43,6 +43,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
 
   // Construct the [Main] client.
   const main = new IPC({
+    id: IPC.MAIN,
     process: 'MAIN',
     onSend: sendHandler,
     events$: events$.pipe(takeUntil(stop$)),

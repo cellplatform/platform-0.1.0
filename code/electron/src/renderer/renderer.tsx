@@ -26,9 +26,11 @@ export async function init<
   if (refs.renderer) {
     return refs.renderer;
   }
+  // Retrieve the ID.
+  const id = await getId();
 
   // Ipc.
-  const ipc = initIpc<M>();
+  const ipc = await initIpc<M>({ id });
 
   // Log.
   const log = initLog({ ipc });
@@ -38,9 +40,6 @@ export async function init<
 
   // Dev tools.
   const devTools = new DevTools({ ipc });
-
-  // Retrieve the ID.
-  const id = await getId();
 
   // React <Provider>.
   const context: t.IContext = { id, ipc, store, log, devTools };

@@ -14,7 +14,9 @@ const remote = electron.remote as Electron.Remote;
 /**
  * Observable wrapper for the electron IPC [Renderer].
  */
-export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
+export async function init<M extends IpcMessage>(
+  args: { id?: number } = {},
+): Promise<IpcClient<M>> {
   /**
    * HACK:  Ensure multiple clients are not initialized on HMR (hot-module-reloads).
    *        This will only happen during development.
@@ -26,6 +28,7 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
 
   const stop$ = new Subject();
   const events$ = new Subject<IpcEvent>();
+  const id = args.id === undefined ? await getId() : args.id;
 
   /**
    * Store references to event-handlers as they are registered.
@@ -45,6 +48,7 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
    * Construct the [Renderer] client.
    */
   const client = new IPC({
+    id,
     process: 'RENDERER',
     events$: events$.pipe(takeUntil(stop$)),
     onSend: ipcRenderer.send,

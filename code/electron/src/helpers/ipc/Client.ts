@@ -30,7 +30,6 @@ export type HandlerRegistered = (args: {
 export type GetHandlerRefs = () => IpcHandlerRefs;
 
 type Ref = {
-  id?: number;
   disposed$: Subject<any>;
   events$: Subject<IpcEvent>;
   handlers: SendHandler[];
@@ -46,6 +45,7 @@ type Ref = {
 export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   public static readonly MAIN = 0;
   public readonly MAIN = IPC.MAIN;
+  public readonly id: number;
 
   private readonly _: Ref = {
     disposed$: new Subject(),
@@ -54,12 +54,14 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   };
 
   constructor(args: {
+    id: number;
     process: ProcessType;
     events$: Observable<IpcEvent>;
     onSend: SendDelegate;
     onHandlerRegistered: HandlerRegistered;
     getHandlerRefs: GetHandlerRefs;
   }) {
+    this.id = args.id;
     this.process = args.process;
     this._.onSend = args.onSend;
     this._.onHandlerRegistered = args.onHandlerRegistered;
@@ -101,22 +103,6 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   public dispose() {
     this.isDisposed = true;
     this._.disposed$.next();
-  }
-
-  /**
-   * The ID of the executing process
-   * (ie. the ID of the renderer window or MAIN `0`).
-   */
-  public get id(): number {
-    if (this._.id === undefined) {
-      if (is.renderer()) {
-        const remote = require('electron').remote as Electron.Remote;
-        this._.id = remote.getCurrentWindow().id;
-      } else {
-        this._.id = IPC.MAIN;
-      }
-    }
-    return this._.id;
   }
 
   /**
