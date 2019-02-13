@@ -1,2 +1,4 @@
-import { singleton } from './Renderer';
-export default singleton;
+import * as renderer from './renderer';
+
+export default renderer;
+export { Context, ReactContext } from './Context';

@@ -14,6 +14,7 @@ export { ILog, IMainLog, IpcClient };
 export type ProcessType = 'MAIN' | 'RENDERER';
 
 export type IContext = {
+  id: number;
   ipc: IpcClient;
   log: ILog;
   store: IStoreClient;
