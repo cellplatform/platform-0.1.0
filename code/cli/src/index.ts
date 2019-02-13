@@ -1,4 +1,4 @@
 export { exec } from './exec';
 export { tasks } from './tasks';
-export { result, semver } from './common';
+export { result } from './common';
 export * from './types';

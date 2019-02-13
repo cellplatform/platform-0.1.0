@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { IResult, result } from '../common';
+import { IResult, result as resultUtil } from '../common';
 
 /**
  * Invokes a shell command.
@@ -10,33 +10,43 @@ export function run(
 ) {
   return new Promise<IResult>(async (resolve, reject) => {
     const { dir: cwd, silent } = options;
+    let info: string[] = [];
+    let errors: string[] = [];
 
     // Spwan the shell process.
     const stdio = silent ? undefined : 'inherit';
     const child = spawn(cmd, { cwd, shell: true, stdio });
 
     // Monitor data coming from process.
-    // if (child.stdout) {
-    //   if (!silent) {
-    //     child.stdout.pipe(process.stdout);
-    //   }
-    //   child.stdout.on('data', (chunk: Buffer) => {
-    //     const msg = chunk.toString().replace(/\n$/, '');
-    //     result.info = [...result.info, msg];
-    //   });
-    //   child.stderr.on('data', (chunk: Buffer) => {
-    //     const msg = chunk.toString().replace(/\n$/, '');
-    //     result.errors = [...result.errors, msg];
-    //   });
-    // }
+    if (child.stdout) {
+      //   if (!silent) {
+      //     child.stdout.pipe(process.stdout);
+      //   }
+      child.stdout.on('data', (chunk: Buffer) => {
+        info = [...info, ...formatOutput(chunk)];
+      });
+      child.stderr.on('data', (chunk: Buffer) => {
+        errors = [...errors, ...formatOutput(chunk)];
+      });
+    }
 
     // Listen for end.
     child.on('exit', e => {
       // const code = e !== null ? e : result.errors.length === 0 ? 0 : 1;
       const code = e || 0;
-      // const result = {  code: e || 0 };
-      resolve(result.format({ code }));
+      const result = resultUtil.format({ code, info: info, errors: errors });
+      resolve(result);
     });
     child.once('error', err => reject(err));
   });
+}
+
+/**
+ * INTERNAL
+ */
+function formatOutput(chunk: Buffer) {
+  return chunk
+    .toString()
+    .replace(/\n$/, '')
+    .split('\n');
 }

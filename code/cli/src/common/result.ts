@@ -22,7 +22,16 @@ export function fail(err: string | Error, code?: number): IResult {
  */
 export function format(result: Partial<IResult>): IResult {
   const code = result.code === undefined ? 0 : result.code;
-  const error = result.error;
-  const ok = !error && code === 0;
-  return error ? { ok, code, error } : { ok, code };
+  const info = result.info || [];
+  const errors = result.errors || [];
+
+  let error = result.error;
+  if (!error && errors.length > 0) {
+    error = new Error(
+      `Errors occured in 'stderr', see the errors[${errors.length}] list.`,
+    );
+  }
+
+  const ok = !error && errors.length === 0 && code === 0;
+  return error ? { ok, code, error, info, errors } : { ok, code, info, errors };
 }

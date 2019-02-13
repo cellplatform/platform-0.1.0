@@ -5,6 +5,8 @@ export type IResult = {
   ok: boolean;
   code: number;
   error?: Error;
+  info: string[];
+  errors: string[];
 };
 
 export type ITask = {
