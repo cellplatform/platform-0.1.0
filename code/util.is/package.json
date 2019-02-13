@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.is",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Environment flags.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

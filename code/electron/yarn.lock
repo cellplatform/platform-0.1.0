@@ -97,14 +97,14 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
-"@platform/util.css@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@platform/util.css/-/util.css-0.0.10.tgz#620b43a584546e2fdc63a415d9a0f8c9f15ade47"
-  integrity sha512-7C40PpfbO5Qxxi8pvNpLFmm+Xh0lG+OFigRd3NcSZX2xfroJ9eBOpIjbajB9Zizfx401AuuApmF6TG0W25YgFg==
+"@platform/util.css@0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@platform/util.css/-/util.css-0.0.11.tgz#89f2315376e6ea9040e4d3c686a176f382c8bb7c"
+  integrity sha512-oCdeWmMyBtMzWFxm5xcESpe6s8fRTa5tWoe7pyet8UzkacNH8U5V8xcjbl3z2cjdLlDtOZoCPdksj6RV/9ZfOg==
   dependencies:
     "@platform/libs" "0.0.3"
-    "@platform/util.is" "0.0.9"
-    "@platform/util.value" "0.0.10"
+    "@platform/util.is" "0.0.10"
+    "@platform/util.value" "0.0.11"
     "@types/tinycolor2" "^1.4.1"
     glamor "2.20.40"
     tinycolor2 "^1.4.1"
@@ -118,30 +118,30 @@
     "@types/listr" "0.13.0"
     listr "0.14.3"
 
-"@platform/util.is@0.0.9", "@platform/util.is@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.9.tgz#d205b7682e0ac87530f9bb116462b0cb1c0db86d"
-  integrity sha512-3tzAAEYszqp56rAdLATQAOhajRC84UIyl1m9LWJOlu2zw5Wjy6rGYJphBI90Zg5FD7Lc2yhXmhl1h4t232vVDA==
+"@platform/util.is@0.0.10", "@platform/util.is@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.10.tgz#f7064576137237ed75318e8f69ea29ce05418c83"
+  integrity sha512-J6Vtg9tmHyJO4yo8D3sss23ZN3CdqFh2xO/MqorsU6WWL5roMZA+pVsKiBRVBi+HzTYB4ASl71WwfzocA3L9dg==
 
-"@platform/util.react@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@platform/util.react/-/util.react-0.0.12.tgz#c99853fbf96e31469f628e5f5908ecf31bb14820"
-  integrity sha512-LkcpbASWpRA/8lH3y+0qwpuT/857j4rE8xeDXI/qwwRsQyQsAhb1RRidb0GlEAjc6AY347WmzNP3SrlPx3+wEw==
+"@platform/util.react@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@platform/util.react/-/util.react-0.0.13.tgz#1cb5d56ce13877f3008f805ed047a9acc6126020"
+  integrity sha512-20YHyMNmmy5K3VQsEWFTQmOqud/gLp3Tr9E4vheUuGwQ5Ng+mBgW2SYeAs35h05RYq71Vs+3OJgtvUpyyGr/pQ==
   dependencies:
-    "@platform/util.css" "0.0.10"
-    "@platform/util.is" "0.0.9"
+    "@platform/util.css" "0.0.11"
+    "@platform/util.is" "0.0.10"
     "@types/react" "16.7.17"
     "@types/react-dom" "16.8.0"
     react "16.8.1"
     react-dom "16.8.1"
 
-"@platform/util.value@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.10.tgz#4cf95148ffbf6644ee6a382751dec27208ab3130"
-  integrity sha512-gDi9KmfNYhnxddBcubRxsow+xCo7iX1VoVLHWJ79/ssIuGdwgLBI3Q1DPnLEUu3cWlHb0EMQAKXuoHd8MKvLaQ==
+"@platform/util.value@0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.11.tgz#3454f5e892c9bf19e6161645d17ffc27d3902ed0"
+  integrity sha512-1ayD7DqE6GkLMHuu7EBh+BN+3gSMTQt1W65PQtl2x2eKTeS7/BpsCsiSU6X8UMcnjcjcaiujcN6IYvVDiypV4A==
   dependencies:
     "@platform/libs" "0.0.3"
-    "@platform/util.is" "0.0.9"
+    "@platform/util.is" "0.0.10"
     "@types/semver" "^5.5.0"
     cuid "2.1.6"
     dayjs "1.8.5"
@@ -826,19 +826,6 @@ electron-download@^4.1.0:
     rc "^1.2.1"
     semver "^5.4.1"
     sumchecker "^2.0.2"
-
-electron-is-dev@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/electron-is-dev/-/electron-is-dev-0.3.0.tgz#14e6fda5c68e9e4ecbeff9ccf037cbd7c05c5afe"
-  integrity sha1-FOb9pcaOnk7L7/nM8DfL18BcWv4=
-
-electron-is@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/electron-is/-/electron-is-3.0.0.tgz#bd4c27651fbe03f243f3607c2a098be884f9ed50"
-  integrity sha512-aQv1y3WrDZ+mtO8acbhiiip/8fa0Et7cvZyvlqJm2H7fih4hiJWEFRyYxzLgDG2kmiLdF8l3y5tbek5JFOPQkQ==
-  dependencies:
-    electron-is-dev "^0.3.0"
-    semver "^5.5.0"
 
 electron-log@2.2.17:
   version "2.2.17"
