@@ -1,0 +1,30 @@
+{
+  "name": "@platform/util.exec",
+  "version": "0.0.0",
+  "description": "Tools for executing commands in child_process.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "yarn chmod && ts test",
+    "tdd": "yarn chmod && ts test --watch",
+    "lint": "yarn chmod && ts lint",
+    "build": "yarn chmod && ts build",
+    "prepare": " ts prepare",
+    "chmod": "chmod 777 node_modules/.bin/ts"
+  },
+  "dependencies": {
+    "@types/listr": "0.13.0",
+    "listr": "0.14.3"
+  },
+  "devDependencies": {
+    "@platform/fs": "0.0.33",
+    "@platform/test": "0.0.26",
+    "@platform/ts": "3.3.41",
+    "@platform/ts.cli": "3.3.31"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": "github.com/uiharness/platform",
+  "license": "MIT"
+}
