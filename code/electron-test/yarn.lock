@@ -884,6 +884,15 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
+"@platform/ui.object@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.1.tgz#c0194139b150e92bc326596fa1e7b22ecc2b52d7"
+  integrity sha512-PVhPKK6EsgnhZOzSpMOyxH5T4MMU8m39Sm6H1o1qUWDxl/CNGKLNJh8cxpJ18p9cJ+eSI4nqEbuNkcvkg2/tQQ==
+  dependencies:
+    "@platform/util.react" "0.0.12"
+    "@uiharness/electron" "0.3.106"
+    react-inspector "2.3.1"
+
 "@platform/util.css@0.0.10":
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/@platform/util.css/-/util.css-0.0.10.tgz#620b43a584546e2fdc63a415d9a0f8c9f15ade47"
@@ -927,7 +936,7 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.9.tgz#d205b7682e0ac87530f9bb116462b0cb1c0db86d"
   integrity sha512-3tzAAEYszqp56rAdLATQAOhajRC84UIyl1m9LWJOlu2zw5Wjy6rGYJphBI90Zg5FD7Lc2yhXmhl1h4t232vVDA==
 
-"@platform/util.react@^0.0.12":
+"@platform/util.react@0.0.12", "@platform/util.react@^0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@platform/util.react/-/util.react-0.0.12.tgz#c99853fbf96e31469f628e5f5908ecf31bb14820"
   integrity sha512-LkcpbASWpRA/8lH3y+0qwpuT/857j4rE8xeDXI/qwwRsQyQsAhb1RRidb0GlEAjc6AY347WmzNP3SrlPx3+wEw==
@@ -1305,10 +1314,33 @@
     electron-window-state "5.0.3"
     tslib "1.9.3"
 
+"@uiharness/electron@0.3.106":
+  version "0.3.106"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.106.tgz#feedd0090218299416ddc103dcd8e404dac0f66a"
+  integrity sha512-X6GKzhRZkpHhs7OaKW2bFMTlVa6tl636gMlcktijfSBXkwR3Q5n9ccgtNuNTYezdSEPX9kYpU5KVBu37FMbtjw==
+  dependencies:
+    "@platform/electron" "0.0.59"
+    "@platform/libs" "0.0.3"
+    "@platform/log" "0.0.59"
+    "@platform/util.value" "^0.0.10"
+    "@types/app-root-path" "1.2.4"
+    "@uiharness/types" "0.0.44"
+    app-root-path "2.1.0"
+    electron-is "3.0.0"
+    electron-is-dev "1.0.1"
+    electron-log "2.2.17"
+    electron-window-state "5.0.3"
+    tslib "1.9.3"
+
 "@uiharness/types@0.0.43":
   version "0.0.43"
   resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.0.43.tgz#0fade65f0a0da216ae3ed637ff504c8eb6bb38ae"
   integrity sha512-4sQ5gXzr8YAc6d2IBv8kc5GMJyd6prIk1PlE6gD1BwdjrGXQZ7kgs5IGYK+nw5miYJFiHBmfyPGdPPDPpNIz1g==
+
+"@uiharness/types@0.0.44":
+  version "0.0.44"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.0.44.tgz#9009a3434233eff7d5eceedc0925e280cda57481"
+  integrity sha512-LjWpQs+ImCI+ex8t29MOmTPInM87SAwyqtfVh2Q3XgDCfHvL2uIsZIlE8y+YjMcjK3q1M4qolBx1Y2VMVi/Ahw==
 
 "@zeit/schemas@2.6.0":
   version "2.6.0"

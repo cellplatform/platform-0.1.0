@@ -1,6 +1,6 @@
 import { fs } from '@platform/fs';
 import { create as createLog, format } from '@platform/log/lib/server';
-import * as is from 'electron-is';
+import { is } from '@platform/util.is';
 import * as elog from 'electron-log';
 import { filter, map } from 'rxjs/operators';
 
@@ -60,7 +60,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
     msg = `${msg} ${tailPath(file, color)}`;
     return log.gray(msg);
   };
-  if (is.dev()) {
+  if (is.dev) {
     logToConsole();
     logToConsoleGray(`logs | ${tailCommand(paths.dev.filename, true)}`);
     logToConsoleGray(`               ${tailPath(paths.prod.filename)}`);
@@ -71,7 +71,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
   const write = (process: t.ProcessType, level: t.LogLevel, output: string) => {
     const prefix = toPrefix(log, process);
     elog[level](prefix, output);
-    if (is.dev() && process === 'MAIN') {
+    if (is.dev && process === 'MAIN') {
       // NB:  Don't worry about writing VIEW renderer logs to the console
       //      This is handled by the base [@platform/log].
       logToConsole(prefix, output);
@@ -118,7 +118,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
  * Derives paths for the logger.
  */
 export function getPaths(args: { dir: string }) {
-  const IS_DEV = is.dev();
+  const IS_DEV = is.dev;
   const env: Env = IS_DEV ? 'dev' : 'prod';
   const dir = args.dir;
   const file = {

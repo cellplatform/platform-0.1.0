@@ -1,15 +1,8 @@
+import { equals } from 'ramda';
 import { Observable, Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
+import { share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 
 import * as t from './types';
-
-/**
- * https://github.com/sindresorhus/electron-store/blob/ca19e10477fb4518e09ca1832a1f4911166bd460/index.js#L26
- *
- * open in editor [MAIN]
- *    electron.shell.openItem(this.path);
- *
- */
 
 /**
  * An abstract representation of the configuration store
@@ -46,6 +39,7 @@ export class Store<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
     this.dispose$.subscribe(() => (this.isDisposed = true));
     this.change$ = args.change$.pipe(
       takeUntil(this.dispose$),
+      distinctUntilChanged((prev, next) => equals(prev, next)),
       share(),
     );
   }

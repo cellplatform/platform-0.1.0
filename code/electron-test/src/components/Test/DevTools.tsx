@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { css, GlamorValue, ICreateDevToolsEvent, renderer } from '../common';
-import { Button } from './primitives';
+import { css, GlamorValue, ICreateDevToolsEvent, renderer } from '../../common';
+import { Button, ObjectView } from '../primitives';
 
 /**
  * Test component.
@@ -17,18 +17,31 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
   public render() {
     const styles = {
       base: css({ marginBottom: 50 }),
-      buttons: css({
+      columns: css({
+        Flex: 'horizontal-start-spaceBetween',
+      }),
+      colButtons: css({
         lineHeight: '1.6em',
         Flex: 'vertical-start',
         paddingLeft: 15,
+        flex: 1,
+      }),
+      colObject: css({
+        flex: 1,
       }),
     };
+
     return (
       <div {...styles.base}>
         <h2>DevTools</h2>
-        <div {...styles.buttons}>
-          <Button label={'show (create)'} onClick={this.newWindow} />
-          <Button label={'clearConsoles'} onClick={this.clearConsoles} />
+        <div {...styles.columns}>
+          <div {...styles.colButtons}>
+            <Button label={'show (create)'} onClick={this.newWindow} />
+            <Button label={'clearConsoles'} onClick={this.clearConsoles} />
+          </div>
+          <div {...styles.colObject}>
+            <ObjectView name={'env'} data={renderer.is.toObject()} />
+          </div>
         </div>
       </div>
     );

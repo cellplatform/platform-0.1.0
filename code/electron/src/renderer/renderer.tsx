@@ -7,8 +7,9 @@ import { init as initLog } from '../helpers/logger/renderer';
 import { init as initStore } from '../helpers/store/renderer';
 import * as t from '../types';
 import { Context, createProvider, ReactContext } from './Context';
+import { is } from '@platform/util.is';
 
-export { Context, ReactContext };
+export { Context, ReactContext, is };
 export * from '../types';
 
 type Refs = {

@@ -5,6 +5,6 @@
     "outDir": "lib",
     "moduleResolution": "node",
     "target": "esnext",
-    "jsx": "preserve"
+    "jsx": "react"
   }
 }

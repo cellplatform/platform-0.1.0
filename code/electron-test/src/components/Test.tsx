@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import { css, GlamorValue, renderer } from '../common';
-import { IpcTest } from './Test-Ipc';
-import { DevToolsTest } from './Test-DevTools';
-import { StoreTest } from './Test-Store';
+import { IpcTest } from './Test/Ipc';
+import { DevToolsTest } from './Test/DevTools';
+import { StoreTest } from './Test/Store';
 
 export type ITestProps = {
   style?: GlamorValue;

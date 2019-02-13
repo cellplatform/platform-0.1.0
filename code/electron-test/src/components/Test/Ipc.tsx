@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, renderer, time, types } from '../common';
-import { Button } from './primitives';
+import { css, GlamorValue, renderer, time, types } from '../../common';
+import { Button } from '../primitives';
 
 /**
  * Test component.
@@ -76,8 +76,8 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
      * Log out events.
      */
     this.ipc.events$.pipe(takeUntil(this.unmounted$)).subscribe(e => {
-      const from = e.sender.id;
-      this.log.info('⚡️ from:', from, e);
+      // const from = e.sender.id;
+      // this.log.info('⚡️ from:', from, e);
     });
     this.ipc.filter<types.IMessageEvent>('MESSAGE').subscribe(e => {
       this.log.info('filtered event', e);

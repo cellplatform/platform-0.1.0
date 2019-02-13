@@ -1,7 +1,19 @@
+export type IFlags = {
+  nodeEnv: 'development' | 'production' | 'browser' | string;
+  browser: boolean;
+  dev: boolean;
+  prod: boolean;
+  test: boolean;
+};
+
+export type IIs = IFlags & {
+  toObject: () => IFlags;
+};
+
 /**
  * Environment flags.
  */
-class Flags {
+class Is implements IIs {
   public get nodeEnv() {
     return this.browser ? 'browser' : process.env.NODE_ENV || 'development';
   }
@@ -25,12 +37,13 @@ class Flags {
     return this.nodeEnv === 'test';
   }
 
-  public toObject() {
+  public toObject(): IFlags {
     return {
       nodeEnv: this.nodeEnv,
       browser: this.browser,
       dev: this.dev,
       prod: this.prod,
+      test: this.test,
     };
   }
 }
@@ -38,4 +51,4 @@ class Flags {
 /**
  * Singleton
  */
-export const is = new Flags();
+export const is = new Is() as IIs;

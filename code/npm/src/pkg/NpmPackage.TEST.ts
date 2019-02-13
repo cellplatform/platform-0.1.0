@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import { fs } from '../common/libs';
 
 const TMP = resolve('./tmp/test');
-const NAME = '@tdb/npm';
+const NAME = '@platform/npm';
 
 describe('NpmPackage (package.json)', () => {
   beforeEach(async () => {
