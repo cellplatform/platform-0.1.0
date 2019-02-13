@@ -2,8 +2,6 @@
   "extends": "./node_modules/@platform/ts/tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "lib",
-
-    "noUnusedLocals": false
+    "outDir": "lib"
   }
 }

@@ -11,5 +11,5 @@ electron:
     renderer: test/renderer.tsx
 
 web:
-  port: 1234
+  port: 3030
   entry: test/web.tsx

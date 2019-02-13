@@ -12,6 +12,7 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
+    "@platform/util.react": "^0.0.12",
     "@uiharness/electron": "0.3.106"
   },
   "devDependencies": {

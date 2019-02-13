@@ -823,7 +823,7 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/ts.cli@^3.3.32":
+"@platform/ts.cli@3.3.32":
   version "3.3.32"
   resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.32.tgz#af6a966d51170412b92dddc0e80653a923e7e5b7"
   integrity sha512-9b+AJYXS8Fl2Q+hzah73ydzzUkYjfexqef8idilEjtJZZC2UuXS9ayYX4sdsM8RkmnFi1+svo5UmqhHI+UoCjA==
