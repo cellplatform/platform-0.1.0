@@ -1,25 +1,24 @@
-import * as is from 'electron-is';
 import { id as idUtil, value as valueUtil } from '@tdb/util';
+import * as is from 'electron-is';
 import { Observable, Subject } from 'rxjs';
-import { filter, share, takeUntil, map } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
+import { EVENT, GLOBAL } from './constants';
+import { SendHandler, SendResponse } from './SendResponse';
 import {
-  IpcEvent,
-  IpcMessage,
-  ProcessType,
-  IpcFilter,
   IpcClient,
+  IpcClientSendOptions,
+  IpcEvent,
   IpcEventHandler,
   IpcEventHandlerArgs,
   IpcEventObservable,
+  IpcFilter,
   IpcHandlerResponseEvent,
-  IpcRegisterHandlerEvent,
   IpcIdentifier,
+  IpcMessage,
+  ProcessType,
   IpcHandlerRefs,
-  IpcClientSendOptions,
 } from './types';
-import { SendResponse, SendHandler } from './SendResponse';
-import { EVENT, CHANNEL } from './constants';
 
 export * from './types';
 
@@ -43,9 +42,8 @@ type Ref = {
  * Generic IPC (inter-process-communication)
  * observable data structure.
  */
-export class Client<M extends IpcMessage = any> implements IpcClient<M> {
+export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   public static readonly MAIN = 0;
-  public readonly MAIN = Client.MAIN;
 
   private readonly _: Ref = {
     disposed$: new Subject(),
@@ -54,12 +52,14 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
   };
 
   constructor(args: {
+    id: number;
     process: ProcessType;
     events$: Observable<IpcEvent>;
     onSend: SendDelegate;
     onHandlerRegistered: HandlerRegistered;
     getHandlerRefs: GetHandlerRefs;
   }) {
+    this.id = args.id;
     this.process = args.process;
     this._.onSend = args.onSend;
     this._.onHandlerRegistered = args.onHandlerRegistered;
@@ -81,8 +81,10 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
   /**
    * Fields.
    */
+  public readonly id: number;
   public readonly process: ProcessType;
-  public readonly channel = CHANNEL.EVENTS;
+  public readonly channel = GLOBAL.IPC_CHANNEL;
+  public readonly MAIN = IPC.MAIN;
   public disposed$ = this._.disposed$.pipe(share());
   public isDisposed = false;
   public timeout = 5000;
@@ -101,19 +103,6 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
   public dispose() {
     this.isDisposed = true;
     this._.disposed$.next();
-  }
-
-  /**
-   * The ID of the executing process
-   * (ie. the ID of the renderer window or MAIN `0`).
-   */
-  public get id(): number {
-    if (is.renderer()) {
-      const remote = require('electron').remote as Electron.Remote;
-      return remote.getCurrentWindow().id;
-    } else {
-      return Client.MAIN;
-    }
   }
 
   /**
@@ -158,20 +147,22 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
 
     const { target } = options;
     const id = this.id;
-    const targets = Client.asTarget(target);
+    const targets = IPC.asTarget(target);
     const process = this.process;
     const eid = `${process}-${id}/${idUtil.shortid()}`;
-    const sender = Client.toIdentifier(this);
+    const sender = IPC.toIdentifier(this);
 
     // Fire the event through the electron IPC system.
     const data: IpcEvent<T> = { eid, type, payload, sender, targets };
     const handlers = this._.handlers;
     const events$ = this.events$;
-    const registeredClients = this.registeredClients({
-      type,
-      exclude: [id],
-    }).filter(c => c.id !== id);
     const timeout = valueUtil.defaultValue(options.timeout, this.timeout);
+    const registeredClients = this
+      // Clients handling the event, not including this one.
+      .handlers(type, { exclude: id })
+      .filter(c => c.id !== id);
+
+    // Prepare the send response.
     const res = new SendResponse<T, D>({
       data,
       events$,
@@ -203,7 +194,7 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
 
     // Alert the process of the registration.
     if (this._.onHandlerRegistered) {
-      const client = Client.toIdentifier(this);
+      const client = IPC.toIdentifier(this);
       this._.onHandlerRegistered({ type, client });
     }
 
@@ -226,20 +217,12 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
 
         // Fire the response data through an event.
         const e: IpcHandlerResponseEvent['payload'] = { eid, data };
-        this._send<IpcHandlerResponseEvent>('./SYS/IPC/handler/response', e);
+        this._send<IpcHandlerResponseEvent>(
+          '@platform/IPC/handler/response',
+          e,
+        );
         return { args, data };
       });
-
-    /**
-     * TODO 🐷
-     *
-     * - wait for all handlers to respond
-     * - call 'complete' on observable
-     * - set reasonable (and configurable) timeout - and fail
-     * - `.complete` promise (error on timeout)
-     * - `.timeout$`
-     *
-     */
   }
 
   private get handlerRefs() {
@@ -252,13 +235,24 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
     return getHandlerRefs();
   }
 
-  private registeredClients(args: {
-    type: M['type'];
-    exclude?: number[];
-  }): IpcIdentifier[] {
-    const { type, exclude = [] } = args;
+  /**
+   * Get a list of clients from all windows/processes that are
+   * handling a particular event.
+   */
+  public handlers(
+    type: M['type'],
+    options: { exclude?: number | number[] } = {},
+  ): IpcIdentifier[] {
+    const exclude =
+      options.exclude === undefined
+        ? []
+        : Array.isArray(options.exclude)
+        ? options.exclude
+        : [options.exclude];
     const ref = this.handlerRefs[type];
-    return (ref ? ref.clients : []).filter(c => !exclude.includes(c.id));
+    return (ref ? ref.clients : [])
+      .filter(c => !exclude.includes(c.id))
+      .map(({ id, process }) => ({ id, process }));
   }
 
   /**

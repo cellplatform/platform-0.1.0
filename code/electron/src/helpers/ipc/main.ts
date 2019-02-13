@@ -2,9 +2,9 @@ import { BrowserWindow, ipcMain } from 'electron';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { Windows } from '../windows';
+import { WindowsMain } from '../windows';
 import {
-  Client,
+  IPC,
   HandlerRegistered,
   IpcClient,
   IpcEvent,
@@ -12,25 +12,23 @@ import {
   IpcRegisterHandlerEvent,
   SendDelegate,
 } from './Client';
-import { IpcIdentifier, IpcGlobalMainRefs } from './types';
+import { Global } from './main.Global';
+import { IpcHandlerRef, IpcIdentifier } from './types';
+import { GLOBAL } from '../constants';
 
-export { IpcClient };
 export * from './types';
-type HandlerRef = {
-  type: IpcMessage['type'];
-  clients: IpcIdentifier[];
-};
 
-type Refs = IpcGlobalMainRefs['_ipcRefs'];
-const refs: Refs = { handlers: {} };
-((global as unknown) as IpcGlobalMainRefs)._ipcRefs = refs;
+export const MAIN_ID = IPC.MAIN;
+
+type Refs = { main?: IpcClient };
+const refs: Refs = {};
 
 /**
  * Observable wrapper for the electron IPC [main] process.
  */
 export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
-  if (refs.client) {
-    return refs.client; // Already initialized.
+  if (refs.main) {
+    return refs.main; // Already initialized.
   }
 
   const stop$ = new Subject();
@@ -46,38 +44,39 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   };
 
   // Construct the [Main] client.
-  const client = new Client({
+  const main = new IPC({
+    id: MAIN_ID,
     process: 'MAIN',
     onSend: sendHandler,
     events$: events$.pipe(takeUntil(stop$)),
     onHandlerRegistered,
-    getHandlerRefs: () => refs.handlers,
+    getHandlerRefs: () => Global.handlerRefs,
   });
-  refs.client = client;
+  refs.main = main;
 
   // Ferry IPC events into the client.
-  const listener = (sys: Electron.Event, e: IpcEvent) => events$.next(e);
-  ipcMain.on(client.channel, listener);
+  const listener = (e: Electron.Event, args: IpcEvent) => events$.next(args);
+  ipcMain.on(main.channel, listener);
 
   // Unwire events when client is diposed.
-  client.disposed$.subscribe(() => stop());
+  main.disposed$.subscribe(() => stop());
   const stop = () => {
     stop$.next();
-    ipcMain.removeListener(client.channel, listener);
+    ipcMain.removeListener(main.channel, listener);
   };
 
   /**
    * Listen for messages coming in on the [main] IPC channel.
    */
-  ipcMain.on(client.channel, (sys: Electron.Event, e: IpcEvent) => {
-    sendToWindows(sys.sender.id, e);
+  ipcMain.on(main.channel, (e: Electron.Event, args: IpcEvent) => {
+    sendToWindows(e.sender.id, args);
   });
 
   /**
    * Ferry messages to all [renderer] windows.
    */
   const sendToWindows = (senderId: number, e: IpcEvent) => {
-    const target = Client.asTarget(e.targets);
+    const target = IPC.asTarget(e.targets);
 
     // - Do not send the message back to the originating window.
     // - If a target was set, only send to that window.
@@ -87,7 +86,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
         target.length === 0 ? true : target.includes(window.id),
       )
       .forEach(window => {
-        window.webContents.send(client.channel, e);
+        window.webContents.send(main.channel, e);
       });
   };
 
@@ -95,8 +94,8 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
    * Listen for handler registrations on client-windows and ferry
    * then onto the global registration manager.
    */
-  client
-    .on<IpcRegisterHandlerEvent>('./SYS/IPC/register-handler')
+  main
+    .on<IpcRegisterHandlerEvent>('@platform/IPC/register-handler')
     .subscribe(e => {
       const type = e.payload.type;
       const client = e.sender;
@@ -104,38 +103,55 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
     });
 
   /**
+   * Echo's the ID of the sender of an event.
+   */
+  ipcMain.on(GLOBAL.IPC.ID.REQUEST, async (e: Electron.Event) => {
+    const id = e.sender.id;
+    e.sender.send(GLOBAL.IPC.ID.RESPONSE, { id });
+  });
+
+  /**
    * Monitor browser-windows.
    */
-  const windows = new Windows();
+  const windows = new WindowsMain();
   windows.change$
     // Listen for browser-windows closing and unregister their handlers.
     .pipe(filter(e => e.type === 'CLOSED'))
     .subscribe(e => removeHandlerRef(e.window.id));
 
   // Finish up.
-  return client;
+  return main;
 };
 
 /**
  * INTERNAL
  */
 
+/**
+ * Adds a reference to a handler to the global object.
+ */
 function addHandlerRef(args: {
   type: IpcMessage['type'];
   client: IpcIdentifier;
 }) {
   const { type, client } = args;
-  const handlerRef: HandlerRef = refs.handlers[type] || { type, clients: [] };
+  const handlerRef: IpcHandlerRef = Global.handlerRefs[type] || {
+    type,
+    clients: [],
+  };
   const exists = handlerRef.clients.find(c => c.id === client.id);
   if (!exists) {
     handlerRef.clients = [...handlerRef.clients, client];
   }
-  refs.handlers = { ...refs.handlers, [type]: handlerRef };
+  Global.setHandlerRef(handlerRef);
 }
 
+/**
+ * Removes a handler ref rom the global object.
+ */
 function removeHandlerRef(id: number) {
   let changed = false;
-  let handlers = { ...refs.handlers };
+  let handlers = { ...Global.handlerRefs };
 
   Object.keys(handlers).forEach(type => {
     const ref = { ...handlers[type] };
@@ -147,6 +163,6 @@ function removeHandlerRef(id: number) {
     }
   });
 
-  refs.handlers = handlers;
+  Global.handlerRefs = handlers;
   return changed;
 }

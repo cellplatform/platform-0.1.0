@@ -1,14 +1,19 @@
 import '../node_modules/@uiharness/dev/css/normalize.css';
+import '@babel/polyfill';
+
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import renderer from '@platform/electron/lib/renderer';
 import { Test } from '../src/components';
-import { renderer, log } from '../src/common';
 
-renderer.init();
-
-try {
-  const el = <Test />;
-  ReactDOM.render(el, document.getElementById('root'));
-} catch (error) {
-  log.error('Load failed: ', error.message);
-}
+/**
+ * Render page.
+ */
+const el = <Test />;
+renderer
+  .render(el, 'root')
+  .then(context => {
+    console.log('renderer loaded:', context); // tslint:disable-line
+  })
+  .catch(err => {
+    /* Do something with the error */
+  });

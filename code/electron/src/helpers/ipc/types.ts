@@ -10,13 +10,6 @@ export type IpcHandlerRef = {
   clients: IpcIdentifier[];
 };
 export type IpcHandlerRefs = { [key: string]: IpcHandlerRef };
-export type IpcGlobalMainRefs = {
-  // NB: Internal use only. DO NOT TOUCH THESE.
-  _ipcRefs: {
-    client?: IpcClient;
-    handlers: IpcHandlerRefs;
-  };
-};
 
 /**
  * Message types/events.
@@ -79,6 +72,11 @@ export type IpcClient<M extends IpcMessage = any> = {
     type: T['type'],
     handler: IpcEventHandler<T>,
   ) => IpcClient<M>;
+
+  handlers: (
+    type: M['type'],
+    options?: { exclude?: number | number[] },
+  ) => IpcIdentifier[];
 };
 
 export type IpcClientSendOptions = {
@@ -93,10 +91,12 @@ export type IpcSending<M extends IpcMessage, D = any> = {
   eid: string; // The unique event-id.
   type: M['type'];
   elapsed: number;
-  results$: Observable<IpcSendResponse<M, D>>;
+  $: Observable<IpcSendResponse<M, D>>;
+  promise: Promise<IpcSending<M, D>>;
   timeout$: Observable<{}>;
   cancel$: Observable<{}>;
   results: Array<IpcHandlerResult<D>>;
+  resultFrom: (sender: number | ProcessType) => IpcHandlerResult<D> | undefined;
   cancel: () => IpcSending<M, D>;
   isCancelled: boolean;
   isComplete: boolean;
@@ -136,7 +136,7 @@ export type IpcEventHandler<M extends IpcMessage = any> = (
  * The response fired back from a registered handler.
  */
 export type IpcHandlerResponseEvent = {
-  type: './SYS/IPC/handler/response';
+  type: '@platform/IPC/handler/response';
   payload: {
     eid: string;
     data?: any;
@@ -147,7 +147,7 @@ export type IpcHandlerResponseEvent = {
  * A notification that an event-handler has been registered.
  */
 export type IpcRegisterHandlerEvent = {
-  type: './SYS/IPC/register-handler';
+  type: '@platform/IPC/register-handler';
   payload: {
     type: IpcMessage['type'];
     stage: 'CREATE' | 'DISPOSE';

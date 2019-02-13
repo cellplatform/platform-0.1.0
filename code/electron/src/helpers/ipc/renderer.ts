@@ -1,65 +1,54 @@
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IpcClient, Client, HandlerRegistered, GetHandlerRefs } from './Client';
-import {
-  IpcEvent,
-  IpcMessage,
-  IpcRegisterHandlerEvent,
-  IpcEventHandler,
-  ProcessType,
-  IpcHandlerRefs,
-  IpcGlobalMainRefs,
-} from './types';
-
-import { time } from '@tdb/util';
+import { GLOBAL } from '../constants';
+import { IPC, GetHandlerRefs, HandlerRegistered, IpcClient } from './Client';
+import { IpcEvent, IpcMessage, IpcRegisterHandlerEvent } from './types';
 
 export * from './types';
 export { IpcClient };
-
 const electron = (window as any).require('electron');
 const ipcRenderer = electron.ipcRenderer as Electron.IpcRenderer;
 const remote = electron.remote as Electron.Remote;
 
-const global: any = window;
-const KEY = '__TDB/IPC_CLIENT__';
-
 /**
  * Observable wrapper for the electron IPC [Renderer].
  */
-export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
+export async function init<M extends IpcMessage>(
+  args: { id?: number } = {},
+): Promise<IpcClient<M>> {
   /**
    * HACK:  Ensure multiple clients are not initialized on HMR (hot-module-reloads).
    *        This will only happen during development.
    */
-  if (global[KEY]) {
-    return global[KEY];
+  const global: any = window;
+  if (global[GLOBAL.IPC_CLIENT]) {
+    return global[GLOBAL.IPC_CLIENT];
   }
 
   const stop$ = new Subject();
   const events$ = new Subject<IpcEvent>();
+  const id = args.id === undefined ? await getId() : args.id;
 
   /**
    * Store references to event-handlers as they are registered.
    */
   const onHandlerRegistered: HandlerRegistered = args => {
-    client.send<IpcRegisterHandlerEvent>('./SYS/IPC/register-handler', {
+    client.send<IpcRegisterHandlerEvent>('@platform/IPC/register-handler', {
       type: args.type,
       stage: 'CREATE',
     });
   };
 
   const getHandlerRefs: GetHandlerRefs = () => {
-    type Refs = IpcGlobalMainRefs['_ipcRefs'];
-    const DEFAULT: Refs = { handlers: {} };
-    const refs: Refs = remote.getGlobal('_ipcRefs') || DEFAULT;
-    return refs.handlers;
+    return remote.getGlobal(GLOBAL.IPC_HANDLERS) || {};
   };
 
   /**
    * Construct the [Renderer] client.
    */
-  const client = new Client({
+  const client = new IPC({
+    id,
     process: 'RENDERER',
     events$: events$.pipe(takeUntil(stop$)),
     onSend: ipcRenderer.send,
@@ -70,7 +59,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   /**
    * Ferry IPC events into the client.
    */
-  const listener = (sys: Electron.Event, e: IpcEvent) => events$.next(e);
+  const listener = (e: Electron.Event, args: IpcEvent) => events$.next(args);
   ipcRenderer.on(client.channel, listener);
 
   /**
@@ -83,6 +72,22 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   };
 
   // Finish up.
-  global[KEY] = client;
+  global[GLOBAL.IPC_CLIENT] = client;
   return client;
-};
+}
+
+/**
+ * Retrieves the ID of the current window.
+ */
+export function getId() {
+  return new Promise<number>((resolve, reject) => {
+    ipcRenderer.send(GLOBAL.IPC.ID.REQUEST);
+    ipcRenderer.on(
+      GLOBAL.IPC.ID.RESPONSE,
+      (e: Electron.Event, args: { id?: number } = {}) => {
+        const id = args.id === undefined ? -1 : args.id;
+        resolve(id);
+      },
+    );
+  });
+}

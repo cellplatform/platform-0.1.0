@@ -248,7 +248,7 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-syntax-json-strings" "^7.2.0"
 
-"@babel/plugin-proposal-object-rest-spread@^7.2.0", "@babel/plugin-proposal-object-rest-spread@^7.3.1":
+"@babel/plugin-proposal-object-rest-spread@^7.3.1":
   version "7.3.2"
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-object-rest-spread/-/plugin-proposal-object-rest-spread-7.3.2.tgz#6d1859882d4d778578e41f82cc5d7bf3d5daf6c1"
   integrity sha512-DjeMS+J2+lpANkYLLO+m6GjoTMygYglKmRe6cDTbFv3L9i6mmiE8fe6B8MtCSLZpVXscD5kn7s6SgtHrDoBWoA==
@@ -592,54 +592,15 @@
     "@babel/helper-regex" "^7.0.0"
     regexpu-core "^4.1.3"
 
-"@babel/preset-env@7.2.3":
-  version "7.2.3"
-  resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.2.3.tgz#948c8df4d4609c99c7e0130169f052ea6a7a8933"
-  integrity sha512-AuHzW7a9rbv5WXmvGaPX7wADxFkZIqKlbBh1dmZUQp4iwiPpkE/Qnrji6SC4UQCQzvWY/cpHET29eUhXS9cLPw==
+"@babel/polyfill@7.2.5":
+  version "7.2.5"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.2.5.tgz#6c54b964f71ad27edddc567d065e57e87ed7fa7d"
+  integrity sha512-8Y/t3MWThtMLYr0YNC/Q76tqN1w30+b0uQMeFUYauG2UGTR19zyUtFrAzT23zNtBxPp+LbE5E/nwV/q/r3y6ug==
   dependencies:
-    "@babel/helper-module-imports" "^7.0.0"
-    "@babel/helper-plugin-utils" "^7.0.0"
-    "@babel/plugin-proposal-async-generator-functions" "^7.2.0"
-    "@babel/plugin-proposal-json-strings" "^7.2.0"
-    "@babel/plugin-proposal-object-rest-spread" "^7.2.0"
-    "@babel/plugin-proposal-optional-catch-binding" "^7.2.0"
-    "@babel/plugin-proposal-unicode-property-regex" "^7.2.0"
-    "@babel/plugin-syntax-async-generators" "^7.2.0"
-    "@babel/plugin-syntax-object-rest-spread" "^7.2.0"
-    "@babel/plugin-syntax-optional-catch-binding" "^7.2.0"
-    "@babel/plugin-transform-arrow-functions" "^7.2.0"
-    "@babel/plugin-transform-async-to-generator" "^7.2.0"
-    "@babel/plugin-transform-block-scoped-functions" "^7.2.0"
-    "@babel/plugin-transform-block-scoping" "^7.2.0"
-    "@babel/plugin-transform-classes" "^7.2.0"
-    "@babel/plugin-transform-computed-properties" "^7.2.0"
-    "@babel/plugin-transform-destructuring" "^7.2.0"
-    "@babel/plugin-transform-dotall-regex" "^7.2.0"
-    "@babel/plugin-transform-duplicate-keys" "^7.2.0"
-    "@babel/plugin-transform-exponentiation-operator" "^7.2.0"
-    "@babel/plugin-transform-for-of" "^7.2.0"
-    "@babel/plugin-transform-function-name" "^7.2.0"
-    "@babel/plugin-transform-literals" "^7.2.0"
-    "@babel/plugin-transform-modules-amd" "^7.2.0"
-    "@babel/plugin-transform-modules-commonjs" "^7.2.0"
-    "@babel/plugin-transform-modules-systemjs" "^7.2.0"
-    "@babel/plugin-transform-modules-umd" "^7.2.0"
-    "@babel/plugin-transform-new-target" "^7.0.0"
-    "@babel/plugin-transform-object-super" "^7.2.0"
-    "@babel/plugin-transform-parameters" "^7.2.0"
-    "@babel/plugin-transform-regenerator" "^7.0.0"
-    "@babel/plugin-transform-shorthand-properties" "^7.2.0"
-    "@babel/plugin-transform-spread" "^7.2.0"
-    "@babel/plugin-transform-sticky-regex" "^7.2.0"
-    "@babel/plugin-transform-template-literals" "^7.2.0"
-    "@babel/plugin-transform-typeof-symbol" "^7.2.0"
-    "@babel/plugin-transform-unicode-regex" "^7.2.0"
-    browserslist "^4.3.4"
-    invariant "^2.2.2"
-    js-levenshtein "^1.1.3"
-    semver "^5.3.0"
+    core-js "^2.5.7"
+    regenerator-runtime "^0.12.0"
 
-"@babel/preset-env@^7.0.0":
+"@babel/preset-env@7.3.1", "@babel/preset-env@^7.0.0":
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.3.1.tgz#389e8ca6b17ae67aaf9a2111665030be923515db"
   integrity sha512-FHKrD6Dxf30e8xgHQO0zJZpUPfVZg+Xwgz5/RdSWCbza9QLNk4Qbp40ctRoqDxml3O8RMzB1DU55SXeDG6PqHQ==
@@ -806,23 +767,24 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/cli@0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.30.tgz#e1acb3723df7a12eeee9da0066131c831452dd1c"
-  integrity sha512-5cwll946xGqgcseZLWB784O0Aaa1hkuYCx8nEJiRP8J9ay8v0n0jFVaM2KYNSqoLAsrIRyfVV+DlYZWTUxJ4pg==
+"@platform/cli@0.0.33":
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.33.tgz#62093a9d25481f0058c870f290142079ba7618e0"
+  integrity sha512-plBGW3yA0Lo/iW151viyst8MvDP11gU8OOTFfAjrLaSjfNYnJ+s0S5FynqPeSoRVB3KGCWDyBnpE15JRouMQrg==
   dependencies:
-    "@platform/fs" "0.0.29"
+    "@platform/fs" "0.0.32"
     "@types/listr" "0.13.0"
     listr "0.14.3"
     yargs "12.0.5"
 
-"@platform/electron@0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.33.tgz#08f00655cc8400855c8b62fd4fa40aadbaccee85"
-  integrity sha512-e7tboE4rVcEbMy4EDR9KRM5Ye66oVgYEWNznopwgzAxMFBkmIwR4XTQT2mjbSKgG70V4p3sY737inHjfEhQXVQ==
+"@platform/electron@0.0.51":
+  version "0.0.51"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.51.tgz#bd06c622a5383c76b7c154d7d470d4c6483bfe26"
+  integrity sha512-1B3CxwKb5Mq5tTgRcvWFeaoQk4K+1n2DjOfQYgkLI+dEZX3yxzROoK1RiCn7XWxI5RsgEkFnNAg8ZgVOoeYgwg==
   dependencies:
-    "@platform/fs" "0.0.29"
-    "@platform/log" "0.0.43"
+    "@babel/polyfill" "7.2.5"
+    "@platform/fs" "0.0.32"
+    "@platform/log" "0.0.53"
     "@tdb/util" "1.9.38"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.1.0"
@@ -832,10 +794,10 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/fs@0.0.29":
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.29.tgz#630044fb5fbd54a956d28a53312b32b615bc06bd"
-  integrity sha512-ax4IgcvsqoDIbr2i1bAX9B8ZEf4FZNMD9pcgQYTwkj/0OekmhRzawXs+lgXRkIgpE0z1e3V6Lwwsh3i2+eAvRg==
+"@platform/fs@0.0.32":
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.32.tgz#47c1c96f0e1e2ff9838b1257da526a1018a1c304"
+  integrity sha512-b5WAxUGy6QhmpXazpXFuGTC69+wx8+zliX04YVTQn9ZY0xUELiJhl7zAI1TmhfMHAggESvQ7zYHDBhIjM1LXqw==
   dependencies:
     "@types/fs-extra" "5.0.4"
     fast-glob "2.2.6"
@@ -852,30 +814,30 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/log@0.0.43":
-  version "0.0.43"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.43.tgz#402d96bbe3aefe17e75fcf0d4e3b8db23658b40e"
-  integrity sha512-I7CZ2kP56NVVjvNLytPN8E1HOxFxsNTtiDpE7jQdzWHHRSjBjSxYCjPyPkj9JtTYITF1Zvo/kxnfMeWRxfi3LQ==
+"@platform/log@0.0.53":
+  version "0.0.53"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.53.tgz#f7694f06c37e5b40a49cd492eca55a963518ae2c"
+  integrity sha512-X3UiB+80LDq0pc8fxtZHXHqTZN7FM/9A4mQ9PiUEimbAS0z8fGpGhI3Kv0BExhSqVyDzztHOZjcb4CLoRHqIIw==
   dependencies:
     "@platform/libs" "0.0.2"
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/ts.cli@3.3.19":
-  version "3.3.19"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.19.tgz#8231211862692070844f0597327f12217bc50be1"
-  integrity sha512-xn5K6PehXdVaokoxUSWqPPk/rXBvPyy0SyA67vpZA53GlNaNI7RL32Pey/1t6XgwDE5pVD5QpdJcUnSfV1pnGw==
+"@platform/ts.cli@3.3.26":
+  version "3.3.26"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.26.tgz#5a487c090143d3d6a0d628b02a85cfb19554a4b6"
+  integrity sha512-2eRHWkuMQFHjnPrmswk8Nea56Jbg1PGbYBBFOKI0GszZF0NLwibuW1muMLX9n8yuAG4QfYZcvKdYXNHGnJTjzg==
   dependencies:
-    "@platform/cli" "0.0.30"
-    "@platform/fs" "0.0.29"
+    "@platform/cli" "0.0.33"
+    "@platform/fs" "0.0.32"
     "@platform/libs" "0.0.2"
-    "@platform/ts" "3.3.40"
+    "@platform/ts" "3.3.41"
     yargs "12.0.5"
 
-"@platform/ts@3.3.40":
-  version "3.3.40"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.40.tgz#f1f5e7fbf8579c1368d59ea2a2cba7984a05469a"
-  integrity sha512-J4dWoDocKcnA/riiqqOS220sTBm6btCmA785VlAQ1vYbnIlKTME3jYXQUltDPrckeDRZXQy+LZiudmNTKq5KYw==
+"@platform/ts@3.3.41":
+  version "3.3.41"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.41.tgz#cc596505fa7bc41d00e1503d47654b5c4d082b7d"
+  integrity sha512-4+7fnwGMGI3+6UalS5ef4FExjEA4MGIomC+JIebs3lBMm7XZBdjcAHELBOjKyO/JagLRHQJ+JJjTjZSMX7qIBw==
   dependencies:
     "@types/node" "10.12.24"
     prettier "1.16.4"
@@ -1156,21 +1118,23 @@
   resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.8.9.tgz#fef41f800cd23db1b4f262ddefe49cd952d82323"
   integrity sha512-vfzZGgZKRFy7KEWcBGfIFk+h6B+thDCLfkD1exMBMRlUsx2icA+J6y4kAbZs/TjSTeY1duw89QUU133TSzr60Q==
 
-"@uiharness/dev@0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.0.30.tgz#aebac09bb1383a8792a2122fc9e3605693903602"
-  integrity sha512-2Vf8CQl67N7/p6y3Ivx4162ISiPjo7dblOW+VOE+IkFuM0nS72sEdRPYUHkjZ/blUmzBrYqScCJGXdpjxx6jzA==
+"@uiharness/dev@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.1.0.tgz#3c9c175d7f0d0f03d05c9f0124824b75ece49092"
+  integrity sha512-lgqeQIwZSKJjsHQxYZ6UBmLgbG5jpZ4G1WQXqYkhjkQ6OJsg6DrEkAGWxu5g4Br29ttym5U4C1dVA5ZvILRR6Q==
   dependencies:
     "@babel/core" "7.2.2"
-    "@babel/preset-env" "7.2.3"
+    "@babel/polyfill" "7.2.5"
+    "@babel/preset-env" "7.3.1"
     "@babel/preset-react" "7.0.0"
     "@babel/preset-typescript" "7.1.0"
-    "@platform/fs" "0.0.29"
-    "@platform/log" "0.0.43"
+    "@platform/electron" "0.0.51"
+    "@platform/fs" "0.0.32"
+    "@platform/log" "0.0.53"
     "@tdb/util" "1.9.38"
-    "@uiharness/electron" "0.3.88"
-    "@uiharness/types" "0.0.35"
-    create-tmpl "0.1.19"
+    "@uiharness/electron" "0.3.103"
+    "@uiharness/types" "0.0.41"
+    create-tmpl "0.1.24"
     electron "4.0.4"
     electron-builder "20.38.5"
     execa "1.0.0"
@@ -1179,17 +1143,17 @@
     serve "10.1.2"
     yargs "12.0.5"
 
-"@uiharness/electron@0.3.88":
-  version "0.3.88"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.88.tgz#c1dd1ef84c20649133d00fa450b2f3c1011eae68"
-  integrity sha512-1cxuWOL/V9oYrWn5eOiLGXljStm8h0spq7n8b6a6GNJbXjbAMURPpzfIO5o2PLnZMaibJwvNpmV06OJf0k/kKA==
+"@uiharness/electron@0.3.103":
+  version "0.3.103"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.103.tgz#3ce53885d27fbed17ed034ab44468139f492765f"
+  integrity sha512-C29uzrrE221eJ+JHGYCCY1PkqBFejVWrLlW2YflCT6STcyiHopQKj3ymJblEbQTGXkB5jJp3M7d3gSS1M3x0tA==
   dependencies:
-    "@platform/electron" "0.0.33"
+    "@platform/electron" "0.0.51"
     "@platform/libs" "0.0.2"
-    "@platform/log" "0.0.43"
+    "@platform/log" "0.0.53"
     "@tdb/util" "1.9.38"
     "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.0.35"
+    "@uiharness/types" "0.0.41"
     app-root-path "2.1.0"
     electron-is "3.0.0"
     electron-is-dev "1.0.1"
@@ -1197,10 +1161,10 @@
     electron-window-state "5.0.3"
     tslib "1.9.3"
 
-"@uiharness/types@0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.0.35.tgz#1fbf330721e81e0e27574d463785777360b18d8c"
-  integrity sha512-3v4qjZebdqozGK/rrvy9qF/+JD0MLOG9G30zbz6aYLTSG9I7OF/hyEBdsX70UZOendzWvKDKDyWzOMvMmoWD3Q==
+"@uiharness/types@0.0.41":
+  version "0.0.41"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.0.41.tgz#66142df217cf27a1ea9663f5e51743f7c767e901"
+  integrity sha512-qlq4PG8d2hYTUQspMM7UjaMQFPryblttI7Le+apLi6cZKNAMtv0AJim9DyI503o9v8ax4eCCoqj7f6KJXzZC4g==
 
 "@zeit/schemas@2.6.0":
   version "2.6.0"
@@ -2348,6 +2312,11 @@ core-js@^2.4.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.3.tgz#4b70938bdffdaf64931e66e2db158f0892289c49"
   integrity sha512-l00tmFFZOBHtYhN4Cz7k32VM7vTn3rE2ANjQDxdEN6zmXZ/xq1jQuutnmHvMG1ZJ7xd72+TA5YpUK8wz3rWsfQ==
 
+core-js@^2.5.7:
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.4.tgz#b8897c062c4d769dd30a0ac5c73976c47f92ea0d"
+  integrity sha512-05qQ5hXShcqGkPZpXEFLIpxayZscVD2kuMBZewxiIPPEagukO4mqgPA9CWhUvFBJfy3ODdK2p9xyHh7FTU9/7A==
+
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -2401,13 +2370,13 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-tmpl@0.1.19:
-  version "0.1.19"
-  resolved "https://registry.yarnpkg.com/create-tmpl/-/create-tmpl-0.1.19.tgz#370e46dafac5e321a3f85129b37d4899c4b59167"
-  integrity sha512-jsWpuYsSkXye/Ad9HXgO1pL+BUczV/erVeoibvY6DQrswGOvy2awm27VFH5rfOUTNudQdFASuDd/pL9nWJmIvg==
+create-tmpl@0.1.24:
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/create-tmpl/-/create-tmpl-0.1.24.tgz#de47a491999b6385eb709dec55b3f613c3f2b647"
+  integrity sha512-xTZ6VTXAiCrLK7+yH/E240i+i5naooq2gr83NXLLERpidrqgpJhIitvXLwLPCIwOQeYCLTz69M8QWRE1D6MZmw==
   dependencies:
-    "@platform/cli" "0.0.30"
-    "@platform/fs" "0.0.29"
+    "@platform/cli" "0.0.33"
+    "@platform/fs" "0.0.32"
     "@tdb/npm" "0.1.21"
     "@tdb/util" "1.9.38"
     "@types/inquirer" "0.0.43"

@@ -1,18 +1,37 @@
-import { ILog } from '@platform/log/lib/types';
-import { IpcClient } from './helpers/ipc';
+import { IpcClient, IpcMessage } from './helpers/ipc/types';
+import { ILog, IMainLog } from './helpers/logger/types';
+import { IStoreClient, StoreJson } from './helpers/store/types';
+import { DevTools } from './helpers/devTools/renderer';
 
-export { ILog };
+export * from './renderer/types';
+export * from './main/types';
+
+export {
+  IStoreClient,
+  IMainStoreClient,
+  StoreJson,
+} from './helpers/store/types';
+
+export { IpcMessage } from './helpers/ipc/types';
+
+export { ILog, IMainLog, IpcClient };
 export type ProcessType = 'MAIN' | 'RENDERER';
 
-export type IContext = {
-  ipc: IpcClient;
+export type IContext<M extends IpcMessage = any, S extends StoreJson = any> = {
+  id: number;
+  ipc: IpcClient<M>;
+  store: IStoreClient<S>;
   log: ILog;
+};
+
+export type IRendererContext<
+  M extends IpcMessage = any,
+  S extends StoreJson = any
+> = IContext<M, S> & {
+  devTools: DevTools;
 };
 
 /**
  * Events
  */
-import { LoggerEvents } from './helpers/logger/types';
-import { DevToolEvents } from './helpers/devTools/types';
-export { LoggerEvents, DevToolEvents };
-export type SystemEvents = LoggerEvents | DevToolEvents;
+export { SystemEvents } from './helpers/types';

@@ -2,6 +2,14 @@
 # yarn lockfile v1
 
 
+"@babel/polyfill@7.2.5":
+  version "7.2.5"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.2.5.tgz#6c54b964f71ad27edddc567d065e57e87ed7fa7d"
+  integrity sha512-8Y/t3MWThtMLYr0YNC/Q76tqN1w30+b0uQMeFUYauG2UGTR19zyUtFrAzT23zNtBxPp+LbE5E/nwV/q/r3y6ug==
+  dependencies:
+    core-js "^2.5.7"
+    regenerator-runtime "^0.12.0"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -15,20 +23,20 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/cli@0.0.32":
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.32.tgz#61c6595c6c60e21a9bf55075eeeacc401175edd9"
-  integrity sha512-8+3J/X1G43Bp2XHouK1L7oKD0h+OzNFLmVBcBJPPwJlKKtgYMNQJxCuWgxt2iq8kelL2FupgyyfE+/cRNePhlw==
+"@platform/cli@0.0.33":
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.33.tgz#62093a9d25481f0058c870f290142079ba7618e0"
+  integrity sha512-plBGW3yA0Lo/iW151viyst8MvDP11gU8OOTFfAjrLaSjfNYnJ+s0S5FynqPeSoRVB3KGCWDyBnpE15JRouMQrg==
   dependencies:
-    "@platform/fs" "0.0.31"
+    "@platform/fs" "0.0.32"
     "@types/listr" "0.13.0"
     listr "0.14.3"
     yargs "12.0.5"
 
-"@platform/fs@0.0.31":
-  version "0.0.31"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.31.tgz#dd9726b641bb3a1e310fcd05d813a5be9480556c"
-  integrity sha512-VSStDLbqA2fMmHXokqBuJHYzQ+vQWRUO8/6+AnVAReYWJbSD2rlF0zKEyCWtrxrwEGlWuHDVHAjOMu0AnNK5ug==
+"@platform/fs@0.0.32":
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.32.tgz#47c1c96f0e1e2ff9838b1257da526a1018a1c304"
+  integrity sha512-b5WAxUGy6QhmpXazpXFuGTC69+wx8+zliX04YVTQn9ZY0xUELiJhl7zAI1TmhfMHAggESvQ7zYHDBhIjM1LXqw==
   dependencies:
     "@types/fs-extra" "5.0.4"
     fast-glob "2.2.6"
@@ -45,40 +53,40 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/log@0.0.47":
-  version "0.0.47"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.47.tgz#724fdf669f029a5ce1804e5054379908530f2ab9"
-  integrity sha512-MIluuH1RXh+nxla/fH/Ae9pLsQzzlWSh0b1nraLnEHsTM6swCXXNFf8Zpy7+BF5sjUlXJ9j+gYStGR8UMZeIEA==
+"@platform/log@0.0.53":
+  version "0.0.53"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.53.tgz#f7694f06c37e5b40a49cd492eca55a963518ae2c"
+  integrity sha512-X3UiB+80LDq0pc8fxtZHXHqTZN7FM/9A4mQ9PiUEimbAS0z8fGpGhI3Kv0BExhSqVyDzztHOZjcb4CLoRHqIIw==
   dependencies:
     "@platform/libs" "0.0.2"
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/test@0.0.25":
-  version "0.0.25"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.25.tgz#9324a47b1bc0456bd2bdf8e87a9c0c474f172ea1"
-  integrity sha512-3W+wBSwsBlpvuhfLxpkbGvLnuqWoUOsxGM0CSeMwdvdfF7FCMLa3HAxKPNMBZytphU4CHbGTyg7OM79mLFkU5w==
+"@platform/test@0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.26.tgz#fdd205aee4da34fb8c471cf48a3e911a9d09b22e"
+  integrity sha512-ku4Uh5iPQcdQViaLxxNygSnuLqMEXjhYcYBUEIEG4dUC7oF4RYinBKCIfu41xE2P9dbIA0NAWxmXEsL9ONGrww==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.5"
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts.cli@3.3.23":
-  version "3.3.23"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.23.tgz#f5e7b2cda5d392d3da7779a4a4908c28085750ad"
-  integrity sha512-4pqnv/NyG8APbPzmfulSqgMkyd5P2LJY0o+/Hx2pHpcrbtFIDMpBouKGrvmEW9in1aL6T47bgJpgAkHDZAXRKw==
+"@platform/ts.cli@3.3.26":
+  version "3.3.26"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.26.tgz#5a487c090143d3d6a0d628b02a85cfb19554a4b6"
+  integrity sha512-2eRHWkuMQFHjnPrmswk8Nea56Jbg1PGbYBBFOKI0GszZF0NLwibuW1muMLX9n8yuAG4QfYZcvKdYXNHGnJTjzg==
   dependencies:
-    "@platform/cli" "0.0.32"
-    "@platform/fs" "0.0.31"
+    "@platform/cli" "0.0.33"
+    "@platform/fs" "0.0.32"
     "@platform/libs" "0.0.2"
-    "@platform/ts" "3.3.40"
+    "@platform/ts" "3.3.41"
     yargs "12.0.5"
 
-"@platform/ts@3.3.40":
-  version "3.3.40"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.40.tgz#f1f5e7fbf8579c1368d59ea2a2cba7984a05469a"
-  integrity sha512-J4dWoDocKcnA/riiqqOS220sTBm6btCmA785VlAQ1vYbnIlKTME3jYXQUltDPrckeDRZXQy+LZiudmNTKq5KYw==
+"@platform/ts@3.3.41":
+  version "3.3.41"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.41.tgz#cc596505fa7bc41d00e1503d47654b5c4d082b7d"
+  integrity sha512-4+7fnwGMGI3+6UalS5ef4FExjEA4MGIomC+JIebs3lBMm7XZBdjcAHELBOjKyO/JagLRHQJ+JJjTjZSMX7qIBw==
   dependencies:
     "@types/node" "10.12.24"
     prettier "1.16.4"
@@ -653,7 +661,7 @@ core-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
   integrity sha1-ZSKUwUZR2yj6k70tX/KYOk8IxjY=
 
-core-js@^2.4.0:
+core-js@^2.4.0, core-js@^2.5.7:
   version "2.6.4"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.4.tgz#b8897c062c4d769dd30a0ac5c73976c47f92ea0d"
   integrity sha512-05qQ5hXShcqGkPZpXEFLIpxayZscVD2kuMBZewxiIPPEagukO4mqgPA9CWhUvFBJfy3ODdK2p9xyHh7FTU9/7A==
@@ -854,10 +862,10 @@ electron-window-state@5.0.3:
     jsonfile "^4.0.0"
     mkdirp "^0.5.1"
 
-electron@4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-4.0.3.tgz#0d45a4bcfb63b3e39daf44aeb599b89e95d2a055"
-  integrity sha512-wOBYnlv3Xgbwh9DAHBktP3sQcbCBuXMQi1NzPH3EMnbdYNqj+FnTzVLq0RYp0uSzdjR3fhAZ/E6wFSMLaAc5iw==
+electron@4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-4.0.4.tgz#638e32ccbe9ded1124c3e6dbbaa1e16d37c32019"
+  integrity sha512-zG5VtLrmPfmw1fXY/3BEtRZk7OZ7djQhweZ6rW+R5NeF6s8RTz/AwTGtLoBo4z8wmJ5QTy0Y941FZw4pe5YlpA==
   dependencies:
     "@types/node" "^10.12.18"
     electron-download "^4.1.0"
@@ -2386,6 +2394,11 @@ regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
+
+regenerator-runtime@^0.12.0:
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
+  integrity sha512-odxIc1/vDlo4iZcfXqRYFj0vpXFNoGdKMAUieAlFYO6m/nl5e9KR/beGf41z4a1FI+aQgtjhuaSlDxQ0hmkrHg==
 
 regex-not@^1.0.0, regex-not@^1.0.2:
   version "1.0.2"

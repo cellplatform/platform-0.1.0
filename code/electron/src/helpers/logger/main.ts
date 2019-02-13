@@ -1,38 +1,43 @@
+import { fs } from '@platform/fs';
 import { create as createLog, format } from '@platform/log/lib/server';
 import { moment } from '@tdb/util';
-import { app } from 'electron';
 import * as is from 'electron-is';
 import * as elog from 'electron-log';
-import { fs } from '@platform/fs';
 import { filter, map } from 'rxjs/operators';
 
 import { IpcClient } from '../ipc/Client';
-import { ILogEvent, LoggerEvents, LogLevel, ProcessType } from './types';
+import * as t from './types';
 
 export { moment, id } from '@tdb/util';
 
 type ILogMetadata = { start: { dev: number; prod: number } };
 type Env = 'prod' | 'dev';
 
-let isInitialized = false;
-export const log = createLog();
+type Ref = { log?: t.IMainLog };
+const ref: Ref = {};
 
 /**
  * Configure local logging on the [main] process.
  */
-export function init(args: { ipc: IpcClient; dir?: string }) {
-  if (isInitialized) {
-    return log;
+export function init(args: { ipc: IpcClient; dir: string }) {
+  if (ref.log) {
+    return ref.log;
   }
-  isInitialized = true;
-  const ipc = args.ipc as IpcClient<LoggerEvents>;
+  const ipc = args.ipc as IpcClient<t.LoggerEvents>;
 
   // Derive log location and store it.
-  const paths = getPaths({
-    dir: args.dir || fs.join(fs.dirname(app.getPath('logs')), app.getName()),
-  });
+  const paths = getPaths({ dir: args.dir });
   const { dir, env } = paths;
   fs.ensureDirSync(dir);
+
+  // Create the logger.
+  const log = createLog() as t.IMainLog;
+  log.paths = {
+    dir,
+    dev: paths.dev.path,
+    prod: paths.prod.path,
+  };
+  ref.log = log;
 
   // Configure the file transport.
   elog.transports.file.format = '{h}:{i}:{s} {text}';
@@ -64,8 +69,8 @@ export function init(args: { ipc: IpcClient; dir?: string }) {
   }
 
   // Write events to logs.
-  const write = (process: ProcessType, level: LogLevel, output: string) => {
-    const prefix = toPrefix(process);
+  const write = (process: t.ProcessType, level: t.LogLevel, output: string) => {
+    const prefix = toPrefix(log, process);
     elog[level](prefix, output);
     if (is.dev() && process === 'MAIN') {
       // NB:  Don't worry about writing VIEW renderer logs to the console
@@ -79,7 +84,7 @@ export function init(args: { ipc: IpcClient; dir?: string }) {
     .pipe(
       filter(() => !log.silent),
       filter(e => e.type === 'LOG'),
-      map(e => e.payload as ILogEvent),
+      map(e => e.payload as t.ILogEvent),
     )
     .subscribe(e => write('MAIN', e.level, e.output));
 
@@ -87,7 +92,7 @@ export function init(args: { ipc: IpcClient; dir?: string }) {
   // and write them to the log.
   ipc.events$
     .pipe(
-      filter(e => e.type === 'LOG/write'),
+      filter(e => e.type === '@platform/LOG/write'),
       filter(e => e.sender.process === 'RENDERER'),
       map(e => e.payload),
     )
@@ -156,7 +161,7 @@ function increment(args: { dir: string; env: 'dev' | 'prod' }) {
   return data.start[env];
 }
 
-const toPrefix = (process: ProcessType) => {
+const toPrefix = (log: t.ILog, process: t.ProcessType) => {
   const isMain = process === 'MAIN';
   let prefix = isMain ? 'MAIN' : 'VIEW';
   prefix = `${prefix} ‣`;
@@ -164,11 +169,3 @@ const toPrefix = (process: ProcessType) => {
   prefix = isMain ? log.green(prefix) : log.magenta(prefix);
   return prefix;
 };
-
-// const toPrefix = (process: ProcessType) => {
-//   let prefix = process === 'MAIN' ? 'MAIN' : 'VIEW';
-//   prefix = `[${prefix}]`;
-//   prefix = `${prefix}      `.substr(0, 6);
-//   prefix = log.gray(prefix);
-//   return prefix;
-// };

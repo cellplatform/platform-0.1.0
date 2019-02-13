@@ -5,5 +5,4 @@ export * from './types';
 export * from './helpers/ipc/types';
 export * from './helpers/logger/types';
 
-export { IpcClient } from './helpers/ipc';
 export { is, path };

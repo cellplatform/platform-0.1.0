@@ -1,17 +1,17 @@
 {
   "name": "@platform/log",
-  "version": "0.0.47",
+  "version": "0.0.53",
   "description": "Client and server logging.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "yarn run example",
-    "example": "node lib/examples",
-    "test": "ts test",
-    "tdd": "ts test --watch",
-    "lint": "ts lint",
-    "build": "ts build",
-    "prepare": "ts prepare",
+    "start": "yarn chmod && yarn run example",
+    "example": "yarn chmod && node lib/examples",
+    "test": "yarn chmod && ts test",
+    "tdd": "yarn chmod && ts test --watch",
+    "lint": "yarn chmod && ts lint",
+    "build": "yarn chmod && ts build",
+    "prepare": "yarn chmod && ts prepare",
     "chmod": "chmod 777 ./node_modules/.bin/ts",
     "tmp": "yarn chmod && cd src/client && ts $@"
   },
@@ -21,8 +21,8 @@
     "cli-table": "0.3.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.25",
-    "@platform/ts.cli": "3.3.23",
+    "@platform/test": "0.0.26",
+    "@platform/ts.cli": "3.3.26",
     "@types/chalk": "2.2.0"
   },
   "files": [

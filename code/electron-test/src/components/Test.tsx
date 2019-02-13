@@ -1,17 +1,18 @@
 import * as React from 'react';
 
 import { css, GlamorValue, renderer } from '../common';
-import { IpcTest } from './Test.Ipc';
-import { DevToolsTest } from './Test.DevTools';
-// import { StoreTest } from './Test.Store';
-
-renderer.init();
+import { IpcTest } from './Test-Ipc';
+import { DevToolsTest } from './Test-DevTools';
+import { StoreTest } from './Test-Store';
 
 export type ITestProps = {
   style?: GlamorValue;
 };
 
 export class Test extends React.PureComponent<ITestProps> {
+  public static contextType = renderer.Context;
+  public context!: renderer.ReactContext;
+
   public render() {
     const styles = {
       base: css({
@@ -19,11 +20,12 @@ export class Test extends React.PureComponent<ITestProps> {
         PaddingX: 25,
       }),
     };
+
     return (
       <div {...css(styles.base, this.props.style)}>
-        <IpcTest />
         <DevToolsTest />
-        {/* <StoreTest /> */}
+        <IpcTest />
+        <StoreTest />
       </div>
     );
   }

@@ -5,20 +5,20 @@ import { table } from './log.table';
 import {
   LogLevel,
   ILogEvent,
-  ServerLog,
-  LogTableOptions,
+  IServerLog,
+  ILogTableOptions,
   ILogAction,
 } from './types';
 
 /**
  * Creates a server log.
  */
-export function create(): ServerLog {
+export function create(): IServerLog {
   const color: ColorFormatter = (color, items) => chalk[color](items as any);
 
-  const log: ServerLog = {
+  const log: IServerLog = {
     ...createLog({ color }),
-    table: (options?: LogTableOptions) => table(log, options),
+    table: (options?: ILogTableOptions) => table(log, options),
   };
 
   // Run the log events through a formatter that converts the

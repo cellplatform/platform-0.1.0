@@ -9,8 +9,26 @@ cd electron-test
 yarn ui start
 ```
 
+
+## package.json
+Optionally add a [browserslist](https://github.com/browserslist/browserslist) reference:
+```json
+{
+  "browserslist": [
+    "electron >= 4"
+  ]
+}
+```
+- https://www.npmjs.com/package/electron-to-chromium
+
+## Polyfill
+The `babel-polyfill` is included to ensure [Parcel](https://parceljs.org) bundles correctly without causing certain errors when building a production distribution, for example  this [issue](https://github.com/parcel-bundler/parcel/issues/871#issuecomment-367899522):
+
+```
+regeneratorRuntime is not defined 😩
+```
+
+
 <p>&nbsp;<p>
 <p>&nbsp;<p>
 
-## 🐷 TODO
-- BUG(?): Double send (with callbacks) causes timeout to fire.

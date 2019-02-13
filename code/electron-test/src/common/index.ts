@@ -10,9 +10,3 @@ export const COLORS = {
   YELLOW: '#FBC72F',
   BLUE: '#477AF7',
 };
-
-import { renderer } from './libs';
-
-const res = renderer.init<types.MyEvents>();
-export const ipc = res.ipc;
-export const log = res.log;

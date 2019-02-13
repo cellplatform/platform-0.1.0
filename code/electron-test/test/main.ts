@@ -4,20 +4,21 @@ import * as uiharness from '@uiharness/electron/lib/main';
 import { BrowserWindow } from 'electron';
 import { map } from 'rxjs/operators';
 
-import * as types from '../src/types';
+import * as t from '../src/types';
 
-const config = require('../.uiharness/config.json');
+const config = require('../.uiharness/config.json') as uiharness.IUIHarnessRuntimeConfig;
 
 /**
  * Initialize the default [main] window process with the [UIHarness].
  */
 (async () => {
   // const store = main.store.create();
+  const appName = config.name;
 
   // NOTE:  You could also get [log, ipc] from `uiharness.init`.
   //        Calling these here as this is about testing the module
   //        that contains [log] and [ipc].
-  const { log, ipc } = main.init<types.MyEvents>();
+  const { log, ipc, store } = await main.init<t.MyEvents>({ appName });
 
   const { newWindow } = await uiharness.init({
     config,
@@ -44,7 +45,7 @@ const config = require('../.uiharness/config.json');
    * Subscribe to all events.
    */
   ipc
-    .filter(e => e.type !== 'LOG/write')
+    .filter(e => e.type !== '@platform/LOG/write')
     .subscribe(e => {
       const { targets, sender } = e;
       const type = log.yellow(e.type);
@@ -55,14 +56,14 @@ const config = require('../.uiharness/config.json');
    * Send a delayed IPC message from main to all windows.
    */
   time.delay(3000, () => {
-    const msg = { text: '🌳 delayed message from main' };
-    ipc.send<types.IMessageEvent>('MESSAGE', msg, 1);
+    const msg = { text: '🌳 delayed message from main to window-1' };
+    ipc.send<t.IMessageEvent>('MESSAGE', msg, { target: 1 });
   });
 
   /**
    * Provide a response-handler for a specific event.
    */
-  ipc.handle<types.IFooEvent>('FOO', async e => {
+  ipc.handle<t.IFooEvent>('FOO', async e => {
     // await time.wait(1000);
     return `response FOO (MAIN) 🤖`;
   });
@@ -71,11 +72,12 @@ const config = require('../.uiharness/config.json');
    * Dev tools.
    */
   ipc
-    .on<types.ICreateDevToolsEvent>('DEVTOOLS/create')
+    .on<t.ICreateDevToolsEvent>('DEVTOOLS/create')
     .pipe(map(e => e.payload))
     .subscribe(e => {
+      const id = e.windowId;
       const all = BrowserWindow.getAllWindows();
-      const parent = all.find(window => window.id === e.windowId);
+      const parent = all.find(window => window.id === id);
       main.devTools.create({ parent, ipc, log });
     });
 })();

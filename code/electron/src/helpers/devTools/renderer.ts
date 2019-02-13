@@ -1,18 +1,22 @@
-import { IpcInternal, IpcClient } from './types';
+import { delay } from 'rxjs/operators';
+import * as t from './types';
 
 /**
  * Renderer API for working with the dev-tools.
  * Call this from the root [/renderer] API.
  */
-export class DevToolsRenderer {
-  private ipc: IpcInternal;
+export class DevTools {
+  private ipc: t.IpcInternal;
 
   /**
-   * Initializes the dev tools.
+   * [Constructor]
    */
-  public init(args: { ipc: IpcClient }) {
+  constructor(args: { ipc: t.IpcClient }) {
     const ipc = (this.ipc = args.ipc);
-    ipc.on('DEV_TOOLS/clearConsole').subscribe(e => clearConsole());
+    ipc
+      .on<t.ClearConsoleEvent>('@platform/DEV_TOOLS/clearConsole')
+      .pipe(delay(0))
+      .subscribe(e => clearConsole());
   }
 
   /**
@@ -21,7 +25,10 @@ export class DevToolsRenderer {
   public clearConsoles() {
     clearConsole();
     if (this.ipc) {
-      this.ipc.send('DEV_TOOLS/clearConsole', {});
+      this.ipc.send<t.ClearConsoleEvent>(
+        '@platform/DEV_TOOLS/clearConsole',
+        {},
+      );
     }
   }
 }

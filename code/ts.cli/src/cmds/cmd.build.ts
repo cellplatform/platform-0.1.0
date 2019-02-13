@@ -60,18 +60,9 @@ export async function buildAs(
 type IArgs = IBuildArgs & { as?: BuildFormat };
 
 /**
- * Runs a TSC build.
+ * Runs a typescript build.
  */
 export async function build(args: IArgs): Promise<IResult> {
-  const { silent } = args;
-  const task: ITask = { title: 'build', task: () => buildTask(args) };
-  return exec.runTasks(task, { silent });
-}
-
-/**
- * Runs a TSC build.
- */
-export async function buildTask(args: IArgs): Promise<IResult> {
   const {
     dir = '',
     outDir = '',

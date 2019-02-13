@@ -1,108 +1,113 @@
+import { Observable } from 'rxjs';
+
 /**
- * Taken from [@types/electron-store]
- * See:
- *    /node_modules/@types/electron-store/index.d.ts
- *    https://github.com/sindresorhus/electron-store
- *
- * Hack:
- *    This is copied inline here because it is not working properly
- *    from the @types definition.
+ * [Client]
+ * An abstract representation of the configuration store
+ * that works on either the [main] or [renderer] processes.
  */
+export type IStoreClient<T extends StoreJson = any> = {
+  change$: Observable<IStoreChange>;
 
-export type JsonArray = Array<string | number | boolean | JsonObject>;
-export type JsonValue = string | number | boolean | JsonObject | JsonArray;
-export type JsonObject = { [x: string]: JsonValue };
+  read: (...keys: Array<keyof T>) => Promise<Partial<T>>;
+  write: (
+    ...values: Array<IStoreKeyValue<T>>
+  ) => Promise<IStoreSetValuesResponse>;
 
-export type ElectronStoreOptions<T> = {
-  /**
-   * Default data.
-   */
-  defaults?: T;
-
-  /**
-   * Name of the storage file (without extension).
-   */
-  name?: string;
-
-  /**
-   * Storage file location. Don't specify this unless absolutely necessary!
-   */
-  cwd?: string;
-
-  /**
-   * When specified, the store will be encrypted using the aes-256-cbc encryption algorithm.
-   */
-  encryptionKey?: string | Buffer;
+  keys: () => Promise<Array<keyof T>>;
+  get: <V extends StoreValue>(key: keyof T, defaultValue?: V) => Promise<V>;
+  set: <K extends keyof T>(key: K, value: T[K]) => Promise<T[K]>;
+  delete: <K extends keyof T>(...keys: K[]) => Promise<{}>;
+  clear: () => Promise<{}>;
+  openInEditor: () => IStoreClient<T>;
 };
 
-export declare class ElectronStore<T = {}>
-  implements Iterable<[string, JsonValue]> {
-  constructor(options?: ElectronStoreOptions<T>);
+export type IStoreKeyValue<T extends StoreJson = any> = {
+  key: keyof T;
+  value: T[keyof T] | undefined;
+};
 
-  /**
-   * Set an item.
-   */
-  public set<K extends keyof T>(key: K, value: T[K]): void;
-  public set(key: string, value: any): void;
+export type StoreValue = boolean | number | string | object | StoreJson;
+export type StoreJson = {
+  [key: string]: StoreValue | StoreValue[] | undefined;
+};
 
-  /**
-   * Set multiple items at once.
-   */
-  public set(object: Pick<T, keyof T> | T | JsonObject): void;
+export type IStoreFile = {
+  version: number;
+  body: StoreJson;
+};
 
-  /**
-   * Get an item or defaultValue if the item does not exist.
-   */
-  public get<K extends keyof T>(key: K, defaultValue?: JsonValue): T[K];
-  public get(key: string, defaultValue?: any): any;
+/**
+ * The store client with extended [main] properties.
+ */
+export type IMainStoreClient<T extends StoreJson = any> = IStoreClient<T> & {
+  path: string;
+};
 
-  /**
-   * Check if an item exists.
-   */
-  public has(key: keyof T | string): boolean;
+/**
+ * [Deletages]
+ */
+export type StoreSetAction = 'UPDATE' | 'DELETE';
 
-  /**
-   * Delete an item.
-   */
-  public delete(key: keyof T | string): void;
+export type GetStoreValues<T extends StoreJson> = (
+  keys: Array<keyof T>,
+) => Promise<StoreJson>;
 
-  /**
-   * Delete all items.
-   */
-  public clear(): void;
+export type SetStoreValues<T extends StoreJson> = (
+  keys: Array<IStoreKeyValue<T>>,
+  action: StoreSetAction,
+) => Promise<IStoreSetValuesResponse>;
 
-  /**
-   * Watches the given key, calling callback on any changes. When a key is first set oldValue
-   * will be undefined, and when a key is deleted newValue will be undefined.
-   */
-  public onDidChange<K extends keyof T>(
-    key: K,
-    callback: (newValue: T[K], oldValue: T[K]) => void,
-  ): void;
-  public onDidChange(
-    key: string,
-    callback: (newValue: JsonValue, oldValue: JsonValue) => void,
-  ): void;
+export type GetStoreKeys<T extends StoreJson> = () => Promise<Array<keyof T>>;
 
-  /**
-   * Get the item count.
-   */
-  public size: number;
+export type OpenStoreInEditor = () => void;
 
-  /**
-   * Get all the data as an object or replace the current data with an object.
-   */
-  public store: T;
+/**
+ * [Events].
+ */
+export type StoreEvents =
+  | IStoreChangeEvent
+  | IStoreGetKeysEvent
+  | IStoreGetValuesEvent
+  | IStoreSetValuesEvent
+  | IOpenStoreFileInEditorEvent;
 
-  /**
-   * Get the path to the storage file.
-   */
-  public path: string;
+export type IStoreChange = {
+  keys: string[];
+  values: StoreJson;
+  action: StoreSetAction;
+};
+export type IStoreChangeEvent = {
+  type: '@platform/STORE/change';
+  payload: IStoreChange;
+};
 
-  /**
-   * Open the storage file in the user's editor.
-   */
-  public openInEditor(): void;
+export type IStoreGetKeysEvent = {
+  type: '@platform/STORE/keys';
+  payload: {};
+};
 
-  public [Symbol.iterator](): Iterator<[string, JsonValue]>;
-}
+export type IStoreGetValuesEvent = {
+  type: '@platform/STORE/get';
+  payload: { keys: string[] };
+};
+export type IStoreGetValuesResponse = {
+  ok: boolean;
+  exists: boolean;
+  version: number;
+  body: StoreJson;
+  error?: string;
+};
+
+export type IStoreSetValuesEvent = {
+  type: '@platform/STORE/set';
+  payload: { values: IStoreKeyValue[]; action: StoreSetAction };
+};
+export type IStoreSetValuesResponse<T extends StoreJson = any> = {
+  ok: boolean;
+  error?: string;
+};
+
+export type IOpenStoreFileInEditorEvent = {
+  type: '@platform/STORE/openInEditor';
+  payload: {};
+};
