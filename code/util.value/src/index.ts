@@ -1,1 +1,1 @@
-// Entry.
+export * from './value';

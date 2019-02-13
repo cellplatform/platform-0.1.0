@@ -7,11 +7,17 @@ test () {
   cd $cwd
 }
 
+test test
+
 test ts
 test ts.cli
+
 test fs
-test test
 test log
 test electron
+
 test util
+test util.css
+test util.is
 test util.react
+test util.value

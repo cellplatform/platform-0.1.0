@@ -80,7 +80,7 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
-"@platform/util.css@^0.0.0":
+"@platform/util.css@0.0.0":
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@platform/util.css/-/util.css-0.0.0.tgz#6a246338dddfe60f0927f22e6ab6d1ef536701a4"
   integrity sha512-lunDi+/IqpjRyZzt1l6eYKOx9ozFBk7Nx6zocUPDAFUi5ypA7IPGCgHQyw6C1u7MUfUZKbEP65Wb0dshciBCAg==
@@ -89,6 +89,11 @@
     "@types/react-dom" "16.8.0"
     react "16.8.1"
     react-dom "16.8.1"
+
+"@platform/util.is@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.0.tgz#b6516cfc5ec8e54b4e68a9b5f3a52fecbad2f66b"
+  integrity sha512-cwL7gZw0H5yIO1/F2qV0mPenn26Y8HD4Un9jTBnjWMe9HjiCjUatJCsPeztrXUy7gDRzfGvFCcdl0jJ/aVtHHw==
 
 "@platform/util.react@0.0.0":
   version "0.0.0"
@@ -100,7 +105,7 @@
     react "16.8.1"
     react-dom "16.8.1"
 
-"@platform/util.value@^0.0.0":
+"@platform/util.value@0.0.0":
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.0.tgz#01025548d837fcea12e126d79e7c28c5428f2ab4"
   integrity sha512-TjDizGv0/CFN6Tttw1RlOVeSDoUUVpy0YhamwilIYMEUXctpB4DB1lucrAcsut6+tAOnUAeEkuAmdieAd9Nzdg==
@@ -168,7 +173,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@16.8.2":
+"@types/react@*", "@types/react@16.8.2", "@types/react@^16.8.2":
   version "16.8.2"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.8.2.tgz#3b7a7f7ea89d1c7d68b00849fb5de839011c077b"
   integrity sha512-6mcKsqlqkN9xADrwiUz2gm9Wg4iGnlVGciwBRYFQSMWG6MQjhOZ/AVnxn+6v8nslFgfYTV8fNdE6XwKu6va5PA==

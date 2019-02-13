@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.value",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Helpers for working with, transforming, and formatting values.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,14 +12,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@types/react": "16.8.2",
-    "@types/react-dom": "16.8.0",
-    "react": "16.8.1",
-    "react-dom": "16.8.1"
+    "@platform/libs": "0.0.2",
+    "dayjs": "1.8.5"
   },
   "devDependencies": {
     "@platform/test": "0.0.0",
-    "@platform/ts.cli": "3.3.26"
+    "@platform/ts.cli": "3.3.26",
+    "moment": "2.24.0"
   },
   "files": [
     "lib"
