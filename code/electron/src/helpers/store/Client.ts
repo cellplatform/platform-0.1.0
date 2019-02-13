@@ -5,14 +5,6 @@ import { share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import * as t from './types';
 
 /**
- * https://github.com/sindresorhus/electron-store/blob/ca19e10477fb4518e09ca1832a1f4911166bd460/index.js#L26
- *
- * open in editor [MAIN]
- *    electron.shell.openItem(this.path);
- *
- */
-
-/**
  * An abstract representation of the configuration store
  * that works on either the [main] or [renderer] processes.
  */
