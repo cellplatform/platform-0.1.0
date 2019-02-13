@@ -1,0 +1,16 @@
+{
+  "name": "sample",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "semver": "1.0.0",
+    "express": "^0.0.1"
+  },
+  "devDependencies": {
+    "mocha": "latest"
+  },
+  "peerDependencies": {
+    "react": "1.2.3"
+  },
+  "license": "MIT"
+}
