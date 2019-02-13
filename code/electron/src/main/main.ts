@@ -11,7 +11,7 @@ export * from '../types';
 
 export { devTools, logger };
 
-export type IMainInitResponse<M extends t.IpcMessage, S extends t.StoreJson> = {
+export type IInitMainResponse<M extends t.IpcMessage, S extends t.StoreJson> = {
   ipc: t.IpcClient<M>;
   log: t.IMainLog;
   store: t.IMainStoreClient<S>;
@@ -27,7 +27,7 @@ export function init<M extends IpcMessage = any, S extends t.StoreJson = any>(
     log?: t.IMainLog | string;
     store?: t.IMainStoreClient<S>;
   } = {},
-): IMainInitResponse<M, S> {
+): IInitMainResponse<M, S> {
   const { appName } = args;
 
   // Initiaize modules.

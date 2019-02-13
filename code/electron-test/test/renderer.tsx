@@ -62,8 +62,8 @@ export class GrandChild extends React.PureComponent {
  * Render page.
  */
 try {
-  // const el = <Test />;
-  const el = <App />;
+  const el = <Test />;
+  // const el = <App />;
   ReactDOM.render(el, document.getElementById('root'));
 } catch (error) {
   log.error('Load failed: ', error.message);

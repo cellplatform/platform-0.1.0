@@ -4,7 +4,9 @@ import { filter, map } from 'rxjs/operators';
 import { IpcClient } from '../ipc/Client';
 import * as t from './types';
 
+export { ILog } from './types';
 export { log };
+
 let isInitialized = false;
 
 /**
