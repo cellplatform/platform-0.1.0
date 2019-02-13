@@ -55,7 +55,7 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
   /**
    * Ferry IPC events into the client.
    */
-  const listener = (sys: Electron.Event, e: IpcEvent) => events$.next(e);
+  const listener = (e: Electron.Event, args: IpcEvent) => events$.next(args);
   ipcRenderer.on(client.channel, listener);
 
   /**
@@ -70,4 +70,20 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
   // Finish up.
   global[GLOBAL.IPC_CLIENT] = client;
   return client;
+}
+
+/**
+ * Retrieves the ID of the current window.
+ */
+export function getId() {
+  return new Promise<number>((resolve, reject) => {
+    ipcRenderer.send(GLOBAL.IPC.ID.REQUEST);
+    ipcRenderer.on(
+      GLOBAL.IPC.ID.RESPONSE,
+      (e: Electron.Event, args: { id?: number } = {}) => {
+        const id = args.id === undefined ? -1 : args.id;
+        resolve(id);
+      },
+    );
+  });
 }

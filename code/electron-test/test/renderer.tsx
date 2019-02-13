@@ -7,6 +7,9 @@ import { renderer, log } from '../src/common';
 
 renderer.init();
 
+/**
+ * Render page.
+ */
 try {
   const el = <Test />;
   ReactDOM.render(el, document.getElementById('root'));

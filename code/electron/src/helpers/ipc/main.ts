@@ -14,6 +14,7 @@ import {
 } from './Client';
 import { Global } from './main.Global';
 import { IpcHandlerRef, IpcIdentifier } from './types';
+import { GLOBAL } from '../constants';
 
 export * from './types';
 
@@ -51,7 +52,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   refs.main = main;
 
   // Ferry IPC events into the client.
-  const listener = (sys: Electron.Event, e: IpcEvent) => events$.next(e);
+  const listener = (e: Electron.Event, args: IpcEvent) => events$.next(args);
   ipcMain.on(main.channel, listener);
 
   // Unwire events when client is diposed.
@@ -64,8 +65,8 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   /**
    * Listen for messages coming in on the [main] IPC channel.
    */
-  ipcMain.on(main.channel, (sys: Electron.Event, e: IpcEvent) => {
-    sendToWindows(sys.sender.id, e);
+  ipcMain.on(main.channel, (e: Electron.Event, args: IpcEvent) => {
+    sendToWindows(e.sender.id, args);
   });
 
   /**
@@ -115,6 +116,17 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
  * INTERNAL
  */
 
+/**
+ * Echo's the ID of the sender of an event.
+ */
+ipcMain.on(GLOBAL.IPC.ID.REQUEST, async (e: Electron.Event) => {
+  const id = e.sender.id;
+  e.sender.send(GLOBAL.IPC.ID.RESPONSE, { id });
+});
+
+/**
+ * Adds a reference to a handler to the global object.
+ */
 function addHandlerRef(args: {
   type: IpcMessage['type'];
   client: IpcIdentifier;
@@ -131,6 +143,9 @@ function addHandlerRef(args: {
   Global.setHandlerRef(handlerRef);
 }
 
+/**
+ * Removes a handler ref rom the global object.
+ */
 function removeHandlerRef(id: number) {
   let changed = false;
   let handlers = { ...Global.handlerRefs };

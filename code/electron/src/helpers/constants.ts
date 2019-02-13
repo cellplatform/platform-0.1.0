@@ -10,4 +10,11 @@ export const GLOBAL = {
   IPC_CHANNEL: '@platform/IPC',
   IPC_CLIENT: '@platform/IPC/CLIENT',
   IPC_HANDLERS: '@platform/IPC/HANDLERS',
+
+  IPC: {
+    ID: {
+      REQUEST: '@platform/IPC/ID/request',
+      RESPONSE: '@platform/IPC/ID/response',
+    },
+  },
 };
