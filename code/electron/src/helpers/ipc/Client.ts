@@ -30,6 +30,7 @@ export type HandlerRegistered = (args: {
 export type GetHandlerRefs = () => IpcHandlerRefs;
 
 type Ref = {
+  id?: number;
   disposed$: Subject<any>;
   events$: Subject<IpcEvent>;
   handlers: SendHandler[];
@@ -107,12 +108,15 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
    * (ie. the ID of the renderer window or MAIN `0`).
    */
   public get id(): number {
-    if (is.renderer()) {
-      const remote = require('electron').remote as Electron.Remote;
-      return remote.getCurrentWindow().id;
-    } else {
-      return Client.MAIN;
+    if (this._.id === undefined) {
+      if (is.renderer()) {
+        const remote = require('electron').remote as Electron.Remote;
+        this._.id = remote.getCurrentWindow().id;
+      } else {
+        this._.id = Client.MAIN;
+      }
     }
+    return this._.id;
   }
 
   /**
