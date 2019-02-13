@@ -1,2 +1,2 @@
-import * as R from 'ramda';
+import * as R from './R';
 export { R };
