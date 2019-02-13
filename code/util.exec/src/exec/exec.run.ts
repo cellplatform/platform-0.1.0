@@ -1,15 +1,21 @@
 import { spawn } from 'child_process';
-import { IResult, result as resultUtil } from '../common';
+import { Subject } from 'rxjs';
+
+import { ICommandInfo, IResult, result as resultUtil } from '../common';
 
 /**
  * Invokes a shell command.
  */
 export function run(
   cmd: string,
-  options: { dir?: string; silent?: boolean } = {},
+  options: {
+    dir?: string;
+    silent?: boolean;
+    info$?: Subject<ICommandInfo>;
+  } = {},
 ) {
   return new Promise<IResult>(async (resolve, reject) => {
-    const { dir: cwd, silent } = options;
+    const { dir: cwd, silent, info$ } = options;
     let info: string[] = [];
     let errors: string[] = [];
 
@@ -17,16 +23,29 @@ export function run(
     const stdio = silent ? undefined : 'inherit';
     const child = spawn(cmd, { cwd, shell: true, stdio });
 
+    const fire = (type: ICommandInfo['type'], lines: string[]) => {
+      if (info$) {
+        lines.forEach(text => info$.next({ type, text }));
+      }
+    };
+
+    const add = (type: ICommandInfo['type'], list: string[], chunk: Buffer) => {
+      const lines = formatOutput(chunk);
+      list = [...list, ...lines];
+      fire(type, lines);
+      return list;
+    };
+
     // Monitor data coming from process.
     if (child.stdout) {
       //   if (!silent) {
       //     child.stdout.pipe(process.stdout);
       //   }
       child.stdout.on('data', (chunk: Buffer) => {
-        info = [...info, ...formatOutput(chunk)];
+        info = add('stdout', info, chunk);
       });
       child.stderr.on('data', (chunk: Buffer) => {
-        errors = [...errors, ...formatOutput(chunk)];
+        errors = add('stderr', errors, chunk);
       });
     }
 

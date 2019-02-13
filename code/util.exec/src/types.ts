@@ -18,3 +18,8 @@ export type ICommand = {
   title: string;
   cmd: string;
 };
+
+export type ICommandInfo = {
+  type: 'stdout' | 'stderr';
+  text: string;
+};

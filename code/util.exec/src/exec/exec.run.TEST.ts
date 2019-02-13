@@ -1,3 +1,14 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+} from 'rxjs/operators';
 import { fs } from '@platform/fs';
 import { expect } from 'chai';
 
@@ -37,8 +48,8 @@ describe('exec', () => {
   it('has [stdout] when silent', async () => {
     const cmd = `echo one && echo two`;
     const res = await exec.run(cmd, { silent: true });
-    expect(res.info).to.eql(['one', 'two']);
     expect(res.ok).to.eql(true);
+    expect(res.info).to.eql(['one', 'two']);
   });
 
   it('has [stderr]', async () => {
@@ -54,5 +65,38 @@ describe('exec', () => {
       `Errors occured in 'stderr'`,
     );
     expect(res.error && res.error.message).to.include(`errors[2] list`);
+  });
+
+  it('fires [stdinfo] into observable', async () => {
+    const list: exec.ICommandInfo[] = [];
+    const info$ = new Subject<exec.ICommandInfo>();
+    info$.subscribe(e => list.push(e));
+
+    const cmd = `echo one && echo two`;
+    const res = await exec.run(cmd, { silent: true, info$ });
+    expect(res.ok).to.eql(true);
+    expect(res.info).to.eql(['one', 'two']);
+
+    expect(list.length).to.eql(2);
+    expect(list[0].type).to.eql('stdout');
+    expect(list[0].text).to.eql('one');
+    expect(list[1].type).to.eql('stdout');
+    expect(list[1].text).to.eql('two');
+  });
+
+  it('fires [stderr] into observable', async () => {
+    const list: exec.ICommandInfo[] = [];
+    const info$ = new Subject<exec.ICommandInfo>();
+    info$.subscribe(e => list.push(e));
+
+    const cmd = `@#$ \n 38^88`;
+    const res = await exec.run(cmd, { silent: true, info$ });
+    expect(res.ok).to.eql(false);
+
+    expect(list.length).to.eql(2);
+    expect(list[0].type).to.eql('stderr');
+    expect(list[0].text).to.include('command not found');
+    expect(list[1].type).to.eql('stderr');
+    expect(list[1].text).to.include('command not found');
   });
 });

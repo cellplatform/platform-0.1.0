@@ -35,7 +35,7 @@
     fs-extra "7.0.1"
     js-yaml "3.12.1"
 
-"@platform/libs@0.0.3":
+"@platform/libs@0.0.3", "@platform/libs@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.3.tgz#536359a3b4ba055ce9a5c83d8ed820dcadea6fe4"
   integrity sha512-+WsAmuT6246uEjJsxU/yQex/lZFQljEhqnUN+xaNmBcQVQXpT9/W7M3MiO1ZrCANuWuJjrzfzadp/0WzlhfyiA==
@@ -55,7 +55,7 @@
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts.cli@^3.3.31":
+"@platform/ts.cli@3.3.31":
   version "3.3.31"
   resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.31.tgz#b97440f96dce4fa6aa842a65ded810056ad8ebd4"
   integrity sha512-DBiXfh743PDAfbaJYD12dK8OQMCKLcSDIkEGeHYYSLXUMvXF5SnJ2OF5rUrRQieYAWH8zgm03GEBMse1HXajzw==
