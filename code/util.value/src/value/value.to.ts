@@ -27,10 +27,10 @@ export function toNumber(value: any) {
  * @returns the converted boolean, otherwise the original value.
  */
 export function toBool(value: any, defaultValue?: any) {
-  if (R.isNil(value)) {
+  if (value === null || value === undefined) {
     return defaultValue;
   }
-  if (R.is(Boolean, value)) {
+  if (typeof value === 'boolean') {
     return value;
   }
   const asString = value

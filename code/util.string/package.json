@@ -1,7 +1,7 @@
 {
-  "name": "@platform/util",
-  "version": "0.0.4",
-  "description": "Roll-up of all util modules.",
+  "name": "@platform/util.string",
+  "version": "0.0.0",
+  "description": "String helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -12,14 +12,14 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/util.css": "0.0.3",
-    "@platform/util.is": "^0.0.3",
-    "@platform/util.react": "0.0.4",
-    "@platform/util.value": "0.0.3"
+    "@types/underscore.string": "^0.0.33",
+    "escape-string-regexp": "^1.0.5",
+    "underscore.string": "^3.3.5"
   },
   "devDependencies": {
     "@platform/test": "0.0.0",
-    "@platform/ts.cli": "3.3.26"
+    "@platform/ts.cli": "3.3.26",
+    "@types/escape-string-regexp": "^1.0.0"
   },
   "files": [
     "lib"
