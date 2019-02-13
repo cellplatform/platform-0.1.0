@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.react",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,7 +12,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@types/react": "16.8.2",
+    "@platform/util.css": "0.0.3",
+    "@platform/util.is": "0.0.3",
+    "@types/react": "16.7.17",
     "@types/react-dom": "16.8.0",
     "react": "16.8.1",
     "react-dom": "16.8.1"

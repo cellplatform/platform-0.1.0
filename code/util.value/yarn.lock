@@ -80,6 +80,11 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
+"@platform/util.is@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.3.tgz#4a27d93af8158dfd6f3dac66997444687f56b411"
+  integrity sha512-wyC6nzSD59gSYm6kPXOkv5v2Q3lBKC6AS2wRDr9xZZmouX4Rw/VnYKBDN1ZgOq0f6c3H51hw/RXByyJvfuT5tA==
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"
@@ -428,7 +433,7 @@ cross-spawn@^6.0.0:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-cuid@^2.1.6:
+cuid@2.1.6:
   version "2.1.6"
   resolved "https://registry.yarnpkg.com/cuid/-/cuid-2.1.6.tgz#dc3a20b5a7497d36d32c0bf8a2997524c9c796c4"
   integrity sha512-ZFp7PS6cSYMJNch9fc3tyHdE4T8TDo3Y5qAxb0KSA9mpiYDo7z9ql1CznFuuzxea9STVIDy0tJWm2lYiX2ZU1Q==

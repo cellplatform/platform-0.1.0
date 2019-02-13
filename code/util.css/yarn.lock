@@ -35,7 +35,7 @@
     fs-extra "7.0.1"
     js-yaml "3.12.1"
 
-"@platform/libs@0.0.2", "@platform/libs@^0.0.2":
+"@platform/libs@0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.2.tgz#56cb00380197db066e35bdf26576dde19290ed43"
   integrity sha512-SK5NunmpaM/RdIgGj5d2zRCHA+2ld2HGQwOu5F/tuqszln18Y0lQpQojpEUfZpnA5j0FrJbsjC4bxEQ6wHhRgA==
@@ -80,17 +80,20 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
-"@platform/util.is@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.1.tgz#e5d87983f07342d9aae08d83d724edf09dc66d23"
-  integrity sha512-8CD4R+rpemLOZW1iel5SpZM6BBQUmkTOF+A7WRRNtVu1GGbjJIJvgaNbbUY83hlFjfR41aLZUaGOu8lUzVT97g==
+"@platform/util.is@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.3.tgz#4a27d93af8158dfd6f3dac66997444687f56b411"
+  integrity sha512-wyC6nzSD59gSYm6kPXOkv5v2Q3lBKC6AS2wRDr9xZZmouX4Rw/VnYKBDN1ZgOq0f6c3H51hw/RXByyJvfuT5tA==
 
-"@platform/util.value@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.1.tgz#07ae2e22881f35c4ecfcf961c8b253737c8ab2ed"
-  integrity sha512-zUaNITuOQOlQI0RTqeRC5XEmkAQYbH0t3yLUgphcbT4RDu6uv4IV53XrCryPtaJENWEgfVg4GNgvVF2XhMiUnw==
+"@platform/util.value@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.3.tgz#5e91bc9a2d5ed449179f82158a4fe834d013d83f"
+  integrity sha512-oeYKqj3xLk+n39XmPmCKXhrWnQa3dGZghpdjiYiUgMk+H4JpCovv+Tj9m+lITAPJW1T4IJ+1o367ds8Ftqb14Q==
   dependencies:
-    "@platform/libs" "^0.0.2"
+    "@platform/libs" "0.0.2"
+    "@platform/util.is" "0.0.3"
+    cuid "2.1.6"
+    dayjs "1.8.5"
 
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
@@ -486,10 +489,20 @@ csstype@^2.2.0:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.2.tgz#3043d5e065454579afc7478a18de41909c8a2f01"
   integrity sha512-Rl7PvTae0pflc1YtxtKbiSqq20Ts6vpIYOD5WBafl4y123DyHUeLrRdQP66sQW8/6gmX8jrYJLXwNeMqYVJcow==
 
+cuid@2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/cuid/-/cuid-2.1.6.tgz#dc3a20b5a7497d36d32c0bf8a2997524c9c796c4"
+  integrity sha512-ZFp7PS6cSYMJNch9fc3tyHdE4T8TDo3Y5qAxb0KSA9mpiYDo7z9ql1CznFuuzxea9STVIDy0tJWm2lYiX2ZU1Q==
+
 date-fns@^1.27.2:
   version "1.30.1"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
+
+dayjs@1.8.5:
+  version "1.8.5"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.5.tgz#0b066770f89a20022218544989f3d23e5e8db29a"
+  integrity sha512-jo5sEFdsT43RqXxoqQVEuD7XL6iSIRxcjTgheJdlV0EHKObKP3pb9JcJEv/KStVMy25ABNQrFnplKcCit05vOA==
 
 debug@3.1.0:
   version "3.1.0"

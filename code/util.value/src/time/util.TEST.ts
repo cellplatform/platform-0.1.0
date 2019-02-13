@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import * as moment from 'moment';
 import { time } from '.';
 
 describe('toTimestamp', () => {
@@ -13,11 +12,7 @@ describe('toTimestamp', () => {
     const timestamp = time.toTimestamp(date);
     expect(timestamp).to.be.a('number');
     expect(timestamp).to.eql(time.toTimestamp(date));
-    expect(timestamp).to.eql(
-      moment(date)
-        .utc()
-        .unix(),
-    );
+    expect(timestamp).to.eql(time.day(date).unix());
   });
 });
 

@@ -51,6 +51,11 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - [@platform/test](/code/test)
 - [@platform/log](/code/log)
 - [@platform/electron](/code/electron)
+- [@platform/util](/code/util)
+- [@platform/util.css](/code/util.css)
+- [@platform/util.is](/code/util.is)
+- [@platform/util.react](/code/util.react)
+- [@platform/util.value](/code/util.value)
 
 
 <p>&nbsp;</p>

@@ -1,4 +1,3 @@
-import * as moment from 'moment';
 import * as day from 'dayjs';
 
 /**
@@ -16,8 +15,5 @@ export function toTimestamp(date?: Date) {
  * Converts a timestamp into a Date.
  */
 export function fromTimestamp(timestamp: number) {
-  return moment
-    .unix(timestamp)
-    .utc()
-    .toDate();
+  return day.unix(timestamp).toDate();
 }
