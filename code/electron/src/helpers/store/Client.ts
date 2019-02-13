@@ -1,5 +1,6 @@
+import { equals } from 'ramda';
 import { Observable, Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
+import { share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 
 import * as t from './types';
 
@@ -46,6 +47,7 @@ export class Store<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
     this.dispose$.subscribe(() => (this.isDisposed = true));
     this.change$ = args.change$.pipe(
       takeUntil(this.dispose$),
+      distinctUntilChanged((prev, next) => equals(prev, next)),
       share(),
     );
   }

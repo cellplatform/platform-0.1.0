@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { css, GlamorValue, ICreateDevToolsEvent, renderer } from '../common';
-import { Button } from './primitives';
+import { css, GlamorValue, ICreateDevToolsEvent, renderer } from '../../common';
+import { Button } from '../primitives';
 
 /**
  * Test component.

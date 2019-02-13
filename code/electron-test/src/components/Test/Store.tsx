@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, renderer } from '../common';
-import * as t from '../types';
-import { Button } from './primitives';
+import { css, GlamorValue, renderer } from '../../common';
+import * as t from '../../types';
+import { Button, ObjectView } from '../primitives';
 
 /**
  * Test component.
@@ -15,6 +15,7 @@ export type IStoreTestProps = {
 
 export type IStoreTestState = {
   count?: number;
+  data?: object;
 };
 
 export class StoreTest extends React.PureComponent<
@@ -28,7 +29,7 @@ export class StoreTest extends React.PureComponent<
   private readonly unmounted$ = new Subject();
 
   private log!: renderer.ILog;
-  private store!: renderer.IStoreClient;
+  private store!: renderer.IStoreClient<t.IMyStore>;
 
   public componentWillMount() {
     const { log, store } = this.context;
@@ -41,11 +42,12 @@ export class StoreTest extends React.PureComponent<
 
     const events$ = this.store.change$.pipe(takeUntil(this.unmounted$));
     events$.subscribe(e => {
-      this.log.info('change$: ', e);
+      this.log.info('store.change$: ', e);
       if (e.keys.includes('count')) {
-        const count = (e.values.count || 0) as number;
-        this.setState({ count });
+        // const count = (e.values.count || 0) as number;
+        // this.setState({ count });
       }
+      this.updateState();
     });
     this.updateState();
   }
@@ -57,37 +59,52 @@ export class StoreTest extends React.PureComponent<
   public render() {
     const styles = {
       base: css({ marginBottom: 50 }),
-      buttons: css({
+      columns: css({
+        Flex: 'horizontal-start-spaceBetween',
+      }),
+      colButtons: css({
         lineHeight: '1.6em',
         Flex: 'vertical-start',
         paddingLeft: 15,
+        flex: 1,
+      }),
+      colObject: css({
+        flex: 1,
       }),
     };
+
+    // const data = { foo: 123 };
 
     return (
       <div {...styles.base}>
         <h2>Store {this.state.count}</h2>
-        <div {...styles.buttons}>
-          <Button label={'keys'} onClick={this.keys} />
-          <Button label={'read'} onClick={this.read} />
-          <Button label={'read (all)'} onClick={this.readAll} />
-          <Button label={'change (count)'} onClick={this.changeCount} />
-          <Button label={'change (foo)'} onClick={this.changeFoo} />
-          <Button
-            label={'delete: count'}
-            onClick={this.deleteHandler('count')}
-          />
-          <Button label={'delete: foo'} onClick={this.deleteHandler('foo')} />
-          <Button label={'clear'} onClick={this.clear} />
-          <Button label={'open in editor'} onClick={this.openInEditor} />
+        <div {...styles.columns}>
+          <div {...styles.colButtons}>
+            <Button label={'keys'} onClick={this.keys} />
+            <Button label={'read'} onClick={this.read} />
+            <Button label={'read (all)'} onClick={this.readAll} />
+            <Button label={'change (count)'} onClick={this.changeCount} />
+            <Button label={'change (foo)'} onClick={this.changeFoo} />
+            <Button
+              label={'delete: count'}
+              onClick={this.deleteHandler('count')}
+            />
+            <Button label={'delete: foo'} onClick={this.deleteHandler('foo')} />
+            <Button label={'clear'} onClick={this.clear} />
+            <Button label={'open in editor'} onClick={this.openInEditor} />
+          </div>
+          <div {...styles.colObject}>
+            <ObjectView name={'store'} data={this.state.data} expandLevel={5} />
+          </div>
         </div>
       </div>
     );
   }
 
   private async updateState() {
-    const { count } = await this.store.read('count', 'foo');
-    this.setState({ count });
+    const data = await this.store.read();
+    const count = data.count;
+    this.setState({ count, data });
   }
 
   private keys = async () => {
