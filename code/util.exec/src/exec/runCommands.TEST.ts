@@ -1,7 +1,7 @@
+import { fs } from '@platform/fs';
 import { expect } from 'chai';
 
 import { exec } from '.';
-import { fs } from '../common';
 
 describe('exec.runCommands', () => {
   after(async () => fs.remove('tmp'));

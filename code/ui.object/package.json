@@ -1,0 +1,28 @@
+{
+  "name": "@platform/ui.object",
+  "version": "0.0.0",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "yarn chmod && ts test",
+    "tdd": "yarn chmod && ts test --watch",
+    "lint": "yarn chmod && ts lint",
+    "build": "yarn chmod && ts build",
+    "prepare": "yarn chmod && ts prepare",
+    "chmod": "chmod 777 node_modules/.bin/ts"
+  },
+  "dependencies": {
+    "@platform/util.react": "0.0.12",
+    "@uiharness/electron": "0.3.106",
+    "react-inspector": "2.3.1"
+  },
+  "devDependencies": {
+    "@platform/electron": "0.0.59",
+    "@platform/ts.cli": "3.3.32",
+    "@uiharness/dev": "0.1.3"
+  },
+  "resolutions": {
+    "@types/react": "16.7.17"
+  },
+  "license": "MIT"
+}

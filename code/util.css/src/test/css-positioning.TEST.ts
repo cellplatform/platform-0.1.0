@@ -21,7 +21,7 @@ describe('React: transformStyle - positioning', () => {
       expect(style.left).to.equal(40);
     });
 
-    it('converts array value (with null\'s)', () => {
+    it("converts array value (with null's)", () => {
       const style = transformStyle({
         Absolute: ['10', null, '30px', '40em'],
       }) as any;

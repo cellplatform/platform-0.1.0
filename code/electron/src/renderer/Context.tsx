@@ -15,7 +15,7 @@ import * as t from '../types';
  * See:
  *    https://reactjs.org/docs/context.html
  */
-export const Context = React.createContext<t.IContext>({} as any);
+export const Context = React.createContext<t.IRendererContext>({} as any);
 Context.displayName = '@platform/electron/Context';
 
 /**

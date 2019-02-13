@@ -1,0 +1,30 @@
+{
+  "name": "@platform/npm",
+  "version": "0.0.4",
+  "description": "Helpers for working with NPM.",
+  "main": "./lib/index",
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "test": "yarn chmod && ts test",
+    "tdd": "yarn chmod && ts test --watch",
+    "lint": "yarn chmod && ts lint",
+    "build": "yarn chmod && ts build",
+    "prepare__": "yarn chmod && ts prepare",
+    "chmod": "chmod 777 node_modules/.bin/ts"
+  },
+  "dependencies": {
+    "@platform/cli": "0.0.39",
+    "@platform/fs": "0.0.33",
+    "@platform/log": "0.0.59",
+    "@platform/util.value": "0.0.10"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.26",
+    "@platform/ts.cli": "3.3.32"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "license": "MIT"
+}

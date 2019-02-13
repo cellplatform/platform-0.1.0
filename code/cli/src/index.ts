@@ -1,4 +1,2 @@
-export { exec } from './exec';
-export { tasks } from './tasks';
-export { result } from './common';
-export * from './types';
+export * from '@platform/util.exec';
+export { fs } from './common';
