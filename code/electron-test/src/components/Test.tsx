@@ -5,7 +5,7 @@ import { IpcTest } from './Test.Ipc';
 import { DevToolsTest } from './Test.DevTools';
 import { StoreTest } from './Test.Store';
 
-renderer.init();
+// renderer.init();
 
 export type ITestProps = {
   style?: GlamorValue;
@@ -21,9 +21,10 @@ export class Test extends React.PureComponent<ITestProps> {
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <DevToolsTest />
+        Test
+        {/* <DevToolsTest />
         <IpcTest />
-        <StoreTest />
+        <StoreTest /> */}
       </div>
     );
   }

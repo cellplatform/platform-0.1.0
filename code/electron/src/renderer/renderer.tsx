@@ -55,6 +55,30 @@ export async function init<
 /**
  * Renders the root of the application into the DOM within
  * an initialized <Provider>.
+ *
+ * To kick off the app:
+ *
+ *      import renderer from '@platform/electron/lib/renderer';
+ *
+ *      renderer
+ *        .render(el, 'root')
+ *        .then(context => {
+ *          console.log('renderer loaded:', context);
+ *        })
+ *        .catch(err => {
+ *          // Do something with the error.
+ *        });
+ *
+ * To access the context deep within the React tree add a `contextType`:
+ *
+ *      export class MyView extends React.PureComponent {
+ *        public public static contextType = renderer.Context;
+ *        public public context!: renderer.ReactContext
+ *        public render() {
+ *          return <div>window-id: {this.context.id}<div>;
+ *        }
+ *      }
+ *
  */
 export async function render(
   element: React.ReactElement<any>,
