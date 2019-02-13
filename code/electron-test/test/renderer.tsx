@@ -1,9 +1,9 @@
 import '../node_modules/@uiharness/dev/css/normalize.css';
 import '@babel/polyfill';
-import * as React from 'react';
-import { renderer } from '../src/components';
 
-// import renderer from '@platform/electron/lib/renderer';
+import * as React from 'react';
+import renderer from '@platform/electron/lib/renderer';
+import { Test } from '../src/components';
 
 export class Child extends React.PureComponent {
   public static contextType = renderer.Context;
@@ -41,4 +41,6 @@ export class GrandChild extends React.PureComponent {
  */
 // const el = <Test />;
 const el = <Child />;
-renderer.render(el, 'root');
+renderer.render(el, 'root').then(context => {
+  console.log('renderer context:', context);
+});

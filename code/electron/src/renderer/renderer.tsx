@@ -10,10 +10,16 @@ import * as t from '../types';
 export { Context, ReactContext };
 export * from '../types';
 
+export type IRenderer<
+  M extends t.IpcMessage = any,
+  S extends t.StoreJson = any
+> = t.IContext & {
+  Context: React.Context<t.IContext>;
+  Provider: React.FunctionComponent;
+};
+
 type Refs = {
-  ipc?: t.IpcClient;
-  store?: t.IStoreClient;
-  log?: t.ILog;
+  renderer?: IRenderer;
   devTools: DevToolsRenderer;
 };
 const refs: Refs = { devTools: new DevToolsRenderer() };
@@ -24,17 +30,19 @@ const refs: Refs = { devTools: new DevToolsRenderer() };
 export async function init<
   M extends t.IpcMessage = any,
   S extends t.StoreJson = any
->() {
+>(): Promise<IRenderer<M, S>> {
+  if (refs.renderer) {
+    return refs.renderer;
+  }
+
   // Ipc.
   const ipc = initIpc<M>();
-  refs.ipc = ipc;
 
   // Log.
   const log = initLog({ ipc });
 
   // Store.
   const store = initStore<S>({ ipc });
-  refs.store = store;
 
   // Dev tools.
   refs.devTools.init({ ipc });
@@ -44,11 +52,11 @@ export async function init<
 
   // React <Provider>.
   const context: t.IContext = { id, ipc, store, log };
-  // const Context = createContext(context);
   const Provider = createProvider(context);
 
   // Finish up.
-  return { ...context, Context, Provider, render };
+  refs.renderer = { ...context, Context, Provider };
+  return refs.renderer;
 }
 
 /**
@@ -59,9 +67,16 @@ export async function render(
   el: React.ReactElement<any>,
   container: Element | string,
 ) {
+  // Setup initial conditions.
   const renderer = await init();
   const { log, Provider } = renderer;
 
+  const throwError = (msg: string) => {
+    log.error(msg);
+    throw new Error(msg);
+  };
+
+  // Find the container element to render within.
   const elContainer =
     typeof container === 'object'
       ? container
@@ -69,15 +84,17 @@ export async function render(
 
   if (!elContainer) {
     const msg = `RENDERER START: Could not find the given Element container '${container}' to load the app within.`;
-    log.error(msg);
-    throw new Error(msg);
+    throwError(msg);
   }
 
+  // Render into the DOM.
   try {
     ReactDOM.render(<Provider>{el}</Provider>, elContainer);
   } catch (error) {
     const msg = `RENDERER START: Failed while rendering DOM. ${error.message}`;
-    log.error(msg);
-    throw new Error(msg);
+    throwError(msg);
   }
+
+  // Finish up.
+  return renderer;
 }
