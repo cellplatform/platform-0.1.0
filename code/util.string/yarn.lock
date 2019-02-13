@@ -35,34 +35,34 @@
     fs-extra "7.0.1"
     js-yaml "3.12.1"
 
-"@platform/libs@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.2.tgz#56cb00380197db066e35bdf26576dde19290ed43"
-  integrity sha512-SK5NunmpaM/RdIgGj5d2zRCHA+2ld2HGQwOu5F/tuqszln18Y0lQpQojpEUfZpnA5j0FrJbsjC4bxEQ6wHhRgA==
+"@platform/libs@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.3.tgz#536359a3b4ba055ce9a5c83d8ed820dcadea6fe4"
+  integrity sha512-+WsAmuT6246uEjJsxU/yQex/lZFQljEhqnUN+xaNmBcQVQXpT9/W7M3MiO1ZrCANuWuJjrzfzadp/0WzlhfyiA==
   dependencies:
-    "@types/ramda" "0.25.48"
+    "@types/ramda" "0.25.49"
     ramda "0.26.1"
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/test@0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.0.tgz#2c5f8c85855fcf1735529056e3c7d1aec263cd1a"
-  integrity sha512-4GuwMGVHrEKU51LsmXHF03WMbUvTBTk7mxNgiLXJIjf6VYc5RDQccYmcQCNh19kjkHSTGD6iE7b9meqohrtOfA==
+"@platform/test@0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.26.tgz#fdd205aee4da34fb8c471cf48a3e911a9d09b22e"
+  integrity sha512-ku4Uh5iPQcdQViaLxxNygSnuLqMEXjhYcYBUEIEG4dUC7oF4RYinBKCIfu41xE2P9dbIA0NAWxmXEsL9ONGrww==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.5"
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts.cli@3.3.26":
-  version "3.3.26"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.26.tgz#5a487c090143d3d6a0d628b02a85cfb19554a4b6"
-  integrity sha512-2eRHWkuMQFHjnPrmswk8Nea56Jbg1PGbYBBFOKI0GszZF0NLwibuW1muMLX9n8yuAG4QfYZcvKdYXNHGnJTjzg==
+"@platform/ts.cli@3.3.27":
+  version "3.3.27"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.27.tgz#506a384cdccc3455004d0cf438e067606e28d660"
+  integrity sha512-SwS0YQYHGR632uNAZPOchp+9qN2t+yvj373aBMP4IzOhgqNwhaUMnou5aYBOedI+GjQHn1cv0f13aOzFPRcpXQ==
   dependencies:
     "@platform/cli" "0.0.33"
     "@platform/fs" "0.0.32"
-    "@platform/libs" "0.0.2"
+    "@platform/libs" "0.0.3"
     "@platform/ts" "3.3.41"
     yargs "12.0.5"
 
@@ -126,10 +126,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.24.tgz#b13564af612a22a20b5d95ca40f1bffb3af315cf"
   integrity sha512-GWWbvt+z9G5otRBW8rssOFgRY87J9N/qbhqfjMZ+gUuL6zoL+Hm6gP/8qQBG4jjimqdaNLCehcVapZ/Fs2WjCQ==
 
-"@types/ramda@0.25.48":
-  version "0.25.48"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.48.tgz#775fc56ae469394146edfff5996b201851bc39b6"
-  integrity sha512-tsNbe/ov4iweH8ADzQF0UN7TApU8iofYeZDZvfSyXQhfiZ2C2hUC3CN9EK0nYGIVqN+Ll5XelKHATDc50t3dlA==
+"@types/ramda@0.25.49":
+  version "0.25.49"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.49.tgz#8da318f54c1acb908e723b9a2103f7c38f90ca4d"
+  integrity sha512-d8QG8fd2Pzml+mzgv3VO4UxvYwjDPw4mv8P/NyCKUBdjIXo35o+4Ndpavr+t5kQ6QGu84wuvFydMaXZgZhnRWw==
 
 "@types/underscore.string@^0.0.33":
   version "0.0.33"

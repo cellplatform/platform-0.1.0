@@ -20,4 +20,5 @@ test util
 test util.css
 test util.is
 test util.react
+test util.string
 test util.value
