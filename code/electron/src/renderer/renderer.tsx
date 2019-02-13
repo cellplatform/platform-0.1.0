@@ -1,25 +1,18 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+
 import { DevToolsRenderer } from '../helpers/devTools/renderer';
 import { getId, init as initIpc } from '../helpers/ipc/renderer';
 import { init as initLog } from '../helpers/logger/renderer';
 import { init as initStore } from '../helpers/store/renderer';
-import { createProvider, Context, ReactContext } from './Context';
 import * as t from '../types';
+import { Context, createProvider, ReactContext } from './Context';
 
 export { Context, ReactContext };
 export * from '../types';
 
-export type IRenderer<
-  M extends t.IpcMessage = any,
-  S extends t.StoreJson = any
-> = t.IContext & {
-  Context: React.Context<t.IContext>;
-  Provider: React.FunctionComponent;
-};
-
 type Refs = {
-  renderer?: IRenderer;
+  renderer?: t.IRenderer;
   devTools: DevToolsRenderer;
 };
 const refs: Refs = { devTools: new DevToolsRenderer() };
@@ -30,7 +23,7 @@ const refs: Refs = { devTools: new DevToolsRenderer() };
 export async function init<
   M extends t.IpcMessage = any,
   S extends t.StoreJson = any
->(): Promise<IRenderer<M, S>> {
+>(): Promise<t.IRenderer<M, S>> {
   if (refs.renderer) {
     return refs.renderer;
   }
@@ -64,7 +57,7 @@ export async function init<
  * an initialized <Provider>.
  */
 export async function render(
-  el: React.ReactElement<any>,
+  element: React.ReactElement<any>,
   container: Element | string,
 ) {
   // Setup initial conditions.
@@ -89,7 +82,8 @@ export async function render(
 
   // Render into the DOM.
   try {
-    ReactDOM.render(<Provider>{el}</Provider>, elContainer);
+    const el = <Provider>{element}</Provider>;
+    ReactDOM.render(el, elContainer);
   } catch (error) {
     const msg = `RENDERER START: Failed while rendering DOM. ${error.message}`;
     throwError(msg);

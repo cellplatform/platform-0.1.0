@@ -3,7 +3,7 @@ import '@babel/polyfill';
 
 import * as React from 'react';
 import renderer from '@platform/electron/lib/renderer';
-import { Test } from '../src/components';
+// import { Test } from '../src/components';
 
 export class Child extends React.PureComponent {
   public static contextType = renderer.Context;
@@ -42,5 +42,5 @@ export class GrandChild extends React.PureComponent {
 // const el = <Test />;
 const el = <Child />;
 renderer.render(el, 'root').then(context => {
-  console.log('renderer context:', context);
+  console.log('renderer loaded:', context); // tslint:disable-line
 });

@@ -1,6 +1,8 @@
-import { IpcClient } from './helpers/ipc/types';
+import { IpcClient, IpcMessage } from './helpers/ipc/types';
 import { ILog, IMainLog } from './helpers/logger/types';
-import { IStoreClient } from './helpers/store/types';
+import { IStoreClient, StoreJson } from './helpers/store/types';
+
+export * from './renderer/types';
 
 export {
   IStoreClient,
@@ -13,11 +15,11 @@ export { IpcMessage } from './helpers/ipc/types';
 export { ILog, IMainLog, IpcClient };
 export type ProcessType = 'MAIN' | 'RENDERER';
 
-export type IContext = {
+export type IContext<M extends IpcMessage = any, S extends StoreJson = any> = {
   id: number;
-  ipc: IpcClient;
+  ipc: IpcClient<M>;
+  store: IStoreClient<S>;
   log: ILog;
-  store: IStoreClient;
 };
 
 /**
