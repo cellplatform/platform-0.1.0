@@ -1,0 +1,23 @@
+{
+  "name": "@platform/util.is",
+  "version": "0.0.1",
+  "description": "Environment flags.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@platform/test": "0.0.0",
+    "@platform/ts.cli": "3.3.26"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,2 @@
+# util.is
+Environment flags.
