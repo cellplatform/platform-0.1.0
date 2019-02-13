@@ -44,8 +44,6 @@ type Ref = {
  */
 export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   public static readonly MAIN = 0;
-  public readonly MAIN = IPC.MAIN;
-  public readonly id: number;
 
   private readonly _: Ref = {
     disposed$: new Subject(),
@@ -83,8 +81,10 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   /**
    * Fields.
    */
+  public readonly id: number;
   public readonly process: ProcessType;
   public readonly channel = GLOBAL.IPC_CHANNEL;
+  public readonly MAIN = IPC.MAIN;
   public disposed$ = this._.disposed$.pipe(share());
   public isDisposed = false;
   public timeout = 5000;
