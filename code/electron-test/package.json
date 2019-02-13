@@ -15,14 +15,14 @@
   "dependencies": {
     "@platform/electron": "0.0.51",
     "@tdb/util": "1.9.38",
-    "@uiharness/electron": "0.3.102"
+    "@uiharness/electron": "0.3.103"
   },
   "browserslist": [
     "electron >= 4"
   ],
   "devDependencies": {
     "@platform/ts.cli": "3.3.26",
-    "@uiharness/dev": "0.0.43"
+    "@uiharness/dev": "0.1.0"
   },
   "resolutions": {
     "@types/react": "16.7.17"
