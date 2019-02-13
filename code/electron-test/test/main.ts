@@ -1,5 +1,5 @@
 import main from '@platform/electron/lib/main';
-import { time } from '@tdb/util';
+import { time } from '@platform/util';
 import * as uiharness from '@uiharness/electron/lib/main';
 import { BrowserWindow } from 'electron';
 import { map } from 'rxjs/operators';

@@ -1,0 +1,29 @@
+{
+  "name": "@platform/util.string",
+  "version": "0.0.2",
+  "description": "String helpers.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "yarn chmod && ts test",
+    "tdd": "yarn chmod && ts test --watch",
+    "lint": "yarn chmod && ts lint",
+    "build": "yarn chmod && ts build",
+    "prepare": "yarn chmod && ts prepare",
+    "chmod": "chmod 777 node_modules/.bin/ts"
+  },
+  "dependencies": {
+    "@types/underscore.string": "^0.0.33",
+    "escape-string-regexp": "^1.0.5",
+    "underscore.string": "^3.3.5"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.26",
+    "@platform/ts.cli": "3.3.28",
+    "@types/escape-string-regexp": "^1.0.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

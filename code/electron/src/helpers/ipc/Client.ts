@@ -1,4 +1,4 @@
-import { id as idUtil, value as valueUtil } from '@tdb/util';
+import { id as idUtil, value as valueUtil } from '@platform/util.value';
 import * as is from 'electron-is';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';

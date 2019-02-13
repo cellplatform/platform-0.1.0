@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts.cli",
-  "version": "3.3.26",
+  "version": "3.3.28",
   "description": "TypesScript tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,9 +19,9 @@
     "clean": "sh sh/clean.sh"
   },
   "dependencies": {
-    "@platform/cli": "0.0.33",
-    "@platform/fs": "0.0.32",
-    "@platform/libs": "0.0.2",
+    "@platform/cli": "0.0.34",
+    "@platform/fs": "0.0.33",
+    "@platform/libs": "0.0.3",
     "@platform/ts": "3.3.41",
     "yargs": "12.0.5"
   },
