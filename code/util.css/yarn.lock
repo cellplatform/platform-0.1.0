@@ -15,14 +15,14 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/cli@0.0.37":
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.37.tgz#bf710b42e99c02370e7eff31a1bb3a7d6120bd9c"
-  integrity sha512-98WoCX9efk23G8CtJiJ8nRRFhQA7Cz9gMKD1kYmlKeHZ5fqO66b9WsPuyg50hxEF76Cx4egzNz1i//b/3i4aIA==
+"@platform/cli@0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.39.tgz#199ba6c12feff9047d2736a16a112c59b4317e22"
+  integrity sha512-Y/fnEBe+2PqnfCyX34iT+bKApsrxhZTxEixxkYX0zKpDbRRpYUC/XKqkfWKFChdmZMpaX0kCZl8+MZ+eZDWCQw==
   dependencies:
     "@platform/fs" "0.0.33"
-    "@types/listr" "0.13.0"
-    listr "0.14.3"
+    "@platform/util.exec" "0.0.1"
+    "@types/yargs" "12.0.8"
     yargs "13.1.0"
 
 "@platform/fs@0.0.33":
@@ -55,12 +55,12 @@
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts.cli@3.3.31":
-  version "3.3.31"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.31.tgz#b97440f96dce4fa6aa842a65ded810056ad8ebd4"
-  integrity sha512-DBiXfh743PDAfbaJYD12dK8OQMCKLcSDIkEGeHYYSLXUMvXF5SnJ2OF5rUrRQieYAWH8zgm03GEBMse1HXajzw==
+"@platform/ts.cli@3.3.32":
+  version "3.3.32"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.32.tgz#af6a966d51170412b92dddc0e80653a923e7e5b7"
+  integrity sha512-9b+AJYXS8Fl2Q+hzah73ydzzUkYjfexqef8idilEjtJZZC2UuXS9ayYX4sdsM8RkmnFi1+svo5UmqhHI+UoCjA==
   dependencies:
-    "@platform/cli" "0.0.37"
+    "@platform/cli" "0.0.39"
     "@platform/fs" "0.0.33"
     "@platform/libs" "0.0.3"
     "@platform/ts" "3.3.41"
@@ -80,18 +80,27 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
-"@platform/util.is@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.8.tgz#473ecf9bca19dfc6cfc39af37b341e42a7f1ca5d"
-  integrity sha512-jvqhNHEUfhLUHL94F8/sV0VfstgnrjJ/TwRrqLpXtJW7yHoRdphLwKYuQS4ukHbSg08ZjOxTnUri+VR2V7iW+A==
-
-"@platform/util.value@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.9.tgz#b6d6563db84c476fdee076b99ecf56a1eb0855d7"
-  integrity sha512-eB1FhOT8RTzYTLk/4lPOaiyPczBtGFCP3n9g4+JllFsDEHZrDKQCFRYx29g++lJ1bh1/oNYx1GGS66+ZFwhCnA==
+"@platform/util.exec@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.1.tgz#0d474ee91258d07316e091230499145bca480b9a"
+  integrity sha512-Klxy5iZaimCChnfY0+AzPmAs9AUhcR0gupJI48t1IMld/PjJbKxhp9PvgECsMkht1We95yPDtGv5uUEIIYP5AQ==
   dependencies:
     "@platform/libs" "0.0.3"
-    "@platform/util.is" "0.0.8"
+    "@types/listr" "0.13.0"
+    listr "0.14.3"
+
+"@platform/util.is@0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.9.tgz#d205b7682e0ac87530f9bb116462b0cb1c0db86d"
+  integrity sha512-3tzAAEYszqp56rAdLATQAOhajRC84UIyl1m9LWJOlu2zw5Wjy6rGYJphBI90Zg5FD7Lc2yhXmhl1h4t232vVDA==
+
+"@platform/util.value@0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.10.tgz#4cf95148ffbf6644ee6a382751dec27208ab3130"
+  integrity sha512-gDi9KmfNYhnxddBcubRxsow+xCo7iX1VoVLHWJ79/ssIuGdwgLBI3Q1DPnLEUu3cWlHb0EMQAKXuoHd8MKvLaQ==
+  dependencies:
+    "@platform/libs" "0.0.3"
+    "@platform/util.is" "0.0.9"
     "@types/semver" "^5.5.0"
     cuid "2.1.6"
     dayjs "1.8.5"
@@ -165,6 +174,11 @@
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@types/tinycolor2/-/tinycolor2-1.4.1.tgz#2f5670c9d1d6e558897a810ed284b44918fc1253"
   integrity sha512-25L/RL5tqZkquKXVHM1fM2bd23qjfbcPpAZ2N/H05Y45g3UEi+Hw8CbDV28shKY8gH1SHiLpZSxPI1lacqdpGg==
+
+"@types/yargs@12.0.8":
+  version "12.0.8"
+  resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.8.tgz#0b45bf0607a5509b921335658d87489c12955176"
+  integrity sha512-OMSKUmZ09gbzITzx4nxnJqhprWC7JqsmlrEsVtb+cv3GXHNpv0kktqxhboKX52FnMggkQvT5ezt8pxTWyKpJHA==
 
 ansi-escapes@^3.0.0:
   version "3.2.0"

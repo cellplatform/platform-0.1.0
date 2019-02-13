@@ -1,0 +1,15 @@
+#
+# https://uiharness.com/docs/config
+#
+
+name: My App
+
+electron:
+  port: 8888
+  entry:
+    main: test/main.ts
+    renderer: test/renderer.tsx
+
+web:
+  port: 1234
+  entry: test/web.tsx

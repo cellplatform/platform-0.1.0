@@ -1,16 +1,15 @@
 {
   "name": "@platform/util.exec",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Tools for executing commands in child_process.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "yarn chmod && ts test",
-    "tdd": "yarn chmod && ts test --watch",
-    "lint": "yarn chmod && ts lint",
-    "build": "yarn chmod && ts build",
-    "prepare": " ts prepare",
-    "chmod": "chmod 777 node_modules/.bin/ts"
+    "test": "sh node_modules/@platform/test/test.sh $@",
+    "tdd": "yarn test --watch",
+    "lint": "sh node_modules/@platform/ts/lint.sh $@",
+    "build": "sh node_modules/@platform/ts/build.sh $@",
+    "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
     "@platform/libs": "0.0.3",
@@ -20,8 +19,7 @@
   "devDependencies": {
     "@platform/fs": "0.0.33",
     "@platform/test": "0.0.26",
-    "@platform/ts": "3.3.41",
-    "@platform/ts.cli": "3.3.31"
+    "@platform/ts": "3.3.41"
   },
   "files": [
     "lib"

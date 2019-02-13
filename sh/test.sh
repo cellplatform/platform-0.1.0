@@ -12,6 +12,7 @@ test test
 test ts
 test ts.cli
 
+test cli
 test fs
 test log
 test electron
@@ -23,3 +24,5 @@ test util.is
 test util.react
 test util.string
 test util.value
+
+test ui.object

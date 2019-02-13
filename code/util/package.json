@@ -1,6 +1,6 @@
 {
   "name": "@platform/util",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Roll-up of all util modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,15 +14,15 @@
   },
   "dependencies": {
     "@platform/libs": "0.0.3",
-    "@platform/util.css": "0.0.9",
-    "@platform/util.is": "0.0.8",
-    "@platform/util.react": "0.0.11",
-    "@platform/util.string": "^0.0.5",
-    "@platform/util.value": "0.0.9"
+    "@platform/util.css": "0.0.10",
+    "@platform/util.is": "0.0.9",
+    "@platform/util.react": "0.0.12",
+    "@platform/util.string": "^0.0.6",
+    "@platform/util.value": "0.0.10"
   },
   "devDependencies": {
     "@platform/test": "0.0.26",
-    "@platform/ts.cli": "3.3.31"
+    "@platform/ts.cli": "3.3.32"
   },
   "files": [
     "lib"
