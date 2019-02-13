@@ -85,6 +85,8 @@ export async function install(
 
   // Run the command.
   const child = exec.run(`cd ${dir} \n ${cmd}`, { silent });
+
+  console.log(`\nTODO 🐷   Pass observable$ into exec.run   \n`)
   child.stdout.on('data', (data: Buffer) => onData(data, false));
   child.stderr.on('data', (data: Buffer) => onData(data, true));
 

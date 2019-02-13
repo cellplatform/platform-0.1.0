@@ -73,7 +73,9 @@ async function getJson(moduleName: string, options: string = ''): Promise<any> {
 
   try {
     const result = await exec.run(cmd, { silent: true });
-    return result.stdout ? parseJson(result.stdout) : undefined;
+    return result.info.length > 0
+      ? parseJson(result.info.join('\n'))
+      : undefined;
   } catch (error) {
     if (error.message.includes('Not found')) {
       return undefined; // Return nothing indicating the module was not found on NPM.

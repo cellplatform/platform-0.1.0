@@ -32,9 +32,7 @@ export function run(
 
     // Listen for end.
     child.on('exit', e => {
-      // const code = e !== null ? e : result.errors.length === 0 ? 0 : 1;
-      const code = e || 0;
-      const result = resultUtil.format({ code, info: info, errors: errors });
+      const result = resultUtil.format({ code: e || 0, info, errors });
       resolve(result);
     });
     child.once('error', err => reject(err));
