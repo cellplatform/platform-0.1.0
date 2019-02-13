@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { GLOBAL } from '../constants';
-import { Client, GetHandlerRefs, HandlerRegistered, IpcClient } from './Client';
+import { IPC, GetHandlerRefs, HandlerRegistered, IpcClient } from './Client';
 import { IpcEvent, IpcMessage, IpcRegisterHandlerEvent } from './types';
 
 export * from './types';
@@ -44,7 +44,7 @@ export function init<M extends IpcMessage>(args: {} = {}): IpcClient<M> {
   /**
    * Construct the [Renderer] client.
    */
-  const client = new Client({
+  const client = new IPC({
     process: 'RENDERER',
     events$: events$.pipe(takeUntil(stop$)),
     onSend: ipcRenderer.send,

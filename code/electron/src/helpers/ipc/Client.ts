@@ -43,9 +43,9 @@ type Ref = {
  * Generic IPC (inter-process-communication)
  * observable data structure.
  */
-export class Client<M extends IpcMessage = any> implements IpcClient<M> {
+export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   public static readonly MAIN = 0;
-  public readonly MAIN = Client.MAIN;
+  public readonly MAIN = IPC.MAIN;
 
   private readonly _: Ref = {
     disposed$: new Subject(),
@@ -113,7 +113,7 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
         const remote = require('electron').remote as Electron.Remote;
         this._.id = remote.getCurrentWindow().id;
       } else {
-        this._.id = Client.MAIN;
+        this._.id = IPC.MAIN;
       }
     }
     return this._.id;
@@ -161,10 +161,10 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
 
     const { target } = options;
     const id = this.id;
-    const targets = Client.asTarget(target);
+    const targets = IPC.asTarget(target);
     const process = this.process;
     const eid = `${process}-${id}/${idUtil.shortid()}`;
-    const sender = Client.toIdentifier(this);
+    const sender = IPC.toIdentifier(this);
 
     // Fire the event through the electron IPC system.
     const data: IpcEvent<T> = { eid, type, payload, sender, targets };
@@ -208,7 +208,7 @@ export class Client<M extends IpcMessage = any> implements IpcClient<M> {
 
     // Alert the process of the registration.
     if (this._.onHandlerRegistered) {
-      const client = Client.toIdentifier(this);
+      const client = IPC.toIdentifier(this);
       this._.onHandlerRegistered({ type, client });
     }
 

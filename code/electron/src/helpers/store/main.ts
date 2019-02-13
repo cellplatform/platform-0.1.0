@@ -3,7 +3,7 @@ import { app } from 'electron';
 import { Subject } from 'rxjs';
 
 import { IpcClient } from '../ipc/Client';
-import { Client } from './Client';
+import { Store } from './Client';
 import * as t from './types';
 
 export * from './types';
@@ -142,7 +142,7 @@ export function init<T extends t.StoreJson>(args: {
   };
 
   // Create the client.
-  const client = (new Client<T>({
+  const client = (new Store<T>({
     getValues,
     setValues,
     getKeys,

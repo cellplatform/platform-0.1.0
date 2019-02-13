@@ -15,7 +15,7 @@ import * as t from './types';
  * An abstract representation of the configuration store
  * that works on either the [main] or [renderer] processes.
  */
-export class Client<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
+export class Store<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
   /**
    * [Fields]
    */

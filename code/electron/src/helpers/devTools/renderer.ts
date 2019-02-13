@@ -5,13 +5,13 @@ import * as t from './types';
  * Renderer API for working with the dev-tools.
  * Call this from the root [/renderer] API.
  */
-export class DevToolsRenderer {
+export class DevTools {
   private ipc: t.IpcInternal;
 
   /**
-   * Initializes the dev tools.
+   * [Constructor]
    */
-  public init(args: { ipc: t.IpcClient }) {
+  constructor(args: { ipc: t.IpcClient }) {
     const ipc = (this.ipc = args.ipc);
     ipc
       .on<t.ClearConsoleEvent>('@platform/DEV_TOOLS/clearConsole')

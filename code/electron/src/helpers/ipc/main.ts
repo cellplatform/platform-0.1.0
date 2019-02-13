@@ -4,7 +4,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import { WindowsMain } from '../windows';
 import {
-  Client,
+  IPC,
   HandlerRegistered,
   IpcClient,
   IpcEvent,
@@ -42,7 +42,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   };
 
   // Construct the [Main] client.
-  const main = new Client({
+  const main = new IPC({
     process: 'MAIN',
     onSend: sendHandler,
     events$: events$.pipe(takeUntil(stop$)),
@@ -73,7 +73,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
    * Ferry messages to all [renderer] windows.
    */
   const sendToWindows = (senderId: number, e: IpcEvent) => {
-    const target = Client.asTarget(e.targets);
+    const target = IPC.asTarget(e.targets);
 
     // - Do not send the message back to the originating window.
     // - If a target was set, only send to that window.

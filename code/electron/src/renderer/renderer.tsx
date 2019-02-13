@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { DevToolsRenderer } from '../helpers/devTools/renderer';
+import { DevTools } from '../helpers/devTools/renderer';
 import { getId, init as initIpc } from '../helpers/ipc/renderer';
 import { init as initLog } from '../helpers/logger/renderer';
 import { init as initStore } from '../helpers/store/renderer';
@@ -13,9 +13,8 @@ export * from '../types';
 
 type Refs = {
   renderer?: t.IRenderer;
-  devTools: DevToolsRenderer;
 };
-const refs: Refs = { devTools: new DevToolsRenderer() };
+const refs: Refs = {};
 
 /**
  * Initializes [Renderer] process systems (safely).
@@ -38,17 +37,17 @@ export async function init<
   const store = initStore<S>({ ipc });
 
   // Dev tools.
-  refs.devTools.init({ ipc });
+  const devTools = new DevTools({ ipc });
 
   // Retrieve the ID.
   const id = await getId();
 
   // React <Provider>.
-  const context: t.IContext = { id, ipc, store, log };
+  const context: t.IContext = { id, ipc, store, log, devTools };
   const Provider = createProvider(context);
 
   // Finish up.
-  refs.renderer = { ...context, Context, Provider };
+  refs.renderer = { ...context, Provider };
   return refs.renderer;
 }
 
@@ -72,8 +71,8 @@ export async function init<
  * To access the context deep within the React tree add a `contextType`:
  *
  *      export class MyView extends React.PureComponent {
- *        public public static contextType = renderer.Context;
- *        public public context!: renderer.ReactContext
+ *        public static contextType = renderer.Context;
+ *        public context!: renderer.ReactContext
  *        public render() {
  *          return <div>window-id: {this.context.id}<div>;
  *        }

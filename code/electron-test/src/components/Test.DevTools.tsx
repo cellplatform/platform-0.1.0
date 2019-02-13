@@ -1,12 +1,6 @@
 import * as React from 'react';
 
-import {
-  css,
-  GlamorValue,
-  ICreateDevToolsEvent,
-  ipc,
-  renderer,
-} from '../common';
+import { css, GlamorValue, ICreateDevToolsEvent, renderer } from '../common';
 import { Button } from './primitives';
 
 /**
@@ -17,9 +11,8 @@ export type IDevToolsTestProps = {
 };
 
 export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
-  constructor(props: IDevToolsTestProps) {
-    super(props);
-  }
+  public static contextType = renderer.Context;
+  public context!: renderer.ReactContext;
 
   public render() {
     const styles = {
@@ -42,15 +35,16 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
   }
 
   private newWindow = () => {
-    const windowId = renderer.id;
+    const { id, ipc } = this.context;
     ipc.send<ICreateDevToolsEvent>(
       'DEVTOOLS/create',
-      { windowId },
+      { windowId: id },
       { target: ipc.MAIN },
     );
   };
 
   private clearConsoles = () => {
-    renderer.devTools.clearConsoles();
+    const { devTools } = this.context;
+    devTools.clearConsoles();
   };
 }

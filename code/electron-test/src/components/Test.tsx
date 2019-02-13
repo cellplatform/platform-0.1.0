@@ -5,13 +5,14 @@ import { IpcTest } from './Test.Ipc';
 import { DevToolsTest } from './Test.DevTools';
 import { StoreTest } from './Test.Store';
 
-// renderer.init();
-
 export type ITestProps = {
   style?: GlamorValue;
 };
 
 export class Test extends React.PureComponent<ITestProps> {
+  public static contextType = renderer.Context;
+  public context!: renderer.ReactContext;
+
   public render() {
     const styles = {
       base: css({
@@ -19,12 +20,12 @@ export class Test extends React.PureComponent<ITestProps> {
         PaddingX: 25,
       }),
     };
+
     return (
       <div {...css(styles.base, this.props.style)}>
-        Test
-        {/* <DevToolsTest />
-        <IpcTest />
-        <StoreTest /> */}
+        <DevToolsTest />
+        {/* <IpcTest /> */}
+        {/* <StoreTest /> */}
       </div>
     );
   }

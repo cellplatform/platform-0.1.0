@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 
 import { GLOBAL } from '../constants';
 import { IpcClient } from '../ipc/Client';
-import { Client } from './Client';
+import { Store } from './Client';
 import * as t from './types';
 
 export * from './types';
@@ -102,7 +102,7 @@ export function init<T extends t.StoreJson>(args: {
   /**
    * Create the client.
    */
-  const client = new Client<T>({ getKeys, getValues, setValues, change$ });
+  const client = new Store<T>({ getKeys, getValues, setValues, change$ });
 
   // Finish up.
   global[GLOBAL.STORE_CLIENT] = client;
