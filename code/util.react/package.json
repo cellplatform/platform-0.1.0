@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.react",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

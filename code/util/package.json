@@ -1,6 +1,6 @@
 {
   "name": "@platform/util",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Roll-up of all util modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,7 +14,7 @@
   "dependencies": {
     "@platform/util.css": "0.0.3",
     "@platform/util.is": "^0.0.3",
-    "@platform/util.react": "0.0.3",
+    "@platform/util.react": "0.0.4",
     "@platform/util.value": "0.0.3"
   },
   "devDependencies": {

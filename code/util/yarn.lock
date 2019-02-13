@@ -97,10 +97,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.3.tgz#4a27d93af8158dfd6f3dac66997444687f56b411"
   integrity sha512-wyC6nzSD59gSYm6kPXOkv5v2Q3lBKC6AS2wRDr9xZZmouX4Rw/VnYKBDN1ZgOq0f6c3H51hw/RXByyJvfuT5tA==
 
-"@platform/util.react@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@platform/util.react/-/util.react-0.0.3.tgz#12c9e644d996136fd2c105c7270659335cc76e93"
-  integrity sha512-WUSXTLcFodafiDEsV0YOlBBk9zXaF7/5cP86MhPHJhee40KnlxZvdDM417jkx1E5oy5aHdthW8pr4TqMiaKCAg==
+"@platform/util.react@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/util.react/-/util.react-0.0.4.tgz#62ca6b094de5351f630283dd484eba62e965d50a"
+  integrity sha512-vsZduonzsAQvsXAoKH3egYVv13ZPe/qbS9qIp0EvGlh9YjFGSCmcYeDutgw/DjE/Zrsja9Vg9iJZdElsa2e1KQ==
   dependencies:
     "@platform/util.css" "0.0.3"
     "@platform/util.is" "0.0.3"
