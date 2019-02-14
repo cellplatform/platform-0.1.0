@@ -2,8 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, renderer, time, types } from '../../common';
+import { css, GlamorValue, renderer, time } from '../../common';
 import { Button } from '../primitives';
+import * as t from '../../types';
 
 /**
  * Test component.
@@ -46,7 +47,6 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
       <div {...styles.base}>
         <h2>IPC ({this.id})</h2>
         <div {...styles.buttons}>
-          <Button label={'new window'} onClick={this.newWindow} />
           <Button
             label={'send: FOO (response handlers)'}
             onClick={this.sendFoo}
@@ -79,38 +79,26 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
       // const from = e.sender.id;
       // this.log.info('⚡️ from:', from, e);
     });
-    this.ipc.filter<types.IMessageEvent>('MESSAGE').subscribe(e => {
+    this.ipc.filter<t.IMessageEvent>('MESSAGE').subscribe(e => {
       this.log.info('filtered event', e);
     });
 
     /**
      * Provide a response-handler for a specific event.
      */
-    this.ipc.handle<types.IFooEvent>('FOO', async e => {
+    this.ipc.handle<t.IFooEvent>('FOO', async e => {
       await time.wait(1000);
       return `response FOO after delay (${this.id}) 🌼`;
     });
   };
 
-  private newWindow = () => {
-    this.ipc.send<types.INewWindowEvent>(
-      'NEW_WINDOW',
-      {},
-      { target: this.ipc.MAIN },
-    );
-  };
-
   private sendMessage = () => {
-    this.ipc.send<types.IMessageEvent>('MESSAGE', { text: 'Hello' });
+    this.ipc.send<t.IMessageEvent>('MESSAGE', { text: 'Hello' });
   };
 
   private sendToHandler = (...target: number[]) => {
     return () => {
-      this.ipc.send<types.IMessageEvent>(
-        'MESSAGE',
-        { text: 'Hello' },
-        { target },
-      );
+      this.ipc.send<t.IMessageEvent>('MESSAGE', { text: 'Hello' }, { target });
     };
   };
 
@@ -118,7 +106,7 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     console.group('🌳 Send Foo');
 
     const count = this.count++;
-    const res = this.ipc.send<types.IFooEvent, string>(
+    const res = this.ipc.send<t.IFooEvent, string>(
       'FOO',
       { count },
       // { timeout: 100 },
@@ -150,7 +138,7 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
   private count = 0;
 
   private sendBar = () => {
-    const res = this.ipc.send<types.IBarEvent, string>('BAR', {});
+    const res = this.ipc.send<t.IBarEvent, string>('BAR', {});
     console.log('res', res);
   };
 

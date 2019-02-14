@@ -1,18 +1,26 @@
 import * as React from 'react';
 
-import { css, GlamorValue, ICreateDevToolsEvent, renderer } from '../../common';
+import { css, GlamorValue, renderer } from '../../common';
 import { Button, ObjectView } from '../primitives';
+import * as t from '../../types';
 
 /**
  * Test component.
  */
-export type IDevToolsTestProps = {
+export type IWindowsTestProps = {
   style?: GlamorValue;
 };
 
-export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
+export type IWindowsTestState = {};
+
+export class WindowsTest extends React.PureComponent<
+  IWindowsTestProps,
+  IWindowsTestState
+> {
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
+
+  public state: IWindowsTestState = {};
 
   public render() {
     const styles = {
@@ -31,30 +39,29 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
       }),
     };
 
+    const windows = this.context.windows;
+    console.log('windows', windows);
+
+    // console.log("renderer.windows", renderer.windows)
+    // renderer.
+
     return (
       <div {...styles.base}>
-        <h2>DevTools</h2>
+        <h2>Windows</h2>
         <div {...styles.columns}>
           <div {...styles.colButtons}>
-            <Button label={'show (create)'} onClick={this.create} />
-            <Button label={'clearConsoles'} onClick={this.clearConsoles} />
+            <Button label={'new window'} onClick={this.newWindow} />
           </div>
           <div {...styles.colObject}>
-            <ObjectView name={'env ("is")'} data={renderer.is.toObject()} />
+            <ObjectView name={'env'} data={renderer.is.toObject()} />
           </div>
         </div>
       </div>
     );
   }
 
-  private create = () => {
-    const { id: windowId, ipc } = this.context;
-    const target = ipc.MAIN;
-    ipc.send<ICreateDevToolsEvent>('DEVTOOLS/create', { windowId }, { target });
-  };
-
-  private clearConsoles = () => {
-    const { devTools } = this.context;
-    devTools.clearConsoles();
+  private newWindow = () => {
+    const { ipc } = this.context;
+    ipc.send<t.INewWindowEvent>('NEW_WINDOW', {}, { target: ipc.MAIN });
   };
 }
