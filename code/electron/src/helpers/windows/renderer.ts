@@ -38,7 +38,6 @@ export class WindowsRenderer implements IWindows {
    */
   constructor(args: { ipc: t.IpcClient }) {
     const ipc = (this.ipc = args.ipc);
-    console.log('windows renderer', args);
 
     ipc
       .on<IWindowChangedEvent>('@platform/WINDOWS/change')

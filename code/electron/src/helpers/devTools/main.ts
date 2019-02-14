@@ -33,10 +33,6 @@ export function create(args: {
     windows,
   } = args;
 
-  console.group('🌳 create devTools');
-  console.log('windows', windows);
-  console.groupEnd();
-
   const fileName = args.fileName
     ? args.fileName
     : parent.getTitle().replace(/\s/g, '_');
