@@ -143,8 +143,9 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
   };
 
   private logInfo = () => {
+    const { log } = this.context;
     this.logCount++;
-    this.log.info(`Hello from renderer (${this.id}) - ${this.logCount}`);
+    log.info(`Hello from renderer (${this.id}) - ${this.logCount}`);
   };
   private logCount = 0;
 }
