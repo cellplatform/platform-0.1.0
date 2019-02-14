@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.object",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,16 +14,19 @@
   },
   "dependencies": {
     "@platform/util.react": "0.0.13",
-    "@uiharness/electron": "0.3.110",
+    "@uiharness/electron": "0.3.111",
     "react-inspector": "2.3.1"
   },
   "devDependencies": {
-    "@platform/electron": "0.0.62",
+    "@platform/electron": "0.0.63",
     "@platform/ts.cli": "3.3.32",
-    "@uiharness/dev": "0.1.7"
+    "@uiharness/dev": "0.1.8"
   },
   "resolutions": {
     "@types/react": "16.7.17"
   },
+  "files": [
+    "src"
+  ],
   "license": "MIT"
 }
