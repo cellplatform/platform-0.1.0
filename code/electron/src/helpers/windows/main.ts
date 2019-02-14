@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 import * as t from '../types';
@@ -34,31 +34,10 @@ export class WindowsMain implements IWindows {
   constructor(args: { ipc: t.IpcClient }) {
     const ipc: t.IpcInternal = args.ipc;
 
-    const fireChange = (
-      type: IWindowChange['type'],
-      id: number,
-    ): IWindowChange => {
-      const payload: IWindowChange = {
-        type,
-        window: id,
-        windows: [...this.refs],
-      };
-      this._change$.next(payload);
-      return payload;
-    };
-
     /**
      * Keep a record of current windows.
      */
-    app.on('browser-window-created', (e, window) => {
-      const id = window.id;
-      this._refs = [...this._refs, { id, tags: [] }];
-      fireChange('CREATED', id);
-      window.on('close', () => {
-        this._refs = this._refs.filter(ref => ref.id !== id);
-        fireChange('CLOSED', id);
-      });
-    });
+    app.on('browser-window-created', this.handleWindowCreated);
 
     /**
      * Broadcast changes through IPC event.
@@ -84,6 +63,7 @@ export class WindowsMain implements IWindows {
    * Disposes of the object and frees up references.
    */
   public dispose() {
+    app.removeListener('browser-window-created', this.handleWindowCreated);
     this.isDisposed = true;
     this._dispose$.next();
   }
@@ -102,17 +82,35 @@ export class WindowsMain implements IWindows {
   /**
    * [Methods]
    */
-  public tag(id: number, ...tag: string[]) {
-    console.log('tag', id, tag);
+  public async refresh() {
+    // No-op on main.
   }
 
-  public async refresh() {
-    // No-op on main
+  public tag(id: number, ...tag: string[]) {
+    console.log('tag', id, tag);
   }
 
   /**
    * [INTERNAL]
    */
+  private handleWindowCreated = (e: Electron.Event, window: BrowserWindow) => {
+    const id = window.id;
+    this._refs = [...this._refs, { id, tags: [] }];
+    this.fireChange('CREATED', id);
+    window.on('close', () => {
+      this._refs = this._refs.filter(ref => ref.id !== id);
+      this.fireChange('CLOSED', id);
+    });
+  };
 
-  //  public console.public log(`\nTODO 🐷   break out window event handlers as methods - and detach on dispose\n`)
+  private fireChange(type: IWindowChange['type'], id: number) {
+    if (!this.isDisposed) {
+      const payload: IWindowChange = {
+        type,
+        window: id,
+        windows: [...this.refs],
+      };
+      this._change$.next(payload);
+    }
+  }
 }
