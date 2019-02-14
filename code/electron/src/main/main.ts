@@ -9,8 +9,8 @@ import {
   MAIN_ID,
 } from '../helpers/ipc/main';
 import * as logger from '../helpers/logger/main';
-import { WindowsMain } from '../helpers/windows/main';
 import { init as initStore } from '../helpers/store/main';
+import { WindowsMain } from '../helpers/windows/main';
 import * as t from '../types';
 
 export * from '../types';

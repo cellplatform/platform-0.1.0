@@ -18,7 +18,7 @@ const config = require('../.uiharness/config.json') as uiharness.IUIHarnessRunti
   // NOTE:  You could also get [log, ipc] from `uiharness.init`.
   //        Calling these here as this is about testing the module
   //        that contains [log] and [ipc].
-  const { log, ipc, store } = await main.init<t.MyEvents>({ appName });
+  const { log, ipc, store, windows } = await main.init<t.MyEvents>({ appName });
 
   const { newWindow } = await uiharness.init({
     config,
@@ -78,6 +78,6 @@ const config = require('../.uiharness/config.json') as uiharness.IUIHarnessRunti
       const id = e.windowId;
       const all = BrowserWindow.getAllWindows();
       const parent = all.find(window => window.id === id);
-      main.devTools.create({ parent, ipc, log });
+      main.devTools.create({ parent, windows });
     });
 })();

@@ -1,15 +1,17 @@
+import { uniq } from 'ramda';
 import { app, BrowserWindow } from 'electron';
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
-import * as t from '../types';
 
+import * as t from '../types';
 import {
   IWindowChange,
-  IWindowRef,
   IWindowChangedEvent,
+  IWindowRef,
   IWindows,
   IWindowsGetEvent,
   IWindowsGetResponse,
+  IWindowTag,
 } from './types';
 
 /**
@@ -86,8 +88,21 @@ export class WindowsMain implements IWindows {
     // No-op on main.
   }
 
-  public tag(id: number, ...tag: string[]) {
-    console.log('tag', id, tag);
+  /**
+   * Applies [1..n] tags to a window.
+   */
+  public tag(id: number, ...tag: IWindowTag[]) {
+    const index = this.refs.findIndex(w => w.id === id);
+    if (index > -1) {
+      tag.forEach(tag => {
+        const refs = [...this.refs];
+        const window = { ...refs[index] };
+        const tags = uniq([...window.tags, tag]);
+        refs[index] = { ...window, tags };
+        this._refs = refs;
+        this.fireChange('TAG', window.id);
+      });
+    }
   }
 
   /**

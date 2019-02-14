@@ -3,6 +3,7 @@ import * as WindowState from 'electron-window-state';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import * as t from './types';
+import { WindowsMain } from '../windows/main';
 
 const OPACITY = {
   FULL: 1,
@@ -19,16 +20,19 @@ const OPACITY = {
  *    https://github.com/electron/electron/blob/master/docs/tutorial/devtools-extension.md
  *
  */
-export function create(
-  args: t.IContext & {
-    parent: BrowserWindow;
-    title?: string;
-    fileName?: string;
-    dirName?: string;
-  },
-) {
-  const { parent, title = 'DevTools', dirName = 'window-state' } = args;
-  // const ipc: t.IpcInternal = args.ipc;
+export function create(args: {
+  parent: BrowserWindow;
+  title?: string;
+  fileName?: string;
+  dirName?: string;
+  windows?: WindowsMain;
+}) {
+  const {
+    parent,
+    title = 'DevTools',
+    dirName = 'window-state',
+    windows,
+  } = args;
 
   const fileName = args.fileName
     ? args.fileName
@@ -83,6 +87,14 @@ export function create(
     const opacity = isFocused ? OPACITY.FULL : OPACITY.DIM;
     devTools.setOpacity(opacity);
   };
+
+  // Add an identifying tag to the window.
+  const tagWindow = () => {
+    if (windows) {
+      windows.tag(devTools.id, { key: 'type', value: 'DEV_TOOLS' });
+    }
+  };
+  tagWindow();
 
   // Dev-tools events.
   parent.webContents.once('did-finish-load', () => {

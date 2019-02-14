@@ -14,7 +14,15 @@ export type IWindows = {
  */
 export type IWindowRef = {
   id: number;
-  tags: string[];
+  tags: IWindowTag[];
+};
+
+/**
+ * A categorization for a window.
+ */
+export type IWindowTag = {
+  key: string;
+  value?: string | number | boolean;
 };
 
 /**
@@ -29,7 +37,7 @@ export type IWindowChangedEvent = {
   };
 };
 export type IWindowChange = {
-  type: 'CREATED' | 'CLOSED';
+  type: 'CREATED' | 'CLOSED' | 'TAG';
   window: number;
   windows: IWindowRef[];
 };
