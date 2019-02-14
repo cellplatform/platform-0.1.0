@@ -1,6 +1,7 @@
 {
   "name": "@platform/ui.object",
-  "version": "0.0.4",
+  "version": "0.0.6",
+  "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
     "start": "ui start $@",
@@ -13,13 +14,13 @@
   },
   "dependencies": {
     "@platform/util.react": "0.0.13",
-    "@uiharness/electron": "0.3.109",
+    "@uiharness/electron": "0.3.110",
     "react-inspector": "2.3.1"
   },
   "devDependencies": {
     "@platform/electron": "0.0.62",
     "@platform/ts.cli": "3.3.32",
-    "@uiharness/dev": "0.1.6"
+    "@uiharness/dev": "0.1.7"
   },
   "resolutions": {
     "@types/react": "16.7.17"
