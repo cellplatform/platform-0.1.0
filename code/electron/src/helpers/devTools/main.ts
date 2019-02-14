@@ -20,14 +20,20 @@ const OPACITY = {
  *
  */
 export function create(
-  args: t.IContext & { parent: BrowserWindow; title?: string },
+  args: t.IContext & {
+    parent: BrowserWindow;
+    title?: string;
+    fileName?: string;
+    dirName?: string;
+  },
 ) {
-  const { parent, title = 'DevTools' } = args;
-  const ipc: t.IpcInternal = args.ipc;
+  const { parent, title = 'DevTools', dirName = 'window-state' } = args;
+  // const ipc: t.IpcInternal = args.ipc;
 
-  const file = `[window].${parent
-    .getTitle()
-    .replace(/\s/g, '_')}.devTools.json`;
+  const fileName = args.fileName
+    ? args.fileName
+    : parent.getTitle().replace(/\s/g, '_');
+  const file = `${dirName}/${fileName}.devTools.json`;
 
   const windowBounds = parent.getBounds();
   const state = WindowState({
