@@ -37,7 +37,7 @@ export async function init<
   // Initiaize modules.
   const ipc = args.ipc || initIpc<M>();
   const store = args.store || initStore<S>({ ipc });
-  const windows = new WindowsMain({ ipc });
+  const windows = createWindows({ ipc });
   const log =
     typeof args.log === 'object'
       ? args.log // Logger already exists and was provided.
@@ -46,6 +46,14 @@ export async function init<
   // Finish up.
   const res: t.IMain<M, S> = { id, ipc, log, store, windows };
   return res;
+}
+
+/**
+ * Factory for creating windows.
+ */
+export function createWindows(args: { ipc: t.IpcClient }) {
+  const { ipc } = args;
+  return new WindowsMain({ ipc });
 }
 
 /**

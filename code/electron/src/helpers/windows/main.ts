@@ -14,6 +14,8 @@ import {
   IWindowTag,
 } from './types';
 
+export * from './types';
+
 /**
  * [main] Maintains a set of reference to all windows.
  */
@@ -91,7 +93,7 @@ export class WindowsMain implements IWindows {
   /**
    * Applies [1..n] tags to a window.
    */
-  public tag(id: number, ...tag: IWindowTag[]) {
+  public async tag(id: number, ...tag: IWindowTag[]) {
     const index = this.refs.findIndex(w => w.id === id);
     if (index > -1) {
       tag.forEach(tag => {
