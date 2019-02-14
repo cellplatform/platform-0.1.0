@@ -14,9 +14,9 @@ export type IMainLog = IServerLog & {
 /**
  * IPC Events.
  */
-export type LoggerEvents = LogWriteEvent;
+export type LoggerEvents = ILogWriteEvent;
 
-export type LogWriteEvent = {
+export type ILogWriteEvent = {
   type: '@platform/LOG/write';
   payload: ILogEvent;
 };

@@ -68,9 +68,9 @@ export type IpcClient<M extends IpcMessage = any> = {
     options?: IpcClientSendOptions,
   ) => IpcSending<T, D>;
 
-  handle: <T extends M>(
+  handle: <T extends M, D = any>(
     type: T['type'],
-    handler: IpcEventHandler<T>,
+    handler: IpcEventHandler<T, D>,
   ) => IpcClient<M>;
 
   handlers: (
@@ -97,6 +97,7 @@ export type IpcSending<M extends IpcMessage, D = any> = {
   cancel$: Observable<{}>;
   results: Array<IpcHandlerResult<D>>;
   resultFrom: (sender: number | ProcessType) => IpcHandlerResult<D> | undefined;
+  dataFrom: (sender: number | ProcessType) => D | undefined;
   cancel: () => IpcSending<M, D>;
   isCancelled: boolean;
   isComplete: boolean;
@@ -124,9 +125,9 @@ export type IpcHandlerResult<D> = {
  * The event passed to an event-handler with methods for responding.
  */
 export type IpcEventHandlerArgs<M extends IpcMessage> = IpcEvent<M> & {};
-export type IpcEventHandler<M extends IpcMessage = any> = (
+export type IpcEventHandler<M extends IpcMessage = any, D = any> = (
   e: IpcEventHandlerArgs<M>,
-) => Promise<any>;
+) => Promise<D>;
 
 /**
  * [EVENTS]

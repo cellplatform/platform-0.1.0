@@ -9,6 +9,7 @@ import {
   MAIN_ID,
 } from '../helpers/ipc/main';
 import * as logger from '../helpers/logger/main';
+import { WindowsMain } from '../helpers/windows/main';
 import { init as initStore } from '../helpers/store/main';
 import * as t from '../types';
 
@@ -36,13 +37,14 @@ export async function init<
   // Initiaize modules.
   const ipc = args.ipc || initIpc<M>();
   const store = args.store || initStore<S>({ ipc });
+  const windows = new WindowsMain({ ipc });
   const log =
     typeof args.log === 'object'
       ? args.log // Logger already exists and was provided.
       : initLog({ ipc, dir: args.log, appName }); // Initialize a new log.
 
   // Finish up.
-  const res: t.IMain<M, S> = { id, ipc, log, store };
+  const res: t.IMain<M, S> = { id, ipc, log, store, windows };
   return res;
 }
 

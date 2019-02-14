@@ -8,6 +8,7 @@ import { init as initStore } from '../helpers/store/renderer';
 import * as t from '../types';
 import { Context, createProvider, ReactContext } from './Context';
 import { is } from '@platform/util.is';
+import { WindowsRenderer } from '../helpers/windows/renderer';
 
 export { Context, ReactContext, is };
 export * from '../types';
@@ -42,12 +43,22 @@ export async function init<
   // Dev tools.
   const devTools = new DevTools({ ipc });
 
+  // Windows manager.
+  const windows = new WindowsRenderer({ ipc });
+
   // React <Provider>.
-  const context: t.IRendererContext = { id, ipc, store, log, devTools };
+  const context: t.IRendererContext = {
+    id,
+    ipc,
+    store,
+    log,
+    devTools,
+    windows,
+  };
   const Provider = createProvider(context);
 
   // Finish up.
-  refs.renderer = { ...context, Provider, devTools };
+  refs.renderer = { ...context, Provider, devTools, windows };
   return refs.renderer;
 }
 

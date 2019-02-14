@@ -1,3 +1,14 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+} from 'rxjs/operators';
 import * as React from 'react';
 
 import { css, GlamorValue, renderer } from '../../common';
@@ -11,7 +22,9 @@ export type IWindowsTestProps = {
   style?: GlamorValue;
 };
 
-export type IWindowsTestState = {};
+export type IWindowsTestState = {
+  windows?: renderer.IWindowRef[];
+};
 
 export class WindowsTest extends React.PureComponent<
   IWindowsTestProps,
@@ -19,8 +32,20 @@ export class WindowsTest extends React.PureComponent<
 > {
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
+  public state: IWindowsTestState = { windows: [] };
 
-  public state: IWindowsTestState = {};
+  private unmounted$ = new Subject();
+
+  public componentDidMount() {
+    this.setState({ windows: this.context.windows.refs });
+    this.context.windows.change$
+      .pipe(takeUntil(this.unmounted$))
+      .subscribe(e => this.setState({ windows: e.windows }));
+  }
+
+  public componentWillUnmount() {
+    this.unmounted$.next();
+  }
 
   public render() {
     const styles = {
@@ -39,21 +64,20 @@ export class WindowsTest extends React.PureComponent<
       }),
     };
 
-    const windows = this.context.windows;
-    console.log('windows', windows);
-
-    // console.log("renderer.windows", renderer.windows)
-    // renderer.
-
     return (
       <div {...styles.base}>
         <h2>Windows</h2>
         <div {...styles.columns}>
           <div {...styles.colButtons}>
             <Button label={'new window'} onClick={this.newWindow} />
+            <Button label={'refresh'} onClick={this.refresh} />
           </div>
           <div {...styles.colObject}>
-            <ObjectView name={'env'} data={renderer.is.toObject()} />
+            <ObjectView
+              name={'windows'}
+              data={this.state.windows}
+              expandLevel={1}
+            />
           </div>
         </div>
       </div>
@@ -63,5 +87,9 @@ export class WindowsTest extends React.PureComponent<
   private newWindow = () => {
     const { ipc } = this.context;
     ipc.send<t.INewWindowEvent>('NEW_WINDOW', {}, { target: ipc.MAIN });
+  };
+
+  private refresh = () => {
+    this.context.windows.refresh();
   };
 }

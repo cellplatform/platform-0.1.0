@@ -192,6 +192,11 @@ export class SendResponse<M extends IpcMessage = any, D = any>
     );
   }
 
+  public dataFrom(sender: number | ProcessType) {
+    const res = this.resultFrom(sender);
+    return res ? res.data : undefined;
+  }
+
   public get cancel$() {
     return this._.cancel$.pipe(share());
   }
