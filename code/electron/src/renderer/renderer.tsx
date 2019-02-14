@@ -56,7 +56,8 @@ export async function init<
     store,
     log,
     devTools,
-    windows,remote
+    windows,
+    remote,
   };
   const Provider = createProvider(context);
 
