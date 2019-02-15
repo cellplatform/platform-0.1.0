@@ -26,5 +26,6 @@
     "lib",
     "src"
   ],
+  "repository": "uiharness/platform",
   "license": "MIT"
 }
