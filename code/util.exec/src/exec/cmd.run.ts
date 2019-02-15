@@ -21,7 +21,12 @@ export function run(
 
     // Spwan the shell process.
     const stdio = silent ? undefined : 'inherit';
-    const child = spawn(cmd, { cwd, shell: true, stdio });
+    const child = spawn(cmd, {
+      cwd,
+      shell: true,
+      stdio,
+      env: { FORCE_COLOR: 'true' },
+    });
 
     const fire = (type: ICommandInfo['type'], lines: string[]) => {
       if (info$) {
@@ -35,6 +40,13 @@ export function run(
       fire(type, lines);
       return list;
     };
+
+    // const s = child.stdin;
+    // console.log('s', s);
+    // child.stdout.on('data', (chunk: Buffer) => {
+    //   const msg = chunk.toString();
+    //   console.log('msg >> ', msg);
+    // });
 
     // Monitor data coming from process.
     if (child.stdout) {

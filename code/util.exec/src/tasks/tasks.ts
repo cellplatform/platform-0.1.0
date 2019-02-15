@@ -10,22 +10,18 @@ export type IRunTasksOptions = {
  * Runs a set of tasks.
  */
 export async function run(
-  tasks: ITask | ITask[],
+  list: ITask | ITask[],
   options: IRunTasksOptions = {},
 ): Promise<IResult> {
   const { silent, concurrent, exitOnError = false } = options;
-  tasks = Array.isArray(tasks) ? tasks : [tasks];
+  list = Array.isArray(list) ? list : [list];
 
   const run = async (task: ITask['task']) => {
-    const res = await task();
-    if (res.error) {
-      throw res.error;
-    }
-    return res;
+    return task();
   };
 
   const runner = new Listr(
-    tasks.map(({ title, task }) => {
+    list.map(({ title, task }) => {
       return {
         title,
         task: async () => run(task),

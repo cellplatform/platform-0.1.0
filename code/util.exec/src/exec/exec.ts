@@ -1,4 +1,5 @@
-export * from './exec.run';
-export { runCommands } from './runCommands';
-export { run as runTasks } from '../tasks/tasks';
+import * as cmd from './cmd';
+
+export { cmd };
+export { tasks } from '../tasks';
 export * from '../types';

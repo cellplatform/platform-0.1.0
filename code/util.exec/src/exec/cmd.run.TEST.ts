@@ -7,10 +7,22 @@ import { exec } from '.';
 describe('exec', () => {
   after(async () => fs.remove('tmp'));
 
+  // it.only('FOO', async () => {
+  //   const cmd = 'node TEMP';
+  //   const res = await exec.cmd.run(cmd, { silent: true });
+  //   console.log('-------------------------------------------');
+  //   console.log('res', res);
+
+  //   /**
+  //    * strip ansi:
+  //    * https://stackoverflow.com/questions/25245716/remove-all-ansi-colors-styles-from-strings
+  //    */
+  // });
+
   it('executes on a child process', async () => {
     await fs.remove('tmp/foo');
     const cmd = `mkdir -p tmp/foo`;
-    const res = await exec.run(cmd);
+    const res = await exec.cmd.run(cmd);
 
     expect(res.ok).to.eql(true);
     expect(res.code).to.eql(0);
@@ -23,28 +35,28 @@ describe('exec', () => {
   });
 
   it('fails on a child process', async () => {
-    const res = await exec.run('FAIL_BIG_TIME', { silent: true });
+    const res = await exec.cmd.run('FAIL_BIG_TIME', { silent: true });
     expect(res.ok).to.eql(false);
     expect(res.code).to.eql(127);
   });
 
   it('has no [stdout] when not silent', async () => {
     const cmd = `echo foo \n echo bar`;
-    const res = await exec.run(cmd);
+    const res = await exec.cmd.run(cmd);
     expect(res.info).to.eql([]);
     expect(res.errors).to.eql([]);
   });
 
   it('has [stdout] when silent', async () => {
     const cmd = `echo one && echo two`;
-    const res = await exec.run(cmd, { silent: true });
+    const res = await exec.cmd.run(cmd, { silent: true });
     expect(res.ok).to.eql(true);
     expect(res.info).to.eql(['one', 'two']);
   });
 
   it('has [stderr]', async () => {
     const cmd = `@#$ \n 38^88`;
-    const res = await exec.run(cmd, { silent: true });
+    const res = await exec.cmd.run(cmd, { silent: true });
 
     expect(res.ok).to.eql(false);
     expect(res.errors.length).to.eql(2);
@@ -63,7 +75,7 @@ describe('exec', () => {
     info$.subscribe(e => list.push(e));
 
     const cmd = `echo one && echo two`;
-    const res = await exec.run(cmd, { silent: true, info$ });
+    const res = await exec.cmd.run(cmd, { silent: true, info$ });
     expect(res.ok).to.eql(true);
     expect(res.info).to.eql(['one', 'two']);
 
@@ -80,7 +92,7 @@ describe('exec', () => {
     info$.subscribe(e => list.push(e));
 
     const cmd = `@#$ \n 38^88`;
-    const res = await exec.run(cmd, { silent: true, info$ });
+    const res = await exec.cmd.run(cmd, { silent: true, info$ });
     expect(res.ok).to.eql(false);
 
     expect(list.length).to.eql(2);
