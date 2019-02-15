@@ -10,5 +10,4 @@ export type IRenderer<
   windows: WindowsRenderer;
 };
 
-
-export * from '../types'
+export * from '../types';

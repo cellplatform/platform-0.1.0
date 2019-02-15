@@ -2,8 +2,7 @@ import { BrowserWindow } from 'electron';
 import * as WindowState from 'electron-window-state';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import * as t from './types';
-import { WindowsMain } from '../windows/main';
+import { IWindows } from '../windows/main';
 
 const OPACITY = {
   FULL: 1,
@@ -25,7 +24,7 @@ export function create(args: {
   title?: string;
   fileName?: string;
   dirName?: string;
-  windows?: WindowsMain;
+  windows?: IWindows;
 }) {
   const {
     parent,

@@ -6,7 +6,7 @@ import renderer from '@platform/electron/lib/renderer';
 import { Test } from '../src/components';
 
 /**
- * Render page.
+ * Render screen.
  */
 const el = <Test />;
 renderer

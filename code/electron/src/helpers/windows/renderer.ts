@@ -10,6 +10,7 @@ import {
   IWindows,
   IWindowsGetEvent,
   IWindowsGetResponse,
+  IWindowTag,
 } from './types';
 
 /**
@@ -37,7 +38,6 @@ export class WindowsRenderer implements IWindows {
    */
   constructor(args: { ipc: t.IpcClient }) {
     const ipc = (this.ipc = args.ipc);
-    console.log('windows renderer', args);
 
     ipc
       .on<IWindowChangedEvent>('@platform/WINDOWS/change')
@@ -89,6 +89,13 @@ export class WindowsRenderer implements IWindows {
         }
       }
     }
+  }
+
+  /**
+   * Applies [1..n] tags to a window.
+   */
+  public async tag(id: number, ...tag: IWindowTag[]) {
+    console.log(`\nTODO 🐷 assign tag to window via event to MAIN  \n`);
   }
 
   /**

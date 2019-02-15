@@ -32,6 +32,7 @@ export type IRendererContext<
 > = IContext<M, S> & {
   devTools: DevTools;
   windows: IWindows;
+  remote: Electron.Remote;
 };
 
 /**

@@ -1,13 +1,14 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.0.60",
+  "version": "0.0.64",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo no-op",
     "tdd": "yarn chmod && ts test --watch",
-    "lint": "yarn chmod && ts lint",
+    "lint__": "yarn chmod && ts lint",
+    "lint": "sh node_modules/@platform/ts/lint.sh",
     "build": "yarn chmod && ts build",
     "prepare": "yarn chmod && ts prepare",
     "chmod": "chmod 777 node_modules/.bin/ts"
@@ -16,8 +17,8 @@
     "@babel/polyfill": "7.2.5",
     "@platform/fs": "0.0.33",
     "@platform/log": "0.0.59",
-    "@platform/util.is": "^0.0.10",
-    "@platform/util.react": "^0.0.13",
+    "@platform/util.is": "0.0.10",
+    "@platform/util.react": "0.0.13",
     "@types/app-root-path": "1.2.4",
     "app-root-path": "2.1.0",
     "electron-log": "2.2.17",

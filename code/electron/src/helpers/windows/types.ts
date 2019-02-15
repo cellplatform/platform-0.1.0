@@ -7,6 +7,7 @@ export type IWindows = {
   change$: Observable<IWindowChange>;
   refs: IWindowRef[];
   refresh: () => Promise<void>;
+  tag: (id: number, ...tag: IWindowTag[]) => Promise<void>;
 };
 
 /**

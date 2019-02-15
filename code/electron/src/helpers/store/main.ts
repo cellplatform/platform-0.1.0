@@ -34,7 +34,7 @@ export function init<T extends t.StoreJson>(args: {
   /**
    * Read values from storage.
    */
-  const getValues: t.GetStoreValues<T> = async keys => {
+  const getValuesHandler = async (keys: Array<keyof T>) => {
     const res: t.IStoreGetValuesResponse = {
       ok: true,
       exists: true,
@@ -69,6 +69,10 @@ export function init<T extends t.StoreJson>(args: {
     }
   };
 
+  const getValues: t.GetStoreValues<T> = async keys => {
+    const res = await getValuesHandler(keys);
+    return res.body || {};
+  };
   /**
    * Save values to storage.
    */
@@ -176,7 +180,7 @@ export function init<T extends t.StoreJson>(args: {
    * Handle GET value requests.
    */
   ipc.handle<t.IStoreGetValuesEvent>('@platform/STORE/get', e =>
-    getValues(e.payload.keys),
+    getValuesHandler(e.payload.keys),
   );
 
   /**

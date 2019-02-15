@@ -71,11 +71,11 @@ export function init(args: { ipc: IpcClient; dir: string }) {
   const write = (process: t.ProcessType, level: t.LogLevel, output: string) => {
     const prefix = toPrefix(log, process);
     elog[level](prefix, output);
-    if (is.dev && process === 'MAIN') {
-      // NB:  Don't worry about writing VIEW renderer logs to the console
-      //      This is handled by the base [@platform/log].
-      logToConsole(prefix, output);
-    }
+    // if (is.dev && process === 'MAIN') {
+    //   // NB:  Don't worry about writing VIEW renderer logs to the console
+    //   //      This is handled by the base [@platform/log].
+    // }
+    logToConsole(prefix, output);
   };
 
   // Pass log events to the electron-log.
@@ -95,7 +95,9 @@ export function init(args: { ipc: IpcClient; dir: string }) {
       filter(e => e.sender.process === 'RENDERER'),
       map(e => e.payload),
     )
-    .subscribe(e => write('RENDERER', e.level, format(e)));
+    .subscribe(e => {
+      write('RENDERER', e.level, format(e));
+    });
 
   // Insert a "startup" divider into log to visually chunk into sessions.
   const count = increment({ dir, env });
