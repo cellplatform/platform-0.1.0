@@ -1,6 +1,6 @@
 import { ICommand, ITask, result } from '../common';
 import { tasks } from '../tasks';
-import { run } from './run';
+import { run } from './cmd.run';
 
 /**
  * Runs a list of commands.
@@ -11,7 +11,6 @@ export async function runList(
 ) {
   const { dir } = options;
   const inputs = Array.isArray(cmds) ? cmds : [cmds];
-
   const commands: ICommand[] = inputs.map(input =>
     typeof input === 'string' ? { title: input, cmd: input } : input,
   );

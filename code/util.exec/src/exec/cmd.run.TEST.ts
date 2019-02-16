@@ -4,7 +4,7 @@ import chalk from 'chalk';
 
 import { exec } from '.';
 
-describe('exec', () => {
+describe('exec.cmd.run', () => {
   after(async () => fs.remove('tmp'));
 
   it('executes on a child process (single command)', async () => {

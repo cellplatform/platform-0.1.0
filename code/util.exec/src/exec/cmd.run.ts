@@ -1,17 +1,22 @@
 import * as ansiRegex from 'ansi-regex';
-import { spawn } from 'child_process';
 import { Observable, ReplaySubject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
-import { ICommandInfo, ICommandPromise, IResult } from '../common';
+import { ICommandInfo, ICommandPromise, IResultInfo } from '../common';
+import { spawn } from './process';
 
 /**
  * Invokes 1..n shell command.
  */
 export function run(
   command: string | string[],
-  options: { dir?: string; silent?: boolean } = {},
+  options: {
+    dir?: string;
+    silent?: boolean;
+    env?: NodeJS.ProcessEnv;
+  } = {},
 ): ICommandPromise {
+  const { silent } = options;
   let isComplete = false;
   let error: Error | undefined;
   const result = { code: 0 };
@@ -29,25 +34,23 @@ export function run(
         : undefined,
   };
 
-  const promise = new Promise<IResult>((resolve, reject) => {
-    const { silent } = options;
+  const promise = new Promise<IResultInfo>((resolve, reject) => {
     const cmd = Array.isArray(command) ? command.join('\n') : command;
 
     // Spawn the child process.
-    const child = spawn(cmd, {
+    const { child } = spawn(cmd, {
       cwd: options.dir,
-      shell: true,
       stdio: undefined, // Handle standard I/O manually.
-      env: { FORCE_COLOR: 'true' },
+      env: options.env,
     });
 
     // Pipe output to [stdout] if not suppressed.
-    if (!silent) {
+    if (!silent && child.stdout) {
       child.stdout.pipe(process.stdout);
     }
 
     // Prepare the result object.
-    const prop = propsFor<IResult>(result);
+    const prop = propsFor<IResultInfo>(result);
     prop('ok', props.ok);
     prop('info', props.info);
     prop('errors', props.errors);
@@ -67,7 +70,7 @@ export function run(
       result.code = e === null ? result.code : e;
       isComplete = true;
       output$.complete();
-      resolve(result as IResult);
+      resolve(result as IResultInfo);
     });
     child.once('error', err => {
       error = err;

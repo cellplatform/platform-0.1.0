@@ -3,32 +3,33 @@
 import { exec } from '..';
 import { time } from './util';
 
-const tasks: exec.ITask[] = [
+export { time, exec };
+export const tasks: exec.ITask[] = [
   {
     title: 'Task 1',
     task: async () => {
+      // Async
       await time.delay(1200);
-      return exec.result.success();
     },
   },
   {
     title: 'Task 2',
-    task: async () => {
-      await time.delay(500);
-      return exec.result.success();
+    task: () => {
+      // Sync - no return value.
+      return;
     },
   },
-  // {
-  //   title: 'will fail',
-  //   task: async () => {
-  //     await time.delay(1500);
-  //     throw new Error('Ouch');
-  //   },
-  // },
+  {
+    title: 'Task will fail',
+    task: async () => {
+      await time.delay(800);
+      throw new Error('Ouch...did fail!');
+    },
+  },
 ];
 
-(async () => {
+export async function run() {
   const res = await exec.tasks.run(tasks, { silent: false, concurrent: true });
   console.log('-------------------------------------------');
   console.log('res', res);
-})();
+}

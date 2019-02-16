@@ -7,6 +7,8 @@ export type IResult = {
   ok: boolean;
   code: number;
   error?: Error;
+};
+export type IResultInfo = IResult & {
   info: string[];
   errors: string[];
 };
@@ -14,9 +16,9 @@ export type IResult = {
 /**
  * A single task.
  */
-export type ITask = {
+export type ITask<T = any> = {
   title: string;
-  task: () => Promise<IResult>;
+  task: () => Promise<T> | T;
 };
 
 /**
@@ -39,8 +41,8 @@ export type ICommandInfo = {
  * The response from running a command providing a await-able
  * promise as well as observables delivering the [stdio] stream.
  */
-export type ICommandPromise = Promise<IResult> &
-  IResult & {
+export type ICommandPromise = Promise<IResultInfo> &
+  IResultInfo & {
     isComplete: boolean;
     output$: Observable<ICommandInfo>;
     stdout$: Observable<string>; // Includes ANSI colors.

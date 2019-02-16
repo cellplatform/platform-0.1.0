@@ -1,6 +1,6 @@
 import * as cmd from './cmd';
+import * as process from './process';
 
-export { cmd };
+export { cmd, process };
 export { tasks } from '../tasks';
-export { result } from '../common';
 export * from '../types';
