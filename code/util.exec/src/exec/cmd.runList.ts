@@ -5,7 +5,7 @@ import { run } from './cmd.run';
 /**
  * Runs a list of commands.
  */
-export async function runList(
+export async function runAsList(
   cmds: string | string[] | ICommand | ICommand[],
   options: tasks.IRunTasksOptions & { dir?: string } = {},
 ) {
