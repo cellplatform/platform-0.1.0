@@ -23,7 +23,7 @@
   "devDependencies": {
     "@platform/test": "0.0.26",
     "@platform/ts.cli": "3.3.33",
-    "@types/react": "16.8.2"
+    "@types/react": "16.8.3"
   },
   "files": [
     "lib"

@@ -15,18 +15,14 @@ describe('glob', () => {
   it('returns no dot-files (default)', async () => {
     const pattern = resolve('./test/sample/tmpl-1/*');
     const res = await glob.find(pattern);
-    const dotFiles = res
-      .map(path => basename(path))
-      .filter(file => file.startsWith('.'));
+    const dotFiles = res.map(path => basename(path)).filter(file => file.startsWith('.'));
     expect(dotFiles).to.eql([]);
   });
 
   it('returns dot-files', async () => {
     const pattern = resolve('./test/sample/tmpl-1/*');
     const res = await glob.find(pattern, { dot: true });
-    const files = res
-      .map(path => basename(path))
-      .filter(file => file.startsWith('.'));
+    const files = res.map(path => basename(path)).filter(file => file.startsWith('.'));
     expect(files).to.include('.babelrc');
     expect(files).to.include('.gitignore');
   });
