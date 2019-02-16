@@ -1,9 +1,9 @@
 import * as ansiRegex from 'ansi-regex';
 import { spawn } from 'child_process';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
-import { ICommandInfo, IResult, result as resultUtil, ICommandPromise } from '../common';
+import { ICommandInfo, ICommandPromise, IResult } from '../common';
 
 /**
  * Invokes 1..n shell command.

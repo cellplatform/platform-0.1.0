@@ -87,7 +87,8 @@ export async function build(args: IArgs): Promise<IResult> {
 
   // Execute command.
   try {
-    const res = await exec.cmd.run(cmd, { silent, dir });
+    console.log('-------------------------------------------');
+    const res = await exec.cmd.runList(cmd, { silent, dir });
     if (res.code !== 0) {
       return result.fail(`Build failed.`, res.code);
     }
