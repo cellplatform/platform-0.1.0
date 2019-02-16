@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.exec",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Tools for executing commands in child_process.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -11,7 +11,8 @@
     "build": "sh node_modules/@platform/ts/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test",
     "example-tasks": "node lib/example/runTasks",
-    "example-cmds": "node lib/example/runCommands"
+    "example-cmds": "node lib/example/runCommands",
+    "example-tasks-cmds": "node lib/example/runTasksThroughCmd"
   },
   "dependencies": {
     "@platform/libs": "0.0.3",

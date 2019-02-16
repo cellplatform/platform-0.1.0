@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.object",
   "description": "Visual display of javascript object.",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,12 +14,12 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@platform/util.react": "0.0.16",
+    "@platform/util.react": "0.0.17",
     "react-inspector": "2.3.1"
   },
   "devDependencies": {
-    "@platform/electron": "0.0.67",
-    "@platform/ts.cli": "3.3.35",
+    "@platform/electron": "0.0.68",
+    "@platform/ts.cli": "3.3.36",
     "@uiharness/dev": "0.1.13"
   },
   "resolutions": {
