@@ -18,11 +18,12 @@
   },
   "devDependencies": {
     "@platform/fs": "0.0.33",
-    "@platform/log": "0.0.59",
     "@platform/test": "0.0.26",
     "@platform/ts": "3.3.41",
     "@types/ansi-regex": "4.0.0",
-    "@types/listr": "0.13.0"
+    "@types/chalk": "2.2.0",
+    "@types/listr": "0.13.0",
+    "chalk": "2.4.2"
   },
   "files": [
     "lib"

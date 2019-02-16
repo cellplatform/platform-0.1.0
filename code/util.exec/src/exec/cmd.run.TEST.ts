@@ -1,18 +1,6 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  scan,
-} from 'rxjs/operators';
 import { fs } from '@platform/fs';
 import { expect } from 'chai';
-import { log } from '@platform/log/lib/server';
+import chalk from 'chalk';
 
 import { exec } from '.';
 
@@ -74,7 +62,7 @@ describe('exec', () => {
 
   it('prints to [stdout] with colors', async () => {
     // NB: Display only - no decent way to test.
-    const colors = `${log.cyan('hey,')} ${log.magenta('with')} ${log.yellow('color! 🌼')}`;
+    const colors = `${chalk.cyan('hey,')} ${chalk.magenta('with')} ${chalk.yellow('color! 🌼')}`;
     const cmd = `echo "${colors}"`;
     const res = await exec.cmd.run(cmd);
     expect(res.ok).to.eql(true);
@@ -88,7 +76,7 @@ describe('exec', () => {
   });
 
   it('emits [stdout] string with colors to [stdout$] observable', async () => {
-    const cmd = `echo hello ${log.cyan('Selina')}`;
+    const cmd = `echo hello ${chalk.cyan('Selina')}`;
     const response = exec.cmd.run(cmd, { silent: true });
 
     const list: string[] = [];
@@ -129,7 +117,7 @@ describe('exec', () => {
   });
 
   it('has [stdout] as [info] array with no colors', async () => {
-    const cmd = `echo ${log.cyan('one')} \n echo two`;
+    const cmd = `echo ${chalk.cyan('one')} \n echo two`;
     const response = exec.cmd.run(cmd, { silent: true });
     expect(response.info).to.eql([]);
 
@@ -146,7 +134,7 @@ describe('exec', () => {
   });
 
   it('has stderr as [errors] array', async () => {
-    const cmd = `echo ${log.cyan('one')} \n FAIL!!`;
+    const cmd = `echo ${chalk.cyan('one')} \n FAIL!!`;
     const response = exec.cmd.run(cmd, { silent: true });
     expect(response.errors).to.eql([]);
 
