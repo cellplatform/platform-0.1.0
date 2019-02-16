@@ -9,6 +9,4 @@ export async function delay(msecs: number, fn?: () => void) {
   });
 }
 
-export const time = {
-  delay,
-};
+export const time = { delay };

@@ -28,7 +28,7 @@ const tasks: exec.ITask[] = [
 ];
 
 (async () => {
-  const res = await exec.tasks.run(tasks, { concurrent: true });
+  const res = await exec.tasks.run(tasks, { silent: false, concurrent: true });
   console.log('-------------------------------------------');
   console.log('res', res);
 })();
