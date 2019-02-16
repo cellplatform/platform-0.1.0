@@ -1,2 +1,2 @@
-export { run } from './cmd.run';
-export { runAsList as runList } from './cmd.runList';
+export { run } from './run';
+export { runList } from './runList';

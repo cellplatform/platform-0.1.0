@@ -1,11 +1,11 @@
 import { ICommand, ITask, result } from '../common';
 import { tasks } from '../tasks';
-import { run } from './cmd.run';
+import { run } from './run';
 
 /**
  * Runs a list of commands.
  */
-export async function runAsList(
+export async function runList(
   cmds: string | string[] | ICommand | ICommand[],
   options: tasks.IRunTasksOptions & { dir?: string } = {},
 ) {

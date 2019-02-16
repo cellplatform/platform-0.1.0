@@ -29,7 +29,7 @@ export async function chmod(
   });
 
   log.info();
-  const res = await exec.runCommands(cmds, { silent, concurrent: true });
+  const res = await exec.cmd.runList(cmds, { silent, concurrent: true });
 
   // Finish up.
   log.info();

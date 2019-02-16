@@ -55,8 +55,7 @@ async function copyPackageJson(args: { rootDir: string; target: string }) {
     await fs.ensureDir(args.target);
 
     // Prepare paths.
-    const packagePath = (dir: string) =>
-      fs.resolve(fs.join(dir, 'package.json'));
+    const packagePath = (dir: string) => fs.resolve(fs.join(dir, 'package.json'));
     const source = packagePath(args.rootDir);
     const target = packagePath(args.target);
 
@@ -89,5 +88,4 @@ const toParent = (path: string) =>
     .slice(1)
     .join('/');
 
-const removeExtension = (path: string) =>
-  path.substr(0, path.length - fs.extname(path).length);
+const removeExtension = (path: string) => path.substr(0, path.length - fs.extname(path).length);

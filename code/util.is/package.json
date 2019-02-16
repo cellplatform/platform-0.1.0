@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.is",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Environment flags.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,11 +15,11 @@
   "dependencies": {},
   "devDependencies": {
     "@platform/test": "0.0.26",
-    "@platform/ts.cli": "3.3.32"
+    "@platform/ts.cli": "3.3.33"
   },
   "files": [
     "lib"
-  ],  "repository": "uiharness/platform",
-
+  ],
+  "repository": "uiharness/platform",
   "license": "MIT"
 }

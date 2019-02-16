@@ -36,9 +36,7 @@ export async function tsconfig(cwd: string = '.') {
     const path = fs.join(dir, file);
     const data = await fs.file.loadAndParse<ITypescriptConfig>(path);
 
-    const outDir =
-      (data && data.compilerOptions && data.compilerOptions.outDir) ||
-      undefined;
+    const outDir = (data && data.compilerOptions && data.compilerOptions.outDir) || undefined;
 
     return { success: true, dir, path, data, outDir };
   } catch (error) {

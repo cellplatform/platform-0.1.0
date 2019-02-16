@@ -7,5 +7,5 @@ import { exec, fs } from '../common';
   const options = `--dir=${dir} --outDir=${outDir} ${argv.slice(3).join(' ')}`;
 
   const cmd = `node bin ${argv[2]} ${options}`;
-  await exec.run(cmd);
+  await exec.cmd.run(cmd);
 })();
