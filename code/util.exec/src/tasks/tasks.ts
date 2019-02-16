@@ -9,10 +9,7 @@ export type IRunTasksOptions = {
 /**
  * Runs a set of tasks.
  */
-export async function run(
-  list: ITask | ITask[],
-  options: IRunTasksOptions = {},
-): Promise<IResult> {
+export async function run(list: ITask | ITask[], options: IRunTasksOptions = {}): Promise<IResult> {
   const { silent, concurrent, exitOnError = false } = options;
   list = Array.isArray(list) ? list : [list];
 

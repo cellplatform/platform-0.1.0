@@ -1,81 +1,132 @@
+import * as ansiRegex from 'ansi-regex';
 import { spawn } from 'child_process';
-import { Subject } from 'rxjs';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
-import { ICommandInfo, IResult, result as resultUtil } from '../common';
+import { ICommandInfo, IResult, result as resultUtil, ICommandPromise } from '../common';
 
 /**
- * Invokes a shell command.
+ * Invokes 1..n shell command.
  */
 export function run(
-  cmd: string,
-  options: {
-    dir?: string;
-    silent?: boolean;
-    info$?: Subject<ICommandInfo>;
-  } = {},
-) {
-  return new Promise<IResult>(async (resolve, reject) => {
-    const { dir: cwd, silent, info$ } = options;
-    let info: string[] = [];
-    let errors: string[] = [];
+  command: string | string[],
+  options: { dir?: string; silent?: boolean } = {},
+): ICommandPromise {
+  let isComplete = false;
+  let error: Error | undefined;
+  const result = { code: 0 };
+  const output$ = new ReplaySubject<ICommandInfo>();
 
-    // Spwan the shell process.
-    const stdio = silent ? undefined : 'inherit';
+  const props = {
+    ok: () => result.code === 0,
+    info: () => reduceAndStripColors(output$.pipe(filter(e => e.type === 'stdout'))),
+    errors: () => reduceAndStripColors(output$.pipe(filter(e => e.type === 'stderr'))),
+    error: () =>
+      error
+        ? error
+        : result.code !== 0
+        ? new Error(`Failed with code '${result.code}'.`)
+        : undefined,
+  };
+
+  const promise = new Promise<IResult>((resolve, reject) => {
+    const { silent } = options;
+    const cmd = Array.isArray(command) ? command.join('\n') : command;
+
+    // Spawn the child process.
     const child = spawn(cmd, {
-      cwd,
+      cwd: options.dir,
       shell: true,
-      stdio,
+      stdio: undefined, // Handle standard I/O manually.
       env: { FORCE_COLOR: 'true' },
     });
 
-    const fire = (type: ICommandInfo['type'], lines: string[]) => {
-      if (info$) {
-        lines.forEach(text => info$.next({ type, text }));
-      }
-    };
+    // Pipe output to [stdout] if not suppressed.
+    if (!silent) {
+      child.stdout.pipe(process.stdout);
+    }
 
-    const add = (type: ICommandInfo['type'], list: string[], chunk: Buffer) => {
-      const lines = formatOutput(chunk);
-      list = [...list, ...lines];
-      fire(type, lines);
-      return list;
-    };
-
-    // const s = child.stdin;
-    // console.log('s', s);
-    // child.stdout.on('data', (chunk: Buffer) => {
-    //   const msg = chunk.toString();
-    //   console.log('msg >> ', msg);
-    // });
+    // Prepare the result object.
+    const prop = propsFor<IResult>(result);
+    prop('ok', props.ok);
+    prop('info', props.info);
+    prop('errors', props.errors);
+    prop('error', props.error);
 
     // Monitor data coming from process.
+    const next = (type: ICommandInfo['type'], chunk: Buffer) => {
+      formatOutput(chunk).forEach(text => output$.next({ type, text }));
+    };
     if (child.stdout) {
-      //   if (!silent) {
-      //     child.stdout.pipe(process.stdout);
-      //   }
-      child.stdout.on('data', (chunk: Buffer) => {
-        info = add('stdout', info, chunk);
-      });
-      child.stderr.on('data', (chunk: Buffer) => {
-        errors = add('stderr', errors, chunk);
-      });
+      child.stdout.on('data', (chunk: Buffer) => next('stdout', chunk));
+      child.stderr.on('data', (chunk: Buffer) => next('stderr', chunk));
     }
 
     // Listen for end.
     child.on('exit', e => {
-      const result = resultUtil.format({ code: e || 0, info, errors });
-      resolve(result);
+      result.code = e === null ? result.code : e;
+      isComplete = true;
+      output$.complete();
+      resolve(result as IResult);
     });
-    child.once('error', err => reject(err));
+    child.once('error', err => {
+      error = err;
+      reject(err);
+    });
   });
+
+  // Prepare the response object.
+  const response = promise as ICommandPromise;
+  response.output$ = output$;
+  response.stdout$ = output$.pipe(
+    filter(e => e.type === 'stdout'),
+    map(e => e.text),
+  );
+  response.stderr$ = output$.pipe(
+    filter(e => e.type === 'stderr'),
+    map(e => e.text),
+  );
+
+  // [IResult] properties.
+  const prop = propsFor<ICommandPromise>(response);
+  prop('code', () => result.code);
+  prop('ok', props.ok);
+  prop('info', props.info);
+  prop('errors', props.errors);
+  prop('error', props.error);
+  prop('stdout', () => reduce(output$.pipe(filter(e => e.type === 'stdout'))));
+  prop('stderr', () => reduce(output$.pipe(filter(e => e.type === 'stderr'))));
+
+  // Extended response properties.
+  prop('isComplete', () => isComplete);
+
+  // Finish up.
+  return response;
 }
 
 /**
  * INTERNAL
  */
-function formatOutput(chunk: Buffer) {
+const formatOutput = (chunk: Buffer) => {
   return chunk
     .toString()
     .replace(/\n$/, '')
     .split('\n');
-}
+};
+
+const propsFor = <T>(obj: Partial<T>) => {
+  return <K extends keyof T>(name: K, get: () => T[K]) => Object.defineProperty(obj, name, { get });
+};
+
+const stripAnsi = (input: string) =>
+  typeof input === 'string' ? input.replace(ansiRegex(), '') : input;
+
+const reduce = (observable: Observable<ICommandInfo>) => {
+  let result: string[] = [];
+  observable.pipe(map(e => e.text)).subscribe(e => (result = [...result, e]));
+  return result;
+};
+
+const reduceAndStripColors = (observable: Observable<ICommandInfo>) => {
+  return reduce(observable).map(text => stripAnsi(text));
+};

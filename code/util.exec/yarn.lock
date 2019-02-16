@@ -35,7 +35,7 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/log@^0.0.59":
+"@platform/log@0.0.59":
   version "0.0.59"
   resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.59.tgz#56cb902d2f89d5cb59bf40f32ee5dcf9d94958b9"
   integrity sha512-Gh61f4BvBrM0EDNGjaS6pbh/1JR3ZEO7Fd9k2Iex2gN818821/a+Om10nZPphq9ZnKc7PExFntrCelEQRCoPCA==
@@ -74,6 +74,11 @@
   integrity sha512-MI4Xx6LHs4Webyvi6EbspgyAb4D2Q2VtnCQ1blOJcoLS6mVa8lNN2rkIy1CVxfTUpoyIbCTkXES1rLXztFD1lg==
   dependencies:
     any-observable "^0.3.0"
+
+"@types/ansi-regex@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/ansi-regex/-/ansi-regex-4.0.0.tgz#cb20bb66da7700ea9b26f16971f03f0e092eddad"
+  integrity sha512-r1W316vjsZXn1/csLC4HcCJs6jIHIzksHJd7xx+Dl+PAb0S2Dh9cR8ZsIMEfGmbBtP7JNWlf2KKahSkDP6rg3g==
 
 "@types/chai@4.1.7":
   version "4.1.7"
@@ -123,6 +128,11 @@ ansi-regex@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-3.0.0.tgz#ed0317c322064f79466c02966bddb605ab37d998"
   integrity sha1-7QMXwyIGT3lGbAKWa922Bas32Zg=
+
+ansi-regex@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-4.0.0.tgz#70de791edf021404c3fd615aa89118ae0432e5a9"
+  integrity sha512-iB5Dda8t/UqpPI/IjsejXu5jOGDrzn41wJyljwPH65VCIbk6+1BzFIMJGFwTNrYXT1CrD+B4l19U7awiQ8rk7w==
 
 ansi-styles@^2.2.1:
   version "2.2.1"

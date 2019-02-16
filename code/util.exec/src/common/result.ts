@@ -27,9 +27,7 @@ export function format(result: Partial<IResult>): IResult {
 
   let error = result.error;
   if (!error && errors.length > 0) {
-    error = new Error(
-      `Errors occured in 'stderr', see the errors[${errors.length}] list.`,
-    );
+    error = new Error(`Errors occured in 'stderr', see the errors[${errors.length}] list.`);
   }
 
   const ok = !error && errors.length === 0 && code === 0;

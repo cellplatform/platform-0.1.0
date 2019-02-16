@@ -1,6 +1,6 @@
 import { ICommand, ITask, result } from '../common';
 import { tasks } from '../tasks';
-import { run as exec } from './cmd.run';
+import { run } from './cmd.run';
 
 /**
  * Runs a list of commands.
@@ -19,11 +19,9 @@ export async function runList(
   const list: ITask[] = commands.map(({ title, cmd }) => ({
     title,
     task: async () => {
-      const res = await exec(cmd, { dir, silent: true });
+      const res = await run(cmd, { dir, silent: true });
       const code = res.code;
-      return code === 0
-        ? result.success()
-        : result.fail(`Failed executing '${cmd}'`);
+      return code === 0 ? result.success() : result.fail(`Failed executing '${cmd}'`);
     },
   }));
 
