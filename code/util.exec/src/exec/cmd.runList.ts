@@ -1,35 +1,17 @@
 import { resolve } from 'path';
 
-import { chalk, ICommand, IResult, IResultInfo, ITask } from '../common';
+import {
+  chalk,
+  ICommand,
+  ICommandError,
+  ICommandErrors,
+  ICommandListExecutionResponse,
+  IListCommandResult,
+  ILog,
+  ITask,
+} from '../common';
 import { tasks } from '../tasks';
 import { run } from './cmd.run';
-
-export type ICommandListExecutionResponse = IResult & {
-  ok: boolean;
-  results: IListCommandResult[];
-  errors: ICommandErrors;
-  dir: string;
-};
-
-export type IListCommandResult = {
-  ok: boolean;
-  index: number;
-  cmd: string;
-  data: IResultInfo;
-};
-
-export type ICommandErrors = ICommandError[] & {
-  log: (args: { log?: ILog }) => void;
-};
-
-export type ILog = { info: LogValue; warn: LogValue; error: LogValue };
-export type LogValue = (...value: any) => void;
-
-export type ICommandError = {
-  index: number;
-  cmd: string;
-  errors: string[];
-};
 
 /**
  * Runs a list of commands.

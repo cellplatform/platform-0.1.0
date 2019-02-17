@@ -51,3 +51,37 @@ export type ICommandPromise = Promise<IResultInfo> &
     stderr: string[]; // Includes ANSI colors - see [info] for values with no colors.
     dir: string; // The `cwd` (current working directory) the script executed in.
   };
+
+/**
+ * Log
+ */
+export type ILog = { info: LogValue; warn: LogValue; error: LogValue };
+export type LogValue = (...value: any) => void;
+
+/**
+ * Command list execution.
+ */
+
+export type ICommandListExecutionResponse = IResult & {
+  ok: boolean;
+  results: IListCommandResult[];
+  errors: ICommandErrors;
+  dir: string;
+};
+
+export type IListCommandResult = {
+  ok: boolean;
+  index: number;
+  cmd: string;
+  data: IResultInfo;
+};
+
+export type ICommandErrors = ICommandError[] & {
+  log: (args: { log?: ILog }) => void;
+};
+
+export type ICommandError = {
+  index: number;
+  cmd: string;
+  errors: string[];
+};
