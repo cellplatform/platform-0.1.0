@@ -80,3 +80,26 @@ describe('isStatusOk', () => {
     expect(value.isStatusOk(undefined as any)).to.eql(false);
   });
 });
+
+describe('plural', () => {
+  it('singular', async () => {
+    expect(value.plural(1, 'item')).to.eql('item');
+    expect(value.plural(-1, 'item')).to.eql('item');
+    expect(value.plural(1, 'item', 'items')).to.eql('item');
+    expect(value.plural(-1, 'item', 'items')).to.eql('item');
+  });
+
+  it('plural', async () => {
+    expect(value.plural(0, 'item', 'items')).to.eql('items');
+    expect(value.plural(2, 'item', 'items')).to.eql('items');
+    expect(value.plural(-2, 'item', 'items')).to.eql('items');
+    expect(value.plural(999, 'item', 'items')).to.eql('items');
+  });
+
+  it('inferred "s"', async () => {
+    expect(value.plural(0, 'item')).to.eql('items');
+    expect(value.plural(2, 'item')).to.eql('items');
+    expect(value.plural(-2, 'item')).to.eql('items');
+    expect(value.plural(999, 'item')).to.eql('items');
+  });
+});
