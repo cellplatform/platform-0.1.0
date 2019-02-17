@@ -3,6 +3,7 @@ cwd=$(pwd)
 
 test () {
   cd code/$1 
+  yarn
   yarn test
   cd $cwd
 }
