@@ -34,10 +34,12 @@ export async function runList(
   const list: ITask[] = cmds.map(({ title, cmd }, index) => ({
     title,
     task: async () => {
-      const data = await run(cmd, { dir, silent: true });
+      const res = run(cmd, { dir, silent: true });
+      const data = await res;
       const error = data.error;
       const ok = data.error || !data.ok || data.code !== 0 ? false : true;
-      results = [...results, { index, ok, cmd, data }];
+      const { stdout, stderr } = res;
+      results = [...results, { index, ok, cmd, data, stdout, stderr }];
       if (error) {
         throw new Error(cmd);
       }
@@ -47,7 +49,6 @@ export async function runList(
 
   // Finish up.
   const errors = formatErrors(results);
-
   const ok = errors.all.length === 0;
   const code = ok ? 0 : 1;
   const error = ok
@@ -72,13 +73,16 @@ function formatErrors(results: IListCommandResult[]) {
   const all = results.filter(res => !res.ok);
   const errors: ICommandError[] = [];
 
-  all.forEach(({ index, data, cmd }) => {
+  all.forEach(({ index, data, cmd, stdout, stderr }) => {
     let targetIndex = errors.findIndex(item => item.index === index);
-
     targetIndex = targetIndex === -1 ? errors.length : targetIndex;
+
     const target = errors[targetIndex] || { index, cmd, errors: [] };
     errors[targetIndex] = target;
+
     data.errors.forEach(err => target.errors.push(err));
+    stdout.forEach(line => target.errors.push(line));
+    stderr.forEach(line => target.errors.push(line));
   });
 
   const command = errors as ICommandErrors;
@@ -87,16 +91,30 @@ function formatErrors(results: IListCommandResult[]) {
   return { all, command };
 }
 
-function logErrors(errors: ICommandErrors, options: { log?: ILog } = {}) {
-  const log = options.log || logger;
+function logErrors(
+  errors: ICommandErrors,
+  options: { log?: ILog | null; index?: number | number[]; header?: boolean } = {},
+) {
+  const log = options.log === null ? undefined : options.log || logger;
+  const indexes =
+    options.index === undefined
+      ? undefined
+      : Array.isArray(options.index)
+      ? options.index
+      : [options.index];
 
   let output = '';
-  const add = (...text: string[]) => (output += `${text.join(' ')}\n`);
+  const add = (...text: any[]) => (output += `${text.join(' ')}\n`);
 
   errors.forEach(({ index, cmd, errors }) => {
-    add(chalk.cyan(`\n(${index + 1})`), chalk.yellow('Errors for command:'));
-    add(`    ${chalk.cyan(cmd)}`);
-    add();
+    if (indexes && !indexes.includes(index)) {
+      return;
+    }
+    if (options.header) {
+      add('\n', chalk.yellow('Errors for command:'));
+      add(`    ${chalk.gray(cmd)}`);
+      add();
+    }
     errors.forEach(line => {
       const isStackTrace = line.includes(' at ') && line.includes('.js');
       const text = isStackTrace ? chalk.gray(line) : line;
@@ -104,7 +122,10 @@ function logErrors(errors: ICommandErrors, options: { log?: ILog } = {}) {
     });
   });
 
-  log.info(output);
+  if (log) {
+    log.info(output);
+  }
+  return output;
 }
 
 const logger: ILog = {

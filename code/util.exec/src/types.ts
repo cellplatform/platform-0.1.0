@@ -74,10 +74,12 @@ export type IListCommandResult = {
   index: number;
   cmd: string;
   data: IResultInfo;
+  stdout: string[];
+  stderr: string[];
 };
 
 export type ICommandErrors = ICommandError[] & {
-  log: (args: { log?: ILog }) => void;
+  log: (args: { log?: ILog | null; index?: number | number[]; header?: boolean }) => string;
 };
 
 export type ICommandError = {

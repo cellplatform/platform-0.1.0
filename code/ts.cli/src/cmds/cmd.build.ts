@@ -25,6 +25,7 @@ export type IBuildArgs = {
 export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Promise<IResult> {
   const { silent, outDir = '', code, error, dir = '' } = await processArgs(args);
   const log = getLog(silent);
+  let errorLog: string | undefined;
 
   if (code !== 0) {
     return result.format({ code, error });
@@ -37,7 +38,16 @@ export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Pr
     const title = format === 'ES_MODULE' ? '.mjs ESModule' : '.js  CommonJS';
     return {
       title: `build ${title}`,
-      task: () => build({ ...args, as: format, silent: true }),
+      task: async () => {
+        const res = await build({ ...args, as: format, silent: true });
+        if (res.errorLog && !errorLog) {
+          errorLog = res.errorLog;
+        }
+        if (!res.ok) {
+          throw res.error;
+        }
+        return res;
+      },
     };
   });
 
@@ -45,6 +55,11 @@ export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Pr
   log.info();
   const res = await exec.tasks.run(tasks, { concurrent: false });
   const { ok } = res;
+
+  // Log any build errors.
+  if (errorLog) {
+    log.info(`\n${errorLog}`);
+  }
 
   // Finish up.
   log.info();
@@ -56,9 +71,8 @@ type IArgs = IBuildArgs & { as?: BuildFormat };
 /**
  * Runs a typescript build.
  */
-export async function build(args: IArgs): Promise<IResult> {
+export async function build(args: IArgs): Promise<IResult & { errorLog?: string }> {
   const { dir = '', outDir = '', silent, watch, as, code, error } = await processArgs(args);
-
   if (code !== 0) {
     return result.format({ code, error });
   }
@@ -86,9 +100,11 @@ export async function build(args: IArgs): Promise<IResult> {
 
   // Execute command.
   try {
-    const res = await exec.cmd.runList(cmd, { silent, dir });
+    const response = exec.cmd.runList(cmd, { silent, dir });
+    const res = await response;
     if (res.code !== 0) {
-      return result.fail(`Build failed.`, res.code);
+      const errorLog = res.errors.log({ log: null, header: false });
+      return { ...result.fail(`Build failed.`, res.code), errorLog };
     }
   } catch (error) {
     return result.fail(error);
