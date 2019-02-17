@@ -73,7 +73,6 @@ const program = yargs
         }),
     async e => {
       const { silent, watch, dir, outDir, esm } = e;
-
       if (watch) {
         // Watching (build as common-js)
         await cmds.build({ silent, dir, outDir, watch: true, as: 'COMMON_JS' });
