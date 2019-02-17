@@ -47,6 +47,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 ## Modules
 
 - [@platform/ts](/code/ts) 
+- [@platform/ts.cli](/code/ts.cli) 
 - [@platform/fs](/code/fs)
 - [@platform/test](/code/test)
 - [@platform/log](/code/log)
