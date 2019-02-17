@@ -15,7 +15,7 @@
   "dependencies": {
     "@platform/libs": "0.0.3",
     "@platform/util.is": "0.0.16",
-    "@types/semver": "^5.5.0",
+    "@types/semver": "5.5.0",
     "cuid": "2.1.6",
     "dayjs": "1.8.6",
     "semver": "5.6.0"
