@@ -1,7 +1,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_shield)
 [![Build Status](https://travis-ci.org/uiharness/platform.svg?branch=master)](https://travis-ci.org/uiharness/platform)
-[![title](https://user-images.githubusercontent.com/185555/52911973-c38f8680-330f-11e9-9a97-574671193823.png)](https://uiharness.com)
+[![title](https://user-images.githubusercontent.com/185555/52911996-30a31c00-3310-11e9-94f0-674c686c4092.png)](https://uiharness.com)
 
 The [monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
 
@@ -68,7 +68,8 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 
 ## License
-[MIT](LICENSE)
+It's [MIT](LICENSE) all the way!  
+And for a scintillating break down of this classic open-source licence, see **Kyle E. Mitchell's** "[The MIT License, line-by-line. 171 words every programmer should understand.](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html)"
 
 <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_large" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=large"/></a>
 
