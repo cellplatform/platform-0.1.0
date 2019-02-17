@@ -100,11 +100,19 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
 
   // Execute command.
   try {
-    const response = exec.cmd.runList(cmd, { silent, dir });
-    const res = await response;
-    if (res.code !== 0) {
-      const errorLog = res.errors.log({ log: null, header: false });
-      return { ...result.fail(`Build failed.`, res.code), errorLog };
+    if (watch) {
+      // Watching.
+      const res = await exec.cmd.run(cmd, { silent, dir });
+      return res;
+    } else {
+      // Not watching.
+      const response = exec.cmd.runList(cmd, { silent, dir });
+      const res = await response;
+      if (res.code !== 0) {
+        const errorLog = res.errors.log({ log: null, header: false });
+        return { ...result.fail(`Build failed.`, res.code), errorLog };
+      }
+      return res;
     }
   } catch (error) {
     return result.fail(error);
