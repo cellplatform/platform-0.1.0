@@ -55,10 +55,10 @@
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts.cli@3.3.39":
-  version "3.3.39"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.39.tgz#b50b66c325e1fb447a70496ab81241fc3530416b"
-  integrity sha512-b26nShQd1Kzaxp3YtFnirbRLjzIpX7EQEd6GYrDYzF79i2UCo5CUD1hXEHIByleBclw1Fs04N8uUjuI8PRXkNw==
+"@platform/ts.cli@3.3.40":
+  version "3.3.40"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.40.tgz#da791087a64710e7389f4481795511c26069e2e1"
+  integrity sha512-UjKHv3BCkZZH3XNeKNdMghsSMlPWpcW4a3vfRIcNaAZPpsOQciDx4KPbZDjn1ejQxnV2YE40EJ+S9JvzVwWS0A==
   dependencies:
     "@platform/cli" "0.0.46"
     "@platform/fs" "0.0.33"
@@ -90,18 +90,18 @@
     ansi-regex "4.0.0"
     listr "0.14.3"
 
-"@platform/util.is@0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.17.tgz#7636259fc11ab8d1c5edb26c67a296b89260d0d1"
-  integrity sha512-U3aLAtRsmLaYUQTWHsJAfJ37C9gpbEtyCurcKHE2iqjFSPNajOi/6TlbLnqOBE1C3gpErM57dqrF2PT9Esafpg==
-
-"@platform/util.value@0.0.18":
+"@platform/util.is@0.0.18":
   version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.18.tgz#9a5f1368bb907ffa8a276f4137bb2980303b6ec9"
-  integrity sha512-i+3Sijsgmb4LvdznT4/0gBQJkhvYEjZgwkx7l87506UrmVQEc9LJquZSlbQ2aGjtyLO0K+u9D1YfnhYp86W70w==
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.18.tgz#33328e1a27c24953ec4a5f236c709363b0898d19"
+  integrity sha512-79Xv9LfaHVoBvFpeQNQmDOTv+slfn1g5lQUGFUi+tAvPo394gfZI/S50vbBfJCEfwgYfR2xLRa2ZXDjE5pSwcA==
+
+"@platform/util.value@0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.19.tgz#6f0eea3426c2fb11fa5a2de2756fa1c1537f129b"
+  integrity sha512-Jl2srrpyjtJlh4NtzXnVb+xcXQrkq4py32zO9RPeDCaB92QnOUbyL2g9mvVGCASNGAgoIY/kIUfjZYxHcelxXg==
   dependencies:
     "@platform/libs" "0.0.4"
-    "@platform/util.is" "0.0.17"
+    "@platform/util.is" "0.0.18"
     "@types/semver" "5.5.0"
     cuid "2.1.6"
     dayjs "1.8.6"

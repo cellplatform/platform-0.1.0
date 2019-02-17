@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Helpers for working with NPM.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -15,12 +15,12 @@
   "dependencies": {
     "@platform/cli": "0.0.46",
     "@platform/fs": "0.0.33",
-    "@platform/log": "0.0.66",
-    "@platform/util.value": "0.0.18"
+    "@platform/log": "0.0.67",
+    "@platform/util.value": "0.0.19"
   },
   "devDependencies": {
     "@platform/test": "0.0.26",
-    "@platform/ts.cli": "3.3.39"
+    "@platform/ts.cli": "3.3.40"
   },
   "files": [
     "lib"
