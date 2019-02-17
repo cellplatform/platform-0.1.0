@@ -1,4 +1,7 @@
+export * from './types';
+
 export { exec } from './exec';
 export { tasks } from './tasks';
-export { result } from './common';
-export * from './types';
+
+import { result, chalk } from './common';
+export const util = { result, chalk };
