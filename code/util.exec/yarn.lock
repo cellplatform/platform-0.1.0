@@ -25,12 +25,12 @@
     fs-extra "7.0.1"
     js-yaml "3.12.1"
 
-"@platform/libs@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.3.tgz#536359a3b4ba055ce9a5c83d8ed820dcadea6fe4"
-  integrity sha512-+WsAmuT6246uEjJsxU/yQex/lZFQljEhqnUN+xaNmBcQVQXpT9/W7M3MiO1ZrCANuWuJjrzfzadp/0WzlhfyiA==
+"@platform/libs@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.4.tgz#62cadbc18fff3ffaeec2d88d486b39a6ad6b52ca"
+  integrity sha512-AP+tU9aAnQbBCVdGQC/WLKicLwN1kiDE7zjKXNk2n1/o4A42dNZxJiWYyZI5JfmNxp8Lvf9bMfN4GgMecksmQA==
   dependencies:
-    "@types/ramda" "0.25.49"
+    "@types/ramda" "0.25.50"
     ramda "0.26.1"
     rxjs "6.4.0"
     tslib "1.9.3"
@@ -76,7 +76,7 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.7.tgz#1b8e33b61a8c09cbe1f85133071baa0dbf9fa71a"
   integrity sha512-2Y8uPt0/jwjhQ6EiluT0XCri1Dbplr0ZxfFXUz+ye13gaqE8u5gL5ppao1JrUYr9cIip5S6MvQzBS7Kke7U9VA==
 
-"@types/chalk@^2.2.0":
+"@types/chalk@2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@types/chalk/-/chalk-2.2.0.tgz#b7f6e446f4511029ee8e3f43075fb5b73fbaa0ba"
   integrity sha512-1zzPV9FDe1I/WHhRkf9SNgqtRJWZqrBWgu7JGveuHmmyR9CnAPCie2N/x+iHrgnpYBIcCJWHBoMRv2TRWktsvw==
@@ -107,10 +107,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.24.tgz#b13564af612a22a20b5d95ca40f1bffb3af315cf"
   integrity sha512-GWWbvt+z9G5otRBW8rssOFgRY87J9N/qbhqfjMZ+gUuL6zoL+Hm6gP/8qQBG4jjimqdaNLCehcVapZ/Fs2WjCQ==
 
-"@types/ramda@0.25.49":
-  version "0.25.49"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.49.tgz#8da318f54c1acb908e723b9a2103f7c38f90ca4d"
-  integrity sha512-d8QG8fd2Pzml+mzgv3VO4UxvYwjDPw4mv8P/NyCKUBdjIXo35o+4Ndpavr+t5kQ6QGu84wuvFydMaXZgZhnRWw==
+"@types/ramda@0.25.50":
+  version "0.25.50"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.50.tgz#7f21d47c650f85b8a61c2b608adf8aa0f1a8fccf"
+  integrity sha512-hkGWVWyPEXkXSh7rxJIGg6ELG1/WlR2BB8JemZW8v2l50bfMUw6CjrETJpgd9i3jUxaxOE/X57DvclWd9wkZhg==
 
 ansi-escapes@^3.0.0:
   version "3.2.0"
