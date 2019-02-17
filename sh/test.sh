@@ -8,22 +8,24 @@ test () {
   cd $cwd
 }
 
-test test
+echo no-op
 
-test ts
-test ts.cli
+# test test
 
-test cli
-test fs
-test log
-test electron
+# test ts
+# test ts.cli
 
-test util
-test util.css
-test util.exec
-test util.is
-test util.react
-test util.string
-test util.value
+# test cli
+# test fs
+# test log
+# test electron
 
-test ui.object
+# test util
+# test util.css
+# test util.exec
+# test util.is
+# test util.react
+# test util.string
+# test util.value
+
+# test ui.object
