@@ -15,17 +15,15 @@ export async function prepare(args: { dir?: string; silent?: boolean } = {}): Pr
    * Run commands.
    */
   try {
-    // TODO 🐷   use NPM when Yarn not installed
-
-    const cmds = ['yarn build', 'yarn lint', 'yarn test'];
-
     log.info();
+    const cmds = ['yarn build', 'yarn lint', 'yarn test'];
     const res = await exec.cmd.runList(cmds, {
       dir: fs.resolve(dir),
       silent,
       concurrent: true,
       exitOnError: false,
     });
+
     log.info();
     return res;
   } catch (error) {

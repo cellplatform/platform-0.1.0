@@ -1,5 +1,5 @@
 {
-  "name": "@scratchpad/ts.cli-pkg-1",
+  "name": "@scratchpad/ts.cli.pkg-1",
   "version": "1.0.0",
   "main": "lib/index",
   "types": "lib/index.d.ts",
