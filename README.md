@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/uiharness/platform.svg?branch=master)](https://travis-ci.org/uiharness/platform)
 [![title](https://user-images.githubusercontent.com/185555/52912140-2d109480-3312-11e9-902f-d8184904b51a.png)](https://uiharness.com)
 
-The [monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
+[Monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
