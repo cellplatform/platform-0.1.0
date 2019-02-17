@@ -28,7 +28,7 @@ export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Pr
   let errorLog: string | undefined;
 
   if (code !== 0) {
-    return result.format({ code, error });
+    return result.formatResult({ code, error });
   }
 
   await fs.remove(outDir);
@@ -54,16 +54,16 @@ export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Pr
   // Run tasks.
   log.info();
   const res = await exec.tasks.run(tasks, { concurrent: false });
-  const { ok } = res;
 
   // Log any build errors.
   if (errorLog) {
     log.info(`\n${errorLog}`);
   }
+  log.info();
 
   // Finish up.
-  log.info();
-  return { ok, code: ok ? 0 : 1 };
+  const { ok } = res;
+  return result.formatResult({ ok, code: ok ? 0 : 1 });
 }
 
 type IArgs = IBuildArgs & { as?: BuildFormat };
@@ -74,7 +74,7 @@ type IArgs = IBuildArgs & { as?: BuildFormat };
 export async function build(args: IArgs): Promise<IResult & { errorLog?: string }> {
   const { dir = '', outDir = '', silent, watch, as, code, error } = await processArgs(args);
   if (code !== 0) {
-    return result.format({ code, error });
+    return result.formatResult({ code, error });
   }
 
   // Prepare the command.

@@ -70,9 +70,6 @@ describe('fs.merge', () => {
     await writeFile('tmp/merge/child-1.yml', 'Hello!');
     const res = await fs.merge('test/merge/folder-1', 'tmp/merge');
 
-    // console.log('-------------------------------------------');
-    // console.log('res', inspect(res, { depth: 10, colors: true }));
-
     expect(res.to).to.not.include('tmp/merge/child-1.yml');
     expect(res.to).to.include('tmp/merge/child-2.yml');
     expect(res.skipped).to.eql(['test/merge/folder-1/child-1.yml']);
