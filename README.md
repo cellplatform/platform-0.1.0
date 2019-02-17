@@ -1,7 +1,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_shield)
 [![Build Status](https://travis-ci.org/uiharness/platform.svg?branch=master)](https://travis-ci.org/uiharness/platform)
-[![title](https://user-images.githubusercontent.com/185555/52911946-698ec100-330f-11e9-8332-501f4a6fb964.png)](https://uiharness.com)
+[![title](https://user-images.githubusercontent.com/185555/52911996-30a31c00-3310-11e9-94f0-674c686c4092.png)](https://uiharness.com)
 
 The [monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
 
