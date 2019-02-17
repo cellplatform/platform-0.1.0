@@ -13,10 +13,3 @@ export function stripAnsiColors(value: string) {
 export function definedPropsFor<T>(obj: Partial<T>) {
   return <K extends keyof T>(name: K, get: () => T[K]) => Object.defineProperty(obj, name, { get });
 }
-
-/**
- * A singular/plural display string.
- */
-export function plural(count: number, singular: string, plural: string) {
-  return count === 1 || count === -1 ? singular : plural;
-}

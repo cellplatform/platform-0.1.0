@@ -15,6 +15,6 @@ export async function run() {
   console.log('-------------------------------------------');
 
   const toMessage = (error?: Error) => (error ? error.message : undefined);
-  const results = res.results.map(res => ({ ...res, error: toMessage(res.error) }));
+  const results = res.results.map(res => ({ ...res }));
   console.log({ ...res, results, error: toMessage(res.error) });
 }

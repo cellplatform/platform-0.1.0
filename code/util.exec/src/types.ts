@@ -49,4 +49,5 @@ export type ICommandPromise = Promise<IResultInfo> &
     stderr$: Observable<string>; // Includes ANSI colors.
     stdout: string[]; // Includes ANSI colors - see [info] for values with no colors.
     stderr: string[]; // Includes ANSI colors - see [info] for values with no colors.
+    dir: string; // The `cwd` (current working directory) the script executed in.
   };

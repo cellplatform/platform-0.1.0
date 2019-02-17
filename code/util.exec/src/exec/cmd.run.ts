@@ -1,5 +1,6 @@
 import { Observable, ReplaySubject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { resolve } from 'path';
 
 import {
   stripAnsiColors,
@@ -22,6 +23,7 @@ export function run(
   } = {},
 ): ICommandPromise {
   const { silent } = options;
+  const dir = resolve(options.dir || process.cwd());
   let isComplete = false;
   let error: Error | undefined;
   const result = { code: 0 };
@@ -40,7 +42,7 @@ export function run(
 
     // Spawn the child process.
     const { child } = spawn(cmd, {
-      cwd: options.dir,
+      cwd: dir,
       stdio: undefined, // Handle standard I/O manually.
       env: options.env,
     });
@@ -81,6 +83,7 @@ export function run(
 
   // Prepare the response object.
   const response = promise as ICommandPromise;
+  response.dir = dir;
   response.output$ = output$;
   response.stdout$ = output$.pipe(
     filter(e => e.type === 'stdout'),

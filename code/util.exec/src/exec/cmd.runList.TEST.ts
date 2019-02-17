@@ -1,6 +1,5 @@
 import { fs } from '@platform/fs';
 import { expect } from 'chai';
-
 import { exec } from '.';
 
 describe('exec.cmd.runList', () => {
@@ -13,6 +12,8 @@ describe('exec.cmd.runList', () => {
     expect(res.ok).to.eql(true);
     expect(res.code).to.eql(0);
     expect(res.error).to.eql(undefined);
+    expect(res.errors).to.eql([]);
+    expect(res.dir).to.eql(process.cwd());
 
     expect(res.results.length).to.eql(1);
     expect(res.results[0].cmd).to.eql(cmd);
@@ -50,16 +51,18 @@ describe('exec.cmd.runList', () => {
       'Error while executing commands (1 of 2 failed)',
     );
 
+    expect(res.errors.length).to.eql(1);
+    expect(res.errors[0].index).to.eql(1);
+    expect(res.errors[0].cmd).to.eql('FAIL!');
+    expect(res.errors[0].errors[0]).to.include('FAIL!: command not found');
+
     const results = res.results;
     expect(results.length).to.eql(2);
-
     expect(results[0].ok).to.eql(true);
     expect(results[1].ok).to.eql(false);
 
-    const error = results[1].error;
-    expect(error && error.message).to.include(`Failed with code 127`);
-
     const result = results[1];
     expect(result && result.data.errors[0]).to.include('FAIL!: command not found');
+    expect((result as any).data.error.message).to.include('Failed with code 127');
   });
 });

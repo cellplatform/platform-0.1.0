@@ -1,25 +1,31 @@
-import { ICommand, IResult, IResultInfo, ITask, plural } from '../common';
+import { resolve } from 'path';
+
+import { chalk, ICommand, IResult, IResultInfo, ITask } from '../common';
 import { tasks } from '../tasks';
 import { run } from './cmd.run';
 
-export type IRunCommandListResult = IResult & {
+export type ICommandListExecutionResponse = IResult & {
   ok: boolean;
-  results: IRunCommandResult[];
-  errors: ICommandError[];
+  results: IListCommandResult[];
+  errors: ICommandErrors;
+  dir: string;
 };
 
-export type IRunCommandResult = {
+export type IListCommandResult = {
   ok: boolean;
   index: number;
   cmd: string;
   data: IResultInfo;
-  error?: Error;
+};
+
+export type ICommandErrors = ICommandError[] & {
+  log: () => void;
 };
 
 export type ICommandError = {
   index: number;
   cmd: string;
-  error: string;
+  errors: string[];
 };
 
 /**
@@ -28,14 +34,16 @@ export type ICommandError = {
 export async function runList(
   commands: string | string[] | ICommand | ICommand[],
   options: tasks.IRunTasksOptions & { dir?: string } = {},
-): Promise<IRunCommandListResult> {
-  const { dir } = options;
+): Promise<ICommandListExecutionResponse> {
+  const dir = resolve(options.dir || process.cwd());
   const inputs = Array.isArray(commands) ? commands : [commands];
+
+  // Prepare the commands.
   const cmds: ICommand[] = inputs.map(input =>
     typeof input === 'string' ? { title: input, cmd: input } : input,
   );
 
-  let results: IRunCommandResult[] = [];
+  let results: IListCommandResult[] = [];
 
   // Run the list of commands.
   const list: ITask[] = cmds.map(({ title, cmd }, index) => ({
@@ -44,34 +52,72 @@ export async function runList(
       const data = await run(cmd, { dir, silent: true });
       const error = data.error;
       const ok = data.error || !data.ok || data.code !== 0 ? false : true;
-      results = [...results, { index, ok, cmd, data, error }];
+      results = [...results, { index, ok, cmd, data }];
       if (error) {
-        const total = data.errors.filter(line => line.trimLeft().startsWith('Error:')).length;
-        const errorTotal = `${total} ${plural(total, 'error', 'errors')}`;
-        throw new Error(`Failed with ${errorTotal}.`);
+        throw new Error(cmd);
       }
     },
   }));
   await tasks.run(list, options);
 
   // Finish up.
-  const errors = results
-    .filter(res => !res.ok)
-    .map(res => {
-      const { index, cmd } = res;
-      const error = res.data.error ? res.data.error.message : 'Unknown';
-      const result: ICommandError = {
-        index,
-        cmd,
-        error,
-      };
-      return result;
-    });
-  const ok = errors.length === 0;
+  const errors = formatErrors(results);
+
+  const ok = errors.all.length === 0;
   const code = ok ? 0 : 1;
   const error = ok
     ? undefined
-    : new Error(`Error while executing commands (${errors.length} of ${cmds.length} failed)`);
+    : new Error(`Error while executing commands (${errors.all.length} of ${cmds.length} failed)`);
 
-  return { ok, code, results, error, errors };
+  return {
+    ok,
+    code,
+    results,
+    error,
+    errors: errors.command,
+    dir,
+  };
+}
+
+/**
+ * INTERNAL
+ */
+
+function formatErrors(results: IListCommandResult[]) {
+  const all = results.filter(res => !res.ok);
+  const errors: ICommandError[] = [];
+
+  // console.log('all', all);
+
+  all.forEach(({ index, data, cmd }) => {
+    let targetIndex = errors.findIndex(item => item.index === index);
+
+    targetIndex = targetIndex === -1 ? errors.length : targetIndex;
+    const target = errors[targetIndex] || { index, cmd, errors: [] };
+    errors[targetIndex] = target;
+    data.errors.forEach(err => target.errors.push(err));
+  });
+
+  const command = errors as ICommandErrors;
+  command.log = () => logErrors(command);
+
+  return { all, command };
+}
+
+function logErrors(errors: ICommandErrors) {
+  let output = '';
+  const add = (...text: string[]) => (output += `${text.join(' ')}\n`);
+
+  errors.forEach(({ index, cmd, errors }) => {
+    add(chalk.cyan(`\n(${index + 1})`), chalk.yellow('Errors for command:'));
+    add(`    ${chalk.cyan(cmd)}`);
+    add();
+    errors.forEach(line => {
+      const isStackTrace = line.includes(' at ') && line.includes('.js');
+      const text = isStackTrace ? chalk.gray(line) : line;
+      add(text);
+    });
+  });
+
+  console.log(output); // tslint:disable-line
 }
