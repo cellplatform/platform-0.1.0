@@ -37,19 +37,18 @@ export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Pr
     const title = format === 'ES_MODULE' ? '.mjs ESModule' : '.js  CommonJS';
     return {
       title: `build ${title}`,
-      task: async () => {
-        return build({ ...args, as: format, silent: true });
-      },
+      task: () => build({ ...args, as: format, silent: true }),
     };
   });
 
   // Run tasks.
   log.info();
-  const res = await exec.tasks.run(tasks, { silent, concurrent: false });
+  const res = await exec.tasks.run(tasks, { concurrent: false });
+  const { ok } = res;
 
   // Finish up.
   log.info();
-  return res;
+  return { ok, code: ok ? 0 : 1 };
 }
 
 type IArgs = IBuildArgs & { as?: BuildFormat };
@@ -87,7 +86,6 @@ export async function build(args: IArgs): Promise<IResult> {
 
   // Execute command.
   try {
-    console.log('-------------------------------------------');
     const res = await exec.cmd.runList(cmd, { silent, dir });
     if (res.code !== 0) {
       return result.fail(`Build failed.`, res.code);
@@ -108,7 +106,6 @@ export async function build(args: IArgs): Promise<IResult> {
 /**
  * INTERNAL
  */
-
 export async function processArgs(args: IArgs) {
   const { silent, watch, as = 'COMMON_JS' } = args;
 
