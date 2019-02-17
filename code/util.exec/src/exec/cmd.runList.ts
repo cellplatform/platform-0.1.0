@@ -1,4 +1,4 @@
-import { ICommand, IResult, IResultInfo, ITask } from '../common';
+import { ICommand, IResult, IResultInfo, ITask, plural } from '../common';
 import { tasks } from '../tasks';
 import { run } from './cmd.run';
 
@@ -46,7 +46,9 @@ export async function runList(
       const ok = data.error || !data.ok || data.code !== 0 ? false : true;
       results = [...results, { index, ok, cmd, data, error }];
       if (error) {
-        throw error;
+        const total = data.errors.filter(line => line.trimLeft().startsWith('Error:')).length;
+        const errorTotal = `${total} ${plural(total, 'error', 'errors')}`;
+        throw new Error(`Failed with ${errorTotal}.`);
       }
     },
   }));
