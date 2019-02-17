@@ -1,5 +1,5 @@
-function write(...values: any) {
-  console.log.apply(null, values); // tslint:disable-line
+function write(...value: any) {
+  console.log.apply(null, value); // tslint:disable-line
 }
 
 function silentWrite(...value: any) {

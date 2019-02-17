@@ -19,8 +19,11 @@ export type IListCommandResult = {
 };
 
 export type ICommandErrors = ICommandError[] & {
-  log: () => void;
+  log: (args: { log?: ILog }) => void;
 };
+
+export type ILog = { info: LogValue; warn: LogValue; error: LogValue };
+export type LogValue = (...value: any) => void;
 
 export type ICommandError = {
   index: number;
@@ -87,8 +90,6 @@ function formatErrors(results: IListCommandResult[]) {
   const all = results.filter(res => !res.ok);
   const errors: ICommandError[] = [];
 
-  // console.log('all', all);
-
   all.forEach(({ index, data, cmd }) => {
     let targetIndex = errors.findIndex(item => item.index === index);
 
@@ -99,12 +100,14 @@ function formatErrors(results: IListCommandResult[]) {
   });
 
   const command = errors as ICommandErrors;
-  command.log = () => logErrors(command);
+  command.log = options => logErrors(command, options);
 
   return { all, command };
 }
 
-function logErrors(errors: ICommandErrors) {
+function logErrors(errors: ICommandErrors, options: { log?: ILog } = {}) {
+  const log = options.log || logger;
+
   let output = '';
   const add = (...text: string[]) => (output += `${text.join(' ')}\n`);
 
@@ -119,5 +122,11 @@ function logErrors(errors: ICommandErrors) {
     });
   });
 
-  console.log(output); // tslint:disable-line
+  log.info(output);
 }
+
+const logger: ILog = {
+  info: console.log, // tslint:disable-line
+  warn: console.warn, // tslint:disable-line
+  error: console.error, // tslint:disable-line
+};
