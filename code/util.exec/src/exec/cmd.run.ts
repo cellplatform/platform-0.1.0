@@ -1,7 +1,13 @@
 import { Observable, ReplaySubject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
-import { stripAnsiColors, ICommandInfo, ICommandPromise, IResultInfo } from '../common';
+import {
+  stripAnsiColors,
+  ICommandInfo,
+  ICommandPromise,
+  IResultInfo,
+  definedPropsFor,
+} from '../common';
 import { spawn } from './process';
 
 /**
@@ -45,7 +51,7 @@ export function run(
     }
 
     // Prepare the result object.
-    const prop = propsFor<IResultInfo>(result);
+    const prop = definedPropsFor<IResultInfo>(result);
     prop('ok', props.ok);
     prop('info', props.info);
     prop('errors', props.errors);
@@ -86,7 +92,7 @@ export function run(
   );
 
   // [IResult] properties.
-  const prop = propsFor<ICommandPromise>(response);
+  const prop = definedPropsFor<ICommandPromise>(response);
   prop('code', () => result.code);
   prop('ok', props.ok);
   prop('info', props.info);
@@ -110,10 +116,6 @@ const formatOutput = (chunk: Buffer) => {
     .toString()
     .replace(/\n$/, '')
     .split('\n');
-};
-
-const propsFor = <T>(obj: Partial<T>) => {
-  return <K extends keyof T>(name: K, get: () => T[K]) => Object.defineProperty(obj, name, { get });
 };
 
 const reduce = (observable: Observable<ICommandInfo>) => {

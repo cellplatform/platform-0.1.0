@@ -11,9 +11,9 @@ describe('exec.process', () => {
     const response = exec.process.spawn(cmd);
 
     expect(typeof response.child.pid).to.eql('number');
-    expect(typeof response.complete.then).to.eql('function');
+    expect(typeof response.then).to.eql('function');
 
-    const result = await response.complete;
+    const result = await response;
 
     expect(result.ok).to.eql(true);
     expect(result.code).to.eql(0);

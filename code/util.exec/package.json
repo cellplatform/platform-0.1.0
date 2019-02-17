@@ -10,10 +10,11 @@
     "lint": "sh node_modules/@platform/ts/lint.sh $@",
     "build": "sh node_modules/@platform/ts/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test",
-    "examples": "node lib/example/examples",
+    "example": "node lib/example/examples",
     "example-tasks": "node lib/example/runTasks",
     "example-cmds": "node lib/example/runCommands",
-    "example-tasks-cmds": "node lib/example/runTasksThroughCmd"
+    "example-tasks-cmds": "node lib/example/runTasksThroughCmd",
+    "tmp": "node lib/example/tmp"
   },
   "dependencies": {
     "@platform/libs": "0.0.3",

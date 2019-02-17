@@ -1,22 +1,33 @@
 import * as childProcess from 'child_process';
 import { IResult } from '../common';
 
+export type ISpawnPromise = Promise<IResult> & {
+  child: childProcess.ChildProcess;
+  options: childProcess.SpawnOptions;
+};
+
 /**
  * Spawns a child process providing both the `child` and completion `promise`.
  */
-export function spawn(command: string | string[], options: childProcess.SpawnOptions = {}) {
+export function spawn(
+  command: string | string[],
+  options: childProcess.SpawnOptions = {},
+): ISpawnPromise {
   const cmd = Array.isArray(command) ? command.join('\n') : command;
+  const env = { ...process.env, FORCE_COLOR: 'true', ...options.env };
 
-  // Spawn the child process.
-  const child = childProcess.spawn(cmd, {
+  options = {
     stdio: 'inherit',
     shell: true,
     ...options,
-    env: { FORCE_COLOR: 'true', ...options.env },
-  });
+    env,
+  };
+
+  // Spawn the child process.
+  const child = childProcess.spawn(cmd, options);
 
   // Listen for end.
-  const complete = new Promise<IResult>((resolve, reject) => {
+  const promise = new Promise<IResult>((resolve, reject) => {
     child.on('exit', e => {
       const code = e === null ? 0 : e;
       const ok = code === 0;
@@ -28,5 +39,8 @@ export function spawn(command: string | string[], options: childProcess.SpawnOpt
   });
 
   // Finish up.
-  return { child, complete };
+  const result = promise as ISpawnPromise;
+  result.child = child;
+  result.options = options;
+  return result;
 }
