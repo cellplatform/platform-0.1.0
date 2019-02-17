@@ -48,7 +48,7 @@ describe('exec.cmd.run', () => {
   });
 
   it('fails on a child process', async () => {
-    const err = `Failed with code '127'`;
+    const err = `Failed with code 127`;
     const response = exec.cmd.run('FAIL_BIG_TIME', { silent: true });
     const result = await response;
     expect(response.ok).to.eql(false);

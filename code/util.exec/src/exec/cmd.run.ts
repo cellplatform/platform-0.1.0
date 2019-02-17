@@ -1,8 +1,7 @@
-import * as ansiRegex from 'ansi-regex';
 import { Observable, ReplaySubject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
-import { ICommandInfo, ICommandPromise, IResultInfo } from '../common';
+import { stripAnsiColors, ICommandInfo, ICommandPromise, IResultInfo } from '../common';
 import { spawn } from './process';
 
 /**
@@ -27,11 +26,7 @@ export function run(
     info: () => reduceAndStripColors(output$.pipe(filter(e => e.type === 'stdout'))),
     errors: () => reduceAndStripColors(output$.pipe(filter(e => e.type === 'stderr'))),
     error: () =>
-      error
-        ? error
-        : result.code !== 0
-        ? new Error(`Failed with code '${result.code}'.`)
-        : undefined,
+      error ? error : result.code !== 0 ? new Error(`Failed with code ${result.code}.`) : undefined,
   };
 
   const promise = new Promise<IResultInfo>((resolve, reject) => {
@@ -121,9 +116,6 @@ const propsFor = <T>(obj: Partial<T>) => {
   return <K extends keyof T>(name: K, get: () => T[K]) => Object.defineProperty(obj, name, { get });
 };
 
-const stripAnsi = (input: string) =>
-  typeof input === 'string' ? input.replace(ansiRegex(), '') : input;
-
 const reduce = (observable: Observable<ICommandInfo>) => {
   let result: string[] = [];
   observable.pipe(map(e => e.text)).subscribe(e => (result = [...result, e]));
@@ -131,5 +123,5 @@ const reduce = (observable: Observable<ICommandInfo>) => {
 };
 
 const reduceAndStripColors = (observable: Observable<ICommandInfo>) => {
-  return reduce(observable).map(text => stripAnsi(text));
+  return reduce(observable).map(text => stripAnsiColors(text));
 };

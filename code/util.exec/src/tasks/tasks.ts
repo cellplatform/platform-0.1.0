@@ -1,4 +1,4 @@
-import { result, IResultInfo, ITask, Listr } from '../common';
+import { IResult, ITask, Listr } from '../common';
 
 export type IRunTasksOptions = {
   silent?: boolean;
@@ -6,8 +6,7 @@ export type IRunTasksOptions = {
   exitOnError?: boolean;
 };
 
-export type ITasksResult = {
-  ok: boolean;
+export type IRunTaskListResult = IResult & {
   errors: ITaskError[];
 };
 
@@ -23,7 +22,7 @@ export type ITaskError = {
 export async function run<T>(
   tasks: ITask<T> | Array<ITask<T>>,
   options: IRunTasksOptions = {},
-): Promise<ITasksResult> {
+): Promise<IRunTaskListResult> {
   const { silent, concurrent, exitOnError = false } = options;
   const renderer = silent ? 'silent' : 'default';
 
@@ -56,5 +55,10 @@ export async function run<T>(
   }
 
   // Finish up.
-  return { ok: errors.length === 0, errors };
+  const ok = errors.length === 0;
+  const code = ok ? 0 : 1;
+  const error = ok
+    ? undefined
+    : new Error(`Error while executing tasks (${errors.length} of ${tasks.length} failed)`);
+  return { ok, code, error, errors };
 }
