@@ -33,7 +33,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 <p>&nbsp;</p>
 
-[@isaacs](https://www.npmjs.com/~isaacs) then provides a thoughtful translation of this ethos into [nodejs](https://nodejs.org) terms. His [whole post](https://blog.izs.me/2013/04/unix-philosophy-and-nodejs) is worth the read, but here's a distillation:
+[@isaacs](https://www.npmjs.com/~isaacs) follows this up with a thoughtful translation into [nodejs](https://nodejs.org) terms. His [whole post](https://blog.izs.me/2013/04/unix-philosophy-and-nodejs) is worth the read, but here's a distillation:
 
 - **Working** is better than perfect.
 - **Focus** is better than features.
