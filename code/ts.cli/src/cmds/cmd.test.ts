@@ -44,9 +44,21 @@ export async function test(
       'src/**/*.{test,TEST}.ts{,x}' \\
   `;
 
-  try {
-    const res = await exec.run(cmd, { silent, dir: fs.resolve(dir) });
+  const done = (res: IResult) => {
     return res.code === 0 ? res : result.fail(`Tests failed.`, res.code);
+  };
+
+  try {
+    if (watch) {
+      // Run with interactive console.
+      const res = await exec.cmd.run(cmd, { silent, dir: fs.resolve(dir) });
+      return done(res);
+    } else {
+      // Run behind spinner.
+      const res = await exec.cmd.runList(cmd, { silent, dir: fs.resolve(dir) });
+      res.errors.log({ log });
+      return done(res);
+    }
   } catch (error) {
     return result.fail(error);
   }

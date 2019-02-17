@@ -6,11 +6,7 @@ import { Observable } from 'rxjs';
 export type Loggable = any;
 export type Logger = (...items: Loggable[]) => string;
 
-export type LogNext = (
-  level: LogLevel,
-  color: LogColor,
-  items: Loggable[],
-) => string;
+export type LogNext = (level: LogLevel, color: LogColor, items: Loggable[]) => string;
 
 export type LogLevel = 'info' | 'warn' | 'error';
 

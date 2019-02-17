@@ -3,9 +3,7 @@ import { exec, fs, getLog, IResult, paths, result } from '../common';
 /**
  * Runs the typescript linter.
  */
-export async function lint(
-  args: { dir?: string; silent?: boolean } = {},
-): Promise<IResult> {
+export async function lint(args: { dir?: string; silent?: boolean } = {}): Promise<IResult> {
   const { silent } = args;
   const dir = args.dir || (await paths.closestParentOf('tslint.json'));
   if (!dir) {
@@ -22,7 +20,7 @@ export async function lint(
 
   try {
     log.info();
-    const res = await exec.runCommands(
+    const res = await exec.cmd.runList(
       [
         {
           title: 'prettier',
@@ -39,7 +37,8 @@ export async function lint(
       },
     );
 
-    log.info();
+    // Finish up.
+    res.errors.log({ log });
     return res;
   } catch (error) {
     return result.fail(error);

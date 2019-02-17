@@ -34,10 +34,7 @@ export type IpcEvent<M extends IpcMessage = any> = {
 
 export type IpcEventObservable<M extends IpcMessage> = Observable<IpcEvent<M>>;
 
-export type IpcFilter<M extends IpcMessage> = (
-  e: IpcEvent<M>,
-  index: number,
-) => boolean;
+export type IpcFilter<M extends IpcMessage> = (e: IpcEvent<M>, index: number) => boolean;
 
 /**
  * Definition of the IPC client.
@@ -56,9 +53,7 @@ export type IpcClient<M extends IpcMessage = any> = {
    */
   dispose: () => void;
 
-  filter: <T extends M>(
-    criteria: IpcFilter<T> | T['type'],
-  ) => IpcEventObservable<T>;
+  filter: <T extends M>(criteria: IpcFilter<T> | T['type']) => IpcEventObservable<T>;
 
   on: <T extends M>(type: T['type']) => IpcEventObservable<T>;
 
@@ -68,15 +63,9 @@ export type IpcClient<M extends IpcMessage = any> = {
     options?: IpcClientSendOptions,
   ) => IpcSending<T, D>;
 
-  handle: <T extends M, D = any>(
-    type: T['type'],
-    handler: IpcEventHandler<T, D>,
-  ) => IpcClient<M>;
+  handle: <T extends M, D = any>(type: T['type'], handler: IpcEventHandler<T, D>) => IpcClient<M>;
 
-  handlers: (
-    type: M['type'],
-    options?: { exclude?: number | number[] },
-  ) => IpcIdentifier[];
+  handlers: (type: M['type'], options?: { exclude?: number | number[] }) => IpcIdentifier[];
 };
 
 export type IpcClientSendOptions = {

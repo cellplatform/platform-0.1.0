@@ -3,9 +3,7 @@ import { exec, fs, getLog, IResult, paths, result } from '../common';
 /**
  * Prepares the module for publishing to NPM.
  */
-export async function prepare(
-  args: { dir?: string; silent?: boolean } = {},
-): Promise<IResult> {
+export async function prepare(args: { dir?: string; silent?: boolean } = {}): Promise<IResult> {
   const { silent } = args;
   const log = getLog(args.silent);
   const dir = args.dir || (await paths.closestParentOf('package.json'));
@@ -17,18 +15,16 @@ export async function prepare(
    * Run commands.
    */
   try {
-    // TODO 🐷   use NPM when Yarn not installed
-
-    const cmds = ['yarn build', 'yarn lint', 'yarn test'];
-
     log.info();
-    const res = await exec.runCommands(cmds, {
+    const cmds = ['yarn build', 'yarn lint', 'yarn test'];
+    const res = await exec.cmd.runList(cmds, {
       dir: fs.resolve(dir),
       silent,
       concurrent: true,
       exitOnError: false,
     });
-    log.info();
+
+    res.errors.log({ log });
     return res;
   } catch (error) {
     return result.fail(error);

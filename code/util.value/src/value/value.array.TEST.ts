@@ -41,13 +41,6 @@ describe('flatten', () => {
   });
 
   it('flattens many levels deep', () => {
-    expect(value.flatten([1, [2, [3, [4, [5, 6]]]]])).to.eql([
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-    ]);
+    expect(value.flatten([1, [2, [3, [4, [5, 6]]]]])).to.eql([1, 2, 3, 4, 5, 6]);
   });
 });

@@ -1,7 +1,7 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.0.64",
+  "version": "0.0.72",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -16,24 +16,24 @@
   "dependencies": {
     "@babel/polyfill": "7.2.5",
     "@platform/fs": "0.0.33",
-    "@platform/log": "0.0.59",
-    "@platform/util.is": "0.0.10",
-    "@platform/util.react": "0.0.13",
+    "@platform/log": "0.0.67",
+    "@platform/util.is": "0.0.18",
+    "@platform/util.react": "0.0.21",
     "@types/app-root-path": "1.2.4",
     "app-root-path": "2.1.0",
-    "electron-log": "2.2.17",
+    "electron-log": "3.0.1",
     "electron-store": "2.0.0",
     "electron-window-state": "5.0.3",
     "is-electron": "2.2.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.26",
-    "@platform/ts.cli": "3.3.32",
-    "electron": "4.0.4"
+    "@platform/ts.cli": "3.3.40",
+    "electron": "4.0.5"
   },
   "files": [
     "lib"
   ],
-  "repository": "github.com/uiharness/platform",
+  "repository": "uiharness/platform",
   "license": "MIT"
 }

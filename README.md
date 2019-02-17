@@ -1,4 +1,5 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![NPM](https://img.shields.io/badge/npm-%40platform-blue.svg)](https://www.npmjs.com/org/platform)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_shield)
 [![Build Status](https://travis-ci.org/uiharness/platform.svg?branch=master)](https://travis-ci.org/uiharness/platform)
 [![title](https://user-images.githubusercontent.com/185555/52255812-f5e8cd80-2978-11e9-8baf-2d4b82b5f02c.png)](https://platform.uiharness.com)

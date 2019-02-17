@@ -101,11 +101,7 @@ export class WindowsRenderer implements IWindows {
   /**
    * INTERNAL
    */
-  private change(
-    type: IWindowChange['type'],
-    window: number,
-    windows: IWindowRef[],
-  ) {
+  private change(type: IWindowChange['type'], window: number, windows: IWindowRef[]) {
     this._refs = [...windows];
     this._change$.next({ type, window, windows });
   }

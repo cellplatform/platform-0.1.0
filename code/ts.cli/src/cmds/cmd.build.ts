@@ -22,14 +22,10 @@ export type IBuildArgs = {
 /**
  * Builds to a set of differing target-formats.
  */
-export async function buildAs(
-  formats: BuildFormat[],
-  args: IBuildArgs = {},
-): Promise<IResult> {
-  const { silent, outDir = '', code, error, dir = '' } = await processArgs(
-    args,
-  );
+export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Promise<IResult> {
+  const { silent, outDir = '', code, error, dir = '' } = await processArgs(args);
   const log = getLog(silent);
+  let errorLog: string | undefined;
 
   if (code !== 0) {
     return result.format({ code, error });
@@ -43,18 +39,31 @@ export async function buildAs(
     return {
       title: `build ${title}`,
       task: async () => {
-        return build({ ...args, as: format, silent: true });
+        const res = await build({ ...args, as: format, silent: true });
+        if (res.errorLog && !errorLog) {
+          errorLog = res.errorLog;
+        }
+        if (!res.ok) {
+          throw res.error;
+        }
+        return res;
       },
     };
   });
 
   // Run tasks.
   log.info();
-  const res = await exec.runTasks(tasks, { silent, concurrent: false });
+  const res = await exec.tasks.run(tasks, { concurrent: false });
+  const { ok } = res;
+
+  // Log any build errors.
+  if (errorLog) {
+    log.info(`\n${errorLog}`);
+  }
 
   // Finish up.
   log.info();
-  return res;
+  return { ok, code: ok ? 0 : 1 };
 }
 
 type IArgs = IBuildArgs & { as?: BuildFormat };
@@ -62,17 +71,8 @@ type IArgs = IBuildArgs & { as?: BuildFormat };
 /**
  * Runs a typescript build.
  */
-export async function build(args: IArgs): Promise<IResult> {
-  const {
-    dir = '',
-    outDir = '',
-    silent,
-    watch,
-    as,
-    code,
-    error,
-  } = await processArgs(args);
-
+export async function build(args: IArgs): Promise<IResult & { errorLog?: string }> {
+  const { dir = '', outDir = '', silent, watch, as, code, error } = await processArgs(args);
   if (code !== 0) {
     return result.format({ code, error });
   }
@@ -100,9 +100,19 @@ export async function build(args: IArgs): Promise<IResult> {
 
   // Execute command.
   try {
-    const res = await exec.run(cmd, { silent, dir });
-    if (res.code !== 0) {
-      return result.fail(`Build failed.`, res.code);
+    if (watch) {
+      // Watching.
+      const res = await exec.cmd.run(cmd, { silent, dir });
+      return res;
+    } else {
+      // Not watching.
+      const response = exec.cmd.runList(cmd, { silent, dir });
+      const res = await response;
+      if (res.code !== 0) {
+        const errorLog = res.errors.log({ log: null, header: false });
+        return { ...result.fail(`Build failed.`, res.code), errorLog };
+      }
+      return res;
     }
   } catch (error) {
     return result.fail(error);
@@ -120,16 +130,13 @@ export async function build(args: IArgs): Promise<IResult> {
 /**
  * INTERNAL
  */
-
 export async function processArgs(args: IArgs) {
   const { silent, watch, as = 'COMMON_JS' } = args;
 
   // Retrieve paths.
   const dir = args.dir || (await paths.closestParentOf('node_modules'));
   if (!dir) {
-    const error = new Error(
-      `The root directory containing 'node_modules' was not found.`,
-    );
+    const error = new Error(`The root directory containing 'node_modules' was not found.`);
     return { code: 1, error };
   }
 
@@ -143,9 +150,7 @@ export async function processArgs(args: IArgs) {
   // Directory code is transpiled to.
   const outDir = args.outDir || tsconfig.outDir;
   if (!outDir) {
-    const error = new Error(
-      `An 'outDir' is not specified within 'tsconfig.json'.`,
-    );
+    const error = new Error(`An 'outDir' is not specified within 'tsconfig.json'.`);
     return { code: 1, error };
   }
 
@@ -162,10 +167,7 @@ export async function processArgs(args: IArgs) {
  *    with both `.js` and `.mjs` files.
  */
 
-async function ensureMainHasNoExtension(
-  dir: string,
-  options: { silent?: boolean } = {},
-) {
+async function ensureMainHasNoExtension(dir: string, options: { silent?: boolean } = {}) {
   const path = fs.join(dir, 'package.json');
   const pkg = await fs.file.loadAndParse<IPackageJson>(path);
   if (!pkg.main) {

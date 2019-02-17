@@ -9,13 +9,7 @@ import * as React from 'react';
 import { css, GlamorValue, isPromise, DEFAULTS } from '../../common';
 import { Editor } from './Editor';
 
-import {
-  ReactInspector,
-  ObjectLabel,
-  ObjectRootLabel,
-  ObjectName,
-  THEME,
-} from './libs';
+import { ReactInspector, ObjectLabel, ObjectRootLabel, ObjectName, THEME } from './libs';
 
 export interface IObjectViewProps {
   data: any;
@@ -44,10 +38,7 @@ interface INodeRendererOptions {
 /**
  * Views an Object as a visual tree.
  */
-export class ObjectView extends React.PureComponent<
-  IObjectViewProps,
-  IObjectViewState
-> {
+export class ObjectView extends React.PureComponent<IObjectViewProps, IObjectViewState> {
   public state: IObjectViewState = {};
   private isUnmounted = false;
 
@@ -55,10 +46,7 @@ export class ObjectView extends React.PureComponent<
     this.loadData();
   }
 
-  public componentDidUpdate(
-    prevProps: IObjectViewProps,
-    prevState: IObjectViewState,
-  ) {
+  public componentDidUpdate(prevProps: IObjectViewProps, prevState: IObjectViewState) {
     if (this.props.data !== prevProps.data && !this.isUnmounted) {
       this.loadData();
     }
@@ -70,13 +58,7 @@ export class ObjectView extends React.PureComponent<
 
   public render() {
     let { data } = this.state;
-    const {
-      name,
-      expandLevel = 1,
-      showNonenumerable = false,
-      expandPaths,
-      style,
-    } = this.props;
+    const { name, expandLevel = 1, showNonenumerable = false, expandPaths, style } = this.props;
 
     if (this.state.isLoading) {
       data = 'Loading...';
@@ -141,13 +123,7 @@ export class ObjectView extends React.PureComponent<
       // TODO
       // return this.renderEditorNode(props);
 
-      return (
-        <ObjectLabel
-          name={name}
-          data={data}
-          isNonenumerable={isNonenumerable}
-        />
-      );
+      return <ObjectLabel name={name} data={data} isNonenumerable={isNonenumerable} />;
     }
   };
 

@@ -1,16 +1,16 @@
 {
   "name": "@platform/libs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Common external toolbelt libs used accross modules.",
   "scripts": {
     "test": "echo no-op"
   },
   "dependencies": {
-    "@types/ramda": "0.25.49",
+    "@types/ramda": "0.25.50",
     "ramda": "0.26.1",
     "rxjs": "6.4.0",
     "tslib": "1.9.3"
   },
-  "repository": "github.com/uiharness/platform",
+  "repository": "uiharness/platform",
   "license": "MIT"
 }

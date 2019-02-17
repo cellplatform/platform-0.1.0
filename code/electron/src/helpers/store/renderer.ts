@@ -10,9 +10,7 @@ export * from './types';
 /**
  * Initializes a store [renderer] client.
  */
-export function init<T extends t.StoreJson>(args: {
-  ipc: IpcClient;
-}): t.IStoreClient<T> {
+export function init<T extends t.StoreJson>(args: { ipc: IpcClient }): t.IStoreClient<T> {
   /**
    * HACK:  Ensure multiple clients are not initialized on HMR (hot-module-reloads).
    *        This will only happen during development.
@@ -28,10 +26,11 @@ export function init<T extends t.StoreJson>(args: {
     try {
       // Fire the event requesting data.
       const payload = { keys: keys as string[] };
-      const res = await ipc.send<
-        t.IStoreGetValuesEvent,
-        t.IStoreGetValuesResponse
-      >('@platform/STORE/get', payload, { target: 0 }).promise;
+      const res = await ipc.send<t.IStoreGetValuesEvent, t.IStoreGetValuesResponse>(
+        '@platform/STORE/get',
+        payload,
+        { target: 0 },
+      ).promise;
 
       // Extract details from the response from MAIN.
       const main = res.resultFrom('MAIN');
@@ -39,8 +38,7 @@ export function init<T extends t.StoreJson>(args: {
 
       // Ensure main responded with data.
       if (data && (!data.ok || data.error)) {
-        const message =
-          data.error || `Failed while getting store values for [${keys}].`;
+        const message = data.error || `Failed while getting store values for [${keys}].`;
         throw new Error(message);
       }
 
@@ -64,10 +62,11 @@ export function init<T extends t.StoreJson>(args: {
         values,
         action,
       };
-      const res = await ipc.send<
-        t.IStoreSetValuesEvent,
-        t.IStoreSetValuesResponse<T>
-      >('@platform/STORE/set', payload, { target: 0 }).promise;
+      const res = await ipc.send<t.IStoreSetValuesEvent, t.IStoreSetValuesResponse<T>>(
+        '@platform/STORE/set',
+        payload,
+        { target: 0 },
+      ).promise;
 
       // Wait for the response.
       const result = res.resultFrom('MAIN');
@@ -99,9 +98,7 @@ export function init<T extends t.StoreJson>(args: {
     ipc.send<t.IOpenStoreFileInEditorEvent>('@platform/STORE/openInEditor', {});
   };
 
-  ipc
-    .on<t.IStoreChangeEvent>('@platform/STORE/change')
-    .subscribe(e => change$.next(e.payload));
+  ipc.on<t.IStoreChangeEvent>('@platform/STORE/change').subscribe(e => change$.next(e.payload));
 
   /**
    * Create the client.

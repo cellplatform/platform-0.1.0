@@ -82,12 +82,9 @@ export async function init<M extends IpcMessage>(
 export function getId() {
   return new Promise<number>((resolve, reject) => {
     ipcRenderer.send(GLOBAL.IPC.ID.REQUEST);
-    ipcRenderer.on(
-      GLOBAL.IPC.ID.RESPONSE,
-      (e: Electron.Event, args: { id?: number } = {}) => {
-        const id = args.id === undefined ? -1 : args.id;
-        resolve(id);
-      },
-    );
+    ipcRenderer.on(GLOBAL.IPC.ID.RESPONSE, (e: Electron.Event, args: { id?: number } = {}) => {
+      const id = args.id === undefined ? -1 : args.id;
+      resolve(id);
+    });
   });
 }

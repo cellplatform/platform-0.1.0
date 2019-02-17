@@ -26,16 +26,9 @@ export function create(args: {
   dirName?: string;
   windows?: IWindows;
 }) {
-  const {
-    parent,
-    title = 'DevTools',
-    dirName = 'window-state',
-    windows,
-  } = args;
+  const { parent, title = 'DevTools', dirName = 'window-state', windows } = args;
 
-  const fileName = args.fileName
-    ? args.fileName
-    : parent.getTitle().replace(/\s/g, '_');
+  const fileName = args.fileName ? args.fileName : parent.getTitle().replace(/\s/g, '_');
   const file = `${dirName}/${fileName}.devTools.json`;
 
   const windowBounds = parent.getBounds();

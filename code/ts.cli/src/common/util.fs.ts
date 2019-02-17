@@ -3,11 +3,7 @@ import { fs } from './libs';
 /**
  * Changes all file-extensions in the given directory.
  */
-export async function changeExtensions(args: {
-  dir: string;
-  from: string;
-  to: string;
-}) {
+export async function changeExtensions(args: { dir: string; from: string; to: string }) {
   const { dir } = args;
   const formatExtension = (ext: string) => `.${ext.replace(/^\./, '')}`;
   const from = formatExtension(args.from);

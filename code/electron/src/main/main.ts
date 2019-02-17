@@ -2,12 +2,7 @@ import { fs } from '@platform/fs';
 import { app } from 'electron';
 
 import * as devTools from '../helpers/devTools/main';
-import {
-  init as initIpc,
-  IpcClient,
-  IpcMessage,
-  MAIN_ID,
-} from '../helpers/ipc/main';
+import { init as initIpc, IpcClient, IpcMessage, MAIN_ID } from '../helpers/ipc/main';
 import * as logger from '../helpers/logger/main';
 import { init as initStore } from '../helpers/store/main';
 import { WindowsMain } from '../helpers/windows/main';
@@ -20,10 +15,7 @@ export { devTools, logger };
 /**
  * Initializes [Main] process systems (safely).
  */
-export async function init<
-  M extends IpcMessage = any,
-  S extends t.StoreJson = any
->(
+export async function init<M extends IpcMessage = any, S extends t.StoreJson = any>(
   args: {
     appName?: string;
     ipc?: t.IpcClient<M>;

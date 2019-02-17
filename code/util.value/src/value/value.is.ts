@@ -91,9 +91,7 @@ export function isNumeric(value: any) {
  * Determines whether the given value is a single alphabetic letter.
  */
 export function isLetter(value: any) {
-  return (
-    isAlpha(value) && R.is(String, value) && (value as string).length === 1
-  );
+  return isAlpha(value) && R.is(String, value) && (value as string).length === 1;
 }
 
 /**
@@ -121,9 +119,7 @@ export function hasWhitespace(text: string) {
  * Determines whether the given value is a Promise.
  */
 export function isPromise(value?: any) {
-  return value
-    ? typeof value === 'object' && typeof value.then === 'function'
-    : false;
+  return value ? typeof value === 'object' && typeof value.then === 'function' : false;
 }
 
 /**

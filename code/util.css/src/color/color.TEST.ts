@@ -3,10 +3,7 @@ import { color } from '.';
 
 describe('color', () => {
   describe('color.format()', () => {
-    const test = (
-      value: string | number | boolean | undefined,
-      output: string | undefined,
-    ) => {
+    const test = (value: string | number | boolean | undefined, output: string | undefined) => {
       expect(color.format(value)).to.eql(output);
     };
 

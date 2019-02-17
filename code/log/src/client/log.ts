@@ -18,8 +18,7 @@ const toColorItem = (color: LogColor, value: any): ColorItem => ({
  * Creates a client log.
  */
 export function create(): ILog {
-  const color: ColorFormatter = (color, items): ColorItem =>
-    toColorItem(color, items);
+  const color: ColorFormatter = (color, items): ColorItem => toColorItem(color, items);
 
   const log: ILog = {
     ...createLog({ color }),
@@ -82,8 +81,7 @@ events$
 /**
  * INTERNAL
  */
-const isColorItem = (item: any) =>
-  item ? item.__IS_COLOR__ === '__LOG_COLOR__' : false;
+const isColorItem = (item: any) => (item ? item.__IS_COLOR__ === '__LOG_COLOR__' : false);
 
 const isSimpleValue = (value: any) =>
   R.is(Boolean, value) || R.is(String, value) || R.is(Number, value);

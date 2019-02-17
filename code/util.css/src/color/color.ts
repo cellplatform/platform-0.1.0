@@ -17,20 +17,14 @@ export const white = () => create('white');
  * Mixes two colors.
  * https://github.com/bgrins/TinyColor#color-utilities
  */
-export function mix(
-  color1: tinycolor.ColorInput,
-  color2: tinycolor.ColorInput,
-  amount?: number,
-) {
+export function mix(color1: tinycolor.ColorInput, color2: tinycolor.ColorInput, amount?: number) {
   return tinycolor.mix(color1, color2, amount);
 }
 
 /**
  * Takes a value of various types and converts it into a color.
  */
-export function format(
-  value: string | number | boolean | undefined,
-): string | undefined {
+export function format(value: string | number | boolean | undefined): string | undefined {
   if (value === undefined) {
     return undefined;
   }
@@ -40,11 +34,7 @@ export function format(
   if (typeof value === 'number') {
     return toGrayAlpha(value);
   }
-  if (
-    typeof value === 'string' &&
-    !value.includes('#') &&
-    !value.includes('rgb')
-  ) {
+  if (typeof value === 'string' && !value.includes('#') && !value.includes('rgb')) {
     return `#${value}`;
   }
   return value as string;

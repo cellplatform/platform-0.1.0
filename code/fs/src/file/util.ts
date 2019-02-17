@@ -8,10 +8,7 @@ const SUPPORTED = ['json', 'yaml', 'yml'];
 /**
  * Loads (and parses) the file at the given path.
  */
-export async function loadAndParse<T>(
-  path: string,
-  defaultValue?: T,
-): Promise<T> {
+export async function loadAndParse<T>(path: string, defaultValue?: T): Promise<T> {
   path = resolve(path);
   if (!(await fs.pathExists(path))) {
     return defaultValue as T;

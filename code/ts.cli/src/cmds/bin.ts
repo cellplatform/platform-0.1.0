@@ -73,7 +73,6 @@ const program = yargs
         }),
     async e => {
       const { silent, watch, dir, outDir, esm } = e;
-
       if (watch) {
         // Watching (build as common-js)
         await cmds.build({ silent, dir, outDir, watch: true, as: 'COMMON_JS' });
@@ -244,8 +243,9 @@ const program = yargs
 /**
  * Show full list of commands if none was provided.
  */
-if (!CMDS.includes(program.argv._[0])) {
-  program.showHelp();
+const command = program.argv._[0];
+if (!CMDS.includes(command)) {
+  program.showHelp('log');
   log.info();
   process.exit(0);
 }

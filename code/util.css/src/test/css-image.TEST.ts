@@ -30,16 +30,12 @@ describe('React: CSS - image', () => {
       browserWindow.devicePixelRatio = 2;
       const result = image('1x.png', '2x.png');
       expect(result.backgroundImage).to.equal('url(1x.png)');
-      expect(result[MEDIA_QUERY_RETINA].backgroundImage).to.equal(
-        'url(2x.png)',
-      );
+      expect(result[MEDIA_QUERY_RETINA].backgroundImage).to.equal('url(2x.png)');
     });
 
     it('returns the 1x resolution on hi-res screen when no 2x image (undefined)', () => {
       browserWindow.devicePixelRatio = 2;
-      expect(
-        image('1x', undefined, { width: 10, height: 20 }).backgroundImage,
-      ).to.equal('url(1x)');
+      expect(image('1x', undefined, { width: 10, height: 20 }).backgroundImage).to.equal('url(1x)');
     });
 
     it('has width and height values (defaults)', () => {

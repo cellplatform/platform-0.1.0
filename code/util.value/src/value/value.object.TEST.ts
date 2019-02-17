@@ -85,10 +85,7 @@ describe('object.pluck', () => {
   it('gets value', () => {
     const test = (keyPath: string, root: any, value: any) => {
       const res = object.pluck(keyPath, root);
-      expect(res).to.eql(
-        value,
-        `The key-path "${keyPath}" should be [${value}]`,
-      );
+      expect(res).to.eql(value, `The key-path "${keyPath}" should be [${value}]`);
     };
     test('foo', { foo: 123 }, 123);
     test('foo.bar', { foo: { bar: 123 } }, 123);

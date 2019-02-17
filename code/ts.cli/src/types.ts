@@ -1,7 +1,7 @@
 /**
  * Commands.
  */
-export { IResult, ITask, ICommand } from '@platform/cli';
+export { IResult, IResultInfo, ITask, ICommand } from '@platform/util.exec';
 
 /**
  * Configuration files.

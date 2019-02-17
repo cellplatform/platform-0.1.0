@@ -4,9 +4,7 @@ import { fs } from '../common';
  * Determines if the given path is a directory
  */
 export async function dir(path: string) {
-  return (await fs.pathExists(path))
-    ? (await fs.lstat(path)).isDirectory()
-    : false;
+  return (await fs.pathExists(path)) ? (await fs.lstat(path)).isDirectory() : false;
 }
 
 /**

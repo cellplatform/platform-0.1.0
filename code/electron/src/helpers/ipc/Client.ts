@@ -22,10 +22,7 @@ import {
 export * from './types';
 
 export type SendDelegate = (channel: string, ...args: any) => void;
-export type HandlerRegistered = (args: {
-  type: IpcMessage['type'];
-  client: IpcIdentifier;
-}) => void;
+export type HandlerRegistered = (args: { type: IpcMessage['type']; client: IpcIdentifier }) => void;
 export type GetHandlerRefs = () => IpcHandlerRefs;
 
 type Ref = {
@@ -66,15 +63,11 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
 
     // Ferry events through the client observable.
     if (args.events$) {
-      args.events$
-        .pipe(takeUntil(this.disposed$))
-        .subscribe(e => this._.events$.next(e));
+      args.events$.pipe(takeUntil(this.disposed$)).subscribe(e => this._.events$.next(e));
     }
 
     // Listen for events and run corresponding response-handlers.
-    this.events$
-      .pipe(filter(e => e.type !== EVENT.HANDLER))
-      .subscribe(e => this.runHandlers(e));
+    this.events$.pipe(filter(e => e.type !== EVENT.HANDLER)).subscribe(e => this.runHandlers(e));
   }
 
   /**
@@ -216,10 +209,7 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
 
         // Fire the response data through an event.
         const e: IpcHandlerResponseEvent['payload'] = { eid, data };
-        this._send<IpcHandlerResponseEvent>(
-          '@platform/IPC/handler/response',
-          e,
-        );
+        this._send<IpcHandlerResponseEvent>('@platform/IPC/handler/response', e);
         return { args, data };
       });
   }
@@ -227,9 +217,7 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   private get handlerRefs() {
     const getHandlerRefs = this._.getHandlerRefs;
     if (!getHandlerRefs) {
-      throw new Error(
-        `The 'getHandlerRefs' delegate was not passed to the constructor.`,
-      );
+      throw new Error(`The 'getHandlerRefs' delegate was not passed to the constructor.`);
     }
     return getHandlerRefs();
   }
@@ -238,10 +226,7 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
    * Get a list of clients from all windows/processes that are
    * handling a particular event.
    */
-  public handlers(
-    type: M['type'],
-    options: { exclude?: number | number[] } = {},
-  ): IpcIdentifier[] {
+  public handlers(type: M['type'], options: { exclude?: number | number[] } = {}): IpcIdentifier[] {
     const exclude =
       options.exclude === undefined
         ? []

@@ -80,11 +80,7 @@ describe('queryString', () => {
   });
 
   describe('isFlag', () => {
-    const test = (
-      keys: string[],
-      query: queryString.UrlQuery | undefined,
-      result: boolean,
-    ) => {
+    const test = (keys: string[], query: queryString.UrlQuery | undefined, result: boolean) => {
       expect(queryString.isFlag(keys, query)).to.eql(result);
     };
 
