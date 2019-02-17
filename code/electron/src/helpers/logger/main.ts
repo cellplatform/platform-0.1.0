@@ -147,9 +147,7 @@ function increment(args: { dir: string; env: 'dev' | 'prod' }) {
   const read = () => {
     const DEFAULT: ILogMetadata = { start: { dev: 0, prod: 0 } };
     try {
-      return fs.pathExistsSync(path)
-        ? (fs.readJsonSync(path) as ILogMetadata)
-        : DEFAULT;
+      return fs.pathExistsSync(path) ? (fs.readJsonSync(path) as ILogMetadata) : DEFAULT;
     } catch (error) {
       return DEFAULT;
     }

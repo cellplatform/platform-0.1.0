@@ -92,11 +92,7 @@ export function remove(
   const isEmptyObject = (value: any) => R.equals(value, {});
   const isWildcard = (value: any) => value === '*';
 
-  const process = (
-    parts: string[],
-    obj: KeyMap,
-    parent?: { key: string; obj: KeyMap },
-  ) => {
+  const process = (parts: string[], obj: KeyMap, parent?: { key: string; obj: KeyMap }) => {
     const key = parts[0];
     const nextKey = parts[1];
 
@@ -111,9 +107,7 @@ export function remove(
 
     if (isWildcard(key) && !isDeepest) {
       // NB: This may be changed in future for operations at a higher level in the path (?) .
-      throw new Error(
-        `Wild card can only be used at end of path (error: '${keyPath}')`,
-      );
+      throw new Error(`Wild card can only be used at end of path (error: '${keyPath}')`);
     }
 
     let shouldDelete = false;
@@ -173,9 +167,7 @@ export function prune(keyPath: string, root: { [key: string]: any }) {
 function prepareKeyPath(keyPath: string) {
   keyPath = keyPath.trim();
   if (keyPath.startsWith('.') || keyPath.endsWith('.')) {
-    throw new Error(
-      `The keyPath cannot start or end with a period (.): "${keyPath}"`,
-    );
+    throw new Error(`The keyPath cannot start or end with a period (.): "${keyPath}"`);
   }
   return compact(keyPath.replace(/\s/g, '').split('.'));
 }

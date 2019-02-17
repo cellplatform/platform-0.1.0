@@ -50,9 +50,7 @@ export function init<T extends t.StoreJson>(args: {
       // Read data into response.
       res.version = typeof data.version === 'number' ? data.version : -1;
       if (keys.length > 0) {
-        keys
-          .map(key => key.toString())
-          .forEach(key => (res.body[key] = data.body[key]));
+        keys.map(key => key.toString()).forEach(key => (res.body[key] = data.body[key]));
       } else {
         // NB: When no keys specified the entire data-set is being requested.
         res.body = data.body;
@@ -121,10 +119,7 @@ export function init<T extends t.StoreJson>(args: {
       const change: t.IStoreChange = {
         action,
         keys,
-        values: values.reduce(
-          (acc, next) => ({ ...acc, [next.key]: next.value }),
-          {},
-        ),
+        values: values.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {}),
       };
       ipc.send<t.IStoreChangeEvent>('@platform/STORE/change', change);
       change$.next(change);
@@ -179,9 +174,7 @@ export function init<T extends t.StoreJson>(args: {
   /**
    * Handle GET value requests.
    */
-  ipc.handle<t.IStoreGetValuesEvent>('@platform/STORE/get', e =>
-    getValuesHandler(e.payload.keys),
-  );
+  ipc.handle<t.IStoreGetValuesEvent>('@platform/STORE/get', e => getValuesHandler(e.payload.keys));
 
   /**
    * Handle SET value requests.
@@ -193,9 +186,8 @@ export function init<T extends t.StoreJson>(args: {
   /**
    * Handle `open in editor` requests.
    */
-  ipc.handle<t.IOpenStoreFileInEditorEvent>(
-    '@platform/STORE/openInEditor',
-    async e => openInEditor(),
+  ipc.handle<t.IOpenStoreFileInEditorEvent>('@platform/STORE/openInEditor', async e =>
+    openInEditor(),
   );
 
   // Finish up.

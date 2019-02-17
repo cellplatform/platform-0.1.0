@@ -2,13 +2,7 @@ import * as nodeUtil from 'util';
 import { map, filter } from 'rxjs/operators';
 import { R, create as createLog, chalk, ColorFormatter } from './common';
 import { table } from './log.table';
-import {
-  LogLevel,
-  ILogEvent,
-  IServerLog,
-  ILogTableOptions,
-  ILogAction,
-} from './types';
+import { LogLevel, ILogEvent, IServerLog, ILogTableOptions, ILogAction } from './types';
 
 /**
  * Creates a server log.

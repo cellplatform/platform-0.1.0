@@ -7,10 +7,6 @@ import { WindowsEvents } from './windows/types';
 export { IpcClient };
 export { IContext, ILog } from '../types';
 
-export type SystemEvents =
-  | LoggerEvents
-  | DevToolEvents
-  | StoreEvents
-  | WindowsEvents;
+export type SystemEvents = LoggerEvents | DevToolEvents | StoreEvents | WindowsEvents;
 
 export type IpcInternal = IpcClient<SystemEvents>;

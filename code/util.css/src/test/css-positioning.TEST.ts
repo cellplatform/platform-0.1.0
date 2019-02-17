@@ -21,7 +21,7 @@ describe('React: transformStyle - positioning', () => {
       expect(style.left).to.equal(40);
     });
 
-    it("converts array value (with null's)", () => {
+    it('converts array value (with null\'s)', () => {
       const style = transformStyle({
         Absolute: ['10', null, '30px', '40em'],
       }) as any;
@@ -111,12 +111,7 @@ describe('React: transformStyle - positioning', () => {
 
     describe('array', () => {
       it('all edges', () => {
-        const style = toPositionEdges('Absolute', [
-          '10',
-          '20',
-          '30em',
-          '40',
-        ]) as any;
+        const style = toPositionEdges('Absolute', ['10', '20', '30em', '40']) as any;
         expect(style.top).to.equal(10);
         expect(style.right).to.equal(20);
         expect(style.bottom).to.equal('30em');
@@ -145,12 +140,7 @@ describe('React: transformStyle - positioning', () => {
       });
 
       it('array containing `null` values', () => {
-        const style = toPositionEdges('Absolute', [
-          null,
-          10,
-          null,
-          null,
-        ]) as any;
+        const style = toPositionEdges('Absolute', [null, 10, null, null]) as any;
         expect(style.top).to.equal(undefined);
         expect(style.right).to.equal(10);
         expect(style.bottom).to.equal(undefined);
@@ -158,12 +148,7 @@ describe('React: transformStyle - positioning', () => {
       });
 
       it('array containing all `null` values', () => {
-        const style = toPositionEdges('Absolute', [
-          null,
-          null,
-          null,
-          null,
-        ]) as any;
+        const style = toPositionEdges('Absolute', [null, null, null, null]) as any;
         expect(style).to.equal(undefined);
       });
     });

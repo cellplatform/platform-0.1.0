@@ -15,13 +15,13 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/cli@0.0.44":
-  version "0.0.44"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.44.tgz#cc6640038e344f9d84ef5209be6a98de79a840ae"
-  integrity sha512-OP/JNdEwND2DeeX+SA0bLs7vI4M6TYC3OdRg36bd/GdglZFuGkD7E/dyh8A4e12Udba9Ol/kp2xShi0wAnFhQA==
+"@platform/cli@0.0.45":
+  version "0.0.45"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.45.tgz#6b5cdec77052fa985ec426fd003011af67ca7787"
+  integrity sha512-3UUzpI5Im8xkbFufqmjWqkTBLwiBR7zEsirLOhrDff3FZcRqN/hZVULBio7pVJIFqmrwWCI9IqVCzhcsqLQqag==
   dependencies:
     "@platform/fs" "0.0.33"
-    "@platform/util.exec" "0.0.5"
+    "@platform/util.exec" "0.0.6"
     "@types/yargs" "12.0.9"
     chalk "2.4.2"
     yargs "13.2.0"
@@ -56,16 +56,16 @@
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts.cli@3.3.37":
-  version "3.3.37"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.37.tgz#5ac7227e8343b7b4e6268ba3173ee79b33483a68"
-  integrity sha512-xTrBFPZ82JT7OBumupSxcjLKiEBla4hp8OwC4kV/n1JIV3K2olwPsCWvJT3Lr9HXCSscvEQnn466Lqr6pfquig==
+"@platform/ts.cli@3.3.38":
+  version "3.3.38"
+  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.38.tgz#53e0ca13ea200c66018b08e760a03223f29fb84c"
+  integrity sha512-IKwkF1fceRgjC5xLhnhHrwxolqXX9fsQJMJAHsOecZmUqt1V7IHLxrgBPcWDG56+ZkXfQyCfvHkX+dfNgIQ6HA==
   dependencies:
-    "@platform/cli" "0.0.44"
+    "@platform/cli" "0.0.45"
     "@platform/fs" "0.0.33"
     "@platform/libs" "0.0.3"
     "@platform/ts" "3.3.41"
-    "@platform/util.exec" "0.0.5"
+    "@platform/util.exec" "0.0.6"
 
 "@platform/ts@3.3.41":
   version "3.3.41"
@@ -81,10 +81,10 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
-"@platform/util.exec@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.5.tgz#669cbb999b4db6eddc815620a1745799e0841971"
-  integrity sha512-T2Guj/iIErjiUgaUxFKIV2PZJK8c4atjZMKIETYmytp6ajARLKWyIJEq6BMOV8Lb4xE1lJJOWChaqYtTxSd48g==
+"@platform/util.exec@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.6.tgz#d6ef5bbd84efdadc50243e3286bc6d789c896f5a"
+  integrity sha512-vQxGA7IxJ36F1OFdEHOKpl+fX6l1EITy/F6JyRMgbyr01P3iGRtO5Edza81U20IEOJPSWmgYcc5vxMCYc7RY6w==
   dependencies:
     "@platform/libs" "0.0.3"
     ansi-regex "4.0.0"

@@ -7,11 +7,7 @@ import { IWindows } from './helpers/windows/types';
 export * from './renderer/types';
 export * from './main/types';
 
-export {
-  IStoreClient,
-  IMainStoreClient,
-  StoreJson,
-} from './helpers/store/types';
+export { IStoreClient, IMainStoreClient, StoreJson } from './helpers/store/types';
 
 export { IpcMessage } from './helpers/ipc/types';
 export { IWindows, IWindowRef } from './helpers/windows/types';
@@ -26,10 +22,10 @@ export type IContext<M extends IpcMessage = any, S extends StoreJson = any> = {
   log: ILog;
 };
 
-export type IRendererContext<
-  M extends IpcMessage = any,
-  S extends StoreJson = any
-> = IContext<M, S> & {
+export type IRendererContext<M extends IpcMessage = any, S extends StoreJson = any> = IContext<
+  M,
+  S
+> & {
   devTools: DevTools;
   windows: IWindows;
   remote: Electron.Remote;

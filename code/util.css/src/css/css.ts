@@ -1,11 +1,5 @@
 import { valueUtil } from '../common';
-import {
-  IFormatCss,
-  IImageOptions,
-  IBackgroundImageStyles,
-  Falsy,
-  GlamorValue,
-} from '../types';
+import { IFormatCss, IImageOptions, IBackgroundImageStyles, Falsy, GlamorValue } from '../types';
 import { css as glamorCss } from 'glamor';
 import { arrayToEdges } from './util';
 
@@ -57,11 +51,7 @@ const mergeAndReplace = (key: string, value: any, target: any) => {
   return target;
 };
 
-const formatImage = (
-  key: string,
-  value: Array<string | number | undefined>,
-  target: any,
-) => {
+const formatImage = (key: string, value: Array<string | number | undefined>, target: any) => {
   // Wrangle parameters.
   let [image1x, image2x, width, height] = value; // tslint:disable-line
 
@@ -97,12 +87,7 @@ export const toPositionEdges = (
   }
   const { left, top, right, bottom } = edges;
 
-  if (
-    top === undefined &&
-    right === undefined &&
-    bottom === undefined &&
-    left === undefined
-  ) {
+  if (top === undefined && right === undefined && bottom === undefined && left === undefined) {
     return undefined;
   }
   return {
@@ -125,11 +110,7 @@ export const formatPositionEdges = (key: string, target: any) => {
  *      - y
  *      - xy
  */
-const formatAbsoluteCenter = (
-  key: string,
-  value: string | boolean | number,
-  target: any,
-) => {
+const formatAbsoluteCenter = (key: string, value: string | boolean | number, target: any) => {
   if (value === true) {
     value = 'xy';
   }
@@ -255,11 +236,7 @@ function convertMainAlignToFlex(token: string): string | undefined {
  * Format a flex css helper
  * Format: [<direction>]-<crossAlignment>-<mainAlignment>
  */
-function formatFlexPosition(
-  key: string,
-  value: string,
-  target: React.CSSProperties,
-) {
+function formatFlexPosition(key: string, value: string, target: React.CSSProperties) {
   let direction: 'row' | 'column' | undefined; // Assume horizontal
   let mainAlignment: string | undefined;
   let crossAlignment: string | undefined;
@@ -275,17 +252,7 @@ function formatFlexPosition(
     }
 
     if (
-      tokenIsOneOf([
-        'center',
-        'start',
-        'end',
-        'left',
-        'right',
-        'top',
-        'bottom',
-        'full',
-        'baseline',
-      ])
+      tokenIsOneOf(['center', 'start', 'end', 'left', 'right', 'top', 'bottom', 'full', 'baseline'])
     ) {
       if (crossAlignment == null) {
         if (direction == null && tokenIsOneOf(['left', 'right'])) {
@@ -387,9 +354,7 @@ export const transformStyle = (
  * Helpers for constructing a CSS object.
  * NB: This doesn't *actually* return React.CSSProperties, but
  */
-const formatCss = (
-  ...styles: Array<React.CSSProperties | GlamorValue | Falsy>
-): GlamorValue => {
+const formatCss = (...styles: Array<React.CSSProperties | GlamorValue | Falsy>): GlamorValue => {
   const newStyles = styles.map(transformStyle);
 
   // Finish up.

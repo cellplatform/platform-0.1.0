@@ -3,23 +3,13 @@
  */
 import { MouseEvent } from 'react';
 
-import {
-  animationFrameScheduler,
-  fromEvent as rxFromEvent,
-  Observable,
-  Subject,
-} from 'rxjs';
+import { animationFrameScheduler, fromEvent as rxFromEvent, Observable, Subject } from 'rxjs';
 import { FromEventTarget } from 'rxjs/internal/observable/fromEvent';
 import { map, merge, observeOn, share } from 'rxjs/operators';
 import { is } from '../common';
 
-const fromEvent = <T>(
-  source: FromEventTarget<any> | undefined,
-  event: string,
-): Observable<T> => {
-  return source
-    ? rxFromEvent(source, event).pipe(share())
-    : new Subject<any>().pipe(share()); // NB: Safe when server-rendered.
+const fromEvent = <T>(source: FromEventTarget<any> | undefined, event: string): Observable<T> => {
+  return source ? rxFromEvent(source, event).pipe(share()) : new Subject<any>().pipe(share()); // NB: Safe when server-rendered.
 };
 
 const fromDocumentEvent = <T>(event: string): Observable<T> =>
@@ -60,8 +50,7 @@ export type KepressObservable = Observable<KeypressEvent>;
 
 const toKeypress = (e: KeyboardEvent, isPressed: boolean) => {
   const { key, code, charCode, altKey, ctrlKey, shiftKey, metaKey, char } = e;
-  const isModifier =
-    key === 'Meta' || key === 'Control' || key === 'Alt' || key === 'Shift';
+  const isModifier = key === 'Meta' || key === 'Control' || key === 'Alt' || key === 'Shift';
   const event: KeypressEvent = {
     isPressed,
     key,

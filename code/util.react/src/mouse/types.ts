@@ -1,13 +1,7 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
 
-export type MouseEventType =
-  | 'DOWN'
-  | 'UP'
-  | 'ENTER'
-  | 'LEAVE'
-  | 'CLICK'
-  | 'DOUBLE_CLICK';
+export type MouseEventType = 'DOWN' | 'UP' | 'ENTER' | 'LEAVE' | 'CLICK' | 'DOUBLE_CLICK';
 
 /**
  * A roll up of all possible mouse events into a single event stream.

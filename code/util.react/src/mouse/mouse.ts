@@ -8,13 +8,7 @@ import {
   IMouseEventProps,
   IMouseHandlers,
 } from './types';
-export {
-  MouseEvent,
-  MouseEventHandler,
-  MouseEventType,
-  IMouseEventProps,
-  IMouseHandlers,
-};
+export { MouseEvent, MouseEventHandler, MouseEventType, IMouseEventProps, IMouseHandlers };
 
 export type MouseHandlerFactory = (
   type: MouseEvent['type'],
@@ -88,8 +82,7 @@ export function handlers(
   } = {},
 ): IMouseHandlers {
   const isActive =
-    Boolean(handler) ||
-    Object.keys(args).some(key => typeof args[key] === 'function');
+    Boolean(handler) || Object.keys(args).some(key => typeof args[key] === 'function');
 
   const getSingleHandler = (type: MouseEventType) => {
     switch (type) {
@@ -122,9 +115,7 @@ export function handlers(
   const get: MouseHandlerFactory = type => {
     const hasSingularEvent = Boolean(getSingleHandler(type));
     const handlers = handler || hasSingularEvent ? [fireNext, handler] : [];
-    return handler || hasSingularEvent
-      ? handle(type, ...(handlers as any[]))
-      : undefined;
+    return handler || hasSingularEvent ? handle(type, ...(handlers as any[])) : undefined;
   };
 
   return {

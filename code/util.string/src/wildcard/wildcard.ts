@@ -25,18 +25,13 @@ const cache = new Map();
  * Accepts an array of inputs and patterns.
  * Returns an array of of inputs filtered based on the patterns.
  */
-export function matchesWildcard(
-  inputs: string[],
-  patterns: string[] | undefined | null,
-): string[] {
+export function matchesWildcard(inputs: string[], patterns: string[] | undefined | null): string[] {
   if (patterns === undefined || patterns === null) {
     return [];
   }
 
   if (!(Array.isArray(inputs) && Array.isArray(patterns))) {
-    throw new TypeError(
-      `Expected two arrays, got ${typeof inputs} ${typeof patterns}`,
-    );
+    throw new TypeError(`Expected two arrays, got ${typeof inputs} ${typeof patterns}`);
   }
 
   if (patterns.length === 0) {
@@ -68,13 +63,8 @@ export function matchesWildcard(
 /**
  * Returns a boolean of whether the input matches the pattern.
  */
-export function isWildcardMatch(
-  input: string,
-  pattern: string | undefined | null,
-): boolean {
-  return pattern === undefined || pattern === null
-    ? false
-    : makeRegEx(pattern, true).test(input);
+export function isWildcardMatch(input: string, pattern: string | undefined | null): boolean {
+  return pattern === undefined || pattern === null ? false : makeRegEx(pattern, true).test(input);
 }
 
 /**

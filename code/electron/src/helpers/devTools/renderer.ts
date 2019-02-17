@@ -25,10 +25,7 @@ export class DevTools {
   public clearConsoles() {
     clearConsole();
     if (this.ipc) {
-      this.ipc.send<t.ClearConsoleEvent>(
-        '@platform/DEV_TOOLS/clearConsole',
-        {},
-      );
+      this.ipc.send<t.ClearConsoleEvent>('@platform/DEV_TOOLS/clearConsole', {});
     }
   }
 }

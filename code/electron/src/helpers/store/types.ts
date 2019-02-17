@@ -9,9 +9,7 @@ export type IStoreClient<T extends StoreJson = any> = {
   change$: Observable<IStoreChange>;
 
   read: (...keys: Array<keyof T>) => Promise<Partial<T>>;
-  write: (
-    ...values: Array<IStoreKeyValue<T>>
-  ) => Promise<IStoreSetValuesResponse>;
+  write: (...values: Array<IStoreKeyValue<T>>) => Promise<IStoreSetValuesResponse>;
 
   keys: () => Promise<Array<keyof T>>;
   get: <V extends StoreValue>(key: keyof T, defaultValue?: V) => Promise<V>;
@@ -48,9 +46,7 @@ export type IMainStoreClient<T extends StoreJson = any> = IStoreClient<T> & {
  */
 export type StoreSetAction = 'UPDATE' | 'DELETE';
 
-export type GetStoreValues<T extends StoreJson> = (
-  keys: Array<keyof T>,
-) => Promise<StoreJson>;
+export type GetStoreValues<T extends StoreJson> = (keys: Array<keyof T>) => Promise<StoreJson>;
 
 export type SetStoreValues<T extends StoreJson> = (
   keys: Array<IStoreKeyValue<T>>,

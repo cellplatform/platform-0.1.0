@@ -82,9 +82,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
     // - If a target was set, only send to that window.
     BrowserWindow.getAllWindows()
       .filter(window => window.id !== senderId)
-      .filter(window =>
-        target.length === 0 ? true : target.includes(window.id),
-      )
+      .filter(window => (target.length === 0 ? true : target.includes(window.id)))
       .forEach(window => {
         window.webContents.send(main.channel, e);
       });
@@ -94,13 +92,11 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
    * Listen for handler registrations on client-windows and ferry
    * then onto the global registration manager.
    */
-  main
-    .on<IpcRegisterHandlerEvent>('@platform/IPC/register-handler')
-    .subscribe(e => {
-      const type = e.payload.type;
-      const client = e.sender;
-      onHandlerRegistered({ type, client });
-    });
+  main.on<IpcRegisterHandlerEvent>('@platform/IPC/register-handler').subscribe(e => {
+    const type = e.payload.type;
+    const client = e.sender;
+    onHandlerRegistered({ type, client });
+  });
 
   /**
    * Echo's the ID of the sender of an event.
@@ -130,10 +126,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
 /**
  * Adds a reference to a handler to the global object.
  */
-function addHandlerRef(args: {
-  type: IpcMessage['type'];
-  client: IpcIdentifier;
-}) {
+function addHandlerRef(args: { type: IpcMessage['type']; client: IpcIdentifier }) {
   const { type, client } = args;
   const handlerRef: IpcHandlerRef = Global.handlerRefs[type] || {
     type,

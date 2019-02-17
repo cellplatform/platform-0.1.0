@@ -41,8 +41,7 @@ type Ref<D> = SendResponseInit<any> & {
 /**
  * A send response with methods for managing callbacks from handlers.
  */
-export class SendResponse<M extends IpcMessage = any, D = any>
-  implements IpcSending<M, D> {
+export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSending<M, D> {
   /**
    * [Fields]
    */
@@ -186,9 +185,7 @@ export class SendResponse<M extends IpcMessage = any, D = any>
 
   public resultFrom(sender: number | ProcessType) {
     return this.results.find(item =>
-      typeof sender === 'number'
-        ? item.sender.id === sender
-        : item.sender.process === sender,
+      typeof sender === 'number' ? item.sender.id === sender : item.sender.process === sender,
     );
   }
 

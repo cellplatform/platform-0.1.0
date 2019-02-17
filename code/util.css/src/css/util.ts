@@ -27,11 +27,7 @@ export const arrayToEdges: IStyle['arrayToEdges'] = value => {
   }
 
   const edges = value
-    .map(item =>
-      typeof item === 'string' && item.endsWith('px')
-        ? item.replace(/px$/, '')
-        : item,
-    )
+    .map(item => (typeof item === 'string' && item.endsWith('px') ? item.replace(/px$/, '') : item))
     .map(item => valueUtil.toNumber(item));
   let top: number | undefined;
   let right: number | undefined;
@@ -75,12 +71,7 @@ export const arrayToEdges: IStyle['arrayToEdges'] = value => {
       left = getEdge(3);
   }
 
-  if (
-    top === undefined &&
-    right === undefined &&
-    bottom === undefined &&
-    left === undefined
-  ) {
+  if (top === undefined && right === undefined && bottom === undefined && left === undefined) {
     return undefined;
   }
   return {

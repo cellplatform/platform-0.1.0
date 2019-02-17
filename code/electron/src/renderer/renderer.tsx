@@ -24,10 +24,9 @@ const refs: Refs = {};
 /**
  * Initializes [Renderer] process systems (safely).
  */
-export async function init<
-  M extends t.IpcMessage = any,
-  S extends t.StoreJson = any
->(): Promise<t.IRenderer<M, S>> {
+export async function init<M extends t.IpcMessage = any, S extends t.StoreJson = any>(): Promise<
+  t.IRenderer<M, S>
+> {
   if (refs.renderer) {
     return refs.renderer;
   }
@@ -94,10 +93,7 @@ export async function init<
  *      }
  *
  */
-export async function render(
-  element: React.ReactElement<any>,
-  container: Element | string,
-) {
+export async function render(element: React.ReactElement<any>, container: Element | string) {
   // Setup initial conditions.
   const renderer = await init();
   const { log, Provider } = renderer;
@@ -109,9 +105,7 @@ export async function render(
 
   // Find the container element to render within.
   const elContainer =
-    typeof container === 'object'
-      ? container
-      : document.getElementById(container || 'root');
+    typeof container === 'object' ? container : document.getElementById(container || 'root');
 
   if (!elContainer) {
     const msg = `RENDERER START: Could not find the given Element container '${container}' to load the app within.`;

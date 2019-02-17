@@ -8,5 +8,5 @@ import { exec, fs } from '../common';
   const options = `--dir=${cwd} --outDir=${outDir} ${argv.slice(3).join(' ')}`;
 
   const cmd = `node bin ${argv[2]} ${options}`;
-  await exec.process.spawn(cmd).complete;
+  await exec.process.spawn(cmd);
 })();

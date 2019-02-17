@@ -5,10 +5,7 @@ import { toBool } from '../common';
  * NB: this record type is derived from NextJS's declaration
  * for the [ctx.query] type.
  */
-export type UrlQuery = Record<
-  string,
-  string | string[] | number | boolean | undefined
->;
+export type UrlQuery = Record<string, string | string[] | number | boolean | undefined>;
 
 /**
  * Takes a query-string value and parses it into an object.
@@ -62,14 +59,8 @@ export function toObject<T>(queryString?: string): T {
  *      const force = valueAsFlag(req.query.force)
  *
  */
-export function valueAsFlag<T>(
-  value?: string | string[] | number | boolean,
-): T {
-  return value === undefined
-    ? false
-    : value === ''
-    ? true
-    : toBool(value, false);
+export function valueAsFlag<T>(value?: string | string[] | number | boolean): T {
+  return value === undefined ? false : value === '' ? true : toBool(value, false);
 }
 
 /**
