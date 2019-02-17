@@ -32,6 +32,6 @@ export async function chmod(
   const res = await exec.cmd.runList(cmds, { silent, concurrent: true });
 
   // Finish up.
-  log.info();
+  res.errors.log({ log });
   return res;
 }

@@ -24,7 +24,7 @@ export async function prepare(args: { dir?: string; silent?: boolean } = {}): Pr
       exitOnError: false,
     });
 
-    log.info();
+    res.errors.log({ log });
     return res;
   } catch (error) {
     return result.fail(error);

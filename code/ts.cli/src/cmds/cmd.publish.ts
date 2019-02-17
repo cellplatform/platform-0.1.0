@@ -37,7 +37,6 @@ export async function publish(
     // const rootDir = fs;
 
     await copyPackageJson({ rootDir: dir, target: tmp });
-
     await fs.copy(outDir, tmp);
 
     return result.success();
