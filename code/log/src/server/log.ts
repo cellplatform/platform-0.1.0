@@ -1,8 +1,9 @@
+import { filter, map } from 'rxjs/operators';
 import * as nodeUtil from 'util';
-import { map, filter } from 'rxjs/operators';
-import { R, create as createLog, chalk, ColorFormatter } from './common';
+
+import { chalk, ColorFormatter, create as createLog } from './common';
 import { table } from './log.table';
-import { LogLevel, ILogEvent, IServerLog, ILogTableOptions, ILogAction } from './types';
+import { ILogAction, ILogEvent, ILogTableOptions, IServerLog, LogLevel } from './types';
 
 /**
  * Creates a server log.
@@ -76,7 +77,7 @@ export function format(e: ILogEvent) {
     }
 
     // Object formatted with colors (JSON).
-    if (R.is(Object, item)) {
+    if (typeof item === 'object') {
       return nodeUtil.inspect(item, false, undefined, true);
     }
 
