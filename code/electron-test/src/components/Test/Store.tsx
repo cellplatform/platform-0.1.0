@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { css, GlamorValue, renderer } from '../../common';
 import * as t from '../../types';
 import { Button, ObjectView } from '../primitives';
+import { TestPanel } from '../TestPanel';
 
 /**
  * Test component.
@@ -18,10 +19,7 @@ export type IStoreTestState = {
   data?: object;
 };
 
-export class StoreTest extends React.PureComponent<
-  IStoreTestProps,
-  IStoreTestState
-> {
+export class StoreTest extends React.PureComponent<IStoreTestProps, IStoreTestState> {
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
 
@@ -73,11 +71,8 @@ export class StoreTest extends React.PureComponent<
       }),
     };
 
-    // const data = { foo: 123 };
-
     return (
-      <div {...styles.base}>
-        <h2>Store {this.state.count}</h2>
+      <TestPanel title={`Store ${this.state.count}`}>
         <div {...styles.columns}>
           <div {...styles.colButtons}>
             <Button label={'keys'} onClick={this.keys} />
@@ -85,10 +80,7 @@ export class StoreTest extends React.PureComponent<
             <Button label={'read (all)'} onClick={this.readAll} />
             <Button label={'change (count)'} onClick={this.changeCount} />
             <Button label={'change (foo)'} onClick={this.changeFoo} />
-            <Button
-              label={'delete: count'}
-              onClick={this.deleteHandler('count')}
-            />
+            <Button label={'delete: count'} onClick={this.deleteHandler('count')} />
             <Button label={'delete: foo'} onClick={this.deleteHandler('foo')} />
             <Button label={'clear'} onClick={this.clear} />
             <Button label={'open in editor'} onClick={this.openInEditor} />
@@ -97,7 +89,7 @@ export class StoreTest extends React.PureComponent<
             <ObjectView name={'store'} data={this.state.data} expandLevel={5} />
           </div>
         </div>
-      </div>
+      </TestPanel>
     );
   }
 
