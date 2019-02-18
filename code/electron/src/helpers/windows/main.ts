@@ -12,6 +12,7 @@ import {
   IWindowsGetEvent,
   IWindowsGetResponse,
   IWindowTag,
+  IWindowsState,
 } from './types';
 
 export * from './types';
@@ -113,10 +114,11 @@ export class WindowsMain implements IWindows {
   }
 
   /**
-   * Convert to simple state object.
+   * Convert to a simple [IWindowsState] object.
    */
-  public toObject() {
-    return { refs: this.refs, focused: this.focused };
+  public toObject(): IWindowsState {
+    const focused = this.focused ? { ...this.focused } : undefined;
+    return { refs: [...this.refs], focused };
   }
 
   /**
@@ -136,13 +138,9 @@ export class WindowsMain implements IWindows {
     if (!this.isDisposed) {
       const payload: IWindowChange = {
         type,
-        windowId: windowId,
-        state: {
-          refs: [...this.refs],
-          focused: this.focused,
-        },
+        windowId,
+        state: this.toObject(),
       };
-      console.log('payload', payload);
       this._change$.next(payload);
     }
   }

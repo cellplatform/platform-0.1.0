@@ -1,17 +1,16 @@
 import { equals } from 'ramda';
 import { Subject } from 'rxjs';
-import { share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, share, takeUntil } from 'rxjs/operators';
 
 import * as t from '../types';
 import {
   IWindowChange,
   IWindowChangedEvent,
-  IWindowRef,
   IWindows,
   IWindowsGetEvent,
   IWindowsGetResponse,
-  IWindowTag,
   IWindowsState,
+  IWindowTag,
 } from './types';
 
 /**
@@ -37,18 +36,11 @@ export class WindowsRenderer implements IWindows {
    */
   constructor(args: { ipc: t.IpcClient }) {
     const ipc = (this.ipc = args.ipc);
-
     ipc
       .on<IWindowChangedEvent>('@platform/WINDOWS/change')
       .pipe(takeUntil(this.dispose$))
       .subscribe(e => {
-        console.log('TEMP: windows/change', e);
-
-        if ((e.payload as any).change) {
-          console.error(`👹 bad payload`, e.payload);
-        }
-
-        const { type, windowId, state } = e.payload;
+        const { type, state, windowId } = e.payload;
         this.change(type, windowId, state);
       });
 
