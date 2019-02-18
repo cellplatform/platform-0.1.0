@@ -83,7 +83,7 @@ export function create(args: {
   // Add an identifying tag to the window.
   const tagWindow = () => {
     if (windows) {
-      windows.tag(devTools.id, { key: 'type', value: 'DEV_TOOLS' });
+      windows.tag(devTools.id, { tag: 'type', value: 'DEV_TOOLS' });
     }
   };
   tagWindow();

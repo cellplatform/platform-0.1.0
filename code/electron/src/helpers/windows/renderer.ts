@@ -11,6 +11,7 @@ import {
   IWindowsGetResponse,
   IWindowsState,
   IWindowTag,
+  IWindowsTagEvent,
 } from './types';
 
 /**
@@ -104,8 +105,8 @@ export class WindowsRenderer implements IWindows {
   /**
    * Applies [1..n] tags to a window.
    */
-  public async tag(id: number, ...tag: IWindowTag[]) {
-    console.log(`\nTODO 🐷 assign tag to window via event to MAIN  \n`);
+  public async tag(windowId: number, ...tags: IWindowTag[]) {
+    this.ipc.send<IWindowsTagEvent>('@platform/WINDOWS/tag', { windowId, tags });
   }
 
   /**

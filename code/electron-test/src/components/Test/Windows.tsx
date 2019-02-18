@@ -65,6 +65,11 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
           <div {...styles.colButtons}>
             <Button label={'new window'} onClick={this.newWindow} />
             <Button label={'refresh'} onClick={this.refresh} />
+            <Button
+              label={'tag (this, "FOO=123")'}
+              onClick={this.tagHandler(this.context.id, 'FOO', 123)}
+            />
+            <Button label={'tag (2, "BAR=true")'} onClick={this.tagHandler(2, 'BAR', true)} />
           </div>
           <div {...styles.colObject}>
             <ObjectView name={'windows'} data={data} expandLevel={1} />
@@ -81,5 +86,12 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
 
   private refresh = () => {
     this.context.windows.refresh();
+  };
+
+  private tagHandler = (windowId: number, tag: string, value: string | number | boolean) => {
+    return () => {
+      console.log('windowId', windowId);
+      this.context.windows.tag(windowId, { tag, value });
+    };
   };
 }

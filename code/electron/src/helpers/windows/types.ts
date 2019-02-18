@@ -11,7 +11,7 @@ export type IWindowsState = {
 export type IWindows = IWindowsState & {
   change$: Observable<IWindowChange>;
   refresh: () => Promise<void>;
-  tag: (id: number, ...tag: IWindowTag[]) => Promise<void>;
+  tag: (windowId: number, ...tag: IWindowTag[]) => Promise<void>;
   toObject(): IWindowsState;
 };
 
@@ -27,14 +27,14 @@ export type IWindowRef = {
  * A categorization for a window.
  */
 export type IWindowTag = {
-  key: string;
+  tag: string;
   value?: string | number | boolean;
 };
 
 /**
  * IPC Events.
  */
-export type WindowsEvents = IWindowChangedEvent | IWindowsGetEvent;
+export type WindowsEvents = IWindowChangedEvent | IWindowsGetEvent | IWindowsTagEvent;
 
 export type IWindowChangedEvent = {
   type: '@platform/WINDOWS/change';
@@ -51,3 +51,11 @@ export type IWindowsGetEvent = {
   payload: {};
 };
 export type IWindowsGetResponse = IWindowsState & {};
+
+export type IWindowsTagEvent = {
+  type: '@platform/WINDOWS/tag';
+  payload: {
+    windowId: number;
+    tags: IWindowTag[];
+  };
+};

@@ -13,6 +13,7 @@ import {
   IWindowsGetResponse,
   IWindowTag,
   IWindowsState,
+  IWindowsTagEvent,
 } from './types';
 
 export * from './types';
@@ -66,6 +67,14 @@ export class WindowsMain implements IWindows {
       };
       return res;
     });
+
+    /**
+     * Listen for tag requests from client windows.
+     */
+    ipc.handle<IWindowsTagEvent>('@platform/WINDOWS/tag', async e => {
+      const { windowId, tags } = e.payload;
+      this.tag(windowId, ...tags);
+    });
   }
 
   /**
@@ -104,18 +113,22 @@ export class WindowsMain implements IWindows {
   /**
    * Applies [1..n] tags to a window.
    */
-  public async tag(id: number, ...tag: IWindowTag[]) {
-    const index = this.refs.findIndex(w => w.id === id);
+  public async tag(windowId: number, ...tags: IWindowTag[]) {
+    const refs = [...this.refs];
+    const index = refs.findIndex(window => window.id === windowId);
+
+    // Apply the tag(s) to the window references.
     if (index > -1) {
-      tag.forEach(tag => {
-        const refs = [...this.refs];
+      tags.forEach(tag => {
         const window = { ...refs[index] };
         const tags = uniq([...window.tags, tag]);
         refs[index] = { ...window, tags };
-        this._refs = refs;
-        this.fireChange('TAG', window.id);
       });
     }
+
+    // Finish up.
+    this._refs = refs;
+    this.fireChange('TAG', windowId);
   }
 
   /**
