@@ -69,7 +69,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
 
   // Write events to logs.
   const write = (sender: IpcIdentifier, level: t.LogLevel, output: string) => {
-    const prefix = toPrefix(log, process);
+    const prefix = toPrefix(sender);
     elog[level](prefix, output);
     // if (is.dev && process === 'MAIN') {
     //   // NB:  Don't worry about writing VIEW renderer logs to the console
@@ -166,10 +166,8 @@ function increment(args: { dir: string; env: 'dev' | 'prod' }) {
 const toPrefix = (sender: IpcIdentifier) => {
   const { id, process } = sender;
   const isMain = process === 'MAIN';
-  let prefix = isMain ? 'MAIN' : 'VIEW';
-  prefix = `${prefix}-${id}`;
-  prefix = `${prefix} ‣`;
-  prefix = `${prefix}      `.substr(0, 6);
+  let prefix = isMain ? 'MAIN' : `VIEW-${id}`;
+  prefix = `${prefix} ›`;
   prefix = isMain ? chalk.green(prefix) : chalk.magenta(prefix);
   return prefix;
 };
