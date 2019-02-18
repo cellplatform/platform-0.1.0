@@ -38,7 +38,7 @@ export function create(options: { color: ColorFormatter }): ILog {
 }
 
 /**
- * INTERNAL
+ * [INTERNAL]
  */
 function createLogger() {
   const events$ = new Subject<ILogAction>();
