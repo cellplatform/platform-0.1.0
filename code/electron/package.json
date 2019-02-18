@@ -7,8 +7,7 @@
   "scripts": {
     "test": "echo no-op",
     "tdd": "yarn chmod && ts test --watch",
-    "lint__": "yarn chmod && ts lint",
-    "lint": "sh node_modules/@platform/ts/lint.sh",
+    "lint": "yarn chmod && ts lint",
     "build": "yarn chmod && ts build",
     "prepare": "yarn chmod && ts prepare",
     "chmod": "chmod 777 node_modules/.bin/ts"

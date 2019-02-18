@@ -1,10 +1,10 @@
 import { fs } from '@platform/fs';
-import { create as createLog, format } from '@platform/log/lib/server';
+import { create as createLog, format, chalk } from '@platform/log/lib/server';
 import { is } from '@platform/util.is';
 import * as elog from 'electron-log';
 import { filter, map } from 'rxjs/operators';
 
-import { IpcClient } from '../ipc/Client';
+import { IpcClient, IpcIdentifier } from '../ipc/Client';
 import * as t from './types';
 
 import { time } from '@platform/util.value';
@@ -68,7 +68,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
   }
 
   // Write events to logs.
-  const write = (process: t.ProcessType, level: t.LogLevel, output: string) => {
+  const write = (sender: IpcIdentifier, level: t.LogLevel, output: string) => {
     const prefix = toPrefix(log, process);
     elog[level](prefix, output);
     // if (is.dev && process === 'MAIN') {
@@ -85,7 +85,9 @@ export function init(args: { ipc: IpcClient; dir: string }) {
       filter(e => e.type === 'LOG'),
       map(e => e.payload as t.ILogEvent),
     )
-    .subscribe(e => write('MAIN', e.level, e.output));
+    .subscribe(e => {
+      write({ id: 0, process: 'MAIN' }, e.level, e.output);
+    });
 
   // Listen for log events from the [renderer] process
   // and write them to the log.
@@ -93,10 +95,11 @@ export function init(args: { ipc: IpcClient; dir: string }) {
     .pipe(
       filter(e => e.type === '@platform/LOG/write'),
       filter(e => e.sender.process === 'RENDERER'),
-      map(e => e.payload),
+      // map(e => e.payload),
     )
     .subscribe(e => {
-      write('RENDERER', e.level, format(e));
+      // e.sender
+      write(e.sender, e.payload.level, format(e.payload));
     });
 
   // Insert a "startup" divider into log to visually chunk into sessions.
@@ -160,11 +163,13 @@ function increment(args: { dir: string; env: 'dev' | 'prod' }) {
   return data.start[env];
 }
 
-const toPrefix = (log: t.ILog, process: t.ProcessType) => {
+const toPrefix = (sender: IpcIdentifier) => {
+  const { id, process } = sender;
   const isMain = process === 'MAIN';
   let prefix = isMain ? 'MAIN' : 'VIEW';
+  prefix = `${prefix}-${id}`;
   prefix = `${prefix} ‣`;
   prefix = `${prefix}      `.substr(0, 6);
-  prefix = isMain ? log.green(prefix) : log.magenta(prefix);
+  prefix = isMain ? chalk.green(prefix) : chalk.magenta(prefix);
   return prefix;
 };

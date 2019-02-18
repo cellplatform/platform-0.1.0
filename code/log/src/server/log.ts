@@ -16,8 +16,8 @@ export function create(): IServerLog {
     table: (options?: ILogTableOptions) => table(log, options),
   };
 
-  // Run the log events through a formatter that converts the
-  // log items into pretty colors.
+  // Run the log events through a formatter that converts
+  // the log items into pretty colors.
   const formatter = map<ILogAction, ILogAction>(e => {
     switch (e.type) {
       case 'LOG':
