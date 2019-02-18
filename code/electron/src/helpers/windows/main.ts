@@ -40,9 +40,14 @@ export class WindowsMain implements IWindows {
     const ipc: t.IpcInternal = args.ipc;
 
     /**
-     * Keep a record of current windows.
+     * Monitor window creation.
      */
     app.on('browser-window-created', this.handleWindowCreated);
+
+    /**
+     * Monitor change of focus.
+     */
+    app.on('browser-window-focus', this.handleFocusChanged);
 
     /**
      * Broadcast changes through IPC event.
@@ -68,6 +73,7 @@ export class WindowsMain implements IWindows {
    */
   public dispose() {
     app.removeListener('browser-window-created', this.handleWindowCreated);
+    app.removeListener('browser-window-focus', this.handleFocusChanged);
     this.isDisposed = true;
     this._dispose$.next();
   }
@@ -125,22 +131,23 @@ export class WindowsMain implements IWindows {
    * [INTERNAL]
    */
   private handleWindowCreated = (e: Electron.Event, window: BrowserWindow) => {
-    const id = window.id;
-    this._refs = [...this._refs, { id, tags: [] }];
-    this.fireChange('CREATED', id);
+    const windowId = window.id;
+    this._refs = [...this._refs, { id: windowId, tags: [] }];
+    this.fireChange('CREATED', windowId);
     window.on('close', () => {
-      this._refs = this._refs.filter(ref => ref.id !== id);
-      this.fireChange('CLOSED', id);
+      this._refs = this._refs.filter(ref => ref.id !== windowId);
+      this.fireChange('CLOSED', windowId);
     });
+  };
+
+  private handleFocusChanged = (e: Electron.Event, window: BrowserWindow) => {
+    this.fireChange('FOCUS', window.id);
   };
 
   private fireChange(type: IWindowChange['type'], windowId?: number) {
     if (!this.isDisposed) {
-      const payload: IWindowChange = {
-        type,
-        windowId,
-        state: this.toObject(),
-      };
+      const state = this.toObject();
+      const payload: IWindowChange = { type, windowId, state };
       this._change$.next(payload);
     }
   }

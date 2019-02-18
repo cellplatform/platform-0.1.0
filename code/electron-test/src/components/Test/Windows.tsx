@@ -56,6 +56,9 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
       }),
     };
 
+    const focused = this.state.current.focused;
+    const data = { ...this.state.current, focused: focused ? focused.id : undefined };
+
     return (
       <TestPanel title={'Windows'}>
         <div {...styles.columns}>
@@ -64,7 +67,7 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
             <Button label={'refresh'} onClick={this.refresh} />
           </div>
           <div {...styles.colObject}>
-            <ObjectView name={'windows'} data={this.state.current} expandLevel={1} />
+            <ObjectView name={'windows'} data={data} expandLevel={1} />
           </div>
         </div>
       </TestPanel>
