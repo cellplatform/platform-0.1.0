@@ -34,9 +34,8 @@ const config = require('../.uiharness/config.json') as uiharness.IUIHarnessRunti
   // log.info('store.count', log.cyan(store.get('count') || 0));
 
   // TEMP 🐷
-  // interval(800).subscribe(() => {
-  //   const f = windows.focused;
-  //   console.log('f', f);
+  // interval(1000).subscribe(() => {
+  //   windows.refresh();
   // });
 
   /**

@@ -41,7 +41,7 @@ export type IWindowChangedEvent = {
   payload: IWindowChange;
 };
 export type IWindowChange = {
-  type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS';
+  type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS' | 'REFRESH';
   windowId?: number;
   state: IWindowsState;
 };

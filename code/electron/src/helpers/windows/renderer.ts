@@ -1,6 +1,6 @@
 import { equals } from 'ramda';
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, share, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, share, takeUntil, debounceTime } from 'rxjs/operators';
 
 import * as t from '../types';
 import {
@@ -27,7 +27,8 @@ export class WindowsRenderer implements IWindows {
   private readonly _change$ = new Subject<IWindowChange>();
   public readonly change$ = this._change$.pipe(
     takeUntil(this.dispose$),
-    distinctUntilChanged((prev, next) => equals(prev, next)),
+    distinctUntilChanged((prev, next) => equals(prev.state, next.state)),
+    debounceTime(0),
     share(),
   );
 

@@ -98,8 +98,7 @@ export class WindowsMain implements IWindows {
    * [Methods]
    */
   public async refresh() {
-    // No-op on main.
-    console.log(`\nTODO 🐷   broadcast latest to all windows \n`);
+    this.fireChange('REFRESH');
   }
 
   /**
