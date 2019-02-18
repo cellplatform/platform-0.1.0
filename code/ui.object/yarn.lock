@@ -849,10 +849,10 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/electron@0.0.79":
-  version "0.0.79"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.79.tgz#c48c65b84709a758609e00d86823e6a889f6614a"
-  integrity sha512-qDplq8wAnj7jDjTyVYCVSO30caN7UYCt018odPgjoBQPEc4a8ez/42S8Yd4gqIBqWXA9UeedUlhVKXXnjheFQw==
+"@platform/electron@0.0.81":
+  version "0.0.81"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.81.tgz#244ba22591469e93b145e026b4c0ea76b54b17f6"
+  integrity sha512-NTR8dAOft3EbJrTDLXuXLrnNYQLTx8Lor/wguxtfRSEm72L9oIkUiY6jhaASL+zkjXQmp6mVEsYeXrbi+Cztpg==
   dependencies:
     "@babel/polyfill" "7.2.5"
     "@platform/fs" "0.0.34"
