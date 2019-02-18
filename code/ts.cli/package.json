@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts.cli",
-  "version": "3.3.43",
+  "version": "3.3.44",
   "description": "TypesScript tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -20,11 +20,11 @@
     "examples": "node lib/example/examples"
   },
   "dependencies": {
-    "@platform/cli": "0.0.49",
+    "@platform/cli": "0.0.50",
     "@platform/fs": "0.0.34",
     "@platform/libs": "0.0.4",
     "@platform/ts": "3.3.42",
-    "@platform/util.exec": "0.0.10"
+    "@platform/util.exec": "0.0.11"
   },
   "devDependencies": {
     "@types/yargs": "12.0.9"
