@@ -47,9 +47,7 @@ export class WindowsMain implements IWindows {
      * Broadcast changes through IPC event.
      */
     this.change$.subscribe(change => {
-      ipc.send<IWindowChangedEvent>('@platform/WINDOWS/change', {
-        change,
-      });
+      ipc.send<IWindowChangedEvent>('@platform/WINDOWS/change', change);
     });
 
     /**
@@ -57,7 +55,8 @@ export class WindowsMain implements IWindows {
      */
     ipc.handle<IWindowsGetEvent>('@platform/WINDOWS/get', async e => {
       const res: IWindowsGetResponse = {
-        windows: this.refs,
+        refs: [...this.refs],
+        focused: this.focused,
       };
       return res;
     });
@@ -83,11 +82,17 @@ export class WindowsMain implements IWindows {
     return this._refs.map(ref => ref.id);
   }
 
+  public get focused() {
+    const window = BrowserWindow.getFocusedWindow();
+    return window ? this.refs.find(ref => ref.id === window.id) : undefined;
+  }
+
   /**
    * [Methods]
    */
   public async refresh() {
     // No-op on main.
+    console.log(`\nTODO 🐷   broadcast latest to all windows \n`);
   }
 
   /**
@@ -108,6 +113,13 @@ export class WindowsMain implements IWindows {
   }
 
   /**
+   * Convert to simple state object.
+   */
+  public toObject() {
+    return { refs: this.refs, focused: this.focused };
+  }
+
+  /**
    * [INTERNAL]
    */
   private handleWindowCreated = (e: Electron.Event, window: BrowserWindow) => {
@@ -120,13 +132,17 @@ export class WindowsMain implements IWindows {
     });
   };
 
-  private fireChange(type: IWindowChange['type'], id: number) {
+  private fireChange(type: IWindowChange['type'], windowId?: number) {
     if (!this.isDisposed) {
       const payload: IWindowChange = {
         type,
-        window: id,
-        windows: [...this.refs],
+        windowId: windowId,
+        state: {
+          refs: [...this.refs],
+          focused: this.focused,
+        },
       };
+      console.log('payload', payload);
       this._change$.next(payload);
     }
   }
