@@ -1,3 +1,5 @@
+import { interval } from 'rxjs';
+
 import main from '@platform/electron/lib/main';
 import { time } from '@platform/util.value';
 import * as uiharness from '@uiharness/electron/lib/main';
@@ -30,6 +32,12 @@ const config = require('../.uiharness/config.json') as uiharness.IUIHarnessRunti
 
   log.info.blue('started');
   // log.info('store.count', log.cyan(store.get('count') || 0));
+
+  // TEMP 🐷
+  // interval(800).subscribe(() => {
+  //   const f = windows.focused;
+  //   console.log('f', f);
+  // });
 
   /**
    * Filter (new window).

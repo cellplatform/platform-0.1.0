@@ -11,6 +11,7 @@ import {
   IWindowsGetEvent,
   IWindowsGetResponse,
   IWindowTag,
+  IWindowsState,
 } from './types';
 
 /**
@@ -18,7 +19,7 @@ import {
  */
 export class WindowsRenderer implements IWindows {
   private ipc: t.IpcInternal;
-  private _refs: IWindowRef[] = [];
+  private _state: IWindowsState = { refs: [], focused: undefined };
 
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -31,8 +32,6 @@ export class WindowsRenderer implements IWindows {
     share(),
   );
 
-  // public refs
-
   /**
    * [Constructor]
    */
@@ -43,8 +42,14 @@ export class WindowsRenderer implements IWindows {
       .on<IWindowChangedEvent>('@platform/WINDOWS/change')
       .pipe(takeUntil(this.dispose$))
       .subscribe(e => {
-        const { type, window, windows } = e.payload.change;
-        this.change(type, window, windows);
+        console.log('TEMP: windows/change', e);
+
+        if ((e.payload as any).change) {
+          console.error(`👹 bad payload`, e.payload);
+        }
+
+        const { type, windowId, state } = e.payload;
+        this.change(type, windowId, state);
       });
 
     this.refresh();
@@ -54,7 +59,11 @@ export class WindowsRenderer implements IWindows {
    * [Properties]
    */
   public get refs() {
-    return this._refs;
+    return this._state.refs;
+  }
+
+  public get focused() {
+    return this._state.focused;
   }
 
   /**
@@ -63,20 +72,28 @@ export class WindowsRenderer implements IWindows {
   public async refresh() {
     type E = IWindowsGetEvent;
     type R = IWindowsGetResponse;
-    const res = await this.ipc.send<E, R>('@platform/WINDOWS/get', {}).promise;
-    const data = res.dataFrom('MAIN');
+    const res = this.ipc.send<E, R>('@platform/WINDOWS/get', {}, { target: this.ipc.MAIN });
+    await res.promise;
+    const remoteState = res.dataFrom('MAIN');
 
-    if (data) {
-      const isChanged = !equals(data.windows, this._refs);
-      if (isChanged) {
+    if (remoteState) {
+      const isRefsChanges = !equals(remoteState.refs, this.refs);
+      const isFocusedChanged = !equals(remoteState.focused, this.focused);
+
+      if (isFocusedChanged) {
+        const focusedWindowId = remoteState.focused ? remoteState.focused.id : undefined;
+        this.change('FOCUS', focusedWindowId, remoteState);
+      }
+
+      if (isRefsChanges) {
         const localWindows = [...this.refs];
-        const remoteWindows = [...data.windows];
+        const remoteWindows = [...remoteState.refs];
 
         // Check for new windows that do not exist locally.
         for (const window of remoteWindows) {
           const existLocally = localWindows.find(m => m.id === window.id);
           if (!existLocally) {
-            this.change('CREATED', window.id, remoteWindows);
+            this.change('CREATED', window.id, remoteState);
           }
         }
 
@@ -84,7 +101,7 @@ export class WindowsRenderer implements IWindows {
         for (const window of localWindows) {
           const existsRemotely = remoteWindows.find(m => m.id === window.id);
           if (!existsRemotely) {
-            this.change('CLOSED', window.id, remoteWindows);
+            this.change('CLOSED', window.id, remoteState);
           }
         }
       }
@@ -99,10 +116,17 @@ export class WindowsRenderer implements IWindows {
   }
 
   /**
-   * INTERNAL
+   * Convert to simple state object.
    */
-  private change(type: IWindowChange['type'], window: number, windows: IWindowRef[]) {
-    this._refs = [...windows];
-    this._change$.next({ type, window, windows });
+  public toObject() {
+    return { ...this._state };
+  }
+
+  /**
+   * [INTERNAL]
+   */
+  private change(type: IWindowChange['type'], windowId: number | undefined, state: IWindowsState) {
+    this._state = { ...state };
+    this._change$.next({ type, windowId, state });
   }
 }

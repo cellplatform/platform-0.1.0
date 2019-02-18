@@ -10,7 +10,7 @@ export * from './main/types';
 export { IStoreClient, IMainStoreClient, StoreJson } from './helpers/store/types';
 
 export { IpcMessage } from './helpers/ipc/types';
-export { IWindows, IWindowRef } from './helpers/windows/types';
+export { IWindows, IWindowsState, IWindowRef } from './helpers/windows/types';
 
 export { ILog, IMainLog, IpcClient };
 export type ProcessType = 'MAIN' | 'RENDERER';

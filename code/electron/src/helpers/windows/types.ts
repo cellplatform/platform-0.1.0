@@ -3,11 +3,16 @@ import { Observable } from 'rxjs';
 /**
  * Represents all windows.
  */
-export type IWindows = {
-  change$: Observable<IWindowChange>;
+export type IWindowsState = {
+  focused?: IWindowRef;
   refs: IWindowRef[];
+};
+
+export type IWindows = IWindowsState & {
+  change$: Observable<IWindowChange>;
   refresh: () => Promise<void>;
   tag: (id: number, ...tag: IWindowTag[]) => Promise<void>;
+  toObject(): IWindowsState;
 };
 
 /**
@@ -33,20 +38,16 @@ export type WindowsEvents = IWindowChangedEvent | IWindowsGetEvent;
 
 export type IWindowChangedEvent = {
   type: '@platform/WINDOWS/change';
-  payload: {
-    change: IWindowChange;
-  };
+  payload: IWindowChange;
 };
 export type IWindowChange = {
-  type: 'CREATED' | 'CLOSED' | 'TAG';
-  window: number;
-  windows: IWindowRef[];
+  type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS';
+  windowId?: number;
+  state: IWindowsState;
 };
 
 export type IWindowsGetEvent = {
   type: '@platform/WINDOWS/get';
   payload: {};
 };
-export type IWindowsGetResponse = {
-  windows: IWindowRef[];
-};
+export type IWindowsGetResponse = IWindowsState & {};
