@@ -26,7 +26,10 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
   private unmounted$ = new Subject();
 
   public componentDidMount() {
-    this.setState({ current: this.context.windows.toObject() });
+    this.setState({
+      current: this.context.windows.toObject(),
+    });
+
     const change$ = this.context.windows.change$.pipe(takeUntil(this.unmounted$));
     change$.subscribe(e => {
       this.setState({ current: e.state });

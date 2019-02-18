@@ -36,8 +36,8 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
       <TestPanel title={'DevTools'}>
         <div {...styles.columns}>
           <div {...styles.colButtons}>
-            <Button label={'show (create)'} onClick={this.create} />
             <Button label={'clearConsoles'} onClick={this.clearConsoles} />
+            <Button label={'show (create)'} onClick={this.create} />
           </div>
           <div {...styles.colObject}>
             <ObjectView name={'env ("is")'} data={renderer.is.toObject()} />
