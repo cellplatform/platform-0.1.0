@@ -832,10 +832,10 @@
     "@types/yargs" "12.0.9"
     yargs "13.2.0"
 
-"@platform/electron@0.0.85":
-  version "0.0.85"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.85.tgz#b6e2d63dab2464e3ff0b1c114ed2ebd491e31581"
-  integrity sha512-KdPPV+FM5+KvhfNygIfsuu9wZmugQao5UEGIa2DMQB4wVHhwpuq7V39oJhDjYBEmjbzHuGY4oQ3x2GBZMmFjwA==
+"@platform/electron@0.0.86":
+  version "0.0.86"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.86.tgz#1e16537250c5b185937ce550a7aeb767748a23f8"
+  integrity sha512-hhSuEISatjsAQxAvxnic2Es/AaiGPZM/c9AWxrUz/qh47ZtP/AoKQifaCwsr/nsH/kb1K0/p23Dsro2eVhNFEA==
   dependencies:
     "@babel/polyfill" "7.2.5"
     "@platform/fs" "0.0.34"
@@ -903,10 +903,10 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
-"@platform/ui.object@0.0.31":
-  version "0.0.31"
-  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.31.tgz#87d8d516a917341a78f0ea0f516ec2f2e9321db5"
-  integrity sha512-tiN4pLv9C25hWsp61vaNpy/YNpJQkP4rpjcRLSSGBAxhseLFlonOrgtYkX/M0PN453Mp4AHo2zLIR8Dv35izXQ==
+"@platform/ui.object@0.0.32":
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.32.tgz#e7da6f8d25ce37b8df91d8d930ce15a710ebf6ee"
+  integrity sha512-tAi5gO6YY9YzFsLhmFNQ7aFdEGgMLCetYZX/3iz7v3KDugn8dCSOf+Z5EaRnP3bNqlHhiKMQD0c1QzKy3UonkQ==
   dependencies:
     "@platform/util.react" "0.0.25"
     react-inspector "2.3.1"
@@ -1288,10 +1288,10 @@
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.9.tgz#693e76a52f61a2f1e7fb48c0eef167b95ea4ffd0"
   integrity sha512-sCZy4SxP9rN2w30Hlmg5dtdRwgYQfYRiLo9usw8X9cxlf+H4FqM1xX7+sNH7NNKVdbXMJWqva7iyy+fxh/V7fA==
 
-"@uiharness/dev@0.1.21":
-  version "0.1.21"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.1.21.tgz#3aae4befa596c80462c6712eb6010f503b8f7637"
-  integrity sha512-h7IY1LjLwJ4HlJ7gQ8o3C1NZ/c2m4+BUoApJ/NmQUjGaLNW0jAbQkEyynQC2Digy6BVnVgJlE8jvf8C3dzjFYQ==
+"@uiharness/dev@0.1.22":
+  version "0.1.22"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.1.22.tgz#9fff168fde737dd7220f2aa6608e21a3e23fd570"
+  integrity sha512-T0+jbZ+uCNaC8twBOJcQDDHzfHTrnnmw+On/N4WUmjRIhsr2XPS6FwMB5c+i+QMpp8hye0/23Li7mcLoB28ECw==
   dependencies:
     "@babel/core" "7.3.3"
     "@babel/polyfill" "7.2.5"
@@ -1300,7 +1300,7 @@
     "@babel/preset-typescript" "7.3.3"
     "@platform/cli" "0.0.50"
     "@platform/fs" "0.0.34"
-    "@uiharness/electron" "0.3.124"
+    "@uiharness/electron" "0.3.125"
     "@uiharness/types" "0.0.48"
     create-tmpl "0.1.32"
     electron "4.0.5"
@@ -1310,14 +1310,14 @@
     parcel-bundler "1.11.0"
     serve "10.1.2"
 
-"@uiharness/electron@0.3.124":
-  version "0.3.124"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.124.tgz#2d28cb055d9587a47998d07b18abec6d96f2e70b"
-  integrity sha512-w/p8BsH/h4BrTZRKF3skzDN6AOsut/kzEvCK0sOtfcqcDX9An6ya6B5UOuo0cgHYb19h0UrnbVV+gsLZ5mR9Kw==
+"@uiharness/electron@0.3.125":
+  version "0.3.125"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.125.tgz#7165c0cf433fc54c3309e65bbaf4ac2b66016b3e"
+  integrity sha512-PJKb/iEWfrDaFnFlIYzioHMrrnRK+z7r9iEWT6T2ssXjUcJJKT5W+PzvrlgrFCirViAx5jf9cFcOIgBW5AblGw==
   dependencies:
-    "@platform/electron" "0.0.85"
+    "@platform/electron" "0.0.86"
     "@platform/log" "0.0.73"
-    "@platform/ui.object" "0.0.31"
+    "@platform/ui.object" "0.0.32"
     "@platform/util.react" "0.0.25"
     "@platform/util.value" "0.0.23"
     "@types/app-root-path" "1.2.4"
