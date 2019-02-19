@@ -124,8 +124,14 @@ export class WindowsMain implements IWindows {
   }
 
   public get focused() {
-    const window = BrowserWindow.getFocusedWindow();
-    return window ? this.refs.find(ref => ref.id === window.id) : undefined;
+    try {
+      const window = BrowserWindow.getFocusedWindow();
+      return window ? this.refs.find(ref => ref.id === window.id) : undefined;
+    } catch (error) {
+      // Ignore.
+      // May throw if invoked while application is shutting down.
+      return undefined;
+    }
   }
 
   /**
@@ -187,13 +193,18 @@ export class WindowsMain implements IWindows {
     const all = BrowserWindow.getAllWindows();
     const refs = windowId.length === 0 ? this.refs : this.byId(...windowId);
     refs.forEach(ref => {
-      const window = all.find(window => window.id === ref.id);
-      if (window) {
-        if (isVisible) {
-          window.show();
-        } else {
-          window.hide();
+      try {
+        const window = all.find(window => window.id === ref.id);
+        if (window) {
+          if (isVisible) {
+            window.show();
+          } else {
+            window.hide();
+          }
         }
+      } catch (error) {
+        // Ignore.
+        // NB: May throw if trying to access a closed window.
       }
     });
     return this;
