@@ -106,7 +106,7 @@ export class StoreTest extends React.PureComponent<IStoreTestProps, IStoreTestSt
 
   private read = async () => {
     const res = await this.store.read('count', 'foo');
-    this.log.info('🌳 read:', res);
+    this.log.info('🌳 store.read:', res);
     this.setState({ count: res.count || 0 });
   };
 
