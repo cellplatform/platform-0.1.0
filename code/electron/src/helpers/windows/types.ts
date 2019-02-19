@@ -23,6 +23,7 @@ export type IWindows = IWindowsState & {
 export type IWindowRef = {
   id: number;
   tags: IWindowTag[];
+  isVisible: boolean;
 };
 
 /**
@@ -43,7 +44,7 @@ export type IWindowChangedEvent = {
   payload: IWindowChange;
 };
 export type IWindowChange = {
-  type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS' | 'REFRESH';
+  type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS' | 'REFRESH' | 'VISIBILITY';
   windowId?: number;
   state: IWindowsState;
 };

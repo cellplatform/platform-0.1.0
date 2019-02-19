@@ -154,12 +154,28 @@ export class WindowsMain implements IWindows {
    */
   private handleWindowCreated = (e: Electron.Event, window: BrowserWindow) => {
     const windowId = window.id;
-    this._refs = [...this._refs, { id: windowId, tags: [] }];
+    this._refs = [...this._refs, { id: windowId, tags: [], isVisible: false }];
     this.fireChange('CREATED', windowId);
+
+    window.on('show', () => this.changeVisibility(windowId, true));
+    window.on('hide', () => this.changeVisibility(windowId, false));
+
     window.on('close', () => {
+      console.log(`\nTODO 🐷   manage another process cancelling the close \n`);
+
       this._refs = this._refs.filter(ref => ref.id !== windowId);
       this.fireChange('CLOSED', windowId);
     });
+  };
+
+  private changeVisibility = (windowId: number, isVisible: boolean) => {
+    const index = this.refs.findIndex(ref => ref.id === windowId);
+    const ref = this.refs[index];
+    if (ref) {
+      this._refs = [...this._refs];
+      this._refs[index] = { ...ref, isVisible };
+    }
+    this.fireChange('VISIBILITY', windowId);
   };
 
   private handleFocusChanged = (e: Electron.Event, window: BrowserWindow) => {
