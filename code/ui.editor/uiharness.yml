@@ -1,12 +1,15 @@
-name: "@platform/hyperdb"
+name: "@platform/ui.editor"
 
 electron:
-  port: 8889
+  port: 8882
   entry:
     main: test/main.ts
     renderer: test/renderer.tsx
 
+web:
+  port: 3030
+  entry: test/web.tsx
+
 sourcemaps:
   strip:
     - node_modules/rxjs
-
