@@ -128,6 +128,13 @@ export class WindowsRenderer implements IWindows {
   }
 
   /**
+   * Filter by window-id.
+   */
+  public byId(...id: number[]) {
+    return util.filterById(this.refs, id);
+  }
+
+  /**
    * [INTERNAL]
    */
   private change(type: IWindowChange['type'], windowId: number | undefined, state: IWindowsState) {

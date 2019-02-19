@@ -1,9 +1,8 @@
 import * as t from './types';
 
 /**
- * Filter
+ * Filter by [tag]
  */
-
 export function filterByTag(refs: t.IWindowRef[], ...tags: t.IWindowTag[]) {
   const isMatch = (item: t.IWindowTag, tag: t.IWindowTag['tag'], value?: t.IWindowTag['value']) => {
     return value !== undefined && item.value !== value ? false : item.tag === tag;
@@ -27,4 +26,11 @@ export function filterByTagWrangle(refs: t.IWindowRef[], args: any[]) {
     return filterByTag(refs, ...p1);
   }
   return filterByTag(refs, ...args);
+}
+
+/**
+ * Filter by [window-id]
+ */
+export function filterById(refs: t.IWindowRef[], id: number[]) {
+  return refs.filter(ref => id.includes(ref.id));
 }
