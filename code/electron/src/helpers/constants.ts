@@ -1,3 +1,5 @@
+import { IWindowTag } from './types';
+
 /**
  * Keys used for storing values on the global (window) object.
  *
@@ -18,3 +20,8 @@ export const GLOBAL = {
     },
   },
 };
+
+/**
+ * Window tags
+ */
+export const TAG_DEV_TOOLS: IWindowTag = { tag: 'type', value: 'DEV_TOOLS' };

@@ -1,25 +1,25 @@
-import { log } from '@platform/log/lib/client';
+import { create } from '@platform/log/lib/client';
 import { filter, map } from 'rxjs/operators';
 
 import { IpcClient } from '../ipc/Client';
 import * as t from './types';
 
 export { ILog } from './types';
-export { log };
 
-let isInitialized = false;
+type Ref = { log?: t.ILog };
+const ref: Ref = {};
 
 /**
  * Configure local logging on the [renderer] process.
  */
 export function init(args: { ipc: IpcClient }) {
-  if (isInitialized) {
-    return log;
+  if (ref.log) {
+    return ref.log;
   }
-  isInitialized = true;
   const ipc = args.ipc as IpcClient<t.LoggerEvents>;
 
   // Fire events through IPC to the main process.
+  const log = create();
   log.events$
     .pipe(
       filter(() => !log.silent),
@@ -28,5 +28,7 @@ export function init(args: { ipc: IpcClient }) {
     )
     .subscribe(e => ipc.send('@platform/LOG/write', e, { target: ipc.MAIN }));
 
+  // Finish up.
+  ref.log = log;
   return log;
 }

@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/uiharness/platform.svg?branch=master)](https://travis-ci.org/uiharness/platform)
 [![title](https://user-images.githubusercontent.com/185555/52912140-2d109480-3312-11e9-902f-d8184904b51a.png)](https://uiharness.com)
 
-The [monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
+[Monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
@@ -74,4 +74,15 @@ It's [MIT](LICENSE) all the way!
 Plus...for a scintillating break down of this open-source classic, treat yourself to **Kyle E. Mitchell's** "[The MIT License, line-by-line. 171 words every programmer should understand.](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html)"
 
 <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_large" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=large"/></a>
+
+
+
+## TODO
+![pre-release](https://img.shields.io/badge/Status-pre--release-orange.svg)  
+API's will change (probably radically 🐷 ) prior to `1.0` release.
+
+- Rename
+  - [ ] `@platform/util.react` ➡️ `@platform/util.react`
+  - [ ] `@platform/ts` ➡️ `@platform/ts.libs`
+  - [ ] `@platform/ts.cli` ➡️ `@platform/ts`
 

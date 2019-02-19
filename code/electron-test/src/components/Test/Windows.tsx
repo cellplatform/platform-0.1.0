@@ -1,19 +1,11 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-} from 'rxjs/operators';
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { css, GlamorValue, renderer } from '../../common';
-import { Button, ObjectView } from '../primitives';
 import * as t from '../../types';
+import { Button, ObjectView } from '../primitives';
+import { TestPanel } from '../TestPanel';
 
 /**
  * Test component.
@@ -23,24 +15,25 @@ export type IWindowsTestProps = {
 };
 
 export type IWindowsTestState = {
-  windows?: renderer.IWindowRef[];
+  current: renderer.IWindowsState;
 };
 
-export class WindowsTest extends React.PureComponent<
-  IWindowsTestProps,
-  IWindowsTestState
-> {
+export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindowsTestState> {
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
-  public state: IWindowsTestState = { windows: [] };
+  public state: IWindowsTestState = { current: { refs: [] } };
 
   private unmounted$ = new Subject();
 
   public componentDidMount() {
-    this.setState({ windows: this.context.windows.refs });
-    this.context.windows.change$
-      .pipe(takeUntil(this.unmounted$))
-      .subscribe(e => this.setState({ windows: e.windows }));
+    this.setState({
+      current: this.context.windows.toObject(),
+    });
+
+    const change$ = this.context.windows.change$.pipe(takeUntil(this.unmounted$));
+    change$.subscribe(e => {
+      this.setState({ current: e.state });
+    });
   }
 
   public componentWillUnmount() {
@@ -49,7 +42,6 @@ export class WindowsTest extends React.PureComponent<
 
   public render() {
     const styles = {
-      base: css({ marginBottom: 50 }),
       columns: css({
         Flex: 'horizontal-start-spaceBetween',
       }),
@@ -65,23 +57,38 @@ export class WindowsTest extends React.PureComponent<
     };
 
     return (
-      <div {...styles.base}>
-        <h2>Windows</h2>
+      <TestPanel title={'Windows'}>
         <div {...styles.columns}>
           <div {...styles.colButtons}>
             <Button label={'new window'} onClick={this.newWindow} />
             <Button label={'refresh'} onClick={this.refresh} />
+            <Button
+              label={'tag (this, "FOO=123")'}
+              onClick={this.tagHandler(this.context.id, 'FOO', 123)}
+            />
+            <Button label={'tag (2, "BAR=true")'} onClick={this.tagHandler(2, 'BAR', true)} />
+            <Button label={'hide (2)'} onClick={this.visibleHandler(false, 2)} />
+            <Button label={'show (2)'} onClick={this.visibleHandler(true, 2)} />
           </div>
           <div {...styles.colObject}>
-            <ObjectView
-              name={'windows'}
-              data={this.state.windows}
-              expandLevel={1}
-            />
+            <ObjectView name={'windows'} data={this.data} expandLevel={1} />
           </div>
         </div>
-      </div>
+      </TestPanel>
     );
+  }
+
+  private get data() {
+    const current = this.state.current;
+    const focused = current.focused;
+    const tags = current.refs
+      .map(ref => ref.tags.map(item => `${item.tag}=${item.value || 'undefined'}`))
+      .flat();
+    return {
+      ...this.state.current,
+      focused: focused ? focused.id : undefined,
+      tags,
+    };
   }
 
   private newWindow = () => {
@@ -91,5 +98,17 @@ export class WindowsTest extends React.PureComponent<
 
   private refresh = () => {
     this.context.windows.refresh();
+  };
+
+  private tagHandler = (windowId: number, tag: string, value: string | number | boolean) => {
+    return () => {
+      this.context.windows.tag(windowId, { tag, value });
+    };
+  };
+
+  private visibleHandler = (isVisible: boolean, ...windowId: number[]) => {
+    return () => {
+      this.context.windows.visible(isVisible, ...windowId);
+    };
   };
 }

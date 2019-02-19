@@ -3,8 +3,9 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { css, GlamorValue, renderer, time } from '../../common';
-import { Button } from '../primitives';
 import * as t from '../../types';
+import { Button } from '../primitives';
+import { TestPanel } from '../TestPanel';
 
 /**
  * Test component.
@@ -36,7 +37,6 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
 
   public render() {
     const styles = {
-      base: css({ marginBottom: 50 }),
       buttons: css({
         lineHeight: '1.6em',
         Flex: 'vertical-start',
@@ -44,30 +44,17 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
       }),
     };
     return (
-      <div {...styles.base}>
-        <h2>IPC ({this.id})</h2>
+      <TestPanel title={`IPC (${this.id})`}>
         <div {...styles.buttons}>
-          <Button
-            label={'send: FOO (response handlers)'}
-            onClick={this.sendFoo}
-          />
+          <Button label={'send: FOO (response handlers)'} onClick={this.sendFoo} />
           <Button label={'send: BAR (no handlers)'} onClick={this.sendBar} />
           <Button label={'send: message (all)'} onClick={this.sendMessage} />
-          <Button
-            label={'send: message (to 1)'}
-            onClick={this.sendToHandler(1)}
-          />
-          <Button
-            label={'send: message (to 1,3)'}
-            onClick={this.sendToHandler(1, 3)}
-          />
-          <Button
-            label={'send: message (to MAIN)'}
-            onClick={this.sendToHandler(0)}
-          />
+          <Button label={'send: message (to 1)'} onClick={this.sendToHandler(1)} />
+          <Button label={'send: message (to 1,3)'} onClick={this.sendToHandler(1, 3)} />
+          <Button label={'send: message (to MAIN)'} onClick={this.sendToHandler(0)} />
           <Button label={'log.info'} onClick={this.logInfo} />
         </div>
-      </div>
+      </TestPanel>
     );
   }
 

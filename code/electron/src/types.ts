@@ -10,7 +10,7 @@ export * from './main/types';
 export { IStoreClient, IMainStoreClient, StoreJson } from './helpers/store/types';
 
 export { IpcMessage } from './helpers/ipc/types';
-export { IWindows, IWindowRef } from './helpers/windows/types';
+export { IWindows, IWindowsState, IWindowRef, IWindowTag } from './helpers/windows/types';
 
 export { ILog, IMainLog, IpcClient };
 export type ProcessType = 'MAIN' | 'RENDERER';
@@ -20,6 +20,7 @@ export type IContext<M extends IpcMessage = any, S extends StoreJson = any> = {
   ipc: IpcClient<M>;
   store: IStoreClient<S>;
   log: ILog;
+  windows: IWindows;
 };
 
 export type IRendererContext<M extends IpcMessage = any, S extends StoreJson = any> = IContext<
@@ -27,7 +28,6 @@ export type IRendererContext<M extends IpcMessage = any, S extends StoreJson = a
   S
 > & {
   devTools: DevTools;
-  windows: IWindows;
   remote: Electron.Remote;
 };
 

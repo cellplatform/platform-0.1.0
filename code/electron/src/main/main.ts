@@ -9,7 +9,6 @@ import { WindowsMain } from '../helpers/windows/main';
 import * as t from '../types';
 
 export * from '../types';
-
 export { devTools, logger };
 
 /**
@@ -21,6 +20,7 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
     ipc?: t.IpcClient<M>;
     log?: t.IMainLog | string;
     store?: t.IMainStoreClient<S>;
+    windows?: t.IWindows;
   } = {},
 ): Promise<t.IMain<M, S>> {
   const { appName } = args;
@@ -29,7 +29,7 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
   // Initiaize modules.
   const ipc = args.ipc || initIpc<M>();
   const store = args.store || initStore<S>({ ipc });
-  const windows = createWindows({ ipc });
+  const windows = args.windows || createWindows({ ipc });
   const log =
     typeof args.log === 'object'
       ? args.log // Logger already exists and was provided.

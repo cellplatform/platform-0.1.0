@@ -3,11 +3,20 @@ import { Observable } from 'rxjs';
 /**
  * Represents all windows.
  */
-export type IWindows = {
-  change$: Observable<IWindowChange>;
+export type IWindowsState = {
+  focused?: IWindowRef;
   refs: IWindowRef[];
-  refresh: () => Promise<void>;
-  tag: (id: number, ...tag: IWindowTag[]) => Promise<void>;
+};
+
+export type IWindows = IWindowsState & {
+  change$: Observable<IWindowChange>;
+  refresh(): Promise<void>;
+  toObject(): IWindowsState;
+  tag(windowId: number, ...tag: IWindowTag[]): Promise<void>;
+  byTag(tag: IWindowTag['tag'], value?: IWindowTag['value']): IWindowRef[];
+  byTag(...tags: IWindowTag[]): IWindowRef[];
+  byId(...windowId: number[]): IWindowRef[];
+  visible(isVisible: boolean, ...windowId: number[]): IWindows;
 };
 
 /**
@@ -16,37 +25,56 @@ export type IWindows = {
 export type IWindowRef = {
   id: number;
   tags: IWindowTag[];
+  isVisible: boolean;
+  parent?: number;
+  children: number[];
 };
 
 /**
  * A categorization for a window.
  */
 export type IWindowTag = {
-  key: string;
+  tag: string;
   value?: string | number | boolean;
 };
 
 /**
  * IPC Events.
  */
-export type WindowsEvents = IWindowChangedEvent | IWindowsGetEvent;
+export type WindowsEvents =
+  | IWindowChangedEvent
+  | IWindowsGetEvent
+  | IWindowsTagEvent
+  | IWindowsVisibleEvent;
 
 export type IWindowChangedEvent = {
   type: '@platform/WINDOWS/change';
-  payload: {
-    change: IWindowChange;
-  };
+  payload: IWindowChange;
 };
 export type IWindowChange = {
-  type: 'CREATED' | 'CLOSED' | 'TAG';
-  window: number;
-  windows: IWindowRef[];
+  type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS' | 'REFRESH' | 'VISIBILITY';
+  windowId?: number;
+  state: IWindowsState;
 };
 
 export type IWindowsGetEvent = {
   type: '@platform/WINDOWS/get';
   payload: {};
 };
-export type IWindowsGetResponse = {
-  windows: IWindowRef[];
+export type IWindowsGetResponse = IWindowsState & {};
+
+export type IWindowsTagEvent = {
+  type: '@platform/WINDOWS/tag';
+  payload: {
+    windowId: number;
+    tags: IWindowTag[];
+  };
+};
+
+export type IWindowsVisibleEvent = {
+  type: '@platform/WINDOWS/visible';
+  payload: {
+    isVisible: boolean;
+    windowId: number[];
+  };
 };

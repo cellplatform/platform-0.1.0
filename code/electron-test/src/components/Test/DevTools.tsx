@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { css, GlamorValue, ICreateDevToolsEvent, renderer } from '../../common';
 import { Button, ObjectView } from '../primitives';
+import { TestPanel } from '../TestPanel';
 
 /**
  * Test component.
@@ -32,18 +33,17 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
     };
 
     return (
-      <div {...styles.base}>
-        <h2>DevTools</h2>
+      <TestPanel title={'DevTools'}>
         <div {...styles.columns}>
           <div {...styles.colButtons}>
-            <Button label={'show (create)'} onClick={this.create} />
             <Button label={'clearConsoles'} onClick={this.clearConsoles} />
+            <Button label={'show (create)'} onClick={this.create} />
           </div>
           <div {...styles.colObject}>
             <ObjectView name={'env ("is")'} data={renderer.is.toObject()} />
           </div>
         </div>
-      </div>
+      </TestPanel>
     );
   }
 

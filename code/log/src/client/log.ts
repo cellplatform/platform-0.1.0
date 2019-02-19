@@ -1,5 +1,5 @@
 import { map, filter } from 'rxjs/operators';
-import { R, create as createLog, ColorFormatter } from './common';
+import { create as createLog, ColorFormatter } from './common';
 import { ILogEvent, ILog, ILogAction, LogColor } from './types';
 
 type ColorItem = {
@@ -84,7 +84,7 @@ events$
 const isColorItem = (item: any) => (item ? item.__IS_COLOR__ === '__LOG_COLOR__' : false);
 
 const isSimpleValue = (value: any) =>
-  R.is(Boolean, value) || R.is(String, value) || R.is(Number, value);
+  typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number';
 
 function format(e: ILogEvent) {
   const hasColor = e.items.some(item => isColorItem(item));

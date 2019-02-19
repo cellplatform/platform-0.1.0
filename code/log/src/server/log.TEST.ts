@@ -91,9 +91,7 @@ describe('logging to console (NB: Tests hidden because this mucks with the conso
     COLORS.forEach(color => {
       const logColor = log[color] as Logger;
       const result = logColor('foo');
-      if (chalk.supportsColor) {
-        expect(result.length).to.be.greaterThan('foo'.length);
-      }
+      expect(result.length).to.be.greaterThan('foo'.length);
       expect(result).to.contain('foo');
     });
   });

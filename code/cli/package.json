@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli",
-  "version": "0.0.48",
+  "version": "0.0.50",
   "description": "Tools for building CLI (command-line-interfaces).",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@platform/fs": "0.0.34",
-    "@platform/util.exec": "0.0.9",
+    "@platform/util.exec": "0.0.11",
     "@types/yargs": "12.0.9",
     "yargs": "13.2.0"
   },
