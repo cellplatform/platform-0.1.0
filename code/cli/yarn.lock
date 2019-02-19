@@ -25,10 +25,10 @@
     fs-extra "7.0.1"
     js-yaml "3.12.1"
 
-"@platform/libs@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.4.tgz#62cadbc18fff3ffaeec2d88d486b39a6ad6b52ca"
-  integrity sha512-AP+tU9aAnQbBCVdGQC/WLKicLwN1kiDE7zjKXNk2n1/o4A42dNZxJiWYyZI5JfmNxp8Lvf9bMfN4GgMecksmQA==
+"@platform/libs@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.5.tgz#6feb74e7ee4e09ca81deae8aa9dccc24b5f4dc78"
+  integrity sha512-/4P6Un2qVgq1ChBg0zSKgDzaAEGap1vSKApQGF7Aas20Aeu3V9WXQIiGMXCm+QvkRBX4PBfLjJlLY9CjnzBsaQ==
   dependencies:
     "@types/ramda" "0.25.50"
     ramda "0.26.1"
@@ -59,12 +59,12 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
-"@platform/util.exec@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.11.tgz#485165bfbbb251c1ecfef28ff179b3d5a7ca7851"
-  integrity sha512-iO9sXTrQtEoBY8QpzblKfNbEzQmNOiApoflX6u5s4HyTisAJnzCL0p4D24lx5tLESdZjUYi8e+o27SljSyamVg==
+"@platform/util.exec@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.12.tgz#46ff42a96b5824a36324326e6d60219f983b889b"
+  integrity sha512-8XNW5SYqeTonXq/IyW8+obXBHA7dQUEmX3afywrVEKBjZkFuS1R0VY0lAamyART+DezIApCIkhqavViKrUf+xA==
   dependencies:
-    "@platform/libs" "0.0.4"
+    "@platform/libs" "0.0.5"
     "@types/chalk" "2.2.0"
     "@types/listr" "0.13.0"
     ansi-regex "4.0.0"

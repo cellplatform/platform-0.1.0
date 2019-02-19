@@ -25,10 +25,10 @@
     fs-extra "7.0.1"
     js-yaml "3.12.1"
 
-"@platform/libs@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.4.tgz#62cadbc18fff3ffaeec2d88d486b39a6ad6b52ca"
-  integrity sha512-AP+tU9aAnQbBCVdGQC/WLKicLwN1kiDE7zjKXNk2n1/o4A42dNZxJiWYyZI5JfmNxp8Lvf9bMfN4GgMecksmQA==
+"@platform/libs@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.5.tgz#6feb74e7ee4e09ca81deae8aa9dccc24b5f4dc78"
+  integrity sha512-/4P6Un2qVgq1ChBg0zSKgDzaAEGap1vSKApQGF7Aas20Aeu3V9WXQIiGMXCm+QvkRBX4PBfLjJlLY9CjnzBsaQ==
   dependencies:
     "@types/ramda" "0.25.50"
     ramda "0.26.1"
