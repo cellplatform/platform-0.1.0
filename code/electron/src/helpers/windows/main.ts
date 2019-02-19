@@ -166,10 +166,7 @@ export class WindowsMain implements IWindows {
 
     window.on('show', () => this.changeVisibility(windowId, true));
     window.on('hide', () => this.changeVisibility(windowId, false));
-
-    window.on('close', () => {
-      console.log(`\nTODO 🐷   manage another process cancelling the close \n`);
-
+    window.on('closed', () => {
       this._refs = this._refs.filter(ref => ref.id !== windowId);
       this.fireChange('CLOSED', windowId);
     });
