@@ -79,7 +79,7 @@ Plus...for a scintillating break down of this open-source classic, treat yoursel
 
 ## TODO
 ![pre-release](https://img.shields.io/badge/Status-pre--release-orange.svg)  
-API's will change (probably radically 🐷 ) prior to `1.0` release.
+API's will change (probably radically 🐷) prior to `1.0` release.
 
 - Rename
   - [ ] `@platform/util.react` ➡️ `@platform/react`
