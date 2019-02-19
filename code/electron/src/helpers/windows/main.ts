@@ -14,6 +14,7 @@ import {
   IWindowsState,
   IWindowsTagEvent,
   IWindowTag,
+  IWindowsVisibleEvent,
 } from './types';
 import * as util from './util';
 
@@ -70,11 +71,19 @@ export class WindowsMain implements IWindows {
     });
 
     /**
-     * Listen for tag requests from client windows.
+     * Handle tag requests from client windows.
      */
     ipc.handle<IWindowsTagEvent>('@platform/WINDOWS/tag', async e => {
       const { windowId, tags } = e.payload;
       this.tag(windowId, ...tags);
+    });
+
+    /**
+     * Handle visibility requests from client windows.
+     */
+    ipc.handle<IWindowsVisibleEvent>('@platform/WINDOWS/visible', async e => {
+      const { isVisible, windowId } = e.payload;
+      this.visible(isVisible, ...windowId);
     });
   }
 
@@ -154,6 +163,25 @@ export class WindowsMain implements IWindows {
    */
   public byId(...windowId: number[]) {
     return util.filterById(this.refs, windowId);
+  }
+
+  /**
+   * Changes the visibility of all or the specified windows.
+   */
+  public visible(isVisible: boolean, ...windowId: number[]) {
+    const all = BrowserWindow.getAllWindows();
+    const refs = windowId.length === 0 ? this.refs : this.byId(...windowId);
+    refs.forEach(ref => {
+      const window = all.find(window => window.id === ref.id);
+      if (window) {
+        if (isVisible) {
+          window.show();
+        } else {
+          window.hide();
+        }
+      }
+    });
+    return this;
   }
 
   /**

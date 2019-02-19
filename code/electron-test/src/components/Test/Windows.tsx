@@ -67,6 +67,8 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
               onClick={this.tagHandler(this.context.id, 'FOO', 123)}
             />
             <Button label={'tag (2, "BAR=true")'} onClick={this.tagHandler(2, 'BAR', true)} />
+            <Button label={'hide (2)'} onClick={this.visibleHandler(false, 2)} />
+            <Button label={'show (2)'} onClick={this.visibleHandler(true, 2)} />
           </div>
           <div {...styles.colObject}>
             <ObjectView name={'windows'} data={this.data} expandLevel={1} />
@@ -101,6 +103,12 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
   private tagHandler = (windowId: number, tag: string, value: string | number | boolean) => {
     return () => {
       this.context.windows.tag(windowId, { tag, value });
+    };
+  };
+
+  private visibleHandler = (isVisible: boolean, ...windowId: number[]) => {
+    return () => {
+      this.context.windows.visible(isVisible, ...windowId);
     };
   };
 }

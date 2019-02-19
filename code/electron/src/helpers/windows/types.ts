@@ -16,12 +16,7 @@ export type IWindows = IWindowsState & {
   byTag(tag: IWindowTag['tag'], value?: IWindowTag['value']): IWindowRef[];
   byTag(...tags: IWindowTag[]): IWindowRef[];
   byId(...windowId: number[]): IWindowRef[];
-
-  /**
-   * TODO
-   * no ids passed changes all window visibility states.  
-   */
-  // visible(isVisible: boolean, ...windowId: number[]): IWindows;
+  visible(isVisible: boolean, ...windowId: number[]): IWindows;
 };
 
 /**
@@ -44,7 +39,11 @@ export type IWindowTag = {
 /**
  * IPC Events.
  */
-export type WindowsEvents = IWindowChangedEvent | IWindowsGetEvent | IWindowsTagEvent;
+export type WindowsEvents =
+  | IWindowChangedEvent
+  | IWindowsGetEvent
+  | IWindowsTagEvent
+  | IWindowsVisibleEvent;
 
 export type IWindowChangedEvent = {
   type: '@platform/WINDOWS/change';
@@ -67,5 +66,13 @@ export type IWindowsTagEvent = {
   payload: {
     windowId: number;
     tags: IWindowTag[];
+  };
+};
+
+export type IWindowsVisibleEvent = {
+  type: '@platform/WINDOWS/visible';
+  payload: {
+    isVisible: boolean;
+    windowId: number[];
   };
 };

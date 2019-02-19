@@ -13,6 +13,7 @@ import {
   IWindowsTagEvent,
   IWindowTag,
   IWindowRef,
+  IWindowsVisibleEvent,
 } from './types';
 import * as util from './util';
 
@@ -132,6 +133,14 @@ export class WindowsRenderer implements IWindows {
    */
   public byId(...windowId: number[]) {
     return util.filterById(this.refs, windowId);
+  }
+
+  /**
+   * Changes the visibility of all or the specified windows.
+   */
+  public visible(isVisible: boolean, ...windowId: number[]) {
+    this.ipc.send<IWindowsVisibleEvent>('@platform/WINDOWS/visible', { isVisible, windowId });
+    return this;
   }
 
   /**
