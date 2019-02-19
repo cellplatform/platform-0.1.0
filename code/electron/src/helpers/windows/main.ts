@@ -102,13 +102,21 @@ export class WindowsMain implements IWindows {
    */
   public get refs() {
     const all = BrowserWindow.getAllWindows();
-    return this._refs.map(ref => {
-      const window = all.find(window => window.id === ref.id);
-      const parent = window ? window.getParentWindow() : undefined;
-      const children = window ? window.getChildWindows().map(window => window.id) : [];
-      ref = parent ? { ...ref, parent: parent.id } : ref;
-      return { ...ref, children };
-    });
+    return this._refs
+      .map(ref => {
+        try {
+          const window = all.find(window => window.id === ref.id);
+          const parent = window ? window.getParentWindow() : undefined;
+          const children = window ? window.getChildWindows().map(window => window.id) : [];
+          ref = parent ? { ...ref, parent: parent.id } : ref;
+          return { ...ref, children };
+        } catch (error) {
+          // Ignore.
+          // NB: May throw if trying to access a closed window.
+          return undefined;
+        }
+      })
+      .filter(ref => Boolean(ref)) as IWindowRef[];
   }
 
   public get ids() {
