@@ -5,11 +5,6 @@ import { debounceTime } from 'rxjs/operators';
 import { IWindows } from '../windows/main';
 import { TAG_DEV_TOOLS as DEV_TOOLS } from '../constants';
 
-const OPACITY = {
-  FULL: 1,
-  DIM: 1,
-};
-
 type Ref = {
   parent: BrowserWindow;
   devTools: BrowserWindow;
@@ -105,12 +100,6 @@ export function create(args: {
     }
   };
 
-  const updateOpacity = () => {
-    const isFocused = parent.isFocused() || devTools.isFocused();
-    const opacity = isFocused ? OPACITY.FULL : OPACITY.DIM;
-    devTools.setOpacity(opacity);
-  };
-
   // Dev-tools events.
   parent.webContents.once('did-finish-load', () => {
     updateSize();
@@ -119,7 +108,6 @@ export function create(args: {
   devTools.on('resize', () => saveState$.next());
   devTools.once('ready-to-show', () => {
     updatePosition();
-    updateOpacity();
     devTools.show();
   });
   devTools.on('close', e => {
@@ -137,12 +125,6 @@ export function create(args: {
   parent.on('close', () => destroy());
   parent.on('move', () => updatePosition());
   parent.on('resize', () => updateSize());
-
-  // Manage opacity.
-  parent.on('focus', () => updateOpacity());
-  parent.on('blur', () => updateOpacity());
-  devTools.on('focus', () => updateOpacity());
-  devTools.on('blur', () => updateOpacity());
 
   // Store a reference.
   const ref: Ref = { parent, devTools };
