@@ -152,8 +152,8 @@ export class WindowsMain implements IWindows {
   /**
    * Filter by window-id.
    */
-  public byId(...id: number[]) {
-    return util.filterById(this.refs, id);
+  public byId(...windowId: number[]) {
+    return util.filterById(this.refs, windowId);
   }
 
   /**
@@ -167,7 +167,7 @@ export class WindowsMain implements IWindows {
     window.on('show', () => this.changeVisibility(windowId, true));
     window.on('hide', () => this.changeVisibility(windowId, false));
     window.on('closed', () => {
-      this._refs = this._refs.filter(ref => ref.id !== windowId);
+      this._refs = this.refs.filter(ref => ref.id !== windowId);
       this.fireChange('CLOSED', windowId);
     });
   };
