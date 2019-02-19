@@ -51,6 +51,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - [@platform/test](/code/test)
 - [@platform/log](/code/log)
 - [@platform/electron](/code/electron)
+- [@platform/react](/code/react)
 - typescript
   - [@platform/ts](/code/ts) 
   - [@platform/ts.cli](/code/ts.cli) 
@@ -59,7 +60,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/util.css](/code/util.css)
   - [@platform/util.exec](/code/util.exec)
   - [@platform/util.is](/code/util.is)
-  - [@platform/util.react](/code/util.react)
   - [@platform/util.value](/code/util.value)
 - ui
   - [@platform/ui.object](/code/ui.object)
