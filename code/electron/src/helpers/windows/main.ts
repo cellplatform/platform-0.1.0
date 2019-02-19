@@ -1,5 +1,5 @@
-import { uniq } from 'ramda';
 import { app, BrowserWindow } from 'electron';
+import { uniq } from 'ramda';
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
@@ -11,10 +11,11 @@ import {
   IWindows,
   IWindowsGetEvent,
   IWindowsGetResponse,
-  IWindowTag,
   IWindowsState,
   IWindowsTagEvent,
+  IWindowTag,
 } from './types';
+import * as util from './util';
 
 export * from './types';
 
@@ -111,6 +112,14 @@ export class WindowsMain implements IWindows {
   }
 
   /**
+   * Convert to a simple [IWindowsState] object.
+   */
+  public toObject(): IWindowsState {
+    const focused = this.focused ? { ...this.focused } : undefined;
+    return { refs: [...this.refs], focused };
+  }
+
+  /**
    * Applies [1..n] tags to a window.
    */
   public async tag(windowId: number, ...tags: IWindowTag[]) {
@@ -132,11 +141,10 @@ export class WindowsMain implements IWindows {
   }
 
   /**
-   * Convert to a simple [IWindowsState] object.
+   * Filter windows on an given tag.
    */
-  public toObject(): IWindowsState {
-    const focused = this.focused ? { ...this.focused } : undefined;
-    return { refs: [...this.refs], focused };
+  public byTag(tag: IWindowTag['tag'], value?: IWindowTag['value']) {
+    return util.filterByTag(this.refs, tag, value);
   }
 
   /**

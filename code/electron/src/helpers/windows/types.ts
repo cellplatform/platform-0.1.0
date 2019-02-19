@@ -10,9 +10,10 @@ export type IWindowsState = {
 
 export type IWindows = IWindowsState & {
   change$: Observable<IWindowChange>;
-  refresh: () => Promise<void>;
-  tag: (windowId: number, ...tag: IWindowTag[]) => Promise<void>;
+  refresh(): Promise<void>;
   toObject(): IWindowsState;
+  tag(windowId: number, ...tag: IWindowTag[]): Promise<void>;
+  byTag(tag: IWindowTag['tag'], value?: IWindowTag['value']): IWindowRef[];
 };
 
 /**

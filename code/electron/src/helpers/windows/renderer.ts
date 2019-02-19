@@ -1,6 +1,6 @@
 import { equals } from 'ramda';
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, share, takeUntil, debounceTime } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, share, takeUntil } from 'rxjs/operators';
 
 import * as t from '../types';
 import {
@@ -10,9 +10,10 @@ import {
   IWindowsGetEvent,
   IWindowsGetResponse,
   IWindowsState,
-  IWindowTag,
   IWindowsTagEvent,
+  IWindowTag,
 } from './types';
+import * as util from './util';
 
 /**
  * [renderer] Maintains a set of reference to all windows.
@@ -103,6 +104,13 @@ export class WindowsRenderer implements IWindows {
   }
 
   /**
+   * Convert to simple state object.
+   */
+  public toObject() {
+    return { ...this._state };
+  }
+
+  /**
    * Applies [1..n] tags to a window.
    */
   public async tag(windowId: number, ...tags: IWindowTag[]) {
@@ -110,10 +118,10 @@ export class WindowsRenderer implements IWindows {
   }
 
   /**
-   * Convert to simple state object.
+   * Filter windows on an given tag.
    */
-  public toObject() {
-    return { ...this._state };
+  public byTag(tag: IWindowTag['tag'], value?: IWindowTag['value']) {
+    return util.filterByTag(this.refs, tag, value);
   }
 
   /**
