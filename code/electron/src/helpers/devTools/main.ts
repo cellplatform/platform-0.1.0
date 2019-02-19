@@ -23,10 +23,10 @@ const refs: { [key: string]: Ref } = {};
  */
 export function create(args: {
   parent: BrowserWindow;
+  windows: IWindows;
   title?: string;
   fileName?: string;
   dirName?: string;
-  windows: IWindows;
 }) {
   const { parent, title = 'DevTools', dirName = 'window-state', windows } = args;
 
@@ -62,7 +62,6 @@ export function create(args: {
     width: state.width,
     height: windowBounds.height,
     parent: parent,
-    opacity: 0,
     show: false,
     minimizable: false,
     maximizable: false,
