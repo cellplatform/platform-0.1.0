@@ -16,7 +16,6 @@ export function filterByTag(refs: t.IWindowRef[], ...tags: t.IWindowTag[]) {
 }
 
 export function filterByTagWrangle(refs: t.IWindowRef[], args: any[]) {
-  console.log('args', args);
   const p1 = args[0];
   const p2 = args[1];
   if (typeof p1 === 'string') {
