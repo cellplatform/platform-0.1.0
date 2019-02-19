@@ -20,6 +20,7 @@ export type IContext<M extends IpcMessage = any, S extends StoreJson = any> = {
   ipc: IpcClient<M>;
   store: IStoreClient<S>;
   log: ILog;
+  windows: IWindows;
 };
 
 export type IRendererContext<M extends IpcMessage = any, S extends StoreJson = any> = IContext<
@@ -27,7 +28,6 @@ export type IRendererContext<M extends IpcMessage = any, S extends StoreJson = a
   S
 > & {
   devTools: DevTools;
-  windows: IWindows;
   remote: Electron.Remote;
 };
 

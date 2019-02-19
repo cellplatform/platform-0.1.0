@@ -26,8 +26,8 @@ const config = require('../.uiharness/config.json') as uiharness.IUIHarnessRunti
     config,
     log,
     ipc,
-    // devTools: true,
     windows,
+    // devTools: true,
   });
 
   log.info.blue('started');
