@@ -26,6 +26,8 @@ export type IWindowRef = {
   id: number;
   tags: IWindowTag[];
   isVisible: boolean;
+  parent?: number;
+  children: number[];
 };
 
 /**

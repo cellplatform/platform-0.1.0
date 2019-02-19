@@ -101,7 +101,14 @@ export class WindowsMain implements IWindows {
    * [Properties]
    */
   public get refs() {
-    return this._refs;
+    const all = BrowserWindow.getAllWindows();
+    return this._refs.map(ref => {
+      const window = all.find(window => window.id === ref.id);
+      const parent = window ? window.getParentWindow() : undefined;
+      const children = window ? window.getChildWindows().map(window => window.id) : [];
+      ref = parent ? { ...ref, parent: parent.id } : ref;
+      return { ...ref, children };
+    });
   }
 
   public get ids() {
@@ -189,7 +196,7 @@ export class WindowsMain implements IWindows {
    */
   private handleWindowCreated = (e: Electron.Event, window: BrowserWindow) => {
     const windowId = window.id;
-    this._refs = [...this._refs, { id: windowId, tags: [], isVisible: false }];
+    this._refs = [...this._refs, { id: windowId, tags: [], children: [], isVisible: false }];
     this.fireChange('CREATED', windowId);
 
     window.on('show', () => this.changeVisibility(windowId, true));
