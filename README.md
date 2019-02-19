@@ -63,6 +63,9 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/util.value](/code/util.value)
 - ui
   - [@platform/ui.object](/code/ui.object)
+  - [@platform/ui.editor](/code/ui.editor)
+- state
+  - [@platform/hyperdb](/code/hyperdb)
 
 
 <p>&nbsp;</p>
