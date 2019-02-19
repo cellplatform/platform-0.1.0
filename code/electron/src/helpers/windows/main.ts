@@ -19,10 +19,13 @@ import * as util from './util';
 
 export * from './types';
 
+let uid = 0;
+
 /**
  * [main] Maintains a set of reference to all windows.
  */
 export class WindowsMain implements IWindows {
+  private uid = uid;
   private _refs: IWindowRef[] = [];
 
   private readonly _dispose$ = new Subject();
@@ -39,6 +42,7 @@ export class WindowsMain implements IWindows {
    * [Constructor]
    */
   constructor(args: { ipc: t.IpcClient }) {
+    uid++;
     const ipc: t.IpcInternal = args.ipc;
 
     /**
@@ -62,11 +66,7 @@ export class WindowsMain implements IWindows {
      * Handle requests from windows for window information.
      */
     ipc.handle<IWindowsGetEvent>('@platform/WINDOWS/get', async e => {
-      const res: IWindowsGetResponse = {
-        refs: [...this.refs],
-        focused: this.focused,
-      };
-      return res;
+      return this.toObject() as IWindowsGetResponse;
     });
 
     /**
