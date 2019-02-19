@@ -12,6 +12,7 @@ import {
   IWindowsState,
   IWindowsTagEvent,
   IWindowTag,
+  IWindowRef,
 } from './types';
 import * as util from './util';
 
@@ -120,8 +121,10 @@ export class WindowsRenderer implements IWindows {
   /**
    * Filter windows on an given tag.
    */
-  public byTag(tag: IWindowTag['tag'], value?: IWindowTag['value']) {
-    return util.filterByTag(this.refs, tag, value);
+  public byTag(tag: IWindowTag['tag'], value?: IWindowTag['value']): IWindowRef[];
+  public byTag(...tags: IWindowTag[]): IWindowRef[];
+  public byTag(): IWindowRef[] {
+    return util.filterByTagWrangle(this.refs, Array.from(arguments));
   }
 
   /**

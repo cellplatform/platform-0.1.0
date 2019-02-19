@@ -56,9 +56,6 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
       }),
     };
 
-    const focused = this.state.current.focused;
-    const data = { ...this.state.current, focused: focused ? focused.id : undefined };
-
     return (
       <TestPanel title={'Windows'}>
         <div {...styles.columns}>
@@ -72,11 +69,24 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
             <Button label={'tag (2, "BAR=true")'} onClick={this.tagHandler(2, 'BAR', true)} />
           </div>
           <div {...styles.colObject}>
-            <ObjectView name={'windows'} data={data} expandLevel={1} />
+            <ObjectView name={'windows'} data={this.data} expandLevel={1} />
           </div>
         </div>
       </TestPanel>
     );
+  }
+
+  private get data() {
+    const current = this.state.current;
+    const focused = current.focused;
+    const tags = current.refs
+      .map(ref => ref.tags.map(item => `${item.tag}=${item.value || 'undefined'}`))
+      .flat();
+    return {
+      ...this.state.current,
+      focused: focused ? focused.id : undefined,
+      tags,
+    };
   }
 
   private newWindow = () => {
@@ -90,7 +100,6 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
 
   private tagHandler = (windowId: number, tag: string, value: string | number | boolean) => {
     return () => {
-      console.log('windowId', windowId);
       this.context.windows.tag(windowId, { tag, value });
     };
   };

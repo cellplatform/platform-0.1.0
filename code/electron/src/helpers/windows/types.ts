@@ -14,6 +14,7 @@ export type IWindows = IWindowsState & {
   toObject(): IWindowsState;
   tag(windowId: number, ...tag: IWindowTag[]): Promise<void>;
   byTag(tag: IWindowTag['tag'], value?: IWindowTag['value']): IWindowRef[];
+  byTag(...tags: IWindowTag[]): IWindowRef[];
 };
 
 /**
