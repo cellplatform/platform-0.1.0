@@ -1,5 +1,5 @@
 export * from '../types';
-export { color, GlamorValue, css, mouse } from '@platform/util.react';
+export { color, GlamorValue, css, mouse } from '@platform/react';
 
 export const COLORS = {
   WHITE: '#fff',

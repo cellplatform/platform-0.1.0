@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Helpers for working with NPM.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -13,14 +13,14 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@platform/cli": "0.0.50",
+    "@platform/cli": "0.0.51",
     "@platform/fs": "0.0.34",
-    "@platform/log": "0.0.73",
-    "@platform/util.value": "0.0.23"
+    "@platform/log": "0.0.74",
+    "@platform/util.value": "0.0.24"
   },
   "devDependencies": {
     "@platform/test": "0.0.27",
-    "@platform/ts.cli": "3.3.44"
+    "@platform/ts.cli": "3.3.45"
   },
   "files": [
     "lib"
