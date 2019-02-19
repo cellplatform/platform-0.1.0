@@ -75,3 +75,14 @@ Plus...for a scintillating break down of this open-source classic, treat yoursel
 
 <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_large" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=large"/></a>
 
+
+
+## TODO
+![pre-release](https://img.shields.io/badge/Status-pre--release-orange.svg)  
+API's will change (probably radically 🐷 ) prior to `1.0` release.
+
+- Rename
+  - [ ] `@platform/util.react` ➡️ `@platform/util.react`
+  - [ ] `@platform/ts` ➡️ `@platform/ts.libs`
+  - [ ] `@platform/ts.cli` ➡️ `@platform/ts`
+
