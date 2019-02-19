@@ -25,7 +25,7 @@ let uid = 0;
  * [main] Maintains a set of reference to all windows.
  */
 export class WindowsMain implements IWindows {
-  private uid = uid;
+  public readonly uid = uid;
   private _refs: IWindowRef[] = [];
 
   private readonly _dispose$ = new Subject();
