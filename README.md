@@ -1,7 +1,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_shield)
 [![Build Status](https://travis-ci.org/uiharness/platform.svg?branch=master)](https://travis-ci.org/uiharness/platform)
-[![title](https://user-images.githubusercontent.com/185555/52912140-2d109480-3312-11e9-902f-d8184904b51a.png)](https://uiharness.com)
+[![title](https://user-images.githubusercontent.com/185555/53066586-6e34be80-3535-11e9-845a-aabb4091a751.png)](https://uiharness.com)
 
 [Monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
 
@@ -63,6 +63,10 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/util.value](/code/util.value)
 - ui
   - [@platform/ui.object](/code/ui.object)
+  - [@platform/ui.editor](/code/ui.editor)
+- state
+  - [@platform/state](/code/state)
+  - [@platform/hyperdb](/code/hyperdb)
 
 
 <p>&nbsp;</p>

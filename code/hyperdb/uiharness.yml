@@ -1,0 +1,12 @@
+name: "@platform/hyperdb"
+
+electron:
+  port: 8889
+  entry:
+    main: test/main.ts
+    renderer: test/renderer.tsx
+
+sourcemaps:
+  strip:
+    - node_modules/rxjs
+
