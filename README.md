@@ -46,15 +46,13 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 ## Modules
 
+- [@platform/ts](/code/ts) 
 - [@platform/fs](/code/fs)
 - [@platform/cli](/code/cli)
 - [@platform/test](/code/test)
 - [@platform/log](/code/log)
 - [@platform/electron](/code/electron)
 - [@platform/react](/code/react)
-- typescript
-  - [@platform/ts](/code/ts) 
-  - [@platform/ts.cli](/code/ts.cli) 
 - util
   - [@platform/util](/code/util)
   - [@platform/util.css](/code/util.css)
