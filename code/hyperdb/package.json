@@ -1,7 +1,7 @@
 {
   "name": "@platform/hyperdb",
   "description": "Electron enabled interface to hyperdb.",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,12 +14,12 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@uiharness/electron": "0.3.126"
+    "@platform/electron": "0.0.92",
+    "@uiharness/electron": "0.3.128"
   },
   "devDependencies": {
-    "@platform/electron": "0.0.90",
-    "@platform/ts": "3.3.53",
-    "@uiharness/dev": "0.1.23"
+    "@platform/ts": "3.3.54",
+    "@uiharness/dev": "0.1.25"
   },
   "resolutions": {
     "@types/react": "16.7.17"

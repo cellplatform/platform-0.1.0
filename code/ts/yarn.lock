@@ -15,20 +15,20 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/cli@0.0.53":
-  version "0.0.53"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.53.tgz#3d3b4e0a1f39fa53c4773bc1e178c220fb9a41e4"
-  integrity sha512-+ySD22Ar20taP3HbC5jhZammLcCgxIOcoNd4tTQnda6S5zrCgWw1D9II2azh7HZZ6XRFVm2bVmQ2eG14544IjQ==
+"@platform/cli@0.0.54":
+  version "0.0.54"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.54.tgz#da3585a12fe2510cdf9d42f4b901e11fdc59feb7"
+  integrity sha512-q4FW8sKu2SATETdURXajeMLlGWEsoEAbZwupXC/70x3LLlRRA6/jDlrjGMeUrqadL2yxDmjw0QkCDUG3km0iWA==
   dependencies:
-    "@platform/fs" "0.0.35"
-    "@platform/util.exec" "0.0.14"
+    "@platform/fs" "0.0.36"
+    "@platform/util.exec" "0.0.15"
     "@types/yargs" "12.0.9"
     yargs "13.2.0"
 
-"@platform/fs@0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.35.tgz#0f1f7c447d5c27abfd75bae208075feda66fd4ac"
-  integrity sha512-ChE9JYSL/OphulFwq5N020UNnXURVUtdIbDkOg+OrkMqTpMhVEdX2hOXBPPyngA06t/G9as7wRup6diQ7WEPAw==
+"@platform/fs@0.0.36":
+  version "0.0.36"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.36.tgz#034218116dff7a5d57cca3be651e40c09764c69c"
+  integrity sha512-Bj5212hG6sfL51m1OHNKxkT2pCILpomzsulreK3MGJ8zpxu8Rm63ngYprJlacchWhTGl36XhRhweoIQwNFxZsg==
   dependencies:
     "@types/fs-extra" "5.0.5"
     fast-glob "2.2.6"
@@ -45,10 +45,10 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/ts.libs@3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.3.1.tgz#f19f6bb1b38115c2477d3bb922023d163918f733"
-  integrity sha512-n62pEESdEmxE7dQ7XbNL9tMEs5d3Bi8TLs1AgB+ydulTCuITOOgq4j8OQd239kmH7XpDfOUbEi0T1O4Bi02YKA==
+"@platform/ts.libs@3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.3.2.tgz#235b54cf1f350db12aebe845b25a6c0716c90e3c"
+  integrity sha512-wx4pZVcsPTLfucM+smENVfIT4TOqQfW0JYf8mY4WO3XabxkyCYgxxvIa4OwJryuT8I5ZzSmVkoGIcZ1Mu0sG/Q==
   dependencies:
     "@types/node" "11.9.4"
     prettier "1.16.4"
@@ -59,10 +59,10 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
-"@platform/util.exec@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.14.tgz#9f74d2810f6cd8fa1b7fc07bc760763f84d9e7f2"
-  integrity sha512-9RI0gEU8xC2+ekqEE67/TqUFfa1JAQQTY4ygQ147W9XyZz3aZmUfwvq5ouY1N4yKFUmePvvV1Dwkd0IEMRTTSg==
+"@platform/util.exec@0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.15.tgz#7ced84c317e0b8eb915baf11d897e9b573a65ccd"
+  integrity sha512-J+wzgx/L/7EKnaBzDf069pvwjDhUAQ716mje7VHj1FsbwdlpBM4Y2qdh1cfg9XT3EH5s3hAXmWN2+4a2Dk1Dbw==
   dependencies:
     "@platform/libs" "0.0.6"
     "@types/chalk" "2.2.0"

@@ -1,0 +1,14 @@
+#
+# https://uiharness.com/docs/config
+#
+name: ui.text
+
+electron:
+  port: 9093
+  entry:
+    main: test/main.ts
+    renderer: test/renderer.tsx
+
+web:
+  port: 3030
+  entry: test/web.tsx

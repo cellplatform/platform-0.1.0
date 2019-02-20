@@ -1,7 +1,7 @@
-name: "@platform/ui.editor"
+name: ui.editor
 
 electron:
-  port: 8882
+  port: 9090
   entry:
     main: test/main.ts
     renderer: test/renderer.tsx

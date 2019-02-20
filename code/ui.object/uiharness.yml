@@ -1,11 +1,10 @@
 #
 # https://uiharness.com/docs/config
 #
-
-name: My App
+name: ui.object
 
 electron:
-  port: 8888
+  port: 9091
   entry:
     main: test/main.ts
     renderer: test/renderer.tsx
