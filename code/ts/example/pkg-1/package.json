@@ -11,7 +11,7 @@
     "prepare": "ts prepare"
   },
   "devDependencies": {
-    "@platform/ts.cli": "^3.3.6"
+    "@platform/ts": "3.3.52"
   },
   "license": "MIT"
 }
