@@ -252,6 +252,6 @@ if (!CMDS.includes(command)) {
 
 function fail(code: number, error: string | Error) {
   const message = typeof error === 'string' ? error : error.message;
-  log.info(`\n😞  ${message}\n`);
+  log.info(`\n😞  ${message}`);
   process.exit(code);
 }
