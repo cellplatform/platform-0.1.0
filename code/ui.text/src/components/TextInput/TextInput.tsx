@@ -1,5 +1,5 @@
+import * as React from 'react';
 import {
-  React,
   R,
   css,
   GlamorValue,
@@ -9,11 +9,7 @@ import {
   value as valueUtil,
   time,
 } from './common';
-import {
-  HtmlInput,
-  IInputValue,
-  DEFAULT_TEXT_STYLE,
-} from './components/HtmlInput';
+import { HtmlInput, IInputValue, DEFAULT_TEXT_STYLE } from './components/HtmlInput';
 import { ITextInputFocus, ITextInputStyle, ITextInputEvents } from './types';
 import { Text } from '../Text';
 
@@ -47,10 +43,7 @@ export type ITextInputState = {
 /**
  * A simple text input field.
  */
-export class TextInput extends React.PureComponent<
-  ITextInputProps,
-  ITextInputState
-> {
+export class TextInput extends React.PureComponent<ITextInputProps, ITextInputState> {
   public static DefaultTextStyle = DEFAULT.VALUE_STYLE;
   public static toTextCss = Text.toTextCss;
   public static measure = (props: ITextInputProps) => {
@@ -141,9 +134,7 @@ export class TextInput extends React.PureComponent<
     };
 
     const elPlaceholder = !hasValue && placeholder && (
-      <div {...css(placeholderStyle(this.props), styles.placeholder)}>
-        {placeholder}
-      </div>
+      <div {...css(placeholderStyle(this.props), styles.placeholder)}>{placeholder}</div>
     );
 
     return (
@@ -204,10 +195,7 @@ function toWidth(props: ITextInputProps) {
 
   let width = TextInput.measure(props).width;
   width = value === undefined || value === '' ? toMinWidth(props) : width;
-  width =
-    typeof maxWidth === 'number' && maxWidth !== -1 && width > maxWidth
-      ? maxWidth
-      : width;
+  width = typeof maxWidth === 'number' && maxWidth !== -1 && width > maxWidth ? maxWidth : width;
 
   const charWidth = TextInput.measure({ ...props, value: 'W' }).width;
   return width + charWidth; // NB: Adding an additional char-width prevents overflow jumping on char-enter.
@@ -240,8 +228,5 @@ function toInitialWidth(props: ITextInputProps) {
 function placeholderStyle(props: ITextInputProps) {
   const isEnabled = valueUtil.defaultValue(props.isEnabled, true);
   const { valueStyle = DEFAULT.VALUE_STYLE, placeholderStyle } = props;
-  return util.toTextInputCss(
-    isEnabled,
-    R.merge(R.clone(valueStyle), placeholderStyle),
-  );
+  return util.toTextInputCss(isEnabled, R.merge(R.clone(valueStyle), placeholderStyle));
 }

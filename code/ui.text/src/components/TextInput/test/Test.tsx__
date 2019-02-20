@@ -21,18 +21,12 @@ const actions = Actions
   // Test actions.
   .header('value')
   .add('short ("hello")', e => e.setState<S>({ value: 'hello' }))
-  .add('medium', e =>
-    e.setState<S>({ value: 'the quick brown fox jumps over the lazy dog.' }),
-  )
+  .add('medium', e => e.setState<S>({ value: 'the quick brown fox jumps over the lazy dog.' }))
   .add('long', e => e.setState<S>({ value: LOREM }))
 
   .header('style')
-  .add('fontFamily: default (Roboto)', e =>
-    e.setState<S>({ fontFamily: constants.ROBOTO.FAMILY }),
-  )
-  .add('fontFamily: monospace', e =>
-    e.setState<S>({ fontFamily: constants.MONOSPACE.FAMILY }),
-  )
+  .add('fontFamily: default (Roboto)', e => e.setState<S>({ fontFamily: constants.ROBOTO.FAMILY }))
+  .add('fontFamily: monospace', e => e.setState<S>({ fontFamily: constants.MONOSPACE.FAMILY }))
   .hr()
   .add('fontSize: 16', e => e.setState<S>({ fontSize: 16 }))
   .add('fontSize: 36', e => e.setState<S>({ fontSize: 36 }));

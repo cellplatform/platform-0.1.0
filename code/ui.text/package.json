@@ -14,7 +14,8 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@platform/react": "0.0.4"
+    "@platform/react": "^0.0.4",
+    "@platform/util.value": "^0.0.27"
   },
   "devDependencies": {
     "@platform/electron": "0.0.90",

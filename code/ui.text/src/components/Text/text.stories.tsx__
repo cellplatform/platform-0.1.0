@@ -21,15 +21,7 @@ describe('Text (Roboto)', { ...STORY })
   .add('uppercase', () => <Text uppercase={true}>{LOREM}</Text>)
   .add('events', () => {
     const text = `Events: ${LOREM}`;
-    return (
-      <Text
-        onClick={logEvent('onClick')}
-        onMouse={logEvent('onMouse')}
-        children={text}
-      />
-    );
+    return <Text onClick={logEvent('onClick')} onMouse={logEvent('onMouse')} children={text} />;
   });
 
-describe('Text (Monospace)', { ...STORY }).add('Monospace', () => (
-  <Monospace>{LOREM}</Monospace>
-));
+describe('Text (Monospace)', { ...STORY }).add('Monospace', () => <Monospace>{LOREM}</Monospace>);

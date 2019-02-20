@@ -1,5 +1,6 @@
+import * as React from 'react';
+
 import {
-  React,
   css,
   ITextProps,
   toTextCss,
@@ -49,11 +50,7 @@ export class Text extends React.PureComponent<ITextProps> {
   private mouse = mouse.fromProps(this.props);
 
   public render() {
-    const {
-      block = false,
-      isSelectable = true,
-      cursor = 'default',
-    } = this.props;
+    const { block = false, isSelectable = true, cursor = 'default' } = this.props;
     const styles = {
       base: css({
         display: block ? 'block' : 'inline-block',

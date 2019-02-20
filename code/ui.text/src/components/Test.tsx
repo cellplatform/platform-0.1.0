@@ -6,21 +6,9 @@ export const Test = () => {
     base: css({ padding: 30 }),
   };
 
-  const data = {
-    foo: 123,
-    bar: [1, 2, 3],
-    baz: {
-      text: 'hello',
-      number: 123,
-      flag: true,
-      date: new Date(),
-      null: null,
-      undefined: undefined,
-    },
-  };
-
   return (
     <div {...styles.base}>
+      Text
       <div />
     </div>
   );

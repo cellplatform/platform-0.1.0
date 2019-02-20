@@ -4,3 +4,4 @@ export { constants };
 export * from './libs';
 export * from './constants';
 export * from './util';
+export * from '../types';

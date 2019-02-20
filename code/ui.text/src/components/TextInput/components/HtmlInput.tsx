@@ -1,17 +1,7 @@
-import {
-  R,
-  React,
-  css,
-  color as colorUtil,
-  util,
-  GlamorValue,
-} from '../common';
-import {
-  ITextInputStyle,
-  TextInputMaskHandler,
-  ITextInputEvents,
-  ITextInputFocus,
-} from '../types';
+import * as React from 'react';
+
+import { R, css, color as colorUtil, util, GlamorValue } from '../common';
+import { ITextInputStyle, TextInputMaskHandler, ITextInputEvents, ITextInputFocus } from '../types';
 
 export const DEFAULT_TEXT_STYLE: ITextInputStyle = {
   opacity: 1,
@@ -31,10 +21,7 @@ export interface IInputValue {
   mask?: TextInputMaskHandler;
 }
 
-export interface IHtmlInputProps
-  extends ITextInputFocus,
-    ITextInputEvents,
-    IInputValue {
+export interface IHtmlInputProps extends ITextInputFocus, ITextInputEvents, IInputValue {
   isEnabled?: boolean;
   isPassword?: boolean;
   disabledOpacity?: number;
@@ -50,10 +37,7 @@ export interface IHtmlInputState {
 /**
  * A raw <input> element used within a <TextInput>.
  */
-export class HtmlInput extends React.PureComponent<
-  IHtmlInputProps,
-  IHtmlInputState
-> {
+export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputState> {
   public state: IHtmlInputState = {};
   private input: HTMLInputElement;
   private inputRef = (el: HTMLInputElement) => (this.input = el);
@@ -131,10 +115,7 @@ export class HtmlInput extends React.PureComponent<
         },
       } as any;
     }
-    styles.base = R.merge(
-      styles.base,
-      util.toTextInputCss(isEnabled, valueStyle),
-    );
+    styles.base = R.merge(styles.base, util.toTextInputCss(isEnabled, valueStyle));
     styles.base.opacity = isEnabled ? 1 : disabledOpacity;
 
     return (
