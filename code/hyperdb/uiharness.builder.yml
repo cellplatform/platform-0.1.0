@@ -1,0 +1,29 @@
+productName: hyperdb
+appId: platform.hyperdb.lib
+publish:
+  provider: github
+  owner: uiharness
+  repo: platform
+  vPrefixedTagName: true
+  releaseType: draft
+  publishAutoUpdate: true
+mac:
+  target:
+    - zip
+  artifactName: '${productName}-mac.${ext}'
+  icon: static/build/app.icns
+win:
+  target:
+    - zip
+  artifactName: '${productName}-win.${ext}'
+  icon: static/build/app.ico
+linux:
+  target:
+    - zip
+  category: Development
+  artifactName: '${productName}-linux.${ext}'
+files:
+  - .uiharness/.bundle/app.main/**
+  - .uiharness/.bundle/app.renderer/prod/**
+directories:
+  output: .uiharness/dist

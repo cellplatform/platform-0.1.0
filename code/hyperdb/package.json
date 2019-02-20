@@ -13,12 +13,13 @@
     "prepare": "yarn chmod && ts prepare",
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "@platform/electron": "0.0.92",
+    "@uiharness/electron": "0.3.128"
+  },
+  "devDependencies": {
     "@platform/ts": "3.3.54",
-    "@uiharness/dev": "0.1.24",
-    "@uiharness/electron": "0.3.126"
+    "@uiharness/dev": "0.1.25"
   },
   "resolutions": {
     "@types/react": "16.7.17"

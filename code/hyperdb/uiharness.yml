@@ -1,4 +1,4 @@
-name: "@platform/hyperdb"
+name: hyperdb
 
 electron:
   port: 8889
