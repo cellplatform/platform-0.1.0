@@ -1,7 +1,7 @@
 {
   "name": "@platform/state",
   "version": "0.0.0",
-  "description": "A strongly typed, rx/observable based adaptation of the Redux/Flux pattern.",
+  "description": "A strongly typed, rx/observable based adaptation of the redux state container pattern.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
   "scripts": {
