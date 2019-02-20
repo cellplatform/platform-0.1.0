@@ -86,7 +86,7 @@ Plus...for a scintillating break down of this open-source classic, treat yoursel
 API's will change (probably radically 🐷) prior to `1.0` release.
 
 - Rename
-  - [x] `@platform/util.react` ➡️ `@platform/react`
-  - [ ] `@platform/ts` ➡️ `@platform/ts.libs`
-  - [ ] `@platform/ts.cli` ➡️ `@platform/ts`
+  - [x] `@platform/util.react` ➡️ `@platform/react` (unpublish `util.react` from NPM)
+  - [x] `@platform/ts` ➡️ `@platform/ts.libs`
+  - [x] `@platform/ts.cli` ➡️ `@platform/ts` (unpublish `ts.cli` from NPM)
 

@@ -53,22 +53,22 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/log@0.0.74":
-  version "0.0.74"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.74.tgz#d7fc9a630e27690b688663e0483d23e84c985353"
-  integrity sha512-9TggsjWSouS7diguAQ59sLSh7ALJr5YofMgOzwpQ+gS+9MakOLB9SDlioFzfdenFIZj7ThaHKoMsV6YjPnqs2w==
+"@platform/log@0.0.75":
+  version "0.0.75"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.75.tgz#c6219342136fd189a72d6a1bfa32e2351544292c"
+  integrity sha512-xK0FaRKWjkXqSOlSCckn6Q9IyVtLe/KDp7KN05rTfGFlQuhLfMmsYXxyFKQP6wd0sE/RfHg1NagSHgNMBkW+nA==
   dependencies:
     "@platform/libs" "0.0.5"
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.1.tgz#0d9864f83bb2bcca5543c8e92d3dab35547424bd"
-  integrity sha512-2X/n4LiSrIpM55sXaB6USY4j1NrkXh9sqtYFX74gFzcQ8xE4f0Udytk1+wDfUBD4o3uExNABXOLkzoX/ZMKIRQ==
+"@platform/react@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.2.tgz#35749db6e859664dc7f0ff4028c58e6fdd502329"
+  integrity sha512-aJH8Pg0lNHEFm1yrS/WkZhnUIEhjag7DpVdv65FAcU9//txaQ/rtJEK1rs/xiXykvfAKKbzOtQMkENw39inb3A==
   dependencies:
-    "@platform/util.css" "0.0.24"
-    "@platform/util.is" "0.0.23"
+    "@platform/util.css" "0.0.25"
+    "@platform/util.is" "0.0.24"
     "@types/react" "16.7.17"
     "@types/react-dom" "16.8.1"
     react "16.8.2"
@@ -98,10 +98,10 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
-"@platform/ts@3.3.50":
-  version "3.3.50"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.50.tgz#851d89984040ebdc2cfca53faac5291f783500a2"
-  integrity sha512-ERwR7eMZEvVw5uA8fI0bIzq8RlY2G3JaFKKJDm4goZJYqy3QuWUlbV7M86U5ENlcUMncz/InuaeNAPDnEit2kQ==
+"@platform/ts@3.3.51":
+  version "3.3.51"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.51.tgz#fd5cfbb2f285e36c221b69db8f1b60e50cfcca83"
+  integrity sha512-o73IKoeF+mqO4IqCTyRZ0u0fPo+hR83sXb5X30EC9XwF+L1fde3sk14h02EhlEuCrqYvEEWgwqiza01NcKicTg==
   dependencies:
     "@platform/cli" "0.0.51"
     "@platform/fs" "0.0.34"
@@ -109,14 +109,14 @@
     "@platform/ts.libs" "3.3.0"
     "@platform/util.exec" "0.0.12"
 
-"@platform/util.css@0.0.24":
-  version "0.0.24"
-  resolved "https://registry.yarnpkg.com/@platform/util.css/-/util.css-0.0.24.tgz#2a2105619f33d7badf1dd2ca68289341f7aeaf21"
-  integrity sha512-Tuy/F498ZgaZMUiB9M43mbwL2pj056Aq3+kKdXIznqF0t1lw8NjMlTXm/SMNim2cckIFkNc8A36x7mA3LKSWJg==
+"@platform/util.css@0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@platform/util.css/-/util.css-0.0.25.tgz#8aeb228a713148f66be8631ff904298cef47802c"
+  integrity sha512-xz29xKpXeYK3E7atnuffkiUMermN9jtckR22f+jJ3u8m2V/7PCf8/mE8ZP/IXapBvp9oUhDo+CDZfD9TErwLHg==
   dependencies:
     "@platform/libs" "0.0.5"
-    "@platform/util.is" "0.0.23"
-    "@platform/util.value" "0.0.24"
+    "@platform/util.is" "0.0.24"
+    "@platform/util.value" "0.0.25"
     "@types/tinycolor2" "^1.4.1"
     glamor "2.20.40"
     tinycolor2 "^1.4.1"
@@ -133,18 +133,18 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/util.is@0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.23.tgz#4b469c7bddf3fc6a2502abcb2897417ee3eb30d0"
-  integrity sha512-Vjf1EH1fAtth7FTjbbtydkyd5wdra3++m7rdHto5bJmu27l2BwQu446p6d1DhWsqVn1mFWLAHHiJNOedLGAAmw==
-
-"@platform/util.value@0.0.24":
+"@platform/util.is@0.0.24":
   version "0.0.24"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.24.tgz#88b0e534b4c83a403ed1b6a0e5a4688f19dfd6bb"
-  integrity sha512-TQkMHFluEgR3MQlpomKluAqrMkHAdqIpfOhZtkCrRlS/jtk7LZvlF60IaYxGNqxqhIiD1GNu++YcnHQFh7vTeQ==
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.24.tgz#26af94e187617a4c6a42ede4916a66b1d49940a8"
+  integrity sha512-iUsJccrzGmS9F5ZpSwbhy5Y8tVSO6MRB6DIeoip7wyHLPxfPRQljVjWOqfufeawpQimgDFQq9a51ygxAM50AFg==
+
+"@platform/util.value@0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.25.tgz#ada561af00e238758e1c47eef0e3a0280d2b4998"
+  integrity sha512-dw7R1EWXhB+nZhofaGUYSKFBRYsJ1bIg1tuzTO78F74TF4hHbA4jkUvoK6SpP9e401CqEOHs6l+Oy9J7S1x4hg==
   dependencies:
     "@platform/libs" "0.0.5"
-    "@platform/util.is" "0.0.23"
+    "@platform/util.is" "0.0.24"
     "@types/semver" "5.5.0"
     cuid "2.1.6"
     dayjs "1.8.6"

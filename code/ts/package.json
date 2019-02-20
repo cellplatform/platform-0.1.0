@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts",
-  "version": "3.3.50",
+  "version": "3.3.51",
   "description": "TypesScript build, prepare and publish toolchain.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -31,7 +31,8 @@
   "files": [
     "lib",
     "bin.js",
-    "*.json"
+    "tsconfig.json",
+    "tslint.json"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"

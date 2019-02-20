@@ -1,7 +1,7 @@
 {
   "name": "@platform/hyperdb",
   "description": "Electron enabled interface to hyperdb.",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -17,7 +17,7 @@
     "@uiharness/electron": "0.3.126"
   },
   "devDependencies": {
-    "@platform/electron": "^0.0.87",
+    "@platform/electron": "^0.0.88",
     "@platform/ts.cli": "^3.3.45",
     "@uiharness/dev": "0.1.23"
   },
