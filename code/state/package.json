@@ -1,0 +1,29 @@
+{
+  "name": "@platform/state",
+  "version": "0.0.0",
+  "description": "A strongly typed, rx/observable based adaptation of the Redux/Flux pattern.",
+  "main": "./lib/index",
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "test": "yarn chmod && ts test",
+    "tdd": "yarn chmod && ts test --watch",
+    "lint": "yarn chmod && ts lint",
+    "build": "yarn chmod && ts build",
+    "prepare": "yarn chmod && ts prepare",
+    "chmod": "chmod 777 node_modules/.bin/ts"
+  },
+  "dependencies": {
+    "@platform/util.value": "0.0.24"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.27",
+    "@platform/ts.cli": "3.3.45",
+    "@types/sinon": "7.0.6",
+    "sinon": "7.2.4"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": "uiharness/platform",
+  "license": "MIT"
+}

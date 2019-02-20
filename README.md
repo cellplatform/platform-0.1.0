@@ -65,6 +65,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/ui.object](/code/ui.object)
   - [@platform/ui.editor](/code/ui.editor)
 - state
+  - [@platform/state](/code/state)
   - [@platform/hyperdb](/code/hyperdb)
 
 
