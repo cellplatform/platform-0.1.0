@@ -1,25 +1,37 @@
 {
-  "name": "@platform/ts",
-  "version": "3.3.42",
-  "description": "Common TypesScript and linter configuration.",
+  "name": "@platform/ts.cli",
+  "version": "3.3.45",
+  "description": "TypesScript tools.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "bin": {
+    "ts": "bin.js"
+  },
   "scripts": {
-    "test": "echo no-op",
-    "lint": "sh lint.sh $@",
-    "build": "sh build.sh $@",
-    "prepare": "yarn build && yarn lint"
+    "test": "node bin test",
+    "lint": "node bin lint",
+    "build": "sh sh/build.sh $@",
+    "prepare": "yarn build && yarn lint && yarn test",
+    "tmp": "node bin $@",
+    "example": "node lib/example/bin",
+    "e": "yarn example $@",
+    "example-pub": "node bin publish --outDir tmp/dist",
+    "clean": "sh sh/clean.sh",
+    "examples": "node lib/example/examples"
   },
   "dependencies": {
-    "@types/node": "11.9.4",
-    "prettier": "1.16.4",
-    "ts-node": "8.0.2",
-    "tslib": "1.9.3",
-    "tslint": "5.12.1",
-    "tslint-config-prettier": "1.18.0",
-    "tslint-react": "3.6.0",
-    "typescript": "3.3.3"
+    "@platform/cli": "0.0.51",
+    "@platform/fs": "0.0.34",
+    "@platform/libs": "0.0.5",
+    "@platform/ts.libs": "3.3.0",
+    "@platform/util.exec": "0.0.12"
+  },
+  "devDependencies": {
+    "@types/yargs": "12.0.9"
   },
   "files": [
-    "*.sh",
+    "lib",
+    "bin.js",
     "*.json"
   ],
   "repository": "uiharness/platform",

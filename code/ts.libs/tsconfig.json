@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "outDir": "lib",
+    "module": "commonjs",
+    "target": "es5",
+    "declaration": false,
+    "sourceMap": false,
+    "moduleResolution": "node",
+    "isolatedModules": false,
+    "importHelpers": true,
+    "jsx": "react",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "removeComments": true,
+    "skipLibCheck": true,
+    "pretty": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": true
+  }
+}

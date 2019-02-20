@@ -13,7 +13,7 @@ echo no-op
 # test test
 
 # test ts
-# test ts.cli
+# test ts.libs
 
 # test cli
 # test fs

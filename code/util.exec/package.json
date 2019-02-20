@@ -24,7 +24,7 @@
   "devDependencies": {
     "@platform/fs": "0.0.34",
     "@platform/test": "0.0.27",
-    "@platform/ts": "3.3.42",
+    "@platform/ts.libs": "3.3.0",
     "@types/ansi-regex": "4.0.0"
   },
   "files": [
