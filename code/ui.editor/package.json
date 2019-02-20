@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.editor",
   "description": "Rich text/markdown editor for web and electron.",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,12 +14,12 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@platform/react": "0.0.5",
+    "@platform/react": "0.0.6",
     "react-inspector": "2.3.1"
   },
   "devDependencies": {
-    "@platform/electron": "0.0.91",
-    "@platform/ts": "3.3.53",
+    "@platform/electron": "0.0.92",
+    "@platform/ts": "3.3.54",
     "@uiharness/dev": "0.1.24"
   },
   "resolutions": {
