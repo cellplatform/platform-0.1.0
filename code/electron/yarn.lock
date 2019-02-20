@@ -62,10 +62,10 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.4.tgz#be473ac65c366b62d6535882e7d1b7310cef96ff"
-  integrity sha512-RZxheKgc451WsjM4GByRQS1/V3aQQCFY8U/bgWk5jeuVQ/ZjacyP1+YH+JfI3KYkpCwJHOHFdizmUDIQJC2jNQ==
+"@platform/react@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.5.tgz#e818c2270c9afbff7f9ba1a258c88984f165973b"
+  integrity sha512-5XUq/gXMAJVneXEEGbWYzBcCi0pn2gcjg0QzfYSTo8L1XqdaJRD+fYhZeJmvVDDddxlDjwNmrM7MWyoQhSKBnQ==
   dependencies:
     "@platform/util.css" "0.0.27"
     "@platform/util.is" "0.0.26"

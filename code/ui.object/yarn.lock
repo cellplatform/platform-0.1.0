@@ -849,15 +849,15 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/electron@0.0.90":
-  version "0.0.90"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.90.tgz#b0d6749d876b96cd8669b02df536d0348d38892f"
-  integrity sha512-0t2drgZrJ4eAuNLqbH7yztPonf6bTt8O2JsKvUc71ISmxjxAMpBIFFTSrmZBCzmYpptMDOoESF6bdLcKZTlh0Q==
+"@platform/electron@0.0.91":
+  version "0.0.91"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.91.tgz#25ed3e4eec2fbf7a6139198c3fa2a2d3093dddf0"
+  integrity sha512-wmuydcW6GzTpZdzyuTjdUD1j0pfXUxUhH0KCi/PM4xAELROLzSpCdLGl4w79bhch9RyCticUOulQz+tOsHWG9w==
   dependencies:
     "@babel/polyfill" "7.2.5"
     "@platform/fs" "0.0.35"
     "@platform/log" "0.0.77"
-    "@platform/react" "0.0.4"
+    "@platform/react" "0.0.5"
     "@platform/util.is" "0.0.26"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.1.0"
@@ -924,10 +924,10 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.4.tgz#be473ac65c366b62d6535882e7d1b7310cef96ff"
-  integrity sha512-RZxheKgc451WsjM4GByRQS1/V3aQQCFY8U/bgWk5jeuVQ/ZjacyP1+YH+JfI3KYkpCwJHOHFdizmUDIQJC2jNQ==
+"@platform/react@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.5.tgz#e818c2270c9afbff7f9ba1a258c88984f165973b"
+  integrity sha512-5XUq/gXMAJVneXEEGbWYzBcCi0pn2gcjg0QzfYSTo8L1XqdaJRD+fYhZeJmvVDDddxlDjwNmrM7MWyoQhSKBnQ==
   dependencies:
     "@platform/util.css" "0.0.27"
     "@platform/util.is" "0.0.26"

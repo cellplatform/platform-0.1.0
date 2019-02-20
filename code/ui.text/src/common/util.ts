@@ -1,5 +1,5 @@
 import { ITextStyle } from '../types';
-import {  color as colorUtil } from './libs';
+import { color as colorUtil } from './libs';
 import { ROBOTO } from './constants';
 
 /**
