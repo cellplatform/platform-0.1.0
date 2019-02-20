@@ -1,6 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_shield)
 [![Build Status](https://travis-ci.org/uiharness/platform.svg?branch=master)](https://travis-ci.org/uiharness/platform)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_shield)
 [![title](https://user-images.githubusercontent.com/185555/53066725-00d55d80-3536-11e9-9b22-e7286a9a4afc.png)](https://uiharness.com)
 
 [Monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
@@ -86,7 +86,7 @@ Plus...for a scintillating break down of this open-source classic, treat yoursel
 API's will change (probably radically 🐷) prior to `1.0` release.
 
 - Rename
-  - [ ] `@platform/util.react` ➡️ `@platform/react`
+  - [x] `@platform/util.react` ➡️ `@platform/react`
   - [ ] `@platform/ts` ➡️ `@platform/ts.libs`
   - [ ] `@platform/ts.cli` ➡️ `@platform/ts`
 
