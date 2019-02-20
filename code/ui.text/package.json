@@ -1,0 +1,32 @@
+{
+  "name": "@platform/ui.text",
+  "description": "Text components.",
+  "version": "0.0.0",
+  "main": "lib/index",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "yarn chmod && ts test",
+    "tdd": "yarn chmod && ts test --watch",
+    "lint": "yarn chmod && ts lint",
+    "build": "yarn chmod && ts build",
+    "prepare": "yarn chmod && ts prepare",
+    "chmod": "chmod 777 node_modules/.bin/ts"
+  },
+  "dependencies": {
+    "@platform/react": "0.0.4"
+  },
+  "devDependencies": {
+    "@platform/electron": "0.0.90",
+    "@platform/ts": "3.3.53",
+    "@uiharness/dev": "0.1.13"
+  },
+  "resolutions": {
+    "@types/react": "16.7.17"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": "uiharness/platform",
+  "license": "MIT"
+}
