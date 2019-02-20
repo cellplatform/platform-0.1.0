@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.27",
-    "@platform/ts.cli": "3.3.45",
+    "@platform/ts": "3.3.50",
     "@types/escape-string-regexp": "^1.0.0"
   },
   "files": [

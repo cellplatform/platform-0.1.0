@@ -8,10 +8,11 @@
     "ts": "bin.js"
   },
   "scripts": {
+    "copy-config": "sh sh/copy-config.sh",
     "test": "node bin test",
     "lint": "node bin lint",
     "build": "sh sh/build.sh $@",
-    "prepare": "yarn build && yarn lint && yarn test",
+    "prepare": "yarn clean && yarn copy-config && yarn build && yarn lint && yarn test",
     "tmp": "node bin $@",
     "example": "node lib/example/bin",
     "e": "yarn example $@",

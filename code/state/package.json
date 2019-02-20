@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.27",
-    "@platform/ts.cli": "3.3.45",
+    "@platform/ts": "3.3.50",
     "@types/sinon": "7.0.6",
     "sinon": "7.2.4"
   },

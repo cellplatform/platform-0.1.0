@@ -1,5 +1,5 @@
 {
-  "name": "hyperdb",
+  "name": "@platform/hyperdb",
   "description": "Electron enabled interface to hyperdb.",
   "version": "0.0.0",
   "main": "lib/index",

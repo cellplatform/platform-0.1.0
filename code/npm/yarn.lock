@@ -64,21 +64,10 @@
     chai "4.2.0"
     mocha "5.2.0"
 
-"@platform/ts.cli@3.3.45":
-  version "3.3.45"
-  resolved "https://registry.yarnpkg.com/@platform/ts.cli/-/ts.cli-3.3.45.tgz#9f4a8e2dd32f5f1ac1124f7c422dfb538b8707c8"
-  integrity sha512-1kJYMivH9bp86iPQmj/gLepIwXtT4R97KTydBse2AblSRjrPd7lSK7Lp6TbD9T9ghJGCFxrIljAdWxCrtB6hBQ==
-  dependencies:
-    "@platform/cli" "0.0.51"
-    "@platform/fs" "0.0.34"
-    "@platform/libs" "0.0.5"
-    "@platform/ts" "3.3.42"
-    "@platform/util.exec" "0.0.12"
-
-"@platform/ts@3.3.42":
-  version "3.3.42"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.42.tgz#7091980a6d8762c02bab87ba67b8c08c2f3e6b4d"
-  integrity sha512-+9KaFaCDIMmq7IAM+eQqXDARvL13EBWj2MjF5HSHBb8QSJWKvRMcUPUGZCIJmgxpgKXoziKTG2WX3qnGiOWHhg==
+"@platform/ts.libs@3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.3.0.tgz#c9a2940bd9089624c21cd0085cf375e27fa64f13"
+  integrity sha512-cBRBpE2EwCOnQapzcEqsehpTpND+2Y23giPnNbqrq1PmkK+6BTeYAtZugkHPIcnop65z1e0W1vswSdjUkJ1S1g==
   dependencies:
     "@types/node" "11.9.4"
     prettier "1.16.4"
@@ -88,6 +77,17 @@
     tslint-config-prettier "1.18.0"
     tslint-react "3.6.0"
     typescript "3.3.3"
+
+"@platform/ts@3.3.50":
+  version "3.3.50"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.50.tgz#851d89984040ebdc2cfca53faac5291f783500a2"
+  integrity sha512-ERwR7eMZEvVw5uA8fI0bIzq8RlY2G3JaFKKJDm4goZJYqy3QuWUlbV7M86U5ENlcUMncz/InuaeNAPDnEit2kQ==
+  dependencies:
+    "@platform/cli" "0.0.51"
+    "@platform/fs" "0.0.34"
+    "@platform/libs" "0.0.5"
+    "@platform/ts.libs" "3.3.0"
+    "@platform/util.exec" "0.0.12"
 
 "@platform/util.exec@0.0.12":
   version "0.0.12"
