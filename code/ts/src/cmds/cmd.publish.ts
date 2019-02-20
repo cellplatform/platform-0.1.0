@@ -25,6 +25,7 @@ export async function publish(
   const modules = fs.join(dir, 'node_modules');
   // const outDir = fs.resolve('.publish');
 
+  // tslint:disable
   console.group('\n\n🐷  TODO publish\n');
   console.log('modules', modules);
   console.log('tsconfig', tsconfig);

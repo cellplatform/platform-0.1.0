@@ -46,15 +46,13 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 ## Modules
 
+- [@platform/ts](/code/ts) 
 - [@platform/fs](/code/fs)
 - [@platform/cli](/code/cli)
 - [@platform/test](/code/test)
 - [@platform/log](/code/log)
 - [@platform/electron](/code/electron)
 - [@platform/react](/code/react)
-- typescript
-  - [@platform/ts](/code/ts) 
-  - [@platform/ts.cli](/code/ts.cli) 
 - util
   - [@platform/util](/code/util)
   - [@platform/util.css](/code/util.css)
@@ -75,7 +73,9 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 ## License
 It's [MIT](LICENSE) all the way!  
-Plus...for a scintillating break down of this open-source classic, treat yourself to **Kyle E. Mitchell's** "[The MIT License, line-by-line. 171 words every programmer should understand.](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html)"
+
+Plus...for a scintillating break down of this open-source classic, treat yourself to **Kyle E. Mitchell's**  
+"[The MIT License, line-by-line. 171 words every programmer should understand.](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html)"
 
 <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_large" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=large"/></a>
 
@@ -86,7 +86,7 @@ Plus...for a scintillating break down of this open-source classic, treat yoursel
 API's will change (probably radically 🐷) prior to `1.0` release.
 
 - Rename
-  - [x] `@platform/util.react` ➡️ `@platform/react`
-  - [ ] `@platform/ts` ➡️ `@platform/ts.libs`
-  - [ ] `@platform/ts.cli` ➡️ `@platform/ts`
+  - [x] `@platform/util.react` ➡️ `@platform/react` (unpublish `util.react` from NPM)
+  - [x] `@platform/ts` ➡️ `@platform/ts.libs`
+  - [x] `@platform/ts.cli` ➡️ `@platform/ts` (unpublish `ts.cli` from NPM)
 

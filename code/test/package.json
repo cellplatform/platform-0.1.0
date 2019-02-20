@@ -1,14 +1,14 @@
 {
   "name": "@platform/test",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "description": "Configuration module containing test related modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "sh test.sh $@",
     "tdd": "yarn test --watch",
-    "lint": "sh node_modules/@platform/ts/lint.sh $@",
-    "build": "sh node_modules/@platform/ts/build.sh $@",
+    "lint": "sh node_modules/@platform/ts.libs/lint.sh $@",
+    "build": "sh node_modules/@platform/ts.libs/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
@@ -18,7 +18,7 @@
     "mocha": "5.2.0"
   },
   "devDependencies": {
-    "@platform/ts": "3.3.42"
+    "@platform/ts.libs": "3.3.1"
   },
   "files": [
     "lib",
