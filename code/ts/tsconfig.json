@@ -1,5 +1,5 @@
 {
-  "extends": "./node_modules/@platform/ts/tsconfig.json",
+  "extends": "./node_modules/@platform/ts.libs/tsconfig.json",
   "include": ["src"],
   "compilerOptions": {
     "outDir": "lib"
