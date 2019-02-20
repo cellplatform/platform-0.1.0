@@ -17,7 +17,7 @@
   "devDependencies": {
     "@platform/electron": "0.0.91",
     "@platform/ts": "3.3.53",
-    "@uiharness/dev": "0.1.23",
+    "@uiharness/dev": "0.1.24",
     "@uiharness/electron": "0.3.126"
   },
   "resolutions": {
