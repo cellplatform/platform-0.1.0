@@ -75,7 +75,9 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 ## License
 It's [MIT](LICENSE) all the way!  
-Plus...for a scintillating break down of this open-source classic, treat yourself to **Kyle E. Mitchell's** "[The MIT License, line-by-line. 171 words every programmer should understand.](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html)"
+
+Plus...for a scintillating break down of this open-source classic, treat yourself to **Kyle E. Mitchell's**  
+"[The MIT License, line-by-line. 171 words every programmer should understand.](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html)"
 
 <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_large" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=large"/></a>
 
