@@ -273,7 +273,7 @@ function isNil(value: any) {
 function formatWatchPatterns(pattern: string[]) {
   const asWildcard = (pattern: string) => (pattern === '' ? '*' : pattern);
   pattern = Array.isArray(pattern) ? pattern : [pattern];
-  pattern = pattern.length === 0 ? [''] : pattern; // Watch for all changes if no specific paths were given.
+  pattern = pattern.length === 0 ? ['*'] : pattern; // NB: Watch for all changes if no specific paths were given.
   pattern = pattern.map(p => p.trim()).map(p => asWildcard(p));
   return pattern;
 }
