@@ -30,15 +30,42 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const db = (this.db = res.db);
     const swarm = (this.swarm = res.swarm);
 
+    // const { dbKey, localKey } = res;
+    // this.setData({
+    //   dbKey: res.dbKey,
+    //   localKey: res.localKey,
+    // });
     console.group('🌳 HyperDB');
     console.log('- dbKey:', res.dbKey);
     console.log('- localKey:', res.localKey);
     console.groupEnd();
 
     db.watch().watch$.subscribe(async e => {
-      const version = await db.version();
-      const watching = db.watching;
-      this.setData({ version, watching, [e.key]: e.value });
+      // const version = await db.version();
+      // const watching = db.watching;
+      // this.setData({ watching, [e.key]: e.value });
+      this.setPropData(e.key, e.value);
+    });
+
+    swarm.events$.subscribe(e => this.updateData());
+    this.updateData();
+  };
+
+  private updateData = async () => {
+    const db = this.db;
+    const swarm = this.swarm;
+    this.setData({
+      db: {
+        dbKey: db.key.toString('hex'),
+        localKey: db.local.key.toString('hex'),
+        version: await db.version(),
+        watching: db.watching,
+      },
+      swarm: {
+        id: swarm.id,
+        isActive: swarm.isActive,
+        connections: await swarm.connections(),
+      },
     });
   };
 
@@ -80,7 +107,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
             </ul>
           </div>
           <div {...styles.right}>
-            <ObjectView name={'db'} data={this.state.data} expandLevel={2} />
+            <ObjectView name={'state'} data={this.state.data} expandPaths={['$.values']} />
           </div>
         </div>
       </TestPanel>
@@ -92,7 +119,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const res = await this.db.get('foo');
     // console.log('get:', res);
     this.count = res.value || 0;
-    this.setData({ foo: res.value });
+    this.setPropData('foo', res.value);
   };
   private putValue = (key: string) => {
     return async () => {
@@ -107,7 +134,18 @@ export class Test extends React.PureComponent<{}, ITestState> {
   private deleteValue = async () => {
     const res = await this.db.del('foo');
     // console.log('del:', res);
-    this.setData({ foo: res.value });
+    // this.setData({ foo: res.value });
+    this.setPropData('foo', res.value);
+  };
+
+  private setPropData = (key: string | number | symbol, value: any) => {
+    const values = { ...(this.state.data.values || {}), [key]: value };
+    this.setData({ values });
+    // Object.keys(obj).forEach(key => {
+    //   data = { ...data, [key]: obj[key] };
+    // });
+    // data = value.deleteUndefined(data);
+    // this.setState({ data });
   };
 
   private setData = (obj: {}) => {

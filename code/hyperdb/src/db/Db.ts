@@ -41,7 +41,7 @@ export class Db<D extends object = any> {
   /**
    * [Fields]
    */
-  public _ = {
+  private _ = {
     db: null as any,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),

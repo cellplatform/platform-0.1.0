@@ -170,6 +170,34 @@ export class Swarm {
   }
 
   /**
+   * Details about current connection state.
+   */
+  public async connections() {
+    const { swarm, db } = this._;
+    if (!swarm) {
+      return { current: -1, peers: [] };
+    }
+
+    const peerKeys: Buffer[] = swarm.connections
+      .map((peer: t.IProtocol) => peer.remoteUserData)
+      .filter((userData: any) => Boolean(userData))
+      .map((userData: any) => Buffer.from(userData));
+
+    const peers = await Promise.all(
+      peerKeys.map(async peerKey => {
+        const isAuthorized = await db.isAuthorized(peerKey);
+        const key = peerKey.toString('hex');
+        return { key, isAuthorized };
+      }),
+    );
+
+    return {
+      total: peers.length,
+      peers,
+    };
+  }
+
+  /**
    * [INTERNAL]
    */
   private fireError(error: Error) {
