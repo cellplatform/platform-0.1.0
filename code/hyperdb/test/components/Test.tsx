@@ -24,17 +24,12 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const { id } = this.context;
     const dir = `.db/db-tmp-${id}`;
     const dbKey =
-      id > 1 ? '59c661482b7719d6033de25438f1dd6597cc07d873ef988e136a54089aeb8ccc' : undefined;
+      id > 1 ? '4a1e914a33a9b2a6e4f5769f0cd73e308e33ec8cf86a804b74cda010c1aeed62' : undefined;
 
     const res = await main.init({ dir, dbKey });
     const db = (this.db = res.db);
     const swarm = (this.swarm = res.swarm);
 
-    // const { dbKey, localKey } = res;
-    // this.setData({
-    //   dbKey: res.dbKey,
-    //   localKey: res.localKey,
-    // });
     console.group('🌳 HyperDB');
     console.log('- dbKey:', res.dbKey);
     console.log('- localKey:', res.localKey);
@@ -54,8 +49,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const swarm = this.swarm;
     this.setData({
       db: {
-        dbKey: db.key.toString('hex'),
-        localKey: db.localKey.toString('hex'),
+        dbKey: db.buffer.key.toString('hex'),
+        localKey: db.buffer.localKey.toString('hex'),
         version: await db.version(),
         watching: db.watching,
       },

@@ -2,28 +2,7 @@ export * from './db/types';
 export * from './swarm/types';
 
 /**
- * [Database]
- */
-
-export type IDbValueMeta<K> = {
-  key: K;
-  exists: boolean;
-  deleted: boolean;
-  clock: number[];
-  feed: number;
-  seq: number;
-  path: number[];
-  inflate: number;
-  trie: any;
-};
-
-export type IDbValue<K, V> = {
-  value: V | undefined;
-  meta: IDbValueMeta<K>;
-};
-
-/**
- * [Swarm]
+ * [Network]
  */
 
 type Bitfield = any;
@@ -55,14 +34,6 @@ export type IFeed = {
   closed: false;
 };
 
-export type ISwarmOptions = {
-  id: string;
-  stream: (peer: IPeer) => IProtocol;
-  utp: boolean;
-  tcp: boolean;
-  maxConnections: number;
-  whitelist: string[];
-};
 
 export type IPeer = {
   channel: Buffer;

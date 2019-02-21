@@ -1,11 +1,25 @@
 export * from '../types';
-import { IProtocol } from '../types';
+import { IProtocol, IPeer } from '../types';
 
+/**
+ * [Configuration]
+ */
+export type ISwarmOptions = {
+  id: string;
+  stream: (peer: IPeer) => IProtocol;
+  utp: boolean;
+  tcp: boolean;
+  maxConnections: number;
+  whitelist: string[];
+};
+
+/**
+ * [Connections]
+ */
 export type ISwarmConnections = {
   total: number;
   peers: ISwarmConnectionPeer[];
 };
-
 export type ISwarmConnectionPeer = {
   id: string;
   isAuthorized: boolean;

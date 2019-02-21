@@ -71,17 +71,16 @@ export class Db<D extends object = any> {
   /**
    * [Properties]
    */
-  public get key(): Buffer {
-    return this._.db.key;
+  public get key(): string {
+    return this.buffer.key.toString('hex');
   }
 
-  public get discoveryKey(): Buffer {
-    return this._.db.discoveryKey;
+  public get discoveryKey(): string {
+    return this.buffer.discoveryKey.toString('hex');
   }
 
-  public get localKey(): Buffer {
-    const local = this._.db.local as t.IFeed;
-    return local.key;
+  public get localKey(): string {
+    return this.buffer.localKey.toString('hex');
   }
 
   public get buffer() {
@@ -116,7 +115,7 @@ export class Db<D extends object = any> {
     //    https://github.com/karissa/hyperdiscovery/pull/12#pullrequestreview-95597621
     //    https://github.com/cblgh/hyperdb-examples
     //
-    const userData = this.localKey;
+    const userData = this.buffer.localKey;
 
     return this._.db.replicate({ live, userData });
   }

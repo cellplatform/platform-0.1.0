@@ -34,7 +34,7 @@ export class Swarm {
    */
   private constructor(args: SwarmArgs) {
     const { db, join = false, autoAuth = false } = args;
-    this.id = db.key.toString('hex');
+    this.id = db.buffer.key.toString('hex');
     this._.db = db;
 
     // Create and join the swarm.

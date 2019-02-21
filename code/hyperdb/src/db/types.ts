@@ -1,6 +1,26 @@
 export * from '../types';
 
 /**
+ * [Value]
+ */
+export type IDbValueMeta<K> = {
+  key: K;
+  exists: boolean;
+  deleted: boolean;
+  clock: number[];
+  feed: number;
+  seq: number;
+  path: number[];
+  inflate: number;
+  trie: any;
+};
+
+export type IDbValue<K, V> = {
+  value: V | undefined;
+  meta: IDbValueMeta<K>;
+};
+
+/**
  * [Events]
  */
 export type DbEvent = IDbErrorEvent | IDbWatchEvent;

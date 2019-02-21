@@ -23,8 +23,8 @@ export async function init(args: {
   const swarm = await Swarm.create({ db, autoAuth, join });
 
   return {
-    dbKey: db.key.toString('hex'),
-    localKey: db.localKey.toString('hex'),
+    dbKey: db.buffer.key.toString('hex'),
+    localKey: db.buffer.localKey.toString('hex'),
     db,
     swarm,
     dir,
