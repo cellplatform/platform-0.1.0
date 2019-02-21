@@ -84,6 +84,8 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
  *
  * To access the context deep within the React tree add a `contextType`:
  *
+ *      import renderer from '@platform/electron/lib/renderer';
+ *
  *      export class MyView extends React.PureComponent {
  *        public static contextType = renderer.Context;
  *        public context!: renderer.ReactContext

@@ -1,1 +1,1 @@
-// module-entry.
+export * from './types';

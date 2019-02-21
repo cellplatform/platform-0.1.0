@@ -18,7 +18,7 @@ export class Test extends React.PureComponent<{}, IState> {
   public render() {
     return (
       <div style={{ paddingLeft: 25 }}>
-        <h1>hyperdb!</h1>
+        <h1>Hello World!</h1>
         <ul>
           <li>
             <Button label={'Increment'} onClick={this.increment(1)} />
