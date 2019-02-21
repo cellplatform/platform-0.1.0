@@ -82,22 +82,23 @@ export class Test extends React.PureComponent<{}, ITestState> {
   private count = 0;
   private getValue = async () => {
     const res = await this.db.get('foo');
-    console.log('get:', res);
+    // console.log('get:', res);
     this.count = res.value || 0;
     this.setData({ foo: res.value });
   };
   private putValue = (key: string) => {
     return async () => {
+      await this.getValue();
       this.count++;
       const res = await this.db.put(key, this.count);
-      console.log('put:', res);
+      // console.log('put:', res);
       this.count = res.value || 0;
     };
   };
 
   private deleteValue = async () => {
     const res = await this.db.del('foo');
-    console.log('del:', res);
+    // console.log('del:', res);
     this.setData({ foo: res.value });
   };
 
