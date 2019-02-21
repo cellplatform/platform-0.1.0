@@ -175,7 +175,7 @@ export class Swarm {
   public async connections() {
     const { swarm, db } = this._;
     if (!swarm) {
-      return { current: -1, peers: [] };
+      return { current: 0, peers: [] };
     }
 
     type IPeerInfo = { id: string; isAuthorized: boolean };
