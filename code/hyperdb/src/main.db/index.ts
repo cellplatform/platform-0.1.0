@@ -1,4 +1,4 @@
-import { HyperDb } from './HyperDb';
+import { Db } from './Db';
 import { Swarm } from './Swarm';
 
-export { HyperDb, Swarm };
+export { Db as HyperDb, Swarm };

@@ -15,20 +15,27 @@ type WatcherRef = { destroy: () => void };
  *  - https://github.com/mafintosh/hyperdb#api
  *
  */
-export class HyperDb<D extends object = any> {
+export class Db<D extends object = any> {
   /**
    * [Static]
    */
   public static create<D extends object = any>(args: { storage: string; dbKey?: string }) {
     const reduce = (a: any, b: any) => a;
-    return new Promise<HyperDb<D>>((resolve, reject) => {
+    return new Promise<Db<D>>((resolve, reject) => {
       const { storage, dbKey } = args;
       const options = { valueEncoding: 'utf-8', reduce };
       const db = args.dbKey ? hyperdb(storage, dbKey, options) : hyperdb(storage, options);
       db.on('ready', () => {
-        resolve(new HyperDb<D>({ db }));
+        resolve(new Db<D>(db));
       });
     });
+  }
+
+  /**
+   * [Constructor]
+   */
+  private constructor(hyperdb: any) {
+    this._.db = hyperdb;
   }
 
   /**
@@ -50,13 +57,6 @@ export class HyperDb<D extends object = any> {
     map(e => e.payload as t.IDbWatchEvent<D>['payload']),
     share(),
   );
-
-  /**
-   * [Constructor]
-   */
-  private constructor(args: { db: any }) {
-    this._.db = args.db;
-  }
 
   /**
    * Disposes of the object and stops all related observables.

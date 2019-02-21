@@ -2,13 +2,13 @@ import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import * as t from '../types';
-import { HyperDb } from './HyperDb';
+import { Db } from './Db';
 import swarmDefaults from './Swarm.defaults';
 
 const discovery = require('discovery-swarm');
 
 type SwarmArgs = {
-  db: HyperDb;
+  db: Db;
   autoAuth?: boolean;
   join?: boolean;
 };
@@ -33,7 +33,7 @@ export class Swarm {
    * [Fields]
    */
   private readonly _ = {
-    db: (null as unknown) as HyperDb,
+    db: (null as unknown) as Db,
     swarm: null as any,
     isDisposed: false,
     dispose$: new Subject(),
