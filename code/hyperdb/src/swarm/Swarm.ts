@@ -45,16 +45,19 @@ export class Swarm {
     this.events$
       // Authorize connected peers that have the DB key.
       .pipe(
-        filter(e => e.type === 'SWARM/connection'),
+        filter(e => e.type === 'SWARM/peer/connected'),
         filter(() => autoAuth),
-        map(e => e.payload as t.ISwarmConnectionEvent['payload']),
+        map(e => e.payload as t.ISwarmPeerConnectedEvent['payload']),
         filter(e => Boolean(e.peer.remoteUserData)), // https://github.com/karissa/hyperdiscovery/pull/12#pullrequestreview-95597621
       )
       .subscribe(async e => {
         const peerKey = Buffer.from(e.peer.remoteUserData);
         const { isAuthorized } = await this.authorize(peerKey);
         if (isAuthorized) {
-          this.next<t.ISwarmPeerConnectedEvent>('SWARM/peerConnected', { isAuthorized, peerKey });
+          this.next<t.ISwarmPeerAuthorizedEvent>('SWARM/peer/authorized', {
+            isAuthorized,
+            peerKey,
+          });
         }
       });
   }
@@ -121,7 +124,7 @@ export class Swarm {
 
       // Listen for connection events.
       swarm.on('connection', (peer: t.IProtocol) => {
-        this.next<t.ISwarmConnectionEvent>('SWARM/connection', { peer });
+        this.next<t.ISwarmPeerConnectedEvent>('SWARM/peer/connected', { peer });
       });
 
       // Request to join.
