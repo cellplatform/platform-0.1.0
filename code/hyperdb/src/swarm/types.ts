@@ -4,7 +4,13 @@ import { IProtocol } from '../types';
 /**
  * [Events]
  */
-export type SwarmEvent = ISwarmConnectionEvent | ISwarmPeerConnectedEvent | ISwarmErrorEvent;
+export type SwarmEvent =
+  | ISwarmConnectionEvent
+  | ISwarmPeerConnectedEvent
+  | ISwarmErrorEvent
+  | ISwarmJoinEvent
+  | ISwarmLeaveEvent;
+
 export type ISwarmConnectionEvent = {
   type: 'SWARM/connection';
   payload: { peer: IProtocol };
@@ -13,6 +19,15 @@ export type ISwarmPeerConnectedEvent = {
   type: 'SWARM/peerConnected';
   payload: { peerKey: Buffer; isAuthorized: boolean };
 };
+export type ISwarmJoinEvent = {
+  type: 'SWARM/join';
+  payload: {};
+};
+export type ISwarmLeaveEvent = {
+  type: 'SWARM/leave';
+  payload: {};
+};
+
 export type ISwarmErrorEvent = {
   type: 'SWARM/error';
   payload: { error: Error };

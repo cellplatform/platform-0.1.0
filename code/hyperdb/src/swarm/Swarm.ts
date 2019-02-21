@@ -125,7 +125,10 @@ export class Swarm {
       });
 
       // Request to join.
-      swarm.join(this.id, undefined, () => resolve());
+      swarm.join(this.id, undefined, () => {
+        this.next<t.ISwarmJoinEvent>('SWARM/join', {});
+        resolve();
+      });
     });
   }
 
@@ -139,6 +142,7 @@ export class Swarm {
       swarm.leave(this.id);
       swarm.destroy();
       this._.swarm = undefined;
+      this.next<t.ISwarmLeaveEvent>('SWARM/leave', {});
     }
   }
 
