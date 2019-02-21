@@ -13,7 +13,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
 
-  public db: main.HyperDb;
+  public db: main.Db;
+  public swarm: main.Swarm;
 
   public componentWillMount() {
     this.init();
@@ -27,6 +28,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     const res = await main.init({ dir, dbKey });
     const db = (this.db = res.db);
+    const swarm = (this.swarm = res.swarm);
 
     console.group('🌳 HyperDB');
     console.log('- dbKey:', res.dbKey);
@@ -57,17 +59,23 @@ export class Test extends React.PureComponent<{}, ITestState> {
                 <Button label={'init'} onClick={this.init} />
               </li>
               <li>
-                <Button label={'get'} onClick={this.getValue} />
+                <Button label={'db.get'} onClick={this.getValue} />
               </li>
               <li>
-                put: <Button label={'foo'} onClick={this.putValue('foo')} />
+                db.put: <Button label={'foo'} onClick={this.putValue('foo')} />
                 <Button label={'bar'} onClick={this.putValue('bar')} />
               </li>
               <li>
-                <Button label={'del'} onClick={this.deleteValue} />
+                <Button label={'db.del'} onClick={this.deleteValue} />
               </li>
               <li>
-                <Button label={'dispose'} onClick={this.dispose} />
+                <Button label={'db.dispose'} onClick={this.dispose} />
+              </li>
+              <li>
+                <Button label={'swarm.leave'} onClick={this.leaveSwarm} />
+              </li>
+              <li>
+                <Button label={'swarm.join'} onClick={this.joinSwarm} />
               </li>
             </ul>
           </div>
@@ -113,5 +121,12 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   private dispose = () => {
     this.db.dispose();
+  };
+
+  private joinSwarm = async () => {
+    await this.swarm.join();
+  };
+  private leaveSwarm = async () => {
+    this.swarm.leave();
   };
 }

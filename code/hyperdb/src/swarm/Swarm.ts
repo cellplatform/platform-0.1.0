@@ -34,19 +34,16 @@ export class Swarm {
    */
   private constructor(args: SwarmArgs) {
     const { db, join = false, autoAuth = false } = args;
-    const id = db.key.toString('hex');
-    this.id = id;
+    this.id = db.key.toString('hex');
     this._.db = db;
-    this.dispose$.subscribe(() => (this._.isDisposed = true));
 
-    // Create the swarm.
-    const swarm = (this._.swarm = discovery(this.config));
+    // Create and join the swarm.
     if (join) {
       this.join();
     }
 
-    // Listen for connection events.
     this.events$
+      // Authorize connected peers that have the DB key.
       .pipe(
         filter(e => e.type === 'SWARM/connection'),
         filter(() => autoAuth),
@@ -60,10 +57,6 @@ export class Swarm {
           this.next<t.ISwarmPeerConnectedEvent>('SWARM/peerConnected', { isAuthorized, peerKey });
         }
       });
-
-    swarm.on('connection', (peer: t.IProtocol) => {
-      this.next<t.ISwarmConnectionEvent>('SWARM/connection', { peer });
-    });
   }
 
   /**
@@ -72,10 +65,10 @@ export class Swarm {
   private readonly _ = {
     db: (null as unknown) as Db,
     swarm: null as any,
-    isDisposed: false,
     dispose$: new Subject(),
     events$: new Subject<t.SwarmEvent>(),
   };
+  public isDisposed = false;
   public readonly id: string;
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
@@ -102,10 +95,9 @@ export class Swarm {
    * Disposes of the object and stops all related observables.
    */
   public dispose() {
+    this.leave();
+    this.isDisposed = true;
     this._.dispose$.next();
-  }
-  public get isDisposed() {
-    return this._.isDisposed;
   }
 
   /**
@@ -113,8 +105,29 @@ export class Swarm {
    */
   public join() {
     return new Promise(resolve => {
-      this._.swarm.join(this.id, undefined, () => resolve());
+      // Create the discovery swarm.
+      const swarm = discovery(this.config);
+      this._.swarm = swarm;
+
+      // Listen for connection events.
+      swarm.on('connection', (peer: t.IProtocol) => {
+        this.next<t.ISwarmConnectionEvent>('SWARM/connection', { peer });
+      });
+
+      // Request to join.
+      swarm.join(this.id, undefined, () => resolve());
     });
+  }
+
+  /**
+   * Leaves the swarm.
+   */
+  public leave() {
+    const swarm = this._.swarm;
+    if (swarm) {
+      swarm.leave(this.id);
+      swarm.destroy();
+    }
   }
 
   /**
