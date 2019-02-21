@@ -1,6 +1,5 @@
-import { Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
 import * as t from '../types';
+const hyperdb = require('hyperdb');
 
 /**
  * Promise based wrapper around a HyperDB instance.
@@ -9,34 +8,32 @@ import * as t from '../types';
  *  - https://github.com/mafintosh/hyperdb#api
  *
  */
+
 export class HyperDb<D extends object = any> {
-  private _ = {
+  /**
+   * Factory.
+   */
+  public static create<D extends object = any>(args: { storage: string; dbKey?: string }) {
+    const reduce = (a: any, b: any) => a;
+    return new Promise<HyperDb<D>>((resolve, reject) => {
+      const { storage, dbKey } = args;
+      const options = { valueEncoding: 'utf-8', reduce };
+      const db = args.dbKey ? hyperdb(storage, dbKey, options) : hyperdb(storage, options);
+      db.on('ready', () => {
+        resolve(new HyperDb<D>(db));
+      });
+    });
+  }
+
+  public _ = {
     db: null as any,
-    isDisposed: false,
-    dispose$: new Subject(),
-    events$: new Subject<t.DbEvent>(),
   };
 
-  public readonly dispose$ = this._.dispose$.pipe(share());
-  public readonly events$ = this._.events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
-
   /**
-   * Constructor.
+   * [Constructor]
    */
-  constructor(args: { instance: any }) {
-    this._.db = args.instance;
-    this.dispose$.subscribe(() => (this._.isDisposed = true));
-  }
-
-  public dispose() {
-    this._.dispose$.next();
-  }
-
-  public get isDisposed() {
-    return this._.isDisposed;
+  private constructor(db: any) {
+    this._.db = db;
   }
 
   /**
@@ -60,6 +57,8 @@ export class HyperDb<D extends object = any> {
   public replicate(options: { live?: boolean }) {
     const { live = false } = options;
 
+    console.log('live', live);
+
     // NOTE: Tack userData onto the replicated database.
     //    This is used by the swarm-connection event to filter on peers
     //    that are looking for this database.
@@ -71,9 +70,8 @@ export class HyperDb<D extends object = any> {
     //    https://github.com/karissa/hyperdiscovery/pull/12#pullrequestreview-95597621
     //    https://github.com/cblgh/hyperdb-examples
     //
-
     const userData = this.local.key;
-    // const userData = this.discoveryKey;
+
     return this._.db.replicate({ live, userData });
   }
 
@@ -106,15 +104,12 @@ export class HyperDb<D extends object = any> {
       });
     });
   }
-
   /**
    * Gets a value from the database.
    */
   public async get<K extends keyof D>(key: K) {
     return new Promise<D[K]>((resolve, reject) => {
       this._.db.get(key, (err: Error, result?: D[K]) => {
-        // console.log('this._.db', this._.db);
-        // console.log('GET  >> ', key, result);
         if (err) {
           reject(err);
         } else {
@@ -130,7 +125,6 @@ export class HyperDb<D extends object = any> {
   public async put<K extends keyof D>(key: K, value: D[K]) {
     return new Promise<D[K]>((resolve, reject) => {
       this._.db.put(key, value, (err: Error, result?: D[K]) => {
-        // console.log('result', result);
         if (err) {
           reject(err);
         } else {
@@ -138,17 +132,5 @@ export class HyperDb<D extends object = any> {
         }
       });
     });
-  }
-
-  /**
-   * [INTERNAL]
-   */
-  private fireError(error: Error) {
-    this.next<t.DbEvent>('DB/error', { error });
-  }
-
-  private next<E extends t.DbEvent>(type: E['type'], payload: E['payload']) {
-    const e = { type, payload };
-    this._.events$.next(e as t.DbEvent);
   }
 }

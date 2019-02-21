@@ -1,10 +1,13 @@
 import { value } from '../common';
+import { HyperDb } from './HyperDb';
 
-const hyperdb = require('hyperdb');
+// const hyperdb = require('hyperdb');
 const discovery = require('discovery-swarm');
-const swarmDefaults = require('dat-swarm-defaults');
-
-export type IHyperDB = any;
+// const swarmDefaults = require('dat-swarm-defaults');
+import swarmDefaults from '../swarm/main.defaults';
+import { Swarm } from './Swarm';
+import * as t from '../types';
+// export type IHyperDB = any;
 
 /**
  *
@@ -17,8 +20,12 @@ export async function init(args: { db: string; key?: string }) {
   console.log(' - key', args.key);
   console.groupEnd();
 
-  const db = await createDb(args);
-  await setupSwarm({ db });
+  // const db = await createDb(args);
+  // const instance = await createDb(args);
+  const db = await HyperDb.create({ storage: args.db, dbKey: args.key });
+  // await setupSwarm({ db });
+
+  const swarm = new Swarm({ db, autoAuth: true, join: true });
 
   const dbKey = db.key.toString('hex');
   const localKey = db.local.key.toString('hex');
@@ -28,21 +35,21 @@ export async function init(args: { db: string; key?: string }) {
 /**
  * Initialize a HyperDB client.
  */
-export function createDb(args: { db: string; key?: string }) {
-  const reduce = (a: any, b: any) => a;
-  return new Promise<IHyperDB>((resolve, reject) => {
-    // Join an existing hyperdb where args.key comes from providing index.js with --key <key>
-    // or create a new original hyperdb, by not specifying a key
-    const options = { valueEncoding: 'utf-8', reduce };
-    const db = args.key ? hyperdb(args.db, args.key, options) : hyperdb(args.db, options);
-    db.on('ready', () => resolve(db));
-  });
-}
+// export function createDb(args: { db: string; key?: string }) {
+//   const reduce = (a: any, b: any) => a;
+//   return new Promise<IHyperDB>((resolve, reject) => {
+//     // Join an existing hyperdb where args.key comes from providing index.js with --key <key>
+//     // or create a new original hyperdb, by not specifying a key
+//     const options = { valueEncoding: 'utf-8', reduce };
+//     const db = args.key ? hyperdb(args.db, args.key, options) : hyperdb(args.db, options);
+//     db.on('ready', () => resolve(db));
+//   });
+// }
 
 /**
  * Setup the P2P swarm.
  */
-export async function setupSwarm(args: { db: IHyperDB; disableAutoAuth?: boolean }) {
+export async function setupSwarm(args: { db: HyperDb; disableAutoAuth?: boolean }) {
   const { db } = args;
   const disableAutoAuth = value.defaultValue(args.disableAutoAuth, false);
 
@@ -51,7 +58,7 @@ export async function setupSwarm(args: { db: IHyperDB; disableAutoAuth?: boolean
     swarmDefaults({
       id: dbstr,
       stream: function(peer: any) {
-        return db.replicate({
+        return db._.db.replicate({
           // TODO: figure out what this truly does
           live: true,
           userData: db.local.key,
@@ -64,7 +71,7 @@ export async function setupSwarm(args: { db: IHyperDB; disableAutoAuth?: boolean
   swarm.join(dbstr);
 
   // emitted when a new peer joins
-  swarm.on('connection', (peer: any) => {
+  swarm.on('connection', async (peer: any) => {
     if (disableAutoAuth) {
       return;
     }
@@ -76,22 +83,33 @@ export async function setupSwarm(args: { db: IHyperDB; disableAutoAuth?: boolean
       return;
     }
     try {
-      const remotePeerKey = Buffer.from(peer.remoteUserData);
+      const peerKey = Buffer.from(peer.remoteUserData);
+      const key = peerKey ? peerKey.toString('hex') : undefined;
 
-      db.authorized(remotePeerKey, function(err: Error, auth: any) {
-        console.log(remotePeerKey.toString('hex'), 'authorized? ' + auth);
-        if (err) {
-          return console.log(err);
-        }
-        if (!auth) {
-          db.authorize(remotePeerKey, function(err: Error) {
-            if (err) {
-              return console.log(err);
-            }
-            console.log(remotePeerKey.toString('hex'), 'was just authorized!');
-          });
-        }
-      });
+      console.log('key', key);
+
+      const isAuthorized = await db.isAuthorized(peerKey);
+      if (!isAuthorized) {
+        await db.authorize(peerKey);
+        console.log(`😀 ${key} was just authorized.`);
+      } else {
+        console.log(`😇 ${key} already authorized`);
+      }
+
+      // db._.db.authorized(peerKey, function(err: Error, auth: any) {
+      //   console.log(peerKey.toString('hex'), 'authorized? ' + auth);
+      //   if (err) {
+      //     return console.log(err);
+      //   }
+      //   if (!auth) {
+      //     db.authorize(peerKey, function(err: Error) {
+      //       if (err) {
+      //         return console.log(err);
+      //       }
+      //       console.log(peerKey.toString('hex'), 'was just authorized!');
+      //     });
+      //   }
+      // });
     } catch (err) {
       console.error(err);
       return;

@@ -1,9 +1,9 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { HyperDb } from '../db/main';
 import * as t from '../types';
-import swarmDefaults from './main.defaults';
+import { HyperDb } from './HyperDb';
+import swarmDefaults from './Swarm.defaults';
 
 const discovery = require('discovery-swarm');
 
@@ -39,33 +39,17 @@ export class Swarm {
     this._.db = db;
     this.dispose$.subscribe(() => (this._.isDisposed = true));
 
-    // Create the swarm and listen for connection events.
+    // Create the swarm.
     const defaults = swarmDefaults({
       id,
-      stream: function(peer: any) {
-        console.log('replicate // PROPER NEW');
-        return db.replicate({
-          // TODO: figure out what this truly does
-          live: true,
-          // userData: db.local.key,
-        });
-      },
+      stream: (peer: t.IPeer) => db.replicate({ live: true }),
     });
-    // const defaults = swarmDefaults({
-    //   id,
-    //   stream: peer => {
-    //     console.log('REPLICATE PROPER');
-    //     return db.replicate({ live: true });
-    //   },
-    // });
-    console.log('default', defaults);
-    const swarm = discovery(defaults);
-    this._.swarm = swarm;
-
+    const swarm = (this._.swarm = discovery(defaults));
     if (join) {
       this.join();
     }
 
+    // Listen for connection events.
     this.events$
       .pipe(
         filter(e => e.type === 'SWARM/connection'),
@@ -76,7 +60,6 @@ export class Swarm {
       .subscribe(async e => {
         const peerKey = Buffer.from(e.peer.remoteUserData);
         const { isAuthorized } = await this.authorize(peerKey);
-        console.log('peer connected', peerKey.toString('hex'), isAuthorized);
         if (isAuthorized) {
           this.next<t.ISwarmPeerConnectedEvent>('SWARM/peerConnected', { isAuthorized, peerKey });
         }
@@ -115,7 +98,6 @@ export class Swarm {
       if (!isAuthorized) {
         await db.authorize(peerKey);
       }
-      console.log('authorized', isAuthorized, key);
       return { isAuthorized };
     } catch (err) {
       const error = new Error(`Failed to authorize peer '${key}'. ${err.message}`);
