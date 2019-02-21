@@ -24,7 +24,7 @@ export async function init(args: {
 
   return {
     dbKey: db.key.toString('hex'),
-    localKey: db.local.key.toString('hex'),
+    localKey: db.localKey.toString('hex'),
     db,
     swarm,
     dir,

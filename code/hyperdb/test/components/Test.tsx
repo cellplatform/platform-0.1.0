@@ -41,14 +41,12 @@ export class Test extends React.PureComponent<{}, ITestState> {
     console.groupEnd();
 
     db.watch().watch$.subscribe(async e => {
-      // const version = await db.version();
-      // const watching = db.watching;
-      // this.setData({ watching, [e.key]: e.value });
       this.setPropData(e.key, e.value);
     });
 
     swarm.events$.subscribe(e => this.updateData());
     this.updateData();
+    this.getValue();
   };
 
   private updateData = async () => {
@@ -57,7 +55,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     this.setData({
       db: {
         dbKey: db.key.toString('hex'),
-        localKey: db.local.key.toString('hex'),
+        localKey: db.localKey.toString('hex'),
         version: await db.version(),
         watching: db.watching,
       },

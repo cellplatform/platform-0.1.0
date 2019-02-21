@@ -79,8 +79,9 @@ export class Db<D extends object = any> {
     return this._.db.discoveryKey;
   }
 
-  public get local(): t.IFeed {
-    return this._.db.local;
+  public get localKey(): Buffer {
+    const local = this._.db.local as t.IFeed;
+    return local.key;
   }
 
   public get watching() {
@@ -105,7 +106,7 @@ export class Db<D extends object = any> {
     //    https://github.com/karissa/hyperdiscovery/pull/12#pullrequestreview-95597621
     //    https://github.com/cblgh/hyperdb-examples
     //
-    const userData = this.local.key;
+    const userData = this.localKey;
 
     return this._.db.replicate({ live, userData });
   }
