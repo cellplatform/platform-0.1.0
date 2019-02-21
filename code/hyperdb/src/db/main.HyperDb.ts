@@ -9,7 +9,7 @@ import * as t from '../types';
  *  - https://github.com/mafintosh/hyperdb#api
  *
  */
-export class HyperDb {
+export class HyperDb<D extends object = any> {
   private _ = {
     db: null as any,
     isDisposed: false,
@@ -60,6 +60,8 @@ export class HyperDb {
   public replicate(options: { live?: boolean }) {
     const { live = false } = options;
 
+    console.log('live ||||||||||', live);
+
     // NOTE: Tack userData onto the replicated database.
     //    This is used by the swarm-connection event to filter on peers
     //    that are looking for this database.
@@ -69,8 +71,10 @@ export class HyperDb {
     //
     // See:
     //    https://github.com/karissa/hyperdiscovery/pull/12#pullrequestreview-95597621
+    //    https://github.com/cblgh/hyperdb-examples
     //
     const userData = this.local.key;
+    // const userData = this.discoveryKey;
     return this._.db.replicate({ live, userData });
   }
 
@@ -99,6 +103,39 @@ export class HyperDb {
           reject(err);
         } else {
           resolve();
+        }
+      });
+    });
+  }
+
+  /**
+   * Gets a value from the database.
+   */
+  public async get<K extends keyof D>(key: K) {
+    return new Promise<D[K]>((resolve, reject) => {
+      this._.db.get(key, (err: Error, result?: D[K]) => {
+        // console.log('this._.db', this._.db);
+        // console.log('GET  >> ', key, result);
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
+
+  /**
+   * Writes a value to the database.
+   */
+  public async put<K extends keyof D>(key: K, value: D[K]) {
+    return new Promise<D[K]>((resolve, reject) => {
+      this._.db.put(key, value, (err: Error, result?: D[K]) => {
+        // console.log('result', result);
+        if (err) {
+          reject(err);
+        } else {
+          resolve(value);
         }
       });
     });

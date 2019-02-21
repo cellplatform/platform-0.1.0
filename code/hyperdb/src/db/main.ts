@@ -39,14 +39,28 @@ export type ICreateDbArgs = {
  */
 export function create(args: ICreateDbArgs) {
   const reduce = (a: any, b: any) => a;
-  const map = (node: any) => node;
+  // const map = (node: any) => node;
 
   return new Promise<HyperDb>(resolve => {
     const { valueEncoding = 'utf-8' } = args;
-    const options = { valueEncoding, reduce, map };
+    const options = { valueEncoding, reduce };
     const instance = args.key
       ? hyperdb(args.storage, args.key, options)
       : hyperdb(args.storage, options);
     instance.on('ready', () => resolve(new HyperDb({ instance })));
+  });
+}
+
+export function create2(args: ICreateDbArgs) {
+  const reduce = (a: any, b: any) => a;
+  // const map = (node: any) => node;
+
+  return new Promise<HyperDb>(resolve => {
+    const { valueEncoding = 'utf-8' } = args;
+    const options = { valueEncoding, reduce };
+    const instance = args.key
+      ? hyperdb(args.storage, args.key, options)
+      : hyperdb(args.storage, options);
+    instance.on('ready', () => resolve(instance));
   });
 }

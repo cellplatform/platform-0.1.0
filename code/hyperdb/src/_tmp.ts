@@ -51,6 +51,7 @@ export async function setupSwarm(args: { db: IHyperDB; disableAutoAuth?: boolean
     swarmDefaults({
       id: dbstr,
       stream: function(peer: any) {
+        console.log('replicate TEMP');
         return db.replicate({
           // TODO: figure out what this truly does
           live: true,
@@ -59,7 +60,7 @@ export async function setupSwarm(args: { db: IHyperDB; disableAutoAuth?: boolean
       },
     }),
   );
-  console.log('looking for peers using swarm id\n\t', dbstr);
+  console.log('TMP/looking for peers using swarm id\n\t', dbstr);
 
   swarm.join(dbstr);
 
@@ -98,5 +99,5 @@ export async function setupSwarm(args: { db: IHyperDB; disableAutoAuth?: boolean
     }
   });
   // return the swarm instance
-  return { swarm, swarmId: dbstr };
+  return { swarm };
 }

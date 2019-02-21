@@ -5,6 +5,8 @@ import { HyperDb } from '../db/main';
 import * as t from '../types';
 import swarmDefaults from './main.defaults';
 
+const swarmDefaults2 = require('dat-swarm-defaults');
+
 const discovery = require('discovery-swarm');
 
 /**
@@ -32,8 +34,9 @@ export class Swarm {
     share(),
   );
 
-  constructor(args: { id: string; db: HyperDb; autoAuth?: boolean; join?: boolean }) {
-    const { id, db, join = false, autoAuth = false } = args;
+  constructor(args: { db: HyperDb; autoAuth?: boolean; join?: boolean }) {
+    const { db, join = false, autoAuth = false } = args;
+    const id = db.key.toString('hex');
     this.id = id;
     this._.db = db;
     this.dispose$.subscribe(() => (this._.isDisposed = true));
@@ -41,8 +44,23 @@ export class Swarm {
     // Create the swarm and listen for connection events.
     const defaults = swarmDefaults({
       id,
-      stream: peer => db.replicate({ live: true }),
+      stream: function(peer: any) {
+        console.log('replicate // PROPER NEW');
+        return db.replicate({
+          // TODO: figure out what this truly does
+          live: true,
+          userData: db.local.key,
+        });
+      },
     });
+    // const defaults = swarmDefaults({
+    //   id,
+    //   stream: peer => {
+    //     console.log('REPLICATE PROPER');
+    //     return db.replicate({ live: true });
+    //   },
+    // });
+    console.log('default', defaults);
     const swarm = discovery(defaults);
     this._.swarm = swarm;
 
@@ -60,6 +78,7 @@ export class Swarm {
       .subscribe(async e => {
         const peerKey = Buffer.from(e.peer.remoteUserData);
         const { isAuthorized } = await this.authorize(peerKey);
+        console.log('peer connected', peerKey.toString('hex'), isAuthorized);
         if (isAuthorized) {
           this.next<t.ISwarmPeerConnectedEvent>('SWARM/peerConnected', { isAuthorized, peerKey });
         }
@@ -68,7 +87,6 @@ export class Swarm {
     swarm.on('connection', (peer: t.IProtocol) => {
       this.next<t.ISwarmConnectionEvent>('SWARM/connection', { peer });
     });
-
   }
 
   public dispose() {
@@ -84,7 +102,7 @@ export class Swarm {
    */
   public join() {
     return new Promise(resolve => {
-      this._.swarm.join(this.id, {}, () => resolve());
+      this._.swarm.join(this.id, undefined, () => resolve());
     });
   }
 
@@ -92,15 +110,16 @@ export class Swarm {
    * Attempts to authorize a peer.
    */
   public async authorize(peerKey: Buffer) {
+    const key = peerKey.toString('hex');
     try {
       const db = this._.db;
       const isAuthorized = await db.isAuthorized(peerKey);
       if (!isAuthorized) {
-        await db.isAuthorized(peerKey);
+        await db.authorize(peerKey);
       }
+      console.log('authorized', isAuthorized, key);
       return { isAuthorized };
     } catch (err) {
-      const key = peerKey.toString('hex');
       const error = new Error(`Failed to authorize peer '${key}'. ${err.message}`);
       this.fireError(error);
       return { isAuthorized: false, error };
