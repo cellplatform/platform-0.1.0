@@ -30,23 +30,6 @@ export class Swarm {
   }
 
   /**
-   * [Fields]
-   */
-  private readonly _ = {
-    db: (null as unknown) as Db,
-    swarm: null as any,
-    isDisposed: false,
-    dispose$: new Subject(),
-    events$: new Subject<t.SwarmEvent>(),
-  };
-  public readonly id: string;
-  public readonly dispose$ = this._.dispose$.pipe(share());
-  public readonly events$ = this._.events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
-
-  /**
    * [Constructor]
    */
   private constructor(args: SwarmArgs) {
@@ -57,11 +40,7 @@ export class Swarm {
     this.dispose$.subscribe(() => (this._.isDisposed = true));
 
     // Create the swarm.
-    const defaults = swarmDefaults({
-      id,
-      stream: (peer: t.IPeer) => db.replicate({ live: true }),
-    });
-    const swarm = (this._.swarm = discovery(defaults));
+    const swarm = (this._.swarm = discovery(this.config));
     if (join) {
       this.join();
     }
@@ -86,6 +65,38 @@ export class Swarm {
       this.next<t.ISwarmConnectionEvent>('SWARM/connection', { peer });
     });
   }
+
+  /**
+   * [Fields]
+   */
+  private readonly _ = {
+    db: (null as unknown) as Db,
+    swarm: null as any,
+    isDisposed: false,
+    dispose$: new Subject(),
+    events$: new Subject<t.SwarmEvent>(),
+  };
+  public readonly id: string;
+  public readonly dispose$ = this._.dispose$.pipe(share());
+  public readonly events$ = this._.events$.pipe(
+    takeUntil(this.dispose$),
+    share(),
+  );
+
+  /**
+   * [Properties]
+   */
+  public get config() {
+    const { db } = this._;
+    return swarmDefaults({
+      id: this.id,
+      stream: (peer: t.IPeer) => db.replicate({ live: true }),
+    });
+  }
+
+  /**
+   * [Methods]
+   */
 
   /**
    * Disposes of the object and stops all related observables.
