@@ -172,21 +172,21 @@ export class Swarm {
   /**
    * Details about current connection state.
    */
-  public async connections() {
+  public async connections(): Promise<t.ISwarmConnections> {
     const { swarm, db } = this._;
     if (!swarm) {
-      return { current: 0, peers: [] };
+      return { total: 0, peers: [] };
     }
 
-    type IPeerInfo = { id: string; isAuthorized: boolean };
     const toPeer = async (peer: t.IProtocol) => {
       const id = peer.id.toString('hex');
       const isAuthorized = await db.isAuthorized(peer.remoteUserData);
-      const result: IPeerInfo = { id, isAuthorized };
+      const result: t.ISwarmConnectionPeer = { id, isAuthorized };
       return result;
     };
 
-    const wait: Array<Promise<IPeerInfo>> = swarm.connections.map((p: t.IProtocol) => toPeer(p));
+    type P = Promise<t.ISwarmConnectionPeer>;
+    const wait: P[] = swarm.connections.map((p: t.IProtocol) => toPeer(p));
     const peers = (await Promise.all(wait)).filter(p => p.isAuthorized);
 
     return {

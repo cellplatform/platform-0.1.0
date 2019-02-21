@@ -1,6 +1,16 @@
 export * from '../types';
 import { IProtocol } from '../types';
 
+export type ISwarmConnections = {
+  total: number;
+  peers: ISwarmConnectionPeer[];
+};
+
+export type ISwarmConnectionPeer = {
+  id: string;
+  isAuthorized: boolean;
+};
+
 /**
  * [Events]
  */
