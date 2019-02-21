@@ -87,10 +87,12 @@ export class Swarm {
     });
   }
 
+  /**
+   * Disposes of the object and stops all related observables.
+   */
   public dispose() {
     this._.dispose$.next();
   }
-
   public get isDisposed() {
     return this._.isDisposed;
   }

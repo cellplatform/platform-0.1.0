@@ -1,3 +1,15 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import * as t from '../types';
 import { value as valueUtil } from '../common';
 
@@ -27,15 +39,41 @@ export class HyperDb<D extends object = any> {
     });
   }
 
+  /**
+   * [Fields]
+   */
   public _ = {
     db: null as any,
+    isDisposed: false,
+    dispose$: new Subject(),
+    events$: new Subject<t.DbEvent>(),
   };
+  public readonly dispose$ = this._.dispose$.pipe(share());
+  public readonly events$ = this._.events$.pipe(
+    takeUntil(this.dispose$),
+    share(),
+  );
 
   /**
    * [Constructor]
    */
   private constructor(db: any) {
     this._.db = db;
+
+    // const watcher = db.watch('', e => {
+    //   console.log('e', e);
+    // });
+    // console.log('watcher', watcher);
+  }
+
+  /**
+   * Disposes of the object and stops all related observables.
+   */
+  public dispose() {
+    this._.dispose$.next();
+  }
+  public get isDisposed() {
+    return this._.isDisposed;
   }
 
   /**
@@ -117,10 +155,22 @@ export class HyperDb<D extends object = any> {
       });
     });
   }
+
+  /**
+   * [INTERNAL]
+   */
+  private fireError(error: Error) {
+    this.next<t.IDbErrorEvent>('DB/error', { error });
+  }
+
+  private next<E extends t.DbEvent>(type: E['type'], payload: E['payload']) {
+    const e = { type, payload };
+    this._.events$.next(e as t.DbEvent);
+  }
 }
 
 /**
- * INTERNAL
+ * [INTERNAL]
  */
 function toValue<K, V>(result: any): t.IDbValue<K, V> {
   const isNil = result === null || result === undefined;
