@@ -2,6 +2,9 @@ import * as React from 'react';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 import * as tmp from '../../src/_tmp';
+
+import * as db2 from '../../src/db2';
+
 import main from '../../src/main';
 import { Button, css, ObjectView, R, renderer } from './common';
 import { TestPanel } from './TestPanel';
@@ -16,13 +19,27 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   public db: HyperDb;
   public tmp: any;
-  public tmp2: any
 
   public componentWillMount() {
     // TEMP 🐷
-    this.init();
-    this.init__TMP();
+    // this.init();
+    // this.init__TMP();
+    this.init3();
   }
+
+  private init3 = async () => {
+    const { id } = this.context;
+    const db = `.db/db-tmp-${id}`;
+    const key =
+      id > 1 ? 'a7ac000868a274408d44561da69ee8d8976c1e741c178b6abc47e8c3fc76e23c' : undefined;
+
+    console.log('db', db);
+    console.log('key', key);
+
+    const res = await db2.init({ db, key });
+    this.tmp = res.db;
+    console.log('TMP/init', res);
+  };
 
   private init__TMP = async () => {
     const { id } = this.context;
@@ -96,29 +113,18 @@ export class Test extends React.PureComponent<{}, ITestState> {
   }
 
   private getValue = async () => {
-    try {
-      // console.group('🌳 get');
+    // console.group('🌳 get');
 
-      console.log('this.db', this.db);
+    // console.log('this.db', this.db);
+    // console.log('this.tmp', this.tmp);
+    // console.log('-------------------------------------------');
 
-      // console.log('this.db', this.db);
-      // console.log('this.tmp', this.tmp);
-      // console.log('-------------------------------------------');
+    this.tmp.get('foo', (err, result) => {
+      console.log('TMP/get', result);
+    });
 
-      this.tmp.get('foo', (err, result) => {
-        console.log('TMP/get', result);
-      });
-
-      this.db._.db.get('foo', (err, result) => {
-        console.log('NORMAL._db./get', result);
-      });
-
-      console.log('before');
-      const res = await this.db.get('foo');
-      console.log('NORMAL/get', res);
-    } catch (error) {
-      console.log('error', error);
-    }
+    // const res = await this.db.get('foo');
+    // console.log('NORMAL/get', res);
     // console.groupEnd();
   };
 
@@ -127,15 +133,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
     // console.group('🌳 put');
 
     this.count++;
-    const res = await this.db.put('foo', this.count);
-    console.log('NORMAL/put', res);
-    // // this.db
-    // console.log('-------------------------------------------');
-    // console.groupEnd();
-
-    this.db._.db.put('foo', this.count, (err, result) => {
-      console.log('NORMAL._db./put', result);
-    });
+    // const res = await this.db.put('foo', this.count);
+    // console.log('NORMAL/put', res);
 
     this.tmp.put('foo', this.count, (err, result) => {
       console.log('TMP/put', result);
