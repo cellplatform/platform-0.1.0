@@ -1,24 +1,22 @@
-import * as hyperdb from './db/main';
-import { Swarm } from './swarm/main';
+import { HyperDb, Swarm } from './db';
+
+// import * as hyperdb from './db/main';
+// import { Swarm } from './swarm/main';
 // import { setupSwarm } from './_tmp';
 
 /**
  * Initializes a new hyperdb.
  */
 export async function init(args: { dir: string; dbKey?: string }) {
-  const { dir } = args;
-  const db = await hyperdb.create({ storage: dir, key: args.dbKey });
-  // const discoveryKey = db.discoveryKey.toString('hex');
-  const dbKey = db.key.toString('hex');
-  const localKey = db.local.key.toString('hex');
-  const swarm = new Swarm({ db, join: true, autoAuth: true });
+  const { dir, dbKey } = args;
 
-  // await setupSwarm({ db: db._.db });
+  const db = await HyperDb.create({ storage: dir, dbKey });
+  const swarm = new Swarm({ db, autoAuth: true, join: true });
 
   return {
     dir,
-    dbKey,
-    localKey,
+    dbKey: db.key.toString('hex'),
+    localKey: db.local.key.toString('hex'),
     db,
     swarm,
   };
@@ -27,8 +25,9 @@ export async function init(args: { dir: string; dbKey?: string }) {
 /**
  * [API]
  */
-export { hyperdb as db };
+export { HyperDb, Swarm };
 export default {
   init,
-  db: hyperdb,
+  HyperDb,
+  Swarm,
 };

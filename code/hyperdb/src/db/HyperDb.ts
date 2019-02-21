@@ -57,8 +57,6 @@ export class HyperDb<D extends object = any> {
   public replicate(options: { live?: boolean }) {
     const { live = false } = options;
 
-    console.log('live', live);
-
     // NOTE: Tack userData onto the replicated database.
     //    This is used by the swarm-connection event to filter on peers
     //    that are looking for this database.
