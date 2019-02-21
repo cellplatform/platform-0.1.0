@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { distinctUntilChanged } from 'rxjs/operators';
 
-import { HyperDb } from '../../src/db';
-
-import main from '../../src/main';
-import { Button, css, ObjectView, R, renderer } from './common';
+// import { HyperDb } from '../../src/db';
+import * as main from '../../src/main';
+import { Button, css, ObjectView, renderer } from './common';
 import { TestPanel } from './TestPanel';
 
 export type ITestState = { count?: number };
@@ -14,7 +12,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
 
-  public db: HyperDb;
+  public db: main.HyperDb;
 
   public componentWillMount() {
     // TEMP 🐷

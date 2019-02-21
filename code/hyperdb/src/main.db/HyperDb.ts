@@ -1,5 +1,23 @@
 import * as t from '../types';
+import { value as valueUtil } from '../common';
+
 const hyperdb = require('hyperdb');
+
+export type IDbValueMeta<K> = {
+  key: K;
+  isDeleted: boolean;
+  clock: number[];
+  feed: number;
+  seq: number;
+  path: number[];
+  inflate: number;
+  trie: any;
+};
+
+export type IDbValue<K, V> = {
+  value: V;
+  meta: IDbValueMeta<K>;
+};
 
 /**
  * Promise based wrapper around a HyperDB instance.
@@ -11,7 +29,7 @@ const hyperdb = require('hyperdb');
 
 export class HyperDb<D extends object = any> {
   /**
-   * Factory.
+   * [Static]
    */
   public static create<D extends object = any>(args: { storage: string; dbKey?: string }) {
     const reduce = (a: any, b: any) => a;
@@ -106,12 +124,12 @@ export class HyperDb<D extends object = any> {
    * Gets a value from the database.
    */
   public async get<K extends keyof D>(key: K) {
-    return new Promise<D[K]>((resolve, reject) => {
-      this._.db.get(key, (err: Error, result?: D[K]) => {
+    return new Promise<IDbValue<K, D[K]>>((resolve, reject) => {
+      this._.db.get(key, (err: Error, result: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(result);
+          resolve(toValue<K, D[K]>(result));
         }
       });
     });
@@ -121,14 +139,27 @@ export class HyperDb<D extends object = any> {
    * Writes a value to the database.
    */
   public async put<K extends keyof D>(key: K, value: D[K]) {
-    return new Promise<D[K]>((resolve, reject) => {
-      this._.db.put(key, value, (err: Error, result?: D[K]) => {
+    return new Promise<IDbValue<K, D[K]>>((resolve, reject) => {
+      this._.db.put(key, value, (err: Error, result: any) => {
         if (err) {
           reject(err);
         } else {
-          resolve(value);
+          resolve(toValue<K, D[K]>(result));
         }
       });
     });
   }
+}
+
+/**
+ * INTERNAL
+ */
+function toValue<K, V>(result: any) {
+  const value = valueUtil.toType(result.value) as V;
+  result = { ...result };
+  delete result.value;
+  return {
+    value,
+    meta: result as IDbValueMeta<K>,
+  };
 }

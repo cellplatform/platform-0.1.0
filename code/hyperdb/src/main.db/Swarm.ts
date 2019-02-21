@@ -7,6 +7,12 @@ import swarmDefaults from './Swarm.defaults';
 
 const discovery = require('discovery-swarm');
 
+type SwarmArgs = {
+  db: HyperDb;
+  autoAuth?: boolean;
+  join?: boolean;
+};
+
 /**
  * Represents a connection to a swarm of peers.
  *
@@ -16,8 +22,16 @@ const discovery = require('discovery-swarm');
  *
  */
 export class Swarm {
-  public readonly id: string;
+  /**
+   * [Static]
+   */
+  public static async create(args: SwarmArgs) {
+    return new Swarm(args);
+  }
 
+  /**
+   * [Fields]
+   */
   private readonly _ = {
     db: (null as unknown) as HyperDb,
     swarm: null as any,
@@ -25,14 +39,17 @@ export class Swarm {
     dispose$: new Subject(),
     events$: new Subject<t.SwarmEvent>(),
   };
-
+  public readonly id: string;
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
     share(),
   );
 
-  constructor(args: { db: HyperDb; autoAuth?: boolean; join?: boolean }) {
+  /**
+   * [Constructor]
+   */
+  private constructor(args: SwarmArgs) {
     const { db, join = false, autoAuth = false } = args;
     const id = db.key.toString('hex');
     this.id = id;
