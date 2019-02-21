@@ -23,7 +23,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const { id } = this.context;
     const dir = `.db/db-tmp-${id}`;
     const dbKey =
-      id > 1 ? 'a7ac000868a274408d44561da69ee8d8976c1e741c178b6abc47e8c3fc76e23c' : undefined;
+      id > 1 ? 'b83a722214bdf9db4bd7a9f900144b8c80c6d7dc7f81372e4e48875cbb903e00' : undefined;
 
     const res = await main.init({ dir, dbKey });
     this.db = res.db;
@@ -66,15 +66,16 @@ export class Test extends React.PureComponent<{}, ITestState> {
     );
   }
 
+  private count = 0;
   private getValue = async () => {
     const res = await this.db.get('foo');
     console.log('get:', res);
+    this.count = res.value || 0;
   };
-
-  private count = 0;
   private putValue = async () => {
     this.count++;
     const res = await this.db.put('foo', this.count);
     console.log('put:', res);
+    this.count = res.value || 0;
   };
 }

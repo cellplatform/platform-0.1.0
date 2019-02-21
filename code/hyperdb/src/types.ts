@@ -1,3 +1,27 @@
+/**
+ * [Database]
+ */
+
+export type IDbValueMeta<K> = {
+  key: K;
+  isDeleted: boolean;
+  clock: number[];
+  feed: number;
+  seq: number;
+  path: number[];
+  inflate: number;
+  trie: any;
+};
+
+export type IDbValue<K, V> = {
+  value?: V;
+  meta: IDbValueMeta<K>;
+};
+
+/**
+ * [Swarm]
+ */
+
 type Bitfield = any;
 type TreeIndex = { [key: string]: Bitfield };
 
@@ -27,9 +51,6 @@ export type IFeed = {
   closed: false;
 };
 
-/**
- * [Swarm]
- */
 export type ISwarmOptions = {
   id: string;
   stream: (peer: IPeer) => IProtocol;

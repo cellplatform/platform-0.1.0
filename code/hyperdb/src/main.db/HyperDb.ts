@@ -3,22 +3,6 @@ import { value as valueUtil } from '../common';
 
 const hyperdb = require('hyperdb');
 
-export type IDbValueMeta<K> = {
-  key: K;
-  isDeleted: boolean;
-  clock: number[];
-  feed: number;
-  seq: number;
-  path: number[];
-  inflate: number;
-  trie: any;
-};
-
-export type IDbValue<K, V> = {
-  value: V;
-  meta: IDbValueMeta<K>;
-};
-
 /**
  * Promise based wrapper around a HyperDB instance.
  *
@@ -97,11 +81,7 @@ export class HyperDb<D extends object = any> {
   public isAuthorized(peerKey: Buffer) {
     return new Promise<boolean>((resolve, reject) => {
       this._.db.authorized(peerKey, (err: Error, result: boolean) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
+        return err ? reject(err) : resolve(result);
       });
     });
   }
@@ -112,11 +92,7 @@ export class HyperDb<D extends object = any> {
   public async authorize(peerKey: Buffer) {
     return new Promise((resolve, reject) => {
       this._.db.authorize(peerKey, (err: Error) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
+        return err ? reject(err) : resolve();
       });
     });
   }
@@ -124,13 +100,9 @@ export class HyperDb<D extends object = any> {
    * Gets a value from the database.
    */
   public async get<K extends keyof D>(key: K) {
-    return new Promise<IDbValue<K, D[K]>>((resolve, reject) => {
+    return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.get(key, (err: Error, result: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(toValue<K, D[K]>(result));
-        }
+        return err ? reject(err) : resolve(toValue(result));
       });
     });
   }
@@ -139,13 +111,9 @@ export class HyperDb<D extends object = any> {
    * Writes a value to the database.
    */
   public async put<K extends keyof D>(key: K, value: D[K]) {
-    return new Promise<IDbValue<K, D[K]>>((resolve, reject) => {
+    return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.put(key, value, (err: Error, result: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(toValue<K, D[K]>(result));
-        }
+        return err ? reject(err) : resolve(toValue(result));
       });
     });
   }
@@ -154,12 +122,13 @@ export class HyperDb<D extends object = any> {
 /**
  * INTERNAL
  */
-function toValue<K, V>(result: any) {
-  const value = valueUtil.toType(result.value) as V;
+function toValue<K, V>(result: any): t.IDbValue<K, V> {
+  const isNil = result === null || result === undefined;
+  const value = isNil ? undefined : (valueUtil.toType(result.value) as V);
   result = { ...result };
   delete result.value;
   return {
     value,
-    meta: result as IDbValueMeta<K>,
+    meta: result as t.IDbValueMeta<K>,
   };
 }
