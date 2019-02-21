@@ -24,7 +24,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const { id } = this.context;
     const dir = `.db/db-tmp-${id}`;
     const dbKey =
-      id > 1 ? 'b83a722214bdf9db4bd7a9f900144b8c80c6d7dc7f81372e4e48875cbb903e00' : undefined;
+      id > 1 ? '59c661482b7719d6033de25438f1dd6597cc07d873ef988e136a54089aeb8ccc' : undefined;
 
     const res = await main.init({ dir, dbKey });
     const db = (this.db = res.db);
@@ -139,13 +139,10 @@ export class Test extends React.PureComponent<{}, ITestState> {
   };
 
   private setPropData = (key: string | number | symbol, value: any) => {
-    const values = { ...(this.state.data.values || {}), [key]: value };
-    this.setData({ values });
-    // Object.keys(obj).forEach(key => {
-    //   data = { ...data, [key]: obj[key] };
-    // });
-    // data = value.deleteUndefined(data);
-    // this.setState({ data });
+    if (key) {
+      const values = { ...(this.state.data.values || {}), [key]: value };
+      this.setData({ values });
+    }
   };
 
   private setData = (obj: {}) => {
