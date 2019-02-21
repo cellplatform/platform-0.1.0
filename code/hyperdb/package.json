@@ -1,6 +1,6 @@
 {
   "name": "@platform/hyperdb",
-  "description": "Electron enabled interface to hyperdb.",
+  "description": "Strongly typed, electron enabled interface to hyperdb.",
   "version": "0.0.5",
   "main": "lib/index",
   "scripts": {
@@ -11,11 +11,13 @@
     "lint": "yarn chmod && ts lint",
     "build": "yarn chmod && ts build",
     "prepare": "yarn chmod && ts prepare",
+    "clean": "sh sh/clean.sh",
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@platform/electron": "0.0.92",
-    "@uiharness/electron": "0.3.128"
+    "@uiharness/electron": "0.3.128",
+    "discovery-swarm": "5.1.4",
+    "hyperdb": "3.5.0"
   },
   "devDependencies": {
     "@platform/ts": "3.3.54",

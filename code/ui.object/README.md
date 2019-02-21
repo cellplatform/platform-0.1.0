@@ -4,3 +4,18 @@
 # @platform/ui.object
 Visual display of javascript object.
 
+<p>&nbsp;<p>
+
+## API
+
+### `expandPaths`
+ 
+The path string is similar to JSONPath. Examples:
+```
+$.foo.bar                     Expand just `bar`
+['$', '$.foo', '$.foo.bar']   Expand all the way down to `bar`
+['$', '$.1']                  Array index
+['$', '$.*']                  Wildcard, equivalent to expandLevel={2}.
+```
+
+See [source ref](https://github.com/xyc/react-inspector#api).

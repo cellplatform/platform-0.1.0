@@ -2,5 +2,5 @@
 [![NPM](https://img.shields.io/npm/v/@platform/hyperdb.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/hyperdb)
 
 # @platform/hyperdb
-Electron enabled interface to [hyperdb](https://github.com/mafintosh/hyperdb).
 
+Strongly typed, [electron](https://electronjs.org) enabled interface to [hyperdb](https://github.com/mafintosh/hyperdb).
