@@ -95,17 +95,20 @@ export class Swarm {
    * Disposes of the object and stops all related observables.
    */
   public dispose() {
-    this.leave();
-    this.isDisposed = true;
-    this._.dispose$.next();
+    if (!this.isDisposed) {
+      this.leave();
+      this.isDisposed = true;
+      this._.dispose$.next();
+    }
   }
 
   /**
    * Connects to the swarm.
    */
   public join() {
+    this.throwIfDisposed('join');
     return new Promise(resolve => {
-      // Create the discovery swarm.
+      // Create the discovery-swarm.
       const swarm = discovery(this.config);
       this._.swarm = swarm;
 
@@ -123,6 +126,7 @@ export class Swarm {
    * Leaves the swarm.
    */
   public leave() {
+    this.throwIfDisposed('leave');
     const swarm = this._.swarm;
     if (swarm) {
       swarm.leave(this.id);
@@ -134,6 +138,7 @@ export class Swarm {
    * Attempts to authorize a peer.
    */
   public async authorize(peerKey: Buffer) {
+    this.throwIfDisposed('authorize');
     const key = peerKey.toString('hex');
     try {
       const db = this._.db;
@@ -159,5 +164,12 @@ export class Swarm {
   private next<E extends t.SwarmEvent>(type: E['type'], payload: E['payload']) {
     const e = { type, payload };
     this._.events$.next(e as t.SwarmEvent);
+  }
+
+  private throwIfDisposed(action: string) {
+    if (this.isDisposed) {
+      const msg = `Cannot '${action}' because the [Swarm] has been disposed.`;
+      throw new Error(msg);
+    }
   }
 }

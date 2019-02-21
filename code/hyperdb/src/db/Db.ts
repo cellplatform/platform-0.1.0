@@ -249,7 +249,7 @@ export class Db<D extends object = any> {
 }
 
 /**
- * [INTERNAL]
+ * [HELPER_FUNCTIONS]
  */
 function toValue<K, V>(result: any): t.IDbValue<K, V> {
   const exists = result && !isNil(result.value);
