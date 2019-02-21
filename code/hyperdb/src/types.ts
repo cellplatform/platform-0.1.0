@@ -1,3 +1,6 @@
+export * from './db/types';
+export * from './swarm/types';
+
 /**
  * [Database]
  */
@@ -93,39 +96,4 @@ export type IProtocol = {
   removeLive: boolean;
   remoteUserData: any;
   remoteExtensions: any[];
-};
-
-/**
- * [SWARM_EVENTS]
- */
-export type SwarmEvent = ISwarmConnectionEvent | ISwarmPeerConnectedEvent | ISwarmErrorEvent;
-export type ISwarmConnectionEvent = {
-  type: 'SWARM/connection';
-  payload: { peer: IProtocol };
-};
-export type ISwarmPeerConnectedEvent = {
-  type: 'SWARM/peerConnected';
-  payload: { peerKey: Buffer; isAuthorized: boolean };
-};
-export type ISwarmErrorEvent = {
-  type: 'SWARM/error';
-  payload: { error: Error };
-};
-
-/**
- * [DB_EVENTS]
- */
-export type DbEvent = IDbErrorEvent | IDbWatchEvent;
-export type IDbWatchEvent<D extends object = any> = {
-  type: 'DB/watch';
-  payload: {
-    key: keyof D;
-    value?: D[keyof D];
-    pattern: string | '*';
-    deleted: boolean;
-  };
-};
-export type IDbErrorEvent = {
-  type: 'DB/error';
-  payload: { error: Error };
 };

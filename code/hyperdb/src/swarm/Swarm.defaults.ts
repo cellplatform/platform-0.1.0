@@ -5,7 +5,7 @@
  *  - https://github.com/maxogden/discovery-channel
  */
 
-import { ISwarmOptions } from '../types';
+import { ISwarmOptions } from './types';
 
 const DAT_DOMAIN = 'dat.local';
 const DEFAULT_DISCOVERY = ['discovery1.datprotocol.com', 'discovery2.datprotocol.com'];

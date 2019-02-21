@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { share, takeUntil, filter, map } from 'rxjs/operators';
 
 import { value as valueUtil } from '../common';
-import * as t from '../types';
+import * as t from './types';
 
 const hyperdb = require('hyperdb');
 type WatcherRefs = { [key: string]: WatcherRef };

@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import * as t from '../types';
+import * as t from './types';
 import { Db } from '../db/Db';
 import swarmDefaults from './Swarm.defaults';
 
@@ -88,6 +88,13 @@ export class Swarm {
   }
 
   /**
+   * Determines whether the swarm has been actively joined to the network.
+   */
+  public get isActive() {
+    return Boolean(this._.swarm);
+  }
+
+  /**
    * [Methods]
    */
 
@@ -131,6 +138,7 @@ export class Swarm {
     if (swarm) {
       swarm.leave(this.id);
       swarm.destroy();
+      this._.swarm = undefined;
     }
   }
 
