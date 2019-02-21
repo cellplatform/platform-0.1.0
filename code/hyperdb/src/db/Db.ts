@@ -84,6 +84,16 @@ export class Db<D extends object = any> {
     return local.key;
   }
 
+  public get buffer() {
+    const db = this._.db;
+    const local = this._.db.local as t.IFeed;
+    return {
+      key: db.key as Buffer,
+      discoveryKey: db.discoveryKey as Buffer,
+      localKey: local.key as Buffer,
+    };
+  }
+
   public get watching() {
     return Object.keys(this._.watchers);
   }
