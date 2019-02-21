@@ -89,3 +89,12 @@ export type ISwarmErrorEvent = {
   type: 'SWARM/error';
   payload: { error: Error };
 };
+
+/**
+ * [DB_EVENTS]
+ */
+export type DbEvent = IDbErrorEvent;
+export type IDbErrorEvent = {
+  type: 'DB/error';
+  payload: { error: Error };
+};

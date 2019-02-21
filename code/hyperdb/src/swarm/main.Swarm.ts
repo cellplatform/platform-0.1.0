@@ -19,9 +19,9 @@ export class Swarm {
   public readonly id: string;
 
   private readonly _ = {
-    isDisposed: false,
     db: (null as unknown) as HyperDb,
     swarm: null as any,
+    isDisposed: false,
     dispose$: new Subject(),
     events$: new Subject<t.SwarmEvent>(),
   };
@@ -36,6 +36,7 @@ export class Swarm {
     const { id, db, join = false, autoAuth = false } = args;
     this.id = id;
     this._.db = db;
+    this.dispose$.subscribe(() => (this._.isDisposed = true));
 
     // Create the swarm and listen for connection events.
     const defaults = swarmDefaults({
@@ -68,8 +69,6 @@ export class Swarm {
       this.next<t.ISwarmConnectionEvent>('SWARM/connection', { peer });
     });
 
-    // Store state.
-    this.dispose$.subscribe(() => (this._.isDisposed = true));
   }
 
   public dispose() {

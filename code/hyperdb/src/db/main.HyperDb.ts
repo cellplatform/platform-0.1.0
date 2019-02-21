@@ -1,4 +1,6 @@
-import { IFeed } from '../types';
+import { Subject } from 'rxjs';
+import { share, takeUntil } from 'rxjs/operators';
+import * as t from '../types';
 
 /**
  * Promise based wrapper around a HyperDB instance.
@@ -8,28 +10,48 @@ import { IFeed } from '../types';
  *
  */
 export class HyperDb {
-  private _db: any;
+  private _ = {
+    db: null as any,
+    isDisposed: false,
+    dispose$: new Subject(),
+    events$: new Subject<t.DbEvent>(),
+  };
+
+  public readonly dispose$ = this._.dispose$.pipe(share());
+  public readonly events$ = this._.events$.pipe(
+    takeUntil(this.dispose$),
+    share(),
+  );
 
   /**
    * Constructor.
    */
   constructor(args: { instance: any }) {
-    this._db = args.instance;
+    this._.db = args.instance;
+    this.dispose$.subscribe(() => (this._.isDisposed = true));
+  }
+
+  public dispose() {
+    this._.dispose$.next();
+  }
+
+  public get isDisposed() {
+    return this._.isDisposed;
   }
 
   /**
    * [Properties]
    */
   public get key(): Buffer {
-    return this._db.key;
+    return this._.db.key;
   }
 
   public get discoveryKey(): Buffer {
-    return this._db.discoveryKey;
+    return this._.db.discoveryKey;
   }
 
-  public get local(): IFeed {
-    return this._db.local;
+  public get local(): t.IFeed {
+    return this._.db.local;
   }
 
   /**
@@ -37,21 +59,19 @@ export class HyperDb {
    */
   public replicate(options: { live?: boolean }) {
     const { live = false } = options;
-    // const userData = this.local.key;
 
     // NOTE: Tack userData onto the replicated database.
     //    This is used by the swarm-connection event to filter on peers
     //    that are looking for this database.
     //
     // See:
-    //    Swarm connection event listenr.
+    //    Swarm connection event listener.
     //
     // See:
     //    https://github.com/karissa/hyperdiscovery/pull/12#pullrequestreview-95597621
     //
     const userData = this.local.key;
-
-    return this._db.replicate({ live, userData });
+    return this._.db.replicate({ live, userData });
   }
 
   /**
@@ -59,7 +79,7 @@ export class HyperDb {
    */
   public isAuthorized(peerKey: Buffer) {
     return new Promise<boolean>((resolve, reject) => {
-      this._db.authorized(peerKey, (err: Error, result: boolean) => {
+      this._.db.authorized(peerKey, (err: Error, result: boolean) => {
         if (err) {
           reject(err);
         } else {
@@ -74,7 +94,7 @@ export class HyperDb {
    */
   public async authorize(peerKey: Buffer) {
     return new Promise((resolve, reject) => {
-      this._db.authorize(peerKey, (err: Error) => {
+      this._.db.authorize(peerKey, (err: Error) => {
         if (err) {
           reject(err);
         } else {
@@ -82,5 +102,17 @@ export class HyperDb {
         }
       });
     });
+  }
+
+  /**
+   * [INTERNAL]
+   */
+  private fireError(error: Error) {
+    this.next<t.DbEvent>('DB/error', { error });
+  }
+
+  private next<E extends t.DbEvent>(type: E['type'], payload: E['payload']) {
+    const e = { type, payload };
+    this._.events$.next(e as t.DbEvent);
   }
 }
