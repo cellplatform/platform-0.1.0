@@ -1,22 +1,21 @@
 import * as React from 'react';
 
-// import { HyperDb } from '../../src/db';
 import * as main from '../../src/main';
-import { Button, css, ObjectView, renderer } from './common';
+import { Button, css, ObjectView, renderer, value } from './common';
 import { TestPanel } from './TestPanel';
-import { async } from 'q';
 
-export type ITestState = { count?: number };
+export type ITestState = {
+  data: any;
+};
 
 export class Test extends React.PureComponent<{}, ITestState> {
-  public state: ITestState = { count: 0 };
+  public state: ITestState = { data: {} };
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
 
   public db: main.HyperDb;
 
   public componentWillMount() {
-    // TEMP 🐷
     this.init();
   }
 
@@ -27,19 +26,25 @@ export class Test extends React.PureComponent<{}, ITestState> {
       id > 1 ? 'b83a722214bdf9db4bd7a9f900144b8c80c6d7dc7f81372e4e48875cbb903e00' : undefined;
 
     const res = await main.init({ dir, dbKey });
-    this.db = res.db;
+    const db = (this.db = res.db);
 
     console.group('🌳 HyperDB');
     console.log('- dbKey:', res.dbKey);
     console.log('- localKey:', res.localKey);
     console.groupEnd();
+
+    db.watch().watch$.subscribe(async e => {
+      const version = await db.version();
+      const watching = db.watching;
+      this.setData({ version, watching, [e.key]: e.value });
+    });
   };
 
   public render() {
     const styles = {
       base: css({ margin: 20 }),
       columns: css({ Flex: 'horizontal', lineHeight: 1.6 }),
-      left: css({ flex: 1 }),
+      left: css({ width: 250 }),
       right: css({ flex: 1 }),
     };
 
@@ -55,15 +60,19 @@ export class Test extends React.PureComponent<{}, ITestState> {
                 <Button label={'get'} onClick={this.getValue} />
               </li>
               <li>
-                <Button label={'put'} onClick={this.putValue} />
+                put: <Button label={'foo'} onClick={this.putValue('foo')} />
+                <Button label={'bar'} onClick={this.putValue('bar')} />
               </li>
               <li>
                 <Button label={'del'} onClick={this.deleteValue} />
               </li>
+              <li>
+                <Button label={'dispose'} onClick={this.dispose} />
+              </li>
             </ul>
           </div>
           <div {...styles.right}>
-            <ObjectView name={'state'} data={this.state} />
+            <ObjectView name={'db'} data={this.state.data} expandLevel={2} />
           </div>
         </div>
       </TestPanel>
@@ -75,16 +84,33 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const res = await this.db.get('foo');
     console.log('get:', res);
     this.count = res.value || 0;
+    this.setData({ foo: res.value });
   };
-  private putValue = async () => {
-    this.count++;
-    const res = await this.db.put('foo', this.count);
-    console.log('put:', res);
-    this.count = res.value || 0;
+  private putValue = (key: string) => {
+    return async () => {
+      this.count++;
+      const res = await this.db.put(key, this.count);
+      console.log('put:', res);
+      this.count = res.value || 0;
+    };
   };
 
   private deleteValue = async () => {
     const res = await this.db.del('foo');
     console.log('del:', res);
+    this.setData({ foo: res.value });
+  };
+
+  private setData = (obj: {}) => {
+    let data = { ...this.state.data };
+    Object.keys(obj).forEach(key => {
+      data = { ...data, [key]: obj[key] };
+    });
+    data = value.deleteUndefined(data);
+    this.setState({ data });
+  };
+
+  private dispose = () => {
+    this.db.dispose();
   };
 }

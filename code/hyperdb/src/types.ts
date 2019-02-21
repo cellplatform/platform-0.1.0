@@ -4,6 +4,7 @@
 
 export type IDbValueMeta<K> = {
   key: K;
+  exists: boolean;
   deleted: boolean;
   clock: number[];
   feed: number;
@@ -114,7 +115,16 @@ export type ISwarmErrorEvent = {
 /**
  * [DB_EVENTS]
  */
-export type DbEvent = IDbErrorEvent;
+export type DbEvent = IDbErrorEvent | IDbWatchEvent;
+export type IDbWatchEvent<D extends object = any> = {
+  type: 'DB/watch';
+  payload: {
+    key: keyof D;
+    value?: D[keyof D];
+    pattern: string | '*';
+    deleted: boolean;
+  };
+};
 export type IDbErrorEvent = {
   type: 'DB/error';
   payload: { error: Error };

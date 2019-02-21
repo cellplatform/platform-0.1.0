@@ -1,10 +1,12 @@
 import { Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
+import { share, takeUntil, filter, map } from 'rxjs/operators';
 
 import { value as valueUtil } from '../common';
 import * as t from '../types';
 
 const hyperdb = require('hyperdb');
+type WatcherRefs = { [key: string]: WatcherRef };
+type WatcherRef = { destroy: () => void };
 
 /**
  * Promise based wrapper around a HyperDB instance.
@@ -34,13 +36,18 @@ export class HyperDb<D extends object = any> {
    */
   public _ = {
     db: null as any,
-    isDisposed: false,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),
+    watchers: ({} as unknown) as WatcherRefs,
   };
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
+    share(),
+  );
+  public readonly watch$ = this.events$.pipe(
+    filter(e => e.type === 'DB/watch'),
+    map(e => e.payload as t.IDbWatchEvent<D>['payload']),
     share(),
   );
 
@@ -55,11 +62,11 @@ export class HyperDb<D extends object = any> {
    * Disposes of the object and stops all related observables.
    */
   public dispose() {
+    this.unwatch();
+    this.isDisposed = true;
     this._.dispose$.next();
   }
-  public get isDisposed() {
-    return this._.isDisposed;
-  }
+  public isDisposed = false;
 
   /**
    * [Properties]
@@ -76,10 +83,15 @@ export class HyperDb<D extends object = any> {
     return this._.db.local;
   }
 
+  public get watching() {
+    return Object.keys(this._.watchers);
+  }
+
   /**
    * [Methods]
    */
   public replicate(options: { live?: boolean }) {
+    this.throwIfDisposed('replicate');
     const { live = false } = options;
 
     // NOTE: Tack userData onto the replicated database.
@@ -99,7 +111,7 @@ export class HyperDb<D extends object = any> {
   }
 
   /**
-   * Check whether a key is authorized to write to the database.
+   * Checks whether a key is authorized to write to the database.
    */
   public isAuthorized(peerKey: Buffer) {
     return new Promise<boolean>((resolve, reject) => {
@@ -110,19 +122,33 @@ export class HyperDb<D extends object = any> {
   }
 
   /**
-   * Authorize a peer to write to the database.
+   * Authorizes a peer to write to the database.
    */
   public async authorize(peerKey: Buffer) {
+    this.throwIfDisposed('authorize');
     return new Promise((resolve, reject) => {
       this._.db.authorize(peerKey, (err: Error) => {
         return err ? this.fireError(err, reject) : resolve();
       });
     });
   }
+
+  /**
+   * Get the current version identifier as a buffer for the db.
+   */
+  public version() {
+    return new Promise<string>((resolve, reject) => {
+      this._.db.version((err: Error, result: any) => {
+        return err ? this.fireError(err, reject) : resolve(result.toString('hex'));
+      });
+    });
+  }
+
   /**
    * Gets a value from the database.
    */
   public async get<K extends keyof D>(key: K) {
+    this.throwIfDisposed('get');
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.get(key, (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(toValue(result));
@@ -134,6 +160,7 @@ export class HyperDb<D extends object = any> {
    * Writes a value to the database.
    */
   public async put<K extends keyof D>(key: K, value: D[K]) {
+    this.throwIfDisposed('put');
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.put(key, value, (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(toValue(result));
@@ -145,10 +172,56 @@ export class HyperDb<D extends object = any> {
    * Removes a value from the database.
    */
   public async del<K extends keyof D>(key: K) {
+    this.throwIfDisposed('delete');
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.del(key, (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(toValue(result));
       });
+    });
+  }
+
+  /**
+   * Starts a watcher for the given key/path.
+   * Pass nothing to watch for all changes.
+   */
+  public watch(...pattern: string[]) {
+    this.throwIfDisposed('watch');
+    pattern = formatWatchPatterns(pattern);
+
+    const storeRef = (key: string, watcher: WatcherRef) => {
+      this.unwatch(key);
+      this._.watchers[key] = watcher;
+    };
+
+    pattern.forEach(pattern => {
+      const match = pattern === '*' ? '' : pattern; // NB: wildcard is matched as empty-string.
+      const watcher = this._.db.watch(match, () => {
+        watcher._nodes.forEach(({ key, value, deleted }: any) => {
+          this.next<t.IDbWatchEvent>('DB/watch', {
+            key,
+            value: formatValue(value),
+            pattern: pattern,
+            deleted,
+          });
+        });
+      });
+      storeRef(pattern, watcher);
+    });
+    return this;
+  }
+
+  /**
+   * Removes the watcher for the given key/path.
+   * Pass nothing to turn-off all watchers.
+   */
+  public unwatch(...pattern: string[]) {
+    const watchers = this._.watchers;
+    pattern = Array.isArray(pattern) ? pattern : [pattern];
+    pattern = pattern.length === 0 ? Object.keys(this._.watchers) : formatWatchPatterns(pattern);
+    pattern.forEach(key => {
+      if (watchers[key]) {
+        watchers[key].destroy();
+      }
     });
   }
 
@@ -166,18 +239,41 @@ export class HyperDb<D extends object = any> {
     const e = { type, payload };
     this._.events$.next(e as t.DbEvent);
   }
+
+  private throwIfDisposed(action: string) {
+    if (this.isDisposed) {
+      const msg = `Cannot '${action}' because the [HyperDb] client has been disposed.`;
+      throw new Error(msg);
+    }
+  }
 }
 
 /**
  * [INTERNAL]
  */
 function toValue<K, V>(result: any): t.IDbValue<K, V> {
-  const isNil = result === null || result === undefined;
-  const value = isNil ? undefined : (valueUtil.toType(result.value) as V);
-  result = { ...result };
+  const exists = result && !isNil(result.value);
+  const value = exists ? formatValue<V>(result.value) : undefined;
+  result = { exists, ...result };
   delete result.value;
   return {
     value,
     meta: result as t.IDbValueMeta<K>,
   };
+}
+
+function formatValue<V>(value: any) {
+  return isNil(value) ? undefined : (valueUtil.toType(value) as V);
+}
+
+function isNil(value: any) {
+  return value === null || value === undefined;
+}
+
+function formatWatchPatterns(pattern: string[]) {
+  const asWildcard = (pattern: string) => (pattern === '' ? '*' : pattern);
+  pattern = Array.isArray(pattern) ? pattern : [pattern];
+  pattern = pattern.length === 0 ? [''] : pattern; // Watch for all changes if no specific paths were given.
+  pattern = pattern.map(p => p.trim()).map(p => asWildcard(p));
+  return pattern;
 }
