@@ -1,5 +1,8 @@
-import { HyperDb, Swarm } from './main.db';
-export { HyperDb, Swarm };
+import { Db } from './db/main';
+import { Swarm } from './swarm/main';
+
+export { Db, Swarm };
+export * from './types';
 
 /**
  * Initializes a new hyperdb.
@@ -7,7 +10,8 @@ export { HyperDb, Swarm };
 export async function init(args: { dir: string; dbKey?: string }) {
   const { dir, dbKey } = args;
 
-  const db = await HyperDb.create({ storage: dir, dbKey });
+  const storage = dir;
+  const db = await Db.create({ storage, dbKey });
   const swarm = await Swarm.create({ db, autoAuth: true, join: true });
 
   return {
