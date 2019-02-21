@@ -1,17 +1,8 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
-import * as t from '../types';
+import { Subject } from 'rxjs';
+import { share, takeUntil } from 'rxjs/operators';
+
 import { value as valueUtil } from '../common';
+import * as t from '../types';
 
 const hyperdb = require('hyperdb');
 
@@ -22,7 +13,6 @@ const hyperdb = require('hyperdb');
  *  - https://github.com/mafintosh/hyperdb#api
  *
  */
-
 export class HyperDb<D extends object = any> {
   /**
    * [Static]
@@ -34,7 +24,7 @@ export class HyperDb<D extends object = any> {
       const options = { valueEncoding: 'utf-8', reduce };
       const db = args.dbKey ? hyperdb(storage, dbKey, options) : hyperdb(storage, options);
       db.on('ready', () => {
-        resolve(new HyperDb<D>(db));
+        resolve(new HyperDb<D>({ db }));
       });
     });
   }
@@ -57,13 +47,8 @@ export class HyperDb<D extends object = any> {
   /**
    * [Constructor]
    */
-  private constructor(db: any) {
-    this._.db = db;
-
-    // const watcher = db.watch('', e => {
-    //   console.log('e', e);
-    // });
-    // console.log('watcher', watcher);
+  private constructor(args: { db: any }) {
+    this._.db = args.db;
   }
 
   /**
@@ -119,7 +104,7 @@ export class HyperDb<D extends object = any> {
   public isAuthorized(peerKey: Buffer) {
     return new Promise<boolean>((resolve, reject) => {
       this._.db.authorized(peerKey, (err: Error, result: boolean) => {
-        return err ? reject(err) : resolve(result);
+        return err ? this.fireError(err, reject) : resolve(result);
       });
     });
   }
@@ -130,7 +115,7 @@ export class HyperDb<D extends object = any> {
   public async authorize(peerKey: Buffer) {
     return new Promise((resolve, reject) => {
       this._.db.authorize(peerKey, (err: Error) => {
-        return err ? reject(err) : resolve();
+        return err ? this.fireError(err, reject) : resolve();
       });
     });
   }
@@ -140,7 +125,7 @@ export class HyperDb<D extends object = any> {
   public async get<K extends keyof D>(key: K) {
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.get(key, (err: Error, result: any) => {
-        return err ? reject(err) : resolve(toValue(result));
+        return err ? this.fireError(err, reject) : resolve(toValue(result));
       });
     });
   }
@@ -151,7 +136,18 @@ export class HyperDb<D extends object = any> {
   public async put<K extends keyof D>(key: K, value: D[K]) {
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.put(key, value, (err: Error, result: any) => {
-        return err ? reject(err) : resolve(toValue(result));
+        return err ? this.fireError(err, reject) : resolve(toValue(result));
+      });
+    });
+  }
+
+  /**
+   * Removes a value from the database.
+   */
+  public async del<K extends keyof D>(key: K) {
+    return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
+      this._.db.del(key, (err: Error, result: any) => {
+        return err ? this.fireError(err, reject) : resolve(toValue(result));
       });
     });
   }
@@ -159,8 +155,11 @@ export class HyperDb<D extends object = any> {
   /**
    * [INTERNAL]
    */
-  private fireError(error: Error) {
+  private fireError(error: Error, reject?: (reason: any) => void) {
     this.next<t.IDbErrorEvent>('DB/error', { error });
+    if (reject) {
+      reject(error);
+    }
   }
 
   private next<E extends t.DbEvent>(type: E['type'], payload: E['payload']) {

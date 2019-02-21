@@ -4,6 +4,7 @@ import * as React from 'react';
 import * as main from '../../src/main';
 import { Button, css, ObjectView, renderer } from './common';
 import { TestPanel } from './TestPanel';
+import { async } from 'q';
 
 export type ITestState = { count?: number };
 
@@ -56,6 +57,9 @@ export class Test extends React.PureComponent<{}, ITestState> {
               <li>
                 <Button label={'put'} onClick={this.putValue} />
               </li>
+              <li>
+                <Button label={'del'} onClick={this.deleteValue} />
+              </li>
             </ul>
           </div>
           <div {...styles.right}>
@@ -77,5 +81,10 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const res = await this.db.put('foo', this.count);
     console.log('put:', res);
     this.count = res.value || 0;
+  };
+
+  private deleteValue = async () => {
+    const res = await this.db.del('foo');
+    console.log('del:', res);
   };
 }

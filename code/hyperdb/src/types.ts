@@ -4,7 +4,7 @@
 
 export type IDbValueMeta<K> = {
   key: K;
-  isDeleted: boolean;
+  deleted: boolean;
   clock: number[];
   feed: number;
   seq: number;
@@ -14,7 +14,7 @@ export type IDbValueMeta<K> = {
 };
 
 export type IDbValue<K, V> = {
-  value?: V;
+  value: V | undefined;
   meta: IDbValueMeta<K>;
 };
 
