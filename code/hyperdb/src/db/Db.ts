@@ -113,8 +113,11 @@ export class Db<D extends object = any> {
   /**
    * Checks whether a key is authorized to write to the database.
    */
-  public isAuthorized(peerKey: Buffer) {
+  public isAuthorized(peerKey?: Buffer) {
     return new Promise<boolean>((resolve, reject) => {
+      if (!(peerKey instanceof Buffer)) {
+        resolve(false);
+      }
       this._.db.authorized(peerKey, (err: Error, result: boolean) => {
         return err ? this.fireError(err, reject) : resolve(result);
       });

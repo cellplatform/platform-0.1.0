@@ -178,18 +178,16 @@ export class Swarm {
       return { current: -1, peers: [] };
     }
 
-    const peerKeys: Buffer[] = swarm.connections
-      .map((peer: t.IProtocol) => peer.remoteUserData)
-      .filter((userData: any) => Boolean(userData))
-      .map((userData: any) => Buffer.from(userData));
+    type IPeerInfo = { id: string; isAuthorized: boolean };
+    const toPeer = async (peer: t.IProtocol) => {
+      const id = peer.id.toString('hex');
+      const isAuthorized = await db.isAuthorized(peer.remoteUserData);
+      const result: IPeerInfo = { id, isAuthorized };
+      return result;
+    };
 
-    const peers = await Promise.all(
-      peerKeys.map(async peerKey => {
-        const isAuthorized = await db.isAuthorized(peerKey);
-        const key = peerKey.toString('hex');
-        return { key, isAuthorized };
-      }),
-    );
+    const wait: Array<Promise<IPeerInfo>> = swarm.connections.map((p: t.IProtocol) => toPeer(p));
+    const peers = (await Promise.all(wait)).filter(p => p.isAuthorized);
 
     return {
       total: peers.length,
