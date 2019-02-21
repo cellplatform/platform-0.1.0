@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { Button, ObjectView, css, renderer } from './common';
-import { TestPanel } from './TestPanel';
+import { distinctUntilChanged } from 'rxjs/operators';
+
+import * as tmp from '../../src/_tmp';
 import main from '../../src/main';
+import { Button, css, ObjectView, R, renderer } from './common';
+import { TestPanel } from './TestPanel';
 
 export type ITestState = { count?: number };
 
@@ -13,10 +16,39 @@ export class Test extends React.PureComponent<{}, ITestState> {
   public componentDidMount() {
     // TEMP 🐷
     this.init();
+    // this.init__TMP();
   }
+
+  // private init__TMP = async () => {
+  //   const { id } = this.context;
+  //   const db = `.db/db-${id}`;
+  //   const key =
+  //     id > 1 ? 'bee2b859d4b7727b82f4f336b64b6d968f1fdccf4fa376d5630c0d1c8d46a0f9' : undefined;
+
+  //   console.log('db', db);
+  //   console.log('key', key);
+
+  //   tmp.init({ db, key });
+  // };
+
   private init = async () => {
-    // const { log } = this.context;
-    const res = await main.init({ storage: '.db/db1' });
+    const { id } = this.context;
+    const db = `.db/db-${id}`;
+
+    const publicKey = 'bee2b859d4b7727b82f4f336b64b6d968f1fdccf4fa376d5630c0d1c8d46a0f9';
+    const res = await main.init({ dir: db, publicKey });
+    console.group('🌳 hyperdb');
+    console.log(' - dir:', res.dir);
+    console.log(' - publicKey:', res.publicKey);
+    console.log(' - db:', res.db);
+    console.log(' - swarm:', res.swarm);
+    console.groupEnd();
+
+    // res.swarm.events$
+    //   .pipe(distinctUntilChanged((prev, next) => R.equals(prev, next)))
+    //   .subscribe(e => {
+    //     console.log('e', e);
+    //   });
   };
 
   public render() {

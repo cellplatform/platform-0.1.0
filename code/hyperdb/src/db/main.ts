@@ -3,11 +3,9 @@
  *  - https://github.com/mafintosh/hyperdb
  */
 const hyperdb = require('hyperdb');
+import { HyperDb } from './main.HyperDB';
 
-export type IHyperDbLib = {
-  // key: Buffer;
-  // discoveryKey: Buffer;
-};
+export { HyperDb };
 
 export type ICreateDbArgs = {
   /**
@@ -36,17 +34,19 @@ export type ICreateDbArgs = {
   valueEncoding?: 'binary' | 'utf-8';
 };
 
-
 /**
  * Create a new HyperDB client.
  */
 export function create(args: ICreateDbArgs) {
   const reduce = (a: any, b: any) => a;
   const map = (node: any) => node;
-  return new Promise<IHyperDbLib>((resolve, reject) => {
+
+  return new Promise<HyperDb>(resolve => {
     const { valueEncoding = 'utf-8' } = args;
     const options = { valueEncoding, reduce, map };
-    const db = args.key ? hyperdb(args.storage, args.key, options) : hyperdb(args.storage, options);
-    db.on('ready', () => resolve(db));
+    const instance = args.key
+      ? hyperdb(args.storage, args.key, options)
+      : hyperdb(args.storage, options);
+    instance.on('ready', () => resolve(new HyperDb({ instance })));
   });
 }

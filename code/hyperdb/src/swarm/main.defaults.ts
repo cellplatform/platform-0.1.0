@@ -5,7 +5,7 @@
  *  - https://github.com/maxogden/discovery-channel
  */
 
-import { ISwarm } from './types';
+import { ISwarmOptions } from '../types';
 
 const DAT_DOMAIN = 'dat.local';
 const DEFAULT_DISCOVERY = ['discovery1.datprotocol.com', 'discovery2.datprotocol.com'];
@@ -21,6 +21,6 @@ const DEFAULT_OPTS = {
   dht: { bootstrap: DEFAULT_BOOTSTRAP },
 };
 
-export default (options: Partial<ISwarm>) => {
+export default (options: Partial<ISwarmOptions>) => {
   return { ...DEFAULT_OPTS, ...options };
 };
