@@ -8,7 +8,7 @@ type IConstructorArgs = {
   ipc: IpcClient;
   dir: string;
   dbKey?: string;
-  props?: t.IDbProps;
+  version?: string; // Version of DB to checkout at.
 };
 
 const TARGET_MAIN = { target: 0 };
@@ -30,9 +30,10 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * [Constructor]
    */
   private constructor(args: IConstructorArgs) {
-    this._ipc = args.ipc;
+    this._.ipc = args.ipc;
     this._.dir = args.dir;
     this._.dbKey = args.dbKey;
+    this._.version = args.version;
     this.dispose$.subscribe(() => (this._.isDisposed = true));
 
     // Promise that alerts when the Db is ready to interact with.
@@ -40,7 +41,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     this.ready = ready$.toPromise();
 
     // Sync props.
-    const state$ = this._ipc.on<t.IDbUpdateStateEvent>('DB/state/update').pipe(
+    const state$ = this._.ipc.on<t.IDbUpdateStateEvent>('DB/state/update').pipe(
       takeUntil(this.dispose$),
       filter(e => e.payload.db.dir === this._.dir),
     );
@@ -56,7 +57,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
 
     // Ferry events through local observable.
     const events: Array<t.DbEvent['type']> = ['DB/watch', 'DB/error'];
-    this._ipc.events$
+    this._.ipc.events$
       .pipe(
         takeUntil(this.dispose$),
         filter(e => events.includes(e.type as any)),
@@ -70,10 +71,11 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * [Fields]
    */
   public readonly ready: Promise<{}>;
-  private readonly _ipc: t.DbIpcClient;
+  // private readonly _ipc: t.DbIpcClient;
 
   private readonly _ = {
     isDisposed: false,
+    ipc: (null as unknown) as t.DbIpcClient,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),
     props: (null as unknown) as t.IDbProps,
@@ -135,6 +137,8 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   public async checkout(version: string) {
+    // const {  } = this._;
+
     console.log(`\nTODO 🐷   \n`);
     /**
      * TODO
@@ -180,7 +184,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     const payload: E['payload'] = {
       db: { dir, dbKey, version },
     };
-    return this._ipc.send<E>('DB/state/get', payload, TARGET_MAIN);
+    return this._.ipc.send<E>('DB/state/get', payload, TARGET_MAIN);
   }
 
   private async invoke<M extends keyof t.IDbMethods>(method: M, params: any[]) {
@@ -192,7 +196,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
       method,
       params,
     };
-    const res = await this._ipc.send<E, R>('DB/invoke', payload, TARGET_MAIN).promise;
+    const res = await this._.ipc.send<E, R>('DB/invoke', payload, TARGET_MAIN).promise;
     const data = res.dataFrom('MAIN');
     if (!data) {
       throw new Error(`Failed invoking '${method}'. No data was returned from MAIN.`);
