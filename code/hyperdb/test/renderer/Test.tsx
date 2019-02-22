@@ -44,25 +44,24 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const { id, ipc } = this.context;
     const dir = `.db/tmp-${id}`;
     const dbKey =
-      id > 1 ? '9ceb2ad0597bcc81094a79245cb653eb39d04a37233b6ed79a0eb8a13e7df8c0' : undefined;
+      id > 1 ? '937c453128fbd651deb0ed4d7b738ed374759beb8a11cdd08e150d47c7f77d8b' : undefined;
 
     const res = await main.create({ dir, dbKey });
     const db = (this.db = res.db);
     const swarm = (this.swarm = res.swarm);
 
-    const dbr = await renderer.create({ ipc, dir: `.db/r-${id}`, dbKey });
-
+    // const dbr = await renderer.create({ ipc, dir: `.db/r-${id}`, dbKey });
     console.group('🌳 HyperDB');
-    console.log('- dbKey:', dbr.db.key);
-    console.log('- localKey:', dbr.db.localKey);
+    console.log('- dbKey:', db.key);
+    console.log('- localKey:', db.localKey);
     console.groupEnd();
 
-    const TEMP = async (db: renderer.IDb) => {
-      const foo = await db.get('foo');
-      console.log('foo', foo);
-    };
+    // const TEMP = async (db: renderer.IDb) => {
+    //   const foo = await db.get('foo');
+    //   console.log('foo', foo);
+    // };
 
-    TEMP(dbr.db);
+    // TEMP(dbr.db);
 
     await db.watch('*');
     db.watch$.subscribe(async e => {
