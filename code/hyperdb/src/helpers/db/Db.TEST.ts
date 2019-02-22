@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import { Db } from './Db.main';
+import { Db } from './Db';
 import { fs } from '@platform/fs';
 
 const dir = '.db/.test';
 
-describe('Db.main', () => {
+describe('Db', () => {
   afterEach(async () => fs.remove(dir));
 
   it('put/get value', async () => {

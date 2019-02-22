@@ -1,5 +1,5 @@
 import * as t from './types';
-import { Db } from './Db.main';
+import { Db } from './Db';
 import { Swarm } from '../swarm/main';
 import { create } from './main.create';
 import { value } from '../common';

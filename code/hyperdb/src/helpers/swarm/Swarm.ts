@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import * as t from './types';
-import { Db } from '../db/Db.main';
+import { Db } from '../db/Db';
 import swarmDefaults from './Swarm.defaults';
 
 const discovery = require('discovery-swarm');

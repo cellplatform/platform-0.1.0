@@ -1,5 +1,5 @@
 import { value } from '../common';
-import { Db } from './Db.main';
+import { Db } from './Db';
 import { Swarm } from '../swarm/main';
 
 export { Db, Swarm };
