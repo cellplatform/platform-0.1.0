@@ -27,9 +27,9 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   private init = async () => {
     const { id } = this.context;
-    const dir = `.db/db-tmp-${id}`;
+    const dir = `.db/tmp-${id}`;
     const dbKey =
-      id > 1 ? '4a1e914a33a9b2a6e4f5769f0cd73e308e33ec8cf86a804b74cda010c1aeed62' : undefined;
+      id > 1 ? '9ceb2ad0597bcc81094a79245cb653eb39d04a37233b6ed79a0eb8a13e7df8c0' : undefined;
 
     const res = await main.init({ dir, dbKey });
     const db = (this.db = res.db);
@@ -70,7 +70,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
   };
 
   private appendVersion = (version: string) => {
-    const versions = R.uniq([version, ...this.state.versions]);
+    const versions = R.uniq([version, ...this.state.versions]).filter(v => Boolean(v));
     this.setState({ versions });
   };
 
