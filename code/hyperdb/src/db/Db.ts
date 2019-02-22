@@ -15,7 +15,7 @@ type WatcherRef = { destroy: () => void };
  *  - https://github.com/mafintosh/hyperdb#api
  *
  */
-export class Db<D extends object = any> {
+export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * [Static]
    */
@@ -54,7 +54,7 @@ export class Db<D extends object = any> {
   );
   public readonly watch$ = this.events$.pipe(
     filter(e => e.type === 'DB/watch'),
-    map(e => e.payload as t.IDbWatchEvent<D>['payload']),
+    map(e => e.payload as t.IDbWatchChange),
     share(),
   );
 
@@ -158,6 +158,18 @@ export class Db<D extends object = any> {
   }
 
   /**
+   * Checkout the database at an older version.
+   * The response is a new [Db] instance.
+   *
+   * NOTE:
+   *      Version should be a version identifier returned
+   *      by the `db.version` method.
+   */
+  public checkout(version: string | Buffer) {
+    return new Db<D>(this._.db.checkout(version));
+  }
+
+  /**
    * Gets a value from the database.
    */
   public async get<K extends keyof D>(key: K) {
@@ -209,12 +221,14 @@ export class Db<D extends object = any> {
     pattern.forEach(pattern => {
       const match = pattern === '*' ? '' : pattern; // NB: wildcard is matched as empty-string.
       const watcher = this._.db.watch(match, () => {
-        watcher._nodes.forEach(({ key, value, deleted }: any) => {
+        watcher._nodes.forEach(async ({ key, value, deleted }: any) => {
+          const version = await this.version();
           this.next<t.IDbWatchEvent>('DB/watch', {
             key,
             value: formatValue(value),
-            pattern: pattern,
+            pattern,
             deleted,
+            version,
           });
         });
       });

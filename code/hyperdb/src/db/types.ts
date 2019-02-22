@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export * from '../types';
 
 /**
@@ -21,18 +23,34 @@ export type IDbValue<K, V> = {
 };
 
 /**
+ * [Database]
+ */
+export type IDb<D extends object = any> = {
+  readonly events$: Observable<DbEvent>;
+  readonly watch$: Observable<IDbWatchChange<D>>;
+  readonly key: string;
+  readonly discoveryKey: string;
+  readonly localKey: string;
+  readonly watching: string[];
+  version(): Promise<string>;
+};
+
+/**
  * [Events]
  */
 export type DbEvent = IDbErrorEvent | IDbWatchEvent;
 export type IDbWatchEvent<D extends object = any> = {
   type: 'DB/watch';
-  payload: {
-    key: keyof D;
-    value?: D[keyof D];
-    pattern: string | '*';
-    deleted: boolean;
-  };
+  payload: IDbWatchChange<D>;
 };
+export type IDbWatchChange<D extends object = any> = {
+  key: keyof D;
+  value?: D[keyof D];
+  pattern: string | '*';
+  deleted: boolean;
+  version: string; // database-version.
+};
+
 export type IDbErrorEvent = {
   type: 'DB/error';
   payload: { error: Error };
