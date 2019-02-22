@@ -44,12 +44,13 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * [Fields]
    */
-  private _ = {
+  private readonly _ = {
     db: null as any,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),
     watchers: ({} as unknown) as WatcherRefs,
   };
+  public isDisposed = false;
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
@@ -60,16 +61,6 @@ export class Db<D extends object = any> implements t.IDb<D> {
     map(e => e.payload as t.IDbWatchChange),
     share(),
   );
-
-  /**
-   * Disposes of the object and stops all related observables.
-   */
-  public dispose() {
-    this.unwatch();
-    this.isDisposed = true;
-    this._.dispose$.next();
-  }
-  public isDisposed = false;
 
   /**
    * [Properties]
@@ -103,6 +94,12 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * [Methods]
    */
+  public dispose() {
+    this.unwatch();
+    this.isDisposed = true;
+    this._.dispose$.next();
+  }
+
   public replicate(options: { live?: boolean }) {
     this.throwIfDisposed('replicate');
     const { live = false } = options;
@@ -168,7 +165,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    *      Version should be a version identifier returned
    *      by the `db.version` method.
    */
-  public checkout(version: string) {
+  public async checkout(version: string) {
     return new Db<D>(this._.db.checkout(version));
   }
 
@@ -212,7 +209,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * Starts a watcher for the given key/path.
    * Pass nothing to watch for all changes.
    */
-  public watch(...pattern: string[]) {
+  public async watch(...pattern: string[]) {
     this.throwIfDisposed('watch');
     pattern = formatWatchPatterns(pattern);
 
@@ -237,14 +234,13 @@ export class Db<D extends object = any> implements t.IDb<D> {
       });
       storeRef(pattern, watcher);
     });
-    return this;
   }
 
   /**
    * Removes the watcher for the given key/path.
    * Pass nothing to turn-off all watchers.
    */
-  public unwatch(...pattern: string[]) {
+  public async unwatch(...pattern: string[]) {
     const watchers = this._.watchers;
     pattern = Array.isArray(pattern) ? pattern : [pattern];
     pattern = pattern.length === 0 ? Object.keys(this._.watchers) : formatWatchPatterns(pattern);
@@ -253,7 +249,6 @@ export class Db<D extends object = any> implements t.IDb<D> {
         watchers[key].destroy();
       }
     });
-    return this;
   }
 
   /**
