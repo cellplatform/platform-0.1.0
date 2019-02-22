@@ -2,7 +2,7 @@ export * from '../../types';
 import { IProtocol, IPeer } from '../../types';
 
 /**
- * [Configuration]
+ * [API]
  */
 export type ISwarmOptions = {
   id: string;
@@ -12,6 +12,8 @@ export type ISwarmOptions = {
   maxConnections: number;
   whitelist: string[];
 };
+
+export type ISwarm = {};
 
 /**
  * [Connections]

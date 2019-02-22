@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import main from '../../src/main';
-import { Button, css, ObjectView, renderer, value, color, R } from './common';
+import renderer from '../../src/renderer';
+import { Button, css, ObjectView, value, color, R } from './common';
 import { TestPanel } from './TestPanel';
 
 export type ITestState = {

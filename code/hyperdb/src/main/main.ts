@@ -6,7 +6,7 @@ export { Db, Swarm };
 export * from '../types';
 
 /**
- * [main] Initializes a new `hyperdb`.
+ * Initializes a new HyperDB on the `main` process.
  */
 export async function init(args: {
   dir: string;

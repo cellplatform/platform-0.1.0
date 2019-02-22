@@ -2,6 +2,21 @@ export * from './helpers/db/types';
 export * from './helpers/swarm/types';
 
 /**
+ * [Electron/IPC]
+ */
+
+export { ILog } from '@platform/electron/lib/types';
+
+import { IpcClient } from '@platform/electron/lib/types';
+export type DbIpcClient = IpcClient<DbIpcEvents>;
+
+export type DbIpcEvents = IIpcFoo;
+export type IIpcFoo = {
+  type: 'HYPERDB/foo';
+  payload: {};
+};
+
+/**
  * [Network]
  */
 
