@@ -32,8 +32,9 @@ export class Test extends React.PureComponent<{}, ITestState> {
   public swarm: renderer.ISwarm;
 
   public componentDidMount() {
-    this.init();
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e as ITestState));
+    this.init();
+    this.initRendererDb();
   }
 
   public componentWillUnmount() {
@@ -51,17 +52,10 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const swarm = (this.swarm = res.swarm);
 
     // const dbr = await renderer.create({ ipc, dir: `.db/r-${id}`, dbKey });
-    console.group('🌳 HyperDB');
+    console.group('🌳 HyperDB (main)');
     console.log('- dbKey:', db.key);
     console.log('- localKey:', db.localKey);
     console.groupEnd();
-
-    // const TEMP = async (db: renderer.IDb) => {
-    //   const foo = await db.get('foo');
-    //   console.log('foo', foo);
-    // };
-
-    // TEMP(dbr.db);
 
     await db.watch('*');
     db.watch$.subscribe(async e => {
@@ -73,6 +67,34 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     this.updateData(db);
     this.appendVersion(await db.version());
+  };
+
+  private initRendererDb = async () => {
+    const { id, ipc } = this.context;
+    const dir = `.db/r-${id}`;
+    const dbKey =
+      id > 1 ? 'f6ea25790b275575f6e91c62c39d8d7945f73ee92a6d83ea50356b7e245b9ab0' : undefined;
+
+    const res = await renderer.create({ ipc, dir, dbKey });
+    const db = res.db;
+    // const swarm = (this.swarm = res.swarm);
+
+    // const dbr = await renderer.create({ ipc, dir: `.db/r-${id}`, dbKey });
+    console.group('🌳 HyperDB (renderer)');
+    console.log('- dbKey:', db.key);
+    console.log('- localKey:', db.localKey);
+    console.groupEnd();
+
+    // await db.watch('*');
+    // db.watch$.subscribe(async e => {
+    //   this.appendVersion(e.version);
+    //   this.setPropData(e.key, e.value);
+    // });
+
+    // swarm.events$.subscribe(e => this.updateData(db));
+
+    // this.updateData(db);
+    // this.appendVersion(await db.version());
   };
 
   private updateData = async (db: renderer.IDb) => {

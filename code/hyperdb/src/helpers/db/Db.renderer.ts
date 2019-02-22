@@ -46,15 +46,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     );
     state$.subscribe(e => {
       const { props } = e.payload;
-
-      // Sync props with provided values.
-      // Object.keys(props).forEach(key => {
-      //   this._.props[key] = props[key].value;
-      // });
       this._.props = props;
-
-      // Dispose of the local client if it's been disposed remotely.
-      // const isDisposed = props.isDisposed && props.isDisposed.value === true;
       if (props.isDisposed) {
         this.dispose();
       }
