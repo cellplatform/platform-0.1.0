@@ -1,19 +1,39 @@
+import { Observable } from 'rxjs';
+import { IPeer, IProtocol } from '../../types';
+
 export * from '../../types';
-import { IProtocol, IPeer } from '../../types';
 
 /**
- * [API]
+ * [Initialization]
  */
-export type ISwarmOptions = {
+export type ISwarmConfig = {
   id: string;
   stream: (peer: IPeer) => IProtocol;
   utp: boolean;
   tcp: boolean;
   maxConnections: number;
   whitelist: string[];
+  dns: {
+    server: string[];
+    domain: string;
+  };
+  dht: {
+    bootstrap: string[];
+  };
 };
 
-export type ISwarm = {};
+/**
+ * [Swarm]
+ */
+export type ISwarm = {
+  readonly id: string;
+  readonly events$: Observable<SwarmEvent>;
+  readonly config: ISwarmConfig;
+  readonly isActive: boolean;
+  join(): Promise<{}>;
+  leave(): void;
+  connections(): Promise<ISwarmConnections>;
+};
 
 /**
  * [Connections]

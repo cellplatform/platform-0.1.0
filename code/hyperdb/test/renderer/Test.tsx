@@ -144,7 +144,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const elVersions = versions.map((version, i) => {
       const start = version.substr(0, 4);
       const end = version.substr(version.length - 10);
-      const short = `${start}…${end}`;
+      const short = `${start}..${end}`;
       const latest = i === 0 ? ' (latest)' : '';
       return (
         <li key={i} {...styles.li}>

@@ -21,7 +21,7 @@ type SwarmArgs = {
  *  - https://github.com/maxogden/discovery-channel
  *
  */
-export class Swarm {
+export class Swarm implements t.ISwarm {
   /**
    * [Static]
    */
@@ -130,7 +130,7 @@ export class Swarm {
       // Request to join.
       swarm.join(this.id, undefined, () => {
         this.next<t.ISwarmJoinEvent>('SWARM/join', {});
-        resolve();
+        resolve({});
       });
     });
   }

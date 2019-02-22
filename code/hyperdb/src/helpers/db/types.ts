@@ -33,6 +33,12 @@ export type IDb<D extends object = any> = {
   readonly localKey: string;
   readonly watching: string[];
   version(): Promise<string>;
+  checkout(version: string): IDb<D>;
+  get<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
+  put<K extends keyof D>(key: K, value: D[K]): Promise<IDbValue<K, D[K]>>;
+  del<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
+  watch(...pattern: string[]): IDb<D>;
+  unwatch(...pattern: string[]): IDb<D>;
 };
 
 /**

@@ -167,7 +167,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    *      Version should be a version identifier returned
    *      by the `db.version` method.
    */
-  public checkout(version: string | Buffer) {
+  public checkout(version: string) {
     return new Db<D>(this._.db.checkout(version));
   }
 
@@ -252,6 +252,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
         watchers[key].destroy();
       }
     });
+    return this;
   }
 
   /**

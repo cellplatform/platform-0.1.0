@@ -9,7 +9,6 @@ const config = require('../.uiharness/config.json');
   await initDb({ log, ipc });
 
   // const res = await main.db.init({ db: 'db1' });
-
   // const { id } = this.context;
 })();
 

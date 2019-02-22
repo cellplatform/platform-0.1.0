@@ -5,7 +5,7 @@
  *  - https://github.com/maxogden/discovery-channel
  */
 
-import { ISwarmOptions } from './types';
+import { ISwarmConfig } from './types';
 
 const DAT_DOMAIN = 'dat.local';
 const DEFAULT_DISCOVERY = ['discovery1.datprotocol.com', 'discovery2.datprotocol.com'];
@@ -17,10 +17,19 @@ const DEFAULT_BOOTSTRAP = [
 ];
 
 const DEFAULT_OPTS = {
-  dns: { server: DEFAULT_DISCOVERY, domain: DAT_DOMAIN },
-  dht: { bootstrap: DEFAULT_BOOTSTRAP },
+  dns: {
+    server: DEFAULT_DISCOVERY,
+    domain: DAT_DOMAIN,
+  },
+  dht: {
+    bootstrap: DEFAULT_BOOTSTRAP,
+  },
 };
 
-export default (options: Partial<ISwarmOptions>) => {
-  return { ...DEFAULT_OPTS, ...options };
+/**
+ * Merge configuration options with default values.
+ */
+export default (options: Partial<ISwarmConfig>) => {
+  const config = { ...DEFAULT_OPTS, ...options };
+  return config as ISwarmConfig;
 };
