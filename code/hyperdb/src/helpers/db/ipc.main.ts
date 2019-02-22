@@ -14,10 +14,9 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
   const ipc = args.ipc as t.DbIpcClient;
   const log = args.log;
 
-  const getOrCreateDb = async (args: { storage: string; dbKey?: string }) => {
-    const key = args.storage;
-    const dir = key;
-    const dbKey = args.dbKey;
+  const getOrCreateDb = async (args: { dir: string; dbKey?: string }) => {
+    const { dir, dbKey } = args;
+    const key = dir;
     refs[key] = refs[key] || (await create({ dir, dbKey }));
     return refs[key];
   };
@@ -29,15 +28,15 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
   ipc.handle<t.IDbIpcGetStateEvent>('HYPERDB/state/get', async e => {
     type E = t.IDbIpcUpdateStateEvent;
     type P = E['payload'];
-    const { storage, dbKey } = e.payload.db;
-    const db = (await getOrCreateDb({ storage, dbKey })).db;
+    const { dir, dbKey } = e.payload.db;
+    const db = (await getOrCreateDb({ dir, dbKey })).db;
     try {
       const { key, discoveryKey, localKey, watching, isDisposed } = db;
       const props: t.IDbProps = { key, discoveryKey, localKey, watching, isDisposed };
-      const payload: P = { db: { storage }, props };
+      const payload: P = { db: { dir }, props };
       ipc.send<E>('HYPERDB/state/update', payload);
     } catch (err) {
-      const message = `Failed to get state fields of DB '${storage}'. ${err.message}`;
+      const message = `Failed to get state fields of DB '${dir}'. ${err.message}`;
       log.error(message);
     }
   });
@@ -47,8 +46,8 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
    */
   ipc.handle<t.IDbIpcInvokeEvent, t.IDbIpcInvokeResponse>('HYPERDB/invoke', async e => {
     const { method, params } = e.payload;
-    const { storage, dbKey } = e.payload.db;
-    const db = await getOrCreateDb({ storage, dbKey });
+    const { dir, dbKey } = e.payload.db;
+    const db = await getOrCreateDb({ dir, dbKey });
     try {
       const fn = db[method] as (...params: any[]) => any;
       const res = fn.apply(db, params);

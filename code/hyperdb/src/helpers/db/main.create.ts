@@ -18,8 +18,7 @@ export async function create(args: {
   const join = value.defaultValue(args.join, true);
 
   // Construct and connect the database.
-  const storage = dir;
-  const db = await Db.create({ storage, dbKey });
+  const db = await Db.create({ dir, dbKey });
   const swarm = await Swarm.create({ db, autoAuth, join });
 
   // Finish up.

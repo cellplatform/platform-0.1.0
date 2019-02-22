@@ -22,12 +22,12 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * [Static]
    */
-  public static create<D extends object = any>(args: { storage: string; dbKey?: string }) {
+  public static create<D extends object = any>(args: { dir: string; dbKey?: string }) {
     return new Promise<Db<D>>(resolve => {
-      const { storage, dbKey } = args;
+      const { dir, dbKey } = args;
       const reduce = (a: any, b: any) => a;
       const options = { valueEncoding: 'utf-8', reduce };
-      const db = args.dbKey ? hyperdb(storage, dbKey, options) : hyperdb(storage, options);
+      const db = args.dbKey ? hyperdb(dir, dbKey, options) : hyperdb(dir, options);
       db.on('ready', () => {
         resolve(new Db<D>(db));
       });

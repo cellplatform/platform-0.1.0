@@ -6,7 +6,7 @@ import * as t from './types';
 
 type IConstructorArgs = {
   ipc: IpcClient;
-  storage: string;
+  dir: string;
   dbKey?: string;
   props?: t.IDbProps;
 };
@@ -31,8 +31,8 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   private constructor(args: IConstructorArgs) {
     this._ipc = args.ipc;
-    this._storage = args.storage;
-    this._dbKey = args.dbKey;
+    this._.dir = args.dir;
+    this._.dbKey = args.dbKey;
     this.dispose$.subscribe(() => (this._.isDisposed = true));
 
     // Promise that alerts when the Db is ready to interact with.
@@ -42,7 +42,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     // Sync props.
     const state$ = this._ipc.on<t.IDbIpcUpdateStateEvent>('HYPERDB/state/update').pipe(
       takeUntil(this.dispose$),
-      filter(e => e.payload.db.storage === this._storage),
+      filter(e => e.payload.db.dir === this._.dir),
     );
     state$.subscribe(e => {
       const { props } = e.payload;
@@ -53,12 +53,6 @@ export class Db<D extends object = any> implements t.IDb<D> {
     });
     state$.pipe(take(1)).subscribe(() => ready$.complete());
     this.syncState();
-
-    // TEMP 🐷
-
-    // this.invoke('version');
-    // this.invoke('put', ['foo', 123]);
-    // this.invoke('get', ['foo']);
   }
 
   /**
@@ -66,14 +60,14 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public readonly ready: Promise<{}>;
   private readonly _ipc: t.DbIpcClient;
-  private readonly _storage: string;
-  private readonly _dbKey: string | undefined;
 
   private readonly _ = {
     isDisposed: false,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),
     props: (null as unknown) as t.IDbProps,
+    dir: '',
+    dbKey: (undefined as unknown) as string | undefined,
   };
   public readonly dispose$ = this._.dispose$.pipe(
     take(1),
@@ -165,8 +159,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
 
   private async syncState() {
     type E = t.IDbIpcGetStateEvent;
+    const { dir, dbKey } = this._;
     const payload: E['payload'] = {
-      db: { storage: this._storage, dbKey: this._dbKey },
+      db: { dir, dbKey },
     };
     return this._ipc.send<E>('HYPERDB/state/get', payload, TARGET_MAIN);
   }
@@ -174,8 +169,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
   private async invoke<M extends keyof t.IDbMethods>(method: M, ...params: any[]) {
     type E = t.IDbIpcInvokeEvent;
     type R = t.IDbIpcInvokeResponse;
+    const { dir, dbKey } = this._;
     const payload: E['payload'] = {
-      db: { storage: this._storage, dbKey: this._dbKey },
+      db: { dir, dbKey },
       method,
       params,
     };
