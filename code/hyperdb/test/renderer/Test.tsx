@@ -1,3 +1,5 @@
+// tslint:disable
+
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -29,12 +31,13 @@ export class Test extends React.PureComponent<{}, ITestState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   public db: renderer.IDb;
-  public swarm: renderer.ISwarm;
+  // public swarm: renderer.ISwarm;
 
-  public componentDidMount() {
+  public async componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e as ITestState));
-    this.init();
-    this.initRendererDb();
+
+    // this.db = await  this.init();
+    this.db = await this.initRendererDb();
   }
 
   public componentWillUnmount() {
@@ -48,8 +51,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
       id > 1 ? '937c453128fbd651deb0ed4d7b738ed374759beb8a11cdd08e150d47c7f77d8b' : undefined;
 
     const res = await main.create({ dir, dbKey });
-    const db = (this.db = res.db);
-    const swarm = (this.swarm = res.swarm);
+    const db = res.db;
+    // const swarm = (this.swarm = res.swarm);
 
     // const dbr = await renderer.create({ ipc, dir: `.db/r-${id}`, dbKey });
     console.group('🌳 HyperDB (main)');
@@ -63,10 +66,11 @@ export class Test extends React.PureComponent<{}, ITestState> {
       this.setPropData(e.key, e.value);
     });
 
-    swarm.events$.subscribe(e => this.updateData(db));
+    // swarm.events$.subscribe(e => this.updateData(db));
 
     this.updateData(db);
     this.appendVersion(await db.version());
+    return db;
   };
 
   private initRendererDb = async () => {
@@ -77,6 +81,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     const res = await renderer.create({ ipc, dir, dbKey });
     const db = res.db;
+    // this.db = db;
     // const swarm = (this.swarm = res.swarm);
 
     // const dbr = await renderer.create({ ipc, dir: `.db/r-${id}`, dbKey });
@@ -98,25 +103,26 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     // swarm.events$.subscribe(e => this.updateData(db));
 
-    // this.updateData(db);
-    // this.appendVersion(await db.version());
+    this.updateData(db);
+    this.appendVersion(await db.version());
+    return db;
   };
 
   private updateData = async (db: renderer.IDb) => {
-    const swarm = this.swarm;
+    // const swarm = this.swarm;
     const version = await db.version();
     this.setData({
       db: {
         dbKey: db.key,
         localKey: db.localKey,
-        version,
         watching: db.watching,
+        version,
       },
-      swarm: {
-        id: swarm.id,
-        isActive: swarm.isActive,
-        connections: await swarm.connections(),
-      },
+      // swarm: {
+      //   id: swarm.id,
+      //   isActive: swarm.isActive,
+      //   connections: await swarm.connections(),
+      // },
     });
     this.getValue(KEY.A1)(db);
     this.getValue(KEY.A2)(db);
@@ -227,7 +233,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
   }
 
   private getValues = () => {
-    Object.keys(KEY).forEach(key => this.getValue(key));
+    Object.keys(KEY).forEach(key => this.getValue(key)(this.db));
   };
 
   private getValue = (key: string) => {
@@ -235,6 +241,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
       db = db || this.db;
       const res = await db.get(key);
       const value = res.value || 0;
+      console.log('GET', key, res);
       this.setPropData(key, value);
       return value;
     };
@@ -274,10 +281,10 @@ export class Test extends React.PureComponent<{}, ITestState> {
   };
 
   private joinSwarm = async () => {
-    await this.swarm.join();
+    // await this.swarm.join();
   };
   private leaveSwarm = async () => {
-    this.swarm.leave();
+    // this.swarm.leave();
   };
 
   private versionClick = (index: number) => {
