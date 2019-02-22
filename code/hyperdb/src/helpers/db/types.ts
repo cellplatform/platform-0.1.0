@@ -32,6 +32,7 @@ export type IDb<D extends object = any> = {
   readonly discoveryKey: string;
   readonly localKey: string;
   readonly watching: string[];
+  readonly isDisposed: boolean;
   version(): Promise<string>;
   checkout(version: string): IDb<D>;
   get<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
@@ -39,6 +40,7 @@ export type IDb<D extends object = any> = {
   del<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   watch(...pattern: string[]): IDb<D>;
   unwatch(...pattern: string[]): IDb<D>;
+  dispose(): void;
 };
 
 /**

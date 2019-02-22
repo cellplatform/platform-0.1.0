@@ -30,9 +30,11 @@ export type ISwarm = {
   readonly events$: Observable<SwarmEvent>;
   readonly config: ISwarmConfig;
   readonly isActive: boolean;
+  readonly isDisposed: boolean;
   join(): Promise<{}>;
   leave(): void;
   connections(): Promise<ISwarmConnections>;
+  dispose(): void;
 };
 
 /**

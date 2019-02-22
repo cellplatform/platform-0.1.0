@@ -19,8 +19,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
 
-  public db: main.Db;
-  public swarm: main.Swarm;
+  public db: renderer.IDb;
+  public swarm: renderer.ISwarm;
 
   public componentWillMount() {
     this.init();
@@ -51,13 +51,13 @@ export class Test extends React.PureComponent<{}, ITestState> {
     this.appendVersion(await db.version());
   };
 
-  private updateData = async (db: main.Db) => {
+  private updateData = async (db: renderer.IDb) => {
     const swarm = this.swarm;
     const version = await db.version();
     this.setData({
       db: {
-        dbKey: db.buffer.key.toString('hex'),
-        localKey: db.buffer.localKey.toString('hex'),
+        dbKey: db.key,
+        localKey: db.localKey,
         version,
         watching: db.watching,
       },
@@ -175,7 +175,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
   }
 
   private count = 0;
-  private getValue = async (db?: main.Db) => {
+  private getValue = async (db?: renderer.IDb) => {
     db = db || this.db;
     const res = await db.get('foo');
     this.count = res.value || 0;
