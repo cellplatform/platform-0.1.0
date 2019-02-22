@@ -1,3 +1,15 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import * as React from 'react';
 
 import main from '../../src/main';
@@ -19,11 +31,18 @@ export class Test extends React.PureComponent<{}, ITestState> {
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
 
+  private unmounted$ = new Subject();
+  private state$ = new Subject<Partial<ITestState>>();
   public db: renderer.IDb;
   public swarm: renderer.ISwarm;
 
-  public componentWillMount() {
+  public componentDidMount() {
     this.init();
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+  }
+
+  public componentWillUnmount() {
+    this.unmounted$.next();
   }
 
   private init = async () => {
@@ -36,10 +55,12 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const db = (this.db = res.db);
     const swarm = (this.swarm = res.swarm);
 
-    console.group('🌳 HyperDB');
-    console.log('- dbKey:', res.dbKey);
-    console.log('- localKey:', res.localKey);
-    console.groupEnd();
+    const dbr = await renderer.init({ dir, dbKey });
+
+    // console.group('🌳 HyperDB');
+    // console.log('- dbKey:', res.dbKey);
+    // console.log('- localKey:', res.localKey);
+    // console.groupEnd();
 
     db.watch().watch$.subscribe(async e => {
       this.appendVersion(e.version);
@@ -72,7 +93,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   private appendVersion = (version: string) => {
     const versions = R.uniq([version, ...this.state.versions]).filter(v => Boolean(v));
-    this.setState({ versions });
+    this.state$.next({ versions });
   };
 
   public render() {
@@ -209,7 +230,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
       data = { ...data, [key]: obj[key] };
     });
     data = value.deleteUndefined(data);
-    this.setState({ data });
+    this.state$.next({ data });
   };
 
   private dispose = () => {
