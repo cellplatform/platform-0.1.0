@@ -4,6 +4,7 @@ import { share, takeUntil, filter, map } from 'rxjs/operators';
 import { value as valueUtil, is } from '../common';
 import * as t from './types';
 
+console.log(`\nTODO 🐷  throw if running in browser/renderer \n`);
 console.log('is.browser', is.browser);
 
 const hyperdb = require('hyperdb');
