@@ -1,9 +1,9 @@
-import { value } from './common';
-import { Db } from './db/main';
-import { Swarm } from './swarm/main';
+import { value } from '../helpers/common';
+import { Db } from '../helpers/db/main';
+import { Swarm } from '../helpers/swarm/main';
 
 export { Db, Swarm };
-export * from './types';
+export * from '../types';
 
 /**
  * [main] Initializes a new `hyperdb`.

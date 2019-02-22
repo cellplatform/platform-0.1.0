@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-export * from '../types';
+export * from '../../types';
 
 /**
  * [Value]

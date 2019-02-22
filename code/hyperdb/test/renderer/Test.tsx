@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import * as main from '../../src/main';
+import main from '../../src/main';
 import { Button, css, ObjectView, renderer, value, color, R } from './common';
 import { TestPanel } from './TestPanel';
 

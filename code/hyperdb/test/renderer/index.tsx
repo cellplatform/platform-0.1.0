@@ -1,8 +1,8 @@
-import '../node_modules/@uiharness/dev/css/normalize.css';
+import '../../node_modules/@uiharness/dev/css/normalize.css';
 
 import * as React from 'react';
 import { renderer } from '@platform/electron/lib/renderer';
-import { Test } from './components/Test';
+import { Test } from './Test';
 
 /**
  * [Note] example <App> root provides access to the

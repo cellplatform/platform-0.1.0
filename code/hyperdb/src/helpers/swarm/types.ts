@@ -1,5 +1,5 @@
-export * from '../types';
-import { IProtocol, IPeer } from '../types';
+export * from '../../types';
+import { IProtocol, IPeer } from '../../types';
 
 /**
  * [Configuration]

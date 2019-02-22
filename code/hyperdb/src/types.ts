@@ -1,5 +1,5 @@
-export * from './db/types';
-export * from './swarm/types';
+export * from './helpers/db/types';
+export * from './helpers/swarm/types';
 
 /**
  * [Network]
@@ -33,7 +33,6 @@ export type IFeed = {
   writable: boolean;
   closed: false;
 };
-
 
 export type IPeer = {
   channel: Buffer;
