@@ -102,7 +102,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
       base: css({
         boxSizing: 'border-box',
         fontSize: 14,
-        Absolute: [4, MARGIN, MARGIN, MARGIN],
+        Absolute: [4, 3, MARGIN, MARGIN],
         margin: 0,
       }),
       hr: css({ border: 'none', borderTop: `solid 1px ${color.format(-0.2)}` }),
