@@ -33,9 +33,7 @@ export type IDbProps = {
   readonly watching: string[];
   readonly isDisposed: boolean;
 };
-export type IDb<D extends object = any> = IDbProps & {
-  readonly events$: Observable<DbEvent>;
-  readonly watch$: Observable<IDbWatchChange<D>>;
+export type IDbMethods<D extends {} = any> = {
   version(): Promise<string>;
   checkout(version: string): Promise<IDb<D>>;
   get<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
@@ -44,16 +42,21 @@ export type IDb<D extends object = any> = IDbProps & {
   watch(...pattern: string[]): Promise<void>;
   unwatch(...pattern: string[]): Promise<void>;
 };
+export type IDb<D extends {} = any> = IDbProps &
+  IDbMethods<D> & {
+    readonly events$: Observable<DbEvent>;
+    readonly watch$: Observable<IDbWatchChange<D>>;
+  };
 
 /**
  * [Events]
  */
 export type DbEvent = IDbErrorEvent | IDbWatchEvent;
-export type IDbWatchEvent<D extends object = any> = {
+export type IDbWatchEvent<D extends {} = any> = {
   type: 'DB/watch';
   payload: IDbWatchChange<D>;
 };
-export type IDbWatchChange<D extends object = any> = {
+export type IDbWatchChange<D extends {} = any> = {
   key: keyof D;
   value?: D[keyof D];
   pattern: string | '*';
@@ -71,14 +74,32 @@ export type IDbErrorEvent = {
  */
 
 export type DbIpcClient = IpcClient<DbIpcEvent>;
-export type DbIpcEvent = IDbIpcGetStateEvent;
-export type IDbIpcGetStateEvent<T extends object = any> = {
-  type: 'HYPERDB/getState';
+export type DbIpcEvent = IDbIpcGetStateEvent | IDbIpcUpdateStateEvent | IDbIpcInvokeEvent;
+
+export type IDbIpcGetStateEvent = {
+  type: 'HYPERDB/state/get';
   payload: {
-    storage: string;
-    dbKey?: string;
+    db: { storage: string; dbKey?: string };
+    fields?: Array<keyof IDbProps>;
   };
 };
-export type IDbIpcGetStateResponse = {
-  props: IDbProps;
+export type IDbIpcUpdateStateEvent = {
+  type: 'HYPERDB/state/update';
+  payload: {
+    db: { storage: string };
+    props: IDbProps;
+  };
+};
+export type IDbIpcInvokeEvent = {
+  type: 'HYPERDB/invoke';
+  payload: {
+    db: { storage: string; dbKey?: string };
+    method: keyof IDbMethods;
+    params: any[];
+  };
+};
+export type IDbIpcInvokeResponse<M extends keyof IDbMethods = any> = {
+  method: M;
+  result?: IDbMethods[M];
+  error?: { message: string };
 };

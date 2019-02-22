@@ -57,12 +57,21 @@ export class Test extends React.PureComponent<{}, ITestState> {
     console.log('- localKey:', dbr.db.localKey);
     console.groupEnd();
 
-    db.watch().watch$.subscribe(async e => {
+    const TEMP = async (db: renderer.IDb) => {
+      const foo = await db.get('foo');
+      console.log('foo', foo);
+    };
+
+    TEMP(dbr.db);
+
+    await db.watch('*');
+    db.watch$.subscribe(async e => {
       this.appendVersion(e.version);
       this.setPropData(e.key, e.value);
     });
 
     swarm.events$.subscribe(e => this.updateData(db));
+
     this.updateData(db);
     this.appendVersion(await db.version());
   };
@@ -243,8 +252,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
   private versionClick = (index: number) => {
     return async () => {
       const version = this.state.versions[index];
-      const db = this.db.checkout(version);
-      this.updateData(db);
+      const db = await this.db.checkout(version);
+      await this.updateData(db);
     };
   };
 }
