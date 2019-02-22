@@ -1,5 +1,5 @@
 export { value } from '@platform/util.value';
-export { is } from '@platform/electron';
+export { is } from '@platform/util.is';
 
 /**
  * [Ramda]
