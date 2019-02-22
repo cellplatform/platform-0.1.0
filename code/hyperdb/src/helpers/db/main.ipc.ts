@@ -6,7 +6,7 @@ import { value, is } from '../common';
 import { fs } from '@platform/fs';
 import { app } from 'electron';
 
-type Refs = { [key: string]: { db: Db; swarm: Swarm } };
+type Refs = { [key: string]: { db: Db; swarm: Swarm; path: string } };
 const refs: Refs = {};
 
 /**
@@ -28,7 +28,8 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
     };
     const path = is.prod ? paths.prod : paths.dev;
     const res = await create({ dir: path, dbKey });
-    const db = res.db;
+    const { db, swarm } = res;
+    // const db = res.db;
 
     // Log the creation.
     log.info(`Database created`);
@@ -41,7 +42,7 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
     db.events$.subscribe(e => ipc.send(e.type, e.payload));
 
     // Finish up.
-    return res;
+    return { db, swarm, path };
   };
 
   const getOrCreateDb = async (args: { dir: string; dbKey?: string; checkoutVersion?: string }) => {
