@@ -278,7 +278,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
  * [HELPER_FUNCTIONS]
  */
 function toValue<K, V>(result: any): t.IDbValue<K, V> {
-  const exists = result && !isNil(result.value);
+  const exists = result && !isNil(result.value) ? true : false;
   const value = exists ? formatValue<V>(result.value) : undefined;
   result = { exists, ...result };
   delete result.value;

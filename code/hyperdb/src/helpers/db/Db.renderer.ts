@@ -114,7 +114,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   public async version() {
-    return this.invoke('version');
+    return this.invoke('version', []);
   }
 
   public async checkout(version: string) {
@@ -128,23 +128,23 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   public async get<K extends keyof D>(key: K) {
-    return this.invoke('get', key);
+    return this.invoke('get', [key]);
   }
 
   public async put<K extends keyof D>(key: K, value: D[K]) {
-    return this.invoke('put', value);
+    return this.invoke('put', [key, value]);
   }
 
   public async del<K extends keyof D>(key: K) {
-    return this.invoke('del', key);
+    return this.invoke('del', [key]);
   }
 
   public async watch(...pattern: string[]) {
-    return this.invoke('watch', ...pattern);
+    return this.invoke('watch', pattern);
   }
 
   public async unwatch(...pattern: string[]) {
-    return this.invoke('unwatch', ...pattern);
+    return this.invoke('unwatch', pattern);
   }
 
   /**
@@ -166,7 +166,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     return this._ipc.send<E>('HYPERDB/state/get', payload, TARGET_MAIN);
   }
 
-  private async invoke<M extends keyof t.IDbMethods>(method: M, ...params: any[]) {
+  private async invoke<M extends keyof t.IDbMethods>(method: M, params: any[]) {
     type E = t.IDbIpcInvokeEvent;
     type R = t.IDbIpcInvokeResponse;
     const { dir, dbKey } = this._;

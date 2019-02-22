@@ -85,7 +85,12 @@ export class Test extends React.PureComponent<{}, ITestState> {
     console.log('- localKey:', db.localKey);
     console.groupEnd();
 
-    // await db.watch('*');
+    await db.watch('*');
+    await db.put('foo', 123);
+
+    const foo = await db.get('foo');
+    console.log('foo', foo);
+
     // db.watch$.subscribe(async e => {
     //   this.appendVersion(e.version);
     //   this.setPropData(e.key, e.value);
@@ -150,6 +155,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
         <div {...styles.columns}>
           <div {...styles.left}>
             <ul {...styles.ul}>
+              {this.button('read all', this.getValues)}
               {this.button(`db.put: ${KEY.A1}`, this.putValue(KEY.A1))}
               {this.button(`db.put: ${KEY.A2}`, this.putValue(KEY.A2))}
               {this.button('db.del', this.deleteValue)}
@@ -219,6 +225,10 @@ export class Test extends React.PureComponent<{}, ITestState> {
       </li>
     );
   }
+
+  private getValues = () => {
+    Object.keys(KEY).forEach(key => this.getValue(key));
+  };
 
   private getValue = (key: string) => {
     return async (db?: renderer.IDb) => {

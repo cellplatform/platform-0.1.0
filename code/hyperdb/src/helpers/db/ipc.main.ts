@@ -47,7 +47,7 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
   ipc.handle<t.IDbIpcInvokeEvent, t.IDbIpcInvokeResponse>('HYPERDB/invoke', async e => {
     const { method, params } = e.payload;
     const { dir, dbKey } = e.payload.db;
-    const db = await getOrCreateDb({ dir, dbKey });
+    const db = (await getOrCreateDb({ dir, dbKey })).db;
     try {
       const fn = db[method] as (...params: any[]) => any;
       const res = fn.apply(db, params);
