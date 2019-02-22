@@ -79,7 +79,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     props: (null as unknown) as t.IDbProps,
     dir: '',
     dbKey: (undefined as unknown) as string | undefined,
-    checkoutVersion: (undefined as unknown) as string | undefined,
+    version: (undefined as unknown) as string | undefined,
   };
   public readonly dispose$ = this._.dispose$.pipe(
     take(1),
@@ -119,7 +119,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   public get checkoutVersion() {
-    return this._.checkoutVersion;
+    return this._.version;
   }
 
   /**
@@ -176,9 +176,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
 
   private async syncState() {
     type E = t.IDbGetStateEvent;
-    const { dir, dbKey, checkoutVersion } = this._;
+    const { dir, dbKey, version } = this._;
     const payload: E['payload'] = {
-      db: { dir, dbKey, checkoutVersion },
+      db: { dir, dbKey, version },
     };
     return this._ipc.send<E>('DB/state/get', payload, TARGET_MAIN);
   }
@@ -186,9 +186,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
   private async invoke<M extends keyof t.IDbMethods>(method: M, params: any[]) {
     type E = t.IDbInvokeEvent;
     type R = t.IDbInvokeResponse;
-    const { dir, dbKey, checkoutVersion } = this._;
+    const { dir, dbKey, version } = this._;
     const payload: E['payload'] = {
-      db: { dir, dbKey, checkoutVersion },
+      db: { dir, dbKey, version },
       method,
       params,
     };

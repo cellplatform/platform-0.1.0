@@ -45,7 +45,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const { id, ipc } = this.context;
     const dir = `.db/r-${id}`;
     const dbKey =
-      id > 1 ? 'f0d680ef76b7b2d37ba28abe60d6a78e01a3c155414df4bca6014376d420a602' : undefined;
+      id > 1 ? 'f6ea25790b275575f6e91c62c39d8d7945f73ee92a6d83ea50356b7e245b9ab0' : undefined;
 
     const res = await renderer.create({ ipc, dir, dbKey });
     const db = res.db;

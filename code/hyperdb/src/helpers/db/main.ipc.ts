@@ -6,7 +6,8 @@ import { value, is } from '../common';
 import { fs } from '@platform/fs';
 import { app } from 'electron';
 
-type Refs = { [key: string]: { db: Db; swarm: Swarm; path: string } };
+type Ref = { db: Db; swarm: Swarm; path: string; version?: string };
+type Refs = { [key: string]: Ref };
 const refs: Refs = {};
 
 /**
@@ -42,13 +43,14 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
     db.events$.subscribe(e => ipc.send(e.type, e.payload));
 
     // Finish up.
-    return { db, swarm, path };
+    const ref: Ref = { db, swarm, path };
+    return ref;
   };
 
-  const getOrCreateDb = async (args: { dir: string; dbKey?: string; checkoutVersion?: string }) => {
-    const { dir, checkoutVersion } = args;
+  const getOrCreateDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
+    const { dir, version } = args;
     let refKey = dir;
-    refKey = checkoutVersion ? `${refKey}/ver:${checkoutVersion}` : refKey;
+    refKey = version ? `${refKey}/ver:${version}` : refKey;
     refs[refKey] = refs[refKey] || createDb(args);
     return refs[refKey];
   };
@@ -60,8 +62,8 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
   ipc.handle<t.IDbGetStateEvent>('DB/state/get', async e => {
     type E = t.IDbUpdateStateEvent;
     type P = E['payload'];
-    const { dir, dbKey, checkoutVersion } = e.payload.db;
-    const db = (await getOrCreateDb({ dir, dbKey, checkoutVersion })).db;
+    const { dir, dbKey, version } = e.payload.db;
+    const db = (await getOrCreateDb({ dir, dbKey, version })).db;
     try {
       const { key, discoveryKey, localKey, watching, isDisposed } = db;
       const props: t.IDbProps = { key, discoveryKey, localKey, watching, isDisposed };
@@ -78,8 +80,8 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
    */
   ipc.handle<t.IDbInvokeEvent, t.IDbInvokeResponse>('DB/invoke', async e => {
     const { method, params } = e.payload;
-    const { dir, dbKey, checkoutVersion } = e.payload.db;
-    const db = (await getOrCreateDb({ dir, dbKey, checkoutVersion })).db;
+    const { dir, dbKey, version } = e.payload.db;
+    const db = (await getOrCreateDb({ dir, dbKey, version })).db;
     try {
       const fn = db[method] as (...params: any[]) => any;
       const res = fn.apply(db, params);

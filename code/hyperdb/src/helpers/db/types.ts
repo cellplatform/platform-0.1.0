@@ -82,7 +82,7 @@ export type DbRendererEvent = IDbGetStateEvent | IDbUpdateStateEvent | IDbInvoke
 export type IDbGetStateEvent = {
   type: 'DB/state/get';
   payload: {
-    db: { dir: string; dbKey?: string; checkoutVersion?: string };
+    db: { dir: string; dbKey?: string; version?: string };
     fields?: Array<keyof IDbProps>;
   };
 };
@@ -96,7 +96,7 @@ export type IDbUpdateStateEvent = {
 export type IDbInvokeEvent = {
   type: 'DB/invoke';
   payload: {
-    db: { dir: string; dbKey?: string; checkoutVersion?: string };
+    db: { dir: string; dbKey?: string; version?: string };
     method: keyof IDbMethods;
     params: any[];
   };
