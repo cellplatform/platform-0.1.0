@@ -1,3 +1,4 @@
+import { IpcClient } from '@platform/electron/lib/types';
 import { Observable } from 'rxjs';
 
 export * from '../../types';
@@ -25,14 +26,16 @@ export type IDbValue<K, V> = {
 /**
  * [Database]
  */
-export type IDb<D extends object = any> = {
-  readonly events$: Observable<DbEvent>;
-  readonly watch$: Observable<IDbWatchChange<D>>;
+export type IDbProps = {
   readonly key: string;
   readonly discoveryKey: string;
   readonly localKey: string;
   readonly watching: string[];
   readonly isDisposed: boolean;
+};
+export type IDb<D extends object = any> = IDbProps & {
+  readonly events$: Observable<DbEvent>;
+  readonly watch$: Observable<IDbWatchChange<D>>;
   version(): Promise<string>;
   checkout(version: string): IDb<D>;
   get<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
@@ -62,4 +65,21 @@ export type IDbWatchChange<D extends object = any> = {
 export type IDbErrorEvent = {
   type: 'DB/error';
   payload: { error: Error };
+};
+
+/**
+ * [IPC] Events
+ */
+
+export type DbIpcClient = IpcClient<DbIpcEvent>;
+export type DbIpcEvent = IDbIpcGetStateEvent;
+export type IDbIpcGetStateEvent<T extends object = any> = {
+  type: 'HYPERDB/getState';
+  payload: {
+    storage: string;
+    dbKey?: string;
+  };
+};
+export type IDbIpcGetStateResponse = {
+  props: IDbProps;
 };

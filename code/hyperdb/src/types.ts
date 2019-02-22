@@ -4,19 +4,8 @@ export * from './helpers/swarm/types';
 /**
  * [Electron/IPC]
  */
-import { IpcClient } from '@platform/electron/lib/types';
-export { IpcClient };
-
-export type DbIpcClient = IpcClient<DbIpcEvents>;
-export type DbIpcEvents = IDbIpcGetEvent | IDbIpcPutEvent;
-export type IDbIpcGetEvent<T extends object = any> = {
-  type: 'HYPERDB/get';
-  payload: {};
-};
-export type IDbIpcPutEvent<T extends object = any> = {
-  type: 'HYPERDB/put';
-  payload: {};
-};
+import { IpcClient, ILog } from '@platform/electron/lib/types';
+export { IpcClient, ILog };
 
 /**
  * [Network]

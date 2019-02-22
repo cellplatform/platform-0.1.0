@@ -46,16 +46,16 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const dbKey =
       id > 1 ? '9ceb2ad0597bcc81094a79245cb653eb39d04a37233b6ed79a0eb8a13e7df8c0' : undefined;
 
-    const res = await main.init({ ipc, dir, dbKey });
+    const res = await main.create({ dir, dbKey });
     const db = (this.db = res.db);
     const swarm = (this.swarm = res.swarm);
 
-    const dbr = await renderer.init({ ipc, dir, dbKey });
+    const dbr = await renderer.create({ ipc, dir: `.db/r-${id}`, dbKey });
 
-    // console.group('🌳 HyperDB');
-    // console.log('- dbKey:', res.dbKey);
-    // console.log('- localKey:', res.localKey);
-    // console.groupEnd();
+    console.group('🌳 HyperDB');
+    console.log('- dbKey:', dbr.db.key);
+    console.log('- localKey:', dbr.db.localKey);
+    console.groupEnd();
 
     db.watch().watch$.subscribe(async e => {
       this.appendVersion(e.version);

@@ -8,20 +8,19 @@ export * from '@platform/electron/lib/renderer';
 /**
  * Initializes a new HyperDB on the `renderer` process.
  */
-export async function init(args: {
+export async function create(args: {
   ipc: t.IpcClient;
   dir: string;
   dbKey?: string;
   autoAuth?: boolean;
   join?: boolean;
 }) {
-  console.log('args', args);
-
   const { ipc, dir, dbKey } = args;
   const autoAuth = value.defaultValue(args.autoAuth, true);
   const join = value.defaultValue(args.join, true);
 
   console.group('🌳 renderer');
+  console.log('args', args);
 
   const storage = dir;
   const db = await Db.create({ ipc, storage, dbKey });
@@ -36,4 +35,5 @@ export async function init(args: {
   //   swarm,
   //   dir,
   // };
+  return { db };
 }
