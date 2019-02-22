@@ -68,6 +68,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     props: (null as unknown) as t.IDbProps,
     dir: '',
     dbKey: (undefined as unknown) as string | undefined,
+    checkoutVersion: (undefined as unknown) as string | undefined,
   };
   public readonly dispose$ = this._.dispose$.pipe(
     take(1),
@@ -104,6 +105,10 @@ export class Db<D extends object = any> implements t.IDb<D> {
 
   public get isDisposed() {
     return this._.isDisposed || this.getProp('isDisposed');
+  }
+
+  public get checkoutVersion() {
+    return this._.checkoutVersion;
   }
 
   /**
@@ -159,9 +164,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
 
   private async syncState() {
     type E = t.IDbIpcGetStateEvent;
-    const { dir, dbKey } = this._;
+    const { dir, dbKey, checkoutVersion } = this._;
     const payload: E['payload'] = {
-      db: { dir, dbKey },
+      db: { dir, dbKey, checkoutVersion },
     };
     return this._ipc.send<E>('HYPERDB/state/get', payload, TARGET_MAIN);
   }
@@ -169,9 +174,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
   private async invoke<M extends keyof t.IDbMethods>(method: M, params: any[]) {
     type E = t.IDbIpcInvokeEvent;
     type R = t.IDbIpcInvokeResponse;
-    const { dir, dbKey } = this._;
+    const { dir, dbKey, checkoutVersion } = this._;
     const payload: E['payload'] = {
-      db: { dir, dbKey },
+      db: { dir, dbKey, checkoutVersion },
       method,
       params,
     };

@@ -14,9 +14,13 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
   const ipc = args.ipc as t.DbIpcClient;
   const log = args.log;
 
-  const getOrCreateDb = async (args: { dir: string; dbKey?: string }) => {
-    const { dir, dbKey } = args;
-    const key = dir;
+  const getOrCreateDb = async (args: { dir: string; dbKey?: string; checkoutVersion?: string }) => {
+    const { dir, dbKey, checkoutVersion } = args;
+    let key = dir;
+    key = checkoutVersion ? `${key}/ver:${checkoutVersion}` : key;
+
+    console.log(`\nTODO 🐷  handle checkout version creation of DB \n`);
+
     refs[key] = refs[key] || (await create({ dir, dbKey }));
     return refs[key];
   };
@@ -28,8 +32,8 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
   ipc.handle<t.IDbIpcGetStateEvent>('HYPERDB/state/get', async e => {
     type E = t.IDbIpcUpdateStateEvent;
     type P = E['payload'];
-    const { dir, dbKey } = e.payload.db;
-    const db = (await getOrCreateDb({ dir, dbKey })).db;
+    const { dir, dbKey, checkoutVersion } = e.payload.db;
+    const db = (await getOrCreateDb({ dir, dbKey, checkoutVersion })).db;
     try {
       const { key, discoveryKey, localKey, watching, isDisposed } = db;
       const props: t.IDbProps = { key, discoveryKey, localKey, watching, isDisposed };
@@ -46,8 +50,8 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
    */
   ipc.handle<t.IDbIpcInvokeEvent, t.IDbIpcInvokeResponse>('HYPERDB/invoke', async e => {
     const { method, params } = e.payload;
-    const { dir, dbKey } = e.payload.db;
-    const db = (await getOrCreateDb({ dir, dbKey })).db;
+    const { dir, dbKey, checkoutVersion } = e.payload.db;
+    const db = (await getOrCreateDb({ dir, dbKey, checkoutVersion })).db;
     try {
       const fn = db[method] as (...params: any[]) => any;
       const res = fn.apply(db, params);

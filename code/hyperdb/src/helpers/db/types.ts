@@ -79,7 +79,7 @@ export type DbIpcEvent = IDbIpcGetStateEvent | IDbIpcUpdateStateEvent | IDbIpcIn
 export type IDbIpcGetStateEvent = {
   type: 'HYPERDB/state/get';
   payload: {
-    db: { dir: string; dbKey?: string };
+    db: { dir: string; dbKey?: string; checkoutVersion?: string };
     fields?: Array<keyof IDbProps>;
   };
 };
@@ -93,7 +93,7 @@ export type IDbIpcUpdateStateEvent = {
 export type IDbIpcInvokeEvent = {
   type: 'HYPERDB/invoke';
   payload: {
-    db: { dir: string; dbKey?: string };
+    db: { dir: string; dbKey?: string; checkoutVersion?: string };
     method: keyof IDbMethods;
     params: any[];
   };
