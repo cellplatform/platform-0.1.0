@@ -95,10 +95,10 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const foo = await db.get('foo');
     console.log('foo', foo);
 
-    // db.watch$.subscribe(async e => {
-    //   this.appendVersion(e.version);
-    //   this.setPropData(e.key, e.value);
-    // });
+    db.watch$.subscribe(async e => {
+      this.appendVersion(e.version);
+      this.setPropData(e.key, e.value);
+    });
 
     // swarm.events$.subscribe(e => this.updateData(db));
 

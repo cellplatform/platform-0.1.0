@@ -14,15 +14,28 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
   const ipc = args.ipc as t.DbIpcClient;
   const log = args.log;
 
-  const getOrCreateDb = async (args: { dir: string; dbKey?: string; checkoutVersion?: string }) => {
+  const createDb = async (args: { dir: string; dbKey?: string; checkoutVersion?: string }) => {
     const { dir, dbKey, checkoutVersion } = args;
-    let key = dir;
-    key = checkoutVersion ? `${key}/ver:${checkoutVersion}` : key;
 
     console.log(`\nTODO 🐷  handle checkout version creation of DB \n`);
 
-    refs[key] = refs[key] || (await create({ dir, dbKey }));
-    return refs[key];
+    // Construct the DB.
+    const res = await create({ dir, dbKey });
+
+    // Ferry events to clients.
+    const db = res.db;
+    db.events$.subscribe(e => ipc.send(e.type, e.payload));
+
+    // Finish up.
+    return res;
+  };
+
+  const getOrCreateDb = async (args: { dir: string; dbKey?: string; checkoutVersion?: string }) => {
+    const { dir, checkoutVersion } = args;
+    let refKey = dir;
+    refKey = checkoutVersion ? `${refKey}/ver:${checkoutVersion}` : refKey;
+    refs[refKey] = refs[refKey] || createDb(args);
+    return refs[refKey];
   };
 
   /**

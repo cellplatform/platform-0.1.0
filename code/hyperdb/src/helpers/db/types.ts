@@ -57,6 +57,7 @@ export type IDbWatchEvent<D extends {} = any> = {
   payload: IDbWatchChange<D>;
 };
 export type IDbWatchChange<D extends {} = any> = {
+  db: { key: string };
   key: keyof D;
   value?: D[keyof D];
   pattern: string | '*';
@@ -65,15 +66,18 @@ export type IDbWatchChange<D extends {} = any> = {
 };
 export type IDbErrorEvent = {
   type: 'DB/error';
-  payload: { error: Error };
+  payload: {
+    db: { key: string };
+    error: Error;
+  };
 };
 
 /**
  * [IPC] Events
  */
 
-export type DbIpcClient = IpcClient<DbIpcEvent>;
-export type DbIpcEvent = IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent;
+export type DbIpcClient = IpcClient<DbRendererEvent>;
+export type DbRendererEvent = IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent | DbEvent;
 
 export type IDbGetStateEvent = {
   type: 'DB/state/get';

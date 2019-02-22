@@ -53,6 +53,17 @@ export class Db<D extends object = any> implements t.IDb<D> {
     });
     state$.pipe(take(1)).subscribe(() => ready$.complete());
     this.syncState();
+
+    // Ferry events through local observable.
+    const events: Array<t.DbEvent['type']> = ['DB/watch', 'DB/error'];
+    this._ipc.events$
+      .pipe(
+        takeUntil(this.dispose$),
+        filter(e => events.includes(e.type as any)),
+        map(e => e as t.DbEvent),
+        filter(e => e.payload.db.key === this.key),
+      )
+      .subscribe(e => this._.events$.next(e));
   }
 
   /**
@@ -115,6 +126,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * [Methods]
    */
   public dispose() {
+    this._.events$.complete();
     this._.dispose$.next();
   }
 

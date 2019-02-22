@@ -97,6 +97,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
   public dispose() {
     this.unwatch();
     this.isDisposed = true;
+    this._.events$.complete();
     this._.dispose$.next();
   }
 
@@ -224,6 +225,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
         watcher._nodes.forEach(async ({ key, value, deleted }: any) => {
           const version = await this.version();
           this.next<t.IDbWatchEvent>('DB/watch', {
+            db: { key: this.key },
             key,
             value: formatValue(value),
             pattern,
@@ -255,7 +257,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * [INTERNAL]
    */
   private fireError(error: Error, reject?: (reason: any) => void) {
-    this.next<t.IDbErrorEvent>('DB/error', { error });
+    this.next<t.IDbErrorEvent>('DB/error', { db: { key: this.key }, error });
     if (reject) {
       reject(error);
     }
