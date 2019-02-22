@@ -37,13 +37,12 @@ export type IDb<D extends object = any> = IDbProps & {
   readonly events$: Observable<DbEvent>;
   readonly watch$: Observable<IDbWatchChange<D>>;
   version(): Promise<string>;
-  checkout(version: string): IDb<D>;
+  checkout(version: string): Promise<IDb<D>>;
   get<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   put<K extends keyof D>(key: K, value: D[K]): Promise<IDbValue<K, D[K]>>;
   del<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
-  watch(...pattern: string[]): IDb<D>;
-  unwatch(...pattern: string[]): IDb<D>;
-  dispose(): void;
+  watch(...pattern: string[]): Promise<void>;
+  unwatch(...pattern: string[]): Promise<void>;
 };
 
 /**
