@@ -40,7 +40,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     this.ready = ready$.toPromise();
 
     // Sync props.
-    const state$ = this._ipc.on<t.IDbIpcUpdateStateEvent>('HYPERDB/state/update').pipe(
+    const state$ = this._ipc.on<t.IDbUpdateStateEvent>('DB/state/update').pipe(
       takeUntil(this.dispose$),
       filter(e => e.payload.db.dir === this._.dir),
     );
@@ -163,24 +163,24 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   private async syncState() {
-    type E = t.IDbIpcGetStateEvent;
+    type E = t.IDbGetStateEvent;
     const { dir, dbKey, checkoutVersion } = this._;
     const payload: E['payload'] = {
       db: { dir, dbKey, checkoutVersion },
     };
-    return this._ipc.send<E>('HYPERDB/state/get', payload, TARGET_MAIN);
+    return this._ipc.send<E>('DB/state/get', payload, TARGET_MAIN);
   }
 
   private async invoke<M extends keyof t.IDbMethods>(method: M, params: any[]) {
-    type E = t.IDbIpcInvokeEvent;
-    type R = t.IDbIpcInvokeResponse;
+    type E = t.IDbInvokeEvent;
+    type R = t.IDbInvokeResponse;
     const { dir, dbKey, checkoutVersion } = this._;
     const payload: E['payload'] = {
       db: { dir, dbKey, checkoutVersion },
       method,
       params,
     };
-    const res = await this._ipc.send<E, R>('HYPERDB/invoke', payload, TARGET_MAIN).promise;
+    const res = await this._ipc.send<E, R>('DB/invoke', payload, TARGET_MAIN).promise;
     const data = res.dataFrom('MAIN');
     if (!data) {
       throw new Error(`Failed invoking '${method}'. No data was returned from MAIN.`);

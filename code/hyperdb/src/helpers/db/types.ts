@@ -63,7 +63,6 @@ export type IDbWatchChange<D extends {} = any> = {
   deleted: boolean;
   version: string; // database-version.
 };
-
 export type IDbErrorEvent = {
   type: 'DB/error';
   payload: { error: Error };
@@ -74,31 +73,31 @@ export type IDbErrorEvent = {
  */
 
 export type DbIpcClient = IpcClient<DbIpcEvent>;
-export type DbIpcEvent = IDbIpcGetStateEvent | IDbIpcUpdateStateEvent | IDbIpcInvokeEvent;
+export type DbIpcEvent = IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent;
 
-export type IDbIpcGetStateEvent = {
-  type: 'HYPERDB/state/get';
+export type IDbGetStateEvent = {
+  type: 'DB/state/get';
   payload: {
     db: { dir: string; dbKey?: string; checkoutVersion?: string };
     fields?: Array<keyof IDbProps>;
   };
 };
-export type IDbIpcUpdateStateEvent = {
-  type: 'HYPERDB/state/update';
+export type IDbUpdateStateEvent = {
+  type: 'DB/state/update';
   payload: {
     db: { dir: string };
     props: IDbProps;
   };
 };
-export type IDbIpcInvokeEvent = {
-  type: 'HYPERDB/invoke';
+export type IDbInvokeEvent = {
+  type: 'DB/invoke';
   payload: {
     db: { dir: string; dbKey?: string; checkoutVersion?: string };
     method: keyof IDbMethods;
     params: any[];
   };
 };
-export type IDbIpcInvokeResponse<M extends keyof IDbMethods = any> = {
+export type IDbInvokeResponse<M extends keyof IDbMethods = any> = {
   method: M;
   result?: IDbMethods[M];
   error?: { message: string };

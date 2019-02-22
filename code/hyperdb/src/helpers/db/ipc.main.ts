@@ -29,8 +29,8 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
    * HANDLE state requests from DB `renderer` clients and
    * fire back the latest values.
    */
-  ipc.handle<t.IDbIpcGetStateEvent>('HYPERDB/state/get', async e => {
-    type E = t.IDbIpcUpdateStateEvent;
+  ipc.handle<t.IDbGetStateEvent>('DB/state/get', async e => {
+    type E = t.IDbUpdateStateEvent;
     type P = E['payload'];
     const { dir, dbKey, checkoutVersion } = e.payload.db;
     const db = (await getOrCreateDb({ dir, dbKey, checkoutVersion })).db;
@@ -38,7 +38,7 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
       const { key, discoveryKey, localKey, watching, isDisposed } = db;
       const props: t.IDbProps = { key, discoveryKey, localKey, watching, isDisposed };
       const payload: P = { db: { dir }, props };
-      ipc.send<E>('HYPERDB/state/update', payload);
+      ipc.send<E>('DB/state/update', payload);
     } catch (err) {
       const message = `Failed to get state fields of DB '${dir}'. ${err.message}`;
       log.error(message);
@@ -48,7 +48,7 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
   /**
    * HANDLE invoke requests from DB `renderer` clients.
    */
-  ipc.handle<t.IDbIpcInvokeEvent, t.IDbIpcInvokeResponse>('HYPERDB/invoke', async e => {
+  ipc.handle<t.IDbInvokeEvent, t.IDbInvokeResponse>('DB/invoke', async e => {
     const { method, params } = e.payload;
     const { dir, dbKey, checkoutVersion } = e.payload.db;
     const db = (await getOrCreateDb({ dir, dbKey, checkoutVersion })).db;
