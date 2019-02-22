@@ -1,5 +1,5 @@
 import { value } from '../helpers/common';
-import { Db } from '../helpers/db/renderer';
+import { Db } from '../helpers/db/Db.renderer';
 import * as t from '../types';
 
 export * from '../types';

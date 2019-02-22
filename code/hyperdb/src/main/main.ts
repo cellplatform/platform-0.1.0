@@ -1,5 +1,5 @@
 import { value } from '../helpers/common';
-import { Db } from '../helpers/db/main';
+import { Db } from '../helpers/db/Db.main';
 import { Swarm } from '../helpers/swarm/main';
 import * as t from '../types';
 

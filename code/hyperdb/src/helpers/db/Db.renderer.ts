@@ -1,22 +1,21 @@
 import * as t from './types';
 import { IpcClient } from '@platform/electron/lib/types';
 
-/**
- * Initialize a new instance of a HyperDb
- */
-// export async function create<D extends object = any>(args: { storage: string; dbKey?: string }) {
-//
-// }
+export type IConstructorArgs = {
+  ipc: IpcClient;
+  storage: string;
+  dbKey?: string;
+};
 
+/**
+ * The [renderer] client to a `Db` that runs on the [main] prcoess.
+ *
+ */
 export class Db<D extends object = any> {
   /**
    * [Static]
    */
-  public static create<D extends object = any>(args: {
-    ipc: IpcClient;
-    storage: string;
-    dbKey?: string;
-  }) {
+  public static create<D extends object = any>(args: IConstructorArgs) {
     // const reduce = (a: any, b: any) => a;
     // return new Promise<Db<D>>((resolve, reject) => {
     //   const { storage, dbKey } = args;
@@ -31,7 +30,7 @@ export class Db<D extends object = any> {
   /**
    * [Constructor]
    */
-  private constructor(args: { ipc: IpcClient }) {
+  private constructor(args: IConstructorArgs) {
     // this._.db = hyperdb;
   }
 }
