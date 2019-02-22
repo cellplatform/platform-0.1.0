@@ -34,45 +34,14 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   public async componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e as ITestState));
-
-    // this.db = await  this.init();
-    this.db = await this.initRendererDb();
+    this.db = await this.init();
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
   }
 
-  // private init = async () => {
-  //   const { id, ipc } = this.context;
-  //   const dir = `.db/tmp-${id}`;
-  //   const dbKey =
-  //     id > 1 ? '937c453128fbd651deb0ed4d7b738ed374759beb8a11cdd08e150d47c7f77d8b' : undefined;
-
-  //   const res = await main.create({ dir, dbKey });
-  //   const db = res.db;
-  //   // const swarm = (this.swarm = res.swarm);
-
-  //   // const dbr = await renderer.create({ ipc, dir: `.db/r-${id}`, dbKey });
-  //   console.group('🌳 HyperDB (main)');
-  //   console.log('- dbKey:', db.key);
-  //   console.log('- localKey:', db.localKey);
-  //   console.groupEnd();
-
-  //   await db.watch('*');
-  //   db.watch$.subscribe(async e => {
-  //     this.appendVersion(e.version);
-  //     this.setPropData(e.key, e.value);
-  //   });
-
-  //   // swarm.events$.subscribe(e => this.updateData(db));
-
-  //   this.updateData(db);
-  //   this.appendVersion(await db.version());
-  //   return db;
-  // };
-
-  private initRendererDb = async () => {
+  private init = async () => {
     const { id, ipc } = this.context;
     const dir = `.db/r-${id}`;
     const dbKey =
