@@ -1,20 +1,10 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import main from '../../src/main';
 import renderer from '../../src/renderer';
-import { Button, css, ObjectView, value, color, R } from './common';
+import { Button, color, css, ObjectView, R, value } from './common';
 import { TestPanel } from './TestPanel';
 
 export type ITestState = {
@@ -38,7 +28,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   public componentDidMount() {
     this.init();
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e as ITestState));
   }
 
   public componentWillUnmount() {
@@ -46,16 +36,16 @@ export class Test extends React.PureComponent<{}, ITestState> {
   }
 
   private init = async () => {
-    const { id } = this.context;
+    const { id, ipc } = this.context;
     const dir = `.db/tmp-${id}`;
     const dbKey =
       id > 1 ? '9ceb2ad0597bcc81094a79245cb653eb39d04a37233b6ed79a0eb8a13e7df8c0' : undefined;
 
-    const res = await main.init({ dir, dbKey });
+    const res = await main.init({ ipc, dir, dbKey });
     const db = (this.db = res.db);
     const swarm = (this.swarm = res.swarm);
 
-    const dbr = await renderer.init({ dir, dbKey });
+    const dbr = await renderer.init({ ipc, dir, dbKey });
 
     // console.group('🌳 HyperDB');
     // console.log('- dbKey:', res.dbKey);

@@ -1,6 +1,7 @@
 import { value } from '../helpers/common';
 import { Db } from '../helpers/db/main';
 import { Swarm } from '../helpers/swarm/main';
+import * as t from '../types';
 
 export { Db, Swarm };
 export * from '../types';
@@ -9,6 +10,7 @@ export * from '../types';
  * Initializes a new HyperDB on the `main` process.
  */
 export async function init(args: {
+  ipc: t.IpcClient;
   dir: string;
   dbKey?: string;
   autoAuth?: boolean;
@@ -23,8 +25,6 @@ export async function init(args: {
   const swarm = await Swarm.create({ db, autoAuth, join });
 
   return {
-    dbKey: db.buffer.key.toString('hex'),
-    localKey: db.buffer.localKey.toString('hex'),
     db,
     swarm,
     dir,
