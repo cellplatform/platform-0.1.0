@@ -76,8 +76,14 @@ export class Test extends React.PureComponent<{}, ITestState> {
   };
 
   public render() {
+    const MARGIN = 20;
     const styles = {
-      base: css({ margin: 20, boxSizing: 'border-box', fontSize: 14 }),
+      base: css({
+        boxSizing: 'border-box',
+        fontSize: 14,
+        Absolute: [4, MARGIN, MARGIN, MARGIN],
+        margin: 0,
+      }),
       hr: css({ border: 'none', borderTop: `solid 1px ${color.format(-0.2)}` }),
       ul: css({ margin: 0, padding: 0, listStyle: 'none' }),
       columns: css({
