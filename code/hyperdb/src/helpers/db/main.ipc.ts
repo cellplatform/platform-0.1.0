@@ -2,7 +2,9 @@ import * as t from './types';
 import { Db } from './Db';
 import { Swarm } from '../swarm/main';
 import { create } from './main.create';
-import { value } from '../common';
+import { value, is } from '../common';
+import { fs } from '@platform/fs';
+import { app } from 'electron';
 
 type Refs = { [key: string]: { db: Db; swarm: Swarm } };
 const refs: Refs = {};
@@ -20,10 +22,22 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
     console.log(`\nTODO 🐷  handle checkout version creation of DB \n`);
 
     // Construct the DB.
-    const res = await create({ dir, dbKey });
+    const paths = {
+      dev: dir,
+      prod: fs.join(app.getPath('userData'), dir),
+    };
+    const path = is.prod ? paths.prod : paths.dev;
+    const res = await create({ dir: path, dbKey });
+    const db = res.db;
+
+    // Log the creation.
+    log.info(`Database created`);
+    log.info.gray(`- storage:  ${path}`);
+    log.info.gray(`- key:      ${db.key}`);
+    log.info.gray(`- version:  ${checkoutVersion ? checkoutVersion : '(latest)'}`);
+    log.info();
 
     // Ferry events to clients.
-    const db = res.db;
     db.events$.subscribe(e => ipc.send(e.type, e.payload));
 
     // Finish up.
