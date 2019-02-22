@@ -12,6 +12,11 @@ export type ITestState = {
   versions: string[];
 };
 
+const KEY = {
+  A1: 'A1',
+  A2: 'A2',
+};
+
 /**
  * See
  * - https://github.com/mafintosh/hyperdb#api
@@ -78,7 +83,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
         connections: await swarm.connections(),
       },
     });
-    this.getValue(db);
+    this.getValue(KEY.A1)(db);
+    this.getValue(KEY.A2)(db);
   };
 
   private appendVersion = (version: string) => {
@@ -114,9 +120,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
         <div {...styles.columns}>
           <div {...styles.left}>
             <ul {...styles.ul}>
-              {this.button('db.get', this.getValue)}
-              {this.button('db.put(foo)', this.putValue('foo'))}
-              {this.button('db.put(bar)', this.putValue('bar'))}
+              {this.button(`db.put: ${KEY.A1}`, this.putValue(KEY.A1))}
+              {this.button(`db.put: ${KEY.A2}`, this.putValue(KEY.A2))}
               {this.button('db.del', this.deleteValue)}
               {this.button('db.dispose', this.dispose)}
               <hr {...styles.hr} />
@@ -185,26 +190,27 @@ export class Test extends React.PureComponent<{}, ITestState> {
     );
   }
 
-  private count = 0;
-  private getValue = async (db?: renderer.IDb) => {
-    db = db || this.db;
-    const res = await db.get('foo');
-    this.count = res.value || 0;
-    this.setPropData('foo', res.value);
+  private getValue = (key: string) => {
+    return async (db?: renderer.IDb) => {
+      db = db || this.db;
+      const res = await db.get(key);
+      const value = res.value || 0;
+      this.setPropData(key, value);
+      return value;
+    };
   };
 
   private putValue = (key: string) => {
     return async () => {
-      await this.getValue();
-      this.count++;
-      const res = await this.db.put(key, this.count);
-      this.count = res.value || 0;
+      const count = (await this.getValue(key)()) + 1;
+      await this.db.put(key, count);
     };
   };
 
   private deleteValue = async () => {
-    const res = await this.db.del('foo');
-    this.setPropData('foo', res.value);
+    const key = KEY.A1;
+    const res = await this.db.del(key);
+    this.setPropData(key, res.value);
   };
 
   private setPropData = (key: string | number | symbol, value: any) => {
