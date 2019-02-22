@@ -4,7 +4,6 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-// import main from '../../src/main';
 import renderer from '../../src/renderer';
 import { Button, color, css, ObjectView, R, value } from './common';
 import { TestPanel } from './TestPanel';
