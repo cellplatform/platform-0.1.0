@@ -1,2 +1,4 @@
 export { value } from '@platform/util.value';
-export * from './ramda';
+
+import { equals, uniq } from 'ramda';
+export const R = { equals, uniq };

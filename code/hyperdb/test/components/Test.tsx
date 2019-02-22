@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { uniq } from 'ramda';
 
 import * as main from '../../src/main';
-import { Button, css, ObjectView, renderer, value, color } from './common';
+import { Button, css, ObjectView, renderer, value, color, R } from './common';
 import { TestPanel } from './TestPanel';
 
 export type ITestState = {
@@ -71,7 +70,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
   };
 
   private appendVersion = (version: string) => {
-    const versions = uniq([version, ...this.state.versions]);
+    const versions = R.uniq([version, ...this.state.versions]);
     this.setState({ versions });
   };
 
