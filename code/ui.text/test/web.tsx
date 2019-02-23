@@ -1,5 +1,5 @@
 import '@babel/polyfill';
-import '../node_modules/@uiharness/dev/css/normalize.css';
+import '../node_modules/@uiharness/electron/css/normalize.css';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
