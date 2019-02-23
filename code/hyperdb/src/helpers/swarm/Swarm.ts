@@ -53,7 +53,9 @@ export class Swarm implements t.ISwarm {
         const peerKey = Buffer.from(e.peer.remoteUserData);
         const { isAuthorized } = await this.authorize(peerKey);
         if (isAuthorized) {
+          const dbKey = this.dbKey;
           this.next<t.ISwarmPeerAuthorizedEvent>('SWARM/peer/authorized', {
+            dbKey,
             isAuthorized,
             peerKey,
           });
@@ -123,15 +125,16 @@ export class Swarm implements t.ISwarm {
       // Create the discovery-swarm.
       const swarm = discovery(this.config);
       this._.swarm = swarm;
+      const dbKey = this.dbKey;
 
       // Listen for connection events.
       swarm.on('connection', (peer: t.IProtocol) => {
-        this.next<t.ISwarmPeerConnectedEvent>('SWARM/peer/connected', { peer });
+        this.next<t.ISwarmPeerConnectedEvent>('SWARM/peer/connected', { dbKey, peer });
       });
 
       // Request to join.
       swarm.join(this.dbKey, undefined, () => {
-        this.next<t.ISwarmJoinEvent>('SWARM/join', {});
+        this.next<t.ISwarmJoinEvent>('SWARM/join', { dbKey });
         resolve({});
       });
     });
@@ -144,10 +147,11 @@ export class Swarm implements t.ISwarm {
     this.throwIfDisposed('leave');
     const swarm = this._.swarm;
     if (swarm) {
+      const dbKey = this.dbKey;
       swarm.leave(this.dbKey);
       swarm.destroy();
       this._.swarm = undefined;
-      this.next<t.ISwarmLeaveEvent>('SWARM/leave', {});
+      this.next<t.ISwarmLeaveEvent>('SWARM/leave', { dbKey });
     }
   }
 
@@ -201,7 +205,8 @@ export class Swarm implements t.ISwarm {
    * [INTERNAL]
    */
   private fireError(error: Error) {
-    this.next<t.ISwarmErrorEvent>('SWARM/error', { error });
+    const dbKey = this.dbKey;
+    this.next<t.ISwarmErrorEvent>('SWARM/error', { dbKey, error });
   }
 
   private next<E extends t.SwarmEvent>(type: E['type'], payload: E['payload']) {

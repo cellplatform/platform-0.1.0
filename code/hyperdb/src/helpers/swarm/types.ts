@@ -61,22 +61,22 @@ export type SwarmEvent =
 
 export type ISwarmPeerConnectedEvent = {
   type: 'SWARM/peer/connected';
-  payload: { peer: IProtocol };
+  payload: { dbKey: string; peer: IProtocol };
 };
 export type ISwarmPeerAuthorizedEvent = {
   type: 'SWARM/peer/authorized';
-  payload: { peerKey: Buffer; isAuthorized: true };
+  payload: { dbKey: string; peerKey: Buffer; isAuthorized: true };
 };
 export type ISwarmJoinEvent = {
   type: 'SWARM/join';
-  payload: {};
+  payload: { dbKey: string };
 };
 export type ISwarmLeaveEvent = {
   type: 'SWARM/leave';
-  payload: {};
+  payload: { dbKey: string };
 };
 
 export type ISwarmErrorEvent = {
   type: 'SWARM/error';
-  payload: { error: Error };
+  payload: { dbKey: string; error: Error };
 };
