@@ -121,7 +121,7 @@ export class Swarm implements t.ISwarm {
    */
   public join() {
     this.throwIfDisposed('join');
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       // Create the discovery-swarm.
       const swarm = discovery(this.config);
       this._.swarm = swarm;
@@ -135,7 +135,7 @@ export class Swarm implements t.ISwarm {
       // Request to join.
       swarm.join(this.dbKey, undefined, () => {
         this.next<t.ISwarmJoinEvent>('SWARM/join', { dbKey });
-        resolve({});
+        resolve();
       });
     });
   }
@@ -143,7 +143,7 @@ export class Swarm implements t.ISwarm {
   /**
    * Leaves the swarm.
    */
-  public leave() {
+  public async leave() {
     this.throwIfDisposed('leave');
     const swarm = this._.swarm;
     if (swarm) {

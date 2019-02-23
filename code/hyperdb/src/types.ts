@@ -12,11 +12,9 @@ export { IpcClient, ILog };
  * Extensions to the API for a DB when it is running in the `renderer` process.
  */
 import { IDb } from './helpers/db/types';
-export type IRendererDb<D extends {} = any> = IDb<D> &{
-
-
-}
-
+export type IRendererDb<D extends {} = any> = IDb<D> & {
+  dispose(): void;
+};
 
 /**
  * [Network]

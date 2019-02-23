@@ -31,10 +31,9 @@ export type ISwarm = {
   readonly config: ISwarmConfig;
   readonly isActive: boolean;
   readonly isDisposed: boolean;
-  join(): Promise<{}>;
-  leave(): void;
+  join(): Promise<void>;
+  leave(): Promise<void>;
   connections(): Promise<ISwarmConnections>;
-  dispose(): void;
 };
 
 /**
