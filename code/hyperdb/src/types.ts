@@ -13,7 +13,10 @@ export { IpcClient, ILog };
  */
 import { IDb } from './helpers/db/types';
 export type IRendererDb<D extends {} = any> = IDb<D> & {
+  readonly checkoutVersion?: string;
   dispose(): void;
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
 };
 
 /**

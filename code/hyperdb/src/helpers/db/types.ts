@@ -34,8 +34,8 @@ export type IDbProps = {
   readonly isDisposed: boolean;
 };
 export type IDbMethods<D extends {} = any> = {
-  version(): Promise<string>;
   checkout(version: string): Promise<IDb<D>>;
+  version(): Promise<string>;
   get<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   put<K extends keyof D>(key: K, value: D[K]): Promise<IDbValue<K, D[K]>>;
   del<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;

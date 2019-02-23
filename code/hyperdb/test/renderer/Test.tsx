@@ -136,8 +136,9 @@ export class Test extends React.PureComponent<{}, ITestState> {
               {this.button('db.del', this.deleteValue)}
               {this.button('db.dispose', this.dispose)}
               <hr {...styles.hr} />
-              {this.button('swarm.leave', this.leaveSwarm)}
-              {this.button('swarm.join', this.joinSwarm)}
+              swarm
+              {this.button('disconnect', this.leaveSwarm)}
+              {this.button('connect', this.joinSwarm)}
             </ul>
           </div>
           <div {...styles.middle}>{this.renderVersions()}</div>
@@ -162,10 +163,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
       }),
       list: css({ Scroll: true, flex: 1, fontSize: 13 }),
       ul: css({ margin: 0, padding: 0, paddingLeft: 20 }),
-      li: css({
-        fontFamily: 'monospace',
-        fontWeight: 'bold',
-      }),
+      li: css({ fontFamily: 'monospace', fontWeight: 'bold' }),
     };
 
     const elVersions = versions.map((version, i) => {
@@ -250,19 +248,17 @@ export class Test extends React.PureComponent<{}, ITestState> {
   };
 
   private joinSwarm = async () => {
-    console.log(`\nTODO 🐷  join \n`);
-    // await this.swarm.join();
+    await this.db.connect();
   };
   private leaveSwarm = async () => {
-    console.log(`\nTODO 🐷  leave \n`);
-    // this.swarm.leave();
+    await this.db.disconnect();
   };
 
   private versionClick = (index: number) => {
     return async () => {
       const version = this.state.versions[index];
       const db = await this.db.checkout(version);
-      await this.updateData(db);
+      await this.updateData(db as IRendererDb);
     };
   };
 }

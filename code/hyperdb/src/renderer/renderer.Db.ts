@@ -160,6 +160,16 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
     return this.invoke('unwatch', pattern);
   }
 
+  public async connect() {
+    //
+    console.log('connect  ');
+  }
+
+  public async disconnect() {
+    //
+    console.log('disconnect');
+  }
+
   /**
    * [Internal]
    */
