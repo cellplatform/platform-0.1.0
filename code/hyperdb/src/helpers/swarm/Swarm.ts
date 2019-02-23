@@ -34,7 +34,6 @@ export class Swarm implements t.ISwarm {
    */
   private constructor(args: SwarmArgs) {
     const { db, join = false, autoAuth = false } = args;
-    this.id = db.buffer.key.toString('hex');
     this._.db = db;
 
     // Create and join the swarm.
@@ -72,7 +71,6 @@ export class Swarm implements t.ISwarm {
     events$: new Subject<t.SwarmEvent>(),
   };
   public isDisposed = false;
-  public readonly id: string;
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
@@ -82,10 +80,14 @@ export class Swarm implements t.ISwarm {
   /**
    * [Properties]
    */
+  public get dbKey() {
+    return this._.db.key;
+  }
+
   public get config() {
     const { db } = this._;
     return swarmDefaults({
-      id: this.id,
+      id: this.dbKey,
       stream: (peer: t.IPeer) => db.replicate({ live: true }),
     });
   }
@@ -128,7 +130,7 @@ export class Swarm implements t.ISwarm {
       });
 
       // Request to join.
-      swarm.join(this.id, undefined, () => {
+      swarm.join(this.dbKey, undefined, () => {
         this.next<t.ISwarmJoinEvent>('SWARM/join', {});
         resolve({});
       });
@@ -142,7 +144,7 @@ export class Swarm implements t.ISwarm {
     this.throwIfDisposed('leave');
     const swarm = this._.swarm;
     if (swarm) {
-      swarm.leave(this.id);
+      swarm.leave(this.dbKey);
       swarm.destroy();
       this._.swarm = undefined;
       this.next<t.ISwarmLeaveEvent>('SWARM/leave', {});

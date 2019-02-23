@@ -26,7 +26,7 @@ export type ISwarmConfig = {
  * [Swarm]
  */
 export type ISwarm = {
-  readonly id: string;
+  readonly dbKey: string;
   readonly events$: Observable<SwarmEvent>;
   readonly config: ISwarmConfig;
   readonly isActive: boolean;
