@@ -1,5 +1,5 @@
 import * as t from '../types';
-import { Db } from './renderer.Db';
+import { RendererDb } from './renderer.Db';
 
 export * from '../types';
 export * from '@platform/electron/lib/renderer';
@@ -9,6 +9,6 @@ export * from '@platform/electron/lib/renderer';
  */
 export async function create(args: { ipc: t.IpcClient; dir: string; dbKey?: string }) {
   const { ipc, dir, dbKey } = args;
-  const db = await Db.create({ ipc, dir, dbKey });
+  const db = await RendererDb.create({ ipc, dir, dbKey });
   return { db };
 }

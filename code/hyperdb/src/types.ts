@@ -2,10 +2,21 @@ export * from './helpers/db/types';
 export * from './helpers/swarm/types';
 
 /**
- * [Electron/IPC]
+ * [Common]
  */
 import { IpcClient, ILog } from '@platform/electron/lib/types';
 export { IpcClient, ILog };
+
+/**
+ * [RendererDb]
+ * Extensions to the API for a DB when it is running in the `renderer` process.
+ */
+import { IDb } from './helpers/db/types';
+export type IRendererDb<D extends {} = any> = IDb<D> &{
+
+
+}
+
 
 /**
  * [Network]

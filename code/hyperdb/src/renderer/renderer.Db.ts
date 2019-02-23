@@ -16,12 +16,12 @@ const TARGET_MAIN = { target: 0 };
 /**
  * The [renderer] client to a `Db` that runs on the [main] prcoess.
  */
-export class Db<D extends object = any> implements t.IDb<D> {
+export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
   /**
    * [Static]
    */
   public static async create<D extends object = any>(args: IConstructorArgs) {
-    const db = new Db<D>(args);
+    const db = new RendererDb<D>(args);
     await db.ready;
     return db;
   }
@@ -137,7 +137,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
   public async checkout(version: string) {
     const { ipc, dir } = this._;
     const dbKey = this.key;
-    return Db.create<D>({ ipc, dir, dbKey, version });
+    return RendererDb.create<D>({ ipc, dir, dbKey, version });
   }
 
   public async get<K extends keyof D>(key: K) {

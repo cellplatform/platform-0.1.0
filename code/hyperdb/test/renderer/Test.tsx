@@ -8,6 +8,7 @@ import renderer from '../../src/renderer';
 import { Button, color, css, ObjectView, R, value } from './common';
 import { TestPanel } from './TestPanel';
 
+type IRendererDb = renderer.IRendererDb;
 export type ITestState = {
   data: any;
   versions: string[];
@@ -29,7 +30,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
-  public db: renderer.IDb;
+  public db: IRendererDb;
   // public swarm: renderer.ISwarm;
 
   public async componentDidMount() {
@@ -76,7 +77,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     return db;
   };
 
-  private updateData = async (db: renderer.IDb) => {
+  private updateData = async (db: IRendererDb) => {
     // const swarm = this.swarm;
     const version = await db.version();
     this.setData({
@@ -205,7 +206,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
   };
 
   private getValue = (key: string) => {
-    return async (db?: renderer.IDb) => {
+    return async (db?: IRendererDb) => {
       db = db || this.db;
       const res = await db.get(key);
       const value = res.value || 0;
