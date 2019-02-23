@@ -46,9 +46,9 @@ export class Test extends React.PureComponent<{}, ITestState> {
   private init = async () => {
     const { id, ipc } = this.context;
     const dir = `.db/tmp-${id}`;
-    // const dbKey =
-    //   id > 1 ? 'ec2863f47c01711fde7505ff430cd8121ef1d8aaf5a0b329a65ef1f0d6cfa1fe' : undefined;
-    const dbKey = 'ec2863f47c01711fde7505ff430cd8121ef1d8aaf5a0b329a65ef1f0d6cfa1fe';
+
+    const PRIMARY = 'e32a5f06ee322d9cc03aa8a6163c2a14b95993f11d6367a0b425410acaf81bc5';
+    const dbKey = id > 1 ? PRIMARY : undefined;
 
     const res = await renderer.create({ ipc, dir, dbKey });
     const db = res.db;
@@ -181,7 +181,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     return (
       <div {...styles.base}>
-        <div {...styles.label}>database key:</div> <div {...styles.key}>{dbKey}</div>
+        <div {...styles.label}>database key (hypersheet):</div> <div {...styles.key}>{dbKey}</div>
       </div>
     );
   }
