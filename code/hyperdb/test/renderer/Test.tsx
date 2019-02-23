@@ -64,7 +64,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     await db.watch('*');
 
-    await db.del('foo')
+    await db.del('foo');
 
     const foo = await db.get('foo');
     console.log('foo', foo);
@@ -272,7 +272,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
   private setPropData = (key: string | number | symbol, value: any) => {
     if (key) {
       const item = { [key]: value || 0 };
-      const values = { ...(this.state.data.values || {}), item };
+      const values = { ...(this.state.data.values || {}), ...item };
       this.setData({ values });
     }
   };
