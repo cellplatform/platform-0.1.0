@@ -10,6 +10,7 @@ import { TestPanel } from './TestPanel';
 
 type IRendererDb = renderer.IRendererDb;
 export type ITestState = {
+  dbKey?: string;
   data: any;
   versions: string[];
 };
@@ -44,9 +45,10 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   private init = async () => {
     const { id, ipc } = this.context;
-    const dir = `.db/r-${id}`;
-    const dbKey =
-      id > 1 ? 'f6ea25790b275575f6e91c62c39d8d7945f73ee92a6d83ea50356b7e245b9ab0' : undefined;
+    const dir = `.db/tmp-${id}`;
+    // const dbKey =
+    //   id > 1 ? 'ec2863f47c01711fde7505ff430cd8121ef1d8aaf5a0b329a65ef1f0d6cfa1fe' : undefined;
+    const dbKey = 'ec2863f47c01711fde7505ff430cd8121ef1d8aaf5a0b329a65ef1f0d6cfa1fe';
 
     const res = await renderer.create({ ipc, dir, dbKey });
     const db = res.db;
@@ -74,6 +76,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     this.updateData(db);
     this.appendVersion(await db.version());
+    this.state$.next({ dbKey: db.key });
     return db;
   };
 
@@ -116,6 +119,9 @@ export class Test extends React.PureComponent<{}, ITestState> {
       columns: css({
         Flex: 'horizontal-stretch-stretch',
         lineHeight: 1.6,
+        borderTop: `solid 5px ${color.format(-0.1)}`,
+        marginTop: 15,
+        paddingTop: 15,
       }),
       left: css({ width: 150, paddingRight: 20 }),
       middle: css({
@@ -126,7 +132,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
     };
 
     return (
-      <TestPanel title={'hyperdb'} style={styles.base}>
+      <TestPanel title={'Hypersheet Database'} style={styles.base}>
+        {this.renderDbKey()}
         <div {...styles.columns}>
           <div {...styles.left}>
             <ul {...styles.ul}>
@@ -147,6 +154,35 @@ export class Test extends React.PureComponent<{}, ITestState> {
           </div>
         </div>
       </TestPanel>
+    );
+  }
+
+  private renderDbKey() {
+    const { dbKey } = this.state;
+    if (!dbKey) {
+      return;
+    }
+    const styles = {
+      base: css({
+        Absolute: [-30, 20, null, null],
+        fontFamily: 'monospace',
+        fontWeight: 'bold',
+        fontSize: 12,
+        Flex: 'horizontal',
+      }),
+      label: css({
+        color: color.format(-0.3),
+        marginRight: 8,
+      }),
+      key: css({
+        color: '#881391', // Purple.
+      }),
+    };
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.label}>database key:</div> <div {...styles.key}>{dbKey}</div>
+      </div>
     );
   }
 
@@ -223,6 +259,10 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   private deleteValue = async () => {
     const key = KEY.A1;
+
+    await this.db.del(KEY.A1);
+    await this.db.del(KEY.A2);
+
     const res = await this.db.del(key);
     this.setPropData(key, res.value);
   };
