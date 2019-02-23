@@ -11,9 +11,9 @@ type Refs = { [key: string]: Ref };
 const refs: Refs = {};
 
 /**
- * The IPC handler on the [main] process that manages DB's.
+ * Start the HyperDB IPC handler's listening on the [main] process.
  */
-export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
+export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   const ipc = args.ipc as t.DbIpcRendererClient;
   const log = args.log;
 

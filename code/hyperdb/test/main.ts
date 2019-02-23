@@ -5,5 +5,9 @@ const config = require('../.uiharness/config.json');
 (async () => {
   const context = await uiharness.init({ config });
   const { log, ipc } = context;
-  await main.init({ ipc, log });
+
+  /**
+   * Initialise the HyperDB on the [main] process.
+   */
+  await main.listen({ ipc, log });
 })();
