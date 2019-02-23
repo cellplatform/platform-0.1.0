@@ -249,9 +249,11 @@ export class Test extends React.PureComponent<{}, ITestState> {
   };
 
   private joinSwarm = async () => {
+    console.log(`\nTODO 🐷  join \n`);
     // await this.swarm.join();
   };
   private leaveSwarm = async () => {
+    console.log(`\nTODO 🐷  leave \n`);
     // this.swarm.leave();
   };
 

@@ -71,8 +71,6 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * [Fields]
    */
   public readonly ready: Promise<{}>;
-  // private readonly _ipc: t.DbIpcClient;
-
   private readonly _ = {
     isDisposed: false,
     ipc: (null as unknown) as t.DbIpcClient,
@@ -137,15 +135,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   public async checkout(version: string) {
-    // const {  } = this._;
-
-    console.log(`\nTODO 🐷   \n`);
-    /**
-     * TODO
-     * - checkout
-     * - dispose (fire dispose event back to MAIN and remove from refs)
-     */
-    return this;
+    const { ipc, dir } = this._;
+    const dbKey = this.key;
+    return Db.create<D>({ ipc, dir, dbKey, version });
   }
 
   public async get<K extends keyof D>(key: K) {

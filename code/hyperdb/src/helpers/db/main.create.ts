@@ -12,13 +12,14 @@ export async function create(args: {
   dbKey?: string;
   autoAuth?: boolean;
   join?: boolean;
+  version?: string;
 }) {
-  const { dir, dbKey } = args;
+  const { dir, dbKey, version } = args;
   const autoAuth = value.defaultValue(args.autoAuth, true);
   const join = value.defaultValue(args.join, true);
 
   // Construct and connect the database.
-  const db = await Db.create({ dir, dbKey });
+  const db = await Db.create({ dir, dbKey, version });
   const swarm = await Swarm.create({ db, autoAuth, join });
 
   // Finish up.

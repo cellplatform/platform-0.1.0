@@ -17,10 +17,8 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
   const ipc = args.ipc as t.DbIpcClient;
   const log = args.log;
 
-  const createDb = async (args: { dir: string; dbKey?: string; checkoutVersion?: string }) => {
-    const { dir, dbKey, checkoutVersion } = args;
-
-    console.log(`\nTODO 🐷  handle checkout version creation of DB \n`);
+  const createDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
+    const { dir, dbKey, version } = args;
 
     // Construct the DB.
     const paths = {
@@ -28,15 +26,14 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
       prod: fs.join(app.getPath('userData'), dir),
     };
     const path = is.prod ? paths.prod : paths.dev;
-    const res = await create({ dir: path, dbKey });
+    const res = await create({ dir: path, dbKey, version });
     const { db, swarm } = res;
-    // const db = res.db;
 
     // Log the creation.
     log.info(`Database created`);
     log.info.gray(`- storage:  ${path}`);
     log.info.gray(`- key:      ${db.key}`);
-    log.info.gray(`- version:  ${checkoutVersion ? checkoutVersion : '(latest)'}`);
+    log.info.gray(`- version:  ${version ? version : '(latest)'}`);
     log.info();
 
     // Ferry events to clients.
