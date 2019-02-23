@@ -64,11 +64,6 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     await db.watch('*');
 
-    await db.del('foo');
-
-    const foo = await db.get('foo');
-    console.log('foo', foo);
-
     db.watch$.subscribe(async e => {
       this.appendVersion(e.version);
       this.setPropData(e.key, e.value);
