@@ -15,14 +15,14 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@uiharness/electron": "0.3.128",
+    "@uiharness/electron": "0.3.129",
     "discovery-swarm": "5.1.4",
     "hyperdb": "3.5.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.29",
     "@platform/ts": "3.3.54",
-    "@uiharness/dev": "0.1.25"
+    "@uiharness/dev": "0.1.26"
   },
   "resolutions": {
     "@types/react": "16.7.17"

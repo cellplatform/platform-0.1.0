@@ -7,6 +7,11 @@ const config = require('../.uiharness/config.json');
   const { log, ipc } = context;
 
   /**
+   * TODO
+   * - store the initial DB key in the store.
+   */
+
+  /**
    * Initialise the HyperDB on the [main] process.
    */
   await main.listen({ ipc, log });
