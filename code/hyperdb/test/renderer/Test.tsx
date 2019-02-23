@@ -48,7 +48,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const dir = `.db/tmp-${id}`;
 
     const PRIMARY = 'e32a5f06ee322d9cc03aa8a6163c2a14b95993f11d6367a0b425410acaf81bc5';
-    const dbKey = id > 1 ? PRIMARY : undefined;
+    const FORCE = true;
+    const dbKey = id > 1 || FORCE ? PRIMARY : undefined;
 
     const res = await renderer.create({ ipc, dir, dbKey });
     const db = res.db;
@@ -62,7 +63,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
     console.groupEnd();
 
     await db.watch('*');
-    await db.put('foo', 123);
+
+    await db.del('foo')
 
     const foo = await db.get('foo');
     console.log('foo', foo);
