@@ -47,8 +47,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const { id, ipc } = this.context;
     const dir = `.db/tmp-${id}`;
 
-    const PRIMARY = 'e32a5f06ee322d9cc03aa8a6163c2a14b95993f11d6367a0b425410acaf81bc5';
-    const FORCE = true;
+    const PRIMARY = 'ec22f3b36d24ac71d1f6d243d7069d9023bdb1c6001dda4bd76f31cfed35d29d';
+    const FORCE = false;
     const dbKey = id > 1 || FORCE ? PRIMARY : undefined;
 
     const res = await renderer.create({ ipc, dir, dbKey });
