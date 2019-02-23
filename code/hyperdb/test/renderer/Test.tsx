@@ -271,7 +271,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   private setPropData = (key: string | number | symbol, value: any) => {
     if (key) {
-      const values = { ...(this.state.data.values || {}), [key]: value };
+      const item = { [key]: value || 0 };
+      const values = { ...(this.state.data.values || {}), item };
       this.setData({ values });
     }
   };
