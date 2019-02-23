@@ -76,8 +76,8 @@ export type IDbErrorEvent = {
  * [IPC] Events
  */
 
-export type DbIpcClient = IpcClient<DbRendererEvent>;
-export type DbRendererEvent = IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent | DbEvent;
+export type DbIpcClient = IpcClient<DbIpcEvent>;
+export type DbIpcEvent = IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent | DbEvent;
 
 export type IDbGetStateEvent = {
   type: 'DB/state/get';

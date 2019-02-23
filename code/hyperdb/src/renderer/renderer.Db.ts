@@ -2,7 +2,7 @@ import { IpcClient } from '@platform/electron/lib/types';
 import { Subject } from 'rxjs';
 import { share, take, takeUntil, filter, map } from 'rxjs/operators';
 
-import * as t from '../types';
+import * as t from './types';
 
 type IConstructorArgs = {
   ipc: IpcClient;
@@ -73,7 +73,7 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
   public readonly ready: Promise<{}>;
   private readonly _ = {
     isDisposed: false,
-    ipc: (null as unknown) as t.DbIpcClient,
+    ipc: (null as unknown) as t.DbIpcRendererClient,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),
     props: (null as unknown) as t.IDbProps,
@@ -161,13 +161,15 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
   }
 
   public async connect() {
-    //
-    console.log('connect  ');
+    const { dir, dbKey, version } = this._;
+    const db = { dir, dbKey, version };
+    this._.ipc.send<t.IDbConnectEvent>('DB/connect', { db }, TARGET_MAIN);
   }
 
   public async disconnect() {
-    //
-    console.log('disconnect');
+    const { dir, dbKey, version } = this._;
+    const db = { dir, dbKey, version };
+    this._.ipc.send<t.IDbDisconnectEvent>('DB/disconnect', { db }, TARGET_MAIN);
   }
 
   /**

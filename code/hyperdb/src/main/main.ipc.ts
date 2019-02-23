@@ -14,7 +14,7 @@ const refs: Refs = {};
  * The IPC handler on the [main] process that manages DB's.
  */
 export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
-  const ipc = args.ipc as t.DbIpcClient;
+  const ipc = args.ipc as t.DbIpcRendererClient;
   const log = args.log;
 
   const createDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
@@ -29,18 +29,12 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
     const res = await create({ dir: path, dbKey, version });
     const { db, swarm } = res;
 
-    // Log the creation.
-    log.info(`Database created`);
-    log.info.gray(`- storage:  ${path}`);
-    log.info.gray(`- key:      ${db.key}`);
-    log.info.gray(`- version:  ${version ? version : '(latest)'}`);
-    log.info();
-
     // Ferry events to clients.
     db.events$.subscribe(e => ipc.send(e.type, e.payload));
 
     // Finish up.
     const ref: Ref = { db, swarm, path };
+    logCreated(log, ref);
     return ref;
   };
 
@@ -53,14 +47,14 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
   };
 
   /**
-   * HANDLE state requests from DB `renderer` clients and
+   * [HANDLE] state requests from DB `renderer` clients and
    * fire back the latest values.
    */
   ipc.handle<t.IDbGetStateEvent>('DB/state/get', async e => {
     type E = t.IDbUpdateStateEvent;
     type P = E['payload'];
     const { dir, dbKey, version } = e.payload.db;
-    const db = (await getOrCreateDb({ dir, dbKey, version })).db;
+    const { db } = await getOrCreateDb({ dir, dbKey, version });
     try {
       const { key, discoveryKey, localKey, watching, isDisposed } = db;
       const props: t.IDbProps = { key, discoveryKey, localKey, watching, isDisposed };
@@ -73,12 +67,12 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
   });
 
   /**
-   * HANDLE invoke requests from DB `renderer` clients.
+   * [HANDLE] invoke requests from DB `renderer` clients.
    */
   ipc.handle<t.IDbInvokeEvent, t.IDbInvokeResponse>('DB/invoke', async e => {
     const { method, params } = e.payload;
     const { dir, dbKey, version } = e.payload.db;
-    const db = (await getOrCreateDb({ dir, dbKey, version })).db;
+    const { db } = await getOrCreateDb({ dir, dbKey, version });
     try {
       const fn = db[method] as (...params: any[]) => any;
       const res = fn.apply(db, params);
@@ -90,4 +84,49 @@ export function init(args: { ipc: t.IpcClient; log: t.ILog }) {
       return { method, error };
     }
   });
+
+  /**
+   * [HANDLE] requests to `disconnect` (leave the swarm).
+   */
+  ipc.handle<t.IDbConnectEvent>('DB/connect', async e => {
+    const { dir, dbKey, version } = e.payload.db;
+    const ref = await getOrCreateDb({ dir, dbKey, version });
+    if (!ref.swarm.isActive) {
+      await ref.swarm.join();
+      logConnection(log, ref);
+    }
+  });
+
+  /**
+   * [HANDLE] requests to `connect` (leave the swarm).
+   */
+  ipc.handle<t.IDbDisconnectEvent>('DB/disconnect', async e => {
+    const { dir, dbKey, version } = e.payload.db;
+    const ref = await getOrCreateDb({ dir, dbKey, version });
+    if (ref.swarm.isActive) {
+      await ref.swarm.leave();
+      logConnection(log, ref);
+    }
+  });
 }
+
+/**
+ * [HELPERS]
+ */
+
+const logCreated = (log: t.ILog, ref: Ref) => {
+  log.info(`Database ${log.yellow('created')}`);
+  log.info.gray(`- storage:  ${ref.path}`);
+  log.info.gray(`- key:      ${ref.db.key}`);
+  log.info.gray(`- version:  ${ref.version ? ref.version : '(latest)'}`);
+  log.info();
+};
+
+const logConnection = (log: t.ILog, ref: Ref) => {
+  const action = ref.swarm.isActive ? 'connected' : 'disconnected';
+  log.info(`Database ${log.yellow(action)} from swarm`);
+  log.info.gray(`- storage:  ${ref.path}`);
+  log.info.gray(`- key:      ${ref.db.key}`);
+  log.info.gray(`- version:  ${ref.version ? ref.version : '(latest)'}`);
+  log.info();
+};

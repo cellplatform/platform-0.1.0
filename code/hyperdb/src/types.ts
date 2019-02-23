@@ -1,3 +1,4 @@
+export * from './renderer/types';
 export * from './helpers/db/types';
 export * from './helpers/swarm/types';
 
@@ -6,18 +7,6 @@ export * from './helpers/swarm/types';
  */
 import { IpcClient, ILog } from '@platform/electron/lib/types';
 export { IpcClient, ILog };
-
-/**
- * [RendererDb]
- * Extensions to the API for a DB when it is running in the `renderer` process.
- */
-import { IDb } from './helpers/db/types';
-export type IRendererDb<D extends {} = any> = IDb<D> & {
-  readonly checkoutVersion?: string;
-  dispose(): void;
-  connect(): Promise<void>;
-  disconnect(): Promise<void>;
-};
 
 /**
  * [Network]
