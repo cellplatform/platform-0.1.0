@@ -2,7 +2,7 @@ import { IpcClient } from '@platform/electron/lib/types';
 import { Subject } from 'rxjs';
 import { share, take, takeUntil, filter, map } from 'rxjs/operators';
 
-import * as t from './types';
+import * as t from '../types';
 
 type IConstructorArgs = {
   ipc: IpcClient;

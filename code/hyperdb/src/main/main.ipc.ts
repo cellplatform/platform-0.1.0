@@ -1,8 +1,8 @@
-import * as t from './types';
-import { Db } from './Db';
-import { Swarm } from '../swarm/main';
+import * as t from '../helpers/db/types';
+import { Db } from '../helpers/db/Db';
+import { Swarm } from '../helpers/swarm/main';
 import { create } from './main.create';
-import { value, is } from '../common';
+import { value, is } from '../helpers/common';
 import { fs } from '@platform/fs';
 import { app } from 'electron';
 

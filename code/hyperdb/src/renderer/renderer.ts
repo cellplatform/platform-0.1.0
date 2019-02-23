@@ -1,5 +1,5 @@
-import { Db } from '../helpers/db/renderer.Db';
 import * as t from '../types';
+import { Db } from './renderer.Db';
 
 export * from '../types';
 export * from '@platform/electron/lib/renderer';

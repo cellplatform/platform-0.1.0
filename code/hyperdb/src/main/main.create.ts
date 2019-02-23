@@ -1,11 +1,12 @@
-import { value } from '../common';
-import { Db } from './Db';
-import { Swarm } from '../swarm/main';
+import { value } from '../helpers/common';
+import { Db } from '../helpers/db';
+import { Swarm } from '../helpers/swarm/main';
 
 export { Db, Swarm };
+export * from '../types';
 
 /**
- * Creates a new network connected HyperDB on the `main` process.
+ * Create a new network connected HyperDB on the `main` process.
  */
 export async function create(args: {
   dir: string;
