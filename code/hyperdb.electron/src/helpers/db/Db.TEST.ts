@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Db } from './Db';
 import { fs } from '@platform/fs';
 
-const dir = '.db/.test';
+const dir = '.dev/.db.test';
 
 describe('Db', () => {
   afterEach(async () => fs.remove(dir));
