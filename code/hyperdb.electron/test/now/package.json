@@ -1,6 +1,6 @@
 {
   "name": "hyperdb.electron-now",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -10,11 +10,10 @@
     "now-build": "echo no-op",
     "prepare": "yarn build",
     "deploy": "yarn prepare && now"
-    
   },
   "dependencies": {
-    "@platform/fs": "^0.0.36",
-    "@platform/hyperdb": "0.0.8",
+    "@platform/fs": "0.0.36",
+    "@platform/hyperdb": "0.0.9",
     "@platform/libs": "0.0.0",
     "@platform/log": "0.0.78",
     "express": "4.16.4"
@@ -26,5 +25,6 @@
   "files": [
     "lib"
   ],
-  "license": "UNLICENSED"
+  "license": "MIT",
+  "private": true
 }
