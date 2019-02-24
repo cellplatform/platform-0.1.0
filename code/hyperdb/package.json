@@ -11,10 +11,11 @@
     "lint": "yarn chmod && ts lint",
     "build": "yarn chmod && ts build",
     "prepare": "yarn chmod && ts prepare",
-    "clean": "sh sh/clean.sh",
+    "clean": "ts-node -T scripts/clean",
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
+    "@platform/electron": "0.0.92",
     "@uiharness/electron": "0.3.129",
     "discovery-swarm": "5.1.4",
     "hyperdb": "3.5.0"
