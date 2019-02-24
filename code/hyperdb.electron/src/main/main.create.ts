@@ -1,8 +1,7 @@
-import { value } from '../helpers/common';
-import { Db } from '../helpers/db';
-import { Swarm } from '../helpers/swarm/main';
+import { value } from '../common';
+import { Db, Swarm } from '@platform/hyperdb';
 
-export { Db, Swarm };
+// export { Db, Swarm };
 export * from '../types';
 
 /**

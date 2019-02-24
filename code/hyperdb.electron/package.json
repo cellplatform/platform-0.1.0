@@ -1,0 +1,37 @@
+{
+  "name": "@platform/hyperdb.electron",
+  "description": "Strongly typed, electron enabled interface to hyperdb.",
+  "version": "0.0.1",
+  "main": "lib/index",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "yarn chmod && ts test",
+    "tdd": "yarn chmod && ts test --watch",
+    "lint": "yarn chmod && ts lint",
+    "build": "yarn chmod && ts build",
+    "prepare": "yarn chmod && ts prepare",
+    "clean": "ts-node -T scripts/clean",
+    "chmod": "chmod 777 node_modules/.bin/ts"
+  },
+  "dependencies": {
+    "@platform/electron": "0.0.93",
+    "@platform/hyperdb": "0.0.8",
+    "@uiharness/electron": "0.3.131",
+    "discovery-swarm": "5.1.4",
+    "hyperdb": "3.5.0"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.29",
+    "@platform/ts": "3.3.54",
+    "@uiharness/dev": "0.1.28"
+  },
+  "resolutions": {
+    "@types/react": "16.7.17"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": "uiharness/platform",
+  "license": "MIT"
+}

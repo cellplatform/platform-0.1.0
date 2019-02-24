@@ -1,5 +1,2 @@
-node_modules
-.uiharness
-.cache
-.db
 .dev
+tmp

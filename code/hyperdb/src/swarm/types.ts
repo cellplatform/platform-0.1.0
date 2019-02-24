@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
-import { IPeer, IProtocol } from '../../types';
+import { IPeer, IProtocol } from '../types';
 
-export * from '../../types';
+export * from '../types';
 
 /**
  * [Initialization]

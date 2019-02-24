@@ -1,7 +1,6 @@
-import { IpcClient } from '@platform/electron/lib/types';
 import { Observable } from 'rxjs';
 
-export * from '../../types';
+export * from '../types';
 
 /**
  * [Value]
@@ -38,7 +37,7 @@ export type IDbMethods<D extends {} = any> = {
   version(): Promise<string>;
   get<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   put<K extends keyof D>(key: K, value: D[K]): Promise<IDbValue<K, D[K]>>;
-  del<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
+  delete<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   watch(...pattern: string[]): Promise<void>;
   unwatch(...pattern: string[]): Promise<void>;
 };
@@ -70,39 +69,4 @@ export type IDbErrorEvent = {
     db: { key: string };
     error: Error;
   };
-};
-
-/**
- * [IPC] Events
- */
-
-export type DbIpcClient = IpcClient<DbIpcEvent>;
-export type DbIpcEvent = IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent | DbEvent;
-
-export type IDbGetStateEvent = {
-  type: 'DB/state/get';
-  payload: {
-    db: { dir: string; dbKey?: string; version?: string };
-    fields?: Array<keyof IDbProps>;
-  };
-};
-export type IDbUpdateStateEvent = {
-  type: 'DB/state/update';
-  payload: {
-    db: { dir: string };
-    props: IDbProps;
-  };
-};
-export type IDbInvokeEvent = {
-  type: 'DB/invoke';
-  payload: {
-    db: { dir: string; dbKey?: string; version?: string };
-    method: keyof IDbMethods;
-    params: any[];
-  };
-};
-export type IDbInvokeResponse<M extends keyof IDbMethods = any> = {
-  method: M;
-  result?: IDbMethods[M];
-  error?: { message: string };
 };
