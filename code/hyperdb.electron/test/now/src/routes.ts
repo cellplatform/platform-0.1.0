@@ -10,10 +10,13 @@ const refs: Refs = {};
 /**
  * Create a new DB instance.
  */
-async function createDb(args: { dbKey: string }) {
-  const { dbKey } = args;
+async function createDb(args: { dbKey: string; reset?: boolean }) {
+  const { dbKey, reset } = args;
   const name = `${dbKey}.db`;
   const dir = fs.join(constants.TMP, name);
+  if (reset) {
+    await fs.remove(dir);
+  }
   const { db, swarm } = await create({ dir, dbKey });
   return { dir, name, db, swarm };
 }
@@ -21,8 +24,11 @@ async function createDb(args: { dbKey: string }) {
 /**
  * Retrieve the requested DB.
  */
-async function getOrCreateDb(args: { dbKey: string }) {
-  const { dbKey } = args;
+async function getOrCreateDb(args: { dbKey: string; reset?: boolean }) {
+  const { dbKey, reset } = args;
+  if (reset) {
+    delete refs[dbKey];
+  }
   return refs[dbKey] ? refs[dbKey] : (refs[dbKey] = await createDb(args));
 }
 
@@ -36,12 +42,7 @@ router.get('/:dbKey', async (req, res) => {
     const version = req.query.version !== undefined;
     let payload: any = {};
 
-    if (reset) {
-      payload = { ...payload, reset };
-      delete refs[dbKey];
-    }
-
-    const { db } = await getOrCreateDb({ dbKey });
+    const { db } = await getOrCreateDb({ dbKey, reset });
     payload = { ...payload, db: db.key };
 
     if (version) {
@@ -61,13 +62,20 @@ router.get('/:dbKey/:key', async (req, res) => {
   try {
     const dbKey = req.params.dbKey as string;
     const key = req.params.key as string;
+    const reset = req.query.reset !== undefined;
+    let payload: any = {};
 
-    const { db } = await getOrCreateDb({ dbKey });
+    payload = reset ? { ...payload, reset } : payload;
+
+    const { db } = await getOrCreateDb({ dbKey, reset });
     const data = await db.get(key);
 
     const { value, meta } = data;
     const { exists, deleted } = meta;
-    res.send({ db: dbKey, key, value, exists, deleted });
+
+    payload = { ...payload, db: dbKey, key, value, exists, deleted };
+
+    res.send(payload);
   } catch (error) {
     res.status(500).send({ error: error.message });
   }

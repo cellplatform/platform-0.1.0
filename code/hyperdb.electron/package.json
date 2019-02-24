@@ -1,7 +1,7 @@
 {
   "name": "@platform/hyperdb.electron",
   "description": "Strongly typed, electron enabled interface to hyperdb.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
