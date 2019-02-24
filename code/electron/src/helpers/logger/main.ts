@@ -1,13 +1,12 @@
 import { fs } from '@platform/fs';
-import { create as createLog, format, chalk } from '@platform/log/lib/server';
+import { chalk, create as createLog, format } from '@platform/log/lib/server';
 import { is } from '@platform/util.is';
+import { time, value } from '@platform/util.value';
 import * as elog from 'electron-log';
 import { filter, map } from 'rxjs/operators';
 
 import { IpcClient, IpcIdentifier } from '../ipc/Client';
 import * as t from './types';
-
-import { time } from '@platform/util.value';
 
 type ILogMetadata = { start: { dev: number; prod: number } };
 type Env = 'prod' | 'dev';
@@ -122,15 +121,13 @@ export function init(args: { ipc: IpcClient; dir: string }) {
 /**
  * Derives paths for the logger.
  */
-export function getPaths(args: { dir: string }) {
-  const IS_DEV = is.dev;
-  const env: Env = IS_DEV ? 'dev' : 'prod';
+export function getPaths(args: { dir: string; env?: Env }) {
+  const env = value.defaultValue(args.env, is.prod ? 'prod' : 'dev');
   const dir = args.dir;
   const file = {
     dev: 'dev.log',
     prod: 'prod.log',
   };
-
   const dev = {
     filename: file.dev,
     path: fs.join(dir, file.dev),
@@ -139,14 +136,13 @@ export function getPaths(args: { dir: string }) {
     filename: file.prod,
     path: fs.join(dir, file.prod),
   };
-
   return { env, dir, dev, prod };
 }
 
 /**
  * INTERNAL
  */
-function increment(args: { dir: string; env: 'dev' | 'prod' }) {
+function increment(args: { dir: string; env: Env }) {
   const read = () => {
     const DEFAULT: ILogMetadata = { start: { dev: 0, prod: 0 } };
     try {
