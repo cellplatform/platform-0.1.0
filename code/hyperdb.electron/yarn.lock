@@ -1245,10 +1245,10 @@
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.9.tgz#693e76a52f61a2f1e7fb48c0eef167b95ea4ffd0"
   integrity sha512-sCZy4SxP9rN2w30Hlmg5dtdRwgYQfYRiLo9usw8X9cxlf+H4FqM1xX7+sNH7NNKVdbXMJWqva7iyy+fxh/V7fA==
 
-"@uiharness/dev@0.1.28":
-  version "0.1.28"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.1.28.tgz#dc77292b8d59385313c823ec5109e84db36ab039"
-  integrity sha512-PCxOnpJaZmAlDL86k//qM/Fi/3ZkkiwVqi1hJl8xdETPnW0xSFG6cqBpBjLv8JR8r1xh6cxEX51yOH58rHlPAw==
+"@uiharness/dev@0.1.29":
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.1.29.tgz#a4ef26a639b8d67d5041ff993edf7eab04ac8a70"
+  integrity sha512-NJAznhZL7deJUzs8xmJfAOv2rkl9/wfeSTDyQT2dVjNp3YHqoYp2yIAsGZRf4fbBKvYIpEF3uG0B2c5I3HSBNg==
   dependencies:
     "@babel/core" "7.3.3"
     "@babel/polyfill" "7.2.5"

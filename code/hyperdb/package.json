@@ -14,10 +14,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.0",
-    "@platform/util.value": "^0.0.28",
-    "discovery-swarm": "^5.1.4",
-    "hyperdb": "^3.5.0"
+    "@platform/util.value": "0.0.28",
+    "discovery-swarm": "5.1.4",
+    "hyperdb": "3.5.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.0",
