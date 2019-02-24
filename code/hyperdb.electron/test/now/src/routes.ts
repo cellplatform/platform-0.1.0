@@ -1,4 +1,5 @@
 import { constants, create, Db, express, fs, Swarm, is } from './common';
+const pkg = require('../package.json');
 
 export const router = express.Router();
 
@@ -81,6 +82,7 @@ router.get('*', async (req, res) => {
     const dbs = items.map(ref => ref.name);
     res.send({
       message: '👋',
+      version: pkg.version,
       dbs,
       is: is.toObject(),
     });
