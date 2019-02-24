@@ -29,35 +29,47 @@ async function getOrCreateDb(args: { dbKey: string }) {
  * Gets details for a specific database.
  */
 router.get('/:dbKey', async (req, res) => {
-  const dbKey = req.params.dbKey as string;
-  const { db } = await getOrCreateDb({ dbKey });
-  const version = await db.version();
-  res.send({ dbKey, version });
+  try {
+    const dbKey = req.params.dbKey as string;
+    const { db } = await getOrCreateDb({ dbKey });
+    const version = await db.version();
+    res.send({ dbKey, version });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
 });
 
 /**
  * Gets the value at the given key.
  */
 router.get('/:dbKey/:key', async (req, res) => {
-  const dbKey = req.params.dbKey as string;
-  const key = req.params.key as string;
-  const { db } = await getOrCreateDb({ dbKey });
-  const data = await db.get(key);
-  const { value, meta } = data;
-  const { exists, deleted } = meta;
-  res.send({ db: dbKey, key, value, exists, deleted });
+  try {
+    const dbKey = req.params.dbKey as string;
+    const key = req.params.key as string;
+    const { db } = await getOrCreateDb({ dbKey });
+    const data = await db.get(key);
+    const { value, meta } = data;
+    const { exists, deleted } = meta;
+    res.send({ db: dbKey, key, value, exists, deleted });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
 });
 
 /**
  * Status info on all databases.
  */
 router.get('*', async (req, res) => {
-  const items = Object.keys(refs).map(key => refs[key]);
-  const dbs = items.map(ref => ref.name);
-  const tmp = constants.TMP;
-  res.send({
-    hello: '👋',
-    dir: tmp,
-    dbs,
-  });
+  try {
+    const items = Object.keys(refs).map(key => refs[key]);
+    const dbs = items.map(ref => ref.name);
+    const tmp = constants.TMP;
+    res.send({
+      message: '👋',
+      dir: tmp,
+      dbs,
+    });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
 });
