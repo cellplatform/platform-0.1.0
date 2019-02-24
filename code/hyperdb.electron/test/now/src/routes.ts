@@ -1,4 +1,4 @@
-import { constants, create, Db, express, fs, Swarm } from './common';
+import { constants, create, Db, express, fs, Swarm, is } from './common';
 
 export const router = express.Router();
 
@@ -68,6 +68,7 @@ router.get('*', async (req, res) => {
       message: '👋',
       dir: tmp,
       dbs,
+      is: is.toObject(),
     });
   } catch (error) {
     res.status(500).send({ error: error.message });
