@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@platform/electron": "0.0.93",
+    "@platform/hyperdb": "0.0.7",
     "@uiharness/electron": "0.3.131",
     "discovery-swarm": "5.1.4",
     "hyperdb": "3.5.0"

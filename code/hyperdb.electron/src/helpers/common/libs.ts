@@ -1,5 +1,4 @@
-export { value } from '@platform/util.value';
-export { is } from '@platform/util.is';
+export { value, is } from '@platform/util.value';
 
 /**
  * [Ramda]

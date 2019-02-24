@@ -1,5 +1,4 @@
-import { Db } from '../helpers/db';
-import { Swarm } from '../helpers/swarm/main';
+import { Db, Swarm } from '@platform/hyperdb';
 
 export { Db, Swarm };
 export * from '../types';

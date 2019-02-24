@@ -804,6 +804,26 @@
     fs-extra "7.0.1"
     js-yaml "3.12.1"
 
+"@platform/hyperdb@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.0.7.tgz#40491d1b51fe86beced33f3052b2718660d43000"
+  integrity sha512-oJScJWcMvinwunqqTLR9Afe3nH753B3UBa/E9b2OXIjDuSYGJxVNGYQksxok5UHEJM3crFCGnZas4pdq5DPgZg==
+  dependencies:
+    "@platform/libs" "0.0.0"
+    "@platform/util.value" "^0.0.28"
+    discovery-swarm "^5.1.4"
+    hyperdb "^3.5.0"
+
+"@platform/libs@0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.0.tgz#c90cabee2753690ac10671a628a12eef18d5e290"
+  integrity sha512-KbldYgIkew9HMKYFAOFQtIdX4qcb6YghFl39md7eFvTBjcf5zhSMmIBETNMftD+pxEPfsJm+BNkqXDRjVhMzPQ==
+  dependencies:
+    "@types/ramda" "0.25.47"
+    ramda "0.26.1"
+    rxjs "6.4.0"
+    tslib "1.9.3"
+
 "@platform/libs@0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.6.tgz#8d91ce59a9823583a93d781e46a41f4de79f7064"
@@ -907,7 +927,7 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.27.tgz#ee5fd7d04b704270ce736269ac61a8233a3d275a"
   integrity sha512-Iq5ZuhH/kBVhF93YN90ioY7szDbKf8pykay4xv0nIlMulCOKm+ExWZLoUODtVM/Zkgv5IdTkP0QbvdvF7paVAg==
 
-"@platform/util.value@0.0.28":
+"@platform/util.value@0.0.28", "@platform/util.value@^0.0.28":
   version "0.0.28"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.28.tgz#14c7865697ac501730ee4d10017aef73f330f335"
   integrity sha512-9TpoV3MT2H0IyvSHoM+YnYqaGtWH+GRYMYPOJC4tBLmU/12bHgQkq4of4OWCS85f1oRTo43RZlxz1KtL9PcQkQ==
@@ -3042,7 +3062,7 @@ discovery-channel@^5.5.1:
     pretty-hash "^1.0.1"
     thunky "^0.1.0"
 
-discovery-swarm@5.1.4:
+discovery-swarm@5.1.4, discovery-swarm@^5.1.4:
   version "5.1.4"
   resolved "https://registry.yarnpkg.com/discovery-swarm/-/discovery-swarm-5.1.4.tgz#6a2731410dc327d40608e467a4e9b00c6cebd40b"
   integrity sha512-vkg0bv+FUwSuPxBWzdNPQVNmXQlIbvz1Ygi+A1XefNUhEzfmM+RNndjtjlDgxD/ZUhFir9PX7Hw9iIDVujsOoA==
@@ -4212,7 +4232,7 @@ hypercore@^6.13.0:
   optionalDependencies:
     fd-lock "^1.0.2"
 
-hyperdb@3.5.0:
+hyperdb@3.5.0, hyperdb@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/hyperdb/-/hyperdb-3.5.0.tgz#0bfd6c97de44f20918c692db537ebee200b890db"
   integrity sha512-NfubW5251YCMcU2iTgobcAHS53qRzwAS+jDOANu0B9W72xtlOFKOlICkvqsMmMiF0SUAVy/Yfud8DUuykeoIJQ==

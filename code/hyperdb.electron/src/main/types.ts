@@ -1,4 +1,4 @@
-export * from '../helpers/db/types';
+export * from '../types';
 
 /**
  * [Events]

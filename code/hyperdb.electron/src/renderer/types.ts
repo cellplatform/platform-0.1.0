@@ -1,4 +1,4 @@
-import { IDb, IpcClient, DbIpcEvent } from '../helpers/db/types';
+import { IDb, IpcClient, DbIpcEvent } from '../types';
 
 export * from '../types';
 
