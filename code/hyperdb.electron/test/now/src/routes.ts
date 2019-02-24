@@ -31,9 +31,23 @@ async function getOrCreateDb(args: { dbKey: string }) {
 router.get('/:dbKey', async (req, res) => {
   try {
     const dbKey = req.params.dbKey as string;
+    const reset = req.query.reset !== undefined;
+    const version = req.query.version !== undefined;
+    let payload: any = {};
+
+    if (reset) {
+      payload = { ...payload, reset };
+      delete refs[dbKey];
+    }
+
     const { db } = await getOrCreateDb({ dbKey });
-    const version = await db.version();
-    res.send({ dbKey, version });
+    payload = { ...payload, db: db.key };
+
+    if (version) {
+      payload = { ...payload, version: await db.version() };
+    }
+
+    res.send(payload);
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
@@ -46,8 +60,10 @@ router.get('/:dbKey/:key', async (req, res) => {
   try {
     const dbKey = req.params.dbKey as string;
     const key = req.params.key as string;
+
     const { db } = await getOrCreateDb({ dbKey });
     const data = await db.get(key);
+
     const { value, meta } = data;
     const { exists, deleted } = meta;
     res.send({ db: dbKey, key, value, exists, deleted });
@@ -63,10 +79,8 @@ router.get('*', async (req, res) => {
   try {
     const items = Object.keys(refs).map(key => refs[key]);
     const dbs = items.map(ref => ref.name);
-    const tmp = constants.TMP;
     res.send({
       message: '👋',
-      dir: tmp,
       dbs,
       is: is.toObject(),
     });
