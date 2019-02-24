@@ -1,5 +1,5 @@
 {
-  "name": "@platform/hyperdb",
+  "name": "@platform/hyperdb.electron",
   "description": "Strongly typed, electron enabled interface to hyperdb.",
   "version": "0.0.6",
   "main": "lib/index",
