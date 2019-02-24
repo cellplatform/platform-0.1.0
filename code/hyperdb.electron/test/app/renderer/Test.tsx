@@ -141,7 +141,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
               {this.button('read all', this.getValues)}
               {this.button(`db.put: ${KEY.A1}`, this.putValue(KEY.A1))}
               {this.button(`db.put: ${KEY.A2}`, this.putValue(KEY.A2))}
-              {this.button('db.del', this.deleteValue)}
+              {this.button('db.delete', this.deleteValue)}
               {this.button('db.dispose', this.dispose)}
               <hr {...styles.hr} />
               swarm
@@ -261,10 +261,10 @@ export class Test extends React.PureComponent<{}, ITestState> {
   private deleteValue = async () => {
     const key = KEY.A1;
 
-    await this.db.del(KEY.A1);
-    await this.db.del(KEY.A2);
+    await this.db.delete(KEY.A1);
+    await this.db.delete(KEY.A2);
 
-    const res = await this.db.del(key);
+    const res = await this.db.delete(key);
     this.setPropData(key, res.value);
   };
 
