@@ -77,10 +77,10 @@ export class Store<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
   /**
    * Retrieves the value at the given key from storage.
    */
-  public async get<V extends t.StoreValue>(key: keyof T, defaultValue?: V) {
+  public async get<K extends keyof T>(key: K, defaultValue?: T[K]) {
     const res = await this.read(key);
     const value = res[key] === undefined ? defaultValue : res[key];
-    return value as V;
+    return value as T[K];
   }
 
   /**
