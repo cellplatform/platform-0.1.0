@@ -167,10 +167,10 @@
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.50.tgz#7f21d47c650f85b8a61c2b608adf8aa0f1a8fccf"
   integrity sha512-hkGWVWyPEXkXSh7rxJIGg6ELG1/WlR2BB8JemZW8v2l50bfMUw6CjrETJpgd9i3jUxaxOE/X57DvclWd9wkZhg==
 
-"@types/react@16.8.3":
-  version "16.8.3"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.8.3.tgz#7b67956f682bea30a5a09b3242c0784ff196c848"
-  integrity sha512-PjPocAxL9SNLjYMP4dfOShW/rj9FDBJGu3JFRt0zEYf77xfihB6fq8zfDpMrV6s82KnAi7F1OEe5OsQX25Ybdw==
+"@types/react@16.7.17":
+  version "16.7.17"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.7.17.tgz#3242e796a1ffbba4f49eae5915a67f4c079504e9"
+  integrity sha512-YcXcaoXaxo7A76mBCGlKlN2aZu3REQfF0DTrhiyXVJLA7PDdxVCr+wiQOrkVNn44D/zLlIyDSn3U918Ve0AaEA==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"

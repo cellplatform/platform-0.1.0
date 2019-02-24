@@ -16,9 +16,9 @@
     "@platform/util.css": "0.0.28",
     "@platform/util.is": "0.0.27",
     "@types/react": "16.7.17",
-    "@types/react-dom": "16.8.1",
-    "react": "16.8.2",
-    "react-dom": "16.8.2"
+    "@types/react-dom": "16.8.2",
+    "react": "16.8.3",
+    "react-dom": "16.8.3"
   },
   "devDependencies": {
     "@platform/test": "0.0.29",
