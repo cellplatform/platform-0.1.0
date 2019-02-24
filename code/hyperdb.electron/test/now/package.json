@@ -7,9 +7,13 @@
     "start": "node .",
     "watch": "nodemon .",
     "build": "ts build",
-    "prepare": "yarn build"
+    "now-build": "echo no-op",
+    "prepare": "yarn build",
+    "deploy": "yarn prepare && now"
+    
   },
   "dependencies": {
+    "@platform/fs": "^0.0.36",
     "@platform/hyperdb": "0.0.8",
     "@platform/libs": "0.0.0",
     "@platform/log": "0.0.78",
