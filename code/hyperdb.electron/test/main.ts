@@ -1,35 +1,19 @@
 import * as uiharness from '@uiharness/electron/lib/main';
-import { filter } from 'rxjs/operators';
-
-import main from '../src/main';
-import * as t from './types';
-
 const config = require('../.uiharness/config.json');
 
+/**
+ * Initialize the default [main] window process with the [UIHarness].
+ *
+ * NOTE:
+ *  To do you own thing, simply disregard this and write your own.
+ *
+ *  To get started with writing your own [main] entry-point see:
+ *    https://electronjs.org/docs/tutorial/first-app#electron-development-in-a-nutshell
+ *
+ *  To review the [UIHarness] example entry-point see:
+ *    https://github.com/uiharness/uiharness/blob/master/code/libs/electron/src/main/index.ts
+ *
+ */
 (async () => {
-  const context = await uiharness.init({ config });
-  const { log, ipc } = context;
-  const store = context.store as t.ITestStore;
-
-  /**
-   * TODO
-   * - store the initial DB key in the store.
-   */
-
-  /**
-   * Initialise the HyperDB on the [main] process.
-   */
-  const { events$ } = await main.listen({ ipc, log });
-
-  // Store the [dbKey] for the primary database
-  // so that other demo-windows can connect with it.
-  events$
-    .pipe(
-      filter(e => e.type === 'DB/main/created'),
-      filter(e => e.payload.dir.endsWith('/tmp-1')),
-    )
-    .subscribe(async e => {
-      console.log('save key', e.payload.dbKey);
-      await store.set('dbKey', e.payload.dbKey);
-    });
+  const res = await uiharness.init({ config });
 })();
