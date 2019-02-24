@@ -11,7 +11,10 @@
     "prepare": "yarn build",
     "deploy": "yarn prepare && now",
     "clean": "cd ../.. && yarn clean",
-    "chmod": "chmod 777 node_modules/.bin/ts"
+    "chmod": "chmod 777 node_modules/.bin/ts",
+    "pstart": "pm2 start ecosystem.config.js",
+    "pstop": "pm2 start ecosystem.config.js",
+    "prestart": "pm2 start ecosystem.config.js"
   },
   "dependencies": {
     "@platform/fs": "0.0.36",
