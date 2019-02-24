@@ -148,8 +148,8 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
     return this.invoke('put', [key, value]);
   }
 
-  public async del<K extends keyof D>(key: K) {
-    return this.invoke('del', [key]);
+  public async delete<K extends keyof D>(key: K) {
+    return this.invoke('delete', [key]);
   }
 
   public async watch(...pattern: string[]) {

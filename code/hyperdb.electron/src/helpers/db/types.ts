@@ -38,7 +38,7 @@ export type IDbMethods<D extends {} = any> = {
   version(): Promise<string>;
   get<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   put<K extends keyof D>(key: K, value: D[K]): Promise<IDbValue<K, D[K]>>;
-  del<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
+  delete<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   watch(...pattern: string[]): Promise<void>;
   unwatch(...pattern: string[]): Promise<void>;
 };

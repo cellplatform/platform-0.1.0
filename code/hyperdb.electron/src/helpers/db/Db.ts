@@ -204,7 +204,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * Removes a value from the database.
    */
-  public async del<K extends keyof D>(key: K) {
+  public async delete<K extends keyof D>(key: K) {
     this.throwIfDisposed('delete');
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.del(key, (err: Error, result: any) => {
