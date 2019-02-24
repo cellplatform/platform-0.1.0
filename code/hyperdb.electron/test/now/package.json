@@ -1,0 +1,26 @@
+{
+  "name": "hyperdb.electron-now",
+  "version": "0.0.0",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "build": "ts build",
+    "prepare": "yarn build"
+  },
+  "dependencies": {
+    "@platform/hyperdb": "0.0.8",
+    "@platform/libs": "0.0.0",
+    "@platform/log": "0.0.78",
+    "express": "4.16.4"
+  },
+  "devDependencies": {
+    "@platform/ts": "3.3.54",
+    "@types/express": "4.16.1"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "UNLICENSED"
+}
