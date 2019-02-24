@@ -28,36 +28,36 @@ async function getOrCreateDb(args: { dbKey: string }) {
 /**
  * Gets details for a specific database.
  */
-router.get('/db/:dbKey', async (req, res) => {
+router.get('/:dbKey', async (req, res) => {
   const dbKey = req.params.dbKey as string;
-  if (!dbKey) {
-    res.status(400).send({ error: 'dbKey not specified' });
-  }
-
   const { db } = await getOrCreateDb({ dbKey });
-
-  const getValue = async (key: string) => (await db.get(key)).value;
-  const values = {
-    A1: await getValue('A1'),
-    A2: await getValue('A2'),
-  };
-
-  res.send({ dbKey, values });
+  const version = await db.version();
+  res.send({ dbKey, version });
 });
 
 /**
- * Status info on all databases..
+ * Gets the value at the given key.
  */
-router.get('/db', async (req, res) => {
-  const items = Object.keys(refs).map(key => refs[key]);
-  const databases = items.map(ref => ref.name);
-  const tmp = constants.TMP;
-  res.send({ tmp, databases });
+router.get('/:dbKey/:key', async (req, res) => {
+  const dbKey = req.params.dbKey as string;
+  const key = req.params.key as string;
+  const { db } = await getOrCreateDb({ dbKey });
+  const data = await db.get(key);
+  const { value, meta } = data;
+  const { exists, deleted } = meta;
+  res.send({ db: dbKey, key, value, exists, deleted });
 });
 
 /**
- * Wildcard
+ * Status info on all databases.
  */
 router.get('*', async (req, res) => {
-  res.send({ message: '👋' });
+  const items = Object.keys(refs).map(key => refs[key]);
+  const dbs = items.map(ref => ref.name);
+  const tmp = constants.TMP;
+  res.send({
+    hello: '👋',
+    dir: tmp,
+    dbs,
+  });
 });

@@ -135,7 +135,7 @@ const logCreated = (log: t.ILog, ref: Ref) => {
   const key = ref.db.key;
   const localKey = ref.db.localKey;
   const isExternal = key !== localKey;
-  const external = isExternal ? ` (${log.magenta('external')})` : ` (${log.cyan('master')})`;
+  const external = isExternal ? ` (${log.magenta('external')})` : ` (${log.yellow('master')})`;
 
   log.info(`Database ${log.yellow('created')}`);
   log.info.gray(`- storage:  ${ref.path}`);

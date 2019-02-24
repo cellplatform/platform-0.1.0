@@ -6,10 +6,12 @@
   "scripts": {
     "start": "node .",
     "watch": "nodemon .",
-    "build": "ts build",
+    "build": "yarn chmod && ts build",
     "now-build": "echo no-op",
     "prepare": "yarn build",
-    "deploy": "yarn prepare && now"
+    "deploy": "yarn prepare && now",
+    "clean": "cd ../.. && yarn clean",
+    "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
     "@platform/fs": "0.0.36",
