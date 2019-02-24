@@ -135,12 +135,13 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
 const logCreated = (log: t.ILog, ref: Ref) => {
   const key = ref.db.key;
   const localKey = ref.db.localKey;
-  const external = key === localKey ? '' : log.cyan(' (external)');
+  const isExternal = key !== localKey;
+  const external = isExternal ? ` (${log.magenta('external')})` : ` (${log.cyan('master')})`;
 
   log.info(`Database ${log.yellow('created')}`);
   log.info.gray(`- storage:  ${ref.path}`);
-  log.info.gray(`- key:      ${key}${external}`);
-  log.info.gray(`- localKey: ${localKey}`);
+  log.info.gray(`- key:      ${log.cyan(key)}${external}`);
+  log.info.gray(`- localKey: ${isExternal ? localKey : log.cyan(localKey)}`);
   log.info.gray(`- version:  ${ref.version ? ref.version : '(latest)'}`);
   log.info();
 };
