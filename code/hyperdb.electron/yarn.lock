@@ -804,10 +804,10 @@
     fs-extra "7.0.1"
     js-yaml "3.12.1"
 
-"@platform/hyperdb@0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.0.7.tgz#40491d1b51fe86beced33f3052b2718660d43000"
-  integrity sha512-oJScJWcMvinwunqqTLR9Afe3nH753B3UBa/E9b2OXIjDuSYGJxVNGYQksxok5UHEJM3crFCGnZas4pdq5DPgZg==
+"@platform/hyperdb@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.0.8.tgz#ae80a085363c0c278df3580bee3f335842273681"
+  integrity sha512-atY6qpRGA3ANCwZVq0UKXyN9XVB0np1nz04ljonobN3emc1nlUSSy2K0G+k7qcbW3K1PsgM2KGfc7k7FS4GPEA==
   dependencies:
     "@platform/libs" "0.0.0"
     "@platform/util.value" "^0.0.28"
