@@ -1,6 +1,7 @@
 import { fs } from '@platform/fs';
 import { app, shell } from 'electron';
 import { Subject } from 'rxjs';
+import { is } from '@platform/util.is';
 
 import { IpcClient } from '../ipc/Client';
 import { Store } from './Client';
@@ -155,7 +156,10 @@ export function init<T extends t.StoreJson>(args: {
 
   // Store the path to the settings file.
   const name = (args.name || 'settings').replace(/\.json$/, '') + '.json';
-  const dir = fs.resolve(args.dir || app.getPath('userData'));
+  const dir =
+    args.dir || is.prod
+      ? fs.resolve(args.dir || app.getPath('userData'))
+      : fs.resolve('./.dev/store');
   const path = fs.join(dir, name);
   client.path = path;
 

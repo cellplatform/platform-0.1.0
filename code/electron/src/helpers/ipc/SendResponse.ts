@@ -34,6 +34,7 @@ type Ref<D> = SendResponseInit<any> & {
   timeout$: Subject<any>;
   results: Array<IpcHandlerResult<D>>;
   timer: ITimer;
+  isTimedOut: boolean;
   elapsed?: number;
   promise?: Promise<IpcSending<any, any>>;
 };
@@ -67,6 +68,7 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
      * Setup timeout.
      */
     const timeout$ = new Subject();
+    timeout$.subscribe(() => (this._.isTimedOut = true));
     ObservableTimer(args.timeout)
       .pipe(
         takeUntil(cancel$),
@@ -86,6 +88,7 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
       complete$,
       cancel$,
       timeout$,
+      isTimedOut: false,
       $: response$.pipe(
         takeUntil(timeout$),
         takeUntil(cancel$),
@@ -212,6 +215,10 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
 
   public get elapsed() {
     return valueUtil.defaultValue(this._.elapsed, this._.timer.elapsed());
+  }
+
+  public get isTimedOut() {
+    return this._.isTimedOut;
   }
 
   /**

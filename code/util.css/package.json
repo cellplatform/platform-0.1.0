@@ -23,7 +23,7 @@
   "devDependencies": {
     "@platform/test": "0.0.29",
     "@platform/ts": "3.3.54",
-    "@types/react": "16.8.3"
+    "@types/react": "16.7.17"
   },
   "files": [
     "lib"

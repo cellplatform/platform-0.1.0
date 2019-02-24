@@ -90,6 +90,7 @@ export type IpcSending<M extends IpcMessage, D = any> = {
   cancel: () => IpcSending<M, D>;
   isCancelled: boolean;
   isComplete: boolean;
+  isTimedOut: boolean;
 };
 
 /**

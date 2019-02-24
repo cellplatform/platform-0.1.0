@@ -21,7 +21,7 @@ type SwarmArgs = {
  *  - https://github.com/maxogden/discovery-channel
  *
  */
-export class Swarm {
+export class Swarm implements t.ISwarm {
   /**
    * [Static]
    */
@@ -34,7 +34,6 @@ export class Swarm {
    */
   private constructor(args: SwarmArgs) {
     const { db, join = false, autoAuth = false } = args;
-    this.id = db.key.toString('hex');
     this._.db = db;
 
     // Create and join the swarm.
@@ -54,7 +53,9 @@ export class Swarm {
         const peerKey = Buffer.from(e.peer.remoteUserData);
         const { isAuthorized } = await this.authorize(peerKey);
         if (isAuthorized) {
+          const dbKey = this.dbKey;
           this.next<t.ISwarmPeerAuthorizedEvent>('SWARM/peer/authorized', {
+            dbKey,
             isAuthorized,
             peerKey,
           });
@@ -72,7 +73,6 @@ export class Swarm {
     events$: new Subject<t.SwarmEvent>(),
   };
   public isDisposed = false;
-  public readonly id: string;
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
@@ -82,10 +82,14 @@ export class Swarm {
   /**
    * [Properties]
    */
+  public get dbKey() {
+    return this._.db.key;
+  }
+
   public get config() {
     const { db } = this._;
     return swarmDefaults({
-      id: this.id,
+      id: this.dbKey,
       stream: (peer: t.IPeer) => db.replicate({ live: true }),
     });
   }
@@ -117,19 +121,20 @@ export class Swarm {
    */
   public join() {
     this.throwIfDisposed('join');
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       // Create the discovery-swarm.
       const swarm = discovery(this.config);
       this._.swarm = swarm;
+      const dbKey = this.dbKey;
 
       // Listen for connection events.
       swarm.on('connection', (peer: t.IProtocol) => {
-        this.next<t.ISwarmPeerConnectedEvent>('SWARM/peer/connected', { peer });
+        this.next<t.ISwarmPeerConnectedEvent>('SWARM/peer/connected', { dbKey, peer });
       });
 
       // Request to join.
-      swarm.join(this.id, undefined, () => {
-        this.next<t.ISwarmJoinEvent>('SWARM/join', {});
+      swarm.join(this.dbKey, undefined, () => {
+        this.next<t.ISwarmJoinEvent>('SWARM/join', { dbKey });
         resolve();
       });
     });
@@ -138,14 +143,15 @@ export class Swarm {
   /**
    * Leaves the swarm.
    */
-  public leave() {
+  public async leave() {
     this.throwIfDisposed('leave');
     const swarm = this._.swarm;
     if (swarm) {
-      swarm.leave(this.id);
+      const dbKey = this.dbKey;
+      swarm.leave(this.dbKey);
       swarm.destroy();
       this._.swarm = undefined;
-      this.next<t.ISwarmLeaveEvent>('SWARM/leave', {});
+      this.next<t.ISwarmLeaveEvent>('SWARM/leave', { dbKey });
     }
   }
 
@@ -199,7 +205,8 @@ export class Swarm {
    * [INTERNAL]
    */
   private fireError(error: Error) {
-    this.next<t.ISwarmErrorEvent>('SWARM/error', { error });
+    const dbKey = this.dbKey;
+    this.next<t.ISwarmErrorEvent>('SWARM/error', { dbKey, error });
   }
 
   private next<E extends t.SwarmEvent>(type: E['type'], payload: E['payload']) {

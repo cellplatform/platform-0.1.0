@@ -1,29 +1,15 @@
-export * from './db/types';
-export * from './swarm/types';
+export * from './renderer/types';
+export * from './helpers/db/types';
+export * from './helpers/swarm/types';
 
 /**
- * [Database]
+ * [Common]
  */
-
-export type IDbValueMeta<K> = {
-  key: K;
-  exists: boolean;
-  deleted: boolean;
-  clock: number[];
-  feed: number;
-  seq: number;
-  path: number[];
-  inflate: number;
-  trie: any;
-};
-
-export type IDbValue<K, V> = {
-  value: V | undefined;
-  meta: IDbValueMeta<K>;
-};
+import { IpcClient, ILog } from '@platform/electron/lib/types';
+export { IpcClient, ILog };
 
 /**
- * [Swarm]
+ * [Network]
  */
 
 type Bitfield = any;
@@ -53,15 +39,6 @@ export type IFeed = {
   sparse: boolean;
   writable: boolean;
   closed: false;
-};
-
-export type ISwarmOptions = {
-  id: string;
-  stream: (peer: IPeer) => IProtocol;
-  utp: boolean;
-  tcp: boolean;
-  maxConnections: number;
-  whitelist: string[];
 };
 
 export type IPeer = {

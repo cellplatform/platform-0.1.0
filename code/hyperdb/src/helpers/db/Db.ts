@@ -1,8 +1,12 @@
 import { Subject } from 'rxjs';
 import { share, takeUntil, filter, map } from 'rxjs/operators';
 
-import { value as valueUtil } from '../common';
+import { value as valueUtil, is } from '../common';
 import * as t from './types';
+
+if (is.browser) {
+  throw new Error(`The Db should only be imported on the [main] process.`);
+}
 
 const hyperdb = require('hyperdb');
 type WatcherRefs = { [key: string]: WatcherRef };
@@ -15,18 +19,24 @@ type WatcherRef = { destroy: () => void };
  *  - https://github.com/mafintosh/hyperdb#api
  *
  */
-export class Db<D extends object = any> {
+export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * [Static]
    */
-  public static create<D extends object = any>(args: { storage: string; dbKey?: string }) {
-    const reduce = (a: any, b: any) => a;
-    return new Promise<Db<D>>((resolve, reject) => {
-      const { storage, dbKey } = args;
+  public static create<D extends object = any>(args: {
+    dir: string;
+    dbKey?: string;
+    version?: string;
+  }) {
+    return new Promise<Db<D>>(resolve => {
+      const { dir, dbKey, version } = args;
+      const reduce = (a: any, b: any) => a;
       const options = { valueEncoding: 'utf-8', reduce };
-      const db = args.dbKey ? hyperdb(storage, dbKey, options) : hyperdb(storage, options);
-      db.on('ready', () => {
-        resolve(new Db<D>(db));
+      const db = args.dbKey ? hyperdb(dir, dbKey, options) : hyperdb(dir, options);
+      db.on('ready', async () => {
+        let result = new Db<D>(db);
+        result = version ? await result.checkout(version) : result;
+        resolve(result);
       });
     });
   }
@@ -41,12 +51,13 @@ export class Db<D extends object = any> {
   /**
    * [Fields]
    */
-  private _ = {
+  private readonly _ = {
     db: null as any,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),
     watchers: ({} as unknown) as WatcherRefs,
   };
+  public isDisposed = false;
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
@@ -54,33 +65,33 @@ export class Db<D extends object = any> {
   );
   public readonly watch$ = this.events$.pipe(
     filter(e => e.type === 'DB/watch'),
-    map(e => e.payload as t.IDbWatchEvent<D>['payload']),
+    map(e => e.payload as t.IDbWatchChange),
     share(),
   );
 
   /**
-   * Disposes of the object and stops all related observables.
-   */
-  public dispose() {
-    this.unwatch();
-    this.isDisposed = true;
-    this._.dispose$.next();
-  }
-  public isDisposed = false;
-
-  /**
    * [Properties]
    */
-  public get key(): Buffer {
-    return this._.db.key;
+  public get key(): string {
+    return this.buffer.key.toString('hex');
   }
 
-  public get discoveryKey(): Buffer {
-    return this._.db.discoveryKey;
+  public get discoveryKey(): string {
+    return this.buffer.discoveryKey.toString('hex');
   }
 
-  public get local(): t.IFeed {
-    return this._.db.local;
+  public get localKey(): string {
+    return this.buffer.localKey.toString('hex');
+  }
+
+  public get buffer() {
+    const db = this._.db;
+    const local = this._.db.local as t.IFeed;
+    return {
+      key: db.key as Buffer,
+      discoveryKey: db.discoveryKey as Buffer,
+      localKey: local.key as Buffer,
+    };
   }
 
   public get watching() {
@@ -90,6 +101,13 @@ export class Db<D extends object = any> {
   /**
    * [Methods]
    */
+  public dispose() {
+    this.unwatch();
+    this.isDisposed = true;
+    this._.events$.complete();
+    this._.dispose$.next();
+  }
+
   public replicate(options: { live?: boolean }) {
     this.throwIfDisposed('replicate');
     const { live = false } = options;
@@ -105,7 +123,7 @@ export class Db<D extends object = any> {
     //    https://github.com/karissa/hyperdiscovery/pull/12#pullrequestreview-95597621
     //    https://github.com/cblgh/hyperdb-examples
     //
-    const userData = this.local.key;
+    const userData = this.buffer.localKey;
 
     return this._.db.replicate({ live, userData });
   }
@@ -148,6 +166,18 @@ export class Db<D extends object = any> {
   }
 
   /**
+   * Checkout the database at an older version.
+   * The response is a new [Db] instance.
+   *
+   * NOTE:
+   *      Version should be a version identifier returned
+   *      by the `db.version` method.
+   */
+  public async checkout(version: string) {
+    return new Db<D>(this._.db.checkout(version));
+  }
+
+  /**
    * Gets a value from the database.
    */
   public async get<K extends keyof D>(key: K) {
@@ -187,7 +217,7 @@ export class Db<D extends object = any> {
    * Starts a watcher for the given key/path.
    * Pass nothing to watch for all changes.
    */
-  public watch(...pattern: string[]) {
+  public async watch(...pattern: string[]) {
     this.throwIfDisposed('watch');
     pattern = formatWatchPatterns(pattern);
 
@@ -199,25 +229,27 @@ export class Db<D extends object = any> {
     pattern.forEach(pattern => {
       const match = pattern === '*' ? '' : pattern; // NB: wildcard is matched as empty-string.
       const watcher = this._.db.watch(match, () => {
-        watcher._nodes.forEach(({ key, value, deleted }: any) => {
+        watcher._nodes.forEach(async ({ key, value, deleted }: any) => {
+          const version = await this.version();
           this.next<t.IDbWatchEvent>('DB/watch', {
+            db: { key: this.key },
             key,
             value: formatValue(value),
-            pattern: pattern,
+            pattern,
             deleted,
+            version,
           });
         });
       });
       storeRef(pattern, watcher);
     });
-    return this;
   }
 
   /**
    * Removes the watcher for the given key/path.
    * Pass nothing to turn-off all watchers.
    */
-  public unwatch(...pattern: string[]) {
+  public async unwatch(...pattern: string[]) {
     const watchers = this._.watchers;
     pattern = Array.isArray(pattern) ? pattern : [pattern];
     pattern = pattern.length === 0 ? Object.keys(this._.watchers) : formatWatchPatterns(pattern);
@@ -232,7 +264,7 @@ export class Db<D extends object = any> {
    * [INTERNAL]
    */
   private fireError(error: Error, reject?: (reason: any) => void) {
-    this.next<t.IDbErrorEvent>('DB/error', { error });
+    this.next<t.IDbErrorEvent>('DB/error', { db: { key: this.key }, error });
     if (reject) {
       reject(error);
     }
@@ -255,7 +287,7 @@ export class Db<D extends object = any> {
  * [HELPER_FUNCTIONS]
  */
 function toValue<K, V>(result: any): t.IDbValue<K, V> {
-  const exists = result && !isNil(result.value);
+  const exists = result && !isNil(result.value) ? true : false;
   const value = exists ? formatValue<V>(result.value) : undefined;
   result = { exists, ...result };
   delete result.value;
