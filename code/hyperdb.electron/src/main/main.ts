@@ -1,6 +1,3 @@
-import { Db, Swarm } from '@platform/hyperdb';
-
-export { Db, Swarm };
 export * from '../types';
 
 /**
@@ -11,4 +8,4 @@ export { listen } from './main.ipc';
 /**
  * Create a new network connected HyperDB on the `main` process.
  */
-export { create } from './main.create';
+export { create, Db, Swarm } from '@platform/hyperdb';

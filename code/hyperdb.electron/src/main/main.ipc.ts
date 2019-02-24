@@ -4,8 +4,7 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { is, value } from '../common';
-import { Db, Swarm } from '@platform/hyperdb';
-import { create } from './main.create';
+import { Db, Swarm, create } from '@platform/hyperdb';
 import * as t from './types';
 
 type Ref = { db: Db; swarm: Swarm; path: string; version?: string };
