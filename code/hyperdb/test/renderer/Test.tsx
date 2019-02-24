@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import renderer from '../../src/renderer';
 import { Button, color, css, ObjectView, R, value } from './common';
 import { TestPanel } from './TestPanel';
+import * as t from '../types';
 
 type IRendererDb = renderer.IRendererDb;
 export type ITestState = {
@@ -43,17 +44,17 @@ export class Test extends React.PureComponent<{}, ITestState> {
     this.unmounted$.next();
   }
 
+  private get store() {
+    return this.context.store as t.ITestStore;
+  }
+
   private init = async () => {
     const { id, ipc } = this.context;
-    const dir = `.db/tmp-${id}`;
-
-    const PRIMARY = 'ec22f3b36d24ac71d1f6d243d7069d9023bdb1c6001dda4bd76f31cfed35d29d';
-    const FORCE = false;
-    const dbKey = id > 1 || FORCE ? PRIMARY : undefined;
+    const dir = `.dev/db/tmp-${id}`;
+    const dbKey = await this.store.get('dbKey');
 
     const res = await renderer.create({ ipc, dir, dbKey });
     const db = res.db;
-    // this.db = db;
     // const swarm = (this.swarm = res.swarm);
 
     // const dbr = await renderer.create({ ipc, dir: `.db/r-${id}`, dbKey });
@@ -63,6 +64,9 @@ export class Test extends React.PureComponent<{}, ITestState> {
     console.groupEnd();
 
     await db.watch('*');
+
+    const s = await this.store.read();
+    console.log('s', s);
 
     db.watch$.subscribe(async e => {
       this.appendVersion(e.version);

@@ -777,7 +777,7 @@
     "@types/yargs" "12.0.9"
     yargs "13.2.0"
 
-"@platform/electron@0.0.92":
+"@platform/electron@0.0.92", "@platform/electron@^0.0.92":
   version "0.0.92"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.92.tgz#f7f1d0191a0c1756bce15b8e89e7b0991965a060"
   integrity sha512-iy7tvRDG715j+bCXLL371FKdvYiTBT6aztHYmeXp9xk/V61/KjcyBLwNp2Edm9xZ+KMjezUzl35b2dV9tfsWLw==

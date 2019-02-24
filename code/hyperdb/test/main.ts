@@ -1,10 +1,15 @@
-import main from '../src/main';
 import * as uiharness from '@uiharness/electron/lib/main';
+import { filter } from 'rxjs/operators';
+
+import main from '../src/main';
+import * as t from './types';
+
 const config = require('../.uiharness/config.json');
 
 (async () => {
   const context = await uiharness.init({ config });
   const { log, ipc } = context;
+  const store = context.store as t.ITestStore;
 
   /**
    * TODO
@@ -14,5 +19,17 @@ const config = require('../.uiharness/config.json');
   /**
    * Initialise the HyperDB on the [main] process.
    */
-  await main.listen({ ipc, log });
+  const { events$ } = await main.listen({ ipc, log });
+
+  // Store the [dbKey] for the primary database
+  // so that other demo-windows can connect with it.
+  events$
+    .pipe(
+      filter(e => e.type === 'DB/main/created'),
+      filter(e => e.payload.dir.endsWith('/tmp-1')),
+    )
+    .subscribe(async e => {
+      console.log('save key', e.payload.dbKey);
+      await store.set('dbKey', e.payload.dbKey);
+    });
 })();
