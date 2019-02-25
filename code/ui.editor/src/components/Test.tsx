@@ -21,7 +21,9 @@ export type ITestProps = {
 };
 
 export type ITestState = {
+  editorState?: t.EditorState;
   transactions: t.Transaction[];
+  content?: string;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -37,8 +39,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       // Display editor events in state.
       .pipe(filter(e => e.payload.stage === 'AFTER'))
       .subscribe(e => {
-        console.log(' >> e', e);
-        this.setState({ transactions: [...this.state.transactions, e.payload.transaction] });
+        const { state, transaction, content } = e.payload;
+        this.setState({
+          editorState: state,
+          content,
+          transactions: [...this.state.transactions, transaction],
+        });
       });
   }
 
@@ -68,14 +74,22 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       state: css({
         flex: 1,
       }),
+      content: css({
+        flex: 1,
+        maxHeight: '33%',
+        fontWeight: 'bold',
+        fontSize: 12,
+      }),
       log: css({
         flex: 1,
-        maxHeight: '50%',
+        maxHeight: '33%',
         Scroll: true,
       }),
     };
 
-    const data = { foo: 123 };
+    const { editorState, content } = this.state;
+    const doc = editorState ? editorState.doc : undefined;
+    const data = { editorState, doc };
 
     return (
       <div {...styles.base}>
@@ -85,6 +99,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           </div>
           <div {...styles.right}>
             <ObjectView name={'state'} data={data} style={styles.state} />
+            <pre {...styles.content}>{content}</pre>
             <div {...styles.log}>{this.renderLog()}</div>
           </div>
         </div>

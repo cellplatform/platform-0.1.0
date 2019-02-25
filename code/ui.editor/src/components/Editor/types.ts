@@ -2,7 +2,7 @@ import { Schema } from 'prosemirror-model';
 import { Transaction, EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 
-export { Transaction };
+export { Transaction, EditorState, Schema, EditorView };
 
 /**
  * [Events]
@@ -16,5 +16,6 @@ export type IEditorTransactionEvent<S extends Schema = any> = {
     transaction: Transaction<S>;
     state: EditorState<S>;
     view: EditorView<S>;
+    content: string;
   };
 };

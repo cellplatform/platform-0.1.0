@@ -97,7 +97,7 @@ export class Editor extends React.PureComponent<IEditorProps> {
     type E = t.IEditorTransactionEvent;
     this._events$.next({
       type: 'EDITOR/transaction',
-      payload: { stage: 'BEFORE', transaction, view, state },
+      payload: { stage: 'BEFORE', transaction, view, state, content: this.content },
     });
 
     // Update the state of the editor.
@@ -107,7 +107,7 @@ export class Editor extends React.PureComponent<IEditorProps> {
     // Fire the "post" event.
     this._events$.next({
       type: 'EDITOR/transaction',
-      payload: { stage: 'AFTER', transaction, view, state },
+      payload: { stage: 'AFTER', transaction, view, state, content: this.content },
     });
   };
 
