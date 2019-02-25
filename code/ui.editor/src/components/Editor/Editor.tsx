@@ -1,26 +1,18 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
-
 import './css';
-import * as React from 'react';
-import { css, color, GlamorValue } from '../../common';
-import * as t from './types';
 
-import { schema } from 'prosemirror-schema-basic';
+import { defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
-import { undo, redo, history } from 'prosemirror-history';
-import { keymap } from 'prosemirror-keymap';
+import * as React from 'react';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { css, GlamorValue } from '../../common';
+import * as t from './types';
+
+// @ts-ignore
+const exampleSetup = require('prosemirror-example-setup').exampleSetup;
+const schema = require('prosemirror-markdown').schema;
 
 export type DocSchema = any;
 
@@ -33,7 +25,9 @@ export type IEditorProps = {
  * A prose-mirror editor.
  *
  * See:
- *  - https://prosemirror.net/docs/guide/
+ *  - https://prosemirror.net/docs/guide
+ *  - https://prosemirror.net/examples/markdown
+ *  - https://github.com/ProseMirror/prosemirror-example-setup/blob/master/README.md
  *
  */
 export class Editor extends React.PureComponent<IEditorProps> {
@@ -59,9 +53,14 @@ export class Editor extends React.PureComponent<IEditorProps> {
   }
 
   public componentDidMount() {
+    const content = '';
     const state = EditorState.create({
-      schema,
-      plugins: [history(), keymap({ 'Mod-z': undo, 'Mod-y': redo })],
+      doc: defaultMarkdownParser.parse(content),
+      plugins: [
+        ...exampleSetup({ schema, menuBar: false }),
+        // history(),
+        // keymap({ 'Mod-z': undo, 'Mod-y': redo }),
+      ],
     });
     this.view = new EditorView<DocSchema>(this.el, {
       state,
@@ -73,14 +72,18 @@ export class Editor extends React.PureComponent<IEditorProps> {
     this.unmounted$.next();
   }
 
+  public get content() {
+    return defaultMarkdownSerializer.serialize(this.view.state.doc);
+  }
+
   /**
    * [Render]
    */
   public render() {
-    const styles = {
-      base: css({}),
-    };
-    return <div ref={this.elRef} {...css(styles.base, this.props.style)} />;
+    const styles = { base: css({}) };
+    return (
+      <div ref={this.elRef} {...css(styles.base, this.props.style)} onClick={this.handleClick} />
+    );
   }
 
   /**
@@ -106,5 +109,9 @@ export class Editor extends React.PureComponent<IEditorProps> {
       type: 'EDITOR/transaction',
       payload: { stage: 'AFTER', transaction, view, state },
     });
+  };
+
+  private handleClick = () => {
+    this.view.focus();
   };
 }
