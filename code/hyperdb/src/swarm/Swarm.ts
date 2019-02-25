@@ -90,7 +90,11 @@ export class Swarm implements t.ISwarm {
     const { db } = this._;
     return swarmDefaults({
       id: this.dbKey,
-      stream: (peer: t.IPeer) => db.replicate({ live: true }),
+      stream: (peer: t.IPeer) => {
+        // NB:  [userData] is injected within the `db.replicate` method
+        //      See further comments within that method.
+        return db.replicate({ live: true });
+      },
     });
   }
 
