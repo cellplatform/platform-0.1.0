@@ -12,7 +12,7 @@ import {
 } from 'rxjs/operators';
 
 import * as React from 'react';
-import { css, color, t, GlamorValue } from '../common';
+import { css, color, t, GlamorValue, COLORS } from '../common';
 import { ObjectView } from './primitives';
 import { Editor } from './Editor';
 
@@ -73,17 +73,21 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       }),
       state: css({
         flex: 1,
+        Scroll: true,
       }),
       content: css({
         flex: 1,
         maxHeight: '33%',
-        fontWeight: 'bold',
-        fontSize: 12,
+        Scroll: true,
+        borderTop: `solid 1px ${color.format(-0.1)}`,
+        paddingTop: 5,
       }),
       log: css({
         flex: 1,
         maxHeight: '33%',
         Scroll: true,
+        borderTop: `solid 1px ${color.format(-0.1)}`,
+        paddingTop: 5,
       }),
     };
 
@@ -99,7 +103,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           </div>
           <div {...styles.right}>
             <ObjectView name={'state'} data={data} style={styles.state} />
-            <pre {...styles.content}>{content}</pre>
+            <div {...styles.content}>{this.renderContent()}</div>
             <div {...styles.log}>{this.renderLog()}</div>
           </div>
         </div>
@@ -113,5 +117,30 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       return <ObjectView key={i} name={'transaction'} data={t} expandLevel={0} />;
     });
     return <div>{elList}</div>;
+  };
+
+  private renderContent = () => {
+    const { content } = this.state;
+    if (!content) {
+      return null;
+    }
+
+    const styles = {
+      base: css({
+        fontWeight: 'bold',
+        fontSize: 12,
+      }),
+      pre: css({
+        fontWeight: 'bold',
+        fontSize: 12,
+        color: COLORS.PURPLE,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div>content (markdown)</div>
+        <pre {...styles.pre}>{content}</pre>
+      </div>
+    );
   };
 }
