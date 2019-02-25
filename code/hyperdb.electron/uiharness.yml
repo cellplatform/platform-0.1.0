@@ -3,8 +3,8 @@ name: hyperdb
 electron:
   port: 8889
   entry:
-    main: test/main.ts
-    renderer: test/renderer/index.tsx
+    main: test/app/main.ts
+    renderer: test/app/renderer/index.tsx
 
 sourcemaps:
   strip:

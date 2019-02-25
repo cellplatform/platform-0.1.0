@@ -804,25 +804,14 @@
     fs-extra "7.0.1"
     js-yaml "3.12.1"
 
-"@platform/hyperdb@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.0.8.tgz#ae80a085363c0c278df3580bee3f335842273681"
-  integrity sha512-atY6qpRGA3ANCwZVq0UKXyN9XVB0np1nz04ljonobN3emc1nlUSSy2K0G+k7qcbW3K1PsgM2KGfc7k7FS4GPEA==
+"@platform/hyperdb@0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.0.9.tgz#610fd2c476b7beb70e8517ae81bb5b288caf3483"
+  integrity sha512-lQFbKwvmQ8Vmi+8NV/Alb/T4f7dkpiyYo2hDVTHu06hF+UJPjKI8j2qlI0guiJzsY/u+RmMVLLZVijE6CDd/Dw==
   dependencies:
-    "@platform/libs" "0.0.0"
-    "@platform/util.value" "^0.0.28"
-    discovery-swarm "^5.1.4"
-    hyperdb "^3.5.0"
-
-"@platform/libs@0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.0.tgz#c90cabee2753690ac10671a628a12eef18d5e290"
-  integrity sha512-KbldYgIkew9HMKYFAOFQtIdX4qcb6YghFl39md7eFvTBjcf5zhSMmIBETNMftD+pxEPfsJm+BNkqXDRjVhMzPQ==
-  dependencies:
-    "@types/ramda" "0.25.47"
-    ramda "0.26.1"
-    rxjs "6.4.0"
-    tslib "1.9.3"
+    "@platform/util.value" "0.0.28"
+    discovery-swarm "5.1.4"
+    hyperdb "3.5.0"
 
 "@platform/libs@0.0.6":
   version "0.0.6"
@@ -927,7 +916,7 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.27.tgz#ee5fd7d04b704270ce736269ac61a8233a3d275a"
   integrity sha512-Iq5ZuhH/kBVhF93YN90ioY7szDbKf8pykay4xv0nIlMulCOKm+ExWZLoUODtVM/Zkgv5IdTkP0QbvdvF7paVAg==
 
-"@platform/util.value@0.0.28", "@platform/util.value@^0.0.28":
+"@platform/util.value@0.0.28":
   version "0.0.28"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.28.tgz#14c7865697ac501730ee4d10017aef73f330f335"
   integrity sha512-9TpoV3MT2H0IyvSHoM+YnYqaGtWH+GRYMYPOJC4tBLmU/12bHgQkq4of4OWCS85f1oRTo43RZlxz1KtL9PcQkQ==
@@ -1245,10 +1234,10 @@
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.9.tgz#693e76a52f61a2f1e7fb48c0eef167b95ea4ffd0"
   integrity sha512-sCZy4SxP9rN2w30Hlmg5dtdRwgYQfYRiLo9usw8X9cxlf+H4FqM1xX7+sNH7NNKVdbXMJWqva7iyy+fxh/V7fA==
 
-"@uiharness/dev@0.1.28":
-  version "0.1.28"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.1.28.tgz#dc77292b8d59385313c823ec5109e84db36ab039"
-  integrity sha512-PCxOnpJaZmAlDL86k//qM/Fi/3ZkkiwVqi1hJl8xdETPnW0xSFG6cqBpBjLv8JR8r1xh6cxEX51yOH58rHlPAw==
+"@uiharness/dev@0.1.29":
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.1.29.tgz#a4ef26a639b8d67d5041ff993edf7eab04ac8a70"
+  integrity sha512-NJAznhZL7deJUzs8xmJfAOv2rkl9/wfeSTDyQT2dVjNp3YHqoYp2yIAsGZRf4fbBKvYIpEF3uG0B2c5I3HSBNg==
   dependencies:
     "@babel/core" "7.3.3"
     "@babel/polyfill" "7.2.5"
@@ -3062,7 +3051,7 @@ discovery-channel@^5.5.1:
     pretty-hash "^1.0.1"
     thunky "^0.1.0"
 
-discovery-swarm@5.1.4, discovery-swarm@^5.1.4:
+discovery-swarm@5.1.4:
   version "5.1.4"
   resolved "https://registry.yarnpkg.com/discovery-swarm/-/discovery-swarm-5.1.4.tgz#6a2731410dc327d40608e467a4e9b00c6cebd40b"
   integrity sha512-vkg0bv+FUwSuPxBWzdNPQVNmXQlIbvz1Ygi+A1XefNUhEzfmM+RNndjtjlDgxD/ZUhFir9PX7Hw9iIDVujsOoA==
@@ -4232,7 +4221,7 @@ hypercore@^6.13.0:
   optionalDependencies:
     fd-lock "^1.0.2"
 
-hyperdb@3.5.0, hyperdb@^3.5.0:
+hyperdb@3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/hyperdb/-/hyperdb-3.5.0.tgz#0bfd6c97de44f20918c692db537ebee200b890db"
   integrity sha512-NfubW5251YCMcU2iTgobcAHS53qRzwAS+jDOANu0B9W72xtlOFKOlICkvqsMmMiF0SUAVy/Yfud8DUuykeoIJQ==

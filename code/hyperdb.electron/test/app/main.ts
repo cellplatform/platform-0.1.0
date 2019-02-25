@@ -1,10 +1,10 @@
 import * as uiharness from '@uiharness/electron/lib/main';
 import { filter } from 'rxjs/operators';
 
-import main from '../src/main';
+import main from '../../src/main';
 import * as t from './types';
 
-const config = require('../.uiharness/config.json');
+const config = require('../../.uiharness/config.json');
 
 (async () => {
   const context = await uiharness.init({ config });
@@ -29,7 +29,6 @@ const config = require('../.uiharness/config.json');
       filter(e => e.payload.dir.endsWith('/tmp-1')),
     )
     .subscribe(async e => {
-      console.log('save key', e.payload.dbKey);
       await store.set('dbKey', e.payload.dbKey);
     });
 })();
