@@ -11,7 +11,7 @@
     "lint": "yarn chmod && ts lint",
     "build": "yarn chmod && ts build",
     "prepare": "yarn chmod && ts prepare",
-    "clean": "ts-node -T scripts/clean",
+    "reset": "ts-node -T scripts/reset",
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {

@@ -138,7 +138,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...styles.base}>
-        <div>content (markdown)</div>
+        <div>content</div>
         <pre {...styles.pre}>{content}</pre>
       </div>
     );
