@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { css, color } from '../common';
 import { ObjectView } from './primitives';
+import { Editor } from './Editor';
 
 export const Test = () => {
   const styles = {
@@ -17,11 +18,13 @@ export const Test = () => {
     left: css({
       flex: 1,
       border: `solid 1px ${color.format(-0.1)}`,
+      display: 'flex',
     }),
     right: css({
       marginLeft: 15,
       width: 300,
     }),
+    editor: css({ flex: 1, padding: 10 }),
   };
 
   const data = { foo: 123 };
@@ -30,9 +33,8 @@ export const Test = () => {
     <div {...styles.base}>
       <div {...styles.columns}>
         <div {...styles.left}>
-          <div>left</div>
+          <Editor style={styles.editor} />
         </div>
-
         <div {...styles.right}>
           <ObjectView name={'state'} data={data} />
         </div>
