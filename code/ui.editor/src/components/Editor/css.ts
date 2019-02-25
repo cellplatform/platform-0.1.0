@@ -5,7 +5,7 @@ import { css } from '../../common';
  */
 const styles = {
   p: {
-    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+    margin: 0,
   },
 };
 
