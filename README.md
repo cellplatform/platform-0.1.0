@@ -65,6 +65,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/ui.text](/code/ui.editor)
 - state
   - [@platform/hyperdb](/code/hyperdb)
+  - [@platform/hyperdb](/code/hyperdb.electron)
   - [@platform/state](/code/state)
 
 
