@@ -25,10 +25,10 @@
     "@types/yargs" "12.0.9"
     yargs "13.2.0"
 
-"@platform/css@0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.0.tgz#24b2c3e76f61a9799319abf0e62ff98c3f4617a2"
-  integrity sha512-obIik7qcZiZ9IfHyHFT3vGMJ91eUKd10DIImPkGCYWBhIB7ERD0nFHhZ3haa6I/K7WZbcsazJN2COs+BGeQtTg==
+"@platform/css@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.1.tgz#751f0e9afdec24e939a05af7f30ea8866326c40b"
+  integrity sha512-3ndskOlcmEYp6yDVX/lma7PtzFPTX+/cbBxiJqyTm5KekvHuH8RG5SFfClWU5dhdQuipZoCHo3rJZzwopmZFcQ==
   dependencies:
     "@platform/libs" "0.0.6"
     "@platform/util.is" "0.0.27"
