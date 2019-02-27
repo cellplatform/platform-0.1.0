@@ -777,10 +777,10 @@
     "@types/yargs" "12.0.9"
     yargs "13.2.0"
 
-"@platform/css@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.1.tgz#751f0e9afdec24e939a05af7f30ea8866326c40b"
-  integrity sha512-3ndskOlcmEYp6yDVX/lma7PtzFPTX+/cbBxiJqyTm5KekvHuH8RG5SFfClWU5dhdQuipZoCHo3rJZzwopmZFcQ==
+"@platform/css@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.2.tgz#8869e2aeba2c10647592b89fdbc4cbf8cb195beb"
+  integrity sha512-r31QFyPj9LizCOCtYNtFhxm9XY0BsBV969LRdMU9i6tOOPJp5MjcpZnJSVP9HykNuHB8GQPdnruBmdUzLZdBiw==
   dependencies:
     "@platform/libs" "0.0.6"
     "@platform/util.is" "0.0.27"
@@ -806,15 +806,15 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/electron@0.0.94":
-  version "0.0.94"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.94.tgz#911d384930540b6a15c97beba67352a09d6198b5"
-  integrity sha512-yzetxzl3nT2ZrWaK4YROZskzB1CJDexBUNCfWBRidSP2rcwdlzqwhK8SiTVui6BnJ96GmPmn/AC6/Mr8SMXnmg==
+"@platform/electron@0.0.95":
+  version "0.0.95"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.95.tgz#5545e06e04bfafb4c717804752a67738f2c56003"
+  integrity sha512-eybSAXKptc4tVNl9W5CTOCA3ziO8Ri/3hT4P7kSsJFw74lVKgsJK6dsFjSCO9vgSbHsY9snMfE7EEj0DvFGXNQ==
   dependencies:
     "@babel/polyfill" "7.2.5"
     "@platform/fs" "0.0.36"
     "@platform/log" "0.0.78"
-    "@platform/react" "0.0.7"
+    "@platform/react" "0.0.8"
     "@platform/util.is" "0.0.27"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.1.0"
@@ -873,12 +873,12 @@
     react "16.8.2"
     react-dom "16.8.2"
 
-"@platform/react@0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.7.tgz#7ffe4b1d7ddd0ae2418579d4b8394b12083559d8"
-  integrity sha512-yKq55AoL2Q5A3c9y89rzXfvr+mXKpsCmAAertbWtHTOqpUi47C4eieLlRGWdvw3fqAdfQ7Vy501i2UU9xqOB9A==
+"@platform/react@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.8.tgz#b7201f606ad012131642d491e92f5c8607eaeda2"
+  integrity sha512-9PSZC4j0TjYLNbz7Bz4QTgbTBl1/IgEX9gBcP/Z0q1hnC80VD1bS/AUJeaNTYtO8t1g/JnD1zhYijLorJ2JMyw==
   dependencies:
-    "@platform/css" "0.0.1"
+    "@platform/css" "0.0.2"
     "@platform/util.is" "0.0.27"
     "@types/react" "16.7.17"
     "@types/react-dom" "16.8.2"
