@@ -13,7 +13,7 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@platform/util.css": "0.0.28",
+    "@platform/css": "0.0.0",
     "@platform/util.is": "0.0.27",
     "@types/react": "16.7.17",
     "@types/react-dom": "16.8.2",

@@ -25,6 +25,18 @@
     "@types/yargs" "12.0.9"
     yargs "13.2.0"
 
+"@platform/css@0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.0.tgz#24b2c3e76f61a9799319abf0e62ff98c3f4617a2"
+  integrity sha512-obIik7qcZiZ9IfHyHFT3vGMJ91eUKd10DIImPkGCYWBhIB7ERD0nFHhZ3haa6I/K7WZbcsazJN2COs+BGeQtTg==
+  dependencies:
+    "@platform/libs" "0.0.6"
+    "@platform/util.is" "0.0.27"
+    "@platform/util.value" "0.0.28"
+    "@types/tinycolor2" "1.4.1"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
 "@platform/fs@0.0.36":
   version "0.0.36"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.36.tgz#034218116dff7a5d57cca3be651e40c09764c69c"
@@ -79,18 +91,6 @@
     "@platform/libs" "0.0.6"
     "@platform/ts.libs" "3.3.2"
     "@platform/util.exec" "0.0.15"
-
-"@platform/util.css@0.0.28":
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/@platform/util.css/-/util.css-0.0.28.tgz#a29abce1b1e15c1ea2dc6137369611bbf8addda2"
-  integrity sha512-n8sio67cMrIE6s5hNFrAiiNinHLiZJdg77PG4fzL0ejfzCEjK0NrSdCS8wD1R9CzAMmQ2JAs4rEdImL+OM3KyA==
-  dependencies:
-    "@platform/libs" "0.0.6"
-    "@platform/util.is" "0.0.27"
-    "@platform/util.value" "0.0.28"
-    "@types/tinycolor2" "^1.4.1"
-    glamor "2.20.40"
-    tinycolor2 "^1.4.1"
 
 "@platform/util.exec@0.0.15":
   version "0.0.15"
@@ -207,7 +207,7 @@
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-5.5.0.tgz#146c2a29ee7d3bae4bf2fcb274636e264c813c45"
   integrity sha512-41qEJgBH/TWgo5NFSvBCJ1qkoi3Q6ONSF2avrHq1LVEZfYpdHmj0y9SuTK+u9ZhG1sYQKBL1AWXKyLWP4RaUoQ==
 
-"@types/tinycolor2@^1.4.1":
+"@types/tinycolor2@1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@types/tinycolor2/-/tinycolor2-1.4.1.tgz#2f5670c9d1d6e558897a810ed284b44918fc1253"
   integrity sha512-25L/RL5tqZkquKXVHM1fM2bd23qjfbcPpAZ2N/H05Y45g3UEi+Hw8CbDV28shKY8gH1SHiLpZSxPI1lacqdpGg==
@@ -1907,7 +1907,7 @@ through@^2.3.8:
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
 
-tinycolor2@^1.4.1:
+tinycolor2@1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
   integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=

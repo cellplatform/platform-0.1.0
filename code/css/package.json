@@ -1,5 +1,5 @@
 {
-  "name": "@platform/util.css",
+  "name": "@platform/css",
   "version": "0.0.0",
   "description": "Helpers for working with inline CSS.",
   "main": "lib/index",
