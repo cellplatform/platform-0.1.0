@@ -52,14 +52,15 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - [@platform/test](/code/test)
 - [@platform/log](/code/log)
 - [@platform/electron](/code/electron)
-- [@platform/react](/code/react)
 - util
   - [@platform/util](/code/util)
-  - [@platform/util.css](/code/util.css)
   - [@platform/util.exec](/code/util.exec)
   - [@platform/util.is](/code/util.is)
   - [@platform/util.value](/code/util.value)
 - ui
+  - [@platform/react](/code/react)
+  - [@platform/util.css](/code/css)
+- ui (components)
   - [@platform/ui.editor](/code/ui.editor)
   - [@platform/ui.object](/code/ui.object)
   - [@platform/ui.text](/code/ui.editor)
