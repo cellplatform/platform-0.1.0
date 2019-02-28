@@ -7,7 +7,7 @@ import { exec } from '../common';
 export async function getVersion() {
   try {
     const cmd = `yarn --version`;
-    const res = await exec.run(cmd, { silent: true });
+    const res = await exec.cmd.run(cmd, { silent: true });
     return res.code === 0 ? res.info[0] : undefined;
   } catch (error) {
     return undefined; // Not installed.

@@ -3,9 +3,7 @@ import { log, exec, INpmInfo } from '../common';
 /**
  * Lookup latest info for module from NPM.
  */
-export async function getInfo(
-  moduleName: string,
-): Promise<INpmInfo | undefined> {
+export async function getInfo(moduleName: string): Promise<INpmInfo | undefined> {
   try {
     const json = await getJson(moduleName);
     const name = json.name;
@@ -26,9 +24,7 @@ export async function getInfo(
 export async function getVersion(moduleName: string) {
   const json = await getJson(moduleName);
   if (!json) {
-    throw new Error(
-      `Cannot get version for '${moduleName}' as it could not be found on NPM.`,
-    );
+    throw new Error(`Cannot get version for '${moduleName}' as it could not be found on NPM.`);
   }
   const dist = json['dist-tags'];
   return dist ? (dist.latest as string) : '';
@@ -38,9 +34,7 @@ export async function getVersion(moduleName: string) {
  * Looks up the latest version for each key/value pair
  * eg { dependences } on a package.json file.
  */
-export async function getVersions(
-  modules: ({ [moduleName: string]: string }) | string[],
-) {
+export async function getVersions(modules: ({ [moduleName: string]: string }) | string[]) {
   const deps = Array.isArray(modules)
     ? modules.reduce((acc, key) => ({ ...acc, [key]: 'latest' }), {})
     : { ...modules };
@@ -72,18 +66,16 @@ async function getJson(moduleName: string, options: string = ''): Promise<any> {
   };
 
   try {
-    const result = await exec.run(cmd, { silent: true });
-    return result.info.length > 0
-      ? parseJson(result.info.join('\n'))
-      : undefined;
+    const result = await exec.cmd.run(cmd, { silent: true });
+    return result.info.length > 0 ? parseJson(result.info.join('\n')) : undefined;
   } catch (error) {
     if (error.message.includes('Not found')) {
       return undefined; // Return nothing indicating the module was not found on NPM.
     } else {
       throw new Error(
-        `Failed while reading info for '${moduleName}' from NPM.\nCMD: ${log.yellow(
-          cmd,
-        )}\n\n${error.message}`,
+        `Failed while reading info for '${moduleName}' from NPM.\nCMD: ${log.yellow(cmd)}\n\n${
+          error.message
+        }`,
       );
     }
   }

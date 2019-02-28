@@ -89,7 +89,7 @@
     "@platform/ts.libs" "3.3.2"
     "@platform/util.exec" "0.0.18"
 
-"@platform/util.exec@0.0.18":
+"@platform/util.exec@0.0.18", "@platform/util.exec@^0.0.18":
   version "0.0.18"
   resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.18.tgz#58b83c48b69c57746273ebee796c1331a8150f3a"
   integrity sha512-OTPd+gePRi0CuyPWt6JJBf5uyQJYqJzEqnBOHRe92CQwOUtxK4UG8KrfPxzMebuvZSZe03QTb5q5eqkjsYNSzQ==

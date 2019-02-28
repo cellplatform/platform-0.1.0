@@ -20,12 +20,6 @@ export type INpmPackageJson = {
 };
 
 export type INpmPackageFields = { [key: string]: string };
-export type NpmPackageFieldsKey =
-  | 'scripts'
-  | 'resolutions'
-  | NpmDepenciesFieldKey;
+export type NpmPackageFieldsKey = 'scripts' | 'resolutions' | NpmDepenciesFieldKey;
 
-export type NpmDepenciesFieldKey =
-  | 'dependencies'
-  | 'devDependencies'
-  | 'peerDependencies';
+export type NpmDepenciesFieldKey = 'dependencies' | 'devDependencies' | 'peerDependencies';

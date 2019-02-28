@@ -5,5 +5,4 @@ export * from './NpmPackage';
 /**
  * Creates a new [NpmPackage] for the given directory.
  */
-export const pkg = (input?: string | INpmPackageInit) =>
-  NpmPackage.create(input);
+export const pkg = (input?: string | INpmPackageInit) => NpmPackage.create(input);

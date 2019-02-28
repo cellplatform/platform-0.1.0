@@ -36,9 +36,7 @@ export class NpmPackage {
     this.exists = fs.existsSync(this.path);
 
     const loadFile = () => {
-      return this.exists
-        ? fs.file.loadAndParseSync<INpmPackageJson>(this.path, {})
-        : {};
+      return this.exists ? fs.file.loadAndParseSync<INpmPackageJson>(this.path, {}) : {};
     };
     this.json = args.json ? args.json : loadFile();
     this._original = { ...this.json };
@@ -151,11 +149,7 @@ export class NpmPackage {
     } = {},
   ) {
     const updateState = value.defaultValue(args.updateState, true);
-    const types = args.types || [
-      'dependencies',
-      'devDependencies',
-      'peerDependencies',
-    ];
+    const types = args.types || ['dependencies', 'devDependencies', 'peerDependencies'];
 
     type VersionChange = {
       type: NpmDepenciesFieldKey;
@@ -179,10 +173,7 @@ export class NpmPackage {
       unchanged: [],
     };
 
-    const getLatest = async (
-      type: NpmDepenciesFieldKey,
-      fields?: INpmPackageFields,
-    ) => {
+    const getLatest = async (type: NpmDepenciesFieldKey, fields?: INpmPackageFields) => {
       if (!fields) {
         return;
       }

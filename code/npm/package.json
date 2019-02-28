@@ -9,13 +9,13 @@
     "tdd": "yarn chmod && ts test --watch",
     "lint": "yarn chmod && ts lint",
     "build": "yarn chmod && ts build",
-    "prepare__": "yarn chmod && ts prepare",
+    "prepare": "yarn chmod && ts prepare",
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@platform/cli": "0.0.57",
     "@platform/fs": "0.0.36",
     "@platform/log": "0.0.81",
+    "@platform/util.exec": "0.0.18",
     "@platform/util.value": "0.0.31"
   },
   "devDependencies": {
