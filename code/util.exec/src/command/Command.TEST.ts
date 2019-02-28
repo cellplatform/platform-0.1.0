@@ -1,7 +1,10 @@
+import { fs } from '@platform/fs';
 import { expect } from 'chai';
 import { Command } from '.';
 
 describe('Command', () => {
+  after(async () => fs.remove('tmp'));
+
   it('creates with no parts', () => {
     const cmd = Command.create();
     expect(cmd.parts).to.eql([]);
@@ -125,5 +128,19 @@ describe('Command', () => {
       .add('--force')
       .add('--dir=123');
     expect(cmd.toString()).to.eql('build --force --dir=123');
+  });
+
+  it('runs a command', async () => {
+    const cmd = Command.create()
+      .add('mkdir')
+      .add('-p tmp/foo');
+
+    const response = cmd.run({ silent: true });
+    const result = await response;
+    expect(result.ok).to.eql(true);
+    expect(result.code).to.eql(0);
+
+    expect(fs.existsSync('tmp/foo')).to.eql(true);
+    await fs.remove('tmp/foo');
   });
 });

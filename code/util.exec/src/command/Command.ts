@@ -1,3 +1,6 @@
+import { exec } from '../exec';
+import { IRunOptions } from '../common';
+
 export type ICommandPart = {
   value: string;
   type: 'COMMAND' | 'FLAG' | 'ARG';
@@ -56,6 +59,10 @@ export class Command {
     parts[parts.length - 1] = last;
     this._.parts = parts;
     return this;
+  }
+
+  public run(options?: IRunOptions) {
+    return exec.cmd.run(this.toString(), options);
   }
 
   public toString() {
