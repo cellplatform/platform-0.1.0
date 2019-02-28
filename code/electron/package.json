@@ -1,7 +1,7 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.0.95",
+  "version": "0.0.97",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -28,10 +28,11 @@
   "devDependencies": {
     "@platform/test": "0.0.29",
     "@platform/ts": "3.3.54",
-    "electron": "4.0.5"
+    "electron": "4.0.6"
   },
   "files": [
-    "lib"
+    "lib",
+    "reset.css"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"
