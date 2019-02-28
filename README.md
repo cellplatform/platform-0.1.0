@@ -52,19 +52,21 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - [@platform/test](/code/test)
 - [@platform/log](/code/log)
 - [@platform/electron](/code/electron)
-- [@platform/react](/code/react)
 - util
   - [@platform/util](/code/util)
-  - [@platform/util.css](/code/util.css)
   - [@platform/util.exec](/code/util.exec)
   - [@platform/util.is](/code/util.is)
   - [@platform/util.value](/code/util.value)
 - ui
+  - [@platform/react](/code/react)
+  - [@platform/css](/code/css)
+- ui (components)
   - [@platform/ui.editor](/code/ui.editor)
   - [@platform/ui.object](/code/ui.object)
   - [@platform/ui.text](/code/ui.editor)
 - state
   - [@platform/hyperdb](/code/hyperdb)
+  - [@platform/hyperdb](/code/hyperdb.electron)
   - [@platform/state](/code/state)
 
 
@@ -90,4 +92,5 @@ API's will change (probably radically 🐷) prior to `1.0` release.
   - [x] `@platform/util.react` ➡️ `@platform/react` (unpublish `util.react` from NPM)
   - [x] `@platform/ts` ➡️ `@platform/ts.libs`
   - [x] `@platform/ts.cli` ➡️ `@platform/ts` (unpublish `ts.cli` from NPM)
+  - [ ] `@platform/util.css` ️️=> `@platform/css`
 

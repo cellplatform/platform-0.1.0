@@ -33,6 +33,18 @@
     "@types/yargs" "12.0.9"
     yargs "13.2.0"
 
+"@platform/css@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.2.tgz#8869e2aeba2c10647592b89fdbc4cbf8cb195beb"
+  integrity sha512-r31QFyPj9LizCOCtYNtFhxm9XY0BsBV969LRdMU9i6tOOPJp5MjcpZnJSVP9HykNuHB8GQPdnruBmdUzLZdBiw==
+  dependencies:
+    "@platform/libs" "0.0.6"
+    "@platform/util.is" "0.0.27"
+    "@platform/util.value" "0.0.28"
+    "@types/tinycolor2" "1.4.1"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
 "@platform/fs@0.0.36":
   version "0.0.36"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.36.tgz#034218116dff7a5d57cca3be651e40c09764c69c"
@@ -62,17 +74,17 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.6.tgz#2e754d0e545b264b20540f37d3bbe41cc2adb67b"
-  integrity sha512-Qi4ER8kLE82vVJb5NA8+qiT70iwx26hBfb9HhvfTviaedYImdmJ/YiVjiXudUGeLMSfEtyM4JsZ2c4FGt120oQ==
+"@platform/react@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.8.tgz#b7201f606ad012131642d491e92f5c8607eaeda2"
+  integrity sha512-9PSZC4j0TjYLNbz7Bz4QTgbTBl1/IgEX9gBcP/Z0q1hnC80VD1bS/AUJeaNTYtO8t1g/JnD1zhYijLorJ2JMyw==
   dependencies:
-    "@platform/util.css" "0.0.28"
+    "@platform/css" "0.0.2"
     "@platform/util.is" "0.0.27"
     "@types/react" "16.7.17"
-    "@types/react-dom" "16.8.1"
-    react "16.8.2"
-    react-dom "16.8.2"
+    "@types/react-dom" "16.8.2"
+    react "16.8.3"
+    react-dom "16.8.3"
 
 "@platform/test@0.0.29":
   version "0.0.29"
@@ -108,18 +120,6 @@
     "@platform/libs" "0.0.6"
     "@platform/ts.libs" "3.3.2"
     "@platform/util.exec" "0.0.15"
-
-"@platform/util.css@0.0.28":
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/@platform/util.css/-/util.css-0.0.28.tgz#a29abce1b1e15c1ea2dc6137369611bbf8addda2"
-  integrity sha512-n8sio67cMrIE6s5hNFrAiiNinHLiZJdg77PG4fzL0ejfzCEjK0NrSdCS8wD1R9CzAMmQ2JAs4rEdImL+OM3KyA==
-  dependencies:
-    "@platform/libs" "0.0.6"
-    "@platform/util.is" "0.0.27"
-    "@platform/util.value" "0.0.28"
-    "@types/tinycolor2" "^1.4.1"
-    glamor "2.20.40"
-    tinycolor2 "^1.4.1"
 
 "@platform/util.exec@0.0.15":
   version "0.0.15"
@@ -213,10 +213,10 @@
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.50.tgz#7f21d47c650f85b8a61c2b608adf8aa0f1a8fccf"
   integrity sha512-hkGWVWyPEXkXSh7rxJIGg6ELG1/WlR2BB8JemZW8v2l50bfMUw6CjrETJpgd9i3jUxaxOE/X57DvclWd9wkZhg==
 
-"@types/react-dom@16.8.1":
-  version "16.8.1"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.1.tgz#e43810a5e44b37854a9c7cd99e6c43e4f522c7c6"
-  integrity sha512-Vyo4LqUvpjNC9RMXV6kXcsvW6U/WKOuHbz+mtY43Fu8AslHjQ5/Yx+sj0agGLkbnqOlQgyIgosewcxdjMirVXA==
+"@types/react-dom@16.8.2":
+  version "16.8.2"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.2.tgz#9bd7d33f908b243ff0692846ef36c81d4941ad12"
+  integrity sha512-MX7n1wq3G/De15RGAAqnmidzhr2Y9O/ClxPxyqaNg96pGyeXUYPSvujgzEVpLo9oIP4Wn1UETl+rxTN02KEpBw==
   dependencies:
     "@types/react" "*"
 
@@ -241,7 +241,7 @@
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-5.5.0.tgz#146c2a29ee7d3bae4bf2fcb274636e264c813c45"
   integrity sha512-41qEJgBH/TWgo5NFSvBCJ1qkoi3Q6ONSF2avrHq1LVEZfYpdHmj0y9SuTK+u9ZhG1sYQKBL1AWXKyLWP4RaUoQ==
 
-"@types/tinycolor2@^1.4.1":
+"@types/tinycolor2@1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@types/tinycolor2/-/tinycolor2-1.4.1.tgz#2f5670c9d1d6e558897a810ed284b44918fc1253"
   integrity sha512-25L/RL5tqZkquKXVHM1fM2bd23qjfbcPpAZ2N/H05Y45g3UEi+Hw8CbDV28shKY8gH1SHiLpZSxPI1lacqdpGg==
@@ -862,10 +862,10 @@ electron-window-state@5.0.3:
     jsonfile "^4.0.0"
     mkdirp "^0.5.1"
 
-electron@4.0.5:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-4.0.5.tgz#d8e7d8a581a3e31071b2226129b26b6110c1d877"
-  integrity sha512-UWFH6SrzNtzfvusGUFYxXDrgsUEbtBXkH/66hpDWxjA2Ckt7ozcYIujZpshbr7LPy8kV3ZRxIvoyCMdaS5DkVQ==
+electron@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-4.0.6.tgz#f936772ddb5eaa026591ea14ef806e1385fbbda9"
+  integrity sha512-r2ow/EmDibjoCNJp35mB1CcPs2xBF9fp2eoWuUOJmpVQyzdba6EnqsSD1BxwXzF9vQ5WkQ2UbfXBIvpomrdioQ==
   dependencies:
     "@types/node" "^10.12.18"
     electron-download "^4.1.0"
@@ -2288,30 +2288,30 @@ rc@^1.2.1:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-dom@16.8.2:
-  version "16.8.2"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.8.2.tgz#7c8a69545dd554d45d66442230ba04a6a0a3c3d3"
-  integrity sha512-cPGfgFfwi+VCZjk73buu14pYkYBR1b/SRMSYqkLDdhSEHnSwcuYTPu6/Bh6ZphJFIk80XLvbSe2azfcRzNF+Xg==
+react-dom@16.8.3:
+  version "16.8.3"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.8.3.tgz#ae236029e66210783ac81999d3015dfc475b9c32"
+  integrity sha512-ttMem9yJL4/lpItZAQ2NTFAbV7frotHk5DZEHXUOws2rMmrsvh1Na7ThGT0dTzUIl6pqTOi5tYREfL8AEna3lA==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    scheduler "^0.13.2"
+    scheduler "^0.13.3"
 
 react-is@^16.8.1:
   version "16.8.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.1.tgz#a80141e246eb894824fb4f2901c0c50ef31d4cdb"
   integrity sha512-ioMCzVDWvCvKD8eeT+iukyWrBGrA3DiFYkXfBsVYIRdaREZuBjENG+KjrikavCLasozqRWTwFUagU/O4vPpRMA==
 
-react@16.8.2:
-  version "16.8.2"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.8.2.tgz#83064596feaa98d9c2857c4deae1848b542c9c0c"
-  integrity sha512-aB2ctx9uQ9vo09HVknqv3DGRpI7OIGJhCx3Bt0QqoRluEjHSaObJl+nG12GDdYH6sTgE7YiPJ6ZUyMx9kICdXw==
+react@16.8.3:
+  version "16.8.3"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.8.3.tgz#c6f988a2ce895375de216edcfaedd6b9a76451d9"
+  integrity sha512-3UoSIsEq8yTJuSu0luO1QQWYbgGEILm+eJl2QN/VLDi7hL+EN18M3q3oVZwmVzzBJ3DkM7RMdRwBmZZ+b4IzSA==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    scheduler "^0.13.2"
+    scheduler "^0.13.3"
 
 read-pkg-up@^1.0.1:
   version "1.0.1"
@@ -2476,10 +2476,10 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-scheduler@^0.13.2:
-  version "0.13.2"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.13.2.tgz#969eaee2764a51d2e97b20a60963b2546beff8fa"
-  integrity sha512-qK5P8tHS7vdEMCW5IPyt8v9MJOHqTrOUgPXib7tqm9vh834ibBX5BNhwkplX/0iOzHW5sXyluehYfS9yrkz9+w==
+scheduler@^0.13.3:
+  version "0.13.3"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.13.3.tgz#bed3c5850f62ea9c716a4d781f9daeb9b2a58896"
+  integrity sha512-UxN5QRYWtpR1egNWzJcVLk8jlegxAugswQc984lD3kU7NuobsO37/sRfbpTdBjtnD5TBNFA2Q2oLV5+UmPSmEQ==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -2810,7 +2810,7 @@ through@^2.3.8:
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
 
-tinycolor2@^1.4.1:
+tinycolor2@1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
   integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=

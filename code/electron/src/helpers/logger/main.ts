@@ -1,9 +1,10 @@
 import { fs } from '@platform/fs';
 import { chalk, create as createLog, format } from '@platform/log/lib/server';
-import { is } from '@platform/util.is';
 import { time, value } from '@platform/util.value';
 import * as elog from 'electron-log';
 import { filter, map } from 'rxjs/operators';
+import { app } from 'electron';
+import { is } from '../is/main';
 
 import { IpcClient, IpcIdentifier } from '../ipc/Client';
 import * as t from './types';
@@ -59,7 +60,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
     msg = `${msg} ${tailPath(file, color)}`;
     return log.gray(msg);
   };
-  if (is.dev) {
+  if (!app.isPackaged) {
     logToConsole();
     logToConsoleGray(`logs | ${tailCommand(paths.dev.filename, true)}`);
     logToConsoleGray(`               ${tailPath(paths.prod.filename)}`);
@@ -94,7 +95,6 @@ export function init(args: { ipc: IpcClient; dir: string }) {
     .pipe(
       filter(e => e.type === '@platform/LOG/write'),
       filter(e => e.sender.process === 'RENDERER'),
-      // map(e => e.payload),
     )
     .subscribe(e => {
       // e.sender

@@ -1,1 +1,3 @@
-export const FOO = 123; // TEMP
+export const COLORS = {
+  PURPLE: '#881391',
+};

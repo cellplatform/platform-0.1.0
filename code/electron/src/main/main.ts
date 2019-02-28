@@ -9,6 +9,7 @@ import { WindowsMain } from '../helpers/windows/main';
 import * as t from '../types';
 
 export * from '../types';
+export { is } from '../helpers/is/main';
 export { devTools, logger };
 
 /**

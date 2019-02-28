@@ -13,9 +13,10 @@
     "clean": "cd ../.. && yarn clean",
     "chmod": "chmod 777 node_modules/.bin/ts",
     "pstart": "pm2 start ecosystem.config.js",
-    "pstop": "pm2 start ecosystem.config.js",
-    "prestart": "pm2 start ecosystem.config.js",
-    "pb": "yarn build && yarn prestart"
+    "pstop": "pm2 stop ecosystem.config.js",
+    "prestart": "pm2 restart ecosystem.config.js",
+    "pb": "yarn build && yarn prestart",
+    "nrestart": "sudo systemctl restart nginx"
   },
   "dependencies": {
     "@platform/fs": "0.0.36",

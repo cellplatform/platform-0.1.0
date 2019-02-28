@@ -20,11 +20,12 @@ echo no-op
 # test log
 # test electron
 
+# test css
+# test react
+
 # test util
-# test util.css
 # test util.exec
 # test util.is
-# test util.react
 # test util.string
 # test util.value
 

@@ -1,0 +1,6 @@
+/**
+ * 1. Change the default font family in all browsers (opinionated).
+ */
+html {
+  font-family: sans-serif; /* 1 */
+}
