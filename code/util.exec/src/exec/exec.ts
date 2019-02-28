@@ -6,4 +6,4 @@ export { cmd, process };
 export { tasks } from '../tasks';
 export * from '../types';
 
-export const create = Command.create;
+export const command = Command.create;

@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.text",
   "description": "Text components.",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,12 +14,12 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@platform/react": "0.0.10",
-    "@platform/util.value": "0.0.30"
+    "@platform/react": "0.0.11",
+    "@platform/util.value": "0.0.31"
   },
   "devDependencies": {
-    "@platform/electron": "0.0.100",
-    "@platform/ts": "3.3.56",
+    "@platform/electron": "0.0.101",
+    "@platform/ts": "3.3.57",
     "@uiharness/dev": "0.1.29"
   },
   "resolutions": {

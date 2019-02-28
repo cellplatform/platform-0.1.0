@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.editor",
   "description": "Rich text/markdown editor for web and electron.",
-  "version": "0.0.46",
+  "version": "0.0.47",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,8 +14,8 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@platform/react": "0.0.10",
-    "@platform/ui.object": "0.0.46",
+    "@platform/react": "0.0.11",
+    "@platform/ui.object": "0.0.47",
     "prosemirror-example-setup": "1.0.1",
     "prosemirror-history": "1.0.4",
     "prosemirror-keymap": "1.0.1",
@@ -26,8 +26,8 @@
     "react-inspector": "2.3.1"
   },
   "devDependencies": {
-    "@platform/electron": "0.0.100",
-    "@platform/ts": "3.3.56",
+    "@platform/electron": "0.0.101",
+    "@platform/ts": "3.3.57",
     "@types/prosemirror-history": "1.0.1",
     "@types/prosemirror-keymap": "1.0.1",
     "@types/prosemirror-markdown": "1.0.2",
