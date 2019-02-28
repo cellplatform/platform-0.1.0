@@ -4,6 +4,7 @@ import { time, value } from '@platform/util.value';
 import * as elog from 'electron-log';
 import { filter, map } from 'rxjs/operators';
 import { app } from 'electron';
+import { is } from '../is/main';
 
 import { IpcClient, IpcIdentifier } from '../ipc/Client';
 import * as t from './types';
@@ -121,7 +122,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
  * Derives paths for the logger.
  */
 export function getPaths(args: { dir: string; env?: Env }) {
-  const env = value.defaultValue(args.env, app.isPackaged ? 'prod' : 'dev');
+  const env = value.defaultValue(args.env, is.prod ? 'prod' : 'dev');
   const dir = args.dir;
   const file = {
     dev: 'dev.log',
