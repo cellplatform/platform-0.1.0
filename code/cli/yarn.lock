@@ -59,10 +59,10 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
-"@platform/util.exec@0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.16.tgz#7de0023ca62b6b6e26792f7dbc4cb121641120a2"
-  integrity sha512-Iit0NDLvpY1Jyj8BE/ph9i82DpMGUkYqalR7H/+giOOgYDM0xTWg4OgYQF6geewfMeRdMsjWYbDNB4Y3YzYGrQ==
+"@platform/util.exec@0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.17.tgz#d198e98362f8324ac1b4637c762ae09176aec88d"
+  integrity sha512-51ctt/xBoJohF68nUYzcHgHhNEOCHY6HpVkfwcSmRlGNJka+uZP55szNoHMH3EGp0zz2Ah8eSnzBGjjhyHS0ew==
   dependencies:
     "@platform/libs" "0.0.6"
     "@types/chalk" "2.2.0"

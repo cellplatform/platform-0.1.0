@@ -15,13 +15,13 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/cli@0.0.55":
-  version "0.0.55"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.55.tgz#afec3e2edf82d66a2f7a4fc5ccd5152c484ca81d"
-  integrity sha512-G28e7YckthBogtYhzFyOf9Qzb3lvA/TfaKWYXmZuGlG0T6ptoGGDigGNlAxl95UWZy6iEvx9uCW1Cs02RE5kxg==
+"@platform/cli@0.0.56":
+  version "0.0.56"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.56.tgz#f9af82ac058e59b8260c45d2ce11eb0828d1951a"
+  integrity sha512-LVpROZdaqD3jYoixr1gEndsOFNUTz9e0kyp0auaq/Ztaqc2b9r4BeetXSWll5Cf6sif6PzaQFAd2H3sSk4noAw==
   dependencies:
     "@platform/fs" "0.0.36"
-    "@platform/util.exec" "0.0.16"
+    "@platform/util.exec" "0.0.17"
     "@types/yargs" "12.0.9"
     yargs "13.2.1"
 
@@ -59,10 +59,10 @@
     tslint-react "3.6.0"
     typescript "3.3.3"
 
-"@platform/util.exec@0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.16.tgz#7de0023ca62b6b6e26792f7dbc4cb121641120a2"
-  integrity sha512-Iit0NDLvpY1Jyj8BE/ph9i82DpMGUkYqalR7H/+giOOgYDM0xTWg4OgYQF6geewfMeRdMsjWYbDNB4Y3YzYGrQ==
+"@platform/util.exec@0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.17.tgz#d198e98362f8324ac1b4637c762ae09176aec88d"
+  integrity sha512-51ctt/xBoJohF68nUYzcHgHhNEOCHY6HpVkfwcSmRlGNJka+uZP55szNoHMH3EGp0zz2Ah8eSnzBGjjhyHS0ew==
   dependencies:
     "@platform/libs" "0.0.6"
     "@types/chalk" "2.2.0"

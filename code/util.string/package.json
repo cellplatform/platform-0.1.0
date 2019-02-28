@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.string",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "String helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.29",
-    "@platform/ts": "3.3.55",
+    "@platform/ts": "3.3.56",
     "@types/escape-string-regexp": "^1.0.0"
   },
   "files": [
