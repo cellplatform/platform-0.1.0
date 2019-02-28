@@ -12,7 +12,6 @@ import {
 } from '../common';
 import { spawn } from './process';
 
-
 /**
  * Invokes 1..n shell command.
  */
