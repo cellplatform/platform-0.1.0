@@ -4,10 +4,10 @@ import { Subject } from 'rxjs';
 import { npm } from '..';
 import { fs, log } from '../common';
 
-describe('install (integration)', function() {
-  this.timeout(20000);
+describe.skip('install (integration)', function() {
+  this.timeout(100000);
 
-  it.skip('npm.install', async () => {
+  it('npm.install', async () => {
     await fs.remove(resolve('./test/install/node_modules'));
     const events$ = new Subject<npm.INpmInstallEvent>();
 
