@@ -52,7 +52,12 @@ export class Command {
     return this;
   }
 
-  public newLine() {
+  public newLine(value?: string, conditional?: boolean) {
+    conditional = conditional === undefined ? true : conditional;
+    if (!conditional) {
+      return this;
+    }
+
     const parts = [...this.parts];
     if (parts.length === 0) {
       return this;
@@ -61,6 +66,11 @@ export class Command {
     last.value += '\n';
     parts[parts.length - 1] = last;
     this._.parts = parts;
+
+    if (value) {
+      this.add(value);
+    }
+
     return this;
   }
 

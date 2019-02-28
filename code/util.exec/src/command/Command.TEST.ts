@@ -24,6 +24,13 @@ describe('Command', () => {
     expect(cmd.parts[0].type).to.eql('COMMAND');
   });
 
+  it('adds a command (multi value)', () => {
+    const cmd = Command.create().add('  run foo ');
+    expect(cmd.parts.length).to.eql(1);
+    expect(cmd.parts[0].value).to.eql('run foo');
+    expect(cmd.parts[0].type).to.eql('COMMAND');
+  });
+
   it('adds two commands', () => {
     const cmd = Command.create()
       .add('  run  ')
@@ -91,7 +98,7 @@ describe('Command', () => {
     expect(cmd.parts[1].type).to.eql('ARG');
   });
 
-  it('trims line-break from added values', () => {
+  it('trims new-line from added values', () => {
     const cmd = Command.create()
       .add('\n  run \n\n')
       .add('  --force \n  \n')
@@ -101,7 +108,7 @@ describe('Command', () => {
     expect(cmd.parts[2].value).to.eql('--dir 1234');
   });
 
-  it('does not add a line break if the command is empty', () => {
+  it('does not add a new-line if the command is empty', () => {
     const cmd = Command.create()
       .newLine()
       .add('run');
@@ -109,7 +116,7 @@ describe('Command', () => {
     expect(cmd.parts[0].value).to.eql('run');
   });
 
-  it('adds a line break', () => {
+  it('adds a new-line', () => {
     const cmd = Command.create()
       .newLine()
       .add('run')
@@ -117,6 +124,22 @@ describe('Command', () => {
       .add('delete');
     expect(cmd.parts[0].value).to.eql('run\n');
     expect(cmd.parts[1].value).to.eql('delete');
+  });
+
+  it('adds a command in the [newLine] method', () => {
+    const cmd = Command.create('run').newLine('build fast');
+    expect(cmd.parts[0].value).to.eql('run\n');
+    expect(cmd.parts[1].value).to.eql('build fast');
+  });
+
+  it('adds a command in the [newLine] method (conditiona)', () => {
+    const cmd = Command.create('run')
+      .newLine('build fast')
+      .newLine('foo', false)
+      .newLine('yo');
+    expect(cmd.parts[0].value).to.eql('run\n');
+    expect(cmd.parts[1].value).to.eql('build fast\n');
+    expect(cmd.parts[2].value).to.eql('yo');
   });
 
   it('toString (empty)', () => {
