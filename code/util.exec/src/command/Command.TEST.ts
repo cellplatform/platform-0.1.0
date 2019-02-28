@@ -10,6 +10,13 @@ describe('Command', () => {
     expect(cmd.parts).to.eql([]);
   });
 
+  it('creates with an initial part', () => {
+    const cmd = Command.create('  run   ');
+    expect(cmd.parts.length).to.eql(1);
+    expect(cmd.parts[0].value).to.eql('run');
+    expect(cmd.parts[0].type).to.eql('COMMAND');
+  });
+
   it('adds a command (trimmed)', () => {
     const cmd = Command.create().add('  run  ');
     expect(cmd.parts.length).to.eql(1);
@@ -142,5 +149,14 @@ describe('Command', () => {
 
     expect(fs.existsSync('tmp/foo')).to.eql(true);
     await fs.remove('tmp/foo');
+  });
+
+  it('clones', () => {
+    const cmd1 = Command.create('run').add('--force');
+    const cmd2 = cmd1.clone();
+    expect(cmd1.toString()).to.eql('run --force');
+    expect(cmd1).to.not.equal(cmd2);
+    expect(cmd1.toString()).to.eql(cmd2.toString());
+    expect(cmd1.parts).to.eql(cmd2.parts);
   });
 });

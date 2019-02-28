@@ -13,14 +13,17 @@ export class Command {
   /**
    * [Static]
    */
-  public static create() {
-    return new Command({});
+  public static create(value?: string) {
+    const cmd = new Command({ parts: [] });
+    return value ? cmd.add(value) : cmd;
   }
 
   /**
    * [Constructor]
    */
-  private constructor(args: {}) {}
+  private constructor(args: { parts: ICommandPart[] }) {
+    this._.parts = [...args.parts];
+  }
 
   /**
    * [Fields]
@@ -63,6 +66,11 @@ export class Command {
 
   public run(options?: IRunOptions) {
     return exec.cmd.run(this.toString(), options);
+  }
+
+  public clone() {
+    const parts = this.parts;
+    return new Command({ parts });
   }
 
   public toString() {
