@@ -1,4 +1,4 @@
-import { exec } from '../exec';
+import { run } from '../exec/cmd.run';
 import { IRunOptions } from '../common';
 
 export type ICommandPart = {
@@ -65,7 +65,7 @@ export class Command {
   }
 
   public run(options?: IRunOptions) {
-    return exec.cmd.run(this.toString(), options);
+    return run(this.toString(), options);
   }
 
   public clone() {
