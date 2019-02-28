@@ -1,9 +1,9 @@
 import { fs } from '@platform/fs';
 import { chalk, create as createLog, format } from '@platform/log/lib/server';
-import { is } from '@platform/util.is';
 import { time, value } from '@platform/util.value';
 import * as elog from 'electron-log';
 import { filter, map } from 'rxjs/operators';
+import { app } from 'electron';
 
 import { IpcClient, IpcIdentifier } from '../ipc/Client';
 import * as t from './types';
@@ -59,7 +59,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
     msg = `${msg} ${tailPath(file, color)}`;
     return log.gray(msg);
   };
-  if (is.dev) {
+  if (!app.isPackaged) {
     logToConsole();
     logToConsoleGray(`logs | ${tailCommand(paths.dev.filename, true)}`);
     logToConsoleGray(`               ${tailPath(paths.prod.filename)}`);
@@ -94,7 +94,6 @@ export function init(args: { ipc: IpcClient; dir: string }) {
     .pipe(
       filter(e => e.type === '@platform/LOG/write'),
       filter(e => e.sender.process === 'RENDERER'),
-      // map(e => e.payload),
     )
     .subscribe(e => {
       // e.sender
@@ -122,7 +121,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
  * Derives paths for the logger.
  */
 export function getPaths(args: { dir: string; env?: Env }) {
-  const env = value.defaultValue(args.env, is.prod ? 'prod' : 'dev');
+  const env = value.defaultValue(args.env, app.isPackaged ? 'prod' : 'dev');
   const dir = args.dir;
   const file = {
     dev: 'dev.log',
