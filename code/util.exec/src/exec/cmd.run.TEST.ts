@@ -61,6 +61,12 @@ describe('exec.cmd.run', () => {
     expect(result.error && result.error.message).to.include(err);
   });
 
+  it('returns info', async () => {
+    const cmd = 'echo foo';
+    const res = await exec.cmd.run(cmd);
+    expect(res.info).to.eql(['foo']);
+  });
+
   it('prints to [stdout] with colors', async () => {
     // NB: Display only - no decent way to test.
     const colors = `${chalk.cyan('hey,')} ${chalk.magenta('with')} ${chalk.yellow('color! 🌼')}`;
