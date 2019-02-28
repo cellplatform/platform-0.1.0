@@ -5,9 +5,14 @@ import { app } from 'electron';
  */
 export const is = {
   get prod() {
-    return app.isPackaged;
+    try {
+      return app === undefined ? process.env.NODE_ENV === 'production' : app.isPackaged;
+    } catch (err) {
+      return false;
+    }
   },
+
   get dev() {
-    return !app.isPackaged;
+    return !is.prod;
   },
 };
