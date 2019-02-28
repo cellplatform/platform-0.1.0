@@ -1,6 +1,15 @@
 import { Observable } from 'rxjs';
 
 /**
+ * Options when executing a command.
+ */
+export type IRunOptions = {
+  dir?: string;
+  silent?: boolean;
+  env?: NodeJS.ProcessEnv;
+};
+
+/**
  * Commands
  */
 export type IResult = {
@@ -61,7 +70,6 @@ export type LogValue = (...value: any) => void;
 /**
  * Command list execution.
  */
-
 export type ICommandListExecutionResponse = IResult & {
   ok: boolean;
   results: IListCommandResult[];

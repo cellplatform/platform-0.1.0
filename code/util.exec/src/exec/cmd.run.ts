@@ -8,20 +8,14 @@ import {
   ICommandPromise,
   IResultInfo,
   definedPropsFor,
+  IRunOptions,
 } from '../common';
 import { spawn } from './process';
 
 /**
  * Invokes 1..n shell command.
  */
-export function run(
-  command: string | string[],
-  options: {
-    dir?: string;
-    silent?: boolean;
-    env?: NodeJS.ProcessEnv;
-  } = {},
-): ICommandPromise {
+export function run(command: string | string[], options: IRunOptions = {}): ICommandPromise {
   const { silent } = options;
   const dir = resolve(options.dir || process.cwd());
   let isComplete = false;
