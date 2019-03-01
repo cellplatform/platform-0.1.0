@@ -7,12 +7,17 @@ describe('util.npm (integration)', function() {
 
   it.skip('getInfo', async () => {
     const res = await npm.getInfo('create-tmpl');
-    log.info(res);
+    log.info('getInfo:', res);
+  });
+
+  it.skip('getInfo: @uiharness/electron', async () => {
+    const res = await npm.getInfo('@uiharness/electron');
+    log.info('getInfo:', res);
   });
 
   it.skip('getVersion', async () => {
     const res = await npm.getVersion('create-tmpl');
-    log.info(res);
+    log.info('getVersion:', res);
   });
 
   it.skip('getVersions (object)', async () => {
