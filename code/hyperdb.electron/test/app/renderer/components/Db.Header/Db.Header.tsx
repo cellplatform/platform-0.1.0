@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { css, color, GlamorValue, IMAGES } from '../../common';
-import { TextInput, TextInputChangeEventHandler, TextInputChangeEvent } from '../primitives';
+
+import { color, css, GlamorValue, IMAGES, t, COLORS } from '../../common';
+import { TextInput, TextInputChangeEvent } from '../primitives';
 
 export type IDbHeaderProps = {
+  db?: t.ITestRendererDb;
   style?: GlamorValue;
 };
 
@@ -12,6 +14,11 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps> {
   }
 
   public render() {
+    const { db } = this.props;
+    if (!db) {
+      return null;
+    }
+
     const styles = {
       base: css({
         boxSizing: 'border-box',
@@ -28,13 +35,11 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps> {
       }),
       body: css({
         flex: 1,
-        // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-        // height: 50,
       }),
       textbox: css({
         // borderBottom: `solid 1px ${color.format(-0.1)}`,
       }),
-      key: css({
+      keyOuter: css({
         fontFamily: 'monospace',
         fontSize: 11,
         fontWeight: 'bold',
@@ -42,7 +47,11 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps> {
         marginTop: 3,
         marginLeft: 4,
       }),
+      key: css({
+        color: COLORS.CLI.CYAN,
+      }),
     };
+    const elPublicKey = <span {...styles.key}>{db.key}</span>;
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.icon} />
@@ -54,9 +63,7 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps> {
             placeholder={'Unnamed'}
             placeholderStyle={{ color: color.format(-0.2) }}
           />
-          <div {...styles.key}>
-            public-key: 4173e6d24fdc4c22f8666081226d7877d032bf955a508047f7e8b1483e202a7c (primary)
-          </div>
+          <div {...styles.keyOuter}>public-key:{elPublicKey} (primary)</div>
         </div>
       </div>
     );

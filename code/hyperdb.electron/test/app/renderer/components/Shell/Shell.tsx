@@ -13,7 +13,7 @@ export type IShellProps = {
 
 export type IShellState = {
   selected?: string; // database [dir].
-  selectedDb?: t.IRendererDb;
+  selectedDb?: t.ITestRendererDb;
   store?: Partial<t.ITestStoreSettings>;
 };
 
@@ -38,21 +38,15 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     this.updateState();
 
     state$
-      // get the currently selected database.
+      // Store the currently selected database in state.
       .pipe(
         debounceTime(0),
-        distinctUntilChanged((prev, next) => prev.selected === next.selected),
+        distinctUntilChanged(prev => prev.selected === this.selected),
       )
       .subscribe(async e => {
         const dir = this.selected;
         const selectedDb = dir ? await renderer.getOrCreate({ ipc, dir }) : undefined;
-        console.log('selected >> ', this.selected);
-        console.log('selectedDb', selectedDb);
         this.state$.next({ selectedDb });
-
-
-        const s = selectedDb ? selectedDb.toString() : undefined;
-        console.log('s', s);
       });
   }
 
@@ -117,9 +111,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   }
 
   private renderMain() {
-    const { selected, store } = this.state;
+    const { selected, store, selectedDb } = this.state;
     const data = { selected, store };
-    const elHeader = selected && <DbHeader />;
+    const elHeader = selected && <DbHeader db={selectedDb} />;
     return (
       <div>
         {elHeader}
