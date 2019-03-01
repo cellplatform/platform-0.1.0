@@ -3,7 +3,6 @@ import '@babel/polyfill';
 
 import { renderer } from '@platform/electron/lib/renderer';
 import * as React from 'react';
-
 import { Test } from './Test';
 
 /**

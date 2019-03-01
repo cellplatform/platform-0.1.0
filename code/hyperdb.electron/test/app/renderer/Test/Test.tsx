@@ -4,10 +4,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import renderer from '../../../src/renderer';
-import { Button, color, css, ObjectView, R, value } from './common';
+// import renderer from '../../../src/renderer';
+import { Button, color, css, ObjectView, R, value, renderer, t } from '../common';
 import { TestPanel } from './TestPanel';
-import * as t from '../types';
+// import * as t from '../types';
 
 type IRendererDb = renderer.IRendererDb;
 export type ITestState = {
