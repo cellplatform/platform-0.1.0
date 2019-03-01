@@ -53,8 +53,8 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   };
 
   /**
-   * [HANDLE] state requests from DB `renderer` clients and
-   * fire back the latest values.
+   * [HANDLE] state requests from DB `renderer` clients
+   * and fire back the latest values.
    */
   ipc.handle<t.IDbGetStateEvent>('DB/state/get', async e => {
     type E = t.IDbUpdateStateEvent;
