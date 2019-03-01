@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { css, color, GlamorValue, IMAGES } from '../../common';
+import { TextInput, TextInputChangeEventHandler, TextInputChangeEvent } from '../primitives';
 
 export type IDbHeaderProps = {
   style?: GlamorValue;
@@ -32,8 +33,14 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps> {
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.icon} />
-        <div {...styles.body}>DbHeader</div>
+        <div {...styles.body}>
+          <TextInput onChange={this.handleChange} />
+        </div>
       </div>
     );
   }
+
+  private handleChange = (e: TextInputChangeEvent) => {
+    console.log('e', e);
+  };
 }
