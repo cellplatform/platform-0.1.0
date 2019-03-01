@@ -48,7 +48,7 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
    */
   public async updateState() {
     const { db } = this.props;
-    const name = (await db.get('sysName')).value;
+    const name = (await db.get('.sys/dbname')).value;
     this.state$.next({ name });
   }
 
@@ -127,6 +127,6 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
 
   private handleNameChange = async (e: TextInputChangeEvent) => {
     const { db } = this.props;
-    await db.put('sysName', e.to);
+    await db.put('.sys/dbname', e.to);
   };
 }

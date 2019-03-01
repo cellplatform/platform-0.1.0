@@ -17,6 +17,6 @@ export type ITestStoreSettings = {
  * Database
  */
 export type ITestDbData = {
-  sysName: string;
+  ['.sys/dbname']: string;
 };
 export type ITestRendererDb = IRendererDb<ITestDbData>;

@@ -9,8 +9,6 @@ import {
   ShellIndexConnectEventHandler,
 } from './types';
 
-const GREEN = '#A6E22E';
-
 export type IShellIndexProps = {
   style?: GlamorValue;
   selected?: string;
@@ -115,10 +113,10 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
         width: BULLET_SIZE,
         height: BULLET_SIZE,
         borderRadius: BULLET_SIZE,
-        border: `solid 1px ${color.format(-0.1)}`,
-        backgroundColor: GREEN,
+        backgroundImage: `linear-gradient(-180deg, #70EB07 0%, #35AF06 100%)`,
       }),
     };
+
     const elSelectedBullet = isSelected && <div {...styles.selected} />;
     return (
       <div key={dir} {...styles.li} onClick={this.selectHandler(dir)}>
