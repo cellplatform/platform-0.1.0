@@ -1026,7 +1026,7 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.0.11":
+"@platform/react@0.0.11", "@platform/react@^0.0.11":
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.11.tgz#957608ea52461d184de758d61934a5361dedb7db"
   integrity sha512-MX5L6bE5p+KcIAwKOpDKLi6GMhaUkSDnKnbdd4hpM8aaRppEtMX36zpKwTHRh4F2MPNIZ5GgNfAXtYDEB1edNg==
