@@ -1,13 +1,25 @@
+import { mergeDeepRight } from 'ramda';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { color, COLORS, css, GlamorValue, mouse, value } from './common';
 
+export type IButtonTheme = {
+  enabledColor: string;
+  disabledColor: string;
+};
+
+export const THEME: IButtonTheme = {
+  enabledColor: COLORS.BLUE,
+  disabledColor: color.format(-0.3) as string,
+};
+
 export type IButtonProps = mouse.IMouseEventProps & {
   children?: React.ReactNode;
   label?: string;
-  isActive?: boolean;
+  isEnabled?: boolean;
+  theme?: Partial<IButtonTheme>;
   style?: GlamorValue;
 };
 
@@ -15,10 +27,14 @@ export type IButtonState = {
   isDown?: boolean;
 };
 
+/**
+ * A simple clickable button primitive.
+ */
 export class Button extends React.PureComponent<IButtonProps, IButtonState> {
   public state: IButtonState = {};
   private mouse: mouse.IMouseHandlers;
   private unmounted$ = new Subject();
+  private state$ = new Subject<IButtonState>();
 
   /**
    * [Lifecycle]
@@ -28,12 +44,15 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
     this.mouse = mouse.fromProps(props, { force: ['DOWN', 'UP'] });
     const mouse$ = this.mouse.events$.pipe(
       takeUntil(this.unmounted$),
-      filter(() => this.isActive),
+      filter(() => this.isEnabled),
     );
 
-    mouse$.pipe(filter(e => e.type === 'DOWN')).subscribe(e => this.setState({ isDown: true }));
-    mouse$.pipe(filter(e => e.type === 'UP')).subscribe(e => this.setState({ isDown: false }));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    state$.subscribe(e => this.setState(e));
+    mouse$.pipe(filter(e => e.type === 'DOWN')).subscribe(e => this.state$.next({ isDown: true }));
+    mouse$.pipe(filter(e => e.type === 'UP')).subscribe(e => this.state$.next({ isDown: false }));
   }
+
   public componentWillUnmount() {
     this.unmounted$.next();
   }
@@ -41,8 +60,13 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
   /**
    * [Properties]
    */
-  public get isActive() {
-    return value.defaultValue(this.props.isActive, true);
+  public get isEnabled() {
+    return value.defaultValue(this.props.isEnabled, true);
+  }
+
+  public get theme() {
+    const { theme = {} } = this.props;
+    return mergeDeepRight(THEME, theme);
   }
 
   /**
@@ -50,23 +74,22 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
    */
   public render() {
     const { isDown = false } = this.state;
-    const isActive = this.isActive;
+    const isEnabled = this.isEnabled;
+    const theme = this.theme;
     const styles = {
       base: css({
         position: 'relative',
         display: 'inline-block',
-        color: isActive && COLORS.BLUE,
-        cursor: isActive && 'pointer',
-        transform: isActive && `translateY(${isDown ? 1 : 0}px)`,
+        color: isEnabled ? theme.enabledColor : theme.disabledColor,
+        cursor: isEnabled && 'pointer',
+        transform: isEnabled && `translateY(${isDown ? 1 : 0}px)`,
         userSelect: 'none',
         marginRight: 8,
       }),
     };
 
-    const events = isActive ? this.mouse.events : {};
-
     return (
-      <div {...css(styles.base, this.props.style)} {...events}>
+      <div {...css(styles.base, this.props.style)} {...this.mouse.events}>
         {this.props.label}
         {this.props.children}
       </div>

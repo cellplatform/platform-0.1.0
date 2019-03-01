@@ -9,6 +9,8 @@ import {
   ShellIndexConnectEventHandler,
 } from './types';
 
+const GREEN = '#A6E22E';
+
 export type IShellIndexProps = {
   style?: GlamorValue;
   selected?: string;
@@ -88,24 +90,41 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
   }
 
   private renderList() {
-    const { selected } = this.props;
     const databases = this.databases;
     const styles = {
       base: css({}),
+    };
+    const elList = databases.map(dir => this.renderListItem({ dir }));
+    return <div {...styles.base}>{elList}</div>;
+  }
+
+  private renderListItem(args: { dir: string }) {
+    const BULLET_SIZE = 8;
+    const { selected } = this.props;
+    const { dir } = args;
+    const isSelected = dir === selected;
+    const styles = {
       li: css({
         borderBottom: `solid 1px ${color.format(-0.1)}`,
         padding: 8,
+        Flex: 'horizontal-spaceBetween-center',
+        cursor: !isSelected && 'pointer',
+      }),
+      selected: css({
+        width: BULLET_SIZE,
+        height: BULLET_SIZE,
+        borderRadius: BULLET_SIZE,
+        border: `solid 1px ${color.format(-0.1)}`,
+        backgroundColor: GREEN,
       }),
     };
-    const elList = databases.map((dir, i) => {
-      const isSelected = dir === selected;
-      return (
-        <div key={dir} {...styles.li}>
-          <Button label={dir} onClick={this.selectHandler(dir)} isActive={!isSelected} />
-        </div>
-      );
-    });
-    return <div {...styles.base}>{elList}</div>;
+    const elSelectedBullet = isSelected && <div {...styles.selected} />;
+    return (
+      <div key={dir} {...styles.li} onClick={this.selectHandler(dir)}>
+        <Button label={dir} isEnabled={!isSelected} theme={{ disabledColor: color.format(-0.7) }} />
+        {elSelectedBullet}
+      </div>
+    );
   }
 
   private renderActions() {
