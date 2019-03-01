@@ -15,7 +15,7 @@
     "@types/chai": "4.1.7",
     "@types/mocha": "5.2.6",
     "chai": "4.2.0",
-    "mocha": "6.0.1"
+    "mocha": "6.0.2"
   },
   "devDependencies": {
     "@platform/ts.libs": "3.3.2"

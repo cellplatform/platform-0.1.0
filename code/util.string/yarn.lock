@@ -150,10 +150,10 @@
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.50.tgz#7f21d47c650f85b8a61c2b608adf8aa0f1a8fccf"
   integrity sha512-hkGWVWyPEXkXSh7rxJIGg6ELG1/WlR2BB8JemZW8v2l50bfMUw6CjrETJpgd9i3jUxaxOE/X57DvclWd9wkZhg==
 
-"@types/underscore.string@^0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@types/underscore.string/-/underscore.string-0.0.33.tgz#1cf9f12e5dc56b1ff7ffa04ffb9c8c0188548647"
-  integrity sha512-Lx2mWs8099HAaCzfxSse1MOSXor4jS1HgIwzhnuOehcPOQiIQb9UGy2B/NjinolZX46yUUfF4VYvLU3YuM0Inw==
+"@types/underscore.string@^0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@types/underscore.string/-/underscore.string-0.0.34.tgz#5bb57ce0c43ca8cc3d0f6a39a9e674429b8d016d"
+  integrity sha512-ixQkLhh+DPyYWEg6EZwOuDJoGAkcbcPXQqd4nk8nzrrlAFngVP56yfLpRu5d4vnlccO4Vb5apOzGIk/M0rINbQ==
   dependencies:
     "@types/underscore" "*"
 

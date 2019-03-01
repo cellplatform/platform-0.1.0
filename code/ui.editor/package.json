@@ -22,7 +22,7 @@
     "prosemirror-markdown": "1.3.0",
     "prosemirror-schema-basic": "1.0.0",
     "prosemirror-state": "1.2.2",
-    "prosemirror-view": "1.8.1",
+    "prosemirror-view": "1.8.2",
     "react-inspector": "2.3.1"
   },
   "devDependencies": {
@@ -32,9 +32,9 @@
     "@types/prosemirror-keymap": "1.0.1",
     "@types/prosemirror-markdown": "1.0.2",
     "@types/prosemirror-schema-basic": "1.0.1",
-    "@types/prosemirror-state": "1.2.2",
-    "@types/prosemirror-view": "1.3.0",
-    "@uiharness/dev": "0.1.29"
+    "@types/prosemirror-state": "1.2.3",
+    "@types/prosemirror-view": "1.3.1",
+    "@uiharness/dev": "0.1.38"
   },
   "resolutions": {
     "@types/react": "16.7.17"
