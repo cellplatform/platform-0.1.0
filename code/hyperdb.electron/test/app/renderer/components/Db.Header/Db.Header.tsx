@@ -1,39 +1,93 @@
 import * as React from 'react';
-import { color, css, GlamorValue, IMAGES, t, COLORS } from '../../common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { color, COLORS, css, GlamorValue, IMAGES, t } from '../../common';
 import { TextInput, TextInputChangeEvent } from '../primitives';
 
 export type IDbHeaderProps = {
-  db?: t.ITestRendererDb;
+  db: t.ITestRendererDb;
   style?: GlamorValue;
 };
 
-export class DbHeader extends React.PureComponent<IDbHeaderProps> {
+export type IDbHeaderState = {
+  name?: string;
+};
+
+export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState> {
+  public state: IDbHeaderState = {};
+  private unmounted$ = new Subject();
+  private state$ = new Subject<IDbHeaderState>();
+
+  /**
+   * [Lifecycle]
+   */
   constructor(props: IDbHeaderProps) {
     super(props);
+    const { db } = this.props;
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    db.watch$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.updateState());
+    db.watch();
+    this.updateState();
   }
 
+  public componentWillUnmount() {
+    this.unmounted$.next();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get isPrimary() {
+    const { db } = this.props;
+    return db.key === db.localKey;
+  }
+
+  /**
+   * [Methods]
+   */
+  public async updateState() {
+    const { db } = this.props;
+    const name = (await db.get('sysName')).value;
+    this.state$.next({ name });
+  }
+
+  /**
+   * [Render]
+   */
   public render() {
     const { db } = this.props;
-    if (!db) {
-      return null;
-    }
+    const isPrimary = this.isPrimary;
 
     const styles = {
       base: css({
         boxSizing: 'border-box',
-        borderBottom: `solid 8px ${color.format(-0.08)}`,
-        marginBottom: 20,
-        paddingBottom: 16,
-        Flex: 'horizontal-center-center',
+        marginBottom: 40,
+        Flex: 'horizontal-start-center',
+      }),
+      iconOuter: css({
+        position: 'relative',
+        marginRight: 10,
       }),
       icon: css({
         position: 'relative',
         Image: [IMAGES.DB, IMAGES.DB2x, 38, 38],
-        marginRight: 10,
-        top: 3,
+      }),
+      typeBadge: css({
+        Absolute: [null, 0, -18, 0],
+        backgroundColor: COLORS.CLI.CYAN,
+        color: color.format(-0.5),
+        border: `solid 1px ${color.format(-0.1)}`,
+        borderRadius: 2,
+        padding: 2,
+        fontSize: 7,
+        fontWeight: 'bold',
+        textAlign: 'center',
       }),
       body: css({
         flex: 1,
+        borderBottom: `solid 8px ${color.format(-0.08)}`,
+        paddingBottom: 6,
       }),
       textbox: css({
         // borderBottom: `solid 1px ${color.format(-0.1)}`,
@@ -44,7 +98,6 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps> {
         fontWeight: 'bold',
         color: color.format(-0.2),
         marginTop: 3,
-        marginLeft: 4,
       }),
       key: css({
         color: COLORS.CLI.CYAN,
@@ -53,22 +106,27 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps> {
     const elPublicKey = <span {...styles.key}>{db.key}</span>;
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div {...styles.icon} />
+        <div {...styles.iconOuter}>
+          <div {...styles.icon} />
+          <div {...styles.typeBadge}>{isPrimary ? 'PRIMARY' : 'PEER'}</div>
+        </div>
         <div {...styles.body}>
           <TextInput
             style={styles.textbox}
             onChange={this.handleNameChange}
-            valueStyle={{ fontSize: 22 }}
+            value={this.state.name}
+            valueStyle={{ fontSize: 22, color: color.format(-0.7) }}
             placeholder={'Unnamed'}
             placeholderStyle={{ color: color.format(-0.2) }}
           />
-          <div {...styles.keyOuter}>public-key:{elPublicKey} (primary)</div>
+          <div {...styles.keyOuter}>{elPublicKey} (public-key)</div>
         </div>
       </div>
     );
   }
 
-  private handleNameChange = (e: TextInputChangeEvent) => {
-    console.log('e', e);
+  private handleNameChange = async (e: TextInputChangeEvent) => {
+    const { db } = this.props;
+    await db.put('sysName', e.to);
   };
 }

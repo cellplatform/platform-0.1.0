@@ -45,7 +45,6 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       )
       .subscribe(async e => {
         const dir = `${await this.store.get('dir')}/${this.selected}`;
-        console.log('dir', dir);
         const selectedDb = dir ? await renderer.getOrCreate({ ipc, dir }) : undefined;
         this.state$.next({ selectedDb });
       });
@@ -58,6 +57,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   /**
    * [Properties]
    */
+
   private get store() {
     return this.context.store as t.ITestStore;
   }
@@ -80,6 +80,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   /**
    * [Render]
    */
+
   public render() {
     const styles = {
       base: css({
@@ -114,7 +115,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   private renderMain() {
     const { selected, store, selectedDb } = this.state;
     const data = { selected, store };
-    const elHeader = selected && <DbHeader db={selectedDb} />;
+    const elHeader = selectedDb && <DbHeader key={selectedDb.key} db={selectedDb} />;
     return (
       <div>
         {elHeader}
@@ -126,6 +127,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   /**
    * [Handlers]
    */
+
   private handleNew = async () => {
     const { ipc, log } = this.context;
 
@@ -137,8 +139,6 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     const dir = `${values.dir}/${name}`;
 
     try {
-      console.log('dir', dir);
-
       // Create the database.
       const res = await renderer.getOrCreate({ ipc, dir, dbKey: undefined });
       this.state$.next({ selected: name });
