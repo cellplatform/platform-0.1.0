@@ -1,13 +1,11 @@
-import { fs } from '@platform/fs';
-import { app } from 'electron';
+import { create, Db, Swarm } from '@platform/hyperdb';
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
-import { is, value } from '../common';
-import { Db, Swarm, create } from '@platform/hyperdb';
+import { value } from '../common';
 import * as t from './types';
 
-type Ref = { db: Db; swarm: Swarm; path: string; version?: string };
+type Ref = { db: Db; swarm: Swarm; dir: string; version?: string };
 type Refs = { [key: string]: Ref };
 const refs: Refs = {};
 
@@ -24,12 +22,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     const { dir, dbKey, version } = args;
 
     // Construct the DB.
-    const paths = {
-      dev: dir,
-      prod: fs.join(app.getPath('userData'), dir),
-    };
-    const path = is.prod ? paths.prod : paths.dev;
-    const res = await create({ dir: path, dbKey, version });
+    const res = await create({ dir, dbKey, version });
     const { db, swarm } = res;
 
     // Ferry DB events to clients.
@@ -46,7 +39,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
         version,
       },
     });
-    const ref: Ref = { db, swarm, path };
+    const ref: Ref = { db, swarm, dir };
     logCreated(log, ref);
     return ref;
   };
@@ -139,7 +132,7 @@ const logCreated = (log: t.ILog, ref: Ref) => {
   const external = isExternal ? ` (${log.magenta('external')})` : ` (${log.yellow('master')})`;
 
   log.info(`Database ${log.yellow('created')}`);
-  log.info.gray(`- storage:  ${ref.path}`);
+  log.info.gray(`- storage:  ${ref.dir}`);
   log.info.gray(`- key:      ${log.cyan(key)}${external}`);
   log.info.gray(`- localKey: ${isExternal ? localKey : log.cyan(localKey)}`);
   log.info.gray(`- version:  ${ref.version ? ref.version : '(latest)'}`);
@@ -149,7 +142,7 @@ const logCreated = (log: t.ILog, ref: Ref) => {
 const logConnection = (log: t.ILog, ref: Ref) => {
   const action = ref.swarm.isActive ? 'connected' : 'disconnected';
   log.info(`Database ${log.yellow(action)} from swarm`);
-  log.info.gray(`- storage:  ${ref.path}`);
+  log.info.gray(`- storage:  ${ref.dir}`);
   log.info.gray(`- key:      ${ref.db.key}`);
   log.info.gray(`- version:  ${ref.version ? ref.version : '(latest)'}`);
   log.info();

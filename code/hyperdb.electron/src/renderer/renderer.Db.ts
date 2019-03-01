@@ -22,7 +22,6 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
    */
   public static async create<D extends object = any>(args: IConstructorArgs) {
     const db = new RendererDb<D>(args);
-    console.log('db', db);
     await db.ready;
     return db;
   }
@@ -189,7 +188,6 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
     const payload: E['payload'] = {
       db: { dir, dbKey, version },
     };
-    console.log('syncState', payload);
     return this._.ipc.send<E>('DB/state/get', payload, TARGET_MAIN);
   }
 
