@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, distinctUntilChanged, delay, debounceTime } from 'rxjs/operators';
 
 import { css, GlamorValue, renderer, t } from '../../common';
 import { DbHeader } from '../Db.Header';
@@ -13,6 +13,7 @@ export type IShellProps = {
 
 export type IShellState = {
   selected?: string; // database [dir].
+  selectedDb?: t.IRendererDb;
   store?: Partial<t.ITestStoreSettings>;
 };
 
@@ -28,11 +29,31 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
    */
 
   public componentDidMount() {
+    const { ipc } = this.context;
+
     const store$ = this.store.change$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
     store$.subscribe(e => this.updateState());
     this.updateState();
+
+    state$
+      // get the currently selected database.
+      .pipe(
+        debounceTime(0),
+        distinctUntilChanged((prev, next) => prev.selected === next.selected),
+      )
+      .subscribe(async e => {
+        const dir = this.selected;
+        const selectedDb = dir ? await renderer.getOrCreate({ ipc, dir }) : undefined;
+        console.log('selected >> ', this.selected);
+        console.log('selectedDb', selectedDb);
+        this.state$.next({ selectedDb });
+
+
+        const s = selectedDb ? selectedDb.toString() : undefined;
+        console.log('s', s);
+      });
   }
 
   public componentWillUnmount() {
@@ -58,11 +79,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public async updateState() {
     const store = await this.store.read();
     this.state$.next({ store });
-    this.select(this.selected);
-  }
-
-  public select(selected: string) {
-    this.state$.next({ selected });
+    this.state$.next({ selected: this.selected });
   }
 
   /**
@@ -126,8 +143,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
     try {
       // Create the database.
-      const res = await renderer.create({ ipc, dir, dbKey: undefined });
-      this.select(name);
+      const res = await renderer.getOrCreate({ ipc, dir, dbKey: undefined });
+      this.state$.next({ selected: name });
     } catch (error) {
       log.error(error);
     }
@@ -138,6 +155,6 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   };
 
   private handleSelect = (e: ShellIndexSelectEvent) => {
-    this.select(e.dir);
+    this.state$.next({ selected: e.dir });
   };
 }

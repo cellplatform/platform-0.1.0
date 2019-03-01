@@ -103,6 +103,7 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
     const { selected } = this.props;
     const { dir } = args;
     const isSelected = dir === selected;
+
     const styles = {
       li: css({
         borderBottom: `solid 1px ${color.format(-0.1)}`,
