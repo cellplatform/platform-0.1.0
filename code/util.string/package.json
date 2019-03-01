@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.string",
-  "version": "0.0.26",
+  "version": "0.0.28",
   "description": "String helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,13 +13,13 @@
     "chmod": "chmod 777 node_modules/.bin/ts"
   },
   "dependencies": {
-    "@types/underscore.string": "^0.0.34",
+    "@types/underscore.string": "^0.0.35",
     "escape-string-regexp": "^1.0.5",
     "underscore.string": "^3.3.5"
   },
   "devDependencies": {
-    "@platform/test": "0.0.29",
-    "@platform/ts": "3.3.57",
+    "@platform/test": "0.0.30",
+    "@platform/ts": "3.3.59",
     "@types/escape-string-regexp": "^1.0.0"
   },
   "files": [
