@@ -1,21 +1,11 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
-import { css, color, GlamorValue, renderer, t } from '../../common';
-import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
-import { ObjectView } from '../primitives';
-import { Test } from '../../Test';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { css, GlamorValue, renderer, t } from '../../common';
 import { DbHeader } from '../Db.Header';
+import { ObjectView } from '../primitives';
+import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
 
 export type IShellProps = {
   style?: GlamorValue;
@@ -53,12 +43,23 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     return this.context.store as t.ITestStore;
   }
 
+  private get selected() {
+    const { selected, store } = this.state;
+    const databases = (store || {}).databases || [];
+    return selected ? selected : databases[0];
+  }
+
   /**
    * [Methods]
    */
   public async updateState() {
     const store = await this.store.read();
     this.setState({ store });
+    this.select(this.selected);
+  }
+
+  public select(dir: string) {
+    this.setState({ selected: dir });
   }
 
   /**
@@ -85,7 +86,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       <div {...css(styles.base, this.props.style)}>
         <ShellIndex
           style={styles.index}
-          selected={this.state.selected}
+          selected={this.selected}
           onNew={this.handleNew}
           onConnect={this.handleConnect}
           onSelect={this.handleSelect}
@@ -98,13 +99,10 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   private renderMain() {
     const { selected, store } = this.state;
     const data = { selected, store };
-
     const elHeader = selected && <DbHeader />;
-
     return (
       <div>
         {elHeader}
-
         <ObjectView data={data} />
       </div>
     );
@@ -120,17 +118,13 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     const values = await this.store.read('dir', 'databases');
     const databases = values.databases || [];
     const primaryCount = databases.filter(name => name.startsWith('primary-')).length;
-    const dir = `${values.dir}/primary-${primaryCount + 1}`;
+    const name = `primary-${primaryCount + 1}`;
+    const dir = `${values.dir}/${name}`;
 
     try {
       // Create the database.
       const res = await renderer.create({ ipc, dir, dbKey: undefined });
-      const db = res.db;
-      console.log('db', db);
-      console.group('🌳 HyperDB (renderer)');
-      console.log('- dbKey:', db.key);
-      console.log('- localKey:', db.localKey);
-      console.groupEnd();
+      this.select(name);
     } catch (error) {
       log.error(error);
     }
@@ -141,6 +135,6 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   };
 
   private handleSelect = (e: ShellIndexSelectEvent) => {
-    this.setState({ selected: e.dir });
+    this.select(e.dir);
   };
 }

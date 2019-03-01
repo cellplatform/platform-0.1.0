@@ -51,6 +51,12 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
     return this.context.store as t.ITestStore;
   }
 
+  private get databases() {
+    const { databases = [] } = this.state;
+    databases.sort();
+    return databases;
+  }
+
   /**
    * [Methods]
    */
@@ -80,8 +86,8 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
   }
 
   private renderList() {
-    const { databases = [] } = this.state;
     const { selected } = this.props;
+    const databases = this.databases;
     const styles = {
       base: css({}),
       li: css({
@@ -92,7 +98,7 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
     const elList = databases.map((dir, i) => {
       const isSelected = dir === selected;
       return (
-        <div key={i} {...styles.li}>
+        <div key={dir} {...styles.li}>
           <Button label={dir} onClick={this.selectHandler(dir)} isActive={!isSelected} />
         </div>
       );
@@ -121,7 +127,7 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
           <Button label={'new'} onClick={this.props.onNew} />
         </div>
         <div {...styles.section}>
-          <Button label={'connect'} onClick={this.props.onConnect} />
+          <Button label={'join'} onClick={this.props.onConnect} />
         </div>
       </div>
     );
