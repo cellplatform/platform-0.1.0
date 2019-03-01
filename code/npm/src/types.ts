@@ -1,6 +1,7 @@
 export interface INpmInfo {
   name: string;
   latest: string;
+  size: number;
   json: { [key: string]: any };
 }
 
