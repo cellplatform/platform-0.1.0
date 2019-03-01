@@ -3,10 +3,11 @@ import '@babel/polyfill';
 
 import { renderer } from '@platform/electron/lib/renderer';
 import * as React from 'react';
-import { Test } from './Test';
+// import { Test } from './Test';
+import { Shell } from './components/Shell';
 
 /**
  * [Renderer] entry-point.
  */
-const el = <Test />;
+const el = <Shell />;
 renderer.render(el, 'root').then(context => context.log.info('renderer loaded!'));

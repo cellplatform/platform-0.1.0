@@ -5,8 +5,9 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 // import renderer from '../../../src/renderer';
-import { Button, color, css, ObjectView, R, value, renderer, t } from '../common';
+import { color, css, R, value, renderer, t } from '../common';
 import { TestPanel } from './TestPanel';
+import { ObjectView, Button } from '../components/primitives';
 // import * as t from '../types';
 
 type IRendererDb = renderer.IRendererDb;
@@ -152,6 +153,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
           <div {...styles.middle}>{this.renderVersions()}</div>
           <div {...styles.right}>
             <ObjectView name={'state'} data={this.state.data} expandPaths={['$.values']} />
+            <hr {...styles.hr} />
+            <ObjectView name={'store'} data={this.store.read()} />
           </div>
         </div>
       </TestPanel>
