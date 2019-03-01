@@ -11,6 +11,7 @@ import {
 
 export type IShellIndexProps = {
   style?: GlamorValue;
+  selected?: string;
   onSelect?: ShellIndexSelectEventHandler;
   onNew?: ShellIndexNewEventHandler;
   onConnect?: ShellIndexConnectEventHandler;
@@ -80,18 +81,19 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
 
   private renderList() {
     const { databases = [] } = this.state;
+    const { selected } = this.props;
     const styles = {
       base: css({}),
       li: css({
         borderBottom: `solid 1px ${color.format(-0.1)}`,
         padding: 8,
-        cursor: 'pointer',
       }),
     };
     const elList = databases.map((dir, i) => {
+      const isSelected = dir === selected;
       return (
         <div key={i} {...styles.li}>
-          <Button label={dir} onClick={this.selectHandler(dir)} />
+          <Button label={dir} onClick={this.selectHandler(dir)} isActive={!isSelected} />
         </div>
       );
     });

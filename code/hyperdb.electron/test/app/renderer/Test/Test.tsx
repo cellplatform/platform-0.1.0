@@ -38,7 +38,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   public async componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e as ITestState));
-    this.db = await this.init();
+    // this.db = await this.init();
   }
 
   public componentWillUnmount() {
