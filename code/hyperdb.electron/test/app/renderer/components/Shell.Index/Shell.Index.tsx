@@ -29,13 +29,15 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
   public context!: renderer.ReactContext;
   public state: IShellIndexState = { databases: [] };
   private unmounted$ = new Subject();
+  private state$ = new Subject<IShellIndexState>();
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
     const store$ = this.store.change$.pipe(takeUntil(this.unmounted$));
-
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    state$.subscribe(e => this.setState(e));
     store$.subscribe(e => this.updateState());
     this.updateState();
   }
@@ -62,7 +64,7 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
    */
   public async updateState() {
     const databases = await this.store.get('databases');
-    this.setState({ databases });
+    this.state$.next({ databases });
   }
 
   /**

@@ -21,6 +21,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
   private unmounted$ = new Subject();
+  private state$ = new Subject<IShellState>();
 
   /**
    * [Lifecycle]
@@ -28,6 +29,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   public componentDidMount() {
     const store$ = this.store.change$.pipe(takeUntil(this.unmounted$));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    state$.subscribe(e => this.setState(e));
     store$.subscribe(e => this.updateState());
     this.updateState();
   }
@@ -54,12 +57,12 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
    */
   public async updateState() {
     const store = await this.store.read();
-    this.setState({ store });
+    this.state$.next({ store });
     this.select(this.selected);
   }
 
-  public select(dir: string) {
-    this.setState({ selected: dir });
+  public select(selected: string) {
+    this.state$.next({ selected });
   }
 
   /**
