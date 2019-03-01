@@ -44,7 +44,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         distinctUntilChanged(prev => prev.selected === this.selected),
       )
       .subscribe(async e => {
-        const dir = this.selected;
+        const dir = `${await this.store.get('dir')}/${this.selected}`;
+        console.log('dir', dir);
         const selectedDb = dir ? await renderer.getOrCreate({ ipc, dir }) : undefined;
         this.state$.next({ selectedDb });
       });
@@ -117,7 +118,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     return (
       <div>
         {elHeader}
-        <ObjectView data={data} />
+        <ObjectView data={data} expandLevel={2} />
       </div>
     );
   }
@@ -136,6 +137,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     const dir = `${values.dir}/${name}`;
 
     try {
+      console.log('dir', dir);
+
       // Create the database.
       const res = await renderer.getOrCreate({ ipc, dir, dbKey: undefined });
       this.state$.next({ selected: name });

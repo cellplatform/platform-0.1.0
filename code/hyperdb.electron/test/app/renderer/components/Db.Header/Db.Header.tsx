@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { color, css, GlamorValue, IMAGES, t, COLORS } from '../../common';
 import { TextInput, TextInputChangeEvent } from '../primitives';
 
@@ -58,7 +57,7 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps> {
         <div {...styles.body}>
           <TextInput
             style={styles.textbox}
-            onChange={this.handleChange}
+            onChange={this.handleNameChange}
             valueStyle={{ fontSize: 22 }}
             placeholder={'Unnamed'}
             placeholderStyle={{ color: color.format(-0.2) }}
@@ -69,7 +68,7 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps> {
     );
   }
 
-  private handleChange = (e: TextInputChangeEvent) => {
+  private handleNameChange = (e: TextInputChangeEvent) => {
     console.log('e', e);
   };
 }
