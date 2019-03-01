@@ -988,6 +988,22 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
+"@platform/electron@0.0.102":
+  version "0.0.102"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.102.tgz#ec1e70692d288bf8e4b8b4fd0285f7468384b2e3"
+  integrity sha512-gHb/8At9wxgQjASrGhK8WleMO+1CdZjJCV3/DxEjoP/Bc6k+JnPLCCDcnJ/yevoNil9aGyaJj2pk5y4ikkk9kw==
+  dependencies:
+    "@babel/polyfill" "7.2.5"
+    "@platform/fs" "0.0.36"
+    "@platform/log" "0.0.81"
+    "@platform/react" "0.0.11"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.1.0"
+    electron-log "3.0.1"
+    electron-store "2.0.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+
 "@platform/fs@0.0.36":
   version "0.0.36"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.36.tgz#034218116dff7a5d57cca3be651e40c09764c69c"

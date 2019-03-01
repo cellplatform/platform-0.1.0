@@ -1,11 +1,11 @@
 import { fs } from '@platform/fs';
 import { app, shell } from 'electron';
 import { Subject } from 'rxjs';
-import { is } from '@platform/util.is';
 
 import { IpcClient } from '../ipc/Client';
 import { Store } from './Client';
 import * as t from './types';
+import { is } from '../is/main';
 
 export * from './types';
 
