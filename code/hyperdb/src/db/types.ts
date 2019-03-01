@@ -45,6 +45,8 @@ export type IDb<D extends {} = any> = IDbProps &
   IDbMethods<D> & {
     readonly events$: Observable<DbEvent>;
     readonly watch$: Observable<IDbWatchChange<D>>;
+    readonly dispose$: Observable<{}>;
+    toString(): string;
   };
 
 /**

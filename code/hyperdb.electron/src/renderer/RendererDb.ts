@@ -172,6 +172,14 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
     this._.ipc.send<t.IDbDisconnectEvent>('DB/disconnect', { db }, TARGET_MAIN);
   }
 
+  public toString() {
+    const { dir, version } = this._;
+    let res = `${dir}/key:${this.key}`;
+    res = version ? `${res}/ver:${version}` : res;
+    res = `[db:${res}]`;
+    return res;
+  }
+
   /**
    * [Internal]
    */
