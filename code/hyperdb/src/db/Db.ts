@@ -34,7 +34,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
       const options = { valueEncoding: 'utf-8', reduce };
       const db = args.dbKey ? hyperdb(dir, dbKey, options) : hyperdb(dir, options);
       db.on('ready', async () => {
-        let result = new Db<D>(db);
+        let result = new Db<D>({ db, dir });
         result = version ? await result.checkout(version) : result;
         resolve(result);
       });
@@ -44,15 +44,19 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * [Constructor]
    */
-  private constructor(hyperdb: any) {
-    this._.db = hyperdb;
+  private constructor(args: { db: any; dir: string; version?: string }) {
+    this._.db = args.db;
+    this._.dir = args.dir;
+    this._.version = args.version;
   }
 
   /**
    * [Fields]
    */
   private readonly _ = {
+    dir: '',
     db: null as any,
+    version: undefined as string | undefined,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),
     watchers: ({} as unknown) as WatcherRefs,
@@ -174,7 +178,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
    *      by the `db.version` method.
    */
   public async checkout(version: string) {
-    return new Db<D>(this._.db.checkout(version));
+    const db = this._.db.checkout(version);
+    const dir = this._.dir;
+    return new Db<D>({ db, dir, version });
   }
 
   /**
@@ -258,6 +264,14 @@ export class Db<D extends object = any> implements t.IDb<D> {
         watchers[key].destroy();
       }
     });
+  }
+
+  public toString() {
+    const { dir, version } = this._;
+    let res = `${dir}/key:${this.key}`;
+    res = version ? `${res}/ver:${version}` : res;
+    res = `[db:${res}]`;
+    return res;
   }
 
   /**

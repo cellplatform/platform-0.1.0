@@ -4,10 +4,11 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import renderer from '../../../src/renderer';
-import { Button, color, css, ObjectView, R, value } from './common';
+// import renderer from '../../../src/renderer';
+import { color, css, R, value, renderer, t } from '../common';
 import { TestPanel } from './TestPanel';
-import * as t from '../types';
+import { ObjectView, Button } from '../components/primitives';
+// import * as t from '../types';
 
 type IRendererDb = renderer.IRendererDb;
 export type ITestState = {
@@ -37,7 +38,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
   public async componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e as ITestState));
-    this.db = await this.init();
+    // this.db = await this.init();
   }
 
   public componentWillUnmount() {
@@ -152,6 +153,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
           <div {...styles.middle}>{this.renderVersions()}</div>
           <div {...styles.right}>
             <ObjectView name={'state'} data={this.state.data} expandPaths={['$.values']} />
+            <hr {...styles.hr} />
+            <ObjectView name={'store'} data={this.store.read()} />
           </div>
         </div>
       </TestPanel>

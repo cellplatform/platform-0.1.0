@@ -55,7 +55,8 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
 
     // Monitor data coming from process.
     const next = (type: ICommandInfo['type'], chunk: Buffer) => {
-      formatOutput(chunk).forEach(text => output$.next({ type, text }));
+      const lines = formatOutput(chunk);
+      lines.forEach(text => output$.next({ type, text }));
     };
     if (child.stdout) {
       child.stdout.on('data', (chunk: Buffer) => next('stdout', chunk));

@@ -52,16 +52,20 @@ export async function install(
   };
 
   const next = (type: INpmInstallEvent['type']) => {
+    if (!events$) {
+      return;
+    }
     result = formatResult({ result, timer });
-    if (events$) {
-      const info = result.info[result.info.length - 1];
-      const error = result.errors[result.errors.length - 1];
-      events$.next({
-        type,
-        result,
-        info,
-        error,
-      });
+    const info = result.info[result.info.length - 1];
+    const error = result.errors[result.errors.length - 1];
+    events$.next({
+      type,
+      result,
+      info,
+      error,
+    });
+    if (type === 'COMPLETE') {
+      events$.complete();
     }
   };
 
@@ -72,8 +76,8 @@ export async function install(
     }
   };
 
-  const onData = (data: Buffer, isError: boolean) => {
-    const text = formatInfoLine(data.toString());
+  const onData = (text: string, isError: boolean) => {
+    text = formatInfoLine(text);
     isError = isErrorText(text) ? true : isError;
     if (isError) {
       text.split('\n').forEach(line => addError(line));
@@ -85,10 +89,8 @@ export async function install(
 
   // Run the command.
   const child = exec.cmd.run(`cd ${dir} \n ${cmd}`, { silent });
-
-  console.log(`\nTODO 🐷   Pass observable$ into exec.run   \n`);
-  // child.stdout.on('data', (data: Buffer) => onData(data, false));
-  // child.stderr.on('data', (data: Buffer) => onData(data, true));
+  child.stdout$.subscribe(e => onData(e, false));
+  child.stderr$.subscribe(e => onData(e, false));
 
   // Finish up.
   await child;

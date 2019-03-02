@@ -1,16 +1,20 @@
 import { log, exec, INpmInfo } from '../common';
+export type NpmInfoField = 'name' | 'version' | 'dist-tags' | 'dist' | 'license';
 
 /**
  * Lookup latest info for module from NPM.
  */
 export async function getInfo(moduleName: string): Promise<INpmInfo | undefined> {
   try {
-    const json = await getJson(moduleName);
+    const fields: NpmInfoField[] = ['name', 'version', 'dist-tags', 'dist', 'license'];
+    const json = await getJson(moduleName, fields);
     const name = json.name;
     const latest = json['dist-tags'].latest;
+    const size = json.dist.unpackedSize;
     return {
       name,
       latest,
+      size,
       json,
     };
   } catch (error) {
@@ -22,12 +26,11 @@ export async function getInfo(moduleName: string): Promise<INpmInfo | undefined>
  * Lookup the latest version of a module on NPM.
  */
 export async function getVersion(moduleName: string) {
-  const json = await getJson(moduleName);
+  const json = await getJson(moduleName, ['dist-tags']);
   if (!json) {
     throw new Error(`Cannot get version for '${moduleName}' as it could not be found on NPM.`);
   }
-  const dist = json['dist-tags'];
-  return dist ? (dist.latest as string) : '';
+  return json.latest;
 }
 
 /**
@@ -51,9 +54,9 @@ export async function getVersions(modules: ({ [moduleName: string]: string }) | 
 /**
  * INTERNAL
  */
-async function getJson(moduleName: string, options: string = ''): Promise<any> {
+async function getJson(moduleName: string, fields: NpmInfoField[]): Promise<any> {
+  const options = fields.join(' ');
   const cmd = `npm info ${moduleName} --json ${options}`.trim();
-
   const parseJson = (text: string) => {
     try {
       const json = JSON.parse(text);
@@ -67,7 +70,8 @@ async function getJson(moduleName: string, options: string = ''): Promise<any> {
 
   try {
     const result = await exec.cmd.run(cmd, { silent: true });
-    return result.info.length > 0 ? parseJson(result.info.join('\n')) : undefined;
+    const text = result.info.join('\n');
+    return result.info.length > 0 ? parseJson(text) : undefined;
   } catch (error) {
     if (error.message.includes('Not found')) {
       return undefined; // Return nothing indicating the module was not found on NPM.

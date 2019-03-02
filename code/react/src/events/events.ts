@@ -1,7 +1,30 @@
 /**
  * Global events subscribed to only once and consumed as [Observable] event producers.
  */
-import { MouseEvent } from 'react';
+
+/**
+ * Based on [React.IMouseEvent]
+ * Note:
+ *    Repeated here as exporting this event via the Observables
+ *    is causing Typescript type-build errors.
+ */
+export type IMouseEvent = {
+  altKey: boolean;
+  button: number;
+  buttons: number;
+  clientX: number;
+  clientY: number;
+  ctrlKey: boolean;
+  metaKey: boolean;
+  movementX: number;
+  movementY: number;
+  pageX: number;
+  pageY: number;
+  relatedTarget: EventTarget;
+  screenX: number;
+  screenY: number;
+  shiftKey: boolean;
+};
 
 import { animationFrameScheduler, fromEvent as rxFromEvent, Observable, Subject } from 'rxjs';
 import { FromEventTarget } from 'rxjs/internal/observable/fromEvent';
@@ -19,10 +42,10 @@ const fromWindowEvent = <T>(event: string): Observable<T> =>
   fromEvent(is.browser ? window : undefined, event);
 
 //
-export const click$ = fromDocumentEvent<MouseEvent>('click');
-export const mouseDown$ = fromDocumentEvent<MouseEvent>('mousedown');
-export const mouseUp$ = fromDocumentEvent<MouseEvent>('mouseup');
-export const mouseMove$ = fromDocumentEvent<MouseEvent>('mousemove');
+export const click$ = fromDocumentEvent<IMouseEvent>('click');
+export const mouseDown$ = fromDocumentEvent<IMouseEvent>('mousedown');
+export const mouseUp$ = fromDocumentEvent<IMouseEvent>('mouseup');
+export const mouseMove$ = fromDocumentEvent<IMouseEvent>('mousemove');
 
 export const hashChange$ = fromWindowEvent<HashChangeEvent>('hashchange');
 export const resize$ = fromWindowEvent<{}>('resize').pipe(

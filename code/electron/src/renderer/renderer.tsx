@@ -7,13 +7,12 @@ import { init as initLog } from '../helpers/logger/renderer';
 import { init as initStore } from '../helpers/store/renderer';
 import * as t from '../types';
 import { Context, createProvider, ReactContext } from './Context';
-import { is } from '@platform/util.is';
 import { WindowsRenderer } from '../helpers/windows/renderer';
 
 const electron = (window as any).require('electron');
 const remote = electron.remote as Electron.Remote;
 
-export { Context, ReactContext, is };
+export { Context, ReactContext };
 export * from '../types';
 
 type Refs = {
