@@ -20,7 +20,7 @@
   "devDependencies": {
     "@platform/electron": "0.0.104",
     "@platform/ts": "3.3.59",
-    "@uiharness/dev": "0.1.39"
+    "@uiharness/dev": "0.1.40"
   },
   "resolutions": {
     "@types/react": "16.7.17"
