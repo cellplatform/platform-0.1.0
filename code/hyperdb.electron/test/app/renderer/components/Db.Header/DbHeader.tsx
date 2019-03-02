@@ -86,6 +86,7 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
         fontSize: 7,
         fontWeight: 'bold',
         textAlign: 'center',
+        userSelect: 'none',
       }),
       body: css({
         flex: 1,
@@ -101,9 +102,11 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
         fontWeight: 'bold',
         color: color.format(-0.2),
         marginTop: 3,
+        userSelect: 'none',
       }),
       key: css({
         color: isPrimary ? COLORS.CLI.PURPLE : COLORS.CLI.CYAN,
+        userSelect: 'text',
       }),
     };
     const elPublicKey = <span {...styles.key}>{db.key}</span>;
