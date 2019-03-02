@@ -6,6 +6,7 @@ import { css, GlamorValue, renderer, t } from '../../common';
 import { DbHeader } from '../Db.Header';
 import { ObjectView } from '../primitives';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
+import { Dialog } from '../Dialog';
 
 export type IShellProps = {
   style?: GlamorValue;
@@ -85,6 +86,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     const styles = {
       base: css({
         Absolute: 0,
+      }),
+      body: css({
+        Absolute: 0,
         Flex: 'horizontal',
       }),
       index: css({
@@ -100,14 +104,17 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <ShellIndex
-          style={styles.index}
-          selected={this.selected}
-          onNew={this.handleNew}
-          onConnect={this.handleConnect}
-          onSelect={this.handleSelect}
-        />
-        <div {...styles.main}>{this.renderMain()}</div>
+        <div {...styles.body}>
+          <ShellIndex
+            style={styles.index}
+            selected={this.selected}
+            onNew={this.handleNew}
+            onConnect={this.handleConnect}
+            onSelect={this.handleSelect}
+          />
+          <div {...styles.main}>{this.renderMain()}</div>
+        </div>
+        <Dialog />
       </div>
     );
   }
