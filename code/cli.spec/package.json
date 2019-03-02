@@ -1,0 +1,25 @@
+{
+  "name": "@platform/cli.spec",
+  "version": "0.0.0",
+  "description": "Isolated data-structures for specifying command-line programs.",
+  "main": "./lib/index",
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/util.value": "0.0.33"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.30",
+    "@platform/ts": "3.3.59"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}
