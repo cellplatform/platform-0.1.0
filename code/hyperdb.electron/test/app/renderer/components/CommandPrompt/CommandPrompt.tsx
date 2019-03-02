@@ -5,7 +5,7 @@ import minimist from 'minimist';
 
 import { color, COLORS, constants, css, events, GlamorValue, containsFocus } from '../../common';
 import { TextInput, TextInputChangeEvent } from '../primitives';
-import { InvokeCommandEventHandler } from './types';
+import { InvokeCommandEventHandler, InvokeCommandEvent } from './types';
 
 const { MONOSPACE } = constants.FONT;
 const { CLI } = COLORS;
@@ -15,6 +15,7 @@ export type ICommandPromptProps = {
   focusOnKeypress?: boolean;
   style?: GlamorValue;
   onInvoke?: InvokeCommandEventHandler;
+  onChange?: InvokeCommandEventHandler;
 };
 export type ICommandPromptState = {
   input?: string;
@@ -71,6 +72,13 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
   public set input(value: string | undefined) {
     this.state$.next({ input: value });
+  }
+
+  private get invokeArgs(): InvokeCommandEvent {
+    const input = this.input.trim();
+    const args = minimist(input.split(' '));
+    const command = args._[0];
+    return { input, args, command };
   }
 
   /**
@@ -142,15 +150,19 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     const input = this.input.trim();
     const { onInvoke } = this.props;
     if (onInvoke && input) {
-      const args = minimist(input.split(' '));
-      const command = args._[0];
-      if (command) {
-        onInvoke({ input, args, command });
+      const e = this.invokeArgs;
+      if (e.command) {
+        onInvoke(e);
       }
     }
   };
 
   private handleChange = async (e: TextInputChangeEvent) => {
     this.input = e.to;
+    
+    const { onChange } = this.props;
+    if (onChange) {
+      onChange(this.invokeArgs);
+    }
   };
 }

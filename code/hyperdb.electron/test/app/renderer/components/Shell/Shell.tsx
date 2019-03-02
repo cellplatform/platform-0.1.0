@@ -172,7 +172,11 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
           <ObjectView data={data} expandLevel={2} />
         </div>
         <div {...styles.footer}>
-          <CommandPrompt focusOnKeypress={true} onInvoke={this.handleInvokeCommand} />
+          <CommandPrompt
+            focusOnKeypress={true}
+            onChange={this.handleCommandChanged}
+            onInvoke={this.handleInvokeCommand}
+          />
         </div>
       </div>
     );
@@ -215,5 +219,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   private handleInvokeCommand = (e: InvokeCommandEvent) => {
     console.log('e', e);
+  };
+
+  private handleCommandChanged = (e: InvokeCommandEvent) => {
+    console.log('changed', e);
   };
 }
