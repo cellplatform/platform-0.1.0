@@ -74,13 +74,6 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     this.state$.next({ input: value });
   }
 
-  private get invokeArgs(): InvokeCommandEvent {
-    const input = this.input.trim();
-    const args = minimist(input.split(' '));
-    const command = args._[0];
-    return { input, args, command };
-  }
-
   /**
    * [Methods]
    */
@@ -88,6 +81,13 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     if (this.elInput) {
       this.elInput.focus();
     }
+  }
+
+  private eventArgs(invoked: boolean): InvokeCommandEvent {
+    const input = this.input.trim();
+    const args = minimist(input.split(' '));
+    const command = args._[0];
+    return { input, args, command, invoked };
   }
 
   public clear() {
@@ -150,7 +150,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     const input = this.input.trim();
     const { onInvoke } = this.props;
     if (onInvoke && input) {
-      const e = this.invokeArgs;
+      const e = this.eventArgs(true);
       if (e.command) {
         onInvoke(e);
       }
@@ -159,10 +159,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
   private handleChange = async (e: TextInputChangeEvent) => {
     this.input = e.to;
-    
+
     const { onChange } = this.props;
     if (onChange) {
-      onChange(this.invokeArgs);
+      onChange(this.eventArgs(false));
     }
   };
 }

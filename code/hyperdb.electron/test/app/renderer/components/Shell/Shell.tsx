@@ -225,3 +225,4 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     console.log('changed', e);
   };
 }
+
