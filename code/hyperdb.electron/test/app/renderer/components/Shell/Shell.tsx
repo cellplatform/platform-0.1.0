@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, distinctUntilChanged, delay, debounceTime } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import { css, GlamorValue, renderer, t } from '../../common';
 import { DbHeader } from '../Db.Header';
-import { ObjectView } from '../primitives';
-import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
+import { ObjectView } from '../primitives';
+import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
 
 export type IShellProps = {
   style?: GlamorValue;
@@ -47,7 +47,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         distinctUntilChanged(prev => prev.selected === this.selected),
       )
       .subscribe(async e => {
-        const dir = `${await this.store.get('dir')}/${this.selected}`;
+        const selected = this.selected;
+        const dir = selected ? `${await this.store.get('dir')}/${selected}` : undefined;
         const selectedDb = dir ? await renderer.getOrCreate({ ipc, dir }) : undefined;
         this.state$.next({ selectedDb });
       });
@@ -78,6 +79,27 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     const store = await this.store.read();
     this.state$.next({ store });
     this.state$.next({ selected: this.selected });
+  }
+
+  private async createDatabase(args: { dbKey?: string }) {
+    const { ipc, log } = this.context;
+    const { dbKey } = args;
+    const prefix = dbKey ? 'peer' : 'primary';
+
+    // Prepare the new directory name for the database.
+    const values = await this.store.read('dir', 'databases');
+    const databases = values.databases || [];
+    const primaryCount = databases.filter(name => name.startsWith(`${prefix}-`)).length;
+    const name = `${prefix}-${primaryCount + 1}`;
+    const dir = `${values.dir}/${name}`;
+
+    try {
+      // Create the database.
+      const res = await renderer.getOrCreate({ ipc, dir, dbKey });
+      this.state$.next({ selected: name });
+    } catch (error) {
+      log.error(error);
+    }
   }
 
   /**
@@ -123,7 +145,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   private renderMain() {
     const { selected, store, selectedDb } = this.state;
-    const data = { selected, store };
+    console.log('selected', selected);
+    const db = selectedDb ? { key: selectedDb.key, localKey: selectedDb.localKey } : {};
+    const data = { selected, store, db };
     const elHeader = selectedDb && <DbHeader key={selectedDb.key} db={selectedDb} />;
     return (
       <div>
@@ -147,22 +171,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
    */
 
   private handleNew = async () => {
-    const { ipc, log } = this.context;
-
-    // Prepare the new directory name for the database.
-    const values = await this.store.read('dir', 'databases');
-    const databases = values.databases || [];
-    const primaryCount = databases.filter(name => name.startsWith('primary-')).length;
-    const name = `primary-${primaryCount + 1}`;
-    const dir = `${values.dir}/${name}`;
-
-    try {
-      // Create the database.
-      const res = await renderer.getOrCreate({ ipc, dir, dbKey: undefined });
-      this.state$.next({ selected: name });
-    } catch (error) {
-      log.error(error);
-    }
+    await this.createDatabase({ dbKey: undefined });
   };
 
   private handleJoinStart = () => {
@@ -170,7 +179,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   };
 
   private handleJoinComplete = (e: JoinWithKeyEvent) => {
-    console.log('e', e);
+    const { dbKey } = e;
+    this.createDatabase({ dbKey });
+    this.clearDialog();
   };
 
   private handleSelect = (e: ShellIndexSelectEvent) => {

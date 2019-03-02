@@ -17,5 +17,7 @@ export const COLORS = {
     MAGENTA: '#FE0064',
     CYAN: '#67D9EF',
     LIME: '#A6E130',
+    DARK_RED: '#CB352F',
+    PURPLE: '#8F2298',
   },
 };

@@ -101,7 +101,7 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
         marginTop: 3,
       }),
       key: css({
-        color: COLORS.CLI.CYAN,
+        color: isPrimary ? COLORS.CLI.PURPLE : COLORS.CLI.CYAN,
       }),
     };
     const elPublicKey = <span {...styles.key}>{db.key}</span>;
