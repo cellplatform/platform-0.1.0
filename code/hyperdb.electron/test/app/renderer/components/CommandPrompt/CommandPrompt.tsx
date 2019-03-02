@@ -1,24 +1,32 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import minimist from 'minimist';
 
-import { color, COLORS, constants, css, events, GlamorValue, containsFocus } from '../../common';
+import {
+  color,
+  COLORS,
+  CommandChangeDispatcher,
+  constants,
+  containsFocus,
+  css,
+  events,
+  GlamorValue,
+  ICommandChangeArgs,
+} from '../../common';
 import { TextInput, TextInputChangeEvent } from '../primitives';
-import { InvokeCommandEventHandler, InvokeCommandEvent } from './types';
 
 const { MONOSPACE } = constants.FONT;
 const { CLI } = COLORS;
 const FONT_SIZE = 14;
 
 export type ICommandPromptProps = {
+  text?: string;
   focusOnKeypress?: boolean;
   style?: GlamorValue;
-  onInvoke?: InvokeCommandEventHandler;
-  onChange?: InvokeCommandEventHandler;
+  onChange?: CommandChangeDispatcher;
 };
 export type ICommandPromptState = {
-  input?: string;
+  // input?: string;
 };
 
 export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICommandPromptState> {
@@ -65,14 +73,13 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   /**
    * [Properties]
    */
-  public get input() {
-    const { input = '' } = this.state;
-    return input;
+  public get text() {
+    return this.props.text || '';
   }
 
-  public set input(value: string | undefined) {
-    this.state$.next({ input: value });
-  }
+  // public set text(input: string | undefined) {
+  //   this.state$.next({ input });
+  // }
 
   /**
    * [Methods]
@@ -83,15 +90,8 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     }
   }
 
-  private eventArgs(invoked: boolean): InvokeCommandEvent {
-    const input = this.input.trim();
-    const args = minimist(input.split(' '));
-    const command = args._[0];
-    return { input, args, command, invoked };
-  }
-
   public clear() {
-    this.input = undefined;
+    this.fireChange(false, '');
   }
 
   /**
@@ -129,7 +129,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
           ref={this.elInputRef}
           style={styles.textbox}
           onChange={this.handleChange}
-          value={this.input}
+          value={this.text}
           valueStyle={{
             color: color.format(0.9),
             fontFamily: MONOSPACE.FAMILY,
@@ -146,23 +146,21 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    * [Handlers]
    */
 
-  private fireInvoke = () => {
-    const input = this.input.trim();
-    const { onInvoke } = this.props;
-    if (onInvoke && input) {
-      const e = this.eventArgs(true);
-      if (e.command) {
-        onInvoke(e);
-      }
+  private fireChange(invoked: boolean, text?: string) {
+    text = (text || '').trim();
+
+    const { onChange } = this.props;
+    const e: ICommandChangeArgs = { text, invoked };
+    if (onChange) {
+      onChange(e);
     }
+  }
+
+  private fireInvoke = () => {
+    this.fireChange(true);
   };
 
   private handleChange = async (e: TextInputChangeEvent) => {
-    this.input = e.to;
-
-    const { onChange } = this.props;
-    if (onChange) {
-      onChange(this.eventArgs(false));
-    }
+    this.fireChange(false, e.to);
   };
 }

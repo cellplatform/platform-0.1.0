@@ -10,3 +10,5 @@ export * from '../../../../src/common';
 export * from '../../images';
 
 export const COLORS = constants.COLORS;
+
+export * from '../../../../src/cli'; // TEMP - will be moved to [@platform/cli.spec]

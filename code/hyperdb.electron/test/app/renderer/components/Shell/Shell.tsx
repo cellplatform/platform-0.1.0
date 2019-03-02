@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, renderer, t } from '../../common';
+import { color, css, GlamorValue, renderer, t, CommandState } from '../../common';
 import { DbHeader } from '../Db.Header';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
 import { ObjectView } from '../primitives';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
-import { CommandPrompt, InvokeCommandEvent } from '../CommandPrompt';
+import { CommandPrompt } from '../CommandPrompt';
 
 export type IShellProps = {
   style?: GlamorValue;
@@ -27,6 +27,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public context!: renderer.ReactContext;
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IShellState>>();
+  private cli = CommandState.create();
 
   /**
    * [Lifecycle]
@@ -35,6 +36,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public componentDidMount() {
     const { ipc } = this.context;
 
+    const cli$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
     const store$ = this.store.change$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
@@ -53,6 +55,11 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         const selectedDb = dir ? await renderer.getOrCreate({ ipc, dir }) : undefined;
         this.state$.next({ selectedDb });
       });
+
+    cli$.subscribe(e => {
+      console.log('CLI change', e);
+      this.forceUpdate();
+    });
   }
 
   public componentWillUnmount() {
@@ -172,11 +179,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
           <ObjectView data={data} expandLevel={2} />
         </div>
         <div {...styles.footer}>
-          <CommandPrompt
-            focusOnKeypress={true}
-            onChange={this.handleCommandChanged}
-            onInvoke={this.handleInvokeCommand}
-          />
+          <CommandPrompt focusOnKeypress={true} text={this.cli.text} onChange={this.cli.onChange} />
         </div>
       </div>
     );
@@ -216,13 +219,4 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   private clearDialog = () => {
     this.state$.next({ dialog: undefined });
   };
-
-  private handleInvokeCommand = (e: InvokeCommandEvent) => {
-    console.log('e', e);
-  };
-
-  private handleCommandChanged = (e: InvokeCommandEvent) => {
-    console.log('changed', e);
-  };
 }
-
