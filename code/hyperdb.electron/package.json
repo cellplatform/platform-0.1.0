@@ -15,6 +15,7 @@
     "tmp": "ts-node -T scripts/tmp $@"
   },
   "dependencies": {
+    "@platform/cli.spec": "0.0.0",
     "@platform/electron": "0.0.104",
     "@platform/hyperdb": "0.0.14",
     "@platform/react": "0.0.13",

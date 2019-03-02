@@ -940,6 +940,13 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@platform/cli.spec@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.0.0.tgz#1ed29c28f0ff39dd39720a68a37d4dc6b7d752af"
+  integrity sha512-YYmLVeHjrZbNkFt3kpQFQh9CLxmb/S5LOEDAfZSED+xLBXLFKKucZfjOXxoI8ESmFBTadsdkEzjvRtji9Ueh3w==
+  dependencies:
+    "@platform/util.value" "0.0.33"
+
 "@platform/cli@0.0.54":
   version "0.0.54"
   resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.54.tgz#da3585a12fe2510cdf9d42f4b901e11fdc59feb7"
@@ -1364,7 +1371,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/minimist@^1.2.0":
+"@types/minimist@1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
   integrity sha1-aaI6OtKcrwCX8G7aWbNh7i8GOfY=
