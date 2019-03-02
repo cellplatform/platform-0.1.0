@@ -7,12 +7,14 @@ import { DbHeader } from '../Db.Header';
 import { ObjectView } from '../primitives';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
 import { JoinDialog } from '../Dialog.Join';
+import { JoinWithKeyEvent } from '../Dialog.Join/types';
 
 export type IShellProps = {
   style?: GlamorValue;
 };
 
 export type IShellState = {
+  dialog?: 'JOIN';
   selected?: string; // database [dir].
   selectedDb?: t.ITestRendererDb;
   store?: Partial<t.ITestStoreSettings>;
@@ -23,7 +25,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
   private unmounted$ = new Subject();
-  private state$ = new Subject<IShellState>();
+  private state$ = new Subject<Partial<IShellState>>();
 
   /**
    * [Lifecycle]
@@ -109,12 +111,12 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
             style={styles.index}
             selected={this.selected}
             onNew={this.handleNew}
-            onConnect={this.handleConnect}
+            onConnect={this.handleJoinStart}
             onSelect={this.handleSelect}
           />
           <div {...styles.main}>{this.renderMain()}</div>
         </div>
-        <JoinDialog />
+        {this.renderDialog()}
       </div>
     );
   }
@@ -129,6 +131,15 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         <ObjectView data={data} expandLevel={2} />
       </div>
     );
+  }
+
+  private renderDialog() {
+    const { dialog } = this.state;
+    switch (dialog) {
+      case 'JOIN':
+        return <JoinDialog onClose={this.clearDialog} onJoin={this.handleJoinComplete} />;
+    }
+    return null;
   }
 
   /**
@@ -154,11 +165,19 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     }
   };
 
-  private handleConnect = () => {
-    console.log('connect');
+  private handleJoinStart = () => {
+    this.state$.next({ dialog: 'JOIN' });
+  };
+
+  private handleJoinComplete = (e: JoinWithKeyEvent) => {
+    console.log('e', e);
   };
 
   private handleSelect = (e: ShellIndexSelectEvent) => {
     this.state$.next({ selected: e.dir });
+  };
+
+  private clearDialog = () => {
+    this.state$.next({ dialog: undefined });
   };
 }

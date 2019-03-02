@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, IMAGES } from '../../common';
+import { takeUntil, filter } from 'rxjs/operators';
+import { css, color, GlamorValue, IMAGES, events } from '../../common';
 import { Dialog } from '../Dialog';
 import { TextInput, TextInputChangeEvent, Button } from '../primitives';
 import { JoinWithKeyEventHandler } from './types';
 
 export type IJoinDialogProps = {
   style?: GlamorValue;
-  onJoinClick?: JoinWithKeyEventHandler;
+  onJoin?: JoinWithKeyEventHandler;
+  onClose?: (e: {}) => void;
 };
 export type IJoinDialogState = {
   dbKey?: string;
@@ -29,6 +30,14 @@ export class JoinDialog extends React.PureComponent<IJoinDialogProps, IJoinDialo
   constructor(props: IJoinDialogProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    events.keyPress$
+      .pipe(
+        takeUntil(this.unmounted$),
+        filter(e => e.isPressed),
+        filter(e => e.key === 'Enter'),
+        filter(e => this.canJoin),
+      )
+      .subscribe(e => this.handleJoinClick());
   }
 
   public componentDidMount() {
@@ -65,7 +74,11 @@ export class JoinDialog extends React.PureComponent<IJoinDialogProps, IJoinDialo
    */
 
   public render() {
-    return <Dialog style={this.props.style}>{this.renderBody()}</Dialog>;
+    return (
+      <Dialog style={this.props.style} onClose={this.props.onClose}>
+        {this.renderBody()}
+      </Dialog>
+    );
   }
 
   private renderBody = () => {
@@ -133,7 +146,7 @@ export class JoinDialog extends React.PureComponent<IJoinDialogProps, IJoinDialo
   };
 
   private handleJoinClick = () => {
-    const { onJoinClick } = this.props;
+    const { onJoin: onJoinClick } = this.props;
     const dbKey = this.dbKey;
     if (onJoinClick && dbKey && this.canJoin) {
       onJoinClick({ dbKey });

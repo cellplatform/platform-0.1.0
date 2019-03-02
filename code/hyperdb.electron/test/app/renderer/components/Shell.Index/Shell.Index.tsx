@@ -143,11 +143,11 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
     };
     return (
       <div {...styles.base}>
-        <div {...styles.section}>
-          <Button label={'new'} onClick={this.props.onNew} />
+        <div {...styles.section} onClick={this.props.onNew}>
+          <Button label={'new'} />
         </div>
-        <div {...styles.section}>
-          <Button label={'join'} onClick={this.props.onConnect} />
+        <div {...styles.section} onClick={this.props.onConnect}>
+          <Button label={'join'} />
         </div>
       </div>
     );

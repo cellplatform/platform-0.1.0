@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, value } from '../../common';
+import { takeUntil, filter } from 'rxjs/operators';
+import { css, color, GlamorValue, value, events } from '../../common';
 import { Button } from '../primitives';
 
 export type IDialogProps = {
@@ -24,6 +24,13 @@ export class Dialog extends React.PureComponent<IDialogProps, IDialogState> {
   constructor(props: IDialogProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    events.keyPress$
+      .pipe(
+        takeUntil(this.unmounted$),
+        filter(e => e.isPressed),
+        filter(e => e.key === 'Escape'),
+      )
+      .subscribe(e => this.fireClose());
   }
 
   public componentWillUnmount() {
