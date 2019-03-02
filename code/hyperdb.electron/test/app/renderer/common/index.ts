@@ -3,7 +3,7 @@ import renderer from '../../../../src/renderer';
 import * as constants from './constants';
 
 export { t, renderer, constants };
-export { css, GlamorValue, color, events } from '@platform/react';
+export { css, GlamorValue, color, events, containsFocus } from '@platform/react';
 export { value, time } from '@platform/util.value';
 
 export * from '../../../../src/common';

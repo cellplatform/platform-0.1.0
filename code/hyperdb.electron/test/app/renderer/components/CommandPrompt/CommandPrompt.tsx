@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
-import { value, events, constants, css, color, GlamorValue, COLORS } from '../../common';
+import { filter, takeUntil } from 'rxjs/operators';
+import minimist from 'minimist';
+
+import { color, COLORS, constants, css, events, GlamorValue, containsFocus } from '../../common';
 import { TextInput, TextInputChangeEvent } from '../primitives';
 import { InvokeCommandEventHandler } from './types';
 
@@ -37,7 +39,11 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     const keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
     keypress$
       // Focus on any keypress.
-      .pipe(filter(e => this.props.focusOnKeypress))
+      .pipe(
+        filter(e => this.props.focusOnKeypress),
+        filter(() => !containsFocus(this)),
+        filter(() => (document.activeElement ? document.activeElement.tagName !== 'INPUT' : true)),
+      )
       .subscribe(e => this.focus());
 
     keypress$
@@ -48,7 +54,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     keypress$
       // Clear on CMD+K
       .pipe(filter(e => e.key === 'k' && e.metaKey))
-      .subscribe(e => (this.input = undefined));
+      .subscribe(e => this.clear());
   }
 
   public componentWillUnmount() {
@@ -74,6 +80,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     if (this.elInput) {
       this.elInput.focus();
     }
+  }
+
+  public clear() {
+    this.input = undefined;
   }
 
   /**
@@ -132,7 +142,11 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     const input = this.input.trim();
     const { onInvoke } = this.props;
     if (onInvoke && input) {
-      onInvoke({ input });
+      const args = minimist(input.split(' '));
+      const command = args._[0];
+      if (command) {
+        onInvoke({ input, args, command });
+      }
     }
   };
 

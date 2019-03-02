@@ -11,7 +11,8 @@
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare",
-    "reset": "ts-node -T scripts/reset"
+    "reset": "ts-node -T scripts/reset",
+    "tmp": "ts-node -T scripts/tmp $@"
   },
   "dependencies": {
     "@platform/electron": "0.0.104",
@@ -21,11 +22,13 @@
     "@uiharness/electron": "0.3.140",
     "discovery-swarm": "5.1.4",
     "hyperdb": "3.5.0",
+    "minimist": "1.2.0",
     "react": "16.8.3"
   },
   "devDependencies": {
     "@platform/test": "0.0.30",
     "@platform/ts": "3.3.59",
+    "@types/minimist": "1.2.0",
     "@uiharness/dev": "0.1.40"
   },
   "files": [
