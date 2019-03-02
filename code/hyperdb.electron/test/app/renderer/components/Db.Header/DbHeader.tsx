@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, IMAGES, t } from '../../common';
+import { color, COLORS, css, GlamorValue, IMAGES, t, constants } from '../../common';
 import { TextInput, TextInputChangeEvent } from '../primitives';
+
+const { MONOSPACE } = constants.FONT;
 
 export type IDbHeaderProps = {
   db: t.ITestRendererDb;
@@ -94,7 +96,7 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
         // borderBottom: `solid 1px ${color.format(-0.1)}`,
       }),
       keyOuter: css({
-        fontFamily: 'monospace',
+        fontFamily: MONOSPACE.FAMILY,
         fontSize: 11,
         fontWeight: 'bold',
         color: color.format(-0.2),

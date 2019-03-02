@@ -2,12 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, renderer, t } from '../../common';
+import { color, css, GlamorValue, renderer, t } from '../../common';
 import { DbHeader } from '../Db.Header';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
 import { ObjectView } from '../primitives';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
+import { CommandPrompt, InvokeCommandEvent } from '../CommandPrompt';
 
 export type IShellProps = {
   style?: GlamorValue;
@@ -121,8 +122,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       }),
       main: css({
         position: 'relative',
-        padding: 20,
         flex: 1,
+        display: 'flex',
       }),
     };
 
@@ -145,14 +146,34 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   private renderMain() {
     const { selected, store, selectedDb } = this.state;
-    console.log('selected', selected);
     const db = selectedDb ? { key: selectedDb.key, localKey: selectedDb.localKey } : {};
     const data = { selected, store, db };
+
+    const styles = {
+      base: css({
+        flex: 1,
+        Flex: 'vertical',
+      }),
+      body: css({
+        flex: 1,
+        padding: 20,
+      }),
+      footer: css({
+        position: 'relative',
+        borderTop: `solid 5px ${color.format(-0.1)}`,
+      }),
+    };
+
     const elHeader = selectedDb && <DbHeader key={selectedDb.key} db={selectedDb} />;
     return (
-      <div>
-        {elHeader}
-        <ObjectView data={data} expandLevel={2} />
+      <div {...styles.base}>
+        <div {...styles.body}>
+          {elHeader}
+          <ObjectView data={data} expandLevel={2} />
+        </div>
+        <div {...styles.footer}>
+          <CommandPrompt focusOnKeypress={true} onInvoke={this.handleInvokeCommand} />
+        </div>
       </div>
     );
   }
@@ -190,5 +211,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   private clearDialog = () => {
     this.state$.next({ dialog: undefined });
+  };
+
+  private handleInvokeCommand = (e: InvokeCommandEvent) => {
+    console.log('e', e);
   };
 }
