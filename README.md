@@ -49,6 +49,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - [@platform/ts](/code/ts) 
 - [@platform/fs](/code/fs)
 - [@platform/cli](/code/cli)
+- [@platform/cli.spec](/code/cli.spec)
 - [@platform/test](/code/test)
 - [@platform/log](/code/log)
 - [@platform/electron](/code/electron)
