@@ -6,7 +6,7 @@ import { css, GlamorValue, renderer, t } from '../../common';
 import { DbHeader } from '../Db.Header';
 import { ObjectView } from '../primitives';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
-import { Dialog } from '../Dialog';
+import { JoinDialog } from '../Dialog.Join';
 
 export type IShellProps = {
   style?: GlamorValue;
@@ -114,7 +114,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
           />
           <div {...styles.main}>{this.renderMain()}</div>
         </div>
-        <Dialog />
+        <JoinDialog />
       </div>
     );
   }

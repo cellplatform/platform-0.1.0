@@ -126,6 +126,10 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
     );
   }
 
+  /**
+   * [Handlers]
+   */
+
   private handleNameChange = async (e: TextInputChangeEvent) => {
     const { db } = this.props;
     await db.put('.sys/dbname', e.to);

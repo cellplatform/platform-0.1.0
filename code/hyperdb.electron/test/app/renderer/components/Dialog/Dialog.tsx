@@ -50,12 +50,13 @@ export class Dialog extends React.PureComponent<IDialogProps, IDialogState> {
         backgroundColor: color.format(0.95),
         border: `solid 1px ${color.format(-0.15)}`,
         borderRadius: 4,
-        padding: 20,
         boxShadow: `0 2px 15px 0 ${color.format(-0.2)}`,
         display: 'flex',
+        overflow: 'hidden',
       }),
       close: css({
         Absolute: [8, 5, null, null],
+        fontSize: 14,
       }),
     };
 

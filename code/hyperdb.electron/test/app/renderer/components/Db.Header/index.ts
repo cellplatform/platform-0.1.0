@@ -1,1 +1,1 @@
-export * from './Db.Header';
+export * from './DbHeader';
