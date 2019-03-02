@@ -16,7 +16,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   const ipc = args.ipc as t.DbIpcRendererClient;
   const log = args.log;
   const events$ = new Subject<t.MainDbEvent>();
-  log.info('listening for hyperdb events');
+  log.info(`listening for ${log.yellow('hyperdb events')}`);
 
   const createDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
     const { dir, dbKey, version } = args;
