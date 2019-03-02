@@ -13,8 +13,7 @@ const config = require('../../../.uiharness/config.json') as uiharness.IUihRunti
   const { log, ipc } = context;
   const store = context.store as t.ITestStore;
 
-  log.info('main started || ');
-  log.info('\n\nstore.path >>>> ', store && (store as any).path, '\n\n');
+  log.info('main started');
 
   try {
     /**
@@ -23,16 +22,7 @@ const config = require('../../../.uiharness/config.json') as uiharness.IUihRunti
     const dir = is.prod ? fs.join(app.getPath('userData'), 'db') : fs.resolve('.dev/db');
     log.info(log.gray('databases:'), dir);
     await store.set('dir', dir);
-
-    const d = await store.get('dir');
-    log.info(d);
-
-    const v = await store.read();
-    log.info(v);
-
     await updateDatabaseList(store);
-
-    log.info('AFTER UPDATE');
 
     /**
      * Initialise the HyperDB on the [main] process.
