@@ -35,8 +35,20 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
     const keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
-    keypress$.pipe(filter(e => this.props.focusOnKeypress)).subscribe(e => this.focus());
-    keypress$.pipe(filter(e => e.key === 'Enter')).subscribe(e => this.fireInvoke());
+    keypress$
+      // Focus on any keypress.
+      .pipe(filter(e => this.props.focusOnKeypress))
+      .subscribe(e => this.focus());
+
+    keypress$
+      // Invoke on [Enter]
+      .pipe(filter(e => e.key === 'Enter'))
+      .subscribe(e => this.fireInvoke());
+
+    keypress$
+      // Clear on CMD+K
+      .pipe(filter(e => e.key === 'k' && e.metaKey))
+      .subscribe(e => (this.input = undefined));
   }
 
   public componentWillUnmount() {
@@ -49,6 +61,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   public get input() {
     const { input = '' } = this.state;
     return input;
+  }
+
+  public set input(value: string | undefined) {
+    this.state$.next({ input: value });
   }
 
   /**
@@ -121,6 +137,6 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   };
 
   private handleChange = async (e: TextInputChangeEvent) => {
-    this.state$.next({ input: e.to });
+    this.input = e.to;
   };
 }
