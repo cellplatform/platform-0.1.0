@@ -9,6 +9,7 @@ describe('CommandState', () => {
   it('creates with default values', () => {
     const state = CommandState.create({ root });
     expect(state.isDisposed).to.eql(false);
+    expect(state.text).to.eql('');
   });
 
   it('disposes', () => {
@@ -22,21 +23,30 @@ describe('CommandState', () => {
     expect(count).to.eql(1);
   });
 
-  it('fires change event', () => {
-    const events: Array<ICommandChangeEvent<any>> = [];
-    const changes: Array<ICommandState<any>> = [];
+  describe('change', () => {
+    it('fires change event', () => {
+      const events: Array<ICommandChangeEvent<any>> = [];
+      const changes: Array<ICommandState<any>> = [];
 
-    const state = CommandState.create({ root });
+      const state = CommandState.create({ root });
 
-    state.events$.subscribe(e => events.push(e));
-    state.change$.subscribe(e => changes.push(e));
+      state.events$.subscribe(e => events.push(e));
+      state.change$.subscribe(e => changes.push(e));
 
-    state.onChange({ text: 'foo', invoked: false });
+      state.onChange({ text: 'foo', invoked: true });
 
-    expect(events.length).to.eql(1);
-    expect(changes.length).to.eql(1);
+      expect(events.length).to.eql(1);
+      expect(changes.length).to.eql(1);
 
-    expect(events[0].payload).to.eql(state);
-    expect(changes[0]).to.eql(state);
+      expect(events[0].payload).to.eql(state);
+      expect(changes[0]).to.eql(state);
+    });
+
+    it('updates current text', () => {
+      const state = CommandState.create({ root });
+      expect(state.text).to.eql('');
+      state.onChange({ text: 'hello' });
+      expect(state.text).to.eql('hello');
+    });
   });
 });

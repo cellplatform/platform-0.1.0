@@ -9,7 +9,7 @@ export type ICommandState<P extends object = any> = {};
 export type CommandChangeDispatcher = (e: ICommandChangeArgs) => void;
 export type ICommandChangeArgs = {
   readonly text: string;
-  readonly invoked: boolean;
+  readonly invoked?: boolean;
 };
 
 /**

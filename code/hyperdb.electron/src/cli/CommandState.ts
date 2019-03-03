@@ -33,6 +33,7 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
     dispose$: new Subject(),
     events$: new Subject<t.CommandEvent>(),
     root: (undefined as unknown) as ICommand,
+    text: '',
   };
 
   public readonly dispose$ = this._.dispose$.pipe(share());
@@ -50,7 +51,7 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
    * [Properties]
    */
   public get text() {
-    return 'TEXT'; // TEMP 🐷
+    return this._.text;
   }
 
   public get isDisposed() {
@@ -61,6 +62,8 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
    * [Methods]
    */
   public onChange: t.CommandChangeDispatcher = e => {
+    const { text } = e;
+    this._.text = text;
     this._.events$.next({ type: 'COMMMAND/change', payload: this });
   };
 
