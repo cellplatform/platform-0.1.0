@@ -23,7 +23,7 @@
     "@uiharness/electron": "0.3.140",
     "discovery-swarm": "5.1.4",
     "hyperdb": "3.5.0",
-    "minimist": "1.2.0",
+    "minimist": "^1.2.0",
     "react": "16.8.3"
   },
   "devDependencies": {

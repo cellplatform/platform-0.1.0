@@ -109,7 +109,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
     try {
       // Create the database.
-      const res = await renderer.getOrCreate({ ipc, dir, dbKey });
+      await renderer.getOrCreate({ ipc, dir, dbKey });
       this.state$.next({ selected: name });
     } catch (error) {
       log.error(error);

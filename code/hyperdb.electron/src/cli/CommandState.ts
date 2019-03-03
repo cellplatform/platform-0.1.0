@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import * as minimist from 'minimist';
+// import minimist from 'minimist';
+const minimist = require('minimist');
 
 import { ICommand } from './libs';
 import * as t from './types';
