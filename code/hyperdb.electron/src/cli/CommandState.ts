@@ -1,36 +1,41 @@
 import { Subject } from 'rxjs';
-import { map, share, take, takeUntil, filter } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
+import { ICommand } from './libs';
 import * as t from './types';
+
+type ICommandStateArgs = {
+  root: ICommand;
+};
 
 /**
  * Manages state of a CLI program.
  */
-export class CommandState implements t.ICommandState {
+export class CommandState<P extends object = any> implements t.ICommandState<P> {
   /**
    * [Static]
    */
-  public static create() {
-    return new CommandState();
+  public static create<P extends object = any>(args: ICommandStateArgs) {
+    return new CommandState<P>(args);
   }
 
   /**
    * [Constructor]
    */
-  private constructor() {
-    this.disposed$.pipe(take(1)).subscribe(() => (this._.isDisposed = true));
+  private constructor(args: ICommandStateArgs) {
+    this._.root = args.root;
   }
 
   /**
    * [Fields]
    */
   private readonly _ = {
-    isDisposed: false,
     dispose$: new Subject(),
     events$: new Subject<t.CommandEvent>(),
+    root: (undefined as unknown) as ICommand,
   };
 
-  public readonly disposed$ = this._.dispose$.pipe(share());
+  public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this._.dispose$),
     share(),
@@ -45,11 +50,11 @@ export class CommandState implements t.ICommandState {
    * [Properties]
    */
   public get text() {
-    return 'FOO';
+    return 'TEXT'; // TEMP 🐷
   }
 
   public get isDisposed() {
-    return this._.isDisposed;
+    return this._.dispose$.isStopped;
   }
 
   /**
@@ -61,5 +66,10 @@ export class CommandState implements t.ICommandState {
 
   public dispose() {
     this._.dispose$.next();
+    this._.dispose$.complete();
+  }
+
+  public toString() {
+    return this.text;
   }
 }

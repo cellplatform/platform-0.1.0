@@ -1,33 +1,42 @@
 import { expect } from 'chai';
 import { CommandState, ICommandChangeEvent, ICommandState } from '.';
+import { Command } from './libs';
+import { Subject } from 'rxjs';
+
+const root = Command.create('foo');
 
 describe('CommandState', () => {
   it('creates with default values', () => {
-    const cmd = CommandState.create();
-    expect(cmd.isDisposed).to.eql(false);
+    const state = CommandState.create({ root });
+    expect(state.isDisposed).to.eql(false);
   });
 
   it('disposes', () => {
-    const cmd = CommandState.create();
-    expect(cmd.isDisposed).to.eql(false);
-    cmd.dispose();
-    expect(cmd.isDisposed).to.eql(true);
+    let count = 0;
+    const state = CommandState.create({ root });
+    state.dispose$.subscribe(() => count++);
+
+    expect(state.isDisposed).to.eql(false);
+    state.dispose();
+    expect(state.isDisposed).to.eql(true);
+    expect(count).to.eql(1);
   });
 
   it('fires change event', () => {
-    const events: ICommandChangeEvent[] = [];
-    const changes: ICommandState[] = [];
-    const cmd = CommandState.create();
+    const events: Array<ICommandChangeEvent<any>> = [];
+    const changes: Array<ICommandState<any>> = [];
 
-    cmd.events$.subscribe(e => events.push(e));
-    cmd.change$.subscribe(e => changes.push(e));
+    const state = CommandState.create({ root });
 
-    cmd.onChange({ text: 'foo', invoked: false });
+    state.events$.subscribe(e => events.push(e));
+    state.change$.subscribe(e => changes.push(e));
+
+    state.onChange({ text: 'foo', invoked: false });
 
     expect(events.length).to.eql(1);
     expect(changes.length).to.eql(1);
 
-    expect(events[0].payload).to.eql(cmd);
-    expect(changes[0]).to.eql(cmd);
+    expect(events[0].payload).to.eql(state);
+    expect(changes[0]).to.eql(state);
   });
 });

@@ -8,7 +8,6 @@ describe('Command', () => {
     expect(cmd.title).to.eql('Foo'); // NB: trims title.
     expect(cmd.handler).to.eql(DEFAULT.HANDLER);
     expect(cmd.children).to.eql([]);
-
   });
 
   it('takes handler in constructor', () => {

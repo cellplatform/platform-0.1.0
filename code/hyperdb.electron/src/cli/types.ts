@@ -1,7 +1,7 @@
 /**
  * Manages state of a CLI program.
  */
-export type ICommandState = {};
+export type ICommandState<P extends object = any> = {};
 
 /**
  * Change delegate.
@@ -17,7 +17,7 @@ export type ICommandChangeArgs = {
  */
 export type CommandEvent = ICommandChangeEvent;
 
-export type ICommandChangeEvent = {
+export type ICommandChangeEvent<P extends object = any> = {
   type: 'COMMMAND/change';
-  payload: ICommandState;
+  payload: ICommandState<P>;
 };
