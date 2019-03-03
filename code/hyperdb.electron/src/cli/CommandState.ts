@@ -48,7 +48,12 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
     share(),
   );
   public readonly change$ = this.events$.pipe(
-    filter(e => e.type === 'COMMMAND/change'),
+    filter(e => e.type === 'COMMAND/change'),
+    map(e => e.payload),
+    share(),
+  );
+  public readonly invoke$ = this.events$.pipe(
+    filter(e => e.type === 'COMMAND/invoke'),
     map(e => e.payload),
     share(),
   );
@@ -78,9 +83,14 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
    * [Methods]
    */
   public onChange: t.CommandChangeDispatcher = e => {
-    const { text } = e;
+    const { text, invoked } = e;
+    const events$ = this._.events$;
     this._.text = text;
-    this._.events$.next({ type: 'COMMMAND/change', payload: this });
+    const payload = this.toObject();
+    events$.next({ type: 'COMMAND/change', payload });
+    if (invoked) {
+      events$.next({ type: 'COMMAND/invoke', payload });
+    }
   };
 
   public dispose() {
@@ -90,5 +100,11 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
 
   public toString() {
     return this.text;
+  }
+
+  public toObject() {
+    const text = this.text;
+    const command = this.command;
+    return { text, command };
   }
 }

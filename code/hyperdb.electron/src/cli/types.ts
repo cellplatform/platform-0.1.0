@@ -1,7 +1,17 @@
+import { ICommand } from './libs';
+
 /**
  * Manages state of a CLI program.
  */
-export type ICommandState<P extends object = any> = {};
+export type ICommandState<P extends object = any> = ICommandStateProps<P> & {
+  toString(): string;
+  toObject(): ICommandStateProps<P>;
+};
+
+export type ICommandStateProps<P extends object = any> = {
+  text: string;
+  command: ICommand | undefined;
+};
 
 /**
  * Change delegate.
@@ -13,11 +23,16 @@ export type ICommandChangeArgs = {
 };
 
 /**
- * Events
+ * [Events]
  */
-export type CommandEvent = ICommandChangeEvent;
+export type CommandEvent = ICommandChangeEvent | ICommandInvokeEvent;
 
 export type ICommandChangeEvent<P extends object = any> = {
-  type: 'COMMMAND/change';
-  payload: ICommandState<P>;
+  type: 'COMMAND/change';
+  payload: ICommandStateProps<P>;
+};
+
+export type ICommandInvokeEvent<P extends object = any> = {
+  type: 'COMMAND/invoke';
+  payload: ICommandStateProps<P>;
 };

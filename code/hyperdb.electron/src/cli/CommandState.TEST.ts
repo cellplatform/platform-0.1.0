@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { CommandState, ICommandChangeEvent, ICommandState } from '.';
+import { CommandEvent, CommandState, ICommandStateProps } from '.';
 import { Command } from './libs';
 
 const root = Command.create('fs')
@@ -24,30 +24,59 @@ describe('CommandState', () => {
     expect(count).to.eql(1);
   });
 
-  describe('change', () => {
-    it('fires change event', () => {
-      const events: Array<ICommandChangeEvent<any>> = [];
-      const changes: Array<ICommandState<any>> = [];
+  describe('toObject', () => {
+    it('toObject', () => {
+      const state = CommandState.create({ root });
+      const obj = state.toObject();
+      expect(obj.text).to.eql('');
+      expect(obj.command).to.eql(undefined);
+    });
+  });
 
+  describe('change', () => {
+    it('fires [change$] event (observable)', () => {
+      const events: CommandEvent[] = [];
+      const changes: ICommandStateProps[] = [];
       const state = CommandState.create({ root });
 
       state.events$.subscribe(e => events.push(e));
       state.change$.subscribe(e => changes.push(e));
 
-      state.onChange({ text: 'foo', invoked: true });
+      state.onChange({ text: 'foo' });
 
       expect(events.length).to.eql(1);
       expect(changes.length).to.eql(1);
 
-      expect(events[0].payload).to.eql(state);
-      expect(changes[0]).to.eql(state);
+      expect(events[0].payload).to.eql(state.toObject());
+      expect(changes[0]).to.eql(state.toObject());
     });
 
-    it('updates current text', () => {
+    it('updates current text on change event', () => {
       const state = CommandState.create({ root });
       expect(state.text).to.eql('');
       state.onChange({ text: 'hello' });
       expect(state.text).to.eql('hello');
+    });
+  });
+
+  describe('invoke', () => {
+    it('fires [invoke$] event (observable)', () => {
+      const events: CommandEvent[] = [];
+      const invokes: ICommandStateProps[] = [];
+      const state = CommandState.create({ root });
+
+      state.events$.subscribe(e => events.push(e));
+      state.invoke$.subscribe(e => invokes.push(e));
+
+      state.onChange({ text: 'foo' }); // NB: invoked: false
+
+      expect(events.length).to.eql(1);
+      expect(invokes.length).to.eql(0);
+
+      state.onChange({ text: 'bar', invoked: true });
+      expect(events.length).to.eql(3); // NB: 3 === 1 (prior) + <change> + <invoke>.
+      expect(invokes.length).to.eql(1);
+      expect(invokes[0].text).to.eql('bar');
     });
   });
 
