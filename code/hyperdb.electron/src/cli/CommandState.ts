@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { share, take, takeUntil, filter } from 'rxjs/operators';
+import { map, share, take, takeUntil, filter } from 'rxjs/operators';
 
 import * as t from './types';
 
@@ -37,6 +37,7 @@ export class CommandState implements t.ICommandState {
   );
   public readonly change$ = this.events$.pipe(
     filter(e => e.type === 'COMMMAND/change'),
+    map(e => e.payload),
     share(),
   );
 
@@ -55,8 +56,7 @@ export class CommandState implements t.ICommandState {
    * [Methods]
    */
   public onChange: t.CommandChangeDispatcher = e => {
-    console.log('dispatchChange', e);
-    this._.events$.next({ type: 'COMMMAND/change', payload: {} });
+    this._.events$.next({ type: 'COMMMAND/change', payload: this });
   };
 
   public dispose() {

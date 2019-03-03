@@ -19,5 +19,5 @@ export type CommandEvent = ICommandChangeEvent;
 
 export type ICommandChangeEvent = {
   type: 'COMMMAND/change';
-  payload: {};
+  payload: ICommandState;
 };
