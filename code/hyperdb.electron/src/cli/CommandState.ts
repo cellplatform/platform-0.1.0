@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
+import * as minimist from 'minimist';
 
 import { ICommand } from './libs';
 import * as t from './types';
@@ -23,7 +24,12 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
    * [Constructor]
    */
   private constructor(args: ICommandStateArgs) {
-    this._.root = args.root;
+    const { root } = args;
+    if (!root) {
+      throw new Error(`A root [Command] spec must be passed to the state constructor.`);
+    }
+
+    this._.root = root;
   }
 
   /**
@@ -50,12 +56,22 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
   /**
    * [Properties]
    */
+  public get isDisposed() {
+    return this._.dispose$.isStopped;
+  }
+
+  public get root() {
+    return this._.root;
+  }
+
   public get text() {
     return this._.text;
   }
 
-  public get isDisposed() {
-    return this._.dispose$.isStopped;
+  public get command() {
+    const args = minimist(this.text.split(' '));
+    const cmd = args._[0];
+    return this.root.children.find(c => c.title === cmd);
   }
 
   /**

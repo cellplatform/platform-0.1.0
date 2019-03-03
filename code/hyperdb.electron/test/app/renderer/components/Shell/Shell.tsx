@@ -2,12 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, renderer, t, CommandState } from '../../common';
+import { color, css, GlamorValue, renderer, t, CommandState, Command } from '../../common';
 import { DbHeader } from '../Db.Header';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
 import { ObjectView } from '../primitives';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
+
 import { CommandPrompt } from '../CommandPrompt';
 
 export type IShellProps = {
@@ -21,13 +22,18 @@ export type IShellState = {
   store?: Partial<t.ITestStoreSettings>;
 };
 
+const root = Command.create('hyperdb')
+  .add('get')
+  .add('put')
+  .add('watch');
+
 export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public state: IShellState = {};
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IShellState>>();
-  private cli = CommandState.create();
+  private cli = CommandState.create({ root });
 
   /**
    * [Lifecycle]

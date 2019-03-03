@@ -1,9 +1,10 @@
 import { expect } from 'chai';
 import { CommandState, ICommandChangeEvent, ICommandState } from '.';
 import { Command } from './libs';
-import { Subject } from 'rxjs';
 
-const root = Command.create('foo');
+const root = Command.create('fs')
+  .add('ls')
+  .add('mkdir');
 
 describe('CommandState', () => {
   it('creates with default values', () => {
@@ -47,6 +48,31 @@ describe('CommandState', () => {
       expect(state.text).to.eql('');
       state.onChange({ text: 'hello' });
       expect(state.text).to.eql('hello');
+    });
+  });
+
+  describe('filtering on current [command]', () => {
+    it('match', () => {
+      const state = CommandState.create({ root });
+      expect(state.command).to.eql(undefined);
+      state.onChange({ text: 'ls' });
+      const cmd = state.command;
+      expect(cmd && cmd.title).to.eql('ls');
+    });
+
+    it('no match', () => {
+      const state = CommandState.create({ root });
+      expect(state.command).to.eql(undefined);
+      state.onChange({ text: 'YO_MAMA' });
+      expect(state.command).to.eql(undefined);
+    });
+
+    it('no match (no commands)', () => {
+      const root = Command.create('empty');
+      const state = CommandState.create({ root });
+      expect(state.command).to.eql(undefined);
+      state.onChange({ text: 'ls' });
+      expect(state.command).to.eql(undefined);
     });
   });
 });
