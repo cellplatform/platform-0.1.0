@@ -11,8 +11,12 @@ export type ICommandState<P extends object = any> = ICommandStateProps<P> & {
 export type ICommandStateProps<P extends object = any> = {
   text: string;
   command: ICommand | undefined;
+  params: P;
 };
 
+/**
+ * Parsing `ARGV` strings.
+ */
 export type IParsedCommand<P extends object = any> = {
   commands: string[];
   params: P;

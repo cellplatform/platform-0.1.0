@@ -123,6 +123,7 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
   public toObject() {
     const text = this.text;
     const command = this.command;
-    return { text, command };
+    const params = this.params;
+    return { text, command, params };
   }
 }

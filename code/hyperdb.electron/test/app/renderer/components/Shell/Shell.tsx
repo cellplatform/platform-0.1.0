@@ -64,6 +64,12 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
     cli$.subscribe(e => {
       console.log('CLI change', e);
+      const { command, text, params } = e;
+      console.group('🌳 change');
+      console.log('text', text);
+      console.log('params', params);
+      console.log('command', command);
+      console.groupEnd();
       this.forceUpdate();
     });
   }

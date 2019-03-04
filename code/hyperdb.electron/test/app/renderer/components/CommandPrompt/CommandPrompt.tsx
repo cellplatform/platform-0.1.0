@@ -147,8 +147,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    */
 
   private fireChange(invoked: boolean, text?: string) {
-    text = (text || '').trim();
-
+    text = text || '';
     const { onChange } = this.props;
     const e: ICommandChangeArgs = { text, invoked };
     if (onChange) {
