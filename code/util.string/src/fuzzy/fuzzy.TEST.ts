@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { str } from '..';
+import { curry } from 'ramda';
 
 describe('fuzzy', () => {
   describe('match', () => {
@@ -27,8 +28,8 @@ describe('fuzzy', () => {
   });
 
   describe('filter', () => {
+    const list = ['baconing', 'narwhal', 'a mighty bear canoe'];
     it('list of results', () => {
-      const list = ['baconing', 'narwhal', 'a mighty bear canoe'];
       const res = str.fuzzy.filter('bcn', list);
       expect(res.length).to.eql(2);
       expect(res[0]).to.eql({ value: 'baconing', score: 3, index: 0 });
@@ -36,9 +37,27 @@ describe('fuzzy', () => {
     });
 
     it('no results', () => {
-      const list = ['baconing', 'narwhal', 'a mighty bear canoe'];
       const res = str.fuzzy.filter('zz', list);
       expect(res).to.eql([]);
+    });
+
+    it('returns all values when no (empty) pattern is given', () => {
+      const res = str.fuzzy.filter('', list);
+      expect(res.length).to.eql(3);
+      expect(res[0].index).to.eql(0);
+      expect(res[1].index).to.eql(1);
+      expect(res[2].index).to.eql(2);
+
+      expect(res[0].score).to.eql(0);
+      expect(res[1].score).to.eql(0);
+      expect(res[2].score).to.eql(0);
+    });
+
+    it('curries', () => {
+      const filter = curry(str.fuzzy.filter);
+      const bcn = filter('bcn');
+      const res = bcn(list);
+      expect(res.length).to.eql(2);
     });
   });
 });

@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { curry } from 'ramda';
-
 import { str } from '..';
 
 describe('wildcard', () => {
