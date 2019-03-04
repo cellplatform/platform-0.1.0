@@ -1,2 +1,3 @@
-export * from './convert';
-export * from './wildcard';
+import * as str from './str';
+
+export { str };
