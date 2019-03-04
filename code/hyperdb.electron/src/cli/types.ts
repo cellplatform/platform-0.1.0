@@ -13,6 +13,11 @@ export type ICommandStateProps<P extends object = any> = {
   command: ICommand | undefined;
 };
 
+export type IParsedCommand<P extends object = any> = {
+  commands: string[];
+  params: P;
+};
+
 /**
  * Change delegate.
  */

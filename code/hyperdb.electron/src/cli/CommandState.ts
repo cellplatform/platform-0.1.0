@@ -1,10 +1,10 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-// import minimist from 'minimist';
-const minimist = require('minimist');
 
-import { ICommand } from './libs';
+import { ICommand, value as valueUtil } from './libs';
 import * as t from './types';
+
+const minimist = require('minimist');
 
 type ICommandStateArgs = {
   root: ICommand;
@@ -19,6 +19,16 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
    */
   public static create<P extends object = any>(args: ICommandStateArgs) {
     return new CommandState<P>(args);
+  }
+
+  public static parse<P extends object = any>(text: string): t.IParsedCommand<P> {
+    const params = minimist(text.split(' '));
+    const commands = (params._ || [])
+      .filter((e: any) => Boolean(e))
+      .map((e: any) => valueUtil.toType(e));
+    delete params._;
+    Object.keys(params).forEach(key => (params[key] = valueUtil.toType(params[key])));
+    return { commands, params };
   }
 
   /**
@@ -75,9 +85,16 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
   }
 
   public get command() {
-    const args = minimist(this.text.split(' '));
-    const cmd = args._[0];
-    return this.root.children.find(c => c.title === cmd);
+    const cmd = this.argv.commands[0];
+    return cmd ? this.root.children.find(c => c.title === cmd) : undefined;
+  }
+
+  public get argv() {
+    return CommandState.parse(this.text);
+  }
+
+  public get params() {
+    return this.argv.params;
   }
 
   /**
