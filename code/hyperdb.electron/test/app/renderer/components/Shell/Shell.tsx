@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, renderer, t, CommandState, Command } from '../../common';
+import { color, css, GlamorValue, renderer, t, CommandState, Command, COLORS } from '../../common';
 import { DbHeader } from '../Db.Header';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
@@ -190,7 +190,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       }),
       footer: css({
         position: 'relative',
-        borderTop: `solid 5px ${color.format(-0.1)}`,
+        backgroundColor: COLORS.DARK,
       }),
     };
 

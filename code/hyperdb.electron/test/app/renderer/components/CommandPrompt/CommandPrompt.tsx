@@ -14,6 +14,8 @@ import {
   ICommandChangeArgs,
 } from '../../common';
 import { TextInput, TextInputChangeEvent } from '../primitives';
+import { ICommandPromptTheme } from './types';
+import { THEMES } from './themes';
 
 const { MONOSPACE } = constants.FONT;
 const { CLI } = COLORS;
@@ -21,13 +23,12 @@ const FONT_SIZE = 14;
 
 export type ICommandPromptProps = {
   text?: string;
+  theme?: ICommandPromptTheme | 'DARK';
   focusOnKeypress?: boolean;
   style?: GlamorValue;
   onChange?: CommandChangeDispatcher;
 };
-export type ICommandPromptState = {
-  // input?: string;
-};
+export type ICommandPromptState = {};
 
 export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICommandPromptState> {
   public state: ICommandPromptState = {};
@@ -80,9 +81,17 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     return this.props.text || '';
   }
 
-  // public set text(input: string | undefined) {
-  //   this.state$.next({ input });
-  // }
+  private get theme() {
+    const { theme = 'DARK' } = this.props;
+    if (typeof theme === 'object') {
+      return theme;
+    }
+    switch (theme) {
+      case 'DARK':
+        return THEMES.DARK;
+    }
+    throw new Error(`Theme '${theme}' not supported`);
+  }
 
   /**
    * [Methods]
@@ -102,20 +111,19 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    */
 
   public render() {
+    const theme = this.theme;
     const styles = {
       base: css({
         position: 'relative',
         boxSizing: 'border-box',
         flex: 1,
-        backgroundColor: COLORS.DARK,
-        color: COLORS.WHITE,
         height: 32,
         fontSize: FONT_SIZE,
         Flex: 'horizontal-center-start',
         fontFamily: MONOSPACE.FAMILY,
       }),
       prefix: css({
-        color: CLI.MAGENTA,
+        color: theme.prefixColor,
         userSelect: 'none',
         marginLeft: 10,
         marginRight: 5,
@@ -134,12 +142,12 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
           onChange={this.handleChange}
           value={this.text}
           valueStyle={{
-            color: color.format(0.9),
+            color: theme.color,
             fontFamily: MONOSPACE.FAMILY,
             fontWeight: 'BOLD',
           }}
           placeholder={'command'}
-          placeholderStyle={{ color: color.format(0.2) }}
+          placeholderStyle={{ color: theme.placeholderColor }}
         />
       </div>
     );
