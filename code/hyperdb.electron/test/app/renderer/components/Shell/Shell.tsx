@@ -42,7 +42,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public componentDidMount() {
     const { ipc } = this.context;
 
-    const cli$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
+    const cliChange$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
+    const cliInvoke$ = this.cli.invoke$.pipe(takeUntil(this.unmounted$));
     const store$ = this.store.change$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
@@ -62,15 +63,25 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         this.state$.next({ selectedDb });
       });
 
-    cli$.subscribe(e => {
-      console.log('CLI change', e);
+    cliChange$.subscribe(e => {
       const { command, text, params } = e;
-      console.group('🌳 change');
+
+      // console.group('🌳 change');
+      // console.log('text', text);
+      // console.log('params', params);
+      // console.log('command', command);
+      // console.groupEnd();
+      this.forceUpdate();
+    });
+
+    cliInvoke$.subscribe(e => {
+      const { command, text, args } = e;
+      console.group('🌳 invoke');
       console.log('text', text);
-      console.log('params', params);
+      console.log('args', args);
       console.log('command', command);
       console.groupEnd();
-      this.forceUpdate();
+      // this.forceUpdate();
     });
   }
 

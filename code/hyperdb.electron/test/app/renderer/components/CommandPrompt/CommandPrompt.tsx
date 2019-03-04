@@ -57,7 +57,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
     keypress$
       // Invoke on [Enter]
-      .pipe(filter(e => e.key === 'Enter'))
+      .pipe(
+        filter(e => e.isPressed === true),
+        filter(e => e.key === 'Enter'),
+      )
       .subscribe(e => this.fireInvoke());
 
     keypress$
@@ -146,7 +149,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    * [Handlers]
    */
 
-  private fireChange(invoked: boolean, text?: string) {
+  private fireChange(invoked: boolean, text: string) {
     text = text || '';
     const { onChange } = this.props;
     const e: ICommandChangeArgs = { text, invoked };
@@ -156,7 +159,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   }
 
   private fireInvoke = () => {
-    this.fireChange(true);
+    this.fireChange(true, this.text);
   };
 
   private handleChange = async (e: TextInputChangeEvent) => {

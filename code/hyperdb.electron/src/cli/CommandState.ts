@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
-import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { filter, map, share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { equals } from 'ramda';
 
 import { ICommand, value as valueUtil } from './libs';
 import * as t from './types';
@@ -21,7 +22,7 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
     return new CommandState<P>(args);
   }
 
-  public static parse<P extends object = any>(text: string): t.IParsedCommand<P> {
+  public static parse<P extends object = any>(text: string): t.IParsedArgs<P> {
     const params = minimist(text.split(' '));
     const commands = (params._ || [])
       .filter((e: any) => Boolean(e))
@@ -61,11 +62,13 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
   public readonly change$ = this.events$.pipe(
     filter(e => e.type === 'COMMAND/change'),
     map(e => e.payload),
+    distinctUntilChanged((prev, next) => equals(prev, next)),
     share(),
   );
   public readonly invoke$ = this.events$.pipe(
     filter(e => e.type === 'COMMAND/invoke'),
     map(e => e.payload),
+    // distinctUntilChanged((prev, next) => equals(prev, next)),
     share(),
   );
 
@@ -85,24 +88,29 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
   }
 
   public get command() {
-    const cmd = this.argv.commands[0];
+    const cmd = this.args.commands[0];
     return cmd ? this.root.children.find(c => c.title === cmd) : undefined;
   }
 
-  public get argv() {
+  public get args() {
     return CommandState.parse(this.text);
   }
 
   public get params() {
-    return this.argv.params;
+    return this.args.params;
   }
 
   /**
    * [Methods]
    */
+  public dispose() {
+    this._.dispose$.next();
+    this._.dispose$.complete();
+  }
+
   public onChange: t.CommandChangeDispatcher = e => {
     const { text, invoked } = e;
-    const events$ = this._.events$;
+    const { events$ } = this._;
     this._.text = text;
     const payload = this.toObject();
     events$.next({ type: 'COMMAND/change', payload });
@@ -111,11 +119,6 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
     }
   };
 
-  public dispose() {
-    this._.dispose$.next();
-    this._.dispose$.complete();
-  }
-
   public toString() {
     return this.text;
   }
@@ -123,7 +126,7 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
   public toObject() {
     const text = this.text;
     const command = this.command;
-    const params = this.params;
-    return { text, command, params };
+    const args = this.args;
+    return { text, command, args };
   }
 }
