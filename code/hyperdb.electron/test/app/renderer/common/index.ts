@@ -14,5 +14,4 @@ export const COLORS = constants.COLORS;
 /**
  * 🐷 TEMP - will be moved to [@platform/cli.spec]
  */
-export * from '../../../../src/cli'; // TEMP - will be moved to [@platform/cli.spec]
 export * from '@platform/cli.spec';

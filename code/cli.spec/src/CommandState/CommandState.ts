@@ -1,11 +1,8 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { equals } from 'ramda';
-
-import { value as valueUtil } from '../common';
-import * as t from '../types';
-
-const minimist = require('minimist');
+import { t } from '../common';
+import { Argv } from '../Argv';
 
 type ICommandStateArgs = {
   root: t.ICommand;
@@ -22,16 +19,6 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
     return new CommandState<P>(args);
   }
 
-  public static parse<P extends object = any>(text: string): t.IParsedArgs<P> {
-    const params = minimist(text.split(' '));
-    const commands = (params._ || [])
-      .filter((e: any) => Boolean(e))
-      .map((e: any) => valueUtil.toType(e));
-    delete params._;
-    Object.keys(params).forEach(key => (params[key] = valueUtil.toType(params[key])));
-    return { commands, params };
-  }
-
   /**
    * [Constructor]
    */
@@ -40,7 +27,6 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
     if (!root) {
       throw new Error(`A root [Command] spec must be passed to the state constructor.`);
     }
-
     this._.root = root;
   }
 
@@ -93,11 +79,7 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
   }
 
   public get args() {
-    return CommandState.parse(this.text);
-  }
-
-  public get params() {
-    return this.args.params;
+    return Argv.parse(this.text);
   }
 
   /**
@@ -124,9 +106,6 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
   }
 
   public toObject() {
-    const text = this.text;
-    const command = this.command;
-    const args = this.args;
-    return { text, command, args };
+    return { text: this.text, command: this.command, args: this.args };
   }
 }
