@@ -12,24 +12,24 @@ export const DEFAULT = {
  * Represents a single [command] which is a named unit of functionality
  * within a program that can optionally take parameter input.
  */
-export class Command<P extends object = any, O extends object = any>
-  implements ICommandBuilder<P, O> {
+export class Command<P extends object = any, A extends object = any>
+  implements ICommandBuilder<P, A> {
   private readonly _: IConstructorArgs;
 
   /**
    * [Static]
    */
-  public static create<P extends object = any, O extends object = any>(
+  public static create<P extends object = any, A extends object = any>(
     title: string,
     handler?: CommandHandler,
-  ): ICommandBuilder<P, O>;
-  public static create<P extends object = any, O extends object = any>(
+  ): ICommandBuilder<P, A>;
+  public static create<P extends object = any, A extends object = any>(
     args: IAddCommandArgs,
-  ): ICommandBuilder<P, O>;
-  public static create<P extends object = any, O extends object = any>(
+  ): ICommandBuilder<P, A>;
+  public static create<P extends object = any, A extends object = any>(
     ...args: any
-  ): ICommandBuilder<P, O> {
-    return new Command<P, O>(toConstuctorArgs(args));
+  ): ICommandBuilder<P, A> {
+    return new Command<P, A>(toConstuctorArgs(args));
   }
 
   /**
@@ -89,9 +89,9 @@ export class Command<P extends object = any, O extends object = any>
   /**
    * Adds a child command.
    */
-  public add(title: string, handler: CommandHandler): ICommandBuilder<P, O>;
-  public add(args: IAddCommandArgs): ICommandBuilder<P, O>;
-  public add(...args: any): ICommandBuilder<P, O> {
+  public add(title: string, handler: CommandHandler): ICommandBuilder<P, A>;
+  public add(args: IAddCommandArgs): ICommandBuilder<P, A>;
+  public add(...args: any): ICommandBuilder<P, A> {
     const child = new Command(toConstuctorArgs(args));
     this._.children = [...this._.children, child] as ICommandBuilder[];
     return this;
@@ -100,7 +100,7 @@ export class Command<P extends object = any, O extends object = any>
   /**
    * Converts the builder to a simple object.
    */
-  public toObject(): ICommand<P, O> {
+  public toObject(): ICommand<P, A> {
     const children = this.children.map(child => child.toObject());
     const title = this.title;
     const handler = this.handler;
@@ -109,8 +109,9 @@ export class Command<P extends object = any, O extends object = any>
 }
 
 /**
- * [INTERNAL]
+ * [Internal]
  */
+
 function toConstuctorArgs(args: any): IConstructorArgs {
   if (typeof args[0] === 'string') {
     const [title, handler] = args;
