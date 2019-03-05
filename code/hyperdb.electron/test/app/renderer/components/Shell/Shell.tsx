@@ -2,14 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, renderer, t, CommandState, Command, COLORS } from '../../common';
-import { DbHeader } from '../Db.Header';
+import * as cli from '../../cli';
+import { COLORS, CommandState, css, GlamorValue, renderer, t } from '../../common';
+import { CommandPrompt } from '../CommandPrompt';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
-import { ObjectView } from '../primitives';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
-
-import { CommandPrompt } from '../CommandPrompt';
+import { ShellMain } from '../Shell.Main';
 
 export type IShellProps = {
   style?: GlamorValue;
@@ -22,18 +21,15 @@ export type IShellState = {
   store?: Partial<t.ITestStoreSettings>;
 };
 
-const root = Command.create('hyperdb')
-  .add('get')
-  .add('put')
-  .add('watch');
-
 export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public state: IShellState = {};
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IShellState>>();
-  private cli = CommandState.create({ root });
+  private cli = CommandState.create({ root: cli.root });
+  private commandPrompt: CommandPrompt | undefined;
+  private commandPromptRef = (ref: CommandPrompt) => (this.commandPrompt = ref);
 
   /**
    * [Lifecycle]
@@ -133,15 +129,19 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     }
   }
 
+  private focusCommandPrompt = () => {
+    if (this.commandPrompt) {
+      this.commandPrompt.focus();
+    }
+  };
+
   /**
    * [Render]
    */
 
   public render() {
     const styles = {
-      base: css({
-        Absolute: 0,
-      }),
+      base: css({ Absolute: 0 }),
       body: css({
         Absolute: 0,
         Flex: 'horizontal',
@@ -186,7 +186,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       }),
       body: css({
         flex: 1,
-        padding: 20,
+        display: 'flex',
+        position: 'relative',
       }),
       footer: css({
         position: 'relative',
@@ -194,15 +195,27 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       }),
     };
 
-    const elHeader = selectedDb && <DbHeader key={selectedDb.key} db={selectedDb} />;
+    // const elHeader = selectedDb && <DbHeader key={selectedDb.key} db={selectedDb} />;
+
+    const elBody = selectedDb && (
+      <ShellMain
+        key={selectedDb.key}
+        db={selectedDb}
+        cli={this.cli}
+        onFocusCommandPrompt={this.focusCommandPrompt}
+      />
+    );
+
     return (
       <div {...styles.base}>
-        <div {...styles.body}>
-          {elHeader}
-          <ObjectView data={data} expandLevel={2} />
-        </div>
+        <div {...styles.body}>{elBody}</div>
         <div {...styles.footer}>
-          <CommandPrompt focusOnKeypress={true} text={this.cli.text} onChange={this.cli.onChange} />
+          <CommandPrompt
+            ref={this.commandPromptRef}
+            focusOnKeypress={true}
+            text={this.cli.text}
+            onChange={this.cli.change}
+          />
         </div>
       </div>
     );

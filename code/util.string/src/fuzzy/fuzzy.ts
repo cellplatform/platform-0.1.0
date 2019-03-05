@@ -24,8 +24,9 @@ export function match(pattern: string, input: string): IFuzzyMatch | undefined {
 /**
  * Performs a boolean check on whether there is a fuzzy pattern match on the given values.
  */
-export function isMatch(pattern: string, input: string) {
-  return Boolean(match(pattern, input));
+export function isMatch(pattern: string, input: string | string[]) {
+  input = Array.isArray(input) ? input : [input];
+  return input.some(value => Boolean(match(pattern, value)));
 }
 
 /**

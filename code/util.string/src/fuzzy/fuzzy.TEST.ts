@@ -16,13 +16,27 @@ describe('fuzzy', () => {
     });
   });
 
-  describe('isMatch', () => {
+  describe('isMatch (single value)', () => {
     it('true', () => {
       const res = str.fuzzy.isMatch('bcn', 'bacon');
       expect(res).to.eql(true);
     });
+
     it('false', () => {
       const res = str.fuzzy.isMatch('bcn', 'zebra');
+      expect(res).to.eql(false);
+    });
+  });
+
+  describe('isMatch (within list)', () => {
+    const list = ['get', 'watch', 'put'];
+    it('true', () => {
+      const res = str.fuzzy.isMatch('t', list);
+      expect(res).to.eql(true);
+    });
+
+    it('false', () => {
+      const res = str.fuzzy.isMatch('z', list);
       expect(res).to.eql(false);
     });
   });

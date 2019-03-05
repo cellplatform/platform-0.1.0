@@ -90,7 +90,7 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
     this._.dispose$.complete();
   }
 
-  public onChange: t.CommandChangeDispatcher = e => {
+  public change: t.CommandChangeDispatcher = e => {
     const { text, invoked } = e;
     const { events$ } = this._;
     this._.text = text;

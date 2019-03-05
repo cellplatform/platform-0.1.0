@@ -42,7 +42,7 @@ describe('CommandState', () => {
       state.events$.subscribe(e => events.push(e));
       state.change$.subscribe(e => changes.push(e));
 
-      state.onChange({ text: 'foo' });
+      state.change({ text: 'foo' });
 
       expect(events.length).to.eql(1);
       expect(changes.length).to.eql(1);
@@ -54,7 +54,7 @@ describe('CommandState', () => {
     it('updates current text on change event', () => {
       const state = CommandState.create({ root });
       expect(state.text).to.eql('');
-      state.onChange({ text: 'hello' });
+      state.change({ text: 'hello' });
       expect(state.text).to.eql('hello');
     });
   });
@@ -68,12 +68,12 @@ describe('CommandState', () => {
       state.events$.subscribe(e => events.push(e));
       state.invoke$.subscribe(e => invokes.push(e));
 
-      state.onChange({ text: 'foo' }); // NB: invoked: false
+      state.change({ text: 'foo' }); // NB: invoked: false
 
       expect(events.length).to.eql(1);
       expect(invokes.length).to.eql(0);
 
-      state.onChange({ text: 'bar', invoked: true });
+      state.change({ text: 'bar', invoked: true });
       expect(events.length).to.eql(3); // NB: 3 === 1 (prior) + <change> + <invoke>.
       expect(invokes.length).to.eql(1);
       expect(invokes[0].text).to.eql('bar');
@@ -84,7 +84,7 @@ describe('CommandState', () => {
     it('match', () => {
       const state = CommandState.create({ root });
       expect(state.command).to.eql(undefined);
-      state.onChange({ text: 'ls' });
+      state.change({ text: 'ls' });
       const cmd = state.command;
       expect(cmd && cmd.title).to.eql('ls');
     });
@@ -92,7 +92,7 @@ describe('CommandState', () => {
     it('no match', () => {
       const state = CommandState.create({ root });
       expect(state.command).to.eql(undefined);
-      state.onChange({ text: 'YO_MAMA' });
+      state.change({ text: 'YO_MAMA' });
       expect(state.command).to.eql(undefined);
     });
 
@@ -100,9 +100,8 @@ describe('CommandState', () => {
       const root = Command.create('empty');
       const state = CommandState.create({ root });
       expect(state.command).to.eql(undefined);
-      state.onChange({ text: 'ls' });
+      state.change({ text: 'ls' });
       expect(state.command).to.eql(undefined);
     });
   });
-
 });

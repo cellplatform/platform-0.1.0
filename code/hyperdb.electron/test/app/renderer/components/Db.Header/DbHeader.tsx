@@ -64,7 +64,6 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
     const styles = {
       base: css({
         boxSizing: 'border-box',
-        marginBottom: 40,
         Flex: 'horizontal-start-center',
       }),
       iconOuter: css({
