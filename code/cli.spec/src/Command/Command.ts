@@ -1,11 +1,12 @@
-import { CommandHandler, ICommand, ICommandBuilder, IAddCommandArgs, value } from '../common';
+import { value } from '../common';
+import * as t from './types';
 
-type IConstructorArgs = ICommand & {
-  children: ICommandBuilder[];
+type IConstructorArgs = t.ICommand & {
+  children: t.ICommandBuilder[];
 };
 
 export const DEFAULT = {
-  HANDLER: (() => null) as CommandHandler,
+  HANDLER: (() => null) as t.CommandHandler,
 };
 
 /**
@@ -13,7 +14,7 @@ export const DEFAULT = {
  * within a program that can optionally take parameter input.
  */
 export class Command<P extends object = any, A extends object = any>
-  implements ICommandBuilder<P, A> {
+  implements t.ICommandBuilder<P, A> {
   private readonly _: IConstructorArgs;
 
   /**
@@ -21,14 +22,14 @@ export class Command<P extends object = any, A extends object = any>
    */
   public static create<P extends object = any, A extends object = any>(
     title: string,
-    handler?: CommandHandler,
-  ): ICommandBuilder<P, A>;
+    handler?: t.CommandHandler,
+  ): t.ICommandBuilder<P, A>;
   public static create<P extends object = any, A extends object = any>(
-    args: IAddCommandArgs,
-  ): ICommandBuilder<P, A>;
+    args: t.IAddCommandArgs,
+  ): t.ICommandBuilder<P, A>;
   public static create<P extends object = any, A extends object = any>(
     ...args: any
-  ): ICommandBuilder<P, A> {
+  ): t.ICommandBuilder<P, A> {
     return new Command<P, A>(toConstuctorArgs(args));
   }
 
@@ -62,7 +63,7 @@ export class Command<P extends object = any, A extends object = any>
     return this._.handler;
   }
 
-  public get children(): ICommandBuilder[] {
+  public get children(): t.ICommandBuilder[] {
     return this._.children;
   }
 
@@ -74,8 +75,8 @@ export class Command<P extends object = any, A extends object = any>
    * [Methods]
    */
 
-  public as<P1 extends object, A1 extends object>(fn: (e: ICommandBuilder<P1, A1>) => void) {
-    fn((this as unknown) as ICommandBuilder<P1, A1>);
+  public as<P1 extends object, A1 extends object>(fn: (e: t.ICommandBuilder<P1, A1>) => void) {
+    fn((this as unknown) as t.ICommandBuilder<P1, A1>);
     return this;
   }
 
@@ -83,7 +84,7 @@ export class Command<P extends object = any, A extends object = any>
    * Cast children to given types.
    */
   public childrenAs<P1 extends object, A1 extends object>() {
-    return this.children as Array<ICommandBuilder<P1, A1>>;
+    return this.children as Array<t.ICommandBuilder<P1, A1>>;
   }
 
   /**
@@ -103,27 +104,34 @@ export class Command<P extends object = any, A extends object = any>
    */
   public add<P1 extends object = P, A1 extends object = A>(
     title: string,
-    handler: CommandHandler<P1, A1>,
-  ): ICommandBuilder<P, A>;
+    handler: t.CommandHandler<P1, A1>,
+  ): t.ICommandBuilder<P, A>;
 
   public add<P1 extends object = P, A1 extends object = A>(
-    args: IAddCommandArgs<P1, A1>,
-  ): ICommandBuilder<P, A>;
+    args: t.IAddCommandArgs<P1, A1>,
+  ): t.ICommandBuilder<P, A>;
 
-  public add(...args: any): ICommandBuilder<P, A> {
+  public add(...args: any): t.ICommandBuilder<P, A> {
     const child = new Command(toConstuctorArgs(args));
-    this._.children = [...this._.children, child] as ICommandBuilder[];
+    this._.children = [...this._.children, child] as t.ICommandBuilder[];
     return this;
   }
 
   /**
    * Converts the builder to a simple object.
    */
-  public toObject(): ICommand<P, A> {
+  public toObject(): t.ICommand<P, A> {
     const children = this.children.map(child => child.toObject());
     const title = this.title;
     const handler = this.handler;
     return { title, handler, children };
+  }
+
+  /**
+   * Invokes the commands handler
+   */
+  public async invoke() {
+    return;
   }
 }
 
@@ -142,8 +150,8 @@ function toConstuctorArgs(args: any): IConstructorArgs {
   throw new Error(`Args could not be interpreted.`);
 }
 
-function cloneChildren(builder: ICommandBuilder): ICommandBuilder[] {
+function cloneChildren(builder: t.ICommandBuilder): t.ICommandBuilder[] {
   return builder.children
-    .map(child => child as ICommandBuilder)
+    .map(child => child as t.ICommandBuilder)
     .map(child => child.clone({ deep: true }));
 }

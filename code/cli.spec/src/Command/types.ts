@@ -48,7 +48,7 @@ export type IAddCommandArgs<P extends object = any, A extends object = any> = {
  */
 export type CommandHandler<P extends object = any, A extends object = any> = (
   e: ICommandHandlerArgs<P, A>,
-) => any;
+) => any | Promise<any>;
 
 /**
  * Arguments passed to a command handler.
