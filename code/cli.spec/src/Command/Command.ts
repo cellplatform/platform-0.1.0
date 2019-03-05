@@ -74,6 +74,18 @@ export class Command<P extends object = any, A extends object = any>
    * [Methods]
    */
 
+  public as<P1 extends object, A1 extends object>(fn: (e: ICommandBuilder<P1, A1>) => void) {
+    fn((this as unknown) as ICommandBuilder<P1, A1>);
+    return this;
+  }
+
+  /**
+   * Cast children to given types.
+   */
+  public childrenAs<P1 extends object, A1 extends object>() {
+    return this.children as Array<ICommandBuilder<P1, A1>>;
+  }
+
   /**
    * Creates an immutable clone of the object.
    */
@@ -89,8 +101,15 @@ export class Command<P extends object = any, A extends object = any>
   /**
    * Adds a child command.
    */
-  public add(title: string, handler: CommandHandler): ICommandBuilder<P, A>;
-  public add(args: IAddCommandArgs): ICommandBuilder<P, A>;
+  public add<P1 extends object = P, A1 extends object = A>(
+    title: string,
+    handler: CommandHandler<P1, A1>,
+  ): ICommandBuilder<P, A>;
+
+  public add<P1 extends object = P, A1 extends object = A>(
+    args: IAddCommandArgs<P1, A1>,
+  ): ICommandBuilder<P, A>;
+
   public add(...args: any): ICommandBuilder<P, A> {
     const child = new Command(toConstuctorArgs(args));
     this._.children = [...this._.children, child] as ICommandBuilder[];

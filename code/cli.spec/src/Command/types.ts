@@ -17,13 +17,23 @@ export type ICommand<P extends object = any, A extends object = any> = {
 /**
  * Represents an API for building a tree of commands.
  */
-export type ICommandBuilder<P extends object = any, A extends object = any> = ICommand<P, A> & {
-  length: number;
-  children: ICommandBuilder[];
+export type ICommandBuilder<P extends object = any, A extends object = any> = ICommand<P, A> &
+  ICommandBuilderAdd<P, A> & {
+    length: number;
+    children: ICommandBuilder[];
+
+    as<P1 extends object, A1 extends object>(
+      fn: (e: ICommandBuilder<P1, A1>) => void,
+    ): ICommandBuilder<P, A>;
+
+    clone(options?: { deep?: boolean }): ICommandBuilder<P, A>;
+    toObject(): ICommand<P, A>;
+    childrenAs<P1 extends object, A1 extends object>(): Array<ICommandBuilder<P1, A1>>;
+  };
+
+export type ICommandBuilderAdd<P extends object = any, A extends object = any> = {
   add(title: string, handler?: CommandHandler<P, A>): ICommandBuilder<P, A>;
   add(args: IAddCommandArgs<P, A>): ICommandBuilder<P, A>;
-  toObject(): ICommand<P, A>;
-  clone(options?: { deep?: boolean }): ICommandBuilder<P, A>;
 };
 
 export type IAddCommandArgs<P extends object = any, A extends object = any> = {
