@@ -1,7 +1,7 @@
-import { CommandHandler, ICommand, ICommandTree, IAddCommandArgs, value } from '../common';
+import { CommandHandler, ICommand, ICommandBuilder, IAddCommandArgs, value } from '../common';
 
 type IConstructorArgs = ICommand & {
-  children: ICommandTree[];
+  children: ICommandBuilder[];
 };
 
 export const DEFAULT = {
@@ -12,7 +12,8 @@ export const DEFAULT = {
  * Represents a single [command] which is a named unit of functionality
  * within a program that can optionally take parameter input.
  */
-export class Command<P extends object = any, O extends object = any> implements ICommandTree<P, O> {
+export class Command<P extends object = any, O extends object = any>
+  implements ICommandBuilder<P, O> {
   private readonly _: IConstructorArgs;
 
   /**
@@ -21,13 +22,13 @@ export class Command<P extends object = any, O extends object = any> implements 
   public static create<P extends object = any, O extends object = any>(
     title: string,
     handler?: CommandHandler,
-  ): ICommandTree<P, O>;
+  ): ICommandBuilder<P, O>;
   public static create<P extends object = any, O extends object = any>(
     args: IAddCommandArgs,
-  ): ICommandTree<P, O>;
+  ): ICommandBuilder<P, O>;
   public static create<P extends object = any, O extends object = any>(
     ...args: any
-  ): ICommandTree<P, O> {
+  ): ICommandBuilder<P, O> {
     return new Command<P, O>(toConstuctorArgs(args));
   }
 
@@ -61,7 +62,7 @@ export class Command<P extends object = any, O extends object = any> implements 
     return this._.handler;
   }
 
-  public get children(): ICommandTree[] {
+  public get children(): ICommandBuilder[] {
     return this._.children;
   }
 
@@ -88,11 +89,11 @@ export class Command<P extends object = any, O extends object = any> implements 
   /**
    * Adds a child command.
    */
-  public add(title: string, handler: CommandHandler): ICommandTree<P, O>;
-  public add(args: IAddCommandArgs): ICommandTree<P, O>;
-  public add(...args: any): ICommandTree<P, O> {
+  public add(title: string, handler: CommandHandler): ICommandBuilder<P, O>;
+  public add(args: IAddCommandArgs): ICommandBuilder<P, O>;
+  public add(...args: any): ICommandBuilder<P, O> {
     const child = new Command(toConstuctorArgs(args));
-    this._.children = [...this._.children, child] as ICommandTree[];
+    this._.children = [...this._.children, child] as ICommandBuilder[];
     return this;
   }
 
@@ -121,6 +122,8 @@ function toConstuctorArgs(args: any): IConstructorArgs {
   throw new Error(`Args could not be interpreted.`);
 }
 
-function cloneChildren(builder: ICommandTree): ICommandTree[] {
-  return builder.children.map(child => child as Command).map(child => child.clone({ deep: true }));
+function cloneChildren(builder: ICommandBuilder): ICommandBuilder[] {
+  return builder.children
+    .map(child => child as ICommandBuilder)
+    .map(child => child.clone({ deep: true }));
 }
