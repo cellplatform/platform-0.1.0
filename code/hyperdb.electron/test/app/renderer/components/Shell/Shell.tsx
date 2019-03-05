@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import * as cli from '../../cli';
-import { COLORS, CommandState, css, GlamorValue, renderer, t } from '../../common';
+import { COLORS, CommandState, css, GlamorValue, renderer, t, str } from '../../common';
 import { CommandPrompt } from '../CommandPrompt';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
@@ -37,11 +37,10 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   public componentDidMount() {
     const { ipc } = this.context;
+    const unmounted$ = this.unmounted$;
 
-    const cliChange$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
-    const cliInvoke$ = this.cli.invoke$.pipe(takeUntil(this.unmounted$));
-    const store$ = this.store.change$.pipe(takeUntil(this.unmounted$));
-    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const store$ = this.store.change$.pipe(takeUntil(unmounted$));
+    const state$ = this.state$.pipe(takeUntil(unmounted$));
     state$.subscribe(e => this.setState(e));
     store$.subscribe(e => this.updateState());
     this.updateState();
@@ -59,26 +58,10 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         this.state$.next({ selectedDb });
       });
 
-    cliChange$.subscribe(e => {
-      const { command, text, params } = e;
-
-      // console.group('🌳 change');
-      // console.log('text', text);
-      // console.log('params', params);
-      // console.log('command', command);
-      // console.groupEnd();
-      this.forceUpdate();
-    });
-
-    cliInvoke$.subscribe(e => {
-      const { command, text, args } = e;
-      console.group('🌳 invoke');
-      console.log('text', text);
-      console.log('args', args);
-      console.log('command', command);
-      console.groupEnd();
-      // this.forceUpdate();
-    });
+    this.cli.change$
+      // Redraw screen each time the CLI state changes.
+      .pipe(takeUntil(unmounted$))
+      .subscribe(e => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -102,6 +85,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   /**
    * [Methods]
    */
+
   public async updateState() {
     const store = await this.store.read();
     this.state$.next({ store });
@@ -195,8 +179,6 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       }),
     };
 
-    // const elHeader = selectedDb && <DbHeader key={selectedDb.key} db={selectedDb} />;
-
     const elBody = selectedDb && (
       <ShellMain
         key={selectedDb.key}
@@ -212,9 +194,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         <div {...styles.footer}>
           <CommandPrompt
             ref={this.commandPromptRef}
-            focusOnKeypress={true}
             text={this.cli.text}
             onChange={this.cli.change}
+            onAutoComplete={this.onAutoComplete}
           />
         </div>
       </div>
@@ -254,5 +236,16 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   private clearDialog = () => {
     this.state$.next({ dialog: undefined });
+  };
+
+  private onAutoComplete = () => {
+    const cli = this.cli;
+    if (cli.command) {
+      return;
+    }
+    const match = cli.root.children.find(c => str.fuzzy.isMatch(cli.text, c.title));
+    if (match) {
+      cli.change({ text: `${match.title} ` });
+    }
   };
 }

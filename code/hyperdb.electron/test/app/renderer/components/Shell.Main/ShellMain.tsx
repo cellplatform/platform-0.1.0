@@ -12,7 +12,9 @@ export type IShellMainProps = {
   style?: GlamorValue;
   onFocusCommandPrompt?: (e: {}) => void;
 };
-export type IShellMainState = {};
+export type IShellMainState = {
+  view?: 'WATCH';
+};
 
 export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainState> {
   public state: IShellMainState = {};
@@ -27,14 +29,13 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
 
   constructor(props: IShellMainProps) {
     super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const unmounted$ = this.unmounted$;
+    this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e));
 
-    const cli = {
-      change$: this.props.cli.change$.pipe(takeUntil(this.unmounted$)),
-      invoke$: this.props.cli.invoke$.pipe(takeUntil(this.unmounted$)),
-    };
-
-    cli.change$.subscribe(e => this.forceUpdate());
+    this.cli.change$.pipe(takeUntil(unmounted$)).subscribe(e => this.forceUpdate());
+    this.cli.invoke$.pipe(takeUntil(unmounted$)).subscribe(e => {
+      console.log('INVOKE', e);
+    });
   }
 
   public componentWillUnmount() {
@@ -46,6 +47,19 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
    */
   public get cli() {
     return this.props.cli;
+  }
+
+  public get store() {
+    return this.context.store as t.ITestStore;
+  }
+
+  /**
+   * [Methods]
+   */
+  public invoke() {
+    if (this.cli.command.title === 'watch') {
+      this.state$.next({ view: 'WATCH' });
+    }
   }
 
   /**
@@ -102,7 +116,8 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
    * [Handlers]
    */
   private handleCommandClick = (e: CommandClickEvent) => {
-    this.cli.change({ text: e.cmd.title });
+    const text = `${e.cmd.title} `;
+    this.cli.change({ text });
     const { onFocusCommandPrompt } = this.props;
     if (onFocusCommandPrompt) {
       onFocusCommandPrompt({});

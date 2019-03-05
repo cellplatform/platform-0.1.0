@@ -18,15 +18,14 @@ import { ICommandPromptTheme } from './types';
 import { THEMES } from './themes';
 
 const { MONOSPACE } = constants.FONT;
-const { CLI } = COLORS;
 const FONT_SIZE = 14;
 
 export type ICommandPromptProps = {
   text?: string;
   theme?: ICommandPromptTheme | 'DARK';
-  focusOnKeypress?: boolean;
   style?: GlamorValue;
   onChange?: CommandChangeDispatcher;
+  onAutoComplete?: (e: {}) => void;
 };
 export type ICommandPromptState = {};
 
@@ -46,28 +45,44 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
-    const keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
-    keypress$
-      // Focus on any keypress.
+    const keydown$ = events.keyPress$.pipe(
+      takeUntil(this.unmounted$),
+      filter(e => e.isPressed === true),
+    );
+
+    keydown$
+      // Focus on CMD+L
       .pipe(
-        filter(e => this.props.focusOnKeypress),
-        filter(() => !containsFocus(this)),
-        filter(() => (document.activeElement ? document.activeElement.tagName !== 'INPUT' : true)),
+        filter(() => !this.isFocused),
+        filter(e => e.key === 'l' && e.metaKey),
       )
       .subscribe(e => this.focus());
 
-    keypress$
+    keydown$
       // Invoke on [Enter]
-      .pipe(
-        filter(e => e.isPressed === true),
-        filter(e => e.key === 'Enter'),
-      )
+      .pipe(filter(e => e.key === 'Enter'))
       .subscribe(e => this.fireInvoke());
 
-    keypress$
+    keydown$
       // Clear on CMD+K
       .pipe(filter(e => e.key === 'k' && e.metaKey))
       .subscribe(e => this.clear());
+
+    const tab$ = keydown$.pipe(
+      filter(e => e.key === 'Tab'),
+      filter(() => this.isFocused),
+    );
+    tab$.subscribe(e => e.preventDefault());
+
+    tab$
+      // Fire auto-complete event.
+      .pipe(filter(e => Boolean(this.text)))
+      .subscribe(e => {
+        const { onAutoComplete } = this.props;
+        if (onAutoComplete) {
+          onAutoComplete({});
+        }
+      });
   }
 
   public componentWillUnmount() {
@@ -79,6 +94,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    */
   public get text() {
     return this.props.text || '';
+  }
+
+  public get isFocused() {
+    return containsFocus(this);
   }
 
   private get theme() {
