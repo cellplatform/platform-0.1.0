@@ -74,7 +74,7 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
   }
 
   public get command() {
-    const cmd = this.args.commands[0];
+    const cmd = this.args.params[0];
     return cmd ? this.root.children.find(c => c.title === cmd) : undefined;
   }
 

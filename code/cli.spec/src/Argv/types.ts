@@ -1,7 +1,7 @@
 /**
  * Parsing `ARGV` strings.
  */
-export type IParsedArgs<P extends object = any> = {
-  commands: string[];
-  params: P;
+export type ICommandArgs<O extends object = any> = {
+  params: Array<string | number | boolean>;
+  options: O;
 };

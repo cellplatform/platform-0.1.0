@@ -1,4 +1,4 @@
-import { ICommand, IParsedArgs } from '../types';
+import { ICommand, ICommandArgs } from '../types';
 
 /**
  * Manages state of a CLI program.
@@ -11,7 +11,7 @@ export type ICommandState<A extends object = any> = ICommandStateProps<A> & {
 export type ICommandStateProps<A extends object = any> = {
   text: string;
   command: ICommand | undefined;
-  args: IParsedArgs<A>;
+  args: ICommandArgs<A>;
 };
 
 /**
