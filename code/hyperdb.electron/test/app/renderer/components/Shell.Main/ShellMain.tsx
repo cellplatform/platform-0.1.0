@@ -116,8 +116,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
    * [Handlers]
    */
   private handleCommandClick = (e: CommandClickEvent) => {
-    const text = `${e.cmd.title} `;
-    this.cli.change({ text });
+    this.cli.change({ text: e.cmd.title });
     const { onFocusCommandPrompt } = this.props;
     if (onFocusCommandPrompt) {
       onFocusCommandPrompt({});

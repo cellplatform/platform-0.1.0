@@ -245,7 +245,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     }
     const match = cli.root.children.find(c => str.fuzzy.isMatch(cli.text, c.title));
     if (match) {
-      cli.change({ text: `${match.title} ` });
+      cli.change({ text: match.title });
     }
   };
 }
