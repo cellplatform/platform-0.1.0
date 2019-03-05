@@ -1,8 +1,9 @@
-import { Subject } from 'rxjs';
-import { filter, map, share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { equals } from 'ramda';
-import { t } from '../common';
+import { Subject } from 'rxjs';
+import { distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operators';
+
 import { Argv } from '../Argv';
+import { t } from '../common';
 
 type ICommandStateArgs = {
   root: t.ICommand;
@@ -74,12 +75,30 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
   }
 
   public get command() {
-    const cmd = this.args.params[0];
-    return cmd ? this.root.children.find(c => c.title === cmd) : undefined;
+    const args = Argv.parse(this.text);
+    const param = args.params[0];
+    return param ? this.root.children.find(c => c.title === param) : undefined;
   }
 
   public get args() {
-    return Argv.parse(this.text);
+    const args = Argv.parse(this.text);
+
+    /**
+     * Trim params prior to the current command.
+     * For example:
+     *
+     *    - with the command line `create foo bar`
+     *    - if the command is `create`
+     *    - the params would be `foo bar` excluding `create`.
+     *
+     */
+    const command = this.command;
+    if (command) {
+      const index = args.params.indexOf(command.title);
+      args.params = args.params.slice(index + 1);
+    }
+
+    return args;
   }
 
   /**

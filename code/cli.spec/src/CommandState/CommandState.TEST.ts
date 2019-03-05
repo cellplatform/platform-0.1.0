@@ -80,13 +80,22 @@ describe('CommandState', () => {
     });
   });
 
-  describe('filtering on current [command]', () => {
+  describe('current [command] property', () => {
     it('match', () => {
       const state = CommandState.create({ root });
       expect(state.command).to.eql(undefined);
       state.change({ text: 'ls' });
       const cmd = state.command;
       expect(cmd && cmd.title).to.eql('ls');
+      expect(state.args.params).to.eql([]);
+    });
+
+    it('match: removes command value from arg params', () => {
+      const root = Command.create('root').add('create');
+      const state = CommandState.create({ root });
+      state.change({ text: 'create foo bar' });
+      expect(state.command && state.command.title).to.eql('create');
+      expect(state.args.params).to.eql(['foo', 'bar']); // NB: `create` excluded.
     });
 
     it('no match', () => {
