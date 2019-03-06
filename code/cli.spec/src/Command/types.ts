@@ -1,4 +1,6 @@
-import { ICommandArgs } from '../types';
+import { ICommandArgs } from '../Argv/types';
+import { Observable } from 'rxjs';
+export { ICommandArgs };
 
 /**
  * Represents a single [command] which is a named unit of
@@ -25,10 +27,14 @@ export type ICommandBuilder<P extends object = any, A extends object = any> = IC
     as<P1 extends object, A1 extends object>(
       fn: (e: ICommandBuilder<P1, A1>) => void,
     ): ICommandBuilder<P, A>;
+    childrenAs<P1 extends object, A1 extends object>(): Array<ICommandBuilder<P1, A1>>;
 
     clone(options?: { deep?: boolean }): ICommandBuilder<P, A>;
     toObject(): ICommand<P, A>;
-    childrenAs<P1 extends object, A1 extends object>(): Array<ICommandBuilder<P1, A1>>;
+    invoke<R = any>(options: {
+      props: P;
+      args?: string | ICommandArgs<A>;
+    }): ICommandInvokePromise<P, A, R>;
   };
 
 export type ICommandBuilderAdd<P extends object = any, A extends object = any> = {
@@ -61,5 +67,42 @@ export type ICommandHandlerArgs<P extends object = any, A extends object = any> 
   props: P;
   get<K extends keyof P>(key: K): P[K];
   set<K extends keyof P>(key: K, value: P[K]): ICommandHandlerArgs<P, A>;
-  clear: () => ICommandHandlerArgs<P, A>;
+};
+
+/**
+ * The response from an invokation of the handler.
+ */
+export type ICommandInvokePromise<P extends object, A extends object, R> = Promise<
+  ICommandInvokeResponse<P, A, R>
+> &
+  ICommandInvokeResponse<P, A, R>;
+export type ICommandInvokeResponse<P extends object, A extends object, R> = {
+  events$: Observable<CommandInvokeEvent>;
+  isComplete: boolean;
+  props: P;
+  args: ICommandArgs<A>;
+  result?: R;
+};
+
+/**
+ * [Events]
+ */
+export type CommandInvokeEvent =
+  | ICommandInvokeSetEvent
+  | ICommandInvokeCompleteEvent
+  | ICommandInvokeStartEvent;
+
+export type ICommandInvokeStartEvent<P extends object = any> = {
+  type: 'COMMAND/invoke/start';
+  payload: { invokeId: string; props: P };
+};
+
+export type ICommandInvokeSetEvent<P extends object = any> = {
+  type: 'COMMAND/invoke/set';
+  payload: { invokeId: string; key: keyof P; value: P[keyof P]; props: P };
+};
+
+export type ICommandInvokeCompleteEvent<P extends object = any> = {
+  type: 'COMMAND/invoke/complete';
+  payload: { invokeId: string; props: P };
 };

@@ -1,9 +1,8 @@
 import { value } from '../common';
 import * as t from './types';
+import { invoker } from './invoke';
 
-type IConstructorArgs = t.ICommand & {
-  children: t.ICommandBuilder[];
-};
+type IConstructorArgs = t.ICommand & { children: t.ICommandBuilder[] };
 
 export const DEFAULT = {
   HANDLER: (() => null) as t.CommandHandler,
@@ -15,8 +14,6 @@ export const DEFAULT = {
  */
 export class Command<P extends object = any, A extends object = any>
   implements t.ICommandBuilder<P, A> {
-  private readonly _: IConstructorArgs;
-
   /**
    * [Static]
    */
@@ -51,6 +48,11 @@ export class Command<P extends object = any, A extends object = any>
 
     this._ = { title, handler, children };
   }
+
+  /**
+   * [Fields]
+   */
+  private readonly _: IConstructorArgs;
 
   /**
    * [Properties]
@@ -128,10 +130,13 @@ export class Command<P extends object = any, A extends object = any>
   }
 
   /**
-   * Invokes the commands handler
+   * Invokes the command's handler.
    */
-  public async invoke() {
-    return;
+  public invoke<R>(options: {
+    props: P;
+    args?: string | t.ICommandArgs<A>;
+  }): t.ICommandInvokePromise<P, A, R> {
+    return invoker<P, A, R>({ command: this, ...options });
   }
 }
 
@@ -147,7 +152,7 @@ function toConstuctorArgs(args: any): IConstructorArgs {
   if (typeof args[0] === 'object') {
     return args[0] as IConstructorArgs;
   }
-  throw new Error(`Args could not be interpreted.`);
+  throw new Error(`[Args] could not be interpreted.`);
 }
 
 function cloneChildren(builder: t.ICommandBuilder): t.ICommandBuilder[] {

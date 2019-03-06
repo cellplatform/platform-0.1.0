@@ -1,1 +1,1 @@
-export { is, value } from '@platform/util.value';
+export { is, value, time, id } from '@platform/util.value';
