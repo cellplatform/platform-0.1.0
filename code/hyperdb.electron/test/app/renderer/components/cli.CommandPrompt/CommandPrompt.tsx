@@ -113,7 +113,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   /**
    * [Methods]
    */
-  private focus = () => {
+  public focus = () => {
     if (this.elInput) {
       this.elInput.focus();
     }

@@ -115,7 +115,7 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
 
     const props = this.toObject();
     const invoked = props.command ? Boolean(e.invoked) : false;
-    const payload = { props, invoked };
+    const payload = { ...props, invoked };
     events$.next({ type: 'COMMAND/state/change', payload });
   };
 

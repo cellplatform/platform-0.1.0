@@ -30,8 +30,5 @@ export type CommandStateEvent = ICommandStateChangeEvent;
 
 export type ICommandStateChangeEvent<P extends object = any> = {
   type: 'COMMAND/state/change';
-  payload: {
-    props: ICommandStateProps<P>;
-    invoked: boolean;
-  };
+  payload: ICommandStateProps<P> & { invoked: boolean };
 };

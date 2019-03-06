@@ -49,9 +49,9 @@ describe('CommandState', () => {
       expect(events.length).to.eql(1);
       expect(changes.length).to.eql(1);
 
-      expect(events[0].payload.props).to.eql(state.toObject());
-      expect(changes[0].props).to.eql(state.toObject());
-      expect(changes[0].invoked).to.eql(false);
+      const props = { ...state.toObject(), invoked: false };
+      expect(events[0].payload).to.eql(props);
+      expect(changes[0]).to.eql(props);
     });
 
     it('updates current text on change event', () => {
@@ -82,7 +82,7 @@ describe('CommandState', () => {
       state.change({ text: 'ls', invoked: true });
       expect(events.length).to.eql(3);
       expect(invokes.length).to.eql(1);
-      expect(invokes[0].props.text).to.eql('ls');
+      expect(invokes[0].text).to.eql('ls');
       expect(invokes[0].invoked).to.eql(true);
 
       state.change({ text: 'ls', invoked: true }); // NB: Invoke again.
