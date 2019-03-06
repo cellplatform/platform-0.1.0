@@ -1,6 +1,8 @@
 import { expect } from 'chai';
-import { CommandStateEvent, CommandState, ICommandStateProps } from '.';
+
+import { CommandState } from '.';
 import { Command } from '../Command';
+import * as t from './types';
 
 const root = Command.create('fs')
   .add('ls')
@@ -35,8 +37,8 @@ describe('CommandState', () => {
 
   describe('change', () => {
     it('fires [change$] event (observable)', () => {
-      const events: CommandStateEvent[] = [];
-      const changes: ICommandStateProps[] = [];
+      const events: t.CommandStateEvent[] = [];
+      const changes: Array<t.ICommandStateChangeEvent['payload']> = [];
       const state = CommandState.create({ root });
 
       state.events$.subscribe(e => events.push(e));
@@ -47,8 +49,9 @@ describe('CommandState', () => {
       expect(events.length).to.eql(1);
       expect(changes.length).to.eql(1);
 
-      expect(events[0].payload).to.eql(state.toObject());
-      expect(changes[0]).to.eql(state.toObject());
+      expect(events[0].payload.props).to.eql(state.toObject());
+      expect(changes[0].props).to.eql(state.toObject());
+      expect(changes[0].invoked).to.eql(false);
     });
 
     it('updates current text on change event', () => {
@@ -61,8 +64,8 @@ describe('CommandState', () => {
 
   describe('invoke', () => {
     it('fires [invoke$] event (observable)', () => {
-      const events: CommandStateEvent[] = [];
-      const invokes: ICommandStateProps[] = [];
+      const events: t.CommandStateEvent[] = [];
+      const invokes: Array<t.ICommandStateChangeEvent['payload']> = [];
       const state = CommandState.create({ root });
 
       state.events$.subscribe(e => events.push(e));
@@ -74,9 +77,10 @@ describe('CommandState', () => {
       expect(invokes.length).to.eql(0);
 
       state.change({ text: 'bar', invoked: true });
-      expect(events.length).to.eql(3); // NB: 3 === 1 (prior) + <change> + <invoke>.
+      expect(events.length).to.eql(2);
       expect(invokes.length).to.eql(1);
-      expect(invokes[0].text).to.eql('bar');
+      expect(invokes[0].props.text).to.eql('bar');
+      expect(invokes[0].invoked).to.eql(true);
     });
   });
 

@@ -52,9 +52,8 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
     distinctUntilChanged((prev, next) => equals(prev, next)),
     share(),
   );
-  public readonly invoke$ = this.events$.pipe(
-    filter(e => e.type === 'COMMAND/state/invoke'),
-    map(e => e.payload),
+  public readonly invoke$ = this.change$.pipe(
+    filter(e => e.invoked),
     share(),
   );
 
@@ -109,14 +108,12 @@ export class CommandState<P extends object = any> implements t.ICommandState<P> 
   }
 
   public change: t.CommandChangeDispatcher = e => {
-    const { text, invoked } = e;
+    const { text } = e;
+    const invoked = Boolean(e.invoked);
     const { events$ } = this._;
     this._.text = text;
-    const payload = this.toObject();
+    const payload = { props: this.toObject(), invoked };
     events$.next({ type: 'COMMAND/state/change', payload });
-    if (invoked) {
-      events$.next({ type: 'COMMAND/state/invoke', payload });
-    }
   };
 
   public toString() {
