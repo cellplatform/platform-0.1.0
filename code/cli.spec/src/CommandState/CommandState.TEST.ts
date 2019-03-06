@@ -97,7 +97,7 @@ describe('CommandState', () => {
       expect(state.command).to.eql(undefined);
       state.change({ text: 'ls' });
       const cmd = state.command;
-      expect(cmd && cmd.title).to.eql('ls');
+      expect(cmd && cmd.name).to.eql('ls');
       expect(state.args.params).to.eql([]);
     });
 
@@ -105,7 +105,7 @@ describe('CommandState', () => {
       const root = Command.create('root').add('create');
       const state = CommandState.create({ root });
       state.change({ text: 'create foo bar' });
-      expect(state.command && state.command.title).to.eql('create');
+      expect(state.command && state.command.name).to.eql('create');
       expect(state.args.params).to.eql(['foo', 'bar']); // NB: `create` excluded.
     });
 

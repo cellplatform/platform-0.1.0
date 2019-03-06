@@ -75,7 +75,7 @@ export class CommandState implements t.ICommandState {
   public get command() {
     const args = Argv.parse(this.text);
     const param = args.params[0];
-    return param ? this.root.children.find(c => c.title === param) : undefined;
+    return param ? this.root.children.find(c => c.name === param) : undefined;
   }
 
   public get args() {
@@ -92,7 +92,7 @@ export class CommandState implements t.ICommandState {
      */
     const command = this.command;
     if (command) {
-      const index = args.params.indexOf(command.title);
+      const index = args.params.indexOf(command.name);
       args.params = args.params.slice(index + 1);
     }
 

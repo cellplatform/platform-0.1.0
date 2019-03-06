@@ -6,7 +6,7 @@ import { invoker } from './invoke';
 import * as t from './types';
 
 type IConstructorArgs = {
-  title: string;
+  name: string;
   handler: t.CommandHandler;
   children: t.ICommandBuilder[];
 };
@@ -41,19 +41,19 @@ export class Command<P extends object = any, A extends object = any>
    * [Constructor]
    */
   private constructor(args: Partial<IConstructorArgs>) {
-    const title = (args.title || '').trim();
+    const name = (args.name || '').trim();
     const handler = args.handler || DEFAULT.HANDLER;
     const children = args.children || [];
 
-    if (!title) {
-      throw new Error(`A command title must be specified.`);
+    if (!name) {
+      throw new Error(`A command 'name' must be specified.`);
     }
 
     if (typeof handler !== 'function') {
-      throw new Error(`A command handler must be a function.`);
+      throw new Error(`A command 'handler' must be a function.`);
     }
 
-    this._.title = title;
+    this._.name = name;
     this._.handler = handler;
     this._.children = children;
   }
@@ -62,7 +62,7 @@ export class Command<P extends object = any, A extends object = any>
    * [Fields]
    */
   private readonly _ = {
-    title: '',
+    name: '',
     handler: (undefined as unknown) as t.CommandHandler,
     children: [] as t.ICommandBuilder[],
     dispose$: new Subject(),
@@ -77,8 +77,8 @@ export class Command<P extends object = any, A extends object = any>
   /**
    * [Properties]
    */
-  public get title() {
-    return this._.title;
+  public get name() {
+    return this._.name;
   }
 
   public get handler() {
@@ -141,11 +141,11 @@ export class Command<P extends object = any, A extends object = any>
    */
   public toObject(): t.ICommand<P, A> {
     const children = this.children.map(child => child.toObject());
-    const title = this.title;
+    const title = this.name;
     const handler = this.handler;
     const events$ = this.events$;
     const invoke: t.InvokeCommand<P, A> = options => this.invoke(options);
-    return { events$, title, handler, children, invoke };
+    return { events$, name: title, handler, children, invoke };
   }
 
   /**
@@ -178,8 +178,8 @@ export class Command<P extends object = any, A extends object = any>
 
 function toConstuctorArgs(args: any): IConstructorArgs {
   if (typeof args[0] === 'string') {
-    const [title, handler] = args;
-    return { title, handler, children: [] };
+    const [name, handler] = args;
+    return { name, handler, children: [] };
   }
   if (typeof args[0] === 'object') {
     return args[0] as IConstructorArgs;

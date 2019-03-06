@@ -11,11 +11,11 @@ export { ICommandArgs };
  *  - `O` stands for argument `options`
  */
 export type ICommand<P extends object = any, A extends object = any> = {
-  events$: Observable<CommandInvokeEvent>;
-  title: string;
+  name: string;
   children: ICommand[];
   handler: CommandHandler<P, A>;
   invoke: InvokeCommand<P, A>;
+  events$: Observable<CommandInvokeEvent>;
 };
 
 /**
@@ -35,13 +35,16 @@ export type ICommandBuilder<P extends object = any, A extends object = any> = IC
     toObject(): ICommand<P, A>;
   };
 
+/**
+ * [Add]
+ */
 export type ICommandBuilderAdd<P extends object = any, A extends object = any> = {
   add(title: string, handler?: CommandHandler<P, A>): ICommandBuilder<P, A>;
   add(args: IAddCommandArgs<P, A>): ICommandBuilder<P, A>;
 };
 
 export type IAddCommandArgs<P extends object = any, A extends object = any> = {
-  title: string;
+  name: string;
 } & Partial<ICommand<P, A>>;
 
 /**

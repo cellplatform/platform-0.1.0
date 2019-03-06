@@ -103,7 +103,7 @@ export function invoker<P extends object, A extends object, R>(options: {
       .pipe(takeUntil(complete$))
       .subscribe(() => {
         response.isTimedOut = true;
-        const error = `The command '${command.title}' timed out.`;
+        const error = `The command '${command.name}' timed out.`;
         done(new Error(error));
       });
 
