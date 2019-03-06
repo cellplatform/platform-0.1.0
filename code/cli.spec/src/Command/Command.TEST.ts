@@ -163,5 +163,4 @@ describe('Command', () => {
       expect(any.children[0].clone).to.eql(undefined);
     });
   });
-
 });

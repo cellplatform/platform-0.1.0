@@ -940,10 +940,10 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/cli.spec@0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.0.0.tgz#1ed29c28f0ff39dd39720a68a37d4dc6b7d752af"
-  integrity sha512-YYmLVeHjrZbNkFt3kpQFQh9CLxmb/S5LOEDAfZSED+xLBXLFKKucZfjOXxoI8ESmFBTadsdkEzjvRtji9Ueh3w==
+"@platform/cli.spec@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.0.1.tgz#44273efa017e3df7eafe8962484d5ddca607a5aa"
+  integrity sha512-0Jc6X7zTfQH8v0G0EcXsPVaca4mTx0QtzpI0lcUs8O2MG6k+FYfU1EEOlkdI04yhi3BLitOoizVVTQ5pcz3KOQ==
   dependencies:
     "@platform/util.value" "0.0.33"
 
@@ -1226,10 +1226,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.32.tgz#3b59faacdb2d5298efe5f407b2d7ef4dcb81dd02"
   integrity sha512-MHW9IsNWLGhczVesJGg8CjAYWamk9dpRCqyXvsfRVbN9OZbDfszomhLZVvjYwLDjdmVZ8f5gioKTBH4lHl4Wxg==
 
-"@platform/util.string@^0.0.29":
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.0.29.tgz#12dce572f4fef266fd973707977fe84bada42da0"
-  integrity sha512-K/5RxsKQXVQ9hmhtnczsl0Vm1qW2KiqD4d5+AmuwmgJV49rv3t/tcTC2P4dXPOsOh7kvTMhLmhu6BvEu0VLmwg==
+"@platform/util.string@^0.0.30":
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.0.30.tgz#d91094fd9d8387c2204a467da588abef126c5ab9"
+  integrity sha512-0XqmefkKSnWUtpDMqC9dFaRUu15eIfLua8Cy6ghcy7pbJ+50L4z+MVCNOY738QQz86eCIZ7juZdTNV9piVZ5YA==
   dependencies:
     "@types/underscore.string" "0.0.35"
     escape-string-regexp "1.0.5"
