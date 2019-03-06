@@ -1,14 +1,4 @@
-import {
-  result,
-  changeExtensions,
-  exec,
-  fs,
-  paths,
-  IResult,
-  ITask,
-  getLog,
-  IPackageJson,
-} from '../common';
+import { exec, fs, getLog, IPackageJson, IResult, ITask, paths, result } from '../common';
 
 export type BuildFormat = 'COMMON_JS' | 'ES_MODULE';
 
@@ -17,6 +7,7 @@ export type IBuildArgs = {
   watch?: boolean;
   dir?: string;
   outDir?: string;
+  tsconfig?: string;
 };
 
 /**
@@ -72,7 +63,9 @@ type IArgs = IBuildArgs & { as?: BuildFormat };
  * Runs a typescript build.
  */
 export async function build(args: IArgs): Promise<IResult & { errorLog?: string }> {
-  const { dir = '', outDir = '', silent, watch, as, code, error } = await processArgs(args);
+  const { dir = '', outDir = '', silent, watch, as, code, error, tsconfig } = await processArgs(
+    args,
+  );
   if (code !== 0) {
     return result.formatResult({ code, error });
   }
@@ -84,6 +77,7 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
   cmd += `node ${fs.join(tsc)}`;
   cmd += ` --outDir ${outDir}`;
   cmd = watch ? `${cmd} --watch` : cmd;
+  cmd = tsconfig ? `${cmd} --project ${tsconfig}` : cmd;
 
   switch (as) {
     case 'COMMON_JS':
@@ -117,14 +111,6 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
   } catch (error) {
     return result.fail(error);
   }
-
-  // Change ESM (ES Module) file extensions.
-  if (as === 'ES_MODULE') {
-    await changeExtensions({ dir: outDir, from: 'js', to: 'mjs' });
-  }
-
-  // Finish up.
-  return result.success();
 }
 
 /**
@@ -141,7 +127,7 @@ export async function processArgs(args: IArgs) {
   }
 
   // Retrieve the TSConfig.
-  const tsconfig = await paths.tsconfig(dir);
+  const tsconfig = await paths.tsconfig(dir, args.tsconfig);
   if (!tsconfig.success) {
     const error = new Error(`A 'tsconfig.json' file could not be found.`);
     return { code: 1, error };
@@ -155,7 +141,7 @@ export async function processArgs(args: IArgs) {
   }
 
   // Finish up.
-  return { code: 0, dir, outDir, silent, watch, as };
+  return { code: 0, dir, outDir, silent, watch, as, tsconfig: tsconfig.filename };
 }
 
 /**

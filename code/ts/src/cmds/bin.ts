@@ -67,15 +67,19 @@ const program = yargs
           describe: 'Redirect output structure to the directory',
           string: true,
         })
-        .option('--no-esm', {
+        .option('tsconfig', {
+          describe: 'Name of the `tsconfig` file',
+          string: true,
+        })
+        .option('no-esm', {
           describe: 'Do not include ESModule output (.jsm)',
           boolean: true,
         }),
     async e => {
-      const { silent, watch, dir, outDir, esm } = e;
+      const { silent, watch, dir, outDir, esm, tsconfig } = e;
       if (watch) {
         // Watching (build as common-js)
-        await cmds.build({ silent, dir, outDir, watch: true, as: 'COMMON_JS' });
+        await cmds.build({ silent, tsconfig, dir, outDir, watch: true, as: 'COMMON_JS' });
       } else {
         // Build all formats (ESM and common-js)
         let formats: cmds.BuildFormat[] = [];
@@ -84,6 +88,7 @@ const program = yargs
         const res = await cmds.buildAs(formats, {
           silent,
           watch,
+          tsconfig,
           dir,
           outDir,
         });
