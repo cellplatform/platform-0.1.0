@@ -4,7 +4,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import * as cli from '../../cli';
 import { COLORS, CommandState, css, GlamorValue, renderer, t, str } from '../../common';
-import { CommandPrompt } from '../CommandPrompt';
+import { CommandPrompt } from '../cli.CommandPrompt';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';

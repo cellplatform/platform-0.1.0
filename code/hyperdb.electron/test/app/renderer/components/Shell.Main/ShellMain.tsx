@@ -3,8 +3,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, t, GlamorValue, CommandState, renderer } from '../../common';
 import { ObjectView } from '../primitives';
-import { DbHeader } from '../Db.Header';
-import { Help, CommandClickEvent } from './components/Help';
+import { DbHeader } from './components/DbHeader';
+import { Help, CommandClickEvent } from '../cli.Help';
 
 export type IShellMainProps = {
   cli: CommandState;
@@ -34,6 +34,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
     this.cli.change$.pipe(takeUntil(unmounted$)).subscribe(e => this.forceUpdate());
     this.cli.invoke$.pipe(takeUntil(unmounted$)).subscribe(e => {
       console.log('INVOKE', e);
+      console.log(`\nTODO 🐷   \n`);
     });
   }
 

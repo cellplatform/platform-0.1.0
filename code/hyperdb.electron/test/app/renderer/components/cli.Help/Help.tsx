@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, CommandState, ICommand, str, Command } from '../../../common';
+
+import { color, CommandState, css, GlamorValue, ICommand, str } from '../../common';
 
 export type CommandClickEvent = {
   cmd: ICommand;
@@ -27,10 +28,9 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
   constructor(props: IHelpProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    const cli = {
-      change$: this.props.cli.change$.pipe(takeUntil(this.unmounted$)),
-    };
-    cli.change$.subscribe(e => this.forceUpdate());
+    const change$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
+
+    change$.subscribe(e => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -40,8 +40,12 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
   /**
    * [Properties]
    */
+  public get cli() {
+    return this.props.cli;
+  }
+
   public get root() {
-    return this.props.cli.root;
+    return this.cli.root;
   }
 
   private get commandList() {
