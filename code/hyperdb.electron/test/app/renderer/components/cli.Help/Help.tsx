@@ -24,7 +24,6 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
   /**
    * [Lifecycle]
    */
-
   constructor(props: IHelpProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
