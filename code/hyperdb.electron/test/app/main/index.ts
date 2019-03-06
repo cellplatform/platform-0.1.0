@@ -6,7 +6,7 @@ import { is, fs } from './common';
 import main from '../../../src/main';
 import * as t from '../types';
 
-const config = require('../../../.uiharness/config.json') as uiharness.IUihRuntimeConfig;
+const config = require('../../../.uiharness/config.json') as uiharness.IRuntimeConfig;
 
 (async () => {
   const context = await uiharness.init({ config });

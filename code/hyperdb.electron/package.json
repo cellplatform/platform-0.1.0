@@ -10,6 +10,7 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare",
     "reset": "ts-node -T scripts/reset",
     "tmp": "ts-node -T scripts/tmp $@"

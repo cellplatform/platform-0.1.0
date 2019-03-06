@@ -31,7 +31,6 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
     super(props);
     const unmounted$ = this.unmounted$;
     this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e));
-
     this.cli.change$.pipe(takeUntil(unmounted$)).subscribe(e => this.forceUpdate());
     this.cli.invoke$.pipe(takeUntil(unmounted$)).subscribe(e => {
       console.log('INVOKE', e);
@@ -57,7 +56,8 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
    * [Methods]
    */
   public invoke() {
-    if (this.cli.command.title === 'watch') {
+    const command = this.cli.command;
+    if (command && command.title === 'watch') {
       this.state$.next({ view: 'WATCH' });
     }
   }
