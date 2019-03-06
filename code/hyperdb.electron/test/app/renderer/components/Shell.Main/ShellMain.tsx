@@ -35,17 +35,6 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
 
     state$.subscribe(e => this.setState(e));
     change$.subscribe(e => this.forceUpdate());
-
-    // change$.pipe(filter((e) => e.invoked)).subscribe((e) => {
-
-    // })
-
-    // change$.pipe(filter(e => e.invoked));
-
-    // this.cli.invoke$.pipe(takeUntil(unmounted$)).subscribe(e => {
-    //   console.log('INVOKE', e);
-    //   console.log(`\nTODO 🐷   \n`);
-    // });
   }
 
   public componentWillUnmount() {

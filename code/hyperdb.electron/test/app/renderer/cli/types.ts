@@ -1,7 +1,8 @@
 import { ITestRendererDb } from '../../types';
 
-export type ICommandProps = {
+export type ITestCommandProps = {
   db?: ITestRendererDb;
+  view?: 'WATCH';
 };
 
-export type ICommandOptions = {};
+export type ITestCommandOptions = {};
