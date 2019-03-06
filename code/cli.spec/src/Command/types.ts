@@ -83,6 +83,7 @@ export type ICommandInvokeResponse<P extends object, A extends object, R> = {
   props: P;
   args: ICommandArgs<A>;
   result?: R;
+  error?: Error;
 };
 
 /**
@@ -91,12 +92,12 @@ export type ICommandInvokeResponse<P extends object, A extends object, R> = {
 export type CommandEvent = CommandInvokeEvent;
 
 export type CommandInvokeEvent =
-  | ICommandInvokeSetEvent
-  | ICommandInvokeCompleteEvent
-  | ICommandInvokeStartEvent;
+  | ICommandInvokeBeforeEvent
+  | ICommandInvokeAfterEvent
+  | ICommandInvokeSetEvent;
 
-export type ICommandInvokeStartEvent<P extends object = any, A extends object = any> = {
-  type: 'COMMAND/invoke/start';
+export type ICommandInvokeBeforeEvent<P extends object = any, A extends object = any> = {
+  type: 'COMMAND/invoke/before';
   payload: { command: ICommand<P, A>; invokeId: string; props: P };
 };
 
@@ -105,7 +106,7 @@ export type ICommandInvokeSetEvent<P extends object = any, A extends object = an
   payload: { command: ICommand<P, A>; invokeId: string; key: keyof P; value: P[keyof P]; props: P };
 };
 
-export type ICommandInvokeCompleteEvent<P extends object = any, A extends object = any> = {
-  type: 'COMMAND/invoke/complete';
-  payload: { command: ICommand<P, A>; invokeId: string; props: P };
+export type ICommandInvokeAfterEvent<P extends object = any, A extends object = any> = {
+  type: 'COMMAND/invoke/after';
+  payload: { command: ICommand<P, A>; invokeId: string; props: P; error?: Error };
 };

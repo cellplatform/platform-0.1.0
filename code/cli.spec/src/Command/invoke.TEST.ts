@@ -8,7 +8,6 @@ import * as t from './types';
  * TODO
  *
  * - timeout
- * - error(?)
  */
 
 describe('Command.invoke', () => {
@@ -53,7 +52,7 @@ describe('Command.invoke', () => {
     expect(res.result).to.eql({ foo: 123 });
   });
 
-  it('fires start/set/complete event sequence', async () => {
+  it('fires [before/set/after] event sequence', async () => {
     const events: t.CommandInvokeEvent[] = [];
     const root = Command.create<P, A>('root').add('copy', e => {
       e.set('text', 'one'); // NB: not async, no return value.
@@ -63,14 +62,14 @@ describe('Command.invoke', () => {
     res.events$.subscribe(e => events.push(e));
 
     expect(events.length).to.eql(1);
-    expect(events[0].type).to.eql('COMMAND/invoke/start');
+    expect(events[0].type).to.eql('COMMAND/invoke/before');
 
     await res;
 
     expect(events.length).to.eql(3);
-    expect(events[0].type).to.eql('COMMAND/invoke/start');
+    expect(events[0].type).to.eql('COMMAND/invoke/before');
     expect(events[1].type).to.eql('COMMAND/invoke/set');
-    expect(events[2].type).to.eql('COMMAND/invoke/complete');
+    expect(events[2].type).to.eql('COMMAND/invoke/after');
 
     const id = events[0].payload.invokeId;
     expect(events[0].payload.invokeId).to.eql(id);
@@ -118,5 +117,50 @@ describe('Command.invoke', () => {
 
     expect(copyCommandEvents).to.eql(invokeEvents);
     expect(rootCommandEvents).to.eql(invokeEvents);
+  });
+
+  it('error', async () => {
+    const commandEvents: t.CommandEvent[] = [];
+    const invokeEvents: t.CommandInvokeEvent[] = [];
+
+    const root = Command.create<P, A>('root').add('copy', async e => {
+      throw new Error('MyError');
+    });
+
+    const copy = root.childrenAs<P, A>()[0];
+    copy.events$.subscribe(e => commandEvents.push(e));
+
+    const res = copy.invoke<R>({ props: { text: 'Hello' } });
+    res.events$.subscribe(e => invokeEvents.push(e));
+    expect(res.error).to.eql(undefined);
+
+    const count = {
+      complete: 0,
+      error: 0,
+    };
+    res.events$.subscribe({
+      complete: () => count.complete++,
+      error: err => count.error++,
+    });
+
+    let error: Error | undefined;
+    try {
+      await res;
+    } catch (err) {
+      error = err;
+    }
+    expect(error && error.message).to.eql('MyError');
+
+    // Error on AFTER observable event.
+    expect(commandEvents).to.eql(invokeEvents);
+    const lastEvent = invokeEvents[invokeEvents.length - 1] as t.ICommandInvokeAfterEvent;
+    expect(lastEvent.payload.error && lastEvent.payload.error.message).to.eql('MyError');
+
+    // Error on response object.
+    expect(res.error && res.error.message).to.eql('MyError');
+
+    // Subscription.
+    expect(count.complete).to.eql(1);
+    expect(count.error).to.eql(0); // NB: Completes as expected passing the Error. The observable is not in an error state.
   });
 });

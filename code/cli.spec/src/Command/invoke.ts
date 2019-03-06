@@ -24,7 +24,7 @@ export function invoker<P extends object, A extends object, R>(options: {
    * Fire initial event.
    */
   events$.next({
-    type: 'COMMAND/invoke/start',
+    type: 'COMMAND/invoke/before',
     payload: { command, invokeId, props: { ...options.props } },
   });
 
@@ -37,6 +37,7 @@ export function invoker<P extends object, A extends object, R>(options: {
     props: options.props,
     args,
     result: undefined,
+    error: undefined as any,
   };
   const sync = () => Object.keys(response).forEach(key => (promise[key] = response[key]));
 
@@ -44,15 +45,19 @@ export function invoker<P extends object, A extends object, R>(options: {
    * The asynchronous promise.
    */
   const promise = new Promise<t.ICommandInvokeResponse<P, A, R>>(async (resolve, reject) => {
-    const done = () => {
+    const done = (error?: Error) => {
       response.isComplete = true;
+      response.error = error;
       sync();
-      events$.next({
-        type: 'COMMAND/invoke/complete',
-        payload: { command, invokeId, props: { ...response.props } },
-      });
+      const props = { ...response.props };
+
+      events$.next({ type: 'COMMAND/invoke/after', payload: { command, invokeId, props, error } });
       events$.complete();
-      resolve(response);
+      if (error) {
+        reject(error);
+      } else {
+        resolve(response);
+      }
     };
 
     const e: t.ICommandHandlerArgs<P, A> = {
@@ -80,9 +85,13 @@ export function invoker<P extends object, A extends object, R>(options: {
     await time.delay(0);
 
     // Invoke the handler and wait for completion.
-    const res = command.handler(e);
-    response.result = value.isPromise(res) ? await res : res;
-    done();
+    try {
+      const res = command.handler(e);
+      response.result = value.isPromise(res) ? await res : res;
+      done();
+    } catch (error) {
+      done(error);
+    }
   });
 
   // Finish up.
