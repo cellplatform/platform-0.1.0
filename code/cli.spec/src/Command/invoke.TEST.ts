@@ -6,12 +6,9 @@ import * as t from './types';
 
 /**
  * TODO
+ *
  * - timeout
- * - invoke events from root command (bubble up)
  * - error(?)
- * - get / set
- *    - mutate props (different object)
- *    - fire set event.
  */
 
 describe('Command.invoke', () => {
@@ -30,7 +27,6 @@ describe('Command.invoke', () => {
       });
 
     const copy = root.childrenAs<P, A>()[1];
-
     const props = { text: 'Hello' };
     const res = copy.invoke<R>({ props, args: '-f' });
 
@@ -62,8 +58,8 @@ describe('Command.invoke', () => {
     const root = Command.create<P, A>('root').add('copy', e => {
       e.set('text', 'one'); // NB: not async, no return value.
     });
-    const res = root.childrenAs<P, A>()[0].invoke({ props: { text: 'Hello' } });
 
+    const res = root.childrenAs<P, A>()[0].invoke({ props: { text: 'Hello' } });
     res.events$.subscribe(e => events.push(e));
 
     expect(events.length).to.eql(1);
@@ -82,8 +78,10 @@ describe('Command.invoke', () => {
     expect(events[2].payload.invokeId).to.eql(id);
   });
 
-  it('fires set events through observable', async () => {
-    const events: t.CommandInvokeEvent[] = [];
+  it('fires set events through observable hierarchy', async () => {
+    const rootCommandEvents: t.CommandEvent[] = [];
+    const copyCommandEvents: t.CommandEvent[] = [];
+    const invokeEvents: t.CommandInvokeEvent[] = [];
 
     const root = Command.create<P, A>('root').add('copy', async e => {
       return time.delay(0, () => {
@@ -92,18 +90,23 @@ describe('Command.invoke', () => {
         e.set('text', 'three');
       });
     });
-    const res = root.childrenAs<P, A>()[0].invoke({ props: { text: 'Hello' } });
 
+    const copy = root.childrenAs<P, A>()[0];
+
+    root.events$.subscribe(e => rootCommandEvents.push(e));
+    copy.events$.subscribe(e => copyCommandEvents.push(e));
+
+    const res = copy.invoke({ props: { text: 'Hello' } });
     expect(res.props).to.eql({ text: 'Hello' });
-    res.events$.subscribe(e => events.push(e));
+    res.events$.subscribe(e => invokeEvents.push(e));
 
     await res;
 
-    const setEvents = events
+    const setEvents = invokeEvents
       .filter(e => e.type === 'COMMAND/invoke/set')
       .map(e => (e as t.ICommandInvokeSetEvent<P>).payload);
 
-    expect(events.length).to.greaterThan(setEvents.length);
+    expect(invokeEvents.length).to.greaterThan(setEvents.length);
 
     expect(setEvents[0].value).to.eql('one');
     expect(setEvents[1].value).to.eql('two');
@@ -112,5 +115,8 @@ describe('Command.invoke', () => {
     expect(setEvents[0].props.text).to.eql('one');
     expect(setEvents[1].props.text).to.eql('two');
     expect(setEvents[2].props.text).to.eql('three');
+
+    expect(copyCommandEvents).to.eql(invokeEvents);
+    expect(rootCommandEvents).to.eql(invokeEvents);
   });
 });

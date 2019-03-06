@@ -81,10 +81,8 @@ describe('Command', () => {
     it('adds a child command', () => {
       const cmd1 = Command.create('foo');
       const cmd2 = cmd1.add('child');
-
       expect(cmd1).to.equal(cmd2);
       expect(cmd1.length).to.eql(1);
-
       expect(cmd2.children[0].title).to.eql('child');
     });
 
@@ -101,6 +99,39 @@ describe('Command', () => {
       expect(cmd.length).to.eql(3);
       expect(cmd.children[0].length).to.eql(1);
       expect(cmd.children[0]).to.equal(a1);
+    });
+  });
+
+  describe('as<P,A>(...)', () => {
+    it('adds child using different types', () => {
+      type P = { text: string };
+      type A = { force: boolean };
+      type P1 = { name: string };
+      type A1 = { suffix: string };
+
+      const tmp = {
+        suffix: '',
+        force: false,
+      };
+
+      const root1 = Command.create<P, A>('root');
+
+      const root2 = root1
+        .as<P1, A1>(cmd =>
+          cmd
+            .add('foo', e => (tmp.suffix = e.args.options.suffix))
+            .add('bar')
+            .add('baz'),
+        )
+        .add('yo', e => (tmp.force = e.args.options.force));
+
+      /**
+       * NB: This tests the typing change for when adding within `as` context.
+       *     The commands are added to the roots, but the typing is clean.
+       *
+       */
+      expect(root1.length).to.eql(4);
+      expect(root1).to.equal(root2);
     });
   });
 
@@ -132,4 +163,5 @@ describe('Command', () => {
       expect(any.children[0].clone).to.eql(undefined);
     });
   });
+
 });

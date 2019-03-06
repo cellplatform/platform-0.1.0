@@ -26,14 +26,14 @@ export type ICommandChangeArgs = {
 /**
  * [Events]
  */
-export type CommandEvent = ICommandChangeEvent | ICommandInvokeEvent;
+export type CommandStateEvent = ICommandStateChangeEvent | ICommandStateInvokeEvent;
 
-export type ICommandChangeEvent<P extends object = any> = {
-  type: 'COMMAND/change';
+export type ICommandStateChangeEvent<P extends object = any> = {
+  type: 'COMMAND/state/change';
   payload: ICommandStateProps<P>;
 };
 
-export type ICommandInvokeEvent<P extends object = any> = {
-  type: 'COMMAND/invoke';
+export type ICommandStateInvokeEvent<P extends object = any> = {
+  type: 'COMMAND/state/invoke';
   payload: ICommandStateProps<P>;
 };

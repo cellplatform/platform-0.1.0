@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { CommandEvent, CommandState, ICommandStateProps } from '.';
+import { CommandStateEvent, CommandState, ICommandStateProps } from '.';
 import { Command } from '../Command';
 
 const root = Command.create('fs')
@@ -35,7 +35,7 @@ describe('CommandState', () => {
 
   describe('change', () => {
     it('fires [change$] event (observable)', () => {
-      const events: CommandEvent[] = [];
+      const events: CommandStateEvent[] = [];
       const changes: ICommandStateProps[] = [];
       const state = CommandState.create({ root });
 
@@ -61,7 +61,7 @@ describe('CommandState', () => {
 
   describe('invoke', () => {
     it('fires [invoke$] event (observable)', () => {
-      const events: CommandEvent[] = [];
+      const events: CommandStateEvent[] = [];
       const invokes: ICommandStateProps[] = [];
       const state = CommandState.create({ root });
 

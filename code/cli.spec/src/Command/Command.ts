@@ -1,8 +1,15 @@
-import { value } from '../common';
-import * as t from './types';
-import { invoker } from './invoke';
+import { Subject } from 'rxjs';
+import { share, takeUntil } from 'rxjs/operators';
 
-type IConstructorArgs = t.ICommand & { children: t.ICommandBuilder[] };
+import { value } from '../common';
+import { invoker } from './invoke';
+import * as t from './types';
+
+type IConstructorArgs = {
+  title: string;
+  handler: t.CommandHandler;
+  children: t.ICommandBuilder[];
+};
 
 export const DEFAULT = {
   HANDLER: (() => null) as t.CommandHandler,
@@ -46,13 +53,26 @@ export class Command<P extends object = any, A extends object = any>
       throw new Error(`A command handler must be a function.`);
     }
 
-    this._ = { title, handler, children };
+    this._.title = title;
+    this._.handler = handler;
+    this._.children = children;
   }
 
   /**
    * [Fields]
    */
-  private readonly _: IConstructorArgs;
+  private readonly _ = {
+    title: '',
+    handler: (undefined as unknown) as t.CommandHandler,
+    children: [] as t.ICommandBuilder[],
+    dispose$: new Subject(),
+    events$: new Subject<t.CommandEvent>(),
+  };
+  public readonly dispose$ = this._.dispose$.pipe(share());
+  public readonly events$ = this._.events$.pipe(
+    takeUntil(this.dispose$),
+    share(),
+  );
 
   /**
    * [Properties]
@@ -73,9 +93,17 @@ export class Command<P extends object = any, A extends object = any>
     return this.children.length;
   }
 
+  public get isDisposed() {
+    return this._.dispose$.isStopped;
+  }
+
   /**
    * [Methods]
    */
+  public dispose() {
+    this._.dispose$.next();
+    this._.dispose$.complete();
+  }
 
   public as<P1 extends object, A1 extends object>(fn: (e: t.ICommandBuilder<P1, A1>) => void) {
     fn((this as unknown) as t.ICommandBuilder<P1, A1>);
@@ -115,6 +143,7 @@ export class Command<P extends object = any, A extends object = any>
 
   public add(...args: any): t.ICommandBuilder<P, A> {
     const child = new Command(toConstuctorArgs(args));
+    child.events$.pipe(takeUntil(this.dispose$)).subscribe(e => this._.events$.next(e));
     this._.children = [...this._.children, child] as t.ICommandBuilder[];
     return this;
   }
@@ -126,7 +155,8 @@ export class Command<P extends object = any, A extends object = any>
     const children = this.children.map(child => child.toObject());
     const title = this.title;
     const handler = this.handler;
-    return { title, handler, children };
+    const events$ = this.events$;
+    return { events$, title, handler, children };
   }
 
   /**
@@ -136,7 +166,7 @@ export class Command<P extends object = any, A extends object = any>
     props: P;
     args?: string | t.ICommandArgs<A>;
   }): t.ICommandInvokePromise<P, A, R> {
-    return invoker<P, A, R>({ command: this, ...options });
+    return invoker<P, A, R>({ ...options, command: this, events$: this._.events$ });
   }
 }
 

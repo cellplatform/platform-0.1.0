@@ -11,6 +11,7 @@ export { ICommandArgs };
  *  - `O` stands for argument `options`
  */
 export type ICommand<P extends object = any, A extends object = any> = {
+  events$: Observable<CommandInvokeEvent>;
   title: string;
   children: ICommand[];
   handler: CommandHandler<P, A>;
@@ -87,22 +88,24 @@ export type ICommandInvokeResponse<P extends object, A extends object, R> = {
 /**
  * [Events]
  */
+export type CommandEvent = CommandInvokeEvent;
+
 export type CommandInvokeEvent =
   | ICommandInvokeSetEvent
   | ICommandInvokeCompleteEvent
   | ICommandInvokeStartEvent;
 
-export type ICommandInvokeStartEvent<P extends object = any> = {
+export type ICommandInvokeStartEvent<P extends object = any, A extends object = any> = {
   type: 'COMMAND/invoke/start';
-  payload: { invokeId: string; props: P };
+  payload: { command: ICommand<P, A>; invokeId: string; props: P };
 };
 
-export type ICommandInvokeSetEvent<P extends object = any> = {
+export type ICommandInvokeSetEvent<P extends object = any, A extends object = any> = {
   type: 'COMMAND/invoke/set';
-  payload: { invokeId: string; key: keyof P; value: P[keyof P]; props: P };
+  payload: { command: ICommand<P, A>; invokeId: string; key: keyof P; value: P[keyof P]; props: P };
 };
 
-export type ICommandInvokeCompleteEvent<P extends object = any> = {
+export type ICommandInvokeCompleteEvent<P extends object = any, A extends object = any> = {
   type: 'COMMAND/invoke/complete';
-  payload: { invokeId: string; props: P };
+  payload: { command: ICommand<P, A>; invokeId: string; props: P };
 };
