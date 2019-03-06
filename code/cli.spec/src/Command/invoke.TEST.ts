@@ -158,13 +158,12 @@ describe('Command.invoke', () => {
     expect(count.error).to.eql(0); // NB: Completes as expected passing the Error. The observable is not in an error state.
   });
 
-  it.only('timeout', async () => {
+  it('timeout', async () => {
     const commandEvents: t.CommandEvent[] = [];
     const invokeEvents: t.CommandInvokeEvent[] = [];
 
     const root = Command.create<P, A>('root').add('copy', async e => {
-      // throw new Error('MyError');
-      await time.delay(50);
+      await time.delay(30);
     });
 
     const copy = root.childrenAs<P, A>()[0];
@@ -181,6 +180,7 @@ describe('Command.invoke', () => {
     } catch (err) {
       error = err;
     }
+    expect(res.isTimedOut).to.eql(true);
 
     expect(error && error.message).to.include('timed out');
     expect(res.error && res.error.message).to.include('timed out');
