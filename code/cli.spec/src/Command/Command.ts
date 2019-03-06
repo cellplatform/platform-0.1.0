@@ -118,18 +118,6 @@ export class Command<P extends object = any, A extends object = any>
   }
 
   /**
-   * Creates an immutable clone of the object.
-   */
-  public clone(options: { deep?: boolean } = {}) {
-    const deep = value.defaultValue(options.deep, true);
-    let args = { ...this._ };
-    if (deep) {
-      args = { ...args, children: cloneChildren(this) };
-    }
-    return new Command<P>(args);
-  }
-
-  /**
    * Adds a child command.
    */
   public add<P1 extends object = P, A1 extends object = A>(
@@ -156,7 +144,20 @@ export class Command<P extends object = any, A extends object = any>
     const title = this.title;
     const handler = this.handler;
     const events$ = this.events$;
-    return { events$, title, handler, children };
+    const invoke: t.InvokeCommand<P, A> = options => this.invoke(options);
+    return { events$, title, handler, children, invoke };
+  }
+
+  /**
+   * Creates an immutable clone of the object.
+   */
+  public clone(options: { deep?: boolean } = {}) {
+    const deep = value.defaultValue(options.deep, true);
+    let args = { ...this._ };
+    if (deep) {
+      args = { ...args, children: cloneChildren(this) };
+    }
+    return new Command<P>(args);
   }
 
   /**

@@ -3,15 +3,15 @@ import { ICommand, ICommandArgs } from '../types';
 /**
  * Manages state of a CLI program.
  */
-export type ICommandState<A extends object = any> = ICommandStateProps<A> & {
+export type ICommandState = ICommandStateProps & {
   toString(): string;
-  toObject(): ICommandStateProps<A>;
+  toObject(): ICommandStateProps;
 };
 
-export type ICommandStateProps<A extends object = any> = {
+export type ICommandStateProps = {
   text: string;
   command: ICommand | undefined;
-  args: ICommandArgs<A>;
+  args: ICommandArgs;
 };
 
 /**
@@ -28,7 +28,7 @@ export type ICommandChangeArgs = {
  */
 export type CommandStateEvent = ICommandStateChangeEvent;
 
-export type ICommandStateChangeEvent<P extends object = any> = {
+export type ICommandStateChangeEvent = {
   type: 'COMMAND/state/change';
-  payload: ICommandStateProps<P> & { invoked: boolean };
+  payload: ICommandStateProps & { invoked: boolean };
 };

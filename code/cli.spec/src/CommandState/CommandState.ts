@@ -5,25 +5,25 @@ import { distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operat
 import { Argv } from '../Argv';
 import { t } from '../common';
 
-type ICommandStateArgs = {
+type ICreateCommandState = {
   root: t.ICommand;
 };
 
 /**
  * Manages state of a CLI program.
  */
-export class CommandState<P extends object = any> implements t.ICommandState<P> {
+export class CommandState implements t.ICommandState {
   /**
    * [Static]
    */
-  public static create<P extends object = any>(args: ICommandStateArgs) {
-    return new CommandState<P>(args);
+  public static create(args: ICreateCommandState) {
+    return new CommandState(args);
   }
 
   /**
    * [Constructor]
    */
-  private constructor(args: ICommandStateArgs) {
+  private constructor(args: ICreateCommandState) {
     const { root } = args;
     if (!root) {
       throw new Error(`A root [Command] spec must be passed to the state constructor.`);

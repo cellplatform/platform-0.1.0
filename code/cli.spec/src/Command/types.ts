@@ -15,6 +15,7 @@ export type ICommand<P extends object = any, A extends object = any> = {
   title: string;
   children: ICommand[];
   handler: CommandHandler<P, A>;
+  invoke: InvokeCommand<P, A>;
 };
 
 /**
@@ -32,11 +33,6 @@ export type ICommandBuilder<P extends object = any, A extends object = any> = IC
 
     clone(options?: { deep?: boolean }): ICommandBuilder<P, A>;
     toObject(): ICommand<P, A>;
-    invoke<R = any>(options: {
-      props: P;
-      args?: string | ICommandArgs<A>;
-      timeout?: number;
-    }): ICommandInvokePromise<P, A, R>;
   };
 
 export type ICommandBuilderAdd<P extends object = any, A extends object = any> = {
@@ -72,7 +68,16 @@ export type ICommandHandlerArgs<P extends object = any, A extends object = any> 
 };
 
 /**
- * The response from an invokation of the handler.
+ * [Invoke]
+ */
+export type InvokeCommand<P extends object = any, A extends object = any> = <R = any>(options: {
+  props: P;
+  args?: string | ICommandArgs<A>;
+  timeout?: number;
+}) => ICommandInvokePromise<P, A, R>;
+
+/**
+ * The response from [invoking] of the handler.
  */
 export type ICommandInvokePromise<P extends object, A extends object, R> = Promise<
   ICommandInvokeResponse<P, A, R>
