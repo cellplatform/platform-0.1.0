@@ -91,7 +91,8 @@ export function invoker<P extends object, A extends object, R>(options: {
       },
     };
 
-    // Ensure events sequence is consistently asynchronous (even if invoked synchronously).
+    // Ensure events sequence is consistently asynchronous
+    // (even if invoked synchronously).
     await time.delay(0);
 
     /**
