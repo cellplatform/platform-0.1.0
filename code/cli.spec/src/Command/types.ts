@@ -35,6 +35,7 @@ export type ICommandBuilder<P extends object = any, A extends object = any> = IC
     invoke<R = any>(options: {
       props: P;
       args?: string | ICommandArgs<A>;
+      timeout?: number;
     }): ICommandInvokePromise<P, A, R>;
   };
 
@@ -79,7 +80,9 @@ export type ICommandInvokePromise<P extends object, A extends object, R> = Promi
   ICommandInvokeResponse<P, A, R>;
 export type ICommandInvokeResponse<P extends object, A extends object, R> = {
   events$: Observable<CommandInvokeEvent>;
+  complete$: Observable<{}>;
   isComplete: boolean;
+  isTimedOut: boolean;
   props: P;
   args: ICommandArgs<A>;
   result?: R;

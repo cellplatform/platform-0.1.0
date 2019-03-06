@@ -165,6 +165,7 @@ export class Command<P extends object = any, A extends object = any>
   public invoke<R>(options: {
     props: P;
     args?: string | t.ICommandArgs<A>;
+    timeout?: number;
   }): t.ICommandInvokePromise<P, A, R> {
     return invoker<P, A, R>({ ...options, command: this, events$: this._.events$ });
   }

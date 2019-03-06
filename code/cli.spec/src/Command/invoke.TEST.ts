@@ -4,12 +4,6 @@ import { Command } from '.';
 import { time } from '../common';
 import * as t from './types';
 
-/**
- * TODO
- *
- * - timeout
- */
-
 describe('Command.invoke', () => {
   type P = { text: string };
   type A = { force?: boolean; f?: boolean };
@@ -162,5 +156,38 @@ describe('Command.invoke', () => {
     // Subscription.
     expect(count.complete).to.eql(1);
     expect(count.error).to.eql(0); // NB: Completes as expected passing the Error. The observable is not in an error state.
+  });
+
+  it.only('timeout', async () => {
+    const commandEvents: t.CommandEvent[] = [];
+    const invokeEvents: t.CommandInvokeEvent[] = [];
+
+    const root = Command.create<P, A>('root').add('copy', async e => {
+      // throw new Error('MyError');
+      await time.delay(50);
+    });
+
+    const copy = root.childrenAs<P, A>()[0];
+    copy.events$.subscribe(e => commandEvents.push(e));
+
+    const res = copy.invoke<R>({ props: { text: 'Hello' }, timeout: 10 });
+    res.events$.subscribe(e => invokeEvents.push(e));
+    expect(res.isTimedOut).to.eql(false);
+    expect(res.error).to.eql(undefined);
+
+    let error: Error | undefined;
+    try {
+      await res;
+    } catch (err) {
+      error = err;
+    }
+
+    expect(error && error.message).to.include('timed out');
+    expect(res.error && res.error.message).to.include('timed out');
+
+    // Timeout error on AFTER event.
+    expect(commandEvents).to.eql(invokeEvents);
+    const afterEvent = invokeEvents[invokeEvents.length - 1] as t.ICommandInvokeAfterEvent;
+    expect(afterEvent.payload.error && afterEvent.payload.error.message).to.include('timed out');
   });
 });

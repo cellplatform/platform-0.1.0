@@ -1,5 +1,5 @@
-import { ReplaySubject, Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { ReplaySubject, Subject, timer } from 'rxjs';
+import { share, takeUntil } from 'rxjs/operators';
 
 import { Argv } from '../Argv';
 import { id, time, value } from '../common';
@@ -13,10 +13,16 @@ export function invoker<P extends object, A extends object, R>(options: {
   command: t.ICommand<P, A>;
   props: P;
   args?: string | t.ICommandArgs<A>;
+  timeout?: number;
 }): t.ICommandInvokePromise<P, A, R> {
   const { command } = options;
   const invokeId = id.shortid();
   const args = typeof options.args === 'object' ? options.args : Argv.parse<A>(options.args || '');
+  const complete$ = new Subject();
+
+  /**
+   * Ferry events to parent.
+   */
   const events$ = new ReplaySubject<t.CommandInvokeEvent>();
   events$.subscribe(e => options.events$.next(e));
 
@@ -33,7 +39,9 @@ export function invoker<P extends object, A extends object, R>(options: {
    */
   const response = {
     events$: events$.pipe(share()),
+    complete$: complete$.asObservable(),
     isComplete: false,
+    isTimedOut: false,
     props: options.props,
     args,
     result: undefined,
@@ -46,8 +54,10 @@ export function invoker<P extends object, A extends object, R>(options: {
    */
   const promise = new Promise<t.ICommandInvokeResponse<P, A, R>>(async (resolve, reject) => {
     const done = (error?: Error) => {
+      complete$.next();
       response.isComplete = true;
       response.error = error;
+
       sync();
       const props = { ...response.props };
 
@@ -83,6 +93,18 @@ export function invoker<P extends object, A extends object, R>(options: {
 
     // Ensure events sequence is consistently asynchronous (even if invoked synchronously).
     await time.delay(0);
+
+    /**
+     * Start timeout.
+     */
+    const timeout = value.defaultValue(options.timeout, 5000);
+    timer(timeout)
+      .pipe(takeUntil(complete$))
+      .subscribe(() => {
+        response.isTimedOut = true;
+        const error = `The command '${command.title}' timed out.`;
+        done(new Error(error));
+      });
 
     // Invoke the handler and wait for completion.
     try {
