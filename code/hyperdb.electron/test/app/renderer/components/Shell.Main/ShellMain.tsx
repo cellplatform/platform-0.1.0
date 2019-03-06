@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, t, GlamorValue, CommandState, renderer } from '../../common';
+
+import { color, CommandState, css, GlamorValue, renderer, t } from '../../common';
+import { CommandClickEvent, Help } from '../cli.Help';
 import { ObjectView } from '../primitives';
 import { DbHeader } from './DbHeader';
-import { Help, CommandClickEvent } from '../cli.Help';
 
 export type IShellMainProps = {
   cli: CommandState;
@@ -29,13 +30,22 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
 
   constructor(props: IShellMainProps) {
     super(props);
-    const unmounted$ = this.unmounted$;
-    this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e));
-    this.cli.change$.pipe(takeUntil(unmounted$)).subscribe(e => this.forceUpdate());
-    this.cli.invoke$.pipe(takeUntil(unmounted$)).subscribe(e => {
-      console.log('INVOKE', e);
-      console.log(`\nTODO 🐷   \n`);
-    });
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const change$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
+
+    state$.subscribe(e => this.setState(e));
+    change$.subscribe(e => this.forceUpdate());
+
+    // change$.pipe(filter((e) => e.invoked)).subscribe((e) => {
+
+    // })
+
+    // change$.pipe(filter(e => e.invoked));
+
+    // this.cli.invoke$.pipe(takeUntil(unmounted$)).subscribe(e => {
+    //   console.log('INVOKE', e);
+    //   console.log(`\nTODO 🐷   \n`);
+    // });
   }
 
   public componentWillUnmount() {

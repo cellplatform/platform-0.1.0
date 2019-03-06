@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
 
 import * as cli from '../../cli';
 import { COLORS, CommandState, css, GlamorValue, renderer, t, str } from '../../common';
@@ -41,6 +41,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
     const store$ = this.store.change$.pipe(takeUntil(unmounted$));
     const state$ = this.state$.pipe(takeUntil(unmounted$));
+    const cli$ = this.cli.change$.pipe(takeUntil(unmounted$));
+
     state$.subscribe(e => this.setState(e));
     store$.subscribe(e => this.updateState());
     this.updateState();
@@ -58,10 +60,12 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         this.state$.next({ selectedDb });
       });
 
-    this.cli.change$
-      // Redraw screen each time the CLI state changes.
-      .pipe(takeUntil(unmounted$))
-      .subscribe(e => this.forceUpdate());
+    // Redraw screen each time the CLI state changes.
+    cli$.subscribe(e => this.forceUpdate());
+
+    cli$.pipe(filter(e => e.invoked)).subscribe(e => {
+      console.log('INVOKE', e);
+    });
   }
 
   public componentWillUnmount() {

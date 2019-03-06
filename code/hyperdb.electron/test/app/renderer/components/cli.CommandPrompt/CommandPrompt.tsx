@@ -4,9 +4,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import {
   color,
-  COLORS,
   CommandChangeDispatcher,
-  constants,
   containsFocus,
   css,
   events,
@@ -14,15 +12,15 @@ import {
   ICommandChangeArgs,
 } from '../../common';
 import { TextInput, TextInputChangeEvent } from '../primitives';
-import { ICommandPromptTheme } from './types';
 import { THEMES } from './themes';
+import { ICommandPromptTheme } from './types';
 
-const { MONOSPACE } = constants.FONT;
 const FONT_SIZE = 14;
 
 export type ICommandPromptProps = {
   text?: string;
   theme?: ICommandPromptTheme | 'DARK';
+  placeholder?: string;
   style?: GlamorValue;
   onChange?: CommandChangeDispatcher;
   onAutoComplete?: (e: {}) => void;
@@ -115,11 +113,11 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   /**
    * [Methods]
    */
-  public focus() {
+  private focus = () => {
     if (this.elInput) {
       this.elInput.focus();
     }
-  }
+  };
 
   public clear() {
     this.fireChange(false, '');
@@ -130,6 +128,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    */
 
   public render() {
+    const { placeholder = 'command' } = this.props;
     const theme = this.theme;
     const styles = {
       base: css({
@@ -139,7 +138,6 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         height: 32,
         fontSize: FONT_SIZE,
         Flex: 'horizontal-center-start',
-        fontFamily: MONOSPACE.FAMILY,
       }),
       prefix: css({
         color: theme.prefixColor,
@@ -153,19 +151,15 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
       }),
     };
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div {...css(styles.base, this.props.style)} onClick={this.focus}>
         <div {...styles.prefix}>{'>'}</div>
         <TextInput
           ref={this.elInputRef}
           style={styles.textbox}
           onChange={this.handleChange}
           value={this.text}
-          valueStyle={{
-            color: theme.color,
-            fontFamily: MONOSPACE.FAMILY,
-            fontWeight: 'BOLD',
-          }}
-          placeholder={'command'}
+          valueStyle={{ color: theme.color }}
+          placeholder={placeholder}
           placeholderStyle={{ color: theme.placeholderColor }}
         />
       </div>

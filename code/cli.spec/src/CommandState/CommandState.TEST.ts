@@ -72,15 +72,22 @@ describe('CommandState', () => {
       state.invoke$.subscribe(e => invokes.push(e));
 
       state.change({ text: 'foo' }); // NB: invoked: false
-
       expect(events.length).to.eql(1);
       expect(invokes.length).to.eql(0);
 
-      state.change({ text: 'bar', invoked: true });
+      state.change({ text: 'bar' }); // NB: invoked: true, but no matching command.
       expect(events.length).to.eql(2);
+      expect(invokes.length).to.eql(0);
+
+      state.change({ text: 'ls', invoked: true });
+      expect(events.length).to.eql(3);
       expect(invokes.length).to.eql(1);
-      expect(invokes[0].props.text).to.eql('bar');
+      expect(invokes[0].props.text).to.eql('ls');
       expect(invokes[0].invoked).to.eql(true);
+
+      state.change({ text: 'ls', invoked: true }); // NB: Invoke again.
+      expect(events.length).to.eql(4);
+      expect(invokes.length).to.eql(2);
     });
   });
 

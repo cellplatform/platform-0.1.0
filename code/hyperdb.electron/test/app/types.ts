@@ -2,6 +2,7 @@ import { IStoreClient } from '@platform/electron/lib/types';
 import { IRendererDb } from '../../src/types';
 
 export * from '../../src/types';
+export * from './renderer/cli/types';
 
 /**
  * Store

@@ -74,6 +74,8 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
         paddingBottom: 5,
         borderBottom: `solid 4px ${color.format(-0.05)}`,
         paddingLeft: 5,
+        textTransform: 'uppercase',
+        fontSize: 12,
       }),
       list: css({
         marginLeft: 5,
