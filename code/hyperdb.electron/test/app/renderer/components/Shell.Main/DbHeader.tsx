@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, IMAGES, t, constants } from '../../../common';
-import { TextInput, TextInputChangeEvent } from '../../primitives';
+import { color, COLORS, css, GlamorValue, IMAGES, t, constants } from '../../common';
+import { TextInput, TextInputChangeEvent } from '../primitives';
 
 const { MONOSPACE } = constants.FONT;
 

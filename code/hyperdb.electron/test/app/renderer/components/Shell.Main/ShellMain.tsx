@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, t, GlamorValue, CommandState, renderer } from '../../common';
 import { ObjectView } from '../primitives';
-import { DbHeader } from './components/DbHeader';
+import { DbHeader } from './DbHeader';
 import { Help, CommandClickEvent } from '../cli.Help';
 
 export type IShellMainProps = {
