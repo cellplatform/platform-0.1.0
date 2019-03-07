@@ -80,12 +80,12 @@ export class Db<D extends object = any> implements t.IDb<D> {
     return this.buffer.key.toString('hex');
   }
 
-  public get discoveryKey(): string {
-    return this.buffer.discoveryKey.toString('hex');
-  }
-
   public get localKey(): string {
     return this.buffer.localKey.toString('hex');
+  }
+
+  public get discoveryKey(): string {
+    return this.buffer.discoveryKey.toString('hex');
   }
 
   public get buffer() {
@@ -93,8 +93,8 @@ export class Db<D extends object = any> implements t.IDb<D> {
     const local = this._.db.local as t.IFeed;
     return {
       key: db.key as Buffer,
-      discoveryKey: db.discoveryKey as Buffer,
       localKey: local.key as Buffer,
+      discoveryKey: db.discoveryKey as Buffer,
     };
   }
 
