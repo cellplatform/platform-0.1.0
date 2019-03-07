@@ -3,33 +3,57 @@ import { Command } from '.';
 import { DEFAULT } from './Command';
 
 describe('Command', () => {
-  it('minimal construction', () => {
-    const cmd = Command.create({ name: '  Foo  ' });
-    expect(cmd.name).to.eql('Foo'); // NB: trims title.
-    expect(cmd.handler).to.eql(DEFAULT.HANDLER);
-    expect(cmd.children).to.eql([]);
+  describe('construction', () => {
+    it('minimal construction', () => {
+      const cmd = Command.create({ name: '  Foo  ' });
+      expect(cmd.name).to.eql('Foo'); // NB: trims title.
+      expect(cmd.handler).to.eql(DEFAULT.HANDLER);
+      expect(cmd.children).to.eql([]);
+    });
+
+    it('takes handler in constructor', () => {
+      const handler = () => true;
+      const cmd = Command.create({ name: 'Foo', handler });
+      expect(cmd.handler).to.eql(handler);
+    });
+
+    it('takes children in constructor', () => {
+      const child = Command.create({ name: 'child' });
+      const parent = Command.create({ name: 'parent', children: [child] });
+      expect(parent.children).to.eql([child]);
+    });
+
+    it('throws if a name is not passed', () => {
+      const test = (name?: any) => {
+        const fn = () => Command.create({ name, handler: () => null });
+        expect(fn).to.throw();
+      };
+      test('');
+      test('  ');
+      test();
+    });
+
+    it('generates id from name', () => {
+      const cmd1 = Command.create({ name: '  foo  ' });
+      const cmd2 = Command.create({ name: 'foo' }); // NB: Same as trimmed name above.
+      const cmd3 = Command.create({ name: 'fOo' });
+      expect(cmd1.id).to.eql(101574);
+      expect(cmd2.id).to.eql(101574);
+      expect(cmd3.id).to.eql(100582); // Different (capital "O" in "fOo").
+    });
   });
 
-  it('takes handler in constructor', () => {
-    const handler = () => true;
-    const cmd = Command.create({ name: 'Foo', handler });
-    expect(cmd.handler).to.eql(handler);
-  });
+  describe('Command.toId (static)', () => {
+    it('name only', () => {
+      const id = Command.toId({ name: 'foo' });
+      expect(id).to.eql(101574);
+    });
 
-  it('takes children in constructor', () => {
-    const child = Command.create({ name: 'child' });
-    const parent = Command.create({ name: 'parent', children: [child] });
-    expect(parent.children).to.eql([child]);
-  });
-
-  it('throws if a title is not passed', () => {
-    const test = (name?: any) => {
-      const fn = () => Command.create({ name, handler: () => null });
-      expect(fn).to.throw();
-    };
-    test('');
-    test('  ');
-    test();
+    it('name with parentId', () => {
+      const parent = Command.toId({ name: 'root' });
+      const id = Command.toId({ name: 'foo', parent });
+      expect(id).to.eql(-63661183);
+    });
   });
 
   describe('clone', () => {
@@ -84,6 +108,28 @@ describe('Command', () => {
       expect(cmd1).to.equal(cmd2);
       expect(cmd1.length).to.eql(1);
       expect(cmd2.children[0].name).to.eql('child');
+    });
+
+    it('id of child includes parent (hash)', () => {
+      const HASH = {
+        parent: Command.toId({ name: 'parent' }),
+        child: Command.toId({ name: 'child' }),
+      };
+      const parentChildId = Command.toId({ name: 'child', parent: HASH.parent });
+      const parent = Command.create('parent').add('child');
+      const child = parent.children[0];
+
+      expect(parent.id).to.eql(HASH.parent);
+      expect(child.id).to.eql(parentChildId);
+    });
+
+    it('throws if the child (name) already exists', () => {
+      const fn = () => {
+        Command.create('parent')
+          .add('child')
+          .add('child');
+      };
+      expect(fn).to.throw(/exists/);
     });
 
     it('adds a child to a child', () => {

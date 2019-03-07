@@ -12,6 +12,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/util.string": "0.0.30",
     "@platform/util.value": "0.0.33"
   },
   "devDependencies": {

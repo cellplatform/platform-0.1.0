@@ -11,6 +11,7 @@ export { ICommandArgs };
  *  - `O` stands for argument `options`
  */
 export type ICommand<P extends object = any, A extends object = any> = {
+  id: number;
   name: string;
   children: ICommand[];
   handler: CommandHandler<P, A>;

@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { value } from '../common';
+import { value, str } from '../common';
 import { invoker } from './invoke';
 import * as t from './types';
 
@@ -24,12 +24,16 @@ export class Command<P extends object = any, A extends object = any>
   /**
    * [Static]
    */
+
+  /**
+   * Creates a new instance of a `Command`.
+   */
   public static create<P extends object = any, A extends object = any>(
     title: string,
     handler?: t.CommandHandler,
   ): t.ICommandBuilder<P, A>;
   public static create<P extends object = any, A extends object = any>(
-    args: t.IAddCommandArgs,
+    args: Partial<IConstructorArgs> & { name: string }, // NB: Force name.
   ): t.ICommandBuilder<P, A>;
   public static create<P extends object = any, A extends object = any>(
     ...args: any
@@ -38,12 +42,21 @@ export class Command<P extends object = any, A extends object = any>
   }
 
   /**
+   * Generates a unique-identifier for a `Command`.
+   */
+  public static toId(args: { name: string; parent?: number }): number {
+    let id = str.hashCode(args.name);
+    if (args.parent) {
+      id = str.hashCode(`${args.parent}/${id}`);
+    }
+    return id;
+  }
+
+  /**
    * [Constructor]
    */
   private constructor(args: Partial<IConstructorArgs>) {
-    const name = (args.name || '').trim();
-    const handler = args.handler || DEFAULT.HANDLER;
-    const children = args.children || [];
+    const { name, handler, children } = formatConstructorArgs(args);
 
     if (!name) {
       throw new Error(`A command 'name' must be specified.`);
@@ -53,6 +66,7 @@ export class Command<P extends object = any, A extends object = any>
       throw new Error(`A command 'handler' must be a function.`);
     }
 
+    this._.id = Command.toId({ name });
     this._.name = name;
     this._.handler = handler;
     this._.children = children;
@@ -62,6 +76,7 @@ export class Command<P extends object = any, A extends object = any>
    * [Fields]
    */
   private readonly _ = {
+    id: 0,
     name: '',
     handler: (undefined as unknown) as t.CommandHandler,
     children: [] as t.ICommandBuilder[],
@@ -77,6 +92,10 @@ export class Command<P extends object = any, A extends object = any>
   /**
    * [Properties]
    */
+  public get id() {
+    return this._.id;
+  }
+
   public get name() {
     return this._.name;
   }
@@ -129,8 +148,19 @@ export class Command<P extends object = any, A extends object = any>
     args: t.IAddCommandArgs<P1, A1>,
   ): t.ICommandBuilder<P, A>;
 
-  public add(...args: any): t.ICommandBuilder<P, A> {
-    const child = new Command(toConstuctorArgs(args));
+  public add(...input: any): t.ICommandBuilder<P, A> {
+    const args = toConstuctorArgs(input);
+
+    // Ensure the child does not already exist.
+    if (this.children.some(e => e.name === args.name)) {
+      throw new Error(`A child command named '${args.name}' already exists within '${this.name}'.`);
+    }
+
+    // Create the child.
+    const child = new Command({ ...args });
+    child._.id = Command.toId({ name: args.name, parent: this.id });
+
+    // Finish up.
     child.events$.pipe(takeUntil(this.dispose$)).subscribe(e => this._.events$.next(e));
     this._.children = [...this._.children, child] as t.ICommandBuilder[];
     return this;
@@ -141,11 +171,15 @@ export class Command<P extends object = any, A extends object = any>
    */
   public toObject(): t.ICommand<P, A> {
     const children = this.children.map(child => child.toObject());
-    const title = this.name;
-    const handler = this.handler;
-    const events$ = this.events$;
     const invoke: t.InvokeCommand<P, A> = options => this.invoke(options);
-    return { events$, name: title, handler, children, invoke };
+    return {
+      id: this.id,
+      name: this.name,
+      handler: this.handler,
+      events$: this.events$,
+      invoke,
+      children,
+    };
   }
 
   /**
@@ -179,12 +213,20 @@ export class Command<P extends object = any, A extends object = any>
 function toConstuctorArgs(args: any): IConstructorArgs {
   if (typeof args[0] === 'string') {
     const [name, handler] = args;
-    return { name, handler, children: [] };
+    return formatConstructorArgs({ name, handler, children: [] });
   }
   if (typeof args[0] === 'object') {
-    return args[0] as IConstructorArgs;
+    return formatConstructorArgs(args[0]);
   }
   throw new Error(`[Args] could not be interpreted.`);
+}
+
+function formatConstructorArgs(args: Partial<IConstructorArgs>): IConstructorArgs {
+  args = { ...args };
+  args.name = (args.name || '').trim();
+  args.handler = args.handler || DEFAULT.HANDLER;
+  args.children = args.children || [];
+  return args as IConstructorArgs;
 }
 
 function cloneChildren(builder: t.ICommandBuilder): t.ICommandBuilder[] {
