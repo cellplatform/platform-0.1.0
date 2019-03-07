@@ -29,7 +29,7 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
     const { db } = this.props;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     db.watch$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.updateState());
-    db.watch();
+    db.watch<t.ITestDbData>('.sys/dbname');
     this.updateState();
   }
 
