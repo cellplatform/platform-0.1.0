@@ -4,8 +4,9 @@ import { takeUntil } from 'rxjs/operators';
 
 import { color, CommandState, css, GlamorValue, renderer, t } from '../../common';
 import { CommandClickEvent, Help } from '../cli.Help';
-import { ObjectView } from '../primitives';
 import { DbHeader } from './components/DbHeader';
+import { DbStatus } from './components/DbStatus';
+import { DbWatch } from './components/DbWatch';
 
 export type IShellMainProps = {
   cli: CommandState;
@@ -73,6 +74,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
         paddingLeft: 6,
       }),
     };
+
     return (
       <div {...css(styles.base, this.props.style)}>
         <DbHeader db={db} style={styles.header} />
@@ -88,23 +90,20 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
 
   private renderOutput() {
     const { cli, db } = this.props;
-    const namespace = cli.namespace;
+    const ns = cli.namespace;
     const styles = {
       base: css({ flex: 1 }),
     };
+    const elStatus = ns && ns.command.name === 'db' && <DbStatus db={db} cli={cli} />;
+    const elWatch = !elStatus && <DbWatch db={db} cli={cli} />;
+    return (
+      <div {...styles.base}>
+        {elStatus}
+        {elWatch}
+      </div>
+    );
 
-    let data: any;
-
-    if (namespace && namespace.command.name === 'db') {
-      data = {
-        db: {
-          key: db.key,
-          localKey: db.localKey,
-        },
-      };
-    }
-
-    return <div {...styles.base}>{data && <ObjectView data={data} expandLevel={3} />}</div>;
+    // return <div {...styles.base}>{data && <ObjectView data={data} expandLevel={3} />}</div>;
   }
 
   /**
