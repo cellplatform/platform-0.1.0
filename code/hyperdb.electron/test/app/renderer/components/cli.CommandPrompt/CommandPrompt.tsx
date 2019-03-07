@@ -66,7 +66,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     keydown$
       // Clear on CMD+K
       .pipe(filter(e => e.key === 'k' && e.metaKey))
-      .subscribe(e => this.clear({ clearNamespace: true }));
+      .subscribe(e => {
+        const clearNamespace = !Boolean(this.text);
+        this.clear({ clearNamespace });
+      });
 
     const tab$ = keydown$.pipe(
       filter(e => e.key === 'Tab'),
