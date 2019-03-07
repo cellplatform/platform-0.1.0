@@ -79,10 +79,18 @@ describe('CommandState', () => {
       expect(state.namespace).to.eql(undefined);
 
       state.change({ text: 'db' });
+      expect(state.text).to.eql('db');
       expect(state.namespace).to.eql(undefined);
 
       state.change({ text: 'db', namespace: true });
-      expect(state.namespace && state.namespace.command.name).to.eql('db');
+
+      const ns = state.namespace;
+      expect(ns && ns.command.name).to.eql('db');
+
+      const path = (ns && ns.path.map(m => m.name)) || [];
+      expect(path.join('.')).to.eql('fs.db');
+
+      expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
     });
 
     it('fires [invoke$] event (observable)', () => {

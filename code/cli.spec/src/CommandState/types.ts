@@ -12,6 +12,7 @@ export type ICommandState = {
 
 export type ICommandNamespace = {
   command: ICommand;
+  path: ICommand[];
 };
 
 /**

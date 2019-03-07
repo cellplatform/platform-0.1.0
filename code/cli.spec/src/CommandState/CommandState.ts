@@ -4,6 +4,7 @@ import { distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operat
 
 import { Argv } from '../Argv';
 import { t } from '../common';
+import { Command } from '../Command/Command';
 
 type ICreateCommandState = {
   root: t.ICommand;
@@ -118,17 +119,25 @@ export class CommandState implements t.ICommandState {
 
     // Update state.
     this._.text = text;
-    const props = this.toObject();
-    const { command } = props;
 
-    // Set namespace.
-    if (e.namespace && command) {
-      const namespace: t.ICommandNamespace = { command };
+    // Set namespace if requested.
+    const command = this.command;
+    if (command && e.namespace) {
+      const id = command.id;
+      const root = this.root;
+      const namespace: t.ICommandNamespace = {
+        command,
+        get path() {
+          return Command.tree.pathTo(root, id);
+        },
+      };
       this._.namespace = namespace;
+      this._.text = ''; // Reset the text as we are now witin a namespace.
     }
 
     // Alert listeners.
-    const invoked = command ? Boolean(e.invoked) : false;
+    const props = this.toObject();
+    const invoked = props.command ? Boolean(e.invoked) : false;
     const payload = { ...props, invoked };
     events$.next({ type: 'COMMAND/state/change', payload });
   };
