@@ -61,7 +61,7 @@ describe('CommandState', () => {
       expect(events.length).to.eql(1);
       expect(changes.length).to.eql(1);
 
-      const props = { ...state.toObject(), invoked: false };
+      const props = { props: state.toObject(), invoked: false, namespace: undefined };
       expect(events[0].payload).to.eql(props);
       expect(changes[0]).to.eql(props);
     });
@@ -92,7 +92,7 @@ describe('CommandState', () => {
       state.change({ text: 'ls', invoked: true });
       expect(events.length).to.eql(3);
       expect(invokes.length).to.eql(1);
-      expect(invokes[0].text).to.eql('ls');
+      expect(invokes[0].props.text).to.eql('ls');
       expect(invokes[0].invoked).to.eql(true);
 
       state.change({ text: 'ls', invoked: true }); // NB: Invoke again.

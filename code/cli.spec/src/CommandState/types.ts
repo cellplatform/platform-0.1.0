@@ -13,6 +13,7 @@ export type ICommandState = {
 export type ICommandNamespace = {
   command: ICommand;
   path: ICommand[];
+  toString(): string;
 };
 
 /**
@@ -32,5 +33,9 @@ export type CommandStateEvent = ICommandStateChangeEvent;
 
 export type ICommandStateChangeEvent = {
   type: 'COMMAND/state/change';
-  payload: ICommandState & { invoked: boolean };
+  payload: {
+    props: ICommandState;
+    invoked: boolean;
+    namespace?: boolean;
+  };
 };

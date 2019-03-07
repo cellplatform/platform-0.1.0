@@ -75,7 +75,10 @@ export function parent<T extends ICommand = ICommand>(root: T, child: number | s
 /**
  * Builds a path to the given command.
  */
-export function toPath<T extends ICommand = ICommand>(root: T, target: number | string | T): T[] {
+export function toPath<T extends ICommand = ICommand>(
+  root: T,
+  target: number | string | ICommand,
+): T[] {
   const cmd = find(root, e => isMatch(e, target)); // Ensure the command exists within the root tree.
   let result: T[] = [];
   if (cmd) {

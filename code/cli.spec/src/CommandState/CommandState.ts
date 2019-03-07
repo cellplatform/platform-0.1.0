@@ -121,7 +121,7 @@ export class CommandState implements t.ICommandState {
 
   public change(e: t.ICommandChangeArgs) {
     const { events$ } = this._;
-    const { text } = e;
+    const { text, namespace } = e;
 
     // Update state.
     this._.text = text;
@@ -130,7 +130,7 @@ export class CommandState implements t.ICommandState {
     const command = this.command;
     if (
       command &&
-      e.namespace === true &&
+      namespace === true &&
       !(this.namespace && this.namespace.command.id === command.id)
     ) {
       const id = command.id;
@@ -139,6 +139,9 @@ export class CommandState implements t.ICommandState {
         command,
         get path() {
           return Command.tree.toPath(root, id).slice(1);
+        },
+        toString() {
+          return ns.path.map(c => c.name).join('.');
         },
       };
       this._.namespace = ns;
@@ -153,7 +156,7 @@ export class CommandState implements t.ICommandState {
     // Alert listeners.
     const props = this.toObject();
     const invoked = props.command ? Boolean(e.invoked) : false;
-    const payload = { ...props, invoked };
+    const payload = { props, invoked, namespace };
     events$.next({ type: 'COMMAND/state/change', payload });
 
     // Finish up.

@@ -3,7 +3,17 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
 
 import * as cli from '../../cli';
-import { COLORS, CommandState, css, GlamorValue, renderer, t, str, ICommand } from '../../common';
+import {
+  COLORS,
+  CommandState,
+  css,
+  GlamorValue,
+  renderer,
+  t,
+  str,
+  ICommand,
+  Command,
+} from '../../common';
 import { CommandPrompt } from '../cli.CommandPrompt';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
@@ -63,16 +73,23 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     // Redraw screen each time the CLI state changes.
     cli$.subscribe(e => this.forceUpdate());
 
-    cli$.pipe(filter(e => e.invoked)).subscribe(async e => {
-      const command = e.command as ICommand<t.ITestCommandProps>;
+    cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
+      const command = e.props.command as ICommand<t.ITestCommandProps>;
       const db = this.state.selectedDb;
       const props: t.ITestCommandProps = { db };
-      const args = e.args;
-      const res = await command.invoke({ props, args });
+      const args = e.props.args;
 
-      console.log('INVOKE', command.toString());
-      console.log('-------------------------------------------');
-      console.log('Shell // invoke response // props', res.props);
+      // Step into namespace (if required).
+      if (!command.handler && command.children.length > 0) {
+        this.cli.change({ text: this.cli.text, namespace: true });
+      }
+
+      // Invoke handler.
+      if (command.handler) {
+        console.log('INVOKE', command.toString());
+        const res = await command.invoke({ props, args });
+        console.log('Shell // invoke response // props', res.props);
+      }
     });
   }
 
@@ -207,6 +224,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
           <CommandPrompt
             ref={this.commandPromptRef}
             text={this.cli.text}
+            namespace={this.cli.namespace}
             onChange={this.cli.change}
             onAutoComplete={this.onAutoComplete}
           />

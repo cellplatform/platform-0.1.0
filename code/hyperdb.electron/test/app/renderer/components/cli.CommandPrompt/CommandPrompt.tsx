@@ -10,6 +10,7 @@ import {
   events,
   GlamorValue,
   ICommandChangeArgs,
+  ICommandNamespace,
 } from '../../common';
 import { TextInput, TextInputChangeEvent } from '../primitives';
 import { THEMES } from './themes';
@@ -19,6 +20,7 @@ const FONT_SIZE = 14;
 
 export type ICommandPromptProps = {
   text?: string;
+  namespace?: ICommandNamespace;
   theme?: ICommandPromptTheme | 'DARK';
   placeholder?: string;
   style?: GlamorValue;
@@ -64,7 +66,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     keydown$
       // Clear on CMD+K
       .pipe(filter(e => e.key === 'k' && e.metaKey))
-      .subscribe(e => this.clear());
+      .subscribe(e => this.clear({ clearNamespace: true }));
 
     const tab$ = keydown$.pipe(
       filter(e => e.key === 'Tab'),
@@ -119,8 +121,9 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     }
   };
 
-  public clear() {
-    this.fireChange(false, '');
+  public clear(args: { clearNamespace?: boolean } = {}) {
+    const namespace = args.clearNamespace ? false : undefined;
+    this.fireChange({ text: '', namespace });
   }
 
   /**
@@ -128,7 +131,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    */
 
   public render() {
-    const { placeholder = 'command' } = this.props;
+    const { placeholder = 'command', namespace } = this.props;
     const theme = this.theme;
     const styles = {
       base: css({
@@ -138,11 +141,15 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         height: 32,
         fontSize: FONT_SIZE,
         Flex: 'horizontal-center-start',
+        paddingLeft: 10,
+      }),
+      namespace: css({
+        color: theme.namespaceColor,
+        marginRight: 4,
       }),
       prefix: css({
         color: theme.prefixColor,
         userSelect: 'none',
-        marginLeft: 10,
         marginRight: 5,
         fontWeight: 600,
       }),
@@ -150,8 +157,12 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         flex: 1,
       }),
     };
+
+    const elNamespace = namespace && <div {...styles.namespace}>{namespace.toString()}</div>;
+
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.focus}>
+        {elNamespace}
         <div {...styles.prefix}>{'>'}</div>
         <TextInput
           ref={this.elInputRef}
@@ -170,20 +181,21 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    * [Handlers]
    */
 
-  private fireChange(invoked: boolean, text: string) {
-    text = text || '';
+  private fireChange(args: { text?: string; invoked?: boolean; namespace?: boolean }) {
+    const { invoked, text = '', namespace } = args;
+    // text = text || '';
     const { onChange } = this.props;
-    const e: ICommandChangeArgs = { text, invoked };
+    const e: ICommandChangeArgs = { text, invoked, namespace };
     if (onChange) {
       onChange(e);
     }
   }
 
   private fireInvoke = () => {
-    this.fireChange(true, this.text);
+    this.fireChange({ text: this.text, invoked: true });
   };
 
   private handleChange = async (e: TextInputChangeEvent) => {
-    this.fireChange(false, e.to);
+    this.fireChange({ text: e.to });
   };
 }

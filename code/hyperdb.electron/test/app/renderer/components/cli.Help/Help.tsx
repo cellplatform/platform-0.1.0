@@ -91,7 +91,9 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
     };
 
     const elList = this.commandList.map((item, i) => {
-      const { name, isMatch, cmd } = item;
+      const { isMatch, cmd } = item;
+      let name = item.name;
+      name = cmd.children.length > 0 ? `${name} (${cmd.children.length})` : name;
       return (
         <div
           key={i}
