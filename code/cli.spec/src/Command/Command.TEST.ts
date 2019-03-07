@@ -110,6 +110,17 @@ describe('Command', () => {
       expect(cmd2.children[0].name).to.eql('child');
     });
 
+    it('adds a existing command as a child (merge)', () => {
+      const cmd1 = Command.create('foo');
+      const cmd2 = Command.create('child', () => null);
+      cmd1.add(cmd2);
+
+      const child = cmd1.children[0];
+      expect(child).to.not.equal(cmd1); // Not the same instance.
+      expect(child.name).to.eql('child');
+      expect(child.handler).to.eql(cmd2.handler);
+    });
+
     it('id of child includes parent (hash)', () => {
       const HASH = {
         parent: Command.toId({ name: 'parent' }),

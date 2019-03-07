@@ -4,6 +4,7 @@ import { share, takeUntil } from 'rxjs/operators';
 import { value, str } from '../common';
 import { invoker } from './invoke';
 import * as t from './types';
+import * as tree from './tree';
 
 type IConstructorArgs = {
   name: string;
@@ -14,6 +15,12 @@ type IConstructorArgs = {
 export const DEFAULT = {
   HANDLER: (() => null) as t.CommandHandler,
 };
+
+/**
+ * TODO 🐷
+ * - ICommandBuilder (remove)
+ * - implements ICommand only
+ */
 
 /**
  * Represents a single [command] which is a named unit of functionality
@@ -51,6 +58,11 @@ export class Command<P extends object = any, A extends object = any>
     }
     return id;
   }
+
+  /**
+   * Helpers for working with a deep `Command` tree structure.
+   */
+  public static tree = tree;
 
   /**
    * [Constructor]
@@ -214,6 +226,10 @@ function toConstuctorArgs(args: any): IConstructorArgs {
   if (typeof args[0] === 'string') {
     const [name, handler] = args;
     return formatConstructorArgs({ name, handler, children: [] });
+  }
+  if (args[0] instanceof Command) {
+    const { name, handler, children } = args[0] as Command;
+    return formatConstructorArgs({ name, handler, children });
   }
   if (typeof args[0] === 'object') {
     return formatConstructorArgs(args[0]);
