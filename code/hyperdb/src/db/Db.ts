@@ -328,7 +328,10 @@ function parseValue<V>(value: any): V | undefined {
     result = valueUtil.isDateString(result) ? new Date(result) : result;
     return result;
   } catch (error) {
-    throw new Error(`Failed while parsing stored DB value '${value}'`);
+    if (!valueUtil.isJson(value)) {
+      return value; // NB: Somehow a value got into the DB that wasn't serialized as JSON.
+    }
+    throw new Error(`Failed while parsing stored DB value '${value}'. ${error.message}`);
   }
 }
 

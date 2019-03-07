@@ -1260,7 +1260,7 @@
     dayjs "1.8.6"
     semver "5.6.0"
 
-"@platform/util.value@0.0.33":
+"@platform/util.value@0.0.33", "@platform/util.value@^0.0.33":
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.33.tgz#8480666f84d4ae80f7586dbfdfcd73fefa82de5d"
   integrity sha512-NALhTTxZLOXys8HIJRUh+g1GL/SH/jaggjKhEdRZrvFrqNNOn6Rb2CLawHL+tXBjz1rYgLsz3j3umRzx9HwtYg==

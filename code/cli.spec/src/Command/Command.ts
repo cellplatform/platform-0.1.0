@@ -35,7 +35,7 @@ export class Command<P extends object = any, A extends object = any> implements 
    */
   public static create<P extends object = any, A extends object = any>(
     title: string,
-    handler?: t.CommandHandler,
+    handler?: t.CommandHandler<P, A>,
   ): Command<P, A>;
   public static create<P extends object = any, A extends object = any>(
     args: Partial<IConstructorArgs<P, A>> & { name: string }, // NB: Force name.

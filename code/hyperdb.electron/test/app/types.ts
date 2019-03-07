@@ -19,5 +19,6 @@ export type ITestStoreSettings = {
  */
 export type ITestDbData = {
   ['.sys/dbname']: string;
+  ['.sys/watch']: string[];
 };
 export type ITestRendererDb = IRendererDb<ITestDbData>;

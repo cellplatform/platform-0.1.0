@@ -174,6 +174,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       index: css({
         position: 'relative',
         width: 180,
+        minWidth: 140,
       }),
       main: css({
         position: 'relative',
