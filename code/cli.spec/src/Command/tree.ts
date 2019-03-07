@@ -5,6 +5,7 @@ export type ICommandTreeVisitorArgs = {
   stop: () => void;
 };
 export type CommandTreeVisitor = (e: ICommandTreeVisitorArgs) => void;
+export type CommandTreeFilter = (command: ICommand) => boolean;
 
 /**
  * Walks the Command tree (recursive descent).
@@ -41,10 +42,10 @@ export function count(command: ICommand) {
 /**
  * Search for a specific command anywhere within the tree.
  */
-export function find(command: ICommand, predicate: (command: ICommand) => boolean) {
+export function find(command: ICommand, fn: CommandTreeFilter) {
   let result: ICommand | undefined;
   walk(command, e => {
-    if (predicate(e.command)) {
+    if (fn(e.command)) {
       e.stop();
       result = e.command;
     }

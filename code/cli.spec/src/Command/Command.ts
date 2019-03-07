@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
+import { curry } from 'ramda';
 
 import { value, str } from '../common';
 import { invoker } from './invoke';
@@ -10,6 +11,12 @@ type IConstructorArgs = {
   name: string;
   handler: t.CommandHandler;
   children: t.ICommandBuilder[];
+};
+
+type ITreeMethods = {
+  walk: (fn: tree.CommandTreeVisitor) => { stopped: boolean };
+  count: (command: t.ICommand) => number;
+  find: (fn: tree.CommandTreeFilter) => Command | undefined;
 };
 
 export const DEFAULT = {
@@ -94,6 +101,7 @@ export class Command<P extends object = any, A extends object = any>
     children: [] as t.ICommandBuilder[],
     dispose$: new Subject(),
     events$: new Subject<t.CommandEvent>(),
+    tree: (undefined as unknown) as ITreeMethods | undefined,
   };
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
@@ -126,6 +134,18 @@ export class Command<P extends object = any, A extends object = any>
 
   public get isDisposed() {
     return this._.dispose$.isStopped;
+  }
+
+  public get tree() {
+    if (!this._.tree) {
+      const methods: ITreeMethods = {
+        walk: curry(tree.walk)(this),
+        count: curry(tree.count)(this),
+        find: curry(tree.find)(this) as any,
+      };
+      this._.tree = methods;
+    }
+    return this._.tree;
   }
 
   /**

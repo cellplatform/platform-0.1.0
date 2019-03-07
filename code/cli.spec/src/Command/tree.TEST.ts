@@ -67,6 +67,11 @@ describe.only('Command.tree', () => {
       expect(events[1].name).to.eql('child-1');
       expect(events[2].name).to.eql('grandchild-1');
     });
+
+    it('instance methods', () => {
+      const events: t.ICommand[] = [];
+      // root
+    });
   });
 
   describe('count', () => {
