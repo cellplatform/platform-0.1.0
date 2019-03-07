@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { color, CommandState, css, GlamorValue, renderer, t } from '../../common';
 import { CommandClickEvent, Help } from '../cli.Help';
 import { ObjectView } from '../primitives';
-import { DbHeader } from './DbHeader';
+import { DbHeader } from './components/DbHeader';
 
 export type IShellMainProps = {
   cli: CommandState;
@@ -13,9 +13,7 @@ export type IShellMainProps = {
   style?: GlamorValue;
   onFocusCommandPrompt?: (e: {}) => void;
 };
-export type IShellMainState = {
-  view?: 'WATCH';
-};
+export type IShellMainState = {};
 
 export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainState> {
   public state: IShellMainState = {};
@@ -53,16 +51,6 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
   }
 
   /**
-   * [Methods]
-   */
-  // public invoke() {
-  //   const command = this.cli.command;
-  //   if (command && command.name === 'watch') {
-  //     this.state$.next({ view: 'WATCH' });
-  //   }
-  // }
-
-  /**
    * [Render]
    */
 
@@ -91,7 +79,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
         <div {...styles.body}>
           {this.renderOutput()}
           <div {...styles.help}>
-            <Help cli={cli} onCommandClick={this.handleCommandClick} />
+            <Help cli={cli} onCommandClick={this.handleHelpCommandClick} />
           </div>
         </div>
       </div>
@@ -99,23 +87,30 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
   }
 
   private renderOutput() {
-    const { cli } = this.props;
+    const { cli, db } = this.props;
+    const namespace = cli.namespace;
     const styles = {
-      base: css({
-        flex: 1,
-      }),
+      base: css({ flex: 1 }),
     };
-    return (
-      <div {...styles.base}>
-        <ObjectView data={cli.toObject()} />
-      </div>
-    );
+
+    let data: any;
+
+    if (namespace && namespace.command.name === 'db') {
+      data = {
+        db: {
+          key: db.key,
+          localKey: db.localKey,
+        },
+      };
+    }
+
+    return <div {...styles.base}>{data && <ObjectView data={data} expandLevel={3} />}</div>;
   }
 
   /**
    * [Handlers]
    */
-  private handleCommandClick = (e: CommandClickEvent) => {
+  private handleHelpCommandClick = (e: CommandClickEvent) => {
     this.cli.change({ text: e.cmd.name });
     const { onFocusCommandPrompt } = this.props;
     if (onFocusCommandPrompt) {

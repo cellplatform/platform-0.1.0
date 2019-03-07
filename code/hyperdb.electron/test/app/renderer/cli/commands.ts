@@ -7,9 +7,15 @@ type P = t.ITestCommandProps;
  * [db] status and global config.
  */
 const db = Command.create<P>('db')
-  .add('status', e => null)
-  .add('new', e => null)
-  .add('join', e => null);
+  .add('new', e => e.props.events$.next({ type: 'CLI/db/new', payload: {} }))
+  .add('join', e => e.props.events$.next({ type: 'CLI/db/join', payload: {} }))
+  .add('rename', async e => {
+    const { db } = e.props;
+    const name = (e.args.params[0] || '').toString().trim();
+    if (db && name) {
+      db.put('.sys/dbname', name);
+    }
+  });
 
 /**
  * [watch] values in the DB.

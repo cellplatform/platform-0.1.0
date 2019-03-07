@@ -38,6 +38,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IShellState>>();
   private cli = CommandState.create({ root: cli.root });
+  private commandEvents$ = new Subject<cli.CliEvent>();
   private commandPrompt: CommandPrompt | undefined;
   private commandPromptRef = (ref: CommandPrompt) => (this.commandPrompt = ref);
 
@@ -52,6 +53,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     const store$ = this.store.change$.pipe(takeUntil(unmounted$));
     const state$ = this.state$.pipe(takeUntil(unmounted$));
     const cli$ = this.cli.change$.pipe(takeUntil(unmounted$));
+    const commandEvents$ = this.commandEvents$.pipe(takeUntil(unmounted$));
 
     state$.subscribe(e => this.setState(e));
     store$.subscribe(e => this.updateState());
@@ -76,7 +78,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
       const command = e.props.command as ICommand<t.ITestCommandProps>;
       const db = this.state.selectedDb;
-      const props: t.ITestCommandProps = { db };
+      const props: t.ITestCommandProps = { db, events$: this.commandEvents$ };
       const args = e.props.args;
 
       // Step into namespace (if required).
@@ -90,6 +92,16 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         const res = await command.invoke({ props, args });
         console.log('Shell // invoke response // props', res.props);
       }
+    });
+
+    /**
+     * Handle callbacks from within invoking commands.
+     */
+    commandEvents$.pipe(filter(e => e.type === 'CLI/db/new')).subscribe(e => {
+      this.handleNew();
+    });
+    commandEvents$.pipe(filter(e => e.type === 'CLI/db/join')).subscribe(e => {
+      this.handleJoinStart();
     });
   }
 
