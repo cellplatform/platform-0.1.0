@@ -12,11 +12,12 @@ type IConstructorArgs<P extends object = any, A extends object = any> = {
   children: Command[];
 };
 
-type ITreeMethods = {
+type ITreeMethods<T extends Command = Command> = {
   count: number;
-  walk: (fn: tree.CommandTreeVisitor<Command>) => tree.ICommandTreeVisitorResult;
-  find: (fn: tree.CommandTreeFilter<Command>) => Command | undefined;
-  parent: (root: Command) => Command | undefined;
+  walk: (fn: tree.CommandTreeVisitor<T>) => tree.ICommandTreeVisitorResult;
+  find: (fn: tree.CommandTreeFilter<T>) => T | undefined;
+  parent: (root: T) => T | undefined;
+  pathTo: (target: number | string | T) => T[];
 };
 
 /**
@@ -131,6 +132,7 @@ export class Command<P extends object = any, A extends object = any> implements 
         walk: fn => tree.walk<Command>(self, fn),
         find: fn => tree.find<Command>(self, fn),
         parent: root => tree.parent<Command>(root, self),
+        pathTo: target => tree.pathTo<Command>(self, target),
       };
       this._.tree = methods;
     }

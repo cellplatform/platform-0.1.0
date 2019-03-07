@@ -168,5 +168,14 @@ describe('Command.tree', () => {
       expect(res[1].name).to.eql('child-1');
       expect(res[2].name).to.eql('grandchild-2');
     });
+
+    it('instance method', () => {
+      const grandchild = root.children[0].children[1];
+      const res = root.tree.pathTo(grandchild);
+      expect(res.length).to.eql(3);
+      expect(res[0].name).to.eql('root');
+      expect(res[1].name).to.eql('child-1');
+      expect(res[2].name).to.eql('grandchild-2');
+    });
   });
 });
