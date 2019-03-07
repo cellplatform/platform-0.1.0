@@ -201,7 +201,8 @@ export class Db<D extends object = any> implements t.IDb<D> {
   public async put<K extends keyof D>(key: K, value: D[K]) {
     this.throwIfDisposed('put');
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
-      this._.db.put(key, value, (err: Error, result: any) => {
+      const v = serializeValue(value);
+      this._.db.put(key, v, (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(toValue(result));
       });
     });
@@ -240,7 +241,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
           this.next<t.IDbWatchEvent>('DB/watch', {
             db: { key: this.key },
             key,
-            value: formatValue(value),
+            value: parseValue(value),
             pattern,
             deleted,
             version,
@@ -302,7 +303,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
  */
 function toValue<K, V>(result: any): t.IDbValue<K, V> {
   const exists = result && !isNil(result.value) ? true : false;
-  const value = exists ? formatValue<V>(result.value) : undefined;
+  const value = exists ? parseValue<V>(result.value) : undefined;
   result = { exists, ...result };
   delete result.value;
   return {
@@ -311,8 +312,31 @@ function toValue<K, V>(result: any): t.IDbValue<K, V> {
   };
 }
 
-function formatValue<V>(value: any) {
-  return isNil(value) ? undefined : (valueUtil.toType(value) as V);
+function parseValue<V>(value: any): V | undefined {
+  if (isNil(value)) {
+    return undefined;
+  }
+
+  value = valueUtil.toType(value);
+  if (typeof value === 'boolean' || typeof value === 'number') {
+    return value as any;
+  }
+
+  try {
+    const obj = JSON.parse(value);
+    let result = obj.v;
+    result = valueUtil.isDateString(result) ? new Date(result) : result;
+    return result;
+  } catch (error) {
+    throw new Error(`Failed while parsing stored DB value '${value}'`);
+  }
+}
+
+function serializeValue(value: any) {
+  if (value === undefined || typeof value === 'boolean' || typeof value === 'number') {
+    return value;
+  }
+  return JSON.stringify({ v: value });
 }
 
 function isNil(value: any) {
