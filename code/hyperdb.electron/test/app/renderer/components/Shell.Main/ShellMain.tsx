@@ -57,7 +57,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
    */
   public invoke() {
     const command = this.cli.command;
-    if (command && command.title === 'watch') {
+    if (command && command.name === 'watch') {
       this.state$.next({ view: 'WATCH' });
     }
   }
@@ -116,7 +116,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
    * [Handlers]
    */
   private handleCommandClick = (e: CommandClickEvent) => {
-    this.cli.change({ text: e.cmd.title });
+    this.cli.change({ text: e.cmd.name });
     const { onFocusCommandPrompt } = this.props;
     if (onFocusCommandPrompt) {
       onFocusCommandPrompt({});

@@ -69,8 +69,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       const props: t.ITestCommandProps = { db };
       const res = await command.invoke({ props, args: e.args });
 
+      console.log('INVOKE', command.toString());
       console.log('-------------------------------------------');
-      console.log('Shell // res.props', res.props);
+      console.log('Shell // invoke response // props', res.props);
     });
   }
 
@@ -253,9 +254,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     if (cli.command) {
       return;
     }
-    const match = cli.root.children.find(c => str.fuzzy.isMatch(cli.text, c.title));
+    const match = cli.root.children.find(c => str.fuzzy.isMatch(cli.text, c.name));
     if (match) {
-      cli.change({ text: match.title });
+      cli.change({ text: match.name });
     }
   };
 }

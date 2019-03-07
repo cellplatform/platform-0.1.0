@@ -14,7 +14,7 @@ export type ICommand<P extends object = any, A extends object = any> = {
   id: number;
   name: string;
   children: ICommand[];
-  handler: CommandHandler<P, A>;
+  handler?: CommandHandler<P, A>;
   invoke: InvokeCommand<P, A>;
   events$: Observable<CommandInvokeEvent>;
 };

@@ -49,9 +49,9 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
 
   private get commandList() {
     const { cli } = this.props;
-    const current = cli.command ? cli.command.title : undefined;
+    const currentId = cli.command ? cli.command.id : undefined;
     const list = matchCommands(cli.text, cli.root).map(item => {
-      const isCurrent = item.title === current;
+      const isCurrent = item.id === currentId;
       return isCurrent ? { ...item, isMatch: true } : item;
     });
     return list;
@@ -91,14 +91,14 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
     };
 
     const elList = this.commandList.map((item, i) => {
-      const { title, isMatch, cmd } = item;
+      const { name, isMatch, cmd } = item;
       return (
         <div
           key={i}
           {...css(styles.cmd, isMatch && styles.cmdMatch)}
           onClick={this.commandClickHandler(cmd)}
         >
-          {title}
+          {name}
         </div>
       );
     });
@@ -130,8 +130,8 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
 
 function matchCommands(input: string, parent: ICommand) {
   return parent.children.map(cmd => {
-    const title = cmd.title;
-    const isMatch = str.fuzzy.isMatch(input, title);
-    return { cmd, title, isMatch };
+    const { id, name } = cmd;
+    const isMatch = str.fuzzy.isMatch(input, name);
+    return { cmd, id, name, isMatch };
   });
 }

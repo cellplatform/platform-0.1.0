@@ -1,13 +1,12 @@
 import { expect } from 'chai';
 import { Command } from '.';
-import { DEFAULT } from './Command';
 
 describe('Command', () => {
   describe('construction', () => {
     it('minimal construction', () => {
       const cmd = Command.create({ name: '  Foo  ' });
       expect(cmd.name).to.eql('Foo'); // NB: trims title.
-      expect(cmd.handler).to.eql(DEFAULT.HANDLER);
+      expect(cmd.handler).to.eql(undefined);
       expect(cmd.children).to.eql([]);
     });
 

@@ -19,10 +19,6 @@ type ITreeMethods = {
   parent: (root: Command) => Command | undefined;
 };
 
-export const DEFAULT = {
-  HANDLER: (() => null) as t.CommandHandler,
-};
-
 /**
  * Represents a single [command] which is a named unit of functionality
  * within a program that can optionally take parameter input.
@@ -74,10 +70,6 @@ export class Command<P extends object = any, A extends object = any> implements 
       throw new Error(`A command 'name' must be specified.`);
     }
 
-    if (typeof handler !== 'function') {
-      throw new Error(`A command 'handler' must be a function.`);
-    }
-
     this._.id = Command.toId({ name });
     this._.name = name;
     this._.handler = handler;
@@ -90,7 +82,7 @@ export class Command<P extends object = any, A extends object = any> implements 
   private readonly _ = {
     id: 0,
     name: '',
-    handler: (undefined as unknown) as t.CommandHandler,
+    handler: undefined as t.CommandHandler | undefined,
     children: [] as Command[],
     dispose$: new Subject(),
     events$: new Subject<t.CommandEvent>(),
@@ -213,7 +205,9 @@ export class Command<P extends object = any, A extends object = any> implements 
    * Converts object to string.
    */
   public toString() {
-    return `[Command:${this.id}:${this.name}]`;
+    const count = this.children.length;
+    const children = count > 0 ? `(${count})` : '';
+    return `[Command:${this.id}:${this.name}${children}]`;
   }
 
   /**
@@ -262,7 +256,6 @@ function toConstuctorArgs(args: any): IConstructorArgs {
 function formatConstructorArgs(args: Partial<IConstructorArgs>): IConstructorArgs {
   args = { ...args };
   args.name = (args.name || '').trim();
-  args.handler = args.handler || DEFAULT.HANDLER;
   args.children = args.children || [];
   return args as IConstructorArgs;
 }
