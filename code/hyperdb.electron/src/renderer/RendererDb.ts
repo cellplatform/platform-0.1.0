@@ -152,11 +152,11 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
     return this.invoke('delete', [key]);
   }
 
-  public async watch(...pattern: string[]) {
+  public async watch<T extends object = D>(...pattern: Array<keyof T>) {
     return this.invoke('watch', pattern);
   }
 
-  public async unwatch(...pattern: string[]) {
+  public async unwatch<T extends object = D>(...pattern: Array<keyof T>) {
     return this.invoke('unwatch', pattern);
   }
 

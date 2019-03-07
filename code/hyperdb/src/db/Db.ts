@@ -188,6 +188,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public async get<K extends keyof D>(key: K) {
     this.throwIfDisposed('get');
+    this.throwIfNoKey('get', key);
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.get(key, (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(toValue(result));
@@ -200,6 +201,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public async put<K extends keyof D>(key: K, value: D[K]) {
     this.throwIfDisposed('put');
+    this.throwIfNoKey('put', key);
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       const v = serializeValue(value);
       this._.db.put(key, v, (err: Error, result: any) => {
@@ -213,6 +215,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public async delete<K extends keyof D>(key: K) {
     this.throwIfDisposed('delete');
+    this.throwIfNoKey('delete', key);
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.del(key, (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(toValue(result));
@@ -223,17 +226,24 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * Starts a watcher for the given key/path.
    * Pass nothing to watch for all changes.
+   *
+   * NOTE:
+   *    The use of `keyof T` allow for string typing of a DB data-set.
+   *
    */
-  public async watch(...pattern: string[]) {
+  public async watch<T extends object = D>(...pattern: Array<keyof T>) {
     this.throwIfDisposed('watch');
-    pattern = formatWatchPatterns(pattern);
+    const patterns = formatWatchPatterns(pattern);
 
     const storeRef = (key: string, watcher: WatcherRef) => {
       this.unwatch(key);
       this._.watchers[key] = watcher;
     };
 
-    pattern.forEach(pattern => {
+    console.log(`\nTODO 🐷   don't add watcher more than once for same pattern \n`);
+
+    patterns.forEach(item => {
+      const pattern = item.toString();
       const match = pattern === '*' ? '' : pattern; // NB: wildcard is matched as empty-string.
       const watcher = this._.db.watch(match, () => {
         watcher._nodes.forEach(async ({ key, value, deleted }: any) => {
@@ -256,11 +266,12 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * Removes the watcher for the given key/path.
    * Pass nothing to turn-off all watchers.
    */
-  public async unwatch(...pattern: string[]) {
+  public async unwatch<T extends object = D>(...pattern: Array<keyof T>) {
     const watchers = this._.watchers;
     pattern = Array.isArray(pattern) ? pattern : [pattern];
-    pattern = pattern.length === 0 ? Object.keys(this._.watchers) : formatWatchPatterns(pattern);
-    pattern.forEach(key => {
+    const patterns =
+      pattern.length === 0 ? Object.keys(this._.watchers) : formatWatchPatterns(pattern);
+    patterns.forEach(key => {
       if (watchers[key]) {
         watchers[key].destroy();
       }
@@ -293,6 +304,13 @@ export class Db<D extends object = any> implements t.IDb<D> {
   private throwIfDisposed(action: string) {
     if (this.isDisposed) {
       const msg = `Cannot '${action}' because the [HyperDb] client has been disposed.`;
+      throw new Error(msg);
+    }
+  }
+
+  private throwIfNoKey(action: string, key: any) {
+    if (!key) {
+      const msg = `Cannot '${action}' because a [key] was not specified.`;
       throw new Error(msg);
     }
   }
@@ -346,10 +364,11 @@ function isNil(value: any) {
   return value === null || value === undefined;
 }
 
-function formatWatchPatterns(pattern: string[]) {
+function formatWatchPatterns<T extends object = any>(pattern: Array<keyof T>) {
   const asWildcard = (pattern: string) => (pattern === '' ? '*' : pattern);
   pattern = Array.isArray(pattern) ? pattern : [pattern];
-  pattern = pattern.length === 0 ? ['*'] : pattern; // NB: Watch for all changes if no specific paths were given.
-  pattern = pattern.map(p => p.trim()).map(p => asWildcard(p));
-  return pattern;
+  let patterns = pattern.map(p => p.toString());
+  patterns = patterns.length === 0 ? ['*'] : patterns; // NB: Watch for all changes if no specific paths were given.
+  patterns = patterns.map(p => p.trim()).map(p => asWildcard(p));
+  return patterns;
 }
