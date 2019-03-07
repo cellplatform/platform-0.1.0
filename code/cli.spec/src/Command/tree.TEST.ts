@@ -70,7 +70,8 @@ describe('Command.tree', () => {
 
     it('instance methods', () => {
       const events: t.ICommand[] = [];
-      // root
+      root.tree.walk(e => events.push(e.command));
+      expect(events.length).to.eql(5);
     });
   });
 
@@ -82,6 +83,10 @@ describe('Command.tree', () => {
     it('has 5 nodes (including itself)', () => {
       expect(Command.tree.count(root)).to.eql(5);
     });
+
+    it('instance method', () => {
+      expect(root.tree.count).to.eql(5);
+    });
   });
 
   describe('find', () => {
@@ -92,6 +97,11 @@ describe('Command.tree', () => {
 
     it('finds the given command', () => {
       const res = Command.tree.find(root, cmd => cmd.name === 'child-2');
+      expect(res && res.name).to.eql('child-2');
+    });
+
+    it('instance method', () => {
+      const res = root.tree.find(cmd => cmd.name === 'child-2');
       expect(res && res.name).to.eql('child-2');
     });
   });

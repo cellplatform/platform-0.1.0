@@ -1,6 +1,5 @@
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
-import { curry } from 'ramda';
 
 import { value, str } from '../common';
 import { invoker } from './invoke';
@@ -14,20 +13,14 @@ type IConstructorArgs = {
 };
 
 type ITreeMethods = {
-  walk: (fn: tree.CommandTreeVisitor) => { stopped: boolean };
-  count: (command: t.ICommand) => number;
-  find: (fn: tree.CommandTreeFilter) => Command | undefined;
+  count: number;
+  walk: (fn: tree.CommandTreeVisitor<Command>) => tree.ICommandTreeVisitorResult;
+  find: (fn: tree.CommandTreeFilter<Command>) => Command | undefined;
 };
 
 export const DEFAULT = {
   HANDLER: (() => null) as t.CommandHandler,
 };
-
-/**
- * TODO 🐷
- * - ICommandBuilder (remove)
- * - implements ICommand only
- */
 
 /**
  * Represents a single [command] which is a named unit of functionality
@@ -137,10 +130,13 @@ export class Command<P extends object = any, A extends object = any> implements 
 
   public get tree() {
     if (!this._.tree) {
+      const self = this; // tslint:disable-line
       const methods: ITreeMethods = {
-        walk: curry(tree.walk)(this),
-        count: curry(tree.count)(this),
-        find: curry(tree.find)(this) as any,
+        get count() {
+          return tree.count(self);
+        },
+        walk: fn => tree.walk<Command>(self, fn),
+        find: fn => tree.find<Command>(self, fn),
       };
       this._.tree = methods;
     }
