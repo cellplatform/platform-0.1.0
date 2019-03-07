@@ -109,8 +109,10 @@ export function invoker<P extends object, A extends object, R>(options: {
 
     // Invoke the handler and wait for completion.
     try {
-      const res = command.handler(e);
-      response.result = value.isPromise(res) ? await res : res;
+      if (typeof command.handler === 'function') {
+        const res = command.handler(e);
+        response.result = value.isPromise(res) ? await res : res;
+      }
       done();
     } catch (error) {
       done(error);

@@ -6,7 +6,7 @@ import { invoker } from './invoke';
 import * as t from './types';
 import * as tree from './tree';
 
-type IConstructorArgs = {
+type IConstructorArgs<P extends object = any, A extends object = any> = {
   name: string;
   handler: t.CommandHandler;
   children: Command[];
@@ -36,7 +36,7 @@ export class Command<P extends object = any, A extends object = any> implements 
     handler?: t.CommandHandler,
   ): Command<P, A>;
   public static create<P extends object = any, A extends object = any>(
-    args: Partial<IConstructorArgs> & { name: string }, // NB: Force name.
+    args: Partial<IConstructorArgs<P, A>> & { name: string }, // NB: Force name.
   ): Command<P, A>;
   public static create<P extends object = any, A extends object = any>(
     ...args: any
@@ -158,14 +158,16 @@ export class Command<P extends object = any, A extends object = any> implements 
   }
 
   /**
-   * Adds a child command.
+   * [Overrides] Add a child command .
    */
   public add<P1 extends object = P, A1 extends object = A>(
     title: string,
     handler?: t.CommandHandler<P1, A1>,
   ): Command<P, A>;
 
-  public add(args: t.ICommand<any, any> & { name: string }): Command<P, A>;
+  public add<P1 extends object = P, A1 extends object = A>(
+    args: Command<P1, A1> | Partial<t.ICommand<P1, A1>> & { name: string },
+  ): Command<P, A>;
 
   public add(...input: any): Command<P, A> {
     const args = toConstuctorArgs(input);

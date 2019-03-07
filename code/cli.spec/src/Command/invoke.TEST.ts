@@ -46,6 +46,14 @@ describe('Command.invoke', () => {
     expect(res.result).to.eql({ foo: 123 });
   });
 
+  it('invokes with no handler', async () => {
+    const root = Command.create<P, A>('root').add('copy');
+    const copy = root.childrenAs<P, A>()[0];
+    const res = await copy.invoke<R>({ props: { text: 'Hello' } });
+    expect(res.isComplete).to.eql(true);
+    expect(res.result).to.eql(undefined);
+  });
+
   it('fires [before/set/after] event sequence', async () => {
     const events: t.CommandInvokeEvent[] = [];
     const root = Command.create<P, A>('root').add('copy', e => {
