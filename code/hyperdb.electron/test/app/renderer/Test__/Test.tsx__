@@ -49,38 +49,38 @@ export class Test extends React.PureComponent<{}, ITestState> {
     return this.context.store as t.ITestStore;
   }
 
-  private init = async () => {
-    const { id, ipc } = this.context;
-    const dir = `.dev/db/tmp-${id}`;
-    const dbKey = await this.store.get('dbKey');
+  // private init = async () => {
+  //   const { id, ipc } = this.context;
+  //   const dir = `.dev/db/tmp-${id}`;
+  //   const dbKey = await this.store.get('dbKey');
 
-    const res = await renderer.create({ ipc, dir, dbKey });
-    const db = res.db;
-    // const swarm = (this.swarm = res.swarm);
+  //   const res = await renderer.create({ ipc, dir, dbKey });
+  //   const db = res.db;
+  //   // const swarm = (this.swarm = res.swarm);
 
-    // const dbr = await renderer.create({ ipc, dir: `.db/r-${id}`, dbKey });
-    console.group('🌳 HyperDB (renderer)');
-    console.log('- dbKey:', db.key);
-    console.log('- localKey:', db.localKey);
-    console.groupEnd();
+  //   // const dbr = await renderer.create({ ipc, dir: `.db/r-${id}`, dbKey });
+  //   console.group('🌳 HyperDB (renderer)');
+  //   console.log('- dbKey:', db.key);
+  //   console.log('- localKey:', db.localKey);
+  //   console.groupEnd();
 
-    await db.watch('*');
+  //   await db.watch('*');
 
-    const s = await this.store.read();
-    console.log('s', s);
+  //   const s = await this.store.read();
+  //   console.log('s', s);
 
-    db.watch$.subscribe(async e => {
-      this.appendVersion(e.version);
-      this.setPropData(e.key, e.value);
-    });
+  //   db.watch$.subscribe(async e => {
+  //     this.appendVersion(e.version);
+  //     this.setPropData(e.key, e.value);
+  //   });
 
-    // swarm.events$.subscribe(e => this.updateData(db));
+  //   // swarm.events$.subscribe(e => this.updateData(db));
 
-    this.updateData(db);
-    this.appendVersion(await db.version());
-    this.state$.next({ dbKey: db.key });
-    return db;
-  };
+  //   this.updateData(db);
+  //   this.appendVersion(await db.version());
+  //   this.state$.next({ dbKey: db.key });
+  //   return db;
+  // };
 
   private updateData = async (db: IRendererDb) => {
     // const swarm = this.swarm;
