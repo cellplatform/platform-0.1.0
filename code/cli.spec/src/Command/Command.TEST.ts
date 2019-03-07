@@ -61,22 +61,26 @@ describe('Command', () => {
       const child = Command.create({ name: 'child' });
       const cmd1 = Command.create({ name: 'foo', children: [child] });
       const cmd2 = cmd1.clone();
-      expect(cmd1).to.eql(cmd2);
-      expect(cmd1).to.not.equal(cmd2);
 
-      expect(cmd2.children).to.eql([child]);
-      expect(cmd2.children[0]).to.not.equal(child);
+      expect(cmd1).to.not.equal(cmd2); // NB: Not the same instance.
+      expect(cmd1.name).to.eql(cmd2.name);
+      expect(cmd1.handler).to.equal(cmd2.handler);
+
+      expect(cmd2.children[0]).to.not.equal(child); // NB: NOT the same instance.
+      expect(cmd2.children[0].name).to.eql('child');
+      expect(cmd2.children[0].handler).to.equal(child.handler);
     });
 
     it('clones - shallow (deep: false)', () => {
       const child = Command.create({ name: 'child' });
       const cmd1 = Command.create({ name: 'foo', children: [child] });
       const cmd2 = cmd1.clone({ deep: false });
-      expect(cmd1).to.eql(cmd2);
-      expect(cmd1).to.not.equal(cmd2);
 
-      expect(cmd2.children).to.eql([child]);
-      expect(cmd2.children[0]).to.equal(child);
+      expect(cmd1).to.not.equal(cmd2); // NB: Not the same instance.
+      expect(cmd1.name).to.eql(cmd2.name);
+      expect(cmd1.handler).to.equal(cmd2.handler);
+
+      expect(cmd2.children[0]).to.equal(child); // NB: is the same instance.
     });
   });
 
@@ -118,7 +122,7 @@ describe('Command', () => {
       const child = cmd1.children[0];
       expect(child).to.not.equal(cmd1); // Not the same instance.
       expect(child.name).to.eql('child');
-      expect(child.handler).to.eql(cmd2.handler);
+      expect(child.handler).to.equal(cmd2.handler);
     });
 
     it('id of child includes parent (hash)', () => {

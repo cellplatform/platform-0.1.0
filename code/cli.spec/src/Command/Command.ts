@@ -10,7 +10,7 @@ import * as tree from './tree';
 type IConstructorArgs = {
   name: string;
   handler: t.CommandHandler;
-  children: t.ICommandBuilder[];
+  children: Command[];
 };
 
 type ITreeMethods = {
@@ -33,8 +33,7 @@ export const DEFAULT = {
  * Represents a single [command] which is a named unit of functionality
  * within a program that can optionally take parameter input.
  */
-export class Command<P extends object = any, A extends object = any>
-  implements t.ICommandBuilder<P, A> {
+export class Command<P extends object = any, A extends object = any> implements t.ICommand<P, A> {
   /**
    * [Static]
    */
@@ -45,13 +44,13 @@ export class Command<P extends object = any, A extends object = any>
   public static create<P extends object = any, A extends object = any>(
     title: string,
     handler?: t.CommandHandler,
-  ): t.ICommandBuilder<P, A>;
+  ): Command<P, A>;
   public static create<P extends object = any, A extends object = any>(
     args: Partial<IConstructorArgs> & { name: string }, // NB: Force name.
-  ): t.ICommandBuilder<P, A>;
+  ): Command<P, A>;
   public static create<P extends object = any, A extends object = any>(
     ...args: any
-  ): t.ICommandBuilder<P, A> {
+  ): Command<P, A> {
     return new Command<P, A>(toConstuctorArgs(args));
   }
 
@@ -98,7 +97,7 @@ export class Command<P extends object = any, A extends object = any>
     id: 0,
     name: '',
     handler: (undefined as unknown) as t.CommandHandler,
-    children: [] as t.ICommandBuilder[],
+    children: [] as Command[],
     dispose$: new Subject(),
     events$: new Subject<t.CommandEvent>(),
     tree: (undefined as unknown) as ITreeMethods | undefined,
@@ -124,7 +123,7 @@ export class Command<P extends object = any, A extends object = any>
     return this._.handler;
   }
 
-  public get children(): t.ICommandBuilder[] {
+  public get children(): Command[] {
     return this._.children;
   }
 
@@ -156,16 +155,16 @@ export class Command<P extends object = any, A extends object = any>
     this._.dispose$.complete();
   }
 
-  public as<P1 extends object, A1 extends object>(fn: (e: t.ICommandBuilder<P1, A1>) => void) {
-    fn((this as unknown) as t.ICommandBuilder<P1, A1>);
+  public as<P1 extends object, A1 extends object>(fn: (e: Command<P1, A1>) => void) {
+    fn((this as unknown) as Command<P1, A1>);
     return this;
   }
 
   /**
    * Cast children to given types.
    */
-  public childrenAs<P1 extends object, A1 extends object>() {
-    return this.children as Array<t.ICommandBuilder<P1, A1>>;
+  public childrenAs<P1 extends object, A1 extends object>(): Array<Command<P1, A1>> {
+    return this.children;
   }
 
   /**
@@ -173,14 +172,12 @@ export class Command<P extends object = any, A extends object = any>
    */
   public add<P1 extends object = P, A1 extends object = A>(
     title: string,
-    handler: t.CommandHandler<P1, A1>,
-  ): t.ICommandBuilder<P, A>;
+    handler?: t.CommandHandler<P1, A1>,
+  ): Command<P, A>;
 
-  public add<P1 extends object = P, A1 extends object = A>(
-    args: t.IAddCommandArgs<P1, A1>,
-  ): t.ICommandBuilder<P, A>;
+  public add(args: t.ICommand<any, any> & { name: string }): Command<P, A>;
 
-  public add(...input: any): t.ICommandBuilder<P, A> {
+  public add(...input: any): Command<P, A> {
     const args = toConstuctorArgs(input);
 
     // Ensure the child does not already exist.
@@ -194,7 +191,7 @@ export class Command<P extends object = any, A extends object = any>
 
     // Finish up.
     child.events$.pipe(takeUntil(this.dispose$)).subscribe(e => this._.events$.next(e));
-    this._.children = [...this._.children, child] as t.ICommandBuilder[];
+    this._.children = [...this._.children, child] as Command[];
     return this;
   }
 
@@ -265,8 +262,6 @@ function formatConstructorArgs(args: Partial<IConstructorArgs>): IConstructorArg
   return args as IConstructorArgs;
 }
 
-function cloneChildren(builder: t.ICommandBuilder): t.ICommandBuilder[] {
-  return builder.children
-    .map(child => child as t.ICommandBuilder)
-    .map(child => child.clone({ deep: true }));
+function cloneChildren(builder: Command): Command[] {
+  return builder.children.map(child => child as Command).map(child => child.clone({ deep: true }));
 }

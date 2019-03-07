@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Command } from '.';
 import * as t from './types';
 
-describe.only('Command.tree', () => {
+describe('Command.tree', () => {
   /**
    * Sample tree structure.
    */
