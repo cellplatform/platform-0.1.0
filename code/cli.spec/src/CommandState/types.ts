@@ -3,24 +3,25 @@ import { ICommand, ICommandArgs } from '../types';
 /**
  * Manages state of a CLI program.
  */
-export type ICommandState = ICommandStateProps & {
-  toString(): string;
-  toObject(): ICommandStateProps;
+export type ICommandState = {
+  text: string;
+  args: ICommandArgs;
+  command: ICommand | undefined;
+  namespace?: ICommandNamespace;
 };
 
-export type ICommandStateProps = {
-  text: string;
-  command: ICommand | undefined;
-  args: ICommandArgs;
+export type ICommandNamespace = {
+  command: ICommand;
 };
 
 /**
- * Change delegate.
+ * [Change] delegate.
  */
 export type CommandChangeDispatcher = (e: ICommandChangeArgs) => void;
 export type ICommandChangeArgs = {
   readonly text: string;
   readonly invoked?: boolean;
+  readonly namespace?: boolean;
 };
 
 /**
@@ -30,5 +31,5 @@ export type CommandStateEvent = ICommandStateChangeEvent;
 
 export type ICommandStateChangeEvent = {
   type: 'COMMAND/state/change';
-  payload: ICommandStateProps & { invoked: boolean };
+  payload: ICommandState & { invoked: boolean };
 };

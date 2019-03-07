@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-
 import { Command } from '.';
 import { time } from '../common';
 import * as t from './types';

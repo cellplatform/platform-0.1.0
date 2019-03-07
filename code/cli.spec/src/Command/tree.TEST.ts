@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { Command } from '.';
 import * as t from './types';
+import { createDeflateRaw } from 'zlib';
 
 describe('Command.tree', () => {
   /**
@@ -135,6 +136,37 @@ describe('Command.tree', () => {
       const res2 = grandchild.tree.parent(root);
       expect(res1).to.eql(undefined);
       expect(res2 && res2.name).to.eql('child-1');
+    });
+  });
+
+  describe('pathTo', () => {
+    it('empty', () => {
+      const random = Command.create('FOO');
+      const res = Command.tree.pathTo(root, random);
+      expect(res).to.eql([]);
+    });
+
+    it('single item (same)', () => {
+      const res = Command.tree.pathTo(root, root);
+      expect(res.length).to.eql(1);
+      expect(res[0] && res[0].id).to.eql(root.id);
+    });
+
+    it('child (2 levels)', () => {
+      const child = root.children[0];
+      const res = Command.tree.pathTo(root, child);
+      expect(res.length).to.eql(2);
+      expect(res[0].name).to.eql('root');
+      expect(res[1].name).to.eql('child-1');
+    });
+
+    it('grandchild (3 levels)', () => {
+      const grandchild = root.children[0].children[1];
+      const res = Command.tree.pathTo(root, grandchild);
+      expect(res.length).to.eql(3);
+      expect(res[0].name).to.eql('root');
+      expect(res[1].name).to.eql('child-1');
+      expect(res[2].name).to.eql('grandchild-2');
     });
   });
 });

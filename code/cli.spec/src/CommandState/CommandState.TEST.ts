@@ -4,15 +4,21 @@ import { CommandState } from '.';
 import { Command } from '../Command';
 import * as t from './types';
 
+const db = Command.create('db')
+  .add('ls')
+  .add('status');
+
 const root = Command.create('fs')
   .add('ls')
-  .add('mkdir');
+  .add('mkdir')
+  .add(db);
 
 describe('CommandState', () => {
   it('creates with default values', () => {
     const state = CommandState.create({ root });
     expect(state.isDisposed).to.eql(false);
     expect(state.text).to.eql('');
+    expect(state.namespace).to.eql(undefined);
   });
 
   it('disposes', () => {
@@ -32,6 +38,7 @@ describe('CommandState', () => {
       const obj = state.toObject();
       expect(obj.text).to.eql('');
       expect(obj.command).to.eql(undefined);
+      expect(obj.namespace).to.eql(undefined);
     });
   });
 
@@ -60,9 +67,24 @@ describe('CommandState', () => {
       state.change({ text: 'hello' });
       expect(state.text).to.eql('hello');
     });
-  });
 
-  describe('invoke', () => {
+    it('cannot change to a namsespace if no command matches', () => {
+      const state = CommandState.create({ root });
+      state.change({ text: 'NO_EXIST', namespace: true });
+      expect(state.namespace).to.eql(undefined);
+    });
+
+    it('changes to a namespace', () => {
+      const state = CommandState.create({ root });
+      expect(state.namespace).to.eql(undefined);
+
+      state.change({ text: 'db' });
+      expect(state.namespace).to.eql(undefined);
+
+      state.change({ text: 'db', namespace: true });
+      expect(state.namespace && state.namespace.command.name).to.eql('db');
+    });
+
     it('fires [invoke$] event (observable)', () => {
       const events: t.CommandStateEvent[] = [];
       const invokes: Array<t.ICommandStateChangeEvent['payload']> = [];
@@ -71,7 +93,7 @@ describe('CommandState', () => {
       state.events$.subscribe(e => events.push(e));
       state.invoke$.subscribe(e => invokes.push(e));
 
-      state.change({ text: 'foo' }); // NB: invoked: false
+      state.change({ text: 'foo' }); // NB: invoked [false].
       expect(events.length).to.eql(1);
       expect(invokes.length).to.eql(0);
 
@@ -124,4 +146,6 @@ describe('CommandState', () => {
       expect(state.command).to.eql(undefined);
     });
   });
+
+  describe('namespace', () => {});
 });

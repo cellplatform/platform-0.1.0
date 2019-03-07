@@ -73,6 +73,25 @@ export function parent<T extends ICommand = ICommand>(root: T, child: number | s
 }
 
 /**
+ * Builds a path to the given command.
+ */
+export function pathTo<T extends ICommand = ICommand>(root: T, target: number | string | T): T[] {
+  const cmd = find(root, e => isMatch(e, target)); // Ensure the command exists within the root tree.
+  let result: T[] = [];
+  if (cmd) {
+    const add = (cmd: T) => {
+      result = [cmd, ...result];
+      const next = parent(root, cmd);
+      if (next) {
+        add(next); // <== RECURSION
+      }
+    };
+    add(cmd);
+  }
+  return result;
+}
+
+/**
  * [Helpers]
  */
 

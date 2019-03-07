@@ -39,6 +39,7 @@ export class CommandState implements t.ICommandState {
     events$: new Subject<t.CommandStateEvent>(),
     root: (undefined as unknown) as t.ICommand,
     text: '',
+    namespace: undefined as t.ICommandNamespace | undefined,
   };
 
   public readonly dispose$ = this._.dispose$.pipe(share());
@@ -72,12 +73,6 @@ export class CommandState implements t.ICommandState {
     return this._.text;
   }
 
-  public get command() {
-    const args = Argv.parse(this.text);
-    const param = args.params[0];
-    return param ? this.root.children.find(c => c.name === param) : undefined;
-  }
-
   public get args() {
     const args = Argv.parse(this.text);
 
@@ -99,6 +94,16 @@ export class CommandState implements t.ICommandState {
     return args;
   }
 
+  public get command() {
+    const args = Argv.parse(this.text);
+    const param = args.params[0];
+    return param ? this.root.children.find(c => c.name === param) : undefined;
+  }
+
+  public get namespace() {
+    return this._.namespace;
+  }
+
   /**
    * [Methods]
    */
@@ -111,10 +116,19 @@ export class CommandState implements t.ICommandState {
     const { text } = e;
     const { events$ } = this._;
 
+    // Update state.
     this._.text = text;
-
     const props = this.toObject();
-    const invoked = props.command ? Boolean(e.invoked) : false;
+    const { command } = props;
+
+    // Set namespace.
+    if (e.namespace && command) {
+      const namespace: t.ICommandNamespace = { command };
+      this._.namespace = namespace;
+    }
+
+    // Alert listeners.
+    const invoked = command ? Boolean(e.invoked) : false;
     const payload = { ...props, invoked };
     events$.next({ type: 'COMMAND/state/change', payload });
   };
@@ -123,7 +137,12 @@ export class CommandState implements t.ICommandState {
     return this.text;
   }
 
-  public toObject() {
-    return { text: this.text, command: this.command, args: this.args };
+  public toObject(): t.ICommandState {
+    return {
+      text: this.text,
+      args: this.args,
+      command: this.command,
+      namespace: this.namespace,
+    };
   }
 }
