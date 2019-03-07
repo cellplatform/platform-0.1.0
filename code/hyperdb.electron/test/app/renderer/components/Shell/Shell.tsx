@@ -273,7 +273,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     if (cli.command) {
       return;
     }
-    const match = cli.root.children.find(c => str.fuzzy.isMatch(cli.text, c.name));
+    const root = cli.namespace ? cli.namespace.command : cli.root;
+    const match = root.children.find(c => str.fuzzy.isMatch(cli.text, c.name));
     if (match) {
       cli.change({ text: match.name });
     }

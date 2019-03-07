@@ -183,7 +183,6 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
   private fireChange(args: { text?: string; invoked?: boolean; namespace?: boolean }) {
     const { invoked, text = '', namespace } = args;
-    // text = text || '';
     const { onChange } = this.props;
     const e: ICommandChangeArgs = { text, invoked, namespace };
     if (onChange) {

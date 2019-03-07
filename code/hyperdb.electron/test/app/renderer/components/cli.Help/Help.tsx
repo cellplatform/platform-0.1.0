@@ -50,7 +50,8 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
   private get commandList() {
     const { cli } = this.props;
     const currentId = cli.command ? cli.command.id : undefined;
-    const list = matchCommands(cli.text, cli.root).map(item => {
+    const root = cli.namespace ? cli.namespace.command : cli.root;
+    const list = matchCommands(cli.text, root).map(item => {
       const isCurrent = item.id === currentId;
       return isCurrent ? { ...item, isMatch: true } : item;
     });

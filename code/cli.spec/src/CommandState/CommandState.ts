@@ -99,12 +99,9 @@ export class CommandState implements t.ICommandState {
   public get command() {
     const args = Argv.parse(this.text);
     const param = (args.params[0] || '').toString();
-    if (param.includes('.')) {
-      const path = `${this.root.name}.${param}`;
-      return this.root.tree.fromPath(path);
-    } else {
-      return param ? this.root.children.find(c => c.name === param) : undefined;
-    }
+    const root = this.namespace ? this.namespace.command : this.root;
+    const path = `${root.name}.${param}`;
+    return Command.tree.fromPath(root, path);
   }
 
   public get namespace() {
@@ -128,6 +125,7 @@ export class CommandState implements t.ICommandState {
 
     // Set namespace if requested.
     const command = this.command;
+
     if (
       command &&
       namespace === true &&
