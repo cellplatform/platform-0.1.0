@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { Command } from '.';
 import * as t from './types';
-import { createDeflateRaw } from 'zlib';
 
 describe('Command.tree', () => {
   /**
@@ -142,19 +141,19 @@ describe('Command.tree', () => {
   describe('pathTo', () => {
     it('empty', () => {
       const random = Command.create('FOO');
-      const res = Command.tree.pathTo(root, random);
+      const res = Command.tree.toPath(root, random);
       expect(res).to.eql([]);
     });
 
     it('single item (same)', () => {
-      const res = Command.tree.pathTo(root, root);
+      const res = Command.tree.toPath(root, root);
       expect(res.length).to.eql(1);
       expect(res[0] && res[0].id).to.eql(root.id);
     });
 
     it('child (2 levels)', () => {
       const child = root.children[0];
-      const res = Command.tree.pathTo(root, child);
+      const res = Command.tree.toPath(root, child);
       expect(res.length).to.eql(2);
       expect(res[0].name).to.eql('root');
       expect(res[1].name).to.eql('child-1');
@@ -162,7 +161,7 @@ describe('Command.tree', () => {
 
     it('grandchild (3 levels)', () => {
       const grandchild = root.children[0].children[1];
-      const res = Command.tree.pathTo(root, grandchild);
+      const res = Command.tree.toPath(root, grandchild);
       expect(res.length).to.eql(3);
       expect(res[0].name).to.eql('root');
       expect(res[1].name).to.eql('child-1');
@@ -171,11 +170,41 @@ describe('Command.tree', () => {
 
     it('instance method', () => {
       const grandchild = root.children[0].children[1];
-      const res = root.tree.pathTo(grandchild);
+      const res = root.tree.toPath(grandchild);
       expect(res.length).to.eql(3);
       expect(res[0].name).to.eql('root');
       expect(res[1].name).to.eql('child-1');
       expect(res[2].name).to.eql('grandchild-2');
+    });
+  });
+
+  describe('fromPath', () => {
+    it('undefined', () => {
+      const res1 = Command.tree.fromPath(root, '');
+      const res2 = Command.tree.fromPath(root, 'NOTHING');
+      const res3 = Command.tree.fromPath(root, 'foo.bar.baz');
+      expect(res1).to.eql(undefined);
+      expect(res2).to.eql(undefined);
+      expect(res3).to.eql(undefined);
+    });
+
+    it('finds the root (not a deep path)', () => {
+      const res = Command.tree.fromPath(root, 'root');
+      expect(res && res.name).to.eql('root');
+    });
+
+    it('finds deep path (3 levels)', () => {
+      const res1 = Command.tree.fromPath(root, 'root.child-1.grandchild-1');
+      const res2 = Command.tree.fromPath(root, 'root.child-1.grandchild-2');
+      expect(res1 && res1.name).to.eql('grandchild-1');
+      expect(res2 && res2.name).to.eql('grandchild-2');
+    });
+
+    it('instance method', () => {
+      const res1 = root.tree.fromPath('YO');
+      const res2 = root.tree.fromPath('root.child-1.grandchild-2');
+      expect(res1).to.eql(undefined);
+      expect(res2 && res2.name).to.eql('grandchild-2');
     });
   });
 });

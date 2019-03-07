@@ -4,9 +4,14 @@ import { CommandState } from '.';
 import { Command } from '../Command';
 import * as t from './types';
 
+const copy = Command.create('copy')
+  .add('fast')
+  .add('slow');
+
 const db = Command.create('db')
   .add('ls')
-  .add('status');
+  .add('status')
+  .add(copy);
 
 const root = Command.create('fs')
   .add('ls')
@@ -42,7 +47,7 @@ describe('CommandState', () => {
     });
   });
 
-  describe('change', () => {
+  describe('change (events)', () => {
     it('fires [change$] event (observable)', () => {
       const events: t.CommandStateEvent[] = [];
       const changes: Array<t.ICommandStateChangeEvent['payload']> = [];
@@ -66,31 +71,6 @@ describe('CommandState', () => {
       expect(state.text).to.eql('');
       state.change({ text: 'hello' });
       expect(state.text).to.eql('hello');
-    });
-
-    it('cannot change to a namsespace if no command matches', () => {
-      const state = CommandState.create({ root });
-      state.change({ text: 'NO_EXIST', namespace: true });
-      expect(state.namespace).to.eql(undefined);
-    });
-
-    it('changes to a namespace', () => {
-      const state = CommandState.create({ root });
-      expect(state.namespace).to.eql(undefined);
-
-      state.change({ text: 'db' });
-      expect(state.text).to.eql('db');
-      expect(state.namespace).to.eql(undefined);
-
-      state.change({ text: 'db', namespace: true });
-
-      const ns = state.namespace;
-      expect(ns && ns.command.name).to.eql('db');
-
-      const path = (ns && ns.path.map(m => m.name)) || [];
-      expect(path.join('.')).to.eql('fs.db');
-
-      expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
     });
 
     it('fires [invoke$] event (observable)', () => {
@@ -118,6 +98,54 @@ describe('CommandState', () => {
       state.change({ text: 'ls', invoked: true }); // NB: Invoke again.
       expect(events.length).to.eql(4);
       expect(invokes.length).to.eql(2);
+    });
+  });
+
+  describe('change: namespace', () => {
+    it('cannot change to a namsespace if no command matches', () => {
+      const state = CommandState.create({ root });
+      state.change({ text: 'NO_EXIST', namespace: true });
+      expect(state.namespace).to.eql(undefined);
+    });
+
+    it('changes to a namespace', () => {
+      const state = CommandState.create({ root });
+      expect(state.namespace).to.eql(undefined);
+
+      state.change({ text: 'db' });
+      expect(state.text).to.eql('db');
+      expect(state.namespace).to.eql(undefined);
+
+      state.change({ text: 'db', namespace: true });
+
+      const ns = state.namespace;
+      expect(ns && ns.command.name).to.eql('db');
+
+      const path = (ns && ns.path.map(m => m.name)) || [];
+      expect(path.join('.')).to.eql('db');
+      expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
+    });
+
+    it('changes to deep namespace (db.copy)', () => {
+      const state = CommandState.create({ root }).change({ text: 'db.copy.fast' });
+      expect(state.namespace).to.eql(undefined);
+
+      state.change({ text: state.text, namespace: true });
+      const ns = state.namespace;
+      expect(ns && ns.command.name).to.eql('fast');
+
+      const path = (ns && ns.path.map(m => m.name)) || [];
+      expect(path.join('.')).to.eql('db.copy.fast');
+      expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
+    });
+
+    it('removes namespace', () => {
+      const state = CommandState.create({ root }).change({ text: 'db', namespace: true });
+      const ns = state.namespace;
+      expect(ns && ns.command.name).to.eql('db');
+
+      state.change({ text: 'db', namespace: false });
+      expect(state.namespace).to.eql(undefined);
     });
   });
 
@@ -153,7 +181,13 @@ describe('CommandState', () => {
       state.change({ text: 'ls' });
       expect(state.command).to.eql(undefined);
     });
-  });
 
-  describe('namespace', () => {});
+    it('match from path ("db.copy.fast")', () => {
+      const state = CommandState.create({ root });
+      expect(state.command).to.eql(undefined);
+      state.change({ text: 'db.copy.fast' });
+      expect(state.text).to.eql('db.copy.fast');
+      expect(state.command && state.command.name).to.eql('fast');
+    });
+  });
 });

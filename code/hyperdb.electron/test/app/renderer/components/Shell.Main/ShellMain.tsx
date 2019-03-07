@@ -55,12 +55,12 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
   /**
    * [Methods]
    */
-  public invoke() {
-    const command = this.cli.command;
-    if (command && command.name === 'watch') {
-      this.state$.next({ view: 'WATCH' });
-    }
-  }
+  // public invoke() {
+  //   const command = this.cli.command;
+  //   if (command && command.name === 'watch') {
+  //     this.state$.next({ view: 'WATCH' });
+  //   }
+  // }
 
   /**
    * [Render]

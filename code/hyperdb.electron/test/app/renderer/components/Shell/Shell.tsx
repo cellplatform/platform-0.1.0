@@ -67,7 +67,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       const command = e.command as ICommand<t.ITestCommandProps>;
       const db = this.state.selectedDb;
       const props: t.ITestCommandProps = { db };
-      const res = await command.invoke({ props, args: e.args });
+      const args = e.args;
+      const res = await command.invoke({ props, args });
 
       console.log('INVOKE', command.toString());
       console.log('-------------------------------------------');

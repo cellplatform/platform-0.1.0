@@ -7,7 +7,7 @@ import { t } from '../common';
 import { Command } from '../Command/Command';
 
 type ICreateCommandState = {
-  root: t.ICommand;
+  root: Command;
 };
 
 /**
@@ -30,6 +30,7 @@ export class CommandState implements t.ICommandState {
       throw new Error(`A root [Command] spec must be passed to the state constructor.`);
     }
     this._.root = root;
+    this.change = this.change.bind(this);
   }
 
   /**
@@ -38,7 +39,7 @@ export class CommandState implements t.ICommandState {
   private readonly _ = {
     dispose$: new Subject(),
     events$: new Subject<t.CommandStateEvent>(),
-    root: (undefined as unknown) as t.ICommand,
+    root: (undefined as unknown) as Command,
     text: '',
     namespace: undefined as t.ICommandNamespace | undefined,
   };
@@ -97,8 +98,13 @@ export class CommandState implements t.ICommandState {
 
   public get command() {
     const args = Argv.parse(this.text);
-    const param = args.params[0];
-    return param ? this.root.children.find(c => c.name === param) : undefined;
+    const param = (args.params[0] || '').toString();
+    if (param.includes('.')) {
+      const path = `${this.root.name}.${param}`;
+      return this.root.tree.fromPath(path);
+    } else {
+      return param ? this.root.children.find(c => c.name === param) : undefined;
+    }
   }
 
   public get namespace() {
@@ -113,26 +119,35 @@ export class CommandState implements t.ICommandState {
     this._.dispose$.complete();
   }
 
-  public change: t.CommandChangeDispatcher = e => {
-    const { text } = e;
+  public change(e: t.ICommandChangeArgs) {
     const { events$ } = this._;
+    const { text } = e;
 
     // Update state.
     this._.text = text;
 
     // Set namespace if requested.
     const command = this.command;
-    if (command && e.namespace) {
+    if (
+      command &&
+      e.namespace === true &&
+      !(this.namespace && this.namespace.command.id === command.id)
+    ) {
       const id = command.id;
       const root = this.root;
-      const namespace: t.ICommandNamespace = {
+      const ns: t.ICommandNamespace = {
         command,
         get path() {
-          return Command.tree.pathTo(root, id);
+          return Command.tree.toPath(root, id).slice(1);
         },
       };
-      this._.namespace = namespace;
-      this._.text = ''; // Reset the text as we are now witin a namespace.
+      this._.namespace = ns;
+      this._.text = ''; // Reset the text as we are now witin a new namespace.
+    }
+
+    // Clear the namespace if requested.
+    if (e.namespace === false) {
+      this._.namespace = undefined;
     }
 
     // Alert listeners.
@@ -140,7 +155,10 @@ export class CommandState implements t.ICommandState {
     const invoked = props.command ? Boolean(e.invoked) : false;
     const payload = { ...props, invoked };
     events$.next({ type: 'COMMAND/state/change', payload });
-  };
+
+    // Finish up.
+    return this;
+  }
 
   public toString() {
     return this.text;

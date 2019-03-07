@@ -17,7 +17,8 @@ type ITreeMethods<T extends Command = Command> = {
   walk: (fn: tree.CommandTreeVisitor<T>) => tree.ICommandTreeVisitorResult;
   find: (fn: tree.CommandTreeFilter<T>) => T | undefined;
   parent: (root: T) => T | undefined;
-  pathTo: (target: number | string | T) => T[];
+  toPath: (target: number | string | T) => T[];
+  fromPath: (path: string) => T | undefined;
 };
 
 /**
@@ -132,7 +133,8 @@ export class Command<P extends object = any, A extends object = any> implements 
         walk: fn => tree.walk<Command>(self, fn),
         find: fn => tree.find<Command>(self, fn),
         parent: root => tree.parent<Command>(root, self),
-        pathTo: target => tree.pathTo<Command>(self, target),
+        toPath: target => tree.toPath<Command>(self, target),
+        fromPath: (path: string) => tree.fromPath<Command>(self, path),
       };
       this._.tree = methods;
     }
