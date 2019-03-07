@@ -105,4 +105,36 @@ describe('Command.tree', () => {
       expect(res && res.name).to.eql('child-2');
     });
   });
+
+  describe('parent', () => {
+    it('has no parent', () => {
+      const res = Command.tree.parent(root, root);
+      expect(res).to.eql(undefined);
+    });
+
+    it('has a parent (by name)', () => {
+      const res = Command.tree.parent(root, grandchild1.name);
+      expect(res && res.name).to.eql('child-1');
+    });
+
+    it('has a parent (by id)', () => {
+      const grandchild = root.children[0].children[1];
+      const res = Command.tree.parent(root, grandchild.id);
+      expect(res && res.name).to.eql('child-1');
+    });
+
+    it('has a parent (by command object)', () => {
+      const grandchild = root.children[0].children[1];
+      const res = Command.tree.parent(root, grandchild);
+      expect(res && res.name).to.eql('child-1');
+    });
+
+    it('instance method', () => {
+      const grandchild = root.children[0].children[1];
+      const res1 = root.tree.parent(root);
+      const res2 = grandchild.tree.parent(root);
+      expect(res1).to.eql(undefined);
+      expect(res2 && res2.name).to.eql('child-1');
+    });
+  });
 });

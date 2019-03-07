@@ -56,3 +56,35 @@ export function count(command: ICommand) {
   walk(command, () => count++);
   return count;
 }
+
+/**
+ * Finds the parent of the given child.
+ */
+export function parent<T extends ICommand = ICommand>(root: T, child: number | string | T) {
+  let result: T | undefined;
+  walk(root, e => {
+    const contains = e.command.children.some(item => isMatch(item, child));
+    if (contains) {
+      e.stop();
+      result = e.command;
+    }
+  });
+  return result;
+}
+
+/**
+ * [Helpers]
+ */
+
+function isMatch(command: ICommand, value: number | string | ICommand) {
+  if (typeof value === 'number' && command.id === value) {
+    return true;
+  }
+  if (typeof value === 'string' && command.name === value) {
+    return true;
+  }
+  if (typeof value === 'object' && value.id === command.id) {
+    return true;
+  }
+  return false;
+}

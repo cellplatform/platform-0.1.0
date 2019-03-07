@@ -16,6 +16,7 @@ type ITreeMethods = {
   count: number;
   walk: (fn: tree.CommandTreeVisitor<Command>) => tree.ICommandTreeVisitorResult;
   find: (fn: tree.CommandTreeFilter<Command>) => Command | undefined;
+  parent: (root: Command) => Command | undefined;
 };
 
 export const DEFAULT = {
@@ -137,6 +138,7 @@ export class Command<P extends object = any, A extends object = any> implements 
         },
         walk: fn => tree.walk<Command>(self, fn),
         find: fn => tree.find<Command>(self, fn),
+        parent: root => tree.parent<Command>(root, self),
       };
       this._.tree = methods;
     }
@@ -205,6 +207,13 @@ export class Command<P extends object = any, A extends object = any> implements 
       invoke,
       children,
     };
+  }
+
+  /**
+   * Converts object to string.
+   */
+  public toString() {
+    return `[Command:${this.id}:${this.name}]`;
   }
 
   /**
