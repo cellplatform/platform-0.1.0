@@ -1,4 +1,4 @@
-import { IDb, INetwork, IpcClient, DbIpcEvent } from '../types';
+import { IDb, INetwork, IpcClient, DbIpcEvent, NetworkIpcEvent } from '../types';
 export * from '../types';
 
 /**
@@ -20,7 +20,7 @@ export type IDbRenderer<D extends {} = any> = IDb<D> & {
 export type INetworkRenderer = INetwork & {};
 
 /**
- * [Events]
+ * [DB_Events]
  */
 export type DbIpcRendererClient = IpcClient<DbIpcRendererEvent>;
 export type DbIpcRendererEvent = DbIpcEvent | IDbConnectEvent | IDbDisconnectEvent;
@@ -34,3 +34,9 @@ export type IDbDisconnectEvent = {
   type: 'DB/disconnect';
   payload: { db: { dir: string; dbKey?: string; version?: string } };
 };
+
+/**
+ * [Nework_Events]
+ */
+export type NetworkIpcRendererClient = IpcClient<NetworkIpcRendererEvent>;
+export type NetworkIpcRendererEvent = NetworkIpcEvent;

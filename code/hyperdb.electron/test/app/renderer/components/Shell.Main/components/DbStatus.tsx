@@ -7,7 +7,7 @@ import { ObjectView, Hr } from '../../primitives';
 export type IDbStatusProps = {
   cli: CommandState;
   db: t.ITestRendererDb;
-  network: t.INetwork;
+  network?: t.INetwork;
   style?: GlamorValue;
 };
 export type IDbStatusState = {
@@ -38,7 +38,7 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
     const { db, network } = props;
 
     db.events$.pipe(takeUntil(unmounted$)).subscribe(e => this.updateState());
-    network.events$.pipe(takeUntil(unmounted$)).subscribe(e => this.updateState());
+    // network.events$.pipe(takeUntil(unmounted$)).subscribe(e => this.updateState());
 
     this.updateState();
   }
@@ -52,6 +52,14 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
    */
   public async updateState() {
     const { db, network } = this.props;
+
+    const swarm = network && {
+      topic: network.topic,
+      status: network.status,
+      isConnected: network.isConnected,
+      connection: network.connection,
+    };
+
     this.state$.next({
       db: {
         dir: db.dir,
@@ -60,12 +68,7 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
         discoveryKey: db.discoveryKey,
         isAuthorized: await db.isAuthorized(),
       },
-      swarm: {
-        topic: network.topic,
-        status: network.status,
-        isConnected: network.isConnected,
-        connection: network.connection,
-      },
+      swarm: swarm,
     });
   }
 

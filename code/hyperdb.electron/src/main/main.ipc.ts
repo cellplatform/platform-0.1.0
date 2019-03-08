@@ -1,6 +1,6 @@
 import { create, Db, Network } from '@platform/hyperdb';
 import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { share, filter } from 'rxjs/operators';
 
 import { value } from '../common';
 import * as t from './types';
@@ -13,7 +13,7 @@ const refs: Refs = {};
  * Start the HyperDB IPC handler's listening on the [main] process.
  */
 export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
-  const ipc = args.ipc as t.DbIpcRendererClient & t.NetworkIpcClient;
+  const ipc = args.ipc as t.DbIpcRendererClient & t.NetworkIpcRendererClient;
   const log = args.log;
   const events$ = new Subject<t.MainDbEvent>();
   log.info(`listening for ${log.yellow('hyperdb events')}`);
@@ -25,8 +25,14 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     const res = await create({ dir, dbKey, version });
     const { db, network } = res;
 
-    // Ferry DB events to clients.
+    // Ferry events to clients.
     db.events$.subscribe(e => ipc.send(e.type, e.payload));
+    // network.events$.subscribe(e => ipc.send(e.type, e.payload));
+
+    network.events$.pipe(filter(e => e.type === 'NETWORK/connection')).subscribe(e => {
+      console.log(`\nTODO 🐷   Ferry events like above with DB \n`);
+      sendNetworkUpdate({ dir });
+    });
 
     // Finish up.
     events$.next({
@@ -137,9 +143,16 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
    * and fire back the latest values.
    */
   ipc.handle<t.INetworkGetStateEvent>('NETWORK/state/get', async e => {
+    const { dir } = e.payload.db;
+    sendNetworkUpdate({ dir });
+  });
+
+  const sendNetworkUpdate = async (args: { dir: string }) => {
+    console.log('send update to', args.dir);
+
     type E = t.INetworkUpdateStateEvent;
     type P = E['payload'];
-    const { dir } = e.payload.db;
+    const { dir } = args;
     const ref = await getRef({ dir });
 
     const type: E['type'] = 'NETWORK/state/update';
@@ -158,7 +171,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       const message = `${errorPrefix}. ${err.message}`;
       log.error(message);
     }
-  });
+  };
 
   // Finish up.
   return {

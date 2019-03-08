@@ -219,6 +219,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         flex: 1,
         display: 'flex',
         position: 'relative',
+        Scroll: true,
       }),
       footer: css({
         position: 'relative',
@@ -226,7 +227,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       }),
     };
 
-    const elBody = selectedDb && selectedNetwork && (
+    const elBody = selectedDb && (
       <ShellMain
         key={selectedDb.key}
         db={selectedDb}

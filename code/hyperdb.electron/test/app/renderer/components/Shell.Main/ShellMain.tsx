@@ -11,7 +11,7 @@ import { DbWatch } from './components/DbWatch';
 export type IShellMainProps = {
   cli: CommandState;
   db: t.ITestRendererDb;
-  network: t.INetwork;
+  network?: t.INetwork;
   style?: GlamorValue;
   onFocusCommandPrompt?: (e: {}) => void;
 };
