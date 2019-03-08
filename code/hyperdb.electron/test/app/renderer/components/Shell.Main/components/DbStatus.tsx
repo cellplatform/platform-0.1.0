@@ -36,7 +36,6 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
     this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e));
 
     const { db, network } = props;
-
     db.events$.pipe(takeUntil(unmounted$)).subscribe(e => this.updateState());
     // network.events$.pipe(takeUntil(unmounted$)).subscribe(e => this.updateState());
 
