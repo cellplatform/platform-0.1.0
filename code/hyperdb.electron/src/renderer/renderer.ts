@@ -1,5 +1,5 @@
 import * as t from '../types';
-import { RendererDb } from './RendererDb';
+import { RendererDb } from './Db.renderer';
 import { take } from 'rxjs/operators';
 
 export * from '../types';
