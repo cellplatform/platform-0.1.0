@@ -33,18 +33,10 @@ export async function updateWatch(args: {
   removeKeys?: string[];
 }) {
   const { db, addKeys = [], removeKeys = [] } = args;
-  if (addKeys.length === 0 && removeKeys.length === 0) {
-    return;
-  }
-
   const current = (await db.get('.sys/watch')).value || [];
   const next = [...new Set([...current, ...addKeys])]
     .map(item => item.toString())
     .filter(key => !removeKeys.includes(key));
-
-  if (!R.equals(current, next)) {
-    await db.put('.sys/watch', next);
-  }
-
+  await db.put('.sys/watch', next);
   return next;
 }
