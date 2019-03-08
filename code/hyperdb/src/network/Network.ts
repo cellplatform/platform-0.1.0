@@ -92,13 +92,16 @@ export class Network {
    * [Methods]
    */
   public dispose() {
-    this.disconnect();
-    this._.events$.complete();
-    this._.dispose$.next();
-    this._.dispose$.complete();
+    if (!this.isDisposed) {
+      this.disconnect();
+      this._.events$.complete();
+      this._.dispose$.next();
+      this._.dispose$.complete();
+    }
   }
 
   public isHolePunchable() {
+    this.throwIfDisposed('isHolePunchable');
     return new Promise<boolean>(resolve => {
       this._.net.discovery.holepunchable((err: Error, yes: boolean) => {
         resolve(yes && !err);
@@ -110,6 +113,7 @@ export class Network {
    * Connects to the swarm.
    */
   public connect() {
+    this.throwIfDisposed('connect');
     const { id, net } = this._;
 
     if (this._.connecting) {
@@ -145,6 +149,7 @@ export class Network {
    * Disconnects from the swarm.
    */
   public disconnect() {
+    this.throwIfDisposed('disconnect');
     this._.connecting = undefined;
     this._.connection = undefined;
     this._.net.leave(this._.id);
@@ -155,10 +160,12 @@ export class Network {
   }
 
   /**
-   * INTERNAL
+   * [INTERNAL]
    */
   private onConnection = (socket: Socket, info: any) => {
     const { db } = this._;
+
+    // console.log('info.remoteUserData', info.peer.remoteUserData);
 
     // Convert info into storage object.
     const peer = info.peer ? { ...info.peer, topic: info.peer.topic.toString('hex') } : undefined;
@@ -168,6 +175,9 @@ export class Network {
         : undefined;
     }
     const connection: t.INetworkConnectionInfo = { ...info, peer };
+
+    console.log('peer', peer);
+
     this._.connection = connection;
 
     // Update state.
@@ -195,6 +205,13 @@ export class Network {
         type: 'NETWORK/connection',
         payload: { status, isConnected, db, connection },
       });
+    }
+  }
+
+  private throwIfDisposed(action: string) {
+    if (this.isDisposed) {
+      const msg = `Cannot '${action}' because the [Swarm] has been disposed.`;
+      throw new Error(msg);
     }
   }
 }

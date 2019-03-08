@@ -1,11 +1,9 @@
-import { value, time } from './common';
+import { value } from './common';
 import { Db } from './db';
-import { Swarm } from './swarm';
-
-export { Db, Swarm };
-export * from './types';
-
 import { Network } from './network';
+
+export { Db, Network };
+export * from './types';
 
 /**
  * Create new HyperDB and connect it to the network.

@@ -1,11 +1,11 @@
-import { create, Db, Swarm } from '@platform/hyperdb';
+import { create, Db, Network } from '@platform/hyperdb';
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { value } from '../common';
 import * as t from './types';
 
-type Ref = { db: Db; swarm: Swarm; dir: string; version?: string };
+type Ref = { db: Db; network: Network; dir: string; version?: string };
 type Refs = { [key: string]: Ref };
 const refs: Refs = {};
 
@@ -23,7 +23,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
 
     // Construct the DB.
     const res = await create({ dir, dbKey, version });
-    const { db, swarm } = res;
+    const { db, network } = res;
 
     // Ferry DB events to clients.
     db.events$.subscribe(e => ipc.send(e.type, e.payload));
@@ -39,7 +39,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
         version,
       },
     });
-    const ref: Ref = { db, swarm, dir };
+    const ref: Ref = { db, network, dir };
     logCreated(log, ref);
     return ref;
   };
@@ -97,8 +97,8 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   ipc.handle<t.IDbConnectEvent>('DB/connect', async e => {
     const { dir, dbKey, version } = e.payload.db;
     const ref = await getOrCreateDb({ dir, dbKey, version });
-    if (!ref.swarm.isActive) {
-      await ref.swarm.join();
+    if (!ref.network.isConnected) {
+      await ref.network.connect();
       logConnection(log, ref);
     }
   });
@@ -109,8 +109,8 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   ipc.handle<t.IDbDisconnectEvent>('DB/disconnect', async e => {
     const { dir, dbKey, version } = e.payload.db;
     const ref = await getOrCreateDb({ dir, dbKey, version });
-    if (ref.swarm.isActive) {
-      await ref.swarm.leave();
+    if (ref.network.isConnected) {
+      await ref.network.disconnect();
       logConnection(log, ref);
     }
   });
@@ -140,7 +140,7 @@ const logCreated = (log: t.ILog, ref: Ref) => {
 };
 
 const logConnection = (log: t.ILog, ref: Ref) => {
-  const action = ref.swarm.isActive ? 'connected' : 'disconnected';
+  const action = ref.network.isConnected ? 'connected' : 'disconnected';
   log.info(`Database ${log.yellow(action)} from swarm`);
   log.info.gray(`- storage:  ${ref.dir}`);
   log.info.gray(`- key:      ${ref.db.key}`);
