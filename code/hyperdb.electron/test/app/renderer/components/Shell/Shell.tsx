@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
+import { map, debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
 
 import * as cli from '../../cli';
 import {
@@ -100,9 +100,19 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     commandEvents$.pipe(filter(e => e.type === 'CLI/db/new')).subscribe(e => {
       this.handleNew();
     });
-    commandEvents$.pipe(filter(e => e.type === 'CLI/db/join')).subscribe(e => {
-      this.handleJoinStart();
-    });
+    commandEvents$
+      .pipe(
+        filter(e => e.type === 'CLI/db/join'),
+        map(e => e as t.ICliJoinDbEvent),
+      )
+      .subscribe(e => {
+        const { dbKey } = e.payload;
+        if (dbKey) {
+          this.handleJoinComplete({ dbKey });
+        } else {
+          this.handleJoinStart();
+        }
+      });
   }
 
   public componentWillUnmount() {

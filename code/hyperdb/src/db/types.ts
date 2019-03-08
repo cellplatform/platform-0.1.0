@@ -40,6 +40,8 @@ export type IDbMethods<D extends {} = any> = {
   delete<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   watch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
   unwatch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
+  isAuthorized(peerKey?: string | Buffer): Promise<boolean>;
+  authorize(peerKey: string | Buffer): Promise<void>;
 };
 export type IDb<D extends {} = any> = IDbProps &
   IDbMethods<D> & {

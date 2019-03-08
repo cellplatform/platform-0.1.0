@@ -138,11 +138,12 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * Checks whether a key is authorized to write to the database.
    */
-  public isAuthorized(peerKey?: Buffer) {
+  public isAuthorized(peerKey?: Buffer | string) {
     return new Promise<boolean>((resolve, reject) => {
-      if (!(peerKey instanceof Buffer)) {
+      if (!peerKey) {
         resolve(false);
       }
+      peerKey = typeof peerKey === 'string' ? Buffer.from(peerKey, 'hex') : peerKey;
       this._.db.authorized(peerKey, (err: Error, result: boolean) => {
         return err ? this.fireError(err, reject) : resolve(result);
       });
@@ -152,9 +153,10 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * Authorizes a peer to write to the database.
    */
-  public async authorize(peerKey: Buffer) {
+  public async authorize(peerKey: Buffer | string) {
     this.throwIfDisposed('authorize');
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
+      peerKey = typeof peerKey === 'string' ? Buffer.from(peerKey, 'hex') : peerKey;
       this._.db.authorize(peerKey, (err: Error) => {
         return err ? this.fireError(err, reject) : resolve();
       });

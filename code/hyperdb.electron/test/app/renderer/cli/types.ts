@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { ITestRendererDb } from '../../types';
 
-export {ITestRendererDb}
+export { ITestRendererDb };
 
 export type ITestCommandProps = {
   db?: ITestRendererDb;
@@ -23,5 +23,5 @@ export type ICliNewDbEvent = {
 
 export type ICliJoinDbEvent = {
   type: 'CLI/db/join';
-  payload: {};
+  payload: { dbKey?: string };
 };

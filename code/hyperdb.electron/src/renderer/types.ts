@@ -11,6 +11,7 @@ export type IRendererDb<D extends {} = any> = IDb<D> & {
   dispose(): void;
   connect(): Promise<void>;
   disconnect(): Promise<void>;
+  authorize(peerKey: string): Promise<void>;
 };
 
 /**

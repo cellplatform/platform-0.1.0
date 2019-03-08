@@ -165,8 +165,6 @@ export class Network {
   private onConnection = (socket: Socket, info: any) => {
     const { db } = this._;
 
-    // console.log('info.remoteUserData', info.peer.remoteUserData);
-
     // Convert info into storage object.
     const peer = info.peer ? { ...info.peer, topic: info.peer.topic.toString('hex') } : undefined;
     if (peer) {
@@ -175,9 +173,6 @@ export class Network {
         : undefined;
     }
     const connection: t.INetworkConnectionInfo = { ...info, peer };
-
-    console.log('peer', peer);
-
     this._.connection = connection;
 
     // Update state.

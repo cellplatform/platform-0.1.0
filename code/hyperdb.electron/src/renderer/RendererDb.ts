@@ -160,6 +160,14 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
     return this.invoke('unwatch', pattern);
   }
 
+  public async authorize(peerKey: string) {
+    return this.invoke('authorize', [peerKey]);
+  }
+
+  public async isAuthorized(peerKey: string) {
+    return this.invoke('authorize', [peerKey]);
+  }
+
   public async connect() {
     const { dir, dbKey, version } = this._;
     const db = { dir, dbKey, version };
