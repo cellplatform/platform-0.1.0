@@ -1,7 +1,7 @@
 import { IStoreClient } from '@platform/electron/lib/types';
-import { IDbRenderer } from '../../src/types';
+import { IDbRenderer } from '@platform/hyperdb.electron/lib/types';
 
-export * from '../../src/types';
+export * from '@platform/hyperdb.electron/lib/types';
 export * from './renderer/cli/types';
 
 /**
