@@ -1,3 +1,4 @@
+import { shell } from 'electron';
 import { Command } from '../common';
 import * as t from './types';
 
@@ -25,4 +26,8 @@ export const db = Command.create<P>('db')
     if (typeof peerKey === 'string') {
       await db.authorize(peerKey);
     }
+  })
+  .add('dir', async e => {
+    const { db } = e.props;
+    shell.showItemInFolder(db.dir);
   });

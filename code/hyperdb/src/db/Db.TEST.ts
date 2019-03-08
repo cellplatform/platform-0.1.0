@@ -11,6 +11,11 @@ describe('Db', () => {
   beforeEach(async () => fs.remove(dir));
 
   describe('properties', () => {
+    it('exposes dir as property', async () => {
+      const db = await Db.create({ dir });
+      expect(db.dir).to.eql(dir);
+    });
+
     it('exposes keys as string', async () => {
       const db = await Db.create({ dir });
       expect(typeof db.key).to.eql('string');

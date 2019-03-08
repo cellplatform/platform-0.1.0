@@ -64,8 +64,8 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     const { dir, dbKey, version } = e.payload.db;
     const { db } = await getOrCreateDb({ dir, dbKey, version });
     try {
-      const { key, discoveryKey, localKey, watching, isDisposed } = db;
-      const props: t.IDbProps = { key, discoveryKey, localKey, watching, isDisposed };
+      const { dir, key, discoveryKey, localKey, watching, isDisposed } = db;
+      const props: t.IDbProps = { dir, key, discoveryKey, localKey, watching, isDisposed };
       const payload: P = { db: { dir }, props };
       ipc.send<E>('DB/state/update', payload);
     } catch (err) {

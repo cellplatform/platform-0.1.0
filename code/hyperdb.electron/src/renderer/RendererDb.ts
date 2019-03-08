@@ -98,6 +98,10 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
   /**
    * [Properties]
    */
+  public get dir() {
+    return this.getProp('dir');
+  }
+
   public get key() {
     return this.getProp('key');
   }

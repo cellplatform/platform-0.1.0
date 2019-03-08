@@ -26,6 +26,7 @@ export type IDbValue<K, V> = {
  * [Database]
  */
 export type IDbProps = {
+  readonly dir: string;
   readonly key: string;
   readonly discoveryKey: string;
   readonly localKey: string;

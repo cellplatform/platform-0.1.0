@@ -11,6 +11,7 @@ export type IDbStatusProps = {
 };
 export type IDbStatusState = {
   db?: {
+    dir: string;
     key: string;
     localKey: string;
     discoveryKey: string;
@@ -46,6 +47,7 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
     const { db } = this.props;
     this.state$.next({
       db: {
+        dir: db.dir,
         key: db.key,
         localKey: db.localKey,
         discoveryKey: db.discoveryKey,
