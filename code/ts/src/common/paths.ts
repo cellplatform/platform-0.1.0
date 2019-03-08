@@ -25,21 +25,20 @@ export async function closestParentOf(
 /**
  * Reads out a TS config file for the given dir.
  */
-export async function tsconfig(cwd: string = '.') {
-  const file = 'tsconfig.json';
+export async function tsconfig(cwd: string, filename = 'tsconfig.json') {
   try {
-    const dir = await closestParentOf(file, cwd);
+    filename = filename.endsWith('.json') ? filename : `${filename}.json`;
+    const dir = await closestParentOf(filename, cwd);
     if (!dir) {
       return { success: false };
     }
 
-    const path = fs.join(dir, file);
+    const path = fs.join(dir, filename);
     const data = await fs.file.loadAndParse<ITypescriptConfig>(path);
-
     const outDir = (data && data.compilerOptions && data.compilerOptions.outDir) || undefined;
 
-    return { success: true, dir, path, data, outDir };
+    return { success: true, filename, dir, path, data, outDir };
   } catch (error) {
-    throw new Error(`Failed to load '${file}' file. ${error.message}`);
+    throw new Error(`Failed to load '${filename}' file. ${error.message}`);
   }
 }

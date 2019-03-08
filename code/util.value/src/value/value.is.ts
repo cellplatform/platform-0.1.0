@@ -44,6 +44,24 @@ export function isBoolString(value?: string) {
 }
 
 /**
+ * Check whether a string is likely to be a date.
+ * Example:
+ *
+ *    `2019-03-07T21:07:33.062Z`
+ *
+ */
+export function isDateString(value?: any) {
+  if (!value || typeof value !== 'string') {
+    return false;
+  }
+  const text = value;
+  if (!text.endsWith('Z') && isNaN(text.charAt[0])) {
+    return false;
+  }
+  return text.includes('-') && text.includes('T') && text.includes(':') && text.includes('.');
+}
+
+/**
  * A safe way to test any value as to wheather is is 'blank'
  * meaning it can be either:
  *   - null

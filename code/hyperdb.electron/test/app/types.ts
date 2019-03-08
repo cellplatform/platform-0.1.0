@@ -2,6 +2,7 @@ import { IStoreClient } from '@platform/electron/lib/types';
 import { IRendererDb } from '../../src/types';
 
 export * from '../../src/types';
+export * from './renderer/cli/types';
 
 /**
  * Store
@@ -18,5 +19,7 @@ export type ITestStoreSettings = {
  */
 export type ITestDbData = {
   ['.sys/dbname']: string;
+  ['.sys/watch']: string[];
 };
 export type ITestRendererDb = IRendererDb<ITestDbData>;
+

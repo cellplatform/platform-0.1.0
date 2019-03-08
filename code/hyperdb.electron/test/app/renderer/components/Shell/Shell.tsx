@@ -1,13 +1,24 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
 
-import { css, GlamorValue, renderer, t } from '../../common';
-import { DbHeader } from '../Db.Header';
+import * as cli from '../../cli';
+import {
+  COLORS,
+  CommandState,
+  css,
+  GlamorValue,
+  renderer,
+  t,
+  str,
+  ICommand,
+  Command,
+} from '../../common';
+import { CommandPrompt } from '../cli.CommandPrompt';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
-import { ObjectView } from '../primitives';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
+import { ShellMain } from '../Shell.Main';
 
 export type IShellProps = {
   style?: GlamorValue;
@@ -26,6 +37,10 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public context!: renderer.ReactContext;
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IShellState>>();
+  private cli = CommandState.create({ root: cli.root });
+  private commandEvents$ = new Subject<cli.CliEvent>();
+  private commandPrompt: CommandPrompt | undefined;
+  private commandPromptRef = (ref: CommandPrompt) => (this.commandPrompt = ref);
 
   /**
    * [Lifecycle]
@@ -33,9 +48,13 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   public componentDidMount() {
     const { ipc } = this.context;
+    const unmounted$ = this.unmounted$;
 
-    const store$ = this.store.change$.pipe(takeUntil(this.unmounted$));
-    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const store$ = this.store.change$.pipe(takeUntil(unmounted$));
+    const state$ = this.state$.pipe(takeUntil(unmounted$));
+    const cli$ = this.cli.change$.pipe(takeUntil(unmounted$));
+    const commandEvents$ = this.commandEvents$.pipe(takeUntil(unmounted$));
+
     state$.subscribe(e => this.setState(e));
     store$.subscribe(e => this.updateState());
     this.updateState();
@@ -52,6 +71,38 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         const selectedDb = dir ? await renderer.getOrCreate({ ipc, dir }) : undefined;
         this.state$.next({ selectedDb });
       });
+
+    // Redraw screen each time the CLI state changes.
+    cli$.subscribe(e => this.forceUpdate());
+
+    cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
+      const command = e.props.command as ICommand<t.ITestCommandProps>;
+      const db = this.state.selectedDb;
+      const props: t.ITestCommandProps = { db, events$: this.commandEvents$ };
+      const args = e.props.args;
+
+      // Step into namespace (if required).
+      if (!command.handler && command.children.length > 0) {
+        this.cli.change({ text: this.cli.text, namespace: true });
+      }
+
+      // Invoke handler.
+      if (command.handler) {
+        console.log('INVOKE', command.toString());
+        const res = await command.invoke({ props, args });
+        console.log('Shell // invoke response // props', res.props);
+      }
+    });
+
+    /**
+     * Handle callbacks from within invoking commands.
+     */
+    commandEvents$.pipe(filter(e => e.type === 'CLI/db/new')).subscribe(e => {
+      this.handleNew();
+    });
+    commandEvents$.pipe(filter(e => e.type === 'CLI/db/join')).subscribe(e => {
+      this.handleJoinStart();
+    });
   }
 
   public componentWillUnmount() {
@@ -75,6 +126,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   /**
    * [Methods]
    */
+
   public async updateState() {
     const store = await this.store.read();
     this.state$.next({ store });
@@ -95,12 +147,18 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
     try {
       // Create the database.
-      const res = await renderer.getOrCreate({ ipc, dir, dbKey });
+      await renderer.getOrCreate({ ipc, dir, dbKey });
       this.state$.next({ selected: name });
     } catch (error) {
       log.error(error);
     }
   }
+
+  private focusCommandPrompt = () => {
+    if (this.commandPrompt) {
+      this.commandPrompt.focus();
+    }
+  };
 
   /**
    * [Render]
@@ -108,9 +166,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   public render() {
     const styles = {
-      base: css({
-        Absolute: 0,
-      }),
+      base: css({ Absolute: 0 }),
       body: css({
         Absolute: 0,
         Flex: 'horizontal',
@@ -118,11 +174,12 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       index: css({
         position: 'relative',
         width: 180,
+        minWidth: 140,
       }),
       main: css({
         position: 'relative',
-        padding: 20,
         flex: 1,
+        display: 'flex',
       }),
     };
 
@@ -145,14 +202,46 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   private renderMain() {
     const { selected, store, selectedDb } = this.state;
-    console.log('selected', selected);
     const db = selectedDb ? { key: selectedDb.key, localKey: selectedDb.localKey } : {};
     const data = { selected, store, db };
-    const elHeader = selectedDb && <DbHeader key={selectedDb.key} db={selectedDb} />;
+
+    const styles = {
+      base: css({
+        flex: 1,
+        Flex: 'vertical',
+      }),
+      body: css({
+        flex: 1,
+        display: 'flex',
+        position: 'relative',
+      }),
+      footer: css({
+        position: 'relative',
+        backgroundColor: COLORS.DARK,
+      }),
+    };
+
+    const elBody = selectedDb && (
+      <ShellMain
+        key={selectedDb.key}
+        db={selectedDb}
+        cli={this.cli}
+        onFocusCommandPrompt={this.focusCommandPrompt}
+      />
+    );
+
     return (
-      <div>
-        {elHeader}
-        <ObjectView data={data} expandLevel={2} />
+      <div {...styles.base}>
+        <div {...styles.body}>{elBody}</div>
+        <div {...styles.footer}>
+          <CommandPrompt
+            ref={this.commandPromptRef}
+            text={this.cli.text}
+            namespace={this.cli.namespace}
+            onChange={this.cli.change}
+            onAutoComplete={this.onAutoComplete}
+          />
+        </div>
       </div>
     );
   }
@@ -190,5 +279,17 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   private clearDialog = () => {
     this.state$.next({ dialog: undefined });
+  };
+
+  private onAutoComplete = () => {
+    const cli = this.cli;
+    if (cli.command) {
+      return;
+    }
+    const root = cli.namespace ? cli.namespace.command : cli.root;
+    const match = root.children.find(c => str.fuzzy.isMatch(cli.text, c.name));
+    if (match) {
+      cli.change({ text: match.name });
+    }
   };
 }

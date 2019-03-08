@@ -1,4 +1,3 @@
-import { R } from '../common';
 import { isBlank } from './value.is';
 
 /**
@@ -52,12 +51,12 @@ export function toBool(value: any, defaultValue?: any) {
  * @return the original or converted value.
  */
 export function toType<T>(value: any) {
-  if (!R.is(String, value)) {
+  if (!(typeof value === 'string')) {
     return value as T;
   }
-  const lowerCase = value.toLowerCase().trim();
 
   // Boolean.
+  const lowerCase = value.toLowerCase().trim();
   if (lowerCase === 'true') {
     return true;
   }
@@ -67,10 +66,10 @@ export function toType<T>(value: any) {
 
   // Number.
   const num = toNumber(lowerCase);
-  if (R.is(Number, num)) {
-    return num as T;
+  if (typeof num === 'number') {
+    return num;
   }
 
-  // Originanl type.
-  return value as T;
+  // Original type.
+  return (value as unknown) as T;
 }

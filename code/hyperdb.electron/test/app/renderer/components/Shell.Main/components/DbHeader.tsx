@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, IMAGES, t } from '../../common';
-import { TextInput, TextInputChangeEvent } from '../primitives';
+import { color, COLORS, css, GlamorValue, IMAGES, t, constants } from '../../../common';
+import { TextInput, TextInputChangeEvent } from '../../primitives';
+
+const { MONOSPACE } = constants.FONT;
 
 export type IDbHeaderProps = {
   db: t.ITestRendererDb;
@@ -27,7 +29,7 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
     const { db } = this.props;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     db.watch$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.updateState());
-    db.watch();
+    db.watch<t.ITestDbData>('.sys/dbname');
     this.updateState();
   }
 
@@ -62,7 +64,6 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
     const styles = {
       base: css({
         boxSizing: 'border-box',
-        marginBottom: 40,
         Flex: 'horizontal-start-center',
       }),
       iconOuter: css({
@@ -84,6 +85,7 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
         fontSize: 7,
         fontWeight: 'bold',
         textAlign: 'center',
+        userSelect: 'none',
       }),
       body: css({
         flex: 1,
@@ -94,14 +96,16 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
         // borderBottom: `solid 1px ${color.format(-0.1)}`,
       }),
       keyOuter: css({
-        fontFamily: 'monospace',
+        fontFamily: MONOSPACE.FAMILY,
         fontSize: 11,
         fontWeight: 'bold',
         color: color.format(-0.2),
         marginTop: 3,
+        userSelect: 'none',
       }),
       key: css({
         color: isPrimary ? COLORS.CLI.PURPLE : COLORS.CLI.CYAN,
+        userSelect: 'text',
       }),
     };
     const elPublicKey = <span {...styles.key}>{db.key}</span>;

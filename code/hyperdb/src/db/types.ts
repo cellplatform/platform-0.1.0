@@ -38,8 +38,8 @@ export type IDbMethods<D extends {} = any> = {
   get<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   put<K extends keyof D>(key: K, value: D[K]): Promise<IDbValue<K, D[K]>>;
   delete<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
-  watch(...pattern: string[]): Promise<void>;
-  unwatch(...pattern: string[]): Promise<void>;
+  watch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
+  unwatch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
 };
 export type IDb<D extends {} = any> = IDbProps &
   IDbMethods<D> & {

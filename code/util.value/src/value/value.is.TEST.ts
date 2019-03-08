@@ -37,6 +37,30 @@ describe('value.isBoolString', () => {
   });
 });
 
+describe('value.isDateString', () => {
+  const test = (expected: boolean, input?: any) => {
+    const res = value.isDateString(input);
+    expect(res).to.eql(expected, `${input} value is date: ${expected}`);
+  };
+
+  it('is a date', () => {
+    test(true, '2019-03-07T21:07:33.062Z');
+  });
+
+  it('is not a date', () => {
+    test(false);
+    test(false, undefined);
+    test(false, null);
+    test(false, '');
+    test(false, '  ');
+    test(false, 123);
+    test(false, new Date()); // NB: Not a date [string].
+    test(false, {});
+    test(false, { date: '2019-03-07T21:07:33.062Z' });
+    test(false, '  2019-03-07T21:07:33.062Z  '); // NB: whitespace makes date invalid for parsing.
+  });
+});
+
 describe('value.isBlank', () => {
   describe('blank', () => {
     it('is blank (nothing)', () => {
