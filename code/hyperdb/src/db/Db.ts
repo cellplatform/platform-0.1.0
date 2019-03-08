@@ -240,11 +240,14 @@ export class Db<D extends object = any> implements t.IDb<D> {
       this._.watchers[key] = watcher;
     };
 
-    console.log(`\nTODO 🐷   don't add watcher more than once for same pattern \n`);
-
     patterns.forEach(item => {
       const pattern = item.toString();
+      if (this.watching.includes(pattern)) {
+        return; // Already watching the given pattern.
+      }
+
       const match = pattern === '*' ? '' : pattern; // NB: wildcard is matched as empty-string.
+
       const watcher = this._.db.watch(match, () => {
         watcher._nodes.forEach(async ({ key, value, deleted }: any) => {
           const version = await this.version();
@@ -258,6 +261,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
           });
         });
       });
+
       storeRef(pattern, watcher);
     });
   }
