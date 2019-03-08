@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 import { Db } from './Db';
 import { fs } from '@platform/fs';
+import * as t from '../types';
+import { time } from '@platform/util.value';
 
 const dir = 'tmp/db';
 after(async () => fs.remove('tmp'));
@@ -73,5 +75,153 @@ describe('Db', () => {
     });
   });
 
-  describe('watch', () => {});
+  describe('watch', () => {
+    it('watching (nothing)', async () => {
+      const db = await Db.create({ dir });
+      expect(db.watching).to.eql([]);
+    });
+
+    it('watches a specific keys', async () => {
+      const db = await Db.create({ dir });
+      expect(db.watching).to.eql([]);
+
+      await db.watch('foo', 'bar');
+      expect(db.watching).to.eql(['foo', 'bar']);
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      await db.put('foo', 123);
+      await db.put('bar', 456);
+      await db.put('baz', 789); // Not watched.
+
+      expect(events.length).to.eql(2);
+      expect(events[0].db.key).to.eql(db.key);
+      expect(events[0].pattern).to.eql('foo');
+      expect(events[0].key).to.eql('foo');
+      expect(events[0].value).to.eql(123);
+
+      expect(events[1].db.key).to.eql(db.key);
+      expect(events[1].pattern).to.eql('bar');
+      expect(events[1].key).to.eql('bar');
+      expect(events[1].value).to.eql(456);
+    });
+
+    it('watches a path of keys ("foo" => "foo/bar" | "foo/bar/baz")', async () => {
+      const db = await Db.create({ dir });
+      expect(db.watching).to.eql([]);
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      await db.watch('foo');
+      await db.put('foo/bar', 'bar');
+      await db.put('foo/bar/baz', 'baz');
+      await db.put('bar', 123); // No match.
+
+      await time.wait(0);
+      expect(events.length).to.eql(2);
+      expect(events[0].pattern).to.eql('foo');
+      expect(events[0].key).to.eql('foo/bar');
+      expect(events[0].value).to.eql('bar');
+
+      expect(events[1].pattern).to.eql('foo');
+      expect(events[1].key).to.eql('foo/bar/baz');
+      expect(events[1].value).to.eql('baz');
+    });
+
+    it('watches a path of keys ("foo/bar" => "foo/bar/baz")', async () => {
+      const db = await Db.create({ dir });
+      expect(db.watching).to.eql([]);
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      await db.watch('foo/bar');
+      await db.put('foo/bar', 'bar');
+      await db.put('foo/bar/baz', 'baz');
+      await db.put('bar', 123); // No match.
+      await db.put('foo', 456); // No match.
+      await db.put('foo/zoo', 789); // No match.
+
+      await time.wait(0);
+      expect(events.length).to.eql(2);
+      expect(events[0].pattern).to.eql('foo/bar');
+      expect(events[0].key).to.eql('foo/bar');
+      expect(events[0].value).to.eql('bar');
+
+      expect(events[1].pattern).to.eql('foo/bar');
+      expect(events[1].key).to.eql('foo/bar/baz');
+      expect(events[1].value).to.eql('baz');
+    });
+
+    it('watches all keys', async () => {
+      const db = await Db.create({ dir });
+      await db.watch();
+      await db.watch();
+      expect(db.watching).to.eql(['*']);
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      await db.put('foo/bar/baz', 'baz');
+      await db.put('foo', null);
+
+      await time.wait(0);
+      expect(events.length).to.eql(2);
+      expect(events[0].value).to.eql('baz');
+      expect(events[1].value).to.eql(null);
+    });
+
+    it('returns all value data-types', async () => {
+      const db = await Db.create({ dir });
+      await db.watch();
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      const now = new Date();
+      await db.put('foo', null);
+      await db.put('foo', undefined);
+      await db.put('foo', 1.23);
+      await db.put('foo', true);
+      await db.put('foo', false);
+      await db.put('foo', 'text');
+      await db.put('foo', []);
+      await db.put('foo', [1, 2, 3]);
+      await db.put('foo', { foo: 123 });
+      await db.put('foo', now);
+
+      await time.wait(0);
+      expect(events[0].value).to.eql(null);
+      expect(events[1].value).to.eql(undefined);
+      expect(events[2].value).to.eql(1.23);
+      expect(events[3].value).to.eql(true);
+      expect(events[4].value).to.eql(false);
+      expect(events[5].value).to.eql('text');
+      expect(events[6].value).to.eql([]);
+      expect(events[7].value).to.eql([1, 2, 3]);
+      expect(events[8].value).to.eql({ foo: 123 });
+      expect(events[9].value).to.eql(now);
+    });
+
+    it('does not watch more than once', async () => {
+      const db = await Db.create({ dir });
+      expect(db.watching).to.eql([]);
+
+      await db.watch();
+      await db.watch();
+      await db.watch();
+      expect(db.watching).to.eql(['*']);
+
+      await db.watch('foo');
+      await db.watch('foo');
+      await db.watch('foo');
+      expect(db.watching).to.eql(['*', 'foo']);
+    });
+  });
+
+  describe('unwatch', () => {
+    it.skip('unwatches', () => {});
+  });
 });

@@ -250,9 +250,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
           const version = await this.version();
           this.next<t.IDbWatchEvent>('DB/watch', {
             db: { key: this.key },
+            pattern,
             key,
             value: parseValue(value),
-            pattern,
             deleted,
             version,
           });
