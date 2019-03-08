@@ -40,7 +40,9 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       },
     });
     const ref: Ref = { db, network, dir };
-    logCreated(log, ref);
+
+    const isAuthorized = await db.isAuthorized(db.localKey);
+    logCreated(log, ref, isAuthorized);
     return ref;
   };
 
@@ -125,17 +127,20 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
  * [HELPERS]
  */
 
-const logCreated = (log: t.ILog, ref: Ref) => {
-  const key = ref.db.key;
-  const localKey = ref.db.localKey;
+const logCreated = (log: t.ILog, ref: Ref, isAuthorized: boolean) => {
+  const db = ref.db;
+  const key = db.key;
+  const localKey = db.localKey;
   const isExternal = key !== localKey;
-  const external = isExternal ? ` (${log.magenta('external')})` : ` (${log.yellow('master')})`;
+  const external = isExternal ? ` (${log.magenta('peer')})` : ` (${log.yellow('primary')})`;
+  const auth = isAuthorized ? 'writer' : 'reader';
 
   log.info(`Database ${log.yellow('created')}`);
-  log.info.gray(`- storage:  ${ref.dir}`);
-  log.info.gray(`- key:      ${log.cyan(key)}${external}`);
-  log.info.gray(`- localKey: ${isExternal ? localKey : log.cyan(localKey)}`);
-  log.info.gray(`- version:  ${ref.version ? ref.version : '(latest)'}`);
+  log.info.gray(`- storage:   ${ref.dir}`);
+  log.info.gray(`- key:       ${log.cyan(key)}${external}`);
+  log.info.gray(`- localKey:  ${isExternal ? localKey : log.cyan(localKey)}`);
+  log.info.gray(`- auth:      ${auth}`);
+  log.info.gray(`- version:   ${ref.version ? ref.version : 'latest'}`);
   log.info();
 };
 
