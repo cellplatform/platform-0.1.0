@@ -1,4 +1,5 @@
 import { Command } from '../common';
+import { updateWatch } from './cmd.watch';
 import * as t from './types';
 
 type P = t.ITestCommandProps;
@@ -11,6 +12,6 @@ export const put = Command.create<P>('put', async e => {
   const [key, value] = e.args.params;
   if (key) {
     await db.put(key as any, value);
-    await db.watch(key as any);
+    await updateWatch({ db, keys: [key.toString()] });
   }
 });

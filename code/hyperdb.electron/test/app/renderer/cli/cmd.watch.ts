@@ -8,7 +8,15 @@ type P = t.ITestCommandProps;
  */
 export const watch = Command.create<P>('watch', async e => {
   const { db } = e.props;
-  const keys = e.args.params;
+  const keys = e.args.params.map(p => p.toString());
+  return updateWatch({ db, keys });
+});
+
+/**
+ *
+ */
+export async function updateWatch(args: { db: t.ITestRendererDb; keys: string[] }) {
+  const { db, keys } = args;
   if (keys.length === 0) {
     return;
   }
@@ -20,4 +28,4 @@ export const watch = Command.create<P>('watch', async e => {
   }
 
   return next;
-});
+}

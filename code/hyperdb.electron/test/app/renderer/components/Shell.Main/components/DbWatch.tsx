@@ -4,6 +4,8 @@ import { takeUntil, filter } from 'rxjs/operators';
 import { css, color, GlamorValue, CommandState, t } from '../../../common';
 import { ObjectView } from '../../primitives';
 
+const SYS_WATCH = '.sys/watch';
+
 export type IDbWatchProps = {
   cli: CommandState;
   db: t.ITestRendererDb;
@@ -31,13 +33,12 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
     this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e as IDbWatchState));
 
     // Update the component when the system-watch configuration changes.
-    const SYS_WATCH = '.sys/watch';
     watch$.pipe(filter(e => e.pattern === SYS_WATCH)).subscribe(e => this.updateWatchedKeys());
     this.updateWatchedKeys();
     db.watch(SYS_WATCH);
 
     // Update screen when watched keys change.
-    watch$.pipe(filter(e => e.pattern !== SYS_WATCH)).subscribe(e => {
+    watch$.pipe(filter(e => !e.key.startsWith('.sys/'))).subscribe(e => {
       const values = { ...this.state.values, [e.key]: e.value };
       this.state$.next({ values });
     });
@@ -45,6 +46,17 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
 
   public componentWillUnmount() {
     this.unmounted$.next();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get values() {
+    const values = { ...this.state.values };
+    Object.keys(values)
+      .filter(key => !Boolean(key))
+      .forEach(key => delete values[key]);
+    return values;
   }
 
   /**
@@ -76,9 +88,13 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
 
     // Store values in the component state.
     let values = { ...(this.state.values || {}) };
-    items.forEach(({ key, value }) => {
-      values = { ...values, [key]: value };
-    });
+    items
+      .filter(({ key }) => !key.startsWith('.sys/'))
+      .filter(({ key }) => Boolean(key))
+      .forEach(({ key, value }) => {
+        values = { ...values, [key]: value };
+      });
+
     this.state$.next({ values });
   }
 
@@ -87,13 +103,10 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
    */
 
   public render() {
-    const { values } = this.state;
-    const styles = {
-      base: css({}),
-    };
+    const styles = { base: css({}) };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <ObjectView name={'db'} data={values} expandLevel={3} />
+        <ObjectView name={'db'} data={this.values} expandLevel={3} />
       </div>
     );
   }

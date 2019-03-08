@@ -1,6 +1,8 @@
 import { Subject } from 'rxjs';
 import { ITestRendererDb } from '../../types';
 
+export {ITestRendererDb}
+
 export type ITestCommandProps = {
   db?: ITestRendererDb;
   view?: 'WATCH';
