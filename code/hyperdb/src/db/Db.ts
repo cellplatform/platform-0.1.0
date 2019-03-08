@@ -79,6 +79,10 @@ export class Db<D extends object = any> implements t.IDb<D> {
     return this._.dispose$.isStopped;
   }
 
+  public get dir() {
+    return this._.dir;
+  }
+
   public get key(): string {
     return this.buffer.key.toString('hex');
   }
@@ -182,8 +186,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public async checkout(version: string) {
     const db = this._.db.checkout(version);
-    const dir = this._.dir;
-    return new Db<D>({ db, dir, version });
+    return new Db<D>({ db, dir: this.dir, version });
   }
 
   /**
@@ -294,8 +297,8 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   public toString() {
-    const { dir, version } = this._;
-    let res = `${dir}/key:${this.key}`;
+    const { version } = this._;
+    let res = `${this.dir}/key:${this.key}`;
     res = version ? `${res}/ver:${version}` : res;
     res = `[db:${res}]`;
     return res;
