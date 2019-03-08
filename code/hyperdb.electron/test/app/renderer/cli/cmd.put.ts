@@ -21,7 +21,7 @@ export const put = Command.create<P>('put', async e => {
     }
   }
 
-  if (key) {
+  if (db && key) {
     await db.put(key as any, value);
     await updateWatch({ db, addKeys: [key.toString()] });
   }

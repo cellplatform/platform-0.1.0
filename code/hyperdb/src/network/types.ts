@@ -1,4 +1,20 @@
+import { Observable } from 'rxjs';
+
 export type NetworkStatus = 'DISCONNECTED' | 'CONNECTING' | 'CONNECTED';
+
+export type INetwork = INetworkProps & {
+  readonly events$: Observable<NetworkEvent>;
+  toString(): string;
+};
+
+export type INetworkProps = {
+  isDisposed: boolean;
+  topic: string;
+  status: NetworkStatus;
+  isConnected: boolean;
+  connection: INetworkConnectionInfo | undefined;
+  db: { key: string; localKey: string };
+};
 
 export type INetworkConnectionInfo = {
   type: 'tcp' | 'utp';
@@ -19,7 +35,7 @@ export type INetworkReferrer = { port: number; host: string; id: string };
 /**
  * [Events]
  */
-export type NetworkEvent = INetworkConnectionEvent|INetworkDataEvent;
+export type NetworkEvent = INetworkConnectionEvent | INetworkDataEvent;
 
 export type INetworkConnectionEvent = {
   type: 'NETWORK/connection';

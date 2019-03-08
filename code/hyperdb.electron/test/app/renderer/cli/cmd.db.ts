@@ -23,11 +23,13 @@ export const db = Command.create<P>('db')
   .add('auth', async e => {
     const { db } = e.props;
     const peerKey = e.args.params[0];
-    if (typeof peerKey === 'string') {
+    if (db && typeof peerKey === 'string') {
       await db.authorize(peerKey);
     }
   })
   .add('dir', async e => {
     const { db } = e.props;
-    shell.showItemInFolder(db.dir);
+    if (db) {
+      shell.showItemInFolder(db.dir);
+    }
   });

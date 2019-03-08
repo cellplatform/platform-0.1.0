@@ -1,19 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { map, debounceTime, distinctUntilChanged, takeUntil, filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
 import * as cli from '../../cli';
-import {
-  COLORS,
-  CommandState,
-  css,
-  GlamorValue,
-  renderer,
-  t,
-  str,
-  ICommand,
-  Command,
-} from '../../common';
+import { COLORS, CommandState, css, GlamorValue, ICommand, renderer, str, t } from '../../common';
 import { CommandPrompt } from '../cli.CommandPrompt';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
@@ -28,6 +18,7 @@ export type IShellState = {
   dialog?: 'JOIN';
   selected?: string; // database [dir].
   selectedDb?: t.ITestRendererDb;
+  selectedNetwork?: t.INetworkRenderer;
   store?: Partial<t.ITestStoreSettings>;
 };
 
@@ -68,8 +59,12 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       .subscribe(async e => {
         const selected = this.selected;
         const dir = selected ? `${await this.store.get('dir')}/${selected}` : undefined;
-        const selectedDb = dir ? await renderer.getOrCreate({ ipc, dir }) : undefined;
-        this.state$.next({ selectedDb });
+        const res = dir ? await renderer.getOrCreate({ ipc, dir }) : undefined;
+        const selectedDb = res ? res.db : undefined;
+        const selectedNetwork = res ? res.network : undefined;
+        this.state$.next({ selectedDb, selectedNetwork });
+
+        console.log('selectedNetwork', selectedNetwork);
       });
 
     // Redraw screen each time the CLI state changes.
@@ -211,7 +206,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   }
 
   private renderMain() {
-    const { selected, store, selectedDb } = this.state;
+    const { selected, store, selectedDb, selectedNetwork } = this.state;
     const db = selectedDb ? { key: selectedDb.key, localKey: selectedDb.localKey } : {};
     const data = { selected, store, db };
 
@@ -231,10 +226,11 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       }),
     };
 
-    const elBody = selectedDb && (
+    const elBody = selectedDb && selectedNetwork && (
       <ShellMain
         key={selectedDb.key}
         db={selectedDb}
+        network={selectedNetwork}
         cli={this.cli}
         onFocusCommandPrompt={this.focusCommandPrompt}
       />

@@ -7,6 +7,7 @@ import { ObjectView, Hr } from '../../primitives';
 export type IDbStatusProps = {
   cli: CommandState;
   db: t.ITestRendererDb;
+  network: t.INetwork;
   style?: GlamorValue;
 };
 export type IDbStatusState = {
@@ -17,6 +18,7 @@ export type IDbStatusState = {
     discoveryKey: string;
     isAuthorized: boolean;
   };
+  swarm?: any;
 };
 
 export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState> {
@@ -30,9 +32,14 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
 
   constructor(props: IDbStatusProps) {
     super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const unmounted$ = this.unmounted$;
+    this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e));
 
-    console.log('init');
+    const { db, network } = props;
+
+    db.events$.pipe(takeUntil(unmounted$)).subscribe(e => this.updateState());
+    network.events$.pipe(takeUntil(unmounted$)).subscribe(e => this.updateState());
+
     this.updateState();
   }
 
@@ -44,7 +51,7 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
    * [Methods]
    */
   public async updateState() {
-    const { db } = this.props;
+    const { db, network } = this.props;
     this.state$.next({
       db: {
         dir: db.dir,
@@ -52,6 +59,12 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
         localKey: db.localKey,
         discoveryKey: db.discoveryKey,
         isAuthorized: await db.isAuthorized(),
+      },
+      swarm: {
+        topic: network.topic,
+        status: network.status,
+        isConnected: network.isConnected,
+        connection: network.connection,
       },
     });
   }
@@ -61,19 +74,12 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
    */
 
   public render() {
-    // const { db } = this.props;
     const styles = { base: css({}) };
-
-    const data = {
-      db: this.state.db,
-      swarm: {},
-    };
-
     return (
       <div {...css(styles.base, this.props.style)}>
-        <ObjectView name={'db'} data={data.db} expandLevel={3} />
+        <ObjectView name={'db'} data={this.state.db} expandLevel={3} />
         <Hr />
-        <ObjectView name={'swarm'} data={data.swarm} expandLevel={3} />
+        <ObjectView name={'swarm'} data={this.state.swarm} expandLevel={3} />
       </div>
     );
   }

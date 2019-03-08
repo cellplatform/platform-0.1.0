@@ -11,6 +11,7 @@ import { DbWatch } from './components/DbWatch';
 export type IShellMainProps = {
   cli: CommandState;
   db: t.ITestRendererDb;
+  network: t.INetwork;
   style?: GlamorValue;
   onFocusCommandPrompt?: (e: {}) => void;
 };
@@ -89,13 +90,13 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
   }
 
   private renderOutput() {
-    const { cli, db } = this.props;
+    const { cli, db, network } = this.props;
     const ns = cli.namespace;
     const styles = {
       base: css({ flex: 1 }),
     };
     const elStatus = ns && ns.command.name === 'db' && (
-      <DbStatus key={db.localKey} db={db} cli={cli} />
+      <DbStatus key={db.localKey} cli={cli} db={db} network={network} />
     );
     const elWatch = !elStatus && <DbWatch db={db} cli={cli} />;
     return (

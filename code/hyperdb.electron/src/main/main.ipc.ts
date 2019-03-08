@@ -13,7 +13,7 @@ const refs: Refs = {};
  * Start the HyperDB IPC handler's listening on the [main] process.
  */
 export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
-  const ipc = args.ipc as t.DbIpcRendererClient;
+  const ipc = args.ipc as t.DbIpcRendererClient & t.NetworkIpcClient;
   const log = args.log;
   const events$ = new Subject<t.MainDbEvent>();
   log.info(`listening for ${log.yellow('hyperdb events')}`);
@@ -46,16 +46,30 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     return ref;
   };
 
-  const getOrCreateDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
+  const getRefKey = (args: { dir: string; dbKey?: string; version?: string }) => {
     const { dir, version } = args;
     let refKey = dir;
     refKey = version ? `${refKey}/ver:${version}` : refKey;
+    return refKey;
+  };
+
+  const getRef = async (args: {
+    dir: string;
+    dbKey?: string;
+    version?: string;
+  }): Promise<Ref | undefined> => {
+    const refKey = getRefKey(args);
+    return refs[refKey];
+  };
+
+  const getOrCreateDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
+    const refKey = getRefKey(args);
     refs[refKey] = refs[refKey] || createDb(args);
     return refs[refKey];
   };
 
   /**
-   * [HANDLE] state requests from DB `renderer` clients
+   * [DB-HANDLE] state requests from DB `renderer` clients
    * and fire back the latest values.
    */
   ipc.handle<t.IDbGetStateEvent>('DB/state/get', async e => {
@@ -69,13 +83,14 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       const payload: P = { db: { dir }, props };
       ipc.send<E>('DB/state/update', payload);
     } catch (err) {
-      const message = `Failed to get state fields of DB '${dir}'. ${err.message}`;
+      const type: E['type'] = 'DB/state/update';
+      const message = `[${type}] Failed to get state fields of DB '${dir}'. ${err.message}`;
       log.error(message);
     }
   });
 
   /**
-   * [HANDLE] invoke requests from DB `renderer` clients.
+   * [DB-HANDLE] invoke requests from DB `renderer` clients.
    */
   ipc.handle<t.IDbInvokeEvent, t.IDbInvokeResponse>('DB/invoke', async e => {
     const { method, params } = e.payload;
@@ -94,7 +109,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   });
 
   /**
-   * [HANDLE] requests to `disconnect` (leave the swarm).
+   * [DB-HANDLE] requests to `disconnect` (leave the swarm).
    */
   ipc.handle<t.IDbConnectEvent>('DB/connect', async e => {
     const { dir, dbKey, version } = e.payload.db;
@@ -106,7 +121,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   });
 
   /**
-   * [HANDLE] requests to `connect` (leave the swarm).
+   * [DB-HANDLE] requests to `connect` (leave the swarm).
    */
   ipc.handle<t.IDbDisconnectEvent>('DB/disconnect', async e => {
     const { dir, dbKey, version } = e.payload.db;
@@ -114,6 +129,34 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     if (ref.network.isConnected) {
       await ref.network.disconnect();
       logConnection(log, ref);
+    }
+  });
+
+  /**
+   * [NETWORK-HANDLE] state requests from Network `renderer` clients
+   * and fire back the latest values.
+   */
+  ipc.handle<t.INetworkGetStateEvent>('NETWORK/state/get', async e => {
+    type E = t.INetworkUpdateStateEvent;
+    type P = E['payload'];
+    const { dir } = e.payload.db;
+    const ref = await getRef({ dir });
+
+    const type: E['type'] = 'NETWORK/state/update';
+    const errorPrefix = `[${type}] Failed to get state fields of Network for DB '${dir}'`;
+    if (!ref) {
+      const message = `${errorPrefix}. The DB has not been created yet.`;
+      log.error(message);
+      return;
+    }
+    try {
+      const { topic, status, isConnected, connection, db, isDisposed } = ref.network;
+      const props: t.INetworkProps = { topic, status, isConnected, connection, db, isDisposed };
+      const payload: P = { db: { dir }, props };
+      ipc.send<E>('NETWORK/state/update', payload);
+    } catch (err) {
+      const message = `${errorPrefix}. ${err.message}`;
+      log.error(message);
     }
   });
 

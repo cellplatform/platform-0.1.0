@@ -14,14 +14,14 @@ type IConstructorArgs = {
 const TARGET_MAIN = { target: 0 };
 
 /**
- * The [renderer] client to a `Db` that runs on the [main] prcoess.
+ * The [renderer] client to a `Db` running on the [main] prcoess.
  */
-export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
+export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
   /**
    * [Static]
    */
   public static async create<D extends object = any>(args: IConstructorArgs) {
-    const db = new RendererDb<D>(args);
+    const db = new DbRenderer<D>(args);
     await db.ready;
     return db;
   }
@@ -34,7 +34,6 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
     this._.dir = args.dir;
     this._.dbKey = args.dbKey;
     this._.version = args.version;
-    this.dispose$.subscribe(() => (this._.isDisposed = true));
 
     // Promise that alerts when the Db is ready to interact with.
     const ready$ = new Subject();
@@ -72,7 +71,6 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
    */
   public readonly ready: Promise<{}>;
   private readonly _ = {
-    isDisposed: false,
     ipc: (null as unknown) as t.DbIpcRendererClient,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),
@@ -98,6 +96,10 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
   /**
    * [Properties]
    */
+  public get isDisposed() {
+    return this._.dispose$.isStopped || this.getProp('isDisposed');
+  }
+
   public get dir() {
     return this.getProp('dir');
   }
@@ -118,9 +120,6 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
     return this.getProp('watching');
   }
 
-  public get isDisposed() {
-    return this._.isDisposed || this.getProp('isDisposed');
-  }
 
   public get checkoutVersion() {
     return this._.version;
@@ -132,6 +131,7 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
   public dispose() {
     this._.events$.complete();
     this._.dispose$.next();
+    this._.dispose$.complete();
   }
 
   public async version() {
@@ -141,7 +141,7 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
   public async checkout(version: string) {
     const { ipc, dir } = this._;
     const dbKey = this.key;
-    return RendererDb.create<D>({ ipc, dir, dbKey, version });
+    return DbRenderer.create<D>({ ipc, dir, dbKey, version });
   }
 
   public async get<K extends keyof D>(key: K) {

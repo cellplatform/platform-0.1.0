@@ -16,7 +16,7 @@ type INetworkArgs = { db: Db };
 /**
  * Manages the network swarm for a single hyperdb.
  */
-export class Network {
+export class Network implements t.INetwork {
   /**
    * [Static]
    */
@@ -67,7 +67,7 @@ export class Network {
     return this._.dispose$.isStopped;
   }
 
-  public get id() {
+  public get topic() {
     return this._.id.toString('hex');
   }
 
@@ -157,6 +157,10 @@ export class Network {
       this._.replication.destroy();
     }
     this.changeStatus('DISCONNECTED');
+  }
+
+  public toString() {
+    return `[network:${this.topic}]`;
   }
 
   /**

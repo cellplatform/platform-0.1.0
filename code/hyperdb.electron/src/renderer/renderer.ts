@@ -1,11 +1,12 @@
 import * as t from '../types';
-import { RendererDb } from './Db.renderer';
+import { DbRenderer } from './renderer.Db';
+import { NetworkRenderer } from './renderer.Network';
 import { take } from 'rxjs/operators';
 
 export * from '../types';
 export * from '@platform/electron/lib/renderer';
 
-type Ref = { db: t.IRendererDb; dir: string; version?: string };
+type Ref = { db: t.IDbRenderer; network: t.INetworkRenderer; dir: string; version?: string };
 type Refs = { [key: string]: Ref };
 const refs: Refs = {};
 
@@ -18,8 +19,9 @@ export async function create<D extends object = any>(args: {
   dbKey?: string;
 }) {
   const { ipc, dir, dbKey } = args;
-  const db = (await RendererDb.create<D>({ ipc, dir, dbKey })) as t.IRendererDb<D>;
-  return { db };
+  const db = (await DbRenderer.create<D>({ ipc, dir, dbKey })) as t.IDbRenderer<D>;
+  const network = (await NetworkRenderer.create({ db, ipc })) as t.INetworkRenderer;
+  return { db, network };
 }
 
 /**
@@ -30,21 +32,22 @@ export async function getOrCreate<D extends object = any>(args: {
   dir: string;
   dbKey?: string;
   version?: string;
-}): Promise<t.IRendererDb<D>> {
+}) {
   // Check if the DB already exists in cache.
   const { dir, version, dbKey, ipc } = args;
   const refKey = toRefKey({ dir, version });
   if (refs[refKey]) {
-    return refs[refKey].db;
+    const db = refs[refKey].db;
+    return { db };
   }
 
   // Create the DB.
-  const db = (await create<D>({ ipc, dir, dbKey })).db;
-  refs[refKey] = { db, dir, version };
+  const { db, network } = await create<D>({ ipc, dir, dbKey });
+  refs[refKey] = { db, network, dir, version };
   db.dispose$.pipe(take(1)).subscribe(e => delete refs[refKey]);
 
   // Finish up.
-  return db;
+  return { db, network };
 }
 
 /**
@@ -53,7 +56,7 @@ export async function getOrCreate<D extends object = any>(args: {
 export function fromCache<D extends object = any>(args: {
   dir: string;
   version?: string;
-}): t.IRendererDb<D> | undefined {
+}): t.IDbRenderer<D> | undefined {
   const ref = refs[toRefKey(args)];
   return ref ? ref.db : undefined;
 }

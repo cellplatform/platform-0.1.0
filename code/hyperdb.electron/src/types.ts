@@ -4,12 +4,12 @@ export * from '@platform/hyperdb/lib/types';
 /**
  * [Common]
  */
-import { IDbProps, IDbMethods, DbEvent } from '@platform/hyperdb/lib/types';
+import { IDbProps, IDbMethods, DbEvent, INetworkProps } from '@platform/hyperdb/lib/types';
 import { IpcClient, ILog } from '@platform/electron/lib/types';
 export { IpcClient, ILog };
 
 /**
- * [IPC] Events
+ * [Db] Events
  */
 export type DbIpcClient = IpcClient<DbIpcEvent>;
 export type DbIpcEvent = IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent | DbEvent;
@@ -40,4 +40,26 @@ export type IDbInvokeResponse<M extends keyof IDbMethods = any> = {
   method: M;
   result?: IDbMethods[M];
   error?: { message: string };
+};
+
+/**
+ * [Network] Events
+ */
+export type NetworkIpcClient = IpcClient<NetworkIpcEvent>;
+export type NetworkIpcEvent = INetworkUpdateStateEvent | INetworkGetStateEvent;
+
+export type INetworkGetStateEvent = {
+  type: 'NETWORK/state/get';
+  payload: {
+    db: { dir: string };
+    fields?: Array<keyof INetworkProps>;
+  };
+};
+
+export type INetworkUpdateStateEvent = {
+  type: 'NETWORK/state/update';
+  payload: {
+    db: { dir: string };
+    props: INetworkProps;
+  };
 };

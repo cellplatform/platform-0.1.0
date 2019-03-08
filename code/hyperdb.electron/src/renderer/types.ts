@@ -1,12 +1,11 @@
-import { IDb, IpcClient, DbIpcEvent } from '../types';
-
+import { IDb, INetwork, IpcClient, DbIpcEvent } from '../types';
 export * from '../types';
 
 /**
- * [RendererDb]
+ * [Db]
  * Extensions to the API for a DB when it is running in the `renderer` process.
  */
-export type IRendererDb<D extends {} = any> = IDb<D> & {
+export type IDbRenderer<D extends {} = any> = IDb<D> & {
   readonly checkoutVersion?: string;
   dispose(): void;
   connect(): Promise<void>;
@@ -15,7 +14,13 @@ export type IRendererDb<D extends {} = any> = IDb<D> & {
 };
 
 /**
- * [IPC] Events
+ * [Network]
+ * Extensions to the API for a network-swarm when it is running in the `renderer` process.
+ */
+export type INetworkRenderer = INetwork & {};
+
+/**
+ * [Events]
  */
 export type DbIpcRendererClient = IpcClient<DbIpcRendererEvent>;
 export type DbIpcRendererEvent = DbIpcEvent | IDbConnectEvent | IDbDisconnectEvent;

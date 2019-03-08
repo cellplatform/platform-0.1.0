@@ -1,4 +1,4 @@
-import { Command } from '../common';
+import { Command, R } from '../common';
 import * as t from './types';
 
 type P = t.ITestCommandProps;
@@ -8,8 +8,10 @@ type P = t.ITestCommandProps;
  */
 export const watch = Command.create<P>('watch', async e => {
   const { db } = e.props;
-  const addKeys = e.args.params.map(p => p.toString());
-  return updateWatch({ db, addKeys });
+  if (db) {
+    const addKeys = e.args.params.map(p => p.toString());
+    updateWatch({ db, addKeys });
+  }
 });
 
 /**
@@ -17,11 +19,13 @@ export const watch = Command.create<P>('watch', async e => {
  */
 export const unwatch = Command.create<P>('unwatch', async e => {
   const { db } = e.props;
-  let removeKeys = e.args.params.map(p => p.toString());
-  if (removeKeys.includes('*')) {
-    removeKeys = (await db.get('.sys/watch')).value;
+  if (db) {
+    let removeKeys = e.args.params.map(p => p.toString()) || [];
+    if (removeKeys.includes('*')) {
+      removeKeys = (await db.get('.sys/watch')).value || [];
+    }
+    updateWatch({ db, removeKeys });
   }
-  return updateWatch({ db, removeKeys });
 });
 
 /**
@@ -34,7 +38,7 @@ export async function updateWatch(args: {
 }) {
   const { db, addKeys = [], removeKeys } = args;
   const current = (await db.get('.sys/watch')).value || [];
-  let next = [...new Set([...current, ...addKeys])].map(item => item.toString());
+  let next = R.uniq([...current, ...addKeys]);
   next = !removeKeys ? next : next.filter(key => !removeKeys.includes(key));
   await db.put('.sys/watch', next);
   return next;
