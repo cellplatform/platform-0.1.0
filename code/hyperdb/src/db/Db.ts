@@ -61,7 +61,6 @@ export class Db<D extends object = any> implements t.IDb<D> {
     events$: new Subject<t.DbEvent>(),
     watchers: ({} as unknown) as WatcherRefs,
   };
-  public isDisposed = false;
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
@@ -76,6 +75,10 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * [Properties]
    */
+  public get isDisposed() {
+    return this._.dispose$.isStopped;
+  }
+
   public get key(): string {
     return this.buffer.key.toString('hex');
   }
@@ -107,9 +110,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public dispose() {
     this.unwatch();
-    this.isDisposed = true;
     this._.events$.complete();
     this._.dispose$.next();
+    this._.dispose$.complete();
   }
 
   public replicate(options: { live?: boolean }) {
@@ -129,7 +132,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     //
     const userData = this.buffer.localKey;
 
-    return this._.db.replicate({ live, userData });
+    return this._.db.replicate({ live, userData }) as t.IProtocol;
   }
 
   /**

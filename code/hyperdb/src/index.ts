@@ -5,6 +5,8 @@ import { Swarm } from './swarm';
 export { Db, Swarm };
 export * from './types';
 
+import { Network } from './network';
+
 /**
  * Create new HyperDB and connect it to the network.
  */
@@ -21,8 +23,16 @@ export async function create(args: {
 
   // Construct and connect the database.
   const db = await Db.create({ dir, dbKey, version });
-  const swarm = await Swarm.create({ db, autoAuth, join });
+  // const swarm = await Swarm.create({ db, autoAuth, join }); // TEMP -- join:false 🐷
+
+  const network = new Network({ db });
+  // try {
+  //   // console.log('network.id', network.id);
+  // } catch (error) {
+  //   console.log('error swarm init', error);
+  // }
 
   // Finish up.
-  return { db, swarm };
+  // return { db, swarm };
+  return { db, network };
 }

@@ -1,3 +1,5 @@
+import { Socket } from 'net';
+
 export * from './db/types';
 export * from './swarm/types';
 
@@ -66,4 +68,6 @@ export type IProtocol = {
   removeLive: boolean;
   remoteUserData: any;
   remoteExtensions: any[];
+
+  pipe: Socket['pipe'];
 };

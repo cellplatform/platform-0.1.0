@@ -16,6 +16,7 @@
     "tmp": "ts-node -T scripts/tmp $@"
   },
   "dependencies": {
+    "@hyperswarm/network": "^0.0.4",
     "@platform/cli.spec": "0.0.1",
     "@platform/electron": "0.0.104",
     "@platform/hyperdb": "0.0.14",
@@ -28,6 +29,7 @@
     "hjson": "3.1.2",
     "hyperdb": "3.5.0",
     "minimist": "1.2.0",
+    "pump": "^3.0.0",
     "react": "16.8.3"
   },
   "devDependencies": {

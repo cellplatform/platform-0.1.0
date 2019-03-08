@@ -1,4 +1,4 @@
-import { time, Command } from '../common';
+import { Command } from '../common';
 import * as t from './types';
 
 type P = t.ITestCommandProps;
