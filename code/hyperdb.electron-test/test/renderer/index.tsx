@@ -1,4 +1,4 @@
-import '../../../node_modules/@platform/css/reset.css';
+import '../../node_modules/@platform/css/reset.css';
 import '@babel/polyfill';
 
 import { renderer } from '@platform/electron/lib/renderer';

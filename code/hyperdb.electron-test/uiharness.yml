@@ -1,10 +1,10 @@
-name: hyperdb
+name: hypersheet (hyperdb)
 
 electron:
   port: 8889
   entry:
-    main: test/app/main/index.ts
-    renderer: test/app/renderer/index.tsx
+    main: test/main/index.ts
+    renderer: test/renderer/index.tsx
 
 sourcemaps:
   strip:

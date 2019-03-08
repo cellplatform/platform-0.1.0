@@ -6,7 +6,7 @@ import { is, fs } from './common';
 import main from '@platform/hyperdb.electron/lib/main';
 import * as t from '../types';
 
-const config = require('../../../.uiharness/config.json') as uiharness.IRuntimeConfig;
+const config = require('../../.uiharness/config.json') as uiharness.IRuntimeConfig;
 
 (async () => {
   const context = await uiharness.init({ config });
