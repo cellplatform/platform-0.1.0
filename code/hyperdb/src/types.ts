@@ -2,6 +2,7 @@ import { Socket } from 'net';
 
 export * from './db/types';
 export * from './swarm/types';
+export * from './network/types';
 
 /**
  * [Network]
@@ -70,4 +71,5 @@ export type IProtocol = {
   remoteExtensions: any[];
 
   pipe: Socket['pipe'];
+  destroy(): void;
 };

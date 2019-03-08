@@ -1,4 +1,4 @@
-import { value } from './common';
+import { value, time } from './common';
 import { Db } from './db';
 import { Swarm } from './swarm';
 
@@ -13,26 +13,19 @@ import { Network } from './network';
 export async function create(args: {
   dir: string;
   dbKey?: string;
-  autoAuth?: boolean;
-  join?: boolean;
+  connect?: boolean;
   version?: string;
 }) {
   const { dir, dbKey, version } = args;
-  const autoAuth = value.defaultValue(args.autoAuth, true);
-  const join = value.defaultValue(args.join, true);
+  const connect = value.defaultValue(args.connect, true);
 
   // Construct and connect the database.
   const db = await Db.create({ dir, dbKey, version });
-  // const swarm = await Swarm.create({ db, autoAuth, join }); // TEMP -- join:false 🐷
-
-  const network = new Network({ db });
-  // try {
-  //   // console.log('network.id', network.id);
-  // } catch (error) {
-  //   console.log('error swarm init', error);
-  // }
+  const network = Network.create({ db });
+  if (connect) {
+    network.connect();
+  }
 
   // Finish up.
-  // return { db, swarm };
   return { db, network };
 }
