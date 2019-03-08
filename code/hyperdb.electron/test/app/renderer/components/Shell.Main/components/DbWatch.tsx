@@ -33,7 +33,7 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
     this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e as IDbWatchState));
 
     // Update the component when the system-watch configuration changes.
-    watch$.pipe(filter(e => e.pattern === SYS_WATCH)).subscribe(e => this.updateWatchedKeys());
+    watch$.pipe(filter(e => e.key === SYS_WATCH)).subscribe(e => this.updateWatchedKeys());
     this.updateWatchedKeys();
     db.watch(SYS_WATCH);
 

@@ -1,4 +1,4 @@
-import { Command } from '../common';
+import { time, Command } from '../common';
 import * as t from './types';
 
 type P = t.ITestCommandProps;
@@ -32,11 +32,10 @@ export async function updateWatch(args: {
   addKeys?: string[];
   removeKeys?: string[];
 }) {
-  const { db, addKeys = [], removeKeys = [] } = args;
+  const { db, addKeys = [], removeKeys } = args;
   const current = (await db.get('.sys/watch')).value || [];
-  const next = [...new Set([...current, ...addKeys])]
-    .map(item => item.toString())
-    .filter(key => !removeKeys.includes(key));
+  let next = [...new Set([...current, ...addKeys])].map(item => item.toString());
+  next = !removeKeys ? next : next.filter(key => !removeKeys.includes(key));
   await db.put('.sys/watch', next);
   return next;
 }
