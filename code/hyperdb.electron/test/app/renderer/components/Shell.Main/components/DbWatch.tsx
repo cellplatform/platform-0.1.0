@@ -87,7 +87,7 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
     );
 
     // Store values in the component state.
-    let values = { ...(this.state.values || {}) };
+    let values = {};
     items
       .filter(({ key }) => !key.startsWith('.sys/'))
       .filter(({ key }) => Boolean(key))
