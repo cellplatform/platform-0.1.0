@@ -6829,10 +6829,10 @@ prosemirror-transform@^1.0.0, prosemirror-transform@^1.1.0:
   dependencies:
     prosemirror-model "^1.0.0"
 
-prosemirror-view@1.8.2:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/prosemirror-view/-/prosemirror-view-1.8.2.tgz#37c847ba5f2e72c1487a9462612f18fc062f8f7d"
-  integrity sha512-kN1N6Y2WCPLFGLLHlqUAA1Hx1ngYPIMR0JTG0VhdAMLWad40irLt4Hy6DDYzRUi1O3lbZZqteoFBOvm5JajupA==
+prosemirror-view@1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/prosemirror-view/-/prosemirror-view-1.8.3.tgz#f8deff22c7d371f63db2686ac6f3661ded1b3ae3"
+  integrity sha512-CAW3SycaJgfPlWwYcDGiwNaCwcikBLSFAgLF+H+bTn0aCAUzcl2DXQdU9dMvK3HeWG+6Xn/QPQbhyyqCcV3ZBw==
   dependencies:
     prosemirror-model "^1.1.0"
     prosemirror-state "^1.0.0"

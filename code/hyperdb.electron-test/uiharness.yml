@@ -1,0 +1,11 @@
+name: hyperdb
+
+electron:
+  port: 8889
+  entry:
+    main: test/app/main/index.ts
+    renderer: test/app/renderer/index.tsx
+
+sourcemaps:
+  strip:
+    - node_modules/rxjs
