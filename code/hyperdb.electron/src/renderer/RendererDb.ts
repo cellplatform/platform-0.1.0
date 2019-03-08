@@ -164,8 +164,8 @@ export class RendererDb<D extends object = any> implements t.IRendererDb<D> {
     return this.invoke('authorize', [peerKey]);
   }
 
-  public async isAuthorized(peerKey: string) {
-    return this.invoke('authorize', [peerKey]);
+  public async isAuthorized(peerKey?: string) {
+    return this.invoke('isAuthorized', [peerKey]);
   }
 
   public async connect() {

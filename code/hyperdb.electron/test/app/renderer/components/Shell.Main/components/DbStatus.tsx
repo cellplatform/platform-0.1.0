@@ -9,7 +9,14 @@ export type IDbStatusProps = {
   db: t.ITestRendererDb;
   style?: GlamorValue;
 };
-export type IDbStatusState = {};
+export type IDbStatusState = {
+  db?: {
+    key: string;
+    localKey: string;
+    discoveryKey: string;
+    isAuthorized: boolean;
+  };
+};
 
 export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState> {
   public state: IDbStatusState = {};
@@ -23,6 +30,9 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
   constructor(props: IDbStatusProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+
+    console.log('init');
+    this.updateState();
   }
 
   public componentWillUnmount() {
@@ -30,19 +40,30 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
   }
 
   /**
-   * [Render]
+   * [Methods]
    */
-
-  public render() {
+  public async updateState() {
     const { db } = this.props;
-    const styles = { base: css({}) };
-
-    const data = {
+    this.state$.next({
       db: {
         key: db.key,
         localKey: db.localKey,
         discoveryKey: db.discoveryKey,
+        isAuthorized: await db.isAuthorized(),
       },
+    });
+  }
+
+  /**
+   * [Render]
+   */
+
+  public render() {
+    // const { db } = this.props;
+    const styles = { base: css({}) };
+
+    const data = {
+      db: this.state.db,
       swarm: {},
     };
 

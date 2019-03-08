@@ -94,7 +94,9 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
     const styles = {
       base: css({ flex: 1 }),
     };
-    const elStatus = ns && ns.command.name === 'db' && <DbStatus db={db} cli={cli} />;
+    const elStatus = ns && ns.command.name === 'db' && (
+      <DbStatus key={db.localKey} db={db} cli={cli} />
+    );
     const elWatch = !elStatus && <DbWatch db={db} cli={cli} />;
     return (
       <div {...styles.base}>

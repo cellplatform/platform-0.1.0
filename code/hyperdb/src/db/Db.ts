@@ -140,9 +140,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public isAuthorized(peerKey?: Buffer | string) {
     return new Promise<boolean>((resolve, reject) => {
-      if (!peerKey) {
-        resolve(false);
-      }
+      peerKey = !peerKey ? this.buffer.localKey : peerKey;
       peerKey = typeof peerKey === 'string' ? Buffer.from(peerKey, 'hex') : peerKey;
       this._.db.authorized(peerKey, (err: Error, result: boolean) => {
         return err ? this.fireError(err, reject) : resolve(result);

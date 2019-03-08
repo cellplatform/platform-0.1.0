@@ -41,7 +41,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     });
     const ref: Ref = { db, network, dir };
 
-    const isAuthorized = await db.isAuthorized(db.localKey);
+    const isAuthorized = await db.isAuthorized();
     logCreated(log, ref, isAuthorized);
     return ref;
   };
