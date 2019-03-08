@@ -250,6 +250,13 @@ export class Db<D extends object = any> implements t.IDb<D> {
 
       const watcher = this._.db.watch(match, () => {
         watcher._nodes.forEach(async ({ key, value, deleted }: any) => {
+          if (this.watching.includes('*') && pattern !== '*') {
+            // When a wildcard is set, no need to fire for specific key patterns.
+            // The wildcard will take care of them all.
+            // This is to avoid duplicate events for a single change.
+            return;
+          }
+
           const version = await this.version();
           this.next<t.IDbWatchEvent>('DB/watch', {
             db: { key: this.key },
@@ -278,6 +285,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     patterns.forEach(key => {
       if (watchers[key]) {
         watchers[key].destroy();
+        delete watchers[key];
       }
     });
   }

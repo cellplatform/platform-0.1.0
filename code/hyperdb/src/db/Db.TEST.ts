@@ -119,7 +119,7 @@ describe('Db', () => {
       await db.put('foo/bar/baz', 'baz');
       await db.put('bar', 123); // No match.
 
-      await time.wait(0);
+      await time.wait(10);
       expect(events.length).to.eql(2);
       expect(events[0].pattern).to.eql('foo');
       expect(events[0].key).to.eql('foo/bar');
@@ -144,7 +144,7 @@ describe('Db', () => {
       await db.put('foo', 456); // No match.
       await db.put('foo/zoo', 789); // No match.
 
-      await time.wait(0);
+      await time.wait(10);
       expect(events.length).to.eql(2);
       expect(events[0].pattern).to.eql('foo/bar');
       expect(events[0].key).to.eql('foo/bar');
@@ -167,7 +167,7 @@ describe('Db', () => {
       await db.put('foo/bar/baz', 'baz');
       await db.put('foo', null);
 
-      await time.wait(0);
+      await time.wait(10);
       expect(events.length).to.eql(2);
       expect(events[0].value).to.eql('baz');
       expect(events[1].value).to.eql(null);
@@ -192,7 +192,7 @@ describe('Db', () => {
       await db.put('foo', { foo: 123 });
       await db.put('foo', now);
 
-      await time.wait(0);
+      await time.wait(10);
       expect(events[0].value).to.eql(null);
       expect(events[1].value).to.eql(undefined);
       expect(events[2].value).to.eql(1.23);
@@ -219,9 +219,75 @@ describe('Db', () => {
       await db.watch('foo');
       expect(db.watching).to.eql(['*', 'foo']);
     });
+
+    it('ignores specific keys when wildcard watch exists', async () => {
+      const db = await Db.create({ dir });
+      await db.watch();
+      await db.watch('foo');
+      expect(db.watching).to.eql(['*', 'foo']);
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      await db.put('foo', 123);
+
+      await time.wait(10);
+      expect(events.length).to.eql(1);
+    });
   });
 
   describe('unwatch', () => {
-    it.skip('unwatches', () => {});
+    it('unwatches all', async () => {
+      const db = await Db.create({ dir });
+      await db.watch();
+      await db.watch('foo');
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      await db.put('foo', 123);
+      await time.wait(10);
+      expect(events.length).to.eql(1);
+
+      db.unwatch();
+      await db.put('foo', 456);
+      await db.put('foo', 789);
+
+      await time.wait(10);
+      expect(events.length).to.eql(1);
+    });
+
+    it('unwatches specific pattern', async () => {
+      const db = await Db.create({ dir });
+      await db.watch();
+      await db.watch('foo', 'bar');
+      expect(db.watching).to.eql(['*', 'foo', 'bar']);
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      let count = 0;
+      const updateValues = async () => {
+        await db.put('foo', count++);
+        await db.put('bar', count++);
+        await db.put('baz', count++); // via wildcard.
+        await time.wait(10);
+      };
+
+      await updateValues();
+      expect(events.length).to.eql(3);
+
+      await db.unwatch('bar');
+      expect(db.watching).to.eql(['*', 'foo']);
+
+      await updateValues();
+      expect(events.length).to.eql(6); // NB: wildcard still catching all changes.
+
+      await db.unwatch('*');
+      expect(db.watching).to.eql(['foo']);
+
+      await updateValues();
+      expect(events.length).to.eql(7); // Only "foo" was fired now.
+    });
   });
 });
