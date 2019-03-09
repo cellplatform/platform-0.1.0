@@ -36,7 +36,7 @@ describe('timer', () => {
       .subtract(1, 'minute')
       .subtract(30, 'second')
       .toDate();
-    const timer = time.timer(start);
+    const timer = time.timer(start) as time.ITimer;
     expect(timer.elapsed('s')).to.eql(90);
     expect(timer.elapsed('sec')).to.eql(90);
   });
