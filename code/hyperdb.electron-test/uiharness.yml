@@ -1,4 +1,4 @@
-name: hypersheet (hyperdb)
+name: hypersheet (db)
 
 electron:
   port: 8889

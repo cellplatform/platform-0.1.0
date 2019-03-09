@@ -63,8 +63,6 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         const selectedDb = res ? res.db : undefined;
         const selectedNetwork = res ? res.network : undefined;
         this.state$.next({ selectedDb, selectedNetwork });
-
-        console.log('selectedNetwork', selectedNetwork);
       });
 
     // Redraw screen each time the CLI state changes.

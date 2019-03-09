@@ -7,6 +7,7 @@ import { CommandClickEvent, Help } from '../cli.Help';
 import { DbHeader } from './components/DbHeader';
 import { DbStatus } from './components/DbStatus';
 import { DbWatch } from './components/DbWatch';
+import { Editor } from './components/Editor';
 
 export type IShellMainProps = {
   cli: CommandState;
@@ -93,20 +94,21 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
     const { cli, db, network } = this.props;
     const ns = cli.namespace;
     const styles = {
-      base: css({ flex: 1 }),
+      base: css({ flex: 1, display: 'flex' }),
     };
     const elStatus = ns && ns.command.name === 'db' && (
       <DbStatus key={db.localKey} cli={cli} db={db} network={network} />
     );
-    const elWatch = !elStatus && <DbWatch db={db} cli={cli} />;
+    const elEditor = ns && ns.command.name === 'editor' && <Editor />;
+    const elWatch = !ns && <DbWatch db={db} cli={cli} />;
+
     return (
       <div {...styles.base}>
         {elStatus}
         {elWatch}
+        {elEditor}
       </div>
     );
-
-    // return <div {...styles.base}>{data && <ObjectView data={data} expandLevel={3} />}</div>;
   }
 
   /**

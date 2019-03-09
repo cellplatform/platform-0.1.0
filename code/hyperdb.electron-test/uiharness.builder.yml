@@ -1,4 +1,4 @@
-productName: hyperdb
+productName: hypersheet-db
 appId: platform.hyperdb.lib
 publish:
   provider: github

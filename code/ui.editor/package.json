@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.editor",
   "description": "Rich text/markdown editor for web and electron.",
-  "version": "0.0.50",
+  "version": "0.0.0",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -43,6 +43,5 @@
     "lib"
   ],
   "repository": "uiharness/platform",
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }
