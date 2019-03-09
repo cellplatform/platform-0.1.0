@@ -36,11 +36,14 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
     watch$.pipe(filter(e => e.key === SYS_WATCH)).subscribe(e => this.updateWatchedKeys());
     this.updateWatchedKeys();
     db.watch(SYS_WATCH);
+    db.watch('cell');
 
     // Update screen when watched keys change.
     watch$.pipe(filter(e => !e.key.startsWith('.sys/'))).subscribe(e => {
+      console.log('e', e);
       const values = { ...this.state.values, [e.key]: e.value };
       this.state$.next({ values });
+      // this.updateWatchedKeys();
     });
   }
 

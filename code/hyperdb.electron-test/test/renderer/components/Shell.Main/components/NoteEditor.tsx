@@ -1,18 +1,19 @@
+import { Editor, EditorEvent } from '@platform/ui.editor';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter, delay, debounce, debounceTime } from 'rxjs/operators';
-import {
-  css,
-  color,
-  GlamorValue,
-  constants,
-  COLORS,
-  t,
-  CommandState,
-  events,
-} from '../../../common';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { updateWatch } from '../../../cli/cmd.watch';
 
-import { Editor, EditorEvent } from '@platform/ui.editor';
+import {
+  color,
+  COLORS,
+  CommandState,
+  constants,
+  css,
+  events,
+  GlamorValue,
+  t,
+} from '../../../common';
 
 export type INoteEditorProps = {
   cli: CommandState;
@@ -87,9 +88,7 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
 
     const key = `cell/${cell}`;
     await db.put(key as any, content);
-
-    console.log('key', key);
-    console.log('content', content);
+    await updateWatch({ db, addKeys: [key] });
   }
 
   /**

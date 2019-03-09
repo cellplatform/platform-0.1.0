@@ -11,12 +11,16 @@ export type IDbStatusProps = {
   style?: GlamorValue;
 };
 export type IDbStatusState = {
-  db?: {
-    dir: string;
-    key: string;
-    localKey: string;
-    discoveryKey: string;
-    isAuthorized: boolean;
+  info?: {
+    db: {
+      dir: string;
+      key: string;
+      localKey: string;
+      discoveryKey: string;
+      isAuthorized: boolean;
+    };
+    name: string;
+    watching: string[];
   };
   swarm?: any;
 };
@@ -60,12 +64,16 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
     };
 
     this.state$.next({
-      db: {
-        dir: db.dir,
-        key: db.key,
-        localKey: db.localKey,
-        discoveryKey: db.discoveryKey,
-        isAuthorized: await db.isAuthorized(),
+      info: {
+        name: (await db.get('.sys/dbname')).value || '',
+        db: {
+          dir: db.dir,
+          key: db.key,
+          localKey: db.localKey,
+          discoveryKey: db.discoveryKey,
+          isAuthorized: await db.isAuthorized(),
+        },
+        watching: (await db.get('.sys/watch')).value || [],
       },
       swarm: swarm,
     });
@@ -79,7 +87,7 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
     const styles = { base: css({}) };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <ObjectView name={'db'} data={this.state.db} expandLevel={3} />
+        <ObjectView name={'db'} data={this.state.info} expandLevel={3} />
         <Hr />
         <ObjectView name={'swarm'} data={this.state.swarm} expandLevel={3} />
       </div>
