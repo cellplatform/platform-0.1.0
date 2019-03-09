@@ -70,7 +70,6 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
         position: 'relative',
         flex: 1,
         Flex: 'horizontal-stretch-stretch',
-        Scroll: true,
         PaddingX: 20,
       }),
       help: css({
@@ -100,7 +99,6 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
       base: css({
         flex: 1,
         display: 'flex',
-        paddingBottom: 80,
       }),
     };
     const elStatus = ns && ns.command.name === 'info' && (

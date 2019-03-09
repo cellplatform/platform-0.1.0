@@ -1,7 +1,8 @@
+import { take } from 'rxjs/operators';
+
 import * as t from '../types';
 import { DbRenderer } from './renderer.Db';
 import { NetworkRenderer } from './renderer.Network';
-import { take } from 'rxjs/operators';
 
 export * from '../types';
 export * from '@platform/electron/lib/renderer';
@@ -27,22 +28,40 @@ export async function create<D extends object = any>(args: {
 /**
  * Gets an existing instance of a DB, or creates a new one database.
  */
+export function get<D extends object = any>(args: { dir: string; version?: string }) {
+  const { dir, version } = args;
+  const refKey = toRefKey({ dir, version });
+  const ref = refs[refKey];
+  if (!ref) {
+    return undefined;
+  }
+  const db = ref.db as t.IDbRenderer<D>;
+  const network = ref.network;
+  return { db, network };
+}
+
+/**
+ * Gets an existing instance of a DB, or creates a new one database.
+ */
 export async function getOrCreate<D extends object = any>(args: {
   ipc: t.IpcClient;
   dir: string;
   dbKey?: string;
   version?: string;
 }) {
-  // Check if the DB already exists in cache.
   const { dir, version, dbKey, ipc } = args;
-  const refKey = toRefKey({ dir, version });
-  if (refs[refKey]) {
-    const db = refs[refKey].db;
-    return { db };
+
+  // Check if the DB already exists in cache.
+  const existing = get({ dir, version });
+  if (existing) {
+    return existing;
   }
 
   // Create the DB.
   const { db, network } = await create<D>({ ipc, dir, dbKey });
+
+  // Store the reference in cache.
+  const refKey = toRefKey({ dir, version });
   refs[refKey] = { db, network, dir, version };
   db.dispose$.pipe(take(1)).subscribe(e => delete refs[refKey]);
 

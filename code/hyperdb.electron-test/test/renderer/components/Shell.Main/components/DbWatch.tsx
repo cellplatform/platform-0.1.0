@@ -110,7 +110,13 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
    */
 
   public render() {
-    const styles = { base: css({}) };
+    const styles = {
+      base: css({
+        flex: 1,
+        Scroll: true,
+        paddingBottom: 80,
+      }),
+    };
     return (
       <div {...css(styles.base, this.props.style)}>
         <ObjectView name={'data'} data={this.values} expandLevel={3} />

@@ -84,12 +84,19 @@ export class DbStatus extends React.PureComponent<IDbStatusProps, IDbStatusState
    */
 
   public render() {
-    const styles = { base: css({}) };
+    const styles = {
+      base: css({
+        flex: 1,
+        Scroll: true,
+        paddingBottom: 80,
+      }),
+    };
     return (
       <div {...css(styles.base, this.props.style)}>
         <ObjectView name={'db'} data={this.state.info} expandLevel={3} />
         <Hr />
         <ObjectView name={'swarm'} data={this.state.swarm} expandLevel={3} />
+        <Hr />
       </div>
     );
   }

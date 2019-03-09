@@ -17,7 +17,7 @@ export const rename = Command.create<P>('rename', async e => {
  */
 export const info = Command.create<P>('info')
   .add(rename)
-  .add('open', async e => {
+  .add('open-dir', async e => {
     const { db } = e.props;
     if (db) {
       shell.showItemInFolder(db.dir);
