@@ -7,7 +7,7 @@ import { CommandClickEvent, Help } from '../cli.Help';
 import { DbHeader } from './components/DbHeader';
 import { DbStatus } from './components/DbStatus';
 import { DbWatch } from './components/DbWatch';
-import { Editor } from './components/Editor';
+import { NoteEditor } from './components/NoteEditor';
 
 export type IShellMainProps = {
   cli: CommandState;
@@ -99,7 +99,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
     const elStatus = ns && ns.command.name === 'db' && (
       <DbStatus key={db.localKey} cli={cli} db={db} network={network} />
     );
-    const elEditor = ns && ns.command.name === 'editor' && <Editor />;
+    const elEditor = ns && ns.command.name === 'editor' && <NoteEditor cli={cli} db={db} />;
     const elWatch = !ns && <DbWatch db={db} cli={cli} />;
 
     return (

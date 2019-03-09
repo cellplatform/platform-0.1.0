@@ -204,10 +204,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   }
 
   private renderMain() {
-    const { selected, store, selectedDb, selectedNetwork } = this.state;
-    const db = selectedDb ? { key: selectedDb.key, localKey: selectedDb.localKey } : {};
-    const data = { selected, store, db };
-
+    const { selectedDb, selectedNetwork } = this.state;
     const styles = {
       base: css({
         flex: 1,

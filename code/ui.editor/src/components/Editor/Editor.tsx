@@ -7,7 +7,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue } from '../../common';
+import { css, GlamorValue, containsFocus } from '../../common';
 import * as t from './types';
 
 // @ts-ignore
@@ -72,8 +72,24 @@ export class Editor extends React.PureComponent<IEditorProps> {
     this.unmounted$.next();
   }
 
+  /**
+   * [Properties]
+   */
   public get content() {
     return defaultMarkdownSerializer.serialize(this.view.state.doc);
+  }
+
+  public get isFocused() {
+    return containsFocus(this);
+  }
+
+  /**
+   * [Methods]
+   */
+  public focus() {
+    if (this.view) {
+      this.view.focus();
+    }
   }
 
   /**
@@ -94,7 +110,6 @@ export class Editor extends React.PureComponent<IEditorProps> {
     let state = view.state;
 
     // Fire the "pre" event.
-    type E = t.IEditorTransactionEvent;
     this._events$.next({
       type: 'EDITOR/transaction',
       payload: { stage: 'BEFORE', transaction, view, state, content: this.content },
@@ -112,6 +127,6 @@ export class Editor extends React.PureComponent<IEditorProps> {
   };
 
   private handleClick = () => {
-    this.view.focus();
+    this.focus();
   };
 }
