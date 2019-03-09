@@ -32,13 +32,6 @@ const config = require('../../.uiharness/config.json') as uiharness.IRuntimeConf
 
     // Keep the store object in sync when a new DB is created.
     created$.subscribe(e => updateDatabaseList(store));
-
-    // Store the [dbKey] for the primary database
-    // so that other demo-windows can connect with it.
-    created$.pipe(filter(e => e.payload.dir.endsWith('/tmp-1'))).subscribe(async e => {
-      await store.set('dbKey', e.payload.dbKey);
-      // await updateDatabaseList(store);
-    });
   } catch (error) {
     log.error('failed during startup', error);
   }
@@ -49,8 +42,9 @@ const config = require('../../.uiharness/config.json') as uiharness.IRuntimeConf
  */
 export async function updateDatabaseList(store: t.ITestStore) {
   const dir = await store.get('dir');
+  const exclude = ['.DS_Store'];
 
   await fs.ensureDir(dir);
-  const files = await fs.readdir(dir);
+  const files = (await fs.readdir(dir)).filter(name => !exclude.includes(name));
   await store.set('databases', files);
 }
