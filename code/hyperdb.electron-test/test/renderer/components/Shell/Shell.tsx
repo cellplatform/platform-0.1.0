@@ -214,7 +214,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         flex: 1,
         display: 'flex',
         position: 'relative',
-        Scroll: true,
+        // Scroll: true,
       }),
       footer: css({
         position: 'relative',

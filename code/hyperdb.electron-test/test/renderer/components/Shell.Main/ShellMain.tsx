@@ -63,12 +63,15 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
       base: css({
         flex: 1,
         Flex: 'vertical-stretch-stretch',
-        padding: 20,
+        // padding: 20,
       }),
-      header: css({ marginBottom: 20 }),
+      header: css({ padding: 20 }),
       body: css({
+        position: 'relative',
         flex: 1,
         Flex: 'horizontal-stretch-stretch',
+        Scroll: true,
+        PaddingX: 20,
       }),
       help: css({
         width: 190,
@@ -94,13 +97,17 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
     const { cli, db, network } = this.props;
     const ns = cli.namespace;
     const styles = {
-      base: css({ flex: 1, display: 'flex' }),
+      base: css({
+        flex: 1,
+        display: 'flex',
+        paddingBottom: 80,
+      }),
     };
-    const elStatus = ns && ns.command.name === 'db' && (
+    const elStatus = ns && ns.command.name === 'info' && (
       <DbStatus key={db.localKey} cli={cli} db={db} network={network} />
     );
     const elEditor = ns && ns.command.name === 'editor' && <NoteEditor cli={cli} db={db} />;
-    const elWatch = !ns && <DbWatch db={db} cli={cli} />;
+    const elWatch = !elStatus && !elEditor && <DbWatch db={db} cli={cli} />;
 
     return (
       <div {...styles.base}>
