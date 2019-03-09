@@ -95,20 +95,13 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
       textbox: css({
         // borderBottom: `solid 1px ${color.format(-0.1)}`,
       }),
-      keyOuter: css({
-        fontFamily: MONOSPACE.FAMILY,
-        fontSize: 11,
-        fontWeight: 'bold',
-        color: color.format(-0.2),
-        marginTop: 3,
-        userSelect: 'none',
-      }),
-      key: css({
-        color: isPrimary ? COLORS.CLI.PURPLE : COLORS.CLI.CYAN,
-        userSelect: 'text',
-      }),
     };
-    const elPublicKey = <span {...styles.key}>{db.key}</span>;
+    const elPublicKey = this.renderKey({
+      key: db.key,
+      suffix: 'public-key',
+      color: isPrimary ? COLORS.CLI.PURPLE : COLORS.CLI.CYAN,
+    });
+    const elPrivateKey = this.renderKey({ key: db.localKey, suffix: 'local-key' });
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.iconOuter}>
@@ -124,8 +117,33 @@ export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState
             placeholder={'Unnamed'}
             placeholderStyle={{ color: color.format(-0.2) }}
           />
-          <div {...styles.keyOuter}>{elPublicKey} (public-key)</div>
+          {elPublicKey}
+          {elPrivateKey}
         </div>
+      </div>
+    );
+  }
+
+  private renderKey(props: { key: string; suffix?: string; color?: string }) {
+    const styles = {
+      base: css({
+        fontFamily: MONOSPACE.FAMILY,
+        fontSize: 11,
+        fontWeight: 'bold',
+        color: color.format(-0.2),
+        marginTop: 3,
+        userSelect: 'none',
+      }),
+      key: css({
+        color: props.color,
+        userSelect: 'text',
+      }),
+    };
+    const elKey = <span {...styles.key}>{props.key}</span>;
+    const elSuffix = props.suffix && <span>({props.suffix})</span>;
+    return (
+      <div {...styles.base}>
+        {elKey} {elSuffix}
       </div>
     );
   }

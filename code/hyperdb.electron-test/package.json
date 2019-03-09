@@ -1,7 +1,7 @@
 {
   "name": "@platform/hyperdb.electron-test",
   "description": "Test module for the [hyperdb.electron].",
-  "version": "0.0.17",
+  "version": "0.1.1",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",

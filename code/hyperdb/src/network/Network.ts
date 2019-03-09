@@ -189,6 +189,7 @@ export class Network implements t.INetwork {
     });
 
     socket.on('data', (data: any) => {
+      console.log('data');
       const db = this.db;
       this._.events$.next({ type: 'NETWORK/data', payload: { db } });
     });

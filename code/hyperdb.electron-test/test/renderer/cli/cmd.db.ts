@@ -40,7 +40,6 @@ export const del = Command.create<P>('delete', async e => {
   }
 });
 
-
 export const auth = Command.create<P>('auth', async e => {
   const { db } = e.props;
   const peerKey = e.args.params[0];
@@ -54,3 +53,4 @@ export const db = Command.create<P>('db')
   .add(del)
   .add(watch)
   .add(unwatch)
+  .add(auth);
