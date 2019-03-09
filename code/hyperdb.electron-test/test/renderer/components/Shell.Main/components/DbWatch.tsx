@@ -40,7 +40,6 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
 
     // Update screen when watched keys change.
     watch$.pipe(filter(e => !e.key.startsWith('.sys/'))).subscribe(e => {
-      console.log('e', e);
       const values = { ...this.state.values, [e.key]: e.value };
       this.state$.next({ values });
       // this.updateWatchedKeys();
@@ -59,6 +58,11 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
     Object.keys(values)
       .filter(key => !Boolean(key))
       .forEach(key => delete values[key]);
+    Object.keys(values)
+      .filter(key => typeof values[key] === 'string')
+      .map(key => ({ key, value: values[key] as string }))
+      .filter(({ value }) => value.length > 64)
+      .forEach(({ key, value }) => (values[key] = `${value.substr(0, 64)}...`));
     return values;
   }
 
