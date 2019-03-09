@@ -1,7 +1,7 @@
 import { Editor, EditorEvent } from '@platform/ui.editor';
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { Subject, Observable } from 'rxjs';
+import { map, debounceTime, filter, takeUntil } from 'rxjs/operators';
 import { updateWatch } from '../../../cli/cmd.watch';
 
 import {
@@ -14,6 +14,7 @@ import {
   GlamorValue,
   t,
 } from '../../../common';
+import * as cli from '../../../cli';
 
 export type INoteEditorProps = {
   cli: CommandState;
@@ -21,7 +22,7 @@ export type INoteEditorProps = {
   style?: GlamorValue;
 };
 export type INoteEditorState = {
-  cell?: string;
+  cellKey?: string;
 };
 
 export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEditorState> {
@@ -36,11 +37,17 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
    * [Lifecycle]
    */
 
-  constructor(props: INoteEditorProps) {
-    super(props);
+  // constructor(props: INoteEditorProps) {
+
+  // }
+
+  public componentDidMount() {
+    // const { db } = this.props;
     const unmounted$ = this.unmounted$;
     this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e));
     const editorEvents$ = this.editorEvents$.pipe(takeUntil(unmounted$));
+    // const dbWatch$ = db.watch$.pipe(takeUntil(unmounted$));
+    const commandEvents$ = cli.events$.pipe(takeUntil(unmounted$));
     const keydown$ = events.keyPress$.pipe(
       takeUntil(unmounted$),
       filter(e => e.isPressed),
@@ -61,6 +68,17 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
     editorEvents$.pipe(debounceTime(300)).subscribe(e => {
       this.saveContent();
     });
+
+    commandEvents$
+      .pipe(
+        filter(e => e.type === 'CLI/editor/cell'),
+        map(e => e.payload as cli.ICliEditorCellEvent['payload']),
+      )
+      .subscribe(e => {
+        // console.log('e', e);
+        this.changeCell(e.cellKey);
+      });
+    this.changeCell(this.cellKey);
   }
 
   public componentWillUnmount() {
@@ -70,8 +88,12 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
   /**
    * [Properties]
    */
-  public get cell() {
-    return this.state.cell || 'A1';
+  public get cellKey() {
+    return this.state.cellKey || 'A1';
+  }
+
+  public get cellDbKey() {
+    return `cell/${this.cellKey}`;
   }
 
   public get content() {
@@ -81,14 +103,30 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
   /**
    * [Methods]
    */
+
   public async saveContent() {
     const { db } = this.props;
     const content = this.content;
-    const cell = this.cell;
-
-    const key = `cell/${cell}`;
+    const key = this.cellDbKey;
     await db.put(key as any, content);
     await updateWatch({ db, addKeys: [key] });
+  }
+
+  public async changeCell(cellKey: string) {
+    const { db } = this.props;
+    this.state$.next({ cellKey });
+
+    const key = this.cellDbKey as any;
+    const content = (await db.get(key)).value;
+
+    console.group('🌳 ');
+    console.log('change', cellKey);
+    console.log('content', content);
+    console.groupEnd();
+
+    if (this.editor) {
+      this.editor.load(content || '');
+    }
   }
 
   /**
@@ -115,7 +153,7 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.top}>
-          <div {...styles.cell}>{this.cell}</div>
+          <div {...styles.cell}>{this.cellKey}</div>
         </div>
         {this.renderEditor()}
       </div>

@@ -14,7 +14,7 @@ export type ITestCommandOptions = {};
 /**
  * Events
  */
-export type CliEvent = ICliNewDbEvent | ICliJoinDbEvent;
+export type CliEvent = ICliNewDbEvent | ICliJoinDbEvent | ICliEditorCellEvent;
 
 export type ICliNewDbEvent = {
   type: 'CLI/db/new';
@@ -24,4 +24,9 @@ export type ICliNewDbEvent = {
 export type ICliJoinDbEvent = {
   type: 'CLI/db/join';
   payload: { dbKey?: string };
+};
+
+export type ICliEditorCellEvent = {
+  type: 'CLI/editor/cell';
+  payload: { cellKey: string };
 };

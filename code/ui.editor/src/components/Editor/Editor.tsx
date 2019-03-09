@@ -53,19 +53,7 @@ export class Editor extends React.PureComponent<IEditorProps> {
   }
 
   public componentDidMount() {
-    const content = '';
-    const state = EditorState.create({
-      doc: defaultMarkdownParser.parse(content),
-      plugins: [
-        ...exampleSetup({ schema, menuBar: false }),
-        // history(),
-        // keymap({ 'Mod-z': undo, 'Mod-y': redo }),
-      ],
-    });
-    this.view = new EditorView<DocSchema>(this.el, {
-      state,
-      dispatchTransaction: this.dispatcher,
-    });
+    this.load('');
   }
 
   public componentWillUnmount() {
@@ -90,6 +78,25 @@ export class Editor extends React.PureComponent<IEditorProps> {
     if (this.view) {
       this.view.focus();
     }
+  }
+
+  public load(content: string) {
+    if (this.view) {
+      this.view.destroy();
+    }
+
+    const state = EditorState.create({
+      doc: defaultMarkdownParser.parse(content),
+      plugins: [
+        ...exampleSetup({ schema, menuBar: false }),
+        // history(),
+        // keymap({ 'Mod-z': undo, 'Mod-y': redo }),
+      ],
+    });
+    this.view = new EditorView<DocSchema>(this.el, {
+      state,
+      dispatchTransaction: this.dispatcher,
+    });
   }
 
   /**

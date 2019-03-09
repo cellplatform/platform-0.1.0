@@ -29,7 +29,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IShellState>>();
   private cli = CommandState.create({ root: cli.root });
-  private commandEvents$ = new Subject<cli.CliEvent>();
+  private commandEvents$ = cli.events$;
   private commandPrompt: CommandPrompt | undefined;
   private commandPromptRef = (ref: CommandPrompt) => (this.commandPrompt = ref);
 
