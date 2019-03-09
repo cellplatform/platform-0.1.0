@@ -53,10 +53,13 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     keydown$
       // Focus on CMD+L
       .pipe(
-        filter(() => !this.isFocused),
         filter(e => e.key === 'l' && e.metaKey),
+        filter(() => !this.isFocused),
       )
-      .subscribe(e => this.focus());
+      .subscribe(e => {
+        e.preventDefault();
+        this.focus();
+      });
 
     keydown$
       // Invoke on [Enter]

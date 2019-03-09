@@ -68,14 +68,14 @@ export class Editor extends React.PureComponent<IEditorProps> {
   }
 
   public get isFocused() {
-    return containsFocus(this);
+    return containsFocus(this.el) || this.view.hasFocus();
   }
 
   /**
    * [Methods]
    */
   public focus() {
-    if (this.view) {
+    if (this.view && this.el) {
       this.view.focus();
     }
   }

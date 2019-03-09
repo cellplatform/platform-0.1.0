@@ -1,20 +1,21 @@
 import { Editor, EditorEvent } from '@platform/ui.editor';
 import * as React from 'react';
-import { Subject, Observable } from 'rxjs';
-import { map, debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { updateWatch } from '../../../cli/cmd.watch';
+import { Subject } from 'rxjs';
+import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 
+import * as cli from '../../../cli';
+import { updateWatch } from '../../../cli/cmd.watch';
 import {
   color,
   COLORS,
   CommandState,
   constants,
+  containsFocus,
   css,
   events,
   GlamorValue,
   t,
 } from '../../../common';
-import * as cli from '../../../cli';
 
 export type INoteEditorProps = {
   cli: CommandState;
@@ -37,29 +38,39 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
    * [Lifecycle]
    */
 
-  // constructor(props: INoteEditorProps) {
-
-  // }
-
   public componentDidMount() {
-    // const { db } = this.props;
-    const unmounted$ = this.unmounted$;
-    this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e));
-    const editorEvents$ = this.editorEvents$.pipe(takeUntil(unmounted$));
-    // const dbWatch$ = db.watch$.pipe(takeUntil(unmounted$));
-    const commandEvents$ = cli.events$.pipe(takeUntil(unmounted$));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const editorEvents$ = this.editorEvents$.pipe(takeUntil(this.unmounted$));
+    const commandEvents$ = cli.events$.pipe(takeUntil(this.unmounted$));
     const keydown$ = events.keyPress$.pipe(
-      takeUntil(unmounted$),
+      takeUntil(this.unmounted$),
       filter(e => e.isPressed),
     );
 
     keydown$
       // Focus editor on key command.
       .pipe(
-        filter(e => e.metaKey && e.key === 'p'),
-        filter(e => Boolean(this.editor && !this.editor.isFocused)),
+        filter(e => e.metaKey && e.key === 'j'),
+        // debounceTime(0),
+        // filter(e => {
+        //   // if (this.editor && this.editor.isFocused) {
+        //   //   return false;
+        //   // }
+        //   // if (document.activeElement && document.ac) {
+        //   console.log('editor isFocused', this.isFocused);
+
+        //   // }
+        //   // return Boolean(this.editor && !this.editor.isFocused);
+        //   // return !this.isFocused;
+        //   return true;
+        // }),
       )
       .subscribe(e => {
+        // e.preventDefault();
+        // console.group('🌳 note');
+        // console.log('document.activeElement', document.activeElement);
+        // console.log('this.isFocused', this.isFocused);
+        // console.groupEnd();
         if (this.editor) {
           this.editor.focus();
         }
@@ -100,6 +111,11 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
     return (this.editor && this.editor.content) || '';
   }
 
+  public get isFocused() {
+    const isEditorFocused = this.editor && this.editor.isFocused;
+    return containsFocus(this) || isEditorFocused;
+  }
+
   /**
    * [Methods]
    */
@@ -118,11 +134,6 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
 
     const key = this.cellDbKey as any;
     const content = (await db.get(key)).value;
-
-    console.group('🌳 ');
-    console.log('change', cellKey);
-    console.log('content', content);
-    console.groupEnd();
 
     if (this.editor) {
       this.editor.load(content || '');
