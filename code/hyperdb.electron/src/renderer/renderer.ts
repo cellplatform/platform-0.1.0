@@ -30,7 +30,7 @@ export async function create<D extends object = any>(args: {
  */
 export function get<D extends object = any>(args: { dir: string; version?: string }) {
   const { dir, version } = args;
-  const refKey = toRefKey({ dir, version });
+  const refKey = toCacheKey({ dir, version });
   const ref = refs[refKey];
   if (!ref) {
     return undefined;
@@ -61,7 +61,7 @@ export async function getOrCreate<D extends object = any>(args: {
   const { db, network } = await create<D>({ ipc, dir, dbKey });
 
   // Store the reference in cache.
-  const refKey = toRefKey({ dir, version });
+  const refKey = toCacheKey({ dir, version });
   refs[refKey] = { db, network, dir, version };
   db.dispose$.pipe(take(1)).subscribe(e => delete refs[refKey]);
 
@@ -76,14 +76,14 @@ export function fromCache<D extends object = any>(args: {
   dir: string;
   version?: string;
 }): t.IDbRenderer<D> | undefined {
-  const ref = refs[toRefKey(args)];
+  const ref = refs[toCacheKey(args)];
   return ref ? ref.db : undefined;
 }
 
 /**
  * INTERNAL
  */
-function toRefKey(args: { dir: string; version?: string }) {
+function toCacheKey(args: { dir: string; version?: string }) {
   const { dir, version } = args;
   return version ? `${dir}/ver:${version}` : dir;
 }

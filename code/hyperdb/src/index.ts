@@ -1,29 +1,11 @@
-import { value } from './common';
 import { Db } from './db';
 import { Network } from './network';
+import { Factory, create as creator } from './factory';
 
-export { Db, Network };
+export { Db, Network, Factory };
 export * from './types';
 
-/**
- * Create new HyperDB and connect it to the network.
- */
-export async function create<D extends object = any>(args: {
-  dir: string;
-  dbKey?: string;
-  connect?: boolean;
-  version?: string;
-}) {
-  const { dir, dbKey, version } = args;
-  const connect = value.defaultValue(args.connect, true);
-
-  // Construct and connect the database.
-  const db = await Db.create<D>({ dir, dbKey, version });
-  const network = Network.create({ db });
-  if (connect) {
-    network.connect();
-  }
-
-  // Finish up.
-  return { db, network };
-}
+export const factory = new Factory({ create: creator });
+export const create = factory.create;
+export const get = factory.get;
+export const getOrCreate = factory.getOrCreate;

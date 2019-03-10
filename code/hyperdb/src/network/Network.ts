@@ -51,7 +51,7 @@ export class Network implements t.INetwork {
     dispose$: new Subject(),
     events$: new Subject<t.NetworkEvent>(),
     status: 'DISCONNECTED' as t.NetworkStatus,
-    connecting: undefined as Promise<{}> | undefined,
+    connecting: undefined as Promise<void> | undefined,
     connection: undefined as t.INetworkConnectionInfo | undefined,
     replication: undefined as t.IProtocol | undefined,
   };
@@ -121,7 +121,7 @@ export class Network implements t.INetwork {
       return this._.connecting; // Return the connection promise if already connected.
     }
 
-    this._.connecting = new Promise(async (resolve, reject) => {
+    this._.connecting = new Promise<void>(async (resolve, reject) => {
       try {
         const isHolePunchable = await this.isHolePunchable();
         if (!isHolePunchable) {
@@ -149,7 +149,7 @@ export class Network implements t.INetwork {
   /**
    * Disconnects from the swarm.
    */
-  public disconnect() {
+  public async disconnect() {
     this.throwIfDisposed('disconnect');
     this._.connecting = undefined;
     this._.connection = undefined;

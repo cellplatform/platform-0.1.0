@@ -5,7 +5,7 @@ import { share, filter } from 'rxjs/operators';
 import { value } from '../common';
 import * as t from './types';
 
-type Ref = { db: Db; network: Network; dir: string; version?: string };
+type Ref = { db: t.IDb; network: t.INetwork; dir: string; version?: string };
 type Refs = { [key: string]: Ref };
 const refs: Refs = {};
 

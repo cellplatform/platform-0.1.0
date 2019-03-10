@@ -1,8 +1,9 @@
-import { expect } from 'chai';
-import { Db } from './Db';
 import { fs } from '@platform/fs';
-import * as t from '../types';
 import { time } from '@platform/util.value';
+import { expect } from 'chai';
+
+import * as t from '../types';
+import { Db } from './Db';
 
 const dir = 'tmp/db';
 after(async () => fs.remove('tmp'));

@@ -5,6 +5,9 @@ export type NetworkStatus = 'DISCONNECTED' | 'CONNECTING' | 'CONNECTED';
 export type INetwork = INetworkProps & {
   readonly events$: Observable<NetworkEvent>;
   toString(): string;
+  dispose(): void;
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
 };
 
 export type INetworkProps = {
