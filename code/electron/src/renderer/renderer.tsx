@@ -51,6 +51,13 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
   const windows = new WindowsRenderer({ ipc });
 
   // React <Provider>.
+  const getContext = async (context: t.IRendererContext) => {
+    if (args.getContext) {
+      const res = await args.getContext({ context });
+      return typeof res === 'object' ? res : {};
+    }
+    return {};
+  };
   let context: t.IRendererContext<M, S> = {
     id,
     ipc,
@@ -59,11 +66,8 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
     devTools,
     windows,
     remote,
-    ...({} as any),
   };
-
-  // Merge in additional context props.
-  context = args.getContext ? { ...context, ...(await args.getContext({ context })) } : context;
+  context = { ...context, ...(await getContext(context)) };
 
   const Provider = createProvider(context);
 
