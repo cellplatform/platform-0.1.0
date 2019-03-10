@@ -11,7 +11,6 @@ export type IDbHeaderProps = {
   db: t.ITestRendererDb;
   style?: GlamorValue;
 };
-
 export type IDbHeaderState = {
   name?: string;
 };
