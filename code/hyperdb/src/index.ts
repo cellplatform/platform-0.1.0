@@ -8,7 +8,7 @@ export * from './types';
 /**
  * Create new HyperDB and connect it to the network.
  */
-export async function create(args: {
+export async function create<D extends object = any>(args: {
   dir: string;
   dbKey?: string;
   connect?: boolean;
@@ -18,7 +18,7 @@ export async function create(args: {
   const connect = value.defaultValue(args.connect, true);
 
   // Construct and connect the database.
-  const db = await Db.create({ dir, dbKey, version });
+  const db = await Db.create<D>({ dir, dbKey, version });
   const network = Network.create({ db });
   if (connect) {
     network.connect();
