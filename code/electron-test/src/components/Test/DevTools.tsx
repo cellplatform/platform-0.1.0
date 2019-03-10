@@ -40,7 +40,7 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
             <Button label={'show (create)'} onClick={this.create} />
           </div>
           <div {...styles.colObject}>
-            <ObjectView name={'env ("is")'} data={renderer.is.toObject()} />
+            <ObjectView name={'context'} data={this.context} />
           </div>
         </div>
       </TestPanel>

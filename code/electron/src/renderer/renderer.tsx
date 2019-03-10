@@ -15,20 +15,23 @@ const remote = electron.remote as Electron.Remote;
 export { Context, ReactContext };
 export * from '../types';
 
-type Refs = {
-  renderer?: t.IRenderer;
-};
+type Refs = { renderer?: t.IRenderer };
 const refs: Refs = {};
+
+type GetContext<M extends t.IpcMessage = any, S extends t.StoreJson = any> = (args: {
+  context: t.IRendererContext<M, S>;
+}) => Promise<any>;
 
 /**
  * Initializes [Renderer] process systems (safely).
  */
-export async function init<M extends t.IpcMessage = any, S extends t.StoreJson = any>(): Promise<
-  t.IRenderer<M, S>
-> {
+export async function init<M extends t.IpcMessage = any, S extends t.StoreJson = any>(
+  args: { getContext?: GetContext<M, S> } = {},
+): Promise<t.IRenderer<M, S>> {
   if (refs.renderer) {
     return refs.renderer;
   }
+
   // Retrieve the ID.
   const id = await getId();
 
@@ -48,7 +51,7 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
   const windows = new WindowsRenderer({ ipc });
 
   // React <Provider>.
-  const context: t.IRendererContext = {
+  let context: t.IRendererContext<M, S> = {
     id,
     ipc,
     store,
@@ -56,7 +59,12 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
     devTools,
     windows,
     remote,
+    ...({} as any),
   };
+
+  // Merge in additional context props.
+  context = args.getContext ? { ...context, ...(await args.getContext({ context })) } : context;
+
   const Provider = createProvider(context);
 
   // Finish up.
@@ -94,9 +102,13 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
  *      }
  *
  */
-export async function render(element: React.ReactElement<any>, container: Element | string) {
+export async function render(
+  element: React.ReactElement<any>,
+  container: Element | string,
+  options: { getContext?: GetContext } = {},
+) {
   // Setup initial conditions.
-  const renderer = await init();
+  const renderer = await init(options);
   const { log, Provider } = renderer;
 
   const throwError = (msg: string) => {

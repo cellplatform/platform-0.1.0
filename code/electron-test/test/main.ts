@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 
 import * as t from '../src/types';
 
-const config = require('../.uiharness/config.json') as uiharness.IUihRuntimeConfig;
+const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
 
 /**
  * Initialize the default [main] window process with the [UIHarness].
@@ -87,7 +87,9 @@ const config = require('../.uiharness/config.json') as uiharness.IUihRuntimeConf
         const id = e.windowId;
         const all = BrowserWindow.getAllWindows();
         const parent = all.find(window => window.id === id);
-        main.devTools.create({ parent, windows });
+        if (parent) {
+          main.devTools.create({ parent, windows });
+        }
       });
   } catch (error) {
     log.error(error.message);
