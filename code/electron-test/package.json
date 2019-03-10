@@ -4,12 +4,12 @@
   "version": "0.0.109",
   "scripts": {
     "postinstall": "ui init",
-    "ui": "yarn chmod && ui $@",
-    "start": "yarn chmod && ui start $@",
+    "ui": "ui $@",
+    "start": "ui start $@",
     "test": "echo no-op",
-    "lint": "yarn chmod && ts lint",
-    "build": "yarn chmod && ts build",
-    "chmod": "sh sh/chmod.sh",
+    "lint": "ts lint",
+    "build": "ts build",
+    "build-test": "ts build --tsconfig tsconfig.test.json",
     "tmp": "msync sync && yarn chmod"
   },
   "dependencies": {
