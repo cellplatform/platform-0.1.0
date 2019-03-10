@@ -5,6 +5,7 @@ import { share, takeUntil, filter, take } from 'rxjs/operators';
 
 import { Db } from '../db';
 import * as t from '../types';
+import { time } from '../common';
 
 const network = require('@hyperswarm/network');
 const pump = require('pump');
@@ -166,33 +167,56 @@ export class Network implements t.INetwork {
   /**
    * [INTERNAL]
    */
-  private onConnection = (socket: Socket, info: any) => {
+  private onConnection = (socket: Socket, details: any) => {
     const { db } = this._;
 
     // Convert info into storage object.
-    const peer = info.peer ? { ...info.peer, topic: info.peer.topic.toString('hex') } : undefined;
+    const peer = details.peer
+      ? { ...details.peer, topic: details.peer.topic.toString('hex') }
+      : undefined;
     if (peer) {
       peer.referrer = peer.referrer
         ? { ...peer.referrer, id: peer.referrer.id.toString('hex') }
         : undefined;
     }
-    const connection: t.INetworkConnectionInfo = { ...info, peer };
-    this._.connection = connection;
+    const info: t.INetworkConnectionInfo = { ...details, peer };
+    this._.connection = info;
 
     // Update state.
     this.changeStatus('CONNECTED');
 
+    /**
+     * TODO
+     * - store connection in a way that `conn` can be disposed of upon leave.
+     * - store connection/info as array of connections.
+     * - monitor heartbeat, restart connection on failure.
+     */
+
     // Replicate the DB.
     const rep = (this._.replication = db.replicate({ live: true }));
-    pump(rep, socket, rep, () => {
+    const conn = pump(rep, socket, rep, () => {
       // Socket Pipe Ended.
-    });
+    }) as t.IProtocol;
 
-    socket.on('data', (data: any) => {
-      console.log('data');
+    // console.log('r', r);
+    // r.destroy();
+
+    let TMP_COUNT = 0;
+    let timer = time.timer();
+    let times: number[] = [];
+    socket.on('data', (data: Buffer) => {
+      const elapsed = timer.elapsed();
+      times = [...times, elapsed];
+      const avg = times.reduce((acc, next) => acc + next, 0) / times.length;
+      console.log('data', `(${TMP_COUNT++}) elapsed: ${elapsed} | avg: ${avg}`);
+
+      timer = time.timer();
+
       const db = this.db;
       this._.events$.next({ type: 'NETWORK/data', payload: { db } });
     });
+
+    // socket.rem
   };
 
   private changeStatus(status: t.NetworkStatus) {
