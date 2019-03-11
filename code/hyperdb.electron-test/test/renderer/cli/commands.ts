@@ -5,7 +5,7 @@ import { db } from './cmd.db';
 import { tmp } from './cmd.tmp';
 import * as t from './types';
 
-type P = t.ITestCommandProps;
+type P = t.ICommandProps;
 
 const newDb = Command.create<P>('new', e =>
   e.props.events$.next({ type: 'CLI/db/new', payload: {} }),

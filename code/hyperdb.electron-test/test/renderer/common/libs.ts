@@ -5,3 +5,6 @@ export * from '@platform/cli.spec';
 
 import * as hjson from 'hjson';
 export { hjson };
+
+export { renderer as hyperdb } from '@platform/hyperdb.electron/lib/renderer';
+export { renderer } from '@platform/electron/lib/renderer';

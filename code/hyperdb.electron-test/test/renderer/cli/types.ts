@@ -1,32 +1,38 @@
 import { Subject } from 'rxjs';
-import { ITestRendererDb } from '../../types';
+import { ITestRendererDb, IDbRendererFactory } from '../../types';
+import { ICommandState } from '../common';
 
 export { ITestRendererDb };
 
-export type ITestCommandProps = {
+export type ICommandLine = {
+  state: ICommandState;
+  events$: Subject<CommandLineEvent>;
+  db: IDbRendererFactory;
+};
+export type ICommandProps = {
   db?: ITestRendererDb;
   view?: 'WATCH';
-  events$: Subject<CliEvent>;
+  events$: Subject<CommandLineEvent>;
 };
 
-export type ITestCommandOptions = {};
+export type ICommandOptions = {};
 
 /**
- * Events
+ * [Events]
  */
-export type CliEvent = ICliNewDbEvent | ICliJoinDbEvent | ICliEditorCellEvent;
+export type CommandLineEvent = INewDbEvent | IJoinDbEvent | IEditorChangeCellEvent;
 
-export type ICliNewDbEvent = {
+export type INewDbEvent = {
   type: 'CLI/db/new';
   payload: {};
 };
 
-export type ICliJoinDbEvent = {
+export type IJoinDbEvent = {
   type: 'CLI/db/join';
   payload: { dbKey?: string };
 };
 
-export type ICliEditorCellEvent = {
+export type IEditorChangeCellEvent = {
   type: 'CLI/editor/cell';
   payload: { cellKey: string };
 };

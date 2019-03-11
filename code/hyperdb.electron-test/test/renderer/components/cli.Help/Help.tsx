@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, CommandState, css, GlamorValue, ICommand, str } from '../../common';
+import { color, CommandState, css, GlamorValue, ICommand, str, ICommandState } from '../../common';
 
 export type CommandClickEvent = {
   cmd: ICommand;
@@ -10,7 +10,7 @@ export type CommandClickEvent = {
 export type CommandClickEventHandler = (e: CommandClickEvent) => void;
 
 export type IHelpProps = {
-  cli: CommandState;
+  cli: ICommandState;
   style?: GlamorValue;
   onCommandClick?: CommandClickEventHandler;
 };

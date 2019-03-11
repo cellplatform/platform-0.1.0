@@ -26,7 +26,7 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
    * [Fields]
    */
   public static contextType = renderer.Context;
-  public context!: renderer.ReactContext;
+  public context!: t.ITestRendererContext;
   public state: IShellIndexState = { databases: [] };
   private unmounted$ = new Subject();
   private state$ = new Subject<IShellIndexState>();

@@ -7,7 +7,6 @@ import { ObjectView } from '../../primitives';
 const SYS_WATCH = '.sys/watch';
 
 export type IDbWatchProps = {
-  cli: CommandState;
   db: t.ITestRendererDb;
   style?: GlamorValue;
 };

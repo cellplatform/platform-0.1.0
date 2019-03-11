@@ -165,8 +165,9 @@ export class CommandState implements t.ICommandState {
     return this.text;
   }
 
-  public toObject(): t.ICommandState {
+  public toObject(): t.ICommandStateProps {
     return {
+      root: this.root,
       text: this.text,
       args: this.args,
       command: this.command,

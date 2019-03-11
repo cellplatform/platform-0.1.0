@@ -18,7 +18,6 @@ import {
 } from '../../../common';
 
 export type INoteEditorProps = {
-  cli: CommandState;
   db: t.ITestRendererDb;
   style?: GlamorValue;
 };
@@ -83,7 +82,7 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
     commandEvents$
       .pipe(
         filter(e => e.type === 'CLI/editor/cell'),
-        map(e => e.payload as cli.ICliEditorCellEvent['payload']),
+        map(e => e.payload as cli.IEditorChangeCellEvent['payload']),
       )
       .subscribe(e => {
         // console.log('e', e);

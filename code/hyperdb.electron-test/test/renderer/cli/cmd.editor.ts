@@ -2,7 +2,7 @@ import { shell } from 'electron';
 import { Command } from '../common';
 import * as t from './types';
 
-type P = t.ITestCommandProps;
+type P = t.ICommandProps;
 
 /**
  * [editor] sample input editor.

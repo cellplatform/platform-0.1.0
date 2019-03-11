@@ -1,9 +1,19 @@
 import { ICommand, ICommandArgs } from '../types';
+import { Observable } from 'rxjs';
 
 /**
  * Manages state of a CLI program.
  */
-export type ICommandState = {
+export type ICommandState = ICommandStateProps & {
+  dispose$: Observable<{}>;
+  events$: Observable<CommandStateEvent>;
+  change$: Observable<ICommandStateChange>;
+  invoke$: Observable<ICommandStateChange>;
+  change: CommandChangeDispatcher;
+};
+
+export type ICommandStateProps = {
+  root: ICommand;
   text: string;
   args: ICommandArgs;
   command: ICommand | undefined;
@@ -33,9 +43,10 @@ export type CommandStateEvent = ICommandStateChangeEvent;
 
 export type ICommandStateChangeEvent = {
   type: 'COMMAND/state/change';
-  payload: {
-    props: ICommandState;
-    invoked: boolean;
-    namespace?: boolean;
-  };
+  payload: ICommandStateChange;
+};
+export type ICommandStateChange = {
+  props: ICommandStateProps;
+  invoked: boolean;
+  namespace?: boolean;
 };

@@ -8,7 +8,7 @@ type Refs = { [key: string]: Ref };
 /**
  * A factory for creating and caching database instances.
  */
-export class Factory<P extends {}, D extends t.IDb<P>, N extends t.INetwork> {
+export class DbFactory<D extends t.IDb, N extends t.INetwork> implements t.IDbFactory<D, N> {
   /**
    * [Static]
    */
@@ -20,7 +20,7 @@ export class Factory<P extends {}, D extends t.IDb<P>, N extends t.INetwork> {
   /**
    * [Constructor]
    */
-  constructor(args: { create: t.CreateDatabase }) {
+  constructor(args: { create: t.CreateDatabase<D, N> }) {
     this._create = args.create;
   }
 
@@ -45,7 +45,7 @@ export class Factory<P extends {}, D extends t.IDb<P>, N extends t.INetwork> {
    * Determines if the specified DB/Network has been created and exists in the cache.
    */
   public isCached = (args: { dir: string; version?: string }) => {
-    const key = Factory.cacheKey(args);
+    const key = DbFactory.cacheKey(args);
     return Boolean(this._cache[key]);
   };
 
@@ -59,12 +59,12 @@ export class Factory<P extends {}, D extends t.IDb<P>, N extends t.INetwork> {
   /**
    * Creates a new DB and network connection.
    */
-  public create = async (args: t.ICreateDatabaseArgs & { cache?: boolean }) => {
+  public create = async <P extends {} = any>(args: t.ICreateCacheableDatabaseArgs) => {
     const res = await this._create<P>(args);
     const { db, network } = res;
 
     // Update state when DB is disposed.
-    const key = Factory.cacheKey(args);
+    const key = DbFactory.cacheKey(args);
     db.dispose$.pipe(take(1)).subscribe(e => {
       delete this._cache[key];
       network.dispose();
@@ -82,24 +82,24 @@ export class Factory<P extends {}, D extends t.IDb<P>, N extends t.INetwork> {
   /**
    * Gets an existing DB/Network instance.
    */
-  public get = (args: {
+  public get = <P extends {} = any>(args: {
     dir: string;
     version?: string;
   }): t.ICreateDatabaseResponse<P> | undefined => {
-    const key = Factory.cacheKey(args);
+    const key = DbFactory.cacheKey(args);
     const ref = this._cache[key];
     if (!ref) {
       return undefined;
     }
-    const db = ref.db as D;
-    const network = ref.network as N;
+    const db = ref.db;
+    const network = ref.network;
     return { db, network };
   };
 
   /**
    * Gets or creates a new DB/Network instance.
    */
-  public getOrCreate = async (args: t.ICreateDatabaseArgs & { cache?: boolean }) => {
-    return (this.get(args) || (await this.create(args))) as t.ICreateDatabaseResponse<P>;
+  public getOrCreate = async <P extends {} = any>(args: t.ICreateCacheableDatabaseArgs) => {
+    return (this.get<P>(args) || (await this.create<P>(args))) as t.ICreateDatabaseResponse<P>;
   };
 }

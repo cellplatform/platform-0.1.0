@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, CommandState, css, GlamorValue, renderer, t } from '../../common';
+import { color, css, GlamorValue, renderer, t } from '../../common';
 import { CommandClickEvent, Help } from '../cli.Help';
 import { DbHeader } from './components/DbHeader';
 import { DbStatus } from './components/DbStatus';
@@ -10,7 +10,6 @@ import { DbWatch } from './components/DbWatch';
 import { NoteEditor } from './components/NoteEditor';
 
 export type IShellMainProps = {
-  cli: CommandState;
   db: t.ITestRendererDb;
   network?: t.INetwork;
   style?: GlamorValue;
@@ -21,7 +20,7 @@ export type IShellMainState = {};
 export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainState> {
   public state: IShellMainState = {};
   public static contextType = renderer.Context;
-  public context!: renderer.ReactContext;
+  public context!: t.ITestRendererContext;
   private unmounted$ = new Subject();
   private state$ = new Subject<IShellMainState>();
 
@@ -29,11 +28,9 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
    * [Lifecycle]
    */
 
-  constructor(props: IShellMainProps) {
-    super(props);
+  public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const change$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
-
     state$.subscribe(e => this.setState(e));
     change$.subscribe(e => this.forceUpdate());
   }
@@ -46,7 +43,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
    * [Properties]
    */
   public get cli() {
-    return this.props.cli;
+    return this.context.cli.state;
   }
 
   public get store() {
@@ -58,7 +55,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
    */
 
   public render() {
-    const { db, cli } = this.props;
+    const { db } = this.props;
     const styles = {
       base: css({
         flex: 1,
@@ -85,7 +82,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
         <div {...styles.body}>
           {this.renderOutput()}
           <div {...styles.help}>
-            <Help cli={cli} onCommandClick={this.handleHelpCommandClick} />
+            <Help cli={this.cli} onCommandClick={this.handleHelpCommandClick} />
           </div>
         </div>
       </div>
@@ -93,7 +90,8 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
   }
 
   private renderOutput() {
-    const { cli, db, network } = this.props;
+    const { db, network } = this.props;
+    const cli = this.cli;
     const ns = cli.namespace;
     const styles = {
       base: css({
@@ -102,10 +100,10 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
       }),
     };
     const elStatus = ns && ns.command.name === 'info' && (
-      <DbStatus key={db.localKey} cli={cli} db={db} network={network} />
+      <DbStatus key={db.localKey} db={db} network={network} />
     );
-    const elEditor = ns && ns.command.name === 'editor' && <NoteEditor cli={cli} db={db} />;
-    const elWatch = !elStatus && !elEditor && <DbWatch db={db} cli={cli} />;
+    const elEditor = ns && ns.command.name === 'editor' && <NoteEditor db={db} />;
+    const elWatch = !elStatus && !elEditor && <DbWatch db={db} />;
 
     return (
       <div {...styles.base}>

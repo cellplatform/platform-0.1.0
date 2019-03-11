@@ -29,7 +29,7 @@ const KEY = {
 export class Test extends React.PureComponent<{}, ITestState> {
   public state: ITestState = { data: {}, versions: [] };
   public static contextType = renderer.Context;
-  public context!: renderer.ReactContext;
+  public context!: t.IRendererContext;
 
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();

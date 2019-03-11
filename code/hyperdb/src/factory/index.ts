@@ -1,2 +1,2 @@
-export * from './Factory';
 export * from './create';
+export * from './DbFactory';

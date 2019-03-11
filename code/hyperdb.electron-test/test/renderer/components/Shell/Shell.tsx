@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
-import * as cli from '../../cli';
-import { COLORS, CommandState, css, GlamorValue, ICommand, renderer, str, t } from '../../common';
+import { COLORS, css, GlamorValue, ICommand, renderer, str, t } from '../../common';
 import { CommandPrompt } from '../cli.CommandPrompt';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
@@ -25,11 +24,9 @@ export type IShellState = {
 export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public state: IShellState = {};
   public static contextType = renderer.Context;
-  public context!: renderer.ReactContext;
+  public context!: t.ITestRendererContext;
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IShellState>>();
-  private cli = CommandState.create({ root: cli.root });
-  private commandEvents$ = cli.events$;
   private commandPrompt: CommandPrompt | undefined;
   private commandPromptRef = (ref: CommandPrompt) => (this.commandPrompt = ref);
 
@@ -38,13 +35,11 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
    */
 
   public componentDidMount() {
-    const { ipc } = this.context;
     const unmounted$ = this.unmounted$;
-
     const store$ = this.store.change$.pipe(takeUntil(unmounted$));
     const state$ = this.state$.pipe(takeUntil(unmounted$));
-    const cli$ = this.cli.change$.pipe(takeUntil(unmounted$));
-    const commandEvents$ = this.commandEvents$.pipe(takeUntil(unmounted$));
+    const cli$ = this.cli.state.change$.pipe(takeUntil(unmounted$));
+    const commandEvents$ = this.cli.events$.pipe(takeUntil(unmounted$));
 
     state$.subscribe(e => this.setState(e));
     store$.subscribe(e => this.updateState());
@@ -59,8 +54,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       .subscribe(async e => {
         const selected = this.selected;
         const dir = selected ? `${await this.store.get('dir')}/${selected}` : undefined;
-        const res = dir ? await renderer.getOrCreate({ ipc, dir }) : undefined;
-        const selectedDb = res ? res.db : undefined;
+        const db = this.context.db;
+        const res = dir ? await db.getOrCreate({ dir }) : undefined;
+        const selectedDb = res ? (res.db as t.ITestRendererDb) : undefined;
         const selectedNetwork = res ? res.network : undefined;
         this.state$.next({ selectedDb, selectedNetwork });
       });
@@ -69,14 +65,14 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     cli$.subscribe(e => this.forceUpdate());
 
     cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
-      const command = e.props.command as ICommand<t.ITestCommandProps>;
+      const command = e.props.command as ICommand<t.ICommandProps>;
       const db = this.state.selectedDb;
-      const props: t.ITestCommandProps = { db, events$: this.commandEvents$ };
+      const props: t.ICommandProps = { db, events$: this.cli.events$ };
       const args = e.props.args;
 
       // Step into namespace (if required).
       if (!command.handler && command.children.length > 0) {
-        this.cli.change({ text: this.cli.text, namespace: true });
+        this.cli.state.change({ text: this.cli.state.text, namespace: true });
       }
 
       // Invoke handler.
@@ -96,7 +92,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     commandEvents$
       .pipe(
         filter(e => e.type === 'CLI/db/join'),
-        map(e => e as t.ICliJoinDbEvent),
+        map(e => e as t.IJoinDbEvent),
       )
       .subscribe(e => {
         const { dbKey } = e.payload;
@@ -117,7 +113,11 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
    */
 
   private get store() {
-    return this.context.store as t.ITestStore;
+    return this.context.store;
+  }
+
+  private get cli() {
+    return this.context.cli;
   }
 
   private get selected() {
@@ -137,7 +137,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   }
 
   private async createDatabase(args: { dbKey?: string }) {
-    const { ipc, log } = this.context;
+    const { ipc, log, db } = this.context;
     const { dbKey } = args;
     const prefix = dbKey ? 'peer' : 'primary';
 
@@ -150,7 +150,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
     try {
       // Create the database.
-      await renderer.getOrCreate({ ipc, dir, dbKey });
+      await db.getOrCreate({ dir, dbKey });
+
+      // await renderer.getOrCreate({ ipc, dir, dbKey });
       this.state$.next({ selected: name });
     } catch (error) {
       log.error(error);
@@ -205,6 +207,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   private renderMain() {
     const { selectedDb, selectedNetwork } = this.state;
+    const cli = this.cli.state;
     const styles = {
       base: css({
         flex: 1,
@@ -227,7 +230,6 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         key={selectedDb.key}
         db={selectedDb}
         network={selectedNetwork}
-        cli={this.cli}
         onFocusCommandPrompt={this.focusCommandPrompt}
       />
     );
@@ -238,9 +240,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         <div {...styles.footer}>
           <CommandPrompt
             ref={this.commandPromptRef}
-            text={this.cli.text}
-            namespace={this.cli.namespace}
-            onChange={this.cli.change}
+            text={cli.text}
+            namespace={cli.namespace}
+            onChange={cli.change}
             onAutoComplete={this.onAutoComplete}
           />
         </div>
@@ -284,7 +286,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   };
 
   private onAutoComplete = () => {
-    const cli = this.cli;
+    const cli = this.cli.state;
     if (cli.command) {
       return;
     }

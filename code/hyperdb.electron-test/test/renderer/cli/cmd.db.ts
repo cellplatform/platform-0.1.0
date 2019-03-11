@@ -3,7 +3,7 @@ import { watch, unwatch, updateWatch } from './cmd.watch';
 
 import * as t from './types';
 
-type P = t.ITestCommandProps;
+type P = t.ICommandProps;
 
 /**
  * [put] write to the DB.

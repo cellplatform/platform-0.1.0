@@ -5,7 +5,6 @@ import { css, color, GlamorValue, CommandState, t } from '../../../common';
 import { ObjectView, Hr } from '../../primitives';
 
 export type IDbStatusProps = {
-  cli: CommandState;
   db: t.ITestRendererDb;
   network?: t.INetwork;
   style?: GlamorValue;

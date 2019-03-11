@@ -1,5 +1,12 @@
+import { IDbFactory } from '@platform/hyperdb/lib/types';
 import { IDb, INetwork, IpcClient, DbIpcEvent, NetworkIpcEvent } from '../types';
+
 export * from '../types';
+
+/**
+ * A factory cor creating DB/Network pairs.
+ */
+export type IDbRendererFactory = IDbFactory<IDbRenderer, INetworkRenderer>;
 
 /**
  * [Db]
