@@ -20,10 +20,16 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
     return version ? `${dir}/ver:${version}` : dir;
   }
 
+  public static create<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwork>(args: {
+    create: t.CreateDatabase<D, N>;
+  }) {
+    return new DbFactory<D, N>(args);
+  }
+
   /**
    * [Constructor]
    */
-  constructor(args: { create: t.CreateDatabase<D, N> }) {
+  private constructor(args: { create: t.CreateDatabase<D, N> }) {
     this._create = args.create;
   }
 

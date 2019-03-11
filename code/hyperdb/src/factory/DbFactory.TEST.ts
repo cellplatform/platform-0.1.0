@@ -16,7 +16,7 @@ describe('Factory', () => {
 
   describe('create', () => {
     it('creates (not cached)', async () => {
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
       expect(factory.isCached({ dir })).to.eql(false);
       const res = await factory.create({ dir, connect: false, cache: false });
       expect(res.db.dir).to.eql(dir);
@@ -25,7 +25,7 @@ describe('Factory', () => {
     });
 
     it('creates (cached, default)', async () => {
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
       expect(factory.isCached({ dir })).to.eql(false);
       const res = await factory.create({ dir, connect: false });
       expect(res.db.dir).to.eql(dir);
@@ -35,7 +35,7 @@ describe('Factory', () => {
 
     it('invoke `afterCreate` callback', async () => {
       const list: t.IAfterCreateArgs[] = [];
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
 
       factory.afterCreate(async e => {
         await time.wait(5); // Simulate pause doing something.
@@ -56,14 +56,14 @@ describe('Factory', () => {
 
   describe('get', () => {
     it('undefined (not created)', () => {
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
       const res = factory.get({ dir });
       expect(res).to.eql(undefined);
       expect(factory.count).to.eql(0);
     });
 
     it('gets a created instance from cache', async () => {
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
       const res1 = await factory.create({ dir, connect: false });
       const res2 = factory.get({ dir });
       expect(factory.count).to.eql(1);
@@ -76,7 +76,7 @@ describe('Factory', () => {
 
   describe('getOrCreate', () => {
     it('creates on get (caches, default)', async () => {
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
       expect(factory.isCached({ dir })).to.eql(false);
       expect(factory.count).to.eql(0);
       const res = await factory.getOrCreate({ dir, connect: false });
@@ -86,7 +86,7 @@ describe('Factory', () => {
     });
 
     it('creates on get (no cache)', async () => {
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
       expect(factory.isCached({ dir })).to.eql(false);
       const res = await factory.getOrCreate({ dir, connect: false, cache: false });
       expect(res && res.db.dir).to.eql(dir);
@@ -97,7 +97,7 @@ describe('Factory', () => {
 
   describe('dispose', () => {
     it('removes from cache on DB disposed', async () => {
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
       const res = await factory.getOrCreate({ dir, connect: false });
       expect(factory.isCached({ dir })).to.eql(true);
       expect(factory.count).to.eql(1);
@@ -107,7 +107,7 @@ describe('Factory', () => {
     });
 
     it('disposes of network on DB disposed', async () => {
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
       const res = await factory.getOrCreate({ dir, connect: false });
       const { db, network } = res;
       expect(network.isDisposed).to.eql(false);
@@ -118,7 +118,7 @@ describe('Factory', () => {
 
   describe('reset', () => {
     it('disposes of all items', async () => {
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
       const res1 = await factory.getOrCreate({ dir: dir1, connect: false });
       const res2 = await factory.getOrCreate({ dir: dir2, connect: false });
 
@@ -140,12 +140,12 @@ describe('Factory', () => {
 
   describe('items', () => {
     it('has no items', () => {
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
       expect(factory.items).to.eql([]);
     });
 
     it('has items', async () => {
-      const factory = new DbFactory({ create });
+      const factory = DbFactory.create({ create });
       const res1 = await factory.getOrCreate({ dir: dir1, connect: false });
       const res2 = await factory.getOrCreate({ dir: dir2, connect: false });
 
