@@ -42,8 +42,6 @@ describe('Factory', () => {
         list.push(e);
       });
 
-      console.log(`\nTODO 🐷   CLONE method\n`);
-
       const args = { dir, connect: false };
       const res = await factory.create(args);
 
@@ -157,6 +155,34 @@ describe('Factory', () => {
 
       expect(items[0].network).to.eql(res1.network);
       expect(items[1].network).to.eql(res2.network);
+    });
+  });
+
+  describe('clone', () => {
+    it('clones from empty', () => {
+      const factory1 = DbFactory.create({ create });
+      const factory2 = factory1.clone();
+      expect(factory2).to.be.an.instanceof(DbFactory);
+      expect(factory1).to.not.equal(factory2);
+    });
+
+    it('clones cache', async () => {
+      const factory1 = DbFactory.create({ create });
+      const res1 = await factory1.getOrCreate({ dir: dir1, connect: false });
+
+      const factory2 = factory1.clone();
+      const res2 = await factory2.getOrCreate({ dir: dir1, connect: false });
+      const res3 = await factory2.getOrCreate({ dir: dir2, connect: false });
+
+      expect(factory1.count).to.eql(1);
+      expect(factory2.count).to.eql(2);
+
+      expect(factory1.get({ dir: dir1 })).to.eql(res1);
+      expect(factory2.get({ dir: dir1 })).to.eql(res1);
+      expect(factory2.get({ dir: dir1 })).to.eql(res2);
+
+      expect(factory1.get({ dir: dir2 })).to.eql(undefined);
+      expect(factory2.get({ dir: dir2 })).to.eql(res3);
     });
   });
 });

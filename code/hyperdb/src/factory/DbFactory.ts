@@ -29,8 +29,9 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
   /**
    * [Constructor]
    */
-  private constructor(args: { create: t.CreateDatabase<D, N> }) {
+  private constructor(args: { create: t.CreateDatabase<D, N>; cache?: Refs }) {
     this._create = args.create;
+    this._cache = { ...(args.cache || {}) };
   }
 
   /**
@@ -38,7 +39,7 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
    */
   private readonly _create: t.CreateDatabase<D, N>;
   private _afterCreate: Array<t.AfterCreate<D, N>> = [];
-  private readonly _cache: Refs = {};
+  private readonly _cache: Refs;
   private readonly _events$ = new Subject<t.DbFactoryEvent>();
   public readonly events$ = this._events$.pipe(share());
 
@@ -122,6 +123,13 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
   public afterCreate(handler: t.AfterCreate<D, N>) {
     this._afterCreate = [...this._afterCreate, handler];
     return this;
+  }
+
+  /**
+   * Creates a new instance of the factory cache retaining current cached state.
+   */
+  public clone() {
+    return new DbFactory<D, N>({ create: this._create, cache: this._cache });
   }
 
   /**
