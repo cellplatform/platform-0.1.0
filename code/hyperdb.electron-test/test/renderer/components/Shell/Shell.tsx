@@ -9,7 +9,7 @@ import { JoinWithKeyEvent } from '../Dialog.Join/types';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
 import { ShellMain } from '../Shell.Main';
 
-const AUTO_CONNECT = true;
+const AUTO_CONNECT = false;
 
 export type IShellProps = {
   style?: GlamorValue;
@@ -17,12 +17,7 @@ export type IShellProps = {
 
 export type IShellState = {
   dialog?: 'JOIN';
-  selected?: string; // database [dir].
-  selection?: {
-    db: t.ITestRendererDb;
-    network: t.INetworkRenderer;
-  };
-  store?: Partial<t.ITestStoreSettings>;
+  selectedDir?: string; // database [dir].
 };
 
 export class Shell extends React.PureComponent<IShellProps, IShellState> {
@@ -53,25 +48,24 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       // Store the currently selected database in state.
       .pipe(
         debounceTime(0),
-        distinctUntilChanged(prev => prev.selected === this.selected),
+        distinctUntilChanged(prev => prev.selectedDir === this.selectedDir),
       )
-      .subscribe(async e => {
-        const selected = this.selected;
-        const dir = selected ? `${await this.store.get('dir')}/${selected}` : undefined;
-        const db = this.context.db;
-        const res = dir ? await db.getOrCreate({ dir, connect: AUTO_CONNECT }) : undefined;
-        const selection = res
-          ? { db: res.db as t.ITestRendererDb, network: res.network }
-          : undefined;
-        this.state$.next({ selection });
-      });
+      .subscribe(e => this.updateState());
+
+    const db = this.context.db;
+    const dbChange$ = db.events$.pipe(
+      takeUntil(this.unmounted$),
+      filter(e => e.type === 'DB_FACTORY/change'),
+      debounceTime(0),
+    );
+    dbChange$.subscribe(e => this.updateState());
 
     // Redraw screen each time the CLI state changes.
-    cli$.subscribe(e => this.forceUpdate());
+    cli$.pipe(debounceTime(0)).subscribe(e => this.forceUpdate());
 
     cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
       const command = e.props.command as ICommand<t.ICommandProps>;
-      const selection = this.state.selection;
+      const selection = this.selection;
       const props: t.ICommandProps = { ...(selection || {}), events$: this.cli.events$ };
       const args = e.props.args;
 
@@ -82,9 +76,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
       // Invoke handler.
       if (command.handler) {
-        console.log('INVOKE', command.toString());
-        const res = await command.invoke({ props, args });
-        console.log('Shell // invoke response // props', res.props);
+        const log = this.context.log;
+        log.info('INVOKE', command.toString());
+        await command.invoke({ props, args });
       }
     });
 
@@ -125,10 +119,21 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     return this.context.cli;
   }
 
-  private get selected() {
-    const { selected, store } = this.state;
-    const databases = (store || {}).databases || [];
-    return selected ? selected : databases[0];
+  private get databases() {
+    return this.context.db.items.map(m => m.db);
+  }
+
+  private get selectedDir() {
+    let { selectedDir } = this.state;
+    const databases = this.databases;
+    selectedDir = selectedDir ? selectedDir : databases.length > 0 ? databases[0].dir : undefined;
+    return selectedDir;
+  }
+
+  public get selection() {
+    const db = this.context.db;
+    const selectedDir = this.selectedDir;
+    return selectedDir ? db.items.find(item => item.db.dir === selectedDir) : undefined;
   }
 
   /**
@@ -136,13 +141,12 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
    */
 
   public async updateState() {
-    const store = await this.store.read();
-    this.state$.next({ store });
-    this.state$.next({ selected: this.selected });
+    const selectedDir = this.selectedDir;
+    this.state$.next({ selectedDir });
   }
 
   private async createDatabase(args: { dbKey?: string }) {
-    const { ipc, log, db } = this.context;
+    const { log, db } = this.context;
     const { dbKey } = args;
     const prefix = dbKey ? 'peer' : 'primary';
 
@@ -156,7 +160,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     try {
       // Create the database.
       await db.getOrCreate({ dir, dbKey, connect: AUTO_CONNECT });
-      this.state$.next({ selected: name });
+      this.state$.next({ selectedDir: name });
     } catch (error) {
       log.error(error);
     }
@@ -196,7 +200,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         <div {...styles.body}>
           <ShellIndex
             style={styles.index}
-            selected={this.selected}
+            selected={this.selectedDir}
             onNew={this.handleNew}
             onConnect={this.handleJoinStart}
             onSelect={this.handleSelect}
@@ -209,7 +213,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   }
 
   private renderMain() {
-    const { selection } = this.state;
+    const selection = this.selection;
     const cli = this.cli.state;
     const styles = {
       base: css({
@@ -220,7 +224,6 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         flex: 1,
         display: 'flex',
         position: 'relative',
-        // Scroll: true,
       }),
       footer: css({
         position: 'relative',
@@ -281,7 +284,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   };
 
   private handleSelect = (e: ShellIndexSelectEvent) => {
-    this.state$.next({ selected: e.dir });
+    this.state$.next({ selectedDir: e.dir });
   };
 
   private clearDialog = () => {
