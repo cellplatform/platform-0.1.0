@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { filter, share, take, takeUntil } from 'rxjs/operators';
+import { filter, share, take, takeUntil, map, debounceTime } from 'rxjs/operators';
 
 import * as t from './types';
 const TARGET_MAIN = { target: 0 };
@@ -38,7 +38,7 @@ export class NetworkRenderer implements t.INetworkRenderer {
     this.ready = ready$.toPromise();
 
     // Sync props.
-    const state$ = this._.ipc.on<t.INetworkUpdateStateEvent>('NETWORK/state/update').pipe(
+    const state$ = this._.ipc.on<t.INetworkUpdateStateEvent>('NETWORK/ipc/state/update').pipe(
       takeUntil(this.dispose$),
       filter(
         e =>
@@ -54,6 +54,24 @@ export class NetworkRenderer implements t.INetworkRenderer {
     });
     state$.pipe(take(1)).subscribe(() => ready$.complete());
     this.syncState();
+
+    // Ferry NetworkEvents (but not internal renderer/IPC system events) through the local observable.
+    this._.ipc.events$
+      .pipe(
+        takeUntil(this.dispose$),
+        filter(e => e.type.startsWith('NETWORK/')),
+        filter(e => !e.type.startsWith('NETWORK/ipc/')),
+        map(e => e as t.NetworkEvent),
+      )
+      .subscribe(e => this._.events$.next(e));
+
+    // Update state on events.
+    this.events$
+      .pipe(
+        filter(e => e.type !== 'NETWORK/data'), // NB: Data is noise, and does not require a state update.
+        debounceTime(10),
+      )
+      .subscribe(e => this.syncState());
   }
 
   /**
@@ -62,7 +80,7 @@ export class NetworkRenderer implements t.INetworkRenderer {
   public readonly ready: Promise<{}>;
   private readonly _ = {
     db: (null as unknown) as t.IDbRenderer,
-    ipc: (null as unknown) as t.NetworkIpcClient,
+    ipc: (null as unknown) as t.HyperdbIpc,
     dispose$: new Subject(),
     events$: new Subject<t.NetworkEvent>(),
     props: (null as unknown) as t.INetworkProps,
@@ -133,7 +151,7 @@ export class NetworkRenderer implements t.INetworkRenderer {
     type E = t.INetworkGetStateEvent;
     const { dir, checkoutVersion: version } = this._.db;
     const payload: E['payload'] = { db: { dir, version } };
-    return this._.ipc.send<E>('NETWORK/state/get', payload, TARGET_MAIN);
+    return this._.ipc.send<E>('NETWORK/ipc/state/get', payload, TARGET_MAIN);
   }
 
   private async invoke<M extends keyof t.INetworkMethods>(
@@ -152,7 +170,7 @@ export class NetworkRenderer implements t.INetworkRenderer {
       params,
       wait,
     };
-    const res = await this._.ipc.send<E, R>('NETWORK/invoke', payload, TARGET_MAIN).promise;
+    const res = await this._.ipc.send<E, R>('NETWORK/ipc/invoke', payload, TARGET_MAIN).promise;
     const data = res.dataFrom('MAIN');
     const prefix = `Failed invoking Network method '${method}'`;
     if (!data) {

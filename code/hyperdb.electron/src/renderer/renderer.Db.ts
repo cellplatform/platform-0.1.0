@@ -40,7 +40,7 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
     this.ready = ready$.toPromise();
 
     // Sync props.
-    const state$ = this._.ipc.on<t.IDbUpdateStateEvent>('DB/state/update').pipe(
+    const state$ = this._.ipc.on<t.IDbUpdateStateEvent>('DB/ipc/state/update').pipe(
       takeUntil(this.dispose$),
       filter(e => e.payload.db.dir === this._.dir && e.payload.db.version === this._.version),
     );
@@ -54,14 +54,13 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
     state$.pipe(take(1)).subscribe(() => ready$.complete());
     this.syncState();
 
-    // Ferry events through local observable.
-    const events: Array<t.DbEvent['type']> = ['DB/watch', 'DB/error'];
+    // Ferry DbEvents (but not internal renderer/IPC system events) through the local observable.
     this._.ipc.events$
       .pipe(
         takeUntil(this.dispose$),
-        filter(e => events.includes(e.type as any)),
+        filter(e => e.type.startsWith('DB/')),
+        filter(e => !e.type.startsWith('DB/ipc/')),
         map(e => e as t.DbEvent),
-        filter(e => e.payload.db.key === this.key),
       )
       .subscribe(e => this._.events$.next(e));
   }
@@ -71,7 +70,7 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
    */
   public readonly ready: Promise<{}>;
   private readonly _ = {
-    ipc: (null as unknown) as t.DbIpcRendererClient,
+    ipc: (null as unknown) as t.HyperdbIpc,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),
     props: (null as unknown) as t.IDbProps,
@@ -195,7 +194,7 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
     const payload: E['payload'] = {
       db: { dir, dbKey, version },
     };
-    return this._.ipc.send<E>('DB/state/get', payload, TARGET_MAIN);
+    return this._.ipc.send<E>('DB/ipc/state/get', payload, TARGET_MAIN);
   }
 
   private async invoke<M extends keyof t.IDbMethods>(method: M, params: any[], wait?: boolean) {
@@ -209,7 +208,7 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
       params,
       wait,
     };
-    const res = await this._.ipc.send<E, R>('DB/invoke', payload, TARGET_MAIN).promise;
+    const res = await this._.ipc.send<E, R>('DB/ipc/invoke', payload, TARGET_MAIN).promise;
     const data = res.dataFrom('MAIN');
     const prefix = `Failed invoking DB method '${method}'`;
     if (!data) {

@@ -1,5 +1,5 @@
 import { IDbFactory } from '@platform/hyperdb/lib/types';
-import { IDb, INetwork, IpcClient, DbIpcEvent, NetworkIpcEvent } from '../types';
+import { IDb, INetwork } from '../types';
 
 export * from '../types';
 
@@ -19,15 +19,3 @@ export type IDbRenderer<D extends {} = any> = IDb<D> & {};
  * Extensions to the API for a network-swarm when it is running in the `renderer` process.
  */
 export type INetworkRenderer = INetwork & {};
-
-/**
- * [DB_Events]
- */
-export type DbIpcRendererClient = IpcClient<DbIpcRendererEvent>;
-export type DbIpcRendererEvent = DbIpcEvent;
-
-/**
- * [Nework_Events]
- */
-export type NetworkIpcRendererClient = IpcClient<NetworkIpcRendererEvent>;
-export type NetworkIpcRendererEvent = NetworkIpcEvent;

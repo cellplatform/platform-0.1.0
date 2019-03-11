@@ -13,7 +13,7 @@ const refs: Refs = {};
  * Start the HyperDB IPC handler's listening on the [main] process.
  */
 export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
-  const ipc = args.ipc as t.DbIpcRendererClient & t.NetworkIpcRendererClient;
+  const ipc = args.ipc as t.HyperdbIpc;
   const log = args.log;
   const events$ = new Subject<t.MainDbEvent>();
   log.info(`listening for ${log.yellow('hyperdb events')}`);
@@ -29,12 +29,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
 
     // Ferry events to clients.
     db.events$.subscribe(e => ipc.send(e.type, e.payload));
-    // network.events$.subscribe(e => ipc.send(e.type, e.payload));
-
-    network.events$.pipe(filter(e => e.type === 'NETWORK/connection')).subscribe(e => {
-      console.log(`\nTODO 🐷   Ferry events like above with DB \n`);
-      sendNetworkUpdate({ dir, version });
-    });
+    network.events$.subscribe(e => ipc.send(e.type, e.payload));
 
     // Finish up.
     events$.next({
@@ -80,7 +75,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
    * [DB-HANDLE] state requests from DB `renderer` clients
    * and fire back the latest values.
    */
-  ipc.handle<t.IDbGetStateEvent>('DB/state/get', async e => {
+  ipc.handle<t.IDbGetStateEvent>('DB/ipc/state/get', async e => {
     type E = t.IDbUpdateStateEvent;
     type P = E['payload'];
     const { dir, dbKey, version } = e.payload.db;
@@ -97,9 +92,9 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
         checkoutVersion,
       };
       const payload: P = { db: { dir, version }, props };
-      ipc.send<E>('DB/state/update', payload);
+      ipc.send<E>('DB/ipc/state/update', payload);
     } catch (err) {
-      const type: E['type'] = 'DB/state/update';
+      const type: E['type'] = 'DB/ipc/state/update';
       const message = `[${type}] Failed to get state fields of DB '${dir}'. ${err.message}`;
       log.error(message);
     }
@@ -108,7 +103,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   /**
    * [DB-HANDLE] invoke requests from DB `renderer` clients.
    */
-  ipc.handle<t.IDbInvokeEvent, t.IDbInvokeResponse>('DB/invoke', async e => {
+  ipc.handle<t.IDbInvokeEvent, t.IDbInvokeResponse>('DB/ipc/invoke', async e => {
     const wait = value.defaultValue(e.payload.wait, true);
     const { method, params } = e.payload;
     const { dir, dbKey, version } = e.payload.db;
@@ -129,7 +124,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
    * [NETWORK-HANDLE] state requests from Network `renderer` clients
    * and fire back the latest values.
    */
-  ipc.handle<t.INetworkGetStateEvent>('NETWORK/state/get', async e => {
+  ipc.handle<t.INetworkGetStateEvent>('NETWORK/ipc/state/get', async e => {
     const { dir, version } = e.payload.db;
     sendNetworkUpdate({ dir, version });
   });
@@ -140,7 +135,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     const { dir, version } = args;
     const ref = await getRef({ dir, version });
 
-    const type: E['type'] = 'NETWORK/state/update';
+    const type: E['type'] = 'NETWORK/ipc/state/update';
     const errorPrefix = `[${type}] Failed to get state fields of Network for DB '${dir}'`;
     if (!ref) {
       const message = `${errorPrefix}. The DB has not been created yet.`;
@@ -151,7 +146,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       const { topic, status, isConnected, connection, db, isDisposed } = ref.network;
       const props: t.INetworkProps = { topic, status, isConnected, connection, db, isDisposed };
       const payload: P = { db: { dir, version }, props };
-      ipc.send<E>('NETWORK/state/update', payload);
+      ipc.send<E>('NETWORK/ipc/state/update', payload);
     } catch (err) {
       const message = `${errorPrefix}. ${err.message}`;
       log.error(message);
@@ -161,7 +156,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   /**
    * [NETWORK-HANDLE] invoke requests from DB `renderer` clients.
    */
-  ipc.handle<t.INetworkInvokeEvent, t.INetworkInvokeResponse>('NETWORK/invoke', async e => {
+  ipc.handle<t.INetworkInvokeEvent, t.INetworkInvokeResponse>('NETWORK/ipc/invoke', async e => {
     type E = t.INetworkInvokeEvent;
     type P = E['payload'];
 
@@ -170,7 +165,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     const { dir, version } = e.payload.db;
     const ref = await getRef({ dir, version });
 
-    const type: E['type'] = 'NETWORK/invoke';
+    const type: E['type'] = 'NETWORK/ipc/invoke';
     const errorPrefix = `[${type}] Failed to invoke Network method for DB '${dir}'`;
 
     if (!ref) {

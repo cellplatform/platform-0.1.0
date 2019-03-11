@@ -9,6 +9,8 @@ import { JoinWithKeyEvent } from '../Dialog.Join/types';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
 import { ShellMain } from '../Shell.Main';
 
+const AUTO_CONNECT = true;
+
 export type IShellProps = {
   style?: GlamorValue;
 };
@@ -57,7 +59,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         const selected = this.selected;
         const dir = selected ? `${await this.store.get('dir')}/${selected}` : undefined;
         const db = this.context.db;
-        const res = dir ? await db.getOrCreate({ dir }) : undefined;
+        const res = dir ? await db.getOrCreate({ dir, connect: AUTO_CONNECT }) : undefined;
         const selection = res
           ? { db: res.db as t.ITestRendererDb, network: res.network }
           : undefined;
@@ -153,9 +155,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
     try {
       // Create the database.
-      await db.getOrCreate({ dir, dbKey });
-
-      // await renderer.getOrCreate({ ipc, dir, dbKey });
+      await db.getOrCreate({ dir, dbKey, connect: AUTO_CONNECT });
       this.state$.next({ selected: name });
     } catch (error) {
       log.error(error);

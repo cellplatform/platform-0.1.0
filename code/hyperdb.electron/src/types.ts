@@ -10,32 +10,35 @@ import {
   DbEvent,
   INetworkProps,
   INetworkMethods,
+  NetworkEvent,
 } from '@platform/hyperdb/lib/types';
 import { IpcClient, ILog } from '@platform/electron/lib/types';
 export { IpcClient, ILog };
 
+export type HyperdbIpcEvent = DbIpcEvent | NetworkIpcEvent;
+export type HyperdbIpc = IpcClient<HyperdbIpcEvent>;
+
 /**
  * [Db] Events
  */
-export type DbIpcClient = IpcClient<DbIpcEvent>;
-export type DbIpcEvent = IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent | DbEvent;
+export type DbIpcEvent = DbEvent | IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent;
 
 export type IDbGetStateEvent = {
-  type: 'DB/state/get';
+  type: 'DB/ipc/state/get';
   payload: {
     db: { dir: string; version?: string; dbKey?: string };
     fields?: Array<keyof IDbProps>;
   };
 };
 export type IDbUpdateStateEvent = {
-  type: 'DB/state/update';
+  type: 'DB/ipc/state/update';
   payload: {
     db: { dir: string; version?: string };
     props: IDbProps;
   };
 };
 export type IDbInvokeEvent = {
-  type: 'DB/invoke';
+  type: 'DB/ipc/invoke';
   payload: {
     db: { dir: string; dbKey?: string; version?: string };
     method: keyof IDbMethods;
@@ -52,28 +55,28 @@ export type IDbInvokeResponse<M extends keyof IDbMethods = any> = {
 /**
  * [Network] Events
  */
-export type NetworkIpcClient = IpcClient<NetworkIpcEvent>;
 export type NetworkIpcEvent =
+  | NetworkEvent
   | INetworkUpdateStateEvent
   | INetworkGetStateEvent
   | INetworkInvokeEvent;
 
 export type INetworkGetStateEvent = {
-  type: 'NETWORK/state/get';
+  type: 'NETWORK/ipc/state/get';
   payload: {
     db: { dir: string; version?: string };
     fields?: Array<keyof INetworkProps>;
   };
 };
 export type INetworkUpdateStateEvent = {
-  type: 'NETWORK/state/update';
+  type: 'NETWORK/ipc/state/update';
   payload: {
     db: { dir: string; version?: string };
     props: INetworkProps;
   };
 };
 export type INetworkInvokeEvent = {
-  type: 'NETWORK/invoke';
+  type: 'NETWORK/ipc/invoke';
   payload: {
     db: { dir: string; version?: string };
     method: keyof INetworkMethods;
