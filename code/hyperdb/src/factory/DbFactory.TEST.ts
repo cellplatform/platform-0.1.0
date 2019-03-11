@@ -3,6 +3,7 @@ import { DbFactory } from '.';
 import { create } from './create';
 import { fs } from '@platform/fs';
 import * as t from './types';
+import { time } from '../common';
 
 const dir = 'tmp/db';
 const dir1 = 'tmp/db-1';
@@ -36,7 +37,10 @@ describe('Factory', () => {
       const list: t.IAfterCreateArgs[] = [];
       const factory = new DbFactory({
         create,
-        afterCreate: async e => list.push(e),
+        afterCreate: async e => {
+          await time.wait(5); // Simulate pause doing something.
+          list.push(e);
+        },
       });
 
       const args = { dir, connect: false };
