@@ -27,16 +27,28 @@ export function create(args: {
   title?: string;
   fileName?: string;
   dirName?: string;
+  focus?: boolean;
 }) {
   const { parent, title = 'DevTools', dirName = 'window-state', windows } = args;
+
+  const show = (devTools: BrowserWindow) => {
+    const isParentFocused = parent.isFocused();
+    devTools.show();
+    if (args.focus === true) {
+      devTools.focus();
+    }
+    if (!args.focus && isParentFocused) {
+      parent.focus();
+    }
+  };
 
   /**
    * Check if the dev-tools for the given parent window already exists.
    */
-  if (refs[parent.id]) {
-    const ref = refs[parent.id];
-    ref.devTools.show();
-    return ref;
+  const existing = getChildDevTools(windows, parent);
+  if (existing) {
+    show(existing);
+    return { id: existing.id };
   }
 
   /**
@@ -107,7 +119,7 @@ export function create(args: {
   devTools.on('resize', () => saveState$.next());
   devTools.once('ready-to-show', () => {
     updatePosition();
-    devTools.show();
+    show(devTools);
   });
   devTools.on('close', e => {
     e.preventDefault();
@@ -130,14 +142,40 @@ export function create(args: {
   refs[parent.id] = ref;
 
   // Finish up.
-  return { window: ref };
+  return { id: devTools.id };
 }
 
 /**
- * [INTERNAL]
+ * Hides the DevTools if they exist.
  */
+export function hide(args: { parent: BrowserWindow; windows: IWindows }) {
+  const { parent, windows } = args;
+  const window = getChildDevTools(windows, parent);
+  if (window) {
+    window.hide();
+  }
+}
 
-const getWindow = (id: number) => BrowserWindow.getAllWindows().find(window => window.id === id);
+/**
+ * Determines whether the given `parent` window currently has DevTools.
+ */
+export function exists(args: { parent: BrowserWindow; windows: IWindows }) {
+  const { parent, windows } = args;
+  return Boolean(getChildDevTools(windows, parent));
+}
+
+/**
+ * Determines whether the given `parent` window currently has DevTools.
+ */
+export function isShowing(args: { parent: BrowserWindow; windows: IWindows }) {
+  const { parent, windows } = args;
+  const window = getChildDevTools(windows, parent);
+  return window ? window.isVisible() : false;
+}
+
+/**
+ * [Internal]
+ */
 
 const isDevTools = (windows: IWindows, id: number) => {
   return windows.byTag(DEV_TOOLS.tag, DEV_TOOLS.value).some(ref => ref.id === id);

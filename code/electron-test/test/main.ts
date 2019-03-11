@@ -81,14 +81,18 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
      * Dev tools.
      */
     ipc
-      .on<t.IShowDevToolsEvent>('TEST/devTools/show')
+      .on<t.IDevToolsEvent>('TEST/devTools')
       .pipe(map(e => e.payload))
       .subscribe(e => {
         const id = e.windowId;
         const all = BrowserWindow.getAllWindows();
         const parent = all.find(window => window.id === id);
         if (parent) {
-          main.devTools.create({ parent, windows });
+          if (e.show) {
+            main.devTools.create({ parent, windows, focus: e.focus });
+          } else {
+            main.devTools.hide({ parent, windows });
+          }
         }
       });
   } catch (error) {

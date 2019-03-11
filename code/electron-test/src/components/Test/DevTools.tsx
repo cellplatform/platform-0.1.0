@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, GlamorValue, IShowDevToolsEvent, renderer } from '../../common';
+import { css, GlamorValue, IDevToolsEvent, renderer } from '../../common';
 import { Button, ObjectView } from '../primitives';
 import { TestPanel } from '../TestPanel';
 
@@ -37,7 +37,9 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
         <div {...styles.columns}>
           <div {...styles.colButtons}>
             <Button label={'clearConsoles'} onClick={this.clearConsoles} />
-            <Button label={'show (new)'} onClick={this.new} />
+            <Button label={'show (new)'} onClick={this.revealHandler(true)} />
+            <Button label={'show (new) - focus'} onClick={this.revealHandler(true, true)} />
+            <Button label={'hide'} onClick={this.revealHandler(false)} />
           </div>
           <div {...styles.colObject}>
             <ObjectView name={'context'} data={this.context} />
@@ -47,10 +49,12 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
     );
   }
 
-  private new = () => {
-    const { id: windowId, ipc } = this.context;
-    const target = ipc.MAIN;
-    ipc.send<IShowDevToolsEvent>('TEST/devTools/show', { windowId }, { target });
+  private revealHandler = (show: boolean, focus?: boolean) => {
+    return () => {
+      const { id: windowId, ipc } = this.context;
+      const target = ipc.MAIN;
+      ipc.send<IDevToolsEvent>('TEST/devTools', { windowId, show, focus }, { target });
+    };
   };
 
   private clearConsoles = () => {
