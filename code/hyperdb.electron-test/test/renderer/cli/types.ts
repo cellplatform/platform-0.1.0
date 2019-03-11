@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { ITestRendererDb, IDbRendererFactory } from '../../types';
+import { ITestRendererDb, IDbRendererFactory, INetworkRenderer } from '../../types';
 import { ICommandState } from '../common';
 
 export { ITestRendererDb };
@@ -11,6 +11,7 @@ export type ICommandLine = {
 };
 export type ICommandProps = {
   db?: ITestRendererDb;
+  network?: INetworkRenderer;
   view?: 'WATCH';
   events$: Subject<CommandLineEvent>;
 };

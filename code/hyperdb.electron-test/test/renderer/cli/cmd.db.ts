@@ -1,9 +1,21 @@
 import { Command, value as valueUtil, hjson } from '../common';
 import { watch, unwatch, updateWatch } from './cmd.watch';
+import { info } from './cmd.db.info';
 
 import * as t from './types';
 
 type P = t.ICommandProps;
+
+/**
+ * [rename] the database.
+ */
+export const rename = Command.create<P>('rename', async e => {
+  const { db } = e.props;
+  const name = (e.args.params[0] || '').toString().trim();
+  if (db && name) {
+    db.put('.sys/dbname', name);
+  }
+});
 
 /**
  * [put] write to the DB.
@@ -40,17 +52,10 @@ export const del = Command.create<P>('delete', async e => {
   }
 });
 
-export const auth = Command.create<P>('auth', async e => {
-  const { db } = e.props;
-  const peerKey = e.args.params[0];
-  if (db && typeof peerKey === 'string') {
-    await db.authorize(peerKey);
-  }
-});
-
 export const db = Command.create<P>('db')
   .add(put)
   .add(del)
   .add(watch)
   .add(unwatch)
-  .add(auth);
+  .add(rename)
+  .add(info);

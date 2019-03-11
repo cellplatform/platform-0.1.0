@@ -16,8 +16,10 @@ export type IShellProps = {
 export type IShellState = {
   dialog?: 'JOIN';
   selected?: string; // database [dir].
-  selectedDb?: t.ITestRendererDb;
-  selectedNetwork?: t.INetworkRenderer;
+  selection?: {
+    db: t.ITestRendererDb;
+    network: t.INetworkRenderer;
+  };
   store?: Partial<t.ITestStoreSettings>;
 };
 
@@ -56,9 +58,10 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         const dir = selected ? `${await this.store.get('dir')}/${selected}` : undefined;
         const db = this.context.db;
         const res = dir ? await db.getOrCreate({ dir }) : undefined;
-        const selectedDb = res ? (res.db as t.ITestRendererDb) : undefined;
-        const selectedNetwork = res ? res.network : undefined;
-        this.state$.next({ selectedDb, selectedNetwork });
+        const selection = res
+          ? { db: res.db as t.ITestRendererDb, network: res.network }
+          : undefined;
+        this.state$.next({ selection });
       });
 
     // Redraw screen each time the CLI state changes.
@@ -66,8 +69,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
     cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
       const command = e.props.command as ICommand<t.ICommandProps>;
-      const db = this.state.selectedDb;
-      const props: t.ICommandProps = { db, events$: this.cli.events$ };
+      const selection = this.state.selection;
+      const props: t.ICommandProps = { ...(selection || {}), events$: this.cli.events$ };
       const args = e.props.args;
 
       // Step into namespace (if required).
@@ -206,7 +209,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   }
 
   private renderMain() {
-    const { selectedDb, selectedNetwork } = this.state;
+    const { selection } = this.state;
     const cli = this.cli.state;
     const styles = {
       base: css({
@@ -225,11 +228,11 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       }),
     };
 
-    const elBody = selectedDb && (
+    const elBody = selection && (
       <ShellMain
-        key={selectedDb.key}
-        db={selectedDb}
-        network={selectedNetwork}
+        key={selection.db.key}
+        db={selection.db}
+        network={selection.network}
         onFocusCommandPrompt={this.focusCommandPrompt}
       />
     );

@@ -5,13 +5,14 @@ import { takeUntil } from 'rxjs/operators';
 import { color, css, GlamorValue, renderer, t } from '../../common';
 import { CommandClickEvent, Help } from '../cli.Help';
 import { DbHeader } from './components/DbHeader';
-import { DbStatus } from './components/DbStatus';
+import { DbInfo } from './components/DbInfo';
 import { DbWatch } from './components/DbWatch';
+import { Network } from './components/Network';
 import { NoteEditor } from './components/NoteEditor';
 
 export type IShellMainProps = {
   db: t.ITestRendererDb;
-  network?: t.INetwork;
+  network: t.INetwork;
   style?: GlamorValue;
   onFocusCommandPrompt?: (e: {}) => void;
 };
@@ -99,15 +100,17 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
         display: 'flex',
       }),
     };
-    const elStatus = ns && ns.command.name === 'info' && (
-      <DbStatus key={db.localKey} db={db} network={network} />
+    const elDbInfo = ns && ns.command.name === 'info' && <DbInfo key={db.localKey} db={db} />;
+    const elNetwork = ns && ns.command.name === 'network' && (
+      <Network key={`${network.topic}/${db.localKey}`} network={network} />
     );
     const elEditor = ns && ns.command.name === 'editor' && <NoteEditor db={db} />;
-    const elWatch = !elStatus && !elEditor && <DbWatch db={db} />;
+    const elWatch = !elDbInfo && !elEditor && !elNetwork && <DbWatch db={db} />;
 
     return (
       <div {...styles.base}>
-        {elStatus}
+        {elDbInfo}
+        {elNetwork}
         {elWatch}
         {elEditor}
       </div>
