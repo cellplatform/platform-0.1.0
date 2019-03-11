@@ -22,19 +22,19 @@ export type MyEvents =
   | IBarEvent;
 
 export type INewWindowEvent = {
-  type: 'NEW_WINDOW';
+  type: 'TEST/window/new';
   payload: {
     name?: string;
   };
 };
 
 export type IMessageEvent = {
-  type: 'MESSAGE';
+  type: 'TEST/message';
   payload: { text: string };
 };
 
 export type IShowDevToolsEvent = {
-  type: 'DEVTOOLS/show';
+  type: 'TEST/devTools/show';
   payload: { windowId: number };
 };
 

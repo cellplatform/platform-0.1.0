@@ -93,7 +93,7 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
 
   private newWindow = () => {
     const { ipc } = this.context;
-    ipc.send<t.INewWindowEvent>('NEW_WINDOW', {}, { target: ipc.MAIN });
+    ipc.send<t.INewWindowEvent>('TEST/window/new', {}, { target: ipc.MAIN });
   };
 
   private refresh = () => {

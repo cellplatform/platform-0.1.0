@@ -42,9 +42,9 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
     /**
      * Filter (new window).
      */
-    ipc.on('NEW_WINDOW').subscribe(e => {
+    ipc.on('TEST/window/new').subscribe(e => {
       const all = BrowserWindow.getAllWindows();
-      if (e.type === 'NEW_WINDOW') {
+      if (e.type === 'TEST/window/new') {
         const name = `New Window (${all.length})`;
         newWindow({ name, devTools: true });
       }
@@ -66,7 +66,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
      */
     time.delay(3000, () => {
       const msg = { text: '🌳 delayed message from main to window-1' };
-      ipc.send<t.IMessageEvent>('MESSAGE', msg, { target: 1 });
+      ipc.send<t.IMessageEvent>('TEST/message', msg, { target: 1 });
     });
 
     /**
@@ -81,7 +81,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
      * Dev tools.
      */
     ipc
-      .on<t.ICreateDevToolsEvent>('DEVTOOLS/create')
+      .on<t.IShowDevToolsEvent>('TEST/devTools/show')
       .pipe(map(e => e.payload))
       .subscribe(e => {
         const id = e.windowId;

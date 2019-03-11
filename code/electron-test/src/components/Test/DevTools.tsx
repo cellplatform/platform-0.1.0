@@ -50,7 +50,7 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
   private new = () => {
     const { id: windowId, ipc } = this.context;
     const target = ipc.MAIN;
-    ipc.send<IShowDevToolsEvent>('DEVTOOLS/show', { windowId }, { target });
+    ipc.send<IShowDevToolsEvent>('TEST/devTools/show', { windowId }, { target });
   };
 
   private clearConsoles = () => {
