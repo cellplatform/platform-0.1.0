@@ -35,13 +35,14 @@ describe('Factory', () => {
 
     it('invoke `afterCreate` callback', async () => {
       const list: t.IAfterCreateArgs[] = [];
-      const factory = new DbFactory({
-        create,
-        afterCreate: async e => {
-          await time.wait(5); // Simulate pause doing something.
-          list.push(e);
-        },
+      const factory = new DbFactory({ create });
+
+      factory.afterCreate(async e => {
+        await time.wait(5); // Simulate pause doing something.
+        list.push(e);
       });
+
+      console.log(`\nTODO 🐷   CLONE method\n`);
 
       const args = { dir, connect: false };
       const res = await factory.create(args);

@@ -27,6 +27,8 @@ export type IDbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
   ): Promise<ICreateDatabaseResponse<P>>;
 
   remove(args: { dir: string; version?: string }): IDbFactory<D, N>;
+
+  afterCreate(handler: AfterCreate<D, N>): IDbFactory<D, N>;
 };
 
 export type IDbFactoryItem<D extends t.IDb, N extends t.INetwork> = {

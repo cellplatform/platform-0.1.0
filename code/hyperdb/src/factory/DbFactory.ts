@@ -23,16 +23,15 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
   /**
    * [Constructor]
    */
-  constructor(args: { create: t.CreateDatabase<D, N>; afterCreate?: t.AfterCreate<D, N> }) {
+  constructor(args: { create: t.CreateDatabase<D, N> }) {
     this._create = args.create;
-    this._afterCreate = args.afterCreate;
   }
 
   /**
    * [Fields]
    */
   private readonly _create: t.CreateDatabase<D, N>;
-  private readonly _afterCreate: t.AfterCreate<D, N> | undefined;
+  private _afterCreate: Array<t.AfterCreate<D, N>> = [];
   private readonly _cache: Refs = {};
   private readonly _events$ = new Subject<t.DbFactoryEvent>();
   public readonly events$ = this._events$.pipe(share());
@@ -97,7 +96,7 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
 
     // Invoke the AFTER creation callback.
     if (this._afterCreate) {
-      await this._afterCreate({ args, db, network });
+      await Promise.all(this._afterCreate.map(handler => handler({ args, db, network })));
     }
 
     // Alert listeners.
@@ -110,6 +109,14 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
     // Finish up.
     return res;
   };
+
+  /**
+   * Registers a handler that is run after creation of a new DB/Network.
+   */
+  public afterCreate(handler: t.AfterCreate<D, N>) {
+    this._afterCreate = [...this._afterCreate, handler];
+    return this;
+  }
 
   /**
    * Gets an existing DB/Network instance.
