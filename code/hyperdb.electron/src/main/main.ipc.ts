@@ -36,7 +36,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       type: 'DB/main/created',
       payload: {
         dir,
-        dbKey: db.key,
+        dbKey: db.key, 
         localKey: db.localKey,
         discoveryKey: db.discoveryKey,
         version,

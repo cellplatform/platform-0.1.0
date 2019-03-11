@@ -26,7 +26,7 @@
   "devDependencies": {
     "@platform/test": "0.0.31",
     "@platform/ts": "3.3.60",
-    "electron": "4.0.6"
+    "electron": "4.0.8"
   },
   "files": [
     "lib",

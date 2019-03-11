@@ -18,8 +18,8 @@
   "devDependencies": {
     "@platform/test": "0.0.31",
     "@platform/ts": "3.3.60",
-    "@types/sinon": "7.0.8",
-    "sinon": "7.2.6"
+    "@types/sinon": "7.0.9",
+    "sinon": "7.2.7"
   },
   "files": [
     "lib"

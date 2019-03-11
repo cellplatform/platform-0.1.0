@@ -15,7 +15,7 @@
     "@platform/fs": "0.0.38",
     "@platform/util.exec": "0.0.21",
     "@types/yargs": "12.0.9",
-    "yargs": "13.2.1"
+    "yargs": "13.2.2"
   },
   "devDependencies": {
     "@platform/test": "0.0.31",
