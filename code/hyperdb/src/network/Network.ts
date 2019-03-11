@@ -7,12 +7,16 @@ import { Db } from '../db';
 import * as t from '../types';
 import { time } from '../common';
 
-const network = require('@hyperswarm/network');
+const hyperswarm = require('@hyperswarm/network');
 const pump = require('pump');
 
 export * from './types';
 
 type INetworkArgs = { db: Db };
+type SocketRefs = {
+  replication: t.IProtocol;
+  connection: Socket;
+};
 
 /**
  * Manages the network swarm for a single hyperdb.
@@ -32,8 +36,8 @@ export class Network implements t.INetwork {
   private constructor(args: INetworkArgs) {
     const db = (this._.db = args.db);
     const $key = db.key;
-    const net = (this._.net = network());
-    this._.id = crypto
+
+    this._.topic = crypto
       .createHash('sha256')
       .update($key)
       .digest();
@@ -41,8 +45,6 @@ export class Network implements t.INetwork {
     // Promise that alerts when the Db is ready to interact with.
     const ready$ = new Subject();
     this.ready = ready$.toPromise();
-
-    net.on('connection', this.onConnection);
 
     // Finish up.
     ready$.next(); // NB: Fires immediately, this is here for symetry with the client.
@@ -54,14 +56,19 @@ export class Network implements t.INetwork {
   private readonly _ = {
     ready: new Subject(),
     db: (undefined as unknown) as Db,
-    net: undefined as any,
-    id: (undefined as unknown) as Buffer,
+    network: undefined as any,
+    topic: (undefined as unknown) as Buffer,
     dispose$: new Subject(),
     events$: new Subject<t.NetworkEvent>(),
     status: 'DISCONNECTED' as t.NetworkStatus,
-    connecting: undefined as Promise<void> | undefined,
+    // connecting: undefined as Promise<void> | undefined,
     connection: undefined as t.INetworkConnectionInfo | undefined,
-    replication: undefined as t.IProtocol | undefined,
+
+    sockets: undefined as SocketRefs | undefined,
+
+    // replicationStream: undefined as t.IProtocol | undefined,
+    // connectionStream: undefined as t.IProtocol | undefined,
+    isHolePunchable: undefined as boolean | undefined,
   };
   public readonly ready: Promise<{}>;
   public readonly dispose$ = this._.dispose$.pipe(share());
@@ -78,7 +85,7 @@ export class Network implements t.INetwork {
   }
 
   public get topic() {
-    return this._.id.toString('hex');
+    return this._.topic.toString('hex');
   }
 
   public get status() {
@@ -110,11 +117,15 @@ export class Network implements t.INetwork {
     }
   }
 
-  public isHolePunchable() {
+  private isHolePunchable(network: any) {
     this.throwIfDisposed('isHolePunchable');
     return new Promise<boolean>(resolve => {
-      this._.net.discovery.holepunchable((err: Error, yes: boolean) => {
-        resolve(yes && !err);
+      if (this._.isHolePunchable !== undefined) {
+        return resolve(this._.isHolePunchable);
+      }
+      network.discovery.holepunchable((err: Error, yes: boolean) => {
+        this._.isHolePunchable = yes && !err;
+        resolve(this._.isHolePunchable);
       });
     });
   }
@@ -122,37 +133,26 @@ export class Network implements t.INetwork {
   /**
    * Connects to the swarm.
    */
-  public connect() {
+  public async connect() {
     this.throwIfDisposed('connect');
-    const { id, net } = this._;
-
-    if (this._.connecting) {
-      return this._.connecting; // Return the connection promise if already connected.
+    if (this._.network) {
+      return; // Already connected.
     }
 
-    this._.connecting = new Promise<void>(async (resolve, reject) => {
-      try {
-        const isHolePunchable = await this.isHolePunchable();
-        if (!isHolePunchable) {
-          const err = 'Network cannot be hole-punched.';
-          reject(new Error(err));
-        }
+    // Create the network swarm.
+    const network = (this._.network = hyperswarm());
+    network.on('connection', this.onConnection);
 
-        this.changeStatus('CONNECTING');
-        net.join(id, { lookup: true, announce: true });
-        this.events$
-          .pipe(
-            filter(e => e.type === 'NETWORK/connection' && e.payload.isConnected),
-            take(1),
-          )
-          .subscribe(() => resolve());
-      } catch (error) {
-        reject(error);
-      }
-    });
+    // Determine if the network can be hole-punched.
+    const isHolePunchable = await this.isHolePunchable(network);
+    if (!isHolePunchable) {
+      const err = 'Network cannot be hole-punched.';
+      throw new Error(err);
+    }
 
-    // Finish up.
-    return this._.connecting;
+    // Start the connection process.
+    network.join(this._.topic, { lookup: true, announce: true });
+    this.changeStatus('CONNECTING');
   }
 
   /**
@@ -160,15 +160,23 @@ export class Network implements t.INetwork {
    */
   public async disconnect() {
     this.throwIfDisposed('disconnect');
-    this._.connecting = undefined;
     this._.connection = undefined;
-    this._.net.leave(this._.id);
-    if (this._.replication) {
-      this._.replication.destroy();
+    if (this._.network) {
+      this._.network.removeListener('connection', this.onConnection);
+      this._.network.leave(this._.topic);
+      this._.network = undefined;
+    }
+    if (this._.sockets) {
+      this._.sockets.connection.destroy();
+      this._.sockets.replication.destroy();
+      this._.sockets = undefined;
     }
     this.changeStatus('DISCONNECTED');
   }
 
+  /**
+   * Display string.
+   */
   public toString() {
     return `[network:${this.topic}]`;
   }
@@ -197,35 +205,33 @@ export class Network implements t.INetwork {
     /**
      * TODO
      * - store connection in a way that `conn` can be disposed of upon leave.
-     * - store connection/info as array of connections.
      * - monitor heartbeat, restart connection on failure.
      */
 
     // Replicate the DB.
-    const rep = (this._.replication = db.replicate({ live: true }));
-    const conn = pump(rep, socket, rep, () => {
-      // Socket Pipe Ended.
-    }) as t.IProtocol;
+    const replication = db.replicate({ live: true });
+    pump(replication, socket, replication, () => {
+      /* Socket Pipe Ended. */
+    });
 
-    // console.log('r', r);
-    // r.destroy();
+    // this._.connectionStream = conn;
+    this._.sockets = { replication, connection: socket };
 
-    let TMP_COUNT = 0;
+    // const TMP_COUNT = 0;
     let timer = time.timer();
     let times: number[] = [];
     socket.on('data', (data: Buffer) => {
       const elapsed = timer.elapsed();
       times = [...times, elapsed];
       const avg = times.reduce((acc, next) => acc + next, 0) / times.length;
-      console.log('data', `(${TMP_COUNT++}) elapsed: ${elapsed} | avg: ${avg}`);
+
+      // console.log('data', `(${TMP_COUNT++}) elapsed: ${elapsed} | avg: ${avg}`);
 
       timer = time.timer();
 
       const db = this.db;
       this._.events$.next({ type: 'NETWORK/data', payload: { db } });
     });
-
-    // socket.rem
   };
 
   private changeStatus(status: t.NetworkStatus) {

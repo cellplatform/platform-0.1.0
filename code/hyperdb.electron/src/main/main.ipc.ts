@@ -125,14 +125,9 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
    * and fire back the latest values.
    */
   ipc.handle<t.INetworkGetStateEvent>('NETWORK/ipc/state/get', async e => {
-    const { dir, version } = e.payload.db;
-    sendNetworkUpdate({ dir, version });
-  });
-
-  const sendNetworkUpdate = async (args: { dir: string; version?: string }) => {
     type E = t.INetworkUpdateStateEvent;
     type P = E['payload'];
-    const { dir, version } = args;
+    const { dir, version } = e.payload.db;
     const ref = await getRef({ dir, version });
 
     const type: E['type'] = 'NETWORK/ipc/state/update';
@@ -151,7 +146,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       const message = `${errorPrefix}. ${err.message}`;
       log.error(message);
     }
-  };
+  });
 
   /**
    * [NETWORK-HANDLE] invoke requests from DB `renderer` clients.

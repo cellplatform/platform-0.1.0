@@ -61,7 +61,7 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
         e.db.watch$
           .pipe(
             takeUntil(e.db.dispose$),
-            debounceTime(0),
+            debounceTime(500),
           )
           .subscribe(() => this.updateState());
         e.db.watch<t.ITestDbData>('.sys/dbname');
