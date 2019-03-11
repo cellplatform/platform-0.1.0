@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { DbFactory } from '.';
 import { create } from './create';
 import { fs } from '@platform/fs';
-import * as t from '../types';
 
 const dir = 'tmp/db';
 const dir1 = 'tmp/db-1';

@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import * as t from '../types';
 
 /**
@@ -6,10 +7,11 @@ import * as t from '../types';
 export type IDbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwork> = {
   count: number;
   items: Array<IDbFactoryItem<D, N>>;
+  events$: Observable<DbFactoryEvent>;
 
   isCached(args: { dir: string; version?: string }): boolean;
 
-  reset(): void;
+  reset(): IDbFactory<D, N>;
 
   create<P extends {} = any>(
     args: ICreateCacheableDatabaseArgs,
@@ -23,6 +25,8 @@ export type IDbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
   getOrCreate<P extends {} = any>(
     args: ICreateCacheableDatabaseArgs,
   ): Promise<ICreateDatabaseResponse<P>>;
+
+  remove(args: { dir: string; version?: string }): IDbFactory<D, N>;
 };
 
 export type IDbFactoryItem<D extends t.IDb, N extends t.INetwork> = {
@@ -50,4 +54,36 @@ export type ICreateCacheableDatabaseArgs = ICreateDatabaseArgs & { cache?: boole
 export type ICreateDatabaseResponse<P extends {} = any> = {
   db: t.IDb<P>;
   network: t.INetwork;
+};
+
+/**
+ * [Events]
+ */
+export type DbFactoryEvent =
+  | IDbFactoryChangeEvent
+  | IDbFactoryCreatedEvent
+  | IDbFactoryRemovedEvent;
+
+export type IDbFactoryChangeEvent = {
+  type: 'DB_FACTORY/change';
+  payload: {
+    action: 'CREATED' | 'REMOVED' | 'RESET';
+    count: number;
+  };
+};
+
+export type IDbFactoryCreatedEvent = {
+  type: 'DB_FACTORY/created';
+  payload: {
+    db: t.IDb;
+    network: t.INetwork;
+  };
+};
+
+export type IDbFactoryRemovedEvent = {
+  type: 'DB_FACTORY/removed';
+  payload: {
+    db: t.IDb;
+    network: t.INetwork;
+  };
 };

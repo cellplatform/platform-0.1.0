@@ -1,6 +1,8 @@
-import { take } from 'rxjs/operators';
-import * as t from '../types';
+import { Subject } from 'rxjs';
+import { filter, share, take, takeUntil } from 'rxjs/operators';
+
 import { value } from '../common';
+import * as t from '../types';
 
 type Ref = { db: t.IDb; network: t.INetwork; dir: string; version?: string };
 type Refs = { [key: string]: Ref };
@@ -30,6 +32,8 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
    */
   private readonly _create: t.CreateDatabase;
   private readonly _cache: Refs = {};
+  private readonly _events$ = new Subject<t.DbFactoryEvent>();
+  public readonly events$ = this._events$.pipe(share());
 
   /**
    * [Properties]
@@ -64,6 +68,8 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
    */
   public reset() {
     Object.keys(this._cache).forEach(key => this._cache[key].db.dispose());
+    this.fireChange('RESET');
+    return this;
   }
 
   /**
@@ -76,8 +82,8 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
     // Update state when DB is disposed.
     const key = DbFactory.cacheKey(args);
     db.dispose$.pipe(take(1)).subscribe(e => {
-      delete this._cache[key];
       network.dispose();
+      this.remove(args);
     });
 
     // Store a reference in cache.
@@ -86,6 +92,14 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
       this._cache[key] = { dir, version, db, network };
     }
 
+    // Alert listeners.
+    this._events$.next({
+      type: 'DB_FACTORY/created',
+      payload: { db, network },
+    });
+    this.fireChange('CREATED');
+
+    // Finish up.
     return res;
   };
 
@@ -107,9 +121,38 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
   };
 
   /**
+   * Removes an item from the cache.
+   */
+  public remove(args: { dir: string; version?: string }) {
+    const ref = this.get(args);
+    if (ref) {
+      const { db, network } = ref;
+      const key = DbFactory.cacheKey(args);
+      delete this._cache[key];
+      this._events$.next({
+        type: 'DB_FACTORY/created',
+        payload: { db, network },
+      });
+      this.fireChange('REMOVED');
+    }
+    return this;
+  }
+
+  /**
    * Gets or creates a new DB/Network instance.
    */
   public getOrCreate = async <P extends {} = any>(args: t.ICreateCacheableDatabaseArgs) => {
     return (this.get<P>(args) || (await this.create<P>(args))) as t.ICreateDatabaseResponse<P>;
   };
+
+  /**
+   * [INTERNAL]
+   */
+
+  private fireChange(action: t.IDbFactoryChangeEvent['payload']['action']) {
+    this._events$.next({
+      type: 'DB_FACTORY/change',
+      payload: { action, count: this.count },
+    });
+  }
 }
