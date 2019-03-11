@@ -32,6 +32,7 @@ export type IDbProps = {
   readonly localKey: string;
   readonly watching: string[];
   readonly isDisposed: boolean;
+  readonly checkoutVersion: string | undefined;
 };
 export type IDbMethods<D extends {} = any> = {
   checkout(version: string): Promise<IDb<D>>;

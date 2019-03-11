@@ -109,6 +109,10 @@ export class Db<D extends object = any> implements t.IDb<D> {
     return Object.keys(this._.watchers);
   }
 
+  public get checkoutVersion() {
+    return this._.version;
+  }
+
   /**
    * [Methods]
    */
@@ -186,7 +190,8 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public async checkout(version: string) {
     const db = this._.db.checkout(version);
-    return new Db<D>({ db, dir: this.dir, version });
+    const dir = this.dir;
+    return new Db<D>({ db, dir, version });
   }
 
   /**
@@ -263,14 +268,13 @@ export class Db<D extends object = any> implements t.IDb<D> {
             return;
           }
 
-          const version = await this.version();
           this.next<t.IDbWatchEvent>('DB/watch', {
             db: { key: this.key },
             pattern,
             key,
             value: parseValue(value),
+            version: await this.version(),
             deleted,
-            version,
           });
         });
       });

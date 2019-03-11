@@ -117,8 +117,6 @@ export class NetworkRenderer implements t.INetworkRenderer {
 
   private async syncState() {
     type E = t.INetworkGetStateEvent;
-    const { dir } = this._.db;
-    const payload: E['payload'] = { db: { dir } };
     return this._.ipc.send<E>('NETWORK/state/get', payload, TARGET_MAIN);
   }
 }

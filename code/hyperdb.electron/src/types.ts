@@ -17,14 +17,14 @@ export type DbIpcEvent = IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent
 export type IDbGetStateEvent = {
   type: 'DB/state/get';
   payload: {
-    db: { dir: string; dbKey?: string; version?: string };
+    db: { dir: string; version?: string; dbKey?: string };
     fields?: Array<keyof IDbProps>;
   };
 };
 export type IDbUpdateStateEvent = {
   type: 'DB/state/update';
   payload: {
-    db: { dir: string };
+    db: { dir: string; version?: string };
     props: IDbProps;
   };
 };
@@ -51,15 +51,27 @@ export type NetworkIpcEvent = INetworkUpdateStateEvent | INetworkGetStateEvent;
 export type INetworkGetStateEvent = {
   type: 'NETWORK/state/get';
   payload: {
-    db: { dir: string };
+    db: { dir: string; version?: string };
     fields?: Array<keyof INetworkProps>;
   };
 };
-
 export type INetworkUpdateStateEvent = {
   type: 'NETWORK/state/update';
   payload: {
-    db: { dir: string };
+    db: { dir: string; version?: string };
     props: INetworkProps;
   };
 };
+// export type INetworkInvokeEvent = {
+//   type: 'NETWORK/invoke';
+//   payload: {
+//     db: { dir: string; dbKey?: string; version?: string };
+//     method: keyof IDbMethods;
+//     params: any[];
+//   };
+// };
+// export type INetworkInvokeResponse<M extends keyof IDbMethods = any> = {
+//   method: M;
+//   result?: IDbMethods[M];
+//   error?: { message: string };
+// };

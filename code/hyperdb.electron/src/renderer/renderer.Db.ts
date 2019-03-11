@@ -42,7 +42,7 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
     // Sync props.
     const state$ = this._.ipc.on<t.IDbUpdateStateEvent>('DB/state/update').pipe(
       takeUntil(this.dispose$),
-      filter(e => e.payload.db.dir === this._.dir),
+      filter(e => e.payload.db.dir === this._.dir && e.payload.db.version === this._.version),
     );
     state$.subscribe(e => {
       const { props } = e.payload;
@@ -213,7 +213,8 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
   private async invoke<M extends keyof t.IDbMethods>(method: M, params: any[]) {
     type E = t.IDbInvokeEvent;
     type R = t.IDbInvokeResponse;
-    const { dir, dbKey, version } = this._;
+    const { dir, dbKey } = this._;
+    const version = this.checkoutVersion;
     const payload: E['payload'] = {
       db: { dir, dbKey, version },
       method,

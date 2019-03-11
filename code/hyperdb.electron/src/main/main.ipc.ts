@@ -31,7 +31,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
 
     network.events$.pipe(filter(e => e.type === 'NETWORK/connection')).subscribe(e => {
       console.log(`\nTODO 🐷   Ferry events like above with DB \n`);
-      sendNetworkUpdate({ dir });
+      sendNetworkUpdate({ dir, version });
     });
 
     // Finish up.
@@ -84,9 +84,17 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     const { dir, dbKey, version } = e.payload.db;
     const { db } = await getOrCreateDb({ dir, dbKey, version });
     try {
-      const { dir, key, discoveryKey, localKey, watching, isDisposed } = db;
-      const props: t.IDbProps = { dir, key, discoveryKey, localKey, watching, isDisposed };
-      const payload: P = { db: { dir }, props };
+      const { dir, key, discoveryKey, localKey, watching, isDisposed, checkoutVersion } = db;
+      const props: t.IDbProps = {
+        dir,
+        key,
+        discoveryKey,
+        localKey,
+        watching,
+        isDisposed,
+        checkoutVersion,
+      };
+      const payload: P = { db: { dir, version }, props };
       ipc.send<E>('DB/state/update', payload);
     } catch (err) {
       const type: E['type'] = 'DB/state/update';
@@ -143,16 +151,14 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
    * and fire back the latest values.
    */
   ipc.handle<t.INetworkGetStateEvent>('NETWORK/state/get', async e => {
-    const { dir } = e.payload.db;
-    sendNetworkUpdate({ dir });
+    const { dir, version } = e.payload.db;
+    sendNetworkUpdate({ dir, version });
   });
 
-  const sendNetworkUpdate = async (args: { dir: string }) => {
-    console.log('send update to', args.dir);
-
+  const sendNetworkUpdate = async (args: { dir: string; version?: string }) => {
     type E = t.INetworkUpdateStateEvent;
     type P = E['payload'];
-    const { dir } = args;
+    const { dir, version } = args;
     const ref = await getRef({ dir });
 
     const type: E['type'] = 'NETWORK/state/update';
@@ -165,7 +171,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     try {
       const { topic, status, isConnected, connection, db, isDisposed } = ref.network;
       const props: t.INetworkProps = { topic, status, isConnected, connection, db, isDisposed };
-      const payload: P = { db: { dir }, props };
+      const payload: P = { db: { dir, version }, props };
       ipc.send<E>('NETWORK/state/update', payload);
     } catch (err) {
       const message = `${errorPrefix}. ${err.message}`;
