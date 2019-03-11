@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil, filter, map, debounceTime } from 'rxjs/operators';
 import { color, css, GlamorValue, renderer, t, COLORS, time } from '../../common';
 import { Button } from '../primitives';
+import { NetworkBullet } from '../NetworkBullet';
 import {
   ShellIndexSelectEventHandler,
   ShellIndexNewEventHandler,
@@ -70,7 +71,7 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
     const databases = await this.store.get('databases');
     for (let dir of databases) {
       dir = `${await this.store.get('dir')}/${dir}`;
-      await db.getOrCreate({ dir, connect: false });
+      await db.getOrCreate({ dir, connect: true });
     }
 
     // Finish up.
@@ -137,7 +138,6 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
   }
 
   private renderListItem(args: IItem) {
-    const BULLET_SIZE = 8;
     const { selected } = this.props;
     const { db, network, name } = args;
     const dir = db.dir;
@@ -153,21 +153,15 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
         backgroundColor: isSelected && COLORS.BLUE,
         color: isSelected ? color.format(0.5) : color.format(-0.4),
       }),
-      statusBullet: css({
-        width: BULLET_SIZE,
-        height: BULLET_SIZE,
-        borderRadius: BULLET_SIZE,
-        backgroundImage: `linear-gradient(-180deg, #70EB07 0%, #35AF06 100%)`,
-      }),
       subheading: css({
         marginTop: 2,
         fontSize: 10,
       }),
     };
 
-    const elSelectedBullet = isSelected && <div {...styles.statusBullet} />;
+    const elSelectedBullet = <NetworkBullet key={db.localKey} db={db} network={network} />;
     return (
-      <div key={dir} {...styles.base} onClick={this.selectHandler(dir)}>
+      <div key={dir} {...styles.base} onMouseDown={this.selectHandler(dir)}>
         <div>
           <Button label={name} isEnabled={!isSelected} theme={{ disabledColor: COLORS.WHITE }} />
           <div {...styles.subheading}>{dirname}</div>

@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, share, take, takeUntil, map, debounceTime } from 'rxjs/operators';
+import { time } from '../common';
 
 import * as t from './types';
 const TARGET_MAIN = { target: 0 };
@@ -55,24 +56,20 @@ export class NetworkRenderer implements t.INetworkRenderer {
     state$.pipe(take(1)).subscribe(() => ready$.complete());
     this.syncState();
 
-    // Ferry network events through the local observable
-    // (but not the internal renderer/IPC system events).
+    // Update connection state on change.
     this._.ipc.events$
       .pipe(
-        takeUntil(this.dispose$),
-        filter(e => e.type.startsWith('NETWORK/')),
-        filter(e => !e.type.startsWith('NETWORK/ipc/')),
-        map(e => e as t.NetworkEvent),
+        filter(e => e.type === 'NETWORK/connection'),
+        map(e => e as t.INetworkConnectionEvent),
+        filter(e => e.payload.db.localKey === this.db.localKey),
       )
-      .subscribe(e => this._.events$.next(e));
-
-    // Update state on network events.
-    this.events$
-      .pipe(
-        filter(e => e.type !== 'NETWORK/data'), // NB: Data is noise and does not require a state update.
-        debounceTime(10),
-      )
-      .subscribe(e => this.syncState());
+      .subscribe(e => {
+        const { status, isConnected, connection } = e.payload;
+        this._.props.status = status;
+        this._.props.isConnected = isConnected;
+        this._.props.connection = connection;
+        this._.events$.next(e);
+      });
   }
 
   /**
@@ -101,7 +98,6 @@ export class NetworkRenderer implements t.INetworkRenderer {
   public get isDisposed() {
     return this._.dispose$.isStopped || this.getProp('isDisposed');
   }
-
   public get topic() {
     return this.getProp('topic');
   }

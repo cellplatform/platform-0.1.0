@@ -1,4 +1,4 @@
-export { value, is } from '@platform/util.value';
+export { value, is, time } from '@platform/util.value';
 
 /**
  * [Ramda]
