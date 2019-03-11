@@ -17,7 +17,7 @@ export type MyEvents =
   | SystemEvents
   | INewWindowEvent
   | IMessageEvent
-  | ICreateDevToolsEvent
+  | IShowDevToolsEvent
   | IFooEvent
   | IBarEvent;
 
@@ -33,8 +33,8 @@ export type IMessageEvent = {
   payload: { text: string };
 };
 
-export type ICreateDevToolsEvent = {
-  type: 'DEVTOOLS/create';
+export type IShowDevToolsEvent = {
+  type: 'DEVTOOLS/show';
   payload: { windowId: number };
 };
 

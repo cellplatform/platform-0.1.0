@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, GlamorValue, ICreateDevToolsEvent, renderer } from '../../common';
+import { css, GlamorValue, IShowDevToolsEvent, renderer } from '../../common';
 import { Button, ObjectView } from '../primitives';
 import { TestPanel } from '../TestPanel';
 
@@ -37,7 +37,7 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
         <div {...styles.columns}>
           <div {...styles.colButtons}>
             <Button label={'clearConsoles'} onClick={this.clearConsoles} />
-            <Button label={'show (create)'} onClick={this.create} />
+            <Button label={'show (new)'} onClick={this.new} />
           </div>
           <div {...styles.colObject}>
             <ObjectView name={'context'} data={this.context} />
@@ -47,10 +47,10 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
     );
   }
 
-  private create = () => {
+  private new = () => {
     const { id: windowId, ipc } = this.context;
     const target = ipc.MAIN;
-    ipc.send<ICreateDevToolsEvent>('DEVTOOLS/create', { windowId }, { target });
+    ipc.send<IShowDevToolsEvent>('DEVTOOLS/show', { windowId }, { target });
   };
 
   private clearConsoles = () => {
