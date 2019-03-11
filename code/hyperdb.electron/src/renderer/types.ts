@@ -12,13 +12,7 @@ export type IDbRendererFactory = IDbFactory<IDbRenderer, INetworkRenderer>;
  * [Db]
  * Extensions to the API for a DB when it is running in the `renderer` process.
  */
-export type IDbRenderer<D extends {} = any> = IDb<D> & {
-  readonly checkoutVersion?: string;
-  dispose(): void;
-  connect(): Promise<void>;
-  disconnect(): Promise<void>;
-  authorize(peerKey: string): Promise<void>;
-};
+export type IDbRenderer<D extends {} = any> = IDb<D> & {};
 
 /**
  * [Network]
@@ -30,17 +24,7 @@ export type INetworkRenderer = INetwork & {};
  * [DB_Events]
  */
 export type DbIpcRendererClient = IpcClient<DbIpcRendererEvent>;
-export type DbIpcRendererEvent = DbIpcEvent | IDbConnectEvent | IDbDisconnectEvent;
-
-export type IDbConnectEvent = {
-  type: 'DB/connect';
-  payload: { db: { dir: string; dbKey?: string; version?: string } };
-};
-
-export type IDbDisconnectEvent = {
-  type: 'DB/disconnect';
-  payload: { db: { dir: string; dbKey?: string; version?: string } };
-};
+export type DbIpcRendererEvent = DbIpcEvent;
 
 /**
  * [Nework_Events]

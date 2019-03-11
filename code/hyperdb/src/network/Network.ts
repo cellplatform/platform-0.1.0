@@ -38,13 +38,21 @@ export class Network implements t.INetwork {
       .update($key)
       .digest();
 
+    // Promise that alerts when the Db is ready to interact with.
+    const ready$ = new Subject();
+    this.ready = ready$.toPromise();
+
     net.on('connection', this.onConnection);
+
+    // Finish up.
+    ready$.next(); // NB: Fires immediately, this is here for symetry with the client.
   }
 
   /**
    * [Fields]
    */
   private readonly _ = {
+    ready: new Subject(),
     db: (undefined as unknown) as Db,
     net: undefined as any,
     id: (undefined as unknown) as Buffer,
@@ -55,6 +63,7 @@ export class Network implements t.INetwork {
     connection: undefined as t.INetworkConnectionInfo | undefined,
     replication: undefined as t.IProtocol | undefined,
   };
+  public readonly ready: Promise<{}>;
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),

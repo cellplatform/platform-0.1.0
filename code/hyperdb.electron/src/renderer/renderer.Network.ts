@@ -7,6 +7,7 @@ const TARGET_MAIN = { target: 0 };
 type IConstructorArgs = {
   db: t.IDbRenderer;
   ipc: t.IpcClient;
+  connect?: boolean;
 };
 
 /**
@@ -17,9 +18,12 @@ export class NetworkRenderer implements t.INetworkRenderer {
    * [Static]
    */
   public static async create(args: IConstructorArgs) {
-    const db = new NetworkRenderer(args);
-    await db.ready;
-    return db;
+    const network = new NetworkRenderer(args);
+    await network.ready;
+    if (args.connect) {
+      network.connect();
+    }
+    return network;
   }
 
   /**
@@ -36,7 +40,10 @@ export class NetworkRenderer implements t.INetworkRenderer {
     // Sync props.
     const state$ = this._.ipc.on<t.INetworkUpdateStateEvent>('NETWORK/state/update').pipe(
       takeUntil(this.dispose$),
-      filter(e => e.payload.db.dir === this._.db.dir),
+      filter(
+        e =>
+          e.payload.db.dir === this._.db.dir && e.payload.db.version === this._.db.checkoutVersion,
+      ),
     );
     state$.subscribe(e => {
       const { props } = e.payload;
@@ -101,6 +108,13 @@ export class NetworkRenderer implements t.INetworkRenderer {
     this._.dispose$.complete();
   }
 
+  public async connect() {
+    this.invoke('connect', [], false);
+  }
+  public async disconnect() {
+    this.invoke('disconnect', [], false);
+  }
+
   public toString() {
     return `[network:${this.topic}]`;
   }
@@ -117,6 +131,36 @@ export class NetworkRenderer implements t.INetworkRenderer {
 
   private async syncState() {
     type E = t.INetworkGetStateEvent;
+    const { dir, checkoutVersion: version } = this._.db;
+    const payload: E['payload'] = { db: { dir, version } };
     return this._.ipc.send<E>('NETWORK/state/get', payload, TARGET_MAIN);
+  }
+
+  private async invoke<M extends keyof t.INetworkMethods>(
+    method: M,
+    params: any[],
+    wait?: boolean,
+  ) {
+    type E = t.INetworkInvokeEvent;
+    type R = t.INetworkInvokeResponse;
+    const db = this._.db;
+    const dir = db.dir;
+    const version = db.checkoutVersion;
+    const payload: E['payload'] = {
+      db: { dir, version },
+      method,
+      params,
+      wait,
+    };
+    const res = await this._.ipc.send<E, R>('NETWORK/invoke', payload, TARGET_MAIN).promise;
+    const data = res.dataFrom('MAIN');
+    const prefix = `Failed invoking Network method '${method}'`;
+    if (!data) {
+      throw new Error(`${prefix}. No data was returned from MAIN.`);
+    }
+    if (data.error) {
+      throw new Error(`${prefix}. ${data.error.message}`);
+    }
+    return data.result;
   }
 }

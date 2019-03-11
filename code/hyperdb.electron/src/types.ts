@@ -4,7 +4,13 @@ export * from '@platform/hyperdb/lib/types';
 /**
  * [Common]
  */
-import { IDbProps, IDbMethods, DbEvent, INetworkProps } from '@platform/hyperdb/lib/types';
+import {
+  IDbProps,
+  IDbMethods,
+  DbEvent,
+  INetworkProps,
+  INetworkMethods,
+} from '@platform/hyperdb/lib/types';
 import { IpcClient, ILog } from '@platform/electron/lib/types';
 export { IpcClient, ILog };
 
@@ -34,6 +40,7 @@ export type IDbInvokeEvent = {
     db: { dir: string; dbKey?: string; version?: string };
     method: keyof IDbMethods;
     params: any[];
+    wait?: boolean;
   };
 };
 export type IDbInvokeResponse<M extends keyof IDbMethods = any> = {
@@ -46,7 +53,10 @@ export type IDbInvokeResponse<M extends keyof IDbMethods = any> = {
  * [Network] Events
  */
 export type NetworkIpcClient = IpcClient<NetworkIpcEvent>;
-export type NetworkIpcEvent = INetworkUpdateStateEvent | INetworkGetStateEvent;
+export type NetworkIpcEvent =
+  | INetworkUpdateStateEvent
+  | INetworkGetStateEvent
+  | INetworkInvokeEvent;
 
 export type INetworkGetStateEvent = {
   type: 'NETWORK/state/get';
@@ -62,16 +72,17 @@ export type INetworkUpdateStateEvent = {
     props: INetworkProps;
   };
 };
-// export type INetworkInvokeEvent = {
-//   type: 'NETWORK/invoke';
-//   payload: {
-//     db: { dir: string; dbKey?: string; version?: string };
-//     method: keyof IDbMethods;
-//     params: any[];
-//   };
-// };
-// export type INetworkInvokeResponse<M extends keyof IDbMethods = any> = {
-//   method: M;
-//   result?: IDbMethods[M];
-//   error?: { message: string };
-// };
+export type INetworkInvokeEvent = {
+  type: 'NETWORK/invoke';
+  payload: {
+    db: { dir: string; version?: string };
+    method: keyof INetworkMethods;
+    params: any[];
+    wait?: boolean;
+  };
+};
+export type INetworkInvokeResponse<M extends keyof INetworkMethods = any> = {
+  method: M;
+  result?: INetworkMethods[M];
+  error?: { message: string };
+};

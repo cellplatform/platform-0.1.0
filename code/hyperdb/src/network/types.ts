@@ -2,13 +2,12 @@ import { Observable } from 'rxjs';
 
 export type NetworkStatus = 'DISCONNECTED' | 'CONNECTING' | 'CONNECTED';
 
-export type INetwork = INetworkProps & {
-  readonly events$: Observable<NetworkEvent>;
-  toString(): string;
-  dispose(): void;
-  connect(): Promise<void>;
-  disconnect(): Promise<void>;
-};
+export type INetwork = INetworkProps &
+  INetworkMethods & {
+    events$: Observable<NetworkEvent>;
+    dispose(): void;
+    ready: Promise<{}>;
+  };
 
 export type INetworkProps = {
   isDisposed: boolean;
@@ -17,6 +16,12 @@ export type INetworkProps = {
   isConnected: boolean;
   connection: INetworkConnectionInfo | undefined;
   db: { key: string; localKey: string };
+};
+
+export type INetworkMethods = {
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
+  toString(): string;
 };
 
 export type INetworkConnectionInfo = {
@@ -43,9 +48,9 @@ export type NetworkEvent = INetworkConnectionEvent | INetworkDataEvent;
 export type INetworkConnectionEvent = {
   type: 'NETWORK/connection';
   payload: {
+    db: { key: string; localKey: string };
     status: NetworkStatus;
     isConnected: boolean;
-    db: { key: string; localKey: string };
     connection?: INetworkConnectionInfo;
   };
 };

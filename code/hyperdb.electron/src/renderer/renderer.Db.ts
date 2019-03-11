@@ -171,18 +171,6 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
     return this.invoke('isAuthorized', [peerKey]);
   }
 
-  public async connect() {
-    const { dir, dbKey, version } = this._;
-    const db = { dir, dbKey, version };
-    this._.ipc.send<t.IDbConnectEvent>('DB/connect', { db }, TARGET_MAIN);
-  }
-
-  public async disconnect() {
-    const { dir, dbKey, version } = this._;
-    const db = { dir, dbKey, version };
-    this._.ipc.send<t.IDbDisconnectEvent>('DB/disconnect', { db }, TARGET_MAIN);
-  }
-
   public toString() {
     const { dir, version } = this._;
     let res = `${dir}/key:${this.key}`;
@@ -210,7 +198,7 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
     return this._.ipc.send<E>('DB/state/get', payload, TARGET_MAIN);
   }
 
-  private async invoke<M extends keyof t.IDbMethods>(method: M, params: any[]) {
+  private async invoke<M extends keyof t.IDbMethods>(method: M, params: any[], wait?: boolean) {
     type E = t.IDbInvokeEvent;
     type R = t.IDbInvokeResponse;
     const { dir, dbKey } = this._;
@@ -219,14 +207,16 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
       db: { dir, dbKey, version },
       method,
       params,
+      wait,
     };
     const res = await this._.ipc.send<E, R>('DB/invoke', payload, TARGET_MAIN).promise;
     const data = res.dataFrom('MAIN');
+    const prefix = `Failed invoking DB method '${method}'`;
     if (!data) {
-      throw new Error(`Failed invoking '${method}'. No data was returned from MAIN.`);
+      throw new Error(`${prefix}. No data was returned from MAIN.`);
     }
     if (data.error) {
-      throw new Error(`Failed invoking '${method}'. ${data.error.message}`);
+      throw new Error(`${prefix}. ${data.error.message}`);
     }
     return data.result;
   }

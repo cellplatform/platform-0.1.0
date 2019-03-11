@@ -18,6 +18,8 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   const events$ = new Subject<t.MainDbEvent>();
   log.info(`listening for ${log.yellow('hyperdb events')}`);
 
+  console.log(`\nTODO 🐷   use Factory cache\n`);
+
   const createDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
     const { dir, dbKey, version } = args;
 
@@ -107,42 +109,19 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
    * [DB-HANDLE] invoke requests from DB `renderer` clients.
    */
   ipc.handle<t.IDbInvokeEvent, t.IDbInvokeResponse>('DB/invoke', async e => {
+    const wait = value.defaultValue(e.payload.wait, true);
     const { method, params } = e.payload;
     const { dir, dbKey, version } = e.payload.db;
     const { db } = await getOrCreateDb({ dir, dbKey, version });
     try {
       const fn = db[method] as (...params: any[]) => any;
       const res = fn.apply(db, params);
-      const result = value.isPromise(res) ? await res : res;
+      const result = wait && value.isPromise(res) ? await res : res;
       return { method, result };
     } catch (err) {
       const message = err.message;
       const error = { message };
       return { method, error };
-    }
-  });
-
-  /**
-   * [DB-HANDLE] requests to `disconnect` (leave the swarm).
-   */
-  ipc.handle<t.IDbConnectEvent>('DB/connect', async e => {
-    const { dir, dbKey, version } = e.payload.db;
-    const ref = await getOrCreateDb({ dir, dbKey, version });
-    if (!ref.network.isConnected) {
-      await ref.network.connect();
-      logConnection(log, ref);
-    }
-  });
-
-  /**
-   * [DB-HANDLE] requests to `connect` (leave the swarm).
-   */
-  ipc.handle<t.IDbDisconnectEvent>('DB/disconnect', async e => {
-    const { dir, dbKey, version } = e.payload.db;
-    const ref = await getOrCreateDb({ dir, dbKey, version });
-    if (ref.network.isConnected) {
-      await ref.network.disconnect();
-      logConnection(log, ref);
     }
   });
 
@@ -159,7 +138,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     type E = t.INetworkUpdateStateEvent;
     type P = E['payload'];
     const { dir, version } = args;
-    const ref = await getRef({ dir });
+    const ref = await getRef({ dir, version });
 
     const type: E['type'] = 'NETWORK/state/update';
     const errorPrefix = `[${type}] Failed to get state fields of Network for DB '${dir}'`;
@@ -178,6 +157,42 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       log.error(message);
     }
   };
+
+  /**
+   * [NETWORK-HANDLE] invoke requests from DB `renderer` clients.
+   */
+  ipc.handle<t.INetworkInvokeEvent, t.INetworkInvokeResponse>('NETWORK/invoke', async e => {
+    type E = t.INetworkInvokeEvent;
+    type P = E['payload'];
+
+    const wait = value.defaultValue(e.payload.wait, true);
+    const { method, params } = e.payload;
+    const { dir, version } = e.payload.db;
+    const ref = await getRef({ dir, version });
+
+    const type: E['type'] = 'NETWORK/invoke';
+    const errorPrefix = `[${type}] Failed to invoke Network method for DB '${dir}'`;
+
+    if (!ref) {
+      const message = `${errorPrefix}. The DB/Network has not been created yet.`;
+      log.error(message);
+      return { method, error: { message } };
+    }
+
+    const network = ref.network;
+
+    try {
+      const fn = network[method] as (...params: any[]) => any;
+      const res = fn.apply(network, params);
+      const result = wait && value.isPromise(res) ? await res : res;
+      return { method, result };
+    } catch (err) {
+      const message = err.message;
+      const error = { message };
+      log.error(message);
+      return { method, error };
+    }
+  });
 
   // Finish up.
   return {

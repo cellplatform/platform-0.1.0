@@ -10,7 +10,7 @@ export { Db, Network };
  */
 export const create: t.CreateDatabase = async args => {
   const { dir, dbKey, version } = args;
-  const connect = value.defaultValue(args.connect, true);
+  const connect = value.defaultValue(args.connect, false);
 
   // Construct and connect the database.
   const db = await Db.create({ dir, dbKey, version });
