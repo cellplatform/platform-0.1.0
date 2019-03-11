@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { color, css, GlamorValue, renderer, t } from '../../common';
+import { color, css, GlamorValue, renderer, t, COLORS } from '../../common';
 import { Button } from '../primitives';
 import {
   ShellIndexSelectEventHandler,
@@ -103,13 +103,14 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
     const isSelected = dir === selected;
 
     const styles = {
-      li: css({
+      base: css({
         borderBottom: `solid 1px ${color.format(-0.1)}`,
         padding: 8,
         Flex: 'horizontal-spaceBetween-center',
         cursor: !isSelected && 'pointer',
+        backgroundColor: isSelected && COLORS.BLUE,
       }),
-      selected: css({
+      statusBullet: css({
         width: BULLET_SIZE,
         height: BULLET_SIZE,
         borderRadius: BULLET_SIZE,
@@ -117,10 +118,10 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
       }),
     };
 
-    const elSelectedBullet = isSelected && <div {...styles.selected} />;
+    const elSelectedBullet = isSelected && <div {...styles.statusBullet} />;
     return (
-      <div key={dir} {...styles.li} onClick={this.selectHandler(dir)}>
-        <Button label={dir} isEnabled={!isSelected} theme={{ disabledColor: color.format(-0.7) }} />
+      <div key={dir} {...styles.base} onClick={this.selectHandler(dir)}>
+        <Button label={dir} isEnabled={!isSelected} theme={{ disabledColor: COLORS.WHITE }} />
         {elSelectedBullet}
       </div>
     );
