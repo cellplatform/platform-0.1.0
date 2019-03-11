@@ -13,7 +13,6 @@
     "tmp": "ts-node -T scripts/tmp $@"
   },
   "dependencies": {
-    "@hyperswarm/network": "^0.0.4",
     "@platform/cli.spec": "0.0.2",
     "@platform/electron": "0.0.105",
     "@platform/hyperdb": "0.0.15",
@@ -22,12 +21,8 @@
     "@platform/util.string": "0.0.31",
     "@platform/util.value": "0.0.34",
     "@uiharness/electron": "0.3.141",
-    "discovery-swarm": "5.1.4",
     "hjson": "3.1.2",
-    "hyperdb": "3.5.0",
-    "minimist": "1.2.0",
-    "pump": "^3.0.0",
-    "react": "16.8.3"
+    "react": "16.8.4"
   },
   "devDependencies": {
     "@platform/test": "0.0.31",

@@ -32,7 +32,7 @@
     "hyperdb": "3.5.0",
     "minimist": "1.2.0",
     "pump": "^3.0.0",
-    "react": "16.8.3"
+    "react": "16.8.4"
   },
   "devDependencies": {
     "@platform/test": "0.0.31",
