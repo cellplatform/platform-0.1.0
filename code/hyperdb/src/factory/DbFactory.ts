@@ -23,14 +23,16 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
   /**
    * [Constructor]
    */
-  constructor(args: { create: t.CreateDatabase<D, N> }) {
+  constructor(args: { create: t.CreateDatabase<D, N>; afterCreate?: t.AfterCreate<D, N> }) {
     this._create = args.create;
+    this._afterCreate = args.afterCreate;
   }
 
   /**
    * [Fields]
    */
-  private readonly _create: t.CreateDatabase;
+  private readonly _create: t.CreateDatabase<D, N>;
+  private readonly _afterCreate: t.AfterCreate<D, N> | undefined;
   private readonly _cache: Refs = {};
   private readonly _events$ = new Subject<t.DbFactoryEvent>();
   public readonly events$ = this._events$.pipe(share());

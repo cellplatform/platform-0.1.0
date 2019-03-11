@@ -56,6 +56,12 @@ export type ICreateDatabaseResponse<P extends {} = any> = {
   network: t.INetwork;
 };
 
+export type AfterCreate<D extends t.IDb = any, N extends t.INetwork = any> = (args: {
+  args: ICreateDatabaseArgs;
+  db: D;
+  network: N;
+}) => void;
+
 /**
  * [Events]
  */

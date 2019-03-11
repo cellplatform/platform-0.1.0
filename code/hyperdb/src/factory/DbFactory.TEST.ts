@@ -12,7 +12,7 @@ after(async () => fs.remove('tmp'));
 describe('Factory', () => {
   beforeEach(() => dirs.forEach(dir => fs.removeSync(dir)));
 
-  describe('cache', () => {
+  describe('create', () => {
     it('creates (not cached)', async () => {
       const factory = new DbFactory({ create });
       expect(factory.isCached({ dir })).to.eql(false);
@@ -29,6 +29,16 @@ describe('Factory', () => {
       expect(res.db.dir).to.eql(dir);
       expect(factory.isCached({ dir })).to.eql(true);
       expect(factory.count).to.eql(1);
+    });
+
+    it('invoke `afterCreate` callback', () => {
+      const factory = new DbFactory({
+        create,
+        afterCreate: e => {
+          console.log('e', e);
+          console.log(`\nTODO 🐷   \n`);
+        },
+      });
     });
   });
 
