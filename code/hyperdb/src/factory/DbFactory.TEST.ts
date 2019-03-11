@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { DbFactory } from '.';
 import { create } from './create';
 import { fs } from '@platform/fs';
+import * as t from './types';
 
 const dir = 'tmp/db';
 const dir1 = 'tmp/db-1';
@@ -31,14 +32,20 @@ describe('Factory', () => {
       expect(factory.count).to.eql(1);
     });
 
-    it('invoke `afterCreate` callback', () => {
+    it('invoke `afterCreate` callback', async () => {
+      const list: t.IAfterCreateArgs[] = [];
       const factory = new DbFactory({
         create,
-        afterCreate: e => {
-          console.log('e', e);
-          console.log(`\nTODO 🐷   \n`);
-        },
+        afterCreate: async e => list.push(e),
       });
+
+      const args = { dir, connect: false };
+      const res = await factory.create(args);
+
+      expect(list.length).to.eql(1);
+      expect(list[0].args).to.eql(args);
+      expect(list[0].db).to.equal(res.db);
+      expect(list[0].network).to.eql(res.network);
     });
   });
 

@@ -79,7 +79,8 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
    */
   public create = async <P extends {} = any>(args: t.ICreateCacheableDatabaseArgs) => {
     const res = await this._create<P>(args);
-    const { db, network } = res;
+    const db = res.db as D;
+    const network = res.network as N;
 
     // Update state when DB is disposed.
     const key = DbFactory.cacheKey(args);
@@ -92,6 +93,11 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
     if (value.defaultValue(args.cache, true)) {
       const { dir, version } = args;
       this._cache[key] = { dir, version, db, network };
+    }
+
+    // Invoke the AFTER creation callback.
+    if (this._afterCreate) {
+      await this._afterCreate({ args, db, network });
     }
 
     // Alert listeners.
