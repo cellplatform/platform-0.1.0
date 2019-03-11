@@ -8,7 +8,8 @@ type Refs = { [key: string]: Ref };
 /**
  * A factory for creating and caching database instances.
  */
-export class DbFactory<D extends t.IDb, N extends t.INetwork> implements t.IDbFactory<D, N> {
+export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwork>
+  implements t.IDbFactory<D, N> {
   /**
    * [Static]
    */
@@ -35,6 +36,15 @@ export class DbFactory<D extends t.IDb, N extends t.INetwork> implements t.IDbFa
    */
   public get count() {
     return Object.keys(this._cache).length;
+  }
+
+  public get items(): Array<t.IDbFactoryItem<D, N>> {
+    const cache = this._cache;
+    return Object.keys(cache)
+      .map(key => cache[key])
+      .map(({ db, network }) => {
+        return { db: db as D, network: network as N };
+      });
   }
 
   /**
