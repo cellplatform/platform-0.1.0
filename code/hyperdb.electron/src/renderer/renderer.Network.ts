@@ -55,7 +55,8 @@ export class NetworkRenderer implements t.INetworkRenderer {
     state$.pipe(take(1)).subscribe(() => ready$.complete());
     this.syncState();
 
-    // Ferry NetworkEvents (but not internal renderer/IPC system events) through the local observable.
+    // Ferry network events through the local observable
+    // (but not the internal renderer/IPC system events).
     this._.ipc.events$
       .pipe(
         takeUntil(this.dispose$),
@@ -65,10 +66,10 @@ export class NetworkRenderer implements t.INetworkRenderer {
       )
       .subscribe(e => this._.events$.next(e));
 
-    // Update state on events.
+    // Update state on network events.
     this.events$
       .pipe(
-        filter(e => e.type !== 'NETWORK/data'), // NB: Data is noise, and does not require a state update.
+        filter(e => e.type !== 'NETWORK/data'), // NB: Data is noise and does not require a state update.
         debounceTime(10),
       )
       .subscribe(e => this.syncState());

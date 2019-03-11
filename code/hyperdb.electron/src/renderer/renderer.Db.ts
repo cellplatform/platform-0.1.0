@@ -54,7 +54,8 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
     state$.pipe(take(1)).subscribe(() => ready$.complete());
     this.syncState();
 
-    // Ferry DbEvents (but not internal renderer/IPC system events) through the local observable.
+    // Ferry DB events through the local observable
+    // (but not the internal renderer/IPC system events).
     this._.ipc.events$
       .pipe(
         takeUntil(this.dispose$),
