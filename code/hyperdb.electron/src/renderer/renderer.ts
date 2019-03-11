@@ -1,4 +1,4 @@
-import { Factory } from '@platform/hyperdb/lib/factory/Factory';
+import { DbFactory } from '@platform/hyperdb/lib/factory/DbFactory';
 import * as t from '../types';
 import { creator } from './create';
 
@@ -18,7 +18,7 @@ export type IInitResult = {
 export function init(args: { ipc: t.IpcClient }): IInitResult {
   const { ipc } = args;
 
-  const factory = new Factory<t.IDbRenderer, t.INetworkRenderer>({
+  const factory = new DbFactory<t.IDbRenderer, t.INetworkRenderer>({
     create: creator({ ipc }),
   }) as t.IDbRendererFactory;
 
