@@ -1,11 +1,11 @@
 import * as crypto from 'crypto';
 import { Socket } from 'net';
 import { Subject } from 'rxjs';
-import { share, takeUntil, filter, take } from 'rxjs/operators';
+import { share, takeUntil } from 'rxjs/operators';
 
+import { time } from '../common';
 import { Db } from '../db';
 import * as t from '../types';
-import { time } from '../common';
 
 const hyperswarm = require('@hyperswarm/network');
 const pump = require('pump');
@@ -47,7 +47,7 @@ export class Network implements t.INetwork {
     this.ready = ready$.toPromise();
 
     // Finish up.
-    ready$.next(); // NB: Fires immediately, this is here for symetry with the client.
+    ready$.next(); // NB: Fires immediately, this is here for symmetry with the client.
   }
 
   /**
@@ -61,13 +61,8 @@ export class Network implements t.INetwork {
     dispose$: new Subject(),
     events$: new Subject<t.NetworkEvent>(),
     status: 'DISCONNECTED' as t.NetworkStatus,
-    // connecting: undefined as Promise<void> | undefined,
     connection: undefined as t.INetworkConnectionInfo | undefined,
-
     sockets: undefined as SocketRefs | undefined,
-
-    // replicationStream: undefined as t.IProtocol | undefined,
-    // connectionStream: undefined as t.IProtocol | undefined,
     isHolePunchable: undefined as boolean | undefined,
   };
   public readonly ready: Promise<{}>;
@@ -175,6 +170,14 @@ export class Network implements t.INetwork {
   }
 
   /**
+   * Reconnects to the network.
+   */
+  public async reconnect() {
+    await this.disconnect();
+    await this.connect();
+  }
+
+  /**
    * Display string.
    */
   public toString() {
@@ -214,20 +217,19 @@ export class Network implements t.INetwork {
       /* Socket Pipe Ended. */
     });
 
-    // this._.connectionStream = conn;
     this._.sockets = { replication, connection: socket };
 
     // const TMP_COUNT = 0;
-    let timer = time.timer();
+    let TEMP_TIMER = time.timer();
     let times: number[] = [];
     socket.on('data', (data: Buffer) => {
-      const elapsed = timer.elapsed();
+      const elapsed = TEMP_TIMER.elapsed();
       times = [...times, elapsed];
       const avg = times.reduce((acc, next) => acc + next, 0) / times.length;
 
       // console.log('data', `(${TMP_COUNT++}) elapsed: ${elapsed} | avg: ${avg}`);
 
-      timer = time.timer();
+      TEMP_TIMER = time.timer();
 
       const db = this.db;
       this._.events$.next({ type: 'NETWORK/data', payload: { db } });

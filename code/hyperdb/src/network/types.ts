@@ -21,6 +21,7 @@ export type INetworkProps = {
 export type INetworkMethods = {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
+  reconnect(): Promise<void>;
   toString(): string;
 };
 

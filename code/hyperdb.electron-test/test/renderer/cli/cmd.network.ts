@@ -18,4 +18,10 @@ export const network = Command.create<P>('network')
     if (network) {
       await network.disconnect();
     }
+  })
+  .add('reconnect', async e => {
+    const { network } = e.props;
+    if (network) {
+      await network.reconnect();
+    }
   });

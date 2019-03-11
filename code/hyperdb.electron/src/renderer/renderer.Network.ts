@@ -130,6 +130,10 @@ export class NetworkRenderer implements t.INetworkRenderer {
     this.invoke('disconnect', [], false);
   }
 
+  public async reconnect() {
+    this.invoke('reconnect', [], false);
+  }
+
   public toString() {
     return `[network:${this.topic}]`;
   }
