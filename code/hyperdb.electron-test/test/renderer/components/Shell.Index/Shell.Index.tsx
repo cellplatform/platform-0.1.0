@@ -69,7 +69,7 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
 
     // Ensure each DB instance is ready to go.
     const databases = await this.store.get('databases');
-    for (let dir of databases) {
+    for (let dir of databases || []) {
       dir = `${await this.store.get('dir')}/${dir}`;
       await db.getOrCreate({ dir, connect: true });
     }

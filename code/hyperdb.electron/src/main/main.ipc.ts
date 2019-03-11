@@ -1,13 +1,11 @@
-import { create, Db, Network } from '@platform/hyperdb';
+import { factory } from '@platform/hyperdb';
 import { Subject } from 'rxjs';
-import { share, filter } from 'rxjs/operators';
+import { share } from 'rxjs/operators';
 
 import { value } from '../common';
 import * as t from './types';
 
 type Ref = { db: t.IDb; network: t.INetwork; dir: string; version?: string };
-type Refs = { [key: string]: Ref };
-const refs: Refs = {};
 
 /**
  * Start the HyperDB IPC handler's listening on the [main] process.
@@ -18,14 +16,11 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   const events$ = new Subject<t.MainDbEvent>();
   log.info(`listening for ${log.yellow('hyperdb events')}`);
 
-  console.log(`\nTODO 🐷   use Factory cache\n`);
+  // const factory = new Factory({ create: async (e) => {} })
 
-  const createDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
-    const { dir, dbKey, version } = args;
-
-    // Construct the DB.
-    const res = await create({ dir, dbKey, version });
-    const { db, network } = res;
+  const databases = factory.clone().afterCreate(async e => {
+    const { dir, version } = e.args;
+    const { db, network } = e;
 
     // Ferry events to clients.
     db.events$.subscribe(e => ipc.send(e.type, e.payload));
@@ -36,40 +31,67 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       type: 'DB/main/created',
       payload: {
         dir,
-        dbKey: db.key, 
+        dbKey: db.key,
         localKey: db.localKey,
         discoveryKey: db.discoveryKey,
         version,
       },
     });
-    const ref: Ref = { db, network, dir };
 
     const isAuthorized = await db.isAuthorized();
-    logCreated(log, ref, isAuthorized);
-    return ref;
-  };
+    logCreated(log, { db, network, dir, version }, isAuthorized);
+  });
 
-  const getRefKey = (args: { dir: string; dbKey?: string; version?: string }) => {
-    const { dir, version } = args;
-    let refKey = dir;
-    refKey = version ? `${refKey}/ver:${version}` : refKey;
-    return refKey;
-  };
+  // const createDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
+  //   const { dir, dbKey, version } = args;
 
-  const getRef = async (args: {
-    dir: string;
-    dbKey?: string;
-    version?: string;
-  }): Promise<Ref | undefined> => {
-    const refKey = getRefKey(args);
-    return refs[refKey];
-  };
+  //   // Construct the DB.
+  //   const res = await create({ dir, dbKey, version });
+  //   const { db, network } = res;
 
-  const getOrCreateDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
-    const refKey = getRefKey(args);
-    refs[refKey] = refs[refKey] || createDb(args);
-    return refs[refKey];
-  };
+  //   // Ferry events to clients.
+  //   db.events$.subscribe(e => ipc.send(e.type, e.payload));
+  //   network.events$.subscribe(e => ipc.send(e.type, e.payload));
+
+  //   // Finish up.
+  //   events$.next({
+  //     type: 'DB/main/created',
+  //     payload: {
+  //       dir,
+  //       dbKey: db.key,
+  //       localKey: db.localKey,
+  //       discoveryKey: db.discoveryKey,
+  //       version,
+  //     },
+  //   });
+  //   const ref: Ref = { db, network, dir };
+
+  //   const isAuthorized = await db.isAuthorized();
+  //   logCreated(log, ref, isAuthorized);
+  //   return ref;
+  // };
+
+  // const getRefKey = (args: { dir: string; dbKey?: string; version?: string }) => {
+  //   const { dir, version } = args;
+  //   let refKey = dir;
+  //   refKey = version ? `${refKey}/ver:${version}` : refKey;
+  //   return refKey;
+  // };
+
+  // const getRef = async (args: {
+  //   dir: string;
+  //   dbKey?: string;
+  //   version?: string;
+  // }): Promise<Ref | undefined> => {
+  //   const refKey = getRefKey(args);
+  //   return refs[refKey];
+  // };
+
+  // const getOrCreateDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
+  //   const refKey = getRefKey(args);
+  //   refs[refKey] = refs[refKey] || createDb(args);
+  //   return refs[refKey];
+  // };
 
   /**
    * [DB-HANDLE] state requests from DB `renderer` clients
@@ -79,7 +101,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     type E = t.IDbUpdateStateEvent;
     type P = E['payload'];
     const { dir, dbKey, version } = e.payload.db;
-    const { db } = await getOrCreateDb({ dir, dbKey, version });
+    const { db } = await databases.getOrCreate({ dir, dbKey, version });
     try {
       const { dir, key, discoveryKey, localKey, watching, isDisposed, checkoutVersion } = db;
       const props: t.IDbProps = {
@@ -107,7 +129,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     const wait = value.defaultValue(e.payload.wait, true);
     const { method, params } = e.payload;
     const { dir, dbKey, version } = e.payload.db;
-    const { db } = await getOrCreateDb({ dir, dbKey, version });
+    const { db } = await databases.getOrCreate({ dir, dbKey, version });
     try {
       const fn = db[method] as (...params: any[]) => any;
       const res = fn.apply(db, params);
@@ -128,7 +150,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     type E = t.INetworkUpdateStateEvent;
     type P = E['payload'];
     const { dir, version } = e.payload.db;
-    const ref = await getRef({ dir, version });
+    const ref = await databases.get({ dir, version });
 
     const type: E['type'] = 'NETWORK/ipc/state/update';
     const errorPrefix = `[${type}] Failed to get state fields of Network for DB '${dir}'`;
@@ -158,7 +180,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     const wait = value.defaultValue(e.payload.wait, true);
     const { method, params } = e.payload;
     const { dir, version } = e.payload.db;
-    const ref = await getRef({ dir, version });
+    const ref = await databases.get({ dir, version });
 
     const type: E['type'] = 'NETWORK/ipc/invoke';
     const errorPrefix = `[${type}] Failed to invoke Network method for DB '${dir}'`;

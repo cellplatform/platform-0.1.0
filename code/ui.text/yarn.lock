@@ -1010,10 +1010,10 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/electron@0.0.105":
-  version "0.0.105"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.0.105.tgz#42d89e559d4df34260d757d018cad2499404901c"
-  integrity sha512-KTV+THlHmdUGrG2tfTJGNnSIjPP+ibeA7EpFmJKH32VmMWpBm0EFNyFXv4vsg/c21qtgkKevvDF0fFu0Dz7F4g==
+"@platform/electron@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.0.tgz#cc2fb063a520cc84d3c97ea116323e89b4415819"
+  integrity sha512-CdUwpE9q3Yyem2ub8mG+CKza5WFvDNG+6XdTt5XgZ1UalD0VyuBYwVVOlEvYRE+5ewJgm8YfSIyPNBQwJAspzg==
   dependencies:
     "@babel/polyfill" "7.2.5"
     "@platform/fs" "0.0.38"

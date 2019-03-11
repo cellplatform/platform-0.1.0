@@ -39,7 +39,7 @@ export type IDbFactoryItem<D extends t.IDb, N extends t.INetwork> = {
 /**
  * Factory function that returns a new Db/Network pair.
  */
-export type CreateDatabase<D extends t.IDb = any, N extends t.INetwork = any> = <
+export type CreateDatabase<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwork> = <
   P extends {} = any
 >(
   args: ICreateDatabaseArgs,
@@ -58,10 +58,10 @@ export type ICreateDatabaseResponse<P extends {} = any> = {
   network: t.INetwork;
 };
 
-export type AfterCreate<D extends t.IDb = any, N extends t.INetwork = any> = (
+export type AfterCreate<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwork> = (
   args: IAfterCreateArgs<D, N>,
 ) => any;
-export type IAfterCreateArgs<D extends t.IDb = any, N extends t.INetwork = any> = {
+export type IAfterCreateArgs<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwork> = {
   args: ICreateDatabaseArgs;
   db: D;
   network: N;

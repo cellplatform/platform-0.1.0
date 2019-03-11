@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.text",
   "description": "Text components.",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -18,7 +18,7 @@
     "@platform/util.value": "0.0.34"
   },
   "devDependencies": {
-    "@platform/electron": "0.0.105",
+    "@platform/electron": "0.1.0",
     "@platform/ts": "3.3.60",
     "@uiharness/dev": "0.1.40"
   },

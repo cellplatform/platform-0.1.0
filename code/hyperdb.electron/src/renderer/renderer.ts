@@ -18,7 +18,7 @@ export type IInitResult = {
 export function init(args: { ipc: t.IpcClient }): IInitResult {
   const { ipc } = args;
 
-  const factory = new DbFactory<t.IDbRenderer, t.INetworkRenderer>({
+  const factory = DbFactory.create<t.IDbRenderer, t.INetworkRenderer>({
     create: creator({ ipc }),
   }) as t.IDbRendererFactory;
 

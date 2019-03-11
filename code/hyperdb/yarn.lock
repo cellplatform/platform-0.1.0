@@ -20,7 +20,7 @@
     "@hyperswarm/dht" "0.0.1"
     multicast-dns "^7.2.0"
 
-"@hyperswarm/network@^0.0.4":
+"@hyperswarm/network@0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@hyperswarm/network/-/network-0.0.4.tgz#60328be9178e32b8023d4f009dee3af3e45fb907"
   integrity sha512-7+ove2aC16d3fDEunNsBmuS8tx1SQwuqtQn6O9HhCuTSe54iVsI6CnwGiSnJAFFY6lhghxNUV/CiqQyGoMxg7g==
@@ -2128,7 +2128,7 @@ protocol-buffers-encodings@^1.1.0:
     signed-varint "^2.0.1"
     varint "^5.0.0"
 
-pump@^3.0.0:
+pump@3.0.0, pump@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/pump/-/pump-3.0.0.tgz#b4a2116815bde2f4e1ea602354e8c75565107a64"
   integrity sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==
