@@ -22,6 +22,7 @@ export interface IInputValue {
 }
 
 export interface IHtmlInputProps extends ITextInputFocus, ITextInputEvents, IInputValue {
+  className?: string;
   isEnabled?: boolean;
   isPassword?: boolean;
   disabledOpacity?: number;
@@ -121,6 +122,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
     return (
       <input
         {...css(styles.base, this.props.style)}
+        className={this.props.className}
         ref={this.inputRef}
         type={isPassword ? 'password' : 'text'}
         disabled={!isEnabled}

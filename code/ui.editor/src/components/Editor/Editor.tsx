@@ -7,7 +7,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue } from '../../common';
+import { css, GlamorValue, containsFocus } from '../../common';
 import * as t from './types';
 
 // @ts-ignore
@@ -53,7 +53,38 @@ export class Editor extends React.PureComponent<IEditorProps> {
   }
 
   public componentDidMount() {
-    const content = '';
+    this.load('');
+  }
+
+  public componentWillUnmount() {
+    this.unmounted$.next();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get content() {
+    return defaultMarkdownSerializer.serialize(this.view.state.doc);
+  }
+
+  public get isFocused() {
+    return containsFocus(this.el) || this.view.hasFocus();
+  }
+
+  /**
+   * [Methods]
+   */
+  public focus() {
+    if (this.view && this.el) {
+      this.view.focus();
+    }
+  }
+
+  public load(content: string) {
+    if (this.view) {
+      this.view.destroy();
+    }
+
     const state = EditorState.create({
       doc: defaultMarkdownParser.parse(content),
       plugins: [
@@ -66,14 +97,6 @@ export class Editor extends React.PureComponent<IEditorProps> {
       state,
       dispatchTransaction: this.dispatcher,
     });
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-  }
-
-  public get content() {
-    return defaultMarkdownSerializer.serialize(this.view.state.doc);
   }
 
   /**
@@ -94,7 +117,6 @@ export class Editor extends React.PureComponent<IEditorProps> {
     let state = view.state;
 
     // Fire the "pre" event.
-    type E = t.IEditorTransactionEvent;
     this._events$.next({
       type: 'EDITOR/transaction',
       payload: { stage: 'BEFORE', transaction, view, state, content: this.content },
@@ -112,6 +134,6 @@ export class Editor extends React.PureComponent<IEditorProps> {
   };
 
   private handleClick = () => {
-    this.view.focus();
+    this.focus();
   };
 }

@@ -36,8 +36,8 @@ export type ReactContext = React.ContextType<typeof Context>;
  * Factory for creating an <Provider> component pre-baked
  * with the electron context (ipc, log, store...etc).
  */
-export function createProvider(value: t.IRendererContext): React.FunctionComponent {
+export function createProvider(context: t.IRendererContext): React.FunctionComponent {
   return (props: { children?: React.ReactNode } = {}) => (
-    <Context.Provider value={value}>{props.children}</Context.Provider>
+    <Context.Provider value={context}>{props.children}</Context.Provider>
   );
 }

@@ -26,11 +26,13 @@ export type IDbValue<K, V> = {
  * [Database]
  */
 export type IDbProps = {
+  readonly dir: string;
   readonly key: string;
   readonly discoveryKey: string;
   readonly localKey: string;
   readonly watching: string[];
   readonly isDisposed: boolean;
+  readonly checkoutVersion: string | undefined;
 };
 export type IDbMethods<D extends {} = any> = {
   checkout(version: string): Promise<IDb<D>>;
@@ -40,6 +42,8 @@ export type IDbMethods<D extends {} = any> = {
   delete<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   watch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
   unwatch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
+  isAuthorized(peerKey?: string | Buffer): Promise<boolean>;
+  authorize(peerKey: string | Buffer): Promise<void>;
 };
 export type IDb<D extends {} = any> = IDbProps &
   IDbMethods<D> & {
@@ -47,6 +51,7 @@ export type IDb<D extends {} = any> = IDbProps &
     readonly watch$: Observable<IDbWatchChange<D>>;
     readonly dispose$: Observable<{}>;
     toString(): string;
+    dispose(): void;
   };
 
 /**

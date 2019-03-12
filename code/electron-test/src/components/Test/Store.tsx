@@ -122,8 +122,7 @@ export class StoreTest extends React.PureComponent<IStoreTestProps, IStoreTestSt
   };
 
   private changeFoo = async () => {
-    type F = t.IMyStore['foo'];
-    const foo = await this.store.get<F>('foo', { bar: false });
+    const foo = await this.store.get('foo', { bar: false });
     foo.bar = !foo.bar;
     await this.store.set('foo', foo);
   };

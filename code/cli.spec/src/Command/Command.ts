@@ -12,15 +12,6 @@ type IConstructorArgs<P extends object = any, A extends object = any> = {
   children: Command[];
 };
 
-type ITreeMethods<T extends Command = Command> = {
-  count: number;
-  walk: (fn: tree.CommandTreeVisitor<T>) => tree.ICommandTreeVisitorResult;
-  find: (fn: tree.CommandTreeFilter<T>) => T | undefined;
-  parent: (root: T) => T | undefined;
-  toPath: (target: number | string | T) => T[];
-  fromPath: (path: string) => T | undefined;
-};
-
 /**
  * Represents a single [command] which is a named unit of functionality
  * within a program that can optionally take parameter input.
@@ -88,7 +79,7 @@ export class Command<P extends object = any, A extends object = any> implements 
     children: [] as Command[],
     dispose$: new Subject(),
     events$: new Subject<t.CommandEvent>(),
-    tree: (undefined as unknown) as ITreeMethods | undefined,
+    tree: (undefined as unknown) as t.ITreeMethods | undefined,
   };
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
@@ -126,15 +117,15 @@ export class Command<P extends object = any, A extends object = any> implements 
   public get tree() {
     if (!this._.tree) {
       const self = this; // tslint:disable-line
-      const methods: ITreeMethods = {
+      const methods: t.ITreeMethods<t.ICommand<P, A>> = {
         get count() {
           return tree.count(self);
         },
-        walk: fn => tree.walk<Command>(self, fn),
-        find: fn => tree.find<Command>(self, fn),
-        parent: root => tree.parent<Command>(root, self),
-        toPath: target => tree.toPath<Command>(self, target),
-        fromPath: (path: string) => tree.fromPath<Command>(self, path),
+        walk: fn => tree.walk(self, fn),
+        find: fn => tree.find(self, fn),
+        parent: root => tree.parent(root, self),
+        toPath: target => tree.toPath(self, target),
+        fromPath: path => tree.fromPath(self, path),
       };
       this._.tree = methods;
     }
@@ -204,6 +195,7 @@ export class Command<P extends object = any, A extends object = any> implements 
       events$: this.events$,
       invoke,
       children,
+      tree: this.tree,
     };
   }
 

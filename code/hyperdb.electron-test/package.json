@@ -1,0 +1,45 @@
+{
+  "name": "hyperdb.electron-test",
+  "description": "Test module for the [hyperdb.electron].",
+  "version": "0.1.7",
+  "main": "lib/index",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "echo no-op",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare",
+    "reset": "ts-node -T scripts/reset",
+    "tmp": "ts-node -T scripts/tmp $@"
+  },
+  "dependencies": {
+    "@hyperswarm/network": "0.0.4",
+    "@platform/cli.spec": "0.0.3",
+    "@platform/electron": "0.1.2",
+    "@platform/hyperdb": "0.0.18",
+    "@platform/hyperdb.electron": "^0.0.23",
+    "@platform/react": "0.0.15",
+    "@platform/ui.editor": "0.0.4",
+    "@platform/ui.text": "0.0.18",
+    "@platform/util.string": "0.0.32",
+    "@platform/util.value": "0.0.35",
+    "@uiharness/electron": "0.3.145",
+    "hjson": "3.1.2",
+    "react": "16.8.4"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.31",
+    "@platform/ts": "3.3.61",
+    "@types/hjson": "2.4.1",
+    "@uiharness/dev": "0.1.45"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": "uiharness/platform",
+  "license": "MIT",
+  "private": true
+}

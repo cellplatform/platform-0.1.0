@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import { Subject } from 'rxjs';
 
-import { exec, ITimer, time, value } from '../common';
+import { exec, time, value } from '../common';
 import { yarn } from '../yarn';
 
 export type Engine = 'YARN' | 'NPM';
@@ -150,7 +150,7 @@ function getExitCode(errors: string[]) {
 
 function formatResult(args: {
   result: INpmInstallResult;
-  timer: ITimer;
+  timer: time.ITimer;
   use?: Engine;
 }): INpmInstallResult {
   const { timer, result } = args;

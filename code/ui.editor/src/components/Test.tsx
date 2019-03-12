@@ -1,20 +1,10 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
-
 import * as React from 'react';
-import { css, color, t, GlamorValue, COLORS } from '../common';
-import { ObjectView } from './primitives';
+import { Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
+import { color, COLORS, css, GlamorValue, t } from '../common';
 import { Editor } from './Editor';
+import { ObjectView } from './primitives';
 
 export type ITestProps = {
   style?: GlamorValue;

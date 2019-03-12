@@ -17,25 +17,25 @@ export type MyEvents =
   | SystemEvents
   | INewWindowEvent
   | IMessageEvent
-  | ICreateDevToolsEvent
+  | IDevToolsEvent
   | IFooEvent
   | IBarEvent;
 
 export type INewWindowEvent = {
-  type: 'NEW_WINDOW';
+  type: 'TEST/window/new';
   payload: {
     name?: string;
   };
 };
 
 export type IMessageEvent = {
-  type: 'MESSAGE';
+  type: 'TEST/message';
   payload: { text: string };
 };
 
-export type ICreateDevToolsEvent = {
-  type: 'DEVTOOLS/create';
-  payload: { windowId: number };
+export type IDevToolsEvent = {
+  type: 'TEST/devTools';
+  payload: { windowId: number; show: boolean; focus?: boolean };
 };
 
 export type IFooEvent = {

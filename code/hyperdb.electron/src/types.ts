@@ -4,108 +4,88 @@ export * from '@platform/hyperdb/lib/types';
 /**
  * [Common]
  */
-import { IDbProps, IDbMethods, DbEvent } from '@platform/hyperdb/lib/types';
+import {
+  IDbProps,
+  IDbMethods,
+  DbEvent,
+  INetworkProps,
+  INetworkMethods,
+  NetworkEvent,
+} from '@platform/hyperdb/lib/types';
 import { IpcClient, ILog } from '@platform/electron/lib/types';
 export { IpcClient, ILog };
 
-/**
- * [Network]
- */
-
-type Bitfield = any;
-type TreeIndex = { [key: string]: Bitfield };
+export type HyperdbIpcEvent = DbIpcEvent | NetworkIpcEvent;
+export type HyperdbIpc = IpcClient<HyperdbIpcEvent>;
 
 /**
- * Local writable feed.
- * You have to get an owner of the hyperdb to authorize you to have your writes replicate.
- * The first person to create the hyperdb is the first owner.
+ * [Db] Events
  */
-export type IFeed = {
-  id: Buffer;
-  key: Buffer;
-  bitfield: Bitfield;
-  discoveryKey: Buffer;
-  secretKey: Buffer;
-  peers: IPeer[];
-  tree: TreeIndex;
-  length: number;
-  maxRequests: number;
-  byteLength: number;
-  remoteLength: number;
-  allowPush: boolean;
-  live: boolean;
-  opened: boolean;
-  readable: boolean;
-  sparse: boolean;
-  writable: boolean;
-  closed: false;
-};
-
-export type IPeer = {
-  channel: Buffer;
-  host: string;
-  id: Buffer;
-  initiator: boolean;
-  port: number;
-  type: 'tcp';
-};
-
-export type IProtocol = {
-  id: Buffer;
-  key: Buffer;
-  ack: boolean;
-  allowHalfOpen: boolean;
-  discoveryKey: Buffer;
-  expectedFeeds: number;
-  feeds: IFeed[];
-  userData: any;
-  maxFeeds: number;
-  live: boolean;
-  readable: boolean;
-  writable: boolean;
-  encrypted: boolean;
-  extension: any[];
-  destroyed: boolean;
-
-  remoteId: Buffer;
-  remoteAck: boolean;
-  remoteDiscoveryKey: Buffer;
-  removeLive: boolean;
-  remoteUserData: any;
-  remoteExtensions: any[];
-};
-
-/**
- * [IPC] Events
- */
-
-export type DbIpcClient = IpcClient<DbIpcEvent>;
-export type DbIpcEvent = IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent | DbEvent;
+export type DbIpcEvent = DbEvent | IDbGetStateEvent | IDbUpdateStateEvent | IDbInvokeEvent;
 
 export type IDbGetStateEvent = {
-  type: 'DB/state/get';
+  type: 'DB/ipc/state/get';
   payload: {
-    db: { dir: string; dbKey?: string; version?: string };
+    db: { dir: string; version?: string; dbKey?: string };
     fields?: Array<keyof IDbProps>;
   };
 };
 export type IDbUpdateStateEvent = {
-  type: 'DB/state/update';
+  type: 'DB/ipc/state/update';
   payload: {
-    db: { dir: string };
+    db: { dir: string; version?: string };
     props: IDbProps;
   };
 };
 export type IDbInvokeEvent = {
-  type: 'DB/invoke';
+  type: 'DB/ipc/invoke';
   payload: {
     db: { dir: string; dbKey?: string; version?: string };
     method: keyof IDbMethods;
     params: any[];
+    wait?: boolean;
   };
 };
 export type IDbInvokeResponse<M extends keyof IDbMethods = any> = {
   method: M;
   result?: IDbMethods[M];
+  error?: { message: string };
+};
+
+/**
+ * [Network] Events
+ */
+export type NetworkIpcEvent =
+  | NetworkEvent
+  | INetworkUpdateStateEvent
+  | INetworkGetStateEvent
+  | INetworkInvokeEvent;
+
+export type INetworkGetStateEvent = {
+  type: 'NETWORK/ipc/state/get';
+  payload: {
+    db: { dir: string; version?: string };
+    fields?: Array<keyof INetworkProps>;
+  };
+};
+export type INetworkUpdateStateEvent = {
+  type: 'NETWORK/ipc/state/update';
+  payload: {
+    db: { dir: string; version?: string };
+    props: INetworkProps;
+  };
+};
+export type INetworkInvokeEvent = {
+  type: 'NETWORK/ipc/invoke';
+  payload: {
+    db: { dir: string; version?: string };
+    method: keyof INetworkMethods;
+    params: any[];
+    wait?: boolean;
+  };
+};
+export type INetworkInvokeResponse<M extends keyof INetworkMethods = any> = {
+  method: M;
+  result?: INetworkMethods[M];
   error?: { message: string };
 };

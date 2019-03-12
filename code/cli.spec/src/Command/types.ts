@@ -17,7 +17,27 @@ export type ICommand<P extends object = any, A extends object = any> = {
   handler?: CommandHandler<P, A>;
   invoke: InvokeCommand<P, A>;
   events$: Observable<CommandInvokeEvent>;
+  tree: ITreeMethods<ICommand<P, A>>;
 };
+
+/**
+ * Tree helpers
+ */
+export type ITreeMethods<T extends ICommand = ICommand> = {
+  count: number;
+  walk: (fn: CommandTreeVisitor<T>) => ICommandTreeVisitorResult;
+  find: (fn: CommandTreeFilter<T>) => T | undefined;
+  parent: (root: T) => T | undefined;
+  toPath: (target: number | string | T) => T[];
+  fromPath: (path: Array<string | number | boolean>) => T | undefined;
+};
+export type ICommandTreeVisitorArgs<T extends ICommand> = {
+  command: T;
+  stop: () => void;
+};
+export type CommandTreeVisitor<T extends ICommand> = (e: ICommandTreeVisitorArgs<T>) => void;
+export type ICommandTreeVisitorResult = { stopped: boolean };
+export type CommandTreeFilter<T extends ICommand> = (command: T) => boolean;
 
 /**
  * The handler that is invoked for a command.

@@ -61,7 +61,6 @@ export class Db<D extends object = any> implements t.IDb<D> {
     events$: new Subject<t.DbEvent>(),
     watchers: ({} as unknown) as WatcherRefs,
   };
-  public isDisposed = false;
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
@@ -76,6 +75,14 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * [Properties]
    */
+  public get isDisposed() {
+    return this._.dispose$.isStopped;
+  }
+
+  public get dir() {
+    return this._.dir;
+  }
+
   public get key(): string {
     return this.buffer.key.toString('hex');
   }
@@ -102,14 +109,18 @@ export class Db<D extends object = any> implements t.IDb<D> {
     return Object.keys(this._.watchers);
   }
 
+  public get checkoutVersion() {
+    return this._.version;
+  }
+
   /**
    * [Methods]
    */
   public dispose() {
     this.unwatch();
-    this.isDisposed = true;
     this._.events$.complete();
     this._.dispose$.next();
+    this._.dispose$.complete();
   }
 
   public replicate(options: { live?: boolean }) {
@@ -129,17 +140,16 @@ export class Db<D extends object = any> implements t.IDb<D> {
     //
     const userData = this.buffer.localKey;
 
-    return this._.db.replicate({ live, userData });
+    return this._.db.replicate({ live, userData }) as t.IProtocol;
   }
 
   /**
    * Checks whether a key is authorized to write to the database.
    */
-  public isAuthorized(peerKey?: Buffer) {
+  public isAuthorized(peerKey?: Buffer | string) {
     return new Promise<boolean>((resolve, reject) => {
-      if (!(peerKey instanceof Buffer)) {
-        resolve(false);
-      }
+      peerKey = !peerKey ? this.buffer.localKey : peerKey;
+      peerKey = typeof peerKey === 'string' ? Buffer.from(peerKey, 'hex') : peerKey;
       this._.db.authorized(peerKey, (err: Error, result: boolean) => {
         return err ? this.fireError(err, reject) : resolve(result);
       });
@@ -149,9 +159,10 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * Authorizes a peer to write to the database.
    */
-  public async authorize(peerKey: Buffer) {
+  public async authorize(peerKey: Buffer | string) {
     this.throwIfDisposed('authorize');
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
+      peerKey = typeof peerKey === 'string' ? Buffer.from(peerKey, 'hex') : peerKey;
       this._.db.authorize(peerKey, (err: Error) => {
         return err ? this.fireError(err, reject) : resolve();
       });
@@ -179,7 +190,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public async checkout(version: string) {
     const db = this._.db.checkout(version);
-    const dir = this._.dir;
+    const dir = this.dir;
     return new Db<D>({ db, dir, version });
   }
 
@@ -257,14 +268,13 @@ export class Db<D extends object = any> implements t.IDb<D> {
             return;
           }
 
-          const version = await this.version();
           this.next<t.IDbWatchEvent>('DB/watch', {
             db: { key: this.key },
             pattern,
             key,
             value: parseValue(value),
+            version: await this.version(),
             deleted,
-            version,
           });
         });
       });
@@ -291,8 +301,8 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   public toString() {
-    const { dir, version } = this._;
-    let res = `${dir}/key:${this.key}`;
+    const { version } = this._;
+    let res = `${this.dir}/key:${this.key}`;
     res = version ? `${res}/ver:${version}` : res;
     res = `[db:${res}]`;
     return res;

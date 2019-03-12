@@ -1,30 +1,30 @@
 {
   "name": "electron-test",
   "description": "External testing module for [@platform/election].",
-  "version": "0.0.109",
+  "version": "0.0.113",
   "scripts": {
     "postinstall": "ui init",
-    "ui": "yarn chmod && ui $@",
-    "start": "yarn chmod && ui start $@",
+    "ui": "ui $@",
+    "start": "ui start $@",
     "test": "echo no-op",
-    "lint": "yarn chmod && ts lint",
-    "build": "yarn chmod && ts build",
-    "chmod": "sh sh/chmod.sh",
+    "lint": "ts lint",
+    "build": "ts build",
+    "build-test": "ts build --tsconfig tsconfig.test.json",
     "tmp": "msync sync && yarn chmod"
   },
   "dependencies": {
-    "@platform/electron": "0.0.104",
-    "@platform/ui.object": "0.0.50",
-    "@platform/react": "0.0.13",
-    "@platform/util.value": "0.0.33",
-    "@uiharness/electron": "0.3.140"
+    "@platform/electron": "0.1.2",
+    "@platform/ui.object": "0.0.54",
+    "@platform/react": "0.0.15",
+    "@platform/util.value": "0.0.35",
+    "@uiharness/electron": "0.3.145"
   },
   "browserslist": [
     "electron >= 4"
   ],
   "devDependencies": {
-    "@platform/ts": "3.3.59",
-    "@uiharness/dev": "0.1.40"
+    "@platform/ts": "3.3.61",
+    "@uiharness/dev": "0.1.45"
   },
   "resolutions": {
     "@types/react": "16.7.17"

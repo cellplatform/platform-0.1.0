@@ -33,6 +33,7 @@ export type ITextInputProps = ITextInputFocus &
     placeholderStyle?: ITextInputStyle;
     spellCheck?: boolean;
     selectionBackground?: number | string;
+    className?: string;
     style?: GlamorValue;
   };
 
@@ -143,6 +144,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
           {elPlaceholder}
           <HtmlInput
             ref={this.inputRef}
+            className={this.props.className}
             isEnabled={isEnabled}
             isPassword={isPassword}
             disabledOpacity={disabledOpacity}

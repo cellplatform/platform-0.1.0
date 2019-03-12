@@ -1,30 +1,21 @@
-import { IDb, IpcClient, DbIpcEvent } from '../types';
+import { IDbFactory } from '@platform/hyperdb/lib/types';
+import { IDb, INetwork } from '../types';
 
 export * from '../types';
 
 /**
- * [RendererDb]
- * Extensions to the API for a DB when it is running in the `renderer` process.
+ * A factory cor creating DB/Network pairs.
  */
-export type IRendererDb<D extends {} = any> = IDb<D> & {
-  readonly checkoutVersion?: string;
-  dispose(): void;
-  connect(): Promise<void>;
-  disconnect(): Promise<void>;
-};
+export type IDbRendererFactory = IDbFactory<IDbRenderer, INetworkRenderer>;
 
 /**
- * [IPC] Events
+ * [Db]
+ * Extensions to the API for a DB when it is running in the `renderer` process.
  */
-export type DbIpcRendererClient = IpcClient<DbIpcRendererEvent>;
-export type DbIpcRendererEvent = DbIpcEvent | IDbConnectEvent | IDbDisconnectEvent;
+export type IDbRenderer<D extends {} = any> = IDb<D> & {};
 
-export type IDbConnectEvent = {
-  type: 'DB/connect';
-  payload: { db: { dir: string; dbKey?: string; version?: string } };
-};
-
-export type IDbDisconnectEvent = {
-  type: 'DB/disconnect';
-  payload: { db: { dir: string; dbKey?: string; version?: string } };
-};
+/**
+ * [Network]
+ * Extensions to the API for a network-swarm when it is running in the `renderer` process.
+ */
+export type INetworkRenderer = INetwork & {};

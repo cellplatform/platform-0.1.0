@@ -1,8 +1,9 @@
-import { expect } from 'chai';
-import { Db } from './Db';
 import { fs } from '@platform/fs';
-import * as t from '../types';
 import { time } from '@platform/util.value';
+import { expect } from 'chai';
+
+import * as t from '../types';
+import { Db } from './Db';
 
 const dir = 'tmp/db';
 after(async () => fs.remove('tmp'));
@@ -11,6 +12,11 @@ describe('Db', () => {
   beforeEach(async () => fs.remove(dir));
 
   describe('properties', () => {
+    it('exposes dir as property', async () => {
+      const db = await Db.create({ dir });
+      expect(db.dir).to.eql(dir);
+    });
+
     it('exposes keys as string', async () => {
       const db = await Db.create({ dir });
       expect(typeof db.key).to.eql('string');

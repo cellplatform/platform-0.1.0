@@ -7,5 +7,5 @@ export { exec } from '@platform/util.exec';
 import * as semver from 'semver';
 export { semver };
 
-export { value, time, ITimer } from '@platform/util.value';
+export { value, time } from '@platform/util.value';
 export { log } from '@platform/log/lib/server';

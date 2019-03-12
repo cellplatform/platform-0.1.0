@@ -15,29 +15,29 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/test@0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.30.tgz#878723b862744952f85e7dc526c13caa31b799a9"
-  integrity sha512-8qLqHlPiIehidh3rGyBeSRfqQkT4sOc8Jbyen361ESZnFEcohV4uprmuuHApUJXb+kUdcQtOmFCZrqGgwpDyLA==
+"@platform/test@0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.31.tgz#48cf967e5d58b93ff9c8885dc6969a8fefc1e002"
+  integrity sha512-uu6CRQyvMfSEqIl1cJlwsU4DU85eLjGBz+3fi3b8UrzOqynqnGJeNF7lPbaYSmDaLjUvwVEbCFt8xr9nUP6TNQ==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.6"
     chai "4.2.0"
     mocha "6.0.2"
 
-"@platform/ts.libs@3.3.3":
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.3.3.tgz#a2a51cd003f4df0c268dc36a517b0176c37c3647"
-  integrity sha512-554ERlaqqoBcM3CSB2dv7fWoczGAi+S6rLkEgImma+Ammpheu60Lk616OyHi1nPrAYxg7w8tMvjkY79HtywFMw==
+"@platform/ts.libs@3.3.4":
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.3.4.tgz#66aadfb428ace1905cb064698aad5df9df92793d"
+  integrity sha512-1cxULorFeBZ/Z6zJiZbL+ScCfZvj9YzG5LQem/rqzMaN3e/8T6+Tu9wcFn+uEGNb0kCWGj4xard7/A+P3PSrAw==
   dependencies:
-    "@types/node" "11.10.0"
+    "@types/node" "11.11.1"
     prettier "1.16.4"
-    ts-node "8.0.2"
+    ts-node "8.0.3"
     tslib "1.9.3"
     tslint "5.13.1"
     tslint-config-prettier "1.18.0"
     tslint-react "3.6.0"
-    typescript "3.3.3"
+    typescript "3.3.3333"
 
 "@types/chai@4.1.7":
   version "4.1.7"
@@ -66,10 +66,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.24.tgz#b13564af612a22a20b5d95ca40f1bffb3af315cf"
   integrity sha512-GWWbvt+z9G5otRBW8rssOFgRY87J9N/qbhqfjMZ+gUuL6zoL+Hm6gP/8qQBG4jjimqdaNLCehcVapZ/Fs2WjCQ==
 
-"@types/node@11.10.0":
-  version "11.10.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.10.0.tgz#08eeb736ae678ccf9ca0922063f3a08795894ede"
-  integrity sha512-6Mb9+PPq9UzRpQrlPzZAbhEvodWDTnsIakddUAtSDpKYF6eu5zAdW31n8x7UZStvqGnDC7dCJnvU188ylv/Ytw==
+"@types/node@11.11.1":
+  version "11.11.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.11.1.tgz#9ee55ffce20f72e141863b0036a6e51c6fc09a1f"
+  integrity sha512-2azXFP9n4aA2QNLkKm/F9pzKxgYj1SMawZ5Eh9iC21RH3XNcFsivLVU2NhpMgQm7YobSByvIol4c42ZFusXFHQ==
 
 ansi-colors@3.2.3:
   version "3.2.3"
@@ -1622,10 +1622,10 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
 
-ts-node@8.0.2:
-  version "8.0.2"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.0.2.tgz#9ecdf8d782a0ca4c80d1d641cbb236af4ac1b756"
-  integrity sha512-MosTrinKmaAcWgO8tqMjMJB22h+sp3Rd1i4fdoWY4mhBDekOwIAKI/bzmRi7IcbCmjquccYg2gcF6NBkLgr0Tw==
+ts-node@8.0.3:
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.0.3.tgz#aa60b836a24dafd8bf21b54766841a232fdbc641"
+  integrity sha512-2qayBA4vdtVRuDo11DEFSsD/SFsBXQBRZZhbRGSIkmYmVkWjULn/GGMdG10KVqkaGndljfaTD8dKjWgcejO8YA==
   dependencies:
     arg "^4.1.0"
     diff "^3.1.0"
@@ -1681,10 +1681,10 @@ type-detect@^4.0.0, type-detect@^4.0.5:
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.8.tgz#7646fb5f18871cfbb7749e69bd39a6388eb7450c"
   integrity sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==
 
-typescript@3.3.3:
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.3.tgz#f1657fc7daa27e1a8930758ace9ae8da31403221"
-  integrity sha512-Y21Xqe54TBVp+VDSNbuDYdGw0BpoR/Q6wo/+35M8PAU0vipahnyduJWirxxdxjsAkS7hue53x2zp8gz7F05u0A==
+typescript@3.3.3333:
+  version "3.3.3333"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.3333.tgz#171b2c5af66c59e9431199117a3bcadc66fdcfd6"
+  integrity sha512-JjSKsAfuHBE/fB2oZ8NxtRTk5iGcg6hkYXMnZ3Wc+b2RSqejEqTaem11mHASMnFilHrax3sLK0GDzcJrekZYLw==
 
 union-value@^1.0.0:
   version "1.0.0"

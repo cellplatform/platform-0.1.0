@@ -4,14 +4,18 @@
 # @platform/hyperdb
 Strongly typed interface to [hyperdb](https://github.com/mafintosh/hyperdb).
 
+![diagram](https://user-images.githubusercontent.com/185555/54233024-eb6db500-4570-11e9-899d-e924cd4967e2.png)
+
+## See Also
+
+- @platform/[hyperdb.electron](../hyperdb.electron)
 
 ## Refs
 
-- Connecting HyperDB to a swarm with Hyperswarm
-  https://github.com/mafintosh/hyperdb/issues/153
+- https://github.com/mafintosh/hyperdb
 
-- Authorization in hyperdb: a deep dive
+- Authorization in hyperdb: a deep dive  
   https://github.com/lachenmayer/hyperdb-authorization-guide
 
-
+- HyperDB [architecture](https://github.com/mafintosh/hyperdb/blob/master/ARCHITECTURE.md)
   
