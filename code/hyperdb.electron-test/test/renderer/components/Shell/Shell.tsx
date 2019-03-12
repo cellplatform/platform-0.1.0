@@ -98,6 +98,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         const { message, command } = e.payload;
         this.state$.next({ dialog: 'ERROR', error: { message, command } });
       });
+
+    // Finish up.
+    this.focusCommandPrompt();
   }
 
   public componentWillUnmount() {

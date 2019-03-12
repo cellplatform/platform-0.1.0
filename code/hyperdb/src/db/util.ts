@@ -11,7 +11,13 @@ export function toValue<K, V>(response: any, options: { parse?: boolean } = {}):
   //        The only time you may want to parse is if the value came back without
   //        having gone through the `map` - for instance, a `delete` response.
   const exists = response && !isNil(response.value) ? true : false;
+
+  if (typeof response !== 'object') {
+    throw new Error(`[util.toValue] Expected response object.`);
+  }
+
   const value = options.parse ? parseValue(response.value) : response.value;
+
   const props: t.IDbValueProps<K> = { exists, ...response };
   delete response.value;
   return {
