@@ -2,33 +2,35 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, t } from '../../../common';
+import { css, GlamorValue, t, renderer } from '../../../common';
 import { Hr, ObjectView } from '../../primitives';
 
-export type IDbInfoProps = {
+export type IInfoProps = {
   db: t.ITestRendererDb;
   style?: GlamorValue;
 };
-export type IDbInfoState = {
+export type IInfoState = {
   db?: any;
   watching?: any;
+  store?: any;
 };
 
-export class DbInfo extends React.PureComponent<IDbInfoProps, IDbInfoState> {
-  public state: IDbInfoState = {};
+export class Info extends React.PureComponent<IInfoProps, IInfoState> {
+  public state: IInfoState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<IDbInfoState>();
+  private state$ = new Subject<IInfoState>();
+  public static contextType = renderer.Context;
+  public context!: t.ITestRendererContext;
 
   /**
    * [Lifecycle]
    */
 
-  constructor(props: IDbInfoProps) {
-    super(props);
+  public componentWillMount() {
     const unmounted$ = this.unmounted$;
     this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e));
 
-    const { db } = props;
+    const { db } = this.props;
     db.events$.pipe(takeUntil(unmounted$)).subscribe(e => this.updateState());
 
     this.updateState();
@@ -43,6 +45,7 @@ export class DbInfo extends React.PureComponent<IDbInfoProps, IDbInfoState> {
    */
   public async updateState() {
     const { db } = this.props;
+    const store = await this.context.store.read();
 
     this.state$.next({
       db: {
@@ -55,6 +58,7 @@ export class DbInfo extends React.PureComponent<IDbInfoProps, IDbInfoState> {
       watching: {
         current: (await db.get('.sys/watch')).value || [],
       },
+      store,
     });
   }
 
@@ -75,6 +79,8 @@ export class DbInfo extends React.PureComponent<IDbInfoProps, IDbInfoState> {
         <ObjectView name={'db'} data={this.state.db} expandLevel={3} />
         <Hr />
         <ObjectView name={'watching'} data={this.state.watching} expandLevel={3} />
+        <Hr />
+        <ObjectView name={'store'} data={this.state.store} expandLevel={3} />
         <Hr />
       </div>
     );

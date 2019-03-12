@@ -1,6 +1,5 @@
 import { Command, value as valueUtil, hjson } from '../common';
 import { watch, unwatch, updateWatch } from './cmd.watch';
-import { info } from './cmd.db.info';
 
 import * as t from './types';
 
@@ -57,5 +56,4 @@ export const db = Command.create<P>('db')
   .add(del)
   .add(watch)
   .add(unwatch)
-  .add(rename)
-  .add(info);
+  .add(rename);

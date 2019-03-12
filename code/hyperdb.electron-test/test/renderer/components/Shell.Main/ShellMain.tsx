@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { color, css, GlamorValue, renderer, t } from '../../common';
 import { CommandClickEvent, Help } from '../cli.Help';
 import { DbHeader } from './components/DbHeader';
-import { DbInfo } from './components/DbInfo';
+import { Info } from './components/Info';
 import { DbWatch } from './components/DbWatch';
 import { Network } from './components/Network';
 import { NoteEditor } from './components/NoteEditor';
@@ -100,7 +100,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
         display: 'flex',
       }),
     };
-    const elDbInfo = ns && ns.command.name === 'info' && <DbInfo key={db.localKey} db={db} />;
+    const elDbInfo = ns && ns.command.name === 'info' && <Info key={db.localKey} db={db} />;
     const elNetwork = ns && ns.command.name === 'network' && (
       <Network key={`${network.topic}/${db.localKey}`} network={network} />
     );

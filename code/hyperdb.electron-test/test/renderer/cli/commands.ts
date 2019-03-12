@@ -3,6 +3,7 @@ import { Command } from '../common';
 import { editor } from './cmd.editor';
 import { db } from './cmd.db';
 import { network } from './cmd.network';
+import { info } from './cmd.db.info';
 import * as t from './types';
 
 type P = t.ICommandProps;
@@ -29,8 +30,8 @@ export const auth = Command.create<P>('auth', async e => {
 export const root = Command.create<P>('hyperdb')
   // .add(newDb)
   // .add(joinDb)
+  .add(info)
   .add(auth)
   .add(db)
   .add(network)
-  // .add(info)
   .add(editor);
