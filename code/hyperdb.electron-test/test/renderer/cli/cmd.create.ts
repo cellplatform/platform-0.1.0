@@ -22,10 +22,6 @@ export const join = Command.create<P>('join', async e => {
   const { params } = args;
   const dbKey = (params[0] || '').toString().replace(/\s/g, '');
 
-  if (dbKey.length === 0) {
-    return;
-  }
-
   if (dbKey.length < 64) {
     return e.props.error('Database public-key must by 64 characters.');
   }

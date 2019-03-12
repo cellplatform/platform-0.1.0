@@ -95,6 +95,10 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
     return databases;
   }
 
+  private get isEmpty() {
+    return this.databases.length === 0;
+  }
+
   /**
    * [Methods]
    */
@@ -118,11 +122,23 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
         borderRight: `solid 1px ${color.format(-0.1)}`,
         Scroll: true,
         fontSize: 14,
+        userSelect: 'none',
+      }),
+      empty: css({
+        fontSize: 11,
+        opacity: 0.4,
+        paddingTop: 8,
+        textAlign: 'center',
       }),
     };
+
+    const isEmpty = this.isEmpty;
+    const elEmpty = isEmpty && <div {...styles.empty}>No databases to display.</div>;
+
     return (
       <div {...css(styles.base, this.props.style)}>
-        {this.renderList()}
+        {elEmpty}
+        {!isEmpty && this.renderList()}
         {/* {this.renderActions()} */}
       </div>
     );

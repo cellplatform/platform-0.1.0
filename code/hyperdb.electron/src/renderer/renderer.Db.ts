@@ -209,7 +209,10 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
       params,
       wait,
     };
-    const res = await this._.ipc.send<E, R>('DB/ipc/invoke', payload, TARGET_MAIN).promise;
+    const res = await this._.ipc.send<E, R>('DB/ipc/invoke', payload, {
+      ...TARGET_MAIN,
+      timeout: 20000,
+    }).promise;
     const data = res.dataFrom('MAIN');
     const prefix = `Failed invoking DB method '${method}'`;
     if (!data) {

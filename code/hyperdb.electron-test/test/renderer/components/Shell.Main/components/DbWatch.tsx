@@ -41,7 +41,6 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
     watch$.pipe(filter(e => !e.key.startsWith('.sys/'))).subscribe(e => {
       const values = { ...this.state.values, [e.key]: e.value };
       this.state$.next({ values });
-      // this.updateWatchedKeys();
     });
   }
 
@@ -79,10 +78,6 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
   public async readWatchedValues() {
     const { db } = this.props;
     const { watching } = this.state;
-
-    console.log(
-      `\nTODO 🐷   getAll method on DB - to do the following set in one line of code. \n`,
-    );
 
     // Read the value of each watched key.
     const items = await Promise.all(

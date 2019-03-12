@@ -50,7 +50,7 @@ export class Info extends React.PureComponent<IInfoProps, IInfoState> {
     const store = await this.context.store.read();
 
     const db = !d
-      ? { message: 'No database to view. Try creating one by clicking [new].' }
+      ? { message: 'No database to view. Try creating one by typing `new` in the command line.' }
       : {
           dir: d.dir,
           key: d.key,
