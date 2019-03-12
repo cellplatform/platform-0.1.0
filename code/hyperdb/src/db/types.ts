@@ -3,11 +3,10 @@ import { Observable } from 'rxjs';
 export * from '../types';
 
 /**
- * [Value]
+ * Raw database [Node] data.
  */
-export type IDbValueMeta<K> = {
+export type IDbNodeProps<K> = {
   key: K;
-  exists: boolean;
   deleted: boolean;
   clock: number[];
   feed: number;
@@ -17,10 +16,19 @@ export type IDbValueMeta<K> = {
   trie: any;
 };
 
-export type IDbValue<K, V> = {
-  value: V | undefined;
-  meta: IDbValueMeta<K>;
+export type DbNodeValue = string | number | boolean | undefined;
+export type IDbNode<K = any, V extends DbNodeValue = any> = IDbNodeProps<K> & {
+  value?: V;
 };
+
+/**
+ * Parsed database [Value]
+ */
+export type IDbValue<K, V> = {
+  value?: V;
+  props: IDbValueProps<K>;
+};
+export type IDbValueProps<K> = IDbNodeProps<K> & { exists: boolean };
 
 /**
  * [Database]

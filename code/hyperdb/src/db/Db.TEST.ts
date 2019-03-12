@@ -11,6 +11,26 @@ after(async () => fs.remove('tmp'));
 describe('Db', () => {
   beforeEach(async () => fs.remove(dir));
 
+  // describe('search', () => {
+  //   it('FOO', async () => {
+  //     const db = await Db.create({ dir });
+
+  //     const wait = Array.from({ length: 5 }).map(async (v, i) => {
+  //       await db.put('foo', i);
+  //       await db.put('foo', { foo: i });
+  //       await db.put('bar', i);
+  //     });
+
+  //     await Promise.all(wait);
+
+  //     await db.TMP();
+
+  //     console.log('-------------------------------------------');
+  //     const res = await db.get('foo');
+  //     console.log('res', res);
+  //   });
+  // });
+
   describe('properties', () => {
     it('exposes dir as property', async () => {
       const db = await Db.create({ dir });
@@ -74,10 +94,9 @@ describe('Db', () => {
       const db = await Db.create({ dir });
       expect((await db.put(KEY, 123)).value).to.eql(123);
       expect((await db.get(KEY)).value).to.eql(123);
-
       const res = await db.delete(KEY);
       expect(res.value).to.eql(undefined);
-      expect(res.meta.deleted).to.eql(true);
+      expect(res.props.deleted).to.eql(true);
     });
   });
 

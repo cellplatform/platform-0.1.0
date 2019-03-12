@@ -1,8 +1,9 @@
 import { Subject } from 'rxjs';
-import { share, takeUntil, filter, map } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { value as valueUtil, is } from '../common';
+import { is } from '../common';
 import * as t from './types';
+import * as util from './util';
 
 if (is.browser) {
   throw new Error(`The Db should only be imported on the [main] process.`);
@@ -30,8 +31,17 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }) {
     return new Promise<Db<D>>(resolve => {
       const { dir, dbKey, version } = args;
-      const reduce = (a: any, b: any) => a;
-      const options = { valueEncoding: 'utf-8', reduce };
+      const reduce = (a: any, b: any) => {
+        console.log('REDUCE');
+        return a;
+      };
+      const map = (node: t.IDbNode) => {
+        // NB:  The underlying DB only stores [string/number/boolean]
+        //      Ensure values are parsed into rich types (eg. objects and arrays etc) .
+        node.value = util.parseValue(node.value);
+        return node;
+      };
+      const options = { valueEncoding: 'utf-8', reduce, map };
       const db = args.dbKey ? hyperdb(dir, dbKey, options) : hyperdb(dir, options);
       db.on('ready', async () => {
         let result = new Db<D>({ db, dir });
@@ -116,6 +126,10 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * [Methods]
    */
+
+  /**
+   * Disposes of the database.
+   */
   public dispose() {
     this.unwatch();
     this._.events$.complete();
@@ -123,6 +137,20 @@ export class Db<D extends object = any> implements t.IDb<D> {
     this._.dispose$.complete();
   }
 
+  // public async TMP() {
+  //   const db = this._.db;
+
+  //   db.list({}, (err: Error, data: any) => {
+  //     const d = data[0];
+  //     console.log('d.key', d.key, d.value);
+  //     const v = d.value;
+  //     console.log('v', v, typeof v);
+  //   });
+  // }
+
+  /**
+   * Starts a replication stream.
+   */
   public replicate(options: { live?: boolean }) {
     this.throwIfDisposed('replicate');
     const { live = false } = options;
@@ -202,7 +230,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     this.throwIfNoKey('get', key);
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.get(key, (err: Error, result: any) => {
-        return err ? this.fireError(err, reject) : resolve(toValue(result));
+        return err ? this.fireError(err, reject) : resolve(util.toValue(result));
       });
     });
   }
@@ -214,9 +242,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
     this.throwIfDisposed('put');
     this.throwIfNoKey('put', key);
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
-      const v = serializeValue(value);
+      const v = util.serializeValue(value);
       this._.db.put(key, v, (err: Error, result: any) => {
-        return err ? this.fireError(err, reject) : resolve(toValue(result));
+        return err ? this.fireError(err, reject) : resolve(util.toValue(result));
       });
     });
   }
@@ -229,7 +257,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     this.throwIfNoKey('delete', key);
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.del(key, (err: Error, result: any) => {
-        return err ? this.fireError(err, reject) : resolve(toValue(result));
+        return err ? this.fireError(err, reject) : resolve(util.toValue(result, { parse: true }));
       });
     });
   }
@@ -244,7 +272,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public async watch<T extends object = D>(...pattern: Array<keyof T>) {
     this.throwIfDisposed('watch');
-    const patterns = formatWatchPatterns(pattern);
+    const patterns = util.formatWatchPatterns(pattern);
 
     const storeRef = (key: string, watcher: WatcherRef) => {
       this.unwatch(key);
@@ -272,7 +300,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
             db: { key: this.key },
             pattern,
             key,
-            value: parseValue(value),
+            value: util.parseValue(value),
             version: await this.version(),
             deleted,
           });
@@ -291,7 +319,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     const watchers = this._.watchers;
     pattern = Array.isArray(pattern) ? pattern : [pattern];
     const patterns =
-      pattern.length === 0 ? Object.keys(this._.watchers) : formatWatchPatterns(pattern);
+      pattern.length === 0 ? Object.keys(this._.watchers) : util.formatWatchPatterns(pattern);
     patterns.forEach(key => {
       if (watchers[key]) {
         watchers[key].destroy();
@@ -336,61 +364,4 @@ export class Db<D extends object = any> implements t.IDb<D> {
       throw new Error(msg);
     }
   }
-}
-
-/**
- * [HELPER_FUNCTIONS]
- */
-function toValue<K, V>(result: any): t.IDbValue<K, V> {
-  const exists = result && !isNil(result.value) ? true : false;
-  const value = exists ? parseValue<V>(result.value) : undefined;
-  result = { exists, ...result };
-  delete result.value;
-  return {
-    value,
-    meta: result as t.IDbValueMeta<K>,
-  };
-}
-
-function parseValue<V>(value: any): V | undefined {
-  if (isNil(value)) {
-    return undefined;
-  }
-
-  value = valueUtil.toType(value);
-  if (typeof value === 'boolean' || typeof value === 'number') {
-    return value as any;
-  }
-
-  try {
-    const obj = JSON.parse(value);
-    let result = obj.v;
-    result = valueUtil.isDateString(result) ? new Date(result) : result;
-    return result;
-  } catch (error) {
-    if (!valueUtil.isJson(value)) {
-      return value; // NB: Somehow a value got into the DB that wasn't serialized as JSON.
-    }
-    throw new Error(`Failed while parsing stored DB value '${value}'. ${error.message}`);
-  }
-}
-
-function serializeValue(value: any) {
-  if (value === undefined || typeof value === 'boolean' || typeof value === 'number') {
-    return value;
-  }
-  return JSON.stringify({ v: value });
-}
-
-function isNil(value: any) {
-  return value === null || value === undefined;
-}
-
-function formatWatchPatterns<T extends object = any>(pattern: Array<keyof T>) {
-  const asWildcard = (pattern: string) => (pattern === '' ? '*' : pattern);
-  pattern = Array.isArray(pattern) ? pattern : [pattern];
-  let patterns = pattern.map(p => p.toString());
-  patterns = patterns.length === 0 ? ['*'] : patterns; // NB: Watch for all changes if no specific paths were given.
-  patterns = patterns.map(p => p.trim()).map(p => asWildcard(p));
-  return patterns;
 }
