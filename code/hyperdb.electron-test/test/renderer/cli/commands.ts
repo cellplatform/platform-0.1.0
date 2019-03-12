@@ -4,17 +4,10 @@ import { editor } from './cmd.editor';
 import { db } from './cmd.db';
 import { network } from './cmd.network';
 import { info } from './cmd.db.info';
+import { create, join } from './cmd.create';
 import * as t from './types';
 
-type P = t.ICommandProps;
-
-const newDb = Command.create<P>('new', e =>
-  e.props.events$.next({ type: 'CLI/db/new', payload: {} }),
-);
-const joinDb = Command.create<P>('join', e => {
-  const dbKey = e.args.params[0] as string;
-  e.props.events$.next({ type: 'CLI/db/join', payload: { dbKey } });
-});
+type P = t.ITestCommandProps;
 
 export const auth = Command.create<P>('auth', async e => {
   const { db } = e.props;
@@ -28,8 +21,8 @@ export const auth = Command.create<P>('auth', async e => {
  * The root of the CLI application.
  */
 export const root = Command.create<P>('hyperdb')
-  // .add(newDb)
-  // .add(joinDb)
+  .add(create)
+  .add(join)
   .add(info)
   .add(auth)
   .add(db)

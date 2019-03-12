@@ -1,7 +1,7 @@
 import { Command, R } from '../common';
 import * as t from './types';
 
-type P = t.ICommandProps;
+type P = t.ITestCommandProps;
 
 /**
  * [watch] values in the DB.

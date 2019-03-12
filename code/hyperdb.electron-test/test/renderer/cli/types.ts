@@ -1,19 +1,38 @@
 import { Subject } from 'rxjs';
-import { ITestRendererDb, IDbRendererFactory, INetworkRenderer } from '../../types';
+import {
+  ICommand,
+  ICommandArgs,
+  ITestRendererDb,
+  IDbRendererFactory,
+  INetworkRenderer,
+  ITestStore,
+  ILog,
+} from '../../types';
 import { ICommandState } from '../common';
 
 export { ITestRendererDb };
 
-export type ICommandLine = {
+export type ITestCommandLine = {
   state: ICommandState;
   events$: Subject<CommandLineEvent>;
-  db: IDbRendererFactory;
+  databases: IDbRendererFactory;
+  invoke(args: ITestCommandLineInvokeArgs): any;
 };
-export type ICommandProps = {
+
+export type ITestCommandLineInvokeArgs = {
+  command: ICommand<ITestCommandProps>;
+  args: ICommandArgs;
+  db?: ITestRendererDb;
+};
+
+export type ITestCommandProps = {
+  databases: IDbRendererFactory;
+  store: ITestStore;
+  log: ILog;
+  events$: Subject<CommandLineEvent>;
   db?: ITestRendererDb;
   network?: INetworkRenderer;
-  view?: 'WATCH';
-  events$: Subject<CommandLineEvent>;
+  error(err: Error | string): void;
 };
 
 export type ICommandOptions = {};
@@ -21,19 +40,28 @@ export type ICommandOptions = {};
 /**
  * [Events]
  */
-export type CommandLineEvent = INewDbEvent | IJoinDbEvent | IEditorChangeCellEvent;
+export type CommandLineEvent =
+  | IJoinDbEvent__DELETE
+  | ICliChangeEditorCellEvent
+  | ICliSelectDbEvent
+  | ICliErrorEvent;
 
-export type INewDbEvent = {
-  type: 'CLI/db/new';
-  payload: {};
+export type ICliErrorEvent = {
+  type: 'CLI/error';
+  payload: { message: string; command: ICommand };
 };
 
-export type IJoinDbEvent = {
+export type ICliSelectDbEvent = {
+  type: 'CLI/db/select';
+  payload: { dir: string };
+};
+
+export type IJoinDbEvent__DELETE = {
   type: 'CLI/db/join';
   payload: { dbKey?: string };
 };
 
-export type IEditorChangeCellEvent = {
+export type ICliChangeEditorCellEvent = {
   type: 'CLI/editor/cell';
   payload: { cellKey: string };
 };

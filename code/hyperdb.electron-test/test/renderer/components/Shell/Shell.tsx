@@ -7,6 +7,7 @@ import { CommandClickEvent, Help } from '../cli.Help';
 import { color, COLORS, css, GlamorValue, ICommand, renderer, str, t } from '../../common';
 import { CommandPrompt } from '../cli.CommandPrompt';
 import { JoinDialog } from '../Dialog.Join';
+import { ErrorDialog } from '../Dialog.Error';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
 import { ShellMain } from '../Shell.Main';
@@ -18,8 +19,12 @@ export type IShellProps = {
 };
 
 export type IShellState = {
-  dialog?: 'JOIN';
+  dialog?: 'JOIN' | 'ERROR';
   selectedDir?: string; // database [dir].
+  error?: {
+    message: string;
+    command: ICommand;
+  };
 };
 
 export class Shell extends React.PureComponent<IShellProps, IShellState> {
@@ -66,34 +71,41 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     cli$.pipe(debounceTime(0)).subscribe(e => this.forceUpdate());
 
     cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
-      const command = e.props.command as ICommand<t.ICommandProps>;
+      const { args } = e.props;
+      const command = e.props.command as t.ICommand<t.ITestCommandProps>;
       const selection = this.selection;
-      const props: t.ICommandProps = { ...(selection || {}), events$: this.cli.events$ };
-      const args = e.props.args;
-
-      // Step into namespace (if required).
-      if (!command.handler && command.children.length > 0) {
-        this.cli.state.change({ text: this.cli.state.text, namespace: true });
-      }
-
-      // Invoke handler.
-      if (command.handler) {
-        const log = this.context.log;
-        log.info('INVOKE', command.toString());
-        await command.invoke({ props, args });
-      }
+      const db = selection ? selection.db : undefined;
+      this.cli.invoke({ command, args, db });
     });
 
     /**
      * Handle callbacks from within invoking commands.
      */
-    commandEvents$.pipe(filter(e => e.type === 'CLI/db/new')).subscribe(e => {
-      this.handleNew();
-    });
+    commandEvents$
+      .pipe(
+        filter(e => e.type === 'CLI/db/select'),
+        map(e => e as t.ICliSelectDbEvent),
+        map(e => e.payload.dir),
+      )
+      .subscribe(selectedDir => this.state$.next({ selectedDir }));
+
+    commandEvents$
+      .pipe(
+        filter(e => e.type === 'CLI/error'),
+        map(e => e as t.ICliErrorEvent),
+        // map(e => e.payload.),
+      )
+      .subscribe(e => {
+        const { message, command } = e.payload;
+        // console.log('error', message);
+        console.log('-------------------------------------------');
+        this.state$.next({ dialog: 'ERROR', error: { message, command } });
+      });
+
     commandEvents$
       .pipe(
         filter(e => e.type === 'CLI/db/join'),
-        map(e => e as t.IJoinDbEvent),
+        map(e => e as t.IJoinDbEvent__DELETE),
       )
       .subscribe(e => {
         const { dbKey } = e.payload;
@@ -271,6 +283,14 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     switch (dialog) {
       case 'JOIN':
         return <JoinDialog onClose={this.clearDialog} onJoin={this.handleJoinComplete} />;
+
+      case 'ERROR':
+        const error = this.state.error;
+        return (
+          error && (
+            <ErrorDialog error={error.message} command={error.command} onClose={this.clearDialog} />
+          )
+        );
     }
     return null;
   }
@@ -280,7 +300,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
    */
 
   private handleNew = async () => {
-    await this.createDatabase({ dbKey: undefined });
+    // NB: Handled by command now.
   };
 
   private handleJoinStart = () => {

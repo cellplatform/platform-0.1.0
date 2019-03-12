@@ -2,7 +2,7 @@ import { shell } from 'electron';
 import { Command } from '../common';
 import * as t from './types';
 
-type P = t.ICommandProps;
+type P = t.ITestCommandProps;
 
 /**
  * [tmp] Temporary debug command.

@@ -82,7 +82,7 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
     commandEvents$
       .pipe(
         filter(e => e.type === 'CLI/editor/cell'),
-        map(e => e.payload as cli.IEditorChangeCellEvent['payload']),
+        map(e => e.payload as cli.ICliChangeEditorCellEvent['payload']),
       )
       .subscribe(e => {
         // console.log('e', e);

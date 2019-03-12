@@ -4,8 +4,9 @@ import {
   IpcClient,
 } from '@platform/electron/lib/types';
 import { IDbRenderer, IDbRendererFactory } from '@platform/hyperdb.electron/lib/types';
-import { ICommandLine } from './renderer/cli/types';
+import { ITestCommandLine } from './renderer/cli/types';
 
+export * from '@platform/cli.spec/lib/types';
 export * from '@platform/hyperdb.electron/lib/types';
 export * from './renderer/cli/types';
 
@@ -23,7 +24,7 @@ export type ITestStoreSettings = {
  * [Context]
  */
 export type ITestRendererContext = IBaseContext<TestEvents, ITestStoreSettings> & {
-  cli: ICommandLine;
+  cli: ITestCommandLine;
   db: IDbRendererFactory;
 };
 

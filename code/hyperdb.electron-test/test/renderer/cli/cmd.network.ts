@@ -1,7 +1,7 @@
 import { Command } from '../common';
 import * as t from './types';
 
-type P = t.ICommandProps;
+type P = t.ITestCommandProps;
 
 /**
  * [network] and global config values.

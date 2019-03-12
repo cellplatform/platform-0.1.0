@@ -123,7 +123,7 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
     return (
       <div {...css(styles.base, this.props.style)}>
         {this.renderList()}
-        {this.renderActions()}
+        {/* {this.renderActions()} */}
       </div>
     );
   }

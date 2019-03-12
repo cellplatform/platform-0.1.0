@@ -3,7 +3,7 @@ import { watch, unwatch, updateWatch } from './cmd.watch';
 
 import * as t from './types';
 
-type P = t.ICommandProps;
+type P = t.ITestCommandProps;
 
 /**
  * [rename] the database.

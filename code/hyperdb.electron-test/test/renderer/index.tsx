@@ -14,10 +14,10 @@ const el = <Shell />;
 renderer
   .render(el, 'root', {
     getContext: async e => {
-      const { ipc } = e.context;
-      const db = hyperdb.init({ ipc }).factory;
-      const cli = initCli({ ipc, db });
-      return { cli, db };
+      const { ipc, log, store } = e.context;
+      const databases = hyperdb.init({ ipc }).factory;
+      const cli = initCli({ log, ipc, store, databases });
+      return { cli, db: databases };
     },
   })
   .then(context => context.log.info('renderer loaded!'));
