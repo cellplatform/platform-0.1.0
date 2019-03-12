@@ -97,11 +97,17 @@ export class CommandState implements t.ICommandState {
   }
 
   public get command() {
-    const args = Argv.parse(this.text);
-    const param = (args.params[0] || '').toString();
     const root = this.namespace ? this.namespace.command : this.root;
-    const path = `${root.name}.${param}`;
-    return Command.tree.fromPath(root, path);
+    const args = Argv.parse(this.text);
+    const path = [root.name, ...args.params];
+
+    // NB: Catch the lowest level command, leaving params intact (ie. strict:false).
+    const res = Command.tree.fromPath(root, path, { strict: false });
+    if (!res) {
+      return undefined;
+    } else {
+      return res.id === root.id ? undefined : res;
+    }
   }
 
   public get namespace() {
@@ -126,24 +132,35 @@ export class CommandState implements t.ICommandState {
     // Set namespace if requested.
     const command = this.command;
 
-    if (
-      command &&
-      namespace === true &&
-      !(this.namespace && this.namespace.command.id === command.id)
-    ) {
-      const id = command.id;
+    const setNamespace = (command: t.ICommand) => {
       const root = this.root;
-      const ns: t.ICommandNamespace = {
-        command,
+      const isLeaf = command.children.length === 0;
+      const ns = isLeaf ? command.tree.parent(root) : command;
+      if (!ns || ns.id === root.id) {
+        return;
+      }
+
+      const id = ns.id;
+
+      const namespace: t.ICommandNamespace = {
+        command: ns,
         get path() {
           return Command.tree.toPath(root, id).slice(1);
         },
         toString() {
-          return ns.path.map(c => c.name).join('.');
+          return namespace.path.map(c => c.name).join('.');
         },
       };
-      this._.namespace = ns;
-      this._.text = ''; // Reset the text as we are now witin a new namespace.
+      this._.namespace = namespace;
+      this._.text = isLeaf ? command.name : ''; // Reset the text as we are now witin a new namespace.
+    };
+
+    if (
+      command &&
+      namespace === true &&
+      !(this.namespace && this.namespace.command.id === command.id) // Not the current namespace.
+    ) {
+      setNamespace(command);
     }
 
     // Clear the namespace if requested.

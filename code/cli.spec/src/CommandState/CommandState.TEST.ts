@@ -13,7 +13,7 @@ const db = Command.create('db')
   .add('status')
   .add(copy);
 
-const root = Command.create('fs')
+const root = Command.create('root')
   .add('ls')
   .add('mkdir')
   .add(db);
@@ -102,9 +102,28 @@ describe('CommandState', () => {
   });
 
   describe('change: namespace', () => {
+    it('does not change to namespace if [namespace] flag not set', () => {
+      const state = CommandState.create({ root });
+      const test = (text: string) => {
+        state.change({ text });
+        expect(state.namespace).to.eql(undefined);
+      };
+      test('');
+      test('db.copy');
+      test('db.copy.fast');
+      test('db copy');
+      test('db copy fast');
+    });
+
     it('cannot change to a namsespace if no command matches', () => {
       const state = CommandState.create({ root });
       state.change({ text: 'NO_EXIST', namespace: true });
+      expect(state.namespace).to.eql(undefined);
+    });
+
+    it('does not change to namespace if the command is a root leaf-node', () => {
+      const state = CommandState.create({ root });
+      state.change({ text: 'ls', namespace: true });
       expect(state.namespace).to.eql(undefined);
     });
 
@@ -126,17 +145,32 @@ describe('CommandState', () => {
       expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
     });
 
-    it('changes to deep namespace (db.copy)', () => {
-      const state = CommandState.create({ root }).change({ text: 'db.copy.fast' });
-      expect(state.namespace).to.eql(undefined);
+    it('changes to deep namespace (db copy)', () => {
+      const state = CommandState.create({ root });
 
-      state.change({ text: state.text, namespace: true });
+      state.change({ text: 'db copy', namespace: true });
       const ns = state.namespace;
-      expect(ns && ns.command.name).to.eql('fast');
+
+      expect(state.command && state.command.name).to.eql(undefined);
+      expect(ns && ns.command.name).to.eql('copy');
 
       const path = (ns && ns.path.map(m => m.name)) || [];
-      expect(path.join('.')).to.eql('db.copy.fast');
+      expect(path).to.eql(['db', 'copy']);
       expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
+    });
+
+    it('changes to deep namespace - parent of leaf (db copy fast)', () => {
+      const state = CommandState.create({ root });
+
+      state.change({ text: 'db copy fast', namespace: true });
+      const ns = state.namespace;
+
+      expect(state.command && state.command.name).to.eql('fast');
+      expect(ns && ns.command.name).to.eql('copy');
+
+      const path = (ns && ns.path.map(m => m.name)) || [];
+      expect(path).to.eql(['db', 'copy']); // Lowest level namespace.
+      expect(state.text).to.eql('fast'); // NB: Text is reset when changing to namespace.
     });
 
     it('removes namespace', () => {
@@ -153,6 +187,7 @@ describe('CommandState', () => {
     it('match', () => {
       const state = CommandState.create({ root });
       expect(state.command).to.eql(undefined);
+
       state.change({ text: 'ls' });
       const cmd = state.command;
       expect(cmd && cmd.name).to.eql('ls');
@@ -182,12 +217,17 @@ describe('CommandState', () => {
       expect(state.command).to.eql(undefined);
     });
 
-    it('match from path ("db.copy.fast")', () => {
-      const state = CommandState.create({ root });
-      expect(state.command).to.eql(undefined);
-      state.change({ text: 'db.copy.fast' });
-      expect(state.text).to.eql('db.copy.fast');
-      expect(state.command && state.command.name).to.eql('fast');
+    it('match from path ("db copy fast")', () => {
+      const test = (text: string, expectName: string) => {
+        const state = CommandState.create({ root });
+        expect(state.command).to.eql(undefined);
+        state.change({ text });
+        expect(state.text).to.eql(text);
+        expect(state.command && state.command.name).to.eql(expectName);
+      };
+      test('db copy fast', 'fast');
+      test('db copy fast foo', 'fast');
+      test('db copy fast foo bar baz', 'fast');
     });
   });
 });

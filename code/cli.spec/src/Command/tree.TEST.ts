@@ -180,31 +180,67 @@ describe('Command.tree', () => {
 
   describe('fromPath', () => {
     it('undefined', () => {
-      const res1 = Command.tree.fromPath(root, '');
-      const res2 = Command.tree.fromPath(root, 'NOTHING');
-      const res3 = Command.tree.fromPath(root, 'foo.bar.baz');
-      expect(res1).to.eql(undefined);
-      expect(res2).to.eql(undefined);
-      expect(res3).to.eql(undefined);
+      const test = (path: string[]) => {
+        const res1 = Command.tree.fromPath(root, []);
+        const res2 = Command.tree.fromPath(root, [], { strict: true });
+        expect(res1).to.eql(undefined);
+        expect(res2).to.eql(undefined);
+      };
+      test([]);
+      test(['']);
+      test(['NOTHING']);
+      test('foo.bar.baz'.split('.'));
     });
 
     it('finds the root (not a deep path)', () => {
-      const res = Command.tree.fromPath(root, 'root');
+      const res = Command.tree.fromPath(root, ['root']);
       expect(res && res.name).to.eql('root');
     });
 
+    it('finds root command, ignores remaining args', () => {
+      const path = ['root', 'put', 'foo', 123, false];
+      const res1 = Command.tree.fromPath(root, path);
+      const res2 = Command.tree.fromPath(root, path, { strict: false }); // Default.
+      const res3 = Command.tree.fromPath(root, path, { strict: true });
+      expect(res1 && res1.name).to.eql('root');
+      expect(res2 && res2.name).to.eql('root');
+      expect(res3 && res3.name).to.eql(undefined);
+    });
+
     it('finds deep path (3 levels)', () => {
-      const res1 = Command.tree.fromPath(root, 'root.child-1.grandchild-1');
-      const res2 = Command.tree.fromPath(root, 'root.child-1.grandchild-2');
+      const res1 = Command.tree.fromPath(root, 'root.child-1.grandchild-1'.split('.'));
+      const res2 = Command.tree.fromPath(root, 'root.child-1.grandchild-2'.split('.'));
       expect(res1 && res1.name).to.eql('grandchild-1');
       expect(res2 && res2.name).to.eql('grandchild-2');
     });
 
     it('instance method', () => {
-      const res1 = root.tree.fromPath('YO');
-      const res2 = root.tree.fromPath('root.child-1.grandchild-2');
+      const res1 = root.tree.fromPath(['YO']);
+      const res2 = root.tree.fromPath('root.child-1.grandchild-2'.split('.'));
       expect(res1).to.eql(undefined);
       expect(res2 && res2.name).to.eql('grandchild-2');
     });
   });
+
+  // describe.only('fromParams', () => {
+  //   it('undefined', () => {
+  //     const res0 = Command.tree.fromParams(root, '');
+  //     const res1 = Command.tree.fromParams(root, []);
+  //     const res2 = Command.tree.fromParams(root, ['NOTHING']);
+  //     const res3 = Command.tree.fromParams(root, ['foo', 'bar', 'baz']);
+  //     const res4 = Command.tree.fromParams(root, 'foo bar baz');
+  //     expect(res0).to.eql(undefined);
+  //     expect(res1).to.eql(undefined);
+  //     expect(res2).to.eql(undefined);
+  //     expect(res3).to.eql(undefined);
+  //     expect(res4).to.eql(undefined);
+  //   });
+
+  //   it('finds the root (not a deep path)', () => {
+  //     const res1 = Command.tree.fromParams(root, 'root');
+  //     const res2 = Command.tree.fromParams(root, ['root']);
+  //     expect(res1 && res1.name).to.eql('root');
+  //     expect(res2 && res2.name).to.eql('root');
+  //   });
+  // });
 });
