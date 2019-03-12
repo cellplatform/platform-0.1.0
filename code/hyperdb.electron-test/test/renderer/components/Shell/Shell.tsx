@@ -45,7 +45,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     const store$ = this.store.change$.pipe(takeUntil(unmounted$));
     const state$ = this.state$.pipe(takeUntil(unmounted$));
     const cli$ = this.cli.state.change$.pipe(takeUntil(unmounted$));
-    const commandEvents$ = this.cli.events$.pipe(takeUntil(unmounted$));
+    const command$ = this.cli.events$.pipe(takeUntil(unmounted$));
 
     state$.subscribe(e => this.setState(e));
     store$.subscribe(e => this.updateState());
@@ -81,7 +81,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     /**
      * Handle callbacks from within invoking commands.
      */
-    commandEvents$
+    command$
       .pipe(
         filter(e => e.type === 'CLI/db/select'),
         map(e => e as t.ITestSelectDbEvent),
@@ -89,7 +89,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       )
       .subscribe(selectedDir => this.state$.next({ selectedDir }));
 
-    commandEvents$
+    command$
       .pipe(
         filter(e => e.type === 'CLI/error'),
         map(e => e as t.ITestErrorEvent),

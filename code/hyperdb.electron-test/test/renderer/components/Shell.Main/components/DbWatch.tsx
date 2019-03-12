@@ -1,8 +1,18 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
-import { css, color, GlamorValue, CommandState, t } from '../../../common';
-import { ObjectView } from '../../primitives';
+import { css, color, GlamorValue, CommandState, renderer, t } from '../../../common';
+import { ObjectView, Hr } from '../../primitives';
 
 const SYS_WATCH = '.sys/watch';
 
@@ -11,25 +21,27 @@ export type IDbWatchProps = {
   style?: GlamorValue;
 };
 export type IDbWatchState = {
-  watching: string[];
-  values: { [key: string]: any };
+  watchingKeys: string[];
+  watchedValues: { [key: string]: any };
+  values?: { [key: string]: any };
 };
 
 export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
-  public state: IDbWatchState = { watching: [], values: {} };
+  public state: IDbWatchState = { watchingKeys: [], watchedValues: {} };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IDbWatchState>>();
+  public static contextType = renderer.Context;
+  public context!: t.ITestRendererContext;
 
   /**
    * [Lifecycle]
    */
 
-  constructor(props: IDbWatchProps) {
-    super(props);
-    const { db } = props;
-    const unmounted$ = this.unmounted$;
-    const watch$ = db.watch$.pipe(takeUntil(unmounted$));
-    this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e as IDbWatchState));
+  public componentWillMount() {
+    const { db } = this.props;
+    const watch$ = db.watch$.pipe(takeUntil(this.unmounted$));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e as IDbWatchState));
+    const command$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
 
     // Update the component when the system-watch configuration changes.
     watch$.pipe(filter(e => e.key === SYS_WATCH)).subscribe(e => this.updateWatchedKeys());
@@ -39,9 +51,19 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
 
     // Update screen when watched keys change.
     watch$.pipe(filter(e => !e.key.startsWith('.sys/'))).subscribe(e => {
-      const values = { ...this.state.values, [e.key]: e.value };
-      this.state$.next({ values });
+      const values = { ...this.state.watchedValues, [e.key]: e.value };
+      this.state$.next({ watchedValues: values });
     });
+
+    // Listen for explicit values object passed from command.
+    command$
+      .pipe(
+        filter(e => e.type === 'CLI/db/values'),
+        map(e => e as t.ITestDbValuesEvent),
+      )
+      .subscribe(e => {
+        this.state$.next({ values: e.payload.values });
+      });
   }
 
   public componentWillUnmount() {
@@ -51,8 +73,12 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
   /**
    * [Properties]
    */
-  public get values() {
-    const values = { ...this.state.values };
+  private get cli() {
+    return this.context.cli;
+  }
+
+  public get watchedValues() {
+    const values = { ...this.state.watchedValues };
     Object.keys(values)
       .filter(key => !Boolean(key))
       .forEach(key => delete values[key]);
@@ -70,14 +96,14 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
   public async updateWatchedKeys() {
     const { db } = this.props;
     const watching = (await db.get('.sys/watch')).value || [];
-    this.state$.next({ watching });
+    this.state$.next({ watchingKeys: watching });
     db.watch(...watching);
     this.readWatchedValues();
   }
 
   public async readWatchedValues() {
     const { db } = this.props;
-    const { watching } = this.state;
+    const { watchingKeys: watching } = this.state;
 
     // Read the value of each watched key.
     const items = await Promise.all(
@@ -96,7 +122,7 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
         values = { ...values, [key]: value };
       });
 
-    this.state$.next({ values });
+    this.state$.next({ watchedValues: values });
   }
 
   /**
@@ -111,9 +137,18 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
         paddingBottom: 80,
       }),
     };
+
+    const elValues = this.state.values && (
+      <div>
+        <Hr />
+        <ObjectView name={'values'} data={this.state.values} expandLevel={1} />
+      </div>
+    );
+
     return (
       <div {...css(styles.base, this.props.style)}>
-        <ObjectView name={'data'} data={this.values} expandLevel={3} />
+        <ObjectView name={'data'} data={this.watchedValues} expandLevel={3} />
+        {elValues}
       </div>
     );
   }

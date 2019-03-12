@@ -155,6 +155,10 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
     return this.invoke('delete', [key]);
   }
 
+  public async values<T extends object = D>(args: t.IDbValuesArgs) {
+    return this.invoke('values', [args]);
+  }
+
   public async watch<T extends object = D>(...pattern: Array<keyof T>) {
     return this.invoke('watch', pattern);
   }

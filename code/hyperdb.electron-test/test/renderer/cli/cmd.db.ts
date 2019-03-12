@@ -51,9 +51,21 @@ export const del = Command.create<P>('delete', async e => {
   }
 });
 
+/**
+ * all [values] in the DB
+ */
+export const values = Command.create<P>('values', async e => {
+  const { db, events$ } = e.props;
+  const params = e.args.params;
+  const pattern = (params[0] || '').toString();
+  const values = await db.values({ pattern });
+  events$.next({ type: 'CLI/db/values', payload: { values } });
+});
+
 export const db = Command.create<P>('db')
   .add(put)
   .add(del)
+  .add(values)
   .add(watch)
   .add(unwatch)
   .add(rename);
