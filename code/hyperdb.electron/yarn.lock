@@ -97,10 +97,10 @@
     fs-extra "7.0.1"
     js-yaml "3.12.2"
 
-"@platform/hyperdb@0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.0.18.tgz#96dc03c98b87b5aa6a6125e2994f054d3b856b66"
-  integrity sha512-rmamJBhjTfZTT4+d6d9GuoN0Pf54GbhMUcmuljk/cKfypVWxl2dM3FH8dzrXts0aDkhZFoIQIGzpTN1dKqModA==
+"@platform/hyperdb@0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.0.19.tgz#888cc1ebd169462fc5dc11c175e67486a1d70093"
+  integrity sha512-ko74sV57B9p9EjaNZBOdt6C/x+YzOkGCWizfDpm6Dk1ldCnNrnGUEEdtaFUeg3OsfWAJYZ3HdKRygLFPO4KF+w==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/util.value" "0.0.35"
