@@ -2,7 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
-import { COLORS, css, GlamorValue, ICommand, renderer, str, t } from '../../common';
+import { CommandClickEvent, Help } from '../cli.Help';
+
+import { color, COLORS, css, GlamorValue, ICommand, renderer, str, t } from '../../common';
 import { CommandPrompt } from '../cli.CommandPrompt';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
@@ -183,15 +185,21 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         Absolute: 0,
         Flex: 'horizontal',
       }),
-      index: css({
+      left: css({
         position: 'relative',
         width: 180,
         minWidth: 140,
       }),
-      main: css({
+      middle: css({
         position: 'relative',
         flex: 1,
         display: 'flex',
+      }),
+      right: css({
+        width: 190,
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+        paddingLeft: 6,
+        paddingTop: 8,
       }),
     };
 
@@ -199,13 +207,16 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
           <ShellIndex
-            style={styles.index}
+            style={styles.left}
             selected={this.selectedDir}
             onNew={this.handleNew}
             onConnect={this.handleJoinStart}
             onSelect={this.handleSelect}
           />
-          <div {...styles.main}>{this.renderMain()}</div>
+          <div {...styles.middle}>{this.renderMain()}</div>
+          <div {...styles.right}>
+            <Help cli={this.cli.state} onCommandClick={this.handleHelpCommandClick} />
+          </div>
         </div>
         {this.renderDialog()}
       </div>
@@ -231,12 +242,11 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       }),
     };
 
-    const elBody = selection && (
+    const elBody = (
       <ShellMain
-        key={selection.db.key}
-        db={selection.db}
-        network={selection.network}
-        onFocusCommandPrompt={this.focusCommandPrompt}
+        key={selection && selection.db.key}
+        db={selection && selection.db}
+        network={selection && selection.network}
       />
     );
 
@@ -301,5 +311,10 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     if (match) {
       cli.change({ text: match.name });
     }
+  };
+
+  private handleHelpCommandClick = (e: CommandClickEvent) => {
+    this.cli.state.change({ text: e.cmd.name });
+    this.focusCommandPrompt();
   };
 }

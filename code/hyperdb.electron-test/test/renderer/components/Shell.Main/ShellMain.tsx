@@ -2,19 +2,17 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, renderer, t } from '../../common';
-import { CommandClickEvent, Help } from '../cli.Help';
+import { css, GlamorValue, renderer, t } from '../../common';
 import { DbHeader } from './components/DbHeader';
-import { Info } from './components/Info';
 import { DbWatch } from './components/DbWatch';
+import { Info } from './components/Info';
 import { Network } from './components/Network';
 import { NoteEditor } from './components/NoteEditor';
 
 export type IShellMainProps = {
-  db: t.ITestRendererDb;
-  network: t.INetwork;
+  db?: t.ITestRendererDb;
+  network?: t.INetwork;
   style?: GlamorValue;
-  onFocusCommandPrompt?: (e: {}) => void;
 };
 export type IShellMainState = {};
 
@@ -61,7 +59,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
       base: css({
         flex: 1,
         Flex: 'vertical-stretch-stretch',
-        // padding: 20,
+        paddingTop: !db && 20,
       }),
       header: css({ padding: 20 }),
       body: css({
@@ -70,22 +68,14 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
         Flex: 'horizontal-stretch-stretch',
         PaddingX: 20,
       }),
-      help: css({
-        width: 190,
-        borderLeft: `solid 1px ${color.format(-0.1)}`,
-        paddingLeft: 6,
-      }),
     };
+
+    const elDbHeader = db && <DbHeader db={db} style={styles.header} />;
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <DbHeader db={db} style={styles.header} />
-        <div {...styles.body}>
-          {this.renderOutput()}
-          <div {...styles.help}>
-            <Help cli={this.cli} onCommandClick={this.handleHelpCommandClick} />
-          </div>
-        </div>
+        {elDbHeader}
+        <div {...styles.body}>{this.renderOutput()}</div>
       </div>
     );
   }
@@ -100,12 +90,12 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
         display: 'flex',
       }),
     };
-    const elDbInfo = ns && ns.command.name === 'info' && <Info key={db.localKey} db={db} />;
-    const elNetwork = ns && ns.command.name === 'network' && (
+    const elDbInfo = ns && ns.command.name === 'info' && <Info key={db && db.localKey} db={db} />;
+    const elNetwork = db && network && ns && ns.command.name === 'network' && (
       <Network key={`${network.topic}/${db.localKey}`} network={network} />
     );
-    const elEditor = ns && ns.command.name === 'editor' && <NoteEditor db={db} />;
-    const elWatch = !elDbInfo && !elEditor && !elNetwork && <DbWatch db={db} />;
+    const elEditor = db && network && ns && ns.command.name === 'editor' && <NoteEditor db={db} />;
+    const elWatch = db && !elDbInfo && !elEditor && !elNetwork && <DbWatch db={db} />;
 
     return (
       <div {...styles.base}>
@@ -116,15 +106,4 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
       </div>
     );
   }
-
-  /**
-   * [Handlers]
-   */
-  private handleHelpCommandClick = (e: CommandClickEvent) => {
-    this.cli.change({ text: e.cmd.name });
-    const { onFocusCommandPrompt } = this.props;
-    if (onFocusCommandPrompt) {
-      onFocusCommandPrompt({});
-    }
-  };
 }

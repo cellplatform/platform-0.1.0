@@ -6,7 +6,7 @@ import { css, GlamorValue, t, renderer } from '../../../common';
 import { Hr, ObjectView } from '../../primitives';
 
 export type IInfoProps = {
-  db: t.ITestRendererDb;
+  db?: t.ITestRendererDb;
   style?: GlamorValue;
 };
 export type IInfoState = {
@@ -31,7 +31,9 @@ export class Info extends React.PureComponent<IInfoProps, IInfoState> {
     this.state$.pipe(takeUntil(unmounted$)).subscribe(e => this.setState(e));
 
     const { db } = this.props;
-    db.events$.pipe(takeUntil(unmounted$)).subscribe(e => this.updateState());
+    if (db) {
+      db.events$.pipe(takeUntil(unmounted$)).subscribe(e => this.updateState());
+    }
 
     this.updateState();
   }
@@ -44,20 +46,28 @@ export class Info extends React.PureComponent<IInfoProps, IInfoState> {
    * [Methods]
    */
   public async updateState() {
-    const { db } = this.props;
+    const { db: d } = this.props;
     const store = await this.context.store.read();
 
+    const db = !d
+      ? { message: 'No database to view. Try creating one by clicking [new].' }
+      : {
+          dir: d.dir,
+          key: d.key,
+          localKey: d.localKey,
+          discoveryKey: d.discoveryKey,
+          isAuthorized: await d.isAuthorized(),
+        };
+
+    const watching = !d
+      ? undefined
+      : {
+          current: (d && (await d.get('.sys/watch')).value) || [],
+        };
+
     this.state$.next({
-      db: {
-        dir: db.dir,
-        key: db.key,
-        localKey: db.localKey,
-        discoveryKey: db.discoveryKey,
-        isAuthorized: await db.isAuthorized(),
-      },
-      watching: {
-        current: (await db.get('.sys/watch')).value || [],
-      },
+      db,
+      watching,
       store,
     });
   }
@@ -74,6 +84,8 @@ export class Info extends React.PureComponent<IInfoProps, IInfoState> {
         paddingBottom: 80,
       }),
     };
+
+    console.log('this.state', this.state);
     return (
       <div {...css(styles.base, this.props.style)}>
         <ObjectView name={'db'} data={this.state.db} expandLevel={3} />

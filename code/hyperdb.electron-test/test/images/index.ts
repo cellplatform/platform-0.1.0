@@ -4,5 +4,3 @@ export const IMAGES = {
   KEYS: require('./keys.png'),
   KEYS2x: require('./keys@2x.png'),
 };
-
-console.log('IMAGES', IMAGES);

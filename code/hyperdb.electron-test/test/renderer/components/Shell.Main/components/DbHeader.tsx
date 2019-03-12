@@ -7,10 +7,6 @@ import { TextInput, TextInputChangeEvent } from '../../primitives';
 
 const { MONOSPACE } = constants.FONT;
 
-const DB = require('../../../../images/db.png');
-
-console.log('DB', DB);
-
 export type IDbHeaderProps = {
   db: t.ITestRendererDb;
   style?: GlamorValue;
