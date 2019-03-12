@@ -1,5 +1,5 @@
 {
-  "name": "@platform/hyperdb.electron-test",
+  "name": "hyperdb.electron-test",
   "description": "Test module for the [hyperdb.electron].",
   "version": "0.1.6",
   "main": "lib/index",
