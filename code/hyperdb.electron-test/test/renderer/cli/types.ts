@@ -40,28 +40,19 @@ export type ICommandOptions = {};
 /**
  * [Events]
  */
-export type CommandLineEvent =
-  | IJoinDbEvent__DELETE
-  | ICliChangeEditorCellEvent
-  | ICliSelectDbEvent
-  | ICliErrorEvent;
+export type CommandLineEvent = ITestChangeEditorCellEvent | ITestSelectDbEvent | ITestErrorEvent;
 
-export type ICliErrorEvent = {
+export type ITestErrorEvent = {
   type: 'CLI/error';
   payload: { message: string; command: ICommand };
 };
 
-export type ICliSelectDbEvent = {
+export type ITestSelectDbEvent = {
   type: 'CLI/db/select';
   payload: { dir: string };
 };
 
-export type IJoinDbEvent__DELETE = {
-  type: 'CLI/db/join';
-  payload: { dbKey?: string };
-};
-
-export type ICliChangeEditorCellEvent = {
+export type ITestChangeEditorCellEvent = {
   type: 'CLI/editor/cell';
   payload: { cellKey: string };
 };

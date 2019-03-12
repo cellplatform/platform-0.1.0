@@ -54,21 +54,24 @@ export class ErrorDialog extends React.PureComponent<IErrorDialogProps, IErrorDi
         MarginX: 80,
         color: COLORS.CLI.MAGENTA,
       }),
-      title: css({
-        borderBottom: `solid 1px ${color.format(-0.2)}`,
-        paddingBottom: 10,
-        marginBottom: 10,
+      footer: css({
+        borderTop: `solid 1px ${color.format(-0.2)}`,
+        marginTop: 10,
+        paddingTop: 10,
+        fontSize: 12,
+        color: color.format(-0.3),
       }),
       error: css({}),
     };
 
-    const title = command ? `Error within command '${command.name}'` : 'Error';
+    const footer = command ? `command: ${command.name}` : undefined;
+    const elFooter = footer && <div {...styles.footer}>{footer}</div>;
 
     return (
       <div {...styles.base}>
         <div {...styles.body}>
-          <div {...styles.title}>{title}</div>
           <div {...styles.error}>{error}</div>
+          {elFooter}
         </div>
       </div>
     );

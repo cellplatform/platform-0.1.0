@@ -84,7 +84,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     commandEvents$
       .pipe(
         filter(e => e.type === 'CLI/db/select'),
-        map(e => e as t.ICliSelectDbEvent),
+        map(e => e as t.ITestSelectDbEvent),
         map(e => e.payload.dir),
       )
       .subscribe(selectedDir => this.state$.next({ selectedDir }));
@@ -92,28 +92,11 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     commandEvents$
       .pipe(
         filter(e => e.type === 'CLI/error'),
-        map(e => e as t.ICliErrorEvent),
-        // map(e => e.payload.),
+        map(e => e as t.ITestErrorEvent),
       )
       .subscribe(e => {
         const { message, command } = e.payload;
-        // console.log('error', message);
-        console.log('-------------------------------------------');
         this.state$.next({ dialog: 'ERROR', error: { message, command } });
-      });
-
-    commandEvents$
-      .pipe(
-        filter(e => e.type === 'CLI/db/join'),
-        map(e => e as t.IJoinDbEvent__DELETE),
-      )
-      .subscribe(e => {
-        const { dbKey } = e.payload;
-        if (dbKey) {
-          this.handleJoinComplete({ dbKey });
-        } else {
-          this.handleJoinStart();
-        }
       });
   }
 
@@ -308,9 +291,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   };
 
   private handleJoinComplete = (e: JoinWithKeyEvent) => {
-    const { dbKey } = e;
-    this.createDatabase({ dbKey });
-    this.clearDialog();
+    // NB: Handled by command now.
   };
 
   private handleSelect = (e: ShellIndexSelectEvent) => {
@@ -319,6 +300,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   private clearDialog = () => {
     this.state$.next({ dialog: undefined });
+    this.focusCommandPrompt();
   };
 
   private onAutoComplete = () => {
