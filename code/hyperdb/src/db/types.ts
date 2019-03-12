@@ -29,8 +29,9 @@ export type IDbValue<K, V> = {
   props: IDbValueProps<K>;
 };
 export type IDbValueProps<K> = IDbNodeProps<K> & { exists: boolean };
-
 export type IDbValues<D extends {} = any> = { [key: string]: IDbValue<keyof D, D[keyof D]> };
+export type IDbValuesArgs = { pattern?: string; recursive?: boolean; gt?: boolean };
+
 /**
  * [Database]
  */
@@ -53,6 +54,7 @@ export type IDbMethods<D extends {} = any> = {
   unwatch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
   isAuthorized(peerKey?: string | Buffer): Promise<boolean>;
   authorize(peerKey: string | Buffer): Promise<void>;
+  values<T extends object = D>(args: IDbValuesArgs): Promise<IDbValues<T>>;
 };
 export type IDb<D extends {} = any> = IDbProps &
   IDbMethods<D> & {

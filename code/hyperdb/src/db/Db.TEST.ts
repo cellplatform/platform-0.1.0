@@ -325,6 +325,13 @@ describe('Db', () => {
       expect(res.zoo).to.eql(undefined);
     });
 
+    it('object value', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', { foo: 123 });
+      const res = await db.values();
+      expect(res.foo.value).to.eql({ foo: 123 });
+    });
+
     it('filters on pattern prefix', async () => {
       const db = await Db.create({ dir });
       await populate(db, ['foo', 'foo/A1', 'foo/A2', 'bar', 'bar/A1', 'bar/A2']);

@@ -135,34 +135,6 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   /**
-   * Retrieves current values withi the database.
-   */
-  public values<T extends object = D>(
-    args: {
-      pattern?: string; //            The value-key pattern to filter on.
-      recursive?: boolean; // (true)  Return all subfolders. False only visits first node in each folder.
-      gt?: boolean; //        (false) Return only nodes that are greater-than than the `pattern` prefix.
-    } = {},
-  ) {
-    const prefix = args.pattern === '*' ? undefined : args.pattern;
-    const recursive = valueUtil.defaultValue(args.recursive, true);
-    const { gt = false } = args;
-    return new Promise<t.IDbValues<T>>((resolve, reject) => {
-      this._.db.list(prefix, { recursive, gt }, (err: Error, data: t.IDbNode[]) => {
-        if (err) {
-          return reject(err);
-        }
-        try {
-          const v = data.reduce((acc, next) => ({ ...acc, [next.key]: util.toValue(next) }), {});
-          resolve(v);
-        } catch (error) {
-          reject(error);
-        }
-      });
-    });
-  }
-
-  /**
    * Starts a replication stream.
    */
   public replicate(options: { live?: boolean }) {
@@ -272,6 +244,34 @@ export class Db<D extends object = any> implements t.IDb<D> {
     return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
       this._.db.del(key, (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(util.toValue(result, { parse: true }));
+      });
+    });
+  }
+
+  /**
+   * Retrieves the current values within the database.
+   */
+  public values<T extends object = D>(
+    args: {
+      pattern?: string; //            The value-key pattern to filter on.
+      recursive?: boolean; // (true)  Return all subfolders. False only visits first node in each folder.
+      gt?: boolean; //        (false) Return only nodes that are greater-than than the `pattern` prefix.
+    } = {},
+  ) {
+    const prefix = args.pattern === '*' ? undefined : args.pattern;
+    const recursive = valueUtil.defaultValue(args.recursive, true);
+    const { gt = false } = args;
+    return new Promise<t.IDbValues<T>>((resolve, reject) => {
+      this._.db.list(prefix, { recursive, gt }, (err: Error, data: t.IDbNode[]) => {
+        if (err) {
+          return reject(err);
+        }
+        try {
+          const v = data.reduce((acc, next) => ({ ...acc, [next.key]: util.toValue(next) }), {});
+          resolve(v);
+        } catch (error) {
+          reject(error);
+        }
       });
     });
   }
