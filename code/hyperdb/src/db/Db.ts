@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { is } from '../common';
+import { is, value as valueUtil } from '../common';
 import * as t from './types';
 import * as util from './util';
 
@@ -31,10 +31,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }) {
     return new Promise<Db<D>>(resolve => {
       const { dir, dbKey, version } = args;
-      const reduce = (a: any, b: any) => {
-        console.log('REDUCE');
-        return a;
-      };
+      const reduce = (a: t.IDbNode, b: t.IDbNode) => a;
       const map = (node: t.IDbNode) => {
         // NB:  The underlying DB only stores [string/number/boolean]
         //      Ensure values are parsed into rich types (eg. objects and arrays etc) .
@@ -137,16 +134,33 @@ export class Db<D extends object = any> implements t.IDb<D> {
     this._.dispose$.complete();
   }
 
-  // public async TMP() {
-  //   const db = this._.db;
-
-  //   db.list({}, (err: Error, data: any) => {
-  //     const d = data[0];
-  //     console.log('d.key', d.key, d.value);
-  //     const v = d.value;
-  //     console.log('v', v, typeof v);
-  //   });
-  // }
+  /**
+   * Retrieves current values withi the database.
+   */
+  public values<T extends object = D>(
+    args: {
+      pattern?: string; //            The value-key pattern to filter on.
+      recursive?: boolean; // (true)  Return all subfolders. False only visits first node in each folder.
+      gt?: boolean; //        (false) Return only nodes that are greater-than than the `pattern` prefix.
+    } = {},
+  ) {
+    const prefix = args.pattern === '*' ? undefined : args.pattern;
+    const recursive = valueUtil.defaultValue(args.recursive, true);
+    const { gt = false } = args;
+    return new Promise<t.IDbValues<T>>((resolve, reject) => {
+      this._.db.list(prefix, { recursive, gt }, (err: Error, data: t.IDbNode[]) => {
+        if (err) {
+          return reject(err);
+        }
+        try {
+          const v = data.reduce((acc, next) => ({ ...acc, [next.key]: util.toValue(next) }), {});
+          resolve(v);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
 
   /**
    * Starts a replication stream.

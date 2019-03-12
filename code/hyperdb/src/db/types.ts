@@ -30,6 +30,7 @@ export type IDbValue<K, V> = {
 };
 export type IDbValueProps<K> = IDbNodeProps<K> & { exists: boolean };
 
+export type IDbValues<D extends {} = any> = { [key: string]: IDbValue<keyof D, D[keyof D]> };
 /**
  * [Database]
  */

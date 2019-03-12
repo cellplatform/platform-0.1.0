@@ -11,26 +11,6 @@ after(async () => fs.remove('tmp'));
 describe('Db', () => {
   beforeEach(async () => fs.remove(dir));
 
-  // describe('search', () => {
-  //   it('FOO', async () => {
-  //     const db = await Db.create({ dir });
-
-  //     const wait = Array.from({ length: 5 }).map(async (v, i) => {
-  //       await db.put('foo', i);
-  //       await db.put('foo', { foo: i });
-  //       await db.put('bar', i);
-  //     });
-
-  //     await Promise.all(wait);
-
-  //     await db.TMP();
-
-  //     console.log('-------------------------------------------');
-  //     const res = await db.get('foo');
-  //     console.log('res', res);
-  //   });
-  // });
-
   describe('properties', () => {
     it('exposes dir as property', async () => {
       const db = await Db.create({ dir });
@@ -313,6 +293,64 @@ describe('Db', () => {
 
       await updateValues();
       expect(events.length).to.eql(7); // Only "foo" was fired now.
+    });
+  });
+
+  describe('values', () => {
+    const populate = async (db: t.IDb, keys: string[], options: { loop?: number } = {}) => {
+      const loop = options.loop || 1;
+      const wait = Array.from({ length: loop }).map(async (v, i) => {
+        for (const key of keys) {
+          await db.put(key, i + 1);
+        }
+      });
+      await Promise.all(wait);
+    };
+
+    it('no values ({})', async () => {
+      const db = await Db.create({ dir });
+      await populate(db, []);
+      const res = await db.values();
+      expect(res).to.eql({});
+    });
+
+    it('has values (foo, bar)', async () => {
+      const db = await Db.create({ dir });
+      await populate(db, ['foo', 'bar']);
+
+      const res = await db.values();
+      expect(Object.keys(res).length).to.eql(2);
+      expect(res.foo.value).to.eql(1);
+      expect(res.bar.value).to.eql(1);
+      expect(res.zoo).to.eql(undefined);
+    });
+
+    it('filters on pattern prefix', async () => {
+      const db = await Db.create({ dir });
+      await populate(db, ['foo', 'foo/A1', 'foo/A2', 'bar', 'bar/A1', 'bar/A2']);
+
+      const res1 = await db.values({ pattern: 'foo' });
+      const res2 = await db.values({ pattern: 'foo/' });
+      const res3 = await db.values({ pattern: 'foo/A' });
+
+      expect(Object.keys(res1).length).to.eql(3);
+      expect(Object.keys(res2).length).to.eql(2);
+      expect(Object.keys(res3).length).to.eql(0);
+
+      expect(res1.foo.props.key).to.eql('foo');
+      expect(res1['foo/A1'].props.key).to.eql('foo/A1');
+      expect(res1['foo/A2'].props.key).to.eql('foo/A2');
+    });
+
+    it('non-recursive', async () => {
+      const db = await Db.create({ dir });
+      await populate(db, ['foo', 'foo/A1', 'foo/A2', 'bar', 'bar/A1', 'bar/A2']);
+
+      const res = await db.values({ recursive: false });
+
+      expect(Object.keys(res).length).to.eql(2);
+      expect(res['foo/A2'].props.key).to.eql('foo/A2');
+      expect(res['bar/A2'].props.key).to.eql('bar/A2');
     });
   });
 });
