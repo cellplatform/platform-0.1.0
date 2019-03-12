@@ -41,29 +41,34 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
   /**
    * [Lifecycle]
    */
-  public async componentDidMount() {
+  public async componentWillMount() {
     const store$ = this.store.change$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
-    store$.subscribe(e => this.updateState());
+
+    const updateState$ = new Subject();
+    updateState$
+      .pipe(
+        takeUntil(this.unmounted$),
+        debounceTime(50),
+      )
+      .subscribe(() => this.updateState());
+
+    store$.subscribe(e => updateState$.next());
 
     const db = this.context.db;
     const db$ = db.events$.pipe(takeUntil(this.unmounted$));
-    db$.pipe(filter(e => e.type === 'DB_FACTORY/change')).subscribe(e => this.updateState());
+    db$.pipe(filter(e => e.type === 'DB_FACTORY/change')).subscribe(e => updateState$.next());
     db$
       // Update state when DB name changes.
       .pipe(
         filter(e => e.type === 'DB_FACTORY/created'),
-        debounceTime(0),
         map(e => e.payload as t.IDbFactoryCreatedEvent['payload']),
       )
       .subscribe(e => {
-        e.db.watch$
-          .pipe(
-            takeUntil(e.db.dispose$),
-            debounceTime(500),
-          )
-          .subscribe(() => this.updateState());
+        e.db.watch$.pipe(debounceTime(300)).subscribe(() => {
+          updateState$.next();
+        });
         e.db.watch<t.ITestDbData>('.sys/dbname');
       });
 
@@ -103,13 +108,14 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
    * [Methods]
    */
   public async updateState() {
-    const items = this.context.db.items.map(async item => {
+    const wait = this.context.db.items.map(async item => {
       const { network } = item;
       const db: t.IDb<t.ITestDbData> = item.db;
       const name = (await db.get('.sys/dbname')).value || 'Unnamed';
       return { db, network, name };
     });
-    this.state$.next({ items: await Promise.all(items) });
+    const items = await Promise.all(wait);
+    this.state$.next({ items });
   }
 
   /**
