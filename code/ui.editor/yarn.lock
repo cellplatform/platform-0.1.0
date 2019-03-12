@@ -990,10 +990,10 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/electron@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.1.tgz#865f219445c32fa4b43407eb2d6e9872f5cf2892"
-  integrity sha512-CT39mXgNk/h2Hr6qvqS2hQlwtjztF1SaVOaA05bZRpC3ofE3ywJ85KDVPuaYHg/8sTML2ZbYq6FVDMHD6CAGIA==
+"@platform/electron@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.2.tgz#3ec8d9f40121a1a4e0c2baf7accd65edf4cc75ad"
+  integrity sha512-SCSda5q/sR4AgZAv8GRgNR25+s794rqG7WukB7RfHRutZwDgR0/ZClihYBc0ynIwd9iG3Vz8fbrzV6XgHVUiOQ==
   dependencies:
     "@babel/polyfill" "7.2.5"
     "@platform/fs" "0.0.38"
@@ -1111,10 +1111,10 @@
     "@platform/react" "0.0.14"
     react-inspector "2.3.1"
 
-"@platform/ui.object@0.0.53":
-  version "0.0.53"
-  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.53.tgz#24dc82fbbbdc4807fa3f9d41704f6d71ff1945aa"
-  integrity sha512-C6NgYVb1W6aIdJqLfYCPI6H8FIlEwRd5epoy5c53Wv2Z7WxY15GdM+0UG492aewyCTS1cPW+P3TliHR6z3W8fw==
+"@platform/ui.object@0.0.54":
+  version "0.0.54"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.54.tgz#e81f8e17840bf6d83ba688aee7459f5793ecea55"
+  integrity sha512-65WM+ujFc0sAs1ZpDyA0cunQY72nFy8hc9+49csDfigyA/EJgpqX9hDReAv97FmVRrbxYchXidl3CwIdwvpPMg==
   dependencies:
     "@platform/react" "0.0.15"
     react-inspector "2.3.1"

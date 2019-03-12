@@ -1,9 +1,9 @@
-productName: hypersheet (db)
+productName: hyperdb
 appId: platform.hyperdb.lib
 publish:
   provider: github
-  owner: uiharness
-  repo: platform
+  owner: __OWNER__
+  repo: __REPO__
   vPrefixedTagName: true
   releaseType: draft
   publishAutoUpdate: true

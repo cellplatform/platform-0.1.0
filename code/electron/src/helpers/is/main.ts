@@ -15,4 +15,11 @@ export const is = {
   get dev() {
     return !is.prod;
   },
+
+  toObject() {
+    return {
+      dev: is.dev,
+      prod: is.prod,
+    };
+  },
 };

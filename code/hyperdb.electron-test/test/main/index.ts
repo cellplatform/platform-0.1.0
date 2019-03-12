@@ -1,7 +1,7 @@
 import { app } from 'electron';
-import * as uiharness from '@uiharness/electron/lib/main';
+import uiharness from '@uiharness/electron/lib/main';
 import { filter } from 'rxjs/operators';
-import { is, fs } from './common';
+import { fs } from './common';
 
 import main from '@platform/hyperdb.electron/lib/main';
 import * as t from '../types';
@@ -19,7 +19,7 @@ const config = require('../../.uiharness/config.json') as uiharness.IRuntimeConf
     /**
      * Initialize the settings store.
      */
-    const dir = is.prod ? fs.join(app.getPath('userData'), 'db') : fs.resolve('.dev/db');
+    const dir = uiharness.is.prod ? fs.join(app.getPath('userData'), 'db') : fs.resolve('.dev/db');
     log.info(log.gray('databases:'), dir);
     await store.set('dir', dir);
     await updateDatabaseList(store);

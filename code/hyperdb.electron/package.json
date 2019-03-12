@@ -1,7 +1,7 @@
 {
   "name": "@platform/hyperdb.electron",
   "description": "Strongly typed, electron enabled interface to hyperdb.",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "main": "lib/index",
   "scripts": {
     "test": "ts test",
@@ -13,7 +13,7 @@
     "tmp": "ts-node -T scripts/tmp $@"
   },
   "dependencies": {
-    "@platform/electron": "0.1.1",
+    "@platform/electron": "0.1.2",
     "@platform/hyperdb": "0.0.18",
     "@platform/util.string": "0.0.32",
     "@platform/util.value": "0.0.35",
