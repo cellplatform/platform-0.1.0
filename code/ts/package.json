@@ -12,7 +12,7 @@
     "copy-config": "sh sh/copy-config.sh",
     "test": "node bin test",
     "tdd": "node bin test --watch",
-    "ti": "node bin test --suffix=INTEGRATION",
+    "ti": "node bin test --suffix INTEGRATION",
     "lint": "node bin lint",
     "build": "sh sh/build.sh $@",
     "prepare": "yarn clean && yarn copy-config && yarn build && yarn lint && yarn test",
