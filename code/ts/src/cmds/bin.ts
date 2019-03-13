@@ -146,10 +146,15 @@ const program = yargs
           alias: 'w',
           describe: 'Watch for changes',
           boolean: true,
+        })
+        .option('suffix', {
+          describe: 'The test file suffix to match.',
+          default: 'test,TEST',
+          string: true,
         }),
     async e => {
-      const { silent, watch, dir } = e;
-      const res = await cmds.test({ silent, watch, dir });
+      const { silent, watch, dir, suffix } = e;
+      const res = await cmds.test({ silent, watch, dir, suffix });
       if (res.error) {
         fail(1, res.error);
       }

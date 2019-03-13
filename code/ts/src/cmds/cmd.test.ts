@@ -4,7 +4,7 @@ import { exec, fs, getLog, IResult, paths, result } from '../common';
  * Runs tests.
  */
 export async function test(
-  args: { dir?: string; silent?: boolean; watch?: boolean } = {},
+  args: { dir?: string; silent?: boolean; watch?: boolean; suffix?: string } = {},
 ): Promise<IResult> {
   const { silent, watch } = args;
   const log = getLog(silent);
@@ -34,6 +34,13 @@ export async function test(
     flags += `--watch \\`;
   }
 
+  let { suffix = 'TEST,test' } = args;
+  suffix = suffix.includes(',') ? `{${suffix}}` : suffix;
+  const pattern = `src/**/*.${suffix}.ts{,x}`;
+  if (!watch) {
+    log.info(pattern);
+  }
+
   const cmd = `
     export NODE_ENV=test
     export TS_NODE_TRANSPILE_ONLY=true
@@ -41,7 +48,7 @@ export async function test(
     
     ${mocha} \\
       ${flags}
-      'src/**/*.{test,TEST}.ts{,x}' \\
+      '${pattern}' \\
   `;
 
   const done = (res: IResult) => {
