@@ -97,10 +97,10 @@
     fs-extra "7.0.1"
     js-yaml "3.12.2"
 
-"@platform/hyperdb@0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.0.18.tgz#96dc03c98b87b5aa6a6125e2994f054d3b856b66"
-  integrity sha512-rmamJBhjTfZTT4+d6d9GuoN0Pf54GbhMUcmuljk/cKfypVWxl2dM3FH8dzrXts0aDkhZFoIQIGzpTN1dKqModA==
+"@platform/hyperdb@0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.0.20.tgz#9b1809fdaff82be25530f6b4085be8e742ece137"
+  integrity sha512-yjNGh2cm9paC9wDkSQbVCgezQY4d4ZybXPyN2eKU8wllosOa+b8Js3luMUZ2crT4Db3uB7vQrUuJwznEJNLCqw==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/util.value" "0.0.35"
@@ -334,10 +334,10 @@
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.9.tgz#693e76a52f61a2f1e7fb48c0eef167b95ea4ffd0"
   integrity sha512-sCZy4SxP9rN2w30Hlmg5dtdRwgYQfYRiLo9usw8X9cxlf+H4FqM1xX7+sNH7NNKVdbXMJWqva7iyy+fxh/V7fA==
 
-"@uiharness/electron@0.3.145":
-  version "0.3.145"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.145.tgz#78b6c9a83cae9e4efaee041e76edf47822e1658a"
-  integrity sha512-CPNvp+oiyObq5mHmC8V0zuWZqKko+8wnf52BLglqK0vmQlqy2mIstxGTgfp+Lz6SSPvtmnmupk6Iz+6x1T8QRw==
+"@uiharness/electron@0.3.147":
+  version "0.3.147"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.147.tgz#a1fd2a6342b53c529c5e8c277ef2a65dc53ca945"
+  integrity sha512-w3e61GaxUTkjhYZWmmtIiXhlhtw7e5FOCLZO8SB7K2KJudkTY+o+/t5X3o5A+u5A5cqJKSp+BPA+5eu01TpBPg==
   dependencies:
     "@platform/electron" "0.1.2"
     "@platform/log" "0.0.85"
@@ -345,13 +345,13 @@
     "@platform/ui.object" "0.0.54"
     "@platform/util.value" "0.0.35"
     "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.0.63"
+    "@uiharness/types" "0.0.64"
     tslib "1.9.3"
 
-"@uiharness/types@0.0.63":
-  version "0.0.63"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.0.63.tgz#f7e8ceb02729222932e7d827e479cc5c7ef7b019"
-  integrity sha512-2xsgQnN9q/Wn67FFoDd13uUcZUqWUUe7y7ELeeCynJ2acMaUehFIpJQcKRF3MFoEjx9KKQVn9BLoOIo+cbWiOQ==
+"@uiharness/types@0.0.64":
+  version "0.0.64"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.0.64.tgz#adf9c56cc755dd61c2c3dd5aadc49ebd164b3431"
+  integrity sha512-zQvD2IcsAVg1TqxfZlmb6u5/TF5wjpNPzaRbSwAjcb9gmNk6ydBy0fqdUBPvj0JMfDUhP20EEG1LWrP1KDYjvA==
 
 ansi-colors@3.2.3:
   version "3.2.3"

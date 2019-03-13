@@ -40,7 +40,11 @@ export type ICommandOptions = {};
 /**
  * [Events]
  */
-export type CommandLineEvent = ITestChangeEditorCellEvent | ITestSelectDbEvent | ITestErrorEvent;
+export type CommandLineEvent =
+  | ITestChangeEditorCellEvent
+  | ITestSelectDbEvent
+  | ITestErrorEvent
+  | ITestDbValuesEvent;
 
 export type ITestErrorEvent = {
   type: 'CLI/error';
@@ -50,6 +54,11 @@ export type ITestErrorEvent = {
 export type ITestSelectDbEvent = {
   type: 'CLI/db/select';
   payload: { dir: string };
+};
+
+export type ITestDbValuesEvent = {
+  type: 'CLI/db/values';
+  payload: { values: any };
 };
 
 export type ITestChangeEditorCellEvent = {

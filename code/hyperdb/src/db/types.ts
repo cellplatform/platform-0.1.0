@@ -3,12 +3,11 @@ import { Observable } from 'rxjs';
 export * from '../types';
 
 /**
- * [Value]
+ * Raw database [Node] data.
  */
-export type IDbValueMeta<K> = {
+export type IDbNodeProps<K> = {
   key: K;
-  exists: boolean;
-  deleted: boolean;
+  deleted: boolean | undefined;
   clock: number[];
   feed: number;
   seq: number;
@@ -17,10 +16,21 @@ export type IDbValueMeta<K> = {
   trie: any;
 };
 
-export type IDbValue<K, V> = {
-  value: V | undefined;
-  meta: IDbValueMeta<K>;
+export type DbNodeValue = string | number | boolean | undefined;
+export type IDbNode<K = any, V extends DbNodeValue = any> = IDbNodeProps<K> & {
+  value?: V;
 };
+
+/**
+ * Parsed database [Value]
+ */
+export type IDbValue<K, V> = {
+  value?: V;
+  props: IDbValueProps<K>;
+};
+export type IDbValueProps<K> = IDbNodeProps<K> & { exists: boolean };
+export type IDbValues<D extends {} = any> = { [key in keyof D]: IDbValue<keyof D, D[keyof D]> };
+export type IDbValuesArgs = { pattern?: string; recursive?: boolean; gt?: boolean };
 
 /**
  * [Database]
@@ -44,6 +54,7 @@ export type IDbMethods<D extends {} = any> = {
   unwatch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
   isAuthorized(peerKey?: string | Buffer): Promise<boolean>;
   authorize(peerKey: string | Buffer): Promise<void>;
+  values<T extends object = D>(args: IDbValuesArgs): Promise<IDbValues<T>>;
 };
 export type IDb<D extends {} = any> = IDbProps &
   IDbMethods<D> & {

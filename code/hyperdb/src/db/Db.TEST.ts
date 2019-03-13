@@ -5,6 +5,16 @@ import { expect } from 'chai';
 import * as t from '../types';
 import { Db } from './Db';
 
+const populate = async (db: t.IDb, keys: string[], options: { loop?: number } = {}) => {
+  const loop = options.loop || 1;
+  const wait = Array.from({ length: loop }).map(async (v, i) => {
+    for (const key of keys) {
+      await db.put(key, i + 1);
+    }
+  });
+  await Promise.all(wait);
+};
+
 const dir = 'tmp/db';
 after(async () => fs.remove('tmp'));
 
@@ -75,9 +85,14 @@ describe('Db', () => {
       expect((await db.put(KEY, 123)).value).to.eql(123);
       expect((await db.get(KEY)).value).to.eql(123);
 
-      const res = await db.delete(KEY);
-      expect(res.value).to.eql(undefined);
-      expect(res.meta.deleted).to.eql(true);
+      const res1 = await db.delete(KEY);
+      const res2 = await db.get(KEY);
+
+      expect(res1.value).to.eql(undefined);
+      expect(res1.props.deleted).to.eql(true);
+
+      expect(res2.value).to.eql(undefined);
+      expect(res2.props.deleted).to.eql(undefined);
     });
   });
 
@@ -294,6 +309,80 @@ describe('Db', () => {
 
       await updateValues();
       expect(events.length).to.eql(7); // Only "foo" was fired now.
+    });
+  });
+
+  describe('values', () => {
+    it('no values ({})', async () => {
+      const db = await Db.create({ dir });
+      await populate(db, []);
+      const res = await db.values();
+      expect(res).to.eql({});
+    });
+
+    it('has values (foo, bar)', async () => {
+      const db = await Db.create({ dir });
+      await populate(db, ['foo', 'bar']);
+
+      const res = await db.values();
+      expect(Object.keys(res).length).to.eql(2);
+      expect(res.foo.value).to.eql(1);
+      expect(res.bar.value).to.eql(1);
+      expect(res.zoo).to.eql(undefined);
+    });
+
+    it('object value', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', { foo: 123 });
+      const res = await db.values();
+      expect(res.foo.value).to.eql({ foo: 123 });
+    });
+
+    it('filters on pattern prefix', async () => {
+      const db = await Db.create({ dir });
+      await populate(db, ['foo', 'foo/A1', 'foo/A2', 'bar', 'bar/A1', 'bar/A2']);
+
+      const res1 = await db.values({ pattern: 'foo' });
+      const res2 = await db.values({ pattern: 'foo/' });
+      const res3 = await db.values({ pattern: 'foo/A' });
+
+      expect(Object.keys(res1).length).to.eql(3);
+      expect(Object.keys(res2).length).to.eql(2);
+      expect(Object.keys(res3).length).to.eql(0);
+
+      expect(res1.foo.props.key).to.eql('foo');
+      expect(res1['foo/A1'].props.key).to.eql('foo/A1');
+      expect(res1['foo/A2'].props.key).to.eql('foo/A2');
+    });
+
+    it('non-recursive', async () => {
+      const db = await Db.create({ dir });
+      await populate(db, ['foo', 'foo/A1', 'foo/A2', 'bar', 'bar/A1', 'bar/A2']);
+
+      const res = await db.values({ recursive: false });
+
+      expect(Object.keys(res).length).to.eql(2);
+      expect(res['foo/A2'].props.key).to.eql('foo/A2');
+      expect(res['bar/A2'].props.key).to.eql('bar/A2');
+    });
+  });
+
+  describe('history', () => {
+    it('all keys', async () => {
+      const db = await Db.create({ dir });
+
+      await populate(db, ['foo', 'bar'], { loop: 2 });
+      const res = await db.history__();
+
+      expect(Object.keys(res).length).to.eql(2);
+
+      expect(res.foo && res.foo.length).to.eql(2);
+      expect(res.foo && res.foo[0].value).to.eql(1);
+      expect(res.foo && res.foo[1].value).to.eql(2);
+
+      expect(res.bar && res.bar.length).to.eql(2);
+      expect(res.bar && res.bar[0].value).to.eql(1);
+      expect(res.bar && res.bar[1].value).to.eql(2);
     });
   });
 });
