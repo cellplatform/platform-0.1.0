@@ -345,8 +345,16 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * Retrieves the history of values within the database.
    */
-  public history<T extends object = D>(options: {} = {}) {
+  public history__<T extends object = D>(options: {} = {}) {
     type R = Partial<{ [key in keyof T]: Array<t.IDbValue<keyof T, T[keyof T]>> }>;
+
+    /**
+     * TODO 🐷
+     *  - run for single key (use `createHistoryKeyStream`)
+     *  - return promise/observable extension
+     *  - stobbable
+     *  - direction arg (oldest => newest, newest => oldest)
+     */
 
     return new Promise<R>((resolve, reject) => {
       const db = this._.db;

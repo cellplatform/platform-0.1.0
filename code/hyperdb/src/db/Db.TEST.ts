@@ -372,7 +372,7 @@ describe('Db', () => {
       const db = await Db.create({ dir });
 
       await populate(db, ['foo', 'bar'], { loop: 2 });
-      const res = await db.history();
+      const res = await db.history__();
 
       expect(Object.keys(res).length).to.eql(2);
 
