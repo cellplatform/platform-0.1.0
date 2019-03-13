@@ -74,9 +74,15 @@ describe('Db', () => {
       const db = await Db.create({ dir });
       expect((await db.put(KEY, 123)).value).to.eql(123);
       expect((await db.get(KEY)).value).to.eql(123);
-      const res = await db.delete(KEY);
-      expect(res.value).to.eql(undefined);
-      expect(res.props.deleted).to.eql(true);
+
+      const res1 = await db.delete(KEY);
+      const res2 = await db.get(KEY);
+
+      expect(res1.value).to.eql(undefined);
+      expect(res1.props.deleted).to.eql(true);
+
+      expect(res2.value).to.eql(undefined);
+      expect(res2.props.deleted).to.eql(undefined);
     });
   });
 

@@ -7,7 +7,7 @@ export * from '../types';
  */
 export type IDbNodeProps<K> = {
   key: K;
-  deleted: boolean;
+  deleted: boolean | undefined;
   clock: number[];
   feed: number;
   seq: number;

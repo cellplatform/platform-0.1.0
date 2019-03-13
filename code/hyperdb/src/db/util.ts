@@ -1,29 +1,38 @@
 import { value as valueUtil } from '../common';
 import * as t from './types';
 
-function isNil(value: any) {
+export function isObject(value: any) {
+  return value !== null && typeof value === 'object';
+}
+
+export function isNil(value: any) {
   return value === null || value === undefined;
 }
 
 export function toValue<K, V>(response: any, options: { parse?: boolean } = {}): t.IDbValue<K, V> {
+  const isObj = isObject(response);
+  const exists = isObj && !isNil(response.value) ? true : false;
+
   // NOTE:  The response value is parsed automatically within the DB's `map` function.
   //        See constructor options.
   //        The only time you may want to parse is if the value came back without
   //        having gone through the `map` - for instance, a `delete` response.
-  const exists = response && !isNil(response.value) ? true : false;
+  let value = isObj ? response.value : undefined;
+  value = options.parse ? parseValue(value) : value;
 
-  if (typeof response !== 'object') {
-    throw new Error(`[util.toValue] Expected response object.`);
-  }
-
-  const value = options.parse ? parseValue(response.value) : response.value;
-
-  const props: t.IDbValueProps<K> = { exists, ...response };
-  delete response.value;
+  const props: any = { exists, ...toNodeProps(response) };
   return {
     value,
     props,
   };
+}
+function toNodeProps(response?: t.IDbNode) {
+  if (!response) {
+    return {};
+  } else {
+    const { key, deleted, clock, feed, seq, path, inflate, trie } = response;
+    return { key, deleted, clock, feed, seq, path, inflate, trie };
+  }
 }
 
 export function parseValue<V>(value: any): V | undefined {
