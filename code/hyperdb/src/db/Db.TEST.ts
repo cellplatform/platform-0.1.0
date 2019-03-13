@@ -5,6 +5,16 @@ import { expect } from 'chai';
 import * as t from '../types';
 import { Db } from './Db';
 
+const populate = async (db: t.IDb, keys: string[], options: { loop?: number } = {}) => {
+  const loop = options.loop || 1;
+  const wait = Array.from({ length: loop }).map(async (v, i) => {
+    for (const key of keys) {
+      await db.put(key, i + 1);
+    }
+  });
+  await Promise.all(wait);
+};
+
 const dir = 'tmp/db';
 after(async () => fs.remove('tmp'));
 
@@ -303,16 +313,6 @@ describe('Db', () => {
   });
 
   describe('values', () => {
-    const populate = async (db: t.IDb, keys: string[], options: { loop?: number } = {}) => {
-      const loop = options.loop || 1;
-      const wait = Array.from({ length: loop }).map(async (v, i) => {
-        for (const key of keys) {
-          await db.put(key, i + 1);
-        }
-      });
-      await Promise.all(wait);
-    };
-
     it('no values ({})', async () => {
       const db = await Db.create({ dir });
       await populate(db, []);
@@ -364,6 +364,25 @@ describe('Db', () => {
       expect(Object.keys(res).length).to.eql(2);
       expect(res['foo/A2'].props.key).to.eql('foo/A2');
       expect(res['bar/A2'].props.key).to.eql('bar/A2');
+    });
+  });
+
+  describe('history', () => {
+    it('all keys', async () => {
+      const db = await Db.create({ dir });
+
+      await populate(db, ['foo', 'bar'], { loop: 2 });
+      const res = await db.history();
+
+      expect(Object.keys(res).length).to.eql(2);
+
+      expect(res.foo && res.foo.length).to.eql(2);
+      expect(res.foo && res.foo[0].value).to.eql(1);
+      expect(res.foo && res.foo[1].value).to.eql(2);
+
+      expect(res.bar && res.bar.length).to.eql(2);
+      expect(res.bar && res.bar[0].value).to.eql(1);
+      expect(res.bar && res.bar[1].value).to.eql(2);
     });
   });
 });

@@ -268,7 +268,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
         }
         try {
           const v = data.reduce((acc, next) => ({ ...acc, [next.key]: util.toValue(next) }), {});
-          resolve(v);
+          resolve(v as any);
         } catch (error) {
           reject(error);
         }
@@ -339,6 +339,31 @@ export class Db<D extends object = any> implements t.IDb<D> {
         watchers[key].destroy();
         delete watchers[key];
       }
+    });
+  }
+
+  /**
+   * Retrieves the history of values within the database.
+   */
+  public history<T extends object = D>(options: {} = {}) {
+    type R = Partial<{ [key in keyof T]: Array<t.IDbValue<keyof T, T[keyof T]>> }>;
+
+    return new Promise<R>((resolve, reject) => {
+      const db = this._.db;
+      const stream = db.createHistoryStream({});
+      const result: R = {};
+
+      stream.on('data', (node: t.IDbNode) => {
+        const key = node.key;
+        result[key] = result[key] || [];
+        result[key] = [...result[key], util.toValue(node, { parse: true })];
+      });
+
+      stream.on('error', (err: Error) => reject(err));
+      stream.on('end', () => {
+        stream.destroy();
+        resolve(result);
+      });
     });
   }
 

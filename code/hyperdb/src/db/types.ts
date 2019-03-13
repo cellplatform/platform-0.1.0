@@ -29,7 +29,7 @@ export type IDbValue<K, V> = {
   props: IDbValueProps<K>;
 };
 export type IDbValueProps<K> = IDbNodeProps<K> & { exists: boolean };
-export type IDbValues<D extends {} = any> = { [key: string]: IDbValue<keyof D, D[keyof D]> };
+export type IDbValues<D extends {} = any> = { [key in keyof D]: IDbValue<keyof D, D[keyof D]> };
 export type IDbValuesArgs = { pattern?: string; recursive?: boolean; gt?: boolean };
 
 /**
