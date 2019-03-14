@@ -3,14 +3,12 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue, IconGrid, Hr, ImageSprite } from './common';
 
-// import { part } from '../../Im';
-import { Icons, IIconProps } from '../Icons';
+import { Icons } from '../Icons';
 
 const SAMPLE = require('../images/ImageSprite.test/sample.png');
 const SAMPLE2x = require('../images/ImageSprite.test/sample@2x.png');
 
 const MAGENTA = '#F93B76';
-// import { part } from '';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {};
