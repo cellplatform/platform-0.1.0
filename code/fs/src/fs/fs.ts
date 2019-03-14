@@ -4,6 +4,7 @@ import * as path from 'path';
 import { glob } from '../glob';
 import { merge } from '../merge';
 import { is } from '../is';
+import { folderSize } from './helpers';
 
 /**
  * Extended [file-system] object.
@@ -30,6 +31,11 @@ export const fs = {
    * Flag helpers
    */
   is,
+
+  /**
+   * Calculates the size of all files within a directory.
+   */
+  folderSize,
 
   /**
    * Helpers for working with paths.
