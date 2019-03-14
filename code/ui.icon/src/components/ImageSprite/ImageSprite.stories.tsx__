@@ -1,0 +1,11 @@
+import { React, describe } from '../../test/storybook';
+import { Test } from './Test';
+
+describe('ImageSprite', {
+  title: 'A collection of images combined into one.',
+  width: '100%',
+  height: '100%',
+  hr: false,
+  padding: 30,
+  flex: true,
+}).add('sample', () => <Test />);
