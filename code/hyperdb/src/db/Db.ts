@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { is, value as valueUtil } from '../common';
+import { is, value as valueUtil, fs } from '../common';
 import * as t from './types';
 import * as util from './util';
 
@@ -373,6 +373,20 @@ export class Db<D extends object = any> implements t.IDb<D> {
         resolve(result);
       });
     });
+  }
+
+  /**
+   * Retrieves statistics about the database.
+   */
+  public async stats(options: {} = {}) {
+    const dir = this.dir;
+    const size = await fs.folderSize(dir);
+    return {
+      dir,
+      size: {
+        bytes: size.bytes,
+      },
+    };
   }
 
   public toString() {
