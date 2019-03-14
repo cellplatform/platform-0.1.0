@@ -3,7 +3,7 @@ import '../../styles';
 import { DefaultSettings } from 'handsontable';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, share } from 'rxjs/operators';
 
 import { constants, css, events, GlamorValue, Handsontable, t, value } from '../../common';
 
@@ -32,8 +32,15 @@ export type IGridState = {
  */
 export class Grid extends React.PureComponent<IGridProps, IGridState> {
   public state: IGridState = { isEditing: false };
+
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IGridState>>();
+  private _events$ = new Subject<t.GridEvent>();
+  public readonly events$ = this._events$.pipe(
+    takeUntil(this.unmounted$),
+    share(),
+  );
+
   private el: HTMLDivElement;
   private elRef = (ref: HTMLDivElement) => (this.el = ref);
   private table: Handsontable;
@@ -62,11 +69,7 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
 
     // Handle editor events.
     const editor$ = editorEvents$.pipe(takeUntil(this.unmounted$));
-    editor$.subscribe(e => {
-      if (this.props.events$) {
-        this.props.events$.next(e); // Bubble event.
-      }
-    });
+    editor$.subscribe(e => this._events$.next(e));
     editor$
       .pipe(filter(e => e.type === 'GRID/EDITOR/begin'))
       .subscribe(() => this.state$.next({ isEditing: true }));
@@ -77,6 +80,13 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
     // Manage size.
     this.updateSize();
     events.resize$.pipe(takeUntil(this.unmounted$)).subscribe(() => this.redraw());
+
+    // Bubble events.
+    this.events$.subscribe(e => {
+      if (this.props.events$) {
+        this.props.events$.next(e);
+      }
+    });
   }
 
   public componentWillUnmount() {
