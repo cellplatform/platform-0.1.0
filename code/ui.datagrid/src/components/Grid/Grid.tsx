@@ -18,11 +18,11 @@ export type IGridProps = {
 };
 export type IGridState = {
   size?: { width: number; height: number };
-  isEditing: boolean;
+  isEditing?: boolean;
 };
 
 /**
- * A wrapper around the [Handontable].
+ * A wrapper around the [Handsontable].
  *
  *    https://handsontable.com/docs
  *    https://github.com/handsontable/handsontable

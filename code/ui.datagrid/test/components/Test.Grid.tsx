@@ -2,10 +2,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { Grid, IGridSettings } from '.';
-import { GlamorValue, Handsontable, css, t } from '../../common';
-import { Editor } from '../Editor';
-import * as render from '../Grid.render';
+import { Grid, IGridSettings } from '../../src/components/Grid';
+import { GlamorValue, Handsontable, css, t } from '../../src/common';
+import { Editor } from '../../src/components/Editor';
+import * as render from '../../src/components/Grid.render';
 
 export { Handsontable };
 
