@@ -118,7 +118,7 @@ export function createEmptyData(rows: number, columns: number) {
 export function createSampleData(args: { Table: Handsontable }) {
   // const { Table } = args;
   // const data = Table.helper.createSpreadsheetData(1000, 100);
-  const data = createEmptyData(3, 3);
+  const data = createEmptyData(1000, 100);
 
   data[0][0] = 'A1';
 
@@ -161,37 +161,8 @@ export function createSampleData(args: { Table: Handsontable }) {
       console.log('afterChange', e);
     },
 
-    /**
-     * See:
-     *   - https://jsfiddle.net/handsoncode/n8eft0m1/
-     *   - https://forum.handsontable.com/t/keyboard-cycling/2802/4
-     */
-    beforeKeyDown(e) {
-      // e.preventDefault();
-      // e.stopImmediatePropagation();
-      console.log('beforeKeydown', e);
-
-      // @ts-ignore
-      const last = this.getSelectedLast();
-      const row = last[0];
-      const col = last[1];
-
-      const key = (e as KeyboardEvent).key;
-
-      // console.group('🌳 ');
-      // console.log('e', e);
-      // console.log('row', row);
-      // console.log('col', col);
-      // console.groupEnd();
-
-      if (row === 0 && key === 'ArrowUp') {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-      }
-      if (col === 0 && key === 'ArrowLeft') {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-      }
+    afterScrollVertically() {
+      console.log('scroll');
     },
   };
 
@@ -272,13 +243,16 @@ const beforeKeydownHandler = (getGrid: () => Grid) => {
     // console.log('col', col);
     // console.groupEnd();
 
-    if (row === 0 && key === 'ArrowUp') {
+    const stop = () => {
       e.preventDefault();
       e.stopImmediatePropagation();
+    };
+
+    if (row === 0 && key === 'ArrowUp') {
+      stop();
     }
     if (col === 0 && key === 'ArrowLeft') {
-      e.preventDefault();
-      e.stopImmediatePropagation();
+      stop();
     }
   };
 };

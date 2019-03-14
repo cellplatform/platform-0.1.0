@@ -105,7 +105,12 @@ export class Editor extends editors.TextEditor {
   public beginEditing(initialValue?: string) {
     super.beginEditing(initialValue);
     this._isEditing = true;
+
+    const props = this.props;
     const { row, column } = this.props;
+
+    const td = this._current.TD;
+    console.log('td', td);
 
     console.log(`\nTODO 🐷  Render the editor with context props \n`);
 
