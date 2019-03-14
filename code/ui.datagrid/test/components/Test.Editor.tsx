@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css } from '../../src/common';
+import { css, datagrid } from './common';
 
 export type ITestEditorProps = {};
 export type ITestEditorState = {};
@@ -11,6 +11,9 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
   public state: ITestEditorState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestEditorState>>();
+
+  public static contextType = datagrid.EditorContext;
+  public context!: datagrid.ReactEditorContext;
 
   /**
    * [Lifecycle]
@@ -21,6 +24,7 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
 
   public componentDidMount() {
     console.log('--------------------editor mounted');
+    console.log('this.context', this.context);
   }
 
   public componentWillUnmount() {

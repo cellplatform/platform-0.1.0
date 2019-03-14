@@ -1,8 +1,8 @@
-export type IEditorProps = {
-  row: number;
-  column: number;
-  isOpen: boolean;
-};
+/**
+ * Properties that are passed to React editor
+ * components as `context`.
+ */
+export type IEditorContext = {};
 
 /**
  * [Events]

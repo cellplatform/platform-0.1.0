@@ -57,7 +57,7 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
     // Create the table.
     const settings = this.settings;
     const Table = this.props.Handsontable || Handsontable;
-    this.table = new Table(this.el as Element, settings);
+    this.table = new Table(this.el as Element, settings) as Handsontable;
 
     // Store metadata on the [Handsontable] instance.
     // NOTE:
@@ -101,6 +101,7 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
   /**
    * [Properties]
    */
+
   private get settings(): IGridSettings {
     const defaultValue = value.defaultValue;
     let settings = this.props.settings || {};
@@ -126,6 +127,7 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
   /**
    * [Methods]
    */
+
   public redraw() {
     this.updateSize();
     if (this.table) {

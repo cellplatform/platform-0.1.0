@@ -2,13 +2,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, Handsontable, t } from '../../src/common';
+import { GlamorValue, Handsontable, t, datagrid } from './common';
 import { Editor } from '../../src/components/Editor';
-import { Grid, IGridSettings } from '../../src/components/Grid';
 import * as render from '../../src/components/Grid.render';
 import { TestEditor } from './Test.Editor';
-
-export { Handsontable };
 
 const createColumns = (length: number) => {
   return Array.from({ length }).map(() => {
@@ -23,9 +20,8 @@ export type ITestProps = {
   style?: GlamorValue;
   Table?: Handsontable;
 };
-
 export type ITestState = {
-  settings?: IGridSettings;
+  settings?: datagrid.IGridSettings;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -34,8 +30,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private events$ = new Subject<t.GridEvent>();
 
-  private grid!: Grid;
-  private gridRef = (ref: Grid) => (this.grid = ref);
+  private grid!: datagrid.Grid;
+  private gridRef = (ref: datagrid.Grid) => (this.grid = ref);
 
   /**
    * [Lifecycle]
@@ -93,7 +89,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public render() {
     return (
-      <Grid
+      <datagrid.Grid
         ref={this.gridRef}
         settings={this.state.settings}
         events$={this.events$}
@@ -120,14 +116,12 @@ export function createSampleData(args: { Table: Handsontable }) {
   // const { Table } = args;
   // const data = Table.helper.createSpreadsheetData(1000, 100);
   const data = createEmptyData(1000, 100);
-
   data[0][0] = 'A1';
 
   // console.log('data', data);
-
   // const getSelectedLast = this.getSelectedLast
 
-  const settings: IGridSettings = {
+  const settings: datagrid.IGridSettings = {
     data,
     columns: createColumns(100),
 
@@ -144,8 +138,7 @@ export function createSampleData(args: { Table: Handsontable }) {
       console.log('source', source);
       console.log('changes', [...changes]);
       console.groupEnd();
-
-      // return false;
+      // return false; // Cancel's change.
     },
 
     afterChange(e) {
@@ -165,7 +158,7 @@ export function createSampleData(args: { Table: Handsontable }) {
  *   - https://jsfiddle.net/handsoncode/n8eft0m1/
  *   - https://forum.handsontable.com/t/keyboard-cycling/2802/4
  */
-const beforeKeydownHandler = (getGrid: () => Grid) => {
+const beforeKeydownHandler = (getGrid: () => datagrid.Grid) => {
   return function(event: Event) {
     const e = event as KeyboardEvent;
     const grid = getGrid();

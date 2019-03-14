@@ -1,10 +1,10 @@
 import { Editors, GridSettings } from 'handsontable';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as ReactDOMServer from 'react-dom/server';
-import { Subject } from 'rxjs';
-import { Handsontable, t, time } from '../../common';
+
+import { Handsontable, t } from '../../common';
 import { IGridRefsPrivate } from '../Grid/types.private';
+import { createProvider } from './EditorContext';
 
 const editors = Handsontable.editors as Editors;
 
@@ -57,7 +57,7 @@ export class Editor extends editors.TextEditor {
     return (this.instance as any).guid;
   }
 
-  public get props(): t.IEditorProps {
+  public get props() {
     const current = this._current;
     return {
       isOpen: this.isOpened(),
@@ -104,13 +104,9 @@ export class Editor extends editors.TextEditor {
     super.beginEditing(initialValue);
     this._isEditing = true;
     const { row, column } = this.props;
-    const td = this._current.TD;
-
-    console.log('td', td);
-    console.log(`\nTODO 🐷  Render the editor with context props \n`);
 
     // Render the editor from the injected factory.
-    const el = <div>{this.refs.editorFactory()}</div>;
+    const el = this.renderEditor();
     ReactDOM.render(el, this.TEXTAREA_PARENT);
 
     // Alert listeners
@@ -168,4 +164,22 @@ export class Editor extends editors.TextEditor {
   //   console.log('setValue');
   //   super.setValue(newValue);
   // }
+
+  /**
+   * [Internal]
+   */
+  /**
+   * Renders the popup-editor within a <Provider> context.
+   */
+  private renderEditor() {
+    // const td = this._current.TD;
+
+    const context: t.IEditorContext = {};
+    const Provider = createProvider(context);
+    return (
+      <Provider>
+        <div>{this.refs.editorFactory()}</div>
+      </Provider>
+    );
+  }
 }
