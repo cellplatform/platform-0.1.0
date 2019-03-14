@@ -20,4 +20,18 @@ describe('fs', () => {
   it('has glob helper', () => {
     expect(fs.glob.find).to.be.an.instanceof(Function);
   });
+
+  describe('folderSize', () => {
+    it('calculates the size of a directory', async () => {
+      const res = await fs.folderSize('./src');
+      expect(res.files.length).to.greaterThan(5);
+      expect(res.bytes).to.greaterThan(1000);
+    });
+
+    it('nothing when path does not exist', async () => {
+      const res = await fs.folderSize('./NO_EXIST');
+      expect(res.bytes).to.eql(0);
+      expect(res.files).to.eql([]);
+    });
+  });
 });

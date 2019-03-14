@@ -1,0 +1,15 @@
+name: ui.icon
+
+electron:
+  port: 9097
+  entry:
+    main: test/main.ts
+    renderer: test/renderer/index.tsx
+
+web:
+  port: 3031
+  entry: test/web.tsx
+
+sourcemaps:
+  strip:
+    - node_modules/rxjs

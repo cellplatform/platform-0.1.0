@@ -5,6 +5,9 @@ import { expect } from 'chai';
 import * as t from '../types';
 import { Db } from './Db';
 
+const LOREM =
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
+
 const populate = async (db: t.IDb, keys: string[], options: { loop?: number } = {}) => {
   const loop = options.loop || 1;
   const wait = Array.from({ length: loop }).map(async (v, i) => {
@@ -383,6 +386,26 @@ describe('Db', () => {
       expect(res.bar && res.bar.length).to.eql(2);
       expect(res.bar && res.bar[0].value).to.eql(1);
       expect(res.bar && res.bar[1].value).to.eql(2);
+    });
+  });
+
+  describe('stats', () => {
+    it('default stats', async () => {
+      const db = await Db.create({ dir });
+      const res1 = await db.stats();
+
+      expect(res1.dir).to.eql(dir);
+      expect(res1.size.bytes).to.greaterThan(2000);
+
+      await Promise.all(
+        Array.from({ length: 10 }).map(async (v, i) => {
+          const key = `cell/${i}`;
+          await db.put(key, LOREM);
+        }),
+      );
+
+      const res2 = await db.stats();
+      expect(res2.size.bytes).to.greaterThan(res1.size.bytes);
     });
   });
 });

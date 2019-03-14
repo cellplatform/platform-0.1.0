@@ -26,7 +26,7 @@
     "@platform/ui.text": "0.0.18",
     "@platform/util.string": "0.0.32",
     "@platform/util.value": "0.0.35",
-    "@uiharness/electron": "0.3.147",
+    "@uiharness/electron": "0.3.149",
     "hjson": "3.1.2",
     "react": "16.8.4"
   },
@@ -34,7 +34,7 @@
     "@platform/test": "0.0.31",
     "@platform/ts": "3.3.61",
     "@types/hjson": "2.4.1",
-    "@uiharness/dev": "0.1.45"
+    "@uiharness/dev": "0.1.50"
   },
   "files": [
     "lib"

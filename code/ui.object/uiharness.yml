@@ -1,6 +1,3 @@
-#
-# https://uiharness.com/docs/config
-#
 name: ui.object
 
 electron:

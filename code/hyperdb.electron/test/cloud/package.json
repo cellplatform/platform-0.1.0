@@ -6,12 +6,11 @@
   "scripts": {
     "start": "node .",
     "watch": "nodemon .",
-    "build": "yarn chmod && ts build",
+    "build": "ts build",
     "now-build": "echo no-op",
     "prepare": "yarn build",
     "deploy": "yarn prepare && now",
     "clean": "cd ../.. && yarn clean",
-    "chmod": "chmod 777 node_modules/.bin/ts",
     "pstart": "pm2 start ecosystem.config.js",
     "pstop": "pm2 stop ecosystem.config.js",
     "prestart": "pm2 restart ecosystem.config.js",

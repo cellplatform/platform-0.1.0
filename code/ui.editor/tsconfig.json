@@ -3,7 +3,6 @@
   "include": ["src"],
   "compilerOptions": {
     "outDir": "lib",
-    "moduleResolution": "node",
     "target": "esnext",
     "jsx": "react",
 

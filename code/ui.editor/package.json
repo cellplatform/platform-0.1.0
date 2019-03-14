@@ -6,12 +6,12 @@
   "scripts": {
     "ui": "ui $@",
     "start": "ui start $@",
-    "test": "yarn chmod && ts test",
-    "tdd": "yarn chmod && ts test --watch",
-    "lint": "yarn chmod && ts lint",
-    "build": "yarn chmod && ts build",
-    "prepare": "yarn chmod && ts prepare",
-    "chmod": "chmod 777 node_modules/.bin/ts"
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare"
   },
   "dependencies": {
     "@platform/react": "0.0.15",
@@ -34,10 +34,7 @@
     "@types/prosemirror-schema-basic": "1.0.1",
     "@types/prosemirror-state": "1.2.3",
     "@types/prosemirror-view": "1.3.1",
-    "@uiharness/dev": "0.1.45"
-  },
-  "resolutions": {
-    "@types/react": "16.7.17"
+    "@uiharness/dev": "0.1.50"
   },
   "files": [
     "lib"

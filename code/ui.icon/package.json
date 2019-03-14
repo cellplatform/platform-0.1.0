@@ -1,0 +1,32 @@
+{
+  "name": "@platform/ui.icon",
+  "description": "Icon component library.",
+  "version": "0.0.0",
+  "main": "lib/index",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/react": "0.0.15"
+  },
+  "peerDependencies": {
+    "react-icons": "3.x"
+  },
+  "devDependencies": {
+    "@platform/ts": "3.3.61",
+    "@uiharness/dev": "0.1.50",
+    "react-icons": "3.5.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": "uiharness/platform",
+  "license": "MIT"
+}
