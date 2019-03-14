@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, IconGrid, Hr, ImageSprite } from './common';
 
 import { Icons } from '../Icons';
+import { color, css, GlamorValue, Hr, IconGrid, ImageSprite } from './common';
 
 const SAMPLE = require('../images/ImageSprite.test/sample.png');
 const SAMPLE2x = require('../images/ImageSprite.test/sample@2x.png');
