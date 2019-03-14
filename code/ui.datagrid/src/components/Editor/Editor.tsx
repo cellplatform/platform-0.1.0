@@ -83,7 +83,7 @@ export class Editor extends editors.TextEditor {
      * HACK:
      *    Hide the text-editor created in the base-class.
      *    There is a bunch of base-class behavior we want to inherit, so simply
-     *    hiding their input and doing out own thing has us maintaining less
+     *    hiding their input and doing our own thing has us maintaining less
      *    code that if we fully implemented from `BaseEditor`.
      */
     this.textareaStyle.display = 'none';
@@ -93,7 +93,8 @@ export class Editor extends editors.TextEditor {
    * [Override] Called when the editor recieves focus.
    */
   public async focus() {
-    // NOTE: Supress focus behavior in parent class.
+    // NOTE:  Suppress focus behavior in parent class.
+    //        This puts focus on the unused text-area input.
   }
 
   /**
@@ -102,13 +103,10 @@ export class Editor extends editors.TextEditor {
   public beginEditing(initialValue?: string) {
     super.beginEditing(initialValue);
     this._isEditing = true;
-
-    const props = this.props;
     const { row, column } = this.props;
-
     const td = this._current.TD;
-    console.log('td', td);
 
+    console.log('td', td);
     console.log(`\nTODO 🐷  Render the editor with context props \n`);
 
     // Render the editor from the injected factory.
@@ -170,89 +168,4 @@ export class Editor extends editors.TextEditor {
   //   console.log('setValue');
   //   super.setValue(newValue);
   // }
-}
-
-/**
- * [_____OLD______]
- */
-export class Editor2 extends editors.TextEditor {
-  public createElements() {
-    super.createElements();
-
-    console.log('create elements');
-
-    // this.TEXTAREA
-
-    this.TEXTAREA = document.createElement('input');
-    this.TEXTAREA.setAttribute('placeholder', 'Custom placeholder');
-    this.TEXTAREA.style.backgroundColor = 'yellow';
-    this.TEXTAREA.className = 'handsontableInput';
-    // this.textareaStyle = this.TEXTAREA.style;
-
-    const el = (
-      <div>
-        <input value={'foo'} />
-      </div>
-    );
-
-    const html = ReactDOMServer.renderToString(el);
-
-    Handsontable.dom.empty(this.TEXTAREA_PARENT);
-    // this.TEXTAREA_PARENT.appendChild(this.TEXTAREA);
-
-    this.TEXTAREA_PARENT.innerHTML = html;
-
-    // console.log('this.TEXTAREA_PARENT', this.TEXTAREA_PARENT);
-
-    // Object.keys(this).forEach(k => {
-    //   console.log(' > ', k);
-    // });
-    // console.log('this', this);
-  }
-
-  public setValue(newValue: any) {
-    console.log('set Value');
-
-    // console.log('this.TEXTAREA', this.TEXTAREA);
-
-    // this.TEXTAREA.value = !newValue ? 'My Value' : newValue;
-
-    // this.TEXTAREA.value = 'foo';
-    // this.TEXTAREA.style.backgroundColor = 'yellow';
-    // console.log(this.TEXTAREA);
-
-    // console.log('this.TEXTAREA_PARENT', this.TEXTAREA_PARENT);
-  }
-
-  public getValue() {
-    console.log('getValue');
-    return 'getValue';
-    // return this.TEXTAREA.value.replace('DD/MM/YYYY', '');
-  }
-
-  public focus() {
-    super.focus();
-    // const col = this.TEXTAREA_PARENT.getElementsByTagName('input');
-    const input = this.input;
-    if (input) {
-      time.delay(100, () => {
-        input.select();
-        input.focus();
-      });
-    }
-  }
-
-  public beginEditing(initialValue?: string) {
-    super.beginEditing(initialValue || 'foo');
-    console.log('begin editing', initialValue);
-  }
-
-  /**
-   * [Internal]
-   */
-
-  private get input() {
-    const col = this.TEXTAREA_PARENT.getElementsByTagName('input');
-    return col[0];
-  }
 }
