@@ -1,7 +1,7 @@
 {
-  "name": "@platform/ui.object",
-  "description": "Visual display of javascript object.",
-  "version": "0.0.54",
+  "name": "@platform/ui.icon",
+  "description": "Icon component library.",
+  "version": "0.0.0",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,8 +14,10 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.0.15",
-    "react-inspector": "2.3.1"
+    "@platform/react": "0.0.15"
+  },
+  "peerDependencies": {
+    "react-icons": "3.x"
   },
   "devDependencies": {
     "@platform/ts": "3.3.61",

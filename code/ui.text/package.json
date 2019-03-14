@@ -18,12 +18,8 @@
     "@platform/util.value": "0.0.35"
   },
   "devDependencies": {
-    "@platform/electron": "0.1.2",
     "@platform/ts": "3.3.61",
     "@uiharness/dev": "0.1.45"
-  },
-  "resolutions": {
-    "@types/react": "16.7.17"
   },
   "files": [
     "lib"

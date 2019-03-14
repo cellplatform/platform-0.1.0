@@ -1,7 +1,3 @@
-#
-# https://uiharness.com/docs/config
-#
-
 name: My Test App
 
 electron:

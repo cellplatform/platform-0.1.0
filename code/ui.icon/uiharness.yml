@@ -1,4 +1,4 @@
-name: ui.object
+name: ui.icon
 
 electron:
   port: 9091
