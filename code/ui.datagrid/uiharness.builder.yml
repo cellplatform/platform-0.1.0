@@ -1,0 +1,19 @@
+productName: ui.datagrid
+appId: platform.ui.datagrid
+publish:
+  provider: github
+  owner: uiharness
+  repo: platform
+  vPrefixedTagName: true
+  releaseType: draft
+  publishAutoUpdate: true
+mac:
+  target:
+    - zip
+  artifactName: '${productName}-mac.${ext}'
+  icon: static/build/app.icns
+files:
+  - .uiharness/.bundle/app.main/**
+  - .uiharness/.bundle/app.renderer/prod/**
+directories:
+  output: .uiharness/dist
