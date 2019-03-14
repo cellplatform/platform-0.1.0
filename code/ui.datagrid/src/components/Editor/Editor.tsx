@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom';
 import * as ReactDOMServer from 'react-dom/server';
 import { Subject } from 'rxjs';
 import { Handsontable, t, time } from '../../common';
+import { IGridRefsPrivate } from '../Grid/types.private';
 
 const editors = Handsontable.editors as Editors;
 
@@ -56,14 +57,6 @@ export class Editor extends editors.TextEditor {
     return (this.instance as any).guid;
   }
 
-  private get events$(): Subject<t.EditorEvent> {
-    return (this.instance as any).__grid.editorEvents$;
-  }
-
-  private get editorFactory(): () => JSX.Element {
-    return (this.instance as any).__grid.editorFactory;
-  }
-
   public get props(): t.IEditorProps {
     const current = this._current;
     return {
@@ -71,6 +64,10 @@ export class Editor extends editors.TextEditor {
       row: current ? current.row : -1,
       column: current ? current.column : -1,
     };
+  }
+
+  private get refs(): IGridRefsPrivate {
+    return (this.instance as any).__gridRefs;
   }
 
   /**
@@ -115,11 +112,11 @@ export class Editor extends editors.TextEditor {
     console.log(`\nTODO 🐷  Render the editor with context props \n`);
 
     // Render the editor from the injected factory.
-    const el = <div>{this.editorFactory()}</div>;
+    const el = <div>{this.refs.editorFactory()}</div>;
     ReactDOM.render(el, this.TEXTAREA_PARENT);
 
     // Alert listeners
-    this.events$.next({
+    this.refs.editorEvents$.next({
       type: 'GRID/EDITOR/begin',
       payload: {
         grid: this.guid,
@@ -144,7 +141,7 @@ export class Editor extends editors.TextEditor {
     ReactDOM.unmountComponentAtNode(this.TEXTAREA_PARENT);
 
     // Alert listeners.
-    this.events$.next({
+    this.refs.editorEvents$.next({
       type: 'GRID/EDITOR/end',
       payload: {
         grid: this.guid,

@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil, share } from 'rxjs/operators';
 
 import { constants, css, events, GlamorValue, Handsontable, t, value } from '../../common';
+import { IGridRefsPrivate } from './types.private';
 
 export type IGridSettings = DefaultSettings;
 
@@ -61,14 +62,14 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
     // Store metadata on the [Handsontable] instance.
     // NOTE:
     //    This is referenced within the [Editor] class.
-    const editorEvents$ = new Subject<t.EditorEvent>();
-    this.table.__grid = {
-      editorEvents$,
+    const refs: IGridRefsPrivate = {
+      editorEvents$: new Subject<t.EditorEvent>(),
       editorFactory: () => this.renderEditor(),
     };
+    this.table.__gridRefs = refs;
 
     // Handle editor events.
-    const editor$ = editorEvents$.pipe(takeUntil(this.unmounted$));
+    const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
     editor$.subscribe(e => this._events$.next(e));
     editor$
       .pipe(filter(e => e.type === 'GRID/EDITOR/begin'))
