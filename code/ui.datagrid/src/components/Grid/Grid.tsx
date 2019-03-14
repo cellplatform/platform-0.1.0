@@ -5,8 +5,18 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil, share } from 'rxjs/operators';
 
-import { constants, css, events, GlamorValue, Handsontable, t, value, time } from '../../common';
+import {
+  constants,
+  css,
+  events,
+  GlamorValue,
+  Handsontable as HandsontableLib,
+  t,
+  value,
+  time,
+} from '../../common';
 import { IGridRefsPrivate } from './types.private';
+import { Grid as GridApi } from '../grid.api';
 
 export type IGridSettings = DefaultSettings;
 
@@ -36,15 +46,12 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
 
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IGridState>>();
-  private _events$ = new Subject<t.GridEvent>();
-  public readonly events$ = this._events$.pipe(
-    takeUntil(this.unmounted$),
-    share(),
-  );
 
   private el: HTMLDivElement;
   private elRef = (ref: HTMLDivElement) => (this.el = ref);
-  private table: Handsontable;
+  private table!: Handsontable;
+
+  public api!: GridApi;
 
   /**
    * [Lifecycle]
@@ -56,8 +63,10 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
   public componentDidMount() {
     // Create the table.
     const settings = this.settings;
-    const Table = this.props.Handsontable || Handsontable;
-    this.table = new Table(this.el as Element, settings) as Handsontable;
+    const Table = this.props.Handsontable || HandsontableLib;
+    const table = (this.table = new Table(this.el as Element, settings));
+    const api = (this.api = GridApi.create({ table }));
+    this.unmounted$.subscribe(() => api.dispose());
 
     // Store metadata on the [Handsontable] instance.
     // NOTE:
@@ -66,11 +75,11 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
       editorEvents$: new Subject<t.EditorEvent>(),
       editorFactory: () => this.renderEditor(),
     };
-    this.table.__gridRefs = refs;
+    (table as any).__gridRefs = refs;
 
     // Handle editor events.
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
-    editor$.subscribe(e => this._events$.next(e));
+    editor$.subscribe(e => this.api.next(e));
     editor$
       .pipe(filter(e => e.type === 'GRID/EDITOR/begin'))
       .subscribe(() => this.state$.next({ isEditing: true }));
@@ -89,25 +98,27 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
       }
     });
 
+    // TEMP 🐷
+
     time.delay(1500, () => {
       if (this.table) {
-        console.log('scroll', this.table);
-        this.table.scrollViewportTo(100, 10);
+        api.scrollTo({ column: 5, row: 650 });
+        // console.log('scroll', this.table);
+        // this.table.scrollViewportTo(100, 10);
       }
     });
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
-    if (this.table) {
-      this.table.destroy();
-      this.table = undefined;
-    }
   }
 
   /**
    * [Properties]
    */
+  public get events$() {
+    return this.api.events$;
+  }
 
   private get settings(): IGridSettings {
     const defaultValue = value.defaultValue;
