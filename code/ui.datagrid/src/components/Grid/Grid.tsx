@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil, share } from 'rxjs/operators';
 
-import { constants, css, events, GlamorValue, Handsontable, t, value } from '../../common';
+import { constants, css, events, GlamorValue, Handsontable, t, value, time } from '../../common';
 import { IGridRefsPrivate } from './types.private';
 
 export type IGridSettings = DefaultSettings;
@@ -86,6 +86,13 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
     this.events$.subscribe(e => {
       if (this.props.events$) {
         this.props.events$.next(e);
+      }
+    });
+
+    time.delay(1500, () => {
+      if (this.table) {
+        console.log('scroll', this.table);
+        this.table.scrollViewportTo(100, 10);
       }
     });
   }
