@@ -2,10 +2,11 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { Grid, IGridSettings } from '../../src/components/Grid';
-import { GlamorValue, Handsontable, css, t } from '../../src/common';
+import { GlamorValue, Handsontable, t } from '../../src/common';
 import { Editor } from '../../src/components/Editor';
+import { Grid, IGridSettings } from '../../src/components/Grid';
 import * as render from '../../src/components/Grid.render';
+import { TestEditor } from './Test.Editor';
 
 export { Handsontable };
 
@@ -132,16 +133,6 @@ export function createSampleData(args: { Table: Handsontable }) {
 
     // observeChanges: true,
 
-    // rowHeaders: true,
-    // colHeaders: true,
-    // colWidths: 100,
-    // viewportRowRenderingOffset: 20,
-    // manualRowResize: true,
-    // manualColumnResize: true,
-
-    // colHeaders: col => renderer.renderHeader({ col }),
-    // viewportColumnRenderingOffset: 80,
-
     /**
      * See:
      *   - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterBeginEditing
@@ -167,46 +158,6 @@ export function createSampleData(args: { Table: Handsontable }) {
   };
 
   return settings;
-}
-
-export type ITestEditorProps = {};
-export type ITestEditorState = {};
-
-export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEditorState> {
-  public state: ITestEditorState = {};
-  private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<ITestEditorState>>();
-
-  /**
-   * [Lifecycle]
-   */
-  public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-  }
-
-  public componentDidMount() {
-    console.log('--------------------editor mounted');
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-  }
-
-  /**
-   * [Render]
-   */
-  public render() {
-    const styles = {
-      base: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <input defaultValue={'foobar'} />
-      </div>
-    );
-  }
 }
 
 /**
