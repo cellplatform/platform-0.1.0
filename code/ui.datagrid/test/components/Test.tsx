@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css } from '../common';
+import { color, css } from './common';
 import { Button } from './primitives';
 import { Test as TestGrid } from './Test.Grid';
 
