@@ -1,5 +1,6 @@
 import { Editors, GridSettings } from 'handsontable';
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import * as ReactDOMServer from 'react-dom/server';
 import { Subject } from 'rxjs';
 import { Handsontable, t, time } from '../../common';
@@ -22,12 +23,8 @@ type ICurrent = {
  */
 export class Editor extends editors.TextEditor {
   /**
-   * [Constructor]
+   * [Lifecycle]
    */
-  public init() {
-    super.init();
-  }
-
   public prepare(
     row: number,
     col: number,
@@ -37,7 +34,7 @@ export class Editor extends editors.TextEditor {
     cellProperties: GridSettings,
   ) {
     super.prepare(row, col, prop, TD, originalValue, cellProperties);
-    this._.current = {
+    this._current = {
       row,
       column: col,
       TD,
@@ -49,10 +46,8 @@ export class Editor extends editors.TextEditor {
   /**
    * [Fields]
    */
-  private readonly _ = {
-    isEditing: false,
-    current: undefined as ICurrent | undefined,
-  };
+  private _isEditing = false;
+  private _current!: ICurrent;
 
   /**
    * [Properties]
@@ -65,8 +60,12 @@ export class Editor extends editors.TextEditor {
     return (this.instance as any).__grid.editorEvents$;
   }
 
+  private get editorFactory(): () => JSX.Element {
+    return (this.instance as any).__grid.editorFactory;
+  }
+
   public get props(): t.IEditorProps {
-    const current = this._.current;
+    const current = this._current;
     return {
       isOpen: this.isOpened(),
       row: current ? current.row : -1,
@@ -79,12 +78,42 @@ export class Editor extends editors.TextEditor {
    */
 
   /**
-   * Invoked at the commencement of an editing operation.
+   * [Override] Initial construction of elements.
+   */
+  public createElements() {
+    super.createElements();
+    /**
+     * HACK:
+     *    Hide the text-editor created in the base-class.
+     *    There is a bunch of base-class behavior we want to inherit, so simply
+     *    hiding their input and doing out own thing has us maintaining less
+     *    code that if we fully implemented from `BaseEditor`.
+     */
+    this.textareaStyle.display = 'none';
+  }
+
+  /**
+   * [Override] Called when the editor recieves focus.
+   */
+  public async focus() {
+    // NOTE: Supress focus behavior in parent class.
+  }
+
+  /**
+   * [Override] Invoked at the commencement of an editing operation.
    */
   public beginEditing(initialValue?: string) {
     super.beginEditing(initialValue);
-    this._.isEditing = true;
+    this._isEditing = true;
     const { row, column } = this.props;
+
+    console.log(`\nTODO 🐷  Render the editor with context props \n`);
+
+    // Render the editor from the injected factory.
+    const el = <div>{this.editorFactory()}</div>;
+    ReactDOM.render(el, this.TEXTAREA_PARENT);
+
+    // Alert listeners
     this.events$.next({
       type: 'GRID/EDITOR/begin',
       payload: {
@@ -96,26 +125,35 @@ export class Editor extends editors.TextEditor {
   }
 
   /**
-   * Invoked when editing is complete.
+   * [Override] Invoked when editing is complete.
    */
   public finishEditing(restoreOriginalValue?: boolean, ctrlDown?: boolean, callback?: () => void) {
     super.finishEditing(restoreOriginalValue, ctrlDown, callback);
-    if (this._.isEditing) {
-      const { row, column } = this.props;
-      this.events$.next({
-        type: 'GRID/EDITOR/end',
-        payload: {
-          grid: this.guid,
-          row,
-          column,
-          isCancelled: Boolean(restoreOriginalValue),
-          value: { to: this.getValue() },
-        },
-      });
+    if (!this._isEditing) {
+      return;
     }
-    this._.isEditing = false;
+    this._isEditing = false;
+
+    // Remove the editor HTML.
+    const { row, column } = this.props;
+    ReactDOM.unmountComponentAtNode(this.TEXTAREA_PARENT);
+
+    // Alert listeners.
+    this.events$.next({
+      type: 'GRID/EDITOR/end',
+      payload: {
+        grid: this.guid,
+        row,
+        column,
+        isCancelled: Boolean(restoreOriginalValue),
+        value: { to: this.getValue() },
+      },
+    });
   }
 
+  /**
+   * [Override] Gets the value of the editor.
+   */
   public getValue() {
     // console.log('getValue');
     // return super.getValue();

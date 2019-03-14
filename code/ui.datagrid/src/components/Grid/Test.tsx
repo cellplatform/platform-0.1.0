@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { Grid, IGridSettings } from '.';
-import { GlamorValue, Handsontable, t } from '../../common';
+import { GlamorValue, Handsontable, css, t } from '../../common';
 import { Editor } from '../Editor';
 import * as render from '../Grid.render';
 
@@ -33,6 +33,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private events$ = new Subject<t.GridEvent>();
 
+  private grid!: Grid;
+  private gridRef = (ref: Grid) => (this.grid = ref);
+
   /**
    * [Lifecycle]
    */
@@ -40,7 +43,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
     const Table = this.Table;
+
     const settings = createSampleData({ Table });
+    settings.beforeKeyDown = beforeKeydownHandler(() => this.grid);
+
     this.state$.next({ settings });
     render.registerAll(Table);
 
@@ -63,6 +69,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           // this.state$.next({ settings });
         }
       });
+
+    events$.subscribe(e => {
+      console.log('🌳  EVENT', e.type);
+    });
   }
 
   public componentWillUnmount() {
@@ -83,13 +93,19 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public render() {
     return (
       <Grid
+        ref={this.gridRef}
         settings={this.state.settings}
         events$={this.events$}
+        editorFactory={this.renderEditor}
         Handsontable={this.Table}
         style={this.props.style}
       />
     );
   }
+
+  private renderEditor = () => {
+    return <TestEditor />;
+  };
 }
 
 /**
@@ -153,7 +169,7 @@ export function createSampleData(args: { Table: Handsontable }) {
     beforeKeyDown(e) {
       // e.preventDefault();
       // e.stopImmediatePropagation();
-      // console.log('beforeKeydown');
+      console.log('beforeKeydown', e);
 
       // @ts-ignore
       const last = this.getSelectedLast();
@@ -181,3 +197,88 @@ export function createSampleData(args: { Table: Handsontable }) {
 
   return settings;
 }
+
+export type ITestEditorProps = {};
+export type ITestEditorState = {};
+
+export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEditorState> {
+  public state: ITestEditorState = {};
+  private unmounted$ = new Subject();
+  private state$ = new Subject<Partial<ITestEditorState>>();
+
+  /**
+   * [Lifecycle]
+   */
+  public componentWillMount() {
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+  }
+
+  public componentDidMount() {
+    console.log('--------------------editor mounted');
+  }
+
+  public componentWillUnmount() {
+    this.unmounted$.next();
+  }
+
+  /**
+   * [Render]
+   */
+  public render() {
+    const styles = {
+      base: css({
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <input defaultValue={'foobar'} />
+      </div>
+    );
+  }
+}
+
+/**
+ * See:
+ *   - https://jsfiddle.net/handsoncode/n8eft0m1/
+ *   - https://forum.handsontable.com/t/keyboard-cycling/2802/4
+ */
+const beforeKeydownHandler = (getGrid: () => Grid) => {
+  return function(event: Event) {
+    const e = event as KeyboardEvent;
+    const grid = getGrid();
+
+    if (grid.isEditing && !['Enter', 'Escape'].includes(e.key)) {
+      e.stopImmediatePropagation();
+      return;
+    }
+
+    console.log('grid.isEditing', grid.isEditing);
+
+    // e.preventDefault();
+    // e.stopImmediatePropagation();
+    console.log('beforeKeydown', e);
+
+    // @ts-ignore
+    const last = this.getSelectedLast();
+    const row = last[0];
+    const col = last[1];
+
+    const key = (e as KeyboardEvent).key;
+
+    // console.group('🌳 ');
+    // console.log('e', e);
+    // console.log('row', row);
+    // console.log('col', col);
+    // console.groupEnd();
+
+    if (row === 0 && key === 'ArrowUp') {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+    if (col === 0 && key === 'ArrowLeft') {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+  };
+};

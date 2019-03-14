@@ -3,9 +3,9 @@ import '../../styles';
 import { DefaultSettings } from 'handsontable';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
-import { css, events, GlamorValue, Handsontable, constants, t, value } from '../../common';
+import { constants, css, events, GlamorValue, Handsontable, t, value } from '../../common';
 
 export type IGridSettings = DefaultSettings;
 
@@ -13,10 +13,12 @@ export type IGridProps = {
   style?: GlamorValue;
   settings?: IGridSettings;
   Handsontable?: Handsontable;
+  editorFactory?: t.EditorFactory;
   events$?: Subject<t.GridEvent>;
 };
 export type IGridState = {
   size?: { width: number; height: number };
+  isEditing: boolean;
 };
 
 /**
@@ -29,7 +31,7 @@ export type IGridState = {
  *
  */
 export class Grid extends React.PureComponent<IGridProps, IGridState> {
-  public state: IGridState = {};
+  public state: IGridState = { isEditing: false };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IGridState>>();
   private el: HTMLDivElement;
@@ -44,39 +46,37 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
   }
 
   public componentDidMount() {
-    // Setup the default settings.
-    let settings = this.props.settings || {};
-    settings = {
-      ...settings,
-      rowHeaders: value.defaultValue(settings.rowHeaders, true),
-      colHeaders: value.defaultValue(settings.colHeaders, true),
-      colWidths: value.defaultValue(settings.colWidths, 100),
-      // columns: createColumns(100),
-      viewportRowRenderingOffset: value.defaultValue(settings.viewportRowRenderingOffset, 20),
-      manualRowResize: value.defaultValue(settings.manualRowResize, true),
-      manualColumnResize: value.defaultValue(settings.manualColumnResize, true),
-    };
-
     // Create the table.
+    const settings = this.settings;
     const Table = this.props.Handsontable || Handsontable;
     this.table = new Table(this.el as Element, settings);
 
     // Store metadata on the [Handsontable] instance.
+    // NOTE:
+    //    This is referenced within the [Editor] class.
     const editorEvents$ = new Subject<t.EditorEvent>();
-    this.table.__grid = { editorEvents$ };
+    this.table.__grid = {
+      editorEvents$,
+      editorFactory: () => this.renderEditor(),
+    };
 
     // Handle editor events.
-    editorEvents$.pipe(takeUntil(this.unmounted$)).subscribe(e => {
+    const editor$ = editorEvents$.pipe(takeUntil(this.unmounted$));
+    editor$.subscribe(e => {
       if (this.props.events$) {
         this.props.events$.next(e); // Bubble event.
       }
     });
+    editor$
+      .pipe(filter(e => e.type === 'GRID/EDITOR/begin'))
+      .subscribe(() => this.state$.next({ isEditing: true }));
+    editor$
+      .pipe(filter(e => e.type === 'GRID/EDITOR/end'))
+      .subscribe(() => this.state$.next({ isEditing: false }));
 
     // Manage size.
     this.updateSize();
-    events.resize$.pipe(takeUntil(this.unmounted$)).subscribe(() => {
-      this.redraw();
-    });
+    events.resize$.pipe(takeUntil(this.unmounted$)).subscribe(() => this.redraw());
   }
 
   public componentWillUnmount() {
@@ -85,6 +85,31 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
       this.table.destroy();
       this.table = undefined;
     }
+  }
+
+  /**
+   * [Properties]
+   */
+  private get settings(): IGridSettings {
+    const defaultValue = value.defaultValue;
+    let settings = this.props.settings || {};
+    settings = {
+      ...settings,
+      rowHeaders: defaultValue(settings.rowHeaders, true),
+      colHeaders: defaultValue(settings.colHeaders, true),
+      colWidths: defaultValue(settings.colWidths, 100),
+      // columns: createColumns(100),
+      viewportRowRenderingOffset: defaultValue(settings.viewportRowRenderingOffset, 20),
+      manualRowResize: defaultValue(settings.manualRowResize, true),
+      manualColumnResize: defaultValue(settings.manualColumnResize, true),
+    };
+
+    return settings;
+  }
+
+  public get isEditing() {
+    const { isEditing = false } = this.state;
+    return isEditing;
   }
 
   /**
@@ -109,6 +134,11 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
         {...css(STYLES.base, this.props.style)}
       />
     );
+  }
+
+  private renderEditor() {
+    const { editorFactory } = this.props;
+    return editorFactory ? editorFactory() : null;
   }
 
   /**
