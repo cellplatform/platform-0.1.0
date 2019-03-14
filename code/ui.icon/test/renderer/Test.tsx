@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, IconGrid, Hr } from './common';
+import { css, color, GlamorValue, IconGrid, Hr, ImageSprite } from './common';
 
-import { Icons, IIconProps } from './Icons';
+// import { part } from '../../Im';
+import { Icons, IIconProps } from '../Icons';
 
+const SAMPLE = require('../images/ImageSprite.test/sample.png');
+const SAMPLE2x = require('../images/ImageSprite.test/sample@2x.png');
+
+const MAGENTA = '#F93B76';
 // import { part } from '';
 
 export type ITestProps = { style?: GlamorValue };
@@ -37,13 +42,16 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
 
     const icons = Object.keys(Icons).map(name => ({ name, icon: Icons[name] }));
-    // return <IconGrid icons={icons} />;
 
     return (
       <div {...css(styles.base, this.props.style)}>
+        <Icons.Face size={80} color={MAGENTA} />
+        <Hr />
         <IconGrid icons={icons} />
 
         <Hr />
+
+        <ImageSprite width={20} height={15} src={SAMPLE} total={{ x: 1, y: 2 }} />
       </div>
     );
   }

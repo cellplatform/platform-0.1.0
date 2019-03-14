@@ -1,4 +1,4 @@
-import { Icon, IIcon, IIconProps } from '../../src';
+import { Icon, IIcon, IIconProps } from '../src';
 export { IIcon, IIconProps };
 
 import {

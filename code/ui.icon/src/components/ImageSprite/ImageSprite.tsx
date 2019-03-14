@@ -18,7 +18,7 @@ export interface IImageSpriteProps {
 /**
  * A collection of images combined into one.
  */
-export class ImageSprite extends React.PureComponent<IImageSpriteProps, {}> {
+export class ImageSprite extends React.PureComponent<IImageSpriteProps> {
   private paths = toPaths(this.props.src);
 
   private get position() {
