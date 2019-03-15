@@ -86,7 +86,7 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
   let cmd = `cd ${fs.resolve(dir)}\n`;
 
   cmd += `node ${fs.join(tsc)}`;
-  cmd += ` --outDir ${tmpDir}`;
+  cmd += ` --outDir ${watch ? outDir : tmpDir}`;
   cmd = watch ? `${cmd} --watch` : cmd;
   cmd = tsconfig ? `${cmd} --project ${tsconfig}` : cmd;
 
@@ -107,11 +107,19 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
   // Execute command.
   try {
     if (watch) {
-      // Watching.
+      /**
+       * Watching
+       * - simple `common-js` build with watcher.
+       */
       const res = await exec.cmd.run(cmd, { silent, dir });
       return res;
     } else {
-      // Not watching.
+      /**
+       * Not watching.
+       * - full build of both `common-js` and `es-modeule`
+       * - build in temporary directories
+       * - merge together upon completion
+       */
       const response = exec.cmd.runList(cmd, { silent, dir });
       const res = await response;
       if (res.code !== 0) {
