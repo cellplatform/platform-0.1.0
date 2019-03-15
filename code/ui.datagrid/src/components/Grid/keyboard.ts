@@ -10,6 +10,8 @@ import { Grid } from '../grid.api/Grid';
  */
 export function keydownHandler(getGrid: () => Grid) {
   return function(e: Event) {
+    // @ts-ignore
+    const table = this as Handsontable;
     const event = e as KeyboardEvent;
     const grid = getGrid();
 
@@ -22,7 +24,16 @@ export function keydownHandler(getGrid: () => Grid) {
     const key = event.key;
     const isEnter = key === 'Enter';
     const isEscape = key === 'Escape';
-    grid.next({ type: 'GRID/keydown', payload: { key, event, isEnter, isEscape, cancel } });
+    grid.next({
+      type: 'GRID/keydown',
+      payload: {
+        key,
+        event,
+        isEnter,
+        isEscape,
+        cancel,
+      },
+    });
 
     if (grid.isEditing) {
       // NOTE:  When the editor is showing give it complete control of the keyboard,
@@ -31,18 +42,23 @@ export function keydownHandler(getGrid: () => Grid) {
       e.stopImmediatePropagation();
     }
 
-    // @ts-ignore
-    const last = this.getSelectedLast();
+    // Supress "key cycling".
+    //    This is when arrow keys at the edges of the grid jump to the other
+    //    side of the grid.  Incredibly disorienting for the user - so here it stops!
+    const last = table.getSelectedLast();
     if (last) {
       const row = last[0];
       const column = last[1];
-
-      // console.log(`\nTODO 🐷 keydown // handle DOWN/RIGHT at far end of table \n`);
-
-      if (row === 0 && key === 'ArrowUp') {
+      if (key === 'ArrowUp' && row === 0) {
         cancel();
       }
-      if (column === 0 && key === 'ArrowLeft') {
+      if (key === 'ArrowLeft' && column === 0) {
+        cancel();
+      }
+      if (key === 'ArrowDown' && row === table.countRows() - 1) {
+        cancel();
+      }
+      if (key === 'ArrowRight' && column === table.countCols() - 1) {
         cancel();
       }
     }
