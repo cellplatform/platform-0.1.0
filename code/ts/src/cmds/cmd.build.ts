@@ -1,4 +1,14 @@
-import { exec, fs, getLog, IPackageJson, IResult, ITask, paths, result } from '../common';
+import {
+  exec,
+  fs,
+  getLog,
+  IPackageJson,
+  IResult,
+  ITask,
+  paths,
+  result,
+  changeExtensions,
+} from '../common';
 
 export type BuildFormat = 'COMMON_JS' | 'ES_MODULE';
 
@@ -44,7 +54,7 @@ export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Pr
 
   // Run tasks.
   log.info();
-  const res = await exec.tasks.run(tasks, { concurrent: false });
+  const res = await exec.tasks.run(tasks, { concurrent: true });
 
   // Log any build errors.
   if (errorLog) {
@@ -71,11 +81,12 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
   }
 
   // Prepare the command.
+  const tmpDir = `.tmp.${as}`.toLowerCase();
   const tsc = 'node_modules/typescript/bin/tsc';
   let cmd = `cd ${fs.resolve(dir)}\n`;
 
   cmd += `node ${fs.join(tsc)}`;
-  cmd += ` --outDir ${outDir}`;
+  cmd += ` --outDir ${tmpDir}`;
   cmd = watch ? `${cmd} --watch` : cmd;
   cmd = tsconfig ? `${cmd} --project ${tsconfig}` : cmd;
 
@@ -88,6 +99,7 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
     case 'ES_MODULE':
       cmd += ` --module es2015`;
       cmd += ` --target ES2017`;
+      cmd += ` --declaration false`; // NB: Declarations added by the COMMON_JS build.
       break;
   }
   cmd += '\n';
@@ -106,6 +118,18 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
         const errorLog = res.errors.log({ log: null, header: false });
         return { ...result.fail(`Build failed.`, res.code), errorLog };
       }
+
+      // Update file extensions.
+      if (as === 'ES_MODULE') {
+        await changeExtensions({ dir: tmpDir, from: '.js', to: '.mjs' });
+      }
+
+      // Merge into final directory.
+      await fs.ensureDir(fs.resolve(outDir));
+      await fs.merge(fs.resolve(tmpDir), fs.resolve(outDir));
+      await fs.remove(fs.resolve(tmpDir));
+
+      // Finish up.
       return res;
     }
   } catch (error) {
