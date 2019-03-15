@@ -1,7 +1,6 @@
-import { Subject } from 'rxjs';
 import { Grid } from '../grid.api';
-
-import { EditorEvent, IEditorContext } from '../Editor/types';
+import { FactoryManager } from '../factory';
+import * as t from '../../types';
 
 /**
  * Private references used internally that are attached
@@ -9,7 +8,7 @@ import { EditorEvent, IEditorContext } from '../Editor/types';
  * different extension points (eg the Grid <=> Editor).
  */
 export type IGridRefsPrivate = {
-  editorEvents$: Subject<EditorEvent>;
-  editorFactory: (args: IEditorContext) => JSX.Element | null;
-  api: Grid;
+  grid: Grid;
+  editorEvents$: t.Subject<t.EditorEvent>;
+  factory: FactoryManager;
 };

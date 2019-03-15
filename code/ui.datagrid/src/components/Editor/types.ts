@@ -1,9 +1,5 @@
-import { Observable } from 'rxjs';
-
 import { Grid } from '../grid.api';
-import { IGridKeydown } from '../Grid/types';
-
-export type EditorFactory = (e: IEditorContext) => JSX.Element | null;
+import * as t from '../../types';
 
 /**
  * Properties that are passed to React editor
@@ -11,11 +7,11 @@ export type EditorFactory = (e: IEditorContext) => JSX.Element | null;
  */
 export type IEditorContext = {
   autoCancel: boolean; // Automatically cancels on Escape key.
-  column: number;
   row: number;
+  column: number;
   grid: Grid;
-  keys$: Observable<IGridKeydown>;
-  end$: Observable<IEndEditingEvent>;
+  keys$: t.Observable<t.IGridKeydown>;
+  end$: t.Observable<IEndEditingEvent>;
   cancel(): void;
   done(args: { value: any }): void;
 };

@@ -68,7 +68,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
 
     events$.subscribe(e => {
-      console.log('🌳  EVENT', e.type, e.payload);
+      // console.log('🌳  EVENT', e.type, e.payload);
     });
   }
 
@@ -93,15 +93,22 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         ref={this.gridRef}
         settings={this.state.settings}
         events$={this.events$}
-        editorFactory={this.renderEditor}
+        factory={this.factory}
         Handsontable={this.Table}
         style={this.props.style}
       />
     );
   }
 
-  private renderEditor = () => {
-    return <TestEditor />;
+  private factory: t.GridFactory = req => {
+    switch (req.type) {
+      case 'EDITOR':
+        return <TestEditor />;
+
+      default:
+        console.log(`Factory type '${req.type}' not supported by test.`);
+        return null;
+    }
   };
 }
 

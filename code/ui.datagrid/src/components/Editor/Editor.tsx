@@ -61,7 +61,7 @@ export class Editor extends editors.TextEditor {
 
   private get context() {
     const { column, row } = this.props;
-    const grid = this.refs.api;
+    const grid = this.refs.grid;
     const end$ = this.refs.editorEvents$.pipe(
       filter(e => e.type === 'GRID/EDITOR/end'),
       map(e => e as t.IEndEditingEvent),
@@ -203,13 +203,15 @@ export class Editor extends editors.TextEditor {
   /**
    * [Internal]
    */
+
   /**
    * Renders the popup-editor within a <Provider> context.
    */
   private render() {
     const context = this.context;
+    const { row, column } = context;
+    const el = this.refs.factory.editor({ row, column });
     const Provider = createProvider(context);
-    const el = this.refs.editorFactory(context);
     const className = constants.CSS_CLASS.EDITOR;
     return (
       <Provider>

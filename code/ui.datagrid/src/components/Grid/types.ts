@@ -1,9 +1,9 @@
-import { EditorEvent } from '../Editor/types';
+import * as t from '../../types';
 
 /**
  * [Events]
  */
-export type GridEvent = EditorEvent | IGridKeydownEvent;
+export type GridEvent = t.EditorEvent | IGridKeydownEvent;
 
 export type IGridKeydownEvent = {
   type: 'GRID/keydown';
