@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts",
-  "version": "3.3.61",
+  "version": "3.3.62",
   "description": "TypesScript build, prepare and publish toolchain.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -24,14 +24,14 @@
     "examples": "node lib/example/examples"
   },
   "dependencies": {
-    "@platform/cli": "0.0.61",
-    "@platform/fs": "0.0.38",
+    "@platform/cli": "0.0.62",
+    "@platform/fs": "0.0.39",
     "@platform/libs": "0.0.8",
-    "@platform/ts.libs": "3.3.4",
-    "@platform/util.exec": "0.0.22"
+    "@platform/ts.libs": "3.3.5",
+    "@platform/util.exec": "0.0.23"
   },
   "devDependencies": {
-    "@platform/test": "0.0.31"
+    "@platform/test": "0.0.32"
   },
   "files": [
     "lib",
