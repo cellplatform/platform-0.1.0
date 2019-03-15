@@ -4,7 +4,7 @@
 # @platform/hyperdb
 Strongly [typed](https://www.typescriptlang.org) interface to [hyperdb](https://github.com/mafintosh/hyperdb) with [hyperswarm](https://github.com/hyperswarm) network connector.
 
-![diagram](https://user-images.githubusercontent.com/185555/54236069-971a0380-4577-11e9-98cb-91fe87ca5071.png)
+![db-qualities](https://user-images.githubusercontent.com/185555/54387772-171fa500-4701-11e9-825e-571d85db72e5.png)
 
 ## See Also
 

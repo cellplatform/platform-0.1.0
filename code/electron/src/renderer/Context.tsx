@@ -3,7 +3,7 @@ import * as t from '../types';
 
 /**
  * The React [Context] used to pass down common modules to components.
- * To use add a static `contextType` to complete, eg:
+ * To use add a static `contextType` to the consuming component, eg:
  *
  *      import renderer from '@platform/electron/lib/renderer';
  *
@@ -33,7 +33,7 @@ Context.displayName = '@platform/electron/Context';
 export type ReactContext = React.ContextType<typeof Context>;
 
 /**
- * Factory for creating an <Provider> component pre-baked
+ * Factory for creating a <Provider> component pre-baked
  * with the electron context (ipc, log, store...etc).
  */
 export function createProvider(context: t.IRendererContext): React.FunctionComponent {
