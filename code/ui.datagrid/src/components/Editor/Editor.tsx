@@ -188,7 +188,7 @@ export class Editor extends editors.TextEditor {
         row,
         column,
         isCancelled,
-        value: { to: this.getValue },
+        value: { to: this.getValue() },
       },
     });
   }
