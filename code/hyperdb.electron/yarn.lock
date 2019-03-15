@@ -335,10 +335,10 @@
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.9.tgz#693e76a52f61a2f1e7fb48c0eef167b95ea4ffd0"
   integrity sha512-sCZy4SxP9rN2w30Hlmg5dtdRwgYQfYRiLo9usw8X9cxlf+H4FqM1xX7+sNH7NNKVdbXMJWqva7iyy+fxh/V7fA==
 
-"@uiharness/electron@0.3.151":
-  version "0.3.151"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.151.tgz#c3f1de172899a74985f468ab4bc9fba2ad711629"
-  integrity sha512-urd4i+xPXnHqtI6UMga+SbwgoZs89//eQZM0oPcXVwPd0kQB1NKrO9ZvtOuoBEiAgGY7jxw8WB9veHUxznH8NQ==
+"@uiharness/electron@0.3.152":
+  version "0.3.152"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.152.tgz#66f491d1de7c61d57be3b0cc9a6a73b87e4a72a7"
+  integrity sha512-GvYwn8wVvLt6yabbwMCoyUCbkAuG7TmUU1O3UN865nqMSimkuchueHDLGkbEVAkQ2ooBq34upfDMO7mmBVWtKg==
   dependencies:
     "@platform/electron" "0.1.3"
     "@platform/log" "0.0.86"
@@ -346,13 +346,13 @@
     "@platform/ui.object" "0.0.55"
     "@platform/util.value" "0.0.36"
     "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.0.65"
+    "@uiharness/types" "0.0.66"
     tslib "1.9.3"
 
-"@uiharness/types@0.0.65":
-  version "0.0.65"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.0.65.tgz#d99c802706a3a9656fd86c5751c6ef44c0dafc99"
-  integrity sha512-FifVFG/ebalKmax4xNolexHfHDfDCHvs3GXusbzkuDl3RI8CfVLDi3RlczPWC/Zql1Yr2+Px7MyuL730ZIDCDg==
+"@uiharness/types@0.0.66":
+  version "0.0.66"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.0.66.tgz#f632c3d036d1045204b21b9959b34021e0db3897"
+  integrity sha512-n+1Ee+Jq7mqpdiPmkK/ITr8qL+7DXcn+kqjJHHiOwTjETp0uOvwuf8smho63atfIt1Q0Hg+aKF9zAP5P7PFYaA==
 
 ansi-colors@3.2.3:
   version "3.2.3"
