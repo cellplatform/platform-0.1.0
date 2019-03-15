@@ -6,22 +6,22 @@ import { is } from '../is';
  * Merges directories.
  */
 export async function merge(
-  source: string | string[],
-  target: string,
+  sourceDir: string | string[],
+  targetDir: string,
   options: { overwrite?: boolean; pattern?: string } = {},
 ) {
   const { overwrite = false, pattern = '**' } = options;
 
   // Ensure the target is a directory.
-  if (!(await is.dir(target))) {
-    throw new Error(`Target path is not a directory: ${target}`);
+  if (!(await is.dir(targetDir))) {
+    throw new Error(`Target path is not a directory: ${targetDir}`);
   }
 
   // Get a listing of the target files.
-  const targets = await glob.find(join(target, '**'));
+  const targets = await glob.find(join(targetDir, '**'));
 
   // Ensure sources are directories.
-  const dirs = Array.isArray(source) ? source : [source];
+  const dirs = Array.isArray(sourceDir) ? sourceDir : [sourceDir];
   for (const dir of dirs) {
     if (!(await is.dir(dir))) {
       throw new Error(`Source path is not a directory: ${dir}`);
@@ -45,7 +45,7 @@ export async function merge(
       const paths = sources.map(from => {
         return {
           from,
-          to: join(target, from.substr(sourceDir.length + 1)),
+          to: join(targetDir, from.substr(sourceDir.length + 1)),
         };
       });
       return {
