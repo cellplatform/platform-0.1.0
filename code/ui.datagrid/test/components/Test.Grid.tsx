@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, Handsontable, t, datagrid } from './common';
+import { GlamorValue, Handsontable as HandsontableLib, t, datagrid } from './common';
 import { Editor } from '../../src/components/Editor';
 import * as render from '../../src/components/Grid.render';
 import { TestEditor } from './Test.Editor';
@@ -80,8 +80,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Properties]
    */
   private get Table() {
-    const { Table = Handsontable } = this.props;
-    return Table;
+    const { Table = HandsontableLib } = this.props;
+    return Table as Handsontable;
   }
 
   /**

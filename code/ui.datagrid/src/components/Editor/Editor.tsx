@@ -2,7 +2,7 @@ import { Editors, GridSettings } from 'handsontable';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Handsontable, t, constants } from '../../common';
+import { time, Handsontable, t, constants } from '../../common';
 import { IGridRefsPrivate } from '../Grid/types.private';
 import { createProvider } from './EditorContext';
 
@@ -63,8 +63,13 @@ export class Editor extends editors.TextEditor {
     return (this.instance as any).__gridRefs;
   }
 
+  private get elEditor(): HTMLDivElement | undefined {
+    const el = this.TEXTAREA_PARENT.firstChild;
+    return el ? (el as HTMLDivElement) : undefined;
+  }
+
   /**
-   * [Methods] (override)
+   * [Methods]
    */
 
   /**
@@ -87,7 +92,7 @@ export class Editor extends editors.TextEditor {
    */
   public async focus() {
     // NOTE:  Suppress focus behavior in parent class.
-    //        This puts focus on the unused text-area input.
+    //        The base-class puts focus on the unused text-area <input>.
   }
 
   /**
@@ -99,16 +104,12 @@ export class Editor extends editors.TextEditor {
     const { row, column } = this.props;
 
     // Render the editor from the injected factory.
-    const el = this.renderEditor();
-    ReactDOM.render(el, this.TEXTAREA_PARENT);
+    ReactDOM.render(this.render(), this.TEXTAREA_PARENT);
 
     // Alert listeners
     this.refs.editorEvents$.next({
       type: 'GRID/EDITOR/begin',
-      payload: {
-        row,
-        column,
-      },
+      payload: { row, column },
     });
   }
 
@@ -121,9 +122,10 @@ export class Editor extends editors.TextEditor {
       return;
     }
     this._isEditing = false;
+    const { row, column } = this.props;
+    const isCancelled = Boolean(restoreOriginalValue);
 
     // Remove the editor HTML.
-    const { row, column } = this.props;
     ReactDOM.unmountComponentAtNode(this.TEXTAREA_PARENT);
 
     // Alert listeners.
@@ -132,7 +134,7 @@ export class Editor extends editors.TextEditor {
       payload: {
         row,
         column,
-        isCancelled: Boolean(restoreOriginalValue),
+        isCancelled,
         value: { to: this.getValue() },
       },
     });
@@ -162,7 +164,7 @@ export class Editor extends editors.TextEditor {
   /**
    * Renders the popup-editor within a <Provider> context.
    */
-  private renderEditor() {
+  private render() {
     const { context } = this.props;
     const Provider = createProvider(context);
     const el = this.refs.editorFactory(context);

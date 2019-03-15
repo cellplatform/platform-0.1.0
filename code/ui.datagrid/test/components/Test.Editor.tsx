@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, datagrid } from './common';
+import { color, css, datagrid } from './common';
 
 export type ITestEditorProps = {};
 export type ITestEditorState = {};
@@ -15,6 +15,9 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
   public static contextType = datagrid.EditorContext;
   public context!: datagrid.ReactEditorContext;
 
+  private input!: HTMLInputElement;
+  private inputRef = (ref: HTMLInputElement) => (this.input = ref);
+
   /**
    * [Lifecycle]
    */
@@ -23,8 +26,7 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
   }
 
   public componentDidMount() {
-    console.log('--------------------editor mounted');
-    console.log('this.context', this.context);
+    this.input.focus();
   }
 
   public componentWillUnmount() {
@@ -37,12 +39,15 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
   public render() {
     const styles = {
       base: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+        padding: 15,
+        borderRadius: 4,
+        border: `solid 1px ${color.format(-0.1)}`,
       }),
     };
     return (
       <div {...styles.base}>
-        <input defaultValue={'foobar'} />
+        <input ref={this.inputRef} defaultValue={'foobar'} />
       </div>
     );
   }
