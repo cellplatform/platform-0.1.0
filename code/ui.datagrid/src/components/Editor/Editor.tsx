@@ -46,6 +46,7 @@ export class Editor extends editors.TextEditor {
    */
   private _isEditing = false;
   private _current!: ICurrent;
+  private _value: any;
 
   /**
    * [Properties]
@@ -58,7 +59,7 @@ export class Editor extends editors.TextEditor {
     return { isOpen, column, row };
   }
 
-  private get context(): t.IEditorContext {
+  private get context() {
     const { column, row } = this.props;
     const grid = this.refs.api;
     const end$ = this.refs.editorEvents$.pipe(
@@ -69,9 +70,17 @@ export class Editor extends editors.TextEditor {
     );
     const keys$ = grid.keys$.pipe(takeUntil(end$));
 
+    keys$
+      .pipe(
+        filter(e => context.autoCancel),
+        filter(e => e.isEscape),
+      )
+      .subscribe(e => cancel());
+
     const done: t.IEditorContext['done'] = args => {
       time.delay(0, () => {
         console.log('DONE', args);
+        this._value = args.value;
 
         // NOTE:
         //    Run the close operation after a tick-delay
@@ -87,7 +96,8 @@ export class Editor extends editors.TextEditor {
       this.close();
     };
 
-    return {
+    const context: t.IEditorContext = {
+      autoCancel: true,
       grid,
       column,
       row,
@@ -96,6 +106,8 @@ export class Editor extends editors.TextEditor {
       done,
       cancel,
     };
+
+    return context;
   }
 
   private get refs(): IGridRefsPrivate {
@@ -134,8 +146,9 @@ export class Editor extends editors.TextEditor {
    */
   public beginEditing(initialValue?: string) {
     super.beginEditing(initialValue);
-    this._isEditing = true;
     const { row, column } = this.props;
+    this._isEditing = true;
+    this._value = undefined;
 
     // Render the editor from the injected factory.
     ReactDOM.render(this.render(), this.TEXTAREA_PARENT);
@@ -152,6 +165,10 @@ export class Editor extends editors.TextEditor {
    */
   public finishEditing(restoreOriginalValue?: boolean, ctrlDown?: boolean, callback?: () => void) {
     super.finishEditing(restoreOriginalValue, ctrlDown, callback);
+
+    console.group('🌳 FINISH');
+    console.log('restoreOriginalValue', restoreOriginalValue);
+    console.groupEnd();
 
     if (!this._isEditing) {
       return;
@@ -171,7 +188,7 @@ export class Editor extends editors.TextEditor {
         row,
         column,
         isCancelled,
-        value: { to: this.getValue() },
+        value: { to: this.getValue },
       },
     });
   }
@@ -180,9 +197,7 @@ export class Editor extends editors.TextEditor {
    * [Override] Gets the value of the editor.
    */
   public getValue() {
-    // console.log('getValue');
-    // return super.getValue();
-    return 'foo';
+    return this._value;
   }
 
   /**

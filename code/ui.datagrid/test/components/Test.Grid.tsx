@@ -41,7 +41,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
     const Table = this.Table;
-
     const settings = createSampleData({ Table });
     // settings.beforeKeyDown = beforeKeydownHandler(() => this.grid);
 
@@ -69,7 +68,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
 
     events$.subscribe(e => {
-      // console.log('🌳  EVENT', e.type);
+      console.log('🌳  EVENT', e.type, e.payload);
     });
   }
 

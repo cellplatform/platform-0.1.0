@@ -10,6 +10,7 @@ export type EditorFactory = (e: IEditorContext) => JSX.Element | null;
  * components as `context`.
  */
 export type IEditorContext = {
+  autoCancel: boolean; // Automatically cancels on Escape key.
   column: number;
   row: number;
   grid: Grid;
@@ -18,8 +19,6 @@ export type IEditorContext = {
   cancel(): void;
   done(args: { value: any }): void;
 };
-
-
 
 /**
  * [Events]

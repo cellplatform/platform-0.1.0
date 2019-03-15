@@ -28,7 +28,9 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
     keys$
       .pipe(filter(e => e.isEnter))
       .subscribe(e => this.context.done({ value: this.input.value }));
-    keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
+
+    // this.context.autoCancel = false;
+    // keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
   }
 
   public componentDidMount() {
@@ -50,10 +52,13 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
         borderRadius: 4,
         border: `solid 1px ${color.format(-0.1)}`,
       }),
+      input: css({
+        outline: 'none',
+      }),
     };
     return (
       <div {...styles.base}>
-        <input ref={this.inputRef} defaultValue={'foobar'} />
+        <input {...styles.input} ref={this.inputRef} defaultValue={'foobar'} />
       </div>
     );
   }
