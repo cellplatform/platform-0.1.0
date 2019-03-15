@@ -1,4 +1,7 @@
+import { Observable } from 'rxjs';
+
 import { Grid } from '../grid.api';
+import { IGridKeydown } from '../Grid/types';
 
 export type EditorFactory = (e: IEditorContext) => JSX.Element | null;
 
@@ -10,7 +13,13 @@ export type IEditorContext = {
   column: number;
   row: number;
   grid: Grid;
+  keys$: Observable<IGridKeydown>;
+  end$: Observable<IEndEditingEvent>;
+  cancel(): void;
+  done(args: { value: any }): void;
 };
+
+
 
 /**
  * [Events]
@@ -20,19 +29,17 @@ export type EditorEvent = IBeginEditingEvent | IEndEditingEvent;
 export type IBeginEditingEvent = {
   type: 'GRID/EDITOR/begin';
   payload: {
-    row: number;
     column: number;
+    row: number;
   };
 };
 
 export type IEndEditingEvent = {
   type: 'GRID/EDITOR/end';
   payload: {
-    isCancelled: boolean;
-    row: number;
     column: number;
-    value: {
-      to: any;
-    };
+    row: number;
+    isCancelled: boolean;
+    value: { to: any };
   };
 };

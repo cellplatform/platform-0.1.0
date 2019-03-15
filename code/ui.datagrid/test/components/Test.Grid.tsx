@@ -22,6 +22,7 @@ export type ITestProps = {
 };
 export type ITestState = {
   settings?: datagrid.IGridSettings;
+  // data?: object;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -42,7 +43,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const Table = this.Table;
 
     const settings = createSampleData({ Table });
-    settings.beforeKeyDown = beforeKeydownHandler(() => this.grid);
+    // settings.beforeKeyDown = beforeKeydownHandler(() => this.grid);
 
     this.state$.next({ settings });
     render.registerAll(Table);
@@ -68,7 +69,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
 
     events$.subscribe(e => {
-      console.log('🌳  EVENT', e.type);
+      // console.log('🌳  EVENT', e.type);
     });
   }
 
@@ -134,69 +135,21 @@ export function createSampleData(args: { Table: Handsontable }) {
      *      https://handsontable.com/docs/6.2.2/tutorial-using-callbacks.html#page-source-definition
      */
     beforeChange(changes, source) {
-      console.group('🌳 beforeChange');
-      console.log('source', source);
-      console.log('changes', [...changes]);
-      console.groupEnd();
+      // console.group('🌳 beforeChange');
+      // console.log('source', source);
+      // console.log('changes', [...changes]);
+      // console.groupEnd();
       // return false; // Cancel's change.
     },
 
     afterChange(e) {
-      console.log('afterChange', e);
+      // console.log('afterChange', e);
     },
 
     afterScrollVertically() {
-      console.log('scroll');
+      // console.log('scroll');
     },
   };
 
   return settings;
 }
-
-/**
- * See:
- *   - https://jsfiddle.net/handsoncode/n8eft0m1/
- *   - https://forum.handsontable.com/t/keyboard-cycling/2802/4
- */
-const beforeKeydownHandler = (getGrid: () => datagrid.Grid) => {
-  return function(event: Event) {
-    const e = event as KeyboardEvent;
-    const grid = getGrid();
-
-    if (grid.isEditing && !['Enter', 'Escape'].includes(e.key)) {
-      e.stopImmediatePropagation();
-      return;
-    }
-
-    console.log('grid.isEditing', grid.isEditing);
-
-    // e.preventDefault();
-    // e.stopImmediatePropagation();
-    console.log('beforeKeydown', e);
-
-    // @ts-ignore
-    const last = this.getSelectedLast();
-    const row = last[0];
-    const col = last[1];
-
-    const key = (e as KeyboardEvent).key;
-
-    // console.group('🌳 ');
-    // console.log('e', e);
-    // console.log('row', row);
-    // console.log('col', col);
-    // console.groupEnd();
-
-    const stop = () => {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    };
-
-    if (row === 0 && key === 'ArrowUp') {
-      stop();
-    }
-    if (col === 0 && key === 'ArrowLeft') {
-      stop();
-    }
-  };
-};

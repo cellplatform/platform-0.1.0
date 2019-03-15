@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 
 import { color, css, datagrid } from './common';
 
@@ -23,6 +23,12 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+
+    const keys$ = this.context.keys$;
+    keys$
+      .pipe(filter(e => e.isEnter))
+      .subscribe(e => this.context.done({ value: this.input.value }));
+    keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
   }
 
   public componentDidMount() {

@@ -1,8 +1,9 @@
 import { Editors, GridSettings } from 'handsontable';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { filter, share, take, takeUntil, map } from 'rxjs/operators';
 
-import { time, Handsontable, t, constants } from '../../common';
+import { time, constants, events, Handsontable, t } from '../../common';
 import { IGridRefsPrivate } from '../Grid/types.private';
 import { createProvider } from './EditorContext';
 
@@ -54,18 +55,51 @@ export class Editor extends editors.TextEditor {
     const column = current ? current.column : -1;
     const row = current ? current.row : -1;
     const isOpen = this.isOpened();
+    return { isOpen, column, row };
+  }
+
+  private get context(): t.IEditorContext {
+    const { column, row } = this.props;
     const grid = this.refs.api;
-    const context: t.IEditorContext = { column, row, grid };
-    return { isOpen, column, row, context };
+    const end$ = this.refs.editorEvents$.pipe(
+      filter(e => e.type === 'GRID/EDITOR/end'),
+      map(e => e as t.IEndEditingEvent),
+      take(1),
+      share(),
+    );
+    const keys$ = grid.keys$.pipe(takeUntil(end$));
+
+    const done: t.IEditorContext['done'] = args => {
+      time.delay(0, () => {
+        console.log('DONE', args);
+
+        // NOTE:
+        //    Run the close operation after a tick-delay
+        //    to ensure that (if this call was initiated on a ENTER keydown event)
+        //    that another handler does not immediately re-open the editor.
+        this.finishEditing(false);
+        this.close();
+      });
+    };
+
+    const cancel: t.IEditorContext['cancel'] = () => {
+      this.finishEditing(true);
+      this.close();
+    };
+
+    return {
+      grid,
+      column,
+      row,
+      keys$,
+      end$,
+      done,
+      cancel,
+    };
   }
 
   private get refs(): IGridRefsPrivate {
     return (this.instance as any).__gridRefs;
-  }
-
-  private get elEditor(): HTMLDivElement | undefined {
-    const el = this.TEXTAREA_PARENT.firstChild;
-    return el ? (el as HTMLDivElement) : undefined;
   }
 
   /**
@@ -118,14 +152,16 @@ export class Editor extends editors.TextEditor {
    */
   public finishEditing(restoreOriginalValue?: boolean, ctrlDown?: boolean, callback?: () => void) {
     super.finishEditing(restoreOriginalValue, ctrlDown, callback);
+
     if (!this._isEditing) {
       return;
     }
     this._isEditing = false;
+
     const { row, column } = this.props;
     const isCancelled = Boolean(restoreOriginalValue);
 
-    // Remove the editor HTML.
+    // Destroy the editor UI component.
     ReactDOM.unmountComponentAtNode(this.TEXTAREA_PARENT);
 
     // Alert listeners.
@@ -149,15 +185,6 @@ export class Editor extends editors.TextEditor {
     return 'foo';
   }
 
-  // public saveValue(val?: any, ctrlDown?: boolean) {
-  //   console.log('saveValue', val, ctrlDown);
-  //   super.saveValue(val, ctrlDown);
-  // }
-  // public setValue(newValue?: any) {
-  //   console.log('setValue');
-  //   super.setValue(newValue);
-  // }
-
   /**
    * [Internal]
    */
@@ -165,7 +192,7 @@ export class Editor extends editors.TextEditor {
    * Renders the popup-editor within a <Provider> context.
    */
   private render() {
-    const { context } = this.props;
+    const context = this.context;
     const Provider = createProvider(context);
     const el = this.refs.editorFactory(context);
     const className = constants.CSS_CLASS.EDITOR;

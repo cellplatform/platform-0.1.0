@@ -3,7 +3,7 @@ import '../../styles';
 import { DefaultSettings } from 'handsontable';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil, share } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import {
   constants,
@@ -13,10 +13,10 @@ import {
   Handsontable as HandsontableLib,
   t,
   value,
-  time,
 } from '../../common';
-import { IGridRefsPrivate } from './types.private';
 import { Grid as GridApi } from '../grid.api';
+import { keydownHandler } from './keyboard';
+import { IGridRefsPrivate } from './types.private';
 
 export type IGridSettings = DefaultSettings;
 
@@ -29,7 +29,6 @@ export type IGridProps = {
 };
 export type IGridState = {
   size?: { width: number; height: number };
-  isEditing?: boolean;
 };
 
 /**
@@ -42,8 +41,8 @@ export type IGridState = {
  *
  */
 export class Grid extends React.PureComponent<IGridProps, IGridState> {
-  public state: IGridState = { isEditing: false };
-  public api!: GridApi;
+  public state: IGridState = {};
+  public grid!: GridApi;
 
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IGridState>>();
@@ -64,7 +63,7 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
     const settings = this.settings;
     const Table = this.props.Handsontable || HandsontableLib;
     const table = (this.table = new Table(this.el as Element, settings));
-    const api = (this.api = GridApi.create({ table }));
+    const api = (this.grid = GridApi.create({ table }));
     this.unmounted$.subscribe(() => api.dispose());
 
     // Store metadata on the [Handsontable] instance.
@@ -79,13 +78,7 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
 
     // Handle editor events.
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
-    editor$.subscribe(e => this.api.next(e));
-    editor$
-      .pipe(filter(e => e.type === 'GRID/EDITOR/begin'))
-      .subscribe(() => this.state$.next({ isEditing: true }));
-    editor$
-      .pipe(filter(e => e.type === 'GRID/EDITOR/end'))
-      .subscribe(() => this.state$.next({ isEditing: false }));
+    editor$.subscribe(e => this.grid.next(e));
 
     // Manage size.
     this.updateSize();
@@ -95,16 +88,6 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
     this.events$.subscribe(e => {
       if (this.props.events$) {
         this.props.events$.next(e);
-      }
-    });
-
-    // TEMP 🐷
-
-    time.delay(800, () => {
-      if (this.table) {
-        // api.scrollTo({ column: 5, row: 10 });
-        // console.log('scroll', this.table);
-        // this.table.scrollViewportTo(100, 10);
       }
     });
   }
@@ -117,7 +100,7 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
    * [Properties]
    */
   public get events$() {
-    return this.api.events$;
+    return this.grid.events$;
   }
 
   private get settings(): IGridSettings {
@@ -132,14 +115,10 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
       viewportRowRenderingOffset: defaultValue(settings.viewportRowRenderingOffset, 20),
       manualRowResize: defaultValue(settings.manualRowResize, true),
       manualColumnResize: defaultValue(settings.manualColumnResize, true),
+      beforeKeyDown: keydownHandler(() => this.grid),
     };
 
     return settings;
-  }
-
-  public get isEditing() {
-    const { isEditing = false } = this.state;
-    return isEditing;
   }
 
   /**
@@ -169,12 +148,6 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
 
   private renderEditor(args: { context: t.IEditorContext }) {
     const { editorFactory } = this.props;
-
-    console.group('🌳 render editor');
-    console.log('this.table.getSelected()', this.table.getSelected());
-    console.log('this.table.getSelectedLast()', this.table.getSelectedLast());
-    console.groupEnd();
-
     return editorFactory ? editorFactory(args.context) : null;
   }
 
