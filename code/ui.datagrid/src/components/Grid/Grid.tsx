@@ -43,6 +43,7 @@ export type IGridState = {
  */
 export class Grid extends React.PureComponent<IGridProps, IGridState> {
   public state: IGridState = { isEditing: false };
+  public api!: GridApi;
 
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IGridState>>();
@@ -50,8 +51,6 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
   private el: HTMLDivElement;
   private elRef = (ref: HTMLDivElement) => (this.el = ref);
   private table!: Handsontable;
-
-  public api!: GridApi;
 
   /**
    * [Lifecycle]
@@ -72,8 +71,9 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
     // NOTE:
     //    This is referenced within the [Editor] class.
     const refs: IGridRefsPrivate = {
+      api,
       editorEvents$: new Subject<t.EditorEvent>(),
-      editorFactory: () => this.renderEditor(),
+      editorFactory: context => this.renderEditor({ context }),
     };
     (table as any).__gridRefs = refs;
 
@@ -100,9 +100,9 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
 
     // TEMP 🐷
 
-    time.delay(1500, () => {
+    time.delay(800, () => {
       if (this.table) {
-        api.scrollTo({ column: 5, row: 650 });
+        // api.scrollTo({ column: 5, row: 10 });
         // console.log('scroll', this.table);
         // this.table.scrollViewportTo(100, 10);
       }
@@ -167,9 +167,15 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
     );
   }
 
-  private renderEditor() {
+  private renderEditor(args: { context: t.IEditorContext }) {
     const { editorFactory } = this.props;
-    return editorFactory ? editorFactory() : null;
+
+    console.group('🌳 render editor');
+    console.log('this.table.getSelected()', this.table.getSelected());
+    console.log('this.table.getSelectedLast()', this.table.getSelectedLast());
+    console.groupEnd();
+
+    return editorFactory ? editorFactory(args.context) : null;
   }
 
   /**

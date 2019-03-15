@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
+import { Grid } from '../grid.api';
 
-import { EditorEvent } from '../../types';
+import { EditorEvent, IEditorContext } from '../Editor/types';
 
 /**
  * Private references used internally that are attached
@@ -9,5 +10,6 @@ import { EditorEvent } from '../../types';
  */
 export type IGridRefsPrivate = {
   editorEvents$: Subject<EditorEvent>;
-  editorFactory: () => JSX.Element | null;
+  editorFactory: (args: IEditorContext) => JSX.Element | null;
+  api: Grid;
 };

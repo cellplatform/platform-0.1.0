@@ -7,5 +7,6 @@ export const COLORS = {
 };
 
 export const CSS_CLASS = {
-  GRID: 'gridComponent',
+  GRID: 'platform-datagrid',
+  EDITOR: 'platform-editor'
 };

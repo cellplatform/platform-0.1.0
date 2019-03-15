@@ -2,7 +2,7 @@ import { Editors, GridSettings } from 'handsontable';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Handsontable, t } from '../../common';
+import { Handsontable, t, constants } from '../../common';
 import { IGridRefsPrivate } from '../Grid/types.private';
 import { createProvider } from './EditorContext';
 
@@ -11,12 +11,14 @@ const editors = Handsontable.editors as Editors;
 type ICurrent = {
   row: number;
   column: number;
-  TD: HTMLElement;
+  td: HTMLElement;
   originalValue: any;
   cellProperties: GridSettings;
 };
 
 /**
+ * Extension hook for custom editor UI components.
+ *
  * See:
  *  - https://handsontable.com/docs/6.2.2/frameworks-wrapper-for-react-custom-editor-example.html
  *  - https://forum.handsontable.com/t/full-custom-editor/2795
@@ -28,20 +30,14 @@ export class Editor extends editors.TextEditor {
    */
   public prepare(
     row: number,
-    col: number,
+    column: number,
     prop: string | number,
-    TD: HTMLElement,
+    td: HTMLElement,
     originalValue: any,
     cellProperties: GridSettings,
   ) {
-    super.prepare(row, col, prop, TD, originalValue, cellProperties);
-    this._current = {
-      row,
-      column: col,
-      TD,
-      originalValue,
-      cellProperties,
-    };
+    super.prepare(row, column, prop, td, originalValue, cellProperties);
+    this._current = { row, column, td, originalValue, cellProperties };
   }
 
   /**
@@ -53,17 +49,14 @@ export class Editor extends editors.TextEditor {
   /**
    * [Properties]
    */
-  public get guid() {
-    return (this.instance as any).guid;
-  }
-
   public get props() {
     const current = this._current;
-    return {
-      isOpen: this.isOpened(),
-      row: current ? current.row : -1,
-      column: current ? current.column : -1,
-    };
+    const column = current ? current.column : -1;
+    const row = current ? current.row : -1;
+    const isOpen = this.isOpened();
+    const grid = this.refs.api;
+    const context: t.IEditorContext = { column, row, grid };
+    return { isOpen, column, row, context };
   }
 
   private get refs(): IGridRefsPrivate {
@@ -113,7 +106,6 @@ export class Editor extends editors.TextEditor {
     this.refs.editorEvents$.next({
       type: 'GRID/EDITOR/begin',
       payload: {
-        grid: this.guid,
         row,
         column,
       },
@@ -138,7 +130,6 @@ export class Editor extends editors.TextEditor {
     this.refs.editorEvents$.next({
       type: 'GRID/EDITOR/end',
       payload: {
-        grid: this.guid,
         row,
         column,
         isCancelled: Boolean(restoreOriginalValue),
@@ -172,13 +163,13 @@ export class Editor extends editors.TextEditor {
    * Renders the popup-editor within a <Provider> context.
    */
   private renderEditor() {
-    // const td = this._current.TD;
-
-    const context: t.IEditorContext = {};
+    const { context } = this.props;
     const Provider = createProvider(context);
+    const el = this.refs.editorFactory(context);
+    const className = constants.CSS_CLASS.EDITOR;
     return (
       <Provider>
-        <div>{this.refs.editorFactory()}</div>
+        <div className={className}>{el}</div>
       </Provider>
     );
   }
