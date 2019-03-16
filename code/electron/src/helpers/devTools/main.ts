@@ -11,6 +11,10 @@ type Ref = {
 };
 const refs: { [key: string]: Ref } = {};
 
+export type ICreateDevToolResponse = {
+  id: number;
+};
+
 /**
  * Control the position of the detached dev-tools.
  *
@@ -29,120 +33,124 @@ export function create(args: {
   dirName?: string;
   focus?: boolean;
 }) {
-  const { parent, title = 'DevTools', dirName = 'window-state', windows } = args;
+  return new Promise<ICreateDevToolResponse>((resolve, reject) => {
+    const { parent, title = 'DevTools', dirName = 'window-state', windows } = args;
 
-  const show = (devTools: BrowserWindow) => {
-    const isParentFocused = parent.isFocused();
-    devTools.show();
-    if (args.focus === true) {
-      devTools.focus();
+    const done = (id: number) => {
+      resolve({ id });
+    };
+
+    const show = (devTools: BrowserWindow) => {
+      const isParentFocused = parent.isFocused();
+      devTools.show();
+      if (args.focus === true) {
+        devTools.focus();
+      }
+      if (!args.focus && isParentFocused) {
+        parent.focus();
+      }
+    };
+
+    /**
+     * Check if the dev-tools for the given parent window already exists.
+     */
+    const existing = getChildDevTools(windows, parent);
+    if (existing) {
+      show(existing);
+      return done(existing.id);
     }
-    if (!args.focus && isParentFocused) {
-      parent.focus();
-    }
-  };
 
-  /**
-   * Check if the dev-tools for the given parent window already exists.
-   */
-  const existing = getChildDevTools(windows, parent);
-  if (existing) {
-    show(existing);
-    return { id: existing.id };
-  }
+    /**
+     * Setup window-state manager.
+     */
+    const fileName = args.fileName ? args.fileName : parent.getTitle().replace(/\s/g, '_');
+    const file = `${dirName}/${fileName}.devTools.json`;
+    const windowBounds = parent.getBounds();
+    const state = WindowState({
+      defaultWidth: windowBounds.width / 2,
+      defaultHeight: windowBounds.height,
+      file,
+    });
+    const saveState$ = new Subject();
+    saveState$.pipe(debounceTime(50)).subscribe(() => saveState());
+    const saveState = () => state.saveState(devTools);
 
-  /**
-   * Setup window-state manager.
-   */
-  const fileName = args.fileName ? args.fileName : parent.getTitle().replace(/\s/g, '_');
-  const file = `${dirName}/${fileName}.devTools.json`;
-  const windowBounds = parent.getBounds();
-  const state = WindowState({
-    defaultWidth: windowBounds.width / 2,
-    defaultHeight: windowBounds.height,
-    file,
-  });
-  const saveState$ = new Subject();
-  saveState$.pipe(debounceTime(50)).subscribe(() => saveState());
-  const saveState = () => state.saveState(devTools);
+    /**
+     * Create the dev-tool browser window.
+     */
+    const devTools = new BrowserWindow({
+      title,
+      width: state.width,
+      height: windowBounds.height,
+      parent,
+      show: false,
+      minimizable: false,
+      maximizable: false,
+      fullscreenable: false,
+      acceptFirstMouse: true,
+    });
+    parent.webContents.setDevToolsWebContents(devTools.webContents);
+    parent.webContents.openDevTools({ mode: 'detach' });
 
-  /**
-   * Create the dev-tool browser window.
-   */
-  const devTools = new BrowserWindow({
-    title,
-    width: state.width,
-    height: windowBounds.height,
-    parent: parent,
-    show: false,
-    minimizable: false,
-    maximizable: false,
-    fullscreenable: false,
-    acceptFirstMouse: true,
-  });
-  parent.webContents.setDevToolsWebContents(devTools.webContents);
-  parent.webContents.openDevTools({ mode: 'detach' });
-
-  const updatePosition = () => {
-    const bounds = parent.getBounds();
-    devTools.setPosition(bounds.x + bounds.width + 10, bounds.y);
-    saveState$.next();
-  };
-
-  // Add an identifying tag to the window.
-  const tagWindow = () => {
-    if (windows) {
-      windows.tag(devTools.id, DEV_TOOLS);
-    }
-  };
-
-  tagWindow();
-
-  /**
-   * Manage state changes (size/position).
-   */
-  const updateSize = () => {
-    try {
+    const updatePosition = () => {
       const bounds = parent.getBounds();
-      devTools.setSize(state.width, bounds.height);
+      devTools.setPosition(bounds.x + bounds.width + 10, bounds.y);
+      saveState$.next();
+    };
+
+    // Add an identifying tag to the window.
+    const tagWindow = () => {
+      if (windows) {
+        windows.tag(devTools.id, DEV_TOOLS);
+      }
+    };
+
+    tagWindow();
+
+    /**
+     * Manage state changes (size/position).
+     */
+    const updateSize = () => {
+      try {
+        const bounds = parent.getBounds();
+        devTools.setSize(state.width, bounds.height);
+        updatePosition();
+      } catch (error) {
+        // Ignore.
+      }
+    };
+
+    // Dev-tools events.
+    parent.webContents.once('did-finish-load', () => {
+      updateSize();
+    });
+
+    devTools.on('resize', () => saveState$.next());
+    devTools.once('ready-to-show', () => {
       updatePosition();
-    } catch (error) {
-      // Ignore.
-    }
-  };
+      show(devTools);
+      done(devTools.id);
+    });
+    devTools.on('close', e => {
+      e.preventDefault();
+      saveState();
+      devTools.hide();
+    });
 
-  // Dev-tools events.
-  parent.webContents.once('did-finish-load', () => {
-    updateSize();
+    const destroy = () => {
+      devTools.close();
+      delete refs[parent.id];
+    };
+
+    // Update size on parent window changes.
+    parent.on('close', () => destroy());
+    parent.on('move', () => updatePosition());
+    parent.on('resize', () => updateSize());
+
+    // Store a reference.
+    const ref: Ref = { parent, devTools };
+    refs[parent.id] = ref;
   });
-
-  devTools.on('resize', () => saveState$.next());
-  devTools.once('ready-to-show', () => {
-    updatePosition();
-    show(devTools);
-  });
-  devTools.on('close', e => {
-    e.preventDefault();
-    saveState();
-    devTools.hide();
-  });
-
-  const destroy = () => {
-    devTools.close();
-    delete refs[parent.id];
-  };
-
-  // Update size on parent window changes.
-  parent.on('close', () => destroy());
-  parent.on('move', () => updatePosition());
-  parent.on('resize', () => updateSize());
-
-  // Store a reference.
-  const ref: Ref = { parent, devTools };
-  refs[parent.id] = ref;
-
-  // Finish up.
-  return { id: devTools.id };
 }
 
 /**
