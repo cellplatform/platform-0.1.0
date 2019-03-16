@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Icons } from '../Icons';
+import { Icons } from './Icons';
 import { color, css, GlamorValue, Hr, IconGrid, ImageSprite } from './common';
 
 const SAMPLE = require('../images/ImageSprite.test/sample.png');
@@ -37,19 +37,22 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       base: css({
         padding: 30,
       }),
+      top: css({
+        Flex: 'horizontal-spaceBetween-center',
+      }),
     };
 
     const icons = Object.keys(Icons).map(name => ({ name, icon: Icons[name] }));
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <Icons.Face size={80} color={MAGENTA} />
+        <div {...styles.top}>
+          <Icons.Face size={64} color={MAGENTA} />
+          <ImageSprite width={20} height={15} src={SAMPLE} total={{ x: 1, y: 2 }} />
+        </div>
         <Hr />
         <IconGrid icons={icons} />
-
         <Hr />
-
-        <ImageSprite width={20} height={15} src={SAMPLE} total={{ x: 1, y: 2 }} />
       </div>
     );
   }
