@@ -5,7 +5,8 @@ import { css, GlamorValue } from '../../common';
 const MEDIA_QUERY_RETINA = `@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)`;
 
 export interface IImageSpriteProps {
-  src: string;
+  image1x: string;
+  image2x: string;
   width: number;
   height: number;
   total: { x: number; y: number };
@@ -19,8 +20,6 @@ export interface IImageSpriteProps {
  * A collection of images combined into one.
  */
 export class ImageSprite extends React.PureComponent<IImageSpriteProps> {
-  private paths = toPaths(this.props.src);
-
   private get position() {
     const { width, height, total } = this.props;
     let { x = 1, y = 1 } = this.props;
@@ -33,8 +32,7 @@ export class ImageSprite extends React.PureComponent<IImageSpriteProps> {
   }
 
   private get image() {
-    const { width, height, total } = this.props;
-    const { image1x, image2x } = this.paths;
+    const { width, height, total, image1x, image2x } = this.props;
     const result = image(image1x, image2x, width, height, total);
     return {
       ...result,
@@ -57,29 +55,20 @@ export class ImageSprite extends React.PureComponent<IImageSpriteProps> {
 }
 
 /**
- * INTERNAL
+ * [INTERNAL]
  */
-function toPaths(src: string) {
-  const index = src.lastIndexOf('.');
-  const base = src.substr(0, index);
-  const ext = src.substr(index + 1);
-  return {
-    image1x: src,
-    image2x: `${base}@2x.${ext}`,
-  };
-}
-
-export const image = (
+function image(
   image1x: string | undefined,
   image2x: string | undefined,
   width: number,
   height: number,
   total: IImageSpriteProps['total'],
-) => {
+) {
   // Prepare image based on current screen density.
   if (!image1x) {
     throw new Error('Must have at least a 1x image.');
   }
+
   const result = {
     width,
     height,
@@ -96,4 +85,4 @@ export const image = (
 
   // Finish up.
   return result;
-};
+}
