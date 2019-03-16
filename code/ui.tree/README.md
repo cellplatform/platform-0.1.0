@@ -2,5 +2,5 @@
 [![NPM](https://img.shields.io/npm/v/@platform/ui.tree.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/ui.tree)
 
 # @platform/ui.tree
-Flexible hierarchical tree view.
 
+Hierarchical tree view.

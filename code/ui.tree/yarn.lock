@@ -844,7 +844,7 @@
     "@platform/util.exec" "0.0.24"
     "@platform/util.value" "0.0.40"
 
-"@platform/react@0.0.20":
+"@platform/react@0.0.20", "@platform/react@^0.0.20":
   version "0.0.20"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.20.tgz#eea8681b083dfd4c822d1e4e03069333f697a292"
   integrity sha512-EExe5MjIUBB2eS5Dj9byh7+RY8vDyrKFG61TrZft4L5N6O+5tFEHS4BF2pgP0zJoq9Tcm9Vpy1b0ThYE1w/2rA==
@@ -881,6 +881,13 @@
     "@platform/ts.libs" "3.3.6"
     "@platform/util.exec" "0.0.24"
 
+"@platform/ui.icon@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.5.tgz#9c28fd7c00f6f46ef2a755715c27c0c759a16512"
+  integrity sha512-lpfldDknU7i2mdB2BkaOrw/pAiG288eug/279bRGfweguYJEDKIxj1whPE8P2j8+BCP0xgwgVBhTEjZLLZ6lcw==
+  dependencies:
+    "@platform/react" "0.0.20"
+
 "@platform/ui.object@0.0.59":
   version "0.0.59"
   resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.59.tgz#876cc70331b579fd15da4b4dc5c914bb0099b942"
@@ -888,6 +895,14 @@
   dependencies:
     "@platform/react" "0.0.20"
     react-inspector "2.3.1"
+
+"@platform/ui.text@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.0.23.tgz#8b8e837842786c4554797a5e50d16fc6110b7ce3"
+  integrity sha512-WTUnNyFexUZmVXGfxg+V2cpAtcpKG7AGjxLznyaF+q2lfhJgtQltYMz9zvHeK/eg7gpjCPwNnB4OZOlU3XsG9g==
+  dependencies:
+    "@platform/react" "0.0.20"
+    "@platform/util.value" "0.0.40"
 
 "@platform/util.exec@0.0.24":
   version "0.0.24"
@@ -6229,6 +6244,11 @@ react-dom@16.8.4:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.13.4"
+
+react-icons@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-3.5.0.tgz#a6135480e3bcbc63f5dd045193ef2a814263d8d1"
+  integrity sha512-LuKUcavgPWjPrRkIdNbsGw8LqcnhfNN0AGCtU4Td1UkOenJSIWbYppSJrD6zi/TDZOHtTs9opu6ZKB/NFWk21g==
 
 react-inspector@2.3.1:
   version "2.3.1"
