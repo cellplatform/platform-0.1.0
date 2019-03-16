@@ -84,8 +84,8 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
     };
 
     const data = {
-      state: this.state,
       context: this.context,
+      state: this.state,
     };
 
     return (
