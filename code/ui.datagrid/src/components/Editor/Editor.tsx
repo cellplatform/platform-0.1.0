@@ -145,6 +145,7 @@ export class Editor extends editors.TextEditor {
     if (this._.isEditing) {
       return;
     }
+
     const el = this.render();
     if (!el) {
       this.onCancel();
@@ -159,11 +160,14 @@ export class Editor extends editors.TextEditor {
 
     const cell = this.cell;
     console.log('cell.td', cell.td);
+    console.log('cell.size', cell.size);
+
     console.group('🌳 siblings');
-    console.log('cell.left', cell.left);
-    console.log('cell.right', cell.right);
-    console.log('cell.top', cell.top);
-    console.log('cell.bottom', cell.bottom);
+    console.log('cell.sibling', cell.sibling);
+    console.log('cell.left', cell.sibling.left);
+    console.log('cell.right', cell.sibling.right);
+    console.log('cell.top', cell.sibling.top);
+    console.log('cell.bottom', cell.sibling.bottom);
     console.groupEnd();
 
     // Alert listeners
