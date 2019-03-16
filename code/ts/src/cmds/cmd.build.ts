@@ -113,6 +113,7 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
        * Watching
        * - simple `common-js` build with watcher.
        */
+      await deleteTempDirs();
       const res = await exec.cmd.run(cmd, { silent, dir });
       return res;
     } else {
