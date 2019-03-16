@@ -17,7 +17,7 @@
     "@platform/hyperdb": "0.0.25",
     "@platform/util.string": "0.0.37",
     "@platform/util.value": "0.0.40",
-    "@uiharness/electron": "0.3.159"
+    "@uiharness/electron": "0.3.160"
   },
   "devDependencies": {
     "@platform/test": "0.0.33",
