@@ -1,14 +1,14 @@
 name: ui.tree
 
 electron:
-  port: 8888
+  port: 8806
   entry:
     main: test/main.ts
     renderer: 
       default: test/renderer.tsx
 
 web:
-  port: 1234
+  port: 3036
   entry: test/web.tsx
 
 sourcemaps:
