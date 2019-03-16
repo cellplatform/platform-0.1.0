@@ -1,0 +1,28 @@
+{
+  "name": "@platform/ui.spinner",
+  "description": "Wait spinner.",
+  "version": "0.0.0",
+  "main": "lib/index",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "ts test $@",
+    "tdd": "ts test --watch",
+    "lint": "ts lint $@",
+    "build": "ts build $@",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare $@"
+  },
+  "dependencies": {
+    "@platform/react": "0.0.18"
+  },
+  "devDependencies": {
+    "@platform/ts": "3.3.64",
+    "@uiharness/dev": "0.1.52"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": "uiharness/platform",
+  "license": "MIT"
+}
