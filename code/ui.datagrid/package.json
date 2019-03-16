@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Isolated datagrid module.",
   "scripts": {
     "ui": "ui $@",
@@ -12,14 +12,14 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.0.17",
-    "@platform/ui.text": "0.0.20",
-    "@uiharness/electron": "0.3.153",
+    "@platform/react": "0.0.18",
+    "@platform/ui.text": "0.0.21",
+    "@uiharness/electron": "0.3.154",
     "handsontable": "6.2.2"
   },
   "devDependencies": {
     "@platform/test": "0.0.32",
-    "@platform/ts": "3.3.63",
+    "@platform/ts": "3.3.64",
     "@uiharness/dev": "0.1.51"
   },
   "files": [
