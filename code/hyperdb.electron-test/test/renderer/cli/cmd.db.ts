@@ -58,8 +58,10 @@ export const values = Command.create<P>('values', async e => {
   const { db, events$ } = e.props;
   const params = e.args.params;
   const pattern = (params[0] || '').toString();
-  const values = await db.values({ pattern });
-  events$.next({ type: 'CLI/db/values', payload: { values } });
+  if (db) {
+    const values = await db.values({ pattern });
+    events$.next({ type: 'CLI/db/values', payload: { values } });
+  }
 });
 
 export const db = Command.create<P>('db')

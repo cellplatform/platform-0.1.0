@@ -11,6 +11,7 @@ import {
 } from '../common';
 
 export type BuildFormat = 'COMMON_JS' | 'ES_MODULE';
+const BUILD_FORMATS = ['COMMON_JS', 'ES_MODULE'] as BuildFormat[];
 
 export type IBuildArgs = {
   silent?: boolean;
@@ -32,6 +33,7 @@ export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Pr
     return result.formatResult({ code, error });
   }
 
+  await deleteTempDirs();
   await fs.remove(outDir);
   await ensureMainHasNoExtension(dir, { silent });
 
@@ -81,12 +83,12 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
   }
 
   // Prepare the command.
-  const tmpDir = `.tmp.${as}`.toLowerCase();
+  const tmpDir = toTmpDir(as);
   const tsc = 'node_modules/typescript/bin/tsc';
   let cmd = `cd ${fs.resolve(dir)}\n`;
 
   cmd += `node ${fs.join(tsc)}`;
-  cmd += ` --outDir ${tmpDir}`;
+  cmd += ` --outDir ${watch ? outDir : tmpDir}`;
   cmd = watch ? `${cmd} --watch` : cmd;
   cmd = tsconfig ? `${cmd} --project ${tsconfig}` : cmd;
 
@@ -107,11 +109,20 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
   // Execute command.
   try {
     if (watch) {
-      // Watching.
+      /**
+       * Watching
+       * - simple `common-js` build with watcher.
+       */
+      await deleteTempDirs();
       const res = await exec.cmd.run(cmd, { silent, dir });
       return res;
     } else {
-      // Not watching.
+      /**
+       * Not watching.
+       * - full build of both `common-js` and `es-modeule`
+       * - build in temporary directories
+       * - merge together upon completion
+       */
       const response = exec.cmd.runList(cmd, { silent, dir });
       const res = await response;
       if (res.code !== 0) {
@@ -140,6 +151,16 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
 /**
  * INTERNAL
  */
+async function deleteTempDirs() {
+  await Promise.all(
+    BUILD_FORMATS.map(format => toTmpDir(format)).map(dir => fs.remove(fs.resolve(dir))),
+  );
+}
+
+function toTmpDir(buildFormat: BuildFormat = 'COMMON_JS') {
+  return `.tmp.${buildFormat}`.toLowerCase();
+}
+
 export async function processArgs(args: IArgs) {
   const { silent, watch, as = 'COMMON_JS' } = args;
 

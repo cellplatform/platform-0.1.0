@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.icon",
   "description": "Icon component library.",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,14 +14,14 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.0.16"
+    "@platform/react": "0.0.20"
   },
   "peerDependencies": {
     "react-icons": "3.x"
   },
   "devDependencies": {
-    "@platform/ts": "3.3.62",
-    "@uiharness/dev": "0.1.51",
+    "@platform/ts": "3.3.66",
+    "@uiharness/dev": "0.2.1",
     "react-icons": "3.5.0"
   },
   "files": [

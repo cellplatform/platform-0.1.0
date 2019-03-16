@@ -62,6 +62,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - ui (components)
   - [@platform/ui.editor](/code/ui.editor)
   - [@platform/ui.object](/code/ui.object)
+  - [@platform/ui.spinner](/code/ui.spinner)
   - [@platform/ui.text](/code/ui.text)
   - [@platform/ui.icon](/code/ui.icon)
 - state

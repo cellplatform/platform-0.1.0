@@ -20,10 +20,14 @@ type ICurrent = {
 /**
  * Extension hook for custom editor UI components.
  *
+ * This abstracts any connection to Handsontable providing
+ * a clean extensibility mechanism for injecting custom cell editor.s
+ *
  * See:
  *  - https://handsontable.com/docs/6.2.2/frameworks-wrapper-for-react-custom-editor-example.html
  *  - https://forum.handsontable.com/t/full-custom-editor/2795
  *  - https://stackblitz.com/edit/angular-dirbuj?file=src/app/hello.component.ts
+ *
  */
 export class Editor extends editors.TextEditor {
   /**
@@ -38,21 +42,24 @@ export class Editor extends editors.TextEditor {
     cellProperties: GridSettings,
   ) {
     super.prepare(row, column, prop, td, originalValue, cellProperties);
-    this._current = { row, column, td, originalValue, cellProperties };
+    this._.current = { row, column, td, originalValue, cellProperties };
   }
 
   /**
    * [Fields]
    */
-  private _isEditing = false;
-  private _current!: ICurrent;
-  private _value: any;
+
+  private readonly _ = {
+    isEditing: false,
+    value: undefined as any,
+    current: undefined as ICurrent | undefined,
+  };
 
   /**
    * [Properties]
    */
   public get props() {
-    const current = this._current;
+    const current = this._.current;
     const column = current ? current.column : -1;
     const row = current ? current.row : -1;
     const isOpen = this.isOpened();
@@ -61,7 +68,12 @@ export class Editor extends editors.TextEditor {
 
   private get context() {
     const { column, row } = this.props;
-    const grid = this.refs.api;
+    const grid = this.grid;
+    const cell = this.cell;
+
+    const complete = this.onComplete;
+    const cancel = this.onCancel;
+
     const end$ = this.refs.editorEvents$.pipe(
       filter(e => e.type === 'GRID/EDITOR/end'),
       map(e => e as t.IEndEditingEvent),
@@ -75,35 +87,17 @@ export class Editor extends editors.TextEditor {
         filter(e => context.autoCancel),
         filter(e => e.isEscape),
       )
-      .subscribe(e => cancel());
-
-    const done: t.IEditorContext['done'] = args => {
-      time.delay(0, () => {
-        console.log('DONE', args);
-        this._value = args.value;
-
-        // NOTE:
-        //    Run the close operation after a tick-delay
-        //    to ensure that (if this call was initiated on a ENTER keydown event)
-        //    that another handler does not immediately re-open the editor.
-        this.finishEditing(false);
-        this.close();
-      });
-    };
-
-    const cancel: t.IEditorContext['cancel'] = () => {
-      this.finishEditing(true);
-      this.close();
-    };
+      .subscribe(cancel);
 
     const context: t.IEditorContext = {
       autoCancel: true,
       grid,
+      cell,
       column,
       row,
       keys$,
       end$,
-      done,
+      complete,
       cancel,
     };
 
@@ -112,6 +106,14 @@ export class Editor extends editors.TextEditor {
 
   private get refs(): IGridRefsPrivate {
     return (this.instance as any).__gridRefs;
+  }
+
+  private get grid() {
+    return this.refs.grid;
+  }
+
+  private get cell() {
+    return this.grid.cell({ row: this.row, column: this.col });
   }
 
   /**
@@ -146,14 +148,24 @@ export class Editor extends editors.TextEditor {
    */
   public beginEditing(initialValue?: string) {
     super.beginEditing(initialValue);
-    const { row, column } = this.props;
-    this._isEditing = true;
-    this._value = undefined;
+    if (this._.isEditing) {
+      return;
+    }
+
+    const el = this.render();
+    if (!el) {
+      this.onCancel();
+      return;
+    }
+
+    this._.isEditing = true;
+    this._.value = undefined;
 
     // Render the editor from the injected factory.
-    ReactDOM.render(this.render(), this.TEXTAREA_PARENT);
+    ReactDOM.render(el, this.TEXTAREA_PARENT);
 
     // Alert listeners
+    const { row, column } = this.props;
     this.refs.editorEvents$.next({
       type: 'GRID/EDITOR/begin',
       payload: { row, column },
@@ -166,14 +178,14 @@ export class Editor extends editors.TextEditor {
   public finishEditing(restoreOriginalValue?: boolean, ctrlDown?: boolean, callback?: () => void) {
     super.finishEditing(restoreOriginalValue, ctrlDown, callback);
 
-    console.group('🌳 FINISH');
-    console.log('restoreOriginalValue', restoreOriginalValue);
-    console.groupEnd();
+    // console.group('🌳 FINISH');
+    // console.log('restoreOriginalValue', restoreOriginalValue);
+    // console.groupEnd();
 
-    if (!this._isEditing) {
+    if (!this._.isEditing) {
       return;
     }
-    this._isEditing = false;
+    this._.isEditing = false;
 
     const { row, column } = this.props;
     const isCancelled = Boolean(restoreOriginalValue);
@@ -197,19 +209,48 @@ export class Editor extends editors.TextEditor {
    * [Override] Gets the value of the editor.
    */
   public getValue() {
-    return this._value;
+    return this._.value;
   }
 
   /**
    * [Internal]
    */
+
+  private onCancel: t.IEditorContext['cancel'] = () => {
+    const restoreOriginalValue = true;
+    this.cancelChanges();
+    this.finishEditing(restoreOriginalValue);
+    this.close();
+  };
+
+  private onComplete: t.IEditorContext['complete'] = args => {
+    time.delay(0, () => {
+      console.log('COMPLETE', args);
+      this._.value = args.value;
+
+      // NOTE:
+      //    Run the close operation after a tick-delay
+      //    to ensure that (if this call was initiated on a ENTER keydown event)
+      //    that another handler does not immediately re-open the editor.
+      const restoreOriginalValue = false;
+      this.finishEditing(restoreOriginalValue);
+      this.close();
+    });
+  };
+
   /**
    * Renders the popup-editor within a <Provider> context.
    */
+
   private render() {
     const context = this.context;
+    const { row, column } = context;
+    const el = this.refs.factory.editor({ row, column });
+    if (!el) {
+      return null;
+    }
+
     const Provider = createProvider(context);
-    const el = this.refs.editorFactory(context);
     const className = constants.CSS_CLASS.EDITOR;
     return (
       <Provider>

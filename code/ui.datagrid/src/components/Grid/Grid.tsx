@@ -14,9 +14,10 @@ import {
   t,
   value,
 } from '../../common';
-import { Grid as GridApi } from '../grid.api';
+import { Grid as GridApi } from '../api';
 import { keydownHandler } from './keyboard';
 import { IGridRefsPrivate } from './types.private';
+import { FactoryManager } from '../factory';
 
 export type IGridSettings = DefaultSettings;
 
@@ -24,7 +25,7 @@ export type IGridProps = {
   style?: GlamorValue;
   settings?: IGridSettings;
   Handsontable?: Handsontable;
-  editorFactory?: t.EditorFactory;
+  factory?: t.GridFactory;
   events$?: Subject<t.GridEvent>;
 };
 export type IGridState = {
@@ -43,6 +44,7 @@ export type IGridState = {
 export class Grid extends React.PureComponent<IGridProps, IGridState> {
   public state: IGridState = {};
   public grid!: GridApi;
+  public factory!: FactoryManager;
 
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IGridState>>();
@@ -63,16 +65,18 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
     const settings = this.settings;
     const Table = this.props.Handsontable || HandsontableLib;
     const table = (this.table = new Table(this.el as Element, settings));
-    const api = (this.grid = GridApi.create({ table }));
-    this.unmounted$.subscribe(() => api.dispose());
+    const grid = (this.grid = GridApi.create({ table }));
+    this.factory = new FactoryManager({ grid, factory: this.props.factory });
+
+    this.unmounted$.subscribe(() => grid.dispose());
 
     // Store metadata on the [Handsontable] instance.
     // NOTE:
     //    This is referenced within the [Editor] class.
     const refs: IGridRefsPrivate = {
-      api,
+      grid: grid,
       editorEvents$: new Subject<t.EditorEvent>(),
-      editorFactory: context => this.renderEditor({ context }),
+      factory: this.factory,
     };
     (table as any).__gridRefs = refs;
 
@@ -144,11 +148,6 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
         {...css(STYLES.base, this.props.style)}
       />
     );
-  }
-
-  private renderEditor(args: { context: t.IEditorContext }) {
-    const { editorFactory } = this.props;
-    return editorFactory ? editorFactory(args.context) : null;
   }
 
   /**

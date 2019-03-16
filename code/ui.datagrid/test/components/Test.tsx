@@ -1,11 +1,8 @@
-import '../../node_modules/@platform/css/reset.css';
-
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css } from './common';
-import { Button } from './primitives';
+import { color, css, Button } from './common';
 import { Test as TestGrid } from './Test.Grid';
 
 export type ITestProps = {};

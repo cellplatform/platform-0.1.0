@@ -68,7 +68,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
 
     events$.subscribe(e => {
-      console.log('🌳  EVENT', e.type, e.payload);
+      // console.log('🌳  EVENT', e.type, e.payload);
     });
   }
 
@@ -93,15 +93,26 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         ref={this.gridRef}
         settings={this.state.settings}
         events$={this.events$}
-        editorFactory={this.renderEditor}
+        factory={this.factory}
         Handsontable={this.Table}
         style={this.props.style}
       />
     );
   }
 
-  private renderEditor = () => {
-    return <TestEditor />;
+  private factory: t.GridFactory = req => {
+    switch (req.type) {
+      case 'EDITOR':
+        if (req.column === 1 && req.row === 0) {
+          return null;
+        }
+
+        return <TestEditor />;
+
+      default:
+        console.log(`Factory type '${req.type}' not supported by test.`);
+        return null;
+    }
   };
 }
 
@@ -117,6 +128,7 @@ export function createSampleData(args: { Table: Handsontable }) {
   // const data = Table.helper.createSpreadsheetData(1000, 100);
   const data = createEmptyData(1000, 100);
   data[0][0] = 'A1';
+  data[0][1] = 'locked';
 
   // console.log('data', data);
   // const getSelectedLast = this.getSelectedLast

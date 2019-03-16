@@ -1,9 +1,3 @@
-/**
- * See `@tdb/ui.test` for UI stories.
- * See:
- *    https://github.com/xyc/react-inspector
- */
-
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { css, GlamorValue } from '../common';
