@@ -68,7 +68,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
 
     events$.subscribe(e => {
-      // console.log('🌳  EVENT', e.type, e.payload);
+      console.log('🌳  EVENT', e.type, e.payload);
     });
   }
 
@@ -103,6 +103,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private factory: t.GridFactory = req => {
     switch (req.type) {
       case 'EDITOR':
+        if (req.column === 1 && req.row === 0) {
+          return null;
+        }
+
         return <TestEditor />;
 
       default:
@@ -124,6 +128,7 @@ export function createSampleData(args: { Table: Handsontable }) {
   // const data = Table.helper.createSpreadsheetData(1000, 100);
   const data = createEmptyData(1000, 100);
   data[0][0] = 'A1';
+  data[0][1] = 'locked';
 
   // console.log('data', data);
   // const getSelectedLast = this.getSelectedLast

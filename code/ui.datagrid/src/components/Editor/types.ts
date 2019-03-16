@@ -13,7 +13,7 @@ export type IEditorContext = {
   keys$: t.Observable<t.IGridKeydown>;
   end$: t.Observable<IEndEditingEvent>;
   cancel(): void;
-  done(args: { value: any }): void;
+  complete(args: { value: any }): void;
 };
 
 /**

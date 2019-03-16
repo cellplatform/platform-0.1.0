@@ -75,26 +75,7 @@ export class Editor extends editors.TextEditor {
         filter(e => context.autoCancel),
         filter(e => e.isEscape),
       )
-      .subscribe(e => cancel());
-
-    const done: t.IEditorContext['done'] = args => {
-      time.delay(0, () => {
-        console.log('DONE', args);
-        this._value = args.value;
-
-        // NOTE:
-        //    Run the close operation after a tick-delay
-        //    to ensure that (if this call was initiated on a ENTER keydown event)
-        //    that another handler does not immediately re-open the editor.
-        this.finishEditing(false);
-        this.close();
-      });
-    };
-
-    const cancel: t.IEditorContext['cancel'] = () => {
-      this.finishEditing(true);
-      this.close();
-    };
+      .subscribe(this.onCancel);
 
     const context: t.IEditorContext = {
       autoCancel: true,
@@ -103,8 +84,8 @@ export class Editor extends editors.TextEditor {
       row,
       keys$,
       end$,
-      done,
-      cancel,
+      complete: this.onComplete,
+      cancel: this.onCancel,
     };
 
     return context;
@@ -146,14 +127,23 @@ export class Editor extends editors.TextEditor {
    */
   public beginEditing(initialValue?: string) {
     super.beginEditing(initialValue);
-    const { row, column } = this.props;
+    if (this._isEditing) {
+      return;
+    }
+    const el = this.render();
+    if (!el) {
+      this.onCancel();
+      return;
+    }
+
     this._isEditing = true;
     this._value = undefined;
 
     // Render the editor from the injected factory.
-    ReactDOM.render(this.render(), this.TEXTAREA_PARENT);
+    ReactDOM.render(el, this.TEXTAREA_PARENT);
 
     // Alert listeners
+    const { row, column } = this.props;
     this.refs.editorEvents$.next({
       type: 'GRID/EDITOR/begin',
       payload: { row, column },
@@ -166,9 +156,9 @@ export class Editor extends editors.TextEditor {
   public finishEditing(restoreOriginalValue?: boolean, ctrlDown?: boolean, callback?: () => void) {
     super.finishEditing(restoreOriginalValue, ctrlDown, callback);
 
-    console.group('🌳 FINISH');
-    console.log('restoreOriginalValue', restoreOriginalValue);
-    console.groupEnd();
+    // console.group('🌳 FINISH');
+    // console.log('restoreOriginalValue', restoreOriginalValue);
+    // console.groupEnd();
 
     if (!this._isEditing) {
       return;
@@ -204,13 +194,40 @@ export class Editor extends editors.TextEditor {
    * [Internal]
    */
 
+  private onCancel: t.IEditorContext['cancel'] = () => {
+    const restoreOriginalValue = true;
+    this.cancelChanges();
+    this.finishEditing(restoreOriginalValue);
+    this.close();
+  };
+
+  private onComplete: t.IEditorContext['complete'] = args => {
+    time.delay(0, () => {
+      console.log('COMPLETE', args);
+      this._value = args.value;
+
+      // NOTE:
+      //    Run the close operation after a tick-delay
+      //    to ensure that (if this call was initiated on a ENTER keydown event)
+      //    that another handler does not immediately re-open the editor.
+      const restoreOriginalValue = false;
+      this.finishEditing(restoreOriginalValue);
+      this.close();
+    });
+  };
+
   /**
    * Renders the popup-editor within a <Provider> context.
    */
+
   private render() {
     const context = this.context;
     const { row, column } = context;
     const el = this.refs.factory.editor({ row, column });
+    if (!el) {
+      return null;
+    }
+
     const Provider = createProvider(context);
     const className = constants.CSS_CLASS.EDITOR;
     return (

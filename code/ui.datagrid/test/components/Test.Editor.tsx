@@ -27,7 +27,7 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
     const keys$ = this.context.keys$;
     keys$
       .pipe(filter(e => e.isEnter))
-      .subscribe(e => this.context.done({ value: this.input.value }));
+      .subscribe(e => this.context.complete({ value: this.input.value }));
 
     // this.context.autoCancel = false;
     // keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
