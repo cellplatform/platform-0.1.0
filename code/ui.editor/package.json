@@ -34,7 +34,7 @@
     "@types/prosemirror-schema-basic": "1.0.1",
     "@types/prosemirror-state": "1.2.3",
     "@types/prosemirror-view": "1.3.1",
-    "@uiharness/dev": "0.1.51"
+    "@uiharness/dev": "0.1.52"
   },
   "files": [
     "lib"

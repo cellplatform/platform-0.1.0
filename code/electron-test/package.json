@@ -17,14 +17,14 @@
     "@platform/ui.object": "0.0.57",
     "@platform/react": "0.0.18",
     "@platform/util.value": "0.0.38",
-    "@uiharness/electron": "0.3.154"
+    "@uiharness/electron": "0.3.155"
   },
   "browserslist": [
     "electron >= 4"
   ],
   "devDependencies": {
     "@platform/ts": "3.3.64",
-    "@uiharness/dev": "0.1.50"
+    "@uiharness/dev": "0.1.52"
   },
   "resolutions": {
     "@types/react": "16.7.17"
