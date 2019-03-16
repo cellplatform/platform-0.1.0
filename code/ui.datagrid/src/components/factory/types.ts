@@ -1,5 +1,4 @@
-import * as t from '../../types';
-import { Grid } from '../grid.api';
+import { Grid } from '../api';
 
 /**
  * A factory function that produces a visual component for display within the grid.

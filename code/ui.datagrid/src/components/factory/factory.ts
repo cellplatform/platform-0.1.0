@@ -1,5 +1,5 @@
 import { t } from '../../common';
-import { Grid } from '../grid.api';
+import { Grid } from '../api';
 
 const defaultFactory: t.GridFactory = req => null;
 

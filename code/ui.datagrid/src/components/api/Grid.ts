@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { t } from '../../common';
+import { Cell } from './Cell';
 
 /**
  * Strongly typed properties and methods for
@@ -18,7 +19,6 @@ export class Grid {
    * [Constructor]
    */
   private constructor(args: { table: Handsontable }) {
-    // this._.table = args.table;
     this._.table = args.table;
 
     this.events$
@@ -70,19 +70,28 @@ export class Grid {
    * Disposes of the grid.
    */
   public dispose() {
-    if (this._.table.isDestroyed) {
-      this._.table.destroy();
+    const { table, dispose$ } = this._;
+    if (table.isDestroyed) {
+      table.destroy();
     }
-    this._.dispose$.next();
-    this._.dispose$.complete();
+    dispose$.next();
+    dispose$.complete();
+  }
+
+  /**
+   * Retrieves an API for working with a single cell.
+   */
+  public cell(args: { row: number; column: number }) {
+    const { row, column } = args;
+    return Cell.create({ table: this._.table, row, column });
   }
 
   /**
    * Scroll the grids view-port to the given column/row cooridnates.
    */
   public scrollTo(args: {
-    column?: number;
     row?: number;
+    column?: number;
     snapToBottom?: boolean; // (false) If true, viewport is scrolled to show the cell on the bottom of the table.
     snapToRight?: boolean; //  (false) If true, viewport is scrolled to show the cell on the right side of the table.
   }) {

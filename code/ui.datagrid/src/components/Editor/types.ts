@@ -1,4 +1,4 @@
-import { Grid } from '../grid.api';
+import { Grid } from '../api';
 import * as t from '../../types';
 
 /**

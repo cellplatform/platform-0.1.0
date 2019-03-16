@@ -14,7 +14,7 @@ import {
   t,
   value,
 } from '../../common';
-import { Grid as GridApi } from '../grid.api';
+import { Grid as GridApi } from '../api';
 import { keydownHandler } from './keyboard';
 import { IGridRefsPrivate } from './types.private';
 import { FactoryManager } from '../factory';

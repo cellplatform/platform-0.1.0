@@ -1,4 +1,4 @@
-import { Grid } from '../grid.api/Grid';
+import { Grid } from '../api';
 
 /**
  * Factory for creating a grid keydown handler.

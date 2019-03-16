@@ -20,10 +20,14 @@ type ICurrent = {
 /**
  * Extension hook for custom editor UI components.
  *
+ * This abstracts any connection to Handsontable providing
+ * a clean extensibility mechanism for injecting custom cell editor.s
+ *
  * See:
  *  - https://handsontable.com/docs/6.2.2/frameworks-wrapper-for-react-custom-editor-example.html
  *  - https://forum.handsontable.com/t/full-custom-editor/2795
  *  - https://stackblitz.com/edit/angular-dirbuj?file=src/app/hello.component.ts
+ *
  */
 export class Editor extends editors.TextEditor {
   /**
@@ -38,21 +42,24 @@ export class Editor extends editors.TextEditor {
     cellProperties: GridSettings,
   ) {
     super.prepare(row, column, prop, td, originalValue, cellProperties);
-    this._current = { row, column, td, originalValue, cellProperties };
+    this._.current = { row, column, td, originalValue, cellProperties };
   }
 
   /**
    * [Fields]
    */
-  private _isEditing = false;
-  private _current!: ICurrent;
-  private _value: any;
+
+  private readonly _ = {
+    isEditing: false,
+    value: undefined as any,
+    current: undefined as ICurrent | undefined,
+  };
 
   /**
    * [Properties]
    */
   public get props() {
-    const current = this._current;
+    const current = this._.current;
     const column = current ? current.column : -1;
     const row = current ? current.row : -1;
     const isOpen = this.isOpened();
@@ -95,6 +102,14 @@ export class Editor extends editors.TextEditor {
     return (this.instance as any).__gridRefs;
   }
 
+  private get grid() {
+    return this.refs.grid;
+  }
+
+  private get cell() {
+    return this.grid.cell({ row: this.row, column: this.col });
+  }
+
   /**
    * [Methods]
    */
@@ -127,7 +142,7 @@ export class Editor extends editors.TextEditor {
    */
   public beginEditing(initialValue?: string) {
     super.beginEditing(initialValue);
-    if (this._isEditing) {
+    if (this._.isEditing) {
       return;
     }
     const el = this.render();
@@ -136,11 +151,20 @@ export class Editor extends editors.TextEditor {
       return;
     }
 
-    this._isEditing = true;
-    this._value = undefined;
+    this._.isEditing = true;
+    this._.value = undefined;
 
     // Render the editor from the injected factory.
     ReactDOM.render(el, this.TEXTAREA_PARENT);
+
+    const cell = this.cell;
+    console.log('cell.td', cell.td);
+    console.group('🌳 siblings');
+    console.log('cell.left', cell.left);
+    console.log('cell.right', cell.right);
+    console.log('cell.top', cell.top);
+    console.log('cell.bottom', cell.bottom);
+    console.groupEnd();
 
     // Alert listeners
     const { row, column } = this.props;
@@ -160,10 +184,10 @@ export class Editor extends editors.TextEditor {
     // console.log('restoreOriginalValue', restoreOriginalValue);
     // console.groupEnd();
 
-    if (!this._isEditing) {
+    if (!this._.isEditing) {
       return;
     }
-    this._isEditing = false;
+    this._.isEditing = false;
 
     const { row, column } = this.props;
     const isCancelled = Boolean(restoreOriginalValue);
@@ -187,7 +211,7 @@ export class Editor extends editors.TextEditor {
    * [Override] Gets the value of the editor.
    */
   public getValue() {
-    return this._value;
+    return this._.value;
   }
 
   /**
@@ -204,7 +228,7 @@ export class Editor extends editors.TextEditor {
   private onComplete: t.IEditorContext['complete'] = args => {
     time.delay(0, () => {
       console.log('COMPLETE', args);
-      this._value = args.value;
+      this._.value = args.value;
 
       // NOTE:
       //    Run the close operation after a tick-delay
