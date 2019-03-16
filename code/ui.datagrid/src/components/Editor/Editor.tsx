@@ -68,7 +68,12 @@ export class Editor extends editors.TextEditor {
 
   private get context() {
     const { column, row } = this.props;
-    const grid = this.refs.grid;
+    const grid = this.grid;
+    const cell = this.cell;
+
+    const complete = this.onComplete;
+    const cancel = this.onCancel;
+
     const end$ = this.refs.editorEvents$.pipe(
       filter(e => e.type === 'GRID/EDITOR/end'),
       map(e => e as t.IEndEditingEvent),
@@ -82,17 +87,18 @@ export class Editor extends editors.TextEditor {
         filter(e => context.autoCancel),
         filter(e => e.isEscape),
       )
-      .subscribe(this.onCancel);
+      .subscribe(cancel);
 
     const context: t.IEditorContext = {
       autoCancel: true,
       grid,
+      cell,
       column,
       row,
       keys$,
       end$,
-      complete: this.onComplete,
-      cancel: this.onCancel,
+      complete,
+      cancel,
     };
 
     return context;
@@ -157,18 +163,6 @@ export class Editor extends editors.TextEditor {
 
     // Render the editor from the injected factory.
     ReactDOM.render(el, this.TEXTAREA_PARENT);
-
-    const cell = this.cell;
-    console.log('cell.td', cell.td);
-    console.log('cell.size', cell.size);
-
-    console.group('🌳 siblings');
-    console.log('cell.sibling', cell.sibling);
-    console.log('cell.left', cell.sibling.left);
-    console.log('cell.right', cell.sibling.right);
-    console.log('cell.top', cell.sibling.top);
-    console.log('cell.bottom', cell.sibling.bottom);
-    console.groupEnd();
 
     // Alert listeners
     const { row, column } = this.props;

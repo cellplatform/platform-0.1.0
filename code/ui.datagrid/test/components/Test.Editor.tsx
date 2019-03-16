@@ -43,6 +43,7 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
 
   public componentDidMount() {
     this.input.focus();
+    this.updateSize();
   }
 
   public componentWillUnmount() {
@@ -56,7 +57,10 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
     const content = <div {...STYLES.inputText}>{this.state.value}</div>;
     const textSize = MeasureSize.measure({ content, style: STYLES.input });
     const textWidth = textSize.width;
-    const width = this.el.offsetWidth;
+
+    const cell = this.context.cell;
+    const width = cell.width + cell.sibling.right.width - PADDING * 2 - 10;
+
     this.state$.next({ textWidth, width });
   }
 
@@ -71,6 +75,7 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
         padding: PADDING,
         borderRadius: 4,
         border: `solid 1px ${color.format(-0.1)}`,
+        width: this.state.width,
       }),
       input: css({
         outline: 'none',

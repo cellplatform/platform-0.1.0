@@ -60,10 +60,6 @@ export class Cell {
     return this.td.offsetHeight;
   }
 
-  /**
-   * [Siblings]
-   */
-
   public get sibling() {
     const table = this._.table;
     const cell = this; // tslint:disable-line
@@ -89,10 +85,11 @@ export class Cell {
     };
   }
 
-  public get bottom() {
-    const table = this._.table;
-    const row = this.row + 1;
-    const column = this.column;
-    return row > table.countRows() - 1 ? undefined : Cell.create({ table, column, row });
+  /**
+   * [Methods]
+   */
+
+  public toString() {
+    return `[Cell|row:${this.row}, column:${this.column}]`;
   }
 }

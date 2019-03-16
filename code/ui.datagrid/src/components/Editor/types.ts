@@ -1,4 +1,4 @@
-import { Grid } from '../api';
+import { Grid, Cell } from '../api';
 import * as t from '../../types';
 
 /**
@@ -10,6 +10,7 @@ export type IEditorContext = {
   row: number;
   column: number;
   grid: Grid;
+  cell: Cell;
   keys$: t.Observable<t.IGridKeydown>;
   end$: t.Observable<IEndEditingEvent>;
   cancel(): void;
