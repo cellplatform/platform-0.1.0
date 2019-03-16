@@ -2,10 +2,16 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 
-import { color, css, datagrid } from './common';
+import { time, color, css, datagrid, ObjectView, MeasureSize } from './common';
+
+const PADDING = 10;
 
 export type ITestEditorProps = {};
-export type ITestEditorState = {};
+export type ITestEditorState = {
+  value?: string;
+  width?: number;
+  textWidth?: number;
+};
 
 export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEditorState> {
   public state: ITestEditorState = {};
@@ -15,6 +21,8 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
   public static contextType = datagrid.EditorContext;
   public context!: datagrid.ReactEditorContext;
 
+  private el!: HTMLDivElement;
+  private elRef = (ref: HTMLDivElement) => (this.el = ref);
   private input!: HTMLInputElement;
   private inputRef = (ref: HTMLInputElement) => (this.input = ref);
 
@@ -42,24 +50,72 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
   }
 
   /**
+   * [Methods]
+   */
+  public updateSize() {
+    const content = <div {...STYLES.inputText}>{this.state.value}</div>;
+    const textSize = MeasureSize.measure({ content, style: STYLES.input });
+    const textWidth = textSize.width;
+    const width = this.el.offsetWidth;
+    this.state$.next({ textWidth, width });
+  }
+
+  /**
    * [Render]
    */
   public render() {
     const styles = {
       base: css({
+        boxSizing: 'border-box',
         backgroundColor: 'rgba(255, 0, 0, 0.1)',
-        padding: 15,
+        padding: PADDING,
         borderRadius: 4,
         border: `solid 1px ${color.format(-0.1)}`,
       }),
       input: css({
         outline: 'none',
+        marginBottom: 4,
       }),
     };
+
+    const data = {
+      state: this.state,
+      context: this.context,
+    };
+
     return (
-      <div {...styles.base}>
-        <input {...styles.input} ref={this.inputRef} defaultValue={'foobar'} />
+      <div ref={this.elRef} {...styles.base}>
+        <input
+          {...css(STYLES.inputText, styles.input)}
+          ref={this.inputRef}
+          value={this.state.value || ''}
+          onChange={this.handleChange}
+        />
+        <ObjectView name={'editor'} data={data} fontSize={9} />
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+  private handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    this.state$.next({ value });
+    time.delay(0, () => this.updateSize());
+  };
 }
+
+/**
+ * [Internal]
+ */
+const STYLES = {
+  inputText: css({
+    fontSize: 14,
+  }),
+  input: css({
+    boxSizing: 'border-box',
+    outline: 'none',
+    marginBottom: 4,
+  }),
+};

@@ -68,7 +68,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
 
     events$.subscribe(e => {
-      console.log('🌳  EVENT', e.type, e.payload);
+      // console.log('🌳  EVENT', e.type, e.payload);
     });
   }
 
