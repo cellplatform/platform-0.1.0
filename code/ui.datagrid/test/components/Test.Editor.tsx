@@ -77,6 +77,7 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
         borderRadius: 4,
         border: `solid 1px ${color.format(-0.1)}`,
         width: this.state.width,
+        Flex: 'vertical-stetch-stretch',
       }),
       input: css({
         outline: 'none',
@@ -85,8 +86,8 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
     };
 
     const data = {
+      textWidth: this.state.textWidth,
       context: this.context,
-      state: this.state,
     };
 
     return (
