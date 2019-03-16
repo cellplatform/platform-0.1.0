@@ -69,10 +69,10 @@
     tslint-react "3.6.0"
     typescript "3.3.3333"
 
-"@platform/ts@3.3.62":
-  version "3.3.62"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.62.tgz#4954896fb4ba369f6bb59d40dd88f39ad3393631"
-  integrity sha512-rxjrSrYhZ3I1yIKRIvYosqJJcWCQ/1gnCwUK56tLM2BgDza5q9ee69EC/KGOMnXeyygqRv6uAQ3+aEp61gouEg==
+"@platform/ts@3.3.63":
+  version "3.3.63"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.63.tgz#13f10f3cd04bb47d25674d657acf67add8b41dc5"
+  integrity sha512-ukA/Rgd1qkJ+C5NJe6DKJe2dRKWhoaKjFdaju2vZtKmSnsAO1uamxjfgRxadZ3Ck2+aVYMpNPEeqHiCk169e8g==
   dependencies:
     "@platform/cli" "0.0.62"
     "@platform/fs" "0.0.39"
