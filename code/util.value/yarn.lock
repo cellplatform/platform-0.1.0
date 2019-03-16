@@ -69,10 +69,10 @@
     tslint-react "3.6.0"
     typescript "3.3.3333"
 
-"@platform/ts@3.3.64":
-  version "3.3.64"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.64.tgz#b09ceae371fb50ebb2858cf0afd106abea22adc8"
-  integrity sha512-AyJhlc8UnJ4wctvIYKctcQVhAVB5XWWYwypmBCJaYtbbRrEJfVg1u3XOmZqXbbQbdKDtgg2aE0kv33lHeiY7Ow==
+"@platform/ts@3.3.65":
+  version "3.3.65"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.65.tgz#fea4dc203092416d33c31cf60f7814045d7b8373"
+  integrity sha512-Bl1lysSx7nY200iyft2dcOLRyX3QomtyvEivX9DQocdFbsb4So0OgTUDj9GDbxibaSRfaQnyxT07mELaLnCl5g==
   dependencies:
     "@platform/cli" "0.0.62"
     "@platform/fs" "0.0.39"
@@ -92,10 +92,10 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/util.is@0.0.37":
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.37.tgz#847b4217830c53f89c1c00ee58f421f5e2a7b480"
-  integrity sha512-nTG1S192LgQbpBVkOKCYDW+Om9TZtSm0sv00QE3SCRZTafpkJJXKUaywLlj+NT5/wj8AJkCQmf0ZuTrMgQAVKA==
+"@platform/util.is@0.0.38":
+  version "0.0.38"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.38.tgz#e79b530b1ec1b1c0b9df7ac5c4e0a2fe28600b67"
+  integrity sha512-atiAAwAjOYaUuyKVYzr9r9OSIE8KgHZ0EpfVploCgP3zUgDMDDq1LctvwARX8FCc1LWXVT3koUyuQ53JNCC7uw==
 
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"

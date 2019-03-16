@@ -962,6 +962,18 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
+"@platform/css@0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.13.tgz#c419eae231bae0c4c08d6dc32220345a02b033a8"
+  integrity sha512-7FmYFeWcZBUc9SfjKpdaEeZxvyz4aAYFCUG8XQiKXatW4lg1Wg5GOqbT+RESTy8IVQ3kNTiJZvln/FpbZhE9Wg==
+  dependencies:
+    "@platform/libs" "0.0.8"
+    "@platform/util.is" "0.0.38"
+    "@platform/util.value" "0.0.39"
+    "@types/tinycolor2" "1.4.1"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
 "@platform/electron@0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.5.tgz#d69313890ec8991d13e6f941449c8ab287092242"
@@ -1029,6 +1041,18 @@
     react "16.8.4"
     react-dom "16.8.4"
 
+"@platform/react@0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.19.tgz#e320f949049dee8514b2815a5dd2b73bb35af826"
+  integrity sha512-E/dJzFWvGXY2c1PSqmK4v+oHzZaC9jYgHOhg6LN2JQ+cvTjsKhpfJjddzw9mqIyrBO8D8fq3Isr22CseRMTKXA==
+  dependencies:
+    "@platform/css" "0.0.13"
+    "@platform/util.is" "0.0.38"
+    "@types/react" "16.8.8"
+    "@types/react-dom" "16.8.2"
+    react "16.8.4"
+    react-dom "16.8.4"
+
 "@platform/ts.libs@3.3.5":
   version "3.3.5"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.3.5.tgz#12ac3aa3fd4e4d7dd512a57f46e28a94c17ff836"
@@ -1043,10 +1067,10 @@
     tslint-react "3.6.0"
     typescript "3.3.3333"
 
-"@platform/ts@3.3.64":
-  version "3.3.64"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.64.tgz#b09ceae371fb50ebb2858cf0afd106abea22adc8"
-  integrity sha512-AyJhlc8UnJ4wctvIYKctcQVhAVB5XWWYwypmBCJaYtbbRrEJfVg1u3XOmZqXbbQbdKDtgg2aE0kv33lHeiY7Ow==
+"@platform/ts@3.3.65":
+  version "3.3.65"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.65.tgz#fea4dc203092416d33c31cf60f7814045d7b8373"
+  integrity sha512-Bl1lysSx7nY200iyft2dcOLRyX3QomtyvEivX9DQocdFbsb4So0OgTUDj9GDbxibaSRfaQnyxT07mELaLnCl5g==
   dependencies:
     "@platform/cli" "0.0.62"
     "@platform/fs" "0.0.39"
@@ -1079,6 +1103,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.37.tgz#847b4217830c53f89c1c00ee58f421f5e2a7b480"
   integrity sha512-nTG1S192LgQbpBVkOKCYDW+Om9TZtSm0sv00QE3SCRZTafpkJJXKUaywLlj+NT5/wj8AJkCQmf0ZuTrMgQAVKA==
 
+"@platform/util.is@0.0.38":
+  version "0.0.38"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.38.tgz#e79b530b1ec1b1c0b9df7ac5c4e0a2fe28600b67"
+  integrity sha512-atiAAwAjOYaUuyKVYzr9r9OSIE8KgHZ0EpfVploCgP3zUgDMDDq1LctvwARX8FCc1LWXVT3koUyuQ53JNCC7uw==
+
 "@platform/util.value@0.0.38":
   version "0.0.38"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.38.tgz#bb7cb6d6d3659bfb2598cadf8cd2ecb26bf2c476"
@@ -1086,6 +1115,18 @@
   dependencies:
     "@platform/libs" "0.0.8"
     "@platform/util.is" "0.0.37"
+    "@types/semver" "5.5.0"
+    cuid "2.1.6"
+    dayjs "1.8.10"
+    semver "5.6.0"
+
+"@platform/util.value@0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.39.tgz#25c723855f4657e4c27bd72758a9f695b722cb0e"
+  integrity sha512-wsJ0eERJRAwlxkHjdeYAErXOS/+YxgpKWX8GJGMRlt6eqAMtGM4IVQIReVrh+eSrZzFO7VPcfqZFjWzmAvuo0A==
+  dependencies:
+    "@platform/libs" "0.0.8"
+    "@platform/util.is" "0.0.38"
     "@types/semver" "5.5.0"
     cuid "2.1.6"
     dayjs "1.8.10"

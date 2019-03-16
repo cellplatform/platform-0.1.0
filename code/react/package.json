@@ -1,6 +1,6 @@
 {
   "name": "@platform/react",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,8 +12,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "0.0.12",
-    "@platform/util.is": "0.0.37",
+    "@platform/css": "0.0.13",
+    "@platform/util.is": "0.0.38",
     "@types/react": "16.8.8",
     "@types/react-dom": "16.8.2",
     "react": "16.8.4",
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.32",
-    "@platform/ts": "3.3.64"
+    "@platform/ts": "3.3.65"
   },
   "files": [
     "lib"
