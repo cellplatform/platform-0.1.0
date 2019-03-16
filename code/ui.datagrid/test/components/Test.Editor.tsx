@@ -59,7 +59,8 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
     const textWidth = textSize.width;
 
     const cell = this.context.cell;
-    const width = cell.width + cell.sibling.right.width - PADDING * 2 - 10;
+    const rightCell = cell.sibling.right;
+    const width = cell.width + (rightCell ? rightCell.width : 0) - PADDING * 2 - 10;
 
     this.state$.next({ textWidth, width });
   }
