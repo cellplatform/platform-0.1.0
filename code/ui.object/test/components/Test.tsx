@@ -1,6 +1,9 @@
+import '@babel/polyfill';
+import '../../node_modules/@platform/css/reset.css';
+
 import * as React from 'react';
-import { css } from '../common';
-import { ObjectView } from './ObjectView';
+import { css } from '../../src/common';
+import { ObjectView } from '../../src';
 
 export const Test = () => {
   const styles = {
