@@ -1,8 +1,4 @@
-#
-# https://uiharness.com/docs/config
-#
-
-name: My App
+name: react
 
 electron:
   port: 8888

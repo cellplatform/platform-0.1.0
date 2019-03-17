@@ -4,31 +4,10 @@ import '@babel/polyfill';
 import { Button, ObjectView } from '@uiharness/ui';
 import * as React from 'react';
 
-// import { MyComponent } from '../../src';
+import { Test as DragTest } from '../../src/drag/Test';
 
-/**
- * Test Component
- */
-export type IState = { count?: number };
-export class Test extends React.PureComponent<{}, IState> {
-  public state: IState = {};
-
+export class Test extends React.PureComponent {
   public render() {
-    return (
-      <div style={{ padding: 30 }}>
-        {/* <MyComponent /> */}
-        <div style={{ marginBottom: 10 }}>
-          <Button label={'Increment'} onClick={this.increment(1)} />
-          <Button label={'Decrement'} onClick={this.increment(-1)} />
-        </div>
-        <ObjectView name={'state'} data={this.state} />
-      </div>
-    );
+    return <DragTest style={{ Absolute: 30 }} />;
   }
-
-  private increment = (amount: number) => {
-    return () => {
-      this.setState({ count: (this.state.count || 0) + amount });
-    };
-  };
 }
