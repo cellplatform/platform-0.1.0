@@ -12,8 +12,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "react": "16.8.4",
-    "@uiharness/electron": "0.3.161"
+    "@platform/react": "0.0.20",
+    "react": "16.8.4"
   },
   "devDependencies": {
     "@uiharness/dev": "0.2.4"

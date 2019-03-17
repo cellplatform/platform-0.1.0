@@ -844,7 +844,7 @@
     "@platform/util.exec" "0.0.24"
     "@platform/util.value" "0.0.40"
 
-"@platform/react@0.0.20":
+"@platform/react@0.0.20", "@platform/react@^0.0.20":
   version "0.0.20"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.20.tgz#eea8681b083dfd4c822d1e4e03069333f697a292"
   integrity sha512-EExe5MjIUBB2eS5Dj9byh7+RY8vDyrKFG61TrZft4L5N6O+5tFEHS4BF2pgP0zJoq9Tcm9Vpy1b0ThYE1w/2rA==
