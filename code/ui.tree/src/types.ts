@@ -1,6 +1,7 @@
 import { MouseEvent } from './common/libs';
+import { IIcon } from '@platform/ui.icon';
 
-export { IIcon } from '@platform/ui.icon';
+export { IIcon };
 export * from './themes/types';
 
 /**

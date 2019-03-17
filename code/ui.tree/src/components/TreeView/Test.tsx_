@@ -1,0 +1,431 @@
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+
+import { ITreeViewProps, TreeNodeMouseEvent, TreeView } from '.';
+import {
+  Actions,
+  color,
+  constants,
+  css,
+  Foo,
+  ITreeNode,
+  log,
+  R,
+  React,
+  sample,
+  themes,
+  tree,
+  types,
+} from '../../test';
+
+const { COLORS } = constants;
+const util = TreeView.util;
+
+const INLINE_SAMPLE = (() => {
+  const node = sample.createRoot([10, 5, 3, 2]);
+  const children = node.children as ITreeNode[];
+  const p = util.props;
+
+  children.forEach(node => {
+    node.props = { ...util.props(node), inline: {} };
+  });
+
+  p(children[0]).inline = { isOpen: true };
+  p(children[0]).label = 'inline open';
+
+  p(children[1]).label = 'inline, custom child';
+
+  children[2].children = undefined;
+  p(children[2]).label = 'no children';
+
+  p(children[3]).isEnabled = false;
+  p(children[3]).label = 'disabled';
+
+  p(children[4]).chevron = { isVisible: true };
+  p(children[4]).header = { parentButton: false };
+  p(children[4]).label = 'twisty and drill-in';
+
+  p(children[5]).inline = undefined;
+  p(children[5]).isSpinning = true;
+  p(children[5]).label = 'spinning, custom child';
+
+  p(children[7]).icon = undefined;
+  p(children[7]).label = 'has children, icon';
+
+  children[8].children = undefined;
+  p(children[8]).icon = undefined;
+  p(children[8]).label = 'no children, no icon';
+
+  p(children[9]).inline = undefined;
+  p(children[9]).badge = 5;
+  p(children[9]).label = 'badge';
+
+  return node;
+})();
+
+type P = ITreeViewProps;
+const actions = Actions.create<P>({ id: 'test.TreeView' })
+  .props({
+    // node: sample.createRoot([3, 2, 4]),
+    node: INLINE_SAMPLE,
+    // node: FOO,
+    // background: 'NONE',
+  })
+  .header('theme')
+  .add('LIGHT', e => e.props({ theme: themes.LIGHT }))
+  .add('DARK', e => e.props({ theme: themes.DARK }))
+  .add('background: NONE', e => e.props({ background: 'NONE' }))
+  .add('background: THEME', e => e.props({ background: 'THEME' }))
+
+  .header('util')
+  .add('walkTree', e => {
+    const prev = e.prevProps as P;
+    tree.walk(prev.node, (node, args) => {
+      log.info(node, args);
+    });
+  })
+  .add('walkTree (stop after 3)', e => {
+    let count = 0;
+    const prev = e.prevProps as P;
+    tree.walk(prev.node, (node, args) => {
+      log.info(node, args);
+      count++;
+      if (count >= 3) {
+        args.stop();
+      }
+    });
+  })
+  .add('walkTree (stop after 100)', e => {
+    let count = 0;
+    const prev = e.prevProps as P;
+    tree.walk(prev.node, (node, args) => {
+      log.info(node, args);
+      count++;
+      if (count >= 100) {
+        args.stop();
+      }
+    });
+  })
+  .add('mapTree', e => {
+    const prev = e.prevProps as P;
+    const res = tree.map(prev.node, node => node.id);
+    log.info('res', res);
+  })
+
+  .header('node (root)')
+  .add('children: undefined', e => e.props({ node: sample.createRoot() }))
+  .add('children: 0', e => e.props({ node: sample.createRoot(0) }))
+  .add('children: 1', e => e.props({ node: sample.createRoot(1) }))
+  .add('children: 10', e => e.props({ node: sample.createRoot(10) }))
+  .hr()
+  .add('children: 10 (no header)', e => {
+    const node = {
+      ...sample.createRoot(10),
+      props: { header: { isVisible: false } },
+    };
+    e.props({ node });
+  })
+  .add('children: 10 (custom margins)', e => {
+    let node = sample.createRoot(10);
+    const children = [...((node.children as ITreeNode[]) || [])];
+    (children[0].props || {}).marginTop = 30;
+    (children[2].props || {}).borderTop = false;
+    (children[5].props || {}).marginBottom = 80;
+    (children[5].props || {}).borderBottom = true;
+    (children[9].props || {}).borderBottom = false;
+    node = { ...node, children };
+    e.props({ node });
+  })
+  .hr()
+  .add('children: 3 => 2', e => e.props({ node: sample.createRoot([3, 2]) }))
+  .add('children: 10 => 5 => 30', e =>
+    e.props({ node: sample.createRoot([10, 5, 30]) }),
+  )
+  .add('children: 50', e => e.props({ node: sample.createRoot(50) }))
+  .add('children: 100', e => e.props({ node: sample.createRoot(100) }))
+  .hr()
+  .add('children: INLINE', e => e.props({ node: INLINE_SAMPLE }))
+  .add('status badge', e => {
+    const node = sample.createRoot([5, 3]);
+    let children = [...((node.children as ITreeNode[]) || [])];
+    children = children.map(child => {
+      const children = (child.children as ITreeNode[]) || [];
+      const badge = children.length;
+      return {
+        ...child,
+        props: { ...child.props, badge },
+      };
+    });
+    e.props({ node: { ...node, children } });
+  })
+  .add('force chevron (2)', e => {
+    const node = sample.createRoot(5);
+    const children = [...((node.children as ITreeNode[]) || [])];
+    (children[2].props || {}).chevron = { isVisible: true };
+    e.props({ node });
+  })
+  .add('hide chevron (2)', e => {
+    const node = sample.createRoot([5, 1]);
+    const children = [...((node.children as ITreeNode[]) || [])];
+    (children[2].props || {}).chevron = { isVisible: false };
+    e.props({ node });
+  })
+  .add('isBold: true (2)', e => {
+    const node = sample.createRoot([5, 1]);
+    const children = [...((node.children as ITreeNode[]) || [])];
+    (children[2].props || {}).isBold = true;
+    e.props({ node });
+  })
+  .add('isSpinning: true (2)', e => {
+    const node = sample.createRoot([5, 1]);
+    const children = [...((node.children as ITreeNode[]) || [])];
+    (children[2].props || {}).isSpinning = true;
+    e.props({ node });
+  })
+  .add('isVisible: true (2) - default', e => {
+    const node = sample.createRoot([5, 1]);
+    const children = [...((node.children as ITreeNode[]) || [])];
+    (children[2].props || {}).isVisible = true;
+    e.props({ node });
+  })
+  .add('isVisible: false (2)', e => {
+    const node = sample.createRoot([5, 1]);
+    const children = [...((node.children as ITreeNode[]) || [])];
+    (children[2].props || {}).isVisible = false;
+    e.props({ node });
+  })
+  .add('isEnabled: false (2)', e => {
+    const node = sample.createRoot([5, 1]);
+    const children = [...((node.children as ITreeNode[]) || [])];
+    (children[2].props || {}).isEnabled = false;
+    e.props({ node });
+  })
+
+  .header('custom child')
+  .add('drill-in (no children)', e => {
+    const node: ITreeNode = {
+      id: 'root',
+      children: [{ id: 'foo', props: { chevron: { isVisible: true } } }],
+    };
+    e.props({ node, current: 'foo' });
+  })
+  .add('drill-in (hide header)', e => {
+    const node: ITreeNode = {
+      id: 'root',
+      children: [
+        {
+          id: 'foo',
+          props: { header: { isVisible: false } },
+          children: [{ id: 'child' }],
+        },
+      ],
+    };
+    e.props({ node, current: 'foo' });
+  })
+  .add('inline (no children)', e => {
+    const node: ITreeNode = {
+      id: 'root',
+      children: [
+        { id: 'foo', props: { inline: { isVisible: true, isOpen: true } } },
+      ],
+    };
+    e.props({ node, current: 'root' });
+  })
+
+  .header('current')
+  .add('root (undefined)', e => e.props({ current: undefined }))
+  .add('root', e => e.props({ current: 'root' }))
+  .add('root.2', e => e.props({ current: 'root.2' }))
+  .add('root.2.1', e => e.props({ current: 'root.2.1' }))
+  .add('root.2.1.3', e => e.props({ current: 'root.2.1.3' }))
+  .add('NOT_EXIST', e => e.props({ current: 'NOT_EXIST' }))
+
+  .header('defaultNodeProps')
+  .add('with padding', e => {
+    e.props({ defaultNodeProps: { padding: [20, 0, 20, 5] } });
+  })
+  .add('with padding (via function)', e => {
+    e.props({
+      defaultNodeProps: args => {
+        log.info('defaultNodeProps:', args);
+        return { padding: [10, 0, 10, 5] };
+      },
+    });
+  })
+  .add('undefined', e => e.props({ defaultNodeProps: undefined }));
+
+/**
+ * Test View.
+ */
+export type IContentProps = ITreeViewProps & {};
+export type IContentState = {
+  node?: ITreeNode;
+  current?: ITreeViewProps['current'];
+};
+export class Content extends React.PureComponent<IContentProps, IContentState> {
+  public state: IContentState = {
+    current: this.props.current,
+    node: this.props.node,
+  };
+
+  private unmounted$ = new Subject();
+  private treeView: TreeView;
+  private treeViewRef = (ref: TreeView) => (this.treeView = ref);
+
+  public componentDidMount() {
+    /**
+     * Handle mouse events.
+     */
+    const treeEvents$ = this.treeView.events$.pipe(
+      takeUntil(this.unmounted$),
+      filter(e => e.button === 'LEFT'),
+    );
+
+    treeEvents$.subscribe(e => {
+      log.info('($) event: ', e);
+    });
+
+    const toggle = (node: ITreeNode) => {
+      const toggled = TreeView.util.toggleIsOpen(this.state.node, node);
+      this.setState({ node: toggled });
+    };
+
+    treeEvents$
+      .pipe(
+        filter(e => e.type === 'DOWN'),
+        filter(e => e.target === 'DRILL_IN'),
+      )
+      .subscribe(e => this.setState({ current: e.id }));
+
+    treeEvents$
+      .pipe(
+        filter(e => e.type === 'DOWN'),
+        filter(e => e.target === 'TWISTY'),
+      )
+      .subscribe(e => toggle(e.node));
+
+    treeEvents$
+      .pipe(
+        filter(e => e.type === 'DOUBLE_CLICK'),
+        filter(e => e.target === 'NODE'),
+      )
+      .subscribe(e => this.setState({ current: e.id }));
+
+    treeEvents$
+      .pipe(
+        filter(e => e.type === 'DOUBLE_CLICK'),
+        filter(e => e.target === 'NODE'),
+        filter(e => Boolean(e.props.inline)),
+      )
+      .subscribe(e => toggle(e.node));
+
+    treeEvents$
+      .pipe(
+        filter(e => e.type === 'DOWN'),
+        filter(e => e.target === 'PARENT'),
+      )
+      .subscribe(e => {
+        const args = { inline: false };
+        const parent = TreeView.util.parent(this.state.node, e.node, args);
+        return this.setState({ current: parent ? parent.id : undefined });
+      });
+  }
+
+  public componentWillUnmount() {
+    this.unmounted$.next();
+  }
+
+  public componentDidUpdate(prev: IContentProps) {
+    const { current, node } = this.props;
+    if (!R.equals(current, prev.current)) {
+      this.setState({ current });
+    }
+    if (!R.equals(node, prev.node)) {
+      this.setState({ node });
+    }
+  }
+
+  public render() {
+    const theme = themes.themeOrDefault(this.props);
+    const styles = {
+      base: css({
+        flex: 1,
+        display: 'flex',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        background: color
+          .create(theme.bg)
+          .darken(5)
+          .toRgbString(),
+      }),
+      panel: css({
+        width: 300,
+        display: 'flex',
+        boxSizing: 'border-box',
+        boxShadow: `0 0px 20px 0 ${color.format(-0.15)}`,
+      }),
+    };
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.panel}>
+          <TreeView
+            ref={this.treeViewRef}
+            renderIcon={sample.renderIcon}
+            {...this.props}
+            node={this.state.node}
+            current={this.state.current}
+            renderPanel={this.renderPanel}
+            onNodeMouse={this.handleNodeMouse}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  private handleHomeClick = () => {
+    this.setState({ current: 'root' });
+  };
+
+  private renderPanel = (e: types.RenderTreePanelArgs<ITreeNode>) => {
+    /**
+     * NOTE:  Use this flag to revent custom panel rendering if
+     *        the node is opened "inline" within it's parent.
+     */
+    if (e.isInline) {
+      // return undefined;
+    }
+
+    const match = ['root.2', 'root.6', 'foo'];
+    if (match.includes(e.node.id)) {
+      const styles = {
+        base: css({
+          flex: 1,
+          lineHeight: '1.6em',
+          padding: 2,
+        }),
+        link: css({ color: COLORS.BLUE, cursor: 'pointer' }),
+      };
+      return (
+        <div {...styles.base}>
+          <Foo style={{ flex: 1, lineHeight: '1.6em' }}>
+            <div>My Custom Panel: {e.node.id}</div>
+            <div onClick={this.handleHomeClick} {...styles.link}>
+              Home
+            </div>
+          </Foo>
+        </div>
+      );
+    }
+    return undefined;
+  };
+
+  private handleNodeMouse = (e: TreeNodeMouseEvent) => {
+    /**
+     * NOTE: See handlers working with `events$` observable above.
+     */
+    // log.info('!! onNodeMouse', e);
+  };
+}
+
+export const Test = actions.component(Content);

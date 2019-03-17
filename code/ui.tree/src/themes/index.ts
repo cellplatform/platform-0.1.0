@@ -13,11 +13,7 @@ export function color(
   theme: number | string | undefined,
 ) {
   const result =
-    prop === true
-      ? theme
-      : prop === false
-      ? 'transparent'
-      : valueUtil.defaultValue(prop, theme);
+    prop === true ? theme : prop === false ? 'transparent' : valueUtil.defaultValue(prop, theme);
   return colorUtil.format(result);
 }
 

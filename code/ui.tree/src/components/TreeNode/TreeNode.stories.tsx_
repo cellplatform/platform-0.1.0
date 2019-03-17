@@ -1,0 +1,11 @@
+import { React, describe } from '../../test/storybook';
+import { Test } from './Test';
+
+describe('components', {
+  title: 'A single leaf node within the tree.',
+  width: '100%',
+  height: '100%',
+  hr: false,
+  padding: 30,
+  flex: true,
+}).add('TreeNode', () => <Test />);
