@@ -906,6 +906,15 @@
     "@platform/react" "0.0.20"
     react-inspector "2.3.1"
 
+"@platform/ui.panel@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.0.0.tgz#b5ecb601bd6eeb876ba36350a485a2233578f626"
+  integrity sha512-mDC0Sz4L0ykUBhe/v/naj1hPc3ermdwOZz0oPjiCwSwsWLunhkiPZIiS7CIuXc1mUjw6HJt2+CtANBbADte2uA==
+  dependencies:
+    "@platform/react" "0.0.20"
+    "@platform/util.animate" "^0.0.0"
+    react "16.8.4"
+
 "@platform/ui.spinner@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.2.tgz#5c8f3f4ce19da0ef0a19259a41b09ab3e07e7509"
@@ -920,6 +929,14 @@
   dependencies:
     "@platform/react" "0.0.20"
     "@platform/util.value" "0.0.40"
+
+"@platform/util.animate@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.animate/-/util.animate-0.0.0.tgz#e975d06578b5cf29a8c3b23c7980a3c79d3eaec1"
+  integrity sha512-ENiEbLsAhgoPxddIZ3zCaGvqzL9ZN8NLjbfU0dyj+OxjgwCHaM8jqqGh8DQL49BV3igRqsnDpgz11w8g4BNm8Q==
+  dependencies:
+    "@platform/libs" "0.0.8"
+    dynamics.js "1.1.5"
 
 "@platform/util.exec@0.0.24":
   version "0.0.24"
@@ -2944,6 +2961,11 @@ duplexer3@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
   integrity sha1-7gHdHKwO08vH/b6jfcCo8c4ALOI=
+
+dynamics.js@1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/dynamics.js/-/dynamics.js-1.1.5.tgz#b90bdc33605cefe652b8416e701f79bf6eefce32"
+  integrity sha1-uQvcM2Bc7+ZSuEFucB95v27vzjI=
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"

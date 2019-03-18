@@ -4,31 +4,75 @@ import '@babel/polyfill';
 import { Button, ObjectView } from '@uiharness/ui';
 import * as React from 'react';
 
-import { MyComponent } from '../../src';
+import { TreeView } from '../../src';
+import { color, css, t } from '../../src/common';
+import { Icons } from './Icons';
+
+const TREE: t.ITreeNode = {
+  id: 'root',
+  props: {
+    label: 'Sheet',
+    icon: 'Face',
+    header: { isVisible: false },
+  },
+  children: [
+    { id: 'child-1', props: { icon: 'Face', marginTop: 30 } },
+    { id: 'child-2', props: { icon: 'Face' } },
+    { id: 'child-3', props: { icon: 'Face' } },
+    { id: 'child-4', props: { icon: 'Face' } },
+    { id: 'child-5', props: { icon: 'Face' } },
+  ],
+};
 
 /**
  * Test Component
  */
-export type IState = { count?: number };
+export type IState = { tree?: t.ITreeNode };
 export class Test extends React.PureComponent<{}, IState> {
-  public state: IState = {};
+  public state: IState = { tree: TREE };
 
   public render() {
+    const styles = {
+      base: css({
+        Absolute: 20,
+        Flex: 'horizontal',
+      }),
+      left: css({
+        width: 180,
+        Flex: 'vertical-spaceBetween',
+      }),
+
+      right: css({
+        flex: 1,
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+        paddingLeft: 20,
+        display: 'flex',
+      }),
+    };
     return (
-      <div style={{ paddingLeft: 25 }}>
-        <MyComponent />
-        <div style={{ marginBottom: 10 }}>
-          <Button label={'Increment'} onClick={this.increment(1)} />
-          <Button label={'Decrement'} onClick={this.increment(-1)} />
+      <div {...styles.base}>
+        <div {...styles.left}>
+          <div>
+            <Button label={'Foo'} />
+          </div>
+          <ObjectView name={'tree'} data={this.state.tree} />
         </div>
-        <ObjectView name={'state'} data={this.state} />
+        <div {...styles.right}>
+          <TreeView
+            node={this.state.tree}
+            theme={'LIGHT'}
+            background={'NONE'}
+            renderIcon={this.renderIcon}
+          />
+        </div>
       </div>
     );
   }
 
-  private increment = (amount: number) => {
-    return () => {
-      this.setState({ count: (this.state.count || 0) + amount });
-    };
+  /**
+   * [Handlers]
+   */
+  private renderIcon: t.RenderTreeIcon = e => {
+    return Icons[e.icon];
   };
 }

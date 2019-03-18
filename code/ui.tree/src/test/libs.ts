@@ -1,7 +1,6 @@
 export { expect } from 'chai';
 
 export * from '../common';
-export * from '@tdb/ui.test.tools';
 
 import * as themes from '../themes';
 export { themes };

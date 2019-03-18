@@ -70,9 +70,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   public render() {
     const props = this.nodeProps;
     const isEnabled = value.defaultValue(props.isEnabled, true);
-
-    const padding = css.arrayToEdges(props.padding || DEFAULT.PADDING);
-
+    const padding = css.arrayToEdges(props.padding) || DEFAULT.PADDING;
     const styles = {
       base: css({
         position: 'relative',
