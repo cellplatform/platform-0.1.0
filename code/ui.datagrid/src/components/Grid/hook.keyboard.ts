@@ -1,14 +1,15 @@
 import { Grid } from '../api';
 
 /**
- * Factory for creating a grid keydown handler.
+ * Factory for creating a grid's `beforeKeyDown` handler.
  *
  * See:
+ *   - https://handsontable.com/docs/6.2.2/Hooks.html#event:beforeKeyDown
  *   - https://jsfiddle.net/handsoncode/n8eft0m1/
  *   - https://forum.handsontable.com/t/keyboard-cycling/2802/4
  *
  */
-export function keydownHandler(getGrid: () => Grid) {
+export function beforeKeyDownHandler(getGrid: () => Grid) {
   return function(e: Event) {
     // @ts-ignore
     const table = this as Handsontable;
@@ -28,6 +29,7 @@ export function keydownHandler(getGrid: () => Grid) {
       type: 'GRID/keydown',
       payload: {
         key,
+        grid,
         event,
         isEnter,
         isEscape,

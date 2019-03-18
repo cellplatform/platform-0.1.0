@@ -47,7 +47,7 @@ export class Grid {
   );
   public readonly keys$ = this._.events$.pipe(
     filter(e => e.type === 'GRID/keydown'),
-    map(e => e.payload as t.IGridKeydown),
+    map(e => e.payload as t.IGridKeypress),
     share(),
   );
 

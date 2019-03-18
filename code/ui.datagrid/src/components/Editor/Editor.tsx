@@ -130,7 +130,7 @@ export class Editor extends editors.TextEditor {
      *    Hide the text-editor created in the base-class.
      *    There is a bunch of base-class behavior we want to inherit, so simply
      *    hiding their input and doing our own thing has us maintaining less
-     *    code that if we fully implemented from `BaseEditor`.
+     *    code than if we fully implemented from `BaseEditor`.
      */
     this.textareaStyle.display = 'none';
   }
@@ -152,7 +152,8 @@ export class Editor extends editors.TextEditor {
       return;
     }
 
-    const el = this.render();
+    const context = this.context;
+    const el = this.render(context);
     if (!el) {
       this.onCancel();
       return;
@@ -177,10 +178,6 @@ export class Editor extends editors.TextEditor {
    */
   public finishEditing(restoreOriginalValue?: boolean, ctrlDown?: boolean, callback?: () => void) {
     super.finishEditing(restoreOriginalValue, ctrlDown, callback);
-
-    // console.group('🌳 FINISH');
-    // console.log('restoreOriginalValue', restoreOriginalValue);
-    // console.groupEnd();
 
     if (!this._.isEditing) {
       return;
@@ -225,7 +222,6 @@ export class Editor extends editors.TextEditor {
 
   private onComplete: t.IEditorContext['complete'] = args => {
     time.delay(0, () => {
-      console.log('COMPLETE', args);
       this._.value = args.value;
 
       // NOTE:
@@ -241,9 +237,7 @@ export class Editor extends editors.TextEditor {
   /**
    * Renders the popup-editor within a <Provider> context.
    */
-
-  private render() {
-    const context = this.context;
+  private render(context: t.IEditorContext) {
     const { row, column } = context;
     const el = this.refs.factory.editor({ row, column });
     if (!el) {

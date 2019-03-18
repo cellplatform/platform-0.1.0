@@ -15,7 +15,7 @@ import {
   value,
 } from '../../common';
 import { Grid as GridApi } from '../api';
-import { keydownHandler } from './keyboard';
+import * as hook from './hook';
 import { IGridRefsPrivate } from './types.private';
 import { FactoryManager } from '../factory';
 
@@ -110,6 +110,9 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
   private get settings(): IGridSettings {
     const defaultValue = value.defaultValue;
     let settings = this.props.settings || {};
+
+    const getGrid = () => this.grid;
+
     settings = {
       ...settings,
       rowHeaders: defaultValue(settings.rowHeaders, true),
@@ -119,7 +122,8 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
       viewportRowRenderingOffset: defaultValue(settings.viewportRowRenderingOffset, 20),
       manualRowResize: defaultValue(settings.manualRowResize, true),
       manualColumnResize: defaultValue(settings.manualColumnResize, true),
-      beforeKeyDown: keydownHandler(() => this.grid),
+      beforeKeyDown: hook.beforeKeyDownHandler(getGrid),
+      beforeChange: hook.beforeChangeHandler(getGrid),
     };
 
     return settings;

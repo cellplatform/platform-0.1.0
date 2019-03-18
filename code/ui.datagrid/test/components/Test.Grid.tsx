@@ -70,6 +70,29 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     events$.subscribe(e => {
       // console.log('🌳  EVENT', e.type, e.payload);
     });
+
+    const change$ = events$.pipe(
+      filter(e => e.type === 'GRID/change'),
+      map(e => e.payload as t.IGridChange),
+    );
+
+    const changeSet$ = events$.pipe(
+      filter(e => e.type === 'GRID/changeSet'),
+      map(e => e.payload as t.IGridChangeSet),
+    );
+
+    change$.subscribe(e => {
+      // e.cancel();
+      console.log('CHANGE', e);
+    });
+
+    change$.pipe(filter(e => e.column === 1 && e.row === 1)).subscribe(e => {
+      // e.cancel();
+      console.log('-------------------------------------------');
+      e.cancel();
+    });
+
+    // changeSet$.subscribe(e => {});
   }
 
   public componentWillUnmount() {
@@ -129,6 +152,7 @@ export function createSampleData(args: { Table: Handsontable }) {
   const data = createEmptyData(1000, 100);
   data[0][0] = 'A1';
   data[0][1] = 'locked';
+  data[1][1] = 'cancel';
 
   // console.log('data', data);
   // const getSelectedLast = this.getSelectedLast
@@ -139,19 +163,19 @@ export function createSampleData(args: { Table: Handsontable }) {
 
     // observeChanges: true,
 
-    /**
-     * See:
-     *   - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterBeginEditing
-     *   - Source callback
-     *      https://handsontable.com/docs/6.2.2/tutorial-using-callbacks.html#page-source-definition
-     */
-    beforeChange(changes, source) {
-      // console.group('🌳 beforeChange');
-      // console.log('source', source);
-      // console.log('changes', [...changes]);
-      // console.groupEnd();
-      // return false; // Cancel's change.
-    },
+    // /**
+    //  * See:
+    //  *   - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterBeginEditing
+    //  *   - Source callback
+    //  *      https://handsontable.com/docs/6.2.2/tutorial-using-callbacks.html#page-source-definition
+    //  */
+    // beforeChange(changes, source) {
+    //   console.group('🌳 beforeChange');
+    //   console.log('source', source);
+    //   console.log('changes', [...changes]);
+    //   console.groupEnd();
+    //   return false; // Cancel's change.
+    // },
 
     afterChange(e) {
       // console.log('afterChange', e);
