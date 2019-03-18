@@ -59,6 +59,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/util.is](/code/util.is)
   - [@platform/util.string](/code/util.string)
   - [@platform/util.value](/code/util.value)
+  - [@platform/util.value.cell](/code/util.value.cell)
 - ui
   - [@platform/react](/code/react)
   - [@platform/css](/code/css)
