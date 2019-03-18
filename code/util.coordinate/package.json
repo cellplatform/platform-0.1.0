@@ -12,7 +12,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.8"
+    "@platform/util.value": "0.0.41",
+    "excel-formula-ast": "^1.1.1",
+    "excel-formula-tokenizer": "^2.3.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.33",

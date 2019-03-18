@@ -1,4 +1,6 @@
-import { toAlphaCharacter } from '../common';
+import { toAlphaCharacter } from './util/toAlpha';
+import * as parser from './util/parser';
+import { t } from '../common';
 
 /**
  * Converts indexes into alpha-numeric cell code.
@@ -7,7 +9,7 @@ import { toAlphaCharacter } from '../common';
  *    - -1,0  => A   (COLUMN)
  *    -  0,-1 => 1   (ROW)
  */
-export function toCellKey(column?: number, row?: number) {
+export function toKey(column?: number, row?: number) {
   // Setup initial conditions.
   column = column === undefined ? -1 : column;
   row = row === undefined ? -1 : row;
@@ -32,6 +34,16 @@ export function toCellKey(column?: number, row?: number) {
 
   // Finish up.
   return result;
+}
+
+/**
+ * Attempts to parse the given cell key.
+ */
+export function fromKey(key: string): t.IGridCellPosition {
+  const parts = parser.toParts(key);
+  const row = parts.row.index;
+  const column = parts.column.index;
+  return { row, column };
 }
 
 /**
