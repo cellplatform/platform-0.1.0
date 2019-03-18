@@ -34,5 +34,6 @@ export type IEndEditingEvent = {
     cell: Cell;
     isCancelled: boolean;
     value: { from?: t.CellValue; to?: t.CellValue };
+    cancel(): void;
   };
 };

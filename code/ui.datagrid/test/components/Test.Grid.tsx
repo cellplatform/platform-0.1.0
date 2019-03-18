@@ -55,6 +55,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         filter(e => !e.payload.isCancelled),
       )
       .subscribe(e => {
+        e.payload.cancel();
+
         let settings = this.state.settings;
         if (settings) {
           settings = { ...settings };

@@ -1,4 +1,5 @@
 import { cell as util } from '@platform/util.value.cell';
+import { t } from '../common';
 
 /**
  * API for accessing and manipulating a cell.
@@ -70,6 +71,13 @@ export class Cell {
 
   public get height() {
     return this.td.offsetHeight;
+  }
+
+  public get data(): t.CellValue {
+    return this._.table.getDataAtCell(this.row, this.column);
+  }
+  public set data(value: t.CellValue) {
+    this._.table.setDataAtCell(this.row, this.column, value);
   }
 
   public get sibling() {

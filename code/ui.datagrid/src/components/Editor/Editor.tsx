@@ -214,20 +214,25 @@ export class Editor extends editors.TextEditor {
     ReactDOM.unmountComponentAtNode(this.TEXTAREA_PARENT);
 
     // Alert listeners.
+    const payload: t.IEndEditingEvent['payload'] = {
+      isCancelled,
+      value: { from, to },
+      get cell() {
+        return grid.cell({ row, column });
+      },
+      cancel() {
+        payload.isCancelled = true;
+        grid.cell({ row, column }).data = from; // NB: Revert the value.
+      },
+    };
     const e: t.IEndEditingEvent = {
       type: 'GRID/EDITOR/end',
-      payload: {
-        isCancelled,
-        value: { from, to },
-        get cell() {
-          return grid.cell({ row, column });
-        },
-      },
+      payload,
     };
 
     // Finish up.
     this._.current = undefined;
-    time.delay(0, () => this.refs.editorEvents$.next(e)); // NB: After delay to ensure event lands after all change events have fired.
+    this.refs.editorEvents$.next(e);
   }
 
   /**
