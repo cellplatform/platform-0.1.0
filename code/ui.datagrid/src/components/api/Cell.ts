@@ -1,3 +1,5 @@
+import { cell as cellUtil } from '@platform/util.value.cell';
+
 type IConstructArgs = {
   table: Handsontable;
   row: number;
@@ -37,6 +39,12 @@ export class Cell {
   /**
    * [Properties]
    */
+  public get key() {
+    const row = this.row;
+    const column = this.column;
+    return cellUtil.toKey(column, row);
+  }
+
   public get isDisposed() {
     return this._.table.isDestroyed;
   }

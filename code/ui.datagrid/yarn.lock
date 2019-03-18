@@ -987,6 +987,15 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.40.tgz#ff2ca1488d0f773c3d3e179eb509c74cda133dab"
   integrity sha512-81i0EV6IwBZEb2b9GFVVjeiu7NP2NQRmaO8mtqooGxKr9wuWb0xyBOvekJfCyDbnDC9sny+Mv+IOWx70rnimaQ==
 
+"@platform/util.value.cell@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.0.2.tgz#836dac94601a8e6964be8e4c02639c78785c8f24"
+  integrity sha512-+gBqrs48aem4NDadsYHetTDUO7ZyGOk+TWamlmvM2AbiXeV8UB2KLU9cLponqdbcgKrh5bdUObvR37whcPvlig==
+  dependencies:
+    "@platform/util.value" "0.0.41"
+    excel-formula-ast "1.1.1"
+    excel-formula-tokenizer "2.3.0"
+
 "@platform/util.value@0.0.40":
   version "0.0.40"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.40.tgz#67b4756db1b1ae4605b6c1cb6884c8252ee0d510"
@@ -3326,6 +3335,16 @@ evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
   dependencies:
     md5.js "^1.3.4"
     safe-buffer "^5.1.1"
+
+excel-formula-ast@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/excel-formula-ast/-/excel-formula-ast-1.1.1.tgz#44dd1379ae70e620691ad8063080ae62c1c2e944"
+  integrity sha512-DWVBtdSge+m4ickkAgljS/ub+RoPy1kz9XxkWUObEWHYGTge9NdzyUKri8OSZZlS+PoG6RcC7eoaRrwe3gzBUQ==
+
+excel-formula-tokenizer@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/excel-formula-tokenizer/-/excel-formula-tokenizer-2.3.0.tgz#e2ea4b217acb8a9c5cf0062fe783bf7c0928f5f4"
+  integrity sha512-9xqAUwL0hTyAopyuE8jhmmnLlxFjbC4t5bxrf+q0QgPxsKohJW90wD9zvLCNqc/DXN/O1TBDoiOd04txFVcl0w==
 
 execa@^0.7.0:
   version "0.7.0"
