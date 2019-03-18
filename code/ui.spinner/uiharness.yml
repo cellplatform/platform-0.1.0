@@ -1,13 +1,13 @@
 name: ui.spinner
 
 electron:
-  port: 9098
+  port: 8804
   entry:
     main: test/main.ts
     renderer: test/renderer.tsx
 
 web:
-  port: 3030
+  port: 3034
   entry: test/web.tsx
 
 sourcemaps:

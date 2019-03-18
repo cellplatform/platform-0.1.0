@@ -1,0 +1,57 @@
+import { ITreeNodeListProps, TreeNodeList } from '.';
+import { Actions, color, css, React, sample } from '../../test';
+
+type P = Partial<ITreeNodeListProps>;
+const node = sample.createRoot(35);
+
+const actions = Actions.create<P>({ id: 'test.TreeNodeList' })
+  .props({ node })
+  .header('root')
+  .add('children: undefined', e => e.props({ node: sample.createRoot() }))
+  .add('children: 0', e => e.props({ node: sample.createRoot(0) }))
+  .add('children: 3', e => e.props({ node: sample.createRoot(3) }))
+  .add('children: 10', e => e.props({ node: sample.createRoot(10) }))
+  .add('children: 50', e => e.props({ node: sample.createRoot(50) }))
+  .add('children: 100', e => e.props({ node: sample.createRoot(100) }))
+
+  .header('node.isSpinning')
+  .add('true', e => e.props(sample.nextNode(e, { isSpinning: true })))
+  .add('false', e => e.props(sample.nextNode(e, { isSpinning: false })))
+  .add('undefined', e => e.props(sample.nextNode(e, { isSpinning: undefined })))
+
+  .header('isScrollable')
+  .add('true', e => e.props({ isScrollable: true }))
+  .add('false', e => e.props({ isScrollable: false }))
+  .add('undefined', e => e.props({ isScrollable: undefined }));
+
+/**
+ * Test View.
+ */
+
+export class Content extends React.PureComponent<Partial<ITreeNodeListProps>> {
+  public render() {
+    const styles = {
+      base: css({
+        flex: 1,
+        display: 'flex',
+        justifyContent: 'center',
+        background: color.format(-0.03),
+      }),
+      panel: css({
+        width: 350,
+        display: 'flex',
+        boxSizing: 'border-box',
+        background: 'white',
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.panel}>
+          <TreeNodeList renderIcon={sample.renderIcon} {...this.props as any} />
+        </div>
+      </div>
+    );
+  }
+}
+
+export const Test = actions.component(Content);

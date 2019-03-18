@@ -95,10 +95,10 @@
     tslint-react "3.6.0"
     typescript "3.3.3333"
 
-"@platform/ts@3.3.66":
-  version "3.3.66"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.66.tgz#c20f3cbb57f580beec2918c375af47c71db339d1"
-  integrity sha512-FxvopGjdLJtyXBa6OmYvCUbh3ZnCN2zWbRlokvygu1CcDX7Eu/kzKESTozRRnMNe6Sm6hm2OuLh9y7nAFzwq+w==
+"@platform/ts@3.3.67":
+  version "3.3.67"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.67.tgz#face4fca29115e595293dacf9bf4fe01f1eb4b53"
+  integrity sha512-dmBsvqIOaQrF37jZ8j5s0MkVEtwVMTZ2Ug7kEPMblmwpoc3BIpk0iOthLOwWMYxDSukP9wJvOinDt08yW6ZnKg==
   dependencies:
     "@platform/cli" "0.0.63"
     "@platform/fs" "0.0.40"
@@ -118,18 +118,18 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/util.is@0.0.39":
-  version "0.0.39"
-  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.39.tgz#3fa66c1ce072d62216265f5cef4b2937aeb8c192"
-  integrity sha512-sk0ogc76ZeVtRC0Q9tS19xii+IwRoyJ4poMUvPIiWo+v8A4X3gaBf4O8AkdULcRcAjqDq0w19c+JfMeC816Trw==
-
-"@platform/util.value@0.0.40":
+"@platform/util.is@0.0.40":
   version "0.0.40"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.40.tgz#67b4756db1b1ae4605b6c1cb6884c8252ee0d510"
-  integrity sha512-DqjyXpktBIyfIOLpLwu5Yp9S23JstfBEu0PT91FTQ9SPqJN8BSsE8AJmSD3OI7YREMVVgba0f4Fae28JfQyJbQ==
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.40.tgz#ff2ca1488d0f773c3d3e179eb509c74cda133dab"
+  integrity sha512-81i0EV6IwBZEb2b9GFVVjeiu7NP2NQRmaO8mtqooGxKr9wuWb0xyBOvekJfCyDbnDC9sny+Mv+IOWx70rnimaQ==
+
+"@platform/util.value@0.0.41":
+  version "0.0.41"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.41.tgz#6146bc8f7e526c7f26a3b8ae3b4225445632eba5"
+  integrity sha512-nZXdBAQVJMs7DvSup8r89XUUqww7wx13Io7ahR4QdjQoaZexkIg2nBrmiwLRPPHYOJBbPchj79GUIf5x8WnaWA==
   dependencies:
     "@platform/libs" "0.0.8"
-    "@platform/util.is" "0.0.39"
+    "@platform/util.is" "0.0.40"
     "@types/semver" "5.5.0"
     cuid "2.1.6"
     dayjs "1.8.10"

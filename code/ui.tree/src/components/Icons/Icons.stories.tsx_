@@ -1,0 +1,12 @@
+import { IconGrid } from '@tdb/ui.icon/lib/components.test';
+import { React, describe } from '../../test/storybook';
+import { Icons } from '.';
+
+describe('components', {
+  title: 'Icon collection.',
+  width: '100%',
+  height: '100%',
+}).add('Icons', () => {
+  const icons = Object.keys(Icons).map(name => ({ name, icon: Icons[name] }));
+  return <IconGrid icons={icons} />;
+});

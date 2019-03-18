@@ -1,11 +1,11 @@
 name: ui.object
 
 electron:
-  port: 9091
+  port: 8803
   entry:
     main: test/main.ts
     renderer: test/renderer.tsx
 
 web:
-  port: 3030
+  port: 3033
   entry: test/web.tsx

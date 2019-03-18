@@ -1,2 +1,2 @@
 export { is } from '@platform/util.is';
-export { GlamorValue, css } from '@platform/css';
+export { GlamorValue, css, color } from '@platform/css';

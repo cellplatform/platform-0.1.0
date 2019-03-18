@@ -53,18 +53,21 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - [@platform/log](/code/log)
 - [@platform/electron](/code/electron)
 - util
+  - [@platform/animate](/code/animate)
   - [@platform/util.exec](/code/util.exec)
   - [@platform/util.is](/code/util.is)
+  - [@platform/util.string](/code/util.string)
   - [@platform/util.value](/code/util.value)
 - ui
   - [@platform/react](/code/react)
   - [@platform/css](/code/css)
 - ui (components)
   - [@platform/ui.editor](/code/ui.editor)
+  - [@platform/ui.icon](/code/ui.icon)
   - [@platform/ui.object](/code/ui.object)
+  - [@platform/ui.panel](/code/ui.panel)
   - [@platform/ui.spinner](/code/ui.spinner)
   - [@platform/ui.text](/code/ui.text)
-  - [@platform/ui.icon](/code/ui.icon)
 - state
   - [@platform/hyperdb](/code/hyperdb)
   - [@platform/hyperdb.electron](/code/hyperdb.electron)

@@ -1,0 +1,154 @@
+import { ITreeNode, ITreeNodeProps, TreeNode, TreeNodeMouseEvent } from '.';
+import {
+  Actions,
+  css,
+  Foo,
+  log,
+  LOREM,
+  React,
+  sample,
+  themes,
+} from '../../test';
+import { Icons } from '../Icons';
+
+export const nextNode = sample.nextNode;
+
+type P = Partial<ITreeNodeProps>;
+const node: ITreeNode = {
+  id: 'root',
+  props: {
+    label: 'Root',
+    icon: 'Face',
+    description: LOREM,
+    badge: 123,
+    // isSpinning: true,
+    // isEnabled: false,
+  },
+};
+
+/**
+ * Test Actions.
+ */
+const actions = Actions.create<P>({ id: 'test.TreeNode' })
+  .props({
+    node,
+    iconRight: Icons.ChevronRight,
+    theme: themes.DARK,
+    // twisty: 'CLOSED',
+    // children: <Foo>children</Foo>,
+  })
+  .header('theme')
+  .add('LIGHT', e => e.props({ theme: themes.LIGHT }))
+  .add('DARK', e => e.props({ theme: themes.DARK }))
+
+  .header('twisty')
+  .add('OPEN', e => e.props({ twisty: 'OPEN' }))
+  .add('CLOSED', e => e.props({ twisty: 'CLOSED' }))
+  .add('null (space placeholder)', e => e.props({ twisty: null }))
+  .add('undefined', e => e.props({ twisty: undefined }))
+
+  .header('icon (left)')
+  .add('Face (string)', e => e.props(nextNode(e, { icon: 'Face' })))
+  .add('Close (string)', e => e.props(nextNode(e, { icon: 'Close' })))
+  .add('404 (string, not exist)', e => e.props(nextNode(e, { icon: '404' })))
+  .add('null (space placeholder)', e => e.props(nextNode(e, { icon: null })))
+  .add('undefined', e => e.props(nextNode(e, { icon: undefined })))
+
+  .header('icon (right)')
+  .add('chevron', e => e.props({ iconRight: Icons.ChevronRight }))
+  .add('null (space placeholder)', e => e.props({ iconRight: null }))
+  .add('undefined', e => e.props({ iconRight: undefined }))
+
+  .header('label')
+  .add('"Hello"', e => e.props(nextNode(e, { label: 'Hello' })))
+  .add('long...', e => e.props(nextNode(e, { label: LOREM })))
+  .add('undefined (node.id)', e => e.props(nextNode(e, { label: undefined })))
+
+  .header('isBold (label)')
+  .add('true', e => e.props(nextNode(e, { isBold: true })))
+  .add('false', e => e.props(nextNode(e, { isBold: false })))
+  .add('undefined (node.id)', e => e.props(nextNode(e, { isBold: undefined })))
+
+  .header('description')
+  .add('short', e =>
+    e.props(
+      nextNode(e, {
+        description: `A short description that isn't too long, it's just right.`,
+      }),
+    ),
+  )
+  .add('long', e => e.props(nextNode(e, { description: LOREM })))
+  .add('undefined', e => e.props(nextNode(e, { description: undefined })))
+
+  .header('statusBadge')
+  .add('123', e => e.props(nextNode(e, { badge: 123 })))
+  .add('"OK"', e => e.props(nextNode(e, { badge: 'OK' })))
+  .add('undefined', e => e.props(nextNode(e, { badge: undefined })))
+
+  .header('padding')
+  .add('[5, 0, 5, 5]', e => e.props(nextNode(e, { padding: [5, 0, 5, 5] })))
+  .add('[15, 0, 15, 5]', e => e.props(nextNode(e, { padding: [15, 0, 15, 5] })))
+  .add('0', e => e.props(nextNode(e, { padding: 0 })))
+  .add('10', e => e.props(nextNode(e, { padding: 10 })))
+  .add('undefined', e => e.props(nextNode(e, { padding: undefined })))
+
+  .header('border')
+  .add('top (LIGHT)', e => e.props(nextNode(e, { borderTop: -0.06 })))
+  .add('bottom (LIGHT)', e => e.props(nextNode(e, { borderBottom: -0.06 })))
+  .add('none (0)', e => e.props(nextNode(e, { borderTop: 0, borderBottom: 0 })))
+  .add('undefined', e =>
+    e.props(nextNode(e, { borderTop: undefined, borderBottom: undefined })),
+  )
+
+  .header('isSpinning')
+  .add('true', e => e.props(nextNode(e, { isSpinning: true })))
+  .add('false', e => e.props(nextNode(e, { isSpinning: false })))
+
+  .header('isSelected')
+  .add('true', e => e.props(nextNode(e, { isSelected: true })))
+  .add('false', e => e.props(nextNode(e, { isSelected: false })))
+
+  .header('isEnabled')
+  .add('true', e => e.props(nextNode(e, { isEnabled: true })))
+  .add('false', e => e.props(nextNode(e, { isEnabled: false })))
+
+  .header('children')
+  .add('<Foo>', e => e.props({ children: <Foo>children</Foo> }))
+  .add('undefined', e => e.props({ children: undefined }))
+
+  .hr();
+
+/**
+ * Test View.
+ */
+export class Content extends React.PureComponent<ITreeNodeProps> {
+  public render() {
+    const theme = themes.themeOrDefault(this.props);
+    const styles = {
+      base: css({
+        Absolute: 0,
+        backgroundColor: theme.bg,
+        Flex: 'start-center',
+        paddingTop: 50,
+      }),
+      node: css({ width: 350 }),
+    };
+    return (
+      <div {...styles.base}>
+        <TreeNode
+          style={styles.node}
+          renderIcon={sample.renderIcon}
+          {...this.props}
+          node={this.props.node}
+          onMouse={this.handleMouse}
+        />
+      </div>
+    );
+  }
+
+  private handleMouse = (e: TreeNodeMouseEvent) => {
+    log.info('!! onMouse: ', e);
+  };
+}
+
+export const Test = actions.component(Content);

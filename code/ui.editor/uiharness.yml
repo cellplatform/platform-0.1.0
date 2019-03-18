@@ -1,13 +1,13 @@
 name: ui.editor
 
 electron:
-  port: 9090
+  port: 8801
   entry:
     main: test/main.ts
     renderer: test/renderer.tsx
 
 web:
-  port: 3030
+  port: 3031
   entry: test/web.tsx
 
 sourcemaps:

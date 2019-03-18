@@ -1,0 +1,23 @@
+{
+  "name": "@platform/ui.panel",
+  "version": "0.0.1",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build $@",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/react": "0.0.21",
+    "@platform/util.animate": "0.0.1",
+    "react": "16.8.4"
+  },
+  "devDependencies": {
+    "@uiharness/dev": "0.2.5"
+  },
+  "license": "MIT"
+}

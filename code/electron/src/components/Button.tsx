@@ -19,6 +19,7 @@ export type IButtonProps = mouse.IMouseEventProps & {
   children?: React.ReactNode;
   label?: string;
   isEnabled?: boolean;
+  block?: boolean;
   theme?: Partial<IButtonTheme>;
   style?: GlamorValue;
 };
@@ -73,13 +74,14 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
    * [Render]
    */
   public render() {
+    const { block = false } = this.props;
     const { isDown = false } = this.state;
     const isEnabled = this.isEnabled;
     const theme = this.theme;
     const styles = {
       base: css({
         position: 'relative',
-        display: 'inline-block',
+        display: block ? 'block' : 'inline-block',
         color: isEnabled ? theme.enabledColor : theme.disabledColor,
         cursor: isEnabled && 'pointer',
         transform: isEnabled && `translateY(${isDown ? 1 : 0}px)`,

@@ -1,13 +1,13 @@
 name: ui.icon
 
 electron:
-  port: 9097
+  port: 8802
   entry:
     main: test/main.ts
     renderer: test/renderer.tsx
 
 web:
-  port: 3031
+  port: 3032
   entry: test/web.tsx
 
 sourcemaps:
