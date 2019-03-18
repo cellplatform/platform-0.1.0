@@ -4,7 +4,7 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { GlamorValue, Handsontable as HandsontableLib, t, datagrid } from './common';
 import { Editor } from '../../src/components/Editor';
-import * as render from '../../src/components/Grid.render';
+import * as render from '../../src/components/render';
 import { TestEditor } from './Test.Editor';
 
 const createColumns = (length: number) => {

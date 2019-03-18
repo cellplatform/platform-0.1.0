@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { filter, share, take, takeUntil, map } from 'rxjs/operators';
 
 import { time, constants, Handsontable, t } from '../../common';
-import { IGridRefsPrivate } from '../Grid/types.private';
+import { IGridRefsPrivate } from '../DataGrid/types.private';
 import { createProvider } from './EditorContext';
 
 const editors = Handsontable.editors as Editors;
