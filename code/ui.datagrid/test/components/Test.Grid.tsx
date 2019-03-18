@@ -31,8 +31,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private events$ = new Subject<t.GridEvent>();
 
-  private grid!: datagrid.Grid;
-  private gridRef = (ref: datagrid.Grid) => (this.grid = ref);
+  private grid!: datagrid.DataGrid;
+  private gridRef = (ref: datagrid.DataGrid) => (this.grid = ref);
 
   /**
    * [Lifecycle]
@@ -120,7 +120,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public render() {
     return (
-      <datagrid.Grid
+      <datagrid.DataGrid
         ref={this.gridRef}
         settings={this.state.settings}
         events$={this.events$}
@@ -151,10 +151,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
  * `Sample Data`
  */
 export function createEmptyData(rows: number, columns: number) {
-  return Array.from({ length: rows }).map(row =>
-    Array.from({ length: columns }).map(col => {
+  return Array.from({ length: rows }).map((v, row) =>
+    Array.from({ length: columns }).map((v, column) => {
       // return { foo: 123 } as any;
       return '';
+      // return datagrid.Cell.toKey({ row, column });
     }),
   );
 }

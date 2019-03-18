@@ -21,14 +21,14 @@ import { FactoryManager } from '../factory';
 
 export type IGridSettings = DefaultSettings;
 
-export type IGridProps = {
+export type IDataGridProps = {
   style?: GlamorValue;
   settings?: IGridSettings;
   Handsontable?: Handsontable;
   factory?: t.GridFactory;
   events$?: Subject<t.GridEvent>;
 };
-export type IGridState = {
+export type IDataGridState = {
   size?: { width: number; height: number };
 };
 
@@ -41,13 +41,13 @@ export type IGridState = {
  *    https://forum.handsontable.com
  *
  */
-export class Grid extends React.PureComponent<IGridProps, IGridState> {
-  public state: IGridState = {};
+export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState> {
+  public state: IDataGridState = {};
   public grid!: GridApi;
   public factory!: FactoryManager;
 
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<IGridState>>();
+  private state$ = new Subject<Partial<IDataGridState>>();
 
   private el: HTMLDivElement;
   private elRef = (ref: HTMLDivElement) => (this.el = ref);
