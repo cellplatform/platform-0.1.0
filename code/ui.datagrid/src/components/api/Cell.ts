@@ -1,10 +1,4 @@
-import { cell as cellUtil } from '@platform/util.value.cell';
-
-type IConstructArgs = {
-  table: Handsontable;
-  row: number;
-  column: number;
-};
+import { cell as util } from '@platform/util.value.cell';
 
 /**
  * API for accessing and manipulating a cell.
@@ -13,14 +7,24 @@ export class Cell {
   /**
    * [Static]
    */
-  public static create(args: IConstructArgs) {
+  public static create(args: { table: Handsontable; row: number; column: number }) {
     return new Cell(args);
+  }
+
+  public static fromKey(args: { table: Handsontable; cellKey: string }) {
+    const { table, cellKey } = args;
+    const { row, column } = util.fromKey(cellKey);
+    return new Cell({ table, row, column });
+  }
+
+  public static toKey(args: { row: number; column: number }) {
+    return util.toKey(args.column, args.row);
   }
 
   /**
    * [Constructor]
    */
-  private constructor(args: IConstructArgs) {
+  private constructor(args: { table: Handsontable; row: number; column: number }) {
     this._.table = args.table;
     this.row = args.row;
     this.column = args.column;
@@ -42,7 +46,7 @@ export class Cell {
   public get key() {
     const row = this.row;
     const column = this.column;
-    return cellUtil.toKey(column, row);
+    return Cell.toKey({ column, row });
   }
 
   public get isDisposed() {
