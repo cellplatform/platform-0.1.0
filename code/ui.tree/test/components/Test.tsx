@@ -5,7 +5,7 @@ import { Button, ObjectView } from '@uiharness/ui';
 import * as React from 'react';
 
 import { TreeView } from '../../src';
-import { color, css, t } from '../../src/common';
+import { color, css, t, COLORS } from '../../src/common';
 import { Icons } from './Icons';
 
 const TREE: t.ITreeNode = {
@@ -27,11 +27,15 @@ const TREE: t.ITreeNode = {
 /**
  * Test Component
  */
-export type IState = { tree?: t.ITreeNode };
+export type IState = {
+  tree?: t.ITreeNode;
+  theme?: t.TreeTheme;
+};
 export class Test extends React.PureComponent<{}, IState> {
-  public state: IState = { tree: TREE };
+  public state: IState = { tree: TREE, theme: 'LIGHT' };
 
   public render() {
+    const { theme } = this.state;
     const styles = {
       base: css({
         Absolute: 20,
@@ -40,11 +44,13 @@ export class Test extends React.PureComponent<{}, IState> {
       left: css({
         width: 180,
         Flex: 'vertical-spaceBetween',
+        lineHeight: 1.6,
       }),
 
       right: css({
         flex: 1,
         borderLeft: `solid 1px ${color.format(-0.1)}`,
+        backgroundColor: theme === 'DARK' && COLORS.DARK,
         paddingLeft: 20,
         display: 'flex',
       }),
@@ -53,14 +59,15 @@ export class Test extends React.PureComponent<{}, IState> {
       <div {...styles.base}>
         <div {...styles.left}>
           <div>
-            <Button label={'Foo'} />
+            {this.button('theme: LIGHT', () => this.setState({ theme: 'LIGHT' }))}
+            {this.button('theme: DARK', () => this.setState({ theme: 'DARK' }))}
           </div>
           <ObjectView name={'tree'} data={this.state.tree} />
         </div>
         <div {...styles.right}>
           <TreeView
             node={this.state.tree}
-            theme={'LIGHT'}
+            theme={this.state.theme}
             background={'NONE'}
             renderIcon={this.renderIcon}
           />
@@ -68,6 +75,10 @@ export class Test extends React.PureComponent<{}, IState> {
       </div>
     );
   }
+
+  private button = (label: string, handler: () => void) => {
+    return <Button label={label} onClick={handler} />;
+  };
 
   /**
    * [Handlers]
