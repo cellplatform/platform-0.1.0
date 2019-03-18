@@ -53,7 +53,8 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - [@platform/log](/code/log)
 - [@platform/electron](/code/electron)
 - util
-  - [@platform/animate](/code/animate)
+  - [@platform/util.animate](/code/util.animate)
+  - [@platform/util.coordinate](/code/util.coordinate)  
   - [@platform/util.exec](/code/util.exec)
   - [@platform/util.is](/code/util.is)
   - [@platform/util.string](/code/util.string)

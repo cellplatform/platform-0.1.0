@@ -1,0 +1,25 @@
+{
+  "name": "@platform/util.coordinate",
+  "version": "0.0.0",
+  "description": "Data types for cooridnates (such as cell keys).",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/libs": "0.0.8"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.33",
+    "@platform/ts": "3.3.67"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}
