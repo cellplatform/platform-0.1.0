@@ -1,4 +1,4 @@
-import { Grid } from '../api';
+import { Grid } from '../../api';
 import { FactoryManager } from '../factory';
 import * as t from '../../types';
 

@@ -1,4 +1,4 @@
-import { Grid } from '../api';
+import { Grid } from '../../api';
 import { t } from '../../common';
 import { TableEventSource } from './types.private';
 

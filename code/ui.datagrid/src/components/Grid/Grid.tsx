@@ -14,7 +14,7 @@ import {
   t,
   value,
 } from '../../common';
-import { Grid as GridApi } from '../api';
+import { Grid as GridApi } from '../../api';
 import * as hook from './hook';
 import { IGridRefsPrivate } from './types.private';
 import { FactoryManager } from '../factory';

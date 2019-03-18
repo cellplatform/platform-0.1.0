@@ -1,4 +1,4 @@
-import { Grid } from '../api';
+import { Grid } from '../../api';
 
 /**
  * Factory for creating a grid's `beforeKeyDown` handler.
