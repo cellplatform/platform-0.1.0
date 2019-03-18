@@ -35,7 +35,7 @@
     fs-extra "7.0.1"
     js-yaml "3.12.2"
 
-"@platform/libs@0.0.8", "@platform/libs@^0.0.8":
+"@platform/libs@0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.8.tgz#012d15240fdb56f6c45f1f83bffd483b05167b9a"
   integrity sha512-YaV/jkiIKMAMPJpUKJDlT1+FrGqO1JdqlQoaalwOCOwehnI0RzdTa6wI13PRJHLk9T2HNQUbjBDAWVBXWlXvQg==
@@ -69,10 +69,10 @@
     tslint-react "3.6.0"
     typescript "3.3.3333"
 
-"@platform/ts@3.3.66":
-  version "3.3.66"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.66.tgz#c20f3cbb57f580beec2918c375af47c71db339d1"
-  integrity sha512-FxvopGjdLJtyXBa6OmYvCUbh3ZnCN2zWbRlokvygu1CcDX7Eu/kzKESTozRRnMNe6Sm6hm2OuLh9y7nAFzwq+w==
+"@platform/ts@3.3.67":
+  version "3.3.67"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.67.tgz#face4fca29115e595293dacf9bf4fe01f1eb4b53"
+  integrity sha512-dmBsvqIOaQrF37jZ8j5s0MkVEtwVMTZ2Ug7kEPMblmwpoc3BIpk0iOthLOwWMYxDSukP9wJvOinDt08yW6ZnKg==
   dependencies:
     "@platform/cli" "0.0.63"
     "@platform/fs" "0.0.40"
@@ -537,7 +537,7 @@ diff@3.5.0, diff@^3.1.0, diff@^3.2.0:
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
   integrity sha512-A46qtFgd+g7pDZinpnwiRJtxbC1hpgf0uzP3iG89scHk0AUC7A1TGxf5OiiOUv/JMZR8GOt8hL900hV0bOy5xA==
 
-dynamics.js@^1.1.5:
+dynamics.js@1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/dynamics.js/-/dynamics.js-1.1.5.tgz#b90bdc33605cefe652b8416e701f79bf6eefce32"
   integrity sha1-uQvcM2Bc7+ZSuEFucB95v27vzjI=

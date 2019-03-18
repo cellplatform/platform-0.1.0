@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.panel",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "ui": "ui $@",
     "start": "ui start $@",
@@ -12,8 +12,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.0.20",
-    "@platform/util.animate": "0.0.0",
+    "@platform/react": "0.0.21",
+    "@platform/util.animate": "0.0.1",
     "react": "16.8.4"
   },
   "devDependencies": {
