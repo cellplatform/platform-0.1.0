@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.33",
-    "@uiharness/dev": "0.2.1",
+    "@uiharness/dev": "0.2.4",
     "react-icons": "3.5.0"
   },
   "license": "MIT"

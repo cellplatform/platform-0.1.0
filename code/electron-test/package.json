@@ -17,7 +17,7 @@
     "@platform/ui.object": "0.0.59",
     "@platform/react": "0.0.20",
     "@platform/util.value": "0.0.40",
-    "@uiharness/electron": "0.3.160"
+    "@uiharness/electron": "0.3.161"
   },
   "browserslist": [
     "electron >= 4"
