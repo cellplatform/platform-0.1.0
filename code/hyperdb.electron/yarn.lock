@@ -233,6 +233,14 @@
     "@platform/react" "0.0.20"
     react-inspector "2.3.1"
 
+"@platform/ui.object@0.0.60":
+  version "0.0.60"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.60.tgz#162f43ffb81bc9ea24c7d2db56c0b9e748d20499"
+  integrity sha512-31jQqwT/yXiQQMIJocDnDLG1ANT5a+D0myQwQ4b1vVkeyO0eLjWFqDYG4fcFPAVUhrz6zecIRzBRYwPe7WWJYQ==
+  dependencies:
+    "@platform/react" "0.0.21"
+    react-inspector "2.3.1"
+
 "@platform/util.exec@0.0.24":
   version "0.0.24"
   resolved "https://registry.yarnpkg.com/@platform/util.exec/-/util.exec-0.0.24.tgz#ead5c12d0f07f42d7de3cfa8d0477c6a823efb24"
@@ -417,10 +425,30 @@
     "@uiharness/ui" "0.1.7"
     tslib "1.9.3"
 
+"@uiharness/electron@0.3.162":
+  version "0.3.162"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.162.tgz#88659a45fa7c731377282afcb6d1ea693d93626a"
+  integrity sha512-FORBfAG7fUDOA/cC2GtqDtVGJFUEoqjG+rBUaHo/fehDTTbB3bw72Rv9z3HV/ixW1S56ZjM7a5BN0J7mD9xFKg==
+  dependencies:
+    "@platform/electron" "0.1.8"
+    "@platform/log" "0.0.91"
+    "@platform/react" "0.0.21"
+    "@platform/ui.object" "0.0.60"
+    "@platform/util.value" "0.0.41"
+    "@types/app-root-path" "1.2.4"
+    "@uiharness/types" "0.0.71"
+    "@uiharness/ui" "0.1.8"
+    tslib "1.9.3"
+
 "@uiharness/types@0.0.70":
   version "0.0.70"
   resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.0.70.tgz#586d3c0e703a27e4917c434eb2f8dd7ed61d3eaf"
   integrity sha512-PlRAot0AnxWIwtVXI2wZ5YT9IHpEm9o8WQqotm+rvATdZJ2PrrCk+6ux0r/gwXMe67OCTc03b56Sk4ZRhnf2Jg==
+
+"@uiharness/types@0.0.71":
+  version "0.0.71"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.0.71.tgz#f08ae388f57412868c70c99bf691c13017dd777a"
+  integrity sha512-wKGGS2id0eaABpCj4LWzCjMVR/oC5z8x0uG6WFftrpU5x6z3//JKxFniAZ8EsEQuAm73Gt1wCLBE4U3J/WeQ0w==
 
 "@uiharness/ui@0.1.7":
   version "0.1.7"
@@ -431,6 +459,16 @@
     "@platform/react" "0.0.20"
     "@platform/ui.object" "0.0.59"
     "@uiharness/types" "0.0.70"
+
+"@uiharness/ui@0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.1.8.tgz#97c24522732bd02033abec40cb3410295968b5f8"
+  integrity sha512-AenpF4xlXJJwJ1oIUbXyVi7GvE6HT1Jr+eRV1kgQ4e9A662ayhBZ8+lur3MFX35ukZb0XEoy/xv+JVwgrAtunA==
+  dependencies:
+    "@platform/electron" "0.1.8"
+    "@platform/react" "0.0.21"
+    "@platform/ui.object" "0.0.60"
+    "@uiharness/types" "0.0.71"
 
 ansi-colors@3.2.3:
   version "3.2.3"

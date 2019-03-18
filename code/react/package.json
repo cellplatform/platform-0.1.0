@@ -20,13 +20,12 @@
     "@types/react": "16.8.8",
     "@types/react-dom": "16.8.2",
     "react": "16.8.4",
-    "react-dom": "16.8.4",
-    "@uiharness/electron": "0.3.161"
+    "react-dom": "16.8.4"
   },
   "devDependencies": {
     "@platform/test": "0.0.33",
     "@platform/ts": "3.3.67",
-    "@uiharness/dev": "0.2.4"
+    "@uiharness/dev": "0.2.5"
   },
   "files": [
     "lib"
