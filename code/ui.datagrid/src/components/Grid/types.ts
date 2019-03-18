@@ -43,7 +43,7 @@ export type IGridChange = {
   source: GridChangeType;
   grid: Grid;
   cell: Cell;
-  value: { from?: string; to?: string };
+  value: { from?: t.CellValue; to?: t.CellValue };
   isCancelled: boolean;
   cancel(): void;
 };

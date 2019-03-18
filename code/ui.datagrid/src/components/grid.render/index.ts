@@ -1,9 +1,9 @@
-import { registerCellRenderer } from './renderer.cell';
+import { registerCellRenderer } from './render.cell';
 
 export * from './types';
 export * from './constants';
-export * from './renderer.cell';
-export * from './renderer.header';
+export * from './render.cell';
+export * from './render.header';
 
 /**
  * Registers all avilable renderers.

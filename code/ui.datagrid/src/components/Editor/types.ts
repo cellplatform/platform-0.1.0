@@ -7,10 +7,8 @@ import * as t from '../../types';
  */
 export type IEditorContext = {
   autoCancel: boolean; // Automatically cancels on Escape key.
-  row: number;
-  column: number;
-  grid: Grid;
   cell: Cell;
+  grid: Grid;
   keys$: t.Observable<t.IGridKeypress>;
   end$: t.Observable<IEndEditingEvent>;
   cancel(): void;
@@ -25,17 +23,16 @@ export type EditorEvent = IBeginEditingEvent | IEndEditingEvent;
 export type IBeginEditingEvent = {
   type: 'GRID/EDITOR/begin';
   payload: {
-    row: number;
-    column: number;
+    cell: Cell;
+    cancel(): void;
   };
 };
 
 export type IEndEditingEvent = {
   type: 'GRID/EDITOR/end';
   payload: {
-    row: number;
-    column: number;
+    cell: Cell;
     isCancelled: boolean;
-    value: { to: any };
+    value: { from?: t.CellValue; to?: t.CellValue };
   };
 };

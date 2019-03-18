@@ -89,7 +89,17 @@ export class Cell {
    * [Methods]
    */
 
+  /**
+   * Display string representation of the cell.
+   */
   public toString() {
     return `[Cell|row:${this.row}, column:${this.column}]`;
+  }
+
+  /**
+   * Determines if the cell matches the given position coordinates.
+   */
+  public isPosition(args: { row: number; column: number }) {
+    return this.row === args.row && this.column === args.column;
   }
 }

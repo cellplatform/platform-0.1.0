@@ -49,7 +49,8 @@ export const cellRenderer: Renderer = (instance, td, row, col, prop, value, cell
 };
 
 function toCellHtml(args: { row: number; col: number; value?: string }) {
-  const { value } = args;
+  let value = args.value;
+  value = typeof value === 'object' ? JSON.stringify(value) : value;
   const el = (
     <div {...styles.cell.base}>
       <span {...styles.cell.value}>{value}</span>

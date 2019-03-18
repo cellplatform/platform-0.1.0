@@ -58,17 +58,27 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         let settings = this.state.settings;
         if (settings) {
           settings = { ...settings };
-          const { row, column } = e.payload;
+          const { cell } = e.payload;
           const data = { ...settings.data };
           // data[row][column] = e.payload.value.to; // HACK - test only:  do this immutably.
-          data[row][column] = 'yo mama';
+          data[cell.row][cell.column] = 'yo mama';
           settings.data = data;
           // this.state$.next({ settings });
         }
       });
 
-    events$.subscribe(e => {
-      // console.log('🌳  EVENT', e.type, e.payload);
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/EDITOR/begin'),
+        map(e => e as t.IBeginEditingEvent),
+      )
+      .subscribe(e => {
+        // Cancel upon start of edit operation.
+        // e.payload.cancel();
+      });
+
+    events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
+      console.log('🌳  EVENT', e.type, e.payload);
     });
 
     const change$ = events$.pipe(
@@ -83,12 +93,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     change$.subscribe(e => {
       // e.cancel();
-      console.log('CHANGE', e);
+      // console.log('CHANGE', e);
     });
 
     change$.pipe(filter(e => e.column === 1 && e.row === 1)).subscribe(e => {
-      // e.cancel();
-      console.log('-------------------------------------------');
       e.cancel();
     });
 
@@ -143,7 +151,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
  * `Sample Data`
  */
 export function createEmptyData(rows: number, columns: number) {
-  return Array.from({ length: rows }).map(row => Array.from({ length: columns }).map(col => ''));
+  return Array.from({ length: rows }).map(row =>
+    Array.from({ length: columns }).map(col => {
+      // return { foo: 123 } as any;
+      return '';
+    }),
+  );
 }
 
 export function createSampleData(args: { Table: Handsontable }) {
