@@ -1,4 +1,4 @@
-import { expect } from '../../../test';
+import { expect } from 'chai';
 import { cell } from '.';
 
 describe('toKey', () => {

@@ -8,7 +8,7 @@ const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
  *    - 27 => AA
  *    ...etc.
  */
-export function toAlphaCharacter(index: number) {
+export function toCharacter(index: number) {
   // Calculate the character multiplier if greater than the length of the alphabet.
   let multiplier = 0;
   if (index > ALPHA.length - 1) {
@@ -36,7 +36,7 @@ export function toAlphaCharacter(index: number) {
  *    - AA => 27
  *    ...etc.
  */
-export function fromAlphaCharacter(value?: string) {
+export function fromCharacter(value?: string) {
   value = value ? value.trim() : value;
   if (!value) {
     return undefined;

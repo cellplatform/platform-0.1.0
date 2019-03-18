@@ -13,7 +13,7 @@ import {
 } from 'excel-formula-ast';
 import { Token, tokenize } from 'excel-formula-tokenizer';
 
-import { value as valueUtil } from '../../common';
+import { value as valueUtil } from '../common';
 
 export { Token, NumberNode, BinaryExpressionNode, UnaryExpressionNode, LogicalNode, TextNode };
 

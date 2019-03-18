@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import * as parser from './parser';
+import { parser } from '.';
 
 describe('parser.toRangeParts', () => {
   it('A:C', () => {

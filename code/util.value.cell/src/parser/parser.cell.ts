@@ -1,6 +1,6 @@
-import { value, GridCellType } from '../../common';
-import { fromAlphaCharacter } from './toAlpha';
-import * as ast from './ast';
+import { value, GridCellType } from '../common';
+import { alpha } from '../alpha';
+import { ast } from '../ast';
 
 export function toParts(input: string, options: { uriPrefix?: string } = {}) {
   const { uriPrefix = 'uri' } = options;
@@ -187,7 +187,7 @@ function parseCellKey(cellKey: string = '') {
 
   // Calculate column index.
   if (result.column.value) {
-    const columnIndex = fromAlphaCharacter(result.column.value);
+    const columnIndex = alpha.fromCharacter(result.column.value);
     result.column.index = columnIndex === undefined ? -1 : columnIndex;
   }
   if (result.row.value) {

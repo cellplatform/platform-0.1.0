@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import * as ast from './ast';
+import { ast } from '.';
 
 describe('ast.toTokens', () => {
   it('converts to tokens', () => {

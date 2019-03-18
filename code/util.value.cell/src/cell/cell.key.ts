@@ -1,5 +1,5 @@
-import { toAlphaCharacter } from './util/toAlpha';
-import * as parser from './util/parser';
+import { alpha } from '../alpha';
+import { parser } from '../parser';
 import { t } from '../common';
 
 /**
@@ -25,11 +25,11 @@ export function toKey(column?: number, row?: number) {
     result = `${cell.row + 1}`;
   } else if (cell.row <= -1) {
     // COLUMN
-    const char = toAlphaCharacter(cell.column);
+    const char = alpha.toCharacter(cell.column);
     result = `${char}`;
   } else {
     // CELL
-    result = `${toAlphaCharacter(cell.column)}${cell.row + 1}`;
+    result = `${alpha.toCharacter(cell.column)}${cell.row + 1}`;
   }
 
   // Finish up.

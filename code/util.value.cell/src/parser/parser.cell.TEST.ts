@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { fromAlphaCharacter } from './toAlpha';
-import * as parser from './parser';
+import { parser } from '.';
+import { alpha } from '../alpha';
 
 describe('parser.toParts', () => {
   it('Sheet1!A1 (CELL)', () => {
@@ -87,7 +87,7 @@ describe('parser.toParts', () => {
     expect(parts.cell).to.eql('ABCDEFGHIJKLMNOP123456789');
     expect(parts.column.value).to.eql('ABCDEFGHIJKLMNOP');
     expect(parts.row.value).to.eql('123456789');
-    expect(parts.column.index).to.eql(fromAlphaCharacter('ABCDEFGHIJKLMNOP'));
+    expect(parts.column.index).to.eql(alpha.fromCharacter('ABCDEFGHIJKLMNOP'));
     expect(parts.row.index).to.eql(123456789 - 1);
   });
 
