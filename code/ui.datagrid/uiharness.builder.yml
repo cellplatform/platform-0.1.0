@@ -1,5 +1,5 @@
 productName: ui.datagrid
-appId: platform.ui.datagrid
+appId: '@platform/ui.datagrid'
 publish:
   provider: github
   owner: uiharness

@@ -78,7 +78,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const grid = (this.grid = Grid.create({ table, totalColumns, totalRows, values }));
     this.factory = new FactoryManager({ grid, factory: this.props.factory });
     this.unmounted$.subscribe(() => grid.dispose());
-    render.registerAll(Table);
+    render.registerAll(Table, grid);
 
     // Store metadata on the [Handsontable] instance.
     // NOTE:
@@ -104,6 +104,12 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
         this.props.events$.next(e);
       }
     });
+
+    // Dispose on HMR.
+    const hot = (module as any).hot;
+    if (hot) {
+      hot.dispose(() => this.componentWillUnmount());
+    }
 
     // Setup initial state.
     // NB:  Running init after a tick prevents unnecessary work if the component

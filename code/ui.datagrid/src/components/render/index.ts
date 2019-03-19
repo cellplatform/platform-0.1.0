@@ -1,3 +1,4 @@
+import { Grid } from '../../api';
 import { registerCellRenderer } from './render.cell';
 
 export * from './types';
@@ -8,6 +9,6 @@ export * from './render.header';
 /**
  * Registers all avilable renderers.
  */
-export function registerAll(Table: Handsontable) {
-  registerCellRenderer(Table);
+export function registerAll(Table: Handsontable, grid: Grid) {
+  registerCellRenderer(Table, grid);
 }

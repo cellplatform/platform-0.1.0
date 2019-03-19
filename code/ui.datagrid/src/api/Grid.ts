@@ -48,6 +48,7 @@ export class Grid {
     this.totalRows = args.totalRows;
     this._.table = args.table;
     this._.values = args.values || {};
+    this.id = `grid/${(this._.table as any).guid.replace(/^ht_/, '')}`;
 
     const editEnd$ = this.events$.pipe(
       filter(e => e.type === 'GRID/EDITOR/end'),
@@ -76,6 +77,7 @@ export class Grid {
     values: ({} as unknown) as t.IGridValues,
   };
 
+  public readonly id: string;
   public readonly totalColumns: number;
   public readonly totalRows: number;
   public readonly dispose$ = this._.dispose$.pipe(share());
@@ -94,10 +96,6 @@ export class Grid {
    */
   public get isDisposed() {
     return this._.table.isDestroyed || this._.dispose$.isStopped;
-  }
-
-  public get instanceId() {
-    return (this._.table as any).guid;
   }
 
   public get isEditing() {
