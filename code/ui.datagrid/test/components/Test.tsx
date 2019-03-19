@@ -97,7 +97,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
               this.grid.select({ cell: 'A1', ranges: ['B2:C4', 'C2:D7'] }),
             )}
           </div>
-          <ObjectView data={this.state.data} />
+          <ObjectView
+            data={this.state.data}
+            expandPaths={['$', '$.selection', '$.selection.ranges']}
+          />
         </div>
         <div {...styles.right}>
           <TestGrid ref={this.testGridRef} style={styles.grid} />

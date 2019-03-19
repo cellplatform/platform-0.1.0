@@ -84,7 +84,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       map(e => e.payload as t.IGridKeypress),
     );
 
-    keys$.subscribe(e => {});
+    // keys$.subscribe(e => {});
 
     keys$.pipe(filter(e => e.event.metaKey && e.key === 'a')).subscribe(e => {
       // Suppress CMD+A (select all).
@@ -126,6 +126,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public render() {
     return (
       <datagrid.DataGrid
+        key={'test.grid'}
         ref={this.datagridRef}
         values={this.state.values}
         events$={this.events$}
@@ -133,6 +134,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         totalColumns={52}
         totalRows={1000}
         Handsontable={this.Table}
+        initial={{ selection: { cell: 'A1' } }}
         style={this.props.style}
       />
     );

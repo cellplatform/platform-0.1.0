@@ -51,18 +51,6 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
       e.stopImmediatePropagation();
     }
 
-    if (isDelete) {
-      e.stopImmediatePropagation();
-
-      console.log('DELETE');
-
-      // Object.keys(grid.values).forEach(key => {
-      //   console.log('key', key);
-      //   const cell = grid.cell(key);
-      //   cell.value = undefined;
-      // });
-    }
-
     // Supress "key cycling".
     //    This is when arrow keys at the edges of the grid jump to the other
     //    side of the grid.  Incredibly disorienting for the user - so here it stops!

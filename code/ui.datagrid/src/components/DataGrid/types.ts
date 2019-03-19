@@ -4,6 +4,14 @@ import * as t from '../../types';
 export type IGridSelection = {
   current?: t.GridCellKey;
   ranges: t.GridCellRangeKey[];
+  all?: boolean;
+};
+
+export type IInitialGridState = {
+  selection?: {
+    cell: t.CellRef;
+    ranges?: t.GridCellRangeKey[];
+  };
 };
 
 /**
