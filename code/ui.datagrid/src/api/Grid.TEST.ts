@@ -36,13 +36,40 @@ describe('Grid', () => {
     expect(count).to.eql(1);
   });
 
-  it('cell', () => {
-    const grid = createGrid();
-    const cell = grid.cell({ row: 0, column: 0 });
-    expect(cell.row).to.eql(0);
-    expect(cell.column).to.eql(0);
-    expect(cell.key).to.eql('A1');
+  describe('cell', () => {
+    it('from row/column', () => {
+      const grid = createGrid();
+      const cell = grid.cell({ row: 0, column: 0 });
+      expect(cell.row).to.eql(0);
+      expect(cell.column).to.eql(0);
+      expect(cell.key).to.eql('A1');
+    });
+
+    it('from key', () => {
+      const grid = createGrid();
+      const cell = grid.cell('B5');
+      expect(cell.column).to.eql(1);
+      expect(cell.row).to.eql(4);
+    });
   });
 
-  it('toData', () => {});
+  describe('changeValues', () => {
+    it('changes an existing value', () => {
+      const grid = createGrid({ values: { A1: 123 } });
+      const values1 = grid.values;
+      expect(values1).to.eql({ A1: 123 });
+
+      grid.changeValues({ A1: 456 });
+      const values2 = grid.values;
+      expect(values1).to.not.equal(values2);
+      expect(values2.A1).to.eql(456);
+    });
+
+    it('adds a new value', () => {
+      const grid = createGrid({ values: { A1: 123 } });
+      grid.changeValues({ B1: 'hello' });
+      expect(grid.values.A1).to.eql(123);
+      expect(grid.values.B1).to.eql('hello');
+    });
+  });
 });

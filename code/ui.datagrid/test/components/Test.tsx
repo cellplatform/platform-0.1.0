@@ -48,6 +48,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         position: 'relative',
         width: 200,
         padding: 10,
+        lineHeight: 1.6,
       }),
       right: css({
         position: 'relative',
@@ -61,8 +62,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <div />
-          <Button label={'loadValues'} onClick={this.handleLoadValues} />
+          <div>
+            <Button label={'loadValues'} onClick={this.handleLoadValues} />
+          </div>
+          <div>
+            <Button label={'changeValues'} onClick={this.handleChangeValues} />
+          </div>
         </div>
         <div {...styles.right}>
           <TestGrid ref={this.testGridRef} style={styles.grid} />
@@ -75,6 +80,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Handlers]
    */
   private handleLoadValues = () => {
-    this.grid.loadValues();
+    this.grid.loadValues({ A3: 123 });
+  };
+
+  private handleChangeValues = () => {
+    this.grid.changeValues({ A1: 'hello' });
   };
 }

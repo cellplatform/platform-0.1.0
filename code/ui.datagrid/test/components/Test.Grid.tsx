@@ -26,8 +26,14 @@ export type ITestState = {
   values?: t.IGridValues;
 };
 
+const DEFAULT = {
+  A1: 'A1',
+  B1: 'locked',
+  B2: 'cancel',
+};
+
 export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = {};
+  public state: ITestState = { values: DEFAULT };
   private state$ = new Subject<Partial<ITestState>>();
   private unmounted$ = new Subject();
   private events$ = new Subject<t.GridEvent>();
@@ -41,7 +47,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
-    const Table = this.Table;
+    // const Table = this.Table;
     // const settings = createSampleData({ Table });
     // settings.beforeKeyDown = beforeKeydownHandler(() => this.grid);
 
@@ -56,6 +62,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         filter(e => !e.payload.isCancelled),
       )
       .subscribe(e => {
+        console.log('HANDLE END  🐷 ');
         // e.payload.cancel();
         // e.payload.cell.value = 'boo';
         // let settings = this.state.settings;
@@ -126,7 +133,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <datagrid.DataGrid
         ref={this.datagridRef}
-        // settings={this.state.settings}
+        values={this.state.values}
         events$={this.events$}
         factory={this.factory}
         Handsontable={this.Table}

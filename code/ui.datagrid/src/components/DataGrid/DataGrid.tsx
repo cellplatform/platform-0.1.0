@@ -24,6 +24,7 @@ import { FactoryManager } from '../factory';
 export type IDataGridProps = {
   totalColumns?: number;
   totalRows?: number;
+  values?: t.IGridValues;
   Handsontable?: Handsontable;
   factory?: t.GridFactory;
   events$?: Subject<t.GridEvent>;
@@ -62,6 +63,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public componentDidMount() {
+    const { values } = this.props;
+
     // Prepare the [handsontable] library.
     const Table = this.props.Handsontable || HandsontableLib;
     render.registerAll(Table);
@@ -70,7 +73,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const totalColumns = this.totalColumns;
     const totalRows = this.totalRows;
     const table = (this.table = new Table(this.el as Element, this.settings));
-    const grid = (this.grid = Grid.create({ table, totalColumns, totalRows }));
+    const grid = (this.grid = Grid.create({ table, totalColumns, totalRows, values }));
     this.factory = new FactoryManager({ grid, factory: this.props.factory });
     this.unmounted$.subscribe(() => grid.dispose());
 
@@ -124,8 +127,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
   private get settings(): DefaultSettings {
     const getGrid = () => this.grid;
-
-    // console.log('SETTINGS', this.grid.instanceId);
 
     const createColumns = (length: number) => {
       return Array.from({ length }).map(() => {

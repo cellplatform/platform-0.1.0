@@ -1,8 +1,9 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { t } from '../common';
+import { t, value as valueUtil } from '../common';
 import { Cell } from './Cell';
+import { utils } from 'mocha';
 
 export type IGridArgs = {
   table: Handsontable;
@@ -24,19 +25,18 @@ export class Grid {
   }
 
   /**
-   * Converts the values
+   * Converts the values.
    */
   public static toDataArray(args: {
     values: t.IGridValues;
     totalColumns: number;
     totalRows: number;
   }) {
-    const { totalColumns, totalRows } = args;
+    const { totalColumns, totalRows, values } = args;
     return Array.from({ length: totalRows }).map((v, row) =>
       Array.from({ length: totalColumns }).map((v, column) => {
-        // return { foo: 123 } as any;
-        return '';
-        // return Cell.toKey({ row, column });
+        const key = Cell.toKey({ row, column });
+        return values[key];
       }),
     );
   }
@@ -50,13 +50,20 @@ export class Grid {
     this._.table = args.table;
     this._.values = args.values || {};
 
+    const editEnd$ = this.events$.pipe(
+      filter(e => e.type === 'GRID/EDITOR/end'),
+      map(e => e.payload as t.IEndEditingEvent['payload']),
+    );
+
     this.events$
       .pipe(filter(e => e.type === 'GRID/EDITOR/begin'))
       .subscribe(() => (this._.isEditing = true));
 
-    this.events$
-      .pipe(filter(e => e.type === 'GRID/EDITOR/end'))
-      .subscribe(() => (this._.isEditing = false));
+    editEnd$.subscribe(() => (this._.isEditing = false));
+    editEnd$.pipe(filter(e => e.isChanged)).subscribe(e => {
+      const key = e.cell.key;
+      this.changeValues({ [key]: e.value.to });
+    });
   }
 
   /**
@@ -109,10 +116,25 @@ export class Grid {
   /**
    * Loads values into the grid.
    */
-  public loadValues() {
+  public loadValues(values?: t.IGridValues) {
+    if (values) {
+      this._.values = { ...values };
+    }
     const data = this.toDataArray();
     const table = this._.table;
     table.loadData(data);
+  }
+
+  public changeValues(changes: t.IGridValues, options: { redraw?: boolean } = {}) {
+    const redraw = valueUtil.defaultValue(options.redraw, true);
+    this._.values = { ...this.values };
+    Object.keys(changes).forEach(key => {
+      const value = changes[key];
+      this._.values[key] = value;
+      if (redraw) {
+        this.cell(key).value = value;
+      }
+    });
   }
 
   /**
@@ -137,7 +159,12 @@ export class Grid {
   /**
    * Retrieves an API for working with a single cell.
    */
-  public cell(args: { row: number; column: number }) {
+
+  // public cell(args: { row: number; column: number }) :Cell
+  // public cell(args: { row: number; column: number }) :Cell
+
+  public cell(key: { row: number; column: number } | string): Cell {
+    const args = typeof key === 'string' ? Cell.fromKey(key) : key;
     const { row, column } = args;
     return Cell.create({ table: this._.table, row, column });
   }

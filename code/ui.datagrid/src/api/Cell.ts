@@ -12,7 +12,7 @@ export class Cell {
     return new Cell(args);
   }
 
-  public static fromKey(args: { table: Handsontable; cellKey: string }) {
+  public static createFromKey(args: { table: Handsontable; cellKey: string }) {
     const { table, cellKey } = args;
     const { row, column } = util.fromKey(cellKey);
     return new Cell({ table, row, column });
@@ -20,6 +20,10 @@ export class Cell {
 
   public static toKey(args: { row: number; column: number }) {
     return util.toKey(args.column, args.row);
+  }
+
+  public static fromKey(cellKey: string) {
+    return util.fromKey(cellKey);
   }
 
   /**
