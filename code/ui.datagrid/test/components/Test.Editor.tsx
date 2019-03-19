@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 
-import { time, color, css, datagrid, ObjectView, MeasureSize } from './common';
+import { time, color, css, datagrid, ObjectView, MeasureSize, t } from './common';
 
 const PADDING = 10;
 
 export type ITestEditorProps = {};
 export type ITestEditorState = {
-  value?: string;
+  value?: t.CellValue;
   width?: number;
   textWidth?: number;
 };
@@ -32,17 +32,24 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
+    // Update <input> on keypress.
     const keys$ = this.context.keys$;
     keys$
       .pipe(filter(e => e.isEnter))
       .subscribe(e => this.context.complete({ value: this.input.value }));
 
+    // Set initial values.
+    const value = this.context.cell.value;
+    this.state$.next({ value });
+
+    // Manage cancelling manually.
     // this.context.autoCancel = false;
     // keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
   }
 
   public componentDidMount() {
     this.input.focus();
+    this.input.select();
     this.updateSize();
   }
 
