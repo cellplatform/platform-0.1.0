@@ -124,30 +124,6 @@ export class Grid {
    */
 
   /**
-   * Loads values into the grid.
-   */
-  public loadValues(values?: t.IGridValues) {
-    if (values) {
-      this._.values = { ...values };
-    }
-    const data = this.toDataArray();
-    const table = this._.table;
-    table.loadData(data);
-  }
-
-  public changeValues(changes: t.IGridValues, options: { redraw?: boolean } = {}) {
-    const redraw = valueUtil.defaultValue(options.redraw, true);
-    this._.values = { ...this.values };
-    Object.keys(changes).forEach(key => {
-      const value = changes[key];
-      this._.values[key] = value;
-      if (redraw) {
-        this.cell(key).value = value;
-      }
-    });
-  }
-
-  /**
    * Disposes of the grid.
    */
   public dispose() {
@@ -167,12 +143,35 @@ export class Grid {
   }
 
   /**
+   * Loads values into the grid.
+   */
+  public loadValues(values?: t.IGridValues) {
+    if (values) {
+      this._.values = { ...values };
+    }
+    const data = this.toDataArray();
+    const table = this._.table;
+    table.loadData(data);
+  }
+
+  /**
+   * Updates values.
+   */
+  public changeValues(changes: t.IGridValues, options: { redraw?: boolean } = {}) {
+    const redraw = valueUtil.defaultValue(options.redraw, true);
+    this._.values = { ...this.values };
+    Object.keys(changes).forEach(key => {
+      const value = changes[key];
+      this._.values[key] = value;
+      if (redraw) {
+        this.cell(key).value = value;
+      }
+    });
+  }
+
+  /**
    * Retrieves an API for working with a single cell.
    */
-
-  // public cell(args: { row: number; column: number }) :Cell
-  // public cell(args: { row: number; column: number }) :Cell
-
   public cell(key: { row: number; column: number } | string): Cell {
     const args = typeof key === 'string' ? Cell.fromKey(key) : key;
     const { row, column } = args;
@@ -183,15 +182,33 @@ export class Grid {
    * Scroll the grids view-port to the given column/row cooridnates.
    */
   public scrollTo(args: {
-    row?: number;
-    column?: number;
+    cell: t.CellRef;
     snapToBottom?: boolean; // (false) If true, viewport is scrolled to show the cell on the bottom of the table.
     snapToRight?: boolean; //  (false) If true, viewport is scrolled to show the cell on the right side of the table.
   }) {
-    const { column, row, snapToBottom = false, snapToRight = false } = args;
-    if (!this.isDisposed && column !== undefined && row !== undefined) {
-      this._.table.scrollViewportTo(row, column, snapToBottom, snapToRight);
-    }
+    const { row, column } = Cell.toPosition(args.cell);
+    const { snapToBottom = false, snapToRight = false } = args;
+    this._.table.scrollViewportTo(row, column, snapToBottom, snapToRight);
+  }
+
+  /**
+   * Selects the specific cell(s).
+   */
+  public select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }) {
+    const table = this._.table;
+    const scrollToCell = valueUtil.defaultValue(args.scrollToCell, true);
+
+    // Select requested ranges.
+    const ranges = (args.ranges || [])
+      .map(rangeKey => Cell.toRangePositions(rangeKey))
+      .map(({ start, end }) => {
+        return [start.row, start.column, end.row, end.column];
+      });
+
+    // Select the focus cell.
+    const current = Cell.toPosition(args.cell);
+    const selection = [...ranges, [current.row, current.column, current.row, current.column]];
+    table.selectCells(selection as any, scrollToCell);
   }
 
   /**

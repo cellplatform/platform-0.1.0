@@ -1,4 +1,4 @@
-import { cell as util } from '@platform/util.value.cell';
+import { cell as util, parser } from '@platform/util.value.cell';
 import { t } from '../common';
 
 /**
@@ -24,6 +24,17 @@ export class Cell {
 
   public static fromKey(cellKey: string) {
     return util.fromKey(cellKey);
+  }
+
+  public static toPosition(ref: t.CellRef) {
+    return typeof ref === 'string' ? Cell.fromKey(ref) : ref;
+  }
+
+  public static toRangePositions(rangeKey: string) {
+    const parts = parser.toRangeParts(rangeKey);
+    const start = Cell.toPosition(parts.left);
+    const end = Cell.toPosition(parts.right);
+    return { start, end };
   }
 
   /**

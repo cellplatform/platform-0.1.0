@@ -47,7 +47,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const grid = this.grid;
     const { selection, values } = grid;
     const data = {
-      values, 
+      values,
       selection,
     };
     this.state$.next({ data });
@@ -72,7 +72,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         Flex: 'vertical-spaceBetween',
       }),
       leftTop: css({
-        fontSize: 14,
+        fontSize: 13,
       }),
       right: css({
         position: 'relative',
@@ -92,6 +92,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             {this.button('change values (prop)', () =>
               this.testGrid.state$.next({ values: { A1: 'happy' } }),
             )}
+            {this.button('select: A1', () => this.grid.select({ cell: 'A1' }))}
+            {this.button('select: A1 and range', () =>
+              this.grid.select({ cell: 'A1', ranges: ['B2:C4', 'C2:D7'] }),
+            )}
           </div>
           <ObjectView data={this.state.data} />
         </div>
@@ -105,12 +109,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Handlers]
    */
-
   private button = (label: string, handler: () => void) => {
     return (
       <div>
         <Button label={label} onClick={handler} />
       </div>
     );
+  };
+
+  private tmp = () => {
+    this.grid.select({ cell: 'A1' });
   };
 }

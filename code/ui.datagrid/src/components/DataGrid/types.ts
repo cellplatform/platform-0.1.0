@@ -1,12 +1,9 @@
 import { Grid, Cell } from '../../api';
 import * as t from '../../types';
 
-export type GridCellKey = string;
-export type GridCellRangeKey = string;
-
 export type IGridSelection = {
-  current?: GridCellKey;
-  ranges: GridCellRangeKey[];
+  current?: t.GridCellKey;
+  ranges: t.GridCellRangeKey[];
 };
 
 /**

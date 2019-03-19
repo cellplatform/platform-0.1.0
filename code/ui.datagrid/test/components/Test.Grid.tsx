@@ -84,6 +84,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       map(e => e.payload as t.IGridKeypress),
     );
 
+    keys$.subscribe(e => {
+      this.grid.select({ cell: 'A1', ranges: ['A3:B8'] });
+      // const r = table.getSelectedRange();
+      // console.log('r', r);
+    });
+
     keys$.pipe(filter(e => e.event.metaKey && e.key === 'a')).subscribe(e => {
       // Suppress CMD+A (select all).
       e.cancel();
@@ -112,6 +118,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private get Table() {
     const { Table = HandsontableLib } = this.props;
     return Table as Handsontable;
+  }
+
+  public get grid() {
+    return this.datagrid.grid;
   }
 
   /**
