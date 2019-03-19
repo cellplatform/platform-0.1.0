@@ -14,7 +14,7 @@ import {
   t,
   value,
 } from '../../common';
-import { Grid as GridApi } from '../../api';
+import { Grid } from '../../api';
 import * as hook from './hook';
 import { IGridRefsPrivate } from './types.private';
 import { FactoryManager } from '../factory';
@@ -43,13 +43,13 @@ export type IDataGridState = {
  */
 export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState> {
   public state: IDataGridState = {};
-  public grid!: GridApi;
+  public grid!: Grid;
   public factory!: FactoryManager;
 
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IDataGridState>>();
 
-  private el: HTMLDivElement;
+  private el!: HTMLDivElement;
   private elRef = (ref: HTMLDivElement) => (this.el = ref);
   private table!: Handsontable;
 
@@ -65,9 +65,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const settings = this.settings;
     const Table = this.props.Handsontable || HandsontableLib;
     const table = (this.table = new Table(this.el as Element, settings));
-    const grid = (this.grid = GridApi.create({ table }));
+    const grid = (this.grid = Grid.create({ table }));
     this.factory = new FactoryManager({ grid, factory: this.props.factory });
-
     this.unmounted$.subscribe(() => grid.dispose());
 
     // Store metadata on the [Handsontable] instance.
