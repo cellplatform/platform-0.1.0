@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
+
 import { t } from '../common';
 import { Cell } from './Cell';
 
@@ -65,6 +66,13 @@ export class Grid {
   /**
    * [Methods]
    */
+
+  public TMP() {
+    const table = this._.table;
+    const data = [['FOO']];
+
+    table.loadData(data);
+  }
 
   /**
    * Disposes of the grid.

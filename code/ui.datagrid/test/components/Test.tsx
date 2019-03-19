@@ -13,6 +13,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
 
+  private testGrid!: TestGrid;
+  private testGridRef = (ref: TestGrid) => (this.testGrid = ref);
+
   /**
    * [Lifecycle]
    */
@@ -52,12 +55,22 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       <div {...styles.base}>
         <div {...styles.left}>
           <div />
-          <Button label={'Grid'} />
+          <Button label={'TMP'} onClick={this.onTemp} />
         </div>
         <div {...styles.right}>
-          <TestGrid style={styles.grid} />
+          <TestGrid ref={this.testGridRef} style={styles.grid} />
         </div>
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+  private onTemp = () => {
+    const grid = this.testGrid.datagrid.grid;
+    // grid.
+    // datagrid.lo
+    grid.TMP();
+  };
 }

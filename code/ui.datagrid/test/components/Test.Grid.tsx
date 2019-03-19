@@ -31,8 +31,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private events$ = new Subject<t.GridEvent>();
 
-  private grid!: datagrid.DataGrid;
-  private gridRef = (ref: datagrid.DataGrid) => (this.grid = ref);
+  public datagrid!: datagrid.DataGrid;
+  private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
 
   /**
    * [Lifecycle]
@@ -55,18 +55,19 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         filter(e => !e.payload.isCancelled),
       )
       .subscribe(e => {
-        e.payload.cancel();
+        // e.payload.cancel();
+        e.payload.cell.value = 'boo';
 
-        let settings = this.state.settings;
-        if (settings) {
-          settings = { ...settings };
-          const { cell } = e.payload;
-          const data = { ...settings.data };
-          // data[row][column] = e.payload.value.to; // HACK - test only:  do this immutably.
-          data[cell.row][cell.column] = 'yo mama';
-          settings.data = data;
-          // this.state$.next({ settings });
-        }
+        // let settings = this.state.settings;
+        // if (settings) {
+        //   // settings = { ...settings };
+        //   // const { cell } = e.payload;
+        //   // const data = { ...settings.data };
+        //   // // data[row][column] = e.payload.value.to; // HACK - test only:  do this immutably.
+        //   // data[cell.row][cell.column] = 'yo mama';
+        //   // settings.data = data;
+        //   // this.state$.next({ settings });
+        // }
       });
 
     events$
@@ -123,7 +124,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public render() {
     return (
       <datagrid.DataGrid
-        ref={this.gridRef}
+        ref={this.datagridRef}
         settings={this.state.settings}
         events$={this.events$}
         factory={this.factory}
@@ -169,6 +170,8 @@ export function createSampleData(args: { Table: Handsontable }) {
   data[0][0] = 'A1';
   data[0][1] = 'locked';
   data[1][1] = 'cancel';
+
+  // console.log('data', data);
 
   // console.log('data', data);
   // const getSelectedLast = this.getSelectedLast

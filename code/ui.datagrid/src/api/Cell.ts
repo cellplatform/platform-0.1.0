@@ -73,10 +73,10 @@ export class Cell {
     return this.td.offsetHeight;
   }
 
-  public get data(): t.CellValue {
+  public get value(): t.CellValue {
     return this._.table.getDataAtCell(this.row, this.column);
   }
-  public set data(value: t.CellValue) {
+  public set value(value: t.CellValue) {
     this._.table.setDataAtCell(this.row, this.column, value);
   }
 

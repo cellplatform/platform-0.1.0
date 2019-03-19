@@ -222,7 +222,7 @@ export class Editor extends editors.TextEditor {
       },
       cancel() {
         payload.isCancelled = true;
-        grid.cell({ row, column }).data = from; // NB: Revert the value.
+        grid.cell({ row, column }).value = from; // NB: Revert the value.
       },
     };
     const e: t.IEndEditingEvent = {
