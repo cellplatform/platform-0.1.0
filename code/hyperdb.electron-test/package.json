@@ -34,7 +34,7 @@
     "@platform/test": "0.0.33",
     "@platform/ts": "3.3.67",
     "@types/hjson": "2.4.1",
-    "@uiharness/dev": "0.2.6"
+    "@uiharness/dev": "0.2.7"
   },
   "files": [
     "lib"

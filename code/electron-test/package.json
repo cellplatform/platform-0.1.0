@@ -24,7 +24,7 @@
   ],
   "devDependencies": {
     "@platform/ts": "3.3.67",
-    "@uiharness/dev": "0.2.5"
+    "@uiharness/dev": "0.2.7"
   },
   "resolutions": {
     "@types/react": "16.7.17"
