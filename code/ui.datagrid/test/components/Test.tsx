@@ -62,12 +62,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <div>
-            <Button label={'loadValues'} onClick={this.handleLoadValues} />
-          </div>
-          <div>
-            <Button label={'changeValues'} onClick={this.handleChangeValues} />
-          </div>
+          {this.button('loadValues', () => this.grid.loadValues({ A3: 123 }))}
+          {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
+          {this.button('change values (prop)', () =>
+            this.testGrid.state$.next({ values: { A1: 'happy' } }),
+          )}
         </div>
         <div {...styles.right}>
           <TestGrid ref={this.testGridRef} style={styles.grid} />
@@ -79,11 +78,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Handlers]
    */
-  private handleLoadValues = () => {
-    this.grid.loadValues({ A3: 123 });
-  };
 
-  private handleChangeValues = () => {
-    this.grid.changeValues({ A1: 'hello' });
+  private button = (label: string, handler: () => void) => {
+    return (
+      <div>
+        <Button label={label} onClick={handler} />
+      </div>
+    );
   };
 }

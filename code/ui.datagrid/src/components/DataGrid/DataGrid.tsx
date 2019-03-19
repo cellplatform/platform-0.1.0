@@ -14,6 +14,7 @@ import {
   GlamorValue,
   Handsontable as HandsontableLib,
   t,
+  R,
   value,
 } from '../../common';
 import { Grid } from '../../api';
@@ -104,6 +105,15 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
     // Finish up.
     grid.loadValues();
+  }
+
+  public componentDidUpdate(prev: IDataGridProps) {
+    /**
+     * If the values prop has changed force-reload the grid.
+     */
+    if (!R.equals(prev.values, this.props.values)) {
+      this.grid.loadValues(this.props.values);
+    }
   }
 
   public componentWillUnmount() {

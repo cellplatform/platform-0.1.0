@@ -3,7 +3,6 @@ import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { t, value as valueUtil } from '../common';
 import { Cell } from './Cell';
-import { utils } from 'mocha';
 
 export type IGridArgs = {
   table: Handsontable;
