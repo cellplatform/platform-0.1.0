@@ -74,6 +74,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       map(e => e.payload as t.IGridChangeSet),
     );
 
+    const selection$ = events$.pipe(
+      filter(e => e.type === 'GRID/selection'),
+      map(e => e.payload as t.IGridSelectionChange),
+    );
+
     change$.subscribe(e => {
       // e.cancel();
       // console.log('CHANGE', e);

@@ -12,7 +12,12 @@ export type IGridSelection = {
 /**
  * [Events]
  */
-export type GridEvent = t.EditorEvent | IGridKeydownEvent | IGridChangeEvent | IGridChangeSetEvent;
+export type GridEvent =
+  | t.EditorEvent
+  | IGridKeydownEvent
+  | IGridChangeEvent
+  | IGridChangeSetEvent
+  | IGridSelectionChangeEvent;
 
 /**
  * Keyboard
@@ -54,4 +59,16 @@ export type IGridChange = {
   isCancelled: boolean;
   isChanged: boolean;
   cancel(): void;
+};
+
+/**
+ * Selection
+ */
+export type IGridSelectionChangeEvent = {
+  type: 'GRID/selection';
+  payload: IGridSelectionChange;
+};
+export type IGridSelectionChange = {
+  grid: Grid;
+  selection: IGridSelection;
 };

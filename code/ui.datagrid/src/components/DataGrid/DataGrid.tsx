@@ -160,6 +160,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       manualColumnResize: true,
       beforeKeyDown: hook.beforeKeyDownHandler(getGrid),
       beforeChange: hook.beforeChangeHandler(getGrid),
+      afterSelection: hook.afterSelectionHandler(getGrid),
     };
   }
 
