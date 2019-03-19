@@ -2,7 +2,16 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 
-import { time, color, css, datagrid, ObjectView, MeasureSize, t } from './common';
+import {
+  time,
+  color,
+  css,
+  datagrid,
+  ObjectView,
+  MeasureSize,
+  t,
+  value as valueUtil,
+} from './common';
 
 const PADDING = 10;
 
@@ -58,6 +67,14 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
   }
 
   /**
+   * [Properties]
+   */
+  public get value() {
+    const value = valueUtil.defaultValue(this.state.value, '');
+    return (value || '').toString();
+  }
+
+  /**
    * [Methods]
    */
   public updateSize() {
@@ -102,7 +119,7 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
         <input
           {...css(STYLES.inputText, styles.input)}
           ref={this.inputRef}
-          value={this.state.value || ''}
+          value={this.value}
           onChange={this.handleChange}
         />
         <ObjectView name={'editor'} data={data} fontSize={9} />

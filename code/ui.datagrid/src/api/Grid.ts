@@ -108,6 +108,21 @@ export class Grid {
     return this._.values;
   }
 
+  public get selection(): t.IGridSelection {
+    const last = this._.table.getSelectedRangeLast();
+
+    const toKey = (coord: Handsontable.wot.CellCoords) =>
+      Cell.toKey({ row: coord.row, column: coord.col });
+
+    const current = last ? toKey(last.highlight) : undefined;
+
+    const selectedRanges = this._.table.getSelectedRange() || [];
+    let ranges = selectedRanges.map(item => `${toKey(item.from)}:${toKey(item.to)}`);
+    ranges = ranges.length === 1 && ranges[0] === `${current}:${current}` ? [] : ranges;
+
+    return { current, ranges };
+  }
+
   /**
    * [Methods]
    */

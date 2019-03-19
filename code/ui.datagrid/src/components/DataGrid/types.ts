@@ -1,6 +1,14 @@
 import { Grid, Cell } from '../../api';
 import * as t from '../../types';
 
+export type GridCellKey = string;
+export type GridCellRangeKey = string;
+
+export type IGridSelection = {
+  current?: GridCellKey;
+  ranges: GridCellRangeKey[];
+};
+
 /**
  * [Events]
  */
@@ -19,6 +27,7 @@ export type IGridKeypress = {
   grid: Grid;
   isEnter: boolean;
   isEscape: boolean;
+  isDelete: boolean;
   cancel: () => void;
 };
 

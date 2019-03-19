@@ -13,8 +13,12 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
   return function(e: Event) {
     // @ts-ignore
     const table = this as Handsontable;
-    const event = e as KeyboardEvent;
     const grid = getGrid();
+    const event = e as KeyboardEvent;
+    const key = event.key;
+    const isEnter = key === 'Enter';
+    const isEscape = key === 'Escape';
+    const isDelete = key === 'Delete';
 
     const cancel = () => {
       e.preventDefault();
@@ -22,9 +26,20 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
     };
 
     // Fire event.
-    const key = event.key;
-    const isEnter = key === 'Enter';
-    const isEscape = key === 'Escape';
+
+    const selection = table.getSelectedRange();
+    const getSelectedRangeLast = table.getSelectedRangeLast();
+
+    console.group('🌳 ');
+
+    console.log('key', key);
+
+    console.log('selection', selection);
+    console.log('getSelectedRangeLast', getSelectedRangeLast);
+    console.log('grid.selection', grid.selection);
+    console.log('grid.selection.ranges', grid.selection.ranges);
+    console.groupEnd();
+
     grid.next({
       type: 'GRID/keydown',
       payload: {
@@ -33,6 +48,7 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
         event,
         isEnter,
         isEscape,
+        isDelete,
         cancel,
       },
     });
@@ -42,6 +58,18 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
       //        supress any navigation handlers within the `handsontable` until it
       //        has finished it's operation.
       e.stopImmediatePropagation();
+    }
+
+    if (isDelete) {
+      e.stopImmediatePropagation();
+
+      console.log('DELETE');
+
+      // Object.keys(grid.values).forEach(key => {
+      //   console.log('key', key);
+      //   const cell = grid.cell(key);
+      //   cell.value = undefined;
+      // });
     }
 
     // Supress "key cycling".

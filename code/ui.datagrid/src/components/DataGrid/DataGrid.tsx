@@ -22,6 +22,8 @@ import * as hook from './hook';
 import { IGridRefsPrivate } from './types.private';
 import { FactoryManager } from '../factory';
 
+const { DEFAULTS } = constants;
+
 export type IDataGridProps = {
   totalColumns?: number;
   totalRows?: number;
@@ -128,11 +130,11 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public get totalColumns() {
-    return value.defaultValue(this.props.totalColumns, 100);
+    return value.defaultValue(this.props.totalColumns, DEFAULTS.TOTAL_COLUMNS);
   }
 
   public get totalRows() {
-    return value.defaultValue(this.props.totalRows, 1000);
+    return value.defaultValue(this.props.totalRows, DEFAULTS.TOTAL_ROWS);
   }
 
   private get settings(): DefaultSettings {
@@ -208,5 +210,6 @@ const STYLES = {
   base: css({
     position: 'relative',
     overflow: 'hidden',
+    userSelect: 'none',
   }),
 };

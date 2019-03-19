@@ -59,6 +59,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
 
     events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
+      // const cell = e.payload.cell;
+      // const key = cell ? cell.key : undefined;
       console.log('🌳  EVENT', e.type, e.payload);
     });
 
@@ -107,6 +109,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         values={this.state.values}
         events$={this.events$}
         factory={this.factory}
+        totalColumns={52}
+        totalRows={1000}
         Handsontable={this.Table}
         style={this.props.style}
       />
