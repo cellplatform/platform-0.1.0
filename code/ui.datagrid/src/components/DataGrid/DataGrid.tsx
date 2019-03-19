@@ -12,10 +12,11 @@ import {
   css,
   events,
   GlamorValue,
-  Handsontable as HandsontableLib,
+  Handsontable as TableLib,
   t,
   R,
   value,
+  time,
 } from '../../common';
 import { Grid } from '../../api';
 import * as hook from './hook';
@@ -31,6 +32,7 @@ export type IDataGridProps = {
   Handsontable?: Handsontable;
   factory?: t.GridFactory;
   events$?: Subject<t.GridEvent>;
+  initial?: t.IInitialGridState;
   style?: GlamorValue;
 };
 export type IDataGridState = {
@@ -66,10 +68,10 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public componentDidMount() {
-    const { values } = this.props;
+    const { values, initial = {} } = this.props;
 
     // Prepare the [handsontable] library.
-    const Table = this.props.Handsontable || HandsontableLib;
+    const Table = this.props.Handsontable || TableLib;
     render.registerAll(Table);
 
     // Create the table and corresponding API wrapper.
@@ -105,14 +107,16 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       }
     });
 
-    // Finish up.
-    grid.loadValues();
-    grid.select({ cell: 'A1' });
+    // Setup initial state.
+    // NB:  Running init after a tick prevents unnecessary work if the component
+    //      is caught in a reload loop which may happen with HMR.  In which case the
+    //      component will be `disposed` by the time `init` is called and hence bypassed.
+    time.delay(0, () => this.init());
   }
 
   public componentDidUpdate(prev: IDataGridProps) {
     /**
-     * If the values prop has changed force-reload the grid.
+     * If the values prop has changed. Force reload the values into the grid.
      */
     if (!R.equals(prev.values, this.props.values)) {
       this.grid.loadValues(this.props.values);
@@ -121,11 +125,16 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
   public componentWillUnmount() {
     this.unmounted$.next();
+    this.unmounted$.complete();
   }
 
   /**
    * [Properties]
    */
+  public get isDisposed() {
+    return this.unmounted$.isStopped || this.grid.isDisposed;
+  }
+
   public get events$() {
     return this.grid.events$;
   }
@@ -162,12 +171,27 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       beforeKeyDown: hook.beforeKeyDownHandler(getGrid),
       beforeChange: hook.beforeChangeHandler(getGrid),
       afterSelection: hook.afterSelectionHandler(getGrid),
+      afterDeselect: hook.afterDeselectHandler(getGrid),
     };
   }
 
   /**
    * [Methods]
    */
+
+  public init() {
+    if (this.isDisposed) {
+      return;
+    }
+    const grid = this.grid;
+    grid.loadValues();
+
+    const { initial } = this.props;
+    if (initial && initial.selection) {
+      const { cell, ranges } = initial.selection;
+      grid.select({ cell, ranges });
+    }
+  }
 
   public redraw() {
     this.updateSize();
@@ -181,11 +205,14 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
    */
 
   public render() {
+    const styles = {
+      base: css({ position: 'relative', overflow: 'hidden', userSelect: 'none' }),
+    };
     return (
       <div
         ref={this.elRef}
         className={constants.CSS_CLASS.GRID}
-        {...css(STYLES.base, this.props.style)}
+        {...css(styles.base, this.props.style)}
       />
     );
   }
@@ -204,14 +231,3 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     }
   }
 }
-
-/**
- * INTERNAL
- */
-const STYLES = {
-  base: css({
-    position: 'relative',
-    overflow: 'hidden',
-    userSelect: 'none',
-  }),
-};
