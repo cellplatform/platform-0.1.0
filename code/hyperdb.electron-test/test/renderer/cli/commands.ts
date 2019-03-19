@@ -1,10 +1,10 @@
-import { shell } from 'electron';
 import { Command } from '../common';
-import { editor } from './cmd.editor';
-import { db } from './cmd.db';
-import { network } from './cmd.network';
-import { info } from './cmd.db.info';
 import { create, join } from './cmd.create';
+import { db } from './cmd.db';
+import { info } from './cmd.db.info';
+import { editor } from './cmd.editor';
+import { grid } from './cmd.grid';
+import { network } from './cmd.network';
 import * as t from './types';
 
 type P = t.ITestCommandProps;
@@ -27,4 +27,5 @@ export const root = Command.create<P>('hyperdb')
   .add(auth)
   .add(db)
   .add(network)
-  .add(editor);
+  .add(editor)
+  .add(grid);

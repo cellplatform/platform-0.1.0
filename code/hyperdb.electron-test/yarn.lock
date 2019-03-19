@@ -1171,6 +1171,16 @@
     "@platform/ts.libs" "3.3.6"
     "@platform/util.exec" "0.0.24"
 
+"@platform/ui.datagrid@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.7.tgz#1f9d8287ae2ef810a3f2cb7769bb2fa461501187"
+  integrity sha512-deeWyzzfmIDcGoheUuTYnK6umgLQYLfMIT7I6xbhauoFVzxPv2fV79dYDO2yuSWHOnQJnYTyikdEeZu5UIuGHg==
+  dependencies:
+    "@platform/react" "0.0.21"
+    "@platform/ui.text" "0.0.24"
+    "@platform/util.value.cell" "0.0.2"
+    handsontable "6.2.2"
+
 "@platform/ui.editor@0.0.10":
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.10.tgz#dd405f2c9b1f1ef93945cae51fafff3f64daad1c"
@@ -1242,6 +1252,15 @@
     escape-string-regexp "1.0.5"
     fuzzy "0.1.3"
     underscore.string "3.3.5"
+
+"@platform/util.value.cell@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.0.2.tgz#836dac94601a8e6964be8e4c02639c78785c8f24"
+  integrity sha512-+gBqrs48aem4NDadsYHetTDUO7ZyGOk+TWamlmvM2AbiXeV8UB2KLU9cLponqdbcgKrh5bdUObvR37whcPvlig==
+  dependencies:
+    "@platform/util.value" "0.0.41"
+    excel-formula-ast "1.1.1"
+    excel-formula-tokenizer "2.3.0"
 
 "@platform/util.value@0.0.40":
   version "0.0.40"
@@ -2009,6 +2028,11 @@ bencode@^2.0.0:
   integrity sha512-2uhEl8FdjSBUyb69qDTgOEeeqDTa+n3yMQzLW0cOzNf1Ow5bwcg3idf+qsWisIKRH8Bk8oC7UXL8irRcPA8ZEQ==
   dependencies:
     safe-buffer "^5.1.1"
+
+bignumber.js@^8.0.1:
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-8.1.1.tgz#4b072ae5aea9c20f6730e4e5d529df1271c4d885"
+  integrity sha512-QD46ppGintwPGuL1KqmwhR0O+N2cZUg8JG/VzwI2e28sM9TqHjQB10lI4QAaMHVbLzwVLLAwEglpKPViWX+5NQ==
 
 binary-extensions@^1.0.0:
   version "1.13.0"
@@ -3814,6 +3838,16 @@ evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
     md5.js "^1.3.4"
     safe-buffer "^5.1.1"
 
+excel-formula-ast@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/excel-formula-ast/-/excel-formula-ast-1.1.1.tgz#44dd1379ae70e620691ad8063080ae62c1c2e944"
+  integrity sha512-DWVBtdSge+m4ickkAgljS/ub+RoPy1kz9XxkWUObEWHYGTge9NdzyUKri8OSZZlS+PoG6RcC7eoaRrwe3gzBUQ==
+
+excel-formula-tokenizer@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/excel-formula-tokenizer/-/excel-formula-tokenizer-2.3.0.tgz#e2ea4b217acb8a9c5cf0062fe783bf7c0928f5f4"
+  integrity sha512-9xqAUwL0hTyAopyuE8jhmmnLlxFjbC4t5bxrf+q0QgPxsKohJW90wD9zvLCNqc/DXN/O1TBDoiOd04txFVcl0w==
+
 execa@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/execa/-/execa-0.7.0.tgz#944becd34cc41ee32a63a9faf27ad5a65fc59777"
@@ -4372,6 +4406,15 @@ growl@1.10.5:
   version "1.10.5"
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.5.tgz#f2735dc2283674fa67478b10181059355c369e5e"
   integrity sha512-qBr4OuELkhPenW6goKVXiv47US3clb3/IbuWF9KNKEijAy9oeHxU9IgzjvJhHkUzhaj7rOUD7+YGWqUjLp5oSA==
+
+handsontable@6.2.2:
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/handsontable/-/handsontable-6.2.2.tgz#f1250f3f374abdf7d4a0080950482d3edeea8f07"
+  integrity sha512-Z/sQa51OMHH4RoeBJeANYJMJYmx5SR+/xP8JCh5mzKJnAMKoQWF1zONPNgNCFZ/LdKFmI0f34XKtU0GHW0MG/Q==
+  dependencies:
+    moment "2.20.1"
+    numbro "^2.0.6"
+    pikaday "1.5.1"
 
 har-schema@^2.0.0:
   version "2.0.0"
@@ -5832,6 +5875,16 @@ mocha@6.0.2:
     yargs-parser "11.1.1"
     yargs-unparser "1.5.0"
 
+moment@2.20.1:
+  version "2.20.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
+  integrity sha512-Yh9y73JRljxW5QxN08Fner68eFLxM5ynNOAw2LbIB1YAGeQzZT8QFSUvkAz609Zf+IHhhaUxqZK8dG3W/+HEvg==
+
+moment@2.x:
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
@@ -6123,6 +6176,13 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
+
+numbro@^2.0.6:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/numbro/-/numbro-2.1.2.tgz#2d51104f09b5d69aef7e15bb565d7795e47ecfd6"
+  integrity sha512-7w833BxZmKGLE9HI0aREtNVRVH6WTYUUlWf4qgA5gKNhPQ4F/MRZ14sc0v8eoLORprk9ZTVwYaLwj8N3Zgxwiw==
+  dependencies:
+    bignumber.js "^8.0.1"
 
 oauth-sign@~0.9.0:
   version "0.9.0"
@@ -6579,6 +6639,13 @@ pify@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-3.0.0.tgz#e5a4acd2c101fdf3d9a4d07f0dbc4db49dd28176"
   integrity sha1-5aSs0sEB/fPZpNB/DbxNtJ3SgXY=
+
+pikaday@1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/pikaday/-/pikaday-1.5.1.tgz#0a48549bc1a14ea1d08c44074d761bc2f2bfcfd3"
+  integrity sha1-CkhUm8GhTqHQjEQHTXYbwvK/z9M=
+  optionalDependencies:
+    moment "2.x"
 
 pinkie-promise@^2.0.0:
   version "2.0.1"
