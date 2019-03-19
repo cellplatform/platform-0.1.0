@@ -4,21 +4,22 @@
  */
 import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
+import * as ReactDOM from 'react-dom';
 
 import { Grid } from '../../api';
 import { color, css } from '../../common';
 import { RegisterRenderer, Renderer } from '../../types';
 import * as constants from './constants';
 
-const styles = {
-  // header: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */ }),
+const CACHE: any = {};
+
+const STYLES = {
   cell: {
     base: css({
       position: 'relative',
       pointerEvents: 'none',
     }),
     value: css({
-      // color: COLORS.BLUE,
       color: color.format(-0.65),
       fontSize: 14,
     }),
@@ -45,37 +46,48 @@ export const cellRenderer = (grid: Grid) => {
     // console.log('row', row);
 
     // console.log('grid.instanceId', grid.instanceId);
-    console.log('grid.id', grid.id, grid.isDisposed);
+    // console.log('grid.id', grid.id, grid.isDisposed);
 
     if (row === 0 && col === 0) {
       // console.log(key, value);
     }
 
-    td.innerHTML = toCellHtmlMemoized({ col, row, value });
+    // td.innerHTML = toCellHtmlMemoized({ td, col, row, value });
+    toCellHtmlMemoized({ td, col, row, value });
     return td;
+
+    // const el = <div>Foo</div>;
+    // ReactDOM.render(el, td);
+    // return td;
   };
   return fn;
 };
 
-function toCellHtml(args: { row: number; col: number; value?: string }) {
-  let value = args.value;
-  value = typeof value === 'object' ? JSON.stringify(value) : value;
-  const el = (
-    <div {...styles.cell.base}>
-      <span {...styles.cell.value}>{value}</span>
-    </div>
-  );
+function toCellHtml(args: { td: HTMLElement; row: number; col: number; value?: string }) {
+  const el = toCellElement(args);
   return ReactDOMServer.renderToString(el);
 }
 
-const CACHE: any = {};
-function toCellHtmlMemoized(args: { row: number; col: number; value?: string }) {
+function toCellElement(args: { td: HTMLElement; row: number; col: number; value?: string }) {
+  let value = args.value;
+  value = typeof value === 'object' ? JSON.stringify(value) : value;
+  return (
+    <div {...STYLES.cell.base}>
+      <span {...STYLES.cell.value}>{value}</span>
+    </div>
+  );
+}
+
+function toCellHtmlMemoized(args: { td: HTMLElement; row: number; col: number; value?: string }) {
   const { row, col, value } = args;
-  const key = `${row}:${col}:${value}`;
+  const key = `${row}:${col}/${value}`;
   if (CACHE[key]) {
     return CACHE[key];
   }
-  const html = toCellHtml(args);
+  // const html = toCellHtml(args);
+  const html = toCellElement(args);
+  ReactDOM.render(html, args.td);
+
   CACHE[key] = html;
   return html;
 }

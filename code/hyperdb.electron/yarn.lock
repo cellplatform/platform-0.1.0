@@ -425,10 +425,10 @@
     "@uiharness/ui" "0.1.7"
     tslib "1.9.3"
 
-"@uiharness/electron@0.3.162":
-  version "0.3.162"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.162.tgz#88659a45fa7c731377282afcb6d1ea693d93626a"
-  integrity sha512-FORBfAG7fUDOA/cC2GtqDtVGJFUEoqjG+rBUaHo/fehDTTbB3bw72Rv9z3HV/ixW1S56ZjM7a5BN0J7mD9xFKg==
+"@uiharness/electron@0.3.163":
+  version "0.3.163"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.163.tgz#87ec322794fcbcd1624c6d5f013ca9c8f6c54897"
+  integrity sha512-65lzL4aPW+X82ypcVIxycBcPiRLpuLdMkzJRMaGh1SNmfA8i3jevWnPIj07rBEwZuaU+TC2xy7fKqcoOLBvYBg==
   dependencies:
     "@platform/electron" "0.1.8"
     "@platform/log" "0.0.91"

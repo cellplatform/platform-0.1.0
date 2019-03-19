@@ -12,7 +12,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@babel/polyfill": "7.2.5",
+    "@babel/polyfill": "7.4.0",
     "@platform/fs": "0.0.40",
     "@platform/log": "0.0.91",
     "@platform/react": "0.0.21",

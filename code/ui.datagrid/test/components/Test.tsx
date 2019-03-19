@@ -96,6 +96,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             {this.button('select: A1 and range', () =>
               this.grid.select({ cell: 'A1', ranges: ['B2:C4', 'C2:D7'] }),
             )}
+            {this.button('scrollTo: A1', () => this.grid.scrollTo({ cell: 'A1' }))}
+            {this.button('scrollTo: B5', () => this.grid.scrollTo({ cell: 'B5' }))}
+            {this.button('scrollTo: AZ1000', () => this.grid.scrollTo({ cell: 'AZ1000' }))}
           </div>
           <ObjectView
             data={this.state.data}

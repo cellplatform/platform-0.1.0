@@ -20,7 +20,7 @@
   "devDependencies": {
     "@platform/test.dom": "0.0.0",
     "@platform/ts": "3.3.67",
-    "@uiharness/dev": "0.2.5"
+    "@uiharness/dev": "0.2.6"
   },
   "files": [
     "lib",

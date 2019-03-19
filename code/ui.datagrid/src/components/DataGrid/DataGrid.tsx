@@ -108,15 +108,29 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     // Dispose on HMR.
     const hot = (module as any).hot;
     if (hot) {
-      hot.dispose(() => this.componentWillUnmount());
+      hot.dispose(() => this.dispose());
     }
 
     // Setup initial state.
     // NB:  Running init after a tick prevents unnecessary work if the component
     //      is caught in a reload loop which may happen with HMR.  In which case the
     //      component will be `disposed` by the time `init` is called and hence bypassed.
-    grid.loadValues();
     time.delay(0, () => this.init());
+  }
+
+  private init() {
+    if (this.isDisposed) {
+      return;
+    }
+    const { initial = {} } = this.props;
+    const grid = this.grid;
+    grid.loadValues();
+    if (initial.selection) {
+      const { cell, ranges } = initial.selection;
+      grid.select({ cell, ranges });
+    }
+    grid.next({ type: 'GRID/ready', payload: { grid } });
+    this.forceUpdate();
   }
 
   public componentDidUpdate(prev: IDataGridProps) {
@@ -129,6 +143,10 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public componentWillUnmount() {
+    this.dispose();
+  }
+
+  public dispose() {
     this.unmounted$.next();
     this.unmounted$.complete();
   }
@@ -138,6 +156,10 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
    */
   public get isDisposed() {
     return this.unmounted$.isStopped || this.grid.isDisposed;
+  }
+
+  public get isReady() {
+    return this.grid ? this.grid.isReady : false;
   }
 
   public get events$() {
@@ -184,19 +206,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
    * [Methods]
    */
 
-  public init() {
-    if (this.isDisposed) {
-      return;
-    }
-    const { initial = {} } = this.props;
-    const grid = this.grid;
-
-    if (initial.selection) {
-      const { cell, ranges } = initial.selection;
-      grid.select({ cell, ranges });
-    }
-  }
-
   public redraw() {
     this.updateSize();
     if (this.table) {
@@ -210,7 +219,12 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
   public render() {
     const styles = {
-      base: css({ position: 'relative', overflow: 'hidden', userSelect: 'none' }),
+      base: css({
+        position: 'relative',
+        overflow: 'hidden',
+        userSelect: 'none',
+        visibility: this.isReady ? 'visible' : 'hidden',
+      }),
     };
     return (
       <div

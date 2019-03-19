@@ -19,10 +19,16 @@ export type IInitialGridState = {
  */
 export type GridEvent =
   | t.EditorEvent
+  | IGridReadyEvent
   | IGridKeydownEvent
   | IGridChangeEvent
   | IGridChangeSetEvent
   | IGridSelectionChangeEvent;
+
+export type IGridReadyEvent = {
+  type: 'GRID/ready';
+  payload: { grid: Grid };
+};
 
 /**
  * Keyboard

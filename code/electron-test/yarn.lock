@@ -1249,6 +1249,21 @@
     "@uiharness/ui" "0.1.8"
     tslib "1.9.3"
 
+"@uiharness/electron@0.3.163":
+  version "0.3.163"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.163.tgz#87ec322794fcbcd1624c6d5f013ca9c8f6c54897"
+  integrity sha512-65lzL4aPW+X82ypcVIxycBcPiRLpuLdMkzJRMaGh1SNmfA8i3jevWnPIj07rBEwZuaU+TC2xy7fKqcoOLBvYBg==
+  dependencies:
+    "@platform/electron" "0.1.8"
+    "@platform/log" "0.0.91"
+    "@platform/react" "0.0.21"
+    "@platform/ui.object" "0.0.60"
+    "@platform/util.value" "0.0.41"
+    "@types/app-root-path" "1.2.4"
+    "@uiharness/types" "0.0.71"
+    "@uiharness/ui" "0.1.8"
+    tslib "1.9.3"
+
 "@uiharness/types@0.0.70":
   version "0.0.70"
   resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.0.70.tgz#586d3c0e703a27e4917c434eb2f8dd7ed61d3eaf"
