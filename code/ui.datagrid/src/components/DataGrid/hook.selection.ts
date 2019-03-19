@@ -24,3 +24,14 @@ export function afterSelectionHandler(getGrid: () => Grid) {
     });
   };
 }
+
+export function afterDeselectHandler(getGrid: () => Grid) {
+  return () => {
+    const grid = getGrid();
+    const selection = grid.selection;
+    grid.next({
+      type: 'GRID/selection',
+      payload: { selection, grid },
+    });
+  };
+}

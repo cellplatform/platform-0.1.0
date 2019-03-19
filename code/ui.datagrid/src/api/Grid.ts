@@ -111,12 +111,45 @@ export class Grid {
   public get selection(): t.IGridSelection {
     const toKey = (coord: Handsontable.wot.CellCoords) =>
       Cell.toKey({ row: coord.row, column: coord.col });
+
+    // Current (input cell).
     const last = this._.table.getSelectedRangeLast();
     const current = last ? toKey(last.highlight) : undefined;
+
+    // Ranges.
     const selectedRanges = this._.table.getSelectedRange() || [];
     let ranges = selectedRanges.map(item => `${toKey(item.from)}:${toKey(item.to)}`);
     ranges = ranges.length === 1 && ranges[0] === `${current}:${current}` ? [] : ranges;
-    return { current, ranges };
+
+    // Determine if the entire sheet is selected.
+    let all = false;
+    if (ranges.length > 0) {
+      const min = { row: -1, col: -1 };
+      const max = { row: -1, col: -1 };
+
+      selectedRanges.forEach(range => {
+        const { from, to } = range;
+        min.row = min.row === -1 || from.row < min.row ? from.row : min.row;
+        min.col = min.col === -1 || from.col < min.col ? from.col : min.col;
+
+        max.row = max.row === -1 || to.row > max.row ? to.row : max.row;
+        max.col = max.col === -1 || to.col > max.col ? to.col : max.col;
+      });
+
+      if (
+        min.row === 0 &&
+        min.col === 0 &&
+        max.row === this.totalRows - 1 &&
+        max.col === this.totalColumns - 1
+      ) {
+        all = true;
+      }
+    }
+
+    // Finish up.
+    let result: t.IGridSelection = { current, ranges };
+    result = all ? { ...result, all } : result;
+    return result;
   }
 
   /**
