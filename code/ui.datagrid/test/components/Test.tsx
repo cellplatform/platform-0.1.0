@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, css, Button, ObjectView, t } from './common';
+import { color, css, Button, ObjectView, t } from '../common';
 import { Test as TestGrid } from './Test.Grid';
 
 export type ITestProps = {};

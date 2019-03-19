@@ -68,19 +68,17 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public componentDidMount() {
-    const { values, initial = {} } = this.props;
-
-    // Prepare the [handsontable] library.
-    const Table = this.props.Handsontable || TableLib;
-    render.registerAll(Table);
+    const { values } = this.props;
 
     // Create the table and corresponding API wrapper.
+    const Table = this.props.Handsontable || TableLib;
     const totalColumns = this.totalColumns;
     const totalRows = this.totalRows;
     const table = (this.table = new Table(this.el as Element, this.settings));
     const grid = (this.grid = Grid.create({ table, totalColumns, totalRows, values }));
     this.factory = new FactoryManager({ grid, factory: this.props.factory });
     this.unmounted$.subscribe(() => grid.dispose());
+    render.registerAll(Table);
 
     // Store metadata on the [Handsontable] instance.
     // NOTE:
@@ -111,6 +109,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     // NB:  Running init after a tick prevents unnecessary work if the component
     //      is caught in a reload loop which may happen with HMR.  In which case the
     //      component will be `disposed` by the time `init` is called and hence bypassed.
+    grid.loadValues();
     time.delay(0, () => this.init());
   }
 
@@ -183,11 +182,10 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     if (this.isDisposed) {
       return;
     }
+    const { initial = {} } = this.props;
     const grid = this.grid;
-    grid.loadValues();
 
-    const { initial } = this.props;
-    if (initial && initial.selection) {
+    if (initial.selection) {
       const { cell, ranges } = initial.selection;
       grid.select({ cell, ranges });
     }

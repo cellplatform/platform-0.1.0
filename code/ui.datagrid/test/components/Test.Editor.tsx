@@ -11,7 +11,7 @@ import {
   MeasureSize,
   t,
   value as valueUtil,
-} from './common';
+} from '../common';
 
 const PADDING = 10;
 

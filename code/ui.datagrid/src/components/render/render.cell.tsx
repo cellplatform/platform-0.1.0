@@ -75,13 +75,7 @@ function toCellHtmlMemoized(args: { row: number; col: number; value?: string }) 
  * Register the cell renderer.
  */
 export function registerCellRenderer(Table: Handsontable) {
-  // const fn: RegisterRenderer = (Handsontable.renderers as any).registerRenderer;
-  // Handsontable.Renderers
-
   const renderers = (Table as any).renderers;
   const fn: RegisterRenderer = renderers.registerRenderer;
   fn(constants.CELL_DEFAULT, cellRenderer);
 }
-
-// export function registerCellRenderer() {
-//   const fn: RegisterRenderer = (Handsontable.renderers as any).registerRenderer;

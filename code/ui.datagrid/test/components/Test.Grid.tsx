@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { datagrid, GlamorValue, Handsontable as HandsontableLib, t } from './common';
+import { datagrid, GlamorValue, Handsontable as HandsontableLib, t } from '../common';
 import { TestEditor } from './Test.Editor';
 
 export type ITestProps = {
