@@ -1,8 +1,5 @@
-type IConstructArgs = {
-  table: Handsontable;
-  row: number;
-  column: number;
-};
+import { cell as util, parser } from '@platform/util.value.cell';
+import { t } from '../common';
 
 /**
  * API for accessing and manipulating a cell.
@@ -11,14 +8,39 @@ export class Cell {
   /**
    * [Static]
    */
-  public static create(args: IConstructArgs) {
+  public static create(args: { table: Handsontable; row: number; column: number }) {
     return new Cell(args);
+  }
+
+  public static createFromKey(args: { table: Handsontable; cellKey: string }) {
+    const { table, cellKey } = args;
+    const { row, column } = util.fromKey(cellKey);
+    return new Cell({ table, row, column });
+  }
+
+  public static toKey(args: { row: number; column: number }) {
+    return util.toKey(args.column, args.row);
+  }
+
+  public static fromKey(cellKey: string) {
+    return util.fromKey(cellKey);
+  }
+
+  public static toPosition(ref: t.CellRef) {
+    return typeof ref === 'string' ? Cell.fromKey(ref) : ref;
+  }
+
+  public static toRangePositions(rangeKey: string) {
+    const parts = parser.toRangeParts(rangeKey);
+    const start = Cell.toPosition(parts.left);
+    const end = Cell.toPosition(parts.right);
+    return { start, end };
   }
 
   /**
    * [Constructor]
    */
-  private constructor(args: IConstructArgs) {
+  private constructor(args: { table: Handsontable; row: number; column: number }) {
     this._.table = args.table;
     this.row = args.row;
     this.column = args.column;
@@ -37,6 +59,12 @@ export class Cell {
   /**
    * [Properties]
    */
+  public get key() {
+    const row = this.row;
+    const column = this.column;
+    return Cell.toKey({ column, row });
+  }
+
   public get isDisposed() {
     return this._.table.isDestroyed;
   }
@@ -58,6 +86,13 @@ export class Cell {
 
   public get height() {
     return this.td.offsetHeight;
+  }
+
+  public get value(): t.CellValue {
+    return this._.table.getDataAtCell(this.row, this.column);
+  }
+  public set value(value: t.CellValue) {
+    this._.table.setDataAtCell(this.row, this.column, value);
   }
 
   public get sibling() {
@@ -89,7 +124,17 @@ export class Cell {
    * [Methods]
    */
 
+  /**
+   * Display string representation of the cell.
+   */
   public toString() {
     return `[Cell|row:${this.row}, column:${this.column}]`;
+  }
+
+  /**
+   * Determines if the cell matches the given position coordinates.
+   */
+  public isPosition(args: { row: number; column: number }) {
+    return this.row === args.row && this.column === args.column;
   }
 }

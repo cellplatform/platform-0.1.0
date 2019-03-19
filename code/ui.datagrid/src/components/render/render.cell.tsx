@@ -5,6 +5,7 @@
 import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
 
+import { Grid } from '../../api';
 import { color, css } from '../../common';
 import { RegisterRenderer, Renderer } from '../../types';
 import * as constants from './constants';
@@ -27,29 +28,38 @@ const styles = {
 /**
  * Renders a cell.
  */
-export const cellRenderer: Renderer = (instance, td, row, col, prop, value, cellProps) => {
-  // console.group('🌳 render');
-  // console.log('instance', instance);
-  // console.log('TD', td);
-  // console.log('row', row);
-  // console.log('col', col);
-  // console.log('prop', prop);
-  // console.log('value', value);
-  // console.log('cellProps', cellProps);
-  // console.groupEnd();
-  // console.log('row', row);
-  const key = `[col-${col}:row-${row}]: `;
+export const cellRenderer = (grid: Grid) => {
+  const fn: Renderer = (instance, td, row, col, prop, value, cellProps) => {
+    if (grid.isDisposed) {
+      return td;
+    }
+    // console.group('🌳 render');
+    // console.log('instance', instance);
+    // console.log('TD', td);
+    // console.log('row', row);
+    // console.log('col', col);
+    // console.log('prop', prop);
+    // console.log('value', value);
+    // console.log('cellProps', cellProps);
+    // console.groupEnd();
+    // console.log('row', row);
 
-  if (row === 0 && col === 0) {
-    // console.log(key, value);
-  }
+    // console.log('grid.instanceId', grid.instanceId);
+    console.log('grid.id', grid.id, grid.isDisposed);
 
-  td.innerHTML = toCellHtmlMemoized({ col, row, value });
-  return td;
+    if (row === 0 && col === 0) {
+      // console.log(key, value);
+    }
+
+    td.innerHTML = toCellHtmlMemoized({ col, row, value });
+    return td;
+  };
+  return fn;
 };
 
 function toCellHtml(args: { row: number; col: number; value?: string }) {
-  const { value } = args;
+  let value = args.value;
+  value = typeof value === 'object' ? JSON.stringify(value) : value;
   const el = (
     <div {...styles.cell.base}>
       <span {...styles.cell.value}>{value}</span>
@@ -73,14 +83,8 @@ function toCellHtmlMemoized(args: { row: number; col: number; value?: string }) 
 /**
  * Register the cell renderer.
  */
-export function registerCellRenderer(Table: Handsontable) {
-  // const fn: RegisterRenderer = (Handsontable.renderers as any).registerRenderer;
-  // Handsontable.Renderers
-
+export function registerCellRenderer(Table: Handsontable, grid: Grid) {
   const renderers = (Table as any).renderers;
   const fn: RegisterRenderer = renderers.registerRenderer;
-  fn(constants.MY_CELL, cellRenderer);
+  fn(constants.CELL_DEFAULT, cellRenderer(grid));
 }
-
-// export function registerCellRenderer() {
-//   const fn: RegisterRenderer = (Handsontable.renderers as any).registerRenderer;

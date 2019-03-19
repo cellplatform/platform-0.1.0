@@ -2,52 +2,41 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, Handsontable as HandsontableLib, t, datagrid } from './common';
-import { Editor } from '../../src/components/Editor';
-import * as render from '../../src/components/Grid.render';
+import { datagrid, GlamorValue, Handsontable as HandsontableLib, t } from '../common';
 import { TestEditor } from './Test.Editor';
-
-const createColumns = (length: number) => {
-  return Array.from({ length }).map(() => {
-    return {
-      renderer: render.MY_CELL,
-      editor: Editor,
-    };
-  });
-};
 
 export type ITestProps = {
   style?: GlamorValue;
   Table?: Handsontable;
 };
 export type ITestState = {
-  settings?: datagrid.IGridSettings;
+  // settings?: datagrid.IGridSettings;
   // data?: object;
+  values?: t.IGridValues;
+};
+
+const DEFAULT = {
+  A1: 'A1',
+  B1: 'locked',
+  B2: 'cancel',
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = {};
-  private state$ = new Subject<Partial<ITestState>>();
+  public state: ITestState = { values: DEFAULT };
+  public state$ = new Subject<Partial<ITestState>>();
   private unmounted$ = new Subject();
   private events$ = new Subject<t.GridEvent>();
 
-  private grid!: datagrid.Grid;
-  private gridRef = (ref: datagrid.Grid) => (this.grid = ref);
+  public datagrid!: datagrid.DataGrid;
+  private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-
-    const Table = this.Table;
-    const settings = createSampleData({ Table });
-    // settings.beforeKeyDown = beforeKeydownHandler(() => this.grid);
-
-    this.state$.next({ settings });
-    render.registerAll(Table);
-
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+
     events$
       .pipe(
         filter(e => e.type === 'GRID/EDITOR/end'),
@@ -55,21 +44,69 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         filter(e => !e.payload.isCancelled),
       )
       .subscribe(e => {
-        let settings = this.state.settings;
-        if (settings) {
-          settings = { ...settings };
-          const { row, column } = e.payload;
-          const data = { ...settings.data };
-          // data[row][column] = e.payload.value.to; // HACK - test only:  do this immutably.
-          data[row][column] = 'yo mama';
-          settings.data = data;
-          // this.state$.next({ settings });
-        }
+        // console.log('HANDLE END  🐷 ');
+        // e.payload.cancel();
       });
 
-    events$.subscribe(e => {
-      // console.log('🌳  EVENT', e.type, e.payload);
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/EDITOR/begin'),
+        map(e => e as t.IBeginEditingEvent),
+      )
+      .subscribe(e => {
+        // Cancel upon start of edit operation.
+        // e.payload.cancel();
+      });
+
+    events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
+      // const cell = e.payload.cell;
+      // const key = cell ? cell.key : undefined;
+      console.log('🌳  EVENT', e.type, e.payload);
     });
+
+    const change$ = events$.pipe(
+      filter(e => e.type === 'GRID/change'),
+      map(e => e.payload as t.IGridChange),
+    );
+
+    const changeSet$ = events$.pipe(
+      filter(e => e.type === 'GRID/changeSet'),
+      map(e => e.payload as t.IGridChangeSet),
+    );
+
+    const selection$ = events$.pipe(
+      filter(e => e.type === 'GRID/selection'),
+      map(e => e.payload as t.IGridSelectionChange),
+    );
+
+    const keys$ = events$.pipe(
+      filter(e => e.type === 'GRID/keydown'),
+      map(e => e.payload as t.IGridKeypress),
+    );
+
+    // keys$.subscribe(e => {});
+
+    keys$
+      .pipe(
+        filter(e => e.event.metaKey && e.key === 'a'),
+        filter(e => !this.grid.isEditing),
+      )
+      .subscribe(e => {
+        // Suppress CMD+A (select all).
+        e.cancel();
+      });
+
+    change$.subscribe(e => {
+      // e.cancel();
+      // console.log('CHANGE', e);
+    });
+
+    change$.pipe(filter(e => e.cell.key === 'B2')).subscribe(e => {
+      console.log('B2');
+      e.cancel();
+    });
+
+    // changeSet$.subscribe(e => {});
   }
 
   public componentWillUnmount() {
@@ -84,17 +121,25 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return Table as Handsontable;
   }
 
+  public get grid() {
+    return this.datagrid.grid;
+  }
+
   /**
    * [Render]
    */
   public render() {
     return (
-      <datagrid.Grid
-        ref={this.gridRef}
-        settings={this.state.settings}
+      <datagrid.DataGrid
+        key={'test.grid'}
+        ref={this.datagridRef}
+        values={this.state.values}
         events$={this.events$}
         factory={this.factory}
+        totalColumns={52}
+        totalRows={1000}
         Handsontable={this.Table}
+        initial={{ selection: { cell: 'A1' } }}
         style={this.props.style}
       />
     );
@@ -114,53 +159,4 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         return null;
     }
   };
-}
-
-/**
- * `Sample Data`
- */
-export function createEmptyData(rows: number, columns: number) {
-  return Array.from({ length: rows }).map(row => Array.from({ length: columns }).map(col => ''));
-}
-
-export function createSampleData(args: { Table: Handsontable }) {
-  // const { Table } = args;
-  // const data = Table.helper.createSpreadsheetData(1000, 100);
-  const data = createEmptyData(1000, 100);
-  data[0][0] = 'A1';
-  data[0][1] = 'locked';
-
-  // console.log('data', data);
-  // const getSelectedLast = this.getSelectedLast
-
-  const settings: datagrid.IGridSettings = {
-    data,
-    columns: createColumns(100),
-
-    // observeChanges: true,
-
-    /**
-     * See:
-     *   - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterBeginEditing
-     *   - Source callback
-     *      https://handsontable.com/docs/6.2.2/tutorial-using-callbacks.html#page-source-definition
-     */
-    beforeChange(changes, source) {
-      // console.group('🌳 beforeChange');
-      // console.log('source', source);
-      // console.log('changes', [...changes]);
-      // console.groupEnd();
-      // return false; // Cancel's change.
-    },
-
-    afterChange(e) {
-      // console.log('afterChange', e);
-    },
-
-    afterScrollVertically() {
-      // console.log('scroll');
-    },
-  };
-
-  return settings;
 }

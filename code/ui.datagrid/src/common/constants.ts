@@ -10,3 +10,8 @@ export const CSS_CLASS = {
   GRID: 'platform-datagrid',
   EDITOR: 'platform-datagrid-editor',
 };
+
+export const DEFAULTS = {
+  TOTAL_COLUMNS: 52,
+  TOTAL_ROWS: 1000,
+};

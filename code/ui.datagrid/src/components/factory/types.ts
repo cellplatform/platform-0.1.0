@@ -1,4 +1,4 @@
-import { Grid } from '../api';
+import { Grid } from '../../api';
 
 /**
  * A factory function that produces a visual component for display within the grid.

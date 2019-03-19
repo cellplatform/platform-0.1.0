@@ -19,3 +19,9 @@ import 'handsontable'; // tslint:disable-line
  */
 export { css, color, GlamorValue, events } from '@platform/react';
 export { value, time } from '@platform/util.value';
+
+/**
+ * Ramda
+ */
+import { equals } from 'ramda';
+export const R = { equals };

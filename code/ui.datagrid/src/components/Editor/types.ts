@@ -1,4 +1,4 @@
-import { Grid, Cell } from '../api';
+import { Grid, Cell } from '../../api';
 import * as t from '../../types';
 
 /**
@@ -7,11 +7,9 @@ import * as t from '../../types';
  */
 export type IEditorContext = {
   autoCancel: boolean; // Automatically cancels on Escape key.
-  row: number;
-  column: number;
-  grid: Grid;
   cell: Cell;
-  keys$: t.Observable<t.IGridKeydown>;
+  grid: Grid;
+  keys$: t.Observable<t.IGridKeypress>;
   end$: t.Observable<IEndEditingEvent>;
   cancel(): void;
   complete(args: { value: any }): void;
@@ -25,17 +23,18 @@ export type EditorEvent = IBeginEditingEvent | IEndEditingEvent;
 export type IBeginEditingEvent = {
   type: 'GRID/EDITOR/begin';
   payload: {
-    column: number;
-    row: number;
+    cell: Cell;
+    cancel(): void;
   };
 };
 
 export type IEndEditingEvent = {
   type: 'GRID/EDITOR/end';
   payload: {
-    column: number;
-    row: number;
+    cell: Cell;
     isCancelled: boolean;
-    value: { to: any };
+    isChanged: boolean;
+    value: { from?: t.CellValue; to?: t.CellValue };
+    cancel(): void;
   };
 };
