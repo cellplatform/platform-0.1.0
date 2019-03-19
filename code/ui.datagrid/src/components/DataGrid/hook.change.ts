@@ -1,5 +1,5 @@
 import { Grid } from '../../api';
-import { t } from '../../common';
+import { t, R } from '../../common';
 import { TableEventSource } from './types.private';
 
 /**
@@ -22,15 +22,16 @@ export function beforeChangeHandler(getGrid: () => Grid) {
         }
         const row = change[0] as number;
         const column = change[1] as number;
+        const value = { from: change[2], to: change[3] };
+        const isChanged = !R.equals(value.from, value.to);
         const payload: t.IGridChange = {
           source: toSource(source),
-          row,
-          column,
           grid,
           get cell() {
             return grid.cell({ row, column });
           },
-          value: { from: change[2], to: change[3] },
+          value,
+          isChanged,
           isCancelled: false,
           cancel() {
             payload.isCancelled = true;
@@ -39,19 +40,23 @@ export function beforeChangeHandler(getGrid: () => Grid) {
         };
         return payload;
       })
-      .filter(e => Boolean(e)) as t.IGridChange[];
+      .filter(e => Boolean(e))
+      .map(e => e as t.IGridChange)
+      .filter(e => e.isChanged);
 
     // Fire change events.
     changes.forEach(payload => grid.next({ type: 'GRID/change', payload }));
 
     // Fire changes as a set.
-    grid.next({
-      type: 'GRID/changeSet',
-      payload: {
-        changes,
-        cancel: () => changes.forEach(change => change.cancel()),
-      },
-    });
+    if (changes.length > 0) {
+      grid.next({
+        type: 'GRID/changeSet',
+        payload: {
+          changes,
+          cancel: () => changes.forEach(change => change.cancel()),
+        },
+      });
+    }
   };
 }
 

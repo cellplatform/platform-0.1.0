@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { filter, share, take, takeUntil, map } from 'rxjs/operators';
 
-import { time, constants, Handsontable, t } from '../../common';
+import { R, time, constants, Handsontable, t } from '../../common';
 import { IGridRefsPrivate } from '../DataGrid/types.private';
 import { createProvider } from './EditorContext';
 
@@ -59,11 +59,8 @@ export class Editor extends editors.TextEditor {
   }
 
   private get context() {
-    const column = this.col;
-    const row = this.row;
     const grid = this.grid;
     const cell = this.cell;
-
     const complete = this.onComplete;
     const cancel = this.onCancel;
 
@@ -214,9 +211,12 @@ export class Editor extends editors.TextEditor {
     ReactDOM.unmountComponentAtNode(this.TEXTAREA_PARENT);
 
     // Alert listeners.
+    const value = { from, to };
+    const isChanged = !R.equals(value.from, value.to);
     const payload: t.IEndEditingEvent['payload'] = {
+      value,
       isCancelled,
-      value: { from, to },
+      isChanged,
       get cell() {
         return grid.cell({ row, column });
       },

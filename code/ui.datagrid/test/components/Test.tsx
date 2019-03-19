@@ -28,6 +28,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   /**
+   * [Properties]
+   */
+  public get grid() {
+    return this.testGrid.datagrid.grid;
+  }
+
+  /**
    * [Render]
    */
   public render() {
@@ -55,7 +62,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       <div {...styles.base}>
         <div {...styles.left}>
           <div />
-          <Button label={'TMP'} onClick={this.onTemp} />
+          <Button label={'loadValues'} onClick={this.handleLoadValues} />
         </div>
         <div {...styles.right}>
           <TestGrid ref={this.testGridRef} style={styles.grid} />
@@ -67,10 +74,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Handlers]
    */
-  private onTemp = () => {
-    const grid = this.testGrid.datagrid.grid;
-    // grid.
-    // datagrid.lo
-    grid.TMP();
+  private handleLoadValues = () => {
+    this.grid.loadValues();
   };
 }

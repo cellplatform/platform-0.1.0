@@ -4,6 +4,8 @@ import { DefaultSettings } from 'handsontable';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Editor } from '../Editor';
+import * as render from '../render';
 
 import {
   constants,
@@ -19,14 +21,13 @@ import * as hook from './hook';
 import { IGridRefsPrivate } from './types.private';
 import { FactoryManager } from '../factory';
 
-export type IGridSettings = DefaultSettings;
-
 export type IDataGridProps = {
-  style?: GlamorValue;
-  settings?: IGridSettings;
+  totalColumns?: number;
+  totalRows?: number;
   Handsontable?: Handsontable;
   factory?: t.GridFactory;
   events$?: Subject<t.GridEvent>;
+  style?: GlamorValue;
 };
 export type IDataGridState = {
   size?: { width: number; height: number };
@@ -61,11 +62,15 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public componentDidMount() {
-    // Create the table.
-    const settings = this.settings;
+    // Prepare the [handsontable] library.
     const Table = this.props.Handsontable || HandsontableLib;
-    const table = (this.table = new Table(this.el as Element, settings));
-    const grid = (this.grid = Grid.create({ table }));
+    render.registerAll(Table);
+
+    // Create the table and corresponding API wrapper.
+    const totalColumns = this.totalColumns;
+    const totalRows = this.totalRows;
+    const table = (this.table = new Table(this.el as Element, this.settings));
+    const grid = (this.grid = Grid.create({ table, totalColumns, totalRows }));
     this.factory = new FactoryManager({ grid, factory: this.props.factory });
     this.unmounted$.subscribe(() => grid.dispose());
 
@@ -93,6 +98,9 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
         this.props.events$.next(e);
       }
     });
+
+    // Finish up.
+    grid.loadValues();
   }
 
   public componentWillUnmount() {
@@ -106,26 +114,40 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     return this.grid.events$;
   }
 
-  private get settings(): IGridSettings {
-    const defaultValue = value.defaultValue;
-    let settings = this.props.settings || {};
+  public get totalColumns() {
+    return value.defaultValue(this.props.totalColumns, 100);
+  }
 
+  public get totalRows() {
+    return value.defaultValue(this.props.totalRows, 1000);
+  }
+
+  private get settings(): DefaultSettings {
     const getGrid = () => this.grid;
 
-    settings = {
-      ...settings,
-      rowHeaders: defaultValue(settings.rowHeaders, true),
-      colHeaders: defaultValue(settings.colHeaders, true),
-      colWidths: defaultValue(settings.colWidths, 100),
-      // columns: createColumns(100),
-      viewportRowRenderingOffset: defaultValue(settings.viewportRowRenderingOffset, 20),
-      manualRowResize: defaultValue(settings.manualRowResize, true),
-      manualColumnResize: defaultValue(settings.manualColumnResize, true),
+    // console.log('SETTINGS', this.grid.instanceId);
+
+    const createColumns = (length: number) => {
+      return Array.from({ length }).map(() => {
+        return {
+          renderer: render.CELL_DEFAULT,
+          editor: Editor,
+        };
+      });
+    };
+
+    return {
+      data: [],
+      rowHeaders: true,
+      colHeaders: true,
+      colWidths: 100,
+      columns: createColumns(this.totalColumns),
+      viewportRowRenderingOffset: 20,
+      manualRowResize: true,
+      manualColumnResize: true,
       beforeKeyDown: hook.beforeKeyDownHandler(getGrid),
       beforeChange: hook.beforeChangeHandler(getGrid),
     };
-
-    return settings;
   }
 
   /**

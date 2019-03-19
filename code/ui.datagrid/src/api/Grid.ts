@@ -4,6 +4,13 @@ import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { t } from '../common';
 import { Cell } from './Cell';
 
+export type IGridArgs = {
+  table: Handsontable;
+  totalColumns: number;
+  totalRows: number;
+  values?: t.IGridValues;
+};
+
 /**
  * Strongly typed properties and methods for
  * programatically manipulating the grid.
@@ -12,15 +19,36 @@ export class Grid {
   /**
    * [Static]
    */
-  public static create(args: { table: Handsontable }) {
+  public static create(args: IGridArgs) {
     return new Grid(args);
+  }
+
+  /**
+   * Converts the values
+   */
+  public static toDataArray(args: {
+    values: t.IGridValues;
+    totalColumns: number;
+    totalRows: number;
+  }) {
+    const { totalColumns, totalRows } = args;
+    return Array.from({ length: totalRows }).map((v, row) =>
+      Array.from({ length: totalColumns }).map((v, column) => {
+        // return { foo: 123 } as any;
+        return '';
+        // return Cell.toKey({ row, column });
+      }),
+    );
   }
 
   /**
    * [Constructor]
    */
-  private constructor(args: { table: Handsontable }) {
+  private constructor(args: IGridArgs) {
+    this.totalColumns = args.totalColumns;
+    this.totalRows = args.totalRows;
     this._.table = args.table;
+    this._.values = args.values || {};
 
     this.events$
       .pipe(filter(e => e.type === 'GRID/EDITOR/begin'))
@@ -39,8 +67,11 @@ export class Grid {
     dispose$: new Subject(),
     events$: new Subject<t.GridEvent>(),
     isEditing: false,
+    values: ({} as unknown) as t.IGridValues,
   };
 
+  public readonly totalColumns: number;
+  public readonly totalRows: number;
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
@@ -59,18 +90,28 @@ export class Grid {
     return this._.table.isDestroyed || this._.dispose$.isStopped;
   }
 
+  public get instanceId() {
+    return (this._.table as any).guid;
+  }
+
   public get isEditing() {
     return this._.isEditing;
+  }
+
+  public get values() {
+    return this._.values;
   }
 
   /**
    * [Methods]
    */
 
-  public TMP() {
+  /**
+   * Loads values into the grid.
+   */
+  public loadValues() {
+    const data = this.toDataArray();
     const table = this._.table;
-    const data = [['FOO']];
-
     table.loadData(data);
   }
 
@@ -84,6 +125,13 @@ export class Grid {
     }
     dispose$.next();
     dispose$.complete();
+  }
+
+  /**
+   * Fires an event (used internally)
+   */
+  public next(e: t.GridEvent) {
+    this._.events$.next(e);
   }
 
   /**
@@ -110,9 +158,13 @@ export class Grid {
   }
 
   /**
-   * Fires an event (used internally)
+   * Converts the current values to a data-array of `[rows:[columns[]]]`
    */
-  public next(e: t.GridEvent) {
-    this._.events$.next(e);
+  public toDataArray() {
+    return Grid.toDataArray({
+      values: this.values,
+      totalColumns: this.totalColumns,
+      totalRows: this.totalRows,
+    });
   }
 }

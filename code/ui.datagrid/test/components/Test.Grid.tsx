@@ -4,25 +4,26 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { GlamorValue, Handsontable as HandsontableLib, t, datagrid } from './common';
 import { Editor } from '../../src/components/Editor';
-import * as render from '../../src/components/render';
+// import * as render from '../../src/components/render';
 import { TestEditor } from './Test.Editor';
 
-const createColumns = (length: number) => {
-  return Array.from({ length }).map(() => {
-    return {
-      renderer: render.MY_CELL,
-      editor: Editor,
-    };
-  });
-};
+// const createColumns = (length: number) => {
+//   return Array.from({ length }).map(() => {
+//     return {
+//       renderer: render.CELL_DEFAULT,
+//       editor: Editor,
+//     };
+//   });
+// };
 
 export type ITestProps = {
   style?: GlamorValue;
   Table?: Handsontable;
 };
 export type ITestState = {
-  settings?: datagrid.IGridSettings;
+  // settings?: datagrid.IGridSettings;
   // data?: object;
+  values?: t.IGridValues;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -41,11 +42,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
     const Table = this.Table;
-    const settings = createSampleData({ Table });
+    // const settings = createSampleData({ Table });
     // settings.beforeKeyDown = beforeKeydownHandler(() => this.grid);
 
-    this.state$.next({ settings });
-    render.registerAll(Table);
+    // this.state$.next({ settings });
+    // render.registerAll(Table);
 
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     events$
@@ -56,8 +57,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       )
       .subscribe(e => {
         // e.payload.cancel();
-        e.payload.cell.value = 'boo';
-
+        // e.payload.cell.value = 'boo';
         // let settings = this.state.settings;
         // if (settings) {
         //   // settings = { ...settings };
@@ -99,7 +99,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       // console.log('CHANGE', e);
     });
 
-    change$.pipe(filter(e => e.column === 1 && e.row === 1)).subscribe(e => {
+    change$.pipe(filter(e => e.cell.key === 'B2')).subscribe(e => {
+      console.log('B2');
       e.cancel();
     });
 
@@ -125,7 +126,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <datagrid.DataGrid
         ref={this.datagridRef}
-        settings={this.state.settings}
+        // settings={this.state.settings}
         events$={this.events$}
         factory={this.factory}
         Handsontable={this.Table}
@@ -176,9 +177,9 @@ export function createSampleData(args: { Table: Handsontable }) {
   // console.log('data', data);
   // const getSelectedLast = this.getSelectedLast
 
-  const settings: datagrid.IGridSettings = {
-    data,
-    columns: createColumns(100),
+  const settings = {
+    data: [],
+    // columns: createColumns(100),
 
     // observeChanges: true,
 
@@ -196,13 +197,13 @@ export function createSampleData(args: { Table: Handsontable }) {
     //   return false; // Cancel's change.
     // },
 
-    afterChange(e) {
-      // console.log('afterChange', e);
-    },
+    // afterChange(e) {
+    //   // console.log('afterChange', e);
+    // },
 
-    afterScrollVertically() {
-      // console.log('scroll');
-    },
+    // afterScrollVertically() {
+    //   // console.log('scroll');
+    // },
   };
 
   return settings;

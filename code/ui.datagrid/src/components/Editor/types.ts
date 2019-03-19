@@ -33,6 +33,7 @@ export type IEndEditingEvent = {
   payload: {
     cell: Cell;
     isCancelled: boolean;
+    isChanged: boolean;
     value: { from?: t.CellValue; to?: t.CellValue };
     cancel(): void;
   };

@@ -38,12 +38,11 @@ export type IGridChangeEvent = {
 
 export type IGridChangeSet = { changes: IGridChange[]; cancel(): void };
 export type IGridChange = {
-  row: number;
-  column: number;
   source: GridChangeType;
   grid: Grid;
   cell: Cell;
   value: { from?: t.CellValue; to?: t.CellValue };
   isCancelled: boolean;
+  isChanged: boolean;
   cancel(): void;
 };

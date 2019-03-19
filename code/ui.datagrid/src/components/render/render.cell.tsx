@@ -80,7 +80,7 @@ export function registerCellRenderer(Table: Handsontable) {
 
   const renderers = (Table as any).renderers;
   const fn: RegisterRenderer = renderers.registerRenderer;
-  fn(constants.MY_CELL, cellRenderer);
+  fn(constants.CELL_DEFAULT, cellRenderer);
 }
 
 // export function registerCellRenderer() {

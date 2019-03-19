@@ -1,1 +1,1 @@
-export const MY_CELL = 'my.cell';
+export const CELL_DEFAULT = 'cell.default';
