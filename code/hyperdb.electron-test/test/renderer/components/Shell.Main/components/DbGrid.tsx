@@ -3,6 +3,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue, t } from '../../../common';
 
+import * as datagrid from '@platform/ui.datagrid';
+
 export type IDbGridProps = { db: t.ITestRendererDb; style?: GlamorValue };
 export type IDbGridState = {};
 
