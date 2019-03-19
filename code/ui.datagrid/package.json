@@ -18,7 +18,7 @@
     "handsontable": "6.2.2"
   },
   "devDependencies": {
-    "@platform/test": "0.0.33",
+    "@platform/test.dom": "0.0.0",
     "@platform/ts": "3.3.67",
     "@uiharness/dev": "0.2.5"
   },

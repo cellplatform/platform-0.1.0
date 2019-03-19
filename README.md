@@ -49,7 +49,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - [@platform/fs](/code/fs)
 - [@platform/cli](/code/cli)
 - [@platform/cli.spec](/code/cli.spec)
-- [@platform/test](/code/test)
 - [@platform/log](/code/log)
 - [@platform/electron](/code/electron)
 - util
@@ -74,6 +73,9 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/hyperdb](/code/hyperdb)
   - [@platform/hyperdb.electron](/code/hyperdb.electron)
   - [@platform/state](/code/state)
+- testing
+  - [@platform/test](/code/test)
+  - [@platform/test.dom](/code/test.dom)
 
 
 <p>&nbsp;</p>
