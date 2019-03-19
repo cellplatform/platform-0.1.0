@@ -949,7 +949,7 @@
     "@platform/react" "0.0.20"
     react-inspector "2.3.1"
 
-"@platform/ui.object@0.0.60", "@platform/ui.object@^0.0.60":
+"@platform/ui.object@0.0.60":
   version "0.0.60"
   resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.60.tgz#162f43ffb81bc9ea24c7d2db56c0b9e748d20499"
   integrity sha512-31jQqwT/yXiQQMIJocDnDLG1ANT5a+D0myQwQ4b1vVkeyO0eLjWFqDYG4fcFPAVUhrz6zecIRzBRYwPe7WWJYQ==

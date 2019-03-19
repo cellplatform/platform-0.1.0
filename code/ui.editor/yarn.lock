@@ -700,6 +700,14 @@
     core-js "^2.5.7"
     regenerator-runtime "^0.12.0"
 
+"@babel/polyfill@7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.4.0.tgz#90f9d68ae34ac42ab4b4aa03151848f536960218"
+  integrity sha512-bVsjsrtsDflIHp5I6caaAa2V25Kzn50HKPL6g3X0P0ni1ks+58cPB8Mz6AOKVuRPgaVdq/OwEUc/1vKqX+Mo4A==
+  dependencies:
+    core-js "^2.6.5"
+    regenerator-runtime "^0.13.2"
+
 "@babel/preset-env@7.3.4":
   version "7.3.4"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.3.4.tgz#887cf38b6d23c82f19b5135298bdb160062e33e1"
@@ -1006,6 +1014,22 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
+"@platform/electron@0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.9.tgz#03b631ec283fa0ec90e75350e4a114ada1e6e3d7"
+  integrity sha512-UXjbGMJJ4Xy3HGonNk+ML7pm6bszHHYUOo82ZSZGISL5UAa+rqK1q1c+mD17UupKe+4NZ02nrdpsr8I876rOww==
+  dependencies:
+    "@babel/polyfill" "7.4.0"
+    "@platform/fs" "0.0.40"
+    "@platform/log" "0.0.91"
+    "@platform/react" "0.0.22"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.1.0"
+    electron-log "3.0.1"
+    electron-store "2.0.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+
 "@platform/fs@0.0.40":
   version "0.0.40"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.40.tgz#f3064572670fb2b5cc41317a93c3b4530b8bd14d"
@@ -1079,6 +1103,18 @@
     react "16.8.4"
     react-dom "16.8.4"
 
+"@platform/react@0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.22.tgz#88bd2eee13883a43369319c1f51417a015003417"
+  integrity sha512-gNt6RG/jZQg52qdA2O1ifalwrTSN2ZSU21cRTS/Bu59cfAEHuA558RW2+EI1r45yqNwU5/WXrh0dWd6Rk07fRQ==
+  dependencies:
+    "@platform/css" "0.0.15"
+    "@platform/util.is" "0.0.40"
+    "@types/react" "16.8.8"
+    "@types/react-dom" "16.8.2"
+    react "16.8.4"
+    react-dom "16.8.4"
+
 "@platform/ts.libs@3.3.6":
   version "3.3.6"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.3.6.tgz#a3c401e0d49e36e86ee23cf4e7c4065c09fa4d3e"
@@ -1118,6 +1154,14 @@
   integrity sha512-31jQqwT/yXiQQMIJocDnDLG1ANT5a+D0myQwQ4b1vVkeyO0eLjWFqDYG4fcFPAVUhrz6zecIRzBRYwPe7WWJYQ==
   dependencies:
     "@platform/react" "0.0.21"
+    react-inspector "2.3.1"
+
+"@platform/ui.object@0.0.61":
+  version "0.0.61"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.61.tgz#7ae0b4eb8e1b8cedca7a9206fdab9304aa13a31a"
+  integrity sha512-K/k6hMCVwbQHgetzWX/9ELL8xvOdk4x+oP2XU12vRzfEF+/7JtgL22kDTXf5rNBGhQ4Fh1/JfXodoU8u+Cip4A==
+  dependencies:
+    "@platform/react" "0.0.22"
     react-inspector "2.3.1"
 
 "@platform/util.exec@0.0.24":
@@ -1481,10 +1525,10 @@
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.9.tgz#693e76a52f61a2f1e7fb48c0eef167b95ea4ffd0"
   integrity sha512-sCZy4SxP9rN2w30Hlmg5dtdRwgYQfYRiLo9usw8X9cxlf+H4FqM1xX7+sNH7NNKVdbXMJWqva7iyy+fxh/V7fA==
 
-"@uiharness/dev@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.5.tgz#bdd87b638c627fc4b76f126e418358b7378ea229"
-  integrity sha512-/lzORIiy1pj0xlF/ZpF4rNYRDyMsfoy5Mha7jImNk+nde7knZZ0oEjF0T+z/Ga+cG54gfJ9JTxTcL5mzrflcTw==
+"@uiharness/dev@0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.7.tgz#3ee7e9c6e47d5f0701eb675a0fdd864c9d24a576"
+  integrity sha512-uyp398sL4GVBUljNWj94r122gB+Zjmk1OQIn+bZBtZI4Ck3qY2b+Dp+6sZ0gD1YF2xGHUrEpkpDkSmmzuD7fcA==
   dependencies:
     "@babel/core" "7.3.4"
     "@babel/polyfill" "7.2.5"
@@ -1494,7 +1538,7 @@
     "@platform/cli" "0.0.63"
     "@platform/fs" "0.0.40"
     "@platform/ts" "3.3.67"
-    "@uiharness/electron" "0.3.162"
+    "@uiharness/electron" "0.3.163"
     "@uiharness/types" "0.0.71"
     create-tmpl "0.1.40"
     electron "4.1.0"
@@ -1518,10 +1562,10 @@
     "@uiharness/ui" "0.1.7"
     tslib "1.9.3"
 
-"@uiharness/electron@0.3.162":
-  version "0.3.162"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.162.tgz#88659a45fa7c731377282afcb6d1ea693d93626a"
-  integrity sha512-FORBfAG7fUDOA/cC2GtqDtVGJFUEoqjG+rBUaHo/fehDTTbB3bw72Rv9z3HV/ixW1S56ZjM7a5BN0J7mD9xFKg==
+"@uiharness/electron@0.3.163":
+  version "0.3.163"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.163.tgz#87ec322794fcbcd1624c6d5f013ca9c8f6c54897"
+  integrity sha512-65lzL4aPW+X82ypcVIxycBcPiRLpuLdMkzJRMaGh1SNmfA8i3jevWnPIj07rBEwZuaU+TC2xy7fKqcoOLBvYBg==
   dependencies:
     "@platform/electron" "0.1.8"
     "@platform/log" "0.0.91"
@@ -2730,6 +2774,11 @@ core-js@^2.4.0, core-js@^2.5.7:
   version "2.6.4"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.4.tgz#b8897c062c4d769dd30a0ac5c73976c47f92ea0d"
   integrity sha512-05qQ5hXShcqGkPZpXEFLIpxayZscVD2kuMBZewxiIPPEagukO4mqgPA9CWhUvFBJfy3ODdK2p9xyHh7FTU9/7A==
+
+core-js@^2.6.5:
+  version "2.6.5"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.5.tgz#44bc8d249e7fb2ff5d00e0341a7ffb94fbf67895"
+  integrity sha512-klh/kDpwX8hryYL14M9w/xei6vrv6sE8gTHDG7/T/+SEovB/G4ejwcfE/CBzO6Edsu+OETZMZ3wcX/EjUkrl5A==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
@@ -7004,6 +7053,11 @@ regenerator-runtime@^0.12.0:
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
   integrity sha512-odxIc1/vDlo4iZcfXqRYFj0vpXFNoGdKMAUieAlFYO6m/nl5e9KR/beGf41z4a1FI+aQgtjhuaSlDxQ0hmkrHg==
+
+regenerator-runtime@^0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.2.tgz#32e59c9a6fb9b1a4aff09b4930ca2d4477343447"
+  integrity sha512-S/TQAZJO+D3m9xeN1WTI8dLKBBiRgXBlTJvbWjCThHWZj9EvHK70Ff50/tYj2J/fvBY6JtFVwRuazHN2E7M9BA==
 
 regenerator-transform@^0.13.3:
   version "0.13.3"
