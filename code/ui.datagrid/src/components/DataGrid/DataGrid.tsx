@@ -107,6 +107,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
     // Finish up.
     grid.loadValues();
+    grid.select({ cell: 'A1' });
   }
 
   public componentDidUpdate(prev: IDataGridProps) {

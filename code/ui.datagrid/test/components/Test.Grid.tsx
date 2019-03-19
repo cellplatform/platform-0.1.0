@@ -84,11 +84,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       map(e => e.payload as t.IGridKeypress),
     );
 
-    keys$.subscribe(e => {
-      this.grid.select({ cell: 'A1', ranges: ['A3:B8'] });
-      // const r = table.getSelectedRange();
-      // console.log('r', r);
-    });
+    keys$.subscribe(e => {});
 
     keys$.pipe(filter(e => e.event.metaKey && e.key === 'a')).subscribe(e => {
       // Suppress CMD+A (select all).
