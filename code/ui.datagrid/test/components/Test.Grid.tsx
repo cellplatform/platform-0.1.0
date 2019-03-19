@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, Handsontable as HandsontableLib, t, datagrid } from './common';
+import { datagrid, GlamorValue, Handsontable as HandsontableLib, t } from './common';
 import { TestEditor } from './Test.Editor';
 
 export type ITestProps = {
@@ -86,10 +86,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     // keys$.subscribe(e => {});
 
-    keys$.pipe(filter(e => e.event.metaKey && e.key === 'a')).subscribe(e => {
-      // Suppress CMD+A (select all).
-      e.cancel();
-    });
+    keys$
+      .pipe(
+        filter(e => e.event.metaKey && e.key === 'a'),
+        filter(e => !this.grid.isEditing),
+      )
+      .subscribe(e => {
+        // Suppress CMD+A (select all).
+        e.cancel();
+      });
 
     change$.subscribe(e => {
       // e.cancel();
