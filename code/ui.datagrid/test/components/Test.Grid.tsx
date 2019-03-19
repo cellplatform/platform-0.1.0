@@ -79,6 +79,16 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       map(e => e.payload as t.IGridSelectionChange),
     );
 
+    const keys$ = events$.pipe(
+      filter(e => e.type === 'GRID/keydown'),
+      map(e => e.payload as t.IGridKeypress),
+    );
+
+    keys$.pipe(filter(e => e.event.metaKey && e.key === 'a')).subscribe(e => {
+      // Suppress CMD+A (select all).
+      e.cancel();
+    });
+
     change$.subscribe(e => {
       // e.cancel();
       // console.log('CHANGE', e);

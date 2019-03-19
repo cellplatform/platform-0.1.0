@@ -33,6 +33,10 @@ export type IGridKeypress = {
   isEnter: boolean;
   isEscape: boolean;
   isDelete: boolean;
+  metaKey: boolean;
+  shiftKey: boolean;
+  ctrlKey: boolean;
+  altKey: boolean;
   cancel: () => void;
 };
 

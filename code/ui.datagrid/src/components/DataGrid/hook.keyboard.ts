@@ -19,6 +19,7 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
     const isEnter = key === 'Enter';
     const isEscape = key === 'Escape';
     const isDelete = key === 'Delete';
+    const { metaKey, shiftKey, ctrlKey, altKey } = event;
 
     const cancel = () => {
       e.preventDefault();
@@ -26,20 +27,6 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
     };
 
     // Fire event.
-
-    const selection = table.getSelectedRange();
-    const getSelectedRangeLast = table.getSelectedRangeLast();
-
-    console.group('🌳 ');
-
-    console.log('key', key);
-
-    console.log('selection', selection);
-    console.log('getSelectedRangeLast', getSelectedRangeLast);
-    console.log('grid.selection', grid.selection);
-    console.log('grid.selection.ranges', grid.selection.ranges);
-    console.groupEnd();
-
     grid.next({
       type: 'GRID/keydown',
       payload: {
@@ -49,6 +36,10 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
         isEnter,
         isEscape,
         isDelete,
+        metaKey,
+        shiftKey,
+        ctrlKey,
+        altKey,
         cancel,
       },
     });
