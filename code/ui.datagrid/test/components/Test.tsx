@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, css, Button } from './common';
+import { color, css, Button, ObjectView, t } from './common';
 import { Test as TestGrid } from './Test.Grid';
 
 export type ITestProps = {};
-export type ITestState = {};
+export type ITestState = {
+  data?: any;
+};
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
@@ -19,8 +21,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+
+  public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const events$ = this.grid.events$.pipe(takeUntil(this.unmounted$));
+    events$.pipe().subscribe(() => this.updateState());
+    this.updateState();
   }
 
   public componentWillUnmount() {
@@ -32,6 +38,20 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public get grid() {
     return this.testGrid.datagrid.grid;
+  }
+
+  /**
+   * [Methods]
+   */
+  public updateState() {
+    const grid = this.grid;
+    const { selection, values } = grid;
+    const data = {
+      values, 
+      selection,
+    };
+    this.state$.next({ data });
+    return data;
   }
 
   /**
@@ -49,6 +69,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         width: 200,
         padding: 10,
         lineHeight: 1.6,
+        Flex: 'vertical-spaceBetween',
+      }),
+      leftTop: css({
+        fontSize: 14,
       }),
       right: css({
         position: 'relative',
@@ -62,11 +86,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          {this.button('loadValues', () => this.grid.loadValues({ A3: 123 }))}
-          {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
-          {this.button('change values (prop)', () =>
-            this.testGrid.state$.next({ values: { A1: 'happy' } }),
-          )}
+          <div {...styles.leftTop}>
+            {this.button('loadValues', () => this.grid.loadValues({ A3: 123 }))}
+            {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
+            {this.button('change values (prop)', () =>
+              this.testGrid.state$.next({ values: { A1: 'happy' } }),
+            )}
+          </div>
+          <ObjectView data={this.state.data} />
         </div>
         <div {...styles.right}>
           <TestGrid ref={this.testGridRef} style={styles.grid} />

@@ -61,7 +61,7 @@ export class Grid {
     editEnd$.subscribe(() => (this._.isEditing = false));
     editEnd$.pipe(filter(e => e.isChanged)).subscribe(e => {
       const key = e.cell.key;
-      this.changeValues({ [key]: e.value.to });
+      this.changeValues({ [key]: e.value.to }, { redraw: false });
     });
   }
 
@@ -109,17 +109,13 @@ export class Grid {
   }
 
   public get selection(): t.IGridSelection {
-    const last = this._.table.getSelectedRangeLast();
-
     const toKey = (coord: Handsontable.wot.CellCoords) =>
       Cell.toKey({ row: coord.row, column: coord.col });
-
+    const last = this._.table.getSelectedRangeLast();
     const current = last ? toKey(last.highlight) : undefined;
-
     const selectedRanges = this._.table.getSelectedRange() || [];
     let ranges = selectedRanges.map(item => `${toKey(item.from)}:${toKey(item.to)}`);
     ranges = ranges.length === 1 && ranges[0] === `${current}:${current}` ? [] : ranges;
-
     return { current, ranges };
   }
 
