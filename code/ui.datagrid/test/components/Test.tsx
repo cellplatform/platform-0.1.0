@@ -47,6 +47,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const grid = this.grid;
     const { selection, values } = grid;
     const data = {
+      isEditing: grid.isEditing,
       values,
       selection,
     };

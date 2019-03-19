@@ -4,24 +4,20 @@
  */
 import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
-import * as ReactDOM from 'react-dom';
 
 import { Grid } from '../../api';
-import { color, css } from '../../common';
+import { color, css, t } from '../../common';
 import { RegisterRenderer, Renderer } from '../../types';
+import { FactoryManager } from '../factory';
 import * as constants from './constants';
-
-const CACHE: any = {};
 
 const STYLES = {
   cell: {
     base: css({
       position: 'relative',
       pointerEvents: 'none',
-    }),
-    value: css({
-      color: color.format(-0.65),
       fontSize: 14,
+      color: color.format(-0.7),
     }),
   },
 };
@@ -29,74 +25,92 @@ const STYLES = {
 /**
  * Renders a cell.
  */
-export const cellRenderer = (grid: Grid) => {
-  const fn: Renderer = (instance, td, row, col, prop, value, cellProps) => {
-    if (grid.isDisposed) {
-      return td;
+export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
+  const CACHE: any = {};
+
+  function toHtml(args: { td: HTMLElement; row: number; column: number; value?: t.CellValue }) {
+    const el = toElement(args);
+    return ReactDOMServer.renderToString(el);
+  }
+
+  function toElement(args: { td: HTMLElement; row: number; column: number; value?: t.CellValue }) {
+    const { row, column, value } = args;
+    return <div {...STYLES.cell.base}>{factory.cell({ row, column, value })}</div>;
+  }
+
+  function toMemoizedHtml(args: {
+    td: HTMLElement;
+    row: number;
+    column: number;
+    value?: t.CellValue;
+  }) {
+    const { row, column: col, value } = args;
+    const key = `${row}:${col}/${value}`;
+    if (CACHE[key]) {
+      return CACHE[key];
     }
-    // console.group('🌳 render');
-    // console.log('instance', instance);
-    // console.log('TD', td);
-    // console.log('row', row);
-    // console.log('col', col);
-    // console.log('prop', prop);
-    // console.log('value', value);
-    // console.log('cellProps', cellProps);
-    // console.groupEnd();
-    // console.log('row', row);
+    const html = toHtml(args);
+    CACHE[key] = html;
+    return html;
+  }
 
-    // console.log('grid.instanceId', grid.instanceId);
-    // console.log('grid.id', grid.id, grid.isDisposed);
-
-    if (row === 0 && col === 0) {
-      // console.log(key, value);
+  const fn: Renderer = (instance, td, row, column, prop, value, cellProps) => {
+    if (!grid.isDisposed) {
+      td.innerHTML = toMemoizedHtml({ td, row, column, value });
     }
-
-    // td.innerHTML = toCellHtmlMemoized({ td, col, row, value });
-    toCellHtmlMemoized({ td, col, row, value });
     return td;
-
-    // const el = <div>Foo</div>;
-    // ReactDOM.render(el, td);
-    // return td;
   };
   return fn;
 };
 
-function toCellHtml(args: { td: HTMLElement; row: number; col: number; value?: string }) {
-  const el = toCellElement(args);
-  return ReactDOMServer.renderToString(el);
-}
-
-function toCellElement(args: { td: HTMLElement; row: number; col: number; value?: string }) {
-  let value = args.value;
-  value = typeof value === 'object' ? JSON.stringify(value) : value;
-  return (
-    <div {...STYLES.cell.base}>
-      <span {...STYLES.cell.value}>{value}</span>
-    </div>
-  );
-}
-
-function toCellHtmlMemoized(args: { td: HTMLElement; row: number; col: number; value?: string }) {
-  const { row, col, value } = args;
-  const key = `${row}:${col}/${value}`;
-  if (CACHE[key]) {
-    return CACHE[key];
-  }
-  // const html = toCellHtml(args);
-  const html = toCellElement(args);
-  ReactDOM.render(html, args.td);
-
-  CACHE[key] = html;
-  return html;
-}
-
 /**
  * Register the cell renderer.
  */
-export function registerCellRenderer(Table: Handsontable, grid: Grid) {
+export function registerCellRenderer(Table: Handsontable, grid: Grid, factory: FactoryManager) {
   const renderers = (Table as any).renderers;
   const fn: RegisterRenderer = renderers.registerRenderer;
-  fn(constants.CELL_DEFAULT, cellRenderer(grid));
+  fn(constants.CELL_DEFAULT, cellRenderer(grid, factory));
 }
+
+// // import * as React from 'react';
+// import { Subject } from 'rxjs';
+// import { takeUntil } from 'rxjs/operators';
+// // import { css, color, GlamorValue } from '../../common';
+
+// export type IFooProps = { style?: GlamorValue };
+// export type IFooState = {
+//   text?: string;
+// };
+
+// export class Foo extends React.PureComponent<IFooProps, IFooState> {
+//   public state: IFooState = {};
+//   private unmounted$ = new Subject();
+//   private state$ = new Subject<Partial<IFooState>>();
+
+//   /**
+//    * [Lifecycle]
+//    */
+//   public componentWillMount() {
+//     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+//     console.log('mounted', this);
+//     this.state$.next({ text: 'Hello2' });
+//   }
+
+//   public componentWillUnmount() {
+//     this.unmounted$.next();
+//   }
+
+//   /**
+//    * [Render]
+//    */
+//   public render() {
+//     const styles = {
+//       base: css({}),
+//     };
+//     return (
+//       <div {...css(styles.base, this.props.style)}>
+//         <div>Foo: {this.state.text}</div>
+//       </div>
+//     );
+//   }
+// }

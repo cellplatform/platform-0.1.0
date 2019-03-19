@@ -10,8 +10,6 @@ export type ITestProps = {
   Table?: Handsontable;
 };
 export type ITestState = {
-  // settings?: datagrid.IGridSettings;
-  // data?: object;
   values?: t.IGridValues;
 };
 
@@ -148,11 +146,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private factory: t.GridFactory = req => {
     switch (req.type) {
       case 'EDITOR':
-        if (req.column === 1 && req.row === 0) {
-          return null;
-        }
-
         return <TestEditor />;
+
+      case 'CELL':
+        const value = typeof req.value === 'object' ? JSON.stringify(req.value) : req.value;
+        return <div>{value}</div>;
 
       default:
         console.log(`Factory type '${req.type}' not supported by test.`);

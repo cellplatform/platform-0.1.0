@@ -277,8 +277,8 @@ export class Editor extends editors.TextEditor {
    * Renders the popup-editor within a <Provider> context.
    */
   private render(context: t.IEditorContext) {
-    const { row, column } = context.cell;
-    const el = this.refs.factory.editor({ row, column });
+    const { row, column, value } = context.cell;
+    const el = this.refs.factory.editor({ row, column, value });
     if (!el) {
       return null;
     }

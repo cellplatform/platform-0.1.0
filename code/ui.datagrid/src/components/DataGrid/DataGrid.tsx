@@ -76,9 +76,9 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const totalRows = this.totalRows;
     const table = (this.table = new Table(this.el as Element, this.settings));
     const grid = (this.grid = Grid.create({ table, totalColumns, totalRows, values }));
-    this.factory = new FactoryManager({ grid, factory: this.props.factory });
+    const factory = (this.factory = new FactoryManager({ grid, factory: this.props.factory }));
     this.unmounted$.subscribe(() => grid.dispose());
-    render.registerAll(Table, grid);
+    render.registerAll(Table, grid, factory);
 
     // Store metadata on the [Handsontable] instance.
     // NOTE:

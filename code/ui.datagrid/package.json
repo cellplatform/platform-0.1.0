@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.datagrid",
   "version": "0.0.6",
-  "description": "Isolated datagrid module.",
+  "description": "Isolated tabular DataGrid.",
   "scripts": {
     "ui": "ui $@",
     "test": "ts test",

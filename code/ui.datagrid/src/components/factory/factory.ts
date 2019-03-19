@@ -28,9 +28,28 @@ export class FactoryManager {
   /**
    * Generates a cell editor.
    */
-  public editor(args: { row: number; column: number }) {
-    const { row, column } = args;
+  public editor(args: { row: number; column: number; value: t.CellValue }) {
+    return this.render({ ...args, type: 'EDITOR' });
+  }
+
+  /**
+   * Generates the display for a single cell
+   */
+  public cell(args: { row: number; column: number; value: t.CellValue }) {
+    return this.render({ ...args, type: 'CELL' });
+  }
+
+  /**
+   * [Internal]
+   */
+  private render(args: {
+    type: t.GridFactoryType;
+    row: number;
+    column: number;
+    value: t.CellValue;
+  }) {
+    const { type, row, column, value } = args;
     const grid = this.grid;
-    return this.factory({ type: 'EDITOR', row, column, grid });
+    return this.factory({ type, row, column, grid, value });
   }
 }

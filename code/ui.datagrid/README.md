@@ -3,10 +3,11 @@
 [![NPM](https://img.shields.io/npm/v/@platform/ui.editor.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/ui.editor)
 
 # @platform/ui.datagrid
-Isolated datagrid module.
 
+Isolated tabular DataGrid.
 
 ## Licencing
+
 This module wraps the `handsomtable` underlying grid for table layout and infinite scrolling.
 
 The library was under MIT, but then [re-licensed itself](https://github.com/handsontable/handsontable/issues/5831) during development.
