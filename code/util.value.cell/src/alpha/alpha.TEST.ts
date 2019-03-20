@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { alpha } from '.';
 
 describe('alpha.toCharacter', () => {
-  it('converts 0 or negative number to [undefined]', () => {
+  it('converts negative number to empty string (undefined)', () => {
     expect(alpha.toCharacter(-1)).to.eql(undefined);
     expect(alpha.toCharacter(-123)).to.eql(undefined);
   });
@@ -23,25 +23,29 @@ describe('alpha.toCharacter', () => {
     expect(alpha.toCharacter(26)).to.eql('AA');
   });
 
-  it('converts 51 to ZZ', () => {
-    expect(alpha.toCharacter(51)).to.eql('ZZ');
+  it('converts 27 to AA', () => {
+    expect(alpha.toCharacter(27)).to.eql('AB');
   });
 
-  it('converts 52 to AAA', () => {
-    expect(alpha.toCharacter(52)).to.eql('AAA');
+  it('converts 51 to AZ', () => {
+    expect(alpha.toCharacter(51)).to.eql('AZ');
   });
 
-  it('converts 77 to ZZZ', () => {
-    expect(alpha.toCharacter(77)).to.eql('ZZZ');
+  it('converts 52 to BA', () => {
+    expect(alpha.toCharacter(52)).to.eql('BA');
   });
 
-  it('converts 78 to AAAA', () => {
-    expect(alpha.toCharacter(78)).to.eql('AAAA');
+  it('converts 77 to BZ', () => {
+    expect(alpha.toCharacter(77)).to.eql('BZ');
+  });
+
+  it('converts 78 to CA', () => {
+    expect(alpha.toCharacter(78)).to.eql('CA');
   });
 });
 
 describe('alpha.fromCharacter', () => {
-  it('converts undefined to -1', () => {
+  it('undefined', () => {
     expect(alpha.fromCharacter()).to.eql(undefined);
   });
 
@@ -56,6 +60,7 @@ describe('alpha.fromCharacter', () => {
 
   it('converts A to 0', () => {
     expect(alpha.fromCharacter('A')).to.eql(0);
+    expect(alpha.fromCharacter('a')).to.eql(0);
   });
 
   it('converts B to 1', () => {
@@ -74,23 +79,11 @@ describe('alpha.fromCharacter', () => {
     expect(alpha.fromCharacter('AB')).to.eql(27);
   });
 
-  it('converts ZZ to 51', () => {
-    expect(alpha.fromCharacter('ZZ')).to.eql(51);
+  it('converts AZ to 51', () => {
+    expect(alpha.fromCharacter('AZ')).to.eql(51);
   });
 
-  it('converts AAA to 52', () => {
-    expect(alpha.fromCharacter('AAA')).to.eql(52);
-  });
-
-  it('converts ZZZ to 77', () => {
-    expect(alpha.fromCharacter('ZZZ')).to.eql(77);
-  });
-
-  it('converts AAAA to 78', () => {
-    expect(alpha.fromCharacter('AAAA')).to.eql(78);
-  });
-
-  it('converts AAAB to 79', () => {
-    expect(alpha.fromCharacter('AAAB')).to.eql(79);
+  it('converts ZZ to 701', () => {
+    expect(alpha.fromCharacter('ZZ')).to.eql(701);
   });
 });

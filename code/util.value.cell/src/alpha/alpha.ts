@@ -1,31 +1,29 @@
-const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
 /**
  * Converts a number to an alphabetic character.
  * Eg:
- *    - 1  => A
- *    - 26 => Z
- *    - 27 => AA
- *    ...etc.
+ *    - 0  => A
+ *    - 1  => B
+ *    - 25 => Z
+ *    - 26 => AA
+ *    - 27 => AB
+ *    - ...etc.
  */
 export function toCharacter(index: number) {
-  // Calculate the character multiplier if greater than the length of the alphabet.
-  let multiplier = 0;
-  if (index > ALPHA.length - 1) {
-    multiplier = Math.floor(index / ALPHA.length);
-    index = index - multiplier * ALPHA.length;
+  if (index < 0) {
+    return undefined;
   }
 
-  // Build the return character.
-  let char = ALPHA[index];
-  if (multiplier > 0) {
-    char = Array.from({ length: multiplier + 1 })
-      .map(() => char)
-      .join('');
-  }
+  let colName = '';
+  let dividend = Math.floor(Math.abs(index + 1));
+  // let dividend = index;
+  let rest: number;
 
-  // Finish up.
-  return char;
+  while (dividend > 0) {
+    rest = (dividend - 1) % 26;
+    colName = String.fromCharCode(65 + rest) + colName;
+    dividend = parseInt(((dividend - rest) / 26).toString(), 10);
+  }
+  return colName;
 }
 
 /**
@@ -41,17 +39,14 @@ export function fromCharacter(value?: string) {
   if (!value) {
     return undefined;
   }
-  const parts = value.split('');
-  let result = -1;
 
-  parts.forEach((char, i) => {
-    const index = ALPHA.indexOf(char);
-    const isLast = i === parts.length - 1;
-    if (index > -1) {
-      result = result < 0 ? 0 : result;
-      result += isLast ? index : ALPHA.length;
-    }
-  });
+  const digits = value.toUpperCase().split('');
+  let number = 0;
 
-  return result < 0 ? undefined : result;
+  for (let i = 0; i < digits.length; i++) {
+    number += (digits[i].charCodeAt(0) - 64) * Math.pow(26, digits.length - i - 1);
+  }
+
+  number--;
+  return number < 0 ? undefined : number;
 }
