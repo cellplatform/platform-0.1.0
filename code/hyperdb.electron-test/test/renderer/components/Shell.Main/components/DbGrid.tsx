@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil, map, delay } from 'rxjs/operators';
-import { css, GlamorValue, t, datagrid, value as valueUtil, rx } from '../../../common';
+import { css, GlamorValue, t, datagrid, value as valueUtil } from '../../../common';
 import { DbGridEditor } from './DbGrid.Editor';
 import { updateWatch } from '../../../cli/cmd.watch';
 
