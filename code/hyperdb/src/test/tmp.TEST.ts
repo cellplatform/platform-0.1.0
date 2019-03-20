@@ -10,7 +10,7 @@ const dir = '.tmp.test/db-size';
 
 describe.only('tmp', function() {
   this.timeout(999999);
-  // beforeEach(async () => fs.remove(dir));
+  beforeEach(async () => fs.remove(dir));
 
   it('large', async () => {
     const db = await Db.create({ dir });
@@ -38,6 +38,6 @@ describe.only('tmp', function() {
     console.log('size', size);
     // console.log('filesize', filesize);
     // console.log('stats', stats.size);
-    console.log('elapsed', timer.elapsed());
+    console.log('elapsed', timer.elapsed('s'), 's');
   });
 });

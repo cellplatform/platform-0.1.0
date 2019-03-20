@@ -29,9 +29,10 @@ export class Db<D extends object = any> implements t.IDb<D> {
     dir: string;
     dbKey?: string;
     version?: string;
+    valueEncoding?: 'utf-8' | 'binary';
   }) {
     return new Promise<Db<D>>(resolve => {
-      const { dir, dbKey, version } = args;
+      const { dir, dbKey, version, valueEncoding = 'utf-8' } = args;
       const reduce = (a: t.IDbNode, b: t.IDbNode) => a;
       const map = (node: t.IDbNode) => {
         // NB:  The underlying DB only stores [string/number/boolean]
@@ -39,7 +40,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
         node.value = util.parseValue(node.value);
         return node;
       };
-      const options = { valueEncoding: 'utf-8', reduce, map };
+      const options = { valueEncoding, reduce, map };
       const db = args.dbKey ? hyperdb(dir, dbKey, options) : hyperdb(dir, options);
       db.on('ready', async () => {
         let result = new Db<D>({ db, dir });
