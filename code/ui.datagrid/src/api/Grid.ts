@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { t, value as valueUtil } from '../common';
+import { t, value as valueUtil, R } from '../common';
 import { Cell } from './Cell';
 
 export type IGridArgs = {
@@ -226,7 +226,11 @@ export class Grid {
     snapToBottom?: boolean; // (false) If true, viewport is scrolled to show the cell on the bottom of the table.
     snapToRight?: boolean; //  (false) If true, viewport is scrolled to show the cell on the right side of the table.
   }) {
-    const { row, column } = Cell.toPosition(args.cell);
+    const pos = Cell.toPosition(args.cell);
+    const row = R.clamp(0, this.totalRows - 1, pos.row);
+    const column = R.clamp(0, this.totalColumns - 1, pos.column);
+
+    // clamp
     const { snapToBottom = false, snapToRight = false } = args;
     this._.table.scrollViewportTo(row, column, snapToBottom, snapToRight);
   }
