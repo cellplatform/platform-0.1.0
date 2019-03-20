@@ -136,7 +136,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
       case 'CELL':
         const value = typeof req.value === 'object' ? JSON.stringify(req.value) : req.value;
-        return <div>{value}</div>;
+        // return <div>{value}</div>;
+        return value;
 
       default:
         console.log(`Factory type '${req.type}' not supported by test.`);

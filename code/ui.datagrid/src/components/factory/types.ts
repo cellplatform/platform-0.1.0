@@ -1,10 +1,11 @@
+import { ReactNode } from 'react';
 import { Grid } from '../../api';
 import * as t from '../../types';
 
 /**
  * A factory function that produces a visual component for display within the grid.
  */
-export type GridFactory = (req: IGridFactoryRequest) => JSX.Element | null;
+export type GridFactory = (req: IGridFactoryRequest) => ReactNode | null;
 export type GridFactoryType = 'EDITOR' | 'CELL';
 
 /**
