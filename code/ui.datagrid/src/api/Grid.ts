@@ -226,11 +226,7 @@ export class Grid {
     snapToBottom?: boolean; // (false) If true, viewport is scrolled to show the cell on the bottom of the table.
     snapToRight?: boolean; //  (false) If true, viewport is scrolled to show the cell on the right side of the table.
   }) {
-    const pos = Cell.toPosition(args.cell);
-    const row = R.clamp(0, this.totalRows - 1, pos.row);
-    const column = R.clamp(0, this.totalColumns - 1, pos.column);
-
-    // clamp
+    const { row, column } = this.toPosition(args.cell);
     const { snapToBottom = false, snapToRight = false } = args;
     this._.table.scrollViewportTo(row, column, snapToBottom, snapToRight);
   }
@@ -250,9 +246,19 @@ export class Grid {
       });
 
     // Select the focus cell.
-    const current = Cell.toPosition(args.cell);
+    const current = this.toPosition(args.cell);
     const selection = [...ranges, [current.row, current.column, current.row, current.column]];
     table.selectCells(selection as any, scrollToCell);
+  }
+
+  /**
+   * Retrieve the row/column position, clamped to the size of the grid.
+   */
+  public toPosition(ref: t.CellRef) {
+    const pos = Cell.toPosition(ref);
+    const row = R.clamp(0, this.totalRows - 1, pos.row);
+    const column = R.clamp(0, this.totalColumns - 1, pos.column);
+    return { row, column };
   }
 
   /**
