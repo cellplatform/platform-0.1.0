@@ -23,7 +23,9 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.33",
-    "@platform/ts": "3.3.67"
+    "@platform/ts": "3.3.67",
+    "@types/filesize": "^4.1.0",
+    "filesize": "^4.1.2"
   },
   "files": [
     "lib"
