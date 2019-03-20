@@ -8,3 +8,8 @@ export { hjson };
 
 export { renderer as hyperdb } from '@platform/hyperdb.electron/lib/renderer';
 export { renderer } from '@platform/electron/lib/renderer';
+
+import datagrid from '../../../node_modules/@platform/ui.datagrid';
+export { datagrid };
+
+export { MeasureSize } from '@platform/react';
