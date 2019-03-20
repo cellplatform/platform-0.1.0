@@ -1,4 +1,6 @@
-import { Grid, Cell } from '../../api';
+import { Observable } from 'rxjs';
+
+import { Cell, Grid } from '../../api';
 import * as t from '../../types';
 
 /**
@@ -9,8 +11,8 @@ export type IEditorContext = {
   autoCancel: boolean; // Automatically cancels on Escape key.
   cell: Cell;
   grid: Grid;
-  keys$: t.Observable<t.IGridKeypress>;
-  end$: t.Observable<IEndEditingEvent>;
+  keys$: Observable<t.IGridKeypress>;
+  end$: Observable<IEndEditingEvent>;
   cancel(): void;
   complete(args: { value: any }): void;
 };

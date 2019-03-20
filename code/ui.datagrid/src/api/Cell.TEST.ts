@@ -1,4 +1,4 @@
-import '../../test/dom';
+import '../test/dom';
 import { expect } from 'chai';
 import { Cell } from '.';
 

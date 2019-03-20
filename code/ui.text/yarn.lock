@@ -1079,10 +1079,10 @@
     react "16.8.4"
     react-dom "16.8.4"
 
-"@platform/react@0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.22.tgz#88bd2eee13883a43369319c1f51417a015003417"
-  integrity sha512-gNt6RG/jZQg52qdA2O1ifalwrTSN2ZSU21cRTS/Bu59cfAEHuA558RW2+EI1r45yqNwU5/WXrh0dWd6Rk07fRQ==
+"@platform/react@0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.23.tgz#8f8fad1e69a342d2e2c154342ad11e9d5cd75ebd"
+  integrity sha512-HMnPfOIPwV8w2QLMnreLenSpG7ju7HiUQDmtp5K+pNAnnjjq5GLk6c50sIiYbISmxHG1n4cM8LiIC5Q8jVYGtA==
   dependencies:
     "@platform/css" "0.0.15"
     "@platform/util.is" "0.0.40"

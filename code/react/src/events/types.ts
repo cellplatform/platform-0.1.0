@@ -42,4 +42,4 @@ export type KeypressEvent = {
   stopPropagation: () => void;
   stopImmediatePropagation: () => void;
 };
-export type KepressObservable = Observable<KeypressEvent>;
+export type KeypressObservable = Observable<KeypressEvent>;

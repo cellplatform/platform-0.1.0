@@ -91,6 +91,22 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
+"@platform/electron@0.1.10":
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.10.tgz#be21d6d63626a324266364ae67a8008e2f43bd33"
+  integrity sha512-QofI8F9l9Mnag+sSkATT4bUsAeYcmNs0LMFQ5M/2NdRO0hJVawnx2CAVE7xXaXhffCoYLv3f0swmkxSzciGusQ==
+  dependencies:
+    "@babel/polyfill" "7.4.0"
+    "@platform/fs" "0.0.40"
+    "@platform/log" "0.0.91"
+    "@platform/react" "0.0.23"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.1.0"
+    electron-log "3.0.1"
+    electron-store "2.0.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+
 "@platform/electron@0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.7.tgz#de22c2b20fd4990d0264db662226a4dc1db0b7c3"
@@ -116,22 +132,6 @@
     "@platform/fs" "0.0.40"
     "@platform/log" "0.0.91"
     "@platform/react" "0.0.21"
-    "@types/app-root-path" "1.2.4"
-    app-root-path "2.1.0"
-    electron-log "3.0.1"
-    electron-store "2.0.0"
-    electron-window-state "5.0.3"
-    is-electron "2.2.0"
-
-"@platform/electron@0.1.9":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.9.tgz#03b631ec283fa0ec90e75350e4a114ada1e6e3d7"
-  integrity sha512-UXjbGMJJ4Xy3HGonNk+ML7pm6bszHHYUOo82ZSZGISL5UAa+rqK1q1c+mD17UupKe+4NZ02nrdpsr8I876rOww==
-  dependencies:
-    "@babel/polyfill" "7.4.0"
-    "@platform/fs" "0.0.40"
-    "@platform/log" "0.0.91"
-    "@platform/react" "0.0.22"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.1.0"
     electron-log "3.0.1"
@@ -214,10 +214,10 @@
     react "16.8.4"
     react-dom "16.8.4"
 
-"@platform/react@0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.22.tgz#88bd2eee13883a43369319c1f51417a015003417"
-  integrity sha512-gNt6RG/jZQg52qdA2O1ifalwrTSN2ZSU21cRTS/Bu59cfAEHuA558RW2+EI1r45yqNwU5/WXrh0dWd6Rk07fRQ==
+"@platform/react@0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.23.tgz#8f8fad1e69a342d2e2c154342ad11e9d5cd75ebd"
+  integrity sha512-HMnPfOIPwV8w2QLMnreLenSpG7ju7HiUQDmtp5K+pNAnnjjq5GLk6c50sIiYbISmxHG1n4cM8LiIC5Q8jVYGtA==
   dependencies:
     "@platform/css" "0.0.15"
     "@platform/util.is" "0.0.40"
@@ -277,12 +277,12 @@
     "@platform/react" "0.0.21"
     react-inspector "2.3.1"
 
-"@platform/ui.object@0.0.61":
-  version "0.0.61"
-  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.61.tgz#7ae0b4eb8e1b8cedca7a9206fdab9304aa13a31a"
-  integrity sha512-K/k6hMCVwbQHgetzWX/9ELL8xvOdk4x+oP2XU12vRzfEF+/7JtgL22kDTXf5rNBGhQ4Fh1/JfXodoU8u+Cip4A==
+"@platform/ui.object@0.0.62":
+  version "0.0.62"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.62.tgz#ae396fb0bdbb5c05103ad6649a705144a67c146e"
+  integrity sha512-HWSqzkLt/NSA7tVEDqFyLEjadfJghKw4QTeo95r5g/FxK7jp3nDgMDLTzHpfV1o3LwhunfGg2x1RUNcTCLy0Gw==
   dependencies:
-    "@platform/react" "0.0.22"
+    "@platform/react" "0.0.23"
     react-inspector "2.3.1"
 
 "@platform/util.exec@0.0.24":
@@ -469,15 +469,15 @@
     "@uiharness/ui" "0.1.7"
     tslib "1.9.3"
 
-"@uiharness/electron@0.3.164":
-  version "0.3.164"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.164.tgz#94e13138f006b756e9f74f11595f53db0c1fbd88"
-  integrity sha512-/+F6OJ9cfskEwXja8yQkpcZzggOrzcYNwErWpi37+t3tUnZu0stOpL5izaVSchApcIX+Wcs1lo1uHR4fJ3+yqg==
+"@uiharness/electron@0.3.165":
+  version "0.3.165"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.165.tgz#f986a53c0ff53a4a91e6c36e0f3b8b03bb7c2bee"
+  integrity sha512-rRq8ON1NXT3uMgbuaDCHwTDgBSRSw8EZN8PzDv3aYFm1qOcGHBuxadxX4Rpvo+OBRaO5+nsb9qdrt4j4bScIkw==
   dependencies:
-    "@platform/electron" "0.1.9"
+    "@platform/electron" "0.1.10"
     "@platform/log" "0.0.91"
-    "@platform/react" "0.0.22"
-    "@platform/ui.object" "0.0.61"
+    "@platform/react" "0.0.23"
+    "@platform/ui.object" "0.0.62"
     "@platform/util.value" "0.0.41"
     "@types/app-root-path" "1.2.4"
     "@uiharness/types" "0.0.71"
