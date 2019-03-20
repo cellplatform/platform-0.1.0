@@ -32,7 +32,6 @@ export class DbGridEditor extends React.PureComponent<IDbGridEditorProps, IDbGri
   public static contextType = datagrid.EditorContext;
   public context!: datagrid.ReactEditorContext;
 
-  private elRef = (ref: HTMLDivElement) => (this.el = ref);
   private input!: HTMLInputElement;
   private inputRef = (ref: HTMLInputElement) => (this.input = ref);
 
@@ -117,7 +116,7 @@ export class DbGridEditor extends React.PureComponent<IDbGridEditorProps, IDbGri
     };
 
     return (
-      <div ref={this.elRef} {...styles.base}>
+      <div {...styles.base}>
         <input
           {...css(STYLES.inputText, styles.input)}
           ref={this.inputRef}
