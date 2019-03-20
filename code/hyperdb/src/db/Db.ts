@@ -1,9 +1,10 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { is, value as valueUtil, fs } from '../common';
+import { is, value as valueUtil, fs, R } from '../common';
 import * as t from './types';
 import * as util from './util';
+import { clamp } from 'ramda';
 
 if (is.browser) {
   throw new Error(`The Db should only be imported on the [main] process.`);
@@ -343,35 +344,37 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   /**
-   * Retrieves the history of values within the database.
+   * Retrieves the history of a value within the database.
    */
-  public history__<T extends object = D>(options: {} = {}) {
-    type R = Partial<{ [key in keyof T]: Array<t.IDbValue<keyof T, T[keyof T]>> }>;
-
-    /**
-     * TODO 🐷
-     *  - run for single key (use `createHistoryKeyStream`)
-     *  - return promise/observable extension
-     *  - stobbable
-     *  - direction arg (oldest => newest, newest => oldest)
-     */
-
+  public history<T extends object = D>(args: { key: keyof T; take?: number }) {
+    type R = Array<t.IDbValue<keyof T, T[keyof T]>>;
     return new Promise<R>((resolve, reject) => {
-      const db = this._.db;
-      const stream = db.createHistoryStream({});
-      const result: R = {};
+      const take =
+        args.take !== undefined ? clamp(0, Number.MAX_SAFE_INTEGER, args.take || 0) : undefined;
+      if (take === 0) {
+        resolve([]);
+      }
 
-      stream.on('data', (node: t.IDbNode) => {
-        const key = node.key;
-        result[key] = result[key] || [];
-        result[key] = [...result[key], util.toValue(node, { parse: true })];
+      const db = this._.db;
+      const stream = db.createKeyHistoryStream(args.key, {});
+      let result: R = [];
+
+      const done = () => {
+        stream.destroy();
+        resolve(result);
+      };
+
+      stream.on('data', (data: t.IDbNode[]) => {
+        const node = data[0];
+        const value = util.toValue<keyof T, T[keyof T]>(node, { parse: true });
+        result = [...result, value];
+        if (typeof take === 'number' && result.length >= take) {
+          return done();
+        }
       });
 
       stream.on('error', (err: Error) => reject(err));
-      stream.on('end', () => {
-        stream.destroy();
-        resolve(result);
-      });
+      stream.on('end', () => done());
     });
   }
 

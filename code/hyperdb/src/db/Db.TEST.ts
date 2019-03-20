@@ -258,6 +258,23 @@ describe('Db', () => {
       await time.wait(10);
       expect(events.length).to.eql(1);
     });
+
+    it.skip('reports whether the value has changed', async () => {
+      const db = await Db.create({ dir });
+      await db.watch();
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      await db.put('foo', 123);
+      await db.put('foo', 123);
+
+      await time.wait(10);
+      console.log('-------------------------------------------');
+      console.log('events', events[0]);
+      console.log('-------------------------------------------');
+      console.log('events', events[1]);
+    });
   });
 
   describe('unwatch', () => {
@@ -371,21 +388,61 @@ describe('Db', () => {
   });
 
   describe('history', () => {
-    it('all keys', async () => {
+    it('entire history for a key', async () => {
       const db = await Db.create({ dir });
+      await populate(db, ['foo'], { loop: 3 });
 
-      await populate(db, ['foo', 'bar'], { loop: 2 });
-      const res = await db.history__();
+      const res = await db.history({ key: 'foo' });
+      const current = await db.get('foo');
 
-      expect(Object.keys(res).length).to.eql(2);
+      expect(res.length).to.eql(3);
+      expect(res[0].value).to.eql(current.value);
 
-      expect(res.foo && res.foo.length).to.eql(2);
-      expect(res.foo && res.foo[0].value).to.eql(1);
-      expect(res.foo && res.foo[1].value).to.eql(2);
+      expect(res[0].value).to.eql(3);
+      expect(res[1].value).to.eql(2);
+      expect(res[2].value).to.eql(1);
+    });
 
-      expect(res.bar && res.bar.length).to.eql(2);
-      expect(res.bar && res.bar[0].value).to.eql(1);
-      expect(res.bar && res.bar[1].value).to.eql(2);
+    it('take 0 / -1 (empty array)', async () => {
+      const test = async (take: number) => {
+        const db = await Db.create({ dir });
+        await populate(db, ['foo'], { loop: 3 });
+        const res = await db.history({ key: 'foo', take });
+        expect(res).to.eql([]);
+      };
+      await test(0);
+      await test(-1);
+      await test(-99);
+    });
+
+    it('takes a single history item (current)', async () => {
+      const db = await Db.create({ dir });
+      await populate(db, ['foo'], { loop: 3 });
+      const res = await db.history({ key: 'foo', take: 1 });
+      const current = await db.get('foo');
+
+      expect(res.length).to.eql(1);
+      expect(res[0].value).to.eql(current.value);
+    });
+
+    it('takes a two history items (last and current)', async () => {
+      const db = await Db.create({ dir });
+      await populate(db, ['foo'], { loop: 3 });
+      const res = await db.history({ key: 'foo', take: 2 });
+      const current = await db.get('foo');
+
+      expect(res.length).to.eql(2);
+      expect(res[0].value).to.eql(current.value);
+      expect(res[0].value).to.eql(3);
+      expect(res[1].value).to.eql(2);
+    });
+
+    it('key/value does not exist', async () => {
+      const db = await Db.create({ dir });
+      const res = await db.history({ key: 'foo' });
+      const current = await db.get('foo');
+      expect(current.props.exists).to.eql(false);
+      expect(res).to.eql([]);
     });
   });
 
