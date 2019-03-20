@@ -6,7 +6,7 @@ import { animationFrameScheduler, fromEvent as rxFromEvent, Observable, Subject 
 import { FromEventTarget } from 'rxjs/internal/observable/fromEvent';
 import { map, merge, observeOn, share } from 'rxjs/operators';
 import { is } from '../common';
-import { IMouseEvent, KeypressEvent, KepressObservable } from './types';
+import { IMouseEvent, KeypressEvent, KeypressObservable } from './types';
 
 export * from './types';
 
@@ -69,4 +69,4 @@ export const keyUp$ = fromDocumentEvent<KeyboardEvent>('keyup').pipe(
   share(),
 );
 
-export const keyPress$ = keyDown$.pipe(merge(keyUp$)) as KepressObservable;
+export const keyPress$ = keyDown$.pipe(merge(keyUp$)) as KeypressObservable;

@@ -1,5 +1,4 @@
-export { Observable, Subject } from 'rxjs';
-export { KepressObservable } from '@platform/react';
+export { KeypressObservable } from '@platform/react';
 
 export * from './components/DataGrid/types';
 export * from './components/Editor/types';

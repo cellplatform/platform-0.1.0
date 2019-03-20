@@ -9,6 +9,7 @@ electron:
 sourcemaps:
   strip:
     - node_modules/rxjs
+    - node_modules/numbro
     - node_modules/prosemirror-model
     - node_modules/prosemirror-state
     - node_modules/prosemirror-transform

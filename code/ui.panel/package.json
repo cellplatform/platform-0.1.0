@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.panel",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "scripts": {
     "ui": "ui $@",
     "start": "ui start $@",
@@ -12,12 +12,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.0.21",
+    "@platform/react": "0.0.23",
     "@platform/util.animate": "0.0.1",
     "react": "16.8.4"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.2.5"
+    "@uiharness/dev": "0.2.10"
   },
   "license": "MIT"
 }

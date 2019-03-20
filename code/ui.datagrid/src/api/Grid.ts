@@ -50,6 +50,10 @@ export class Grid {
     this._.values = args.values || {};
     this.id = `grid/${(this._.table as any).guid.replace(/^ht_/, '')}`;
 
+    this.events$
+      .pipe(filter(e => e.type === 'GRID/ready'))
+      .subscribe(() => (this._.isReady = true));
+
     const editEnd$ = this.events$.pipe(
       filter(e => e.type === 'GRID/EDITOR/end'),
       map(e => e.payload as t.IEndEditingEvent['payload']),
@@ -73,6 +77,7 @@ export class Grid {
     table: (undefined as unknown) as Handsontable,
     dispose$: new Subject(),
     events$: new Subject<t.GridEvent>(),
+    isReady: false,
     isEditing: false,
     values: ({} as unknown) as t.IGridValues,
   };
@@ -96,6 +101,10 @@ export class Grid {
    */
   public get isDisposed() {
     return this._.table.isDestroyed || this._.dispose$.isStopped;
+  }
+
+  public get isReady() {
+    return this.isDisposed ? false : this._.isReady;
   }
 
   public get isEditing() {

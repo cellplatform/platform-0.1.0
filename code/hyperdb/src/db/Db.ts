@@ -1,9 +1,10 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { is, value as valueUtil, fs } from '../common';
+import { is, value as valueUtil, fs, rx } from '../common';
 import * as t from './types';
 import * as util from './util';
+import { clamp, equals, groupBy } from 'ramda';
 
 if (is.browser) {
   throw new Error(`The Db should only be imported on the [main] process.`);
@@ -55,6 +56,25 @@ export class Db<D extends object = any> implements t.IDb<D> {
     this._.db = args.db;
     this._.dir = args.dir;
     this._.version = args.version;
+
+    /**
+     * Debounce the watch observable.
+     * NOTE:
+     *    Sometimes there can be several watch patterns that will match the same
+     *    key multiple times.  To avoid firing an event for of these repeat notifications
+     *    this observable buffers up changes, then fires out the latest event for each unique key.
+     */
+    rx.debounceBuffer(this._.watch$.pipe(takeUntil(this.dispose$)), 5).subscribe(e => {
+      const groups = groupBy(item => item.key.toString(), e);
+      const events = Object.keys(groups).reduce(
+        (acc, key) => {
+          const list = groups[key];
+          return [...acc, list[list.length - 1]];
+        },
+        [] as t.IDbWatchChange[],
+      );
+      events.forEach(payload => this.next<t.IDbWatchEvent>('DB/watch', payload));
+    });
   }
 
   /**
@@ -66,6 +86,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     version: undefined as string | undefined,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),
+    watch$: new Subject<t.IDbWatchChange>(),
     watchers: ({} as unknown) as WatcherRefs,
   };
   public readonly dispose$ = this._.dispose$.pipe(share());
@@ -227,9 +248,12 @@ export class Db<D extends object = any> implements t.IDb<D> {
   public async put<K extends keyof D>(key: K, value: D[K]) {
     this.throwIfDisposed('put');
     this.throwIfNoKey('put', key);
-    return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
-      const v = util.serializeValue(value);
-      this._.db.put(key, v, (err: Error, result: any) => {
+    return new Promise<t.IDbValue<K, D[K]>>(async (resolve, reject) => {
+      const current = await this.get(key);
+      if (equals(value, current.value)) {
+        resolve(current); // No change to the value so do not touch the DB.
+      }
+      this._.db.put(key, util.serializeValue(value), (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(util.toValue(result));
       });
     });
@@ -293,6 +317,11 @@ export class Db<D extends object = any> implements t.IDb<D> {
       this._.watchers[key] = watcher;
     };
 
+    const getPrior = async (key: string) => {
+      const prior = (await this.history<any>(key, { take: 2 }))[1];
+      return prior ? prior.value : undefined;
+    };
+
     patterns.forEach(item => {
       const pattern = item.toString();
       if (this.watching.includes(pattern)) {
@@ -310,14 +339,20 @@ export class Db<D extends object = any> implements t.IDb<D> {
             return;
           }
 
-          this.next<t.IDbWatchEvent>('DB/watch', {
+          const version = await this.version();
+          const from = await getPrior(key);
+          const to = util.parseValue(value);
+
+          const payload: t.IDbWatchChange = {
             db: { key: this.key },
             pattern,
             key,
-            value: util.parseValue(value),
-            version: await this.version(),
-            deleted,
-          });
+            value: { from, to },
+            isChanged: !equals(from, to),
+            isDeleted: deleted,
+            version,
+          };
+          this._.watch$.next(payload);
         });
       });
 
@@ -343,35 +378,39 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   /**
-   * Retrieves the history of values within the database.
+   * Retrieves the history of a value within the database.
    */
-  public history__<T extends object = D>(options: {} = {}) {
-    type R = Partial<{ [key in keyof T]: Array<t.IDbValue<keyof T, T[keyof T]>> }>;
-
-    /**
-     * TODO 🐷
-     *  - run for single key (use `createHistoryKeyStream`)
-     *  - return promise/observable extension
-     *  - stobbable
-     *  - direction arg (oldest => newest, newest => oldest)
-     */
-
+  public history<K extends keyof D>(key: K, options: { take?: number } = {}) {
+    type R = Array<t.IDbValue<K, D[K]>>;
     return new Promise<R>((resolve, reject) => {
-      const db = this._.db;
-      const stream = db.createHistoryStream({});
-      const result: R = {};
+      const take =
+        options.take !== undefined
+          ? clamp(0, Number.MAX_SAFE_INTEGER, options.take || 0)
+          : undefined;
+      if (take === 0) {
+        resolve([]);
+      }
 
-      stream.on('data', (node: t.IDbNode) => {
-        const key = node.key;
-        result[key] = result[key] || [];
-        result[key] = [...result[key], util.toValue(node, { parse: true })];
+      const db = this._.db;
+      const stream = db.createKeyHistoryStream(key, {});
+      let result: R = [];
+
+      const done = () => {
+        stream.destroy();
+        resolve(result);
+      };
+
+      stream.on('data', (data: t.IDbNode[]) => {
+        const node = data[0];
+        const value = util.toValue<K, D[K]>(node, { parse: true });
+        result = [...result, value];
+        if (typeof take === 'number' && result.length >= take) {
+          return done();
+        }
       });
 
       stream.on('error', (err: Error) => reject(err));
-      stream.on('end', () => {
-        stream.destroy();
-        resolve(result);
-      });
+      stream.on('end', () => done());
     });
   }
 

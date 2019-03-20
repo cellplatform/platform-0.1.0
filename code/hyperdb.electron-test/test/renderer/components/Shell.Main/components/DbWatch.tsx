@@ -1,18 +1,9 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
-import { css, color, GlamorValue, CommandState, renderer, t } from '../../../common';
-import { ObjectView, Hr } from '../../primitives';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
+
+import { css, GlamorValue, renderer, t } from '../../../common';
+import { Hr, ObjectView } from '../../primitives';
 
 const SYS_WATCH = '.sys/watch';
 
@@ -51,7 +42,7 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
 
     // Update screen when watched keys change.
     watch$.pipe(filter(e => !e.key.startsWith('.sys/'))).subscribe(e => {
-      const values = { ...this.state.watchedValues, [e.key]: e.value };
+      const values = { ...this.state.watchedValues, [e.key]: e.value.to };
       this.state$.next({ watchedValues: values });
     });
 
@@ -82,11 +73,17 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
     Object.keys(values)
       .filter(key => !Boolean(key))
       .forEach(key => delete values[key]);
+
     Object.keys(values)
       .filter(key => typeof values[key] === 'string')
       .map(key => ({ key, value: values[key] as string }))
       .filter(({ value }) => value.length > 64)
       .forEach(({ key, value }) => (values[key] = `${value.substr(0, 64)}...`));
+
+    Object.keys(values)
+      .filter(key => !Boolean(values[key]))
+      .forEach(key => delete values[key]);
+
     return values;
   }
 

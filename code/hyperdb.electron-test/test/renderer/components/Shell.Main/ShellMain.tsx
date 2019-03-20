@@ -8,6 +8,7 @@ import { DbWatch } from './components/DbWatch';
 import { Info } from './components/Info';
 import { Network } from './components/Network';
 import { NoteEditor } from './components/NoteEditor';
+import { DbGrid } from './components/DbGrid';
 
 export type IShellMainProps = {
   db?: t.ITestRendererDb;
@@ -52,9 +53,11 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
   /**
    * [Render]
    */
-
   public render() {
     const { db } = this.props;
+    const ns = this.cli.namespace;
+    const isGrid = ns && ns.command.name === 'grid';
+
     const styles = {
       base: css({
         flex: 1,
@@ -66,11 +69,11 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
         position: 'relative',
         flex: 1,
         Flex: 'horizontal-stretch-stretch',
-        PaddingX: 20,
+        PaddingX: isGrid ? 0 : 20,
       }),
     };
 
-    const elDbHeader = db && <DbHeader db={db} style={styles.header} />;
+    const elDbHeader = db && !isGrid && <DbHeader db={db} style={styles.header} />;
 
     return (
       <div {...css(styles.base, this.props.style)}>
@@ -94,14 +97,16 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
     const elNetwork = db && network && ns && ns.command.name === 'network' && (
       <Network key={`${network.topic}/${db.localKey}`} network={network} />
     );
-    const elEditor = db && network && ns && ns.command.name === 'editor' && <NoteEditor db={db} />;
-    const elWatch = db && !elDbInfo && !elEditor && !elNetwork && <DbWatch db={db} />;
+    const elEditor = db && ns && ns.command.name === 'editor' && <NoteEditor db={db} />;
+    const elGrid = db && ns && ns.command.name === 'grid' && <DbGrid db={db} />;
+    const elWatch = db && !elDbInfo && !elEditor && !elNetwork && !elGrid && <DbWatch db={db} />;
 
     return (
       <div {...styles.base}>
         {elDbInfo}
         {elNetwork}
         {elWatch}
+        {elGrid}
         {elEditor}
       </div>
     );

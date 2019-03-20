@@ -700,6 +700,14 @@
     core-js "^2.5.7"
     regenerator-runtime "^0.12.0"
 
+"@babel/polyfill@7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.4.0.tgz#90f9d68ae34ac42ab4b4aa03151848f536960218"
+  integrity sha512-bVsjsrtsDflIHp5I6caaAa2V25Kzn50HKPL6g3X0P0ni1ks+58cPB8Mz6AOKVuRPgaVdq/OwEUc/1vKqX+Mo4A==
+  dependencies:
+    core-js "^2.6.5"
+    regenerator-runtime "^0.13.2"
+
 "@babel/preset-env@7.3.4":
   version "7.3.4"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.3.4.tgz#887cf38b6d23c82f19b5135298bdb160062e33e1"
@@ -1008,6 +1016,22 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
+"@platform/electron@0.1.10", "@platform/electron@^0.1.10":
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.10.tgz#be21d6d63626a324266364ae67a8008e2f43bd33"
+  integrity sha512-QofI8F9l9Mnag+sSkATT4bUsAeYcmNs0LMFQ5M/2NdRO0hJVawnx2CAVE7xXaXhffCoYLv3f0swmkxSzciGusQ==
+  dependencies:
+    "@babel/polyfill" "7.4.0"
+    "@platform/fs" "0.0.40"
+    "@platform/log" "0.0.91"
+    "@platform/react" "0.0.23"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.1.0"
+    electron-log "3.0.1"
+    electron-store "2.0.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+
 "@platform/electron@0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.7.tgz#de22c2b20fd4990d0264db662226a4dc1db0b7c3"
@@ -1050,16 +1074,16 @@
     fs-extra "7.0.1"
     js-yaml "3.12.2"
 
-"@platform/hyperdb.electron@^0.0.31":
-  version "0.0.31"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.0.31.tgz#b34ec5419fea6f559dfb657b51d9238ce9d322da"
-  integrity sha512-wIuwR7Fpo6ZVdzgFCyMWUdJF1T9XbGdIAW4lmTKEmt4mvIyISWqndu+IrJKn4adrsCCeQUAAaa12/PVp8fGt8Q==
+"@platform/hyperdb.electron@0.0.33":
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.0.33.tgz#92e3094f000ed07712a10606a59e916885479419"
+  integrity sha512-HCw2eANwk+dH+fH850jnVO2lh2zYse7HR5aqBCQMurNfeORd41AEPWdmwvIK16tXJTO00z+pwhAGZagpOgzzkg==
   dependencies:
-    "@platform/electron" "0.1.8"
+    "@platform/electron" "0.1.10"
     "@platform/hyperdb" "0.0.26"
     "@platform/util.string" "0.0.38"
     "@platform/util.value" "0.0.41"
-    "@uiharness/electron" "0.3.161"
+    "@uiharness/electron" "0.3.165"
 
 "@platform/hyperdb@0.0.26":
   version "0.0.26"
@@ -1136,6 +1160,18 @@
     react "16.8.4"
     react-dom "16.8.4"
 
+"@platform/react@0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.23.tgz#8f8fad1e69a342d2e2c154342ad11e9d5cd75ebd"
+  integrity sha512-HMnPfOIPwV8w2QLMnreLenSpG7ju7HiUQDmtp5K+pNAnnjjq5GLk6c50sIiYbISmxHG1n4cM8LiIC5Q8jVYGtA==
+  dependencies:
+    "@platform/css" "0.0.15"
+    "@platform/util.is" "0.0.40"
+    "@types/react" "16.8.8"
+    "@types/react-dom" "16.8.2"
+    react "16.8.4"
+    react-dom "16.8.4"
+
 "@platform/test@0.0.33":
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.33.tgz#13a5a863c97bbcb5ece0df18562aa5aec33997e8"
@@ -1171,13 +1207,24 @@
     "@platform/ts.libs" "3.3.6"
     "@platform/util.exec" "0.0.24"
 
-"@platform/ui.editor@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.10.tgz#dd405f2c9b1f1ef93945cae51fafff3f64daad1c"
-  integrity sha512-ZPRa6MWDZqMexn0h1OPE6tk96goQVaGXG6Tod9kP90k8LSkz8opJWTfy8RX8fXgE7sHEC6ALNJrZBZ0oHw1G2g==
+"@platform/ui.datagrid@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.12.tgz#78c1a44053e09dcf60cf3b2b613b02df80920598"
+  integrity sha512-UBHqCErCq88+fDCyvqxxguUAaxzpy/jRpQlP+R24z/UxDJpaAViWXg5K2xoWaFe7frIDrWWWteKTwzGHk8aBtg==
   dependencies:
-    "@platform/react" "0.0.21"
-    "@platform/ui.object" "0.0.60"
+    "@platform/electron" "^0.1.10"
+    "@platform/react" "0.0.23"
+    "@platform/ui.text" "0.0.26"
+    "@platform/util.value.cell" "0.0.2"
+    handsontable "6.2.2"
+
+"@platform/ui.editor@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.12.tgz#85f7639a745ff25d2ea785b7a2a788a70785665e"
+  integrity sha512-K9Qjf9sAXlLgGxHp0DipEaZNH7yq47lKIPZ79uW6Yy7Ui9FwGGt6emTh3av3Jm7C5KgMrT0UGlNOG5FmmtsIoQ==
+  dependencies:
+    "@platform/react" "0.0.23"
+    "@platform/ui.object" "0.0.62"
     prosemirror-example-setup "1.0.1"
     prosemirror-history "1.0.4"
     prosemirror-keymap "1.0.1"
@@ -1203,12 +1250,20 @@
     "@platform/react" "0.0.21"
     react-inspector "2.3.1"
 
-"@platform/ui.text@0.0.24":
-  version "0.0.24"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.0.24.tgz#a6422de2b2a38ed21905dea6631f79bbd36c65f2"
-  integrity sha512-GXoVLJ9+krZlwLEm/vNM3SAcVZ0g6j9gC4g74FDzrzJym+v3xKjIHC18lnvqmdGQNPnugVgNsp0rDxEWo3bfGw==
+"@platform/ui.object@0.0.62":
+  version "0.0.62"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.62.tgz#ae396fb0bdbb5c05103ad6649a705144a67c146e"
+  integrity sha512-HWSqzkLt/NSA7tVEDqFyLEjadfJghKw4QTeo95r5g/FxK7jp3nDgMDLTzHpfV1o3LwhunfGg2x1RUNcTCLy0Gw==
   dependencies:
-    "@platform/react" "0.0.21"
+    "@platform/react" "0.0.23"
+    react-inspector "2.3.1"
+
+"@platform/ui.text@0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.0.26.tgz#8265b16b48ae28e99660198c7a1879f2852abdfe"
+  integrity sha512-8RU/Fz1Y4pYNnaQDJfjCmZBOAFzWigHXPqfEm4CEJlK8fZn/OjCWkqXYDJttQ9ZCUL4eD2pkUvptyMrllxuXdA==
+  dependencies:
+    "@platform/react" "0.0.23"
     "@platform/util.value" "0.0.41"
 
 "@platform/util.exec@0.0.24":
@@ -1242,6 +1297,15 @@
     escape-string-regexp "1.0.5"
     fuzzy "0.1.3"
     underscore.string "3.3.5"
+
+"@platform/util.value.cell@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.0.2.tgz#836dac94601a8e6964be8e4c02639c78785c8f24"
+  integrity sha512-+gBqrs48aem4NDadsYHetTDUO7ZyGOk+TWamlmvM2AbiXeV8UB2KLU9cLponqdbcgKrh5bdUObvR37whcPvlig==
+  dependencies:
+    "@platform/util.value" "0.0.41"
+    excel-formula-ast "1.1.1"
+    excel-formula-tokenizer "2.3.0"
 
 "@platform/util.value@0.0.40":
   version "0.0.40"
@@ -1511,10 +1575,10 @@
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.9.tgz#693e76a52f61a2f1e7fb48c0eef167b95ea4ffd0"
   integrity sha512-sCZy4SxP9rN2w30Hlmg5dtdRwgYQfYRiLo9usw8X9cxlf+H4FqM1xX7+sNH7NNKVdbXMJWqva7iyy+fxh/V7fA==
 
-"@uiharness/dev@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.5.tgz#bdd87b638c627fc4b76f126e418358b7378ea229"
-  integrity sha512-/lzORIiy1pj0xlF/ZpF4rNYRDyMsfoy5Mha7jImNk+nde7knZZ0oEjF0T+z/Ga+cG54gfJ9JTxTcL5mzrflcTw==
+"@uiharness/dev@0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.7.tgz#3ee7e9c6e47d5f0701eb675a0fdd864c9d24a576"
+  integrity sha512-uyp398sL4GVBUljNWj94r122gB+Zjmk1OQIn+bZBtZI4Ck3qY2b+Dp+6sZ0gD1YF2xGHUrEpkpDkSmmzuD7fcA==
   dependencies:
     "@babel/core" "7.3.4"
     "@babel/polyfill" "7.2.5"
@@ -1524,7 +1588,7 @@
     "@platform/cli" "0.0.63"
     "@platform/fs" "0.0.40"
     "@platform/ts" "3.3.67"
-    "@uiharness/electron" "0.3.162"
+    "@uiharness/electron" "0.3.163"
     "@uiharness/types" "0.0.71"
     create-tmpl "0.1.40"
     electron "4.1.0"
@@ -1548,15 +1612,30 @@
     "@uiharness/ui" "0.1.7"
     tslib "1.9.3"
 
-"@uiharness/electron@0.3.162":
-  version "0.3.162"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.162.tgz#88659a45fa7c731377282afcb6d1ea693d93626a"
-  integrity sha512-FORBfAG7fUDOA/cC2GtqDtVGJFUEoqjG+rBUaHo/fehDTTbB3bw72Rv9z3HV/ixW1S56ZjM7a5BN0J7mD9xFKg==
+"@uiharness/electron@0.3.163":
+  version "0.3.163"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.163.tgz#87ec322794fcbcd1624c6d5f013ca9c8f6c54897"
+  integrity sha512-65lzL4aPW+X82ypcVIxycBcPiRLpuLdMkzJRMaGh1SNmfA8i3jevWnPIj07rBEwZuaU+TC2xy7fKqcoOLBvYBg==
   dependencies:
     "@platform/electron" "0.1.8"
     "@platform/log" "0.0.91"
     "@platform/react" "0.0.21"
     "@platform/ui.object" "0.0.60"
+    "@platform/util.value" "0.0.41"
+    "@types/app-root-path" "1.2.4"
+    "@uiharness/types" "0.0.71"
+    "@uiharness/ui" "0.1.8"
+    tslib "1.9.3"
+
+"@uiharness/electron@0.3.165":
+  version "0.3.165"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.165.tgz#f986a53c0ff53a4a91e6c36e0f3b8b03bb7c2bee"
+  integrity sha512-rRq8ON1NXT3uMgbuaDCHwTDgBSRSw8EZN8PzDv3aYFm1qOcGHBuxadxX4Rpvo+OBRaO5+nsb9qdrt4j4bScIkw==
+  dependencies:
+    "@platform/electron" "0.1.10"
+    "@platform/log" "0.0.91"
+    "@platform/react" "0.0.23"
+    "@platform/ui.object" "0.0.62"
     "@platform/util.value" "0.0.41"
     "@types/app-root-path" "1.2.4"
     "@uiharness/types" "0.0.71"
@@ -2009,6 +2088,11 @@ bencode@^2.0.0:
   integrity sha512-2uhEl8FdjSBUyb69qDTgOEeeqDTa+n3yMQzLW0cOzNf1Ow5bwcg3idf+qsWisIKRH8Bk8oC7UXL8irRcPA8ZEQ==
   dependencies:
     safe-buffer "^5.1.1"
+
+bignumber.js@^8.0.1:
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-8.1.1.tgz#4b072ae5aea9c20f6730e4e5d529df1271c4d885"
+  integrity sha512-QD46ppGintwPGuL1KqmwhR0O+N2cZUg8JG/VzwI2e28sM9TqHjQB10lI4QAaMHVbLzwVLLAwEglpKPViWX+5NQ==
 
 binary-extensions@^1.0.0:
   version "1.13.0"
@@ -2872,7 +2956,7 @@ core-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
   integrity sha1-ZSKUwUZR2yj6k70tX/KYOk8IxjY=
 
-core-js@^2.4.0, core-js@^2.5.7:
+core-js@^2.4.0, core-js@^2.5.7, core-js@^2.6.5:
   version "2.6.5"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.5.tgz#44bc8d249e7fb2ff5d00e0341a7ffb94fbf67895"
   integrity sha512-klh/kDpwX8hryYL14M9w/xei6vrv6sE8gTHDG7/T/+SEovB/G4ejwcfE/CBzO6Edsu+OETZMZ3wcX/EjUkrl5A==
@@ -3814,6 +3898,16 @@ evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
     md5.js "^1.3.4"
     safe-buffer "^5.1.1"
 
+excel-formula-ast@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/excel-formula-ast/-/excel-formula-ast-1.1.1.tgz#44dd1379ae70e620691ad8063080ae62c1c2e944"
+  integrity sha512-DWVBtdSge+m4ickkAgljS/ub+RoPy1kz9XxkWUObEWHYGTge9NdzyUKri8OSZZlS+PoG6RcC7eoaRrwe3gzBUQ==
+
+excel-formula-tokenizer@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/excel-formula-tokenizer/-/excel-formula-tokenizer-2.3.0.tgz#e2ea4b217acb8a9c5cf0062fe783bf7c0928f5f4"
+  integrity sha512-9xqAUwL0hTyAopyuE8jhmmnLlxFjbC4t5bxrf+q0QgPxsKohJW90wD9zvLCNqc/DXN/O1TBDoiOd04txFVcl0w==
+
 execa@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/execa/-/execa-0.7.0.tgz#944becd34cc41ee32a63a9faf27ad5a65fc59777"
@@ -4372,6 +4466,15 @@ growl@1.10.5:
   version "1.10.5"
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.5.tgz#f2735dc2283674fa67478b10181059355c369e5e"
   integrity sha512-qBr4OuELkhPenW6goKVXiv47US3clb3/IbuWF9KNKEijAy9oeHxU9IgzjvJhHkUzhaj7rOUD7+YGWqUjLp5oSA==
+
+handsontable@6.2.2:
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/handsontable/-/handsontable-6.2.2.tgz#f1250f3f374abdf7d4a0080950482d3edeea8f07"
+  integrity sha512-Z/sQa51OMHH4RoeBJeANYJMJYmx5SR+/xP8JCh5mzKJnAMKoQWF1zONPNgNCFZ/LdKFmI0f34XKtU0GHW0MG/Q==
+  dependencies:
+    moment "2.20.1"
+    numbro "^2.0.6"
+    pikaday "1.5.1"
 
 har-schema@^2.0.0:
   version "2.0.0"
@@ -5832,6 +5935,16 @@ mocha@6.0.2:
     yargs-parser "11.1.1"
     yargs-unparser "1.5.0"
 
+moment@2.20.1:
+  version "2.20.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
+  integrity sha512-Yh9y73JRljxW5QxN08Fner68eFLxM5ynNOAw2LbIB1YAGeQzZT8QFSUvkAz609Zf+IHhhaUxqZK8dG3W/+HEvg==
+
+moment@2.x:
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
@@ -6123,6 +6236,13 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
+
+numbro@^2.0.6:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/numbro/-/numbro-2.1.2.tgz#2d51104f09b5d69aef7e15bb565d7795e47ecfd6"
+  integrity sha512-7w833BxZmKGLE9HI0aREtNVRVH6WTYUUlWf4qgA5gKNhPQ4F/MRZ14sc0v8eoLORprk9ZTVwYaLwj8N3Zgxwiw==
+  dependencies:
+    bignumber.js "^8.0.1"
 
 oauth-sign@~0.9.0:
   version "0.9.0"
@@ -6579,6 +6699,13 @@ pify@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-3.0.0.tgz#e5a4acd2c101fdf3d9a4d07f0dbc4db49dd28176"
   integrity sha1-5aSs0sEB/fPZpNB/DbxNtJ3SgXY=
+
+pikaday@1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/pikaday/-/pikaday-1.5.1.tgz#0a48549bc1a14ea1d08c44074d761bc2f2bfcfd3"
+  integrity sha1-CkhUm8GhTqHQjEQHTXYbwvK/z9M=
+  optionalDependencies:
+    moment "2.x"
 
 pinkie-promise@^2.0.0:
   version "2.0.1"
@@ -7673,6 +7800,11 @@ regenerator-runtime@^0.12.0:
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
   integrity sha512-odxIc1/vDlo4iZcfXqRYFj0vpXFNoGdKMAUieAlFYO6m/nl5e9KR/beGf41z4a1FI+aQgtjhuaSlDxQ0hmkrHg==
+
+regenerator-runtime@^0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.2.tgz#32e59c9a6fb9b1a4aff09b4930ca2d4477343447"
+  integrity sha512-S/TQAZJO+D3m9xeN1WTI8dLKBBiRgXBlTJvbWjCThHWZj9EvHK70Ff50/tYj2J/fvBY6JtFVwRuazHN2E7M9BA==
 
 regenerator-transform@^0.13.3:
   version "0.13.3"

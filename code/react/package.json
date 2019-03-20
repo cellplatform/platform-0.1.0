@@ -1,6 +1,6 @@
 {
   "name": "@platform/react",
-  "version": "0.0.21",
+  "version": "0.0.23",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@platform/test": "0.0.33",
     "@platform/ts": "3.3.67",
-    "@uiharness/dev": "0.2.5"
+    "@uiharness/dev": "0.2.10"
   },
   "files": [
     "lib"

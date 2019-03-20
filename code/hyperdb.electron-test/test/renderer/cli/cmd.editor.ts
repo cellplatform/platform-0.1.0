@@ -1,4 +1,3 @@
-import { shell } from 'electron';
 import { Command } from '../common';
 import * as t from './types';
 

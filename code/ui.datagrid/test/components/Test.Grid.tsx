@@ -9,11 +9,7 @@ export type ITestProps = {
   style?: GlamorValue;
   Table?: Handsontable;
 };
-export type ITestState = {
-  // settings?: datagrid.IGridSettings;
-  // data?: object;
-  values?: t.IGridValues;
-};
+export type ITestState = { values?: t.IGridValues };
 
 const DEFAULT = {
   A1: 'A1',
@@ -35,7 +31,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+  }
+
+  public componentDidMount() {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    // const keys$ = this.grid.keys$;
 
     events$
       .pipe(
@@ -78,23 +78,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       filter(e => e.type === 'GRID/selection'),
       map(e => e.payload as t.IGridSelectionChange),
     );
-
-    const keys$ = events$.pipe(
-      filter(e => e.type === 'GRID/keydown'),
-      map(e => e.payload as t.IGridKeypress),
-    );
-
-    // keys$.subscribe(e => {});
-
-    keys$
-      .pipe(
-        filter(e => e.event.metaKey && e.key === 'a'),
-        filter(e => !this.grid.isEditing),
-      )
-      .subscribe(e => {
-        // Suppress CMD+A (select all).
-        e.cancel();
-      });
 
     change$.subscribe(e => {
       // e.cancel();
@@ -141,6 +124,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         Handsontable={this.Table}
         initial={{ selection: { cell: 'A1' } }}
         style={this.props.style}
+        canSelectAll={false}
       />
     );
   }
@@ -148,11 +132,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private factory: t.GridFactory = req => {
     switch (req.type) {
       case 'EDITOR':
-        if (req.column === 1 && req.row === 0) {
-          return null;
-        }
-
         return <TestEditor />;
+
+      case 'CELL':
+        const value = typeof req.value === 'object' ? JSON.stringify(req.value) : req.value;
+        return <div>{value}</div>;
 
       default:
         console.log(`Factory type '${req.type}' not supported by test.`);

@@ -906,6 +906,18 @@
     react "16.8.4"
     react-dom "16.8.4"
 
+"@platform/react@0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.23.tgz#8f8fad1e69a342d2e2c154342ad11e9d5cd75ebd"
+  integrity sha512-HMnPfOIPwV8w2QLMnreLenSpG7ju7HiUQDmtp5K+pNAnnjjq5GLk6c50sIiYbISmxHG1n4cM8LiIC5Q8jVYGtA==
+  dependencies:
+    "@platform/css" "0.0.15"
+    "@platform/util.is" "0.0.40"
+    "@types/react" "16.8.8"
+    "@types/react-dom" "16.8.2"
+    react "16.8.4"
+    react-dom "16.8.4"
+
 "@platform/ts.libs@3.3.6":
   version "3.3.6"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.3.6.tgz#a3c401e0d49e36e86ee23cf4e7c4065c09fa4d3e"
@@ -1197,10 +1209,10 @@
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.9.tgz#693e76a52f61a2f1e7fb48c0eef167b95ea4ffd0"
   integrity sha512-sCZy4SxP9rN2w30Hlmg5dtdRwgYQfYRiLo9usw8X9cxlf+H4FqM1xX7+sNH7NNKVdbXMJWqva7iyy+fxh/V7fA==
 
-"@uiharness/dev@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.5.tgz#bdd87b638c627fc4b76f126e418358b7378ea229"
-  integrity sha512-/lzORIiy1pj0xlF/ZpF4rNYRDyMsfoy5Mha7jImNk+nde7knZZ0oEjF0T+z/Ga+cG54gfJ9JTxTcL5mzrflcTw==
+"@uiharness/dev@0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.7.tgz#3ee7e9c6e47d5f0701eb675a0fdd864c9d24a576"
+  integrity sha512-uyp398sL4GVBUljNWj94r122gB+Zjmk1OQIn+bZBtZI4Ck3qY2b+Dp+6sZ0gD1YF2xGHUrEpkpDkSmmzuD7fcA==
   dependencies:
     "@babel/core" "7.3.4"
     "@babel/polyfill" "7.2.5"
@@ -1210,7 +1222,7 @@
     "@platform/cli" "0.0.63"
     "@platform/fs" "0.0.40"
     "@platform/ts" "3.3.67"
-    "@uiharness/electron" "0.3.162"
+    "@uiharness/electron" "0.3.163"
     "@uiharness/types" "0.0.71"
     create-tmpl "0.1.40"
     electron "4.1.0"
@@ -1234,10 +1246,10 @@
     "@uiharness/ui" "0.1.7"
     tslib "1.9.3"
 
-"@uiharness/electron@0.3.162":
-  version "0.3.162"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.162.tgz#88659a45fa7c731377282afcb6d1ea693d93626a"
-  integrity sha512-FORBfAG7fUDOA/cC2GtqDtVGJFUEoqjG+rBUaHo/fehDTTbB3bw72Rv9z3HV/ixW1S56ZjM7a5BN0J7mD9xFKg==
+"@uiharness/electron@0.3.163":
+  version "0.3.163"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.3.163.tgz#87ec322794fcbcd1624c6d5f013ca9c8f6c54897"
+  integrity sha512-65lzL4aPW+X82ypcVIxycBcPiRLpuLdMkzJRMaGh1SNmfA8i3jevWnPIj07rBEwZuaU+TC2xy7fKqcoOLBvYBg==
   dependencies:
     "@platform/electron" "0.1.8"
     "@platform/log" "0.0.91"

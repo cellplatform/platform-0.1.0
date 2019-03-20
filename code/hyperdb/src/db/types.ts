@@ -76,9 +76,10 @@ export type IDbWatchEvent<D extends {} = any> = {
 export type IDbWatchChange<D extends {} = any> = {
   db: { key: string };
   key: keyof D;
-  value?: D[keyof D];
+  value: { from?: D[keyof D]; to?: D[keyof D] };
+  isChanged: boolean;
+  isDeleted: boolean;
   pattern: string | '*';
-  deleted: boolean;
   version: string; // database-version.
 };
 export type IDbErrorEvent = {

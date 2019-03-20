@@ -8,10 +8,12 @@ export type IGridSelection = {
 };
 
 export type IInitialGridState = {
-  selection?: {
-    cell: t.CellRef;
-    ranges?: t.GridCellRangeKey[];
-  };
+  selection?:
+    | string
+    | {
+        cell: t.CellRef;
+        ranges?: t.GridCellRangeKey[];
+      };
 };
 
 /**
@@ -19,10 +21,16 @@ export type IInitialGridState = {
  */
 export type GridEvent =
   | t.EditorEvent
+  | IGridReadyEvent
   | IGridKeydownEvent
   | IGridChangeEvent
   | IGridChangeSetEvent
   | IGridSelectionChangeEvent;
+
+export type IGridReadyEvent = {
+  type: 'GRID/ready';
+  payload: { grid: Grid };
+};
 
 /**
  * Keyboard

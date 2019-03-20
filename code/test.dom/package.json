@@ -17,7 +17,7 @@
     "jsdom-global": "3.0.2"
   },
   "devDependencies": {
-    "@platform/ts": "3.3.54"
+    "@platform/ts": "3.3.67"
   },
   "files": [
     "lib"
