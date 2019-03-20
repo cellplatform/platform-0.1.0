@@ -4,8 +4,9 @@ import { Db } from '..';
 import { time } from '../common';
 import * as filesize from 'filesize';
 
-const dir = 'tmp-1/db-size';
+const dir = '.tmp.test/db-size';
 // after(async () => fs.remove('tmp'));
+// before(async () => fs.remove(dir));
 
 describe.only('tmp', function() {
   this.timeout(999999);
