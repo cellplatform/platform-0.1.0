@@ -119,6 +119,8 @@ describe('Db', () => {
       await db.put('bar', 456);
       await db.put('baz', 789); // Not watched.
 
+      await time.wait(10);
+
       expect(events.length).to.eql(2);
       expect(events[0].db.key).to.eql(db.key);
       expect(events[0].pattern).to.eql('foo');
@@ -205,9 +207,10 @@ describe('Db', () => {
       db.watch$.subscribe(e => events.push(e));
 
       await db.put('foo', 123);
-      await db.put('foo', 456);
-
       await time.wait(10);
+      await db.put('foo', 456);
+      await time.wait(10);
+
       expect(events.length).to.eql(2);
       expect(events[0].value).to.eql({ from: undefined, to: 123 });
       expect(events[1].value).to.eql({ from: 123, to: 456 });
@@ -220,15 +223,37 @@ describe('Db', () => {
       const events: t.IDbWatchChange[] = [];
       db.watch$.subscribe(e => events.push(e));
 
-      await db.put('foo', 123);
-      await db.put('foo', 123);
-      await db.put('foo', 456);
+      const put = async (value: any) => {
+        await db.put('foo', value);
+        await time.wait(10);
+      };
+
+      await put(123);
+      await put(123);
+      await put(456);
 
       await time.wait(10);
       expect(events.length).to.eql(3);
       expect(events[0].isChanged).to.eql(true);
       expect(events[1].isChanged).to.eql(false);
       expect(events[2].isChanged).to.eql(true);
+    });
+
+    it('isDeleted', async () => {
+      const db = await Db.create({ dir });
+      await db.watch();
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      await db.put('foo', 123);
+      await time.wait(10);
+      await db.delete('foo');
+
+      await time.wait(10);
+      expect(events.length).to.eql(2);
+      expect(events[0].isDeleted).to.eql(false);
+      expect(events[1].isDeleted).to.eql(true);
     });
 
     it('returns all value data-types', async () => {
@@ -240,18 +265,22 @@ describe('Db', () => {
 
       const now = new Date();
 
-      await db.put('foo', null);
-      await db.put('foo', undefined);
-      await db.put('foo', 1.23);
-      await db.put('foo', true);
-      await db.put('foo', false);
-      await db.put('foo', 'text');
-      await db.put('foo', []);
-      await db.put('foo', [1, 2, 3]);
-      await db.put('foo', { foo: 123 });
-      await db.put('foo', now);
+      const put = async (value: any) => {
+        await db.put('foo', value);
+        await time.wait(10);
+      };
 
-      await time.wait(10);
+      await put(null);
+      await put(undefined);
+      await put(1.23);
+      await put(true);
+      await put(false);
+      await put('text');
+      await put([]);
+      await put([1, 2, 3]);
+      await put({ foo: 123 });
+      await put(now);
+
       expect(events[0].value).to.eql({ from: undefined, to: null });
       expect(events[1].value).to.eql({ from: undefined, to: undefined });
       expect(events[2].value).to.eql({ from: undefined, to: 1.23 });
@@ -292,6 +321,24 @@ describe('Db', () => {
 
       await time.wait(10);
       expect(events.length).to.eql(1);
+    });
+
+    it('debounces multiple key matches', async () => {
+      const db = await Db.create({ dir });
+      await db.watch('cell');
+      await db.watch('cell/');
+      await db.watch('cell/A1');
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      db.put('cell/A1', 123); // NB: All watch patterns above match this.
+      db.put('cell/A2', 456);
+
+      await time.wait(50);
+      expect(events.length).to.eql(2);
+      expect(events[0].key).to.eql('cell/A1');
+      expect(events[1].key).to.eql('cell/A2');
     });
   });
 

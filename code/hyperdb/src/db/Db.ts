@@ -1,10 +1,10 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { is, value as valueUtil, fs } from '../common';
+import { is, value as valueUtil, fs, rx } from '../common';
 import * as t from './types';
 import * as util from './util';
-import { clamp, equals } from 'ramda';
+import { clamp, equals, groupBy } from 'ramda';
 
 if (is.browser) {
   throw new Error(`The Db should only be imported on the [main] process.`);
@@ -56,6 +56,25 @@ export class Db<D extends object = any> implements t.IDb<D> {
     this._.db = args.db;
     this._.dir = args.dir;
     this._.version = args.version;
+
+    /**
+     * Debounce the watch observable.
+     * NOTE:
+     *    Sometimes there can be several watch patterns that will match the same
+     *    key multiple times.  To avoid firing an event for of these repeat notifications
+     *    this observable buffers up changes, then fires out the latest event for each unique key.
+     */
+    rx.debounceBuffer(this._.watch$.pipe(takeUntil(this.dispose$)), 5).subscribe(e => {
+      const groups = groupBy(item => item.key.toString(), e);
+      const events = Object.keys(groups).reduce(
+        (acc, key) => {
+          const list = groups[key];
+          return [...acc, list[list.length - 1]];
+        },
+        [] as t.IDbWatchChange[],
+      );
+      events.forEach(payload => this.next<t.IDbWatchEvent>('DB/watch', payload));
+    });
   }
 
   /**
@@ -67,6 +86,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     version: undefined as string | undefined,
     dispose$: new Subject(),
     events$: new Subject<t.DbEvent>(),
+    watch$: new Subject<t.IDbWatchChange>(),
     watchers: ({} as unknown) as WatcherRefs,
   };
   public readonly dispose$ = this._.dispose$.pipe(share());
@@ -316,18 +336,20 @@ export class Db<D extends object = any> implements t.IDb<D> {
             return;
           }
 
+          const version = await this.version();
           const from = await getPrior(key);
           const to = util.parseValue(value);
 
-          this.next<t.IDbWatchEvent>('DB/watch', {
+          const payload: t.IDbWatchChange = {
             db: { key: this.key },
             pattern,
             key,
             value: { from, to },
-            version: await this.version(),
             isChanged: !equals(from, to),
-            deleted,
-          });
+            isDeleted: deleted,
+            version,
+          };
+          this._.watch$.next(payload);
         });
       });
 
