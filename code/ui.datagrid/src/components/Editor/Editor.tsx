@@ -11,10 +11,10 @@ const editors = Handsontable.editors as Editors;
 
 type IEditOperation = {
   context: t.IEditorContext;
-  from?: t.CellValue;
-  to?: t.CellValue;
   isCancelled?: boolean;
 };
+
+console.log(`\nTODO 🐷   MOVE isCancelled to context \n`);
 
 /**
  * Extension hook for custom editor UI components.
@@ -53,43 +53,8 @@ export class Editor extends editors.TextEditor {
   /**
    * [Properties]
    */
-
   private get isEditing() {
     return Boolean(this._.current);
-  }
-
-  private get context() {
-    const grid = this.grid;
-    const cell = this.cell;
-    const complete = this.onComplete;
-    const cancel = this.onCancel;
-
-    const end$ = this.refs.editorEvents$.pipe(
-      filter(e => e.type === 'GRID/EDITOR/end'),
-      map(e => e as t.IEndEditingEvent),
-      take(1),
-      share(),
-    );
-    const keys$ = grid.keys$.pipe(takeUntil(end$));
-
-    keys$
-      .pipe(
-        filter(e => context.autoCancel),
-        filter(e => e.isEscape),
-      )
-      .subscribe(cancel);
-
-    const context: t.IEditorContext = {
-      autoCancel: true,
-      grid,
-      cell,
-      keys$,
-      end$,
-      complete,
-      cancel,
-    };
-
-    return context;
   }
 
   private get refs(): IGridRefsPrivate {
@@ -102,6 +67,11 @@ export class Editor extends editors.TextEditor {
 
   private get cell() {
     return this.grid.cell({ row: this.row, column: this.col });
+  }
+
+  private get context() {
+    const current = this._.current;
+    return current ? current.context : undefined;
   }
 
   /**
@@ -141,7 +111,7 @@ export class Editor extends editors.TextEditor {
     }
 
     const grid = this.grid;
-    const context = this.context;
+    const context = this.createContext();
     const el = this.render(context);
     if (!el) {
       this.onCancel();
@@ -151,8 +121,7 @@ export class Editor extends editors.TextEditor {
     const column = this.col;
 
     // Store state for the current edit operation.
-    const from = this.instance.getDataAtCell(this.row, this.col);
-    const current: IEditOperation = { context, from };
+    const current: IEditOperation = { context };
     this._.current = current;
 
     // Listener for any cancel operations applied to the [GRID/change] event.
@@ -193,18 +162,19 @@ export class Editor extends editors.TextEditor {
   /**
    * [Override] Invoked when editing is complete.
    */
-  public finishEditing(restoreOriginalValue?: boolean, ctrlDown?: boolean, callback?: () => void) {
-    super.finishEditing(restoreOriginalValue, ctrlDown, callback);
+  public finishEditing(restoreValue?: boolean, ctrlDown?: boolean, callback?: () => void) {
+    super.finishEditing(restoreValue, ctrlDown, callback);
     const current = this._.current;
     if (!current) {
       return;
     }
 
+    const context = current.context;
     const grid = this.grid;
     const row = this.row;
     const column = this.col;
-    const isCancelled = current.isCancelled ? true : Boolean(restoreOriginalValue);
-    const from = current.from;
+    const isCancelled = current.isCancelled ? true : Boolean(restoreValue);
+    const from = context.value.from;
     const to = isCancelled ? from : this.getValue();
 
     // Destroy the editor UI component.
@@ -239,13 +209,61 @@ export class Editor extends editors.TextEditor {
    * [Override] Gets the value of the editor.
    */
   public getValue() {
-    const current = this._.current;
-    return current ? current.to : undefined;
+    const context = this.context;
+    return context ? context.value.to : undefined;
   }
 
   /**
    * [Internal]
    */
+
+  private createContext() {
+    const grid = this.grid;
+    const cell = this.cell;
+    const complete = this.onComplete;
+    const cancel = this.onCancel;
+
+    const end$ = this.refs.editorEvents$.pipe(
+      filter(e => e.type === 'GRID/EDITOR/end'),
+      map(e => e as t.IEndEditingEvent),
+      take(1),
+      share(),
+    );
+    const keys$ = grid.keys$.pipe(takeUntil(end$));
+
+    keys$
+      .pipe(
+        filter(e => context.autoCancel),
+        filter(e => e.isEscape),
+      )
+      .subscribe(cancel);
+
+    const from = this.instance.getDataAtCell(this.row, this.col);
+    let to = from;
+    const value: t.IEditorContext['value'] = {
+      from,
+      get to() {
+        return to;
+      },
+      set to(change: any) {
+        to = change;
+      },
+    };
+
+    const context: t.IEditorContext = {
+      autoCancel: true,
+      grid,
+      cell,
+      keys$,
+      end$,
+      value,
+      complete,
+      cancel,
+      set: (value: any) => (context.value.to = value),
+    };
+
+    return context;
+  }
 
   private onCancel: t.IEditorContext['cancel'] = () => {
     if (this._.current) {
@@ -257,16 +275,12 @@ export class Editor extends editors.TextEditor {
     this.close();
   };
 
-  private onComplete: t.IEditorContext['complete'] = args => {
+  private onComplete: t.IEditorContext['complete'] = () => {
+    // NOTE:
+    //    Run the close operation after a tick-delay
+    //    to ensure that (if this call was initiated on a ENTER keydown event)
+    //    that another handler does not immediately re-open the editor.
     time.delay(0, () => {
-      if (this._.current) {
-        this._.current.to = args.value;
-      }
-
-      // NOTE:
-      //    Run the close operation after a tick-delay
-      //    to ensure that (if this call was initiated on a ENTER keydown event)
-      //    that another handler does not immediately re-open the editor.
       const restoreOriginalValue = false;
       this.finishEditing(restoreOriginalValue);
       this.close();
