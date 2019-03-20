@@ -1,10 +1,10 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { is, value as valueUtil, fs, R } from '../common';
+import { is, value as valueUtil, fs } from '../common';
 import * as t from './types';
 import * as util from './util';
-import { clamp } from 'ramda';
+import { clamp, equals } from 'ramda';
 
 if (is.browser) {
   throw new Error(`The Db should only be imported on the [main] process.`);
@@ -294,6 +294,11 @@ export class Db<D extends object = any> implements t.IDb<D> {
       this._.watchers[key] = watcher;
     };
 
+    const getPrior = async (key: string) => {
+      const prior = (await this.history<any>(key, { take: 2 }))[1];
+      return prior ? prior.value : undefined;
+    };
+
     patterns.forEach(item => {
       const pattern = item.toString();
       if (this.watching.includes(pattern)) {
@@ -311,12 +316,16 @@ export class Db<D extends object = any> implements t.IDb<D> {
             return;
           }
 
+          const from = await getPrior(key);
+          const to = util.parseValue(value);
+
           this.next<t.IDbWatchEvent>('DB/watch', {
             db: { key: this.key },
             pattern,
             key,
-            value: util.parseValue(value),
+            value: { from, to },
             version: await this.version(),
+            isChanged: !equals(from, to),
             deleted,
           });
         });
@@ -346,17 +355,19 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * Retrieves the history of a value within the database.
    */
-  public history<T extends object = D>(args: { key: keyof T; take?: number }) {
-    type R = Array<t.IDbValue<keyof T, T[keyof T]>>;
+  public history<K extends keyof D>(key: K, options: { take?: number } = {}) {
+    type R = Array<t.IDbValue<K, D[K]>>;
     return new Promise<R>((resolve, reject) => {
       const take =
-        args.take !== undefined ? clamp(0, Number.MAX_SAFE_INTEGER, args.take || 0) : undefined;
+        options.take !== undefined
+          ? clamp(0, Number.MAX_SAFE_INTEGER, options.take || 0)
+          : undefined;
       if (take === 0) {
         resolve([]);
       }
 
       const db = this._.db;
-      const stream = db.createKeyHistoryStream(args.key, {});
+      const stream = db.createKeyHistoryStream(key, {});
       let result: R = [];
 
       const done = () => {
@@ -366,7 +377,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
 
       stream.on('data', (data: t.IDbNode[]) => {
         const node = data[0];
-        const value = util.toValue<keyof T, T[keyof T]>(node, { parse: true });
+        const value = util.toValue<K, D[K]>(node, { parse: true });
         result = [...result, value];
         if (typeof take === 'number' && result.length >= take) {
           return done();
