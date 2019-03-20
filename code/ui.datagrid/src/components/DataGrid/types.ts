@@ -8,10 +8,12 @@ export type IGridSelection = {
 };
 
 export type IInitialGridState = {
-  selection?: {
-    cell: t.CellRef;
-    ranges?: t.GridCellRangeKey[];
-  };
+  selection?:
+    | string
+    | {
+        cell: t.CellRef;
+        ranges?: t.GridCellRangeKey[];
+      };
 };
 
 /**

@@ -3,7 +3,7 @@ import '../../styles';
 import { DefaultSettings } from 'handsontable';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 import { Editor } from '../Editor';
 import * as render from '../render';
 
@@ -33,6 +33,7 @@ export type IDataGridProps = {
   factory?: t.GridFactory;
   events$?: Subject<t.GridEvent>;
   initial?: t.IInitialGridState;
+  canSelectAll?: boolean;
   style?: GlamorValue;
 };
 export type IDataGridState = {
@@ -76,8 +77,9 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const totalRows = this.totalRows;
     const table = (this.table = new Table(this.el as Element, this.settings));
     const grid = (this.grid = Grid.create({ table, totalColumns, totalRows, values }));
+
+    // Initialize factories.
     const factory = (this.factory = new FactoryManager({ grid, factory: this.props.factory }));
-    this.unmounted$.subscribe(() => grid.dispose());
     render.registerAll(Table, grid, factory);
 
     // Store metadata on the [Handsontable] instance.
@@ -85,21 +87,34 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     //    This is referenced within the [Editor] class.
     const refs: IGridRefsPrivate = {
       grid: grid,
-      editorEvents$: new Subject<t.EditorEvent>(),
+      editorEvents$: new Subject<t.EditorEvent>(), // NB: This ferries events back from the [Editor].
       factory: this.factory,
     };
     (table as any).__gridRefs = refs;
 
-    // Handle editor events.
+    // Setup observables.
+    const { events$, keys$ } = grid;
+    this.unmounted$.subscribe(() => grid.dispose());
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
+
+    // Ferry editor events to the [Grid] API.
     editor$.subscribe(e => this.grid.next(e));
+
+    // Disallow select all (CMD+A) unless requested by prop.
+    keys$
+      .pipe(
+        filter(e => e.metaKey && e.key === 'a'),
+        filter(e => this.props.canSelectAll !== true),
+        filter(e => !grid.isEditing),
+      )
+      .subscribe(e => e.cancel());
 
     // Manage size.
     this.updateSize();
     events.resize$.pipe(takeUntil(this.unmounted$)).subscribe(() => this.redraw());
 
     // Bubble events.
-    this.events$.subscribe(e => {
+    events$.subscribe(e => {
       if (this.props.events$) {
         this.props.events$.next(e);
       }
@@ -126,7 +141,9 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const grid = this.grid;
     grid.loadValues();
     if (initial.selection) {
-      const { cell, ranges } = initial.selection;
+      const selection =
+        typeof initial.selection === 'string' ? { cell: initial.selection } : initial.selection;
+      const { cell, ranges } = selection;
       grid.select({ cell, ranges });
     }
     grid.next({ type: 'GRID/ready', payload: { grid } });
