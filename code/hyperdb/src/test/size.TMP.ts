@@ -1,6 +1,5 @@
-import { fs } from '@platform/fs';
 import { Db } from '..';
-import { time } from '../common';
+import { time, fs } from '../common';
 import * as filesize from 'filesize';
 
 const dir = '.tmp.test/db-size';
