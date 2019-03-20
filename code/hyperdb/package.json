@@ -11,7 +11,8 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "tmp": "ts test --suffix=TMP $@"
   },
   "dependencies": {
     "@hyperswarm/network": "0.0.4",

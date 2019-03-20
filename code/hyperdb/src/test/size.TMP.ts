@@ -1,5 +1,4 @@
 import { fs } from '@platform/fs';
-import { expect } from 'chai';
 import { Db } from '..';
 import { time } from '../common';
 import * as filesize from 'filesize';
@@ -8,7 +7,7 @@ const dir = '.tmp.test/db-size';
 // after(async () => fs.remove('tmp'));
 // before(async () => fs.remove(dir));
 
-describe.only('tmp', function() {
+describe('tmp', function() {
   this.timeout(999999);
   beforeEach(async () => fs.remove(dir));
 
