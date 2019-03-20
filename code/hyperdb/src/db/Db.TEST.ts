@@ -340,6 +340,21 @@ describe('Db', () => {
       expect(events[0].key).to.eql('cell/A1');
       expect(events[1].key).to.eql('cell/A2');
     });
+
+    it('does not fire if PUT value has not changed', async () => {
+      const db = await Db.create({ dir });
+      await db.watch('');
+
+      const events: t.IDbWatchChange[] = [];
+      db.watch$.subscribe(e => events.push(e));
+
+      await db.put('foo', 123);
+      await db.put('foo', 123);
+      await db.put('foo', 123);
+
+      await time.wait(10);
+      expect(events.length).to.eql(1);
+    });
   });
 
   describe('unwatch', () => {

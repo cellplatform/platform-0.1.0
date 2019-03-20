@@ -1,5 +1,5 @@
 import { cell as util, parser } from '@platform/util.value.cell';
-import { t } from '../common';
+import { t, R } from '../common';
 
 /**
  * API for accessing and manipulating a cell.
@@ -92,7 +92,9 @@ export class Cell {
     return this._.table.getDataAtCell(this.row, this.column);
   }
   public set value(value: t.CellValue) {
-    this._.table.setDataAtCell(this.row, this.column, value);
+    if (!R.equals(value, this.value)) {
+      this._.table.setDataAtCell(this.row, this.column, value);
+    }
   }
 
   public get sibling() {

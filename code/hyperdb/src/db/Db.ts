@@ -248,9 +248,12 @@ export class Db<D extends object = any> implements t.IDb<D> {
   public async put<K extends keyof D>(key: K, value: D[K]) {
     this.throwIfDisposed('put');
     this.throwIfNoKey('put', key);
-    return new Promise<t.IDbValue<K, D[K]>>((resolve, reject) => {
-      const v = util.serializeValue(value);
-      this._.db.put(key, v, (err: Error, result: any) => {
+    return new Promise<t.IDbValue<K, D[K]>>(async (resolve, reject) => {
+      const current = await this.get(key);
+      if (equals(value, current.value)) {
+        resolve(current); // No change to the value so do not touch the DB.
+      }
+      this._.db.put(key, util.serializeValue(value), (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(util.toValue(result));
       });
     });
