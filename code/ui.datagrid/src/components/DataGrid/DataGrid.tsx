@@ -216,6 +216,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       beforeChange: hook.beforeChangeHandler(getGrid),
       afterSelection: hook.afterSelectionHandler(getGrid),
       afterDeselect: hook.afterDeselectHandler(getGrid),
+      renderAllRows: false, // Virtual scrolling.
     };
   }
 
@@ -228,6 +229,16 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     if (this.table) {
       this.table.render();
     }
+  }
+
+  public updateSize() {
+    const el = this.el;
+    if (!el || this.isDisposed) {
+      return;
+    }
+    const { offsetWidth: width, offsetHeight: height } = el;
+    const size = { width, height };
+    this.state$.next({ size });
   }
 
   /**
@@ -250,19 +261,5 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
         {...css(styles.base, this.props.style)}
       />
     );
-  }
-
-  /**
-   * [Internal]
-   */
-
-  private updateSize() {
-    const el = this.el;
-    if (el) {
-      const width = el.offsetWidth;
-      const height = el.offsetHeight;
-      const size = { width, height };
-      this.state$.next({ size });
-    }
   }
 }

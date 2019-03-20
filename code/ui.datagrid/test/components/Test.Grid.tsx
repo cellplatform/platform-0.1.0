@@ -120,9 +120,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         events$={this.events$}
         factory={this.factory}
         totalColumns={52}
-        totalRows={1000}
+        totalRows={2000}
         Handsontable={this.Table}
-        initial={{ selection: { cell: 'A1' } }}
+        initial={{ selection: 'A1' }}
         style={this.props.style}
         canSelectAll={false}
       />
