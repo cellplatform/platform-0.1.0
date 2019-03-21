@@ -37,11 +37,6 @@ export class DbGrid extends React.PureComponent<IDbGridProps, IDbGridState> {
       // console.log('🌳  EVENT', e.type, e.payload);
     });
 
-    grid$.pipe(filter(e => Boolean(this.datagrid))).subscribe(e => {
-      const payload = { state: this.gridState };
-      this.context.cli.events$.next({ type: 'CLI/grid/change', payload });
-    });
-
     // Watch for chagnes to cells.
     const dbWatch$ = this.db.watch$.pipe(
       takeUntil(this.unmounted$),

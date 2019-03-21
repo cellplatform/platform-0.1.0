@@ -29,20 +29,6 @@ export function init(args: {
     hot.dispose(() => reload$.next());
   }
 
-  let grid: t.ITestGridState = {};
-  const handlers$ = events$.pipe(takeUntil(reload$));
-  handlers$
-    .pipe(
-      filter(e => e.type === 'CLI/grid/change'),
-      map(e => e as t.ITestGridChangeEvent),
-    )
-    .subscribe(e => {
-      const state = e.payload.state;
-      if (state && state.selection && state.selection.current) {
-        grid = { ...grid, selection: state.selection };
-      }
-    });
-
   const invoke: t.ITestCommandLine['invoke'] = async e => {
     const { command, args } = e;
     const dir = e.db ? e.db.dir : undefined;
@@ -56,9 +42,6 @@ export function init(args: {
       events$,
       db,
       network,
-      get grid() {
-        return grid;
-      },
       error(err: string | Error) {
         const message = typeof err === 'string' ? err : err.message;
         log.error(message);

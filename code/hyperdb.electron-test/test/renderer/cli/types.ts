@@ -31,7 +31,6 @@ export type ITestCommandProps = {
   log: ILog;
   events$: Subject<CommandLineEvent>;
   db?: ITestRendererDb;
-  grid: ITestGridState;
   network?: INetworkRenderer;
   error(err: Error | string): void;
 };
@@ -49,8 +48,7 @@ export type CommandLineEvent =
   | ITestChangeEditorCellEvent
   | ITestSelectDbEvent
   | ITestErrorEvent
-  | ITestDbValuesEvent
-  | ITestGridChangeEvent;
+  | ITestDbValuesEvent;
 
 export type ITestErrorEvent = {
   type: 'CLI/error';
@@ -70,11 +68,4 @@ export type ITestDbValuesEvent = {
 export type ITestChangeEditorCellEvent = {
   type: 'CLI/editor/cell';
   payload: { cellKey: string };
-};
-
-export type ITestGridChangeEvent = {
-  type: 'CLI/grid/change';
-  payload: {
-    state: ITestGridState;
-  };
 };
