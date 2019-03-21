@@ -168,7 +168,7 @@ export class Grid {
    */
   public dispose() {
     const { table, dispose$ } = this._;
-    if (table.isDestroyed) {
+    if (!table.isDestroyed) {
       table.destroy();
     }
     dispose$.next();

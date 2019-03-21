@@ -77,6 +77,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const totalRows = this.totalRows;
     const table = (this.table = new Table(this.el as Element, this.settings));
     const grid = (this.grid = Grid.create({ table, totalColumns, totalRows, values }));
+    this.unmounted$.subscribe(() => grid.dispose());
 
     // Initialize factories.
     const factory = (this.factory = new FactoryManager({ grid, factory: this.props.factory }));
@@ -94,7 +95,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
     // Setup observables.
     const { events$, keys$ } = grid;
-    this.unmounted$.subscribe(() => grid.dispose());
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
 
     // Ferry editor events to the [Grid] API.
