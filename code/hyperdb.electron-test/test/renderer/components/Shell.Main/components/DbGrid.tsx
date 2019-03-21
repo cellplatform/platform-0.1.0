@@ -43,12 +43,7 @@ export class DbGrid extends React.PureComponent<IDbGridProps, IDbGridState> {
     await this.db.watch(PATTERN.CELL);
 
     // Update the GRID when the DB changes.
-    // rx.debounceBuffer(watch$, 0).subscribe(e => {
-    //   console.log('e', e);
-    // });
-
     dbWatch$.pipe(delay(0)).subscribe(e => {
-      console.log('e.value.to', e.value.to, e.isChanged);
       this.updateGridCell(e.key, e.value.to);
     });
 
