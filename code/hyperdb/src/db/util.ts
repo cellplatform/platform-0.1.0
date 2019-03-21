@@ -6,7 +6,7 @@ export function isObject(value: any) {
 }
 
 export function isNil(value: any) {
-  return value === null || value === undefined;
+  return value === undefined || value === null;
 }
 
 export function toValue<K, V>(response: any, options: { parse?: boolean } = {}): t.IDbValue<K, V> {
@@ -49,6 +49,7 @@ export function parseValue<V>(value: any): V | undefined {
     const obj = JSON.parse(value);
     let result = obj.v;
     result = valueUtil.isDateString(result) ? new Date(result) : result;
+    result = result === null ? undefined : result;
     return result;
   } catch (error) {
     if (!valueUtil.isJson(value)) {

@@ -183,6 +183,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * Checks whether a key is authorized to write to the database.
    */
   public isAuthorized(peerKey?: Buffer | string) {
+    this.throwIfDisposed('isAuthorized');
     return new Promise<boolean>((resolve, reject) => {
       peerKey = !peerKey ? this.buffer.localKey : peerKey;
       peerKey = typeof peerKey === 'string' ? Buffer.from(peerKey, 'hex') : peerKey;
@@ -209,6 +210,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * Get the current version identifier as a buffer for the db.
    */
   public version() {
+    this.throwIfDisposed('version');
     return new Promise<string>((resolve, reject) => {
       this._.db.version((err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(result.toString('hex'));
@@ -225,6 +227,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    *      by the `db.version` method.
    */
   public async checkout(version: string) {
+    this.throwIfDisposed('checkout');
     const db = this._.db.checkout(version);
     const dir = this.dir;
     return new Db<D>({ db, dir, version });
@@ -252,7 +255,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     return new Promise<t.IDbValue<K, D[K]>>(async (resolve, reject) => {
       const current = await this.get(key);
       if (equals(value, current.value)) {
-        resolve(current); // No change to the value so do not touch the DB.
+        return resolve(current); // No change to the value so do not touch the DB.
       }
       this._.db.put(key, util.serializeValue(value), (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(util.toValue(result));
@@ -366,6 +369,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * Pass nothing to turn-off all watchers.
    */
   public async unwatch<T extends object = D>(...pattern: Array<keyof T>) {
+    this.throwIfDisposed('unwatch');
     const watchers = this._.watchers;
     pattern = Array.isArray(pattern) ? pattern : [pattern];
     const patterns =
@@ -382,6 +386,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * Retrieves the history of a value within the database.
    */
   public history<K extends keyof D>(key: K, options: { take?: number } = {}) {
+    this.throwIfDisposed('history');
     type R = Array<t.IDbValue<K, D[K]>>;
     return new Promise<R>((resolve, reject) => {
       const take =
@@ -419,6 +424,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
    * Retrieves statistics about the database.
    */
   public async stats(options: {} = {}) {
+    this.throwIfDisposed('stats');
     const dir = this.dir;
     const size = await fs.folderSize(dir);
     return {
