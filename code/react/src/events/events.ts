@@ -39,15 +39,13 @@ export const resize$ = fromWindowEvent<{}>('resize').pipe(
  */
 
 const toKeypress = (e: KeyboardEvent, isPressed: boolean) => {
-  const { key, code, charCode, altKey, ctrlKey, shiftKey, metaKey, char } = e;
+  const { key, code, altKey, ctrlKey, shiftKey, metaKey } = e;
   const isModifier = key === 'Meta' || key === 'Control' || key === 'Alt' || key === 'Shift';
   const event: KeypressEvent = {
     event: e,
     isPressed,
     key,
     code,
-    charCode,
-    char,
     altKey,
     ctrlKey,
     shiftKey,

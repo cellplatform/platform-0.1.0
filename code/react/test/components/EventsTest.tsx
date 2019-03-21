@@ -43,7 +43,7 @@ export class EventsTest extends React.PureComponent<IEventsTestProps, IEventsTes
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <ObjectView name={'events'} data={this.state} expandLevel={1} />
+        <ObjectView name={'events'} data={this.state} expandLevel={2} />
       </div>
     );
   }

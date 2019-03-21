@@ -30,9 +30,7 @@ export type IMouseEvent = {
 export type KeypressEvent = {
   event: KeyboardEvent;
   isPressed: boolean;
-  char: string | null;
   code: string;
-  charCode: number;
   key: string;
   altKey: boolean;
   ctrlKey: boolean;
