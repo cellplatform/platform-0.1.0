@@ -1,10 +1,9 @@
 import '../../node_modules/@platform/css/reset.css';
 import '@babel/polyfill';
 
-import { Button, ObjectView } from '@uiharness/ui';
 import * as React from 'react';
 
-import { Test as DragTest } from '../../src/drag/Test';
+import { DragTest } from './DragTest';
 
 export class Test extends React.PureComponent {
   public render() {

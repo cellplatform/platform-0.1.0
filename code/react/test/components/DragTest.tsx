@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
-import { drag } from '.';
-import { color, css, GlamorValue } from '../common';
+import { drag } from '../../src';
+import { color, css, GlamorValue } from './common';
 
 const RED = 'rgba(255, 0, 0, 0.1)';
 const CLI = {
@@ -17,13 +17,13 @@ const CLI = {
   PURPLE: '#8F2298',
 };
 
-export type ITestProps = { style?: GlamorValue };
-export type ITestState = { event?: drag.IDragPositionEvent };
+export type IDragTestProps = { style?: GlamorValue };
+export type IDragTestState = { event?: drag.IDragPositionEvent };
 
-export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = {};
+export class DragTest extends React.PureComponent<IDragTestProps, IDragTestState> {
+  public state: IDragTestState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<ITestState>>();
+  private state$ = new Subject<Partial<IDragTestState>>();
 
   /**
    * [Lifecycle]
@@ -94,26 +94,35 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       label: css({}),
       magenta: css({ color: CLI.MAGENTA }),
       blue: css({ color: CLI.BLUE }),
+      undefined: css({ color: color.format(-0.3) }),
     };
 
-    const coord = (label: string, x: number, y: number) => (
-      <div {...styles.coord}>
-        <span {...styles.label}>{label}</span> <span {...styles.magenta}>x</span>:
-        <span {...styles.blue}>{x}</span> <span {...styles.magenta}>y</span>:
-        <span {...styles.blue}>{y}</span>
-      </div>
-    );
-
+    const coord = (label: string, pos?: { x: number; y: number }) => {
+      if (!pos) {
+        return (
+          <div {...styles.coord}>
+            <span {...styles.label}>{label}</span> <span {...styles.undefined}>undefined</span>:
+          </div>
+        );
+      }
+      return (
+        <div {...styles.coord}>
+          <span {...styles.label}>{label}</span> <span {...styles.magenta}>x</span>:
+          <span {...styles.blue}>{pos.x}</span> <span {...styles.magenta}>y</span>:
+          <span {...styles.blue}>{pos.y}</span>
+        </div>
+      );
+    };
     return (
       <div {...styles.base}>
         <div>
           <span {...styles.label}>type</span> <span {...styles.magenta}>{e.type}</span>
         </div>
-        {coord('client', e.client.x, e.client.y)}
-        {coord('screen', e.screen.x, e.screen.y)}
-        {coord('element', e.element.x, e.element.y)}
-        {coord('delta', e.delta.x, e.delta.y)}
-        {coord('start', e.start.x, e.start.y)}
+        {coord('client', e.client)}
+        {coord('screen', e.screen)}
+        {coord('element', e.element)}
+        {coord('delta', e.delta)}
+        {coord('start', e.start)}
       </div>
     );
   }
@@ -122,6 +131,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Handlers]
    */
   private handleStart = (e: React.MouseEvent) => {
+    this.state$.next({ event: undefined });
     const el = e.target as HTMLElement;
     drag
       // Monitor the position throughout the drag operation.
