@@ -1,9 +1,10 @@
 import {
-  IStoreClient,
-  IRendererContext as IBaseContext,
   IpcClient,
+  IRendererContext as IBaseContext,
+  IStoreClient,
 } from '@platform/electron/lib/types';
 import { IDbRenderer, IDbRendererFactory } from '@platform/hyperdb.electron/lib/types';
+
 import { ITestCommandLine } from './renderer/cli/types';
 
 export * from '@platform/cli.spec/lib/types';

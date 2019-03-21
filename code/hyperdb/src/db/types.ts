@@ -55,6 +55,10 @@ export type IDbMethods<D extends {} = any> = {
   isAuthorized(peerKey?: string | Buffer): Promise<boolean>;
   authorize(peerKey: string | Buffer): Promise<void>;
   values<T extends object = D>(args: IDbValuesArgs): Promise<IDbValues<T>>;
+  history<K extends keyof D>(
+    key: K,
+    options?: { take?: number },
+  ): Promise<Array<IDbValue<K, D[K]>>>;
 };
 export type IDb<D extends {} = any> = IDbProps &
   IDbMethods<D> & {

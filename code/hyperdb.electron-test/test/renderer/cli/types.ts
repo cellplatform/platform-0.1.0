@@ -8,7 +8,7 @@ import {
   ITestStore,
   ILog,
 } from '../../types';
-import { ICommandState } from '../common';
+import { ICommandState, datagrid } from '../common';
 
 export { ITestRendererDb };
 
@@ -31,8 +31,13 @@ export type ITestCommandProps = {
   log: ILog;
   events$: Subject<CommandLineEvent>;
   db?: ITestRendererDb;
+  grid: ITestGridState;
   network?: INetworkRenderer;
   error(err: Error | string): void;
+};
+
+export type ITestGridState = {
+  selection?: datagrid.IGridSelection;
 };
 
 export type ICommandOptions = {};
@@ -44,7 +49,8 @@ export type CommandLineEvent =
   | ITestChangeEditorCellEvent
   | ITestSelectDbEvent
   | ITestErrorEvent
-  | ITestDbValuesEvent;
+  | ITestDbValuesEvent
+  | ITestGridChangeEvent;
 
 export type ITestErrorEvent = {
   type: 'CLI/error';
@@ -64,4 +70,11 @@ export type ITestDbValuesEvent = {
 export type ITestChangeEditorCellEvent = {
   type: 'CLI/editor/cell';
   payload: { cellKey: string };
+};
+
+export type ITestGridChangeEvent = {
+  type: 'CLI/grid/change';
+  payload: {
+    state: ITestGridState;
+  };
 };

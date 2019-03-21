@@ -1,9 +1,10 @@
-import * as t from '../../types';
 import { Subject } from 'rxjs';
-import { CommandLineEvent } from './types';
 
-import { root } from './commands';
+import * as t from '../../types';
 import { CommandState } from '../common';
+import { root } from './commands';
+import { CommandLineEvent } from './types';
+import { map, takeUntil, filter } from 'rxjs/operators';
 
 export * from './commands';
 export * from './types';
@@ -21,6 +22,26 @@ export function init(args: {
 }): t.ITestCommandLine {
   const { log, databases, store } = args;
   const state = CommandState.create({ root });
+  const reload$ = new Subject();
+
+  const hot = (module as any).hot;
+  if (hot) {
+    hot.dispose(() => reload$.next());
+  }
+
+  let grid: t.ITestGridState = {};
+  const handlers$ = events$.pipe(takeUntil(reload$));
+  handlers$
+    .pipe(
+      filter(e => e.type === 'CLI/grid/change'),
+      map(e => e as t.ITestGridChangeEvent),
+    )
+    .subscribe(e => {
+      const state = e.payload.state;
+      if (state && state.selection && state.selection.current) {
+        grid = { ...grid, selection: state.selection };
+      }
+    });
 
   const invoke: t.ITestCommandLine['invoke'] = async e => {
     const { command, args } = e;
@@ -35,6 +56,9 @@ export function init(args: {
       events$,
       db,
       network,
+      get grid() {
+        return grid;
+      },
       error(err: string | Error) {
         const message = typeof err === 'string' ? err : err.message;
         log.error(message);

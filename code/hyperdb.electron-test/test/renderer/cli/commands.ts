@@ -7,6 +7,8 @@ import { grid } from './cmd.grid';
 import { network } from './cmd.network';
 import * as t from './types';
 
+export { updateWatch } from './cmd.watch';
+
 type P = t.ITestCommandProps;
 
 export const auth = Command.create<P>('auth', async e => {

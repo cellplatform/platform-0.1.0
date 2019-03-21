@@ -144,35 +144,39 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
   }
 
   public async get<K extends keyof D>(key: K) {
-    return this.invoke('get', [key]);
+    return this.invoke('get', [key]) as Promise<t.IDbValue<K, D[K]>>;
   }
 
   public async put<K extends keyof D>(key: K, value: D[K]) {
-    return this.invoke('put', [key, value]);
+    return this.invoke('put', [key, value]) as Promise<t.IDbValue<K, D[K]>>;
   }
 
   public async delete<K extends keyof D>(key: K) {
-    return this.invoke('delete', [key]);
+    return this.invoke('delete', [key]) as Promise<t.IDbValue<K, D[K]>>;
   }
 
   public async values<T extends object = D>(args: t.IDbValuesArgs) {
-    return this.invoke('values', [args]);
+    return this.invoke('values', [args]) as Promise<t.IDbValues<T>>;
   }
 
   public async watch<T extends object = D>(...pattern: Array<keyof T>) {
-    return this.invoke('watch', pattern);
+    return this.invoke('watch', pattern) as Promise<void>;
   }
 
   public async unwatch<T extends object = D>(...pattern: Array<keyof T>) {
-    return this.invoke('unwatch', pattern);
+    return this.invoke('unwatch', pattern) as Promise<void>;
   }
 
   public async authorize(peerKey: string) {
-    return this.invoke('authorize', [peerKey]);
+    return this.invoke('authorize', [peerKey]) as Promise<void>;
   }
 
   public async isAuthorized(peerKey?: string) {
-    return this.invoke('isAuthorized', [peerKey]);
+    return this.invoke('isAuthorized', [peerKey]) as Promise<boolean>;
+  }
+
+  public async history<K extends keyof D>(key: K, options: { take?: number } = {}) {
+    return this.invoke('history', [key, options]) as Promise<Array<t.IDbValue<K, D[K]>>>;
   }
 
   public toString() {

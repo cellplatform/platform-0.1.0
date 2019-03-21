@@ -16,8 +16,6 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   const events$ = new Subject<t.MainDbEvent>();
   log.info(`listening for ${log.yellow('hyperdb events')}`);
 
-  // const factory = new Factory({ create: async (e) => {} })
-
   const databases = factory.clone().afterCreate(async e => {
     const { dir, version } = e.args;
     const { db, network } = e;
@@ -41,57 +39,6 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     const isAuthorized = await db.isAuthorized();
     logCreated(log, { db, network, dir, version }, isAuthorized);
   });
-
-  // const createDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
-  //   const { dir, dbKey, version } = args;
-
-  //   // Construct the DB.
-  //   const res = await create({ dir, dbKey, version });
-  //   const { db, network } = res;
-
-  //   // Ferry events to clients.
-  //   db.events$.subscribe(e => ipc.send(e.type, e.payload));
-  //   network.events$.subscribe(e => ipc.send(e.type, e.payload));
-
-  //   // Finish up.
-  //   events$.next({
-  //     type: 'DB/main/created',
-  //     payload: {
-  //       dir,
-  //       dbKey: db.key,
-  //       localKey: db.localKey,
-  //       discoveryKey: db.discoveryKey,
-  //       version,
-  //     },
-  //   });
-  //   const ref: Ref = { db, network, dir };
-
-  //   const isAuthorized = await db.isAuthorized();
-  //   logCreated(log, ref, isAuthorized);
-  //   return ref;
-  // };
-
-  // const getRefKey = (args: { dir: string; dbKey?: string; version?: string }) => {
-  //   const { dir, version } = args;
-  //   let refKey = dir;
-  //   refKey = version ? `${refKey}/ver:${version}` : refKey;
-  //   return refKey;
-  // };
-
-  // const getRef = async (args: {
-  //   dir: string;
-  //   dbKey?: string;
-  //   version?: string;
-  // }): Promise<Ref | undefined> => {
-  //   const refKey = getRefKey(args);
-  //   return refs[refKey];
-  // };
-
-  // const getOrCreateDb = async (args: { dir: string; dbKey?: string; version?: string }) => {
-  //   const refKey = getRefKey(args);
-  //   refs[refKey] = refs[refKey] || createDb(args);
-  //   return refs[refKey];
-  // };
 
   /**
    * [DB-HANDLE] state requests from DB `renderer` clients

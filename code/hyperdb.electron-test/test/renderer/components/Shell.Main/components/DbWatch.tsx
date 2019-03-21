@@ -21,6 +21,7 @@ export class DbWatch extends React.PureComponent<IDbWatchProps, IDbWatchState> {
   public state: IDbWatchState = { watchingKeys: [], watchedValues: {} };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IDbWatchState>>();
+
   public static contextType = renderer.Context;
   public context!: t.ITestRendererContext;
 

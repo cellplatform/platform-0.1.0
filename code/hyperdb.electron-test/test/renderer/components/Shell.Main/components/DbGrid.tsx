@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil, map, delay } from 'rxjs/operators';
-import { css, GlamorValue, t, datagrid, value as valueUtil } from '../../../common';
+import { css, GlamorValue, t, datagrid, value as valueUtil, renderer } from '../../../common';
 import { DbGridEditor } from './DbGrid.Editor';
-import { updateWatch } from '../../../cli/cmd.watch';
+import { updateWatch, ITestGridState } from '../../../cli';
 
 export type IDbGridProps = { db: t.ITestRendererDb; style?: GlamorValue };
 export type IDbGridState = { values?: datagrid.IGridValues };
@@ -17,6 +17,9 @@ export class DbGrid extends React.PureComponent<IDbGridProps, IDbGridState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IDbGridState>>();
   private grid$ = new Subject<datagrid.GridEvent>();
+
+  public static contextType = renderer.Context;
+  public context!: t.ITestRendererContext;
 
   public datagrid!: datagrid.DataGrid;
   private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
@@ -32,6 +35,11 @@ export class DbGrid extends React.PureComponent<IDbGridProps, IDbGridState> {
     const grid$ = this.grid$.pipe(takeUntil(this.unmounted$));
     grid$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
       // console.log('🌳  EVENT', e.type, e.payload);
+    });
+
+    grid$.pipe(filter(e => Boolean(this.datagrid))).subscribe(e => {
+      const payload = { state: this.gridState };
+      this.context.cli.events$.next({ type: 'CLI/grid/change', payload });
     });
 
     // Watch for chagnes to cells.
@@ -73,36 +81,46 @@ export class DbGrid extends React.PureComponent<IDbGridProps, IDbGridState> {
    * [Properties]
    */
   public get grid() {
-    return this.datagrid.grid;
+    return this.datagrid ? this.datagrid.grid : undefined;
   }
 
   public get db() {
     return this.props.db;
   }
 
+  public get gridState(): ITestGridState {
+    const grid = this.grid;
+    return { selection: grid ? grid.selection : undefined };
+  }
+
   /**
    * [Methods]
    */
   public async loadFromDb() {
-    const db = this.db;
-    const res = await db.values({ pattern: PATTERN.CELL });
+    const grid = this.grid;
+    if (grid) {
+      const db = this.db;
+      const res = await db.values({ pattern: PATTERN.CELL });
 
-    const values = Object.keys(res).reduce((acc, next, i) => {
-      const key = toCellKey(next);
-      acc = { ...acc, [key]: res[next].value };
-      return acc;
-    }, {});
+      const values = Object.keys(res).reduce((acc, next, i) => {
+        const key = toCellKey(next);
+        acc = { ...acc, [key]: res[next].value };
+        return acc;
+      }, {});
 
-    this.grid.loadValues(values);
+      grid.loadValues(values);
+    }
   }
 
   public async updateGridCell(dbKey: string, value: any) {
-    const cellKey = toCellKey(dbKey);
-    value = value === null || value === undefined ? undefined : value;
-
-    const pos = datagrid.Cell.toPosition(cellKey);
-    const cell = this.grid.cell(pos);
-    cell.value = value;
+    const grid = this.grid;
+    if (grid) {
+      const cellKey = toCellKey(dbKey);
+      value = value === null || value === undefined ? undefined : value;
+      const pos = datagrid.Cell.toPosition(cellKey);
+      const cell = grid.cell(pos);
+      cell.value = value;
+    }
   }
 
   public async saveCellToDb(dbKey: string, value: any, options: { watch?: boolean } = {}) {
@@ -174,7 +192,7 @@ export class DbGrid extends React.PureComponent<IDbGridProps, IDbGridState> {
         return <div>{value}</div>;
 
       default:
-        this.context.log(`Factory type '${req.type}' not supported by test.`);
+        this.context.log.info(`Factory type '${req.type}' not supported by test.`);
         return null;
     }
   };
@@ -183,7 +201,6 @@ export class DbGrid extends React.PureComponent<IDbGridProps, IDbGridState> {
 /**
  * [Helpers]
  */
-
 function toCellKey(dbKey: string) {
   return dbKey.replace(/^cell\//, '');
 }
