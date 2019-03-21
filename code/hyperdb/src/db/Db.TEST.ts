@@ -525,16 +525,33 @@ describe('Db', () => {
       expect(res).to.eql([]);
     });
 
-    it('only has one history item when same value is written many times', async () => {
+    it.only('write the same value is many times (1 history item)', async () => {
+      const db = await Db.create({ dir });
+      const res1 = await db.history('foo');
+      expect(res1).to.eql([]);
+
+      await db.put('foo', 123);
+      await db.put('foo', 123);
+      await db.put('foo', 123);
+
+      const res2 = await db.history('foo');
+      expect(res2.length).to.eql(1);
+      expect(res2[0].props.seq).to.eql(1);
+    });
+
+    it.only('writes the same value many times, then changes it (2 history items)', async () => {
       const db = await Db.create({ dir });
 
       await db.put('foo', 123);
       await db.put('foo', 123);
-      await db.put('foo', 123);
+      await db.put('foo', 'abc');
 
       const res = await db.history('foo');
-      expect(res.length).to.eql(1);
-      expect(res[0].props.seq).to.eql(1);
+      console.log('-------------------------------------------');
+      console.log('res', res);
+
+      // expect(res.length).to.eql(1);
+      // expect(res[0].props.seq).to.eql(1);
     });
   });
 
