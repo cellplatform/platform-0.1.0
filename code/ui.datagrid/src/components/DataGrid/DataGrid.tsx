@@ -269,44 +269,4 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 }
 
-console.log(`\nTODO 🐷   FOCUS - move this to the main [events] object for window.\n`);
-
-/**
- * Manage FOCUS state
- * todo
- *
- */
-
-// function FOO() {
-//   let lastActiveElement = document.activeElement;
-
-//   function detectBlur() {
-//     // Do logic related to blur using document.activeElement;
-//     // You can do change detection too using lastActiveElement as a history
-//     // console.log('detectBlur', detectBlur);
-//   }
-
-//   function isSameActiveElement() {
-//     const currentActiveElement = document.activeElement;
-//     if (lastActiveElement !== currentActiveElement) {
-//       lastActiveElement = currentActiveElement;
-//       return false;
-//     }
-
-//     return true;
-//   }
-
-//   function detectFocus() {
-//     // Add logic to detect focus and to see if it has changed or not from the lastActiveElement.
-//     // console.log('detectFocus');
-//   }
-
-//   function attachEvents() {
-//     window.addEventListener('focus', detectFocus, true);
-//     window.addEventListener('blur', detectBlur, true);
-//   }
-
-//   attachEvents();
-// }
-
-// FOO();
+console.log(`\nTODO 🐷   Change selection state on Focus.\n`);
