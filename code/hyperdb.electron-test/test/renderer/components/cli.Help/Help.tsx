@@ -65,8 +65,6 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
 
   public render() {
     const { debug } = this.props;
-    console.log('debug', debug);
-
     const styles = {
       base: css({
         fontSize: 14,
