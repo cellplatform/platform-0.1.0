@@ -48,7 +48,8 @@ export type CommandLineEvent =
   | ITestChangeEditorCellEvent
   | ITestSelectDbEvent
   | ITestErrorEvent
-  | ITestDbValuesEvent;
+  | ITestDbValuesEvent
+  | ITestRightPanelEvent;
 
 export type ITestErrorEvent = {
   type: 'CLI/error';
@@ -68,4 +69,9 @@ export type ITestDbValuesEvent = {
 export type ITestChangeEditorCellEvent = {
   type: 'CLI/editor/cell';
   payload: { cellKey: string };
+};
+
+export type ITestRightPanelEvent = {
+  type: 'CLI/rightPanel';
+  payload: { data: any };
 };
