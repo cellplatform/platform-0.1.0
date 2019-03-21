@@ -49,6 +49,7 @@ export class DragTest extends React.PureComponent<IDragTestProps, IDragTestState
         position: 'relative',
         userSelect: 'none',
         backgroundColor: RED,
+        flex: 1,
       }),
       target: css({
         display: event ? 'block' : 'none',
@@ -63,7 +64,7 @@ export class DragTest extends React.PureComponent<IDragTestProps, IDragTestState
       footer: css({
         Absolute: [0, null, null, 0],
         fontSize: 11,
-        padding: 6,
+        padding: 10,
       }),
     };
 
