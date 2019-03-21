@@ -524,6 +524,18 @@ describe('Db', () => {
       expect(current.props.exists).to.eql(false);
       expect(res).to.eql([]);
     });
+
+    it('only has one history item when same value is written many times', async () => {
+      const db = await Db.create({ dir });
+
+      await db.put('foo', 123);
+      await db.put('foo', 123);
+      await db.put('foo', 123);
+
+      const res = await db.history('foo');
+      expect(res.length).to.eql(1);
+      expect(res[0].props.seq).to.eql(1);
+    });
   });
 
   describe('stats', () => {
