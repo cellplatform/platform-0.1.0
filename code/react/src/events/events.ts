@@ -42,6 +42,7 @@ const toKeypress = (e: KeyboardEvent, isPressed: boolean) => {
   const { key, code, charCode, altKey, ctrlKey, shiftKey, metaKey, char } = e;
   const isModifier = key === 'Meta' || key === 'Control' || key === 'Alt' || key === 'Shift';
   const event: KeypressEvent = {
+    event: e,
     isPressed,
     key,
     code,

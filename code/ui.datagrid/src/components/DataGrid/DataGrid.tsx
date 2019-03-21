@@ -212,11 +212,16 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       viewportRowRenderingOffset: 20,
       manualRowResize: true,
       manualColumnResize: true,
+      renderAllRows: false, // Virtual scrolling.
+
+      /**
+       * Event Hooks
+       * https://handsontable.com/docs/6.2.2/Hooks.html
+       */
       beforeKeyDown: hook.beforeKeyDownHandler(getGrid),
       beforeChange: hook.beforeChangeHandler(getGrid),
       afterSelection: hook.afterSelectionHandler(getGrid),
       afterDeselect: hook.afterDeselectHandler(getGrid),
-      renderAllRows: false, // Virtual scrolling.
     };
   }
 

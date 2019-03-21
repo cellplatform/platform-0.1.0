@@ -1,4 +1,5 @@
 import { Grid } from '../../api';
+import { t } from '../../common';
 
 /**
  * Factory for creating a grid's `beforeKeyDown` handler.
@@ -14,35 +15,11 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
     // @ts-ignore
     const table = this as Handsontable;
     const grid = getGrid();
-    const event = e as KeyboardEvent;
-    const key = event.key;
-    const isEnter = key === 'Enter';
-    const isEscape = key === 'Escape';
-    const isDelete = key === 'Delete';
-    const { metaKey, shiftKey, ctrlKey, altKey } = event;
-
-    const cancel = () => {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    };
+    const payload = toGridKeypress(e, grid);
+    const { cancel, key } = payload;
 
     // Fire event.
-    grid.next({
-      type: 'GRID/keydown',
-      payload: {
-        key,
-        grid,
-        event,
-        isEnter,
-        isEscape,
-        isDelete,
-        metaKey,
-        shiftKey,
-        ctrlKey,
-        altKey,
-        cancel,
-      },
-    });
+    grid.next({ type: 'GRID/keydown', payload });
 
     if (grid.isEditing) {
       // NOTE:  When the editor is showing give it complete control of the keyboard,
@@ -64,12 +41,44 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
       if (key === 'ArrowLeft' && column === 0) {
         cancel();
       }
-      if (key === 'ArrowDown' && row === table.countRows() - 1) {
+      if (key === 'ArrowDown' && row === grid.totalRows - 1) {
         cancel();
       }
-      if (key === 'ArrowRight' && column === table.countCols() - 1) {
+      if (key === 'ArrowRight' && column === grid.totalColumns - 1) {
         cancel();
       }
     }
+  };
+}
+
+/**
+ * Creates a Grid keydown event object.
+ */
+export function toGridKeypress(e: Event, grid: Grid): t.IGridKeypress {
+  const event = e as KeyboardEvent;
+  const key = event.key;
+  const isEnter = key === 'Enter';
+  const isEscape = key === 'Escape';
+  const isDelete = key === 'Delete';
+  const { metaKey, shiftKey, ctrlKey, altKey } = event;
+
+  const cancel = () => {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  };
+
+  // Fire event.
+  return {
+    key,
+    grid,
+    event,
+    isEnter,
+    isEscape,
+    isDelete,
+    metaKey,
+    shiftKey,
+    ctrlKey,
+    altKey,
+    cancel,
   };
 }

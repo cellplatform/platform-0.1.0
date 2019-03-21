@@ -28,6 +28,7 @@ export type IMouseEvent = {
  * Keypress
  */
 export type KeypressEvent = {
+  event: KeyboardEvent;
   isPressed: boolean;
   char: string | null;
   code: string;

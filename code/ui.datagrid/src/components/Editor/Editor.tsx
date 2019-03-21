@@ -3,9 +3,10 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { filter, share, take, takeUntil, map } from 'rxjs/operators';
 
-import { R, time, constants, Handsontable, t } from '../../common';
+import { R, time, constants, Handsontable, t, events } from '../../common';
 import { IGridRefsPrivate } from '../DataGrid/types.private';
 import { createProvider } from './EditorContext';
+import { toGridKeypress } from '../DataGrid/hook.keyboard';
 
 const editors = Handsontable.editors as Editors;
 
@@ -229,7 +230,12 @@ export class Editor extends editors.TextEditor {
       take(1),
       share(),
     );
-    const keys$ = grid.keys$.pipe(takeUntil(end$));
+
+    const keys$ = events.keyUp$.pipe(
+      takeUntil(end$),
+      map(e => toGridKeypress(e.event, grid)),
+      share(),
+    );
 
     keys$
       .pipe(
