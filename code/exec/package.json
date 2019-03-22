@@ -1,6 +1,6 @@
 {
-  "name": "@platform/util.exec",
-  "version": "0.0.24",
+  "name": "@platform/exec",
+  "version": "0.0.0",
   "description": "Tools for executing commands in child_process.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
