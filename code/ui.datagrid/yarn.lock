@@ -842,7 +842,7 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.1.10", "@platform/electron@^0.1.10":
+"@platform/electron@0.1.10":
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.10.tgz#be21d6d63626a324266364ae67a8008e2f43bd33"
   integrity sha512-QofI8F9l9Mnag+sSkATT4bUsAeYcmNs0LMFQ5M/2NdRO0hJVawnx2CAVE7xXaXhffCoYLv3f0swmkxSzciGusQ==
@@ -851,6 +851,22 @@
     "@platform/fs" "0.0.40"
     "@platform/log" "0.0.91"
     "@platform/react" "0.0.23"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.1.0"
+    electron-log "3.0.1"
+    electron-store "2.0.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+
+"@platform/electron@^0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.12.tgz#36e3f5d6f1ca31d9e8e3a09c38821773df68af70"
+  integrity sha512-ftoeQYHjYHAdHOVHkM198Qfg2IplLsU8JlSB0d1ID1tngiz2GbMnaTrQfntDrC4ZV2/VJBB0VaaAIeENucVA7Q==
+  dependencies:
+    "@babel/polyfill" "7.4.0"
+    "@platform/fs" "0.0.40"
+    "@platform/log" "0.0.91"
+    "@platform/react" "0.0.25"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.1.0"
     electron-log "3.0.1"
@@ -909,6 +925,18 @@
     react "16.8.4"
     react-dom "16.8.4"
 
+"@platform/react@0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.25.tgz#9a460e9728fb29d1cc8654703428f8a3285f7da5"
+  integrity sha512-l7ybnWQ649ozgAncoZ8vcVhc2EH9KOEo53AK7kiGYmXSb9ekbxcwxSe5m1Hrm2MX16gYr2cqZLsHnHDlwyewnw==
+  dependencies:
+    "@platform/css" "0.0.15"
+    "@platform/util.is" "0.0.40"
+    "@types/react" "16.8.8"
+    "@types/react-dom" "16.8.3"
+    react "16.8.4"
+    react-dom "16.8.4"
+
 "@platform/test.dom@0.0.0":
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@platform/test.dom/-/test.dom-0.0.0.tgz#145e3dc150cbc92419866af03bb8b8757f62a6ba"
@@ -962,12 +990,12 @@
     "@platform/react" "0.0.23"
     react-inspector "2.3.1"
 
-"@platform/ui.text@0.0.26":
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.0.26.tgz#8265b16b48ae28e99660198c7a1879f2852abdfe"
-  integrity sha512-8RU/Fz1Y4pYNnaQDJfjCmZBOAFzWigHXPqfEm4CEJlK8fZn/OjCWkqXYDJttQ9ZCUL4eD2pkUvptyMrllxuXdA==
+"@platform/ui.text@0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.0.28.tgz#502f57a6699f8e7f72ffa707b41dd14f6090c3dd"
+  integrity sha512-7hvo/EQtijONCyjp12tKEQFBCrBVWdfof08T13KT3IuXleGAZoYQqpSyGfdg4lE0O5KYEsrP6jimQbzL6peKyw==
   dependencies:
-    "@platform/react" "0.0.23"
+    "@platform/react" "0.0.25"
     "@platform/util.value" "0.0.41"
 
 "@platform/util.exec@0.0.24":
@@ -1097,6 +1125,13 @@
   version "16.8.2"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.2.tgz#9bd7d33f908b243ff0692846ef36c81d4941ad12"
   integrity sha512-MX7n1wq3G/De15RGAAqnmidzhr2Y9O/ClxPxyqaNg96pGyeXUYPSvujgzEVpLo9oIP4Wn1UETl+rxTN02KEpBw==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-dom@16.8.3":
+  version "16.8.3"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.3.tgz#6131b7b6158bc7ed1925a3374b88b7c00481f0cb"
+  integrity sha512-HF5hD5YR3z9Mn6kXcW1VKe4AQ04ZlZj1EdLBae61hzQ3eEWWxMgNLUbIxeZp40BnSxqY1eAYLsH9QopQcxzScA==
   dependencies:
     "@types/react" "*"
 

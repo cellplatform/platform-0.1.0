@@ -23,5 +23,5 @@ export { value, time } from '@platform/util.value';
 /**
  * Ramda
  */
-import { equals } from 'ramda';
-export const R = { equals };
+import { equals, clamp } from 'ramda';
+export const R = { equals, clamp };

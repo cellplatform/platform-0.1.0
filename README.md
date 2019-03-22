@@ -1,6 +1,6 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/uiharness/platform.svg?branch=master)](https://travis-ci.org/uiharness/platform)
-[![title](https://user-images.githubusercontent.com/185555/54674422-4307b400-4b61-11e9-8224-06805c5af012.png)](https://uiharness.com)
+[![banner](https://user-images.githubusercontent.com/185555/54737526-5d9b6500-4c15-11e9-8186-f0f4abf9104d.png)](https://uiharness.com)
 
 [Monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
 
@@ -100,6 +100,6 @@ API's will change (probably radically 🐷) prior to `1.0` release.
   - [x] `@platform/util.react` ➡️ `@platform/react` (unpublish `util.react` from NPM)
   - [x] `@platform/ts` ➡️ `@platform/ts.libs`
   - [x] `@platform/ts.cli` ➡️ `@platform/ts` (unpublish `ts.cli` from NPM)
-  - [x] `@platform/util.css` ️️=> `@platform/css`
-  - [ ] `@platform/util.exec` ️️=> `@platform/exec`
+  - [x] `@platform/util.css` ️️=> `@platform/css` (unpublish `/util.css`)
+  - [ ] `@platform/util.exec` ️️=> `@platform/exec` (unpublish `/util.exec`)
 

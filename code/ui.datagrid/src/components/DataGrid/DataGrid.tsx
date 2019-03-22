@@ -77,6 +77,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const totalRows = this.totalRows;
     const table = (this.table = new Table(this.el as Element, this.settings));
     const grid = (this.grid = Grid.create({ table, totalColumns, totalRows, values }));
+    this.unmounted$.subscribe(() => grid.dispose());
 
     // Initialize factories.
     const factory = (this.factory = new FactoryManager({ grid, factory: this.props.factory }));
@@ -94,7 +95,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
     // Setup observables.
     const { events$, keys$ } = grid;
-    this.unmounted$.subscribe(() => grid.dispose());
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
 
     // Ferry editor events to the [Grid] API.
@@ -212,6 +212,12 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       viewportRowRenderingOffset: 20,
       manualRowResize: true,
       manualColumnResize: true,
+      renderAllRows: false, // Virtual scrolling.
+
+      /**
+       * Event Hooks
+       * https://handsontable.com/docs/6.2.2/Hooks.html
+       */
       beforeKeyDown: hook.beforeKeyDownHandler(getGrid),
       beforeChange: hook.beforeChangeHandler(getGrid),
       afterSelection: hook.afterSelectionHandler(getGrid),
@@ -228,6 +234,16 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     if (this.table) {
       this.table.render();
     }
+  }
+
+  public updateSize() {
+    const el = this.el;
+    if (!el || this.isDisposed) {
+      return;
+    }
+    const { offsetWidth: width, offsetHeight: height } = el;
+    const size = { width, height };
+    this.state$.next({ size });
   }
 
   /**
@@ -251,18 +267,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       />
     );
   }
-
-  /**
-   * [Internal]
-   */
-
-  private updateSize() {
-    const el = this.el;
-    if (el) {
-      const width = el.offsetWidth;
-      const height = el.offsetHeight;
-      const size = { width, height };
-      this.state$.next({ size });
-    }
-  }
 }
+
+console.log(`\nTODO 🐷   Change selection state on Focus.\n`);

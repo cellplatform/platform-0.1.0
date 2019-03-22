@@ -1,16 +1,17 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import {
-  time,
   color,
   css,
   datagrid,
-  ObjectView,
   MeasureSize,
+  ObjectView,
   t,
+  time,
   value as valueUtil,
+  events,
 } from '../common';
 
 const PADDING = 10;
@@ -39,13 +40,17 @@ export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEdito
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    state$.subscribe(e => this.setState(e));
 
     // Update <input> on keypress.
     const keys$ = this.context.keys$;
-    keys$
-      .pipe(filter(e => e.isEnter))
-      .subscribe(e => this.context.complete({ value: this.input.value }));
+    keys$.pipe(filter(e => e.isEnter)).subscribe(e => this.context.complete());
+
+    // Keep the editor context up-to-date with the latest value.
+    state$.subscribe(e => {
+      this.context.set(this.value);
+    });
 
     // Set initial values.
     const value = this.context.cell.value;

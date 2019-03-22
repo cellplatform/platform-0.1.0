@@ -9,12 +9,17 @@ import * as t from '../../types';
  */
 export type IEditorContext = {
   autoCancel: boolean; // Automatically cancels on Escape key.
-  cell: Cell;
-  grid: Grid;
-  keys$: Observable<t.IGridKeypress>;
-  end$: Observable<IEndEditingEvent>;
+  readonly cell: Cell;
+  readonly grid: Grid;
+  readonly keys$: Observable<t.IGridKeypress>;
+  readonly end$: Observable<IEndEditingEvent>;
+  readonly value: {
+    readonly from?: any;
+    to?: any; // Writable, or use `set(...)` method.
+  };
+  set(value: any): void;
   cancel(): void;
-  complete(args: { value: any }): void;
+  complete(): void;
 };
 
 /**

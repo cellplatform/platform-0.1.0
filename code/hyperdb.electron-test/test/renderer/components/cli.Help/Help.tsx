@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, CommandState, css, GlamorValue, ICommand, str, ICommandState } from '../../common';
+import { color, css, GlamorValue, ICommand, ICommandState, str } from '../../common';
+import { ObjectView } from '../primitives';
 
 export type CommandClickEvent = {
   cmd: ICommand;
@@ -11,6 +12,7 @@ export type CommandClickEventHandler = (e: CommandClickEvent) => void;
 
 export type IHelpProps = {
   cli: ICommandState;
+  debug?: any;
   style?: GlamorValue;
   onCommandClick?: CommandClickEventHandler;
 };
@@ -28,7 +30,6 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     const change$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
-
     change$.subscribe(e => this.forceUpdate());
   }
 
@@ -63,11 +64,15 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
    */
 
   public render() {
+    const { debug } = this.props;
     const styles = {
       base: css({
         fontSize: 14,
         color: color.format(-0.5),
         boxSizing: 'border-box',
+        flex: 1,
+        position: 'relative',
+        Flex: 'vertical',
       }),
       title: css({
         fontWeight: 'bold',
@@ -77,6 +82,10 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
         paddingLeft: 5,
         textTransform: 'uppercase',
         fontSize: 12,
+      }),
+      body: css({
+        Flex: 'vertical-spaceBetween',
+        flex: 1,
       }),
       list: css({
         marginLeft: 5,
@@ -88,6 +97,11 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
       }),
       cmdMatch: css({
         opacity: 1,
+      }),
+      debug: css({
+        maxHeight: '50%',
+        Scroll: true,
+        paddingBottom: 10,
       }),
     };
 
@@ -106,10 +120,19 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
       );
     });
 
+    const elDebug = debug && (
+      <div {...styles.debug}>
+        <ObjectView data={debug} expandLevel={2} />
+      </div>
+    );
+
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.title}>Help</div>
-        <div {...styles.list}>{elList}</div>
+        <div {...styles.body}>
+          <div {...styles.list}>{elList}</div>
+          {elDebug}
+        </div>
       </div>
     );
   }

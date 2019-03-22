@@ -1,16 +1,32 @@
 import { Command } from '../common';
 import * as t from './types';
+import { uniq } from 'ramda';
 
 type P = t.ITestCommandProps;
 
 /**
  * [grid] editor.
  */
-export const grid = Command.create<P>('grid').add('refresh', e => {
-  console.log('grid refresh', e);
-  // let cellKey = e.args.params[0];
-  // if (cellKey && typeof cellKey === 'string' && cellKey.trim()) {
-  //   cellKey = cellKey.trim();
-  //   e.props.events$.next({ type: 'CLI/editor/cell', payload: { cellKey } });
-  // }
+export const grid = Command.create<P>('grid').add('history', async e => {
+  const { db } = e.props;
+  const key = (e.args.params[0] || '').toString();
+  if (db && key) {
+    const dbKey = toDbKey(key.toUpperCase());
+    const history = (await db.history(dbKey as any)).map(e => e.value);
+
+    const payload = { data: { history } };
+    e.props.events$.next({ type: 'CLI/rightPanel', payload });
+  }
 });
+
+/**
+ * [Helpers]
+ */
+
+function toCellKey(dbKey: string) {
+  return dbKey.replace(/^cell\//, '');
+}
+
+function toDbKey(cellKey: string) {
+  return `cell/${toCellKey(cellKey)}`;
+}

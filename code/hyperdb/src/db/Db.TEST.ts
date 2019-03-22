@@ -1,5 +1,5 @@
 import { fs } from '@platform/fs';
-import { time } from '@platform/util.value';
+import { time, value as valueUtil } from '@platform/util.value';
 import { expect } from 'chai';
 
 import * as t from '../types';
@@ -49,7 +49,7 @@ describe('Db', () => {
     });
   });
 
-  describe('updating values', () => {
+  describe('writing values', () => {
     it('put/get value', async () => {
       const KEY = 'foo';
       const db = await Db.create({ dir });
@@ -58,13 +58,12 @@ describe('Db', () => {
         await db.put(KEY, value);
         const res = await db.get(KEY);
         expect(res.value).to.eql(
-          expected,
+          valueUtil.defaultValue(expected, value),
           `DB value '${res.value}' not same as original '${value}'.`,
         );
       };
 
       await test(undefined);
-      await test(null);
       await test(1.23);
       await test(true);
       await test(false);
@@ -80,6 +79,18 @@ describe('Db', () => {
 
       const now = new Date();
       await test(now, now);
+    });
+
+    it('converts [null] to [undefined]', async () => {
+      const db = await Db.create({ dir });
+
+      const res1 = (await db.get('foo')).value;
+      expect(res1).to.eql(undefined);
+
+      await db.put('foo', null);
+
+      const res2 = (await db.get('foo')).value;
+      expect(res2).to.eql(undefined);
     });
 
     it('deletes a value', async () => {
@@ -191,12 +202,12 @@ describe('Db', () => {
       db.watch$.subscribe(e => events.push(e));
 
       await db.put('foo/bar/baz', 'baz');
-      await db.put('foo', null);
+      await db.put('foo', 123);
 
       await time.wait(10);
       expect(events.length).to.eql(2);
       expect(events[0].value).to.eql({ from: undefined, to: 'baz' });
-      expect(events[1].value).to.eql({ from: undefined, to: null });
+      expect(events[1].value).to.eql({ from: undefined, to: 123 });
     });
 
     it('value: from => to', async () => {
@@ -229,14 +240,13 @@ describe('Db', () => {
       };
 
       await put(123);
-      await put(123);
+      await put(123); // No change.
       await put(456);
 
       await time.wait(10);
-      expect(events.length).to.eql(3);
+      expect(events.length).to.eql(2);
       expect(events[0].isChanged).to.eql(true);
-      expect(events[1].isChanged).to.eql(false);
-      expect(events[2].isChanged).to.eql(true);
+      expect(events[1].isChanged).to.eql(true);
     });
 
     it('isDeleted', async () => {
@@ -270,9 +280,8 @@ describe('Db', () => {
         await time.wait(10);
       };
 
-      await put(null);
-      await put(undefined);
       await put(1.23);
+      await put(undefined);
       await put(true);
       await put(false);
       await put('text');
@@ -280,17 +289,18 @@ describe('Db', () => {
       await put([1, 2, 3]);
       await put({ foo: 123 });
       await put(now);
+      await put(null); // => undefined
 
-      expect(events[0].value).to.eql({ from: undefined, to: null });
-      expect(events[1].value).to.eql({ from: undefined, to: undefined });
-      expect(events[2].value).to.eql({ from: undefined, to: 1.23 });
-      expect(events[3].value).to.eql({ from: 1.23, to: true });
-      expect(events[4].value).to.eql({ from: true, to: false });
-      expect(events[5].value).to.eql({ from: false, to: 'text' });
-      expect(events[6].value).to.eql({ from: 'text', to: [] });
-      expect(events[7].value).to.eql({ from: [], to: [1, 2, 3] });
-      expect(events[8].value).to.eql({ from: [1, 2, 3], to: { foo: 123 } });
-      expect(events[9].value).to.eql({ from: { foo: 123 }, to: now });
+      expect(events[0].value).to.eql({ from: undefined, to: 1.23 });
+      expect(events[1].value).to.eql({ from: 1.23, to: undefined });
+      expect(events[2].value).to.eql({ from: undefined, to: true });
+      expect(events[3].value).to.eql({ from: true, to: false });
+      expect(events[4].value).to.eql({ from: false, to: 'text' });
+      expect(events[5].value).to.eql({ from: 'text', to: [] });
+      expect(events[6].value).to.eql({ from: [], to: [1, 2, 3] });
+      expect(events[7].value).to.eql({ from: [1, 2, 3], to: { foo: 123 } });
+      expect(events[8].value).to.eql({ from: { foo: 123 }, to: now });
+      expect(events[9].value).to.eql({ from: now, to: undefined });
     });
 
     it('does not watch more than once', async () => {
@@ -523,6 +533,45 @@ describe('Db', () => {
       const current = await db.get('foo');
       expect(current.props.exists).to.eql(false);
       expect(res).to.eql([]);
+    });
+
+    it('write the same value is many times (1 history item)', async () => {
+      const db = await Db.create({ dir });
+      const res0 = await db.history('foo');
+      expect(res0).to.eql([]);
+
+      await db.put('foo', 123);
+      const res1 = await db.history('foo');
+
+      await db.put('foo', 123);
+      const res2 = await db.history('foo');
+
+      await db.put('foo', 123);
+      const res3 = await db.history('foo');
+
+      expect(res1.length).to.eql(1);
+      expect(res2.length).to.eql(1);
+      expect(res3.length).to.eql(1);
+
+      expect(res1[0].props.seq).to.eql(1);
+      expect(res1).to.eql(res3);
+    });
+
+    it('writes the same value many times, then changes it (2 history items)', async () => {
+      const db = await Db.create({ dir });
+
+      await db.put('foo', 123);
+      const res1 = await db.history('foo');
+
+      await db.put('foo', 123);
+      const res2 = await db.history('foo');
+
+      await db.put('foo', 'abc');
+      const res3 = await db.history('foo');
+
+      expect(res1.length).to.eql(1);
+      expect(res2.length).to.eql(1); // No change, so no write.
+      expect(res3.length).to.eql(2);
     });
   });
 

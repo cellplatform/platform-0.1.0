@@ -74,15 +74,15 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.23.tgz#8f8fad1e69a342d2e2c154342ad11e9d5cd75ebd"
-  integrity sha512-HMnPfOIPwV8w2QLMnreLenSpG7ju7HiUQDmtp5K+pNAnnjjq5GLk6c50sIiYbISmxHG1n4cM8LiIC5Q8jVYGtA==
+"@platform/react@0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.25.tgz#9a460e9728fb29d1cc8654703428f8a3285f7da5"
+  integrity sha512-l7ybnWQ649ozgAncoZ8vcVhc2EH9KOEo53AK7kiGYmXSb9ekbxcwxSe5m1Hrm2MX16gYr2cqZLsHnHDlwyewnw==
   dependencies:
     "@platform/css" "0.0.15"
     "@platform/util.is" "0.0.40"
     "@types/react" "16.8.8"
-    "@types/react-dom" "16.8.2"
+    "@types/react-dom" "16.8.3"
     react "16.8.4"
     react-dom "16.8.4"
 
@@ -213,10 +213,10 @@
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.3.tgz#e6c35cb0a75843c9cfe58e0be294ffbc4480f33e"
   integrity sha512-ZTepXW1dgQySkTUbxb2JC61vJxnLqofq4S43rFWpobRRsDh9HgNQxjEWhjQcjoYAMhkyV8JsE9mhE7Pgo3AYbg==
 
-"@types/react-dom@16.8.2":
-  version "16.8.2"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.2.tgz#9bd7d33f908b243ff0692846ef36c81d4941ad12"
-  integrity sha512-MX7n1wq3G/De15RGAAqnmidzhr2Y9O/ClxPxyqaNg96pGyeXUYPSvujgzEVpLo9oIP4Wn1UETl+rxTN02KEpBw==
+"@types/react-dom@16.8.3":
+  version "16.8.3"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.3.tgz#6131b7b6158bc7ed1925a3374b88b7c00481f0cb"
+  integrity sha512-HF5hD5YR3z9Mn6kXcW1VKe4AQ04ZlZj1EdLBae61hzQ3eEWWxMgNLUbIxeZp40BnSxqY1eAYLsH9QopQcxzScA==
   dependencies:
     "@types/react" "*"
 

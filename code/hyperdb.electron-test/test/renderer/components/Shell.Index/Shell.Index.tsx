@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter, map, debounceTime } from 'rxjs/operators';
-import { color, css, GlamorValue, renderer, t, COLORS, time } from '../../common';
-import { Button } from '../primitives';
+import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
+
+import { color, COLORS, css, GlamorValue, renderer, t } from '../../common';
 import { NetworkBullet } from '../NetworkBullet';
+import { Button } from '../primitives';
 import {
-  ShellIndexSelectEventHandler,
-  ShellIndexNewEventHandler,
   ShellIndexConnectEventHandler,
+  ShellIndexNewEventHandler,
+  ShellIndexSelectEventHandler,
 } from './types';
 
 export type IShellIndexProps = {
@@ -175,18 +176,40 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
         backgroundColor: isSelected && COLORS.BLUE,
         color: isSelected ? color.format(0.5) : color.format(-0.4),
       }),
+      content: css({
+        flex: 1,
+        marginRight: 4,
+      }),
       subheading: css({
         marginTop: 2,
         fontSize: 10,
+        Flex: 'horizontal',
+        flex: 1,
+      }),
+      selectedButton: css({
+        color: COLORS.WHITE,
+        marginLeft: 6,
       }),
     };
 
     const elSelectedBullet = <NetworkBullet key={db.localKey} db={db} network={network} />;
+
+    const elReconnect = isSelected && (
+      <Button
+        label={'reconnect'}
+        style={styles.selectedButton}
+        onClick={this.reconnectHandler(args)}
+      />
+    );
+
     return (
       <div key={dir} {...styles.base} onMouseDown={this.selectHandler(dir)}>
-        <div>
+        <div {...styles.content}>
           <Button label={name} isEnabled={!isSelected} theme={{ disabledColor: COLORS.WHITE }} />
-          <div {...styles.subheading}>{dirname}</div>
+          <div {...styles.subheading}>
+            <div>{dirname}</div>
+            {elReconnect}
+          </div>
         </div>
         {elSelectedBullet}
       </div>
@@ -229,6 +252,12 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
       if (onSelect) {
         onSelect({ dir });
       }
+    };
+  };
+
+  private reconnectHandler = (args: IItem) => {
+    return () => {
+      args.network.reconnect();
     };
   };
 }

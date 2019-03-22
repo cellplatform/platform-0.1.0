@@ -120,9 +120,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         events$={this.events$}
         factory={this.factory}
         totalColumns={52}
-        totalRows={1000}
+        totalRows={2000}
         Handsontable={this.Table}
-        initial={{ selection: { cell: 'A1' } }}
+        initial={{ selection: 'A1' }}
         style={this.props.style}
         canSelectAll={false}
       />
@@ -136,7 +136,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
       case 'CELL':
         const value = typeof req.value === 'object' ? JSON.stringify(req.value) : req.value;
-        return <div>{value}</div>;
+        // return <div>{value}</div>;
+        return value;
 
       default:
         console.log(`Factory type '${req.type}' not supported by test.`);

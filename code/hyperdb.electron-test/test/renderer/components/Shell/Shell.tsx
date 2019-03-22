@@ -21,10 +21,8 @@ export type IShellProps = {
 export type IShellState = {
   dialog?: 'JOIN' | 'ERROR';
   selectedDir?: string; // database [dir].
-  error?: {
-    message: string;
-    command: ICommand;
-  };
+  error?: { message: string; command: ICommand };
+  helpDebug?: any;
 };
 
 export class Shell extends React.PureComponent<IShellProps, IShellState> {
@@ -99,6 +97,15 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         this.state$.next({ dialog: 'ERROR', error: { message, command } });
       });
 
+    command$
+      .pipe(
+        filter(e => e.type === 'CLI/rightPanel'),
+        map(e => e as t.ITestRightPanelEvent),
+      )
+      .subscribe(e => {
+        this.state$.next({ helpDebug: e.payload.data });
+      });
+
     // Finish up.
     this.focusCommandPrompt();
   }
@@ -145,27 +152,6 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     this.state$.next({ selectedDir });
   }
 
-  private async createDatabase(args: { dbKey?: string }) {
-    const { log, db } = this.context;
-    const { dbKey } = args;
-    const prefix = dbKey ? 'peer' : 'primary';
-
-    // Prepare the new directory name for the database.
-    const values = await this.store.read('dir', 'databases');
-    const databases = values.databases || [];
-    const primaryCount = databases.filter(name => name.startsWith(`${prefix}-`)).length;
-    const name = `${prefix}-${primaryCount + 1}`;
-    const dir = `${values.dir}/${name}`;
-
-    try {
-      // Create the database.
-      await db.getOrCreate({ dir, dbKey, connect: AUTO_CONNECT });
-      this.state$.next({ selectedDir: name });
-    } catch (error) {
-      log.error(error);
-    }
-  }
-
   private focusCommandPrompt = () => {
     if (this.commandPrompt) {
       this.commandPrompt.focus();
@@ -198,6 +184,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         borderLeft: `solid 1px ${color.format(-0.1)}`,
         paddingLeft: 6,
         paddingTop: 8,
+        display: 'flex',
       }),
     };
 
@@ -213,7 +200,11 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
           />
           <div {...styles.middle}>{this.renderMain()}</div>
           <div {...styles.right}>
-            <Help cli={this.cli.state} onCommandClick={this.handleHelpCommandClick} />
+            <Help
+              cli={this.cli.state}
+              debug={this.state.helpDebug}
+              onCommandClick={this.handleHelpCommandClick}
+            />
           </div>
         </div>
         {this.renderDialog()}

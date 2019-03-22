@@ -1,5 +1,5 @@
 productName: hyperdb
-appId: platform.hyperdb.lib
+appId: hyperdb.electron-test
 publish:
   provider: github
   owner: __OWNER__

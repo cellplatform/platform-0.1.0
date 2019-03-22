@@ -1,2 +1,3 @@
 .dev
-tmp
+/tmp*
+/.tmp*

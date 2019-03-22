@@ -39,21 +39,17 @@ export class DbGridEditor extends React.PureComponent<IDbGridEditorProps, IDbGri
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    state$.subscribe(e => this.setState(e));
+    state$.subscribe(e => this.context.set(this.value));
 
     // Update <input> on keypress.
     const keys$ = this.context.keys$;
-    keys$
-      .pipe(filter(e => e.isEnter))
-      .subscribe(e => this.context.complete({ value: this.input.value }));
+    keys$.pipe(filter(e => e.isEnter)).subscribe(e => this.context.complete());
 
     // Set initial values.
     const value = this.context.cell.value;
     this.state$.next({ value });
-
-    // Manage cancelling manually.
-    // this.context.autoCancel = false;
-    // keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
   }
 
   public componentDidMount() {
