@@ -18,7 +18,7 @@
     "@platform/test": "0.0.33",
     "@platform/ts": "3.3.67",
     "@types/sinon": "7.0.10",
-    "sinon": "7.2.7"
+    "sinon": "7.3.0"
   },
   "files": [
     "lib"

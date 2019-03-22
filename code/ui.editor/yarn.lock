@@ -6801,10 +6801,10 @@ prosemirror-transform@^1.0.0, prosemirror-transform@^1.1.0:
   dependencies:
     prosemirror-model "^1.0.0"
 
-prosemirror-view@1.8.3:
-  version "1.8.3"
-  resolved "https://registry.yarnpkg.com/prosemirror-view/-/prosemirror-view-1.8.3.tgz#f8deff22c7d371f63db2686ac6f3661ded1b3ae3"
-  integrity sha512-CAW3SycaJgfPlWwYcDGiwNaCwcikBLSFAgLF+H+bTn0aCAUzcl2DXQdU9dMvK3HeWG+6Xn/QPQbhyyqCcV3ZBw==
+prosemirror-view@1.8.4:
+  version "1.8.4"
+  resolved "https://registry.yarnpkg.com/prosemirror-view/-/prosemirror-view-1.8.4.tgz#6931c0610dba427eb7bb0c4686915affb66b5ea8"
+  integrity sha512-d0aUs9TYFvRb1jmnZ4+zXtm4hegtSlZ1xgzRDfzFGRjKtgvb7j7qcHAHKRhfuWrgwf8eGjlO2zo5ksmV/t0bQw==
   dependencies:
     prosemirror-model "^1.1.0"
     prosemirror-state "^1.0.0"
@@ -6955,6 +6955,15 @@ react-inspector@2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/react-inspector/-/react-inspector-2.3.1.tgz#f0eb7f520669b545b441af9d38ec6d706e5f649c"
   integrity sha512-tUUK7t3KWgZEIUktOYko5Ic/oYwvjEvQUFAGC1UeMeDaQ5za2yZFtItJa2RTwBJB//NxPr000WQK6sEbqC6y0Q==
+  dependencies:
+    babel-runtime "^6.26.0"
+    is-dom "^1.0.9"
+    prop-types "^15.6.1"
+
+react-inspector@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-inspector/-/react-inspector-3.0.0.tgz#e9a6bf1195d02e5b76d9eaf260b1ce6ba23d46df"
+  integrity sha512-nKXmnRhotT+DGkif5Q877CmIiSJmHpquAMRmCYhZ5E8qX4RSB9W0LcHu0tGNJNJRX1KDsHsM2AkCje2fYkNSfg==
   dependencies:
     babel-runtime "^6.26.0"
     is-dom "^1.0.9"

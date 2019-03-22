@@ -19,14 +19,14 @@
     "@types/app-root-path": "1.2.4",
     "app-root-path": "2.1.0",
     "electron-log": "3.0.1",
-    "electron-store": "2.0.0",
+    "electron-store": "3.0.0",
     "electron-window-state": "5.0.3",
     "is-electron": "2.2.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.33",
     "@platform/ts": "3.3.67",
-    "electron": "4.1.0"
+    "electron": "4.1.1"
   },
   "files": [
     "lib",
