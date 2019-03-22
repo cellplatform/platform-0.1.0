@@ -14,7 +14,7 @@
   "dependencies": {
     "@platform/fs": "0.0.40",
     "@platform/log": "0.0.91",
-    "@platform/util.exec": "0.0.24",
+    "@platform/exec": "0.0.0",
     "@platform/util.value": "0.0.41"
   },
   "devDependencies": {

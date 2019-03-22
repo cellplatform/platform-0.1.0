@@ -28,7 +28,7 @@
     "@platform/fs": "0.0.40",
     "@platform/libs": "0.0.8",
     "@platform/ts.libs": "3.3.6",
-    "@platform/util.exec": "0.0.24"
+    "@platform/exec": "0.0.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.33"
