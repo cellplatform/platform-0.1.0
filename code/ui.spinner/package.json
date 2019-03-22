@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.spinner",
   "description": "Wait spinner.",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,10 +14,10 @@
     "prepare": "ts prepare $@"
   },
   "dependencies": {
-    "@platform/react": "0.0.25"
+    "@platform/react": "0.0.27"
   },
   "devDependencies": {
-    "@platform/ts": "3.3.67",
+    "@platform/ts": "3.3.69",
     "@uiharness/dev": "0.2.10"
   },
   "files": [
