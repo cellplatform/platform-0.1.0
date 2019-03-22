@@ -11,6 +11,10 @@ const _focus$ = new Subject<IFocusEvent>();
 export const focus$ = _focus$.pipe(share());
 
 (() => {
+  if (!is.browser) {
+    return;
+  }
+
   let last = document.activeElement;
   function hasChanged() {
     const current = document.activeElement;
@@ -32,8 +36,6 @@ export const focus$ = _focus$.pipe(share());
     };
   }
 
-  if (is.browser) {
-    window.addEventListener('focus', onEvent('FOCUS'), true);
-    window.addEventListener('blur', onEvent('BLUR'), true);
-  }
+  window.addEventListener('focus', onEvent('FOCUS'), true);
+  window.addEventListener('blur', onEvent('BLUR'), true);
 })();
