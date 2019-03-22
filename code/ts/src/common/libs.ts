@@ -1,5 +1,5 @@
 export { fs } from '@platform/fs';
-export { exec, tasks } from '@platform/util.exec';
+export { exec, tasks } from '@platform/exec';
 
-import { util } from '@platform/util.exec';
+import { util } from '@platform/exec';
 export const result = util.result;
