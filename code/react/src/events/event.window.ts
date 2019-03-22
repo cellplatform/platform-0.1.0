@@ -1,12 +1,18 @@
 import { animationFrameScheduler } from 'rxjs';
 import { observeOn, share } from 'rxjs/operators';
+
+import { IWindowResizeEvent } from './types';
 import { fromWindowEvent } from './util';
 
-export * from './types';
-
+/**
+ * [URL_Hash]
+ */
 export const hashChange$ = fromWindowEvent<HashChangeEvent>('hashchange');
 
-export const resize$ = fromWindowEvent<{}>('resize').pipe(
+/**
+ * [Resize]
+ */
+export const resize$ = fromWindowEvent<IWindowResizeEvent>('resize').pipe(
   observeOn(animationFrameScheduler),
   share(),
 );

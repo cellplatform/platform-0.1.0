@@ -1,6 +1,11 @@
 import { Observable } from 'rxjs';
 
 /**
+ * Window Resize
+ */
+export type IWindowResizeEvent = {};
+
+/**
  * Based on [React.IMouseEvent]
  * Note:
  *    Repeated here as exporting this event via the Observables
@@ -27,7 +32,7 @@ export type IMouseEvent = {
 /**
  * Keypress
  */
-export type KeypressEvent = {
+export type IKeypressEvent = {
   event: KeyboardEvent;
   isPressed: boolean;
   code: string;
@@ -41,4 +46,14 @@ export type KeypressEvent = {
   stopPropagation: () => void;
   stopImmediatePropagation: () => void;
 };
-export type KeypressObservable = Observable<KeypressEvent>;
+export type KeypressObservable = Observable<IKeypressEvent>;
+
+/**
+ * Focus
+ */
+export type IFocusEvent = {
+  type: 'FOCUS' | 'BLUR';
+  from?: Element;
+  to?: Element;
+};
+export type FocusObservable = Observable<IFocusEvent>;

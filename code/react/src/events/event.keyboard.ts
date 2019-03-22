@@ -1,13 +1,12 @@
 import { map, merge, share } from 'rxjs/operators';
-import { KeypressEvent, KeypressObservable } from './types';
-import { fromDocumentEvent } from './util';
 
-export * from './types';
+import { IKeypressEvent, KeypressObservable } from './types';
+import { fromDocumentEvent } from './util';
 
 const toKeypress = (e: KeyboardEvent, isPressed: boolean) => {
   const { key, code, altKey, ctrlKey, shiftKey, metaKey } = e;
   const isModifier = key === 'Meta' || key === 'Control' || key === 'Alt' || key === 'Shift';
-  const event: KeypressEvent = {
+  const event: IKeypressEvent = {
     event: e,
     isPressed,
     key,
