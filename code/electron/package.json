@@ -21,7 +21,8 @@
     "electron-log": "3.0.1",
     "electron-store": "3.0.0",
     "electron-window-state": "5.0.3",
-    "is-electron": "2.2.0"
+    "is-electron": "2.2.0",
+    "v8-compile-cache": "2.0.2"
   },
   "devDependencies": {
     "@platform/test": "0.0.34",
