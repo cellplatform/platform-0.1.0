@@ -58,6 +58,17 @@ export async function test(
   try {
     // Run with interactive console.
     const res = await exec.cmd.run(cmd, { silent, dir: fs.resolve(dir) });
+
+    if (!res.ok && res.errors.some(line => line.includes('Error: No test files found'))) {
+      log.info(`No tests found.\n`);
+      return done({ ok: true, code: 0 }); // No tests, don't fail the operation, just print a warning.
+    }
+
+    if (!res.ok && res.errors.length > 0) {
+      res.errors.forEach(line => log.info(line));
+      log.info();
+    }
+
     return done(res);
     // if (watch) {
     // } else {
