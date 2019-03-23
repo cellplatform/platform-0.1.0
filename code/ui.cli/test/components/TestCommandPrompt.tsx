@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { CommandPrompt } from '../../src';
+import { CommandPrompt, Help } from '../../src';
 import { init } from '../cli';
 import { COLORS, css, GlamorValue, str, t } from '../common';
 
@@ -101,7 +101,7 @@ export class TestCommandPrompt extends React.PureComponent<
           />
         </div>
         <div {...styles.body}>
-          <div>body</div>
+          <Help cli={this.cli} onCommandClick={this.handleHelpClick} />
         </div>
       </div>
     );
@@ -117,5 +117,9 @@ export class TestCommandPrompt extends React.PureComponent<
     if (match) {
       cli.change({ text: match.name });
     }
+  };
+
+  private handleHelpClick = (e: t.CommandClickEvent) => {
+    console.log('help click', e);
   };
 }
