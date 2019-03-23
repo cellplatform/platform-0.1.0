@@ -4,7 +4,7 @@ import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
 import { CommandPrompt, Help } from '../../src';
 import { init } from '../cli';
-import { COLORS, css, GlamorValue, str, t } from '../common';
+import { COLORS, css, GlamorValue, str, t, renderer } from '../common';
 
 const cli = init({});
 
@@ -19,6 +19,9 @@ export class TestCommandPrompt extends React.PureComponent<
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestCommandPromptState>>();
 
+  public static contextType = renderer.Context;
+  public context!: renderer.ReactContext;
+
   private prompt: CommandPrompt | undefined;
   private promptRef = (ref: CommandPrompt) => (this.prompt = ref);
 
@@ -27,7 +30,7 @@ export class TestCommandPrompt extends React.PureComponent<
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    const cli$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
+    const cli$ = this.cli.state.change$.pipe(takeUntil(this.unmounted$));
 
     cli$.subscribe(e => {
       // console.log('🌳 EVENT', e);
@@ -38,12 +41,7 @@ export class TestCommandPrompt extends React.PureComponent<
     cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
       const { args } = e.props;
       const command = e.props.command as t.ICommand<t.ITestCommandProps>;
-      console.group('🌳 invoke');
-      console.log('e', e);
-      console.log('args', args);
-      console.log('command', command);
-      console.groupEnd();
-      // this.cli.invoke({ command, args, db });
+      this.cli.invoke({ command, args });
     });
   }
 
@@ -59,7 +57,7 @@ export class TestCommandPrompt extends React.PureComponent<
    * [Properties]
    */
   private get cli() {
-    return cli.state;
+    return cli;
   }
 
   /**
@@ -94,14 +92,14 @@ export class TestCommandPrompt extends React.PureComponent<
         <div {...styles.prompt}>
           <CommandPrompt
             ref={this.promptRef}
-            text={cli.text}
-            namespace={cli.namespace}
-            onChange={cli.change}
+            text={cli.state.text}
+            namespace={cli.state.namespace}
+            onChange={cli.state.change}
             onAutoComplete={this.handleAutoComplete}
           />
         </div>
         <div {...styles.body}>
-          <Help cli={this.cli} onCommandClick={this.handleHelpClick} />
+          <Help cli={this.cli.state} onCommandClick={this.handleHelpClick} />
         </div>
       </div>
     );
@@ -111,7 +109,7 @@ export class TestCommandPrompt extends React.PureComponent<
    * [Handlers]
    */
   private handleAutoComplete = () => {
-    const cli = this.cli;
+    const cli = this.cli.state;
     const root = cli.namespace ? cli.namespace.command : cli.root;
     const match = root.children.find(c => str.fuzzy.isMatch(cli.text, c.name));
     if (match) {
