@@ -1,0 +1,29 @@
+{
+  "name": "@platform/ui.cli",
+  "version": "0.0.0",
+  "description": "Components for building cli (command-line-interface) related user-interfaces.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build $@",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "react": "16.8.5",
+    "react-dom": "16.8.5"
+  },
+  "devDependencies": {
+    "@uiharness/electron": "0.4.2",
+    "@uiharness/dev": "0.2.12"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}
