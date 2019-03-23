@@ -15,12 +15,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "react": "16.8.5",
-    "react-dom": "16.8.5"
+    "@platform/react": "0.0.28"
   },
   "devDependencies": {
-    "@uiharness/electron": "0.4.2",
-    "@uiharness/dev": "0.2.12"
+    "@uiharness/dev": "0.2.12",
+    "@uiharness/electron": "0.4.2"
   },
   "files": [
     "lib"

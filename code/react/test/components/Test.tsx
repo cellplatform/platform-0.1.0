@@ -41,8 +41,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Properties]
    */
-  public get view() {
-    return this.state.view || localStorage.getItem(STORAGE.VIEW) || 'drag';
+  public get view(): View {
+    return this.state.view || (localStorage.getItem(STORAGE.VIEW) as View) || 'drag';
   }
 
   /**
