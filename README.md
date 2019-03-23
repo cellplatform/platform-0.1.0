@@ -47,14 +47,12 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 - [@platform/ts](/code/ts) 
 - [@platform/fs](/code/fs)
-- [@platform/cli](/code/cli)
-- [@platform/cli.spec](/code/cli.spec)
 - [@platform/log](/code/log)
+- [@platform/exec](/code/exec)
 - [@platform/electron](/code/electron)
 - util
   - [@platform/util.animate](/code/util.animate)
   - [@platform/util.coordinate](/code/util.coordinate)  
-  - [@platform/util.exec](/code/util.exec)
   - [@platform/util.is](/code/util.is)
   - [@platform/util.string](/code/util.string)
   - [@platform/util.value](/code/util.value)
@@ -76,6 +74,9 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - testing
   - [@platform/test](/code/test)
   - [@platform/test.dom](/code/test.dom)
+- cli
+  - [@platform/cli](/code/cli)
+  - [@platform/cli.spec](/code/cli.spec)
 
 
 <p>&nbsp;</p>

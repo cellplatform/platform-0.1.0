@@ -1,2 +1,2 @@
-export * from '@platform/util.exec';
+export * from '@platform/exec';
 export { fs } from './common';
