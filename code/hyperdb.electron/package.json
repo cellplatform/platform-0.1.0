@@ -1,7 +1,7 @@
 {
   "name": "@platform/hyperdb.electron",
   "description": "Strongly typed, electron enabled interface to hyperdb.",
-  "version": "0.0.39",
+  "version": "0.0.42",
   "main": "lib/index",
   "scripts": {
     "test": "ts test",
@@ -13,15 +13,15 @@
     "tmp": "ts-node -T scripts/tmp $@"
   },
   "dependencies": {
-    "@platform/electron": "0.1.14",
-    "@platform/hyperdb": "0.0.30",
-    "@platform/util.string": "0.0.40",
-    "@platform/util.value": "0.0.43",
-    "@uiharness/electron": "0.4.1"
+    "@platform/electron": "0.1.17",
+    "@platform/hyperdb": "0.0.32",
+    "@platform/util.string": "0.0.42",
+    "@platform/util.value": "0.0.45",
+    "@uiharness/electron": "0.4.6"
   },
   "devDependencies": {
-    "@platform/test": "0.0.34",
-    "@platform/ts": "3.3.69"
+    "@platform/test": "0.0.35",
+    "@platform/ts": "3.3.71"
   },
   "files": [
     "lib"

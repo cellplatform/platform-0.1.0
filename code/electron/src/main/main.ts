@@ -1,13 +1,3 @@
-/**
- * Optimization:
- *   v8-compile-cache attaches a require hook to use V8's code cache to speed up instantiation time.
- *   The "code cache" is the work of parsing and compiling done by V8.
- *
- * - https://www.npmjs.com/package/v8-compile-cache
- * - https://www.youtube.com/watch?v=VBfvnKDlZMw
- */
-import 'v8-compile-cache';
-
 import { fs } from '@platform/fs';
 import { app } from 'electron';
 
