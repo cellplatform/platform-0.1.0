@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { debounceTime, takeUntil, filter } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { CommandPrompt } from '../../src/components/CommandPrompt';
+import { CommandPrompt } from '../../src';
 import { init } from '../cli';
-import { COLORS, css, GlamorValue, t, str } from '../common';
+import { COLORS, css, GlamorValue, str, t } from '../common';
 
 const cli = init({});
 
@@ -79,20 +79,30 @@ export class TestCommandPrompt extends React.PureComponent<
 
     const styles = {
       base: css({
-        backgroundColor: COLORS.DARK,
-        padding: 20,
         flex: 1,
+      }),
+      prompt: css({
+        backgroundColor: COLORS.DARK,
+        padding: 5,
+      }),
+      body: css({
+        padding: 20,
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <CommandPrompt
-          ref={this.promptRef}
-          text={cli.text}
-          namespace={cli.namespace}
-          onChange={cli.change}
-          onAutoComplete={this.handleAutoComplete}
-        />
+        <div {...styles.prompt}>
+          <CommandPrompt
+            ref={this.promptRef}
+            text={cli.text}
+            namespace={cli.namespace}
+            onChange={cli.change}
+            onAutoComplete={this.handleAutoComplete}
+          />
+        </div>
+        <div {...styles.body}>
+          <div>body</div>
+        </div>
       </div>
     );
   }

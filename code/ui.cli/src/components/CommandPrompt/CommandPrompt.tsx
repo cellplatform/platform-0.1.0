@@ -3,7 +3,6 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import {
-  color,
   CommandChangeDispatcher,
   containsFocus,
   css,
