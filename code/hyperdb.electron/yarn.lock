@@ -88,6 +88,22 @@
     is-electron "2.2.0"
     v8-compile-cache "2.0.2"
 
+"@platform/electron@0.1.15":
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.15.tgz#eb281aef656df5b5c523119748ba04750cfc4f67"
+  integrity sha512-OW1UmJtwQwcgXubicr8bKTPBfalQeae762/CFcB6n1u+YPpkwFF9XEs03lDo8Rkm+RH0NGTIGbhqINZ8rhq39A==
+  dependencies:
+    "@babel/polyfill" "7.4.0"
+    "@platform/fs" "0.0.41"
+    "@platform/log" "0.0.93"
+    "@platform/react" "0.0.27"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.1.0"
+    electron-log "3.0.1"
+    electron-store "3.0.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+
 "@platform/exec@0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.0.2.tgz#7f8064637055b818a46b357b566337b4a079fc71"

@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.editor",
   "description": "Rich text/markdown editor for web and electron.",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -26,7 +26,7 @@
     "react-inspector": "3.0.0"
   },
   "devDependencies": {
-    "@platform/electron": "0.1.14",
+    "@platform/electron": "0.1.15",
     "@platform/ts": "3.3.69",
     "@types/prosemirror-history": "1.0.1",
     "@types/prosemirror-keymap": "1.0.1",
