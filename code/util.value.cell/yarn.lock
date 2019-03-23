@@ -81,10 +81,10 @@
     tslint-react "3.6.0"
     typescript "3.3.4000"
 
-"@platform/ts@3.3.70":
-  version "3.3.70"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.70.tgz#e652034a67e58e5d1ce0492f14309392bf00ae4e"
-  integrity sha512-OV4dlYs1Esw94yXtUb7LQCrAta7jvy15OI+KHibnfsG5LIeFbeZwVSq9L6ZnPlyzdHWw/X2m9insk7oelNld1w==
+"@platform/ts@3.3.71":
+  version "3.3.71"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.71.tgz#567280bee97f0bfd98df5c349a4281607cbfb660"
+  integrity sha512-P0KgNNfF4g9Uy+SSSbYrrYnqsaUlIzRReyie8ipKraGFzvGq7zhbDRWYLjRczlz0HOiGPsHUmOA5lJKG+cc5Sw==
   dependencies:
     "@platform/cli" "0.0.66"
     "@platform/exec" "0.0.3"
@@ -92,18 +92,18 @@
     "@platform/libs" "0.0.9"
     "@platform/ts.libs" "3.3.8"
 
-"@platform/util.is@0.0.43":
-  version "0.0.43"
-  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.43.tgz#6aac6a0b15c40ed16626aeb8dfd698508ccd02e9"
-  integrity sha512-Rago7d1WH3vnR1c1k7cpGC6JSdzGaI9+cW5WguHzCalVgFmpYxrcfKQYO7eu9b6zACWBQ+72q2G67wXLKAAn8Q==
-
-"@platform/util.value@0.0.44":
+"@platform/util.is@0.0.44":
   version "0.0.44"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.44.tgz#15d30af98b52e54c4b5a9c4fb3728a02503f9857"
-  integrity sha512-BBAw41AyL6WtlRzp/Rhr2I7Njc3Y6M2dCEdJuusNTS1+mi0CXa/hrghtvHpjYpaAAAA5AzTBWp3gQzpCirH/Mw==
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.44.tgz#22ff2cfe31bcb2d5447b2651b1c2f137c0287c2c"
+  integrity sha512-mt5gWP782m0mVRXw3hXSHgD9KSn0YNsQF4y+V1wMcyvU664/vi6wKkXkB3fa7dlM2XFFhnnX0M3t7Fpw82gyag==
+
+"@platform/util.value@0.0.45":
+  version "0.0.45"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.45.tgz#9eddad213e01b3b382330e6c8c11181feb4cffdb"
+  integrity sha512-mYGtSMHX67DEUQwqZvw02QjFnwiudC9A1+wvamKvYeiVU95vETUyZi3Mpd9ZysL8mHJtw2H36D//0pNdICrztg==
   dependencies:
     "@platform/libs" "0.0.9"
-    "@platform/util.is" "0.0.43"
+    "@platform/util.is" "0.0.44"
     "@types/semver" "5.5.0"
     cuid "2.1.6"
     dayjs "1.8.11"
@@ -147,12 +147,7 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.6.tgz#b8622d50557dd155e9f2f634b7d68fd38de5e94b"
   integrity sha512-1axi39YdtBI7z957vdqXI4Ac25e7YihYQtJa+Clnxg1zTJEaIRbndt71O3sP4GAMgiAm0pY26/b9BrY4MR/PMw==
 
-"@types/node@*":
-  version "11.11.3"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.11.3.tgz#7c6b0f8eaf16ae530795de2ad1b85d34bf2f5c58"
-  integrity sha512-wp6IOGu1lxsfnrD+5mX6qwSwWuqsdkKKxTN4aQc4wByHAKZJf9/D4KXPQ1POUjEbnCP5LMggB0OEFNY9OTsMqg==
-
-"@types/node@11.11.6":
+"@types/node@*", "@types/node@11.11.6":
   version "11.11.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.11.6.tgz#df929d1bb2eee5afdda598a41930fe50b43eaa6a"
   integrity sha512-Exw4yUWMBXM3X+8oqzJNRqZSwUAaS4+7NdvHqQuFi/d+synz++xmX3QIf+BFqneW8N31R8Ky+sikfZUXq07ggQ==
@@ -1147,18 +1142,10 @@ js-yaml@3.12.0:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
-js-yaml@3.13.0:
+js-yaml@3.13.0, js-yaml@^3.7.0:
   version "3.13.0"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.13.0.tgz#38ee7178ac0eea2c97ff6d96fff4b18c7d8cf98e"
   integrity sha512-pZZoSxcCYco+DIKBTimr67J6Hy+EYGZDY/HCWC+iAEA9h1ByhMXAIVUXMcMFpOCxQ/xjXmPI2MkDL5HRm5eFrQ==
-  dependencies:
-    argparse "^1.0.7"
-    esprima "^4.0.0"
-
-js-yaml@^3.7.0:
-  version "3.12.2"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.12.2.tgz#ef1d067c5a9d9cb65bd72f285b5d8105c77f14fc"
-  integrity sha512-QHn/Lh/7HhZ/Twc7vJYQTkjuCa0kaCcDcjK5Zlk2rvnUpy7DxMJ23+Jc2dcyvltwQVg1nygAVlB2oRDFHoRS5Q==
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"

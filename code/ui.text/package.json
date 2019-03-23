@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.text",
   "description": "Text components.",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,11 +14,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.0.28",
-    "@platform/util.value": "0.0.44"
+    "@platform/react": "0.0.29",
+    "@platform/util.value": "0.0.45"
   },
   "devDependencies": {
-    "@platform/ts": "3.3.70",
+    "@platform/ts": "3.3.71",
     "@uiharness/dev": "0.2.12"
   },
   "files": [
