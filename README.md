@@ -61,7 +61,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/react](/code/react)
   - [@platform/css](/code/css)
 - ui (components)
-  - [@platform/ui.text](/code/ui.cli)
+  - [@platform/ui.cli](/code/ui.cli)
   - [@platform/ui.editor](/code/ui.editor)
   - [@platform/ui.icon](/code/ui.icon)
   - [@platform/ui.object](/code/ui.object)
@@ -78,6 +78,9 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - cli
   - [@platform/cli](/code/cli)
   - [@platform/cli.spec](/code/cli.spec)
+- npm
+  - [@platform/npm](/code/npm)
+  - [@platform/npm.electron](/code/npm.electron)
 
 
 <p>&nbsp;</p>
