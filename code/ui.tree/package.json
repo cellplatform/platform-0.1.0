@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.34",
-    "@uiharness/dev": "0.2.10",
+    "@uiharness/dev": "0.2.11",
     "react-icons": "3.5.0"
   },
   "files": [
