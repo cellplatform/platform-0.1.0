@@ -769,6 +769,14 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@platform/cli.spec@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.0.13.tgz#d059276091db9253f791a00d0f46097d59106a0d"
+  integrity sha512-xsxIMnxZ5YgcHTlR0vvvi2OUhJzFsPIHnDzbf/unGlsP+sjcZIDcF6DLy9De9pD6Zn1Ee/spFSpYolKvpnVuBQ==
+  dependencies:
+    "@platform/util.string" "0.0.41"
+    "@platform/util.value" "0.0.44"
+
 "@platform/cli@0.0.65":
   version "0.0.65"
   resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.65.tgz#9571cfd9251e0a435974f80f158ed71aa9cb7a6a"
@@ -882,7 +890,7 @@
     react "16.8.4"
     react-dom "16.8.4"
 
-"@platform/react@^0.0.28":
+"@platform/react@0.0.28":
   version "0.0.28"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.0.28.tgz#d73ec621fa3f31df6bb777b73b49d9fba58859d7"
   integrity sha512-P0bLrhB0MVOUwzQB/ooCOz+9DuRypAs6Tk26cqKb/ZRIGOZ6WXzSzohxukhvoaSyCc6+881GLt4ffAexd7Khow==
@@ -927,6 +935,14 @@
     "@platform/react" "0.0.27"
     react-inspector "3.0.0"
 
+"@platform/ui.text@^0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.0.31.tgz#2a0b4706c87ec6af18b34e3e9e8ff9b00acf1670"
+  integrity sha512-TLzUhPx3eS0Q/3X6S6HY3rZVmkTPng+WD2WDsPUy0fG9xbsHQH1/w/WrsebrXkYSbdOr6KZLaUInVUm1vwx1mg==
+  dependencies:
+    "@platform/react" "0.0.28"
+    "@platform/util.value" "0.0.44"
+
 "@platform/util.is@0.0.42":
   version "0.0.42"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.42.tgz#069fec0ab14c170c2c5dd3cb6eaad92cf56673e5"
@@ -936,6 +952,16 @@
   version "0.0.43"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.43.tgz#6aac6a0b15c40ed16626aeb8dfd698508ccd02e9"
   integrity sha512-Rago7d1WH3vnR1c1k7cpGC6JSdzGaI9+cW5WguHzCalVgFmpYxrcfKQYO7eu9b6zACWBQ+72q2G67wXLKAAn8Q==
+
+"@platform/util.string@0.0.41":
+  version "0.0.41"
+  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.0.41.tgz#dc611a035f0fb178b67b865df5f1f3a83064394b"
+  integrity sha512-+oXs9NHRgJsnlIlD5u1Kz33q1xGsEPRltbpUR2d8YdU+a2GTu2b0+iBdegBGsQr249VJR6qHmQumZH7lAvjmCg==
+  dependencies:
+    "@types/underscore.string" "0.0.36"
+    escape-string-regexp "1.0.5"
+    fuzzy "0.1.3"
+    underscore.string "3.3.5"
 
 "@platform/util.value@0.0.43":
   version "0.0.43"
@@ -1164,6 +1190,18 @@
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@types/tinycolor2/-/tinycolor2-1.4.1.tgz#2f5670c9d1d6e558897a810ed284b44918fc1253"
   integrity sha512-25L/RL5tqZkquKXVHM1fM2bd23qjfbcPpAZ2N/H05Y45g3UEi+Hw8CbDV28shKY8gH1SHiLpZSxPI1lacqdpGg==
+
+"@types/underscore.string@0.0.36":
+  version "0.0.36"
+  resolved "https://registry.yarnpkg.com/@types/underscore.string/-/underscore.string-0.0.36.tgz#df5869e713b67f566e29f342b44b303f1770865e"
+  integrity sha512-rJi3IaYzqJ3tAHdZQgpGwkeApXIrK9dxnc2RkGwyTsIY6LeSW25eaVtfNTYk8mbsJ9cx5HNDkt0Vtqz9i0IbPw==
+  dependencies:
+    "@types/underscore" "*"
+
+"@types/underscore@*":
+  version "1.8.13"
+  resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.8.13.tgz#e1bf89141fbccb71dcb3bf12d86a923c007698e3"
+  integrity sha512-2YEdDHTYAv3YmSoQofzFnlWYDAAtMtVcQ0lOHoURuCt1aT9OgxhhjRRU1WVAiLchNWM7B3a8/iomxenfr9TwKA==
 
 "@types/yargs@12.0.10":
   version "12.0.10"
@@ -3131,7 +3169,7 @@ escape-html@~1.0.3:
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
   integrity sha1-Aljq5NPQwJdN4cFpGI7wBR0dGYg=
 
-escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
+escape-string-regexp@1.0.5, escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
   integrity sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
@@ -3530,6 +3568,11 @@ function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
   integrity sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==
+
+fuzzy@0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/fuzzy/-/fuzzy-0.1.3.tgz#4c76ec2ff0ac1a36a9dccf9a00df8623078d4ed8"
+  integrity sha1-THbsL/CsGjap3M+aAN+GIweNTtg=
 
 gauge@~2.7.3:
   version "2.7.4"
@@ -6986,6 +7029,11 @@ split-string@^3.0.1, split-string@^3.0.2:
   dependencies:
     extend-shallow "^3.0.0"
 
+sprintf-js@^1.0.3:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.1.2.tgz#da1765262bf8c0f571749f2ad6c26300207ae673"
+  integrity sha512-VE0SOVEHCk7Qc8ulkWw3ntAzXuqf7S2lvwQaDLRnUeIEaKNQJzV6BwmLKhOqT61aGhfUMrXeaBk+oDGCzvhcug==
+
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
@@ -7511,6 +7559,14 @@ ua-parser-js@^0.7.18:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.19.tgz#94151be4c0a7fb1d001af7022fdaca4642659e4b"
   integrity sha512-T3PVJ6uz8i0HzPxOF9SWzWAlfN/DavlpQqepn22xgve/5QecC+XMCAtmUNnY7C9StehaV6exjUCI801lOI7QlQ==
 
+underscore.string@3.3.5:
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/underscore.string/-/underscore.string-3.3.5.tgz#fc2ad255b8bd309e239cbc5816fd23a9b7ea4023"
+  integrity sha512-g+dpmgn+XBneLmXXo+sGlW5xQEt4ErkS3mgeN2GFbremYeMBSJKr9Wf2KJplQVaiPY/f7FN6atosWYNm9ovrYg==
+  dependencies:
+    sprintf-js "^1.0.3"
+    util-deprecate "^1.0.2"
+
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/unicode-canonical-property-names-ecmascript/-/unicode-canonical-property-names-ecmascript-1.0.4.tgz#2619800c4c825800efdd8343af7dd9933cbe2818"
@@ -7658,7 +7714,7 @@ utf8-byte-length@^1.0.1:
   resolved "https://registry.yarnpkg.com/utf8-byte-length/-/utf8-byte-length-1.0.4.tgz#f45f150c4c66eee968186505ab93fcbb8ad6bf61"
   integrity sha1-9F8VDExm7uloGGUFq5P8u4rWv2E=
 
-util-deprecate@^1.0.1, util-deprecate@~1.0.1:
+util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=

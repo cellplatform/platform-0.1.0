@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from './common';
+import { css, color, GlamorValue } from '../common';
 
 export type ITestCommandListProps = { style?: GlamorValue };
 export type ITestCommandListState = {};

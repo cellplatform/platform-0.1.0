@@ -7,7 +7,7 @@ import { TestCommandPrompt } from './TestCommandPrompt';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, Button, Hr } from './common';
+import { css, color, GlamorValue, Button, Hr } from '../common';
 
 const STORAGE = { VIEW: 'TEST/REACT/view' };
 type View = 'prompt' | 'list';
