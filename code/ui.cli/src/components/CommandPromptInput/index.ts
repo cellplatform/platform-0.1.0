@@ -1,3 +1,3 @@
 export * from './types';
-export * from './CommandPrompt';
+export * from './CommandPromptInput';
 export { THEMES } from './themes';

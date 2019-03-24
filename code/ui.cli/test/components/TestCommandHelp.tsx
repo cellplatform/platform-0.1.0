@@ -3,16 +3,16 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue } from '../common';
 
-export type ITestCommandListProps = { style?: GlamorValue };
-export type ITestCommandListState = {};
+export type ITestCommandHelpProps = { style?: GlamorValue };
+export type ITestCommandHelpState = {};
 
-export class TestCommandList extends React.PureComponent<
-  ITestCommandListProps,
-  ITestCommandListState
+export class TestCommandHelp extends React.PureComponent<
+  ITestCommandHelpProps,
+  ITestCommandHelpState
 > {
-  public state: ITestCommandListState = {};
+  public state: ITestCommandHelpState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<ITestCommandListState>>();
+  private state$ = new Subject<Partial<ITestCommandHelpState>>();
 
   /**
    * [Lifecycle]

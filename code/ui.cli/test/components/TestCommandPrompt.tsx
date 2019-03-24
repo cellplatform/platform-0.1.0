@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { CommandPrompt, Help } from '../../src';
+import { CommandPromptInput, Help } from '../../src';
 import { init } from '../cli';
 import { COLORS, css, GlamorValue, str, t, renderer } from '../common';
 
@@ -22,8 +22,8 @@ export class TestCommandPrompt extends React.PureComponent<
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
 
-  private prompt: CommandPrompt | undefined;
-  private promptRef = (ref: CommandPrompt) => (this.prompt = ref);
+  private prompt: CommandPromptInput | undefined;
+  private promptRef = (ref: CommandPromptInput) => (this.prompt = ref);
 
   /**
    * [Lifecycle]
@@ -90,7 +90,7 @@ export class TestCommandPrompt extends React.PureComponent<
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.prompt}>
-          <CommandPrompt
+          <CommandPromptInput
             ref={this.promptRef}
             text={cli.state.text}
             namespace={cli.state.namespace}

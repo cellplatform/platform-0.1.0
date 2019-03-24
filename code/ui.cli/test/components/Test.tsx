@@ -1,7 +1,7 @@
 import '../../node_modules/@platform/css/reset.css';
 import '@babel/polyfill';
 
-import { TestCommandList } from './TestCommandList';
+import { TestCommandHelp } from './TestCommandHelp';
 import { TestCommandPrompt } from './TestCommandPrompt';
 
 import * as React from 'react';
@@ -90,7 +90,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         return <TestCommandPrompt />;
 
       case 'list':
-        return <TestCommandList />;
+        return <TestCommandHelp />;
 
       default:
         return <div>View '{view}'' not supported</div>;

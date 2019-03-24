@@ -17,7 +17,7 @@ import { ICommandPromptTheme } from './types';
 
 const FONT_SIZE = 14;
 
-export type ICommandPromptProps = {
+export type ICommandPromptInputProps = {
   text?: string;
   namespace?: ICommandNamespace;
   theme?: ICommandPromptTheme | 'DARK';
@@ -26,12 +26,18 @@ export type ICommandPromptProps = {
   onChange?: CommandChangeDispatcher;
   onAutoComplete?: (e: {}) => void;
 };
-export type ICommandPromptState = {};
+export type ICommandPromptInputState = {};
 
-export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICommandPromptState> {
-  public state: ICommandPromptState = {};
+/**
+ * Non-stateful input control for a command.
+ */
+export class CommandPromptInput extends React.PureComponent<
+  ICommandPromptInputProps,
+  ICommandPromptInputState
+> {
+  public state: ICommandPromptInputState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<ICommandPromptState>();
+  private state$ = new Subject<ICommandPromptInputState>();
 
   private elInput: TextInput | undefined;
   private elInputRef = (ref: TextInput) => (this.elInput = ref);
@@ -40,7 +46,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    * [Lifecycle]
    */
 
-  constructor(props: ICommandPromptProps) {
+  constructor(props: ICommandPromptInputProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
