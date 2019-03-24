@@ -1,11 +1,9 @@
 import * as React from 'react';
-
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { KeyBindings, Keyboard, IKeypressEvent } from '../../src';
-import { ObjectView, log, css } from './common';
-// import { describe, log, ObjectView, React, time } from '../../test/storybook';
+import { IKeyBindingEvent, IKeypressEvent, KeyBindings, Keyboard } from '../../src';
+import { color, css, ObjectView } from './common';
 
 type MyCommands = 'SAVE' | 'PASTE' | 'FOO' | 'BAR';
 const bindings: KeyBindings<MyCommands> = [
@@ -16,46 +14,34 @@ const bindings: KeyBindings<MyCommands> = [
 ];
 const keyboard = Keyboard.create({ bindings });
 
-// describe('behavior/keyboard', {
-//   title: 'Keyboard command manager.',
-//   padding: 50,
-//   cropMarks: false,
-//   align: 'top left',
-// })
-//   .add('default', () => <Test key={'default'} keyboard={keyboard} />)
-//   .add('disposed (takeUntil)', () => {
-//     const stop$ = new Subject();
-//     time.delay(2000, () => {
-//       stop$.next();
-//       log.info('Stopped!');
-//     });
-//     return <Test key={'stopped'} keyboard={keyboard.takeUntil(stop$)} />;
-//   });
-
 export interface IKeyboardTestProps {
   keyboard?: Keyboard<MyCommands>;
 }
 export interface IKeyboardTestState {
   keyPress?: IKeypressEvent;
+  bindingPress?: IKeyBindingEvent<MyCommands>;
 }
 
 export class KeyboardTest extends React.PureComponent<IKeyboardTestProps, IKeyboardTestState> {
   public state: IKeyboardTestState = {};
+  private state$ = new Subject<Partial<IKeyboardTestState>>();
   private unmounted$ = new Subject();
   private keyboard = this.props.keyboard || keyboard;
 
   public componentDidMount() {
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+
     this.keyboard.keyPress$
       // Monitor all key-presses.
       .pipe(takeUntil(this.unmounted$))
-      .subscribe(keyPress => this.setState({ keyPress }));
+      .subscribe(keyPress => this.state$.next({ keyPress }));
 
     this.keyboard.bindingPress$
       // Monitor key-bindings.
       .pipe(takeUntil(this.unmounted$))
       .subscribe(e => {
         e.preventDefault();
-        log.info('!! Binding: ', e);
+        this.state$.next({ bindingPress: e });
       });
   }
 
@@ -64,23 +50,39 @@ export class KeyboardTest extends React.PureComponent<IKeyboardTestProps, IKeybo
   }
 
   public render() {
-    const { keyPress } = this.state;
+    const { keyPress, bindingPress } = this.state;
     const styles = {
-      base: css({ padding: 20 }),
+      base: css({ flex: 1 }),
+      body: css({ padding: 20 }),
+      binding: css({
+        padding: 20,
+        // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
+      }),
     };
     const data = {
       key: keyPress && keyPress.code,
       latest: this.formatKey(this.keyboard.latest),
       bindings: this.keyboard.bindings,
     };
+
+    const elBinding = bindingPress && (
+      <span>
+        {bindingPress.key} | {bindingPress.command}
+      </span>
+    );
+
     return (
       <div {...styles.base}>
-        <ObjectView
-          data={data}
-          name={'keyboard'}
-          expandLevel={1}
-          expandPaths={['$.bindings', '$.bindings.*']}
-        />
+        <div {...styles.binding}>Binding: {elBinding || 'none'}</div>
+        <div {...styles.body}>
+          <ObjectView
+            data={data}
+            name={'keyboard'}
+            expandLevel={1}
+            expandPaths={['$.bindings', '$.bindings.*']}
+          />
+        </div>
       </div>
     );
   }

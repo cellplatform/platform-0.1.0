@@ -2,7 +2,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil, share, take, filter, map } from 'rxjs/operators';
 import { events } from '../events';
 import { R } from '../common';
-import { IKeypressEvent, KeyBindings, KeyCommand, KeyBindingEvent, KeyBinding } from './types';
+import { IKeypressEvent, KeyBindings, KeyCommand, IKeyBindingEvent, KeyBinding } from './types';
 
 export type KeyboardOptions<T extends KeyCommand> = {
   bindings?: KeyBindings<T>;
@@ -28,13 +28,43 @@ const isModifierPressed = (e: IKeypressEvent) => {
  */
 export class Keyboard<T extends KeyCommand> {
   /**
-   * Constructor.
+   * [Static]
    */
   public static create<T extends KeyCommand>(options: KeyboardOptions<T>) {
     return new Keyboard<T>(options);
   }
+
+  /**
+   * Determine whether the given key value is a modifier key (CMD, ALT, CTRL, SHIFT).
+   */
+  public static isModifier(key: string) {
+    return Object.keys(MODIFIERS).some(item => item === key);
+  }
+
+  /**
+   * Converts a key pattern (eg CMD+N) into it's constituent parts.
+   * For example:
+   *    `CMD+N` => `{ keys:['n'], modifiers:['META'] }`
+   */
+  public static parse(pattern: string) {
+    const parts = pattern
+      .split('+')
+      .map(key => key.trim().toUpperCase())
+      .map(key => {
+        key = key === 'CMD' ? 'META' : key;
+        key = key === 'CONTROL' ? 'CTRL' : key;
+        return key;
+      });
+    const modifiers = parts.filter(Keyboard.isModifier);
+    const keys = parts.filter(key => !modifiers.some(item => item === key));
+    return { keys, modifiers };
+  }
+
+  /**
+   * [Constructor]
+   */
   private constructor(options: KeyboardOptions<T>) {
-    const bindingPress$ = new Subject<KeyBindingEvent<T>>();
+    const bindingPress$ = new Subject<IKeyBindingEvent<T>>();
     this.bindingPress$ = bindingPress$.pipe(
       takeUntil(this.dispose$),
       share(),
@@ -52,14 +82,18 @@ export class Keyboard<T extends KeyCommand> {
   }
 
   /**
-   * Fields.
+   * [Fields]
    */
   private readonly dispose$ = new Subject();
 
   public readonly keyPress$: Observable<IKeypressEvent>;
-  public readonly bindingPress$: Observable<KeyBindingEvent<T>>;
+  public readonly bindingPress$: Observable<IKeyBindingEvent<T>>;
   public readonly bindings: KeyBindings<T> = [];
   public latest: IKeypressEvent | undefined;
+
+  /**
+   * [Methods]
+   */
 
   /**
    * Disposes of the keyboard.
@@ -94,9 +128,13 @@ export class Keyboard<T extends KeyCommand> {
   }
 
   /**
+   * [Internal]
+   */
+
+  /**
    * Watches key-presses looking for a match with one of the bindings.
    */
-  private monitorBindings(fire: (e: KeyBindingEvent<T>) => void) {
+  private monitorBindings(fire: (e: IKeyBindingEvent<T>) => void) {
     const keyPress$ = this.keyPress$;
     let pressedKeys: string[] = [];
     keyPress$
@@ -124,6 +162,8 @@ export class Keyboard<T extends KeyCommand> {
             key,
             command,
             preventDefault: () => event.preventDefault(),
+            stopPropagation: () => event.stopPropagation(),
+            stopImmediatePropagation: () => event.stopImmediatePropagation(),
           });
         }
       });
@@ -133,22 +173,6 @@ export class Keyboard<T extends KeyCommand> {
    * Determine if the given key event matches a binding
    */
   private matchBinding(e: IKeypressEvent, pressedKeys: string[]): KeyBinding<T> | undefined {
-    const isModifier = (key: string) => Object.keys(MODIFIERS).some(item => item === key);
-
-    const toParts = (pattern: string) => {
-      const parts = pattern
-        .split('+')
-        .map(key => key.trim().toUpperCase())
-        .map(key => {
-          key = key === 'CMD' ? 'META' : key;
-          key = key === 'CONTROL' ? 'CTRL' : key;
-          return key;
-        });
-      const modifiers = parts.filter(isModifier);
-      const keys = parts.filter(key => !modifiers.some(item => item === key));
-      return { modifiers, keys };
-    };
-
     const hasAllModifiers = (modifiers: string[]) => {
       for (const key of Object.keys(MODIFIERS)) {
         const exists = modifiers.some(item => item === key);
@@ -166,7 +190,7 @@ export class Keyboard<T extends KeyCommand> {
     };
 
     for (const binding of this.bindings) {
-      const parts = toParts(binding.key);
+      const parts = Keyboard.parse(binding.key);
       if (isMatch(parts)) {
         return binding;
       }

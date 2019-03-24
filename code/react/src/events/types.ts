@@ -42,9 +42,9 @@ export type IKeypressEvent = {
   shiftKey: boolean;
   metaKey: boolean;
   isModifier: boolean;
-  preventDefault: () => void;
-  stopPropagation: () => void;
-  stopImmediatePropagation: () => void;
+  preventDefault(): void;
+  stopPropagation(): void;
+  stopImmediatePropagation(): void;
 };
 export type KeypressObservable = Observable<IKeypressEvent>;
 

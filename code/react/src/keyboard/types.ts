@@ -10,8 +10,13 @@ export type KeyBinding<T extends KeyCommand> = {
   command: T;
 };
 
-export type KeyBindingEvent<T extends KeyCommand> = {
+/**
+ * Fired when a key-binding is activated.
+ */
+export type IKeyBindingEvent<T extends KeyCommand> = {
   command: T;
   key: string;
-  preventDefault: () => void;
+  preventDefault(): void;
+  stopPropagation(): void;
+  stopImmediatePropagation(): void;
 };
