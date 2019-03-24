@@ -4,22 +4,22 @@ import { takeUntil } from 'rxjs/operators';
 
 import { color, css, GlamorValue, str, t } from '../../common';
 
-export type IHelpProps = {
+export type ICommandHelpProps = {
   cli: t.ICommandState;
   style?: GlamorValue;
   onCommandClick?: t.CommandClickEventHandler;
 };
-export type IHelpState = {};
+export type ICommandHelpState = {};
 
-export class Help extends React.PureComponent<IHelpProps, IHelpState> {
-  public state: IHelpState = {};
+export class CommandHelp extends React.PureComponent<ICommandHelpProps, ICommandHelpState> {
+  public state: ICommandHelpState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<IHelpState>();
+  private state$ = new Subject<ICommandHelpState>();
 
   /**
    * [Lifecycle]
    */
-  constructor(props: IHelpProps) {
+  constructor(props: ICommandHelpProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     const change$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
