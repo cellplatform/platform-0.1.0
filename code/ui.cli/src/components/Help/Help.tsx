@@ -2,10 +2,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, ICommand, ICommandState, str, t } from '../../common';
+import { color, css, GlamorValue, str, t } from '../../common';
 
 export type IHelpProps = {
-  cli: ICommandState;
+  cli: t.ICommandState;
   style?: GlamorValue;
   onCommandClick?: t.CommandClickEventHandler;
 };
@@ -125,7 +125,7 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
   /**
    * [Handlers]
    */
-  private commandClickHandler = (cmd: ICommand) => {
+  private commandClickHandler = (cmd: t.ICommand) => {
     return () => {
       const { onCommandClick } = this.props;
       if (onCommandClick) {
@@ -136,10 +136,10 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
 }
 
 /**
- * [INTERNAL]
+ * [Helpers]
  */
 
-function matchCommands(input: string, parent: ICommand) {
+function matchCommands(input: string, parent: t.ICommand) {
   return parent.children.map(cmd => {
     const { id, name } = cmd;
     const isMatch = str.fuzzy.isMatch(input, name);

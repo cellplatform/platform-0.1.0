@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { CommandPromptInput, Help } from '../../src';
+import { CommandPrompt, CommandPromptInput, Help } from '../../src';
 import { init } from '../cli';
 import { COLORS, css, GlamorValue, str, t, renderer } from '../common';
 
@@ -22,8 +22,11 @@ export class TestCommandPrompt extends React.PureComponent<
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
 
-  private prompt: CommandPromptInput | undefined;
-  private promptRef = (ref: CommandPromptInput) => (this.prompt = ref);
+  private prompt!: CommandPrompt;
+  private promptRef = (ref: CommandPrompt) => (this.prompt = ref);
+
+  private promptInput: CommandPromptInput | undefined;
+  private promptInputRef = (ref: CommandPromptInput) => (this.promptInput = ref);
 
   /**
    * [Lifecycle]
@@ -64,8 +67,8 @@ export class TestCommandPrompt extends React.PureComponent<
    * [Methods]
    */
   private focus = () => {
-    if (this.prompt) {
-      this.prompt.focus();
+    if (this.promptInput) {
+      this.promptInput.focus();
     }
   };
 
@@ -91,12 +94,15 @@ export class TestCommandPrompt extends React.PureComponent<
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.prompt}>
           <CommandPromptInput
-            ref={this.promptRef}
+            ref={this.promptInputRef}
             text={cli.state.text}
             namespace={cli.state.namespace}
             onChange={cli.state.change}
             onAutoComplete={this.handleAutoComplete}
           />
+        </div>
+        <div {...styles.prompt}>
+          <CommandPrompt ref={this.promptRef} cli={this.cli.state} />
         </div>
         <div {...styles.body}>
           <Help cli={this.cli.state} onCommandClick={this.handleHelpClick} />
