@@ -1,1 +1,1 @@
-export * from '../CommandPromptInput/types'
+export * from '../CommandPromptInput/types';
