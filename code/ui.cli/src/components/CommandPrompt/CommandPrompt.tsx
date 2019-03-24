@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil, debounceTime } from 'rxjs/operators';
 
-import { GlamorValue, str, t } from '../../common';
+import { GlamorValue, str, t, events } from '../../common';
 import { CommandPromptInput } from '../CommandPromptInput';
 import { ICommandPromptTheme } from './types';
 
@@ -10,6 +10,7 @@ export type ICommandPromptProps = {
   cli: t.ICommandState;
   theme?: ICommandPromptTheme | 'DARK';
   placeholder?: string;
+  keyPress$?: events.KeypressObservable;
   style?: GlamorValue;
 };
 export type ICommandPromptState = {};
@@ -26,17 +27,57 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    // Setup observables.
     const cli$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
+    const keydown$ = (this.props.keyPress$ || events.keyPress$).pipe(
+      takeUntil(this.unmounted$),
+      filter(e => e.isPressed === true),
+    );
 
-    cli$.pipe(debounceTime(0)).subscribe(e => this.forceUpdate());
+    // Update state.
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
-    cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
-      const { args } = e.props;
-      // const command = e.props.command;
-      // this.cli.invoke({ command, args });
-      console.log('INVOKE', args);
-    });
+    cli$
+      // Redraw on CLI changes.
+      .pipe(debounceTime(0))
+      .subscribe(e => this.forceUpdate());
+
+    // cli$
+    //   // Handle invoke requests.
+    //   .pipe(filter(e => e.invoked && !e.namespace))
+    //   .subscribe(async e => {
+    //     const { args } = e.props;
+    //     // const command = e.props.command;
+    //     // this.cli.invoke({ command, args });
+    //     console.log('INVOKE', args);
+    //   });
+
+    keydown$
+      // Focus on CMD+L
+      .pipe(
+        filter(e => e.key === 'l' && e.metaKey),
+        filter(() => !this.isFocused),
+      )
+      .subscribe(e => {
+        e.preventDefault();
+        this.focus();
+      });
+
+    keydown$
+      // Invoke on [Enter]
+      .pipe(filter(e => e.key === 'Enter'))
+      .subscribe(e => this.invoke());
+
+    keydown$
+      // Clear on CMD+K
+      .pipe(
+        filter(e => e.key === 'k' && e.metaKey),
+        filter(e => this.isFocused),
+      )
+      .subscribe(e => {
+        const clearNamespace = !Boolean(this.cli.text);
+        this.clear({ clearNamespace });
+      });
   }
 
   public componentWillUnmount() {
@@ -50,6 +91,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     return this.props.cli;
   }
 
+  public get isFocused() {
+    return this.input ? this.input.isFocused : false;
+  }
+
   /**
    * [Methods]
    */
@@ -57,6 +102,15 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     if (this.input) {
       this.input.focus();
     }
+  };
+
+  public clear = (args: { clearNamespace?: boolean } = {}) => {
+    const namespace = args.clearNamespace ? false : undefined;
+    this.fireChange({ text: '', namespace });
+  };
+
+  public invoke = () => {
+    this.fireChange({ text: this.cli.text, invoked: true });
   };
 
   /**
@@ -73,6 +127,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         placeholder={placeholder}
         text={cli.text}
         namespace={cli.namespace}
+        keyPress$={this.props.keyPress$}
         onChange={cli.change}
         onAutoComplete={this.handleAutoComplete}
       />
@@ -89,5 +144,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     if (match) {
       cli.change({ text: match.name });
     }
+  };
+
+  private fireChange = (args: { text?: string; invoked?: boolean; namespace?: boolean }) => {
+    const e = CommandPromptInput.toChangeArgs(args);
+    this.cli.change(e);
   };
 }
