@@ -2,7 +2,8 @@ import { expect } from 'chai';
 
 import { CommandState } from '.';
 import { Command } from '../Command';
-import * as t from './types';
+import { time } from '../common';
+import * as t from '../types';
 
 const copy = Command.create('copy')
   .add('fast')
@@ -18,9 +19,17 @@ const root = Command.create('root')
   .add('mkdir')
   .add(db);
 
+let getInvokeArgsList: t.ICommandStateProps[] = [];
+const getInvokeArgs: t.InvokeCommandArgsFactory = async state => {
+  getInvokeArgsList = [...getInvokeArgsList, state];
+  return { props: { foo: 123 } };
+};
+
 describe('CommandState', () => {
+  beforeEach(() => (getInvokeArgsList = []));
+
   it('creates with default values', () => {
-    const state = CommandState.create({ root });
+    const state = CommandState.create({ root, getInvokeArgs });
     expect(state.isDisposed).to.eql(false);
     expect(state.text).to.eql('');
     expect(state.namespace).to.eql(undefined);
@@ -28,7 +37,7 @@ describe('CommandState', () => {
 
   it('disposes', () => {
     let count = 0;
-    const state = CommandState.create({ root });
+    const state = CommandState.create({ root, getInvokeArgs });
     state.dispose$.subscribe(() => count++);
 
     expect(state.isDisposed).to.eql(false);
@@ -39,7 +48,7 @@ describe('CommandState', () => {
 
   describe('toObject', () => {
     it('toObject', () => {
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
       const obj = state.toObject();
       expect(obj.text).to.eql('');
       expect(obj.command).to.eql(undefined);
@@ -50,11 +59,11 @@ describe('CommandState', () => {
   describe('change (events)', () => {
     it('fires [change$] event (observable)', () => {
       const events: t.CommandStateEvent[] = [];
-      const changes: Array<t.ICommandStateChangeEvent['payload']> = [];
-      const state = CommandState.create({ root });
+      const changes: Array<t.ICommandStateChangedEvent['payload']> = [];
+      const state = CommandState.create({ root, getInvokeArgs });
 
       state.events$.subscribe(e => events.push(e));
-      state.change$.subscribe(e => changes.push(e));
+      state.changed$.subscribe(e => changes.push(e));
 
       state.change({ text: 'foo' });
 
@@ -67,7 +76,7 @@ describe('CommandState', () => {
     });
 
     it('updates current text on change event', () => {
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
       expect(state.text).to.eql('');
       state.change({ text: 'hello' });
       expect(state.text).to.eql('hello');
@@ -75,8 +84,8 @@ describe('CommandState', () => {
 
     it('fires [invoke$] event (observable)', () => {
       const events: t.CommandStateEvent[] = [];
-      const invokes: Array<t.ICommandStateChangeEvent['payload']> = [];
-      const state = CommandState.create({ root });
+      const invokes: Array<t.ICommandStateChangedEvent['payload']> = [];
+      const state = CommandState.create({ root, getInvokeArgs });
 
       state.events$.subscribe(e => events.push(e));
       state.invoke$.subscribe(e => invokes.push(e));
@@ -103,7 +112,7 @@ describe('CommandState', () => {
 
   describe('change: namespace', () => {
     it('does not change to namespace if [namespace] flag not set', () => {
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
       const test = (text: string) => {
         state.change({ text });
         expect(state.namespace).to.eql(undefined);
@@ -116,19 +125,19 @@ describe('CommandState', () => {
     });
 
     it('cannot change to a namsespace if no command matches', () => {
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
       state.change({ text: 'NO_EXIST', namespace: true });
       expect(state.namespace).to.eql(undefined);
     });
 
     it('does not change to namespace if the command is a root leaf-node', () => {
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
       state.change({ text: 'ls', namespace: true });
       expect(state.namespace).to.eql(undefined);
     });
 
     it('changes to a namespace', () => {
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
       expect(state.namespace).to.eql(undefined);
 
       state.change({ text: 'db' });
@@ -146,7 +155,7 @@ describe('CommandState', () => {
     });
 
     it('changes to deep namespace (db copy)', () => {
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
 
       state.change({ text: 'db copy', namespace: true });
       const ns = state.namespace;
@@ -160,7 +169,7 @@ describe('CommandState', () => {
     });
 
     it('changes to deep namespace - parent of leaf (db copy fast)', () => {
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
 
       state.change({ text: 'db copy fast', namespace: true });
       const ns = state.namespace;
@@ -174,7 +183,10 @@ describe('CommandState', () => {
     });
 
     it('removes namespace', () => {
-      const state = CommandState.create({ root }).change({ text: 'db', namespace: true });
+      const state = CommandState.create({ root, getInvokeArgs }).change({
+        text: 'db',
+        namespace: true,
+      });
       const ns = state.namespace;
       expect(ns && ns.command.name).to.eql('db');
 
@@ -185,7 +197,7 @@ describe('CommandState', () => {
 
   describe('current [command] property', () => {
     it('match', () => {
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
       expect(state.command).to.eql(undefined);
 
       state.change({ text: 'ls' });
@@ -196,14 +208,14 @@ describe('CommandState', () => {
 
     it('match: removes command value from arg params', () => {
       const root = Command.create('root').add('create');
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
       state.change({ text: 'create foo bar' });
       expect(state.command && state.command.name).to.eql('create');
       expect(state.args.params).to.eql(['foo', 'bar']); // NB: `create` excluded.
     });
 
     it('no match', () => {
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
       expect(state.command).to.eql(undefined);
       state.change({ text: 'YO_MAMA' });
       expect(state.command).to.eql(undefined);
@@ -211,7 +223,7 @@ describe('CommandState', () => {
 
     it('no match (no commands)', () => {
       const root = Command.create('empty');
-      const state = CommandState.create({ root });
+      const state = CommandState.create({ root, getInvokeArgs });
       expect(state.command).to.eql(undefined);
       state.change({ text: 'ls' });
       expect(state.command).to.eql(undefined);
@@ -219,7 +231,7 @@ describe('CommandState', () => {
 
     it('match from path ("db copy fast")', () => {
       const test = (text: string, expectName: string) => {
-        const state = CommandState.create({ root });
+        const state = CommandState.create({ root, getInvokeArgs });
         expect(state.command).to.eql(undefined);
         state.change({ text });
         expect(state.text).to.eql(text);
@@ -228,6 +240,109 @@ describe('CommandState', () => {
       test('db copy fast', 'fast');
       test('db copy fast foo', 'fast');
       test('db copy fast foo bar baz', 'fast');
+    });
+  });
+
+  describe('invoke', () => {
+    it('does not invoke when no command', async () => {
+      const root = Command.create('root').add('run');
+      const state = CommandState.create({ root, getInvokeArgs });
+      const res = await state.invoke();
+      expect(res.invoked).to.eql(false);
+      expect(res.state.command).to.eql(undefined);
+      expect(res.args.props.foo).to.eql(123); // Derived from `getInvokeArgs` factory.
+    });
+
+    it('invokes the current command (with props from factory)', async () => {
+      const list: t.ICommandHandlerArgs[] = [];
+      const root = Command.create('root').add('run', async args => {
+        await time.wait(10);
+        list.push(args);
+        return 1234;
+      });
+      const state = CommandState.create({ root, getInvokeArgs });
+      state.change({ text: 'run' });
+
+      const res = await state.invoke();
+
+      expect(res.invoked).to.eql(true);
+      expect(res.state.command && res.state.command.name).to.eql('run');
+
+      expect(list.length).to.eql(1);
+      const response = res.response;
+      expect(response && response.result).to.eql(1234);
+    });
+
+    it('invokes with props/args from parameter', async () => {
+      const list: t.ICommandHandlerArgs[] = [];
+      const root = Command.create('root').add('run', async args => {
+        list.push(args);
+      });
+      const state = CommandState.create({ root, getInvokeArgs });
+      state.change({ text: 'run' });
+
+      await state.invoke({ props: { msg: 'hello' }, timeout: 1234, args: '--force' });
+
+      expect(list.length).to.eql(1);
+      const item = list[0];
+      expect(item.args).to.eql({ params: [], options: { force: true } });
+      expect(item.props).to.eql({ msg: 'hello' });
+    });
+
+    it('fires `invoking` | `invoked` events', async () => {
+      const list: t.CommandStateEvent[] = [];
+      const root = Command.create('root').add('run');
+      const state = CommandState.create({ root, getInvokeArgs });
+      state.change({ text: 'run' });
+
+      state.events$.subscribe(e => list.push(e));
+      const res = await state.invoke({ stepIntoNamespace: false });
+
+      expect(list.length).to.eql(2);
+      expect(res.cancelled).to.eql(false);
+
+      expect(list[0].type).to.eql('COMMAND/state/invoking');
+      expect(list[1].type).to.eql('COMMAND/state/invoked');
+      expect(list[1].payload).to.eql(res);
+    });
+
+    it('cancels invoke operation from BEFORE event', async () => {
+      let count = 0;
+      const root = Command.create('root').add('run', e => count++);
+      const state = CommandState.create({ root, getInvokeArgs });
+      state.change({ text: 'run' });
+
+      state.invoking$.subscribe(e => e.cancel());
+      const res = await state.invoke();
+
+      expect(count).to.eql(0);
+      expect(res.cancelled).to.eql(true);
+    });
+
+    it('no namespace change', async () => {
+      const root = Command.create('root').add('run');
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      state.change({ text: 'run' });
+      expect(state.namespace).to.eql(undefined);
+
+      await state.invoke({ stepIntoNamespace: true }); // NB: default:true
+      expect(state.namespace).to.eql(undefined);
+    });
+
+    it('steps into a namespace upon invoking', async () => {
+      const ns = Command.create('ns')
+        .add('list')
+        .add('run');
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, getInvokeArgs });
+      expect(state.namespace).to.eql(undefined);
+
+      state.change({ text: 'ns' });
+      expect(state.namespace).to.eql(undefined);
+
+      await state.invoke({ stepIntoNamespace: true }); // NB: default:true
+      expect(state.namespace && state.namespace.command.name).to.eql('ns');
     });
   });
 });

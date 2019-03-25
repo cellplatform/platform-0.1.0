@@ -1,4 +1,4 @@
-import { ICommand, ICommandArgs } from '../types';
+import { ICommand, ICommandArgs, IInvokeCommandArgs, IInvokedCommandResponse } from '../types';
 import { Observable } from 'rxjs';
 
 /**
@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 export type ICommandState = ICommandStateProps & {
   dispose$: Observable<{}>;
   events$: Observable<CommandStateEvent>;
-  change$: Observable<ICommandStateChange>;
-  invoke$: Observable<ICommandStateChange>;
+  changed$: Observable<ICommandStateChanged>;
+  invoke$: Observable<ICommandStateChanged>;
   change: CommandChangeDispatcher;
 };
 
@@ -37,16 +37,50 @@ export type ICommandChangeArgs = {
 };
 
 /**
+ * [Invoke]
+ */
+export type InvokeCommandArgsFactory<P extends object = any, A extends object = any> = (
+  state: ICommandStateProps,
+) => Promise<IInvokeCommandArgs<P, A>>;
+
+export type ICommandStateInvokeResponse = {
+  cancelled: boolean;
+  invoked: boolean;
+  state: ICommandStateProps;
+  args: IInvokeCommandArgs;
+  timeout: number;
+  response?: IInvokedCommandResponse<any, any, any>;
+};
+
+/**
  * [Events]
  */
-export type CommandStateEvent = ICommandStateChangeEvent;
+export type CommandStateEvent =
+  | ICommandStateChangedEvent
+  | ICommandStateInvokingEvent
+  | ICommandStateInvokedEvent;
 
-export type ICommandStateChangeEvent = {
-  type: 'COMMAND/state/change';
-  payload: ICommandStateChange;
+export type ICommandStateChangedEvent = {
+  type: 'COMMAND/state/changed';
+  payload: ICommandStateChanged;
 };
-export type ICommandStateChange = {
+export type ICommandStateChanged = {
   props: ICommandStateProps;
   invoked: boolean;
   namespace?: boolean;
+};
+
+export type ICommandStateInvokingEvent = {
+  type: 'COMMAND/state/invoking';
+  payload: {
+    state: ICommandStateProps;
+    args: IInvokeCommandArgs;
+    cancelled: boolean;
+    cancel(): void;
+  };
+};
+
+export type ICommandStateInvokedEvent = {
+  type: 'COMMAND/state/invoked';
+  payload: ICommandStateInvokeResponse;
 };

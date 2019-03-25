@@ -2,7 +2,7 @@ import { ReplaySubject, Subject, timer } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
 import { Argv } from '../Argv';
-import { id, time, value } from '../common';
+import { id, time, value, DEFAULT } from '../common';
 import * as t from './types';
 
 /**
@@ -14,11 +14,12 @@ export function invoker<P extends object, A extends object, R>(options: {
   props: P;
   args?: string | t.ICommandArgs<A>;
   timeout?: number;
-}): t.ICommandInvokePromise<P, A, R> {
+}): t.IInvokedCommandPromise<P, A, R> {
   const { command } = options;
   const invokeId = id.shortid();
   const args = typeof options.args === 'object' ? options.args : Argv.parse<A>(options.args || '');
   const complete$ = new Subject();
+  const timeout = value.defaultValue(options.timeout, DEFAULT.TIMEOUT);
 
   /**
    * Ferry events to parent.
@@ -42,6 +43,7 @@ export function invoker<P extends object, A extends object, R>(options: {
     complete$: complete$.asObservable(),
     isComplete: false,
     isTimedOut: false,
+    timeout,
     props: options.props,
     args,
     result: undefined,
@@ -52,7 +54,7 @@ export function invoker<P extends object, A extends object, R>(options: {
   /**
    * The asynchronous promise.
    */
-  const promise = new Promise<t.ICommandInvokeResponse<P, A, R>>(async (resolve, reject) => {
+  const promise = new Promise<t.IInvokedCommandResponse<P, A, R>>(async (resolve, reject) => {
     const done = (error?: Error) => {
       complete$.next();
       response.isComplete = true;
@@ -98,7 +100,6 @@ export function invoker<P extends object, A extends object, R>(options: {
     /**
      * Start timeout.
      */
-    const timeout = value.defaultValue(options.timeout, 5000);
     timer(timeout)
       .pipe(takeUntil(complete$))
       .subscribe(() => {
@@ -121,5 +122,5 @@ export function invoker<P extends object, A extends object, R>(options: {
 
   // Finish up.
   sync();
-  return promise as t.ICommandInvokePromise<P, A, R>;
+  return promise as t.IInvokedCommandPromise<P, A, R>;
 }

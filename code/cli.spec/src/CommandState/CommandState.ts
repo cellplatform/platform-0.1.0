@@ -3,11 +3,13 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { Argv } from '../Argv';
-import { t } from '../common';
+import { t, value as valueUtil } from '../common';
 import { Command } from '../Command/Command';
+import { DEFAULT } from '../common/constants';
 
-type ICreateCommandState = {
+type ICommandStateArgs = {
   root: Command;
+  getInvokeArgs: t.InvokeCommandArgsFactory;
 };
 
 /**
@@ -17,19 +19,20 @@ export class CommandState implements t.ICommandState {
   /**
    * [Static]
    */
-  public static create(args: ICreateCommandState) {
+  public static create(args: ICommandStateArgs) {
     return new CommandState(args);
   }
 
   /**
    * [Constructor]
    */
-  private constructor(args: ICreateCommandState) {
+  private constructor(args: ICommandStateArgs) {
     const { root } = args;
     if (!root) {
       throw new Error(`A root [Command] spec must be passed to the state constructor.`);
     }
     this._.root = root;
+    this._.getInvokeArgs = args.getInvokeArgs;
     this.change = this.change.bind(this);
   }
 
@@ -37,6 +40,7 @@ export class CommandState implements t.ICommandState {
    * [Fields]
    */
   private readonly _ = {
+    getInvokeArgs: (undefined as unknown) as t.InvokeCommandArgsFactory,
     dispose$: new Subject(),
     events$: new Subject<t.CommandStateEvent>(),
     root: (undefined as unknown) as Command,
@@ -49,14 +53,24 @@ export class CommandState implements t.ICommandState {
     takeUntil(this._.dispose$),
     share(),
   );
-  public readonly change$ = this.events$.pipe(
-    filter(e => e.type === 'COMMAND/state/change'),
-    map(e => e.payload),
+  public readonly changed$ = this.events$.pipe(
+    filter(e => e.type === 'COMMAND/state/changed'),
+    map(e => e.payload as t.ICommandStateChanged),
     distinctUntilChanged((prev, next) => equals(prev, next) && !next.invoked),
     share(),
   );
-  public readonly invoke$ = this.change$.pipe(
+  public readonly invoke$ = this.changed$.pipe(
     filter(e => e.invoked),
+    share(),
+  );
+  public readonly invoking$ = this.events$.pipe(
+    filter(e => e.type === 'COMMAND/state/invoking'),
+    map(e => e.payload as t.ICommandStateInvokingEvent['payload']),
+    share(),
+  );
+  public readonly invoked$ = this.events$.pipe(
+    filter(e => e.type === 'COMMAND/state/invoked'),
+    map(e => e.payload as t.ICommandStateInvokedEvent['payload']),
     share(),
   );
 
@@ -172,10 +186,77 @@ export class CommandState implements t.ICommandState {
     const props = this.toObject();
     const invoked = props.command ? Boolean(e.invoked) : false;
     const payload = { props, invoked, namespace };
-    events$.next({ type: 'COMMAND/state/change', payload });
+    events$.next({ type: 'COMMAND/state/changed', payload });
 
     // Finish up.
     return this;
+  }
+
+  /**
+   * Invokes the current command, if there is one.
+   */
+  public async invoke(
+    options: {
+      props?: {};
+      args?: string | t.ICommandArgs;
+      timeout?: number;
+      stepIntoNamespace?: boolean;
+    } = {},
+  ): Promise<t.ICommandStateInvokeResponse> {
+    // Step into namespace (if required).
+    if (valueUtil.defaultValue(options.stepIntoNamespace, true)) {
+      this.change({ text: this.text, namespace: true });
+    }
+
+    const { events$ } = this._;
+    const state = this.toObject();
+    const command = state.command;
+
+    // Prepare the args to pass to the command.
+    const args = { ...(await this._.getInvokeArgs(state)) };
+    args.props = options.props !== undefined ? options.props : args.props;
+    args.args = options.args !== undefined ? options.args : args.args;
+    args.timeout = options.timeout !== undefined ? options.timeout : args.timeout;
+    const timeout = valueUtil.defaultValue(args.timeout, DEFAULT.TIMEOUT);
+
+    // Ensure there is a command to invoke.
+    let result: t.ICommandStateInvokeResponse = {
+      invoked: false,
+      cancelled: false,
+      state,
+      args,
+      timeout,
+    };
+    if (!command) {
+      return result;
+    }
+
+    // Fire BEFORE event.
+    let isCancelled = false;
+    events$.next({
+      type: 'COMMAND/state/invoking',
+      payload: {
+        get cancelled() {
+          return isCancelled;
+        },
+        cancel: () => (isCancelled = true),
+        state,
+        args,
+      },
+    });
+    if (isCancelled) {
+      return { ...result, invoked: true, cancelled: true };
+    }
+
+    // Invoke the command.
+    const response = await command.invoke(args);
+    result = { ...result, invoked: true, response };
+
+    // Fire AFTER event.
+    events$.next({ type: 'COMMAND/state/invoked', payload: result });
+
+    // Finish up.
+    return result;
   }
 
   public toString() {

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { Command } from '.';
-import { time } from '../common';
+import { time, constants } from '../common';
 import * as t from './types';
 
 describe('Command.invoke', () => {
@@ -23,6 +23,7 @@ describe('Command.invoke', () => {
     const res = copy.invoke<R>({ props, args: '-f' });
 
     expect(res.isComplete).to.eql(false);
+    expect(res.timeout).to.eql(constants.DEFAULT.TIMEOUT);
     expect(res.args).to.eql({ params: [], options: { f: true } });
     expect(res.props).to.eql(props);
     expect(res.result).to.eql(undefined);
@@ -178,6 +179,7 @@ describe('Command.invoke', () => {
 
     const res = copy.invoke<R>({ props: { text: 'Hello' }, timeout: 10 });
     res.events$.subscribe(e => invokeEvents.push(e));
+    expect(res.timeout).to.eql(10);
     expect(res.isTimedOut).to.eql(false);
     expect(res.error).to.eql(undefined);
 

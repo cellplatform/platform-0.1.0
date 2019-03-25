@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { CommandHelp, CommandPrompt } from '../../src';
-import { init } from '../cli';
+import { init as initCommandLine } from '../cli';
 import { COLORS, css, GlamorValue, renderer, t } from '../common';
 
-const cli = init({});
+const cli = initCommandLine({});
 
 export type ITestCommandPromptProps = { style?: GlamorValue };
 export type ITestCommandPromptState = {};
@@ -30,17 +30,17 @@ export class TestCommandPrompt extends React.PureComponent<
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    const cli$ = this.cli.state.change$.pipe(takeUntil(this.unmounted$));
+    const cli$ = this.cli.state.changed$.pipe(takeUntil(this.unmounted$));
 
     cli$.subscribe(e => {
       // console.log('🌳 EVENT', e);
     });
 
-    cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
-      const { args } = e.props;
-      const command = e.props.command as t.ICommand<t.ITestCommandProps>;
-      this.cli.invoke({ command, args });
-    });
+    // cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
+    //   const { args } = e.props;
+    //   const command = e.props.command as t.ICommand<t.ITestCommandProps>;
+    //   this.cli.invoke({ command, args });
+    // });
   }
 
   public componentDidMount() {

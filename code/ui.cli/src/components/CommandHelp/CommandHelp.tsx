@@ -22,8 +22,8 @@ export class CommandHelp extends React.PureComponent<ICommandHelpProps, ICommand
   constructor(props: ICommandHelpProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    const change$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
-    change$.subscribe(e => this.forceUpdate());
+    const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
+    changed$.subscribe(e => this.forceUpdate());
   }
 
   public componentWillUnmount() {

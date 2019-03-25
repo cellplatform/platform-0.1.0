@@ -28,7 +28,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    */
   public componentWillMount() {
     // Setup observables.
-    const cli$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
+    const cli$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
     const keydown$ = (this.props.keyPress$ || events.keyPress$).pipe(
       takeUntil(this.unmounted$),
       filter(e => e.isPressed === true),
@@ -42,15 +42,15 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
       .pipe(debounceTime(0))
       .subscribe(e => this.forceUpdate());
 
-    // cli$
-    //   // Handle invoke requests.
-    //   .pipe(filter(e => e.invoked && !e.namespace))
-    //   .subscribe(async e => {
-    //     const { args } = e.props;
-    //     // const command = e.props.command;
-    //     // this.cli.invoke({ command, args });
-    //     console.log('INVOKE', args);
-    //   });
+    cli$
+      // Handle invoke requests.
+      .pipe(filter(e => e.invoked && !e.namespace))
+      .subscribe(async e => {
+        const { args } = e.props;
+        // const command = e.props.command;
+        // this.cli.invoke({ command, args });
+        console.log('INVOKE', args);
+      });
 
     keydown$
       // Focus on CMD+L
