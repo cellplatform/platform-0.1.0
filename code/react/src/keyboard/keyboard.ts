@@ -66,11 +66,11 @@ export class Keyboard<T extends KeyCommand> {
   private constructor(options: KeyboardOptions<T>) {
     const bindingPress$ = new Subject<IKeyBindingEvent<T>>();
     this.bindingPress$ = bindingPress$.pipe(
-      takeUntil(this.dispose$),
+      takeUntil(this._dispose$),
       share(),
     );
     let keyPress$ = options.keyPress$ || events.keyPress$;
-    this.keyPress$ = keyPress$ = keyPress$.pipe(takeUntil(this.dispose$));
+    this.keyPress$ = keyPress$ = keyPress$.pipe(takeUntil(this._dispose$));
     this.bindings = options.bindings || [];
 
     keyPress$.subscribe(e => (this.latest = e));
@@ -84,7 +84,8 @@ export class Keyboard<T extends KeyCommand> {
   /**
    * [Fields]
    */
-  private readonly dispose$ = new Subject();
+  private readonly _dispose$ = new Subject();
+  public readonly dispose$ = this._dispose$.pipe(share());
 
   public readonly keyPress$: Observable<IKeypressEvent>;
   public readonly bindingPress$: Observable<IKeyBindingEvent<T>>;
@@ -99,7 +100,8 @@ export class Keyboard<T extends KeyCommand> {
    * Disposes of the keyboard.
    */
   public dispose() {
-    this.dispose$.next();
+    this._dispose$.next();
+    this._dispose$.complete();
   }
 
   /**
