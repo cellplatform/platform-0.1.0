@@ -29,19 +29,21 @@ export type EditorEvent = IBeginEditingEvent | IEndEditingEvent;
 
 export type IBeginEditingEvent = {
   type: 'GRID/EDITOR/begin';
-  payload: {
-    cell: Cell;
-    cancel(): void;
-  };
+  payload: IBeginEditing;
+};
+export type IBeginEditing = {
+  cell: Cell;
+  cancel(): void;
 };
 
 export type IEndEditingEvent = {
   type: 'GRID/EDITOR/end';
-  payload: {
-    cell: Cell;
-    isCancelled: boolean;
-    isChanged: boolean;
-    value: { from?: t.CellValue; to?: t.CellValue };
-    cancel(): void;
-  };
+  payload: IEndEditing;
+};
+export type IEndEditing = {
+  cell: Cell;
+  isCancelled: boolean;
+  isChanged: boolean;
+  value: { from?: t.CellValue; to?: t.CellValue };
+  cancel(): void;
 };
