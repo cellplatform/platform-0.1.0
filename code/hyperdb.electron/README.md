@@ -4,5 +4,5 @@
 
 ![diagram](https://user-images.githubusercontent.com/185555/54874120-d1be4e80-4e49-11e9-8acf-689739d9a155.png)
 
-# @platform/hyperdb.electron
+# hyperdb.electron
 Safe [IPC](https://electronjs.org/docs/api/ipc-renderer) wrapper for working with [@platform/hyperdb](../hyperdb) in [electron](https://electronjs.org).

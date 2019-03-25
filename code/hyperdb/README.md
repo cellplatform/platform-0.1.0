@@ -2,7 +2,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![NPM](https://img.shields.io/npm/v/@platform/hyperdb.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/hyperdb)
 
-# @platform/hyperdb
+# hyperdb
 Strongly [typed](https://www.typescriptlang.org) interface to [hyperdb](https://github.com/mafintosh/hyperdb) with [hyperswarm](https://github.com/hyperswarm) network connector.
 
 ![db-qualities](https://user-images.githubusercontent.com/185555/54387772-171fa500-4701-11e9-825e-571d85db72e5.png)

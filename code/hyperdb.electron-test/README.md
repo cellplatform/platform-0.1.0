@@ -1,1 +1,1 @@
-# @platform/hyperdb.electron-test
+# hyperdb.electron-test
