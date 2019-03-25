@@ -1,7 +1,7 @@
 ![Module](https://img.shields.io/badge/%40platform-ui.datagrid-%23EA4E7E.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![NPM](https://img.shields.io/npm/v/@platform/ui.datagrid.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/ui.datagrid)
-![banner](https://user-images.githubusercontent.com/185555/54957675-4f07d180-4fb8-11e9-82d8-4ff513fa7513.png)
+![banner](https://user-images.githubusercontent.com/185555/54959872-6ac2a600-4fbf-11e9-89fe-9a0ee2353742.png)
 
 
 # ui.datagrid
