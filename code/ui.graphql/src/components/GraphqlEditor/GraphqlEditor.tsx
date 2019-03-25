@@ -2,7 +2,7 @@ import './styles';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, GlamorValue, graphqlFetcher } from '../../common';
+import { css, GlamorValue, graphqlFetcher, constants } from '../../common';
 
 const GraphiQL = require('graphiql');
 
@@ -34,15 +34,16 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
         position: 'relative',
         flex: 1,
       }),
+      logo: css({ display: 'none' }),
     };
     return (
-      <div {...css(styles.base, this.props.style)}>
-        <GraphiQL fetcher={graphqlFetcher} />
+      <div {...css(styles.base, this.props.style)} className={constants.CSS.ROOT}>
+        <GraphiQL fetcher={graphqlFetcher}>
+          <GraphiQL.Logo>
+            <div {...styles.logo} />
+          </GraphiQL.Logo>
+        </GraphiQL>
       </div>
     );
   }
 }
-
-/**
- * [Helpers]
- */
