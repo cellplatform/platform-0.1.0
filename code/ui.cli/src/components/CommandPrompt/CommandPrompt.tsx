@@ -28,7 +28,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    */
   public componentWillMount() {
     // Setup observables.
-    const cli$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
+    const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
     const keydown$ = (this.props.keyPress$ || events.keyPress$).pipe(
       takeUntil(this.unmounted$),
       filter(e => e.isPressed === true),
@@ -37,14 +37,15 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     // Update state.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
-    cli$
+    changed$
       // Redraw on CLI changes.
       .pipe(debounceTime(0))
       .subscribe(e => this.forceUpdate());
 
-    cli$
+    changed$
       // Handle invoke requests.
-      .pipe(filter(e => e.invoked && !e.namespace))
+      // .pipe(filter(e => e.invoked && !e.namespace))
+      .pipe(filter(e => e.invoked))
       .subscribe(e => this.cli.invoke());
 
     console.log(`\nTODO 🐷   Take Key Commands from props \n`);

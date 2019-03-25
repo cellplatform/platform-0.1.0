@@ -6,8 +6,8 @@ import { COLORS, color, css, GlamorValue, t } from '../../common';
 import { Dialog } from '../Dialog';
 
 export type IErrorDialogProps = {
-  command: t.ICommand;
   error: string;
+  command?: t.ICommand;
   style?: GlamorValue;
   onClose?: (e: {}) => void;
 };

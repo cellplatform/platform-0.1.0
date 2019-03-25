@@ -19,6 +19,7 @@ export type ITestStoreSettings = {
   dbKey?: string;
   dir: string;
   databases: string[];
+  selectedDatabase?: string;
 };
 
 /**

@@ -216,32 +216,32 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
     );
   }
 
-  private renderActions() {
-    const styles = {
-      base: css({
-        Flex: 'horizontal-stretch-stretch',
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
-      }),
-      section: css({
-        padding: 8,
-        flex: 1,
-        Flex: 'center-center',
-        ':first-child': {
-          borderRight: `solid 1px ${color.format(-0.1)}`,
-        },
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <div {...styles.section} onClick={this.props.onNew}>
-          <Button label={'new'} />
-        </div>
-        <div {...styles.section} onClick={this.props.onConnect}>
-          <Button label={'join'} />
-        </div>
-      </div>
-    );
-  }
+  // private renderActions() {
+  //   const styles = {
+  //     base: css({
+  //       Flex: 'horizontal-stretch-stretch',
+  //       borderBottom: `solid 1px ${color.format(-0.1)}`,
+  //     }),
+  //     section: css({
+  //       padding: 8,
+  //       flex: 1,
+  //       Flex: 'center-center',
+  //       ':first-child': {
+  //         borderRight: `solid 1px ${color.format(-0.1)}`,
+  //       },
+  //     }),
+  //   };
+  //   return (
+  //     <div {...styles.base}>
+  //       <div {...styles.section} onClick={this.props.onNew}>
+  //         <Button label={'new'} />
+  //       </div>
+  //       <div {...styles.section} onClick={this.props.onConnect}>
+  //         <Button label={'join'} />
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   /**
    * [Handlers]

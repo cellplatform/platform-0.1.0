@@ -30,9 +30,9 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
 
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    const change$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
-    change$.subscribe(e => this.forceUpdate());
+    const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
+    changed$.subscribe(e => this.forceUpdate());
   }
 
   public componentWillUnmount() {

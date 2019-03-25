@@ -29,7 +29,7 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
   constructor(props: IHelpProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    const change$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
+    const change$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
     change$.subscribe(e => this.forceUpdate());
   }
 
