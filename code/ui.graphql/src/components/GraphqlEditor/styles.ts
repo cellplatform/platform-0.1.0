@@ -3,10 +3,14 @@ import { css, color, constants, COLORS } from '../../common';
 
 const ROOT = constants.CSS.ROOT;
 
+const DARK = color.create(COLORS.DARK);
+
 const styles = {
   '.topBar': {
-    background: COLORS.DARK,
     padding: 10,
+    background: COLORS.DARK,
+    color: COLORS.WHITE,
+    border: 'none',
   },
 
   '.toolbar-button': {
@@ -27,6 +31,14 @@ const styles = {
 
   '.execute-button-wrap button': {
     boxShadow: 'none',
+  },
+
+  '.CodeMirror-gutter.CodeMirror-foldgutter': {
+    background: COLORS.DARK,
+  },
+
+  '.CodeMirror-gutter.CodeMirror-linenumbers': {
+    background: DARK.lighten(5).toRgbString(),
   },
 };
 
