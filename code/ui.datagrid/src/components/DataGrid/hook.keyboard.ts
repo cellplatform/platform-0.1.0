@@ -19,7 +19,7 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
     const { cancel, key } = payload;
 
     // Fire event.
-    grid.next({ type: 'GRID/keydown', payload });
+    grid.fire({ type: 'GRID/keydown', payload });
 
     if (grid.isEditing) {
       // NOTE:  When the editor is showing give it complete control of the keyboard,

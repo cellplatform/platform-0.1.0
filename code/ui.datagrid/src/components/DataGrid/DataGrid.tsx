@@ -99,7 +99,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
 
     // Ferry editor events to the [Grid] API.
-    editor$.subscribe(e => this.grid.next(e));
+    editor$.subscribe(e => this.grid.fire(e));
 
     // Disallow select all (CMD+A) unless requested by prop.
     keys$
@@ -157,7 +157,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       const { cell, ranges } = selection;
       grid.select({ cell, ranges });
     }
-    grid.next({ type: 'GRID/ready', payload: { grid } });
+    grid.fire({ type: 'GRID/ready', payload: { grid } });
     this.forceUpdate();
   }
 
@@ -204,6 +204,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
   private get settings(): DefaultSettings {
     const getGrid = () => this.grid;
+    const selectionHandler = hook.afterSelectionHandler(getGrid);
 
     const createColumns = (length: number) => {
       return Array.from({ length }).map(() => {
@@ -231,14 +232,17 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
        */
       beforeKeyDown: hook.beforeKeyDownHandler(getGrid),
       beforeChange: hook.beforeChangeHandler(getGrid),
-      afterSelection: hook.afterSelectionHandler(getGrid),
-      afterDeselect: hook.afterDeselectHandler(getGrid),
+      afterSelection: selectionHandler.select,
+      afterDeselect: selectionHandler.deselect,
     };
   }
 
   /**
    * [Methods]
    */
+  public focus() {
+    this.grid.focus();
+  }
 
   public redraw() {
     this.updateSize();

@@ -101,6 +101,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.main}>
           <div {...styles.left}>
             <div {...styles.leftTop}>
+              {this.button('focus', () => this.grid.focus())}
               {this.button('loadValues', () => this.grid.loadValues({ A3: 123 }))}
               {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
               {this.button('change values (prop)', () =>

@@ -37,6 +37,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     // const keys$ = this.grid.keys$;
 
+    events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
+      console.log('🌳 EVENT', e.type, e.payload);
+    });
+
     events$
       .pipe(
         filter(e => e.type === 'GRID/EDITOR/end'),
@@ -56,12 +60,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     beginEdit$.pipe(filter(e => e.cell.key === 'B1')).subscribe(e => {
       // Cancel B1 edit operations before they begin.
       e.cancel();
-    });
-
-    events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
-      // const cell = e.payload.cell;
-      // const key = cell ? cell.key : undefined;
-      console.log('🌳  EVENT', e.type, e.payload);
     });
 
     const change$ = events$.pipe(

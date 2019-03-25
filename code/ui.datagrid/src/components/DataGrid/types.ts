@@ -25,7 +25,9 @@ export type GridEvent =
   | IGridKeydownEvent
   | IGridChangeEvent
   | IGridChangeSetEvent
-  | IGridSelectionChangeEvent;
+  | IGridSelectionChangeEvent
+  | IGridFocusEvent
+  | IGridBlurEvent;
 
 export type IGridReadyEvent = {
   type: 'GRID/ready';
@@ -87,5 +89,18 @@ export type IGridSelectionChangeEvent = {
 };
 export type IGridSelectionChange = {
   grid: Grid;
-  selection: IGridSelection;
+  from: IGridSelection;
+  to: IGridSelection;
+};
+
+/**
+ * Focus
+ */
+export type IGridFocusEvent = {
+  type: 'GRID/focus';
+  payload: { grid: Grid };
+};
+export type IGridBlurEvent = {
+  type: 'GRID/blur';
+  payload: { grid: Grid };
 };

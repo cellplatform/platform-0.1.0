@@ -1,4 +1,5 @@
 import { Grid } from '../../api';
+import { t } from '../../common';
 
 /**
  * Factory for creating a grid's `afterSelection` handler.
@@ -8,7 +9,9 @@ import { Grid } from '../../api';
  *
  */
 export function afterSelectionHandler(getGrid: () => Grid) {
-  return (
+  let from: t.IGridSelection = { current: undefined, ranges: [] };
+
+  const select = (
     row1: number,
     column1: number,
     row2: number,
@@ -17,21 +20,23 @@ export function afterSelectionHandler(getGrid: () => Grid) {
     selectionLayerLevel: number,
   ) => {
     const grid = getGrid();
-    const selection = grid.selection;
-    grid.next({
+    const to = grid.selection;
+    grid.fire({
       type: 'GRID/selection',
-      payload: { selection, grid },
+      payload: { from, to, grid },
     });
+    from = { ...to };
   };
-}
 
-export function afterDeselectHandler(getGrid: () => Grid) {
-  return () => {
+  const deselect = () => {
     const grid = getGrid();
-    const selection = grid.selection;
-    grid.next({
+    const to = grid.selection;
+    grid.fire({
       type: 'GRID/selection',
-      payload: { selection, grid },
+      payload: { from, to, grid },
     });
+    from = { ...to };
   };
+
+  return { select, deselect };
 }

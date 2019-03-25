@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { filter, map, share, takeUntil, debounceTime } from 'rxjs/operators';
 
 import { t, value as valueUtil, R } from '../common';
 import { Cell } from './Cell';
@@ -54,20 +54,49 @@ export class Grid {
       .pipe(filter(e => e.type === 'GRID/ready'))
       .subscribe(() => (this._.isReady = true));
 
+    /**
+     * Manage editor events.
+     */
+    this.events$
+      .pipe(filter(e => e.type === 'GRID/EDITOR/begin'))
+      .subscribe(() => (this._.isEditing = true));
+
     const editEnd$ = this.events$.pipe(
       filter(e => e.type === 'GRID/EDITOR/end'),
       map(e => e.payload as t.IEndEditingEvent['payload']),
     );
-
-    this.events$
-      .pipe(filter(e => e.type === 'GRID/EDITOR/begin'))
-      .subscribe(() => (this._.isEditing = true));
 
     editEnd$.subscribe(() => (this._.isEditing = false));
     editEnd$.pipe(filter(e => e.isChanged)).subscribe(e => {
       const key = e.cell.key;
       this.changeValues({ [key]: e.value.to }, { redraw: false });
     });
+
+    const selection$ = this.events$.pipe(
+      filter(e => e.type === 'GRID/selection'),
+      map(e => e.payload as t.IGridSelectionChange),
+    );
+
+    selection$
+      // Retain last selection state to ressurect the value upon re-focus of grid.
+      .pipe(filter(e => Boolean(e.to.current)))
+      .subscribe(e => (this._.lastSelection = e.to));
+
+    selection$
+      // Monitor focus.
+      .pipe(
+        debounceTime(0),
+        filter(e => !Boolean(e.from.current) && Boolean(e.to.current)),
+      )
+      .subscribe(e => this.fire({ type: 'GRID/focus', payload: { grid: this } }));
+
+    selection$
+      // Monitor blur.
+      .pipe(
+        debounceTime(0),
+        filter(e => Boolean(e.from.current) && !Boolean(e.to.current)),
+      )
+      .subscribe(e => this.fire({ type: 'GRID/blur', payload: { grid: this } }));
   }
 
   /**
@@ -80,6 +109,7 @@ export class Grid {
     isReady: false,
     isEditing: false,
     values: ({} as unknown) as t.IGridValues,
+    lastSelection: (undefined as unknown) as t.IGridSelection,
   };
 
   public readonly id: string;
@@ -178,7 +208,7 @@ export class Grid {
   /**
    * Fires an event (used internally)
    */
-  public next(e: t.GridEvent) {
+  public fire(e: t.GridEvent) {
     this._.events$.next(e);
   }
 
@@ -257,6 +287,16 @@ export class Grid {
    */
   public deselect() {
     this._.table.deselectCell();
+  }
+
+  /**
+   * Assigns focus to the grid
+   */
+  public focus() {
+    const last = this._.lastSelection;
+    const cell = last.current || 'A1';
+    const ranges = last.ranges || [];
+    this.select({ cell, ranges });
   }
 
   /**
