@@ -1,5 +1,5 @@
 import { cell as util, parser } from '@platform/util.value.cell';
-import { t, R } from '../common';
+import { t, R } from '../../common';
 
 /**
  * API for accessing and manipulating a cell.

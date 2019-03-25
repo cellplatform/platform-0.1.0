@@ -1,8 +1,8 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil, debounceTime } from 'rxjs/operators';
 
-import { t, value as valueUtil, R } from '../common';
-import { Cell } from './Cell';
+import { t, value as valueUtil, R } from '../../common';
+import { Cell } from '../Cell';
 
 export type IGridArgs = {
   table: Handsontable;
