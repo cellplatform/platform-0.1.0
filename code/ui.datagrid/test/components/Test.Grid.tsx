@@ -48,15 +48,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         // e.payload.cancel();
       });
 
-    events$
-      .pipe(
-        filter(e => e.type === 'GRID/EDITOR/begin'),
-        map(e => e as t.IBeginEditingEvent),
-      )
-      .subscribe(e => {
-        // Cancel upon start of edit operation.
-        // e.payload.cancel();
-      });
+    const beginEdit$ = events$.pipe(
+      filter(e => e.type === 'GRID/EDITOR/begin'),
+      map(e => e.payload as t.IBeginEditing),
+    );
+
+    beginEdit$.pipe(filter(e => e.cell.key === 'B1')).subscribe(e => {
+      // Cancel B1 edit operations before they begin.
+      e.cancel();
+    });
 
     events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
       // const cell = e.payload.cell;
