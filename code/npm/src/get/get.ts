@@ -18,7 +18,8 @@ export async function getInfo(moduleName: string): Promise<INpmInfo | undefined>
       json,
     };
   } catch (error) {
-    throw error;
+    const message = `Failed getting info for '${moduleName}'. ${error.message}`;
+    throw new Error(message);
   }
 }
 
