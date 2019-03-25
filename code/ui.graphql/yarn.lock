@@ -882,7 +882,7 @@
     react "16.8.5"
     react-dom "16.8.5"
 
-"@platform/test@^0.0.35":
+"@platform/test@0.0.35":
   version "0.0.35"
   resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.35.tgz#c8988b88569f25ea65e3fa4c3e59989a60480588"
   integrity sha512-jqg5DfYmgtJEorbGvbnPMUHD90pZoP6P/U98MAyteKa8bsUzH+n/HkREfyJ6H91QQoBV8u9L5udsq6bS637X3w==
@@ -906,7 +906,7 @@
     tslint-react "3.6.0"
     typescript "3.3.4000"
 
-"@platform/ts@3.3.71", "@platform/ts@^3.3.71":
+"@platform/ts@3.3.71":
   version "3.3.71"
   resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.3.71.tgz#567280bee97f0bfd98df5c349a4281607cbfb660"
   integrity sha512-P0KgNNfF4g9Uy+SSSbYrrYnqsaUlIzRReyie8ipKraGFzvGq7zhbDRWYLjRczlz0HOiGPsHUmOA5lJKG+cc5Sw==
@@ -965,6 +965,18 @@
   integrity sha512-1zzPV9FDe1I/WHhRkf9SNgqtRJWZqrBWgu7JGveuHmmyR9CnAPCie2N/x+iHrgnpYBIcCJWHBoMRv2TRWktsvw==
   dependencies:
     chalk "*"
+
+"@types/codemirror@^0.0.72":
+  version "0.0.72"
+  resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.72.tgz#75e95e3b488717605d2591cd80c4d2ed88ff276e"
+  integrity sha512-dKtEP139Jxdrog/6zW8akX3LdhJ3V8NjYNCpIHdBVVo6ZiYpShPamtQoGpVhzrUzTOu5A6NlozOSiZipCEVCow==
+  dependencies:
+    "@types/tern" "*"
+
+"@types/estree@*":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
+  integrity sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
 
 "@types/fs-extra@5.0.5":
   version "5.0.5"
@@ -1042,6 +1054,13 @@
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-5.5.0.tgz#146c2a29ee7d3bae4bf2fcb274636e264c813c45"
   integrity sha512-41qEJgBH/TWgo5NFSvBCJ1qkoi3Q6ONSF2avrHq1LVEZfYpdHmj0y9SuTK+u9ZhG1sYQKBL1AWXKyLWP4RaUoQ==
+
+"@types/tern@*":
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/@types/tern/-/tern-0.23.0.tgz#144326f7a53b013a7dcbf770f6026e075febbd01"
+  integrity sha512-klmHtUmX+in4DA8l+Hj/zFO8M3g+otgQ9n7AfiEJ3Er9xjxjEsidKVyifLV4klwVu/X7qh8oIFY4d+GNgZiR7Q==
+  dependencies:
+    "@types/estree" "*"
 
 "@types/through@*":
   version "0.0.29"

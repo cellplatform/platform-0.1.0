@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@platform/react": "0.1.0",
+    "@types/codemirror": "0.0.72",
     "@types/graphql": "14.0.7",
     "@uiharness/electron": "0.4.6",
     "graphiql": "0.13.0",
