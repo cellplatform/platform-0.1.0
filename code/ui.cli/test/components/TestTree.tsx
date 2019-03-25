@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { COLORS, css, t } from '../../src/common';
+import { color, COLORS, css, t } from '../../src/common';
 import { TreeView } from '../../src/components/primitives';
 import { init as initCommandLine } from '../cli';
 import { Icons } from './Icons';
@@ -92,6 +92,7 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
       tree: css({
         width: 240,
         display: 'flex',
+        borderRight: `solid 1px ${color.format(0.25)}`,
       }),
     };
     return (
