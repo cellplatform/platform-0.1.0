@@ -13,7 +13,6 @@ const styles = {
     color: COLORS.WHITE,
     border: 'none',
   },
-
   '.toolbar-button': {
     background: 'none',
     border: `solid 1px ${color.format(0.1)}`,
@@ -24,6 +23,12 @@ const styles = {
     paddingBottom: 5,
     paddingLeft: 15,
     paddingRight: 15,
+  },
+
+  '.docExplorerShow': {
+    background: COLORS.DARK,
+    color: COLORS.WHITE,
+    border: 'none',
   },
 
   '.execute-button-wrap': {
