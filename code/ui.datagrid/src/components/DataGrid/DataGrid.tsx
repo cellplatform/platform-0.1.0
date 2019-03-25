@@ -3,7 +3,7 @@ import '../../styles';
 import { DefaultSettings } from 'handsontable';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, debounceTime } from 'rxjs/operators';
 
 import { Grid } from '../../api';
 import {
@@ -137,6 +137,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     events.focus$
       .pipe(
         takeUntil(this.unmounted$),
+        debounceTime(0),
+        filter(e => e.to !== document.body),
         filter(e => !containsFocus(this)),
       )
       .subscribe(e => this.grid.deselect());
