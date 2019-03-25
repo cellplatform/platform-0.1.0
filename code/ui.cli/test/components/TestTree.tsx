@@ -1,16 +1,6 @@
-import { merge, Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { COLORS, css, t } from '../../src/common';
 import { TreeView } from '../../src/components/primitives';
@@ -63,7 +53,7 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
     const click$ = mouseEvents$.pipe(filter(e => e.type === 'DOWN'));
 
     mouseEvents$.subscribe(e => {
-      console.log('e', e);
+      // console.log('e', e);
     });
 
     mouseEvents$
@@ -128,6 +118,9 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
   };
 }
 
+/**
+ * Builds a <TreeView> data structure for the given command.
+ */
 function buildTree(command: t.ICommand, options: { parent?: t.ITreeNode } = {}) {
   const parent: t.ITreeNode = options.parent || {
     id: `cmd:${command.id}`,
@@ -148,8 +141,6 @@ function buildTree(command: t.ICommand, options: { parent?: t.ITreeNode } = {}) 
     }
     return node;
   });
-
-  console.log('root', command);
 
   return parent;
 }
