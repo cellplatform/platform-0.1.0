@@ -1,7 +1,7 @@
 /**
- * Handsomtable.
- *    https://github.com/handsontable/handsontable
- *    https://github.com/handsontable/react-handsontable (not used, ref only)
+ * Handsontable
+ *  - https://github.com/handsontable/handsontable
+ *  - https://github.com/handsontable/react-handsontable (not used, ref only)
  */
 
 // HACK - was experiencing a load error related to the module not found.
