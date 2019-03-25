@@ -1,0 +1,32 @@
+{
+  "name": "@platform/ui.grqphql",
+  "version": "0.0.0",
+  "description": "UI components for working with GraphQL.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build $@",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/react": "0.1.0",
+    "@types/graphql": "14.0.7",
+    "@uiharness/electron": "0.4.6",
+    "graphiql": "0.13.0",
+    "graphql": "14.1.1"
+  },
+  "devDependencies": {
+    "@uiharness/dev": "0.2.16",
+    "typescript": "^3.3.4000"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}
