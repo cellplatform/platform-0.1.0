@@ -63,6 +63,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - ui (components)
   - [@platform/ui.cli](/code/ui.cli)
   - [@platform/ui.editor](/code/ui.editor)
+  - [@platform/ui.graphql](/code/ui.graphql)
   - [@platform/ui.icon](/code/ui.icon)
   - [@platform/ui.object](/code/ui.object)
   - [@platform/ui.panel](/code/ui.panel)
