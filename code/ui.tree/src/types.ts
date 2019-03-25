@@ -97,7 +97,7 @@ export type RenderTreeIconArgs<T extends ITreeNode = ITreeNode> = {
 };
 
 /**
- * EVENTS
+ * [Events]
  */
 export type TreeNodeMouseEvent<T extends ITreeNode = ITreeNode> = MouseEvent & {
   target: 'NODE' | 'TWISTY' | 'DRILL_IN' | 'PARENT';

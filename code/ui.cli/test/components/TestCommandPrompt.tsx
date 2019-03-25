@@ -30,7 +30,7 @@ export class TestCommandPrompt extends React.PureComponent<
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    const cli$ = this.cli.state.changed$.pipe(takeUntil(this.unmounted$));
+    const cli$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
 
     cli$.subscribe(e => {
       // console.log('🌳 EVENT', e);
@@ -62,6 +62,7 @@ export class TestCommandPrompt extends React.PureComponent<
    * [Render]
    */
   public render() {
+    const cli = this.cli;
     const styles = {
       base: css({ flex: 1 }),
       prompt: css({
@@ -73,10 +74,10 @@ export class TestCommandPrompt extends React.PureComponent<
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.prompt}>
-          <CommandPrompt ref={this.promptRef} cli={this.cli.state} />
+          <CommandPrompt ref={this.promptRef} cli={cli} />
         </div>
         <div {...styles.body}>
-          <CommandHelpList cli={this.cli.state} onCommandClick={this.handleHelpClick} />
+          <CommandHelpList cli={cli} onCommandClick={this.handleHelpClick} />
         </div>
       </div>
     );

@@ -9,5 +9,5 @@ export function init(args: {}) {
     },
   });
 
-  return { state };
+  return state;
 }

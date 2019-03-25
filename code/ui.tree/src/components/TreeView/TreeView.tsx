@@ -1,17 +1,16 @@
+import * as React from 'react';
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
-
-import * as React from 'react';
 
 import {
   css,
   GlamorValue,
   ITreeNode,
   R,
+  t,
   tree as treeUtil,
   TreeNodeMouseEvent,
   TreeNodeMouseEventHandler,
-  t,
   value as valueUtil,
 } from '../../common';
 import * as themes from '../../themes';
@@ -28,6 +27,7 @@ export type ITreeViewProps = {
   renderIcon?: t.RenderTreeIcon;
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
+  mouseEvents$?: Subject<TreeNodeMouseEvent>;
   style?: GlamorValue;
   onNodeMouse?: TreeNodeMouseEventHandler;
 };
@@ -49,18 +49,26 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
   public state: ITreeViewState = {};
   private unmounted$ = new Subject();
-  private _events$ = new Subject<TreeNodeMouseEvent<any>>();
-  public readonly events$ = this._events$.pipe(
+  private _mouseEvents$ = new Subject<TreeNodeMouseEvent>();
+  public readonly mouseEvents$ = this._mouseEvents$.pipe(
     takeUntil(this.unmounted$),
     share(),
   );
 
   public componentDidMount() {
+    const { mouseEvents$ } = this.props;
+
+    // Bubble mouse-events through given subject.
+    if (mouseEvents$) {
+      this.mouseEvents$.pipe(takeUntil(this.unmounted$)).subscribe(e => mouseEvents$.next(e));
+    }
+
     this.updatePath();
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
+    this.unmounted$.complete();
   }
 
   public componentDidUpdate(prev: ITreeViewProps) {
@@ -221,7 +229,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     if (onNodeMouse) {
       onNodeMouse(e);
     }
-    this._events$.next(e);
+    this._mouseEvents$.next(e);
   };
 
   private updatePath() {
