@@ -870,6 +870,18 @@
     react "16.8.5"
     react-dom "16.8.5"
 
+"@platform/react@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.0.tgz#204a1863fa012e33a90a9d43f6a7e8e08498a31b"
+  integrity sha512-B/17efsWYMNvYC27BOwUftTMg95CV5asBhj08ipmI3Aw/+08LxdTFc0ccjc780oWxzmQaAtFwqFL5p2mAARYqA==
+  dependencies:
+    "@platform/css" "0.0.19"
+    "@platform/util.is" "0.0.44"
+    "@types/react" "16.8.8"
+    "@types/react-dom" "16.8.3"
+    react "16.8.5"
+    react-dom "16.8.5"
+
 "@platform/ts.libs@3.3.8":
   version "3.3.8"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.3.8.tgz#49870a3262b2ccddf5226dd43288f64ff158ef9c"

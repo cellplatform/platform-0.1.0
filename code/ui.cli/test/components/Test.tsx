@@ -3,6 +3,7 @@ import '@babel/polyfill';
 
 import { TestCommandHelp } from './TestCommandHelp';
 import { TestCommandPrompt } from './TestCommandPrompt';
+import { TestTree } from './TestTree';
 
 import * as React from 'react';
 import { Subject } from 'rxjs';
@@ -10,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue, Button, Hr } from '../common';
 
 const STORAGE = { VIEW: 'TEST/REACT/view' };
-type View = 'prompt' | 'list';
+type View = 'prompt' | 'list' | 'tree';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {
@@ -76,6 +77,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.left}>
           {this.buttonView('prompt')}
           {this.buttonView('list')}
+          {this.buttonView('tree')}
         </div>
         <div {...styles.main}>{this.renderView()}</div>
       </div>
@@ -91,6 +93,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
       case 'list':
         return <TestCommandHelp />;
+
+      case 'tree':
+        return <TestTree />;
 
       default:
         return <div>View '{view}'' not supported</div>;

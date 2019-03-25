@@ -807,6 +807,22 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
+"@platform/electron@0.1.19":
+  version "0.1.19"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.19.tgz#a97065a3cb49cab4ca533f418f1bfb42f346b45a"
+  integrity sha512-KTG01T3xSjzgodfGs4IEwFdJNjuKiopzAVhYludnj5vpZbL0cy4dO9VZTkrK2LP5eycsvnHuUMOlJ/gKZCmUMw==
+  dependencies:
+    "@babel/polyfill" "7.4.0"
+    "@platform/fs" "0.0.42"
+    "@platform/log" "0.0.95"
+    "@platform/react" "0.1.0"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.2.0"
+    electron-log "3.0.1"
+    electron-store "3.0.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+
 "@platform/exec@0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.0.3.tgz#daebaa800d7d2a8518b510e939c83cc56e731123"
@@ -870,6 +886,18 @@
     react "16.8.5"
     react-dom "16.8.5"
 
+"@platform/react@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.0.tgz#204a1863fa012e33a90a9d43f6a7e8e08498a31b"
+  integrity sha512-B/17efsWYMNvYC27BOwUftTMg95CV5asBhj08ipmI3Aw/+08LxdTFc0ccjc780oWxzmQaAtFwqFL5p2mAARYqA==
+  dependencies:
+    "@platform/css" "0.0.19"
+    "@platform/util.is" "0.0.44"
+    "@types/react" "16.8.8"
+    "@types/react-dom" "16.8.3"
+    react "16.8.5"
+    react-dom "16.8.5"
+
 "@platform/ts.libs@3.3.8":
   version "3.3.8"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.3.8.tgz#49870a3262b2ccddf5226dd43288f64ff158ef9c"
@@ -901,6 +929,14 @@
   integrity sha512-iMLAvpVYLHIIC1ktlCO56YFO+EpQMvWEgMzuVKzUhTnuN47w7a7KJrLU5z3+jLnd2uEzOLovXv3uQhvf0PMqtg==
   dependencies:
     "@platform/react" "0.0.29"
+    react-inspector "3.0.0"
+
+"@platform/ui.object@0.0.70":
+  version "0.0.70"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.70.tgz#ff231762b0e4615c2a9e4ca4265e891ea640b054"
+  integrity sha512-fL11jp8pWXkX7o6E1ReZczULX7GbncWc6g6ibWd4IKZOBq+c3KE4GEh/GV2rRQOj2yu8yHPXruz4rWhXO8+Cow==
+  dependencies:
+    "@platform/react" "0.1.0"
     react-inspector "3.0.0"
 
 "@platform/util.is@0.0.44":

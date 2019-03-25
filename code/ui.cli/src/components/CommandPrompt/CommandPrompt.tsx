@@ -44,11 +44,8 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
     changed$
       // Handle invoke requests.
-      // .pipe(filter(e => e.invoked && !e.namespace))
       .pipe(filter(e => e.invoked))
       .subscribe(e => this.cli.invoke());
-
-    console.log(`\nTODO 🐷   Take Key Commands from props \n`);
 
     keydown$
       // Focus on CMD+L
