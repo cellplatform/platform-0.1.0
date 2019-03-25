@@ -290,33 +290,40 @@ describe('CommandState', () => {
     });
 
     it('fires `invoking` | `invoked` events', async () => {
-      const list: t.CommandStateEvent[] = [];
+      const events: t.CommandStateEvent[] = [];
       const root = Command.create('root').add('run');
       const state = CommandState.create({ root, getInvokeArgs });
       state.change({ text: 'run' });
 
-      state.events$.subscribe(e => list.push(e));
+      state.events$.subscribe(e => events.push(e));
       const res = await state.invoke({ stepIntoNamespace: false });
 
-      expect(list.length).to.eql(2);
+      expect(events.length).to.eql(2);
       expect(res.cancelled).to.eql(false);
 
-      expect(list[0].type).to.eql('COMMAND/state/invoking');
-      expect(list[1].type).to.eql('COMMAND/state/invoked');
-      expect(list[1].payload).to.eql(res);
+      expect(events[0].type).to.eql('COMMAND/state/invoking');
+      expect(events[1].type).to.eql('COMMAND/state/invoked');
+      expect(events[1].payload).to.eql(res);
     });
 
     it('cancels invoke operation from BEFORE event', async () => {
+      const events: t.CommandStateEvent[] = [];
       let count = 0;
       const root = Command.create('root').add('run', e => count++);
       const state = CommandState.create({ root, getInvokeArgs });
       state.change({ text: 'run' });
 
+      state.events$.subscribe(e => events.push(e));
       state.invoking$.subscribe(e => e.cancel());
       const res = await state.invoke();
 
       expect(count).to.eql(0);
       expect(res.cancelled).to.eql(true);
+
+      expect(events[2].type).to.eql('COMMAND/state/invoked');
+      const e = events[2].payload as t.ICommandStateInvokedEvent['payload'];
+      expect(e.cancelled).to.eql(true);
+      expect(e.invoked).to.eql(false);
     });
 
     it('no namespace change', async () => {

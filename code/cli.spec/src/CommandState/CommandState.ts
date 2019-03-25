@@ -231,7 +231,7 @@ export class CommandState implements t.ICommandState {
       return result;
     }
 
-    // Fire BEFORE event.
+    // Fire BEFORE event and exit if any listeners cancel the operation.
     let isCancelled = false;
     events$.next({
       type: 'COMMAND/state/invoking',
@@ -245,14 +245,14 @@ export class CommandState implements t.ICommandState {
       },
     });
     if (isCancelled) {
-      return { ...result, invoked: true, cancelled: true };
+      result = { ...result, invoked: false, cancelled: true };
+      events$.next({ type: 'COMMAND/state/invoked', payload: result });
+      return result;
     }
 
     // Invoke the command.
     const response = await command.invoke(args);
     result = { ...result, invoked: true, response };
-
-    // Fire AFTER event.
     events$.next({ type: 'COMMAND/state/invoked', payload: result });
 
     // Finish up.
