@@ -22,8 +22,9 @@
     "graphql": "14.1.1"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.2.16",
-    "typescript": "^3.3.4000"
+    "@platform/test": "0.0.35",
+    "@platform/ts": "3.3.71",
+    "@uiharness/dev": "0.2.16"
   },
   "files": [
     "lib"
