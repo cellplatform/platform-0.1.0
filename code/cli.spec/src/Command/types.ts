@@ -65,24 +65,28 @@ export type ICommandHandlerArgs<P extends object = any, A extends object = any> 
 /**
  * [Invoke]
  */
-export type InvokeCommand<P extends object = any, A extends object = any> = <R = any>(options: {
+export type InvokeCommand<P extends object = any, A extends object = any> = <R = any>(
+  options: IInvokeCommandArgs<P, A>,
+) => IInvokedCommandPromise<P, A, R>;
+export type IInvokeCommandArgs<P extends object = any, A extends object = any> = {
   props: P;
   args?: string | ICommandArgs<A>;
   timeout?: number;
-}) => ICommandInvokePromise<P, A, R>;
+};
 
 /**
  * The response from [invoking] of the handler.
  */
-export type ICommandInvokePromise<P extends object, A extends object, R> = Promise<
-  ICommandInvokeResponse<P, A, R>
+export type IInvokedCommandPromise<P extends object, A extends object, R> = Promise<
+  IInvokedCommandResponse<P, A, R>
 > &
-  ICommandInvokeResponse<P, A, R>;
-export type ICommandInvokeResponse<P extends object, A extends object, R> = {
+  IInvokedCommandResponse<P, A, R>;
+export type IInvokedCommandResponse<P extends object, A extends object, R> = {
   events$: Observable<CommandInvokeEvent>;
   complete$: Observable<{}>;
   isComplete: boolean;
   isTimedOut: boolean;
+  timeout: number;
   props: P;
   args: ICommandArgs<A>;
   result?: R;

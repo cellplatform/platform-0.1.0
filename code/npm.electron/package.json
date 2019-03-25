@@ -1,0 +1,28 @@
+{
+  "name": "@platform/npm.electron",
+  "version": "0.0.2",
+  "description": "Tools for working eith NPM within an electron app.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build $@",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/react": "0.1.0",
+    "@uiharness/electron": "0.4.6"
+  },
+  "devDependencies": {
+    "@uiharness/dev": "0.2.16"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

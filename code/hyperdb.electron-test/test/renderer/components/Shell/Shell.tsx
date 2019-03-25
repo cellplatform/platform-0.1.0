@@ -2,17 +2,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
-import { CommandClickEvent, Help } from '../cli.Help';
-
-import { color, COLORS, css, GlamorValue, ICommand, renderer, str, t } from '../../common';
-import { CommandPrompt } from '../cli.CommandPrompt';
-import { JoinDialog } from '../Dialog.Join';
+import { color, COLORS, css, GlamorValue, ICommand, renderer, t } from '../../common';
 import { ErrorDialog } from '../Dialog.Error';
+import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
+import { Help } from '../Help';
+import { CommandClickEvent, CommandPrompt } from '../primitives';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
 import { ShellMain } from '../Shell.Main';
-
-const AUTO_CONNECT = false;
 
 export type IShellProps = {
   style?: GlamorValue;
@@ -21,7 +18,7 @@ export type IShellProps = {
 export type IShellState = {
   dialog?: 'JOIN' | 'ERROR';
   selectedDir?: string; // database [dir].
-  error?: { message: string; command: ICommand };
+  error?: { message: string; command?: ICommand };
   helpDebug?: any;
 };
 
@@ -42,7 +39,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     const unmounted$ = this.unmounted$;
     const store$ = this.store.change$.pipe(takeUntil(unmounted$));
     const state$ = this.state$.pipe(takeUntil(unmounted$));
-    const cli$ = this.cli.state.change$.pipe(takeUntil(unmounted$));
+    const cli$ = this.cli.state.changed$.pipe(takeUntil(unmounted$));
     const command$ = this.cli.events$.pipe(takeUntil(unmounted$));
 
     state$.subscribe(e => this.setState(e));
@@ -66,15 +63,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     dbChange$.subscribe(e => this.updateState());
 
     // Redraw screen each time the CLI state changes.
-    cli$.pipe(debounceTime(0)).subscribe(e => this.forceUpdate());
-
-    cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
-      const { args } = e.props;
-      const command = e.props.command as t.ICommand<t.ITestCommandProps>;
-      const selection = this.selection;
-      const db = selection ? selection.db : undefined;
-      this.cli.invoke({ command, args, db });
-    });
+    // cli$.pipe(debounceTime(0)).subscribe(e => this.forceUpdate());
 
     /**
      * Handle callbacks from within invoking commands.
@@ -85,7 +74,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         map(e => e as t.ITestSelectDbEvent),
         map(e => e.payload.dir),
       )
-      .subscribe(selectedDir => this.state$.next({ selectedDir }));
+      .subscribe(selectedDir => {
+        this.state$.next({ selectedDir });
+      });
 
     command$
       .pipe(
@@ -243,13 +234,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       <div {...styles.base}>
         <div {...styles.body}>{elBody}</div>
         <div {...styles.footer}>
-          <CommandPrompt
-            ref={this.commandPromptRef}
-            text={cli.text}
-            namespace={cli.namespace}
-            onChange={cli.change}
-            onAutoComplete={this.onAutoComplete}
-          />
+          <CommandPrompt ref={this.commandPromptRef} cli={cli} />
         </div>
       </div>
     );
@@ -288,8 +273,10 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     // NB: Handled by command now.
   };
 
-  private handleSelect = (e: ShellIndexSelectEvent) => {
-    this.state$.next({ selectedDir: e.dir });
+  private handleSelect = async (e: ShellIndexSelectEvent) => {
+    const selectedDir = e.dir;
+    this.state$.next({ selectedDir });
+    this.store.set('selectedDatabase', selectedDir);
   };
 
   private clearDialog = () => {
@@ -297,17 +284,17 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
     this.focusCommandPrompt();
   };
 
-  private onAutoComplete = () => {
-    const cli = this.cli.state;
-    if (cli.command) {
-      return;
-    }
-    const root = cli.namespace ? cli.namespace.command : cli.root;
-    const match = root.children.find(c => str.fuzzy.isMatch(cli.text, c.name));
-    if (match) {
-      cli.change({ text: match.name });
-    }
-  };
+  // private onAutoComplete = () => {
+  //   const cli = this.cli.state;
+  //   if (cli.command) {
+  //     return;
+  //   }
+  //   const root = cli.namespace ? cli.namespace.command : cli.root;
+  //   const match = root.children.find(c => str.fuzzy.isMatch(cli.text, c.name));
+  //   if (match) {
+  //     cli.change({ text: match.name });
+  //   }
+  // };
 
   private handleHelpCommandClick = (e: CommandClickEvent) => {
     this.cli.state.change({ text: e.cmd.name });

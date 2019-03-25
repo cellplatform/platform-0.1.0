@@ -2,28 +2,31 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, ICommand, ICommandState, str, t } from '../../common';
+import { color, css, GlamorValue, str, t } from '../../common';
 
-export type IHelpProps = {
-  cli: ICommandState;
+export type ICommandHelpListProps = {
+  cli: t.ICommandState;
   style?: GlamorValue;
   onCommandClick?: t.CommandClickEventHandler;
 };
-export type IHelpState = {};
+export type ICommandHelpListState = {};
 
-export class Help extends React.PureComponent<IHelpProps, IHelpState> {
-  public state: IHelpState = {};
+export class CommandHelpList extends React.PureComponent<
+  ICommandHelpListProps,
+  ICommandHelpListState
+> {
+  public state: ICommandHelpListState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<IHelpState>();
+  private state$ = new Subject<ICommandHelpListState>();
 
   /**
    * [Lifecycle]
    */
-  constructor(props: IHelpProps) {
+  constructor(props: ICommandHelpListProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    const change$ = this.cli.change$.pipe(takeUntil(this.unmounted$));
-    change$.subscribe(e => this.forceUpdate());
+    const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
+    changed$.subscribe(e => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -66,19 +69,6 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
         position: 'relative',
         Flex: 'vertical',
       }),
-      title: css({
-        fontWeight: 'bold',
-        marginBottom: 5,
-        paddingBottom: 5,
-        borderBottom: `solid 4px ${color.format(-0.05)}`,
-        paddingLeft: 5,
-        textTransform: 'uppercase',
-        fontSize: 12,
-      }),
-      body: css({
-        Flex: 'vertical-spaceBetween',
-        flex: 1,
-      }),
       list: css({
         marginLeft: 5,
         lineHeight: 1.5,
@@ -114,10 +104,7 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div {...styles.title}>Help</div>
-        <div {...styles.body}>
-          <div {...styles.list}>{elList}</div>
-        </div>
+        <div {...styles.list}>{elList}</div>
       </div>
     );
   }
@@ -125,7 +112,7 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
   /**
    * [Handlers]
    */
-  private commandClickHandler = (cmd: ICommand) => {
+  private commandClickHandler = (cmd: t.ICommand) => {
     return () => {
       const { onCommandClick } = this.props;
       if (onCommandClick) {
@@ -136,10 +123,10 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
 }
 
 /**
- * [INTERNAL]
+ * [Helpers]
  */
 
-function matchCommands(input: string, parent: ICommand) {
+function matchCommands(input: string, parent: t.ICommand) {
   return parent.children.map(cmd => {
     const { id, name } = cmd;
     const isMatch = str.fuzzy.isMatch(input, name);

@@ -16,13 +16,6 @@ export type ITestCommandLine = {
   state: ICommandState;
   events$: Subject<CommandLineEvent>;
   databases: IDbRendererFactory;
-  invoke(args: ITestCommandLineInvokeArgs): any;
-};
-
-export type ITestCommandLineInvokeArgs = {
-  command: ICommand<ITestCommandProps>;
-  args: ICommandArgs;
-  db?: ITestRendererDb;
 };
 
 export type ITestCommandProps = {
@@ -53,7 +46,7 @@ export type CommandLineEvent =
 
 export type ITestErrorEvent = {
   type: 'CLI/error';
-  payload: { message: string; command: ICommand };
+  payload: { message: string; command?: ICommand };
 };
 
 export type ITestSelectDbEvent = {

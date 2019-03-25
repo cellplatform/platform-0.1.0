@@ -1,53 +1,51 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, debounceTime } from 'rxjs/operators';
 
-import {
-  CommandChangeDispatcher,
-  containsFocus,
-  css,
-  events,
-  GlamorValue,
-  ICommandChangeArgs,
-  ICommandNamespace,
-} from '../../common';
-import { TextInput, TextInputChangeEvent } from '../primitives';
-import { THEMES } from './themes';
+import { GlamorValue, str, t, events } from '../../common';
+import { CommandPromptInput } from '../CommandPromptInput';
 import { ICommandPromptTheme } from './types';
 
-const FONT_SIZE = 14;
-
 export type ICommandPromptProps = {
-  text?: string;
-  namespace?: ICommandNamespace;
+  cli: t.ICommandState;
   theme?: ICommandPromptTheme | 'DARK';
   placeholder?: string;
+  keyPress$?: events.KeypressObservable;
   style?: GlamorValue;
-  onChange?: CommandChangeDispatcher;
-  onAutoComplete?: (e: {}) => void;
 };
 export type ICommandPromptState = {};
 
 export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICommandPromptState> {
   public state: ICommandPromptState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<ICommandPromptState>();
+  private state$ = new Subject<Partial<ICommandPromptState>>();
 
-  private elInput: TextInput | undefined;
-  private elInputRef = (ref: TextInput) => (this.elInput = ref);
+  private input: CommandPromptInput | undefined;
+  private inputRef = (ref: CommandPromptInput) => (this.input = ref);
 
   /**
    * [Lifecycle]
    */
-
-  constructor(props: ICommandPromptProps) {
-    super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-
-    const keydown$ = events.keyPress$.pipe(
+  public componentWillMount() {
+    // Setup observables.
+    const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
+    const keydown$ = (this.props.keyPress$ || events.keyPress$).pipe(
       takeUntil(this.unmounted$),
       filter(e => e.isPressed === true),
     );
+
+    // Update state.
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+
+    changed$
+      // Redraw on CLI changes.
+      .pipe(debounceTime(0))
+      .subscribe(e => this.forceUpdate());
+
+    changed$
+      // Handle invoke requests.
+      .pipe(filter(e => e.invoked))
+      .subscribe(e => this.cli.invoke());
 
     keydown$
       // Focus on CMD+L
@@ -63,7 +61,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     keydown$
       // Invoke on [Enter]
       .pipe(filter(e => e.key === 'Enter'))
-      .subscribe(e => this.fireInvoke());
+      .subscribe(e => this.invoke());
 
     keydown$
       // Clear on CMD+K
@@ -72,24 +70,8 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         filter(e => this.isFocused),
       )
       .subscribe(e => {
-        const clearNamespace = !Boolean(this.text);
+        const clearNamespace = !Boolean(this.cli.text);
         this.clear({ clearNamespace });
-      });
-
-    const tab$ = keydown$.pipe(
-      filter(e => e.key === 'Tab'),
-      filter(() => this.isFocused),
-    );
-    tab$.subscribe(e => e.preventDefault());
-
-    tab$
-      // Fire auto-complete event.
-      .pipe(filter(e => Boolean(this.text)))
-      .subscribe(e => {
-        const { onAutoComplete } = this.props;
-        if (onAutoComplete) {
-          onAutoComplete({});
-        }
       });
   }
 
@@ -100,109 +82,67 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   /**
    * [Properties]
    */
-  public get text() {
-    return this.props.text || '';
+  public get cli() {
+    return this.props.cli;
   }
 
   public get isFocused() {
-    return containsFocus(this);
-  }
-
-  private get theme() {
-    const { theme = 'DARK' } = this.props;
-    if (typeof theme === 'object') {
-      return theme;
-    }
-    switch (theme) {
-      case 'DARK':
-        return THEMES.DARK;
-    }
-    throw new Error(`Theme '${theme}' not supported`);
+    return this.input ? this.input.isFocused : false;
   }
 
   /**
    * [Methods]
    */
   public focus = () => {
-    if (this.elInput) {
-      this.elInput.focus();
+    if (this.input) {
+      this.input.focus();
     }
   };
 
-  public clear(args: { clearNamespace?: boolean } = {}) {
+  public clear = (args: { clearNamespace?: boolean } = {}) => {
     const namespace = args.clearNamespace ? false : undefined;
     this.fireChange({ text: '', namespace });
-  }
+  };
+
+  public invoke = () => {
+    this.fireChange({ text: this.cli.text, invoked: true });
+  };
 
   /**
    * [Render]
    */
-
   public render() {
-    const { placeholder = 'command', namespace } = this.props;
-    const theme = this.theme;
-    const styles = {
-      base: css({
-        position: 'relative',
-        boxSizing: 'border-box',
-        flex: 1,
-        height: 32,
-        fontSize: FONT_SIZE,
-        Flex: 'horizontal-center-start',
-        paddingLeft: 10,
-      }),
-      namespace: css({
-        color: theme.namespaceColor,
-        marginRight: 4,
-      }),
-      prefix: css({
-        color: theme.prefixColor,
-        userSelect: 'none',
-        marginRight: 5,
-        fontWeight: 600,
-      }),
-      textbox: css({
-        flex: 1,
-      }),
-    };
-
-    const elNamespace = namespace && <div {...styles.namespace}>{namespace.toString()}</div>;
-
+    const { theme, placeholder, style } = this.props;
+    const cli = this.cli;
     return (
-      <div {...css(styles.base, this.props.style)} onClick={this.focus}>
-        {elNamespace}
-        <div {...styles.prefix}>{'>'}</div>
-        <TextInput
-          ref={this.elInputRef}
-          style={styles.textbox}
-          onChange={this.handleChange}
-          value={this.text}
-          valueStyle={{ color: theme.color }}
-          placeholder={placeholder}
-          placeholderStyle={{ color: theme.placeholderColor }}
-        />
-      </div>
+      <CommandPromptInput
+        ref={this.inputRef}
+        style={style}
+        theme={theme}
+        placeholder={placeholder}
+        text={cli.text}
+        namespace={cli.namespace}
+        keyPress$={this.props.keyPress$}
+        onChange={cli.change}
+        onAutoComplete={this.handleAutoComplete}
+      />
     );
   }
 
   /**
    * [Handlers]
    */
-
-  private fireChange(args: { text?: string; invoked?: boolean; namespace?: boolean }) {
-    const { invoked, text = '', namespace } = args;
-    const { onChange } = this.props;
-    const e: ICommandChangeArgs = { text, invoked, namespace };
-    if (onChange) {
-      onChange(e);
+  private handleAutoComplete = () => {
+    const cli = this.cli;
+    const root = cli.namespace ? cli.namespace.command : cli.root;
+    const match = root.children.find(c => str.fuzzy.isMatch(cli.text, c.name));
+    if (match) {
+      cli.change({ text: match.name });
     }
-  }
-
-  private fireInvoke = () => {
-    this.fireChange({ text: this.text, invoked: true });
   };
 
-  private handleChange = async (e: TextInputChangeEvent) => {
-    this.fireChange({ text: e.to });
+  private fireChange = (args: { text?: string; invoked?: boolean; namespace?: boolean }) => {
+    const e = CommandPromptInput.toChangeArgs(args);
+    this.cli.change(e);
   };
 }

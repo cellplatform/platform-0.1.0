@@ -3,7 +3,6 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import {
-  color,
   CommandChangeDispatcher,
   containsFocus,
   css,
@@ -18,21 +17,28 @@ import { ICommandPromptTheme } from './types';
 
 const FONT_SIZE = 14;
 
-export type ICommandPromptProps = {
+export type ICommandPromptInputProps = {
   text?: string;
   namespace?: ICommandNamespace;
   theme?: ICommandPromptTheme | 'DARK';
   placeholder?: string;
+  keyPress$?: events.KeypressObservable;
   style?: GlamorValue;
   onChange?: CommandChangeDispatcher;
   onAutoComplete?: (e: {}) => void;
 };
-export type ICommandPromptState = {};
+export type ICommandPromptInputState = {};
 
-export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICommandPromptState> {
-  public state: ICommandPromptState = {};
+/**
+ * Non-stateful input control for a command.
+ */
+export class CommandPromptInput extends React.PureComponent<
+  ICommandPromptInputProps,
+  ICommandPromptInputState
+> {
+  public state: ICommandPromptInputState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<ICommandPromptState>();
+  private state$ = new Subject<ICommandPromptInputState>();
 
   private elInput: TextInput | undefined;
   private elInputRef = (ref: TextInput) => (this.elInput = ref);
@@ -41,46 +47,19 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    * [Lifecycle]
    */
 
-  constructor(props: ICommandPromptProps) {
-    super(props);
+  public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
-    const keydown$ = events.keyPress$.pipe(
+    const keydown$ = (this.props.keyPress$ || events.keyPress$).pipe(
       takeUntil(this.unmounted$),
       filter(e => e.isPressed === true),
     );
 
-    keydown$
-      // Focus on CMD+L
-      .pipe(
-        filter(e => e.key === 'l' && e.metaKey),
-        filter(() => !this.isFocused),
-      )
-      .subscribe(e => {
-        e.preventDefault();
-        this.focus();
-      });
-
-    keydown$
-      // Invoke on [Enter]
-      .pipe(filter(e => e.key === 'Enter'))
-      .subscribe(e => this.fireInvoke());
-
-    keydown$
-      // Clear on CMD+K
-      .pipe(
-        filter(e => e.key === 'k' && e.metaKey),
-        filter(e => this.isFocused),
-      )
-      .subscribe(e => {
-        const clearNamespace = !Boolean(this.text);
-        this.clear({ clearNamespace });
-      });
-
     const tab$ = keydown$.pipe(
       filter(e => e.key === 'Tab'),
-      filter(() => this.isFocused),
+      filter(e => this.isFocused),
     );
+
     tab$.subscribe(e => e.preventDefault());
 
     tab$
@@ -129,11 +108,6 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
       this.elInput.focus();
     }
   };
-
-  public clear(args: { clearNamespace?: boolean } = {}) {
-    const namespace = args.clearNamespace ? false : undefined;
-    this.fireChange({ text: '', namespace });
-  }
 
   /**
    * [Render]
@@ -191,19 +165,23 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    */
 
   private fireChange(args: { text?: string; invoked?: boolean; namespace?: boolean }) {
-    const { invoked, text = '', namespace } = args;
     const { onChange } = this.props;
-    const e: ICommandChangeArgs = { text, invoked, namespace };
     if (onChange) {
+      const e = CommandPromptInput.toChangeArgs(args);
       onChange(e);
     }
   }
 
-  private fireInvoke = () => {
-    this.fireChange({ text: this.text, invoked: true });
-  };
-
   private handleChange = async (e: TextInputChangeEvent) => {
     this.fireChange({ text: e.to });
   };
+
+  public static toChangeArgs(args: {
+    text?: string;
+    invoked?: boolean;
+    namespace?: boolean;
+  }): ICommandChangeArgs {
+    const { invoked, text = '', namespace } = args;
+    return { text, invoked, namespace };
+  }
 }

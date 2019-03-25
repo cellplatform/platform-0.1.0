@@ -3,11 +3,13 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { Argv } from '../Argv';
-import { t } from '../common';
+import { R, t, value as valueUtil } from '../common';
 import { Command } from '../Command/Command';
+import { DEFAULT } from '../common/constants';
 
-type ICreateCommandState = {
+type ICommandStateArgs = {
   root: Command;
+  getInvokeArgs: t.InvokeCommandArgsFactory;
 };
 
 /**
@@ -17,19 +19,20 @@ export class CommandState implements t.ICommandState {
   /**
    * [Static]
    */
-  public static create(args: ICreateCommandState) {
+  public static create(args: ICommandStateArgs) {
     return new CommandState(args);
   }
 
   /**
    * [Constructor]
    */
-  private constructor(args: ICreateCommandState) {
+  private constructor(args: ICommandStateArgs) {
     const { root } = args;
     if (!root) {
       throw new Error(`A root [Command] spec must be passed to the state constructor.`);
     }
     this._.root = root;
+    this._.getInvokeArgs = args.getInvokeArgs;
     this.change = this.change.bind(this);
   }
 
@@ -37,6 +40,7 @@ export class CommandState implements t.ICommandState {
    * [Fields]
    */
   private readonly _ = {
+    getInvokeArgs: (undefined as unknown) as t.InvokeCommandArgsFactory,
     dispose$: new Subject(),
     events$: new Subject<t.CommandStateEvent>(),
     root: (undefined as unknown) as Command,
@@ -49,14 +53,24 @@ export class CommandState implements t.ICommandState {
     takeUntil(this._.dispose$),
     share(),
   );
-  public readonly change$ = this.events$.pipe(
-    filter(e => e.type === 'COMMAND/state/change'),
-    map(e => e.payload),
+  public readonly changed$ = this.events$.pipe(
+    filter(e => e.type === 'COMMAND/state/changed'),
+    map(e => e.payload as t.ICommandStateChanged),
     distinctUntilChanged((prev, next) => equals(prev, next) && !next.invoked),
     share(),
   );
-  public readonly invoke$ = this.change$.pipe(
+  public readonly invoke$ = this.changed$.pipe(
     filter(e => e.invoked),
+    share(),
+  );
+  public readonly invoking$ = this.events$.pipe(
+    filter(e => e.type === 'COMMAND/state/invoking'),
+    map(e => e.payload as t.ICommandStateInvoking),
+    share(),
+  );
+  public readonly invoked$ = this.events$.pipe(
+    filter(e => e.type === 'COMMAND/state/invoked'),
+    map(e => e.payload as t.ICommandStateInvokeResponse),
     share(),
   );
 
@@ -122,28 +136,41 @@ export class CommandState implements t.ICommandState {
     this._.dispose$.complete();
   }
 
+  /**
+   * Changes the current state.
+   */
   public change(e: t.ICommandChangeArgs) {
     const { events$ } = this._;
     const { text, namespace } = e;
 
     // Update state.
     this._.text = text;
-
-    // Set namespace if requested.
     const command = this.command;
 
-    const setNamespace = (command: t.ICommand) => {
+    const trimNamespacePrefix = (text: string, namespace: t.ICommandNamespace) => {
+      const ns = namespace.path.map(item => item.name);
+      const parts = text.split(' ');
+      let index = 0;
+      for (const level of ns) {
+        parts[index] = parts[index] === level ? '' : parts[index];
+        index++;
+      }
+      return parts.join(' ').trim();
+    };
+
+    // Set namespace if requested.
+    const setNamespace = (text: string, command: t.ICommand) => {
       const root = this.root;
       const isLeaf = command.children.length === 0;
       const ns = isLeaf ? command.tree.parent(root) : command;
       if (!ns || ns.id === root.id) {
         return;
       }
-
       const id = ns.id;
-
+      const name = ns.name;
       const namespace: t.ICommandNamespace = {
         command: ns,
+        name,
         get path() {
           return Command.tree.toPath(root, id).slice(1);
         },
@@ -152,7 +179,7 @@ export class CommandState implements t.ICommandState {
         },
       };
       this._.namespace = namespace;
-      this._.text = isLeaf ? command.name : ''; // Reset the text as we are now witin a new namespace.
+      this._.text = trimNamespacePrefix(text, namespace); // Reset the text as we are now witin a new namespace.
     };
 
     if (
@@ -160,7 +187,7 @@ export class CommandState implements t.ICommandState {
       namespace === true &&
       !(this.namespace && this.namespace.command.id === command.id) // Not the current namespace.
     ) {
-      setNamespace(command);
+      setNamespace(text, command);
     }
 
     // Clear the namespace if requested.
@@ -172,10 +199,77 @@ export class CommandState implements t.ICommandState {
     const props = this.toObject();
     const invoked = props.command ? Boolean(e.invoked) : false;
     const payload = { props, invoked, namespace };
-    events$.next({ type: 'COMMAND/state/change', payload });
+    events$.next({ type: 'COMMAND/state/changed', payload });
 
     // Finish up.
     return this;
+  }
+
+  /**
+   * Invokes the current command, if there is one.
+   */
+  public async invoke(
+    options: t.ICommandStateInvokeArgs = {},
+  ): Promise<t.ICommandStateInvokeResponse> {
+    // Step into namespace (if required).
+    const ns = this.namespace;
+    let changedNamespace = false;
+    if (valueUtil.defaultValue(options.stepIntoNamespace, true)) {
+      this.change({ text: this.text, namespace: true });
+      changedNamespace = !R.equals(ns, this.namespace);
+    }
+
+    const { events$ } = this._;
+    const state = this.toObject();
+    const command = state.command;
+
+    // Prepare the args to pass to the command.
+    const args = { ...(await this._.getInvokeArgs(state)) };
+    args.props = options.props !== undefined ? options.props : args.props;
+    args.args = options.args !== undefined ? options.args : args.args || state.args;
+    args.timeout = options.timeout !== undefined ? options.timeout : args.timeout;
+    const timeout = valueUtil.defaultValue(args.timeout, DEFAULT.TIMEOUT);
+
+    // Ensure there is a command to invoke.
+    let result: t.ICommandStateInvokeResponse = {
+      invoked: false,
+      cancelled: false,
+      changedNamespace,
+      state,
+      props: args.props,
+      args: typeof args.args === 'object' ? args.args : Argv.parse<any>(args.args || ''),
+      timeout,
+    };
+    if (!command) {
+      return result;
+    }
+
+    // Fire BEFORE event and exit if any listeners cancel the operation.
+    let isCancelled = false;
+    events$.next({
+      type: 'COMMAND/state/invoking',
+      payload: {
+        get cancelled() {
+          return isCancelled;
+        },
+        cancel: () => (isCancelled = true),
+        state,
+        args,
+      },
+    });
+    if (isCancelled) {
+      result = { ...result, invoked: false, cancelled: true };
+      events$.next({ type: 'COMMAND/state/invoked', payload: result });
+      return result;
+    }
+
+    // Invoke the command.
+    const response = await command.invoke(args);
+    result = { ...result, invoked: true, response };
+    events$.next({ type: 'COMMAND/state/invoked', payload: result });
+
+    // Finish up.
+    return result;
   }
 
   public toString() {

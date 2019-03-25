@@ -1,16 +1,17 @@
 import '../../node_modules/@platform/css/reset.css';
 import '@babel/polyfill';
 
-import { DragTest } from './DragTest';
-import { EventsTest } from './EventsTest';
-
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, Button, Hr } from './common';
+
+import { Button, color, css, GlamorValue } from './common';
+import { DragTest } from './DragTest';
+import { EventsTest } from './EventsTest';
+import { KeyboardTest } from './KeyboardTest';
 
 const STORAGE = { VIEW: 'TEST/REACT/view' };
-type View = 'drag' | 'events';
+type View = 'drag' | 'events' | 'keyboard';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {
@@ -76,6 +77,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.left}>
           {this.buttonView('drag')}
           {this.buttonView('events')}
+          {this.buttonView('keyboard')}
         </div>
         <div {...styles.main}>{this.renderView()}</div>
       </div>
@@ -91,6 +93,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
       case 'events':
         return <EventsTest />;
+
+      case 'keyboard':
+        return <KeyboardTest />;
 
       default:
         return <div>View '{view}'' not supported</div>;
