@@ -2,17 +2,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
-import { CommandClickEvent, Help } from '../cli.Help';
-
-import { color, COLORS, css, GlamorValue, ICommand, renderer, str, t } from '../../common';
-import { CommandPrompt } from '../primitives';
-import { JoinDialog } from '../Dialog.Join';
+import { color, COLORS, css, GlamorValue, ICommand, renderer, t } from '../../common';
 import { ErrorDialog } from '../Dialog.Error';
+import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
+import { Help } from '../Help';
+import { CommandClickEvent, CommandPrompt } from '../primitives';
 import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
 import { ShellMain } from '../Shell.Main';
-
-const AUTO_CONNECT = false;
 
 export type IShellProps = {
   style?: GlamorValue;

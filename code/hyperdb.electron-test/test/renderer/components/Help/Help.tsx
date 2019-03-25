@@ -3,12 +3,12 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, css, GlamorValue, ICommand, ICommandState, str } from '../../common';
-import { ObjectView } from '../primitives';
+import { ObjectView, CommandHelpList, CommandClickEventHandler } from '../primitives';
 
-export type CommandClickEvent = {
-  cmd: ICommand;
-};
-export type CommandClickEventHandler = (e: CommandClickEvent) => void;
+// export type CommandClickEvent = {
+//   cmd: ICommand;
+// };
+// export type CommandClickEventHandler = (e: CommandClickEvent) => void;
 
 export type IHelpProps = {
   cli: ICommandState;
@@ -87,38 +87,12 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
         Flex: 'vertical-spaceBetween',
         flex: 1,
       }),
-      list: css({
-        marginLeft: 5,
-        lineHeight: 1.5,
-      }),
-      cmd: css({
-        opacity: 0.3,
-        cursor: 'pointer',
-      }),
-      cmdMatch: css({
-        opacity: 1,
-      }),
       debug: css({
         maxHeight: '50%',
         Scroll: true,
         paddingBottom: 10,
       }),
     };
-
-    const elList = this.commandList.map((item, i) => {
-      const { isMatch, cmd } = item;
-      let name = item.name;
-      name = cmd.children.length > 0 ? `${name} (${cmd.children.length})` : name;
-      return (
-        <div
-          key={i}
-          {...css(styles.cmd, isMatch && styles.cmdMatch)}
-          onClick={this.commandClickHandler(cmd)}
-        >
-          {name}
-        </div>
-      );
-    });
 
     const elDebug = debug && (
       <div {...styles.debug}>
@@ -130,24 +104,12 @@ export class Help extends React.PureComponent<IHelpProps, IHelpState> {
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.title}>Help</div>
         <div {...styles.body}>
-          <div {...styles.list}>{elList}</div>
+          <CommandHelpList cli={this.cli} onCommandClick={this.props.onCommandClick} />
           {elDebug}
         </div>
       </div>
     );
   }
-
-  /**
-   * [Handlers]
-   */
-  private commandClickHandler = (cmd: ICommand) => {
-    return () => {
-      const { onCommandClick } = this.props;
-      if (onCommandClick) {
-        onCommandClick({ cmd });
-      }
-    };
-  };
 }
 
 /**
