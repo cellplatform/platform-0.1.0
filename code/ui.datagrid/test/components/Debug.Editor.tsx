@@ -15,17 +15,17 @@ import {
 
 const PADDING = 10;
 
-export type ITestEditorProps = {};
-export type ITestEditorState = {
+export type IDebugEditorProps = {};
+export type IDebugEditorState = {
   value?: t.CellValue;
   width?: number;
   textWidth?: number;
 };
 
-export class TestEditor extends React.PureComponent<ITestEditorProps, ITestEditorState> {
-  public state: ITestEditorState = {};
+export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEditorState> {
+  public state: IDebugEditorState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<ITestEditorState>>();
+  private state$ = new Subject<Partial<IDebugEditorState>>();
 
   public static contextType = datagrid.EditorContext;
   public context!: datagrid.ReactEditorContext;

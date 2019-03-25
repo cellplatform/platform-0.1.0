@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { datagrid, GlamorValue, Handsontable as HandsontableLib, t } from '../common';
-import { TestEditor } from './Test.Editor';
+import { DebugEditor } from './Debug.Editor';
 
 export type ITestProps = {
   style?: GlamorValue;
@@ -130,7 +130,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private factory: t.GridFactory = req => {
     switch (req.type) {
       case 'EDITOR':
-        return <TestEditor />;
+        return <DebugEditor />;
 
       case 'CELL':
         const value = typeof req.value === 'object' ? JSON.stringify(req.value) : req.value;
