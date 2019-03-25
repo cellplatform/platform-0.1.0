@@ -5,7 +5,7 @@
 
 
 # ui.datagrid
-Strongly typed tabular data-grid with rich observable event stream.
+[Strongly typed](https://www.typescriptlang.org) tabular data-grid with rich [observable](https://www.learnrxjs.io) event stream.
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
