@@ -4,22 +4,25 @@ import { takeUntil } from 'rxjs/operators';
 
 import { color, css, GlamorValue, str, t } from '../../common';
 
-export type ICommandHelpProps = {
+export type ICommandHelpListProps = {
   cli: t.ICommandState;
   style?: GlamorValue;
   onCommandClick?: t.CommandClickEventHandler;
 };
-export type ICommandHelpState = {};
+export type ICommandHelpListState = {};
 
-export class CommandHelp extends React.PureComponent<ICommandHelpProps, ICommandHelpState> {
-  public state: ICommandHelpState = {};
+export class CommandHelpList extends React.PureComponent<
+  ICommandHelpListProps,
+  ICommandHelpListState
+> {
+  public state: ICommandHelpListState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<ICommandHelpState>();
+  private state$ = new Subject<ICommandHelpListState>();
 
   /**
    * [Lifecycle]
    */
-  constructor(props: ICommandHelpProps) {
+  constructor(props: ICommandHelpListProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
@@ -66,19 +69,6 @@ export class CommandHelp extends React.PureComponent<ICommandHelpProps, ICommand
         position: 'relative',
         Flex: 'vertical',
       }),
-      title: css({
-        fontWeight: 'bold',
-        marginBottom: 5,
-        paddingBottom: 5,
-        borderBottom: `solid 4px ${color.format(-0.05)}`,
-        paddingLeft: 5,
-        textTransform: 'uppercase',
-        fontSize: 12,
-      }),
-      body: css({
-        Flex: 'vertical-spaceBetween',
-        flex: 1,
-      }),
       list: css({
         marginLeft: 5,
         lineHeight: 1.5,
@@ -114,10 +104,7 @@ export class CommandHelp extends React.PureComponent<ICommandHelpProps, ICommand
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div {...styles.title}>Help</div>
-        <div {...styles.body}>
-          <div {...styles.list}>{elList}</div>
-        </div>
+        <div {...styles.list}>{elList}</div>
       </div>
     );
   }

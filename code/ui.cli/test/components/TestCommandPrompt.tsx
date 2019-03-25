@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { CommandHelp, CommandPrompt } from '../../src';
+import { CommandHelpList, CommandPrompt } from '../../src';
 import { init as initCommandLine } from '../cli';
 import { COLORS, css, GlamorValue, renderer, t } from '../common';
 
@@ -76,7 +76,7 @@ export class TestCommandPrompt extends React.PureComponent<
           <CommandPrompt ref={this.promptRef} cli={this.cli.state} />
         </div>
         <div {...styles.body}>
-          <CommandHelp cli={this.cli.state} onCommandClick={this.handleHelpClick} />
+          <CommandHelpList cli={this.cli.state} onCommandClick={this.handleHelpClick} />
         </div>
       </div>
     );
