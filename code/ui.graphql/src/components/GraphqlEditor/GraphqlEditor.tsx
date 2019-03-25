@@ -1,4 +1,5 @@
-import './styles';
+// import '../../styles';
+import '../../styles';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -41,7 +42,7 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
     };
     return (
       <div {...css(styles.base, this.props.style)} className={constants.CSS.ROOT}>
-        <GraphiQL ref={this.graphiqlRef} fetcher={graphqlFetcher}>
+        <GraphiQL ref={this.graphiqlRef} fetcher={graphqlFetcher} editorTheme={'nord'}>
           <GraphiQL.Logo>
             <div {...styles.logo} />
           </GraphiQL.Logo>

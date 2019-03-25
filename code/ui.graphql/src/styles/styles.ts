@@ -1,8 +1,9 @@
-import '../../../node_modules/graphiql/graphiql.css';
-import { css, color, constants, COLORS } from '../../common';
+import '../../node_modules/graphiql/graphiql.css';
+import './nord.css';
+import { css, color, constants, COLORS } from '../common';
 
+const CLI = COLORS.CLI;
 const ROOT = constants.CSS.ROOT;
-
 const DARK = color.create(COLORS.DARK);
 
 const styles = {
@@ -39,6 +40,19 @@ const styles = {
 
   '.CodeMirror-gutter.CodeMirror-linenumbers': {
     background: DARK.lighten(5).toRgbString(),
+    // background: DARK.darken(10).toRgbString(),
+  },
+
+  '.CodeMirror.cm-s-nord': {
+    background: DARK.darken(12).toRgbString(),
+  },
+
+  '.resultWrap': {
+    borderLeft: 'none',
+  },
+
+  '.cm-invalidchar': {
+    color: CLI.MAGENTA,
   },
 };
 
