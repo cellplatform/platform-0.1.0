@@ -10,6 +10,9 @@ const ROOT = constants.CSS.ROOT;
 const DARK = color.create(COLORS.DARK);
 
 const styles = {
+  /**
+   * Shell structure.
+   */
   '.topBar': {
     padding: 10,
     background: COLORS.DARK,
@@ -48,6 +51,14 @@ const styles = {
     boxShadow: 'none',
   },
 
+  '.resultWrap': {
+    borderLeft: 'none',
+  },
+
+  /**
+   * Code editor.
+   */
+
   '.CodeMirror-gutter.CodeMirror-foldgutter': {
     background: COLORS.DARK,
   },
@@ -62,13 +73,20 @@ const styles = {
 
   '.CodeMirror-linenumber': { color: color.format(0.4) },
 
-  '.resultWrap': {
-    borderLeft: 'none',
-  },
-
+  /**
+   * Syntax highlighting
+   */
   '.cm-invalidchar': {
     color: CLI.MAGENTA,
   },
+
+  '.cm-keyword': { color: CLI.MAGENTA },
+  '.cm-property': { color: CLI.CYAN },
+  '.cm-def': { color: CLI.WHITE },
+  '.cm-attribute': { color: CLI.LIME },
+  '.cm-number': { color: CLI.BLUE },
+  '.cm-string': { color: CLI.YELLOW },
+  '.cm-string-2': { color: CLI.YELLOW },
 };
 
 const prefix = `.${ROOT} .graphiql-container`;
