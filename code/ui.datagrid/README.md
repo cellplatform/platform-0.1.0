@@ -13,8 +13,6 @@
 ---
 
 ### Licencing
-This module wraps the `handsontable` underlying grid for table layout and infinite scrolling.
-
-The library was under [MIT](https://en.wikipedia.org/wiki/MIT_License), but then [re-licensed itself](https://github.com/handsontable/handsontable/issues/5831) during development.
-
+This module wraps the `handsontable` underlying grid for table layout and infinite scrolling.  
+The library was under [MIT](https://en.wikipedia.org/wiki/MIT_License), but then [re-licensed itself](https://github.com/handsontable/handsontable/issues/5831) during development.  
 This module references `handsontable@6.2.2` which is the last release on a clean [MIT licence](https://en.wikipedia.org/wiki/MIT_License).
