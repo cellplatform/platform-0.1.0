@@ -3,25 +3,26 @@ import '../../styles';
 import { DefaultSettings } from 'handsontable';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
-import { Editor } from '../Editor';
-import * as render from '../render';
+import { filter, takeUntil } from 'rxjs/operators';
 
+import { Grid } from '../../api';
 import {
   constants,
   css,
   events,
   GlamorValue,
   Handsontable as TableLib,
-  t,
   R,
-  value,
+  t,
   time,
+  value,
+  containsFocus,
 } from '../../common';
-import { Grid } from '../../api';
+import { Editor } from '../Editor';
+import { FactoryManager } from '../factory';
+import * as render from '../render';
 import * as hook from './hook';
 import { IGridRefsPrivate } from './types.private';
-import { FactoryManager } from '../factory';
 
 const { DEFAULTS } = constants;
 
@@ -131,6 +132,14 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     //      is caught in a reload loop which may happen with HMR.  In which case the
     //      component will be `disposed` by the time `init` is called and hence bypassed.
     time.delay(0, () => this.init());
+
+    // Clear selection when another element outside the grid receives focus.
+    events.focus$
+      .pipe(
+        takeUntil(this.unmounted$),
+        filter(e => !containsFocus(this)),
+      )
+      .subscribe(e => this.grid.deselect());
   }
 
   private init() {

@@ -17,7 +17,7 @@ import 'handsontable'; // tslint:disable-line
 /**
  * Util
  */
-export { css, color, GlamorValue, events } from '@platform/react';
+export { css, color, GlamorValue, events, containsFocus } from '@platform/react';
 export { value, time } from '@platform/util.value';
 
 /**

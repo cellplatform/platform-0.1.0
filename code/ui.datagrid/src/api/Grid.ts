@@ -246,9 +246,17 @@ export class Grid {
       });
 
     // Select the focus cell.
-    const current = this.toPosition(args.cell);
-    const selection = [...ranges, [current.row, current.column, current.row, current.column]];
-    table.selectCells(selection as any, scrollToCell);
+    const pos = this.toPosition(args.cell);
+    const current = [pos.row, pos.column, pos.row, pos.column];
+    const selection = [...ranges, current] as any;
+    table.selectCells(selection, scrollToCell);
+  }
+
+  /**
+   * Clears any selection.
+   */
+  public deselect() {
+    this._.table.deselectCell();
   }
 
   /**
