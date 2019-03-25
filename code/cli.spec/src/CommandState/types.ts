@@ -24,6 +24,7 @@ export type ICommandStateProps = {
 };
 
 export type ICommandNamespace = {
+  name: string;
   command: ICommand;
   path: ICommand[];
   toString(): string;

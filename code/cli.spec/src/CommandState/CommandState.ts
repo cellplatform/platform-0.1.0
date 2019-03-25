@@ -136,28 +136,41 @@ export class CommandState implements t.ICommandState {
     this._.dispose$.complete();
   }
 
+  /**
+   * Changes the current state.
+   */
   public change(e: t.ICommandChangeArgs) {
     const { events$ } = this._;
     const { text, namespace } = e;
 
     // Update state.
     this._.text = text;
-
-    // Set namespace if requested.
     const command = this.command;
 
-    const setNamespace = (command: t.ICommand) => {
+    const trimNamespacePrefix = (text: string, namespace: t.ICommandNamespace) => {
+      const ns = namespace.path.map(item => item.name);
+      const parts = text.split(' ');
+      let index = 0;
+      for (const level of ns) {
+        parts[index] = parts[index] === level ? '' : parts[index];
+        index++;
+      }
+      return parts.join(' ').trim();
+    };
+
+    // Set namespace if requested.
+    const setNamespace = (text: string, command: t.ICommand) => {
       const root = this.root;
       const isLeaf = command.children.length === 0;
       const ns = isLeaf ? command.tree.parent(root) : command;
       if (!ns || ns.id === root.id) {
         return;
       }
-
       const id = ns.id;
-
+      const name = ns.name;
       const namespace: t.ICommandNamespace = {
         command: ns,
+        name,
         get path() {
           return Command.tree.toPath(root, id).slice(1);
         },
@@ -166,7 +179,7 @@ export class CommandState implements t.ICommandState {
         },
       };
       this._.namespace = namespace;
-      this._.text = isLeaf ? command.name : ''; // Reset the text as we are now witin a new namespace.
+      this._.text = trimNamespacePrefix(text, namespace); // Reset the text as we are now witin a new namespace.
     };
 
     if (
@@ -174,7 +187,7 @@ export class CommandState implements t.ICommandState {
       namespace === true &&
       !(this.namespace && this.namespace.command.id === command.id) // Not the current namespace.
     ) {
-      setNamespace(command);
+      setNamespace(text, command);
     }
 
     // Clear the namespace if requested.
@@ -213,7 +226,7 @@ export class CommandState implements t.ICommandState {
     // Prepare the args to pass to the command.
     const args = { ...(await this._.getInvokeArgs(state)) };
     args.props = options.props !== undefined ? options.props : args.props;
-    args.args = options.args !== undefined ? options.args : args.args;
+    args.args = options.args !== undefined ? options.args : args.args || state.args;
     args.timeout = options.timeout !== undefined ? options.timeout : args.timeout;
     const timeout = valueUtil.defaultValue(args.timeout, DEFAULT.TIMEOUT);
 

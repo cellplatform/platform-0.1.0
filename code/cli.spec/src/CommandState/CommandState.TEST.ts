@@ -182,6 +182,21 @@ describe('CommandState', () => {
       expect(state.text).to.eql('fast'); // NB: Text is reset when changing to namespace.
     });
 
+    it('changes to deep namespace and retains args', () => {
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      state.change({ text: 'db copy fast foo --force', namespace: true });
+      const ns = state.namespace;
+
+      expect(state.command && state.command.name).to.eql('fast');
+      expect(ns && ns.command.name).to.eql('copy');
+
+      const path = (ns && ns.path.map(m => m.name)) || [];
+      expect(path).to.eql(['db', 'copy']); // Lowest level namespace.
+      expect(state.text).to.eql('fast foo --force');
+      expect(state.args).to.eql({ params: ['foo'], options: { force: true } });
+    });
+
     it('removes namespace', () => {
       const state = CommandState.create({ root, getInvokeArgs }).change({
         text: 'db',
@@ -261,7 +276,7 @@ describe('CommandState', () => {
         return 1234;
       });
       const state = CommandState.create({ root, getInvokeArgs });
-      state.change({ text: 'run' });
+      state.change({ text: 'run foo --force' });
 
       const res = await state.invoke();
 
@@ -269,6 +284,8 @@ describe('CommandState', () => {
       expect(res.state.command && res.state.command.name).to.eql('run');
 
       expect(list.length).to.eql(1);
+      expect(list[0].args).to.eql({ params: ['foo'], options: { force: true } });
+
       const response = res.response;
       expect(response && response.result).to.eql(1234);
     });
@@ -338,7 +355,7 @@ describe('CommandState', () => {
       expect(res.changedNamespace).to.eql(false);
     });
 
-    it('steps into a namespace upon invoking', async () => {
+    it('steps into a namespace upon invoking (directly)', async () => {
       const ns = Command.create('ns')
         .add('list')
         .add('run');
@@ -350,8 +367,57 @@ describe('CommandState', () => {
       expect(state.namespace).to.eql(undefined);
 
       const res = await state.invoke({ stepIntoNamespace: true }); // NB: default:true
+
       expect(state.namespace && state.namespace.command.name).to.eql('ns');
       expect(res.changedNamespace).to.eql(true);
+    });
+
+    it('steps into a namespace upon invoking (indirectly)', async () => {
+      const ns = Command.create('ns')
+        .add('list')
+        .add('run');
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, getInvokeArgs });
+      expect(state.namespace).to.eql(undefined);
+
+      state.change({ text: 'ns run foo --force' });
+      expect(state.namespace).to.eql(undefined);
+
+      const res = await state.invoke();
+
+      expect(res.changedNamespace).to.eql(true);
+      expect(state.namespace && state.namespace.command.name).to.eql('ns');
+
+      const args = { params: ['foo'], options: { force: true } };
+      expect(res.args).to.eql(args);
+      expect(state.args).to.eql(args);
+      expect(state.text).to.eql('run foo --force');
+    });
+
+    it('invokes command directy within namespace', async () => {
+      const ns = Command.create('ns')
+        .add('list')
+        .add('run');
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, getInvokeArgs });
+      expect(state.namespace).to.eql(undefined);
+
+      state.change({ text: 'ns', namespace: true });
+      expect(state.namespace && state.namespace.name).to.eql('ns');
+
+      const args = { params: ['foo'], options: { force: true } };
+      state.change({ text: 'run foo --force' });
+      expect(state.text).to.eql('run foo --force');
+      expect(state.args).to.eql(args);
+
+      const res = await state.invoke();
+
+      expect(res.changedNamespace).to.eql(true);
+      expect(state.namespace && state.namespace.command.name).to.eql('ns');
+
+      expect(res.args).to.eql(args);
+      expect(state.args).to.eql(args);
+      expect(state.text).to.eql('run foo --force');
     });
   });
 });
