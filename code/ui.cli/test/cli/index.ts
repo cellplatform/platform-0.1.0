@@ -9,22 +9,5 @@ export function init(args: {}) {
     },
   });
 
-  // const invoke: t.ITestCommandLine['invoke'] = async e => {
-  //   const { command } = e;
-  //   const props: t.ITestCommandProps = {};
-
-  //   // Step into namespace (if required).
-  //   state.change({ text: state.text, namespace: true });
-
-  //   // Invoke handler.
-  //   // if (command.handler) {
-  //   //   console.log('INVOKE', command.toString());
-  //   await command.invoke({ props });
-  //   // }
-  // };
-
-  return {
-    state,
-    // invoke,
-  };
+  return { state };
 }

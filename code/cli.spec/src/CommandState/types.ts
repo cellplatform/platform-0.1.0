@@ -9,7 +9,10 @@ export type ICommandState = ICommandStateProps & {
   events$: Observable<CommandStateEvent>;
   changed$: Observable<ICommandStateChanged>;
   invoke$: Observable<ICommandStateChanged>;
+  invoking$: Observable<ICommandStateInvoking>;
+  invoked$: Observable<ICommandStateInvokeResponse>;
   change: CommandChangeDispatcher;
+  invoke(options?: ICommandStateInvokeArgs): Promise<ICommandStateInvokeResponse>;
 };
 
 export type ICommandStateProps = {
@@ -43,11 +46,20 @@ export type InvokeCommandArgsFactory<P extends object = any, A extends object = 
   state: ICommandStateProps,
 ) => Promise<IInvokeCommandArgs<P, A>>;
 
+export type ICommandStateInvokeArgs = {
+  props?: {};
+  args?: string | ICommandArgs;
+  timeout?: number;
+  stepIntoNamespace?: boolean;
+};
+
 export type ICommandStateInvokeResponse = {
   cancelled: boolean;
+  changedNamespace: boolean;
   invoked: boolean;
   state: ICommandStateProps;
-  args: IInvokeCommandArgs;
+  props: { [key: string]: any };
+  args: ICommandArgs;
   timeout: number;
   response?: IInvokedCommandResponse<any, any, any>;
 };
@@ -72,12 +84,13 @@ export type ICommandStateChanged = {
 
 export type ICommandStateInvokingEvent = {
   type: 'COMMAND/state/invoking';
-  payload: {
-    state: ICommandStateProps;
-    args: IInvokeCommandArgs;
-    cancelled: boolean;
-    cancel(): void;
-  };
+  payload: ICommandStateInvoking;
+};
+export type ICommandStateInvoking = {
+  state: ICommandStateProps;
+  args: IInvokeCommandArgs;
+  cancelled: boolean;
+  cancel(): void;
 };
 
 export type ICommandStateInvokedEvent = {

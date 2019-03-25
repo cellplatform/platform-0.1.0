@@ -250,7 +250,7 @@ describe('CommandState', () => {
       const res = await state.invoke();
       expect(res.invoked).to.eql(false);
       expect(res.state.command).to.eql(undefined);
-      expect(res.args.props.foo).to.eql(123); // Derived from `getInvokeArgs` factory.
+      expect(res.props.foo).to.eql(123); // Derived from `getInvokeArgs` factory.
     });
 
     it('invokes the current command (with props from factory)', async () => {
@@ -333,8 +333,9 @@ describe('CommandState', () => {
       state.change({ text: 'run' });
       expect(state.namespace).to.eql(undefined);
 
-      await state.invoke({ stepIntoNamespace: true }); // NB: default:true
+      const res = await state.invoke({ stepIntoNamespace: true }); // NB: default:true
       expect(state.namespace).to.eql(undefined);
+      expect(res.changedNamespace).to.eql(false);
     });
 
     it('steps into a namespace upon invoking', async () => {
@@ -348,8 +349,9 @@ describe('CommandState', () => {
       state.change({ text: 'ns' });
       expect(state.namespace).to.eql(undefined);
 
-      await state.invoke({ stepIntoNamespace: true }); // NB: default:true
+      const res = await state.invoke({ stepIntoNamespace: true }); // NB: default:true
       expect(state.namespace && state.namespace.command.name).to.eql('ns');
+      expect(res.changedNamespace).to.eql(true);
     });
   });
 });

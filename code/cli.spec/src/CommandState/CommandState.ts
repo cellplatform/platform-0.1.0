@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { Argv } from '../Argv';
-import { t, value as valueUtil } from '../common';
+import { R, t, value as valueUtil } from '../common';
 import { Command } from '../Command/Command';
 import { DEFAULT } from '../common/constants';
 
@@ -65,12 +65,12 @@ export class CommandState implements t.ICommandState {
   );
   public readonly invoking$ = this.events$.pipe(
     filter(e => e.type === 'COMMAND/state/invoking'),
-    map(e => e.payload as t.ICommandStateInvokingEvent['payload']),
+    map(e => e.payload as t.ICommandStateInvoking),
     share(),
   );
   public readonly invoked$ = this.events$.pipe(
     filter(e => e.type === 'COMMAND/state/invoked'),
-    map(e => e.payload as t.ICommandStateInvokedEvent['payload']),
+    map(e => e.payload as t.ICommandStateInvokeResponse),
     share(),
   );
 
@@ -196,16 +196,14 @@ export class CommandState implements t.ICommandState {
    * Invokes the current command, if there is one.
    */
   public async invoke(
-    options: {
-      props?: {};
-      args?: string | t.ICommandArgs;
-      timeout?: number;
-      stepIntoNamespace?: boolean;
-    } = {},
+    options: t.ICommandStateInvokeArgs = {},
   ): Promise<t.ICommandStateInvokeResponse> {
     // Step into namespace (if required).
+    const ns = this.namespace;
+    let changedNamespace = false;
     if (valueUtil.defaultValue(options.stepIntoNamespace, true)) {
       this.change({ text: this.text, namespace: true });
+      changedNamespace = !R.equals(ns, this.namespace);
     }
 
     const { events$ } = this._;
@@ -223,8 +221,10 @@ export class CommandState implements t.ICommandState {
     let result: t.ICommandStateInvokeResponse = {
       invoked: false,
       cancelled: false,
+      changedNamespace,
       state,
-      args,
+      props: args.props,
+      args: typeof args.args === 'object' ? args.args : Argv.parse<any>(args.args || ''),
       timeout,
     };
     if (!command) {
