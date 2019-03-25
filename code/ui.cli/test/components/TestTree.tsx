@@ -1,36 +1,59 @@
+import { Button, ObjectView } from '@uiharness/ui';
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from '../common';
 
-export type ITestTreeProps = { style?: GlamorValue };
-export type ITestTreeState = {};
+import { TreeView } from '../../src/components/primitives';
+import { color, css, t, COLORS } from '../../src/common';
+import { Icons } from './Icons';
 
-export class TestTree extends React.PureComponent<ITestTreeProps, ITestTreeState> {
-  public state: ITestTreeState = {};
-  private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<ITestTreeState>>();
+const TREE: t.ITreeNode = {
+  id: 'root',
+  props: {
+    label: 'Sheet',
+    icon: 'Face',
+    header: { isVisible: false },
+  },
+  children: [
+    { id: 'child-1', props: { icon: 'Face', marginTop: 30 } },
+    { id: 'child-2', props: { icon: 'Face' } },
+    { id: 'child-3', props: { icon: 'Face' } },
+    { id: 'child-4', props: { icon: 'Face' } },
+    { id: 'child-5', props: { icon: 'Face' } },
+  ],
+};
 
-  /**
-   * [Lifecycle]
-   */
-  public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-  }
+/**
+ * Test Component
+ */
+export type ITestTreeState = {
+  tree?: t.ITreeNode;
+};
+export class TestTree extends React.PureComponent<{}, ITestTreeState> {
+  public state: ITestTreeState = { tree: TREE };
 
-  public componentWillUnmount() {
-    this.unmounted$.next();
-  }
-
-  /**
-   * [Render]
-   */
   public render() {
-    const styles = { base: css({}) };
+    const styles = {
+      base: css({
+        flex: 1,
+        Flex: 'horizontal',
+        backgroundColor: COLORS.DARK,
+      }),
+    };
     return (
-      <div {...css(styles.base, this.props.style)}>
-        <div>TestTree</div>
+      <div {...styles.base}>
+        <TreeView
+          node={this.state.tree}
+          theme={'DARK'}
+          background={'NONE'}
+          renderIcon={this.renderIcon}
+        />
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+  private renderIcon: t.RenderTreeIcon = e => {
+    return Icons[e.icon];
+  };
 }
