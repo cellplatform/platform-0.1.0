@@ -8,6 +8,7 @@ import * as t from '../../types';
  * components as `context`.
  */
 export type IEditorContext = {
+  isCancelled: boolean;
   autoCancel: boolean; // Automatically cancels on Escape key.
   readonly cell: Cell;
   readonly grid: Grid;

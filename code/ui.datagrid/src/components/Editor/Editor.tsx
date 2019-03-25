@@ -10,13 +10,6 @@ import { toGridKeypress } from '../DataGrid/hook.keyboard';
 
 const editors = Handsontable.editors as Editors;
 
-type IEditOperation = {
-  context: t.IEditorContext;
-  isCancelled?: boolean;
-};
-
-console.log(`\nTODO 🐷   MOVE isCancelled to context \n`);
-
 /**
  * Extension hook for custom editor UI components.
  *
@@ -48,7 +41,7 @@ export class Editor extends editors.TextEditor {
    * [Fields]
    */
   private readonly _ = {
-    current: undefined as IEditOperation | undefined,
+    current: undefined as t.IEditorContext | undefined,
   };
 
   /**
@@ -71,8 +64,7 @@ export class Editor extends editors.TextEditor {
   }
 
   private get context() {
-    const current = this._.current;
-    return current ? current.context : undefined;
+    return this._.current;
   }
 
   /**
@@ -122,8 +114,7 @@ export class Editor extends editors.TextEditor {
     const column = this.col;
 
     // Store state for the current edit operation.
-    const current: IEditOperation = { context };
-    this._.current = current;
+    this._.current = context;
 
     // Listener for any cancel operations applied to the [GRID/change] event.
     this.grid.events$
@@ -170,12 +161,11 @@ export class Editor extends editors.TextEditor {
       return;
     }
 
-    const context = current.context;
     const grid = this.grid;
     const row = this.row;
     const column = this.col;
     const isCancelled = current.isCancelled ? true : Boolean(restoreValue);
-    const from = context.value.from;
+    const from = current.value.from;
     const to = isCancelled ? from : this.getValue();
 
     // Destroy the editor UI component.
@@ -222,7 +212,11 @@ export class Editor extends editors.TextEditor {
     const grid = this.grid;
     const cell = this.cell;
     const complete = this.onComplete;
-    const cancel = this.onCancel;
+
+    const cancel = () => {
+      context.isCancelled = true;
+      this.onCancel();
+    };
 
     const end$ = this.refs.editorEvents$.pipe(
       filter(e => e.type === 'GRID/EDITOR/end'),
@@ -257,6 +251,7 @@ export class Editor extends editors.TextEditor {
     };
 
     const context: t.IEditorContext = {
+      isCancelled: false,
       autoCancel: true,
       grid,
       cell,
