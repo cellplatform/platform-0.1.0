@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil, debounceTime } from 'rxjs/operators';
 
-import { Grid } from '../../api';
+import { Grid, Editor } from '../../api';
 import {
   constants,
   css,
@@ -18,7 +18,6 @@ import {
   value,
   containsFocus,
 } from '../../common';
-import { Editor } from '../Editor';
 import { FactoryManager } from '../factory';
 import * as render from '../render';
 import * as hook from './hook';

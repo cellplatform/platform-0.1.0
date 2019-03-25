@@ -1,4 +1,4 @@
 export * from './types';
+export * from './api/Editor/EditorContext';
 export * from './components/DataGrid';
-export * from './components/Editor/EditorContext';
 export { Grid, Cell } from './api';

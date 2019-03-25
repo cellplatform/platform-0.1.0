@@ -4,9 +4,9 @@ import * as ReactDOM from 'react-dom';
 import { filter, share, take, takeUntil, map } from 'rxjs/operators';
 
 import { R, time, constants, Handsontable, t, events } from '../../common';
-import { IGridRefsPrivate } from '../DataGrid/types.private';
+import { IGridRefsPrivate } from '../../components/DataGrid/types.private';
 import { createProvider } from './EditorContext';
-import { toGridKeypress } from '../DataGrid/hook.keyboard';
+import { toGridKeypress } from '../../components/DataGrid/hook.keyboard';
 
 const editors = Handsontable.editors as Editors;
 

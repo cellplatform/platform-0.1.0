@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 
-import { Cell, Grid } from '../../api';
+import { Cell } from '../Cell';
+import { Grid } from '../Grid';
 import * as t from '../../types';
 
 /**
