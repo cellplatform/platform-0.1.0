@@ -1,5 +1,8 @@
+/**
+ * - https://codemirror.net/theme
+ */
 import '../../node_modules/graphiql/graphiql.css';
-import './nord.css';
+import './themes/nord.css';
 import { css, color, constants, COLORS } from '../common';
 
 const CLI = COLORS.CLI;
