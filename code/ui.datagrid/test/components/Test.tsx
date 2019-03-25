@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, css, Button, ObjectView, t } from '../common';
+import { color, css, Button, ObjectView, COLORS } from '../common';
 import { Test as TestGrid } from './Test.Grid';
+import { CommandPrompt } from '@platform/ui.cli';
+import { init as initCommandLine } from '../cli';
 
 export type ITestProps = {};
 export type ITestState = {
@@ -17,6 +19,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
   private testGrid!: TestGrid;
   private testGridRef = (ref: TestGrid) => (this.testGrid = ref);
+
+  private cli = initCommandLine({});
 
   /**
    * [Lifecycle]
@@ -63,7 +67,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       base: css({
         Absolute: 0,
         backgroundColor: color.format(-0.08),
+        Flex: 'vertical',
+      }),
+      main: css({
+        position: 'relative',
         Flex: 'horizontal',
+        flex: 1,
       }),
       left: css({
         position: 'relative',
@@ -83,40 +92,48 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         Absolute: 10,
         border: `solid 1px ${color.format(-0.2)}`,
       }),
+      footer: css({
+        backgroundColor: COLORS.DARK,
+      }),
     };
     return (
       <div {...styles.base}>
-        <div {...styles.left}>
-          <div {...styles.leftTop}>
-            {this.button('loadValues', () => this.grid.loadValues({ A3: 123 }))}
-            {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
-            {this.button('change values (prop)', () =>
-              this.testGrid.state$.next({ values: { A1: 'happy' } }),
-            )}
-            {this.button('select: A1', () => this.grid.select({ cell: 'A1' }))}
-            {this.button('select: A1 and range', () =>
-              this.grid.select({ cell: 'A1', ranges: ['B2:C4', 'C2:D7'] }),
-            )}
-            {this.button('select: bottom/right', () =>
-              this.grid.select({
-                cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
-              }),
-            )}
-            {this.button('scrollTo: A1', () => this.grid.scrollTo({ cell: 'A1' }))}
-            {this.button('scrollTo: B5', () => this.grid.scrollTo({ cell: 'B5' }))}
-            {this.button('scrollTo: bottom/right', () =>
-              this.grid.scrollTo({
-                cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
-              }),
-            )}
+        <div {...styles.main}>
+          <div {...styles.left}>
+            <div {...styles.leftTop}>
+              {this.button('loadValues', () => this.grid.loadValues({ A3: 123 }))}
+              {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
+              {this.button('change values (prop)', () =>
+                this.testGrid.state$.next({ values: { A1: 'happy' } }),
+              )}
+              {this.button('select: A1', () => this.grid.select({ cell: 'A1' }))}
+              {this.button('select: A1 and range', () =>
+                this.grid.select({ cell: 'A1', ranges: ['B2:C4', 'C2:D7'] }),
+              )}
+              {this.button('select: bottom/right', () =>
+                this.grid.select({
+                  cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
+                }),
+              )}
+              {this.button('scrollTo: A1', () => this.grid.scrollTo({ cell: 'A1' }))}
+              {this.button('scrollTo: B5', () => this.grid.scrollTo({ cell: 'B5' }))}
+              {this.button('scrollTo: bottom/right', () =>
+                this.grid.scrollTo({
+                  cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
+                }),
+              )}
+            </div>
+            <ObjectView
+              data={this.state.data}
+              expandPaths={['$', '$.selection', '$.selection.ranges']}
+            />
           </div>
-          <ObjectView
-            data={this.state.data}
-            expandPaths={['$', '$.selection', '$.selection.ranges']}
-          />
+          <div {...styles.right}>
+            <TestGrid ref={this.testGridRef} style={styles.grid} />
+          </div>
         </div>
-        <div {...styles.right}>
-          <TestGrid ref={this.testGridRef} style={styles.grid} />
+        <div {...styles.footer}>
+          <CommandPrompt cli={this.cli} theme={'DARK'} />
         </div>
       </div>
     );

@@ -1,21 +1,12 @@
 import '../../node_modules/@platform/css/reset.css';
 import '@babel/polyfill';
 
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 import { GraphqlEditor, GraphqlEditorEvent } from '../../src';
-import { color, css, GlamorValue } from './common';
+import { css, GlamorValue } from './common';
 
 /**
  * Test Component

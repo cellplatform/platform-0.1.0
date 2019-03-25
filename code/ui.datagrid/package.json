@@ -23,6 +23,7 @@
   "devDependencies": {
     "@platform/test.dom": "0.0.4",
     "@platform/ts": "3.3.71",
+    "@platform/ui.cli": "^0.0.5",
     "@uiharness/dev": "0.2.16"
   },
   "files": [
