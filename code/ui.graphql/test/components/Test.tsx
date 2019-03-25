@@ -54,7 +54,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       base: css({
         Absolute: 20,
         display: 'flex',
-        border: `solid 1px ${color.format(-0.2)}`,
       }),
     };
     return (

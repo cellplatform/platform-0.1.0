@@ -34,6 +34,12 @@ const styles = {
     border: 'none',
   },
 
+  '.variable-editor-title': {
+    background: COLORS.DARK,
+    color: COLORS.WHITE,
+    border: 'none',
+  },
+
   '.execute-button-wrap': {
     marginLeft: 0,
   },
@@ -47,13 +53,14 @@ const styles = {
   },
 
   '.CodeMirror-gutter.CodeMirror-linenumbers': {
-    background: DARK.lighten(5).toRgbString(),
-    // background: DARK.darken(10).toRgbString(),
+    background: DARK.lighten(8).toRgbString(),
   },
 
   '.CodeMirror.cm-s-nord': {
-    background: DARK.darken(12).toRgbString(),
+    background: DARK.darken(15).toRgbString(),
   },
+
+  '.CodeMirror-linenumber': { color: color.format(0.4) },
 
   '.resultWrap': {
     borderLeft: 'none',
