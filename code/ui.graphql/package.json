@@ -1,5 +1,5 @@
 {
-  "name": "@platform/ui.grqphql",
+  "name": "@platform/ui.graphql",
   "version": "0.0.0",
   "description": "UI components for working with GraphQL.",
   "main": "lib/index",
