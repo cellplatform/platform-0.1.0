@@ -211,65 +211,73 @@ export class CommandState implements t.ICommandState {
   public async invoke(
     options: t.ICommandStateInvokeArgs = {},
   ): Promise<t.ICommandStateInvokeResponse> {
-    // Step into namespace (if required).
-    const ns = this.namespace;
-    let changedNamespace = false;
-    if (valueUtil.defaultValue(options.stepIntoNamespace, true)) {
-      this.change({ text: this.text, namespace: true });
-      changedNamespace = !R.equals(ns, this.namespace);
-    }
-
     const { events$ } = this._;
     const state = this.toObject();
-    const command = state.command;
+    let namespaceChanged = false;
 
-    // Prepare the args to pass to the command.
-    const args = { ...(await this._.getInvokeArgs(state)) };
-    args.props = options.props !== undefined ? options.props : args.props;
-    args.args = options.args !== undefined ? options.args : args.args || state.args;
-    args.timeout = options.timeout !== undefined ? options.timeout : args.timeout;
-    const timeout = valueUtil.defaultValue(args.timeout, DEFAULT.TIMEOUT);
+    const invoke = async (command?: t.ICommand) => {
+      // Prepare the args to pass to the command.
+      const args = { ...(await this._.getInvokeArgs(state)) };
+      args.props = options.props !== undefined ? options.props : args.props;
+      args.args = options.args !== undefined ? options.args : args.args || state.args;
+      args.timeout = options.timeout !== undefined ? options.timeout : args.timeout;
+      const timeout = valueUtil.defaultValue(args.timeout, DEFAULT.TIMEOUT);
 
-    // Ensure there is a command to invoke.
-    let result: t.ICommandStateInvokeResponse = {
-      invoked: false,
-      cancelled: false,
-      changedNamespace,
-      state,
-      props: args.props,
-      args: typeof args.args === 'object' ? args.args : Argv.parse<any>(args.args || ''),
-      timeout,
-    };
-    if (!command) {
-      return result;
-    }
-
-    // Fire BEFORE event and exit if any listeners cancel the operation.
-    let isCancelled = false;
-    events$.next({
-      type: 'COMMAND/state/invoking',
-      payload: {
-        get cancelled() {
-          return isCancelled;
-        },
-        cancel: () => (isCancelled = true),
+      // Ensure there is a command to invoke.
+      let result: t.ICommandStateInvokeResponse = {
+        invoked: false,
+        cancelled: false,
+        namespaceChanged,
         state,
-        args,
-      },
-    });
-    if (isCancelled) {
-      result = { ...result, invoked: false, cancelled: true };
+        props: args.props,
+        args: typeof args.args === 'object' ? args.args : Argv.parse<any>(args.args || ''),
+        timeout,
+      };
+      if (!command) {
+        return result;
+      }
+
+      // Fire BEFORE event and exit if any listeners cancel the operation.
+      let isCancelled = false;
+      events$.next({
+        type: 'COMMAND/state/invoking',
+        payload: {
+          get cancelled() {
+            return isCancelled;
+          },
+          cancel: () => (isCancelled = true),
+          state,
+          args,
+        },
+      });
+      if (isCancelled) {
+        result = { ...result, invoked: false, cancelled: true };
+        events$.next({ type: 'COMMAND/state/invoked', payload: result });
+        return result;
+      }
+
+      // Invoke the command.
+      const response = await command.invoke(args);
+      result = { ...result, invoked: true, response };
       events$.next({ type: 'COMMAND/state/invoked', payload: result });
+
+      // Finish up.
       return result;
+    };
+
+    // Step into namespace (if required).
+    let ns = this.namespace;
+    if (valueUtil.defaultValue(options.stepIntoNamespace, true)) {
+      this.change({ text: this.text, namespace: true });
+      namespaceChanged = !R.equals(ns, this.namespace);
+      ns = this.namespace;
+      if (namespaceChanged && ns && ns.command.handler && ns.command !== state.command) {
+        invoke(ns.command);
+      }
     }
 
-    // Invoke the command.
-    const response = await command.invoke(args);
-    result = { ...result, invoked: true, response };
-    events$.next({ type: 'COMMAND/state/invoked', payload: result });
-
-    // Finish up.
-    return result;
+    // Invoke the command
+    return invoke(state.command);
   }
 
   public toString() {

@@ -352,7 +352,7 @@ describe('CommandState', () => {
 
       const res = await state.invoke({ stepIntoNamespace: true }); // NB: default:true
       expect(state.namespace).to.eql(undefined);
-      expect(res.changedNamespace).to.eql(false);
+      expect(res.namespaceChanged).to.eql(false);
     });
 
     it('steps into a namespace upon invoking (directly)', async () => {
@@ -369,7 +369,7 @@ describe('CommandState', () => {
       const res = await state.invoke({ stepIntoNamespace: true }); // NB: default:true
 
       expect(state.namespace && state.namespace.command.name).to.eql('ns');
-      expect(res.changedNamespace).to.eql(true);
+      expect(res.namespaceChanged).to.eql(true);
     });
 
     it('steps into a namespace upon invoking (indirectly)', async () => {
@@ -385,7 +385,7 @@ describe('CommandState', () => {
 
       const res = await state.invoke();
 
-      expect(res.changedNamespace).to.eql(true);
+      expect(res.namespaceChanged).to.eql(true);
       expect(state.namespace && state.namespace.command.name).to.eql('ns');
 
       const args = { params: ['foo'], options: { force: true } };
@@ -394,7 +394,51 @@ describe('CommandState', () => {
       expect(state.text).to.eql('run foo --force');
     });
 
-    it('invokes command directy within namespace', async () => {
+    it('invokes command on stepped into namespace', async () => {
+      let count = 0;
+      const ns = Command.create('ns', () => count++)
+        .add('list')
+        .add('run');
+
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      state.change({ text: 'ns' });
+      expect(state.namespace).to.eql(undefined);
+
+      expect(state.command && state.command.name).to.eql('ns');
+      const res = await state.invoke();
+
+      expect(res.namespaceChanged).to.eql(true);
+      expect(state.namespace && state.namespace.name).to.eql('ns');
+      expect(count).to.eql(1);
+    });
+
+    it('invokes command on stepped into namespace AND target command', async () => {
+      const count = {
+        ns: 0,
+        run: 0,
+      };
+      const ns = Command.create('ns', () => count.ns++)
+        .add('list')
+        .add('run', () => count.run++);
+
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      state.change({ text: 'ns run' });
+      expect(state.namespace).to.eql(undefined);
+
+      expect(state.command && state.command.name).to.eql('run');
+      const res = await state.invoke();
+
+      expect(res.namespaceChanged).to.eql(true);
+      expect(state.namespace && state.namespace.name).to.eql('ns');
+      expect(count.ns).to.eql(1);
+      expect(count.run).to.eql(1);
+    });
+
+    it('invokes command directly within namespace', async () => {
       const ns = Command.create('ns')
         .add('list')
         .add('run');
@@ -412,7 +456,7 @@ describe('CommandState', () => {
 
       const res = await state.invoke();
 
-      expect(res.changedNamespace).to.eql(true);
+      expect(res.namespaceChanged).to.eql(true);
       expect(state.namespace && state.namespace.command.name).to.eql('ns');
 
       expect(res.args).to.eql(args);
