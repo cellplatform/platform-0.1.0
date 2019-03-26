@@ -20,7 +20,7 @@
     "@types/graphql": "14.0.7",
     "@uiharness/electron": "0.4.7",
     "graphiql": "0.13.0",
-    "graphql": "14.1.1"
+    "graphql": "14.2.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.36",
