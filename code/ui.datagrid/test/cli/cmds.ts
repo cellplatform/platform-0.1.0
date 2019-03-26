@@ -13,7 +13,6 @@ const ns = Command.create<P>('ns')
  * The root of the CLI application.
  */
 export const root = Command.create<P>('root')
-  .add(list)
-  .add(ns)
-  .add('run', async e => null)
-  .add('play', async e => null);
+  .add('grid', e => e.props.state$.next({ view: 'grid' }))
+  .add('editor', e => e.props.state$.next({ view: 'editor' }))
+  .add(ns);

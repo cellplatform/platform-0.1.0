@@ -47,6 +47,10 @@ export class Editor extends editors.TextEditor {
   /**
    * [Properties]
    */
+  private get isDisposed() {
+    return this.grid.isDisposed;
+  }
+
   private get isEditing() {
     return Boolean(this._.current);
   }
@@ -75,6 +79,10 @@ export class Editor extends editors.TextEditor {
    * [Override] Initial construction of elements.
    */
   public createElements() {
+    if (this.isDisposed) {
+      return;
+    }
+
     super.createElements();
     /**
      * HACK:
@@ -98,6 +106,10 @@ export class Editor extends editors.TextEditor {
    * [Override] Invoked at the commencement of an editing operation.
    */
   public beginEditing(initialValue?: string) {
+    if (this.isDisposed) {
+      return;
+    }
+
     super.beginEditing(initialValue);
     if (this.isEditing) {
       return;
@@ -155,6 +167,9 @@ export class Editor extends editors.TextEditor {
    * [Override] Invoked when editing is complete.
    */
   public finishEditing(restoreValue?: boolean, ctrlDown?: boolean, callback?: () => void) {
+    if (this.isDisposed) {
+      return;
+    }
     super.finishEditing(restoreValue, ctrlDown, callback);
     const current = this._.current;
     if (!current) {
