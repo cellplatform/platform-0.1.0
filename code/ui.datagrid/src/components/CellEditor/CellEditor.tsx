@@ -1,21 +1,33 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, t } from '../../common';
-import { Text } from '../primitives';
 
-import { ReactEditorContext, EditorContext } from '../../api';
-
-import { THEMES } from './themes';
+import { EditorContext, ReactEditorContext } from '../../api';
+import { GlamorValue, t, css } from '../../common';
+import { CellEditorView } from './CellEditorView';
 
 export type ICellEditorProps = {
   theme?: t.ICellEditorTheme | 'DEFAULT';
   style?: GlamorValue;
 };
-export type ICellEditorState = {};
+
+export type ICellEditorState = {
+  width?: number;
+  height?: number;
+};
 
 export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEditorState> {
-  public static THEMES = THEMES;
+  public static THEMES = CellEditorView.THEMES;
 
   public static contextType = EditorContext;
   public context!: ReactEditorContext;
@@ -24,48 +36,84 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ICellEditorState>>();
 
+  private view!: CellEditorView;
+  private viewRef = (ref: CellEditorView) => (this.view = ref);
+
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    state$.subscribe(e => this.setState(e));
+
+    // Update <input> on keypress.
+    const keys$ = this.context.keys$;
+    keys$.pipe(filter(e => e.isEnter)).subscribe(e => this.context.complete());
+
+    // Keep the editor context up-to-date with the latest value.
+    state$.subscribe(e => {
+      // this.context.set(this.value);
+    });
+
+    // Set initial values.
+    const value = this.context.cell.value;
+    // this.state$.next({ value });
+
+    // Manage cancelling manually.
+    // this.context.autoCancel = false;
+    // keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
+  }
+
+  public componentDidMount() {
+    this.updateSize();
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
+    this.unmounted$.complete();
   }
 
   /**
    * [Properties]
    */
-  private get theme() {
-    const { theme = 'DEFAULT' } = this.props;
-    if (typeof theme === 'object') {
-      return theme;
-    }
-    switch (theme) {
-      case 'DEFAULT':
-        return THEMES.DEFAULT;
-    }
-    throw new Error(`Theme '${theme}' not supported`);
+  public get size() {
+    const BORDER_WIDTH = CellEditorView.BORDER_WIDTH;
+    const cell = this.context.cell;
+    const width = cell.td.offsetWidth - BORDER_WIDTH * 2 + (cell.column === 0 ? 0 : 1);
+    const height = cell.td.offsetHeight - BORDER_WIDTH * 2 + (cell.row === 0 ? 0 : 1);
+    return { width, height };
+  }
+
+  /**
+   * [Methods]
+   */
+  public updateSize() {
+    const { width, height } = this.size;
+    this.state$.next({ width, height });
   }
 
   /**
    * [Render]
    */
   public render() {
-    const theme = this.theme;
-    const styles = {
-      base: css({
-        boxSizing: 'border-box',
-        border: `solid 2px ${theme.borderColor}`,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-      }),
-    };
+    const { width, height } = this.state;
     return (
-      <div {...css(styles.base, this.props.style)}>
-        <Text>Cell</Text>
-      </div>
+      <CellEditorView
+        ref={this.viewRef}
+        theme={this.props.theme}
+        style={this.props.style}
+        width={width}
+        height={height}
+      />
     );
   }
+
+  /**
+   * [Handlers]
+   */
+  private handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // const value = e.target.value;
+    // this.state$.next({ value });
+    // time.delay(0, () => this.updateSize());
+  };
 }

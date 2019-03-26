@@ -282,6 +282,9 @@ export class Editor extends editors.TextEditor {
   }
 
   private onCancel: t.IEditorContext['cancel'] = () => {
+    if (this.isDisposed) {
+      return;
+    }
     if (this._.current) {
       this._.current.isCancelled = true;
     }
@@ -292,6 +295,9 @@ export class Editor extends editors.TextEditor {
   };
 
   private onComplete: t.IEditorContext['complete'] = () => {
+    if (this.isDisposed) {
+      return;
+    }
     // NOTE:
     //    Run the close operation after a tick-delay
     //    to ensure that (if this call was initiated on a ENTER keydown event)
