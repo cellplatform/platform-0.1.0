@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue, t } from '../../common';
-import { Text } from '../primitives';
+import { Text, FormulaInput } from '../primitives';
 
 import { THEMES } from './themes';
 
@@ -76,7 +76,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     return (
       <div {...css(styles.base, this.props.style)}>
         {this.renderTitle()}
-        <Text>Cell</Text>
+        <FormulaInput value={'=SUM(1,2,3)'} />
       </div>
     );
   }

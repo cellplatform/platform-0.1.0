@@ -70,7 +70,7 @@ export class TestCellEditor extends React.PureComponent<
             ref={this.editorRef}
             style={styles.editor}
             width={250}
-            height={22}
+            // height={22}
             title={'A1'}
           />
         </div>

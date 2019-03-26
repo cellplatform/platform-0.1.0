@@ -1,5 +1,3 @@
-import '../../styles';
-
 import * as React from 'react';
 import { Controlled as CodeMirrorControlled, IInstance } from 'react-codemirror2';
 import { Subject } from 'rxjs';
