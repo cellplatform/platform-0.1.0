@@ -56,7 +56,7 @@ export type ICommandStateInvokeArgs = {
 
 export type ICommandStateInvokeResponse = {
   cancelled: boolean;
-  changedNamespace: boolean;
+  namespaceChanged: boolean;
   invoked: boolean;
   state: ICommandStateProps;
   props: { [key: string]: any };
@@ -90,7 +90,7 @@ export type ICommandStateInvokingEvent = {
 export type ICommandStateInvoking = {
   state: ICommandStateProps;
   args: IInvokeCommandArgs;
-  cancelled: boolean;
+  isCancelled: boolean;
   cancel(): void;
 };
 

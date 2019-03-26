@@ -45,11 +45,11 @@ export function beforeChangeHandler(getGrid: () => Grid) {
       .filter(e => e.isChanged);
 
     // Fire change events.
-    changes.forEach(payload => grid.next({ type: 'GRID/change', payload }));
+    changes.forEach(payload => grid.fire({ type: 'GRID/change', payload }));
 
     // Fire changes as a set.
     if (changes.length > 0) {
-      grid.next({
+      grid.fire({
         type: 'GRID/changeSet',
         payload: {
           changes,

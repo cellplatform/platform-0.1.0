@@ -1,7 +1,8 @@
 export { KeypressObservable } from '@platform/react';
 
+export * from './api/Editor/types';
+export * from './components/CellEditor/types';
 export * from './components/DataGrid/types';
-export * from './components/Editor/types';
 export * from './components/render/types';
 export * from './components/factory/types';
 

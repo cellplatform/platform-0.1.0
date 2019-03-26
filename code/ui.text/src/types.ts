@@ -1,5 +1,7 @@
 import { GlamorValue, IMouseEventProps } from '@platform/react';
 
+export * from './components/TextInput/types';
+
 export type ITextStyle = {
   color?: number | string;
   fontSize?: number;

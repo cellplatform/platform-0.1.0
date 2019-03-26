@@ -1,0 +1,17 @@
+name: ui.codemirror
+
+electron:
+  port: 9724
+  entry:
+    main: test/main.ts
+    renderer: 
+      default: test/renderer.tsx
+
+web:
+  port: 3035
+  entry: test/web.tsx
+
+sourcemaps:
+  strip:
+    - node_modules/rxjs
+

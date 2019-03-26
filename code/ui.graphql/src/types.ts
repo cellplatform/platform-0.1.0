@@ -1,1 +1,1 @@
-export type FOO = 123; // TEMP
+export * from './components/GraphqlEditor/types';

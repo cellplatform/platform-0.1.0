@@ -3,25 +3,25 @@ import '../../styles';
 import { DefaultSettings } from 'handsontable';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
-import { Editor } from '../Editor';
-import * as render from '../render';
+import { filter, takeUntil, debounceTime } from 'rxjs/operators';
 
+import { Grid, Editor } from '../../api';
 import {
   constants,
   css,
   events,
   GlamorValue,
   Handsontable as TableLib,
-  t,
   R,
-  value,
+  t,
   time,
+  value,
+  containsFocus,
 } from '../../common';
-import { Grid } from '../../api';
+import { FactoryManager } from '../factory';
+import * as render from '../render';
 import * as hook from './hook';
 import { IGridRefsPrivate } from './types.private';
-import { FactoryManager } from '../factory';
 
 const { DEFAULTS } = constants;
 
@@ -98,7 +98,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
 
     // Ferry editor events to the [Grid] API.
-    editor$.subscribe(e => this.grid.next(e));
+    editor$.subscribe(e => this.grid.fire(e));
 
     // Disallow select all (CMD+A) unless requested by prop.
     keys$
@@ -131,6 +131,16 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     //      is caught in a reload loop which may happen with HMR.  In which case the
     //      component will be `disposed` by the time `init` is called and hence bypassed.
     time.delay(0, () => this.init());
+
+    // Clear selection when another element outside the grid receives focus.
+    events.focus$
+      .pipe(
+        takeUntil(this.unmounted$),
+        debounceTime(0),
+        filter(e => e.to !== document.body),
+        filter(e => !containsFocus(this)),
+      )
+      .subscribe(e => this.grid.deselect());
   }
 
   private init() {
@@ -146,7 +156,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       const { cell, ranges } = selection;
       grid.select({ cell, ranges });
     }
-    grid.next({ type: 'GRID/ready', payload: { grid } });
+    grid.fire({ type: 'GRID/ready', payload: { grid } });
     this.forceUpdate();
   }
 
@@ -193,6 +203,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
   private get settings(): DefaultSettings {
     const getGrid = () => this.grid;
+    const selectionHandler = hook.afterSelectionHandler(getGrid);
 
     const createColumns = (length: number) => {
       return Array.from({ length }).map(() => {
@@ -220,14 +231,17 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
        */
       beforeKeyDown: hook.beforeKeyDownHandler(getGrid),
       beforeChange: hook.beforeChangeHandler(getGrid),
-      afterSelection: hook.afterSelectionHandler(getGrid),
-      afterDeselect: hook.afterDeselectHandler(getGrid),
+      afterSelection: selectionHandler.select,
+      afterDeselect: selectionHandler.deselect,
     };
   }
 
   /**
    * [Methods]
    */
+  public focus() {
+    this.grid.focus();
+  }
 
   public redraw() {
     this.updateSize();
