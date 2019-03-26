@@ -4,7 +4,6 @@
 ![banner](https://user-images.githubusercontent.com/185555/54975174-1e955700-4ffb-11e9-86ea-769be61ef617.png)
 
 
-# ui.monaco
 [Strongly typed](https://www.typescriptlang.org) wrapper around the [monaco](https://github.com/Microsoft/monaco-editor) code editor, with rich [observable](https://www.learnrxjs.io) event stream.
 
 
