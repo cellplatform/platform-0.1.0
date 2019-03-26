@@ -48,7 +48,7 @@ export class Editor extends editors.TextEditor {
    * [Properties]
    */
   private get isDisposed() {
-    return this.grid.isDisposed;
+    return this.instance.isDestroyed || this.grid.isDisposed;
   }
 
   private get isEditing() {

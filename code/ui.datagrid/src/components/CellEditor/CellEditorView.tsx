@@ -7,15 +7,18 @@ import { Text } from '../primitives';
 import { THEMES } from './themes';
 
 export type ICellEditorViewProps = {
+  title?: React.ReactNode;
   width?: number;
   height?: number;
   theme?: t.ICellEditorTheme | 'DEFAULT';
   style?: GlamorValue;
 };
 
+const BORDER_WIDTH = 2;
+
 export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   public static THEMES = THEMES;
-  public static BORDER_WIDTH = 2;
+  public static BORDER_WIDTH = BORDER_WIDTH;
 
   private unmounted$ = new Subject();
 
@@ -45,6 +48,13 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   }
 
   /**
+   * [Methods]
+   */
+  public focus() {
+    console.log('FOCUS');
+  }
+
+  /**
    * [Render]
    */
   public render() {
@@ -53,17 +63,48 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
 
     const styles = {
       base: css({
+        position: 'relative',
         boxSizing: 'border-box',
-        border: `solid 2px ${theme.borderColor}`,
-        // border: `solid ${CellEditorView.BORDER_WIDTH}px ${'red'}`,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        border: `solid ${BORDER_WIDTH}px ${theme.borderColor}`,
+        backgroundColor: theme.inputBackground,
         width,
         height,
+        boxShadow: `0 0px ${theme.inputShadow.blur}px 0 ${color.format(theme.inputShadow.color)}`,
+        fontSize: 14,
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
+        {this.renderTitle()}
         <Text>Cell</Text>
+      </div>
+    );
+  }
+
+  private renderTitle() {
+    const { title } = this.props;
+    if (!title) {
+      return null;
+    }
+    const theme = this.theme;
+    const styles = {
+      base: css({
+        Absolute: [-4, null, null, 0 - BORDER_WIDTH],
+        userSelect: 'none',
+      }),
+      body: css({
+        Absolute: [null, null, 0, 0],
+        backgroundColor: theme.titleBackground,
+        color: theme.titleColor,
+        fontSize: 12,
+        PaddingX: 10,
+        paddingTop: 5,
+        paddingBottom: 3,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <Text style={styles.body}>{title}</Text>
       </div>
     );
   }

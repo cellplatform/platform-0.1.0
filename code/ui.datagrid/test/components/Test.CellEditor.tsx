@@ -55,19 +55,24 @@ export class TestCellEditor extends React.PureComponent<
         flex: 1,
         padding: 20,
         paddingTop: 40,
+        backgroundColor: color.format(1),
       }),
-      editor: css({
-        width: 250,
-      }),
+      editor: css({}),
     };
 
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <div {...styles.leftTop}>{this.button('foo', () => null)}</div>
+          <div {...styles.leftTop}>{this.button('focus', () => this.editor.focus())}</div>
         </div>
         <div {...styles.right}>
-          <CellEditorView ref={this.editorRef} style={styles.editor} />
+          <CellEditorView
+            ref={this.editorRef}
+            style={styles.editor}
+            width={250}
+            height={22}
+            title={'A1'}
+          />
         </div>
       </div>
     );
