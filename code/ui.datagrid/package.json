@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Isolated tabular DataGrid.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -21,11 +21,11 @@
     "handsontable": "6.2.2"
   },
   "devDependencies": {
-    "@platform/cli.spec": "0.0.15",
+    "@platform/cli.spec": "0.0.16",
     "@platform/test": "0.0.35",
     "@platform/test.dom": "0.0.4",
     "@platform/ts": "3.3.71",
-    "@platform/ui.cli": "0.0.5",
+    "@platform/ui.cli": "0.0.6",
     "@uiharness/dev": "0.2.16"
   },
   "files": [
