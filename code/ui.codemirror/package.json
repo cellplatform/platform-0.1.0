@@ -1,23 +1,27 @@
 {
-  "name": "@platform/ui.monaco",
+  "name": "@platform/ui.codemirror",
   "version": "0.0.0",
-  "description": "Strongly typed wrapper around monaco-editor.",
+  "description": "Strongly typed wrapper around codemirror.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
   "scripts": {
     "ui": "ui $@",
+    "start": "ui start $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build $@",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
-    "prepare ": "ts prepare"
+    "prepare": "ts prepare"
   },
   "dependencies": {
     "@platform/react": "0.1.0",
+    "@types/codemirror": "0.0.72",
     "@uiharness/electron": "0.4.6",
-    "monaco-editor": "0.16.2"
+    "codemirror": "5.45.0",
+    "react-codemirror2": "5.1.0"
   },
   "devDependencies": {
-    "@platform/fs": "0.0.42",
     "@platform/test": "0.0.35",
     "@platform/ts": "3.3.71",
     "@uiharness/dev": "0.2.16"
