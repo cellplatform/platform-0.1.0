@@ -1,26 +1,9 @@
-import '../../node_modules/@platform/css/reset.css';
-import '@babel/polyfill';
-
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, t, Hr } from './common';
-import { FormulaInput } from '../../src';
-
-/**
- * Test Component
- */
+import { FormulaInput, IFormulaInputProps } from '../../src';
+import { color, css, GlamorValue, t } from './common';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {
@@ -28,7 +11,9 @@ export type ITestState = {
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = { value: '=SUM(1, 2, 3)' };
+  public state: ITestState = {
+    value: '=IF(A1:B2, TRUE, FALSE) / 100',
+  };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.FormulaInputEvent>();
@@ -47,16 +32,39 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     events$
       .pipe(
         filter(e => e.type === 'INPUT/formula/tab'),
-        map(e => e.payload as t.FormulaInputTab),
+        map(e => e.payload as t.IFormulaInputTab),
       )
       .subscribe(e => {
-        e.cancel();
+        // e.cancel();
+        // NB: supressed with `allowTab:false` property on component (below).
       });
 
     events$
       .pipe(
-        filter(e => e.type === 'INPUT/formula/change'),
-        map(e => e.payload as t.FormulaInputChange),
+        filter(e => e.type === 'INPUT/formula/newLine'),
+        map(e => e.payload as t.IFormulaInputNewLine),
+      )
+      .subscribe(e => {
+        // Example: Only allow new-line when SHIFT modifier key is pressed.
+        if (!e.modifierKeys.shift) {
+          e.cancel();
+        }
+      });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'INPUT/formula/changing'),
+        map(e => e.payload as t.IFormulaInputChanging),
+      )
+      .subscribe(e => {
+        // Example: selectively cancel a change via the event.
+        // e.cancel();
+      });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'INPUT/formula/changed'),
+        map(e => e.payload as t.IFormulaInputChanged),
       )
       .subscribe(e => {
         this.state$.next({ value: e.to });
@@ -73,22 +81,48 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public render() {
     const styles = {
       base: css({
-        Absolute: 20,
-        // display: 'flex',
+        Absolute: [0, 20, 20, 20],
       }),
     };
     return (
       <div {...styles.base}>
-        <FormulaInput
-          value={this.state.value}
-          focusOnLoad={true}
-          selectOnLoad={true}
-          events$={this.events$}
-        />
-        <Hr />
-        <FormulaInput value={this.state.value} events$={this.events$} maxLength={4} />
-        <Hr />
-        <FormulaInput value={this.state.value} events$={this.events$} isMultiLine={true} />
+        {this.renderInput('default - mode: "spreadsheet"', {
+          focusOnLoad: true,
+          selectOnLoad: true,
+        })}
+        {this.renderInput('allowTab: true', { allowTab: true })}
+        {this.renderInput('maxLength (4)', { maxLength: 4 })}
+        {this.renderInput('multiline', { multiline: true, height: 120 })}
+      </div>
+    );
+  }
+
+  private renderInput(title: string, props: IFormulaInputProps) {
+    const styles = {
+      base: css({
+        PaddingY: 20,
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
+      }),
+      title: css({
+        fontSize: 12,
+        opacity: 0.5,
+      }),
+      body: css({
+        marginLeft: 20,
+        marginTop: 8,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.title}>{title}</div>
+        <div {...styles.body}>
+          <FormulaInput
+            value={this.state.value}
+            allowTab={false}
+            {...props}
+            events$={this.events$}
+          />
+        </div>
       </div>
     );
   }

@@ -3,19 +3,24 @@ import '../../styles';
 import * as React from 'react';
 import { Controlled as CodeMirrorControlled, IInstance } from 'react-codemirror2';
 import { Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
+import { share, takeUntil, filter, map } from 'rxjs/operators';
 
-import { css, GlamorValue, is, t, time } from '../../common';
+import { css, GlamorValue, is, t, time, value as valueUtil, events } from '../../common';
 
+/**
+ * For more syntax modes, see:
+ * - https://codemirror.net/mode
+ */
 if (is.browser) {
-  require('codemirror/mode/mathematica/mathematica.js');
-  require('codemirror/mode/javascript/javascript.js');
+  require('codemirror/mode/spreadsheet/spreadsheet.js');
 }
+export type FormulaInputMode = 'spreadsheet';
 
 export interface IFormulaInputProps {
   value?: string;
-  mode?: 'mathematica' | 'javascript';
-  isMultiLine?: boolean;
+  mode?: FormulaInputMode;
+  multiline?: boolean;
+  allowTab?: boolean;
   focusOnLoad?: boolean;
   selectOnLoad?: boolean;
   maxLength?: number;
@@ -32,6 +37,9 @@ export interface IFormulaInputState {
  * Color coded formula input.
  */
 export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormulaInputState> {
+  /**
+   * [Fields]
+   */
   public state: IFormulaInputState = { isLoaded: false };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IFormulaInputState>>();
@@ -45,29 +53,70 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     share(),
   );
 
+  private readonly modifierKeys: t.IModifierKeys = {
+    alt: false,
+    control: false,
+    shift: false,
+    meta: false,
+  };
+
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
     const { events$ } = this.props;
+
+    // Change state safely.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+
+    // Bubble events to parent.
     if (events$) {
       this.events$.subscribe(e => events$.next(e));
     }
+
+    // Suppress tab key if requested.
+    this.events$
+      .pipe(
+        filter(e => e.type === 'INPUT/formula/tab'),
+        filter(e => !valueUtil.defaultValue(this.props.allowTab, true)),
+        map(e => e.payload as t.IFormulaInputTab),
+      )
+      .subscribe(e => e.cancel());
+
+    // Monitor modifier keys.
+    const keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
+    // const keydown$ = keypress$.pipe(filter(e => e.isPressed));
+    const modifier$ = keypress$.pipe(filter(e => e.isModifier));
+
+    modifier$
+      .pipe(
+        filter(e => e.isPressed),
+        map(e => e.key.toLowerCase()),
+      )
+      .subscribe(key => (this.modifierKeys[key] = true));
+    modifier$
+      .pipe(
+        filter(e => !e.isPressed),
+        map(e => e.key.toLowerCase()),
+      )
+      .subscribe(key => (this.modifierKeys[key] = false));
   }
 
   public componentDidMount() {
-    const { focusOnLoad, selectOnLoad } = this.props;
+    // Perform initial state setup.
     time.delay(0, () => {
-      this.setState({ isLoaded: true }, () => {
-        if (focusOnLoad) {
-          this.focus();
-        }
-        if (selectOnLoad) {
-          this.selectAll();
-        }
-      });
+      this.setState({ isLoaded: true }, () => this.init());
     });
+  }
+
+  private init() {
+    const { focusOnLoad, selectOnLoad } = this.props;
+    if (focusOnLoad) {
+      this.focus();
+    }
+    if (selectOnLoad) {
+      this.selectAll();
+    }
   }
 
   public componentWillUnmount() {
@@ -83,7 +132,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
   }
 
   private get height() {
-    const { isMultiLine = false, height } = this.props;
+    const { multiline: isMultiLine = false, height } = this.props;
     if (height !== undefined) {
       return height;
     }
@@ -118,7 +167,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
    */
 
   public render() {
-    const { isMultiLine = false, maxLength, mode = 'mathematica' } = this.props;
+    const { multiline: isMultiLine = false, maxLength, mode = 'spreadsheet' } = this.props;
     const height = this.height;
     const value = formatValue(this.props.value, { maxLength, isMultiLine });
     const styles = {
@@ -169,19 +218,23 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     data: CodeMirror.EditorChange,
     value: string,
   ) => {
-    const { isMultiLine = false, maxLength } = this.props;
+    const { multiline: isMultiLine = false, maxLength } = this.props;
     const change = data as CodeMirror.EditorChangeCancellable;
     const char = change.text[0];
+    const modifierKeys = { ...this.modifierKeys };
 
     if (char.includes('\t')) {
       let isCancelled = false;
       this.fire({
         type: 'INPUT/formula/tab',
         payload: {
-          cancel: () => (isCancelled = true),
           get isCancelled() {
             return isCancelled;
           },
+          cancel() {
+            isCancelled = true;
+          },
+          modifierKeys,
         },
       });
       if (isCancelled) {
@@ -196,6 +249,46 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
       }
     }
 
+    if (isNewLine(change)) {
+      let isCancelled = false;
+      this.fire({
+        type: 'INPUT/formula/newLine',
+        payload: {
+          get isCancelled() {
+            return isCancelled;
+          },
+          cancel() {
+            isCancelled = true;
+          },
+          modifierKeys,
+        },
+      });
+      if (isCancelled) {
+        return; // No need to continue - a new-line request was cancelled.
+      }
+    }
+
+    // Fire BEFORE event.
+    const from = this.props.value || '';
+    const to = value;
+    const isMax = maxLength === undefined ? null : to.length === maxLength;
+    let isChangeCancelled = false;
+    const changedPayload: t.IFormulaInputChanged = { from, to, isMax, char, modifierKeys };
+    const changingPayload: t.IFormulaInputChanging = {
+      ...changedPayload,
+      get isCancelled() {
+        return isChangeCancelled;
+      },
+      cancel() {
+        isChangeCancelled = true;
+      },
+    };
+    this.fire({ type: 'INPUT/formula/changing', payload: changingPayload });
+    if (isChangeCancelled) {
+      return; // A listener cancelled the change.
+    }
+
+    // Apply the change to the editor.
     if (maxLength !== undefined) {
       const clippedValue = formatValue(value, { maxLength, isMultiLine });
       if (clippedValue !== value) {
@@ -206,11 +299,8 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
       }
     }
 
-    // Alert listeners.
-    const from = this.props.value || '';
-    const to = value;
-    const isMax = maxLength === undefined ? null : to.length === maxLength;
-    this.fire({ type: 'INPUT/formula/change', payload: { from, to, isMax, char } });
+    // Fire AFTER event.
+    this.fire({ type: 'INPUT/formula/changed', payload: changedPayload });
   };
 }
 
@@ -218,12 +308,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
  * [Helpers]
  */
 function singleLineOnly(change: CodeMirror.EditorChangeCancellable) {
-  // Supress new lines characters.
-  // Source: https://discuss.codemirror.net/t/single-line-codemirror/195/3
-  const typedNewLine =
-    change.origin === '+input' && typeof change.text === 'object' && change.text.join('') === '';
-
-  if (typedNewLine) {
+  if (isNewLine(change)) {
     return change.cancel();
   }
 
@@ -235,6 +320,14 @@ function singleLineOnly(change: CodeMirror.EditorChangeCancellable) {
   }
 
   return null;
+}
+
+function isNewLine(change: CodeMirror.EditorChange) {
+  // Supress new lines characters.
+  // Source: https://discuss.codemirror.net/t/single-line-codemirror/195/3
+  return (
+    change.origin === '+input' && typeof change.text === 'object' && change.text.join('') === ''
+  );
 }
 
 function formatValue(

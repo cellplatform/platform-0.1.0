@@ -3,26 +3,44 @@ import {
   TextInputTabEvent,
 } from '@platform/ui.text/lib/components/TextInput';
 
-export type FormulaInputChange = TextInputChangeEvent;
-export type FormulaInputTab = TextInputTabEvent & { isCancelled: boolean };
+export type IModifierKeys = {
+  alt: boolean;
+  control: boolean;
+  shift: boolean;
+  meta: boolean;
+};
+
+export type IFormulaInputTab = TextInputTabEvent & {
+  isCancelled: boolean;
+  modifierKeys: IModifierKeys;
+};
 
 /**
  * [Events]
  */
 export type FormulaInputEvent =
-  | IFormulaInputChangeEvent
+  | IFormulaInputChangingEvent
+  | IFormulaInputChangedEvent
   | IFormulaInputTabEvent
   | IFormulaInputFocusEvent
-  | ICodeMirrorFormulaBlurEvent;
+  | ICodeMirrorFormulaBlurEvent
+  | IFormulaInputNewLineEvent;
 
-export type IFormulaInputChangeEvent = {
-  type: 'INPUT/formula/change';
-  payload: FormulaInputChange;
+export type IFormulaInputChangingEvent = {
+  type: 'INPUT/formula/changing';
+  payload: IFormulaInputChanged;
 };
+export type IFormulaInputChanging = IFormulaInputChanged & { cancel(): void; isCancelled: boolean };
+
+export type IFormulaInputChangedEvent = {
+  type: 'INPUT/formula/changed';
+  payload: IFormulaInputChanged;
+};
+export type IFormulaInputChanged = TextInputChangeEvent & { modifierKeys: IModifierKeys };
 
 export type IFormulaInputTabEvent = {
   type: 'INPUT/formula/tab';
-  payload: FormulaInputTab;
+  payload: IFormulaInputTab;
 };
 
 export type IFormulaInputFocusEvent = {
@@ -32,4 +50,14 @@ export type IFormulaInputFocusEvent = {
 export type ICodeMirrorFormulaBlurEvent = {
   type: 'INPUT/formula/blur';
   payload: {};
+};
+
+export type IFormulaInputNewLineEvent = {
+  type: 'INPUT/formula/newLine';
+  payload: IFormulaInputNewLine;
+};
+export type IFormulaInputNewLine = {
+  isCancelled: boolean;
+  cancel(): void;
+  modifierKeys: IModifierKeys;
 };
