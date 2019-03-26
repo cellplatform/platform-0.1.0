@@ -1,6 +1,6 @@
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/uiharness/platform.svg?branch=master)](https://travis-ci.org/uiharness/platform)
-[![banner](https://user-images.githubusercontent.com/185555/54737526-5d9b6500-4c15-11e9-8186-f0f4abf9104d.png)](https://uiharness.com)
+[![banner](https://user-images.githubusercontent.com/185555/55036317-1b43af00-507f-11e9-8034-59f1e4510f77.png)](https://uiharness.com)
 
 [Monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
 
