@@ -1,1 +1,1 @@
-import './codemirror.css';
+import '../../css/codemirror.css';

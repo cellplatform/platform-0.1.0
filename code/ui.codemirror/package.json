@@ -28,7 +28,8 @@
     "@uiharness/dev": "0.2.18"
   },
   "files": [
-    "lib"
+    "lib",
+    "css"
   ],
   "license": "MIT"
 }
