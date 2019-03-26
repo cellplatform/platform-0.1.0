@@ -10,8 +10,7 @@ export type IModifierKeys = {
   meta: boolean;
 };
 
-export type FormulaInputChange = TextInputChangeEvent & { modifierKeys: IModifierKeys };
-export type FormulaInputTab = TextInputTabEvent & {
+export type IFormulaInputTab = TextInputTabEvent & {
   isCancelled: boolean;
   modifierKeys: IModifierKeys;
 };
@@ -20,20 +19,28 @@ export type FormulaInputTab = TextInputTabEvent & {
  * [Events]
  */
 export type FormulaInputEvent =
-  | IFormulaInputChangeEvent
+  | IFormulaInputChangingEvent
+  | IFormulaInputChangedEvent
   | IFormulaInputTabEvent
   | IFormulaInputFocusEvent
   | ICodeMirrorFormulaBlurEvent
   | IFormulaInputNewLineEvent;
 
-export type IFormulaInputChangeEvent = {
-  type: 'INPUT/formula/change';
-  payload: FormulaInputChange;
+export type IFormulaInputChangingEvent = {
+  type: 'INPUT/formula/changing';
+  payload: IFormulaInputChanged;
 };
+export type IFormulaInputChanging = IFormulaInputChanged & { cancel(): void; isCancelled: boolean };
+
+export type IFormulaInputChangedEvent = {
+  type: 'INPUT/formula/changed';
+  payload: IFormulaInputChanged;
+};
+export type IFormulaInputChanged = TextInputChangeEvent & { modifierKeys: IModifierKeys };
 
 export type IFormulaInputTabEvent = {
   type: 'INPUT/formula/tab';
-  payload: FormulaInputTab;
+  payload: IFormulaInputTab;
 };
 
 export type IFormulaInputFocusEvent = {

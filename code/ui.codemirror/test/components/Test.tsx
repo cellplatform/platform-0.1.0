@@ -32,7 +32,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     events$
       .pipe(
         filter(e => e.type === 'INPUT/formula/tab'),
-        map(e => e.payload as t.FormulaInputTab),
+        map(e => e.payload as t.IFormulaInputTab),
       )
       .subscribe(e => {
         // e.cancel();
@@ -53,8 +53,18 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     events$
       .pipe(
-        filter(e => e.type === 'INPUT/formula/change'),
-        map(e => e.payload as t.FormulaInputChange),
+        filter(e => e.type === 'INPUT/formula/changing'),
+        map(e => e.payload as t.IFormulaInputChanging),
+      )
+      .subscribe(e => {
+        // Example: selectively cancel a change via the event.
+        // e.cancel();
+      });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'INPUT/formula/changed'),
+        map(e => e.payload as t.IFormulaInputChanged),
       )
       .subscribe(e => {
         this.state$.next({ value: e.to });

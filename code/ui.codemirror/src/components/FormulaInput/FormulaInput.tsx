@@ -79,7 +79,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
       .pipe(
         filter(e => e.type === 'INPUT/formula/tab'),
         filter(e => !valueUtil.defaultValue(this.props.allowTab, true)),
-        map(e => e.payload as t.FormulaInputTab),
+        map(e => e.payload as t.IFormulaInputTab),
       )
       .subscribe(e => e.cancel());
 
@@ -231,7 +231,9 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
           get isCancelled() {
             return isCancelled;
           },
-          cancel: () => (isCancelled = true),
+          cancel() {
+            isCancelled = true;
+          },
           modifierKeys,
         },
       });
@@ -255,7 +257,9 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
           get isCancelled() {
             return isCancelled;
           },
-          cancel: () => (isCancelled = true),
+          cancel() {
+            isCancelled = true;
+          },
           modifierKeys,
         },
       });
@@ -264,6 +268,27 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
       }
     }
 
+    // Fire BEFORE event.
+    const from = this.props.value || '';
+    const to = value;
+    const isMax = maxLength === undefined ? null : to.length === maxLength;
+    let isChangeCancelled = false;
+    const changedPayload: t.IFormulaInputChanged = { from, to, isMax, char, modifierKeys };
+    const changingPayload: t.IFormulaInputChanging = {
+      ...changedPayload,
+      get isCancelled() {
+        return isChangeCancelled;
+      },
+      cancel() {
+        isChangeCancelled = true;
+      },
+    };
+    this.fire({ type: 'INPUT/formula/changing', payload: changingPayload });
+    if (isChangeCancelled) {
+      return; // A listener cancelled the change.
+    }
+
+    // Apply the change to the editor.
     if (maxLength !== undefined) {
       const clippedValue = formatValue(value, { maxLength, isMultiLine });
       if (clippedValue !== value) {
@@ -274,14 +299,8 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
       }
     }
 
-    // Alert listeners.
-    const from = this.props.value || '';
-    const to = value;
-    const isMax = maxLength === undefined ? null : to.length === maxLength;
-    this.fire({
-      type: 'INPUT/formula/change',
-      payload: { from, to, isMax, char, modifierKeys },
-    });
+    // Fire AFTER event.
+    this.fire({ type: 'INPUT/formula/changed', payload: changedPayload });
   };
 }
 
