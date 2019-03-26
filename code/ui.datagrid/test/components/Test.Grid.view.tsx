@@ -38,7 +38,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     // const keys$ = this.grid.keys$;
 
     events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
-      console.log('🌳 EVENT', e.type, e.payload);
+      // console.log('🌳 EVENT', e.type, e.payload);
     });
 
     events$

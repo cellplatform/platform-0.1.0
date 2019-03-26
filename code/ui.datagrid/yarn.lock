@@ -815,7 +815,7 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/electron@^0.1.19":
+"@platform/electron@0.1.19":
   version "0.1.19"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.19.tgz#a97065a3cb49cab4ca533f418f1bfb42f346b45a"
   integrity sha512-KTG01T3xSjzgodfGs4IEwFdJNjuKiopzAVhYludnj5vpZbL0cy4dO9VZTkrK2LP5eycsvnHuUMOlJ/gKZCmUMw==
@@ -951,7 +951,7 @@
     "@platform/libs" "0.0.9"
     "@platform/ts.libs" "3.3.8"
 
-"@platform/ui.cli@^0.0.5":
+"@platform/ui.cli@0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.5.tgz#d8b04a30b5d8a96cfa71969ad3f33cffc7dd011c"
   integrity sha512-/r7s3Ulpgxx20DTCgIM5L75sdtj1h59rB3j12ZZnP2DAV3uqtiAsoOvC72DUjvIPPP1gsNtS/U71TMTmsMoWvQ==
@@ -4573,9 +4573,9 @@ js-base64@^2.1.9:
   integrity sha512-M7kLczedRMYX4L8Mdh4MzyAMM9O5osx+4FcOQuTvr3A9F2D9S5JXheN0ewNbrvK2UatkTRhL5ejGmGSjNMiZuw==
 
 js-beautify@^1.8.9:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/js-beautify/-/js-beautify-1.9.0.tgz#2562fcdee340f9f962ae2ec4a8a40e7aaa6d964f"
-  integrity sha512-P0skmY4IDjfLiVrx+GLDeme8w5G0R1IGXgccVU5HP2VM3lRblH7qN2LTea5vZAxrDjpZBD0Jv+ahpjwVcbz/rw==
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/js-beautify/-/js-beautify-1.9.1.tgz#6f9ef915f5d8d92b9f907606fce63795884c8040"
+  integrity sha512-oxxvVZdOdUfzk8IOLBF2XUZvl2GoBEfA+b0of4u2EBY/46NlXasi8JdFvazA5lCrf9/lQhTjyVy2QCUW7iq0MQ==
   dependencies:
     config-chain "^1.1.12"
     editorconfig "^0.15.2"

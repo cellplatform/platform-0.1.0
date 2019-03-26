@@ -32,6 +32,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     state$.subscribe(() => localStorage.setItem(KEY.VIEW, this.view));
     const view = (localStorage.getItem(KEY.VIEW) as t.ITestState['view']) || this.view;
     this.state$.next({ view });
+    this.cli.change({ text: view, namespace: true });
   }
 
   public componentWillUnmount() {
