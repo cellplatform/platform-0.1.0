@@ -5,7 +5,7 @@ import { Controlled as CodeMirrorControlled, IInstance } from 'react-codemirror2
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, is, t, time } from '../../common';
+import { css, GlamorValue, is, t, time, value as valueUtil } from '../../common';
 
 if (is.browser) {
   require('codemirror/mode/mathematica/mathematica.js');
@@ -15,7 +15,8 @@ if (is.browser) {
 export interface IFormulaInputProps {
   value?: string;
   mode?: 'mathematica' | 'javascript';
-  isMultiLine?: boolean;
+  multiline?: boolean;
+  allowTab?: boolean;
   focusOnLoad?: boolean;
   selectOnLoad?: boolean;
   maxLength?: number;
@@ -52,22 +53,30 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     const { events$ } = this.props;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     if (events$) {
-      this.events$.subscribe(e => events$.next(e));
+      this.events$.subscribe(e => events$.next(e)); // Bubble events to parent.
     }
   }
 
   public componentDidMount() {
-    const { focusOnLoad, selectOnLoad } = this.props;
+    // Perform initial state setup.
     time.delay(0, () => {
-      this.setState({ isLoaded: true }, () => {
-        if (focusOnLoad) {
-          this.focus();
-        }
-        if (selectOnLoad) {
-          this.selectAll();
-        }
-      });
+      this.setState({ isLoaded: true }, () => this.init());
     });
+
+    // Suppress tab key if requested.
+    if (!valueUtil.defaultValue(this.props.allowTab, true)) {
+      console.log('-------------------------------------------');
+    }
+  }
+
+  private init() {
+    const { focusOnLoad, selectOnLoad } = this.props;
+    if (focusOnLoad) {
+      this.focus();
+    }
+    if (selectOnLoad) {
+      this.selectAll();
+    }
   }
 
   public componentWillUnmount() {
@@ -83,7 +92,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
   }
 
   private get height() {
-    const { isMultiLine = false, height } = this.props;
+    const { multiline: isMultiLine = false, height } = this.props;
     if (height !== undefined) {
       return height;
     }
@@ -118,7 +127,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
    */
 
   public render() {
-    const { isMultiLine = false, maxLength, mode = 'mathematica' } = this.props;
+    const { multiline: isMultiLine = false, maxLength, mode = 'mathematica' } = this.props;
     const height = this.height;
     const value = formatValue(this.props.value, { maxLength, isMultiLine });
     const styles = {
@@ -169,7 +178,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     data: CodeMirror.EditorChange,
     value: string,
   ) => {
-    const { isMultiLine = false, maxLength } = this.props;
+    const { multiline: isMultiLine = false, maxLength } = this.props;
     const change = data as CodeMirror.EditorChangeCancellable;
     const char = change.text[0];
 

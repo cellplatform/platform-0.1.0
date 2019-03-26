@@ -1,2 +1,2 @@
 export { GlamorValue, css, color } from '@platform/react';
-export { time, is } from '@platform/util.value';
+export { time, is, value } from '@platform/util.value';

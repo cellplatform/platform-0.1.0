@@ -1,26 +1,9 @@
-import '../../node_modules/@platform/css/reset.css';
-import '@babel/polyfill';
-
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, t, Hr } from './common';
-import { FormulaInput } from '../../src';
-
-/**
- * Test Component
- */
+import { FormulaInput, IFormulaInputProps } from '../../src';
+import { css, GlamorValue, Hr, t, color } from './common';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {
@@ -73,22 +56,41 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public render() {
     const styles = {
       base: css({
-        Absolute: 20,
-        // display: 'flex',
+        Absolute: [0, 20, 20, 20],
       }),
     };
     return (
       <div {...styles.base}>
-        <FormulaInput
-          value={this.state.value}
-          focusOnLoad={true}
-          selectOnLoad={true}
-          events$={this.events$}
-        />
-        <Hr />
-        <FormulaInput value={this.state.value} events$={this.events$} maxLength={4} />
-        <Hr />
-        <FormulaInput value={this.state.value} events$={this.events$} isMultiLine={true} />
+        {this.renderInput('default', { focusOnLoad: true, selectOnLoad: true })}
+        {this.renderInput('maxLength (4)', { maxLength: 4 })}
+        {this.renderInput('multiline', { multiline: true, height: 120 })}
+      </div>
+    );
+  }
+
+  private renderInput(title: string, props: IFormulaInputProps) {
+    const SPACING = 20;
+    const styles = {
+      base: css({
+        PaddingY: 20,
+        // marginBottom: 10,
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
+      }),
+      title: css({
+        fontSize: 12,
+        opacity: 0.5,
+      }),
+      body: css({
+        marginLeft: 20,
+        marginTop: 8,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.title}>{title}</div>
+        <div {...styles.body}>
+          <FormulaInput value={this.state.value} {...props} events$={this.events$} />
+        </div>
       </div>
     );
   }
