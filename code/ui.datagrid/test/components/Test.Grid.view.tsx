@@ -85,7 +85,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     });
 
     change$.pipe(filter(e => e.cell.key === 'B2')).subscribe(e => {
-      console.log('B2');
+      console.log('Cancel [B2]');
       e.cancel();
     });
 
@@ -112,8 +112,6 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
    * [Render]
    */
   public render() {
-    const { editorType } = this.props;
-    console.log('editorType', editorType);
     return (
       <datagrid.DataGrid
         key={'test.grid'}

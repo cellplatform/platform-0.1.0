@@ -42,9 +42,8 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {}
 
-  public componentDidMount() {
+  public componentWillMount() {
     let isMounted = false;
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
