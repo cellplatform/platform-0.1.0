@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { FormulaInput, IFormulaInputProps } from '../../src';
-import { css, GlamorValue, Hr, t, color } from './common';
+import { color, css, GlamorValue, t } from './common';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {
@@ -11,7 +11,9 @@ export type ITestState = {
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = { value: '=SUM(1, 2, 3)' };
+  public state: ITestState = {
+    value: '=IF(A1:B2, TRUE, FALSE) / 100',
+  };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.FormulaInputEvent>();
@@ -33,7 +35,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         map(e => e.payload as t.FormulaInputTab),
       )
       .subscribe(e => {
-        e.cancel();
+        // e.cancel();
+        // NB: supressed with `allowTab:false` property on component (below).
       });
 
     events$
@@ -61,7 +64,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...styles.base}>
-        {this.renderInput('default', { focusOnLoad: true, selectOnLoad: true })}
+        {this.renderInput('default - mode: "spreadsheet"', {
+          focusOnLoad: true,
+          selectOnLoad: true,
+        })}
+        {this.renderInput('allowTab: true', { allowTab: true })}
         {this.renderInput('maxLength (4)', { maxLength: 4 })}
         {this.renderInput('multiline', { multiline: true, height: 120 })}
       </div>
@@ -71,7 +78,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private renderInput(title: string, props: IFormulaInputProps) {
     const styles = {
       base: css({
-         PaddingY: 20,
+        PaddingY: 20,
         borderBottom: `solid 1px ${color.format(-0.1)}`,
       }),
       title: css({
@@ -87,7 +94,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       <div {...styles.base}>
         <div {...styles.title}>{title}</div>
         <div {...styles.body}>
-          <FormulaInput value={this.state.value} {...props} events$={this.events$} />
+          <FormulaInput
+            value={this.state.value}
+            allowTab={false}
+            {...props}
+            events$={this.events$}
+          />
         </div>
       </div>
     );

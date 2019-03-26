@@ -3,18 +3,17 @@ import '../../styles';
 import * as React from 'react';
 import { Controlled as CodeMirrorControlled, IInstance } from 'react-codemirror2';
 import { Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
+import { share, takeUntil, filter, map } from 'rxjs/operators';
 
 import { css, GlamorValue, is, t, time, value as valueUtil } from '../../common';
 
 if (is.browser) {
   require('codemirror/mode/mathematica/mathematica.js');
-  require('codemirror/mode/javascript/javascript.js');
 }
 
 export interface IFormulaInputProps {
   value?: string;
-  mode?: 'mathematica' | 'javascript';
+  mode?: 'spreadsheet';
   multiline?: boolean;
   allowTab?: boolean;
   focusOnLoad?: boolean;
@@ -64,9 +63,13 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     });
 
     // Suppress tab key if requested.
-    if (!valueUtil.defaultValue(this.props.allowTab, true)) {
-      console.log('-------------------------------------------');
-    }
+    this.events$
+      .pipe(
+        filter(e => e.type === 'INPUT/formula/tab'),
+        filter(e => !valueUtil.defaultValue(this.props.allowTab, true)),
+        map(e => e.payload as t.FormulaInputTab),
+      )
+      .subscribe(e => e.cancel());
   }
 
   private init() {
@@ -127,7 +130,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
    */
 
   public render() {
-    const { multiline: isMultiLine = false, maxLength, mode = 'mathematica' } = this.props;
+    const { multiline: isMultiLine = false, maxLength, mode = 'spreadsheet' } = this.props;
     const height = this.height;
     const value = formatValue(this.props.value, { maxLength, isMultiLine });
     const styles = {
