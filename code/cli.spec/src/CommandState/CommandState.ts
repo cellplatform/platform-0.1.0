@@ -242,7 +242,7 @@ export class CommandState implements t.ICommandState {
       events$.next({
         type: 'COMMAND/state/invoking',
         payload: {
-          get cancelled() {
+          get isCancelled() {
             return isCancelled;
           },
           cancel: () => (isCancelled = true),

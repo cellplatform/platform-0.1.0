@@ -90,7 +90,7 @@ export type ICommandStateInvokingEvent = {
 export type ICommandStateInvoking = {
   state: ICommandStateProps;
   args: IInvokeCommandArgs;
-  cancelled: boolean;
+  isCancelled: boolean;
   cancel(): void;
 };
 
