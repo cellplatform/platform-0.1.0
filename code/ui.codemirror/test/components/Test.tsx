@@ -41,6 +41,18 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     events$
       .pipe(
+        filter(e => e.type === 'INPUT/formula/newLine'),
+        map(e => e.payload as t.IFormulaInputNewLine),
+      )
+      .subscribe(e => {
+        // Example: Only allow new-line when SHIFT modifier key is pressed.
+        if (!e.modifierKeys.shift) {
+          e.cancel();
+        }
+      });
+
+    events$
+      .pipe(
         filter(e => e.type === 'INPUT/formula/change'),
         map(e => e.payload as t.FormulaInputChange),
       )
