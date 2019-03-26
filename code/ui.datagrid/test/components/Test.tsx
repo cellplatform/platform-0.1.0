@@ -29,10 +29,10 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     state$.subscribe(e => this.setState(e));
 
     // Save and resume the current view using local-storage.
-    state$.subscribe(() => localStorage.setItem(KEY.VIEW, this.view));
-    const view = (localStorage.getItem(KEY.VIEW) as t.ITestState['view']) || this.view;
-    this.state$.next({ view });
+    const view = this.viewStorage;
     this.cli.change({ text: view, namespace: true });
+    this.state$.next({ view });
+    state$.subscribe(() => (this.viewStorage = this.view));
   }
 
   public componentWillUnmount() {
@@ -43,8 +43,15 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Properties]
    */
 
-  public get view() {
+  public get view(): t.TestView {
     return this.state.view || 'grid';
+  }
+
+  public get viewStorage(): t.TestView {
+    return (localStorage.getItem(KEY.VIEW) as t.TestView) || this.view;
+  }
+  public set viewStorage(view: t.TestView) {
+    localStorage.setItem(KEY.VIEW, view);
   }
 
   /**

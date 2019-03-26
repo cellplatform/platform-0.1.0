@@ -7,6 +7,7 @@ export type ITestCommandProps = {
   state$: Subject<Partial<ITestState>>;
 };
 
+export type TestView = 'grid' | 'editor';
 export type ITestState = {
-  view?: 'grid' | 'editor';
+  view?: TestView;
 };
