@@ -925,6 +925,14 @@
     "@platform/react" "0.0.29"
     react-inspector "3.0.0"
 
+"@platform/ui.text@^0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.0.34.tgz#3553fd3ab783beb06af13c6fa07c4c3c98c5fe29"
+  integrity sha512-TABqI3J7XR0HdQ1iyucoViJMLLWoF5lByGDjVu9w20PWtKAgaLu3hO+nRxb4aDkOOfY2uYq1FZLMrDebHj5uAQ==
+  dependencies:
+    "@platform/react" "0.1.0"
+    "@platform/util.value" "0.0.45"
+
 "@platform/util.is@0.0.44":
   version "0.0.44"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.44.tgz#22ff2cfe31bcb2d5447b2651b1c2f137c0287c2c"
@@ -2066,7 +2074,7 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codemirror@^5.45.0:
+codemirror@5.45.0:
   version "5.45.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.45.0.tgz#db5ebbb3bf44028c684053f3954d011efcec27ad"
   integrity sha512-c19j644usCE8gQaXa0jqn2B/HN9MnB2u6qPIrrhrMkB+QAP42y8G4QnTwuwbVSoUS1jEl7JU9HZMGhCDL0nsAw==
@@ -6337,7 +6345,7 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.1, rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-codemirror2@^5.1.0:
+react-codemirror2@5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-5.1.0.tgz#62de4460178adea40eb52eabf7491669bf3794b8"
   integrity sha512-Cksbgbviuf2mJfMyrKmcu7ycK6zX/ukuQO8dvRZdFWqATf5joalhjFc6etnBdGCcPA2LbhIwz+OPnQxLN/j1Fw==

@@ -1,0 +1,20 @@
+import { React, describe } from '../../../test/storybook';
+import { Test } from './Test';
+
+describe('primitives/ForumulaInput', {
+  title: 'Color coded formula input.',
+  width: 500,
+  backdrop: -0.04,
+})
+  .add('single-line: empty', () => {
+    return <Test value={''} />;
+  })
+  .add('single-line', () => {
+    return <Test />;
+  })
+  .add('max-length: 3', () => {
+    return <Test maxLength={3} />;
+  })
+  .add('multi-line', () => {
+    return <Test isMultiLine={true} height={120} />;
+  });

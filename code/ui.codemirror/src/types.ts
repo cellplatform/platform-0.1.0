@@ -1,9 +1,8 @@
+import { FormulaInputEvent } from './components/FormulaInput/types';
+
+export * from './components/FormulaInput/types';
+
 /**
  * [Events]
  */
-export type CodeMirrorEvent = ICodeMirrorFooEvent;
-
-export type ICodeMirrorFooEvent = {
-  type: 'FOO';
-  payload: {};
-};
+export type CodeMirrorEvent = FormulaInputEvent;

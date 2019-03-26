@@ -1,0 +1,39 @@
+import { React, css, log } from '../../../common';
+import { FormulaInput, IFormulaInputProps, TextInputChangeEvent } from '..';
+
+export interface ITestState {
+  value?: string;
+  isMounted?: boolean;
+}
+
+export class Test extends React.PureComponent<IFormulaInputProps, ITestState> {
+  public state: ITestState = { value: '=SUM(1, 3, "hello")' };
+  public log = (...message: any[]) => log.info.apply(this, message);
+
+  public componentDidMount() {
+    this.setState({ isMounted: true });
+  }
+
+  public render() {
+    const styles = {
+      base: css({
+        backgroundColor: 'white',
+      }),
+    };
+    const el = this.state.isMounted && (
+      <FormulaInput
+        style={styles.base}
+        value={this.state.value}
+        {...this.props}
+        onChange={this.handleChange}
+      />
+    );
+
+    return el || <div />;
+  }
+
+  private handleChange = (e: TextInputChangeEvent) => {
+    this.log('!! onChange:', e);
+    this.setState({ value: e.to });
+  };
+}
