@@ -69,11 +69,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   private renderInput(title: string, props: IFormulaInputProps) {
-    const SPACING = 20;
     const styles = {
       base: css({
-        PaddingY: 20,
-        // marginBottom: 10,
+         PaddingY: 20,
         borderBottom: `solid 1px ${color.format(-0.1)}`,
       }),
       title: css({

@@ -16,10 +16,10 @@
   },
   "dependencies": {
     "@platform/react": "0.1.3",
-    "@uiharness/electron": "0.4.7"
+    "@uiharness/electron": "0.4.8"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.2.17"
+    "@uiharness/dev": "0.2.18"
   },
   "files": [
     "lib"
