@@ -16,6 +16,8 @@ export type ICommandPromptProps = {
 export type ICommandPromptState = {};
 
 export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICommandPromptState> {
+  public static THEMES = CommandPromptInput.THEMES;
+
   public state: ICommandPromptState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ICommandPromptState>>();

@@ -10,7 +10,13 @@ import { TestGrid } from './Test.Grid';
 
 const KEY = {
   VIEW: 'ui.datagrid/view',
+  EDITOR: 'ui.datagrid/editor',
 };
+
+function fromStorage<T = any>(key: string, defaultValue?: T): T | undefined {
+  const value = localStorage.getItem(key);
+  return (value === undefined ? defaultValue : value) as T;
+}
 
 export type ITestProps = {};
 
@@ -29,10 +35,14 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     state$.subscribe(e => this.setState(e));
 
     // Save and resume the current view using local-storage.
-    const view = this.viewStorage;
-    this.cli.change({ text: view, namespace: true });
-    this.state$.next({ view });
-    state$.subscribe(() => (this.viewStorage = this.view));
+    const view = fromStorage<t.TestViewType>(KEY.VIEW, this.viewType);
+    const editor = fromStorage<t.TestEditorType>(KEY.EDITOR, this.editorType);
+    this.cli.change({ text: view || '', namespace: true });
+    this.state$.next({ view, editor });
+    state$.subscribe(() => {
+      localStorage.setItem(KEY.VIEW, this.viewType);
+      localStorage.setItem(KEY.EDITOR, this.editorType);
+    });
   }
 
   public componentWillUnmount() {
@@ -42,16 +52,12 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   /**
    * [Properties]
    */
-
-  public get view(): t.TestView {
+  public get viewType(): t.TestViewType {
     return this.state.view || 'grid';
   }
 
-  public get viewStorage(): t.TestView {
-    return (localStorage.getItem(KEY.VIEW) as t.TestView) || this.view;
-  }
-  public set viewStorage(view: t.TestView) {
-    localStorage.setItem(KEY.VIEW, view);
+  public get editorType(): t.TestEditorType {
+    return this.state.editor || 'debug';
   }
 
   /**
@@ -74,8 +80,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       }),
     };
 
-    const view = this.view;
-    const elGrid = view === 'grid' && <TestGrid />;
+    const view = this.viewType;
+    const elGrid = view === 'grid' && <TestGrid editorType={this.editorType} />;
     const elCellEditor = view === 'editor' && <TestCellEditor />;
 
     return (

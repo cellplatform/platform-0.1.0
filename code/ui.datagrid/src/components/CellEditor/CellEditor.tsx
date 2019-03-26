@@ -1,12 +1,25 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from '../../common';
+import { css, color, GlamorValue, t } from '../../common';
+import { Text } from '../primitives';
 
-export type ICellEditorProps = { style?: GlamorValue };
+import { ReactEditorContext, EditorContext } from '../../api';
+
+import { THEMES } from './themes';
+
+export type ICellEditorProps = {
+  theme?: t.ICellEditorTheme | 'DEFAULT';
+  style?: GlamorValue;
+};
 export type ICellEditorState = {};
 
 export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEditorState> {
+  public static THEMES = THEMES;
+
+  public static contextType = EditorContext;
+  public context!: ReactEditorContext;
+
   public state: ICellEditorState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ICellEditorState>>();
@@ -23,13 +36,35 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
   }
 
   /**
+   * [Properties]
+   */
+  private get theme() {
+    const { theme = 'DEFAULT' } = this.props;
+    if (typeof theme === 'object') {
+      return theme;
+    }
+    switch (theme) {
+      case 'DEFAULT':
+        return THEMES.DEFAULT;
+    }
+    throw new Error(`Theme '${theme}' not supported`);
+  }
+
+  /**
    * [Render]
    */
   public render() {
-    const styles = { base: css({}) };
+    const theme = this.theme;
+    const styles = {
+      base: css({
+        boxSizing: 'border-box',
+        border: `solid 2px ${theme.borderColor}`,
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+      }),
+    };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>CellEditor</div>
+        <Text>Cell</Text>
       </div>
     );
   }

@@ -4,8 +4,10 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { datagrid, GlamorValue, Handsontable as HandsontableLib, t } from '../common';
 import { DebugEditor } from './Debug.Editor';
+import { CellEditor } from '../../src';
 
 export type ITestGridViewProps = {
+  editorType: t.TestEditorType;
   style?: GlamorValue;
   Table?: Handsontable;
 };
@@ -110,6 +112,8 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
    * [Render]
    */
   public render() {
+    const { editorType } = this.props;
+    console.log('editorType', editorType);
     return (
       <datagrid.DataGrid
         key={'test.grid'}
@@ -130,7 +134,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
   private factory: t.GridFactory = req => {
     switch (req.type) {
       case 'EDITOR':
-        return <DebugEditor />;
+        return this.renderEditor();
 
       case 'CELL':
         const value = typeof req.value === 'object' ? JSON.stringify(req.value) : req.value;
@@ -140,6 +144,16 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
       default:
         console.log(`Factory type '${req.type}' not supported by test.`);
         return null;
+    }
+  };
+
+  private renderEditor = () => {
+    switch (this.props.editorType) {
+      case 'default':
+        return <CellEditor />;
+
+      default:
+        return <DebugEditor />;
     }
   };
 }

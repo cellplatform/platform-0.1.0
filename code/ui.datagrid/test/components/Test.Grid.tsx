@@ -2,10 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Button, color, css, GlamorValue, ObjectView } from '../common';
+import { Button, color, css, GlamorValue, ObjectView, t } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
-export type ITestGridProps = { style?: GlamorValue };
+export type ITestGridProps = {
+  editorType: t.TestEditorType;
+  style?: GlamorValue;
+};
 export type ITestGridState = {
   data?: any;
 };
@@ -48,10 +51,14 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   public updateState() {
     const grid = this.grid;
     const { selection, values } = grid;
+    const { editorType } = this.props;
     const data = {
-      isEditing: grid.isEditing,
-      values,
-      selection,
+      grid: {
+        isEditing: grid.isEditing,
+        values,
+        selection,
+      },
+      debug: { editorType },
     };
     this.state$.next({ data });
     return data;
@@ -114,13 +121,17 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             )}
           </div>
           <ObjectView
-            name={'grid'}
+            name={'state'}
             data={this.state.data}
-            expandPaths={['$', '$.selection', '$.selection.ranges']}
+            expandPaths={['$', '$.grid', '$.grid.selection', '$.grid.selection.ranges']}
           />
         </div>
         <div {...styles.right}>
-          <TestGridView ref={this.testGridRef} style={styles.grid} />
+          <TestGridView
+            ref={this.testGridRef}
+            style={styles.grid}
+            editorType={this.props.editorType}
+          />
         </div>
       </div>
     );
