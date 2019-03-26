@@ -1,6 +1,6 @@
 {
   "name": "@platform/state",
-  "version": "0.0.21",
+  "version": "0.0.23",
   "description": "A strongly typed, rx/observable based adaptation of the redux state container pattern.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -12,11 +12,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/util.value": "0.0.45"
+    "@platform/util.value": "0.0.47"
   },
   "devDependencies": {
-    "@platform/test": "0.0.35",
-    "@platform/ts": "3.3.71",
+    "@platform/test": "0.0.36",
+    "@platform/ts": "3.3.73",
     "@types/sinon": "7.0.10",
     "sinon": "7.3.0"
   },

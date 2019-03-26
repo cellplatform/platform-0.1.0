@@ -60,6 +60,8 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
     };
     if (child.stdout) {
       child.stdout.on('data', (chunk: Buffer) => next('stdout', chunk));
+    }
+    if (child.stderr) {
       child.stderr.on('data', (chunk: Buffer) => next('stderr', chunk));
     }
 

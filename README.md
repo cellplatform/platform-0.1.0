@@ -62,6 +62,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/css](/code/css)
 - ui components
   - [@platform/ui.cli](/code/ui.cli)
+  - [@platform/ui.codemirror](/code/ui.codemirror)
   - [@platform/ui.editor](/code/ui.editor)
   - [@platform/ui.graphql](/code/ui.graphql)
   - [@platform/ui.icon](/code/ui.icon)
