@@ -120,6 +120,10 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
   /**
    * [Methods]
    */
+  public run(selectedOperationName?: string) {
+    this.graphiql.handleRunQuery(selectedOperationName);
+  }
+
   public prettify() {
     this.query = GraphqlEditor.prettify(this.query, 'GRAPHQL');
     this.variables = GraphqlEditor.prettify(this.variables, 'JSON');
@@ -133,17 +137,14 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
     if (!text.trim()) {
       return text;
     }
-
     switch (type) {
       case 'GRAPHQL':
         const { parse, print } = require('graphql');
         return print(parse(text));
-
       case 'JSON':
         const obj = hjson.parse(text);
         return hjson.stringify(obj, { quotes: 'all', separator: true });
     }
-
     return text;
   }
 

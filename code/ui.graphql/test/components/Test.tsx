@@ -81,6 +81,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <div {...styles.left}>
+          {this.button('run', () => this.editor.run())}
           {this.button('data (console)', () => {
             console.group('🌳 data');
             console.log(' - result', this.editor.result);
