@@ -210,8 +210,15 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
       onKeyDown({ ...e, modifierKeys });
     }
     if (onTab && e.key === 'Tab') {
+      let isCancelled = false;
       onTab({
-        cancel: () => e.preventDefault(),
+        get isCancelled() {
+          return isCancelled;
+        },
+        cancel() {
+          isCancelled = true;
+          e.preventDefault();
+        },
         modifierKeys,
       });
     }

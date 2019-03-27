@@ -34,7 +34,11 @@ export type TextInputChangeEvent = {
 };
 export type TextInputChangeEventHandler = (e: TextInputChangeEvent) => void;
 
-export type TextInputTabEvent = { cancel: () => void; modifierKeys: ITextModifierKeys };
+export type TextInputTabEvent = {
+  isCancelled: boolean;
+  cancel: () => void;
+  modifierKeys: ITextModifierKeys;
+};
 export type TextInputTabEventHandler = (e: TextInputTabEvent) => void;
 
 export type TextInputKeyEvent = React.KeyboardEvent<HTMLInputElement> & {
