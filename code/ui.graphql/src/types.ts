@@ -5,4 +5,4 @@ export type Json = {
   [key: string]: JsonValue;
 };
 
-export type JsonFetcher = (params: any) => Promise<Json | undefined>;
+export type JsonFetcher = (params: any) => Promise<Json>;

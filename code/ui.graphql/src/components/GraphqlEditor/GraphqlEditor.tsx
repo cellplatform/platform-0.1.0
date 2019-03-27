@@ -4,8 +4,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { constants, css, GlamorValue, graphqlFetcher } from '../../common';
+import { constants, css, GlamorValue } from '../../common';
 import { GraphqlEditorEvent } from './types';
+import { graphqlFetcher } from './fetch';
 
 const GraphiQL = require('graphiql');
 
@@ -75,8 +76,8 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
   private get fetcher() {
     // const url = `${window.location.origin}/graphql`;
     const url = `https://api.blocktap.io/graphql`;
-
-    return graphqlFetcher({ url });
+    const events$ = this._events$;
+    return graphqlFetcher({ url, events$ });
   }
 
   /**
