@@ -32,6 +32,7 @@ export type ICellEditorViewProps = {
 };
 
 export type I__TEMP__State = { value?: string };
+console.log(`\nTODO 🐷   Remove TEMP state from <CellEditorView> \n`);
 
 export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I__TEMP__State> {
   public state: I__TEMP__State = {};

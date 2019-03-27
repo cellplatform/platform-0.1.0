@@ -63,14 +63,12 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
    * [Lifecycle]
    */
   public componentWillMount() {
-    const { events$ } = this.props;
-
     // Change state safely.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
     // Bubble events to parent.
-    if (events$) {
-      this.events$.subscribe(e => events$.next(e));
+    if (this.props.events$) {
+      this.events$.subscribe(this.props.events$);
     }
 
     // Suppress tab key if requested.

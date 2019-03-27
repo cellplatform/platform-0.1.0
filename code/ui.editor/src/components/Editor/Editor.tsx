@@ -18,6 +18,7 @@ export type DocSchema = any;
 
 export type IEditorProps = {
   events$?: Subject<t.EditorEvent>;
+  focusOnLoad?: boolean;
   style?: GlamorValue;
 };
 
@@ -45,10 +46,10 @@ export class Editor extends React.PureComponent<IEditorProps> {
   /**
    * [Constructor]
    */
-  constructor(props: IEditorProps) {
-    super(props);
-    if (props.events$) {
-      this.events$.subscribe(props.events$);
+
+  public componentWillMount() {
+    if (this.props.events$) {
+      this.events$.subscribe(this.props.events$);
     }
   }
 

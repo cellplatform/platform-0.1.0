@@ -44,9 +44,9 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
+    // Bubble events to parent.
     if (this.props.events$) {
-      const events$ = this.props.events$;
-      this.events$.subscribe(e => events$.next(e)); // Bubble events.
+      this.events$.subscribe(this.props.events$);
     }
 
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
