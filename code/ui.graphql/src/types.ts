@@ -1,6 +1,13 @@
 export * from './components/GraphqlEditor/types';
 
-export type JsonValue = boolean | number | string | null | IJson | JsonValue[];
+export type JsonValue =
+  | boolean
+  | number
+  | string
+  | null
+  | Json
+  | Array<boolean | number | string | null | Json>;
+
 export type Json = {
   [key: string]: JsonValue;
 };
