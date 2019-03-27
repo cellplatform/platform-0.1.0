@@ -167,6 +167,13 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     this.editor.execCommand('selectAll');
   }
 
+  private setGlobalStyles() {
+    const style = {
+      '.CodeMirror': { fontSize: this.fontSize },
+    };
+    css.global(style, { prefix: `.${this.className}` });
+  }
+
   /**
    * [Render]
    */
@@ -308,15 +315,6 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     // Fire AFTER event.
     this.fire({ type: 'INPUT/formula/changed', payload: changedPayload });
   };
-
-  private setGlobalStyles() {
-    const style = {
-      '.CodeMirror': { fontSize: this.fontSize },
-    };
-    const prefix = `.${this.className}`;
-    css.global(style, { prefix });
-    console.log('prefix', prefix);
-  }
 }
 
 /**

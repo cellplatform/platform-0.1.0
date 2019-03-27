@@ -3,16 +3,20 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { FormulaInput, IFormulaInputProps } from '../../src';
-import { color, css, GlamorValue, t } from './common';
+import { color, css, GlamorValue, t, Button } from './common';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {
   value?: string;
 };
 
+const DEFAULT = {
+  VALUE: '=IF(A1:B2, TRUE, FALSE) / 100',
+};
+
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {
-    value: '=IF(A1:B2, TRUE, FALSE) / 100',
+    value: DEFAULT.VALUE,
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
@@ -81,8 +85,40 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public render() {
     const styles = {
       base: css({
-        Absolute: [0, 20, 20, 20],
+        Absolute: 0,
+        Flex: 'horizontal',
       }),
+      left: css({
+        width: 180,
+        backgroundColor: color.format(-0.04),
+        borderRight: `solid 1px ${color.format(-0.1)}`,
+        fontSize: 14,
+        padding: 10,
+        lineHeight: 1.6,
+      }),
+      right: css({
+        flex: 1,
+      }),
+    };
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.left}>
+          {this.button('value: <empty>', () => this.state$.next({ value: '' }))}
+          {this.button('value: DEFAULT', () => this.state$.next({ value: DEFAULT.VALUE }))}
+        </div>
+        <div {...styles.right}>{this.renderInputs()}</div>
+      </div>
+    );
+  }
+
+  private button(title: string, handler?: () => void) {
+    return <Button label={title} onClick={handler} block={true} />;
+  }
+
+  private renderInputs() {
+    const styles = {
+      base: css({ PaddingX: 20 }),
     };
     return (
       <div {...styles.base}>
