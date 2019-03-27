@@ -63,7 +63,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         width: 180,
         backgroundColor: color.format(-0.04),
         borderRight: `solid 1px ${color.format(-0.1)}`,
-        fontSize: 14,
+        fontSize: 13,
         padding: 10,
         lineHeight: 1.8,
       }),
@@ -81,6 +81,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <div {...styles.left}>
+          {this.button('data (console)', () => {
+            console.group('🌳 data');
+            console.log(' - result', this.editor.result);
+            console.log(' - schema', this.editor.schema);
+            console.groupEnd();
+          })}
+          <Hr margin={5} />
           {this.button('query: DEFAULT', () => (this.editor.query = DEFAULT.QUERY))}
           {this.button('query: <empty>', () => (this.editor.query = ''))}
           <Hr margin={5} />

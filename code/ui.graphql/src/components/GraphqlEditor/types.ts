@@ -5,6 +5,7 @@ import { Json } from '../../types';
  */
 
 export type GraphqlEditorEvent =
+  | IGraphqlEditorSchemaLoaded
   | IGraphqlEditorQueryChangedEvent
   | IGraphqlEditorOperationNameChangedEvent
   | IGraphqlEditorVariablesChangedEvent
@@ -13,6 +14,11 @@ export type GraphqlEditorEvent =
   | IGraphqlEditorFetchingEvent
   | IGraphqlEditorFetchedEvent
   | IGraphqlEditorFetchErrorEvent;
+
+export type IGraphqlEditorSchemaLoaded = {
+  type: 'GRAPHQL_EDITOR/schema/loaded';
+  payload: { url: string; schema: Json };
+};
 
 export type IGraphqlEditorQueryChangedEvent = {
   type: 'GRAPHQL_EDITOR/changed/query';
@@ -41,12 +47,28 @@ export type IGraphqlEditorDocsToggledEvent = {
 
 export type IGraphqlEditorFetchingEvent = {
   type: 'GRAPHQL_EDITOR/fetching';
-  payload: { fetchId: string; url: string; params: object; isCancelled: boolean; cancel(): void };
+  payload: IGraphqlEditorFetching;
 };
+export type IGraphqlEditorFetching = {
+  fetchId: string;
+  url: string;
+  params: object;
+  isCancelled: boolean;
+  cancel(): void;
+};
+
 export type IGraphqlEditorFetchedEvent = {
   type: 'GRAPHQL_EDITOR/fetched';
-  payload: { fetchId: string; url: string; params: object; result: Json; isError: boolean };
+  payload: IGraphqlEditorFetched;
 };
+export type IGraphqlEditorFetched = {
+  fetchId: string;
+  url: string;
+  params: object;
+  result: Json;
+  isError: boolean;
+};
+
 export type IGraphqlEditorFetchErrorEvent = {
   type: 'GRAPHQL_EDITOR/fetch/error';
   payload: { fetchId: string; url: string; params: object; error: Error };

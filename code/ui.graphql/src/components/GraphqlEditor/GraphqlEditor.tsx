@@ -6,9 +6,9 @@ import '../../styles';
 
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
+import { share, map, takeUntil, filter } from 'rxjs/operators';
 
-import { constants, css, GlamorValue, hjson } from '../../common';
+import { constants, css, GlamorValue, hjson, t } from '../../common';
 import { GraphqlEditorEvent } from './types';
 import { graphqlFetcher } from './fetch';
 import { DEFAULT_MESSAGE } from './default';
@@ -27,6 +27,8 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IGraphqlEditorState>>();
 
+  private _result: t.Json | undefined;
+  private _schema: t.Json | undefined;
   private _events$ = new Subject<GraphqlEditorEvent>();
   public events$ = this._events$.pipe(
     takeUntil(this.unmounted$),
@@ -40,11 +42,30 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
    * [Lifecycle]
    */
   public componentWillMount() {
-    const { events$ } = this.props;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    if (events$) {
-      this.events$.subscribe(e => events$.next(e));
+
+    if (this.props.events$) {
+      const events$ = this.props.events$;
+      this.events$.subscribe(e => events$.next(e)); // Bubble events.
     }
+
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    events$
+      // Store the latest JSON result.
+      .pipe(
+        filter(e => e.type === 'GRAPHQL_EDITOR/fetched'),
+        map(e => e.payload as t.IGraphqlEditorFetched),
+      )
+      .subscribe(e => {
+        this._result = e.result;
+        const data = e.result.data;
+        const schema = data ? ((data as any).__schema as t.Json) : undefined;
+        const { url } = this.props;
+        if (url && schema) {
+          this._schema = schema;
+          this.fire({ type: 'GRAPHQL_EDITOR/schema/loaded', payload: { url, schema } });
+        }
+      });
   }
 
   public componentWillUnmount() {
@@ -54,6 +75,14 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
   /**
    * [Properties]
    */
+  public get result() {
+    return this._result;
+  }
+
+  public get schema() {
+    return this._schema;
+  }
+
   public get query() {
     return this.editor.query.getValue();
   }
