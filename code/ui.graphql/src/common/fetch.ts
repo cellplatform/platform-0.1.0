@@ -1,15 +1,19 @@
+import { Json, JsonFetcher } from '../types';
+
 const fetch = require('isomorphic-fetch');
 
 /**
  * See:
- * - https://github.com/graphql/graphiql#getting-started
+ *  - https://github.com/graphql/graphiql#getting-started
  */
-export function graphqlFetcher(graphQLParams: any) {
-  const url = `${window.location.origin}/graphql`;
-  // const url = `https://api.blocktap.io/graphql`;
-  return fetch(url, {
-    method: 'post',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(graphQLParams),
-  }).then((response: any) => response.json());
+export function graphqlFetcher(args: { url: string }): JsonFetcher {
+  return async (params: any): Promise<Json | undefined> => {
+    const res = await fetch(args.url, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    const json = await res.json();
+    return json;
+  };
 }

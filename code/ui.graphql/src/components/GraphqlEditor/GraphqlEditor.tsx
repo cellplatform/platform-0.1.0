@@ -72,6 +72,13 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
     };
   }
 
+  private get fetcher() {
+    // const url = `${window.location.origin}/graphql`;
+    const url = `https://api.blocktap.io/graphql`;
+
+    return graphqlFetcher({ url });
+  }
+
   /**
    * [Methods]
    */
@@ -99,7 +106,7 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
       <div {...css(styles.base, this.props.style)} className={constants.CSS.ROOT}>
         <GraphiQL
           ref={this.graphiqlRef}
-          fetcher={graphqlFetcher}
+          fetcher={this.fetcher}
           editorTheme={'nord'}
           onEditQuery={this.handleEditQuery}
           onEditVariables={this.handleEditVariables}
