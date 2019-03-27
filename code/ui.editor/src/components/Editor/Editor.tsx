@@ -1,4 +1,4 @@
-import './css';
+import '../../styles';
 
 import { defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { EditorState } from 'prosemirror-state';
@@ -7,7 +7,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, containsFocus } from '../../common';
+import { css, GlamorValue, containsFocus, constants } from '../../common';
 import * as t from './types';
 
 // @ts-ignore
@@ -55,6 +55,10 @@ export class Editor extends React.PureComponent<IEditorProps> {
 
   public componentDidMount() {
     this.load('');
+
+    if (this.props.focusOnLoad) {
+      this.focus();
+    }
   }
 
   public componentWillUnmount() {
@@ -106,7 +110,12 @@ export class Editor extends React.PureComponent<IEditorProps> {
   public render() {
     const styles = { base: css({}) };
     return (
-      <div ref={this.elRef} {...css(styles.base, this.props.style)} onClick={this.handleClick} />
+      <div
+        ref={this.elRef}
+        {...css(styles.base, this.props.style)}
+        className={constants.CSS_CLASS.EDITOR}
+        onClick={this.handleClick}
+      />
     );
   }
 

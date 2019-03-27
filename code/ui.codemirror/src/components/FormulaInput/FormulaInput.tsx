@@ -7,7 +7,7 @@ import { css, events, GlamorValue, is, t, value as valueUtil } from '../../commo
 
 /**
  * For more syntax modes, see:
- * - https://codemirror.net/mode
+ *  - https://codemirror.net/mode
  */
 if (is.browser) {
   require('codemirror/mode/spreadsheet/spreadsheet.js');

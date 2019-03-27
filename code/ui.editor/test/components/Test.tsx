@@ -119,12 +119,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         Flex: 'horizontal-stretch-stretch',
         flex: 1,
       }),
-      left: css({
+      editorOuter: css({
         flex: 1,
-        border: `solid 1px ${color.format(-0.1)}`,
+        border: `dashed 1px ${color.format(-0.15)}`,
         display: 'flex',
+        padding: 2,
       }),
-      editor: css({ flex: 1, padding: 10 }),
+      editor: css({ flex: 1 }),
       right: css({
         marginLeft: 15,
         width: 450,
@@ -157,8 +158,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <div {...styles.columns}>
-          <div {...styles.left}>
-            <Editor ref={this.editorRef} style={styles.editor} events$={this.events$} />
+          <div {...styles.editorOuter}>
+            <Editor
+              ref={this.editorRef}
+              style={styles.editor}
+              events$={this.events$}
+              focusOnLoad={true}
+            />
           </div>
           <div {...styles.right}>
             <ObjectView name={'state'} data={data} style={styles.state} />
