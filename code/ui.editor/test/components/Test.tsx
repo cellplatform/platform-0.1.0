@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { map, filter, takeUntil } from 'rxjs/operators';
 
 import { Editor } from '../../src';
-import { color, COLORS, css, GlamorValue, ObjectView, t } from './common';
+import { color, COLORS, css, GlamorValue, ObjectView, t, Button, Hr } from './common';
 
 export type ITestProps = {
   style?: GlamorValue;
@@ -20,6 +20,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.EditorEvent>();
+
+  private editor!: Editor;
+  private editorRef = (ref: Editor) => (this.editor = ref);
 
   /**
    * [Lifecycle]
@@ -73,6 +76,41 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const styles = {
       base: css({
         Absolute: 0,
+        display: 'flex',
+      }),
+      left: css({
+        width: 180,
+        backgroundColor: color.format(-0.04),
+        borderRight: `solid 1px ${color.format(-0.1)}`,
+        fontSize: 13,
+        padding: 10,
+        lineHeight: 1.8,
+      }),
+      right: css({
+        position: 'relative',
+        flex: 1,
+      }),
+    };
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.left}>
+          {this.button('focus', () => this.editor.focus())}
+          <Hr margin={5} />
+        </div>
+        <div {...styles.right}>{this.renderEditor()}</div>
+      </div>
+    );
+  }
+
+  private button(title: string, handler?: () => void) {
+    return <Button label={title} onClick={handler} block={true} />;
+  }
+
+  public renderEditor() {
+    const styles = {
+      base: css({
+        Absolute: 0,
         boxSizing: 'border-box',
         display: 'flex',
       }),
@@ -120,7 +158,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       <div {...styles.base}>
         <div {...styles.columns}>
           <div {...styles.left}>
-            <Editor style={styles.editor} events$={this.events$} />
+            <Editor ref={this.editorRef} style={styles.editor} events$={this.events$} />
           </div>
           <div {...styles.right}>
             <ObjectView name={'state'} data={data} style={styles.state} />
