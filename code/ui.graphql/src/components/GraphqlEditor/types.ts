@@ -66,7 +66,7 @@ export type IGraphqlEditorFetched = {
 
 export type IGraphqlEditorSchemaFetchedEvent = {
   type: 'GRAPHQL_EDITOR/fetched/schema';
-  payload: { url: string; schema: Json };
+  payload: { fetchId: string; url: string; schema: Json };
 };
 
 export type IGraphqlEditorFetchErrorEvent = {
