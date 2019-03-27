@@ -1,17 +1,20 @@
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { Text } from '../Text';
 import {
-  R,
   css,
   GlamorValue,
-  util,
   MeasureSize,
-  toTextCss,
-  value as valueUtil,
+  R,
   time,
+  toTextCss,
+  util,
+  value as valueUtil,
 } from './common';
-import { HtmlInput, IInputValue, DEFAULT_TEXT_STYLE } from './components/HtmlInput';
-import { ITextInputFocus, ITextInputStyle, ITextInputEvents } from './types';
-import { Text } from '../Text';
+import { DEFAULT_TEXT_STYLE, HtmlInput, IInputValue } from './components/HtmlInput';
+import { ITextInputEvents, ITextInputFocus, ITextInputStyle } from './types';
 
 const DEFAULT = {
   VALUE_STYLE: DEFAULT_TEXT_STYLE,
@@ -45,6 +48,9 @@ export type ITextInputState = {
  * A simple text input field.
  */
 export class TextInput extends React.PureComponent<ITextInputProps, ITextInputState> {
+  /**
+   * [Static]
+   */
   public static DefaultTextStyle = DEFAULT.VALUE_STYLE;
   public static toTextCss = Text.toTextCss;
   public static measure = (props: ITextInputProps) => {
@@ -53,11 +59,22 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
     return MeasureSize.measure({ content, ...style });
   };
 
+  /**
+   * [Fields]
+   */
   public state: ITextInputState = { width: toInitialWidth(this.props) };
+  private unmounted$ = new Subject();
+  private state$ = new Subject<Partial<ITextInputState>>();
 
-  private isUnmounted = false;
   private input: HtmlInput;
   private inputRef = (el: HtmlInput) => (this.input = el);
+
+  /**
+   * [Lifecycle]
+   */
+  public componentWillMount() {
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+  }
 
   public componentDidMount() {
     this.updateAutoSize();
@@ -68,7 +85,15 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
   }
 
   public componentWillUnmount() {
-    this.isUnmounted = true;
+    this.unmounted$.next();
+    this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get isUnmounted() {
+    return this.unmounted$.isStopped;
   }
 
   /**
@@ -77,6 +102,10 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
   public get size() {
     return TextInput.measure(this.props);
   }
+
+  /**
+   * [Methods]
+   */
 
   public focus(select?: boolean) {
     if (this.input) {
@@ -104,6 +133,23 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
       this.input.caretToEnd();
     }
   }
+
+  private updateAutoSize() {
+    if (!this.props.autoSize || this.isUnmounted) {
+      return;
+    }
+    time.delay(0, () => {
+      // NB: Delay is so size measurement returns accurate number.
+      const width = toWidth(this.props);
+      if (!this.isUnmounted) {
+        this.state$.next({ width });
+      }
+    });
+  }
+
+  /**
+   * [Render]
+   */
 
   public render() {
     const isEnabled = valueUtil.defaultValue(this.props.isEnabled, true);
@@ -169,23 +215,10 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
       </div>
     );
   }
-
-  private updateAutoSize() {
-    if (!this.props.autoSize || this.isUnmounted) {
-      return;
-    }
-    time.delay(0, () => {
-      // NB: Delay is so size measurement returns accurate number.
-      const width = toWidth(this.props);
-      if (!this.isUnmounted) {
-        this.setState({ width });
-      }
-    });
-  }
 }
 
 /**
- * INTERNAL
+ * [Helpers]
  */
 function toWidth(props: ITextInputProps) {
   if (!props.autoSize) {

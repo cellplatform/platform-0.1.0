@@ -1,19 +1,9 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { R, css, color as colorUtil, util, GlamorValue, t, events } from '../common';
-import { ITextInputStyle, TextInputMaskHandler, ITextInputEvents, ITextInputFocus } from '../types';
+import { color as colorUtil, css, events, GlamorValue, R, t, util } from '../common';
+import { ITextInputEvents, ITextInputFocus, ITextInputStyle, TextInputMaskHandler } from '../types';
 
 export const DEFAULT_TEXT_STYLE: ITextInputStyle = {
   opacity: 1,
@@ -107,6 +97,12 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   public componentWillReceiveProps(nextProps: IHtmlInputProps) {
     this.setValue(nextProps);
   }
+
+  public componentWillUnmount() {
+    this.unmounted$.next();
+    this.unmounted$.complete();
+  }
+
 
   /**
    * [Methods]
@@ -288,3 +284,4 @@ function changedCharacter(from: string, to: string) {
   }
   return ''; // No change.
 }
+
