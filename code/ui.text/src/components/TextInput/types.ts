@@ -34,16 +34,21 @@ export type TextInputChangeEvent = {
 };
 export type TextInputChangeEventHandler = (e: TextInputChangeEvent) => void;
 
-export type TextInputTabEvent = { cancel: () => void };
+export type TextInputTabEvent = { cancel: () => void; modifierKeys: ITextModifierKeys };
 export type TextInputTabEventHandler = (e: TextInputTabEvent) => void;
+
+export type TextInputKeyEvent = React.KeyboardEvent<HTMLInputElement> & {
+  modifierKeys: ITextModifierKeys;
+};
+export type TextInputKeyEventHandler = (e: TextInputKeyEvent) => void;
 
 export interface ITextInputEvents {
   onChange?: TextInputChangeEventHandler;
-  onKeyPress?: React.EventHandler<React.KeyboardEvent<HTMLInputElement>>;
-  onKeyDown?: React.EventHandler<React.KeyboardEvent<HTMLInputElement>>;
-  onKeyUp?: React.EventHandler<React.KeyboardEvent<HTMLInputElement>>;
+  onKeyPress?: TextInputKeyEventHandler;
+  onKeyDown?: TextInputKeyEventHandler;
+  onKeyUp?: TextInputKeyEventHandler;
+  onEnter?: TextInputKeyEventHandler;
+  onTab?: TextInputTabEventHandler;
   onFocus?: React.EventHandler<React.FocusEvent<HTMLInputElement>>;
   onBlur?: React.EventHandler<React.FocusEvent<HTMLInputElement>>;
-  onEnter?: React.EventHandler<React.KeyboardEvent<HTMLInputElement>>;
-  onTab?: TextInputTabEventHandler;
 }

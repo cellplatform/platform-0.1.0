@@ -103,7 +103,6 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
     this.unmounted$.complete();
   }
 
-
   /**
    * [Methods]
    */
@@ -196,7 +195,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         onBlur={this.props.onBlur}
         onKeyPress={this.handleKeyPress}
         onKeyDown={this.handleKeydown}
-        onKeyUp={this.props.onKeyUp}
+        onKeyUp={this.handleKeyup}
       />
     );
   }
@@ -206,33 +205,44 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
    */
   private handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { onKeyDown, onTab } = this.props;
+    const modifierKeys = { ...this.modifierKeys };
     if (onKeyDown) {
-      onKeyDown(e);
+      onKeyDown({ ...e, modifierKeys });
     }
     if (onTab && e.key === 'Tab') {
       onTab({
         cancel: () => e.preventDefault(),
+        modifierKeys,
       });
+    }
+  };
+
+  private handleKeyup = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const { onKeyUp } = this.props;
+    if (onKeyUp) {
+      const modifierKeys = { ...this.modifierKeys };
+      onKeyUp({ ...e, modifierKeys });
     }
   };
 
   private handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { onKeyPress, onEnter } = this.props;
+    const modifierKeys = { ...this.modifierKeys };
     if (onEnter && e.key === 'Enter') {
-      onEnter(e);
+      onEnter({ ...e, modifierKeys });
     }
     if (onKeyPress) {
-      onKeyPress(e);
+      onKeyPress({ ...e, modifierKeys });
     }
   };
 
-  private handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  private handleChange = (e: React.ChangeEvent) => {
     const { onChange, maxLength, mask } = this.props;
 
     // Derive values.
     const from = this.state.value || '';
     const to = ((e.target as any).value as string) || '';
-    const char = changedCharacter(from, to);
+    const char = getChangedCharacter(from, to);
     const isMax = maxLength === undefined ? null : to.length === maxLength;
 
     // Check whether an input-filter will mask the values.
@@ -267,7 +277,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
  * [Helpers]
  */
 
-function changedCharacter(from: string, to: string) {
+function getChangedCharacter(from: string, to: string) {
   if (to.length === from.length) {
     return '';
   }
@@ -284,4 +294,3 @@ function changedCharacter(from: string, to: string) {
   }
   return ''; // No change.
 }
-
