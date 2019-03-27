@@ -21,6 +21,8 @@ const DEFAULT = {
   QUERY_COUNTRIES: `
     {
       continents {
+        code
+        name
         countries {
           name
           phone

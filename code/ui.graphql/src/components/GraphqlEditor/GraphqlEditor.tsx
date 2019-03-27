@@ -63,7 +63,7 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
         const { url } = this.props;
         if (url && schema) {
           this._schema = schema;
-          this.fire({ type: 'GRAPHQL_EDITOR/schema/loaded', payload: { url, schema } });
+          this.fire({ type: 'GRAPHQL_EDITOR/fetched/schema', payload: { url, schema } });
         }
       });
   }

@@ -5,7 +5,6 @@ import { Json } from '../../types';
  */
 
 export type GraphqlEditorEvent =
-  | IGraphqlEditorSchemaLoaded
   | IGraphqlEditorQueryChangedEvent
   | IGraphqlEditorOperationNameChangedEvent
   | IGraphqlEditorVariablesChangedEvent
@@ -13,12 +12,8 @@ export type GraphqlEditorEvent =
   | IGraphqlEditorDocsToggledEvent
   | IGraphqlEditorFetchingEvent
   | IGraphqlEditorFetchedEvent
-  | IGraphqlEditorFetchErrorEvent;
-
-export type IGraphqlEditorSchemaLoaded = {
-  type: 'GRAPHQL_EDITOR/schema/loaded';
-  payload: { url: string; schema: Json };
-};
+  | IGraphqlEditorFetchErrorEvent
+  | IGraphqlEditorSchemaFetchedEvent;
 
 export type IGraphqlEditorQueryChangedEvent = {
   type: 'GRAPHQL_EDITOR/changed/query';
@@ -67,6 +62,11 @@ export type IGraphqlEditorFetched = {
   params: object;
   result: Json;
   isError: boolean;
+};
+
+export type IGraphqlEditorSchemaFetchedEvent = {
+  type: 'GRAPHQL_EDITOR/fetched/schema';
+  payload: { url: string; schema: Json };
 };
 
 export type IGraphqlEditorFetchErrorEvent = {
