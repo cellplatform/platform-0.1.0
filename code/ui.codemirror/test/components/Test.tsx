@@ -92,6 +92,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         })}
         {this.renderInput('allowTab: true', { allowTab: true })}
         {this.renderInput('maxLength (4)', { maxLength: 4 })}
+        {this.renderInput('fontSize (16)', { fontSize: 16 })}
+        {this.renderInput('fontSize (8)', { fontSize: 8 })}
         {this.renderInput('multiline', { multiline: true, height: 120 })}
       </div>
     );
