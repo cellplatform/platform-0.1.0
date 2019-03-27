@@ -1,5 +1,12 @@
 import { ITextStyle } from '../../types';
 
+export type ITextModifierKeys = {
+  alt: boolean;
+  control: boolean;
+  shift: boolean;
+  meta: boolean;
+};
+
 export interface ITextInputFocus {
   focusOnLoad?: boolean;
   focusAction?: 'SELECT' | 'END';
@@ -15,17 +22,19 @@ export interface ITextInputStyle extends ITextStyle {
   disabledColor?: number | string;
 }
 
+/**
+ * [Events]
+ */
 export type TextInputChangeEvent = {
   from: string;
   to: string;
   char: string;
   isMax: boolean | null;
+  modifierKeys: ITextModifierKeys;
 };
 export type TextInputChangeEventHandler = (e: TextInputChangeEvent) => void;
 
-export type TextInputTabEvent = {
-  cancel: () => void;
-};
+export type TextInputTabEvent = { cancel: () => void };
 export type TextInputTabEventHandler = (e: TextInputTabEvent) => void;
 
 export interface ITextInputEvents {

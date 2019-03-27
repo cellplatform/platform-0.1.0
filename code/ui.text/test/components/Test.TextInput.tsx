@@ -1,12 +1,19 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Hr, css, color, GlamorValue, Button, TextInput, TextInputChangeEvent } from '../common';
+import {
+  Hr,
+  css,
+  color,
+  GlamorValue,
+  Button,
+  TextInput,
+  TextInputChangeEvent,
+  log,
+} from '../common';
 
 export type ITestTextInputProps = { style?: GlamorValue };
-export type ITestTextInputState = {
-  value?: string;
-};
+export type ITestTextInputState = { value?: string };
 
 export class TestTextInput extends React.PureComponent<ITestTextInputProps, ITestTextInputState> {
   public state: ITestTextInputState = {};
@@ -93,5 +100,6 @@ export class TestTextInput extends React.PureComponent<ITestTextInputProps, ITes
 
   private handleChange = (e: TextInputChangeEvent) => {
     this.state$.next({ value: e.to });
+    log.info('CHANGE', e);
   };
 }

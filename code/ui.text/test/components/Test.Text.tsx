@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, Text, ITextProps, Hr } from '../common';
+import { css, color, GlamorValue, Text, ITextProps, log } from '../common';
 
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
+
+const logEvent = (event: string) => (e: any) => log.info(event, e);
 
 export type ITestTextProps = { style?: GlamorValue };
 export type ITestTextState = {};
@@ -38,10 +40,11 @@ export class TestText extends React.PureComponent<ITestTextProps, ITestTextState
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        {this.renderText('Default')}
+        {this.renderText('Default (logging events)', { onMouse: logEvent('onMouse') })}
         {this.renderText('fontWeight: LIGHT', { fontWeight: 'LIGHT' })}
         {this.renderText('fontWeight: NORMAL', { fontWeight: 'NORMAL' })}
         {this.renderText('fontWeight: BOLD', { fontWeight: 'BOLD' })}
+        {this.renderText('uppercase', { uppercase: true })}
       </div>
     );
   }
