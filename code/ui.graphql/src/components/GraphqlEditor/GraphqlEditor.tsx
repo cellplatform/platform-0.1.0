@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { constants, css, GlamorValue } from '../../common';
+import { constants, css, GlamorValue, hjson } from '../../common';
 import { GraphqlEditorEvent } from './types';
 import { graphqlFetcher } from './fetch';
 
@@ -52,16 +52,16 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
   public get query() {
     return this.editor.query.getValue();
   }
-
   public set query(text: string) {
+    text = GraphqlEditor.prettify(text, 'GRAPHQL');
     this.editor.query.setValue(text);
   }
 
   public get variables() {
     return this.editor.variable.getValue();
   }
-
   public set variables(text: string) {
+    text = GraphqlEditor.prettify(text, 'JSON');
     this.editor.variable.setValue(text);
   }
 
@@ -87,12 +87,30 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
    * [Methods]
    */
   public prettify() {
-    const { parse, print } = require('graphql');
-    this.query = print(parse(this.query));
+    this.query = GraphqlEditor.prettify(this.query, 'GRAPHQL');
+    this.variables = GraphqlEditor.prettify(this.variables, 'JSON');
     this.fire({
       type: 'GRAPHQL_EDITOR/prettified',
       payload: { query: this.query, variables: this.variables },
     });
+  }
+
+  public static prettify(text: string, type: 'GRAPHQL' | 'JSON') {
+    if (!text.trim()) {
+      return text;
+    }
+
+    switch (type) {
+      case 'GRAPHQL':
+        const { parse, print } = require('graphql');
+        return print(parse(text));
+
+      case 'JSON':
+        const obj = hjson.parse(text);
+        return hjson.stringify(obj, { quotes: 'all', separator: true });
+    }
+
+    return text;
   }
 
   /**

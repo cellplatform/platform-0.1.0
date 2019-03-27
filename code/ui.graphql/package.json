@@ -20,11 +20,13 @@
     "@types/graphql": "14.0.7",
     "@uiharness/electron": "0.4.8",
     "graphiql": "0.13.0",
-    "graphql": "14.2.0"
+    "graphql": "14.2.0",
+    "hjson": "3.1.2"
   },
   "devDependencies": {
     "@platform/test": "0.0.36",
     "@platform/ts": "3.3.74",
+    "@types/hjson": "2.4.1",
     "@uiharness/dev": "0.2.18"
   },
   "files": [

@@ -1,16 +1,26 @@
-import '../../node_modules/@platform/css/reset.css';
-import '@babel/polyfill';
-
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { GraphqlEditor, GraphqlEditorEvent } from '../../src';
-import { css, GlamorValue } from './common';
+import { color, Button, css, GlamorValue, Hr } from './common';
 
-/**
- * Test Component
- */
+const DEFAULT = {
+  QUERY: `
+    query foo {
+      markets(filter: {baseSymbol: {_eq: "BTC"}, quoteSymbol: {_in: ["USD", "USDT", "USDC"]}}) {
+        marketSymbol
+        ohlcv(resolution: _1d, limit: 1)
+      }
+    }
+  `,
+  VARIABLES: `
+    {
+      foo: 1234
+      bar: hello
+    }
+  `,
+};
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {};
@@ -20,6 +30,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<GraphqlEditorEvent>();
+
+  private editor!: GraphqlEditor;
+  private editorRef = (ref: GraphqlEditor) => (this.editor = ref);
 
   /**
    * [Lifecycle]
@@ -43,8 +56,23 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public render() {
     const styles = {
       base: css({
-        Absolute: 20,
+        Absolute: 0,
         display: 'flex',
+      }),
+      left: css({
+        width: 180,
+        backgroundColor: color.format(-0.04),
+        borderRight: `solid 1px ${color.format(-0.1)}`,
+        fontSize: 14,
+        padding: 10,
+        lineHeight: 1.8,
+      }),
+      right: css({
+        flex: 1,
+        position: 'relative',
+      }),
+      editor: css({
+        Absolute: 20,
       }),
     };
 
@@ -52,8 +80,26 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     return (
       <div {...styles.base}>
-        <GraphqlEditor url={url} events$={this.events$} />
+        <div {...styles.left}>
+          {this.button('query: DEFAULT', () => (this.editor.query = DEFAULT.QUERY))}
+          {this.button('query: <empty>', () => (this.editor.query = ''))}
+          <Hr margin={5} />
+          {this.button('variables: DEFAULT', () => (this.editor.variables = DEFAULT.VARIABLES))}
+          {this.button('variables: <empty>', () => (this.editor.variables = ''))}
+        </div>
+        <div {...styles.right}>
+          <GraphqlEditor
+            ref={this.editorRef}
+            url={url}
+            events$={this.events$}
+            style={styles.editor}
+          />
+        </div>
       </div>
     );
+  }
+
+  private button(title: string, handler?: () => void) {
+    return <Button label={title} onClick={handler} block={true} />;
   }
 }

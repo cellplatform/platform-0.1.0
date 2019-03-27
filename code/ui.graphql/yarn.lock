@@ -1107,6 +1107,11 @@
   resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-14.0.7.tgz#daa09397220a68ce1cbb3f76a315ff3cd92312f6"
   integrity sha512-BoLDjdvLQsXPZLJux3lEZANwGr3Xag56Ngy0U3y8uoRSDdeLcn43H3oBcgZlnd++iOQElBpaRVDHPzEDekyvXQ==
 
+"@types/hjson@2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@types/hjson/-/hjson-2.4.1.tgz#a6fc8649777b63f979193d2d5c108a71b3d414d9"
+  integrity sha512-yXq/C73UHM8GQc6RYJnUXUgxudr2Q9227Iawhkp03YCnfJJTc+6LJnnVLx+UR/Dvw6imO5Q3vpGNmR9IRBI0JQ==
+
 "@types/inquirer@6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@types/inquirer/-/inquirer-6.0.0.tgz#bbf3c915f9266e30adf78fc2f3df72f205287aca"
@@ -3950,6 +3955,11 @@ hex-color-regex@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
+
+hjson@3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/hjson/-/hjson-3.1.2.tgz#1ae8a3a897a1fab8d45180f98e9abf9b56f95b55"
+  integrity sha512-2ILrho8eRl2Bniy61mDFiXRAloYqH2T6OwWkoF/8y55DPFgG2RcqQGNXIfBLp432dnAbLOpBJ4pJs63W3X27EA==
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
