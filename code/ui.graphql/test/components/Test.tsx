@@ -3,14 +3,29 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { GraphqlEditor, GraphqlEditorEvent } from '../../src';
-import { color, Button, css, GlamorValue, Hr } from './common';
+import { color, Button, css, GlamorValue, Hr, constants } from './common';
 
+const URL = {
+  BLOCKTAP: 'https://api.blocktap.io/graphql',
+  COUNTRIES: 'https://countries.trevorblades.com',
+};
 const DEFAULT = {
-  QUERY: `
+  QUERY_MARKET: `
     query foo {
       markets(filter: {baseSymbol: {_eq: "BTC"}, quoteSymbol: {_in: ["USD", "USDT", "USDC"]}}) {
         marketSymbol
         ohlcv(resolution: _1d, limit: 1)
+      }
+    }
+  `,
+  QUERY_COUNTRIES: `
+    {
+      continents {
+        countries {
+          name
+          phone
+          currency    
+        }
       }
     }
   `,
@@ -23,7 +38,9 @@ const DEFAULT = {
 };
 
 export type ITestProps = { style?: GlamorValue };
-export type ITestState = {};
+export type ITestState = {
+  url?: string;
+};
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
@@ -51,6 +68,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   /**
+   * [Methods]
+   */
+  public set(query: string, url: string) {
+    this.editor.query = query;
+    this.state$.next({ url });
+  }
+
+  /**
    * [Render]
    */
   public render() {
@@ -71,12 +96,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         flex: 1,
         position: 'relative',
       }),
-      editor: css({
-        Absolute: 20,
-      }),
     };
-
-    const url = `https://api.blocktap.io/graphql`;
 
     return (
       <div {...styles.base}>
@@ -89,25 +109,46 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             console.groupEnd();
           })}
           <Hr margin={5} />
-          {this.button('query: DEFAULT', () => (this.editor.query = DEFAULT.QUERY))}
           {this.button('query: <empty>', () => (this.editor.query = ''))}
+          {this.button('query: btc markets', () => this.set(DEFAULT.QUERY_MARKET, URL.BLOCKTAP))}
+          {this.button('query: countries', () => this.set(DEFAULT.QUERY_COUNTRIES, URL.COUNTRIES))}
           <Hr margin={5} />
-          {this.button('variables: DEFAULT', () => (this.editor.variables = DEFAULT.VARIABLES))}
           {this.button('variables: <empty>', () => (this.editor.variables = ''))}
+          {this.button('variables: DEFAULT', () => (this.editor.variables = DEFAULT.VARIABLES))}
         </div>
-        <div {...styles.right}>
-          <GraphqlEditor
-            ref={this.editorRef}
-            url={url}
-            events$={this.events$}
-            style={styles.editor}
-          />
-        </div>
+        <div {...styles.right}>{this.renderEditor()}</div>
       </div>
     );
   }
 
   private button(title: string, handler?: () => void) {
     return <Button label={title} onClick={handler} block={true} />;
+  }
+
+  private renderEditor() {
+    const { url = URL.COUNTRIES } = this.state;
+    const styles = {
+      base: css({}),
+      url: css({
+        margin: 20,
+        marginTop: 13,
+        fontSize: 12,
+        color: color.format(-0.5),
+      }),
+      editor: css({
+        Absolute: [40, 20, 20, 20],
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.url}>{url}</div>
+        <GraphqlEditor
+          ref={this.editorRef}
+          url={url}
+          events$={this.events$}
+          style={styles.editor}
+        />
+      </div>
+    );
   }
 }
