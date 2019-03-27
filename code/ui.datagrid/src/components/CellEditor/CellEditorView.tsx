@@ -13,7 +13,7 @@ import {
 import * as React from 'react';
 
 import { color, constants, css, GlamorValue, t } from '../../common';
-import { FormulaInput, Text, Editor } from '../primitives';
+import { FormulaInput, Text, TextEditor } from '../primitives';
 import { THEMES } from './themes';
 
 const BORDER_WIDTH = 2;
@@ -46,10 +46,9 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
   private formula!: FormulaInput;
   private formulaRef = (ref: FormulaInput) => (this.formula = ref);
 
-
-  private formula$ = new Subject<t.>();
-  private editor!: Editor;
-  private editorRef = (ref: Editor) => (this.editor = ref);
+  private text$ = new Subject<t.TextEditorEvent>();
+  private text!: TextEditor;
+  private textRef = (ref: TextEditor) => (this.text = ref);
 
   /**
    * [Lifecycle]
@@ -57,10 +56,24 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
 
   public componentDidMount() {
     const formula$ = this.formula$.pipe(takeUntil(this.unmounted$));
+    const text$ = this.text$.pipe(takeUntil(this.unmounted$));
 
     formula$.subscribe(e => {
-      // console.log('e', e);
+      console.log('🌳 FORMULA', e);
     });
+
+    text$.subscribe(e => {
+      console.log('🌼 TEXT', e);
+    });
+
+    text$
+      .pipe(
+        filter(e => e.type === 'EDITOR/changing'),
+        map(e => e.payload as t.ITextEditorChanging),
+      )
+      .subscribe(e => {
+        // e.cancel();
+      });
 
     formula$
       .pipe(
@@ -68,7 +81,6 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
         map(e => e.payload as t.IFormulaInputChanged),
       )
       .subscribe(e => {
-        console.log('e', e);
         this.setState({ value: e.to });
       });
   }
@@ -211,7 +223,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
       }),
     };
 
-    return <Editor ref={this.editorRef} style={styles.editor} />;
+    return <TextEditor ref={this.textRef} style={styles.editor} events$={this.text$} />;
   }
 
   private renderFormula() {
@@ -226,11 +238,11 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
     return (
       <FormulaInput
         ref={this.formulaRef}
+        style={styles.base}
         events$={this.formula$}
         multiline={false}
         value={this.value}
         fontSize={12}
-        style={styles.base}
       />
     );
   }

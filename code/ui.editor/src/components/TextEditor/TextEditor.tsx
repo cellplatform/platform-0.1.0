@@ -40,8 +40,8 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   private view: EditorView;
 
   private unmounted$ = new Subject();
-  private readonly _events$ = new Subject<t.TextEditorEvent>();
-  public readonly events$ = this._events$.pipe(takeUntil(this.unmounted$));
+  private _events$ = new Subject<t.TextEditorEvent>();
+  public events$ = this._events$.pipe(takeUntil(this.unmounted$));
 
   /**
    * [Constructor]

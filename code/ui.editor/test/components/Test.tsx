@@ -14,6 +14,39 @@ export type ITestState = {
   content?: string;
 };
 
+const LOREM =
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
+
+const DEFAULT = {
+  MARKDOWN: `
+# Heading1
+## Heading2
+### Heading3
+#### Heading4
+##### Heading5
+
+- one
+- two
+- three
+
+---
+
+Before
+
+      code block
+
+After
+
+  `.substring(1),
+  LONG: `
+${LOREM}  
+
+---
+
+${LOREM}  
+  `,
+};
+
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = { transactions: [] };
   private unmounted$ = new Subject();
@@ -96,6 +129,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.left}>
           {this.button('focus', () => this.editor.focus())}
           <Hr margin={5} />
+          {this.button('load: <empty>', () => this.editor.load(''))}
+          {this.button('load: short', () => this.editor.load('hello'))}
+          {this.button('load: long', () => this.editor.load(DEFAULT.LONG))}
+          {this.button('load: markdown', () => this.editor.load(DEFAULT.MARKDOWN))}
         </div>
         <div {...styles.right}>{this.renderEditor()}</div>
       </div>
