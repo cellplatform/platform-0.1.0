@@ -128,7 +128,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     const theme = this.theme;
     const styles = {
       base: css({
-        Absolute: [-4, null, null, 0 - BORDER_WIDTH],
+        Absolute: [-3, null, null, 0],
         userSelect: 'none',
       }),
       body: css({
