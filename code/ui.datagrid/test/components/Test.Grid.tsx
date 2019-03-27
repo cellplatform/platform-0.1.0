@@ -72,6 +72,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       base: css({
         Flex: 'horizontal',
         flex: 1,
+        backgroundColor: color.format(-0.08),
       }),
       left: css({
         position: 'relative',

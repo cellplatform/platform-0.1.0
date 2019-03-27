@@ -1,12 +1,12 @@
 import { Editors, GridSettings } from 'handsontable';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { filter, share, take, takeUntil, map } from 'rxjs/operators';
+import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
-import { R, time, constants, Handsontable, t, events } from '../../common';
+import { constants, events, Handsontable, R, t, time } from '../../common';
+import { toGridKeypress } from '../../components/DataGrid/hook.keyboard';
 import { IGridRefsPrivate } from '../../components/DataGrid/types.private';
 import { createProvider } from './EditorContext';
-import { toGridKeypress } from '../../components/DataGrid/hook.keyboard';
 
 const editors = Handsontable.editors as Editors;
 
@@ -321,6 +321,7 @@ export class Editor extends editors.TextEditor {
 
     const Provider = createProvider(context);
     const className = constants.CSS_CLASS.EDITOR;
+
     return (
       <Provider>
         <div className={className}>{el}</div>

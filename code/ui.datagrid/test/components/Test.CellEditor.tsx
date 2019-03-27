@@ -2,7 +2,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { CellEditorView } from '../../src/components/CellEditor/CellEditorView';
+import {
+  CellEditorView,
+  ICellEditorViewProps,
+} from '../../src/components/CellEditor/CellEditorView';
 import { Button, color, css, GlamorValue } from '../common';
 
 export type ITestCellEditorProps = { style?: GlamorValue };
@@ -16,8 +19,8 @@ export class TestCellEditor extends React.PureComponent<
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestCellEditorState>>();
 
-  private editor!: CellEditorView;
-  private editorRef = (ref: CellEditorView) => (this.editor = ref);
+  private editors: CellEditorView[] = [];
+  private editorRef = (ref: CellEditorView) => this.editors.push(ref);
 
   /**
    * [Lifecycle]
@@ -46,6 +49,7 @@ export class TestCellEditor extends React.PureComponent<
         lineHeight: 1.6,
         Flex: 'vertical-spaceBetween',
         borderRight: `solid 1px ${color.format(-0.1)}`,
+        backgroundColor: color.format(-0.05),
       }),
       leftTop: css({
         fontSize: 13,
@@ -53,27 +57,54 @@ export class TestCellEditor extends React.PureComponent<
       right: css({
         position: 'relative',
         flex: 1,
-        padding: 20,
-        paddingTop: 40,
+        PaddingX: 20,
+        paddingTop: 10,
         backgroundColor: color.format(1),
       }),
-      editor: css({}),
     };
 
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <div {...styles.leftTop}>{this.button('focus', () => this.editor.focus())}</div>
+          <div {...styles.leftTop}>{this.button('focus', () => this.editors[0].focus())}</div>
         </div>
         <div {...styles.right}>
-          <CellEditorView
-            ref={this.editorRef}
-            style={styles.editor}
-            width={250}
-            // height={22}
-            title={'A1'}
-          />
+          {this.renderEditor('formula', { mode: 'FORMULA' })}
+          {this.renderEditor('formula', { mode: 'FORMULA', title: 'B3', column: 1, row: 4 })}
+          {this.renderEditor('text', { mode: 'TEXT', title: 'B3', column: 1, row: 4 })}
         </div>
+      </div>
+    );
+  }
+
+  private renderEditor(title: string, props: ICellEditorViewProps = {}) {
+    const styles = {
+      base: css({
+        position: 'relative',
+        paddingTop: 60,
+        paddingBottom: 30,
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
+      }),
+      title: css({
+        Absolute: [5, null, null, 0],
+        fontSize: 12,
+        opacity: 0.5,
+      }),
+      editor: css({
+        marginLeft: 40,
+      }),
+    };
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.title}>{title}</div>
+        <CellEditorView
+          ref={this.editorRef}
+          style={styles.editor}
+          width={250}
+          title={'A1'}
+          {...props}
+        />
       </div>
     );
   }

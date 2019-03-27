@@ -86,11 +86,21 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
    * [Properties]
    */
   public get size() {
-    const BORDER_WIDTH = CellEditorView.BORDER_WIDTH;
     const cell = this.context.cell;
-    const width = cell.td.offsetWidth - BORDER_WIDTH * 2 + (cell.column === 0 ? 0 : 1);
-    const height = cell.td.offsetHeight - BORDER_WIDTH * 2 + (cell.row === 0 ? 0 : 1);
+    const width = cell.td.offsetWidth + (cell.column === 0 ? 0 : 1);
+    const height = cell.td.offsetHeight + (cell.row === 0 ? -1 : 0); // NB: Account for table edge differences.
     return { width, height };
+  }
+
+  private get cell() {
+    return this.context.cell;
+  }
+
+  private get row() {
+    return this.cell.row || 0;
+  }
+  private get column() {
+    return this.cell.column || 0;
   }
 
   /**
@@ -113,6 +123,8 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
         style={this.props.style}
         width={width}
         height={height}
+        row={this.row}
+        column={this.column}
       />
     );
   }

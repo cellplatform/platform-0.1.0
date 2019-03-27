@@ -14,4 +14,6 @@ export const CSS_CLASS = {
 export const DEFAULTS = {
   TOTAL_COLUMNS: 52,
   TOTAL_ROWS: 1000,
+  ROW_HEIGHTS: 25,
+  COLUMN_WIDTHS: 100,
 };

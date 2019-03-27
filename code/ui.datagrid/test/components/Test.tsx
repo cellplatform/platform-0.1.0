@@ -67,7 +67,6 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const styles = {
       base: css({
         Absolute: 0,
-        backgroundColor: color.format(-0.08),
         Flex: 'vertical',
       }),
       main: css({
