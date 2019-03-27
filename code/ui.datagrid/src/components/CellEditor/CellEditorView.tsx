@@ -13,7 +13,7 @@ import {
 import * as React from 'react';
 
 import { color, constants, css, GlamorValue, t } from '../../common';
-import { FormulaInput, Text } from '../primitives';
+import { FormulaInput, Text, Editor } from '../primitives';
 import { THEMES } from './themes';
 
 const BORDER_WIDTH = 2;
@@ -35,7 +35,7 @@ export type I__TEMP__State = { value?: string };
 console.log(`\nTODO 🐷   Remove TEMP state from <CellEditorView> \n`);
 
 export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I__TEMP__State> {
-  public state: I__TEMP__State = {};
+  public state: I__TEMP__State = { value: '=SUM(1,2)' };
 
   public static THEMES = THEMES;
   public static BORDER_WIDTH = BORDER_WIDTH;
@@ -45,6 +45,11 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
   private formula$ = new Subject<t.FormulaInputEvent>();
   private formula!: FormulaInput;
   private formulaRef = (ref: FormulaInput) => (this.formula = ref);
+
+
+  private formula$ = new Subject<t.>();
+  private editor!: Editor;
+  private editorRef = (ref: Editor) => (this.editor = ref);
 
   /**
    * [Lifecycle]
@@ -199,7 +204,14 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
   }
 
   private renderText() {
-    return <div>text</div>;
+    const styles = {
+      editor: css({
+        margin: BORDER_WIDTH,
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+      }),
+    };
+
+    return <Editor ref={this.editorRef} style={styles.editor} />;
   }
 
   private renderFormula() {
