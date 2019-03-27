@@ -5,3 +5,8 @@
 # ui.panel
 Panel container components and behaviors.
 
+## Setup
+
+    yarn add @platform/ui.panel
+
+

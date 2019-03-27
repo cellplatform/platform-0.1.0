@@ -5,4 +5,9 @@
 # ui.icon
 Icon component library.
 
+## Setup
+Make sure to include the `react-icons` peer-dependency:
+
+    yarn add @platform/ui.icon react-icons
+
 

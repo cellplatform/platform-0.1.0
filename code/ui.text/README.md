@@ -5,3 +5,7 @@
 # ui.text
 Text components.
 
+## Setup
+
+    yarn add @platform/ui.text
+

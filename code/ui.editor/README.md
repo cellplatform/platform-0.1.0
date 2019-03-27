@@ -4,3 +4,6 @@
 
 Rich text/markdown editor for [web](https://developer.mozilla.org) and [electron](https://electronjs.org).
 
+## Setup
+
+    yarn add @platform/ui.editor

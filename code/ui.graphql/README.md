@@ -6,6 +6,10 @@
 
 UI components for working with [GraphQL](https://graphql.org/).
 
+## Setup
+
+    yarn add @platform/ui.graphql
+
 
 <p>&nbsp;<p>
 <p>&nbsp;<p>

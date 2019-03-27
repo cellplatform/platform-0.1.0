@@ -6,6 +6,10 @@
 
 [Strongly typed](https://www.typescriptlang.org) tabular data-grid with rich [observable](https://www.learnrxjs.io) event stream.
 
+## Setup
+
+    yarn add @platform/ui.datagrid
+
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>

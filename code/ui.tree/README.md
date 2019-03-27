@@ -5,3 +5,8 @@
 # ui.tree
 
 Hierarchical tree view.
+
+## Setup
+
+    yarn add @platform/ui.tree
+

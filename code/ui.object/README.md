@@ -5,6 +5,12 @@
 # ui.object
 Visual display of javascript object.
 
+## Setup
+
+    yarn add @platform/ui.object
+
+
+
 <p>&nbsp;<p>
 
 ## API

@@ -5,3 +5,6 @@
 
 Components for building [cli](https://en.wikipedia.org/wiki/Command-line_interface) ([command-line-interface](https://en.wikipedia.org/wiki/Command-line_interface)) related UI.
 
+## Setup
+
+    yarn add @platform/ui.cli
