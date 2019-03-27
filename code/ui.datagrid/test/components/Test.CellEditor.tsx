@@ -9,7 +9,9 @@ import {
 import { Button, color, css, GlamorValue } from '../common';
 
 export type ITestCellEditorProps = { style?: GlamorValue };
-export type ITestCellEditorState = {};
+export type ITestCellEditorState = {
+  value?:string;
+};
 
 export class TestCellEditor extends React.PureComponent<
   ITestCellEditorProps,
@@ -101,6 +103,7 @@ export class TestCellEditor extends React.PureComponent<
         <CellEditorView
           ref={this.editorRef}
           style={styles.editor}
+          value={this.state.value}
           width={250}
           title={'A1'}
           {...props}

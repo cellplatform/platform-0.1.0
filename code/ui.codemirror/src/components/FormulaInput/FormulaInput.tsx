@@ -52,7 +52,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     share(),
   );
 
-  private readonly modifierKeys: t.IModifierKeys = {
+  private readonly modifierKeys: t.ITextModifierKeys = {
     alt: false,
     control: false,
     shift: false,

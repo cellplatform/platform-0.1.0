@@ -1,5 +1,16 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import * as React from 'react';
-import { Subject } from 'rxjs';
 
 import { color, constants, css, GlamorValue, t } from '../../common';
 import { FormulaInput, Text } from '../primitives';
@@ -9,6 +20,7 @@ const BORDER_WIDTH = 2;
 const { DEFAULTS, COLORS } = constants;
 
 export type ICellEditorViewProps = {
+  value?: string;
   row?: number;
   column?: number;
   title?: React.ReactNode;
@@ -19,18 +31,42 @@ export type ICellEditorViewProps = {
   style?: GlamorValue;
 };
 
-export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
+export type I__TEMP__State = { value?: string };
+
+export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I__TEMP__State> {
+  public state: I__TEMP__State = {};
+
   public static THEMES = THEMES;
   public static BORDER_WIDTH = BORDER_WIDTH;
 
   private unmounted$ = new Subject();
 
-  private formulaInput!: FormulaInput;
-  private formulaInputRef = (ref: FormulaInput) => (this.formulaInput = ref);
+  private formula$ = new Subject<t.FormulaInputEvent>();
+  private formula!: FormulaInput;
+  private formulaRef = (ref: FormulaInput) => (this.formula = ref);
 
   /**
    * [Lifecycle]
    */
+
+  public componentDidMount() {
+    const formula$ = this.formula$.pipe(takeUntil(this.unmounted$));
+
+    formula$.subscribe(e => {
+      // console.log('e', e);
+    });
+
+    formula$
+      .pipe(
+        filter(e => e.type === 'INPUT/formula/changed'),
+        map(e => e.payload as t.IFormulaInputChanged),
+      )
+      .subscribe(e => {
+        console.log('e', e);
+        this.setState({ value: e.to });
+      });
+  }
+
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
@@ -39,6 +75,10 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   /**
    * [Properties]
    */
+  public get value() {
+    return this.state.value || '';
+  }
+
   private get theme() {
     const { theme = 'DEFAULT' } = this.props;
     if (typeof theme === 'object') {
@@ -70,8 +110,8 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       case 'TEXT':
         return;
       case 'FORMULA':
-        if (this.formulaInput) {
-          this.formulaInput.focus();
+        if (this.formula) {
+          this.formula.focus();
         }
         break;
     }
@@ -172,8 +212,10 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     };
     return (
       <FormulaInput
-        ref={this.formulaInputRef}
-        value={'=SUM(1,2,3)'}
+        ref={this.formulaRef}
+        events$={this.formula$}
+        multiline={false}
+        value={this.value}
         fontSize={12}
         style={styles.base}
       />
