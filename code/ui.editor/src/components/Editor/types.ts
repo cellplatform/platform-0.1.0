@@ -7,15 +7,24 @@ export { Transaction, EditorState, Schema, EditorView };
 /**
  * [Events]
  */
-export type EditorEvent = IEditorTransactionEvent;
+export type EditorEvent = IEditorChangingEvent | IEditorChangedEvent;
 
-export type IEditorTransactionEvent<S extends Schema = any> = {
-  type: 'EDITOR/transaction';
-  payload: {
-    stage: 'BEFORE' | 'AFTER';
-    transaction: Transaction<S>;
-    state: EditorState<S>;
-    view: EditorView<S>;
-    content: string;
-  };
+export type IEditorChangingEvent<S extends Schema = any> = {
+  type: 'EDITOR/changing';
+  payload: IEditorChanging<S>;
+};
+export type IEditorChanging<S extends Schema = any> = IEditorChanged<S> & {
+  cancel(): void;
+  isCancelled: boolean;
+};
+
+export type IEditorChangedEvent<S extends Schema = any> = {
+  type: 'EDITOR/changed';
+  payload: IEditorChanged<S>;
+};
+export type IEditorChanged<S extends Schema = any> = {
+  transaction: Transaction<S>;
+  state: EditorState<S>;
+  view: EditorView<S>;
+  content: string;
 };

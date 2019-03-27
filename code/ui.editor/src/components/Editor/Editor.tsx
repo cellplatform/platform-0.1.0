@@ -110,26 +110,42 @@ export class Editor extends React.PureComponent<IEditorProps> {
   }
 
   /**
-   * [Internal]
+   * [Handlers]
    */
   private dispatcher = (transaction: t.Transaction<DocSchema>) => {
     const view = this.view;
     let state = view.state;
+    const events$ = this._events$;
 
-    // Fire the "pre" event.
-    this._events$.next({
-      type: 'EDITOR/transaction',
-      payload: { stage: 'BEFORE', transaction, view, state, content: this.content },
+    // Fire the BEFORE event.
+    let isCancelled = false;
+    events$.next({
+      type: 'EDITOR/changing',
+      payload: {
+        transaction,
+        view,
+        state,
+        content: this.content,
+        get isCancelled() {
+          return isCancelled;
+        },
+        cancel() {
+          isCancelled = true;
+        },
+      },
     });
+    if (isCancelled) {
+      return;
+    }
 
     // Update the state of the editor.
     state = view.state.apply(transaction);
     view.updateState(state);
 
-    // Fire the "post" event.
-    this._events$.next({
-      type: 'EDITOR/transaction',
-      payload: { stage: 'AFTER', transaction, view, state, content: this.content },
+    // Fire the AFTER event.
+    events$.next({
+      type: 'EDITOR/changed',
+      payload: { transaction, view, state, content: this.content },
     });
   };
 

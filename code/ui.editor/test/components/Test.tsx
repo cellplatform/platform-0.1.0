@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { map, filter, takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, t } from '../common';
-import { Editor } from './Editor';
-import { ObjectView } from './primitives';
+import { Editor } from '../../src';
+import { color, COLORS, css, GlamorValue, ObjectView, t } from './common';
 
 export type ITestProps = {
   style?: GlamorValue;
@@ -12,32 +11,64 @@ export type ITestProps = {
 
 export type ITestState = {
   editorState?: t.EditorState;
-  transactions: t.Transaction[];
+  transactions?: t.Transaction[];
   content?: string;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = { transactions: [] };
+  private unmounted$ = new Subject();
+  private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.EditorEvent>();
 
-  constructor(props: ITestProps) {
-    super(props);
+  /**
+   * [Lifecycle]
+   */
+  public componentWillMount() {
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
   }
 
   public componentDidMount() {
-    this.events$
-      // Display editor events in state.
-      .pipe(filter(e => e.payload.stage === 'AFTER'))
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+
+    events$.subscribe(e => {
+      console.log('🌳', e);
+    });
+
+    events$
+      // Cancel change.
+      .pipe(
+        filter(e => e.type === 'EDITOR/changing'),
+        map(e => e.payload as t.IEditorChanging),
+      )
       .subscribe(e => {
-        const { state, transaction, content } = e.payload;
-        this.setState({
+        // e.cancel();
+      });
+
+    events$
+      // Display editor events in state.
+      .pipe(
+        filter(e => e.type === 'EDITOR/changed'),
+        map(e => e.payload as t.IEditorChanged),
+      )
+      .subscribe(e => {
+        const { state, transaction, content } = e;
+        this.state$.next({
           editorState: state,
           content,
-          transactions: [...this.state.transactions, transaction],
+          transactions: [...(this.state.transactions || []), transaction],
         });
       });
   }
 
+  public componentWillUnmount() {
+    this.unmounted$.next();
+    this.unmounted$.complete();
+  }
+
+  /**
+   * [Render]
+   */
   public render() {
     const styles = {
       base: css({
