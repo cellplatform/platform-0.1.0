@@ -8,7 +8,8 @@ export const COLORS = {
 
 export const CSS_CLASS = {
   GRID: 'platform-datagrid',
-  EDITOR: 'platform-datagrid-editor',
+  GRID_EDITOR: 'platform-datagrid-editor',
+  CELL_EDITOR: 'platform-cell-editor',
 };
 
 export const DEFAULTS = {

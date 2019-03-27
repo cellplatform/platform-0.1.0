@@ -1,16 +1,6 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { color, constants, css, GlamorValue, t } from '../../common';
 import { FormulaInput, Text, TextEditor } from '../primitives';
@@ -57,6 +47,10 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
   public componentDidMount() {
     const formula$ = this.formula$.pipe(takeUntil(this.unmounted$));
     const text$ = this.text$.pipe(takeUntil(this.unmounted$));
+    const textChanged$ = text$.pipe(
+      filter(e => e.type === 'EDITOR/changed'),
+      map(e => e.payload as t.ITextEditorChanged),
+    );
 
     formula$.subscribe(e => {
       console.log('🌳 FORMULA', e);
@@ -64,6 +58,12 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
 
     text$.subscribe(e => {
       console.log('🌼 TEXT', e);
+      // // console.log("e.payload.size", e.payload.size)
+    });
+
+    textChanged$.subscribe(e => {
+      console.log('size', e.size);
+      // // console.log("e.payload.size", e.payload.size)
     });
 
     text$
@@ -97,7 +97,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
     return this.state.value || '';
   }
 
-  private get theme() {
+  public get theme() {
     const { theme = 'DEFAULT' } = this.props;
     if (typeof theme === 'object') {
       return theme;
@@ -109,14 +109,15 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
     throw new Error(`Theme '${theme}' not supported`);
   }
 
-  private get mode() {
-    return this.props.mode || 'FORMULA';
+  public get mode() {
+    // return this.props.mode || 'FORMULA';
+    return this.props.mode || 'TEXT';
   }
 
-  private get row() {
+  public get row() {
     return this.props.row || 0;
   }
-  private get column() {
+  public get column() {
     return this.props.column || 0;
   }
 
@@ -157,7 +158,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
       }),
     };
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div {...css(styles.base, this.props.style)} className={constants.CSS_CLASS.CELL_EDITOR}>
         {this.renderBorder()}
         <div {...styles.body}>
           {this.renderTitle()}

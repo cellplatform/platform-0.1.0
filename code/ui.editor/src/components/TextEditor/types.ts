@@ -27,4 +27,5 @@ export type ITextEditorChanged<S extends Schema = any> = {
   state: EditorState<S>;
   view: EditorView<S>;
   content: string;
+  size: { width: number; height: number };
 };

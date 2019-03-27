@@ -76,6 +76,16 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     return containsFocus(this.el) || this.view.hasFocus();
   }
 
+  public get width() {
+    return this.el ? this.el.offsetWidth : -1;
+  }
+  public get height() {
+    return this.el ? this.el.offsetHeight : -1;
+  }
+  public get size() {
+    return { width: this.width, height: this.height };
+  }
+
   /**
    * [Methods]
    */
@@ -126,6 +136,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     const view = this.view;
     let state = view.state;
     const events$ = this._events$;
+    const self = this; // tslint:disable-line
 
     // Fire the BEFORE event.
     let isCancelled = false;
@@ -142,6 +153,9 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
         cancel() {
           isCancelled = true;
         },
+        get size() {
+          return self.size;
+        },
       },
     });
     if (isCancelled) {
@@ -155,7 +169,15 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     // Fire the AFTER event.
     events$.next({
       type: 'EDITOR/changed',
-      payload: { transaction, view, state, content: this.content },
+      payload: {
+        transaction,
+        view,
+        state,
+        content: this.content,
+        get size() {
+          return self.size;
+        },
+      },
     });
   };
 
