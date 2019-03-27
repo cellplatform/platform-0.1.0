@@ -1,1 +1,1 @@
-export * from './components/Editor/types';
+export * from './components/TextEditor/types';

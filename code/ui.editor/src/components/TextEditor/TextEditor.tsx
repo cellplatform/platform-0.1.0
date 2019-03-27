@@ -16,8 +16,8 @@ const schema = require('prosemirror-markdown').schema;
 
 export type DocSchema = any;
 
-export type IEditorProps = {
-  events$?: Subject<t.EditorEvent>;
+export type ITextEditorProps = {
+  events$?: Subject<t.TextEditorEvent>;
   focusOnLoad?: boolean;
   style?: GlamorValue;
 };
@@ -31,7 +31,7 @@ export type IEditorProps = {
  *  - https://github.com/ProseMirror/prosemirror-example-setup/blob/master/README.md
  *
  */
-export class Editor extends React.PureComponent<IEditorProps> {
+export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * [Fields]
    */
@@ -40,7 +40,7 @@ export class Editor extends React.PureComponent<IEditorProps> {
   private view: EditorView;
 
   private unmounted$ = new Subject();
-  private readonly _events$ = new Subject<t.EditorEvent>();
+  private readonly _events$ = new Subject<t.TextEditorEvent>();
   public readonly events$ = this._events$.pipe(takeUntil(this.unmounted$));
 
   /**

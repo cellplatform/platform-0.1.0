@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { map, filter, takeUntil } from 'rxjs/operators';
 
-import { Editor } from '../../src';
-import { color, COLORS, css, GlamorValue, ObjectView, t, Button, Hr } from './common';
+import { TextEditor, color, COLORS, css, GlamorValue, ObjectView, t, Button, Hr } from './common';
 
 export type ITestProps = {
   style?: GlamorValue;
@@ -19,10 +18,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = { transactions: [] };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
-  private events$ = new Subject<t.EditorEvent>();
+  private events$ = new Subject<t.TextEditorEvent>();
 
-  private editor!: Editor;
-  private editorRef = (ref: Editor) => (this.editor = ref);
+  private editor!: TextEditor;
+  private editorRef = (ref: TextEditor) => (this.editor = ref);
 
   /**
    * [Lifecycle]
@@ -42,7 +41,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       // Cancel change.
       .pipe(
         filter(e => e.type === 'EDITOR/changing'),
-        map(e => e.payload as t.IEditorChanging),
+        map(e => e.payload as t.ITextEditorChanging),
       )
       .subscribe(e => {
         // e.cancel();
@@ -52,7 +51,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       // Display editor events in state.
       .pipe(
         filter(e => e.type === 'EDITOR/changed'),
-        map(e => e.payload as t.IEditorChanged),
+        map(e => e.payload as t.ITextEditorChanged),
       )
       .subscribe(e => {
         const { state, transaction, content } = e;
@@ -159,7 +158,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       <div {...styles.base}>
         <div {...styles.columns}>
           <div {...styles.editorOuter}>
-            <Editor
+            <TextEditor
               ref={this.editorRef}
               style={styles.editor}
               events$={this.events$}
