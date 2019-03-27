@@ -21,3 +21,9 @@ export const ROBOTO = {
 export const MONOSPACE = {
   FAMILY: `Menlo, Monaco, 'Lucida Console', Courier, monospace`,
 };
+
+export const COLORS = {
+  WHITE: '#fff',
+  BLACK: '#fff',
+  DARK: '#293042', // Inky blue/black.
+};
