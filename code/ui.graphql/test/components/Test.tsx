@@ -47,9 +47,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         display: 'flex',
       }),
     };
+
+    const url = `https://api.blocktap.io/graphql`;
+
     return (
       <div {...styles.base}>
-        <GraphqlEditor events$={this.events$} />
+        <GraphqlEditor url={url} events$={this.events$} />
       </div>
     );
   }

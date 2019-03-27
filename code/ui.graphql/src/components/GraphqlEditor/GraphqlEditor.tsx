@@ -10,7 +10,11 @@ import { graphqlFetcher } from './fetch';
 
 const GraphiQL = require('graphiql');
 
-export type IGraphqlEditorProps = { style?: GlamorValue; events$?: Subject<GraphqlEditorEvent> };
+export type IGraphqlEditorProps = {
+  url?: string;
+  style?: GlamorValue;
+  events$?: Subject<GraphqlEditorEvent>;
+};
 export type IGraphqlEditorState = {};
 
 export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGraphqlEditorState> {
@@ -74,8 +78,7 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
   }
 
   private get fetcher() {
-    // const url = `${window.location.origin}/graphql`;
-    const url = `https://api.blocktap.io/graphql`;
+    const { url = `${window.location.origin}/graphql` } = this.props;
     const events$ = this._events$;
     return graphqlFetcher({ url, events$ });
   }
