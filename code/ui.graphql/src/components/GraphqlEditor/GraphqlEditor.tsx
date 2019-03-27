@@ -1,3 +1,7 @@
+/**
+ * See:
+ *  - https://github.com/graphql/graphiql
+ */
 import '../../styles';
 
 import * as React from 'react';
@@ -7,6 +11,7 @@ import { share, takeUntil } from 'rxjs/operators';
 import { constants, css, GlamorValue, hjson } from '../../common';
 import { GraphqlEditorEvent } from './types';
 import { graphqlFetcher } from './fetch';
+import { DEFAULT_MESSAGE } from './default';
 
 const GraphiQL = require('graphiql');
 
@@ -130,6 +135,7 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
           ref={this.graphiqlRef}
           fetcher={this.fetcher}
           editorTheme={'nord'}
+          defaultQuery={DEFAULT_MESSAGE}
           onEditQuery={this.handleEditQuery}
           onEditVariables={this.handleEditVariables}
           onEditOperationName={this.handleEditOperationName}
