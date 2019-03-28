@@ -49,7 +49,11 @@ export type ITestState = {
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = { transactions: [], value: DEFAULT.LONG };
+  public state: ITestState = {
+    transactions: [],
+    value: DEFAULT.LONG,
+    // value: 'hello',
+  };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.TextEditorEvent>();
@@ -91,9 +95,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       .subscribe(e => {
         const { state, value } = e;
         this.state$.next({
-          editorState: state,
+          editorState: state.to,
           size: e.size,
-          value,
+          value: e.value.to,
         });
       });
   }

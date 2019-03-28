@@ -36,11 +36,19 @@ export type ITextEditorProps = {
  */
 export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
+   * [Static]
+   */
+  public static serialize(state: t.EditorState) {
+    return defaultMarkdownSerializer.serialize(state.doc);
+  }
+
+  /**
    * [Fields]
    */
   private el: HTMLDivElement;
   private elRef = (ref: HTMLDivElement) => (this.el = ref);
   private view: EditorView;
+  private _prevState: t.EditorState | undefined;
 
   private unmounted$ = new Subject();
   private _events$ = new Subject<t.TextEditorEvent>();
@@ -91,8 +99,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   public get value() {
-    const doc = this.view.state.doc;
-    return defaultMarkdownSerializer.serialize(doc);
+    return TextEditor.serialize(this.view.state);
   }
 
   public get editor() {
@@ -180,20 +187,32 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * [Handlers]
    */
-  private dispatch = (tr: t.Transaction<DocSchema>) => {
+  private dispatch = (transaction: t.Transaction<DocSchema>) => {
     const view = this.view;
-    let state = view.state;
     const self = this; // tslint:disable-line
+
+    const state = {
+      from: view.state,
+      to: view.state.apply(transaction),
+    };
+
+    const value = {
+      get from() {
+        return TextEditor.serialize(state.from);
+      },
+      get to() {
+        return TextEditor.serialize(state.to);
+      },
+    };
 
     // Fire the BEFORE event.
     let isCancelled = false;
     this.fire({
       type: 'EDITOR/changing',
       payload: {
-        transaction: tr,
-        view,
+        transaction,
         state,
-        value: this.value,
+        value,
         get isCancelled() {
           return isCancelled;
         },
@@ -210,11 +229,11 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     }
 
     // Update the state of the editor.
-    state = state.apply(tr);
-    view.updateState(state);
+    view.updateState(state.to);
 
     // Fire the AFTER event.
     this.fireChanged();
+    this._prevState = state.to;
   };
 
   private fire(e: t.TextEditorEvent) {
@@ -223,12 +242,26 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
   private fireChanged() {
     const self = this; // tslint:disable-line
+
+    const state = {
+      from: this._prevState,
+      to: this.view.state,
+    };
+
+    const value = {
+      get from() {
+        return state.from ? TextEditor.serialize(state.from) : '';
+      },
+      get to() {
+        return TextEditor.serialize(state.to);
+      },
+    };
+
     this.fire({
       type: 'EDITOR/changed',
       payload: {
-        view: this.view,
-        state: this.view.state,
-        value: this.value,
+        state,
+        value,
         get size() {
           return self.size;
         },
