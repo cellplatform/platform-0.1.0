@@ -3,7 +3,7 @@ export type IShadow = {
   color: string | number;
 };
 
-export type CellEditorMode = 'FORMULA' | 'TEXT';
+export type CellEditorMode = 'FORMULA' | 'MARKDOWN' | 'TEXT';
 
 export type ICellEditorTheme = {
   borderColor: string | number;

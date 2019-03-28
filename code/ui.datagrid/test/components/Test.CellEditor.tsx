@@ -21,6 +21,7 @@ import { Button, color, css, GlamorValue, t } from '../common';
 export type ITestCellEditorProps = { style?: GlamorValue };
 export type ITestCellEditorState = {
   formulaValue?: string;
+  markdownValue?: string;
   textValue?: string;
 };
 
@@ -30,7 +31,7 @@ export class TestCellEditor extends React.PureComponent<
 > {
   public state: ITestCellEditorState = {
     formulaValue: 'SUM(1,2,3)',
-    textValue: 'Hello',
+    markdownValue: 'Hello',
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestCellEditorState>>();
@@ -67,6 +68,9 @@ export class TestCellEditor extends React.PureComponent<
     changed$.subscribe(e => {
       if (e.mode === 'FORMULA') {
         this.state$.next({ formulaValue: e.to });
+      }
+      if (e.mode === 'TEXT') {
+        this.state$.next({ markdownValue: e.to });
       }
       if (e.mode === 'TEXT') {
         this.state$.next({ textValue: e.to });
@@ -120,6 +124,7 @@ export class TestCellEditor extends React.PureComponent<
           {this.renderEditor('formula', { mode: 'FORMULA' })}
           {this.renderEditor('formula', { mode: 'FORMULA', title: 'B3', column: 1, row: 4 })}
           {this.renderEditor('text', { mode: 'TEXT', title: 'B3', column: 1, row: 4 })}
+          {this.renderEditor('markdown', { mode: 'MARKDOWN', title: 'B3', column: 1, row: 4 })}
         </div>
       </div>
     );
@@ -144,7 +149,7 @@ export class TestCellEditor extends React.PureComponent<
     };
 
     const { mode } = props;
-    const value = mode === 'FORMULA' ? this.state.formulaValue : this.state.textValue;
+    const value = mode === 'FORMULA' ? this.state.formulaValue : this.state.markdownValue;
 
     return (
       <div {...styles.base}>

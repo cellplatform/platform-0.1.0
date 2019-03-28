@@ -32,9 +32,9 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   private formula!: FormulaInput;
   private formulaRef = (ref: FormulaInput) => (this.formula = ref);
 
-  private text$ = new Subject<t.TextEditorEvent>();
-  private text!: TextEditor;
-  private textRef = (ref: TextEditor) => (this.text = ref);
+  private markdown$ = new Subject<t.TextEditorEvent>();
+  private markdown!: TextEditor;
+  private markdownRef = (ref: TextEditor) => (this.markdown = ref);
 
   private _events$ = new Subject<t.CellEditorEvent>();
   public events$ = this._events$.pipe(
@@ -53,7 +53,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
 
   public componentDidMount() {
     const formula$ = this.formula$.pipe(takeUntil(this.unmounted$));
-    const text$ = this.text$.pipe(takeUntil(this.unmounted$));
+    const text$ = this.markdown$.pipe(takeUntil(this.unmounted$));
     const textChanged$ = text$.pipe(
       filter(e => e.type === 'EDITOR/changed'),
       map(e => e.payload as t.ITextEditorChanged),
@@ -78,11 +78,11 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         filter(e => e.type === 'EDITOR/changing'),
         map(e => e.payload as t.ITextEditorChanging),
         filter(e => e.value.to !== e.value.from),
-        filter(e => this.mode === 'TEXT'),
+        filter(e => this.mode === 'MARKDOWN'),
       )
       .subscribe(e => {
         const { from, to } = e.value;
-        const { isCancelled } = this.fireChanging({ mode: 'TEXT', from, to });
+        const { isCancelled } = this.fireChanging({ mode: 'MARKDOWN', from, to });
         if (isCancelled) {
           e.cancel();
         }
@@ -93,11 +93,11 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         filter(e => e.type === 'EDITOR/changed'),
         map(e => e.payload as t.ITextEditorChanged),
         filter(e => e.value.to !== e.value.from),
-        filter(e => this.mode === 'TEXT'),
+        filter(e => this.mode === 'MARKDOWN'),
       )
       .subscribe(e => {
         const { from, to } = e.value;
-        this.fireChanged({ mode: 'TEXT', from, to });
+        this.fireChanged({ mode: 'MARKDOWN', from, to });
       });
 
     formula$
@@ -164,7 +164,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   }
 
   public get mode() {
-    return this.props.mode || 'TEXT';
+    return this.props.mode || 'MARKDOWN';
   }
 
   public get row() {
@@ -180,9 +180,9 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   public focus(options: { selectAll?: boolean } = {}) {
     const { selectAll } = options;
     switch (this.mode) {
-      case 'TEXT':
-        if (this.text) {
-          this.text.focus({ selectAll });
+      case 'MARKDOWN':
+        if (this.markdown) {
+          this.markdown.focus({ selectAll });
         }
         break;
       case 'FORMULA':
@@ -244,7 +244,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         <div {...styles.body}>
           {this.renderTitle()}
           {this.renderFormula()}
-          {this.renderText()}
+          {this.renderMarkdown()}
         </div>
       </div>
     );
@@ -290,8 +290,8 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     );
   }
 
-  private renderText() {
-    const isText = this.mode === 'TEXT';
+  private renderMarkdown() {
+    const isText = this.mode === 'MARKDOWN';
     const styles = {
       editor: css({
         position: isText ? 'relative' : 'absolute',
@@ -305,9 +305,9 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     };
     return (
       <TextEditor
-        ref={this.textRef}
+        ref={this.markdownRef}
         style={styles.editor}
-        events$={this.text$}
+        events$={this.markdown$}
         value={this.value}
       />
     );
