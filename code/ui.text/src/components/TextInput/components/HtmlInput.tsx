@@ -94,8 +94,8 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
     }
   }
 
-  public componentWillReceiveProps(nextProps: IHtmlInputProps) {
-    this.setValue(nextProps);
+  public componentDidUpdate() {
+    this.setValue(this.props);
   }
 
   public componentWillUnmount() {
