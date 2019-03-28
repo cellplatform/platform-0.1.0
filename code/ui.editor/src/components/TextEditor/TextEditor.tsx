@@ -63,11 +63,19 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
   public componentWillUnmount() {
     this.unmounted$.next();
+    this.unmounted$.complete();
+    if (this.view) {
+      this.view.destroy();
+    }
   }
 
   /**
    * [Properties]
    */
+  public get isDisposed() {
+    return this.unmounted$.complete;
+  }
+
   public get content() {
     return defaultMarkdownSerializer.serialize(this.view.state.doc);
   }
@@ -112,6 +120,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
       state,
       dispatchTransaction: this.dispatcher,
     });
+    this.fireChanged();
   }
 
   /**
@@ -135,12 +144,11 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   private dispatcher = (transaction: t.Transaction<DocSchema>) => {
     const view = this.view;
     let state = view.state;
-    const events$ = this._events$;
     const self = this; // tslint:disable-line
 
     // Fire the BEFORE event.
     let isCancelled = false;
-    events$.next({
+    this.fire({
       type: 'EDITOR/changing',
       payload: {
         transaction,
@@ -167,21 +175,27 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     view.updateState(state);
 
     // Fire the AFTER event.
-    events$.next({
+    this.fireChanged();
+  };
+
+  private fire(e: t.TextEditorEvent) {
+    this._events$.next(e);
+  }
+
+  private fireChanged() {
+    const self = this; // tslint:disable-line
+    this.fire({
       type: 'EDITOR/changed',
       payload: {
-        transaction,
-        view,
-        state,
+        view: this.view,
+        state: this.view.state,
         content: this.content,
         get size() {
           return self.size;
         },
       },
     });
-  };
+  }
 
-  private handleClick = () => {
-    this.focus();
-  };
+  private handleClick = () => this.focus();
 }

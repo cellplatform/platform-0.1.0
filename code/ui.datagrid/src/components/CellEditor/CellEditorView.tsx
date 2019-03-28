@@ -231,7 +231,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
     const styles = {
       base: css({
         position: 'relative',
-        top: 1, // NB: Offset to vertically align an min-height.
+        top: 1, // NB: Offset to vertically align within the min-height.
         height: DEFAULTS.ROW_HEIGHTS - BORDER_WIDTH * 2,
         // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       }),

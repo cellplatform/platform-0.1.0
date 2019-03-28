@@ -14,6 +14,7 @@ export type ITextEditorChangingEvent<S extends Schema = any> = {
   payload: ITextEditorChanging<S>;
 };
 export type ITextEditorChanging<S extends Schema = any> = ITextEditorChanged<S> & {
+  transaction: Transaction<S>;
   cancel(): void;
   isCancelled: boolean;
 };
@@ -23,7 +24,6 @@ export type ITextEditorChangedEvent<S extends Schema = any> = {
   payload: ITextEditorChanged<S>;
 };
 export type ITextEditorChanged<S extends Schema = any> = {
-  transaction: Transaction<S>;
   state: EditorState<S>;
   view: EditorView<S>;
   content: string;

@@ -39,12 +39,18 @@ export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEd
    * [Lifecycle]
    */
   public componentWillMount() {
+    let isMounted = false;
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
 
     // Update <input> on keypress.
     const keys$ = this.context.keys$;
-    keys$.pipe(filter(e => e.isEnter)).subscribe(e => this.context.complete());
+    keys$
+      .pipe(
+        filter(e => e.isEnter),
+        filter(() => isMounted),
+      )
+      .subscribe(e => this.context.complete());
 
     // Keep the editor context up-to-date with the latest value.
     state$.subscribe(e => {
@@ -58,6 +64,10 @@ export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEd
     // Manage cancelling manually.
     // this.context.autoCancel = false;
     // keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
+
+    // Delay mounted flag to ensure the ENTER key that may have been used to
+    // initiate the editor does not immediately close the editor.
+    time.delay(100, () => (isMounted = true));
   }
 
   public componentDidMount() {

@@ -4,16 +4,6 @@ import { map, filter, takeUntil } from 'rxjs/operators';
 
 import { TextEditor, color, COLORS, css, GlamorValue, ObjectView, t, Button, Hr } from './common';
 
-export type ITestProps = {
-  style?: GlamorValue;
-};
-
-export type ITestState = {
-  editorState?: t.EditorState;
-  transactions?: t.Transaction[];
-  content?: string;
-};
-
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
 
@@ -47,6 +37,17 @@ ${LOREM}
   `,
 };
 
+export type ITestProps = {
+  style?: GlamorValue;
+};
+
+export type ITestState = {
+  editorState?: t.EditorState;
+  transactions?: t.Transaction[];
+  content?: string;
+  size?: { width: number; height: number };
+};
+
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = { transactions: [] };
   private unmounted$ = new Subject();
@@ -60,38 +61,38 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-  }
-
-  public componentDidMount() {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    state$.subscribe(e => this.setState(e));
 
     events$.subscribe(e => {
       console.log('🌳', e);
     });
 
     events$
-      // Cancel change.
+      // BEFORE change
       .pipe(
         filter(e => e.type === 'EDITOR/changing'),
         map(e => e.payload as t.ITextEditorChanging),
       )
       .subscribe(e => {
-        // e.cancel();
+        const { transaction } = e;
+        const transactions = [...(this.state.transactions || []), transaction];
+        this.state$.next({ transactions });
       });
 
     events$
-      // Display editor events in state.
+      // AFTER change.
       .pipe(
         filter(e => e.type === 'EDITOR/changed'),
         map(e => e.payload as t.ITextEditorChanged),
       )
       .subscribe(e => {
-        const { state, transaction, content } = e;
+        const { state, content } = e;
         this.state$.next({
           editorState: state,
+          size: e.size,
           content,
-          transactions: [...(this.state.transactions || []), transaction],
         });
       });
   }
@@ -105,6 +106,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Render]
    */
   public render() {
+    const { size } = this.state;
     const styles = {
       base: css({
         Absolute: 0,
@@ -144,6 +146,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   public renderEditor() {
+    const { size } = this.state;
     const styles = {
       base: css({
         Absolute: 0,
@@ -156,12 +159,20 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         flex: 1,
       }),
       editorOuter: css({
+        position: 'relative',
         flex: 1,
         border: `dashed 1px ${color.format(-0.15)}`,
-        display: 'flex',
-        padding: 2,
       }),
-      editor: css({ flex: 1 }),
+      scrollContainer: css({
+        Scroll: true,
+        Absolute: 2,
+      }),
+      size: css({
+        Absolute: [-14, 2, null, null],
+        fontSize: 10,
+        opacity: 0.7,
+      }),
+      editor: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */ }),
       right: css({
         marginLeft: 15,
         width: 450,
@@ -191,16 +202,25 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const doc = editorState ? editorState.doc : undefined;
     const data = { editorState, doc };
 
+    const elSize = size && (
+      <div {...styles.size}>
+        {size.width} x {size.height}
+      </div>
+    );
+
     return (
       <div {...styles.base}>
         <div {...styles.columns}>
           <div {...styles.editorOuter}>
-            <TextEditor
-              ref={this.editorRef}
-              style={styles.editor}
-              events$={this.events$}
-              focusOnLoad={true}
-            />
+            {elSize}
+            <div {...styles.scrollContainer}>
+              <TextEditor
+                ref={this.editorRef}
+                style={styles.editor}
+                events$={this.events$}
+                focusOnLoad={true}
+              />
+            </div>
           </div>
           <div {...styles.right}>
             <ObjectView name={'state'} data={data} style={styles.state} />

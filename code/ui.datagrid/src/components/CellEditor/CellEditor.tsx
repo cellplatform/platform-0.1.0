@@ -132,9 +132,9 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
   /**
    * [Handlers]
    */
-  private handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const value = e.target.value;
-    // this.state$.next({ value });
-    // time.delay(0, () => this.updateSize());
-  };
+  // private handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const value = e.target.value;
+  // this.state$.next({ value });
+  // time.delay(0, () => this.updateSize());
+  // };
 }
