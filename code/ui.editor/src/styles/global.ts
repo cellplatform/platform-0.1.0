@@ -18,11 +18,17 @@ const styles = {
     fontSize: 13,
     color: color.format(-0.8),
     backgroundColor: color.format(-0.03),
+    border: `solid 1px ${color.format(-0.05)}`,
     paddingTop: 12,
     paddingBottom: 10,
     borderRadius: 2,
     marginTop: 20,
     marginBottom: 25,
+  },
+  ul: {
+    margin: 0,
+    padding: 0,
+    paddingLeft: 25,
   },
 };
 

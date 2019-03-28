@@ -51,7 +51,7 @@ export type ITestState = {
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {
     transactions: [],
-    value: DEFAULT.LONG,
+    value: DEFAULT.MARKDOWN,
     // value: 'hello',
   };
   private unmounted$ = new Subject();
