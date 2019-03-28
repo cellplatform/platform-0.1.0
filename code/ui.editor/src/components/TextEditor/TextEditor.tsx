@@ -18,7 +18,7 @@ const schema = require('prosemirror-markdown').schema;
 export type DocSchema = any;
 
 export type ITextEditorProps = {
-  markdown?: string;
+  value?: string;
   events$?: Subject<t.TextEditorEvent>;
   focusOnLoad?: boolean;
   selectOnLoad?: boolean;
@@ -57,18 +57,18 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   public componentDidMount() {
-    const { focusOnLoad, selectOnLoad, markdown = '' } = this.props;
-    this.init(markdown);
+    const { focusOnLoad, selectOnLoad, value = '' } = this.props;
+    this.init(value);
     if (focusOnLoad) {
       this.focus({ selectAll: selectOnLoad });
     }
   }
 
   public componentDidUpdate(prev: ITextEditorProps) {
-    const { markdown = '' } = this.props;
-    if (prev.markdown !== markdown) {
-      if (markdown !== this.markdown) {
-        this.load(markdown);
+    const { value = '' } = this.props;
+    if (prev.value !== value) {
+      if (value !== this.value) {
+        this.load(value);
       }
     }
   }
@@ -90,7 +90,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     return containsFocus(this.el) || this.view.hasFocus();
   }
 
-  public get markdown() {
+  public get value() {
     const doc = this.view.state.doc;
     return defaultMarkdownSerializer.serialize(doc);
   }
@@ -131,13 +131,13 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * Initializes the PromiseMirror editor component.
    */
-  public init(markdown: string) {
+  public init(value: string) {
     if (this.view) {
       this.view.destroy();
     }
 
     const state = EditorState.create({
-      doc: defaultMarkdownParser.parse(markdown),
+      doc: defaultMarkdownParser.parse(value),
       plugins: [
         ...exampleSetup({ schema, menuBar: false }),
         // history(),
@@ -154,9 +154,9 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * Loads the given markdown document (replacing any existing content).
    */
-  public load(markdown: string) {
+  public load(value: string) {
     const { state } = this.editor;
-    const node = defaultMarkdownParser.parse(markdown);
+    const node = defaultMarkdownParser.parse(value);
     const tr = state.tr;
     tr.replaceWith(0, tr.doc.content.size, node);
     this.dispatch(tr);
@@ -193,7 +193,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
         transaction: tr,
         view,
         state,
-        markdown: this.markdown,
+        value: this.value,
         get isCancelled() {
           return isCancelled;
         },
@@ -228,7 +228,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
       payload: {
         view: this.view,
         state: this.view.state,
-        markdown: this.markdown,
+        value: this.value,
         get size() {
           return self.size;
         },
