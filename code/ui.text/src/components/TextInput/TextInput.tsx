@@ -1,27 +1,18 @@
 import * as React from 'react';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 import { Text } from '../Text';
 import {
   css,
   GlamorValue,
   MeasureSize,
   R,
+  t,
   time,
   toTextCss,
   util,
   value as valueUtil,
-  t,
 } from './common';
 import { DEFAULT_TEXT_STYLE, HtmlInput, IInputValue } from './components/HtmlInput';
 import { ITextInputEvents, ITextInputFocus, ITextInputStyle } from './types';
