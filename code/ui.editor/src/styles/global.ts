@@ -5,7 +5,7 @@ import { css, constants, color } from '../common';
  */
 const styles = {
   h1: { margin: 0 },
-  p: { margin: 0 },
+  p: { margin: 0, lineHeight: '1.5em' },
   hr: {
     border: 'none',
     borderBottom: `solid 5px ${color.format(-0.1)}`,

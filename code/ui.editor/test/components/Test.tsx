@@ -44,12 +44,12 @@ export type ITestProps = {
 export type ITestState = {
   editorState?: t.EditorState;
   transactions?: t.Transaction[];
-  content?: string;
   size?: { width: number; height: number };
+  markdown?: string;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = { transactions: [] };
+  public state: ITestState = { transactions: [], markdown: DEFAULT.LONG };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.TextEditorEvent>();
@@ -89,11 +89,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         map(e => e.payload as t.ITextEditorChanged),
       )
       .subscribe(e => {
-        const { state, markdown: content } = e;
+        const { state, markdown } = e;
         this.state$.next({
           editorState: state,
           size: e.size,
-          content,
+          markdown,
         });
       });
   }
@@ -107,7 +107,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Render]
    */
   public render() {
-    const { size } = this.state;
     const styles = {
       base: css({
         Absolute: 0,
@@ -130,6 +129,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <div {...styles.left}>
+          {this.button('tmp', () => this.state$.next({ markdown: 'Hello' }))}
           {this.button('focus', () => this.editor.focus())}
           {this.button('selectAll', () => this.editor.focus({ selectAll: true }))}
           <Hr margin={5} />
@@ -137,6 +137,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           {this.button('load: short', () => this.editor.load('hello'))}
           {this.button('load: long', () => this.editor.load(DEFAULT.LONG))}
           {this.button('load: markdown', () => this.editor.load(DEFAULT.MARKDOWN))}
+          <Hr margin={5} />
+          {this.button('markdown: short', () => this.state$.next({ markdown: 'hello' }))}
         </div>
         <div {...styles.right}>{this.renderEditor()}</div>
       </div>
@@ -202,7 +204,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       }),
     };
 
-    const { editorState, content } = this.state;
+    const { editorState } = this.state;
     const doc = editorState ? editorState.doc : undefined;
     const data = { editorState, doc };
 
@@ -221,7 +223,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
               <TextEditor
                 ref={this.editorRef}
                 style={styles.editor}
-                markdown={DEFAULT.LONG}
+                markdown={this.state.markdown}
                 events$={this.events$}
                 focusOnLoad={true}
               />
@@ -246,8 +248,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   };
 
   private renderContent = () => {
-    const { content } = this.state;
-    if (!content) {
+    const { markdown } = this.state;
+    if (!markdown) {
       return null;
     }
 
@@ -264,8 +266,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...styles.base}>
-        <div>content</div>
-        <pre {...styles.pre}>{content}</pre>
+        <div>markdown</div>
+        <pre {...styles.pre}>{markdown}</pre>
       </div>
     );
   };

@@ -64,12 +64,19 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     }
   }
 
+  public componentDidUpdate(prev: ITextEditorProps) {
+    const { markdown = '' } = this.props;
+    if (prev.markdown !== markdown) {
+      if (markdown !== this.markdown) {
+        this.load(markdown);
+      }
+    }
+  }
+
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
-    if (this.view) {
-      this.view.destroy();
-    }
+    this.view.destroy();
   }
 
   /**
@@ -84,7 +91,8 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   public get markdown() {
-    return defaultMarkdownSerializer.serialize(this.view.state.doc);
+    const doc = this.view.state.doc;
+    return defaultMarkdownSerializer.serialize(doc);
   }
 
   public get editor() {
@@ -112,7 +120,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    */
   public focus(options: { selectAll?: boolean } = {}) {
     const { view, state } = this.editor;
-    if (view && this.el) {
+    if (view) {
       if (options.selectAll) {
         commands.selectAll(state, this.dispatch);
       }
