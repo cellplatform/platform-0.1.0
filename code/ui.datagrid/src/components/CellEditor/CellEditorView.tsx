@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { color, constants, containsFocus, css, GlamorValue, t } from '../../common';
-import { FormulaInput, Text, TextEditor } from '../primitives';
+import { FormulaInput, Text, TextEditor, TextInput } from '../primitives';
 import { THEMES } from './themes';
 
 const BORDER_WIDTH = 2;
@@ -36,6 +36,10 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   private markdown!: TextEditor;
   private markdownRef = (ref: TextEditor) => (this.markdown = ref);
 
+  private text$ = new Subject<t.TextInputEvent>();
+  private text!: TextInput;
+  private textRef = (ref: TextInput) => (this.text = ref);
+
   private _events$ = new Subject<t.CellEditorEvent>();
   public events$ = this._events$.pipe(
     takeUntil(this.unmounted$),
@@ -53,27 +57,19 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
 
   public componentDidMount() {
     const formula$ = this.formula$.pipe(takeUntil(this.unmounted$));
-    const text$ = this.markdown$.pipe(takeUntil(this.unmounted$));
-    const textChanged$ = text$.pipe(
-      filter(e => e.type === 'EDITOR/changed'),
-      map(e => e.payload as t.ITextEditorChanged),
-    );
+    const markdown$ = this.markdown$.pipe(takeUntil(this.unmounted$));
+    const text$ = this.text$.pipe(takeUntil(this.unmounted$));
 
     formula$.subscribe(e => {
       // console.log('🌳 FORMULA', e);
     });
 
-    text$.subscribe(e => {
+    markdown$.subscribe(e => {
       // console.log('🌼 TEXT', e);
       // // console.log("e.payload.size", e.payload.size)
     });
 
-    textChanged$.subscribe(e => {
-      // console.log('size', e.size);
-      // // console.log("e.payload.size", e.payload.size)
-    });
-
-    text$
+    markdown$
       .pipe(
         filter(e => e.type === 'EDITOR/changing'),
         map(e => e.payload as t.ITextEditorChanging),
@@ -88,7 +84,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         }
       });
 
-    text$
+    markdown$
       .pipe(
         filter(e => e.type === 'EDITOR/changed'),
         map(e => e.payload as t.ITextEditorChanged),
@@ -123,6 +119,31 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .subscribe(e => {
         const { from, to } = e;
         this.fireChanged({ mode: 'FORMULA', from, to });
+      });
+
+    text$
+      .pipe(
+        filter(e => e.type === 'TEXT_INPUT/changing'),
+        map(e => e.payload as t.ITextInputChanging),
+        filter(e => this.mode === 'TEXT'),
+      )
+      .subscribe(e => {
+        const { from, to } = e;
+        const { isCancelled } = this.fireChanging({ mode: 'TEXT', from, to });
+        if (isCancelled) {
+          e.cancel();
+        }
+      });
+
+    text$
+      .pipe(
+        filter(e => e.type === 'TEXT_INPUT/changed'),
+        map(e => e.payload as t.ITextInputChanged),
+        filter(e => this.mode === 'TEXT'),
+      )
+      .subscribe(e => {
+        const { from, to } = e;
+        this.fireChanged({ mode: 'TEXT', from, to });
       });
   }
 
@@ -244,6 +265,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         <div {...styles.body}>
           {this.renderTitle()}
           {this.renderFormula()}
+          {this.renderText()}
           {this.renderMarkdown()}
         </div>
       </div>
@@ -297,7 +319,6 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         position: isText ? 'relative' : 'absolute',
         left: isText ? undefined : -9999999,
         margin: BORDER_WIDTH,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         fontFamily: ROBOTO.FAMILY,
         fontSize: 14,
         PaddingX: 3,
@@ -332,6 +353,34 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
           multiline={false}
           value={this.value}
           fontSize={12}
+        />
+      </div>
+    );
+  }
+
+  private renderText() {
+    const isText = this.mode === 'TEXT';
+    const styles = {
+      base: css({
+        position: isText ? 'relative' : 'absolute',
+        left: isText ? 0 : -999999,
+        top: 1,
+        height: DEFAULTS.ROW_HEIGHTS - BORDER_WIDTH * 2,
+        PaddingX: BORDER_WIDTH,
+      }),
+      input: css({
+        fontSize: 14,
+        paddingTop: 2,
+        paddingLeft: 3,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <TextInput
+          ref={this.textRef}
+          events$={this.text$}
+          value={this.value}
+          style={styles.input}
         />
       </div>
     );

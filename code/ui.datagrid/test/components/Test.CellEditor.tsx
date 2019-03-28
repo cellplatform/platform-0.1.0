@@ -31,7 +31,8 @@ export class TestCellEditor extends React.PureComponent<
 > {
   public state: ITestCellEditorState = {
     formulaValue: 'SUM(1,2,3)',
-    markdownValue: 'Hello',
+    markdownValue: 'Markdown',
+    textValue: 'Text',
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestCellEditorState>>();
@@ -69,7 +70,7 @@ export class TestCellEditor extends React.PureComponent<
       if (e.mode === 'FORMULA') {
         this.state$.next({ formulaValue: e.to });
       }
-      if (e.mode === 'TEXT') {
+      if (e.mode === 'MARKDOWN') {
         this.state$.next({ markdownValue: e.to });
       }
       if (e.mode === 'TEXT') {
@@ -149,7 +150,16 @@ export class TestCellEditor extends React.PureComponent<
     };
 
     const { mode } = props;
-    const value = mode === 'FORMULA' ? this.state.formulaValue : this.state.markdownValue;
+    let value = '';
+    if (mode === 'FORMULA') {
+      value = this.state.formulaValue || '';
+    }
+    if (mode === 'MARKDOWN') {
+      value = this.state.markdownValue || '';
+    }
+    if (mode === 'TEXT') {
+      value = this.state.textValue || '';
+    }
 
     return (
       <div {...styles.base}>
