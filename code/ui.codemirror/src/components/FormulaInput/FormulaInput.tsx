@@ -190,6 +190,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
         Scroll: isMultiLine,
         overflow: 'hidden',
         lineHeight: 1,
+        paddingLeft: 0,
       }),
     };
 

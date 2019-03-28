@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil, share } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { color, constants, css, GlamorValue, t } from '../../common';
+import { color, constants, containsFocus, css, GlamorValue, t } from '../../common';
 import { FormulaInput, Text, TextEditor } from '../primitives';
 import { THEMES } from './themes';
 
@@ -78,6 +78,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         filter(e => e.type === 'EDITOR/changing'),
         map(e => e.payload as t.ITextEditorChanging),
         filter(e => e.value.to !== e.value.from),
+        filter(e => this.mode === 'TEXT'),
       )
       .subscribe(e => {
         const { from, to } = e.value;
@@ -92,6 +93,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         filter(e => e.type === 'EDITOR/changed'),
         map(e => e.payload as t.ITextEditorChanged),
         filter(e => e.value.to !== e.value.from),
+        filter(e => this.mode === 'TEXT'),
       )
       .subscribe(e => {
         const { from, to } = e.value;
@@ -102,6 +104,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter(e => e.type === 'INPUT/formula/changing'),
         map(e => e.payload as t.IFormulaInputChanging),
+        filter(e => this.mode === 'FORMULA'),
       )
       .subscribe(e => {
         const { from, to } = e;
@@ -115,11 +118,21 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter(e => e.type === 'INPUT/formula/changed'),
         map(e => e.payload as t.IFormulaInputChanged),
+        filter(e => this.mode === 'FORMULA'),
       )
       .subscribe(e => {
         const { from, to } = e;
         this.fireChanged({ mode: 'FORMULA', from, to });
       });
+  }
+
+  public componentDidUpdate(prev: ICellEditorViewProps) {
+    const mode = this.mode;
+    if (mode !== prev.mode) {
+      if (this.isFocused) {
+        this.focus(); // Ensure focus is switched to the INPUT component for the new mode.
+      }
+    }
   }
 
   public componentWillUnmount() {
@@ -132,6 +145,10 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
    */
   public get value() {
     return this.props.value || '';
+  }
+
+  public get isFocused() {
+    return containsFocus(this);
   }
 
   public get theme() {
@@ -147,7 +164,6 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   }
 
   public get mode() {
-    // return this.props.mode || 'FORMULA';
     return this.props.mode || 'TEXT';
   }
 
@@ -227,19 +243,21 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         {this.renderBorder()}
         <div {...styles.body}>
           {this.renderTitle()}
-          {this.renderBody()}
+          {this.renderFormula()}
+          {this.renderText()}
         </div>
       </div>
     );
   }
 
   private renderBorder() {
+    const BORDER = STYLES.BORDER;
     return (
       <React.Fragment>
-        <div {...STYLES.BORDER.left} />
-        <div {...STYLES.BORDER.top} />
-        <div {...STYLES.BORDER.right} />
-        <div {...STYLES.BORDER.bottom} />
+        <div {...BORDER.left} />
+        <div {...BORDER.top} />
+        <div {...BORDER.right} />
+        <div {...BORDER.bottom} />
       </React.Fragment>
     );
   }
@@ -272,18 +290,12 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     );
   }
 
-  private renderBody() {
-    switch (this.mode) {
-      case 'TEXT':
-        return this.renderText();
-      case 'FORMULA':
-        return this.renderFormula();
-    }
-  }
-
   private renderText() {
+    const isText = this.mode === 'TEXT';
     const styles = {
       editor: css({
+        position: isText ? 'relative' : 'absolute',
+        left: isText ? undefined : -9999999,
         margin: BORDER_WIDTH,
         backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         fontFamily: ROBOTO.FAMILY,
@@ -302,23 +314,26 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   }
 
   private renderFormula() {
+    const isFormula = this.mode === 'FORMULA';
     const styles = {
       base: css({
-        position: 'relative',
-        top: 1, // NB: Offset to vertically align within the min-height.
+        position: isFormula ? 'relative' : 'absolute',
+        top: 1,
+        left: isFormula ? 0 : -999999,
         height: DEFAULTS.ROW_HEIGHTS - BORDER_WIDTH * 2,
-        // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        PaddingX: BORDER_WIDTH,
       }),
     };
     return (
-      <FormulaInput
-        ref={this.formulaRef}
-        style={styles.base}
-        events$={this.formula$}
-        multiline={false}
-        value={this.value}
-        fontSize={12}
-      />
+      <div {...styles.base}>
+        <FormulaInput
+          ref={this.formulaRef}
+          events$={this.formula$}
+          multiline={false}
+          value={this.value}
+          fontSize={12}
+        />
+      </div>
     );
   }
 }

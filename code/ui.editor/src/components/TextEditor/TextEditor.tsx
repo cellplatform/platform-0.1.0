@@ -5,10 +5,10 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter, map } from 'rxjs/operators';
 import * as commands from 'prosemirror-commands';
 
-import { css, GlamorValue, containsFocus, constants } from '../../common';
+import { css, GlamorValue, containsFocus, constants, events } from '../../common';
 import * as t from './types';
 
 // @ts-ignore
@@ -54,6 +54,13 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   private _events$ = new Subject<t.TextEditorEvent>();
   public events$ = this._events$.pipe(takeUntil(this.unmounted$));
 
+  private readonly modifierKeys: t.ITextEditorModifierKeys = {
+    alt: false,
+    control: false,
+    shift: false,
+    meta: false,
+  };
+
   /**
    * [Constructor]
    */
@@ -62,6 +69,24 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     if (this.props.events$) {
       this.events$.subscribe(this.props.events$);
     }
+
+    // Monitor keyboard.
+    const keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
+    const modifier$ = keypress$.pipe(filter(e => e.isModifier));
+
+    // Keep references to currently pressed modifier keys
+    modifier$
+      .pipe(
+        filter(e => e.isPressed),
+        map(e => e.key.toLowerCase()),
+      )
+      .subscribe(key => (this.modifierKeys[key] = true));
+    modifier$
+      .pipe(
+        filter(e => !e.isPressed),
+        map(e => e.key.toLowerCase()),
+      )
+      .subscribe(key => (this.modifierKeys[key] = false));
   }
 
   public componentDidMount() {
@@ -206,12 +231,14 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
     // Fire the BEFORE event.
     let isCancelled = false;
+    const modifierKeys = { ...this.modifierKeys };
     this.fire({
       type: 'EDITOR/changing',
       payload: {
         transaction,
         state,
         value,
+        modifierKeys,
         get isCancelled() {
           return isCancelled;
         },
@@ -240,6 +267,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
   private fireChanged() {
     const self = this; // tslint:disable-line
+    const modifierKeys = { ...this.modifierKeys };
 
     const state = {
       from: this._prevState,
@@ -260,6 +288,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
       payload: {
         state,
         value,
+        modifierKeys,
         get size() {
           return self.size;
         },
