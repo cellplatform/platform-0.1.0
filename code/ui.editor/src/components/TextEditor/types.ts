@@ -26,6 +26,6 @@ export type ITextEditorChangedEvent<S extends Schema = any> = {
 export type ITextEditorChanged<S extends Schema = any> = {
   state: EditorState<S>;
   view: EditorView<S>;
-  content: string;
+  markdown: string;
   size: { width: number; height: number };
 };

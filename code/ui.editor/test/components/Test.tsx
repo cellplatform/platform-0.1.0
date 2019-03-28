@@ -70,7 +70,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     });
 
     events$
-      // BEFORE change
+      // BEFORE change.
       .pipe(
         filter(e => e.type === 'EDITOR/changing'),
         map(e => e.payload as t.ITextEditorChanging),
@@ -79,6 +79,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         const { transaction } = e;
         const transactions = [...(this.state.transactions || []), transaction];
         this.state$.next({ transactions });
+        // e.cancel();
       });
 
     events$
@@ -88,7 +89,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         map(e => e.payload as t.ITextEditorChanged),
       )
       .subscribe(e => {
-        const { state, content } = e;
+        const { state, markdown: content } = e;
         this.state$.next({
           editorState: state,
           size: e.size,
@@ -130,6 +131,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       <div {...styles.base}>
         <div {...styles.left}>
           {this.button('focus', () => this.editor.focus())}
+          {this.button('selectAll', () => this.editor.focus({ selectAll: true }))}
           <Hr margin={5} />
           {this.button('load: <empty>', () => this.editor.load(''))}
           {this.button('load: short', () => this.editor.load('hello'))}
@@ -168,11 +170,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         Absolute: 2,
       }),
       size: css({
-        Absolute: [-14, 2, null, null],
+        Absolute: [-16, null, null, 2],
         fontSize: 10,
         opacity: 0.7,
       }),
-      editor: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */ }),
+      editor: css({
+        backgroundColor: 'rgba(255, 0, 0, 0.05)',
+      }),
       right: css({
         marginLeft: 15,
         width: 450,
@@ -217,6 +221,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
               <TextEditor
                 ref={this.editorRef}
                 style={styles.editor}
+                markdown={DEFAULT.LONG}
                 events$={this.events$}
                 focusOnLoad={true}
               />

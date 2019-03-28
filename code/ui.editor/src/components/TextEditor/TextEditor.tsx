@@ -6,6 +6,7 @@ import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import * as commands from 'prosemirror-commands';
 
 import { css, GlamorValue, containsFocus, constants } from '../../common';
 import * as t from './types';
@@ -17,8 +18,10 @@ const schema = require('prosemirror-markdown').schema;
 export type DocSchema = any;
 
 export type ITextEditorProps = {
+  markdown?: string;
   events$?: Subject<t.TextEditorEvent>;
   focusOnLoad?: boolean;
+  selectOnLoad?: boolean;
   style?: GlamorValue;
 };
 
@@ -54,10 +57,10 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   public componentDidMount() {
-    this.load('');
-
-    if (this.props.focusOnLoad) {
-      this.focus();
+    const { focusOnLoad, selectOnLoad, markdown = '' } = this.props;
+    this.init(markdown);
+    if (focusOnLoad) {
+      this.focus({ selectAll: selectOnLoad });
     }
   }
 
@@ -76,12 +79,18 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     return this.unmounted$.complete;
   }
 
-  public get content() {
+  public get isFocused() {
+    return containsFocus(this.el) || this.view.hasFocus();
+  }
+
+  public get markdown() {
     return defaultMarkdownSerializer.serialize(this.view.state.doc);
   }
 
-  public get isFocused() {
-    return containsFocus(this.el) || this.view.hasFocus();
+  public get editor() {
+    const view = this.view;
+    const state = view.state;
+    return { view, state };
   }
 
   public get width() {
@@ -97,19 +106,30 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * [Methods]
    */
-  public focus() {
-    if (this.view && this.el) {
-      this.view.focus();
+
+  /**
+   * Assigns focus to the editor.
+   */
+  public focus(options: { selectAll?: boolean } = {}) {
+    const { view, state } = this.editor;
+    if (view && this.el) {
+      if (options.selectAll) {
+        commands.selectAll(state, this.dispatch);
+      }
+      view.focus();
     }
   }
 
-  public load(content: string) {
+  /**
+   * Initializes the PromiseMirror editor component.
+   */
+  public init(markdown: string) {
     if (this.view) {
       this.view.destroy();
     }
 
     const state = EditorState.create({
-      doc: defaultMarkdownParser.parse(content),
+      doc: defaultMarkdownParser.parse(markdown),
       plugins: [
         ...exampleSetup({ schema, menuBar: false }),
         // history(),
@@ -118,9 +138,20 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     });
     this.view = new EditorView<DocSchema>(this.el, {
       state,
-      dispatchTransaction: this.dispatcher,
+      dispatchTransaction: this.dispatch,
     });
     this.fireChanged();
+  }
+
+  /**
+   * Loads the given markdown document (replacing any existing content).
+   */
+  public load(markdown: string) {
+    const { state } = this.editor;
+    const node = defaultMarkdownParser.parse(markdown);
+    const tr = state.tr;
+    tr.replaceWith(0, tr.doc.content.size, node);
+    this.dispatch(tr);
   }
 
   /**
@@ -141,7 +172,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * [Handlers]
    */
-  private dispatcher = (transaction: t.Transaction<DocSchema>) => {
+  private dispatch = (tr: t.Transaction<DocSchema>) => {
     const view = this.view;
     let state = view.state;
     const self = this; // tslint:disable-line
@@ -151,10 +182,10 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     this.fire({
       type: 'EDITOR/changing',
       payload: {
-        transaction,
+        transaction: tr,
         view,
         state,
-        content: this.content,
+        markdown: this.markdown,
         get isCancelled() {
           return isCancelled;
         },
@@ -171,7 +202,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     }
 
     // Update the state of the editor.
-    state = view.state.apply(transaction);
+    state = state.apply(tr);
     view.updateState(state);
 
     // Fire the AFTER event.
@@ -189,7 +220,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
       payload: {
         view: this.view,
         state: this.view.state,
-        content: this.content,
+        markdown: this.markdown,
         get size() {
           return self.size;
         },

@@ -8,7 +8,7 @@ const styles = {
   p: { margin: 0 },
   hr: {
     border: 'none',
-    borderBottom: `solid 1px ${color.format(-0.25)}`,
+    borderBottom: `solid 5px ${color.format(-0.1)}`,
     marginTop: 30,
     marginBottom: 30,
   },
