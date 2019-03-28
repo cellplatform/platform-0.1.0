@@ -61,7 +61,7 @@ export class TestCellEditor extends React.PureComponent<
     );
 
     changing$.subscribe(e => {
-      e.cancel();
+      // e.cancel();
     });
 
     changed$.subscribe(e => {
@@ -111,7 +111,10 @@ export class TestCellEditor extends React.PureComponent<
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <div {...styles.leftTop}>{this.button('focus', () => this.editors[0].focus())}</div>
+          <div {...styles.leftTop}>
+            {this.button('focus', () => this.editors[0].focus())}
+            {this.button('focus (select)', () => this.editors[0].focus({ selectAll: true }))}
+          </div>
         </div>
         <div {...styles.right}>
           {this.renderEditor('formula', { mode: 'FORMULA' })}

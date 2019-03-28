@@ -148,9 +148,12 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
   /**
    * [Methods]
    */
-  public focus() {
+  public focus(options: { selectAll?: boolean } = {}) {
     if (this.editor) {
       this.editor.focus();
+      if (options.selectAll) {
+        this.selectAll();
+      }
     }
   }
 

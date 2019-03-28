@@ -64,12 +64,12 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     });
 
     text$.subscribe(e => {
-      console.log('🌼 TEXT', e);
+      // console.log('🌼 TEXT', e);
       // // console.log("e.payload.size", e.payload.size)
     });
 
     textChanged$.subscribe(e => {
-      console.log('size', e.size);
+      // console.log('size', e.size);
       // // console.log("e.payload.size", e.payload.size)
     });
 
@@ -77,11 +77,25 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter(e => e.type === 'EDITOR/changing'),
         map(e => e.payload as t.ITextEditorChanging),
+        filter(e => e.value.to !== e.value.from),
       )
       .subscribe(e => {
-        // const { from, to } = e;
-        // e.
-        // e.cancel();
+        const { from, to } = e.value;
+        const { isCancelled } = this.fireChanging({ mode: 'TEXT', from, to });
+        if (isCancelled) {
+          e.cancel();
+        }
+      });
+
+    text$
+      .pipe(
+        filter(e => e.type === 'EDITOR/changed'),
+        map(e => e.payload as t.ITextEditorChanged),
+        filter(e => e.value.to !== e.value.from),
+      )
+      .subscribe(e => {
+        const { from, to } = e.value;
+        this.fireChanged({ mode: 'TEXT', from, to });
       });
 
     formula$
@@ -103,12 +117,8 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         map(e => e.payload as t.IFormulaInputChanged),
       )
       .subscribe(e => {
-        // this.setState({ value: e.to });
         const { from, to } = e;
-        this.fire({
-          type: 'CELL_EDITOR/changed',
-          payload: { mode: 'FORMULA', from, to },
-        });
+        this.fireChanged({ mode: 'FORMULA', from, to });
       });
   }
 
@@ -151,13 +161,17 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   /**
    * [Methods]
    */
-  public focus() {
+  public focus(options: { selectAll?: boolean } = {}) {
+    const { selectAll } = options;
     switch (this.mode) {
       case 'TEXT':
-        return;
+        if (this.text) {
+          this.text.focus({ selectAll });
+        }
+        break;
       case 'FORMULA':
         if (this.formula) {
-          this.formula.focus();
+          this.formula.focus({ selectAll });
         }
         break;
     }
@@ -179,6 +193,11 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       },
     };
     this.fire({ type: 'CELL_EDITOR/changing', payload });
+    return payload;
+  }
+
+  private fireChanged(payload: t.ICellEditorChanged) {
+    this.fire({ type: 'CELL_EDITOR/changed', payload });
     return payload;
   }
 
@@ -272,7 +291,6 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         PaddingX: 3,
       }),
     };
-
     return (
       <TextEditor
         ref={this.textRef}

@@ -173,11 +173,10 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    * [Render]
    */
   public render() {
-    const styles = { base: css({}) };
     return (
       <div
         ref={this.elRef}
-        {...css(styles.base, this.props.style)}
+        {...this.props.style}
         className={constants.CSS_CLASS.EDITOR}
         onClick={this.handleClick}
       />
@@ -233,7 +232,6 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
     // Fire the AFTER event.
     this.fireChanged();
-    this._prevState = state.to;
   };
 
   private fire(e: t.TextEditorEvent) {
@@ -267,6 +265,8 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
         },
       },
     });
+
+    this._prevState = state.to;
   }
 
   private handleClick = () => this.focus();
