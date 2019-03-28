@@ -1,32 +1,28 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil, share } from 'rxjs/operators';
 
 import { color, constants, css, GlamorValue, t } from '../../common';
 import { FormulaInput, Text, TextEditor } from '../primitives';
 import { THEMES } from './themes';
 
 const BORDER_WIDTH = 2;
-const { DEFAULTS, COLORS } = constants;
+const { DEFAULTS, COLORS, ROBOTO } = constants;
 
 export type ICellEditorViewProps = {
+  events$?: Subject<t.CellEditorEvent>;
   value?: string;
   row?: number;
   column?: number;
   title?: React.ReactNode;
-  mode?: 'FORMULA' | 'TEXT';
+  mode?: t.CellEditorMode;
   width?: number;
   height?: number;
   theme?: t.ICellEditorTheme | 'DEFAULT';
   style?: GlamorValue;
 };
 
-export type I__TEMP__State = { value?: string };
-console.log(`\nTODO 🐷   Remove TEMP state from <CellEditorView> \n`);
-
-export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I__TEMP__State> {
-  public state: I__TEMP__State = { value: '=SUM(1,2)' };
-
+export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   public static THEMES = THEMES;
   public static BORDER_WIDTH = BORDER_WIDTH;
 
@@ -40,9 +36,20 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
   private text!: TextEditor;
   private textRef = (ref: TextEditor) => (this.text = ref);
 
+  private _events$ = new Subject<t.CellEditorEvent>();
+  public events$ = this._events$.pipe(
+    takeUntil(this.unmounted$),
+    share(),
+  );
+
   /**
    * [Lifecycle]
    */
+  public componentWillMount() {
+    if (this.props.events$) {
+      this.events$.subscribe(this.props.events$);
+    }
+  }
 
   public componentDidMount() {
     const formula$ = this.formula$.pipe(takeUntil(this.unmounted$));
@@ -53,7 +60,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
     );
 
     formula$.subscribe(e => {
-      console.log('🌳 FORMULA', e);
+      // console.log('🌳 FORMULA', e);
     });
 
     text$.subscribe(e => {
@@ -72,7 +79,22 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
         map(e => e.payload as t.ITextEditorChanging),
       )
       .subscribe(e => {
+        // const { from, to } = e;
+        // e.
         // e.cancel();
+      });
+
+    formula$
+      .pipe(
+        filter(e => e.type === 'INPUT/formula/changing'),
+        map(e => e.payload as t.IFormulaInputChanging),
+      )
+      .subscribe(e => {
+        const { from, to } = e;
+        const { isCancelled } = this.fireChanging({ mode: 'FORMULA', from, to });
+        if (isCancelled) {
+          e.cancel();
+        }
       });
 
     formula$
@@ -81,7 +103,12 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
         map(e => e.payload as t.IFormulaInputChanged),
       )
       .subscribe(e => {
-        this.setState({ value: e.to });
+        // this.setState({ value: e.to });
+        const { from, to } = e;
+        this.fire({
+          type: 'CELL_EDITOR/changed',
+          payload: { mode: 'FORMULA', from, to },
+        });
       });
   }
 
@@ -94,7 +121,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
    * [Properties]
    */
   public get value() {
-    return this.state.value || '';
+    return this.props.value || '';
   }
 
   public get theme() {
@@ -134,6 +161,25 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
         }
         break;
     }
+  }
+
+  private fire(e: t.CellEditorEvent) {
+    this._events$.next(e);
+  }
+
+  private fireChanging(args: t.ICellEditorChanged) {
+    let isCancelled = false;
+    const payload: t.ICellEditorChanging = {
+      ...args,
+      get isCancelled() {
+        return isCancelled;
+      },
+      cancel() {
+        isCancelled = true;
+      },
+    };
+    this.fire({ type: 'CELL_EDITOR/changing', payload });
+    return payload;
   }
 
   /**
@@ -221,10 +267,20 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps, I_
       editor: css({
         margin: BORDER_WIDTH,
         backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        fontFamily: ROBOTO.FAMILY,
+        fontSize: 14,
+        PaddingX: 3,
       }),
     };
 
-    return <TextEditor ref={this.textRef} style={styles.editor} events$={this.text$} />;
+    return (
+      <TextEditor
+        ref={this.textRef}
+        style={styles.editor}
+        events$={this.text$}
+        value={this.value}
+      />
+    );
   }
 
   private renderFormula() {

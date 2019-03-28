@@ -1,3 +1,5 @@
+export { ROBOTO, MONOSPACE } from '@platform/ui.text/lib';
+
 export const COLORS = {
   WHITE: '#fff',
   DARK: '#293042', // Inky blue/black.
