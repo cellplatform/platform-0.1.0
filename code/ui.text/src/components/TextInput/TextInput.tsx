@@ -114,10 +114,10 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
    * [Methods]
    */
 
-  public focus(select?: boolean) {
+  public focus(options: { selectAll?: boolean } = {}) {
     if (this.input) {
       this.input.focus();
-      if (select) {
+      if (options.selectAll) {
         this.input.select();
       }
     }

@@ -74,8 +74,6 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     const value = (this.context.cell.value || '').toString();
     this.state$.next({ value });
 
-    this.context.keys$;
-
     events$
       .pipe(
         filter(e => e.type === 'CELL_EDITOR/changed'),

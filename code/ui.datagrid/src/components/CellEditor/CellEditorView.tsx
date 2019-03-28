@@ -200,17 +200,14 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
    */
   public focus(options: { selectAll?: boolean } = {}) {
     const { selectAll } = options;
-    switch (this.mode) {
-      case 'MARKDOWN':
-        if (this.markdown) {
-          this.markdown.focus({ selectAll });
-        }
-        break;
-      case 'FORMULA':
-        if (this.formula) {
-          this.formula.focus({ selectAll });
-        }
-        break;
+    if (this.mode === 'MARKDOWN' && this.markdown) {
+      this.markdown.focus({ selectAll });
+    }
+    if (this.mode === 'FORMULA' && this.formula) {
+      this.formula.focus({ selectAll });
+    }
+    if (this.mode === 'TEXT' && this.text) {
+      this.text.focus({ selectAll });
     }
   }
 
