@@ -25,6 +25,7 @@ export interface ITextInputStyle extends ITextStyle {
 /**
  * [Events]
  */
+
 export type TextInputChangeEvent = {
   from: string;
   to: string;
@@ -36,7 +37,7 @@ export type TextInputChangeEventHandler = (e: TextInputChangeEvent) => void;
 
 export type TextInputTabEvent = {
   isCancelled: boolean;
-  cancel: () => void;
+  cancel(): void;
   modifierKeys: ITextModifierKeys;
 };
 export type TextInputTabEventHandler = (e: TextInputTabEvent) => void;
@@ -56,3 +57,23 @@ export interface ITextInputEvents {
   onFocus?: React.EventHandler<React.FocusEvent<HTMLInputElement>>;
   onBlur?: React.EventHandler<React.FocusEvent<HTMLInputElement>>;
 }
+
+/**
+ * [Event] Observable
+ */
+export type TextInputEvent = ITextInputChangingEvent | ITextInputChangedEvent;
+
+export type ITextInputChangingEvent = {
+  type: 'TEXT_INPUT/changing';
+  payload: ITextInputChanging;
+};
+export type ITextInputChanging = TextInputChangeEvent & {
+  isCancelled: boolean;
+  cancel(): void;
+};
+
+export type ITextInputChangedEvent = {
+  type: 'TEXT_INPUT/changed';
+  payload: ITextInputChanged;
+};
+export type ITextInputChanged = TextInputChangeEvent;

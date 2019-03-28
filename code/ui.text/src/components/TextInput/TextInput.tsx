@@ -1,7 +1,16 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import { Text } from '../Text';
 import {
   css,
@@ -12,6 +21,7 @@ import {
   toTextCss,
   util,
   value as valueUtil,
+  t,
 } from './common';
 import { DEFAULT_TEXT_STYLE, HtmlInput, IInputValue } from './components/HtmlInput';
 import { ITextInputEvents, ITextInputFocus, ITextInputStyle } from './types';
@@ -24,6 +34,7 @@ const DEFAULT = {
 export type ITextInputProps = ITextInputFocus &
   ITextInputEvents &
   IInputValue & {
+    events$?: Subject<t.TextInputEvent>;
     isEnabled?: boolean;
     isPassword?: boolean;
     disabledOpacity?: number;
@@ -65,6 +76,8 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
   public state: ITextInputState = { width: toInitialWidth(this.props) };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITextInputState>>();
+  private _events$ = new Subject<t.TextInputEvent>();
+  public events = this._events$.pipe(takeUntil(this.unmounted$));
 
   private input: HtmlInput;
   private inputRef = (el: HtmlInput) => (this.input = el);
@@ -74,6 +87,9 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    if (this.props.events$) {
+      this.events.subscribe(this.props.events$);
+    }
   }
 
   public componentDidMount() {
@@ -205,7 +221,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
             onKeyUp={this.props.onKeyUp}
             onFocus={this.props.onFocus}
             onBlur={this.props.onBlur}
-            onChange={this.props.onChange}
+            onChange={this.handleChange}
             onEnter={this.props.onEnter}
             onTab={this.props.onTab}
             spellCheck={this.props.spellCheck}
@@ -215,6 +231,42 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+  private fire(e: t.TextInputEvent) {
+    this._events$.next(e);
+  }
+
+  private handleChange = (e: t.TextInputChangeEvent) => {
+    const { onChange } = this.props;
+
+    // Fire the BEFORE event.
+    let isCancelled = false;
+    this.fire({
+      type: 'TEXT_INPUT/changing',
+      payload: {
+        ...e,
+        get isCancelled() {
+          return isCancelled;
+        },
+        cancel() {
+          isCancelled = true;
+        },
+      },
+    });
+
+    if (isCancelled) {
+      return;
+    }
+
+    // Fire AFTER event.
+    this.fire({ type: 'TEXT_INPUT/changed', payload: e });
+    if (onChange) {
+      onChange(e);
+    }
+  };
 }
 
 /**

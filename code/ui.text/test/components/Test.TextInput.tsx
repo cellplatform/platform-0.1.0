@@ -1,16 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import {
-  Hr,
-  css,
-  color,
-  GlamorValue,
-  Button,
-  TextInput,
-  TextInputChangeEvent,
-  log,
-} from '../common';
+import { filter, map, takeUntil } from 'rxjs/operators';
+
+import { Button, color, css, GlamorValue, Hr, t, TextInput, log } from '../common';
 
 export type ITestTextInputProps = { style?: GlamorValue };
 export type ITestTextInputState = { value?: string };
@@ -19,6 +11,7 @@ export class TestTextInput extends React.PureComponent<ITestTextInputProps, ITes
   public state: ITestTextInputState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestTextInputState>>();
+  private events$ = new Subject<t.TextInputEvent>();
 
   private input!: TextInput;
   private inputRef = (ref: TextInput) => (this.input = ref);
@@ -27,7 +20,31 @@ export class TestTextInput extends React.PureComponent<ITestTextInputProps, ITes
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    state$.subscribe(e => this.setState(e));
+
+    events$.subscribe(e => {
+      log.info('🌳', e);
+    });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'TEXT_INPUT/changing'),
+        map(e => e.payload as t.ITextInputChanging),
+      )
+      .subscribe(e => {
+        // e.cancel();
+      });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'TEXT_INPUT/changed'),
+        map(e => e.payload as t.ITextInputChanged),
+      )
+      .subscribe(e => {
+        this.state$.next({ value: e.to });
+      });
   }
 
   public componentWillUnmount() {
@@ -88,7 +105,8 @@ export class TestTextInput extends React.PureComponent<ITestTextInputProps, ITes
           focusOnLoad={true}
           placeholder={'Placeholder'}
           placeholderStyle={{ color: color.format(-0.2) }}
-          onChange={this.handleChange}
+          // onChange={this.handleChange}
+          events$={this.events$}
         />
       </div>
     );
@@ -98,8 +116,8 @@ export class TestTextInput extends React.PureComponent<ITestTextInputProps, ITes
    * [Handlers]
    */
 
-  private handleChange = (e: TextInputChangeEvent) => {
-    this.state$.next({ value: e.to });
-    log.info('CHANGE', e);
-  };
+  // private handleChange = (e: TextInputChangeEvent) => {
+  //   this.state$.next({ value: e.to });
+  //   log.info('CHANGE', e);
+  // };
 }
