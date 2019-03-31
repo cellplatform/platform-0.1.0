@@ -336,7 +336,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     const styles = {
       base: css({
         position: isFormula ? 'relative' : 'absolute',
-        top: 1,
+        top: BORDER_WIDTH,
         left: isFormula ? 0 : -999999,
         height: DEFAULTS.ROW_HEIGHTS - BORDER_WIDTH * 2,
         PaddingX: BORDER_WIDTH,
