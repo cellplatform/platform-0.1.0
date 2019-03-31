@@ -26,7 +26,7 @@ export type HandlerRegistered = (args: { type: IpcMessage['type']; client: IpcId
 export type GetHandlerRefs = () => IpcHandlerRefs;
 
 type Ref = {
-  disposed$: Subject<any>;
+  dispose$: Subject<any>;
   events$: Subject<IpcEvent>;
   handlers: SendHandler[];
   onSend?: SendDelegate;
@@ -39,14 +39,14 @@ type Ref = {
  * observable data structure.
  */
 export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
+  /**
+   * [Static]
+   */
   public static readonly MAIN = 0;
 
-  private readonly _: Ref = {
-    disposed$: new Subject(),
-    events$: new Subject<IpcEvent<M>>(),
-    handlers: [],
-  };
-
+  /**
+   * [Lifecycle]
+   */
   constructor(args: {
     id: number;
     process: ProcessType;
@@ -71,39 +71,54 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   }
 
   /**
-   * Fields.
+   * Disposes of the client.
    */
+  public dispose() {
+    this._.dispose$.next();
+    this._.dispose$.complete();
+  }
+
+  /**
+   * [Fields]
+   */
+  private readonly _: Ref = {
+    dispose$: new Subject(),
+    events$: new Subject<IpcEvent<M>>(),
+    handlers: [],
+  };
+
   public readonly id: number;
   public readonly process: ProcessType;
   public readonly channel = GLOBAL.IPC_CHANNEL;
   public readonly MAIN = IPC.MAIN;
-  public disposed$ = this._.disposed$.pipe(share());
-  public isDisposed = false;
+  public disposed$ = this._.dispose$.pipe(share());
   public timeout = 5000;
+  public readonly dispose$ = this._.dispose$.pipe(share());
 
   /**
    * Observable of all IPC message events.
    */
   public readonly events$: IpcEventObservable<M> = this._.events$.pipe(
-    takeUntil(this._.disposed$),
+    takeUntil(this.dispose$),
     share(),
   );
 
   /**
-   * Disposes of the client.
+   * [Properties]
    */
-  public dispose() {
-    this.isDisposed = true;
-    this._.disposed$.next();
+  public get isDisposed() {
+    return this._.dispose$.isStopped;
   }
 
   /**
    * Get a filtered observable of IPC events.
    */
-  public filter<T extends M>(criteria: IpcFilter<M> | T['type']) {
-    return typeof criteria === 'string'
-      ? this.events$.pipe(filter(e => e.type === criteria))
-      : this.events$.pipe(filter(criteria));
+  public filter<T extends M>(criteria: IpcFilter<M> | T['type']): IpcEventObservable<T> {
+    const $ =
+      typeof criteria === 'string'
+        ? this.events$.pipe(filter(e => e.type === criteria))
+        : this.events$.pipe(filter(criteria));
+    return $.pipe(map(e => e as IpcEvent<T>));
   }
 
   /**
@@ -142,12 +157,12 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
     const targets = IPC.asTarget(target);
     const process = this.process;
     const eid = `${process}-${id}/${idUtil.shortid()}`;
-    const sender = IPC.toIdentifier(this);
+    const sender = IPC.toIdentifier(this as IpcClient);
 
     // Fire the event through the electron IPC system.
     const data: IpcEvent<T> = { eid, type, payload, sender, targets };
     const handlers = this._.handlers;
-    const events$ = this.events$;
+    const events$ = (this.events$ as unknown) as IpcEventObservable<T>;
     const timeout = valueUtil.defaultValue(options.timeout, this.timeout);
     const registeredClients = this
       // Clients handling the event, not including this one.
@@ -180,18 +195,18 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   /**
    * Registers a response-handler for a specific event.
    */
-  public handle<T extends M>(type: T['type'], handler: IpcEventHandler<T>) {
+  public handle<T extends M>(type: T['type'], handler: IpcEventHandler<T>): IpcClient<M> {
     // Store the handler in memory.
     this._.handlers = [...this._.handlers, { type, handler }];
 
     // Alert the process of the registration.
     if (this._.onHandlerRegistered) {
-      const client = IPC.toIdentifier(this);
+      const client = IPC.toIdentifier(this as IpcClient);
       this._.onHandlerRegistered({ type, client });
     }
 
     // Finish up.
-    return this;
+    return this as IpcClient<M>;
   }
 
   /**

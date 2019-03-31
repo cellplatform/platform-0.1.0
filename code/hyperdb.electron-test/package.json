@@ -1,7 +1,7 @@
 {
   "name": "hyperdb.electron-test",
   "description": "Test module for the [hyperdb.electron].",
-  "version": "0.1.42",
+  "version": "0.1.43",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -18,24 +18,24 @@
   },
   "dependencies": {
     "@hyperswarm/network": "0.0.4",
-    "@platform/cli.spec": "0.0.19",
-    "@platform/electron": "0.1.22",
-    "@platform/hyperdb": "0.0.35",
-    "@platform/hyperdb.electron": "0.0.47",
-    "@platform/react": "0.1.3",
-    "@platform/ui.cli": "0.0.9",
-    "@platform/ui.datagrid": "^0.0.28",
-    "@platform/ui.editor": "0.0.25",
-    "@platform/ui.text": "0.0.37",
-    "@platform/util.string": "0.0.45",
-    "@platform/util.value": "0.0.48",
+    "@platform/cli.spec": "0.0.20",
+    "@platform/electron": "0.1.23",
+    "@platform/hyperdb": "0.0.36",
+    "@platform/hyperdb.electron": "0.0.48",
+    "@platform/react": "0.1.4",
+    "@platform/ui.cli": "0.0.10",
+    "@platform/ui.datagrid": "^0.0.30",
+    "@platform/ui.editor": "0.0.26",
+    "@platform/ui.text": "0.0.38",
+    "@platform/util.string": "0.0.46",
+    "@platform/util.value": "0.0.49",
     "@uiharness/electron": "0.4.8",
     "hjson": "3.1.2",
-    "react": "16.8.5"
+    "react": "16.8.6"
   },
   "devDependencies": {
-    "@platform/test": "0.0.36",
-    "@platform/ts": "3.3.74",
+    "@platform/test": "0.0.37",
+    "@platform/ts": "3.3.75",
     "@types/hjson": "2.4.1",
     "@uiharness/dev": "0.2.18"
   },
