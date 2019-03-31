@@ -1,7 +1,7 @@
 name: ui.graphql
 
 electron:
-  port: 8888
+  port: 7918
   entry:
     main: test/main.ts
     renderer: 
