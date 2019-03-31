@@ -19,7 +19,6 @@
   },
   "devDependencies": {
     "@platform/ts": "3.3.74",
-    "@platform/ui.cli": "0.0.9",
     "@uiharness/dev": "0.2.18"
   },
   "files": [

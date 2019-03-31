@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { Button, color, css, GlamorValue, Hr, t, TextInput, log } from '../common';
+import { TestText } from './Test.Text';
 
 export type ITestTextInputProps = { style?: GlamorValue };
 export type ITestTextInputState = { value?: string };
@@ -95,7 +96,11 @@ export class TestTextInput extends React.PureComponent<ITestTextInputProps, ITes
 
   private renderInput() {
     const styles = {
-      base: css({ padding: 30 }),
+      base: css({
+        Absolute: 0,
+        padding: 30,
+        Scroll: true,
+      }),
     };
     return (
       <div {...styles.base}>
@@ -103,11 +108,15 @@ export class TestTextInput extends React.PureComponent<ITestTextInputProps, ITes
           ref={this.inputRef}
           value={this.state.value}
           focusOnLoad={true}
-          placeholder={'Placeholder'}
+          placeholder={'TextInput'}
           placeholderStyle={{ color: color.format(-0.2) }}
           // onChange={this.handleChange}
           events$={this.events$}
         />
+
+        <Hr margin={50} />
+
+        <TestText />
       </div>
     );
   }
