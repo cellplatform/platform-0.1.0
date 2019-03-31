@@ -1,8 +1,11 @@
+import '../../node_modules/@platform/ui.graphql/css/index.css';
+
+import { GraphqlEditor } from '@platform/ui.graphql';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { Button, color, css, GlamorValue, ObjectView, t } from '../common';
+import { Button, color, css, GlamorValue, Hr, ObjectView, t } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
 export type ITestGridProps = {
@@ -11,12 +14,14 @@ export type ITestGridProps = {
 };
 export type ITestGridState = {
   data?: any;
+  showGraphql?: boolean;
 };
 
 export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState> {
-  public state: ITestGridState = {};
+  public state: ITestGridState = { showGraphql: true };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestGridState>>();
+  private events$ = new Subject<t.GridEvent>();
 
   private testGrid!: TestGridView;
   private testGridRef = (ref: TestGridView) => (this.testGrid = ref);
@@ -25,7 +30,24 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    state$.subscribe(e => this.setState(e));
+
+    events$.subscribe(e => {
+      // console.log('e', e);
+    });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/EDITOR/end'),
+        map(e => e.payload as t.IEndEditing),
+        filter(e => Boolean(e.value.to && e.value.to.toString().toLowerCase() === '=gql')),
+      )
+      .subscribe(e => {
+        console.log('e', e);
+        this.state$.next({ showGraphql: true });
+      });
   }
 
   public componentDidMount() {
@@ -88,9 +110,13 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         position: 'relative',
         flex: 1,
       }),
-      grid: css({
+
+      rightInner: css({
         Absolute: 10,
         border: `solid 1px ${color.format(-0.2)}`,
+      }),
+      grid: css({
+        Absolute: 0,
       }),
     };
 
@@ -98,6 +124,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       <div {...styles.base}>
         <div {...styles.left}>
           <div {...styles.leftTop}>
+            {this.button('grid', () => this.state$.next({ showGraphql: false }))}
+            <Hr margin={5} />
             {this.button('focus', () => this.grid.focus())}
             {this.button('loadValues', () => this.grid.loadValues({ A3: 123 }))}
             {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
@@ -128,12 +156,30 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           />
         </div>
         <div {...styles.right}>
-          <TestGridView
-            ref={this.testGridRef}
-            style={styles.grid}
-            editorType={this.props.editorType}
-          />
+          <div {...styles.rightInner}>
+            <TestGridView
+              ref={this.testGridRef}
+              style={styles.grid}
+              editorType={this.props.editorType}
+              events$={this.events$}
+            />
+            {this.state.showGraphql && this.renderGraphql()}
+          </div>
         </div>
+      </div>
+    );
+  }
+
+  private renderGraphql() {
+    const styles = {
+      base: css({
+        Absolute: 0,
+        zIndex: 999,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <GraphqlEditor url={'https://api.blocktap.io/graphql'} />
       </div>
     );
   }
