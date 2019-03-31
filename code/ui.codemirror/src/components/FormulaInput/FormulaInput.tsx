@@ -3,7 +3,7 @@ import { Controlled as CodeMirrorControlled, IInstance } from 'react-codemirror2
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { css, events, GlamorValue, is, t, value as valueUtil } from '../../common';
+import { css, events, GlamorValue, is, t, value as valueUtil, constants } from '../../common';
 
 /**
  * For more syntax modes, see:
@@ -170,7 +170,14 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
 
   private setGlobalStyles() {
     const style = {
-      '.CodeMirror': { fontSize: this.fontSize },
+      '.CodeMirror': {
+        fontSize: this.fontSize,
+        background: 'none',
+      },
+      '.CodeMirror pre': {
+        fontFamily: constants.MONOSPACE.FAMILY,
+        fontWeight: 'bold',
+      },
     };
     css.global(style, { prefix: `.${this.className}` });
   }

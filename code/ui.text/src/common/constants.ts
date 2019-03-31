@@ -19,7 +19,7 @@ export const ROBOTO = {
 };
 
 export const MONOSPACE = {
-  FAMILY: `Menlo, Monaco, 'Lucida Console', Courier, monospace`,
+  FAMILY: `Roboto Mono, Menlo, Monaco, 'Lucida Console', Courier, monospace`,
 };
 
 export const COLORS = {

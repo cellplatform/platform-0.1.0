@@ -161,7 +161,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       base: css({}),
       top: css({
         position: 'relative',
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         Flex: 'horizontal-center',
         height: 40,
       }),
@@ -183,7 +182,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.top}>
           <div {...styles.topLeft}>{url}</div>
           <div {...styles.topRight}>
-            <FormulaInput value={'=SUM(1,2,3)'} />
+            <FormulaInput value={'=IF(A1:B2, TRUE, FALSE) / 100'} />
           </div>
         </div>
         <GraphqlEditor
