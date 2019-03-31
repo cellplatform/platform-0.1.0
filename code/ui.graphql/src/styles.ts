@@ -1,5 +1,6 @@
 /**
  * - https://codemirror.net/theme
+ *
  * NOTE:
  *    Ensure that you import the base css files from witin the consuming module.
  *    eg:
