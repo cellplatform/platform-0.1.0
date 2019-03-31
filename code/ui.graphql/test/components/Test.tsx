@@ -3,35 +3,16 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { GraphqlEditor, GraphqlEditorEvent } from '../../src';
-import { color, Button, css, GlamorValue, Hr, constants } from './common';
+import { color, Button, css, GlamorValue, Hr, t } from './common';
 
-const URL = {
-  BLOCKTAP: 'https://api.blocktap.io/graphql',
-  COUNTRIES: 'https://countries.trevorblades.com',
-};
-const DEFAULT = {
-  QUERY_MARKET: `
-    query foo {
-      markets(filter: {baseSymbol: {_eq: "BTC"}, quoteSymbol: {_in: ["USD", "USDT", "USDC"]}}) {
-        marketSymbol
-        ohlcv(resolution: _1d, limit: 1)
-      }
-    }
-  `,
-  QUERY_COUNTRIES: `
-    {
-      continents {
-        code
-        name
-        countries {
-          name
-          phone
-          currency    
-        }
-      }
-    }
-  `,
-  VARIABLES: `
+// const URL = {
+//   BLOCKTAP: 'https://api.blocktap.io/graphql',
+//   COUNTRIES: 'https://countries.trevorblades.com',
+//   STARWARS: 'https://graphql.org/swapi-graphql',
+// };
+
+const VARIABLES = {
+  DEFAULT: `
     {
       foo: 1234
       bar: hello
@@ -39,9 +20,59 @@ const DEFAULT = {
   `,
 };
 
+export type ISample = {
+  url: string;
+  query: string;
+};
+
+const QUERY: { [key: string]: ISample } = {
+  MARKET: {
+    url: 'https://api.blocktap.io/graphql',
+    query: `
+      query foo {
+        markets(filter: {baseSymbol: {_eq: "BTC"}, quoteSymbol: {_in: ["USD", "USDT", "USDC"]}}) {
+          marketSymbol
+          ohlcv(resolution: _1d, limit: 1)
+        }
+      }
+  `,
+  },
+  COUNTRIES: {
+    url: 'https://countries.trevorblades.com',
+    query: `
+      {
+        continents {
+          code
+          name
+          countries {
+            name
+            phone
+            currency    
+          }
+        }
+      }
+    `,
+  },
+  STARWARS: {
+    url: 'https://api.graphcms.com/simple/v1/swapi',
+    query: `
+      query Films {
+        allFilms {
+          films {
+            title
+            director
+            releaseDate
+          }
+        }
+      }  
+  `,
+  },
+};
+
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {
   url?: string;
+  query?: string;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -63,6 +94,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     events$.subscribe(e => {
       console.log('🌳 EVENT', e);
     });
+
+    this.setSample(QUERY.STARWARS);
   }
 
   public componentWillUnmount() {
@@ -72,9 +105,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Methods]
    */
-  public set(query: string, url: string) {
-    this.editor.query = query;
-    this.state$.next({ url });
+  public setSample(sample: ISample) {
+    const { url, query } = sample;
+    this.state$.next({ url, query });
   }
 
   /**
@@ -112,11 +145,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           })}
           <Hr margin={5} />
           {this.button('query: <empty>', () => (this.editor.query = ''))}
-          {this.button('query: btc markets', () => this.set(DEFAULT.QUERY_MARKET, URL.BLOCKTAP))}
-          {this.button('query: countries', () => this.set(DEFAULT.QUERY_COUNTRIES, URL.COUNTRIES))}
+          {this.button('query: btc markets', () => this.setSample(QUERY.MARKET))}
+          {this.button('query: countries', () => this.setSample(QUERY.COUNTRIES))}
+          {this.button('query: starwars', () => this.setSample(QUERY.STARWARS))}
           <Hr margin={5} />
           {this.button('variables: <empty>', () => (this.editor.variables = ''))}
-          {this.button('variables: DEFAULT', () => (this.editor.variables = DEFAULT.VARIABLES))}
+          {this.button('variables: DEFAULT', () => (this.editor.variables = VARIABLES.DEFAULT))}
         </div>
         <div {...styles.right}>{this.renderEditor()}</div>
       </div>
@@ -128,7 +162,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   private renderEditor() {
-    const { url = URL.COUNTRIES } = this.state;
+    const { url } = this.state;
     const styles = {
       base: css({}),
       url: css({
@@ -147,6 +181,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <GraphqlEditor
           ref={this.editorRef}
           url={url}
+          query={this.state.query}
           events$={this.events$}
           style={styles.editor}
         />
