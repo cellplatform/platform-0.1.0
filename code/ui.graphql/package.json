@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.graphql",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "UI components for working with GraphQL.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -30,7 +30,8 @@
     "@uiharness/dev": "0.2.18"
   },
   "files": [
-    "lib"
+    "lib",
+    "css"
   ],
   "license": "MIT"
 }

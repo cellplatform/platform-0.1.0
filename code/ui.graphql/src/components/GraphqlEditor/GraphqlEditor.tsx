@@ -16,6 +16,7 @@ import { DEFAULT_MESSAGE } from './default';
 const GraphiQL = require('graphiql');
 
 export type IGraphqlEditorProps = {
+  query?: string;
   url?: string;
   style?: GlamorValue;
   events$?: Subject<GraphqlEditorEvent>;
@@ -67,6 +68,13 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
           this.fire({ type: 'GRAPHQL_EDITOR/fetched/schema', payload: { fetchId, url, schema } });
         }
       });
+  }
+
+  public componentDidUpdate(prev: IGraphqlEditorProps) {
+    const { query } = this.props;
+    if (query && query !== prev.query) {
+      this.query = query;
+    }
   }
 
   public componentWillUnmount() {

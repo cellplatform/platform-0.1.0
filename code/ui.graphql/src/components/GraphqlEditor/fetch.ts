@@ -12,8 +12,8 @@ export function graphqlFetcher(args: {
   events$: Subject<t.GraphqlEditorEvent>;
 }): t.JsonFetcher {
   return async (params: any): Promise<t.Json> => {
-    const { url, events$ } = args;
     const fetchId = id.shortid();
+    const { events$, url } = args;
 
     // Fire BEFORE event.
     let isCancelled = false;
@@ -35,10 +35,11 @@ export function graphqlFetcher(args: {
       return {};
     }
 
+    // Perform network fetch.
     try {
       const res = await fetch(url, {
         headers: { 'Content-Type': 'application/json' },
-        method: 'post',
+        method: 'POST',
         body: JSON.stringify(params),
       });
       const result = await res.json();
