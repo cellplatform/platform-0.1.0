@@ -1,5 +1,5 @@
 export const CSS = {
-  ROOT: 'platform-graphql-editor',
+  ROOT: 'pf-GraphqlEditor',
 };
 
 export const COLORS = {

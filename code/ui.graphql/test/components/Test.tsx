@@ -3,13 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { GraphqlEditor, GraphqlEditorEvent } from '../../src';
-import { color, Button, css, GlamorValue, Hr, t } from './common';
-
-// const URL = {
-//   BLOCKTAP: 'https://api.blocktap.io/graphql',
-//   COUNTRIES: 'https://countries.trevorblades.com',
-//   STARWARS: 'https://graphql.org/swapi-graphql',
-// };
+import { color, Button, css, GlamorValue, Hr, FormulaInput } from './common';
 
 const VARIABLES = {
   DEFAULT: `
@@ -56,16 +50,16 @@ const QUERY: { [key: string]: ISample } = {
   STARWARS: {
     url: 'https://api.graphcms.com/simple/v1/swapi',
     query: `
-      query Films {
+      {
         allFilms {
-          films {
-            title
-            director
-            releaseDate
+          title
+          planets {
+            name
+            terrain
           }
         }
-      }  
-  `,
+      }
+    `,
   },
 };
 
@@ -165,11 +159,20 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const { url } = this.state;
     const styles = {
       base: css({}),
-      url: css({
-        margin: 20,
-        marginTop: 13,
+      top: css({
+        position: 'relative',
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        Flex: 'horizontal-center',
+        height: 40,
+      }),
+      topLeft: css({
+        paddingLeft: 20,
         fontSize: 12,
         color: color.format(-0.5),
+        flex: 1,
+      }),
+      topRight: css({
+        paddingRight: 20,
       }),
       editor: css({
         Absolute: [40, 20, 20, 20],
@@ -177,7 +180,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...styles.base}>
-        <div {...styles.url}>{url}</div>
+        <div {...styles.top}>
+          <div {...styles.topLeft}>{url}</div>
+          <div {...styles.topRight}>
+            <FormulaInput value={'=SUM(1,2,3)'} />
+          </div>
+        </div>
         <GraphqlEditor
           ref={this.editorRef}
           url={url}

@@ -1,9 +1,13 @@
 /**
  * - https://codemirror.net/theme
+ * NOTE:
+ *    Ensure that you import the base css files from witin the consuming module.
+ *    eg:
+ *
+ *        import `@platform/ui.graphql/css/index.css`
+ *
  */
-import '../../node_modules/graphiql/graphiql.css';
-import './themes/nord.css';
-import { css, color, constants, COLORS } from '../common';
+import { css, color, constants, COLORS } from './common';
 
 const CLI = COLORS.CLI;
 const ROOT = constants.CSS.ROOT;
