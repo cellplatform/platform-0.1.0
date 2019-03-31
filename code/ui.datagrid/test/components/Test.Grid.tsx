@@ -1,9 +1,8 @@
 import '../../node_modules/@platform/ui.graphql/css/index.css';
 
-import { GraphqlEditor } from '@platform/ui.graphql';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { Button, color, css, GlamorValue, Hr, ObjectView, t } from '../common';
 import { TestGridView } from './Test.Grid.view';
@@ -14,11 +13,10 @@ export type ITestGridProps = {
 };
 export type ITestGridState = {
   data?: any;
-  showGraphql?: boolean;
 };
 
 export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState> {
-  public state: ITestGridState = { showGraphql: true };
+  public state: ITestGridState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestGridState>>();
   private events$ = new Subject<t.GridEvent>();
@@ -37,17 +35,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     events$.subscribe(e => {
       // console.log('e', e);
     });
-
-    events$
-      .pipe(
-        filter(e => e.type === 'GRID/EDITOR/end'),
-        map(e => e.payload as t.IEndEditing),
-        filter(e => Boolean(e.value.to && e.value.to.toString().toLowerCase() === '=gql')),
-      )
-      .subscribe(e => {
-        console.log('e', e);
-        this.state$.next({ showGraphql: true });
-      });
   }
 
   public componentDidMount() {
@@ -163,23 +150,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
               editorType={this.props.editorType}
               events$={this.events$}
             />
-            {this.state.showGraphql && this.renderGraphql()}
           </div>
         </div>
-      </div>
-    );
-  }
-
-  private renderGraphql() {
-    const styles = {
-      base: css({
-        Absolute: 0,
-        zIndex: 999,
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <GraphqlEditor url={'https://api.blocktap.io/graphql'} />
       </div>
     );
   }
