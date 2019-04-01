@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@platform/ts": "3.4.0",
-    "@uiharness/dev": "0.2.23"
+    "@uiharness/dev": "0.2.25"
   },
   "files": [
     "lib"

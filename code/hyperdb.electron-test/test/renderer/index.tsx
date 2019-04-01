@@ -1,6 +1,3 @@
-import '../../node_modules/@platform/css/reset.css';
-import '@babel/polyfill';
-
 import { renderer } from '@platform/electron/lib/renderer';
 import * as React from 'react';
 import { Shell } from './components/Shell';
