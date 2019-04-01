@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { init as initCommandLine } from '../cli';
-import { color, COLORS, css, t } from '../common';
+import { COLORS, css, t } from '../common';
 import { TestCellEditor } from './Test.CellEditor';
 import { TestGrid } from './Test.Grid';
 

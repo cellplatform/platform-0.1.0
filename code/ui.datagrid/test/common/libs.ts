@@ -1,3 +1,7 @@
+import '../../import.css';
+import '../../node_modules/@platform/css/reset.css';
+import '@babel/polyfill';
+
 import datagrid from '../../src';
 
 export { datagrid };
