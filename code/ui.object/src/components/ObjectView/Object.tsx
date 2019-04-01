@@ -1,7 +1,6 @@
 /**
- * See `@tdb/ui.test` for UI stories.
  * See:
- *    https://github.com/xyc/react-inspector
+ *   - https://github.com/xyc/react-inspector
  */
 
 import * as React from 'react';
@@ -97,9 +96,9 @@ export class ObjectView extends React.PureComponent<IObjectViewProps, IObjectVie
     const { theme = 'LIGHT' } = this.props;
     switch (theme) {
       case 'LIGHT':
-        return THEME.CHROME_LIGHT;
+        return THEME.LIGHT;
       case 'DARK':
-        return THEME.CHROME_DARK;
+        return THEME.DARK;
       default:
         throw new Error(`Theme '${theme}' not supported.`);
     }

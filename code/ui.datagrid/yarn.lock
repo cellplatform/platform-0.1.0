@@ -1098,7 +1098,7 @@
   dependencies:
     "@platform/react" "0.1.5"
 
-"@platform/ui.object@0.0.76":
+"@platform/ui.object@0.0.76", "@platform/ui.object@^0.0.76":
   version "0.0.76"
   resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.76.tgz#6d3f9f2302a8daabd24195be56d7e9d82415567b"
   integrity sha512-+X6oTpYrlGGGS+hwWVtFZubUW0YtqzQ8GoaYVAjmb845LHjoWuYcW+QMRnNMNxK3ogciC310Ai5ZyxiMaWLCog==

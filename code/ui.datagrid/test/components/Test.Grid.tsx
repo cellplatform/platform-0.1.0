@@ -109,8 +109,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       <div {...styles.base}>
         <div {...styles.left}>
           <div {...styles.leftTop}>
-            {this.button('grid', () => this.state$.next({ showGraphql: false }))}
-            <Hr margin={5} />
             {this.button('focus', () => this.grid.focus())}
             {this.button('loadValues', () => this.grid.loadValues({ A3: 123 }))}
             {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}

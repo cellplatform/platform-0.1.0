@@ -63,6 +63,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   /**
    * [Render]
    */
+
   public render() {
     const styles = {
       base: css({
