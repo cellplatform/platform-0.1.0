@@ -28,7 +28,7 @@
     "@platform/test.dom": "0.0.8",
     "@platform/ts": "3.3.75",
     "@platform/ui.cli": "0.0.10",
-    "@uiharness/dev": "0.2.18"
+    "@uiharness/dev": "0.2.19"
   },
   "files": [
     "lib",
