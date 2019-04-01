@@ -1,6 +1,6 @@
 {
   "name": "@platform/react",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,8 +15,8 @@
     "start": "ui start $@"
   },
   "dependencies": {
-    "@platform/css": "0.0.23",
-    "@platform/util.is": "0.0.48",
+    "@platform/css": "0.0.24",
+    "@platform/util.is": "0.0.49",
     "@types/react": "16.8.10",
     "@types/react-dom": "16.8.3",
     "react": "16.8.6",
@@ -24,8 +24,8 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.37",
-    "@platform/ts": "3.3.75",
-    "@uiharness/dev": "0.2.19"
+    "@platform/ts": "3.4.0",
+    "@uiharness/dev": "0.2.21"
   },
   "files": [
     "lib"
