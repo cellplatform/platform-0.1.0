@@ -1,5 +1,5 @@
 import * as React from 'react';
-import renderer from '@platform/electron/lib/renderer';
+import { renderer } from './common';
 import { Test } from './components/Test';
 
 /**

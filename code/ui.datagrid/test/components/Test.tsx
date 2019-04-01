@@ -47,6 +47,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
   public componentWillUnmount() {
     this.unmounted$.next();
+    this.unmounted$.complete();
   }
 
   /**

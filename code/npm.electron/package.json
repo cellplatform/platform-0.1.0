@@ -15,8 +15,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/exec": "0.0.7",
+    "@platform/npm": "0.0.48",
     "@platform/react": "0.1.5",
-    "@uiharness/electron": "0.4.15"
+    "@uiharness/electron": "0.4.15",
+    "@platform/ui.cli": "0.0.11"
   },
   "devDependencies": {
     "@uiharness/dev": "0.2.25"
