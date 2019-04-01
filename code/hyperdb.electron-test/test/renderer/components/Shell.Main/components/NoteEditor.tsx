@@ -1,4 +1,4 @@
-import { Editor, EditorEvent } from '@platform/ui.editor';
+import { TextEditor, TextEditorEvent } from '@platform/ui.editor';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
@@ -29,9 +29,9 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
   public state: INoteEditorState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<INoteEditorState>>();
-  private editorEvents$ = new Subject<EditorEvent>();
-  private editor: Editor | undefined;
-  private editorRef = (ref: Editor) => (this.editor = ref);
+  private editorEvents$ = new Subject<TextEditorEvent>();
+  private editor: TextEditor | undefined;
+  private editorRef = (ref: TextEditor) => (this.editor = ref);
 
   /**
    * [Lifecycle]
@@ -106,8 +106,8 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
     return `cell/${this.cellKey}`;
   }
 
-  public get content() {
-    return (this.editor && this.editor.content) || '';
+  public get value() {
+    return (this.editor && this.editor.value) || '';
   }
 
   public get isFocused() {
@@ -121,7 +121,7 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
 
   public async saveContent() {
     const { db } = this.props;
-    const content = this.content;
+    const content = this.value;
     const key = this.cellDbKey;
     await db.put(key as any, content);
     await updateWatch({ db, addKeys: [key] });
@@ -177,6 +177,6 @@ export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEdito
         paddingTop: 10,
       }),
     };
-    return <Editor ref={this.editorRef} style={styles.base} events$={this.editorEvents$} />;
+    return <TextEditor ref={this.editorRef} style={styles.base} events$={this.editorEvents$} />;
   }
 }

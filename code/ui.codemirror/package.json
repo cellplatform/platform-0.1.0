@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.codemirror",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Strongly typed wrapper around codemirror.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -29,7 +29,8 @@
   },
   "files": [
     "lib",
-    "css"
+    "css",
+    "import.css"
   ],
   "license": "MIT"
 }

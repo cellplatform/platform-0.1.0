@@ -15,7 +15,7 @@ yarn add @platform/ui.codemirror
 Ensure you reference the required CSS files within your project.
 
 ```typescript
-import '@platform/ui.codemirror/css/index.css'
+import '@platform/ui.codemirror/import.css'
 ```
 
 <p>&nbsp;<p>

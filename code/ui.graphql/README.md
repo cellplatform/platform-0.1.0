@@ -13,7 +13,7 @@ UI components for working with [GraphQL](https://graphql.org/).
 Ensure base `css` files are included in the consuming project.
 
 ``` typescript
-import `@platform/ui.graphql/css/index.css`
+import `@platform/ui.graphql/import.css`
 ```
 
 

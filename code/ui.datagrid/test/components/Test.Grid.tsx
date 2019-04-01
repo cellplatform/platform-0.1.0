@@ -1,5 +1,3 @@
-import '../../node_modules/@platform/ui.graphql/css/index.css';
-
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
