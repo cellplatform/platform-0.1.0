@@ -1,13 +1,21 @@
-import '@babel/polyfill';
-import '../../node_modules/@platform/css/reset.css';
-
 import * as React from 'react';
-import { css } from '../../src/common';
-import { ObjectView } from '../../src';
+import { css, ObjectView, constants } from './common';
 
 export const Test = () => {
   const styles = {
-    base: css({ padding: 30 }),
+    base: css({
+      Flex: 'vertical',
+      Absolute: 0,
+    }),
+    top: css({
+      flex: 1,
+      padding: 30,
+    }),
+    bottom: css({
+      flex: 1,
+      padding: 30,
+      backgroundColor: constants.COLORS.DARK,
+    }),
   };
 
   const data = {
@@ -25,7 +33,12 @@ export const Test = () => {
 
   return (
     <div {...styles.base}>
-      <ObjectView name={'custom name'} data={data} expandLevel={5} />
+      <div {...styles.top}>
+        <ObjectView name={'custom name'} data={data} expandLevel={5} />
+      </div>
+      <div {...styles.bottom}>
+        <ObjectView name={'custom name'} data={data} expandLevel={5} theme={'DARK'} />
+      </div>
     </div>
   );
 };
