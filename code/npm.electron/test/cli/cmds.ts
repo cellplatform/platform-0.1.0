@@ -1,7 +1,4 @@
-import { Command, t } from '../common';
-import { remote } from 'electron';
-
-// import { fs } from '@platform/fs';
+import { Command, t } from '../components/common';
 
 type P = t.ITestCommandProps;
 

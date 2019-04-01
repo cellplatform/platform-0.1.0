@@ -4,7 +4,9 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { init as initCommandLine } from '../cli';
-import { COLORS, css, t, renderer } from '../common';
+import { COLORS, css, t, renderer } from './common';
+
+import { Npm } from '../../src/renderer';
 
 /**
  * Test Component
@@ -17,6 +19,7 @@ export class Test extends React.PureComponent<{}, t.ITestState> {
 
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
+  public npm!: Npm;
 
   /**
    * [Lifecycle]
@@ -25,6 +28,8 @@ export class Test extends React.PureComponent<{}, t.ITestState> {
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
+
+    this.npm = Npm.create({ ipc: this.context.ipc });
   }
 
   public componentWillUnmount() {
