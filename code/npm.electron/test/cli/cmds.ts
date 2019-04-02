@@ -7,8 +7,18 @@ type P = t.ITestCommandProps;
  */
 export const root = Command.create<P>('root')
   //
-  .add('tmp', async e => {
+  .add('install', async e => {
+    const { npm } = e.props;
+    const { params } = e.args;
     console.log('e.props', e.props);
+    console.log('e.args', e.args);
+
+    const name = (params[0] || '').toString();
+    const version = (params[1] || '').toString();
+
+    if (name) {
+      await npm.install({ name, version });
+    }
 
     // const res = await npm.getInfo('@platform/npm');
     // console.log('res', res);

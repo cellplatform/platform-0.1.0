@@ -43,13 +43,12 @@ export class Npm {
    * [Methods]
    */
 
-  public TMP() {
+  public install(args: { name: string; version?: string }) {
+    const { name, version } = args;
     this.send(
       {
         type: 'NPM/install',
-        payload: {
-          name: 'express',
-        },
+        payload: { name, version },
       },
       { timeout: 50000 },
     );

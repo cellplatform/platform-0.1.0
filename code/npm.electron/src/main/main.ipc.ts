@@ -23,11 +23,13 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
     const isLatest = version === LATEST;
     version = isLatest ? await npm.getVersion(name) : version;
 
+    console.log(`\nTODO 🐷   install DIR NAME not 'TMP'\n`);
     const dir = fs.join(app.getPath('desktop'), 'TMP', `${name}@${version}`);
 
     // Log.
+    const ver = log.magenta(version);
     log.info.gray(' - name:   ', log.cyan(name));
-    log.info.gray(' - version:', isLatest ? `latest (${version})` : version);
+    log.info.gray(' - version:', isLatest ? `latest (${ver})` : ver);
     log.info.gray(' - dir:    ', dir);
 
     // Prepare the [package.json] file.

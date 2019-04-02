@@ -3,10 +3,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { init as initCommandLine } from '../cli';
-import { COLORS, css, t, renderer, Button, Hr } from './common';
-
-import { Npm } from '../../src/renderer';
+import { init as commandLine } from '../cli';
+import { COLORS, css, t, renderer, Button, Hr, Npm } from './common';
 
 /**
  * Test Component
@@ -15,11 +13,11 @@ export class Test extends React.PureComponent<{}, t.ITestState> {
   public state: t.ITestState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
-  private cli = initCommandLine({ state$: this.state$ });
 
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
   public npm!: Npm;
+  public cli!: t.ICommandState;
 
   /**
    * [Lifecycle]
@@ -30,6 +28,7 @@ export class Test extends React.PureComponent<{}, t.ITestState> {
     state$.subscribe(e => this.setState(e));
 
     this.npm = Npm.create({ ipc: this.context.ipc });
+    this.cli = commandLine({ state$: this.state$, npm: this.npm });
   }
 
   public componentWillUnmount() {
@@ -61,8 +60,7 @@ export class Test extends React.PureComponent<{}, t.ITestState> {
     return (
       <div {...styles.base}>
         <div {...styles.main}>
-          {this.button('TMP', () => this.npm.TMP())}
-          <Hr />
+          <div>Body</div>
         </div>
         <div {...styles.footer}>
           <CommandPrompt cli={this.cli} theme={'DARK'} />
