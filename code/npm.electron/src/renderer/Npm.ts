@@ -44,8 +44,15 @@ export class Npm {
    */
 
   public TMP() {
-    console.log('TMP');
-    this.send({ type: 'NPM/foo', payload: {} }, { timeout: 50000 });
+    this.send(
+      {
+        type: 'NPM/install',
+        payload: {
+          name: 'express',
+        },
+      },
+      { timeout: 50000 },
+    );
   }
 
   private send(e: t.NpmMessage, options?: t.IpcClientSendOptions) {

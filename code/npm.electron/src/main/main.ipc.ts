@@ -1,4 +1,4 @@
-import { t, exec, fs } from './common';
+import { t, exec, fs, npm } from './common';
 import { app } from 'electron';
 
 /**
@@ -10,21 +10,41 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
   log.info(`listening for ${log.yellow('npm events')}`);
 
   /**
-   * Event handler
+   * [Handle] installing an NPM module
    */
-  ipc.handle<t.IFooMessage>('NPM/foo', async e => {
-    console.log('e', e);
-    log.info(e);
+  ipc.handle<t.INpmInstall>('NPM/install', async e => {
+    log.info();
+    log.info('Install from NPM');
+    const { name } = e.payload;
 
-    const dir = fs.join(app.getPath('desktop'), 'TMP');
-    await fs.ensureDir(dir);
+    // Get version.
+    const LATEST = 'latest';
+    let version = e.payload.version || LATEST;
+    const isLatest = version === LATEST;
+    version = isLatest ? await npm.getVersion(name) : version;
 
-    log.info('dir:', dir);
+    const dir = fs.join(app.getPath('desktop'), 'TMP', `${name}@${version}`);
 
-    const cmd = exec.command('npm install express');
+    // Log.
+    log.info.gray(' - name:   ', log.cyan(name));
+    log.info.gray(' - version:', isLatest ? `latest (${version})` : version);
+    log.info.gray(' - dir:    ', dir);
 
-    log.info('installing...');
-    const res = await cmd.run({ dir });
-    log.info('res', res);
+    // Prepare the [package.json] file.
+    const pkg = npm.pkg({
+      json: {
+        name: 'local.install',
+        dependencies: {
+          [name]: version,
+        },
+        private: true,
+      },
+    });
+    pkg.save(dir);
+
+    const cmd = exec.command('npm install');
+    log.info.gray('installing...');
+    const res = await cmd.run({ dir, silent: true });
+    log.info(`Done:`, res.ok ? log.green('success') : log.red('failed'));
   });
 }

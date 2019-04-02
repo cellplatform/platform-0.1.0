@@ -8,9 +8,12 @@ export type NpmIpc = IpcClient<NpmMessage>;
 /**
  * IPC Events
  */
-export type NpmMessage = IFooMessage;
+export type NpmMessage = INpmInstall;
 
-export type IFooMessage = {
-  type: 'NPM/foo';
-  payload: {};
+export type INpmInstall = {
+  type: 'NPM/install';
+  payload: {
+    name: string;
+    version?: string;
+  };
 };
