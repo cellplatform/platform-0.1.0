@@ -1,4 +1,4 @@
-import { t, exec, fs, npm } from './common';
+import { t, exec, fs, npm, time } from './common';
 import { app } from 'electron';
 
 /**
@@ -13,40 +13,58 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
    * [Handle] installing an NPM module
    */
   ipc.handle<t.INpmInstall>('NPM/install', async e => {
-    log.info();
-    log.info('Install from NPM');
-    const { name } = e.payload;
+    try {
+      const timer = time.timer();
+      const { name } = e.payload;
+      log.info();
+      log.info('Install from NPM');
 
-    // Get version.
-    const LATEST = 'latest';
-    let version = e.payload.version || LATEST;
-    const isLatest = version === LATEST;
-    version = isLatest ? await npm.getVersion(name) : version;
+      // Get version.
+      const LATEST = 'latest';
+      let version = e.payload.version || LATEST;
+      const isLatest = version === LATEST;
+      version = isLatest ? await npm.getVersion(name) : version;
 
-    console.log(`\nTODO 🐷   install DIR NAME not 'TMP'\n`);
-    const dir = fs.join(app.getPath('desktop'), 'TMP', `${name}@${version}`);
+      console.log(`\nTODO 🐷   install DIR NAME not 'TMP'\n`);
+      const dir = fs.join(app.getPath('desktop'), 'TMP', `${name}@${version}`);
 
-    // Log.
-    const ver = log.magenta(version);
-    log.info.gray(' - name:   ', log.cyan(name));
-    log.info.gray(' - version:', isLatest ? `latest (${ver})` : ver);
-    log.info.gray(' - dir:    ', dir);
+      // Log.
+      const ver = log.magenta(version);
+      log.info.gray(' - name:   ', log.cyan(name));
+      log.info.gray(' - version:', isLatest ? `latest (${ver})` : ver);
+      log.info.gray(' - dir:    ', dir);
 
-    // Prepare the [package.json] file.
-    const pkg = npm.pkg({
-      json: {
-        name: 'local.install',
-        dependencies: {
-          [name]: version,
+      // Prepare the [package.json] file.
+      const pkg = npm.pkg({
+        json: {
+          name: 'local.install',
+          dependencies: {
+            [name]: version,
+          },
+          private: true,
         },
-        private: true,
-      },
-    });
-    pkg.save(dir);
+      });
+      pkg.save(dir);
 
-    const cmd = exec.command('npm install');
-    log.info.gray('installing...');
-    const res = await cmd.run({ dir, silent: true });
-    log.info(`Done:`, res.ok ? log.green('success') : log.red('failed'));
+      // Run the install.
+      const cmd = exec.command('npm install');
+      log.info.gray('installing...');
+      const res = await cmd.run({ dir, silent: true });
+      const elapsed = log.gray(`${timer.elapsed('s')}s`);
+      log.info(`Done:`, res.ok ? log.green('success') : log.red('failed'), elapsed);
+
+      // Handle error.
+      if (!res.ok) {
+        const dest = `${dir}.fail`;
+        await fs.remove(`${dir}.fail`);
+        await fs.move(dir, dest);
+
+        res.errors.forEach(err => {
+          log.info.gray(err);
+        });
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
   });
 }
