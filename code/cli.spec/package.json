@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@platform/util.string": "0.0.47",
-    "@platform/util.value": "0.0.50"
+    "@platform/util.value": "0.0.50",
+    "minimist": "1.2.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.37",
