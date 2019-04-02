@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { init as initCommandLine } from '../cli';
-import { COLORS, css, t, renderer } from './common';
+import { COLORS, css, t, renderer, Button, Hr } from './common';
 
 import { Npm } from '../../src/renderer';
 
@@ -61,12 +61,17 @@ export class Test extends React.PureComponent<{}, t.ITestState> {
     return (
       <div {...styles.base}>
         <div {...styles.main}>
-          <div>body</div>
+          {this.button('TMP', () => this.npm.TMP())}
+          <Hr />
         </div>
         <div {...styles.footer}>
           <CommandPrompt cli={this.cli} theme={'DARK'} />
         </div>
       </div>
     );
+  }
+
+  private button(label: string, handler: () => void) {
+    return <Button label={label} onClick={handler} />;
   }
 }

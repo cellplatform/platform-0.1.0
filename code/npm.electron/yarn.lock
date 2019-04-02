@@ -942,7 +942,7 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/exec@0.0.7", "@platform/exec@^0.0.7":
+"@platform/exec@0.0.7":
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.0.7.tgz#e0c75aa9b7019688488121a2e097c74aaac4821b"
   integrity sha512-xJPjQ3xrvFWnMlaeFDdj25jF4b7TdHtA1v7fxc8zK8r7tx17bH6r6jsgjLn8WyE/Bf7rjE7sXJEfz4/BMG/BcA==
@@ -984,7 +984,7 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/npm@0.0.48", "@platform/npm@^0.0.48":
+"@platform/npm@0.0.48":
   version "0.0.48"
   resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.0.48.tgz#8fe82b94174c0b21e27a004e2a6310ba1c95f6f5"
   integrity sha512-WfLuiuffdP5hcUn28Sg2szWxGL6nIDOmJ7z44vfnIUpaYlcpl0sOFGndeoKcPOE88vyiM5V5DWANoHJ5Msu0/Q==
@@ -1031,7 +1031,7 @@
     "@platform/libs" "0.0.11"
     "@platform/ts.libs" "3.4.0"
 
-"@platform/ui.cli@^0.0.11":
+"@platform/ui.cli@0.0.11":
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.11.tgz#156bdd1a041a9b6aa6e9d2d90861e137878da4ef"
   integrity sha512-XwOPxJR2YTK3NdQ3ghW2x+ngZII+fiZUbTY3noQ4b5UB/v+eoSYjfvwPRDaCXiJW160vzBAwjz4KxOLfTGOBqA==

@@ -14,18 +14,17 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
    */
   ipc.handle<t.IFooMessage>('NPM/foo', async e => {
     console.log('e', e);
+    log.info(e);
 
     const dir = fs.join(app.getPath('desktop'), 'TMP');
     await fs.ensureDir(dir);
 
-    console.log('dir', dir);
+    log.info('dir:', dir);
 
     const cmd = exec.command('npm install express');
 
-    console.log('cmd.toString()', cmd.toString());
-
+    log.info('installing...');
     const res = await cmd.run({ dir });
-    console.log('-------------------------------------------');
-    console.log('res', res);
+    log.info('res', res);
   });
 }

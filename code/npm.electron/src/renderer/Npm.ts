@@ -16,9 +16,6 @@ export class Npm {
    */
   private constructor(args: { ipc: t.IpcClient }) {
     this._.ipc = args.ipc;
-
-    // TEMP 🐷
-    this.send({ type: 'NPM/foo', payload: {} }, { timeout: 50000 });
   }
 
   public dispose() {
@@ -45,6 +42,12 @@ export class Npm {
   /**
    * [Methods]
    */
+
+  public TMP() {
+    console.log('TMP');
+    this.send({ type: 'NPM/foo', payload: {} }, { timeout: 50000 });
+  }
+
   private send(e: t.NpmMessage, options?: t.IpcClientSendOptions) {
     this._.ipc.send(e.type, e.payload, options);
   }
