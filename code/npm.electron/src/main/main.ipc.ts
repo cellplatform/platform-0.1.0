@@ -13,27 +13,28 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
    * [Handle] installing an NPM module
    */
   ipc.handle<t.INpmInstall>('NPM/install', async e => {
+    const timer = time.timer();
+    const { name } = e.payload;
+    log.info();
+    log.info('Install from NPM');
+
+    // Get version.
+    const LATEST = 'latest';
+    let version = e.payload.version || LATEST;
+    const isLatest = version === LATEST;
+    version = isLatest ? await npm.getVersion(name) : version;
+    const nameVersion = `${name}@${version}`;
+
+    console.log(`\nTODO 🐷   install DIR NAME not 'TMP'\n`);
+    const dir = fs.join(app.getPath('desktop'), 'TMP', nameVersion);
+
+    // Log.
+    const ver = log.magenta(version);
+    log.info.gray(' - name:   ', log.cyan(name));
+    log.info.gray(' - version:', isLatest ? `latest (${ver})` : ver);
+    log.info.gray(' - dir:    ', dir);
+
     try {
-      const timer = time.timer();
-      const { name } = e.payload;
-      log.info();
-      log.info('Install from NPM');
-
-      // Get version.
-      const LATEST = 'latest';
-      let version = e.payload.version || LATEST;
-      const isLatest = version === LATEST;
-      version = isLatest ? await npm.getVersion(name) : version;
-
-      console.log(`\nTODO 🐷   install DIR NAME not 'TMP'\n`);
-      const dir = fs.join(app.getPath('desktop'), 'TMP', `${name}@${version}`);
-
-      // Log.
-      const ver = log.magenta(version);
-      log.info.gray(' - name:   ', log.cyan(name));
-      log.info.gray(' - version:', isLatest ? `latest (${ver})` : ver);
-      log.info.gray(' - dir:    ', dir);
-
       // Prepare the [package.json] file.
       const pkg = npm.pkg({
         json: {
@@ -64,7 +65,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
         });
       }
     } catch (error) {
-      console.log('error', error);
+      log.error(`Failed while installing '${nameVersion}'. ${error.message}`);
     }
   });
 }
