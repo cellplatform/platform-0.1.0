@@ -30,7 +30,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
       version = isLatest ? await npm.getVersion(name) : version;
       const nameVersion = `${name}@${version}`;
 
-      console.log(`\nTODO 🐷   install DIR NAME not 'TMP'\n`);
+      log.info(`\nTODO 🐷   install DIR NAME not 'TMP'\n`);
       const dir = fs.join(app.getPath('desktop'), 'TMP', nameVersion);
 
       // Log.
