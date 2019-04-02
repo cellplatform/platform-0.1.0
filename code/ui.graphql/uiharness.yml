@@ -1,7 +1,7 @@
 name: ui.graphql
 
 electron:
-  port: 8888
+  port: 7918
   entry:
     main: test/main.ts
     renderer: 
@@ -14,4 +14,5 @@ web:
 sourcemaps:
   strip:
     - node_modules/rxjs
+    - node_modules/react-inspector
 

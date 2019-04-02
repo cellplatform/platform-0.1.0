@@ -1,6 +1,4 @@
-export * from './types';
-export * from './components/Text';
-export * from './components/TextInput';
+import * as text from './text';
+export default text;
 
-export { toTextCss, pluckTextStyles, constants } from './common';
-export { ROBOTO, MONOSPACE } from './common/constants';
+export * from './text';

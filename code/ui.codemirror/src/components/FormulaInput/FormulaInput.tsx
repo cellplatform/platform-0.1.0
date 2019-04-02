@@ -1,15 +1,13 @@
-import '../../styles';
-
 import * as React from 'react';
 import { Controlled as CodeMirrorControlled, IInstance } from 'react-codemirror2';
 import { Subject } from 'rxjs';
-import { share, takeUntil, filter, map } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, is, t, time, value as valueUtil, events } from '../../common';
+import { css, events, GlamorValue, is, t, value as valueUtil, constants } from '../../common';
 
 /**
  * For more syntax modes, see:
- * - https://codemirror.net/mode
+ *  - https://codemirror.net/mode
  */
 if (is.browser) {
   require('codemirror/mode/spreadsheet/spreadsheet.js');
@@ -19,6 +17,7 @@ export type FormulaInputMode = 'spreadsheet';
 export interface IFormulaInputProps {
   value?: string;
   mode?: FormulaInputMode;
+  fontSize?: number;
   multiline?: boolean;
   allowTab?: boolean;
   focusOnLoad?: boolean;
@@ -53,7 +52,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     share(),
   );
 
-  private readonly modifierKeys: t.IModifierKeys = {
+  private readonly modifierKeys: t.ITextModifierKeys = {
     alt: false,
     control: false,
     shift: false,
@@ -64,14 +63,12 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
    * [Lifecycle]
    */
   public componentWillMount() {
-    const { events$ } = this.props;
-
     // Change state safely.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
     // Bubble events to parent.
-    if (events$) {
-      this.events$.subscribe(e => events$.next(e));
+    if (this.props.events$) {
+      this.events$.subscribe(this.props.events$);
     }
 
     // Suppress tab key if requested.
@@ -83,11 +80,11 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
       )
       .subscribe(e => e.cancel());
 
-    // Monitor modifier keys.
+    // Monitor keyboard.
     const keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
-    // const keydown$ = keypress$.pipe(filter(e => e.isPressed));
     const modifier$ = keypress$.pipe(filter(e => e.isModifier));
 
+    // Keep references to currently pressed modifier keys
     modifier$
       .pipe(
         filter(e => e.isPressed),
@@ -103,10 +100,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
   }
 
   public componentDidMount() {
-    // Perform initial state setup.
-    time.delay(0, () => {
-      this.setState({ isLoaded: true }, () => this.init());
-    });
+    this.setState({ isLoaded: true }, () => this.init());
   }
 
   private init() {
@@ -142,12 +136,24 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     return;
   }
 
+  private get className() {
+    return `platform-formulaInput-${this.fontSize}`;
+  }
+
+  private get fontSize() {
+    const { fontSize = 12 } = this.props;
+    return fontSize;
+  }
+
   /**
    * [Methods]
    */
-  public focus() {
+  public focus(options: { selectAll?: boolean } = {}) {
     if (this.editor) {
       this.editor.focus();
+      if (options.selectAll) {
+        this.selectAll();
+      }
     }
   }
 
@@ -162,11 +168,26 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     this.editor.execCommand('selectAll');
   }
 
+  private setGlobalStyles() {
+    const style = {
+      '.CodeMirror': {
+        fontSize: this.fontSize,
+        background: 'none',
+      },
+      '.CodeMirror pre': {
+        fontFamily: constants.MONOSPACE.FAMILY,
+        fontWeight: 'bold',
+      },
+    };
+    css.global(style, { prefix: `.${this.className}` });
+  }
+
   /**
    * [Render]
    */
 
   public render() {
+    this.setGlobalStyles();
     const { multiline: isMultiLine = false, maxLength, mode = 'spreadsheet' } = this.props;
     const height = this.height;
     const value = formatValue(this.props.value, { maxLength, isMultiLine });
@@ -176,6 +197,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
         Scroll: isMultiLine,
         overflow: 'hidden',
         lineHeight: 1,
+        paddingLeft: 0,
       }),
     };
 
@@ -191,7 +213,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     );
 
     return (
-      <div className={'FormulaInput'} {...css(styles.base, this.props.style)}>
+      <div className={this.className} {...css(styles.base, this.props.style)}>
         {el}
       </div>
     );

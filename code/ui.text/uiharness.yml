@@ -9,3 +9,9 @@ electron:
 web:
   port: 3035
   entry: test/web.tsx
+
+
+sourcemaps:
+  strip:
+    - node_modules/rxjs
+

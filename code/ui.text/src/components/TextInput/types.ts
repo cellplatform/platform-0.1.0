@@ -1,5 +1,12 @@
 import { ITextStyle } from '../../types';
 
+export type ITextModifierKeys = {
+  alt: boolean;
+  control: boolean;
+  shift: boolean;
+  meta: boolean;
+};
+
 export interface ITextInputFocus {
   focusOnLoad?: boolean;
   focusAction?: 'SELECT' | 'END';
@@ -15,26 +22,58 @@ export interface ITextInputStyle extends ITextStyle {
   disabledColor?: number | string;
 }
 
+/**
+ * [Events]
+ */
+
 export type TextInputChangeEvent = {
   from: string;
   to: string;
   char: string;
   isMax: boolean | null;
+  modifierKeys: ITextModifierKeys;
 };
 export type TextInputChangeEventHandler = (e: TextInputChangeEvent) => void;
 
 export type TextInputTabEvent = {
-  cancel: () => void;
+  isCancelled: boolean;
+  cancel(): void;
+  modifierKeys: ITextModifierKeys;
 };
 export type TextInputTabEventHandler = (e: TextInputTabEvent) => void;
 
+export type TextInputKeyEvent = React.KeyboardEvent<HTMLInputElement> & {
+  modifierKeys: ITextModifierKeys;
+};
+export type TextInputKeyEventHandler = (e: TextInputKeyEvent) => void;
+
 export interface ITextInputEvents {
   onChange?: TextInputChangeEventHandler;
-  onKeyPress?: React.EventHandler<React.KeyboardEvent<HTMLInputElement>>;
-  onKeyDown?: React.EventHandler<React.KeyboardEvent<HTMLInputElement>>;
-  onKeyUp?: React.EventHandler<React.KeyboardEvent<HTMLInputElement>>;
+  onKeyPress?: TextInputKeyEventHandler;
+  onKeyDown?: TextInputKeyEventHandler;
+  onKeyUp?: TextInputKeyEventHandler;
+  onEnter?: TextInputKeyEventHandler;
+  onTab?: TextInputTabEventHandler;
   onFocus?: React.EventHandler<React.FocusEvent<HTMLInputElement>>;
   onBlur?: React.EventHandler<React.FocusEvent<HTMLInputElement>>;
-  onEnter?: React.EventHandler<React.KeyboardEvent<HTMLInputElement>>;
-  onTab?: TextInputTabEventHandler;
 }
+
+/**
+ * [Event] Observable
+ */
+export type TextInputEvent = ITextInputChangingEvent | ITextInputChangedEvent;
+
+export type ITextInputChangingEvent = {
+  type: 'TEXT_INPUT/changing';
+  payload: ITextInputChanging;
+};
+export type ITextInputChanging = TextInputChangeEvent & {
+  isCancelled: boolean;
+  cancel(): void;
+};
+
+export type ITextInputChangedEvent = {
+  type: 'TEXT_INPUT/changed';
+  payload: ITextInputChanged;
+};
+export type ITextInputChanged = TextInputChangeEvent;

@@ -6,6 +6,17 @@
 
 [Strongly typed](https://www.typescriptlang.org) tabular data-grid with rich [observable](https://www.learnrxjs.io) event stream.
 
+## Setup
+
+    yarn add @platform/ui.datagrid
+
+Ensure you reference the required CSS files within your project.
+
+```typescript
+import '@platform/ui.datagrid/import.css'
+```
+
+
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 

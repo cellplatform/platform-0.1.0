@@ -4,8 +4,9 @@ export { R };
 export {
   css,
   color,
-  GlamorValue,
   mouse,
+  events,
+  GlamorValue,
   MouseEvent,
   MouseEventHandler,
   MeasureSize,

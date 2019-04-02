@@ -11,4 +11,5 @@ electron:
 sourcemaps:
   strip:
     - node_modules/rxjs
+    - node_modules/react-inspector
 

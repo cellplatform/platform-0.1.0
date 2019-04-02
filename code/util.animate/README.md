@@ -5,6 +5,12 @@
 # util.animate
 Physics based animation.  Uses [dynamics.js](http://dynamicsjs.com/) under the hood.
 
+## Setup
+
+    yarn add @platform/util.animate
+
+
+
 ## Usage
 Within a [React](https://reactjs.org/) component:
 

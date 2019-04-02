@@ -217,8 +217,9 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     return {
       data: [],
       rowHeaders: true,
+      rowHeights: DEFAULTS.ROW_HEIGHTS,
       colHeaders: true,
-      colWidths: 100,
+      colWidths: DEFAULTS.COLUMN_WIDTHS,
       columns: createColumns(this.totalColumns),
       viewportRowRenderingOffset: 20,
       manualRowResize: true,

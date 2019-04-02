@@ -6,6 +6,12 @@
 
 [Strongly typed](https://www.typescriptlang.org) wrapper around the [monaco](https://github.com/Microsoft/monaco-editor) code editor, with rich [observable](https://www.learnrxjs.io) event stream.
 
+## Setup
+
+    yarn add @platform/ui.monaco
+
+
+
 
 <p>&nbsp;<p>
 <p>&nbsp;<p>

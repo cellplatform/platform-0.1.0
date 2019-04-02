@@ -1,7 +1,9 @@
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { R, css, color as colorUtil, util, GlamorValue } from '../common';
-import { ITextInputStyle, TextInputMaskHandler, ITextInputEvents, ITextInputFocus } from '../types';
+import { color as colorUtil, css, events, GlamorValue, R, t, util } from '../common';
+import { ITextInputEvents, ITextInputFocus, ITextInputStyle, TextInputMaskHandler } from '../types';
 
 export const DEFAULT_TEXT_STYLE: ITextInputStyle = {
   opacity: 1,
@@ -39,23 +41,71 @@ export interface IHtmlInputState {
  * A raw <input> element used within a <TextInput>.
  */
 export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputState> {
+  /**
+   * [Fields]
+   */
   public state: IHtmlInputState = {};
+  private unmounted$ = new Subject();
+  private state$ = new Subject<Partial<IHtmlInputState>>();
+
   private input: HTMLInputElement;
   private inputRef = (el: HTMLInputElement) => (this.input = el);
 
+  private readonly modifierKeys: t.ITextModifierKeys = {
+    alt: false,
+    control: false,
+    shift: false,
+    meta: false,
+  };
+
+  /**
+   * [Lifecycle]
+   */
   public componentWillMount() {
+    // Change state safely.
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+
+    // Monitor keyboard.
+    const keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
+    const modifier$ = keypress$.pipe(filter(e => e.isModifier));
+
+    // Keep references to currently pressed modifier keys
+    modifier$
+      .pipe(
+        filter(e => e.isPressed),
+        map(e => e.key.toLowerCase()),
+      )
+      .subscribe(key => (this.modifierKeys[key] = true));
+    modifier$
+      .pipe(
+        filter(e => !e.isPressed),
+        map(e => e.key.toLowerCase()),
+      )
+      .subscribe(key => (this.modifierKeys[key] = false));
+
+    // Initialize.
     this.setValue(this.props);
   }
+
   public componentDidMount() {
     const { focusOnLoad } = this.props;
     if (focusOnLoad) {
       setTimeout(() => this.focus(), 0);
     }
   }
-  public componentWillReceiveProps(nextProps: IHtmlInputProps) {
-    this.setValue(nextProps);
+
+  public componentDidUpdate() {
+    this.setValue(this.props);
   }
 
+  public componentWillUnmount() {
+    this.unmounted$.next();
+    this.unmounted$.complete();
+  }
+
+  /**
+   * [Methods]
+   */
   public focus() {
     if (this.input) {
       this.input.focus();
@@ -88,6 +138,17 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
     }
   }
 
+  private setValue = (props: IHtmlInputProps) => {
+    let value = props.value || '';
+    if (props.maxLength !== undefined && value.length > props.maxLength) {
+      value = value.substr(0, props.maxLength);
+    }
+    this.state$.next({ value });
+  };
+
+  /**
+   * [Render]
+   */
   public render() {
     const {
       isEnabled = true,
@@ -134,48 +195,61 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         onBlur={this.props.onBlur}
         onKeyPress={this.handleKeyPress}
         onKeyDown={this.handleKeydown}
-        onKeyUp={this.props.onKeyUp}
+        onKeyUp={this.handleKeyup}
       />
     );
   }
 
-  private setValue = (props: IHtmlInputProps) => {
-    let value = props.value || '';
-    if (props.maxLength !== undefined && value.length > props.maxLength) {
-      value = value.substr(0, props.maxLength);
-    }
-    this.setState({ value });
-  };
-
+  /**
+   * [Handlers]
+   */
   private handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { onKeyDown, onTab } = this.props;
+    const modifierKeys = { ...this.modifierKeys };
     if (onKeyDown) {
-      onKeyDown(e);
+      onKeyDown({ ...e, modifierKeys });
     }
     if (onTab && e.key === 'Tab') {
+      let isCancelled = false;
       onTab({
-        cancel: () => e.preventDefault(),
+        get isCancelled() {
+          return isCancelled;
+        },
+        cancel() {
+          isCancelled = true;
+          e.preventDefault();
+        },
+        modifierKeys,
       });
+    }
+  };
+
+  private handleKeyup = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const { onKeyUp } = this.props;
+    if (onKeyUp) {
+      const modifierKeys = { ...this.modifierKeys };
+      onKeyUp({ ...e, modifierKeys });
     }
   };
 
   private handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { onKeyPress, onEnter } = this.props;
+    const modifierKeys = { ...this.modifierKeys };
     if (onEnter && e.key === 'Enter') {
-      onEnter(e);
+      onEnter({ ...e, modifierKeys });
     }
     if (onKeyPress) {
-      onKeyPress(e);
+      onKeyPress({ ...e, modifierKeys });
     }
   };
 
-  private handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  private handleChange = (e: React.ChangeEvent) => {
     const { onChange, maxLength, mask } = this.props;
 
     // Derive values.
     const from = this.state.value || '';
     const to = ((e.target as any).value as string) || '';
-    const char = changedCharacter(from, to);
+    const char = getChangedCharacter(from, to);
     const isMax = maxLength === undefined ? null : to.length === maxLength;
 
     // Check whether an input-filter will mask the values.
@@ -187,7 +261,8 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
 
     // Update state and alert listeners.
     if (onChange && from !== to) {
-      onChange({ from, to, isMax, char });
+      const modifierKeys = { ...this.modifierKeys };
+      onChange({ from, to, isMax, char, modifierKeys });
     }
   };
 
@@ -205,7 +280,11 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   };
 }
 
-function changedCharacter(from: string, to: string) {
+/**
+ * [Helpers]
+ */
+
+function getChangedCharacter(from: string, to: string) {
   if (to.length === from.length) {
     return '';
   }

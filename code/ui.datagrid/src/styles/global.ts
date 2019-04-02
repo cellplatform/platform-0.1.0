@@ -1,4 +1,3 @@
-import '../../static/css/handsontable.full.min.css';
 import { ROBOTO } from '@platform/ui.text/lib/common/constants';
 import { css, constants } from '../common';
 

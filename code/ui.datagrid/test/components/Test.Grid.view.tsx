@@ -7,6 +7,7 @@ import { DebugEditor } from './Debug.Editor';
 import { CellEditor } from '../../src';
 
 export type ITestGridViewProps = {
+  events$?: Subject<t.GridEvent>;
   editorType: t.TestEditorType;
   style?: GlamorValue;
   Table?: Handsontable;
@@ -23,7 +24,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
   public state: ITestGridViewState = { values: DEFAULT };
   public state$ = new Subject<Partial<ITestGridViewState>>();
   private unmounted$ = new Subject();
-  private events$ = new Subject<t.GridEvent>();
+  private events$ = this.props.events$ || new Subject<t.GridEvent>();
 
   public datagrid!: datagrid.DataGrid;
   private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);

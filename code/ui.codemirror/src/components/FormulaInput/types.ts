@@ -1,18 +1,13 @@
 import {
   TextInputChangeEvent,
   TextInputTabEvent,
+  ITextModifierKeys,
 } from '@platform/ui.text/lib/components/TextInput';
 
-export type IModifierKeys = {
-  alt: boolean;
-  control: boolean;
-  shift: boolean;
-  meta: boolean;
-};
+export { ITextModifierKeys };
 
 export type IFormulaInputTab = TextInputTabEvent & {
   isCancelled: boolean;
-  modifierKeys: IModifierKeys;
 };
 
 /**
@@ -36,7 +31,7 @@ export type IFormulaInputChangedEvent = {
   type: 'INPUT/formula/changed';
   payload: IFormulaInputChanged;
 };
-export type IFormulaInputChanged = TextInputChangeEvent & { modifierKeys: IModifierKeys };
+export type IFormulaInputChanged = TextInputChangeEvent;
 
 export type IFormulaInputTabEvent = {
   type: 'INPUT/formula/tab';
@@ -59,5 +54,5 @@ export type IFormulaInputNewLineEvent = {
 export type IFormulaInputNewLine = {
   isCancelled: boolean;
   cancel(): void;
-  modifierKeys: IModifierKeys;
+  modifierKeys: ITextModifierKeys;
 };

@@ -6,6 +6,16 @@
 
 UI components for working with [GraphQL](https://graphql.org/).
 
+## Setup
+
+    yarn add @platform/ui.graphql
+
+Ensure base `css` files are included in the consuming project.
+
+``` typescript
+import `@platform/ui.graphql/import.css`
+```
+
 
 <p>&nbsp;<p>
 <p>&nbsp;<p>

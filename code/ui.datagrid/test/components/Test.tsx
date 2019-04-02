@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { init as initCommandLine } from '../cli';
-import { color, COLORS, css, t } from '../common';
+import { COLORS, css, t } from '../common';
 import { TestCellEditor } from './Test.CellEditor';
 import { TestGrid } from './Test.Grid';
 
@@ -47,6 +47,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
   public componentWillUnmount() {
     this.unmounted$.next();
+    this.unmounted$.complete();
   }
 
   /**
@@ -63,11 +64,11 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   /**
    * [Render]
    */
+
   public render() {
     const styles = {
       base: css({
         Absolute: 0,
-        backgroundColor: color.format(-0.08),
         Flex: 'vertical',
       }),
       main: css({

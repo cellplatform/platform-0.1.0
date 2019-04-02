@@ -1,3 +1,5 @@
+export { MONOSPACE } from '@platform/ui.text';
+
 export const COLORS = {
   WHITE: '#fff',
   BLACK: '#000',

@@ -53,7 +53,7 @@ export type IpcClient<M extends IpcMessage = any> = {
    */
   dispose: () => void;
 
-  filter: <T extends M>(criteria: IpcFilter<T> | T['type']) => IpcEventObservable<T>;
+  filter: <T extends M>(criteria: IpcFilter<M> | T['type']) => IpcEventObservable<T>;
 
   on: <T extends M>(type: T['type']) => IpcEventObservable<T>;
 

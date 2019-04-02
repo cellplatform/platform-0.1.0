@@ -7,6 +7,17 @@
 [Strongly typed](https://www.typescriptlang.org) wrapper around [codemirror](https://codemirror.net/), with rich [observable](https://www.learnrxjs.io) event stream.
 
 
+## Setup
+```bash
+yarn add @platform/ui.codemirror
+```
+
+Ensure you reference the required CSS files within your project.
+
+```typescript
+import '@platform/ui.codemirror/import.css'
+```
+
 <p>&nbsp;<p>
 <p>&nbsp;<p>
 
