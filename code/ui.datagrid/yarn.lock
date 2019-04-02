@@ -896,13 +896,14 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/cli.spec@0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.0.21.tgz#89bab799120e9cfc65e52264e54c4635349ade4f"
-  integrity sha512-L0/qZNO9QS4v0OceinCokYM87ZJ77liox8vuXeUfMdduAG18issc0krwVQljyKOl1JaCew0rNuYxmKGJOOWPCQ==
+"@platform/cli.spec@0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.0.22.tgz#d1a08ce9309f2c591fb85085b17b03d7db4e6a70"
+  integrity sha512-hkJd7NbT3AVWK+uBF+4vsCIeOD+8vvOFA7fkfUxDNTfFX0u2Zqz8mBejb+P6qh+AQUq4ct6ZxGk9KwhNLOB+wg==
   dependencies:
     "@platform/util.string" "0.0.47"
     "@platform/util.value" "0.0.50"
+    minimist "1.2.0"
 
 "@platform/cli@0.0.70":
   version "0.0.70"
@@ -1052,12 +1053,12 @@
     "@platform/libs" "0.0.11"
     "@platform/ts.libs" "3.4.0"
 
-"@platform/ui.cli@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.11.tgz#156bdd1a041a9b6aa6e9d2d90861e137878da4ef"
-  integrity sha512-XwOPxJR2YTK3NdQ3ghW2x+ngZII+fiZUbTY3noQ4b5UB/v+eoSYjfvwPRDaCXiJW160vzBAwjz4KxOLfTGOBqA==
+"@platform/ui.cli@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.12.tgz#5bea0351572c72cfff0f166f56de78b683226bd8"
+  integrity sha512-tDeauwx7+CknHY8v783HMng3TsoWZv1xMR/bDbNL41g8ji0RHE2I8l7aMJ2yvHIg95sqlGS89OYBIf8wGSWRkw==
   dependencies:
-    "@platform/cli.spec" "0.0.21"
+    "@platform/cli.spec" "0.0.22"
     "@platform/react" "0.1.5"
     "@platform/ui.text" "0.0.39"
     "@platform/ui.tree" "0.0.17"
@@ -5224,7 +5225,7 @@ minimist@0.0.8:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
   integrity sha1-hX/Kv8M5fSYluCKCYuhqp6ARsF0=
 
-minimist@^1.1.0, minimist@^1.1.3, minimist@^1.2.0:
+minimist@1.2.0, minimist@^1.1.0, minimist@^1.1.3, minimist@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
   integrity sha1-o1AIsg9BOD7sH7kU9M1d95omQoQ=
