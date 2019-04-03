@@ -65,6 +65,7 @@ describe('Db', () => {
 
       await test(undefined);
       await test(1.23);
+      await test(0);
       await test(true);
       await test(false);
       await test('foo');
