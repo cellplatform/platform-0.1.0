@@ -1515,7 +1515,7 @@
     "@types/prosemirror-state" "*"
     "@types/prosemirror-view" "*"
 
-"@types/prosemirror-markdown@1.0.2":
+"@types/prosemirror-markdown@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@types/prosemirror-markdown/-/prosemirror-markdown-1.0.2.tgz#df2739a30ecf2f6941202d7a334e3e5570a0ade7"
   integrity sha512-pbhWI2K4Ugtu4L+sufQKAp+9lS9ZFYsnMzaw34rWixKT8piEAfh7dB9kc9eEifQXq2diRa7Fc86EpGmJKNGqFA==
