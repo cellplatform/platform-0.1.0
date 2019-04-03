@@ -1,10 +1,9 @@
-import { CommandPrompt } from '@platform/ui.cli';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { init as commandLine } from '../cli';
-import { COLORS, css, t, renderer, Button, Hr, Npm } from './common';
+import { Npm, renderer, Shell, t } from './common';
 
 /**
  * Test Component
@@ -41,35 +40,10 @@ export class Test extends React.PureComponent<{}, t.ITestState> {
    */
 
   public render() {
-    const styles = {
-      base: css({
-        Absolute: 0,
-        Flex: 'vertical',
-      }),
-      main: css({
-        position: 'relative',
-        display: 'flex',
-        flex: 1,
-        padding: 20,
-      }),
-      footer: css({
-        backgroundColor: COLORS.DARK,
-      }),
-    };
-
     return (
-      <div {...styles.base}>
-        <div {...styles.main}>
-          <div>Body</div>
-        </div>
-        <div {...styles.footer}>
-          <CommandPrompt cli={this.cli} theme={'DARK'} />
-        </div>
-      </div>
+      <Shell cli={this.cli}>
+        <div>npm</div>
+      </Shell>
     );
-  }
-
-  private button(label: string, handler: () => void) {
-    return <Button label={label} onClick={handler} />;
   }
 }

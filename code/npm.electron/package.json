@@ -17,12 +17,11 @@
   "dependencies": {
     "@platform/exec": "0.0.9",
     "@platform/npm": "0.0.50",
-    "@platform/react": "0.1.7",
-    "@uiharness/electron": "0.4.19",
-    "@platform/ui.cli": "0.0.14"
+    "@platform/react": "0.1.7"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.2.30"
+    "@uiharness/dev": "0.2.30",
+    "@uiharness/ui": "^0.1.29"
   },
   "files": [
     "lib"

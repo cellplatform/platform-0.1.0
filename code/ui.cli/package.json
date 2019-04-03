@@ -19,12 +19,12 @@
     "@platform/react": "0.1.7",
     "@platform/ui.text": "0.0.41",
     "@platform/ui.tree": "0.0.19",
-    "react-icons": "^3.5.0"
+    "react-icons": "3.5.0"
   },
   "devDependencies": {
-    "@platform/ts": "^3.4.2",
+    "@platform/ts": "3.4.2",
     "@uiharness/dev": "0.2.30",
-    "@uiharness/electron": "0.4.19"
+    "@uiharness/ui": "0.1.29"
   },
   "files": [
     "lib"
