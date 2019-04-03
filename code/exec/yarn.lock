@@ -26,12 +26,12 @@
     fs-extra "7.0.1"
     js-yaml "3.13.0"
 
-"@platform/libs@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.11.tgz#95961acc492dd26acde27f08803619f2355faf10"
-  integrity sha512-nXgCqxuE+tsLuwSu58VDkrfxSnx15ZVJ3nb3NSJsG0PKhCBkHn+xbZXdRd8rhqXINGdn7Yg2cLxPGzDxK+3YJg==
+"@platform/libs@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.12.tgz#84f224528adae402ddba30b0bfcd74dbdd22f490"
+  integrity sha512-wOPuSNdtuZt1BjDVkqCMAFSqSeDS8zSwA8tT/7tixReA+BVwePrpeL3m6ElH5A1znqxsb+W3KMyAw0AjVAlICQ==
   dependencies:
-    "@types/ramda" "0.26.5"
+    "@types/ramda" "0.26.6"
     ramda "0.26.1"
     rxjs "6.4.0"
     tslib "1.9.3"
@@ -119,10 +119,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.13.0.tgz#b0df8d6ef9b5001b2be3a94d909ce3c29a80f9e1"
   integrity sha512-rx29MMkRdVmzunmiA4lzBYJNnXsW/PhG4kMBy2ATsYaDjGGR75dCFEVVROKpNwlVdcUX3xxlghKQOeDPBJobng==
 
-"@types/ramda@0.26.5":
-  version "0.26.5"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.5.tgz#99f62d7c29fc9a5381008128e33c08e951fbb620"
-  integrity sha512-0W7/G3OfpqoNLp10UA+2a7cKNZeUaqSULdCrHU8Xrum1O+ZZQR9dk3CgNFD2u2+eJ5PfTL3kk/xzrfgjFf6f8w==
+"@types/ramda@0.26.6":
+  version "0.26.6"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.6.tgz#1aaf5060da8ebb99529420b6eb997c50f74c218e"
+  integrity sha512-AmTHEkGo/EEufYY7MRqlgI0HLsLiAnc02pKOTVzE2D9IHf6yH2Xz71ompfEnduuaFGplYrtIOFOUOLs0AbMj9Q==
 
 ansi-colors@3.2.3:
   version "3.2.3"
