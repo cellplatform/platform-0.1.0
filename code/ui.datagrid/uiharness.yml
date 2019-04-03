@@ -14,17 +14,4 @@ sourcemaps:
   strip:
     - node_modules/rxjs
     - node_modules/numbro
-    - node_modules/prosemirror-model
-    - node_modules/prosemirror-state
-    - node_modules/prosemirror-transform
-    - node_modules/prosemirror-view
-    - node_modules/prosemirror-markdown
-    - node_modules/prosemirror-example-setup
-    - node_modules/prosemirror-history
-    - node_modules/prosemirror-commands
-    - node_modules/prosemirror-dropcursor
-    - node_modules/prosemirror-menu
-    - node_modules/prosemirror-schema-list
-    - node_modules/prosemirror-inputrules
-    - node_modules/prosemirror-gapcursor
-    - node_modules/prosemirror-keymap
+    - node_modules/prosemirror*

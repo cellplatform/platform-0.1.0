@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.object",
   "description": "Visual display of javascript object.",
-  "version": "0.0.77",
+  "version": "0.0.79",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,12 +14,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.1.5",
+    "@platform/react": "0.1.7",
     "react-inspector": "3.0.2"
   },
   "devDependencies": {
-    "@platform/ts": "3.4.0",
-    "@uiharness/dev": "0.2.25"
+    "@platform/ts": "3.4.2",
+    "@uiharness/dev": "0.2.30"
   },
   "files": [
     "lib"

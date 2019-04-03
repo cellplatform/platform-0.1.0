@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from '../../common';
 
-import { StackPanel, StackPanelSlideEvent, IStackPanel } from '.';
-import { Button } from '@uiharness/ui';
-import { Foo } from '@platform/react';
+import { IStackPanel, StackPanel, StackPanelSlideEvent } from '../../src';
+import { color, css, Foo, GlamorValue, Button } from './common';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {

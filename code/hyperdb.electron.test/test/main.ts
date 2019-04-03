@@ -1,12 +1,12 @@
-import { app } from 'electron';
-import uiharness from '@uiharness/electron/lib/main';
-import { filter } from 'rxjs/operators';
-import { fs } from './common';
-
+import { fs } from '@platform/fs';
 import main from '@platform/hyperdb.electron/lib/main';
-import * as t from '../types';
+import uiharness from '@uiharness/electron/lib/main';
+import { app } from 'electron';
+import { filter } from 'rxjs/operators';
 
-const config = require('../../.uiharness/config.json') as uiharness.IRuntimeConfig;
+import * as t from './types';
+
+const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
 
 (async () => {
   const context = await uiharness.init({ config });

@@ -13,28 +13,32 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
    * [Handle] installing an NPM module
    */
   ipc.handle<t.INpmInstall>('NPM/install', async e => {
-    const timer = time.timer();
-    const { name } = e.payload;
-    log.info();
-    log.info('Install from NPM');
-
-    // Get version.
-    const LATEST = 'latest';
-    let version = e.payload.version || LATEST;
-    const isLatest = version === LATEST;
-    version = isLatest ? await npm.getVersion(name) : version;
-    const nameVersion = `${name}@${version}`;
-
-    console.log(`\nTODO 🐷   install DIR NAME not 'TMP'\n`);
-    const dir = fs.join(app.getPath('desktop'), 'TMP', nameVersion);
-
-    // Log.
-    const ver = log.magenta(version);
-    log.info.gray(' - name:   ', log.cyan(name));
-    log.info.gray(' - version:', isLatest ? `latest (${ver})` : ver);
-    log.info.gray(' - dir:    ', dir);
-
     try {
+      const timer = time.timer();
+      const { name } = e.payload;
+
+      const node = (await exec.command('node -v').run()).info[0];
+
+      log.info();
+      log.info('node', log.yellow(node));
+      log.info('Install from NPM');
+
+      // Get version.
+      const LATEST = 'latest';
+      let version = e.payload.version || LATEST;
+      const isLatest = version === LATEST;
+      version = isLatest ? await npm.getVersion(name) : version;
+      const nameVersion = `${name}@${version}`;
+
+      log.info(`\nTODO 🐷   install DIR NAME not 'TMP'\n`);
+      const dir = fs.join(app.getPath('desktop'), 'TMP', nameVersion);
+
+      // Log.
+      const ver = log.magenta(version);
+      log.info.gray(' - name:   ', log.cyan(name));
+      log.info.gray(' - version:', isLatest ? `latest (${ver})` : ver);
+      log.info.gray(' - dir:    ', dir);
+
       // Prepare the [package.json] file.
       const pkg = npm.pkg({
         json: {
@@ -65,7 +69,8 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
         });
       }
     } catch (error) {
-      log.error(`Failed while installing '${nameVersion}'. ${error.message}`);
+      const { name, version = 'latest' } = e.payload;
+      log.error(`Failed while installing '${name}@${version}'. ${error.message}`);
     }
   });
 }
