@@ -2,8 +2,8 @@ productName: hyperdb
 appId: hyperdb.electron-test
 publish:
   provider: github
-  owner: __OWNER__
-  repo: __REPO__
+  owner: uiharness
+  repo: platform
   vPrefixedTagName: true
   releaseType: draft
   publishAutoUpdate: true
@@ -22,8 +22,3 @@ linux:
     - zip
   category: Development
   artifactName: '${productName}-${version}-linux.${ext}'
-files:
-  - .uiharness/.bundle/app.main/**
-  - .uiharness/.bundle/app.renderer/prod/**
-directories:
-  output: .uiharness/dist

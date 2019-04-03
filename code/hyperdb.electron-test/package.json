@@ -1,7 +1,7 @@
 {
   "name": "hyperdb.electron-test",
   "description": "Test module for the [hyperdb.electron].",
-  "version": "0.1.54",
+  "version": "0.1.55",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -20,8 +20,8 @@
     "@hyperswarm/network": "0.0.4",
     "@platform/cli.spec": "0.0.24",
     "@platform/electron": "0.1.27",
-    "@platform/hyperdb": "0.0.39",
-    "@platform/hyperdb.electron": "0.0.52",
+    "@platform/hyperdb": "0.0.40",
+    "@platform/hyperdb.electron": "0.0.53",
     "@platform/react": "0.1.7",
     "@platform/ui.cli": "0.0.14",
     "@platform/ui.datagrid": "^0.0.41",
@@ -37,7 +37,8 @@
     "@platform/test": "0.0.38",
     "@platform/ts": "3.4.2",
     "@types/hjson": "2.4.1",
-    "@uiharness/dev": "0.2.30"
+    "@uiharness/dev": "0.2.30",
+    "@uiharness/ui": "^0.1.29"
   },
   "files": [
     "lib"

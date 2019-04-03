@@ -1,6 +1,6 @@
 {
   "name": "@platform/hyperdb",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "description": "Strongly typed interface to hyperdb.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
