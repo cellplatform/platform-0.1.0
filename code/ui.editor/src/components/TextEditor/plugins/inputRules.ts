@@ -11,6 +11,7 @@ import {
   smartQuotes,
   emDash,
   ellipsis,
+  InputRule,
 } from 'prosemirror-inputrules';
 
 /**
@@ -24,8 +25,6 @@ export function blockQuoteRule(nodeType: NodeType) {
 }
 
 /**
- * `(NodeType) → InputRule`
- *
  * Given a list node type, returns an input rule that turns a number
  * followed by a dot at the start of a textblock into an ordered list.
  */
@@ -39,8 +38,6 @@ export function orderedListRule(nodeType: NodeType) {
 }
 
 /**
- * `(NodeType) → InputRule`
- *
  * Given a list node type, returns an input rule that turns a bullet
  * (dash, plush, or asterisk) at the start of a textblock into a
  * bullet list.
@@ -50,8 +47,6 @@ export function bulletListRule(nodeType: NodeType) {
 }
 
 /**
- * `(NodeType) → InputRule`
- *
  * Given a code block node type, returns an input rule that turns a
  * textblock starting with three backticks into a code block.
  */
@@ -60,8 +55,15 @@ export function codeBlockRule(nodeType: NodeType) {
 }
 
 /**
- * `(NodeType, number) → InputRule`
- *
+ * Given `---` replace with a horizontal-rule.
+ */
+export const hrRule = new InputRule(/^—-$/, (state, match, start, end) => {
+  const hr = state.schema.nodes.horizontal_rule.create();
+  const tr = state.tr.delete(start, end).insert(start, hr);
+  return tr;
+});
+
+/**
  * Given a node type and a maximum level, creates an input rule that
  * turns up to that number of `#` characters followed by a space at
  * the start of a textblock into a heading whose level corresponds to
@@ -74,14 +76,13 @@ export function headingRule(nodeType: NodeType, maxLevel: number) {
 }
 
 /**
- * `(Schema) → Plugin`
- *
  * A set of input rules for creating the basic { block } quotes, lists,
  * code blocks, and heading.
  */
 export function build(schema: Schema) {
   const nodes = schema.nodes;
-  const rules = smartQuotes.concat(ellipsis, emDash);
+  // const rules = smartQuotes.concat(ellipsis, emDash);
+  const rules = smartQuotes.concat(ellipsis, hrRule, emDash);
 
   if (nodes.blockquote) {
     rules.push(blockQuoteRule(nodes.blockquote));
