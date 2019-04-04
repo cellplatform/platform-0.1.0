@@ -16,6 +16,7 @@ import { liftListItem, sinkListItem, splitListItem, wrapInList } from 'prosemirr
 import { EditorState, Transaction } from 'prosemirror-state';
 
 import { EditorKeyMap } from '../types';
+import { time } from '../../../common';
 
 export { EditorKeyMap };
 
@@ -79,16 +80,26 @@ export function build(schema: Schema, mapKeys?: EditorKeyMap) {
   bind('Mod-BracketLeft', lift);
   bind('Escape', selectParentNode);
 
+  // Insert date.
+  bind('Mod-Shift-d', (state, dispatch) => {
+    const date = time.day().format('D MMMM YYYY');
+    const tr = state.tr.insertText(date).scrollIntoView();
+    dispatch(tr);
+    return false;
+  });
+
   if (schema.marks.strong) {
     const type = schema.marks.strong;
     bind('Mod-b', toggleMark(type));
     bind('Mod-B', toggleMark(type));
   }
+
   if (schema.marks.em) {
     const type = schema.marks.em;
     bind('Mod-i', toggleMark(type));
     bind('Mod-I', toggleMark(type));
   }
+
   if (schema.marks.code) {
     const type = schema.marks.code;
     bind('Mod-`', toggleMark(type));
@@ -98,14 +109,17 @@ export function build(schema: Schema, mapKeys?: EditorKeyMap) {
     const type = schema.nodes.bullet_list;
     bind('Shift-Ctrl-8', wrapInList(type));
   }
+
   if (schema.nodes.ordered_list) {
     const type = schema.nodes.ordered_list;
     bind('Shift-Ctrl-9', wrapInList(type));
   }
+
   if (schema.nodes.blockquote) {
     const type = schema.nodes.blockquote;
     bind('Ctrl->', wrapIn(type));
   }
+
   if (schema.nodes.hard_break) {
     const br = schema.nodes.hard_break;
     const cmd = chainCommands(exitCode, (state, dispatch) => {
@@ -121,30 +135,36 @@ export function build(schema: Schema, mapKeys?: EditorKeyMap) {
       bind('Ctrl-Enter', cmd);
     }
   }
+
   if (schema.nodes.list_item) {
     const type = schema.nodes.list_item;
     bind('Enter', splitListItem(type));
     bind('Mod-[', liftListItem(type));
     bind('Mod-]', sinkListItem(type));
   }
+
   if (schema.nodes.paragraph) {
     const type = schema.nodes.paragraph;
     bind('Shift-Ctrl-0', setBlockType(type));
   }
+
   if (schema.nodes.code_block) {
     const type = schema.nodes.code_block;
     bind('Shift-Ctrl-\\', setBlockType(type));
   }
+
   if (schema.nodes.heading) {
     const type = schema.nodes.heading;
     for (let i = 1; i <= 6; i++) {
       bind('Shift-Ctrl-' + i, setBlockType(type, { level: i }));
     }
   }
+
   if (schema.nodes.horizontal_rule) {
     const hr = schema.nodes.horizontal_rule;
     bind('Mod-_', (state, dispatch) => {
-      dispatch(state.tr.replaceSelectionWith(hr.create()).scrollIntoView());
+      const tr = state.tr.replaceSelectionWith(hr.create()).scrollIntoView();
+      dispatch(tr);
       return true;
     });
   }
