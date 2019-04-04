@@ -3,7 +3,6 @@
   "include": ["src"],
   "compilerOptions": {
     "outDir": "lib",
-    "target": "esnext",
-    "noUnusedLocals": false
+    "target": "esnext"
   }
 }

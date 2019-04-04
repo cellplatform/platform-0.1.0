@@ -8,6 +8,7 @@ import { init as initStore } from '../helpers/store/renderer';
 import * as t from '../types';
 import { Context, createProvider, ReactContext } from './Context';
 import { WindowsRenderer } from '../helpers/windows/renderer';
+import * as keyboard from './keyboard';
 
 const electron = (window as any).require('electron');
 const remote = electron.remote as Electron.Remote;
@@ -68,10 +69,10 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
     remote,
   };
   context = { ...context, ...(await getContext(context)) };
-
   const Provider = createProvider(context);
 
   // Finish up.
+  keyboard.init();
   refs.renderer = { ...context, Provider, devTools, windows };
   return refs.renderer;
 }
