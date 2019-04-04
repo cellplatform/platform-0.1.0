@@ -1,19 +1,16 @@
 import '../../styles';
 
-import { defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
+import * as commands from 'prosemirror-commands';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter, map } from 'rxjs/operators';
-import * as commands from 'prosemirror-commands';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, containsFocus, constants, events } from '../../common';
+import { constants, containsFocus, events, GlamorValue } from '../../common';
+import * as markdown from './markdown';
+import * as plugins from './plugins';
 import * as t from './types';
-
-// @ts-ignore
-const exampleSetup = require('prosemirror-example-setup').exampleSetup;
-const schema = require('prosemirror-markdown').schema;
 
 export type DocSchema = any;
 
@@ -38,9 +35,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * [Static]
    */
-  public static serialize(state: t.EditorState) {
-    return defaultMarkdownSerializer.serialize(state.doc);
-  }
+  public static markdown = markdown;
 
   /**
    * [Fields]
@@ -124,7 +119,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   public get value() {
-    return TextEditor.serialize(this.view.state);
+    return markdown.serialize(this.view.state);
   }
 
   public get editor() {
@@ -169,13 +164,10 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     }
 
     const state = EditorState.create({
-      doc: defaultMarkdownParser.parse(value),
-      plugins: [
-        ...exampleSetup({ schema, menuBar: false }),
-        // history(),
-        // keymap({ 'Mod-z': undo, 'Mod-y': redo }),
-      ],
+      doc: markdown.parse(value),
+      plugins: plugins.init({ schema: markdown.schema }),
     });
+
     this.view = new EditorView<DocSchema>(this.el, {
       state,
       dispatchTransaction: this.dispatch,
@@ -188,7 +180,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    */
   public load(value: string) {
     const { state } = this.editor;
-    const node = defaultMarkdownParser.parse(value);
+    const node = markdown.parse(value);
     const tr = state.tr;
     tr.replaceWith(0, tr.doc.content.size, node);
     this.dispatch(tr);
@@ -222,10 +214,10 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
     const value = {
       get from() {
-        return TextEditor.serialize(state.from);
+        return markdown.serialize(state.from);
       },
       get to() {
-        return TextEditor.serialize(state.to);
+        return markdown.serialize(state.to);
       },
     };
 
@@ -276,10 +268,10 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
     const value = {
       get from() {
-        return state.from ? TextEditor.serialize(state.from) : '';
+        return state.from ? markdown.serialize(state.from) : '';
       },
       get to() {
-        return TextEditor.serialize(state.to);
+        return markdown.serialize(state.to);
       },
     };
 

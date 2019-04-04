@@ -4,6 +4,11 @@ import { EditorView } from 'prosemirror-view';
 
 export { Transaction, EditorState, Schema, EditorView, Node };
 
+/**
+ * See: `plugins/keyMap.ts`
+ */
+export type EditorKeyMap = { [key: string]: boolean | string };
+
 export type ITextEditorModifierKeys = {
   alt: boolean;
   control: boolean;

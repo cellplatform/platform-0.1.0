@@ -23,7 +23,9 @@ const DEFAULT = {
 
 Before
 
-      code block
+\`\`\`
+code block
+\`\`\`
 
 After
 
