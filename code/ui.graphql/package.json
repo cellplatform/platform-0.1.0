@@ -19,7 +19,7 @@
     "@platform/ui.codemirror": "0.0.14",
     "@types/codemirror": "0.0.72",
     "@types/graphql": "14.2.0",
-    "@uiharness/electron": "0.4.19",
+    "@uiharness/electron": "0.4.20",
     "graphiql": "0.13.0",
     "graphql": "14.2.1",
     "hjson": "3.1.2"
@@ -28,8 +28,8 @@
     "@platform/test": "0.0.38",
     "@platform/ts": "3.4.2",
     "@types/hjson": "2.4.1",
-    "@uiharness/dev": "0.2.30",
-    "@uiharness/ui": "^0.1.31"
+    "@uiharness/dev": "0.2.32",
+    "@uiharness/ui": "^0.1.33"
   },
   "files": [
     "lib",

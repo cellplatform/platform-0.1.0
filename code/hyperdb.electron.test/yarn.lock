@@ -963,16 +963,6 @@
     "@platform/util.value" "0.0.52"
     minimist "1.2.0"
 
-"@platform/cli@0.0.71":
-  version "0.0.71"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.71.tgz#91f9caa233bf78992bd06aa5cdecba4c62940ddd"
-  integrity sha512-9UXIpbOAuG8m4msCWP3BD6nMjh4oQyKYKlI6usvMqpbrQiPBI0EqED8Avi8y3myrx5rQs/0iRGRuy56QgZp/Fw==
-  dependencies:
-    "@platform/exec" "0.0.8"
-    "@platform/fs" "0.0.45"
-    "@types/yargs" "12.0.11"
-    yargs "13.2.2"
-
 "@platform/cli@0.0.72":
   version "0.0.72"
   resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.72.tgz#34d1870bc6d2d01880532ced34677f38c6936f86"
@@ -1023,10 +1013,10 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/electron@0.1.27":
-  version "0.1.27"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.27.tgz#7f7f2b6c919a6f765f549b45c3de14ce59176b18"
-  integrity sha512-QlJaH0prRfEDGDDqvSbogpRQoFrVtPkm/9k1Tfq+yw6Hb1w7jmbNLZnSdftV2z3a9DvUrTy0fg2y6muNj58B6w==
+"@platform/electron@0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.28.tgz#02d8a07dee40153426400e9e115581088cd589ae"
+  integrity sha512-H8w2Eisl+DctbHwdTBFDf2cnY5nvYL/vcrjl2x4M3KYMNug9Fn+HEx5ekgHZnEl6XibXZ3G2vJ9bvfe3eFvzuA==
   dependencies:
     "@babel/polyfill" "7.4.3"
     "@platform/fs" "0.0.45"
@@ -1034,22 +1024,10 @@
     "@platform/react" "0.1.7"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.2.1"
-    electron-log "3.0.4"
+    electron-log "3.0.5"
     electron-store "3.1.0"
     electron-window-state "5.0.3"
     is-electron "2.2.0"
-
-"@platform/exec@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.0.8.tgz#7174f29641816af02611b8b3ef579e2ebe5f9aec"
-  integrity sha512-UUciPcDqDWC0U2MyTfuzMAVIoGYLsNDDr5z49ib0ir5G4Daa2is5crAnWf0U+Hml8+0b1uWq1OxynwC2/JEtNw==
-  dependencies:
-    "@platform/libs" "0.0.11"
-    "@types/chalk" "2.2.0"
-    "@types/listr" "0.13.0"
-    ansi-regex "4.1.0"
-    chalk "2.4.2"
-    listr "0.14.3"
 
 "@platform/exec@0.0.9":
   version "0.0.9"
@@ -1074,12 +1052,12 @@
     fs-extra "7.0.1"
     js-yaml "3.13.0"
 
-"@platform/hyperdb.electron@0.0.53":
-  version "0.0.53"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.0.53.tgz#440d880e7be14c749748f8e46a9d172e4991cf99"
-  integrity sha512-KI9/OqdVctOWqpHpp2J2bUFVG13l5F57JHz+iBdpwZzaIjbt8ANidRzM6Z1MabL9r7UKbd8J7sPEnwoOdMFNfQ==
+"@platform/hyperdb.electron@0.0.54":
+  version "0.0.54"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.0.54.tgz#ec105851737964d6fd268550f794ad2cf6cf91bf"
+  integrity sha512-V51bNmUBa7fxNLV5viebhU/I+miY3TkByskTRIfFvRMC+mkYpV9hIywEMzxkCM+xM6SDpuVZXbF+ZpOPXWYKnw==
   dependencies:
-    "@platform/electron" "0.1.27"
+    "@platform/electron" "0.1.28"
     "@platform/hyperdb" "0.0.40"
     "@platform/util.string" "0.0.49"
     "@platform/util.value" "0.0.52"
@@ -1135,15 +1113,15 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/npm@0.0.49":
-  version "0.0.49"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.0.49.tgz#05a27ac46e4ab52895db36d7a98f378ea7cab8d2"
-  integrity sha512-fgv9Rt4V603FNziYpm+CySPDc8Lo1p6wx3km560gopIYmugc4jPp7v6a/QjSD27RPO4Nsu043h0QAOSsi3g3bQ==
+"@platform/npm@0.0.50":
+  version "0.0.50"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.0.50.tgz#4de6ff6b8b5cac64769f44ad32dd1470b11bcfa9"
+  integrity sha512-M/LIExlWYa13MAo7VKNvN45/4rxtulKaEIu7M6Qm6V5sX6alMC1YfgZi3KfjSXTx5arZYnLgP3aNj1VXk51uHQ==
   dependencies:
-    "@platform/exec" "0.0.8"
+    "@platform/exec" "0.0.9"
     "@platform/fs" "0.0.45"
-    "@platform/log" "0.0.101"
-    "@platform/util.value" "0.0.51"
+    "@platform/log" "0.0.102"
+    "@platform/util.value" "0.0.52"
 
 "@platform/react@0.1.6":
   version "0.1.6"
@@ -1183,17 +1161,6 @@
     tslint-react "4.0.0"
     typescript "3.4.1"
 
-"@platform/ts@3.4.1":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.4.1.tgz#6e623107b7dfa70dda267229365b72e1323adfd8"
-  integrity sha512-r0tZeKlzUPmv2gPB8veqlP4kaezfrlenbcz9kauWi5FGKGdzESyocxcEQ2rtv7U5Ss/Qulrlyu02uHS5eqImfw==
-  dependencies:
-    "@platform/cli" "0.0.71"
-    "@platform/exec" "0.0.8"
-    "@platform/fs" "0.0.45"
-    "@platform/libs" "0.0.11"
-    "@platform/ts.libs" "3.4.1"
-
 "@platform/ts@3.4.2":
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.4.2.tgz#266eff363675ac7db1c2a14738cbb1a904ae7b1f"
@@ -1228,34 +1195,37 @@
     codemirror "5.45.0"
     react-codemirror2 "5.1.0"
 
-"@platform/ui.datagrid@^0.0.41":
-  version "0.0.41"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.41.tgz#972ba50ccd9b4d43dad12c50c7db5ea4a571f1ab"
-  integrity sha512-M2vTJPEwT9Pwk4XZEcV0CvyGNXPosLIA9G8WcbYOdsxYmH1eruOdEFnteB6WVYktaBiylMbfdEtsOpIs2G+BqQ==
+"@platform/ui.datagrid@^0.0.43":
+  version "0.0.43"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.43.tgz#e9b04f743d0428a9cacd872ffa4cbe8c286b8984"
+  integrity sha512-2bzrKRIlYCmuSa/fa/ElPdws67ldDb+V85XR6Lxc3FtjCd+yHET3IMuzCied3DZnK0RzIGEfcLsE4imH82Q3NA==
   dependencies:
-    "@platform/electron" "0.1.27"
+    "@platform/electron" "0.1.28"
     "@platform/react" "0.1.7"
     "@platform/ui.codemirror" "0.0.14"
-    "@platform/ui.editor" "0.0.32"
+    "@platform/ui.editor" "0.0.33"
     "@platform/ui.text" "0.0.41"
     "@platform/util.value.cell" "0.0.13"
     handsontable "6.2.2"
 
-"@platform/ui.editor@0.0.32":
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.32.tgz#533cc2732e5cfec10e098fbafad0ce0d2cd80edc"
-  integrity sha512-HsQ9o8wemM4owcSjheFc2XcCPZzDySyiFR3pGsGt+VUtzdDJRcekvPzP4eEbWUg82KOwYaEWSxC/PQW/ntUoKA==
+"@platform/ui.editor@0.0.33":
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.33.tgz#3645548fe627a5962978d5329ec19da3e136ce3b"
+  integrity sha512-t010rJFtQzMDgGkKRjSpGgf/qRNvINS6qctunk6E5rMcVnQxWuYEycswRNF85WPrypUIlGBFD/6mW/idBbgM3A==
   dependencies:
     "@platform/react" "0.1.7"
-    "@platform/ui.object" "0.0.79"
-    prosemirror-example-setup "1.0.1"
+    prosemirror-commands "1.0.7"
+    prosemirror-dropcursor "1.1.1"
+    prosemirror-gapcursor "1.0.3"
     prosemirror-history "1.0.4"
+    prosemirror-inputrules "1.0.1"
     prosemirror-keymap "1.0.1"
     prosemirror-markdown "1.3.0"
+    prosemirror-menu "1.0.5"
     prosemirror-schema-basic "1.0.0"
+    prosemirror-schema-list "1.0.2"
     prosemirror-state "1.2.2"
     prosemirror-view "1.8.4"
-    react-inspector "3.0.2"
 
 "@platform/ui.icon@0.0.23":
   version "0.0.23"
@@ -1525,27 +1495,27 @@
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.11.tgz#a090d88e1f40a910e6443c95493c1c035c76ebdc"
   integrity sha512-IsU1TD+8cQCyG76ZqxP0cVFnofvfzT8p/wO8ENT4jbN/KKN3grsHFgHNl/U+08s33ayX4LwI85cEhYXCOlOkMw==
 
-"@uiharness/dev@0.2.30":
-  version "0.2.30"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.30.tgz#3084484466258e00e84e0f4a9199014710866511"
-  integrity sha512-97y9aw7Qp8eI9i+hZ1fawV3wRBITNZp66YHJtBbbrwYia9PFeiAfPJ93bJMpi3XnBDyDQlX+kFBSWB4XYdWMYw==
+"@uiharness/dev@0.2.32":
+  version "0.2.32"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.32.tgz#f1a1f6f95864c06d4aa4009deac06c130bcdb91d"
+  integrity sha512-MAz8UfG0aXD2Q8RTj/9+OghTyhh7GrF51ZggVf55qOhpHf85NbEXYKlNRQYj0BNshEhkV2FeIldMEiHuHvgKLQ==
   dependencies:
     "@babel/core" "7.4.3"
     "@babel/polyfill" "7.4.3"
     "@babel/preset-env" "7.4.3"
     "@babel/preset-react" "7.0.0"
     "@babel/preset-typescript" "7.3.3"
-    "@platform/cli" "0.0.71"
+    "@platform/cli" "0.0.72"
     "@platform/fs" "0.0.45"
-    "@platform/ts" "3.4.1"
-    "@uiharness/electron" "0.4.19"
+    "@platform/ts" "3.4.2"
+    "@uiharness/electron" "0.4.20"
     "@uiharness/types" "0.1.11"
-    create-tmpl "0.1.48"
+    create-tmpl "0.1.49"
     electron "4.1.3"
     electron-builder "20.39.0"
     filesize "4.1.2"
     parcel-bundler "1.12.3"
-    serve "10.1.2"
+    serve "11.0.0"
 
 "@uiharness/electron@0.4.19":
   version "0.4.19"
@@ -1561,17 +1531,31 @@
     "@uiharness/types" "0.1.11"
     tslib "1.9.3"
 
+"@uiharness/electron@0.4.20":
+  version "0.4.20"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.20.tgz#dba8a2bf0f2785a651fd1f2003fa647b2d864a0d"
+  integrity sha512-arqyF/aQ+Foes7lTZ1a7uMc4xHXDqWbgZ+SGAowoYgHaNGR5CkkzyF/JH98DIjh0bvbQVvWdBSroVgjiH5AQOQ==
+  dependencies:
+    "@platform/electron" "0.1.28"
+    "@platform/log" "0.0.102"
+    "@platform/react" "0.1.7"
+    "@platform/ui.object" "0.0.79"
+    "@platform/util.value" "0.0.52"
+    "@types/app-root-path" "1.2.4"
+    "@uiharness/types" "0.1.11"
+    tslib "1.9.3"
+
 "@uiharness/types@0.1.11":
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.1.11.tgz#6774861b235b0ea24961e9cef980e6e3a0b6d512"
   integrity sha512-GDf9c05F/tNC+2mQqp9vidMYtElrK3yg24D9KrCGi91eyFCYGJhTPC/zfA0ea0VhJ4x8oSHyTf9SLkTRmHHJ0g==
 
-"@uiharness/ui@0.1.30":
-  version "0.1.30"
-  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.1.30.tgz#3e09c179bfa00453345cc27d84eff74e81ab6beb"
-  integrity sha512-vUsBCFnQAnYjpLcmQY7F4y6N5JBbU2PsS8I9k/dl/8iYoHkZ0u7WNslWCTtA94ECX8n27PRM6KZaQz8Oqf+VDw==
+"@uiharness/ui@0.1.33":
+  version "0.1.33"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.1.33.tgz#2ec3336b0b0fd2ae870f8bd5776fb81126562d04"
+  integrity sha512-i6yoIrowaAShdmhB4l9I0hA48zSyHDb2G2cMIzXS+XCN1Qof/okI/txlAUbyLEw5TMVoGZPlwmIQVcdKSrXkyA==
   dependencies:
-    "@platform/electron" "0.1.27"
+    "@platform/electron" "0.1.28"
     "@platform/react" "0.1.7"
     "@platform/ui.cli" "^0.0.14"
     "@platform/ui.object" "0.0.79"
@@ -2841,13 +2825,13 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-tmpl@0.1.48:
-  version "0.1.48"
-  resolved "https://registry.yarnpkg.com/create-tmpl/-/create-tmpl-0.1.48.tgz#446be6b7c697e3f03fa0f4ebc9708c90e6c56c30"
-  integrity sha512-g7o6gMfh77c+3ykHuhss62EIyjPh09qU8MrTfLe4FS0WCNODJoC6pRL4ELgPvYZr88Fg9O8Zn+CCWI45qQIxLQ==
+create-tmpl@0.1.49:
+  version "0.1.49"
+  resolved "https://registry.yarnpkg.com/create-tmpl/-/create-tmpl-0.1.49.tgz#f19bbe3d674fbe1bd9f3e09c1e2e29b26ca3c786"
+  integrity sha512-g03KuCxRY8zJA4XnpWoNGD+QzbFCh32LHtYWYJ0m/IX/kAFGWVMtaFxWUX1cH2CPV25uuQSzb1K+4u7F8YtZgg==
   dependencies:
-    "@platform/cli" "0.0.71"
-    "@platform/npm" "0.0.49"
+    "@platform/cli" "0.0.72"
+    "@platform/npm" "0.0.50"
     "@types/inquirer" "6.0.0"
     inquirer "6.2.2"
     isbinaryfile "4.0.0"
@@ -3499,6 +3483,11 @@ electron-log@3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.4.tgz#d2e296157999f540621300183662882bb6d14991"
   integrity sha512-W99wnksbZlH+CZgauXCG0JPw03902QeyQPxfrfdfQ3gzei2QqXb3tYpn21I4t2L/aI3D2Lp9hiUj6iawVfq4WA==
+
+electron-log@3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.5.tgz#9bdd307f1f1aec85c0873babd6bdfffb1a661436"
+  integrity sha512-wWOPNBVGh7NJx/OLXdgtuYrqxoG9ZWO+kZYloIHi66B5W9EgXZw71jdZ1ddeWNg4CkABypa8tkrRGqCKF+9tYg==
 
 electron-osx-sign@0.4.11:
   version "0.4.11"
@@ -6846,7 +6835,7 @@ prop-types@^15.5.10, prop-types@^15.6.1, prop-types@^15.6.2:
     object-assign "^4.1.1"
     react-is "^16.8.1"
 
-prosemirror-commands@^1.0.0:
+prosemirror-commands@1.0.7, prosemirror-commands@^1.0.0:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/prosemirror-commands/-/prosemirror-commands-1.0.7.tgz#e5a2ba821e29ea7065c88277fe2c3d7f6b0b9d37"
   integrity sha512-IR8yMSdw7XlKuF68tydAak1J9P/lLD5ohsrL7pzoLsJAJAQU7mVPDXtGbQrrm0mesddFjcc1zNo/cJQN3lRYnA==
@@ -6855,7 +6844,7 @@ prosemirror-commands@^1.0.0:
     prosemirror-state "^1.0.0"
     prosemirror-transform "^1.0.0"
 
-prosemirror-dropcursor@^1.0.0:
+prosemirror-dropcursor@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/prosemirror-dropcursor/-/prosemirror-dropcursor-1.1.1.tgz#c60ed1ed6c58804a06a75db06a0d993b087b7622"
   integrity sha512-GeUyMO/tOEf8MXrP7Xb7UIMrfK86OGh0fnyBrHfhav4VjY9cw65mNoqHy87CklE5711AhCP5Qzfp8RL/hVKusg==
@@ -6864,22 +6853,7 @@ prosemirror-dropcursor@^1.0.0:
     prosemirror-transform "^1.1.0"
     prosemirror-view "^1.1.0"
 
-prosemirror-example-setup@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/prosemirror-example-setup/-/prosemirror-example-setup-1.0.1.tgz#286e750258e75348e8a3da302744a535f1f44828"
-  integrity sha512-4NKWpdmm75Zzgq/dIrypRnkBNPx+ONKyoGF42a9g3VIVv0TWglf1CBNxt5kzCgli9xdfut/xE5B42F9DR6BLHw==
-  dependencies:
-    prosemirror-commands "^1.0.0"
-    prosemirror-dropcursor "^1.0.0"
-    prosemirror-gapcursor "^1.0.0"
-    prosemirror-history "^1.0.0"
-    prosemirror-inputrules "^1.0.0"
-    prosemirror-keymap "^1.0.0"
-    prosemirror-menu "^1.0.0"
-    prosemirror-schema-list "^1.0.0"
-    prosemirror-state "^1.0.0"
-
-prosemirror-gapcursor@^1.0.0:
+prosemirror-gapcursor@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/prosemirror-gapcursor/-/prosemirror-gapcursor-1.0.3.tgz#acc6537fc5a35e9b38966f91a199a382dfc715c4"
   integrity sha512-X+hJhr42PcHWiSWL+lI5f/UeOhXCxlBFb8M6O8aG1hssmaRrW7sS2/Fjg5jFV+pTdS1REFkmm1occh01FMdDIQ==
@@ -6898,7 +6872,7 @@ prosemirror-history@1.0.4, prosemirror-history@^1.0.0:
     prosemirror-transform "^1.0.0"
     rope-sequence "^1.2.0"
 
-prosemirror-inputrules@^1.0.0:
+prosemirror-inputrules@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/prosemirror-inputrules/-/prosemirror-inputrules-1.0.1.tgz#f63305fd966379f218e82ca76a2a9b328b66dc7b"
   integrity sha512-UHy22NmwxS5WIMQYkzraDttQAF8mpP82FfbJsmKFfx6jwkR/SZa+ZhbkLY0zKQ5fBdJN7euj36JG/B5iAlrpxA==
@@ -6922,7 +6896,7 @@ prosemirror-markdown@1.3.0:
     markdown-it "^8.4.2"
     prosemirror-model "^1.0.0"
 
-prosemirror-menu@^1.0.0:
+prosemirror-menu@1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/prosemirror-menu/-/prosemirror-menu-1.0.5.tgz#e95b9f97fc4f9557ec6ad9000732cf6df7d3789b"
   integrity sha512-9Vrn7CC191v7FA4QrAkL8W1SrR73V3CRIYCDuk94R8oFVk4VxSFdoKVLHuvGzxZ8b5LCu3DMJfh86YW9uL4RkQ==
@@ -6946,7 +6920,7 @@ prosemirror-schema-basic@1.0.0:
   dependencies:
     prosemirror-model "^1.0.0"
 
-prosemirror-schema-list@^1.0.0:
+prosemirror-schema-list@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/prosemirror-schema-list/-/prosemirror-schema-list-1.0.2.tgz#8381fb0c1eaf439d848059f62e2fac517033c2ef"
   integrity sha512-IJ4DEpUEymfO+NNA4DAgCMF39XiQqpmCoPYY3SXa1jYcVgObGpGfJlSjZYVFEpimoLI7/mLoOLDhCtpGCRhTfg==
@@ -7601,10 +7575,10 @@ serialize-to-js@^1.1.1:
     js-beautify "^1.8.9"
     safer-eval "^1.3.0"
 
-serve-handler@5.0.8:
-  version "5.0.8"
-  resolved "https://registry.yarnpkg.com/serve-handler/-/serve-handler-5.0.8.tgz#790dbe340dabf1d61bdbaa02ea37dcab372377a8"
-  integrity sha512-pqk0SChbBLLHfMIxQ55czjdiW7tj2cFy53svvP8e5VqEN/uB/QpfiTJ8k1uIYeFTDVoi+FGi5aqXScuu88bymg==
+serve-handler@6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/serve-handler/-/serve-handler-6.0.0.tgz#c6eaf6f89881adede09cd737b54e8b2eff4fd585"
+  integrity sha512-2/e0+N1abV1HAN+YN8uCOPi1B0bIYaR6kRcSfzezRwszak5Yzr6QhT34XJk2Bw89rhXenqwLNJb4NnF2/krnGQ==
   dependencies:
     bytes "3.0.0"
     content-disposition "0.5.2"
@@ -7625,10 +7599,10 @@ serve-static@^1.12.4:
     parseurl "~1.3.2"
     send "0.16.2"
 
-serve@10.1.2:
-  version "10.1.2"
-  resolved "https://registry.yarnpkg.com/serve/-/serve-10.1.2.tgz#805917f2692ed5d8720bbd1981ac3974d38b7d8d"
-  integrity sha512-TVH35uwndRlCqSeX3grR3Ntrjx2aBTeu6sx+zTD2CzN2N/rHuEDTvxiBwWbrellJNyWiQFz2xZmoW+UxV+Zahg==
+serve@11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/serve/-/serve-11.0.0.tgz#577f4e0f4b57058d12e3be19373f1a3d6d8826dc"
+  integrity sha512-Gnyyp3JAtRUo0dRH1/YWPKbnaXHfzQBiVh9+qSUi6tyVcVA8twUP2c+GnOwsoe9Ss7dfOHJUTSA4fdWP//Y4gQ==
   dependencies:
     "@zeit/schemas" "2.6.0"
     ajv "6.5.3"
@@ -7637,7 +7611,7 @@ serve@10.1.2:
     chalk "2.4.1"
     clipboardy "1.2.3"
     compression "1.7.3"
-    serve-handler "5.0.8"
+    serve-handler "6.0.0"
     update-check "1.5.2"
 
 set-blocking@^2.0.0, set-blocking@~2.0.0:
