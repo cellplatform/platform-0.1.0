@@ -5,6 +5,7 @@ import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { color, constants, containsFocus, css, GlamorValue, t } from '../../common';
 import { FormulaInput, Text, TextEditor, TextInput } from '../primitives';
 import { THEMES } from './themes';
+import { EditorContext, ReactEditorContext } from '../../api';
 
 const BORDER_WIDTH = 2;
 const { DEFAULTS, COLORS, ROBOTO } = constants;
@@ -23,10 +24,19 @@ export type ICellEditorViewProps = {
 };
 
 export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
+  /**
+   * [Static]
+   */
   public static THEMES = THEMES;
   public static BORDER_WIDTH = BORDER_WIDTH;
 
+  /**
+   * [Fields]
+   */
   private unmounted$ = new Subject();
+
+  public static contextType = EditorContext;
+  public context!: ReactEditorContext;
 
   private formula$ = new Subject<t.FormulaInputEvent>();
   private formula!: FormulaInput;
@@ -59,6 +69,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     const formula$ = this.formula$.pipe(takeUntil(this.unmounted$));
     const markdown$ = this.markdown$.pipe(takeUntil(this.unmounted$));
     const text$ = this.text$.pipe(takeUntil(this.unmounted$));
+    const keys$ = this.context.keys$.pipe(takeUntil(this.unmounted$));
 
     formula$.subscribe(e => {
       // console.log('🌳 FORMULA', e);
@@ -68,6 +79,15 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       // console.log('🌼 TEXT', e);
       // // console.log("e.payload.size", e.payload.size)
     });
+
+    // keys$.pipe(filter(e => e.isEnter)).subscribe(e => {
+    //   console.log('this.context', this.context);
+    //   e.cancel();
+    // });
+
+    // Manage cancelling manually.
+    // this.context.autoCancel = false;
+    // keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
 
     markdown$
       .pipe(
