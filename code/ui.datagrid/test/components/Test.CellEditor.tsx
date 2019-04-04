@@ -7,29 +7,22 @@ import {
   ICellEditorViewProps,
 } from '../../src/components/CellEditor/CellEditorView';
 import { Button, color, css, GlamorValue, t } from '../common';
+import { TestCellEditorMode } from './Test.CellEditorMode';
 
 export type ITestCellEditorProps = { style?: GlamorValue };
-export type ITestCellEditorState = {
-  formulaValue?: string;
-  markdownValue?: string;
-  textValue?: string;
-};
+export type ITestCellEditorState = {};
 
 export class TestCellEditor extends React.PureComponent<
   ITestCellEditorProps,
   ITestCellEditorState
 > {
-  public state: ITestCellEditorState = {
-    formulaValue: 'SUM(1,2,3)',
-    markdownValue: 'Markdown',
-    textValue: 'Text',
-  };
+  public state: ITestCellEditorState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestCellEditorState>>();
   private events$ = new Subject<t.CellEditorEvent>();
 
-  private editors: CellEditorView[] = [];
-  private editorRef = (ref: CellEditorView) => this.editors.push(ref);
+  private instances: TestCellEditorMode[] = [];
+  private instanceRef = (ref: TestCellEditorMode) => this.instances.push(ref);
 
   /**
    * [Lifecycle]
@@ -40,7 +33,7 @@ export class TestCellEditor extends React.PureComponent<
     state$.subscribe(e => this.setState(e));
 
     events$.subscribe(e => {
-      console.log('🌳', e);
+      console.log('🌳', e.type, e.payload);
     });
 
     const changing$ = events$.pipe(
@@ -51,26 +44,34 @@ export class TestCellEditor extends React.PureComponent<
       filter(e => e.type === 'CELL_EDITOR/changed'),
       map(e => e.payload as t.ICellEditorChanged),
     );
+    const size$ = events$.pipe(
+      filter(e => e.type === 'CELL_EDITOR/size'),
+      map(e => e as t.ICellEditorSizeEvent),
+    );
 
     changing$.subscribe(e => {
       // e.cancel();
     });
 
     changed$.subscribe(e => {
-      if (e.mode === 'FORMULA') {
-        this.state$.next({ formulaValue: e.to });
-      }
-      if (e.mode === 'MARKDOWN') {
-        this.state$.next({ markdownValue: e.to });
-      }
-      if (e.mode === 'TEXT') {
-        this.state$.next({ textValue: e.to });
-      }
+      //
+    });
+
+    size$.subscribe(e => {
+      const size = e.payload.to;
+      this.state$.next({ height: size.height });
     });
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get editor() {
+    return this.instances[0].editor;
   }
 
   /**
@@ -107,76 +108,23 @@ export class TestCellEditor extends React.PureComponent<
       <div {...styles.base}>
         <div {...styles.left}>
           <div {...styles.leftTop}>
-            {this.button('focus', () => this.editors[0].focus())}
-            {this.button('focus (select)', () => this.editors[0].focus({ selectAll: true }))}
+            {this.button('focus', () => this.editor.focus())}
+            {this.button('focus (select)', () =>
+              this.editor.focus({ selectAll: true }),
+            )}
           </div>
         </div>
         <div {...styles.right}>
-          {this.renderEditors('formula', { mode: 'FORMULA' })}
-          {this.renderEditors('text', { mode: 'TEXT' })}
-          {this.renderEditors('markdown', { mode: 'MARKDOWN' })}
+          {this.renderEditor('FORMULA')}
+          {this.renderEditor('TEXT')}
+          {this.renderEditor('MARKDOWN')}
         </div>
       </div>
     );
   }
 
-  private renderEditors(title: string, props: ICellEditorViewProps = {}) {
-    const styles = {
-      base: css({
-        position: 'relative',
-        paddingTop: 80,
-        paddingBottom: 60,
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
-      }),
-      title: css({
-        Absolute: [5, null, null, 0],
-        fontSize: 12,
-        opacity: 0.5,
-      }),
-      body: css({
-        MarginX: 40,
-        Flex: 'horizontal-start-spaceBetween',
-      }),
-    };
-
-    const A1 = { title: 'A1', column: 0, row: 0 };
-    const B2 = { title: 'B2', column: 1, row: 1 };
-
-    return (
-      <div {...styles.base}>
-        <div {...styles.title}>{title}</div>
-        <div {...styles.body}>
-          {this.renderEditor({ ...A1, ...props })}
-          {this.renderEditor({ ...B2, ...props })}
-        </div>
-      </div>
-    );
-  }
-
-  private renderEditor(props: ICellEditorViewProps = {}) {
-    const styles = {};
-
-    const { mode } = props;
-    let value = '';
-    if (mode === 'FORMULA') {
-      value = this.state.formulaValue || '';
-    }
-    if (mode === 'MARKDOWN') {
-      value = this.state.markdownValue || '';
-    }
-    if (mode === 'TEXT') {
-      value = this.state.textValue || '';
-    }
-
-    return (
-      <CellEditorView
-        ref={this.editorRef}
-        events$={this.events$}
-        value={value}
-        width={250}
-        {...props}
-      />
-    );
+  private renderEditor(mode: t.CellEditorMode) {
+    return <TestCellEditorMode ref={this.instanceRef} title={mode.toLowerCase()} mode={mode} />;
   }
 
   /**

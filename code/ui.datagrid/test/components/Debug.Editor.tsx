@@ -2,16 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import {
-  color,
-  css,
-  datagrid,
-  MeasureSize,
-  ObjectView,
-  t,
-  time,
-  value as valueUtil,
-} from '../common';
+import { color, css, datagrid, MeasureSize, ObjectView, t, time } from '../common';
 
 const PADDING = 10;
 
@@ -84,8 +75,7 @@ export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEd
    * [Properties]
    */
   public get value() {
-    const value = valueUtil.defaultValue(this.state.value, '');
-    return (value || '').toString();
+    return (this.state.value || '').toString();
   }
 
   /**

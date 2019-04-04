@@ -78,7 +78,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
         map(e => e.payload as t.ICellEditorChanged),
       )
       .subscribe(e => {
-        this.state$.next({ value: e.to });
+        this.state$.next({ value: e.value.to });
       });
 
     // Keep the editor context up-to-date with the latest value.

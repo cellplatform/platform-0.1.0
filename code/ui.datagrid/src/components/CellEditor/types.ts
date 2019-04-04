@@ -13,10 +13,15 @@ export type ICellEditorTheme = {
   inputShadow: IShadow;
 };
 
+export type ICellEditorSize = { width: number; height: number };
+
 /**
  * [Events]
  */
-export type CellEditorEvent = ICellEditorChangedEvent | ICellEditorChangingEvent;
+export type CellEditorEvent =
+  | ICellEditorChangedEvent
+  | ICellEditorChangingEvent
+  | ICellEditorSizeEvent;
 
 export type ICellEditorChangingEvent = {
   type: 'CELL_EDITOR/changing';
@@ -33,6 +38,14 @@ export type ICellEditorChangedEvent = {
 };
 export type ICellEditorChanged = {
   mode: CellEditorMode;
-  from: string;
-  to: string;
+  value: { from: string; to: string };
+};
+
+export type ICellEditorSizeEvent = {
+  type: 'CELL_EDITOR/size';
+  payload: {
+    mode: CellEditorMode;
+    from: ICellEditorSize;
+    to: ICellEditorSize;
+  };
 };

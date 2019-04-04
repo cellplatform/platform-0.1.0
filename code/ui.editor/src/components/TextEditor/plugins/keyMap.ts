@@ -85,7 +85,7 @@ export function build(schema: Schema, mapKeys?: EditorKeyMap) {
     const date = time.day().format('D MMMM YYYY');
     const tr = state.tr.insertText(date).scrollIntoView();
     dispatch(tr);
-    return false;
+    return true;
   });
 
   if (schema.marks.strong) {

@@ -46,7 +46,7 @@ export type ITestProps = {
 export type ITestState = {
   editorState?: t.EditorState;
   transactions?: t.Transaction[];
-  size?: { width: number; height: number };
+  size?: t.IEditorSize;
   value?: string;
 };
 
@@ -72,7 +72,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     state$.subscribe(e => this.setState(e));
 
     events$.subscribe(e => {
-      console.log('🌳', e);
+      console.log('🌳', e.type, e.payload);
     });
 
     events$
@@ -95,10 +95,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         map(e => e.payload as t.ITextEditorChanged),
       )
       .subscribe(e => {
-        const { state, value } = e;
+        const { state } = e;
         this.state$.next({
           editorState: state.to,
-          size: e.size,
+          size: e.size.to,
           value: e.value.to,
         });
       });
@@ -225,15 +225,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.columns}>
           <div {...styles.editorOuter}>
             {elSize}
-            <div {...styles.scrollContainer}>
-              <TextEditor
-                ref={this.editorRef}
-                style={styles.editor}
-                value={this.state.value}
-                events$={this.events$}
-                focusOnLoad={true}
-              />
-            </div>
+            <TextEditor
+              ref={this.editorRef}
+              style={styles.scrollContainer}
+              editorStyle={styles.editor}
+              value={this.state.value}
+              events$={this.events$}
+              focusOnLoad={true}
+            />
           </div>
           <div {...styles.right}>
             <ObjectView name={'state'} data={data} style={styles.state} />

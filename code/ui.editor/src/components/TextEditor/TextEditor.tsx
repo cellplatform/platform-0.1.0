@@ -7,7 +7,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { constants, containsFocus, events, GlamorValue } from '../../common';
+import { constants, containsFocus, events, GlamorValue, css } from '../../common';
 import * as markdown from './markdown';
 import * as plugins from './plugins';
 import * as t from './types';
@@ -20,6 +20,7 @@ export type ITextEditorProps = {
   focusOnLoad?: boolean;
   selectOnLoad?: boolean;
   style?: GlamorValue;
+  editorStyle?: GlamorValue;
 };
 
 /**
@@ -37,13 +38,26 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    */
   public static markdown = markdown;
 
+  public static size(el?: HTMLElement): t.IEditorSize {
+    const width = el ? el.offsetWidth : -1;
+    const height = el ? el.offsetHeight : -1;
+    return { width, height };
+  }
+
   /**
    * [Fields]
    */
-  private el: HTMLDivElement;
-  private elRef = (ref: HTMLDivElement) => (this.el = ref);
+  private elEditor: HTMLDivElement;
+  private elEditorRef = (ref: HTMLDivElement) => (this.elEditor = ref);
+
+  private elMeasure: HTMLDivElement;
+  private elMeasureRef = (ref: HTMLDivElement) => (this.elMeasure = ref);
+
   private view: EditorView;
+  private viewMeasure: EditorView;
+
   private _prevState: t.EditorState | undefined;
+  private _prevSize: t.IEditorSize = { width: -1, height: -1 };
 
   private unmounted$ = new Subject();
   private _events$ = new Subject<t.TextEditorEvent>();
@@ -115,7 +129,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   public get isFocused() {
-    return containsFocus(this.el) || this.view.hasFocus();
+    return containsFocus(this.elEditor) || this.view.hasFocus();
   }
 
   public get value() {
@@ -128,14 +142,8 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     return { view, state };
   }
 
-  public get width() {
-    return this.el ? this.el.offsetWidth : -1;
-  }
-  public get height() {
-    return this.el ? this.el.offsetHeight : -1;
-  }
-  public get size() {
-    return { width: this.width, height: this.height };
+  public get size(): t.IEditorSize {
+    return TextEditor.size(this.elEditor);
   }
 
   /**
@@ -168,10 +176,18 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
       plugins: plugins.init({ schema: markdown.schema }),
     });
 
-    this.view = new EditorView<DocSchema>(this.el, {
+    const dispatchTransaction = this.dispatch;
+
+    this.view = new EditorView<DocSchema>(this.elEditor, {
       state,
-      dispatchTransaction: this.dispatch,
+      dispatchTransaction,
     });
+
+    this.viewMeasure = new EditorView<DocSchema>(this.elMeasure, {
+      state,
+      dispatchTransaction,
+    });
+
     this.fireChanged();
   }
 
@@ -190,13 +206,28 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    * [Render]
    */
   public render() {
+    const styles = {
+      measureOuter: css({
+        Absolute: 0,
+        visibility: 'hidden',
+      }),
+    };
+
     return (
-      <div
-        ref={this.elRef}
-        {...this.props.style}
-        className={constants.CSS_CLASS.EDITOR}
-        onClick={this.handleClick}
-      />
+      <div {...this.props.style} onClick={this.handleClick}>
+        <div
+          ref={this.elEditorRef}
+          className={constants.CSS_CLASS.EDITOR}
+          {...this.props.editorStyle}
+        />
+        <div {...styles.measureOuter}>
+          <div
+            ref={this.elMeasureRef}
+            className={constants.CSS_CLASS.EDITOR}
+            {...this.props.editorStyle}
+          />
+        </div>
+      </div>
     );
   }
 
@@ -221,6 +252,18 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
       },
     };
 
+    let toSize: t.IEditorSize | undefined;
+    const size = {
+      from: this._prevSize,
+      get to() {
+        if (!toSize) {
+          self.viewMeasure.updateState(state.to);
+          toSize = TextEditor.size(self.elMeasure);
+        }
+        return toSize;
+      },
+    };
+
     // Fire the BEFORE event.
     let isCancelled = false;
     const modifierKeys = { ...this.modifierKeys };
@@ -231,14 +274,12 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
         state,
         value,
         modifierKeys,
+        size,
         get isCancelled() {
           return isCancelled;
         },
         cancel() {
           isCancelled = true;
-        },
-        get size() {
-          return self.size;
         },
       },
     });
@@ -248,6 +289,10 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
     // Update the state of the editor.
     view.updateState(state.to);
+    if (!toSize) {
+      // NB: Short-circuit if state already updated by `size.to` getter.
+      this.viewMeasure.updateState(state.to);
+    }
 
     // Fire the AFTER event.
     this.fireChanged();
@@ -258,9 +303,8 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   private fireChanged() {
-    const self = this; // tslint:disable-line
     const modifierKeys = { ...this.modifierKeys };
-
+    const size = { from: this._prevSize, to: this.size };
     const state = {
       from: this._prevState,
       to: this.view.state,
@@ -281,13 +325,13 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
         state,
         value,
         modifierKeys,
-        get size() {
-          return self.size;
-        },
+        size,
       },
     });
 
+    // Store state as "prev" for next event.
     this._prevState = state.to;
+    this._prevSize = size.to;
   }
 
   private handleClick = () => this.focus();
