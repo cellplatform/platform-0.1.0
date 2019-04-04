@@ -30,7 +30,7 @@
     "@platform/ts": "3.4.2",
     "@types/hjson": "2.4.1",
     "@uiharness/dev": "0.2.30",
-    "@uiharness/ui": "0.1.30"
+    "@uiharness/ui": "0.1.31"
   },
   "files": [
     "lib"
