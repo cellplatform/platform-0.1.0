@@ -107,10 +107,10 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
-"@platform/electron@0.1.27":
-  version "0.1.27"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.27.tgz#7f7f2b6c919a6f765f549b45c3de14ce59176b18"
-  integrity sha512-QlJaH0prRfEDGDDqvSbogpRQoFrVtPkm/9k1Tfq+yw6Hb1w7jmbNLZnSdftV2z3a9DvUrTy0fg2y6muNj58B6w==
+"@platform/electron@0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.28.tgz#02d8a07dee40153426400e9e115581088cd589ae"
+  integrity sha512-H8w2Eisl+DctbHwdTBFDf2cnY5nvYL/vcrjl2x4M3KYMNug9Fn+HEx5ekgHZnEl6XibXZ3G2vJ9bvfe3eFvzuA==
   dependencies:
     "@babel/polyfill" "7.4.3"
     "@platform/fs" "0.0.45"
@@ -118,7 +118,7 @@
     "@platform/react" "0.1.7"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.2.1"
-    electron-log "3.0.4"
+    electron-log "3.0.5"
     electron-store "3.1.0"
     electron-window-state "5.0.3"
     is-electron "2.2.0"
@@ -1136,6 +1136,11 @@ electron-log@3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.4.tgz#d2e296157999f540621300183662882bb6d14991"
   integrity sha512-W99wnksbZlH+CZgauXCG0JPw03902QeyQPxfrfdfQ3gzei2QqXb3tYpn21I4t2L/aI3D2Lp9hiUj6iawVfq4WA==
+
+electron-log@3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.5.tgz#9bdd307f1f1aec85c0873babd6bdfffb1a661436"
+  integrity sha512-wWOPNBVGh7NJx/OLXdgtuYrqxoG9ZWO+kZYloIHi66B5W9EgXZw71jdZ1ddeWNg4CkABypa8tkrRGqCKF+9tYg==
 
 electron-store@3.1.0:
   version "3.1.0"
