@@ -22,7 +22,7 @@
   "devDependencies": {
     "@platform/ts": "3.4.2",
     "@uiharness/dev": "0.2.30",
-    "@uiharness/ui": "^0.1.29",
+    "@uiharness/ui": "^0.1.30",
     "react-icons": "3.5.0"
   },
   "files": [

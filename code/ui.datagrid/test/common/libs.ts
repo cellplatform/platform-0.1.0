@@ -1,3 +1,3 @@
 export { MeasureSize } from '@platform/react';
-export { ObjectView, Button, Hr } from '@uiharness/ui';
+export { ObjectView, Button, Hr, Shell } from '@uiharness/ui';
 export * from '@platform/cli.spec';

@@ -853,10 +853,10 @@ electron-download@^4.1.0:
     semver "^5.4.1"
     sumchecker "^2.0.2"
 
-electron-log@3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.4.tgz#d2e296157999f540621300183662882bb6d14991"
-  integrity sha512-W99wnksbZlH+CZgauXCG0JPw03902QeyQPxfrfdfQ3gzei2QqXb3tYpn21I4t2L/aI3D2Lp9hiUj6iawVfq4WA==
+electron-log@3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.5.tgz#9bdd307f1f1aec85c0873babd6bdfffb1a661436"
+  integrity sha512-wWOPNBVGh7NJx/OLXdgtuYrqxoG9ZWO+kZYloIHi66B5W9EgXZw71jdZ1ddeWNg4CkABypa8tkrRGqCKF+9tYg==
 
 electron-store@3.1.0:
   version "3.1.0"
