@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.spinner",
   "description": "Wait spinner.",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -21,7 +21,8 @@
     "@uiharness/dev": "0.2.32"
   },
   "files": [
-    "lib"
+    "lib",
+    "spin.js"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"
