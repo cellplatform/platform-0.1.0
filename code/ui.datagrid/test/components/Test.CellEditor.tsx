@@ -1,16 +1,6 @@
 import * as React from 'react';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 import {
   CellEditorView,
@@ -122,21 +112,20 @@ export class TestCellEditor extends React.PureComponent<
           </div>
         </div>
         <div {...styles.right}>
-          {this.renderEditor('formula', { mode: 'FORMULA' })}
-          {this.renderEditor('formula', { mode: 'FORMULA', title: 'B3', column: 1, row: 4 })}
-          {this.renderEditor('text', { mode: 'TEXT', title: 'B3', column: 1, row: 4 })}
-          {this.renderEditor('markdown', { mode: 'MARKDOWN', title: 'B3', column: 1, row: 4 })}
+          {this.renderEditors('formula', { mode: 'FORMULA' })}
+          {this.renderEditors('text', { mode: 'TEXT' })}
+          {this.renderEditors('markdown', { mode: 'MARKDOWN' })}
         </div>
       </div>
     );
   }
 
-  private renderEditor(title: string, props: ICellEditorViewProps = {}) {
+  private renderEditors(title: string, props: ICellEditorViewProps = {}) {
     const styles = {
       base: css({
         position: 'relative',
-        paddingTop: 60,
-        paddingBottom: 30,
+        paddingTop: 80,
+        paddingBottom: 50,
         borderBottom: `solid 1px ${color.format(-0.1)}`,
       }),
       title: css({
@@ -144,10 +133,28 @@ export class TestCellEditor extends React.PureComponent<
         fontSize: 12,
         opacity: 0.5,
       }),
-      editor: css({
-        marginLeft: 40,
+      body: css({
+        MarginX: 40,
+        Flex: 'horizontal-center-spaceBetween',
       }),
     };
+
+    const A1 = { title: 'A1', column: 0, row: 0 };
+    const B2 = { title: 'B2', column: 1, row: 1 };
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.title}>{title}</div>
+        <div {...styles.body}>
+          {this.renderEditor({ ...A1, ...props })}
+          {this.renderEditor({ ...B2, ...props })}
+        </div>
+      </div>
+    );
+  }
+
+  private renderEditor(props: ICellEditorViewProps = {}) {
+    const styles = {};
 
     const { mode } = props;
     let value = '';
@@ -162,18 +169,13 @@ export class TestCellEditor extends React.PureComponent<
     }
 
     return (
-      <div {...styles.base}>
-        <div {...styles.title}>{title}</div>
-        <CellEditorView
-          ref={this.editorRef}
-          style={styles.editor}
-          events$={this.events$}
-          value={value}
-          width={250}
-          title={'A1'}
-          {...props}
-        />
-      </div>
+      <CellEditorView
+        ref={this.editorRef}
+        events$={this.events$}
+        value={value}
+        width={250}
+        {...props}
+      />
     );
   }
 
