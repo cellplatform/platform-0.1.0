@@ -241,12 +241,13 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   public render() {
     const { width, height } = this.props;
     const theme = this.theme;
+    const shadow = theme.inputShadow;
 
     const styles = {
       base: css({
         position: 'relative',
         boxSizing: 'border-box',
-        boxShadow: `0 0px ${theme.inputShadow.blur}px 0 ${color.format(theme.inputShadow.color)}`,
+        boxShadow: `0 0px ${shadow.blur}px 0 ${color.format(shadow.color)}`,
         backgroundColor: theme.inputBackground,
         width,
         height,
@@ -336,7 +337,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     const styles = {
       base: css({
         position: isFormula ? 'relative' : 'absolute',
-        top: BORDER_WIDTH,
+        top: BORDER_WIDTH + (this.row === 0 ? -1 : 0),
         left: isFormula ? 0 : -999999,
         height: DEFAULTS.ROW_HEIGHTS - BORDER_WIDTH * 2,
         PaddingX: BORDER_WIDTH,

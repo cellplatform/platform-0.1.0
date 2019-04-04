@@ -125,7 +125,7 @@ export class TestCellEditor extends React.PureComponent<
       base: css({
         position: 'relative',
         paddingTop: 80,
-        paddingBottom: 50,
+        paddingBottom: 60,
         borderBottom: `solid 1px ${color.format(-0.1)}`,
       }),
       title: css({
@@ -135,7 +135,7 @@ export class TestCellEditor extends React.PureComponent<
       }),
       body: css({
         MarginX: 40,
-        Flex: 'horizontal-center-spaceBetween',
+        Flex: 'horizontal-start-spaceBetween',
       }),
     };
 
