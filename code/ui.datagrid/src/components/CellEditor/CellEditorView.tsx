@@ -310,35 +310,13 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     );
   }
 
-  private renderMarkdown() {
-    const isText = this.mode === 'MARKDOWN';
-    const styles = {
-      editor: css({
-        position: isText ? 'relative' : 'absolute',
-        left: isText ? undefined : -9999999,
-        margin: BORDER_WIDTH,
-        fontFamily: ROBOTO.FAMILY,
-        fontSize: 14,
-        PaddingX: 3,
-      }),
-    };
-    return (
-      <TextEditor
-        ref={this.markdownRef}
-        style={styles.editor}
-        events$={this.markdown$}
-        value={this.value}
-      />
-    );
-  }
-
   private renderFormula() {
-    const isFormula = this.mode === 'FORMULA';
+    const isVisible = this.mode === 'FORMULA';
     const styles = {
       base: css({
-        position: isFormula ? 'relative' : 'absolute',
+        position: isVisible ? 'relative' : 'absolute',
+        left: isVisible ? 0 : -999999,
         top: BORDER_WIDTH + (this.row === 0 ? -1 : 0),
-        left: isFormula ? 0 : -999999,
         height: DEFAULTS.ROW_HEIGHTS - BORDER_WIDTH * 2,
         PaddingX: BORDER_WIDTH,
       }),
@@ -357,12 +335,12 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   }
 
   private renderText() {
-    const isText = this.mode === 'TEXT';
+    const isVisible = this.mode === 'TEXT';
     const styles = {
       base: css({
-        position: isText ? 'relative' : 'absolute',
-        left: isText ? 0 : -999999,
-        top: 1,
+        position: isVisible ? 'relative' : 'absolute',
+        left: isVisible ? 0 : -999999,
+        top: this.row === 0 ? 0 : 1,
         height: DEFAULTS.ROW_HEIGHTS - BORDER_WIDTH * 2,
         PaddingX: BORDER_WIDTH,
       }),
@@ -381,6 +359,29 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
           style={styles.input}
         />
       </div>
+    );
+  }
+
+  private renderMarkdown() {
+    const isVisible = this.mode === 'MARKDOWN';
+    const styles = {
+      editor: css({
+        position: isVisible ? 'relative' : 'absolute',
+        left: isVisible ? undefined : -9999999,
+        top: this.row === 0 ? 0 : 1,
+        margin: BORDER_WIDTH,
+        fontFamily: ROBOTO.FAMILY,
+        fontSize: 14,
+        PaddingX: 3,
+      }),
+    };
+    return (
+      <TextEditor
+        ref={this.markdownRef}
+        style={styles.editor}
+        events$={this.markdown$}
+        value={this.value}
+      />
     );
   }
 }
