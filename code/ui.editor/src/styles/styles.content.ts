@@ -37,7 +37,7 @@ export const styles: t.IEditorStyles = {
   ul: {
     margin: 0,
     padding: 0,
-    paddingLeft: 25,
+    paddingLeft: 17,
   },
   blockquote: {
     borderLeft: `solid 5px ${color.format(-0.1)}`,

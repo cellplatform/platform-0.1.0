@@ -283,11 +283,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         fontWeight: 'bold',
         fontSize: 12,
         color: COLORS.PURPLE,
+        marginLeft: 15,
       }),
     };
     return (
       <div {...styles.base}>
-        <div>value</div>
+        <div>value (markdown)</div>
         <pre {...styles.pre}>{value}</pre>
       </div>
     );
