@@ -1,12 +1,11 @@
 import { t, css, constants } from '../common';
-import * as styles from './default';
+import * as content from './styles.content';
 
 /**
  * Initializes the given set of styles.
  */
 export function init(args: { styles: Partial<t.IEditorStyles>; className?: string }) {
-  const className = args.className;
-  const prefix = toPrefix(className);
+  const prefix = toPrefix(args.className);
   css.global(args.styles as t.IEditorStyles, { prefix });
 }
 
@@ -26,4 +25,4 @@ function toPrefix(className?: string) {
  */
 const prefix = toPrefix();
 css.global({ [prefix]: { outline: 'none' } });
-css.global(styles.defaultStyles, { prefix });
+css.global(content.styles, { prefix });

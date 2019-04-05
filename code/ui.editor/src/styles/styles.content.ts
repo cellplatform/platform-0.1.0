@@ -1,9 +1,9 @@
 import { color, t } from '../common';
 
 /**
- * Globally assigned styles for the ProseMirror editor.
+ * Globally assigned styles for the ProseMirror editor content.
  */
-export const defaultStyles: t.IEditorStyles = {
+export const styles: t.IEditorStyles = {
   h1: { margin: 0 },
   h2: {},
   h3: {},
