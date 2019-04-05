@@ -1,16 +1,22 @@
-import { css, constants, color } from '../common';
+import { color, t } from '../common';
 
 /**
  * Globally assigned styles for the ProseMirror editor.
  */
-const styles = {
+export const defaultStyles: t.IEditorStyles = {
   h1: { margin: 0 },
+  h2: {},
+  h3: {},
+  h4: { textTransform: 'uppercase', color: color.format(-0.4) },
+  h5: {},
+  h6: {},
   p: { margin: 0, lineHeight: '1.5em' },
   hr: {
     border: 'none',
-    borderBottom: `solid 5px ${color.format(-0.1)}`,
-    marginTop: 30,
-    marginBottom: 30,
+    borderBottom: `solid 5px`,
+    borderColor: color.format(-0.1),
+    marginTop: 20,
+    marginBottom: 20,
   },
   pre: {
     fontFamily: 'monospace',
@@ -30,11 +36,14 @@ const styles = {
     padding: 0,
     paddingLeft: 25,
   },
+  blockquote: {
+    borderLeft: `solid 5px ${color.format(-0.1)}`,
+    margin: 0,
+    marginTop: '1.5em',
+    marginBottom: '1.5em',
+    paddingLeft: 10,
+    paddingTop: 4,
+    paddingBottom: 4,
+    color: color.format(-0.6),
+  },
 };
-
-/**
- * Insert global styles.
- */
-const prefix = `.${constants.CSS_CLASS.EDITOR} .ProseMirror`;
-css.global({ [prefix]: { outline: 'none' } });
-css.global(styles, { prefix });

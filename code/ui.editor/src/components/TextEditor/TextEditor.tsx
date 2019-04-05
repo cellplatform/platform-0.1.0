@@ -1,4 +1,4 @@
-import '../../styles';
+import * as styles from '../../styles';
 
 import * as commands from 'prosemirror-commands';
 import { EditorState } from 'prosemirror-state';
@@ -7,7 +7,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { constants, containsFocus, events, GlamorValue, css } from '../../common';
+import { constants, containsFocus, events, GlamorValue, css, IEditorStyles } from '../../common';
 import * as markdown from './markdown';
 import * as plugins from './plugins';
 import * as t from './types';
@@ -19,8 +19,10 @@ export type ITextEditorProps = {
   events$?: Subject<t.TextEditorEvent>;
   focusOnLoad?: boolean;
   selectOnLoad?: boolean;
+  className?: string;
   style?: GlamorValue;
   editorStyle?: GlamorValue;
+  contentStyle?: Partial<IEditorStyles>;
 };
 
 /**
@@ -202,12 +204,22 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     this.dispatch(tr);
   }
 
+  private updateStyles() {
+    const { contentStyle, className } = this.props;
+    if (contentStyle) {
+      styles.init({ styles: contentStyle, className });
+    }
+  }
+
   /**
    * [Render]
    */
   public render() {
+    this.updateStyles();
+
+    const className = `${constants.CSS_CLASS.EDITOR} ${this.props.className || ''}`.trim();
     const styles = {
-      measureOuter: css({
+      measure: css({
         Absolute: 0,
         visibility: 'hidden',
       }),
@@ -215,17 +227,15 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
     return (
       <div {...this.props.style} onClick={this.handleClick}>
-        <div
-          ref={this.elEditorRef}
-          className={constants.CSS_CLASS.EDITOR}
-          {...this.props.editorStyle}
-        />
-        <div {...styles.measureOuter}>
-          <div
-            ref={this.elMeasureRef}
-            className={constants.CSS_CLASS.EDITOR}
-            {...this.props.editorStyle}
-          />
+        <div ref={this.elEditorRef} className={className} {...this.props.editorStyle} />
+        <div {...styles.measure}>
+          {/* 
+            NOTE: The element below is turned into a second "hidden" editor which is
+                  used for measure the size of the rendered content prior to the main
+                  visible editor being updated.
+                  This data is fired through the "changing/pre" event.
+          */}
+          <div ref={this.elMeasureRef} className={className} {...this.props.editorStyle} />
         </div>
       </div>
     );

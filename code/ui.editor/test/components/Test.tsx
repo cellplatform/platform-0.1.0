@@ -29,7 +29,12 @@ code block
 
 After
 
+> Block quote  \
+
+> For whom the bell tolls.
+
   `.substring(1),
+
   LONG: `
 ${LOREM}  
 
@@ -37,6 +42,15 @@ ${LOREM}
 
 ${LOREM}  
   `,
+};
+
+const MY_STYLES: Partial<t.IEditorStyles> = {
+  h1: {
+    color: '#709FFF', // Blue.
+  },
+  hr: {
+    borderColor: '#FF004B', // Pink.
+  },
 };
 
 export type ITestProps = {
@@ -227,8 +241,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             {elSize}
             <TextEditor
               ref={this.editorRef}
+              className={'myClass'}
               style={styles.scrollContainer}
               editorStyle={styles.editor}
+              contentStyle={MY_STYLES}
               value={this.state.value}
               events$={this.events$}
               focusOnLoad={true}
