@@ -5,7 +5,10 @@ import { color, t } from '../common';
  */
 export const styles: t.IEditorStyles = {
   h1: { margin: 0 },
-  h2: {},
+  h2: {
+    borderBottom: `solid 1px ${color.format(-0.1)}`,
+    paddingBottom: 5,
+  },
   h3: {},
   h4: { textTransform: 'uppercase', color: color.format(-0.4) },
   h5: {},
