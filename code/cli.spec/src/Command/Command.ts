@@ -1,19 +1,20 @@
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { value, str } from '../common';
+import { value, str, t } from '../common';
 import { invoker } from './invoke';
-import * as t from './types';
 import * as tree from './tree';
+import { CommandParam } from '../CommandParam';
 
 type IConstructorArgs<P extends object = any, A extends object = any> = {
   name: string;
   handler: t.CommandHandler;
   children: Command[];
+  params: CommandParam[];
 };
 
 /**
- * Represents a single [command] which is a named unit of functionality
+ * Represents a single [Command] which is a named unit of functionality
  * within a program that can optionally take parameter input.
  */
 export class Command<P extends object = any, A extends object = any> implements t.ICommand<P, A> {
@@ -54,10 +55,10 @@ export class Command<P extends object = any, A extends object = any> implements 
   public static tree = tree;
 
   /**
-   * [Constructor]
+   * [Lifecycle]
    */
   private constructor(args: Partial<IConstructorArgs>) {
-    const { name, handler, children } = formatConstructorArgs(args);
+    const { name, handler, children, params } = formatConstructorArgs(args);
 
     if (!name) {
       throw new Error(`A command 'name' must be specified.`);
@@ -67,6 +68,12 @@ export class Command<P extends object = any, A extends object = any> implements 
     this._.name = name;
     this._.handler = handler;
     this._.children = children;
+    this._.params = params;
+  }
+
+  public dispose() {
+    this._.dispose$.next();
+    this._.dispose$.complete();
   }
 
   /**
@@ -77,6 +84,7 @@ export class Command<P extends object = any, A extends object = any> implements 
     name: '',
     handler: undefined as t.CommandHandler | undefined,
     children: [] as Command[],
+    params: [] as CommandParam[],
     dispose$: new Subject(),
     events$: new Subject<t.CommandEvent>(),
     tree: (undefined as unknown) as t.ITreeMethods | undefined,
@@ -100,6 +108,10 @@ export class Command<P extends object = any, A extends object = any> implements 
 
   public get handler() {
     return this._.handler;
+  }
+
+  public get params(): CommandParam[] {
+    return this._.params;
   }
 
   public get children(): Command[] {
@@ -135,10 +147,6 @@ export class Command<P extends object = any, A extends object = any> implements 
   /**
    * [Methods]
    */
-  public dispose() {
-    this._.dispose$.next();
-    this._.dispose$.complete();
-  }
 
   public as<P1 extends object, A1 extends object>(fn: (e: Command<P1, A1>) => void) {
     fn((this as unknown) as Command<P1, A1>);
@@ -153,7 +161,7 @@ export class Command<P extends object = any, A extends object = any> implements 
   }
 
   /**
-   * [Overrides] Add a child command .
+   * [Overrides] Add a child command.
    */
   public add<P1 extends object = P, A1 extends object = A>(
     title: string,
@@ -183,6 +191,15 @@ export class Command<P extends object = any, A extends object = any> implements 
   }
 
   /**
+   * Add a parameter
+   */
+  public param(name: string, type: t.CommandParamType) {
+    const param = CommandParam.create({ name, type });
+    this._.params = [...this._.params, param];
+    return this;
+  }
+
+  /**
    * Converts the builder to a simple object.
    */
   public toObject(): t.ICommand<P, A> {
@@ -193,9 +210,10 @@ export class Command<P extends object = any, A extends object = any> implements 
       name: this.name,
       handler: this.handler,
       events$: this.events$,
-      invoke,
+      params: this.params,
       children,
       tree: this.tree,
+      invoke,
     };
   }
 
@@ -255,6 +273,7 @@ function formatConstructorArgs(args: Partial<IConstructorArgs>): IConstructorArg
   args = { ...args };
   args.name = (args.name || '').trim();
   args.children = args.children || [];
+  args.params = args.params || [];
   return args as IConstructorArgs;
 }
 

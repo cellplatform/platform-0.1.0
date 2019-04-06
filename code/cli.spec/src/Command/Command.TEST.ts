@@ -8,6 +8,7 @@ describe('Command', () => {
       expect(cmd.name).to.eql('Foo'); // NB: trims title.
       expect(cmd.handler).to.eql(undefined);
       expect(cmd.children).to.eql([]);
+      expect(cmd.params).to.eql([]);
     });
 
     it('takes handler in constructor', () => {
@@ -195,6 +196,38 @@ describe('Command', () => {
     });
   });
 
+  describe('param', () => {
+    it('adds a parameter', () => {
+      const cmd = Command.create('foo')
+        .param('bar', 'string')
+        .param('baz', ['one', 'two', 'three']);
+      expect(cmd.name).to.eql('foo');
+
+      const params = cmd.params;
+      expect(params.length).to.eql(2);
+      expect(params[0].name).to.eql('bar');
+      expect(params[0].type).to.eql('string');
+      expect(params[1].name).to.eql('baz');
+      expect(params[1].type).to.eql(['one', 'two', 'three']);
+    });
+
+    it('clones parameter', () => {
+      const cmd1 = Command.create('foo')
+        .param('bar', 'string')
+        .param('baz', ['one', 'two', 'three']);
+      const cmd2 = cmd1.clone();
+
+      expect(cmd2.param).to.not.equal(cmd1.params);
+
+      const params = cmd2.params;
+      expect(params.length).to.eql(2);
+      expect(params[0].name).to.eql('bar');
+      expect(params[0].type).to.eql('string');
+      expect(params[1].name).to.eql('baz');
+      expect(params[1].type).to.eql(['one', 'two', 'three']);
+    });
+  });
+
   describe('toObject', () => {
     it('deep', () => {
       const myHandler = () => true;
@@ -202,6 +235,7 @@ describe('Command', () => {
         .add('a', myHandler)
         .add('b', myHandler);
       cmd.children[1].add('b1', myHandler);
+      cmd.children[1].param('myParam', 'boolean');
 
       const obj = cmd.toObject();
 
@@ -209,6 +243,10 @@ describe('Command', () => {
       expect(obj.children[0].name).to.eql('a');
       expect(obj.children[1].name).to.eql('b');
       expect(obj.children[1].children[0].name).to.eql('b1');
+
+      expect(obj.children[1].params.length).to.eql(1);
+      expect(obj.children[1].params[0].name).to.eql('myParam');
+      expect(obj.children[1].params[0].type).to.eql('boolean');
 
       expect(obj.handler).to.eql(myHandler);
       expect(obj.children[0].handler).to.eql(myHandler);
