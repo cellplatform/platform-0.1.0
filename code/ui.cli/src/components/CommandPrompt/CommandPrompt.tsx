@@ -6,17 +6,12 @@ import { GlamorValue, str, t, events } from '../../common';
 import { CommandPromptInput } from '../CommandPromptInput';
 import { ICommandPromptTheme } from './types';
 
-type CommandAutoCompleted = {
-  from: string;
-  to: string;
-  index: number;
-};
-
 export type ICommandPromptProps = {
   cli: t.ICommandState;
   theme?: ICommandPromptTheme | 'DARK';
   placeholder?: string;
   keyPress$?: events.KeypressObservable;
+  events$?: Subject<t.CommandPromptEvent>;
   style?: GlamorValue;
 };
 export type ICommandPromptState = {};
@@ -28,23 +23,32 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ICommandPromptState>>();
   private keyPress$ = (this.props.keyPress$ || events.keyPress$).pipe(takeUntil(this.unmounted$));
+  private _events$ = new Subject<t.CommandPromptEvent>();
+  public events$ = this._events$.pipe(takeUntil(this.unmounted$));
 
   private input: CommandPromptInput | undefined;
   private inputRef = (ref: CommandPromptInput) => (this.input = ref);
 
-  private autoCompleted: CommandAutoCompleted | undefined;
+  private autoCompleted: t.ICommandAutoCompleted | undefined;
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
     // Setup observables.
+    const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
     const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
     const keydown$ = this.keyPress$.pipe(filter(e => e.isPressed === true));
     const tab$ = keydown$.pipe(
       filter(e => e.key === 'Tab'),
       filter(e => this.isFocused),
     );
+
+    // Bubble events.
+    cli$.subscribe(this._events$);
+    if (this.props.events$) {
+      this.events$.subscribe(this.props.events$);
+    }
 
     // Update state.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
@@ -99,9 +103,12 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         // to toggle through possible matches if that tab-key is
         // being repeatedly pressed.
         const prev = this.autoCompleted;
-        const text = prev ? prev.from : this.cli.text;
+        const text = prev ? prev.text.from : this.cli.text;
         const index = prev ? prev.index + 1 : 0;
         this.autoCompleted = this.autoComplete(text, index);
+        if (this.autoCompleted) {
+          this.fire({ type: 'COMMAND_PROMPT/autoCompleted', payload: this.autoCompleted });
+        }
       });
 
     changed$.subscribe(e => {
@@ -150,7 +157,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     this.fireChange({ text: this.cli.text, invoked: true });
   };
 
-  public autoComplete = (text: string, index?: number): CommandAutoCompleted | undefined => {
+  public autoComplete = (text: string, index?: number): t.ICommandAutoCompleted | undefined => {
     const cli = this.cli;
     const root = cli.namespace ? cli.namespace.command : cli.root;
 
@@ -168,13 +175,21 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
     const to = match.name;
     cli.change({ text: to });
-    return { from: text, to, index };
+    return {
+      index,
+      text: { from: text, to },
+      matches: matches.map(cmd => cmd.name),
+    };
   };
 
   private fireChange = (args: { text?: string; invoked?: boolean; namespace?: boolean }) => {
     const e = CommandPromptInput.toChangeArgs(args);
     this.cli.change(e);
   };
+
+  private fire(e: t.CommandPromptEvent) {
+    this._events$.next(e);
+  }
 
   /**
    * [Render]

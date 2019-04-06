@@ -18,6 +18,7 @@ export class TestCommandPrompt extends React.PureComponent<
   public state: ITestCommandPromptState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestCommandPromptState>>();
+  private events$ = new Subject<t.CommandPromptEvent>();
 
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
@@ -41,6 +42,10 @@ export class TestCommandPrompt extends React.PureComponent<
     //   const command = e.props.command as t.ICommand<t.ITestCommandProps>;
     //   this.cli.invoke({ command, args });
     // });
+
+    this.events$.subscribe(e => {
+      console.log('🌳', e.type, e.payload);
+    });
   }
 
   public componentDidMount() {
@@ -74,7 +79,7 @@ export class TestCommandPrompt extends React.PureComponent<
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.prompt}>
-          <CommandPrompt ref={this.promptRef} cli={cli} />
+          <CommandPrompt ref={this.promptRef} cli={cli} events$={this.events$} />
         </div>
         <div {...styles.body}>
           <CommandHelpList cli={cli} onCommandClick={this.handleHelpClick} />
