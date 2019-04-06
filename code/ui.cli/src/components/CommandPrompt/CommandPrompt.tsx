@@ -6,6 +6,12 @@ import { GlamorValue, str, t, events } from '../../common';
 import { CommandPromptInput } from '../CommandPromptInput';
 import { ICommandPromptTheme } from './types';
 
+type CommandAutoCompleted = {
+  from: string;
+  to: string;
+  index: number;
+};
+
 export type ICommandPromptProps = {
   cli: t.ICommandState;
   theme?: ICommandPromptTheme | 'DARK';
@@ -25,6 +31,8 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
   private input: CommandPromptInput | undefined;
   private inputRef = (ref: CommandPromptInput) => (this.input = ref);
+
+  private autoCompleted: CommandAutoCompleted | undefined;
 
   /**
    * [Lifecycle]
@@ -86,7 +94,21 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     tab$
       // Autocomplete on [Tab]
       .pipe(filter(e => Boolean(this.cli.text)))
-      .subscribe(e => this.autoComplete());
+      .subscribe(e => {
+        // Look for a previous autocomplete value to see if we need
+        // to toggle through possible matches if that tab-key is
+        // being repeatedly pressed.
+        const prev = this.autoCompleted;
+        const text = prev ? prev.from : this.cli.text;
+        const index = prev ? prev.index + 1 : 0;
+        this.autoCompleted = this.autoComplete(text, index);
+      });
+
+    changed$.subscribe(e => {
+      // Reset the transient "last autocompleted" value after
+      // any other change to the current input text.
+      this.autoCompleted = undefined;
+    });
   }
 
   public componentWillUnmount() {
@@ -128,13 +150,25 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     this.fireChange({ text: this.cli.text, invoked: true });
   };
 
-  public autoComplete = () => {
+  public autoComplete = (text: string, index?: number): CommandAutoCompleted | undefined => {
     const cli = this.cli;
     const root = cli.namespace ? cli.namespace.command : cli.root;
-    const match = root.children.find(c => str.fuzzy.isMatch(cli.text, c.name));
-    if (match) {
-      cli.change({ text: match.name });
+
+    const matches = root.children.filter(child => str.fuzzy.isMatch(text, child.name));
+    if (matches.length === 0) {
+      return;
     }
+
+    index = index === undefined ? 0 : index;
+    index = index > matches.length - 1 ? 0 : index;
+    const match = matches[index];
+    if (!match) {
+      return;
+    }
+
+    const to = match.name;
+    cli.change({ text: to });
+    return { from: text, to, index };
   };
 
   private fireChange = (args: { text?: string; invoked?: boolean; namespace?: boolean }) => {
