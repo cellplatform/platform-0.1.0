@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 export type IWindowResizeEvent = {};
 
 /**
- * Based on [React.IMouseEvent]
+ * Based on [React.MouseEvent]
  * Note:
  *    Repeated here as exporting this event via the Observables
  *    is causing Typescript type-build errors.
