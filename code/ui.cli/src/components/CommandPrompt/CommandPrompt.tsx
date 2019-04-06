@@ -21,6 +21,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   public state: ICommandPromptState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ICommandPromptState>>();
+  private keyPress$ = (this.props.keyPress$ || events.keyPress$).pipe(takeUntil(this.unmounted$));
 
   private input: CommandPromptInput | undefined;
   private inputRef = (ref: CommandPromptInput) => (this.input = ref);
@@ -31,9 +32,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   public componentWillMount() {
     // Setup observables.
     const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
-    const keydown$ = (this.props.keyPress$ || events.keyPress$).pipe(
-      takeUntil(this.unmounted$),
-      filter(e => e.isPressed === true),
+    const keydown$ = this.keyPress$.pipe(filter(e => e.isPressed === true));
+    const tab$ = keydown$.pipe(
+      filter(e => e.key === 'Tab'),
+      filter(e => this.isFocused),
     );
 
     // Update state.
@@ -50,14 +52,15 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
       .subscribe(e => this.cli.invoke());
 
     keydown$
-      // Focus on CMD+L
-      .pipe(
-        filter(e => e.key === 'l' && e.metaKey),
-        filter(() => !this.isFocused),
-      )
+      // Focus or blur on CMD+L
+      .pipe(filter(e => e.key === 'l' && e.metaKey))
       .subscribe(e => {
         e.preventDefault();
-        this.focus();
+        if (this.isFocused) {
+          this.blur();
+        } else {
+          this.focus();
+        }
       });
 
     keydown$
@@ -66,7 +69,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
       .subscribe(e => this.invoke());
 
     keydown$
-      // Clear on CMD+K
+      // Clear on [CMD+K]
       .pipe(
         filter(e => e.key === 'k' && e.metaKey),
         filter(e => this.isFocused),
@@ -75,6 +78,15 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         const clearNamespace = !Boolean(this.cli.text);
         this.clear({ clearNamespace });
       });
+
+    tab$
+      // When [Tab] key pressed, keep focus on command-prompt.
+      .subscribe(e => e.preventDefault());
+
+    tab$
+      // Autocomplete on [Tab]
+      .pipe(filter(e => Boolean(this.cli.text)))
+      .subscribe(e => this.autoComplete());
   }
 
   public componentWillUnmount() {
@@ -101,6 +113,12 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     }
   };
 
+  public blur = () => {
+    if (this.input) {
+      this.input.blur();
+    }
+  };
+
   public clear = (args: { clearNamespace?: boolean } = {}) => {
     const namespace = args.clearNamespace ? false : undefined;
     this.fireChange({ text: '', namespace });
@@ -108,6 +126,20 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
   public invoke = () => {
     this.fireChange({ text: this.cli.text, invoked: true });
+  };
+
+  public autoComplete = () => {
+    const cli = this.cli;
+    const root = cli.namespace ? cli.namespace.command : cli.root;
+    const match = root.children.find(c => str.fuzzy.isMatch(cli.text, c.name));
+    if (match) {
+      cli.change({ text: match.name });
+    }
+  };
+
+  private fireChange = (args: { text?: string; invoked?: boolean; namespace?: boolean }) => {
+    const e = CommandPromptInput.toChangeArgs(args);
+    this.cli.change(e);
   };
 
   /**
@@ -124,27 +156,9 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         placeholder={placeholder}
         text={cli.text}
         namespace={cli.namespace}
-        keyPress$={this.props.keyPress$}
+        keyPress$={this.keyPress$}
         onChange={cli.change}
-        onAutoComplete={this.handleAutoComplete}
       />
     );
   }
-
-  /**
-   * [Handlers]
-   */
-  private handleAutoComplete = () => {
-    const cli = this.cli;
-    const root = cli.namespace ? cli.namespace.command : cli.root;
-    const match = root.children.find(c => str.fuzzy.isMatch(cli.text, c.name));
-    if (match) {
-      cli.change({ text: match.name });
-    }
-  };
-
-  private fireChange = (args: { text?: string; invoked?: boolean; namespace?: boolean }) => {
-    const e = CommandPromptInput.toChangeArgs(args);
-    this.cli.change(e);
-  };
 }

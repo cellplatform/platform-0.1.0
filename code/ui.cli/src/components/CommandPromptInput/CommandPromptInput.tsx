@@ -25,7 +25,6 @@ export type ICommandPromptInputProps = {
   keyPress$?: events.KeypressObservable;
   style?: GlamorValue;
   onChange?: CommandChangeDispatcher;
-  onAutoComplete?: (e: {}) => void;
 };
 export type ICommandPromptInputState = {};
 
@@ -51,28 +50,6 @@ export class CommandPromptInput extends React.PureComponent<
 
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-
-    const keydown$ = (this.props.keyPress$ || events.keyPress$).pipe(
-      takeUntil(this.unmounted$),
-      filter(e => e.isPressed === true),
-    );
-
-    const tab$ = keydown$.pipe(
-      filter(e => e.key === 'Tab'),
-      filter(e => this.isFocused),
-    );
-
-    tab$.subscribe(e => e.preventDefault());
-
-    tab$
-      // Fire auto-complete event.
-      .pipe(filter(e => Boolean(this.text)))
-      .subscribe(e => {
-        const { onAutoComplete } = this.props;
-        if (onAutoComplete) {
-          onAutoComplete({});
-        }
-      });
   }
 
   public componentWillUnmount() {
@@ -108,6 +85,12 @@ export class CommandPromptInput extends React.PureComponent<
   public focus = () => {
     if (this.elInput) {
       this.elInput.focus();
+    }
+  };
+
+  public blur = () => {
+    if (this.elInput) {
+      this.elInput.blur();
     }
   };
 
