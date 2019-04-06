@@ -13,7 +13,7 @@ export type IEditorContext = {
   autoCancel: boolean; // Automatically cancels on Escape key.
   readonly cell: Cell;
   readonly grid: Grid;
-  readonly keys$: Observable<t.IGridKeypress>;
+  readonly keys$: Observable<t.IGridKeydown>;
   readonly end$: Observable<IEndEditingEvent>;
   readonly value: {
     readonly from?: any;

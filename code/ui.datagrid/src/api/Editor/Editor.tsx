@@ -3,8 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
-import { constants, events, Handsontable, R, t, time } from '../../common';
-import { toGridKeypress } from '../../components/DataGrid/hook.keyboard';
+import { constants, Handsontable, R, t, time } from '../../common';
 import { IGridRefsPrivate } from '../../components/DataGrid/types.private';
 import { createProvider } from './EditorContext';
 
@@ -240,9 +239,10 @@ export class Editor extends editors.TextEditor {
       share(),
     );
 
-    const keys$ = events.keyUp$.pipe(
+    const keys$ = grid.events$.pipe(
       takeUntil(end$),
-      map(e => toGridKeypress(e.event, grid)),
+      filter(e => e.type === 'GRID/keydown'),
+      map(e => e.payload as t.IGridKeydown),
       share(),
     );
 

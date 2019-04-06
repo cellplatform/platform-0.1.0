@@ -38,10 +38,13 @@ export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEd
     const keys$ = this.context.keys$;
     keys$
       .pipe(
-        filter(e => e.isEnter),
         filter(() => isMounted),
+        filter(e => e.isEnter),
+        filter(e => e.metaKey),
       )
-      .subscribe(e => this.context.complete());
+      .subscribe(e => {
+        this.context.complete();
+      });
 
     // Keep the editor context up-to-date with the latest value.
     state$.subscribe(e => {

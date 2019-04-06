@@ -6,7 +6,7 @@ import { t } from '../../common';
  *
  * See:
  *   - https://handsontable.com/docs/6.2.2/Hooks.html#event:beforeKeyDown
- *   - https://jsfiddle.net/handsoncode/n8eft0m1/
+ *   - https://jsfiddle.net/handsoncode/n8eft0m1
  *   - https://forum.handsontable.com/t/keyboard-cycling/2802/4
  *
  */
@@ -15,7 +15,7 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
     // @ts-ignore
     const table = this as Handsontable;
     const grid = getGrid();
-    const payload = toGridKeypress(e, grid);
+    const payload = toGridKeydown(e, grid);
     const { cancel, key } = payload;
 
     // Fire event.
@@ -29,8 +29,8 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
     }
 
     // Supress "key cycling".
-    //    This is when arrow keys at the edges of the grid jump to the other
-    //    side of the grid.  Incredibly disorienting for the user - so here it stops!
+    //    This is when arrow keys at the edges of the grid jump to the other side of the grid.
+    //    Incredibly disorienting for the user - here the madness stops!
     const last = table.getSelectedLast();
     if (last) {
       const row = last[0];
@@ -52,9 +52,10 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
 }
 
 /**
- * Creates a Grid keydown event object.
+ * [Internal]
  */
-export function toGridKeypress(e: Event, grid: Grid): t.IGridKeypress {
+
+function toGridKeydown(e: Event, grid: Grid): t.IGridKeydown {
   const event = e as KeyboardEvent;
   const key = event.key;
   const isEnter = key === 'Enter';
@@ -67,7 +68,6 @@ export function toGridKeypress(e: Event, grid: Grid): t.IGridKeypress {
     e.stopImmediatePropagation();
   };
 
-  // Fire event.
   return {
     key,
     grid,
