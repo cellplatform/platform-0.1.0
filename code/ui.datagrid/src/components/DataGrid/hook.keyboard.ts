@@ -22,9 +22,9 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
     grid.fire({ type: 'GRID/keydown', payload });
 
     if (grid.isEditing) {
-      // NOTE:  When the editor is showing give it complete control of the keyboard,
-      //        supress any navigation handlers within the `handsontable` until it
-      //        has finished it's operation.
+      // NOTE:  When the editor is showing give it complete control of the keyboard by
+      //        supressing any navigation handlers within the `handsontable` until it
+      //        has finished its edit-operation.
       e.stopImmediatePropagation();
     }
 
