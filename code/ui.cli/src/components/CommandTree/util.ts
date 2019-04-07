@@ -42,3 +42,11 @@ export function asCommandId(node?: string | t.ITreeNode) {
   id = id ? id.replace(/^cmd\:/, '') : undefined;
   return id === undefined ? -1 : parseInt(id, 10);
 }
+
+/**
+ * Derive a command from a tree node.
+ */
+export function asCommand(root: t.ICommand, node?: string | t.ITreeNode) {
+  const id = asCommandId(node);
+  return root.tree.find(cmd => cmd.id === id);
+}

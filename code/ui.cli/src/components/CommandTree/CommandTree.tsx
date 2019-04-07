@@ -71,6 +71,16 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
         this.fireCurrent(parent);
       });
 
+    click$
+      //
+      .pipe(filter(e => e.target === 'NODE'))
+      .subscribe(e => {
+        const command = util.asCommand(this.root, e.node);
+        if (command) {
+          this.fire({ type: 'COMMAND_TREE/click', payload: { command } });
+        }
+      });
+
     // Finish up.
     this.updateTree();
   }
@@ -102,8 +112,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
   }
 
   private fireCurrent(node?: string | t.ITreeNode) {
-    const id = util.asCommandId(node);
-    const command = this.root.tree.find(cmd => cmd.id === id);
+    const command = util.asCommand(this.root, node);
     this.fire({ type: 'COMMAND_TREE/current', payload: { command } });
   }
 

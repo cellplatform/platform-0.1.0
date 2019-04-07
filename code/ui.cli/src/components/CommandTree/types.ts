@@ -4,7 +4,7 @@ import * as t from '../../types';
 /**
  * [Events]
  */
-export type CommandTreeEvent = ICommandTreeCurrentEvent;
+export type CommandTreeEvent = ICommandTreeCurrentEvent | ICommandTreeClickEvent;
 
 export type ICommandTreeCurrentEvent = {
   type: 'COMMAND_TREE/current';
@@ -12,4 +12,12 @@ export type ICommandTreeCurrentEvent = {
 };
 export type ICommandTreeCurrent = {
   command?: t.ICommand;
+};
+
+export type ICommandTreeClickEvent = {
+  type: 'COMMAND_TREE/click';
+  payload: ICommandTreeClick;
+};
+export type ICommandTreeClick = {
+  command: t.ICommand;
 };
