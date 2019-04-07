@@ -1272,7 +1272,19 @@
     "@platform/libs" "0.0.12"
     "@platform/ts.libs" "3.4.2"
 
-"@platform/ui.cli@0.0.19", "@platform/ui.cli@^0.0.19":
+"@platform/ui.cli@0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.20.tgz#6847ba85594a90afb85fb693ea0305d96efd9463"
+  integrity sha512-LPNEmckjA2lmFVZCNPA3CjsO3DYQXzgNM+tIW7dIzSVfnIKPanWLLqzVbso64hncHDhHF8pFYYww9AArTtR2QQ==
+  dependencies:
+    "@platform/cli.spec" "0.0.26"
+    "@platform/react" "0.1.8"
+    "@platform/ui.panel" "^0.0.21"
+    "@platform/ui.text" "0.0.42"
+    "@platform/ui.tree" "0.0.23"
+    react-icons "3.5.0"
+
+"@platform/ui.cli@^0.0.19":
   version "0.0.19"
   resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.19.tgz#066376d0143aae267e60fa9e44b5b13c2912a33d"
   integrity sha512-qV98La/aMRmtpPybV4zINJ+XqmJETFu1SIsbv/4U/RtTIoFLhQnCzcBkXGv5vnUvDRHtZex+pX4yxIhZh8TBvQ==

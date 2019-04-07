@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.cli",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Components for building cli (command-line-interface) related user-interfaces.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@platform/ts": "3.4.3",
     "@uiharness/dev": "0.2.33",
-    "@uiharness/ui": "0.1.37"
+    "@uiharness/ui": "0.1.38"
   },
   "files": [
     "lib"
