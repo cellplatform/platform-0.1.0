@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.spinner",
   "description": "Wait spinner.",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",

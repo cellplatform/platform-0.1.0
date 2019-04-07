@@ -30,7 +30,7 @@ export const INLINE_SAMPLE = (() => {
   p(children[5]).label = 'spinning, custom child';
 
   p(children[7]).icon = undefined;
-  p(children[7]).label = 'has children, icon';
+  p(children[7]).label = 'has children, no icon';
 
   children[8].children = undefined;
   p(children[8]).icon = undefined;

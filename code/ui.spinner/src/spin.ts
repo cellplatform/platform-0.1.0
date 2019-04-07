@@ -1,6 +1,6 @@
 /**
  * Inlined from:
- * 
+ *
  * - https://spin.js.org/spin.js
  * - https://github.com/fgnass/spin.js
  *
