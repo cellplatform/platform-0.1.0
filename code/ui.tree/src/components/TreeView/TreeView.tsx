@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import {
   css,
@@ -27,9 +27,9 @@ export type ITreeViewProps = {
   renderIcon?: t.RenderTreeIcon;
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
-  mouseEvents$?: Subject<TreeNodeMouseEvent>;
+  events$?: Subject<t.TreeViewEvent>;
+  mouse$?: Subject<t.TreeNodeMouseEvent>;
   style?: GlamorValue;
-  onNodeMouse?: TreeNodeMouseEventHandler;
 };
 
 export type ITreeViewState = {
@@ -43,32 +43,49 @@ const HEADER_HEIGHT = 36;
 
 export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState> {
   /**
-   * Utilities for working with the tree.
+   * [Static]
    */
   public static util = treeUtil;
 
+  private static current(props: ITreeViewProps) {
+    const { node } = props;
+    const current = props.current || node;
+    const result = typeof current === 'object' ? current : treeUtil.findById(node, current);
+    return result || node;
+  }
+
+  /**
+   * [Fields]
+   */
   public state: ITreeViewState = {};
   private unmounted$ = new Subject();
-  private _mouseEvents$ = new Subject<TreeNodeMouseEvent>();
-  public readonly mouseEvents$ = this._mouseEvents$.pipe(
+
+  private _events$ = new Subject<t.TreeViewEvent>();
+  public readonly events$ = this._events$.pipe(
     takeUntil(this.unmounted$),
     share(),
   );
+  public readonly mouseEvents$ = this.events$.pipe(
+    filter(e => e.type === 'TREEVIEW/mouse'),
+    map(e => e.payload as t.TreeNodeMouseEvent),
+    share(),
+  );
 
-  public componentDidMount() {
-    const { mouseEvents$ } = this.props;
-
-    // Bubble mouse-events through given subject.
-    if (mouseEvents$) {
-      this.mouseEvents$.pipe(takeUntil(this.unmounted$)).subscribe(e => mouseEvents$.next(e));
+  /**
+   * [Lifecycle]
+   */
+  public componentWillMount() {
+    // Bubble events through given subject(s).
+    if (this.props.events$) {
+      this.events$.subscribe(this.props.events$);
     }
-
-    this.updatePath();
+    if (this.props.mouse$) {
+      this.mouseEvents$.subscribe(this.props.mouse$);
+    }
   }
 
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
+  public componentDidMount() {
+    this.updatePath();
   }
 
   public componentDidUpdate(prev: ITreeViewProps) {
@@ -85,6 +102,14 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     }
   }
 
+  public componentWillUnmount() {
+    this.unmounted$.next();
+    this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
   private get theme() {
     return themes.themeOrDefault(this.props);
   }
@@ -92,6 +117,22 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   private get headerHeight() {
     return HEADER_HEIGHT;
   }
+
+  private get panels(): IStackPanel[] {
+    const { renderedPath = [] } = this.state;
+    const panels = renderedPath.map((node, i) => {
+      let el: React.ReactNode | null | undefined;
+      el = this.renderCustomPanel(node, i);
+      el = el === undefined ? this.renderNodeList(node, i) : el;
+      const panel: IStackPanel = { el };
+      return panel;
+    });
+    return panels;
+  }
+
+  /**
+   * [Render]
+   */
 
   public render() {
     const panels = this.panels;
@@ -115,18 +156,6 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         />
       </div>
     );
-  }
-
-  private get panels(): IStackPanel[] {
-    const { renderedPath = [] } = this.state;
-    const panels = renderedPath.map((node, i) => {
-      let el: React.ReactNode | null | undefined;
-      el = this.renderCustomPanel(node, i);
-      el = el === undefined ? this.renderNodeList(node, i) : el;
-      const panel: IStackPanel = { el };
-      return panel;
-    });
-    return panels;
   }
 
   private renderCustomPanel(node: t.ITreeNode, depth: number) {
@@ -212,10 +241,13 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private handleNodeMouse = (e: TreeNodeMouseEvent) => {
-    const props = treeUtil.props(e);
+  /**
+   * [Handlers]
+   */
+  private handleNodeMouse = (payload: TreeNodeMouseEvent) => {
+    const props = treeUtil.props(payload);
     if (props.isEnabled === false) {
-      switch (e.type) {
+      switch (payload.type) {
         case 'CLICK':
         case 'DOUBLE_CLICK':
         case 'DOWN':
@@ -225,11 +257,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
       }
     }
 
-    const { onNodeMouse } = this.props;
-    if (onNodeMouse) {
-      onNodeMouse(e);
-    }
-    this._mouseEvents$.next(e);
+    this._events$.next({ type: 'TREEVIEW/mouse', payload });
   };
 
   private updatePath() {
@@ -245,13 +273,6 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
       currentPath,
       renderedPath,
     });
-  }
-
-  private static current(props: ITreeViewProps) {
-    const { node } = props;
-    const current = props.current || node;
-    const result = typeof current === 'object' ? current : treeUtil.findById(node, current);
-    return result || node;
   }
 
   private handleSlide = (e: StackPanelSlideEvent) => {

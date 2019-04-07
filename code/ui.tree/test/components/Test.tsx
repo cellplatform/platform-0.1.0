@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
-import { Icons, TreeView, Button, color, COLORS, css, ObjectView, t } from './common';
 import * as sample from '../sample';
+import { Button, color, COLORS, css, Icons, ObjectView, t, TreeView } from './common';
 
 const TREE: t.ITreeNode = {
   id: 'root',
@@ -33,12 +33,75 @@ export class Test extends React.PureComponent<{}, ITestState> {
   public state: ITestState = { root: sample.INLINE_SAMPLE, theme: 'LIGHT' };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
+  private events$ = new Subject<t.TreeViewEvent>();
+  private mouse$ = new Subject<t.TreeNodeMouseEvent>();
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    // Setup observables.
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    const mouse$ = this.mouse$.pipe(takeUntil(this.unmounted$));
+    const click$ = mouse$.pipe(filter(e => e.button === 'LEFT'));
+
+    // Update state.
+    state$.subscribe(e => this.setState(e));
+
+    // Log events.
+    events$.subscribe(e => {
+      console.log('🌳', e.type, e.payload);
+    });
+
+    /**
+     * Handle mouse.
+     */
+
+    const toggle = (node: t.ITreeNode) => {
+      const toggled = TreeView.util.toggleIsOpen(this.state.root, node);
+      this.state$.next({ root: toggled });
+    };
+
+    click$
+      .pipe(
+        filter(e => e.type === 'DOWN'),
+        filter(e => e.target === 'DRILL_IN'),
+      )
+      .subscribe(e => this.state$.next({ current: e.id }));
+
+    click$
+      .pipe(
+        filter(e => e.type === 'DOWN'),
+        filter(e => e.target === 'TWISTY'),
+      )
+      .subscribe(e => toggle(e.node));
+
+    click$
+      .pipe(
+        filter(e => e.type === 'DOUBLE_CLICK'),
+        filter(e => e.target === 'NODE'),
+      )
+      .subscribe(e => this.state$.next({ current: e.id }));
+
+    click$
+      .pipe(
+        filter(e => e.type === 'DOUBLE_CLICK'),
+        filter(e => e.target === 'NODE'),
+        filter(e => Boolean(e.props.inline)),
+      )
+      .subscribe(e => toggle(e.node));
+
+    click$
+      .pipe(
+        filter(e => e.type === 'DOWN'),
+        filter(e => e.target === 'PARENT'),
+      )
+      .subscribe(e => {
+        const args = { inline: false };
+        const parent = TreeView.util.parent(this.state.root, e.node, args);
+        return this.state$.next({ current: parent ? parent.id : undefined });
+      });
   }
 
   public componentWillUnmount() {
@@ -66,10 +129,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
         borderRight: `solid 1px ${color.format(-0.1)}`,
         backgroundColor: color.format(-0.02),
       }),
-
       right: css({
         backgroundColor: theme === 'DARK' ? COLORS.DARK : undefined,
-
         position: 'relative',
         Flex: 'horizontal-start-center',
         flex: 1,
@@ -117,6 +178,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
           theme={this.state.theme}
           background={'NONE'}
           renderIcon={this.renderIcon}
+          events$={this.events$}
+          mouse$={this.mouse$}
         />
       </div>
     );
