@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { color, COLORS, css, t } from '../../src/common';
-import { TreeView } from '../../src/components/primitives';
-import { init as initCommandLine } from '../cli';
-import { Icons } from './Icons';
 import { CommandTree } from '../../src/components/CommandTree';
+import { init as initCommandLine } from '../cli';
 
 const cli = initCommandLine({});
 
@@ -14,15 +12,13 @@ const cli = initCommandLine({});
  * Test Component
  */
 export type ITestTreeState = {
-  tree?: t.ITreeNode;
-  current?: string;
+  current?: t.ICommand;
 };
 
 export class TestTree extends React.PureComponent<{}, ITestTreeState> {
-  public state: ITestTreeState = { tree: buildTree(cli.root) };
+  public state: ITestTreeState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestTreeState>>();
-  private mouse$ = new Subject<t.TreeNodeMouseEvent>();
   private events$ = new Subject<t.CommandTreeEvent>();
 
   /**
@@ -36,36 +32,13 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
       console.log('🌳', e.type, e.payload);
     });
 
-    const mouse$ = this.mouse$.pipe(
-      takeUntil(this.unmounted$),
-      filter(e => e.button === 'LEFT'),
-    );
-
-    const click$ = mouse$.pipe(filter(e => e.type === 'DOWN'));
-
-    mouse$.subscribe(e => {
-      // console.log('e', e);
-    });
-
-    mouse$
-      // Drill into child node.
+    events$
       .pipe(
-        filter(
-          e =>
-            (e.type === 'DOUBLE_CLICK' && e.target === 'NODE') ||
-            (e.type === 'DOWN' && e.target === 'DRILL_IN'),
-        ),
-        filter(e => (e.node.children || []).length > 0),
+        filter(e => e.type === 'COMMAND_TREE/current'),
+        map(e => e.payload as t.ICommandTreeCurrent),
       )
-      .subscribe(e => this.state$.next({ current: e.node.id }));
-
-    click$
-      // Step up to parent.
-      .pipe(filter(e => e.target === 'PARENT'))
       .subscribe(e => {
-        const parent = TreeView.util.parent(this.state.tree, e.node);
-        const current = parent ? parent.id : undefined;
-        this.state$.next({ current });
+        this.state$.next({ current: e.command });
       });
   }
 
@@ -90,52 +63,15 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
     return (
       <div {...styles.base}>
         <div {...styles.tree}>
-          <CommandTree root={cli.root} theme={'DARK'} background={'NONE'} events={this.events$} />
-
-          {/* <TreeView
-            node={this.state.tree}
+          <CommandTree
+            root={cli.root}
             current={this.state.current}
             theme={'DARK'}
             background={'NONE'}
-            renderIcon={this.renderIcon}
-            mouseEvents$={this.mouse$}
-          /> */}
+            events={this.events$}
+          />
         </div>
       </div>
     );
   }
-
-  /**
-   * [Handlers]
-   */
-  private renderIcon: t.RenderTreeIcon = e => {
-    return Icons[e.icon];
-  };
-}
-
-/**
- * Builds a <TreeView> data structure for the given command.
- */
-function buildTree(command: t.ICommand, options: { parent?: t.ITreeNode } = {}) {
-  const parent: t.ITreeNode = options.parent || {
-    id: `cmd:${command.id}`,
-    props: { label: 'Commands' },
-  };
-
-  parent.children = command.children.map(cmd => {
-    const node: t.ITreeNode = {
-      id: `cmd:${cmd.id}`,
-      props: {
-        label: cmd.name,
-        icon: 'Face',
-      },
-    };
-
-    if (cmd.children.length > 0) {
-      buildTree(cmd, { parent: node });
-    }
-    return node;
-  });
-
-  return parent;
 }
