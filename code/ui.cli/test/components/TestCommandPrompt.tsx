@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { CommandHelpList, CommandPrompt, CommandTree } from '../../src';
 import * as cli from '../cli';
-import { COLORS, css, GlamorValue, renderer, t } from '../common';
+import { color, COLORS, css, GlamorValue, renderer, t } from '../common';
 
 export type ITestCommandPromptProps = { style?: GlamorValue };
 export type ITestCommandPromptState = {};
@@ -70,13 +70,15 @@ export class TestCommandPrompt extends React.PureComponent<
         padding: 5,
       }),
       body: css({
-        padding: 20,
+        padding: 40,
         Flex: 'horizontal-stretch-stretch',
         flex: 1,
       }),
       tree: css({
         flex: 1,
         display: 'flex',
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+        borderRight: `solid 1px ${color.format(-0.1)}`,
       }),
     };
 
