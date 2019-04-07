@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import { Subject } from 'rxjs';
 import { takeUntil, distinctUntilChanged, delay } from 'rxjs/operators';
-import { css, animation, value } from '../../../common';
-import { IStackPanel } from '../types';
+import { css, animation, value } from '../../common';
+import { IStackPanel } from './types';
 
 export interface IPanelProps {
   data: IStackPanel;
@@ -20,6 +20,22 @@ export type IPanelState = {
 };
 
 export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
+  /**
+   * [Static]
+   */
+
+  private static edge(props: IPanelProps): OffsetEdge | undefined {
+    const { current, index } = props;
+    return current === index
+      ? undefined // Currently visible.
+      : index < current
+      ? 'OFFSET_LEFT'
+      : 'OFFSET_RIGHT';
+  }
+
+  /**
+   * [Fields]
+   */
   private props$ = new Subject<IPanelProps>();
   public state: IPanelState = {
     props$: this.props$,
@@ -29,6 +45,10 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
 
   private stop$ = new Subject();
   private unmounted$ = new Subject();
+
+  /**
+   * [Lifecycle]
+   */
 
   public componentDidMount() {
     const props$ = this.props$.pipe(takeUntil(this.unmounted$));
@@ -49,44 +69,15 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
 
   public componentWillUnmount() {
     this.unmounted$.next();
+    this.unmounted$.complete();
   }
 
-  public render() {
-    const { data } = this.props;
-    const { offset = 0, opacity } = this.state;
-    const styles = {
-      base: css({
-        Absolute: 0,
-        display: 'flex',
-        transform: `translateX(${offset * 100}%)`,
-        opacity,
-      }),
-    };
-    return <div {...styles.base}>{data.el}</div>;
-  }
-
-  private get offset() {
-    switch (this.edge) {
-      case 'OFFSET_LEFT':
-        return -1;
-      case 'OFFSET_RIGHT':
-        return 1;
-      default:
-        return 0;
-    }
-  }
+  /**
+   * [Properties]
+   */
 
   private get edge() {
     return Panel.edge(this.props);
-  }
-
-  private static edge(props: IPanelProps): OffsetEdge | undefined {
-    const { current, index } = props;
-    return current === index
-      ? undefined // Currently visible.
-      : index < current
-      ? 'OFFSET_LEFT'
-      : 'OFFSET_RIGHT';
   }
 
   private get offsetOpacity() {
@@ -100,6 +91,21 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
         return 1;
     }
   }
+
+  private get offset() {
+    switch (this.edge) {
+      case 'OFFSET_LEFT':
+        return -1;
+      case 'OFFSET_RIGHT':
+        return 1;
+      default:
+        return 0;
+    }
+  }
+
+  /**
+   * [Methods]
+   */
 
   private animate(args: { offset: number }) {
     this.stop$.next(); // Stop currently executing animation (if any).
@@ -120,5 +126,23 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
           // Done.
         },
       });
+  }
+
+  /**
+   * [Render]
+   */
+
+  public render() {
+    const { data } = this.props;
+    const { offset = 0, opacity } = this.state;
+    const styles = {
+      base: css({
+        Absolute: 0,
+        display: 'flex',
+        transform: `translateX(${offset * 100}%)`,
+        opacity,
+      }),
+    };
+    return <div {...styles.base}>{data.el}</div>;
   }
 }

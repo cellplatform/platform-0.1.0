@@ -4,7 +4,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil, map, filter, distinctUntilChanged, pairwise } from 'rxjs/operators';
 import { R, css, GlamorValue, value, time } from '../../common';
 import { IStackPanel, StackPanelSlideEvent, StackPanelSlideEventHandler } from './types';
-import { Panel } from './components/Panel';
+import { Panel } from './Panel';
 
 export type IStackPanelProps = {
   index?: number;
@@ -16,6 +16,10 @@ export type IStackPanelProps = {
 
 export class StackPanel extends React.PureComponent<IStackPanelProps> {
   /**
+   * [Static]
+   */
+
+  /**
    * Prepares an index, ensuring it is within bounds.
    */
   public static index(props: IStackPanelProps) {
@@ -24,12 +28,15 @@ export class StackPanel extends React.PureComponent<IStackPanelProps> {
     return result < 0 ? -1 : R.clamp(0, panels.length - 1, result);
   }
 
-  private get index() {
-    return StackPanel.index(this.props);
-  }
-
+  /**
+   * [Fields]
+   */
   private unmounted$ = new Subject();
   private props$ = new BehaviorSubject<IStackPanelProps>(this.props);
+
+  /**
+   * [Lifecycle]
+   */
 
   public componentDidMount() {
     const props$ = this.props$.pipe(takeUntil(this.unmounted$));
@@ -58,11 +65,24 @@ export class StackPanel extends React.PureComponent<IStackPanelProps> {
 
   public componentWillUnmount() {
     this.unmounted$.next();
+    this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+
+  private get index() {
+    return StackPanel.index(this.props);
   }
 
   private get duation() {
     return value.defaultValue(this.props.duration, 200);
   }
+
+  /**
+   * [Render]
+   */
 
   public render() {
     const { panels = [] } = this.props;
@@ -80,6 +100,11 @@ export class StackPanel extends React.PureComponent<IStackPanelProps> {
       })
       .reverse();
     // elPanels.reverse();
+
+    console.group('🌳 render');
+    console.log('index', index);
+    console.log('panels', panels);
+    console.groupEnd();
 
     return <div {...css(styles.base, this.props.style)}>{elPanels}</div>;
   }

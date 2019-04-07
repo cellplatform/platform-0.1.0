@@ -5,23 +5,24 @@ import { takeUntil } from 'rxjs/operators';
 import { IStackPanel, StackPanel, StackPanelSlideEvent } from '../../src';
 import { color, css, Foo, GlamorValue, Button } from './common';
 
-export type ITestProps = { style?: GlamorValue };
-export type ITestState = {
-  index?: number;
-};
-
 const TestPanel = (props: { label: string }) => (
   <Foo style={{ flex: 1, margin: 5 }} children={props.label} />
 );
 
-const panels: IStackPanel[] = [
+const PANELS: IStackPanel[] = [
   { el: <TestPanel label={'one'} />, offsetOpacity: 0 },
   { el: <TestPanel label={'two'} />, offsetOpacity: 0 },
   { el: <TestPanel label={'three'} />, offsetOpacity: 0 },
 ];
 
+export type ITestProps = { style?: GlamorValue };
+export type ITestState = {
+  index?: number;
+  panels?: IStackPanel[];
+};
+
 export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = {};
+  public state: ITestState = { panels: [PANELS[0]] };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
 
@@ -50,7 +51,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       }),
     };
 
-    const elIndexButtons = Array.from({ length: panels.length }).map((v, i) => (
+    const elIndexButtons = Array.from({ length: PANELS.length }).map((v, i) => (
       <div key={i}>{this.indexButton(i)}</div>
     ));
 
@@ -83,7 +84,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       <div {...styles.base}>
         <div {...styles.panel}>
           <StackPanel
-            panels={panels}
+            panels={this.state.panels}
             index={this.state.index}
             style={styles.panel}
             onSlide={this.handleSlide}
@@ -94,7 +95,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   private indexButton = (index: number) => {
-    return <div>{this.button(`index: ${index}`, () => this.state$.next({ index }))}</div>;
+    const onClick = () => {
+      let panels = this.state.panels || [];
+      if (index > panels.length - 1) {
+        panels = PANELS.slice(0, index + 1);
+      }
+      this.state$.next({ index, panels });
+    };
+
+    return <div>{this.button(`index: ${index}`, onClick)}</div>;
   };
 
   private button = (label: string, handler: () => void) => {

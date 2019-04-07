@@ -105,6 +105,8 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
       panel: css({ flex: 1 }),
     };
 
+    console.log('panels', panels);
+
     return (
       <div {...css(styles.base, this.props.style)}>
         <StackPanel
