@@ -1,7 +1,23 @@
 import { createRoot } from './util';
 import { t, TreeView } from '../components/common';
 
-export const INLINE_SAMPLE = (() => {
+export const SIMPLE: t.ITreeNode = {
+  id: 'root',
+  props: {
+    label: 'Sheet',
+    icon: 'Face',
+    header: { isVisible: false },
+  },
+  children: [
+    { id: 'child-1', props: { icon: 'Face', marginTop: 30 } },
+    { id: 'child-2', props: { icon: 'Face' } },
+    { id: 'child-3', props: { icon: 'Face' } },
+    { id: 'child-4', props: { icon: 'Face' } },
+    { id: 'child-5', props: { icon: 'Face' } },
+  ],
+};
+
+export const COMPREHENSIVE = (() => {
   const node = createRoot([10, 5, 3, 2]);
   const children = node.children as t.ITreeNode[];
   const p = TreeView.util.props;

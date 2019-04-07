@@ -3,23 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import * as sample from '../sample';
-import { Button, color, COLORS, css, Icons, ObjectView, t, TreeView } from './common';
-
-const TREE: t.ITreeNode = {
-  id: 'root',
-  props: {
-    label: 'Sheet',
-    icon: 'Face',
-    header: { isVisible: false },
-  },
-  children: [
-    { id: 'child-1', props: { icon: 'Face', marginTop: 30 } },
-    { id: 'child-2', props: { icon: 'Face' } },
-    { id: 'child-3', props: { icon: 'Face' } },
-    { id: 'child-4', props: { icon: 'Face' } },
-    { id: 'child-5', props: { icon: 'Face' } },
-  ],
-};
+import { Button, color, COLORS, css, Icons, ObjectView, t, TreeView, Foo } from './common';
 
 export type ITestState = {
   theme?: t.TreeTheme;
@@ -30,7 +14,10 @@ export class Test extends React.PureComponent<{}, ITestState> {
   /**
    * [Fields]
    */
-  public state: ITestState = { root: sample.INLINE_SAMPLE, theme: 'LIGHT' };
+  public state: ITestState = {
+    root: sample.COMPREHENSIVE,
+    theme: 'LIGHT',
+  };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.TreeViewEvent>();
@@ -178,6 +165,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
           theme={this.state.theme}
           background={'NONE'}
           renderIcon={this.renderIcon}
+          renderPanel={this.renderPanel}
           events$={this.events$}
           mouse$={this.mouse$}
         />
@@ -193,4 +181,41 @@ export class Test extends React.PureComponent<{}, ITestState> {
    * [Handlers]
    */
   private renderIcon: t.RenderTreeIcon = e => Icons[e.icon];
+
+  private renderPanel = (e: t.RenderTreePanelArgs<t.ITreeNode>) => {
+    /**
+     * NOTE:  Use this flag to revent custom panel rendering if
+     *        the node is opened "inline" within it's parent.
+     */
+    if (e.isInline) {
+      // return undefined;
+    }
+
+    const match = ['root.2', 'root.6', 'foo'];
+    if (match.includes(e.node.id)) {
+      const styles = {
+        base: css({
+          flex: 1,
+          lineHeight: '1.6em',
+          padding: 2,
+        }),
+        link: css({ color: COLORS.BLUE, cursor: 'pointer' }),
+      };
+      return (
+        <div {...styles.base}>
+          <Foo style={{ flex: 1, lineHeight: '1.6em' }}>
+            <div>My Custom Panel: {e.node.id}</div>
+            <div onClick={this.handleHomeClick} {...styles.link}>
+              Home
+            </div>
+          </Foo>
+        </div>
+      );
+    }
+    return undefined;
+  };
+
+  private handleHomeClick = () => {
+    this.state$.next({ current: 'root' });
+  };
 }
