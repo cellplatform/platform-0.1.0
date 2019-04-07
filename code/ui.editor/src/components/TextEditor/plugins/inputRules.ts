@@ -81,7 +81,6 @@ export function headingRule(nodeType: NodeType, maxLevel: number) {
  */
 export function build(schema: Schema) {
   const nodes = schema.nodes;
-  // const rules = smartQuotes.concat(ellipsis, emDash);
   const rules = smartQuotes.concat(ellipsis, hrRule, emDash);
 
   if (nodes.blockquote) {
