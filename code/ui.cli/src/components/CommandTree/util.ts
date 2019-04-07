@@ -10,11 +10,12 @@ export function buildTree(command: t.ICommand, options: { parent?: t.ITreeNode }
   };
 
   parent.children = command.children.map(cmd => {
+    const hasChildren = cmd.children.length > 0;
     const node: t.ITreeNode = {
       id: asNodeId(cmd),
       props: {
         label: cmd.name,
-        icon: 'Face',
+        icon: hasChildren ? 'Namespace' : 'Command',
       },
     };
     if (cmd.children.length > 0) {

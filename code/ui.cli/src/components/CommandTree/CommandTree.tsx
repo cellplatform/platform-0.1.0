@@ -4,7 +4,7 @@ import { share, filter, takeUntil } from 'rxjs/operators';
 
 import { GlamorValue, t } from '../../common';
 import { ITreeViewProps, TreeView } from '../primitives';
-import { TreeIcons } from './TreeIcons';
+import { Icons } from '../Icons';
 import * as util from './util';
 
 export type ICommandTreeProps = {
@@ -71,9 +71,14 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
         this.fireCurrent(parent);
       });
 
-    // TEMP 🐷
-    const tree = util.buildTree(this.root);
-    this.state$.next({ tree });
+    // Finish up.
+    this.updateTree();
+  }
+
+  public componentDidUpdate(prev: ICommandTreeProps) {
+    if (prev.root !== this.root) {
+      this.updateTree();
+    }
   }
 
   public componentWillUnmount() {
@@ -91,6 +96,11 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
   /**
    * [Methods]
    */
+  private updateTree() {
+    const tree = util.buildTree(this.root);
+    this.state$.next({ tree });
+  }
+
   private fireCurrent(node?: string | t.ITreeNode) {
     const id = util.asCommandId(node);
     const command = this.root.tree.find(cmd => cmd.id === id);
@@ -105,10 +115,11 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
    * [Render]
    */
   public render() {
+    const current = util.asNodeId(this.props.current);
     return (
       <TreeView
         node={this.state.tree}
-        current={util.asNodeId(this.props.current)}
+        current={current}
         theme={'DARK'}
         background={'NONE'}
         renderIcon={this.renderIcon}
@@ -122,6 +133,6 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
    * [Handlers]
    */
   private renderIcon: t.RenderTreeIcon = e => {
-    return TreeIcons[e.icon];
+    return Icons[e.icon];
   };
 }
