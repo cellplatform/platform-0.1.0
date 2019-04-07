@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { color, COLORS, css, t } from '../../src/common';
-import { CommandTree } from '../../src';
+import { CommandTreeView } from '../../src/components/CommandTree/CommandTreeView';
 import { init as initCommandLine } from '../cli';
 
 const cli = initCommandLine({});
@@ -63,12 +63,12 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
     return (
       <div {...styles.base}>
         <div {...styles.tree}>
-          <CommandTree
+          <CommandTreeView
             root={cli.root}
             current={this.state.current}
             theme={'DARK'}
             background={'NONE'}
-            events={this.events$}
+            events$={this.events$}
           />
         </div>
       </div>

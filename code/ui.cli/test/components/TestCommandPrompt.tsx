@@ -80,14 +80,6 @@ export class TestCommandPrompt extends React.PureComponent<
       }),
     };
 
-    /**
-     * TODO
-     * - turn <CommandTree> into <CommandTreeView>
-     * - Make <CommandTree> take the `CommandState` object like `CommandHelpList` does.
-     *    and manage changes internally.
-     */
-    const current = this.cli.namespace ? this.cli.namespace.command : undefined;
-
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.prompt}>
@@ -96,7 +88,7 @@ export class TestCommandPrompt extends React.PureComponent<
         <div {...styles.body}>
           <CommandHelpList cli={cli} onCommandClick={this.handleHelpClick} />
           <div {...styles.tree}>
-            <CommandTree root={cli.root} current={current} theme={'LIGHT'} />
+            <CommandTree cli={cli} />
           </div>
         </div>
       </div>

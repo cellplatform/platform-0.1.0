@@ -1,30 +1,24 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { share, filter, takeUntil } from 'rxjs/operators';
+import { share, takeUntil } from 'rxjs/operators';
 
 import { GlamorValue, t } from '../../common';
-import { ITreeViewProps, TreeView } from '../primitives';
-import { Icons } from '../Icons';
-import * as util from './util';
+import { CommandTreeView, ICommandTreeViewProps } from './CommandTreeView';
 
 export type ICommandTreeProps = {
-  root: t.ICommand;
-  current?: t.ICommand;
-  theme?: ITreeViewProps['theme'];
-  background?: ITreeViewProps['background'];
-  events?: Subject<t.CommandTreeEvent>;
+  cli: t.ICommandState;
+  theme?: ICommandTreeViewProps['theme'];
+  background?: ICommandTreeViewProps['background'];
+  events$?: Subject<t.CommandTreeEvent>;
   style?: GlamorValue;
 };
-export type ICommandTreeState = {
-  tree?: t.ITreeNode;
-  // current?: string;
-};
+export type ICommandTreeState = {};
 
 export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommandTreeState> {
   public state: ICommandTreeState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ICommandTreeState>>();
-  private mouse$ = new Subject<t.TreeNodeMouseEvent>();
+
   private _events$ = new Subject<t.CommandTreeEvent>();
   public events$ = this._events$.pipe(
     takeUntil(this.unmounted$),
@@ -37,58 +31,18 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
   public componentWillMount() {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    const mouse$ = this.mouse$.pipe(
-      takeUntil(this.unmounted$),
-      filter(e => e.button === 'LEFT'),
-    );
-    const click$ = mouse$.pipe(filter(e => e.type === 'DOWN'));
+    const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
 
     // Update state.
     state$.subscribe(e => this.setState(e));
 
     // Bubble events.
-    if (this.props.events) {
-      this.events$.subscribe(this.props.events);
+    if (this.props.events$) {
+      this.events$.subscribe(this.props.events$);
     }
 
-    mouse$
-      // Drill into child node.
-      .pipe(
-        filter(
-          e =>
-            (e.type === 'DOUBLE_CLICK' && e.target === 'NODE') ||
-            (e.type === 'DOWN' && e.target === 'DRILL_IN'),
-        ),
-        filter(e => (e.node.children || []).length > 0),
-      )
-      .subscribe(e => this.fireCurrent(e.node));
-
-    click$
-      // Step up to parent.
-      .pipe(filter(e => e.target === 'PARENT'))
-      .subscribe(e => {
-        const parent = TreeView.util.parent(this.state.tree, e.node);
-        this.fireCurrent(parent);
-      });
-
-    click$
-      //
-      .pipe(filter(e => e.target === 'NODE'))
-      .subscribe(e => {
-        const command = util.asCommand(this.root, e.node);
-        if (command) {
-          this.fire({ type: 'COMMAND_TREE/click', payload: { command } });
-        }
-      });
-
-    // Finish up.
-    this.updateTree();
-  }
-
-  public componentDidUpdate(prev: ICommandTreeProps) {
-    if (prev.root !== this.root) {
-      this.updateTree();
-    }
+    // Redraw on CLI changed.
+    changed$.subscribe(e => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -97,33 +51,14 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
   }
 
   /**
-   * [Propertes]
+   * [Properties]
    */
-  public get root() {
-    return this.props.root;
+  public get cli() {
+    return this.props.cli;
   }
 
-  private get currentNodeId() {
-    const { tree } = this.state;
-    const { current } = this.props;
-    return !current && tree ? tree.id : util.asNodeId(current);
-  }
-
-  /**
-   * [Methods]
-   */
-  private updateTree() {
-    const tree = util.buildTree(this.root);
-    this.state$.next({ tree });
-  }
-
-  private fireCurrent(node?: string | t.ITreeNode) {
-    const command = util.asCommand(this.root, node);
-    this.fire({ type: 'COMMAND_TREE/current', payload: { command } });
-  }
-
-  private fire(e: t.CommandTreeEvent) {
-    this._events$.next(e);
+  public get current() {
+    return this.cli.namespace ? this.cli.namespace.command : undefined;
   }
 
   /**
@@ -131,22 +66,14 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
    */
   public render() {
     return (
-      <TreeView
-        node={this.state.tree}
-        current={this.currentNodeId}
+      <CommandTreeView
+        root={this.cli.root}
+        current={this.current}
         theme={this.props.theme}
         background={this.props.background}
-        renderIcon={this.renderIcon}
-        mouseEvents$={this.mouse$}
+        events$={this._events$}
         style={this.props.style}
       />
     );
   }
-
-  /**
-   * [Handlers]
-   */
-  private renderIcon: t.RenderTreeIcon = e => {
-    return Icons[e.icon];
-  };
 }
