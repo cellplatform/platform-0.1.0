@@ -28,7 +28,8 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
    */
 
   public static edge(props: { index: number; current: number }): OffsetEdge | undefined {
-    const { index, current } = props;
+    const { index } = props;
+    const current = props.current < 0 ? 0 : props.current;
     if (current === index) {
       return undefined; // Currently visible.
     } else {
@@ -77,8 +78,10 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
     });
   }
 
-  public componentDidUpdate() {
-    this.updateState();
+  public componentDidUpdate(prev: IPanelProps) {
+    if (prev.current !== this.props.current) {
+      this.updateState();
+    }
   }
 
   public componentWillUnmount() {
@@ -122,7 +125,12 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
 
   public render() {
     const { data, duration } = this.props;
-    const { offset = 0, opacity } = this.state;
+    const { offset, opacity } = this.state;
+
+    if (offset === undefined) {
+      return null;
+    }
+
     const styles = {
       base: css({
         Absolute: 0,
@@ -132,6 +140,7 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
         transition: `transform ${duration}ms, opacity ${duration}ms`,
       }),
     };
+
     return <div {...styles.base}>{data.el}</div>;
   }
 }
