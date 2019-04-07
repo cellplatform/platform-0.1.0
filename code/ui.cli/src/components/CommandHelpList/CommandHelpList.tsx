@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, css, GlamorValue, str, t } from '../../common';
+import { Icons } from '../Icons';
 
 export type ICommandHelpListProps = {
   cli: t.ICommandState;
@@ -87,24 +88,38 @@ export class CommandHelpList extends React.PureComponent<
       }),
     };
 
-    const elList = this.commandList.map((item, i) => {
-      const { isMatch, cmd } = item;
-      let name = item.name;
-      name = cmd.children.length > 0 ? `${name} (${cmd.children.length})` : name;
-      return (
-        <div
-          key={i}
-          {...css(styles.cmd, isMatch && styles.cmdMatch)}
-          onClick={this.commandClickHandler(cmd)}
-        >
-          {name}
-        </div>
-      );
+    const elList = this.commandList.map((item, index) => {
+      const { cmd, isMatch } = item;
+      return this.renderListItem({ cmd, isMatch, index });
     });
 
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.list}>{elList}</div>
+      </div>
+    );
+  }
+
+  private renderListItem(props: { cmd: t.ICommand; isMatch: boolean; index: number }) {
+    const { cmd, isMatch, index } = props;
+    const name = cmd.name;
+    const hasChildren = cmd.children.length > 0;
+    const Icon = hasChildren ? Icons.Namespace : Icons.Command;
+    const styles = {
+      base: css({
+        opacity: isMatch ? 1 : 0.3,
+        cursor: 'pointer',
+        Flex: 'horizontal-center',
+        marginBottom: 4,
+      }),
+      icon: css({
+        marginRight: 6,
+      }),
+    };
+    return (
+      <div key={index} {...css(styles.base)} onClick={this.commandClickHandler(cmd)}>
+        <Icon size={18} style={styles.icon} />
+        {name}
       </div>
     );
   }
