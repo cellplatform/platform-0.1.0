@@ -22,15 +22,15 @@ const TREE: t.ITreeNode = {
   ],
 };
 
-/**
- * Test Component
- */
 export type ITestState = {
   theme?: t.TreeTheme;
   root?: t.ITreeNode;
   current?: string;
 };
 export class Test extends React.PureComponent<{}, ITestState> {
+  /**
+   * [Fields]
+   */
   public state: ITestState = { root: TREE, theme: 'LIGHT' };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
@@ -55,20 +55,29 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const { theme } = this.state;
     const styles = {
       base: css({
-        Absolute: 20,
+        Absolute: 0,
         Flex: 'horizontal',
       }),
       left: css({
-        width: 180,
+        width: 200,
         Flex: 'vertical-spaceBetween',
-        lineHeight: 1.6,
+        lineHeight: 1.8,
+        fontSize: 12,
+        padding: 10,
+        borderRight: `solid 1px ${color.format(-0.1)}`,
+        backgroundColor: color.format(-0.02),
       }),
 
       right: css({
+        backgroundColor: theme === 'DARK' ? COLORS.DARK : undefined,
+
+        position: 'relative',
+        Flex: 'horizontal-start-center',
         flex: 1,
-        borderLeft: `solid 1px ${color.format(-0.1)}`,
-        backgroundColor: theme === 'DARK' && COLORS.DARK,
-        paddingLeft: 20,
+      }),
+      rightCenter: css({
+        height: '100%',
+        width: 300,
         display: 'flex',
       }),
     };
@@ -83,26 +92,43 @@ export class Test extends React.PureComponent<{}, ITestState> {
           <ObjectView name={'tree'} data={this.state.root} />
         </div>
         <div {...styles.right}>
-          <TreeView
-            node={this.state.root}
-            current={this.state.current}
-            theme={this.state.theme}
-            background={'NONE'}
-            renderIcon={this.renderIcon}
-          />
+          <div {...styles.rightCenter}>{this.renderTree()}</div>
         </div>
       </div>
     );
   }
 
+  private renderTree() {
+    const { theme } = this.state;
+    const borderColor = theme === 'DARK' ? color.format(0.2) : color.format(-0.1);
+    const border = `solid 1px ${borderColor}`;
+    const styles = {
+      base: css({
+        flex: 1,
+        display: 'flex',
+        borderLeft: border,
+        borderRight: border,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <TreeView
+          node={this.state.root}
+          current={this.state.current}
+          theme={this.state.theme}
+          background={'NONE'}
+          renderIcon={this.renderIcon}
+        />
+      </div>
+    );
+  }
+
   private button = (label: string, handler: () => void) => {
-    return <Button label={label} onClick={handler} />;
+    return <Button label={label} onClick={handler} block={true} />;
   };
 
   /**
    * [Handlers]
    */
-  private renderIcon: t.RenderTreeIcon = e => {
-    return Icons[e.icon];
-  };
+  private renderIcon: t.RenderTreeIcon = e => Icons[e.icon];
 }
