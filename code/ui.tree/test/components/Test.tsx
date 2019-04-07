@@ -163,7 +163,6 @@ export class Test extends React.PureComponent<{}, ITestState> {
           node={this.state.root}
           current={this.state.current}
           theme={this.state.theme}
-          background={'NONE'}
           renderIcon={this.renderIcon}
           renderPanel={this.renderPanel}
           events$={this.events$}
