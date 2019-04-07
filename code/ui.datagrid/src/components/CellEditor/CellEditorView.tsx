@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { color, constants, containsFocus, css, GlamorValue, t } from '../../common';
+import { color, constants, containsFocus, css, GlamorValue, t, R } from '../../common';
 import { FormulaInput, Text, TextEditor, TextInput } from '../primitives';
 import { THEMES } from './themes';
 
@@ -23,9 +23,15 @@ export type ICellEditorViewProps = {
 };
 
 export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
+  /**
+   * [Static]
+   */
   public static THEMES = THEMES;
   public static BORDER_WIDTH = BORDER_WIDTH;
 
+  /**
+   * [Fields]
+   */
   private unmounted$ = new Subject();
 
   private formula$ = new Subject<t.FormulaInputEvent>();
@@ -69,32 +75,9 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       // // console.log("e.payload.size", e.payload.size)
     });
 
-    markdown$
-      .pipe(
-        filter(e => e.type === 'EDITOR/changing'),
-        map(e => e.payload as t.ITextEditorChanging),
-        filter(e => e.value.to !== e.value.from),
-        filter(e => this.mode === 'MARKDOWN'),
-      )
-      .subscribe(e => {
-        const { from, to } = e.value;
-        const { isCancelled } = this.fireChanging({ mode: 'MARKDOWN', from, to });
-        if (isCancelled) {
-          e.cancel();
-        }
-      });
-
-    markdown$
-      .pipe(
-        filter(e => e.type === 'EDITOR/changed'),
-        map(e => e.payload as t.ITextEditorChanged),
-        filter(e => e.value.to !== e.value.from),
-        filter(e => this.mode === 'MARKDOWN'),
-      )
-      .subscribe(e => {
-        const { from, to } = e.value;
-        this.fireChanged({ mode: 'MARKDOWN', from, to });
-      });
+    // Manage cancelling manually.
+    // this.context.autoCancel = false;
+    // keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
 
     formula$
       .pipe(
@@ -104,7 +87,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       )
       .subscribe(e => {
         const { from, to } = e;
-        const { isCancelled } = this.fireChanging({ mode: 'FORMULA', from, to });
+        const { isCancelled } = this.fireChanging('FORMULA', from, to);
         if (isCancelled) {
           e.cancel();
         }
@@ -118,7 +101,8 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       )
       .subscribe(e => {
         const { from, to } = e;
-        this.fireChanged({ mode: 'FORMULA', from, to });
+        const value = { from, to };
+        this.fireChanged({ mode: 'FORMULA', value });
       });
 
     text$
@@ -129,7 +113,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       )
       .subscribe(e => {
         const { from, to } = e;
-        const { isCancelled } = this.fireChanging({ mode: 'TEXT', from, to });
+        const { isCancelled } = this.fireChanging('TEXT', from, to);
         if (isCancelled) {
           e.cancel();
         }
@@ -143,7 +127,48 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       )
       .subscribe(e => {
         const { from, to } = e;
-        this.fireChanged({ mode: 'TEXT', from, to });
+        const value = { from, to };
+        this.fireChanged({ mode: 'TEXT', value });
+      });
+
+    markdown$
+      .pipe(
+        filter(e => e.type === 'EDITOR/changing'),
+        map(e => e.payload as t.ITextEditorChanging),
+        filter(e => this.mode === 'MARKDOWN'),
+        filter(e => e.value.to !== e.value.from || !R.equals(e.size.from, e.size.to)),
+      )
+      .subscribe(e => {
+        const { from, to } = e.value;
+        const { isCancelled } = this.fireChanging('MARKDOWN', from, to);
+        if (isCancelled) {
+          e.cancel();
+        }
+      });
+
+    markdown$
+      .pipe(
+        filter(e => e.type === 'EDITOR/changed'),
+        map(e => e.payload as t.ITextEditorChanged),
+        filter(e => this.mode === 'MARKDOWN'),
+        filter(e => e.value.to !== e.value.from || !R.equals(e.size.from, e.size.to)),
+      )
+      .subscribe(e => {
+        const { from, to } = e.value;
+        const value = { from, to };
+        this.fireChanged({ mode: 'MARKDOWN', value });
+
+        this.fire({
+          type: 'CELL_EDITOR/size',
+          payload: {
+            mode: this.mode,
+            from: e.size.from,
+            to: {
+              ...e.size.to,
+              height: e.size.to.height + 4, // TEMP 🐷
+            },
+          },
+        });
       });
   }
 
@@ -215,23 +240,34 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     this._events$.next(e);
   }
 
-  private fireChanging(args: t.ICellEditorChanged) {
+  private fireChanging(mode: t.CellEditorMode, from: string, to: string) {
+    const self = this; // tslint:disable-line
     let isCancelled = false;
-    const payload: t.ICellEditorChanging = {
-      ...args,
-      get isCancelled() {
-        return isCancelled;
-      },
+    const payload = {
+      mode,
+      value: { from, to },
       cancel() {
         isCancelled = true;
       },
+      get isCancelled() {
+        return isCancelled;
+      },
+      get isFocused() {
+        return self.isFocused;
+      },
     };
-    this.fire({ type: 'CELL_EDITOR/changing', payload });
+    this.fire({
+      type: 'CELL_EDITOR/changing',
+      payload: payload as t.ICellEditorChanging,
+    });
     return payload;
   }
 
   private fireChanged(payload: t.ICellEditorChanged) {
-    this.fire({ type: 'CELL_EDITOR/changed', payload });
+    this.fire({
+      type: 'CELL_EDITOR/changed',
+      payload: payload,
+    });
     return payload;
   }
 
@@ -241,12 +277,13 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   public render() {
     const { width, height } = this.props;
     const theme = this.theme;
+    const shadow = theme.inputShadow;
 
     const styles = {
       base: css({
         position: 'relative',
         boxSizing: 'border-box',
-        boxShadow: `0 0px ${theme.inputShadow.blur}px 0 ${color.format(theme.inputShadow.color)}`,
+        boxShadow: `0 0px ${shadow.blur}px 0 ${color.format(shadow.color)}`,
         backgroundColor: theme.inputBackground,
         width,
         height,
@@ -309,35 +346,13 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     );
   }
 
-  private renderMarkdown() {
-    const isText = this.mode === 'MARKDOWN';
-    const styles = {
-      editor: css({
-        position: isText ? 'relative' : 'absolute',
-        left: isText ? undefined : -9999999,
-        margin: BORDER_WIDTH,
-        fontFamily: ROBOTO.FAMILY,
-        fontSize: 14,
-        PaddingX: 3,
-      }),
-    };
-    return (
-      <TextEditor
-        ref={this.markdownRef}
-        style={styles.editor}
-        events$={this.markdown$}
-        value={this.value}
-      />
-    );
-  }
-
   private renderFormula() {
-    const isFormula = this.mode === 'FORMULA';
+    const isVisible = this.mode === 'FORMULA';
     const styles = {
       base: css({
-        position: isFormula ? 'relative' : 'absolute',
-        top: BORDER_WIDTH,
-        left: isFormula ? 0 : -999999,
+        position: isVisible ? 'relative' : 'absolute',
+        left: isVisible ? 0 : -999999,
+        top: BORDER_WIDTH + (this.row === 0 ? -1 : 0),
         height: DEFAULTS.ROW_HEIGHTS - BORDER_WIDTH * 2,
         PaddingX: BORDER_WIDTH,
       }),
@@ -356,12 +371,12 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   }
 
   private renderText() {
-    const isText = this.mode === 'TEXT';
+    const isVisible = this.mode === 'TEXT';
     const styles = {
       base: css({
-        position: isText ? 'relative' : 'absolute',
-        left: isText ? 0 : -999999,
-        top: 1,
+        position: isVisible ? 'relative' : 'absolute',
+        left: isVisible ? 0 : -999999,
+        top: this.row === 0 ? 0 : 1,
         height: DEFAULTS.ROW_HEIGHTS - BORDER_WIDTH * 2,
         PaddingX: BORDER_WIDTH,
       }),
@@ -380,6 +395,30 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
           style={styles.input}
         />
       </div>
+    );
+  }
+
+  private renderMarkdown() {
+    const isVisible = this.mode === 'MARKDOWN';
+
+    const styles = {
+      editor: css({
+        position: isVisible ? 'relative' : 'absolute',
+        left: isVisible ? undefined : -9999999,
+        top: this.row === 0 ? 0 : 1,
+        margin: BORDER_WIDTH,
+        fontFamily: ROBOTO.FAMILY,
+        fontSize: 14,
+        PaddingX: 3,
+      }),
+    };
+    return (
+      <TextEditor
+        ref={this.markdownRef}
+        style={styles.editor}
+        events$={this.markdown$}
+        value={this.value}
+      />
     );
   }
 }

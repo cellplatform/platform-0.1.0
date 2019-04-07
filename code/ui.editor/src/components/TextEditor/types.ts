@@ -4,6 +4,13 @@ import { EditorView } from 'prosemirror-view';
 
 export { Transaction, EditorState, Schema, EditorView, Node };
 
+export type IEditorSize = { width: number; height: number };
+
+/**
+ * See: `plugins/keyMap.ts`
+ */
+export type EditorKeyMap = { [key: string]: boolean | string };
+
 export type ITextEditorModifierKeys = {
   alt: boolean;
   control: boolean;
@@ -24,7 +31,7 @@ export type ITextEditorChanging<S extends Schema = any> = {
   transaction: Transaction<S>;
   state: { from: EditorState<S>; to: EditorState<S> };
   value: { from: string; to: string };
-  size: { width: number; height: number };
+  size: { from: IEditorSize; to: IEditorSize };
   modifierKeys: ITextEditorModifierKeys;
   isCancelled: boolean;
   cancel(): void;
@@ -37,6 +44,6 @@ export type ITextEditorChangedEvent<S extends Schema = any> = {
 export type ITextEditorChanged<S extends Schema = any> = {
   state: { from?: EditorState<S>; to: EditorState<S> };
   value: { from: string; to: string };
-  size: { width: number; height: number };
+  size: { from: IEditorSize; to: IEditorSize };
   modifierKeys: ITextEditorModifierKeys;
 };

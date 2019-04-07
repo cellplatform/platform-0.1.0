@@ -1,10 +1,9 @@
-import { CommandPrompt } from '@platform/ui.cli';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { init as initCommandLine } from '../cli';
-import { COLORS, css, t } from '../common';
+import * as cli from '../cli';
+import { Shell, t } from '../common';
 import { TestCellEditor } from './Test.CellEditor';
 import { TestGrid } from './Test.Grid';
 
@@ -19,12 +18,11 @@ function fromStorage<T = any>(key: string, defaultValue?: T): T | undefined {
 }
 
 export type ITestProps = {};
-
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
-  private cli = initCommandLine({ state$: this.state$ });
+  private cli = cli.init({ state$: this.state$ });
 
   /**
    * [Lifecycle]
@@ -66,35 +64,14 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
 
   public render() {
-    const styles = {
-      base: css({
-        Absolute: 0,
-        Flex: 'vertical',
-      }),
-      main: css({
-        position: 'relative',
-        display: 'flex',
-        flex: 1,
-      }),
-      footer: css({
-        backgroundColor: COLORS.DARK,
-      }),
-    };
-
     const view = this.viewType;
     const elGrid = view === 'grid' && <TestGrid editorType={this.editorType} />;
     const elCellEditor = view === 'editor' && <TestCellEditor />;
-
     return (
-      <div {...styles.base}>
-        <div {...styles.main}>
-          {elGrid}
-          {elCellEditor}
-        </div>
-        <div {...styles.footer}>
-          <CommandPrompt cli={this.cli} theme={'DARK'} />
-        </div>
-      </div>
+      <Shell cli={this.cli}>
+        {elGrid}
+        {elCellEditor}
+      </Shell>
     );
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm",
-  "version": "0.0.50",
+  "version": "0.0.51",
   "description": "Helpers for working with NPM.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -12,14 +12,14 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/fs": "0.0.45",
-    "@platform/log": "0.0.102",
-    "@platform/exec": "0.0.9",
-    "@platform/util.value": "0.0.52"
+    "@platform/fs": "0.0.46",
+    "@platform/log": "0.0.103",
+    "@platform/exec": "0.0.10",
+    "@platform/util.value": "0.0.53"
   },
   "devDependencies": {
-    "@platform/test": "0.0.38",
-    "@platform/ts": "3.4.2"
+    "@platform/test": "0.0.39",
+    "@platform/ts": "3.4.3"
   },
   "files": [
     "lib"

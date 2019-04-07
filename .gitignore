@@ -19,3 +19,5 @@ npm-debug.log
 yarn-error.log
 sync.yaml
 /TMP.md
+
+code/ui.editor/src/components/TextEditor/plugins/keyMap.ts

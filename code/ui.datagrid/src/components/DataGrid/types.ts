@@ -39,9 +39,9 @@ export type IGridReadyEvent = {
  */
 export type IGridKeydownEvent = {
   type: 'GRID/keydown';
-  payload: IGridKeypress;
+  payload: IGridKeydown;
 };
-export type IGridKeypress = {
+export type IGridKeydown = {
   key: KeyboardEvent['key'];
   event: KeyboardEvent;
   grid: Grid;

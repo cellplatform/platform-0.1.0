@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.spinner",
   "description": "Wait spinner.",
-  "version": "0.0.20",
+  "version": "0.0.22",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,14 +14,15 @@
     "prepare": "ts prepare $@"
   },
   "dependencies": {
-    "@platform/react": "0.1.7"
+    "@platform/react": "0.1.8"
   },
   "devDependencies": {
-    "@platform/ts": "3.4.2",
-    "@uiharness/dev": "0.2.30"
+    "@platform/ts": "3.4.3",
+    "@uiharness/dev": "0.2.33"
   },
   "files": [
-    "lib"
+    "lib",
+    "spin.js"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"

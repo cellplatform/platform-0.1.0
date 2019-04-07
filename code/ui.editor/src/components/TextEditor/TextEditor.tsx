@@ -1,19 +1,16 @@
-import '../../styles';
+import * as styles from '../../styles';
 
-import { defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
+import * as commands from 'prosemirror-commands';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter, map } from 'rxjs/operators';
-import * as commands from 'prosemirror-commands';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, containsFocus, constants, events } from '../../common';
+import { constants, containsFocus, events, GlamorValue, css, IEditorStyles } from '../../common';
+import * as markdown from './markdown';
+import * as plugins from './plugins';
 import * as t from './types';
-
-// @ts-ignore
-const exampleSetup = require('prosemirror-example-setup').exampleSetup;
-const schema = require('prosemirror-markdown').schema;
 
 export type DocSchema = any;
 
@@ -22,7 +19,10 @@ export type ITextEditorProps = {
   events$?: Subject<t.TextEditorEvent>;
   focusOnLoad?: boolean;
   selectOnLoad?: boolean;
+  className?: string;
   style?: GlamorValue;
+  editorStyle?: GlamorValue;
+  contentStyle?: Partial<IEditorStyles>;
 };
 
 /**
@@ -38,17 +38,28 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * [Static]
    */
-  public static serialize(state: t.EditorState) {
-    return defaultMarkdownSerializer.serialize(state.doc);
+  public static markdown = markdown;
+
+  public static size(el?: HTMLElement): t.IEditorSize {
+    const width = el ? el.offsetWidth : -1;
+    const height = el ? el.offsetHeight : -1;
+    return { width, height };
   }
 
   /**
    * [Fields]
    */
-  private el: HTMLDivElement;
-  private elRef = (ref: HTMLDivElement) => (this.el = ref);
+  private elEditor: HTMLDivElement;
+  private elEditorRef = (ref: HTMLDivElement) => (this.elEditor = ref);
+
+  private elMeasure: HTMLDivElement;
+  private elMeasureRef = (ref: HTMLDivElement) => (this.elMeasure = ref);
+
   private view: EditorView;
+  private viewMeasure: EditorView;
+
   private _prevState: t.EditorState | undefined;
+  private _prevSize: t.IEditorSize = { width: -1, height: -1 };
 
   private unmounted$ = new Subject();
   private _events$ = new Subject<t.TextEditorEvent>();
@@ -120,11 +131,11 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   public get isFocused() {
-    return containsFocus(this.el) || this.view.hasFocus();
+    return containsFocus(this.elEditor) || this.view.hasFocus();
   }
 
   public get value() {
-    return TextEditor.serialize(this.view.state);
+    return markdown.serialize(this.view.state);
   }
 
   public get editor() {
@@ -133,14 +144,8 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     return { view, state };
   }
 
-  public get width() {
-    return this.el ? this.el.offsetWidth : -1;
-  }
-  public get height() {
-    return this.el ? this.el.offsetHeight : -1;
-  }
-  public get size() {
-    return { width: this.width, height: this.height };
+  public get size(): t.IEditorSize {
+    return TextEditor.size(this.elEditor);
   }
 
   /**
@@ -169,17 +174,22 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     }
 
     const state = EditorState.create({
-      doc: defaultMarkdownParser.parse(value),
-      plugins: [
-        ...exampleSetup({ schema, menuBar: false }),
-        // history(),
-        // keymap({ 'Mod-z': undo, 'Mod-y': redo }),
-      ],
+      doc: markdown.parse(value),
+      plugins: plugins.init({ schema: markdown.schema }),
     });
-    this.view = new EditorView<DocSchema>(this.el, {
+
+    const dispatchTransaction = this.dispatch;
+
+    this.view = new EditorView<DocSchema>(this.elEditor, {
       state,
-      dispatchTransaction: this.dispatch,
+      dispatchTransaction,
     });
+
+    this.viewMeasure = new EditorView<DocSchema>(this.elMeasure, {
+      state,
+      dispatchTransaction,
+    });
+
     this.fireChanged();
   }
 
@@ -188,23 +198,46 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    */
   public load(value: string) {
     const { state } = this.editor;
-    const node = defaultMarkdownParser.parse(value);
+    const node = markdown.parse(value);
     const tr = state.tr;
     tr.replaceWith(0, tr.doc.content.size, node);
     this.dispatch(tr);
+  }
+
+  private updateStyles() {
+    const { contentStyle, className } = this.props;
+    if (contentStyle) {
+      styles.init({ styles: contentStyle, className });
+    }
   }
 
   /**
    * [Render]
    */
   public render() {
+    this.updateStyles();
+
+    const className = `${constants.CSS_CLASS.EDITOR} ${this.props.className || ''}`.trim();
+    const styles = {
+      measure: css({
+        Absolute: 0,
+        visibility: 'hidden',
+      }),
+    };
+
     return (
-      <div
-        ref={this.elRef}
-        {...this.props.style}
-        className={constants.CSS_CLASS.EDITOR}
-        onClick={this.handleClick}
-      />
+      <div {...this.props.style} onClick={this.handleClick}>
+        <div ref={this.elEditorRef} className={className} {...this.props.editorStyle} />
+        <div {...styles.measure}>
+          {/* 
+            NOTE: The element below is turned into a second "hidden" editor which is
+                  used for measure the size of the rendered content prior to the main
+                  visible editor being updated.
+                  This data is fired through the "changing/pre" event.
+          */}
+          <div ref={this.elMeasureRef} className={className} {...this.props.editorStyle} />
+        </div>
+      </div>
     );
   }
 
@@ -222,10 +255,22 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
     const value = {
       get from() {
-        return TextEditor.serialize(state.from);
+        return markdown.serialize(state.from);
       },
       get to() {
-        return TextEditor.serialize(state.to);
+        return markdown.serialize(state.to);
+      },
+    };
+
+    let toSize: t.IEditorSize | undefined;
+    const size = {
+      from: this._prevSize,
+      get to() {
+        if (!toSize) {
+          self.viewMeasure.updateState(state.to);
+          toSize = TextEditor.size(self.elMeasure);
+        }
+        return toSize;
       },
     };
 
@@ -239,14 +284,12 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
         state,
         value,
         modifierKeys,
+        size,
         get isCancelled() {
           return isCancelled;
         },
         cancel() {
           isCancelled = true;
-        },
-        get size() {
-          return self.size;
         },
       },
     });
@@ -256,6 +299,10 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
     // Update the state of the editor.
     view.updateState(state.to);
+    if (!toSize) {
+      // NB: Short-circuit if state already updated by `size.to` getter.
+      this.viewMeasure.updateState(state.to);
+    }
 
     // Fire the AFTER event.
     this.fireChanged();
@@ -266,9 +313,8 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   private fireChanged() {
-    const self = this; // tslint:disable-line
     const modifierKeys = { ...this.modifierKeys };
-
+    const size = { from: this._prevSize, to: this.size };
     const state = {
       from: this._prevState,
       to: this.view.state,
@@ -276,10 +322,10 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
     const value = {
       get from() {
-        return state.from ? TextEditor.serialize(state.from) : '';
+        return state.from ? markdown.serialize(state.from) : '';
       },
       get to() {
-        return TextEditor.serialize(state.to);
+        return markdown.serialize(state.to);
       },
     };
 
@@ -289,13 +335,13 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
         state,
         value,
         modifierKeys,
-        get size() {
-          return self.size;
-        },
+        size,
       },
     });
 
+    // Store state as "prev" for next event.
     this._prevState = state.to;
+    this._prevSize = size.to;
   }
 
   private handleClick = () => this.focus();

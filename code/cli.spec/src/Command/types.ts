@@ -1,6 +1,7 @@
 import { ICommandArgs } from '../Argv/types';
 import { Observable } from 'rxjs';
 export { ICommandArgs };
+import { ICommandParam } from '../CommandParam/types';
 
 /**
  * Represents a single [command] which is a named unit of
@@ -8,11 +9,12 @@ export { ICommandArgs };
  *
  * Generics:
  *  - `P` stands for `props`
- *  - `O` stands for argument `options`
+ *  - `A` stands for `arguments`
  */
 export type ICommand<P extends object = any, A extends object = any> = {
   id: number;
   name: string;
+  params: ICommandParam[];
   children: ICommand[];
   handler?: CommandHandler<P, A>;
   invoke: InvokeCommand<P, A>;
@@ -43,7 +45,7 @@ export type CommandTreeFilter<T extends ICommand> = (command: T) => boolean;
  * The handler that is invoked for a command.
  * Generics:
  *  - `P` stands for `props`
- *  - `O` stands for argument `options`
+ *  - `A` stands for `arguments`
  */
 export type CommandHandler<P extends object = any, A extends object = any> = (
   e: ICommandHandlerArgs<P, A>,
@@ -53,7 +55,7 @@ export type CommandHandler<P extends object = any, A extends object = any> = (
  * Arguments passed to a command handler.
  * Generics:
  *  - `P` stands for `props`
- *  - `O` stands for argument `options`
+ *  - `A` stands for `arguments`
  */
 export type ICommandHandlerArgs<P extends object = any, A extends object = any> = {
   args: ICommandArgs<A>;

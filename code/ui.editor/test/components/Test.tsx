@@ -23,11 +23,18 @@ const DEFAULT = {
 
 Before
 
-      code block
+\`\`\`
+code block
+\`\`\`
 
 After
 
+> Block quote  \
+
+> For whom the bell tolls.
+
   `.substring(1),
+
   LONG: `
 ${LOREM}  
 
@@ -37,6 +44,15 @@ ${LOREM}
   `,
 };
 
+const MY_STYLES: Partial<t.IEditorStyles> = {
+  h1: {
+    color: '#709FFF', // Blue.
+  },
+  hr: {
+    borderColor: '#FF004B', // Pink.
+  },
+};
+
 export type ITestProps = {
   style?: GlamorValue;
 };
@@ -44,7 +60,7 @@ export type ITestProps = {
 export type ITestState = {
   editorState?: t.EditorState;
   transactions?: t.Transaction[];
-  size?: { width: number; height: number };
+  size?: t.IEditorSize;
   value?: string;
 };
 
@@ -70,7 +86,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     state$.subscribe(e => this.setState(e));
 
     events$.subscribe(e => {
-      console.log('🌳', e);
+      console.log('🌳', e.type, e.payload);
     });
 
     events$
@@ -93,10 +109,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         map(e => e.payload as t.ITextEditorChanged),
       )
       .subscribe(e => {
-        const { state, value } = e;
+        const { state } = e;
         this.state$.next({
           editorState: state.to,
-          size: e.size,
+          size: e.size.to,
           value: e.value.to,
         });
       });
@@ -223,15 +239,16 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.columns}>
           <div {...styles.editorOuter}>
             {elSize}
-            <div {...styles.scrollContainer}>
-              <TextEditor
-                ref={this.editorRef}
-                style={styles.editor}
-                value={this.state.value}
-                events$={this.events$}
-                focusOnLoad={true}
-              />
-            </div>
+            <TextEditor
+              ref={this.editorRef}
+              className={'myClass'}
+              style={styles.scrollContainer}
+              editorStyle={styles.editor}
+              contentStyle={MY_STYLES}
+              value={this.state.value}
+              events$={this.events$}
+              focusOnLoad={true}
+            />
           </div>
           <div {...styles.right}>
             <ObjectView name={'state'} data={data} style={styles.state} />
@@ -266,11 +283,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         fontWeight: 'bold',
         fontSize: 12,
         color: COLORS.PURPLE,
+        marginLeft: 15,
       }),
     };
     return (
       <div {...styles.base}>
-        <div>value</div>
+        <div>value (markdown)</div>
         <pre {...styles.pre}>{value}</pre>
       </div>
     );

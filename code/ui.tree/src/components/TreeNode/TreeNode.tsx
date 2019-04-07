@@ -6,7 +6,6 @@ import {
   TreeNodeMouseEvent,
   TreeNodeMouseEventHandler,
   ITreeNode,
-  // toCssEdges,
   t,
   tree,
   value,
@@ -331,7 +330,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     target: TreeNodeMouseEvent['target'],
     onMouse?: TreeNodeMouseEventHandler,
   ) {
-    return mouse.handlers(e => {
+    const handlers = mouse.handlers(e => {
       e.cancel();
       const node = getNode();
       const props = node.props || {};
@@ -339,7 +338,16 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
       if (onMouse) {
         onMouse({ ...e, id: node.id, target, node, props, children });
       }
-    }).events;
+    });
+    type Handler = React.MouseEventHandler;
+    const events = handlers.events;
+    const onClick = events.onClick as Handler;
+    const onDoubleClick = events.onDoubleClick as Handler;
+    const onMouseDown = events.onMouseDown as Handler;
+    const onMouseUp = events.onMouseUp as Handler;
+    const onMouseEnter = events.onMouseEnter as Handler;
+    const onMouseLeave = events.onMouseLeave as Handler;
+    return { onClick, onDoubleClick, onMouseDown, onMouseUp, onMouseEnter, onMouseLeave };
   }
 
   private nodeHandlers = this.mouseHandlers('NODE');
