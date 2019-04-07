@@ -1,22 +1,25 @@
 import * as React from 'react';
-
 import { Subject } from 'rxjs';
-import { takeUntil, distinctUntilChanged, delay } from 'rxjs/operators';
-import { css, animation, value } from '../../common';
+import { takeUntil } from 'rxjs/operators';
+
+import { css, value, time } from '../../common';
 import { IStackPanel } from './types';
 
-export interface IPanelProps {
+type OffsetEdge = 'OFFSET_LEFT' | 'OFFSET_RIGHT';
+
+export type IPanelProps = {
   data: IStackPanel;
   index: number;
   current: number;
+  previous: number;
   duration: number;
-}
+};
 
-type OffsetEdge = 'OFFSET_LEFT' | 'OFFSET_RIGHT';
 export type IPanelState = {
-  props$?: Subject<IPanelProps>;
   offset?: number;
   opacity?: number;
+  edge?: OffsetEdge;
+  isMounted?: boolean;
 };
 
 export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
@@ -24,76 +27,17 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
    * [Static]
    */
 
-  private static edge(props: IPanelProps): OffsetEdge | undefined {
-    const { current, index } = props;
-    return current === index
-      ? undefined // Currently visible.
-      : index < current
-      ? 'OFFSET_LEFT'
-      : 'OFFSET_RIGHT';
-  }
-
-  /**
-   * [Fields]
-   */
-  private props$ = new Subject<IPanelProps>();
-  public state: IPanelState = {
-    props$: this.props$,
-    offset: this.offset,
-    opacity: 1,
-  };
-
-  private stop$ = new Subject();
-  private unmounted$ = new Subject();
-
-  /**
-   * [Lifecycle]
-   */
-
-  public componentDidMount() {
-    const props$ = this.props$.pipe(takeUntil(this.unmounted$));
-    props$
-      .pipe(
-        distinctUntilChanged((p, n) => Panel.edge(p) === Panel.edge(n)),
-        delay(0),
-      )
-      .subscribe(e => this.animate({ offset: this.offset }));
-  }
-
-  public static getDerivedStateFromProps(props: IPanelProps, state: IPanelState) {
-    if (state.props$) {
-      state.props$.next(props);
-    }
-    return null;
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
-
-  /**
-   * [Properties]
-   */
-
-  private get edge() {
-    return Panel.edge(this.props);
-  }
-
-  private get offsetOpacity() {
-    const { data } = this.props;
-    const opacity = value.defaultValue(data.offsetOpacity, 1);
-    switch (this.edge) {
-      case 'OFFSET_LEFT':
-      case 'OFFSET_RIGHT':
-        return opacity;
-      default:
-        return 1;
+  public static edge(props: { index: number; current: number }): OffsetEdge | undefined {
+    const { index, current } = props;
+    if (current === index) {
+      return undefined; // Currently visible.
+    } else {
+      return index < current ? 'OFFSET_LEFT' : 'OFFSET_RIGHT';
     }
   }
 
-  private get offset() {
-    switch (this.edge) {
+  public static offset(edge?: OffsetEdge) {
+    switch (edge) {
       case 'OFFSET_LEFT':
         return -1;
       case 'OFFSET_RIGHT':
@@ -104,28 +48,72 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
   }
 
   /**
+   * [Fields]
+   */
+  public state: IPanelState = { opacity: 1 };
+  private unmounted$ = new Subject();
+  private state$ = new Subject<Partial<IPanelState>>();
+
+  /**
+   * [Lifecycle]
+   */
+
+  public componentWillMount() {
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+
+    // Set initial panel position (prior to first render).
+    const { index, previous } = this.props;
+    const edge = Panel.edge({ index, current: previous });
+    const offset = Panel.offset(edge);
+    this.setState({ edge, offset });
+  }
+
+  public componentDidMount() {
+    time.delay(0, () => {
+      // NB:  Allow the first render to occur, which may have the panel off screen.
+      //      Then re-calculate the position of the panel to allow it to slide
+      //      in if necessary.
+      this.updateState();
+    });
+  }
+
+  public componentDidUpdate() {
+    this.updateState();
+  }
+
+  public componentWillUnmount() {
+    this.unmounted$.next();
+    this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get isDisposed() {
+    return this.unmounted$.isStopped;
+  }
+
+  /**
    * [Methods]
    */
 
-  private animate(args: { offset: number }) {
-    this.stop$.next(); // Stop currently executing animation (if any).
-    const current = () => this.state;
-    const { duration } = this.props;
-    const offset = args.offset;
-    const opacity = this.offsetOpacity;
-    const target = { offset, opacity };
-    animation
-      .start({ target, current, duration, type: 'easeInOut' })
-      .pipe(
-        takeUntil(this.stop$),
-        takeUntil(this.unmounted$),
-      )
-      .subscribe({
-        next: data => this.setState(data as any),
-        complete: () => {
-          // Done.
-        },
-      });
+  public updateState() {
+    const edge = Panel.edge(this.props);
+    const offset = Panel.offset(edge);
+    const opacity = this.offsetOpacity(edge);
+    this.state$.next({ edge, offset, opacity });
+  }
+
+  private offsetOpacity(edge?: OffsetEdge) {
+    const { data } = this.props;
+    const opacity = value.defaultValue(data.offsetOpacity, 1);
+    switch (edge) {
+      case 'OFFSET_LEFT':
+      case 'OFFSET_RIGHT':
+        return opacity;
+      default:
+        return 1;
+    }
   }
 
   /**
@@ -133,14 +121,15 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
    */
 
   public render() {
-    const { data } = this.props;
+    const { data, duration } = this.props;
     const { offset = 0, opacity } = this.state;
     const styles = {
       base: css({
         Absolute: 0,
         display: 'flex',
-        transform: `translateX(${offset * 100}%)`,
         opacity,
+        transform: `translateX(${offset * 100}%)`,
+        transition: `transform ${duration}ms, opacity ${duration}ms`,
       }),
     };
     return <div {...styles.base}>{data.el}</div>;

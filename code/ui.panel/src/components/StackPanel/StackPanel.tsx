@@ -33,6 +33,7 @@ export class StackPanel extends React.PureComponent<IStackPanelProps> {
    */
   private unmounted$ = new Subject();
   private props$ = new BehaviorSubject<IStackPanelProps>(this.props);
+  private previous = this.index;
 
   /**
    * [Lifecycle]
@@ -40,18 +41,27 @@ export class StackPanel extends React.PureComponent<IStackPanelProps> {
 
   public componentDidMount() {
     const props$ = this.props$.pipe(takeUntil(this.unmounted$));
-    props$
-      .pipe(
-        filter(() => Boolean(this.props.onSlide)),
-        map(e => StackPanel.index(e)),
-        distinctUntilChanged((prev, next) => prev === next),
-        pairwise(),
-      )
-      .subscribe(e => {
+
+    const indexChanged$ = props$.pipe(
+      filter(() => Boolean(this.props.onSlide)),
+      map(e => StackPanel.index(e)),
+      distinctUntilChanged((prev, next) => prev === next),
+      pairwise(),
+    );
+
+    indexChanged$
+      // Store previous index reference
+      .subscribe(indexes => {
+        this.previous = indexes[0];
+      });
+
+    indexChanged$
+      // Fire START/COMPLETE events.
+      .subscribe(indexes => {
         const fire = (stage: StackPanelSlideEvent['stage']) => {
           const { onSlide } = this.props;
           if (onSlide) {
-            onSlide({ stage, from: e[0], to: e[1] });
+            onSlide({ stage, from: indexes[0], to: indexes[1] });
           }
         };
         fire('START');
@@ -96,15 +106,18 @@ export class StackPanel extends React.PureComponent<IStackPanelProps> {
     };
     const elPanels = panels
       .map((data, i) => {
-        return <Panel key={i} index={i} current={index} data={data} duration={duration} />;
+        return (
+          <Panel
+            key={i}
+            index={i}
+            current={index}
+            previous={this.previous}
+            data={data}
+            duration={duration}
+          />
+        );
       })
       .reverse();
-    // elPanels.reverse();
-
-    console.group('🌳 render');
-    console.log('index', index);
-    console.log('panels', panels);
-    console.groupEnd();
 
     return <div {...css(styles.base, this.props.style)}>{elPanels}</div>;
   }
