@@ -51,9 +51,7 @@ export class StackPanel extends React.PureComponent<IStackPanelProps> {
 
     indexChanged$
       // Store previous index reference
-      .subscribe(indexes => {
-        this.previous = indexes[0];
-      });
+      .subscribe(indexes => (this.previous = indexes[0]));
 
     indexChanged$
       // Fire START/COMPLETE events.
