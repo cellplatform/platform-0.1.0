@@ -6,7 +6,7 @@ import { t } from '../../common';
 export function buildTree(command: t.ICommand, options: { parent?: t.ITreeNode } = {}) {
   const parent: t.ITreeNode = options.parent || {
     id: asNodeId(command),
-    props: { label: 'Commands' },
+    props: { label: 'Commands', header: { isVisible: false } },
   };
 
   parent.children = command.children.map(cmd => {

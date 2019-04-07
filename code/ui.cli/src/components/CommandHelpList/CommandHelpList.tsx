@@ -117,7 +117,7 @@ export class CommandHelpList extends React.PureComponent<
         opacity: isMatch ? 1 : 0.3,
         cursor: 'pointer',
         Flex: 'horizontal-center',
-        paddingBottom: isLast ? 0 : 4,
+        paddingBottom: isLast ? 0 : 6,
       }),
       icon: css({
         marginRight: 6,

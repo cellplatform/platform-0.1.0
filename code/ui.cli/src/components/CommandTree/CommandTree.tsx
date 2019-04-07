@@ -10,8 +10,8 @@ import * as util from './util';
 export type ICommandTreeProps = {
   root: t.ICommand;
   current?: t.ICommand;
-  theme: ITreeViewProps['theme'];
-  background: ITreeViewProps['background'];
+  theme?: ITreeViewProps['theme'];
+  background?: ITreeViewProps['background'];
   events?: Subject<t.CommandTreeEvent>;
   style?: GlamorValue;
 };
@@ -134,8 +134,8 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
       <TreeView
         node={this.state.tree}
         current={this.currentNodeId}
-        theme={'DARK'}
-        background={'NONE'}
+        theme={this.props.theme}
+        background={this.props.background}
         renderIcon={this.renderIcon}
         mouseEvents$={this.mouse$}
         style={this.props.style}

@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { color, COLORS, css, t } from '../../src/common';
-import { CommandTree } from '../../src/components/CommandTree';
+import { CommandTree } from '../../src';
 import { init as initCommandLine } from '../cli';
 
 const cli = initCommandLine({});
