@@ -190,7 +190,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
       // return undefined;
     }
 
-    const match = ['root.2', 'root.6', 'foo'];
+    const match = ['root.2', 'root.3', 'foo'];
     if (match.includes(e.node.id)) {
       const styles = {
         base: css({
