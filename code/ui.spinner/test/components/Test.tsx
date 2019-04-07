@@ -22,14 +22,16 @@ export const Test = () => {
   return (
     <div {...styles.base}>
       <div {...styles.spinners}>
-        <Spinner size={'SMALL'} />
-        <Spinner size={'MEDIUM'} />
-        <Spinner size={'LARGE'} />
+        <Spinner size={12} />
+        <Spinner size={18} />
+        <Spinner size={22} />
+        <Spinner size={32} />
       </div>
       <div {...css(styles.spinners, styles.inverted)}>
-        <Spinner size={'SMALL'} color={1} />
-        <Spinner size={'MEDIUM'} color={1} />
-        <Spinner size={'LARGE'} color={1} />
+        <Spinner size={12} color={1} />
+        <Spinner size={18} color={1} />
+        <Spinner size={22} color={1} />
+        <Spinner size={32} color={1} />
       </div>
     </div>
   );

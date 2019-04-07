@@ -21,8 +21,7 @@
     "@uiharness/dev": "0.2.33"
   },
   "files": [
-    "lib",
-    "spin.js"
+    "lib"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"
