@@ -23,12 +23,18 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestTreeState>>();
   private mouse$ = new Subject<t.TreeNodeMouseEvent>();
+  private events$ = new Subject<t.CommandTreeEvent>();
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+
+    events$.subscribe(e => {
+      console.log('🌳', e.type, e.payload);
+    });
 
     const mouse$ = this.mouse$.pipe(
       takeUntil(this.unmounted$),
@@ -84,7 +90,7 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
     return (
       <div {...styles.base}>
         <div {...styles.tree}>
-          <CommandTree root={cli.root} theme={'DARK'} background={'NONE'} />
+          <CommandTree root={cli.root} theme={'DARK'} background={'NONE'} events={this.events$} />
 
           {/* <TreeView
             node={this.state.tree}
