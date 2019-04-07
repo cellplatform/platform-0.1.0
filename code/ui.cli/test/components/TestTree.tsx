@@ -6,24 +6,9 @@ import { color, COLORS, css, t } from '../../src/common';
 import { TreeView } from '../../src/components/primitives';
 import { init as initCommandLine } from '../cli';
 import { Icons } from './Icons';
+import { CommandTree } from '../../src/components/CommandTree';
 
 const cli = initCommandLine({});
-
-const TREE: t.ITreeNode = {
-  id: 'root',
-  props: {
-    label: 'Sheet',
-    icon: 'Face',
-    header: { isVisible: false },
-  },
-  children: [
-    { id: 'child-1', props: { icon: 'Face', marginTop: 30 } },
-    { id: 'child-2', props: { icon: 'Face' } },
-    { id: 'child-3', props: { icon: 'Face' } },
-    { id: 'child-4', props: { icon: 'Face' } },
-    { id: 'child-5', props: { icon: 'Face' } },
-  ],
-};
 
 /**
  * Test Component
@@ -37,7 +22,7 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
   public state: ITestTreeState = { tree: buildTree(cli.root) };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestTreeState>>();
-  private mouseEvents$ = new Subject<t.TreeNodeMouseEvent>();
+  private mouse$ = new Subject<t.TreeNodeMouseEvent>();
 
   /**
    * [Lifecycle]
@@ -45,18 +30,18 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
-    const mouseEvents$ = this.mouseEvents$.pipe(
+    const mouse$ = this.mouse$.pipe(
       takeUntil(this.unmounted$),
       filter(e => e.button === 'LEFT'),
     );
 
-    const click$ = mouseEvents$.pipe(filter(e => e.type === 'DOWN'));
+    const click$ = mouse$.pipe(filter(e => e.type === 'DOWN'));
 
-    mouseEvents$.subscribe(e => {
+    mouse$.subscribe(e => {
       // console.log('e', e);
     });
 
-    mouseEvents$
+    mouse$
       // Drill into child node.
       .pipe(
         filter(
@@ -80,6 +65,7 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
 
   public componentWillUnmount() {
     this.unmounted$.next();
+    this.unmounted$.complete();
   }
 
   public render() {
@@ -98,14 +84,16 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
     return (
       <div {...styles.base}>
         <div {...styles.tree}>
-          <TreeView
+          <CommandTree root={cli.root} theme={'DARK'} background={'NONE'} />
+
+          {/* <TreeView
             node={this.state.tree}
             current={this.state.current}
             theme={'DARK'}
             background={'NONE'}
             renderIcon={this.renderIcon}
-            mouseEvents$={this.mouseEvents$}
-          />
+            mouseEvents$={this.mouse$}
+          /> */}
         </div>
       </div>
     );
