@@ -1,11 +1,9 @@
-import '../../node_modules/@platform/css/reset.css';
-import '@babel/polyfill';
-
-import { Button, ObjectView } from '@uiharness/ui';
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { TreeView } from '../../src';
-import { color, css, t, COLORS } from '../../src/common';
+import { Button, color, COLORS, css, ObjectView, t } from './common';
 import { Icons } from './Icons';
 
 const TREE: t.ITreeNode = {
@@ -27,12 +25,31 @@ const TREE: t.ITreeNode = {
 /**
  * Test Component
  */
-export type IState = {
-  tree?: t.ITreeNode;
+export type ITestState = {
   theme?: t.TreeTheme;
+  root?: t.ITreeNode;
+  current?: string;
 };
-export class Test extends React.PureComponent<{}, IState> {
-  public state: IState = { tree: TREE, theme: 'LIGHT' };
+export class Test extends React.PureComponent<{}, ITestState> {
+  public state: ITestState = { root: TREE, theme: 'LIGHT' };
+  private unmounted$ = new Subject();
+  private state$ = new Subject<Partial<ITestState>>();
+
+  /**
+   * [Lifecycle]
+   */
+  public componentWillMount() {
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+  }
+
+  public componentWillUnmount() {
+    this.unmounted$.next();
+    this.unmounted$.complete();
+  }
+
+  /**
+   * [Render]
+   */
 
   public render() {
     const { theme } = this.state;
@@ -55,18 +72,20 @@ export class Test extends React.PureComponent<{}, IState> {
         display: 'flex',
       }),
     };
+
     return (
       <div {...styles.base}>
         <div {...styles.left}>
           <div>
-            {this.button('theme: LIGHT', () => this.setState({ theme: 'LIGHT' }))}
-            {this.button('theme: DARK', () => this.setState({ theme: 'DARK' }))}
+            {this.button('theme: LIGHT', () => this.state$.next({ theme: 'LIGHT' }))}
+            {this.button('theme: DARK', () => this.state$.next({ theme: 'DARK' }))}
           </div>
-          <ObjectView name={'tree'} data={this.state.tree} />
+          <ObjectView name={'tree'} data={this.state.root} />
         </div>
         <div {...styles.right}>
           <TreeView
-            node={this.state.tree}
+            node={this.state.root}
+            current={this.state.current}
             theme={this.state.theme}
             background={'NONE'}
             renderIcon={this.renderIcon}

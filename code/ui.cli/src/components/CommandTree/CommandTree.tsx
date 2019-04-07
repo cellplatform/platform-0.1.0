@@ -97,10 +97,16 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
   }
 
   /**
-   * Propertes
+   * [Propertes]
    */
   public get root() {
     return this.props.root;
+  }
+
+  private get currentNodeId() {
+    const { tree } = this.state;
+    const { current } = this.props;
+    return !current && tree ? tree.id : util.asNodeId(current);
   }
 
   /**
@@ -124,11 +130,10 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
    * [Render]
    */
   public render() {
-    const current = util.asNodeId(this.props.current);
     return (
       <TreeView
         node={this.state.tree}
-        current={current}
+        current={this.currentNodeId}
         theme={'DARK'}
         background={'NONE'}
         renderIcon={this.renderIcon}
