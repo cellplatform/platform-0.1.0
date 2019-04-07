@@ -2,9 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { TreeView } from '../../src';
-import { Button, color, COLORS, css, ObjectView, t } from './common';
-import { Icons } from './Icons';
+import { Icons, TreeView, Button, color, COLORS, css, ObjectView, t } from './common';
+import * as sample from '../sample';
 
 const TREE: t.ITreeNode = {
   id: 'root',
@@ -31,7 +30,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
   /**
    * [Fields]
    */
-  public state: ITestState = { root: TREE, theme: 'LIGHT' };
+  public state: ITestState = { root: sample.INLINE_SAMPLE, theme: 'LIGHT' };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
 
