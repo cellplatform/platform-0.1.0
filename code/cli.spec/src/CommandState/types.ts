@@ -83,10 +83,22 @@ export type ICommandStateInvokeResponse = {
  * [Events]
  */
 export type CommandStateEvent =
+  | ICommandStateChangingEvent
   | ICommandStateChangedEvent
   | ICommandStateInvokingEvent
   | ICommandStateInvokedEvent
   | ICommandStateAutoCompletedEvent;
+
+export type ICommandStateChangingEvent = {
+  type: 'COMMAND/state/changing';
+  payload: ICommandStateChanging;
+};
+export type ICommandStateChanging = {
+  prev?: ICommandChangeArgs;
+  next: ICommandChangeArgs;
+  isCancelled: boolean;
+  cancel(): void;
+};
 
 export type ICommandStateChangedEvent = {
   type: 'COMMAND/state/changed';

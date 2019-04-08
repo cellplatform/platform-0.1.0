@@ -61,30 +61,47 @@ describe('CommandState', () => {
   describe('change (events)', () => {
     it('fires [change$] event (observable)', () => {
       const events: t.CommandStateEvent[] = [];
-      const changes: Array<t.ICommandStateChangedEvent['payload']> = [];
+      const changingEvents: t.ICommandStateChanging[] = [];
+      const changedEvents: t.ICommandStateChanged[] = [];
       const state = CommandState.create({ root, getInvokeArgs });
 
       state.events$.subscribe(e => events.push(e));
-      state.changed$.subscribe(e => changes.push(e));
+      state.changing$.subscribe(e => changingEvents.push(e));
+      state.changed$.subscribe(e => changedEvents.push(e));
 
-      state.change({ text: 'foo' });
+      const next = { text: 'foo' };
+      state.change(next);
 
-      expect(events.length).to.eql(1);
-      expect(changes.length).to.eql(1);
+      expect(events.length).to.eql(2);
+      expect(changedEvents.length).to.eql(1);
 
-      const payload = events[0].payload as t.ICommandStateChanged;
-      expect(payload.invoked).to.eql(false);
-      expect(payload.namespace).to.eql(false);
-      expect(payload.props.text).to.eql('foo');
-      expect(payload.props.command).to.eql(undefined);
-      expect(payload.props.namespace).to.eql(undefined);
+      expect(events[0].type).to.eql('COMMAND/state/changing');
+      expect(events[1].type).to.eql('COMMAND/state/changed');
 
-      const changed = changes[0] as t.ICommandStateChanged;
+      const changing = changingEvents[0] as t.ICommandStateChanging;
+      expect(changing.isCancelled).to.eql(false);
+      expect(changing.prev).to.eql(undefined);
+      expect(changing.next).to.eql(next);
+
+      const changed = changedEvents[0] as t.ICommandStateChanged;
       expect(changed.invoked).to.eql(false);
       expect(changed.namespace).to.eql(false);
       expect(changed.props.text).to.eql('foo');
       expect(changed.props.command).to.eql(undefined);
       expect(changed.props.namespace).to.eql(undefined);
+    });
+
+    it('cancels change', () => {
+      const events: t.CommandStateEvent[] = [];
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      state.events$.subscribe(e => events.push(e));
+      state.changing$.subscribe(e => e.cancel());
+
+      state.change({ text: 'foo' });
+
+      expect(events.length).to.eql(1);
+      expect(events[0].type).to.eql('COMMAND/state/changing');
     });
 
     it('autoCompletes', () => {
@@ -106,12 +123,12 @@ describe('CommandState', () => {
       expect(state.autoCompleted).to.eql(autoCompleted);
       expect(state.toObject().autoCompleted).to.eql(autoCompleted);
 
-      expect(events.length).to.eql(2);
+      expect(events.length).to.eql(3);
       expect(changes.length).to.eql(1);
 
-      expect(events[0].type).to.eql('COMMAND/state/autoCompleted');
-      expect(events[0].payload).to.eql(autoCompleted);
-      expect(events[1].type).to.equal('COMMAND/state/changed');
+      expect(events[1].type).to.eql('COMMAND/state/autoCompleted');
+      expect(events[1].payload).to.eql(autoCompleted);
+      expect(events[2].type).to.equal('COMMAND/state/changed');
       expect(changes[0].props.autoCompleted).to.eql(autoCompleted);
 
       // Reset auto-complete.
@@ -136,21 +153,21 @@ describe('CommandState', () => {
       state.invoke$.subscribe(e => invokes.push(e));
 
       state.change({ text: 'foo' }); // NB: invoked [false].
-      expect(events.length).to.eql(1);
-      expect(invokes.length).to.eql(0);
-
-      state.change({ text: 'bar' }); // NB: invoked: true, but no matching command.
       expect(events.length).to.eql(2);
       expect(invokes.length).to.eql(0);
 
+      state.change({ text: 'bar' }); // NB: invoked: true, but no matching command.
+      expect(events.length).to.eql(4);
+      expect(invokes.length).to.eql(0);
+
       state.change({ text: 'ls', invoked: true });
-      expect(events.length).to.eql(3);
+      expect(events.length).to.eql(6);
       expect(invokes.length).to.eql(1);
       expect(invokes[0].props.text).to.eql('ls');
       expect(invokes[0].invoked).to.eql(true);
 
       state.change({ text: 'ls', invoked: true }); // NB: Invoke again.
-      expect(events.length).to.eql(4);
+      expect(events.length).to.eql(8);
       expect(invokes.length).to.eql(2);
     });
   });
@@ -431,8 +448,8 @@ describe('CommandState', () => {
       expect(count).to.eql(0);
       expect(res.cancelled).to.eql(true);
 
-      expect(events[2].type).to.eql('COMMAND/state/invoked');
-      const e = events[2].payload as t.ICommandStateInvokedEvent['payload'];
+      expect(events[3].type).to.eql('COMMAND/state/invoked');
+      const e = events[3].payload as t.ICommandStateInvokedEvent['payload'];
       expect(e.cancelled).to.eql(true);
       expect(e.invoked).to.eql(false);
     });

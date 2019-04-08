@@ -85,7 +85,7 @@ export class TestCommandPrompt extends React.PureComponent<
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.prompt}>
-          <CommandPrompt ref={this.promptRef} cli={cli} events$={this.events$} />
+          <CommandPrompt ref={this.promptRef} cli={cli} />
         </div>
         <div {...styles.body}>
           <CommandHelpList cli={cli} onCommandClick={this.handleHelpClick} />

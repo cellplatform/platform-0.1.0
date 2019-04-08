@@ -47,17 +47,22 @@ export class CommandState implements t.ICommandState {
     text: '',
     namespace: undefined as t.ICommandNamespace | undefined,
     autoCompleted: undefined as t.ICommandAutoCompleted | undefined,
+    prevChange: undefined as t.ICommandChangeArgs | undefined,
   };
 
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
-    takeUntil(this._.dispose$),
+    takeUntil(this.dispose$),
+    share(),
+  );
+  public readonly changing$ = this.events$.pipe(
+    filter(e => e.type === 'COMMAND/state/changing'),
+    map(e => e.payload as t.ICommandStateChanging),
     share(),
   );
   public readonly changed$ = this.events$.pipe(
     filter(e => e.type === 'COMMAND/state/changed'),
     map(e => e.payload as t.ICommandStateChanged),
-    distinctUntilChanged((prev, next) => equals(prev, next) && !next.invoked),
     share(),
   );
   public readonly invoke$ = this.changed$.pipe(
@@ -165,8 +170,32 @@ export class CommandState implements t.ICommandState {
    * Changes the current state.
    */
   public change(e: t.ICommandChangeArgs, options: { silent?: boolean } = {}) {
+    // Fire BEFORE event.
     const { silent } = options;
     const { events$ } = this._;
+    const prev = this._.prevChange;
+    this._.prevChange = e;
+    if (!silent) {
+      let isCancelled = false;
+      events$.next({
+        type: 'COMMAND/state/changing',
+        payload: {
+          prev,
+          next: e,
+          get isCancelled() {
+            return isCancelled;
+          },
+          cancel() {
+            isCancelled = true;
+          },
+        },
+      });
+      if (isCancelled) {
+        return this;
+      }
+    }
+
+    // Setup initial conditions.
     let namespace = e.namespace;
     let text = e.text === undefined ? this.text : e.text;
 
@@ -247,7 +276,7 @@ export class CommandState implements t.ICommandState {
       events$.next({ type: 'COMMAND/state/autoCompleted', payload: e.autoCompleted });
     }
 
-    // Alert listeners.
+    // Fire AFTER event.
     if (!silent) {
       const props = this.toObject();
       const invoked = props.command ? Boolean(e.invoked) : false;
