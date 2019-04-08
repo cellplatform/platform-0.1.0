@@ -501,4 +501,71 @@ describe('CommandState', () => {
       expect(state.text).to.eql('run foo --force');
     });
   });
+
+  describe('fuzzyMatches', () => {
+    it('matches on current text', () => {
+      const ns = Command.create('ns')
+        .add('list')
+        .add('run')
+        .add('play');
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      expect(state.fuzzyMatches.length).to.eql(1);
+      expect(state.fuzzyMatches[0].command.name).to.eql('ns');
+      expect(state.fuzzyMatches[0].isMatch).to.eql(true); // No text === match
+
+      state.change({ text: 's' }); // matches on "s" - "n[s]"
+
+      expect(state.fuzzyMatches.length).to.eql(1);
+      expect(state.fuzzyMatches[0].command.name).to.eql('ns');
+      expect(state.fuzzyMatches[0].isMatch).to.eql(true);
+
+      state.change({ text: 'z' }); // no match
+      expect(state.fuzzyMatches.length).to.eql(1);
+      expect(state.fuzzyMatches[0].command.name).to.eql('ns');
+      expect(state.fuzzyMatches[0].isMatch).to.eql(false);
+    });
+
+    it('matches within namespace', () => {
+      const ns = Command.create('ns')
+        .add('list')
+        .add('run')
+        .add('play');
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      state.change({ text: 'ns', namespace: true });
+      expect(state.namespace && state.namespace.name).to.eql('ns');
+
+      const test = (index: number, name: string, isMatch: boolean) => {
+        const matches = state.fuzzyMatches;
+        expect(matches[index].command.name).to.eql(name);
+        expect(matches[index].isMatch).to.eql(isMatch);
+      };
+
+      // Matches everything when no text.
+      test(0, 'list', true);
+      test(1, 'run', true);
+      test(2, 'play', true);
+
+      // Still no text (trimmed).
+      state.change({ text: '  ' });
+      test(0, 'list', true);
+      test(1, 'run', true);
+      test(2, 'play', true);
+
+      // Partial matches.
+      state.change({ text: 'l' });
+      test(0, 'list', true); // "[l]ist"
+      test(1, 'run', false);
+      test(2, 'play', true); // "p[l]ay"
+
+      // No matches.
+      state.change({ text: 'foo' });
+      test(0, 'list', false);
+      test(1, 'run', false);
+      test(2, 'play', false);
+    });
+  });
 });

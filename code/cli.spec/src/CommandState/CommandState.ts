@@ -136,13 +136,15 @@ export class CommandState implements t.ICommandState {
   public get fuzzyMatches() {
     const currentId = this.command ? this.command.id : undefined;
     const root = this.namespace ? this.namespace.command : this.root;
-    const input = this.autoCompleted
+    const input = (this.autoCompleted
       ? this.autoCompleted.matches.map(cmd => cmd.name)
-      : [this.text];
+      : [this.text]
+    ).filter(text => Boolean(text.trim()));
+    const isEmpty = input.length === 0;
     return root.children
       .map(command => {
         const { name } = command;
-        const isMatch = input.some(text => str.fuzzy.isMatch(text, name));
+        const isMatch = isEmpty ? true : input.some(text => str.fuzzy.isMatch(text, name));
         return { command, isMatch };
       })
       .map(item => {
@@ -321,6 +323,7 @@ export class CommandState implements t.ICommandState {
       command: this.command,
       namespace: this.namespace,
       autoCompleted: this.autoCompleted,
+      fuzzyMatches: this.fuzzyMatches,
     };
   }
 }
