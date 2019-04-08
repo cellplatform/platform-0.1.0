@@ -8,6 +8,7 @@ import { CommandParam, ICommandParamArgs } from '../CommandParam';
 
 type ICommandArgs<P extends object = any, A extends object = any> = {
   name: string;
+  description: string;
   handler: t.CommandHandler;
   children: Command[];
   params: CommandParam[] | ICommandParamArgs[];
@@ -58,7 +59,7 @@ export class Command<P extends object = any, A extends object = any> implements 
    * [Lifecycle]
    */
   private constructor(args: Partial<ICommandArgs>) {
-    const { name, handler, children, params } = formatConstructorArgs(args);
+    const { name, description, handler, children, params } = formatConstructorArgs(args);
 
     if (!name) {
       throw new Error(`A command 'name' must be specified.`);
@@ -66,9 +67,9 @@ export class Command<P extends object = any, A extends object = any> implements 
 
     this._.id = Command.toId({ name });
     this._.name = name;
+    this._.description = description;
     this._.handler = handler;
     this._.children = children;
-
     this._.params = params as CommandParam[];
   }
 
@@ -83,6 +84,7 @@ export class Command<P extends object = any, A extends object = any> implements 
   private readonly _ = {
     id: 0,
     name: '',
+    description: undefined as string | undefined,
     handler: undefined as t.CommandHandler | undefined,
     children: [] as Command[],
     params: [] as CommandParam[],
@@ -101,6 +103,10 @@ export class Command<P extends object = any, A extends object = any> implements 
    */
   public get id() {
     return this._.id;
+  }
+
+  public get description() {
+    return this._.description || '';
   }
 
   public get name() {
@@ -192,12 +198,24 @@ export class Command<P extends object = any, A extends object = any> implements 
   }
 
   /**
-   * Add a parameter
+   * [Overrides] Add a parameter.
    */
-  public param(name: string, type: t.CommandParamType) {
-    const param = CommandParam.create({ name, type });
-    this._.params = [...this._.params, param];
-    return this;
+  public param(name: string, type: t.CommandParamType): Command<P, A>;
+  public param(args: ICommandParamArgs): Command<P, A>;
+  public param(...input: any): Command<P, A> {
+    const add = (args: ICommandParamArgs) => {
+      const param = CommandParam.create(args);
+      this._.params = [...this._.params, param];
+      return this;
+    };
+    if (typeof input[0] === 'string') {
+      const [name, type] = input;
+      return add({ name, type });
+    }
+    if (typeof input[0] === 'object') {
+      return add(input[0]);
+    }
+    throw new Error(`Given parameter arguments not supported.`);
   }
 
   /**
@@ -209,6 +227,7 @@ export class Command<P extends object = any, A extends object = any> implements 
     return {
       id: this.id,
       name: this.name,
+      description: this.description,
       handler: this.handler,
       events$: this.events$,
       params: this.params,
@@ -274,6 +293,7 @@ function formatConstructorArgs(args: Partial<ICommandArgs>): ICommandArgs {
   const params = args.params || [];
   return {
     name: (args.name || '').trim(),
+    description: (args.description || '').trim(),
     handler: args.handler || (() => undefined),
     children: args.children || [],
     params: params.map(p => (p instanceof CommandParam ? p : CommandParam.create(p))),

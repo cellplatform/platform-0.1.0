@@ -7,6 +7,7 @@ describe('CommandParam', () => {
     expect(param.name).to.eql('foo');
     expect(param.type).to.eql('string');
     expect(param.isEnum).to.eql(false);
+    expect(param.description).to.eql('');
   });
 
   it('throws if name not specified', () => {
@@ -29,5 +30,10 @@ describe('CommandParam', () => {
     const param = CommandParam.create({ name: 'foo', type: ['one', 1, true] });
     expect(param.type).to.eql(['one', 1, true]);
     expect(param.isEnum).to.eql(true);
+  });
+
+  it('description (trimmed)', () => {
+    const param = CommandParam.create({ name: 'foo', description: '  hello ' });
+    expect(param.description).to.eql('hello');
   });
 });

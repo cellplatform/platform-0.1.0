@@ -2,8 +2,9 @@
  * A single parameter of a Command.
  */
 export type ICommandParam = {
-  name: string;
   type: CommandParamType;
+  name: string;
+  description: string;
   isEnum: boolean;
 };
 
