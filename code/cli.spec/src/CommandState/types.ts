@@ -69,9 +69,9 @@ export type ICommandStateInvokeArgs = {
 };
 
 export type ICommandStateInvokeResponse = {
-  cancelled: boolean;
-  namespaceChanged: boolean;
-  invoked: boolean;
+  isCancelled: boolean;
+  isNamespaceChanged: boolean;
+  isInvoked: boolean;
   state: ICommandStateProps;
   props: { [key: string]: any };
   args: ICommandArgs;
@@ -105,7 +105,7 @@ export type ICommandStateChangedEvent = {
   payload: ICommandStateChanged;
 };
 export type ICommandStateChanged = {
-  props: ICommandStateProps;
+  state: ICommandStateProps;
   invoked: boolean;
   namespace?: boolean;
 };

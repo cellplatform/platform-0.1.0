@@ -30,22 +30,9 @@ export class TestCommandPrompt extends React.PureComponent<
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    const cli$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
+    const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
 
     cli$.subscribe(e => {
-      // console.log('🌳 EVENT', e);
-    });
-
-    const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
-    changed$.subscribe(e => this.forceUpdate());
-
-    // cli$.pipe(filter(e => e.invoked && !e.namespace)).subscribe(async e => {
-    //   const { args } = e.props;
-    //   const command = e.props.command as t.ICommand<t.ITestCommandProps>;
-    //   this.cli.invoke({ command, args });
-    // });
-
-    this.events$.subscribe(e => {
       console.log('🌳', e.type, e.payload);
     });
   }

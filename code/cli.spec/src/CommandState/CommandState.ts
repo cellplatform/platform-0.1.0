@@ -278,9 +278,9 @@ export class CommandState implements t.ICommandState {
 
     // Fire AFTER event.
     if (!silent) {
-      const props = this.toObject();
-      const invoked = props.command ? Boolean(e.invoked) : false;
-      const payload = { props, invoked, namespace: Boolean(this.namespace) };
+      const state = this.toObject();
+      const invoked = state.command ? Boolean(e.invoked) : false;
+      const payload = { state, invoked, namespace: Boolean(this.namespace) };
       events$.next({ type: 'COMMAND/state/changed', payload });
     }
 
@@ -315,9 +315,9 @@ export class CommandState implements t.ICommandState {
 
       // Ensure there is a command to invoke.
       let result: t.ICommandStateInvokeResponse = {
-        invoked: false,
-        cancelled: false,
-        namespaceChanged,
+        isInvoked: false,
+        isCancelled: false,
+        isNamespaceChanged: namespaceChanged,
         state,
         props: args.props,
         args: typeof args.args === 'object' ? args.args : Argv.parse<any>(args.args || ''),
@@ -335,20 +335,22 @@ export class CommandState implements t.ICommandState {
           get isCancelled() {
             return isCancelled;
           },
-          cancel: () => (isCancelled = true),
+          cancel() {
+            isCancelled = true;
+          },
           state,
           args,
         },
       });
+
       if (isCancelled) {
-        result = { ...result, invoked: false, cancelled: true };
-        events$.next({ type: 'COMMAND/state/invoked', payload: result });
+        result = { ...result, isInvoked: false, isCancelled: true };
         return result;
       }
 
       // Invoke the command.
       const response = await command.invoke(args);
-      result = { ...result, invoked: true, response };
+      result = { ...result, isInvoked: true, response };
       events$.next({ type: 'COMMAND/state/invoked', payload: result });
 
       // Finish up.
@@ -358,7 +360,7 @@ export class CommandState implements t.ICommandState {
     // Step into namespace (if required).
     let ns = this.namespace;
     if (valueUtil.defaultValue(options.stepIntoNamespace, true)) {
-      this.change({ text: this.text, namespace: true });
+      this.change({ text: this.text, namespace: true }, { silent: true }); // <== RECURSION
       namespaceChanged = !R.equals(ns, this.namespace);
       ns = this.namespace;
       if (namespaceChanged && ns && ns.command.handler && ns.command !== state.command) {
