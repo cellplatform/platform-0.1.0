@@ -5,10 +5,9 @@ import { takeUntil } from 'rxjs/operators';
 import { Button, color, css, GlamorValue } from '../common';
 import { TestCommandHelp } from './TestCommandHelp';
 import { TestCommandPrompt } from './TestCommandPrompt';
-import { TestTree } from './TestTree';
 
 const STORAGE = { VIEW: 'TEST/REACT/view' };
-type View = 'prompt' | 'list' | 'tree';
+type View = 'prompt' | 'list';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {
@@ -74,7 +73,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.left}>
           {this.buttonView('prompt')}
           {this.buttonView('list')}
-          {this.buttonView('tree')}
         </div>
         <div {...styles.main}>{this.renderView()}</div>
       </div>
@@ -90,9 +88,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
       case 'list':
         return <TestCommandHelp />;
-
-      case 'tree':
-        return <TestTree />;
 
       default:
         return <div>View '{view}' not supported</div>;

@@ -9,6 +9,7 @@ import {
   t,
   tree,
   value,
+  color,
 } from '../../common';
 import * as themes from '../../themes';
 import { Text } from '../Text';
@@ -183,7 +184,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
           {fn({
             style: styles.icon,
             size: SIZE.ICON_LEFT,
-            color: theme.labelColor,
+            color: props.iconColor ? color.format(props.iconColor) : theme.labelColor,
           })}
         </div>
       );
@@ -223,6 +224,8 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     const { node, iconRight } = this.props;
     const props = this.nodeProps;
     const label = props.label || node.id;
+    const labelColor = props.labelColor ? color.format(props.labelColor) : theme.labelColor;
+    // const color = props.label ? color.for
     const styles = {
       base: css({
         flex: 1,
@@ -242,7 +245,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         height: SIZE.LABEL,
-        color: theme.labelColor,
+        color: labelColor,
         fontSize: 14,
         fontWeight: props.isBold ? 900 : undefined,
       }),
@@ -272,7 +275,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     const styles = {
       base: css({
         fontSize: 11,
-        color: theme.labelColor,
+        color: props.descriptionColor ? color.format(props.descriptionColor) : theme.labelColor,
         lineHeight: '1.5em',
         paddingBottom: 4,
         marginRight: iconRight !== undefined ? SIZE.ICON_RIGHT : MARGIN.LABEL_RIGHT,

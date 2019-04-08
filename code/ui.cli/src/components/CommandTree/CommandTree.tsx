@@ -57,7 +57,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     return this.props.cli;
   }
 
-  public get current() {
+  public get nsCommand() {
     return this.cli.namespace ? this.cli.namespace.command : undefined;
   }
 
@@ -67,8 +67,9 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
   public render() {
     return (
       <CommandTreeView
-        root={this.cli.root}
-        current={this.current}
+        rootCommand={this.cli.root}
+        nsCommand={this.nsCommand}
+        currentCommand={this.cli.command}
         fuzzyMatches={this.cli.fuzzyMatches}
         theme={this.props.theme}
         background={this.props.background}

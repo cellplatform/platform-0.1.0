@@ -28,9 +28,12 @@ export type TreeNodeFactory<T extends ITreeNode> = (id: T['id']) => T | undefine
  */
 export type ITreeNodeProps = {
   label?: string;
+  labelColor?: string | number;
   icon?: TreeNodeIcon;
+  iconColor?: string | number;
   title?: string; // For <Header> if different from `label`.
   description?: string;
+  descriptionColor?: string | number;
   opacity?: number;
   padding?: number | number[]; // [top, right, bottom left].
   marginTop?: number;
