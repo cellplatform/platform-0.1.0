@@ -99,7 +99,8 @@ export class CommandPromptInput extends React.PureComponent<
    */
 
   public render() {
-    const { placeholder = 'command', namespace } = this.props;
+    const { placeholder = 'command' } = this.props;
+    const ns = this.props.namespace;
     const theme = this.theme;
     const styles = {
       base: css({
@@ -126,7 +127,7 @@ export class CommandPromptInput extends React.PureComponent<
       }),
     };
 
-    const elNamespace = namespace && <div {...styles.namespace}>{namespace.toString()}</div>;
+    const elNamespace = ns && <div {...styles.namespace}>{ns.toString({ delimiter: '.' })}</div>;
 
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.focus}>

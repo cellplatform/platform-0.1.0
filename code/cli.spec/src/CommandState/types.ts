@@ -29,7 +29,7 @@ export type ICommandNamespace = {
   name: string;
   command: ICommand;
   path: ICommand[];
-  toString(): string;
+  toString(options?: { delimiter?: string }): string;
 };
 
 export type ICommandAutoCompleted = {

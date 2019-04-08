@@ -221,8 +221,9 @@ export class CommandState implements t.ICommandState {
         get path() {
           return Command.tree.toPath(root, id).slice(1);
         },
-        toString() {
-          return nextNamespace.path.map(c => c.name).join('.');
+        toString(options = {}) {
+          const { delimiter = '.' } = options;
+          return nextNamespace.path.map(c => c.name).join(delimiter);
         },
       };
       this._.namespace = nextNamespace;

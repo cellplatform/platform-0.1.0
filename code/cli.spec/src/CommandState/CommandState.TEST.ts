@@ -294,6 +294,14 @@ describe('CommandState', () => {
       expect(state.command).to.eql(undefined);
       expect(state.text).to.eql('');
     });
+
+    it('namespace.toString()', () => {
+      const state = CommandState.create({ root, getInvokeArgs });
+      state.change({ text: 'db copy fast', namespace: true });
+      const ns = state.namespace;
+      expect(ns && ns.toString()).to.eql('db.copy');
+      expect(ns && ns.toString({ delimiter: '/' })).to.eql('db/copy');
+    });
   });
 
   describe('current [command] property', () => {
