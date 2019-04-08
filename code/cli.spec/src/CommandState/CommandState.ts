@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { Argv } from '../Argv';
-import { R, t, value as valueUtil } from '../common';
+import { R, t, value as valueUtil, str } from '../common';
 import { Command } from '../Command/Command';
 import { DEFAULT } from '../common/constants';
 
@@ -131,6 +131,24 @@ export class CommandState implements t.ICommandState {
 
   public get autoCompleted() {
     return this._.autoCompleted;
+  }
+
+  public get fuzzyMatches() {
+    const currentId = this.command ? this.command.id : undefined;
+    const root = this.namespace ? this.namespace.command : this.root;
+    const input = this.autoCompleted
+      ? this.autoCompleted.matches.map(cmd => cmd.name)
+      : [this.text];
+    return root.children
+      .map(command => {
+        const { name } = command;
+        const isMatch = input.some(text => str.fuzzy.isMatch(text, name));
+        return { command, isMatch };
+      })
+      .map(item => {
+        const isCurrent = item.command.id === currentId;
+        return isCurrent ? { ...item, isMatch: true } : item;
+      });
   }
 
   /**

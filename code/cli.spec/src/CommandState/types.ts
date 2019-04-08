@@ -22,6 +22,7 @@ export type ICommandStateProps = {
   command: ICommand | undefined;
   namespace?: ICommandNamespace;
   autoCompleted?: ICommandAutoCompleted;
+  fuzzyMatches: Array<{ command: ICommand; isMatch: boolean }>;
 };
 
 export type ICommandNamespace = {
