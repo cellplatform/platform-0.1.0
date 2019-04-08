@@ -33,6 +33,7 @@ describe('CommandState', () => {
     expect(state.isDisposed).to.eql(false);
     expect(state.text).to.eql('');
     expect(state.namespace).to.eql(undefined);
+    expect(state.autoCompleted).to.eql(undefined);
   });
 
   it('disposes', () => {
@@ -53,6 +54,7 @@ describe('CommandState', () => {
       expect(obj.text).to.eql('');
       expect(obj.command).to.eql(undefined);
       expect(obj.namespace).to.eql(undefined);
+      expect(obj.autoCompleted).to.eql(undefined);
     });
   });
 
@@ -73,6 +75,41 @@ describe('CommandState', () => {
       const props = { props: state.toObject(), invoked: false, namespace: undefined };
       expect(events[0].payload).to.eql(props);
       expect(changes[0]).to.eql(props);
+    });
+
+    it('autoCompletes', () => {
+      const events: t.CommandStateEvent[] = [];
+      const changes: Array<t.ICommandStateChangedEvent['payload']> = [];
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      state.events$.subscribe(e => events.push(e));
+      state.changed$.subscribe(e => changes.push(e));
+
+      const autoCompleted: t.ICommandAutoCompleted = {
+        index: 0,
+        text: { from: 'l', to: 'list' },
+        matches: [Command.create('list')],
+      };
+
+      state.change({ text: 'foo', autoCompleted });
+
+      expect(state.autoCompleted).to.eql(autoCompleted);
+      expect(state.toObject().autoCompleted).to.eql(autoCompleted);
+
+      expect(events.length).to.eql(2);
+      expect(changes.length).to.eql(1);
+
+      expect(events[0].type).to.eql('COMMAND/state/autoCompleted');
+      expect(events[0].payload).to.eql(autoCompleted);
+      expect(events[1].type).to.equal('COMMAND/state/changed');
+      expect(changes[0].props.autoCompleted).to.eql(autoCompleted);
+
+      // Reset auto-complete.
+      state.change({ text: 'foobar' });
+      expect(state.autoCompleted).to.eql(undefined);
+      expect(state.toObject().autoCompleted).to.eql(undefined);
+
+      // expect(state.).to.eql(result);
     });
 
     it('updates current text on change event', () => {
