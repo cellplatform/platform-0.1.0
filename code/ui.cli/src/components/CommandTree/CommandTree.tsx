@@ -1,16 +1,7 @@
 import * as React from 'react';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
+
 import { GlamorValue, t } from '../../common';
 import { CommandTreeView, ICommandTreeViewProps } from './CommandTreeView';
 
@@ -61,14 +52,8 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
         map(e => e.payload as t.ICommandTreeClick),
       )
       .subscribe(e => {
-        console.log('invoke', e);
-        // this.cli.invoke()
-        const command = e.command;
-
-        const path = this.cli.root.tree.toPath(command);
-        console.log('path', path);
-
-        // this.cli.change({ text: command.name });
+        this.cli.change({ text: e.command.name });
+        this.cli.invoke({ stepIntoNamespace: false });
       });
 
     tree$
@@ -78,17 +63,10 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
         map(e => e.payload as t.ICommandTreeCurrent),
       )
       .subscribe(e => {
-        console.group('🌳 CURRENT');
-
-        console.log('e.direction', e.direction);
-
         const command = e.command;
         const namespace = e.direction === 'PARENT' ? 'PARENT' : true;
         const text = command ? command.name : '';
-
         this.cli.change({ text, namespace });
-
-        console.groupEnd();
       });
   }
 
