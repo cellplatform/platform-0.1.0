@@ -1314,10 +1314,10 @@
     "@platform/libs" "0.0.12"
     "@platform/ts.libs" "3.4.2"
 
-"@platform/ui.cli@0.0.27":
-  version "0.0.27"
-  resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.27.tgz#9ea8870eb7242712b20f9eb6fdb87bc6a6927d44"
-  integrity sha512-QoIyv6dvAIu9sz3Aqgrp6EEiR6hgSQRQQit/RggbaHsFi6W+Ps9l/qzDxN32I3jDz68uB7piiQ88tj1+7Fwd1w==
+"@platform/ui.cli@0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.28.tgz#8255b84ba567a82fc7ef582355a5863937df9c36"
+  integrity sha512-bg5lUKK4ujxihzAOtCYMg09FLWI6cvjc5EO5MCpjtY+kw+0YESeEzlW6m1Vu2+WLACshi0YtyYk5QGm8xbSNIg==
   dependencies:
     "@platform/cli.spec" "0.0.32"
     "@platform/react" "0.1.9"
