@@ -85,7 +85,12 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         filter(e => this.isFocused),
       )
       .subscribe(e => {
-        this.cli.change({ namespace: 'PARENT' });
+        const text = this.cli.text;
+        if (text.trim()) {
+          this.cli.change({ text: '' });
+        } else {
+          this.cli.change({ namespace: 'PARENT' });
+        }
       });
 
     tab$
