@@ -31,6 +31,7 @@ export type ITreeNodeProps = {
   icon?: TreeNodeIcon;
   title?: string; // For <Header> if different from `label`.
   description?: string;
+  opacity?: number;
   padding?: number | number[]; // [top, right, bottom left].
   marginTop?: number;
   marginBottom?: number;

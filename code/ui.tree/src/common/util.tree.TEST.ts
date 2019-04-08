@@ -1,5 +1,5 @@
-import { expect, ITreeNode, TreeNodeFactory } from '../test';
-import { tree as util } from '.';
+import { expect } from 'chai';
+import { tree as util, ITreeNode, TreeNodeFactory } from '.';
 
 describe('util.tree', () => {
   describe('walk', () => {

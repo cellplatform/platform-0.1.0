@@ -47,6 +47,9 @@ export type ITreeNodeProps = {
 };
 
 export class TreeNode extends React.PureComponent<ITreeNodeProps> {
+  /**
+   * [Properties]
+   */
   private get theme() {
     return themes.themeOrDefault(this.props);
   }
@@ -66,10 +69,22 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     return props.isSelected ? theme.node.selected.bgColor : undefined;
   }
 
+  private get isEnabled() {
+    return value.defaultValue(this.nodeProps.isEnabled, true);
+  }
+
+  private get opacity() {
+    return value.defaultValue(this.nodeProps.opacity, 1);
+  }
+
+  /**
+   * [Render]
+   */
   public render() {
     const props = this.nodeProps;
-    const isEnabled = value.defaultValue(props.isEnabled, true);
+    const isEnabled = this.isEnabled;
     const padding = css.arrayToEdges(props.padding) || DEFAULT.PADDING;
+    const opacity = this.opacity;
     const styles = {
       base: css({
         position: 'relative',
@@ -86,7 +101,8 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
       body: css({
         position: 'relative',
         Flex: 'horizontal-start-stretch',
-        opacity: isEnabled ? 1 : 0.3,
+        opacity: isEnabled ? opacity : Math.min(0.3, opacity),
+        transition: 'opacity 0.2s',
       }),
     };
 
@@ -182,7 +198,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
       return;
     }
     const theme = this.theme.node;
-    const isActive = iconRight !== null;
+    const isActive = this.isEnabled && iconRight !== null;
     const styles = {
       base: css({
         Absolute: [0, 0, null, null],

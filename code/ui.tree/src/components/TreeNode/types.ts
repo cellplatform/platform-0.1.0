@@ -1,5 +1,4 @@
 import { MouseEvent } from '@platform/react';
-
 import * as t from '../../types';
 
 /**

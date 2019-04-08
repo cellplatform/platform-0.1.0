@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { share, filter, takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, t } from '../../common';
+import { GlamorValue, t, R } from '../../common';
 import { ITreeViewProps, TreeView } from '../primitives';
 import { Icons } from '../Icons';
 import * as util from './util';
@@ -10,6 +10,7 @@ import * as util from './util';
 export type ICommandTreeViewProps = {
   root: t.ICommand;
   current?: t.ICommand;
+  fuzzyMatches?: t.ICommandFuzzyMatch[];
   theme?: ITreeViewProps['theme'];
   background?: ITreeViewProps['background'];
   events$?: Subject<t.CommandTreeEvent>;
@@ -17,6 +18,7 @@ export type ICommandTreeViewProps = {
 };
 export type ICommandTreeViewState = {
   tree?: t.ITreeNode;
+  // dimmed?: t.ICommand[];
 };
 
 export class CommandTreeView extends React.PureComponent<
@@ -88,7 +90,13 @@ export class CommandTreeView extends React.PureComponent<
   }
 
   public componentDidUpdate(prev: ICommandTreeViewProps) {
-    if (prev.root !== this.root) {
+    const dimmed = {
+      prev: filterDimmed(prev.fuzzyMatches),
+      next: filterDimmed(this.props.fuzzyMatches),
+    };
+    const isDimmedChanged = !R.equals(dimmed.prev, dimmed.next);
+
+    if (isDimmedChanged || prev.root !== this.root) {
       this.updateTree();
     }
   }
@@ -115,7 +123,20 @@ export class CommandTreeView extends React.PureComponent<
    * [Methods]
    */
   private updateTree() {
+    // Build the tree structure.
     const tree = util.buildTree(this.root);
+
+    // Dim any nodes that are filtered out due to the current input text.
+    const dimmed = filterDimmed(this.props.fuzzyMatches);
+    if (dimmed.length > 0) {
+      TreeView.util.walk(tree, node => {
+        if (dimmed.includes(node.id)) {
+          TreeView.util.props(node).opacity = 0.3;
+        }
+      });
+    }
+
+    // Update state.
     this.state$.next({ tree });
   }
 
@@ -150,3 +171,18 @@ export class CommandTreeView extends React.PureComponent<
    */
   private renderIcon: t.RenderTreeIcon = e => Icons[e.icon];
 }
+
+/**
+ * [Helpers]
+ */
+
+function filterDimmed(matches: t.ICommandFuzzyMatch[] = []) {
+  return matches
+    .filter(m => m.isMatch === false)
+    .map(m => m.command)
+    .map(cmd => util.asNodeId(cmd));
+}
+
+// function filterDimmedIds(matches: t.ICommandFuzzyMatch[] = []) {
+//   return filterDimmed(matches).map(cmd => cmd.id);
+// }

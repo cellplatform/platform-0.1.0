@@ -69,6 +69,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
       <CommandTreeView
         root={this.cli.root}
         current={this.current}
+        fuzzyMatches={this.cli.fuzzyMatches}
         theme={this.props.theme}
         background={this.props.background}
         events$={this._events$}
