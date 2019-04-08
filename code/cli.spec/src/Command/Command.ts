@@ -280,8 +280,8 @@ function toConstuctorArgs(args: any): ICommandArgs {
     return formatConstructorArgs({ name, handler, children: [] });
   }
   if (args[0] instanceof Command) {
-    const { name, handler, children } = args[0] as Command;
-    return formatConstructorArgs({ name, handler, children });
+    const { name, description, handler, children, params } = args[0] as Command;
+    return formatConstructorArgs({ name, description, handler, children, params });
   }
   if (typeof args[0] === 'object') {
     return formatConstructorArgs(args[0]);

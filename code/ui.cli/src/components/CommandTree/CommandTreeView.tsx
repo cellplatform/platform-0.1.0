@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { share, filter, takeUntil } from 'rxjs/operators';
+import { filter, share, takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, t, R, COLORS, color } from '../../common';
-import { ITreeViewProps, TreeView } from '../primitives';
+import { COLORS, GlamorValue, R, t } from '../../common';
 import { Icons } from '../Icons';
+import { ITreeViewProps, TreeView } from '../primitives';
 import * as util from './util';
 
 export type ICommandTreeViewProps = {
@@ -136,6 +136,8 @@ export class CommandTreeView extends React.PureComponent<
     const dimmed = filterDimmed(this.props.fuzzyMatches);
 
     TreeView.util.walk(tree, node => {
+      const command = node.data as t.ICommand;
+
       // Dim any nodes that are filtered out due to the current input text.
       if (dimmed.includes(node.id)) {
         p(node).opacity = 0.3;
@@ -146,6 +148,7 @@ export class CommandTreeView extends React.PureComponent<
         const color = this.props.theme === 'DARK' ? COLORS.CLI.CYAN : COLORS.BLUE;
         p(node).iconColor = color;
         p(node).labelColor = color;
+        p(node).description = command.description;
       }
     });
 

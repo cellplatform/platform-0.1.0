@@ -2,7 +2,11 @@ import { Command, t } from '../common';
 
 type P = t.ITestCommandProps;
 
-const list = Command.create<P>('list', async e => true);
+const list = Command.create<P>({
+  name: 'list',
+  handler: e => true,
+  description: 'List all items that match the input',
+});
 
 const ns = Command.create<P>('ns')
   .add('one', async e => null)
@@ -15,5 +19,5 @@ const ns = Command.create<P>('ns')
 export const root = Command.create<P>('root')
   .add(list)
   .add(ns)
-  .add('run', async e => null)
-  .add('play', async e => null);
+  .add({ name: 'run', handler: e => null, description: 'Run the thing now.' })
+  .add({ name: 'play', handler: e => null, description: 'Play through the speakers loudly.' });
