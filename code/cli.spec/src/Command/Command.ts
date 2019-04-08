@@ -6,7 +6,7 @@ import { invoker } from './invoke';
 import * as tree from './tree';
 import { CommandParam, ICommandParamArgs } from '../CommandParam';
 
-type IConstructorArgs<P extends object = any, A extends object = any> = {
+type ICommandArgs<P extends object = any, A extends object = any> = {
   name: string;
   handler: t.CommandHandler;
   children: Command[];
@@ -30,7 +30,7 @@ export class Command<P extends object = any, A extends object = any> implements 
     handler?: t.CommandHandler<P, A>,
   ): Command<P, A>;
   public static create<P extends object = any, A extends object = any>(
-    args: Partial<IConstructorArgs<P, A>> & { name: string }, // NB: Force name.
+    args: Partial<ICommandArgs<P, A>> & { name: string }, // NB: Force name.
   ): Command<P, A>;
   public static create<P extends object = any, A extends object = any>(
     ...args: any
@@ -57,7 +57,7 @@ export class Command<P extends object = any, A extends object = any> implements 
   /**
    * [Lifecycle]
    */
-  private constructor(args: Partial<IConstructorArgs>) {
+  private constructor(args: Partial<ICommandArgs>) {
     const { name, handler, children, params } = formatConstructorArgs(args);
 
     if (!name) {
@@ -170,7 +170,7 @@ export class Command<P extends object = any, A extends object = any> implements 
   ): Command<P, A>;
 
   public add<P1 extends object = P, A1 extends object = A>(
-    args: Command<P1, A1> | Partial<t.ICommand<P1, A1>> & { name: string },
+    args: Command<P1, A1> | Partial<ICommandArgs<P1, A1>> & { name: string },
   ): Command<P, A>;
 
   public add(...input: any): Command<P, A> {
@@ -255,7 +255,7 @@ export class Command<P extends object = any, A extends object = any> implements 
  * [Internal]
  */
 
-function toConstuctorArgs(args: any): IConstructorArgs {
+function toConstuctorArgs(args: any): ICommandArgs {
   if (typeof args[0] === 'string') {
     const [name, handler] = args;
     return formatConstructorArgs({ name, handler, children: [] });
@@ -270,7 +270,7 @@ function toConstuctorArgs(args: any): IConstructorArgs {
   throw new Error(`[Args] could not be interpreted.`);
 }
 
-function formatConstructorArgs(args: Partial<IConstructorArgs>): IConstructorArgs {
+function formatConstructorArgs(args: Partial<ICommandArgs>): ICommandArgs {
   const params = args.params || [];
   return {
     name: (args.name || '').trim(),
