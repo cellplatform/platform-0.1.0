@@ -1,12 +1,13 @@
 import { expect } from 'chai';
 import { Command } from '.';
+import { CommandParam } from '../CommandParam';
 
 describe('Command', () => {
   describe('construction', () => {
     it('minimal construction', () => {
-      const cmd = Command.create({ name: '  Foo  ' });
+      const cmd = Command.create('  Foo  ');
       expect(cmd.name).to.eql('Foo'); // NB: trims title.
-      expect(cmd.handler).to.eql(undefined);
+      expect(cmd.handler).to.be.an.instanceof(Function);
       expect(cmd.children).to.eql([]);
       expect(cmd.params).to.eql([]);
     });
@@ -21,6 +22,21 @@ describe('Command', () => {
       const child = Command.create({ name: 'child' });
       const parent = Command.create({ name: 'parent', children: [child] });
       expect(parent.children).to.eql([child]);
+    });
+
+    it('takes params in constructor', () => {
+      const cmd = Command.create({
+        name: 'child',
+        params: [{ name: 'foo', type: 'string' }, { name: 'bar', type: [1, 2, 3] }],
+      });
+      const params = cmd.params;
+      expect(params.length).to.eql(2);
+      expect(params[0]).to.be.an.instanceof(CommandParam);
+      expect(params[1]).to.be.an.instanceof(CommandParam);
+      expect(params[0].name).to.eql('foo');
+      expect(params[1].name).to.eql('bar');
+      expect(params[0].type).to.eql('string');
+      expect(params[1].type).to.eql([1, 2, 3]);
     });
 
     it('throws if a name is not passed', () => {

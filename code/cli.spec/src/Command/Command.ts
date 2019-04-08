@@ -4,13 +4,13 @@ import { share, takeUntil } from 'rxjs/operators';
 import { value, str, t } from '../common';
 import { invoker } from './invoke';
 import * as tree from './tree';
-import { CommandParam } from '../CommandParam';
+import { CommandParam, ICommandParamArgs } from '../CommandParam';
 
 type IConstructorArgs<P extends object = any, A extends object = any> = {
   name: string;
   handler: t.CommandHandler;
   children: Command[];
-  params: CommandParam[];
+  params: CommandParam[] | ICommandParamArgs[];
 };
 
 /**
@@ -68,7 +68,8 @@ export class Command<P extends object = any, A extends object = any> implements 
     this._.name = name;
     this._.handler = handler;
     this._.children = children;
-    this._.params = params;
+
+    this._.params = params as CommandParam[];
   }
 
   public dispose() {
@@ -270,11 +271,13 @@ function toConstuctorArgs(args: any): IConstructorArgs {
 }
 
 function formatConstructorArgs(args: Partial<IConstructorArgs>): IConstructorArgs {
-  args = { ...args };
-  args.name = (args.name || '').trim();
-  args.children = args.children || [];
-  args.params = args.params || [];
-  return args as IConstructorArgs;
+  const params = args.params || [];
+  return {
+    name: (args.name || '').trim(),
+    handler: args.handler || (() => undefined),
+    children: args.children || [],
+    params: params.map(p => (p instanceof CommandParam ? p : CommandParam.create(p))),
+  };
 }
 
 function cloneChildren(builder: Command): Command[] {
