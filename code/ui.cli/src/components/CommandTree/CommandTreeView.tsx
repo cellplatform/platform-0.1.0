@@ -65,14 +65,16 @@ export class CommandTreeView extends React.PureComponent<
         ),
         filter(e => (e.node.children || []).length > 0),
       )
-      .subscribe(e => this.fireCurrent(e.node));
+      .subscribe(e => {
+        this.fireCurrent(e.node, e.target === 'NODE' ? 'NONE' : 'CHILD');
+      });
 
     click$
       // Step up to parent.
       .pipe(filter(e => e.target === 'PARENT'))
       .subscribe(e => {
         const parent = TreeView.util.parent(this.state.tree, e.node);
-        this.fireCurrent(parent);
+        this.fireCurrent(parent, 'PARENT');
       });
 
     click$
@@ -156,9 +158,15 @@ export class CommandTreeView extends React.PureComponent<
     this.state$.next({ tree });
   }
 
-  private fireCurrent(node?: string | t.ITreeNode) {
+  private fireCurrent(
+    node: string | t.ITreeNode | undefined,
+    direction: t.ICommandTreeCurrent['direction'],
+  ) {
     const command = util.asCommand(this.rootCommand, node);
-    this.fire({ type: 'COMMAND_TREE/current', payload: { command } });
+    this.fire({
+      type: 'COMMAND_TREE/current',
+      payload: { command, direction },
+    });
   }
 
   private fire(e: t.CommandTreeEvent) {

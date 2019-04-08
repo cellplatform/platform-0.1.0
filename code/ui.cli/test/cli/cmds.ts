@@ -8,10 +8,16 @@ const list = Command.create<P>({
   description: 'List all items that match the input',
 });
 
+const child = Command.create<P>('child')
+  .add('foo', async e => null)
+  .add('bar', async e => null)
+  .add('baz', async e => null);
+
 const ns = Command.create<P>('ns')
   .add('one', async e => null)
   .add('two', async e => null)
-  .add('three', async e => null);
+  .add('three', async e => null)
+  .add(child);
 
 /**
  * The root of the CLI application.

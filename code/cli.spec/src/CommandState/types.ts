@@ -48,9 +48,9 @@ export type ICommandFuzzyMatch = {
  */
 export type CommandChangeDispatcher = (e: ICommandChangeArgs) => void;
 export type ICommandChangeArgs = {
-  text: string;
+  text?: string;
   invoked?: boolean;
-  namespace?: boolean;
+  namespace?: boolean | 'PARENT';
   autoCompleted?: ICommandAutoCompleted;
 };
 

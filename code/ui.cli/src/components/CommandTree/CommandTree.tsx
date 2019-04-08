@@ -1,7 +1,16 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
-
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import { GlamorValue, t } from '../../common';
 import { CommandTreeView, ICommandTreeViewProps } from './CommandTreeView';
 
@@ -32,6 +41,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
+    const tree$ = this.events$;
 
     // Update state.
     state$.subscribe(e => this.setState(e));
@@ -43,6 +53,43 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
 
     // Redraw on CLI changed.
     changed$.subscribe(e => this.forceUpdate());
+
+    tree$
+      // Invoke command on click.
+      .pipe(
+        filter(e => e.type === 'COMMAND_TREE/click'),
+        map(e => e.payload as t.ICommandTreeClick),
+      )
+      .subscribe(e => {
+        console.log('invoke', e);
+        // this.cli.invoke()
+        const command = e.command;
+
+        const path = this.cli.root.tree.toPath(command);
+        console.log('path', path);
+
+        // this.cli.change({ text: command.name });
+      });
+
+    tree$
+      // Invoke command on click.
+      .pipe(
+        filter(e => e.type === 'COMMAND_TREE/current'),
+        map(e => e.payload as t.ICommandTreeCurrent),
+      )
+      .subscribe(e => {
+        console.group('🌳 CURRENT');
+
+        console.log('e.direction', e.direction);
+
+        const command = e.command;
+        const namespace = e.direction === 'PARENT' ? 'PARENT' : true;
+        const text = command ? command.name : '';
+
+        this.cli.change({ text, namespace });
+
+        console.groupEnd();
+      });
   }
 
   public componentWillUnmount() {
