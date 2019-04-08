@@ -24,7 +24,7 @@
     "@platform/test": "0.0.40",
     "@platform/ts": "3.4.4",
     "@uiharness/dev": "0.2.33",
-    "@uiharness/ui": "^0.1.40",
+    "@uiharness/ui": "^0.1.41",
     "react-icons": "3.5.0"
   },
   "files": [

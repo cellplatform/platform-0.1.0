@@ -29,7 +29,7 @@
     "@platform/ts": "3.4.4",
     "@platform/ui.cli": "0.0.28",
     "@uiharness/dev": "0.2.33",
-    "@uiharness/ui": "^0.1.40"
+    "@uiharness/ui": "^0.1.41"
   },
   "files": [
     "lib",
