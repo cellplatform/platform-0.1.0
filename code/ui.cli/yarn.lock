@@ -1064,10 +1064,10 @@
     "@platform/util.value" "0.0.53"
     minimist "1.2.0"
 
-"@platform/cli.spec@0.0.31":
-  version "0.0.31"
-  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.0.31.tgz#58471a874b8ef5a86f36db8b984d2f4b747f905c"
-  integrity sha512-ywneQ/Sc6WB/TrPs2LR8jFS2qBKJxytA7vRpoPvvF7uPe8oj2Xvc09GVw2SZ5QCBDhnT00VQYfQR8JR47Dv4sw==
+"@platform/cli.spec@0.0.32":
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.0.32.tgz#3a0cbd062921b7c0f525185bf998ea6dc59bbe59"
+  integrity sha512-b6fThE4Endc6tbWmz9BQzAofV/1ovERrDA3S7j965w54Zb0vmhPJAQuPoWBIthz41Q/3DWmSlFWtGiNWX0DXMA==
   dependencies:
     "@platform/util.string" "0.0.51"
     "@platform/util.value" "0.0.54"
