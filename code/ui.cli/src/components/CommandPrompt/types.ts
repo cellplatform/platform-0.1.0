@@ -9,11 +9,5 @@ export type CommandPromptEvent = t.CommandStateEvent | ICommandAutoCompletedEven
 
 export type ICommandAutoCompletedEvent = {
   type: 'COMMAND_PROMPT/autoCompleted';
-  payload: ICommandAutoCompleted;
-};
-
-export type ICommandAutoCompleted = {
-  index: number;
-  text: { from: string; to: string };
-  matches: string[];
+  payload: t.ICommandAutoCompleted;
 };

@@ -1,45 +1,94 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
-import { TreeView } from '../../src';
-import { Button, color, COLORS, css, ObjectView, t } from './common';
-import { Icons } from './Icons';
+import * as sample from '../sample';
+import { Button, color, COLORS, css, Icons, ObjectView, t, TreeView, Foo } from './common';
 
-const TREE: t.ITreeNode = {
-  id: 'root',
-  props: {
-    label: 'Sheet',
-    icon: 'Face',
-    header: { isVisible: false },
-  },
-  children: [
-    { id: 'child-1', props: { icon: 'Face', marginTop: 30 } },
-    { id: 'child-2', props: { icon: 'Face' } },
-    { id: 'child-3', props: { icon: 'Face' } },
-    { id: 'child-4', props: { icon: 'Face' } },
-    { id: 'child-5', props: { icon: 'Face' } },
-  ],
-};
-
-/**
- * Test Component
- */
 export type ITestState = {
   theme?: t.TreeTheme;
   root?: t.ITreeNode;
   current?: string;
 };
 export class Test extends React.PureComponent<{}, ITestState> {
-  public state: ITestState = { root: TREE, theme: 'LIGHT' };
+  /**
+   * [Fields]
+   */
+  public state: ITestState = {
+    root: sample.COMPREHENSIVE,
+    theme: 'LIGHT',
+  };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
+  private events$ = new Subject<t.TreeViewEvent>();
+  private mouse$ = new Subject<t.TreeNodeMouseEvent>();
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    // Setup observables.
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    const mouse$ = this.mouse$.pipe(takeUntil(this.unmounted$));
+    const click$ = mouse$.pipe(filter(e => e.button === 'LEFT'));
+
+    // Update state.
+    state$.subscribe(e => this.setState(e));
+
+    // Log events.
+    events$.subscribe(e => {
+      console.log('🌳', e.type, e.payload);
+    });
+
+    /**
+     * Handle mouse.
+     */
+
+    const toggle = (node: t.ITreeNode) => {
+      const toggled = TreeView.util.toggleIsOpen(this.state.root, node);
+      this.state$.next({ root: toggled });
+    };
+
+    click$
+      .pipe(
+        filter(e => e.type === 'DOWN'),
+        filter(e => e.target === 'DRILL_IN'),
+      )
+      .subscribe(e => this.state$.next({ current: e.id }));
+
+    click$
+      .pipe(
+        filter(e => e.type === 'DOWN'),
+        filter(e => e.target === 'TWISTY'),
+      )
+      .subscribe(e => toggle(e.node));
+
+    click$
+      .pipe(
+        filter(e => e.type === 'DOUBLE_CLICK'),
+        filter(e => e.target === 'NODE'),
+      )
+      .subscribe(e => this.state$.next({ current: e.id }));
+
+    click$
+      .pipe(
+        filter(e => e.type === 'DOUBLE_CLICK'),
+        filter(e => e.target === 'NODE'),
+        filter(e => Boolean(e.props.inline)),
+      )
+      .subscribe(e => toggle(e.node));
+
+    click$
+      .pipe(
+        filter(e => e.type === 'DOWN'),
+        filter(e => e.target === 'PARENT'),
+      )
+      .subscribe(e => {
+        const args = { inline: false };
+        const parent = TreeView.util.parent(this.state.root, e.node, args);
+        return this.state$.next({ current: parent ? parent.id : undefined });
+      });
   }
 
   public componentWillUnmount() {
@@ -55,20 +104,27 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const { theme } = this.state;
     const styles = {
       base: css({
-        Absolute: 20,
+        Absolute: 0,
         Flex: 'horizontal',
       }),
       left: css({
-        width: 180,
+        width: 200,
         Flex: 'vertical-spaceBetween',
-        lineHeight: 1.6,
+        lineHeight: 1.8,
+        fontSize: 12,
+        padding: 10,
+        borderRight: `solid 1px ${color.format(-0.1)}`,
+        backgroundColor: color.format(-0.02),
       }),
-
       right: css({
+        backgroundColor: theme === 'DARK' ? COLORS.DARK : undefined,
+        position: 'relative',
+        Flex: 'horizontal-start-center',
         flex: 1,
-        borderLeft: `solid 1px ${color.format(-0.1)}`,
-        backgroundColor: theme === 'DARK' && COLORS.DARK,
-        paddingLeft: 20,
+      }),
+      rightCenter: css({
+        height: '100%',
+        width: 300,
         display: 'flex',
       }),
     };
@@ -83,26 +139,82 @@ export class Test extends React.PureComponent<{}, ITestState> {
           <ObjectView name={'tree'} data={this.state.root} />
         </div>
         <div {...styles.right}>
-          <TreeView
-            node={this.state.root}
-            current={this.state.current}
-            theme={this.state.theme}
-            background={'NONE'}
-            renderIcon={this.renderIcon}
-          />
+          <div {...styles.rightCenter}>{this.renderTree()}</div>
         </div>
       </div>
     );
   }
 
+  private renderTree() {
+    const { theme } = this.state;
+    const borderColor = theme === 'DARK' ? color.format(0.2) : color.format(-0.1);
+    const border = `solid 1px ${borderColor}`;
+    const styles = {
+      base: css({
+        flex: 1,
+        display: 'flex',
+        borderLeft: border,
+        borderRight: border,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <TreeView
+          node={this.state.root}
+          current={this.state.current}
+          theme={this.state.theme}
+          renderIcon={this.renderIcon}
+          renderPanel={this.renderPanel}
+          events$={this.events$}
+          mouse$={this.mouse$}
+        />
+      </div>
+    );
+  }
+
   private button = (label: string, handler: () => void) => {
-    return <Button label={label} onClick={handler} />;
+    return <Button label={label} onClick={handler} block={true} />;
   };
 
   /**
    * [Handlers]
    */
-  private renderIcon: t.RenderTreeIcon = e => {
-    return Icons[e.icon];
+  private renderIcon: t.RenderTreeIcon = e => Icons[e.icon];
+
+  private renderPanel = (e: t.RenderTreePanelArgs<t.ITreeNode>) => {
+    /**
+     * NOTE:  Use this flag to revent custom panel rendering if
+     *        the node is opened "inline" within it's parent.
+     */
+    if (e.isInline) {
+      // return undefined;
+    }
+
+    const match = ['root.2', 'root.3', 'foo'];
+    if (match.includes(e.node.id)) {
+      const styles = {
+        base: css({
+          flex: 1,
+          lineHeight: '1.6em',
+          padding: 2,
+        }),
+        link: css({ color: COLORS.BLUE, cursor: 'pointer' }),
+      };
+      return (
+        <div {...styles.base}>
+          <Foo style={{ flex: 1, lineHeight: '1.6em' }}>
+            <div>My Custom Panel: {e.node.id}</div>
+            <div onClick={this.handleHomeClick} {...styles.link}>
+              Home
+            </div>
+          </Foo>
+        </div>
+      );
+    }
+    return undefined;
+  };
+
+  private handleHomeClick = () => {
+    this.state$.next({ current: 'root' });
   };
 }

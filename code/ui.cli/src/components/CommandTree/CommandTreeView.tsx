@@ -139,7 +139,7 @@ export class CommandTreeView extends React.PureComponent<
         theme={this.props.theme}
         background={this.props.background}
         renderIcon={this.renderIcon}
-        mouseEvents$={this.mouse$}
+        mouse$={this.mouse$}
         style={this.props.style}
       />
     );

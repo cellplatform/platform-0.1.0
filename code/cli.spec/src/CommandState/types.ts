@@ -21,6 +21,7 @@ export type ICommandStateProps = {
   args: ICommandArgs;
   command: ICommand | undefined;
   namespace?: ICommandNamespace;
+  autoCompleted?: ICommandAutoCompleted;
 };
 
 export type ICommandNamespace = {
@@ -30,14 +31,21 @@ export type ICommandNamespace = {
   toString(): string;
 };
 
+export type ICommandAutoCompleted = {
+  index: number;
+  text: { from: string; to: string };
+  matches: ICommand[];
+};
+
 /**
  * [Change] delegate.
  */
 export type CommandChangeDispatcher = (e: ICommandChangeArgs) => void;
 export type ICommandChangeArgs = {
-  readonly text: string;
-  readonly invoked?: boolean;
-  readonly namespace?: boolean;
+  text: string;
+  invoked?: boolean;
+  namespace?: boolean;
+  autoCompleted?: ICommandAutoCompleted;
 };
 
 /**
@@ -71,7 +79,8 @@ export type ICommandStateInvokeResponse = {
 export type CommandStateEvent =
   | ICommandStateChangedEvent
   | ICommandStateInvokingEvent
-  | ICommandStateInvokedEvent;
+  | ICommandStateInvokedEvent
+  | ICommandStateAutoCompletedEvent;
 
 export type ICommandStateChangedEvent = {
   type: 'COMMAND/state/changed';
@@ -97,4 +106,9 @@ export type ICommandStateInvoking = {
 export type ICommandStateInvokedEvent = {
   type: 'COMMAND/state/invoked';
   payload: ICommandStateInvokeResponse;
+};
+
+export type ICommandStateAutoCompletedEvent = {
+  type: 'COMMAND/state/autoCompleted';
+  payload: ICommandAutoCompleted;
 };

@@ -46,6 +46,7 @@ export class CommandState implements t.ICommandState {
     root: (undefined as unknown) as Command,
     text: '',
     namespace: undefined as t.ICommandNamespace | undefined,
+    autoCompleted: undefined as t.ICommandAutoCompleted | undefined,
   };
 
   public readonly dispose$ = this._.dispose$.pipe(share());
@@ -128,6 +129,10 @@ export class CommandState implements t.ICommandState {
     return this._.namespace;
   }
 
+  public get autoCompleted() {
+    return this._.autoCompleted;
+  }
+
   /**
    * [Methods]
    */
@@ -193,6 +198,12 @@ export class CommandState implements t.ICommandState {
     // Clear the namespace if requested.
     if (e.namespace === false) {
       this._.namespace = undefined;
+    }
+
+    // Store the auto-complete value.
+    this._.autoCompleted = e.autoCompleted;
+    if (e.autoCompleted) {
+      events$.next({ type: 'COMMAND/state/autoCompleted', payload: e.autoCompleted });
     }
 
     // Alert listeners.
@@ -291,6 +302,7 @@ export class CommandState implements t.ICommandState {
       args: this.args,
       command: this.command,
       namespace: this.namespace,
+      autoCompleted: this.autoCompleted,
     };
   }
 }

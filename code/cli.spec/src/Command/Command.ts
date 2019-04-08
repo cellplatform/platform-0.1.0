@@ -4,13 +4,14 @@ import { share, takeUntil } from 'rxjs/operators';
 import { value, str, t } from '../common';
 import { invoker } from './invoke';
 import * as tree from './tree';
-import { CommandParam } from '../CommandParam';
+import { CommandParam, ICommandParamArgs } from '../CommandParam';
 
-type IConstructorArgs<P extends object = any, A extends object = any> = {
+type ICommandArgs<P extends object = any, A extends object = any> = {
   name: string;
+  description: string;
   handler: t.CommandHandler;
   children: Command[];
-  params: CommandParam[];
+  params: CommandParam[] | ICommandParamArgs[];
 };
 
 /**
@@ -30,7 +31,7 @@ export class Command<P extends object = any, A extends object = any> implements 
     handler?: t.CommandHandler<P, A>,
   ): Command<P, A>;
   public static create<P extends object = any, A extends object = any>(
-    args: Partial<IConstructorArgs<P, A>> & { name: string }, // NB: Force name.
+    args: Partial<ICommandArgs<P, A>> & { name: string }, // NB: Force name.
   ): Command<P, A>;
   public static create<P extends object = any, A extends object = any>(
     ...args: any
@@ -57,8 +58,8 @@ export class Command<P extends object = any, A extends object = any> implements 
   /**
    * [Lifecycle]
    */
-  private constructor(args: Partial<IConstructorArgs>) {
-    const { name, handler, children, params } = formatConstructorArgs(args);
+  private constructor(args: Partial<ICommandArgs>) {
+    const { name, description, handler, children, params } = formatConstructorArgs(args);
 
     if (!name) {
       throw new Error(`A command 'name' must be specified.`);
@@ -66,9 +67,10 @@ export class Command<P extends object = any, A extends object = any> implements 
 
     this._.id = Command.toId({ name });
     this._.name = name;
+    this._.description = description;
     this._.handler = handler;
     this._.children = children;
-    this._.params = params;
+    this._.params = params as CommandParam[];
   }
 
   public dispose() {
@@ -82,6 +84,7 @@ export class Command<P extends object = any, A extends object = any> implements 
   private readonly _ = {
     id: 0,
     name: '',
+    description: undefined as string | undefined,
     handler: undefined as t.CommandHandler | undefined,
     children: [] as Command[],
     params: [] as CommandParam[],
@@ -100,6 +103,10 @@ export class Command<P extends object = any, A extends object = any> implements 
    */
   public get id() {
     return this._.id;
+  }
+
+  public get description() {
+    return this._.description || '';
   }
 
   public get name() {
@@ -169,7 +176,7 @@ export class Command<P extends object = any, A extends object = any> implements 
   ): Command<P, A>;
 
   public add<P1 extends object = P, A1 extends object = A>(
-    args: Command<P1, A1> | Partial<t.ICommand<P1, A1>> & { name: string },
+    args: Command<P1, A1> | Partial<ICommandArgs<P1, A1>> & { name: string },
   ): Command<P, A>;
 
   public add(...input: any): Command<P, A> {
@@ -191,12 +198,24 @@ export class Command<P extends object = any, A extends object = any> implements 
   }
 
   /**
-   * Add a parameter
+   * [Overrides] Add a parameter.
    */
-  public param(name: string, type: t.CommandParamType) {
-    const param = CommandParam.create({ name, type });
-    this._.params = [...this._.params, param];
-    return this;
+  public param(name: string, type: t.CommandParamType): Command<P, A>;
+  public param(args: ICommandParamArgs): Command<P, A>;
+  public param(...input: any): Command<P, A> {
+    const add = (args: ICommandParamArgs) => {
+      const param = CommandParam.create(args);
+      this._.params = [...this._.params, param];
+      return this;
+    };
+    if (typeof input[0] === 'string') {
+      const [name, type] = input;
+      return add({ name, type });
+    }
+    if (typeof input[0] === 'object') {
+      return add(input[0]);
+    }
+    throw new Error(`Given parameter arguments not supported.`);
   }
 
   /**
@@ -208,6 +227,7 @@ export class Command<P extends object = any, A extends object = any> implements 
     return {
       id: this.id,
       name: this.name,
+      description: this.description,
       handler: this.handler,
       events$: this.events$,
       params: this.params,
@@ -254,7 +274,7 @@ export class Command<P extends object = any, A extends object = any> implements 
  * [Internal]
  */
 
-function toConstuctorArgs(args: any): IConstructorArgs {
+function toConstuctorArgs(args: any): ICommandArgs {
   if (typeof args[0] === 'string') {
     const [name, handler] = args;
     return formatConstructorArgs({ name, handler, children: [] });
@@ -269,12 +289,15 @@ function toConstuctorArgs(args: any): IConstructorArgs {
   throw new Error(`[Args] could not be interpreted.`);
 }
 
-function formatConstructorArgs(args: Partial<IConstructorArgs>): IConstructorArgs {
-  args = { ...args };
-  args.name = (args.name || '').trim();
-  args.children = args.children || [];
-  args.params = args.params || [];
-  return args as IConstructorArgs;
+function formatConstructorArgs(args: Partial<ICommandArgs>): ICommandArgs {
+  const params = args.params || [];
+  return {
+    name: (args.name || '').trim(),
+    description: (args.description || '').trim(),
+    handler: args.handler || (() => undefined),
+    children: args.children || [],
+    params: params.map(p => (p instanceof CommandParam ? p : CommandParam.create(p))),
+  };
 }
 
 function cloneChildren(builder: Command): Command[] {

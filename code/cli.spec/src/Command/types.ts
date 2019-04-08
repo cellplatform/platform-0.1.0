@@ -14,6 +14,7 @@ import { ICommandParam } from '../CommandParam/types';
 export type ICommand<P extends object = any, A extends object = any> = {
   id: number;
   name: string;
+  description: string;
   params: ICommandParam[];
   children: ICommand[];
   handler?: CommandHandler<P, A>;

@@ -232,7 +232,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
       }),
     };
 
-    const elSpinner = props.isSpinning && <Spinner color={this.theme.spinner} />;
+    const elSpinner = props.isSpinning && <Spinner color={this.theme.spinner} size={18} />;
 
     return (
       <div {...styles.base}>

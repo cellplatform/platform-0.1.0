@@ -1191,15 +1191,16 @@
     "@platform/libs" "0.0.12"
     "@platform/ts.libs" "3.4.2"
 
-"@platform/ui.cli@^0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.17.tgz#c931938aef2bb1d762b5b4be977b2a490eca8d07"
-  integrity sha512-PP7SxMdpnlBpG19xZJZv0m1YWxKzTAOAaJR8rc6uBuMc5J5h6k71f5QmNxv+RbsQ1OisOJM96IFx0oB/W0Tf7Q==
+"@platform/ui.cli@^0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.21.tgz#f607d7bd290c9de7105d732668fa323950eb7bfe"
+  integrity sha512-NXPxe+BBhRfyf+zTmV52qRyqN5tLAiggWimVaAYWYmHKL+AsfwPnsqjcO+YLYkO5CJzjg9g66ww5SabT8c7wzQ==
   dependencies:
     "@platform/cli.spec" "0.0.26"
     "@platform/react" "0.1.8"
+    "@platform/ui.panel" "^0.0.21"
     "@platform/ui.text" "0.0.42"
-    "@platform/ui.tree" "0.0.21"
+    "@platform/ui.tree" "0.0.24"
     react-icons "3.5.0"
 
 "@platform/ui.icon@0.0.24":
@@ -1217,18 +1218,18 @@
     "@platform/react" "0.1.8"
     react-inspector "3.0.2"
 
-"@platform/ui.panel@0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.0.19.tgz#af01ce704080878d8a4934548537bb717821736d"
-  integrity sha512-q2udQ8ioqTZpJ4+pKT5dtu/Xy8T+Bm3NxleLwe22dc5oPkjnvAVmrslOYxFTUavClup94YcrQdHQChoSrdHUiQ==
+"@platform/ui.panel@0.0.21", "@platform/ui.panel@^0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.0.21.tgz#8dfa4e053ed142df4102c5fc20c500ed9f5b4e0f"
+  integrity sha512-xK0YHM7jqP/WxDEkvi/JmUaKGbAwTQBQvAhq5xNrkwx/QAbfUxE6sRBYAtbOe3oc3pABfv1qtdU47HvzCPklaQ==
   dependencies:
     "@platform/react" "0.1.8"
     "@platform/util.animate" "0.0.13"
 
-"@platform/ui.spinner@0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.22.tgz#6243ac7b4aebb8f3bc0ae1c250c46af2e207f4af"
-  integrity sha512-R5b4BVdJoamlpNPVigIGINsqbS9dHMrJo9T78gxI7n1LPWkC2ELlqp4qex+624a68+ODTD2xlStR5yuafbjYrw==
+"@platform/ui.spinner@0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.23.tgz#7f68f4ad0bdc82875eb0f2701ad412aee15ef035"
+  integrity sha512-2OgaqOPx9OgshG9s3yGWJ+SZBk0z75SFtFX7kfielGcDOKrl3jUmniXDF1unsgRGzoBBQrB7xF1s5aYTmkBC2A==
   dependencies:
     "@platform/react" "0.1.8"
 
@@ -1240,16 +1241,16 @@
     "@platform/react" "0.1.8"
     "@platform/util.value" "0.0.53"
 
-"@platform/ui.tree@0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.0.21.tgz#d97557e24f93cd69f13197859e950e4248da3ac8"
-  integrity sha512-GZ/n5L+8UZ63DoIqD5Gmp8hCRke9IBDnGp9N3k5+YY+szo0myyWZdK1LjqxCZaCzs3zH4HUc65yKqo5Fqds7+w==
+"@platform/ui.tree@0.0.24":
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.0.24.tgz#11cf86eef2f994df2e4b0b574ebc350a108d61c1"
+  integrity sha512-3AAKJFFrwsgFoCDokq0PA7DB9e/61yTGacbrtnSea3AkKC+qyxVH0i2BlAIMZaRhdV2eHcXzxswCH2ZwCUcV6A==
   dependencies:
     "@platform/css" "0.0.27"
     "@platform/react" "0.1.8"
     "@platform/ui.icon" "0.0.24"
-    "@platform/ui.panel" "0.0.19"
-    "@platform/ui.spinner" "0.0.22"
+    "@platform/ui.panel" "0.0.21"
+    "@platform/ui.spinner" "0.0.23"
     "@platform/ui.text" "0.0.42"
 
 "@platform/util.animate@0.0.13":
@@ -1461,14 +1462,14 @@
   resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.1.12.tgz#cbf52d8aa9b2a8203a2299dc62edc92cfb6d108f"
   integrity sha512-eApcbWCMv0xKYGt2/jqL1tKH/3Bx8os4js0cG061v6QsX2NCHTX3yL2RCaXXCy5HCB1AGgPpxs6er4l532wSrw==
 
-"@uiharness/ui@^0.1.35":
-  version "0.1.35"
-  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.1.35.tgz#1b6c2c0f2a906f04a297236b6fab87cf5a0fde37"
-  integrity sha512-DgsWEX9iDaYU0eQ2KA2n16BHUKQSCcJTEmfle0CsY9GC37U0eA6om5k/f2fYKs3c3Bj5byWyU5G0mXZy0Aozmg==
+"@uiharness/ui@^0.1.39":
+  version "0.1.39"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.1.39.tgz#3a8a290eabc8ce4455013ff9911eb2a82066eaf4"
+  integrity sha512-VXMfFLObJt1f6xc8Nt+4iPLL81SvJhrKRJ1E3lVeTcOdflDYfh8VgjrXA6qxNJeYVp250Z49k+O05vrq4LsLOA==
   dependencies:
     "@platform/electron" "0.1.30"
     "@platform/react" "0.1.8"
-    "@platform/ui.cli" "^0.0.17"
+    "@platform/ui.cli" "^0.0.21"
     "@platform/ui.object" "0.0.80"
     "@uiharness/types" "0.1.12"
 

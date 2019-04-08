@@ -1,8 +1,9 @@
-import { MouseEvent } from './common/libs';
 import { IIcon } from '@platform/ui.icon';
 
 export { IIcon };
 export * from './themes/types';
+export * from './components/TreeView/types';
+export * from './components/TreeNode/types';
 
 /**
  * A single node within the "tree"
@@ -95,15 +96,3 @@ export type RenderTreeIconArgs<T extends ITreeNode = ITreeNode> = {
   icon: string; // Identifier of the icon.
   node: T;
 };
-
-/**
- * [Events]
- */
-export type TreeNodeMouseEvent<T extends ITreeNode = ITreeNode> = MouseEvent & {
-  target: 'NODE' | 'TWISTY' | 'DRILL_IN' | 'PARENT';
-  id: T['id'];
-  node: T;
-  props: ITreeNodeProps;
-  children: T[];
-};
-export type TreeNodeMouseEventHandler = (e: TreeNodeMouseEvent) => void;

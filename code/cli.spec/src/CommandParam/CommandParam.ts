@@ -3,6 +3,7 @@ import { ICommandParam } from './types';
 export type ICommandParamArgs = {
   name: ICommandParam['name'];
   type?: ICommandParam['type'];
+  description?: ICommandParam['description'];
 };
 
 /**
@@ -28,6 +29,7 @@ export class CommandParam implements ICommandParam {
 
     this.name = name;
     this.type = args.type || 'string';
+    this.description = (args.description || '').trim();
   }
 
   /**
@@ -35,6 +37,7 @@ export class CommandParam implements ICommandParam {
    */
   public readonly name: ICommandParam['name'];
   public readonly type: ICommandParam['type'];
+  public readonly description: ICommandParam['description'];
 
   /**
    * [Properties]

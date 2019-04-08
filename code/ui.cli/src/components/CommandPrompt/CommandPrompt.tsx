@@ -29,8 +29,6 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   private input: CommandPromptInput | undefined;
   private inputRef = (ref: CommandPromptInput) => (this.input = ref);
 
-  private autoCompleted: t.ICommandAutoCompleted | undefined;
-
   /**
    * [Lifecycle]
    */
@@ -102,20 +100,17 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         // Look for a previous autocomplete value to see if we need
         // to toggle through possible matches if that tab-key is
         // being repeatedly pressed.
-        const prev = this.autoCompleted;
+        const prev = this.cli.autoCompleted;
         const text = prev ? prev.text.from : this.cli.text;
         const index = prev ? prev.index + 1 : 0;
-        this.autoCompleted = this.autoComplete(text, index);
-        if (this.autoCompleted) {
-          this.fire({ type: 'COMMAND_PROMPT/autoCompleted', payload: this.autoCompleted });
+        this.autoComplete(text, index);
+        if (this.cli.autoCompleted) {
+          this.fire({
+            type: 'COMMAND_PROMPT/autoCompleted',
+            payload: this.cli.autoCompleted,
+          });
         }
       });
-
-    changed$.subscribe(e => {
-      // Reset the transient "last autocompleted" value after
-      // any other change to the current input text.
-      this.autoCompleted = undefined;
-    });
   }
 
   public componentWillUnmount() {
@@ -168,18 +163,19 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
     index = index === undefined ? 0 : index;
     index = index > matches.length - 1 ? 0 : index;
-    const match = matches[index];
-    if (!match) {
+    const to = matches[index];
+    if (!to) {
       return;
     }
 
-    const to = match.name;
-    cli.change({ text: to });
-    return {
+    const autoCompleted: t.ICommandAutoCompleted = {
       index,
-      text: { from: text, to },
-      matches: matches.map(cmd => cmd.name),
+      text: { from: text, to: to.name },
+      matches,
     };
+    cli.change({ text: to.name, autoCompleted });
+
+    return autoCompleted;
   };
 
   private fireChange = (args: { text?: string; invoked?: boolean; namespace?: boolean }) => {

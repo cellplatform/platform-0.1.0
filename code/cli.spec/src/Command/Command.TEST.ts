@@ -1,12 +1,14 @@
 import { expect } from 'chai';
 import { Command } from '.';
+import { CommandParam } from '../CommandParam';
 
 describe('Command', () => {
   describe('construction', () => {
     it('minimal construction', () => {
-      const cmd = Command.create({ name: '  Foo  ' });
+      const cmd = Command.create('  Foo  ');
       expect(cmd.name).to.eql('Foo'); // NB: trims title.
-      expect(cmd.handler).to.eql(undefined);
+      expect(cmd.description).to.eql('');
+      expect(cmd.handler).to.be.an.instanceof(Function);
       expect(cmd.children).to.eql([]);
       expect(cmd.params).to.eql([]);
     });
@@ -21,6 +23,21 @@ describe('Command', () => {
       const child = Command.create({ name: 'child' });
       const parent = Command.create({ name: 'parent', children: [child] });
       expect(parent.children).to.eql([child]);
+    });
+
+    it('takes params in constructor', () => {
+      const cmd = Command.create({
+        name: 'child',
+        params: [{ name: 'foo', type: 'string' }, { name: 'bar', type: [1, 2, 3] }],
+      });
+      const params = cmd.params;
+      expect(params.length).to.eql(2);
+      expect(params[0]).to.be.an.instanceof(CommandParam);
+      expect(params[1]).to.be.an.instanceof(CommandParam);
+      expect(params[0].name).to.eql('foo');
+      expect(params[1].name).to.eql('bar');
+      expect(params[0].type).to.eql('string');
+      expect(params[1].type).to.eql([1, 2, 3]);
     });
 
     it('throws if a name is not passed', () => {
@@ -196,6 +213,37 @@ describe('Command', () => {
     });
   });
 
+  describe('description', () => {
+    it('adds with description', () => {
+      const cmd = Command
+        //
+        .create({ name: 'foo', description: 'something' })
+        .add({ name: 'child', description: 'my-child' });
+      expect(cmd.description).to.eql('something');
+      expect(cmd.children[0].description).to.eql('my-child');
+    });
+
+    it('trims description', () => {
+      const cmd = Command.create({ name: 'foo', description: '  hello  ' });
+      expect(cmd.description).to.eql('hello');
+    });
+
+    it('trims description (empty)', () => {
+      const cmd = Command.create({ name: 'foo', description: '  ' });
+      expect(cmd.description).to.eql('');
+    });
+
+    it('clones the description (deep)', () => {
+      const root1 = Command
+        //
+        .create({ name: 'foo', description: 'something' })
+        .add({ name: 'child', description: 'my-child' });
+      const root2 = root1.clone();
+      expect(root2.description).to.eql('something');
+      expect(root2.children[0].description).to.eql('my-child');
+    });
+  });
+
   describe('param', () => {
     it('adds a parameter', () => {
       const cmd = Command.create('foo')
@@ -211,10 +259,23 @@ describe('Command', () => {
       expect(params[1].type).to.eql(['one', 'two', 'three']);
     });
 
+    it('adds a parameter with description (from object)', () => {
+      const cmd = Command.create('foo').param({
+        name: 'bar',
+        type: 'string',
+        description: 'something',
+      });
+      const params = cmd.params;
+      expect(params.length).to.eql(1);
+      expect(params[0].name).to.eql('bar');
+      expect(params[0].type).to.eql('string');
+      expect(params[0].description).to.eql('something');
+    });
+
     it('clones parameter', () => {
       const cmd1 = Command.create('foo')
         .param('bar', 'string')
-        .param('baz', ['one', 'two', 'three']);
+        .param({ name: 'baz', type: ['one', 'two', 'three'], description: 'something' });
       const cmd2 = cmd1.clone();
 
       expect(cmd2.param).to.not.equal(cmd1.params);
@@ -223,8 +284,10 @@ describe('Command', () => {
       expect(params.length).to.eql(2);
       expect(params[0].name).to.eql('bar');
       expect(params[0].type).to.eql('string');
+      expect(params[0].description).to.eql('');
       expect(params[1].name).to.eql('baz');
       expect(params[1].type).to.eql(['one', 'two', 'three']);
+      expect(params[1].description).to.eql('something');
     });
   });
 
@@ -233,7 +296,7 @@ describe('Command', () => {
       const myHandler = () => true;
       const cmd = Command.create('root', myHandler)
         .add('a', myHandler)
-        .add('b', myHandler);
+        .add({ name: 'b', description: 'Bee' });
       cmd.children[1].add('b1', myHandler);
       cmd.children[1].param('myParam', 'boolean');
 
@@ -249,9 +312,10 @@ describe('Command', () => {
       expect(obj.children[1].params[0].type).to.eql('boolean');
 
       expect(obj.handler).to.eql(myHandler);
-      expect(obj.children[0].handler).to.eql(myHandler);
-      expect(obj.children[1].handler).to.eql(myHandler);
+      expect(obj.children[0].handler).to.equal(myHandler);
+      expect(obj.children[1].handler).to.not.equal(myHandler); // No explicit handler set.
       expect(obj.children[1].children[0].handler).to.eql(myHandler);
+      expect(obj.children[1].description).to.eql('Bee');
 
       // NB: Function stripped from new object.
       const any: any = obj;

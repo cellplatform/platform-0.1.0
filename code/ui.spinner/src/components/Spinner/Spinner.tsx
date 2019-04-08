@@ -6,12 +6,16 @@ import { SpinnerConfig } from './types';
 
 export interface ISpinnerProps {
   color?: string | number;
-  size?: 'SMALL' | 'MEDIUM' | 'LARGE';
+  size?: 12 | 18 | 22 | 32;
   style?: GlamorValue;
 }
 export interface ISpinnerState {
   started?: number;
 }
+
+const SUPPORTED = {
+  SIZE: [12, 18, 22, 32],
+};
 
 /**
  * Spin.js component.
@@ -41,13 +45,13 @@ export class Spinner extends React.PureComponent<ISpinnerProps, ISpinnerState> {
   }
 
   public render() {
-    const pixelSize = this.pixelSize;
+    const size = this.size;
     const styles = {
       base: css({
         display: 'inline-block',
         position: 'relative',
-        width: pixelSize,
-        height: pixelSize,
+        width: size,
+        height: size,
       }),
     };
 
@@ -63,21 +67,11 @@ export class Spinner extends React.PureComponent<ISpinnerProps, ISpinnerState> {
   }
 
   private get size() {
-    const { size = 'MEDIUM' } = this.props;
-    return size;
-  }
-
-  private get pixelSize() {
-    switch (this.size) {
-      case 'SMALL':
-        return 12;
-      case 'MEDIUM':
-        return 22;
-      case 'LARGE':
-        return 32;
-      default:
-        throw new Error(`Spinner size '${this.size}' not supported.`);
+    const { size = 22 } = this.props;
+    if (!SUPPORTED.SIZE.includes(size)) {
+      throw new Error(`Spinner size '${size}' not supported.`);
     }
+    return size;
   }
 
   private get config(): SpinnerConfig {
@@ -89,16 +83,25 @@ export class Spinner extends React.PureComponent<ISpinnerProps, ISpinnerState> {
     };
 
     switch (this.size) {
-      case 'SMALL':
+      case 12:
         result = {
           ...result,
-          width: 2,
-          radius: 3,
-          length: 3,
+          width: 1.5,
+          radius: 2.5,
+          length: 2,
           lines: 8,
         };
         break;
-      case 'MEDIUM':
+      case 18:
+        result = {
+          ...result,
+          width: 2,
+          radius: 3.5,
+          length: 3,
+          lines: 10,
+        };
+        break;
+      case 22:
         result = {
           ...result,
           width: 2,
@@ -107,7 +110,7 @@ export class Spinner extends React.PureComponent<ISpinnerProps, ISpinnerState> {
           lines: 12,
         };
         break;
-      case 'LARGE':
+      case 32:
         result = {
           ...result,
           width: 3,
@@ -116,8 +119,6 @@ export class Spinner extends React.PureComponent<ISpinnerProps, ISpinnerState> {
           lines: 12,
         };
         break;
-      default:
-        break; // Ignore.
     }
 
     return result;
@@ -130,7 +131,7 @@ export class Spinner extends React.PureComponent<ISpinnerProps, ISpinnerState> {
 
   private start = () => {
     this.stop();
-    const Base = require('../../../spin.js');
+    const Base = require('../../spin');
     this.spinner = new Base.Spinner(this.config).spin(this.el);
     this.setState({ started: (this.state.started || 0) + 1 });
   };

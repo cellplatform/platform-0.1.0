@@ -94,7 +94,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
 
     const elSpinner = isSpinning && (
       <div {...styles.spinner}>
-        <Spinner color={theme.spinner} />
+        <Spinner color={theme.spinner} size={18} />
       </div>
     );
 
