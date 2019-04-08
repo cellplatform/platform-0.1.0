@@ -58,7 +58,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
     changed$
       // Handle invoke requests.
-      .pipe(filter(e => e.invoked))
+      .pipe(
+        filter(e => e.invoked),
+        filter(e => this.isFocused),
+      )
       .subscribe(e => this.cli.invoke());
 
     keydown$
@@ -75,7 +78,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
     keydown$
       // Invoke on [Enter]
-      .pipe(filter(e => e.key === 'Enter'))
+      .pipe(
+        filter(e => e.key === 'Enter'),
+        filter(e => this.isFocused),
+      )
       .subscribe(e => this.invoke());
 
     keydown$
@@ -87,9 +93,9 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
       .subscribe(e => {
         const text = this.cli.text;
         if (text.trim()) {
-          this.cli.change({ text: '' });
+          this.change({ text: '' });
         } else {
-          this.cli.change({ namespace: 'PARENT' });
+          this.change({ namespace: 'PARENT' });
         }
       });
 
@@ -148,7 +154,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   };
 
   public invoke = () => {
-    this.fireChange({ text: this.cli.text, invoked: true });
+    this.change({ text: this.cli.text, invoked: true });
   };
 
   public autoComplete = (text: string, index?: number): t.ICommandAutoCompleted | undefined => {
@@ -172,13 +178,12 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
       text: { from: text, to: to.name },
       matches,
     };
-    cli.change({ text: to.name, autoCompleted });
+    this.change({ text: to.name, autoCompleted });
 
     return autoCompleted;
   };
 
-  private fireChange = (args: { text?: string; invoked?: boolean; namespace?: boolean }) => {
-    const e = CommandPromptInput.toChangeArgs(args);
+  private change = (e: t.ICommandChangeArgs) => {
     this.cli.change(e);
   };
 
@@ -201,7 +206,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         text={cli.text}
         namespace={cli.namespace}
         keyPress$={this.keyPress$}
-        onChange={cli.change}
+        onChange={this.change}
       />
     );
   }
