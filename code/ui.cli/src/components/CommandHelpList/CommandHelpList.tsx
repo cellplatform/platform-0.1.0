@@ -49,7 +49,8 @@ export class CommandHelpList extends React.PureComponent<
     const { cli } = this.props;
     const currentId = cli.command ? cli.command.id : undefined;
     const root = cli.namespace ? cli.namespace.command : cli.root;
-    const list = matchCommands(cli.text, root).map(item => {
+    const input = cli.autoCompleted ? cli.autoCompleted.matches.map(cmd => cmd.name) : [cli.text];
+    const list = matchCommands(input, root).map(item => {
       const isCurrent = item.id === currentId;
       return isCurrent ? { ...item, isMatch: true } : item;
     });
@@ -148,10 +149,10 @@ export class CommandHelpList extends React.PureComponent<
  * [Helpers]
  */
 
-function matchCommands(input: string, parent: t.ICommand) {
+function matchCommands(input: string[], parent: t.ICommand) {
   return parent.children.map(cmd => {
     const { id, name } = cmd;
-    const isMatch = str.fuzzy.isMatch(input, name);
+    const isMatch = input.some(text => str.fuzzy.isMatch(text, name));
     return { cmd, id, name, isMatch };
   });
 }
