@@ -17,8 +17,9 @@ export function buildTree(command: t.ICommand, options: { parent?: t.ITreeNode }
       props: {
         label: cmd.name,
         icon: hasChildren ? 'Namespace' : 'Command',
-        badge: hasChildren ? totalChildren : undefined,
+        // badge: hasChildren ? totalChildren : undefined,
       },
+      data: cmd,
     };
     if (cmd.children.length > 0) {
       buildTree(cmd, { parent: node }); // <== RECURSION

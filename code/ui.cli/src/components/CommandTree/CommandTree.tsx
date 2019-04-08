@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { GlamorValue, t } from '../../common';
 import { CommandTreeView, ICommandTreeViewProps } from './CommandTreeView';
@@ -32,6 +32,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
+    const tree$ = this.events$;
 
     // Update state.
     state$.subscribe(e => this.setState(e));
@@ -43,6 +44,30 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
 
     // Redraw on CLI changed.
     changed$.subscribe(e => this.forceUpdate());
+
+    tree$
+      // Invoke command on click.
+      .pipe(
+        filter(e => e.type === 'COMMAND_TREE/click'),
+        map(e => e.payload as t.ICommandTreeClick),
+      )
+      .subscribe(e => {
+        this.cli.change({ text: e.command.name });
+        this.cli.invoke({ stepIntoNamespace: false });
+      });
+
+    tree$
+      // Invoke command on click.
+      .pipe(
+        filter(e => e.type === 'COMMAND_TREE/current'),
+        map(e => e.payload as t.ICommandTreeCurrent),
+      )
+      .subscribe(e => {
+        const command = e.command;
+        const namespace = e.direction === 'PARENT' ? 'PARENT' : true;
+        const text = command ? command.name : '';
+        this.cli.change({ text, namespace });
+      });
   }
 
   public componentWillUnmount() {
@@ -57,7 +82,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     return this.props.cli;
   }
 
-  public get current() {
+  public get nsCommand() {
     return this.cli.namespace ? this.cli.namespace.command : undefined;
   }
 
@@ -67,8 +92,10 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
   public render() {
     return (
       <CommandTreeView
-        root={this.cli.root}
-        current={this.current}
+        rootCommand={this.cli.root}
+        nsCommand={this.nsCommand}
+        currentCommand={this.cli.command}
+        fuzzyMatches={this.cli.fuzzyMatches}
         theme={this.props.theme}
         background={this.props.background}
         events$={this._events$}

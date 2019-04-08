@@ -242,6 +242,16 @@ describe('Command', () => {
       expect(root2.description).to.eql('something');
       expect(root2.children[0].description).to.eql('my-child');
     });
+
+    it('adds description from pre-existing command', () => {
+      const cmd1 = Command.create({ name: 'foo', description: 'one' });
+      const cmd2 = Command.create({ name: 'bar', description: 'two' });
+      cmd1.add(cmd2);
+
+      expect(cmd1.description).to.eql('one');
+      expect(cmd2.description).to.eql('two');
+      expect(cmd1.children[0].description).to.eql('two');
+    });
   });
 
   describe('param', () => {
@@ -270,6 +280,16 @@ describe('Command', () => {
       expect(params[0].name).to.eql('bar');
       expect(params[0].type).to.eql('string');
       expect(params[0].description).to.eql('something');
+    });
+
+    it('adds parameters from existing command', () => {
+      const cmd1 = Command.create({ name: 'foo' }).param('one', 'string');
+      const cmd2 = Command.create({ name: 'bar' }).param('two', 'number');
+      cmd1.add(cmd2);
+
+      expect(cmd1.params[0].name).to.eql('one');
+      expect(cmd2.params[0].name).to.eql('two');
+      expect(cmd1.children[0].params[0].name).to.eql('two');
     });
 
     it('clones parameter', () => {

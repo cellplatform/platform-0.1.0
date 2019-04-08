@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { Argv } from '../Argv';
-import { R, t, value as valueUtil } from '../common';
+import { R, t, value as valueUtil, str } from '../common';
 import { Command } from '../Command/Command';
 import { DEFAULT } from '../common/constants';
 
@@ -133,6 +133,26 @@ export class CommandState implements t.ICommandState {
     return this._.autoCompleted;
   }
 
+  public get fuzzyMatches() {
+    const currentId = this.command ? this.command.id : undefined;
+    const root = this.namespace ? this.namespace.command : this.root;
+    const input = (this.autoCompleted
+      ? this.autoCompleted.matches.map(cmd => cmd.name)
+      : [this.text]
+    ).filter(text => Boolean(text.trim()));
+    const isEmpty = input.length === 0;
+    return root.children
+      .map(command => {
+        const { name } = command;
+        const isMatch = isEmpty ? true : input.some(text => str.fuzzy.isMatch(text, name));
+        return { command, isMatch };
+      })
+      .map(item => {
+        const isCurrent = item.command.id === currentId;
+        return isCurrent ? { ...item, isMatch: true } : item;
+      });
+  }
+
   /**
    * [Methods]
    */
@@ -144,23 +164,45 @@ export class CommandState implements t.ICommandState {
   /**
    * Changes the current state.
    */
-  public change(e: t.ICommandChangeArgs) {
+  public change(e: t.ICommandChangeArgs, options: { silent?: boolean } = {}) {
+    const { silent } = options;
     const { events$ } = this._;
-    const { text, namespace } = e;
+    let namespace = e.namespace;
+    let text = e.text === undefined ? this.text : e.text;
+
+    // Reset namespace if parent requested.
+    if (namespace === 'PARENT' && this._.namespace) {
+      const parent = this._.namespace.command.tree.parent(this.root);
+      this.clear({ silent: true });
+      if (parent) {
+        namespace = true;
+        text = this.root.tree
+          .toPath(parent)
+          .slice(1)
+          .map(cmd => cmd.name)
+          .join(' ');
+      }
+    }
 
     // Update state.
     this._.text = text;
     const command = this.command;
+    const prevNamespace = this.namespace;
 
-    const trimNamespacePrefix = (text: string, namespace: t.ICommandNamespace) => {
-      const ns = namespace.path.map(item => item.name);
-      const parts = text.split(' ');
+    const trimNamespacePrefix = (
+      text: string,
+      prev: t.ICommandNamespace | undefined,
+      next: t.ICommandNamespace,
+    ) => {
+      const textParts = text.split(' ');
+      const nsPrev = prev ? prev.path.map(item => item.name) : [];
+      const nsNext = next.path.map(item => item.name).slice(nsPrev.length);
       let index = 0;
-      for (const level of ns) {
-        parts[index] = parts[index] === level ? '' : parts[index];
+      for (const level of nsNext) {
+        textParts[index] = textParts[index] === level ? '' : textParts[index];
         index++;
       }
-      return parts.join(' ').trim();
+      return textParts.join(' ').trim();
     };
 
     // Set namespace if requested.
@@ -173,26 +215,24 @@ export class CommandState implements t.ICommandState {
       }
       const id = ns.id;
       const name = ns.name;
-      const namespace: t.ICommandNamespace = {
+      const nextNamespace: t.ICommandNamespace = {
         command: ns,
         name,
         get path() {
           return Command.tree.toPath(root, id).slice(1);
         },
         toString() {
-          return namespace.path.map(c => c.name).join('.');
+          return nextNamespace.path.map(c => c.name).join('.');
         },
       };
-      this._.namespace = namespace;
-      this._.text = trimNamespacePrefix(text, namespace); // Reset the text as we are now witin a new namespace.
+      this._.namespace = nextNamespace;
+      this._.text = trimNamespacePrefix(text, prevNamespace, nextNamespace); // Reset the text as we are now witin a new namespace.
     };
 
-    if (
-      command &&
-      namespace === true &&
-      !(this.namespace && this.namespace.command.id === command.id) // Not the current namespace.
-    ) {
-      setNamespace(text, command);
+    if (command && namespace === true) {
+      if (!this.namespace || (this.namespace ? this.namespace.command.id !== command.id : true)) {
+        setNamespace(text, command);
+      }
     }
 
     // Clear the namespace if requested.
@@ -202,18 +242,27 @@ export class CommandState implements t.ICommandState {
 
     // Store the auto-complete value.
     this._.autoCompleted = e.autoCompleted;
-    if (e.autoCompleted) {
+    if (!silent && e.autoCompleted) {
       events$.next({ type: 'COMMAND/state/autoCompleted', payload: e.autoCompleted });
     }
 
     // Alert listeners.
-    const props = this.toObject();
-    const invoked = props.command ? Boolean(e.invoked) : false;
-    const payload = { props, invoked, namespace };
-    events$.next({ type: 'COMMAND/state/changed', payload });
+    if (!silent) {
+      const props = this.toObject();
+      const invoked = props.command ? Boolean(e.invoked) : false;
+      const payload = { props, invoked, namespace: Boolean(this.namespace) };
+      events$.next({ type: 'COMMAND/state/changed', payload });
+    }
 
     // Finish up.
     return this;
+  }
+
+  /**
+   * Clears the state of the current command/namespace.
+   */
+  public clear(options: { silent?: boolean } = {}) {
+    this.change({ text: '', namespace: false }, options);
   }
 
   /**
@@ -303,6 +352,7 @@ export class CommandState implements t.ICommandState {
       command: this.command,
       namespace: this.namespace,
       autoCompleted: this.autoCompleted,
+      fuzzyMatches: this.fuzzyMatches,
     };
   }
 }

@@ -72,9 +72,19 @@ describe('CommandState', () => {
       expect(events.length).to.eql(1);
       expect(changes.length).to.eql(1);
 
-      const props = { props: state.toObject(), invoked: false, namespace: undefined };
-      expect(events[0].payload).to.eql(props);
-      expect(changes[0]).to.eql(props);
+      const payload = events[0].payload as t.ICommandStateChanged;
+      expect(payload.invoked).to.eql(false);
+      expect(payload.namespace).to.eql(false);
+      expect(payload.props.text).to.eql('foo');
+      expect(payload.props.command).to.eql(undefined);
+      expect(payload.props.namespace).to.eql(undefined);
+
+      const changed = changes[0] as t.ICommandStateChanged;
+      expect(changed.invoked).to.eql(false);
+      expect(changed.namespace).to.eql(false);
+      expect(changed.props.text).to.eql('foo');
+      expect(changed.props.command).to.eql(undefined);
+      expect(changed.props.namespace).to.eql(undefined);
     });
 
     it('autoCompletes', () => {
@@ -108,8 +118,6 @@ describe('CommandState', () => {
       state.change({ text: 'foobar' });
       expect(state.autoCompleted).to.eql(undefined);
       expect(state.toObject().autoCompleted).to.eql(undefined);
-
-      // expect(state.).to.eql(result);
     });
 
     it('updates current text on change event', () => {
@@ -173,7 +181,7 @@ describe('CommandState', () => {
       expect(state.namespace).to.eql(undefined);
     });
 
-    it('changes to a namespace', () => {
+    it('changes to root namespace ("db")', () => {
       const state = CommandState.create({ root, getInvokeArgs });
       expect(state.namespace).to.eql(undefined);
 
@@ -191,7 +199,7 @@ describe('CommandState', () => {
       expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
     });
 
-    it('changes to deep namespace (db copy)', () => {
+    it('changes to deep namespace ("db copy")', () => {
       const state = CommandState.create({ root, getInvokeArgs });
 
       state.change({ text: 'db copy', namespace: true });
@@ -205,7 +213,7 @@ describe('CommandState', () => {
       expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
     });
 
-    it('changes to deep namespace - parent of leaf (db copy fast)', () => {
+    it('changes to deep namespace - parent of leaf ("db copy fast")', () => {
       const state = CommandState.create({ root, getInvokeArgs });
 
       state.change({ text: 'db copy fast', namespace: true });
@@ -217,6 +225,18 @@ describe('CommandState', () => {
       const path = (ns && ns.path.map(m => m.name)) || [];
       expect(path).to.eql(['db', 'copy']); // Lowest level namespace.
       expect(state.text).to.eql('fast'); // NB: Text is reset when changing to namespace.
+    });
+
+    it('changes from one namespace to a deeper namespace', () => {
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      state.change({ text: 'db', namespace: true });
+      expect(state.namespace && state.namespace.name).to.eql('db');
+      expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
+
+      state.change({ text: 'copy', namespace: true });
+      expect(state.namespace && state.namespace.name).to.eql('copy');
+      expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
     });
 
     it('changes to deep namespace and retains args', () => {
@@ -244,6 +264,35 @@ describe('CommandState', () => {
 
       state.change({ text: 'db', namespace: false });
       expect(state.namespace).to.eql(undefined);
+    });
+
+    it('clears namespace/command', () => {
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      state.change({ text: 'db copy fast', namespace: true });
+      expect(state.text).to.eql('fast');
+      expect(state.namespace && state.namespace.name).to.eql('copy');
+      expect(state.command && state.command.name).to.eql('fast');
+
+      state.clear();
+
+      expect(state.namespace).to.eql(undefined);
+      expect(state.command).to.eql(undefined);
+    });
+
+    it('steps up to parent namespace', () => {
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      state.change({ text: 'db copy fast', namespace: true });
+      let ns = state.namespace;
+      expect(ns && ns.command.name).to.eql('copy');
+
+      state.change({ namespace: 'PARENT' });
+      ns = state.namespace;
+
+      expect(ns && ns.name).to.eql('db');
+      expect(state.command).to.eql(undefined);
+      expect(state.text).to.eql('');
     });
   });
 
@@ -499,6 +548,73 @@ describe('CommandState', () => {
       expect(res.args).to.eql(args);
       expect(state.args).to.eql(args);
       expect(state.text).to.eql('run foo --force');
+    });
+  });
+
+  describe('fuzzyMatches', () => {
+    it('matches on current text', () => {
+      const ns = Command.create('ns')
+        .add('list')
+        .add('run')
+        .add('play');
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      expect(state.fuzzyMatches.length).to.eql(1);
+      expect(state.fuzzyMatches[0].command.name).to.eql('ns');
+      expect(state.fuzzyMatches[0].isMatch).to.eql(true); // No text === match
+
+      state.change({ text: 's' }); // matches on "s" - "n[s]"
+
+      expect(state.fuzzyMatches.length).to.eql(1);
+      expect(state.fuzzyMatches[0].command.name).to.eql('ns');
+      expect(state.fuzzyMatches[0].isMatch).to.eql(true);
+
+      state.change({ text: 'z' }); // no match
+      expect(state.fuzzyMatches.length).to.eql(1);
+      expect(state.fuzzyMatches[0].command.name).to.eql('ns');
+      expect(state.fuzzyMatches[0].isMatch).to.eql(false);
+    });
+
+    it('matches within namespace', () => {
+      const ns = Command.create('ns')
+        .add('list')
+        .add('run')
+        .add('play');
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, getInvokeArgs });
+
+      state.change({ text: 'ns', namespace: true });
+      expect(state.namespace && state.namespace.name).to.eql('ns');
+
+      const test = (index: number, name: string, isMatch: boolean) => {
+        const matches = state.fuzzyMatches;
+        expect(matches[index].command.name).to.eql(name);
+        expect(matches[index].isMatch).to.eql(isMatch);
+      };
+
+      // Matches everything when no text.
+      test(0, 'list', true);
+      test(1, 'run', true);
+      test(2, 'play', true);
+
+      // Still no text (trimmed).
+      state.change({ text: '  ' });
+      test(0, 'list', true);
+      test(1, 'run', true);
+      test(2, 'play', true);
+
+      // Partial matches.
+      state.change({ text: 'l' });
+      test(0, 'list', true); // "[l]ist"
+      test(1, 'run', false);
+      test(2, 'play', true); // "p[l]ay"
+
+      // No matches.
+      state.change({ text: 'foo' });
+      test(0, 'list', false);
+      test(1, 'run', false);
+      test(2, 'play', false);
     });
   });
 });

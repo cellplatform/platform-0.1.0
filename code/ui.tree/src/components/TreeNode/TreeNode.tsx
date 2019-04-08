@@ -9,6 +9,7 @@ import {
   t,
   tree,
   value,
+  color,
 } from '../../common';
 import * as themes from '../../themes';
 import { Text } from '../Text';
@@ -47,6 +48,9 @@ export type ITreeNodeProps = {
 };
 
 export class TreeNode extends React.PureComponent<ITreeNodeProps> {
+  /**
+   * [Properties]
+   */
   private get theme() {
     return themes.themeOrDefault(this.props);
   }
@@ -66,10 +70,22 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     return props.isSelected ? theme.node.selected.bgColor : undefined;
   }
 
+  private get isEnabled() {
+    return value.defaultValue(this.nodeProps.isEnabled, true);
+  }
+
+  private get opacity() {
+    return value.defaultValue(this.nodeProps.opacity, 1);
+  }
+
+  /**
+   * [Render]
+   */
   public render() {
     const props = this.nodeProps;
-    const isEnabled = value.defaultValue(props.isEnabled, true);
+    const isEnabled = this.isEnabled;
     const padding = css.arrayToEdges(props.padding) || DEFAULT.PADDING;
+    const opacity = this.opacity;
     const styles = {
       base: css({
         position: 'relative',
@@ -86,7 +102,8 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
       body: css({
         position: 'relative',
         Flex: 'horizontal-start-stretch',
-        opacity: isEnabled ? 1 : 0.3,
+        opacity: isEnabled ? opacity : Math.min(0.3, opacity),
+        transition: 'opacity 0.2s',
       }),
     };
 
@@ -167,7 +184,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
           {fn({
             style: styles.icon,
             size: SIZE.ICON_LEFT,
-            color: theme.labelColor,
+            color: props.iconColor ? color.format(props.iconColor) : theme.labelColor,
           })}
         </div>
       );
@@ -182,7 +199,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
       return;
     }
     const theme = this.theme.node;
-    const isActive = iconRight !== null;
+    const isActive = this.isEnabled && iconRight !== null;
     const styles = {
       base: css({
         Absolute: [0, 0, null, null],
@@ -207,6 +224,8 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     const { node, iconRight } = this.props;
     const props = this.nodeProps;
     const label = props.label || node.id;
+    const labelColor = props.labelColor ? color.format(props.labelColor) : theme.labelColor;
+    // const color = props.label ? color.for
     const styles = {
       base: css({
         flex: 1,
@@ -226,7 +245,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         height: SIZE.LABEL,
-        color: theme.labelColor,
+        color: labelColor,
         fontSize: 14,
         fontWeight: props.isBold ? 900 : undefined,
       }),
@@ -256,7 +275,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     const styles = {
       base: css({
         fontSize: 11,
-        color: theme.labelColor,
+        color: props.descriptionColor ? color.format(props.descriptionColor) : theme.labelColor,
         lineHeight: '1.5em',
         paddingBottom: 4,
         marginRight: iconRight !== undefined ? SIZE.ICON_RIGHT : MARGIN.LABEL_RIGHT,

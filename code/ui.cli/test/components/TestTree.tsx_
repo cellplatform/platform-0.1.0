@@ -64,7 +64,7 @@ export class TestTree extends React.PureComponent<{}, ITestTreeState> {
       <div {...styles.base}>
         <div {...styles.tree}>
           <CommandTreeView
-            root={cli.root}
+            rootCommand={cli.root}
             current={this.state.current}
             theme={'DARK'}
             background={'NONE'}

@@ -22,6 +22,7 @@ export type ICommandStateProps = {
   command: ICommand | undefined;
   namespace?: ICommandNamespace;
   autoCompleted?: ICommandAutoCompleted;
+  fuzzyMatches: ICommandFuzzyMatch[];
 };
 
 export type ICommandNamespace = {
@@ -37,14 +38,19 @@ export type ICommandAutoCompleted = {
   matches: ICommand[];
 };
 
+export type ICommandFuzzyMatch = {
+  command: ICommand;
+  isMatch: boolean;
+};
+
 /**
  * [Change] delegate.
  */
 export type CommandChangeDispatcher = (e: ICommandChangeArgs) => void;
 export type ICommandChangeArgs = {
-  text: string;
+  text?: string;
   invoked?: boolean;
-  namespace?: boolean;
+  namespace?: boolean | 'PARENT';
   autoCompleted?: ICommandAutoCompleted;
 };
 

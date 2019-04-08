@@ -1,5 +1,5 @@
 import { createRoot } from './util';
-import { t, TreeView } from '../components/common';
+import { t, TreeView, COLORS } from '../components/common';
 
 export const SIMPLE: t.ITreeNode = {
   id: 'root',
@@ -19,7 +19,7 @@ export const SIMPLE: t.ITreeNode = {
 
 export const COMPREHENSIVE = (() => {
   const p = TreeView.util.props;
-  const root = createRoot([10, 5, 3, 2]);
+  const root = createRoot([14, 5, 3, 2]);
 
   p(root).header = { isVisible: false };
 
@@ -40,6 +40,7 @@ export const COMPREHENSIVE = (() => {
 
   p(children[3]).isEnabled = false;
   p(children[3]).label = 'disabled';
+  p(children[3]).chevron = { isVisible: true };
 
   p(children[4]).chevron = { isVisible: true };
   p(children[4]).label = 'twisty and drill-in';
@@ -61,7 +62,22 @@ export const COMPREHENSIVE = (() => {
   p(children[9]).inline = undefined;
   p(children[9]).badge = 5;
   p(children[9]).label = 'badge';
-  p(children[9]).marginBottom = 50;
+
+  p(children[10]).label = 'opacity: 0.6';
+  p(children[10]).inline = undefined;
+  p(children[10]).opacity = 0.6;
+
+  p(children[11]).label = 'icon color';
+  p(children[11]).iconColor = COLORS.BLUE;
+
+  p(children[12]).label = 'label color';
+  p(children[12]).labelColor = COLORS.BLUE;
+
+  p(children[13]).label = 'Description';
+  p(children[13]).description =
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius.';
+  p(children[13]).descriptionColor = -0.3;
+  p(children[13]).marginBottom = 80;
 
   return root;
 })();

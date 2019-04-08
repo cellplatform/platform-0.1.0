@@ -12,6 +12,7 @@ export type ICommandTreeCurrentEvent = {
 };
 export type ICommandTreeCurrent = {
   command?: t.ICommand;
+  direction: 'NONE' | 'CHILD' | 'PARENT';
 };
 
 export type ICommandTreeClickEvent = {

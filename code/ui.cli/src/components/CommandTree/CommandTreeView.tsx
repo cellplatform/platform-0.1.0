@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { share, filter, takeUntil } from 'rxjs/operators';
+import { filter, share, takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, t } from '../../common';
-import { ITreeViewProps, TreeView } from '../primitives';
+import { COLORS, GlamorValue, R, t } from '../../common';
 import { Icons } from '../Icons';
+import { ITreeViewProps, TreeView } from '../primitives';
 import * as util from './util';
 
 export type ICommandTreeViewProps = {
-  root: t.ICommand;
-  current?: t.ICommand;
+  rootCommand: t.ICommand;
+  nsCommand?: t.ICommand;
+  currentCommand?: t.ICommand;
+  fuzzyMatches?: t.ICommandFuzzyMatch[];
   theme?: ITreeViewProps['theme'];
   background?: ITreeViewProps['background'];
   events$?: Subject<t.CommandTreeEvent>;
@@ -63,21 +65,23 @@ export class CommandTreeView extends React.PureComponent<
         ),
         filter(e => (e.node.children || []).length > 0),
       )
-      .subscribe(e => this.fireCurrent(e.node));
+      .subscribe(e => {
+        this.fireCurrent(e.node, e.target === 'NODE' ? 'NONE' : 'CHILD');
+      });
 
     click$
       // Step up to parent.
       .pipe(filter(e => e.target === 'PARENT'))
       .subscribe(e => {
         const parent = TreeView.util.parent(this.state.tree, e.node);
-        this.fireCurrent(parent);
+        this.fireCurrent(parent, 'PARENT');
       });
 
     click$
       //
       .pipe(filter(e => e.target === 'NODE'))
       .subscribe(e => {
-        const command = util.asCommand(this.root, e.node);
+        const command = util.asCommand(this.rootCommand, e.node);
         if (command) {
           this.fire({ type: 'COMMAND_TREE/click', payload: { command } });
         }
@@ -88,7 +92,18 @@ export class CommandTreeView extends React.PureComponent<
   }
 
   public componentDidUpdate(prev: ICommandTreeViewProps) {
-    if (prev.root !== this.root) {
+    const dimmed = {
+      prev: filterDimmed(prev.fuzzyMatches),
+      next: filterDimmed(this.props.fuzzyMatches),
+    };
+    const isDimmedChanged = !R.equals(dimmed.prev, dimmed.next);
+    const isCurrentCommandChanged =
+      (prev.currentCommand && prev.currentCommand.id) !==
+      (this.props.currentCommand && this.props.currentCommand.id);
+
+    const isRootChanged = prev.rootCommand !== this.rootCommand;
+
+    if (isDimmedChanged || isCurrentCommandChanged || isRootChanged) {
       this.updateTree();
     }
   }
@@ -101,27 +116,57 @@ export class CommandTreeView extends React.PureComponent<
   /**
    * [Propertes]
    */
-  public get root() {
-    return this.props.root;
+  public get rootCommand() {
+    return this.props.rootCommand;
   }
 
   private get currentNodeId() {
     const { tree } = this.state;
-    const { current } = this.props;
-    return !current && tree ? tree.id : util.asNodeId(current);
+    const { nsCommand } = this.props;
+    return !nsCommand && tree ? tree.id : util.asNodeId(nsCommand);
   }
 
   /**
    * [Methods]
    */
   private updateTree() {
-    const tree = util.buildTree(this.root);
+    // Build the tree structure.
+    const tree = util.buildTree(this.rootCommand);
+    const p = TreeView.util.props;
+
+    const currentCommandId = util.asNodeId(this.props.currentCommand);
+    const dimmed = filterDimmed(this.props.fuzzyMatches);
+
+    TreeView.util.walk(tree, node => {
+      const command = node.data as t.ICommand;
+
+      // Dim any nodes that are filtered out due to the current input text.
+      if (dimmed.includes(node.id)) {
+        p(node).opacity = 0.3;
+      }
+
+      // Highlight the current command.
+      if (node.id === currentCommandId) {
+        const color = this.props.theme === 'DARK' ? COLORS.CLI.CYAN : COLORS.BLUE;
+        p(node).iconColor = color;
+        p(node).labelColor = color;
+        p(node).description = command.description;
+      }
+    });
+
+    // Update state.
     this.state$.next({ tree });
   }
 
-  private fireCurrent(node?: string | t.ITreeNode) {
-    const command = util.asCommand(this.root, node);
-    this.fire({ type: 'COMMAND_TREE/current', payload: { command } });
+  private fireCurrent(
+    node: string | t.ITreeNode | undefined,
+    direction: t.ICommandTreeCurrent['direction'],
+  ) {
+    const command = util.asCommand(this.rootCommand, node);
+    this.fire({
+      type: 'COMMAND_TREE/current',
+      payload: { command, direction },
+    });
   }
 
   private fire(e: t.CommandTreeEvent) {
@@ -150,3 +195,18 @@ export class CommandTreeView extends React.PureComponent<
    */
   private renderIcon: t.RenderTreeIcon = e => Icons[e.icon];
 }
+
+/**
+ * [Helpers]
+ */
+
+function filterDimmed(matches: t.ICommandFuzzyMatch[] = []) {
+  return matches
+    .filter(m => m.isMatch === false)
+    .map(m => m.command)
+    .map(cmd => util.asNodeId(cmd));
+}
+
+// function filterDimmedIds(matches: t.ICommandFuzzyMatch[] = []) {
+//   return filterDimmed(matches).map(cmd => cmd.id);
+// }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, str, t } from '../../common';
+import { color, css, GlamorValue, t } from '../../common';
 import { Icons } from '../Icons';
 
 export type ICommandHelpListProps = {
@@ -45,16 +45,8 @@ export class CommandHelpList extends React.PureComponent<
     return this.cli.root;
   }
 
-  private get commandList() {
-    const { cli } = this.props;
-    const currentId = cli.command ? cli.command.id : undefined;
-    const root = cli.namespace ? cli.namespace.command : cli.root;
-    const input = cli.autoCompleted ? cli.autoCompleted.matches.map(cmd => cmd.name) : [cli.text];
-    const list = matchCommands(input, root).map(item => {
-      const isCurrent = item.id === currentId;
-      return isCurrent ? { ...item, isMatch: true } : item;
-    });
-    return list;
+  private get list() {
+    return this.props.cli.fuzzyMatches;
   }
 
   /**
@@ -89,11 +81,11 @@ export class CommandHelpList extends React.PureComponent<
       }),
     };
 
-    const list = this.commandList;
+    const list = this.list;
     const elList = list.map((item, index) => {
-      const { cmd, isMatch } = item;
+      const { command, isMatch } = item;
       const isLast = index === list.length - 1;
-      return this.renderListItem({ index, cmd, isMatch, isLast });
+      return this.renderListItem({ index, command, isMatch, isLast });
     });
 
     return (
@@ -105,13 +97,13 @@ export class CommandHelpList extends React.PureComponent<
 
   private renderListItem(props: {
     index: number;
-    cmd: t.ICommand;
+    command: t.ICommand;
     isMatch: boolean;
     isLast: boolean;
   }) {
-    const { index, cmd, isMatch, isLast } = props;
-    const name = cmd.name;
-    const hasChildren = cmd.children.length > 0;
+    const { index, command, isMatch, isLast } = props;
+    const name = command.name;
+    const hasChildren = command.children.length > 0;
     const Icon = hasChildren ? Icons.Namespace : Icons.Command;
     const styles = {
       base: css({
@@ -125,7 +117,7 @@ export class CommandHelpList extends React.PureComponent<
       }),
     };
     return (
-      <div key={index} {...css(styles.base)} onClick={this.commandClickHandler(cmd)}>
+      <div key={index} {...css(styles.base)} onClick={this.commandClickHandler(command)}>
         <Icon size={18} style={styles.icon} />
         {name}
       </div>
@@ -143,16 +135,4 @@ export class CommandHelpList extends React.PureComponent<
       }
     };
   };
-}
-
-/**
- * [Helpers]
- */
-
-function matchCommands(input: string[], parent: t.ICommand) {
-  return parent.children.map(cmd => {
-    const { id, name } = cmd;
-    const isMatch = input.some(text => str.fuzzy.isMatch(text, name));
-    return { cmd, id, name, isMatch };
-  });
 }

@@ -85,8 +85,12 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         filter(e => this.isFocused),
       )
       .subscribe(e => {
-        const clearNamespace = !Boolean(this.cli.text);
-        this.clear({ clearNamespace });
+        const text = this.cli.text;
+        if (text.trim()) {
+          this.cli.change({ text: '' });
+        } else {
+          this.cli.change({ namespace: 'PARENT' });
+        }
       });
 
     tab$
@@ -141,11 +145,6 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     if (this.input) {
       this.input.blur();
     }
-  };
-
-  public clear = (args: { clearNamespace?: boolean } = {}) => {
-    const namespace = args.clearNamespace ? false : undefined;
-    this.fireChange({ text: '', namespace });
   };
 
   public invoke = () => {
