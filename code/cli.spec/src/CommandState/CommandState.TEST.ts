@@ -479,8 +479,9 @@ describe('CommandState', () => {
 
       const res = await state.invoke({ stepIntoNamespace: true }); // NB: default:true
 
-      expect(state.namespace && state.namespace.command.name).to.eql('ns');
       expect(res.isNamespaceChanged).to.eql(true);
+      expect(res.state.namespace && res.state.namespace.name).to.eql('ns');
+      expect(state.namespace && state.namespace.command.name).to.eql('ns');
     });
 
     it('steps into a namespace upon invoking (indirectly)', async () => {

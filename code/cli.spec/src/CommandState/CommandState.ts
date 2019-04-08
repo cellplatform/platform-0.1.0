@@ -303,7 +303,7 @@ export class CommandState implements t.ICommandState {
   ): Promise<t.ICommandStateInvokeResponse> {
     const { events$ } = this._;
     const state = this.toObject();
-    let namespaceChanged = false;
+    let isNamespaceChanged = false;
 
     const invoke = async (command?: t.ICommand) => {
       // Prepare the args to pass to the command.
@@ -317,7 +317,7 @@ export class CommandState implements t.ICommandState {
       let result: t.ICommandStateInvokeResponse = {
         isInvoked: false,
         isCancelled: false,
-        isNamespaceChanged: namespaceChanged,
+        isNamespaceChanged,
         state,
         props: args.props,
         args: typeof args.args === 'object' ? args.args : Argv.parse<any>(args.args || ''),
@@ -350,7 +350,7 @@ export class CommandState implements t.ICommandState {
 
       // Invoke the command.
       const response = await command.invoke(args);
-      result = { ...result, isInvoked: true, response };
+      result = { ...result, isInvoked: true, response, state: this.toObject() };
       events$.next({ type: 'COMMAND/state/invoked', payload: result });
 
       // Finish up.
@@ -361,9 +361,9 @@ export class CommandState implements t.ICommandState {
     let ns = this.namespace;
     if (valueUtil.defaultValue(options.stepIntoNamespace, true)) {
       this.change({ text: this.text, namespace: true }, { silent: true }); // <== RECURSION
-      namespaceChanged = !R.equals(ns, this.namespace);
+      isNamespaceChanged = !R.equals(ns, this.namespace);
       ns = this.namespace;
-      if (namespaceChanged && ns && ns.command.handler && ns.command !== state.command) {
+      if (isNamespaceChanged && ns && ns.command.handler && ns.command !== state.command) {
         invoke(ns.command);
       }
     }
