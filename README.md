@@ -109,5 +109,5 @@ API's will change (probably radically 🐷) prior to `1.0` release.
   - [x] `@platform/ts` ➡️ `@platform/ts.libs`
   - [x] `@platform/ts.cli` ➡️ `@platform/ts` (unpublish `ts.cli` from NPM)
   - [x] `@platform/util.css` ️️=> `@platform/css` (unpublish `/util.css`)
-  - [ ] `@platform/util.exec` ️️=> `@platform/exec` (unpublish `/util.exec`)
+  - [x] `@platform/util.exec` ️️=> `@platform/exec` (unpublish `/util.exec`)
 
