@@ -8,10 +8,17 @@ const list = Command.create<P>({
   description: 'List all items that match the input',
 });
 
+const grandchild = Command.create<P>('grandchild')
+  .add('expert', async e => null)
+  .add('achiever', async e => null)
+  .add('pluralist', async e => null)
+  .add('strategist', async e => null);
+
 const child = Command.create<P>('child')
   .add('foo', async e => null)
   .add('bar', async e => null)
-  .add('baz', async e => null);
+  .add('baz', async e => null)
+  .add(grandchild);
 
 const ns = Command.create<P>('ns')
   .add('one', async e => null)
