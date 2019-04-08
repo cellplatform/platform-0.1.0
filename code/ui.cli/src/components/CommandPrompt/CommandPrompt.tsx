@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, str, t, events, R } from '../../common';
+import { events, GlamorValue, str, t } from '../../common';
 import { CommandPromptInput } from '../CommandPromptInput';
 import { ICommandPromptTheme } from './types';
 
