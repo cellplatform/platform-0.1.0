@@ -376,7 +376,7 @@ describe('CommandState', () => {
       const res = await state.invoke();
       expect(res.isInvoked).to.eql(false);
       expect(res.state.command).to.eql(undefined);
-      expect(res.props.foo).to.eql(123); // Derived from `getInvokeArgs` factory.
+      expect(res.props).to.eql({});
     });
 
     it('invokes the current command (with props from factory)', async () => {

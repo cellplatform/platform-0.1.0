@@ -319,13 +319,13 @@ export class CommandState implements t.ICommandState {
     const state = this.toObject();
     let isNamespaceChanged = false;
 
-    const invoke = async (command?: t.ICommand) => {
+    const invoke = async (command: t.ICommand) => {
       // Props.
       let props: any = command ? this.props(command) || {} : {};
       props = options.props !== undefined ? { ...props, ...options.props } : props;
 
       // Prepare the args to pass to the command.
-      const args = { ...(await this._.beforeInvoke({ state, props })) };
+      const args = { ...(await this._.beforeInvoke({ command, state, props })) };
       args.args = options.args !== undefined ? options.args : args.args || state.args;
       args.timeout = options.timeout !== undefined ? options.timeout : args.timeout;
       const timeout = valueUtil.defaultValue(args.timeout, DEFAULT.TIMEOUT);
@@ -400,7 +400,19 @@ export class CommandState implements t.ICommandState {
     }
 
     // Invoke the command
-    return invoke(state.command);
+    if (state.command) {
+      return invoke(state.command);
+    } else {
+      return {
+        isInvoked: false,
+        isCancelled: false,
+        isNamespaceChanged: false,
+        state,
+        props: {},
+        args: Argv.parse<any>(''),
+        timeout: DEFAULT.TIMEOUT,
+      };
+    }
   }
 
   public toString() {
