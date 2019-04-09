@@ -121,8 +121,6 @@ export class CommandState implements t.ICommandState {
     const args = Argv.parse(this.text);
     const path = [root.name, ...args.params];
 
-    // console.log('path', path);
-
     // NB: Catch the lowest level command, leaving params intact (ie. strict:false).
     const res = Command.tree.fromPath(root, path, { strict: false });
     if (!res) {
@@ -169,18 +167,9 @@ export class CommandState implements t.ICommandState {
   }
 
   /**
-   * Gets property state for the given command.
-   * These are values that are set within invoke handlers on the command.
-   */
-  public props<P extends object = any>(command: t.ICommand | number): P | undefined {
-    const id = typeof command === 'object' ? command.id : command;
-    return this._.commandProps[id];
-  }
-
-  /**
    * Clears stored command-property state.
    */
-  public clearProps() {
+  public reset() {
     this._.commandProps = {};
   }
 
@@ -323,8 +312,15 @@ export class CommandState implements t.ICommandState {
     const stepIntoNamespace = valueUtil.defaultValue(options.stepIntoNamespace, true);
 
     const invoke = async (command: t.ICommand, namespace?: t.ICommand) => {
+      const getProps = () => {
+        return this._.commandProps[(namespace || command).id];
+      };
+      const setProps = (props: object) => {
+        this._.commandProps[(namespace || command).id] = props;
+      };
+
       // Properties.
-      let props: any = command ? this.props(command) || {} : {};
+      let props: any = command ? getProps() || {} : {};
       props = options.props !== undefined ? { ...props, ...options.props } : props;
 
       // Prepare the args to pass to the command.
@@ -386,7 +382,7 @@ export class CommandState implements t.ICommandState {
 
       // Store the resulting props as future state
       // (which may have been mutated within the handler via the `set` method).
-      this._.commandProps[command.id] = props;
+      setProps(props);
 
       // Finish up.
       this.fire({ type: 'COMMAND_STATE/invoked', payload: result });

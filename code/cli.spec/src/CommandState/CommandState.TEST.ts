@@ -446,11 +446,9 @@ describe('CommandState', () => {
 
       const res1 = await state.invoke();
       expect(res1.props).to.eql({ foo: 123 });
-      expect(state.props(run)).to.eql({ foo: 123 });
 
       const res2 = await state.invoke({ props: { foo: 'hello' } });
       expect(res2.props).to.eql({ foo: 'hello' });
-      expect(state.props(run)).to.eql({ foo: 'hello' });
     });
 
     it('fires `invoking` | `invoked` events', async () => {
@@ -618,7 +616,6 @@ describe('CommandState', () => {
       const state = CommandState.create({ root, beforeInvoke });
 
       const ls = root.children[0];
-      expect(state.props(ls)).to.eql(undefined);
 
       state.change({ text: 'root', namespace: true }).change({ text: 'ls' });
       const res = await state.invoke();
@@ -626,10 +623,6 @@ describe('CommandState', () => {
       // Changed props on response object.
       expect(res.props.foo).to.eql('hello');
       expect(res.props.bar).to.eql(456);
-
-      // Changed props stored in state.
-      expect(state.props(ls)).to.eql({ foo: 'hello', bar: 456 });
-      expect(state.props(ls.id)).to.eql({ foo: 'hello', bar: 456 });
     });
 
     it('passes prior updated prop state to invoke args', async () => {
@@ -641,40 +634,17 @@ describe('CommandState', () => {
       const state = CommandState.create({ root, beforeInvoke });
 
       state.change({ text: 'root', namespace: true }).change({ text: 'ls' });
-      expect(state.props(ls)).to.eql(undefined);
 
       // Initial `count` value incremented on the command's property state.
       const res1 = await state.invoke();
       expect(res1.props.count).to.eql(1);
-      expect(state.props(ls)).to.eql({ foo: 123, count: 1 });
 
       // Second call to an invoke increments from the prior stored state.
       const res2 = await state.invoke();
       expect(res2.props.count).to.eql(2);
-      expect(state.props(ls)).to.eql({ foo: 123, count: 2 });
 
       // Not the same instance.
       expect(res1.props).to.not.equal(res2.props);
-    });
-
-    it('clears command property state', async () => {
-      const root = Command.create('root')
-        .add('ls', e => e.set('foo', 'ls-prop'))
-        .add('run', e => e.set('foo', 'run-prop'));
-      const ls = root.children[0];
-      const run = root.children[1];
-      const state = CommandState.create({ root, beforeInvoke });
-
-      await state.change({ text: 'ls' }).invoke();
-      await state.change({ text: 'run' }).invoke();
-
-      expect(state.props(ls)).to.eql({ foo: 'ls-prop' });
-      expect(state.props(run)).to.eql({ foo: 'run-prop' });
-
-      state.clearProps();
-
-      expect(state.props(ls)).to.eql(undefined);
-      expect(state.props(run)).to.eql(undefined);
     });
   });
 
