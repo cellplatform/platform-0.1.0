@@ -171,12 +171,11 @@ export class CommandState implements t.ICommandState {
   public change(e: t.ICommandChange, options: { silent?: boolean } = {}) {
     // Fire BEFORE event.
     const { silent } = options;
-    const { events$ } = this._;
     const prev = this._.prevChange;
     this._.prevChange = e;
     if (!silent) {
       let isCancelled = false;
-      events$.next({
+      this.fire({
         type: 'COMMAND_STATE/changing',
         payload: {
           prev,
@@ -272,7 +271,7 @@ export class CommandState implements t.ICommandState {
     // Store the auto-complete value.
     this._.autoCompleted = e.autoCompleted;
     if (!silent && e.autoCompleted) {
-      events$.next({ type: 'COMMAND_STATE/autoCompleted', payload: e.autoCompleted });
+      this.fire({ type: 'COMMAND_STATE/autoCompleted', payload: e.autoCompleted });
     }
 
     // Fire AFTER event.
@@ -280,7 +279,7 @@ export class CommandState implements t.ICommandState {
       const state = this.toObject();
       const invoked = state.command ? Boolean(e.invoked) : false;
       const payload = { state, invoked, namespace: Boolean(this.namespace) };
-      events$.next({ type: 'COMMAND_STATE/changed', payload });
+      this.fire({ type: 'COMMAND_STATE/changed', payload });
     }
 
     // Finish up.
@@ -300,7 +299,6 @@ export class CommandState implements t.ICommandState {
   public async invoke(
     options: t.ICommandStateInvokeArgs = {},
   ): Promise<t.ICommandStateInvokeResponse> {
-    const { events$ } = this._;
     const state = this.toObject();
     let isNamespaceChanged = false;
 
@@ -328,7 +326,7 @@ export class CommandState implements t.ICommandState {
 
       // Fire BEFORE event and exit if any listeners cancel the operation.
       let isCancelled = false;
-      events$.next({
+      this.fire({
         type: 'COMMAND_STATE/invoking',
         payload: {
           get isCancelled() {
@@ -350,7 +348,7 @@ export class CommandState implements t.ICommandState {
       // Invoke the command.
       const response = await command.invoke(args);
       result = { ...result, isInvoked: true, response, state: this.toObject() };
-      events$.next({ type: 'COMMAND_STATE/invoked', payload: result });
+      this.fire({ type: 'COMMAND_STATE/invoked', payload: result });
 
       // Finish up.
       return result;
@@ -385,5 +383,9 @@ export class CommandState implements t.ICommandState {
       autoCompleted: this.autoCompleted,
       fuzzyMatches: this.fuzzyMatches,
     };
+  }
+
+  private fire(e: t.CommandStateEvent) {
+    this._.events$.next(e);
   }
 }
