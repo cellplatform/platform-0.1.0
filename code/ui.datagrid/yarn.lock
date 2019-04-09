@@ -1388,16 +1388,16 @@
     "@platform/libs" "0.0.12"
     "@platform/ts.libs" "3.4.3"
 
-"@platform/ui.cli@0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.30.tgz#7d576c35b17a5fd27b0029f73b72ad4d747e719a"
-  integrity sha512-t9Nara4dSyQ1iGYYF1VLK/KRQUl5TP8L359n5UWRWgmpWJy3mku20vjzm2yCVutYawZWiYLgnZEy4jUhPxUQKA==
+"@platform/ui.cli@0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.31.tgz#53901d74e95ce8c4061e40151d3cde97b8bb0072"
+  integrity sha512-omx9FaqRHR/Iih6Z0KB2pMEX0xRPnErpZfRiLw7ie3VIXzRnLUgWDstXBUODnni0mHuM3lM1soW0aFYPIrlC3g==
   dependencies:
     "@platform/cli.spec" "0.0.34"
     "@platform/react" "0.1.10"
     "@platform/ui.panel" "^0.0.23"
     "@platform/ui.text" "0.0.44"
-    "@platform/ui.tree" "0.0.26"
+    "@platform/ui.tree" "0.0.27"
     react-icons "3.5.0"
 
 "@platform/ui.cli@^0.0.29":
@@ -1531,10 +1531,10 @@
     "@platform/ui.spinner" "0.0.24"
     "@platform/ui.text" "0.0.43"
 
-"@platform/ui.tree@0.0.26":
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.0.26.tgz#6c7711b54fe6357c9a26215101dd9fbda82fa1a8"
-  integrity sha512-W/KqbPmO7wF5/RQCJUz2d0yoUqVf9qg/pNY+f8PsJcgn79nILyV0YcClB38zJjVkMDLhFnZEvyAhqMc3VBMEWQ==
+"@platform/ui.tree@0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.0.27.tgz#3b8ffdb59d2b3ef412d8b2a597b277dec57847d7"
+  integrity sha512-74F1Eqt56mKWXhA1Y1dQDKUF1hN3rs0sXAhZnJcrqE54tkt+Dlq5M5xJWZte+Jw/GVfI73ZuqYsZZEo0EDQIaA==
   dependencies:
     "@platform/css" "0.0.29"
     "@platform/react" "0.1.10"

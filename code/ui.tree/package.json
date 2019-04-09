@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.tree",
   "description": "Hierarchical tree view.",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "scripts": {
     "ui": "ui $@",
     "start": "ui start $@",
