@@ -416,7 +416,7 @@ describe('CommandState', () => {
       await state.invoke();
 
       expect(args.ns && args.ns.command.name).to.eql('ns');
-      expect(args.ns && args.ns.namespace).to.eql(undefined);
+      expect(args.ns && args.ns.namespace && args.ns.namespace.name).to.eql('ns');
 
       state.change({ text: 'ns', namespace: true }).change({ text: 'run' });
       await state.invoke();
@@ -608,16 +608,14 @@ describe('CommandState', () => {
       expect(state.text).to.eql('run foo --force');
     });
 
-    it('stores command changes from the [set] method of the [invoke] args', async () => {
-      const root = Command.create('root').add('ls', e => {
+    it('stores command changes from the [set] method of the [invoke] args on the namespace', async () => {
+      const root = Command.create('root').add('one', e => {
         e.set('foo', 'hello');
         e.set('bar', 456);
       });
       const state = CommandState.create({ root, beforeInvoke });
 
-      const ls = root.children[0];
-
-      state.change({ text: 'root', namespace: true }).change({ text: 'ls' });
+      state.change({ text: 'root', namespace: true }).change({ text: 'one' });
       const res = await state.invoke();
 
       // Changed props on response object.
@@ -625,15 +623,17 @@ describe('CommandState', () => {
       expect(res.props.bar).to.eql(456);
     });
 
-    it('passes prior updated prop state to invoke args', async () => {
-      const root = Command.create('root').add('ls', e => {
-        const count = e.get('count') || 0;
-        e.set('count', count + 1);
-      });
-      const ls = root.children[0];
-      const state = CommandState.create({ root, beforeInvoke });
-
-      state.change({ text: 'root', namespace: true }).change({ text: 'ls' });
+    it('passes prior updated prop state to the [invoke] args', async () => {
+      const root = Command.create('root')
+        .add('increment', e => {
+          const count = e.get('count', 0);
+          e.set('count', count + 1);
+        })
+        .add('decrement', e => {
+          const count = e.get('count', 0);
+          e.set('count', count - 1);
+        });
+      const state = CommandState.create({ root, beforeInvoke }).change({ text: 'increment' });
 
       // Initial `count` value incremented on the command's property state.
       const res1 = await state.invoke();
@@ -642,9 +642,38 @@ describe('CommandState', () => {
       // Second call to an invoke increments from the prior stored state.
       const res2 = await state.invoke();
       expect(res2.props.count).to.eql(2);
+      expect(res1.props).to.not.equal(res2.props); // Not the same instance.
 
-      // Not the same instance.
-      expect(res1.props).to.not.equal(res2.props);
+      // Third call to a different child command (props shared within namespace).
+      state.change({ text: 'decrement' });
+      const res3 = await state.invoke();
+      expect(res3.props.count).to.eql(1);
+    });
+
+    it('resets mutated prop state', async () => {
+      const ns = Command.create('ns', e => {
+        e.set('foo', 999);
+      });
+      ns.add('run', e => {
+        e.set('foo', e.get('foo', 0) + 1);
+      });
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, beforeInvoke });
+
+      state.change({ text: 'ns' });
+      const res1 = await state.invoke();
+      expect(res1.props).to.eql({ foo: 999 });
+      expect(state.namespace && state.namespace.name).to.eql('ns');
+
+      state.change({ text: 'run' });
+      const res2 = await state.invoke();
+      expect(res2.props).to.eql({ foo: 1000 });
+      expect(state.namespace && state.namespace.name).to.eql('ns');
+
+      state.reset();
+
+      const res3 = await state.invoke();
+      expect(res3.props).to.eql({ foo: 124 }); // NB: Incremented from default value.
     });
   });
 

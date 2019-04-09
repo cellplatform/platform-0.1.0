@@ -310,13 +310,14 @@ export class CommandState implements t.ICommandState {
     const state = this.toObject();
     let isNamespaceChanged = false;
     const stepIntoNamespace = valueUtil.defaultValue(options.stepIntoNamespace, true);
+    const root = this.root;
 
     const invoke = async (command: t.ICommand, namespace?: t.ICommand) => {
       const getProps = () => {
-        return this._.commandProps[(namespace || command).id];
+        return this._.commandProps[(namespace || root).id];
       };
       const setProps = (props: object) => {
-        this._.commandProps[(namespace || command).id] = props;
+        this._.commandProps[(namespace || root).id] = props;
       };
 
       // Properties.
@@ -407,13 +408,13 @@ export class CommandState implements t.ICommandState {
         ns.next.command.handler &&
         ns.next.command !== state.command
       ) {
-        invoke(ns.next.command);
+        invoke(ns.next.command, ns.next.command);
       }
     }
 
     // Invoke the command.
     if (state.command) {
-      const namespace = state.namespace ? state.namespace.command : undefined;
+      const namespace = this.namespace ? this.namespace.command : undefined;
       return invoke(state.command, namespace);
     } else {
       // Nothing to invoke.

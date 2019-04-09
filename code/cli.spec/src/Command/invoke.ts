@@ -84,8 +84,9 @@ export function invoker<P extends object, A extends object, R>(options: {
       get props() {
         return { ...response.props };
       },
-      get(key) {
-        return response.props[key];
+      get(key, defaultValue) {
+        const value = response.props[key];
+        return value === undefined && defaultValue !== undefined ? defaultValue : value;
       },
       set(key, value) {
         const props = { ...response.props, [key]: value };
