@@ -7,9 +7,10 @@ export type ITestCommandProps = {
   state$: Subject<Partial<ITestState>>;
 };
 
-export type TestViewType = 'grid' | 'editor';
+export type TestViewType = 'grid' | 'editor' | 'foo';
 export type TestEditorType = 'debug' | 'default';
 export type ITestState = {
   view?: TestViewType;
   editor?: TestEditorType;
+  el?: React.ReactNode;
 };
