@@ -19,14 +19,14 @@ const root = Command.create('root')
   .add('mkdir')
   .add(db);
 
-let getInvokeArgsList: t.ICommandStateProps[] = [];
-const beforeInvoke: t.BeforeInvokeCommand = async state => {
-  getInvokeArgsList = [...getInvokeArgsList, state];
-  return { props: { foo: 123 } };
+let beforeInvokeList: t.ICommandStateProps[] = [];
+const beforeInvoke: t.BeforeInvokeCommand = async e => {
+  beforeInvokeList = [...beforeInvokeList, e.state];
+  return { props: { foo: 123, ...e.props } };
 };
 
 describe('CommandState', () => {
-  beforeEach(() => (getInvokeArgsList = []));
+  beforeEach(() => (beforeInvokeList = []));
 
   it('creates with default values', () => {
     const state = CommandState.create({ root, beforeInvoke });
@@ -398,23 +398,36 @@ describe('CommandState', () => {
       expect(list[0].args).to.eql({ params: ['foo'], options: { force: true } });
 
       const response = res.response;
-      expect(response && response.result).to.eql(1234);
+      expect(response && response.result).to.eql(1234); // Returned from the handler.
+      expect(res.props.foo).to.eql(123); // From the `beforeInvoke` property generator.
     });
 
     it('invokes with props/args from parameter', async () => {
       const list: t.ICommandHandlerArgs[] = [];
-      const root = Command.create('root').add('run', async args => {
-        list.push(args);
-      });
-      const state = CommandState.create({ root, beforeInvoke });
-      state.change({ text: 'run' });
+      const root = Command.create('root').add('run', e => list.push(e));
+      const state = CommandState.create({ root, beforeInvoke }).change({ text: 'run' });
 
       await state.invoke({ props: { msg: 'hello' }, timeout: 1234, args: '--force' });
 
       expect(list.length).to.eql(1);
       const item = list[0];
       expect(item.args).to.eql({ params: [], options: { force: true } });
-      expect(item.props).to.eql({ msg: 'hello' });
+      expect(item.props).to.eql({ msg: 'hello', foo: 123 }); // NB: The {foo:123} injected from the `beforeInvoke` handler.
+    });
+
+    it('overwrites [beforeInvoke] props with passed parameter props', async () => {
+      const list: t.ICommandHandlerArgs[] = [];
+      const root = Command.create('root').add('run', e => list.push(e));
+      const run = root.children[0];
+      const state = CommandState.create({ root, beforeInvoke }).change({ text: 'run' });
+
+      const res1 = await state.invoke();
+      expect(res1.props).to.eql({ foo: 123 });
+      expect(state.props(run)).to.eql({ foo: 123 });
+
+      const res2 = await state.invoke({ props: { foo: 'hello' } });
+      expect(res2.props).to.eql({ foo: 'hello' });
+      expect(state.props(run)).to.eql({ foo: 'hello' });
     });
 
     it('fires `invoking` | `invoked` events', async () => {
@@ -454,7 +467,7 @@ describe('CommandState', () => {
       expect(e.isCancelled).to.eql(true);
     });
 
-    it('no namespace change', async () => {
+    it('does not step into namespace', async () => {
       const root = Command.create('root').add('run');
       const state = CommandState.create({ root, beforeInvoke });
 
@@ -506,7 +519,7 @@ describe('CommandState', () => {
       expect(state.text).to.eql('run foo --force');
     });
 
-    it('invokes command on stepped into namespace', async () => {
+    it('invokes command on the namespace that was stepped into', async () => {
       let count = 0;
       const ns = Command.create('ns', () => count++)
         .add('list')
@@ -526,7 +539,7 @@ describe('CommandState', () => {
       expect(count).to.eql(1);
     });
 
-    it('invokes command on stepped into namespace AND target command', async () => {
+    it('invokes command on the namespace that was stepped into AND the target command', async () => {
       const count = {
         ns: 0,
         run: 0,
@@ -574,6 +587,53 @@ describe('CommandState', () => {
       expect(res.args).to.eql(args);
       expect(state.args).to.eql(args);
       expect(state.text).to.eql('run foo --force');
+    });
+
+    it('stores command changes from the [set] method of the [invoke] args', async () => {
+      const root = Command.create('root').add('ls', e => {
+        e.set('foo', 'hello');
+        e.set('bar', 456);
+      });
+      const state = CommandState.create({ root, beforeInvoke });
+
+      const ls = root.children[0];
+      expect(state.props(ls)).to.eql(undefined);
+
+      state.change({ text: 'root', namespace: true }).change({ text: 'ls' });
+      const res = await state.invoke();
+
+      // Changed props on response object.
+      expect(res.props.foo).to.eql('hello');
+      expect(res.props.bar).to.eql(456);
+
+      // Changed props stored in state.
+      expect(state.props(ls)).to.eql({ foo: 'hello', bar: 456 });
+      expect(state.props(ls.id)).to.eql({ foo: 'hello', bar: 456 });
+    });
+
+    it('passes prior updated prop state', async () => {
+      const root = Command.create('root').add('ls', e => {
+        const count = e.get('count') || 0;
+        e.set('count', count + 1);
+      });
+      const state = CommandState.create({ root, beforeInvoke });
+      const ls = root.children[0];
+
+      state.change({ text: 'root', namespace: true }).change({ text: 'ls' });
+      expect(state.props(ls)).to.eql(undefined);
+
+      // Initial `count` value incremented on the command's property state.
+      const res1 = await state.invoke();
+      expect(res1.props.count).to.eql(1);
+      expect(state.props(ls)).to.eql({ foo: 123, count: 1 });
+
+      // Second call to an invoke increments from the prior stored state.
+      const res2 = await state.invoke();
+      expect(res2.props.count).to.eql(2);
+      expect(state.props(ls)).to.eql({ foo: 123, count: 2 });
+
+      // Not the same instance.
+      expect(res1.props).to.not.equal(res2.props);
     });
   });
 

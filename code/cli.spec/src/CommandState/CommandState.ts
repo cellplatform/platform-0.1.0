@@ -47,6 +47,7 @@ export class CommandState implements t.ICommandState {
     namespace: undefined as t.ICommandNamespace | undefined,
     autoCompleted: undefined as t.ICommandAutoCompleted | undefined,
     prevChange: undefined as t.ICommandChange | undefined,
+    commandProps: ({} as unknown) as { [key: string]: any },
   };
 
   public readonly dispose$ = this._.dispose$.pipe(share());
@@ -163,6 +164,15 @@ export class CommandState implements t.ICommandState {
   public dispose() {
     this._.dispose$.next();
     this._.dispose$.complete();
+  }
+
+  /**
+   * Gets property state for the given command.
+   * These are values that are set within invoke handlers on the command.
+   */
+  public props<P extends object = any>(command: t.ICommand | number): P | undefined {
+    const id = typeof command === 'object' ? command.id : command;
+    return this._.commandProps[id];
   }
 
   /**
@@ -303,9 +313,12 @@ export class CommandState implements t.ICommandState {
     let isNamespaceChanged = false;
 
     const invoke = async (command?: t.ICommand) => {
+      // Props.
+      let props: any = command ? this.props(command) || {} : {};
+      props = options.props !== undefined ? { ...props, ...options.props } : props;
+
       // Prepare the args to pass to the command.
-      const args = { ...(await this._.beforeInvoke(state)) };
-      args.props = options.props !== undefined ? options.props : args.props;
+      const args = { ...(await this._.beforeInvoke({ state, props })) };
       args.args = options.args !== undefined ? options.args : args.args || state.args;
       args.timeout = options.timeout !== undefined ? options.timeout : args.timeout;
       const timeout = valueUtil.defaultValue(args.timeout, DEFAULT.TIMEOUT);
@@ -346,11 +359,25 @@ export class CommandState implements t.ICommandState {
       }
 
       // Invoke the command.
-      const response = await command.invoke(args);
-      result = { ...result, isInvoked: true, response, state: this.toObject() };
-      this.fire({ type: 'COMMAND_STATE/invoked', payload: result });
+      const res = command.invoke(args);
+
+      // Wait for response data.
+      const response = await res;
+      props = response.props;
+      result = {
+        ...result,
+        isInvoked: true,
+        state: this.toObject(),
+        props,
+        response,
+      };
+
+      // Store the resulting props as future state.
+      // (which may have been mutated within the handler via the `set` method).
+      this._.commandProps[command.id] = props;
 
       // Finish up.
+      this.fire({ type: 'COMMAND_STATE/invoked', payload: result });
       return result;
     };
 

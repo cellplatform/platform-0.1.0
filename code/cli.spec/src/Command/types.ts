@@ -113,10 +113,23 @@ export type ICommandInvokeBeforeEvent<P extends object = any, A extends object =
 
 export type ICommandInvokeSetEvent<P extends object = any, A extends object = any> = {
   type: 'COMMAND/invoke/set';
-  payload: { command: ICommand<P, A>; invokeId: string; key: keyof P; value: P[keyof P]; props: P };
+  payload: ICommandInvokeSet<P, A>;
+};
+export type ICommandInvokeSet<P extends object = any, A extends object = any> = {
+  command: ICommand<P, A>;
+  invokeId: string;
+  key: keyof P;
+  value: P[keyof P];
+  props: P;
 };
 
 export type ICommandInvokeAfterEvent<P extends object = any, A extends object = any> = {
   type: 'COMMAND/invoke/after';
-  payload: { command: ICommand<P, A>; invokeId: string; props: P; error?: Error };
+  payload: ICommandInvokeAfter<P, A>;
+};
+export type ICommandInvokeAfter<P extends object = any, A extends object = any> = {
+  command: ICommand<P, A>;
+  invokeId: string;
+  props: P;
+  error?: Error;
 };

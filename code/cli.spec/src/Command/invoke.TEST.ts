@@ -4,7 +4,7 @@ import { time, constants } from '../common';
 import * as t from './types';
 
 describe('Command.invoke', () => {
-  type P = { text: string };
+  type P = { text: string; count?: number };
   type A = { force?: boolean; f?: boolean };
   type R = { foo: number };
 
@@ -52,6 +52,17 @@ describe('Command.invoke', () => {
     const res = await copy.invoke<R>({ props: { text: 'Hello' } });
     expect(res.isComplete).to.eql(true);
     expect(res.result).to.eql(undefined);
+  });
+
+  it('updates props via [set] method of [invoke] args', async () => {
+    const root = Command.create<P, A>('root').add('copy', e => {
+      e.set('text', `${e.get('text')} world!`);
+      e.set('count', 123);
+    });
+    const copy = root.childrenAs<P, A>()[0];
+    const res = await copy.invoke<R>({ props: { text: 'Hello' } });
+    expect(res.props.text).to.eql('Hello world!');
+    expect(res.props.count).to.eql(123);
   });
 
   it('fires [before/set/after] event sequence', async () => {
