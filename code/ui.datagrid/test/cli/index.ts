@@ -7,8 +7,9 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   const { state$ } = args;
   return CommandState.create({
     root,
-    beforeInvoke: async state => {
-      const props: t.ITestCommandProps = { state$ };
+    beforeInvoke: async e => {
+      console.log('e.props', e.props);
+      const props: t.ITestCommandProps = { ...e.props, state$ };
       return { props };
     },
   });

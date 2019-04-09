@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Command, t } from '../common';
-// import { grid } from './cmd.grid';
+import { grid as g } from './cmd.grid';
 
 type P = t.ITestCommandProps;
 
@@ -20,5 +20,6 @@ const editor = Command
 export const root = Command.create<P>('root')
   // .add(grid)
   .add(grid)
-  .add(editor);
+  .add(editor)
+  .add(g);
 // .add(foo);
