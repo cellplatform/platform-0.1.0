@@ -1,4 +1,4 @@
-import { CommandState, t } from '../common';
+import { CommandState } from '../common';
 import { root } from './cmds';
 
 export function init(args: {}) {

@@ -46,7 +46,7 @@ export class CommandState implements t.ICommandState {
     text: '',
     namespace: undefined as t.ICommandNamespace | undefined,
     autoCompleted: undefined as t.ICommandAutoCompleted | undefined,
-    prevChange: undefined as t.ICommandChangeArgs | undefined,
+    prevChange: undefined as t.ICommandChange | undefined,
   };
 
   public readonly dispose$ = this._.dispose$.pipe(share());
@@ -168,7 +168,7 @@ export class CommandState implements t.ICommandState {
   /**
    * Changes the current state.
    */
-  public change(e: t.ICommandChangeArgs, options: { silent?: boolean } = {}) {
+  public change(e: t.ICommandChange, options: { silent?: boolean } = {}) {
     // Fire BEFORE event.
     const { silent } = options;
     const { events$ } = this._;

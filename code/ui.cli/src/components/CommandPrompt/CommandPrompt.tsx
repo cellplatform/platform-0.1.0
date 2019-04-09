@@ -183,7 +183,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     return autoCompleted;
   };
 
-  private change = (e: t.ICommandChangeArgs) => {
+  private change = (e: t.ICommandChange) => {
     this.cli.change(e);
   };
 

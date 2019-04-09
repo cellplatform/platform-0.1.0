@@ -8,7 +8,7 @@ import {
   css,
   events,
   GlamorValue,
-  ICommandChangeArgs,
+  ICommandChange,
   ICommandNamespace,
 } from '../../common';
 import { TextInput, TextInputChangeEvent } from '../primitives';
@@ -166,7 +166,7 @@ export class CommandPromptInput extends React.PureComponent<
     text?: string;
     invoked?: boolean;
     namespace?: boolean;
-  }): ICommandChangeArgs {
+  }): ICommandChange {
     const { invoked, text = '', namespace } = args;
     return { text, invoked, namespace };
   }

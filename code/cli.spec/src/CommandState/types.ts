@@ -46,8 +46,8 @@ export type ICommandFuzzyMatch = {
 /**
  * [Change] delegate.
  */
-export type CommandChangeDispatcher = (e: ICommandChangeArgs) => void;
-export type ICommandChangeArgs = {
+export type CommandChangeDispatcher = (e: ICommandChange) => void;
+export type ICommandChange = {
   text?: string;
   invoked?: boolean;
   namespace?: boolean | 'PARENT';
@@ -93,8 +93,8 @@ export type ICommandStateChangingEvent = {
   payload: ICommandStateChanging;
 };
 export type ICommandStateChanging = {
-  prev?: ICommandChangeArgs;
-  next: ICommandChangeArgs;
+  prev?: ICommandChange;
+  next: ICommandChange;
   isCancelled: boolean;
   cancel(): void;
 };
