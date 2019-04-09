@@ -611,13 +611,13 @@ describe('CommandState', () => {
       expect(state.props(ls.id)).to.eql({ foo: 'hello', bar: 456 });
     });
 
-    it('passes prior updated prop state', async () => {
+    it('passes prior updated prop state to invoke args', async () => {
       const root = Command.create('root').add('ls', e => {
         const count = e.get('count') || 0;
         e.set('count', count + 1);
       });
-      const state = CommandState.create({ root, beforeInvoke });
       const ls = root.children[0];
+      const state = CommandState.create({ root, beforeInvoke });
 
       state.change({ text: 'root', namespace: true }).change({ text: 'ls' });
       expect(state.props(ls)).to.eql(undefined);
@@ -634,6 +634,26 @@ describe('CommandState', () => {
 
       // Not the same instance.
       expect(res1.props).to.not.equal(res2.props);
+    });
+
+    it('clears command property state', async () => {
+      const root = Command.create('root')
+        .add('ls', e => e.set('foo', 'ls-prop'))
+        .add('run', e => e.set('foo', 'run-prop'));
+      const ls = root.children[0];
+      const run = root.children[1];
+      const state = CommandState.create({ root, beforeInvoke });
+
+      await state.change({ text: 'ls' }).invoke();
+      await state.change({ text: 'run' }).invoke();
+
+      expect(state.props(ls)).to.eql({ foo: 'ls-prop' });
+      expect(state.props(run)).to.eql({ foo: 'run-prop' });
+
+      state.clearProps();
+
+      expect(state.props(ls)).to.eql(undefined);
+      expect(state.props(run)).to.eql(undefined);
     });
   });
 

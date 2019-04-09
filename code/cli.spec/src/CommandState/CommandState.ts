@@ -176,6 +176,13 @@ export class CommandState implements t.ICommandState {
   }
 
   /**
+   * Clears stored command-property state.
+   */
+  public clearProps() {
+    this._.commandProps = {};
+  }
+
+  /**
    * Changes the current state.
    */
   public change(e: t.ICommandChange, options: { silent?: boolean } = {}) {
