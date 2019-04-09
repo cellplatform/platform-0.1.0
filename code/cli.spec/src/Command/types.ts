@@ -64,7 +64,7 @@ export type ICommandHandlerArgs<P extends object = any, A extends object = any> 
   args: ICommandArgs<A>;
   props: P;
   get<K extends keyof P>(key: K, defaultValue?: P[K]): P[K];
-  set<K extends keyof P>(key: K, value: P[K]): ICommandHandlerArgs<P, A>;
+  set<K extends keyof P>(key: K, value: P[K]): P[K];
 };
 
 /**

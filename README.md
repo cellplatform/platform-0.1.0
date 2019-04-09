@@ -75,6 +75,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/hyperdb](/code/hyperdb)
   - [@platform/hyperdb.electron](/code/hyperdb.electron)
   - [@platform/state](/code/state)
+  - [@platform/state.react](/code/state.react)
 - testing
   - [@platform/test](/code/test)
   - [@platform/test.dom](/code/test.dom)

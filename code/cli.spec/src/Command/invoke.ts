@@ -95,7 +95,7 @@ export function invoker<P extends object, A extends object, R>(options: {
           type: 'COMMAND/invoke/set',
           payload: { command, invokeId, key, value, props },
         });
-        return e;
+        return value;
       },
     };
 
