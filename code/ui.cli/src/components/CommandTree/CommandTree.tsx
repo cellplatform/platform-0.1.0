@@ -31,8 +31,8 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
   public componentWillMount() {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
-    const invoked$ = this.cli.invoked$.pipe(takeUntil(this.unmounted$));
+    const cliChanged$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
+    const cliInvoked$ = this.cli.invoked$.pipe(takeUntil(this.unmounted$));
     const events$ = this.events$;
 
     // Update state.
@@ -44,7 +44,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     }
 
     // Redraw on CLI changed.
-    merge(changed$, invoked$).subscribe(e => this.forceUpdate());
+    merge(cliChanged$, cliInvoked$).subscribe(e => this.forceUpdate());
 
     events$
       // Invoke command on click.
@@ -58,16 +58,21 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
       });
 
     events$
-      // Invoke command on click.
+      // Invoke command when the command changes.
       .pipe(
         filter(e => e.type === 'COMMAND_TREE/current'),
         map(e => e.payload as t.ICommandTreeCurrent),
       )
       .subscribe(e => {
         const command = e.command;
-        const namespace = e.direction === 'PARENT' ? 'PARENT' : true;
         const text = command ? command.name : '';
-        this.cli.change({ text, namespace });
+        if (e.direction === 'CHILD') {
+          this.cli.change({ text });
+          this.cli.invoke({ stepIntoNamespace: true });
+        } else {
+          const namespace = e.direction === 'PARENT' ? 'PARENT' : true;
+          this.cli.change({ text, namespace });
+        }
       });
   }
 
