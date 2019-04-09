@@ -9,7 +9,7 @@ import { DEFAULT } from '../common/constants';
 
 type ICommandStateArgs = {
   root: Command;
-  getInvokeArgs: t.InvokeCommandArgsFactory;
+  beforeInvoke: t.BeforeInvokeCommand;
 };
 
 /**
@@ -32,7 +32,7 @@ export class CommandState implements t.ICommandState {
       throw new Error(`A root [Command] spec must be passed to the state constructor.`);
     }
     this._.root = root;
-    this._.getInvokeArgs = args.getInvokeArgs;
+    this._.beforeInvoke = args.beforeInvoke;
     this.change = this.change.bind(this);
   }
 
@@ -40,7 +40,7 @@ export class CommandState implements t.ICommandState {
    * [Fields]
    */
   private readonly _ = {
-    getInvokeArgs: (undefined as unknown) as t.InvokeCommandArgsFactory,
+    beforeInvoke: (undefined as unknown) as t.BeforeInvokeCommand,
     dispose$: new Subject(),
     events$: new Subject<t.CommandStateEvent>(),
     root: (undefined as unknown) as Command,
@@ -307,7 +307,7 @@ export class CommandState implements t.ICommandState {
 
     const invoke = async (command?: t.ICommand) => {
       // Prepare the args to pass to the command.
-      const args = { ...(await this._.getInvokeArgs(state)) };
+      const args = { ...(await this._.beforeInvoke(state)) };
       args.props = options.props !== undefined ? options.props : args.props;
       args.args = options.args !== undefined ? options.args : args.args || state.args;
       args.timeout = options.timeout !== undefined ? options.timeout : args.timeout;

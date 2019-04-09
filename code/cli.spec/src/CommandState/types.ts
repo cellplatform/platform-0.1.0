@@ -57,7 +57,7 @@ export type ICommandChangeArgs = {
 /**
  * [Invoke]
  */
-export type InvokeCommandArgsFactory<P extends object = any, A extends object = any> = (
+export type BeforeInvokeCommand<P extends object = any, A extends object = any> = (
   state: ICommandStateProps,
 ) => Promise<IInvokeCommandArgs<P, A>>;
 
@@ -67,7 +67,6 @@ export type ICommandStateInvokeArgs = {
   timeout?: number;
   stepIntoNamespace?: boolean;
 };
-
 export type ICommandStateInvokeResponse = {
   isCancelled: boolean;
   isNamespaceChanged: boolean;
