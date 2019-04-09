@@ -28,7 +28,7 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
 
   public render() {
     const theme = this.theme.header;
-    const { height, title = 'Untitled', showParentButton, background = 'THEME' } = this.props;
+    const { height, title = 'Untitled', showParentButton } = this.props;
     const styles = {
       base: css({
         Absolute: [0, 0, null, 0],
@@ -38,7 +38,7 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
       }),
       background: css({
         Absolute: 0,
-        backgroundColor: background === 'THEME' && theme.bg,
+        backgroundColor: theme.bg,
         borderBottom: `solid 1px ${theme.borderBottomColor}`,
         opacity: 0.95,
       }),

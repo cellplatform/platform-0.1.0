@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
+import { Subject, merge } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { GlamorValue, t } from '../../common';
@@ -32,7 +32,8 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
-    const tree$ = this.events$;
+    const invoked$ = this.cli.invoked$.pipe(takeUntil(this.unmounted$));
+    const events$ = this.events$;
 
     // Update state.
     state$.subscribe(e => this.setState(e));
@@ -43,9 +44,9 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     }
 
     // Redraw on CLI changed.
-    changed$.subscribe(e => this.forceUpdate());
+    merge(changed$, invoked$).subscribe(e => this.forceUpdate());
 
-    tree$
+    events$
       // Invoke command on click.
       .pipe(
         filter(e => e.type === 'COMMAND_TREE/click'),
@@ -56,7 +57,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
         this.cli.invoke({ stepIntoNamespace: false });
       });
 
-    tree$
+    events$
       // Invoke command on click.
       .pipe(
         filter(e => e.type === 'COMMAND_TREE/current'),

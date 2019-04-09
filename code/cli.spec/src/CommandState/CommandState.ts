@@ -47,17 +47,22 @@ export class CommandState implements t.ICommandState {
     text: '',
     namespace: undefined as t.ICommandNamespace | undefined,
     autoCompleted: undefined as t.ICommandAutoCompleted | undefined,
+    prevChange: undefined as t.ICommandChangeArgs | undefined,
   };
 
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
-    takeUntil(this._.dispose$),
+    takeUntil(this.dispose$),
+    share(),
+  );
+  public readonly changing$ = this.events$.pipe(
+    filter(e => e.type === 'COMMAND/state/changing'),
+    map(e => e.payload as t.ICommandStateChanging),
     share(),
   );
   public readonly changed$ = this.events$.pipe(
     filter(e => e.type === 'COMMAND/state/changed'),
     map(e => e.payload as t.ICommandStateChanged),
-    distinctUntilChanged((prev, next) => equals(prev, next) && !next.invoked),
     share(),
   );
   public readonly invoke$ = this.changed$.pipe(
@@ -165,8 +170,32 @@ export class CommandState implements t.ICommandState {
    * Changes the current state.
    */
   public change(e: t.ICommandChangeArgs, options: { silent?: boolean } = {}) {
+    // Fire BEFORE event.
     const { silent } = options;
     const { events$ } = this._;
+    const prev = this._.prevChange;
+    this._.prevChange = e;
+    if (!silent) {
+      let isCancelled = false;
+      events$.next({
+        type: 'COMMAND/state/changing',
+        payload: {
+          prev,
+          next: e,
+          get isCancelled() {
+            return isCancelled;
+          },
+          cancel() {
+            isCancelled = true;
+          },
+        },
+      });
+      if (isCancelled) {
+        return this;
+      }
+    }
+
+    // Setup initial conditions.
     let namespace = e.namespace;
     let text = e.text === undefined ? this.text : e.text;
 
@@ -221,8 +250,9 @@ export class CommandState implements t.ICommandState {
         get path() {
           return Command.tree.toPath(root, id).slice(1);
         },
-        toString() {
-          return nextNamespace.path.map(c => c.name).join('.');
+        toString(options = {}) {
+          const { delimiter = '.' } = options;
+          return nextNamespace.path.map(c => c.name).join(delimiter);
         },
       };
       this._.namespace = nextNamespace;
@@ -246,11 +276,11 @@ export class CommandState implements t.ICommandState {
       events$.next({ type: 'COMMAND/state/autoCompleted', payload: e.autoCompleted });
     }
 
-    // Alert listeners.
+    // Fire AFTER event.
     if (!silent) {
-      const props = this.toObject();
-      const invoked = props.command ? Boolean(e.invoked) : false;
-      const payload = { props, invoked, namespace: Boolean(this.namespace) };
+      const state = this.toObject();
+      const invoked = state.command ? Boolean(e.invoked) : false;
+      const payload = { state, invoked, namespace: Boolean(this.namespace) };
       events$.next({ type: 'COMMAND/state/changed', payload });
     }
 
@@ -273,7 +303,7 @@ export class CommandState implements t.ICommandState {
   ): Promise<t.ICommandStateInvokeResponse> {
     const { events$ } = this._;
     const state = this.toObject();
-    let namespaceChanged = false;
+    let isNamespaceChanged = false;
 
     const invoke = async (command?: t.ICommand) => {
       // Prepare the args to pass to the command.
@@ -285,9 +315,9 @@ export class CommandState implements t.ICommandState {
 
       // Ensure there is a command to invoke.
       let result: t.ICommandStateInvokeResponse = {
-        invoked: false,
-        cancelled: false,
-        namespaceChanged,
+        isInvoked: false,
+        isCancelled: false,
+        isNamespaceChanged,
         state,
         props: args.props,
         args: typeof args.args === 'object' ? args.args : Argv.parse<any>(args.args || ''),
@@ -305,20 +335,22 @@ export class CommandState implements t.ICommandState {
           get isCancelled() {
             return isCancelled;
           },
-          cancel: () => (isCancelled = true),
+          cancel() {
+            isCancelled = true;
+          },
           state,
           args,
         },
       });
+
       if (isCancelled) {
-        result = { ...result, invoked: false, cancelled: true };
-        events$.next({ type: 'COMMAND/state/invoked', payload: result });
+        result = { ...result, isInvoked: false, isCancelled: true };
         return result;
       }
 
       // Invoke the command.
       const response = await command.invoke(args);
-      result = { ...result, invoked: true, response };
+      result = { ...result, isInvoked: true, response, state: this.toObject() };
       events$.next({ type: 'COMMAND/state/invoked', payload: result });
 
       // Finish up.
@@ -328,10 +360,10 @@ export class CommandState implements t.ICommandState {
     // Step into namespace (if required).
     let ns = this.namespace;
     if (valueUtil.defaultValue(options.stepIntoNamespace, true)) {
-      this.change({ text: this.text, namespace: true });
-      namespaceChanged = !R.equals(ns, this.namespace);
+      this.change({ text: this.text, namespace: true }, { silent: true }); // <== RECURSION
+      isNamespaceChanged = !R.equals(ns, this.namespace);
       ns = this.namespace;
-      if (namespaceChanged && ns && ns.command.handler && ns.command !== state.command) {
+      if (isNamespaceChanged && ns && ns.command.handler && ns.command !== state.command) {
         invoke(ns.command);
       }
     }

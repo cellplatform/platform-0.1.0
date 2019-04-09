@@ -29,7 +29,7 @@ export type ICommandNamespace = {
   name: string;
   command: ICommand;
   path: ICommand[];
-  toString(): string;
+  toString(options?: { delimiter?: string }): string;
 };
 
 export type ICommandAutoCompleted = {
@@ -69,9 +69,9 @@ export type ICommandStateInvokeArgs = {
 };
 
 export type ICommandStateInvokeResponse = {
-  cancelled: boolean;
-  namespaceChanged: boolean;
-  invoked: boolean;
+  isCancelled: boolean;
+  isNamespaceChanged: boolean;
+  isInvoked: boolean;
   state: ICommandStateProps;
   props: { [key: string]: any };
   args: ICommandArgs;
@@ -83,17 +83,29 @@ export type ICommandStateInvokeResponse = {
  * [Events]
  */
 export type CommandStateEvent =
+  | ICommandStateChangingEvent
   | ICommandStateChangedEvent
   | ICommandStateInvokingEvent
   | ICommandStateInvokedEvent
   | ICommandStateAutoCompletedEvent;
+
+export type ICommandStateChangingEvent = {
+  type: 'COMMAND/state/changing';
+  payload: ICommandStateChanging;
+};
+export type ICommandStateChanging = {
+  prev?: ICommandChangeArgs;
+  next: ICommandChangeArgs;
+  isCancelled: boolean;
+  cancel(): void;
+};
 
 export type ICommandStateChangedEvent = {
   type: 'COMMAND/state/changed';
   payload: ICommandStateChanged;
 };
 export type ICommandStateChanged = {
-  props: ICommandStateProps;
+  state: ICommandStateProps;
   invoked: boolean;
   namespace?: boolean;
 };

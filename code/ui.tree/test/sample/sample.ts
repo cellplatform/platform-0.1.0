@@ -6,7 +6,6 @@ export const SIMPLE: t.ITreeNode = {
   props: {
     label: 'Sheet',
     icon: 'Face',
-    header: { isVisible: false },
   },
   children: [
     { id: 'child-1', props: { icon: 'Face', marginTop: 30 } },
@@ -21,7 +20,7 @@ export const COMPREHENSIVE = (() => {
   const p = TreeView.util.props;
   const root = createRoot([14, 5, 3, 2]);
 
-  p(root).header = { isVisible: false };
+  // p(root).header = { isVisible: false };
 
   const children = root.children as t.ITreeNode[];
   children.forEach(node => {
