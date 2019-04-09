@@ -20,8 +20,10 @@ const child = Command.create<P>('child')
   .add('baz', async e => null)
   .add(grandchild);
 
-const ns = Command.create<P>('ns')
-  .add('one', async e => null)
+const ns = Command.create<P>('ns', e => {
+  console.log('invoked:ns');
+})
+  .add('one', async e => console.log('invoked:one'))
   .add('two', async e => null)
   .add('three', async e => null)
   .add(child);

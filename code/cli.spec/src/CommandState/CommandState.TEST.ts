@@ -540,10 +540,7 @@ describe('CommandState', () => {
     });
 
     it('invokes command on the namespace that was stepped into AND the target command', async () => {
-      const count = {
-        ns: 0,
-        run: 0,
-      };
+      const count = { ns: 0, run: 0 };
       const ns = Command.create('ns', () => count.ns++)
         .add('list')
         .add('run', () => count.run++);
@@ -564,9 +561,8 @@ describe('CommandState', () => {
     });
 
     it('invokes command directly within namespace', async () => {
-      const ns = Command.create('ns')
-        .add('list')
-        .add('run');
+      const count = { ns: 0, run: 0 };
+      const ns = Command.create('ns', e => count.ns++).add('run', () => count.run++);
       const root = Command.create('root').add(ns);
       const state = CommandState.create({ root, beforeInvoke });
       expect(state.namespace).to.eql(undefined);
@@ -580,8 +576,10 @@ describe('CommandState', () => {
       expect(state.args).to.eql(args);
 
       const res = await state.invoke();
+      expect(count.ns).to.eql(0);
+      expect(count.run).to.eql(1);
 
-      expect(res.isNamespaceChanged).to.eql(true);
+      expect(res.isNamespaceChanged).to.eql(false);
       expect(state.namespace && state.namespace.command.name).to.eql('ns');
 
       expect(res.args).to.eql(args);

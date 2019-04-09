@@ -121,6 +121,8 @@ export class CommandState implements t.ICommandState {
     const args = Argv.parse(this.text);
     const path = [root.name, ...args.params];
 
+    // console.log('path', path);
+
     // NB: Catch the lowest level command, leaving params intact (ie. strict:false).
     const res = Command.tree.fromPath(root, path, { strict: false });
     if (!res) {
@@ -318,6 +320,7 @@ export class CommandState implements t.ICommandState {
   ): Promise<t.ICommandStateInvokeResponse> {
     const state = this.toObject();
     let isNamespaceChanged = false;
+    const stepIntoNamespace = valueUtil.defaultValue(options.stepIntoNamespace, true);
 
     const invoke = async (command: t.ICommand) => {
       // Props.
@@ -334,10 +337,10 @@ export class CommandState implements t.ICommandState {
       let result: t.ICommandStateInvokeResponse = {
         isInvoked: false,
         isCancelled: false,
-        isNamespaceChanged,
+        isNamespaceChanged: isNamespaceChanged,
         state,
         props: args.props,
-        args: typeof args.args === 'object' ? args.args : Argv.parse<any>(args.args || ''),
+        args: typeof args.args === 'object' ? args.args : Argv.parse(args.args || ''),
         timeout,
       };
       if (!command) {
@@ -379,7 +382,7 @@ export class CommandState implements t.ICommandState {
         response,
       };
 
-      // Store the resulting props as future state.
+      // Store the resulting props as future state
       // (which may have been mutated within the handler via the `set` method).
       this._.commandProps[command.id] = props;
 
@@ -389,27 +392,39 @@ export class CommandState implements t.ICommandState {
     };
 
     // Step into namespace (if required).
-    let ns = this.namespace;
-    if (valueUtil.defaultValue(options.stepIntoNamespace, true)) {
+    if (stepIntoNamespace) {
+      const ns = {
+        prev: this.namespace,
+        next: undefined as t.ICommandNamespace | undefined,
+      };
       this.change({ text: this.text, namespace: true }, { silent: true }); // <== RECURSION
-      isNamespaceChanged = !R.equals(ns, this.namespace);
-      ns = this.namespace;
-      if (isNamespaceChanged && ns && ns.command.handler && ns.command !== state.command) {
-        invoke(ns.command);
+      ns.next = this.namespace;
+
+      const namespaceId = (ns?: t.ICommandNamespace) => (ns ? ns.command.id : undefined);
+      isNamespaceChanged = namespaceId(ns.prev) !== namespaceId(ns.next);
+
+      if (
+        isNamespaceChanged &&
+        ns.next &&
+        ns.next.command.handler &&
+        ns.next.command !== state.command
+      ) {
+        invoke(ns.next.command);
       }
     }
 
-    // Invoke the command
+    // Invoke the command.
     if (state.command) {
       return invoke(state.command);
     } else {
+      // Nothing to invoke.
       return {
         isInvoked: false,
         isCancelled: false,
         isNamespaceChanged: false,
         state,
         props: {},
-        args: Argv.parse<any>(''),
+        args: Argv.parse(''),
         timeout: DEFAULT.TIMEOUT,
       };
     }
