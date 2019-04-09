@@ -11,7 +11,7 @@ import * as t from './types';
 export function invoker<P extends object, A extends object, R>(options: {
   events$: Subject<t.CommandInvokeEvent>;
   command: t.ICommand<P, A>;
-  namespace?: t.ICommand<P, A>;
+  namespace: t.ICommand<P, A>;
   props: P;
   args?: string | t.ICommandArgs<A>;
   timeout?: number;

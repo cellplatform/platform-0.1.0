@@ -20,7 +20,7 @@ describe('Command.invoke', () => {
 
     const copy = root.childrenAs<P, A>()[1];
     const props = { text: 'Hello' };
-    const res = copy.invoke<R>({ props, args: '-f' });
+    const res = copy.invoke<R>({ namespace: root, props, args: '-f' });
 
     expect(res.isComplete).to.eql(false);
     expect(res.timeout).to.eql(constants.DEFAULT.TIMEOUT);
@@ -41,7 +41,7 @@ describe('Command.invoke', () => {
   it('invokes with response (sync)', async () => {
     const root = Command.create<P, A>('root').add('copy', e => ({ foo: 123 }));
     const copy = root.childrenAs<P, A>()[0];
-    const res = await copy.invoke<R>({ props: { text: 'Hello' } });
+    const res = await copy.invoke<R>({ namespace: root, props: { text: 'Hello' } });
     expect(res.isComplete).to.eql(true);
     expect(res.result).to.eql({ foo: 123 });
   });
@@ -49,7 +49,7 @@ describe('Command.invoke', () => {
   it('invokes with no handler', async () => {
     const root = Command.create<P, A>('root').add('copy');
     const copy = root.childrenAs<P, A>()[0];
-    const res = await copy.invoke<R>({ props: { text: 'Hello' } });
+    const res = await copy.invoke<R>({ namespace: root, props: { text: 'Hello' } });
     expect(res.isComplete).to.eql(true);
     expect(res.result).to.eql(undefined);
   });
@@ -60,7 +60,7 @@ describe('Command.invoke', () => {
       e.set('count', 123);
     });
     const copy = root.childrenAs<P, A>()[0];
-    const res = await copy.invoke<R>({ props: { text: 'Hello' } });
+    const res = await copy.invoke<R>({ namespace: root, props: { text: 'Hello' } });
     expect(res.props.text).to.eql('Hello world!');
     expect(res.props.count).to.eql(123);
   });
@@ -71,7 +71,7 @@ describe('Command.invoke', () => {
       e.set('text', 'one'); // NB: not async, no return value.
     });
 
-    const res = root.childrenAs<P, A>()[0].invoke({ props: { text: 'Hello' } });
+    const res = root.childrenAs<P, A>()[0].invoke({ namespace: root, props: { text: 'Hello' } });
     res.events$.subscribe(e => events.push(e));
 
     expect(events.length).to.eql(1);
@@ -108,7 +108,7 @@ describe('Command.invoke', () => {
     root.events$.subscribe(e => rootCommandEvents.push(e));
     copy.events$.subscribe(e => copyCommandEvents.push(e));
 
-    const res = copy.invoke({ props: { text: 'Hello' } });
+    const res = copy.invoke({ namespace: root, props: { text: 'Hello' } });
     expect(res.props).to.eql({ text: 'Hello' });
     res.events$.subscribe(e => invokeEvents.push(e));
 
@@ -143,7 +143,7 @@ describe('Command.invoke', () => {
     const copy = root.childrenAs<P, A>()[0];
     copy.events$.subscribe(e => commandEvents.push(e));
 
-    const res = copy.invoke<R>({ props: { text: 'Hello' } });
+    const res = copy.invoke<R>({ namespace: root, props: { text: 'Hello' } });
     res.events$.subscribe(e => invokeEvents.push(e));
     expect(res.error).to.eql(undefined);
 
@@ -188,7 +188,7 @@ describe('Command.invoke', () => {
     const copy = root.childrenAs<P, A>()[0];
     copy.events$.subscribe(e => commandEvents.push(e));
 
-    const res = copy.invoke<R>({ props: { text: 'Hello' }, timeout: 10 });
+    const res = copy.invoke<R>({ namespace: root, props: { text: 'Hello' }, timeout: 10 });
     res.events$.subscribe(e => invokeEvents.push(e));
     expect(res.timeout).to.eql(10);
     expect(res.isTimedOut).to.eql(false);

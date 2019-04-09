@@ -312,7 +312,7 @@ export class CommandState implements t.ICommandState {
     const stepIntoNamespace = valueUtil.defaultValue(options.stepIntoNamespace, true);
     const root = this.root;
 
-    const invoke = async (command: t.ICommand, namespace?: t.ICommand) => {
+    const invoke = async (command: t.ICommand, namespace: t.ICommand) => {
       const getProps = () => {
         return this._.commandProps[(namespace || root).id];
       };
@@ -414,7 +414,7 @@ export class CommandState implements t.ICommandState {
 
     // Invoke the command.
     if (state.command) {
-      const namespace = this.namespace ? this.namespace.command : undefined;
+      const namespace = this.namespace ? this.namespace.command : root;
       return invoke(state.command, namespace);
     } else {
       // Nothing to invoke.
