@@ -3,7 +3,7 @@ import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { Argv } from '../Argv';
 import { Command } from '../Command/Command';
-import { R, str, t, value as valueUtil } from '../common';
+import { str, t, value as valueUtil } from '../common';
 import { DEFAULT } from '../common/constants';
 
 type ICommandStateArgs = {
@@ -322,13 +322,15 @@ export class CommandState implements t.ICommandState {
     let isNamespaceChanged = false;
     const stepIntoNamespace = valueUtil.defaultValue(options.stepIntoNamespace, true);
 
-    const invoke = async (command: t.ICommand) => {
-      // Props.
+    const invoke = async (command: t.ICommand, namespace?: t.ICommand) => {
+      // Properties.
       let props: any = command ? this.props(command) || {} : {};
       props = options.props !== undefined ? { ...props, ...options.props } : props;
 
       // Prepare the args to pass to the command.
-      const args = { ...(await this._.beforeInvoke({ command, state, props })) };
+      const partial = await this._.beforeInvoke({ command, namespace, state, props });
+      const args = { ...(partial as t.IInvokeCommandArgs), command, namespace };
+
       args.args = options.args !== undefined ? options.args : args.args || state.args;
       args.timeout = options.timeout !== undefined ? options.timeout : args.timeout;
       const timeout = valueUtil.defaultValue(args.timeout, DEFAULT.TIMEOUT);
@@ -337,7 +339,7 @@ export class CommandState implements t.ICommandState {
       let result: t.ICommandStateInvokeResponse = {
         isInvoked: false,
         isCancelled: false,
-        isNamespaceChanged: isNamespaceChanged,
+        isNamespaceChanged,
         state,
         props: args.props,
         args: typeof args.args === 'object' ? args.args : Argv.parse(args.args || ''),
@@ -415,7 +417,8 @@ export class CommandState implements t.ICommandState {
 
     // Invoke the command.
     if (state.command) {
-      return invoke(state.command);
+      const namespace = state.namespace ? state.namespace.command : undefined;
+      return invoke(state.command, namespace);
     } else {
       // Nothing to invoke.
       return {

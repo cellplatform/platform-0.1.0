@@ -59,6 +59,8 @@ export type CommandHandler<P extends object = any, A extends object = any> = (
  *  - `A` stands for `arguments`
  */
 export type ICommandHandlerArgs<P extends object = any, A extends object = any> = {
+  command: ICommand<P, A>;
+  namespace?: ICommand<P, A>;
   args: ICommandArgs<A>;
   props: P;
   get<K extends keyof P>(key: K): P[K];
@@ -75,6 +77,7 @@ export type IInvokeCommandArgs<P extends object = any, A extends object = any> =
   props: P;
   args?: string | ICommandArgs<A>;
   timeout?: number;
+  namespace?: ICommand<P, A>;
 };
 
 /**

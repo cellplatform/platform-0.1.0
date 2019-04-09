@@ -402,6 +402,29 @@ describe('CommandState', () => {
       expect(res.props.foo).to.eql(123); // From the `beforeInvoke` property generator.
     });
 
+    it('passes command/namespace to invoke args', async () => {
+      const args = {
+        ns: undefined as t.ICommandHandlerArgs | undefined,
+        run: undefined as t.ICommandHandlerArgs | undefined,
+      };
+
+      const ns = Command.create('ns', e => (args.ns = e)).add('run', e => (args.run = e));
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, beforeInvoke });
+
+      state.change({ text: 'ns' });
+      await state.invoke();
+
+      expect(args.ns && args.ns.command.name).to.eql('ns');
+      expect(args.ns && args.ns.namespace).to.eql(undefined);
+
+      state.change({ text: 'ns', namespace: true }).change({ text: 'run' });
+      await state.invoke();
+
+      expect(args.run && args.run.command.name).to.eql('run');
+      expect(args.run && args.run.namespace && args.run.namespace.name).to.eql('ns');
+    });
+
     it('invokes with props/args from parameter', async () => {
       const list: t.ICommandHandlerArgs[] = [];
       const root = Command.create('root').add('run', e => list.push(e));

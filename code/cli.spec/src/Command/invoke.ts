@@ -11,11 +11,12 @@ import * as t from './types';
 export function invoker<P extends object, A extends object, R>(options: {
   events$: Subject<t.CommandInvokeEvent>;
   command: t.ICommand<P, A>;
+  namespace?: t.ICommand<P, A>;
   props: P;
   args?: string | t.ICommandArgs<A>;
   timeout?: number;
 }): t.IInvokedCommandPromise<P, A, R> {
-  const { command } = options;
+  const { command, namespace } = options;
   const invokeId = id.shortid();
   const args = typeof options.args === 'object' ? options.args : Argv.parse<A>(options.args || '');
   const done$ = new Subject();
@@ -75,6 +76,8 @@ export function invoker<P extends object, A extends object, R>(options: {
     };
 
     const e: t.ICommandHandlerArgs<P, A> = {
+      command,
+      namespace,
       get args() {
         return { ...response.args };
       },

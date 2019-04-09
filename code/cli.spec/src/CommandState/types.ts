@@ -59,9 +59,10 @@ export type ICommandChange = {
  */
 export type BeforeInvokeCommand<P extends object = any, A extends object = any> = (args: {
   command: ICommand<P, A>;
+  namespace?: ICommand<P, A>;
   state: ICommandStateProps;
   props: P;
-}) => Promise<IInvokeCommandArgs<P, A>>;
+}) => Promise<Partial<IInvokeCommandArgs<P, A>>>;
 
 export type ICommandStateInvokeArgs = {
   props?: {};
