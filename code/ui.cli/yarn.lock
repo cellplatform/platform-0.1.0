@@ -1064,6 +1064,15 @@
     "@platform/util.value" "0.0.55"
     minimist "1.2.0"
 
+"@platform/cli.spec@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.1.0.tgz#3122150a58a21f92cce3f850480d24e88ea90b56"
+  integrity sha512-66LAPiLNTCOcZ5OKDZ0xvS8lbzOEpUmO0HCxcFfIJRVI4r+ekFMdriVfOamqSQdZjVYuFGe+Dfy3xF57QT1CMg==
+  dependencies:
+    "@platform/util.string" "0.0.52"
+    "@platform/util.value" "0.0.55"
+    minimist "1.2.0"
+
 "@platform/cli@0.0.73":
   version "0.0.73"
   resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.73.tgz#e54d2a287b2306fc610775df3c3516bb410024da"
