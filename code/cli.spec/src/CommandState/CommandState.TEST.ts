@@ -75,8 +75,8 @@ describe('CommandState', () => {
       expect(events.length).to.eql(2);
       expect(changedEvents.length).to.eql(1);
 
-      expect(events[0].type).to.eql('COMMAND/state/changing');
-      expect(events[1].type).to.eql('COMMAND/state/changed');
+      expect(events[0].type).to.eql('COMMAND_STATE/changing');
+      expect(events[1].type).to.eql('COMMAND_STATE/changed');
 
       const changing = changingEvents[0] as t.ICommandStateChanging;
       expect(changing.isCancelled).to.eql(false);
@@ -101,7 +101,7 @@ describe('CommandState', () => {
       state.change({ text: 'foo' });
 
       expect(events.length).to.eql(1);
-      expect(events[0].type).to.eql('COMMAND/state/changing');
+      expect(events[0].type).to.eql('COMMAND_STATE/changing');
     });
 
     it('autoCompletes', () => {
@@ -126,9 +126,9 @@ describe('CommandState', () => {
       expect(events.length).to.eql(3);
       expect(changes.length).to.eql(1);
 
-      expect(events[1].type).to.eql('COMMAND/state/autoCompleted');
+      expect(events[1].type).to.eql('COMMAND_STATE/autoCompleted');
       expect(events[1].payload).to.eql(autoCompleted);
-      expect(events[2].type).to.equal('COMMAND/state/changed');
+      expect(events[2].type).to.equal('COMMAND_STATE/changed');
       expect(changes[0].state.autoCompleted).to.eql(autoCompleted);
 
       // Reset auto-complete.
@@ -429,8 +429,8 @@ describe('CommandState', () => {
       expect(events.length).to.eql(2);
       expect(res.isCancelled).to.eql(false);
 
-      expect(events[0].type).to.eql('COMMAND/state/invoking');
-      expect(events[1].type).to.eql('COMMAND/state/invoked');
+      expect(events[0].type).to.eql('COMMAND_STATE/invoking');
+      expect(events[1].type).to.eql('COMMAND_STATE/invoked');
       expect(events[1].payload).to.eql(res);
     });
 
@@ -448,7 +448,7 @@ describe('CommandState', () => {
       expect(count).to.eql(0);
       expect(res.isCancelled).to.eql(true);
       expect(events.length).to.eql(1);
-      expect(events[0].type).to.eql('COMMAND/state/invoking');
+      expect(events[0].type).to.eql('COMMAND_STATE/invoking');
 
       const e = events[0].payload as t.ICommandStateInvokingEvent['payload'];
       expect(e.isCancelled).to.eql(true);

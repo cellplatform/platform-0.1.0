@@ -89,7 +89,7 @@ export type CommandStateEvent =
   | ICommandStateAutoCompletedEvent;
 
 export type ICommandStateChangingEvent = {
-  type: 'COMMAND/state/changing';
+  type: 'COMMAND_STATE/changing';
   payload: ICommandStateChanging;
 };
 export type ICommandStateChanging = {
@@ -100,7 +100,7 @@ export type ICommandStateChanging = {
 };
 
 export type ICommandStateChangedEvent = {
-  type: 'COMMAND/state/changed';
+  type: 'COMMAND_STATE/changed';
   payload: ICommandStateChanged;
 };
 export type ICommandStateChanged = {
@@ -110,7 +110,7 @@ export type ICommandStateChanged = {
 };
 
 export type ICommandStateInvokingEvent = {
-  type: 'COMMAND/state/invoking';
+  type: 'COMMAND_STATE/invoking';
   payload: ICommandStateInvoking;
 };
 export type ICommandStateInvoking = {
@@ -121,11 +121,11 @@ export type ICommandStateInvoking = {
 };
 
 export type ICommandStateInvokedEvent = {
-  type: 'COMMAND/state/invoked';
+  type: 'COMMAND_STATE/invoked';
   payload: ICommandStateInvokeResponse;
 };
 
 export type ICommandStateAutoCompletedEvent = {
-  type: 'COMMAND/state/autoCompleted';
+  type: 'COMMAND_STATE/autoCompleted';
   payload: ICommandAutoCompleted;
 };

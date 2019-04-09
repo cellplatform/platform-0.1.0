@@ -1,10 +1,9 @@
-import { equals } from 'ramda';
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { Argv } from '../Argv';
-import { R, t, value as valueUtil, str } from '../common';
 import { Command } from '../Command/Command';
+import { R, str, t, value as valueUtil } from '../common';
 import { DEFAULT } from '../common/constants';
 
 type ICommandStateArgs = {
@@ -56,12 +55,12 @@ export class CommandState implements t.ICommandState {
     share(),
   );
   public readonly changing$ = this.events$.pipe(
-    filter(e => e.type === 'COMMAND/state/changing'),
+    filter(e => e.type === 'COMMAND_STATE/changing'),
     map(e => e.payload as t.ICommandStateChanging),
     share(),
   );
   public readonly changed$ = this.events$.pipe(
-    filter(e => e.type === 'COMMAND/state/changed'),
+    filter(e => e.type === 'COMMAND_STATE/changed'),
     map(e => e.payload as t.ICommandStateChanged),
     share(),
   );
@@ -70,12 +69,12 @@ export class CommandState implements t.ICommandState {
     share(),
   );
   public readonly invoking$ = this.events$.pipe(
-    filter(e => e.type === 'COMMAND/state/invoking'),
+    filter(e => e.type === 'COMMAND_STATE/invoking'),
     map(e => e.payload as t.ICommandStateInvoking),
     share(),
   );
   public readonly invoked$ = this.events$.pipe(
-    filter(e => e.type === 'COMMAND/state/invoked'),
+    filter(e => e.type === 'COMMAND_STATE/invoked'),
     map(e => e.payload as t.ICommandStateInvokeResponse),
     share(),
   );
@@ -178,7 +177,7 @@ export class CommandState implements t.ICommandState {
     if (!silent) {
       let isCancelled = false;
       events$.next({
-        type: 'COMMAND/state/changing',
+        type: 'COMMAND_STATE/changing',
         payload: {
           prev,
           next: e,
@@ -273,7 +272,7 @@ export class CommandState implements t.ICommandState {
     // Store the auto-complete value.
     this._.autoCompleted = e.autoCompleted;
     if (!silent && e.autoCompleted) {
-      events$.next({ type: 'COMMAND/state/autoCompleted', payload: e.autoCompleted });
+      events$.next({ type: 'COMMAND_STATE/autoCompleted', payload: e.autoCompleted });
     }
 
     // Fire AFTER event.
@@ -281,7 +280,7 @@ export class CommandState implements t.ICommandState {
       const state = this.toObject();
       const invoked = state.command ? Boolean(e.invoked) : false;
       const payload = { state, invoked, namespace: Boolean(this.namespace) };
-      events$.next({ type: 'COMMAND/state/changed', payload });
+      events$.next({ type: 'COMMAND_STATE/changed', payload });
     }
 
     // Finish up.
@@ -330,7 +329,7 @@ export class CommandState implements t.ICommandState {
       // Fire BEFORE event and exit if any listeners cancel the operation.
       let isCancelled = false;
       events$.next({
-        type: 'COMMAND/state/invoking',
+        type: 'COMMAND_STATE/invoking',
         payload: {
           get isCancelled() {
             return isCancelled;
@@ -351,7 +350,7 @@ export class CommandState implements t.ICommandState {
       // Invoke the command.
       const response = await command.invoke(args);
       result = { ...result, isInvoked: true, response, state: this.toObject() };
-      events$.next({ type: 'COMMAND/state/invoked', payload: result });
+      events$.next({ type: 'COMMAND_STATE/invoked', payload: result });
 
       // Finish up.
       return result;
