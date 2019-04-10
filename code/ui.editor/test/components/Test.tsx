@@ -9,12 +9,13 @@ const LOREM =
 
 const DEFAULT = {
   MARKDOWN: `
-# Heading1
-## Heading2
-### Heading3
-#### Heading4
-##### Heading5
-
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
+  
 - one
 - two
 - three
@@ -48,14 +49,14 @@ ${LOREM}
   `,
 
   HEADING: `
-  # Heading 1
-  ## Heading 2
-  ### Heading 3
-  #### Heading 4
-  ##### Heading 5
-  ###### Heading 6
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
 
-  Paragraph - ${LOREM}
+Paragraph - ${LOREM}
   `,
 };
 

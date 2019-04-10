@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Command, t } from '../common';
+import { markdown, Command, t } from '../common';
 import { grid as g } from './cmd.grid';
 
 type P = t.ITestCommandProps;
@@ -8,7 +8,12 @@ type P = t.ITestCommandProps;
 const grid = Command
   // <DataGrid>
   .create<P>('grid', e => e.props.state$.next({ view: 'grid' }))
-  .add('editor', e => e.props.state$.next({ editor: e.args.params[0] as t.TestEditorType }));
+  .add('editor', e => e.props.state$.next({ editor: e.args.params[0] as t.TestEditorType }))
+  .add('markdown', async e => {
+    const text = `# Heading`;
+    const html = await markdown.parse.toHtml(text);
+    console.log('html', html);
+  });
 
 const editor = Command
   // <CellEditor>
