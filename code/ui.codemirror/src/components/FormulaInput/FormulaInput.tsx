@@ -172,12 +172,11 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     this.editor.execCommand('goDocStart');
     return this;
   }
-  
+
   public cursorToEnd() {
     this.editor.execCommand('goDocEnd');
     return this;
   }
-
 
   private setGlobalStyles() {
     const style = {
