@@ -33,7 +33,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const cliChanged$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
     const cliInvoked$ = this.cli.invoked$.pipe(takeUntil(this.unmounted$));
-    const events$ = this.events$;
+    const tree$ = this.events$;
 
     // Update state.
     state$.subscribe(e => this.setState(e));
@@ -46,7 +46,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     // Redraw on CLI changed.
     merge(cliChanged$, cliInvoked$).subscribe(e => this.forceUpdate());
 
-    events$
+    tree$
       // Invoke command on click.
       .pipe(
         filter(e => e.type === 'COMMAND_TREE/click'),
@@ -57,7 +57,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
         this.cli.invoke({ stepIntoNamespace: false });
       });
 
-    events$
+    tree$
       // Invoke command when the command changes.
       .pipe(
         filter(e => e.type === 'COMMAND_TREE/current'),
@@ -72,6 +72,16 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
         } else {
           const namespace = e.direction === 'PARENT' ? 'PARENT' : true;
           this.cli.change({ text, namespace });
+          // this.cli.invoke();
+          /**
+           * TODO 🐷
+           * -  should invoke root NS/command handler
+           * -  state should return `root` when no command is selected.
+           * -  this invoking behavior should be independent of the `tree`.
+           *    rather hang it off the `cli` state object, because
+           *    the <CommandPrompt> should cause the same invoke behavior to occur too
+           *
+           */
         }
       });
   }
