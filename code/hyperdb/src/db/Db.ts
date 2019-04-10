@@ -311,7 +311,6 @@ export class Db<D extends object = any> implements t.IDb<D> {
       const list = Array.isArray(data)
         ? data
         : Object.keys(data).map(key => ({ type: 'put', key, value: data[key] }));
-
       this._.db.batch(list, (err: Error, data: t.IDbNode[]) => {
         if (err) {
           return reject(err);

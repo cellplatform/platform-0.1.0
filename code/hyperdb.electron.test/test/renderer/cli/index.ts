@@ -25,13 +25,15 @@ export function init(args: {
 
   const state = CommandState.create({
     root,
-    getInvokeArgs: async state => {
+    beforeInvoke: async e => {
+      const { state } = e;
       const { command } = state;
       const dir = await store.get('selectedDatabase');
       const ref = dir ? databases.get({ dir }) : undefined;
       const db = ref ? ref.db : undefined;
       const network = ref ? ref.network : undefined;
       const props: t.ITestCommandProps = {
+        ...e.props,
         log,
         databases,
         store,
