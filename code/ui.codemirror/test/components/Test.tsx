@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { FormulaInput, IFormulaInputProps } from '../../src';
-import { color, css, GlamorValue, t, Button } from './common';
+import { color, css, GlamorValue, t, Button, Hr } from './common';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {
@@ -21,6 +21,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.FormulaInputEvent>();
+
+  private input!: FormulaInput;
+  private inputRef = (ref: FormulaInput) => (this.input = ref);
 
   /**
    * [Lifecycle]
@@ -106,6 +109,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.left}>
           {this.button('value: <empty>', () => this.state$.next({ value: '' }))}
           {this.button('value: DEFAULT', () => this.state$.next({ value: DEFAULT.VALUE }))}
+          <Hr />
+          {this.button('focus', () => this.input.focus())}
+          {this.button('selectAll', () => this.input.selectAll().focus())}
+          {this.button('cursorToStart', () => this.input.cursorToStart().focus())}
+          {this.button('cursorToEnd', () => this.input.cursorToEnd().focus())}
         </div>
         <div {...styles.right}>{this.renderInputs()}</div>
       </div>
@@ -122,10 +130,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...styles.base}>
-        {this.renderInput('default - mode: "spreadsheet"', {
-          focusOnLoad: true,
-          selectOnLoad: true,
-        })}
+        {this.renderInput(
+          'default - mode: "spreadsheet"',
+          {
+            focusOnLoad: true,
+            selectOnLoad: true,
+          },
+          this.inputRef,
+        )}
         {this.renderInput('allowTab: true', { allowTab: true })}
         {this.renderInput('maxLength (4)', { maxLength: 4 })}
         {this.renderInput('fontSize (16)', { fontSize: 16 })}
@@ -135,7 +147,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     );
   }
 
-  private renderInput(title: string, props: IFormulaInputProps) {
+  private renderInput(
+    title: string,
+    props: IFormulaInputProps,
+    ref?: React.LegacyRef<FormulaInput>,
+  ) {
     const styles = {
       base: css({
         PaddingY: 20,
@@ -155,6 +171,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.title}>{title}</div>
         <div {...styles.body}>
           <FormulaInput
+            ref={ref}
             value={this.state.value}
             allowTab={false}
             {...props}

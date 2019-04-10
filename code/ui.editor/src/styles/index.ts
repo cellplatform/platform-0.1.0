@@ -1,5 +1,5 @@
 import { t, css, constants } from '../common';
-import * as content from './styles.content';
+import * as content from './markdown';
 
 /**
  * Initializes the given set of styles.

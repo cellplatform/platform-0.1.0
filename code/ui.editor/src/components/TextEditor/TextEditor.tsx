@@ -1,7 +1,7 @@
 import * as styles from '../../styles';
 
 import * as commands from 'prosemirror-commands';
-import { EditorState } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import { Subject } from 'rxjs';
@@ -18,7 +18,7 @@ export type ITextEditorProps = {
   value?: string;
   events$?: Subject<t.TextEditorEvent>;
   focusOnLoad?: boolean;
-  selectOnLoad?: boolean;
+  selectAllOnLoad?: boolean;
   className?: string;
   style?: GlamorValue;
   editorStyle?: GlamorValue;
@@ -101,10 +101,13 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   public componentDidMount() {
-    const { focusOnLoad, selectOnLoad, value = '' } = this.props;
+    const { focusOnLoad, selectAllOnLoad, value = '' } = this.props;
     this.init(value);
+    if (selectAllOnLoad) {
+      this.selectAll();
+    }
     if (focusOnLoad) {
-      this.focus({ selectAll: selectOnLoad });
+      this.focus();
     }
   }
 
@@ -153,19 +156,6 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    */
 
   /**
-   * Assigns focus to the editor.
-   */
-  public focus(options: { selectAll?: boolean } = {}) {
-    const { view, state } = this.editor;
-    if (view) {
-      if (options.selectAll) {
-        commands.selectAll(state, this.dispatch);
-      }
-      view.focus();
-    }
-  }
-
-  /**
    * Initializes the PromiseMirror editor component.
    */
   public init(value: string) {
@@ -202,6 +192,43 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     const tr = state.tr;
     tr.replaceWith(0, tr.doc.content.size, node);
     this.dispatch(tr);
+  }
+
+  /**
+   * Assigns focus to the editor.
+   */
+  public focus() {
+    const { view } = this.editor;
+    if (view) {
+      view.focus();
+    }
+    return this;
+  }
+
+  public selectAll() {
+    const { state } = this.editor;
+    commands.selectAll(state, this.dispatch);
+    return this;
+  }
+
+  public cursorToStart() {
+    const { view } = this.editor;
+    if (view) {
+      const tr = view.state.tr;
+      const selection = TextSelection.atStart(tr.doc);
+      view.dispatch(tr.setSelection(selection));
+    }
+    return this;
+  }
+
+  public cursorToEnd() {
+    const { view } = this.editor;
+    if (view) {
+      const tr = view.state.tr;
+      const selection = TextSelection.atEnd(tr.doc);
+      view.dispatch(tr.setSelection(selection));
+    }
+    return this;
   }
 
   private updateStyles() {

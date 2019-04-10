@@ -109,9 +109,9 @@ export class TestCellEditor extends React.PureComponent<
         <div {...styles.left}>
           <div {...styles.leftTop}>
             {this.button('focus', () => this.editor.focus())}
-            {this.button('focus (select)', () =>
-              this.editor.focus({ selectAll: true }),
-            )}
+            {this.button('selectAll', () => this.editor.selectAll().focus())}
+            {this.button('cursorToStart', () => this.editor.cursorToStart().focus())}
+            {this.button('cursorToEnd', () => this.editor.cursorToEnd().focus())}
           </div>
         </div>
         <div {...styles.right}>

@@ -13,7 +13,7 @@ export type ICellEditorTheme = {
   inputShadow: IShadow;
 };
 
-export type ICellEditorSize = { width: number; height: number };
+type ISize = { width: number; height: number };
 
 /**
  * [Events]
@@ -43,9 +43,10 @@ export type ICellEditorChanged = {
 
 export type ICellEditorSizeEvent = {
   type: 'CELL_EDITOR/size';
-  payload: {
-    mode: CellEditorMode;
-    from: ICellEditorSize;
-    to: ICellEditorSize;
-  };
+  payload: ICellEditorSize;
+};
+export type ICellEditorSize = {
+  mode: CellEditorMode;
+  from: ISize;
+  to: ISize;
 };

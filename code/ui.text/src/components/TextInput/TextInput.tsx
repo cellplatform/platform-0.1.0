@@ -114,31 +114,39 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
    * [Methods]
    */
 
-  public focus(options: { selectAll?: boolean } = {}) {
+  public focus() {
     if (this.input) {
       this.input.focus();
-      if (options.selectAll) {
-        this.input.select();
-      }
     }
+    return this;
   }
 
   public blur() {
     if (this.input) {
       this.input.blur();
     }
+    return this;
   }
 
-  public select() {
+  public selectAll() {
     if (this.input) {
-      this.input.select();
+      this.input.selectAll();
     }
+    return this;
   }
 
-  public caretToEnd() {
+  public cursorToStart() {
     if (this.input) {
-      this.input.caretToEnd();
+      this.input.cursorToStart();
     }
+    return this;
+  }
+
+  public cursorToEnd() {
+    if (this.input) {
+      this.input.cursorToEnd();
+    }
+    return this;
   }
 
   private updateAutoSize() {

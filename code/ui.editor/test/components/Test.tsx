@@ -68,7 +68,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {
     transactions: [],
     value: DEFAULT.MARKDOWN,
-    // value: 'hello',
+    // value: '## Heading2',
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
@@ -151,14 +151,19 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.left}>
           {this.button('tmp', () => this.state$.next({ value: 'Hello' }))}
           {this.button('focus', () => this.editor.focus())}
-          {this.button('selectAll', () => this.editor.focus({ selectAll: true }))}
+          {this.button('selectAll', () => this.editor.selectAll().focus())}
+          {this.button('cursorToStart', () => this.editor.cursorToStart().focus())}
+          {this.button('cursorToEnd', () => this.editor.cursorToEnd().focus())}
+
           <Hr margin={5} />
           {this.button('load: <empty>', () => this.editor.load(''))}
           {this.button('load: short', () => this.editor.load('hello'))}
           {this.button('load: long', () => this.editor.load(DEFAULT.LONG))}
           {this.button('load: markdown', () => this.editor.load(DEFAULT.MARKDOWN))}
           <Hr margin={5} />
-          {this.button('value: short', () => this.state$.next({ value: 'hello' }))}
+          {this.button('(prop) value: <empty>', () => this.state$.next({ value: '' }))}
+          {this.button('(prop) value: short', () => this.state$.next({ value: 'hello' }))}
+          {this.button('(prop) value: long', () => this.state$.next({ value: DEFAULT.LONG }))}
         </div>
         <div {...styles.right}>{this.renderEditor()}</div>
       </div>

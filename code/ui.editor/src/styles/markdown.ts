@@ -4,7 +4,8 @@ import { color, t } from '../common';
  * Globally assigned styles for the ProseMirror editor content.
  */
 export const styles: t.IEditorStyles = {
-  h1: { margin: 0 },
+  'h1, h2, h3, h4, h5, h6': { margin: 0 },
+  h1: {},
   h2: {
     borderBottom: `solid 1px ${color.format(-0.1)}`,
     paddingBottom: 5,

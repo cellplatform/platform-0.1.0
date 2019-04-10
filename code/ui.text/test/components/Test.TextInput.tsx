@@ -83,7 +83,9 @@ export class TestTextInput extends React.PureComponent<ITestTextInputProps, ITes
           {this.button('value: short', () => this.state$.next({ value: 'hello' }))}
           <Hr margin={5} />
           {this.button('focus', () => this.input.focus())}
-          {this.button('select', () => this.input.select())}
+          {this.button('selectAll', () => this.input.selectAll().focus())}
+          {this.button('cursorToStart', () => this.input.cursorToStart().focus())}
+          {this.button('cursorToEnd', () => this.input.cursorToEnd().focus())}
         </div>
         <div {...styles.right}>{this.renderInput()}</div>
       </div>

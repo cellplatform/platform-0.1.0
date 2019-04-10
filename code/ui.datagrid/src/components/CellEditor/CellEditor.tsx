@@ -1,24 +1,15 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { EditorContext, ReactEditorContext } from '../../api';
-import { GlamorValue, t, css, time } from '../../common';
+import { GlamorValue, t, time } from '../../common';
 import { CellEditorView } from './CellEditorView';
 
 export type ICellEditorProps = {
   events$?: Subject<t.CellEditorEvent>;
   theme?: t.ICellEditorTheme | 'DEFAULT';
+  textMode?: 'MARKDOWN' | 'TEXT';
   style?: GlamorValue;
 };
 
@@ -27,6 +18,8 @@ export type ICellEditorState = {
   height?: number;
   value?: string;
 };
+
+type ISize = { width: number; height: number };
 
 export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEditorState> {
   public static THEMES = CellEditorView.THEMES;
@@ -54,10 +47,18 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     let isMounted = false;
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const events$ = this.events$;
-    state$.subscribe(e => this.setState(e));
+
+    // Bubble events.
     if (this.props.events$) {
       this.events$.subscribe(this.props.events$);
     }
+
+    // Update state.
+    state$.subscribe(e => this.setState(e));
+
+    // Set initial value.
+    const value = (this.context.cell.value || '').toString();
+    this.state$.next({ value });
 
     // Update <input> on keypress.
     const keys$ = this.context.keys$;
@@ -65,13 +66,14 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
       .pipe(
         filter(e => e.isEnter),
         filter(() => isMounted),
+        filter(e => (this.mode === 'MARKDOWN' ? e.metaKey : true)),
       )
-      .subscribe(e => this.context.complete());
+      .subscribe(e => {
+        this.context.set(this.value);
+        this.context.complete();
+      });
 
-    // Set initial value.
-    const value = (this.context.cell.value || '').toString();
-    this.state$.next({ value });
-
+    // Keep the local `value` state in sync with the editor view.
     events$
       .pipe(
         filter(e => e.type === 'CELL_EDITOR/changed'),
@@ -81,24 +83,38 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
         this.state$.next({ value: e.value.to });
       });
 
+    // Keep the size in sync with the editor's reported size.
+    events$
+      .pipe(
+        filter(e => e.type === 'CELL_EDITOR/size'),
+        map(e => e.payload as t.ICellEditorSize),
+      )
+      .subscribe(e => {
+        this.updateSize({
+          width: this.cellSize.width,
+          height: e.to.height,
+        });
+      });
+
     // Keep the editor context up-to-date with the latest value.
-    state$.subscribe(e => {
-      this.context.set(this.value);
-    });
+    state$.subscribe(e => this.context.set(this.value));
 
     // Manage cancelling manually.
     // this.context.autoCancel = false;
     // keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
 
-    // Delay mounted flag to ensure the ENTER key that may have been used to
-    // initiate the editor does not immediately close the editor.
+    // Delay the `isMounted` flag to ensure the ENTER key that may have
+    // been used to initiate the editor does not immediately close the editor.
     time.delay(100, () => (isMounted = true));
     this.updateSize();
   }
 
   public componentDidMount() {
-    this.view.focus({ selectAll: true });
     this.updateSize();
+    if (this.mode === 'FORMULA') {
+      this.selectAll();
+    }
+    this.focus();
   }
 
   public componentWillUnmount() {
@@ -118,14 +134,21 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
   }
 
   public get mode(): t.CellEditorMode {
-    return this.value.startsWith('=') ? 'FORMULA' : 'TEXT';
+    const { textMode = 'MARKDOWN' } = this.props;
+    return this.value.startsWith('=') ? 'FORMULA' : textMode;
   }
 
-  public get size() {
+  public get cellSize(): ISize {
+    // NB: +/- 1 on size values based on position accounts for table edge differences.
     const cell = this.context.cell;
-    const width = cell.td.offsetWidth + (cell.column === 0 ? 0 : 1);
-    const height = cell.td.offsetHeight + (cell.row === 0 ? -1 : 0); // NB: Account for table edge differences.
-    return { width, height };
+    return {
+      get width() {
+        return cell.td.offsetWidth + (cell.column === 0 ? 0 : 1);
+      },
+      get height() {
+        return cell.td.offsetHeight + (cell.row === 0 ? -1 : 0);
+      },
+    };
   }
 
   private get cell() {
@@ -142,16 +165,47 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
   /**
    * [Methods]
    */
-  public updateSize() {
-    const { width, height } = this.size;
+  public focus() {
+    if (this.view) {
+      this.view.focus();
+    }
+    return this;
+  }
+
+  public selectAll() {
+    if (this.view) {
+      this.view.selectAll();
+    }
+    return this;
+  }
+
+  public cursorToStart() {
+    if (this.view) {
+      this.view.cursorToStart();
+    }
+    return this;
+  }
+
+  public cursorToEnd() {
+    if (this.view) {
+      this.view.cursorToEnd();
+    }
+    return this;
+  }
+
+  private updateSize(size?: ISize) {
+    const { width, height } = size || this.cellSize;
     this.state$.next({ width, height });
+    return this;
   }
 
   /**
    * [Render]
    */
   public render() {
-    const { width, height } = this.state;
+    const { width } = this.state;
+    const height = Math.max(this.state.height || 0, this.cellSize.height);
+
     const key = `editor-${this.column}:${this.row}`;
     return (
       <CellEditorView
