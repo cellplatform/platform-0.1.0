@@ -304,6 +304,28 @@ export class Db<D extends object = any> implements t.IDb<D> {
     });
   }
 
+  public update<T extends object = D>(
+    data: t.IDbUpdateObject<T> | t.IDbUpdateList<T>,
+  ): Promise<t.IDbValues<T>> {
+    return new Promise<t.IDbValues<T>>((resolve, reject) => {
+      const list = Array.isArray(data)
+        ? data
+        : Object.keys(data).map(key => ({ type: 'put', key, value: data[key] }));
+
+      this._.db.batch(list, (err: Error, data: t.IDbNode[]) => {
+        if (err) {
+          return reject(err);
+        }
+        try {
+          const v = data.reduce((acc, next) => ({ ...acc, [next.key]: util.toValue(next) }), {});
+          resolve(v as any);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
   /**
    * Starts a watcher for the given key/path.
    * Pass nothing to watch for all changes.
@@ -435,6 +457,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
     };
   }
 
+  /**
+   * Produces a display string representing the database.
+   */
   public toString() {
     const { version } = this._;
     let res = `${this.dir}/key:${this.key}`;
@@ -444,7 +469,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   /**
-   * [INTERNAL]
+   * [Internal]
    */
   private fireError(error: Error, reject?: (reason: any) => void) {
     this.next<t.IDbErrorEvent>('DB/error', { db: { key: this.key }, error });
