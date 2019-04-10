@@ -85,6 +85,8 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - npm
   - [@platform/npm](/code/npm)
   - [@platform/npm.electron](/code/npm.electron)
+- auth
+  - [@platform/auth0](/code/auth0)
 
 
 <p>&nbsp;</p>
@@ -104,11 +106,4 @@ Plus...for a scintillating break down of this open-source classic, treat yoursel
 ## TODO
 ![pre-release](https://img.shields.io/badge/Status-pre--release-orange.svg)  
 API's will change (probably radically 🐷) prior to `1.0` release.
-
-- Rename
-  - [x] `@platform/util.react` ➡️ `@platform/react` (unpublish `util.react` from NPM)
-  - [x] `@platform/ts` ➡️ `@platform/ts.libs`
-  - [x] `@platform/ts.cli` ➡️ `@platform/ts` (unpublish `ts.cli` from NPM)
-  - [x] `@platform/util.css` ️️=> `@platform/css` (unpublish `/util.css`)
-  - [x] `@platform/util.exec` ️️=> `@platform/exec` (unpublish `/util.exec`)
 

@@ -1,0 +1,17 @@
+name: auth0
+
+electron:
+  port: 5974
+  entry:
+    main: test/main.ts
+    renderer: 
+      default: test/renderer.tsx
+
+web:
+  port: 1234
+  entry: test/web.tsx
+
+sourcemaps:
+  strip:
+    - node_modules/rxjs
+
