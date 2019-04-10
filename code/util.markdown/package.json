@@ -1,0 +1,30 @@
+{
+  "name": "@platform/util.markdown",
+  "version": "0.0.0",
+  "description": "Strongly typed tools for working with markdown.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "rehype-format": "^2.3.1",
+    "rehype-stringify": "^5.0.0",
+    "remark-parse": "^6.0.3",
+    "remark-rehype": "^4.0.0",
+    "unified": "7.1.0"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.41",
+    "@platform/ts": "3.4.5"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": "uiharness/platform",
+  "license": "MIT"
+}
