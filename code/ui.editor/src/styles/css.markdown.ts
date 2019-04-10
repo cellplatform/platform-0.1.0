@@ -8,7 +8,8 @@ export const styles: t.IEditorStyles = {
   h1: {},
   h2: {
     borderBottom: `solid 1px ${color.format(-0.1)}`,
-    paddingBottom: 5,
+    paddingBottom: '0.2em',
+    marginBottom: '1em',
   },
   h3: {},
   h4: { textTransform: 'uppercase', color: color.format(-0.4) },

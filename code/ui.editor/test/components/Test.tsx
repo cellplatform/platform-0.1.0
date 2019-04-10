@@ -44,7 +44,17 @@ ${LOREM}
   `,
 
   HEADING: `
-## Heading  
+## Heading
+  `,
+
+  TEMP: `
+  # Heading
+  ## Heading
+  ### Heading
+  #### Heading
+  ##### Heading
+  ###### Heading
+    
   `,
 };
 

@@ -50,8 +50,14 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * [Fields]
    */
+  private elEditorOuter: HTMLDivElement;
+  private elEditorOuterRef = (ref: HTMLDivElement) => (this.elEditor = ref);
+
   private elEditor: HTMLDivElement;
   private elEditorRef = (ref: HTMLDivElement) => (this.elEditor = ref);
+
+  private elMeasureOuter: HTMLDivElement;
+  private elMeasureOuterRef = (ref: HTMLDivElement) => (this.elMeasure = ref);
 
   private elMeasure: HTMLDivElement;
   private elMeasureRef = (ref: HTMLDivElement) => (this.elMeasure = ref);
@@ -247,24 +253,34 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     const className = `${constants.CSS_CLASS.EDITOR} ${this.props.className || ''}`.trim();
     const { fontSize = 16 } = this.props;
     const styles = {
-      base: css({ fontSize }),
-      measure: css({
-        Absolute: 0,
-        visibility: 'hidden',
+      base: css({ fontSize, boxSizing: 'border-box' }),
+      editorOuter: css({
+        overflow: 'hidden', // NB: Prevent margin collapsing. https://stackoverflow.com/questions/19718634/how-to-disable-margin-collapsing
       }),
+      measureOuter: css({ Absolute: 0, visibility: 'hidden' }),
     };
 
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
-        <div ref={this.elEditorRef} className={className} {...this.props.editorStyle} />
-        <div {...styles.measure}>
-          {/* 
+        <div
+          ref={this.elEditorOuterRef}
+          className={className}
+          {...css(this.props.editorStyle, styles.editorOuter)}
+        >
+          <div ref={this.elEditorRef} />
+        </div>
+        {/*
             NOTE: The element below is turned into a second "hidden" editor which is
-                  used for measure the size of the rendered content prior to the main
+                  used to measure the size of the rendered content prior to the main
                   visible editor being updated.
                   This data is fired through the "changing/pre" event.
           */}
-          <div ref={this.elMeasureRef} className={className} {...this.props.editorStyle} />
+        <div
+          ref={this.elMeasureOuterRef}
+          className={className}
+          {...css(this.props.editorStyle, styles.editorOuter, styles.measureOuter)}
+        >
+          <div ref={this.elMeasureRef} />
         </div>
       </div>
     );
