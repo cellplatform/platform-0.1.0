@@ -43,7 +43,7 @@ export function init(args: { schema: Schema; history?: boolean; mapKeys?: keyMap
   return plugins.concat(
     new Plugin({
       props: {
-        attributes: { class: 'ProseMirror-example-setup-style' },
+        // attributes: { class: 'my-css-class' },
       },
     }),
   );
