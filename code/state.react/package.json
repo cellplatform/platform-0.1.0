@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@uiharness/dev": "0.2.34",
-    "@uiharness/ui": "0.2.4"
+    "@uiharness/ui": "0.2.6"
   },
   "files": [
     "lib"
