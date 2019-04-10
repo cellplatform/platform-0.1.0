@@ -262,6 +262,7 @@ export class Command<P extends object = any, A extends object = any> implements 
    * Invokes the command's handler.
    */
   public invoke<R>(options: {
+    namespace: t.ICommand<P, A>;
     props: P;
     args?: string | t.ICommandArgs<A>;
     timeout?: number;

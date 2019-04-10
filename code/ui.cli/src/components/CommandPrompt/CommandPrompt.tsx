@@ -35,7 +35,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   public componentWillMount() {
     // Setup observables.
     const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
-    const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
+    const cliChanged$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
     const keydown$ = this.keyPress$.pipe(filter(e => e.isPressed === true));
     const tab$ = keydown$.pipe(
       filter(e => e.key === 'Tab'),
@@ -51,12 +51,12 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     // Update state.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
-    changed$
+    cliChanged$
       // Redraw on CLI changes.
       .pipe(debounceTime(0))
       .subscribe(e => this.forceUpdate());
 
-    changed$
+    cliChanged$
       // Handle invoke requests.
       .pipe(
         filter(e => e.invoked),
@@ -183,7 +183,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     return autoCompleted;
   };
 
-  private change = (e: t.ICommandChangeArgs) => {
+  private change = (e: t.ICommandChange) => {
     this.cli.change(e);
   };
 

@@ -11,21 +11,22 @@ import * as t from './types';
 export function invoker<P extends object, A extends object, R>(options: {
   events$: Subject<t.CommandInvokeEvent>;
   command: t.ICommand<P, A>;
+  namespace: t.ICommand<P, A>;
   props: P;
   args?: string | t.ICommandArgs<A>;
   timeout?: number;
 }): t.IInvokedCommandPromise<P, A, R> {
-  const { command } = options;
+  const { command, namespace } = options;
   const invokeId = id.shortid();
   const args = typeof options.args === 'object' ? options.args : Argv.parse<A>(options.args || '');
-  const complete$ = new Subject();
+  const done$ = new Subject();
   const timeout = value.defaultValue(options.timeout, DEFAULT.TIMEOUT);
 
   /**
    * Ferry events to parent.
    */
   const events$ = new ReplaySubject<t.CommandInvokeEvent>();
-  events$.subscribe(e => options.events$.next(e));
+  events$.subscribe(options.events$);
 
   /**
    * Fire initial event.
@@ -40,7 +41,7 @@ export function invoker<P extends object, A extends object, R>(options: {
    */
   const response = {
     events$: events$.pipe(share()),
-    complete$: complete$.asObservable(),
+    complete$: done$.asObservable(),
     isComplete: false,
     isTimedOut: false,
     timeout,
@@ -56,15 +57,17 @@ export function invoker<P extends object, A extends object, R>(options: {
    */
   const promise = new Promise<t.IInvokedCommandResponse<P, A, R>>(async (resolve, reject) => {
     const done = (error?: Error) => {
-      complete$.next();
       response.isComplete = true;
       response.error = error;
 
       sync();
-      const props = { ...response.props };
+      done$.next();
+      done$.complete();
 
+      const props = { ...response.props };
       events$.next({ type: 'COMMAND/invoke/after', payload: { command, invokeId, props, error } });
       events$.complete();
+
       if (error) {
         reject(error);
       } else {
@@ -73,14 +76,17 @@ export function invoker<P extends object, A extends object, R>(options: {
     };
 
     const e: t.ICommandHandlerArgs<P, A> = {
+      command,
+      namespace,
       get args() {
         return { ...response.args };
       },
       get props() {
         return { ...response.props };
       },
-      get(key) {
-        return response.props[key];
+      get(key, defaultValue) {
+        const value = response.props[key];
+        return value === undefined && defaultValue !== undefined ? defaultValue : value;
       },
       set(key, value) {
         const props = { ...response.props, [key]: value };
@@ -89,7 +95,7 @@ export function invoker<P extends object, A extends object, R>(options: {
           type: 'COMMAND/invoke/set',
           payload: { command, invokeId, key, value, props },
         });
-        return e;
+        return value;
       },
     };
 
@@ -101,7 +107,7 @@ export function invoker<P extends object, A extends object, R>(options: {
      * Start timeout.
      */
     timer(timeout)
-      .pipe(takeUntil(complete$))
+      .pipe(takeUntil(done$))
       .subscribe(() => {
         response.isTimedOut = true;
         const error = `The command '${command.name}' timed out.`;

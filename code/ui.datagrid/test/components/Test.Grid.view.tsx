@@ -6,6 +6,8 @@ import { datagrid, GlamorValue, Handsontable as HandsontableLib, t } from '../co
 import { DebugEditor } from './Debug.Editor';
 import { CellEditor } from '../../src';
 
+export type DataGrid = datagrid.DataGrid;
+
 export type ITestGridViewProps = {
   events$?: Subject<t.GridEvent>;
   editorType: t.TestEditorType;

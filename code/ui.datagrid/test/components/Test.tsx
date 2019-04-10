@@ -68,9 +68,10 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const elGrid = view === 'grid' && <TestGrid editorType={this.editorType} />;
     const elCellEditor = view === 'editor' && <TestCellEditor />;
     return (
-      <Shell cli={this.cli}>
+      <Shell cli={this.cli} tree={{}}>
         {elGrid}
         {elCellEditor}
+        {this.state.el}
       </Shell>
     );
   }

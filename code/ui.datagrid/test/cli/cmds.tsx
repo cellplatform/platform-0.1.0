@@ -1,4 +1,7 @@
+import * as React from 'react';
+
 import { Command, t } from '../common';
+import { grid as g } from './cmd.grid';
 
 type P = t.ITestCommandProps;
 
@@ -15,5 +18,8 @@ const editor = Command
  * The root of the CLI application.
  */
 export const root = Command.create<P>('root')
+  // .add(grid)
   .add(grid)
-  .add(editor);
+  .add(editor)
+  .add(g);
+// .add(foo);

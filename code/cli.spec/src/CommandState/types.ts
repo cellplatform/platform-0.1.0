@@ -46,8 +46,8 @@ export type ICommandFuzzyMatch = {
 /**
  * [Change] delegate.
  */
-export type CommandChangeDispatcher = (e: ICommandChangeArgs) => void;
-export type ICommandChangeArgs = {
+export type CommandChangeDispatcher = (e: ICommandChange) => void;
+export type ICommandChange = {
   text?: string;
   invoked?: boolean;
   namespace?: boolean | 'PARENT';
@@ -57,9 +57,12 @@ export type ICommandChangeArgs = {
 /**
  * [Invoke]
  */
-export type InvokeCommandArgsFactory<P extends object = any, A extends object = any> = (
-  state: ICommandStateProps,
-) => Promise<IInvokeCommandArgs<P, A>>;
+export type BeforeInvokeCommand<P extends object = any, A extends object = any> = (args: {
+  command: ICommand<P, A>;
+  namespace?: ICommand<P, A>;
+  state: ICommandStateProps;
+  props: P;
+}) => Promise<Partial<IInvokeCommandArgs<P, A>>>;
 
 export type ICommandStateInvokeArgs = {
   props?: {};
@@ -67,7 +70,6 @@ export type ICommandStateInvokeArgs = {
   timeout?: number;
   stepIntoNamespace?: boolean;
 };
-
 export type ICommandStateInvokeResponse = {
   isCancelled: boolean;
   isNamespaceChanged: boolean;
@@ -90,18 +92,18 @@ export type CommandStateEvent =
   | ICommandStateAutoCompletedEvent;
 
 export type ICommandStateChangingEvent = {
-  type: 'COMMAND/state/changing';
+  type: 'COMMAND_STATE/changing';
   payload: ICommandStateChanging;
 };
 export type ICommandStateChanging = {
-  prev?: ICommandChangeArgs;
-  next: ICommandChangeArgs;
+  prev?: ICommandChange;
+  next: ICommandChange;
   isCancelled: boolean;
   cancel(): void;
 };
 
 export type ICommandStateChangedEvent = {
-  type: 'COMMAND/state/changed';
+  type: 'COMMAND_STATE/changed';
   payload: ICommandStateChanged;
 };
 export type ICommandStateChanged = {
@@ -111,7 +113,7 @@ export type ICommandStateChanged = {
 };
 
 export type ICommandStateInvokingEvent = {
-  type: 'COMMAND/state/invoking';
+  type: 'COMMAND_STATE/invoking';
   payload: ICommandStateInvoking;
 };
 export type ICommandStateInvoking = {
@@ -122,11 +124,11 @@ export type ICommandStateInvoking = {
 };
 
 export type ICommandStateInvokedEvent = {
-  type: 'COMMAND/state/invoked';
+  type: 'COMMAND_STATE/invoked';
   payload: ICommandStateInvokeResponse;
 };
 
 export type ICommandStateAutoCompletedEvent = {
-  type: 'COMMAND/state/autoCompleted';
+  type: 'COMMAND_STATE/autoCompleted';
   payload: ICommandAutoCompleted;
 };

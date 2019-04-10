@@ -1,0 +1,28 @@
+{
+  "name": "@platform/state.react",
+  "version": "0.0.0",
+  "description": "React bindings for @platform/state.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build $@",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/react": "0.1.10"
+  },
+  "devDependencies": {
+    "@uiharness/dev": "0.2.34",
+    "@uiharness/ui": "0.2.6"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

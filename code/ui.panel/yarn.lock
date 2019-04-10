@@ -1055,10 +1055,10 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/cli.spec@0.0.34":
-  version "0.0.34"
-  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.0.34.tgz#386e68983d581f80497c684115182b038d3cc574"
-  integrity sha512-9xm3hnRTiAHNxj/hoXfvVQWhu51iVY9RkWDlZsYUfhmvxLQ+sZ/+C57wnmmyoq6y+ZeLaQD6Dn9WYV8v+CtFag==
+"@platform/cli.spec@0.0.37":
+  version "0.0.37"
+  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.0.37.tgz#5616d7b1faeffefc74be6237d49384d5f06e5b0b"
+  integrity sha512-exIJNEoZbX9x46N6gHz54uOfSfndn+N9vGA6at9m0CQxxFWerTUFwYHOsbcliznnen8JdPFumtx2Va/qJiW2zA==
   dependencies:
     "@platform/util.string" "0.0.52"
     "@platform/util.value" "0.0.55"
@@ -1233,12 +1233,12 @@
     "@platform/libs" "0.0.12"
     "@platform/ts.libs" "3.4.3"
 
-"@platform/ui.cli@^0.0.31":
-  version "0.0.31"
-  resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.31.tgz#53901d74e95ce8c4061e40151d3cde97b8bb0072"
-  integrity sha512-omx9FaqRHR/Iih6Z0KB2pMEX0xRPnErpZfRiLw7ie3VIXzRnLUgWDstXBUODnni0mHuM3lM1soW0aFYPIrlC3g==
+"@platform/ui.cli@^0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@platform/ui.cli/-/ui.cli-0.0.34.tgz#a441ab80e2f04b69bb1b559e2891f9176a260326"
+  integrity sha512-86G/caaYI3Fk1SIh7zM/VKPSglC4TU480P++M5INTcpbzhX7UcvVoVdlcTcwGHpOKFaZgZ4oarvOMZCoA6gtSw==
   dependencies:
-    "@platform/cli.spec" "0.0.34"
+    "@platform/cli.spec" "0.0.37"
     "@platform/react" "0.1.10"
     "@platform/ui.panel" "^0.0.23"
     "@platform/ui.text" "0.0.44"
@@ -1533,14 +1533,14 @@
   resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.1.13.tgz#07999dcd92689970524878f9c7f11e04ae7b0d0d"
   integrity sha512-xiBeCwn4OLMV0nlOSGA3tpGb236fGtlWx2J5znCXf9ZZ1TV1AOS+l58OmKMpGw9n1sf/vMA6TgUaO3iM/BZTVg==
 
-"@uiharness/ui@0.1.43":
-  version "0.1.43"
-  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.1.43.tgz#cef733b345cd3b3afe96a20d018f8d5a71f9efc8"
-  integrity sha512-lVM+J9pNG0ZYoC6ULUiHcU/NO/mj0ur02fS7zQghrx7dHRVReo6V1QcfkcEm9wLay9bmlmpaq+qcq0cbsSQINQ==
+"@uiharness/ui@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.2.4.tgz#e08f6ad29bfc04645121b447cc0b686a61dcf03e"
+  integrity sha512-bSOnlvbbw45BZoAiAE6dM+V7kQPzn1UvMCoDsEdyHyqODTKbYSjGWMNzH6Adp5EjCRhZ9VoZ4Kq0ePlzHHlM7w==
   dependencies:
     "@platform/electron" "0.1.32"
     "@platform/react" "0.1.10"
-    "@platform/ui.cli" "^0.0.31"
+    "@platform/ui.cli" "^0.0.34"
     "@platform/ui.object" "0.0.82"
     "@uiharness/types" "0.1.13"
 
