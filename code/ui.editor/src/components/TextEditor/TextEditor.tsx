@@ -23,6 +23,7 @@ export type ITextEditorProps = {
   style?: GlamorValue;
   editorStyle?: GlamorValue;
   contentStyle?: Partial<IEditorStyles>;
+  fontSize?: number | string;
 };
 
 /**
@@ -243,9 +244,10 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    */
   public render() {
     this.updateStyles();
-
     const className = `${constants.CSS_CLASS.EDITOR} ${this.props.className || ''}`.trim();
+    const { fontSize = 16 } = this.props;
     const styles = {
+      base: css({ fontSize }),
       measure: css({
         Absolute: 0,
         visibility: 'hidden',
@@ -253,7 +255,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     };
 
     return (
-      <div {...this.props.style} onClick={this.handleClick}>
+      <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
         <div ref={this.elEditorRef} className={className} {...this.props.editorStyle} />
         <div {...styles.measure}>
           {/* 

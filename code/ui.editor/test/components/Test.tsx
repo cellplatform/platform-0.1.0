@@ -42,6 +42,10 @@ ${LOREM}
 
 ${LOREM}  
   `,
+
+  HEADING: `
+## Heading  
+  `,
 };
 
 const MY_STYLES: Partial<t.IEditorStyles> = {
@@ -62,13 +66,14 @@ export type ITestState = {
   transactions?: t.Transaction[];
   size?: t.IEditorSize;
   value?: string;
+  fontSize?: number | string;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {
     transactions: [],
-    value: DEFAULT.MARKDOWN,
-    // value: '## Heading2',
+    // value: DEFAULT.MARKDOWN,
+    value: DEFAULT.HEADING,
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
@@ -154,7 +159,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           {this.button('selectAll', () => this.editor.selectAll().focus())}
           {this.button('cursorToStart', () => this.editor.cursorToStart().focus())}
           {this.button('cursorToEnd', () => this.editor.cursorToEnd().focus())}
-
           <Hr margin={5} />
           {this.button('load: <empty>', () => this.editor.load(''))}
           {this.button('load: short', () => this.editor.load('hello'))}
@@ -162,8 +166,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           {this.button('load: markdown', () => this.editor.load(DEFAULT.MARKDOWN))}
           <Hr margin={5} />
           {this.button('(prop) value: <empty>', () => this.state$.next({ value: '' }))}
+          {this.button('(prop) value: heading', () => this.state$.next({ value: DEFAULT.HEADING }))}
           {this.button('(prop) value: short', () => this.state$.next({ value: 'hello' }))}
           {this.button('(prop) value: long', () => this.state$.next({ value: DEFAULT.LONG }))}
+          <Hr margin={5} />
+          {this.button('fontSize: 14', () => this.state$.next({ fontSize: 14 }))}
+          {this.button('fontSize: 16 (default)', () => this.state$.next({ fontSize: undefined }))}
+          {this.button('fontSize: 22', () => this.state$.next({ fontSize: 22 }))}
         </div>
         <div {...styles.right}>{this.renderEditor()}</div>
       </div>
@@ -247,10 +256,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             <TextEditor
               ref={this.editorRef}
               className={'myClass'}
+              value={this.state.value}
               style={styles.scrollContainer}
               editorStyle={styles.editor}
               contentStyle={MY_STYLES}
-              value={this.state.value}
+              fontSize={this.state.fontSize}
               events$={this.events$}
               focusOnLoad={true}
             />
