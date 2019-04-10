@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.cli",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "description": "Components for building cli (command-line-interface) related user-interfaces.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
