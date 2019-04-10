@@ -7,7 +7,6 @@ import {
   selectParentNode,
   setBlockType,
   toggleMark,
-  wrapIn,
 } from 'prosemirror-commands';
 import { redo, undo } from 'prosemirror-history';
 import { undoInputRule } from 'prosemirror-inputrules';
@@ -15,8 +14,8 @@ import { Schema } from 'prosemirror-model';
 import { liftListItem, sinkListItem, splitListItem, wrapInList } from 'prosemirror-schema-list';
 import { EditorState, Transaction } from 'prosemirror-state';
 
-import { EditorKeyMap } from '../types';
 import { time } from '../../../common';
+import { EditorKeyMap } from '../types';
 
 export { EditorKeyMap };
 
