@@ -44,26 +44,24 @@ ${LOREM}
   `,
 
   HEADING: `
-## Heading
-  `,
+  # Heading 1
+  ## Heading 2
+  ### Heading 3
+  #### Heading 4
+  ##### Heading 5
+  ###### Heading 6
 
-  TEMP: `
-  # Heading
-  ## Heading
-  ### Heading
-  #### Heading
-  ##### Heading
-  ###### Heading
-    
+  Paragraph - ${LOREM}
   `,
 };
 
+const PINK = '#FF004B';
 const MY_STYLES: Partial<t.IEditorStyles> = {
   h1: {
-    color: '#709FFF', // Blue.
+    color: PINK,
   },
   hr: {
-    borderColor: '#FF004B', // Pink.
+    borderColor: PINK,
   },
 };
 

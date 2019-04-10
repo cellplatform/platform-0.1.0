@@ -4,17 +4,23 @@ import { color, t } from '../common';
  * Globally assigned styles for the ProseMirror editor content.
  */
 export const styles: t.IEditorStyles = {
-  'h1, h2, h3, h4, h5, h6': { margin: 0 }, // Reset
-  h1: {},
-  h2: {
+  'h1, h2, h3, h4, h5, h6': {
+    margin: 0,
+  },
+  'h1, h2': {
     borderBottom: `solid 1px ${color.format(-0.1)}`,
     paddingBottom: '0.2em',
+    marginBottom: '0.8em',
+  },
+  'h3, h4, h5, h6': {
     marginBottom: '1em',
   },
-  h3: {},
-  h4: { textTransform: 'uppercase', color: color.format(-0.4) },
-  h5: {},
-  h6: {},
+  h1: { fontSize: '1.7em' },
+  h2: { fontSize: '1.4em' },
+  h3: { fontSize: '1.2em' },
+  h4: { fontSize: '1em' },
+  h5: { fontSize: '0.85em', textTransform: 'uppercase' },
+  h6: { fontSize: '0.85em', textTransform: 'uppercase', color: color.format(-0.4) },
   p: { margin: 0, lineHeight: '1.5em' },
   hr: {
     border: 'none',
