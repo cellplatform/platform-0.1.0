@@ -19,9 +19,13 @@ const DEFAULT = {
 - two
 - three
 
+1. tahi
+2. rua
+3. toru
+
 ---
 
-Before
+Before the \`code\` block:
 
 \`\`\`
 code block
@@ -80,8 +84,8 @@ export type ITestState = {
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {
     transactions: [],
-    // value: DEFAULT.MARKDOWN,
-    value: DEFAULT.HEADING,
+    value: DEFAULT.MARKDOWN,
+    // value: DEFAULT.HEADING,
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
@@ -219,7 +223,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         opacity: 0.7,
       }),
       editor: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.05)',
+        backgroundColor: 'rgba(255, 0, 0, 0.02)',
       }),
       right: css({
         marginLeft: 15,

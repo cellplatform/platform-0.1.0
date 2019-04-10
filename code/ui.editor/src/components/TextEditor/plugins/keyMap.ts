@@ -102,23 +102,23 @@ export function build(schema: Schema, mapKeys?: EditorKeyMap) {
 
   if (schema.marks.code) {
     const type = schema.marks.code;
-    bind('Mod-`', toggleMark(type));
+    bind('Mod-Alt-c', toggleMark(type));
   }
 
   if (schema.nodes.bullet_list) {
     const type = schema.nodes.bullet_list;
-    bind('Shift-Ctrl-8', wrapInList(type));
+    bind('Mod-Alt-b', wrapInList(type));
   }
 
   if (schema.nodes.ordered_list) {
     const type = schema.nodes.ordered_list;
-    bind('Shift-Ctrl-9', wrapInList(type));
+    bind('Mod-Alt-o', wrapInList(type));
   }
 
-  if (schema.nodes.blockquote) {
-    const type = schema.nodes.blockquote;
-    bind('Ctrl->', wrapIn(type));
-  }
+  // if (schema.nodes.blockquote) {
+  //   const type = schema.nodes.blockquote;
+  //   bind('Ctrl->', wrapIn(type));
+  // }
 
   if (schema.nodes.hard_break) {
     const br = schema.nodes.hard_break;
@@ -145,18 +145,18 @@ export function build(schema: Schema, mapKeys?: EditorKeyMap) {
 
   if (schema.nodes.paragraph) {
     const type = schema.nodes.paragraph;
-    bind('Shift-Ctrl-0', setBlockType(type));
+    bind('Mod-Alt-0', setBlockType(type));
   }
 
   if (schema.nodes.code_block) {
     const type = schema.nodes.code_block;
-    bind('Shift-Ctrl-\\', setBlockType(type));
+    bind('Mod-Alt-\\', setBlockType(type));
   }
 
   if (schema.nodes.heading) {
     const type = schema.nodes.heading;
     for (let i = 1; i <= 6; i++) {
-      bind('Shift-Ctrl-' + i, setBlockType(type, { level: i }));
+      bind('Mod-Alt-' + i, setBlockType(type, { level: i }));
     }
   }
 

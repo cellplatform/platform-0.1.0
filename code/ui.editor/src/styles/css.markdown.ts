@@ -10,7 +10,7 @@ export const styles: t.IEditorStyles = {
   'h1, h2': {
     borderBottom: `solid 1px ${color.format(-0.1)}`,
     paddingBottom: '0.2em',
-    marginBottom: '0.8em',
+    marginBottom: '0.4em',
   },
   'h3, h4, h5, h6': {
     marginBottom: '1em',
@@ -29,23 +29,14 @@ export const styles: t.IEditorStyles = {
     marginTop: '1.8em',
     marginBottom: '1.8em',
   },
-  pre: {
-    fontFamily: 'monospace',
-    fontWeight: 'bold',
-    fontSize: '0.8em',
-    color: color.format(-0.8),
-    backgroundColor: color.format(-0.03),
-    border: `solid 1px ${color.format(-0.05)}`,
-    padding: '1em',
-    paddingTop: '1.1em',
-    borderRadius: 2,
-    marginTop: '1.4em',
-    marginBottom: '1.8em',
-  },
-  ul: {
+  'ul, ol': {
     margin: 0,
     padding: 0,
-    paddingLeft: '1em',
+    paddingLeft: '1.2em',
+    marginBottom: '1em',
+  },
+  ol: {
+    paddingLeft: '1.25em',
   },
   blockquote: {
     borderLeft: `solid 5px ${color.format(-0.1)}`,
@@ -56,5 +47,30 @@ export const styles: t.IEditorStyles = {
     paddingTop: '0.3em',
     paddingBottom: '0.3em',
     color: color.format(-0.6),
+  },
+  code: {
+    fontFamily: 'monospace',
+    fontWeight: 'bold',
+  },
+  pre: {
+    fontSize: '0.85em',
+    color: color.format(-0.8),
+    backgroundColor: color.format(-0.03),
+    border: `solid 1px ${color.format(-0.05)}`,
+    borderRadius: 2,
+    padding: '1em',
+    paddingTop: '1.1em',
+    marginTop: '1.4em',
+    marginBottom: '1.8em',
+  },
+  'p code': {
+    fontSize: '0.85em',
+    color: '#C80100', // Dark red.
+    backgroundColor: color.format(-0.03),
+    border: `solid 1px ${color.format(-0.05)}`,
+    padding: '0.05em 0.25em',
+    borderRadius: 3,
+    top: '-0.1em',
+    position: 'relative',
   },
 };
