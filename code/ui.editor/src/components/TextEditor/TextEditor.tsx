@@ -19,6 +19,7 @@ export type ITextEditorProps = {
   events$?: Subject<t.TextEditorEvent>;
   focusOnLoad?: boolean;
   selectAllOnLoad?: boolean;
+  cursorToEndOnLoad?: boolean;
   className?: string;
   style?: GlamorValue;
   editorStyle?: GlamorValue;
@@ -27,6 +28,7 @@ export type ITextEditorProps = {
 
   allowEnter?: boolean;
   allowMetaEnter?: boolean;
+  allowHeadings?: boolean;
 };
 
 /**
@@ -107,10 +109,18 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   public componentDidMount() {
-    const { focusOnLoad, selectAllOnLoad, value = '' } = this.props;
+    const {
+      value = '',
+      focusOnLoad,
+      selectAllOnLoad,
+      cursorToEndOnLoad: caretToEndOnLoad,
+    } = this.props;
     this.init(value);
     if (selectAllOnLoad) {
       this.selectAll();
+    }
+    if (caretToEndOnLoad) {
+      this.cursorToEnd();
     }
     if (focusOnLoad) {
       this.focus();
@@ -168,14 +178,13 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     if (this.view) {
       this.view.destroy();
     }
-
-    const { allowEnter, allowMetaEnter } = this.props;
     const state = EditorState.create({
       doc: markdown.parse(value),
       plugins: plugins.init({
         schema: markdown.schema,
-        allowEnter,
-        allowMetaEnter,
+        allowEnter: this.props.allowEnter,
+        allowMetaEnter: this.props.allowMetaEnter,
+        allowHeadings: this.props.allowHeadings,
       }),
     });
 

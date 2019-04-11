@@ -456,6 +456,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         events$={this.markdown$}
         value={this.value}
         allowEnter={false}
+        allowHeadings={false}
       />
     );
   }

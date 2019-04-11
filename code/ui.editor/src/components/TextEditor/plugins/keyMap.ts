@@ -61,6 +61,7 @@ export function build(
     mapKeys?: EditorKeyMap;
     allowEnter?: boolean;
     allowMetaEnter?: boolean;
+    allowHeadings?: boolean;
   },
 ) {
   const { mapKeys } = options;
@@ -149,8 +150,6 @@ export function build(
 
   if (schema.nodes.list_item) {
     const type = schema.nodes.list_item;
-    // bind('Enter', splitListItem(type));
-    // bind('Mod-Enter', splitListItem(type));
     bind('Mod-[', liftListItem(type));
     bind('Mod-]', sinkListItem(type));
   }
@@ -165,7 +164,7 @@ export function build(
     bind('Mod-Alt-\\', setBlockType(type));
   }
 
-  if (schema.nodes.heading) {
+  if (schema.nodes.heading && options.allowHeadings !== false) {
     const type = schema.nodes.heading;
     for (let i = 1; i <= 6; i++) {
       bind('Mod-Alt-' + i, setBlockType(type, { level: i }));
@@ -174,7 +173,7 @@ export function build(
 
   if (schema.nodes.horizontal_rule) {
     const hr = schema.nodes.horizontal_rule;
-    bind('Mod-_', (state, dispatch) => {
+    bind('Mod-H', (state, dispatch) => {
       const tr = state.tr.replaceSelectionWith(hr.create()).scrollIntoView();
       dispatch(tr);
       return true;
@@ -183,12 +182,13 @@ export function build(
 
   const handleEnter: EditorCommand = (state, dispatch) => {
     const findParentListItem = utils.findParentNode(node => node.type === schema.nodes.list_item);
-    const isWithinList = Boolean(findParentListItem(state.selection));
-    if (isWithinList) {
+    const li = findParentListItem(state.selection);
+
+    if (li && li.node.textContent) {
       // Inside a <ul> or <ol>
       splitListItem(schema.nodes.list_item)(state, dispatch);
     } else {
-      // Simple new-line.
+      // New-line.
       baseKeymap.Enter(state, dispatch);
     }
     return true;

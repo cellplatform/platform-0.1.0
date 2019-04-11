@@ -32,12 +32,13 @@ export function init(args: {
   mapKeys?: keyMap.EditorKeyMap;
   allowEnter?: boolean;
   allowMetaEnter?: boolean;
+  allowHeadings?: boolean;
 }) {
-  const { schema, mapKeys, allowEnter, allowMetaEnter } = args;
+  const { schema, mapKeys, allowEnter, allowMetaEnter, allowHeadings } = args;
 
   let plugins: Plugin[] = [
-    inputRules.build(schema),
-    keymap(keyMap.build(schema, { mapKeys, allowEnter, allowMetaEnter })),
+    inputRules.build(schema, { allowHeadings }),
+    keymap(keyMap.build(schema, { mapKeys, allowEnter, allowMetaEnter, allowHeadings })),
     keymap(baseKeymap),
     dropCursor(),
     gapCursor(),

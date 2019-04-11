@@ -90,7 +90,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     transactions: [],
     // value: DEFAULT.MARKDOWN,
     // value: DEFAULT.HEADING,
-    value: '# Heading',
+    value: '* one\n* two',
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
@@ -277,6 +277,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
               style={styles.scrollContainer}
               editorStyle={styles.editor}
               contentStyle={MY_STYLES}
+              cursorToEndOnLoad={true}
               fontSize={this.state.fontSize}
               events$={this.events$}
               focusOnLoad={true}

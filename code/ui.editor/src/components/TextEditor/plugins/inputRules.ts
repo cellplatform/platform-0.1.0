@@ -79,7 +79,7 @@ export function headingRule(nodeType: NodeType, maxLevel: number) {
  * A set of input rules for creating the basic { block } quotes, lists,
  * code blocks, and heading.
  */
-export function build(schema: Schema) {
+export function build(schema: Schema, options: { allowHeadings?: boolean }) {
   const nodes = schema.nodes;
   const rules = smartQuotes.concat(ellipsis, hrRule, emDash);
 
@@ -95,7 +95,7 @@ export function build(schema: Schema) {
   if (nodes.code_block) {
     rules.push(codeBlockRule(nodes.code_block));
   }
-  if (nodes.heading) {
+  if (nodes.heading && options.allowHeadings !== false) {
     rules.push(headingRule(nodes.heading, 6));
   }
 
