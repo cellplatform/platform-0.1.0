@@ -67,4 +67,4 @@ const STYLES = {
 /**
  * Load `global styles`.
  */
-css.global(STYLES, { prefix: `.${CSS.CLASS.GRID} .handsontable` });
+css.global(STYLES, { prefix: `.${CSS.CLASS.GRID.BASE}.handsontable` });

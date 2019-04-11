@@ -330,7 +330,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       body: css({ Absolute: 0 }),
     };
     return (
-      <div {...css(styles.base, this.props.style)} className={CSS.CLASS.CELL_EDITOR}>
+      <div {...css(styles.base, this.props.style)} className={CSS.CLASS.CELL.EDITOR}>
         {this.renderBorder()}
         <div {...styles.body}>
           {this.renderTitle()}

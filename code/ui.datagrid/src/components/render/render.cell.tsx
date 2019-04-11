@@ -12,6 +12,9 @@ import * as constants from './constants';
 import * as css from '../../styles/global.cell';
 import { t } from '../../common';
 
+const CLASS = css.CLASS;
+const { CELL, GRID } = CLASS;
+
 /**
  * Renders a cell.
  *
@@ -31,11 +34,10 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
     const child: any = factory.cell({ row, column, value });
     const isHtml = typeof child === 'string' && child.startsWith('<');
 
-    let className = constants.CSS.CLASS.CELL;
-    className = isHtml ? `${css.CLASS.MARKDOWN} ${className}` : className;
-    className = row === 0 ? `${className} p-first-row` : className;
-    className = column === 0 ? `${className} p-first-column` : className;
-    className = `${className} p-content`;
+    let className = CELL.BASE;
+    className = isHtml ? `${CELL.MARKDOWN} ${className}` : className;
+    className = row === 0 ? `${className} ${GRID.FIRST.ROW}` : className;
+    className = column === 0 ? `${className} ${GRID.FIRST.COLUMN}` : className;
 
     if (isHtml) {
       return <div className={className} dangerouslySetInnerHTML={{ __html: child }} />;

@@ -331,7 +331,7 @@ export class Editor extends editors.TextEditor {
     }
 
     const Provider = createProvider(context);
-    const className = CSS.CLASS.GRID_EDITOR;
+    const className = CSS.CLASS.GRID.EDITOR;
 
     return (
       <Provider>

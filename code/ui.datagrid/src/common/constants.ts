@@ -1,3 +1,5 @@
+import { CSS as EDITOR_CSS } from '@platform/ui.editor';
+
 export { ROBOTO, MONOSPACE } from '@platform/ui.text/lib';
 
 export const COLORS = {
@@ -10,10 +12,19 @@ export const COLORS = {
 
 export const CSS = {
   CLASS: {
-    GRID: 'p-datagrid',
-    GRID_EDITOR: 'p-datagrid-editor',
-    CELL: 'p-datagrid-cell',
-    CELL_EDITOR: 'p-datagrid-cell-editor',
+    GRID: {
+      BASE: 'p-dg',
+      EDITOR: 'p-dg-editor',
+      FIRST: {
+        ROW: 'p-dg-firstRow',
+        COLUMN: 'p-dg-firstColumn',
+      },
+    },
+    CELL: {
+      BASE: 'p-dg-cell',
+      EDITOR: 'p-dg-cellEditor',
+      MARKDOWN: EDITOR_CSS.CLASS.MARKDOWN,
+    },
   },
 };
 

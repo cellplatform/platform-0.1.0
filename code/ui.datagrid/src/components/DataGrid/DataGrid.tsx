@@ -287,7 +287,11 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       }),
     };
     return (
-      <div ref={this.elRef} className={CSS.CLASS.GRID} {...css(styles.base, this.props.style)} />
+      <div
+        ref={this.elRef}
+        className={CSS.CLASS.GRID.BASE}
+        {...css(styles.base, this.props.style)}
+      />
     );
   }
 }

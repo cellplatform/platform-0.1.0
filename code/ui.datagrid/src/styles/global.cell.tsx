@@ -1,14 +1,11 @@
-import { CSS as EDITOR } from '@platform/ui.editor';
 import { color, css, constants } from '../common';
 
-export const CLASS = {
-  CELL: constants.CSS.CLASS.CELL,
-  MARKDOWN: EDITOR.CLASS.MARKDOWN,
-};
+export const CLASS = constants.CSS.CLASS;
+const { CELL, GRID } = CLASS;
 
 const STYLES = {
   CELL: {
-    [`.${CLASS.CELL}.p-content`]: {
+    [`.${CELL.BASE}`]: {
       // Reset CSS from handsontable.
       all: 'unset',
       whiteSpace: 'normal',
@@ -20,7 +17,7 @@ const STYLES = {
       color: color.format(-0.7),
       marginTop: 2,
     },
-    [`.${CLASS.CELL}.p-content.p-first-row`]: {
+    [`.${CELL.BASE}.${GRID.FIRST.ROW}`]: {
       marginTop: 1,
     },
   },
@@ -62,4 +59,4 @@ const STYLES = {
  * Load `global styles`.
  */
 css.global(STYLES.CELL);
-css.global(STYLES.MARKDOWN, { prefix: `.${CLASS.MARKDOWN}` });
+css.global(STYLES.MARKDOWN, { prefix: `.${CELL.MARKDOWN}` });
