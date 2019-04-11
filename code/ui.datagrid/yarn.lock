@@ -1278,10 +1278,10 @@
     codemirror "5.45.0"
     react-codemirror2 "5.1.0"
 
-"@platform/ui.editor@0.0.40":
-  version "0.0.40"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.40.tgz#ca7232ad332c55478fea4c81ad853493840a15f9"
-  integrity sha512-xaEraGCnTSipoHLhkY2Wl7nr66pU0YeWkSGYiT6kVT7qW8KjPpr5NQC1UOUnj/ZDKQVTUjKeSDpQ0nSlDusJcw==
+"@platform/ui.editor@0.0.41":
+  version "0.0.41"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.41.tgz#e70482807a41b62dd165f21195141c3173df5b87"
+  integrity sha512-5qu5VCOPrw6J3+pLZbVBST7X2ZCcL3Od1u16ZYhxyEdxPxZQQQD3CWH2ikigSQBw/hZWNvQ8XymsWr3IDsfuww==
   dependencies:
     "@platform/react" "0.1.10"
     prosemirror-commands "1.0.7"
