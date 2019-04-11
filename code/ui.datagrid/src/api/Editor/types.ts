@@ -11,6 +11,7 @@ import * as t from '../../types';
 export type IEditorContext = {
   isCancelled: boolean;
   autoCancel: boolean; // Automatically cancels on Escape key.
+  readonly initial: t.CellValue;
   readonly size: t.ISize | undefined;
   readonly cell: Cell;
   readonly grid: Grid;

@@ -55,7 +55,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     state$.subscribe(e => this.setState(e));
 
     // Set initial value.
-    const value = (this.context.cell.value || '').toString();
+    const value = (this.context.initial || '').toString();
     this.state$.next({ value });
 
     // Handle keypresses.
@@ -76,7 +76,8 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
         map(e => e.payload as t.ICellEditorChanged),
       )
       .subscribe(e => {
-        this.state$.next({ value: e.value.to });
+        const value = e.value.to;
+        this.state$.next({ value });
       });
 
     // Keep the size in sync with the editor's reported size.

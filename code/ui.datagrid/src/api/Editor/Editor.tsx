@@ -115,7 +115,8 @@ export class Editor extends editors.TextEditor {
     }
 
     const grid = this.grid;
-    const context = this.createContext();
+    const initial = initialValue === null ? this.cell.value : '';
+    const context = this.createContext({ initial });
     const el = this.render(context);
     if (!el) {
       this.onCancel();
@@ -224,7 +225,7 @@ export class Editor extends editors.TextEditor {
    * [Internal]
    */
 
-  private createContext() {
+  private createContext(args: { initial?: t.CellValue }) {
     const grid = this.grid;
     const cell = this.cell;
 
@@ -264,6 +265,7 @@ export class Editor extends editors.TextEditor {
     const value = { from, to: from };
 
     const context: t.IEditorContext = {
+      initial: args.initial,
       isCancelled: false,
       autoCancel: true,
       grid,
