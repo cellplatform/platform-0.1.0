@@ -88,10 +88,10 @@ export type ITestState = {
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {
     transactions: [],
-    // value: DEFAULT.MARKDOWN,
+    value: DEFAULT.MARKDOWN,
     // value: DEFAULT.HEADING,
     // value: '* one\n* two',
-    value: LOREM,
+    // value: LOREM,
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();

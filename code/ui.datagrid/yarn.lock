@@ -1266,10 +1266,10 @@
     "@platform/ui.tree" "0.0.28"
     react-icons "3.5.0"
 
-"@platform/ui.codemirror@0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.0.18.tgz#9b8de46b86ef5479d2a238b042000efe5c90d793"
-  integrity sha512-9xQaRHNkK2ZcfklDNWXUkWsOxWvQl7xNiUiHeAMzZEloCfe47BVK4jYqePAB1qDL0MXNa5GEBXjD/eQNMYgJtw==
+"@platform/ui.codemirror@0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.0.19.tgz#deb7ac0d3ca7bede96fec5a7f9323cc4fea3778b"
+  integrity sha512-7zLlJ2bxVUQ/NQe6zZ/y5+bWVrUgJwRQpOoRxDwBAW1CxhgJuiL3Vf199fQeLRTwEf0k2dR7qGVv4NO2fWrnXQ==
   dependencies:
     "@platform/react" "0.1.10"
     "@platform/ui.text" "0.0.45"
@@ -1278,10 +1278,10 @@
     codemirror "5.45.0"
     react-codemirror2 "5.1.0"
 
-"@platform/ui.editor@0.0.39":
-  version "0.0.39"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.39.tgz#551c1192b70e4a9f10b3e9e3c27ee1b6a61ce47b"
-  integrity sha512-kaxLKVzQhflWLZK/lrRhFXJZWWdeAKom7fH+gQ9BmXRjdKI7oVaxw3n/UxOzQSt1q0tH8TVnycdn9OqZ5i+2Hw==
+"@platform/ui.editor@0.0.40":
+  version "0.0.40"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.40.tgz#ca7232ad332c55478fea4c81ad853493840a15f9"
+  integrity sha512-xaEraGCnTSipoHLhkY2Wl7nr66pU0YeWkSGYiT6kVT7qW8KjPpr5NQC1UOUnj/ZDKQVTUjKeSDpQ0nSlDusJcw==
   dependencies:
     "@platform/react" "0.1.10"
     prosemirror-commands "1.0.7"
@@ -1367,10 +1367,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.54.tgz#9de48d729438fa037068c82871c05e34682558be"
   integrity sha512-rItmFr1whZaFtLaRyqXUChve0juQc9hTyDRo39Oi36+lcTKLo8CjSEwB9katNuNEAvn5Xw/zbgebEjw/mYAZ4A==
 
-"@platform/util.markdown@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.markdown/-/util.markdown-0.0.1.tgz#61934afb4d2aae56491c5b2317ddeb43a4f83d67"
-  integrity sha512-50du4KH3HhJ9QxCPB27HylGTLL09eINYdj3rOw5cIoCFHhuIbKq9xzZNL5oZfSiW66a5lL0FjrAYzscaM9qRHQ==
+"@platform/util.markdown@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.markdown/-/util.markdown-0.0.2.tgz#36df50daf4e28c67d1878e7f8fc42c191dbcddca"
+  integrity sha512-P5M6ErMUZq3X40ZeVLJOHX4XrkPcSlEaoISuc4b/YRDS1d/Mm3/tV/E5DABEhSeO1uvnlEAE67UFOPsi49g1AQ==
   dependencies:
     rehype-format "2.3.1"
     rehype-stringify "5.0.0"

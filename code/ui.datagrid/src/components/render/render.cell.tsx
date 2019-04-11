@@ -13,14 +13,6 @@ import * as constants from './constants';
 
 import { CLASS_NAME as EDITOR_CLASS_NAME } from '@platform/ui.editor';
 
-// const STYLES = {
-//   cell: {
-//     textHtml: css({
-//       paddingTop: 1,
-//     }),
-//   },
-// };
-
 // Override Handontable CSS that messes with the cell markdown-styles.
 const globalMarkdown = {
   '*': {
@@ -41,7 +33,6 @@ const globalMarkdown = {
   hr: {
     marginTop: '0.1em',
     marginBottom: '0.1em',
-    // borderColor: 'blue',
     borderBottomWidth: `3px`,
   },
 };
