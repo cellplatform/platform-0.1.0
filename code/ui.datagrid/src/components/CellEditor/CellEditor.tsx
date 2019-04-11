@@ -42,7 +42,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
    */
 
   public componentWillMount() {
-    let isMounted = false;
+    let isReady = false;
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const events$ = this.events$;
 
@@ -59,7 +59,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     this.state$.next({ value });
 
     // Handle keypresses.
-    const keys$ = this.context.keys$.pipe(filter(() => isMounted));
+    const keys$ = this.context.keys$.pipe(filter(() => isReady));
     const enterKey$ = keys$.pipe(filter(e => e.isEnter));
     enterKey$
       .pipe(filter(e => (this.mode === 'MARKDOWN' ? !(e.metaKey || e.shiftKey) : true)))
@@ -99,9 +99,11 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     // this.context.autoCancel = false;
     // keys$.pipe(filter(e => e.isEscape)).subscribe(e => this.context.cancel());
 
-    // Delay the `isMounted` flag to ensure the ENTER key that may have
+    // Delay the `isReady` flag to ensure the ENTER key that may have
     // been used to initiate the editor does not immediately close the editor.
-    time.delay(100, () => (isMounted = true));
+    time.delay(100, () => (isReady = true));
+
+    // Finish up.
     this.updateSize();
   }
 
@@ -211,10 +213,12 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
   public render() {
     const { width, height } = this.size;
     const key = `editor-${this.column}:${this.row}`;
+    const title = this.context.cell.key;
     return (
       <CellEditorView
         key={key}
         ref={this.viewRef}
+        title={title}
         events$={this._events$}
         value={this.state.value}
         theme={this.props.theme}

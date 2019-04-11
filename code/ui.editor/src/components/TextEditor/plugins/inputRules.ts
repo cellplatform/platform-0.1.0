@@ -64,6 +64,16 @@ export const hrRule = new InputRule(/^—-$/, (state, match, start, end) => {
 });
 
 /**
+ * Given `lorem` replace with "lorem ipsum...".
+ */
+export const loremRule = new InputRule(/lorem\s/, (state, match, start, end) => {
+  const lorem =
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
+  const tr = state.tr.delete(start, end).insertText(lorem, start);
+  return tr;
+});
+
+/**
  * Given a node type and a maximum level, creates an input rule that
  * turns up to that number of `#` characters followed by a space at
  * the start of a textblock into a heading whose level corresponds to
@@ -81,7 +91,7 @@ export function headingRule(nodeType: NodeType, maxLevel: number) {
  */
 export function build(schema: Schema, options: { allowHeadings?: boolean }) {
   const nodes = schema.nodes;
-  const rules = smartQuotes.concat(ellipsis, hrRule, emDash);
+  const rules = smartQuotes.concat(ellipsis, hrRule, emDash, loremRule);
 
   if (nodes.blockquote) {
     rules.push(blockQuoteRule(nodes.blockquote));

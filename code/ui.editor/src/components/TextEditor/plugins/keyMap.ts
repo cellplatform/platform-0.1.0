@@ -65,6 +65,9 @@ export function build(
   },
 ) {
   const { mapKeys } = options;
+  const find = {
+    parentListItem: utils.findParentNode(node => node.type === schema.nodes.list_item),
+  };
 
   const keys = {};
   function bind(key: string, cmd: EditorCommand) {
@@ -181,8 +184,7 @@ export function build(
   }
 
   const handleEnter: EditorCommand = (state, dispatch) => {
-    const findParentListItem = utils.findParentNode(node => node.type === schema.nodes.list_item);
-    const li = findParentListItem(state.selection);
+    const li = find.parentListItem(state.selection);
 
     if (li && li.node.textContent) {
       // Inside a <ul> or <ol>
@@ -206,6 +208,24 @@ export function build(
     }
     return handleEnter(state, dispatch);
   });
+
+  // bind('`', (state, dispatch) => {
+  //   toggleMark(schema.marks.code)(state, dispatch);
+  //   return true;
+  // });
+
+  // bind('ArrowRight', (state, dispatch) => {
+  //   console.group('🌳 NEXT');
+  //   console.log('arrow next');
+  //   const code = find.parentCode(state.selection);
+  //   console.log('state.selection', state.selection);
+  //   const f = utils.isNodeSelection(state.selection);
+  //   console.log('f', f);
+  //   console.log('code', code);
+  //   console.groupEnd();
+
+  //   return false;
+  // });
 
   // Finish up.
   return keys;

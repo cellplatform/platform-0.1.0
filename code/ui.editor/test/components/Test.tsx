@@ -90,7 +90,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     transactions: [],
     // value: DEFAULT.MARKDOWN,
     // value: DEFAULT.HEADING,
-    value: '* one\n* two',
+    // value: '* one\n* two',
+    value: LOREM,
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
