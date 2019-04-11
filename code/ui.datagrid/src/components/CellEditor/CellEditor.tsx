@@ -58,14 +58,11 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     const value = (this.context.cell.value || '').toString();
     this.state$.next({ value });
 
-    // Update <input> on keypress.
-    const keys$ = this.context.keys$;
-    keys$
-      .pipe(
-        filter(e => e.isEnter),
-        filter(() => isMounted),
-        filter(e => (this.mode === 'MARKDOWN' ? !e.shiftKey : true)),
-      )
+    // Handle keypresses.
+    const keys$ = this.context.keys$.pipe(filter(() => isMounted));
+    const enterKey$ = keys$.pipe(filter(e => e.isEnter));
+    enterKey$
+      .pipe(filter(e => (this.mode === 'MARKDOWN' ? !(e.metaKey || e.shiftKey) : true)))
       .subscribe(e => {
         const value = this.value;
         const size = this.size;
@@ -110,10 +107,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
 
   public componentDidMount() {
     this.updateSize();
-    if (this.mode === 'FORMULA') {
-      this.selectAll();
-    }
-    this.focus();
+    this.cursorToEnd().focus();
   }
 
   public componentWillUnmount() {
