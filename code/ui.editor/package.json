@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.editor",
   "description": "Rich text/markdown editor for web and electron.",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -26,6 +26,8 @@
     "prosemirror-schema-basic": "1.0.0",
     "prosemirror-schema-list": "1.0.2",
     "prosemirror-state": "1.2.2",
+    "prosemirror-tables": "^0.7.10",
+    "prosemirror-utils": "^0.7.7",
     "prosemirror-view": "1.8.7"
   },
   "devDependencies": {
