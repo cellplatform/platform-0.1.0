@@ -214,23 +214,24 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       });
     };
 
-    const rowHeights: any = (index: number) => {
-      // if (index === 1) {
-      //   return 80;
-      // }
-      return DEFAULTS.ROW_HEIGHTS;
-    };
+    // const rowHeights: any = (index: number) => {
+    //   // if (index === 1) {
+    //   //   return 80;
+    //   // }
+    //   return DEFAULTS.ROW_HEIGHTS;
+    // };
 
-    return {
+    const settings = {
       data: [],
+
       rowHeaders: true,
-      // rowHeights: DEFAULTS.ROW_HEIGHTS,
-      rowHeights,
+      rowHeights: DEFAULTS.ROW_HEIGHTS,
 
       colHeaders: true,
       colWidths: DEFAULTS.COLUMN_WIDTHS,
       columns: createColumns(this.totalColumns),
       viewportRowRenderingOffset: 20,
+      
       manualRowResize: true,
       manualColumnResize: true,
       renderAllRows: false, // Virtual scrolling.
@@ -244,6 +245,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       afterSelection: selectionHandler.select,
       afterDeselect: selectionHandler.deselect,
     };
+
+    return settings;
   }
 
   /**

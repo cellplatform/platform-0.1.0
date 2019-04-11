@@ -79,7 +79,13 @@ export const styles: t.IEditorStyles = {
   'h1:last-child, h2:last-child, h3:last-child, h4:last-child, h5:last-child, h6:last-child': {
     marginBottom: 0,
   },
-  'p:last-child, ul:last-child, ol:last-child, pre:last-child, blockquote:last-child': {
+  'p:last-child': {
+    marginBottom: 0,
+  },
+  'ul:last-child, ol:last-child': {
+    marginBottom: 0,
+  },
+  'blockquote:last-child, pre:last-child': {
     marginBottom: 0,
   },
 };

@@ -19,6 +19,8 @@ export type ITestGridViewState = { values?: t.IGridValues };
 const DEFAULT = {
   A1: 'A1',
   // A2: '* one\n * two',
+  A2: '# Heading\nhello',
+  A3: '## Heading\nhello',
   B1: 'locked',
   B2: 'cancel',
 };
