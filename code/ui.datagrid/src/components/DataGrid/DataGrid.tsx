@@ -214,10 +214,19 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       });
     };
 
+    const rowHeights: any = (index: number) => {
+      // if (index === 1) {
+      //   return 80;
+      // }
+      return DEFAULTS.ROW_HEIGHTS;
+    };
+
     return {
       data: [],
       rowHeaders: true,
-      rowHeights: DEFAULTS.ROW_HEIGHTS,
+      // rowHeights: DEFAULTS.ROW_HEIGHTS,
+      rowHeights,
+
       colHeaders: true,
       colWidths: DEFAULTS.COLUMN_WIDTHS,
       columns: createColumns(this.totalColumns),

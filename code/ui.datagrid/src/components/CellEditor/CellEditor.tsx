@@ -139,7 +139,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
         return cell.td.offsetWidth + (cell.column === 0 ? 0 : 1);
       },
       get height() {
-        return cell.td.offsetHeight + (cell.row === 0 ? -1 : 0);
+        return cell.td.offsetHeight + (cell.row === 0 ? 0 : +1);
       },
     };
   }

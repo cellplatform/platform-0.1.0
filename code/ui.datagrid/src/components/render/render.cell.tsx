@@ -13,25 +13,18 @@ import * as constants from './constants';
 
 import { CLASS_NAME as EDITOR_CLASS_NAME } from '@platform/ui.editor';
 
-const STYLES = {
-  cell: {
-    base: css({
-      position: 'relative',
-      pointerEvents: 'none',
-      fontSize: 14,
-      color: color.format(-0.7),
-    }),
-    markdownHtml: css({
-      paddingTop: 2,
-    }),
-  },
-};
+// const STYLES = {
+//   cell: {
+//     textHtml: css({
+//       paddingTop: 1,
+//     }),
+//   },
+// };
 
 // Override Handontable CSS that messes with the cell markdown-styles.
-const global = {
+const globalMarkdown = {
   '*': {
-    boxSizing: 'border-box',
-    whiteSpace: 'normal',
+    // Reset CSS from handsontable.
     paddingInlineStart: 0,
     marginBlockStart: 0,
     marginBlockEnd: 0,
@@ -39,13 +32,42 @@ const global = {
   'h1, h2': {
     borderBottom: 'none',
     paddingBottom: 0,
+    marginBottom: '1em',
   },
   h1: { fontSize: '1.4em' },
   h2: { fontSize: '1.2em' },
   h3: { fontSize: '1em' },
   h4: { fontSize: '1em' },
+  hr: {
+    marginTop: '0.1em',
+    marginBottom: '0.1em',
+    // borderColor: 'blue',
+    borderBottomWidth: `3px`,
+  },
 };
-css.global(global, { prefix: `.${EDITOR_CLASS_NAME.CONTENT_MARKDOWN}` });
+css.global(globalMarkdown, { prefix: `.${EDITOR_CLASS_NAME.CONTENT_MARKDOWN}` });
+
+/**
+ * Base cell styles.
+ */
+const CELL = constants.CSS_CLASS.CELL;
+css.global({
+  [`.${CELL}.p-content`]: {
+    // Reset CSS from handsontable.
+    // all: 'unset',
+    whiteSpace: 'normal',
+
+    // Base cell styles.
+    boxSizing: 'border-box',
+    pointerEvents: 'none',
+    fontSize: 14,
+    color: color.format(-0.7),
+    marginTop: 2,
+  },
+  [`.${CELL}.p-content.p-first-row`]: {
+    marginTop: 1,
+  },
+});
 
 /**
  * Renders a cell.
@@ -60,20 +82,20 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
 
   function toElement(args: { td: HTMLElement; row: number; column: number; value?: t.CellValue }) {
     const { row, column, value } = args;
-    let child: any = factory.cell({ row, column, value });
+    const child: any = factory.cell({ row, column, value });
+    const isHtml = typeof child === 'string' && child.startsWith('<');
 
-    // If the content is HTML (parsed markdown) ensure it is rendered as HTML.
-    if (typeof child === 'string' && child.startsWith('<')) {
-      child = (
-        <div
-          className={EDITOR_CLASS_NAME.CONTENT_MARKDOWN}
-          {...STYLES.cell.markdownHtml}
-          dangerouslySetInnerHTML={{ __html: child }}
-        />
-      );
+    let className = constants.CSS_CLASS.CELL;
+    className = isHtml ? `${EDITOR_CLASS_NAME.CONTENT_MARKDOWN} ${className}` : className;
+    className = row === 0 ? `${className} p-first-row` : className;
+    className = column === 0 ? `${className} p-first-column` : className;
+    className = `${className} p-content`;
+
+    if (isHtml) {
+      return <div className={className} dangerouslySetInnerHTML={{ __html: child }} />;
+    } else {
+      return <div className={className}>{child}</div>;
     }
-
-    return <div {...STYLES.cell.base}>{child}</div>;
   }
 
   function toMemoizedHtml(args: {

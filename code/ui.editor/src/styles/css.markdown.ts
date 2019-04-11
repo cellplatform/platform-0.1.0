@@ -15,6 +15,7 @@ export const styles: t.IEditorStyles = {
   'h3, h4, h5, h6': {
     marginBottom: '1em',
   },
+
   h1: { fontSize: '1.7em' },
   h2: { fontSize: '1.4em' },
   h3: { fontSize: '1.2em' },
@@ -72,5 +73,13 @@ export const styles: t.IEditorStyles = {
     borderRadius: 3,
     top: '-0.1em',
     position: 'relative',
+  },
+
+  // Last child-resets
+  'h1:last-child, h2:last-child, h3:last-child, h4:last-child, h5:last-child, h6:last-child': {
+    marginBottom: 0,
+  },
+  'p:last-child, ul:last-child, ol:last-child, pre:last-child, blockquote:last-child': {
+    marginBottom: 0,
   },
 };

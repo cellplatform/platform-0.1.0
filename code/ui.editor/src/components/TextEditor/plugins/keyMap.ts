@@ -1,5 +1,8 @@
+import * as utils from 'prosemirror-utils';
+
 import {
   chainCommands,
+  baseKeymap,
   exitCode,
   joinDown,
   joinUp,
@@ -30,29 +33,38 @@ const isMac = typeof navigator !== 'undefined' ? /Mac/.test(navigator.platform) 
  * Inspect the given schema looking for marks and nodes,
  * and if found, add the following key bindings related to them.
  *
- *   - `Mod-b`                  for toggling [strong](#schema-basic.StrongMark)
- *   - `Mod-i`                  for toggling [emphasis](#schema-basic.EmMark)
- *   - `Mod-`                   for toggling [code font](#schema-basic.CodeMark)
- *   - `Ctrl-Shift-0`           for making the current textblock a paragraph
- *   - `Ctrl-Shift-1`           to `Ctrl-Shift-Digit6` for making the current textblock a heading of the corresponding level
- *   - `Ctrl-Shift-Backslash`   to make the current textblock a code block
- *   - `Ctrl-Shift-8`           to wrap the selection in an ordered list
- *   - `Ctrl-Shift-9`           to wrap the selection in a bullet list
- *   - `Ctrl->`                 to wrap the selection in a block quote
- *   - `Enter`                  to split a non-empty textblock in a list item while at the same time splitting the list item
- *   - `Mod-Enter`              to insert a hard break
- *   - `Mod-_`                  to insert a horizontal rule
- *   - `Backspace`              to undo an input rule
- *   - `Alt-ArrowUp`            to `joinUp`
- *   - `Alt-ArrowDown`          to `joinDown`
- *   - `Mod-BracketLeft`        to `lift`
- *   - `Escape`                 to `selectParentNode`
+ *   - toggling [strong](#schema-basic.StrongMark)
+ *   - toggling [emphasis](#schema-basic.EmMark)
+ *   - toggling [code font](#schema-basic.CodeMark)
+ *   - making the current textblock a paragraph
+ *   - for making the current textblock a heading of the corresponding level
+ *   - make the current textblock a code block
+ *   - wrap the selection in an ordered list
+ *   - wrap the selection in a bullet list
+ *   - wrap the selection in a block quote
+ *   - split a non-empty textblock in a list item while at the same time splitting the list item
+ *   - insert a hard break
+ *   - insert a horizontal rule
+ *   - undo an input rule
+ *   - `joinUp`
+ *   - `joinDown`
+ *   - `lift`
+ *   - `selectParentNode`
  *
  * You can suppress or map these bindings by passing a `mapKeys`
  * argument, which maps key names (say `"Mod-B"` to either `false`, to
  * remove the binding, or a new key name string.
  */
-export function build(schema: Schema, mapKeys?: EditorKeyMap) {
+export function build(
+  schema: Schema,
+  options: {
+    mapKeys?: EditorKeyMap;
+    allowEnter?: boolean;
+    allowMetaEnter?: boolean;
+  },
+) {
+  const { mapKeys } = options;
+
   const keys = {};
   function bind(key: string, cmd: EditorCommand) {
     if (mapKeys) {
@@ -128,16 +140,17 @@ export function build(schema: Schema, mapKeys?: EditorKeyMap) {
       }
       return true;
     });
-    bind('Mod-Enter', cmd);
+    // bind('Mod-Enter', cmd);
     bind('Shift-Enter', cmd);
     if (isMac) {
-      bind('Ctrl-Enter', cmd);
+      // bind('Ctrl-Enter', cmd);
     }
   }
 
   if (schema.nodes.list_item) {
     const type = schema.nodes.list_item;
-    bind('Enter', splitListItem(type));
+    // bind('Enter', splitListItem(type));
+    // bind('Mod-Enter', splitListItem(type));
     bind('Mod-[', liftListItem(type));
     bind('Mod-]', sinkListItem(type));
   }
@@ -168,5 +181,32 @@ export function build(schema: Schema, mapKeys?: EditorKeyMap) {
     });
   }
 
+  const handleEnter: EditorCommand = (state, dispatch) => {
+    const findParentListItem = utils.findParentNode(node => node.type === schema.nodes.list_item);
+    const isWithinList = Boolean(findParentListItem(state.selection));
+    if (isWithinList) {
+      // Inside a <ul> or <ol>
+      splitListItem(schema.nodes.list_item)(state, dispatch);
+    } else {
+      // Simple new-line.
+      baseKeymap.Enter(state, dispatch);
+    }
+    return true;
+  };
+
+  bind('Mod-Enter', (state, dispatch) => {
+    if (options.allowMetaEnter === false) {
+      return true; // Cancel further handlers.
+    }
+    return handleEnter(state, dispatch);
+  });
+  bind('Enter', (state, dispatch) => {
+    if (options.allowEnter === false) {
+      return true; // Cancel further handlers.
+    }
+    return handleEnter(state, dispatch);
+  });
+
+  // Finish up.
   return keys;
 }

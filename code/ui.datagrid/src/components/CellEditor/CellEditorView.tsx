@@ -327,9 +327,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         height,
         minHeight: DEFAULTS.ROW_HEIGHTS + (this.row === 0 ? -1 : 0),
       }),
-      body: css({
-        Absolute: 0,
-      }),
+      body: css({ Absolute: 0 }),
     };
     return (
       <div {...css(styles.base, this.props.style)} className={constants.CSS_CLASS.CELL_EDITOR}>
@@ -457,6 +455,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         style={styles.editor}
         events$={this.markdown$}
         value={this.value}
+        allowEnter={false}
       />
     );
   }

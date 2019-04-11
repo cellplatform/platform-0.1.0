@@ -88,8 +88,9 @@ export type ITestState = {
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {
     transactions: [],
-    value: DEFAULT.MARKDOWN,
+    // value: DEFAULT.MARKDOWN,
     // value: DEFAULT.HEADING,
+    value: '# Heading',
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
@@ -279,6 +280,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
               fontSize={this.state.fontSize}
               events$={this.events$}
               focusOnLoad={true}
+              allowEnter={true}
+              allowMetaEnter={true}
             />
           </div>
           <div {...styles.right}>

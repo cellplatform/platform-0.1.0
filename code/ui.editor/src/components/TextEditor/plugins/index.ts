@@ -26,12 +26,18 @@ import * as keyMap from './keyMap';
  *  - prompt
  *  - menu
  */
-export function init(args: { schema: Schema; history?: boolean; mapKeys?: keyMap.EditorKeyMap }) {
-  const { schema } = args;
+export function init(args: {
+  schema: Schema;
+  history?: boolean;
+  mapKeys?: keyMap.EditorKeyMap;
+  allowEnter?: boolean;
+  allowMetaEnter?: boolean;
+}) {
+  const { schema, mapKeys, allowEnter, allowMetaEnter } = args;
 
   let plugins: Plugin[] = [
     inputRules.build(schema),
-    keymap(keyMap.build(schema, args.mapKeys)),
+    keymap(keyMap.build(schema, { mapKeys, allowEnter, allowMetaEnter })),
     keymap(baseKeymap),
     dropCursor(),
     gapCursor(),

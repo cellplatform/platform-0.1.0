@@ -24,6 +24,9 @@ export type ITextEditorProps = {
   editorStyle?: GlamorValue;
   contentStyle?: Partial<IEditorStyles>;
   fontSize?: number | string;
+
+  allowEnter?: boolean;
+  allowMetaEnter?: boolean;
 };
 
 /**
@@ -50,14 +53,8 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * [Fields]
    */
-  private elEditorOuter: HTMLDivElement;
-  private elEditorOuterRef = (ref: HTMLDivElement) => (this.elEditor = ref);
-
   private elEditor: HTMLDivElement;
   private elEditorRef = (ref: HTMLDivElement) => (this.elEditor = ref);
-
-  private elMeasureOuter: HTMLDivElement;
-  private elMeasureOuterRef = (ref: HTMLDivElement) => (this.elMeasure = ref);
 
   private elMeasure: HTMLDivElement;
   private elMeasureRef = (ref: HTMLDivElement) => (this.elMeasure = ref);
@@ -69,6 +66,8 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   private _prevSize: t.IEditorSize = { width: -1, height: -1 };
 
   private unmounted$ = new Subject();
+  private keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
+
   private _events$ = new Subject<t.TextEditorEvent>();
   public events$ = this._events$.pipe(takeUntil(this.unmounted$));
 
@@ -89,7 +88,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     }
 
     // Monitor keyboard.
-    const keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
+    const keypress$ = this.keypress$;
     const modifier$ = keypress$.pipe(filter(e => e.isModifier));
 
     // Keep references to currently pressed modifier keys
@@ -170,9 +169,14 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
       this.view.destroy();
     }
 
+    const { allowEnter, allowMetaEnter } = this.props;
     const state = EditorState.create({
       doc: markdown.parse(value),
-      plugins: plugins.init({ schema: markdown.schema }),
+      plugins: plugins.init({
+        schema: markdown.schema,
+        allowEnter,
+        allowMetaEnter,
+      }),
     });
 
     const dispatchTransaction = this.dispatch;

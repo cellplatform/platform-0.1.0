@@ -9,14 +9,15 @@ export const COLORS = {
 };
 
 export const CSS_CLASS = {
-  GRID: 'platform-datagrid',
-  GRID_EDITOR: 'platform-datagrid-editor',
-  CELL_EDITOR: 'platform-cell-editor',
+  GRID: 'p-datagrid',
+  GRID_EDITOR: 'p-datagrid-editor',
+  CELL: 'p-datagrid-cell',
+  CELL_EDITOR: 'p-datagrid-cell-editor',
 };
 
 export const DEFAULTS = {
   TOTAL_COLUMNS: 52,
   TOTAL_ROWS: 1000,
-  ROW_HEIGHTS: 25,
+  ROW_HEIGHTS: 26,
   COLUMN_WIDTHS: 100,
 };
