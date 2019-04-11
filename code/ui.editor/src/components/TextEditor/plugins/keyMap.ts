@@ -117,6 +117,11 @@ export function build(
     bind('Mod-Alt-c', toggleMark(type));
   }
 
+  if (schema.nodes.code_block) {
+    const type = schema.nodes.code_block;
+    bind('Mod-Alt-Shift-c', setBlockType(type));
+  }
+
   if (schema.nodes.bullet_list) {
     const type = schema.nodes.bullet_list;
     bind('Mod-Alt-b', wrapInList(type));
@@ -157,11 +162,6 @@ export function build(
   if (schema.nodes.paragraph) {
     const type = schema.nodes.paragraph;
     bind('Mod-Alt-0', setBlockType(type));
-  }
-
-  if (schema.nodes.code_block) {
-    const type = schema.nodes.code_block;
-    bind('Mod-Alt-\\', setBlockType(type));
   }
 
   if (schema.nodes.heading && options.allowHeadings !== false) {
