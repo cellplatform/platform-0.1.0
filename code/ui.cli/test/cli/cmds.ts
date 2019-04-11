@@ -31,7 +31,9 @@ const ns = Command.create<P>('ns', e => {
 /**
  * The root of the CLI application.
  */
-export const root = Command.create<P>('root')
+export const root = Command.create<P>('root', e => {
+  console.log('invoked:root');
+})
   .add(list)
   .add(ns)
   .add({ name: 'run', handler: e => null, description: 'Run the thing now.' })

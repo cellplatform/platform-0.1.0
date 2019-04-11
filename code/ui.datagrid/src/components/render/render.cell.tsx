@@ -6,24 +6,20 @@ import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
 
 import { Grid } from '../../api';
-import { color, css, t } from '../../common';
 import { RegisterRenderer, Renderer } from '../../types';
 import { FactoryManager } from '../factory';
 import * as constants from './constants';
+import * as css from '../../styles/global.cell';
+import { t } from '../../common';
 
-const STYLES = {
-  cell: {
-    base: css({
-      position: 'relative',
-      pointerEvents: 'none',
-      fontSize: 14,
-      color: color.format(-0.7),
-    }),
-  },
-};
+const CLASS = css.CLASS;
+const { CELL, GRID } = CLASS;
 
 /**
  * Renders a cell.
+ *
+ * See also:
+ *   - /styles/global.cell.ts
  */
 export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
   const CACHE: any = {};
@@ -35,7 +31,19 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
 
   function toElement(args: { td: HTMLElement; row: number; column: number; value?: t.CellValue }) {
     const { row, column, value } = args;
-    return <div {...STYLES.cell.base}>{factory.cell({ row, column, value })}</div>;
+    const child: any = factory.cell({ row, column, value });
+    const isHtml = typeof child === 'string' && child.startsWith('<');
+
+    let className = CELL.BASE;
+    className = isHtml ? `${CELL.MARKDOWN} ${className}` : className;
+    className = row === 0 ? `${className} ${GRID.FIRST.ROW}` : className;
+    className = column === 0 ? `${className} ${GRID.FIRST.COLUMN}` : className;
+
+    if (isHtml) {
+      return <div className={className} dangerouslySetInnerHTML={{ __html: child }} />;
+    } else {
+      return <div className={className}>{child}</div>;
+    }
   }
 
   function toMemoizedHtml(args: {
@@ -71,46 +79,3 @@ export function registerCellRenderer(Table: Handsontable, grid: Grid, factory: F
   const fn: RegisterRenderer = renderers.registerRenderer;
   fn(constants.CELL_DEFAULT, cellRenderer(grid, factory));
 }
-
-// // import * as React from 'react';
-// import { Subject } from 'rxjs';
-// import { takeUntil } from 'rxjs/operators';
-// // import { css, color, GlamorValue } from '../../common';
-
-// export type IFooProps = { style?: GlamorValue };
-// export type IFooState = {
-//   text?: string;
-// };
-
-// export class Foo extends React.PureComponent<IFooProps, IFooState> {
-//   public state: IFooState = {};
-//   private unmounted$ = new Subject();
-//   private state$ = new Subject<Partial<IFooState>>();
-
-//   /**
-//    * [Lifecycle]
-//    */
-//   public componentWillMount() {
-//     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-//     console.log('mounted', this);
-//     this.state$.next({ text: 'Hello2' });
-//   }
-
-//   public componentWillUnmount() {
-//     this.unmounted$.next();
-//   }
-
-//   /**
-//    * [Render]
-//    */
-//   public render() {
-//     const styles = {
-//       base: css({}),
-//     };
-//     return (
-//       <div {...css(styles.base, this.props.style)}>
-//         <div>Foo: {this.state.text}</div>
-//       </div>
-//     );
-//   }
-// }

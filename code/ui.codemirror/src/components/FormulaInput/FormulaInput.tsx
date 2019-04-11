@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Controlled as CodeMirrorControlled, IInstance } from 'react-codemirror2';
-import { Subject } from 'rxjs';
+import { Subject, ReplaySubject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { css, events, GlamorValue, is, t, value as valueUtil, constants } from '../../common';
@@ -52,6 +52,8 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     share(),
   );
 
+  private readonly execCommand$ = new ReplaySubject<string>();
+
   private readonly modifierKeys: t.ITextModifierKeys = {
     alt: false,
     control: false,
@@ -101,6 +103,25 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
 
   public componentDidMount() {
     this.setState({ isLoaded: true }, () => this.init());
+
+    // Execute requested command.
+    // NB:  Run through observable to catch calls made
+    //       prior to the  component being ready.
+    this.execCommand$
+      .pipe(
+        takeUntil(this.unmounted$),
+        filter(() => Boolean(this.editor)),
+      )
+      .subscribe(command => {
+        switch (command) {
+          case 'focus':
+            this.editor.focus();
+            break;
+          default:
+            this.editor.execCommand(command);
+            break;
+        }
+      });
   }
 
   private init() {
@@ -148,24 +169,32 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
   /**
    * [Methods]
    */
-  public focus(options: { selectAll?: boolean } = {}) {
-    if (this.editor) {
-      this.editor.focus();
-      if (options.selectAll) {
-        this.selectAll();
-      }
-    }
-  }
-
   public redraw() {
     this.forceUpdate();
     if (this.editor) {
       this.editor.refresh();
     }
+    return this;
+  }
+
+  public focus() {
+    this.execCommand$.next('focus');
+    return this;
   }
 
   public selectAll() {
-    this.editor.execCommand('selectAll');
+    this.execCommand$.next('selectAll');
+    return this;
+  }
+
+  public cursorToStart() {
+    this.execCommand$.next('goDocStart');
+    return this;
+  }
+
+  public cursorToEnd() {
+    this.execCommand$.next('goDocEnd');
+    return this;
   }
 
   private setGlobalStyles() {

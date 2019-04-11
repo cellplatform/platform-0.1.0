@@ -1,3 +1,5 @@
+import { t } from '../../common';
+
 export type IShadow = {
   blur: number;
   color: string | number;
@@ -12,8 +14,6 @@ export type ICellEditorTheme = {
   inputBackground: string | number;
   inputShadow: IShadow;
 };
-
-export type ICellEditorSize = { width: number; height: number };
 
 /**
  * [Events]
@@ -43,9 +43,10 @@ export type ICellEditorChanged = {
 
 export type ICellEditorSizeEvent = {
   type: 'CELL_EDITOR/size';
-  payload: {
-    mode: CellEditorMode;
-    from: ICellEditorSize;
-    to: ICellEditorSize;
-  };
+  payload: ICellEditorSize;
+};
+export type ICellEditorSize = {
+  mode: CellEditorMode;
+  from: t.ISize;
+  to: t.ISize;
 };

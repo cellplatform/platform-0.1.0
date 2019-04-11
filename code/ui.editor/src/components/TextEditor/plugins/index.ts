@@ -2,6 +2,7 @@
  * Based on:
  *  - https://github.com/ProseMirror/prosemirror-example-setup
  */
+import { constants } from '../../../common';
 
 import { Schema } from 'prosemirror-model';
 import { keymap } from 'prosemirror-keymap';
@@ -25,12 +26,19 @@ import * as keyMap from './keyMap';
  *  - prompt
  *  - menu
  */
-export function init(args: { schema: Schema; history?: boolean; mapKeys?: keyMap.EditorKeyMap }) {
-  const { schema } = args;
+export function init(args: {
+  schema: Schema;
+  history?: boolean;
+  mapKeys?: keyMap.EditorKeyMap;
+  allowEnter?: boolean;
+  allowMetaEnter?: boolean;
+  allowHeadings?: boolean;
+}) {
+  const { schema, mapKeys, allowEnter, allowMetaEnter, allowHeadings } = args;
 
   let plugins: Plugin[] = [
-    inputRules.build(schema),
-    keymap(keyMap.build(schema, args.mapKeys)),
+    inputRules.build(schema, { allowHeadings }),
+    keymap(keyMap.build(schema, { mapKeys, allowEnter, allowMetaEnter, allowHeadings })),
     keymap(baseKeymap),
     dropCursor(),
     gapCursor(),
@@ -43,7 +51,7 @@ export function init(args: { schema: Schema; history?: boolean; mapKeys?: keyMap
   return plugins.concat(
     new Plugin({
       props: {
-        attributes: { class: 'ProseMirror-example-setup-style' },
+        attributes: { class: constants.CSS.CLASS.MARKDOWN },
       },
     }),
   );

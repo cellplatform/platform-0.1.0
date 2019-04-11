@@ -1,0 +1,29 @@
+productName: ui.editor
+appId: '@platform/ui.editor'
+publish:
+  provider: github
+  owner: __OWNER__
+  repo: __REPO__
+  vPrefixedTagName: true
+  releaseType: draft
+  publishAutoUpdate: true
+mac:
+  target:
+    - zip
+  artifactName: '${productName}-${version}-mac.${ext}'
+  icon: static/build/app.icns
+win:
+  target:
+    - zip
+  artifactName: '${productName}-${version}-win.${ext}'
+  icon: static/build/app.ico
+linux:
+  target:
+    - zip
+  category: Development
+  artifactName: '${productName}-${version}-linux.${ext}'
+files:
+  - bundle/app.main/**
+  - bundle/app.renderer/prod/**
+directories:
+  output: dist

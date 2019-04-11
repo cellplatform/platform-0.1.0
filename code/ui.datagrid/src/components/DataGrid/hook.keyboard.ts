@@ -32,7 +32,7 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
     //    This is when arrow keys at the edges of the grid jump to the other side of the grid.
     //    Incredibly disorienting for the user - here the madness stops!
     const last = table.getSelectedLast();
-    if (last) {
+    if (last && !grid.isEditing) {
       const row = last[0];
       const column = last[1];
       if (key === 'ArrowUp' && row === 0) {

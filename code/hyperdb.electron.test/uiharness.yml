@@ -11,4 +11,4 @@ sourcemaps:
     - node_modules/rxjs
     - node_modules/numbro
     - node_modules/react-inspector
-    - node_modules/prosemirror*
+    - node_modules/**/prosemirror*

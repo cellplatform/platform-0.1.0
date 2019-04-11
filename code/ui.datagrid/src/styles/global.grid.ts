@@ -1,14 +1,17 @@
 import { color, COLORS, css, constants } from '../common';
 
+const { CSS, ROBOTO } = constants;
+const BLUE = COLORS.BLUE;
+
 /**
  * Common Styles.
  */
-const styles = {
-  resizer: { backgroundColor: COLORS.BLUE },
+const COMMON = {
+  resizer: { backgroundColor: BLUE },
   resizerGuide: {
-    backgroundColor: COLORS.BLUE,
-    borderRightColor: COLORS.BLUE,
-    borderBottomColor: COLORS.BLUE,
+    backgroundColor: BLUE,
+    borderRightColor: BLUE,
+    borderBottomColor: BLUE,
   },
   cellBorder: {
     borderColor: color.format(-0.15),
@@ -18,7 +21,12 @@ const styles = {
 /**
  * Grid specific CSS overrides.
  */
-const GRID_GLOBAL = {
+const STYLES = {
+  '': {
+    // Root level styles on grid <div>.
+    fontFamily: ROBOTO.FAMILY,
+  },
+
   /**
    * Row/column header styles.
    */
@@ -34,20 +42,20 @@ const GRID_GLOBAL = {
   /**
    * Resize row/column.
    */
-  '.manualColumnResizer:hover': styles.resizer,
-  '.manualColumnResizer.active': styles.resizer,
+  '.manualColumnResizer:hover': COMMON.resizer,
+  '.manualColumnResizer.active': COMMON.resizer,
 
-  '.manualRowResizer:hover': styles.resizer,
-  '.manualRowResizer.active': styles.resizer,
+  '.manualRowResizer:hover': COMMON.resizer,
+  '.manualRowResizer.active': COMMON.resizer,
 
-  '.manualColumnResizerGuide': styles.resizerGuide,
-  '.manualRowResizerGuide': styles.resizerGuide,
+  '.manualColumnResizerGuide': COMMON.resizerGuide,
+  '.manualRowResizerGuide': COMMON.resizerGuide,
 
   /**
    * Cell borders.
    */
-  th: styles.cellBorder,
-  td: styles.cellBorder,
+  th: COMMON.cellBorder,
+  td: COMMON.cellBorder,
 
   /**
    * Turn off top/left border on table.
@@ -57,6 +65,6 @@ const GRID_GLOBAL = {
 };
 
 /**
- * Load styles into the <head>.
+ * Load `global styles`.
  */
-css.global(GRID_GLOBAL, { prefix: `.${constants.CSS_CLASS.GRID} .handsontable` });
+css.global(STYLES, { prefix: `.${CSS.CLASS.GRID.BASE}.handsontable` });

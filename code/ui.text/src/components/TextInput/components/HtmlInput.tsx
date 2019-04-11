@@ -110,32 +110,55 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
     if (this.input) {
       this.input.focus();
     }
+    return this;
   }
 
   public blur() {
     if (this.input) {
       this.input.blur();
     }
+    return this;
   }
 
-  public select() {
+  public selectAll() {
     if (this.input) {
       this.input.select();
     }
+    return this;
   }
 
-  public caretToEnd() {
+  public cursorToStart() {
+    if (this.input) {
+      const el = this.input as any;
+
+      if (el.setSelectionRange) {
+        // Modern browsers
+        el.focus();
+        el.setSelectionRange(0, 0);
+      } else if (el.createTextRange) {
+        // IE8 and below.
+        const range = el.createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', 0);
+        range.moveStart('character', 0);
+        range.select();
+      }
+    }
+    return this;
+  }
+
+  public cursorToEnd() {
     if (this.input) {
       const el = this.input as any;
       if (typeof el.selectionStart === 'number') {
         el.selectionStart = el.selectionEnd = el.value.length;
       } else if (typeof el.createTextRange !== 'undefined') {
-        this.focus();
         const range = el.createTextRange();
         range.collapse(false);
         range.select();
       }
     }
+    return this;
   }
 
   private setValue = (props: IHtmlInputProps) => {
@@ -269,10 +292,10 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   private handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     const { focusAction, onFocus } = this.props;
     if (focusAction === 'SELECT') {
-      this.select();
+      this.selectAll();
     }
     if (focusAction === 'END') {
-      this.caretToEnd();
+      this.cursorToEnd();
     }
     if (onFocus) {
       onFocus(e);

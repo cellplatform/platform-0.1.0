@@ -9,19 +9,24 @@ const LOREM =
 
 const DEFAULT = {
   MARKDOWN: `
-# Heading1
-## Heading2
-### Heading3
-#### Heading4
-##### Heading5
-
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
+  
 - one
 - two
 - three
 
+1. tahi
+2. rua
+3. toru
+
 ---
 
-Before
+Before the \`code\` block:
 
 \`\`\`
 code block
@@ -33,6 +38,9 @@ After
 
 > For whom the bell tolls.
 
+${LOREM}  
+
+
   `.substring(1),
 
   LONG: `
@@ -42,14 +50,26 @@ ${LOREM}
 
 ${LOREM}  
   `,
+
+  HEADING: `
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
+
+Paragraph - ${LOREM}
+  `,
 };
 
+const PINK = '#FF004B';
 const MY_STYLES: Partial<t.IEditorStyles> = {
   h1: {
-    color: '#709FFF', // Blue.
+    color: PINK,
   },
   hr: {
-    borderColor: '#FF004B', // Pink.
+    borderColor: PINK,
   },
 };
 
@@ -62,13 +82,16 @@ export type ITestState = {
   transactions?: t.Transaction[];
   size?: t.IEditorSize;
   value?: string;
+  fontSize?: number | string;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {
     transactions: [],
     value: DEFAULT.MARKDOWN,
-    // value: 'hello',
+    // value: DEFAULT.HEADING,
+    // value: '* one\n* two',
+    // value: LOREM,
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
@@ -151,14 +174,23 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.left}>
           {this.button('tmp', () => this.state$.next({ value: 'Hello' }))}
           {this.button('focus', () => this.editor.focus())}
-          {this.button('selectAll', () => this.editor.focus({ selectAll: true }))}
+          {this.button('selectAll', () => this.editor.selectAll().focus())}
+          {this.button('cursorToStart', () => this.editor.cursorToStart().focus())}
+          {this.button('cursorToEnd', () => this.editor.cursorToEnd().focus())}
           <Hr margin={5} />
           {this.button('load: <empty>', () => this.editor.load(''))}
           {this.button('load: short', () => this.editor.load('hello'))}
           {this.button('load: long', () => this.editor.load(DEFAULT.LONG))}
           {this.button('load: markdown', () => this.editor.load(DEFAULT.MARKDOWN))}
           <Hr margin={5} />
-          {this.button('value: short', () => this.state$.next({ value: 'hello' }))}
+          {this.button('(prop) value: <empty>', () => this.state$.next({ value: '' }))}
+          {this.button('(prop) value: heading', () => this.state$.next({ value: DEFAULT.HEADING }))}
+          {this.button('(prop) value: short', () => this.state$.next({ value: 'hello' }))}
+          {this.button('(prop) value: long', () => this.state$.next({ value: DEFAULT.LONG }))}
+          <Hr margin={5} />
+          {this.button('fontSize: 14', () => this.state$.next({ fontSize: 14 }))}
+          {this.button('fontSize: 16 (default)', () => this.state$.next({ fontSize: undefined }))}
+          {this.button('fontSize: 22', () => this.state$.next({ fontSize: 22 }))}
         </div>
         <div {...styles.right}>{this.renderEditor()}</div>
       </div>
@@ -197,7 +229,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         opacity: 0.7,
       }),
       editor: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.05)',
+        backgroundColor: 'rgba(255, 0, 0, 0.02)',
       }),
       right: css({
         marginLeft: 15,
@@ -242,12 +274,16 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             <TextEditor
               ref={this.editorRef}
               className={'myClass'}
+              value={this.state.value}
               style={styles.scrollContainer}
               editorStyle={styles.editor}
               contentStyle={MY_STYLES}
-              value={this.state.value}
+              cursorToEndOnLoad={true}
+              fontSize={this.state.fontSize}
               events$={this.events$}
               focusOnLoad={true}
+              allowEnter={true}
+              allowMetaEnter={true}
             />
           </div>
           <div {...styles.right}>

@@ -11,17 +11,19 @@ import * as t from '../../types';
 export type IEditorContext = {
   isCancelled: boolean;
   autoCancel: boolean; // Automatically cancels on Escape key.
+  readonly initial: t.CellValue;
+  readonly size: t.ISize | undefined;
   readonly cell: Cell;
   readonly grid: Grid;
   readonly keys$: Observable<t.IGridKeydown>;
   readonly end$: Observable<IEndEditingEvent>;
   readonly value: {
     readonly from?: any;
-    to?: any; // Writable, or use `set(...)` method.
+    readonly to?: any; // Writable, or use `set(...)` method.
   };
-  set(value: any): void;
-  cancel(): void;
-  complete(): void;
+  set(args: { value?: any; size?: t.ISize }): IEditorContext;
+  cancel(): IEditorContext;
+  complete(): IEditorContext;
 };
 
 /**
@@ -47,5 +49,6 @@ export type IEndEditing = {
   isCancelled: boolean;
   isChanged: boolean;
   value: { from?: t.CellValue; to?: t.CellValue };
+  size?: t.ISize;
   cancel(): void;
 };

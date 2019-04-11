@@ -50,6 +50,7 @@ export type IDbMethods<D extends {} = any> = {
   get<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   put<K extends keyof D>(key: K, value: D[K]): Promise<IDbValue<K, D[K]>>;
   delete<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
+  update<T extends object = D>(data: IDbUpdateObject<T> | IDbUpdateList<T>): Promise<IDbValues<T>>;
   watch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
   unwatch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
   isAuthorized(peerKey?: string | Buffer): Promise<boolean>;
@@ -68,6 +69,8 @@ export type IDb<D extends {} = any> = IDbProps &
     toString(): string;
     dispose(): void;
   };
+export type IDbUpdateObject<D extends object = any> = { [key in keyof D]: D[keyof D] };
+export type IDbUpdateList<D extends object = any> = Array<{ key: keyof D; value: D[keyof D] }>;
 
 /**
  * [Events]

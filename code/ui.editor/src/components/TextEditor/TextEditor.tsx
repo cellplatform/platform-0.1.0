@@ -1,7 +1,7 @@
 import * as styles from '../../styles';
 
 import * as commands from 'prosemirror-commands';
-import { EditorState } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import * as React from 'react';
 import { Subject } from 'rxjs';
@@ -12,17 +12,25 @@ import * as markdown from './markdown';
 import * as plugins from './plugins';
 import * as t from './types';
 
+const CLASS = constants.CSS.CLASS;
+
 export type DocSchema = any;
 
 export type ITextEditorProps = {
   value?: string;
   events$?: Subject<t.TextEditorEvent>;
   focusOnLoad?: boolean;
-  selectOnLoad?: boolean;
+  selectAllOnLoad?: boolean;
+  cursorToEndOnLoad?: boolean;
   className?: string;
   style?: GlamorValue;
   editorStyle?: GlamorValue;
   contentStyle?: Partial<IEditorStyles>;
+  fontSize?: number | string;
+
+  allowEnter?: boolean;
+  allowMetaEnter?: boolean;
+  allowHeadings?: boolean;
 };
 
 /**
@@ -62,6 +70,8 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   private _prevSize: t.IEditorSize = { width: -1, height: -1 };
 
   private unmounted$ = new Subject();
+  private keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
+
   private _events$ = new Subject<t.TextEditorEvent>();
   public events$ = this._events$.pipe(takeUntil(this.unmounted$));
 
@@ -82,7 +92,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     }
 
     // Monitor keyboard.
-    const keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
+    const keypress$ = this.keypress$;
     const modifier$ = keypress$.pipe(filter(e => e.isModifier));
 
     // Keep references to currently pressed modifier keys
@@ -101,10 +111,21 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   }
 
   public componentDidMount() {
-    const { focusOnLoad, selectOnLoad, value = '' } = this.props;
+    const {
+      value = '',
+      focusOnLoad,
+      selectAllOnLoad,
+      cursorToEndOnLoad: caretToEndOnLoad,
+    } = this.props;
     this.init(value);
+    if (selectAllOnLoad) {
+      this.selectAll();
+    }
+    if (caretToEndOnLoad) {
+      this.cursorToEnd();
+    }
     if (focusOnLoad) {
-      this.focus({ selectAll: selectOnLoad });
+      this.focus();
     }
   }
 
@@ -153,29 +174,20 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    */
 
   /**
-   * Assigns focus to the editor.
-   */
-  public focus(options: { selectAll?: boolean } = {}) {
-    const { view, state } = this.editor;
-    if (view) {
-      if (options.selectAll) {
-        commands.selectAll(state, this.dispatch);
-      }
-      view.focus();
-    }
-  }
-
-  /**
    * Initializes the PromiseMirror editor component.
    */
   public init(value: string) {
     if (this.view) {
       this.view.destroy();
     }
-
     const state = EditorState.create({
       doc: markdown.parse(value),
-      plugins: plugins.init({ schema: markdown.schema }),
+      plugins: plugins.init({
+        schema: markdown.schema,
+        allowEnter: this.props.allowEnter,
+        allowMetaEnter: this.props.allowMetaEnter,
+        allowHeadings: this.props.allowHeadings,
+      }),
     });
 
     const dispatchTransaction = this.dispatch;
@@ -204,6 +216,43 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     this.dispatch(tr);
   }
 
+  /**
+   * Assigns focus to the editor.
+   */
+  public focus() {
+    const { view } = this.editor;
+    if (view) {
+      view.focus();
+    }
+    return this;
+  }
+
+  public selectAll() {
+    const { state } = this.editor;
+    commands.selectAll(state, this.dispatch);
+    return this;
+  }
+
+  public cursorToStart() {
+    const { view } = this.editor;
+    if (view) {
+      const tr = view.state.tr;
+      const selection = TextSelection.atStart(tr.doc);
+      view.dispatch(tr.setSelection(selection));
+    }
+    return this;
+  }
+
+  public cursorToEnd() {
+    const { view } = this.editor;
+    if (view) {
+      const tr = view.state.tr;
+      const selection = TextSelection.atEnd(tr.doc);
+      view.dispatch(tr.setSelection(selection));
+    }
+    return this;
+  }
+
   private updateStyles() {
     const { contentStyle, className } = this.props;
     if (contentStyle) {
@@ -216,26 +265,32 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    */
   public render() {
     this.updateStyles();
-
-    const className = `${constants.CSS_CLASS.EDITOR} ${this.props.className || ''}`.trim();
+    const className = `${CLASS.EDITOR} ${this.props.className || ''}`.trim();
+    const { fontSize = 16 } = this.props;
     const styles = {
-      measure: css({
-        Absolute: 0,
-        visibility: 'hidden',
+      base: css({ fontSize, boxSizing: 'border-box' }),
+      editorOuter: css({
+        overflow: 'hidden', // NB: Prevent margin collapsing. https://stackoverflow.com/questions/19718634/how-to-disable-margin-collapsing
       }),
+      measureOuter: css({ Absolute: 0, visibility: 'hidden' }),
     };
 
     return (
-      <div {...this.props.style} onClick={this.handleClick}>
-        <div ref={this.elEditorRef} className={className} {...this.props.editorStyle} />
-        <div {...styles.measure}>
-          {/* 
+      <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
+        <div className={className} {...css(this.props.editorStyle, styles.editorOuter)}>
+          <div ref={this.elEditorRef} />
+        </div>
+        {/*
             NOTE: The element below is turned into a second "hidden" editor which is
-                  used for measure the size of the rendered content prior to the main
+                  used to measure the size of the rendered content prior to the main
                   visible editor being updated.
                   This data is fired through the "changing/pre" event.
           */}
-          <div ref={this.elMeasureRef} className={className} {...this.props.editorStyle} />
+        <div
+          className={className}
+          {...css(this.props.editorStyle, styles.editorOuter, styles.measureOuter)}
+        >
+          <div ref={this.elMeasureRef} />
         </div>
       </div>
     );

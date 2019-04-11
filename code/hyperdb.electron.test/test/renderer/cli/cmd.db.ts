@@ -52,6 +52,26 @@ export const del = Command.create<P>('delete', async e => {
 });
 
 /**
+ * [update] multiple values within the DB
+ */
+export const update = Command.create<P>('update', async e => {
+  const { db } = e.props;
+  const params = e.args.params;
+  const key = params[0];
+  if (db && key) {
+    const data: any = {};
+    params.forEach((param, i) => {
+      const isKey = i % 2 === 0;
+      if (isKey) {
+        data[param.toString()] = params[i + 1];
+      }
+    });
+    await db.update(data);
+    await updateWatch({ db, addKeys: Object.keys(data) });
+  }
+});
+
+/**
  * all [values] in the DB
  */
 export const values = Command.create<P>('values', async e => {
@@ -68,6 +88,7 @@ export const db = Command.create<P>('db')
   .add(put)
   .add(del)
   .add(values)
+  .add(update)
   .add(watch)
   .add(unwatch)
   .add(rename);

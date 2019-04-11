@@ -20,3 +20,5 @@ export type CellRef = IGridCellPosition | GridCellKey;
 export type IGridValues = {
   [key: string]: CellValue;
 };
+
+export type ISize = { width: number; height: number };

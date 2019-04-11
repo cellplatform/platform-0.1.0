@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { datagrid, GlamorValue, Handsontable as HandsontableLib, t } from '../common';
+import { datagrid, GlamorValue, Handsontable as HandsontableLib, t, markdown } from '../common';
 import { DebugEditor } from './Debug.Editor';
 import { CellEditor } from '../../src';
 
@@ -18,6 +18,9 @@ export type ITestGridViewState = { values?: t.IGridValues };
 
 const DEFAULT = {
   A1: 'A1',
+  // A2: '* one\n * two',
+  A2: '# Heading\nhello',
+  A3: '## Heading\nhello',
   B1: 'locked',
   B2: 'cancel',
 };
@@ -49,13 +52,30 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     events$
       .pipe(
         filter(e => e.type === 'GRID/EDITOR/end'),
-        map(e => e as t.IEndEditingEvent),
-        filter(e => !e.payload.isCancelled),
+        map(e => e.payload as t.IEndEditing),
+        filter(e => !e.isCancelled),
       )
       .subscribe(e => {
         // console.log('HANDLE END  🐷 ');
         // e.payload.cancel();
+        console.group('🌳 END EDIT');
+        console.log('e', e);
+        console.log('e.size', e.size);
+        console.groupEnd();
+        // console.log('END', e);
       });
+
+    // events$
+    // .pipe(
+    //   filter(e => e.type === 'GRID/EDITOR/end'),
+    //   map(e => e as t.IEndEditingEvent),
+    //   filter(e => !e.payload.isCancelled),
+    // )
+    // .subscribe(e => {
+    //   // console.log('HANDLE END  🐷 ');
+    //   // e.payload.cancel();
+    //   console.log('e', e);
+    // });
 
     const beginEdit$ = events$.pipe(
       filter(e => e.type === 'GRID/EDITOR/begin'),
@@ -138,9 +158,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         return this.renderEditor();
 
       case 'CELL':
-        const value = typeof req.value === 'object' ? JSON.stringify(req.value) : req.value;
-        // return <div>{value}</div>;
-        return value;
+        return formatValue(req.value);
 
       default:
         console.log(`Factory type '${req.type}' not supported by test.`);
@@ -157,4 +175,17 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         return <DebugEditor />;
     }
   };
+}
+
+/**
+ * [Helpers]
+ */
+function formatValue(value: datagrid.CellValue) {
+  value = typeof value === 'string' && !value.startsWith('=') ? markdown.toHtmlSync(value) : value;
+  value = typeof value === 'object' ? JSON.stringify(value) : value;
+  // if (typeof value === 'string' && !value.includes('\n') && value.startsWith('<p>')) {
+  // Strip <P>
+  // value = value.replace(/^\<p\>/, '').replace(/\<\/p\>/, '');
+  // }
+  return value;
 }
