@@ -36,6 +36,14 @@ const global = {
     marginBlockStart: 0,
     marginBlockEnd: 0,
   },
+  'h1, h2': {
+    borderBottom: 'none',
+    paddingBottom: 0,
+  },
+  h1: { fontSize: '1.4em' },
+  h2: { fontSize: '1.2em' },
+  h3: { fontSize: '1em' },
+  h4: { fontSize: '1em' },
 };
 css.global(global, { prefix: `.${EDITOR_CLASS_NAME.CONTENT_MARKDOWN}` });
 

@@ -2,10 +2,6 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import {
-  CellEditorView,
-  ICellEditorViewProps,
-} from '../../src/components/CellEditor/CellEditorView';
 import { Button, color, css, GlamorValue, t } from '../common';
 import { TestCellEditorMode } from './Test.CellEditorMode';
 

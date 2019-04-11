@@ -9,8 +9,6 @@ import { THEMES } from './themes';
 const BORDER_WIDTH = 2;
 const { DEFAULTS, COLORS, ROBOTO } = constants;
 
-type ISize = { width: number; height: number };
-
 type ICommonMethods = {
   focus(): any;
   selectAll(): any;
@@ -217,7 +215,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     return this.props.column || 0;
   }
 
-  private get size(): ISize {
+  private get size(): t.ISize {
     const width = value.defaultValue(this.props.width, -1);
     const height = value.defaultValue(this.props.height, -1);
     return { width, height };
@@ -295,7 +293,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     return payload;
   }
 
-  private fireSize(from?: ISize) {
+  private fireSize(from?: t.ISize) {
     from = from || this.size;
     let to = this.size;
 

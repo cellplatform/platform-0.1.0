@@ -181,6 +181,7 @@ export class Editor extends editors.TextEditor {
     const isCancelled = current.isCancelled ? true : Boolean(restoreValue);
     const from = current.value.from;
     const to = isCancelled ? from : this.getValue();
+    const size = current.size;
 
     // Destroy the editor UI component.
     ReactDOM.unmountComponentAtNode(this.TEXTAREA_PARENT);
@@ -190,6 +191,7 @@ export class Editor extends editors.TextEditor {
     const isChanged = !R.equals(value.from, value.to);
     const payload: t.IEndEditingEvent['payload'] = {
       value,
+      size,
       isCancelled,
       isChanged,
       get cell() {
@@ -225,11 +227,16 @@ export class Editor extends editors.TextEditor {
   private createContext() {
     const grid = this.grid;
     const cell = this.cell;
-    const complete = this.onComplete;
 
-    const cancel = () => {
+    const cancel: t.IEditorContext['cancel'] = () => {
       context.isCancelled = true;
       this.onCancel();
+      return context;
+    };
+
+    const complete: t.IEditorContext['complete'] = () => {
+      this.onComplete();
+      return context;
     };
 
     const end$ = this.refs.editorEvents$.pipe(
@@ -254,16 +261,7 @@ export class Editor extends editors.TextEditor {
       .subscribe(cancel);
 
     const from = this.instance.getDataAtCell(this.row, this.col);
-    let to = from;
-    const value: t.IEditorContext['value'] = {
-      from,
-      get to() {
-        return to;
-      },
-      set to(change: any) {
-        to = change;
-      },
-    };
+    const value = { from, to: from };
 
     const context: t.IEditorContext = {
       isCancelled: false,
@@ -275,13 +273,23 @@ export class Editor extends editors.TextEditor {
       value,
       complete,
       cancel,
-      set: (value: any) => (context.value.to = value),
+      size: undefined,
+      set(args: { value?: any; size?: t.ISize }) {
+        if (args.value !== undefined) {
+          value.to = args.value;
+        }
+        if (args.size !== undefined) {
+          const { width, height } = args.size;
+          (context as any).size = { width, height };
+        }
+        return context;
+      },
     };
 
     return context;
   }
 
-  private onCancel: t.IEditorContext['cancel'] = () => {
+  private onCancel = () => {
     if (this.isDisposed) {
       return;
     }
@@ -294,7 +302,7 @@ export class Editor extends editors.TextEditor {
     this.close();
   };
 
-  private onComplete: t.IEditorContext['complete'] = () => {
+  private onComplete = () => {
     if (this.isDisposed) {
       return;
     }

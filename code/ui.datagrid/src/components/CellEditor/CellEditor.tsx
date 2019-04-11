@@ -19,8 +19,6 @@ export type ICellEditorState = {
   value?: string;
 };
 
-type ISize = { width: number; height: number };
-
 export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEditorState> {
   public static THEMES = CellEditorView.THEMES;
 
@@ -66,11 +64,12 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
       .pipe(
         filter(e => e.isEnter),
         filter(() => isMounted),
-        filter(e => (this.mode === 'MARKDOWN' ? e.metaKey : true)),
+        filter(e => (this.mode === 'MARKDOWN' ? !e.shiftKey : true)),
       )
       .subscribe(e => {
-        this.context.set(this.value);
-        this.context.complete();
+        const value = this.value;
+        const size = this.size;
+        this.context.set({ value, size }).complete();
       });
 
     // Keep the local `value` state in sync with the editor view.
@@ -97,7 +96,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
       });
 
     // Keep the editor context up-to-date with the latest value.
-    state$.subscribe(e => this.context.set(this.value));
+    state$.subscribe(e => this.context.set({ value: this.value }));
 
     // Manage cancelling manually.
     // this.context.autoCancel = false;
@@ -138,7 +137,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     return this.value.startsWith('=') ? 'FORMULA' : textMode;
   }
 
-  public get cellSize(): ISize {
+  public get cellSize(): t.ISize {
     // NB: +/- 1 on size values based on position accounts for table edge differences.
     const cell = this.context.cell;
     return {
@@ -147,6 +146,19 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
       },
       get height() {
         return cell.td.offsetHeight + (cell.row === 0 ? -1 : 0);
+      },
+    };
+  }
+
+  public get size(): t.ISize {
+    const state = this.state;
+    const cell = this.cellSize;
+    return {
+      get width() {
+        return Math.max(state.width || 0, cell.width);
+      },
+      get height() {
+        return Math.max(state.height || 0, cell.height);
       },
     };
   }
@@ -193,7 +205,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     return this;
   }
 
-  private updateSize(size?: ISize) {
+  private updateSize(size?: t.ISize) {
     const { width, height } = size || this.cellSize;
     this.state$.next({ width, height });
     return this;
@@ -203,9 +215,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
    * [Render]
    */
   public render() {
-    const { width } = this.state;
-    const height = Math.max(this.state.height || 0, this.cellSize.height);
-
+    const { width, height } = this.size;
     const key = `editor-${this.column}:${this.row}`;
     return (
       <CellEditorView

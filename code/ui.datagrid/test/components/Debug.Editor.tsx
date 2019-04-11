@@ -48,7 +48,7 @@ export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEd
 
     // Keep the editor context up-to-date with the latest value.
     state$.subscribe(e => {
-      this.context.set(this.value);
+      this.context.set({ value: this.value });
     });
 
     // Set initial values.
