@@ -15,17 +15,31 @@ const processor = unified()
   .use(html);
 
 /**
- * Converts the given markdown to HTML.
+ * Converts the given markdown to HTML asynchronously.
  */
 export function toHtml(markdown: string) {
   return new Promise<string>((resolve, reject) => {
-    processor.process(markdown, (err: Error, file: any) => {
+    processor.process(markdown, (err: Error, res: any) => {
       if (err) {
         reject(err);
       }
-      const contents = file.contents as string;
-      const html = contents.replace(/^\n/, '').replace(/\n$/, '');
+      const html = formatHtmlResponse(res.contents);
       resolve(html);
     });
   });
+}
+
+/**
+ * Converts the given markdown to HTML synchronously.
+ */
+export function toHtmlSync(markdown: string) {
+  const res = processor.processSync(markdown);
+  return formatHtmlResponse(res.contents);
+}
+
+/**
+ * [Helpers]
+ */
+function formatHtmlResponse(html: string) {
+  return html.replace(/^\n/, '').replace(/\n$/, '');
 }
