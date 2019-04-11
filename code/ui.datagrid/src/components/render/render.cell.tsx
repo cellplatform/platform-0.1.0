@@ -11,6 +11,8 @@ import { RegisterRenderer, Renderer } from '../../types';
 import { FactoryManager } from '../factory';
 import * as constants from './constants';
 
+import { CLASS_NAME as EDITOR_CLASS_NAME } from '@platform/ui.editor';
+
 const STYLES = {
   cell: {
     base: css({
@@ -19,8 +21,23 @@ const STYLES = {
       fontSize: 14,
       color: color.format(-0.7),
     }),
+    markdownHtml: css({
+      paddingTop: 2,
+    }),
   },
 };
+
+// Override Handontable CSS that messes with the cell markdown-styles.
+const global = {
+  '*': {
+    boxSizing: 'border-box',
+    whiteSpace: 'normal',
+    paddingInlineStart: 0,
+    marginBlockStart: 0,
+    marginBlockEnd: 0,
+  },
+};
+css.global(global, { prefix: `.${EDITOR_CLASS_NAME.CONTENT_MARKDOWN}` });
 
 /**
  * Renders a cell.
@@ -35,7 +52,20 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
 
   function toElement(args: { td: HTMLElement; row: number; column: number; value?: t.CellValue }) {
     const { row, column, value } = args;
-    return <div {...STYLES.cell.base}>{factory.cell({ row, column, value })}</div>;
+    let child: any = factory.cell({ row, column, value });
+
+    // If the content is HTML (parsed markdown) ensure it is rendered as HTML.
+    if (typeof child === 'string' && child.startsWith('<')) {
+      child = (
+        <div
+          className={EDITOR_CLASS_NAME.CONTENT_MARKDOWN}
+          {...STYLES.cell.markdownHtml}
+          dangerouslySetInnerHTML={{ __html: child }}
+        />
+      );
+    }
+
+    return <div {...STYLES.cell.base}>{child}</div>;
   }
 
   function toMemoizedHtml(args: {
@@ -71,46 +101,3 @@ export function registerCellRenderer(Table: Handsontable, grid: Grid, factory: F
   const fn: RegisterRenderer = renderers.registerRenderer;
   fn(constants.CELL_DEFAULT, cellRenderer(grid, factory));
 }
-
-// // import * as React from 'react';
-// import { Subject } from 'rxjs';
-// import { takeUntil } from 'rxjs/operators';
-// // import { css, color, GlamorValue } from '../../common';
-
-// export type IFooProps = { style?: GlamorValue };
-// export type IFooState = {
-//   text?: string;
-// };
-
-// export class Foo extends React.PureComponent<IFooProps, IFooState> {
-//   public state: IFooState = {};
-//   private unmounted$ = new Subject();
-//   private state$ = new Subject<Partial<IFooState>>();
-
-//   /**
-//    * [Lifecycle]
-//    */
-//   public componentWillMount() {
-//     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-//     console.log('mounted', this);
-//     this.state$.next({ text: 'Hello2' });
-//   }
-
-//   public componentWillUnmount() {
-//     this.unmounted$.next();
-//   }
-
-//   /**
-//    * [Render]
-//    */
-//   public render() {
-//     const styles = {
-//       base: css({}),
-//     };
-//     return (
-//       <div {...css(styles.base, this.props.style)}>
-//         <div>Foo: {this.state.text}</div>
-//       </div>
-//     );
-//   }
-// }

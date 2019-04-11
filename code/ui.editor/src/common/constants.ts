@@ -2,6 +2,7 @@ export const COLORS = {
   PURPLE: '#881391',
 };
 
-export const CSS_CLASS = {
-  EDITOR: 'platform-editor',
+export const CLASS_NAME = {
+  EDITOR: 'p-editor',
+  CONTENT_MARKDOWN: 'p-editor-markdown',
 };

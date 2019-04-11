@@ -250,7 +250,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    */
   public render() {
     this.updateStyles();
-    const className = `${constants.CSS_CLASS.EDITOR} ${this.props.className || ''}`.trim();
+    const className = `${constants.CLASS_NAME.EDITOR} ${this.props.className || ''}`.trim();
     const { fontSize = 16 } = this.props;
     const styles = {
       base: css({ fontSize, boxSizing: 'border-box' }),
@@ -262,11 +262,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
-        <div
-          ref={this.elEditorOuterRef}
-          className={className}
-          {...css(this.props.editorStyle, styles.editorOuter)}
-        >
+        <div className={className} {...css(this.props.editorStyle, styles.editorOuter)}>
           <div ref={this.elEditorRef} />
         </div>
         {/*
@@ -276,7 +272,6 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
                   This data is fired through the "changing/pre" event.
           */}
         <div
-          ref={this.elMeasureOuterRef}
           className={className}
           {...css(this.props.editorStyle, styles.editorOuter, styles.measureOuter)}
         >

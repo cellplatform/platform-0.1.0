@@ -38,6 +38,9 @@ After
 
 > For whom the bell tolls.
 
+${LOREM}  
+
+
   `.substring(1),
 
   LONG: `

@@ -2,6 +2,7 @@
  * Based on:
  *  - https://github.com/ProseMirror/prosemirror-example-setup
  */
+import { constants } from '../../../common';
 
 import { Schema } from 'prosemirror-model';
 import { keymap } from 'prosemirror-keymap';
@@ -43,7 +44,7 @@ export function init(args: { schema: Schema; history?: boolean; mapKeys?: keyMap
   return plugins.concat(
     new Plugin({
       props: {
-        // attributes: { class: 'my-css-class' },
+        attributes: { class: constants.CLASS_NAME.CONTENT_MARKDOWN },
       },
     }),
   );

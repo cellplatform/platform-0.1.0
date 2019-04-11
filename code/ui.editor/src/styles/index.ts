@@ -1,8 +1,10 @@
 import { t, css, constants } from '../common';
 import * as markdown from './css.markdown';
 
+const { CLASS_NAME: CSS_CLASS } = constants;
+
 function toPrefix(className?: string) {
-  let prefix = `.${constants.CSS_CLASS.EDITOR}`;
+  let prefix = `.${CSS_CLASS.EDITOR}`;
   prefix = className ? `${prefix}.${className}` : prefix;
   prefix = `${prefix} .ProseMirror`;
   return prefix;
@@ -21,4 +23,4 @@ export function init(args: { styles: Partial<t.IEditorStyles>; className?: strin
  */
 const prefix = toPrefix();
 css.global({ [prefix]: { outline: 'none', fontSize: '1em' } });
-css.global(markdown.styles, { prefix });
+css.global(markdown.styles, { prefix: `.${CSS_CLASS.CONTENT_MARKDOWN}` });

@@ -10,7 +10,7 @@ export const styles: t.IEditorStyles = {
   'h1, h2': {
     borderBottom: `solid 1px ${color.format(-0.1)}`,
     paddingBottom: '0.2em',
-    marginBottom: '0.4em',
+    marginBottom: '0.5em',
   },
   'h3, h4, h5, h6': {
     marginBottom: '1em',
