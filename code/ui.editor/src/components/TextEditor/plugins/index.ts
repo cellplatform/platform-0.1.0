@@ -51,7 +51,7 @@ export function init(args: {
   return plugins.concat(
     new Plugin({
       props: {
-        attributes: { class: constants.CLASS_NAME.CONTENT_MARKDOWN },
+        attributes: { class: constants.CSS.CLASS.MARKDOWN },
       },
     }),
   );

@@ -12,6 +12,8 @@ import * as markdown from './markdown';
 import * as plugins from './plugins';
 import * as t from './types';
 
+const CLASS = constants.CSS.CLASS;
+
 export type DocSchema = any;
 
 export type ITextEditorProps = {
@@ -263,7 +265,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    */
   public render() {
     this.updateStyles();
-    const className = `${constants.CLASS_NAME.EDITOR} ${this.props.className || ''}`.trim();
+    const className = `${CLASS.EDITOR} ${this.props.className || ''}`.trim();
     const { fontSize = 16 } = this.props;
     const styles = {
       base: css({ fontSize, boxSizing: 'border-box' }),

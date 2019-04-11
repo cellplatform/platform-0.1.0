@@ -23,7 +23,7 @@ import * as render from '../render';
 import * as hook from './hook';
 import { IGridRefsPrivate } from './types.private';
 
-const { DEFAULTS } = constants;
+const { DEFAULTS, CSS } = constants;
 
 export type IDataGridProps = {
   totalColumns?: number;
@@ -231,7 +231,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       colWidths: DEFAULTS.COLUMN_WIDTHS,
       columns: createColumns(this.totalColumns),
       viewportRowRenderingOffset: 20,
-      
+
       manualRowResize: true,
       manualColumnResize: true,
       renderAllRows: false, // Virtual scrolling.
@@ -287,11 +287,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       }),
     };
     return (
-      <div
-        ref={this.elRef}
-        className={constants.CSS_CLASS.GRID}
-        {...css(styles.base, this.props.style)}
-      />
+      <div ref={this.elRef} className={CSS.CLASS.GRID} {...css(styles.base, this.props.style)} />
     );
   }
 }

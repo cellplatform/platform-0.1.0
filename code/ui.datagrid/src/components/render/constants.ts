@@ -1,2 +1,2 @@
-export { CSS_CLASS } from '../../common/constants';
+export { CSS } from '../../common';
 export const CELL_DEFAULT = 'cell.default';

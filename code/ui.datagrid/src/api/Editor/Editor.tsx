@@ -8,6 +8,7 @@ import { IGridRefsPrivate } from '../../components/DataGrid/types.private';
 import { createProvider } from './EditorContext';
 
 const editors = Handsontable.editors as Editors;
+const { CSS } = constants;
 
 /**
  * Extension hook for custom editor UI components.
@@ -330,7 +331,7 @@ export class Editor extends editors.TextEditor {
     }
 
     const Provider = createProvider(context);
-    const className = constants.CSS_CLASS.GRID_EDITOR;
+    const className = CSS.CLASS.GRID_EDITOR;
 
     return (
       <Provider>

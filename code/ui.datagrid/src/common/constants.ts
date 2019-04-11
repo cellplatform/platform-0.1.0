@@ -8,11 +8,13 @@ export const COLORS = {
   PINK: '#FF0048',
 };
 
-export const CSS_CLASS = {
-  GRID: 'p-datagrid',
-  GRID_EDITOR: 'p-datagrid-editor',
-  CELL: 'p-datagrid-cell',
-  CELL_EDITOR: 'p-datagrid-cell-editor',
+export const CSS = {
+  CLASS: {
+    GRID: 'p-datagrid',
+    GRID_EDITOR: 'p-datagrid-editor',
+    CELL: 'p-datagrid-cell',
+    CELL_EDITOR: 'p-datagrid-cell-editor',
+  },
 };
 
 export const DEFAULTS = {

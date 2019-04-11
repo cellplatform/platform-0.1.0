@@ -1,23 +1,8 @@
-import { ROBOTO } from '@platform/ui.text/lib/common/constants';
-import { css, constants } from '../common';
-
-const GRID_CASS = `.${constants.CSS_CLASS.GRID}`;
+import './global.grid';
+import './global.cell';
+import { constants, css } from '../common';
 
 /**
  * Ensure required CSS style sheets are in the <head>.
  */
-css.head.importStylesheet(ROBOTO.GOOGLE_FONTS.URL);
-
-/**
- * Global CSS setup.
- */
-const GLOBAL = {
-  [GRID_CASS]: {
-    fontFamily: ROBOTO.FAMILY,
-  },
-};
-
-/**
- * Load styles into the <head>.
- */
-css.global(GLOBAL);
+css.head.importStylesheet(constants.ROBOTO.GOOGLE_FONTS.URL);

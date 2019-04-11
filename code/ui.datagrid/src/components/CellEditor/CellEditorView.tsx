@@ -7,9 +7,7 @@ import { FormulaInput, Text, TextEditor, TextInput } from '../primitives';
 import { THEMES } from './themes';
 
 const BORDER_WIDTH = 2;
-const { DEFAULTS, COLORS, ROBOTO } = constants;
-
-// Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.
+const { DEFAULTS, COLORS, ROBOTO, CSS } = constants;
 
 type ICommonMethods = {
   focus(): any;
@@ -332,7 +330,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       body: css({ Absolute: 0 }),
     };
     return (
-      <div {...css(styles.base, this.props.style)} className={constants.CSS_CLASS.CELL_EDITOR}>
+      <div {...css(styles.base, this.props.style)} className={CSS.CLASS.CELL_EDITOR}>
         {this.renderBorder()}
         <div {...styles.body}>
           {this.renderTitle()}
