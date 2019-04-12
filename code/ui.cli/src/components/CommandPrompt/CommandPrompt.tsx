@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { events, GlamorValue, str, t } from '../../common';
+import { events, GlamorValue, Keyboard, str, t } from '../../common';
 import { CommandPromptInput } from '../CommandPromptInput';
 import { ICommandPromptTheme } from './types';
 
@@ -10,6 +10,8 @@ export type ICommandPromptProps = {
   cli: t.ICommandState;
   theme?: ICommandPromptTheme | 'DARK';
   placeholder?: string;
+  focusOnLoad?: boolean;
+  keyMap?: Partial<t.ICommandPromptKeyMap>;
   keyPress$?: events.KeypressObservable;
   events$?: Subject<t.CommandPromptEvent>;
   style?: GlamorValue;
@@ -32,7 +34,9 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public async componentWillMount() {
+    const keyMap = this.keyMap;
+
     // Setup observables.
     const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
     const cliChanged$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
@@ -66,7 +70,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
     keydown$
       // Focus or blur on CMD+L
-      .pipe(filter(e => e.key === 'l' && e.metaKey))
+      .pipe(filter(e => Keyboard.matchEvent(keyMap.focus, e)))
       .subscribe(e => {
         e.preventDefault();
         if (this.isFocused) {
@@ -123,6 +127,12 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
       });
   }
 
+  public componentDidMount() {
+    if (this.props.focusOnLoad) {
+      this.focus();
+    }
+  }
+
   public componentWillUnmount() {
     this.unmounted$.next();
   }
@@ -136,6 +146,13 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
   public get isFocused() {
     return this.input ? this.input.isFocused : false;
+  }
+
+  private get keyMap() {
+    const { keyMap = {} } = this.props;
+    return {
+      focus: Keyboard.parse(keyMap.focus, 'CMD+L'),
+    };
   }
 
   /**

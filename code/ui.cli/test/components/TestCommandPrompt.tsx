@@ -6,7 +6,7 @@ import { CommandHelpList, CommandPrompt, CommandTree } from '../../src';
 import * as cli from '../cli';
 import { color, COLORS, css, GlamorValue, renderer, t } from '../common';
 
-export type ITestCommandPromptProps = { style?: GlamorValue };
+export type ITestCommandPromptProps = {};
 export type ITestCommandPromptState = {};
 
 export class TestCommandPrompt extends React.PureComponent<
@@ -38,7 +38,8 @@ export class TestCommandPrompt extends React.PureComponent<
   }
 
   public componentDidMount() {
-    this.prompt.focus();
+    // this.prompt.focus();
+    this.cli.invoke();
   }
 
   public componentWillUnmount() {
@@ -70,9 +71,9 @@ export class TestCommandPrompt extends React.PureComponent<
     };
 
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div {...styles.base}>
         <div {...styles.prompt}>
-          <CommandPrompt ref={this.promptRef} cli={cli} />
+          <CommandPrompt ref={this.promptRef} cli={cli} keyMap={{ focus: 'CMD+SHIFT+L' }} />
         </div>
         <div {...styles.body}>
           <CommandHelpList cli={cli} onCommandClick={this.handleHelpClick} />
@@ -81,7 +82,7 @@ export class TestCommandPrompt extends React.PureComponent<
           </div>
         </div>
         <div {...styles.prompt}>
-          <CommandPrompt ref={this.promptRef} cli={cli} events$={this.events$} />
+          <CommandPrompt ref={this.promptRef} cli={cli} events$={this.events$} focusOnLoad={true} />
         </div>
       </div>
     );
