@@ -21,7 +21,10 @@ const child = Command.create<P>('child')
   .add(grandchild);
 
 const ns = Command.create<P>('ns', e => {
-  console.log('invoked:ns');
+  console.group('🌼 invoked:ns');
+  console.log('e.command', e.command && e.command.name);
+  console.log('e.namespace', e.namespace && e.namespace.name);
+  console.groupEnd();
 })
   .add('one', async e => console.log('invoked:one'))
   .add('two', async e => null)
@@ -32,7 +35,10 @@ const ns = Command.create<P>('ns', e => {
  * The root of the CLI application.
  */
 export const root = Command.create<P>('root', e => {
-  console.log('invoked:root');
+  console.group('🌼 invoked:root');
+  console.log('e.command', e.command && e.command.name);
+  console.log('e.namespace', e.namespace && e.namespace.name);
+  console.groupEnd();
 })
   .add(list)
   .add(ns)
