@@ -87,10 +87,10 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.11.tgz#939be4a6736a460af7ca0991d07ac5e024a1fdfe"
-  integrity sha512-ZvVgzUCvXS056v1JkvKyzPgZO23CTXrSOTHBUcMWCnbuxnkIj+/WuUkKf9Kd3oqavC7yi1nDu5u3ImG2I7gReg==
+"@platform/react@0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.12.tgz#d4bf6252dcaca3ffb4b8130aaed2e5b17914c8f4"
+  integrity sha512-SF/NZnbG4KTlS5RaIWPpDTDPqWmQOf8uDUXu7qVzrC/mIVGdEUMbB87q7jLgnkFxuZ2snoODr6oP4Rk+VTJ9cw==
   dependencies:
     "@platform/css" "0.0.30"
     "@platform/util.is" "0.0.55"
