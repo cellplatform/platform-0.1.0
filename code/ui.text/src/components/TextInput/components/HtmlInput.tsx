@@ -84,7 +84,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
       .subscribe(key => (this.modifierKeys[key] = false));
 
     // Initialize.
-    this.setValue(this.props);
+    this.updateValue();
   }
 
   public componentDidMount() {
@@ -94,8 +94,10 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
     }
   }
 
-  public componentDidUpdate() {
-    this.setValue(this.props);
+  public componentDidUpdate(prev: IHtmlInputProps) {
+    if (this.props.value !== this.state.value) {
+      this.updateValue();
+    }
   }
 
   public componentWillUnmount() {
@@ -161,13 +163,10 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
     return this;
   }
 
-  private setValue = (props: IHtmlInputProps) => {
-    let value = props.value || '';
-    if (props.maxLength !== undefined && value.length > props.maxLength) {
-      value = value.substr(0, props.maxLength);
-    }
-    this.state$.next({ value });
-  };
+  private updateValue(args: { value?: string; maxLength?: number } = {}) {
+    const { value = this.props.value, maxLength = this.props.maxLength } = args;
+    this.state$.next({ value: formatValue({ value, maxLength }) });
+  }
 
   /**
    * [Render]
@@ -271,7 +270,8 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
 
     // Derive values.
     const from = this.state.value || '';
-    const to = ((e.target as any).value as string) || '';
+    let to = ((e.target as any).value as string) || '';
+    to = formatValue({ value: to, maxLength });
     const char = getChangedCharacter(from, to);
     const isMax = maxLength === undefined ? null : to.length === maxLength;
 
@@ -283,9 +283,12 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
     }
 
     // Update state and alert listeners.
-    if (onChange && from !== to) {
-      const modifierKeys = { ...this.modifierKeys };
-      onChange({ from, to, isMax, char, modifierKeys });
+    if (from !== to) {
+      this.updateValue({ value: to, maxLength });
+      if (onChange) {
+        const modifierKeys = { ...this.modifierKeys };
+        onChange({ from, to, isMax, char, modifierKeys });
+      }
     }
   };
 
@@ -323,4 +326,13 @@ function getChangedCharacter(from: string, to: string) {
     index += 1;
   }
   return ''; // No change.
+}
+
+function formatValue(args: { value?: string; maxLength?: number }) {
+  const { maxLength } = args;
+  let value = args.value || '';
+  if (maxLength !== undefined && value.length > maxLength) {
+    value = value.substr(0, maxLength);
+  }
+  return value;
 }

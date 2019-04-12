@@ -164,10 +164,10 @@ export class CommandPromptInput extends React.PureComponent<
 
   public static toChangeArgs(args: {
     text?: string;
-    invoked?: boolean;
+    invoke?: boolean;
     namespace?: boolean;
   }): ICommandChange {
-    const { invoked, text = '', namespace } = args;
-    return { text, invoked, namespace };
+    const { invoke, text = '', namespace } = args;
+    return { text, invoke, namespace };
   }
 }

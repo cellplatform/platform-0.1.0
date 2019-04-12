@@ -20,7 +20,7 @@ export type ICommandStateProps = {
   text: string;
   args: ICommandArgs;
   command: ICommand | undefined;
-  namespace?: ICommandNamespace;
+  namespace: ICommandNamespace;
   autoCompleted?: ICommandAutoCompleted;
   fuzzyMatches: ICommandFuzzyMatch[];
 };
@@ -29,6 +29,7 @@ export type ICommandNamespace = {
   name: string;
   command: ICommand;
   path: ICommand[];
+  isRoot: boolean;
   toString(options?: { delimiter?: string }): string;
 };
 
@@ -49,7 +50,7 @@ export type ICommandFuzzyMatch = {
 export type CommandChangeDispatcher = (e: ICommandChange) => void;
 export type ICommandChange = {
   text?: string;
-  invoked?: boolean;
+  invoke?: boolean;
   namespace?: boolean | 'PARENT';
   autoCompleted?: ICommandAutoCompleted;
 };
@@ -96,8 +97,10 @@ export type ICommandStateChangingEvent = {
   payload: ICommandStateChanging;
 };
 export type ICommandStateChanging = {
-  prev?: ICommandChange;
-  next: ICommandChange;
+  args: {
+    prev?: ICommandChange;
+    next: ICommandChange;
+  };
   isCancelled: boolean;
   cancel(): void;
 };
@@ -107,9 +110,10 @@ export type ICommandStateChangedEvent = {
   payload: ICommandStateChanged;
 };
 export type ICommandStateChanged = {
-  state: ICommandStateProps;
-  invoked: boolean;
-  namespace?: boolean;
+  invoke: boolean;
+  isNamespaceChanged?: boolean;
+  prev: ICommandStateProps;
+  next: ICommandStateProps;
 };
 
 export type ICommandStateInvokingEvent = {

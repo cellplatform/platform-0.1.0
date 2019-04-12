@@ -59,7 +59,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     cliChanged$
       // Handle invoke requests.
       .pipe(
-        filter(e => e.invoked),
+        filter(e => e.invoke),
         filter(e => this.isFocused),
       )
       .subscribe(e => this.cli.invoke());
@@ -95,7 +95,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         if (text.trim()) {
           this.change({ text: '' });
         } else {
-          this.change({ namespace: 'PARENT' });
+          this.change({ namespace: 'PARENT', invoke: true });
         }
       });
 
@@ -154,7 +154,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
   };
 
   public invoke = () => {
-    this.change({ text: this.cli.text, invoked: true });
+    this.change({ text: this.cli.text, invoke: true });
   };
 
   public autoComplete = (text: string, index?: number): t.ICommandAutoCompleted | undefined => {

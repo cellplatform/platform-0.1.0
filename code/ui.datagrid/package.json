@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid",
-  "version": "0.0.73",
+  "version": "0.0.76",
   "description": "Isolated tabular DataGrid.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,22 +14,22 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/electron": "0.1.32",
-    "@platform/react": "0.1.10",
-    "@platform/ui.codemirror": "0.0.19",
-    "@platform/ui.editor": "0.0.41",
-    "@platform/ui.text": "0.0.45",
-    "@platform/util.markdown": "0.0.2",
-    "@platform/util.value.cell": "0.0.16",
+    "@platform/electron": "0.1.33",
+    "@platform/react": "0.1.11",
+    "@platform/ui.codemirror": "0.0.21",
+    "@platform/ui.editor": "0.0.42",
+    "@platform/ui.text": "0.1.1",
+    "@platform/util.markdown": "0.0.3",
+    "@platform/util.value.cell": "0.0.17",
     "handsontable": "6.2.2"
   },
   "devDependencies": {
-    "@platform/cli.spec": "0.1.0",
-    "@platform/test": "0.0.41",
-    "@platform/test.dom": "0.0.14",
-    "@platform/ts": "3.4.5",
-    "@uiharness/dev": "0.2.34",
-    "@uiharness/ui": "0.2.7"
+    "@platform/cli.spec": "0.1.2",
+    "@platform/test": "0.0.42",
+    "@platform/test.dom": "0.0.15",
+    "@platform/ts": "3.4.6",
+    "@uiharness/dev": "0.2.35",
+    "@uiharness/ui": "0.2.9"
   },
   "files": [
     "lib",
