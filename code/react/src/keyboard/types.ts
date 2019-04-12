@@ -10,6 +10,17 @@ export type KeyBinding<T extends KeyCommand> = {
   command: T;
 };
 
+export type ModifierKey = 'ALT' | 'CTRL' | 'SHIFT' | 'META';
+export type IKeyPattern = { keys: string[]; modifiers: ModifierKey[] };
+export type IKeyMatchEventArgs = {
+  // NB: Subset of native [Keyboard] event.
+  key: string;
+  altKey: boolean;
+  ctrlKey: boolean;
+  shiftKey: boolean;
+  metaKey: boolean;
+};
+
 /**
  * Fired when a key-binding is activated.
  */

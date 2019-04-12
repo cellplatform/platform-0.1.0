@@ -71,17 +71,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
           this.cli.invoke({ stepIntoNamespace: true });
         } else {
           const namespace = e.direction === 'PARENT' ? 'PARENT' : true;
-          this.cli.change({ text, namespace });
-          // this.cli.invoke();
-          /**
-           * TODO 🐷
-           * -  should invoke root NS/command handler
-           * -  state should return `root` when no command is selected.
-           * -  this invoking behavior should be independent of the `tree`.
-           *    rather hang it off the `cli` state object, because
-           *    the <CommandPrompt> should cause the same invoke behavior to occur too
-           *
-           */
+          this.cli.change({ text, namespace, invoke: true });
         }
       });
   }
