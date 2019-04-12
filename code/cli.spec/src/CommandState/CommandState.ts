@@ -66,7 +66,7 @@ export class CommandState implements t.ICommandState {
     share(),
   );
   public readonly invoke$ = this.changed$.pipe(
-    filter(e => e.invoked),
+    filter(e => e.isInvoked),
     share(),
   );
   public readonly invoking$ = this.events$.pipe(
@@ -177,16 +177,18 @@ export class CommandState implements t.ICommandState {
    * Changes the current state.
    */
   public change(e: t.ICommandChange, options: { silent?: boolean } = {}) {
-    // Fire BEFORE event.
     const { silent } = options;
-    const prev = this._.prevChange;
+    const prevChange = this._.prevChange;
+    const prev = this.toObject();
+
+    // Fire BEFORE event.
     this._.prevChange = e;
     if (!silent) {
       let isCancelled = false;
       this.fire({
         type: 'COMMAND_STATE/changing',
         payload: {
-          prev,
+          prev: prevChange,
           next: e,
           get isCancelled() {
             return isCancelled;
@@ -271,11 +273,13 @@ export class CommandState implements t.ICommandState {
 
     // Fire AFTER event.
     if (!silent) {
-      const state = this.toObject();
-      const invoked = state.command ? Boolean(e.invoked) : false;
-      const namespace = prevNamespace.command.id !== this.namespace.command.id;
-      const payload = { state, invoked, namespace };
-      this.fire({ type: 'COMMAND_STATE/changed', payload });
+      const next = this.toObject();
+      const isInvoked = next.command ? Boolean(e.invoked) : false;
+      const isNamespaceChanged = prev.namespace.command.id !== next.namespace.command.id;
+      this.fire({
+        type: 'COMMAND_STATE/changed',
+        payload: { prev, next, isInvoked, isNamespaceChanged },
+      });
     }
 
     // Finish up.

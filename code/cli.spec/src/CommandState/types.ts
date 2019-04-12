@@ -108,9 +108,10 @@ export type ICommandStateChangedEvent = {
   payload: ICommandStateChanged;
 };
 export type ICommandStateChanged = {
-  state: ICommandStateProps;
-  invoked: boolean;
-  namespace?: boolean;
+  isInvoked: boolean;
+  isNamespaceChanged?: boolean;
+  prev: ICommandStateProps;
+  next: ICommandStateProps;
 };
 
 export type ICommandStateInvokingEvent = {

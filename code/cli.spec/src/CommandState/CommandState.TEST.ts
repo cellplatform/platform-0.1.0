@@ -83,11 +83,11 @@ describe('CommandState', () => {
       expect(changing.next).to.eql(next);
 
       const changed = changedEvents[0] as t.ICommandStateChanged;
-      expect(changed.invoked).to.eql(false);
-      expect(changed.namespace).to.eql(false);
-      expect(changed.state.text).to.eql('foo');
-      expect(changed.state.command).to.eql(undefined);
-      expect(changed.state.namespace.name).to.eql('root');
+      expect(changed.isInvoked).to.eql(false);
+      expect(changed.isNamespaceChanged).to.eql(false);
+      expect(changed.next.text).to.eql('foo');
+      expect(changed.next.command).to.eql(undefined);
+      expect(changed.next.namespace.name).to.eql('root');
     });
 
     it('cancels change', () => {
@@ -128,7 +128,7 @@ describe('CommandState', () => {
       expect(events[1].type).to.eql('COMMAND_STATE/autoCompleted');
       expect(events[1].payload).to.eql(autoCompleted);
       expect(events[2].type).to.equal('COMMAND_STATE/changed');
-      expect(changes[0].state.autoCompleted).to.eql(autoCompleted);
+      expect(changes[0].next.autoCompleted).to.eql(autoCompleted);
 
       // Reset auto-complete.
       state.change({ text: 'foobar' });
@@ -162,8 +162,8 @@ describe('CommandState', () => {
       state.change({ text: 'ls', invoked: true });
       expect(events.length).to.eql(6);
       expect(invokes.length).to.eql(1);
-      expect(invokes[0].state.text).to.eql('ls');
-      expect(invokes[0].invoked).to.eql(true);
+      expect(invokes[0].next.text).to.eql('ls');
+      expect(invokes[0].isInvoked).to.eql(true);
 
       state.change({ text: 'ls', invoked: true }); // NB: Invoke again.
       expect(events.length).to.eql(8);
@@ -313,11 +313,11 @@ describe('CommandState', () => {
       expect(state.command).to.eql(undefined);
       expect(state.text).to.eql('');
 
-      expect(changed[0].namespace).to.eql(true);
-      expect(changed[0].state.namespace.name).to.eql('copy');
+      expect(changed[0].isNamespaceChanged).to.eql(true);
+      expect(changed[0].next.namespace.name).to.eql('copy');
 
-      expect(changed[1].namespace).to.eql(true);
-      expect(changed[1].state.namespace.name).to.eql('db');
+      expect(changed[1].isNamespaceChanged).to.eql(true);
+      expect(changed[1].next.namespace.name).to.eql('db');
     });
 
     it('namespace.toString()', () => {
