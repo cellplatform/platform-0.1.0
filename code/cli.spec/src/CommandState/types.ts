@@ -50,7 +50,7 @@ export type ICommandFuzzyMatch = {
 export type CommandChangeDispatcher = (e: ICommandChange) => void;
 export type ICommandChange = {
   text?: string;
-  invoked?: boolean;
+  invoke?: boolean;
   namespace?: boolean | 'PARENT';
   autoCompleted?: ICommandAutoCompleted;
 };
@@ -110,7 +110,7 @@ export type ICommandStateChangedEvent = {
   payload: ICommandStateChanged;
 };
 export type ICommandStateChanged = {
-  isInvoked: boolean;
+  invoke: boolean;
   isNamespaceChanged?: boolean;
   prev: ICommandStateProps;
   next: ICommandStateProps;

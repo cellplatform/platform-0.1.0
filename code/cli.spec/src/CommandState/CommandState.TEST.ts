@@ -83,7 +83,7 @@ describe('CommandState', () => {
       expect(changing.args.next).to.eql(next);
 
       const changed = changedEvents[0] as t.ICommandStateChanged;
-      expect(changed.isInvoked).to.eql(false);
+      expect(changed.invoke).to.eql(false);
       expect(changed.isNamespaceChanged).to.eql(false);
       expect(changed.next.text).to.eql('foo');
       expect(changed.next.command).to.eql(undefined);
@@ -159,13 +159,13 @@ describe('CommandState', () => {
       expect(events.length).to.eql(4);
       expect(invokes.length).to.eql(0);
 
-      state.change({ text: 'ls', invoked: true });
+      state.change({ text: 'ls', invoke: true });
       expect(events.length).to.eql(6);
       expect(invokes.length).to.eql(1);
       expect(invokes[0].next.text).to.eql('ls');
-      expect(invokes[0].isInvoked).to.eql(true);
+      expect(invokes[0].invoke).to.eql(true);
 
-      state.change({ text: 'ls', invoked: true }); // NB: Invoke again.
+      state.change({ text: 'ls', invoke: true }); // NB: Invoke again.
       expect(events.length).to.eql(8);
       expect(invokes.length).to.eql(2);
     });
@@ -191,7 +191,7 @@ describe('CommandState', () => {
       expect(state.namespace.name).to.eql('root');
     });
 
-    it('does not change to namespace if the command is a root leaf-node', () => {
+    it('changes to root leaf node', () => {
       const state = CommandState.create({ root, beforeInvoke });
       state.change({ text: 'ls', namespace: true });
       expect(state.namespace.name).to.eql('root');
@@ -251,11 +251,11 @@ describe('CommandState', () => {
       const state = CommandState.create({ root, beforeInvoke });
 
       state.change({ text: 'db', namespace: true });
-      expect(state.namespace && state.namespace.name).to.eql('db');
+      expect(state.namespace.name).to.eql('db');
       expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
 
       state.change({ text: 'copy', namespace: true });
-      expect(state.namespace && state.namespace.name).to.eql('copy');
+      expect(state.namespace.name).to.eql('copy');
       expect(state.text).to.eql(''); // NB: Text is reset when changing to namespace.
     });
 
@@ -381,6 +381,7 @@ describe('CommandState', () => {
     it('does not invoke when no command', async () => {
       const root = Command.create('root').add('run');
       const state = CommandState.create({ root, beforeInvoke });
+      state.change({ text: 'NO_EXIST' });
       const res = await state.invoke();
       expect(res.isInvoked).to.eql(false);
       expect(res.state.command).to.eql(undefined);
@@ -408,6 +409,50 @@ describe('CommandState', () => {
       const response = res.response;
       expect(response && response.result).to.eql(1234); // Returned from the handler.
       expect(res.props.foo).to.eql(123); // From the `beforeInvoke` property generator.
+    });
+
+    it('invokes the root namespace handler', async () => {
+      const count = { root: 0, run: 0 };
+      const root = Command.create('root', () => count.root++).add('run', () => count.run++);
+      const state = CommandState.create({ root, beforeInvoke });
+
+      state.change({ text: 'FOO' });
+      expect(state.text).to.eql('FOO');
+      expect(state.command).to.eql(undefined);
+      await state.invoke();
+      expect(count.root).to.eql(0); // No matching command, but text content prevents NS from being invoked.
+
+      state.change({ text: '' });
+      expect(state.text).to.eql('');
+      expect(state.command).to.eql(undefined);
+      await state.invoke();
+
+      expect(count.root).to.eql(1);
+
+      state.change({ text: '   ' }); // Empty text trimmed - and therefore NS handler invoked.
+      await state.invoke();
+      expect(count.root).to.eql(2);
+    });
+
+    it('invokes the root namespace handler', async () => {
+      const count = { root: 0, ns: 0, run: 0 };
+      const ns = Command.create('ns', () => count.ns++).add('run', () => count.run++);
+      const root = Command.create('root', () => count.root++).add(ns);
+      const state = CommandState.create({ root, beforeInvoke });
+
+      await state.invoke();
+      expect(count.root).to.eql(1);
+
+      state.change({ text: 'ns', namespace: true });
+      await state.invoke();
+      expect(count.root).to.eql(1);
+      expect(count.ns).to.eql(1);
+
+      state.change({ text: 'run' });
+      await state.invoke();
+      expect(count.root).to.eql(1);
+      expect(count.ns).to.eql(1);
+      expect(count.run).to.eql(1);
     });
 
     it('passes command/namespace to invoke args', async () => {
@@ -522,8 +567,8 @@ describe('CommandState', () => {
       const res = await state.invoke({ stepIntoNamespace: true }); // NB: default:true
 
       expect(res.isNamespaceChanged).to.eql(true);
-      expect(res.state.namespace && res.state.namespace.name).to.eql('ns');
-      expect(state.namespace && state.namespace.command.name).to.eql('ns');
+      expect(res.state.namespace.name).to.eql('ns');
+      expect(state.namespace.command.name).to.eql('ns');
     });
 
     it('steps into a namespace upon invoking (indirectly)', async () => {
@@ -540,7 +585,7 @@ describe('CommandState', () => {
       const res = await state.invoke();
 
       expect(res.isNamespaceChanged).to.eql(true);
-      expect(state.namespace && state.namespace.command.name).to.eql('ns');
+      expect(state.namespace.command.name).to.eql('ns');
 
       const args = { params: ['foo'], options: { force: true } };
       expect(res.args).to.eql(args);
@@ -564,7 +609,7 @@ describe('CommandState', () => {
       const res = await state.invoke();
 
       expect(res.isNamespaceChanged).to.eql(true);
-      expect(state.namespace && state.namespace.name).to.eql('ns');
+      expect(state.namespace.name).to.eql('ns');
       expect(count).to.eql(1);
     });
 
@@ -579,12 +624,12 @@ describe('CommandState', () => {
 
       state.change({ text: 'ns run' });
       expect(state.namespace.name).to.eql('root');
-
       expect(state.command && state.command.name).to.eql('run');
+
       const res = await state.invoke();
 
       expect(res.isNamespaceChanged).to.eql(true);
-      expect(state.namespace && state.namespace.name).to.eql('ns');
+      expect(state.namespace.name).to.eql('ns');
       expect(count.ns).to.eql(1);
       expect(count.run).to.eql(1);
     });
@@ -597,7 +642,7 @@ describe('CommandState', () => {
       expect(state.namespace.name).to.eql('root');
 
       state.change({ text: 'ns', namespace: true });
-      expect(state.namespace && state.namespace.name).to.eql('ns');
+      expect(state.namespace.name).to.eql('ns');
 
       const args = { params: ['foo'], options: { force: true } };
       state.change({ text: 'run foo --force' });
@@ -609,7 +654,7 @@ describe('CommandState', () => {
       expect(count.run).to.eql(1);
 
       expect(res.isNamespaceChanged).to.eql(false);
-      expect(state.namespace && state.namespace.command.name).to.eql('ns');
+      expect(state.namespace.command.name).to.eql('ns');
 
       expect(res.args).to.eql(args);
       expect(state.args).to.eql(args);
@@ -671,12 +716,12 @@ describe('CommandState', () => {
       state.change({ text: 'ns' });
       const res1 = await state.invoke();
       expect(res1.props).to.eql({ foo: 999 });
-      expect(state.namespace && state.namespace.name).to.eql('ns');
+      expect(state.namespace.name).to.eql('ns');
 
       state.change({ text: 'run' });
       const res2 = await state.invoke();
       expect(res2.props).to.eql({ foo: 1000 });
-      expect(state.namespace && state.namespace.name).to.eql('ns');
+      expect(state.namespace.name).to.eql('ns');
 
       state.reset();
 
@@ -719,7 +764,7 @@ describe('CommandState', () => {
       const state = CommandState.create({ root, beforeInvoke });
 
       state.change({ text: 'ns', namespace: true });
-      expect(state.namespace && state.namespace.name).to.eql('ns');
+      expect(state.namespace.name).to.eql('ns');
 
       const test = (index: number, name: string, isMatch: boolean) => {
         const matches = state.fuzzyMatches;

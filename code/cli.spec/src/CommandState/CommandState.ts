@@ -66,7 +66,7 @@ export class CommandState implements t.ICommandState {
     share(),
   );
   public readonly invoke$ = this.changed$.pipe(
-    filter(e => e.isInvoked),
+    filter(e => e.invoke),
     share(),
   );
   public readonly invoking$ = this.events$.pipe(
@@ -273,11 +273,11 @@ export class CommandState implements t.ICommandState {
     // Fire AFTER event.
     if (!silent) {
       const next = this.toObject();
-      const isInvoked = next.command ? Boolean(e.invoked) : false;
+      const invoke = Boolean(e.invoke);
       const isNamespaceChanged = prev.namespace.command.id !== next.namespace.command.id;
       this.fire({
         type: 'COMMAND_STATE/changed',
-        payload: { prev, next, isInvoked, isNamespaceChanged },
+        payload: { prev, next, invoke, isNamespaceChanged },
       });
     }
 
@@ -405,8 +405,11 @@ export class CommandState implements t.ICommandState {
 
     // Invoke the command.
     if (state.command) {
-      const namespace = this.namespace ? this.namespace.command : root;
+      const namespace = this.namespace.command;
       return invoke(state.command, namespace);
+    } else if (this.text.trim() === '' && this.namespace.command.handler) {
+      const namespace = this.namespace.command;
+      return invoke(namespace, namespace);
     } else {
       // Nothing to invoke.
       return {
