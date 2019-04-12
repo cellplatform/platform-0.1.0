@@ -97,8 +97,10 @@ export type ICommandStateChangingEvent = {
   payload: ICommandStateChanging;
 };
 export type ICommandStateChanging = {
-  prev?: ICommandChange;
-  next: ICommandChange;
+  args: {
+    prev?: ICommandChange;
+    next: ICommandChange;
+  };
   isCancelled: boolean;
   cancel(): void;
 };

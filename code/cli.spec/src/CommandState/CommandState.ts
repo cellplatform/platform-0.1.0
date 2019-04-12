@@ -188,8 +188,7 @@ export class CommandState implements t.ICommandState {
       this.fire({
         type: 'COMMAND_STATE/changing',
         payload: {
-          prev: prevChange,
-          next: e,
+          args: { prev: prevChange, next: e },
           get isCancelled() {
             return isCancelled;
           },

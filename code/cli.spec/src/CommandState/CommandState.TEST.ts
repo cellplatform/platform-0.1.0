@@ -79,8 +79,8 @@ describe('CommandState', () => {
 
       const changing = changingEvents[0] as t.ICommandStateChanging;
       expect(changing.isCancelled).to.eql(false);
-      expect(changing.prev).to.eql(undefined);
-      expect(changing.next).to.eql(next);
+      expect(changing.args.prev).to.eql(undefined);
+      expect(changing.args.next).to.eql(next);
 
       const changed = changedEvents[0] as t.ICommandStateChanged;
       expect(changed.isInvoked).to.eql(false);
