@@ -20,7 +20,7 @@ export type ICommandStateProps = {
   text: string;
   args: ICommandArgs;
   command: ICommand | undefined;
-  namespace?: ICommandNamespace;
+  namespace: ICommandNamespace;
   autoCompleted?: ICommandAutoCompleted;
   fuzzyMatches: ICommandFuzzyMatch[];
 };
@@ -29,6 +29,7 @@ export type ICommandNamespace = {
   name: string;
   command: ICommand;
   path: ICommand[];
+  isRoot: boolean;
   toString(options?: { delimiter?: string }): string;
 };
 

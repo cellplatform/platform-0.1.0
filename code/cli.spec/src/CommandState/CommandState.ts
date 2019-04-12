@@ -44,7 +44,7 @@ export class CommandState implements t.ICommandState {
     events$: new Subject<t.CommandStateEvent>(),
     root: (undefined as unknown) as Command,
     text: '',
-    namespace: undefined as t.ICommandNamespace | undefined,
+    namespace: (undefined as unknown) as t.ICommandNamespace,
     autoCompleted: undefined as t.ICommandAutoCompleted | undefined,
     prevChange: undefined as t.ICommandChange | undefined,
     commandProps: ({} as unknown) as { [key: string]: any },
@@ -131,7 +131,7 @@ export class CommandState implements t.ICommandState {
   }
 
   public get namespace() {
-    return this._.namespace;
+    return this._.namespace || (this._.namespace = this.toNamespace(this.root));
   }
 
   public get autoCompleted() {
@@ -242,25 +242,12 @@ export class CommandState implements t.ICommandState {
 
     // Set namespace if requested.
     const setNamespace = (text: string, command: t.ICommand) => {
-      const root = this.root;
       const isLeaf = command.children.length === 0;
-      const ns = isLeaf ? command.tree.parent(root) : command;
-      if (!ns || ns.id === root.id) {
+      const nsCommand = isLeaf ? command.tree.parent(this.root) : command;
+      if (!nsCommand) {
         return;
       }
-      const id = ns.id;
-      const name = ns.name;
-      const nextNamespace: t.ICommandNamespace = {
-        command: ns,
-        name,
-        get path() {
-          return Command.tree.toPath(root, id).slice(1);
-        },
-        toString(options = {}) {
-          const { delimiter = '.' } = options;
-          return nextNamespace.path.map(c => c.name).join(delimiter);
-        },
-      };
+      const nextNamespace = this.toNamespace(nsCommand);
       this._.namespace = nextNamespace;
       this._.text = trimNamespacePrefix(text, prevNamespace, nextNamespace); // Reset the text as we are now witin a new namespace.
     };
@@ -273,7 +260,7 @@ export class CommandState implements t.ICommandState {
 
     // Clear the namespace if requested.
     if (e.namespace === false) {
-      this._.namespace = undefined;
+      this._.namespace = this.toNamespace(this.root);
     }
 
     // Store the auto-complete value.
@@ -286,7 +273,8 @@ export class CommandState implements t.ICommandState {
     if (!silent) {
       const state = this.toObject();
       const invoked = state.command ? Boolean(e.invoked) : false;
-      const payload = { state, invoked, namespace: Boolean(this.namespace) };
+      const namespace = prevNamespace.command.id !== this.namespace.command.id;
+      const payload = { state, invoked, namespace };
       this.fire({ type: 'COMMAND_STATE/changed', payload });
     }
 
@@ -448,5 +436,23 @@ export class CommandState implements t.ICommandState {
 
   private fire(e: t.CommandStateEvent) {
     this._.events$.next(e);
+  }
+
+  private toNamespace(command: t.ICommand): t.ICommandNamespace {
+    const root = this.root;
+    const ns: t.ICommandNamespace = {
+      command,
+      name: command.name,
+      isRoot: root.id === command.id,
+      get path() {
+        return Command.tree.toPath(root, command.id).slice(1);
+      },
+      toString(options = {}) {
+        const { delimiter = '.' } = options;
+        return ns.path.map(c => c.name).join(delimiter);
+      },
+    };
+
+    return ns;
   }
 }
