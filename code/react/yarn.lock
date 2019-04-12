@@ -1554,10 +1554,10 @@
   resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.1.15.tgz#9dea1dd8089430552684cdf6fb8d8051327cdfcb"
   integrity sha512-Lt/KQLlTr2DIsvCnS1yCQvZR9mIqHL+/LLls4itgCd+Fp7zwrD/pOExraWbV55mJ91q7WNzXBfIluJqLn/+WKw==
 
-"@uiharness/ui@0.2.10":
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.2.10.tgz#cef2afc0e58da56e02f6fcb2f007abc22550338d"
-  integrity sha512-i88GvO0SbMBUp4ZzCLr8TG/5bxtZnYrj5gwfGKYbasWZ93s5Y/PuSxcOAMnTW4CmlryNN0+iEBBNtxwopuUPEQ==
+"@uiharness/ui@0.2.12":
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.2.12.tgz#8610000f97e9ea12484c5ffbaae0be14ddf66e59"
+  integrity sha512-nwmbjlWHkPyx02I55Im8VnbYufUPKR8CPWQHngSCa0TvkWPQVUWOmQOfdP7lZm1bvgXcddpXjOf05Y58tropkg==
   dependencies:
     "@platform/electron" "0.1.34"
     "@platform/react" "0.1.12"

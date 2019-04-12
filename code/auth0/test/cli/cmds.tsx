@@ -1,7 +1,4 @@
-import * as React from 'react';
-import { t, Command, css } from '../common';
-import { AuthState } from '../components/AuthState';
-// import { part } from '../';
+import { Command, t } from '../common';
 
 type P = t.ITestCommandProps & { count: number };
 
