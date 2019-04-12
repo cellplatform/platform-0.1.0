@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { t, Command, css } from '../components/common';
+import { t, Command, css } from '../common';
 
 type P = t.ITestCommandProps & { count: number };
 
@@ -11,20 +11,17 @@ const ns = Command.create<P>('ns')
 /**
  * The root of the CLI application.
  */
-export const root = Command.create<P>('root')
+export const root = Command.create<P>('root', e => {
+  console.log('root');
+  const el = (
+    <div>
+      <div>hello</div>
+    </div>
+  );
+
+  e.props.state$.next({ el });
+})
   //
-  .add('foo', async e => {
-    const count = e.get('count', 0) + 1;
-    e.set('count', count);
-
-    const styles = { base: css({ PaddingX: 20 }) };
-    const el = (
-      <div {...styles.base}>
-        <h1>My Foo {count} 👋</h1>
-      </div>
-    );
-
-    e.props.state$.next({ el });
-  })
+  .add('foo', async e => {})
   .add('bar')
   .add(ns);
