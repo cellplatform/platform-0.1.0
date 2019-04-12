@@ -1,12 +1,13 @@
 import { Observable, Subject } from 'rxjs';
-import { takeUntil, share, take, filter, map } from 'rxjs/operators';
-import { events } from '../events';
-import { R } from '../common';
-import { IKeypressEvent, KeyBindings, KeyCommand, IKeyBindingEvent, KeyBinding } from './types';
+import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
-export type KeyboardOptions<T extends KeyCommand> = {
-  bindings?: KeyBindings<T>;
-  keyPress$?: Observable<IKeypressEvent>;
+import { R } from '../common';
+import { events } from '../events';
+import * as t from './types';
+
+export type KeyboardOptions<T extends t.KeyCommand> = {
+  bindings?: t.KeyBindings<T>;
+  keyPress$?: Observable<t.IKeypressEvent>;
   dispose$?: Observable<any>;
 };
 
@@ -17,7 +18,7 @@ const MODIFIERS = {
   SHIFT: 'shiftKey',
 };
 
-const isModifierPressed = (e: IKeypressEvent) => {
+const isModifierPressed = (e: t.IKeypressEvent) => {
   return Object.keys(MODIFIERS)
     .map(key => MODIFIERS[key])
     .some(prop => e[prop] === true);
@@ -26,11 +27,11 @@ const isModifierPressed = (e: IKeypressEvent) => {
 /**
  * Keyboard command manager.
  */
-export class Keyboard<T extends KeyCommand> {
+export class Keyboard<T extends t.KeyCommand> {
   /**
    * [Static]
    */
-  public static create<T extends KeyCommand>(options: KeyboardOptions<T>) {
+  public static create<T extends t.KeyCommand>(options: KeyboardOptions<T>) {
     return new Keyboard<T>(options);
   }
 
@@ -46,25 +47,70 @@ export class Keyboard<T extends KeyCommand> {
    * For example:
    *    `CMD+N` => `{ keys:['n'], modifiers:['META'] }`
    */
-  public static parse(pattern: string) {
-    const parts = pattern
+  public static parse(pattern: string | boolean | undefined, defaultValue?: string): t.IKeyPattern {
+    const EMPTY = { keys: [], modifiers: [] };
+    if (pattern === false) {
+      return EMPTY;
+    }
+    pattern = typeof pattern === 'string' ? pattern.trim() : pattern;
+    if ((pattern === true || !pattern) && typeof defaultValue === 'string') {
+      pattern = defaultValue;
+    }
+    if (!pattern || typeof pattern !== 'string') {
+      return EMPTY;
+    }
+    const parts = (pattern || '')
       .split('+')
-      .map(key => key.trim().toUpperCase())
+      .map(key => key.trim())
+      .filter(key => Boolean(key))
+      .map(key => key.toUpperCase())
       .map(key => {
         key = key === 'CMD' ? 'META' : key;
+        key = key === 'COMMAND' ? 'META' : key;
         key = key === 'CONTROL' ? 'CTRL' : key;
         return key;
       });
-    const modifiers = parts.filter(Keyboard.isModifier);
-    const keys = parts.filter(key => !modifiers.some(item => item === key));
+    const modifiers = Array.from(new Set(parts.filter(Keyboard.isModifier))) as t.ModifierKey[];
+    let keys = parts.filter(key => !modifiers.some(item => item === key));
+    keys = Array.from(new Set(keys));
     return { keys, modifiers };
+  }
+
+  /**
+   * Determines if the given keyboard event matches the given pattern.
+   */
+  public static matchEvent(pattern: t.IKeyPattern | string, event: Partial<t.IKeyMatchEventArgs>) {
+    const key = (event.key || '').toUpperCase();
+
+    pattern = typeof pattern === 'string' ? Keyboard.parse(pattern) : pattern;
+    if (!pattern.keys.includes(key)) {
+      return false;
+    }
+
+    let eventModifiers: t.ModifierKey[] = [];
+    eventModifiers = event.metaKey ? [...eventModifiers, 'META'] : eventModifiers;
+    eventModifiers = event.ctrlKey ? [...eventModifiers, 'CTRL'] : eventModifiers;
+    eventModifiers = event.altKey ? [...eventModifiers, 'ALT'] : eventModifiers;
+    eventModifiers = event.shiftKey ? [...eventModifiers, 'SHIFT'] : eventModifiers;
+
+    if (eventModifiers.length !== pattern.modifiers.length) {
+      return false;
+    }
+
+    for (const modifier of eventModifiers) {
+      if (!pattern.modifiers.includes(modifier)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   /**
    * [Constructor]
    */
   private constructor(options: KeyboardOptions<T>) {
-    const bindingPress$ = new Subject<IKeyBindingEvent<T>>();
+    const bindingPress$ = new Subject<t.IKeyBindingEvent<T>>();
     this.bindingPress$ = bindingPress$.pipe(
       takeUntil(this._dispose$),
       share(),
@@ -87,10 +133,10 @@ export class Keyboard<T extends KeyCommand> {
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
 
-  public readonly keyPress$: Observable<IKeypressEvent>;
-  public readonly bindingPress$: Observable<IKeyBindingEvent<T>>;
-  public readonly bindings: KeyBindings<T> = [];
-  public latest: IKeypressEvent | undefined;
+  public readonly keyPress$: Observable<t.IKeypressEvent>;
+  public readonly bindingPress$: Observable<t.IKeyBindingEvent<T>>;
+  public readonly bindings: t.KeyBindings<T> = [];
+  public latest: t.IKeypressEvent | undefined;
 
   /**
    * [Methods]
@@ -117,7 +163,7 @@ export class Keyboard<T extends KeyCommand> {
   /**
    * Creates a clone of the keyboard with the given keypress filter applied.
    */
-  public filter(fn: (e: IKeypressEvent) => boolean) {
+  public filter(fn: (e: t.IKeypressEvent) => boolean) {
     const keyPress$ = this.keyPress$.pipe(filter(fn));
     return this.clone({ keyPress$ });
   }
@@ -136,7 +182,7 @@ export class Keyboard<T extends KeyCommand> {
   /**
    * Watches key-presses looking for a match with one of the bindings.
    */
-  private monitorBindings(fire: (e: IKeyBindingEvent<T>) => void) {
+  private monitorBindings(fire: (e: t.IKeyBindingEvent<T>) => void) {
     const keyPress$ = this.keyPress$;
     let pressedKeys: string[] = [];
     keyPress$
@@ -174,7 +220,7 @@ export class Keyboard<T extends KeyCommand> {
   /**
    * Determine if the given key event matches a binding
    */
-  private matchBinding(e: IKeypressEvent, pressedKeys: string[]): KeyBinding<T> | undefined {
+  private matchBinding(e: t.IKeypressEvent, pressedKeys: string[]): t.KeyBinding<T> | undefined {
     const hasAllModifiers = (modifiers: string[]) => {
       for (const key of Object.keys(MODIFIERS)) {
         const exists = modifiers.some(item => item === key);
