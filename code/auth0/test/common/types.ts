@@ -7,5 +7,5 @@ export type ITestCommandProps = {
 };
 
 export type ITestState = {
-  el?: React.ReactNode;
+  data?: any;
 };
