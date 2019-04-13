@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts.libs",
-  "version": "3.4.4",
+  "version": "3.4.5",
   "description": "Common TypesScript and linter configuration.",
   "scripts": {
     "test": "echo no-op",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@types/node": "11.13.4",
-    "prettier": "1.16.4",
+    "prettier": "1.17.0",
     "ts-node": "8.0.3",
     "tslib": "1.9.3",
     "tslint": "5.15.0",

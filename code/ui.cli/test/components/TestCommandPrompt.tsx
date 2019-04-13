@@ -38,7 +38,7 @@ export class TestCommandPrompt extends React.PureComponent<
   }
 
   public componentDidMount() {
-    // this.prompt.focus();
+    // Initial invoke to run any `root` handler that may have been specified.
     this.cli.invoke();
   }
 

@@ -1,27 +1,31 @@
-import * as React from 'react';
-import { t, Command, css } from '../common';
+import { Command, t, WebAuth } from '../common';
 
-type P = t.ITestCommandProps & { count: number };
+/**
+ * Login Image
+ *   - https://user-images.githubusercontent.com/185555/56072416-b1e7ce00-5dea-11e9-946f-cdc54fadf0b3.png
+ */
 
-const ns = Command.create<P>('ns')
-  .add('one', async e => null)
-  .add('two', async e => null)
-  .add('three', async e => null);
+type P = t.ITestCommandProps;
 
 /**
  * The root of the CLI application.
  */
 export const root = Command.create<P>('root', e => {
-  console.log('root');
-  const el = (
-    <div>
-      <div>hello</div>
-    </div>
-  );
-
-  e.props.state$.next({ el });
+  e.props.updateState();
 })
-  //
-  .add('foo', async e => {})
-  .add('bar')
-  .add(ns);
+  .add('update', e => e.props.updateState())
+  .add('login', async e => {
+    const { auth } = e.props;
+    auth.login();
+    e.props.updateState();
+  })
+  .add('logout', async e => {
+    const { auth } = e.props;
+    auth.logout();
+    e.props.updateState();
+  })
+  .add('logout-force', async e => {
+    const { auth } = e.props;
+    auth.logout({ force: true });
+    e.props.updateState();
+  });
