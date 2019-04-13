@@ -3,8 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/hyperdb.types.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/hyperdb.types)
 ![banner](https://user-images.githubusercontent.com/185555/56085605-37768700-5e9a-11e9-927f-75b977f1b637.png)
 
-# hyperdb
-Abstract [types](https://www.typescriptlang.org) for @platform/[hyperdb](../hyperdb).
+Abstract [types](https://www.typescriptlang.org) for [@platform/hyperdb](../hyperdb).
 
 
 <p>&nbsp;<p><p>&nbsp;<p>

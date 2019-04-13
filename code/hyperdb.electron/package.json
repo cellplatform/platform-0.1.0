@@ -15,6 +15,7 @@
   "dependencies": {
     "@platform/electron": "0.1.35",
     "@platform/hyperdb": "0.1.2",
+    "@platform/hyperdb.types": "^0.0.0",
     "@platform/util.string": "0.0.54",
     "@platform/util.value": "0.0.57",
     "@uiharness/electron": "0.4.24"

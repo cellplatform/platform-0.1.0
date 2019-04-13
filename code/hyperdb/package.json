@@ -17,6 +17,7 @@
   "dependencies": {
     "@hyperswarm/network": "0.0.4",
     "@platform/fs": "0.0.50",
+    "@platform/hyperdb.types": "^0.0.0",
     "@platform/util.value": "0.0.57",
     "discovery-swarm": "5.1.4",
     "hyperdb": "3.5.0",

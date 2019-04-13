@@ -1,4 +1,5 @@
 export * from './renderer/types';
+export * from '@platform/hyperdb.types';
 export * from '@platform/hyperdb/lib/types';
 
 /**

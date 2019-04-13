@@ -1,7 +1,5 @@
 import { Observable } from 'rxjs';
 
-export * from '../types';
-
 /**
  * Raw database [Node] data.
  */

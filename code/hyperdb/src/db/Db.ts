@@ -1,8 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { is, value as valueUtil, fs, rx } from '../common';
-import * as t from './types';
+import { is, value as valueUtil, fs, rx, t } from '../common';
 import * as util from './util';
 import { clamp, equals, groupBy } from 'ramda';
 
