@@ -38,7 +38,7 @@ export class AuthState extends React.PureComponent<IAuthStateProps, t.ITestState
 
   public get avatarUrl() {
     const profile = this.profile;
-    return profile ? profile.avatarUrl : undefined;
+    return profile ? profile.picture : undefined;
   }
 
   /**

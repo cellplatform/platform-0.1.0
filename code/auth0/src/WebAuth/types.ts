@@ -1,3 +1,5 @@
+import { IAuthTokens, IAuthProfile } from '../types';
+
 export type WebAuthStatus = 'LOADING' | 'READY' | 'DISPOSED';
 
 export type IWebAuthArgs = {
@@ -19,20 +21,8 @@ export type IWebAuthProps = {
   responseType: string;
   scope: string;
   expiresAt?: Date;
-  tokens?: IWebAuthTokens;
-  profile?: IWebAuthProfile;
-};
-
-export type IWebAuthTokens = {
-  accessToken: string;
-  idToken: string;
-};
-
-export type IWebAuthProfile = {
-  userId: string;
-  email: string;
-  avatarUrl: string;
-  updatedAt: Date;
+  tokens?: IAuthTokens;
+  profile?: IAuthProfile;
 };
 
 /**

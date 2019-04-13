@@ -136,8 +136,8 @@ export class WebAuth {
 
   public status: t.WebAuthStatus = 'LOADING';
   public expiresAt = -1;
-  public tokens: t.IWebAuthTokens | undefined;
-  public profile: t.IWebAuthProfile | undefined;
+  public tokens: t.IAuthTokens | undefined;
+  public profile: t.IAuthProfile | undefined;
 
   /**
    * [Properties]
@@ -287,7 +287,7 @@ export class WebAuth {
 
   private getProfile() {
     this.throwIfDisposed('getProfile');
-    return new Promise<t.IWebAuthProfile | undefined>((resolve, reject) => {
+    return new Promise<t.IAuthProfile | undefined>((resolve, reject) => {
       if (!this.tokens) {
         return resolve(undefined);
       }
@@ -296,11 +296,11 @@ export class WebAuth {
         if (err) {
           return reject(err);
         }
-        const profile: t.IWebAuthProfile = {
-          userId: result.sub,
+        const profile: t.IAuthProfile = {
+          sub: result.sub,
           email: result.name,
           updatedAt: new Date(result.updated_at),
-          avatarUrl: result.picture,
+          picture: result.picture,
         };
         resolve(profile);
       });
