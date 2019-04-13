@@ -1,1 +1,1 @@
-export * from '@platform/ui.cli/lib/types';
+export * from './WebAuth/types';

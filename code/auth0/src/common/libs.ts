@@ -1,1 +1,1 @@
-export { css, GlamorValue, color } from '@platform/react';
+export { css, GlamorValue, color, is } from '@platform/react';

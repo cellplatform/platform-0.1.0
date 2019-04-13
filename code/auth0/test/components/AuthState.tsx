@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { t, css, color, GlamorValue, ObjectView } from '../common';
+
+import { css, GlamorValue, ObjectView, t } from '../common';
 
 export type IAuthStateProps = {
   data?: object;

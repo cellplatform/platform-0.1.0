@@ -1,4 +1,4 @@
-import { Command, t } from '../common';
+import { Command, t, WebAuth } from '../common';
 
 type P = t.ITestCommandProps & { count: number };
 
@@ -11,14 +11,10 @@ const ns = Command.create<P>('ns')
  * The root of the CLI application.
  */
 export const root = Command.create<P>('root')
-  //
   .add('login', async e => {
-    console.log('login');
-    e.props.state$.next({ data: { foo: 123 } });
+    const { auth } = e.props;
+    auth.login();
   })
   .add('logout', async e => {
-    console.log('logout');
-    e.props.state$.next({ data: { foo: 888 } });
+    const { state$, auth } = e.props;
   });
-// .add('bar')
-// .add(ns);

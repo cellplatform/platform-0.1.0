@@ -6,7 +6,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "ui": "ui $@",
-    "start": "ui start $@",
+    "start": "ui start web $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
@@ -15,9 +15,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.1.12"
+    "@platform/react": "0.1.12",
+    "auth0-js": "9.10.1"
   },
   "devDependencies": {
+    "@types/auth0-js": "9.10.1",
     "@uiharness/dev": "0.2.36",
     "@uiharness/ui": "0.2.13"
   },

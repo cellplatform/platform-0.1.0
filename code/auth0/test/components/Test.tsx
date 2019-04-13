@@ -10,6 +10,11 @@ const KEY = {
   CMD: 'AUTH0/test/cmd',
 };
 
+/**
+ * Login Image
+ * - https://user-images.githubusercontent.com/185555/56072416-b1e7ce00-5dea-11e9-946f-cdc54fadf0b3.png
+ */
+
 export type ITestProps = {};
 
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
@@ -30,7 +35,10 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     // Save last CLI command to storage.
     console.log(`\nTODO 🐷  move CLI storage to @uiharness/ui \n`);
     cli$.subscribe(e => localStorage.setItem(KEY.CMD, this.cli.text));
-    this.cli.change({ text: localStorage.getItem(KEY.CMD) });
+  }
+
+  public componentDidMount() {
+    this.cli.change({ text: localStorage.getItem(KEY.CMD) || '', invoke: false });
   }
 
   public componentWillUnmount() {
