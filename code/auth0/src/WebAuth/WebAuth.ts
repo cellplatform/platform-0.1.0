@@ -85,7 +85,7 @@ export class WebAuth {
   private monitor() {
     let prev = Boolean(this.isLoggedIn);
     this._stopMonitor$.next();
-    interval(1000)
+    interval(500)
       .pipe(
         takeUntil(this.dispose$),
         takeUntil(this._stopMonitor$),
