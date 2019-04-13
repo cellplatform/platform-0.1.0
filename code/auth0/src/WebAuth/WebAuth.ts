@@ -139,9 +139,12 @@ export class WebAuth {
     this._client.authorize();
   }
 
-  public logout(options: { silent?: boolean } = {}) {
+  public logout(options: { force?: boolean; silent?: boolean } = {}) {
     this.throwIfDisposed('logout');
     storage.isLoggedIn = false;
+    if (options.force) {
+      this._client.logout({});
+    }
     if (options.silent !== true) {
       this.fireChanged();
     }
