@@ -1,7 +1,7 @@
 import * as auth0 from 'auth0-js';
-import { Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
-import { is, t, time } from '../common';
+import { Subject, interval } from 'rxjs';
+import { share, takeUntil, filter } from 'rxjs/operators';
+import { is, t, time, R } from '../common';
 
 const KEY = {
   LOGGED_IN: 'AUTH0/isLoggedIn',
@@ -58,14 +58,17 @@ export class WebAuth {
     });
 
     // Initialize.
-    this._prev = this.toObject();
+    this._prevProps = this.toObject();
     if (args.initialize !== false) {
-      time.delay(0, () => this.init());
+      time.delay(0, () => {
+        this.init();
+        this.monitor();
+      });
     }
   }
 
-  public async init() {
-    if (this.status !== 'LOADING') {
+  public async init(options: { force?: boolean } = {}) {
+    if (!options.force && this.status !== 'LOADING') {
       return;
     }
     this.fireChanged();
@@ -79,10 +82,32 @@ export class WebAuth {
     return this;
   }
 
+  private monitor() {
+    let prev = Boolean(this.isLoggedIn);
+    this._stopMonitor$.next();
+    interval(1000)
+      .pipe(
+        takeUntil(this.dispose$),
+        takeUntil(this._stopMonitor$),
+        filter(() => this.isReady),
+        filter(() => Boolean(storage.isLoggedIn) !== prev),
+      )
+      .subscribe(async () => {
+        if (this.isLoggedIn) {
+          this.init({ force: true });
+        } else {
+          this.logout();
+        }
+        prev = Boolean(this.isLoggedIn);
+      });
+  }
+
   public dispose() {
     this.status = 'DISPOSED';
     this._dispose$.next();
     this._dispose$.complete();
+    this._stopMonitor$.next();
+    this._stopMonitor$.complete();
   }
 
   /**
@@ -90,7 +115,9 @@ export class WebAuth {
    */
 
   private _auth0: auth0.WebAuth;
-  private _prev!: t.IWebAuthProps;
+  private _prevChange: t.IWebAuthChange | undefined;
+  private _prevProps!: t.IWebAuthProps;
+  private _stopMonitor$ = new Subject();
 
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -171,6 +198,7 @@ export class WebAuth {
   public toObject(): t.IWebAuthProps {
     const tokens = this.tokens;
     const profile = this.profile;
+    const expiresAt = this.expiresAt;
     return {
       status: this.status,
       isReady: this.isReady,
@@ -180,7 +208,7 @@ export class WebAuth {
       clientId: this.clientId,
       responseType: this.responseType,
       scope: this.scope,
-      expiresAt: new Date(this.expiresAt),
+      expiresAt: expiresAt > -1 ? new Date(this.expiresAt) : undefined,
       tokens: tokens ? { ...tokens } : undefined,
       profile: profile ? { ...profile } : undefined,
     };
@@ -193,15 +221,18 @@ export class WebAuth {
     this._events$.next(e);
   }
 
-  private fireChanged() {
-    const next = this.toObject();
+  private fireChanged(options: { force?: boolean } = {}) {
     const status = this.status;
     const isLoggedIn = this.isLoggedIn;
-    this.fire({
-      type: 'AUTH0/WebAuth/changed',
-      payload: { status, isLoggedIn, prev: this._prev, next },
-    });
-    this._prev = next;
+    const next = this.toObject();
+    const prev = this._prevProps;
+    const payload: t.IWebAuthChange = { status, isLoggedIn, prev, next };
+    if (!options.force && R.equals(this._prevChange, payload)) {
+      return;
+    }
+    this.fire({ type: 'AUTH0/WebAuth/changed', payload });
+    this._prevProps = next;
+    this._prevChange = payload;
   }
 
   private throwIfDisposed(action: string) {

@@ -49,6 +49,7 @@ export class AuthState extends React.PureComponent<IAuthStateProps, t.ITestState
       base: css({
         position: 'relative',
         flex: 1,
+        Scroll: true,
       }),
       body: css({
         position: 'relative',

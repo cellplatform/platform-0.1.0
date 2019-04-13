@@ -18,7 +18,7 @@ export type IWebAuthProps = {
   clientId: string;
   responseType: string;
   scope: string;
-  expiresAt: Date;
+  expiresAt?: Date;
   tokens?: IWebAuthTokens;
   profile?: IWebAuthProfile;
 };
@@ -42,9 +42,9 @@ export type WebAuthEvent = IWebAuthChangedEvent;
 
 export type IWebAuthChangedEvent = {
   type: 'AUTH0/WebAuth/changed';
-  payload: IWebAuthChanged;
+  payload: IWebAuthChange;
 };
-export type IWebAuthChanged = {
+export type IWebAuthChange = {
   status: WebAuthStatus;
   isLoggedIn: IWebAuthProps['isLoggedIn'];
   prev: IWebAuthProps;
