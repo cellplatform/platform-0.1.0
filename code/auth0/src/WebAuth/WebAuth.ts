@@ -45,11 +45,11 @@ export class WebAuth {
     this.domain = args.domain;
     this.clientId = args.clientId;
     this.responseType = args.responseType || 'token id_token';
-    this.scope = args.scope || 'openid';
+    this.scope = args.scope || 'openid profile';
     this.redirectUri = args.redirectUri || window.location.href;
 
     // Create wrapped Auth0 manager.
-    this._client = new auth0.WebAuth({
+    this._auth0 = new auth0.WebAuth({
       domain: this.domain,
       clientID: this.clientId,
       responseType: this.responseType,
@@ -89,7 +89,7 @@ export class WebAuth {
    * [Fields]
    */
 
-  private _client: auth0.WebAuth;
+  private _auth0: auth0.WebAuth;
   private _prev!: t.IWebAuthProps;
 
   private readonly _dispose$ = new Subject();
@@ -110,6 +110,7 @@ export class WebAuth {
   public status: t.WebAuthStatus = 'LOADING';
   public expiresAt = -1;
   public tokens: t.IWebAuthTokens | undefined;
+  public profile: t.IWebAuthProfile | undefined;
 
   /**
    * [Properties]
@@ -136,14 +137,17 @@ export class WebAuth {
    */
   public login() {
     this.throwIfDisposed('login');
-    this._client.authorize();
+    this._auth0.authorize();
   }
 
   public logout(options: { force?: boolean; silent?: boolean } = {}) {
     this.throwIfDisposed('logout');
     storage.isLoggedIn = false;
+    this.tokens = undefined;
+    this.profile = undefined;
+    this.expiresAt = -1;
     if (options.force) {
-      this._client.logout({});
+      this._auth0.logout({});
     }
     if (options.silent !== true) {
       this.fireChanged();
@@ -153,18 +157,20 @@ export class WebAuth {
   public renewTokens(options: { silent?: boolean } = {}) {
     this.throwIfDisposed('renewTokens');
     return new Promise((resolve, reject) => {
-      this._client.checkSession({}, (err, auth) => {
+      this._auth0.checkSession({}, async (err, auth) => {
         if (err) {
           this.logout(options);
           return reject(err);
         }
-        this.localLogin(auth, options);
+        await this.localLogin(auth, options);
         resolve();
       });
     });
   }
 
   public toObject(): t.IWebAuthProps {
+    const tokens = this.tokens;
+    const profile = this.profile;
     return {
       status: this.status,
       isReady: this.isReady,
@@ -174,8 +180,9 @@ export class WebAuth {
       clientId: this.clientId,
       responseType: this.responseType,
       scope: this.scope,
-      tokens: this.tokens,
-      expiresAt: this.expiresAt,
+      expiresAt: new Date(this.expiresAt),
+      tokens: tokens ? { ...tokens } : undefined,
+      profile: profile ? { ...profile } : undefined,
     };
   }
 
@@ -206,12 +213,12 @@ export class WebAuth {
   private parseHash(options: { silent?: boolean } = {}) {
     this.throwIfDisposed('parseHash');
     return new Promise((resolve, reject) => {
-      this._client.parseHash((err, auth) => {
+      this._auth0.parseHash(async (err, auth) => {
         if (err) {
           this.logout();
           return reject(err);
         }
-        this.localLogin(auth, options);
+        await this.localLogin(auth, options);
         resolve();
       });
     });
@@ -221,20 +228,51 @@ export class WebAuth {
     history.pushState('', document.title, window.location.pathname + window.location.search);
   }
 
-  private localLogin(auth: auth0.Auth0DecodedHash | null, options: { silent?: boolean } = {}) {
+  private async localLogin(
+    auth: auth0.Auth0DecodedHash | null,
+    options: { silent?: boolean } = {},
+  ) {
+    // Setup initial conditions.
     if (!auth || !(auth.accessToken && auth.idToken)) {
       return false;
     }
     this.removeUrlHash();
+
+    // Update state.
     this.expiresAt = (auth.expiresIn || 0) * 1000 + new Date().getTime();
     this.tokens = {
       accessToken: auth.accessToken,
       idToken: auth.idToken,
     };
+    this.profile = await this.getProfile();
+
+    // Finish up.
     storage.isLoggedIn = true;
     if (options.silent !== true) {
       this.fireChanged();
     }
     return true;
+  }
+
+  private getProfile() {
+    this.throwIfDisposed('getProfile');
+    return new Promise<t.IWebAuthProfile | undefined>((resolve, reject) => {
+      if (!this.tokens) {
+        return resolve(undefined);
+      }
+      const token = this.tokens.accessToken;
+      this._auth0.client.userInfo(token, (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        const profile: t.IWebAuthProfile = {
+          userId: result.sub,
+          email: result.name,
+          updatedAt: new Date(result.updated_at),
+          avatarUrl: result.picture,
+        };
+        resolve(profile);
+      });
+    });
   }
 }

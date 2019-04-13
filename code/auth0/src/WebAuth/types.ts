@@ -18,13 +18,21 @@ export type IWebAuthProps = {
   clientId: string;
   responseType: string;
   scope: string;
-  expiresAt: number;
+  expiresAt: Date;
   tokens?: IWebAuthTokens;
+  profile?: IWebAuthProfile;
 };
 
 export type IWebAuthTokens = {
   accessToken: string;
   idToken: string;
+};
+
+export type IWebAuthProfile = {
+  userId: string;
+  email: string;
+  avatarUrl: string;
+  updatedAt: Date;
 };
 
 /**

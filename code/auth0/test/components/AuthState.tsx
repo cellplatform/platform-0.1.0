@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { css, GlamorValue, ObjectView, t } from '../common';
 
 export type IAuthStateProps = {
-  data?: object;
+  data?: t.IWebAuthProps;
   style?: GlamorValue;
 };
 
@@ -29,19 +29,56 @@ export class AuthState extends React.PureComponent<IAuthStateProps, t.ITestState
   }
 
   /**
+   * [Properties]
+   */
+  public get profile() {
+    const { data } = this.props;
+    return data ? data.profile : undefined;
+  }
+
+  public get avatarUrl() {
+    const profile = this.profile;
+    return profile ? profile.avatarUrl : undefined;
+  }
+
+  /**
    * [Render]
    */
   public render() {
     const styles = {
       base: css({
-        padding: 20,
-        overflow: 'hidden',
+        position: 'relative',
+        flex: 1,
+      }),
+      body: css({
+        position: 'relative',
+        Absolute: 20,
       }),
     };
-    const data = { ...(this.props.data || {}) };
+    const data = this.props.data || {};
     return (
       <div {...css(styles.base, this.props.style)}>
-        <ObjectView name={'auth'} data={data} expandLevel={2} />
+        <div {...styles.body}>
+          <ObjectView name={'auth'} data={data} expandLevel={2} />
+          {this.renderAvatar()}
+        </div>
+      </div>
+    );
+  }
+
+  private renderAvatar() {
+    const url = this.avatarUrl;
+    if (!url) {
+      return null;
+    }
+    const size = 45;
+    const styles = {
+      base: css({ Absolute: [0, 0, null, null] }),
+      avatar: css({ width: size, height: size, borderRadius: 4 }),
+    };
+    return (
+      <div {...styles.base}>
+        <img src={url} {...styles.avatar} />
       </div>
     );
   }
