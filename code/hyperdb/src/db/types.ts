@@ -35,6 +35,15 @@ export type IDbValuesArgs = { pattern?: string; recursive?: boolean; gt?: boolea
 /**
  * [Database]
  */
+export type IDb<D extends {} = any> = IDbProps &
+  IDbMethods<D> & {
+    readonly events$: Observable<DbEvent>;
+    readonly watch$: Observable<IDbWatchChange<D>>;
+    readonly dispose$: Observable<{}>;
+    toString(): string;
+    dispose(): void;
+  };
+
 export type IDbProps = {
   readonly dir: string;
   readonly key: string;
@@ -44,6 +53,7 @@ export type IDbProps = {
   readonly isDisposed: boolean;
   readonly checkoutVersion: string | undefined;
 };
+
 export type IDbMethods<D extends {} = any> = {
   checkout(version: string): Promise<IDb<D>>;
   version(): Promise<string>;
@@ -61,14 +71,7 @@ export type IDbMethods<D extends {} = any> = {
     options?: { take?: number },
   ): Promise<Array<IDbValue<K, D[K]>>>;
 };
-export type IDb<D extends {} = any> = IDbProps &
-  IDbMethods<D> & {
-    readonly events$: Observable<DbEvent>;
-    readonly watch$: Observable<IDbWatchChange<D>>;
-    readonly dispose$: Observable<{}>;
-    toString(): string;
-    dispose(): void;
-  };
+
 export type IDbUpdateObject<D extends object = any> = { [key in keyof D]: D[keyof D] };
 export type IDbUpdateList<D extends object = any> = Array<{ key: keyof D; value: D[keyof D] }>;
 
@@ -91,8 +94,5 @@ export type IDbWatchChange<D extends {} = any> = {
 };
 export type IDbErrorEvent = {
   type: 'DB/error';
-  payload: {
-    db: { key: string };
-    error: Error;
-  };
+  payload: { db: { key: string }; error: Error };
 };
