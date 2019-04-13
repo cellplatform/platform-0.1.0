@@ -10,11 +10,6 @@ const KEY = {
   CMD: 'AUTH0/test/cmd',
 };
 
-/**
- * Login Image
- * - https://user-images.githubusercontent.com/185555/56072416-b1e7ce00-5dea-11e9-946f-cdc54fadf0b3.png
- */
-
 export type ITestProps = {};
 
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {

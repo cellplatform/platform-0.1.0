@@ -12,10 +12,30 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
     // scope: 'openid',
   });
 
+  const updateState = () => {
+    const data = auth.toObject();
+    const tokens = data.tokens;
+    if (tokens) {
+      tokens.accessToken = tokens.accessToken.substring(0, 15) + '...';
+      tokens.idToken = tokens.idToken.substring(0, 15) + '...';
+    }
+    state$.next({ data });
+  };
+
+  auth.events$.subscribe(e => {
+    console.log('🌳', e.type, e.payload);
+    updateState();
+  });
+
   return CommandState.create({
     root,
     beforeInvoke: async e => {
-      const props: t.ITestCommandProps = { ...e.props, auth, state$ };
+      const props: t.ITestCommandProps = {
+        ...e.props,
+        auth,
+        state$,
+        updateState,
+      };
       return { props };
     },
   });

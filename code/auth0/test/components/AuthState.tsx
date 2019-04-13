@@ -32,11 +32,16 @@ export class AuthState extends React.PureComponent<IAuthStateProps, t.ITestState
    * [Render]
    */
   public render() {
-    const styles = { base: css({ padding: 20 }) };
+    const styles = {
+      base: css({
+        padding: 20,
+        overflow: 'hidden',
+      }),
+    };
     const data = { ...(this.props.data || {}) };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <ObjectView name={'auth'} data={data} />
+        <ObjectView name={'auth'} data={data} expandLevel={2} />
       </div>
     );
   }

@@ -7,6 +7,7 @@ export * from '../../src/types';
 export type ITestCommandProps = {
   state$: Subject<ITestState>;
   auth: WebAuth;
+  updateState(): void;
 };
 
 export type ITestState = {
