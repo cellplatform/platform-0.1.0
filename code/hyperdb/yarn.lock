@@ -74,10 +74,10 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.types@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.0.tgz#f03aabdb7c3e84d65664511956c5e7c15c661322"
-  integrity sha512-5sUNr2WvTJhjiWgDkrSL7ItrC5DV9g9TlOTF1+oe4VrxROQHyt3efIsIZW1jQeKb2p1rnkPw/wVKMEREUDwIMQ==
+"@platform/hyperdb.types@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.1.tgz#d22982ed35506e3d401857454b3e51c9a7d5fb6e"
+  integrity sha512-zA/gVBsklsvseDLSOfDg1iHUM9dmsUGuYN71bugRcnxbuiFhHBDjqNjT5rUa5R34NFjSpKZ6RLStg0Y2WWHcrA==
   dependencies:
     "@platform/libs" "0.0.12"
 

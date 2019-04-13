@@ -1394,6 +1394,13 @@
     codemirror "5.45.0"
     react-codemirror2 "5.1.0"
 
+"@platform/ui.datagrid.types@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.0.tgz#79cb79bf62c4cc4d93b3beff3482e8fa57c952ab"
+  integrity sha512-z/P5gua95eQPbEW7awpERvpbsdgSBP1jJ/sQczBJRSxMwoTmO/YiaS9IZOTKvl532DpQXfwbdBOugM2V0UOmpw==
+  dependencies:
+    "@platform/libs" "0.0.12"
+
 "@platform/ui.editor@0.0.44":
   version "0.0.44"
   resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.44.tgz#8ec22c5533ce43c897b1c78c9767ddf83610081f"
