@@ -2,7 +2,19 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
 
-import { markdown, datagrid, color, Shell, t, ObjectView, css, renderer, value } from '../common';
+import {
+  markdown,
+  datagrid,
+  color,
+  Shell,
+  t,
+  ObjectView,
+  css,
+  renderer,
+  Sync,
+  constants,
+  value,
+} from '../common';
 import * as cli from '../cli';
 
 const storage = {
@@ -23,6 +35,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private state$ = new Subject<Partial<t.ITestState>>();
   private grid$ = new Subject<t.GridEvent>();
   private cli!: t.ICommandState;
+  private sync!: Sync;
 
   private datagrid!: datagrid.DataGrid;
   private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
@@ -33,22 +46,36 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
-    this.cli = cli.init({ state$: this.state$, databases: this.databases });
+  public async componentWillMount() {
+    this.cli = cli.init({
+      state$: this.state$,
+      databases: this.databases,
+      getState: () => this.state,
+    });
+
+    // Update state.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
 
+    // Store values in local-storage.
     state$
       .pipe(distinctUntilChanged((prev, next) => prev.showDebug === next.showDebug))
       .subscribe(e => {
         this.datagrid.redraw();
-        storage.showDebug = this.state.showDebug;
+        storage.showDebug = this.state.showDebug || false;
       });
+
+    // Setup syncer.
+    const dir = constants.DB.DIR;
+    const db = (await this.databases.getOrCreate({ dir, connect: false })).db;
+    const grid = this.datagrid.grid;
+    this.sync = Sync.create({ db, grid });
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+    this.sync.dispose();
   }
 
   /**
@@ -73,22 +100,11 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         flex: 1,
         display: 'flex',
       }),
-      right: css({
-        width: 250,
-        padding: 8,
-        backgroundColor: color.format(-0.03),
-        borderLeft: `solid 1px ${color.format(-0.1)}`,
-      }),
     };
 
     const showDebug = this.state.showDebug;
     const tree = showDebug ? {} : undefined;
-
-    const elRight = showDebug && (
-      <div {...styles.right}>
-        <ObjectView name={'state'} data={this.state} />
-      </div>
-    );
+    const elRight = showDebug && this.renderDebug();
 
     return (
       <Shell cli={this.cli} tree={tree}>
@@ -97,6 +113,38 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
           {elRight}
         </div>
       </Shell>
+    );
+  }
+
+  private renderDebug() {
+    const styles = {
+      base: css({
+        width: 330,
+        padding: 8,
+        backgroundColor: color.format(-0.03),
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+      }),
+    };
+
+    const data = { ...this.state };
+    delete data.showDebug;
+    if (data['db.cells']) {
+      const cells = value.deleteEmpty(data['db.cells']);
+      Object.keys(cells).forEach(key => {
+        const MAX = 15;
+        const value = cells[key];
+        if (typeof value === 'string' && value.length > MAX) {
+          cells[key] = `${value.substring(0, MAX).trim()}...`;
+        }
+      });
+
+      data['db.cells'] = cells;
+    }
+
+    return (
+      <div {...styles.base}>
+        <ObjectView name={'state'} data={data} expandLevel={2} />
+      </div>
     );
   }
 

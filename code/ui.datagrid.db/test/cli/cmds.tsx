@@ -1,22 +1,35 @@
-import { Command, t } from '../common';
+import { constants, Command, t } from '../common';
 
 type P = t.ICommandProps & {};
+
+/**
+ * Manipulate the DB directly.
+ */
+const db = Command.create<P>('db')
+  .add('a1', async e => {
+    const value = (e.args.params[0] || '').toString();
+    await e.props.db.put<any>('cell/A1', value);
+  })
+  .add('b2', async e => {
+    const value = (e.args.params[0] || '').toString();
+    await e.props.db.put<any>('cell/B2', value);
+  });
+
+/**
+ * Debug options.
+ */
+const debug = Command.create<P>('debug')
+  .add('show', e => e.props.state$.next({ showDebug: true }))
+  .add('hide', e => e.props.state$.next({ showDebug: false }));
 
 /**
  * The root of the CLI application.
  */
 export const root = Command.create<P>('root', e => {
   // Setup root screen.
-  e.props.state$.next({ dir: e.props.db.dir });
 })
-  .add('show', e => e.props.state$.next({ showDebug: true }))
-  .add('hide', e => e.props.state$.next({ showDebug: false }))
-  .add('get-foo', async e => {
-    const db = e.props.db;
-    const foo = await db.get('foo');
-    console.log('foo', foo);
-  })
-  .add('put-foo', async e => {
-    const db = e.props.db;
-    await db.put('foo', 123);
+  .add(db)
+  .add(debug)
+  .add('tmp', async e => {
+    await e.props.databases.getOrCreate({ dir: constants.DB.DIR });
   });

@@ -32,22 +32,84 @@ describe('Factory', () => {
       expect(factory.count).to.eql(1);
     });
 
-    it('invoke `afterCreate` callback', async () => {
-      const list: t.IAfterCreateArgs[] = [];
+    it('fires before/after events', async () => {
+      const list: t.DbFactoryEvent[] = [];
       const factory = DbFactory.create({ create });
-
-      factory.afterCreate(async e => {
-        await time.wait(5); // Simulate pause doing something.
-        list.push(e);
-      });
+      factory.events$.subscribe(e => list.push(e));
 
       const args = { dir, connect: false };
       const res = await factory.create(args);
 
+      const creating = list[0] as t.IDbFactoryCreatingEvent;
+      const created = list[1] as t.IDbFactoryCreatedEvent;
+      const change = list[2] as t.IDbFactoryChangeEvent;
+
+      await time.wait(50);
+
+      expect(list.length).to.eql(3);
+      expect(creating.type).to.eql('DB_FACTORY/creating');
+      expect(created.type).to.eql('DB_FACTORY/created');
+      expect(change.type).to.eql('DB_FACTORY/change');
+
+      expect(creating.payload).to.eql(args);
+      expect(created.payload.args).to.eql(args);
+      expect(created.payload.db).to.eql(res.db);
+      expect(created.payload.network).to.eql(res.network);
+    });
+
+    it('adjusts the directory the DB is saved to within the [creating] event', async () => {
+      const factory = DbFactory.create({ create });
+
+      expect(fs.pathExistsSync(dir1)).to.eql(false);
+      expect(fs.pathExistsSync(dir2)).to.eql(false);
+
+      factory.creating$.subscribe(e => (e.dir = dir2));
+
+      const args = { dir: dir1, connect: false };
+      await factory.create(args);
+
+      expect(fs.pathExistsSync(dir1)).to.eql(false);
+      expect(fs.pathExistsSync(dir2)).to.eql(true); // NB: Dir adjusted to `dir2` in handler.
+    });
+
+    it('caches a DB that has had the `dir` adjusted in [creating] event', async () => {
+      const list: t.IDbFactoryCreated[] = [];
+
+      const factory = DbFactory.create({ create });
+      factory.creating$.subscribe(e => {
+        e.dir = dir2;
+      });
+      factory.created$.subscribe(e => {
+        list.push(e);
+      });
+
+      const args = { dir: dir1, connect: false };
+      await factory.getOrCreate(args);
+
+      expect(factory.isCached({ dir: dir2 })).to.eql(true);
       expect(list.length).to.eql(1);
-      expect(list[0].args).to.eql(args);
-      expect(list[0].db).to.equal(res.db);
-      expect(list[0].network).to.eql(res.network);
+
+      await factory.getOrCreate(args);
+      expect(list.length).to.eql(1);
+    });
+
+    it('does not fire the creating/created events when DB already exists', async () => {
+      let list: t.DbFactoryEvent[] = [];
+      const factory = DbFactory.create({ create });
+      factory.events$.subscribe(e => list.push(e));
+
+      const args = { dir, connect: false };
+      await factory.getOrCreate(args);
+      expect(list.length).to.eql(3); // Initial creation.
+
+      list = [];
+      await factory.getOrCreate(args);
+      expect(list.length).to.eql(1); // Cached (but "created" event fired to check cache accurately).
+      expect(list[0].type).to.eql('DB_FACTORY/creating');
+
+      list = [];
+      await factory.create(args);
+      expect(list.length).to.eql(3); // Force created again (via the "create" method).
     });
   });
 

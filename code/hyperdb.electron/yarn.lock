@@ -110,21 +110,21 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.types@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.1.tgz#d22982ed35506e3d401857454b3e51c9a7d5fb6e"
-  integrity sha512-zA/gVBsklsvseDLSOfDg1iHUM9dmsUGuYN71bugRcnxbuiFhHBDjqNjT5rUa5R34NFjSpKZ6RLStg0Y2WWHcrA==
+"@platform/hyperdb.types@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.3.tgz#2b3f5b61a3bc0c015790bb16853a5aeea15b4d74"
+  integrity sha512-vEASKnVrZy11wG0EongbAAI6AnI1fQ17GIsHHv8Z3Vn3yn9BON4yi4wVNtV1b+6JZghjak6r1hFatHJ5WFt1DQ==
   dependencies:
     "@platform/libs" "0.0.12"
 
-"@platform/hyperdb@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.3.tgz#113ce28b6f6920685373a48ed1e577e8ae6509c0"
-  integrity sha512-5ZD8pf8GVBKvvOwCxiUdQhi+WFdcWSiCpMeoXF8+o9XtTSAUIM8p2gAEejWEH/AssZZZgkrdCR4ydHedRnDyZQ==
+"@platform/hyperdb@0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.6.tgz#b3dbae225ebe1a4c9ae48aea8d91f18884acc056"
+  integrity sha512-U9JfxgaB1Qa43a8FytjAUo+6klET2FPjzD0+UKC5CkhY7wenEf22bP+/QKUZhIlDJBUyAMvdq3G9jDpTOD0lag==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.50"
-    "@platform/hyperdb.types" "^0.0.1"
+    "@platform/hyperdb.types" "0.0.3"
     "@platform/util.value" "0.0.57"
     discovery-swarm "5.1.4"
     hyperdb "3.5.0"

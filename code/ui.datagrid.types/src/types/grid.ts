@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t, Observable } from '../common';
 
 export type IGrid = {
   /**
@@ -12,6 +12,8 @@ export type IGrid = {
   readonly isEditing: boolean;
   readonly values: t.IGridValues;
   readonly selection: t.IGridSelection;
+  readonly events$: Observable<t.GridEvent>;
+  readonly keys$: Observable<t.IGridKeydown>;
 
   /**
    * [Methods]

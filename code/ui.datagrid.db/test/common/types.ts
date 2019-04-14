@@ -12,8 +12,8 @@ export type ICommandProps = {
 
 export type ITestState = {
   values?: t.IGridValues;
-  dir?: string;
   showDebug?: boolean;
+  'db.cells'?: {};
 };
 
 export type IDb = t.IDb<IDbSchema>;
