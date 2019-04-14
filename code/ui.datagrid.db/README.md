@@ -11,7 +11,7 @@ Abstract synchronization mapper between [ui.datagrid](../ui.datagrid) and a [hyp
 
 ## Modules
 
-![sync](https://user-images.githubusercontent.com/185555/56090674-3aed2b00-5ef9-11e9-86bb-25615ea4c125.png)
+![sync](https://user-images.githubusercontent.com/185555/56090799-2873f100-5efb-11e9-95b5-46c2af34c624.png)
 
 Updates to the grid (UI) are saved to the DB, and conversely changes to the DB (which may occur due to changes by other users over the network) are synchroized into the grid (UI).
 
