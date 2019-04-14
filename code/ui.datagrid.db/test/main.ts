@@ -15,6 +15,8 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
    */
   const { creating$ } = await hyperdb.listen({ ipc, log });
 
+  log.info('prod', uiharness.is.prod);
+
   creating$
     // Change the DB directory when running in production.
     .pipe(filter(e => uiharness.is.prod))

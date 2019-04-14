@@ -1088,33 +1088,33 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.electron@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.1.tgz#8f3c1e4fce73c4deecb3ac146be9fb422606d0c4"
-  integrity sha512-44P0aj/3chDfu/flXkkUBuA/yfAiqMep733M4r+Uuwkef2q8SEz9lql+Gj7P7VnuBCI6vESr1NFEGJk8qUbbhw==
+"@platform/hyperdb.electron@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.2.tgz#2c1155800c0bed9b3511015bac7bedab00836a1a"
+  integrity sha512-ta+VlDSCvO3hkMCDtyS7xF/PRSksODDNG0X1ygNLlycR3oNE6ocYhfpzid/+a7wfD+mt4OhrmSmLC3buYv7fLw==
   dependencies:
     "@platform/electron" "0.1.35"
-    "@platform/hyperdb" "0.1.4"
-    "@platform/hyperdb.types" "0.0.2"
+    "@platform/hyperdb" "0.1.5"
+    "@platform/hyperdb.types" "0.0.3"
     "@platform/util.string" "0.0.54"
     "@platform/util.value" "0.0.57"
     "@uiharness/electron" "0.4.25"
 
-"@platform/hyperdb.types@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.2.tgz#832ba7855d106fd0bfbc3c974a088e74607435b1"
-  integrity sha512-wWhWRPtpLzVhIFYlekz8HiRu/tt8elSiTQx6To7Axnj9NsDW8iYQ7n6gajKVItMBcQ09tkdDmJ62FdTULFfdUA==
+"@platform/hyperdb.types@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.3.tgz#2b3f5b61a3bc0c015790bb16853a5aeea15b4d74"
+  integrity sha512-vEASKnVrZy11wG0EongbAAI6AnI1fQ17GIsHHv8Z3Vn3yn9BON4yi4wVNtV1b+6JZghjak6r1hFatHJ5WFt1DQ==
   dependencies:
     "@platform/libs" "0.0.12"
 
-"@platform/hyperdb@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.4.tgz#3e41c923f0118f5d012e0a4cb131aaa46e0a92d9"
-  integrity sha512-cBiciF1wQsmIu1R8T4plRJV3vPS7cAIW9FAu+hgo0TLPRNCAGEBz6N9Yph/Yu3mWy9xIZW1nqzGLHULuZt+4ww==
+"@platform/hyperdb@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.5.tgz#736bde041a46d2c5aaa08e6340d9a0bc0ca42107"
+  integrity sha512-89GFrXC+BhuLerrnkSWtSajJEv6/xFhb6NuKBIZywYm0LIsVDPNGjmy7rNF0YvfzrrKWgyDOXvalxCkSM+/6DQ==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.50"
-    "@platform/hyperdb.types" "0.0.2"
+    "@platform/hyperdb.types" "0.0.3"
     "@platform/util.value" "0.0.57"
     discovery-swarm "5.1.4"
     hyperdb "3.5.0"
@@ -1251,22 +1251,22 @@
     codemirror "5.45.0"
     react-codemirror2 "5.1.0"
 
-"@platform/ui.datagrid.types@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.2.tgz#d4579790d79a50b9fc02758e319bf018da9dbc65"
-  integrity sha512-3W2mF5yk8uT95/KTh+uGhaA7Zaie0MaiCgylryq05pUR+nMYqykeXcfeW3LDSu0TSvfAHmMwrhAC5BFHJMCjJA==
+"@platform/ui.datagrid.types@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.3.tgz#9420b35f9663129948ae855d5459043d10346e37"
+  integrity sha512-TAErbknkka5wa7UBTbTzAansbwNl0Wbp435xLDQmbr5kAHuwpGQKArqPbzFLSYeYDZQKCILAsXtLFWhWOcPtsg==
   dependencies:
     "@platform/react" "0.1.13"
     "@platform/util.value.cell" "0.0.18"
 
-"@platform/ui.datagrid@0.0.81":
-  version "0.0.81"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.81.tgz#ff8d34d0821822042cf32f39d714e1bebec02955"
-  integrity sha512-a4iIQzwVbWQ+ousfIczswfox0goup7NsidctbRg6lU2KgJjqMTtHapr9EOlGjHfc9ejZdUHVDK6rQ7GBN7ULhg==
+"@platform/ui.datagrid@0.0.82":
+  version "0.0.82"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.82.tgz#4f236525cc11b2bec5186b3e4a883d185e417615"
+  integrity sha512-X7sXmLl+3LW576FIzwY4zYomQsV2F1EhCPYkJhAJkdWd8WAK9sbPw+42H28nstalXFi7X/UPWw8u8Nwdp00RBg==
   dependencies:
     "@platform/react" "0.1.13"
     "@platform/ui.codemirror" "0.0.23"
-    "@platform/ui.datagrid.types" "0.0.2"
+    "@platform/ui.datagrid.types" "0.0.3"
     "@platform/ui.editor" "0.0.44"
     "@platform/ui.text" "0.1.3"
     "@platform/util.markdown" "0.0.4"
