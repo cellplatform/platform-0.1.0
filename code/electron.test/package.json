@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@platform/ts": "3.4.7",
-    "@uiharness/dev": "0.2.37",
+    "@uiharness/dev": "0.2.39",
     "@uiharness/electron": "0.4.25"
   },
   "resolutions": {
