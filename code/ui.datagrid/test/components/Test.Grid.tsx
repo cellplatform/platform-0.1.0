@@ -93,6 +93,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         padding: 10,
         lineHeight: 1.6,
         Flex: 'vertical-spaceBetween',
+        Scroll: true,
       }),
       leftTop: css({
         fontSize: 13,
