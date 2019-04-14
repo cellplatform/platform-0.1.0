@@ -20,7 +20,7 @@
     "@platform/fs": "0.0.50",
     "@platform/test": "0.0.43",
     "@platform/ts": "3.4.7",
-    "@uiharness/dev": "0.2.37"
+    "@uiharness/dev": "0.2.39"
   },
   "files": [
     "lib"

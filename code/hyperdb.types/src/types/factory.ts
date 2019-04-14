@@ -1,5 +1,4 @@
-import { Observable } from 'rxjs';
-import * as t from '../types';
+import { t, Observable } from '../common';
 
 /**
  * Factory cache manager.

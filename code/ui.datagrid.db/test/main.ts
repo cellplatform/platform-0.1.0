@@ -1,20 +1,14 @@
-import * as main from '@uiharness/electron/lib/main';
-const config = require('../.uiharness/config.json') as main.IRuntimeConfig;
+import hyperdb from '@platform/hyperdb.electron/lib/main';
+import uiharness from '@uiharness/electron/lib/main';
 
-/**
- * Initialize the default [main] window process with the [UIHarness].
- *
- * NOTE:
- *  To do your own thing, simply disregard this and write your own.
- *
- *  To get started writing your own [main] entry-point:
- *    https://electronjs.org/docs/tutorial/first-app#electron-development-in-a-nutshell
- *
- *  To review the [UIHarness] entry-point as a example:
- *    https://github.com/uiharness/uiharness/blob/master/code/libs/electron/src/main/index.ts
- *
- */
+const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
+
 (async () => {
-  const { log } = await main.init({ config });
+  const { log, ipc } = await uiharness.init({ config });
   log.info('main started');
+
+  /**
+   * Initialise the HyperDB on the [main] process.
+   */
+  const { events$ } = await hyperdb.listen({ ipc, log });
 })();

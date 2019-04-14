@@ -9,7 +9,7 @@ import { t } from '../../common';
  *
  */
 export function afterSelectionHandler(getGrid: () => Grid) {
-  let from: t.IGridSelection = { current: undefined, ranges: [] };
+  let from: t.IGridSelection = { cell: undefined, ranges: [] };
 
   const select = (
     row1: number,

@@ -1399,10 +1399,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@uiharness/dev@0.2.37":
-  version "0.2.37"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.37.tgz#02fde5a529a3fa084269308d6d7478e34df37d10"
-  integrity sha512-s0PHuIk7KZPsXLs2sjpvYIwkAkljol7NKOGxVm1rckP51s0iB9Pn3tKV5zEc905dABa7q1NulVP2nKvHwpEwGg==
+"@uiharness/dev@0.2.39":
+  version "0.2.39"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.39.tgz#3555e9048875dff856134ce16d59eb58f36394a0"
+  integrity sha512-9zKoyud6pBvw9Cqrc37l3n1Kda6x7duP3TXfBpkhaH8ccaq7MxOLk/MQT8Z2MTLmhvt72yIcmWj+7H73r5fKXw==
   dependencies:
     "@babel/core" "7.4.3"
     "@babel/polyfill" "7.4.3"

@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.cell",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Single cell (and cell editor) within a @platform/ui.datagrid.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,13 +16,13 @@
   },
   "dependencies": {
     "@platform/react": "0.1.13",
-    "@platform/ui.datagrid.types": "0.0.1"
+    "@platform/ui.datagrid.types": "0.0.2"
   },
   "devDependencies": {
     "@platform/test": "0.0.43",
     "@platform/ts": "3.4.7",
-    "@uiharness/dev": "0.2.37",
-    "@uiharness/ui": "0.2.14"
+    "@uiharness/dev": "0.2.39",
+    "@uiharness/ui": "0.2.16"
   },
   "files": [
     "lib"

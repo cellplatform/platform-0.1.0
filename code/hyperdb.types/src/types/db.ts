@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable } from '../common';
 
 /**
  * Raw database [Node] data.

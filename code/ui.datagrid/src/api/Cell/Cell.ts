@@ -4,7 +4,7 @@ import { t, R } from '../../common';
 /**
  * API for accessing and manipulating a cell.
  */
-export class Cell {
+export class Cell implements t.ICell {
   /**
    * [Static]
    */
