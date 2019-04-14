@@ -7,6 +7,8 @@ export type IDbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
   count: number;
   items: Array<IDbFactoryItem<D, N>>;
   events$: Observable<DbFactoryEvent>;
+  creating$: Observable<ICreateDatabaseArgs>;
+  created$: Observable<IDbFactoryCreated>;
 
   isCached(args: { dir: string; version?: string }): boolean;
 
@@ -26,8 +28,6 @@ export type IDbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
   ): Promise<ICreateDatabaseResponse<P>>;
 
   remove(args: { dir: string; version?: string }): IDbFactory<D, N>;
-
-  afterCreate(handler: AfterCreate<D, N>): IDbFactory<D, N>;
 };
 
 export type IDbFactoryItem<D extends t.IDb, N extends t.INetwork> = {
@@ -57,20 +57,12 @@ export type ICreateDatabaseResponse<P extends {} = any> = {
   network: t.INetwork;
 };
 
-export type AfterCreate<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwork> = (
-  args: IAfterCreateArgs<D, N>,
-) => any;
-export type IAfterCreateArgs<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwork> = {
-  args: ICreateDatabaseArgs;
-  db: D;
-  network: N;
-};
-
 /**
  * [Events]
  */
 export type DbFactoryEvent =
   | IDbFactoryChangeEvent
+  | IDbFactoryCreatingEvent
   | IDbFactoryCreatedEvent
   | IDbFactoryRemovedEvent;
 
@@ -82,12 +74,18 @@ export type IDbFactoryChangeEvent = {
   };
 };
 
+export type IDbFactoryCreatingEvent = {
+  type: 'DB_FACTORY/creating';
+  payload: ICreateDatabaseArgs;
+};
 export type IDbFactoryCreatedEvent = {
   type: 'DB_FACTORY/created';
-  payload: {
-    db: t.IDb;
-    network: t.INetwork;
-  };
+  payload: IDbFactoryCreated;
+};
+export type IDbFactoryCreated = {
+  args: ICreateDatabaseArgs;
+  db: t.IDb;
+  network: t.INetwork;
 };
 
 export type IDbFactoryRemovedEvent = {

@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { filter, share, take, takeUntil } from 'rxjs/operators';
+import { map, filter, share, take, takeUntil } from 'rxjs/operators';
 
 import { value } from '../common';
 import * as t from '../types';
@@ -38,10 +38,20 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
    * [Fields]
    */
   private readonly _create: t.CreateDatabase<D, N>;
-  private _afterCreate: Array<t.AfterCreate<D, N>> = [];
   private readonly _cache: Refs;
   private readonly _events$ = new Subject<t.DbFactoryEvent>();
+
   public readonly events$ = this._events$.pipe(share());
+  public readonly creating$ = this.events$.pipe(
+    filter(e => e.type === 'DB_FACTORY/creating'),
+    map(e => e.payload as t.ICreateDatabaseArgs),
+    share(),
+  );
+  public readonly created$ = this.events$.pipe(
+    filter(e => e.type === 'DB_FACTORY/created'),
+    map(e => e.payload as t.IDbFactoryCreated),
+    share(),
+  );
 
   /**
    * [Properties]
@@ -84,6 +94,13 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
    * Creates a new DB and network connection.
    */
   public create = async <P extends {} = any>(args: t.ICreateCacheableDatabaseArgs) => {
+    // Fire BEFORE event.
+    args = { ...args };
+    this.fire({
+      type: 'DB_FACTORY/creating',
+      payload: args,
+    });
+
     const res = await this._create<P>(args);
     const db = res.db as D;
     const network = res.network as N;
@@ -101,29 +118,16 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
       this._cache[key] = { dir, version, db, network };
     }
 
-    // Invoke the AFTER creation callback.
-    if (this._afterCreate) {
-      await Promise.all(this._afterCreate.map(handler => handler({ args, db, network })));
-    }
-
-    // Alert listeners.
-    this._events$.next({
+    // Fire AFTER event.
+    this.fire({
       type: 'DB_FACTORY/created',
-      payload: { db, network },
+      payload: { args, db, network },
     });
     this.fireChange('CREATED');
 
     // Finish up.
     return res;
   };
-
-  /**
-   * Registers a handler that is run after creation of a new DB/Network.
-   */
-  public afterCreate(handler: t.AfterCreate<D, N>) {
-    this._afterCreate = [...this._afterCreate, handler];
-    return this;
-  }
 
   /**
    * Creates a new instance of the factory cache retaining current cached state.
@@ -158,8 +162,8 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
       const { db, network } = ref;
       const key = DbFactory.cacheKey(args);
       delete this._cache[key];
-      this._events$.next({
-        type: 'DB_FACTORY/created',
+      this.fire({
+        type: 'DB_FACTORY/removed',
         payload: { db, network },
       });
       this.fireChange('REMOVED');
@@ -178,8 +182,12 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
    * [INTERNAL]
    */
 
+  private fire(e: t.DbFactoryEvent) {
+    this._events$.next(e);
+  }
+
   private fireChange(action: t.IDbFactoryChangeEvent['payload']['action']) {
-    this._events$.next({
+    this.fire({
       type: 'DB_FACTORY/change',
       payload: { action, count: this.count },
     });

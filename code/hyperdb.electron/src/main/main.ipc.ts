@@ -1,6 +1,6 @@
 import { factory } from '@platform/hyperdb';
 import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { share, filter, map } from 'rxjs/operators';
 
 import { value } from '../common';
 import * as t from './types';
@@ -14,9 +14,13 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   const ipc = args.ipc as t.HyperdbIpc;
   const log = args.log;
   const events$ = new Subject<t.MainDbEvent>();
+  const databases = factory.clone();
+
   log.info(`listening for ${log.yellow('hyperdb events')}`);
 
-  const databases = factory.clone().afterCreate(async e => {
+  databases.creating$.subscribe(payload => events$.next({ type: 'DB/main/creating', payload }));
+
+  databases.created$.subscribe(async e => {
     const { dir, version } = e.args;
     const { db, network } = e;
 
@@ -156,6 +160,16 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   // Finish up.
   return {
     events$: events$.pipe(share()),
+    creating$: events$.pipe(
+      filter(e => e.type === 'DB/main/creating'),
+      map(e => e.payload as t.IMainDbCreating),
+      share(),
+    ),
+    created$: events$.pipe(
+      filter(e => e.type === 'DB/main/created'),
+      map(e => e.payload as t.IMainDbCreated),
+      share(),
+    ),
   };
 }
 
