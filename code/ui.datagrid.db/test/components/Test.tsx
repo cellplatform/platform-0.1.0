@@ -132,7 +132,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       const cells = value.deleteEmpty(data['db.cells']);
       Object.keys(cells).forEach(key => {
         const MAX = 15;
-        const value = data['db.cells'][key];
+        const value = cells[key];
         if (typeof value === 'string' && value.length > MAX) {
           cells[key] = `${value.substring(0, MAX).trim()}...`;
         }

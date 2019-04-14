@@ -5,8 +5,17 @@
 
 Abstract synchronization mapper between [ui.datagrid](../ui.datagrid) and a [hyperdb](../hyperdb).
 
-
-
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 
+
+## Modules
+
+![sync](https://user-images.githubusercontent.com/185555/56090674-3aed2b00-5ef9-11e9-86bb-25615ea4c125.png)
+
+Updates to the grid (UI) are saved to the DB, and conversely changes to the DB (which may occur due to changes by other users over the network) are synchroized into the grid (UI).
+
+![video](https://user-images.githubusercontent.com/185555/56090725-02018600-5efa-11e9-87bb-af86a527d0cd.gif)
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>

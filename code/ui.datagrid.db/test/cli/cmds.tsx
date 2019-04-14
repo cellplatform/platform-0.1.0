@@ -8,17 +8,11 @@ type P = t.ICommandProps & {};
 const db = Command.create<P>('db')
   .add('a1', async e => {
     const value = (e.args.params[0] || '').toString();
-    const db = e.props.db;
-    // const foo = await db.get('foo');
-    // console.log('foo', foo);
-    const key = 'cell/A1';
-    await db.put<any>(key, value);
-    const res = await db.get<any>(key);
-    console.log('res', res);
+    await e.props.db.put<any>('cell/A1', value);
   })
   .add('b2', async e => {
-    const db = e.props.db;
-    await db.put('foo', 123);
+    const value = (e.args.params[0] || '').toString();
+    await e.props.db.put<any>('cell/B2', value);
   });
 
 /**
