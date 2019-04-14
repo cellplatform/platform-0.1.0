@@ -1,9 +1,10 @@
+import { cell as util } from '@platform/util.value.cell';
+
 import { Grid, Editor } from '../../api';
 import * as hooks from '../hooks';
-import * as render from '../render';
 import { constants } from '../../common';
 
-const { DEFAULTS } = constants;
+const { DEFAULT } = constants;
 
 /**
  * Retrieves `handsontable` settings for a grid.
@@ -14,31 +15,31 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
 
   const createColumns = (length: number) => {
     const col = {
-      renderer: DEFAULTS.CELL_RENDERER,
+      renderer: DEFAULT.CELL_RENDERER,
       editor: Editor,
-      width: (index: number) => {
-        // console.log('get col width', index);
-        return index === 0 ? 300 : DEFAULTS.COLUMN_WIDTHS;
-      },
     };
     return Array.from({ length }).map(() => col);
   };
 
   const rowHeights: any = (index: number) => {
-    // if (index === 1) {
-    //   return 80;
-    // }
-
-    return DEFAULTS.ROW_HEIGHTS;
+    let height = DEFAULT.ROW_HEIGHT;
+    const grid = getGrid();
+    if (grid) {
+      const row = grid.rows[index];
+      height = row && row.height !== undefined ? row.height : height;
+    }
+    return height;
   };
 
-  // const colWidths: any = (index: number) => {
-  //   // if (index === 1) {
-  //   //   return 380;
-  //   // }
-  //   console.log('colWidths', index);
-  //   return DEFAULTS.COLUMN_WIDTHS;
-  // };
+  const colWidths: any = (index: number) => {
+    let width = DEFAULT.COLUMN_WIDTH;
+    const grid = getGrid();
+    if (grid) {
+      const column = grid.columns[util.toKey(index)];
+      width = column && column.width !== undefined ? column.width : width;
+    }
+    return width;
+  };
 
   const settings: Handsontable.DefaultSettings = {
     data: [],
@@ -47,7 +48,7 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
     rowHeights,
 
     colHeaders: true,
-    // colWidths,
+    colWidths,
     columns: createColumns(totalColumns),
 
     viewportRowRenderingOffset: 20,

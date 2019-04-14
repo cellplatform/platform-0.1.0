@@ -16,6 +16,8 @@ export type IGrid = {
   readonly keys$: Observable<t.IGridKeydown>;
 
   values: t.IGridValues;
+  columns: IGridColumns;
+  rows: IGridRows;
 
   /**
    * [Methods]
@@ -37,6 +39,9 @@ export type IGridSelection = {
   readonly all?: boolean;
 };
 
-export type IGridValues = {
-  [key: string]: CellValue;
-};
+export type IGridValues = { [key: string]: CellValue };
+export type IGridColumns = { [key: string]: IGridColumn };
+export type IGridRows = { [key: string]: IGridRow };
+
+export type IGridColumn = { width?: number };
+export type IGridRow = { height?: number };

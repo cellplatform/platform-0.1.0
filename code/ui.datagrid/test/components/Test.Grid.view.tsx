@@ -14,19 +14,33 @@ export type ITestGridViewProps = {
   style?: GlamorValue;
   Table?: Handsontable;
 };
-export type ITestGridViewState = { values?: t.IGridValues };
+export type ITestGridViewState = {
+  values?: t.IGridValues;
+  columns?: t.IGridColumns;
+  rows?: t.IGridRows;
+};
 
 const DEFAULT = {
-  A1: 'A1',
-  // A2: '* one\n * two',
-  A2: '# Heading\nhello',
-  A3: '## Heading\nhello',
-  B1: 'locked',
-  B2: 'cancel',
+  VALUES: {
+    A1: 'A1',
+    // A2: '* one\n * two',
+    A2: '# Heading\nhello',
+    A3: '## Heading\nhello',
+    B1: 'locked',
+    B2: 'cancel',
+  },
+  COLUMNS: {
+    A: { width: 200 },
+  },
+  ROWS: {},
 };
 
 export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestGridViewState> {
-  public state: ITestGridViewState = { values: DEFAULT };
+  public state: ITestGridViewState = {
+    values: DEFAULT.VALUES,
+    columns: DEFAULT.COLUMNS,
+    rows: DEFAULT.ROWS,
+  };
   public state$ = new Subject<Partial<ITestGridViewState>>();
   private unmounted$ = new Subject();
   private events$ = this.props.events$ || new Subject<t.GridEvent>();
@@ -140,6 +154,8 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         key={'test.grid'}
         ref={this.datagridRef}
         values={this.state.values}
+        columns={this.state.columns}
+        rows={this.state.rows}
         events$={this.events$}
         factory={this.factory}
         totalColumns={52}

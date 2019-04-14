@@ -31,7 +31,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     state$.subscribe(e => this.setState(e));
 
     events$.subscribe(e => {
-      // console.log('e', e);
+      console.log('🌳', e.type, e.payload);
     });
   }
 
@@ -52,17 +52,23 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     return this.testGrid.datagrid.grid;
   }
 
+  private get test$() {
+    return this.testGrid.state$;
+  }
+
   /**
    * [Methods]
    */
   public updateState() {
     const grid = this.grid;
-    const { selection, values } = grid;
+    const { selection, values, rows, columns } = grid;
     const { editorType } = this.props;
     const data = {
       grid: {
         isEditing: grid.isEditing,
         values,
+        rows,
+        columns,
         selection,
       },
       debug: { editorType },
@@ -112,11 +118,16 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             {this.button('redraw', () => this.grid.redraw())}
             {this.button('focus', () => this.grid.focus())}
             <Hr margin={5} />
-            {this.button('loadValues', () => (this.grid.values = { A1: 'loaded value' }))}
+            {this.button('values', () => (this.grid.values = { A1: 'loaded value' }))}
             {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
             {this.button('change values (via prop)', () =>
-              this.testGrid.state$.next({ values: { A1: 'happy' } }),
+              this.test$.next({ values: { A1: 'happy' } }),
             )}
+            <Hr margin={5} />
+            {this.button('columns widths', () =>
+              this.test$.next({ columns: { A: { width: 300 } } }),
+            )}
+            {this.button('row heights', () => this.test$.next({ rows: { 1: { height: 120 } } }))}
             <Hr margin={5} />
             {this.button('select: A1', () => this.grid.select({ cell: 'A1' }))}
             {this.button('select: A1 and range', () =>
@@ -136,11 +147,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
               }),
             )}
           </div>
-          <ObjectView
-            name={'state'}
-            data={this.state.data}
-            expandPaths={['$', '$.grid', '$.grid.selection', '$.grid.selection.ranges']}
-          />
+          {this.renderState()}
         </div>
         <div {...styles.right}>
           <div {...styles.rightInner}>
@@ -153,6 +160,16 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           </div>
         </div>
       </div>
+    );
+  }
+
+  private renderState() {
+    return (
+      <ObjectView
+        name={'state'}
+        data={this.state.data}
+        expandPaths={['$', '$.grid', '$.grid.selection', '$.grid.selection.ranges']}
+      />
     );
   }
 

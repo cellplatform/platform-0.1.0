@@ -9,6 +9,8 @@ export type IGridArgs = {
   totalColumns: number;
   totalRows: number;
   values?: t.IGridValues;
+  columns?: t.IGridColumns;
+  rows?: t.IGridRows;
 };
 
 /**
@@ -48,11 +50,23 @@ export class Grid implements t.IGrid {
     this.totalRows = args.totalRows;
     this._.table = args.table;
     this._.values = args.values || {};
+    this._.columns = args.columns || {};
+    this._.rows = args.rows || {};
     this.id = `grid/${(this._.table as any).guid.replace(/^ht_/, '')}`;
 
     this.events$
       .pipe(filter(e => e.type === 'GRID/ready'))
       .subscribe(() => (this._.isReady = true));
+
+    /**
+     * Debounced redraw.
+     */
+    this._.redraw$
+      .pipe(
+        takeUntil(this.dispose$),
+        debounceTime(0),
+      )
+      .subscribe(e => this.fire({ type: 'GRID/redraw', payload: {} }));
 
     /**
      * Manage editor events.
@@ -106,9 +120,12 @@ export class Grid implements t.IGrid {
     table: (undefined as unknown) as Handsontable,
     dispose$: new Subject(),
     events$: new Subject<t.GridEvent>(),
+    redraw$: new Subject(),
     isReady: false,
     isEditing: false,
     values: ({} as unknown) as t.IGridValues,
+    columns: ({} as unknown) as t.IGridColumns,
+    rows: ({} as unknown) as t.IGridRows,
     lastSelection: (undefined as unknown) as t.IGridSelection,
   };
 
@@ -147,12 +164,28 @@ export class Grid implements t.IGrid {
   public set values(values: t.IGridValues) {
     values = { ...values };
     const data = Grid.toDataArray({
-      values: values,
+      values,
       totalColumns: this.totalColumns,
       totalRows: this.totalRows,
     });
     this._.values = values;
     this._.table.loadData(data);
+  }
+
+  public get columns() {
+    return this._.columns;
+  }
+  public set columns(value: t.IGridColumns) {
+    this._.columns = value || {};
+    this.redraw();
+  }
+
+  public get rows() {
+    return this._.rows;
+  }
+  public set rows(value: t.IGridRows) {
+    this._.rows = value || {};
+    this.redraw();
   }
 
   public get selection(): t.IGridSelection {
@@ -302,7 +335,7 @@ export class Grid implements t.IGrid {
    * Requests that the grid be redrawn.
    */
   public redraw() {
-    this.fire({ type: 'GRID/redraw', payload: {} });
+    this._.redraw$.next();
     return this;
   }
 

@@ -76,5 +76,5 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
 export function registerCellRenderer(Table: Handsontable, grid: Grid, factory: FactoryManager) {
   const renderers = (Table as any).renderers;
   const fn: RegisterRenderer = renderers.registerRenderer;
-  fn(constants.DEFAULTS.CELL_RENDERER, cellRenderer(grid, factory));
+  fn(constants.DEFAULT.CELL_RENDERER, cellRenderer(grid, factory));
 }

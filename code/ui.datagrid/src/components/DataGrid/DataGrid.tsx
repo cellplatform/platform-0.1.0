@@ -22,12 +22,14 @@ import * as render from '../render';
 import { getSettings } from './settings';
 import { IGridRefsPrivate } from './types.private';
 
-const { DEFAULTS, CSS } = constants;
+const { DEFAULT, CSS } = constants;
 
 export type IDataGridProps = {
   totalColumns?: number;
   totalRows?: number;
   values?: t.IGridValues;
+  columns?: t.IGridColumns;
+  rows?: t.IGridRows;
   Handsontable?: Handsontable;
   factory?: t.GridFactory;
   events$?: Subject<t.GridEvent>;
@@ -66,7 +68,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public componentDidMount() {
-    const { values } = this.props;
+    const { values, columns, rows } = this.props;
 
     // Create the table and corresponding API wrapper.
     const Table = this.props.Handsontable || TableLib;
@@ -74,7 +76,14 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const totalRows = this.totalRows;
     const settings = getSettings({ totalColumns, getGrid: () => this.grid });
     const table = (this.table = new Table(this.el as Element, settings));
-    const grid = (this.grid = Grid.create({ table, totalColumns, totalRows, values }));
+    const grid = (this.grid = Grid.create({
+      table,
+      totalColumns,
+      totalRows,
+      values,
+      columns,
+      rows,
+    }));
     this.unmounted$.subscribe(() => grid.dispose());
 
     // Initialize factories.
@@ -151,9 +160,9 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     if (this.isDisposed) {
       return;
     }
-    const { initial = {} } = this.props;
+    const { initial = {}, values = {} } = this.props;
     const grid = this.grid;
-    grid.values = {};
+    grid.values = values;
     if (initial.selection) {
       const selection =
         typeof initial.selection === 'string' ? { cell: initial.selection } : initial.selection;
@@ -165,11 +174,23 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public componentDidUpdate(prev: IDataGridProps) {
-    /**
-     * If the values prop has changed. Force reload the values into the grid.
-     */
-    if (!R.equals(prev.values, this.props.values)) {
-      this.grid.values = this.props.values || {};
+    const next = this.props;
+    const grid = this.grid;
+    let redraw = false;
+    if (!R.equals(prev.values, next.values)) {
+      grid.values = next.values || {};
+      redraw = true;
+    }
+    if (!R.equals(prev.columns, next.columns)) {
+      grid.columns = next.columns || {};
+      redraw = true;
+    }
+    if (!R.equals(prev.rows, next.rows)) {
+      grid.rows = next.rows || {};
+      redraw = true;
+    }
+    if (redraw) {
+      this.redraw();
     }
   }
 
@@ -198,11 +219,11 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public get totalColumns() {
-    return value.defaultValue(this.props.totalColumns, DEFAULTS.TOTAL_COLUMNS);
+    return value.defaultValue(this.props.totalColumns, DEFAULT.TOTAL_COLUMNS);
   }
 
   public get totalRows() {
-    return value.defaultValue(this.props.totalRows, DEFAULTS.TOTAL_ROWS);
+    return value.defaultValue(this.props.totalRows, DEFAULT.TOTAL_ROWS);
   }
 
   /**

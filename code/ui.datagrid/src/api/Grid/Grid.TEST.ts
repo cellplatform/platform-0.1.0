@@ -14,11 +14,15 @@ const createGrid = (args: Partial<IGridArgs> = {}) => {
 describe('Grid', () => {
   it('constructs', () => {
     const values = { A1: 123 };
-    const grid = createGrid({ totalColumns: 10, totalRows: 5, values });
+    const columns = { A: { width: 200 } };
+    const rows = { 10: { height: 200 } };
+    const grid = createGrid({ totalColumns: 10, totalRows: 5, values, columns, rows });
     expect(grid.isEditing).to.eql(false);
     expect(grid.totalColumns).to.eql(10);
     expect(grid.totalRows).to.eql(5);
     expect(grid.values).to.eql(values);
+    expect(grid.columns).to.eql(columns);
+    expect(grid.rows).to.eql(rows);
   });
 
   it('dispose', () => {
