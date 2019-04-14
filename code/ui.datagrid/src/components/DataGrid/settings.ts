@@ -21,26 +21,31 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
     });
   };
 
-  // const rowHeights: any = (index: number) => {
-  //   // if (index === 1) {
-  //   //   return 80;
-  //   // }
-  //   return DEFAULTS.ROW_HEIGHTS;
-  // };
+  const rowHeights: any = (index: number) => {
+    // if (index === 1) {
+    //   return 80;
+    // }
+    return DEFAULTS.ROW_HEIGHTS;
+  };
 
-  // const grid = getGrid();
+  const colWidths: any = (index: number) => {
+    // if (index === 1) {
+    //   return 380;
+    // }
+    return DEFAULTS.COLUMN_WIDTHS;
+  };
 
   const settings = {
     data: [],
 
     rowHeaders: true,
-    rowHeights: DEFAULTS.ROW_HEIGHTS,
+    rowHeights,
 
     colHeaders: true,
-    colWidths: DEFAULTS.COLUMN_WIDTHS,
+    colWidths,
     columns: createColumns(totalColumns),
-    viewportRowRenderingOffset: 20,
 
+    viewportRowRenderingOffset: 20,
     manualRowResize: true,
     manualColumnResize: true,
     renderAllRows: false, // Virtual scrolling.
