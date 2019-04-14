@@ -1120,7 +1120,7 @@
     hyperdb "3.5.0"
     pump "3.0.0"
 
-"@platform/libs@0.0.12":
+"@platform/libs@0.0.12", "@platform/libs@^0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.12.tgz#84f224528adae402ddba30b0bfcd74dbdd22f490"
   integrity sha512-wOPuSNdtuZt1BjDVkqCMAFSqSeDS8zSwA8tT/7tixReA+BVwePrpeL3m6ElH5A1znqxsb+W3KMyAw0AjVAlICQ==
