@@ -4,7 +4,7 @@
   "main": "index.js",
   "dependencies": {
     "semver": "4.3.6",
-    "express": "^4.16.4"
+    "express": "4.16.4"
   },
   "devDependencies": {
     "mocha": "latest"

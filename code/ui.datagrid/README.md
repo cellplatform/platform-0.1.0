@@ -3,7 +3,6 @@
 [![NPM](https://img.shields.io/npm/v/@platform/ui.datagrid.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/ui.datagrid)
 ![banner](https://user-images.githubusercontent.com/185555/54960061-1835b980-4fc0-11e9-831c-acb96e734d56.png)
 
-
 [Strongly typed](https://www.typescriptlang.org) tabular data-grid with rich [observable](https://www.learnrxjs.io) event stream.
 
 ## Setup
