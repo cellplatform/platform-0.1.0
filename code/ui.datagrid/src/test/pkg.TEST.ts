@@ -9,12 +9,12 @@ describe('package.json', () => {
     const PKG = 'handsontable';
     const MIT = '6.2.2';
 
+    let msg = `\nWARNING [${PKG}] must be version ${log.green(MIT)} not ${log.red(MIT)}.`;
     if (deps.handsontable !== MIT) {
-      let msg = `\nWARNING [${PKG}] must be version ${log.green(MIT)} not ${log.red(MIT)}.`;
       msg += log.gray(`\nv${MIT} is the latest version licended under the MIT licence.\n`);
       log.info.yellow(msg);
     }
 
-    expect(deps[PKG]).to.eql(MIT);
+    expect(deps[PKG]).to.eql(MIT, msg);
   });
 });
