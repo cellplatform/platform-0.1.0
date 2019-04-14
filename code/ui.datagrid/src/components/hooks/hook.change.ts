@@ -1,6 +1,6 @@
 import { Grid } from '../../api';
 import { t, R } from '../../common';
-import { TableEventSource } from './types.private';
+import { TableEventSource } from '../DataGrid/types.private';
 
 /**
  * Factory for creating a grid's `beforeChange` handler.

@@ -20,7 +20,7 @@ import {
 } from '../../common';
 import { FactoryManager } from '../factory';
 import * as render from '../render';
-import * as hook from './hook';
+import * as hooks from '../hooks';
 import { IGridRefsPrivate } from './types.private';
 
 const { DEFAULTS, CSS } = constants;
@@ -203,7 +203,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
   private get settings(): DefaultSettings {
     const getGrid = () => this.grid;
-    const selectionHandler = hook.afterSelectionHandler(getGrid);
+    const selectionHandler = hooks.afterSelectionHandler(getGrid);
 
     const createColumns = (length: number) => {
       return Array.from({ length }).map(() => {
@@ -240,8 +240,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
        * Event Hooks
        * https://handsontable.com/docs/6.2.2/Hooks.html
        */
-      beforeKeyDown: hook.beforeKeyDownHandler(getGrid),
-      beforeChange: hook.beforeChangeHandler(getGrid),
+      beforeKeyDown: hooks.beforeKeyDownHandler(getGrid),
+      beforeChange: hooks.beforeChangeHandler(getGrid),
       afterSelection: selectionHandler.select,
       afterDeselect: selectionHandler.deselect,
     };
