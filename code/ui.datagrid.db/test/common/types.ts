@@ -6,9 +6,16 @@ export * from '../../src/types';
 
 export type ICommandProps = {
   state$: Subject<ITestState>;
+  databases: t.IDbFactory;
+  db: IDb;
 };
 
 export type ITestState = {
-  count?: number;
   values?: t.IGridValues;
+  dir?: string;
+};
+
+export type IDb = t.IDb<IDbSchema>;
+export type IDbSchema = {
+  foo: number;
 };

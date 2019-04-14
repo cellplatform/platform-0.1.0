@@ -1,5 +1,5 @@
 import { fs } from '@platform/fs';
-import main from '@platform/hyperdb.electron/lib/main';
+import hyperdb from '@platform/hyperdb.electron/lib/main';
 import uiharness from '@uiharness/electron/lib/main';
 import { app } from 'electron';
 import { filter } from 'rxjs/operators';
@@ -27,7 +27,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
     /**
      * Initialise the HyperDB on the [main] process.
      */
-    const { events$ } = await main.listen({ ipc, log });
+    const { events$ } = await hyperdb.listen({ ipc, log });
     const created$ = events$.pipe(filter(e => e.type === 'DB/main/created'));
 
     // Keep the store object in sync when a new DB is created.

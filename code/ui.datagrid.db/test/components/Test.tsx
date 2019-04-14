@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { markdown, datagrid, color, Shell, t, ObjectView, css, renderer } from '../common';
 import * as cli from '../cli';
-import { markdown, datagrid, color, Shell, t, ObjectView, css } from '../common';
 
 export type ITestProps = {};
 
@@ -12,12 +12,16 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
   private grid$ = new Subject<t.GridEvent>();
-  private cli: t.ICommandState = cli.init({ state$: this.state$ });
+  private cli!: t.ICommandState;
+
+  public static contextType = renderer.Context;
+  public context!: renderer.ReactContext;
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
+    this.cli = cli.init({ state$: this.state$, databases: this.databases });
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
   }
@@ -25,6 +29,13 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get databases() {
+    return (this.context as any).databases as t.IDbFactory;
   }
 
   /**

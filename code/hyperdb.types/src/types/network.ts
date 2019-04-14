@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable } from '../common';
 
 export type NetworkStatus = 'DISCONNECTED' | 'CONNECTING' | 'CONNECTED';
 

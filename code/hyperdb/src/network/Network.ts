@@ -10,8 +10,6 @@ import * as t from '../types';
 const hyperswarm = require('@hyperswarm/network');
 const pump = require('pump');
 
-export * from './types';
-
 type INetworkArgs = { db: Db };
 type SocketRefs = {
   replication: t.IProtocol;

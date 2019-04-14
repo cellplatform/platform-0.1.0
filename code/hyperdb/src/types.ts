@@ -1,9 +1,6 @@
 import { Socket } from 'net';
 
 export * from '@platform/hyperdb.types';
-// export * from './db/types';
-export * from './network/types';
-export * from './factory/types';
 
 /**
  * [Network]

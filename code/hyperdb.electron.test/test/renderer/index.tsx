@@ -1,8 +1,8 @@
-import { renderer } from '@platform/electron/lib/renderer';
 import * as React from 'react';
-import { Shell } from './components/Shell';
+
 import { init as initCli } from './cli';
-import { hyperdb, t } from './common';
+import { hyperdb, renderer } from './common';
+import { Shell } from './components/Shell';
 
 /**
  * [Renderer] entry-point.
