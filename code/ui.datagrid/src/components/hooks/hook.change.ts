@@ -24,7 +24,7 @@ export function beforeChangeHandler(getGrid: () => Grid) {
         const column = change[1] as number;
         const value = { from: change[2], to: change[3] };
         const isChanged = !R.equals(value.from, value.to);
-        const payload: t.IGridChange = {
+        const payload: t.IGridCellChange = {
           source: toSource(source),
           grid,
           get cell() {
@@ -41,7 +41,7 @@ export function beforeChangeHandler(getGrid: () => Grid) {
         return payload;
       })
       .filter(e => Boolean(e))
-      .map(e => e as t.IGridChange)
+      .map(e => e as t.IGridCellChange)
       .filter(e => e.isChanged);
 
     // Fire change events.

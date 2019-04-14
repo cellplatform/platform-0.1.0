@@ -8,7 +8,7 @@ export type GridEvent =
   | IGridReadyEvent
   | IGridRedrawEvent
   | IGridKeydownEvent
-  | IGridChangeEvent
+  | IGridCellChangeEvent
   | IGridChangeSetEvent
   | IGridSelectionChangeEvent
   | IGridFocusEvent
@@ -51,16 +51,16 @@ export type IGridKeydown = {
 export type GridChangeType = 'EDIT' | 'OTHER';
 export type IGridChangeSetEvent = {
   type: 'GRID/changeSet';
-  payload: IGridChangeSet;
+  payload: IGridCellChangeSet;
 };
 
-export type IGridChangeEvent = {
+export type IGridCellChangeEvent = {
   type: 'GRID/change';
-  payload: IGridChange;
+  payload: IGridCellChange;
 };
 
-export type IGridChangeSet = { changes: IGridChange[]; cancel(): void };
-export type IGridChange = {
+export type IGridCellChangeSet = { changes: IGridCellChange[]; cancel(): void };
+export type IGridCellChange = {
   source: GridChangeType;
   grid: t.IGrid;
   cell: t.ICell;

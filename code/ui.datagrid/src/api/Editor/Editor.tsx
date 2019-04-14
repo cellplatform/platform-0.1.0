@@ -134,7 +134,7 @@ export class Editor extends editors.TextEditor {
       .pipe(
         takeUntil(context.end$),
         filter(e => e.type === 'GRID/change'),
-        map(e => e.payload as t.IGridChange),
+        map(e => e.payload as t.IGridCellChange),
         filter(e => e.isCancelled),
         filter(e => e.cell.isPosition({ row, column })),
       )

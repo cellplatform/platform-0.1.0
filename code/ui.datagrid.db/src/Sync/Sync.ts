@@ -31,7 +31,7 @@ export class Sync {
     const grid$ = grid.events$.pipe(takeUntil(this.dispose$));
     const gridChanges$ = grid$.pipe(
       filter(e => e.type === 'GRID/changeSet'),
-      map(e => e.payload as t.IGridChangeSet),
+      map(e => e.payload as t.IGridCellChangeSet),
     );
     const db$ = db.events$.pipe(takeUntil(this.dispose$));
 
