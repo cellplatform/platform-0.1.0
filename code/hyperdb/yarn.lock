@@ -74,10 +74,10 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.types@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.1.tgz#d22982ed35506e3d401857454b3e51c9a7d5fb6e"
-  integrity sha512-zA/gVBsklsvseDLSOfDg1iHUM9dmsUGuYN71bugRcnxbuiFhHBDjqNjT5rUa5R34NFjSpKZ6RLStg0Y2WWHcrA==
+"@platform/hyperdb.types@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.2.tgz#832ba7855d106fd0bfbc3c974a088e74607435b1"
+  integrity sha512-wWhWRPtpLzVhIFYlekz8HiRu/tt8elSiTQx6To7Axnj9NsDW8iYQ7n6gajKVItMBcQ09tkdDmJ62FdTULFfdUA==
   dependencies:
     "@platform/libs" "0.0.12"
 
@@ -163,7 +163,7 @@
   dependencies:
     chalk "*"
 
-"@types/filesize@^4.1.0":
+"@types/filesize@4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@types/filesize/-/filesize-4.1.0.tgz#da49e71ccb6bf5b024ced2bcad30528a8eebd46d"
   integrity sha512-PsogPt8wYP5406gh7hscvg3jdcEGeeHeG+qGpwSK3wUTgiT2WvKbT8la/SxSglfLTqxJcLwPcXvhenNGOAdHuw==
@@ -978,7 +978,7 @@ figures@^2.0.0:
   dependencies:
     escape-string-regexp "^1.0.5"
 
-filesize@^4.1.2:
+filesize@4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/filesize/-/filesize-4.1.2.tgz#fcd570af1353cea97897be64f56183adb995994b"
   integrity sha512-iSWteWtfNcrWQTkQw8ble2bnonSl7YJImsn9OZKpE2E4IHhXI78eASpDYUljXZZdYj36QsEKjOs/CsiDqmKMJw==

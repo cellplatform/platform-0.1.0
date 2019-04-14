@@ -1088,33 +1088,33 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.electron@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.0.tgz#c7a7acd933273431b1a16b84d76d582174d3ee8b"
-  integrity sha512-fGCTfzeEQVawgaG5eLCCs7RcyooFcQMmZGhTAU88QAAiRNCVvjO4469ouILYjRQGnXIz/KaBMns+ZPsZOepuyg==
+"@platform/hyperdb.electron@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.1.tgz#8f3c1e4fce73c4deecb3ac146be9fb422606d0c4"
+  integrity sha512-44P0aj/3chDfu/flXkkUBuA/yfAiqMep733M4r+Uuwkef2q8SEz9lql+Gj7P7VnuBCI6vESr1NFEGJk8qUbbhw==
   dependencies:
     "@platform/electron" "0.1.35"
-    "@platform/hyperdb" "0.1.3"
-    "@platform/hyperdb.types" "^0.0.1"
+    "@platform/hyperdb" "0.1.4"
+    "@platform/hyperdb.types" "0.0.2"
     "@platform/util.string" "0.0.54"
     "@platform/util.value" "0.0.57"
-    "@uiharness/electron" "0.4.24"
+    "@uiharness/electron" "0.4.25"
 
-"@platform/hyperdb.types@0.0.1", "@platform/hyperdb.types@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.1.tgz#d22982ed35506e3d401857454b3e51c9a7d5fb6e"
-  integrity sha512-zA/gVBsklsvseDLSOfDg1iHUM9dmsUGuYN71bugRcnxbuiFhHBDjqNjT5rUa5R34NFjSpKZ6RLStg0Y2WWHcrA==
+"@platform/hyperdb.types@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.2.tgz#832ba7855d106fd0bfbc3c974a088e74607435b1"
+  integrity sha512-wWhWRPtpLzVhIFYlekz8HiRu/tt8elSiTQx6To7Axnj9NsDW8iYQ7n6gajKVItMBcQ09tkdDmJ62FdTULFfdUA==
   dependencies:
     "@platform/libs" "0.0.12"
 
-"@platform/hyperdb@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.3.tgz#113ce28b6f6920685373a48ed1e577e8ae6509c0"
-  integrity sha512-5ZD8pf8GVBKvvOwCxiUdQhi+WFdcWSiCpMeoXF8+o9XtTSAUIM8p2gAEejWEH/AssZZZgkrdCR4ydHedRnDyZQ==
+"@platform/hyperdb@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.4.tgz#3e41c923f0118f5d012e0a4cb131aaa46e0a92d9"
+  integrity sha512-cBiciF1wQsmIu1R8T4plRJV3vPS7cAIW9FAu+hgo0TLPRNCAGEBz6N9Yph/Yu3mWy9xIZW1nqzGLHULuZt+4ww==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.50"
-    "@platform/hyperdb.types" "^0.0.1"
+    "@platform/hyperdb.types" "0.0.2"
     "@platform/util.value" "0.0.57"
     discovery-swarm "5.1.4"
     hyperdb "3.5.0"
