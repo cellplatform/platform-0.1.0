@@ -176,14 +176,18 @@ export class Grid implements t.IGrid {
     return this._.columns;
   }
   public set columns(value: t.IGridColumns) {
+    const from = { ...this._.columns };
     this._.columns = value || {};
+    this.fire({ type: 'GRID/columns/changed', payload: { from, to: value } });
   }
 
   public get rows() {
     return this._.rows;
   }
   public set rows(value: t.IGridRows) {
+    const from = { ...this._.rows };
     this._.rows = value || {};
+    this.fire({ type: 'GRID/rows/changed', payload: { from, to: value } });
   }
 
   public get selection(): t.IGridSelection {

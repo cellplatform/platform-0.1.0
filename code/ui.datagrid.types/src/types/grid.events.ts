@@ -10,6 +10,8 @@ export type GridEvent =
   | IGridKeydownEvent
   | IGridCellChangeEvent
   | IGridChangeSetEvent
+  | IColumnsChangedEvent
+  | IRowsChangedEvent
   | IGridSelectionChangeEvent
   | IGridFocusEvent
   | IGridBlurEvent;
@@ -46,7 +48,7 @@ export type IGridKeydown = {
 };
 
 /**
- * Change
+ * Cell.
  */
 export type GridChangeType = 'EDIT' | 'OTHER';
 export type IGridChangeSetEvent = {
@@ -71,7 +73,31 @@ export type IGridCellChange = {
 };
 
 /**
- * Selection
+ * Column.
+ */
+export type IColumnsChangedEvent = {
+  type: 'GRID/columns/changed';
+  payload: IColumnsChanged;
+};
+export type IColumnsChanged = {
+  from: t.IGridColumns;
+  to: t.IGridColumns;
+};
+
+/**
+ * Rows.
+ */
+export type IRowsChangedEvent = {
+  type: 'GRID/rows/changed';
+  payload: IRowsChanged;
+};
+export type IRowsChanged = {
+  from: t.IGridRows;
+  to: t.IGridRows;
+};
+
+/**
+ * Selection.
  */
 export type IGridSelectionChangeEvent = {
   type: 'GRID/selection';
@@ -84,7 +110,7 @@ export type IGridSelectionChange = {
 };
 
 /**
- * Focus
+ * Focus.
  */
 export type IGridFocusEvent = {
   type: 'GRID/focus';
