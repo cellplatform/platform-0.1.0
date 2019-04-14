@@ -67,7 +67,7 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
     afterDeselect: selectionHandler.deselect,
 
     /**
-     * Store the column size data after a manual resize.
+     * Store the `column width` data after a manual resize.
      * - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterColumnResize
      */
     afterColumnResize: (index: number, width: number, isDoubleClick: boolean) => {
@@ -75,6 +75,7 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
       if (grid) {
         const key = util.toKey(index);
         let column = grid.columns[key];
+        width = Math.max(DEFAULT.COLUMN_WIDTH_MIN, width);
         column = { ...(column || {}), width };
         grid.columns = { ...grid.columns, [key]: { ...(column || {}), width } };
         grid.redraw();
@@ -82,6 +83,23 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
     },
 
     /**
+     * Store the `row height` data after a manual resize.
+     * - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterRowResize
+     */
+    afterRowResize: (index: number, height: number, isDoubleClick: boolean) => {
+      const grid = getGrid();
+      if (grid) {
+        const key = index;
+        let row = grid.rows[key];
+        height = Math.max(DEFAULT.ROW_HEIGHT_MIN, height);
+        row = { ...(row || {}), height };
+        grid.rows = { ...grid.rows, [key]: { ...(row || {}), height } };
+        grid.redraw();
+      }
+    },
+
+    /**
+     * Ensure `column width` is retrieved from state.
      * - https://handsontable.com/docs/6.2.2/Hooks.html#event:modifyColWidth
      */
     modifyColWidth: (width: number, index: number) => {
@@ -92,6 +110,20 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
         width = column && column.width !== undefined ? column.width : width;
       }
       return width;
+    },
+
+    /**
+     * Ensure `row height` is retrieved from state.
+     * - https://handsontable.com/docs/6.2.2/Hooks.html#event:modifyRowHeight
+     */
+    modifyRowHeight: (height: number, index: number) => {
+      const grid = getGrid();
+      if (grid) {
+        const key = index;
+        const row = grid.rows[key];
+        height = row && row.height !== undefined ? row.height : height;
+      }
+      return height;
     },
   };
 
