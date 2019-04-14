@@ -35,7 +35,8 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
     let width = DEFAULT.COLUMN_WIDTH;
     const grid = getGrid();
     if (grid) {
-      const column = grid.columns[util.toKey(index)];
+      const key = util.toKey(index);
+      const column = grid.columns[key];
       width = column && column.width !== undefined ? column.width : width;
     }
     return width;
@@ -58,12 +59,40 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
 
     /**
      * Event Hooks
-     * https://handsontable.com/docs/6.2.2/Hooks.html
+     * - https://handsontable.com/docs/6.2.2/Hooks.html
      */
     beforeKeyDown: hooks.beforeKeyDownHandler(getGrid),
     beforeChange: hooks.beforeChangeHandler(getGrid),
     afterSelection: selectionHandler.select,
     afterDeselect: selectionHandler.deselect,
+
+    /**
+     * Store the column size data after a manual resize.
+     * - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterColumnResize
+     */
+    afterColumnResize: (index: number, width: number, isDoubleClick: boolean) => {
+      const grid = getGrid();
+      if (grid) {
+        const key = util.toKey(index);
+        let column = grid.columns[key];
+        column = { ...(column || {}), width };
+        grid.columns = { ...grid.columns, [key]: { ...(column || {}), width } };
+        grid.redraw();
+      }
+    },
+
+    /**
+     * - https://handsontable.com/docs/6.2.2/Hooks.html#event:modifyColWidth
+     */
+    modifyColWidth: (width: number, index: number) => {
+      const grid = getGrid();
+      if (grid) {
+        const key = util.toKey(index);
+        const column = grid.columns[key];
+        width = column && column.width !== undefined ? column.width : width;
+      }
+      return width;
+    },
   };
 
   return settings;

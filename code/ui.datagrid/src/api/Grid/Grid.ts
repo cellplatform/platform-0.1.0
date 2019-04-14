@@ -177,7 +177,6 @@ export class Grid implements t.IGrid {
   }
   public set columns(value: t.IGridColumns) {
     this._.columns = value || {};
-    this.redraw();
   }
 
   public get rows() {
@@ -185,7 +184,6 @@ export class Grid implements t.IGrid {
   }
   public set rows(value: t.IGridRows) {
     this._.rows = value || {};
-    this.redraw();
   }
 
   public get selection(): t.IGridSelection {

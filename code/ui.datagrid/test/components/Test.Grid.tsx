@@ -125,7 +125,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
               this.test$.next({ values: { A1: 'happy' } }),
             )}
             <Hr margin={5} />
-            {this.button('columns widths', () =>
+            {this.button('columns widths - A:200', () =>
+              this.test$.next({ columns: { A: { width: 200 } } }),
+            )}
+            {this.button('columns widths - A:300', () =>
               this.test$.next({ columns: { A: { width: 300 } } }),
             )}
             {this.button('row heights', () => this.test$.next({ rows: { 1: { height: 120 } } }))}

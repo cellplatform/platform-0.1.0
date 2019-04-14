@@ -30,7 +30,7 @@ const DEFAULT = {
     B2: 'cancel',
   },
   COLUMNS: {
-    A: { width: 200 },
+    A: { width: 300 },
   },
   ROWS: {},
 };
