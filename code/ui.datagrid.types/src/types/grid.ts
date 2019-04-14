@@ -1,4 +1,5 @@
 import { t, Observable } from '../common';
+import { CellValue } from './common';
 
 export type IGrid = {
   /**
@@ -10,16 +11,16 @@ export type IGrid = {
   readonly isDisposed: boolean;
   readonly isReady: boolean;
   readonly isEditing: boolean;
-  readonly values: t.IGridValues;
   readonly selection: t.IGridSelection;
   readonly events$: Observable<t.GridEvent>;
   readonly keys$: Observable<t.IGridKeydown>;
+
+  values: t.IGridValues;
 
   /**
    * [Methods]
    */
   dispose(): void;
-  loadValues(values?: t.IGridValues): IGrid;
   changeValues(changes: t.IGridValues, options?: { redraw?: boolean }): IGrid;
   cell(key: t.CellRef): t.ICell;
   scrollTo(args: { cell: t.CellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
@@ -34,4 +35,8 @@ export type IGridSelection = {
   readonly cell?: t.GridCellKey;
   readonly ranges: t.GridCellRangeKey[];
   readonly all?: boolean;
+};
+
+export type IGridValues = {
+  [key: string]: CellValue;
 };

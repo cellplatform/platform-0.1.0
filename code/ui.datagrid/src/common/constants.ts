@@ -33,4 +33,5 @@ export const DEFAULTS = {
   TOTAL_ROWS: 1000,
   ROW_HEIGHTS: 26,
   COLUMN_WIDTHS: 100,
+  CELL_RENDERER: 'cell',
 };

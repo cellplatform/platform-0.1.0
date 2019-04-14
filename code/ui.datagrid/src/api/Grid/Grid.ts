@@ -144,6 +144,16 @@ export class Grid implements t.IGrid {
   public get values() {
     return this._.values;
   }
+  public set values(values: t.IGridValues) {
+    values = { ...values };
+    const data = Grid.toDataArray({
+      values: values,
+      totalColumns: this.totalColumns,
+      totalRows: this.totalRows,
+    });
+    this._.values = values;
+    this._.table.loadData(data);
+  }
 
   public get selection(): t.IGridSelection {
     const toKey = (coord: Handsontable.wot.CellCoords) =>
@@ -203,22 +213,6 @@ export class Grid implements t.IGrid {
     }
     dispose$.next();
     dispose$.complete();
-  }
-
-  /**
-   * Loads values into the grid.
-   */
-  public loadValues(values?: t.IGridValues) {
-    if (values) {
-      this._.values = { ...values };
-    }
-    const data = Grid.toDataArray({
-      values: this.values,
-      totalColumns: this.totalColumns,
-      totalRows: this.totalRows,
-    });
-    this._.table.loadData(data);
-    return this;
   }
 
   /**

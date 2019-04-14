@@ -112,7 +112,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             {this.button('redraw', () => this.grid.redraw())}
             {this.button('focus', () => this.grid.focus())}
             <Hr margin={5} />
-            {this.button('loadValues', () => this.grid.loadValues({ A1: 'loaded value' }))}
+            {this.button('loadValues', () => (this.grid.values = { A1: 'loaded value' }))}
             {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
             {this.button('change values (via prop)', () =>
               this.testGrid.state$.next({ values: { A1: 'happy' } }),

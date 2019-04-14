@@ -7,7 +7,3 @@ export type GridCellKey = string;
 export type GridCellRangeKey = string;
 export type CellValue = string | boolean | number | object | null | undefined;
 export type CellRef = IGridCellPosition | GridCellKey;
-
-export type IGridValues = {
-  [key: string]: CellValue;
-};

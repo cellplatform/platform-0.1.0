@@ -14,8 +14,12 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
 
   const createColumns = (length: number) => {
     const col = {
-      renderer: render.CELL_DEFAULT,
+      renderer: DEFAULTS.CELL_RENDERER,
       editor: Editor,
+      width: (index: number) => {
+        // console.log('get col width', index);
+        return index === 0 ? 300 : DEFAULTS.COLUMN_WIDTHS;
+      },
     };
     return Array.from({ length }).map(() => col);
   };
@@ -24,24 +28,26 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
     // if (index === 1) {
     //   return 80;
     // }
+
     return DEFAULTS.ROW_HEIGHTS;
   };
 
-  const colWidths: any = (index: number) => {
-    // if (index === 1) {
-    //   return 380;
-    // }
-    return DEFAULTS.COLUMN_WIDTHS;
-  };
+  // const colWidths: any = (index: number) => {
+  //   // if (index === 1) {
+  //   //   return 380;
+  //   // }
+  //   console.log('colWidths', index);
+  //   return DEFAULTS.COLUMN_WIDTHS;
+  // };
 
-  const settings = {
+  const settings: Handsontable.DefaultSettings = {
     data: [],
 
     rowHeaders: true,
     rowHeights,
 
     colHeaders: true,
-    colWidths,
+    // colWidths,
     columns: createColumns(totalColumns),
 
     viewportRowRenderingOffset: 20,

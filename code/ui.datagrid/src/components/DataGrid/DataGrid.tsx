@@ -153,7 +153,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     }
     const { initial = {} } = this.props;
     const grid = this.grid;
-    grid.loadValues();
+    grid.values = {};
     if (initial.selection) {
       const selection =
         typeof initial.selection === 'string' ? { cell: initial.selection } : initial.selection;
@@ -169,7 +169,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
      * If the values prop has changed. Force reload the values into the grid.
      */
     if (!R.equals(prev.values, this.props.values)) {
-      this.grid.loadValues(this.props.values);
+      this.grid.values = this.props.values || {};
     }
   }
 
@@ -214,7 +214,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public redraw() {
-    console.log('redraw');
     this.updateSize();
     if (this.table) {
       this.table.render();
