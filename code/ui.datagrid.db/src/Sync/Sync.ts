@@ -106,7 +106,7 @@ export class Sync {
         acc[next.key] = next.value;
         return acc;
       }, {});
-    this.grid.loadValues(values);
+    this.grid.values = values;
   }
 
   /**
