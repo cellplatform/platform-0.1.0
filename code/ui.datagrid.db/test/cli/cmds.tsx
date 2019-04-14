@@ -1,4 +1,4 @@
-import { Command, t } from '../common';
+import { constants, Command, t } from '../common';
 
 type P = t.ICommandProps & {};
 
@@ -19,4 +19,7 @@ export const root = Command.create<P>('root', e => {
   .add('put-foo', async e => {
     const db = e.props.db;
     await db.put('foo', 123);
+  })
+  .add('tmp', async e => {
+    await e.props.databases.getOrCreate({ dir: constants.DB.DIR });
   });
