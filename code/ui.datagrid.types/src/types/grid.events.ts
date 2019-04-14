@@ -50,12 +50,12 @@ export type IGridKeydown = {
  */
 export type GridChangeType = 'EDIT' | 'OTHER';
 export type IGridChangeSetEvent = {
-  type: 'GRID/changeSet';
+  type: 'GRID/cell/change/set';
   payload: IGridCellChangeSet;
 };
 
 export type IGridCellChangeEvent = {
-  type: 'GRID/change';
+  type: 'GRID/cell/change';
   payload: IGridCellChange;
 };
 

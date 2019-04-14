@@ -102,12 +102,12 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     });
 
     const change$ = events$.pipe(
-      filter(e => e.type === 'GRID/change'),
+      filter(e => e.type === 'GRID/cell/change'),
       map(e => e.payload as t.IGridCellChange),
     );
 
     const changeSet$ = events$.pipe(
-      filter(e => e.type === 'GRID/changeSet'),
+      filter(e => e.type === 'GRID/cell/change/set'),
       map(e => e.payload as t.IGridCellChangeSet),
     );
 

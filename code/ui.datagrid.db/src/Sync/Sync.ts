@@ -30,7 +30,7 @@ export class Sync {
     // Setup observables.
     const grid$ = grid.events$.pipe(takeUntil(this.dispose$));
     const gridChanges$ = grid$.pipe(
-      filter(e => e.type === 'GRID/changeSet'),
+      filter(e => e.type === 'GRID/cell/change/set'),
       map(e => e.payload as t.IGridCellChangeSet),
     );
     const db$ = db.events$.pipe(takeUntil(this.dispose$));
