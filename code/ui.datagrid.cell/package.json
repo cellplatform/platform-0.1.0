@@ -15,7 +15,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.1.13"
+    "@platform/react": "0.1.13",
+    "@platform/ui.datagrid.types": "0.0.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.43",

@@ -1061,7 +1061,7 @@
     "@platform/log" "0.0.103"
     "@platform/util.value" "0.0.53"
 
-"@platform/react@0.1.13", "@platform/react@^0.1.13":
+"@platform/react@0.1.13":
   version "0.1.13"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.13.tgz#a9c08d82189ed2ecc7d375775e357fcdefc76f4d"
   integrity sha512-YiAXw/MIMQ/WTdGkgkf7heXQ0z8pS3U27ctTfYnFWpZmoexuyod5vtbs20NKDTC4ANHxLt0yLwL9gF1JGGp4Gg==
@@ -1073,7 +1073,7 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/test@^0.0.43":
+"@platform/test@0.0.43":
   version "0.0.43"
   resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.43.tgz#4b5207a2725e11a0c1576bbe2ad8059c442fd9b4"
   integrity sha512-l59cugSsQZO+mgIM6vGfNOuTjv32eFUxguQ7THwed9v6ToLVatvcxh5Vbkh972G+smzfOjsqemCOJGz2k3jn9Q==
@@ -1098,7 +1098,7 @@
     tslint-react "4.0.0"
     typescript "3.4.3"
 
-"@platform/ts@3.4.7", "@platform/ts@^3.4.7":
+"@platform/ts@3.4.7":
   version "3.4.7"
   resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.4.7.tgz#aa8a28c22f911de7531c632a9933dfd78ef9cd93"
   integrity sha512-QDhqV7dRwyam82zxWJZVd8TsjFRwEBegYrIxbrLzHdGxzdEC35u3BWb4MuePUhSeXck6V1fQE2a5viUGjgoSxw==
@@ -1120,6 +1120,13 @@
     "@platform/ui.text" "0.1.3"
     "@platform/ui.tree" "0.0.32"
     react-icons "3.5.0"
+
+"@platform/ui.datagrid.types@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.1.tgz#3785d8fbf7bd86bf7d99cff55cccf75dd9b83ef5"
+  integrity sha512-sVdREfF0rRifIml4PBYoVtH+/b5cz2hBbj7isOtMvqaB7x/3DSNuECrArvf0o/hxURJgVsmUa44NL6j5xq83kg==
+  dependencies:
+    "@platform/libs" "0.0.12"
 
 "@platform/ui.icon@0.0.29":
   version "0.0.29"

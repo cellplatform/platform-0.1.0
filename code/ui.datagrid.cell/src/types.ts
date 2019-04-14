@@ -1,1 +1,1 @@
-export type Foo = 'TEMP';
+export * from '@platform/ui.datagrid.types';
