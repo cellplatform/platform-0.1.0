@@ -95,8 +95,21 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const { events$, keys$ } = grid;
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
 
+    // Bubble events.
+    if (this.props.events$) {
+      events$.subscribe(this.props.events$);
+    }
+
     // Ferry editor events to the [Grid] API.
     editor$.subscribe(e => this.grid.fire(e));
+
+    // Redraw grid.
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/redraw'),
+        debounceTime(0),
+      )
+      .subscribe(() => this.redraw());
 
     // Disallow select all (CMD+A) unless requested by prop.
     keys$
@@ -110,13 +123,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     // Manage size.
     this.updateSize();
     events.resize$.pipe(takeUntil(this.unmounted$)).subscribe(() => this.redraw());
-
-    // Bubble events.
-    events$.subscribe(e => {
-      if (this.props.events$) {
-        this.props.events$.next(e);
-      }
-    });
 
     // Dispose on HMR.
     const hot = (module as any).hot;
@@ -208,6 +214,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public redraw() {
+    console.log('redraw');
     this.updateSize();
     if (this.table) {
       this.table.render();

@@ -6,6 +6,7 @@ import { t } from '../common';
 export type GridEvent =
   | t.EditorEvent
   | IGridReadyEvent
+  | IGridRedrawEvent
   | IGridKeydownEvent
   | IGridChangeEvent
   | IGridChangeSetEvent
@@ -16,6 +17,11 @@ export type GridEvent =
 export type IGridReadyEvent = {
   type: 'GRID/ready';
   payload: { grid: t.IGrid };
+};
+
+export type IGridRedrawEvent = {
+  type: 'GRID/redraw';
+  payload: {};
 };
 
 /**

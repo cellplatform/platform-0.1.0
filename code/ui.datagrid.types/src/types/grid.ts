@@ -26,6 +26,7 @@ export type IGrid = {
   select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }): IGrid;
   deselect(): IGrid;
   focus(): IGrid;
+  redraw(): IGrid;
   toPosition(ref: t.CellRef): t.IGridCellPosition;
 };
 

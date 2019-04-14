@@ -206,13 +206,6 @@ export class Grid implements t.IGrid {
   }
 
   /**
-   * Fires an event (used internally)
-   */
-  public fire(e: t.GridEvent) {
-    this._.events$.next(e);
-  }
-
-  /**
    * Loads values into the grid.
    */
   public loadValues(values?: t.IGridValues) {
@@ -312,6 +305,14 @@ export class Grid implements t.IGrid {
   }
 
   /**
+   * Requests that the grid be redrawn.
+   */
+  public redraw() {
+    this.fire({ type: 'GRID/redraw', payload: {} });
+    return this;
+  }
+
+  /**
    * Retrieve the row/column position, clamped to the size of the grid.
    */
   public toPosition(ref: t.CellRef) {
@@ -319,5 +320,12 @@ export class Grid implements t.IGrid {
     const row = R.clamp(0, this.totalRows - 1, pos.row);
     const column = R.clamp(0, this.totalColumns - 1, pos.column);
     return { row, column };
+  }
+
+  /**
+   * [Internal]
+   */
+  public fire(e: t.GridEvent) {
+    this._.events$.next(e);
   }
 }

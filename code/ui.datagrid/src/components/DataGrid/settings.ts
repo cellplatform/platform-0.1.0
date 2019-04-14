@@ -13,12 +13,11 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
   const selectionHandler = hooks.afterSelectionHandler(getGrid);
 
   const createColumns = (length: number) => {
-    return Array.from({ length }).map(() => {
-      return {
-        renderer: render.CELL_DEFAULT,
-        editor: Editor,
-      };
-    });
+    const col = {
+      renderer: render.CELL_DEFAULT,
+      editor: Editor,
+    };
+    return Array.from({ length }).map(() => col);
   };
 
   const rowHeights: any = (index: number) => {

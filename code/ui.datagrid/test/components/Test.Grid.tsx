@@ -109,12 +109,15 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       <div {...styles.base}>
         <div {...styles.left}>
           <div {...styles.leftTop}>
+            {this.button('redraw', () => this.grid.redraw())}
             {this.button('focus', () => this.grid.focus())}
-            {this.button('loadValues', () => this.grid.loadValues({ A3: 123 }))}
+            <Hr margin={5} />
+            {this.button('loadValues', () => this.grid.loadValues({ A1: 'loaded value' }))}
             {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
-            {this.button('change values (prop)', () =>
+            {this.button('change values (via prop)', () =>
               this.testGrid.state$.next({ values: { A1: 'happy' } }),
             )}
+            <Hr margin={5} />
             {this.button('select: A1', () => this.grid.select({ cell: 'A1' }))}
             {this.button('select: A1 and range', () =>
               this.grid.select({ cell: 'A1', ranges: ['B2:C4', 'C2:D7'] }),
@@ -124,6 +127,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
                 cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
               }),
             )}
+            <Hr margin={5} />
             {this.button('scrollTo: A1', () => this.grid.scrollTo({ cell: 'A1' }))}
             {this.button('scrollTo: B5', () => this.grid.scrollTo({ cell: 'B5' }))}
             {this.button('scrollTo: bottom/right', () =>
