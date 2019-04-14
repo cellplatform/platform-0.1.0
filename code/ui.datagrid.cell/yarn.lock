@@ -1121,10 +1121,10 @@
     "@platform/ui.tree" "0.0.32"
     react-icons "3.5.0"
 
-"@platform/ui.datagrid.types@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.4.tgz#e5a89f0f28015e98ee77e5f08a05e9ff4d3a86c1"
-  integrity sha512-lZQui8E/JL/bkwHboCsZpSPpBxOL9UJ0U3Y2sVTWYWH2YnNHwotEf4JCNegHPbuJNxl58lWy6vbfwCNnHMg8sQ==
+"@platform/ui.datagrid.types@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.5.tgz#4beccb227ed6dc2e9d8707cc04f93dc7a2ecf405"
+  integrity sha512-l63uVY1AZd+xLHrHEZLaGpDzmVbCc1xR24jl6NG9n7fP4kGBqcaPoZSjjeTRyEDO7twV8RRrZeF/GYMYVBDTuQ==
   dependencies:
     "@platform/react" "0.1.13"
     "@platform/util.value.cell" "0.0.18"
