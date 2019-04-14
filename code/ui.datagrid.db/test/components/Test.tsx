@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { markdown, datagrid, color, Shell, t, ObjectView, css, renderer } from '../common';
+import { markdown, datagrid, color, Shell, t, ObjectView, css, renderer, value } from '../common';
 import * as cli from '../cli';
 
 export type ITestProps = {};
@@ -23,7 +23,9 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public componentWillMount() {
     this.cli = cli.init({ state$: this.state$, databases: this.databases });
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe(e => {
+      this.setState(e);
+    });
   }
 
   public componentWillUnmount() {
@@ -36,6 +38,10 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public get databases() {
     return (this.context as any).databases as t.IDbFactory;
+  }
+
+  public get showDebug() {
+    return value.defaultValue(this.state.showDebug, true);
   }
 
   /**
@@ -60,13 +66,20 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         borderLeft: `solid 1px ${color.format(-0.1)}`,
       }),
     };
+
+    const tree = this.showDebug ? {} : undefined;
+
+    const elRight = this.showDebug && (
+      <div {...styles.right}>
+        <ObjectView name={'state'} data={this.state} />
+      </div>
+    );
+
     return (
-      <Shell cli={this.cli} tree={{}}>
+      <Shell cli={this.cli} tree={tree}>
         <div {...styles.base}>
           <div {...styles.left}>{this.renderGrid()}</div>
-          <div {...styles.right}>
-            <ObjectView name={'state'} data={this.state} />
-          </div>
+          {elRight}
         </div>
       </Shell>
     );

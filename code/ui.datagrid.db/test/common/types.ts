@@ -13,6 +13,7 @@ export type ICommandProps = {
 export type ITestState = {
   values?: t.IGridValues;
   dir?: string;
+  showDebug?: boolean;
 };
 
 export type IDb = t.IDb<IDbSchema>;
