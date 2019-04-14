@@ -1,18 +1,31 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
 
 import { markdown, datagrid, color, Shell, t, ObjectView, css, renderer, value } from '../common';
 import * as cli from '../cli';
 
+const storage = {
+  get showDebug() {
+    const value = localStorage.getItem('showDebug') || 'true';
+    return value === 'true';
+  },
+  set showDebug(value: boolean) {
+    localStorage.setItem('showDebug', (value || false).toString());
+  },
+};
+
 export type ITestProps = {};
 
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
-  public state: t.ITestState = {};
+  public state: t.ITestState = { showDebug: storage.showDebug };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
   private grid$ = new Subject<t.GridEvent>();
   private cli!: t.ICommandState;
+
+  private datagrid!: datagrid.DataGrid;
+  private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
 
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
@@ -23,9 +36,14 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public componentWillMount() {
     this.cli = cli.init({ state$: this.state$, databases: this.databases });
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => {
-      this.setState(e);
-    });
+    state$.subscribe(e => this.setState(e));
+
+    state$
+      .pipe(distinctUntilChanged((prev, next) => prev.showDebug === next.showDebug))
+      .subscribe(e => {
+        this.datagrid.redraw();
+        storage.showDebug = this.state.showDebug;
+      });
   }
 
   public componentWillUnmount() {
@@ -38,10 +56,6 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public get databases() {
     return (this.context as any).databases as t.IDbFactory;
-  }
-
-  public get showDebug() {
-    return value.defaultValue(this.state.showDebug, true);
   }
 
   /**
@@ -67,9 +81,10 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       }),
     };
 
-    const tree = this.showDebug ? {} : undefined;
+    const showDebug = this.state.showDebug;
+    const tree = showDebug ? {} : undefined;
 
-    const elRight = this.showDebug && (
+    const elRight = showDebug && (
       <div {...styles.right}>
         <ObjectView name={'state'} data={this.state} />
       </div>
@@ -88,6 +103,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private renderGrid() {
     return (
       <datagrid.DataGrid
+        ref={this.datagridRef}
         values={this.state.values}
         events$={this.grid$}
         factory={this.factory}
