@@ -12,7 +12,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.12"
+    "@platform/react": "0.1.13",
+    "@platform/util.value.cell": "0.0.18"
   },
   "devDependencies": {
     "@platform/ts": "3.4.7"

@@ -15,7 +15,7 @@ export type IGridArgs = {
  * Strongly typed properties and methods for
  * programatically manipulating the grid.
  */
-export class Grid {
+export class Grid implements t.IGrid {
   /**
    * [Static]
    */
@@ -79,14 +79,14 @@ export class Grid {
 
     selection$
       // Retain last selection state to ressurect the value upon re-focus of grid.
-      .pipe(filter(e => Boolean(e.to.current)))
+      .pipe(filter(e => Boolean(e.to.cell)))
       .subscribe(e => (this._.lastSelection = e.to));
 
     selection$
       // Monitor focus.
       .pipe(
         debounceTime(0),
-        filter(e => !Boolean(e.from.current) && Boolean(e.to.current)),
+        filter(e => !Boolean(e.from.cell) && Boolean(e.to.cell)),
       )
       .subscribe(e => this.fire({ type: 'GRID/focus', payload: { grid: this } }));
 
@@ -94,7 +94,7 @@ export class Grid {
       // Monitor blur.
       .pipe(
         debounceTime(0),
-        filter(e => Boolean(e.from.current) && !Boolean(e.to.current)),
+        filter(e => Boolean(e.from.cell) && !Boolean(e.to.cell)),
       )
       .subscribe(e => this.fire({ type: 'GRID/blur', payload: { grid: this } }));
   }
@@ -151,12 +151,12 @@ export class Grid {
 
     // Current (input cell).
     const last = this._.table.getSelectedRangeLast();
-    const current = last ? toKey(last.highlight) : undefined;
+    const cell = last ? toKey(last.highlight) : undefined;
 
     // Ranges.
     const selectedRanges = this._.table.getSelectedRange() || [];
     let ranges = selectedRanges.map(item => `${toKey(item.from)}:${toKey(item.to)}`);
-    ranges = ranges.length === 1 && ranges[0] === `${current}:${current}` ? [] : ranges;
+    ranges = ranges.length === 1 && ranges[0] === `${cell}:${cell}` ? [] : ranges;
 
     // Determine if the entire sheet is selected.
     let all = false;
@@ -184,7 +184,7 @@ export class Grid {
     }
 
     // Finish up.
-    let result: t.IGridSelection = { current, ranges };
+    let result: t.IGridSelection = { cell, ranges };
     result = all ? { ...result, all } : result;
     return result;
   }
@@ -219,9 +219,13 @@ export class Grid {
     if (values) {
       this._.values = { ...values };
     }
-    const data = this.toDataArray();
-    const table = this._.table;
-    table.loadData(data);
+    const data = Grid.toDataArray({
+      values: this.values,
+      totalColumns: this.totalColumns,
+      totalRows: this.totalRows,
+    });
+    this._.table.loadData(data);
+    return this;
   }
 
   /**
@@ -237,12 +241,13 @@ export class Grid {
         this.cell(key).value = value;
       }
     });
+    return this;
   }
 
   /**
    * Retrieves an API for working with a single cell.
    */
-  public cell(key: { row: number; column: number } | string): Cell {
+  public cell(key: { row: number; column: number } | string) {
     const args = typeof key === 'string' ? Cell.fromKey(key) : key;
     const { row, column } = args;
     return Cell.create({ table: this._.table, row, column });
@@ -259,6 +264,7 @@ export class Grid {
     const { row, column } = this.toPosition(args.cell);
     const { snapToBottom = false, snapToRight = false } = args;
     this._.table.scrollViewportTo(row, column, snapToBottom, snapToRight);
+    return this;
   }
 
   /**
@@ -280,6 +286,8 @@ export class Grid {
     const current = [pos.row, pos.column, pos.row, pos.column];
     const selection = [...ranges, current] as any;
     table.selectCells(selection, scrollToCell);
+
+    return this;
   }
 
   /**
@@ -287,6 +295,7 @@ export class Grid {
    */
   public deselect() {
     this._.table.deselectCell();
+    return this;
   }
 
   /**
@@ -294,9 +303,10 @@ export class Grid {
    */
   public focus() {
     const last = this._.lastSelection;
-    const cell = last.current || 'A1';
+    const cell = last.cell || 'A1';
     const ranges = last.ranges || [];
     this.select({ cell, ranges });
+    return this;
   }
 
   /**
@@ -307,16 +317,5 @@ export class Grid {
     const row = R.clamp(0, this.totalRows - 1, pos.row);
     const column = R.clamp(0, this.totalColumns - 1, pos.column);
     return { row, column };
-  }
-
-  /**
-   * Converts the current values to a data-array of `[rows:[columns[]]]`
-   */
-  public toDataArray() {
-    return Grid.toDataArray({
-      values: this.values,
-      totalColumns: this.totalColumns,
-      totalRows: this.totalRows,
-    });
   }
 }
