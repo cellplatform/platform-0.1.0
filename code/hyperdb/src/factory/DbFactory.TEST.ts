@@ -71,6 +71,24 @@ describe('Factory', () => {
       expect(fs.pathExistsSync(dir1)).to.eql(false);
       expect(fs.pathExistsSync(dir2)).to.eql(true); // NB: Dir adjusted to `dir2` in handler.
     });
+
+    it.only('does not fire the creating/created events when DB already exists', async () => {
+      let list: t.DbFactoryEvent[] = [];
+      const factory = DbFactory.create({ create });
+      factory.events$.subscribe(e => list.push(e));
+
+      const args = { dir, connect: false };
+      await factory.getOrCreate(args);
+
+      expect(list.length).to.eql(3); // Initial creation.
+      list = [];
+
+      await factory.getOrCreate(args);
+      expect(list.length).to.eql(0); // Cached.
+
+      await factory.create(args);
+      expect(list.length).to.eql(3); // Force created again ("create" method).
+    });
   });
 
   describe('get', () => {
