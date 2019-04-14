@@ -17,7 +17,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
 
   creating$
     // Change the DB directory when running in production.
-    .pipe(filter(e => uiharness.is.prod))
+    .pipe(filter(e => Boolean(uiharness.is.prod)))
     .subscribe(e => {
       e.dir = fs.join(app.getPath('appData'), 'db');
     });

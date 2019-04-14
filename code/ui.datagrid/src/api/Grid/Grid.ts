@@ -232,15 +232,17 @@ export class Grid implements t.IGrid {
    * Updates values.
    */
   public changeValues(changes: t.IGridValues, options: { redraw?: boolean } = {}) {
-    const redraw = valueUtil.defaultValue(options.redraw, true);
-    this._.values = { ...this.values };
-    Object.keys(changes).forEach(key => {
-      const value = changes[key];
-      this._.values[key] = value;
-      if (redraw) {
-        this.cell(key).value = value;
-      }
-    });
+    if (changes) {
+      const redraw = valueUtil.defaultValue(options.redraw, true);
+      this._.values = { ...this.values };
+      Object.keys(changes).forEach(key => {
+        const value = changes[key];
+        this._.values[key] = value;
+        if (redraw) {
+          this.cell(key).value = value;
+        }
+      });
+    }
     return this;
   }
 
