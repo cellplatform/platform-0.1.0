@@ -14,7 +14,6 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/electron": "0.1.35",
     "@platform/react": "0.1.13",
     "@platform/ui.codemirror": "0.0.23",
     "@platform/ui.datagrid.types": "0.0.1",
