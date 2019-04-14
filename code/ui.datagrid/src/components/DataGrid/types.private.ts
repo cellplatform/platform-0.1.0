@@ -1,6 +1,5 @@
 import { Subject } from 'rxjs';
 
-import { Grid } from '../../api';
 import * as t from '../../types';
 import { FactoryManager } from '../factory';
 
@@ -10,7 +9,7 @@ import { FactoryManager } from '../factory';
  * different extension points (eg the Grid <=> Editor).
  */
 export type IGridRefsPrivate = {
-  grid: Grid;
+  grid: t.IGrid;
   editorEvents$: Subject<t.EditorEvent>;
   factory: FactoryManager;
 };
