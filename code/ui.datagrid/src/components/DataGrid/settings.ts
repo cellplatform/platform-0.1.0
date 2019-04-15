@@ -75,7 +75,7 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
       if (grid) {
         const key = util.toKey(index);
         let column = grid.columns[key];
-        width = Math.max(DEFAULT.COLUMN_WIDTH_MIN, width);
+        width = isDoubleClick ? DEFAULT.COLUMN_WIDTH : Math.max(DEFAULT.COLUMN_WIDTH_MIN, width);
         column = { ...(column || {}), width };
         grid.changeColumns({ [key]: { ...(column || {}), width } }).redraw();
       }
@@ -90,7 +90,7 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
       if (grid) {
         const key = index;
         let row = grid.rows[key];
-        height = Math.max(DEFAULT.ROW_HEIGHT_MIN, height);
+        height = isDoubleClick ? DEFAULT.ROW_HEIGHT : Math.max(DEFAULT.ROW_HEIGHT_MIN, height);
         row = { ...(row || {}), height };
         grid.changeRows({ [key]: { ...(row || {}), height } }).redraw();
       }
