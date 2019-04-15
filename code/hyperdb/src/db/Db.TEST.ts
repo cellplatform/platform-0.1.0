@@ -623,21 +623,22 @@ describe('Db', () => {
       expect((await db.get('foo')).value).to.eql(undefined);
       expect((await db.get('bar')).value).to.eql(undefined);
 
-      const res = await db.update<{ foo: number; bar: number }>([
+      type Foo = { success: boolean };
+      const res = await db.update<{ foo: number; bar: Foo }>([
         { key: 'foo', value: 123 },
-        { key: 'bar', value: 456 },
+        { key: 'bar', value: { success: true } },
       ]);
 
       expect(Object.keys(res).length).to.eql(2);
       expect(res.foo.value).to.eql(123);
-      expect(res.bar.value).to.eql(456);
+      expect(res.bar.value).to.eql({ success: true });
 
       // Same clock value (single transaction).
       expect(res.foo.props.clock).to.eql([3]);
       expect(res.bar.props.clock).to.eql([3]);
 
       expect((await db.get('foo')).value).to.eql(123);
-      expect((await db.get('bar')).value).to.eql(456);
+      expect((await db.get('bar')).value).to.eql({ success: true });
     });
   });
 });
