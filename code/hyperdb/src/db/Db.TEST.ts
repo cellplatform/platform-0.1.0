@@ -603,18 +603,18 @@ describe('Db', () => {
       expect((await db.get('foo')).value).to.eql(undefined);
       expect((await db.get('bar')).value).to.eql(undefined);
 
-      const res = await db.update({ foo: 123, bar: 456 });
+      const res = await db.update({ foo: 123, bar: { msg: 'hello' } });
 
       expect(Object.keys(res).length).to.eql(2);
       expect(res.foo.value).to.eql(123);
-      expect(res.bar.value).to.eql(456);
+      expect(res.bar.value).to.eql({ msg: 'hello' });
 
       // Same clock value (single transaction).
       expect(res.foo.props.clock).to.eql([3]);
       expect(res.bar.props.clock).to.eql([3]);
 
       expect((await db.get('foo')).value).to.eql(123);
-      expect((await db.get('bar')).value).to.eql(456);
+      expect((await db.get('bar')).value).to.eql({ msg: 'hello' });
     });
 
     it('batch writes a list (array)', async () => {

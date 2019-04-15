@@ -32,7 +32,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }) {
     return new Promise<Db<D>>(resolve => {
       const { dir, dbKey, version, valueEncoding = 'utf-8' } = args;
-      const reduce = (a: t.IDbNode, b: t.IDbNode) => a;
+      const reduce = (a: t.IDbNode, b: t.IDbNode) => {
+        return a;
+      };
       const map = (node: t.IDbNode) => {
         // NB:  The underlying DB only stores [string/number/boolean]
         //      Ensure values are parsed into rich types (eg. objects and arrays etc) .
@@ -307,16 +309,27 @@ export class Db<D extends object = any> implements t.IDb<D> {
     data: t.IDbUpdateObject<T> | t.IDbUpdateList<T>,
   ): Promise<t.IDbValues<T>> {
     return new Promise<t.IDbValues<T>>((resolve, reject) => {
-      const list = Array.isArray(data)
+      let list: any[] = Array.isArray(data)
         ? data
         : Object.keys(data).map(key => ({ type: 'put', key, value: data[key] }));
+
+      list = list.map(item => {
+        const type = item.type || 'put';
+        const value = util.serializeValue(item.value);
+        return { ...item, type, value };
+      });
+
       this._.db.batch(list, (err: Error, data: t.IDbNode[]) => {
         if (err) {
           return reject(err);
         }
         try {
-          const v = data.reduce((acc, next) => ({ ...acc, [next.key]: util.toValue(next) }), {});
-          resolve(v as any);
+          const res = data.reduce((acc, next) => {
+            next.value = util.parseValue(next.value);
+            const value = util.toValue(next);
+            return { ...acc, [next.key]: value };
+          }, {});
+          resolve(res as any);
         } catch (error) {
           reject(error);
         }
