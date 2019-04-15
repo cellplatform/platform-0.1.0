@@ -86,7 +86,7 @@ export type IColumnsChanged = {
 };
 export type IColumnChange = {
   column: string;
-  type: 'UPDATE' | 'RESET';
+  type: 'UPDATE' | 'RESET' | 'RESET/doubleClick';
   from: t.IGridColumn;
   to: t.IGridColumn;
 };
@@ -105,7 +105,7 @@ export type IRowsChanged = {
 };
 export type IRowChange = {
   row: number;
-  type: 'UPDATE' | 'RESET';
+  type: 'UPDATE' | 'RESET' | 'RESET/doubleClick';
   from: t.IGridRow;
   to: t.IGridRow;
 };

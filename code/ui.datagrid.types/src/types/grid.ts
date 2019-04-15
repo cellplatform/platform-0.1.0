@@ -24,8 +24,8 @@ export type IGrid = {
    */
   dispose(): void;
   changeValues(changes: t.IGridValues, options?: { redraw?: boolean }): IGrid;
-  changeColumns(columns: t.IGridColumns): IGrid;
-  changeRows(rows: t.IGridRows): IGrid;
+  changeColumns(columns: t.IGridColumns, options?: { type?: t.IColumnChange['type'] }): IGrid;
+  changeRows(rows: t.IGridRows, options?: { type?: t.IRowChange['type'] }): IGrid;
   cell(key: t.CellRef): t.ICell;
   scrollTo(args: { cell: t.CellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
   select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }): IGrid;

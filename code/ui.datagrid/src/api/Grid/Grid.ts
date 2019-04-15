@@ -178,7 +178,7 @@ export class Grid implements t.IGrid {
   }
   public set columns(value: t.IGridColumns) {
     this._.columns = {}; // Reset.
-    this.changeColumns(value);
+    this.changeColumns(value, { type: 'RESET' });
   }
 
   public get rows() {
@@ -186,7 +186,7 @@ export class Grid implements t.IGrid {
   }
   public set rows(value: t.IGridRows) {
     this._.rows = {}; // Reset.
-    this.changeRows(value);
+    this.changeRows(value, { type: 'RESET' });
   }
 
   public get selection(): t.IGridSelection {
@@ -270,7 +270,8 @@ export class Grid implements t.IGrid {
   /**
    * Updates columns.
    */
-  public changeColumns(columns: t.IGridColumns) {
+  public changeColumns(columns: t.IGridColumns, options: { type?: t.IColumnChange['type'] } = {}) {
+    const { type = 'UPDATE' } = options;
     const from = { ...this._.columns };
     const to = { ...from };
     let changes: t.IColumnChange[] = [];
@@ -285,7 +286,6 @@ export class Grid implements t.IGrid {
         to[key] = next;
       }
       if (!R.equals(prev, next)) {
-        const type = isDefault ? 'RESET' : 'UPDATE';
         changes = [...changes, { column: key, type, from: prev, to: next }];
       }
     });
@@ -297,7 +297,8 @@ export class Grid implements t.IGrid {
   /**
    *  Updates rows.
    */
-  public changeRows(rows: t.IGridRows) {
+  public changeRows(rows: t.IGridRows, options: { type?: t.IColumnChange['type'] } = {}) {
+    const { type = 'UPDATE' } = options;
     const from = { ...this._.rows };
     const to = { ...from };
     let changes: t.IRowChange[] = [];
@@ -312,7 +313,6 @@ export class Grid implements t.IGrid {
         to[key] = next;
       }
       if (!R.equals(prev, next)) {
-        const type = isDefault ? 'RESET' : 'UPDATE';
         const row = parseInt(key, 10);
         changes = [...changes, { row, type, from: prev, to: next }];
       }

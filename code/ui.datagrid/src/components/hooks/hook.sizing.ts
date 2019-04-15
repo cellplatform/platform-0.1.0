@@ -17,7 +17,12 @@ export function sizeHandlers(getGrid: () => Grid) {
       let column = grid.columns[key];
       width = isDoubleClick ? DEFAULT.COLUMN_WIDTH : Math.max(DEFAULT.COLUMN_WIDTH_MIN, width);
       column = { ...(column || {}), width };
-      grid.changeColumns({ [key]: { ...(column || {}), width } }).redraw();
+      grid
+        .changeColumns(
+          { [key]: { ...(column || {}), width } },
+          { type: isDoubleClick ? 'RESET/doubleClick' : 'UPDATE' },
+        )
+        .redraw();
     }
   }
 
@@ -32,7 +37,12 @@ export function sizeHandlers(getGrid: () => Grid) {
       let row = grid.rows[key];
       height = isDoubleClick ? DEFAULT.ROW_HEIGHT : Math.max(DEFAULT.ROW_HEIGHT_MIN, height);
       row = { ...(row || {}), height };
-      grid.changeRows({ [key]: { ...(row || {}), height } }).redraw();
+      grid
+        .changeRows(
+          { [key]: { ...(row || {}), height } },
+          { type: isDoubleClick ? 'RESET/doubleClick' : 'UPDATE' },
+        )
+        .redraw();
     }
   }
 
