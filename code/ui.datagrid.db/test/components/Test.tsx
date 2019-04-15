@@ -19,7 +19,7 @@ import * as cli from '../cli';
 
 const storage = {
   get showDebug() {
-    const value = localStorage.getItem('showDebug') || 'true';
+    const value = localStorage.getItem('showDebug') || 'false';
     return value === 'true';
   },
   set showDebug(value: boolean) {
