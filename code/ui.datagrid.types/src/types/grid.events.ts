@@ -105,7 +105,7 @@ export type IRowsChanged = {
 };
 export type IRowChange = {
   row: number;
-  type: 'UPDATE' | 'RESET' | 'RESET/doubleClick';
+  type: 'UPDATE' | 'UPDATE/cellEdited' | 'RESET' | 'RESET/doubleClick';
   from: t.IGridRow;
   to: t.IGridRow;
 };
