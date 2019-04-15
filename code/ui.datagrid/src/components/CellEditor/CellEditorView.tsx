@@ -7,7 +7,7 @@ import { FormulaInput, Text, TextEditor, TextInput } from '../primitives';
 import { THEMES } from './themes';
 
 const BORDER_WIDTH = 2;
-const { DEFAULTS, COLORS, ROBOTO, CSS } = constants;
+const { DEFAULT, COLORS, ROBOTO, CSS } = constants;
 
 type ICommonMethods = {
   focus(): any;
@@ -325,7 +325,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         backgroundColor: theme.inputBackground,
         width,
         height,
-        minHeight: DEFAULTS.ROW_HEIGHTS + (this.row === 0 ? -1 : 0),
+        minHeight: DEFAULT.ROW_HEIGHT + (this.row === 0 ? -1 : 0),
       }),
       body: css({ Absolute: 0 }),
     };
@@ -389,7 +389,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         position: isVisible ? 'relative' : 'absolute',
         left: isVisible ? 0 : -999999,
         top: BORDER_WIDTH + (this.row === 0 ? -1 : 0),
-        height: DEFAULTS.ROW_HEIGHTS - BORDER_WIDTH * 2,
+        height: DEFAULT.ROW_HEIGHT - BORDER_WIDTH * 2,
         PaddingX: BORDER_WIDTH,
       }),
     };
@@ -414,7 +414,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         position: isVisible ? 'relative' : 'absolute',
         left: isVisible ? 0 : -999999,
         top: this.row === 0 ? 0 : 1,
-        height: DEFAULTS.ROW_HEIGHTS - BORDER_WIDTH * 2,
+        height: DEFAULT.ROW_HEIGHT - BORDER_WIDTH * 2,
         PaddingX: BORDER_WIDTH,
       }),
       input: css({

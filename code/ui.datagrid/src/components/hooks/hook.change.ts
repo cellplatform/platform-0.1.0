@@ -1,6 +1,6 @@
 import { Grid } from '../../api';
 import { t, R } from '../../common';
-import { TableEventSource } from './types.private';
+import { TableEventSource } from '../DataGrid/types.private';
 
 /**
  * Factory for creating a grid's `beforeChange` handler.
@@ -24,7 +24,7 @@ export function beforeChangeHandler(getGrid: () => Grid) {
         const column = change[1] as number;
         const value = { from: change[2], to: change[3] };
         const isChanged = !R.equals(value.from, value.to);
-        const payload: t.IGridChange = {
+        const payload: t.IGridCellChange = {
           source: toSource(source),
           grid,
           get cell() {
@@ -41,16 +41,16 @@ export function beforeChangeHandler(getGrid: () => Grid) {
         return payload;
       })
       .filter(e => Boolean(e))
-      .map(e => e as t.IGridChange)
+      .map(e => e as t.IGridCellChange)
       .filter(e => e.isChanged);
 
     // Fire change events.
-    changes.forEach(payload => grid.fire({ type: 'GRID/change', payload }));
+    changes.forEach(payload => grid.fire({ type: 'GRID/cell/change', payload }));
 
     // Fire changes as a set.
     if (changes.length > 0) {
       grid.fire({
-        type: 'GRID/changeSet',
+        type: 'GRID/cell/change/set',
         payload: {
           changes,
           cancel: () => changes.forEach(change => change.cancel()),

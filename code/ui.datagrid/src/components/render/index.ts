@@ -3,7 +3,6 @@ import { registerCellRenderer } from './render.cell';
 import { FactoryManager } from '../factory';
 
 export * from './types';
-export * from './constants';
 export * from './render.cell';
 export * from './render.header';
 

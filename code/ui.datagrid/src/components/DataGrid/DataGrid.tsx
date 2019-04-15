@@ -1,13 +1,13 @@
 import '../../styles';
 
-import { DefaultSettings } from 'handsontable';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil, debounceTime } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { Grid, Editor } from '../../api';
+import { Grid } from '../../api';
 import {
   constants,
+  containsFocus,
   css,
   events,
   GlamorValue,
@@ -16,19 +16,20 @@ import {
   t,
   time,
   value,
-  containsFocus,
 } from '../../common';
 import { FactoryManager } from '../factory';
 import * as render from '../render';
-import * as hook from './hook';
+import { getSettings } from './settings';
 import { IGridRefsPrivate } from './types.private';
 
-const { DEFAULTS, CSS } = constants;
+const { DEFAULT, CSS } = constants;
 
 export type IDataGridProps = {
   totalColumns?: number;
   totalRows?: number;
   values?: t.IGridValues;
+  columns?: t.IGridColumns;
+  rows?: t.IGridRows;
   Handsontable?: Handsontable;
   factory?: t.GridFactory;
   events$?: Subject<t.GridEvent>;
@@ -36,9 +37,7 @@ export type IDataGridProps = {
   canSelectAll?: boolean;
   style?: GlamorValue;
 };
-export type IDataGridState = {
-  size?: { width: number; height: number };
-};
+export type IDataGridState = { size?: t.ISize };
 
 /**
  * A wrapper around the [Handsontable].
@@ -69,14 +68,22 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public componentDidMount() {
-    const { values } = this.props;
+    const { values, columns, rows } = this.props;
 
     // Create the table and corresponding API wrapper.
     const Table = this.props.Handsontable || TableLib;
     const totalColumns = this.totalColumns;
     const totalRows = this.totalRows;
-    const table = (this.table = new Table(this.el as Element, this.settings));
-    const grid = (this.grid = Grid.create({ table, totalColumns, totalRows, values }));
+    const settings = getSettings({ totalColumns, getGrid: () => this.grid });
+    const table = (this.table = new Table(this.el as Element, settings));
+    const grid = (this.grid = Grid.create({
+      table,
+      totalColumns,
+      totalRows,
+      values,
+      columns,
+      rows,
+    }));
     this.unmounted$.subscribe(() => grid.dispose());
 
     // Initialize factories.
@@ -97,8 +104,21 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const { events$, keys$ } = grid;
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
 
+    // Bubble events.
+    if (this.props.events$) {
+      events$.subscribe(this.props.events$);
+    }
+
     // Ferry editor events to the [Grid] API.
     editor$.subscribe(e => this.grid.fire(e));
+
+    // Redraw grid.
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/redraw'),
+        debounceTime(0),
+      )
+      .subscribe(() => this.redraw());
 
     // Disallow select all (CMD+A) unless requested by prop.
     keys$
@@ -112,13 +132,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     // Manage size.
     this.updateSize();
     events.resize$.pipe(takeUntil(this.unmounted$)).subscribe(() => this.redraw());
-
-    // Bubble events.
-    events$.subscribe(e => {
-      if (this.props.events$) {
-        this.props.events$.next(e);
-      }
-    });
 
     // Dispose on HMR.
     const hot = (module as any).hot;
@@ -147,9 +160,9 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     if (this.isDisposed) {
       return;
     }
-    const { initial = {} } = this.props;
+    const { initial = {}, values = {} } = this.props;
     const grid = this.grid;
-    grid.loadValues();
+    grid.values = values;
     if (initial.selection) {
       const selection =
         typeof initial.selection === 'string' ? { cell: initial.selection } : initial.selection;
@@ -161,11 +174,23 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public componentDidUpdate(prev: IDataGridProps) {
-    /**
-     * If the values prop has changed. Force reload the values into the grid.
-     */
-    if (!R.equals(prev.values, this.props.values)) {
-      this.grid.loadValues(this.props.values);
+    const next = this.props;
+    const grid = this.grid;
+    let redraw = false;
+    if (!R.equals(prev.values, next.values)) {
+      grid.values = next.values || {};
+      redraw = true;
+    }
+    if (!R.equals(prev.columns, next.columns)) {
+      grid.columns = next.columns || {};
+      redraw = true;
+    }
+    if (!R.equals(prev.rows, next.rows)) {
+      grid.rows = next.rows || {};
+      redraw = true;
+    }
+    if (redraw) {
+      this.redraw();
     }
   }
 
@@ -194,59 +219,11 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public get totalColumns() {
-    return value.defaultValue(this.props.totalColumns, DEFAULTS.TOTAL_COLUMNS);
+    return value.defaultValue(this.props.totalColumns, DEFAULT.TOTAL_COLUMNS);
   }
 
   public get totalRows() {
-    return value.defaultValue(this.props.totalRows, DEFAULTS.TOTAL_ROWS);
-  }
-
-  private get settings(): DefaultSettings {
-    const getGrid = () => this.grid;
-    const selectionHandler = hook.afterSelectionHandler(getGrid);
-
-    const createColumns = (length: number) => {
-      return Array.from({ length }).map(() => {
-        return {
-          renderer: render.CELL_DEFAULT,
-          editor: Editor,
-        };
-      });
-    };
-
-    // const rowHeights: any = (index: number) => {
-    //   // if (index === 1) {
-    //   //   return 80;
-    //   // }
-    //   return DEFAULTS.ROW_HEIGHTS;
-    // };
-
-    const settings = {
-      data: [],
-
-      rowHeaders: true,
-      rowHeights: DEFAULTS.ROW_HEIGHTS,
-
-      colHeaders: true,
-      colWidths: DEFAULTS.COLUMN_WIDTHS,
-      columns: createColumns(this.totalColumns),
-      viewportRowRenderingOffset: 20,
-
-      manualRowResize: true,
-      manualColumnResize: true,
-      renderAllRows: false, // Virtual scrolling.
-
-      /**
-       * Event Hooks
-       * https://handsontable.com/docs/6.2.2/Hooks.html
-       */
-      beforeKeyDown: hook.beforeKeyDownHandler(getGrid),
-      beforeChange: hook.beforeChangeHandler(getGrid),
-      afterSelection: selectionHandler.select,
-      afterDeselect: selectionHandler.deselect,
-    };
-
-    return settings;
+    return value.defaultValue(this.props.totalRows, DEFAULT.TOTAL_ROWS);
   }
 
   /**
@@ -254,6 +231,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
    */
   public focus() {
     this.grid.focus();
+    return this;
   }
 
   public redraw() {
@@ -261,6 +239,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     if (this.table) {
       this.table.render();
     }
+    return this;
   }
 
   public updateSize() {
@@ -271,6 +250,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const { offsetWidth: width, offsetHeight: height } = el;
     const size = { width, height };
     this.state$.next({ size });
+    return this;
   }
 
   /**
@@ -295,5 +275,3 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     );
   }
 }
-
-console.log(`\nTODO 🐷   Change selection state on Focus.\n`);

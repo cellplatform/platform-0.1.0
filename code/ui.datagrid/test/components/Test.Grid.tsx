@@ -31,7 +31,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     state$.subscribe(e => this.setState(e));
 
     events$.subscribe(e => {
-      // console.log('e', e);
+      console.log('🌳', e.type, e.payload);
     });
   }
 
@@ -52,17 +52,23 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     return this.testGrid.datagrid.grid;
   }
 
+  private get test$() {
+    return this.testGrid.state$;
+  }
+
   /**
    * [Methods]
    */
   public updateState() {
     const grid = this.grid;
-    const { selection, values } = grid;
+    const { selection, values, rows, columns } = grid;
     const { editorType } = this.props;
     const data = {
       grid: {
         isEditing: grid.isEditing,
         values,
+        rows,
+        columns,
         selection,
       },
       debug: { editorType },
@@ -87,6 +93,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         padding: 10,
         lineHeight: 1.6,
         Flex: 'vertical-spaceBetween',
+        Scroll: true,
       }),
       leftTop: css({
         fontSize: 13,
@@ -109,12 +116,28 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       <div {...styles.base}>
         <div {...styles.left}>
           <div {...styles.leftTop}>
+            {this.button('redraw', () => this.grid.redraw())}
             {this.button('focus', () => this.grid.focus())}
-            {this.button('loadValues', () => this.grid.loadValues({ A3: 123 }))}
+            <Hr margin={5} />
+            {this.button('values', () => (this.grid.values = { A1: 'loaded value' }))}
             {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
-            {this.button('change values (prop)', () =>
-              this.testGrid.state$.next({ values: { A1: 'happy' } }),
+            {this.button('change values (via prop)', () =>
+              this.test$.next({ values: { A1: 'happy' } }),
             )}
+            <Hr margin={5} />
+            {this.button('columns (width) - A:200', () =>
+              this.test$.next({ columns: { A: { width: 200 } } }),
+            )}
+            {this.button('columns (width) - A:300', () =>
+              this.test$.next({ columns: { A: { width: 300 } } }),
+            )}
+            {this.button('rows (height) - 1:0', () =>
+              this.test$.next({ rows: { 1: { height: 0 } } }),
+            )}
+            {this.button('rows (height) - 1:120', () =>
+              this.test$.next({ rows: { 1: { height: 120 } } }),
+            )}
+            <Hr margin={5} />
             {this.button('select: A1', () => this.grid.select({ cell: 'A1' }))}
             {this.button('select: A1 and range', () =>
               this.grid.select({ cell: 'A1', ranges: ['B2:C4', 'C2:D7'] }),
@@ -124,6 +147,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
                 cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
               }),
             )}
+            <Hr margin={5} />
             {this.button('scrollTo: A1', () => this.grid.scrollTo({ cell: 'A1' }))}
             {this.button('scrollTo: B5', () => this.grid.scrollTo({ cell: 'B5' }))}
             {this.button('scrollTo: bottom/right', () =>
@@ -132,11 +156,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
               }),
             )}
           </div>
-          <ObjectView
-            name={'state'}
-            data={this.state.data}
-            expandPaths={['$', '$.grid', '$.grid.selection', '$.grid.selection.ranges']}
-          />
+          {this.renderState()}
         </div>
         <div {...styles.right}>
           <div {...styles.rightInner}>
@@ -149,6 +169,16 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           </div>
         </div>
       </div>
+    );
+  }
+
+  private renderState() {
+    return (
+      <ObjectView
+        name={'state'}
+        data={this.state.data}
+        expandPaths={['$', '$.grid', '$.grid.selection', '$.grid.selection.ranges']}
+      />
     );
   }
 

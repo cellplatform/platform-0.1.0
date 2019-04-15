@@ -8,9 +8,8 @@ import * as ReactDOMServer from 'react-dom/server';
 import { Grid } from '../../api';
 import { RegisterRenderer, Renderer } from '../../types';
 import { FactoryManager } from '../factory';
-import * as constants from './constants';
 import * as css from '../../styles/global.cell';
-import { t } from '../../common';
+import { t, constants } from '../../common';
 
 const CLASS = css.CLASS;
 const { CELL, GRID } = CLASS;
@@ -77,5 +76,5 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
 export function registerCellRenderer(Table: Handsontable, grid: Grid, factory: FactoryManager) {
   const renderers = (Table as any).renderers;
   const fn: RegisterRenderer = renderers.registerRenderer;
-  fn(constants.CELL_DEFAULT, cellRenderer(grid, factory));
+  fn(constants.DEFAULT.CELL_RENDERER, cellRenderer(grid, factory));
 }

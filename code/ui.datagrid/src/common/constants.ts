@@ -28,9 +28,12 @@ export const CSS = {
   },
 };
 
-export const DEFAULTS = {
+export const DEFAULT = {
   TOTAL_COLUMNS: 52,
   TOTAL_ROWS: 1000,
-  ROW_HEIGHTS: 26,
-  COLUMN_WIDTHS: 100,
+  ROW_HEIGHT: 26,
+  ROW_HEIGHT_MIN: 26,
+  COLUMN_WIDTH: 130,
+  COLUMN_WIDTH_MIN: 5,
+  CELL_RENDERER: 'cell',
 };

@@ -1,5 +1,4 @@
-import '../../node_modules/@platform/css/reset.css';
-import '../../node_modules/@platform/ui.datagrid/import.css';
+import './styles';
 import '@babel/polyfill';
 
 import * as constants from './constants';

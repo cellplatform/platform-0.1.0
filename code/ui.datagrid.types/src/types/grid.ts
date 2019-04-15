@@ -1,4 +1,5 @@
 import { t, Observable } from '../common';
+import { CellValue } from './common';
 
 export type IGrid = {
   /**
@@ -10,22 +11,25 @@ export type IGrid = {
   readonly isDisposed: boolean;
   readonly isReady: boolean;
   readonly isEditing: boolean;
-  readonly values: t.IGridValues;
   readonly selection: t.IGridSelection;
   readonly events$: Observable<t.GridEvent>;
   readonly keys$: Observable<t.IGridKeydown>;
+
+  values: t.IGridValues;
+  columns: IGridColumns;
+  rows: IGridRows;
 
   /**
    * [Methods]
    */
   dispose(): void;
-  loadValues(values?: t.IGridValues): IGrid;
   changeValues(changes: t.IGridValues, options?: { redraw?: boolean }): IGrid;
   cell(key: t.CellRef): t.ICell;
   scrollTo(args: { cell: t.CellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
   select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }): IGrid;
   deselect(): IGrid;
   focus(): IGrid;
+  redraw(): IGrid;
   toPosition(ref: t.CellRef): t.IGridCellPosition;
 };
 
@@ -34,3 +38,10 @@ export type IGridSelection = {
   readonly ranges: t.GridCellRangeKey[];
   readonly all?: boolean;
 };
+
+export type IGridValues = { [key: string]: CellValue };
+export type IGridColumns = { [key: string]: IGridColumn };
+export type IGridRows = { [key: string]: IGridRow };
+
+export type IGridColumn = { width?: number };
+export type IGridRow = { height?: number };

@@ -9,6 +9,8 @@ export type IGridArgs = {
   totalColumns: number;
   totalRows: number;
   values?: t.IGridValues;
+  columns?: t.IGridColumns;
+  rows?: t.IGridRows;
 };
 
 /**
@@ -48,11 +50,23 @@ export class Grid implements t.IGrid {
     this.totalRows = args.totalRows;
     this._.table = args.table;
     this._.values = args.values || {};
+    this._.columns = args.columns || {};
+    this._.rows = args.rows || {};
     this.id = `grid/${(this._.table as any).guid.replace(/^ht_/, '')}`;
 
     this.events$
       .pipe(filter(e => e.type === 'GRID/ready'))
       .subscribe(() => (this._.isReady = true));
+
+    /**
+     * Debounced redraw.
+     */
+    this._.redraw$
+      .pipe(
+        takeUntil(this.dispose$),
+        debounceTime(0),
+      )
+      .subscribe(e => this.fire({ type: 'GRID/redraw', payload: {} }));
 
     /**
      * Manage editor events.
@@ -106,9 +120,12 @@ export class Grid implements t.IGrid {
     table: (undefined as unknown) as Handsontable,
     dispose$: new Subject(),
     events$: new Subject<t.GridEvent>(),
+    redraw$: new Subject(),
     isReady: false,
     isEditing: false,
     values: ({} as unknown) as t.IGridValues,
+    columns: ({} as unknown) as t.IGridColumns,
+    rows: ({} as unknown) as t.IGridRows,
     lastSelection: (undefined as unknown) as t.IGridSelection,
   };
 
@@ -143,6 +160,34 @@ export class Grid implements t.IGrid {
 
   public get values() {
     return this._.values;
+  }
+  public set values(values: t.IGridValues) {
+    values = { ...values };
+    const data = Grid.toDataArray({
+      values,
+      totalColumns: this.totalColumns,
+      totalRows: this.totalRows,
+    });
+    this._.values = values;
+    this._.table.loadData(data);
+  }
+
+  public get columns() {
+    return this._.columns;
+  }
+  public set columns(value: t.IGridColumns) {
+    const from = { ...this._.columns };
+    this._.columns = value || {};
+    this.fire({ type: 'GRID/columns/changed', payload: { from, to: value } });
+  }
+
+  public get rows() {
+    return this._.rows;
+  }
+  public set rows(value: t.IGridRows) {
+    const from = { ...this._.rows };
+    this._.rows = value || {};
+    this.fire({ type: 'GRID/rows/changed', payload: { from, to: value } });
   }
 
   public get selection(): t.IGridSelection {
@@ -203,29 +248,6 @@ export class Grid implements t.IGrid {
     }
     dispose$.next();
     dispose$.complete();
-  }
-
-  /**
-   * Fires an event (used internally)
-   */
-  public fire(e: t.GridEvent) {
-    this._.events$.next(e);
-  }
-
-  /**
-   * Loads values into the grid.
-   */
-  public loadValues(values?: t.IGridValues) {
-    if (values) {
-      this._.values = { ...values };
-    }
-    const data = Grid.toDataArray({
-      values: this.values,
-      totalColumns: this.totalColumns,
-      totalRows: this.totalRows,
-    });
-    this._.table.loadData(data);
-    return this;
   }
 
   /**
@@ -312,6 +334,14 @@ export class Grid implements t.IGrid {
   }
 
   /**
+   * Requests that the grid be redrawn.
+   */
+  public redraw() {
+    this._.redraw$.next();
+    return this;
+  }
+
+  /**
    * Retrieve the row/column position, clamped to the size of the grid.
    */
   public toPosition(ref: t.CellRef) {
@@ -319,5 +349,12 @@ export class Grid implements t.IGrid {
     const row = R.clamp(0, this.totalRows - 1, pos.row);
     const column = R.clamp(0, this.totalColumns - 1, pos.column);
     return { row, column };
+  }
+
+  /**
+   * [Internal]
+   */
+  public fire(e: t.GridEvent) {
+    this._.events$.next(e);
   }
 }

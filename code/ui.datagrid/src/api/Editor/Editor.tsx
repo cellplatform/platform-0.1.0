@@ -133,8 +133,8 @@ export class Editor extends editors.TextEditor {
     this.grid.events$
       .pipe(
         takeUntil(context.end$),
-        filter(e => e.type === 'GRID/change'),
-        map(e => e.payload as t.IGridChange),
+        filter(e => e.type === 'GRID/cell/change'),
+        map(e => e.payload as t.IGridCellChange),
         filter(e => e.isCancelled),
         filter(e => e.cell.isPosition({ row, column })),
       )

@@ -6,9 +6,12 @@ import { t } from '../common';
 export type GridEvent =
   | t.EditorEvent
   | IGridReadyEvent
+  | IGridRedrawEvent
   | IGridKeydownEvent
-  | IGridChangeEvent
+  | IGridCellChangeEvent
   | IGridChangeSetEvent
+  | IColumnsChangedEvent
+  | IRowsChangedEvent
   | IGridSelectionChangeEvent
   | IGridFocusEvent
   | IGridBlurEvent;
@@ -16,6 +19,11 @@ export type GridEvent =
 export type IGridReadyEvent = {
   type: 'GRID/ready';
   payload: { grid: t.IGrid };
+};
+
+export type IGridRedrawEvent = {
+  type: 'GRID/redraw';
+  payload: {};
 };
 
 /**
@@ -40,21 +48,21 @@ export type IGridKeydown = {
 };
 
 /**
- * Change
+ * Cell.
  */
 export type GridChangeType = 'EDIT' | 'OTHER';
 export type IGridChangeSetEvent = {
-  type: 'GRID/changeSet';
-  payload: IGridChangeSet;
+  type: 'GRID/cell/change/set';
+  payload: IGridCellChangeSet;
 };
 
-export type IGridChangeEvent = {
-  type: 'GRID/change';
-  payload: IGridChange;
+export type IGridCellChangeEvent = {
+  type: 'GRID/cell/change';
+  payload: IGridCellChange;
 };
 
-export type IGridChangeSet = { changes: IGridChange[]; cancel(): void };
-export type IGridChange = {
+export type IGridCellChangeSet = { changes: IGridCellChange[]; cancel(): void };
+export type IGridCellChange = {
   source: GridChangeType;
   grid: t.IGrid;
   cell: t.ICell;
@@ -65,7 +73,31 @@ export type IGridChange = {
 };
 
 /**
- * Selection
+ * Column.
+ */
+export type IColumnsChangedEvent = {
+  type: 'GRID/columns/changed';
+  payload: IColumnsChanged;
+};
+export type IColumnsChanged = {
+  from: t.IGridColumns;
+  to: t.IGridColumns;
+};
+
+/**
+ * Rows.
+ */
+export type IRowsChangedEvent = {
+  type: 'GRID/rows/changed';
+  payload: IRowsChanged;
+};
+export type IRowsChanged = {
+  from: t.IGridRows;
+  to: t.IGridRows;
+};
+
+/**
+ * Selection.
  */
 export type IGridSelectionChangeEvent = {
   type: 'GRID/selection';
@@ -78,7 +110,7 @@ export type IGridSelectionChange = {
 };
 
 /**
- * Focus
+ * Focus.
  */
 export type IGridFocusEvent = {
   type: 'GRID/focus';

@@ -14,19 +14,33 @@ export type ITestGridViewProps = {
   style?: GlamorValue;
   Table?: Handsontable;
 };
-export type ITestGridViewState = { values?: t.IGridValues };
+export type ITestGridViewState = {
+  values?: t.IGridValues;
+  columns?: t.IGridColumns;
+  rows?: t.IGridRows;
+};
 
 const DEFAULT = {
-  A1: 'A1',
-  // A2: '* one\n * two',
-  A2: '# Heading\nhello',
-  A3: '## Heading\nhello',
-  B1: 'locked',
-  B2: 'cancel',
+  VALUES: {
+    A1: 'A1',
+    // A2: '* one\n * two',
+    A2: '# Heading\nhello',
+    A3: '## Heading\nhello',
+    B1: 'locked',
+    B2: 'cancel',
+  },
+  COLUMNS: {
+    A: { width: 300 },
+  },
+  ROWS: {},
 };
 
 export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestGridViewState> {
-  public state: ITestGridViewState = { values: DEFAULT };
+  public state: ITestGridViewState = {
+    values: DEFAULT.VALUES,
+    columns: DEFAULT.COLUMNS,
+    rows: DEFAULT.ROWS,
+  };
   public state$ = new Subject<Partial<ITestGridViewState>>();
   private unmounted$ = new Subject();
   private events$ = this.props.events$ || new Subject<t.GridEvent>();
@@ -88,13 +102,13 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     });
 
     const change$ = events$.pipe(
-      filter(e => e.type === 'GRID/change'),
-      map(e => e.payload as t.IGridChange),
+      filter(e => e.type === 'GRID/cell/change'),
+      map(e => e.payload as t.IGridCellChange),
     );
 
     const changeSet$ = events$.pipe(
-      filter(e => e.type === 'GRID/changeSet'),
-      map(e => e.payload as t.IGridChangeSet),
+      filter(e => e.type === 'GRID/cell/change/set'),
+      map(e => e.payload as t.IGridCellChangeSet),
     );
 
     const selection$ = events$.pipe(
@@ -140,10 +154,12 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         key={'test.grid'}
         ref={this.datagridRef}
         values={this.state.values}
+        columns={this.state.columns}
+        rows={this.state.rows}
         events$={this.events$}
         factory={this.factory}
-        totalColumns={52}
-        totalRows={2000}
+        // totalColumns={52}
+        // totalRows={5}
         Handsontable={this.Table}
         initial={{ selection: 'A1' }}
         style={this.props.style}
