@@ -5,7 +5,9 @@ electron:
   entry:
     main: test/main.ts
     renderer: 
-      default: test/renderer.tsx
+      default:
+        path: test/renderer.tsx
+        title: Debug (pre-release)
 
 
 sourcemaps:

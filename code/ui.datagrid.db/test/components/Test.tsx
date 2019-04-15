@@ -123,6 +123,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         padding: 8,
         backgroundColor: color.format(-0.03),
         borderLeft: `solid 1px ${color.format(-0.1)}`,
+        Scroll: true,
       }),
     };
 
