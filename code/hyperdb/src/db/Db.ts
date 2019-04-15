@@ -308,7 +308,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
   /**
    * Writes multiple values to the DB in a single transaction.
    */
-  public updateMany<T extends object = D>(
+  public putMany<T extends object = D>(
     data: t.IDbUpdateObject<T> | t.IDbUpdateList<T>,
   ): Promise<t.IDbValues<T>> {
     return this._update({ data, type: 'put' });

@@ -596,14 +596,14 @@ describe('Db', () => {
     });
   });
 
-  describe('updateMany', () => {
+  describe('putMany', () => {
     it('updates from object', async () => {
       const db = await Db.create({ dir });
 
       expect((await db.get('foo')).value).to.eql(undefined);
       expect((await db.get('bar')).value).to.eql(undefined);
 
-      const res = await db.updateMany({ foo: 123, bar: { msg: 'hello' } });
+      const res = await db.putMany({ foo: 123, bar: { msg: 'hello' } });
 
       expect(Object.keys(res).length).to.eql(2);
       expect(res.foo.value).to.eql(123);
@@ -624,7 +624,7 @@ describe('Db', () => {
       expect((await db.get('bar')).value).to.eql(undefined);
 
       type Foo = { success: boolean };
-      const res = await db.updateMany<{ foo: number; bar: Foo }>([
+      const res = await db.putMany<{ foo: number; bar: Foo }>([
         { key: 'foo', value: 123 },
         { key: 'bar', value: { success: true } },
       ]);
@@ -649,7 +649,7 @@ describe('Db', () => {
       expect((await db.get('foo')).props.exists).to.eql(false);
       expect((await db.get('bar')).props.exists).to.eql(false);
 
-      await db.updateMany({ foo: 123, bar: { msg: 'hello' } });
+      await db.putMany({ foo: 123, bar: { msg: 'hello' } });
 
       expect((await db.get('foo')).props.exists).to.eql(true);
       expect((await db.get('bar')).props.exists).to.eql(true);
