@@ -1088,33 +1088,33 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.electron@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.0.tgz#c7a7acd933273431b1a16b84d76d582174d3ee8b"
-  integrity sha512-fGCTfzeEQVawgaG5eLCCs7RcyooFcQMmZGhTAU88QAAiRNCVvjO4469ouILYjRQGnXIz/KaBMns+ZPsZOepuyg==
+"@platform/hyperdb.electron@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.4.tgz#5e60cb4b7777a540503f69920724b6848fc2154c"
+  integrity sha512-alXKooZ4JUtH+aEoSTIE+d3IoGyRZBdPvh9U7VHaPUCF1U5NVOVvrUHKWwRLogqJ/k5Ab0UoeGyrFxElO+CdUQ==
   dependencies:
     "@platform/electron" "0.1.35"
-    "@platform/hyperdb" "0.1.3"
-    "@platform/hyperdb.types" "^0.0.1"
+    "@platform/hyperdb" "0.1.7"
+    "@platform/hyperdb.types" "0.0.4"
     "@platform/util.string" "0.0.54"
     "@platform/util.value" "0.0.57"
-    "@uiharness/electron" "0.4.24"
+    "@uiharness/electron" "0.4.25"
 
-"@platform/hyperdb.types@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.1.tgz#d22982ed35506e3d401857454b3e51c9a7d5fb6e"
-  integrity sha512-zA/gVBsklsvseDLSOfDg1iHUM9dmsUGuYN71bugRcnxbuiFhHBDjqNjT5rUa5R34NFjSpKZ6RLStg0Y2WWHcrA==
+"@platform/hyperdb.types@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.4.tgz#1d02095758878ce81a7aa1223ad5ee3f6204544d"
+  integrity sha512-M3BhwSCNrQbmRLpqhGqB6D6hvgVSpgDrGLcxpyw3/fbJ5gr71KO4U7fNUkRgDVxLuNYu+zzcqqOolZb4EE+7yQ==
   dependencies:
     "@platform/libs" "0.0.12"
 
-"@platform/hyperdb@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.3.tgz#113ce28b6f6920685373a48ed1e577e8ae6509c0"
-  integrity sha512-5ZD8pf8GVBKvvOwCxiUdQhi+WFdcWSiCpMeoXF8+o9XtTSAUIM8p2gAEejWEH/AssZZZgkrdCR4ydHedRnDyZQ==
+"@platform/hyperdb@0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.7.tgz#f594b39c7cad9342f49e8067570ac6a9147a3d47"
+  integrity sha512-4ZiroGjVOitZhZRAIgcoUs1IiZVRcKSQ3LPSjM/vfwuS+F603YYDAFLh00dVORlyU6fukkOykD/5grH9CH7ZKw==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.50"
-    "@platform/hyperdb.types" "^0.0.1"
+    "@platform/hyperdb.types" "0.0.4"
     "@platform/util.value" "0.0.57"
     discovery-swarm "5.1.4"
     hyperdb "3.5.0"
@@ -1240,22 +1240,22 @@
     codemirror "5.45.0"
     react-codemirror2 "5.1.0"
 
-"@platform/ui.datagrid.types@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.2.tgz#d4579790d79a50b9fc02758e319bf018da9dbc65"
-  integrity sha512-3W2mF5yk8uT95/KTh+uGhaA7Zaie0MaiCgylryq05pUR+nMYqykeXcfeW3LDSu0TSvfAHmMwrhAC5BFHJMCjJA==
+"@platform/ui.datagrid.types@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.5.tgz#4beccb227ed6dc2e9d8707cc04f93dc7a2ecf405"
+  integrity sha512-l63uVY1AZd+xLHrHEZLaGpDzmVbCc1xR24jl6NG9n7fP4kGBqcaPoZSjjeTRyEDO7twV8RRrZeF/GYMYVBDTuQ==
   dependencies:
     "@platform/react" "0.1.13"
     "@platform/util.value.cell" "0.0.18"
 
-"@platform/ui.datagrid@0.0.81":
-  version "0.0.81"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.81.tgz#ff8d34d0821822042cf32f39d714e1bebec02955"
-  integrity sha512-a4iIQzwVbWQ+ousfIczswfox0goup7NsidctbRg6lU2KgJjqMTtHapr9EOlGjHfc9ejZdUHVDK6rQ7GBN7ULhg==
+"@platform/ui.datagrid@0.0.84":
+  version "0.0.84"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.84.tgz#029ba21252088ef049c5296ed9f8d1942edbd4cb"
+  integrity sha512-ifeVQwyvIJjWmGDKwwZV5KW5ybq6reCVfaGpgvt3pZFWz2hGkDgPZdJ7mfMd+fulLWR39W3deAaDV1BfCQTQ2g==
   dependencies:
     "@platform/react" "0.1.13"
     "@platform/ui.codemirror" "0.0.23"
-    "@platform/ui.datagrid.types" "0.0.2"
+    "@platform/ui.datagrid.types" "0.0.5"
     "@platform/ui.editor" "0.0.44"
     "@platform/ui.text" "0.1.3"
     "@platform/util.markdown" "0.0.4"
