@@ -305,7 +305,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     });
   }
 
-  public update<T extends object = D>(
+  public updateMany<T extends object = D>(
     data: t.IDbUpdateObject<T> | t.IDbUpdateList<T>,
   ): Promise<t.IDbValues<T>> {
     return new Promise<t.IDbValues<T>>((resolve, reject) => {
