@@ -15,10 +15,10 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
    */
   const { creating$ } = await hyperdb.listen({ ipc, log });
 
-  creating$
-    // Change the DB directory when running in production.
-    .pipe(filter(e => Boolean(uiharness.is.prod)))
-    .subscribe(e => {
-      e.dir = fs.join(app.getPath('appData'), 'db');
-    });
+  // creating$
+  //   // Change the DB directory when running in production.
+  //   .pipe(filter(e => Boolean(uiharness.is.prod)))
+  //   .subscribe(e => {
+  //     e.dir = fs.join(app.getPath('appData'), 'db');
+  //   });
 })();
