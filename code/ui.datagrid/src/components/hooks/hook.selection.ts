@@ -11,7 +11,7 @@ import { t } from '../../common';
 export function afterSelectionHandler(getGrid: () => Grid) {
   let from: t.IGridSelection = { cell: undefined, ranges: [] };
 
-  const select = (
+  const afterSelection = (
     row1: number,
     column1: number,
     row2: number,
@@ -28,7 +28,7 @@ export function afterSelectionHandler(getGrid: () => Grid) {
     from = { ...to };
   };
 
-  const deselect = () => {
+  const afterDeselect = () => {
     const grid = getGrid();
     const to = grid.selection;
     grid.fire({
@@ -38,5 +38,5 @@ export function afterSelectionHandler(getGrid: () => Grid) {
     from = { ...to };
   };
 
-  return { select, deselect };
+  return { afterSelection, afterDeselect };
 }
