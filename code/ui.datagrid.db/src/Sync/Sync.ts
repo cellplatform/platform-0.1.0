@@ -1,6 +1,8 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import { t, value } from '../common';
+import { t, value, constants } from '../common';
+
+const { KEY } = constants;
 
 export type ISyncArgs = {
   db: t.IDb;
@@ -14,6 +16,19 @@ export class Sync {
    */
   public static create(args: ISyncArgs) {
     return new Sync(args);
+  }
+
+  public static toDbCellKey(key: string | { key: string }) {
+    key = typeof key === 'object' ? key.key : key;
+    const parts = (key || '').split('/');
+    key = parts[parts.length - 1];
+    return !key ? '' : `${KEY.PREFIX.CELL}${key}`;
+  }
+
+  public static toGridCellKey(key: string) {
+    const parts = (key || '').split('/');
+    key = parts[parts.length - 1];
+    return key.toUpperCase();
   }
 
   /**
@@ -40,7 +55,7 @@ export class Sync {
      */
     gridChanges$.subscribe(async e => {
       const list = e.changes.map(change => ({
-        key: this.toDbCellKey(change.cell),
+        key: Sync.toDbCellKey(change.cell),
         value: change.value.to,
       }));
       await db.update(list);
@@ -56,7 +71,7 @@ export class Sync {
         map(e => e.payload as t.IDbWatchChange),
       )
       .subscribe(e => {
-        const key = this.toGridCellKey(e.key.toString());
+        const key = Sync.toGridCellKey(e.key.toString());
         grid.cell(key).value = e.value.to;
       });
 
@@ -99,25 +114,13 @@ export class Sync {
    */
 
   public async loadGrid() {
-    const cells = await this.db.values({ pattern: 'cell/' });
+    const cells = await this.db.values({ pattern: KEY.PREFIX.CELL });
     const values = Object.keys(cells)
-      .map(key => ({ key: this.toGridCellKey(key), value: cells[key].value }))
+      .map(key => ({ key: Sync.toGridCellKey(key), value: cells[key].value }))
       .reduce((acc, next) => {
         acc[next.key] = next.value;
         return acc;
       }, {});
     this.grid.values = values;
-  }
-
-  /**
-   * [Helpers]
-   */
-  private toDbCellKey(key: string | t.ICell) {
-    key = typeof key === 'object' ? key.key : key;
-    return `cell/${key}`;
-  }
-
-  private toGridCellKey(key: string) {
-    return key.replace(/^cell\//, '');
   }
 }
