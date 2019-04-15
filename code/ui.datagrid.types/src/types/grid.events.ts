@@ -82,7 +82,13 @@ export type IColumnsChangedEvent = {
 export type IColumnsChanged = {
   from: t.IGridColumns;
   to: t.IGridColumns;
-  changes: { [key: string]: { from: t.IGridColumn; to: t.IGridColumn } };
+  changes: IColumnChange[];
+};
+export type IColumnChange = {
+  column: string;
+  type: 'UPDATE' | 'RESET';
+  from: t.IGridColumn;
+  to: t.IGridColumn;
 };
 
 /**
@@ -95,7 +101,13 @@ export type IRowsChangedEvent = {
 export type IRowsChanged = {
   from: t.IGridRows;
   to: t.IGridRows;
-  changes: { [key: string]: { from: t.IGridRow; to: t.IGridRow } };
+  changes: IRowChange[];
+};
+export type IRowChange = {
+  row: number;
+  type: 'UPDATE' | 'RESET';
+  from: t.IGridRow;
+  to: t.IGridRow;
 };
 
 /**

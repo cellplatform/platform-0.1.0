@@ -105,7 +105,7 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
       if (grid) {
         const key = util.toKey(index);
         const column = grid.columns[key];
-        width = column && column.width !== undefined ? column.width : width;
+        width = column && column.width !== undefined ? column.width : DEFAULT.COLUMN_WIDTH;
       }
       return width;
     },
@@ -119,7 +119,7 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
       if (grid) {
         const key = index;
         const row = grid.rows[key];
-        height = row && row.height !== undefined ? row.height : height;
+        height = row && row.height !== undefined ? row.height : DEFAULT.ROW_HEIGHT;
       }
       return height;
     },

@@ -3,6 +3,7 @@ import { filter, map, share, takeUntil, debounceTime } from 'rxjs/operators';
 
 import { t, value as valueUtil, R } from '../../common';
 import { Cell } from '../Cell';
+import { DEFAULT } from '../../common/constants';
 
 export type IGridArgs = {
   table: Handsontable;
@@ -272,13 +273,20 @@ export class Grid implements t.IGrid {
   public changeColumns(columns: t.IGridColumns) {
     const from = { ...this._.columns };
     const to = { ...from };
-    const changes: t.IColumnsChanged['changes'] = {};
+    let changes: t.IColumnChange[] = [];
+
     Object.keys(columns).forEach(key => {
       const prev = from[key];
       const next = columns[key];
-      to[key] = next;
+      const isDefault = next.width === DEFAULT.COLUMN_WIDTH;
+      if (isDefault) {
+        delete to[key];
+      } else {
+        to[key] = next;
+      }
       if (!R.equals(prev, next)) {
-        changes[key] = { from: prev, to: next };
+        const type = isDefault ? 'RESET' : 'UPDATE';
+        changes = [...changes, { column: key, type, from: prev, to: next }];
       }
     });
     this._.columns = to;
@@ -292,13 +300,21 @@ export class Grid implements t.IGrid {
   public changeRows(rows: t.IGridRows) {
     const from = { ...this._.rows };
     const to = { ...from };
-    const changes: t.IRowsChanged['changes'] = {};
+    let changes: t.IRowChange[] = [];
+
     Object.keys(rows).forEach(key => {
       const prev = from[key];
       const next = rows[key];
-      to[key] = next;
+      const isDefault = next.height === DEFAULT.ROW_HEIGHT;
+      if (isDefault) {
+        delete to[key];
+      } else {
+        to[key] = next;
+      }
       if (!R.equals(prev, next)) {
-        changes[key] = { from: prev, to: next };
+        const type = isDefault ? 'RESET' : 'UPDATE';
+        const row = parseInt(key, 10);
+        changes = [...changes, { row, type, from: prev, to: next }];
       }
     });
     this._.rows = to;
