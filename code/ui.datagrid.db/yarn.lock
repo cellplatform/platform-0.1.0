@@ -1088,33 +1088,33 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.electron@0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.6.tgz#2e205ed43a6ed2fa70936b484b9617fec514e457"
-  integrity sha512-Ek1Y72r7XJjXvUvNgltJivVXoUbzThE1nwMPzgXus8cElZSwyfYKDnQqXEz4QuA+IlBWpZi4wM9EjXW+3A8wIg==
+"@platform/hyperdb.electron@0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.7.tgz#0b2f0368fb13272ef3a7e433ae93cecb88e2fd66"
+  integrity sha512-YUy0la7hv4n12ycaZi/9uC1kJlqJr9t4qiwCfIJwjyzO7MdociBI5p47UiK5PTbTJcRxJFb+gVSOSufdnbEegA==
   dependencies:
     "@platform/electron" "0.1.35"
-    "@platform/hyperdb" "0.1.9"
-    "@platform/hyperdb.types" "0.0.6"
+    "@platform/hyperdb" "0.1.10"
+    "@platform/hyperdb.types" "0.0.7"
     "@platform/util.string" "0.0.54"
     "@platform/util.value" "0.0.57"
     "@uiharness/electron" "0.4.25"
 
-"@platform/hyperdb.types@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.6.tgz#e9fbfb06f4c42f1df57cf3edcb26947fa9cc21a9"
-  integrity sha512-my8ZtJU04IsOilCz6QnjzaFQdjEOEFI77zwEgDQHtmsmCiSRvYfNib5l4lLQ9kS/IfLDTcd7OZuvzRjUJoJWbg==
+"@platform/hyperdb.types@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.7.tgz#a7b33fe7fa325aedb4defb3eda8fc6249a841912"
+  integrity sha512-uBFi33ovV/CRIOfYz2SFISXMAjHzQMYeXEWXlx8S7DV9AWsiRhc5p4jgti6Bj0vbddhxdKbj5XXCNfTlMH5hcw==
   dependencies:
     "@platform/libs" "0.0.12"
 
-"@platform/hyperdb@0.1.9":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.9.tgz#55508ce6a4b44dccd715bfcf249fb2d2b154b0d7"
-  integrity sha512-qmPdhdIur8xaGxAGseCmqh+XWDNdwKGFroLgyI0bHpdkpHaDf4PrTnSSqmuVqaCFAUssldBw48uHPNfDr3W9Rg==
+"@platform/hyperdb@0.1.10":
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.10.tgz#3c9415c3259cb95115fce8fd1ba093fb20fbefc9"
+  integrity sha512-J7LDa4VgU7S0NSa/kGEoFtRA0hGsMaPp5M2fsZMwiZylfryiJcpJw69agfdyM5cPBYIysEAdgSaJaYuFGJoeFw==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.50"
-    "@platform/hyperdb.types" "0.0.6"
+    "@platform/hyperdb.types" "0.0.7"
     "@platform/util.value" "0.0.57"
     discovery-swarm "5.1.4"
     hyperdb "3.5.0"
@@ -1251,22 +1251,22 @@
     codemirror "5.45.0"
     react-codemirror2 "5.1.0"
 
-"@platform/ui.datagrid.types@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.5.tgz#4beccb227ed6dc2e9d8707cc04f93dc7a2ecf405"
-  integrity sha512-l63uVY1AZd+xLHrHEZLaGpDzmVbCc1xR24jl6NG9n7fP4kGBqcaPoZSjjeTRyEDO7twV8RRrZeF/GYMYVBDTuQ==
+"@platform/ui.datagrid.types@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.6.tgz#ceb9b3689842370cc34d1f6d3cf3b848c1df6503"
+  integrity sha512-piaT22kMB2w+4kRnd3Ryh5WO184ziJEpa8eTnEYSfsBxzRdonoqOEAhXHI6k1yPEPT6wnCrzhChY2L8iSlALPQ==
   dependencies:
     "@platform/react" "0.1.13"
     "@platform/util.value.cell" "0.0.18"
 
-"@platform/ui.datagrid@0.0.84":
-  version "0.0.84"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.84.tgz#029ba21252088ef049c5296ed9f8d1942edbd4cb"
-  integrity sha512-ifeVQwyvIJjWmGDKwwZV5KW5ybq6reCVfaGpgvt3pZFWz2hGkDgPZdJ7mfMd+fulLWR39W3deAaDV1BfCQTQ2g==
+"@platform/ui.datagrid@0.0.85":
+  version "0.0.85"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.85.tgz#783fa76542381f8e604060c664bd100accb4a020"
+  integrity sha512-zPk0Xb3F9nbcZkxE63TmZfBTGVeLY6TjjzDfN6mXS2+CfqISSXpvXOEMnYTaqSxF0WCE+hUr0Fv/iaWmLqpSLQ==
   dependencies:
     "@platform/react" "0.1.13"
     "@platform/ui.codemirror" "0.0.23"
-    "@platform/ui.datagrid.types" "0.0.5"
+    "@platform/ui.datagrid.types" "0.0.6"
     "@platform/ui.editor" "0.0.44"
     "@platform/ui.text" "0.1.3"
     "@platform/util.markdown" "0.0.4"
