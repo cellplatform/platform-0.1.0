@@ -61,6 +61,7 @@ export type IDbMethods<D extends {} = any> = {
   updateMany<T extends object = D>(
     data: IDbUpdateObject<T> | IDbUpdateList<T>,
   ): Promise<IDbValues<T>>;
+  deleteMany<T extends object = D>(data: Array<keyof T>): Promise<void>;
   watch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
   unwatch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
   isAuthorized(peerKey?: string | Buffer): Promise<boolean>;

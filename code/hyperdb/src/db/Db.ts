@@ -305,16 +305,36 @@ export class Db<D extends object = any> implements t.IDb<D> {
     });
   }
 
+  /**
+   * Writes multiple values to the DB in a single transaction.
+   */
   public updateMany<T extends object = D>(
     data: t.IDbUpdateObject<T> | t.IDbUpdateList<T>,
   ): Promise<t.IDbValues<T>> {
+    return this._update({ data, type: 'put' });
+  }
+
+  /**
+   * Deletes multiple values from the DB in a single transaction.
+   */
+  public async deleteMany<T extends object = D>(data: Array<keyof T>): Promise<void> {
+    const list: any = data.map(key => ({ key, value: undefined }));
+    await this._update({ data: list, type: 'del' });
+  }
+
+  private _update<T extends object = D>(args: {
+    data: t.IDbUpdateObject<T> | t.IDbUpdateList<T>;
+    type: 'put' | 'del';
+  }): Promise<t.IDbValues<T>> {
+    const { data } = args;
+
     return new Promise<t.IDbValues<T>>((resolve, reject) => {
       let list: any[] = Array.isArray(data)
         ? data
-        : Object.keys(data).map(key => ({ type: 'put', key, value: data[key] }));
+        : Object.keys(data).map(key => ({ key, value: data[key] }));
 
       list = list.map(item => {
-        const type = item.type || 'put';
+        const type = args.type;
         const value = util.serializeValue(item.value);
         return { ...item, type, value };
       });

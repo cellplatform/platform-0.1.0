@@ -163,6 +163,10 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
     return this.invoke('updateMany', [args]) as Promise<t.IDbValues<T>>;
   }
 
+  public async deleteMany<T extends object = D>(args: Array<keyof T>) {
+    return this.invoke('deleteMany', [args]) as Promise<void>;
+  }
+
   public async watch<T extends object = D>(...pattern: Array<keyof T>) {
     return this.invoke('watch', pattern) as Promise<void>;
   }

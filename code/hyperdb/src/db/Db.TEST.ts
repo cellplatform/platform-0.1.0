@@ -596,8 +596,8 @@ describe('Db', () => {
     });
   });
 
-  describe('update', () => {
-    it('batch writes an object', async () => {
+  describe('updateMany', () => {
+    it('updates from object', async () => {
       const db = await Db.create({ dir });
 
       expect((await db.get('foo')).value).to.eql(undefined);
@@ -617,7 +617,7 @@ describe('Db', () => {
       expect((await db.get('bar')).value).to.eql({ msg: 'hello' });
     });
 
-    it('batch writes a list (array)', async () => {
+    it('updates from list (array)', async () => {
       const db = await Db.create({ dir });
 
       expect((await db.get('foo')).value).to.eql(undefined);
@@ -639,6 +639,25 @@ describe('Db', () => {
 
       expect((await db.get('foo')).value).to.eql(123);
       expect((await db.get('bar')).value).to.eql({ success: true });
+    });
+  });
+
+  describe('deleteMany', () => {
+    it('deletes from array of keys', async () => {
+      const db = await Db.create({ dir });
+
+      expect((await db.get('foo')).props.exists).to.eql(false);
+      expect((await db.get('bar')).props.exists).to.eql(false);
+
+      await db.updateMany({ foo: 123, bar: { msg: 'hello' } });
+
+      expect((await db.get('foo')).props.exists).to.eql(true);
+      expect((await db.get('bar')).props.exists).to.eql(true);
+
+      await db.deleteMany(['bar', 'foo']);
+
+      expect((await db.get('foo')).props.exists).to.eql(false);
+      expect((await db.get('bar')).props.exists).to.eql(false);
     });
   });
 });
