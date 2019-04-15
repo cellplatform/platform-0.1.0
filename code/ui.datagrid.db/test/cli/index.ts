@@ -37,7 +37,7 @@ export function init(args: {
       if (pattern === 'column/') {
         db.columns = { ...db.columns, [key]: value };
       }
-      if (pattern === 'column/') {
+      if (pattern === 'row/') {
         db.rows = { ...db.rows, [key]: value };
       }
 
