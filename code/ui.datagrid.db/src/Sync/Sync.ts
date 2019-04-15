@@ -8,7 +8,7 @@ const { KEY } = constants;
 export type ISyncArgs = {
   db: t.IDb;
   grid: t.IGrid;
-  loadGrid?: boolean;
+  initGrid?: boolean;
 };
 
 export class Sync {
@@ -41,29 +41,52 @@ export class Sync {
    */
   private constructor(args: ISyncArgs) {
     const { db, grid } = args;
-    const loadGrid = value.defaultValue(args.loadGrid, true);
+    const loadGrid = value.defaultValue(args.initGrid, true);
 
     // Store refs;
     this.db = db;
     this.grid = grid;
 
     // Setup observables.
+    const db$ = db.events$.pipe(takeUntil(this.dispose$));
     const grid$ = grid.events$.pipe(takeUntil(this.dispose$));
-    const gridChanges$ = grid$.pipe(
+    const gridCellChanges$ = grid$.pipe(
       filter(e => e.type === 'GRID/cell/change/set'),
       map(e => e.payload as t.IGridCellChangeSet),
     );
-    const db$ = db.events$.pipe(takeUntil(this.dispose$));
+    const gridColumnsChanges$ = grid$.pipe(
+      filter(e => e.type === 'GRID/columns/changed'),
+      map(e => e.payload as t.IColumnsChanged),
+    );
+    const gridRowsChanges$ = grid$.pipe(
+      filter(e => e.type === 'GRID/rows/changed'),
+      map(e => e.payload as t.IRowsChanged),
+    );
 
     /**
      * Save to DB when grid cells are edited.
      */
-    gridChanges$.subscribe(async e => {
+    gridCellChanges$.subscribe(async e => {
       const list = e.changes.map(change => ({
         key: Sync.toDbCellKey(change.cell),
         value: change.value.to,
       }));
       await db.update(list);
+    });
+
+    gridColumnsChanges$.subscribe(async e => {
+      const list = e.changes.map(change => ({
+        key: Sync.toDbColumnKey(change.column),
+        value: change.to,
+      }));
+      // console.log('columns', e);
+      console.log('list', list);
+      // const key = Sync.toDbColumnKey(e.to)
+      await db.update(list);
+    });
+
+    gridRowsChanges$.subscribe(e => {
+      console.log('rows', e);
     });
 
     /**

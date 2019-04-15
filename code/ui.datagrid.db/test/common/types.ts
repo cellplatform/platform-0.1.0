@@ -14,6 +14,8 @@ export type ITestState = {
   values?: t.IGridValues;
   showDebug?: boolean;
   'db.cells'?: {};
+  'db.columns'?: {};
+  'db.rows'?: {};
 };
 
 export type IDb = t.IDb<IDbSchema>;

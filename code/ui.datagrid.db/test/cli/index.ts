@@ -23,11 +23,20 @@ export function init(args: {
      * Watch for changes to raw DB and update debug state.
      */
     db.watch('cell/');
+    db.watch('column/');
+    db.watch('row/');
     db.watch$.subscribe(e => {
+      const pattern = e.pattern;
       const key = e.key;
       const value = e.value.to;
-      const values = { ...(getState()['db.cells'] || {}), [key]: value };
-      state$.next({ ['db.cells']: values });
+      if (pattern === 'cell/') {
+        const values = { ...(getState()['db.cells'] || {}), [key]: value };
+        state$.next({ ['db.cells']: values });
+      }
+      if (pattern === 'column/') {
+        const values = { ...(getState()['db.columns'] || {}), [key]: value };
+        state$.next({ ['db.columns']: values });
+      }
     });
 
     /**

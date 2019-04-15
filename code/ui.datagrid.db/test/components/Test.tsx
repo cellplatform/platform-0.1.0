@@ -137,7 +137,6 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
           cells[key] = `${value.substring(0, MAX).trim()}...`;
         }
       });
-
       data['db.cells'] = cells;
     }
 
