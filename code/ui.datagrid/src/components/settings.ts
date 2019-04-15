@@ -1,8 +1,8 @@
 import { cell as util } from '@platform/util.value.cell';
 
-import { Grid, Editor } from '../../api';
-import * as hooks from '../hooks';
-import { constants } from '../../common';
+import { Grid, Editor } from '../api';
+import * as hooks from './hooks';
+import { constants } from '../common';
 
 const { DEFAULT } = constants;
 

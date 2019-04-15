@@ -19,7 +19,7 @@ import {
 } from '../../common';
 import { FactoryManager } from '../factory';
 import * as render from '../render';
-import { getSettings } from './settings';
+import { getSettings } from '../settings';
 import { IGridRefsPrivate } from './types.private';
 
 const { DEFAULT, CSS } = constants;
