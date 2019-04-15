@@ -176,18 +176,16 @@ export class Grid implements t.IGrid {
     return this._.columns;
   }
   public set columns(value: t.IGridColumns) {
-    const from = { ...this._.columns };
-    this._.columns = value || {};
-    this.fire({ type: 'GRID/columns/changed', payload: { from, to: value } });
+    this._.columns = {}; // Reset.
+    this.changeColumns(value);
   }
 
   public get rows() {
     return this._.rows;
   }
   public set rows(value: t.IGridRows) {
-    const from = { ...this._.rows };
-    this._.rows = value || {};
-    this.fire({ type: 'GRID/rows/changed', payload: { from, to: value } });
+    this._.rows = {}; // Reset.
+    this.changeRows(value);
   }
 
   public get selection(): t.IGridSelection {
@@ -265,6 +263,46 @@ export class Grid implements t.IGrid {
         }
       });
     }
+    return this;
+  }
+
+  /**
+   * Updates columns.
+   */
+  public changeColumns(columns: t.IGridColumns) {
+    const from = { ...this._.columns };
+    const to = { ...from };
+    const changes: t.IColumnsChanged['changes'] = {};
+    Object.keys(columns).forEach(key => {
+      const prev = from[key];
+      const next = columns[key];
+      to[key] = next;
+      if (!R.equals(prev, next)) {
+        changes[key] = { from: prev, to: next };
+      }
+    });
+    this._.columns = to;
+    this.fire({ type: 'GRID/columns/changed', payload: { from, to, changes } });
+    return this;
+  }
+
+  /**
+   *  Updates rows.
+   */
+  public changeRows(rows: t.IGridRows) {
+    const from = { ...this._.rows };
+    const to = { ...from };
+    const changes: t.IRowsChanged['changes'] = {};
+    Object.keys(rows).forEach(key => {
+      const prev = from[key];
+      const next = rows[key];
+      to[key] = next;
+      if (!R.equals(prev, next)) {
+        changes[key] = { from: prev, to: next };
+      }
+    });
+    this._.rows = to;
+    this.fire({ type: 'GRID/rows/changed', payload: { from, to, changes } });
     return this;
   }
 

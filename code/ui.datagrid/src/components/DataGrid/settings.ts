@@ -77,8 +77,7 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
         let column = grid.columns[key];
         width = Math.max(DEFAULT.COLUMN_WIDTH_MIN, width);
         column = { ...(column || {}), width };
-        grid.columns = { ...grid.columns, [key]: { ...(column || {}), width } };
-        grid.redraw();
+        grid.changeColumns({ [key]: { ...(column || {}), width } }).redraw();
       }
     },
 
@@ -93,8 +92,7 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
         let row = grid.rows[key];
         height = Math.max(DEFAULT.ROW_HEIGHT_MIN, height);
         row = { ...(row || {}), height };
-        grid.rows = { ...grid.rows, [key]: { ...(row || {}), height } };
-        grid.redraw();
+        grid.changeRows({ [key]: { ...(row || {}), height } }).redraw();
       }
     },
 
