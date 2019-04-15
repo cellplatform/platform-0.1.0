@@ -93,6 +93,13 @@ export class Cell implements t.ICell {
   }
   public set value(value: t.CellValue) {
     if (!R.equals(value, this.value)) {
+      console.group('🌳 cell value');
+      console.log('this.key', this.key);
+      console.log('this.row', this.row);
+      console.log('this.column', this.column);
+      console.log('value', value);
+      console.log('this._.table', this._.table);
+      console.groupEnd();
       this._.table.setDataAtCell(this.row, this.column, value);
     }
   }

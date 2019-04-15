@@ -328,6 +328,9 @@ export class Grid implements t.IGrid {
   public cell(key: { row: number; column: number } | string) {
     const args = typeof key === 'string' ? Cell.fromKey(key) : key;
     const { row, column } = args;
+    if (row < 0 || column < 0) {
+      throw new Error(`Cell does not exist at row:${row}, column:${column}.`);
+    }
     return Cell.create({ table: this._.table, row, column });
   }
 

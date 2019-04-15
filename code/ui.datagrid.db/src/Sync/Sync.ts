@@ -22,17 +22,21 @@ export class Sync {
   public static toDbCellKey(key: string | { key: string }) {
     return toDbKey(KEY.PREFIX.CELL, key);
   }
-
   public static toDbColumnKey(key: number | string) {
     key = typeof key === 'number' ? util.toKey(key) : key;
     return toDbKey(KEY.PREFIX.COLUMN, key);
   }
-
   public static toDbRowKey(key: number | string) {
     return toDbKey(KEY.PREFIX.ROW, key);
   }
 
   public static toGridCellKey(key: string) {
+    return lastPart(key, '/').toUpperCase();
+  }
+  public static toGridColumnKey(key: string) {
+    return lastPart(key, '/').toUpperCase();
+  }
+  public static toGridRowKey(key: string) {
     return lastPart(key, '/').toUpperCase();
   }
 
@@ -49,6 +53,11 @@ export class Sync {
 
     // Setup observables.
     const db$ = db.events$.pipe(takeUntil(this.dispose$));
+    const dbWatch$ = db$.pipe(
+      filter(e => e.type === 'DB/watch'),
+      map(e => e.payload as t.IDbWatchChange),
+    );
+
     const grid$ = grid.events$.pipe(takeUntil(this.dispose$));
     const gridCellChanges$ = grid$.pipe(
       filter(e => e.type === 'GRID/cell/change/set'),
@@ -71,7 +80,7 @@ export class Sync {
         key: Sync.toDbCellKey(change.cell),
         value: change.value.to,
       }));
-      await db.update(list);
+      await db.putMany(list);
     });
 
     gridColumnsChanges$.subscribe(async e => {
@@ -79,33 +88,31 @@ export class Sync {
         key: Sync.toDbColumnKey(change.column),
         value: change.to,
       }));
-      // console.log('columns', e);
-      console.log('list', list);
-      // const key = Sync.toDbColumnKey(e.to)
-      await db.update(list);
+      await db.putMany(list);
     });
 
-    gridRowsChanges$.subscribe(e => {
-      console.log('rows', e);
+    gridRowsChanges$.subscribe(async e => {
+      const list = e.changes.map(change => ({
+        key: Sync.toDbRowKey(change.row),
+        value: change.to,
+      }));
+      await db.putMany(list);
     });
 
     /**
      * Watch for DB changes.
      */
     db.watch('cell/');
-    db$
-      .pipe(
-        filter(e => e.type === 'DB/watch'),
-        map(e => e.payload as t.IDbWatchChange),
-      )
-      .subscribe(e => {
-        const key = Sync.toGridCellKey(e.key.toString());
-        grid.cell(key).value = e.value.to;
-      });
+    dbWatch$.pipe(filter(e => e.pattern === 'cell/')).subscribe(e => {
+      const key = Sync.toGridCellKey(e.key.toString());
+      grid.cell(key).value = e.value.to;
+    });
 
     // Finish up.
     if (loadGrid) {
       this.loadGrid();
+      this.loadColumns();
+      this.loadRows();
     }
   }
 
@@ -151,6 +158,28 @@ export class Sync {
       }, {});
     this.grid.values = values;
   }
+
+  public async loadColumns() {
+    const columns = await this.db.values({ pattern: KEY.PREFIX.COLUMN });
+    const values = Object.keys(columns)
+      .map(key => ({ key: Sync.toGridColumnKey(key), value: columns[key].value }))
+      .reduce((acc, next) => {
+        acc[next.key] = next.value;
+        return acc;
+      }, {});
+    this.grid.columns = values;
+  }
+
+  public async loadRows() {
+    const rows = await this.db.values({ pattern: KEY.PREFIX.ROW });
+    const values = Object.keys(rows)
+      .map(key => ({ key: Sync.toGridRowKey(key), value: rows[key].value }))
+      .reduce((acc, next) => {
+        acc[next.key] = next.value;
+        return acc;
+      }, {});
+    this.grid.rows = values;
+  }
 }
 
 /**
@@ -162,6 +191,7 @@ function lastPart(text: string, delimiter: string) {
 }
 
 function toDbKey(prefix: string, key: string | number | { key: string }) {
+  key = typeof key === 'number' ? key.toString() : key;
   key = typeof key === 'object' ? key.key : (key || '').toString();
   key = lastPart(key, '/');
   return !key ? '' : `${prefix}${key}`;

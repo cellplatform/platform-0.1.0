@@ -29,22 +29,34 @@ export function init(args: {
       const pattern = e.pattern;
       const key = e.key;
       const value = e.value.to;
+      const db = { ...(getState().db || { cells: {}, columns: {}, rows: {} }) };
+
       if (pattern === 'cell/') {
-        const values = { ...(getState()['db.cells'] || {}), [key]: value };
-        state$.next({ ['db.cells']: values });
+        db.cells = { ...db.cells, [key]: value };
       }
       if (pattern === 'column/') {
-        const values = { ...(getState()['db.columns'] || {}), [key]: value };
-        state$.next({ ['db.columns']: values });
+        db.columns = { ...db.columns, [key]: value };
       }
+      if (pattern === 'column/') {
+        db.rows = { ...db.rows, [key]: value };
+      }
+
+      state$.next({ db });
     });
 
     /**
      * Load initial values.
      */
-    const cells = await db.values({ pattern: 'cell/' });
-    Object.keys(cells).forEach(key => (cells[key] = cells[key].value));
-    state$.next({ ['db.cells']: cells });
+    const loadValues = async (pattern: string, target: object) => {
+      const values = await db.values({ pattern });
+      Object.keys(values).forEach(key => (target[key] = values[key].value));
+    };
+
+    const target = { cells: {}, columns: {}, rows: {} };
+    await loadValues('cell/', target.cells);
+    await loadValues('column/', target.columns);
+    await loadValues('row/', target.rows);
+    state$.next({ db: target });
 
     return db;
   };

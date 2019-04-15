@@ -119,7 +119,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private renderDebug() {
     const styles = {
       base: css({
-        width: 280,
+        width: 300,
         padding: 8,
         backgroundColor: color.format(-0.03),
         borderLeft: `solid 1px ${color.format(-0.1)}`,

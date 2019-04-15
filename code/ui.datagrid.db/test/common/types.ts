@@ -13,9 +13,11 @@ export type ICommandProps = {
 export type ITestState = {
   values?: t.IGridValues;
   showDebug?: boolean;
-  'db.cells'?: {};
-  'db.columns'?: {};
-  'db.rows'?: {};
+  db?: {
+    cells: {};
+    columns: {};
+    rows: {};
+  };
 };
 
 export type IDb = t.IDb<IDbSchema>;
