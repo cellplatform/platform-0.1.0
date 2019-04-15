@@ -86,6 +86,18 @@ export class Grid implements t.IGrid {
       const key = e.cell.key;
       this.changeValues({ [key]: e.value.to }, { redraw: false });
     });
+    editEnd$
+      .pipe(
+        filter(e => !e.isCancelled),
+        filter(e => e.cell.key === this.selection.cell),
+      )
+      .subscribe(e => {
+        // Select next cell (below) when use ends and edit, typcially with ENTER key.
+        const below = e.cell.sibling.bottom;
+        if (below) {
+          this.select({ cell: below });
+        }
+      });
 
     const selection$ = this.events$.pipe(
       filter(e => e.type === 'GRID/selection'),

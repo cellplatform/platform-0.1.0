@@ -211,10 +211,7 @@ export class Editor extends editors.TextEditor {
         grid.cell({ row, column }).value = from; // NB: Revert the value.
       },
     };
-    const e: t.IEndEditingEvent = {
-      type: 'GRID/EDITOR/end',
-      payload,
-    };
+    const e: t.IEndEditingEvent = { type: 'GRID/EDITOR/end', payload };
 
     // Finish up.
     this._.current = undefined;
