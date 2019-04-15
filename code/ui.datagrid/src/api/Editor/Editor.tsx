@@ -188,6 +188,13 @@ export class Editor extends editors.TextEditor {
     // Destroy the editor UI component.
     ReactDOM.unmountComponentAtNode(this.TEXTAREA_PARENT);
 
+    // Update the row-height of the grid.
+    if (size) {
+      const index = this.row;
+      const row = { ...grid.rows[index], height: size.height };
+      grid.changeRows({ [index]: row }, { type: 'UPDATE/cellEdited' });
+    }
+
     // Alert listeners.
     const value = { from, to };
     const isChanged = !R.equals(value.from, value.to);
