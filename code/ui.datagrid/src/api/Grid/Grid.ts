@@ -335,7 +335,7 @@ export class Grid implements t.IGrid {
   }
 
   /**
-   * Scroll the grids view-port to the given column/row cooridnates.
+   * Scroll the grids view-port to the given column/row coordinates.
    */
   public scrollTo(args: {
     cell: t.CellRef;
