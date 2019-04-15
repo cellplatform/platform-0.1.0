@@ -18,6 +18,28 @@ describe('Sync', () => {
       test({ key: undefined }, '');
     });
 
+    it('toDbRowKey', () => {
+      const test = (key: any, expected: any) => {
+        const res = Sync.toDbRowKey(key);
+        expect(res).to.eql(expected);
+      };
+      test('1', 'row/1');
+      test(1, 'row/1');
+      test('row/1', 'row/1');
+    });
+
+    it('toDbColumnKey', () => {
+      const test = (key: any, expected: any) => {
+        const res = Sync.toDbColumnKey(key);
+        expect(res).to.eql(expected);
+      };
+      test('A', 'column/A');
+      test(0, 'column/A');
+      test(1, 'column/B');
+      test('column/A', 'column/A');
+      test('FOO/A', 'column/A');
+    });
+
     it('toGridCellKey', () => {
       const test = (key: any, expected: any) => {
         const res = Sync.toGridCellKey(key);

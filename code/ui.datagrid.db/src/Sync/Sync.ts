@@ -1,3 +1,4 @@
+import { cell as util } from '@platform/util.value.cell';
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { t, value, constants } from '../common';
@@ -19,16 +20,20 @@ export class Sync {
   }
 
   public static toDbCellKey(key: string | { key: string }) {
-    key = typeof key === 'object' ? key.key : key;
-    const parts = (key || '').split('/');
-    key = parts[parts.length - 1];
-    return !key ? '' : `${KEY.PREFIX.CELL}${key}`;
+    return toDbKey(KEY.PREFIX.CELL, key);
+  }
+
+  public static toDbColumnKey(key: number | string) {
+    key = typeof key === 'number' ? util.toKey(key) : key;
+    return toDbKey(KEY.PREFIX.COLUMN, key);
+  }
+
+  public static toDbRowKey(key: number | string) {
+    return toDbKey(KEY.PREFIX.ROW, key);
   }
 
   public static toGridCellKey(key: string) {
-    const parts = (key || '').split('/');
-    key = parts[parts.length - 1];
-    return key.toUpperCase();
+    return lastPart(key, '/').toUpperCase();
   }
 
   /**
@@ -123,4 +128,18 @@ export class Sync {
       }, {});
     this.grid.values = values;
   }
+}
+
+/**
+ * [Helpers]
+ */
+function lastPart(text: string, delimiter: string) {
+  const parts = (text || '').split(delimiter);
+  return parts[parts.length - 1];
+}
+
+function toDbKey(prefix: string, key: string | number | { key: string }) {
+  key = typeof key === 'object' ? key.key : (key || '').toString();
+  key = lastPart(key, '/');
+  return !key ? '' : `${prefix}${key}`;
 }
