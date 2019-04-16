@@ -192,7 +192,8 @@ export class Editor extends editors.TextEditor {
     if (size) {
       const index = this.row;
       const row = { ...grid.rows[index], height: size.height };
-      grid.changeRows({ [index]: row }, { type: 'UPDATE/cellEdited' });
+      const change = { [index]: row };
+      grid.changeRows(change, { type: 'UPDATE/cellEdited' }).redraw();
     }
 
     // Alert listeners.
