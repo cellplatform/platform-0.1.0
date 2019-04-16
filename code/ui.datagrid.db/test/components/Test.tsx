@@ -129,8 +129,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
     const data = { ...this.state };
     delete data.showDebug;
-    if (data['db.cells']) {
-      const cells = value.deleteEmpty(data['db.cells']);
+    if (data.db && data.db.cells) {
+      const cells = value.deleteEmpty(data.db.cells);
       Object.keys(cells).forEach(key => {
         const MAX = 15;
         const value = cells[key];
@@ -138,7 +138,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
           cells[key] = `${value.substring(0, MAX).trim()}...`;
         }
       });
-      data['db.cells'] = cells;
+      data.db.cells = cells;
     }
 
     return (
