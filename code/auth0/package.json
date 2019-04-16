@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@platform/react": "0.1.13",
-    "auth0-js": "9.10.1"
+    "auth0-js": "9.10.2"
   },
   "devDependencies": {
     "@types/auth0-js": "9.10.1",
