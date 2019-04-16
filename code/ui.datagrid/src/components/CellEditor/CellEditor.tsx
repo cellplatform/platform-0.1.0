@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { EditorContext, ReactEditorContext } from '../../api';
 import { GlamorValue, t, time } from '../../common';
 import { CellEditorView } from './CellEditorView';
 
@@ -22,8 +21,8 @@ export type ICellEditorState = {
 export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEditorState> {
   public static THEMES = CellEditorView.THEMES;
 
-  public static contextType = EditorContext;
-  public context!: ReactEditorContext;
+  public static contextType = t.EditorContext;
+  public context!: t.ReactEditorContext;
 
   public state: ICellEditorState = {};
   private unmounted$ = new Subject();

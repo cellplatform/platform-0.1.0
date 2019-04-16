@@ -5,7 +5,7 @@ import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
 import { constants, Handsontable, R, t, time } from '../../common';
 import { IGridRefsPrivate } from '../../components/DataGrid/types.private';
-import { createProvider } from './EditorContext';
+import { createProvider } from './provider';
 
 const editors = Handsontable.editors as Editors;
 const { CSS } = constants;
