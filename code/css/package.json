@@ -1,6 +1,6 @@
 {
   "name": "@platform/css",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "Helpers for working with inline CSS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,15 +13,15 @@
   },
   "dependencies": {
     "@platform/libs": "0.0.12",
-    "@platform/util.is": "0.0.56",
-    "@platform/util.value": "0.0.57",
+    "@platform/util.is": "0.0.57",
+    "@platform/util.value": "0.0.58",
     "@types/tinycolor2": "1.4.1",
     "glamor": "2.20.40",
     "tinycolor2": "1.4.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.43",
-    "@platform/ts": "3.4.7",
+    "@platform/test": "0.0.44",
+    "@platform/ts": "3.4.8",
     "@types/react": "16.8.13"
   },
   "files": [

@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import * as str from '.';
 
 describe('str.matchAll (regex)', () => {
-  it('direct invoke', () => {
+  it('invoke (direct)', () => {
     const res = str.matchAll(/\$\{.*?\}/, 'hello ${NAME}. ${AGE}.');
     expect(res.length).to.eql(2);
 
@@ -14,7 +14,7 @@ describe('str.matchAll (regex)', () => {
     expect(res[1].index).to.eql(15);
   });
 
-  it('curried', () => {
+  it('invoke (curried)', () => {
     const matcher = str.matchAll(/\$\{.*?\}/);
     const input = 'hello ${NAME}. ${AGE}';
     const res = matcher(input);

@@ -2,14 +2,14 @@
 # yarn lockfile v1
 
 
-"@platform/ts.libs@3.4.5":
-  version "3.4.5"
-  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.4.5.tgz#24222d35eb7280ccfc2e0f014b2cddb0033379a1"
-  integrity sha512-ObnqN2MS7Bm3I6PeBDWpJqCG8qkYB/UzAUgRnCtud1DS0SvD1V8fByQVfyDNA1d7M9+w7k4mf81pIsN4F2tlHw==
+"@platform/ts.libs@3.4.6":
+  version "3.4.6"
+  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.4.6.tgz#56176c2aaf8345337e5e5a22e26eeaade939cfd9"
+  integrity sha512-+j9uO0UbZGrRLuGyVmkQhUPUEyybBOmJn1Oz/E/Ymi4EX78ylwwEWv2b5pvkjijxynkUjI0wrDGy4YTRiw1L3g==
   dependencies:
     "@types/node" "11.13.4"
     prettier "1.17.0"
-    ts-node "8.0.3"
+    ts-node "8.1.0"
     tslib "1.9.3"
     tslint "5.15.0"
     tslint-config-prettier "1.18.0"
@@ -1535,10 +1535,10 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
 
-ts-node@8.0.3:
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.0.3.tgz#aa60b836a24dafd8bf21b54766841a232fdbc641"
-  integrity sha512-2qayBA4vdtVRuDo11DEFSsD/SFsBXQBRZZhbRGSIkmYmVkWjULn/GGMdG10KVqkaGndljfaTD8dKjWgcejO8YA==
+ts-node@8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.1.0.tgz#8c4b37036abd448577db22a061fd7a67d47e658e"
+  integrity sha512-34jpuOrxDuf+O6iW1JpgTRDFynUZ1iEqtYruBqh35gICNjN8x+LpVcPAcwzLPi9VU6mdA3ym+x233nZmZp445A==
   dependencies:
     arg "^4.1.0"
     diff "^3.1.0"

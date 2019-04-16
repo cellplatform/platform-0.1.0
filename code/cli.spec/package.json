@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli.spec",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Isolated data-structures for specifying command-line programs.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -12,13 +12,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/util.string": "0.0.54",
-    "@platform/util.value": "0.0.57",
+    "@platform/util.string": "0.0.55",
+    "@platform/util.value": "0.0.58",
     "minimist": "1.2.0"
   },
   "devDependencies": {
-    "@platform/test": "0.0.43",
-    "@platform/ts": "3.4.7"
+    "@platform/test": "0.0.44",
+    "@platform/ts": "3.4.8"
   },
   "files": [
     "lib"

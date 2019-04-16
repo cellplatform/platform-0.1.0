@@ -24,9 +24,12 @@ export type IRegexMatch = {
 function _matchAll(regex: RegExp, input: string): IRegexMatch[] {
   let list: IRegexMatch[] = [];
 
-  let flags = '';
-  flags = regex.ignoreCase ? `${flags}i` : flags;
-  regex = new RegExp(regex.source, flags);
+  // NB: Strip out the `global` flag to capture the entire text input.
+  if (regex.global) {
+    let flags = '';
+    flags = regex.ignoreCase ? `${flags}i` : flags;
+    regex = new RegExp(regex.source, flags);
+  }
 
   const find = (text: string, start: number = 0) => {
     const res = regex.exec(text);
