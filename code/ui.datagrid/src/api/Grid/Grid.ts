@@ -3,6 +3,7 @@ import { filter, map, share, takeUntil, debounceTime } from 'rxjs/operators';
 
 import { t, value as valueUtil, R } from '../../common';
 import { Cell } from '../Cell';
+import { DEFAULT } from '../../common/constants';
 
 export type IGridArgs = {
   table: Handsontable;
@@ -85,6 +86,18 @@ export class Grid implements t.IGrid {
       const key = e.cell.key;
       this.changeValues({ [key]: e.value.to }, { redraw: false });
     });
+    editEnd$
+      .pipe(
+        filter(e => !e.isCancelled),
+        filter(e => e.cell.key === this.selection.cell),
+      )
+      .subscribe(e => {
+        // Select next cell (below) when use ends and edit, typcially with ENTER key.
+        const below = e.cell.sibling.bottom;
+        if (below) {
+          this.select({ cell: below });
+        }
+      });
 
     const selection$ = this.events$.pipe(
       filter(e => e.type === 'GRID/selection'),
@@ -176,18 +189,16 @@ export class Grid implements t.IGrid {
     return this._.columns;
   }
   public set columns(value: t.IGridColumns) {
-    const from = { ...this._.columns };
-    this._.columns = value || {};
-    this.fire({ type: 'GRID/columns/changed', payload: { from, to: value } });
+    this._.columns = {}; // Reset.
+    this.changeColumns(value, { type: 'RESET' });
   }
 
   public get rows() {
     return this._.rows;
   }
   public set rows(value: t.IGridRows) {
-    const from = { ...this._.rows };
-    this._.rows = value || {};
-    this.fire({ type: 'GRID/rows/changed', payload: { from, to: value } });
+    this._.rows = {}; // Reset.
+    this.changeRows(value, { type: 'RESET' });
   }
 
   public get selection(): t.IGridSelection {
@@ -269,16 +280,74 @@ export class Grid implements t.IGrid {
   }
 
   /**
+   * Updates columns.
+   */
+  public changeColumns(columns: t.IGridColumns, options: { type?: t.IColumnChange['type'] } = {}) {
+    const { type = 'UPDATE' } = options;
+    const from = { ...this._.columns };
+    const to = { ...from };
+    let changes: t.IColumnChange[] = [];
+
+    Object.keys(columns).forEach(key => {
+      const prev = from[key];
+      const next = columns[key];
+      const isDefault = next.width === DEFAULT.COLUMN_WIDTH;
+      if (isDefault) {
+        delete to[key];
+      } else {
+        to[key] = next;
+      }
+      if (!R.equals(prev, next)) {
+        changes = [...changes, { column: key, type, from: prev, to: next }];
+      }
+    });
+    this._.columns = to;
+    this.fire({ type: 'GRID/columns/changed', payload: { from, to, changes } });
+    return this;
+  }
+
+  /**
+   *  Updates rows.
+   */
+  public changeRows(rows: t.IGridRows, options: { type?: t.IColumnChange['type'] } = {}) {
+    const { type = 'UPDATE' } = options;
+    const from = { ...this._.rows };
+    const to = { ...from };
+    let changes: t.IRowChange[] = [];
+
+    Object.keys(rows).forEach(key => {
+      const prev = from[key];
+      const next = rows[key];
+      const isDefault = next.height === DEFAULT.ROW_HEIGHT;
+      if (isDefault) {
+        delete to[key];
+      } else {
+        to[key] = next;
+      }
+      if (!R.equals(prev, next)) {
+        const row = parseInt(key, 10);
+        changes = [...changes, { row, type, from: prev, to: next }];
+      }
+    });
+    this._.rows = to;
+    this.fire({ type: 'GRID/rows/changed', payload: { from, to, changes } });
+    return this;
+  }
+
+  /**
    * Retrieves an API for working with a single cell.
    */
   public cell(key: { row: number; column: number } | string) {
     const args = typeof key === 'string' ? Cell.fromKey(key) : key;
     const { row, column } = args;
+    if (row < 0 || column < 0) {
+      throw new Error(`Cell does not exist at row:${row}, column:${column}.`);
+    }
     return Cell.create({ table: this._.table, row, column });
   }
 
   /**
-   * Scroll the grids view-port to the given column/row cooridnates.
+   * Scroll the grids view-port to the given column/row coordinates.
    */
   public scrollTo(args: {
     cell: t.CellRef;

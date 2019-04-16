@@ -19,7 +19,7 @@ import * as cli from '../cli';
 
 const storage = {
   get showDebug() {
-    const value = localStorage.getItem('showDebug') || 'true';
+    const value = localStorage.getItem('showDebug') || 'false';
     return value === 'true';
   },
   set showDebug(value: boolean) {
@@ -119,17 +119,18 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private renderDebug() {
     const styles = {
       base: css({
-        width: 280,
+        width: 300,
         padding: 8,
         backgroundColor: color.format(-0.03),
         borderLeft: `solid 1px ${color.format(-0.1)}`,
+        Scroll: true,
       }),
     };
 
     const data = { ...this.state };
     delete data.showDebug;
-    if (data['db.cells']) {
-      const cells = value.deleteEmpty(data['db.cells']);
+    if (data.db && data.db.cells) {
+      const cells = value.deleteEmpty(data.db.cells);
       Object.keys(cells).forEach(key => {
         const MAX = 15;
         const value = cells[key];
@@ -137,8 +138,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
           cells[key] = `${value.substring(0, MAX).trim()}...`;
         }
       });
-
-      data['db.cells'] = cells;
+      data.db.cells = cells;
     }
 
     return (

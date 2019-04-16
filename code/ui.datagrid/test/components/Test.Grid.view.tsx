@@ -70,26 +70,8 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         filter(e => !e.isCancelled),
       )
       .subscribe(e => {
-        // console.log('HANDLE END  🐷 ');
         // e.payload.cancel();
-        console.group('🌳 END EDIT');
-        console.log('e', e);
-        console.log('e.size', e.size);
-        console.groupEnd();
-        // console.log('END', e);
       });
-
-    // events$
-    // .pipe(
-    //   filter(e => e.type === 'GRID/EDITOR/end'),
-    //   map(e => e as t.IEndEditingEvent),
-    //   filter(e => !e.payload.isCancelled),
-    // )
-    // .subscribe(e => {
-    //   // console.log('HANDLE END  🐷 ');
-    //   // e.payload.cancel();
-    //   console.log('e', e);
-    // });
 
     const beginEdit$ = events$.pipe(
       filter(e => e.type === 'GRID/EDITOR/begin'),

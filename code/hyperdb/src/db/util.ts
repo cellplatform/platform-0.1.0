@@ -15,7 +15,7 @@ export function toValue<K, V>(response: any, options: { parse?: boolean } = {}):
   // NOTE:  The response value is parsed automatically within the DB's `map` function.
   //        See constructor options.
   //        The only time you may want to parse is if the value came back without
-  //        having gone through the `map` - for instance, a `delete` response.
+  //        having gone through the `map` - for example, a `delete` response.
   let value = isObj ? response.value : undefined;
   value = options.parse ? parseValue(value) : value;
 

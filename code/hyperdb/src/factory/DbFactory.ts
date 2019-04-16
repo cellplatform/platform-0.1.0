@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { map, filter, share, take, takeUntil } from 'rxjs/operators';
+import { filter, map, share, take } from 'rxjs/operators';
 
 import { value } from '../common';
 import * as t from '../types';
@@ -178,7 +178,6 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
     // NB:  Fire the PRE "creating" event in case any listeners adjust the input args (eg. the 'dir')
     //      so as to ensure the correct cache item is looked up.
     args = this.fireCreating(args);
-
     return (this.get<P>(args) || (await this._create<P>(args))) as t.ICreateDatabaseResponse<P>;
   };
 
@@ -198,10 +197,9 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
   }
 
   private fireCreating(args: t.ICreateCacheableDatabaseArgs) {
-    args = { ...args };
     this.fire({
       type: 'DB_FACTORY/creating',
-      payload: args,
+      payload: { ...args },
     });
     return args;
   }

@@ -1,4 +1,5 @@
 import { constants, Command, t } from '../common';
+const { shell } = require('electron').remote;
 
 type P = t.ICommandProps & {};
 
@@ -30,6 +31,9 @@ export const root = Command.create<P>('root', e => {
 })
   .add(db)
   .add(debug)
-  .add('tmp', async e => {
-    await e.props.databases.getOrCreate({ dir: constants.DB.DIR });
+  .add('dir', async e => {
+    shell.showItemInFolder(constants.DB.DIR);
+  })
+  .add('beep', async e => {
+    shell.beep();
   });

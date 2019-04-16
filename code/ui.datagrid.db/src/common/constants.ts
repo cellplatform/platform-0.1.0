@@ -1,1 +1,7 @@
-export const TEMP = 123;
+export const KEY = {
+  PREFIX: {
+    CELL: 'cell/',
+    COLUMN: 'column/',
+    ROW: 'row/',
+  },
+};

@@ -188,6 +188,14 @@ export class Editor extends editors.TextEditor {
     // Destroy the editor UI component.
     ReactDOM.unmountComponentAtNode(this.TEXTAREA_PARENT);
 
+    // Update the row-height of the grid.
+    if (size) {
+      const index = this.row;
+      const row = { ...grid.rows[index], height: size.height };
+      const change = { [index]: row };
+      grid.changeRows(change, { type: 'UPDATE/cellEdited' }).redraw();
+    }
+
     // Alert listeners.
     const value = { from, to };
     const isChanged = !R.equals(value.from, value.to);
@@ -204,10 +212,7 @@ export class Editor extends editors.TextEditor {
         grid.cell({ row, column }).value = from; // NB: Revert the value.
       },
     };
-    const e: t.IEndEditingEvent = {
-      type: 'GRID/EDITOR/end',
-      payload,
-    };
+    const e: t.IEndEditingEvent = { type: 'GRID/EDITOR/end', payload };
 
     // Finish up.
     this._.current = undefined;

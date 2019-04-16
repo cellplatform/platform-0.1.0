@@ -596,48 +596,68 @@ describe('Db', () => {
     });
   });
 
-  describe('update', () => {
-    it('batch writes an object', async () => {
+  describe('putMany', () => {
+    it('updates from object', async () => {
       const db = await Db.create({ dir });
 
       expect((await db.get('foo')).value).to.eql(undefined);
       expect((await db.get('bar')).value).to.eql(undefined);
 
-      const res = await db.update({ foo: 123, bar: 456 });
+      const res = await db.putMany({ foo: 123, bar: { msg: 'hello' } });
 
       expect(Object.keys(res).length).to.eql(2);
       expect(res.foo.value).to.eql(123);
-      expect(res.bar.value).to.eql(456);
+      expect(res.bar.value).to.eql({ msg: 'hello' });
 
       // Same clock value (single transaction).
       expect(res.foo.props.clock).to.eql([3]);
       expect(res.bar.props.clock).to.eql([3]);
 
       expect((await db.get('foo')).value).to.eql(123);
-      expect((await db.get('bar')).value).to.eql(456);
+      expect((await db.get('bar')).value).to.eql({ msg: 'hello' });
     });
 
-    it('batch writes a list (array)', async () => {
+    it('updates from list (array)', async () => {
       const db = await Db.create({ dir });
 
       expect((await db.get('foo')).value).to.eql(undefined);
       expect((await db.get('bar')).value).to.eql(undefined);
 
-      const res = await db.update<{ foo: number; bar: number }>([
+      type Foo = { success: boolean };
+      const res = await db.putMany<{ foo: number; bar: Foo }>([
         { key: 'foo', value: 123 },
-        { key: 'bar', value: 456 },
+        { key: 'bar', value: { success: true } },
       ]);
 
       expect(Object.keys(res).length).to.eql(2);
       expect(res.foo.value).to.eql(123);
-      expect(res.bar.value).to.eql(456);
+      expect(res.bar.value).to.eql({ success: true });
 
       // Same clock value (single transaction).
       expect(res.foo.props.clock).to.eql([3]);
       expect(res.bar.props.clock).to.eql([3]);
 
       expect((await db.get('foo')).value).to.eql(123);
-      expect((await db.get('bar')).value).to.eql(456);
+      expect((await db.get('bar')).value).to.eql({ success: true });
+    });
+  });
+
+  describe('deleteMany', () => {
+    it('deletes from array of keys', async () => {
+      const db = await Db.create({ dir });
+
+      expect((await db.get('foo')).props.exists).to.eql(false);
+      expect((await db.get('bar')).props.exists).to.eql(false);
+
+      await db.putMany({ foo: 123, bar: { msg: 'hello' } });
+
+      expect((await db.get('foo')).props.exists).to.eql(true);
+      expect((await db.get('bar')).props.exists).to.eql(true);
+
+      await db.deleteMany(['bar', 'foo']);
+
+      expect((await db.get('foo')).props.exists).to.eql(false);
+      expect((await db.get('bar')).props.exists).to.eql(false);
     });
   });
 });

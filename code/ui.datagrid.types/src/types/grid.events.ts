@@ -82,6 +82,13 @@ export type IColumnsChangedEvent = {
 export type IColumnsChanged = {
   from: t.IGridColumns;
   to: t.IGridColumns;
+  changes: IColumnChange[];
+};
+export type IColumnChange = {
+  column: string;
+  type: 'UPDATE' | 'RESET' | 'RESET/doubleClick';
+  from: t.IGridColumn;
+  to: t.IGridColumn;
 };
 
 /**
@@ -94,6 +101,13 @@ export type IRowsChangedEvent = {
 export type IRowsChanged = {
   from: t.IGridRows;
   to: t.IGridRows;
+  changes: IRowChange[];
+};
+export type IRowChange = {
+  row: number;
+  type: 'UPDATE' | 'UPDATE/cellEdited' | 'RESET' | 'RESET/doubleClick';
+  from: t.IGridRow;
+  to: t.IGridRow;
 };
 
 /**
