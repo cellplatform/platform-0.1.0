@@ -1,5 +1,4 @@
 import { t, Observable } from '../common';
-import { CellValue } from './common';
 
 export type IGrid = {
   /**
@@ -41,7 +40,7 @@ export type IGridSelection = {
   readonly all?: boolean;
 };
 
-export type IGridValues = { [key: string]: CellValue };
+export type IGridValues = { [key: string]: t.CellValue };
 export type IGridColumns = { [key: string]: IGridColumn };
 export type IGridRows = { [key: string]: IGridRow };
 
