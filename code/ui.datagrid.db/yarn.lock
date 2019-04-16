@@ -1110,15 +1110,15 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.electron@0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.10.tgz#2f9cec90fac4b9649df0803ba50d75b44c55151b"
-  integrity sha512-xHFLTc3NkyZ4fAzVTWak4tfvPjk1Bt9gl79/eBYUMXPymHebNXrCz1UazYQDFI7AI/2b9KnmHxHdQrd7rafUAg==
+"@platform/hyperdb.electron@0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.12.tgz#854d466eb0f25989586ef6e5adfe25998c508c92"
+  integrity sha512-/elpookjNHBO3h11TGX3MlNWLDYHbcJeY/iYNY6ZyPEY/+1EbFtGMqK1VHP1DI1t7vIzb8oA9qLcgCRfEtjMNA==
   dependencies:
     "@platform/electron" "0.1.36"
     "@platform/hyperdb" "0.1.13"
     "@platform/hyperdb.types" "0.0.10"
-    "@platform/util.string" "0.0.55"
+    "@platform/util.string" "0.1.1"
     "@platform/util.value" "0.0.58"
     "@uiharness/electron" "0.4.26"
 
@@ -1306,10 +1306,10 @@
     "@platform/react" "0.1.14"
     "@platform/util.value.cell" "0.0.19"
 
-"@platform/ui.datagrid@0.0.89":
-  version "0.0.89"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.89.tgz#c2788b4aba43b2ddb3343b40d23b4484de0874b5"
-  integrity sha512-qJd7U2XKiQ3XH9YDgLEr+TStbQc1U9QV3I8wDF5I1gfDwQyY5Vs1jqlZNZj8GTkANtUt63QnorpBc0l6/Dyjmw==
+"@platform/ui.datagrid@0.0.91":
+  version "0.0.91"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.91.tgz#2ed6bcb05ac44ebe88bf5876931189a148161b5a"
+  integrity sha512-xEUsWn3LYuVtDqv/LgyoU5R3Ji6WWrqSfXdNVxPF55CLQ83/WerGl76yhDRZ3PiGJ1UOVtYlmYYUkBICiqNjHQ==
   dependencies:
     "@platform/react" "0.1.14"
     "@platform/ui.codemirror" "0.0.24"
@@ -1443,10 +1443,10 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.string@0.0.55":
-  version "0.0.55"
-  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.0.55.tgz#c01aab5871e159e5d8fc9ab900f14edd00f3da7d"
-  integrity sha512-xjiNHABf+Gu+L8K6rTBNSJdS++27gKLN3XwIX2AM8KQSyCX+ZegQnnRKREXPrNdwmO/r4CpTcsdHA9OBhAEkLw==
+"@platform/util.string@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.1.1.tgz#2b44180d3faf2945f3e9b9ddcb00cb4f248bcf42"
+  integrity sha512-bf/yrHYCABwK7UtYTSS1uWRjBfjOOLoF0acGk/7QxOnklCIfOhZy+NJkDo1/GwcxDUNObchNocgKl01oQqQE0A==
   dependencies:
     "@types/underscore.string" "0.0.36"
     escape-string-regexp "1.0.5"

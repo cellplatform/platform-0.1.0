@@ -1064,12 +1064,12 @@
     "@platform/util.value" "0.0.57"
     minimist "1.2.0"
 
-"@platform/cli.spec@0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.1.5.tgz#77b66ab9e4d24196f78d78f41891ac664b2afb51"
-  integrity sha512-aT5khrjXwZ1PGaMN5zYHNqHGrH8MjMnkHYlNPx4PpkTSEa1ZwhWOtehupyZGSMddIeAMoYVnce2STIgjmn/a6Q==
+"@platform/cli.spec@0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.1.7.tgz#3e7dd59841210e59427d6cbf5868a46e77faa86c"
+  integrity sha512-9gKZHD1UttIAaWUaNuwqjrs4y0bJeZhHbT1uMPzn+j9SHCw+TLQV42zG4Nh314xotWNvhYECSradD6IUZ+IGhw==
   dependencies:
-    "@platform/util.string" "0.0.55"
+    "@platform/util.string" "0.1.1"
     "@platform/util.value" "0.0.58"
     minimist "1.2.0"
 
@@ -1500,10 +1500,10 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.string@0.0.55":
-  version "0.0.55"
-  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.0.55.tgz#c01aab5871e159e5d8fc9ab900f14edd00f3da7d"
-  integrity sha512-xjiNHABf+Gu+L8K6rTBNSJdS++27gKLN3XwIX2AM8KQSyCX+ZegQnnRKREXPrNdwmO/r4CpTcsdHA9OBhAEkLw==
+"@platform/util.string@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.1.1.tgz#2b44180d3faf2945f3e9b9ddcb00cb4f248bcf42"
+  integrity sha512-bf/yrHYCABwK7UtYTSS1uWRjBfjOOLoF0acGk/7QxOnklCIfOhZy+NJkDo1/GwcxDUNObchNocgKl01oQqQE0A==
   dependencies:
     "@types/underscore.string" "0.0.36"
     escape-string-regexp "1.0.5"

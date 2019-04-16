@@ -1,7 +1,7 @@
 /**
  * Replaces `"${variable}"` patterns within a string.
  */
-export function format(text: string, variables: { [key: string]: string | number | boolean }) {
+export function replace(text: string, variables: { [key: string]: string | number | boolean }) {
   Object.keys(variables).forEach(key => {
     const value = variables[key] || '';
     const regex = new RegExp(`\\$\\{${key}\\}`, 'g');
