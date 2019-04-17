@@ -7,7 +7,7 @@ Safe [IPC](https://electronjs.org/docs/api/ipc-renderer) wrapper for working wit
 
 <p>&nbsp;<p><p>&nbsp;<p>
 
-![diagram](https://user-images.githubusercontent.com/185555/54874120-d1be4e80-4e49-11e9-8acf-689739d9a155.png)
+![diagram](https://user-images.githubusercontent.com/185555/56272203-54d37b80-614e-11e9-9fd4-44bfa3fd36fd.png)
 
 <p>&nbsp;<p><p>&nbsp;<p>
 
