@@ -8,5 +8,5 @@ export type ICommandProps = {
 };
 
 export type ITestState = {
-  count?: number;
+
 };
