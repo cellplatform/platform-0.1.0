@@ -739,20 +739,20 @@ describe('CommandState', () => {
       const root = Command.create('root').add(ns);
       const state = CommandState.create({ root, beforeInvoke });
 
-      expect(state.fuzzyMatches.length).to.eql(1);
-      expect(state.fuzzyMatches[0].command.name).to.eql('ns');
-      expect(state.fuzzyMatches[0].isMatch).to.eql(true); // No text === match
+      expect(state.fuzzy.matches.length).to.eql(1);
+      expect(state.fuzzy.matches[0].command.name).to.eql('ns');
+      expect(state.fuzzy.matches[0].isMatch).to.eql(true); // No text === match
 
       state.change({ text: 's' }); // matches on "s" - "n[s]"
 
-      expect(state.fuzzyMatches.length).to.eql(1);
-      expect(state.fuzzyMatches[0].command.name).to.eql('ns');
-      expect(state.fuzzyMatches[0].isMatch).to.eql(true);
+      expect(state.fuzzy.matches.length).to.eql(1);
+      expect(state.fuzzy.matches[0].command.name).to.eql('ns');
+      expect(state.fuzzy.matches[0].isMatch).to.eql(true);
 
       state.change({ text: 'z' }); // no match
-      expect(state.fuzzyMatches.length).to.eql(1);
-      expect(state.fuzzyMatches[0].command.name).to.eql('ns');
-      expect(state.fuzzyMatches[0].isMatch).to.eql(false);
+      expect(state.fuzzy.matches.length).to.eql(1);
+      expect(state.fuzzy.matches[0].command.name).to.eql('ns');
+      expect(state.fuzzy.matches[0].isMatch).to.eql(false);
     });
 
     it('matches within namespace', () => {
@@ -767,7 +767,7 @@ describe('CommandState', () => {
       expect(state.namespace.name).to.eql('ns');
 
       const test = (index: number, name: string, isMatch: boolean) => {
-        const matches = state.fuzzyMatches;
+        const matches = state.fuzzy.matches;
         expect(matches[index].command.name).to.eql(name);
         expect(matches[index].isMatch).to.eql(isMatch);
       };

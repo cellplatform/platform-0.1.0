@@ -12,6 +12,7 @@ export type ICommandTreeViewProps = {
   nsCommand?: t.ICommand;
   currentCommand?: t.ICommand;
   fuzzyMatches?: t.ICommandFuzzyMatch[];
+  isAutocompleted?: boolean;
   theme?: ITreeViewProps['theme'];
   background?: ITreeViewProps['background'];
   events$?: Subject<t.CommandTreeEvent>;
@@ -130,12 +131,13 @@ export class CommandTreeView extends React.PureComponent<
    * [Methods]
    */
   private updateTree() {
+    const { currentCommand, isAutocompleted, fuzzyMatches = [] } = this.props;
+
     // Build the tree structure.
     const tree = util.buildTree(this.rootCommand);
     const p = TreeView.util.props;
-
-    const currentCommandId = util.asNodeId(this.props.currentCommand);
-    const dimmed = filterDimmed(this.props.fuzzyMatches);
+    const currentCommandId = util.asNodeId(currentCommand);
+    const dimmed = currentCommand && !isAutocompleted ? [] : filterDimmed(fuzzyMatches);
 
     TreeView.util.walk(tree, node => {
       const command = node.data as t.ICommand;
@@ -206,7 +208,3 @@ function filterDimmed(matches: t.ICommandFuzzyMatch[] = []) {
     .map(m => m.command)
     .map(cmd => util.asNodeId(cmd));
 }
-
-// function filterDimmedIds(matches: t.ICommandFuzzyMatch[] = []) {
-//   return filterDimmed(matches).map(cmd => cmd.id);
-// }
