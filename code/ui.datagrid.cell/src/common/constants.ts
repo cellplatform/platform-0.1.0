@@ -1,4 +1,37 @@
+import { CSS as EDITOR_CSS } from '@platform/ui.editor';
+
+export { ROBOTO, MONOSPACE } from '@platform/ui.text/lib';
+
 export const COLORS = {
+  WHITE: '#fff',
   DARK: '#293042', // Inky blue/black.
   BLUE: '#4B89FF',
+};
+
+export const CSS = {
+  CLASS: {
+    GRID: {
+      BASE: 'p-dg',
+      EDITOR: 'p-dg-editor',
+      FIRST: {
+        ROW: 'p-dg-firstRow',
+        COLUMN: 'p-dg-firstColumn',
+      },
+    },
+    CELL: {
+      BASE: 'p-dg-cell',
+      EDITOR: 'p-dg-cellEditor',
+      MARKDOWN: EDITOR_CSS.CLASS.MARKDOWN,
+    },
+  },
+};
+
+export const DEFAULT = {
+  TOTAL_COLUMNS: 52,
+  TOTAL_ROWS: 1000,
+  ROW_HEIGHT: 26,
+  ROW_HEIGHT_MIN: 26,
+  COLUMN_WIDTH: 100,
+  COLUMN_WIDTH_MIN: 5,
+  CELL_RENDERER: 'cell',
 };
