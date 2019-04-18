@@ -133,7 +133,6 @@ export class CommandTreeView extends React.PureComponent<
     // Build the tree structure.
     const tree = util.buildTree(this.rootCommand);
     const p = TreeView.util.props;
-
     const currentCommandId = util.asNodeId(this.props.currentCommand);
     const dimmed = filterDimmed(this.props.fuzzyMatches);
 

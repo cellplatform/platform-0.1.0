@@ -74,6 +74,8 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
           this.cli.change({ text, namespace, invoke: true });
         }
       });
+
+    // this.cli.autoCompleted
   }
 
   public componentWillUnmount() {
@@ -96,12 +98,16 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
    * [Render]
    */
   public render() {
+    const fuzzy = this.cli.fuzzy;
+    const fuzzyMatches = fuzzy.matches;
+    console.log('this.cli.fuzzy', this.cli.fuzzy);
+
     return (
       <CommandTreeView
         rootCommand={this.cli.root}
         nsCommand={this.nsCommand}
         currentCommand={this.cli.command}
-        fuzzyMatches={this.cli.fuzzyMatches}
+        fuzzyMatches={fuzzyMatches}
         theme={this.props.theme}
         background={this.props.background}
         events$={this._events$}

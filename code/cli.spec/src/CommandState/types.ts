@@ -22,7 +22,7 @@ export type ICommandStateProps = {
   command: ICommand | undefined;
   namespace: ICommandNamespace;
   autoCompleted?: ICommandAutoCompleted;
-  fuzzyMatches: ICommandFuzzyMatch[];
+  fuzzy: ICommandStateFuzzy;
 };
 
 export type ICommandNamespace = {
@@ -39,6 +39,9 @@ export type ICommandAutoCompleted = {
   matches: ICommand[];
 };
 
+export type ICommandStateFuzzy = {
+  matches: ICommandFuzzyMatch[];
+};
 export type ICommandFuzzyMatch = {
   command: ICommand;
   isMatch: boolean;

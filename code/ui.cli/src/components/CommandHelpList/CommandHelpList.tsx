@@ -46,7 +46,7 @@ export class CommandHelpList extends React.PureComponent<
   }
 
   private get list() {
-    return this.props.cli.fuzzyMatches;
+    return this.props.cli.fuzzy.matches;
   }
 
   /**

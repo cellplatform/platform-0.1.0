@@ -138,7 +138,7 @@ export class CommandState implements t.ICommandState {
     return this._.autoCompleted;
   }
 
-  public get fuzzyMatches() {
+  public get fuzzy() {
     const currentId = this.command ? this.command.id : undefined;
     const root = this.namespace ? this.namespace.command : this.root;
     const input = (this.autoCompleted
@@ -146,7 +146,7 @@ export class CommandState implements t.ICommandState {
       : [this.text]
     ).filter(text => Boolean(text.trim()));
     const isEmpty = input.length === 0;
-    return root.children
+    const matches = root.children
       .map(command => {
         const { name } = command;
         const isMatch = isEmpty ? true : input.some(text => str.fuzzy.isMatch(text, name));
@@ -156,6 +156,8 @@ export class CommandState implements t.ICommandState {
         const isCurrent = item.command.id === currentId;
         return isCurrent ? { ...item, isMatch: true } : item;
       });
+
+    return { matches };
   }
 
   /**
@@ -436,7 +438,7 @@ export class CommandState implements t.ICommandState {
       command: this.command,
       namespace: this.namespace,
       autoCompleted: this.autoCompleted,
-      fuzzyMatches: this.fuzzyMatches,
+      fuzzy: this.fuzzy,
     };
   }
 
