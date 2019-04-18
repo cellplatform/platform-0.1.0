@@ -80,6 +80,7 @@ export class Test extends React.PureComponent<{}, t.ITestState> {
         PaddingX: 20,
         paddingTop: 10,
         backgroundColor: color.format(1),
+        userSelect: 'none',
       }),
     };
 
