@@ -12,6 +12,7 @@
 Ensure you reference the required CSS files within your project.
 
 ```typescript
+import '@platform/css/reset.css';
 import '@platform/ui.datagrid/import.css'
 ```
 

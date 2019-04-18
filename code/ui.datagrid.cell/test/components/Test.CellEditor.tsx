@@ -8,24 +8,23 @@ import {
 } from '../../src/components/CellEditor/CellEditorView';
 import { color, css, GlamorValue, t } from '../common';
 
-export type ITestCellEditorModeProps = {
+export type ITestCellEditorProps = {
   title: string;
   mode: t.CellEditorMode;
-  // editor: ICellEditorViewProps;
   style?: GlamorValue;
 };
-export type ITestCellEditorModeState = {
+export type ITestCellEditorState = {
   value?: string;
   height?: number;
 };
 
-export class TestCellEditorMode extends React.PureComponent<
-  ITestCellEditorModeProps,
-  ITestCellEditorModeState
+export class TestCellEditor extends React.PureComponent<
+  ITestCellEditorProps,
+  ITestCellEditorState
 > {
-  public state: ITestCellEditorModeState = {};
+  public state: ITestCellEditorState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<ITestCellEditorModeState>>();
+  private state$ = new Subject<Partial<ITestCellEditorState>>();
   private events$ = new Subject<t.CellEditorEvent>();
 
   private editors: CellEditorView[] = [];
@@ -114,6 +113,7 @@ export class TestCellEditorMode extends React.PureComponent<
         fontSize: 12,
         opacity: 0.5,
       }),
+      spacer: css({ width: 30 }),
       body: css({
         MarginX: 40,
         Flex: 'horizontal-start-spaceBetween',
@@ -128,6 +128,7 @@ export class TestCellEditorMode extends React.PureComponent<
         <div {...styles.title}>{title}</div>
         <div {...styles.body}>
           {this.renderEditor({ ...A1 })}
+          <div {...styles.spacer} />
           {this.renderEditor({ ...B2 })}
         </div>
       </div>

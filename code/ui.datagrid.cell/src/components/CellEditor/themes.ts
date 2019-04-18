@@ -1,4 +1,4 @@
-import { COLORS, color } from '../../common';
+import { COLORS } from '../../common';
 import { ICellEditorTheme } from './types';
 
 const DEFAULT: ICellEditorTheme = {

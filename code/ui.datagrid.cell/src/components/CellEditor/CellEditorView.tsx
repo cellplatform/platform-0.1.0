@@ -3,10 +3,11 @@ import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { value, color, constants, containsFocus, css, GlamorValue, t, R, time } from '../../common';
-import { FormulaInput, Text, TextEditor, TextInput } from '../primitives';
+
+import * as p from '../primitives';
 import { THEMES } from './themes';
 
-const BORDER_WIDTH = 2;
+const BORDER = { WIDTH: 2 };
 const { DEFAULT, COLORS, ROBOTO, CSS } = constants;
 
 type ICommonMethods = {
@@ -34,24 +35,24 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
    * [Static]
    */
   public static THEMES = THEMES;
-  public static BORDER_WIDTH = BORDER_WIDTH;
+  public static BORDER = BORDER;
 
   /**
    * [Fields]
    */
   private unmounted$ = new Subject();
 
-  private formula$ = new Subject<t.FormulaInputEvent>();
-  private formula!: FormulaInput;
-  private formulaRef = (ref: FormulaInput) => (this.formula = ref);
+  private formula$ = new Subject<p.FormulaInputEvent>();
+  private formula!: p.FormulaInput;
+  private formulaRef = (ref: p.FormulaInput) => (this.formula = ref);
 
-  private markdown$ = new Subject<t.TextEditorEvent>();
-  private markdown!: TextEditor;
-  private markdownRef = (ref: TextEditor) => (this.markdown = ref);
+  private markdown$ = new Subject<p.TextEditorEvent>();
+  private markdown!: p.TextEditor;
+  private markdownRef = (ref: p.TextEditor) => (this.markdown = ref);
 
-  private text$ = new Subject<t.TextInputEvent>();
-  private text!: TextInput;
-  private textRef = (ref: TextInput) => (this.text = ref);
+  private text$ = new Subject<p.TextInputEvent>();
+  private text!: p.TextInput;
+  private textRef = (ref: p.TextInput) => (this.text = ref);
 
   private _events$ = new Subject<t.CellEditorEvent>();
   public events$ = this._events$.pipe(
@@ -86,7 +87,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter(e => e.type === 'INPUT/formula/changing'),
         filter(e => this.mode === 'FORMULA'),
-        map(e => e.payload as t.IFormulaInputChanging),
+        map(e => e.payload as p.IFormulaInputChanging),
       )
       .subscribe(e => {
         const { from, to } = e;
@@ -100,7 +101,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter(e => e.type === 'INPUT/formula/changed'),
         filter(e => this.mode === 'FORMULA'),
-        map(e => e.payload as t.IFormulaInputChanged),
+        map(e => e.payload as p.IFormulaInputChanged),
       )
       .subscribe(e => {
         const { from, to } = e;
@@ -112,7 +113,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter(e => e.type === 'TEXT_INPUT/changing'),
         filter(e => this.mode === 'TEXT'),
-        map(e => e.payload as t.ITextInputChanging),
+        map(e => e.payload as p.ITextInputChanging),
       )
       .subscribe(e => {
         const { from, to } = e;
@@ -126,7 +127,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter(e => e.type === 'TEXT_INPUT/changed'),
         filter(e => this.mode === 'TEXT'),
-        map(e => e.payload as t.ITextInputChanged),
+        map(e => e.payload as p.ITextInputChanged),
       )
       .subscribe(e => {
         const { from, to } = e;
@@ -138,7 +139,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter(e => e.type === 'EDITOR/changing'),
         filter(e => this.mode === 'MARKDOWN'),
-        map(e => e.payload as t.ITextEditorChanging),
+        map(e => e.payload as p.ITextEditorChanging),
         filter(e => e.value.to !== e.value.from || !R.equals(e.size.from, e.size.to)),
       )
       .subscribe(e => {
@@ -153,7 +154,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter(e => e.type === 'EDITOR/changed'),
         filter(e => this.mode === 'MARKDOWN'),
-        map(e => e.payload as t.ITextEditorChanged),
+        map(e => e.payload as p.ITextEditorChanged),
         filter(e => e.value.to !== e.value.from || !R.equals(e.size.from, e.size.to)),
       )
       .subscribe(e => {
@@ -300,7 +301,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     const mode = this.mode;
     if (mode === 'MARKDOWN') {
       to = this.markdown.size;
-      to = { ...to, height: to.height + BORDER_WIDTH * 2 };
+      to = { ...to, height: to.height + BORDER.WIDTH * 2 };
     }
 
     this.fire({
@@ -325,7 +326,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         backgroundColor: theme.inputBackground,
         width,
         height,
-        minHeight: DEFAULT.ROW_HEIGHT + (this.row === 0 ? -1 : 0),
+        minHeight: DEFAULT.ROW.HEIGHT + (this.row === 0 ? -1 : 0),
       }),
       body: css({ Absolute: 0 }),
     };
@@ -377,7 +378,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     };
     return (
       <div {...styles.base}>
-        <Text style={styles.body}>{title}</Text>
+        <p.Text style={styles.body}>{title}</p.Text>
       </div>
     );
   }
@@ -388,14 +389,14 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       base: css({
         position: isVisible ? 'relative' : 'absolute',
         left: isVisible ? 0 : -999999,
-        top: BORDER_WIDTH + (this.row === 0 ? -1 : 0),
-        height: DEFAULT.ROW_HEIGHT - BORDER_WIDTH * 2,
-        PaddingX: BORDER_WIDTH,
+        top: BORDER.WIDTH + (this.row === 0 ? -1 : 0),
+        height: DEFAULT.ROW.HEIGHT - BORDER.WIDTH * 2,
+        PaddingX: BORDER.WIDTH,
       }),
     };
     return (
       <div {...styles.base}>
-        <FormulaInput
+        <p.FormulaInput
           ref={this.formulaRef}
           events$={this.formula$}
           multiline={false}
@@ -413,9 +414,9 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       base: css({
         position: isVisible ? 'relative' : 'absolute',
         left: isVisible ? 0 : -999999,
-        top: this.row === 0 ? 0 : 1,
-        height: DEFAULT.ROW_HEIGHT - BORDER_WIDTH * 2,
-        PaddingX: BORDER_WIDTH,
+        top: this.row === 0 ? 1 : 2,
+        height: DEFAULT.ROW.HEIGHT - BORDER.WIDTH * 2,
+        PaddingX: BORDER.WIDTH,
       }),
       input: css({
         fontSize: 14,
@@ -425,7 +426,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     };
     return (
       <div {...styles.base}>
-        <TextInput
+        <p.TextInput
           ref={this.textRef}
           events$={this.text$}
           value={this.value}
@@ -442,15 +443,15 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       editor: css({
         position: isVisible ? 'relative' : 'absolute',
         left: isVisible ? undefined : -9999999,
-        top: this.row === 0 ? 0 : -1,
-        margin: BORDER_WIDTH,
+        top: this.row === 0 ? 0 : 1,
+        margin: BORDER.WIDTH,
         fontFamily: ROBOTO.FAMILY,
         fontSize: 14,
         PaddingX: 3,
       }),
     };
     return (
-      <TextEditor
+      <p.TextEditor
         ref={this.markdownRef}
         style={styles.editor}
         events$={this.markdown$}
@@ -470,22 +471,22 @@ const STYLES = {
     left: css({
       backgroundColor: COLORS.BLUE,
       Absolute: [0, null, 0, 0],
-      width: BORDER_WIDTH,
+      width: BORDER.WIDTH,
     }),
     top: css({
       backgroundColor: COLORS.BLUE,
       Absolute: [0, 0, null, 0],
-      height: BORDER_WIDTH,
+      height: BORDER.WIDTH,
     }),
     right: css({
       backgroundColor: COLORS.BLUE,
       Absolute: [0, 0, 0, null],
-      width: BORDER_WIDTH,
+      width: BORDER.WIDTH,
     }),
     bottom: css({
       backgroundColor: COLORS.BLUE,
       Absolute: [null, 0, 0, 0],
-      height: BORDER_WIDTH,
+      height: BORDER.WIDTH,
     }),
   },
 };

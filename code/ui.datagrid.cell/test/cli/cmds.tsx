@@ -1,23 +1,24 @@
 import { Command, t } from '../common';
 
-type P = t.ICommandProps & { count: number };
+type P = t.ICommandProps;
 
 /**
  * The root of the CLI application.
  */
-export const root = Command.create<P>('root', e => {
-  // Setup initial screen.
-})
-
-  .add('increment', e => {
-    // Sample command.
-    const count = e.get('count', 0) + 1;
-    e.set('count', count);
-    e.props.state$.next({ count });
+export const root = Command.create<P>('root')
+  .add('focus', e => {
+    const editor = e.props.editorViews[0];
+    editor.focus();
   })
-  .add('decrement', e => {
-    // Sample command.
-    const count = e.get('count', 0) - 1;
-    e.set('count', count);
-    e.props.state$.next({ count });
+  .add('selectAll', e => {
+    const editor = e.props.editorViews[0];
+    editor.selectAll().focus();
+  })
+  .add('cursorToStart', e => {
+    const editor = e.props.editorViews[0];
+    editor.cursorToStart().focus();
+  })
+  .add('cursorToEnd', e => {
+    const editor = e.props.editorViews[0];
+    editor.cursorToEnd().focus();
   });

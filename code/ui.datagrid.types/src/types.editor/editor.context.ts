@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { t } from '../../common';
+import { t } from '../common';
 
 /**
  * The React [Context] used to pass down common properties to editor components.
@@ -32,13 +32,3 @@ EditorContext.displayName = '@platform/ui.datagrid/Context';
  *
  */
 export type ReactEditorContext = React.ContextType<typeof EditorContext>;
-
-/**
- * Factory for creating a <Provider> component pre-baked
- * with the context that will be used by the popup-editor.
- */
-export function createProvider(context: t.IEditorContext): React.FunctionComponent {
-  return (props: { children?: React.ReactNode } = {}) => (
-    <EditorContext.Provider value={context}>{props.children}</EditorContext.Provider>
-  );
-}

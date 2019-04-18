@@ -1,10 +1,5 @@
 import { t } from '../../common';
 
-export type IShadow = {
-  blur: number;
-  color: string | number;
-};
-
 export type CellEditorMode = 'FORMULA' | 'MARKDOWN' | 'TEXT';
 
 export type ICellEditorTheme = {
@@ -12,7 +7,11 @@ export type ICellEditorTheme = {
   titleBackground: string | number;
   titleColor: string | number;
   inputBackground: string | number;
-  inputShadow: IShadow;
+  inputShadow: ICellEditorShadow;
+};
+export type ICellEditorShadow = {
+  blur: number;
+  color: string | number;
 };
 
 /**
