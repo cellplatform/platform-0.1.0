@@ -114,6 +114,7 @@ export class TestCellEditorMode extends React.PureComponent<
         fontSize: 12,
         opacity: 0.5,
       }),
+      spacer: css({ width: 30 }),
       body: css({
         MarginX: 40,
         Flex: 'horizontal-start-spaceBetween',
@@ -128,6 +129,7 @@ export class TestCellEditorMode extends React.PureComponent<
         <div {...styles.title}>{title}</div>
         <div {...styles.body}>
           {this.renderEditor({ ...A1 })}
+          <div {...styles.spacer} />
           {this.renderEditor({ ...B2 })}
         </div>
       </div>
