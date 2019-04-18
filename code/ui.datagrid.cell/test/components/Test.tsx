@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
 import { ObjectView, Shell, t } from '../common';
+import { TestCellEditor } from './Test.CellEditor';
 
 export type ITestProps = {};
 
@@ -33,7 +34,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     return (
       <Shell cli={this.cli} tree={{}}>
         <div style={{ padding: 30, flex: 1 }}>
-          <ObjectView name={'state'} data={this.state} />
+          <TestCellEditor />
         </div>
       </Shell>
     );

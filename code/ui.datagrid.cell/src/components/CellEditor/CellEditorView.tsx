@@ -414,7 +414,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       base: css({
         position: isVisible ? 'relative' : 'absolute',
         left: isVisible ? 0 : -999999,
-        top: this.row === 0 ? 0 : 1,
+        top: this.row === 0 ? 1 : 2,
         height: DEFAULT.ROW.HEIGHT - BORDER.WIDTH * 2,
         PaddingX: BORDER.WIDTH,
       }),
@@ -443,7 +443,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       editor: css({
         position: isVisible ? 'relative' : 'absolute',
         left: isVisible ? undefined : -9999999,
-        top: this.row === 0 ? 0 : -1,
+        top: this.row === 0 ? 0 : 1,
         margin: BORDER.WIDTH,
         fontFamily: ROBOTO.FAMILY,
         fontSize: 14,

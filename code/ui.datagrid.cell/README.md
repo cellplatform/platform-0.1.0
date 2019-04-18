@@ -5,6 +5,17 @@
 
 Single cell (and cell editor) within an [@platform/ui.datagrid](../ui.datagrid).
 
+## Setup
+
+    yarn add @platform/ui.datagrid.cell
+
+Ensure you reference the required CSS files within your project.
+
+```typescript
+import '@platform/css/reset.css';
+import '@platform/ui.codemirror/import.css';
+import '@platform/ui.datagrid.cell/import.css'
+```
 
 
 <p>&nbsp;</p>

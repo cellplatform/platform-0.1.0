@@ -1,4 +1,4 @@
-import '../../node_modules/@platform/css/reset.css';
+import './styles';
 import '@babel/polyfill';
 
 import * as t from './types';
