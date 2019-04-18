@@ -7,7 +7,7 @@ import { value, color, constants, containsFocus, css, GlamorValue, t, R, time } 
 import * as p from '../primitives';
 import { THEMES } from './themes';
 
-const BORDER_WIDTH = 2;
+const BORDER = { WIDTH: 2 };
 const { DEFAULT, COLORS, ROBOTO, CSS } = constants;
 
 type ICommonMethods = {
@@ -35,7 +35,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
    * [Static]
    */
   public static THEMES = THEMES;
-  public static BORDER_WIDTH = BORDER_WIDTH;
+  public static BORDER = BORDER;
 
   /**
    * [Fields]
@@ -301,7 +301,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     const mode = this.mode;
     if (mode === 'MARKDOWN') {
       to = this.markdown.size;
-      to = { ...to, height: to.height + BORDER_WIDTH * 2 };
+      to = { ...to, height: to.height + BORDER.WIDTH * 2 };
     }
 
     this.fire({
@@ -326,7 +326,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         backgroundColor: theme.inputBackground,
         width,
         height,
-        minHeight: DEFAULT.ROW_HEIGHT + (this.row === 0 ? -1 : 0),
+        minHeight: DEFAULT.ROW.HEIGHT + (this.row === 0 ? -1 : 0),
       }),
       body: css({ Absolute: 0 }),
     };
@@ -389,9 +389,9 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       base: css({
         position: isVisible ? 'relative' : 'absolute',
         left: isVisible ? 0 : -999999,
-        top: BORDER_WIDTH + (this.row === 0 ? -1 : 0),
-        height: DEFAULT.ROW_HEIGHT - BORDER_WIDTH * 2,
-        PaddingX: BORDER_WIDTH,
+        top: BORDER.WIDTH + (this.row === 0 ? -1 : 0),
+        height: DEFAULT.ROW.HEIGHT - BORDER.WIDTH * 2,
+        PaddingX: BORDER.WIDTH,
       }),
     };
     return (
@@ -415,8 +415,8 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         position: isVisible ? 'relative' : 'absolute',
         left: isVisible ? 0 : -999999,
         top: this.row === 0 ? 0 : 1,
-        height: DEFAULT.ROW_HEIGHT - BORDER_WIDTH * 2,
-        PaddingX: BORDER_WIDTH,
+        height: DEFAULT.ROW.HEIGHT - BORDER.WIDTH * 2,
+        PaddingX: BORDER.WIDTH,
       }),
       input: css({
         fontSize: 14,
@@ -444,7 +444,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         position: isVisible ? 'relative' : 'absolute',
         left: isVisible ? undefined : -9999999,
         top: this.row === 0 ? 0 : -1,
-        margin: BORDER_WIDTH,
+        margin: BORDER.WIDTH,
         fontFamily: ROBOTO.FAMILY,
         fontSize: 14,
         PaddingX: 3,
@@ -471,22 +471,22 @@ const STYLES = {
     left: css({
       backgroundColor: COLORS.BLUE,
       Absolute: [0, null, 0, 0],
-      width: BORDER_WIDTH,
+      width: BORDER.WIDTH,
     }),
     top: css({
       backgroundColor: COLORS.BLUE,
       Absolute: [0, 0, null, 0],
-      height: BORDER_WIDTH,
+      height: BORDER.WIDTH,
     }),
     right: css({
       backgroundColor: COLORS.BLUE,
       Absolute: [0, 0, 0, null],
-      width: BORDER_WIDTH,
+      width: BORDER.WIDTH,
     }),
     bottom: css({
       backgroundColor: COLORS.BLUE,
       Absolute: [null, 0, 0, 0],
-      height: BORDER_WIDTH,
+      height: BORDER.WIDTH,
     }),
   },
 };
