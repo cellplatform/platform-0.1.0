@@ -98,16 +98,13 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
    * [Render]
    */
   public render() {
-    const fuzzy = this.cli.fuzzy;
-    const fuzzyMatches = fuzzy.matches;
-    console.log('this.cli.fuzzy', this.cli.fuzzy);
-
     return (
       <CommandTreeView
         rootCommand={this.cli.root}
         nsCommand={this.nsCommand}
         currentCommand={this.cli.command}
-        fuzzyMatches={fuzzyMatches}
+        fuzzyMatches={this.cli.fuzzy.matches}
+        isAutocompleted={Boolean(this.cli.autoCompleted)}
         theme={this.props.theme}
         background={this.props.background}
         events$={this._events$}
