@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.cell",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Single cell (and cell editor) within a @platform/ui.datagrid.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
