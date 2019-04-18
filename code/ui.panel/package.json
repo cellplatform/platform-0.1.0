@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "@platform/ts": "3.4.9",
-    "@uiharness/dev": "0.2.41",
-    "@uiharness/ui": "0.2.18"
+    "@uiharness/dev": "0.2.42",
+    "@uiharness/ui": "0.2.19"
   },
   "license": "MIT"
 }

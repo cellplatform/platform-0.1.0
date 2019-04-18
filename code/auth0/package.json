@@ -20,8 +20,8 @@
   },
   "devDependencies": {
     "@types/auth0-js": "9.10.1",
-    "@uiharness/dev": "0.2.41",
-    "@uiharness/ui": "0.2.18"
+    "@uiharness/dev": "0.2.42",
+    "@uiharness/ui": "0.2.19"
   },
   "files": [
     "lib"
