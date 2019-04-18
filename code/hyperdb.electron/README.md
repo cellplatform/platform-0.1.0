@@ -5,13 +5,22 @@
 
 Safe [IPC](https://electronjs.org/docs/api/ipc-renderer) wrapper for working with [@platform/hyperdb](../hyperdb) in [electron](https://electronjs.org).
 
+
+## Setup
+
+    yarn add @platform/hyperdb.electron
+
+See the [`/test`](./test) folder for example configuration and usage samples in a [uiharness](https://uiharness.com).
+
+    yarn ui start
+
 <p>&nbsp;<p><p>&nbsp;<p>
 
-![diagram](https://user-images.githubusercontent.com/185555/56272203-54d37b80-614e-11e9-9fd4-44bfa3fd36fd.png)
+![diagram](https://user-images.githubusercontent.com/185555/56322016-03fa6c00-61bc-11e9-8aa3-2a365e4fd3cb.png)
 
 <p>&nbsp;<p><p>&nbsp;<p>
 
 ## See Also
 
-- @platform/[hyperdb.types](../hyperdb.types)
+- @platform/[hyperdb](../hyperdb)
 - @platform/[hyperdb.types](../hyperdb.types)
