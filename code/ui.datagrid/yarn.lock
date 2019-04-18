@@ -1357,7 +1357,7 @@
     "@platform/ui.tree" "0.0.32"
     react-icons "3.5.0"
 
-"@platform/ui.codemirror@0.0.24":
+"@platform/ui.codemirror@0.0.24", "@platform/ui.codemirror@^0.0.24":
   version "0.0.24"
   resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.0.24.tgz#514a242f72c6f8f73a5dad3fd3fa5aaf93125084"
   integrity sha512-Wq1n9LGxk9Rwf0yib/gxxGMzDOkkr9ZiPt1cMyedLddTVHF86hHnYm6gw6G3u07Qx1n/2MrVq/eD4ZjplLZzYQ==
@@ -1369,6 +1369,18 @@
     codemirror "5.45.0"
     react-codemirror2 "5.1.0"
 
+"@platform/ui.datagrid.cell@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.9.tgz#f24b0a5a6aaa4fbe6086489925e770081ca1d9c6"
+  integrity sha512-vfkJ9WwZLsrCEAUGs2P8hl5lUAY4RMUxvJ4tQVGCXvDzlI0/hv2+aO11Dr278fvP9TfBz3MfNGVTwn+a//bbfg==
+  dependencies:
+    "@platform/react" "0.1.14"
+    "@platform/ui.codemirror" "^0.0.24"
+    "@platform/ui.datagrid.types" "0.0.9"
+    "@platform/ui.editor" "^0.0.45"
+    "@platform/ui.text" "^0.1.4"
+    "@platform/util.markdown" "^0.0.5"
+
 "@platform/ui.datagrid.types@0.0.9":
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.9.tgz#9f76dd098e31e296e4c68e4f5db0797fb23a3006"
@@ -1377,7 +1389,7 @@
     "@platform/react" "0.1.14"
     "@platform/util.value.cell" "0.0.19"
 
-"@platform/ui.editor@0.0.45":
+"@platform/ui.editor@0.0.45", "@platform/ui.editor@^0.0.45":
   version "0.0.45"
   resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.45.tgz#118467c7fbe845c279764133e8b1ebbfe826b36f"
   integrity sha512-eHfcDSTtxBnpvXWU9vhxIFFSJP8DJHznj+bWWY+VdxYpKkfzWsll5Z1byY0DOGY/a/pgW+mOhPY22tGu3fk7lQ==
@@ -1436,7 +1448,7 @@
     "@platform/react" "0.1.13"
     "@platform/util.value" "0.0.57"
 
-"@platform/ui.text@0.1.4":
+"@platform/ui.text@0.1.4", "@platform/ui.text@^0.1.4":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.1.4.tgz#617b5b71b3315c8f74396edc577d482be1c82fbc"
   integrity sha512-rqIXtNcMfkDOEimRMJxIULZzYIKLtrcksG/vvReGjhDkvnqTJsZT3VmDNqbxo3XVroJA9D2pMjW2To16Rj1GFg==
@@ -1479,7 +1491,7 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.57.tgz#4e424256d1ca38660d911693e34718dadfee1bf9"
   integrity sha512-uUL8Eolu3RnviFhZfk2Z5QeezNbQ1D+D5hsIFrskyjDdMUj9JPAvEb0BiUm4VIxit222SLefef0KSK6DHlGNKA==
 
-"@platform/util.markdown@0.0.5":
+"@platform/util.markdown@0.0.5", "@platform/util.markdown@^0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@platform/util.markdown/-/util.markdown-0.0.5.tgz#5f21ab56d141a0af12e69e5dc6bf5ff3f03d25b3"
   integrity sha512-fhTVwIRtHzrpJSbgvNJKheRoN49fpfXqZ4uWKiemB0zMyFbdew/fCH26GzObVxG5BhtvhYuxI/E1KSJA343REA==

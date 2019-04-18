@@ -2,9 +2,15 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { datagrid, GlamorValue, Handsontable as HandsontableLib, t, markdown } from '../common';
+import {
+  CellEditor,
+  datagrid,
+  GlamorValue,
+  Handsontable as HandsontableLib,
+  t,
+  markdown,
+} from '../common';
 import { DebugEditor } from './Debug.Editor';
-import { CellEditor } from '../../src';
 
 export type DataGrid = datagrid.DataGrid;
 
