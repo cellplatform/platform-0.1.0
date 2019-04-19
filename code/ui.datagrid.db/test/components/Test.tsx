@@ -1,21 +1,22 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
-import {
-  markdown,
-  datagrid,
-  color,
-  Shell,
-  t,
-  ObjectView,
-  css,
-  renderer,
-  Sync,
-  constants,
-  value,
-} from '../common';
 import * as cli from '../cli';
+import {
+  value,
+  CellEditor,
+  color,
+  constants,
+  css,
+  datagrid,
+  markdown,
+  ObjectView,
+  renderer,
+  Shell,
+  Sync,
+  t,
+} from '../common';
 
 const storage = {
   get showDebug() {
@@ -165,7 +166,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private factory: t.GridFactory = req => {
     switch (req.type) {
       case 'EDITOR':
-        return <datagrid.CellEditor />;
+        return <CellEditor />;
 
       case 'CELL':
         return formatValue(req.value);

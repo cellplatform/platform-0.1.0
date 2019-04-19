@@ -18,14 +18,15 @@
     "@platform/hyperdb.types": "0.0.11",
     "@platform/libs": "0.0.12",
     "@platform/ui.datagrid.types": "0.0.11",
-    "@platform/util.value.cell": "0.0.20",
-    "@platform/hyperdb": "0.1.14",
-    "@platform/hyperdb.electron": "0.1.13",
-    "@platform/ui.datagrid": "0.0.93"
+    "@platform/util.value.cell": "0.0.20"
   },
   "devDependencies": {
+    "@platform/hyperdb": "0.1.14",
+    "@platform/hyperdb.electron": "0.1.13",
     "@platform/test": "0.0.45",
     "@platform/ts": "3.4.9",
+    "@platform/ui.datagrid": "0.0.93",
+    "@platform/ui.datagrid.cell": "0.0.11",
     "@uiharness/dev": "0.2.42",
     "@uiharness/ui": "0.2.19"
   },
