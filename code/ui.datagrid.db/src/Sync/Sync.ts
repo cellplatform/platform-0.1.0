@@ -10,7 +10,7 @@ export type ISyncArgs = {
   db: t.IDb;
   grid: t.IGrid;
   initGrid?: boolean;
-  events?: Subject<t.SyncEvent>;
+  events$?: Subject<t.SyncEvent>;
 };
 
 export class Sync {
@@ -33,8 +33,8 @@ export class Sync {
     this.grid = grid;
 
     // Bubble events.
-    if (args.events) {
-      this.events$.subscribe(args.events);
+    if (args.events$) {
+      this.events$.subscribe(args.events$);
     }
 
     // Setup observables.
@@ -165,5 +165,12 @@ export class Sync {
         return acc;
       }, {});
     this.grid.rows = values;
+  }
+
+  /**
+   * [Helpers]
+   */
+  private fire(e: t.SyncEvent) {
+    this._.events$.next(e);
   }
 }

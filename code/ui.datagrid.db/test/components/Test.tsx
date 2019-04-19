@@ -35,6 +35,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
   private grid$ = new Subject<t.GridEvent>();
+  private sync$ = new Subject<t.SyncEvent>();
   private cli!: t.ICommandState;
   private sync!: Sync;
 
@@ -54,8 +55,11 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       getState: () => this.state,
     });
 
-    // Update state.
+    // Setup ovservables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const sync$ = this.sync$.pipe(takeUntil(this.unmounted$));
+
+    // Update state.
     state$.subscribe(e => this.setState(e));
 
     // Store values in local-storage.
@@ -66,11 +70,16 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         storage.showDebug = this.state.showDebug || false;
       });
 
+    // Events.
+    sync$.subscribe(e => {
+      console.log('🌳', e.type, e.payload);
+    });
+
     // Setup syncer.
     const dir = constants.DB.DIR;
     const db = (await this.databases.getOrCreate({ dir, connect: false })).db;
     const grid = this.datagrid.grid;
-    this.sync = Sync.create({ db, grid });
+    this.sync = Sync.create({ db, grid, events$: this.sync$ });
   }
 
   public componentWillUnmount() {
