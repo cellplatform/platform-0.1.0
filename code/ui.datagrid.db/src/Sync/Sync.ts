@@ -170,7 +170,7 @@ export class Sync {
   /**
    * [Helpers]
    */
-  private fire(e: t.SyncEvent) {
-    this._.events$.next(e);
-  }
+  // private fire(e: t.SyncEvent) {
+  //   this._.events$.next(e);
+  // }
 }
