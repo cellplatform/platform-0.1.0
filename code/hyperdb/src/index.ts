@@ -1,11 +1,4 @@
-import { Db } from './db';
-import { Network } from './network';
-import { DbFactory, create as creator } from './factory';
+import * as hyperdb from './hyperdb';
 
-export { Db, Network, DbFactory as Factory };
-export * from './types';
-
-export const factory = DbFactory.create({ create: creator });
-export const create = factory.create;
-export const get = factory.get;
-export const getOrCreate = factory.getOrCreate;
+export * from './hyperdb';
+export default hyperdb;
