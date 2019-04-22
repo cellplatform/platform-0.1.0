@@ -1088,17 +1088,17 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.electron@0.1.13":
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.13.tgz#92e8c979be43c93266ba9989b5831b7f030e629e"
-  integrity sha512-s3/85tTtwxRii0OyqLMHUD4llsR4ttgG3M8hOi642TC+X3nuXOcHFHcqoqC6oBW9DFX4+TNAYnrijLOMclGs1Q==
+"@platform/hyperdb.electron@0.1.14":
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.14.tgz#d24c5676ec89d426f3c5b6e513d8a8530d36ecda"
+  integrity sha512-DXR0Ur0h2DRF9wL4BLgyXwj3iuQO4eSd9aLSMkV1f33675g3IBx/Ia9YwC22Bfus2RAr+xqi1NE4zUF3UJKZsA==
   dependencies:
     "@platform/electron" "0.1.37"
-    "@platform/hyperdb" "0.1.14"
+    "@platform/hyperdb" "0.1.15"
     "@platform/hyperdb.types" "0.0.11"
     "@platform/util.string" "0.1.2"
     "@platform/util.value" "0.0.59"
-    "@uiharness/electron" "0.4.27"
+    "@uiharness/electron" "0.4.28"
 
 "@platform/hyperdb.types@0.0.11":
   version "0.0.11"
@@ -1107,10 +1107,10 @@
   dependencies:
     "@platform/libs" "0.0.12"
 
-"@platform/hyperdb@0.1.14":
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.14.tgz#103ad9584ae6d10a1ed23ba15df59e22bb863720"
-  integrity sha512-TftvNtHwXfx63rOn0ObH5nmttC9bjqTYvsmD6iwg8ZqcwXyngTR+ZE2eGKZkod26dmm/Yt/39uCJLxeSQcdzbw==
+"@platform/hyperdb@0.1.15":
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.15.tgz#d38935394953c5c61ce92aaf5a40fa3cc3e6f838"
+  integrity sha512-chGzV4V/+NaKhQ/MJlPbwYJWZBtc/Z+cIa2L3K/hfUBZaSqM9oEOPNeGI4AaGvjaKljOcL96UaWDrml8GPzj/w==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.52"
