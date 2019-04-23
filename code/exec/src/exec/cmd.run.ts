@@ -1,5 +1,5 @@
-import { Observable, ReplaySubject } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { resolve } from 'path';
 
 import {
@@ -11,6 +11,7 @@ import {
   IRunOptions,
 } from '../common';
 import { spawn } from './process';
+import { ChildProcess } from 'child_process';
 
 /**
  * Invokes 1..n shell command.
@@ -18,6 +19,7 @@ import { spawn } from './process';
 export function run(command: string | string[], options: IRunOptions = {}): ICommandPromise {
   const { silent } = options;
   const dir = resolve(options.dir || process.cwd());
+  const complete$ = new Subject();
   let isComplete = false;
   let error: Error | undefined;
   const result = { code: 0 };
@@ -31,15 +33,16 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
       error ? error : result.code !== 0 ? new Error(`Failed with code ${result.code}.`) : undefined,
   };
 
+  let child: ChildProcess | undefined;
   const promise = new Promise<IResultInfo>((resolve, reject) => {
     const cmd = Array.isArray(command) ? command.join('\n') : command;
 
     // Spawn the child process.
-    const { child } = spawn(cmd, {
+    child = spawn(cmd, {
       cwd: dir,
       stdio: undefined, // Handle standard I/O manually.
       env: options.env,
-    });
+    }).child;
 
     // Pipe output to [stdout] if not suppressed.
     if (!silent && child.stdout) {
@@ -70,6 +73,8 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
       result.code = e === null ? result.code : e;
       isComplete = true;
       output$.complete();
+      complete$.next();
+      complete$.complete();
       resolve(result as IResultInfo);
     });
     child.once('error', err => {
@@ -81,15 +86,32 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
   // Prepare the response object.
   const response = promise as ICommandPromise;
   response.dir = dir;
-  response.output$ = output$;
-  response.stdout$ = output$.pipe(
+  response.complete$ = complete$.pipe(share());
+  response.output$ = output$.pipe(
+    takeUntil(complete$),
+    share(),
+  );
+  response.stdout$ = response.output$.pipe(
     filter(e => e.type === 'stdout'),
     map(e => e.text),
+    share(),
   );
-  response.stderr$ = output$.pipe(
+  response.stderr$ = response.output$.pipe(
     filter(e => e.type === 'stderr'),
     map(e => e.text),
+    share(),
   );
+
+  response.kill = (signal?: string) => {
+    if (child) {
+      /**
+       * For list of unix signals:
+       * - http://man7.org/linux/man-pages/man7/signal.7.html
+       */
+      child.kill(signal || 'SIGTERM');
+      child = undefined;
+    }
+  };
 
   // [IResult] properties.
   const prop = definedPropsFor<ICommandPromise>(response);

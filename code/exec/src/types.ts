@@ -53,12 +53,14 @@ export type ICommandInfo = {
 export type ICommandPromise = Promise<IResultInfo> &
   IResultInfo & {
     isComplete: boolean;
+    complete$: Observable<{}>;
     output$: Observable<ICommandInfo>;
     stdout$: Observable<string>; // Includes ANSI colors.
     stderr$: Observable<string>; // Includes ANSI colors.
     stdout: string[]; // Includes ANSI colors - see [info] for values with no colors.
     stderr: string[]; // Includes ANSI colors - see [info] for values with no colors.
     dir: string; // The `cwd` (current working directory) the script executed in.
+    kill(): void;
   };
 
 /**
