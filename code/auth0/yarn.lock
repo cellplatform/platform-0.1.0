@@ -961,6 +961,18 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
+"@platform/css@0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.34.tgz#8a5ecaa24386f2fa92913d73bfccc66bbcb3315c"
+  integrity sha512-csF8B7W+mAb8vaB2Y3/nuM52O27rRiyz906d3zueuircTGz7zOzNduxRyHLF5+31fF64IjWnlvSpBJq5m9HD3A==
+  dependencies:
+    "@platform/libs" "0.0.12"
+    "@platform/util.is" "0.0.59"
+    "@platform/util.value" "0.0.60"
+    "@types/tinycolor2" "1.4.1"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
 "@platform/electron@0.1.37":
   version "0.1.37"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.37.tgz#f5e442285d75255a000a2323983dadc137eb2c52"
@@ -1073,6 +1085,18 @@
     react "16.8.6"
     react-dom "16.8.6"
 
+"@platform/react@0.1.16":
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.16.tgz#8fad4eb9230cc64dcf1731a744a6ce39389fbc28"
+  integrity sha512-utj8fUEwQC/ncDv92urOdx6qGQcYRAfMQywt/KcgBX46wZ44x1BmpHmiRBR2pk1j9GYpK+CGLv1DT4kpwWboTA==
+  dependencies:
+    "@platform/css" "0.0.34"
+    "@platform/util.is" "0.0.59"
+    "@types/react" "16.8.14"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
 "@platform/ts.libs@3.4.7":
   version "3.4.7"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.4.7.tgz#adf04c4d60d02985a1cb10ddc20db48bed00bd44"
@@ -1178,6 +1202,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.58.tgz#9fb2364a8c43b82faea7f3b20e6a435798853067"
   integrity sha512-lK/omfSxLubkIGMP+mlZAlW1fSthyGSJ+XevfZxdzYS38iG6R0oNBAoPHPTF1jS1ZcyPEKFOBLbaal6mb5ZfPg==
 
+"@platform/util.is@0.0.59":
+  version "0.0.59"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.59.tgz#b951760b805032ffd01257e006cafe43c2217304"
+  integrity sha512-CyHuAawCfvsm1U+6Z4NxLWYHF9yzX9HYxy9y5VkpzsITu9DgjjzFkn99RbsurvO2YQ2X8X5EQKJF2BB+dP3fNA==
+
 "@platform/util.string@0.1.2", "@platform/util.string@^0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.1.2.tgz#4607664b8e04596fa2fc756bd39895b1635ff6f9"
@@ -1207,6 +1236,18 @@
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.58"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.12"
+    semver "6.0.0"
+
+"@platform/util.value@0.0.60":
+  version "0.0.60"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.60.tgz#fe43a884d424376061d4ff3f1c1a859528b0e480"
+  integrity sha512-UYwz0l0ew39i5LWn/eE2XCrWEIDsg9zQH2FlfNjklQAsagwJAwSPQj5ZU9d5Obq6a1/2x616MRQmyejZQEYjxQ==
+  dependencies:
+    "@platform/libs" "0.0.12"
+    "@platform/util.is" "0.0.59"
     "@types/semver" "6.0.0"
     cuid "2.1.6"
     dayjs "1.8.12"
@@ -1304,6 +1345,14 @@
   version "16.8.13"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.8.13.tgz#a82b15aad9ab91c40edca0d6889b7745ae24f053"
   integrity sha512-otJ4ntMuHGrvm67CdDJMAls4WqotmAmW0g3HmWi9LCjSWXrxoXY/nHXrtmMfvPEEmGFNm6NdgMsJmnfH820Qaw==
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^2.2.0"
+
+"@types/react@16.8.14":
+  version "16.8.14"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.8.14.tgz#b561bfabeb8f60d12e6d4766367e7a9ae927aa18"
+  integrity sha512-26tFVJ1omGmzIdFTFmnC5zhz1GTaqCjxgUxV4KzWvsybF42P7/j4RBn6UeO3KbHPXqKWZszMXMoI65xIWm954A==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"

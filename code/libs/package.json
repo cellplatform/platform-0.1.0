@@ -6,9 +6,9 @@
     "test": "echo no-op"
   },
   "dependencies": {
-    "@types/ramda": "0.26.7",
+    "@types/ramda": "0.26.8",
     "ramda": "0.26.1",
-    "rxjs": "6.4.0",
+    "rxjs": "6.5.1",
     "tslib": "1.9.3"
   },
   "repository": "uiharness/platform",
