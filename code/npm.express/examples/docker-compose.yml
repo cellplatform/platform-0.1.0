@@ -1,0 +1,22 @@
+# docker-compose.yml
+version: '3'
+
+services:
+  app:
+    image: teamdb/npm.express
+    container_name: app
+    command: yarn start --npm-module=@platform/npm.express.example-server --prerelease=true --update
+    restart: unless-stopped
+    ports:
+      - '5000:5000' # Hint: '80:5000' to expose the imported module to the public internet.
+      - '3000:3000'
+    volumes:
+      - app-fs:/data
+
+volumes:
+  app-fs:
+    driver: local
+    driver_opts:
+      type: none
+      device: /Users/phil/tmp/npm.express/
+      o: bind

@@ -48,7 +48,7 @@ export function init(args: {
      * Load initial values.
      */
     const loadValues = async (pattern: string, target: object) => {
-      const values = await db.values({ pattern });
+      const values = await (await getDb()).values({ pattern });
       Object.keys(values).forEach(key => (target[key] = values[key].value));
     };
 

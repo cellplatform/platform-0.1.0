@@ -1,3 +1,6 @@
+export type NpmPrerelease = boolean | 'alpha' | 'beta'
+
+
 export interface INpmInfo {
   name: string;
   latest: string;
@@ -18,6 +21,7 @@ export type INpmPackageJson = {
   devDependencies?: INpmPackageFields;
   peerDependencies?: INpmPackageFields;
   resolutions?: INpmPackageFields;
+  license?: string;
 };
 export type INpmPackageFields = { [key: string]: string };
 export type NpmPackageFieldsKey =

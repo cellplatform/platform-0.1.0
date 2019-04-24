@@ -19,6 +19,8 @@ describe('NpmPackage (package.json)', () => {
       const pkg = NpmPackage.create();
       expect(pkg.name).to.eql(NAME);
       expect(pkg.exists).to.eql(true);
+      expect(pkg.path.endsWith('/npm/package.json')).to.eql(true);
+      expect(pkg.dir.endsWith('/npm')).to.eql(true);
     });
 
     it('loads with relative dir', () => {
@@ -38,6 +40,8 @@ describe('NpmPackage (package.json)', () => {
       expect(pkg.name).to.eql(undefined);
       expect(pkg.json).to.eql({});
       expect(pkg.exists).to.eql(false);
+      expect(pkg.path).to.eql('/tmp/foo/package.json');
+      expect(pkg.dir).to.eql('/tmp/foo');
     });
 
     it('creates from module method', () => {
@@ -53,6 +57,7 @@ describe('NpmPackage (package.json)', () => {
       expect(pkg.exists).to.eql(true);
       expect(pkg.json).to.eql(json);
       expect(pkg.path).to.eql('package.json');
+      expect(pkg.dir).to.eql('');
     });
 
     it('creates with JSON (dir provided, exists)', () => {
@@ -60,15 +65,17 @@ describe('NpmPackage (package.json)', () => {
       const pkg = npm.pkg({ json, dir: './test/sample' });
       expect(pkg.exists).to.eql(true);
       expect(pkg.json).to.eql(json);
-      expect(pkg.path).to.eql('test/sample/package.json');
+      expect(pkg.path.endsWith('test/sample/package.json')).to.eql(true);
+      expect(pkg.dir.endsWith('test/sample')).to.eql(true);
     });
 
-    it('creates with JSON (dir provided, does not texist)', () => {
+    it('creates with JSON (dir provided, does not exist)', () => {
       const json = { name: 'my-module', version: '0.0.0' };
       const pkg = npm.pkg({ json, dir: '/foo/bar' });
       expect(pkg.exists).to.eql(false);
       expect(pkg.json).to.eql(json);
       expect(pkg.path).to.eql('/foo/bar/package.json');
+      expect(pkg.dir).to.eql('/foo/bar');
     });
   });
 

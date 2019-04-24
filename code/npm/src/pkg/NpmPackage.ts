@@ -16,23 +16,25 @@ export type INpmPackageInit = {
  * Represents a `package.json`.
  */
 export class NpmPackage {
+  /**
+   * [Static]
+   */
   public static create = (input?: string | INpmPackageInit) =>
     typeof input === 'string' || input === undefined
       ? new NpmPackage({ dir: input })
       : new NpmPackage(input);
 
-  public readonly path: string;
-  public readonly exists: boolean;
-
-  public json: INpmPackageJson;
-  private readonly _original: INpmPackageJson;
-
+  /**
+   * [Lifecycle]
+   */
   private constructor(args: INpmPackageInit) {
     let dir = args.dir;
     dir = dir ? dir : '.';
     dir = dir.trim();
-    dir = dir.endsWith('package.json') ? dir : fs.join(dir, 'package.json');
-    this.path = dir;
+
+    let path = dir.endsWith('package.json') ? dir : fs.join(dir, 'package.json');
+    path = args.json ? path : fs.resolve(path);
+    this.path = path;
     this.exists = fs.existsSync(this.path);
 
     const loadFile = () => {
@@ -43,9 +45,21 @@ export class NpmPackage {
   }
 
   /**
-   * [PROPERTIES]
+   * [Fields]
    */
+  public readonly path: string;
+  public readonly exists: boolean;
 
+  public json: INpmPackageJson;
+  private readonly _original: INpmPackageJson;
+
+  /**
+   * [Properties]
+   */
+  public get dir() {
+    const dir = fs.dirname(this.path);
+    return dir === '.' ? '' : dir;
+  }
   public get name() {
     return this.json.name;
   }

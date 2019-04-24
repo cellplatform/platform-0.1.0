@@ -1,11 +1,11 @@
 import { expect } from 'chai';
-import { Sync } from '.';
+import * as keys from './keys';
 
 describe('Sync', () => {
   describe('(static)', () => {
     it('toDbCellKey', () => {
       const test = (key: any, expected: any) => {
-        const res = Sync.toDbCellKey(key);
+        const res = keys.toDbCellKey(key);
         expect(res).to.eql(expected);
       };
       test('A1', 'cell/A1');
@@ -20,7 +20,7 @@ describe('Sync', () => {
 
     it('toDbRowKey', () => {
       const test = (key: any, expected: any) => {
-        const res = Sync.toDbRowKey(key);
+        const res = keys.toDbRowKey(key);
         expect(res).to.eql(expected);
       };
       test('1', 'row/1');
@@ -30,7 +30,7 @@ describe('Sync', () => {
 
     it('toDbColumnKey', () => {
       const test = (key: any, expected: any) => {
-        const res = Sync.toDbColumnKey(key);
+        const res = keys.toDbColumnKey(key);
         expect(res).to.eql(expected);
       };
       test('A', 'column/A');
@@ -42,7 +42,7 @@ describe('Sync', () => {
 
     it('toGridCellKey', () => {
       const test = (key: any, expected: any) => {
-        const res = Sync.toGridCellKey(key);
+        const res = keys.toGridCellKey(key);
         expect(res).to.eql(expected);
       };
       test('A1', 'A1');
