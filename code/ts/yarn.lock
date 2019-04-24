@@ -31,20 +31,20 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/cli@0.0.80":
-  version "0.0.80"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.80.tgz#e218329f43eb9b51764fcae2ac88e1dbac15cfcc"
-  integrity sha512-4puuZkziH0/yQifS+4r+jw6AnmZwUbrAwsMIJEk4uWSTbeVL3JcSVxY0s1K6bGR4QAJ7r2DVL8KXukKx/RADkA==
+"@platform/cli@0.0.81":
+  version "0.0.81"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.81.tgz#1ced8116f4efe488c01a98c412b5c9e524539507"
+  integrity sha512-raxAm3ox7C6KxBJs0to3Pw/2NT2QwgKq8SiXXnvl0CeS/vlFCyXxA9dH9gCG4TLx08MtHM8ur24tcRuZgmw6Qg==
   dependencies:
-    "@platform/exec" "0.0.17"
+    "@platform/exec" "0.1.0"
     "@platform/fs" "0.0.53"
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/exec@0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.0.17.tgz#2759a07e5e09050185b1ae2c1dd2a0a862fbf782"
-  integrity sha512-ZyLqg6jCBX3lSpydX7B5nhKcCcaKt5JK3fx4Rn1eC32wn+RtgW9Q8wnRzekVdBJ5kr8bhKCuHChkvJXBBNIdRg==
+"@platform/exec@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.1.0.tgz#bd045100804ca9df2248229d9665c8e5031a1c06"
+  integrity sha512-NVcdQCRFT7PLDnE8HtF8JlcIuAvzyUQ2bquSuQuy0s0HcYJEVYt4tlPyf3DsAvsrEQ3sE046npbPpNh8AjZ6Ug==
   dependencies:
     "@platform/libs" "0.0.12"
     "@types/chalk" "2.2.0"

@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.cli",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "description": "Components for building cli (command-line-interface) related user-interfaces.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,15 +15,15 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cli.spec": "0.1.9",
-    "@platform/react": "0.1.16",
-    "@platform/ui.panel": "0.0.29",
-    "@platform/ui.text": "0.1.6",
-    "@platform/ui.tree": "0.0.35",
+    "@platform/cli.spec": "0.1.10",
+    "@platform/react": "0.1.17",
+    "@platform/ui.panel": "0.0.30",
+    "@platform/ui.text": "0.1.7",
+    "@platform/ui.tree": "0.0.36",
     "react-icons": "3.6.1"
   },
   "devDependencies": {
-    "@platform/ts": "3.4.10",
+    "@platform/ts": "3.4.11",
     "@uiharness/dev": "0.2.42",
     "@uiharness/ui": "0.2.19"
   },
