@@ -3,15 +3,18 @@ import * as minimist from 'minimist';
 import { is, log, t, value } from '../common';
 import { init } from './server';
 import { start } from '../router/routes.run';
+import { update } from '../router/routes.update';
 
 /**
  * Retrieve command-line args.
  */
 const argv = minimist(process.argv.slice(2));
-const port = (argv.PORT || 3000) as number;
-const name = argv.NPM_MODULE as string;
-const prerelease = (value.toType(argv.PRERELEASE) || false) as t.NpmPrerelease;
-const urlPrefix = argv.URL_PREFIX as string | undefined;
+
+const port = (argv.port || 3000) as number;
+const name = argv['npm-module'] as string;
+const prerelease = (value.toType(argv.prerelease) || false) as t.NpmPrerelease;
+const urlPrefix = argv['url-prefix'] as string | undefined;
+const updateOnStartup = (argv.update || false) as boolean;
 
 const fail = (message: string) => {
   log.info();
@@ -22,10 +25,10 @@ const fail = (message: string) => {
 };
 
 if (!name) {
-  fail(`A --NPM_MODULE=<name> must be passed at startup.`);
+  fail(`A '--npm-module=<name>' must be passed at startup.`);
 }
 if (typeof prerelease === 'string' && !['alpha', 'beta'].includes(prerelease.trim())) {
-  fail(`Invalid '--PRERELEASE=${prerelease}'. Must be <boolean|alpha|beta>.`);
+  fail(`Invalid '--prerelease=${prerelease}'. Must be <boolean|alpha|beta>.`);
 }
 
 /**
@@ -51,5 +54,9 @@ server.listen(port, async () => {
   log.info.gray(`   - ${log.green('POST')} ${prefix}/stop`);
   log.info();
 
-  await start({ name, downloadDir, prerelease });
+  if (updateOnStartup) {
+    await update({ name, downloadDir, prerelease, restart: true });
+  } else {
+    await start({ name, downloadDir, prerelease });
+  }
 });

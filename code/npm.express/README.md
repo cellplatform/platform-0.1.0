@@ -4,6 +4,9 @@
 ![banner](https://user-images.githubusercontent.com/185555/56625096-bd12e780-668f-11e9-935e-58bea6081f51.png)
 [Express](https://expressjs.com) [middleware](https://expressjs.com/en/guide/using-middleware.html) for working with [NPM](http://npmjs.com).
 
+- Continuous deployment via [NPM](http://npmjs.com).
+- Run as [middleware](https://expressjs.com/en/guide/using-middleware.html) or use [Docker container](https://www.docker.com) directly (recommended).
+
 <p>&nbsp;<p>
 
 ## Setup
@@ -50,10 +53,13 @@ server.listen(1234);
 
 To configure the module when working with it as [Docker container](https://www.docker.com) pass the following command-line arguments:
 
-    --NPM_MODULE='my-module'          # (required) The name of the NPM module being managed.
-    --PORT=<number>                   # (optional) Port to run the management server on.
-    --PRERELEASE=<boolean|alpha|beta> # (optional) Whether pre-release versions should be used (default:false)
-    --URL_PREFIX=<string>             # (optional) Prefix to prepend URL's with, eg /foo => GET /foo/status
+```bash
+    --npm-module='my-module'            # (required) The name of the NPM module being managed.
+    --port='<number>'                   # (optional) Port to run the management server on.
+    --prerelease='<boolean|alpha|beta>' # (optional) Whether pre-release versions should be used (default:false).
+    --url-prefix='<string>'             # (optional) Prefix to prepend URL's with, eg /foo => GET /foo/status
+    --update                            # (optional) Flag indicating if update performed at startup (default:false).
+```
 
 see the `/docker-compose.yml` file for example configuration.
 
