@@ -31,20 +31,20 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/cli@0.0.81":
-  version "0.0.81"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.81.tgz#1ced8116f4efe488c01a98c412b5c9e524539507"
-  integrity sha512-raxAm3ox7C6KxBJs0to3Pw/2NT2QwgKq8SiXXnvl0CeS/vlFCyXxA9dH9gCG4TLx08MtHM8ur24tcRuZgmw6Qg==
+"@platform/cli@0.0.82":
+  version "0.0.82"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.82.tgz#ec9b03e2a219a16ac26bf0df5b6765fc7b52aa3b"
+  integrity sha512-zZxSaSzw5xK4+V18DGjZTzM6e/ChMIYhKMcNgrB2GQsYm2A/wckTtlTTF2lLTmKcoXI0qZb7y/L6XxfwObvsLw==
   dependencies:
-    "@platform/exec" "0.1.0"
-    "@platform/fs" "0.0.53"
+    "@platform/exec" "0.1.1"
+    "@platform/fs" "0.0.54"
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/exec@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.1.0.tgz#bd045100804ca9df2248229d9665c8e5031a1c06"
-  integrity sha512-NVcdQCRFT7PLDnE8HtF8JlcIuAvzyUQ2bquSuQuy0s0HcYJEVYt4tlPyf3DsAvsrEQ3sE046npbPpNh8AjZ6Ug==
+"@platform/exec@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.1.1.tgz#96b08b7aa8b88e0f71e07336bf9b3f05cca2507c"
+  integrity sha512-p6cutWR1OIMbXKGlA8GPA1ZymiZGvGjM2dXgWuAVYotnwNSAzkBEO+a1O6dutnN8D2eid70Q3zgGCXglanviaA==
   dependencies:
     "@platform/libs" "0.0.12"
     "@types/chalk" "2.2.0"
@@ -53,10 +53,10 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs@0.0.53":
-  version "0.0.53"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.53.tgz#727a3bd4eedd92ccda52bd1cb146cac959aa7fb4"
-  integrity sha512-jo1a634lcg13SA5OHYs6+2HkXp9SZxsT6Nin1apJBFDo3sCqjhng+zSxRNgAppGhpFxCt6KqjM6k1L14XaHnsA==
+"@platform/fs@0.0.54":
+  version "0.0.54"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.54.tgz#728c331b890c64562b51d5ddb0321900422d1a97"
+  integrity sha512-q2AXXJZK13CXvHFL+eZbrc3LN7m9xIG1xQgQ2UdJ6xWQ/IxlZAB7OW8RhYyZWbpfe4FnZ5CorYTxrijEA9vQAw==
   dependencies:
     "@types/fs-extra" "5.0.5"
     "@types/js-yaml" "3.12.1"
@@ -74,10 +74,10 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/ts.libs@3.4.8":
-  version "3.4.8"
-  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.4.8.tgz#108079ad160c9ba1523906bc926822a19c4473fd"
-  integrity sha512-xtyisfHSPF7O6gT7Yil/FVc/HncpNsEF0t5Gv42QzLC08kfdDYRI69UR0e4JhlN6gKXxllUdvmNDrSDXN2wFNw==
+"@platform/ts.libs@3.4.9":
+  version "3.4.9"
+  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.4.9.tgz#b95b7a24400244de3418e3d6e73b6b3eb201d3aa"
+  integrity sha512-FC5pR1N3S829T551h3ef1d9FWVov9pwgVCOGqUxK1X9jHU+KAuqhEYOA1xgegxK0s5wrRGoYkbaSk+eYWsK3Nw==
   dependencies:
     "@types/node" "11.13.7"
     prettier "1.17.0"
@@ -86,18 +86,18 @@
     tslint "5.16.0"
     tslint-config-prettier "1.18.0"
     tslint-react "4.0.0"
-    typescript "3.4.4"
+    typescript "3.4.5"
 
-"@platform/ts@3.4.11":
-  version "3.4.11"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.4.11.tgz#ff81a661fbe80e06bd569f07eb964c705c4f7199"
-  integrity sha512-DwVfZMANkxD7KUyRC0KqdqmOimTDoqiDtj6EN/E0P0nEIdnpMIhQD33/P7ynSVrrh8NPRKsc1Bw6FByUgO7iDQ==
+"@platform/ts@3.4.12":
+  version "3.4.12"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.4.12.tgz#2dd1ecc598813f696e5da342adf71769375c8c89"
+  integrity sha512-qZ6lzh/hvC9k/T+toJX8+FlkLAMgwyUCYzV1URFj8dP2HxP56PEIIQHfhjvyNoWwHLHt9g/3qLkIYofUUIP0YA==
   dependencies:
-    "@platform/cli" "0.0.81"
-    "@platform/exec" "0.1.0"
-    "@platform/fs" "0.0.53"
+    "@platform/cli" "0.0.82"
+    "@platform/exec" "0.1.1"
+    "@platform/fs" "0.0.54"
     "@platform/libs" "0.0.12"
-    "@platform/ts.libs" "3.4.8"
+    "@platform/ts.libs" "3.4.9"
 
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
@@ -1649,10 +1649,10 @@ tsutils@^3.9.1:
   dependencies:
     tslib "^1.8.1"
 
-typescript@3.4.4:
-  version "3.4.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.4.4.tgz#aac4a08abecab8091a75f10842ffa0631818f785"
-  integrity sha512-xt5RsIRCEaf6+j9AyOBgvVuAec0i92rgCaS3S+UVf5Z/vF2Hvtsw08wtUTJqp4djwznoAgjSxeCcU4r+CcDBJA==
+typescript@3.4.5:
+  version "3.4.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.4.5.tgz#2d2618d10bb566572b8d7aad5180d84257d70a99"
+  integrity sha512-YycBxUb49UUhdNMU5aJ7z5Ej2XGmaIBL0x34vZ82fn3hGvD+bgrMrVDpatgz2f7YxUMJxMkbWxJZeAvDxVe7Vw==
 
 union-value@^1.0.0:
   version "1.0.0"
