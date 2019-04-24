@@ -14,7 +14,8 @@
     "build": "ts build",
     "prepare": "ts prepare",
     "dbuild": "sh sh/dbuild.sh",
-    "dpush": "sh sh/dpush.sh"
+    "dpush": "sh sh/dpush.sh",
+    "reset": "sh sh/reset.sh"
   },
   "dependencies": {
     "@platform/exec": "0.1.1",

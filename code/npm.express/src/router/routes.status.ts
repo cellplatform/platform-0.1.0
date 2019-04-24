@@ -37,7 +37,7 @@ export async function getStatus(args: { name: string; dir: string }) {
     latest,
     isChanged,
   };
-  return { name, version, dir };
+  return { name, dir, version };
 }
 
 /**
