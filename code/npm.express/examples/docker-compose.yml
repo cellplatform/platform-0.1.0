@@ -5,7 +5,7 @@ services:
   app:
     image: teamdb/npm.express
     container_name: app
-    command: yarn start --npm-module=@tdb/slc.graphql --prerelease=true --update
+    command: yarn start --npm-module=@platform/npm.express.example-server --prerelease=true --update
     restart: unless-stopped
     ports:
       - '5000:5000' # Hint: '80:5000' to expose the imported module to the public internet.

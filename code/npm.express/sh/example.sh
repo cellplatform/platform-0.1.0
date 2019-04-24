@@ -1,7 +1,7 @@
 #!/bin/bash
 
 yarn start \
-      --npm-module='@tdb/slc.graphql' \
+      --npm-module='@platform/npm.express.example-server' \
       --port=3000 \
       --prerelease=true \
       --url-prefix=/ \

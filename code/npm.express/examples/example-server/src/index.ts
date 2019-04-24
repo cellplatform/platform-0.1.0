@@ -23,7 +23,8 @@ let count = 0;
 const PORT = 8080;
 server.listen(PORT, () => {
   console.log();
-  console.log(`👋  http://localhost:${PORT}`);
+  console.log(`👋  host:    http://localhost:${PORT}`);
+  console.log(`   name:    ${pkg.name}`);
   console.log(`   version: ${pkg.version}`);
   console.log();
 });
