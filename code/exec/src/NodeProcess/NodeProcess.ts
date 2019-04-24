@@ -43,10 +43,9 @@ export class NodeProcess {
    * [Lifecycle]
    */
   private constructor(args: t.NodeProcessArgs) {
-    const { dir, port } = args;
+    const { dir } = args;
 
     this.dir = dir;
-    this.port = port;
 
     this.dispose$.subscribe(() => {
       this.stop();
@@ -62,7 +61,6 @@ export class NodeProcess {
    * [Fields]
    */
   public readonly dir: string;
-  public readonly port: number | undefined;
   public isSilent = false;
 
   private _ = {
@@ -91,13 +89,12 @@ export class NodeProcess {
    * [Methods]
    */
   public async start(options: { force?: boolean; stopWait?: number } = {}) {
-    const { dir, port } = this.toObject();
+    const { dir } = this.toObject();
     let isCancelled = false;
     this.fire({
       type: 'PROCESS/starting',
       payload: {
         dir,
-        port,
         get isCancelled() {
           return isCancelled;
         },
@@ -130,19 +127,18 @@ export class NodeProcess {
 
       // Finish up.
       this._.child = child;
-      this.fire({ type: 'PROCESS/started', payload: { dir, port } });
+      this.fire({ type: 'PROCESS/started', payload: { dir } });
     }
   }
 
   public async stop(options: { wait?: number } = {}) {
     const { wait = 500 } = options;
-    const { dir, port } = this.toObject();
+    const { dir } = this.toObject();
     let isCancelled = false;
     this.fire({
       type: 'PROCESS/stopping',
       payload: {
         dir,
-        port,
         get isCancelled() {
           return isCancelled;
         },
@@ -163,13 +159,12 @@ export class NodeProcess {
 
     // Finish up.
     await delay(wait); // NB: Pause allows time for the process to stop gracefully and clean up.
-    this.fire({ type: 'PROCESS/stopped', payload: { dir, port } });
+    this.fire({ type: 'PROCESS/stopped', payload: { dir } });
   }
 
   public toObject() {
     return {
       dir: this.dir,
-      port: this.port,
       isRunning: this.isRunning,
       isDisposed: this.isDisposed,
       isSilent: this.isSilent,

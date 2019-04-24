@@ -1,6 +1,5 @@
 export type NodeProcessArgs = {
   dir: string;
-  port?: number;
 };
 
 /**
@@ -14,7 +13,7 @@ export type NodeProcessEvent =
 
 export type INodeProcessStarting = {
   type: 'PROCESS/starting';
-  payload: { dir: string; port?: number; isCancelled: boolean; cancel(): void };
+  payload: { dir: string; isCancelled: boolean; cancel(): void };
 };
 export type INodeProcessStarted = {
   type: 'PROCESS/started';
@@ -23,9 +22,9 @@ export type INodeProcessStarted = {
 
 export type INodeProcessStopping = {
   type: 'PROCESS/stopping';
-  payload: { dir: string; port?: number; isCancelled: boolean; cancel(): void };
+  payload: { dir: string; isCancelled: boolean; cancel(): void };
 };
 export type INodeProcessStopped = {
   type: 'PROCESS/stopped';
-  payload: { dir: string; port?: number };
+  payload: { dir: string };
 };
