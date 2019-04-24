@@ -29,6 +29,10 @@ export async function getInfo(moduleName: string): Promise<INpmInfo | undefined>
 
 /**
  * Lookup the latest version of a module on NPM.
+ *
+ *    By default the latest version does not include pre-release versions.
+ *    Pass `{ prerelease: true|'alpha'|'beta' }` to retrieve the latest pre-release.
+ *
  */
 export async function getVersion(moduleName: string, options: INpmVersionOptions = {}) {
   const { prerelease = false } = options;
@@ -55,7 +59,7 @@ export async function getVersion(moduleName: string, options: INpmVersionOptions
 
 /**
  * Looks up the latest version for each key/value pair
- * eg { dependences } on a package.json file.
+ * eg `{ dependences }` on a package.json file.
  */
 export async function getVersions(
   modules: ({ [moduleName: string]: string }) | string[],
