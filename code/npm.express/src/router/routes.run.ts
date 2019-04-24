@@ -12,9 +12,9 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
     type BodyParams = {
       force?: boolean;
     };
-    const body = req.body as BodyParams;
-    const { name, dir } = await args.getContext();
-    const result = await start({ name, dir, force: body.force });
+    const { force } = req.body as BodyParams;
+    const { name, downloadDir, prerelease } = await args.getContext();
+    const result = await start({ name, downloadDir, prerelease, force });
     res.send(result);
   });
 
@@ -22,8 +22,8 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
    * [POST] Stops the running service.
    */
   router.post('/stop', async (req, res) => {
-    const { name, dir } = await args.getContext();
-    const result = await stop({ name, dir });
+    const { name, downloadDir } = await args.getContext();
+    const result = await stop({ name, downloadDir });
     res.send(result);
   });
 
@@ -34,10 +34,16 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
 /**
  * Starts the service.
  */
-export async function start(args: { name: string; dir: string; force?: boolean }) {
-  const { name } = args;
-  const status = await getStatus({ name, dir: args.dir });
-  const process = NodeProcess.singleton({ dir: status.dir });
+export async function start(args: {
+  name: string;
+  downloadDir: string;
+  prerelease: t.NpmPrerelease;
+  force?: boolean;
+}) {
+  const { name, downloadDir, prerelease } = args;
+  const status = await getStatus({ name, downloadDir, prerelease });
+  const { dir } = status;
+  const process = NodeProcess.singleton({ dir });
 
   // Monitor events.
   let actions: string[] = [];
@@ -46,7 +52,7 @@ export async function start(args: { name: string; dir: string; force?: boolean }
   // Ensure the module is installed.
   const isInstalled = await fs.pathExists(status.dir);
   if (!isInstalled) {
-    const updated = await update({ name, dir: args.dir });
+    const updated = await update({ name, downloadDir, prerelease });
     actions = [...actions, `INSTALLED/${updated.version.latest}`];
   }
 
@@ -62,9 +68,9 @@ export async function start(args: { name: string; dir: string; force?: boolean }
 /**
  * Stops the running service.
  */
-export async function stop(args: { name: string; dir: string }) {
-  const { name } = args;
-  const dir = getDir(name, args.dir);
+export async function stop(args: { name: string; downloadDir: string }) {
+  const { name, downloadDir } = args;
+  const dir = getDir(name, downloadDir);
   const process = NodeProcess.singleton({ dir });
   let actions: string[] = [];
   if (process.isRunning) {

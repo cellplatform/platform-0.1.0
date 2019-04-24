@@ -1,8 +1,8 @@
-import { log, exec, INpmInfo, semver } from '../common';
-export type NpmInfoField = 'name' | 'version' | 'versions' | 'dist-tags' | 'dist' | 'license';
+import { exec, INpmInfo, log, semver, t } from '../common';
 
+export type NpmInfoField = 'name' | 'version' | 'versions' | 'dist-tags' | 'dist' | 'license';
 export type INpmVersionOptions = {
-  prerelease?: boolean | 'alpha' | 'beta';
+  prerelease?: t.NpmPrerelease;
 };
 
 /**

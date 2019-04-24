@@ -36,8 +36,8 @@ import * as express from 'express';
 
 const getContext = async () => {
   return {
-    name: 'my-module', // The name of the NPM module being managed.
-    dir: '/path/to/working/folder', // The directory where versions are downloaded to.
+    name: 'my-module',                        // Name of the NPM module being managed.
+    downloadDir: '/path/to/download/folder',  // Directory where latest NPM version is downloaded to.
   };
 };
 
@@ -50,8 +50,17 @@ server.listen(1234);
 
 To configure the module when working with it as [Docker container](https://www.docker.com) pass the following command-line arguments:
 
-    --NODE_MODULE='my-module'         # (required) The name of the NPM module being managed.
-    --PRERELEASE=<boolean|alpha|beta> # (optional) Whether pre-release versions should be used (default:false)
+    --NPM_MODULE='my-module'          # (required) The name of the NPM module being managed.
     --PORT=<number>                   # (optional) Port to run the management server on.
+    --PRERELEASE=<boolean|alpha|beta> # (optional) Whether pre-release versions should be used (default:false)
+    --URL_PREFIX=<string>             # (optional) Prefix to prepend URL's with, eg /foo => GET /foo/status
 
 see the `/docker-compose.yml` file for example configuration.
+
+
+## Routes
+
+    GET   /status
+    POST  /update   body: { dryRun?: boolean, restart?: boolean }
+    POST  /start    body: { restart?: boolean }
+    POST  /stop

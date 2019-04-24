@@ -1,3 +1,6 @@
+export type NpmPrerelease = boolean | 'alpha' | 'beta'
+
+
 export interface INpmInfo {
   name: string;
   latest: string;

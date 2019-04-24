@@ -5,9 +5,7 @@
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
   "scripts": {
-    "example": "yarn start --NODE_MODULE=@tdb/slc.graphql --PORT=3000",
     "start": "node lib/server/start $@",
-    "watch": "nodemon --ignore tmp lib/server/start",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
@@ -15,7 +13,8 @@
     "prepare": "ts prepare",
     "dbuild": "sh sh/dbuild.sh",
     "dpush": "sh sh/dpush.sh",
-    "reset": "sh sh/reset.sh"
+    "reset": "sh sh/reset.sh",
+    "example": "sh sh/example.sh"
   },
   "dependencies": {
     "@platform/exec": "0.1.1",

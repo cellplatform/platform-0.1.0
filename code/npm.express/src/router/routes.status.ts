@@ -9,8 +9,8 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
   router.get('/status', async (req, res) => {
     try {
       const context = await args.getContext();
-      const { name } = context;
-      const status = await getStatus({ name, dir: context.dir });
+      const { name, downloadDir, prerelease } = context;
+      const status = await getStatus({ name, downloadDir, prerelease });
       const process = NodeProcess.singleton({ dir: status.dir });
       res.send({ ...status, isRunning: process.isRunning });
     } catch (error) {
@@ -25,11 +25,15 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
 /**
  * Retrieves status details
  */
-export async function getStatus(args: { name: string; dir: string }) {
-  const { name } = args;
-  const dir = getDir(name, args.dir);
+export async function getStatus(args: {
+  name: string;
+  downloadDir: string;
+  prerelease: t.NpmPrerelease;
+}) {
+  const { name, downloadDir, prerelease } = args;
+  const dir = getDir(name, downloadDir);
   const pkg = npm.pkg(dir);
-  const latest = (await npm.getVersion(name)) || '-';
+  const latest = (await npm.getVersion(name, { prerelease })) || '-';
   const current = pkg.version || '-';
   const isChanged = current !== latest;
   const version = {
@@ -43,6 +47,6 @@ export async function getStatus(args: { name: string; dir: string }) {
 /**
  * Retrieve the path to the given module.
  */
-export function getDir(name: string, rootDir: string) {
-  return fs.join(rootDir, 'node_modules', name);
+export function getDir(name: string, downloadDir: string) {
+  return fs.join(downloadDir, 'node_modules', name);
 }
