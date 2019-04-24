@@ -33,4 +33,14 @@ describe('util.npm (integration)', function() {
     expect(res).to.not.equal(modules);
     log.info(res);
   });
+
+  it.skip('getVersion: prerelease', async () => {
+    const res = await npm.getVersion('@tdb/slc.graphql', { prerelease: true });
+    log.info('getVersion:', res);
+  });
+
+  it.skip('getVersions: prerelease', async () => {
+    const res = await npm.getVersions(['@tdb/slc.graphql'], { prerelease: false });
+    log.info('getVersions:', res);
+  });
 });

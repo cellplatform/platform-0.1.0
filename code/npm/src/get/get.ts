@@ -1,5 +1,9 @@
-import { log, exec, INpmInfo } from '../common';
-export type NpmInfoField = 'name' | 'version' | 'dist-tags' | 'dist' | 'license';
+import { log, exec, INpmInfo, semver } from '../common';
+export type NpmInfoField = 'name' | 'version' | 'versions' | 'dist-tags' | 'dist' | 'license';
+
+export type INpmVersionOptions = {
+  prerelease?: boolean | 'alpha' | 'beta';
+};
 
 /**
  * Lookup latest info for module from NPM.
@@ -26,25 +30,43 @@ export async function getInfo(moduleName: string): Promise<INpmInfo | undefined>
 /**
  * Lookup the latest version of a module on NPM.
  */
-export async function getVersion(moduleName: string) {
-  const json = await getJson(moduleName, ['dist-tags']);
-  if (!json) {
+export async function getVersion(moduleName: string, options: INpmVersionOptions = {}) {
+  const { prerelease = false } = options;
+  const versions = await getJson(moduleName, ['versions']);
+  if (!versions || versions.length === 0) {
     throw new Error(`Cannot get version for '${moduleName}' as it could not be found on NPM.`);
   }
-  return json.latest;
+  const latest = (index: number): string => {
+    const version = versions[index];
+    const pre = semver.prerelease(version);
+    if (pre) {
+      if (prerelease === true) {
+        return version;
+      }
+      if (typeof prerelease === 'string' && pre.includes(prerelease)) {
+        return version;
+      }
+      return latest(index - 1); // <== RECURSION
+    }
+    return version;
+  };
+  return latest(versions.length - 1);
 }
 
 /**
  * Looks up the latest version for each key/value pair
  * eg { dependences } on a package.json file.
  */
-export async function getVersions(modules: ({ [moduleName: string]: string }) | string[]) {
+export async function getVersions(
+  modules: ({ [moduleName: string]: string }) | string[],
+  options: INpmVersionOptions = {},
+) {
   const deps = Array.isArray(modules)
     ? modules.reduce((acc, key) => ({ ...acc, [key]: 'latest' }), {})
     : { ...modules };
   const wait = Object.keys(deps).map(async moduleName => {
     const current = deps[moduleName].trim();
-    let version = await getVersion(moduleName);
+    let version = await getVersion(moduleName, options);
     version = current.startsWith('^') ? `^${version}` : version;
     deps[moduleName] = version;
   });
@@ -53,7 +75,7 @@ export async function getVersions(modules: ({ [moduleName: string]: string }) | 
 }
 
 /**
- * INTERNAL
+ * [Helpers]
  */
 async function getJson(moduleName: string, fields: NpmInfoField[]): Promise<any> {
   const options = fields.join(' ');
