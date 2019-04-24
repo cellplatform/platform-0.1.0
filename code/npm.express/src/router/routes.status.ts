@@ -6,7 +6,7 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
   /**
    * [POST] Updates the module to the latest version.
    */
-  router.post('/status', async (req, res) => {
+  router.get('/status', async (req, res) => {
     try {
       const context = await args.getContext();
       const { name } = context;
