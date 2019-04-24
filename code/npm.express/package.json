@@ -5,21 +5,30 @@
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
   "scripts": {
+    "example": "yarn start --NODE_MODULE=@tdb/slc.graphql --PORT=3000",
+    "start": "node lib/server/start $@",
+    "watch": "nodemon --ignore tmp lib/server/start",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "dbuild": "sh sh/dbuild.sh",
+    "dpush": "sh sh/dpush.sh"
   },
   "dependencies": {
     "@platform/exec": "0.1.1",
     "@platform/npm": "0.1.2",
     "@types/express": "4.16.1",
-    "express": "4.16.4"
+    "body-parser": "1.18.3",
+    "express": "4.16.4",
+    "minimist": "1.2.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.47",
-    "@platform/ts": "3.4.12"
+    "@platform/ts": "3.4.12",
+    "@types/body-parser": "1.17.0",
+    "@types/minimist": "1.2.0"
   },
   "files": [
     "lib"

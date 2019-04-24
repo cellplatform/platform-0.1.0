@@ -3,6 +3,21 @@
 [![NPM](https://img.shields.io/npm/v/@platform/npm.express.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/npm.express)
 ![banner](https://user-images.githubusercontent.com/185555/56625096-bd12e780-668f-11e9-935e-58bea6081f51.png)
 
-
 [Express](https://expressjs.com) middleware for working with [NPM](http://npmjs.com).
 
+## Setup
+
+To work with the middleware directly reference the module.
+
+    yarn add @platform/npm.express
+
+## Example
+
+Run the example directly in node:
+
+    yarn example
+
+or run the example within docker:
+
+    yarn dbuild
+    docker-compose up

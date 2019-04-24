@@ -42,7 +42,7 @@ export async function update(args: {
   let actions: string[] = [];
 
   log.info();
-  log.info.cyan('Update');
+  log.info.cyan('Update\n');
   log.info.gray(' - module:    ', log.white(name));
   log.info.gray(' - dir:       ', log.white(status.dir));
   log.info.gray(' - current:   ', log.white(version.current || '-'));
@@ -68,6 +68,7 @@ export async function update(args: {
     log.info.gray(`...installing...`);
     await npm.install({ use: 'YARN', dir, silent: true });
     actions = [...actions, `INSTALLED/${version.latest}`];
+    log.info();
     log.info(`Installed ${log.yellow(`v${version.latest}`)} 🌼`);
     log.info();
 

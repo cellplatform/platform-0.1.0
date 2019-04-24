@@ -1,12 +1,17 @@
-import * as express from 'express';
 import { json } from 'body-parser';
+import * as express from 'express';
+
 import { fs, is } from '../common';
 import * as router from '../router';
 
+/**
+ * Initializes a new base web server.
+ */
 export function init(args: { name: string }) {
+  const { name } = args;
   const dir = is.prod ? '/data' : fs.resolve('./tmp');
+
   const getContext = async () => {
-    const name = args.name;
     return { name, dir };
   };
 
