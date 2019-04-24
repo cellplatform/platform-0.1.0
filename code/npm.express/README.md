@@ -24,6 +24,7 @@ Run the example directly in node:
 or run the example within docker:
 
     yarn dbuild
+    cd examples
     docker-compose up
 
 see the `/docker-compose.yml` file for example configuration and command-line arguments to pass to the container.

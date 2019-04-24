@@ -39,7 +39,15 @@ export async function update(args: {
   const { name, downloadDir, dryRun, restart, prerelease } = args;
   const status = await getStatus({ name, downloadDir, prerelease });
   const { version, dir: moduleDir } = status;
+
   let actions: string[] = [];
+  const start = async () => {
+    const process = NodeProcess.singleton({ dir: moduleDir });
+    const monitor = monitorProcessEvents(process);
+    await process.start({ force: true });
+    actions = [...actions, ...monitor.actions];
+    monitor.stop();
+  };
 
   log.info();
   log.info.cyan('Update\n');
@@ -49,6 +57,10 @@ export async function update(args: {
   log.info.gray(' - latest:    ', log.white(version.latest));
   log.info.gray(' - isChanged: ', log.white(version.isChanged));
   log.info();
+
+  if (!version.isChanged) {
+    log.info.yellow(`👌  Already up-to-date.`);
+  }
 
   // Ensure package exists.
   if (!(await fs.pathExists(fs.join(downloadDir, 'package.json')))) {
@@ -73,12 +85,12 @@ export async function update(args: {
     log.info();
 
     if (restart) {
-      const process = NodeProcess.singleton({ dir: moduleDir });
-      const monitor = monitorProcessEvents(process);
-      await process.start({ force: true });
-      actions = [...actions, ...monitor.actions];
-      monitor.stop();
+      await start();
     }
+  }
+
+  if (!dryRun && !version.isChanged && restart) {
+    await start();
   }
 
   // Finish up.
