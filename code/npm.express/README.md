@@ -2,17 +2,18 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![NPM](https://img.shields.io/npm/v/@platform/npm.express.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/npm.express)
 ![banner](https://user-images.githubusercontent.com/185555/56625096-bd12e780-668f-11e9-935e-58bea6081f51.png)
+[Express](https://expressjs.com) [middleware](https://expressjs.com/en/guide/using-middleware.html) for working with [NPM](http://npmjs.com).
 
-[Express](https://expressjs.com) middleware for working with [NPM](http://npmjs.com).
+<p>&nbsp;<p>
 
 ## Setup
-
 To work with the middleware directly reference the module.
 
     yarn add @platform/npm.express
 
-## Example
+<p>&nbsp;<p>
 
+## Example
 Run the example directly in node:
 
     yarn example
@@ -21,3 +22,36 @@ or run the example within docker:
 
     yarn dbuild
     docker-compose up
+
+see the `/docker-compose.yml` file for example configuration and command-line arguments to pass to the container.
+
+<p>&nbsp;<p>
+
+## Middleware
+
+To use the [express middleware](https://expressjs.com/en/guide/using-middleware.html) directly
+
+```typescript
+import * as express from 'express';
+
+const getContext = async () => {
+  return {
+    name: 'my-module', // The name of the NPM module being managed.
+    dir: '/path/to/working/folder', // The directory where versions are downloaded to.
+  };
+};
+
+const routes = router.create({ getContext });
+const server = express().use(routes);
+server.listen(1234);
+```
+
+## Command-Line Arguments
+
+To configure the module when working with it as [Docker container](https://www.docker.com) pass the following command-line arguments:
+
+    --NODE_MODULE='my-module'         # (required) The name of the NPM module being managed.
+    --PRERELEASE=<boolean|alpha|beta> # (optional) Whether pre-release versions should be used (default:false)
+    --PORT=<number>                   # (optional) Port to run the management server on.
+
+see the `/docker-compose.yml` file for example configuration.
