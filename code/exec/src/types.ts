@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+export * from './NodeProcess/types';
 
 /**
  * Options when executing a command.
