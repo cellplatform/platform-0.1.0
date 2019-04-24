@@ -22,7 +22,7 @@ const fail = (message: string) => {
 };
 
 if (!name) {
-  fail(`A --NPM_MODULE=<name> value must be passed at startup.`);
+  fail(`A --NPM_MODULE=<name> must be passed at startup.`);
 }
 if (typeof prerelease === 'string' && !['alpha', 'beta'].includes(prerelease.trim())) {
   fail(`Invalid '--PRERELEASE=${prerelease}'. Must be <boolean|alpha|beta>.`);
