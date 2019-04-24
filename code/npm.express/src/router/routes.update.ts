@@ -12,8 +12,7 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
       dryRun?: boolean;
       restart?: boolean;
     };
-    const body = req.body as BodyParams;
-    const { dryRun, restart } = body;
+    const { dryRun, restart } = req.body as BodyParams;
     try {
       const { name, dir } = await args.getContext();
       const response = await update({ name, dir, dryRun, restart });
