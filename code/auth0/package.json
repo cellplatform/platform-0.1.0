@@ -1,7 +1,7 @@
 {
   "name": "@platform/auth0",
   "version": "0.0.9",
-  "description": "Interfaces and UI for working with Auth0.",
+  "description": "Interfaces for working with Auth0.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {

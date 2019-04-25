@@ -1,4 +1,4 @@
-import { Command, t, WebAuth } from '../common';
+import { Command, t } from '../common';
 
 /**
  * Login Image

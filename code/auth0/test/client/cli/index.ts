@@ -32,14 +32,16 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
 
   auth.changed$
     .pipe(
-      filter(e => e.isLoggedIn),
+      filter(e => Boolean(e.isLoggedIn)),
       distinctUntilChanged((prev, next) => prev.isLoggedIn === next.isLoggedIn),
     )
     .subscribe(() => {
       const write = (name: string, token: string) => log.info(`${name}: \n\n${token}\n\n`);
       const tokens = auth.tokens;
-      write('accessToken', tokens.accessToken);
-      write('idToken', tokens.idToken);
+      if (tokens) {
+        write('accessToken', tokens.accessToken);
+        write('idToken', tokens.idToken);
+      }
     });
 
   return CommandState.create({

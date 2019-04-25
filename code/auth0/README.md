@@ -3,8 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/auth0.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/auth0)
 ![banner](https://user-images.githubusercontent.com/185555/55848773-30056400-5ba2-11e9-977b-620387715258.png)
 
-
-Interfaces and UI for working with [Auth0](https://auth0.com).
+Interfaces for working with [Auth0](https://auth0.com).
 
 
 <p>&nbsp;<p>
@@ -12,3 +11,11 @@ Interfaces and UI for working with [Auth0](https://auth0.com).
 ## Refs
 
 - https://auth0.com/docs/quickstart/backend/nodejs
+- https://auth0.com/blog/develop-modern-apps-with-react-graphql-apollo-and-add-authentication/
+
+Modules:
+- jwks-rsa
+- jsonwebtoken
+
+<!-- - express-jwt
+- express-jwt-authz -->
