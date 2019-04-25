@@ -1,18 +1,24 @@
 import { json } from 'body-parser';
 import * as express from 'express';
 
-import { fs, is, t } from '../common';
+import { fs, t } from '../common';
 import * as router from '../router';
 
 /**
  * Initializes a new base web server.
  */
-export function init(args: { name: string; prerelease?: t.NpmPrerelease; urlPrefix?: string }) {
+export function init(args: {
+  name: string;
+  downloadDir: string;
+  prerelease?: t.NpmPrerelease;
+  urlPrefix?: string;
+}) {
   const { name } = args;
   const prerelease = args.prerelease || false;
-  const downloadDir = is.prod ? '/data' : fs.resolve('./tmp');
+  const downloadDir = fs.resolve(args.downloadDir);
 
-  let urlPrefix = (args.urlPrefix || '').replace(/^\//, '').replace(/\/$/, '');
+  let urlPrefix = args.urlPrefix || '';
+  urlPrefix = urlPrefix.replace(/^\//, '').replace(/\/$/, '');
   urlPrefix = `/${urlPrefix}`;
 
   const getContext = async () => {

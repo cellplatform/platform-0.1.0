@@ -10,6 +10,7 @@
 <p>&nbsp;<p>
 
 ## Setup
+
 To work with the middleware directly reference the module.
 
     yarn add @platform/npm.express
@@ -17,6 +18,7 @@ To work with the middleware directly reference the module.
 <p>&nbsp;<p>
 
 ## Example
+
 Run the example directly in node:
 
     yarn example
@@ -27,7 +29,7 @@ or run the example within docker:
     cd examples
     docker-compose up
 
-see the `/docker-compose.yml` file for example configuration and command-line arguments to pass to the container.
+see the `/examples/docker-compose.yml` file for example configuration and command-line arguments to pass to the container.
 
 <p>&nbsp;<p>
 
@@ -40,8 +42,8 @@ import * as express from 'express';
 
 const getContext = async () => {
   return {
-    name: 'my-module',                        // Name of the NPM module being managed.
-    downloadDir: '/path/to/download/folder',  // Directory where latest NPM version is downloaded to.
+    name: 'my-module', // Name of the NPM module being managed.
+    downloadDir: '/path/to/download/folder', // Directory where latest NPM version is downloaded to.
   };
 };
 
@@ -55,15 +57,15 @@ server.listen(1234);
 To configure the module when working with it as [Docker container](https://www.docker.com) pass the following command-line arguments:
 
 ```bash
-    --npm-module='my-module'            # (required) The name of the NPM module being managed.
+    --npm-module='<string>'             # (required) The name of the NPM module being managed.
+    --dir='<string>'                    # (required) Path to the download directory.
     --port='<number>'                   # (optional) Port to run the management server on.
     --prerelease='<boolean|alpha|beta>' # (optional) Whether pre-release versions should be used (default:false).
     --url-prefix='<string>'             # (optional) Prefix to prepend URL's with, eg /foo => GET /foo/status
     --update                            # (optional) Flag indicating if update performed at startup (default:false).
 ```
 
-see the `/docker-compose.yml` file for example configuration.
-
+see the `/examples/docker-compose.yml` file for example configuration.
 
 ## Routes
 
