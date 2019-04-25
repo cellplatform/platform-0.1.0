@@ -38,8 +38,8 @@ import { router } from '@platform/npm.express';
 
 const getContext = async () => {
   return {
-    name: 'my-module', // Name of the NPM module being managed.
-    downloadDir: '/path/to/download/folder', // Directory where latest NPM version is downloaded to.
+    name: 'my-module',                // Name of the NPM module being managed.
+    downloadDir: '/download/folder',  // Directory where latest NPM version is downloaded to.
   };
 };
 
