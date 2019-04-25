@@ -59,7 +59,7 @@ export async function update(args: {
   const { version } = info;
   let wanted = args.version || version.latest;
   wanted = wanted.toLowerCase() === 'latest' ? version.latest : wanted;
-  const isChanged = semver.neq(version.current, wanted);
+  const isChanged = !semver.eq(version.current, wanted);
 
   let actions: string[] = [];
   const start = async () => {
