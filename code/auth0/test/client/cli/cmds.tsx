@@ -1,8 +1,9 @@
-import { Command, t } from '../common';
+import { Command, t, log } from '../common';
 
 /**
  * Login Image
- *   - https://user-images.githubusercontent.com/185555/56072416-b1e7ce00-5dea-11e9-946f-cdc54fadf0b3.png
+ * Configured within Auth0 admin screen (Universal Login).
+ * - https://user-images.githubusercontent.com/185555/56072416-b1e7ce00-5dea-11e9-946f-cdc54fadf0b3.png
  */
 
 type P = t.ITestCommandProps;
@@ -13,7 +14,7 @@ type P = t.ITestCommandProps;
 export const root = Command.create<P>('root', e => {
   e.props.updateState();
 })
-  .add('update', e => e.props.updateState())
+  .add('updateState', e => e.props.updateState())
   .add('login', async e => {
     const { auth } = e.props;
     auth.login();
@@ -24,8 +25,19 @@ export const root = Command.create<P>('root', e => {
     auth.logout();
     e.props.updateState();
   })
-  .add('logout-force', async e => {
+  .add('force-logout', async e => {
     const { auth } = e.props;
     auth.logout({ force: true });
     e.props.updateState();
+  })
+  .add('tokens', async e => {
+    const { auth } = e.props;
+    const write = (name: string, token: string) => log.info(`${name}: \n\n${token}\n\n`);
+    const tokens = auth.tokens;
+    if (tokens) {
+      write('accessToken', tokens.accessToken);
+      write('idToken', tokens.idToken);
+    } else {
+      log.info('Not logged in.');
+    }
   });

@@ -1,6 +1,4 @@
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, filter } from 'rxjs/operators';
-
 import { CommandState, log, t, WebAuth } from '../common';
 import { root } from './cmds';
 
@@ -10,17 +8,23 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   const auth = WebAuth.create({
     domain: 'test-platform.auth0.com',
     clientId: 'oPjzxrhihhlEtZ2dRz5KnCRUfBzHgsRh',
-    // scope: 'openid profile', // (default)
     // responseType: 'token id_token', // (default)
+
+    /**
+     * See:
+     * - https://manage.auth0.com/dashboard/us/test-platform/apis/5cc17072967c0308e756065f/settings
+     */
     audience: 'https://uiharness.com/api/sample',
+    scope: 'openid profile db:read',
   });
 
   const updateState = () => {
     const data = auth.toObject();
     const tokens = data.tokens;
+    const shorten = (token: string) => token.substring(0, 15) + '...';
     if (tokens) {
-      tokens.accessToken = tokens.accessToken;
-      tokens.idToken = tokens.idToken.substring(0, 15) + '...';
+      tokens.accessToken = shorten(tokens.accessToken);
+      tokens.idToken = shorten(tokens.idToken);
     }
     state$.next({ data });
   };
@@ -29,20 +33,6 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
     log.info('🐷', e.type, e.payload);
     updateState();
   });
-
-  auth.changed$
-    .pipe(
-      filter(e => Boolean(e.isLoggedIn)),
-      distinctUntilChanged((prev, next) => prev.isLoggedIn === next.isLoggedIn),
-    )
-    .subscribe(() => {
-      const write = (name: string, token: string) => log.info(`${name}: \n\n${token}\n\n`);
-      const tokens = auth.tokens;
-      if (tokens) {
-        write('accessToken', tokens.accessToken);
-        write('idToken', tokens.idToken);
-      }
-    });
 
   return CommandState.create({
     root,
