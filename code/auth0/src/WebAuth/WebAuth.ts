@@ -46,6 +46,7 @@ export class WebAuth {
     this.clientId = args.clientId;
     this.responseType = args.responseType || 'token id_token';
     this.scope = args.scope || 'openid profile';
+    this.audience = args.audience;
     this.redirectUri = args.redirectUri || window.location.href;
 
     // Create wrapped Auth0 manager.
@@ -55,6 +56,7 @@ export class WebAuth {
       responseType: this.responseType,
       scope: this.scope,
       redirectUri: this.redirectUri,
+      audience: this.audience,
     });
 
     // Initialize.
@@ -137,6 +139,7 @@ export class WebAuth {
   public readonly clientId: string;
   public readonly responseType: string;
   public readonly scope: string;
+  public readonly audience: string | undefined;
   public readonly redirectUri: string;
 
   public status: t.WebAuthStatus = 'LOADING';
@@ -213,6 +216,7 @@ export class WebAuth {
       clientId: this.clientId,
       responseType: this.responseType,
       scope: this.scope,
+      audience: this.audience,
       expiresAt: expiresAt > -1 ? new Date(this.expiresAt) : undefined,
       tokens: tokens ? { ...tokens } : undefined,
       profile: profile ? { ...profile } : undefined,

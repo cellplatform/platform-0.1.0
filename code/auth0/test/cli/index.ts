@@ -10,15 +10,15 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   const auth = WebAuth.create({
     domain: 'test-platform.auth0.com',
     clientId: 'oPjzxrhihhlEtZ2dRz5KnCRUfBzHgsRh',
-    // responseType: 'token id_token',
-    // scope: 'openid',
+    // scope: 'openid profile', // (default)
+    // responseType: 'token id_token', // (default)
   });
 
   const updateState = () => {
     const data = auth.toObject();
     const tokens = data.tokens;
     if (tokens) {
-      tokens.accessToken = tokens.accessToken.substring(0, 15) + '...';
+      tokens.accessToken = tokens.accessToken;
       tokens.idToken = tokens.idToken.substring(0, 15) + '...';
     }
     state$.next({ data });
@@ -35,11 +35,7 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
       distinctUntilChanged((prev, next) => prev.isLoggedIn === next.isLoggedIn),
     )
     .subscribe(() => {
-      const { accessToken, idToken } = auth.tokens;
-      log.group('🌳 Tokens');
-      log.info(`accessToken: \n${accessToken}`);
-      log.info(`idToken: \n${idToken}`);
-      log.groupEnd();
+      log.info(`idToken: \n\n${auth.tokens.idToken}\n\n`);
     });
 
   return CommandState.create({

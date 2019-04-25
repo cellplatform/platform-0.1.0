@@ -7,6 +7,7 @@ export type IWebAuthArgs = {
   clientId: string;
   responseType?: string;
   scope?: string;
+  audience?: string;
   redirectUri?: string;
   initialize?: boolean;
 };
@@ -20,6 +21,7 @@ export type IWebAuthProps = {
   clientId: string;
   responseType: string;
   scope: string;
+  audience?: string;
   expiresAt?: Date;
   tokens?: IAuthTokens;
   profile?: IAuthProfile;
