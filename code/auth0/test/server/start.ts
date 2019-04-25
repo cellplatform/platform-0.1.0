@@ -1,2 +1,2 @@
-import { start } from '.';
-start();
+import * as graphql from './graphql';
+graphql.start();

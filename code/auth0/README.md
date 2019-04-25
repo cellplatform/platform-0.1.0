@@ -17,5 +17,3 @@ Modules:
 - jwks-rsa
 - jsonwebtoken
 
-<!-- - express-jwt
-- express-jwt-authz -->

@@ -3,3 +3,4 @@ import * as express from 'express';
 
 export { t, express };
 export { log } from '@platform/log/lib/server';
+export { ApolloServer, gql } from 'apollo-server';
