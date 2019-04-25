@@ -1,4 +1,4 @@
-import { express, fs, monitorProcessEvents, NodeProcess, t } from '../common';
+import { express, fs, getProcess, log, monitorProcessEvents, t } from '../common';
 import { getDir, getStatus } from './routes.status';
 import { update } from './routes.update';
 
@@ -43,7 +43,7 @@ export async function start(args: {
   const { name, downloadDir, prerelease } = args;
   const status = await getStatus({ name, downloadDir, prerelease });
   const { dir } = status;
-  const process = NodeProcess.singleton({ dir });
+  const process = getProcess(dir);
 
   // Monitor events.
   let actions: string[] = [];
@@ -62,7 +62,8 @@ export async function start(args: {
   monitor.stop();
 
   // Finish up.
-  return { ...status, isRunning: process.isRunning, actions };
+  const isRunning = process.isRunning;
+  return { isRunning, ...status.info, actions };
 }
 
 /**
@@ -71,11 +72,15 @@ export async function start(args: {
 export async function stop(args: { name: string; downloadDir: string }) {
   const { name, downloadDir } = args;
   const dir = getDir(name, downloadDir);
-  const process = NodeProcess.singleton({ dir });
+  const process = getProcess(dir);
   let actions: string[] = [];
   if (process.isRunning) {
     actions = [...actions, 'STOPPED'];
   }
   await process.stop();
-  return { name, isRunning: process.isRunning, actions };
+  const isRunning = process.isRunning;
+  log.info();
+  log.info.gray(`😴 Stopped`);
+  log.info();
+  return { isRunning, name, actions };
 }

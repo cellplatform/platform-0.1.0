@@ -1,7 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-
-import { NodeProcess } from './libs';
+import { fs, NodeProcess } from './libs';
 
 /**
  * Monitors events of a child node-process creating a list of
@@ -25,4 +24,12 @@ export function monitorProcessEvents(process: NodeProcess) {
       return actions;
     },
   };
+}
+
+/**
+ * Retrieves the [NodeProcess] for the given dir.
+ */
+export function getProcess(dir: string) {
+  dir = fs.resolve(dir);
+  return NodeProcess.singleton({ dir });
 }

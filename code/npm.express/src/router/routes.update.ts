@@ -1,4 +1,4 @@
-import { exec, express, fs, log, monitorProcessEvents, NodeProcess, npm, t } from '../common';
+import { exec, express, fs, getProcess, log, monitorProcessEvents, npm, t } from '../common';
 import { getStatus } from './routes.status';
 
 export function create(args: { getContext: t.GetNpmRouteContext }) {
@@ -38,11 +38,12 @@ export async function update(args: {
 }) {
   const { name, downloadDir, dryRun, restart, prerelease } = args;
   const status = await getStatus({ name, downloadDir, prerelease });
-  const { version, dir: moduleDir } = status;
+  const { info, dir: moduleDir } = status;
+  const { version } = info;
 
   let actions: string[] = [];
   const start = async () => {
-    const process = NodeProcess.singleton({ dir: moduleDir });
+    const process = getProcess(moduleDir);
     const monitor = monitorProcessEvents(process);
     await process.start({ force: true });
     actions = [...actions, ...monitor.actions];
@@ -94,5 +95,5 @@ export async function update(args: {
   }
 
   // Finish up.
-  return { ...status, actions };
+  return { ...status.info, actions };
 }
