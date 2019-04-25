@@ -56,10 +56,10 @@ export async function update(args: {
   log.info.gray(' - dir:       ', log.white(moduleDir));
   log.info.gray(' - current:   ', log.white(version.current || '-'));
   log.info.gray(' - latest:    ', log.white(version.latest));
-  log.info.gray(' - isChanged: ', log.white(version.isChanged));
+  log.info.gray(' - isChanged: ', log.white(status.isChanged));
   log.info();
 
-  if (!version.isChanged) {
+  if (!status.isChanged) {
     log.info.yellow(`👌  Already up-to-date.`);
   }
 
@@ -70,7 +70,7 @@ export async function update(args: {
     actions = [...actions, 'CREATED_PACKAGE'];
   }
 
-  if (!dryRun && version.isChanged) {
+  if (!dryRun && status.isChanged) {
     // Setup the installer package.
     const pkg = npm.pkg(downloadDir);
     pkg.json.dependencies = pkg.json.dependencies || {};
@@ -90,7 +90,7 @@ export async function update(args: {
     }
   }
 
-  if (!dryRun && !version.isChanged && restart) {
+  if (!dryRun && !status.isChanged && restart) {
     await start();
   }
 

@@ -40,7 +40,6 @@ export async function getStatus(args: {
   const version = {
     current,
     latest,
-    isChanged,
   };
   const info = { name, version };
   return { info, dir, isChanged };
