@@ -88,19 +88,23 @@ export async function update(args: {
     actions = [...actions, 'CREATED_PACKAGE'];
   }
 
+  if (dryRun && isChanged) {
+    log.info.gray(`Dry run...no changes made.\n`);
+  }
+
   if (!dryRun && isChanged) {
     // Setup the installer package.
     const pkg = npm.pkg(downloadDir);
     pkg.json.dependencies = pkg.json.dependencies || {};
-    pkg.json.dependencies[name] = version.latest;
+    pkg.json.dependencies[name] = wanted;
     await pkg.save();
 
     // Pull the module from NPM.
     log.info.gray(`...installing...`);
     await npm.install({ use: 'YARN', dir: downloadDir, silent: true });
-    actions = [...actions, `INSTALLED/${version.latest}`];
+    actions = [...actions, `INSTALLED/${wanted}`];
     log.info();
-    log.info(`Installed ${log.yellow(`v${version.latest}`)} 🌼`);
+    log.info(`Installed ${log.yellow(`v${wanted}`)} 🌼`);
     log.info();
 
     if (restart) {
