@@ -1,4 +1,14 @@
-import { exec, express, fs, getProcess, log, monitorProcessEvents, npm, t } from '../common';
+import {
+  exec,
+  express,
+  fs,
+  getProcess,
+  log,
+  monitorProcessEvents,
+  npm,
+  t,
+  semver,
+} from '../common';
 import { getStatus } from './routes.status';
 
 export function create(args: { getContext: t.GetNpmRouteContext }) {
@@ -11,11 +21,12 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
     type BodyParams = {
       dryRun?: boolean;
       restart?: boolean;
+      version?: string | 'latest';
     };
-    const { dryRun, restart } = req.body as BodyParams;
+    const { dryRun, restart, version } = req.body as BodyParams;
     try {
       const { name, downloadDir, prerelease } = await args.getContext();
-      const response = await update({ name, downloadDir, prerelease, dryRun, restart });
+      const response = await update({ name, downloadDir, prerelease, dryRun, restart, version });
       res.send(response);
     } catch (error) {
       res.send({ status: 500, error: error.message });
@@ -35,11 +46,15 @@ export async function update(args: {
   prerelease: t.NpmPrerelease;
   dryRun?: boolean;
   restart?: boolean;
+  version?: string | 'latest';
 }) {
   const { name, downloadDir, dryRun, restart, prerelease } = args;
   const status = await getStatus({ name, downloadDir, prerelease });
   const { info, dir: moduleDir } = status;
   const { version } = info;
+  let wanted = args.version || version.latest;
+  wanted = wanted.toLowerCase() === 'latest' ? version.latest : wanted;
+  const isChanged = semver.neq(version.current, wanted);
 
   let actions: string[] = [];
   const start = async () => {
@@ -52,14 +67,17 @@ export async function update(args: {
 
   log.info();
   log.info.cyan('Update\n');
-  log.info.gray(' - module:    ', log.white(name));
-  log.info.gray(' - dir:       ', log.white(moduleDir));
-  log.info.gray(' - current:   ', log.white(version.current || '-'));
-  log.info.gray(' - latest:    ', log.white(version.latest));
-  log.info.gray(' - isChanged: ', log.white(status.isChanged));
+  log.info.gray(' - module:   ', log.white(name));
+  log.info.gray(' - dir:      ', log.white(moduleDir));
+  log.info.gray(' - current:  ', log.white(version.current || '-'));
+  log.info.gray(' - latest:   ', log.white(version.latest));
+  if (args.version) {
+    log.info.gray(' - wanted:   ', log.yellow(wanted));
+  }
+  log.info.gray(' - status:   ', isChanged ? log.yellow('UPDATE REQUIRED') : log.gray('NO CHANGE'));
   log.info();
 
-  if (!status.isChanged) {
+  if (!isChanged) {
     log.info.yellow(`👌  Already up-to-date.`);
   }
 
@@ -70,7 +88,7 @@ export async function update(args: {
     actions = [...actions, 'CREATED_PACKAGE'];
   }
 
-  if (!dryRun && status.isChanged) {
+  if (!dryRun && isChanged) {
     // Setup the installer package.
     const pkg = npm.pkg(downloadDir);
     pkg.json.dependencies = pkg.json.dependencies || {};
@@ -90,7 +108,7 @@ export async function update(args: {
     }
   }
 
-  if (!dryRun && !status.isChanged && restart) {
+  if (!dryRun && !isChanged && restart) {
     await start();
   }
 
