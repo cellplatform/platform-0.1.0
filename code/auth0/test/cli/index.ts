@@ -12,6 +12,7 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
     clientId: 'oPjzxrhihhlEtZ2dRz5KnCRUfBzHgsRh',
     // scope: 'openid profile', // (default)
     // responseType: 'token id_token', // (default)
+    audience: 'https://uiharness.com/api/sample',
   });
 
   const updateState = () => {
@@ -35,7 +36,10 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
       distinctUntilChanged((prev, next) => prev.isLoggedIn === next.isLoggedIn),
     )
     .subscribe(() => {
-      log.info(`idToken: \n\n${auth.tokens.idToken}\n\n`);
+      const write = (name: string, token: string) => log.info(`${name}: \n\n${token}\n\n`);
+      const tokens = auth.tokens;
+      write('accessToken', tokens.accessToken);
+      write('idToken', tokens.idToken);
     });
 
   return CommandState.create({
