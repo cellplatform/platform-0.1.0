@@ -22,10 +22,15 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
       dryRun?: boolean;
       restart?: boolean;
       version?: string | 'latest';
+      prerelease?: t.NpmPrerelease;
     };
-    const { dryRun, restart, version } = req.body as BodyParams;
+
+    const body = req.body as BodyParams;
+    const { dryRun, restart, version } = body;
     try {
-      const { name, downloadDir, prerelease } = await args.getContext();
+      const context = await args.getContext();
+      const { name, downloadDir } = context;
+      const prerelease = body.prerelease === undefined ? context.prerelease : body.prerelease;
       const response = await update({ name, downloadDir, prerelease, dryRun, restart, version });
       res.send(response);
     } catch (error) {
@@ -43,10 +48,10 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
 export async function update(args: {
   name: string;
   downloadDir: string;
-  prerelease: t.NpmPrerelease;
   dryRun?: boolean;
   restart?: boolean;
   version?: string | 'latest';
+  prerelease: t.NpmPrerelease;
 }) {
   const { name, downloadDir, dryRun, restart, prerelease } = args;
   const status = await getStatus({ name, downloadDir, prerelease });
@@ -67,14 +72,15 @@ export async function update(args: {
 
   log.info();
   log.info.cyan('Update\n');
-  log.info.gray(' - module:   ', log.white(name));
-  log.info.gray(' - dir:      ', log.white(moduleDir));
-  log.info.gray(' - current:  ', log.white(version.current || '-'));
-  log.info.gray(' - latest:   ', log.white(version.latest));
-  if (args.version) {
-    log.info.gray(' - wanted:   ', log.yellow(wanted));
-  }
-  log.info.gray(' - status:   ', isChanged ? log.yellow('UPDATE REQUIRED') : log.gray('NO CHANGE'));
+  log.info.gray(' - module:     ', log.magenta(name));
+  log.info.gray(' - dir:        ', log.white(moduleDir));
+  log.info.gray(' - prerelease: ', log.white(prerelease));
+  log.info.gray(' - current:    ', log.white(version.current || '-'));
+  log.info.gray(' - latest:     ', log.white(version.latest));
+  log.info.gray(' - wanted:     ', log.yellow(wanted), !isChanged ? log.yellow(' (latest)') : '');
+
+  const statusInfo = isChanged ? log.cyan('UPDATE REQUIRED') : log.gray('NO CHANGE');
+  log.info.gray(' - status:     ', statusInfo);
   log.info();
 
   if (!isChanged) {

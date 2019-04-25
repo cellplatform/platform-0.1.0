@@ -66,6 +66,6 @@ see the `/examples/docker-compose.yml` file for example configuration.
 ## Routes
 
     GET   /status
-    POST  /update   body: { dryRun?:boolean, restart?:boolean, version?:string|'latest' }
-    POST  /start    body: { restart?:boolean }
+    POST  /update   body: { restart?:bool, version?:string|'latest', prerelease?:bool|alpha|beta, dryRun?:bool, }
+    POST  /start    body: { restart?:bool }
     POST  /stop
