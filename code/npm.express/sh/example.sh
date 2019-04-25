@@ -6,4 +6,4 @@ yarn start \
       --port=3000 \
       --prerelease=true \
       --url-prefix=/ \
-      --update
+      # --update

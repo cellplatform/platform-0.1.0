@@ -10,10 +10,12 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
     try {
       const context = await args.getContext();
       const { name, downloadDir, prerelease } = context;
-      const status = await getStatus({ name, downloadDir, prerelease });
-      const process = getProcess(status.dir);
+      const { info, dir, isChanged } = await getStatus({ name, downloadDir, prerelease });
+      const process = getProcess(dir);
       const isRunning = process.isRunning;
-      res.send({ isRunning, ...status.info });
+      const status = isChanged ? 'UPDATE_PENDING' : 'LATEST';
+
+      res.send({ isRunning, status, ...info });
     } catch (error) {
       res.send({ status: 500, error: error.message });
     }
