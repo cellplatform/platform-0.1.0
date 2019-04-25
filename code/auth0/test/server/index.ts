@@ -1,7 +1,7 @@
-import { log } from './common';
-import * as express from 'express';
+import { log, express } from './common';
+import { router } from './routes';
 
-const server = express();
+const server = express().use(router);
 
 /**
  * Startup
