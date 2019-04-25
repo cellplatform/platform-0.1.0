@@ -1,1 +1,5 @@
-export * from '../../src/server/types';
+export * from '../../src/types';
+
+export type IContext = {
+  foo: any;
+};

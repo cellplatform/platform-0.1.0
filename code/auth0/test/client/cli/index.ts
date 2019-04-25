@@ -8,14 +8,15 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   const auth = WebAuth.create({
     domain: 'test-platform.auth0.com',
     clientId: 'oPjzxrhihhlEtZ2dRz5KnCRUfBzHgsRh',
-    // responseType: 'token id_token', // (default)
 
     /**
      * See:
      * - https://manage.auth0.com/dashboard/us/test-platform/apis/5cc17072967c0308e756065f/settings
      */
     audience: 'https://uiharness.com/api/sample',
+    // audience: 'https://test-platform.auth0.com/userinfo',
     scope: 'openid profile db:read',
+    responseType: 'token id_token', // (default)
   });
 
   const updateState = () => {

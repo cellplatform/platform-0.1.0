@@ -1,1 +1,1 @@
-export type Foo = number;
+export * from '../types';

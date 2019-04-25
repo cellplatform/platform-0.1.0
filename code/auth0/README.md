@@ -5,15 +5,10 @@
 
 Interfaces for working with [Auth0](https://auth0.com).
 
-
 <p>&nbsp;<p>
 
 ## Refs
 
 - https://auth0.com/docs/quickstart/backend/nodejs
-- https://auth0.com/blog/develop-modern-apps-with-react-graphql-apollo-and-add-authentication/
-
-Modules:
-- jwks-rsa
-- jsonwebtoken
-
+- https://auth0.com/blog/develop-modern-apps-with-react-graphql-apollo-and-add-authentication
+- https://auth0.com/docs/api/authentication#user-profile
