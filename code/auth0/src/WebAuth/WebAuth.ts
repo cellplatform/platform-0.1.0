@@ -1,6 +1,6 @@
 import * as auth0 from 'auth0-js';
 import { Subject, interval } from 'rxjs';
-import { share, takeUntil, filter } from 'rxjs/operators';
+import { map, share, takeUntil, filter } from 'rxjs/operators';
 import { is, t, time, R } from '../common';
 
 const KEY = {
@@ -125,6 +125,11 @@ export class WebAuth {
   private readonly _events$ = new Subject<t.WebAuthEvent>();
   public readonly events$ = this._events$.pipe(
     takeUntil(this.dispose$),
+    share(),
+  );
+  public readonly changed$ = this.events$.pipe(
+    filter(e => e.type === 'AUTH0/WebAuth/changed'),
+    map(e => e.payload as t.IWebAuthChange),
     share(),
   );
 

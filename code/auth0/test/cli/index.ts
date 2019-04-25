@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 
-import { CommandState, t, WebAuth } from '../common';
+import { CommandState, log, t, WebAuth } from '../common';
 import { root } from './cmds';
 
 export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
@@ -24,9 +25,22 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   };
 
   auth.events$.subscribe(e => {
-    console.log('🌳', e.type, e.payload);
+    log.info('🐷', e.type, e.payload);
     updateState();
   });
+
+  auth.changed$
+    .pipe(
+      filter(e => e.isLoggedIn),
+      distinctUntilChanged((prev, next) => prev.isLoggedIn === next.isLoggedIn),
+    )
+    .subscribe(() => {
+      const { accessToken, idToken } = auth.tokens;
+      log.group('🌳 Tokens');
+      log.info(`accessToken: \n${accessToken}`);
+      log.info(`idToken: \n${idToken}`);
+      log.groupEnd();
+    });
 
   return CommandState.create({
     root,
