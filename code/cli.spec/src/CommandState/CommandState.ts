@@ -427,7 +427,8 @@ export class CommandState implements t.ICommandState {
   }
 
   public toString() {
-    return this.text;
+    const ns = this.namespace;
+    return ns.isRoot ? this.text : `${ns.toString({ delimiter: ' ' })} ${this.text}`;
   }
 
   public toObject(): t.ICommandStateProps {

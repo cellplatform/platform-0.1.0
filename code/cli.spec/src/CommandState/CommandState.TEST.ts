@@ -329,6 +329,28 @@ describe('CommandState', () => {
     });
   });
 
+  describe('toString', () => {
+    it('no namespace', () => {
+      const state = CommandState.create({ root, beforeInvoke });
+      expect(state.text).to.eql('');
+      expect(state.toString()).to.eql('');
+
+      state.change({ text: 'foo' });
+      expect(state.toString()).to.eql('foo');
+
+      state.change({ text: 'foo bar' });
+      expect(state.toString()).to.eql('foo bar');
+    });
+
+    it('namespace', () => {
+      const state = CommandState.create({ root, beforeInvoke });
+      expect(state.toString()).to.eql('');
+
+      state.change({ text: 'db copy fast', namespace: true });
+      expect(state.toString()).to.eql('db copy fast');
+    });
+  });
+
   describe('current [command] property', () => {
     it('match', () => {
       const state = CommandState.create({ root, beforeInvoke });
