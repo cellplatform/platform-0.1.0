@@ -1,4 +1,4 @@
-import * as state from './State';
+import * as store from './Store';
 
-export default state;
-export * from './State';
+export default store;
+export * from './Store';

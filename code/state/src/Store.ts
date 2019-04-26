@@ -4,7 +4,7 @@ import * as t from './types';
 
 export * from './types';
 
-export type IStateArgs<M extends {}> = {
+export type IStoreArgs<M extends {}> = {
   initial: M;
 };
 
@@ -12,25 +12,25 @@ export type IStateArgs<M extends {}> = {
  * Creates a new state machine.
  */
 
-export function create<M extends {}, E extends t.IStateEvent>(args: IStateArgs<M>) {
-  return State.create<M, E>(args);
+export function create<M extends {}, E extends t.IStoreEvent>(args: IStoreArgs<M>) {
+  return Store.create<M, E>(args);
 }
 
 /**
  * An observable state machine.
  */
-export class State<M extends {}, E extends t.IStateEvent> {
+export class Store<M extends {}, E extends t.IStoreEvent> {
   /**
    * [Static]
    */
-  public static create<M extends {}, E extends t.IStateEvent>(args: IStateArgs<M>) {
-    return new State<M, E>(args);
+  public static create<M extends {}, E extends t.IStoreEvent>(args: IStoreArgs<M>) {
+    return new Store<M, E>(args);
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: IStateArgs<M>) {
+  private constructor(args: IStoreArgs<M>) {
     this._.current = { ...args.initial };
   }
 
