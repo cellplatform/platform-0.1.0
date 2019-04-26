@@ -3,4 +3,4 @@
 [![NPM](https://img.shields.io/npm/v/@platform/state.react.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/state.react)
 ![banner](https://user-images.githubusercontent.com/185555/56085496-625fdb80-5e98-11e9-9a25-352d185dddb4.png)
 
-React bindings for [@platform/state](../state).
+[React](https://reactjs.org) bindings for [@platform/state](../state).

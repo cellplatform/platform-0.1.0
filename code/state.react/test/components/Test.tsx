@@ -7,8 +7,9 @@ import { Button, ObjectView, Shell, css, GlamorValue, t } from './common';
 import * as cli from '../cli';
 
 export type ITestProps = {};
+export type ITestState = {};
 
-export class Test extends React.PureComponent<ITestProps, t.ITestState> {
+export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
@@ -19,13 +20,9 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    this.cli = cli.init({ state$: this.state$ });
+    this.cli = cli.init({});
 
-    const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
-
-    cli$.subscribe(e => {
-      console.log('🌳', e.type, e.payload);
-    });
+    // const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
   }
 
   public componentWillUnmount() {
@@ -37,10 +34,10 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Render]
    */
   public render() {
-    // const styles = { content: css({ padding: 20 }) };
+    const styles = { base: css({ padding: 20 }) };
     return (
       <Shell cli={this.cli} tree={{}}>
-        {this.state.el}
+        <div {...styles.base}>hello</div>
       </Shell>
     );
   }

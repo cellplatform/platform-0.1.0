@@ -1073,6 +1073,13 @@
     react "16.8.6"
     react-dom "16.8.6"
 
+"@platform/state@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.1.0.tgz#2ea9eb7110ae91c33f7729f41e2b1eebab7d1be8"
+  integrity sha512-+QJQ7ygVeWOkkyKT7i04ql90rJWL2DuFEzv9Uxu2oCej+U5ldhZJqVb6K8Esv7yjA2lkoU7DkMDYVRD4Gg+wrw==
+  dependencies:
+    "@platform/util.value" "0.0.62"
+
 "@platform/ts.libs@3.4.9":
   version "3.4.9"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.4.9.tgz#b95b7a24400244de3418e3d6e73b6b3eb201d3aa"

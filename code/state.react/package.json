@@ -15,7 +15,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.1.18"
+    "@platform/react": "0.1.18",
+    "@platform/state": "0.1.0"
   },
   "devDependencies": {
     "@uiharness/dev": "0.2.43",

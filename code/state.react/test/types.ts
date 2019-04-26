@@ -1,11 +1,4 @@
-import { Subject } from 'rxjs';
-
+export * from '@platform/cli.spec';
 export * from '../src/types';
 
-export type ITestCommandProps = {
-  state$: Subject<ITestState>;
-};
-
-export type ITestState = {
-  el?: React.ReactNode;
-};
+export type ITestCommandProps = {};
