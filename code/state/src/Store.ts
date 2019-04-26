@@ -11,7 +11,6 @@ export type IStoreArgs<M extends {}> = {
 /**
  * Creates a new state machine.
  */
-
 export function create<M extends {}, E extends t.IStoreEvent>(args: IStoreArgs<M>) {
   return Store.create<M, E>(args);
 }

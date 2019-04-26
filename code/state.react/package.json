@@ -1,6 +1,6 @@
 {
   "name": "@platform/state.react",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "React bindings for @platform/state.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

@@ -2,8 +2,10 @@ import * as React from 'react';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Button, ObjectView, Shell, css, GlamorValue, t } from './common';
+import { Button, ObjectView, Shell, css, GlamorValue, t } from '../common';
+import { Child } from './Test.Child';
 
+import { Provider } from '../store';
 import * as cli from '../cli';
 
 export type ITestProps = {};
@@ -21,8 +23,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     this.cli = cli.init({});
-
-    // const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
   }
 
   public componentWillUnmount() {
@@ -34,11 +34,17 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Render]
    */
   public render() {
-    const styles = { base: css({ padding: 20 }) };
+    const styles = { base: css({ flex: 1, padding: 30 }) };
     return (
-      <Shell cli={this.cli} tree={{}}>
-        <div {...styles.base}>hello</div>
-      </Shell>
+      <Provider>
+        <Shell cli={this.cli} tree={{}}>
+          <div {...styles.base}>
+            <Child>
+              <Child />
+            </Child>
+          </div>
+        </Shell>
+      </Provider>
     );
   }
 }
