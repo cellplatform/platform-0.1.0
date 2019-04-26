@@ -1,4 +1,4 @@
-import { interval, Subject } from 'rxjs';
+import { timer, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { axios, jwksClient, jwt, str, t } from './common';
 
@@ -62,7 +62,7 @@ export class AccessToken implements t.IAccessToken {
       // until the max-age forces a re-parsing of the token.
       expire$.pipe(debounceTime(timeout)).subscribe(() => removeFromCache());
       expire$.next(); // Start the timer.
-      interval(maxAge).subscribe(() => removeFromCache()); // Force expire after max-age.
+      timer(maxAge).subscribe(() => removeFromCache()); // Force expire after max-age.
     }
 
     // Finish up.
