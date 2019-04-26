@@ -37,6 +37,15 @@ describe('CommandState', () => {
     expect(state.autoCompleted).to.eql(undefined);
   });
 
+  it('creates with initial text', () => {
+    const text = 'db copy fast';
+    const state = CommandState.create({ root, text, beforeInvoke });
+
+    expect(state.text).to.eql('fast');
+    expect(state.namespace.name).to.eql('copy');
+    expect(state.namespace.isRoot).to.eql(false);
+  });
+
   it('disposes', () => {
     let count = 0;
     const state = CommandState.create({ root, beforeInvoke });

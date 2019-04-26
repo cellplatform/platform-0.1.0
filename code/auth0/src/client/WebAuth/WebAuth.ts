@@ -172,7 +172,9 @@ export class WebAuth {
    */
   public login() {
     this.throwIfDisposed('login');
-    this._auth0.authorize();
+    if (!this.isLoggedIn) {
+      this._auth0.authorize();
+    }
   }
 
   public logout(options: { force?: boolean; silent?: boolean } = {}) {

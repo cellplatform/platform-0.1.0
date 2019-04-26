@@ -1055,10 +1055,10 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/cli.spec@0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.1.11.tgz#34b9236ec5706700625cd273a9be8ae0aec42585"
-  integrity sha512-X6vUTozox1xIQSJPPJoBskaovyaXfjgAcFqFHXnHHdpC1bI4K+psfLBY7Hd6/m328oC2cU1NAnVRJIcRpZyz8Q==
+"@platform/cli.spec@0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.1.12.tgz#28358bfe98d08298d246ad34d7b04ec8c59c68da"
+  integrity sha512-35HM5hcXZcgAeGqWComiowZPJRln1X+77LKRJPly3L0bajJHdEfag+zE+t1BVFK/X8OKM1jbpZQfgaMLWpvlRA==
   dependencies:
     "@platform/util.string" "0.1.5"
     "@platform/util.value" "0.0.62"

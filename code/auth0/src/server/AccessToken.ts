@@ -77,9 +77,8 @@ export class AccessToken implements t.IAccessToken {
       const { token, audience, issuer, algorithms } = args;
 
       // JSON web-key-set.
-      const jwksUri = `${issuer.replace(/\/$/, '')}/.well-known/jwks.json`;
       const jwks = jwksClient({
-        jwksUri,
+        jwksUri: `${issuer.replace(/\/$/, '')}/.well-known/jwks.json`,
         strictSsl: true,
         cache: true,
         rateLimit: true, // To prevent attackers to send many random values (brute force attack).
