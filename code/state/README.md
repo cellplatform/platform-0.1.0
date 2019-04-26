@@ -8,9 +8,13 @@ For applying to [UI](https://en.wikipedia.org/wiki/User_interface) see the [reac
 
 
 
-## Setup
+## Install
 
     yarn add @platform/state
+
+
+## Getting Started
+
 
 Define your `model` and mutation `events`:
 
@@ -30,6 +34,8 @@ type IDecrementEvent = {
 };
 ```
 
+<p>&nbsp;<p>
+
 Create a new state-machine:
 
 ```typescript
@@ -38,3 +44,30 @@ import { Store } from '@platform/state';
 const initial: IMyModel = { count: 0 };
 const store = Store.create<IMyModel, MyEvent>({ initial });
 ```
+
+<p>&nbsp;<p>
+
+Define a listener that mutates the state based on a specific dispatched event (equivalent of a ["reducer"](https://redux.js.org/basics/reducers)):
+
+```typescript
+store
+  .on<t.ITestIncrementEvent>('TEST/increment')
+  .subscribe(e => {
+    const count = e.state.count + e.payload.by
+    const next = { ...e.state, count };
+    e.change(next);
+  });
+```
+
+<p>&nbsp;<p>
+
+Dispatch change events:
+
+```typescript
+
+store.state // => count === 0
+store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
+store.state // => count === 1
+
+```
+
