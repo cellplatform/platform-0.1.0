@@ -12,6 +12,7 @@ import * as t from './types';
  *      export class MyView extends React.PureComponent {
  *        public static contextType = state.Context;
  *        public context!: state.ReactContext
+ *        public store = this.context.getStore<IMyModel, MyEvent>();
  *      }
  *
  * See:
@@ -29,6 +30,7 @@ Context.displayName = '@platform/state/Context';
  *      export class MyView extends React.PureComponent {
  *        public static contextType = state.Context;
  *        public context!: state.ReactContext
+ *        public store = this.context.getStore<IMyModel, MyEvent>();
  *      }
  *
  */

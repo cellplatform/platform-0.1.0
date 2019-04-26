@@ -12,6 +12,8 @@ For applying to [UI](https://en.wikipedia.org/wiki/User_interface) see the [reac
 
     yarn add @platform/state
 
+<p>&nbsp;<p>
+
 
 ## Getting Started
 
@@ -19,19 +21,13 @@ For applying to [UI](https://en.wikipedia.org/wiki/User_interface) see the [reac
 Define your `model` and mutation `events`:
 
 ```typescript
-export type IMyModel = {
+type IMyModel = {
   count: number;
 };
 
 type MyEvent = IIncrementEvent | IDecrementEvent;
-type IIncrementEvent = {
-  type: 'TEST/increment';
-  payload: { by: number };
-};
-type IDecrementEvent = {
-  type: 'TEST/decrement';
-  payload: { by: number };
-};
+type IIncrementEvent = { type: 'TEST/increment'; payload: { by: number } };
+type IDecrementEvent = { type: 'TEST/decrement'; payload: { by: number } };
 ```
 
 <p>&nbsp;<p>
