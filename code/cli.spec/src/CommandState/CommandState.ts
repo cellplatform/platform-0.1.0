@@ -9,6 +9,7 @@ import { DEFAULT } from '../common/constants';
 type ICommandStateArgs = {
   root: Command;
   beforeInvoke: t.BeforeInvokeCommand;
+  text?: string;
 };
 
 /**
@@ -26,13 +27,17 @@ export class CommandState implements t.ICommandState {
    * [Constructor]
    */
   private constructor(args: ICommandStateArgs) {
-    const { root } = args;
+    const { root, text } = args;
     if (!root) {
       throw new Error(`A root [Command] spec must be passed to the state constructor.`);
     }
     this._.root = root;
     this._.beforeInvoke = args.beforeInvoke;
     this.change = this.change.bind(this);
+
+    if (text) {
+      this.change({ text, namespace: true }, { silent: true });
+    }
   }
 
   /**
@@ -427,7 +432,8 @@ export class CommandState implements t.ICommandState {
   }
 
   public toString() {
-    return this.text;
+    const ns = this.namespace;
+    return ns.isRoot ? this.text : `${ns.toString({ delimiter: ' ' })} ${this.text}`;
   }
 
   public toObject(): t.ICommandStateProps {

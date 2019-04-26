@@ -37,6 +37,15 @@ describe('CommandState', () => {
     expect(state.autoCompleted).to.eql(undefined);
   });
 
+  it('creates with initial text', () => {
+    const text = 'db copy fast';
+    const state = CommandState.create({ root, text, beforeInvoke });
+
+    expect(state.text).to.eql('fast');
+    expect(state.namespace.name).to.eql('copy');
+    expect(state.namespace.isRoot).to.eql(false);
+  });
+
   it('disposes', () => {
     let count = 0;
     const state = CommandState.create({ root, beforeInvoke });
@@ -326,6 +335,28 @@ describe('CommandState', () => {
       const ns = state.namespace;
       expect(ns.toString()).to.eql('db.copy');
       expect(ns.toString({ delimiter: '/' })).to.eql('db/copy');
+    });
+  });
+
+  describe('toString', () => {
+    it('no namespace', () => {
+      const state = CommandState.create({ root, beforeInvoke });
+      expect(state.text).to.eql('');
+      expect(state.toString()).to.eql('');
+
+      state.change({ text: 'foo' });
+      expect(state.toString()).to.eql('foo');
+
+      state.change({ text: 'foo bar' });
+      expect(state.toString()).to.eql('foo bar');
+    });
+
+    it('namespace', () => {
+      const state = CommandState.create({ root, beforeInvoke });
+      expect(state.toString()).to.eql('');
+
+      state.change({ text: 'db copy fast', namespace: true });
+      expect(state.toString()).to.eql('db copy fast');
     });
   });
 

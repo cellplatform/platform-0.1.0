@@ -1,6 +1,6 @@
 import * as React from 'react';
 import renderer from '@platform/electron/lib/renderer';
-import { Test } from './components/Test';
+import { Test } from './client/components/Test';
 
 export class App extends React.PureComponent {
   public static contextType = renderer.Context;

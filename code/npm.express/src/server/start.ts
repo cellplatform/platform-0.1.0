@@ -10,8 +10,9 @@ import { update } from '../router/routes.update';
  */
 const argv = minimist(process.argv.slice(2));
 
-const port = (argv.port || 3000) as number;
 const name = argv['npm-module'] as string;
+const downloadDir = (argv.dir || '').trim() as string;
+const port = (argv.port || 3000) as number;
 const prerelease = (value.toType(argv.prerelease) || false) as t.NpmPrerelease;
 const urlPrefix = argv['url-prefix'] as string | undefined;
 const updateOnStartup = (argv.update || false) as boolean;
@@ -25,17 +26,20 @@ const fail = (message: string) => {
 };
 
 if (!name) {
-  fail(`A '--npm-module=<name>' must be passed at startup.`);
+  fail(`MISSING [--npm-module=<name>] must be passed at startup.`);
+}
+if (!downloadDir) {
+  fail(`MISSING [--dir=<string>] must be passed at startup.`);
 }
 if (typeof prerelease === 'string' && !['alpha', 'beta'].includes(prerelease.trim())) {
-  fail(`Invalid '--prerelease=${prerelease}'. Must be <boolean|alpha|beta>.`);
+  fail(`INVALID [--prerelease=${prerelease}]. Must be <boolean|alpha|beta>.`);
 }
 
 /**
  * Start the server.
  */
-const res = init({ name, prerelease, urlPrefix });
-const { server, downloadDir } = res;
+const res = init({ name, downloadDir, prerelease, urlPrefix });
+const { server } = res;
 server.listen(port, async () => {
   const url = log.cyan(`http://localhost:${log.magenta(port)}`);
   const prefix = res.urlPrefix === '/' ? '' : res.urlPrefix;

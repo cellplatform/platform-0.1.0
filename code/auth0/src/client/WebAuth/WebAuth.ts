@@ -1,6 +1,6 @@
 import * as auth0 from 'auth0-js';
 import { Subject, interval } from 'rxjs';
-import { share, takeUntil, filter } from 'rxjs/operators';
+import { map, share, takeUntil, filter } from 'rxjs/operators';
 import { is, t, time, R } from '../common';
 
 const KEY = {
@@ -46,6 +46,7 @@ export class WebAuth {
     this.clientId = args.clientId;
     this.responseType = args.responseType || 'token id_token';
     this.scope = args.scope || 'openid profile';
+    this.audience = args.audience;
     this.redirectUri = args.redirectUri || window.location.href;
 
     // Create wrapped Auth0 manager.
@@ -55,6 +56,7 @@ export class WebAuth {
       responseType: this.responseType,
       scope: this.scope,
       redirectUri: this.redirectUri,
+      audience: this.audience,
     });
 
     // Initialize.
@@ -127,11 +129,17 @@ export class WebAuth {
     takeUntil(this.dispose$),
     share(),
   );
+  public readonly changed$ = this.events$.pipe(
+    filter(e => e.type === 'AUTH0/WebAuth/changed'),
+    map(e => e.payload as t.IWebAuthChange),
+    share(),
+  );
 
   public readonly domain: string;
   public readonly clientId: string;
   public readonly responseType: string;
   public readonly scope: string;
+  public readonly audience: string | undefined;
   public readonly redirectUri: string;
 
   public status: t.WebAuthStatus = 'LOADING';
@@ -164,7 +172,9 @@ export class WebAuth {
    */
   public login() {
     this.throwIfDisposed('login');
-    this._auth0.authorize();
+    if (!this.isLoggedIn) {
+      this._auth0.authorize();
+    }
   }
 
   public logout(options: { force?: boolean; silent?: boolean } = {}) {
@@ -208,6 +218,7 @@ export class WebAuth {
       clientId: this.clientId,
       responseType: this.responseType,
       scope: this.scope,
+      audience: this.audience,
       expiresAt: expiresAt > -1 ? new Date(this.expiresAt) : undefined,
       tokens: tokens ? { ...tokens } : undefined,
       profile: profile ? { ...profile } : undefined,

@@ -1,4 +1,4 @@
-import { express, fs, NodeProcess, npm, t } from '../common';
+import { express, fs, getProcess, npm, t } from '../common';
 
 export function create(args: { getContext: t.GetNpmRouteContext }) {
   const router = express.Router();
@@ -10,9 +10,12 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
     try {
       const context = await args.getContext();
       const { name, downloadDir, prerelease } = context;
-      const status = await getStatus({ name, downloadDir, prerelease });
-      const process = NodeProcess.singleton({ dir: status.dir });
-      res.send({ ...status, isRunning: process.isRunning });
+      const { info, dir, isChanged } = await getStatus({ name, downloadDir, prerelease });
+      const process = getProcess(dir);
+      const isRunning = process.isRunning;
+      const status = isChanged ? 'UPDATE_PENDING' : 'LATEST';
+
+      res.send({ isRunning, status, ...info });
     } catch (error) {
       res.send({ status: 500, error: error.message });
     }
@@ -39,9 +42,9 @@ export async function getStatus(args: {
   const version = {
     current,
     latest,
-    isChanged,
   };
-  return { name, dir, version };
+  const info = { name, version };
+  return { info, dir, isChanged };
 }
 
 /**

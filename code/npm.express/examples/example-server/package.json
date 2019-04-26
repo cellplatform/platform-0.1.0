@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm.express.example-server",
-  "version": "0.0.0",
+  "version": "0.0.2-beta.1",
   "description": "Example server for demonstrating [@platform/npm.express].",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,11 +15,11 @@
   },
   "dependencies": {
     "@platform/libs": "0.0.12",
-    "express": "^4.16.4"
+    "express": "4.16.4"
   },
   "devDependencies": {
     "@platform/ts": "3.4.12",
-    "@types/express": "^4.16.1"
+    "@types/express": "4.16.1"
   },
   "files": [
     "lib"
