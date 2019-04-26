@@ -1,16 +1,12 @@
-import { AccessToken, ApolloServer, gql, log, t } from './common';
-
-// const options = {
-//   audience: 'https://uiharness.com/api/sample',
-//   issuer: 'https://test-platform.auth0.com/',
-// };
+import { AccessToken, ApolloServer, gql, log, t, time } from './common';
 
 /**
  * [Types]
  */
 const typeDefs = gql`
   type User {
-    name: String
+    email: String
+    elapsed: Float
   }
   type Query {
     me: User
@@ -22,8 +18,12 @@ const typeDefs = gql`
  */
 const resolvers = {
   Query: {
-    me: (_: any, args: any, ctx: t.IContext, info: any) => {
-      return { name: ctx.foo };
+    me: async (_: any, args: any, ctx: t.IContext, info: any) => {
+      const timer = time.timer();
+      const user = await ctx.getUser();
+      const email = user ? user.email : undefined;
+      const elapsed = timer.elapsed();
+      return { email, elapsed };
     },
   },
 };
@@ -35,23 +35,25 @@ export const server = new ApolloServer({
   typeDefs,
   resolvers,
   async context(e): Promise<t.IContext> {
-    const authorization = e.req.headers.authorization;
+    const getToken = async () => {
+      const headers = e.req.headers;
+      const authorization = headers.authorization;
+      return !authorization
+        ? undefined
+        : AccessToken.create({
+            token: authorization,
+            audience: 'https://uiharness.com/api/sample',
+            issuer: 'https://test-platform.auth0.com/',
+            algorithms: ['RS256'],
+          });
+    };
 
-    if (authorization) {
-      const token = await AccessToken.create({
-        token: authorization,
-        audience: 'https://uiharness.com/api/sample',
-        issuer: 'https://test-platform.auth0.com/',
-        algorithms: ['RS256'],
-      });
+    const getUser = async () => {
+      const token = await getToken();
+      return token ? token.getProfile() : undefined;
+    };
 
-      console.log('token.sub', token.sub);
-
-      // const user = await token.getProfile();
-      // console.log('user', user);
-    }
-
-    return { foo: 1234 };
+    return { getUser, getToken };
   },
 });
 

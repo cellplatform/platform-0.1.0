@@ -1,5 +1,7 @@
 export * from '../../src/types';
+import * as t from '../../src/types';
 
 export type IContext = {
-  foo: any;
+  getToken(): Promise<t.IAccessToken | undefined>;
+  getUser(): Promise<t.IAuthProfile | undefined>;
 };
