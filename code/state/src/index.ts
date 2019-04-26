@@ -1,2 +1,4 @@
-export * from './types';
-export { createStore } from './store';
+import * as state from './State';
+
+export default state;
+export * from './State';
