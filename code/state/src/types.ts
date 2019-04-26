@@ -1,102 +1,32 @@
-import { Observable } from 'rxjs';
-
 /**
- * Defines a state tree.
+ * Basic shape of an event fired through the state-machine.
  */
-export type IState = {
-  [key: string]: any;
-};
-
-/**
- * Defines an action that is dispatched to updated the state tree.
- */
-export interface IAction {
+export type IStoreEvent = {
   type: string;
-  payload: { [key: string]: any };
-}
-
-/**
- * Generic definition of a function that creates and fires an action.
- */
-export type IDispatcher<A extends IAction> = (
-  store: IStore<any, any>,
-  payload: A['payload'],
-) => void;
-
-/**
- * A function that changes a state-tree based on an action.
- */
-export type Reducer<TState extends IState, TAction extends IAction> = (
-  state: TState,
-  action: TAction,
-  options?: StoreContext,
-) => TState | void;
-
-/**
- * An object passed to reducers and epics providing context.
- */
-export type StoreContext = {
-  context?: any;
-  name?: string; // The optional display name of the store (passed into `createStore`).
-  key?: string; // The key of the store if within a dictionary.
+  payload: object;
 };
 
 /**
- * An event fired from an obervable when the state tree changes.
+ * A wrapper of an [IStoreEvent] that is dispatched through
+ * the store's `events$` observable.
  */
-export type StateChange<TState extends IState, TAction extends IAction> = {
-  type: TAction['type'];
-  state: TState;
-  action: TAction;
-  payload: TAction['payload'];
-  options: StoreContext;
+export type IDispatch<
+  M extends {} = {},
+  E extends IStoreEvent = IStoreEvent,
+  SE extends IStoreEvent = IStoreEvent
+> = {
+  type: E['type'];
+  payload: E['payload'];
+  state: M;
+  change(next: M): IDispatch<M, E>;
+  dispatch(event: SE): IDispatch<M, E>;
 };
 
 /**
- * An state change event that is passed to an "epic".
+ * A notification of a change to a store's state-tree.
  */
-export interface IActionEpic<S extends IState, A extends IAction> extends StateChange<S, A> {
-  dispatch: <T extends IAction>(type: T['type'], payload?: T['payload']) => void;
-}
-
-/**
- * A store containing state and the necessary methods for
- * changing and responding to state-change actions.
- */
-export interface IStore<S extends IState, A extends IAction> {
-  readonly uid: string | number;
-  readonly name?: string;
-  readonly state$: Observable<StateChange<S, A>>;
-  readonly state: S;
-  readonly context?: any;
-
-  dispatch: <T extends IAction>(type: T['type'], payload?: T['payload']) => IStore<S, A>;
-
-  reducer: <T extends A>(fn: Reducer<S, T>) => IStore<S, A>;
-  reduce: <T extends A>(action: T['type'], fn: Reducer<S, T>) => IStore<S, A>;
-
-  on: <T extends A>(action: T['type'] | Array<T['type']>) => Observable<IActionEpic<S, T>>;
-
-  dict: (path: string, factory: StoreFactory<IState, IAction>) => IStore<S, A>;
-  add: (path: string, store: IStore<IState, IAction>) => IStore<S, A>;
-  remove: (path: string, options?: { key?: string }) => IStore<S, A>;
-
-  get: <S extends IState, A extends IAction>(
-    path?: string,
-    options?: { key?: string; initialState?: S },
-  ) => IStore<S, A> | undefined;
-}
-
-/**
- * Factory that creates a new store instance.
- */
-export type StoreFactory<S extends IState, A extends IAction> = (
-  options?: StoreFactoryOptions<S>,
-) => IStore<S, A>;
-
-export type StoreFactoryOptions<S extends IState> = {
-  initial?: S;
-  path?: string;
-  key?: string;
-  [key: string]: any; // Other props.
+export type IStateChange<M extends {} = {}, E extends IStoreEvent = IStoreEvent> = {
+  event: E;
+  from: M;
+  to: M;
 };

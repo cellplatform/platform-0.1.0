@@ -1,30 +1,15 @@
-import * as React from 'react';
-import { t, Command, css } from '../components/common';
+import { Command, t, value } from '../common';
 
 type P = t.ITestCommandProps & { count: number };
 
-const ns = Command.create<P>('ns')
-  .add('one', async e => null)
-  .add('two', async e => null)
-  .add('three', async e => null);
-
-/**
- * The root of the CLI application.
- */
 export const root = Command.create<P>('root')
-  //
-  .add('foo', async e => {
-    const count = e.get('count', 0) + 1;
-    e.set('count', count);
-
-    const styles = { base: css({ PaddingX: 20 }) };
-    const el = (
-      <div {...styles.base}>
-        <h1>My Foo {count} 👋</h1>
-      </div>
-    );
-
-    e.props.state$.next({ el });
+  .add('increment', e => {
+    const store = e.props.store;
+    const by = value.toNumber(e.args.params[0] || 1);
+    store.dispatch({ type: 'TEST/increment', payload: { by } });
   })
-  .add('bar')
-  .add(ns);
+  .add('decrement', e => {
+    const store = e.props.store;
+    const by = value.toNumber(e.args.params[0] || 1);
+    store.dispatch({ type: 'TEST/decrement', payload: { by } });
+  });
