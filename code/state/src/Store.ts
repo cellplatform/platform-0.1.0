@@ -31,7 +31,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> {
    * [Lifecycle]
    */
   private constructor(args: IStoreArgs<M>) {
-    this._.current = { ...args.initial };
+    this._.state = { ...args.initial };
   }
 
   /**
@@ -49,7 +49,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> {
     dispose$: new Subject(),
     events$: new Subject<E>(),
     changed$: new Subject<t.IStateChange<M>>(),
-    current: (undefined as unknown) as M,
+    state: (undefined as unknown) as M,
   };
 
   /**
@@ -85,8 +85,8 @@ export class Store<M extends {}, E extends t.IStoreEvent> {
   /**
    * The current state.
    */
-  public get current() {
-    return this._.current;
+  public get state() {
+    return this._.state;
   }
 
   /**
@@ -118,17 +118,17 @@ export class Store<M extends {}, E extends t.IStoreEvent> {
   private toDispatchEvent<T extends E>(event: T) {
     const { type, payload } = event;
     let current: M | undefined;
-    const getCurrent = () => (current = current || { ...this.current });
+    const getCurrent = () => (current = current || { ...this.state });
     const result: t.IDispatch<M, T, E> = {
       type,
       payload,
-      get current() {
+      get state() {
         return getCurrent();
       },
       change: next => {
         const from = getCurrent();
         const to = { ...next };
-        this._.current = to;
+        this._.state = to;
         this._.changed$.next({ event, from, to });
         return result;
       },

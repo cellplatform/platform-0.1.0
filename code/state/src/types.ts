@@ -17,7 +17,7 @@ export type IDispatch<
 > = {
   type: E['type'];
   payload: E['payload'];
-  current: M;
+  state: M;
   change(next: M): IDispatch<M, E>;
   dispatch(event: SE): IDispatch<M, E>;
 };

@@ -25,8 +25,8 @@ describe('Store', () => {
     it('constructs', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       expect(store.isDisposed).to.eql(false);
-      expect(store.current).to.not.equal(initial);
-      expect(store.current).to.eql(initial);
+      expect(store.state).to.not.equal(initial);
+      expect(store.state).to.eql(initial);
     });
 
     it('disposes', () => {
@@ -62,48 +62,48 @@ describe('Store', () => {
       expect(events[1].type).to.eql('TEST/decrement');
     });
 
-    it('returns copy of current object on event', () => {
+    it('returns copy of the current state object on event', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
 
-      const models: IMyModel[] = [];
+      const states: IMyModel[] = [];
       store.on<IIncrementEvent>('TEST/increment').subscribe(e => {
-        models.push(e.current);
-        models.push(e.current);
+        states.push(e.state);
+        states.push(e.state);
       });
 
       store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
 
-      expect(models.length).to.eql(2);
-      expect(models[0]).to.eql(store.current); // NB: Equivalent.
-      expect(models[1]).to.eql(store.current); // NB: Equivalent.
+      expect(states.length).to.eql(2);
+      expect(states[0]).to.eql(store.state); // NB: Equivalent.
+      expect(states[1]).to.eql(store.state); // NB: Equivalent.
 
       // Not the same instance.
-      expect(models[0]).to.not.equal(store.current);
-      expect(models[1]).to.not.equal(store.current);
-      expect(models[0]).to.equal(models[1]); // NB: The same copy is returned from repeat calls to 'current' property.
+      expect(states[0]).to.not.equal(store.state);
+      expect(states[1]).to.not.equal(store.state);
+      expect(states[0]).to.equal(states[1]); // NB: The same copy is returned from repeat calls to 'state' property.
     });
 
-    it('changes current state', () => {
+    it('changes the current state', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
-      expect(store.current.count).to.eql(0);
+      expect(store.state.count).to.eql(0);
 
       store.on<IIncrementEvent>('TEST/increment').subscribe(e => {
-        const count = e.current.count + e.payload.by;
-        const next = { ...e.current, count };
+        const count = e.state.count + e.payload.by;
+        const next = { ...e.state, count };
         e.change(next);
       });
 
       store.on<IDecrementEvent>('TEST/decrement').subscribe(e => {
-        const count = e.current.count - e.payload.by;
-        const next = { ...e.current, count };
+        const count = e.state.count - e.payload.by;
+        const next = { ...e.state, count };
         e.change(next);
       });
 
       store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
-      expect(store.current.count).to.eql(1);
+      expect(store.state.count).to.eql(1);
 
       store.dispatch({ type: 'TEST/decrement', payload: { by: 2 } });
-      expect(store.current.count).to.eql(-1);
+      expect(store.state.count).to.eql(-1);
     });
 
     it('fires [changed] event', () => {
@@ -113,8 +113,8 @@ describe('Store', () => {
 
       store.on<IIncrementEvent>('TEST/increment').subscribe(e => {
         if (e.payload.by > 0) {
-          const count = e.current.count + e.payload.by;
-          const next = { ...e.current, count };
+          const count = e.state.count + e.payload.by;
+          const next = { ...e.state, count };
           e.change(next);
         }
       });
