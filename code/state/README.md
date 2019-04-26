@@ -47,11 +47,11 @@ const store = Store.create<IMyModel, MyEvent>({ initial });
 
 <p>&nbsp;<p>
 
-Define a listener that mutates the state based on a specific dispatched event (equivalent of a ["reducer"](https://redux.js.org/basics/reducers)):
+Define a listener that mutates the state based on a specific event type (equivalent of a ["reducer"](https://redux.js.org/basics/reducers)):
 
 ```typescript
 store
-  .on<t.ITestIncrementEvent>('TEST/increment')
+  .on<ITestIncrementEvent>('TEST/increment')
   .subscribe(e => {
     const count = e.state.count + e.payload.by
     const next = { ...e.state, count };
