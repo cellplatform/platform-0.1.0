@@ -1,15 +1,29 @@
-import { t, jwt, jwksClient, axios } from './common';
+import { interval, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { axios, jwksClient, jwt, str, t } from './common';
+
+const SEC = 1000;
+const MIN = SEC * 60;
+const HOUR = MIN * 60;
 
 export type IAccessTokenArgs = {
   token: string;
   audience: string;
   issuer: string;
-  algorithms?: string[];
+  algorithms: string[];
 };
 
-const DEFAULT = {
-  ALGORITHMS: ['RS256'],
+export type IAccessTokenOptions = {
+  cache?: boolean;
 };
+
+const toCacheKey = (args: IAccessTokenArgs) => {
+  const { token, audience, issuer, algorithms } = args;
+  const text = `${token}:${audience}:${issuer}:${algorithms}`;
+  return str.hashCode(text);
+};
+
+const CACHE: { [key: string]: { token: AccessToken; expire$: Subject<{}> } } = {};
 
 /**
  * Manages an access token.
@@ -18,26 +32,61 @@ export class AccessToken implements t.IAccessToken {
   /**
    * [Static]
    */
-  public static async create(args: IAccessTokenArgs) {
+  public static async create(args: IAccessTokenArgs & IAccessTokenOptions) {
+    // Check cache.
+    const useCache = args.cache === undefined ? true : args.cache;
+    const key = useCache ? toCacheKey(args) : '';
+    if (useCache && CACHE[key]) {
+      CACHE[key].expire$.next();
+      return CACHE[key].token;
+    }
+
+    // Create the token.
     const token = await AccessToken.decode(args);
+    const result = new AccessToken(args, token);
 
-    // TEMP 🐷 todo caching.
+    // Manage the cache.
+    if (useCache) {
+      const maxAge = 5 * MIN;
+      const timeout = SEC * 30;
 
-    return new AccessToken(args, token);
+      const expire$ = new Subject();
+      CACHE[key] = { token: result, expire$ };
+
+      const removeFromCache = () => {
+        expire$.complete();
+        delete CACHE[key];
+      };
+
+      // Incremental access to the item keeps the item in the cache,
+      // until the max-age forces a re-parsing of the token.
+      expire$.pipe(debounceTime(timeout)).subscribe(() => removeFromCache());
+      expire$.next(); // Start the timer.
+      interval(maxAge).subscribe(() => removeFromCache()); // Force expire after max-age.
+    }
+
+    // Finish up.
+    return result;
   }
 
   /**
    * Decodes the given token.
    */
-  public static decode(args: IAccessTokenArgs) {
+  public static decode(args: IAccessTokenArgs & IAccessTokenOptions) {
     return new Promise<t.IAccessToken>((resolve, reject) => {
-      const { token, audience, issuer } = args;
-      const algorithms = args.algorithms || DEFAULT.ALGORITHMS;
-      const options = { audience, issuer, algorithms };
+      const { token, audience, issuer, algorithms } = args;
 
       // JSON web-key-set.
       const jwksUri = `${issuer.replace(/\/$/, '')}/.well-known/jwks.json`;
-      const jwks = jwksClient({ jwksUri });
+      const jwks = jwksClient({
+        jwksUri,
+        strictSsl: true,
+        cache: true,
+        rateLimit: true, // To prevent attackers to send many random values (brute force attack).
+        jwksRequestsPerMinute: 10,
+        cacheMaxEntries: 50,
+        cacheMaxAge: 10 * HOUR,
+      });
 
       // Retrieves the signing key.
       const getKey: jwt.GetPublicKeyOrSecret = (header, callback) => {
@@ -48,7 +97,7 @@ export class AccessToken implements t.IAccessToken {
       };
 
       // Decode the token.
-      jwt.verify(token, getKey, options, (err, decoded) => {
+      jwt.verify(token, getKey, { audience, issuer, algorithms }, (err, decoded) => {
         if (err) {
           return reject(err);
         }
@@ -78,7 +127,7 @@ export class AccessToken implements t.IAccessToken {
     // Context.
     this.audience = args.audience;
     this.issuer = args.issuer;
-    this.algorithms = args.algorithms || DEFAULT.ALGORITHMS;
+    this.algorithms = args.algorithms;
   }
 
   /**

@@ -35,22 +35,22 @@ export const server = new ApolloServer({
   typeDefs,
   resolvers,
   async context(e): Promise<t.IContext> {
-    const token = e.req.headers.authorization;
+    const authorization = e.req.headers.authorization;
 
-    const r = await AccessToken.create({
-      token,
-      audience: 'https://uiharness.com/api/sample',
-      issuer: 'https://test-platform.auth0.com/',
-    });
+    if (authorization) {
+      const token = await AccessToken.create({
+        token: authorization,
+        audience: 'https://uiharness.com/api/sample',
+        issuer: 'https://test-platform.auth0.com/',
+        algorithms: ['RS256'],
+      });
 
-    const user = await r.getProfile();
+      console.log('token.sub', token.sub);
 
-    console.log('user', user);
+      // const user = await token.getProfile();
+      // console.log('user', user);
+    }
 
-    // const accessToken = auth ? await decodeToken(auth) : undefined;
-    // console.log('accessToken', accessToken);
-    // const user = await getUserInfo(auth, accessToken);
-    // console.log('token', token);
     return { foo: 1234 };
   },
 });

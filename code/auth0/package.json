@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@platform/react": "0.1.18",
+    "@platform/util.string": "0.1.5",
     "@types/jsonwebtoken": "8.3.2",
     "auth0-js": "9.10.2",
     "axios": "0.18.0",
