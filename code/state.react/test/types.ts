@@ -1,7 +1,7 @@
+import { Store } from '@platform/state';
+
 export * from '@platform/ui.cli/lib/types';
 export * from '../src/types';
-
-import { Store } from '@platform/state';
 
 export type ITestCommandProps = {
   store: Store<IMyModel, MyEvent>;

@@ -106,6 +106,46 @@ describe('Store', () => {
       expect(store.state.count).to.eql(-1);
     });
 
+    it('fires [changing] event', () => {
+      const store = Store.create<IMyModel, MyEvent>({ initial });
+      const events: Array<t.IStateChanging<any, any>> = [];
+      store.changing$.subscribe(e => events.push(e));
+
+      store.on<IIncrementEvent>('TEST/increment').subscribe(e => e.change(e.state));
+      store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
+
+      expect(events.length).to.eql(1);
+      expect(events[0].isCancelled).to.eql(false);
+      expect(events[0].change.type).to.eql('TEST/increment');
+    });
+
+    it('cancels change', () => {
+      const store = Store.create<IMyModel, MyEvent>({ initial });
+
+      let cancel = false;
+      store.changing$.subscribe(e => {
+        if (cancel) {
+          e.cancel();
+        }
+      });
+
+      store.on<IIncrementEvent>('TEST/increment').subscribe(e => {
+        if (e.payload.by > 0) {
+          const count = e.state.count + e.payload.by;
+          const next = { ...e.state, count };
+          e.change(next);
+        }
+      });
+
+      expect(store.state.count).to.eql(0);
+      store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
+      expect(store.state.count).to.eql(1);
+
+      cancel = true;
+      store.dispatch({ type: 'TEST/increment', payload: { by: 99 } });
+      expect(store.state.count).to.eql(1); // No change.
+    });
+
     it('fires [changed] event', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       const events: Array<t.IStateChange<any, any>> = [];
@@ -128,9 +168,11 @@ describe('Store', () => {
       const change1: t.IStateChange<IMyModel, IIncrementEvent> = events[0];
       const change2: t.IStateChange<IMyModel, IIncrementEvent> = events[1];
 
+      expect(change1.type).to.eql('TEST/increment');
       expect(change1.event.type).to.eql('TEST/increment');
       expect(change1.event.payload.by).to.eql(90);
 
+      expect(change2.type).to.eql('TEST/increment');
       expect(change2.event.type).to.eql('TEST/increment');
       expect(change2.event.payload.by).to.eql(2);
 

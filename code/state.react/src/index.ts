@@ -1,4 +1,5 @@
 import * as state from './state';
 
-export { state };
 export default state;
+export { state };
+export * from './state';

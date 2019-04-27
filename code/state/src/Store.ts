@@ -47,6 +47,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> {
   private readonly _ = {
     dispose$: new Subject(),
     events$: new Subject<E>(),
+    changing$: new Subject<t.IStateChanging<M>>(),
     changed$: new Subject<t.IStateChange<M>>(),
     state: (undefined as unknown) as M,
   };
@@ -57,7 +58,13 @@ export class Store<M extends {}, E extends t.IStoreEvent> {
   public readonly dispose$ = this._.dispose$.pipe(share());
 
   /**
-   * Fires when the state changes.
+   * Fires immediately before the state changes.
+   * Can be used to cancel updates.
+   */
+  public readonly changing$ = this._.changing$.pipe(share());
+
+  /**
+   * Fires when the state has changed.
    */
   public readonly changed$ = this._.changed$.pipe(share());
 
@@ -127,8 +134,22 @@ export class Store<M extends {}, E extends t.IStoreEvent> {
       change: next => {
         const from = getCurrent();
         const to = { ...next };
+
+        // Fire PRE event (and check if anyone cancelled it).
+        let isCancelled = false;
+        const change: t.IStateChange<M, T> = { type, event, from, to };
+        this._.changing$.next({
+          change,
+          isCancelled,
+          cancel: () => (isCancelled = true),
+        });
+        if (isCancelled) {
+          return result;
+        }
+
+        // Update state.
         this._.state = to;
-        this._.changed$.next({ event, from, to });
+        this._.changed$.next(change);
         return result;
       },
       dispatch: event => {
