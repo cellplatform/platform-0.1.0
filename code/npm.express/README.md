@@ -48,6 +48,14 @@ const server = express().use(routes);
 server.listen(1234);
 ```
 
+## Routes
+
+    GET   /status
+    POST  /update   body: { restart?:bool, version?:string|'latest', prerelease?:bool|alpha|beta, dryRun?:bool, }
+    POST  /start    body: { restart?:bool }
+    POST  /stop
+
+
 ## Command-Line Arguments
 
 To configure the module when working with it as [Docker container](https://www.docker.com) pass the following command-line arguments:
@@ -63,9 +71,18 @@ To configure the module when working with it as [Docker container](https://www.d
 
 see the `/examples/docker-compose.yml` file for example configuration.
 
-## Routes
 
-    GET   /status
-    POST  /update   body: { restart?:bool, version?:string|'latest', prerelease?:bool|alpha|beta, dryRun?:bool, }
-    POST  /start    body: { restart?:bool }
-    POST  /stop
+### .env
+These same arguments can alternatively be specified as environment variables, see `/example/.service.env` and the `env_file` reference in `docker-compose.yml` for example.
+Values passed explicitly to the command override environment variables.
+
+```bash
+NPM_MODULE="..."
+NPM_DIR="..."
+NPM_PORT="..."
+NPM_PRERELEASE="..."
+NPM_URL_PREFIX="..."
+NPM_UPDATE="..."
+```
+
+

@@ -5,17 +5,46 @@ import { init } from './server';
 import { start } from '../router/routes.run';
 import { update } from '../router/routes.update';
 
-/**
- * Retrieve command-line args.
- */
+const { toBool, toNumber } = value;
 const argv = minimist(process.argv.slice(2));
 
-const name = argv['npm-module'] as string;
-const downloadDir = (argv.dir || '').trim() as string;
-const port = (argv.port || 3000) as number;
-const prerelease = (value.toType(argv.prerelease) || false) as t.NpmPrerelease;
-const urlPrefix = argv['url-prefix'] as string | undefined;
-const updateOnStartup = (argv.update || false) as boolean;
+const trimQuotes = (value: string) =>
+  (value || '')
+    .trim()
+    .replace(/^\"/, '')
+    .replace(/\"$/, '')
+    .replace(/^\'/, '')
+    .replace(/\'$/, '');
+
+/**
+ * Retrieve command-line args.
+ * Order of precidence:
+ *  1. explicit arg from command (eg "--npm-module")
+ *  2. environment variable (eg: "NPM_MODULE")
+ */
+const arg = <T = string>(cmd: string, env: string, defaultValue: T, format?: (value: any) => T) => {
+  let value: any;
+  if (argv[cmd]) {
+    value = argv[cmd] as T;
+  }
+  if (!value && process.env[env]) {
+    value = (process.env[env] as unknown) as T;
+    value = typeof value === 'string' ? trimQuotes(value) : value;
+  }
+  value = typeof value === 'string' ? value.trim() : value;
+  value = value || defaultValue;
+  if (format) {
+    value = format(value);
+  }
+  return value as T;
+};
+
+const name = arg('npm-module', 'NPM_MODULE', '');
+const downloadDir = arg('dir', 'NPM_DIR', '');
+const port = arg<number>('port', 'NPM_PORT', 3000, v => toNumber(v));
+const urlPrefix = arg('url-prefix', 'NPM_URL_PREFIX', '');
+const updateOnStartup = arg('update', 'NPM_UPDATE', false);
+const prerelease = arg<t.NpmPrerelease>('prerelease', 'NPM_PRERELEASE', false, v => toBool(v));
 
 const fail = (message: string) => {
   log.info();
