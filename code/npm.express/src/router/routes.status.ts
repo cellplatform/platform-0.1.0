@@ -8,14 +8,22 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
    */
   router.get('/status', async (req, res) => {
     try {
+      // Setup initial conditions.
       const context = await args.getContext();
       const { name, downloadDir, prerelease } = context;
       const { info, dir, isChanged } = await getStatus({ name, downloadDir, prerelease });
+
+      // Determine process state.
       const process = getProcess(dir);
       const isRunning = process.isRunning;
       const status = isChanged ? 'UPDATE_PENDING' : 'LATEST';
 
-      res.send({ isRunning, status, ...info });
+      // Publish pre-release status.
+      let response = { isRunning, status, ...info } as any;
+      response = prerelease ? { ...response, prerelease } : response;
+
+      // Finish up.
+      res.send(response);
     } catch (error) {
       res.send({ status: 500, error: error.message });
     }
