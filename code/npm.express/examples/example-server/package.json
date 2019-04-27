@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm.express.example-server",
-  "version": "0.0.2-beta.1",
+  "version": "0.0.2-beta.3",
   "description": "Example server for demonstrating [@platform/npm.express].",
   "main": "lib/index",
   "types": "lib/index.d.ts",
