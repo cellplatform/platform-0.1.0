@@ -26,7 +26,17 @@ export type IDispatch<
  * A notification of a change to a store's state-tree.
  */
 export type IStateChange<M extends {} = {}, E extends IStoreEvent = IStoreEvent> = {
+  type: E['type'];
   event: E;
   from: M;
   to: M;
+};
+
+/**
+ * A notification that a change is about to be made to the store's state-tree.
+ */
+export type IStateChanging<M extends {} = {}, E extends IStoreEvent = IStoreEvent> = {
+  change: IStateChange<M, E>;
+  isCancelled: boolean;
+  cancel(): void;
 };
