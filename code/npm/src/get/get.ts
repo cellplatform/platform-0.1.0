@@ -35,26 +35,27 @@ export async function getInfo(moduleName: string): Promise<INpmInfo | undefined>
  *
  */
 export async function getVersion(moduleName: string, options: INpmVersionOptions = {}) {
-  const { prerelease = false } = options;
   const versions = await getJson(moduleName, ['versions']);
   if (!versions || versions.length === 0) {
     throw new Error(`Cannot get version for '${moduleName}' as it could not be found on NPM.`);
   }
   const latest = (index: number): string => {
     const version = versions[index];
-    const pre = semver.prerelease(version);
-    if (pre) {
-      if (prerelease === true) {
-        return version;
-      }
-      if (typeof prerelease === 'string' && pre.includes(prerelease)) {
-        return version;
-      }
-      return latest(index - 1); // <== RECURSION
-    }
-    return version;
+    return filter.version(version, options) ? version : latest(index - 1);
   };
   return latest(versions.length - 1);
+}
+
+/**
+ * Retrieves the complete version history for the given module (newest-to-oldest).
+ *
+ *    By default the latest version does not include pre-release versions.
+ *    Pass `{ prerelease: true|'alpha'|'beta' }` to retrieve the latest pre-release.
+ *
+ */
+export async function getVersionHistory(moduleName: string, options: INpmVersionOptions = {}) {
+  const versions: string[] = (await getJson(moduleName, ['versions'])) || [];
+  return versions.filter(version => filter.version(version, options)).reverse();
 }
 
 /**
@@ -111,3 +112,23 @@ async function getJson(moduleName: string, fields: NpmInfoField[]): Promise<any>
     }
   }
 }
+
+const filter = {
+  /**
+   * Filters a version include or excluding pre-release values.
+   */
+  version(version: string, options: INpmVersionOptions) {
+    const { prerelease } = options;
+    const pre = semver.prerelease(version);
+    if (pre) {
+      if (prerelease === true) {
+        return true;
+      }
+      if (typeof prerelease === 'string' && pre.includes(prerelease)) {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  },
+};

@@ -1,4 +1,4 @@
-import { express, fs, getProcess, npm, t } from '../common';
+import { express, fs, getProcess, npm, t, value } from '../common';
 
 export function create(args: { getContext: t.GetNpmRouteContext }) {
   const router = express.Router();
@@ -9,8 +9,12 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
   router.get('/status', async (req, res) => {
     try {
       // Setup initial conditions.
+      const queryKeys = Object.keys(req.query);
+      const showVersions = queryKeys.includes('versions') && req.query.versions !== 'false';
       const context = await args.getContext();
       const { name, downloadDir, prerelease } = context;
+
+      // Retrieve status info.
       const { info, dir, isChanged } = await getStatus({ name, downloadDir, prerelease });
 
       // Determine process state.
@@ -21,6 +25,12 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
       // Publish pre-release status.
       let response = { isRunning, status, ...info } as any;
       response = prerelease ? { ...response, prerelease } : response;
+
+      // Retrieve version history.
+      if (showVersions) {
+        const versions = await npm.getVersionHistory(name, { prerelease });
+        response = { ...response, versions };
+      }
 
       // Finish up.
       res.send(response);
