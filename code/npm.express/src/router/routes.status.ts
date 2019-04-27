@@ -10,7 +10,6 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
     try {
       // Setup initial conditions.
       const queryKeys = Object.keys(req.query);
-      const showVersions = queryKeys.includes('versions') && req.query.versions !== 'false';
       const context = await args.getContext();
       const { name, downloadDir, prerelease } = context;
 
@@ -27,8 +26,14 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
       response = prerelease ? { ...response, prerelease } : response;
 
       // Retrieve version history.
+      const showVersions = queryKeys.includes('versions') && req.query.versions !== 'false';
       if (showVersions) {
-        const versions = await npm.getVersionHistory(name, { prerelease });
+        let versions = await npm.getVersionHistory(name, { prerelease });
+        let total = value.toNumber(req.query.versions);
+        if (typeof total === 'number') {
+          total = total < 0 ? 0 : total;
+          versions = versions.slice(0, total);
+        }
         response = { ...response, versions };
       }
 
