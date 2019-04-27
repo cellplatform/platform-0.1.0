@@ -1196,10 +1196,10 @@
     "@platform/log" "0.0.103"
     "@platform/util.value" "0.0.53"
 
-"@platform/npm@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.1.4.tgz#9fcc97bd5bcd4045978b57335c6f523a994ff7f9"
-  integrity sha512-K3UtR97VFwxnarno4TuNrWvbzr2jIauQJSZyiXMjmADEmMxww5w7LT8g7jIvptzzTLNy9nqpA7CL2PD4yv3umQ==
+"@platform/npm@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.1.5.tgz#0edc9839043ef72e7f6026405cf3c96fcd7aa0de"
+  integrity sha512-VQCKNL9AcevssvpSnE5VSvDwV8reH/6+pDJDqS5LUCOBYXpwE6dTWAxuL+Wt4AMmueWYTZQ8niLBZsYY0BCr9Q==
   dependencies:
     "@platform/exec" "0.1.1"
     "@platform/fs" "0.0.54"
