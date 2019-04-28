@@ -53,6 +53,18 @@
     chalk "2.4.2"
     listr "0.14.3"
 
+"@platform/exec@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.1.2.tgz#4aeb0c5faf115254fee01f8adb7d6788e1caf835"
+  integrity sha512-Lt2j/OPuqmU3fryM/jhqy6yksUG0QiPMeSzfjWFes7K+iwzK1siuhswcj7d5b5eYSylBkqiqiCOUY8NlWYcLDg==
+  dependencies:
+    "@platform/libs" "0.0.12"
+    "@types/chalk" "2.2.0"
+    "@types/listr" "0.13.0"
+    ansi-regex "4.1.0"
+    chalk "2.4.2"
+    listr "0.14.3"
+
 "@platform/fs@0.0.54":
   version "0.0.54"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.54.tgz#728c331b890c64562b51d5ddb0321900422d1a97"
