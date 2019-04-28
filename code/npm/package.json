@@ -21,7 +21,9 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.47",
-    "@platform/ts": "3.4.12"
+    "@platform/ts": "3.4.12",
+    "@types/dotenv": "6.1.1",
+    "dotenv": "7.0.0"
   },
   "files": [
     "lib"

@@ -1,18 +1,27 @@
 import { expect } from 'chai';
+import * as dotenv from 'dotenv';
+
 import { npm } from '..';
 import { log } from '../common';
+
+dotenv.config();
+
+/**
+ * For calls to private modules, pass the NPM_TOKEN
+ * and ensure there is a `.npmrc` file within the project
+ * containing:
+ *
+ *    //registry.npmjs.org/:_authToken=${NPM_TOKEN}
+ *
+ */
 
 describe('util.npm (integration)', function() {
   this.timeout(20000);
 
-  it.skip('getInfo', async () => {
-    const res = await npm.getInfo('create-tmpl');
-    log.info('getInfo:', res);
-  });
-
-  it.skip('getInfo: @uiharness/electron', async () => {
-    const res = await npm.getInfo('@uiharness/electron');
-    log.info('getInfo:', res);
+  it.skip('getVersion (private module)', async () => {
+    const NPM_TOKEN = process.env.NPM_TOKEN_TEST;
+    const res = await npm.getVersion('@tdb/slc.graphql', { NPM_TOKEN });
+    log.info('getVersion:', res);
   });
 
   it.skip('getVersion', async () => {

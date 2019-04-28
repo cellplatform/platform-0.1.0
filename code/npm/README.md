@@ -5,4 +5,14 @@
 
 Helpers for working with [NPM (Node Package Manager)](http://npmjs.com).
 
+<p>&nbsp;<p>
+
+
+## Private Modules
+For calls to private modules, pass the `NPM_TOKEN` parameter to corresponding method
+and ensure there is a `.npmrc` file within the project containing:
+
+
+    //registry.npmjs.org/:_authToken=${NPM_TOKEN}
+
 
