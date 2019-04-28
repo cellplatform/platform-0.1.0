@@ -9,6 +9,8 @@ services:
     env_file:
       - env/server.env
       - env/example.env
+    environment:
+      - NPM_TOKEN=$NPM_TOKEN
     restart: unless-stopped
     ports:
       - '8080:8080' # Hint: '80:5000' to expose the imported module to the public internet.

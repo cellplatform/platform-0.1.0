@@ -79,7 +79,8 @@ export async function getStatus(args: {
   const { name, downloadDir, prerelease, NPM_TOKEN } = args;
   const dir = getDir(name, downloadDir);
   const pkg = npm.pkg(dir);
-  const latest = (await npm.getVersion(name, { prerelease, NPM_TOKEN })) || '-';
+  const cwd = downloadDir;
+  const latest = (await npm.getVersion(name, { cwd, prerelease, NPM_TOKEN })) || '-';
   const current = pkg.version || '-';
   const isChanged = current !== latest;
   const version = {

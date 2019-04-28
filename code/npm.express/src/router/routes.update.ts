@@ -71,15 +71,8 @@ export async function update(args: {
   let actions: string[] = [];
   const { name, downloadDir, dryRun, prerelease = false, NPM_TOKEN } = args;
   const restart = value.defaultValue(args.restart, true);
-  const status = await getStatus({ name, downloadDir, prerelease });
+  const status = await getStatus({ name, downloadDir, prerelease, NPM_TOKEN });
   const { info, dir: moduleDir } = status;
-
-  // Ensure the NPM token is setup.
-  await fs.ensureDir(downloadDir);
-  const npmrc = fs.resolve(fs.join(downloadDir, '.npmrc'));
-  if (NPM_TOKEN && !(await fs.pathExists(npmrc))) {
-    await fs.writeFile(npmrc, `//registry.npmjs.org/:_authToken=\${NPM_TOKEN}`);
-  }
 
   // Retrieve version information.
   const { version } = info;
@@ -128,7 +121,7 @@ export async function update(args: {
     actions = [...actions, `FAIL/404`];
 
     log.info('✋');
-    log.info.yellow(`    The module ${log.red(name)} was not be found on NPM.`);
+    log.info.yellow(`    The module ${log.red(name)} was not found on NPM.`);
     log.info.yellow('    HINT: If the module is private ensure you have an NPM_TOKEN configured.');
     log.info();
 
@@ -151,7 +144,7 @@ export async function update(args: {
 
   // Ensure package exists.
   if (!(await fs.pathExists(fs.join(downloadDir, 'package.json')))) {
-    await exec.command('yarn init -y').run({ dir: downloadDir, silent: true });
+    await exec.command('yarn init -y').run({ cwd: downloadDir, silent: true });
     actions = [...actions, 'CREATED_PACKAGE'];
   }
 

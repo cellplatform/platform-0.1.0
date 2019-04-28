@@ -26,6 +26,13 @@ export function init(args: {
     return { name, downloadDir, prerelease, NPM_TOKEN };
   };
 
+  // Ensure download folder is setup.
+  fs.ensureDirSync(downloadDir);
+  const npmrc = fs.resolve(fs.join(downloadDir, '.npmrc'));
+  if (!fs.pathExistsSync(npmrc)) {
+    fs.writeFileSync(npmrc, `//registry.npmjs.org/:_authToken=\${NPM_TOKEN}\n`);
+  }
+
   const routes = router.create({ getContext });
   const server = express()
     .use(json())
