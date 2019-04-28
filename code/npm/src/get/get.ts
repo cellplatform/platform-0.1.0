@@ -1,6 +1,5 @@
 import { exec, log, semver, t } from '../common';
 
-export type NpmInfoField = 'name' | 'version' | 'versions' | 'dist-tags' | 'dist' | 'license';
 export type INpmVersionOptions = {
   prerelease?: t.NpmPrerelease;
 };
@@ -71,7 +70,7 @@ export async function getVersions(
  */
 async function getJson(
   moduleName: string,
-  field: NpmInfoField,
+  field: string,
   options: INpmInfoOptions = {},
 ): Promise<any> {
   const { NPM_TOKEN } = options;

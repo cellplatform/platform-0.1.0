@@ -5,6 +5,7 @@ import { npm } from '..';
 import { log } from '../common';
 
 dotenv.config();
+const NPM_TOKEN = process.env.NPM_TOKEN_TEST;
 
 /**
  * For calls to private modules, pass the NPM_TOKEN
@@ -19,7 +20,6 @@ describe('util.npm (integration)', function() {
   this.timeout(20000);
 
   it.skip('getVersion (private module)', async () => {
-    const NPM_TOKEN = process.env.NPM_TOKEN_TEST;
     const res = await npm.getVersion('@tdb/slc.graphql', { NPM_TOKEN });
     log.info('getVersion:', res);
   });
