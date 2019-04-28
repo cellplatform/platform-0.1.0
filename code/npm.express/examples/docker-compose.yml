@@ -7,8 +7,8 @@ services:
     # command: yarn start --npm-module=@platform/npm.express.example-server --url-prefix=/sys --dir=/data/app --prerelease=true --update
     command: yarn start --url-prefix=/sys
     env_file:
-      - env/main.env
-      - env/example-server.env
+      - env/server.env
+      - env/example.env
     restart: unless-stopped
     ports:
       - '8080:8080' # Hint: '80:5000' to expose the imported module to the public internet.

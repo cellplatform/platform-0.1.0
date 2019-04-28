@@ -15,7 +15,6 @@ const NPM_TOKEN = process.env.NPM_TOKEN_TEST;
  *    //registry.npmjs.org/:_authToken=${NPM_TOKEN}
  *
  */
-
 describe('util.npm (integration)', function() {
   this.timeout(20000);
 
