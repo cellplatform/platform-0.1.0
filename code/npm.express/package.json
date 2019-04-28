@@ -15,7 +15,7 @@
     "dpush": "sh sh/dpush.sh",
     "reset": "sh sh/reset.sh",
     "example": "sh sh/example.sh",
-    "docker": "cd examples && docker-compose up"
+    "docker": "cd examples && docker-compose up --force-recreate"
   },
   "dependencies": {
     "@platform/exec": "0.1.1",
