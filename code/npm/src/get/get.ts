@@ -20,7 +20,7 @@ export async function getVersion(
 ) {
   const versions = await getJson(moduleName, 'versions', options);
   if (!versions || versions.length === 0) {
-    throw new Error(`Cannot get version for '${moduleName}' as it could not be found on NPM.`);
+    return '';
   }
   const latest = (index: number): string => {
     const version = versions[index];
