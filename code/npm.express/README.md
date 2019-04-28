@@ -98,16 +98,17 @@ see the `/examples/docker-compose.yml` file for example configuration.
 
 
 ### .env
-These same arguments can alternatively be specified as environment variables, see `/example/.service.env` and the `env_file` reference in `docker-compose.yml` for example.
-Values passed explicitly to the command override environment variables.
+These same arguments can alternatively be specified as environment variables, see `/example/env/main.env` and the `env_file` reference in `docker-compose.yml` for example.
 
 ```bash
-NPM_MODULE="..."
-NPM_DIR="..."
-NPM_PORT="..."
-NPM_PRERELEASE="..."
-NPM_URL_PREFIX="..."
-NPM_UPDATE="..."
+NPM_MODULE=           --npm-module
+NPM_DIR=              --dir
+NPM_PORT=             --port
+NPM_PRERELEASE=       --prerelease
+NPM_URL_PREFIX=       --url-prefix
+NPM_UPDATE=           --update
 ```
+
+Any values passed explicitly to the command will override the environment variables.
 
 
