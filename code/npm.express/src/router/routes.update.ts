@@ -104,6 +104,7 @@ export async function update(args: {
   log.info.gray('    - module:    ', log.magenta(name));
   log.info.gray('    - dir:       ', log.white(moduleDir));
   log.info.gray('    - prerelease:', log.white(prerelease));
+  log.info.gray('    - token:     ', Boolean(NPM_TOKEN));
   log.info.gray('    - current:   ', log.white(version.current || '-'));
   log.info.gray('    - latest:    ', log.white(version.latest));
   log.info.gray('    - wanted:    ', log.yellow(wanted), !isChanged ? log.yellow('(latest)') : '');

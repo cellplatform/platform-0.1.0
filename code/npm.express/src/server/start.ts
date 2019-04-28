@@ -78,7 +78,7 @@ server.listen(port, async () => {
   log.info();
   log.info.gray(`   - module:         ${log.yellow(name)}`);
   log.info.gray(`   - download-dir:   ${downloadDir}`);
-  log.info.gray(`   - prerelease:     ${prerelease}`);
+  log.info.gray(`   - prerelease:     ${prerelease ? prerelease : false}`);
   log.info.gray(`   - prod:           ${is.prod}`);
   log.info();
   log.info.gray(`   Routes\n`);

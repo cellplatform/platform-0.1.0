@@ -32,8 +32,8 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
       const isRunning = process.isRunning;
       const status = isChanged ? 'UPDATE_PENDING' : 'LATEST';
 
-      // Publish pre-release status.
-      let response = { isRunning, status, prerelease, ...info } as any;
+      // Build status response.
+      let response = { isRunning, status, prerelease, token: Boolean(NPM_TOKEN), ...info } as any;
       response = prerelease ? { ...response, prerelease } : response;
 
       // Retrieve version history.
