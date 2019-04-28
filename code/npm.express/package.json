@@ -14,7 +14,8 @@
     "dbuild": "sh sh/dbuild.sh",
     "dpush": "sh sh/dpush.sh",
     "reset": "sh sh/reset.sh",
-    "example": "sh sh/example.sh"
+    "example": "sh sh/example.sh",
+    "docker": "cd examples && docker-compose up"
   },
   "dependencies": {
     "@platform/exec": "0.1.1",
