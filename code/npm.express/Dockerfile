@@ -9,4 +9,5 @@ RUN yarn install --ignore-scripts --production
 
 COPY --chown=node:node lib lib
 ENV NODE_ENV="production"
+ENV DOCKER="true"
 
