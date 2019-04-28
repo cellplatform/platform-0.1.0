@@ -1,4 +1,5 @@
 #!/bin/bash
 
-yarn prepare
+# yarn prepare
+yarn build
 docker build -t teamdb/npm.express .

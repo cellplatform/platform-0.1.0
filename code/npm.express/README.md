@@ -51,9 +51,27 @@ server.listen(1234);
 ## Routes
 
     GET   /status
-    POST  /update   body: { restart?:bool, version?:string|'latest', prerelease?:bool|alpha|beta, dryRun?:bool, }
-    POST  /start    body: { restart?:bool }
+    POST  /update
+    POST  /start
     POST  /stop
+
+Body parameters for `/update`:
+
+```typescript
+{ 
+  restart?: boolean;                        // Restart the service once updated (default: true)
+  version?: string | 'latest';              // Specific version to install (default: 'latest')
+  prerelease?: boolean | 'alpha' | 'beta',  // Install pre-release version, eg 1.2.0-beta.0 (default: false)
+  reset?: boolean,                          // Delete existing download before installing (default: false)
+  dryRun?: boolean,                         // Perform all checks, but don't actually change anything.
+}
+```
+
+Body parameters for `/start`:
+
+```typescript
+{ restart?: boolean }
+```
 
 
 ## Command-Line Arguments

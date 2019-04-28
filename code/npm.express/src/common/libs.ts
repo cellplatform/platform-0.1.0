@@ -6,4 +6,4 @@ export { exec, NodeProcess } from '@platform/exec';
 export { log } from '@platform/log/lib/server';
 export { npm } from '@platform/npm';
 export { is } from '@platform/util.is';
-export { value } from '@platform/util.value';
+export { value, time } from '@platform/util.value';
