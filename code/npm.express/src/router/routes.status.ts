@@ -1,4 +1,4 @@
-import { express, fs, getProcess, npm, t, value } from '../common';
+import { express, filesize, fs, getProcess, npm, t, value } from '../common';
 
 export function create(args: { getContext: t.GetNpmRouteContext }) {
   const router = express.Router();
@@ -8,8 +8,14 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
    */
   router.get('/status', async (req, res) => {
     try {
+      type Query = {
+        versions?: number;
+        size?: boolean;
+      };
+
       // Setup initial conditions.
-      const queryKeys = Object.keys(req.query);
+      const query: Query = req.query;
+      const queryKeys = Object.keys(query);
       const context = await args.getContext();
       const { name, downloadDir, prerelease } = context;
 
@@ -35,6 +41,14 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
           versions = versions.slice(0, total);
         }
         response = { ...response, versions };
+      }
+
+      // Retrieve folder size.
+      const showSize = queryKeys.includes('size') && req.query.size !== 'false';
+      if (showSize) {
+        const bytes = (await fs.folderSize(downloadDir)).bytes;
+        const size = { bytes, display: filesize(bytes, { round: 0 }) };
+        response = { ...response, size };
       }
 
       // Finish up.

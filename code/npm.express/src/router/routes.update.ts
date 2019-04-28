@@ -6,9 +6,8 @@ import {
   log,
   monitorProcessEvents,
   npm,
-  t,
   semver,
-  time,
+  t,
   value,
 } from '../common';
 import { getStatus } from './routes.status';

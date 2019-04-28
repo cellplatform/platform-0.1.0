@@ -1,5 +1,6 @@
 import * as express from 'express';
-export { express };
+import * as filesize from 'filesize';
+export { express, filesize };
 
 export { fs } from '@platform/fs';
 export { exec, NodeProcess } from '@platform/exec';

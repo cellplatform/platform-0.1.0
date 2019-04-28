@@ -55,8 +55,16 @@ server.listen(1234);
     POST  /start
     POST  /stop
 
-Body parameters for `/update`:
+Query-string parameters for `/status`:
+```typescript
+{
+  versions?=<number>    // Include version history. If number (n) provided returns only the latest (n) versions.
+  size?=<boolean>       // Include size of the download folder.
+}
+```
 
+
+Body parameters for `/update`:
 ```typescript
 { 
   restart?: boolean;                        // Restart the service once updated (default: true)
@@ -68,7 +76,6 @@ Body parameters for `/update`:
 ```
 
 Body parameters for `/start`:
-
 ```typescript
 { restart?: boolean }
 ```
