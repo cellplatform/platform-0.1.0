@@ -31,13 +31,13 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
       const nameVersion = `${name}@${version}`;
 
       log.info(`\nTODO 🐷   install DIR NAME not 'TMP'\n`);
-      const dir = fs.join(app.getPath('desktop'), 'TMP', nameVersion);
+      const cwd = fs.join(app.getPath('desktop'), 'TMP', nameVersion);
 
       // Log.
       const ver = log.magenta(version);
       log.info.gray(' - name:   ', log.cyan(name));
       log.info.gray(' - version:', isLatest ? `latest (${ver})` : ver);
-      log.info.gray(' - dir:    ', dir);
+      log.info.gray(' - dir:    ', cwd);
 
       // Prepare the [package.json] file.
       const pkg = npm.pkg({
@@ -49,20 +49,20 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
           private: true,
         },
       });
-      pkg.save(dir);
+      pkg.save(cwd);
 
       // Run the install.
       const cmd = exec.command('npm install');
       log.info.gray('installing...');
-      const res = await cmd.run({ dir, silent: true });
+      const res = await cmd.run({ cwd, silent: true });
       const elapsed = log.gray(`${timer.elapsed('s')}s`);
       log.info(`Done:`, res.ok ? log.green('success') : log.red('failed'), elapsed);
 
       // Handle error.
       if (!res.ok) {
-        const dest = `${dir}.fail`;
-        await fs.remove(`${dir}.fail`);
-        await fs.move(dir, dest);
+        const dest = `${cwd}.fail`;
+        await fs.remove(`${cwd}.fail`);
+        await fs.move(cwd, dest);
 
         res.errors.forEach(err => {
           log.info.gray(err);

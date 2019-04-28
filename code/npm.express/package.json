@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm.express",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Express middleware for working with NPM.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -18,8 +18,8 @@
     "docker": "cd examples && docker-compose up --force-recreate"
   },
   "dependencies": {
-    "@platform/exec": "0.1.2",
-    "@platform/npm": "0.1.7",
+    "@platform/exec": "0.2.0",
+    "@platform/npm": "0.1.8",
     "@types/express": "4.16.1",
     "body-parser": "1.19.0",
     "express": "4.16.4",
@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.47",
-    "@platform/ts": "3.4.12",
+    "@platform/ts": "3.4.13",
     "@types/body-parser": "1.17.0",
     "@types/filesize": "4.1.0",
     "@types/minimist": "1.2.0"

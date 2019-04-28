@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.graphql",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "UI components for working with GraphQL.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,8 +15,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.1.18",
-    "@platform/ui.codemirror": "0.0.28",
+    "@platform/react": "0.1.19",
+    "@platform/ui.codemirror": "0.0.29",
     "@types/codemirror": "0.0.74",
     "@types/graphql": "14.2.0",
     "@uiharness/electron": "0.4.29",
@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.47",
-    "@platform/ts": "3.4.12",
+    "@platform/ts": "3.4.13",
     "@types/hjson": "2.4.1",
     "@uiharness/dev": "0.2.43",
     "@uiharness/ui": "0.2.20"

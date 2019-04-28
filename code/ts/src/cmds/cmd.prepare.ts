@@ -18,7 +18,7 @@ export async function prepare(args: { dir?: string; silent?: boolean } = {}): Pr
     log.info();
     const cmds = ['yarn build', 'yarn lint', 'yarn test'];
     const res = await exec.cmd.runList(cmds, {
-      dir: fs.resolve(dir),
+      cwd: fs.resolve(dir),
       silent,
       concurrent: true,
       exitOnError: false,
