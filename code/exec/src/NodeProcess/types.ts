@@ -1,5 +1,6 @@
 export type NodeProcessArgs = {
   dir: string;
+  NPM_TOKEN?: string;
 };
 
 /**

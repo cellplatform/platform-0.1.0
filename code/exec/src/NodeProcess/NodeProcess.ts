@@ -43,13 +43,10 @@ export class NodeProcess {
    * [Lifecycle]
    */
   private constructor(args: t.NodeProcessArgs) {
-    const { dir } = args;
-
+    const { dir, NPM_TOKEN } = args;
     this.dir = dir;
-
-    this.dispose$.subscribe(() => {
-      this.stop();
-    });
+    this._.NPM_TOKEN = NPM_TOKEN;
+    this.dispose$.subscribe(() => this.stop());
   }
 
   public dispose() {
@@ -64,6 +61,7 @@ export class NodeProcess {
   public isSilent = false;
 
   private _ = {
+    NPM_TOKEN: undefined as undefined | string,
     child: undefined as undefined | exec.ICommandPromise,
     dispose$: new Subject(),
     events$: new Subject<t.NodeProcessEvent>(),
@@ -83,6 +81,11 @@ export class NodeProcess {
 
   public get isRunning() {
     return Boolean(this._.child);
+  }
+
+  private get env() {
+    const { NPM_TOKEN } = this._;
+    return NPM_TOKEN ? { NPM_TOKEN } : undefined;
   }
 
   /**
@@ -115,8 +118,9 @@ export class NodeProcess {
     // Start the process.
     if (!this.isRunning) {
       const dir = this.dir;
+      const env = this.env;
       const cmd = exec.command(`yarn start`);
-      const child = cmd.run({ dir, silent: true });
+      const child = cmd.run({ dir, env, silent: true });
       const name = basename(this.dir);
 
       // Monitor events on the child process.
