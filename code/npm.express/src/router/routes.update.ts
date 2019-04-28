@@ -72,12 +72,12 @@ export async function update(args: {
 
   log.info();
   log.info.cyan('Update\n');
-  log.info.gray(' - module:     ', log.magenta(name));
-  log.info.gray(' - dir:        ', log.white(moduleDir));
-  log.info.gray(' - prerelease: ', log.white(prerelease));
-  log.info.gray(' - current:    ', log.white(version.current || '-'));
-  log.info.gray(' - latest:     ', log.white(version.latest));
-  log.info.gray(' - wanted:     ', log.yellow(wanted), !isChanged ? log.yellow(' (latest)') : '');
+  log.info.gray('    - module:    ', log.magenta(name));
+  log.info.gray('    - dir:       ', log.white(moduleDir));
+  log.info.gray('    - prerelease:', log.white(prerelease));
+  log.info.gray('    - current:   ', log.white(version.current || '-'));
+  log.info.gray('    - latest:    ', log.white(version.latest));
+  log.info.gray('    - wanted:    ', log.yellow(wanted), !isChanged ? log.yellow(' (latest)') : '');
 
   const statusInfo = isChanged ? log.cyan('UPDATE REQUIRED') : log.gray('NO CHANGE');
   log.info.gray(' - status:     ', statusInfo);
