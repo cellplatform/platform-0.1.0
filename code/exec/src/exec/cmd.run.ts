@@ -18,7 +18,7 @@ import { ChildProcess } from 'child_process';
  */
 export function run(command: string | string[], options: IRunOptions = {}): ICommandPromise {
   const { silent } = options;
-  const dir = resolve(options.dir || process.cwd());
+  const cwd = resolve(options.cwd || process.cwd());
   const complete$ = new Subject();
   let isComplete = false;
   let error: Error | undefined;
@@ -39,7 +39,7 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
 
     // Spawn the child process.
     child = spawn(cmd, {
-      cwd: dir,
+      cwd,
       stdio: undefined, // Handle standard I/O manually.
       env: options.env,
     }).child;
@@ -85,7 +85,7 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
 
   // Prepare the response object.
   const response = promise as ICommandPromise;
-  response.dir = dir;
+  response.cwd = cwd;
   response.complete$ = complete$.pipe(share());
   response.output$ = output$.pipe(
     takeUntil(complete$),

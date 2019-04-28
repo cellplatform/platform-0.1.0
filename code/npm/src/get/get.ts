@@ -4,6 +4,7 @@ export type INpmVersionOptions = {
   prerelease?: t.NpmPrerelease;
 };
 export type INpmInfoOptions = {
+  cwd?: string;
   NPM_TOKEN?: string;
 };
 
@@ -73,7 +74,7 @@ async function getJson(
   field: string,
   options: INpmInfoOptions = {},
 ): Promise<any> {
-  const { NPM_TOKEN } = options;
+  const { NPM_TOKEN, cwd } = options;
 
   /**
    * NOTE: `yarn` used instead of `npm` as yarn respects the existence
@@ -94,7 +95,7 @@ async function getJson(
 
   try {
     const env = NPM_TOKEN ? { NPM_TOKEN } : undefined;
-    const result = await exec.command(cmd).run({ env, silent: true });
+    const result = await exec.command(cmd).run({ cwd, env, silent: true });
     const text = result.info.join('\n');
     return result.info.length > 0 ? parseJson(text) : undefined;
   } catch (error) {
