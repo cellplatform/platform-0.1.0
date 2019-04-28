@@ -92,6 +92,7 @@ To configure the module when working with it as [Docker container](https://www.d
     --prerelease='<boolean|alpha|beta>' # (optional) Whether pre-release versions should be used (default:false).
     --url-prefix='<string>'             # (optional) Prefix to prepend URL's with, eg /foo => GET /foo/status
     --update                            # (optional) Flag indicating if update performed at startup (default:false).
+    --npm-token                         # (optional) An NPM authorization token if working with private modules.
 ```
 
 see the `/examples/docker-compose.yml` file for example configuration.
@@ -107,8 +108,17 @@ NPM_PORT=             --port
 NPM_PRERELEASE=       --prerelease
 NPM_URL_PREFIX=       --url-prefix
 NPM_UPDATE=           --update
+NPM_TOKEN=            --npm-token
 ```
 
 Any values passed explicitly to the command will override the environment variables.
 
 
+## Private NPM Packages
+
+Follow the instructions on NPM ["Using private packages in a CI/CD workflow"](https://docs.npmjs.com/using-private-packages-in-a-ci-cd-workflow) to create a token to access your private modules:
+
+    npm token create --read-only
+
+Alternatively tokens can be created within the [npmjs.com](https://www.npmjs.com) adminitration UI.  
+Pass the token as either a command-line argument or an environment variable at startup.

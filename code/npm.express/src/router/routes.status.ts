@@ -17,18 +17,23 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
       const query: Query = req.query;
       const queryKeys = Object.keys(query);
       const context = await args.getContext();
-      const { name, downloadDir, prerelease } = context;
+      const { name, downloadDir, prerelease, NPM_TOKEN } = context;
 
       // Retrieve status info.
-      const { info, dir, isChanged } = await getStatus({ name, downloadDir, prerelease });
+      const { info, dir, isChanged } = await getStatus({
+        name,
+        downloadDir,
+        prerelease,
+        NPM_TOKEN,
+      });
 
       // Determine process state.
-      const process = getProcess(dir);
+      const process = getProcess(dir, NPM_TOKEN);
       const isRunning = process.isRunning;
       const status = isChanged ? 'UPDATE_PENDING' : 'LATEST';
 
       // Publish pre-release status.
-      let response = { isRunning, status, ...info } as any;
+      let response = { isRunning, status, prerelease, ...info } as any;
       response = prerelease ? { ...response, prerelease } : response;
 
       // Retrieve version history.
@@ -63,17 +68,18 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
 }
 
 /**
- * Retrieves status details
+ * Retrieves status details.
  */
 export async function getStatus(args: {
   name: string;
   downloadDir: string;
   prerelease: t.NpmPrerelease;
+  NPM_TOKEN?: string;
 }) {
-  const { name, downloadDir, prerelease } = args;
+  const { name, downloadDir, prerelease, NPM_TOKEN } = args;
   const dir = getDir(name, downloadDir);
   const pkg = npm.pkg(dir);
-  const latest = (await npm.getVersion(name, { prerelease })) || '-';
+  const latest = (await npm.getVersion(name, { prerelease, NPM_TOKEN })) || '-';
   const current = pkg.version || '-';
   const isChanged = current !== latest;
   const version = {

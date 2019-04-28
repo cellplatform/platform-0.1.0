@@ -12,8 +12,9 @@ export function init(args: {
   downloadDir: string;
   prerelease?: t.NpmPrerelease;
   urlPrefix?: string;
+  NPM_TOKEN?: string;
 }) {
-  const { name } = args;
+  const { name, NPM_TOKEN } = args;
   const prerelease = args.prerelease || false;
   const downloadDir = fs.resolve(args.downloadDir);
 
@@ -21,8 +22,8 @@ export function init(args: {
   urlPrefix = urlPrefix.replace(/^\//, '').replace(/\/$/, '');
   urlPrefix = `/${urlPrefix}`;
 
-  const getContext = async () => {
-    return { name, downloadDir, prerelease };
+  const getContext: t.GetNpmRouteContext = async () => {
+    return { name, downloadDir, prerelease, NPM_TOKEN };
   };
 
   const routes = router.create({ getContext });

@@ -32,7 +32,7 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
 
     try {
       const context = await args.getContext();
-      const { name, downloadDir } = context;
+      const { name, downloadDir, NPM_TOKEN } = context;
       const prerelease = body.prerelease === undefined ? context.prerelease : body.prerelease;
       const response = await update({
         name,
@@ -42,6 +42,7 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
         restart,
         version,
         reset,
+        NPM_TOKEN,
       });
       res.send(response);
     } catch (error) {
@@ -64,23 +65,45 @@ export async function update(args: {
   restart?: boolean;
   version?: string | 'latest';
   reset?: boolean;
+  NPM_TOKEN?: string;
 }) {
-  const { name, downloadDir, dryRun, prerelease = false } = args;
-  const restart = value.defaultValue(args.reset, true);
+  // Setup initial conditions.
+  let actions: string[] = [];
+  const { name, downloadDir, dryRun, prerelease = false, NPM_TOKEN } = args;
+  const restart = value.defaultValue(args.restart, true);
   const status = await getStatus({ name, downloadDir, prerelease });
   const { info, dir: moduleDir } = status;
+
+  // Ensure the NPM token is setup.
+  await fs.ensureDir(downloadDir);
+  const npmrc = fs.resolve(fs.join(downloadDir, '.npmrc'));
+  if (NPM_TOKEN && !(await fs.pathExists(npmrc))) {
+    await fs.writeFile(npmrc, `//registry.npmjs.org/:_authToken=\${NPM_TOKEN}`);
+  }
+
+  // Retrieve version information.
   const { version } = info;
   let wanted = args.version || version.latest;
   wanted = wanted.toLowerCase() === 'latest' ? version.latest : wanted;
-  let isChanged = !semver.eq(version.current, wanted);
+  const notFound = !semver.isValid(wanted);
+  let isChanged = notFound ? false : !semver.eq(version.current, wanted);
 
-  let actions: string[] = [];
+  const done = async (args: { error?: t.INpmError }) => {
+    const { error } = args;
+    return { ...status.info, actions, error };
+  };
+
   const start = async () => {
-    const process = getProcess(moduleDir);
-    const monitor = monitorProcessEvents(process);
-    await process.start({ force: true });
-    actions = [...actions, ...monitor.actions];
-    monitor.stop();
+    try {
+      const process = getProcess(moduleDir, NPM_TOKEN);
+
+      const monitor = monitorProcessEvents(process);
+      await process.start({ force: true });
+      actions = [...actions, ...monitor.actions];
+      monitor.stop();
+    } catch (error) {
+      log.error(`Failed while starting service. ${error.message}`);
+    }
   };
 
   log.info();
@@ -92,24 +115,42 @@ export async function update(args: {
   log.info.gray('    - latest:    ', log.white(version.latest));
   log.info.gray('    - wanted:    ', log.yellow(wanted), !isChanged ? log.yellow('(latest)') : '');
 
-  const statusInfo = isChanged ? log.green('UPDATE REQUIRED') : log.gray('NO CHANGE');
+  const statusInfo = notFound
+    ? log.red('404 Not Found')
+    : isChanged || args.reset
+    ? log.green(args.reset ? 'RESET' : 'INSTALL REQUIRED')
+    : log.gray('NO CHANGE');
   log.info.gray('    - status:    ', statusInfo);
   log.info();
 
-  if (!isChanged) {
+  // Ensure a module version exists to install.
+  if (notFound) {
+    actions = [...actions, `FAIL/404`];
+
+    log.info('✋');
+    log.info.yellow(`    The module ${log.red(name)} was not be found on NPM.`);
+    log.info.yellow('    HINT: If the module is private ensure you have an NPM_TOKEN configured.');
+    log.info();
+
+    const message = `The module '${name}' was not be found on NPM.`;
+    return done({ error: { status: 404, message } });
+  }
+
+  if (!isChanged && !args.reset) {
     log.info.yellow(`👌  Already up-to-date.`);
   }
 
   // Delete the existing folder first if requested.
   if (!dryRun && args.reset && (await fs.pathExists(downloadDir))) {
     await fs.remove(downloadDir);
+    await fs.ensureDir(downloadDir);
+    actions = [...actions, `DELETED/existing-download`];
     log.info.gray(`\nExisting download deleted\n`);
     isChanged = true;
   }
 
   // Ensure package exists.
   if (!(await fs.pathExists(fs.join(downloadDir, 'package.json')))) {
-    await fs.ensureDir(downloadDir);
     await exec.command('yarn init -y').run({ dir: downloadDir, silent: true });
     actions = [...actions, 'CREATED_PACKAGE'];
   }
@@ -119,22 +160,28 @@ export async function update(args: {
   }
 
   if (!dryRun && isChanged) {
-    // Setup the installer package.
-    const pkg = npm.pkg(downloadDir);
-    pkg.json.dependencies = pkg.json.dependencies || {};
-    pkg.json.dependencies[name] = wanted;
-    await pkg.save();
+    try {
+      // Setup the installer package.
+      const pkg = npm.pkg(downloadDir);
+      pkg.json.dependencies = pkg.json.dependencies || {};
+      pkg.json.dependencies[name] = wanted;
+      await pkg.save();
 
-    // Pull the module from NPM.
-    log.info.gray(`...installing...`);
-    await npm.install({ use: 'YARN', dir: downloadDir, silent: true });
-    actions = [...actions, `INSTALLED/${wanted}`];
-    log.info();
-    log.info(`Installed ${log.yellow(`v${wanted}`)} 🌼`);
-    log.info();
+      // Pull the module from NPM.
+      log.info.gray(`...installing...`);
+      await npm.install({ use: 'YARN', dir: downloadDir, silent: true, NPM_TOKEN });
+      actions = [...actions, `INSTALLED/${wanted}`];
+      log.info();
+      log.info(`Installed ${log.yellow(`v${wanted}`)} 🌼`);
+      log.info();
 
-    if (restart) {
-      await start();
+      if (restart) {
+        await start();
+      }
+    } catch (error) {
+      const message = `Failed while installing '${name}'.`;
+      log.error(message);
+      return done({ error: { status: 500, message } });
     }
   }
 
@@ -143,5 +190,5 @@ export async function update(args: {
   }
 
   // Finish up.
-  return { ...status.info, actions };
+  return done({});
 }

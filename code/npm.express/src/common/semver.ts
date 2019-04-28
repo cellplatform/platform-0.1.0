@@ -10,3 +10,10 @@ export function eq(v1: string, v2: string) {
     return false;
   }
 }
+
+/**
+ * Determine if the version is valid.
+ */
+export function isValid(version: string) {
+  return semver.valid(version);
+}

@@ -1,9 +1,9 @@
 import * as minimist from 'minimist';
 
 import { is, log, t, value } from '../common';
-import { init } from './server';
 import { start } from '../router/routes.run';
 import { update } from '../router/routes.update';
+import { init } from './server';
 
 const { toBool, toNumber } = value;
 const argv = minimist(process.argv.slice(2));
@@ -45,6 +45,7 @@ const port = arg<number>('port', 'NPM_PORT', 3000, v => toNumber(v));
 const urlPrefix = arg('url-prefix', 'NPM_URL_PREFIX', '');
 const updateOnStartup = arg('update', 'NPM_UPDATE', false);
 const prerelease = arg<t.NpmPrerelease>('prerelease', 'NPM_PRERELEASE', false, v => toBool(v));
+const NPM_TOKEN = arg<string | undefined>('npm-token', 'NPM_TOKEN', undefined);
 
 const fail = (message: string) => {
   log.info();
@@ -67,7 +68,7 @@ if (typeof prerelease === 'string' && !['alpha', 'beta'].includes(prerelease.tri
 /**
  * Start the server.
  */
-const res = init({ name, downloadDir, prerelease, urlPrefix });
+const res = init({ name, downloadDir, prerelease, urlPrefix, NPM_TOKEN });
 const { server } = res;
 server.listen(port, async () => {
   const url = log.cyan(`http://localhost:${log.magenta(port)}`);
@@ -88,8 +89,8 @@ server.listen(port, async () => {
   log.info();
 
   if (updateOnStartup) {
-    await update({ name, downloadDir, prerelease, restart: true });
+    await update({ name, downloadDir, prerelease, NPM_TOKEN, restart: true });
   } else {
-    await start({ name, downloadDir, prerelease });
+    await start({ name, downloadDir, prerelease, NPM_TOKEN });
   }
 });

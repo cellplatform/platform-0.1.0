@@ -13,8 +13,8 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
       force?: boolean;
     };
     const { force } = req.body as BodyParams;
-    const { name, downloadDir, prerelease } = await args.getContext();
-    const result = await start({ name, downloadDir, prerelease, force });
+    const { name, downloadDir, prerelease, NPM_TOKEN } = await args.getContext();
+    const result = await start({ name, downloadDir, prerelease, force, NPM_TOKEN });
     res.send(result);
   });
 
@@ -22,8 +22,8 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
    * [POST] Stops the running service.
    */
   router.post('/stop', async (req, res) => {
-    const { name, downloadDir } = await args.getContext();
-    const result = await stop({ name, downloadDir });
+    const { name, downloadDir, NPM_TOKEN } = await args.getContext();
+    const result = await stop({ name, downloadDir, NPM_TOKEN });
     res.send(result);
   });
 
@@ -39,40 +39,52 @@ export async function start(args: {
   downloadDir: string;
   prerelease: t.NpmPrerelease;
   force?: boolean;
+  NPM_TOKEN?: string;
 }) {
-  const { name, downloadDir, prerelease } = args;
-  const status = await getStatus({ name, downloadDir, prerelease });
+  const { name, downloadDir, prerelease, NPM_TOKEN } = args;
+  const status = await getStatus({ name, downloadDir, prerelease, NPM_TOKEN });
   const { dir } = status;
-  const process = getProcess(dir);
+  const process = getProcess(dir, NPM_TOKEN);
 
   // Monitor events.
   let actions: string[] = [];
   const monitor = monitorProcessEvents(process);
 
+  const done = (args: { error?: t.INpmError }) => {
+    monitor.stop();
+    const { error } = args;
+    const isRunning = process.isRunning;
+    return { isRunning, ...status.info, actions, error };
+  };
+
   // Ensure the module is installed.
   const isInstalled = await fs.pathExists(status.dir);
   if (!isInstalled) {
-    const updated = await update({ name, downloadDir, prerelease });
-    actions = [...actions, `INSTALLED/${updated.version.latest}`];
+    const updated = await update({ name, downloadDir, prerelease, NPM_TOKEN });
+    const { error } = updated;
+    if (error) {
+      actions = [...actions, `FAILED/on-install`];
+      return done({ error });
+    } else {
+      actions = [...actions, `INSTALLED/${updated.version.latest}`];
+    }
   }
 
   // Stop the process if necessary.
   await process.start({ force: args.force });
   actions = [...actions, ...monitor.actions];
-  monitor.stop();
 
   // Finish up.
-  const isRunning = process.isRunning;
-  return { isRunning, ...status.info, actions };
+  return done({});
 }
 
 /**
  * Stops the running service.
  */
-export async function stop(args: { name: string; downloadDir: string }) {
-  const { name, downloadDir } = args;
+export async function stop(args: { name: string; downloadDir: string; NPM_TOKEN?: string }) {
+  const { name, downloadDir, NPM_TOKEN } = args;
   const dir = getDir(name, downloadDir);
-  const process = getProcess(dir);
+  const process = getProcess(dir, NPM_TOKEN);
   let actions: string[] = [];
   if (process.isRunning) {
     actions = [...actions, 'STOPPED'];

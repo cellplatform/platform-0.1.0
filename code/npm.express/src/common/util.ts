@@ -29,7 +29,7 @@ export function monitorProcessEvents(process: NodeProcess) {
 /**
  * Retrieves the [NodeProcess] for the given dir.
  */
-export function getProcess(dir: string) {
+export function getProcess(dir: string, NPM_TOKEN?: string) {
   dir = fs.resolve(dir);
-  return NodeProcess.singleton({ dir });
+  return NodeProcess.singleton({ dir, NPM_TOKEN });
 }
