@@ -1,21 +1,51 @@
 import * as minimist from 'minimist';
 
 import { is, log, t, value } from '../common';
-import { init } from './server';
 import { start } from '../router/routes.run';
 import { update } from '../router/routes.update';
+import { init } from './server';
+
+const { toBool, toNumber } = value;
+const argv = minimist(process.argv.slice(2));
+
+const trimQuotes = (value: string) =>
+  (value || '')
+    .trim()
+    .replace(/^\"/, '')
+    .replace(/\"$/, '')
+    .replace(/^\'/, '')
+    .replace(/\'$/, '');
 
 /**
  * Retrieve command-line args.
+ * Order of precidence:
+ *  1. explicit arg from command (eg "--npm-module")
+ *  2. environment variable (eg: "NPM_MODULE")
  */
-const argv = minimist(process.argv.slice(2));
+const arg = <T = string>(cmd: string, env: string, defaultValue: T, format?: (value: any) => T) => {
+  let value: any;
+  if (argv[cmd]) {
+    value = argv[cmd] as T;
+  }
+  if (!value && process.env[env]) {
+    value = (process.env[env] as unknown) as T;
+    value = typeof value === 'string' ? trimQuotes(value) : value;
+  }
+  value = typeof value === 'string' ? value.trim() : value;
+  value = value || defaultValue;
+  if (format) {
+    value = format(value);
+  }
+  return value as T;
+};
 
-const name = argv['npm-module'] as string;
-const downloadDir = (argv.dir || '').trim() as string;
-const port = (argv.port || 3000) as number;
-const prerelease = (value.toType(argv.prerelease) || false) as t.NpmPrerelease;
-const urlPrefix = argv['url-prefix'] as string | undefined;
-const updateOnStartup = (argv.update || false) as boolean;
+const name = arg('npm-module', 'NPM_MODULE', '');
+const downloadDir = arg('dir', 'NPM_DIR', '');
+const port = arg<number>('port', 'NPM_PORT', 3000, v => toNumber(v));
+const urlPrefix = arg('url-prefix', 'NPM_URL_PREFIX', '');
+const updateOnStartup = arg('update', 'NPM_UPDATE', false);
+const prerelease = arg<t.NpmPrerelease>('prerelease', 'NPM_PRERELEASE', false, v => toBool(v));
+const NPM_TOKEN = arg<string | undefined>('npm-token', 'NPM_TOKEN', undefined);
 
 const fail = (message: string) => {
   log.info();
@@ -38,7 +68,7 @@ if (typeof prerelease === 'string' && !['alpha', 'beta'].includes(prerelease.tri
 /**
  * Start the server.
  */
-const res = init({ name, downloadDir, prerelease, urlPrefix });
+const res = init({ name, downloadDir, prerelease, urlPrefix, NPM_TOKEN });
 const { server } = res;
 server.listen(port, async () => {
   const url = log.cyan(`http://localhost:${log.magenta(port)}`);
@@ -48,7 +78,7 @@ server.listen(port, async () => {
   log.info();
   log.info.gray(`   - module:         ${log.yellow(name)}`);
   log.info.gray(`   - download-dir:   ${downloadDir}`);
-  log.info.gray(`   - prerelease:     ${prerelease}`);
+  log.info.gray(`   - prerelease:     ${prerelease ? prerelease : false}`);
   log.info.gray(`   - prod:           ${is.prod}`);
   log.info();
   log.info.gray(`   Routes\n`);
@@ -59,8 +89,8 @@ server.listen(port, async () => {
   log.info();
 
   if (updateOnStartup) {
-    await update({ name, downloadDir, prerelease, restart: true });
+    await update({ name, downloadDir, prerelease, NPM_TOKEN, restart: true });
   } else {
-    await start({ name, downloadDir, prerelease });
+    await start({ name, downloadDir, prerelease, NPM_TOKEN });
   }
 });

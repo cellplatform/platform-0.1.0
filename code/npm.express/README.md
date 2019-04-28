@@ -48,6 +48,39 @@ const server = express().use(routes);
 server.listen(1234);
 ```
 
+## Routes
+
+    GET   /status
+    POST  /update
+    POST  /start
+    POST  /stop
+
+Query-string parameters for `/status`:
+```typescript
+{
+  versions?=<number>    // Include version history. If number (n) provided returns only the latest (n) versions.
+  size?=<boolean>       // Include size of the download folder.
+}
+```
+
+
+Body parameters for `/update`:
+```typescript
+{ 
+  restart?: boolean;                        // Restart the service once updated (default: true)
+  version?: string | 'latest';              // Specific version to install (default: 'latest')
+  prerelease?: boolean | 'alpha' | 'beta',  // Install pre-release version, eg 1.2.0-beta.0 (default: false)
+  reset?: boolean,                          // Delete existing download before installing (default: false)
+  dryRun?: boolean,                         // Perform all checks, but don't actually change anything.
+}
+```
+
+Body parameters for `/start`:
+```typescript
+{ restart?: boolean }
+```
+
+
 ## Command-Line Arguments
 
 To configure the module when working with it as [Docker container](https://www.docker.com) pass the following command-line arguments:
@@ -59,13 +92,33 @@ To configure the module when working with it as [Docker container](https://www.d
     --prerelease='<boolean|alpha|beta>' # (optional) Whether pre-release versions should be used (default:false).
     --url-prefix='<string>'             # (optional) Prefix to prepend URL's with, eg /foo => GET /foo/status
     --update                            # (optional) Flag indicating if update performed at startup (default:false).
+    --npm-token                         # (optional) An NPM authorization token if working with private modules.
 ```
 
 see the `/examples/docker-compose.yml` file for example configuration.
 
-## Routes
 
-    GET   /status
-    POST  /update   body: { restart?:bool, version?:string|'latest', prerelease?:bool|alpha|beta, dryRun?:bool, }
-    POST  /start    body: { restart?:bool }
-    POST  /stop
+### .env
+These same arguments can alternatively be specified as environment variables, see `/example/env/main.env` and the `env_file` reference in `docker-compose.yml` for example.
+
+```bash
+NPM_MODULE=           --npm-module
+NPM_DIR=              --dir
+NPM_PORT=             --port
+NPM_PRERELEASE=       --prerelease
+NPM_URL_PREFIX=       --url-prefix
+NPM_UPDATE=           --update
+NPM_TOKEN=            --npm-token
+```
+
+Any values passed explicitly to the command will override the environment variables.
+
+
+## Private NPM Packages
+
+Follow the instructions on NPM ["Using private packages in a CI/CD workflow"](https://docs.npmjs.com/using-private-packages-in-a-ci-cd-workflow) to create a token to access your private modules:
+
+    npm token create --read-only
+
+Alternatively tokens can be created within the [npmjs.com](https://www.npmjs.com) adminitration UI.  
+Pass the token as either a command-line argument or an environment variable at startup.

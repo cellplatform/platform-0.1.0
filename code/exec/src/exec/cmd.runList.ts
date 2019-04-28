@@ -18,9 +18,9 @@ import { run } from './cmd.run';
  */
 export async function runList(
   commands: string | string[] | ICommand | ICommand[],
-  options: tasks.IRunTasksOptions & { dir?: string } = {},
+  options: tasks.IRunTasksOptions & { cwd?: string } = {},
 ): Promise<ICommandListExecutionResponse> {
-  const dir = resolve(options.dir || process.cwd());
+  const cwd = resolve(options.cwd || process.cwd());
   const inputs = Array.isArray(commands) ? commands : [commands];
 
   // Prepare the commands.
@@ -34,7 +34,7 @@ export async function runList(
   const list: ITask[] = cmds.map(({ title, cmd }, index) => ({
     title,
     task: async () => {
-      const res = run(cmd, { dir, silent: true });
+      const res = run(cmd, { cwd, silent: true });
       const data = await res;
       const error = data.error;
       const ok = data.error || !data.ok || data.code !== 0 ? false : true;
@@ -61,7 +61,7 @@ export async function runList(
     results,
     error,
     errors: errors.command,
-    dir,
+    cwd,
   };
 }
 

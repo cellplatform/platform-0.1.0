@@ -19,19 +19,19 @@ export class NodeProcess {
 
   public static cache: { [key: string]: NodeProcess } = {};
   public static singleton(args: t.NodeProcessArgs, options: { force?: boolean } = {}) {
-    const { dir } = args;
+    const { cwd } = args;
     const { force } = options;
     const cache = NodeProcess.cache;
-    if (force && cache[dir]) {
-      cache[dir].dispose();
-      delete cache[dir];
+    if (force && cache[cwd]) {
+      cache[cwd].dispose();
+      delete cache[cwd];
     }
-    if (!cache[dir]) {
+    if (!cache[cwd]) {
       const process = new NodeProcess(args);
-      process.dispose$.subscribe(() => delete cache[dir]);
-      cache[dir] = process;
+      process.dispose$.subscribe(() => delete cache[cwd]);
+      cache[cwd] = process;
     }
-    return cache[dir];
+    return cache[cwd];
   }
 
   public static killPort(port: number, options?: exec.IRunOptions) {
@@ -43,13 +43,10 @@ export class NodeProcess {
    * [Lifecycle]
    */
   private constructor(args: t.NodeProcessArgs) {
-    const { dir } = args;
-
-    this.dir = dir;
-
-    this.dispose$.subscribe(() => {
-      this.stop();
-    });
+    const { cwd, NPM_TOKEN } = args;
+    this.cwd = cwd;
+    this._.NPM_TOKEN = NPM_TOKEN;
+    this.dispose$.subscribe(() => this.stop());
   }
 
   public dispose() {
@@ -60,10 +57,11 @@ export class NodeProcess {
   /**
    * [Fields]
    */
-  public readonly dir: string;
+  public readonly cwd: string;
   public isSilent = false;
 
   private _ = {
+    NPM_TOKEN: undefined as undefined | string,
     child: undefined as undefined | exec.ICommandPromise,
     dispose$: new Subject(),
     events$: new Subject<t.NodeProcessEvent>(),
@@ -85,16 +83,21 @@ export class NodeProcess {
     return Boolean(this._.child);
   }
 
+  private get env() {
+    const { NPM_TOKEN } = this._;
+    return NPM_TOKEN ? { NPM_TOKEN } : undefined;
+  }
+
   /**
    * [Methods]
    */
   public async start(options: { force?: boolean; stopWait?: number } = {}) {
-    const { dir } = this.toObject();
+    const { cwd: dir } = this.toObject();
     let isCancelled = false;
     this.fire({
       type: 'PROCESS/starting',
       payload: {
-        dir,
+        cwd: dir,
         get isCancelled() {
           return isCancelled;
         },
@@ -114,10 +117,11 @@ export class NodeProcess {
 
     // Start the process.
     if (!this.isRunning) {
-      const dir = this.dir;
+      const dir = this.cwd;
+      const env = this.env;
       const cmd = exec.command(`yarn start`);
-      const child = cmd.run({ dir, silent: true });
-      const name = basename(this.dir);
+      const child = cmd.run({ cwd: dir, env, silent: true });
+      const name = basename(this.cwd);
 
       // Monitor events on the child process.
       child.complete$.subscribe(() => delete this._.child);
@@ -127,18 +131,18 @@ export class NodeProcess {
 
       // Finish up.
       this._.child = child;
-      this.fire({ type: 'PROCESS/started', payload: { dir } });
+      this.fire({ type: 'PROCESS/started', payload: { cwd: dir } });
     }
   }
 
   public async stop(options: { wait?: number } = {}) {
     const { wait = 500 } = options;
-    const { dir } = this.toObject();
+    const { cwd } = this.toObject();
     let isCancelled = false;
     this.fire({
       type: 'PROCESS/stopping',
       payload: {
-        dir,
+        cwd,
         get isCancelled() {
           return isCancelled;
         },
@@ -159,12 +163,12 @@ export class NodeProcess {
 
     // Finish up.
     await delay(wait); // NB: Pause allows time for the process to stop gracefully and clean up.
-    this.fire({ type: 'PROCESS/stopped', payload: { dir } });
+    this.fire({ type: 'PROCESS/stopped', payload: { cwd } });
   }
 
   public toObject() {
     return {
-      dir: this.dir,
+      cwd: this.cwd,
       isRunning: this.isRunning,
       isDisposed: this.isDisposed,
       isSilent: this.isSilent,

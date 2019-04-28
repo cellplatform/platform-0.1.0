@@ -1,18 +1,26 @@
 import { expect } from 'chai';
+import * as dotenv from 'dotenv';
+
 import { npm } from '..';
 import { log } from '../common';
 
+dotenv.config();
+const NPM_TOKEN = process.env.NPM_TOKEN_TEST;
+
+/**
+ * For calls to private modules, pass the NPM_TOKEN
+ * and ensure there is a `.npmrc` file within the project
+ * containing:
+ *
+ *    //registry.npmjs.org/:_authToken=${NPM_TOKEN}
+ *
+ */
 describe('util.npm (integration)', function() {
   this.timeout(20000);
 
-  it.skip('getInfo', async () => {
-    const res = await npm.getInfo('create-tmpl');
-    log.info('getInfo:', res);
-  });
-
-  it.skip('getInfo: @uiharness/electron', async () => {
-    const res = await npm.getInfo('@uiharness/electron');
-    log.info('getInfo:', res);
+  it.skip('getVersion (private module)', async () => {
+    const res = await npm.getVersion('@tdb/slc.graphql', { NPM_TOKEN });
+    log.info('getVersion:', res);
   });
 
   it.skip('getVersion', async () => {
@@ -42,5 +50,10 @@ describe('util.npm (integration)', function() {
   it.skip('getVersions: prerelease', async () => {
     const res = await npm.getVersions(['@tdb/slc.graphql'], { prerelease: false });
     log.info('getVersions:', res);
+  });
+
+  it.skip('getVersionHistory', async () => {
+    const res = await npm.getVersionHistory('@tdb/slc.graphql', { prerelease: true });
+    log.info('getVersionHistory:', res);
   });
 });

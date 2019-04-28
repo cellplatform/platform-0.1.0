@@ -25,7 +25,7 @@ export type IBuildArgs = {
  * Builds to a set of differing target-formats.
  */
 export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Promise<IResult> {
-  const { silent, outDir = '', code, error, dir = '' } = await processArgs(args);
+  const { silent, outDir = '', code, error, cwd = '' } = await processArgs(args);
   const log = getLog(silent);
   let errorLog: string | undefined;
 
@@ -35,7 +35,7 @@ export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Pr
 
   await deleteTempDirs();
   await fs.remove(outDir);
-  await ensureMainHasNoExtension(dir, { silent });
+  await ensureMainHasNoExtension(cwd, { silent });
 
   const tasks: ITask[] = formats.map(format => {
     const title = format === 'ES_MODULE' ? '.mjs ESModule' : '.js  CommonJS';
@@ -75,7 +75,7 @@ type IArgs = IBuildArgs & { as?: BuildFormat };
  * Runs a typescript build.
  */
 export async function build(args: IArgs): Promise<IResult & { errorLog?: string }> {
-  const { dir = '', outDir = '', silent, watch, as, code, error, tsconfig } = await processArgs(
+  const { cwd = '', outDir = '', silent, watch, as, code, error, tsconfig } = await processArgs(
     args,
   );
   if (code !== 0) {
@@ -85,7 +85,7 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
   // Prepare the command.
   const tmpDir = toTmpDir(as);
   const tsc = 'node_modules/typescript/bin/tsc';
-  let cmd = `cd ${fs.resolve(dir)}\n`;
+  let cmd = `cd ${fs.resolve(cwd)}\n`;
 
   cmd += `node ${fs.join(tsc)}`;
   cmd += ` --outDir ${watch ? outDir : tmpDir}`;
@@ -114,7 +114,7 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
        * - simple `common-js` build with watcher.
        */
       await deleteTempDirs();
-      const res = await exec.cmd.run(cmd, { silent, dir });
+      const res = await exec.cmd.run(cmd, { silent, cwd });
       return res;
     } else {
       /**
@@ -123,7 +123,7 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
        * - build in temporary directories
        * - merge together upon completion
        */
-      const response = exec.cmd.runList(cmd, { silent, dir });
+      const response = exec.cmd.runList(cmd, { silent, cwd });
       const res = await response;
       if (res.code !== 0) {
         const errorLog = res.errors.log({ log: null, header: false });
@@ -166,14 +166,14 @@ export async function processArgs(args: IArgs) {
   const { silent, watch, as = 'COMMON_JS' } = args;
 
   // Retrieve paths.
-  const dir = args.dir || (await paths.closestParentOf('node_modules'));
-  if (!dir) {
+  const cwd = args.dir || (await paths.closestParentOf('node_modules'));
+  if (!cwd) {
     const error = new Error(`The root directory containing 'node_modules' was not found.`);
     return { code: 1, error };
   }
 
   // Retrieve the TSConfig.
-  const tsconfig = await paths.tsconfig(dir, args.tsconfig);
+  const tsconfig = await paths.tsconfig(cwd, args.tsconfig);
   if (!tsconfig.success) {
     const error = new Error(`A 'tsconfig.json' file could not be found.`);
     return { code: 1, error };
@@ -187,7 +187,7 @@ export async function processArgs(args: IArgs) {
   }
 
   // Finish up.
-  return { code: 0, dir, outDir, silent, watch, as, tsconfig: tsconfig.filename };
+  return { code: 0, cwd, outDir, silent, watch, as, tsconfig: tsconfig.filename };
 }
 
 /**

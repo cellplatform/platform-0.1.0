@@ -5,6 +5,12 @@ const pkg = require('../package.json');
 const server = express();
 
 /**
+ * Demonstrate the env-vars are loaded from [.env] file via `docker-compose.yml`
+ */
+console.log('\nprocess.env.FOO:', process.env.FOO || '<not-found>');
+console.log();
+
+/**
  * Routes
  */
 server.get('*', (req, res) => {

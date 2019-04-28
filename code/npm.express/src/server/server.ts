@@ -12,8 +12,9 @@ export function init(args: {
   downloadDir: string;
   prerelease?: t.NpmPrerelease;
   urlPrefix?: string;
+  NPM_TOKEN?: string;
 }) {
-  const { name } = args;
+  const { name, NPM_TOKEN } = args;
   const prerelease = args.prerelease || false;
   const downloadDir = fs.resolve(args.downloadDir);
 
@@ -21,9 +22,16 @@ export function init(args: {
   urlPrefix = urlPrefix.replace(/^\//, '').replace(/\/$/, '');
   urlPrefix = `/${urlPrefix}`;
 
-  const getContext = async () => {
-    return { name, downloadDir, prerelease };
+  const getContext: t.GetNpmRouteContext = async () => {
+    return { name, downloadDir, prerelease, NPM_TOKEN };
   };
+
+  // Ensure download folder is setup.
+  fs.ensureDirSync(downloadDir);
+  const npmrc = fs.resolve(fs.join(downloadDir, '.npmrc'));
+  if (!fs.pathExistsSync(npmrc)) {
+    fs.writeFileSync(npmrc, `//registry.npmjs.org/:_authToken=\${NPM_TOKEN}\n`);
+  }
 
   const routes = router.create({ getContext });
   const server = express()

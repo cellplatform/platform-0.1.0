@@ -6,4 +6,10 @@ export type INpmRouteContext = {
   name: string;
   downloadDir: string;
   prerelease: t.NpmPrerelease;
+  NPM_TOKEN?: string;
+};
+
+export type INpmError = {
+  message: string;
+  status: number;
 };

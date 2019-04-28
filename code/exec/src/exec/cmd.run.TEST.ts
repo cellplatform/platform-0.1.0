@@ -13,7 +13,7 @@ describe('exec.cmd.run', () => {
     const response = exec.cmd.run(cmd, { silent: true });
     const result = await response;
 
-    expect(response.dir).to.eql(process.cwd());
+    expect(response.cwd).to.eql(process.cwd());
     expect(response.ok).to.eql(true);
     expect(response.code).to.eql(0);
     expect(response.error).to.eql(undefined);

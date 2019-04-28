@@ -123,17 +123,15 @@ export class Store<M extends {}, E extends t.IStoreEvent> {
 
   private toDispatchEvent<T extends E>(event: T) {
     const { type, payload } = event;
-    let current: M | undefined;
-    const getCurrent = () => (current = current || { ...this.state });
+    const from = { ...this.state };
     const result: t.IDispatch<M, T, E> = {
       type,
       payload,
       get state() {
-        return getCurrent();
+        return { ...from };
       },
-      change: next => {
-        const from = getCurrent();
-        const to = { ...next };
+      change: state => {
+        const to = { ...state };
 
         // Fire PRE event (and check if anyone cancelled it).
         let isCancelled = false;

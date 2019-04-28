@@ -80,7 +80,7 @@ describe('Store', () => {
       // Not the same instance.
       expect(states[0]).to.not.equal(store.state);
       expect(states[1]).to.not.equal(store.state);
-      expect(states[0]).to.equal(states[1]); // NB: The same copy is returned from repeat calls to 'state' property.
+      expect(states[0]).to.not.equal(states[1]); // NB: Different copies returned from repeat calls to 'state' property.
     });
 
     it('changes the current state', () => {

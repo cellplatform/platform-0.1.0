@@ -13,7 +13,7 @@ describe('exec.cmd.runList', () => {
     expect(res.code).to.eql(0);
     expect(res.error).to.eql(undefined);
     expect(res.errors).to.eql([]);
-    expect(res.dir).to.eql(process.cwd());
+    expect(res.cwd).to.eql(process.cwd());
 
     expect(res.results.length).to.eql(1);
     expect(res.results[0].cmd).to.eql(cmd);

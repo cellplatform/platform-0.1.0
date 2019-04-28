@@ -32,10 +32,11 @@ export async function install(
     dir?: string;
     silent?: boolean;
     events$?: Subject<INpmInstallEvent>;
+    NPM_TOKEN?: string;
   } = {},
 ) {
   const timer = time.timer();
-  const { events$ } = args;
+  const { events$, NPM_TOKEN } = args;
   const use = await toEngine(args.use);
   const dir = resolve(args.dir ? args.dir : '.');
   const cmd = await installCommand({ use });
@@ -88,7 +89,8 @@ export async function install(
   };
 
   // Run the command.
-  const child = exec.cmd.run(`cd ${dir} \n ${cmd}`, { silent });
+  const env = NPM_TOKEN ? { NPM_TOKEN } : undefined;
+  const child = exec.cmd.run(`cd ${dir} \n ${cmd}`, { silent, env });
   child.stdout$.subscribe(e => onData(e, false));
   child.stderr$.subscribe(e => onData(e, false));
 

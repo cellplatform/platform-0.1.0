@@ -31,10 +31,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/exec@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.1.1.tgz#96b08b7aa8b88e0f71e07336bf9b3f05cca2507c"
-  integrity sha512-p6cutWR1OIMbXKGlA8GPA1ZymiZGvGjM2dXgWuAVYotnwNSAzkBEO+a1O6dutnN8D2eid70Q3zgGCXglanviaA==
+"@platform/exec@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.0.tgz#b7a4c166ff0690054cf0546edcb2b8ead8de17ea"
+  integrity sha512-5hpo4V8540f0ZQWSE2135u3XtJ5NXIj0aaqldyYxk1DXJCipokLGdyZ0osG+qOIRk+GCy/KHfLbeTpUf+Yw6mA==
   dependencies:
     "@platform/libs" "0.0.12"
     "@types/chalk" "2.2.0"

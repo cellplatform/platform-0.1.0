@@ -5,7 +5,7 @@ export * from './NodeProcess/types';
  * Options when executing a command.
  */
 export type IRunOptions = {
-  dir?: string;
+  cwd?: string;
   silent?: boolean;
   env?: NodeJS.ProcessEnv;
 };
@@ -60,7 +60,7 @@ export type ICommandPromise = Promise<IResultInfo> &
     stderr$: Observable<string>; // Includes ANSI colors.
     stdout: string[]; // Includes ANSI colors - see [info] for values with no colors.
     stderr: string[]; // Includes ANSI colors - see [info] for values with no colors.
-    dir: string; // The `cwd` (current working directory) the script executed in.
+    cwd: string; // The `cwd` (current working directory) the script executed in.
     kill(): void;
   };
 
@@ -77,7 +77,7 @@ export type ICommandListExecutionResponse = IResult & {
   ok: boolean;
   results: IListCommandResult[];
   errors: ICommandErrors;
-  dir: string;
+  cwd: string;
 };
 
 export type IListCommandResult = {

@@ -1,12 +1,4 @@
-export type NpmPrerelease = boolean | 'alpha' | 'beta'
-
-
-export interface INpmInfo {
-  name: string;
-  latest: string;
-  size: number;
-  json: { [key: string]: any };
-}
+export type NpmPrerelease = boolean | 'alpha' | 'beta';
 
 /**
  * `package.json`
