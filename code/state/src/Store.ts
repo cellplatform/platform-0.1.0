@@ -18,7 +18,7 @@ export function create<M extends {}, E extends t.IStoreEvent>(args: IStoreArgs<M
 /**
  * An observable state machine.
  */
-export class Store<M extends {}, E extends t.IStoreEvent> {
+export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M, E> {
   /**
    * [Static]
    */
@@ -92,7 +92,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> {
    * The current state.
    */
   public get state() {
-    return this._.state;
+    return { ...this._.state };
   }
 
   /**
@@ -123,7 +123,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> {
 
   private toDispatchEvent<T extends E>(event: T) {
     const { type, payload } = event;
-    const from = { ...this.state };
+    const from = this.state;
     const result: t.IDispatch<M, T, E> = {
       type,
       payload,

@@ -1,3 +1,22 @@
+import { Observable } from 'rxjs';
+
+/**
+ * An observable state machine.
+ */
+export type IStore<M extends {}, E extends IStoreEvent> = {
+  state: M;
+  isDisposed: boolean;
+
+  dispose$: Observable<{}>;
+  changing$: Observable<IStateChanging>;
+  changed$: Observable<IStateChange>;
+  events$: Observable<IStoreEvent>;
+
+  dispose(): void;
+  dispatch(event: E): IStore<M, E>;
+  on<T extends E>(type: T['type']): Observable<IDispatch<M, T, E>>;
+};
+
 /**
  * Basic shape of an event fired through the state-machine.
  */
