@@ -18,7 +18,8 @@ import { CommandPrompt } from '../CommandPrompt';
 export type ICommandShellProps = {
   children?: React.ReactNode;
   cli: t.ICommandState;
-  tree?: { width?: number; background?: number };
+  tree?: t.ICommandShellTreeOptions;
+  localStorage?: boolean | t.ICommandShellLocalStorageOptions;
   focusOnLoad?: boolean;
   style?: GlamorValue;
 };
