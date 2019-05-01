@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { color, Shell, t, ObjectView, Hr, css, Conversation } from '../common';
+import { color, CommandShell, t, ObjectView, Hr, css, Conversation } from '../common';
 
 export type ITestProps = {};
 

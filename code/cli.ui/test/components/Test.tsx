@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Button, color, css, GlamorValue } from '../common';
-import { TestShell } from './Test.Shell';
+import { TestShell } from './Test.CommandShell';
 import { TestCommandPrompt } from './Test.CommandPrompt';
 
 const STORAGE = { VIEW: 'TEST/REACT/view' };

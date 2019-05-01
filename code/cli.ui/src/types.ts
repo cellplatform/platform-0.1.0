@@ -5,6 +5,7 @@ export * from '@platform/ui.tree/lib/types';
 
 export * from './components/CommandPrompt/types';
 export * from './components/CommandTree/types';
+export * from './components/CommandShell/types';
 
 /**
  * [Events]

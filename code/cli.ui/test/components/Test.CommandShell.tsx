@@ -3,15 +3,15 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { GlamorValue, Shell } from '../common';
+import { GlamorValue, CommandShell } from '../common';
 
-export type ITestShellProps = { style?: GlamorValue };
-export type ITestShellState = {};
+export type ITestCommandShellProps = { style?: GlamorValue };
+export type ITestCommandShellState = {};
 
-export class TestShell extends React.PureComponent<ITestShellProps, ITestShellState> {
-  public state: ITestShellState = {};
+export class TestShell extends React.PureComponent<ITestCommandShellProps, ITestCommandShellState> {
+  public state: ITestCommandShellState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<ITestShellState>>();
+  private state$ = new Subject<Partial<ITestCommandShellState>>();
   private cli = cli.init({});
 
   /**
@@ -29,6 +29,6 @@ export class TestShell extends React.PureComponent<ITestShellProps, ITestShellSt
    * [Render]
    */
   public render() {
-    return <Shell cli={this.cli} tree={{}} />;
+    return <CommandShell cli={this.cli} tree={{}} />;
   }
 }

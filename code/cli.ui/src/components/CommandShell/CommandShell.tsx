@@ -15,16 +15,16 @@ import {
 import { CommandTree, ICommandTreeProps } from '../CommandTree';
 import { CommandPrompt } from '../CommandPrompt';
 
-export type IShellProps = {
+export type ICommandShellProps = {
   children?: React.ReactNode;
   cli: t.ICommandState;
   tree?: { width?: number; background?: number };
   focusOnLoad?: boolean;
   style?: GlamorValue;
 };
-export type IShellState = {};
+export type ICommandShellState = {};
 
-export class Shell extends React.PureComponent<IShellProps, IShellState> {
+export class CommandShell extends React.PureComponent<ICommandShellProps, ICommandShellState> {
   /**
    * [State]
    */
@@ -35,9 +35,9 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
    * [Fields]
    */
 
-  public state: IShellState = {};
+  public state: ICommandShellState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<IShellState>>();
+  private state$ = new Subject<Partial<ICommandShellState>>();
   private tree$ = new Subject<t.CommandTreeEvent>();
 
   private prompt!: CommandPrompt;
