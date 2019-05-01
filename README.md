@@ -65,6 +65,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/react](/code/react)
   - [@platform/css](/code/css)
 - ui components
+  - [@platform/ui.button](/code/ui.button)
   - [@platform/ui.cli](/code/ui.cli)
   - [@platform/ui.codemirror](/code/ui.codemirror)
   - [@platform/ui.editor](/code/ui.editor)
