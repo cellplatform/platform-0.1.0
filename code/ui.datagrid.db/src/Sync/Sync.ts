@@ -1,10 +1,8 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { constants, t, value } from '../common';
-import * as keys from './keys';
-
-const { KEY } = constants;
+import { t, value } from '../common';
+import { Keys } from '../keys';
 
 export type ISyncArgs = {
   db: t.IDb;
@@ -31,6 +29,7 @@ export class Sync {
     // Store refs;
     this.db = db;
     this.grid = grid;
+    this.keys = Keys.create({});
 
     // Bubble events.
     if (args.events$) {
@@ -63,7 +62,7 @@ export class Sync {
      */
     gridCellChanges$.subscribe(async e => {
       const list = e.changes.map(change => ({
-        key: keys.toDbCellKey(change.cell),
+        key: this.keys.db.toCellKey(change.cell),
         value: change.value.to,
       }));
       await db.putMany(list);
@@ -71,7 +70,7 @@ export class Sync {
 
     gridColumnsChanges$.subscribe(async e => {
       const list = e.changes.map(change => ({
-        key: keys.toDbColumnKey(change.column),
+        key: this.keys.db.toColumnKey(change.column),
         value: change.to,
       }));
       await db.putMany(list);
@@ -79,7 +78,7 @@ export class Sync {
 
     gridRowsChanges$.subscribe(async e => {
       const list = e.changes.map(change => ({
-        key: keys.toDbRowKey(change.row),
+        key: this.keys.db.toRowKey(change.row),
         value: change.to,
       }));
       await db.putMany(list);
@@ -90,7 +89,7 @@ export class Sync {
      */
     db.watch('cell/');
     dbWatch$.pipe(filter(e => e.pattern === 'cell/')).subscribe(e => {
-      const key = keys.toGridCellKey(e.key.toString());
+      const key = this.keys.grid.toCellKey(e.key.toString());
       grid.cell(key).value = e.value.to;
     });
 
@@ -116,6 +115,7 @@ export class Sync {
   };
   public readonly grid: t.IGrid;
   public readonly db: t.IDb;
+  private keys!: Keys;
 
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
@@ -133,11 +133,10 @@ export class Sync {
   /**
    * [Methods]
    */
-
   public async loadGrid() {
-    const cells = await this.db.values({ pattern: KEY.PREFIX.CELL });
+    const cells = await this.db.values({ pattern: this.keys.db.prefix.cell });
     const values = Object.keys(cells)
-      .map(key => ({ key: keys.toGridCellKey(key), value: cells[key].value }))
+      .map(key => ({ key: this.keys.grid.toCellKey(key), value: cells[key].value }))
       .reduce((acc, next) => {
         acc[next.key] = next.value;
         return acc;
@@ -146,9 +145,10 @@ export class Sync {
   }
 
   public async loadColumns() {
-    const columns = await this.db.values({ pattern: KEY.PREFIX.COLUMN });
+    // const columns = await this.db.values({ pattern: PREFIX.COLUMN });
+    const columns = await this.db.values({ pattern: this.keys.db.prefix.column });
     const values = Object.keys(columns)
-      .map(key => ({ key: keys.toGridColumnKey(key), value: columns[key].value }))
+      .map(key => ({ key: this.keys.grid.toColumnKey(key), value: columns[key].value }))
       .reduce((acc, next) => {
         acc[next.key] = next.value;
         return acc;
@@ -157,9 +157,10 @@ export class Sync {
   }
 
   public async loadRows() {
-    const rows = await this.db.values({ pattern: KEY.PREFIX.ROW });
+    // const rows = await this.db.values({ pattern: PREFIX.ROW });
+    const rows = await this.db.values({ pattern: this.keys.db.prefix.row });
     const values = Object.keys(rows)
-      .map(key => ({ key: keys.toGridRowKey(key), value: rows[key].value }))
+      .map(key => ({ key: this.keys.grid.toRowKey(key), value: rows[key].value }))
       .reduce((acc, next) => {
         acc[next.key] = next.value;
         return acc;

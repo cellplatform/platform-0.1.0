@@ -1,11 +1,12 @@
 import { expect } from 'chai';
-import * as keys from './keys';
+import { Keys } from './keys';
 
 describe('Sync', () => {
   describe('(static)', () => {
     it('toDbCellKey', () => {
+      const keys = Keys.create({});
       const test = (key: any, expected: any) => {
-        const res = keys.toDbCellKey(key);
+        const res = keys.db.toCellKey(key);
         expect(res).to.eql(expected);
       };
       test('A1', 'cell/A1');
@@ -19,8 +20,9 @@ describe('Sync', () => {
     });
 
     it('toDbRowKey', () => {
+      const keys = Keys.create({});
       const test = (key: any, expected: any) => {
-        const res = keys.toDbRowKey(key);
+        const res = keys.db.toRowKey(key);
         expect(res).to.eql(expected);
       };
       test('1', 'row/1');
@@ -29,8 +31,9 @@ describe('Sync', () => {
     });
 
     it('toDbColumnKey', () => {
+      const keys = Keys.create({});
       const test = (key: any, expected: any) => {
-        const res = keys.toDbColumnKey(key);
+        const res = keys.db.toColumnKey(key);
         expect(res).to.eql(expected);
       };
       test('A', 'column/A');
@@ -41,8 +44,9 @@ describe('Sync', () => {
     });
 
     it('toGridCellKey', () => {
+      const keys = Keys.create({});
       const test = (key: any, expected: any) => {
-        const res = keys.toGridCellKey(key);
+        const res = keys.grid.toCellKey(key);
         expect(res).to.eql(expected);
       };
       test('A1', 'A1');
