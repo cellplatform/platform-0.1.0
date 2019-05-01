@@ -84,7 +84,6 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
             {this.renderBody()}
           </div>
         </div>
-        {this.renderBottomConnector()}
       </Text>
     );
   }
@@ -132,37 +131,11 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
 
   private renderBody() {
     const styles = {
-      base: css({
-        padding: 15,
-      }),
+      base: css({ padding: 15 }),
     };
     return (
       <div {...styles.base}>
         <div>body</div>
-      </div>
-    );
-  }
-
-  private renderBottomConnector() {
-    const { bottomConnector = 0 } = this.props;
-    if (bottomConnector <= 0) {
-      return null;
-    }
-
-    const MARGIN = 2;
-    const styles = {
-      base: css({
-        paddingLeft: SIZE.LEFT_MARGIN + 18,
-      }),
-      line: css({
-        borderLeft: `solid 3px ${color.format(-0.1)}`,
-        height: bottomConnector - MARGIN * 2,
-        MarginY: MARGIN,
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <div {...styles.line} />
       </div>
     );
   }

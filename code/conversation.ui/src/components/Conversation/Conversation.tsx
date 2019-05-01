@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { css, GlamorValue } from '../../common';
 import { ThreadComment } from '../ThreadComment';
+import { Divider } from '../Divider';
 
 export type IConversationProps = { style?: GlamorValue };
 export type IConversationState = {};
@@ -47,9 +48,11 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
-          <ThreadComment avatarUrl={TEMP.WOMAN_1} bottomConnector={25} />
-          <ThreadComment avatarUrl={TEMP.WOMAN_2} bottomConnector={25} />
-          <ThreadComment avatarUrl={TEMP.WOMAN_1} bottomConnector={0} />
+          <ThreadComment avatarUrl={TEMP.WOMAN_1} />
+          <Divider height={25} left={78} />
+          <ThreadComment avatarUrl={TEMP.WOMAN_2} />
+          <Divider height={25} left={78} />
+          <ThreadComment avatarUrl={TEMP.WOMAN_1} />
         </div>
       </div>
     );
