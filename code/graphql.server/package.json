@@ -1,0 +1,36 @@
+{
+  "name": "@platform/graphql.server",
+  "version": "0.0.0",
+  "description": "Express configuration of Apollo server.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node lib.test/test/start",
+    "watch": "nodemon lib.test/test/start",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/graphql": "0.0.0",
+    "@platform/libs": "0.0.12",
+    "@platform/log": "0.0.113",
+    "@platform/util.is": "0.0.62",
+    "@types/express": "4.16.1",
+    "@types/graphql": "14.2.0",
+    "apollo-server-express": "2.4.8",
+    "express": "4.16.4",
+    "graphql": "14.2.1"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.47",
+    "@platform/ts": "3.4.13"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}
