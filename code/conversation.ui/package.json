@@ -27,7 +27,7 @@
     "@platform/conversation.db": "0.0.2",
     "@platform/graphql.server": "0.0.2",
     "@uiharness/dev": "0.2.44",
-    "@uiharness/ui": "0.2.21"
+    "@uiharness/ui": "0.2.22"
   },
   "files": [
     "lib"
