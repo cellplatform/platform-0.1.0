@@ -8,9 +8,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { share, map, takeUntil, filter } from 'rxjs/operators';
 
-import { constants, css, GlamorValue, hjson, t } from '../../common';
+import { constants, css, GlamorValue, hjson, t, graphqlFetcher } from '../../common';
 import { GraphqlEditorEvent } from './types';
-import { graphqlFetcher } from './fetch';
 import { DEFAULT_MESSAGE } from './default';
 
 const GraphiQL = require('graphiql');

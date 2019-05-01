@@ -1,0 +1,29 @@
+{
+  "name": "@platform/http",
+  "version": "0.0.0",
+  "description": "Tools for working with HTTP.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/libs": "0.0.12",
+    "isomorphic-fetch": "2.2.1"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.47",
+    "@platform/ts": "3.4.13",
+    "@types/isomorphic-fetch": "0.0.35"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}
