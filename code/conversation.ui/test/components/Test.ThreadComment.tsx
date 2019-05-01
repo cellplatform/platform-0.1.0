@@ -3,16 +3,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue } from '../common';
 
-export type ITestCommandHelpProps = { style?: GlamorValue };
-export type ITestCommandHelpState = {};
+export type IThreadCommentProps = { style?: GlamorValue };
+export type IThreadCommentState = {};
 
-export class TestCommandHelp extends React.PureComponent<
-  ITestCommandHelpProps,
-  ITestCommandHelpState
-> {
-  public state: ITestCommandHelpState = {};
+export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThreadCommentState> {
+  public state: IThreadCommentState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<ITestCommandHelpState>>();
+  private state$ = new Subject<Partial<IThreadCommentState>>();
 
   /**
    * [Lifecycle]
@@ -23,22 +20,17 @@ export class TestCommandHelp extends React.PureComponent<
 
   public componentWillUnmount() {
     this.unmounted$.next();
+    this.unmounted$.complete();
   }
 
   /**
    * [Render]
    */
   public render() {
-    const styles = {
-      base: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-        padding: 20,
-        flex: 1,
-      }),
-    };
+    const styles = { base: css({}) };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>TestCommandList</div>
+        <div>ThreadComment</div>
       </div>
     );
   }

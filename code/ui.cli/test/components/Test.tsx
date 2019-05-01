@@ -3,11 +3,11 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Button, color, css, GlamorValue } from '../common';
-import { TestCommandHelp } from './TestCommandHelp';
-import { TestCommandPrompt } from './TestCommandPrompt';
+import { TestShell } from './Test.Shell';
+import { TestCommandPrompt } from './Test.CommandPrompt';
 
 const STORAGE = { VIEW: 'TEST/REACT/view' };
-type View = 'prompt' | 'list';
+type View = 'prompt' | 'shell';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {
@@ -72,7 +72,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       <div {...styles.base}>
         <div {...styles.left}>
           {this.buttonView('prompt')}
-          {this.buttonView('list')}
+          {this.buttonView('shell')}
         </div>
         <div {...styles.main}>{this.renderView()}</div>
       </div>
@@ -86,8 +86,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       case 'prompt':
         return <TestCommandPrompt />;
 
-      case 'list':
-        return <TestCommandHelp />;
+      case 'shell':
+        return <TestShell />;
 
       default:
         return <div>View '{view}' not supported</div>;

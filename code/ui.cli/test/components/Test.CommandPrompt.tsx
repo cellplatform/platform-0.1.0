@@ -2,9 +2,17 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { CommandHelpList, CommandPrompt, CommandTree } from '../../src';
 import * as cli from '../cli';
-import { color, COLORS, css, GlamorValue, renderer, t } from '../common';
+import {
+  color,
+  COLORS,
+  CommandHelpList,
+  CommandPrompt,
+  CommandTree,
+  css,
+  renderer,
+  t,
+} from '../common';
 
 export type ITestCommandPromptProps = {};
 export type ITestCommandPromptState = {};
