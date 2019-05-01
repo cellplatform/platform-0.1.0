@@ -3,12 +3,20 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { Shell, t, MyComponent, ObjectView, Hr } from '../common';
+import { Avatar, constants, css, Shell, t } from '../common';
+
+const PINK = '#CD638D';
 
 export type ITestProps = {};
 
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
-  public state: t.ITestState = {};
+  public state: t.ITestState = {
+    src: constants.URL.WOMAN_1,
+    size: 64,
+    borderRadius: 8,
+    borderWidth: 5,
+    borderColor: 0.2,
+  };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
   private cli: t.ICommandState = cli.init({ state$: this.state$ });
@@ -30,12 +38,24 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Render]
    */
   public render() {
+    const styles = {
+      base: css({
+        backgroundColor: PINK,
+        flex: 1,
+        padding: 30,
+      }),
+    };
     return (
       <Shell cli={this.cli} tree={{}}>
-        <div style={{ padding: 30, flex: 1 }}>
-          <MyComponent text={this.state.title} />
-          <Hr />
-          <ObjectView name={'state'} data={this.state} />
+        <div {...styles.base}>
+          <Avatar
+            src={this.state.src}
+            size={this.state.size}
+            borderRadius={this.state.borderRadius}
+            borderWidth={this.state.borderWidth}
+            borderColor={this.state.borderColor}
+            block={this.state.block}
+          />
         </div>
       </Shell>
     );

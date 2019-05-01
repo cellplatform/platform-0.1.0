@@ -1,28 +1,32 @@
-import { Command, t } from '../common';
+import { Command, t, constants } from '../common';
 
-type P = t.ICommandProps & { count: number };
+const { URL } = constants;
+
+type P = t.ICommandProps;
 
 /**
  * The root of the CLI application.
  */
-export const root = Command.create<P>('root', e => {
-  // Setup initial screen.
-})
-  .add('title', e => {
-    // Sample command.
-    const title = (e.args.params[0] || 'Untitled').toString();
-    e.props.state$.next({ title });
+export const root = Command.create<P>('root')
+  .add('src-woman-1', e => {
+    e.props.state$.next({ src: URL.WOMAN_1 });
   })
-
-  .add('increment', e => {
-    // Sample command.
-    const count = e.get('count', 0) + 1;
-    e.set('count', count);
-    e.props.state$.next({ count });
+  .add('src-woman-2', e => {
+    e.props.state$.next({ src: URL.WOMAN_2 });
   })
-  .add('decrement', e => {
-    // Sample command.
-    const count = e.get('count', 0) - 1;
-    e.set('count', count);
-    e.props.state$.next({ count });
+  .add('size', e => {
+    const size = e.args.params[0] as number;
+    e.props.state$.next({ size });
+  })
+  .add('borderRadius', e => {
+    const borderRadius = e.args.params[0] as number;
+    e.props.state$.next({ borderRadius });
+  })
+  .add('borderColor', e => {
+    const borderColor = e.args.params[0] as number | string;
+    e.props.state$.next({ borderColor });
+  })
+  .add('borderWidth', e => {
+    const borderWidth = e.args.params[0] as number;
+    e.props.state$.next({ borderWidth });
   });

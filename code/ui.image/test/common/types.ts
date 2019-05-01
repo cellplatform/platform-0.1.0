@@ -8,6 +8,9 @@ export type ICommandProps = {
 };
 
 export type ITestState = {
-  title?: string;
-  count?: number;
+  src?: string;
+  size?: number;
+  borderRadius?: number;
+  borderWidth?: number;
+  borderColor?: number | string;
 };
