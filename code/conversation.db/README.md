@@ -7,3 +7,9 @@ Data persistence and server-side middleware for conversation threads.
 
 <p>&nbsp;<p>
 <p>&nbsp;<p>
+
+## Modules
+- [@platform/conversation.types](../conversation.types)
+- [@platform/conversation.db](../conversation.db)
+- [@platform/conversation.ui](../conversation.ui)
+

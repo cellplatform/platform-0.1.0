@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@platform/conversation.types": "0.0.0",
+    "@platform/hyperdb": "0.1.20",
     "@platform/libs": "0.0.12"
   },
   "devDependencies": {
