@@ -19,8 +19,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.47",
-    "@platform/ts": "3.4.13",
-    "@types/isomorphic-fetch": "0.0.35"
+    "@platform/ts": "3.4.13"
   },
   "files": [
     "lib"
