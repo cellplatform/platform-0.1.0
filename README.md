@@ -70,6 +70,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/ui.editor](/code/ui.editor)
   - [@platform/ui.graphql](/code/ui.graphql)
   - [@platform/ui.icon](/code/ui.icon)
+  - [@platform/ui.image](/code/ui.image)
   - [@platform/ui.monaco](/code/ui.monaco)
   - [@platform/ui.object](/code/ui.object)
   - [@platform/ui.panel](/code/ui.panel)

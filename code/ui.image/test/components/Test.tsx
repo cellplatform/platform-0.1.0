@@ -54,7 +54,6 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
             borderRadius={this.state.borderRadius}
             borderWidth={this.state.borderWidth}
             borderColor={this.state.borderColor}
-            block={this.state.block}
           />
         </div>
       </Shell>

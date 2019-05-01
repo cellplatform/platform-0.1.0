@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from '../../common';
+import { t, css, color, GlamorValue } from '../../common';
 
 export type IAvatarProps = {
   src?: string;
@@ -10,6 +10,7 @@ export type IAvatarProps = {
   borderWidth?: number;
   borderColor?: number | string;
   block?: boolean;
+  events$?: Subject<t.AvatarEvent>;
   style?: GlamorValue;
 };
 export type IAvatarState = {
@@ -23,17 +24,31 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
   public state: IAvatarState = { isLoaded: false };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IAvatarState>>();
+  private events$ = new Subject<t.AvatarEvent>();
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+
+    if (this.props.events$) {
+      events$.subscribe(this.props.events$);
+    }
+    this.fireLoad('LOADING');
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get src() {
+    return this.props.src || '';
   }
 
   /**
@@ -93,6 +108,20 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
     );
   }
 
-  private handleImageLoaded = () => this.state$.next({ isLoaded: true });
-  private handleImageLoadError = () => this.state$.next({ isLoaded: null });
+  private handleImageLoaded = () => {
+    this.state$.next({ isLoaded: true });
+    this.fireLoad('LOADED');
+  };
+  private handleImageLoadError = () => {
+    this.state$.next({ isLoaded: null });
+    this.fireLoad('LOAD_FAILED');
+  };
+
+  private fire(e: t.AvatarEvent) {
+    this.events$.next(e);
+  }
+  private fireLoad(status: t.AvatarLoadStatus) {
+    const src = this.src;
+    this.fire({ type: 'AVATAR/load', payload: { status, src } });
+  }
 }

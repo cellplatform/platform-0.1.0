@@ -1,1 +1,1 @@
-export type Foo = 'TEMP';
+export * from './components/Avatar/types';
