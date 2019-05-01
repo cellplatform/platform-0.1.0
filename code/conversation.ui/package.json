@@ -19,6 +19,7 @@
     "@platform/conversation.types": "0.0.1",
     "@platform/react": "0.1.19",
     "@platform/ui.editor": "0.0.50",
+    "@platform/ui.image": "^0.0.0",
     "@platform/ui.text": "0.1.9"
   },
   "devDependencies": {

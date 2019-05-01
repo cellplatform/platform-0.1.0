@@ -46,7 +46,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       }),
       right: css({
         boxSizing: 'border-box',
-        width: 250,
+        width: 280,
         padding: 8,
         borderLeft: `solid 1px ${color.format(-0.1)}`,
       }),

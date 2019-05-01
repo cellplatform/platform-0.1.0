@@ -1269,6 +1269,13 @@
   dependencies:
     "@platform/react" "0.1.18"
 
+"@platform/ui.image@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.image/-/ui.image-0.0.0.tgz#b03c859937d6243d4406723514731460d484691e"
+  integrity sha512-CvjQRReHfhhd7F+buEPnpaIcJvTVYGTzjYyGk8Hu2xIwgdAG6lGRYiaJSQu4guFxy6P29b4LeKrqLhgIeWPzxg==
+  dependencies:
+    "@platform/react" "0.1.19"
+
 "@platform/ui.object@0.0.90":
   version "0.0.90"
   resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.90.tgz#394429d97aff558466f5727e91ad07e20ebbfb56"

@@ -3,9 +3,15 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue } from '../../common';
 import { Editor } from '../Editor';
+import { ThreadComment } from '../ThreadComment';
 
 export type IConversationProps = { style?: GlamorValue };
 export type IConversationState = {};
+
+const TEMP = {
+  WOMAN_1: require('../../../static/images/woman-1.jpg'),
+  WOMAN_2: require('../../../static/images/woman-2.jpg'),
+};
 
 export class Conversation extends React.PureComponent<IConversationProps, IConversationState> {
   public state: IConversationState = {};
@@ -34,6 +40,7 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
         Flex: 'vertical-stretch-stretch',
       }),
       body: css({
+        paddingTop: 20,
         flex: 1,
       }),
       editor: css({
@@ -45,11 +52,11 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
-          <div>body.</div>
+          <ThreadComment avatarUrl={TEMP.WOMAN_1} bottomConnector={25} />
+          <ThreadComment avatarUrl={TEMP.WOMAN_2} bottomConnector={25} />
+          <ThreadComment avatarUrl={TEMP.WOMAN_1} bottomConnector={0} />
         </div>
-        <div {...styles.editor}>
-          <Editor />
-        </div>
+        <div {...styles.editor}>{/* <Editor /> */}</div>
       </div>
     );
   }

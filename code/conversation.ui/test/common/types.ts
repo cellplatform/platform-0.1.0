@@ -7,7 +7,4 @@ export type ICommandProps = {
   state$: Subject<ITestState>;
 };
 
-export type ITestState = {
-  title?: string;
-  count?: number;
-};
+export type ITestState = {};
