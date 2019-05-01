@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from '../../common';
-import { Editor } from '../Editor';
+
+import { css, GlamorValue } from '../../common';
 import { ThreadComment } from '../ThreadComment';
 
 export type IConversationProps = { style?: GlamorValue };
@@ -43,11 +43,6 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
         paddingTop: 20,
         flex: 1,
       }),
-      editor: css({
-        borderTop: `solid 6px ${color.format(-0.1)}`,
-        height: 220,
-        display: 'flex',
-      }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
@@ -56,7 +51,6 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
           <ThreadComment avatarUrl={TEMP.WOMAN_2} bottomConnector={25} />
           <ThreadComment avatarUrl={TEMP.WOMAN_1} bottomConnector={0} />
         </div>
-        <div {...styles.editor}>{/* <Editor /> */}</div>
       </div>
     );
   }

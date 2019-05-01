@@ -1,17 +1,8 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
-import { css, color, GlamorValue, t } from '../../common';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
+
+import { css, GlamorValue, t } from '../../common';
 import { TextEditor } from '../primitives';
 
 const MARKDOWN = `
@@ -19,14 +10,7 @@ Dear **Foo**
 ---
 - one
 - two
-- one
-- two
-- one
-- two
-- one
-- two
-- one
-- two
+- three
 
 `;
 
@@ -42,8 +26,8 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
   private state$ = new Subject<Partial<IEditorState>>();
   private events$ = new Subject<t.TextEditorEvent>();
 
-  private editor!: TextEditor;
-  private editorRef = (ref: TextEditor) => (this.editor = ref);
+  // private editor!: TextEditor;
+  // private editorRef = (ref: TextEditor) => (this.editor = ref);
 
   /**
    * [Lifecycle]
@@ -86,7 +70,7 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <TextEditor ref={this.editorRef} value={this.state.value} events$={this.events$} />
+        <TextEditor value={this.state.value} events$={this.events$} />
       </div>
     );
   }
