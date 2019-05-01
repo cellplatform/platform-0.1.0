@@ -1,4 +1,4 @@
-name: ui.cli
+name: cli.ui
 
 electron:
   port: 9925
