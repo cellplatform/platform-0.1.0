@@ -17,17 +17,17 @@ describe('mouse', () => {
 
   describe('handler', () => {
     it('single handler', () => {
-      const res = mouse.handle('CLICK', e => true);
+      const res = mouse.handle({ type: 'CLICK', handlers: [e => true] });
       expect(res).to.be.an.instanceof(Function);
     });
 
     it('multiple handlers', () => {
-      const res = mouse.handle('CLICK', e => true, e => false);
+      const res = mouse.handle({ type: 'CLICK', handlers: [e => true, e => false] });
       expect(res).to.be.an.instanceof(Function);
     });
 
     it('no handlers (undefined)', () => {
-      const res = mouse.handle('CLICK');
+      const res = mouse.handle({ type: 'CLICK' });
       expect(res).to.eql(undefined);
     });
   });
