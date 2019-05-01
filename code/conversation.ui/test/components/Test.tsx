@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { Shell, t, MyComponent, ObjectView, Hr } from '../common';
+import { color, Shell, t, ObjectView, Hr, css, Conversation } from '../common';
 
 export type ITestProps = {};
 
@@ -30,12 +30,38 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Render]
    */
   public render() {
+    const styles = {
+      base: css({
+        flex: 1,
+        Flex: 'horizontal',
+      }),
+      left: css({
+        flex: 1,
+        Flex: 'vertical-center-stretch',
+      }),
+      body: css({
+        width: 760,
+        flex: 1,
+        display: 'flex',
+      }),
+      right: css({
+        boxSizing: 'border-box',
+        width: 250,
+        padding: 8,
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+      }),
+    };
     return (
       <Shell cli={this.cli} tree={{}}>
-        <div style={{ padding: 30, flex: 1 }}>
-          <MyComponent text={this.state.title} />
-          <Hr />
-          <ObjectView name={'state'} data={this.state} />
+        <div {...styles.base}>
+          <div {...styles.left}>
+            <div {...styles.body}>
+              <Conversation />
+            </div>
+          </div>
+          <div {...styles.right}>
+            <ObjectView name={'state'} data={this.state} />
+          </div>
         </div>
       </Shell>
     );
