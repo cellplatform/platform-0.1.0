@@ -140,7 +140,7 @@
     "@platform/libs" "0.0.12"
     "@platform/ts.libs" "3.4.9"
 
-"@platform/util.is@^0.0.62":
+"@platform/util.is@0.0.62":
   version "0.0.62"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.62.tgz#0b4d8da88620258b29dd50d45af0cc6ec465f147"
   integrity sha512-A29FDqiwy8YmctfR9rAaqyfEgMkf0xHp9XGLckin+vVfOCGFfORrmta0nk467+UOBf8YAMUPZax5zpj9YqQ0Aw==

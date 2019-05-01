@@ -67,10 +67,10 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/conversation.types@0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.0.tgz#2e45e82d40b9427eada68abb7aa4838b662abbf4"
-  integrity sha512-teYAnqGisM/2LuGHvoA5EqqPsIPi5l7pwmYk0zM2u5+Q0+WOJQtgOixkGYjTjHZnLxfxDZLNYPfPylU7PBS9yg==
+"@platform/conversation.types@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.1.tgz#aa87c51c47255893e238806be4c5bf58004ebaed"
+  integrity sha512-u5MOMVcLqosrwCEmhkJy6VCVYAxSHFFcCW630WXuDarxVXL9szkWpc4GtvNOklOscyq9+raLlKL6QqOTjuOrAA==
   dependencies:
     "@platform/libs" "0.0.12"
 
