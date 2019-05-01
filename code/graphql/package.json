@@ -14,11 +14,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.12"
+    "@platform/libs": "0.0.12",
+    "@types/graphql": "14.2.0",
+    "graphql": "14.2.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.45",
-    "@platform/ts": "3.4.9"
+    "@platform/test": "0.0.47",
+    "@platform/ts": "3.4.13"
   },
   "files": [
     "lib"

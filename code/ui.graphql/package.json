@@ -15,13 +15,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/graphql": "0.0.0",
     "@platform/react": "0.1.19",
     "@platform/ui.codemirror": "0.0.29",
     "@types/codemirror": "0.0.74",
-    "@types/graphql": "14.2.0",
     "@uiharness/electron": "0.4.29",
     "graphiql": "0.13.0",
-    "graphql": "14.2.1",
     "hjson": "3.1.2"
   },
   "devDependencies": {
