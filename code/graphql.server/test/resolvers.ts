@@ -13,7 +13,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    send(message: String): Boolean
+    echo(message: String): String
   }
 `;
 
@@ -28,9 +28,10 @@ export const resolvers: t.IResolvers = {
   },
 
   Mutation: {
-    send: async (_: any, args: any, ctx: t.IContext, info: any) => {
-      log.info('send', args);
-      return true;
+    echo: async (_: any, args: { message: string }, ctx: t.IContext, info: any) => {
+      const res = `Echo: ${args.message}`;
+      log.info(res);
+      return res;
     },
   },
 };

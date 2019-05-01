@@ -5,8 +5,8 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "node lib.test/test/start",
-    "watch": "nodemon lib.test/test/start",
+    "start": "yarn build-test && node lib.test/test/start",
+    "watch": "yarn build-test && nodemon lib.test/test/start",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
