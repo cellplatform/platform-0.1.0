@@ -8,7 +8,7 @@ export class Argv {
   /**
    * Parse a input string into command line argument: [parameters] and [commands].
    */
-  public static parse<P extends t.CommandArgsOptions = any>(text: string): t.ICommandArgs<P> {
+  public static parse<P extends t.ICommandArgsOptions = any>(text: string): t.ICommandArgs<P> {
     const params = minimist((text || '').split(' '));
     const commands = (params._ || [])
       .filter((e: any) => Boolean(e))

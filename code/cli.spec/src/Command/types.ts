@@ -1,6 +1,8 @@
 import { Observable } from 'rxjs';
 import * as t from '../types';
 
+export type ICommandProps = { [key: string]: any };
+
 /**
  * Represents a single [command] which is a named unit of
  * functionality that can optionally take parameter input.
@@ -9,7 +11,7 @@ import * as t from '../types';
  *  - `P` stands for `props`
  *  - `A` stands for `arguments`
  */
-export type ICommand<P extends object = any, A extends t.CommandArgsOptions = any> = {
+export type ICommand<P extends ICommandProps = any, A extends t.ICommandArgsOptions = any> = {
   id: number;
   name: string;
   description: string;
@@ -46,7 +48,7 @@ export type CommandTreeFilter<T extends ICommand> = (command: T) => boolean;
  *  - `P` stands for `props`
  *  - `A` stands for `arguments`
  */
-export type CommandHandler<P extends object = any, A extends t.CommandArgsOptions = any> = (
+export type CommandHandler<P extends ICommandProps = any, A extends t.ICommandArgsOptions = any> = (
   e: ICommandHandlerArgs<P, A>,
 ) => any | Promise<any>;
 
@@ -56,7 +58,10 @@ export type CommandHandler<P extends object = any, A extends t.CommandArgsOption
  *  - `P` stands for `props`
  *  - `A` stands for `arguments`
  */
-export type ICommandHandlerArgs<P extends object = any, A extends t.CommandArgsOptions = any> = {
+export type ICommandHandlerArgs<
+  P extends ICommandProps = any,
+  A extends t.ICommandArgsOptions = any
+> = {
   command: ICommand<P, A>;
   namespace: ICommand<P, A>;
   args: t.ICommandArgs<A>;
@@ -70,10 +75,15 @@ export type ICommandHandlerArgs<P extends object = any, A extends t.CommandArgsO
 /**
  * [Invoke]
  */
-export type InvokeCommand<P extends object = any, A extends t.CommandArgsOptions = any> = <R = any>(
+export type InvokeCommand<P extends ICommandProps = any, A extends t.ICommandArgsOptions = any> = <
+  R = any
+>(
   options: IInvokeCommandArgs<P, A>,
 ) => IInvokedCommandPromise<P, A, R>;
-export type IInvokeCommandArgs<P extends object = any, A extends t.CommandArgsOptions = any> = {
+export type IInvokeCommandArgs<
+  P extends ICommandProps = any,
+  A extends t.ICommandArgsOptions = any
+> = {
   command: ICommand<P, A>;
   namespace: ICommand<P, A>;
   props: P;
@@ -111,18 +121,24 @@ export type CommandInvokeEvent =
   | ICommandInvokeSetEvent;
 
 export type ICommandInvokeBeforeEvent<
-  P extends object = any,
-  A extends t.CommandArgsOptions = any
+  P extends ICommandProps = any,
+  A extends t.ICommandArgsOptions = any
 > = {
   type: 'COMMAND/invoke/before';
   payload: { command: ICommand<P, A>; invokeId: string; props: P };
 };
 
-export type ICommandInvokeSetEvent<P extends object = any, A extends t.CommandArgsOptions = any> = {
+export type ICommandInvokeSetEvent<
+  P extends ICommandProps = any,
+  A extends t.ICommandArgsOptions = any
+> = {
   type: 'COMMAND/invoke/set';
   payload: ICommandInvokeSet<P, A>;
 };
-export type ICommandInvokeSet<P extends object = any, A extends t.CommandArgsOptions = any> = {
+export type ICommandInvokeSet<
+  P extends ICommandProps = any,
+  A extends t.ICommandArgsOptions = any
+> = {
   command: ICommand<P, A>;
   invokeId: string;
   key: keyof P;
@@ -131,13 +147,16 @@ export type ICommandInvokeSet<P extends object = any, A extends t.CommandArgsOpt
 };
 
 export type ICommandInvokeAfterEvent<
-  P extends object = any,
-  A extends t.CommandArgsOptions = any
+  P extends ICommandProps = any,
+  A extends t.ICommandArgsOptions = any
 > = {
   type: 'COMMAND/invoke/after';
   payload: ICommandInvokeAfter<P, A>;
 };
-export type ICommandInvokeAfter<P extends object = any, A extends t.CommandArgsOptions = any> = {
+export type ICommandInvokeAfter<
+  P extends ICommandProps = any,
+  A extends t.ICommandArgsOptions = any
+> = {
   command: ICommand<P, A>;
   invokeId: string;
   props: P;
