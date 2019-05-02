@@ -7,7 +7,7 @@ import { id, time, value, DEFAULT, t } from '../common';
 /**
  * An async invoker.
  */
-export function invoker<P extends object, A extends object, R>(options: {
+export function invoker<P extends object, A extends t.CommandArgsOptions, R>(options: {
   events$: Subject<t.CommandInvokeEvent>;
   command: t.ICommand<P, A>;
   namespace: t.ICommand<P, A>;
