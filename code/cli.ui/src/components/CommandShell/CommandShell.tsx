@@ -51,9 +51,13 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     // const tree$ = this.tree$.pipe(takeUntil(this.unmounted$));
+    // const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
 
     // Update state.
     state$.subscribe(e => this.setState(e));
+
+    // TEMP 🐷 TODO -- save CLI value to storage.
+    // cli$.subscribe(e => localStorage.setItem(KEY_CMD, this.cli.toString()));
   }
 
   public componentDidMount() {
@@ -121,7 +125,7 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.main}>
-          {tree && this.renderIndex()}
+          {tree && this.renderTreeIndex()}
           <div {...styles.body}>{this.props.children}</div>
         </div>
         <div {...styles.footer}>
@@ -136,7 +140,7 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
     );
   }
 
-  private renderIndex() {
+  private renderTreeIndex() {
     const { tree = {} } = this.props;
     const background = this.background;
 
