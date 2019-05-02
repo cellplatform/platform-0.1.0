@@ -12,7 +12,7 @@ export function graphqlFetcher(args: {
   url: string;
   events$: Subject<t.GraphqlEditorEvent>;
 }): t.JsonFetcher {
-  return async (params: any): Promise<t.Json> => {
+  return async (params: any): Promise<t.IJsonMap> => {
     const fetchId = id.shortid();
     const { events$, url } = args;
 

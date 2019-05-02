@@ -18,6 +18,7 @@
     "@platform/graphql": "0.0.1",
     "@platform/react": "0.1.20",
     "@platform/ui.codemirror": "0.0.30",
+    "@platform/util.value": "^0.0.64",
     "@types/codemirror": "0.0.74",
     "@uiharness/electron": "0.4.30",
     "graphiql": "0.13.0",

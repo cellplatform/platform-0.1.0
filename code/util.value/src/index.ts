@@ -1,5 +1,6 @@
 export { is } from '@platform/util.is';
 
+export * from './types';
 export * from './value';
 export * from './time';
 export { id } from './id';
