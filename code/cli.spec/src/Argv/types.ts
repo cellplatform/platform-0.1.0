@@ -1,10 +1,10 @@
-export type CommandArgsParamType = string | number | boolean;
-export type ICommandArgsOptions = { [key: string]: CommandArgsParamType | undefined };
+export type CommandArgValue = string | number | boolean;
+export type CommandArgsOptions = { [key: string]: CommandArgValue | undefined };
 
 /**
  * Parsing `ARGV` strings.
  */
-export type ICommandArgs<O extends ICommandArgsOptions = {}> = {
-  params: CommandArgsParamType[];
+export type ICommandArgs<O extends CommandArgsOptions = {}> = {
+  params: CommandArgValue[];
   options: O;
 };

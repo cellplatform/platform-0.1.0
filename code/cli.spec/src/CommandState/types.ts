@@ -63,7 +63,7 @@ export type ICommandChange = {
  */
 export type BeforeInvokeCommand<
   P extends t.ICommandProps = any,
-  A extends t.ICommandArgsOptions = any
+  A extends t.CommandArgsOptions = any
 > = (args: {
   command: t.ICommand<P, A>;
   namespace?: t.ICommand<P, A>;

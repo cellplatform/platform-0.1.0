@@ -1,6 +1,6 @@
 import * as t from '../types';
 
-export type CommandParamType = 'string' | 'boolean' | 'number' | t.CommandArgsParamType[];
+export type CommandParamType = 'string' | 'boolean' | 'number' | t.CommandArgValue[];
 
 /**
  * A single parameter of a Command.

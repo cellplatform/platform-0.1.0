@@ -540,6 +540,54 @@ describe('CommandState', () => {
       expect(p5).to.eql(undefined);
     });
 
+    it.only('[e.option] method', async () => {
+      const events: t.ICommandHandlerArgs[] = [];
+      const ns = Command.create('ns').add('run', e => events.push(e));
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, beforeInvoke });
+
+      state.change({ text: 'ns', namespace: true });
+      state.change({ text: 'run' });
+      await state.invoke();
+
+      // No value.
+      const option1 = events[0].option('force');
+      expect(option1).to.eql(undefined);
+
+      // Default value.
+      const option2 = events[0].option<string>('force', 'hello');
+      expect(option2).to.eql('hello');
+
+      // Option (true).
+      state.change({ text: 'run --force' });
+      await state.invoke();
+      const option3a = events[1].option<boolean>('force', false);
+      const option3b = events[1].option<number>('port', 1234);
+      expect(option3a).to.eql(true);
+      expect(option3b).to.eql(1234);
+
+      // Option (string/boolean).
+      state.change({ text: 'run --force=false --label harry -p 8080' });
+      await state.invoke();
+      const option4a = events[2].option<boolean>('force', true);
+      const option4b = events[2].option<boolean>('label');
+      const option4c = events[2].option<number>('p');
+      expect(option4a).to.eql(false);
+      expect(option4b).to.eql('harry');
+      expect(option4c).to.eql(8080);
+
+      // Option (full and abbreviated key).
+      state.change({ text: 'run -p 8080' });
+      await state.invoke();
+      const option5 = events[2].option<number>(['port', 'p'], 1234);
+      expect(option5).to.eql(8080);
+
+      state.change({ text: 'run --port 8080' });
+      await state.invoke();
+      const option6 = events[2].option<number>(['p', 'port'], 1234);
+      expect(option6).to.eql(8080);
+    });
+
     it('invokes with props/args from parameter', async () => {
       const list: t.ICommandHandlerArgs[] = [];
       const root = Command.create('root').add('run', e => list.push(e));
