@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 
-export * from '@platform/ui.cli/lib/types';
+export * from '@platform/cli.ui/lib/types';
 export * from '../../src/types';
 
 export type ICommandProps = {
