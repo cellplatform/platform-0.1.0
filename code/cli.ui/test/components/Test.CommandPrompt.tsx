@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import * as cli from '../cli';
 import {
   color,
   COLORS,
@@ -14,7 +13,7 @@ import {
   t,
 } from '../common';
 
-export type ITestCommandPromptProps = {};
+export type ITestCommandPromptProps = { cli: t.ICommandState };
 export type ITestCommandPromptState = {};
 
 export class TestCommandPrompt extends React.PureComponent<
@@ -25,7 +24,7 @@ export class TestCommandPrompt extends React.PureComponent<
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestCommandPromptState>>();
   private events$ = new Subject<t.CommandPromptEvent>();
-  private cli = cli.init({});
+  private cli = this.props.cli;
 
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;

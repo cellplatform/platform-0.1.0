@@ -1,4 +1,5 @@
 import { Command, t } from '../common';
+import { shell } from './cmds.shell';
 
 type P = t.ITestCommandProps;
 
@@ -40,6 +41,7 @@ export const root = Command.create<P>('root', e => {
   console.log('e.namespace', e.namespace && e.namespace.name);
   console.groupEnd();
 })
+  .add(shell)
   .add(list)
   .add(ns)
   .add({ name: 'run', handler: e => null, description: 'Run the thing now.' })

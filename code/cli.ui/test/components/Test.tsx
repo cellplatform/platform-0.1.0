@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Button, color, css, GlamorValue } from '../common';
+import * as cli from '../cli';
+import { Button, color, css, GlamorValue, t } from '../common';
 import { TestShell } from './Test.CommandShell';
 import { TestCommandPrompt } from './Test.CommandPrompt';
 
@@ -10,7 +11,7 @@ const STORAGE = { VIEW: 'TEST/REACT/view' };
 type View = 'prompt' | 'shell';
 
 export type ITestProps = { style?: GlamorValue };
-export type ITestState = {
+export type ITestState = t.ITestState & {
   view?: View;
 };
 
@@ -18,6 +19,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
+  private cli = cli.init({ state$: this.state$, getState: () => this.state });
 
   /**
    * [Lifecycle]
@@ -84,10 +86,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     switch (view) {
       case 'prompt':
-        return <TestCommandPrompt />;
+        return <TestCommandPrompt cli={this.cli} />;
 
       case 'shell':
-        return <TestShell />;
+        return <TestShell cli={this.cli} {...this.state.commandShell} />;
 
       default:
         return <div>View '{view}' not supported</div>;
