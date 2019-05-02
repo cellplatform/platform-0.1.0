@@ -86,10 +86,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     switch (view) {
       case 'prompt':
-        return <TestCommandPrompt cli={this.cli} />;
+        return <TestCommandPrompt cli={this.cli} testState={this.state} />;
 
       case 'shell':
-        return <TestShell cli={this.cli} {...this.state.commandShell} />;
+        return <TestShell cli={this.cli} testState={this.state} />;
 
       default:
         return <div>View '{view}' not supported</div>;

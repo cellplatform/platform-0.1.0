@@ -540,7 +540,7 @@ describe('CommandState', () => {
       expect(p5).to.eql(undefined);
     });
 
-    it.only('[e.option] method', async () => {
+    it('[e.option] method', async () => {
       const events: t.ICommandHandlerArgs[] = [];
       const ns = Command.create('ns').add('run', e => events.push(e));
       const root = Command.create('root').add(ns);
@@ -579,13 +579,27 @@ describe('CommandState', () => {
       // Option (full and abbreviated key).
       state.change({ text: 'run -p 8080' });
       await state.invoke();
-      const option5 = events[2].option<number>(['port', 'p'], 1234);
+      const option5 = events[3].option<number>(['port', 'p'], 1234);
       expect(option5).to.eql(8080);
 
       state.change({ text: 'run --port 8080' });
       await state.invoke();
-      const option6 = events[2].option<number>(['p', 'port'], 1234);
+      const option6 = events[4].option<number>(['p', 'port'], 1234);
       expect(option6).to.eql(8080);
+
+      // Option: negative number.
+      state.change({ text: 'run --color=-1.23' });
+      await state.invoke();
+      const option7 = events[5].option<number>('color');
+      expect(option7).to.eql(-1.23);
+
+      // Option: trims "-" prefix.
+      state.change({ text: 'run --color=red -f' });
+      await state.invoke();
+      const option8a = events[6].option<number>('--color');
+      const option8b = events[6].option<number>(['--force', '-f']);
+      expect(option8a).to.eql('red');
+      expect(option8b).to.eql(true);
     });
 
     it('invokes with props/args from parameter', async () => {
@@ -604,7 +618,6 @@ describe('CommandState', () => {
     it('overwrites [beforeInvoke] props with passed parameter props', async () => {
       const list: t.ICommandHandlerArgs[] = [];
       const root = Command.create('root').add('run', e => list.push(e));
-      const run = root.children[0];
       const state = CommandState.create({ root, beforeInvoke }).change({ text: 'run' });
 
       const res1 = await state.invoke();

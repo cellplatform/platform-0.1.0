@@ -13,7 +13,7 @@ import {
   t,
 } from '../common';
 
-export type ITestCommandPromptProps = { cli: t.ICommandState };
+export type ITestCommandPromptProps = { cli: t.ICommandState, testState: t.ITestState };
 export type ITestCommandPromptState = {};
 
 export class TestCommandPrompt extends React.PureComponent<

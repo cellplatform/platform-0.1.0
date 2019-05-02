@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { GlamorValue, CommandShell, t } from '../common';
 
-export type ITestCommandShellProps = { cli: t.ICommandState };
+export type ITestCommandShellProps = { cli: t.ICommandState; testState: t.ITestState };
 export type ITestCommandShellState = {};
 
 export class TestShell extends React.PureComponent<ITestCommandShellProps, ITestCommandShellState> {
@@ -28,6 +28,7 @@ export class TestShell extends React.PureComponent<ITestCommandShellProps, ITest
    * [Render]
    */
   public render() {
-    return <CommandShell cli={this.cli} tree={{}} />;
+    const { testState } = this.props;
+    return <CommandShell cli={this.cli} tree={testState.tree || {}} />;
   }
 }

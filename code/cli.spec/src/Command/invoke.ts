@@ -106,7 +106,9 @@ export function invoker<P extends t.ICommandProps, A extends t.CommandArgsOption
       ): T {
         const options = response.args.options;
         const optionsKeys = Object.keys(options).map(key => key.toString());
-        const keys = (Array.isArray(key) ? key : [key]).map(key => key.toString());
+        const keys = (Array.isArray(key) ? key : [key])
+          .map(key => key.toString())
+          .map(key => key.replace(/^\-+/, ''));
         for (const key of keys) {
           if (optionsKeys.includes(key) && options[key] !== undefined) {
             return options[key] as T;

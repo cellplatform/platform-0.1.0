@@ -7,8 +7,15 @@ type P = t.ITestCommandProps;
  */
 export const shell = Command.create<P>('shell', e => {
   console.group('🌼 invoked:shell');
-})
-  .add('tree-width', e => {
-    console.log('e.args', e.args);
-  })
-  .add('tree-background');
+  console.groupEnd();
+}).add('tree', e => {
+  const state: any = {
+    ...e.props.state,
+    tree: {
+      ...(e.props.state.tree || {}),
+      width: e.option(['width', 'w']),
+      background: e.option(['background', 'bg']),
+    },
+  };
+  e.props.next(state);
+});
