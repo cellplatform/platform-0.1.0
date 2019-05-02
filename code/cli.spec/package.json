@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli.spec",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Isolated data-structures for specifying command-line programs.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
