@@ -1,7 +1,5 @@
-import { ICommandArgs } from '../Argv/types';
 import { Observable } from 'rxjs';
-export { ICommandArgs };
-import { ICommandParam } from '../CommandParam/types';
+import * as t from '../types';
 
 /**
  * Represents a single [command] which is a named unit of
@@ -15,7 +13,7 @@ export type ICommand<P extends object = any, A extends object = any> = {
   id: number;
   name: string;
   description: string;
-  params: ICommandParam[];
+  params: t.ICommandParam[];
   children: ICommand[];
   handler?: CommandHandler<P, A>;
   invoke: InvokeCommand<P, A>;
@@ -61,10 +59,11 @@ export type CommandHandler<P extends object = any, A extends object = any> = (
 export type ICommandHandlerArgs<P extends object = any, A extends object = any> = {
   command: ICommand<P, A>;
   namespace: ICommand<P, A>;
-  args: ICommandArgs<A>;
+  args: t.ICommandArgs<A>;
   props: P;
   get<K extends keyof P>(key: K, defaultValue?: P[K]): P[K];
   set<K extends keyof P>(key: K, value: P[K]): P[K];
+  param<T extends t.CommandArgsParamType>(index: number, defaultValue?: T): T;
 };
 
 /**
@@ -74,9 +73,10 @@ export type InvokeCommand<P extends object = any, A extends object = any> = <R =
   options: IInvokeCommandArgs<P, A>,
 ) => IInvokedCommandPromise<P, A, R>;
 export type IInvokeCommandArgs<P extends object = any, A extends object = any> = {
+  command: ICommand<P, A>;
   namespace: ICommand<P, A>;
   props: P;
-  args?: string | ICommandArgs<A>;
+  args?: string | t.ICommandArgs<A>;
   timeout?: number;
 };
 
@@ -94,7 +94,7 @@ export type IInvokedCommandResponse<P extends object, A extends object, R> = {
   isTimedOut: boolean;
   timeout: number;
   props: P;
-  args: ICommandArgs<A>;
+  args: t.ICommandArgs<A>;
   result?: R;
   error?: Error;
 };

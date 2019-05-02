@@ -2,8 +2,7 @@ import { ReplaySubject, Subject, timer } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
 import { Argv } from '../Argv';
-import { id, time, value, DEFAULT } from '../common';
-import * as t from './types';
+import { id, time, value, DEFAULT, t } from '../common';
 
 /**
  * An async invoker.
@@ -96,6 +95,10 @@ export function invoker<P extends object, A extends object, R>(options: {
           payload: { command, invokeId, key, value, props },
         });
         return value;
+      },
+      param<T extends t.CommandArgsParamType>(index: number, defaultValue?: T): T {
+        const value: any = response.args.params[index];
+        return value === undefined ? defaultValue : value;
       },
     };
 

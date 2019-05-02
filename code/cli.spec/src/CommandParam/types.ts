@@ -1,3 +1,7 @@
+import * as t from '../types';
+
+export type CommandParamType = 'string' | 'boolean' | 'number' | t.CommandArgsParamType[];
+
 /**
  * A single parameter of a Command.
  */
@@ -7,5 +11,3 @@ export type ICommandParam = {
   description: string;
   isEnum: boolean;
 };
-
-export type CommandParamType = 'string' | 'boolean' | 'number' | Array<string | boolean | number>;

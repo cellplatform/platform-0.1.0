@@ -1,7 +1,9 @@
+export type CommandArgsParamType = string | number | boolean;
+
 /**
  * Parsing `ARGV` strings.
  */
-export type ICommandArgs<O extends object = any> = {
-  params: Array<string | number | boolean>;
+export type ICommandArgs<O extends object = {}> = {
+  params: CommandArgsParamType[];
   options: O;
 };

@@ -487,26 +487,57 @@ describe('CommandState', () => {
     });
 
     it('passes command/namespace to invoke args', async () => {
-      const args = {
+      const result = {
         ns: undefined as t.ICommandHandlerArgs | undefined,
         run: undefined as t.ICommandHandlerArgs | undefined,
       };
 
-      const ns = Command.create('ns', e => (args.ns = e)).add('run', e => (args.run = e));
+      const ns = Command.create('ns', e => (result.ns = e)).add('run', e => (result.run = e));
       const root = Command.create('root').add(ns);
       const state = CommandState.create({ root, beforeInvoke });
 
       state.change({ text: 'ns' });
       await state.invoke();
 
-      expect(args.ns && args.ns.command.name).to.eql('ns');
-      expect(args.ns && args.ns.namespace && args.ns.namespace.name).to.eql('ns');
+      expect(result.ns && result.ns.command.name).to.eql('ns');
+      expect(result.ns && result.ns.namespace && result.ns.namespace.name).to.eql('ns');
 
       state.change({ text: 'ns', namespace: true }).change({ text: 'run' });
       await state.invoke();
 
-      expect(args.run && args.run.command.name).to.eql('run');
-      expect(args.run && args.run.namespace && args.run.namespace.name).to.eql('ns');
+      expect(result.run && result.run.command.name).to.eql('run');
+      expect(result.run && result.run.namespace && result.run.namespace.name).to.eql('ns');
+    });
+
+    it('[e.param] method', async () => {
+      const events: t.ICommandHandlerArgs[] = [];
+      const ns = Command.create('ns').add('run', e => events.push(e));
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, beforeInvoke });
+
+      state.change({ text: 'ns', namespace: true });
+      state.change({ text: 'run' });
+      await state.invoke();
+
+      // No value.
+      const p1 = events[0].param(0);
+      expect(p1).to.eql(undefined);
+
+      // Default value.
+      const p2 = events[0].param<string>(0, 'hello');
+      expect(p2).to.eql('hello');
+
+      // Parameter value.
+      state.change({ text: 'run fast' });
+      await state.invoke();
+      const p3 = events[1].param<string>(0, 'hello');
+      expect(p3).to.eql('fast');
+
+      const p4 = events[1].param<boolean>(1, true);
+      expect(p4).to.eql(true);
+
+      const p5 = events[1].param<boolean>(2);
+      expect(p5).to.eql(undefined);
     });
 
     it('invokes with props/args from parameter', async () => {
