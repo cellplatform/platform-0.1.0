@@ -29,6 +29,7 @@ export type ITreeViewProps = {
   background?: 'THEME' | 'NONE';
   events$?: Subject<t.TreeViewEvent>;
   mouse$?: Subject<t.TreeNodeMouseEvent>;
+  slideDuration?: number;
   style?: GlamorValue;
 };
 
@@ -153,6 +154,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
           panels={panels}
           index={this.state.index}
           onSlide={this.handleSlide}
+          duration={this.props.slideDuration}
         />
       </div>
     );

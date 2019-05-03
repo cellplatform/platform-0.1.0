@@ -3,7 +3,8 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import * as sample from '../sample';
-import { Button, color, COLORS, css, Icons, ObjectView, t, TreeView, Foo } from './common';
+import { Button, color, COLORS, css, ObjectView, t, TreeView, Foo } from '../common';
+import { Icons } from './Icons';
 
 export type ITestState = {
   theme?: t.TreeTheme;

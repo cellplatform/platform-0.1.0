@@ -1,5 +1,5 @@
 import { createRoot } from './util';
-import { t, TreeView, COLORS } from '../components/common';
+import { t, TreeView, COLORS } from '../common';
 
 export const SIMPLE: t.ITreeNode = {
   id: 'root',
