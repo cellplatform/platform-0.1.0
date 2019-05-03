@@ -973,14 +973,14 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.0.40":
-  version "0.0.40"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.40.tgz#1cae2bfa44922561940bdc2e6ca3d166468e1198"
-  integrity sha512-oSo2bwOXDJpz0i3SU8T4DBepoL5ussQAns6JCcJ0jskhWXsLM2v4p4EA61puZHc3xKWD/Mg5GSrlvGRsHZtDdg==
+"@platform/css@0.0.41":
+  version "0.0.41"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.41.tgz#a0dc34ead744a9f9c6200350f1e342c10efab60e"
+  integrity sha512-mIrgNw9ThHBZRY/S1glgsSpRN3t0J2sHaeihSoK+7bqVDUKE+eUvbS2Kzixy6MexLXPZmB+ytsteijIwOcHT1g==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.63"
-    "@platform/util.value" "0.1.1"
+    "@platform/util.value" "0.1.2"
     "@types/tinycolor2" "1.4.1"
     glamor "2.20.40"
     tinycolor2 "1.4.1"
@@ -1097,12 +1097,12 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/react@0.1.22":
-  version "0.1.22"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.22.tgz#242448b7ff8df82a0a880df16715935016c05959"
-  integrity sha512-hx0ydrDmrwVQuUPw2mOLsJRhAH0bsfGWyGvCQ9cAytciaVqp/q6q6dwuk6vYgy5zS3HQMws0RRDN0uQbMjcyeQ==
+"@platform/react@0.1.23":
+  version "0.1.23"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.23.tgz#db9914ace806a02c0a58b87d6e176c0339a06837"
+  integrity sha512-P8M7yItgaJlioHmAWmnh90sCBaaWp5B6uz7QFAp36nN4OWafpW+bTC7bxBMLDeAYldZyntM0AD2wSi3I/vuFaw==
   dependencies:
-    "@platform/css" "0.0.40"
+    "@platform/css" "0.0.41"
     "@platform/util.is" "0.0.63"
     "@types/react" "16.8.15"
     "@types/react-dom" "16.8.4"
@@ -1133,6 +1133,13 @@
     "@platform/fs" "0.0.55"
     "@platform/libs" "0.0.12"
     "@platform/ts.libs" "3.4.10"
+
+"@platform/types@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.1.tgz#74315f6a3ddb06b491f1663812b637fc7ab418c3"
+  integrity sha512-WrpKhWMgESuFdhputYEwmpab8OYULT+7yqdsE8PwBWBO15soSe/ooZ5FLurDAs9raDdpIGHg6W0yAO0dh6LnZQ==
+  dependencies:
+    rxjs "6.5.1"
 
 "@platform/ui.icon@0.0.36":
   version "0.0.36"
@@ -1236,12 +1243,13 @@
     dayjs "1.8.13"
     semver "6.0.0"
 
-"@platform/util.value@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.1.1.tgz#a210b2f07aafa38d2f4765588e9b102462ab8f4a"
-  integrity sha512-9kuREH6kIKJ0BXitwe+OVQuX8SuNHhRQJ6hD9/RLYME0kzXgE8srGSWHzfzO9QiNyiIrvapv8w143aRsaklsrA==
+"@platform/util.value@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.1.2.tgz#30e872e58951063db34342befe04dc4b7e92774e"
+  integrity sha512-txZZgzKG0Wn/fAyGfzRfltWG2O4bd07ZmS0P1Ot7CrNw+3Kf2FYN/RFjxq83Dc16p0CP2Y9SfwHCzRMKxTjgQw==
   dependencies:
     "@platform/libs" "0.0.12"
+    "@platform/types" "0.0.1"
     "@platform/util.is" "0.0.63"
     "@types/semver" "6.0.0"
     cuid "2.1.6"
@@ -7004,7 +7012,7 @@ rxjs@6.4.0:
   dependencies:
     tslib "^1.9.0"
 
-rxjs@>=6.4.0, rxjs@^6.3.3, rxjs@^6.4.0, rxjs@^6.5.1:
+rxjs@6.5.1, rxjs@>=6.4.0, rxjs@^6.3.3, rxjs@^6.4.0, rxjs@^6.5.1:
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.1.tgz#f7a005a9386361921b8524f38f54cbf80e5d08f4"
   integrity sha512-y0j31WJc83wPu31vS1VlAFW5JGrnGC+j+TtGAa1fRQphy48+fDYiDmX8tjGloToEsMkxnouOg/1IzXGKkJnZMg==
