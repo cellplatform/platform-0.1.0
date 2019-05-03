@@ -4,13 +4,13 @@ import * as t from '../types';
 
 export type IMyObject = { message: string; count: number; obj: { force?: boolean } | undefined };
 const config = {
-  count: { default: 123 },
-  message: 'MY_KEY/message',
-  obj: { default: { force: true }, key: 'MY_KEY/obj' },
+  count: { default: 0, key: 'KEY/count' },
+  message: 'KEY/message',
+  obj: { default: { force: true } },
 };
 const initial = {
-  count: 123,
-  message: 'hello',
+  'KEY/count': 123,
+  'KEY/message': 'hello',
 };
 
 /**
@@ -66,7 +66,7 @@ describe('localStorage', () => {
 
     local.delete('count');
     local.delete('message');
-    expect(local.count).to.eql(123);
+    expect(local.count).to.eql(0);
     expect(local.message).to.eql(undefined);
   });
 
@@ -89,20 +89,34 @@ describe('localStorage', () => {
     expect(local.count).to.eql(123);
     local.count = 456;
     local.delete('count');
+    local.message = 'boo';
+    local.obj = { force: false };
 
-    expect(events.all.length).to.eql(3);
+    expect(events.all.length).to.eql(5);
     expect(events.all[0].type).to.eql('LOCAL_STORAGE/get');
     expect(events.all[1].type).to.eql('LOCAL_STORAGE/set');
     expect(events.all[2].type).to.eql('LOCAL_STORAGE/delete');
 
-    expect(events.get[0].key).to.eql('count');
+    expect(events.get[0].key).to.eql('KEY/count');
+    expect(events.get[0].prop).to.eql('count');
     expect(events.get[0].value).to.eql(123);
 
-    expect(events.set[0].key).to.eql('count');
+    expect(events.set[0].prop).to.eql('count');
+    expect(events.set[0].key).to.eql('KEY/count');
     expect(events.set[0].value.from).to.eql(123);
     expect(events.set[0].value.to).to.eql(456);
 
-    expect(events.delete[0].key).to.eql('count');
+    expect(events.delete[0].prop).to.eql('count');
     expect(events.delete[0].value).to.eql(456);
+
+    expect(events.set[1].prop).to.eql('message');
+    expect(events.set[1].key).to.eql('KEY/message');
+    expect(events.set[1].value.from).to.eql('hello');
+    expect(events.set[1].value.to).to.eql('boo');
+
+    expect(events.set[2].prop).to.eql('obj');
+    expect(events.set[2].key).to.eql('obj');
+    expect(events.set[2].value.from).to.eql({ force: true });
+    expect(events.set[2].value.to).to.eql({ force: false });
   });
 });

@@ -4,16 +4,16 @@ import { filter, map, share } from 'rxjs/operators';
 import { is, value as valueUtil } from '../common';
 import * as t from '../types';
 
-export type ILocalStorageField = {
+export type ILocalStorageField<P extends t.ILocalStorageProps<P>> = {
   key: string;
-  default: t.Json | undefined;
+  default?: P[keyof P];
 };
 
 /**
  * A strongly typed interface to the `localStorage` object.
  */
 export function localStorage<P extends t.ILocalStorageProps<P>>(
-  config: { [prop in keyof P]: string | Partial<ILocalStorageField> },
+  config: { [prop in keyof P]: string | Partial<ILocalStorageField<P>> },
   options: { provider?: t.ILocalStorageProvider } = {},
 ): t.ILocalStorage<P> {
   // Setup initial conditions.
@@ -21,10 +21,10 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
   const provider = options.provider || defaultStorage;
 
   // Prepare the default values.
-  const fields: { [prop: string]: ILocalStorageField } = {};
+  const fields: { [prop: string]: ILocalStorageField<P> } = {};
   props.forEach(prop => {
-    const field: ILocalStorageField =
-      typeof config[prop] === 'string' ? { key: prop } : config[prop];
+    const field: ILocalStorageField<P> =
+      typeof config[prop] === 'string' ? { key: config[prop] } : config[prop];
     const key = field.key || prop;
     fields[prop] = { key, default: field.default };
   });
@@ -38,6 +38,11 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
     const key = field.key;
     const value = provider.get(key);
     return value === undefined ? field.default : value;
+  };
+
+  const getKey = (prop: keyof P | string) => {
+    const field = fields[prop.toString()];
+    return field.key;
   };
 
   // API.
@@ -57,23 +62,25 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
         map(e => e.payload as t.ILocalStorageDelete),
       ),
     },
-    delete(key: keyof P) {
-      const value = getValue(key);
-      provider.delete(key.toString());
-      _events$.next({ type: 'LOCAL_STORAGE/delete', payload: { key, value } });
+    delete(prop: keyof P) {
+      const key = getKey(prop);
+      const value = getValue(prop);
+      provider.delete(key);
+      _events$.next({ type: 'LOCAL_STORAGE/delete', payload: { key, prop, value } });
       return obj;
     },
   };
 
   // Define property handlers.
-  props.forEach(key => {
-    Object.defineProperty(obj, key, {
+  props.forEach(prop => {
+    Object.defineProperty(obj, prop, {
       /**
        * [GET] property value.
        */
       get() {
-        const value = getValue(key);
-        _events$.next({ type: 'LOCAL_STORAGE/get', payload: { key, value } });
+        const key = getKey(prop);
+        const value = getValue(prop);
+        _events$.next({ type: 'LOCAL_STORAGE/get', payload: { key, prop, value } });
         return value;
       },
 
@@ -81,9 +88,10 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
        * [SET] property value.
        */
       set(to: any) {
-        const value = { from: getValue(key), to };
-        provider.set(key.toString(), to);
-        _events$.next({ type: 'LOCAL_STORAGE/set', payload: { key, value } });
+        const key = getKey(prop);
+        const value = { from: getValue(prop), to };
+        provider.set(key, to);
+        _events$.next({ type: 'LOCAL_STORAGE/set', payload: { key, prop, value } });
       },
     });
   });

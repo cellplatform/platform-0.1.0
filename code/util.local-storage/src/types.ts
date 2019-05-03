@@ -34,7 +34,8 @@ export type ILocalStorageGetEvent<P extends ILocalStorageProps<P> = any> = {
   payload: ILocalStorageGet<P>;
 };
 export type ILocalStorageGet<P extends ILocalStorageProps<P> = any> = {
-  key: keyof P;
+  key: string;
+  prop: keyof P;
   value: P[keyof P];
 };
 
@@ -43,7 +44,8 @@ export type ILocalStorageSetEvent<P extends ILocalStorageProps<P> = any> = {
   payload: ILocalStorageSet<P>;
 };
 export type ILocalStorageSet<P extends ILocalStorageProps<P> = any> = {
-  key: keyof P;
+  key: string;
+  prop: keyof P;
   value: { from: P[keyof P]; to: P[keyof P] };
 };
 
@@ -52,6 +54,7 @@ export type ILocalStorageDeleteEvent<P extends ILocalStorageProps<P> = any> = {
   payload: ILocalStorageDelete<P>;
 };
 export type ILocalStorageDelete<P extends ILocalStorageProps<P> = any> = {
-  key: keyof P;
+  key: string;
+  prop: keyof P;
   value: P[keyof P];
 };
