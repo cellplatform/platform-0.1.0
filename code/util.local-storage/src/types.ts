@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Json } from '@platform/types';
 export { Json, IJsonMap, IJsonArray } from '@platform/types';
 
-export type ILocalStorageProps<P = any> = Record<keyof P, P[keyof P]>;
+export type ILocalStorageProps<T> = { [P in keyof T]: T[P] };
 
 export type ILocalStorage<P extends ILocalStorageProps<P>> = ILocalStorageProps<P> & {
   $: {

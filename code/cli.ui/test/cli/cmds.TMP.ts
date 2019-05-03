@@ -23,6 +23,5 @@ export const tmp = Command.create<P>('tmp', e => {
   // console.log('local.foo', local.foo);
   local.count = e.param<number>(0, 0);
 
-  const count = local.count;
-  console.log('count', count);
+  console.log('local.count', local.count);
 });

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-export type IProps<P = any> = Record<keyof P, P[keyof P]>;
+export type IProps<T = any> = { [P in keyof T]: T[P] };
 export type IObservableProps<P = any> = IProps<P> & {
   readonly $: {
     readonly dispose$: Observable<{}>;

@@ -38,6 +38,7 @@ describe('localStorage', () => {
   it('gets initial values', () => {
     const provider = testProvider(initial);
     const local = localStorage<IMyObject>(config, { provider });
+
     expect(local.count).to.eql(123);
     expect(local.message).to.eql('hello');
     expect(local.obj).to.eql({ force: true });
