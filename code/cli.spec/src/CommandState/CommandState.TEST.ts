@@ -487,26 +487,119 @@ describe('CommandState', () => {
     });
 
     it('passes command/namespace to invoke args', async () => {
-      const args = {
+      const result = {
         ns: undefined as t.ICommandHandlerArgs | undefined,
         run: undefined as t.ICommandHandlerArgs | undefined,
       };
 
-      const ns = Command.create('ns', e => (args.ns = e)).add('run', e => (args.run = e));
+      const ns = Command.create('ns', e => (result.ns = e)).add('run', e => (result.run = e));
       const root = Command.create('root').add(ns);
       const state = CommandState.create({ root, beforeInvoke });
 
       state.change({ text: 'ns' });
       await state.invoke();
 
-      expect(args.ns && args.ns.command.name).to.eql('ns');
-      expect(args.ns && args.ns.namespace && args.ns.namespace.name).to.eql('ns');
+      expect(result.ns && result.ns.command.name).to.eql('ns');
+      expect(result.ns && result.ns.namespace && result.ns.namespace.name).to.eql('ns');
 
       state.change({ text: 'ns', namespace: true }).change({ text: 'run' });
       await state.invoke();
 
-      expect(args.run && args.run.command.name).to.eql('run');
-      expect(args.run && args.run.namespace && args.run.namespace.name).to.eql('ns');
+      expect(result.run && result.run.command.name).to.eql('run');
+      expect(result.run && result.run.namespace && result.run.namespace.name).to.eql('ns');
+    });
+
+    it('[e.param] method', async () => {
+      const events: t.ICommandHandlerArgs[] = [];
+      const ns = Command.create('ns').add('run', e => events.push(e));
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, beforeInvoke });
+
+      state.change({ text: 'ns', namespace: true });
+      state.change({ text: 'run' });
+      await state.invoke();
+
+      // No value.
+      const p1 = events[0].param(0);
+      expect(p1).to.eql(undefined);
+
+      // Default value.
+      const p2 = events[0].param<string>(0, 'hello');
+      expect(p2).to.eql('hello');
+
+      // Parameter value.
+      state.change({ text: 'run fast' });
+      await state.invoke();
+      const p3 = events[1].param<string>(0, 'hello');
+      expect(p3).to.eql('fast');
+
+      const p4 = events[1].param<boolean>(1, true);
+      expect(p4).to.eql(true);
+
+      const p5 = events[1].param<boolean>(2);
+      expect(p5).to.eql(undefined);
+    });
+
+    it('[e.option] method', async () => {
+      const events: t.ICommandHandlerArgs[] = [];
+      const ns = Command.create('ns').add('run', e => events.push(e));
+      const root = Command.create('root').add(ns);
+      const state = CommandState.create({ root, beforeInvoke });
+
+      state.change({ text: 'ns', namespace: true });
+      state.change({ text: 'run' });
+      await state.invoke();
+
+      // No value.
+      const option1 = events[0].option('force');
+      expect(option1).to.eql(undefined);
+
+      // Default value.
+      const option2 = events[0].option<string>('force', 'hello');
+      expect(option2).to.eql('hello');
+
+      // Option (true).
+      state.change({ text: 'run --force' });
+      await state.invoke();
+      const option3a = events[1].option<boolean>('force', false);
+      const option3b = events[1].option<number>('port', 1234);
+      expect(option3a).to.eql(true);
+      expect(option3b).to.eql(1234);
+
+      // Option (string/boolean).
+      state.change({ text: 'run --force=false --label harry -p 8080' });
+      await state.invoke();
+      const option4a = events[2].option<boolean>('force', true);
+      const option4b = events[2].option<boolean>('label');
+      const option4c = events[2].option<number>('p');
+      expect(option4a).to.eql(false);
+      expect(option4b).to.eql('harry');
+      expect(option4c).to.eql(8080);
+
+      // Option (full and abbreviated key).
+      state.change({ text: 'run -p 8080' });
+      await state.invoke();
+      const option5 = events[3].option<number>(['port', 'p'], 1234);
+      expect(option5).to.eql(8080);
+
+      state.change({ text: 'run --port 8080' });
+      await state.invoke();
+      const option6 = events[4].option<number>(['p', 'port'], 1234);
+      expect(option6).to.eql(8080);
+
+      // Option: negative number.
+      state.change({ text: 'run --color=-1.23' });
+      await state.invoke();
+      const option7 = events[5].option<number>('color');
+      expect(option7).to.eql(-1.23);
+
+      // Option: trims "-" prefix.
+      state.change({ text: 'run --color=red -f' });
+      await state.invoke();
+      const option8a = events[6].option<number>('--color');
+      const option8b = events[6].option<number>(['--force', '-f']);
+      expect(option8a).to.eql('red');
+      expect(option8b).to.eql(true);
     });
 
     it('invokes with props/args from parameter', async () => {
@@ -525,7 +618,6 @@ describe('CommandState', () => {
     it('overwrites [beforeInvoke] props with passed parameter props', async () => {
       const list: t.ICommandHandlerArgs[] = [];
       const root = Command.create('root').add('run', e => list.push(e));
-      const run = root.children[0];
       const state = CommandState.create({ root, beforeInvoke }).change({ text: 'run' });
 
       const res1 = await state.invoke();

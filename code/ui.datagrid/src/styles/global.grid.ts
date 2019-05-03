@@ -65,6 +65,6 @@ const STYLES = {
 };
 
 /**
- * Load `global styles`.
+ * Initialize.
  */
 css.global(STYLES, { prefix: `.${CSS.CLASS.GRID.BASE}.handsontable` });

@@ -6,5 +6,6 @@
   },
   "repository": "github.com/uiharness/platform",
   "license": "MIT",
+  "files": [],
   "private": true
 }

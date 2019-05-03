@@ -12,3 +12,7 @@ Interfaces for working with [Auth0](https://auth0.com).
 - https://auth0.com/docs/quickstart/backend/nodejs
 - https://auth0.com/blog/develop-modern-apps-with-react-graphql-apollo-and-add-authentication
 - https://auth0.com/docs/api/authentication#user-profile
+
+Restricting scopes per user
+- https://community.auth0.com/t/how-to-represent-multiple-access-level-in-an-application-calling-an-api/8067
+- https://community.auth0.com/t/how-to-assign-custom-scopes-to-users/6649

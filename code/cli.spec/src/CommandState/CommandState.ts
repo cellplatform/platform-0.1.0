@@ -324,7 +324,11 @@ export class CommandState implements t.ICommandState {
 
       // Prepare the args to pass to the command.
       const partial = await this._.beforeInvoke({ command, namespace, state, props });
-      const args = { ...(partial as t.IInvokeCommandArgs), command, namespace };
+      const args: t.IInvokeCommandArgs = {
+        ...(partial as t.IInvokeCommandArgs),
+        command,
+        namespace,
+      };
 
       args.args = options.args !== undefined ? options.args : args.args || state.args;
       args.timeout = options.timeout !== undefined ? options.timeout : args.timeout;

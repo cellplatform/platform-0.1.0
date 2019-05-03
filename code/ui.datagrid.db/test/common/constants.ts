@@ -1,5 +1,3 @@
-export * from '../../src/common/constants';
-
 const { app } = require('electron').remote;
 const userData = app.getPath('userData');
 

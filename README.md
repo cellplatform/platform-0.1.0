@@ -45,6 +45,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 ## Modules
 
+- [@platform/types](/code/types) 
 - [@platform/ts](/code/ts) 
 - [@platform/fs](/code/fs)
 - [@platform/log](/code/log)
@@ -54,19 +55,25 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/util.animate](/code/util.animate)
   - [@platform/util.coordinate](/code/util.coordinate)  
   - [@platform/util.is](/code/util.is)
+  - [@platform/util.local-storage](/code/util.local-storage)
   - [@platform/util.markdown](/code/util.markdown)
   - [@platform/util.string](/code/util.string)
   - [@platform/util.value](/code/util.value)
   - [@platform/util.value.cell](/code/util.value.cell)
+- network
+  - [@platform/http](/code/http)
+  - [@platform/graphql](/code/graphql)
 - ui
   - [@platform/react](/code/react)
   - [@platform/css](/code/css)
 - ui components
+  - [@platform/ui.button](/code/ui.button)
   - [@platform/ui.cli](/code/ui.cli)
   - [@platform/ui.codemirror](/code/ui.codemirror)
   - [@platform/ui.editor](/code/ui.editor)
   - [@platform/ui.graphql](/code/ui.graphql)
   - [@platform/ui.icon](/code/ui.icon)
+  - [@platform/ui.image](/code/ui.image)
   - [@platform/ui.monaco](/code/ui.monaco)
   - [@platform/ui.object](/code/ui.object)
   - [@platform/ui.panel](/code/ui.panel)

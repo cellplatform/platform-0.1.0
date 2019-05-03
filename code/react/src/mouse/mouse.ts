@@ -10,10 +10,11 @@ import {
 } from './types';
 export { MouseEvent, MouseEventHandler, MouseEventType, IMouseEventProps, IMouseHandlers };
 
-export type MouseHandlerFactory = (
-  type: MouseEvent['type'],
-  ...handler: Array<MouseEventHandler | undefined>
-) => React.MouseEventHandler | undefined;
+export type MouseHandlerFactory = (args: {
+  type: MouseEvent['type'];
+  handlers?: MouseEventHandler[];
+  getEnabled?: () => boolean;
+}) => React.MouseEventHandler | undefined;
 
 type MouseEventInternal = MouseEvent & {
   _react: React.MouseEvent; // NB: Used internally, should not be called externally as may cause pooling errors.
@@ -46,14 +47,16 @@ export function fromProps(
   props: IMouseEventProps,
   args: {
     force?: MouseEventType[]; // Ensures a handler for the event-type is created, even if one is not passed as a prop.
+    getEnabled?: () => boolean;
   } = {},
 ) {
-  const { force = [] } = args;
+  const { force = [], getEnabled } = args;
   const prep = (type: MouseEventType, handler?: React.MouseEventHandler) => {
     return handler ? handler : force.includes(type) ? dummy : undefined;
   };
 
   return handlers(props.onMouse, {
+    getEnabled,
     onClick: prep('CLICK', props.onClick),
     onDoubleClick: prep('DOUBLE_CLICK', props.onDoubleClick),
     onMouseDown: prep('DOWN', props.onMouseDown),
@@ -73,6 +76,7 @@ export function fromProps(
 export function handlers(
   handler?: MouseEventHandler,
   args: {
+    getEnabled?: () => boolean;
     onClick?: React.MouseEventHandler;
     onDoubleClick?: React.MouseEventHandler;
     onMouseDown?: React.MouseEventHandler;
@@ -81,6 +85,8 @@ export function handlers(
     onMouseLeave?: React.MouseEventHandler;
   } = {},
 ): IMouseHandlers {
+  const { getEnabled } = args;
+
   const isActive =
     Boolean(handler) || Object.keys(args).some(key => typeof args[key] === 'function');
 
@@ -112,22 +118,22 @@ export function handlers(
     }
   };
 
-  const get: MouseHandlerFactory = type => {
-    const hasSingularEvent = Boolean(getSingleHandler(type));
-    const handlers = handler || hasSingularEvent ? [fireNext, handler] : [];
-    return handler || hasSingularEvent ? handle(type, ...(handlers as any[])) : undefined;
+  const get: MouseHandlerFactory = args => {
+    const hasSingularEvent = Boolean(getSingleHandler(args.type));
+    const handlers: any[] = handler || hasSingularEvent ? [fireNext, handler] : [];
+    return handler || hasSingularEvent ? handle({ ...args, getEnabled, handlers }) : undefined;
   };
 
   return {
     isActive,
     events$: next$.pipe(share()),
     events: {
-      onClick: get('CLICK'),
-      onDoubleClick: get('DOUBLE_CLICK'),
-      onMouseDown: get('DOWN'),
-      onMouseUp: get('UP'),
-      onMouseEnter: get('ENTER'),
-      onMouseLeave: get('LEAVE'),
+      onClick: get({ type: 'CLICK' }),
+      onDoubleClick: get({ type: 'DOUBLE_CLICK' }),
+      onMouseDown: get({ type: 'DOWN' }),
+      onMouseUp: get({ type: 'UP' }),
+      onMouseEnter: get({ type: 'ENTER' }),
+      onMouseLeave: get({ type: 'LEAVE' }),
     },
   };
 }
@@ -135,19 +141,19 @@ export function handlers(
 /**
  * Factory for a mouse handler for a single event type.
  */
-export const handle: MouseHandlerFactory = (type, ...handler) => {
-  const handlers = (handler === undefined
-    ? []
-    : Array.isArray(handler)
-    ? handler
-    : [handler]
-  ).filter(h => Boolean(h)) as MouseEventHandler[];
+export const handle: MouseHandlerFactory = args => {
+  const { type, getEnabled } = args;
+  const handlers = (args.handlers || []).filter(e => Boolean(e));
 
   if (handlers.length === 0) {
     return undefined;
   }
 
   return (e: React.MouseEvent) => {
+    if (getEnabled && !getEnabled()) {
+      return;
+    }
+
     handlers.forEach(handler => {
       const args: MouseEventInternal = {
         type,
@@ -164,7 +170,7 @@ export const handle: MouseHandlerFactory = (type, ...handler) => {
 };
 
 /**
- * INTERNAL
+ * [Helpers]
  */
 const toButton = (e: React.MouseEvent): MouseEvent['button'] => {
   const button = e.button;

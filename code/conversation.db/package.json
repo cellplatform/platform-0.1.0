@@ -1,0 +1,29 @@
+{
+  "name": "@platform/conversation.db",
+  "version": "0.0.6",
+  "description": "Data persistence and server-side middleware for conversation threads.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/conversation.types": "0.0.3",
+    "@platform/hyperdb": "0.1.25",
+    "@platform/libs": "0.0.12"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.49",
+    "@platform/ts": "3.4.15"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

@@ -2,13 +2,12 @@ import { ReplaySubject, Subject, timer } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
 import { Argv } from '../Argv';
-import { id, time, value, DEFAULT } from '../common';
-import * as t from './types';
+import { id, time, value, DEFAULT, t } from '../common';
 
 /**
  * An async invoker.
  */
-export function invoker<P extends object, A extends object, R>(options: {
+export function invoker<P extends t.ICommandProps, A extends t.CommandArgsOptions, R>(options: {
   events$: Subject<t.CommandInvokeEvent>;
   command: t.ICommand<P, A>;
   namespace: t.ICommand<P, A>;
@@ -96,6 +95,26 @@ export function invoker<P extends object, A extends object, R>(options: {
           payload: { command, invokeId, key, value, props },
         });
         return value;
+      },
+      param<T extends t.CommandArgValue>(index: number, defaultValue?: T): T {
+        const value: any = response.args.params[index];
+        return value === undefined ? defaultValue : value;
+      },
+      option<T extends t.CommandArgValue>(
+        key: keyof t.CommandArgsOptions | Array<keyof t.CommandArgsOptions>,
+        defaultValue?: T,
+      ): T {
+        const options = response.args.options;
+        const optionsKeys = Object.keys(options).map(key => key.toString());
+        const keys = (Array.isArray(key) ? key : [key])
+          .map(key => key.toString())
+          .map(key => key.replace(/^\-+/, ''));
+        for (const key of keys) {
+          if (optionsKeys.includes(key) && options[key] !== undefined) {
+            return options[key] as T;
+          }
+        }
+        return defaultValue as T;
       },
     };
 

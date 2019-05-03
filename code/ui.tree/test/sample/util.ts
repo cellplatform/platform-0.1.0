@@ -1,4 +1,4 @@
-import { ITreeNode, value } from '../components/common';
+import { ITreeNode, value } from '../common';
 
 export type TotalChildren = number | number[];
 

@@ -8,9 +8,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { share, map, takeUntil, filter } from 'rxjs/operators';
 
-import { constants, css, GlamorValue, hjson, t } from '../../common';
+import { constants, css, GlamorValue, hjson, t, graphqlFetcher } from '../../common';
 import { GraphqlEditorEvent } from './types';
-import { graphqlFetcher } from './fetch';
 import { DEFAULT_MESSAGE } from './default';
 
 const GraphiQL = require('graphiql');
@@ -28,8 +27,8 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IGraphqlEditorState>>();
 
-  private _result: t.Json | undefined;
-  private _schema: t.Json | undefined;
+  private _result: t.IJsonMap | undefined;
+  private _schema: t.IJsonMap | undefined;
   private _events$ = new Subject<GraphqlEditorEvent>();
   public events$ = this._events$.pipe(
     takeUntil(this.unmounted$),
@@ -61,7 +60,7 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
         this._result = e.result;
         const data = e.result.data;
         const fetchId = e.fetchId;
-        const schema = data ? ((data as any).__schema as t.Json) : undefined;
+        const schema = data ? ((data as any).__schema as t.IJsonMap) : undefined;
         const { url } = this.props;
         if (url && schema) {
           this._schema = schema;

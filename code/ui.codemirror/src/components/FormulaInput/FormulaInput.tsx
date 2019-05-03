@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Controlled as CodeMirrorControlled, IInstance } from 'react-codemirror2';
+import { Controlled as CodeMirrorControlled } from 'react-codemirror2';
 import { Subject, ReplaySubject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
@@ -265,7 +265,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
   };
 
   private handleBeforeChange = (
-    editor: IInstance,
+    editor: CodeMirror.Editor,
     data: CodeMirror.EditorChange,
     value: string,
   ) => {

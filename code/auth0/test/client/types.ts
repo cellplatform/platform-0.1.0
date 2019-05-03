@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { WebAuth } from '../../src';
 
-export * from '@platform/ui.cli/lib/types';
+export * from '@platform/cli.ui/lib/types';
 export * from '../../src/client/types';
 
 export type ITestCommandProps = {

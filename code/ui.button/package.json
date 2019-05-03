@@ -1,0 +1,28 @@
+{
+  "name": "@platform/ui.button",
+  "version": "0.0.5",
+  "description": "Button components.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build $@",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/react": "0.1.24"
+  },
+  "devDependencies": {
+    "@uiharness/dev": "0.2.45",
+    "@uiharness/ui": "0.2.24"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

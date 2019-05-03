@@ -1,4 +1,4 @@
-import { ICommand, ICommandArgs, IInvokeCommandArgs, IInvokedCommandResponse } from '../types';
+import * as t from '../types';
 import { Observable } from 'rxjs';
 
 /**
@@ -16,10 +16,10 @@ export type ICommandState = ICommandStateProps & {
 };
 
 export type ICommandStateProps = {
-  root: ICommand;
+  root: t.ICommand;
   text: string;
-  args: ICommandArgs;
-  command: ICommand | undefined;
+  args: t.ICommandArgs;
+  command: t.ICommand | undefined;
   namespace: ICommandNamespace;
   autoCompleted?: ICommandAutoCompleted;
   fuzzy: ICommandStateFuzzy;
@@ -27,8 +27,8 @@ export type ICommandStateProps = {
 
 export type ICommandNamespace = {
   name: string;
-  command: ICommand;
-  path: ICommand[];
+  command: t.ICommand;
+  path: t.ICommand[];
   isRoot: boolean;
   toString(options?: { delimiter?: string }): string;
 };
@@ -36,14 +36,14 @@ export type ICommandNamespace = {
 export type ICommandAutoCompleted = {
   index: number;
   text: { from: string; to: string };
-  matches: ICommand[];
+  matches: t.ICommand[];
 };
 
 export type ICommandStateFuzzy = {
   matches: ICommandFuzzyMatch[];
 };
 export type ICommandFuzzyMatch = {
-  command: ICommand;
+  command: t.ICommand;
   isMatch: boolean;
 };
 
@@ -61,16 +61,19 @@ export type ICommandChange = {
 /**
  * [Invoke]
  */
-export type BeforeInvokeCommand<P extends object = any, A extends object = any> = (args: {
-  command: ICommand<P, A>;
-  namespace?: ICommand<P, A>;
+export type BeforeInvokeCommand<
+  P extends t.ICommandProps = any,
+  A extends t.CommandArgsOptions = any
+> = (args: {
+  command: t.ICommand<P, A>;
+  namespace?: t.ICommand<P, A>;
   state: ICommandStateProps;
   props: P;
-}) => Promise<Partial<IInvokeCommandArgs<P, A>>>;
+}) => Promise<Partial<t.IInvokeCommandArgs<P, A>>>;
 
 export type ICommandStateInvokeArgs = {
   props?: {};
-  args?: string | ICommandArgs;
+  args?: string | t.ICommandArgs;
   timeout?: number;
   stepIntoNamespace?: boolean;
 };
@@ -80,9 +83,9 @@ export type ICommandStateInvokeResponse = {
   isInvoked: boolean;
   state: ICommandStateProps;
   props: { [key: string]: any };
-  args: ICommandArgs;
+  args: t.ICommandArgs;
   timeout: number;
-  response?: IInvokedCommandResponse<any, any, any>;
+  response?: t.IInvokedCommandResponse<any, any, any>;
 };
 
 /**
@@ -125,7 +128,7 @@ export type ICommandStateInvokingEvent = {
 };
 export type ICommandStateInvoking = {
   state: ICommandStateProps;
-  args: IInvokeCommandArgs;
+  args: t.IInvokeCommandArgs;
   isCancelled: boolean;
   cancel(): void;
 };

@@ -1,4 +1,5 @@
 import './global.grid';
+import './global.headers';
 import './global.cell';
 import { constants, css } from '../common';
 

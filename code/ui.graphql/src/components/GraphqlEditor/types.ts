@@ -1,4 +1,4 @@
-import { Json } from '../../types';
+import * as t from '../../types';
 
 /**
  * [Events]
@@ -60,13 +60,13 @@ export type IGraphqlEditorFetched = {
   fetchId: string;
   url: string;
   params: object;
-  result: Json;
+  result: t.IJsonMap;
   isError: boolean;
 };
 
 export type IGraphqlEditorSchemaFetchedEvent = {
   type: 'GRAPHQL_EDITOR/fetched/schema';
-  payload: { fetchId: string; url: string; schema: Json };
+  payload: { fetchId: string; url: string; schema: t.IJsonMap };
 };
 
 export type IGraphqlEditorFetchErrorEvent = {

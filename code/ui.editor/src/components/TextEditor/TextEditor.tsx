@@ -18,6 +18,7 @@ export type DocSchema = any;
 
 export type ITextEditorProps = {
   value?: string;
+  format?: 'MARKDOWN';
   events$?: Subject<t.TextEditorEvent>;
   focusOnLoad?: boolean;
   selectAllOnLoad?: boolean;

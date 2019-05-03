@@ -1,0 +1,27 @@
+{
+  "name": "@platform/util.local-storage",
+  "version": "0.0.2",
+  "description": "Strongly typed wrapper for working with localStorage.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/util.value": "0.1.3"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.49",
+    "@platform/ts": "3.4.15"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

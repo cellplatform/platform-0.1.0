@@ -42,6 +42,24 @@ describe('Store', () => {
     });
   });
 
+  describe('state', () => {
+    it('returns new immutable object from [state] property', () => {
+      const store = Store.create<IMyModel, MyEvent>({ initial });
+      const state1 = store.state;
+      const state2 = store.state;
+
+      expect(store.state).to.eql(initial);
+      expect(store.state).to.not.equal(initial);
+
+      expect(state1).to.eql(store.state);
+      expect(state1).to.eql(initial);
+
+      expect(state1).to.not.equal(state2);
+
+      expect(store.state).to.not.equal(initial);
+    });
+  });
+
   describe('dispatch', () => {
     it('returns the state object', () => {
       const state = Store.create<IMyModel, MyEvent>({ initial });

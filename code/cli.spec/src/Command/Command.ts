@@ -6,7 +6,7 @@ import { invoker } from './invoke';
 import * as tree from './tree';
 import { CommandParam, ICommandParamArgs } from '../CommandParam';
 
-type ICommandArgs<P extends object = any, A extends object = any> = {
+type ICommandArgs<P extends t.ICommandProps = any, A extends t.CommandArgsOptions = any> = {
   name: string;
   description: string;
   handler: t.CommandHandler;
@@ -18,7 +18,8 @@ type ICommandArgs<P extends object = any, A extends object = any> = {
  * Represents a single [Command] which is a named unit of functionality
  * within a program that can optionally take parameter input.
  */
-export class Command<P extends object = any, A extends object = any> implements t.ICommand<P, A> {
+export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOptions = any>
+  implements t.ICommand<P, A> {
   /**
    * [Static]
    */
@@ -26,14 +27,14 @@ export class Command<P extends object = any, A extends object = any> implements 
   /**
    * Creates a new instance of a `Command`.
    */
-  public static create<P extends object = any, A extends object = any>(
+  public static create<P extends t.ICommandProps = any, A extends t.CommandArgsOptions = any>(
     title: string,
     handler?: t.CommandHandler<P, A>,
   ): Command<P, A>;
-  public static create<P extends object = any, A extends object = any>(
+  public static create<P extends t.ICommandProps = any, A extends t.CommandArgsOptions = any>(
     args: Partial<ICommandArgs<P, A>> & { name: string }, // NB: Force name.
   ): Command<P, A>;
-  public static create<P extends object = any, A extends object = any>(
+  public static create<P extends t.ICommandProps = any, A extends t.CommandArgsOptions = any>(
     ...args: any
   ): Command<P, A> {
     return new Command<P, A>(toConstuctorArgs(args));
@@ -155,7 +156,7 @@ export class Command<P extends object = any, A extends object = any> implements 
    * [Methods]
    */
 
-  public as<P1 extends object, A1 extends object>(fn: (e: Command<P1, A1>) => void) {
+  public as<P1 extends object, A1 extends t.CommandArgsOptions>(fn: (e: Command<P1, A1>) => void) {
     fn((this as unknown) as Command<P1, A1>);
     return this;
   }
@@ -163,19 +164,19 @@ export class Command<P extends object = any, A extends object = any> implements 
   /**
    * Cast children to given types.
    */
-  public childrenAs<P1 extends object, A1 extends object>(): Array<Command<P1, A1>> {
+  public childrenAs<P1 extends object, A1 extends t.CommandArgsOptions>(): Array<Command<P1, A1>> {
     return this.children;
   }
 
   /**
    * [Overrides] Add a child command.
    */
-  public add<P1 extends object = P, A1 extends object = A>(
+  public add<P1 extends object = P, A1 extends t.CommandArgsOptions = A>(
     title: string,
     handler?: t.CommandHandler<P1, A1>,
   ): Command<P, A>;
 
-  public add<P1 extends object = P, A1 extends object = A>(
+  public add<P1 extends object = P, A1 extends t.CommandArgsOptions = A>(
     args: Command<P1, A1> | Partial<ICommandArgs<P1, A1>> & { name: string },
   ): Command<P, A>;
 
