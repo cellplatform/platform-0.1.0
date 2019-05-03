@@ -1253,6 +1253,13 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.63.tgz#e40e0c3d74468268070227f613238c0f57d32df6"
   integrity sha512-XHYJF2+24EzTK1lOl6gtWS5UZIXJAW/ZLwMF7UOYGQx/x0/8BvUpfXZonoe7KqUNcDv5m4+eIdkzFH72W/Pn3g==
 
+"@platform/util.local-storage@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.0.tgz#e40776859e653397ab7c221e044643719bf3b10e"
+  integrity sha512-9z4LOgp+rRaT0MWo++qIwjgG4L65YAALQHmtiVxpQdQIN4rwarepfDWTGukD+dsR9gyy0nT9qhWAYis40raAVA==
+  dependencies:
+    "@platform/util.value" "0.1.1"
+
 "@platform/util.string@0.1.7", "@platform/util.string@^0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.1.7.tgz#9d993c430654bdfe6563006c1ad119b38cfc6993"

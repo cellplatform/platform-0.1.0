@@ -8,7 +8,6 @@ const config = {
   message: 'MY_KEY/message',
   obj: { default: { force: true }, key: 'MY_KEY/obj' },
 };
-
 const initial = {
   count: 123,
   message: 'hello',
