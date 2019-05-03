@@ -54,6 +54,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/util.animate](/code/util.animate)
   - [@platform/util.coordinate](/code/util.coordinate)  
   - [@platform/util.is](/code/util.is)
+  - [@platform/util.local-storage](/code/util.local-storage)
   - [@platform/util.markdown](/code/util.markdown)
   - [@platform/util.string](/code/util.string)
   - [@platform/util.value](/code/util.value)
