@@ -1,17 +1,8 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
-import * as t from '../types';
+import { Subject } from 'rxjs';
+import { filter, map, share } from 'rxjs/operators';
+
 import { is } from '../common';
+import * as t from '../types';
 import { value as valueUtil } from '../value';
 
 /**
