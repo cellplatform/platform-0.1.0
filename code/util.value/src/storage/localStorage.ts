@@ -1,3 +1,15 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import * as t from '../types';
 import { is } from '../common';
 import { value as valueUtil } from '../value';
@@ -9,13 +21,42 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
   defaultValues: P,
   options: { provider?: t.ILocalStorageProvider } = {},
 ): t.ILocalStorage<P> {
+  // Setup initial conditions.
   defaultValues = { ...defaultValues };
   const keys = Object.keys(defaultValues);
   const provider = options.provider || defaultStorage;
 
+  // Observables.
+  const _events$ = new Subject<t.LocalStorageEvent>();
+  const events$ = _events$.pipe(share());
+
+  const getValue = (key: keyof P | string) => {
+    key = key.toString();
+    const value = provider.get(key.toString());
+    return value === undefined ? defaultValues[key] : value;
+  };
+
+  // LocalStorage.
   const obj = {
+    $: {
+      events$,
+      get$: events$.pipe(
+        filter(e => e.type === 'LOCAL_STORAGE/get'),
+        map(e => e.payload as t.ILocalStorageGet),
+      ),
+      set$: events$.pipe(
+        filter(e => e.type === 'LOCAL_STORAGE/set'),
+        map(e => e.payload as t.ILocalStorageSet),
+      ),
+      delete$: events$.pipe(
+        filter(e => e.type === 'LOCAL_STORAGE/delete'),
+        map(e => e.payload as t.ILocalStorageDelete),
+      ),
+    },
     delete(key: keyof P) {
+      const value = getValue(key);
       provider.delete(key.toString());
+      _events$.next({ type: 'LOCAL_STORAGE/delete', payload: { key, value } });
       return obj;
     },
   };
@@ -27,15 +68,18 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
        * [GET] property value.
        */
       get() {
-        const result = provider.get(key.toString());
-        return result === undefined ? defaultValues[key] : result;
+        const value = getValue(key);
+        _events$.next({ type: 'LOCAL_STORAGE/get', payload: { key, value } });
+        return value;
       },
 
       /**
        * [SET] property value.
        */
-      set(value: any) {
-        provider.set(key.toString(), value);
+      set(to: any) {
+        const value = { from: getValue(key), to };
+        provider.set(key.toString(), to);
+        _events$.next({ type: 'LOCAL_STORAGE/set', payload: { key, value } });
       },
     });
   });
