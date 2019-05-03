@@ -27,8 +27,8 @@
     "@platform/ts": "3.4.15",
     "@platform/ui.datagrid": "0.0.104",
     "@platform/ui.datagrid.cell": "0.0.20",
-    "@uiharness/dev": "0.2.44",
-    "@uiharness/ui": "0.2.23"
+    "@uiharness/dev": "0.2.45",
+    "@uiharness/ui": "0.2.24"
   },
   "files": [
     "lib"

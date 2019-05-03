@@ -26,8 +26,8 @@
     "@platform/cli.ui": "^0.1.6",
     "@platform/conversation.db": "0.0.6",
     "@platform/graphql.server": "0.0.3",
-    "@uiharness/dev": "0.2.44",
-    "@uiharness/ui": "0.2.23"
+    "@uiharness/dev": "0.2.45",
+    "@uiharness/ui": "0.2.24"
   },
   "files": [
     "lib"
