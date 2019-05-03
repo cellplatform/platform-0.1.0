@@ -1,6 +1,6 @@
 {
   "name": "@platform/auth0",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Interfaces for working with Auth0.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,8 +16,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.1.23",
-    "@platform/util.string": "0.1.7",
+    "@platform/react": "0.1.24",
+    "@platform/util.string": "0.1.8",
     "@types/jsonwebtoken": "8.3.2",
     "auth0-js": "9.10.2",
     "axios": "0.18.0",

@@ -45,6 +45,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 ## Modules
 
+- [@platform/types](/code/types) 
 - [@platform/ts](/code/ts) 
 - [@platform/fs](/code/fs)
 - [@platform/log](/code/log)
