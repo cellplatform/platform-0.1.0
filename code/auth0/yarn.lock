@@ -985,14 +985,14 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.0.39":
-  version "0.0.39"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.39.tgz#3d1fc495141bd3e7eac6738e380ef4b503ce321b"
-  integrity sha512-gJZgH3sd59pokYtjgjrWh1VLdKpkHeLgKths1eN5FCC/fIRcy26G9GVAvIxa1WKFYdrgvuY9RfjPys5AB/fFMA==
+"@platform/css@0.0.40":
+  version "0.0.40"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.40.tgz#1cae2bfa44922561940bdc2e6ca3d166468e1198"
+  integrity sha512-oSo2bwOXDJpz0i3SU8T4DBepoL5ussQAns6JCcJ0jskhWXsLM2v4p4EA61puZHc3xKWD/Mg5GSrlvGRsHZtDdg==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.63"
-    "@platform/util.value" "0.1.0"
+    "@platform/util.value" "0.1.1"
     "@types/tinycolor2" "1.4.1"
     glamor "2.20.40"
     tinycolor2 "1.4.1"
@@ -1109,12 +1109,12 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/react@0.1.21":
-  version "0.1.21"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.21.tgz#f56732a21e1ac4aa11b506712720105e3863bfcc"
-  integrity sha512-C+9nw4xIT9d581bqQurNlHt96+y64eBzHhnNABznpEkGE0a0fNvuqsof7RZr+8Jtd6HM/afFp0BmSPfHuDeArQ==
+"@platform/react@0.1.22":
+  version "0.1.22"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.22.tgz#242448b7ff8df82a0a880df16715935016c05959"
+  integrity sha512-hx0ydrDmrwVQuUPw2mOLsJRhAH0bsfGWyGvCQ9cAytciaVqp/q6q6dwuk6vYgy5zS3HQMws0RRDN0uQbMjcyeQ==
   dependencies:
-    "@platform/css" "0.0.39"
+    "@platform/css" "0.0.40"
     "@platform/util.is" "0.0.63"
     "@types/react" "16.8.15"
     "@types/react-dom" "16.8.4"
@@ -1248,10 +1248,10 @@
     dayjs "1.8.13"
     semver "6.0.0"
 
-"@platform/util.value@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.1.0.tgz#78e0d8826e6625d1530567f0d284cbc9f2231453"
-  integrity sha512-69Il96l4DvC/k+gN9tCg11wkRSd72qtLsmZaFlGKeUmrd+gj3cPEJ5f+cNN7Isjp/9WSNUoCoqGXQ5Ddncu0tw==
+"@platform/util.value@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.1.1.tgz#a210b2f07aafa38d2f4765588e9b102462ab8f4a"
+  integrity sha512-9kuREH6kIKJ0BXitwe+OVQuX8SuNHhRQJ6hD9/RLYME0kzXgE8srGSWHzfzO9QiNyiIrvapv8w143aRsaklsrA==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.63"
