@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { t, css, color, GlamorValue } from '../../common';
+import { t, css, color, GlamorValue, value } from '../../common';
+import { Icons, IIcon } from '../Icons';
 
 export type IAvatarProps = {
   src?: string;
@@ -10,18 +11,20 @@ export type IAvatarProps = {
   borderWidth?: number;
   borderColor?: number | string;
   block?: boolean;
+  placeholderIcon?: IIcon;
   events$?: Subject<t.AvatarEvent>;
   style?: GlamorValue;
 };
 export type IAvatarState = {
   isLoaded?: boolean | null;
+  status?: t.AvatarLoadStatus;
 };
 
 /**
  * A picture of a user.
  */
 export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
-  public state: IAvatarState = { isLoaded: false };
+  public state: IAvatarState = { isLoaded: false, status: 'LOADING' };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IAvatarState>>();
   private events$ = new Subject<t.AvatarEvent>();
@@ -51,22 +54,15 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
     return this.props.src || '';
   }
 
+  public get isPlaceholder() {
+    return this.state.isLoaded === null;
+  }
+
   /**
    * [Render]
    */
   public render() {
-    const {
-      style,
-      src,
-      borderColor = 0.4,
-      borderWidth = 0,
-      size = 36,
-      borderRadius = 5,
-      block = false,
-    } = this.props;
-
-    const imageWidth = size - borderWidth * 2;
-
+    const { style, borderColor = 0.4, size = 36, borderRadius = 5, block = false } = this.props;
     const styles = {
       base: css({
         position: 'relative',
@@ -77,33 +73,63 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
         backgroundColor: typeof borderColor === 'string' ? borderColor : color.format(borderColor),
         borderRadius: borderRadius,
       }),
-      imageOuter: css({
+    };
+    return (
+      <div {...css(styles.base, style)}>
+        {this.renderImage()}
+        {this.isPlaceholder && this.renderPlaceholder()}
+      </div>
+    );
+  }
+
+  private renderImage() {
+    const { borderWidth = 0, size = 36, borderRadius = 5 } = this.props;
+    const src = this.src;
+    const width = size - borderWidth * 2;
+    const isLoaded = this.state.isLoaded;
+
+    const styles = {
+      base: css({
         overflow: 'hidden',
         Absolute: [borderWidth, null, null, borderWidth],
-        width: imageWidth,
-        height: imageWidth,
+        width: width,
+        height: width,
         borderRadius: borderRadius - borderWidth * 0.75,
         backgroundImage: `url(${src})`,
         backgroundSize: 'contain',
-        display: this.state.isLoaded ? 'block' : 'none',
+        display: isLoaded === false ? 'none' : 'block',
       }),
-      image: css({
+      hiddenImge: css({
+        Absolute: [-500, null, null, -500],
         width: 1,
         height: 1,
         visibility: 'hidden',
       }),
     };
-
     return (
-      <div {...css(styles.base, style)}>
-        <div {...styles.imageOuter}>
-          <img
-            src={src}
-            {...styles.image}
-            onLoad={this.handleImageLoaded}
-            onError={this.handleImageLoadError}
-          />
-        </div>
+      <div {...styles.base}>
+        <img
+          {...styles.hiddenImge}
+          src={src}
+          onLoad={this.handleImageLoaded}
+          onError={this.handleImageLoadError}
+        />
+      </div>
+    );
+  }
+
+  private renderPlaceholder() {
+    const styles = {
+      base: css({
+        Absolute: 0,
+        Flex: 'center-center',
+      }),
+      icon: css({}),
+    };
+    const Icon = this.props.placeholderIcon || Icons.Face;
+    return (
+      <div {...styles.base}>
+        <Icon style={styles.icon} />
       </div>
     );
   }
@@ -113,8 +139,10 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
     this.fireLoad('LOADED');
   };
   private handleImageLoadError = () => {
+    const src = this.src;
     this.state$.next({ isLoaded: null });
-    this.fireLoad('LOAD_FAILED');
+    const status = src ? 'LOAD_FAILED' : 'LOADED'; // NB: If there is no src URL then it wasn't a actual fail.
+    this.fireLoad(status);
   };
 
   private fire(e: t.AvatarEvent) {
@@ -122,6 +150,14 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
   }
   private fireLoad(status: t.AvatarLoadStatus) {
     const src = this.src;
-    this.fire({ type: 'AVATAR/load', payload: { status, src } });
+    let type: t.IAvatarLoadEvent['payload']['type'] | undefined;
+    if (status === 'LOADED') {
+      type = !src ? 'PLACEHOLDER' : 'IMAGE';
+    }
+    if (status === 'LOAD_FAILED') {
+      type = 'PLACEHOLDER';
+    }
+    this.state$.next({ status });
+    this.fire({ type: 'AVATAR/load', payload: value.deleteUndefined({ status, src, type }) });
   }
 }

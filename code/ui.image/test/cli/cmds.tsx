@@ -1,18 +1,16 @@
 import { Command, t, constants } from '../common';
 
 const { URL } = constants;
-
 type P = t.ICommandProps;
 
 /**
  * The root of the CLI application.
  */
 export const root = Command.create<P>('root')
-  .add('src-woman-1', e => {
-    e.props.state$.next({ src: URL.WOMAN_1 });
-  })
-  .add('src-woman-2', e => {
-    e.props.state$.next({ src: URL.WOMAN_2 });
+  .add('src', e => {
+    const param = e.param(0);
+    const src = typeof param === 'string' ? param : (URL[`WOMAN_${param}`] as string);
+    e.props.state$.next({ src });
   })
   .add('size', e => {
     const size = e.args.params[0] as number;

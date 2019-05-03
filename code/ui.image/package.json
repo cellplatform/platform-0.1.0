@@ -15,7 +15,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.1.24"
+    "@platform/react": "0.1.24",
+    "@platform/ui.icon": "0.0.40",
+    "react-icons": "3.6.1"
   },
   "devDependencies": {
     "@uiharness/dev": "0.2.45",

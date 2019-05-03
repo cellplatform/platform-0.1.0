@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { Avatar, constants, css, Shell, t } from '../common';
+import { log, Avatar, constants, css, CommandShell, t } from '../common';
 
 const PINK = '#CD638D';
 
@@ -19,6 +19,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
+  private events$ = new Subject<t.AvatarEvent>();
   private cli: t.ICommandState = cli.init({ state$: this.state$ });
 
   /**
@@ -26,7 +27,12 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
+
+    events$.subscribe(e => {
+      log.info('🐷', e.type, e.payload);
+    });
   }
 
   public componentWillUnmount() {
@@ -46,7 +52,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       }),
     };
     return (
-      <Shell cli={this.cli} tree={{}}>
+      <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
           <Avatar
             src={this.state.src}
@@ -54,9 +60,10 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
             borderRadius={this.state.borderRadius}
             borderWidth={this.state.borderWidth}
             borderColor={this.state.borderColor}
+            events$={this.events$}
           />
         </div>
-      </Shell>
+      </CommandShell>
     );
   }
 }
