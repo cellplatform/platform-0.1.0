@@ -71,6 +71,21 @@ describe('localStorage', () => {
     expect(local.message).to.eql(undefined);
   });
 
+  it('applies common key prefix', () => {
+    const provider = testProvider({
+      'FOO/count': 123,
+      'FOO/message': 'hello',
+    });
+    const local = localStorage<IMyObject>(
+      { message: { default: '' }, count: { default: 0 }, obj: { default: { force: true } } },
+      { provider, prefix: 'FOO/' },
+    );
+
+    expect(local.count).to.eql(123);
+    expect(local.message).to.eql('hello');
+    expect(local.obj).to.eql({ force: true });
+  });
+
   it('fires events', () => {
     const events = {
       all: [] as t.LocalStorageEvent[],

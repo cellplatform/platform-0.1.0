@@ -14,7 +14,7 @@ export type ILocalStorageField<P extends t.ILocalStorageProps<P>> = {
  */
 export function localStorage<P extends t.ILocalStorageProps<P>>(
   config: { [prop in keyof P]: string | Partial<ILocalStorageField<P>> },
-  options: { provider?: t.ILocalStorageProvider } = {},
+  options: { provider?: t.ILocalStorageProvider; prefix?: string } = {},
 ): t.ILocalStorage<P> {
   // Setup initial conditions.
   const props = Object.keys(config);
@@ -25,7 +25,8 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
   props.forEach(prop => {
     const field: ILocalStorageField<P> =
       typeof config[prop] === 'string' ? { key: config[prop] } : config[prop];
-    const key = field.key || prop;
+    let key = field.key || prop;
+    key = options.prefix ? `${options.prefix}${key}` : key;
     fields[prop] = { key, default: field.default };
   });
 
