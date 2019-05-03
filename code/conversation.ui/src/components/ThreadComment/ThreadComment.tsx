@@ -48,7 +48,6 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
    */
   public render() {
     const { avatarUrl } = this.props;
-
     const styles = {
       base: css({
         display: 'block',

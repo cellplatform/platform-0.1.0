@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from '../common';
+import { css, color, GlamorValue, t, ThreadComment, constants } from '../common';
+// import { part } from '../';
 
-export type IThreadCommentProps = { style?: GlamorValue };
-export type IThreadCommentState = {};
+const { URL } = constants;
 
-export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThreadCommentState> {
-  public state: IThreadCommentState = {};
+export type ITestProps = {};
+
+export class Test extends React.PureComponent<ITestProps, t.ITestState> {
+  public state: t.ITestState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<IThreadCommentState>>();
+  private state$ = new Subject<Partial<t.ITestState>>();
 
   /**
    * [Lifecycle]
@@ -27,10 +29,19 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
    * [Render]
    */
   public render() {
-    const styles = { base: css({}) };
+    const styles = {
+      base: css({
+        flex: 1,
+        Flex: 'start-center',
+        padding: 50,
+      }),
+      outer: css({ width: 750 }),
+    };
     return (
-      <div {...css(styles.base, this.props.style)}>
-        <div>ThreadComment</div>
+      <div {...styles.base}>
+        <div {...styles.outer}>
+          <ThreadComment avatarUrl={URL.WOMAN_1} />
+        </div>
       </div>
     );
   }
