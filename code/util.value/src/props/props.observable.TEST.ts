@@ -11,11 +11,18 @@ const initial: IMyObject = { count: 0, message: '' };
 
 describe('props.observable', () => {
   describe('lifecycle', () => {
-    it('constructs with keys from initial value', () => {
+    it('constructs with keys from initial Object', () => {
       const obj = props.observable<IMyObject>(initial);
       expect(obj.isDisposed).to.eql(false);
       expect(obj.count).to.eql(0);
       expect(obj.message).to.eql('');
+    });
+
+    it('constructs with keys from initial array', () => {
+      const obj = props.observable<IMyObject>(['count', 'message']);
+      expect(obj.isDisposed).to.eql(false);
+      expect(obj.count).to.eql(undefined);
+      expect(obj.message).to.eql(undefined);
     });
 
     it('constructs with no initial value', () => {
