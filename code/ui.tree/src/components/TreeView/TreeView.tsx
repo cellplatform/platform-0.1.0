@@ -136,6 +136,13 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    */
 
   public render() {
+    const { index } = this.state;
+    if (index === undefined) {
+      // Index not calculated yet...wait until we have
+      // a position in the stack before rendering anything.
+      return null;
+    }
+
     const panels = this.panels;
     const styles = {
       base: css({
@@ -152,7 +159,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         <StackPanel
           style={styles.stack}
           panels={panels}
-          index={this.state.index}
+          index={index}
           onSlide={this.handleSlide}
           duration={this.props.slideDuration}
         />

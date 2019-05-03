@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import * as sample from '../sample';
-import { Button, color, COLORS, css, ObjectView, t, TreeView, Foo } from '../common';
+import { Button, color, COLORS, css, ObjectView, t, TreeView, Foo, log } from '../common';
 import { Icons } from './Icons';
 
 export type ITestState = {
@@ -18,6 +18,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
   public state: ITestState = {
     root: sample.COMPREHENSIVE,
     theme: 'LIGHT',
+    // current: 'root.1.1',
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
@@ -39,7 +40,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     // Log events.
     events$.subscribe(e => {
-      console.log('🌳', e.type, e.payload);
+      log.info('🌳', e.type, e.payload);
     });
 
     /**
