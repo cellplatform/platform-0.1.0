@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.0.12",
+    "@platform/types": "0.0.1",
     "@platform/util.is": "0.0.63",
     "@types/semver": "6.0.0",
     "cuid": "2.1.6",

@@ -1,9 +1,8 @@
 import { Subject } from 'rxjs';
 import { filter, map, share } from 'rxjs/operators';
 
-import { is } from '../common';
+import { is, value as valueUtil } from '../common';
 import * as t from '../types';
-import { value as valueUtil } from '../value';
 
 /**
  * A strongly typed interface to the `localStorage` object.

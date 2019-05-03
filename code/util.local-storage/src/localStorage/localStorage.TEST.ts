@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { storage } from '.';
+import { localStorage } from '.';
 import * as t from '../types';
 
 export type IMyObject = { message: string; count: number };
@@ -29,36 +29,36 @@ const testProvider = (initial?: t.IJsonMap) => {
 describe('localStorage', () => {
   it('gets initial values', () => {
     const provider = testProvider(initial);
-    const localStorage = storage.localStorage<IMyObject>(initial, { provider });
-    expect(localStorage.count).to.eql(123);
-    expect(localStorage.message).to.eql('hello');
+    const local = localStorage<IMyObject>(initial, { provider });
+    expect(local.count).to.eql(123);
+    expect(local.message).to.eql('hello');
   });
 
   it('writes values', () => {
     const provider = testProvider(initial);
-    const localStorage = storage.localStorage<IMyObject>(initial, { provider });
+    const local = localStorage<IMyObject>(initial, { provider });
 
-    localStorage.count = 888;
-    localStorage.message = 'foo';
+    local.count = 888;
+    local.message = 'foo';
 
-    expect(localStorage.count).to.eql(888);
-    expect(localStorage.message).to.eql('foo');
+    expect(local.count).to.eql(888);
+    expect(local.message).to.eql('foo');
   });
 
   it('deletes values', () => {
     const provider = testProvider(initial);
-    const localStorage = storage.localStorage<IMyObject>(initial, { provider });
+    const local = localStorage<IMyObject>(initial, { provider });
 
-    localStorage.count = 888;
-    localStorage.message = 'foo';
+    local.count = 888;
+    local.message = 'foo';
 
-    expect(localStorage.count).to.eql(888);
-    expect(localStorage.message).to.eql('foo');
+    expect(local.count).to.eql(888);
+    expect(local.message).to.eql('foo');
 
-    localStorage.delete('count');
-    localStorage.delete('message');
-    expect(localStorage.count).to.eql(123);
-    expect(localStorage.message).to.eql('hello');
+    local.delete('count');
+    local.delete('message');
+    expect(local.count).to.eql(123);
+    expect(local.message).to.eql('hello');
   });
 
   it('fires events', () => {
@@ -70,16 +70,16 @@ describe('localStorage', () => {
     };
 
     const provider = testProvider(initial);
-    const localStorage = storage.localStorage<IMyObject>(initial, { provider });
+    const local = localStorage<IMyObject>(initial, { provider });
 
-    localStorage.$.events$.subscribe(e => events.all.push(e));
-    localStorage.$.get$.subscribe(e => events.get.push(e));
-    localStorage.$.set$.subscribe(e => events.set.push(e));
-    localStorage.$.delete$.subscribe(e => events.delete.push(e));
+    local.$.events$.subscribe(e => events.all.push(e));
+    local.$.get$.subscribe(e => events.get.push(e));
+    local.$.set$.subscribe(e => events.set.push(e));
+    local.$.delete$.subscribe(e => events.delete.push(e));
 
-    expect(localStorage.count).to.eql(123);
-    localStorage.count = 456;
-    localStorage.delete('count');
+    expect(local.count).to.eql(123);
+    local.count = 456;
+    local.delete('count');
 
     expect(events.all.length).to.eql(3);
     expect(events.all[0].type).to.eql('LOCAL_STORAGE/get');
