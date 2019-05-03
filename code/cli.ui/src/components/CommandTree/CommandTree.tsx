@@ -74,8 +74,6 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
           this.cli.change({ text, namespace, invoke: true });
         }
       });
-
-    // this.cli.autoCompleted
   }
 
   public componentWillUnmount() {

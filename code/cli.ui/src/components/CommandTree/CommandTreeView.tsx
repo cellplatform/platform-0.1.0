@@ -19,7 +19,7 @@ export type ICommandTreeViewProps = {
   style?: GlamorValue;
 };
 export type ICommandTreeViewState = {
-  tree?: t.ITreeNode;
+  treeRoot?: t.ITreeNode;
 };
 
 export class CommandTreeView extends React.PureComponent<
@@ -74,7 +74,7 @@ export class CommandTreeView extends React.PureComponent<
       // Step up to parent.
       .pipe(filter(e => e.target === 'PARENT'))
       .subscribe(e => {
-        const parent = TreeView.util.parent(this.state.tree, e.node);
+        const parent = TreeView.util.parent(this.state.treeRoot, e.node);
         this.fireCurrent(parent, 'PARENT');
       });
 
@@ -122,9 +122,9 @@ export class CommandTreeView extends React.PureComponent<
   }
 
   private get currentNodeId() {
-    const { tree } = this.state;
+    const { treeRoot } = this.state;
     const { nsCommand } = this.props;
-    return !nsCommand && tree ? tree.id : util.asNodeId(nsCommand);
+    return !nsCommand && treeRoot ? treeRoot.id : util.asTreeNodeId(nsCommand);
   }
 
   /**
@@ -134,12 +134,12 @@ export class CommandTreeView extends React.PureComponent<
     const { currentCommand, isAutocompleted, fuzzyMatches = [] } = this.props;
 
     // Build the tree structure.
-    const tree = util.buildTree(this.rootCommand);
+    const treeRoot = util.buildTree(this.rootCommand);
     const p = TreeView.util.props;
-    const currentCommandId = util.asNodeId(currentCommand);
+    const currentCommandId = util.asTreeNodeId(currentCommand);
     const dimmed = currentCommand && !isAutocompleted ? [] : filterDimmed(fuzzyMatches);
 
-    TreeView.util.walk(tree, node => {
+    TreeView.util.walk(treeRoot, node => {
       const command = node.data as t.ICommand;
 
       // Dim any nodes that are filtered out due to the current input text.
@@ -157,7 +157,7 @@ export class CommandTreeView extends React.PureComponent<
     });
 
     // Update state.
-    this.state$.next({ tree });
+    this.state$.next({ treeRoot });
   }
 
   private fireCurrent(
@@ -181,7 +181,7 @@ export class CommandTreeView extends React.PureComponent<
   public render() {
     return (
       <TreeView
-        node={this.state.tree}
+        node={this.state.treeRoot}
         current={this.currentNodeId}
         theme={this.props.theme}
         background={this.props.background}
@@ -206,5 +206,5 @@ function filterDimmed(matches: t.ICommandFuzzyMatch[] = []) {
   return matches
     .filter(m => m.isMatch === false)
     .map(m => m.command)
-    .map(cmd => util.asNodeId(cmd));
+    .map(cmd => util.asTreeNodeId(cmd));
 }

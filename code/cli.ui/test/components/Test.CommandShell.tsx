@@ -29,6 +29,6 @@ export class TestShell extends React.PureComponent<ITestCommandShellProps, ITest
    */
   public render() {
     const { testState } = this.props;
-    return <CommandShell cli={this.cli} tree={testState.tree || {}} />;
+    return <CommandShell cli={this.cli} tree={testState.tree || {}} localStorage={true} />;
   }
 }

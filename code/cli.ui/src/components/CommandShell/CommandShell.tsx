@@ -11,6 +11,7 @@ import {
   GlamorValue,
   t,
   value,
+  localStorage,
 } from '../../common';
 import { CommandTree, ICommandTreeProps } from '../CommandTree';
 import { CommandPrompt } from '../CommandPrompt';
@@ -19,7 +20,7 @@ export type ICommandShellProps = {
   children?: React.ReactNode;
   cli: t.ICommandState;
   tree?: t.ICommandShellTreeOptions;
-  localStorage?: boolean | t.ICommandShellLocalStorageOptions;
+  localStorage?: boolean;
   focusOnLoad?: boolean;
   style?: GlamorValue;
 };
@@ -50,18 +51,18 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
   public componentWillMount() {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
     // const tree$ = this.tree$.pipe(takeUntil(this.unmounted$));
-    // const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
 
     // Update state.
     state$.subscribe(e => this.setState(e));
 
-    // TEMP 🐷 TODO -- save CLI value to storage.
-    // cli$.subscribe(e => localStorage.setItem(KEY_CMD, this.cli.toString()));
-  }
-
-  public componentDidMount() {
-    this.cli.invoke();
+    // Initialise the last command-line value, and keep a store of it as it changes.
+    if (this.props.localStorage) {
+      this.cli.change({ text: localStorage.text, namespace: true });
+      this.cli.invoke({ stepIntoNamespace: true });
+      cli$.subscribe(e => (localStorage.text = this.cli.toString()));
+    }
   }
 
   public componentWillUnmount() {

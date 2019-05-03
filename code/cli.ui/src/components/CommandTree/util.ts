@@ -5,7 +5,7 @@ import { t } from '../../common';
  */
 export function buildTree(command: t.ICommand, options: { parent?: t.ITreeNode } = {}) {
   const parent: t.ITreeNode = options.parent || {
-    id: asNodeId(command),
+    id: asTreeNodeId(command),
     props: { label: 'Commands', header: { isVisible: false } },
   };
 
@@ -13,7 +13,7 @@ export function buildTree(command: t.ICommand, options: { parent?: t.ITreeNode }
     const totalChildren = cmd.children.length;
     const hasChildren = totalChildren > 0;
     const node: t.ITreeNode = {
-      id: asNodeId(cmd),
+      id: asTreeNodeId(cmd),
       props: {
         label: cmd.name,
         icon: hasChildren ? 'Namespace' : 'Command',
@@ -33,7 +33,7 @@ export function buildTree(command: t.ICommand, options: { parent?: t.ITreeNode }
 /**
  * Converts the given command to a tree-view node ID.
  */
-export function asNodeId(command?: t.ICommand) {
+export function asTreeNodeId(command?: t.ICommand) {
   return command ? `cmd:${command.id}` : '';
 }
 

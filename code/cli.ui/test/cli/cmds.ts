@@ -1,6 +1,5 @@
 import { Command, t } from '../common';
 import { shell } from './cmds.shell';
-import { tmp } from './cmds.TMP';
 
 type P = t.ITestCommandProps;
 
@@ -42,7 +41,6 @@ export const root = Command.create<P>('root', e => {
   console.log('e.namespace', e.namespace && e.namespace.name);
   console.groupEnd();
 })
-  .add(tmp)
   .add(shell)
   .add(list)
   .add(ns)
