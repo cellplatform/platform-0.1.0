@@ -4,29 +4,43 @@ import { filter, map, share } from 'rxjs/operators';
 import { is, value as valueUtil } from '../common';
 import * as t from '../types';
 
+export type ILocalStorageField = {
+  key: string;
+  default: t.Json | undefined;
+};
+
 /**
  * A strongly typed interface to the `localStorage` object.
  */
 export function localStorage<P extends t.ILocalStorageProps<P>>(
-  defaultValues: P,
+  config: { [prop in keyof P]: string | Partial<ILocalStorageField> },
   options: { provider?: t.ILocalStorageProvider } = {},
 ): t.ILocalStorage<P> {
   // Setup initial conditions.
-  defaultValues = { ...defaultValues };
-  const keys = Object.keys(defaultValues);
+  const props = Object.keys(config);
   const provider = options.provider || defaultStorage;
+
+  // Prepare the default values.
+  const fields: { [prop: string]: ILocalStorageField } = {};
+  props.forEach(prop => {
+    const field: ILocalStorageField =
+      typeof config[prop] === 'string' ? { key: prop } : config[prop];
+    const key = field.key || prop;
+    fields[prop] = { key, default: field.default };
+  });
 
   // Observables.
   const _events$ = new Subject<t.LocalStorageEvent>();
   const events$ = _events$.pipe(share());
 
-  const getValue = (key: keyof P | string) => {
-    key = key.toString();
-    const value = provider.get(key.toString());
-    return value === undefined ? defaultValues[key] : value;
+  const getValue = (prop: keyof P | string) => {
+    const field = fields[prop.toString()];
+    const key = field.key;
+    const value = provider.get(key);
+    return value === undefined ? field.default : value;
   };
 
-  // LocalStorage.
+  // API.
   const obj = {
     $: {
       events$,
@@ -52,7 +66,7 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
   };
 
   // Define property handlers.
-  keys.forEach(key => {
+  props.forEach(key => {
     Object.defineProperty(obj, key, {
       /**
        * [GET] property value.

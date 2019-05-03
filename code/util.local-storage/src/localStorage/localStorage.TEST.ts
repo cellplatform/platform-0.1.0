@@ -2,8 +2,17 @@ import { expect } from 'chai';
 import { localStorage } from '.';
 import * as t from '../types';
 
-export type IMyObject = { message: string; count: number };
-const initial: IMyObject = { count: 123, message: 'hello' };
+export type IMyObject = { message: string; count: number; obj: { force?: boolean } | undefined };
+const config = {
+  count: { default: 123 },
+  message: 'MY_KEY/message',
+  obj: { default: { force: true }, key: 'MY_KEY/obj' },
+};
+
+const initial = {
+  count: 123,
+  message: 'hello',
+};
 
 /**
  * [NOTE] An injected provider allows testing on server, whereas the
@@ -29,14 +38,15 @@ const testProvider = (initial?: t.IJsonMap) => {
 describe('localStorage', () => {
   it('gets initial values', () => {
     const provider = testProvider(initial);
-    const local = localStorage<IMyObject>(initial, { provider });
+    const local = localStorage<IMyObject>(config, { provider });
     expect(local.count).to.eql(123);
     expect(local.message).to.eql('hello');
+    expect(local.obj).to.eql({ force: true });
   });
 
   it('writes values', () => {
     const provider = testProvider(initial);
-    const local = localStorage<IMyObject>(initial, { provider });
+    const local = localStorage<IMyObject>(config, { provider });
 
     local.count = 888;
     local.message = 'foo';
@@ -47,7 +57,7 @@ describe('localStorage', () => {
 
   it('deletes values', () => {
     const provider = testProvider(initial);
-    const local = localStorage<IMyObject>(initial, { provider });
+    const local = localStorage<IMyObject>(config, { provider });
 
     local.count = 888;
     local.message = 'foo';
@@ -58,7 +68,7 @@ describe('localStorage', () => {
     local.delete('count');
     local.delete('message');
     expect(local.count).to.eql(123);
-    expect(local.message).to.eql('hello');
+    expect(local.message).to.eql(undefined);
   });
 
   it('fires events', () => {
@@ -70,7 +80,7 @@ describe('localStorage', () => {
     };
 
     const provider = testProvider(initial);
-    const local = localStorage<IMyObject>(initial, { provider });
+    const local = localStorage<IMyObject>(config, { provider });
 
     local.$.events$.subscribe(e => events.all.push(e));
     local.$.get$.subscribe(e => events.get.push(e));
