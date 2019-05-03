@@ -1245,12 +1245,14 @@
   dependencies:
     "@platform/react" "0.1.24"
 
-"@platform/ui.image@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@platform/ui.image/-/ui.image-0.0.5.tgz#d7ee93903c36159cc4c278bd2fd1e34650727fa8"
-  integrity sha512-Rc3+XLdTkSTywvRGFU6VKXdaMwBu2sDSRS/GMlvQ/z6c+3AcnEquKi2hEPBHcnIsY9ix5NrUghm6hFNmkKmzuA==
+"@platform/ui.image@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@platform/ui.image/-/ui.image-0.0.6.tgz#a997f2c8eb1ec6c9aeef23b5a6ba805554695487"
+  integrity sha512-mppSQhiviJlVYaKUG4udcOEanTD9MkSCKZQ4E2JgUDkLNbMVCHoNkFE+8y9kVg0IyCVHXnPJgQpgMbQY+MlpHQ==
   dependencies:
     "@platform/react" "0.1.24"
+    "@platform/ui.icon" "0.0.40"
+    react-icons "3.6.1"
 
 "@platform/ui.object@0.0.96":
   version "0.0.96"
