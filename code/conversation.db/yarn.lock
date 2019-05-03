@@ -104,15 +104,15 @@
   dependencies:
     "@platform/libs" "0.0.12"
 
-"@platform/hyperdb@0.1.21":
-  version "0.1.21"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.21.tgz#2b5599ba952886692fa9e230f85a73379d0de529"
-  integrity sha512-S7n5nA47kOEZjJMG7ztRR6Dr4pTMfvyDXPoozLXoi9nhj/QmGFoMxzFjhGDfOKgJmVheLD7p8mvwhIyJSXNORQ==
+"@platform/hyperdb@0.1.22":
+  version "0.1.22"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.22.tgz#297baa5e7f5ecbe5d0723548139e641616f6869b"
+  integrity sha512-p221KsFNpKl73jSNM7gefxIwkKBmqCBCNb7l1U6edXlbjd0vQVcbb3vVspMUwy0C9eMllAwc6+/dXdYzOlBWVg==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.55"
     "@platform/hyperdb.types" "0.0.16"
-    "@platform/util.value" "0.0.64"
+    "@platform/util.value" "0.1.0"
     discovery-swarm "5.1.4"
     hyperdb "3.5.0"
     pump "3.0.0"
@@ -168,10 +168,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.63.tgz#e40e0c3d74468268070227f613238c0f57d32df6"
   integrity sha512-XHYJF2+24EzTK1lOl6gtWS5UZIXJAW/ZLwMF7UOYGQx/x0/8BvUpfXZonoe7KqUNcDv5m4+eIdkzFH72W/Pn3g==
 
-"@platform/util.value@0.0.64":
-  version "0.0.64"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.0.64.tgz#7f86fa68f215452dea4650321826f2b6e6e3b4af"
-  integrity sha512-zJwm213DFV7swBv24bqROmlc5Pugu42W2vOgF+R9kkMjwhyIQYuG/j83tVALfS35ubsFuff1u2PuOF0VDcEy5A==
+"@platform/util.value@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.1.0.tgz#78e0d8826e6625d1530567f0d284cbc9f2231453"
+  integrity sha512-69Il96l4DvC/k+gN9tCg11wkRSd72qtLsmZaFlGKeUmrd+gj3cPEJ5f+cNN7Isjp/9WSNUoCoqGXQ5Ddncu0tw==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.63"

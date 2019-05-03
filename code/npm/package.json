@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Helpers for working with NPM.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -15,7 +15,7 @@
     "@platform/exec": "0.2.1",
     "@platform/fs": "0.0.55",
     "@platform/log": "0.0.114",
-    "@platform/util.value": "0.0.64",
+    "@platform/util.value": "0.1.0",
     "@types/semver": "6.0.0",
     "semver": "6.0.0"
   },

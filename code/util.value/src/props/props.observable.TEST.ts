@@ -74,7 +74,9 @@ describe('props.observable', () => {
       // BEFORE event.
       expect(events.getting.length).to.eql(2);
       expect(events.getting[0].value).to.eql('');
+      expect(events.getting[0].isModified).to.eql(true);
       expect(events.getting[1].value).to.eql(0);
+      expect(events.getting[1].isModified).to.eql(true);
 
       // AFTER event.
       expect(events.get.length).to.eql(2);

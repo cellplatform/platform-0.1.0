@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.image",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Image related components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.1.20"
+    "@platform/react": "0.1.21"
   },
   "devDependencies": {
     "@uiharness/dev": "0.2.44",
