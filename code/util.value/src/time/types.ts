@@ -17,15 +17,17 @@ export type ITime = {
 
 export type IDuration = {
   msec: number;
-  ms: number;
   sec: number;
-  s: number;
+  min: number;
+  hour: number;
+  day: number;
+  toString(unit?: TimerUnit): string;
 };
 
-export type TimerUnit = 'msec' | 'ms' | 'sec' | 's';
+export type TimerUnit = 'msec' | 'ms' | 'sec' | 's' | 'min' | 'm' | 'hour' | 'h' | 'day' | 'd';
 
 export type ITimer = {
   startedAt: Date;
   reset: () => ITimer;
-  elapsed: (unit?: TimerUnit) => number;
+  elapsed: IDuration;
 };
