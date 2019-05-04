@@ -9,7 +9,7 @@ type P = t.ITestCommandProps;
  */
 export const shell = Command.create<P>('shell', e => {
   log.info('🌼 invoked:shell');
-  e.props.next({ el: <div>Shell</div> });
+  e.props.next({ el: <div>🐚 Shell</div> });
 }).add('tree', e => {
   log.info('🌳 invoked:shell.tree');
   const state: any = {

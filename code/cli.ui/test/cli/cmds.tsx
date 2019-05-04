@@ -41,7 +41,7 @@ export const root = Command.create<P>('root', e => {
   console.log('e.command', e.command && e.command.name);
   console.log('e.namespace', e.namespace && e.namespace.name);
   console.groupEnd();
-  e.props.next({ el: <div>Root</div> });
+  e.props.next({ el: <div>🐷Root</div> });
 })
   .add(shell)
   .add(list)

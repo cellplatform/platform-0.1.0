@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { CommandShell, t } from '../common';
+import { css, CommandShell, t } from '../common';
 
 export type ITestCommandShellProps = {};
 
@@ -29,6 +29,13 @@ export class TestShell extends React.PureComponent<ITestCommandShellProps, t.ITe
    */
   public render() {
     const { tree = {} } = this.state;
-    return <CommandShell cli={this.cli} tree={tree} localStorage={true} />;
+    const styles = {
+      body: css({ padding: 30 }),
+    };
+    return (
+      <CommandShell cli={this.cli} tree={tree} localStorage={true}>
+        <div {...styles.body}>{this.state.el}</div>
+      </CommandShell>
+    );
   }
 }
