@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from '../../common';
+import { css, color, GlamorValue, markdown } from '../../common';
 import { Avatar, Text } from '../primitives';
 import { Triangle } from './components/Triangle';
 
@@ -9,6 +9,7 @@ export type IThreadCommentProps = {
   avatarUrl?: string;
   bottomConnector?: number;
   header?: JSX.Element;
+  body?: string;
   style?: GlamorValue;
 };
 export type IThreadCommentState = {};
@@ -105,7 +106,6 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     return (
       <div {...styles.base}>
         <Triangle style={styles.triangle} backgroundColor={COLOR.HEADER.BG} borderColor={-0.1} />
-
         {this.props.header}
       </div>
     );
@@ -113,11 +113,17 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
 
   private renderBody() {
     const styles = {
-      base: css({ padding: 15 }),
+      base: css({
+        padding: 15,
+        userSelect: 'text',
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+      }),
     };
+    const html = markdown.toHtmlSync(this.props.body || '');
+
     return (
       <div {...styles.base}>
-        <div>body</div>
+        <div dangerouslySetInnerHTML={{ __html: html }} />
       </div>
     );
   }

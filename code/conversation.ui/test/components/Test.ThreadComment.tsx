@@ -10,10 +10,29 @@ import {
   ThreadCommentHeader,
   constants,
   time,
+  Hr,
+  LOREM,
 } from '../common';
-// import { part } from '../';
 
 const { URL } = constants;
+
+const BODY = {
+  MARKDOWN_1: `
+🌼You dig?
+
+  `,
+
+  MARKDOWN_2: `
+Hey **Bob**
+
+${LOREM}
+
+${LOREM}
+
+🌼You dig?
+
+  `,
+};
 
 export type ITestProps = {};
 
@@ -45,6 +64,10 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         padding: 50,
       }),
       outer: css({ width: 750 }),
+      headerOuter: css({
+        marginBottom: 50,
+        marginLeft: 60,
+      }),
     };
 
     const timestamp = time
@@ -53,11 +76,13 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       .toDate();
 
     const elHeader = <ThreadCommentHeader name={'mary@foo.com'} timestamp={timestamp} />;
+    const body = BODY.MARKDOWN_1;
 
     return (
       <div {...styles.base}>
         <div {...styles.outer}>
-          <ThreadComment avatarUrl={URL.WOMAN_1} header={elHeader} />
+          <div {...styles.headerOuter}>{elHeader}</div>
+          <ThreadComment avatarUrl={URL.WOMAN_1} header={elHeader} body={body} />
         </div>
       </div>
     );

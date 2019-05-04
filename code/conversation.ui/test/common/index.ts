@@ -7,3 +7,5 @@ import * as constants from './constants';
 export * from './types';
 export * from './libs';
 export { t, constants };
+
+export const LOREM = constants.LOREM;

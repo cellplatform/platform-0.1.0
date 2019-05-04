@@ -49,6 +49,7 @@ export class ThreadCommentHeader extends React.PureComponent<
         flex: 1,
         margin: 14,
         fontSize: 14,
+        userSelect: 'none',
       }),
       name: css({
         fontWeight: 'bold',
