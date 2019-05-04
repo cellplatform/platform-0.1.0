@@ -1,4 +1,6 @@
+import * as React from 'react';
 import { Subject } from 'rxjs';
+
 import { t } from './common';
 
 export { ILog } from '@platform/log';
@@ -11,5 +13,6 @@ export type ITestCommandProps = {
 };
 
 export type ITestState = {
+  el?: React.ReactNode;
   tree?: t.ICommandShellTreeOptions;
 };
