@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.button",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Button components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,11 +15,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.1.25"
+    "@platform/react": "0.1.26"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.2.45",
-    "@uiharness/ui": "0.2.24"
+    "@uiharness/dev": "0.2.46",
+    "@uiharness/ui": "0.2.25"
   },
   "files": [
     "lib"

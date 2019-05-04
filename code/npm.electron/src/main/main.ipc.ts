@@ -55,7 +55,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.IMainLog }) {
       const cmd = exec.command('npm install');
       log.info.gray('installing...');
       const res = await cmd.run({ cwd, silent: true });
-      const elapsed = log.gray(`${timer.elapsed('s')}s`);
+      const elapsed = log.gray(`${timer.elapsed.toString()}`);
       log.info(`Done:`, res.ok ? log.green('success') : log.red('failed'), elapsed);
 
       // Handle error.
