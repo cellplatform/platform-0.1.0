@@ -3,40 +3,40 @@ import { css } from '..';
 
 describe('css.arrayToEdges', () => {
   it('undefined => undefined', () => {
-    expect(css.arrayToEdges(undefined)).to.eql({});
+    expect(css.toEdges(undefined)).to.eql({});
   });
 
   it('null => undefined', () => {
-    expect(css.arrayToEdges(null)).to.eql({});
+    expect(css.toEdges(null)).to.eql({});
   });
 
   it('[] => undefined', () => {
-    expect(css.arrayToEdges([])).to.eql({});
+    expect(css.toEdges([])).to.eql({});
   });
 
   it('"" => undefined', () => {
-    expect(css.arrayToEdges('')).to.eql({});
-    expect(css.arrayToEdges('  ')).to.eql({});
+    expect(css.toEdges('')).to.eql({});
+    expect(css.toEdges('  ')).to.eql({});
   });
 
   it('[null, null, null, null] => undefined', () => {
-    expect(css.arrayToEdges([null, null, null, null])).to.eql({});
+    expect(css.toEdges([null, null, null, null])).to.eql({});
   });
 
   it('[null, null] => undefined', () => {
-    expect(css.arrayToEdges([null, null])).to.eql({});
+    expect(css.toEdges([null, null])).to.eql({});
   });
 
   it('defaultValue', () => {
     const expected = { top: 10, right: 10, bottom: 10, left: 10 };
-    expect(css.arrayToEdges(undefined, { defaultValue: 10 })).to.eql(expected);
-    expect(css.arrayToEdges([], { defaultValue: 10 })).to.eql(expected);
-    expect(css.arrayToEdges([null], { defaultValue: 10 })).to.eql(expected);
-    expect(css.arrayToEdges([null, null], { defaultValue: 10 })).to.eql(expected);
+    expect(css.toEdges(undefined, { defaultValue: 10 })).to.eql(expected);
+    expect(css.toEdges([], { defaultValue: 10 })).to.eql(expected);
+    expect(css.toEdges([null], { defaultValue: 10 })).to.eql(expected);
+    expect(css.toEdges([null, null], { defaultValue: 10 })).to.eql(expected);
   });
 
   it('"0 10px 6em 9%"', () => {
-    expect(css.arrayToEdges('0 10px 6em 9%')).to.eql({
+    expect(css.toEdges('0 10px 6em 9%')).to.eql({
       top: 0,
       right: 10,
       bottom: '6em',
@@ -45,7 +45,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('"20px 5em"', () => {
-    expect(css.arrayToEdges('20px 5em')).to.eql({
+    expect(css.toEdges('20px 5em')).to.eql({
       top: 20,
       right: '5em',
       bottom: 20,
@@ -54,7 +54,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('10', () => {
-    expect(css.arrayToEdges(10)).to.eql({
+    expect(css.toEdges(10)).to.eql({
       top: 10,
       right: 10,
       bottom: 10,
@@ -63,7 +63,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('"10px"', () => {
-    expect(css.arrayToEdges('10px')).to.eql({
+    expect(css.toEdges('10px')).to.eql({
       top: 10,
       right: 10,
       bottom: 10,
@@ -72,7 +72,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('"5em"', () => {
-    expect(css.arrayToEdges('5em')).to.eql({
+    expect(css.toEdges('5em')).to.eql({
       top: '5em',
       right: '5em',
       bottom: '5em',
@@ -81,7 +81,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('[10, 20, 30, 40]', () => {
-    expect(css.arrayToEdges([10, 20, 30, 40])).to.eql({
+    expect(css.toEdges([10, 20, 30, 40])).to.eql({
       top: 10,
       right: 20,
       bottom: 30,
@@ -90,7 +90,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('[10, null, "30%", "40px"]', () => {
-    expect(css.arrayToEdges([10, null, '30%', '40px'])).to.eql({
+    expect(css.toEdges([10, null, '30%', '40px'])).to.eql({
       top: 10,
       right: undefined,
       bottom: '30%',
@@ -99,7 +99,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('[10, 20]', () => {
-    expect(css.arrayToEdges([10, 20])).to.eql({
+    expect(css.toEdges([10, 20])).to.eql({
       top: 10,
       right: 20,
       bottom: 10,
@@ -108,7 +108,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('[null, 20]', () => {
-    expect(css.arrayToEdges([null, 20])).to.eql({
+    expect(css.toEdges([null, 20])).to.eql({
       top: undefined,
       right: 20,
       bottom: undefined,
@@ -117,7 +117,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('[10, null]', () => {
-    expect(css.arrayToEdges([10, null])).to.eql({
+    expect(css.toEdges([10, null])).to.eql({
       top: 10,
       right: undefined,
       bottom: 10,

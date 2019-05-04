@@ -44,17 +44,17 @@ export type IStyle = IFormatCss & {
   transform: typeof transformStyle;
   head: ICssHead;
   merge: (...rules: any[]) => CssProps;
-  arrayToEdges: ArrayToEdges;
-  toMargins(edges?: EdgesInput, options?: { defaultValue?: EdgesInput }): Partial<IMarginEdges>;
-  toPadding(edges?: EdgesInput, options?: { defaultValue?: EdgesInput }): Partial<IPaddingEdges>;
+  toEdges: ToCssEdges<IEdges>;
+  toMargins: ToCssEdges<IMarginEdges>;
+  toPadding: ToCssEdges<IPaddingEdges>;
 };
 
 export type EdgesInput = string | number | undefined | null | Array<string | number | null>;
 
-export type ArrayToEdges = (
+export type ToCssEdges<T> = (
   input?: EdgesInput,
   options?: { defaultValue?: EdgesInput },
-) => Partial<IEdges>;
+) => Partial<T>;
 
 export type IEdges = {
   top: string | number;
