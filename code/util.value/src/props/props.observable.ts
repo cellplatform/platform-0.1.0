@@ -32,40 +32,21 @@ export function observable<P extends t.IProps>(
     takeUntil(dispose$),
     share(),
   );
-  const getting$ = events$.pipe(
-    filter(e => e.type === 'PROP/getting'),
-    map(e => e.payload as t.IPropGetting),
-    share(),
-  );
-  const get$ = events$.pipe(
-    filter(e => e.type === 'PROP/get'),
-    map(e => e.payload as t.IPropGet),
-    share(),
-  );
-  const setting$ = events$.pipe(
+  const changing$ = events$.pipe(
     filter(e => e.type === 'PROP/setting'),
-    map(e => e.payload as t.IPropSetting),
+    map(e => e.payload as t.IPropChanging),
     share(),
   );
-  const set$ = events$.pipe(
+  const changed$ = events$.pipe(
     filter(e => e.type === 'PROP/set'),
-    map(e => e.payload as t.IPropSet),
+    map(e => e.payload as t.IPropChanged),
     share(),
   );
 
   const obj = {
-    $: {
-      dispose$: dispose$.pipe(share()),
-      events$,
-      getting$,
-      get$,
-      setting$,
-      set$,
-    },
-    changed$: set$.pipe(
-      map(e => e as t.IPropChanged),
-      share(),
-    ),
+    $: { dispose$: dispose$.pipe(share()), events$ },
+    changing$,
+    changed$,
     get isDisposed() {
       return dispose$.isStopped;
     },
@@ -118,7 +99,7 @@ export function observable<P extends t.IProps>(
         const value = { from, to };
         let isCancelled = false;
 
-        const before: t.IPropSetting<P> = {
+        const before: t.IPropChanging<P> = {
           key,
           value,
           get isCancelled() {

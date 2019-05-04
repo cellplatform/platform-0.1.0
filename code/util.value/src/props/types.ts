@@ -5,11 +5,8 @@ export type IObservableProps<P = any> = IProps<P> & {
   readonly $: {
     readonly dispose$: Observable<{}>;
     readonly events$: Observable<PropEvent>;
-    readonly getting$: Observable<IPropGetting<P>>;
-    readonly get$: Observable<IPropGet<P>>;
-    readonly setting$: Observable<IPropSetting<P>>;
-    readonly set$: Observable<IPropSet<P>>;
   };
+  readonly changing$: Observable<IPropChanging<P>>;
   readonly changed$: Observable<IPropChanged<P>>;
   readonly isDisposed: boolean;
   dispose(): void;
@@ -19,7 +16,7 @@ export type IObservableProps<P = any> = IProps<P> & {
 /**
  * [Events]
  */
-export type PropEvent = IPropGettingEvent | IPropGetEvent | IPropSettingEvent | IPropSetEvent;
+export type PropEvent = IPropGettingEvent | IPropGetEvent | IPropChangingEvent | IPropChangedEvent;
 
 export type IPropGettingEvent<P extends IProps = any> = {
   type: 'PROP/getting';
@@ -41,24 +38,22 @@ export type IPropGet<P extends IProps = any> = {
   value: P[keyof P];
 };
 
-export type IPropSettingEvent<P extends IProps = any> = {
+export type IPropChangingEvent<P extends IProps = any> = {
   type: 'PROP/setting';
-  payload: IPropSetting<P>;
+  payload: IPropChanging<P>;
 };
-export type IPropSetting<P extends IProps = any> = {
+export type IPropChanging<P extends IProps = any> = {
   key: keyof P;
   value: { from: P[keyof P]; to: P[keyof P] };
   isCancelled: boolean;
   cancel(): void;
 };
 
-export type IPropSetEvent<P extends IProps = any> = {
+export type IPropChangedEvent<P extends IProps = any> = {
   type: 'PROP/set';
-  payload: IPropSet<P>;
+  payload: IPropChanged<P>;
 };
-export type IPropSet<P extends IProps = any> = {
+export type IPropChanged<P extends IProps = any> = {
   key: keyof P;
   value: { from: P[keyof P]; to: P[keyof P] };
 };
-
-export type IPropChanged<P extends IProps = any> = IPropSet<P>;

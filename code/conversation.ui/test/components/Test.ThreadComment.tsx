@@ -30,7 +30,7 @@ export class Test extends React.PureComponent<ITestProps> {
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    this.props.data.$.set$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.forceUpdate());
+    this.props.data.changed$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.forceUpdate());
   }
 
   public componentWillUnmount() {
