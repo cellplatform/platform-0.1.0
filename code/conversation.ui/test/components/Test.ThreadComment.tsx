@@ -1,7 +1,16 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, t, ThreadComment, constants } from '../common';
+import {
+  css,
+  color,
+  GlamorValue,
+  t,
+  ThreadComment,
+  ThreadCommentHeader,
+  constants,
+  time,
+} from '../common';
 // import { part } from '../';
 
 const { URL } = constants;
@@ -37,10 +46,18 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       }),
       outer: css({ width: 750 }),
     };
+
+    const timestamp = time
+      .day()
+      .subtract(2, 'h')
+      .toDate();
+
+    const elHeader = <ThreadCommentHeader name={'mary@foo.com'} timestamp={timestamp} />;
+
     return (
       <div {...styles.base}>
         <div {...styles.outer}>
-          <ThreadComment avatarUrl={URL.WOMAN_1} />
+          <ThreadComment avatarUrl={URL.WOMAN_1} header={elHeader} />
         </div>
       </div>
     );

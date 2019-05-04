@@ -8,6 +8,7 @@ import { Triangle } from './components/Triangle';
 export type IThreadCommentProps = {
   avatarUrl?: string;
   bottomConnector?: number;
+  header?: JSX.Element;
   style?: GlamorValue;
 };
 export type IThreadCommentState = {};
@@ -52,6 +53,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
       base: css({
         display: 'block',
         boxSizing: 'border-box',
+        userSelect: 'none',
       }),
       inner: css({
         Flex: 'horizontal',
@@ -104,26 +106,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
       <div {...styles.base}>
         <Triangle style={styles.triangle} backgroundColor={COLOR.HEADER.BG} borderColor={-0.1} />
 
-        {this.renderHeaderContent()}
-        <div />
-      </div>
-    );
-  }
-
-  private renderHeaderContent() {
-    const styles = {
-      base: css({
-        flex: 1,
-        margin: 14,
-        fontSize: 14,
-      }),
-      name: css({
-        fontWeight: 'bold',
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <span {...styles.name}>mary@foo.com</span> <span>commented 2 hours ago</span>
+        {this.props.header}
       </div>
     );
   }
