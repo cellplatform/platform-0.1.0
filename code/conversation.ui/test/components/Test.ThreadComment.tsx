@@ -1,43 +1,26 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
 import {
-  css,
   color,
-  GlamorValue,
+  COLORS,
+  constants,
+  css,
+  LOREM,
   t,
   ThreadComment,
   ThreadCommentHeader,
-  constants,
   time,
-  Hr,
-  LOREM,
-  COLORS,
 } from '../common';
 
 const { URL } = constants;
 
-const BODY = {
-  MARKDOWN_1: `
-🌼You dig?
-
-  `,
-
-  MARKDOWN_2: `
-Hey **Bob**
-
-${LOREM}
-
-${LOREM}
-
-🌼You dig?
-
-  `,
+export type ITestProps = {
+  data: t.IObservableProps<t.IThreadCommentTestProps>;
 };
 
-export type ITestProps = {};
-
-export class Test extends React.PureComponent<ITestProps, t.ITestState> {
+export class Test extends React.PureComponent<ITestProps> {
   public state: t.ITestState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
@@ -47,6 +30,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.props.data.$.set$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -58,6 +42,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Render]
    */
   public render() {
+    const data = this.props.data;
     const styles = {
       base: css({
         flex: 1,
@@ -67,7 +52,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       }),
       outer: css({ width: 750 }),
       headerOuter: css({
-        paddingLeft: 30,
+        paddingLeft: 60,
         paddingBottom: 30,
         marginBottom: 60,
         borderBottom: `dashed 1px ${color.alpha(COLORS.PINK, 0.3)}`,
@@ -79,8 +64,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       .subtract(2, 'h')
       .toDate();
 
-    const elHeader = <ThreadCommentHeader name={'mary@foo.com'} timestamp={timestamp} />;
-    const body = BODY.MARKDOWN_1;
+    const elHeader = <ThreadCommentHeader name={data.name} timestamp={timestamp} />;
+    const body = data.body;
 
     return (
       <div {...styles.base}>

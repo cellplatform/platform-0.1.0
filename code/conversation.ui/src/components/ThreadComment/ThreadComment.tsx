@@ -1,7 +1,8 @@
+import './styles';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, markdown } from '../../common';
+import { css, color, GlamorValue, markdown, CSS } from '../../common';
 import { Avatar, Text } from '../primitives';
 import { Triangle } from './components/Triangle';
 
@@ -46,6 +47,13 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
   }
 
   /**
+   * [Properties]
+   */
+  public get body() {
+    return this.props.body || '';
+  }
+
+  /**
    * [Render]
    */
   public render() {
@@ -83,7 +91,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
           </div>
           <div {...styles.right}>
             {this.renderHeader()}
-            {this.renderBody()}
+            {this.body ? this.renderBody() : this.renderEmpty()}
           </div>
         </div>
       </Text>
@@ -115,15 +123,30 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     const styles = {
       base: css({
         padding: 15,
+        // PaddingX: 15,
         userSelect: 'text',
       }),
     };
-    const html = markdown.toHtmlSync(this.props.body || '');
+    const html = markdown.toHtmlSync(this.body);
+    const className = `${CSS.CLASS.MARKDOWN} ${CSS.CLASS.COMMENT} `;
 
     return (
       <div {...styles.base}>
-        <div dangerouslySetInnerHTML={{ __html: html }} />
+        <div className={className} dangerouslySetInnerHTML={{ __html: html }} />
       </div>
     );
+  }
+
+  private renderEmpty() {
+    const styles = {
+      base: css({
+        Flex: 'center-center',
+        padding: 15,
+        opacity: 0.3,
+        fontStyle: 'italic',
+        fontSize: 14,
+      }),
+    };
+    return <div {...styles.base}>Nothing to display.</div>;
   }
 }
