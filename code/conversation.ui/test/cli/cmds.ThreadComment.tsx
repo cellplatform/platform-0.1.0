@@ -10,7 +10,6 @@ type P = t.ICommandProps & { count: number };
 export const threadComment = Command.create<P>('ThreadComment', e => {
   const el = <Test />;
   e.props.next({ el });
-  console.log('root');
 })
   .add('body', e => {
     // const key

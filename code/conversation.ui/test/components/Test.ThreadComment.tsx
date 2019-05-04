@@ -12,6 +12,7 @@ import {
   time,
   Hr,
   LOREM,
+  COLORS,
 } from '../common';
 
 const { URL } = constants;
@@ -61,12 +62,15 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       base: css({
         flex: 1,
         Flex: 'start-center',
-        padding: 50,
+        padding: 15,
+        paddingTop: 50,
       }),
       outer: css({ width: 750 }),
       headerOuter: css({
-        marginBottom: 50,
-        marginLeft: 60,
+        paddingLeft: 30,
+        paddingBottom: 30,
+        marginBottom: 60,
+        borderBottom: `dashed 1px ${color.alpha(COLORS.PINK, 0.3)}`,
       }),
     };
 

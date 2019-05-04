@@ -116,7 +116,6 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
       base: css({
         padding: 15,
         userSelect: 'text',
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       }),
     };
     const html = markdown.toHtmlSync(this.props.body || '');
