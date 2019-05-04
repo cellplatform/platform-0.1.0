@@ -967,10 +967,24 @@
     "@platform/util.value" "0.1.5"
     minimist "1.2.0"
 
-"@platform/cli.ui@0.1.8", "@platform/cli.ui@^0.1.8":
+"@platform/cli.ui@0.1.8":
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.1.8.tgz#80ffdcd2796a0a9eee2639d71b7d00e513c01def"
   integrity sha512-AJ9jPi6PPhl2VG18hceK+KJTd3FH3nBlVw6mcM3cFwm5KBhLtPkwKktFv1sb9QgdsPn69cb+/BqGgTcIsv7U+w==
+  dependencies:
+    "@platform/cli.spec" "0.1.21"
+    "@platform/react" "0.1.26"
+    "@platform/ui.panel" "0.0.40"
+    "@platform/ui.text" "0.1.16"
+    "@platform/ui.tree" "0.0.46"
+    "@platform/util.local-storage" "^0.0.4"
+    "@platform/util.value" "0.1.5"
+    react-icons "3.6.1"
+
+"@platform/cli.ui@0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.1.9.tgz#c099831534db791c6fa3a87a011ee37a0bcc735c"
+  integrity sha512-qkUP2m5HjRuKyU88WGx7AmpjYHShgoWOj6wZAa9eowUkwHp5shvNu/yrm1JSqfyRX2ZSmmPErfziCKSyojjx+A==
   dependencies:
     "@platform/cli.spec" "0.1.21"
     "@platform/react" "0.1.26"
@@ -1205,7 +1219,7 @@
   dependencies:
     "@platform/react" "0.1.26"
 
-"@platform/ui.image@^0.0.8":
+"@platform/ui.image@0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@platform/ui.image/-/ui.image-0.0.8.tgz#703379be2633158c31d98fac3d06c5717ed5856c"
   integrity sha512-n6I/uLlaa3W1U9nOpugoanS6B25Y+zIzvL7P1rTpZWgRco096xPSL2IPDQj5C4zEto6LszbuViTZmSZSEOr+yQ==
@@ -1277,7 +1291,7 @@
   dependencies:
     "@platform/util.value" "0.1.5"
 
-"@platform/util.markdown@^0.0.13":
+"@platform/util.markdown@0.0.13":
   version "0.0.13"
   resolved "https://registry.yarnpkg.com/@platform/util.markdown/-/util.markdown-0.0.13.tgz#ffe36a427654ed5fda3c65fa493aa8ae6f1a36a1"
   integrity sha512-EN8hyHGJYp9GdSbzeqP1zXlp6x+jAkQ7HIhBqipDl/8XAo1Kkoi4Bwx4unKVyDL4B5jnefTRgqW5U2DQZOMgJA==
@@ -1298,7 +1312,7 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value@0.1.5", "@platform/util.value@^0.1.5":
+"@platform/util.value@0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.1.5.tgz#ab00b4fdc7ebaff4ef475ed21652fa8bbd3f5f40"
   integrity sha512-G0TWEzmV8e4Bseh3lMMC85u8Shi+REP7XkwFXKyIy/kYtxOOG1RHeSuPom/fqJWfcVN1XQu3SwEtBM7QiEyPiA==
