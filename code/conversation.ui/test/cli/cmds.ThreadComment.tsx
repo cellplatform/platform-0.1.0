@@ -42,6 +42,10 @@ const BODY = {
   Hey **Bob**
   
   ${LOREM}
+
+  - one
+  - two
+  - three
   
   ${LOREM}
   
