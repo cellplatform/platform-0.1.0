@@ -26,8 +26,8 @@
   },
   "devDependencies": {
     "@types/auth0-js": "9.10.2",
-    "@uiharness/dev": "0.2.46",
-    "@uiharness/ui": "0.2.25",
+    "@uiharness/dev": "0.2.47",
+    "@uiharness/ui": "0.2.26",
     "apollo-server": "2.4.8",
     "graphql": "14.2.1"
   },

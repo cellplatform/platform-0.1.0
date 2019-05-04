@@ -18,8 +18,8 @@
     "@platform/react": "0.1.26"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.2.46",
-    "@uiharness/ui": "0.2.25"
+    "@uiharness/dev": "0.2.47",
+    "@uiharness/ui": "0.2.26"
   },
   "files": [
     "lib"
