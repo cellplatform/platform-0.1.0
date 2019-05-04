@@ -965,10 +965,10 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.0.45":
-  version "0.0.45"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.45.tgz#2e8d9ce7ed194dab8d6ee6ed861189a59c3c3bfa"
-  integrity sha512-14lzF/HQZZ29lD91rH3BQGc8ePyGpN+kCf7IOuy+KhjsF7QwblRd7mcmzwnjkDzCEK0HKGn3UvrGjehbri6BOQ==
+"@platform/css@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.0.tgz#0b75a0271634f987e443fb79d8226a0abda6d3a3"
+  integrity sha512-lkUYbgd2U0WW9/MbE52wgdQ2Cav7k1QrBexBfot2yGkMHgG6xqmsEGdwfozP0hzD3GD9Oq2SwUhYIZiltgDoNQ==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.65"

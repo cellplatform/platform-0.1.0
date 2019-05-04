@@ -977,10 +977,10 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.0.45":
-  version "0.0.45"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.45.tgz#2e8d9ce7ed194dab8d6ee6ed861189a59c3c3bfa"
-  integrity sha512-14lzF/HQZZ29lD91rH3BQGc8ePyGpN+kCf7IOuy+KhjsF7QwblRd7mcmzwnjkDzCEK0HKGn3UvrGjehbri6BOQ==
+"@platform/css@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.0.tgz#0b75a0271634f987e443fb79d8226a0abda6d3a3"
+  integrity sha512-lkUYbgd2U0WW9/MbE52wgdQ2Cav7k1QrBexBfot2yGkMHgG6xqmsEGdwfozP0hzD3GD9Oq2SwUhYIZiltgDoNQ==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.65"
@@ -1071,12 +1071,12 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/react@0.1.27":
-  version "0.1.27"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.27.tgz#362c97d2ae3effc0e3c4b05177506324f2a6d97e"
-  integrity sha512-nv4D2LhqfqxCme70W8sSTjtuFZpt+v5F8FB1bD8XM1eWUGGTz68iWpwa22g9sV7ycZTOMkoGClkUN2Mw4EXMuw==
+"@platform/react@0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.28.tgz#396b6771fd38933f78fafc3438fe0a63ade7e8ac"
+  integrity sha512-LuXQtBPgn69VdgRLuqIV+tbE5gg8HntFodfLnSCgzj7kP4nEPnpDR2eTfRU3ueAIuhgZUut1W8ewHTDqQvlcnQ==
   dependencies:
-    "@platform/css" "0.0.45"
+    "@platform/css" "0.1.0"
     "@platform/util.is" "0.0.65"
     "@types/react" "16.8.16"
     "@types/react-dom" "16.8.4"

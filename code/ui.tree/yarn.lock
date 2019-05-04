@@ -965,10 +965,10 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.0.45", "@platform/css@^0.0.45":
-  version "0.0.45"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.0.45.tgz#2e8d9ce7ed194dab8d6ee6ed861189a59c3c3bfa"
-  integrity sha512-14lzF/HQZZ29lD91rH3BQGc8ePyGpN+kCf7IOuy+KhjsF7QwblRd7mcmzwnjkDzCEK0HKGn3UvrGjehbri6BOQ==
+"@platform/css@0.1.0", "@platform/css@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.0.tgz#0b75a0271634f987e443fb79d8226a0abda6d3a3"
+  integrity sha512-lkUYbgd2U0WW9/MbE52wgdQ2Cav7k1QrBexBfot2yGkMHgG6xqmsEGdwfozP0hzD3GD9Oq2SwUhYIZiltgDoNQ==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.65"
@@ -1059,12 +1059,12 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/react@0.1.27":
-  version "0.1.27"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.27.tgz#362c97d2ae3effc0e3c4b05177506324f2a6d97e"
-  integrity sha512-nv4D2LhqfqxCme70W8sSTjtuFZpt+v5F8FB1bD8XM1eWUGGTz68iWpwa22g9sV7ycZTOMkoGClkUN2Mw4EXMuw==
+"@platform/react@0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.28.tgz#396b6771fd38933f78fafc3438fe0a63ade7e8ac"
+  integrity sha512-LuXQtBPgn69VdgRLuqIV+tbE5gg8HntFodfLnSCgzj7kP4nEPnpDR2eTfRU3ueAIuhgZUut1W8ewHTDqQvlcnQ==
   dependencies:
-    "@platform/css" "0.0.45"
+    "@platform/css" "0.1.0"
     "@platform/util.is" "0.0.65"
     "@types/react" "16.8.16"
     "@types/react-dom" "16.8.4"
@@ -1121,12 +1121,12 @@
   dependencies:
     "@platform/react" "0.1.26"
 
-"@platform/ui.icon@0.0.43":
-  version "0.0.43"
-  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.43.tgz#47618202daf6e25a074248dbc9f272af3aa157b4"
-  integrity sha512-PULdJ+1OYlSW1cM++0J5lZA2Qf7e7fqnKifdvR745ZZLoZUmYadeTpurNov2nTD4bac5MjrxkDj28+tsmRwYTg==
+"@platform/ui.icon@0.0.44":
+  version "0.0.44"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.44.tgz#4efdab7109abf884041bab84b03b961ac32ad90b"
+  integrity sha512-e2X8n/PZs0X/IMYig2u8CUEQsxRSa+kejii8mY7ZSpqNH1lNM0cftNr0Z7pyqLA01OdJYB3yNH3xVJNGk7JKwQ==
   dependencies:
-    "@platform/react" "0.1.27"
+    "@platform/react" "0.1.28"
 
 "@platform/ui.object@0.0.98":
   version "0.0.98"
@@ -1144,12 +1144,12 @@
     "@platform/react" "0.1.26"
     "@platform/util.animate" "0.0.26"
 
-"@platform/ui.panel@0.0.41":
-  version "0.0.41"
-  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.0.41.tgz#aebfb0035df3d161cce5f2c2c77aa7f4191f4217"
-  integrity sha512-oXO7eNp5AYlHTu+ACyzp6+x4DrMfUfJtav5wjMKKfkx+We4fA4ujq7fyW2x4L/FQnujCsuDSsrwsgilFFdQj7Q==
+"@platform/ui.panel@0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.0.42.tgz#dfa695d54bbf4b26dcb360c34d10af4bb1b991a8"
+  integrity sha512-S6I/x+wHUtsr3owGgFeMMfSS3TjQybYfUCOvkuU7nSVUnN4iUsG/N15askV6lz48Cj9rvORw/gVdO6urnYx1Iw==
   dependencies:
-    "@platform/react" "0.1.27"
+    "@platform/react" "0.1.28"
     "@platform/util.animate" "0.0.26"
 
 "@platform/ui.spinner@0.0.41":
@@ -1159,12 +1159,12 @@
   dependencies:
     "@platform/react" "0.1.26"
 
-"@platform/ui.spinner@0.0.42":
-  version "0.0.42"
-  resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.42.tgz#1eb35e5fa6399dc6a69006b95aac2ae8c5a560d4"
-  integrity sha512-kE8WA9PFVAQNs+OCZibxlSauCJ2kDE93gQb4QsaX1ZeTG7EP7fXbU7QRuEfB83NzkiZHp5idfrluYJvDwkHFOQ==
+"@platform/ui.spinner@0.0.43":
+  version "0.0.43"
+  resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.43.tgz#48d664574ef8bf35abdb347d456723030a6b27d9"
+  integrity sha512-p0zE3J+hfeknoUTQ4Pit/l0YJkIGT1cARj3aJw9uoJ8umqJlkDK8csZzB/ehanc//MCQzS3aNjlRhC0AXlgjxA==
   dependencies:
-    "@platform/react" "0.1.27"
+    "@platform/react" "0.1.28"
 
 "@platform/ui.text@0.1.16":
   version "0.1.16"
@@ -1174,12 +1174,12 @@
     "@platform/react" "0.1.26"
     "@platform/util.value" "0.1.5"
 
-"@platform/ui.text@0.1.17":
-  version "0.1.17"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.1.17.tgz#85da5348d5726471e4b80a6ca64b4612c40883a3"
-  integrity sha512-6Crfpq9W7IoJ9B9+0Ppqd2GGeQpKWAfZtC6SICGgmivENRiOM5u+WtKrMfYXw0aVHp5oNJMbeV24hIWY7NsTbg==
+"@platform/ui.text@0.1.18":
+  version "0.1.18"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.1.18.tgz#c3e7a2e3bf746ac4473bca4a602722467a7bf0bf"
+  integrity sha512-yaqbfO3vxEjb30ZIWzArLvXoDCqpPnaiM2g0ny+0pSkz3cCZHjoppLVh/hKZg4b2EATbxw5sHP1VN0gaTq9JqA==
   dependencies:
-    "@platform/react" "0.1.27"
+    "@platform/react" "0.1.28"
     "@platform/util.value" "0.1.6"
 
 "@platform/ui.tree@0.0.46":
