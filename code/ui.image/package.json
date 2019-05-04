@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.image",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Image related components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,8 +15,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.1.24",
-    "@platform/ui.icon": "0.0.40",
+    "@platform/react": "0.1.25",
+    "@platform/ui.icon": "0.0.41",
     "react-icons": "3.6.1"
   },
   "devDependencies": {

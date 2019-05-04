@@ -13,7 +13,7 @@ import {
   markdown,
   ObjectView,
   renderer,
-  Shell,
+  CommandShell,
   Sync,
   t,
 } from '../common';
@@ -117,12 +117,12 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const elRight = showDebug && this.renderDebug();
 
     return (
-      <Shell cli={this.cli} tree={tree}>
+      <CommandShell cli={this.cli} tree={tree}>
         <div {...styles.base}>
           <div {...styles.left}>{this.renderGrid()}</div>
           {elRight}
         </div>
-      </Shell>
+      </CommandShell>
     );
   }
 

@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { init as commandLine } from '../cli';
-import { Npm, renderer, Shell, t } from './common';
+import { Npm, renderer, CommandShell, t } from '../common';
 
 /**
  * Test Component
@@ -41,9 +41,9 @@ export class Test extends React.PureComponent<{}, t.ITestState> {
 
   public render() {
     return (
-      <Shell cli={this.cli}>
+      <CommandShell cli={this.cli}>
         <div>npm</div>
-      </Shell>
+      </CommandShell>
     );
   }
 }

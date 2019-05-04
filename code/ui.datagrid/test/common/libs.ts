@@ -1,5 +1,5 @@
 export { MeasureSize } from '@platform/react';
-export { ObjectView, Button, Hr, Shell, Command, CommandState } from '@uiharness/ui';
+export { ObjectView, Button, Hr, CommandShell, Command, CommandState } from '@uiharness/ui';
 
 export * from '@platform/cli.spec';
 export * from '@platform/ui.datagrid.cell';

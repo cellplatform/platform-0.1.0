@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Button, ObjectView, Shell, css, GlamorValue, t } from '../common';
+import { Button, ObjectView, CommandShell, css, GlamorValue, t } from '../common';
 import { Child } from './Test.Child';
 
 import { Provider } from '../store';
@@ -37,13 +37,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const styles = { base: css({ flex: 1, padding: 30 }) };
     return (
       <Provider>
-        <Shell cli={this.cli} tree={{}}>
+        <CommandShell cli={this.cli} tree={{}}>
           <div {...styles.base}>
             <Child>
               <Child />
             </Child>
           </div>
-        </Shell>
+        </CommandShell>
       </Provider>
     );
   }

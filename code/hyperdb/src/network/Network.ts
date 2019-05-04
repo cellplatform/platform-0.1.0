@@ -221,8 +221,8 @@ export class Network implements t.INetwork {
     let TEMP_TIMER = time.timer();
     let times: number[] = [];
     socket.on('data', (data: Buffer) => {
-      const elapsed = TEMP_TIMER.elapsed();
-      times = [...times, elapsed];
+      const elapsed = TEMP_TIMER.elapsed;
+      times = [...times, elapsed.msec];
       const avg = times.reduce((acc, next) => acc + next, 0) / times.length;
 
       // console.log('data', `(${TMP_COUNT++}) elapsed: ${elapsed} | avg: ${avg}`);

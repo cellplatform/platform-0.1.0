@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { Shell, t } from '../common';
+import { CommandShell, t } from '../common';
 import { TestGrid } from './Test.Grid';
 
 const KEY = {
@@ -57,9 +57,9 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
   public render() {
     return (
-      <Shell cli={this.cli} tree={{}}>
+      <CommandShell cli={this.cli} tree={{}}>
         <TestGrid editorType={this.editorType} />
-      </Shell>
+      </CommandShell>
     );
   }
 }

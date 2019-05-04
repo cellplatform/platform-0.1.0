@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { color, css, Shell, t } from '../common';
+import { color, css, CommandShell, t } from '../common';
 import { TestCellEditor } from './Test.CellEditor';
 
 export class Test extends React.PureComponent<{}, t.ITestState> {
@@ -65,9 +65,9 @@ export class Test extends React.PureComponent<{}, t.ITestState> {
    */
   public render() {
     return (
-      <Shell cli={this.cli} tree={{}}>
+      <CommandShell cli={this.cli} tree={{}}>
         {this.renderBody()}
-      </Shell>
+      </CommandShell>
     );
   }
 

@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { log, LinkButton, constants, css, Shell, t, value } from '../common';
+import { log, LinkButton, css, CommandShell, t, value } from '../common';
 
 export type ITestProps = {};
 
@@ -38,11 +38,11 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       }),
     };
     return (
-      <Shell cli={this.cli} tree={{}}>
+      <CommandShell cli={this.cli} tree={{}}>
         <div {...styles.base}>
           <LinkButton label={'Click Me'} onClick={this.handleClick} isEnabled={isEnabled} />
         </div>
-      </Shell>
+      </CommandShell>
     );
   }
 
