@@ -3,12 +3,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, mouse, value, t } from '../../common';
-
-export const THEME: t.IButtonTheme = {
-  enabledColor: COLORS.BLUE,
-  disabledColor: color.format(-0.3) as string,
-};
+import { color, css, GlamorValue, mouse, t, value } from '../../common';
+import * as themes from './themes';
 
 export type IButtonProps = mouse.IMouseEventProps & {
   id?: string;
@@ -29,6 +25,14 @@ export type IButtonState = {
  * A simple clickable button primitive.
  */
 export class Button extends React.PureComponent<IButtonProps, IButtonState> {
+  /**
+   * [Static]
+   */
+  public static themes = themes;
+
+  /**
+   * [Fields]
+   */
   public state: IButtonState = {};
   private mouse: mouse.IMouseHandlers;
   private unmounted$ = new Subject();
@@ -67,7 +71,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
 
   public get theme() {
     const { theme = {} } = this.props;
-    return mergeDeepRight(THEME, theme);
+    return mergeDeepRight(themes.BASE, theme);
   }
 
   /**

@@ -49,10 +49,10 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/css@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.1.tgz#85cc4fa5bf0b27ababa8df426affee11adfa2ca7"
-  integrity sha512-k3zkHJMCRPpbxV2lirQJYKCSncfE3/A4ykN61EltN/bgXzaHEDSkpXgXFdj3oEJwyMnuTYLhJJRdKl1fBwCBfQ==
+"@platform/css@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.2.tgz#0b04feb72bb4c859800a448b3d2e623cd62947a9"
+  integrity sha512-hV6fWqeBKi0yR3e5MeSAvSlU/WjBSaVla45q/CtMonOpoZWFB85ek/vp+AZR9yqpdQ/j45pXDUk3BVcw9JVG+A==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.65"
@@ -103,12 +103,12 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.1.29":
-  version "0.1.29"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.29.tgz#25181d9af20e6e5302c51dda4b3c32307e8a8ab5"
-  integrity sha512-uwj+/7yKqdTyEXvGFifVL/uuSoetPqOyx4GD2sKYltkHJBLoLUW5HrWbtV7abCWtGmRm2Budl6mxMnXuVpUTCw==
+"@platform/react@0.1.30":
+  version "0.1.30"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.30.tgz#d75594f859a021c2982c8def42f0ef4521b0fa26"
+  integrity sha512-U5DfpvQWWyYjzSKpfIN2sQVY8L6+EDg4i0OUMD9AUXwrBLAdjL3VmR9zjwI710dKrRS3qBe3eh+DyssoqzXQUA==
   dependencies:
-    "@platform/css" "0.1.1"
+    "@platform/css" "0.1.2"
     "@platform/util.is" "0.0.65"
     "@types/react" "16.8.16"
     "@types/react-dom" "16.8.4"

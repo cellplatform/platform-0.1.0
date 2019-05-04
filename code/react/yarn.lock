@@ -965,6 +965,18 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
+"@platform/css@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.2.tgz#0b04feb72bb4c859800a448b3d2e623cd62947a9"
+  integrity sha512-hV6fWqeBKi0yR3e5MeSAvSlU/WjBSaVla45q/CtMonOpoZWFB85ek/vp+AZR9yqpdQ/j45pXDUk3BVcw9JVG+A==
+  dependencies:
+    "@platform/libs" "0.0.12"
+    "@platform/util.is" "0.0.65"
+    "@platform/util.value" "0.1.6"
+    "@types/tinycolor2" "1.4.1"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
 "@platform/electron@0.1.51":
   version "0.1.51"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.51.tgz#fc0cb8404c9a0a9598d18999207034f83fb2a8b4"

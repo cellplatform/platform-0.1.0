@@ -136,8 +136,6 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     const html = markdown.toHtmlSync(this.body);
     const className = `${CSS.CLASS.EDITOR_MARKDOWN} ${CSS.CLASS.MARKDOWN} `;
 
-    console.log('className', className);
-
     return (
       <div {...styles.base} className={CSS.CLASS.COMMENT_BODY}>
         <div className={className} dangerouslySetInnerHTML={{ __html: html }} />

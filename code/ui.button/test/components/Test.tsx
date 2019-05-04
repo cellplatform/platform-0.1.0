@@ -46,7 +46,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         <div {...styles.base}>
           <Button label={'Click Me'} onClick={this.handleClick} isEnabled={isEnabled} />
 
-          <Hr />
+          <Hr color={'PINK'} opacity={0.6} dashed={true} />
 
           <Button isEnabled={isEnabled} margin={[0, 20, 0, 0]}>
             {this.iconButtonContent({ label: 'Bar' })}
@@ -60,11 +60,12 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private iconButtonContent(props: { label: string }) {
     const styles = {
       base: css({ Flex: 'horizontal-center-center' }),
+      icon: css({ marginRight: 3 }),
     };
 
     return (
       <div {...styles.base}>
-        <Icons.Face />
+        <Icons.Face style={styles.icon} />
         <div>{props.label}</div>
       </div>
     );

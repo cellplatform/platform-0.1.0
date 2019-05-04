@@ -87,6 +87,18 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
+"@platform/css@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.2.tgz#0b04feb72bb4c859800a448b3d2e623cd62947a9"
+  integrity sha512-hV6fWqeBKi0yR3e5MeSAvSlU/WjBSaVla45q/CtMonOpoZWFB85ek/vp+AZR9yqpdQ/j45pXDUk3BVcw9JVG+A==
+  dependencies:
+    "@platform/libs" "0.0.12"
+    "@platform/util.is" "0.0.65"
+    "@platform/util.value" "0.1.6"
+    "@types/tinycolor2" "1.4.1"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
 "@platform/electron@0.1.51":
   version "0.1.51"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.51.tgz#fc0cb8404c9a0a9598d18999207034f83fb2a8b4"
@@ -96,6 +108,22 @@
     "@platform/fs" "0.0.57"
     "@platform/log" "0.0.116"
     "@platform/react" "0.1.29"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.2.1"
+    electron-log "3.0.5"
+    electron-store "3.2.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+
+"@platform/electron@0.1.52":
+  version "0.1.52"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.52.tgz#c205f044f83006db649368fea8238f860f13ccfa"
+  integrity sha512-YrBN19MsKxqh4z8D98TX/42sb8uSHf0uVVX9XsCAxCOCEkoEHHfLOwdjkFJSjAK98WoG++5X3aeafeb4nB6TrA==
+  dependencies:
+    "@babel/polyfill" "7.4.4"
+    "@platform/fs" "0.0.57"
+    "@platform/log" "0.0.116"
+    "@platform/react" "0.1.30"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.2.1"
     electron-log "3.0.5"
@@ -171,6 +199,18 @@
   integrity sha512-uwj+/7yKqdTyEXvGFifVL/uuSoetPqOyx4GD2sKYltkHJBLoLUW5HrWbtV7abCWtGmRm2Budl6mxMnXuVpUTCw==
   dependencies:
     "@platform/css" "0.1.1"
+    "@platform/util.is" "0.0.65"
+    "@types/react" "16.8.16"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
+"@platform/react@0.1.30":
+  version "0.1.30"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.30.tgz#d75594f859a021c2982c8def42f0ef4521b0fa26"
+  integrity sha512-U5DfpvQWWyYjzSKpfIN2sQVY8L6+EDg4i0OUMD9AUXwrBLAdjL3VmR9zjwI710dKrRS3qBe3eh+DyssoqzXQUA==
+  dependencies:
+    "@platform/css" "0.1.2"
     "@platform/util.is" "0.0.65"
     "@types/react" "16.8.16"
     "@types/react-dom" "16.8.4"
