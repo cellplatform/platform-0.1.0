@@ -119,9 +119,6 @@ export class ObjectView extends React.PureComponent<IObjectViewProps, IObjectVie
       // NB: Don't show preview of object on root.
       return this.renderRootNode(props);
     } else {
-      // TODO
-      // return this.renderEditorNode(props);
-
       return <ObjectLabel name={name} data={data} isNonenumerable={isNonenumerable} />;
     }
   };

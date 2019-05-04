@@ -22,7 +22,7 @@ describe('logging to console (NB: Tests hidden because this mucks with the conso
     log.warn('warn');
     log.error('error');
     log.DEBUG('debug');
-    log.TODO('something');
+    log.TODO('something'); // Unit-test.
 
     expect(items[0]).to.equal('info');
     expect(items[1]).to.contain('warn');
