@@ -35,9 +35,7 @@ export type GlobalCssRules = (
 export type CssProps = CSSProperties;
 export type ClassName = (...styles: Array<CssProps | undefined>) => string;
 
-export type ICssHead = {
-  importStylesheet: ImportStylesheet;
-};
+export type ICssHead = { importStylesheet: ImportStylesheet };
 export type ImportStylesheet = (url: string) => IStyle;
 
 export type IStyle = IFormatCss & {
@@ -46,14 +44,32 @@ export type IStyle = IFormatCss & {
   transform: typeof transformStyle;
   head: ICssHead;
   merge: (...rules: any[]) => CssProps;
-  arrayToEdges: (
-    input: string | number | undefined | null | Array<string | number | null>,
-  ) =>
-    | {
-        top: string | number | undefined;
-        right: string | number | undefined;
-        bottom: string | number | undefined;
-        left: string | number | undefined;
-      }
-    | undefined;
+  arrayToEdges: ArrayToEdges;
+  toMargins(edges?: EdgesInput): Partial<IMarginEdges>;
+  toPadding(edges?: EdgesInput): Partial<IPaddingEdges>;
+};
+
+export type EdgesInput = string | number | undefined | null | Array<string | number | null>;
+
+export type ArrayToEdges = (input: EdgesInput) => Partial<IEdges>; // & { toMargin(): Partial<IMarginEdges>; toPadding(): Partial<IPaddingEdges> };
+
+export type IEdges = {
+  top: string | number;
+  right: string | number;
+  bottom: string | number;
+  left: string | number;
+};
+
+export type IMarginEdges = {
+  marginTop: string | number;
+  marginRight: string | number;
+  marginBottom: string | number;
+  marginLeft: string | number;
+};
+
+export type IPaddingEdges = {
+  paddingTop: string | number;
+  paddingRight: string | number;
+  paddingBottom: string | number;
+  paddingLeft: string | number;
 };

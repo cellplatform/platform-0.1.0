@@ -1,4 +1,4 @@
-import { IStyle } from '../types';
+import * as t from '../types';
 import { valueUtil } from '../common';
 
 /**
@@ -11,15 +11,15 @@ import { valueUtil } from '../common';
  *  - Y/X array    (eg. [20, 5])
  *
  */
-export const arrayToEdges: IStyle['arrayToEdges'] = value => {
+export const arrayToEdges: t.ArrayToEdges = value => {
   if (value === undefined || value === null) {
-    return undefined;
+    return {};
   }
   if (typeof value === 'string' && valueUtil.isBlank(value)) {
-    return undefined;
+    return {};
   }
   if (Array.isArray(value) && value.length === 0) {
-    return undefined;
+    return {};
   }
 
   if (!Array.isArray(value)) {
@@ -72,7 +72,7 @@ export const arrayToEdges: IStyle['arrayToEdges'] = value => {
   }
 
   if (top === undefined && right === undefined && bottom === undefined && left === undefined) {
-    return undefined;
+    return {};
   }
   return {
     top,
@@ -81,3 +81,14 @@ export const arrayToEdges: IStyle['arrayToEdges'] = value => {
     left,
   };
 };
+
+/**
+ * Prefixes each of the edge properties with the given prefix.
+ */
+export function prefixEdges<T extends {}>(prefix: string, edges: Partial<t.IEdges>): T {
+  return Object.keys(edges).reduce((acc, key) => {
+    const value = edges[key];
+    key = `${prefix}${key[0].toUpperCase()}${key.substr(1)}`;
+    return { ...acc, [key]: value };
+  }, {}) as T;
+}

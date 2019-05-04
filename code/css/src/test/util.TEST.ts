@@ -3,28 +3,28 @@ import { css } from '..';
 
 describe('css.arrayToEdges', () => {
   it('undefined => undefined', () => {
-    expect(css.arrayToEdges(undefined)).to.eql(undefined);
+    expect(css.arrayToEdges(undefined)).to.eql({});
   });
 
   it('null => undefined', () => {
-    expect(css.arrayToEdges(null)).to.eql(undefined);
+    expect(css.arrayToEdges(null)).to.eql({});
   });
 
   it('[] => undefined', () => {
-    expect(css.arrayToEdges([])).to.eql(undefined);
+    expect(css.arrayToEdges([])).to.eql({});
   });
 
   it('"" => undefined', () => {
-    expect(css.arrayToEdges('')).to.eql(undefined);
-    expect(css.arrayToEdges('  ')).to.eql(undefined);
+    expect(css.arrayToEdges('')).to.eql({});
+    expect(css.arrayToEdges('  ')).to.eql({});
   });
 
   it('[null, null, null, null] => undefined', () => {
-    expect(css.arrayToEdges([null, null, null, null])).to.eql(undefined);
+    expect(css.arrayToEdges([null, null, null, null])).to.eql({});
   });
 
   it('[null, null] => undefined', () => {
-    expect(css.arrayToEdges([null, null])).to.eql(undefined);
+    expect(css.arrayToEdges([null, null])).to.eql({});
   });
 
   it('"0 10px 6em 9%"', () => {
@@ -115,5 +115,59 @@ describe('css.arrayToEdges', () => {
       bottom: 10,
       left: undefined,
     });
+  });
+});
+
+describe('toMargins', () => {
+  it('none', () => {
+    expect(css.toMargins()).to.eql({});
+    expect(css.toMargins(null)).to.eql({});
+  });
+
+  it('all edges', () => {
+    expect(css.toMargins(10)).to.eql({
+      marginTop: 10,
+      marginRight: 10,
+      marginBottom: 10,
+      marginLeft: 10,
+    });
+    expect(css.toMargins([10, 20, 30, 40])).to.eql({
+      marginTop: 10,
+      marginRight: 20,
+      marginBottom: 30,
+      marginLeft: 40,
+    });
+  });
+
+  it('Y/X', () => {
+    const res = css.toMargins([10, 20]);
+    expect(res).to.eql({ marginTop: 10, marginRight: 20, marginBottom: 10, marginLeft: 20 });
+  });
+});
+
+describe('toPadding', () => {
+  it('none', () => {
+    expect(css.toPadding()).to.eql({});
+    expect(css.toPadding(null)).to.eql({});
+  });
+
+  it('all edges', () => {
+    expect(css.toPadding(10)).to.eql({
+      paddingTop: 10,
+      paddingRight: 10,
+      paddingBottom: 10,
+      paddingLeft: 10,
+    });
+    expect(css.toPadding([10, 20, 30, 40])).to.eql({
+      paddingTop: 10,
+      paddingRight: 20,
+      paddingBottom: 30,
+      paddingLeft: 40,
+    });
+  });
+
+  it('Y/X', () => {
+    const res = css.toPadding([10, 20]);
+    expect(res).to.eql({ paddingTop: 10, paddingRight: 20, paddingBottom: 10, paddingLeft: 20 });
   });
 });
