@@ -1,4 +1,4 @@
-import { valueUtil } from '../common';
+import { valueUtil, R } from '../common';
 import { IFormatCss, IImageOptions, IBackgroundImageStyles, Falsy, GlamorValue } from '../types';
 import { css as glamorCss } from 'glamor';
 import { toEdges } from './util';
@@ -45,7 +45,7 @@ export const image = (
   return result;
 };
 
-const mergeAndReplace = (key: string, value: any, target: any) => {
+const mergeAndReplace = (key: string, value: any, target: object) => {
   Object.assign(target, value);
   delete target[key];
   return target;
@@ -81,8 +81,7 @@ export const toPositionEdges = (
     }
   | undefined => {
   const edges = toEdges(value);
-
-  if (!edges) {
+  if (R.isEmpty(edges)) {
     return undefined;
   }
   const { left, top, right, bottom } = edges;

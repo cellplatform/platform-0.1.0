@@ -25,17 +25,16 @@ const isBlank = (value: t.EdgesInput) => {
  *
  */
 export const toEdges: t.ToCssEdges<t.IEdges> = (input, options = {}) => {
-  const { defaultValue } = options;
   if (isBlank(input)) {
+    const { defaultValue } = options;
     if (defaultValue && !isBlank(defaultValue)) {
       input = defaultValue;
+    } else {
+      return {};
     }
   }
 
-  if (!input) {
-    return {};
-  }
-
+  input = input || 0;
   if (!Array.isArray(input)) {
     input = input.toString().split(' ');
   }

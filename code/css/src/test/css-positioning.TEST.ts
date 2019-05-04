@@ -21,7 +21,7 @@ describe('React: transformStyle - positioning', () => {
       expect(style.left).to.equal(40);
     });
 
-    it('converts array value (with null\'s)', () => {
+    it('converts array value (with null)', () => {
       const style = transformStyle({
         Absolute: ['10', null, '30px', '40em'],
       }) as any;
@@ -30,6 +30,26 @@ describe('React: transformStyle - positioning', () => {
       expect(style.right).to.equal(undefined);
       expect(style.bottom).to.equal(30);
       expect(style.left).to.equal('40em');
+    });
+
+    it('single value', () => {
+      const test = (style: {}, position: string, value: number) => {
+        const res = transformStyle(style);
+        expect(res).to.eql({
+          position,
+          top: value,
+          right: value,
+          bottom: value,
+          left: value,
+        });
+      };
+
+      test({ Absolute: 0 }, 'absolute', 0);
+      test({ Absolute: -0 }, 'absolute', 0);
+      test({ Absolute: 1 }, 'absolute', 1);
+
+      test({ Fixed: 0 }, 'fixed', 0);
+      test({ Fixed: 1 }, 'fixed', 1);
     });
 
     it('does nothing with an [undefined] value', () => {

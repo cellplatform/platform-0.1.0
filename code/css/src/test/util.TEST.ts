@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { css } from '..';
 
-describe('css.arrayToEdges', () => {
+describe('css.toEdges', () => {
   it('undefined => undefined', () => {
     expect(css.toEdges(undefined)).to.eql({});
   });
@@ -50,6 +50,15 @@ describe('css.arrayToEdges', () => {
       right: '5em',
       bottom: 20,
       left: '5em',
+    });
+  });
+
+  it('0', () => {
+    expect(css.toEdges(0)).to.eql({
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
     });
   });
 
