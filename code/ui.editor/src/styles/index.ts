@@ -1,5 +1,5 @@
 import { t, css, constants } from '../common';
-import * as markdown from './css.markdown';
+import * as markdown from './markdown.css';
 
 const CLASS = constants.CSS.CLASS;
 

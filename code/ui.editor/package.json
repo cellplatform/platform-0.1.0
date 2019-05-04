@@ -14,6 +14,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/css": "^0.1.1",
     "@platform/react": "0.1.29",
     "prosemirror-commands": "1.0.7",
     "prosemirror-dropcursor": "1.1.1",

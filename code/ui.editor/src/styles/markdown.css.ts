@@ -22,7 +22,11 @@ export const styles: t.IEditorStyles = {
   h4: { fontSize: '1em' },
   h5: { fontSize: '0.85em', textTransform: 'uppercase' },
   h6: { fontSize: '0.85em', textTransform: 'uppercase', color: color.format(-0.4) },
-  p: { margin: 0, lineHeight: '1.5em' },
+  p: {
+    margin: 0,
+    marginBottom: '1.2em',
+    lineHeight: '1.5em',
+  },
   hr: {
     border: 'none',
     borderBottom: `solid 5px`,
@@ -31,10 +35,11 @@ export const styles: t.IEditorStyles = {
     marginBottom: '1.8em',
   },
   'ul, ol': {
+    lineHeight: '1.5em',
     margin: 0,
     padding: 0,
     paddingLeft: '1.2em',
-    marginBottom: '1em',
+    marginBottom: '1.2em',
   },
   ol: {
     paddingLeft: '1.25em',
