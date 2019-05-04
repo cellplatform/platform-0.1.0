@@ -19,4 +19,5 @@ export type ITestState = {
 export type IThreadCommentTestProps = {
   name?: string;
   body?: string;
+  isEditing: boolean;
 };

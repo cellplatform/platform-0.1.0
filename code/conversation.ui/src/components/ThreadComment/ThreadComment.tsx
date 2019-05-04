@@ -5,12 +5,14 @@ import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue, markdown, CSS } from '../../common';
 import { Avatar, Text } from '../primitives';
 import { Triangle } from './components/Triangle';
+import { Editor } from '../Editor';
 
 export type IThreadCommentProps = {
   avatarUrl?: string;
   bottomConnector?: number;
   header?: JSX.Element;
   body?: string;
+  isEditing?: boolean;
   style?: GlamorValue;
 };
 export type IThreadCommentState = {};
@@ -57,7 +59,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
    * [Render]
    */
   public render() {
-    const { avatarUrl } = this.props;
+    const { avatarUrl, isEditing } = this.props;
     const styles = {
       base: css({
         display: 'block',
@@ -77,6 +79,10 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
         borderRadius: 3,
       }),
     };
+
+    const elBody = isEditing ? null : this.body ? this.renderBody() : this.renderEmpty();
+    const elEditor = isEditing && this.renderEditor();
+
     return (
       <Text style={styles.base}>
         <div {...styles.inner}>
@@ -91,7 +97,8 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
           </div>
           <div {...styles.right}>
             {this.renderHeader()}
-            {this.body ? this.renderBody() : this.renderEmpty()}
+            {elBody}
+            {elEditor}
           </div>
         </div>
       </Text>
@@ -123,7 +130,6 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     const styles = {
       base: css({
         padding: 15,
-        // PaddingX: 15,
         userSelect: 'text',
       }),
     };
@@ -148,5 +154,28 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
       }),
     };
     return <div {...styles.base}>Nothing to display.</div>;
+  }
+
+  private renderEditor() {
+    const styles = {
+      base: css({
+        Flex: 'vertical',
+      }),
+      toolbar: css({
+        borderTop: `solid 1px ${color.format(-0.1)}`,
+        backgroundColor: color.format(-0.01),
+        PaddingX: 15,
+        PaddingY: 10,
+      }),
+    };
+
+    return (
+      <div>
+        <Editor value={this.body} />
+        <div {...styles.toolbar}>
+          <div>edit toolbar</div>
+        </div>
+      </div>
+    );
   }
 }

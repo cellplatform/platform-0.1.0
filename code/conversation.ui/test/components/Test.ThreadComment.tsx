@@ -65,13 +65,17 @@ export class Test extends React.PureComponent<ITestProps> {
       .toDate();
 
     const elHeader = <ThreadCommentHeader name={data.name} timestamp={timestamp} />;
-    const body = data.body;
 
     return (
       <div {...styles.base}>
         <div {...styles.outer}>
           <div {...styles.headerOuter}>{elHeader}</div>
-          <ThreadComment avatarUrl={URL.WOMAN_1} header={elHeader} body={body} />
+          <ThreadComment
+            avatarUrl={URL.WOMAN_1}
+            header={elHeader}
+            body={data.body}
+            isEditing={data.isEditing}
+          />
         </div>
       </div>
     );

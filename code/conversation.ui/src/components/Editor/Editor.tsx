@@ -14,14 +14,14 @@ Dear **Foo**
 
 `;
 
-export type IEditorProps = { style?: GlamorValue };
+export type IEditorProps = { style?: GlamorValue; value?: string };
 export type IEditorState = {
   editorState?: t.EditorState;
   value?: string;
 };
 
 export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
-  public state: IEditorState = { value: MARKDOWN };
+  public state: IEditorState = { value: this.props.value };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IEditorState>>();
   private events$ = new Subject<t.TextEditorEvent>();
@@ -50,6 +50,13 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
           value: e.value.to,
         });
       });
+  }
+
+  public componentDidUpdate(prev: IEditorProps) {
+    const { value } = this.props;
+    if (prev.value !== value) {
+      this.state$.next({ value });
+    }
   }
 
   public componentWillUnmount() {

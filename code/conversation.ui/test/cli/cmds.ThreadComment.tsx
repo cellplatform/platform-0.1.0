@@ -8,6 +8,7 @@ export const createThreadCommentProps = () => {
   return props.observable<t.IThreadCommentTestProps>({
     name: 'mary@foo.com',
     body: 'Hello world!',
+    isEditing: false,
   });
 };
 
@@ -28,7 +29,10 @@ export const threadComment = Command.create<P>('ThreadComment', e => {
     const body = typeof p === 'number' ? BODY[`MARKDOWN_${p}`] : p;
     data.body = body;
   })
-  .add('editor', e => {});
+  .add('editor', e => {
+    const data = e.props.threadComment;
+    data.isEditing = Boolean(e.param(0));
+  });
 
 /**
  * [Sample]
