@@ -1,6 +1,6 @@
 {
   "name": "@platform/css",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Helpers for working with inline CSS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -24,8 +24,8 @@
   "devDependencies": {
     "@platform/test": "0.0.50",
     "@types/react": "16.8.16",
-    "@uiharness/dev": "0.2.47",
-    "@uiharness/ui": "0.2.27"
+    "@uiharness/dev": "0.2.50",
+    "@uiharness/ui": "0.2.30"
   },
   "files": [
     "lib",
