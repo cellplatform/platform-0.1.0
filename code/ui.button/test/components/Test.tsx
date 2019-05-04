@@ -41,17 +41,27 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         Flex: 'horizontal-center-center',
       }),
     };
+
+    const common = {
+      isEnabled,
+      onClick: this.handleClick,
+    };
+
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
-          <Button label={'Click Me'} onClick={this.handleClick} isEnabled={isEnabled} />
+          <Button {...common} label={'Click Me'} />
 
           <Hr.PinkDashed />
 
-          <Button isEnabled={isEnabled} margin={[0, 20, 0, 0]}>
+          <Button {...common} margin={[0, 20, 0, 0]}>
             {this.iconButtonContent({ label: 'Bar' })}
           </Button>
-          <Button isEnabled={isEnabled}>{this.iconButtonContent({ label: 'Bar' })}</Button>
+          <Button {...common}>{this.iconButtonContent({ label: 'Bar' })}</Button>
+
+          <Hr.PinkDashed />
+
+          <Button {...common} label={'Base Border'} theme={Button.theme.BORDER.BASE} />
         </div>
       </CommandShell>
     );
@@ -62,7 +72,6 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       base: css({ Flex: 'horizontal-center-center' }),
       icon: css({ marginRight: 3 }),
     };
-
     return (
       <div {...styles.base}>
         <Icons.Face style={styles.icon} />

@@ -1,10 +1,9 @@
-import { mergeDeepRight } from 'ramda';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, mouse, t, value } from '../../common';
-import * as themes from './themes';
+import { css, GlamorValue, mouse, t, value } from '../../common';
+import { ButtonTheme } from './ButtonTheme';
 
 export type IButtonProps = mouse.IMouseEventProps & {
   id?: string;
@@ -28,7 +27,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
   /**
    * [Static]
    */
-  public static themes = themes;
+  public static theme = ButtonTheme;
 
   /**
    * [Fields]
@@ -69,9 +68,8 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
     return value.defaultValue(this.props.isEnabled, true);
   }
 
-  public get theme() {
-    const { theme = {} } = this.props;
-    return mergeDeepRight(themes.BASE, theme);
+  private get theme() {
+    return ButtonTheme.merge(this.props.theme);
   }
 
   /**
@@ -86,19 +84,28 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
     const styles = {
       base: css({
         ...css.toMargins(this.props.margin),
+        boxSizing: 'border-box',
         position: 'relative',
         display: block ? 'block' : 'inline-block',
         color: isEnabled ? theme.enabledColor : theme.disabledColor,
         cursor: isEnabled && 'pointer',
         userSelect: 'none',
       }),
+      border:
+        theme.border.isVisible &&
+        css({
+          ...css.toPadding(theme.border.padding),
+          border: `solid ${theme.border.thickness}px ${theme.border.color}`,
+          borderRadius: theme.border.radius,
+        }),
       content: css({
         transform: isEnabled && `translateY(${isDown ? 1 : 0}px)`,
+        opacity: isEnabled ? 1 : theme.disabledOpacity,
       }),
     };
 
     return (
-      <div {...css(styles.base, this.props.style)} {...this.mouse.events}>
+      <div {...css(styles.base, styles.border, this.props.style)} {...this.mouse.events}>
         <div {...styles.content}>
           {this.props.label}
           {this.props.children}
