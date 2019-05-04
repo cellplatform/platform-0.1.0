@@ -965,10 +965,10 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.0.tgz#0b75a0271634f987e443fb79d8226a0abda6d3a3"
-  integrity sha512-lkUYbgd2U0WW9/MbE52wgdQ2Cav7k1QrBexBfot2yGkMHgG6xqmsEGdwfozP0hzD3GD9Oq2SwUhYIZiltgDoNQ==
+"@platform/css@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.1.tgz#85cc4fa5bf0b27ababa8df426affee11adfa2ca7"
+  integrity sha512-k3zkHJMCRPpbxV2lirQJYKCSncfE3/A4ykN61EltN/bgXzaHEDSkpXgXFdj3oEJwyMnuTYLhJJRdKl1fBwCBfQ==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.65"
@@ -1059,12 +1059,12 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/react@0.1.28":
-  version "0.1.28"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.28.tgz#396b6771fd38933f78fafc3438fe0a63ade7e8ac"
-  integrity sha512-LuXQtBPgn69VdgRLuqIV+tbE5gg8HntFodfLnSCgzj7kP4nEPnpDR2eTfRU3ueAIuhgZUut1W8ewHTDqQvlcnQ==
+"@platform/react@0.1.29":
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.29.tgz#25181d9af20e6e5302c51dda4b3c32307e8a8ab5"
+  integrity sha512-uwj+/7yKqdTyEXvGFifVL/uuSoetPqOyx4GD2sKYltkHJBLoLUW5HrWbtV7abCWtGmRm2Budl6mxMnXuVpUTCw==
   dependencies:
-    "@platform/css" "0.1.0"
+    "@platform/css" "0.1.1"
     "@platform/util.is" "0.0.65"
     "@types/react" "16.8.16"
     "@types/react-dom" "16.8.4"
@@ -1114,32 +1114,32 @@
   dependencies:
     rxjs "6.5.1"
 
-"@platform/ui.codemirror@^0.0.38":
-  version "0.0.38"
-  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.0.38.tgz#e584bf82348e8c16a03c6fbcc7625699a0b579ef"
-  integrity sha512-OXWufOJJGzGXbnqlPNnm7Lre33o1of0bJ18Xpa9hM0cjA7pwvf+L9/2YrRtE3PdPMVWMxX+1rgflc8hYe+9+qg==
+"@platform/ui.codemirror@^0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.0.39.tgz#9cb852d971fea3ab8b875740e10586c3fb6be6b8"
+  integrity sha512-TNKs9XdCfBONc9uEGibtwK2qUREnZ9JVoTxBr+kn42E7RdFDeaEOSZsyJDyfkaDGooLWmVVzq1ngymKcZNSXcQ==
   dependencies:
-    "@platform/react" "0.1.28"
-    "@platform/ui.text" "0.1.18"
+    "@platform/react" "0.1.29"
+    "@platform/ui.text" "0.1.19"
     "@types/codemirror" "0.0.74"
     "@uiharness/electron" "0.4.33"
     codemirror "5.46.0"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.0.24":
-  version "0.0.24"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.24.tgz#3fff53337feb8bfb8fb06d393525da6c67f3812b"
-  integrity sha512-5K2R6xc03iQb4v8mlWsSOPP7kT0WhMZIUkJg69wae6rw3FU6VVCQ1n5TCJvX8xI9wFblsmGNQO0LSu8SpeV1eA==
+"@platform/ui.datagrid.types@0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.25.tgz#4ea0e7e834be96b1055085935af7f108c87536c4"
+  integrity sha512-ykgfgemDI65SyHCxVx1NrT5oBC3pFDGQFGGhLX3xz8bwpCKgAr5VedLJ5PrRq3xWruCdSi3uiYRgU5m2nQR5aQ==
   dependencies:
-    "@platform/react" "0.1.28"
+    "@platform/react" "0.1.29"
     "@platform/util.value.cell" "0.0.32"
 
-"@platform/ui.editor@^0.0.59":
-  version "0.0.59"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.59.tgz#97a27952866408520bc08eaf1331d4f1248babbc"
-  integrity sha512-d2Wu59oxCXCHxZPOSTgaTPs/ug3c/NqZEgAjqjXOvOyGGRM0y17DNtVthNxpBdoV6lEOQApkFxCbzVV7nckKwg==
+"@platform/ui.editor@^0.0.60":
+  version "0.0.60"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.60.tgz#38e6e8d2a4349fbe1cc6d0f2a8adde42937c0fc1"
+  integrity sha512-+lPbGsBpDe1SCSUEEWN4Vw9xFUlnKpId3wPR7jMUd3/3Kqiopoi/8icScvJ3M1rrR4XBUxUuqJbPiZjcGV1UCA==
   dependencies:
-    "@platform/react" "0.1.28"
+    "@platform/react" "0.1.29"
     prosemirror-commands "1.0.7"
     prosemirror-dropcursor "1.1.1"
     prosemirror-gapcursor "1.0.3"
@@ -1153,7 +1153,7 @@
     prosemirror-state "1.2.2"
     prosemirror-tables "0.7.11"
     prosemirror-utils "0.7.7"
-    prosemirror-view "1.9.0"
+    prosemirror-view "1.9.1"
 
 "@platform/ui.icon@0.0.42":
   version "0.0.42"
@@ -1193,12 +1193,12 @@
     "@platform/react" "0.1.26"
     "@platform/util.value" "0.1.5"
 
-"@platform/ui.text@0.1.18", "@platform/ui.text@^0.1.18":
-  version "0.1.18"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.1.18.tgz#c3e7a2e3bf746ac4473bca4a602722467a7bf0bf"
-  integrity sha512-yaqbfO3vxEjb30ZIWzArLvXoDCqpPnaiM2g0ny+0pSkz3cCZHjoppLVh/hKZg4b2EATbxw5sHP1VN0gaTq9JqA==
+"@platform/ui.text@0.1.19", "@platform/ui.text@^0.1.19":
+  version "0.1.19"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.1.19.tgz#08fff88c392b0ea7c030bb10d7a07958ca3c4813"
+  integrity sha512-pxFZ09NTpsCPC1Hi599+vTEY8A1SjYCYxmZK5Sz43nudzPFXYbSpm1Q1k/3vMt0Bfrv5/kTv6u26g+rOu9BmLw==
   dependencies:
-    "@platform/react" "0.1.28"
+    "@platform/react" "0.1.29"
     "@platform/util.value" "0.1.6"
 
 "@platform/ui.tree@0.0.46":
@@ -6851,10 +6851,10 @@ prosemirror-utils@0.7.7:
   resolved "https://registry.yarnpkg.com/prosemirror-utils/-/prosemirror-utils-0.7.7.tgz#a9bda2468113d34f3721ba15eaa2fd04b81d7dc8"
   integrity sha512-0cSWive9oCOr4nnTlEQ9scr8g8kj126glAigb6cKLB4sq/eSyumVu8Ogqus6KEoLInBy6WONXJbgm/2xJ8MShw==
 
-prosemirror-view@1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/prosemirror-view/-/prosemirror-view-1.9.0.tgz#6da22cfc30c813221f919ebd3af00ec16d49c27a"
-  integrity sha512-44X/RkUV7Dr3byn+HViIww7UVo2EBbtC0yoU27YirxDBfmnZFnd6Duhzpt7eu7i+oaTLjV/OY1E/UBqFM8l6Xg==
+prosemirror-view@1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/prosemirror-view/-/prosemirror-view-1.9.1.tgz#3f987d55586909d4156a76b32918338655e32699"
+  integrity sha512-/8kQ9/CZaaDoQEqBfgyW2ex/SnuqkMim20oMpLwHYuuxfe2K30kymQYP1pEKmTVK1K97s7uE78YPyOrUU+VeuQ==
   dependencies:
     prosemirror-model "^1.1.0"
     prosemirror-state "^1.0.0"

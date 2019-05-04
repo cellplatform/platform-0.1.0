@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm.electron",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "description": "Tools for working eith NPM within an electron app.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,7 +17,7 @@
   "dependencies": {
     "@platform/exec": "0.2.3",
     "@platform/npm": "0.1.16",
-    "@platform/react": "0.1.28"
+    "@platform/react": "0.1.29"
   },
   "devDependencies": {
     "@uiharness/dev": "0.2.47",

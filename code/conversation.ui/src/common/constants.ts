@@ -1,3 +1,5 @@
+import { CSS as EDITOR_CSS } from '@platform/ui.editor';
+
 export const COLORS = {
   DARK: '#293042', // Inky blue/black.
   BLUE: '#4B89FF',
@@ -6,7 +8,8 @@ export const COLORS = {
 
 export const CSS = {
   CLASS: {
-    MARKDOWN: 'p-conv-md',
-    COMMENT: 'p-conv-comment',
+    EDITOR_MARKDOWN: EDITOR_CSS.CLASS.MARKDOWN,
+    MARKDOWN: 'p-conversation-markdown',
+    COMMENT: 'p-conversation-comment',
   },
 };
