@@ -59,7 +59,8 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
 
     // Initialise the last command-line value, and keep a store of it as it changes.
     if (this.props.localStorage) {
-      this.cli.change({ text: localStorage.text, namespace: true });
+      const text = localStorage.text;
+      this.cli.change({ text });
       this.cli.invoke({ stepIntoNamespace: true });
       cli$.subscribe(e => (localStorage.text = this.cli.toString()));
     }
