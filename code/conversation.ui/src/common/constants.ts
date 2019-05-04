@@ -11,5 +11,6 @@ export const CSS = {
     EDITOR_MARKDOWN: EDITOR_CSS.CLASS.MARKDOWN,
     MARKDOWN: 'p-conversation-markdown',
     COMMENT: 'p-conversation-comment',
+    COMMENT_BODY: 'p-conversation-comment-body',
   },
 };

@@ -7,7 +7,7 @@ type P = t.ICommandProps;
 export const createThreadCommentProps = () => {
   return props.observable<t.IThreadCommentTestProps>({
     name: 'mary@foo.com',
-    body: 'Hello world!',
+    body: BODY.MARKDOWN_2,
     isEditing: false,
   });
 };
@@ -45,6 +45,8 @@ const BODY = {
   MARKDOWN_2: `
   Hey **Bob**
   
+  ${LOREM}
+
   ${LOREM}
 
   - one

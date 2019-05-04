@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@platform/conversation.types": "0.0.4",
+    "@platform/css": "^0.1.1",
     "@platform/react": "0.1.29",
     "@platform/ui.editor": "0.0.60",
     "@platform/ui.image": "0.0.11",

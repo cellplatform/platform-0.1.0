@@ -84,7 +84,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     const elEditor = isEditing && this.renderEditor();
 
     return (
-      <Text style={styles.base}>
+      <Text style={styles.base} className={CSS.CLASS.COMMENT}>
         <div {...styles.inner}>
           <div {...styles.left}>
             <Avatar
@@ -134,12 +134,12 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
       }),
     };
     const html = markdown.toHtmlSync(this.body);
-    const className = `${CSS.CLASS.EDITOR_MARKDOWN} ${CSS.CLASS.MARKDOWN} ${CSS.CLASS.COMMENT} `;
+    const className = `${CSS.CLASS.EDITOR_MARKDOWN} ${CSS.CLASS.MARKDOWN} `;
 
     console.log('className', className);
 
     return (
-      <div {...styles.base}>
+      <div {...styles.base} className={CSS.CLASS.COMMENT_BODY}>
         <div className={className} dangerouslySetInnerHTML={{ __html: html }} />
       </div>
     );
@@ -160,8 +160,9 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
 
   private renderEditor() {
     const styles = {
-      base: css({
-        Flex: 'vertical',
+      base: css({}),
+      editor: css({
+        padding: 3,
       }),
       toolbar: css({
         borderTop: `solid 1px ${color.format(-0.1)}`,
@@ -172,11 +173,27 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     };
 
     return (
-      <div>
-        <Editor value={this.body} />
-        <div {...styles.toolbar}>
-          <div>edit toolbar</div>
+      <div {...styles.base}>
+        <div {...styles.editor}>
+          <Editor value={this.body} />
         </div>
+        {this.renderEditorToolbar()}
+      </div>
+    );
+  }
+
+  private renderEditorToolbar() {
+    const styles = {
+      base: css({
+        borderTop: `solid 1px ${color.format(-0.1)}`,
+        backgroundColor: color.format(-0.01),
+        PaddingX: 15,
+        PaddingY: 10,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div>edit toolbar</div>
       </div>
     );
   }
