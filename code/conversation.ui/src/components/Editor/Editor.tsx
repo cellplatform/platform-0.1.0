@@ -5,15 +5,6 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { css, GlamorValue, t } from '../../common';
 import { TextEditor } from '../primitives';
 
-const MARKDOWN = `
-Dear **Foo**
----
-- one
-- two
-- three
-
-`;
-
 export type IEditorProps = { style?: GlamorValue; value?: string };
 export type IEditorState = {
   editorState?: t.EditorState;
@@ -25,9 +16,6 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IEditorState>>();
   private events$ = new Subject<t.TextEditorEvent>();
-
-  // private editor!: TextEditor;
-  // private editorRef = (ref: TextEditor) => (this.editor = ref);
 
   /**
    * [Lifecycle]
