@@ -49,19 +49,24 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
           <Hr />
 
           <Button isEnabled={isEnabled} margin={[0, 20, 0, 0]}>
-            <div {...styles.iconContent}>
-              <Icons.Face />
-              <div>Foo</div>
-            </div>
+            {this.iconButtonContent({ label: 'Bar' })}
           </Button>
-          <Button isEnabled={isEnabled}>
-            <div {...styles.iconContent}>
-              <Icons.Face />
-              <div>Bar</div>
-            </div>
-          </Button>
+          <Button isEnabled={isEnabled}>{this.iconButtonContent({ label: 'Bar' })}</Button>
         </div>
       </CommandShell>
+    );
+  }
+
+  private iconButtonContent(props: { label: string }) {
+    const styles = {
+      base: css({ Flex: 'horizontal-center-center' }),
+    };
+
+    return (
+      <div {...styles.base}>
+        <Icons.Face />
+        <div>{props.label}</div>
+      </div>
     );
   }
 

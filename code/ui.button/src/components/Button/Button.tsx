@@ -3,14 +3,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, mouse, value } from '../../common';
+import { color, COLORS, css, GlamorValue, mouse, value, t } from '../../common';
 
-export type IButtonTheme = {
-  enabledColor: string;
-  disabledColor: string;
-};
-
-export const THEME: IButtonTheme = {
+export const THEME: t.IButtonTheme = {
   enabledColor: COLORS.BLUE,
   disabledColor: color.format(-0.3) as string,
 };
@@ -21,7 +16,7 @@ export type IButtonProps = mouse.IMouseEventProps & {
   label?: string;
   isEnabled?: boolean;
   block?: boolean;
-  theme?: Partial<IButtonTheme>;
+  theme?: Partial<t.IButtonTheme>;
   margin?: string | number | Array<string | number | null>;
   style?: GlamorValue;
 };

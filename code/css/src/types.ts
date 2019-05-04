@@ -45,13 +45,16 @@ export type IStyle = IFormatCss & {
   head: ICssHead;
   merge: (...rules: any[]) => CssProps;
   arrayToEdges: ArrayToEdges;
-  toMargins(edges?: EdgesInput): Partial<IMarginEdges>;
-  toPadding(edges?: EdgesInput): Partial<IPaddingEdges>;
+  toMargins(edges?: EdgesInput, options?: { defaultValue?: EdgesInput }): Partial<IMarginEdges>;
+  toPadding(edges?: EdgesInput, options?: { defaultValue?: EdgesInput }): Partial<IPaddingEdges>;
 };
 
 export type EdgesInput = string | number | undefined | null | Array<string | number | null>;
 
-export type ArrayToEdges = (input: EdgesInput) => Partial<IEdges>; // & { toMargin(): Partial<IMarginEdges>; toPadding(): Partial<IPaddingEdges> };
+export type ArrayToEdges = (
+  input?: EdgesInput,
+  options?: { defaultValue?: EdgesInput },
+) => Partial<IEdges>;
 
 export type IEdges = {
   top: string | number;

@@ -1,6 +1,19 @@
 import * as t from '../types';
 import { valueUtil } from '../common';
 
+const isBlank = (value: t.EdgesInput) => {
+  if (value === undefined || value === null) {
+    return true;
+  }
+  if (typeof value === 'string' && valueUtil.isBlank(value)) {
+    return true;
+  }
+  if (Array.isArray(value) && valueUtil.compact(value).length === 0) {
+    return true;
+  }
+  return false;
+};
+
 /**
  * Takes an array of input CSS values and converts them to
  * [top, right, bottom, left] values.
@@ -11,14 +24,15 @@ import { valueUtil } from '../common';
  *  - Y/X array    (eg. [20, 5])
  *
  */
-export const arrayToEdges: t.ArrayToEdges = value => {
-  if (value === undefined || value === null) {
-    return {};
+export const arrayToEdges: t.ArrayToEdges = (value, options = {}) => {
+  const { defaultValue } = options;
+  if (isBlank(value)) {
+    if (defaultValue && !isBlank(defaultValue)) {
+      value = defaultValue;
+    }
   }
-  if (typeof value === 'string' && valueUtil.isBlank(value)) {
-    return {};
-  }
-  if (Array.isArray(value) && value.length === 0) {
+
+  if (!value) {
     return {};
   }
 
@@ -86,9 +100,11 @@ export const arrayToEdges: t.ArrayToEdges = value => {
  * Prefixes each of the edge properties with the given prefix.
  */
 export function prefixEdges<T extends {}>(prefix: string, edges: Partial<t.IEdges>): T {
-  return Object.keys(edges).reduce((acc, key) => {
+  const result = Object.keys(edges).reduce((acc, key) => {
     const value = edges[key];
     key = `${prefix}${key[0].toUpperCase()}${key.substr(1)}`;
     return { ...acc, [key]: value };
   }, {}) as T;
+
+  return result;
 }
