@@ -10,8 +10,10 @@ export type IObservableProps<P = any> = IProps<P> & {
     readonly setting$: Observable<IPropSetting<P>>;
     readonly set$: Observable<IPropSet<P>>;
   };
+  readonly changed$: Observable<IPropChanged<P>>;
   readonly isDisposed: boolean;
   dispose(): void;
+  toObject(): IProps<P>;
 };
 
 /**
@@ -58,3 +60,5 @@ export type IPropSet<P extends IProps = any> = {
   key: keyof P;
   value: { from: P[keyof P]; to: P[keyof P] };
 };
+
+export type IPropChanged<P extends IProps = any> = IPropSet<P>;

@@ -32,36 +32,49 @@ export function observable<P extends t.IProps>(
     takeUntil(dispose$),
     share(),
   );
+  const getting$ = events$.pipe(
+    filter(e => e.type === 'PROP/getting'),
+    map(e => e.payload as t.IPropGetting),
+    share(),
+  );
+  const get$ = events$.pipe(
+    filter(e => e.type === 'PROP/get'),
+    map(e => e.payload as t.IPropGet),
+    share(),
+  );
+  const setting$ = events$.pipe(
+    filter(e => e.type === 'PROP/setting'),
+    map(e => e.payload as t.IPropSetting),
+    share(),
+  );
+  const set$ = events$.pipe(
+    filter(e => e.type === 'PROP/set'),
+    map(e => e.payload as t.IPropSet),
+    share(),
+  );
 
   const obj = {
     $: {
       dispose$: dispose$.pipe(share()),
       events$,
-
-      getting$: events$.pipe(
-        filter(e => e.type === 'PROP/getting'),
-        map(e => e.payload as t.IPropGetting),
-      ),
-      get$: events$.pipe(
-        filter(e => e.type === 'PROP/get'),
-        map(e => e.payload as t.IPropGet),
-      ),
-      setting$: events$.pipe(
-        filter(e => e.type === 'PROP/setting'),
-        map(e => e.payload as t.IPropSetting),
-      ),
-      set$: events$.pipe(
-        filter(e => e.type === 'PROP/set'),
-        map(e => e.payload as t.IPropSet),
-      ),
+      getting$,
+      get$,
+      setting$,
+      set$,
     },
-
+    changed$: set$.pipe(
+      map(e => e as t.IPropChanged),
+      share(),
+    ),
     get isDisposed() {
       return dispose$.isStopped;
     },
     dispose() {
       dispose$.next();
       dispose$.complete();
+    },
+    toObject() {
+      return keys.reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {}) as t.IProps<P>;
     },
   };
 

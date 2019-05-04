@@ -138,6 +138,22 @@ describe('props.observable', () => {
       expect(obj.count).to.eql(888);
     });
 
+    it('fires top-level [changed$] event', () => {
+      const changed: t.IPropChanged[] = [];
+      const obj = props.observable<IMyObject>(initial);
+      obj.changed$.subscribe(e => changed.push(e));
+
+      obj.message = 'foo';
+      expect(changed.length).to.eql(1);
+      expect(changed[0].value.from).to.eql('');
+      expect(changed[0].value.to).to.eql('foo');
+
+      obj.count = 888;
+      expect(changed.length).to.eql(2);
+      expect(changed[1].value.from).to.eql(0);
+      expect(changed[1].value.to).to.eql(888);
+    });
+
     it('cancels set operation', () => {
       const events = {
         setting: [] as t.IPropSetting[],
@@ -157,5 +173,14 @@ describe('props.observable', () => {
       expect(events.set.length).to.eql(0);
       expect(events.setting[0].isCancelled).to.eql(true);
     });
+  });
+
+  it('toObject', () => {
+    const obj = props.observable<IMyObject>(initial);
+    expect(obj.toObject()).to.eql(initial);
+    expect(obj.toObject()).to.not.equal(initial);
+    obj.count = 8;
+    obj.message = 'bang';
+    expect(obj.toObject()).to.eql({ count: 8, message: 'bang' });
   });
 });
