@@ -15,32 +15,34 @@ export const THEME: IButtonTheme = {
   disabledColor: color.format(-0.3) as string,
 };
 
-export type ILinkButtonProps = mouse.IMouseEventProps & {
+export type IButtonProps = mouse.IMouseEventProps & {
+  id?: string;
   children?: React.ReactNode;
   label?: string;
   isEnabled?: boolean;
   block?: boolean;
   theme?: Partial<IButtonTheme>;
+  margin?: string | number | Array<string | number | null>;
   style?: GlamorValue;
 };
 
-export type ILinkButtonState = {
+export type IButtonState = {
   isDown?: boolean;
 };
 
 /**
  * A simple clickable button primitive.
  */
-export class LinkButton extends React.PureComponent<ILinkButtonProps, ILinkButtonState> {
-  public state: ILinkButtonState = {};
+export class Button extends React.PureComponent<IButtonProps, IButtonState> {
+  public state: IButtonState = {};
   private mouse: mouse.IMouseHandlers;
   private unmounted$ = new Subject();
-  private state$ = new Subject<ILinkButtonState>();
+  private state$ = new Subject<IButtonState>();
 
   /**
    * [Lifecycle]
    */
-  constructor(props: ILinkButtonProps) {
+  constructor(props: IButtonProps) {
     super(props);
     this.mouse = mouse.fromProps(props, {
       force: ['DOWN', 'UP'],
@@ -81,22 +83,27 @@ export class LinkButton extends React.PureComponent<ILinkButtonProps, ILinkButto
     const { isDown = false } = this.state;
     const isEnabled = this.isEnabled;
     const theme = this.theme;
+
     const styles = {
       base: css({
+        ...css.toMargins(this.props.margin),
         position: 'relative',
         display: block ? 'block' : 'inline-block',
         color: isEnabled ? theme.enabledColor : theme.disabledColor,
         cursor: isEnabled && 'pointer',
-        transform: isEnabled && `translateY(${isDown ? 1 : 0}px)`,
         userSelect: 'none',
-        marginRight: 8,
+      }),
+      content: css({
+        transform: isEnabled && `translateY(${isDown ? 1 : 0}px)`,
       }),
     };
 
     return (
       <div {...css(styles.base, this.props.style)} {...this.mouse.events}>
-        {this.props.label}
-        {this.props.children}
+        <div {...styles.content}>
+          {this.props.label}
+          {this.props.children}
+        </div>
       </div>
     );
   }

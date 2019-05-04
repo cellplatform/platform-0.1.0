@@ -3,7 +3,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { log, LinkButton, css, CommandShell, t, value } from '../common';
+import { log, Button, css, CommandShell, t, value, Hr } from '../common';
+import { Icons } from './Icons';
 
 export type ITestProps = {};
 
@@ -36,11 +37,29 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         flex: 1,
         padding: 30,
       }),
+      iconContent: css({
+        Flex: 'horizontal-center-center',
+      }),
     };
     return (
-      <CommandShell cli={this.cli} tree={{}}>
+      <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
-          <LinkButton label={'Click Me'} onClick={this.handleClick} isEnabled={isEnabled} />
+          <Button label={'Click Me'} onClick={this.handleClick} isEnabled={isEnabled} />
+
+          <Hr />
+
+          <Button isEnabled={isEnabled} margin={[0, 20, 0, 0]}>
+            <div {...styles.iconContent}>
+              <Icons.Face />
+              <div>Foo</div>
+            </div>
+          </Button>
+          <Button isEnabled={isEnabled}>
+            <div {...styles.iconContent}>
+              <Icons.Face />
+              <div>Bar</div>
+            </div>
+          </Button>
         </div>
       </CommandShell>
     );
