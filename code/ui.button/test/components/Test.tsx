@@ -46,7 +46,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         <div {...styles.base}>
           <Button label={'Click Me'} onClick={this.handleClick} isEnabled={isEnabled} />
 
-          <Hr color={'PINK'} opacity={0.6} dashed={true} />
+          <Hr.PinkDashed />
 
           <Button isEnabled={isEnabled} margin={[0, 20, 0, 0]}>
             {this.iconButtonContent({ label: 'Bar' })}
