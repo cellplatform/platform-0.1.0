@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, CSS, css, GlamorValue, markdown, t } from '../../common';
+import { color, CSS, css, GlamorValue, markdown, t, COLORS } from '../../common';
 import { Avatar, Text } from '../primitives';
 import { CommentEditor } from './components/CommentEditor';
 import { Triangle } from './components/Triangle';
@@ -70,6 +70,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
         display: 'block',
         boxSizing: 'border-box',
         userSelect: 'none',
+        backgroundColor: COLORS.WHITE,
       }),
       inner: css({
         Flex: 'horizontal',

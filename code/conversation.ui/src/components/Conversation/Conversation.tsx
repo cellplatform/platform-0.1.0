@@ -44,7 +44,8 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
     store$.subscribe(e => this.forceUpdate());
 
     editorChanged$.subscribe(e => {
-      const draft = e.value.to;
+      const markdown = e.value.to;
+      const draft = markdown ? { markdown } : undefined;
       store.dispatch({ type: 'THREAD/draft', payload: { draft } });
     });
   }
@@ -104,12 +105,14 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
 
   private renderNextComment() {
     const elHeader = <ThreadCommentHeader />;
+    const draft = this.store.state.draft;
+    const body = draft ? draft.markdown : undefined;
     return (
       <ThreadComment
         key={this.state.nextId}
         avatarUrl={TEMP.WOMAN_1}
         header={elHeader}
-        body={this.store.state.draft}
+        body={body}
         isEditing={true}
         editor$={this.editor$}
       />

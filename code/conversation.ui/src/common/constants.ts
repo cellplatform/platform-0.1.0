@@ -1,6 +1,7 @@
 import { CSS as EDITOR_CSS } from '@platform/ui.editor';
 
 export const COLORS = {
+  WHITE: '#fff',
   DARK: '#293042', // Inky blue/black.
   BLUE: '#4B89FF',
   PINK: '#FF0067',

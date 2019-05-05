@@ -4,8 +4,10 @@ export type IThreadStore = t.IStore<IThreadModel, ThreadEvent>;
 
 export type IThreadModel = {
   items: ThreadItem[];
-  draft?: string;
+  draft?: IThreadDraft;
 };
+
+export type IThreadDraft = { markdown: string };
 
 /**
  * [Items]
@@ -34,5 +36,5 @@ export type IThreadItemsEvent = {
 
 export type IThreadDraftEvent = {
   type: 'THREAD/draft';
-  payload: { draft: string };
+  payload: { draft?: IThreadDraft };
 };

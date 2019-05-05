@@ -62,7 +62,7 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
    * [Properties]
    */
   public get isEmpty() {
-    return !Boolean((this.state.value || '').trim());
+    return !Boolean(this.state.value);
   }
 
   /**
@@ -103,9 +103,24 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
     };
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.focusOnClick}>
+        {this.isEmpty && this.renderPlaceholder()}
         <TextEditor ref={this.editorRef} value={this.state.value} events$={this.props.editor$} />
       </div>
     );
+  }
+
+  private renderPlaceholder(args: { text?: string } = {}) {
+    const { text = 'Leave a comment.' } = args;
+    const styles = {
+      base: css({
+        Absolute: [18, null, null, 16],
+        pointerEvents: 'none',
+        fontSize: '14',
+        fontStyle: 'italic',
+        opacity: 0.3,
+      }),
+    };
+    return <div {...styles.base}>{text}</div>;
   }
 
   private renderEditorToolbar() {

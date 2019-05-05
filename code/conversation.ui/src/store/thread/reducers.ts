@@ -26,6 +26,6 @@ export function init(store: t.IThreadStore) {
     .subscribe(e => {
       const state = e.state;
       const draft = e.payload.draft;
-      e.change(value.deleteEmpty({ ...state, draft }));
+      e.change(value.deleteUndefined({ ...state, draft }));
     });
 }
