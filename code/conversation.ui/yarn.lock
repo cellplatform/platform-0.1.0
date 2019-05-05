@@ -1145,6 +1145,21 @@
     react "16.8.6"
     react-dom "16.8.6"
 
+"@platform/state.react@0.1.15":
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.1.15.tgz#e29d1f2668762ef85a1689b16acb6a4cc5f11b37"
+  integrity sha512-/7fDgB+7iWABl+xyej4m6+KayiEog7sQriHXnHWARuXhmGHgSWbpCgEAEhq3V1V6mAJopmcmuaqVec4T1ypObg==
+  dependencies:
+    "@platform/react" "0.1.30"
+    "@platform/state" "0.1.11"
+
+"@platform/state@0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.1.11.tgz#60ed72ecc81206dae194a1baffad29c64b844395"
+  integrity sha512-AH1sSErunQd0i/jC93kSD1NVSmFb72s+CsDiFgGj/IkXPj5SxcKr/ABu2QzfMB8T0sEXLGntzTSQsVmi1x3BrA==
+  dependencies:
+    "@platform/util.value" "0.1.6"
+
 "@platform/ts.libs@3.4.12":
   version "3.4.12"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.4.12.tgz#6b161d86d49ca686f51a7c9bbb824103d126b86c"
@@ -1177,7 +1192,7 @@
   dependencies:
     rxjs "6.5.1"
 
-"@platform/ui.button@^0.1.0":
+"@platform/ui.button@0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.1.0.tgz#91d6e1d946f60c9f0fce5bca78bb0d3067e94404"
   integrity sha512-lBN5E2WwvJnWiGfslKPtVjJzR/VLYzzpq4LwhBU18ZNu/p3X/8knFdx4jjwnqlqvlLJQWlQ0dn0b5SxtsDoa0w==

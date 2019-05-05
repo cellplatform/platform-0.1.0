@@ -18,6 +18,8 @@
   "dependencies": {
     "@platform/conversation.types": "0.0.4",
     "@platform/react": "0.1.30",
+    "@platform/state": "0.1.11",
+    "@platform/state.react": "0.1.15",
     "@platform/ui.button": "0.1.0",
     "@platform/ui.editor": "0.0.61",
     "@platform/ui.image": "0.0.12",

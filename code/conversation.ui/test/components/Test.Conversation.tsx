@@ -2,23 +2,27 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import * as cli from '../cli';
-import { color, CommandShell, t, ObjectView, Hr, css, Conversation } from '../common';
+import { color, Conversation, css, ObjectView, t } from '../common';
 
-export type ITestProps = {};
+export type ITestProps = { store: t.IThreadStore };
+export type ITestState = {};
 
-export class Test extends React.PureComponent<ITestProps, t.ITestState> {
-  public state: t.ITestState = {};
+export class Test extends React.PureComponent<ITestProps, ITestState> {
+  public state: ITestState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<t.ITestState>>();
-  private cli = cli.init({ state$: this.state$ });
+  private state$ = new Subject<Partial<ITestState>>();
+  private store = this.props.store;
+  private store$ = this.store.events$.pipe(takeUntil(this.unmounted$));
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const store$ = this.store$;
+
     state$.subscribe(e => this.setState(e));
+    store$.subscribe(e => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -59,7 +63,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
           </div>
         </div>
         <div {...styles.right}>
-          <ObjectView name={'state'} data={this.state} />
+          <ObjectView name={'state'} data={this.store.state} />
         </div>
       </div>
     );

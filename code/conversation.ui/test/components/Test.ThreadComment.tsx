@@ -7,7 +7,6 @@ import {
   COLORS,
   constants,
   css,
-  LOREM,
   t,
   ThreadComment,
   ThreadCommentHeader,

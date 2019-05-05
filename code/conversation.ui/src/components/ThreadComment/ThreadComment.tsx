@@ -192,13 +192,11 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
       }),
     };
 
-    const MIN_WIDTH = 110;
+    const MIN_WIDTH = 100;
 
     return (
       <div {...styles.base}>
-        <div>
-          <div />
-        </div>
+        <div>{/* left */}</div>
         <div>
           <buttons.HoverGrey label={'Cancel'} minWidth={MIN_WIDTH} margin={[null, 5, null, null]} />
           <buttons.Blue label={'Comment'} minWidth={MIN_WIDTH} />
