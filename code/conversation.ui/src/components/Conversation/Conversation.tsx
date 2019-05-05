@@ -52,7 +52,7 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
           <Divider height={25} left={78} />
           <ThreadComment avatarUrl={TEMP.WOMAN_2} />
           <Divider height={25} left={78} />
-          <ThreadComment avatarUrl={TEMP.WOMAN_1} />
+          <ThreadComment avatarUrl={TEMP.WOMAN_1} isEditing={true} />
         </div>
       </div>
     );

@@ -186,8 +186,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
       base: css({
         borderTop: `solid 1px ${color.format(-0.1)}`,
         backgroundColor: color.format(-0.01),
-        PaddingX: 15,
-        PaddingY: 10,
+        padding: 8,
         Flex: 'horiziontal-center-spaceBetween',
       }),
     };

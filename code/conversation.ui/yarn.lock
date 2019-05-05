@@ -1145,18 +1145,18 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/state.react@0.1.15":
-  version "0.1.15"
-  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.1.15.tgz#e29d1f2668762ef85a1689b16acb6a4cc5f11b37"
-  integrity sha512-/7fDgB+7iWABl+xyej4m6+KayiEog7sQriHXnHWARuXhmGHgSWbpCgEAEhq3V1V6mAJopmcmuaqVec4T1ypObg==
+"@platform/state.react@0.1.16":
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.1.16.tgz#3cd986354bd2741888520f005bc81d81d14eee9e"
+  integrity sha512-1NH608DaJyF+Z6ucb5ZvoSL4jJVPi0GSCprYvV4zQHtVgQGfVaPz9lmy3+1rCZ2XMJVpTlTc6TncWHl6zvHVtA==
   dependencies:
     "@platform/react" "0.1.30"
-    "@platform/state" "0.1.11"
+    "@platform/state" "0.1.12"
 
-"@platform/state@0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.1.11.tgz#60ed72ecc81206dae194a1baffad29c64b844395"
-  integrity sha512-AH1sSErunQd0i/jC93kSD1NVSmFb72s+CsDiFgGj/IkXPj5SxcKr/ABu2QzfMB8T0sEXLGntzTSQsVmi1x3BrA==
+"@platform/state@0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.1.12.tgz#60b5df9ad9dd3d9d7f2e3a7ff86ab9490112ab05"
+  integrity sha512-wvUxuE9nAPa8gyDZbi/+IIO/h37r67vpqe+DAhWQaV191UhNyr1hO9AF0u4U9tBeZNgUAZmDSkfP8ZKKkYdK9g==
   dependencies:
     "@platform/util.value" "0.1.6"
 
@@ -1192,10 +1192,10 @@
   dependencies:
     rxjs "6.5.1"
 
-"@platform/ui.button@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.1.0.tgz#91d6e1d946f60c9f0fce5bca78bb0d3067e94404"
-  integrity sha512-lBN5E2WwvJnWiGfslKPtVjJzR/VLYzzpq4LwhBU18ZNu/p3X/8knFdx4jjwnqlqvlLJQWlQ0dn0b5SxtsDoa0w==
+"@platform/ui.button@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.1.1.tgz#264d4969bc7ff3828f378c4913cc1e4f4d067ca1"
+  integrity sha512-8crZ7YzJuZeKAmxRzygqD8aMlYu2yU328RGOwF3lj3+GC5mfZy8oHY0joXo9U4EbLLCII5Y5oABz4SrAll5u7Q==
   dependencies:
     "@platform/react" "0.1.30"
 
