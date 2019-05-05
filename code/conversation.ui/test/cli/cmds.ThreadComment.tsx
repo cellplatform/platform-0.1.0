@@ -29,9 +29,13 @@ export const threadComment = Command.create<P>('ThreadComment', e => {
     const body = typeof p === 'number' ? BODY[`MARKDOWN_${p}`] : p;
     data.body = body;
   })
-  .add('editor', e => {
+  .add('edit-mode', e => {
     const data = e.props.threadComment;
-    data.isEditing = Boolean(e.param(0));
+    data.isEditing = true;
+  })
+  .add('read-mode', e => {
+    const data = e.props.threadComment;
+    data.isEditing = false;
   });
 
 /**

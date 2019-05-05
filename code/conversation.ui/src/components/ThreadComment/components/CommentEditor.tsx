@@ -1,19 +1,22 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue, t } from '../../../common';
-import { Editor } from '../../Editor';
 import * as buttons from '../../buttons';
+import { TextEditor } from '../../primitives';
 
 export type ICommentEditorProps = {
   editor$: Subject<t.TextEditorEvent>;
-  markdown?: string;
+  value?: string;
   style?: GlamorValue;
 };
-export type ICommentEditorState = {};
+export type ICommentEditorState = {
+  editorState?: t.EditorState;
+  value?: string;
+};
 
 export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICommentEditorState> {
-  public state: ICommentEditorState = {};
+  public state: ICommentEditorState = { value: this.props.value };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ICommentEditorState>>();
 
@@ -22,7 +25,28 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
    */
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const editor$ = this.props.editor$.pipe(takeUntil(this.unmounted$));
+    const changed$ = editor$.pipe(
+      filter(e => e.type === 'EDITOR/changed'),
+      map(e => e.payload as t.ITextEditorChanged),
+    );
+
     state$.subscribe(e => this.setState(e));
+
+    editor$.subscribe(e => {
+      // console.log('e', e);
+    });
+
+    changed$.subscribe(e => {
+      // console.log('changed', e);
+    });
+  }
+
+  public componentDidUpdate(prev: ICommentEditorState) {
+    const { value } = this.props;
+    if (prev.value !== value) {
+      this.state$.next({ value });
+    }
   }
 
   public componentWillUnmount() {
@@ -31,10 +55,16 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
   }
 
   /**
+   * [Properties]
+   */
+  public get isEmpty() {
+    return !Boolean((this.state.value || '').trim());
+  }
+
+  /**
    * [Render]
    */
   public render() {
-    const { markdown = '' } = this.props;
     const styles = {
       base: css({
         position: 'relative',
@@ -53,10 +83,23 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
 
     return (
       <div {...styles.base}>
-        <div {...styles.editor}>
-          <Editor value={markdown} events$={this.props.editor$} />
-        </div>
+        {this.renderEditor()}
         {this.renderEditorToolbar()}
+      </div>
+    );
+  }
+
+  private renderEditor() {
+    const styles = {
+      base: css({
+        position: 'relative',
+        flex: 1,
+        padding: 15,
+      }),
+    };
+    return (
+      <div {...css(styles.base, this.props.style)}>
+        <TextEditor value={this.state.value} events$={this.props.editor$} />
       </div>
     );
   }
@@ -71,6 +114,9 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
         Flex: 'horiziontal-center-spaceBetween',
       }),
     };
+
+    const isEnabled = !this.isEmpty;
+
     return (
       <div {...styles.base}>
         <div>{/* left */}</div>
@@ -80,7 +126,7 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
             minWidth={BUTTON_WIDTH}
             margin={[null, 5, null, null]}
           />
-          <buttons.Blue label={'Comment'} minWidth={BUTTON_WIDTH} />
+          <buttons.Blue label={'Comment'} minWidth={BUTTON_WIDTH} isEnabled={isEnabled} />
         </div>
       </div>
     );

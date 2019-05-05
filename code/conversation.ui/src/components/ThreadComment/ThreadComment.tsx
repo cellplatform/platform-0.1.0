@@ -86,7 +86,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     };
 
     const elBody = isEditing ? null : this.body ? this.renderBody() : this.renderEmpty();
-    const elEditor = isEditing && <CommentEditor markdown={this.body} editor$={this.editor$} />;
+    const elEditor = isEditing && <CommentEditor value={this.body} editor$={this.editor$} />;
 
     return (
       <Text style={styles.base} className={CSS.CLASS.COMMENT}>
@@ -136,7 +136,6 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
       base: css({
         padding: 15,
         userSelect: 'text',
-        minHeight: 55,
       }),
     };
     const html = markdown.toHtmlSync(this.body);
