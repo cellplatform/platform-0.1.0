@@ -19,14 +19,26 @@ export class ThreadCommentHeader extends React.PureComponent<
   public state: IThreadCommentHeaderState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IThreadCommentHeaderState>>();
+  private redraw$ = new Subject();
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const redraw$ = this.redraw$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
+    redraw$.subscribe(() => {
+      this.forceUpdate();
+      this.startRedrawTimer();
+    });
   }
+
+  public componentDidMount() {
+    this.startRedrawTimer();
+  }
+
+  // public componentDidUpdate(prevProps, prevState) {}
 
   public componentWillUnmount() {
     this.unmounted$.next();
@@ -38,6 +50,21 @@ export class ThreadCommentHeader extends React.PureComponent<
    */
   public get name() {
     return this.props.name || 'Unnamed';
+  }
+
+  public get elapsed() {
+    const { timestamp } = this.props;
+    return timestamp ? time.elapsed(timestamp) : undefined;
+  }
+
+  /**
+   * Methods
+   */
+  public startRedrawTimer() {
+    if (this.props.timestamp) {
+      const SEC = 1000;
+      time.delay(SEC * 10, () => this.redraw$.next());
+    }
   }
 
   /**
@@ -65,11 +92,11 @@ export class ThreadCommentHeader extends React.PureComponent<
   }
 
   private renderTimestamp() {
-    const { timestamp } = this.props;
-    if (!timestamp) {
+    const elapsed = this.elapsed;
+    if (!elapsed) {
       return null;
     }
-    const elapsed = time.elapsed(timestamp);
-    return <span>commented {elapsed.toString()} ago</span>;
+    const msg = elapsed.sec < 1 ? 'just now' : `${elapsed.toString()} ago`;
+    return <span>commented {msg}</span>;
   }
 }

@@ -94,7 +94,7 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
   private renderItem(item: t.ThreadItem) {
     switch (item.kind) {
       case 'THREAD/comment':
-        const elHeader = <ThreadCommentHeader />;
+        const elHeader = <ThreadCommentHeader timestamp={item.timestamp} />;
         return <ThreadComment key={item.id} avatarUrl={TEMP.WOMAN_1} header={elHeader} />;
 
       default:
@@ -104,14 +104,12 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
   }
 
   private renderNextComment() {
-    const elHeader = <ThreadCommentHeader />;
     const draft = this.store.state.draft;
     const body = draft ? draft.markdown : undefined;
     return (
       <ThreadComment
         key={this.state.nextId}
         avatarUrl={TEMP.WOMAN_1}
-        header={elHeader}
         body={body}
         isEditing={true}
         editor$={this.editor$}
