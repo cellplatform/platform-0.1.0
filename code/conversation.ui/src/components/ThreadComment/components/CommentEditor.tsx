@@ -10,6 +10,7 @@ export type ICommentEditorProps = {
   editor$: Subject<t.TextEditorEvent>;
   value?: string;
   style?: GlamorValue;
+  onComment?: (e: {}) => void;
 };
 export type ICommentEditorState = {
   editorState?: t.EditorState;
@@ -132,7 +133,7 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
         padding: 8,
         Flex: 'horiziontal-center-spaceBetween',
       }),
-      left: css({ paddingLeft: 5 }),
+      left: css({ paddingLeft: 6 }),
       right: css({}),
     };
 
@@ -144,12 +145,17 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
           <Icons.Markdown size={20} />
         </div>
         <div {...styles.right}>
-          <buttons.HoverGrey
+          {/* <buttons.HoverGrey
             label={'Cancel'}
             minWidth={BUTTON_WIDTH}
             margin={[null, 5, null, null]}
+          /> */}
+          <buttons.Blue
+            label={'Comment'}
+            minWidth={BUTTON_WIDTH}
+            isEnabled={isEnabled}
+            onClick={this.props.onComment}
           />
-          <buttons.Blue label={'Comment'} minWidth={BUTTON_WIDTH} isEnabled={isEnabled} />
         </div>
       </div>
     );

@@ -94,7 +94,7 @@ export class ThreadCommentHeader extends React.PureComponent<
     if (!elapsed) {
       return null;
     }
-    const msg = elapsed.sec < 1 ? 'just now' : `${elapsed.toString()} ago`;
+    const msg = elapsed.min < 1 ? 'just now' : `${elapsed.toString()} ago`;
     return <span>commented {msg}</span>;
   }
 }

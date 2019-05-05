@@ -4,10 +4,10 @@ export type IThreadStore = t.IStore<IThreadModel, ThreadEvent>;
 
 export type IThreadModel = {
   items: ThreadItem[];
-  draft?: IThreadDraft;
+  draft: IThreadDraft;
 };
 
-export type IThreadDraft = { markdown: string };
+export type IThreadDraft = { user: IThreadUser; markdown?: string };
 
 /**
  * [Items]
@@ -18,8 +18,13 @@ export type IThreadComment = {
   kind: 'THREAD/comment';
   id: string;
   timestamp: Date;
-  user: { id: string; name?: string };
+  user: IThreadUser;
+  body?: {
+    markdown: string;
+  };
 };
+
+export type IThreadUser = { id: string; name?: string };
 
 /**
  * [Events]
@@ -38,5 +43,5 @@ export type IThreadItemsEvent = {
 
 export type IThreadDraftEvent = {
   type: 'THREAD/draft';
-  payload: { draft?: IThreadDraft };
+  payload: { draft: IThreadDraft };
 };

@@ -6,7 +6,8 @@ import { createThreadCommentProps } from './cmds.ThreadComment';
 
 export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   const { state$ } = args;
-  const threadStore = store.thread.create();
+  const user: t.IThreadUser = { id: 'sub|mary', name: 'mary@foo.com' };
+  const threadStore = store.thread.create({ user });
   const threadCommentProps = createThreadCommentProps();
 
   // CLI.

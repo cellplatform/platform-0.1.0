@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil, map } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, state, t, log, id as idUtil } from '../../common';
-import { ThreadComment } from '../ThreadComment';
+import { css, GlamorValue, id as idUtil, log, state, t } from '../../common';
 import { Divider } from '../Divider';
+import { ThreadComment } from '../ThreadComment';
 import { ThreadCommentHeader } from '../ThreadCommentHeader';
 
 export type IConversationProps = { style?: GlamorValue };
-export type IConversationState = {
-  nextId?: string;
-};
+export type IConversationState = {};
 
 const TEMP = {
   WOMAN_1: require('../../../static/images/woman-1.jpg'),
@@ -18,7 +16,7 @@ const TEMP = {
 };
 
 export class Conversation extends React.PureComponent<IConversationProps, IConversationState> {
-  public state: IConversationState = { nextId: idUtil.cuid() };
+  public state: IConversationState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IConversationState>>();
   private editor$ = new Subject<t.TextEditorEvent>();
@@ -45,7 +43,8 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
 
     editorChanged$.subscribe(e => {
       const markdown = e.value.to;
-      const draft = markdown ? { markdown } : undefined;
+      const user = this.user;
+      const draft = markdown ? { user, markdown } : { user };
       store.dispatch({ type: 'THREAD/draft', payload: { draft } });
     });
   }
@@ -60,6 +59,10 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
    */
   public get items() {
     return this.store.state.items;
+  }
+
+  public get user() {
+    return this.store.state.draft.user;
   }
 
   /**
@@ -96,7 +99,10 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
       case 'THREAD/comment':
         const name = item.user.name || item.user.id;
         const elHeader = <ThreadCommentHeader timestamp={item.timestamp} name={name} />;
-        return <ThreadComment key={item.id} avatarUrl={TEMP.WOMAN_1} header={elHeader} />;
+        const body = item.body ? item.body.markdown : undefined;
+        return (
+          <ThreadComment key={item.id} avatarUrl={TEMP.WOMAN_1} header={elHeader} body={body} />
+        );
 
       default:
         log.warn(`Item of kind '${item.kind}' not supported.`);
@@ -105,16 +111,27 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
   }
 
   private renderNextComment() {
-    const draft = this.store.state.draft;
-    const body = draft ? draft.markdown : undefined;
+    const body = this.store.state.draft.markdown;
     return (
       <ThreadComment
-        key={this.state.nextId}
         avatarUrl={TEMP.WOMAN_1}
         body={body}
         isEditing={true}
         editor$={this.editor$}
+        onComment={this.handleCommentClick}
       />
     );
   }
+
+  private handleCommentClick = () => {
+    const markdown = this.store.state.draft.markdown || '';
+    const item: t.IThreadComment = {
+      kind: 'THREAD/comment',
+      id: idUtil.cuid(),
+      timestamp: new Date(),
+      user: this.user,
+      body: { markdown },
+    };
+    this.store.dispatch({ type: 'THREAD/add', payload: { item } });
+  };
 }

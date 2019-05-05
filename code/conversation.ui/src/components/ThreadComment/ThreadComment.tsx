@@ -17,6 +17,7 @@ export type IThreadCommentProps = {
   isEditing?: boolean;
   editor$?: Subject<t.TextEditorEvent>;
   style?: GlamorValue;
+  onComment?: (e: {}) => void;
 };
 export type IThreadCommentState = {};
 
@@ -87,7 +88,9 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     };
 
     const elBody = isEditing ? null : this.body ? this.renderBody() : this.renderEmpty();
-    const elEditor = isEditing && <CommentEditor value={this.body} editor$={this.editor$} />;
+    const elEditor = isEditing && (
+      <CommentEditor value={this.body} editor$={this.editor$} onComment={this.props.onComment} />
+    );
 
     return (
       <Text style={styles.base} className={CSS.CLASS.COMMENT}>

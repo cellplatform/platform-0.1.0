@@ -1,4 +1,3 @@
-import { value } from '../common';
 import * as t from '../types';
 
 export function init(store: t.IThreadStore) {
@@ -8,7 +7,9 @@ export function init(store: t.IThreadStore) {
     .subscribe(e => {
       const state = e.state;
       const items = [...state.items, e.payload.item];
-      e.change({ ...state, items });
+      const draft = { ...state.draft };
+      delete draft.markdown;
+      e.change({ ...state, items, draft });
     });
 
   store
@@ -26,6 +27,6 @@ export function init(store: t.IThreadStore) {
     .subscribe(e => {
       const state = e.state;
       const draft = e.payload.draft;
-      e.change(value.deleteUndefined({ ...state, draft }));
+      e.change({ ...state, draft });
     });
 }
