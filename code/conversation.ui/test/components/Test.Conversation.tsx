@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, Conversation, css, ObjectView, t } from '../common';
+import { color, Conversation, css, ObjectView, t, state } from '../common';
 
 export type ITestProps = { store: t.IThreadStore };
 export type ITestState = {};
@@ -13,6 +13,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private state$ = new Subject<Partial<ITestState>>();
   private store = this.props.store;
   private store$ = this.store.events$.pipe(takeUntil(this.unmounted$));
+  private Provider = state.createProvider(this.store);
 
   /**
    * [Lifecycle]
@@ -56,16 +57,18 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       }),
     };
     return (
-      <div {...styles.base}>
-        <div {...styles.left}>
-          <div {...styles.body}>
-            <Conversation />
+      <this.Provider>
+        <div {...styles.base}>
+          <div {...styles.left}>
+            <div {...styles.body}>
+              <Conversation />
+            </div>
+          </div>
+          <div {...styles.right}>
+            <ObjectView name={'state'} data={this.store.state} />
           </div>
         </div>
-        <div {...styles.right}>
-          <ObjectView name={'state'} data={this.store.state} />
-        </div>
-      </div>
+      </this.Provider>
     );
   }
 }

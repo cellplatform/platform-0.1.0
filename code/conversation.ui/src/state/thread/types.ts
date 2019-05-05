@@ -1,12 +1,16 @@
 import * as t from '../types';
 
-export type IThreadStore = t.IStore<IMyModel, MyEvent>;
+export type IThreadStore = t.IStore<IThreadModel, ThreadEvent>;
 
-export type IMyModel = {
+export type IThreadModel = {
   count: number;
 };
 
-export type MyEvent = IIncrementEvent | IDecrementEvent;
+/**
+ * [Events]
+ */
+export type ThreadEvent = IIncrementEvent | IDecrementEvent;
+
 export type IIncrementEvent = {
   type: 'TEST/increment';
   payload: { by: number };

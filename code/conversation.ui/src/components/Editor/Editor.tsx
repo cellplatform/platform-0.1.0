@@ -5,7 +5,11 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { css, GlamorValue, t } from '../../common';
 import { TextEditor } from '../primitives';
 
-export type IEditorProps = { style?: GlamorValue; value?: string };
+export type IEditorProps = {
+  style?: GlamorValue;
+  value?: string;
+  events$?: Subject<t.TextEditorEvent>;
+};
 export type IEditorState = {
   editorState?: t.EditorState;
   value?: string;
@@ -24,6 +28,10 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
+
+    if (this.props.events$) {
+      this.events$.subscribe(this.props.events$);
+    }
 
     events$
       // AFTER change.

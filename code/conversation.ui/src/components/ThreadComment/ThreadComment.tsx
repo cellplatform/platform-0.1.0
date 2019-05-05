@@ -1,12 +1,13 @@
 import './styles';
+
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, markdown, CSS } from '../../common';
+
+import { color, CSS, css, GlamorValue, markdown, t } from '../../common';
 import { Avatar, Text } from '../primitives';
+import { CommentEditor } from './components/CommentEditor';
 import { Triangle } from './components/Triangle';
-import { Editor } from '../Editor';
-import * as buttons from '../buttons';
 
 export type IThreadCommentProps = {
   avatarUrl?: string;
@@ -14,6 +15,7 @@ export type IThreadCommentProps = {
   header?: JSX.Element;
   body?: string;
   isEditing?: boolean;
+  editor$?: Subject<t.TextEditorEvent>;
   style?: GlamorValue;
 };
 export type IThreadCommentState = {};
@@ -36,12 +38,14 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
   public state: IThreadCommentState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IThreadCommentState>>();
+  private editor$ = this.props.editor$ || new Subject<t.TextEditorEvent>();
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    state$.subscribe(e => this.setState(e));
   }
 
   public componentWillUnmount() {
@@ -82,7 +86,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     };
 
     const elBody = isEditing ? null : this.body ? this.renderBody() : this.renderEmpty();
-    const elEditor = isEditing && this.renderEditor();
+    const elEditor = isEditing && <CommentEditor markdown={this.body} editor$={this.editor$} />;
 
     return (
       <Text style={styles.base} className={CSS.CLASS.COMMENT}>
@@ -132,6 +136,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
       base: css({
         padding: 15,
         userSelect: 'text',
+        minHeight: 55,
       }),
     };
     const html = markdown.toHtmlSync(this.body);
@@ -144,9 +149,11 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     );
   }
 
-  private renderEmpty() {
+  private renderEmpty(props: { message?: string; style?: GlamorValue } = {}) {
+    const { message = 'Nothing to display.' } = props;
     const styles = {
       base: css({
+        pointerEvents: 'none',
         Flex: 'center-center',
         padding: 15,
         opacity: 0.3,
@@ -154,53 +161,6 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
         fontSize: 14,
       }),
     };
-    return <div {...styles.base}>Nothing to display.</div>;
-  }
-
-  private renderEditor() {
-    const styles = {
-      base: css({}),
-      editor: css({
-        padding: 3,
-      }),
-      toolbar: css({
-        borderTop: `solid 1px ${color.format(-0.1)}`,
-        backgroundColor: color.format(-0.01),
-        PaddingX: 15,
-        PaddingY: 10,
-      }),
-    };
-
-    return (
-      <div {...styles.base}>
-        <div {...styles.editor}>
-          <Editor value={this.body} />
-        </div>
-        {this.renderEditorToolbar()}
-      </div>
-    );
-  }
-
-  private renderEditorToolbar() {
-    const styles = {
-      base: css({
-        borderTop: `solid 1px ${color.format(-0.1)}`,
-        backgroundColor: color.format(-0.01),
-        padding: 8,
-        Flex: 'horiziontal-center-spaceBetween',
-      }),
-    };
-
-    const MIN_WIDTH = 100;
-
-    return (
-      <div {...styles.base}>
-        <div>{/* left */}</div>
-        <div>
-          <buttons.HoverGrey label={'Cancel'} minWidth={MIN_WIDTH} margin={[null, 5, null, null]} />
-          <buttons.Blue label={'Comment'} minWidth={MIN_WIDTH} />
-        </div>
-      </div>
-    );
+    return <div {...css(styles.base, props.style)}>{message}</div>;
   }
 }

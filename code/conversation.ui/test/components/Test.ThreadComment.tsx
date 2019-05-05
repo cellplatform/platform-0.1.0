@@ -1,6 +1,16 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import {
   color,
@@ -11,6 +21,7 @@ import {
   ThreadComment,
   ThreadCommentHeader,
   time,
+  state,
 } from '../common';
 
 const { URL } = constants;
@@ -23,13 +34,31 @@ export class Test extends React.PureComponent<ITestProps> {
   public state: t.ITestState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
+  private editor$ = new Subject<t.TextEditorEvent>();
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const editor$ = this.editor$.pipe(takeUntil(this.unmounted$));
+
+    state$.subscribe(e => this.setState(e));
+
     this.props.data.changed$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.forceUpdate());
+
+    editor$.subscribe(e => {
+      console.log('editor:', e);
+    });
+
+    editor$
+      .pipe(
+        filter(e => e.type === 'EDITOR/changing'),
+        map(e => e.payload as t.ITextEditorChanging),
+      )
+      .subscribe(e => {
+        // e.cancel();
+      });
   }
 
   public componentWillUnmount() {
@@ -74,6 +103,7 @@ export class Test extends React.PureComponent<ITestProps> {
             header={elHeader}
             body={data.body}
             isEditing={data.isEditing}
+            editor$={this.editor$}
           />
         </div>
       </div>

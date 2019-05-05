@@ -6,10 +6,10 @@ import { createThreadCommentProps } from './cmds.ThreadComment';
 
 export function init(args: {
   state$: Subject<Partial<t.ITestState>>;
-  threadStore?: t.IThreadStore;
+  // threadStore?: t.IThreadStore;
 }) {
   const { state$ } = args;
-  const threadStore = args.threadStore || state.thread.create();
+  const threadStore = state.thread.create();
   const threadComment = createThreadCommentProps();
 
   // CLI.
