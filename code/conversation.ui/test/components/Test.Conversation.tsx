@@ -48,6 +48,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         width: 760,
         flex: 1,
         display: 'flex',
+        paddingTop: 30,
       }),
       right: css({
         boxSizing: 'border-box',
