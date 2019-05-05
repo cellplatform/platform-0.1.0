@@ -60,14 +60,14 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         <div {...styles.base}>
           <Button {...common} label={'Click Me'} />
 
-          <Hr.PinkDashed />
+          <PinkDashed />
 
           <Button {...common} margin={[0, 20, 0, 0]}>
             {this.iconButtonContent({ label: 'Bar' })}
           </Button>
           <Button {...common}>{this.iconButtonContent({ label: 'Bar' })}</Button>
 
-          <Hr.PinkDashed />
+          <PinkDashed />
 
           <div {...styles.centerY}>
             <Button {...common} label={'Base Border'} theme={Button.theme.BORDER.BASE} />
@@ -88,10 +88,27 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
               {this.iconButtonContent({ label: 'Blue Icon' })}
             </Button>
           </div>
-          <Hr.PinkDashed />
+          <PinkDashed />
           <div {...styles.centerY}>
             <Button {...common} label={'Green'} theme={Button.theme.BORDER.GREEN} />
             <Button {...common} label={'Dark'} theme={Button.theme.BORDER.DARK} />
+          </div>
+
+          <PinkDashed />
+
+          <div {...styles.centerY}>
+            <Button
+              {...common}
+              label={'minWidth: 250'}
+              theme={Button.theme.BORDER.BASE}
+              minWidth={250}
+            />
+            <Button
+              {...common}
+              label={'minWidth: 250'}
+              theme={Button.theme.BORDER.BLUE}
+              minWidth={250}
+            />
           </div>
         </div>
       </CommandShell>
@@ -115,3 +132,5 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     log.info('click');
   };
 }
+
+const PinkDashed = () => <Hr.PinkDashed margin={[40, 0]} />;

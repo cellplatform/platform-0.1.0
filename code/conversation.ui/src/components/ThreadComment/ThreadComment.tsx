@@ -6,6 +6,7 @@ import { css, color, GlamorValue, markdown, CSS } from '../../common';
 import { Avatar, Text } from '../primitives';
 import { Triangle } from './components/Triangle';
 import { Editor } from '../Editor';
+import * as buttons from '../buttons';
 
 export type IThreadCommentProps = {
   avatarUrl?: string;
@@ -187,11 +188,21 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
         backgroundColor: color.format(-0.01),
         PaddingX: 15,
         PaddingY: 10,
+        Flex: 'horiziontal-center-spaceBetween',
       }),
     };
+
+    const MIN_WIDTH = 110;
+
     return (
       <div {...styles.base}>
-        <div>edit toolbar</div>
+        <div>
+          <div />
+        </div>
+        <div>
+          <buttons.HoverGrey label={'Cancel'} minWidth={MIN_WIDTH} margin={[null, 5, null, null]} />
+          <buttons.Blue label={'Comment'} minWidth={MIN_WIDTH} />
+        </div>
       </div>
     );
   }

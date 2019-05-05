@@ -16,19 +16,12 @@ const BASE: t.IButtonTheme = {
   },
 };
 
-/**
- * Merges the given them into the base.
- */
-export function merge(theme: t.IButtonTheme) {
-  return R.mergeDeepRight(BASE, theme);
-}
-
 export class ButtonTheme {
   /**
    * [Static]
    */
-  public static merge(theme: Partial<t.IButtonTheme> = {}) {
-    const res = R.mergeDeepRight(BASE, theme) as t.IButtonTheme;
+  public static merge(theme: Partial<t.IButtonTheme>, base: t.IButtonTheme = BASE) {
+    const res = R.mergeDeepRight(base, theme) as t.IButtonTheme;
     return R.clone(res);
   }
 
@@ -57,10 +50,18 @@ export class ButtonTheme {
         theme.backgroundColor.enabled = COLORS.GREEN;
         return theme;
       },
+      // get WHITE() {
+      //   const theme = BORDER.SOLID;
+      //   theme.backgroundColor.enabled = COLORS.GREEN;
+      //   return theme;
+      // },
       get DARK() {
         const theme = BORDER.SOLID;
         theme.backgroundColor.enabled = COLORS.DARK;
         return theme;
+      },
+      merge(theme: Partial<t.IButtonTheme>, base?: t.IButtonTheme) {
+        return ButtonTheme.merge(theme, base || BORDER.BASE);
       },
     };
     return BORDER;

@@ -1177,6 +1177,13 @@
   dependencies:
     rxjs "6.5.1"
 
+"@platform/ui.button@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.1.0.tgz#91d6e1d946f60c9f0fce5bca78bb0d3067e94404"
+  integrity sha512-lBN5E2WwvJnWiGfslKPtVjJzR/VLYzzpq4LwhBU18ZNu/p3X/8knFdx4jjwnqlqvlLJQWlQ0dn0b5SxtsDoa0w==
+  dependencies:
+    "@platform/react" "0.1.30"
+
 "@platform/ui.editor@0.0.61":
   version "0.0.61"
   resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.61.tgz#08cd6e2a40005d4d827520446fe1c6b95843742b"

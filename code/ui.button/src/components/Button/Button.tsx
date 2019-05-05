@@ -17,6 +17,7 @@ export type IButtonProps = mouse.IMouseEventProps & {
   overTheme?: Partial<t.IButtonTheme>;
   downTheme?: Partial<t.IButtonTheme>;
   margin?: string | number | Array<string | number | null>;
+  minWidth?: number;
   style?: GlamorValue;
 };
 
@@ -83,14 +84,14 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
     const overTheme = defaultValue(this.props.overTheme, this.props.theme);
     const downTheme = defaultValue(this.props.downTheme, overTheme);
     const current = isDown ? downTheme : isOver ? overTheme : theme;
-    return ButtonTheme.merge(current);
+    return ButtonTheme.merge(current || {});
   }
 
   /**
    * [Render]
    */
   public render() {
-    const { block = false } = this.props;
+    const { block = false, minWidth } = this.props;
     const { isDown = false } = this.state;
     const isEnabled = this.isEnabled;
 
@@ -108,9 +109,12 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
           isEnabled ? theme.color.enabled : theme.color.disabled || theme.color.enabled,
         ),
         backgroundColor: backgroundColor && color.format(backgroundColor),
-
         cursor: isEnabled && 'pointer',
         userSelect: 'none',
+      }),
+      inner: css({
+        minWidth,
+        Flex: 'center-center',
       }),
       border:
         theme.border.isVisible &&
@@ -127,9 +131,11 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
 
     return (
       <div {...css(styles.base, styles.border, this.props.style)} {...this.mouse.events}>
-        <div {...styles.content}>
-          {this.props.label}
-          {this.props.children}
+        <div {...styles.inner}>
+          <div {...styles.content}>
+            {this.props.label}
+            {this.props.children}
+          </div>
         </div>
       </div>
     );
