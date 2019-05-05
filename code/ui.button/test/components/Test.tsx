@@ -62,10 +62,15 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
           <PinkDashed />
 
-          <Button {...common} margin={[0, 20, 0, 0]}>
-            {this.iconButtonContent({ label: 'Bar' })}
-          </Button>
-          <Button {...common}>{this.iconButtonContent({ label: 'Bar' })}</Button>
+          <div {...styles.centerY}>
+            <Button {...common} margin={[0, 20, 0, 0]}>
+              {this.iconButtonContent({ label: 'Foo' })}
+            </Button>
+            <Button {...common} margin={[0, 20, 0, 0]}>
+              {this.iconButtonContent({ label: 'Bar' })}
+            </Button>
+            <Button {...common}>{this.iconButtonContent({})}</Button>
+          </div>
 
           <PinkDashed />
 
@@ -115,15 +120,21 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     );
   }
 
-  private iconButtonContent(props: { label: string }) {
+  private iconButtonContent(props: { label?: string }) {
+    const { label } = props;
     const styles = {
-      base: css({ Flex: 'horizontal-center-center' }),
-      icon: css({ marginRight: 3 }),
+      base: css({
+        Flex: 'horizontal-center-center',
+      }),
+      icon: css({
+        marginRight: label && 3,
+      }),
     };
+    const elLabel = label && <div>{props.label}</div>;
     return (
       <div {...styles.base}>
         <Icons.Face style={styles.icon} />
-        <div>{props.label}</div>
+        {elLabel}
       </div>
     );
   }
