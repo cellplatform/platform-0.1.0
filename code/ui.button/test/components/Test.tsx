@@ -87,6 +87,9 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
             <Button {...common} theme={Button.theme.BORDER.BLUE}>
               {this.iconButtonContent({ label: 'Blue Icon' })}
             </Button>
+          </div>
+          <Hr.PinkDashed />
+          <div {...styles.centerY}>
             <Button {...common} label={'Green'} theme={Button.theme.BORDER.GREEN} />
             <Button {...common} label={'Dark'} theme={Button.theme.BORDER.DARK} />
           </div>
