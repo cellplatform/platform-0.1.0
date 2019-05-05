@@ -71,10 +71,21 @@ export class ThreadCommentHeader extends React.PureComponent<
   public render() {
     const styles = {
       base: css({
+        position: 'relative',
         flex: 1,
         margin: 14,
         fontSize: 14,
         userSelect: 'none',
+        display: 'flex',
+        minHeight: 20,
+      }),
+      outer: css({
+        flex: 1,
+        Absolute: 0,
+        width: '100%',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
       }),
       name: css({
         fontWeight: 'bold',
@@ -84,7 +95,9 @@ export class ThreadCommentHeader extends React.PureComponent<
 
     return (
       <Text style={css(styles.base, this.props.style)}>
-        <span {...styles.name}>{this.name}</span> {this.renderTimestamp()}
+        <div {...styles.outer}>
+          <span {...styles.name}>{this.name}</span> {this.renderTimestamp()}
+        </div>
       </Text>
     );
   }
