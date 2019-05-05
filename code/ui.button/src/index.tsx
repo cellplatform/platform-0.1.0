@@ -1,1 +1,1 @@
-export * from './components/LinkButton';
+export * from './components/Button';

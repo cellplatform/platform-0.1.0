@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli",
-  "version": "0.0.85",
+  "version": "0.0.86",
   "description": "Tools for building CLI (command-line-interfaces).",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,14 +12,14 @@
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
-    "@platform/fs": "0.0.56",
-    "@platform/exec": "0.2.2",
+    "@platform/fs": "0.0.57",
+    "@platform/exec": "0.2.3",
     "@types/yargs": "13.0.0",
     "yargs": "13.2.2"
   },
   "devDependencies": {
-    "@platform/test": "0.0.49",
-    "@platform/ts.libs": "3.4.11"
+    "@platform/test": "0.0.50",
+    "@platform/ts.libs": "3.4.12"
   },
   "files": [
     "lib"

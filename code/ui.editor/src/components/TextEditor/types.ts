@@ -1,6 +1,7 @@
 import { Schema, Node } from 'prosemirror-model';
 import { Transaction, EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
+import { IKeypressEvent } from '@platform/react';
 
 export { Transaction, EditorState, Schema, EditorView, Node };
 
@@ -21,7 +22,11 @@ export type ITextEditorModifierKeys = {
 /**
  * [Events]
  */
-export type TextEditorEvent = ITextEditorChangingEvent | ITextEditorChangedEvent;
+export type TextEditorEvent =
+  | ITextEditorChangingEvent
+  | ITextEditorChangedEvent
+  | ITextEditorKeydownEvent
+  | ITextEditorEnterKeyEvent;
 
 export type ITextEditorChangingEvent<S extends Schema = any> = {
   type: 'EDITOR/changing';
@@ -46,4 +51,24 @@ export type ITextEditorChanged<S extends Schema = any> = {
   value: { from: string; to: string };
   size: { from: IEditorSize; to: IEditorSize };
   modifierKeys: ITextEditorModifierKeys;
+};
+
+export type ITextEditorKeydownEvent = {
+  type: 'EDITOR/keydown';
+  payload: ITextEditorKeydown;
+};
+export type ITextEditorKeydown = {
+  event: IKeypressEvent;
+  isCancelled: boolean;
+  cancel(): void;
+};
+
+export type ITextEditorEnterKeyEvent = {
+  type: 'EDITOR/keydown/enter';
+  payload: ITextEditorEnterKey;
+};
+export type ITextEditorEnterKey = {
+  isMeta: boolean;
+  isCancelled: boolean;
+  cancel(): void;
 };

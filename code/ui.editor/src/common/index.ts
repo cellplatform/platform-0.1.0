@@ -1,7 +1,8 @@
 import * as constants from './constants';
+import * as markdown from './markdown';
 import * as t from '../types';
 
-export { constants, t };
+export { constants, markdown, t };
 export * from './libs';
 export * from '../types';
 

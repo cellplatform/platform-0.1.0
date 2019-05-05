@@ -4,7 +4,6 @@
     "rootDir": "src",
     "outDir": "lib",
 
-    "strict": true,
-    "strictFunctionTypes": false
+    "noUnusedLocals": false
   }
 }

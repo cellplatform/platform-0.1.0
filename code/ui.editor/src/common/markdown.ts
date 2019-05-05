@@ -1,4 +1,4 @@
-import { t } from '../../common';
+import * as t from '../types';
 import { defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { Schema } from 'prosemirror-model';
 

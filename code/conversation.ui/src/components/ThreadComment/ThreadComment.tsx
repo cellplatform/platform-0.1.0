@@ -1,14 +1,23 @@
+import './styles';
+
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from '../../common';
+
+import { color, CSS, css, GlamorValue, markdown, t, COLORS } from '../../common';
 import { Avatar, Text } from '../primitives';
+import { CommentEditor } from './components/CommentEditor';
 import { Triangle } from './components/Triangle';
 
 export type IThreadCommentProps = {
   avatarUrl?: string;
   bottomConnector?: number;
+  header?: JSX.Element;
+  body?: string;
+  isEditing?: boolean;
+  editor$?: Subject<t.TextEditorEvent>;
   style?: GlamorValue;
+  onComment?: (e: {}) => void;
 };
 export type IThreadCommentState = {};
 
@@ -30,12 +39,14 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
   public state: IThreadCommentState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IThreadCommentState>>();
+  private editor$ = this.props.editor$ || new Subject<t.TextEditorEvent>();
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    state$.subscribe(e => this.setState(e));
   }
 
   public componentWillUnmount() {
@@ -44,14 +55,23 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
   }
 
   /**
+   * [Properties]
+   */
+  public get body() {
+    return this.props.body || '';
+  }
+
+  /**
    * [Render]
    */
   public render() {
-    const { avatarUrl } = this.props;
+    const { avatarUrl, isEditing } = this.props;
     const styles = {
       base: css({
         display: 'block',
         boxSizing: 'border-box',
+        userSelect: 'none',
+        backgroundColor: COLORS.WHITE,
       }),
       inner: css({
         Flex: 'horizontal',
@@ -66,8 +86,14 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
         borderRadius: 3,
       }),
     };
+
+    const elBody = isEditing ? null : this.body ? this.renderBody() : this.renderEmpty();
+    const elEditor = isEditing && (
+      <CommentEditor value={this.body} editor$={this.editor$} onComment={this.props.onComment} />
+    );
+
     return (
-      <Text style={styles.base}>
+      <Text style={styles.base} className={CSS.CLASS.COMMENT}>
         <div {...styles.inner}>
           <div {...styles.left}>
             <Avatar
@@ -80,7 +106,8 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
           </div>
           <div {...styles.right}>
             {this.renderHeader()}
-            {this.renderBody()}
+            {elBody}
+            {elEditor}
           </div>
         </div>
       </Text>
@@ -103,39 +130,40 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     return (
       <div {...styles.base}>
         <Triangle style={styles.triangle} backgroundColor={COLOR.HEADER.BG} borderColor={-0.1} />
-
-        {this.renderHeaderContent()}
-        <div />
-      </div>
-    );
-  }
-
-  private renderHeaderContent() {
-    const styles = {
-      base: css({
-        flex: 1,
-        margin: 14,
-        fontSize: 14,
-      }),
-      name: css({
-        fontWeight: 'bold',
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <span {...styles.name}>mary@foo.com</span> <span>commented 2 hours ago</span>
+        {this.props.header}
       </div>
     );
   }
 
   private renderBody() {
     const styles = {
-      base: css({ padding: 15 }),
+      base: css({
+        padding: 15,
+        userSelect: 'text',
+      }),
     };
+    const html = markdown.toHtmlSync(this.body);
+    const className = `${CSS.CLASS.EDITOR_MARKDOWN} ${CSS.CLASS.MARKDOWN} `;
+
     return (
-      <div {...styles.base}>
-        <div>body</div>
+      <div {...styles.base} className={CSS.CLASS.COMMENT_BODY}>
+        <div className={className} dangerouslySetInnerHTML={{ __html: html }} />
       </div>
     );
+  }
+
+  private renderEmpty(props: { message?: string; style?: GlamorValue } = {}) {
+    const { message = 'Nothing to display.' } = props;
+    const styles = {
+      base: css({
+        pointerEvents: 'none',
+        Flex: 'center-center',
+        padding: 15,
+        opacity: 0.3,
+        fontStyle: 'italic',
+        fontSize: 14,
+      }),
+    };
+    return <div {...css(styles.base, props.style)}>{message}</div>;
   }
 }

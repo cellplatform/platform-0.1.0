@@ -8,6 +8,9 @@ const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
 
 const DEFAULT = {
+  /**
+   * Default
+   */
   MARKDOWN: `
 # Heading 1
 ## Heading 2
@@ -40,17 +43,26 @@ After
 
 ${LOREM}  
 
+${LOREM}  
+
 
   `.substring(1),
 
+  /**
+   * Long
+   */
   LONG: `
 ${LOREM}  
 
 ---
 
 ${LOREM}  
-  `,
 
+`,
+
+  /**
+   * Headerings
+   */
   HEADING: `
 # Heading 1
 ## Heading 2
@@ -111,6 +123,25 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     events$.subscribe(e => {
       console.log('🌳', e.type, e.payload);
     });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'EDITOR/keydown'),
+        map(e => e.payload as t.ITextEditorKeydown),
+      )
+      .subscribe(e => {
+        // e.cancel();
+      });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'EDITOR/keydown/enter'),
+        map(e => e.payload as t.ITextEditorEnterKey),
+        // filter(e => e.isMeta),
+      )
+      .subscribe(e => {
+        // e.cancel();
+      });
 
     events$
       // BEFORE change.

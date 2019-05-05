@@ -1,34 +1,42 @@
 import { expect } from 'chai';
 import { css } from '..';
 
-describe('css.arrayToEdges', () => {
+describe('css.toEdges', () => {
   it('undefined => undefined', () => {
-    expect(css.arrayToEdges(undefined)).to.eql(undefined);
+    expect(css.toEdges(undefined)).to.eql({});
   });
 
   it('null => undefined', () => {
-    expect(css.arrayToEdges(null)).to.eql(undefined);
+    expect(css.toEdges(null)).to.eql({});
   });
 
   it('[] => undefined', () => {
-    expect(css.arrayToEdges([])).to.eql(undefined);
+    expect(css.toEdges([])).to.eql({});
   });
 
   it('"" => undefined', () => {
-    expect(css.arrayToEdges('')).to.eql(undefined);
-    expect(css.arrayToEdges('  ')).to.eql(undefined);
+    expect(css.toEdges('')).to.eql({});
+    expect(css.toEdges('  ')).to.eql({});
   });
 
   it('[null, null, null, null] => undefined', () => {
-    expect(css.arrayToEdges([null, null, null, null])).to.eql(undefined);
+    expect(css.toEdges([null, null, null, null])).to.eql({});
   });
 
   it('[null, null] => undefined', () => {
-    expect(css.arrayToEdges([null, null])).to.eql(undefined);
+    expect(css.toEdges([null, null])).to.eql({});
+  });
+
+  it('defaultValue', () => {
+    const expected = { top: 10, right: 10, bottom: 10, left: 10 };
+    expect(css.toEdges(undefined, { defaultValue: 10 })).to.eql(expected);
+    expect(css.toEdges([], { defaultValue: 10 })).to.eql(expected);
+    expect(css.toEdges([null], { defaultValue: 10 })).to.eql(expected);
+    expect(css.toEdges([null, null], { defaultValue: 10 })).to.eql(expected);
   });
 
   it('"0 10px 6em 9%"', () => {
-    expect(css.arrayToEdges('0 10px 6em 9%')).to.eql({
+    expect(css.toEdges('0 10px 6em 9%')).to.eql({
       top: 0,
       right: 10,
       bottom: '6em',
@@ -37,7 +45,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('"20px 5em"', () => {
-    expect(css.arrayToEdges('20px 5em')).to.eql({
+    expect(css.toEdges('20px 5em')).to.eql({
       top: 20,
       right: '5em',
       bottom: 20,
@@ -45,8 +53,17 @@ describe('css.arrayToEdges', () => {
     });
   });
 
+  it('0', () => {
+    expect(css.toEdges(0)).to.eql({
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+    });
+  });
+
   it('10', () => {
-    expect(css.arrayToEdges(10)).to.eql({
+    expect(css.toEdges(10)).to.eql({
       top: 10,
       right: 10,
       bottom: 10,
@@ -55,7 +72,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('"10px"', () => {
-    expect(css.arrayToEdges('10px')).to.eql({
+    expect(css.toEdges('10px')).to.eql({
       top: 10,
       right: 10,
       bottom: 10,
@@ -64,7 +81,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('"5em"', () => {
-    expect(css.arrayToEdges('5em')).to.eql({
+    expect(css.toEdges('5em')).to.eql({
       top: '5em',
       right: '5em',
       bottom: '5em',
@@ -73,7 +90,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('[10, 20, 30, 40]', () => {
-    expect(css.arrayToEdges([10, 20, 30, 40])).to.eql({
+    expect(css.toEdges([10, 20, 30, 40])).to.eql({
       top: 10,
       right: 20,
       bottom: 30,
@@ -82,7 +99,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('[10, null, "30%", "40px"]', () => {
-    expect(css.arrayToEdges([10, null, '30%', '40px'])).to.eql({
+    expect(css.toEdges([10, null, '30%', '40px'])).to.eql({
       top: 10,
       right: undefined,
       bottom: '30%',
@@ -91,7 +108,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('[10, 20]', () => {
-    expect(css.arrayToEdges([10, 20])).to.eql({
+    expect(css.toEdges([10, 20])).to.eql({
       top: 10,
       right: 20,
       bottom: 10,
@@ -100,7 +117,7 @@ describe('css.arrayToEdges', () => {
   });
 
   it('[null, 20]', () => {
-    expect(css.arrayToEdges([null, 20])).to.eql({
+    expect(css.toEdges([null, 20])).to.eql({
       top: undefined,
       right: 20,
       bottom: undefined,
@@ -109,11 +126,79 @@ describe('css.arrayToEdges', () => {
   });
 
   it('[10, null]', () => {
-    expect(css.arrayToEdges([10, null])).to.eql({
+    expect(css.toEdges([10, null])).to.eql({
       top: 10,
       right: undefined,
       bottom: 10,
       left: undefined,
     });
+  });
+});
+
+describe('toMargins', () => {
+  it('none', () => {
+    expect(css.toMargins()).to.eql({});
+    expect(css.toMargins(null)).to.eql({});
+  });
+
+  it('all edges', () => {
+    expect(css.toMargins(10)).to.eql({
+      marginTop: 10,
+      marginRight: 10,
+      marginBottom: 10,
+      marginLeft: 10,
+    });
+    expect(css.toMargins([10, 20, 30, 40])).to.eql({
+      marginTop: 10,
+      marginRight: 20,
+      marginBottom: 30,
+      marginLeft: 40,
+    });
+  });
+
+  it('Y/X', () => {
+    const res = css.toMargins([10, 20]);
+    expect(res).to.eql({ marginTop: 10, marginRight: 20, marginBottom: 10, marginLeft: 20 });
+  });
+
+  it('defaultValue', () => {
+    const expected = { marginTop: 10, marginRight: 10, marginBottom: 10, marginLeft: 10 };
+    expect(css.toMargins(undefined, { defaultValue: 10 })).to.eql(expected);
+    expect(css.toMargins([], { defaultValue: 10 })).to.eql(expected);
+    expect(css.toMargins([null], { defaultValue: 10 })).to.eql(expected);
+  });
+});
+
+describe('toPadding', () => {
+  it('none', () => {
+    expect(css.toPadding()).to.eql({});
+    expect(css.toPadding(null)).to.eql({});
+  });
+
+  it('all edges', () => {
+    expect(css.toPadding(10)).to.eql({
+      paddingTop: 10,
+      paddingRight: 10,
+      paddingBottom: 10,
+      paddingLeft: 10,
+    });
+    expect(css.toPadding([10, 20, 30, 40])).to.eql({
+      paddingTop: 10,
+      paddingRight: 20,
+      paddingBottom: 30,
+      paddingLeft: 40,
+    });
+  });
+
+  it('Y/X', () => {
+    const res = css.toPadding([10, 20]);
+    expect(res).to.eql({ paddingTop: 10, paddingRight: 20, paddingBottom: 10, paddingLeft: 20 });
+  });
+
+  it('defaultValue', () => {
+    const expected = { paddingTop: 10, paddingRight: 10, paddingBottom: 10, paddingLeft: 10 };
+    expect(css.toPadding(undefined, { defaultValue: 10 })).to.eql(expected);
+    expect(css.toPadding([], { defaultValue: 10 })).to.eql(expected);
+    expect(css.toPadding([null], { defaultValue: 10 })).to.eql(expected);
   });
 });

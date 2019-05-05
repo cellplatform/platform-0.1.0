@@ -2,7 +2,7 @@
  * Based on:
  *  - https://github.com/ProseMirror/prosemirror-example-setup
  */
-import { constants } from '../../../common';
+import { constants, t } from '../../../common';
 
 import { Schema } from 'prosemirror-model';
 import { keymap } from 'prosemirror-keymap';
@@ -15,6 +15,7 @@ import { gapCursor } from 'prosemirror-gapcursor';
 
 import * as inputRules from './inputRules';
 import * as keyMap from './keyMap';
+import { Subject } from 'rxjs';
 
 /**
  * Initializes an editor/schema with:
@@ -28,17 +29,18 @@ import * as keyMap from './keyMap';
  */
 export function init(args: {
   schema: Schema;
+  events$: Subject<t.TextEditorEvent>;
   history?: boolean;
   mapKeys?: keyMap.EditorKeyMap;
   allowEnter?: boolean;
   allowMetaEnter?: boolean;
   allowHeadings?: boolean;
 }) {
-  const { schema, mapKeys, allowEnter, allowMetaEnter, allowHeadings } = args;
+  const { schema, events$, mapKeys, allowEnter, allowMetaEnter, allowHeadings } = args;
 
   let plugins: Plugin[] = [
     inputRules.build(schema, { allowHeadings }),
-    keymap(keyMap.build(schema, { mapKeys, allowEnter, allowMetaEnter, allowHeadings })),
+    keymap(keyMap.build({ schema, events$, mapKeys, allowEnter, allowMetaEnter, allowHeadings })),
     keymap(baseKeymap),
     dropCursor(),
     gapCursor(),

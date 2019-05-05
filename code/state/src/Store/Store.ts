@@ -23,7 +23,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
    * [Static]
    */
   public static create<M extends {}, E extends t.IStoreEvent>(args: IStoreArgs<M>) {
-    return new Store<M, E>(args);
+    return new Store<M, E>(args) as t.IStore<M, E>;
   }
 
   /**

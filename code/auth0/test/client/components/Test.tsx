@@ -3,12 +3,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { Shell, t } from '../common';
+import { CommandShell, t } from '../common';
 import { AuthState } from './AuthState';
-
-const KEY = {
-  CMD: 'AUTH0/test/cmd',
-};
 
 export type ITestProps = {};
 
@@ -16,24 +12,13 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
-  private cli!: t.ICommandState;
+  private cli = cli.init({ state$: this.state$ });
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-
-    this.cli = cli.init({ state$: this.state$ });
-    const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
-
-    // Save last CLI command to storage.
-    console.log(`\nTODO 🐷  move CLI storage to @uiharness/ui \n`);
-    cli$.subscribe(e => localStorage.setItem(KEY.CMD, this.cli.text));
-  }
-
-  public componentDidMount() {
-    this.cli.change({ text: localStorage.getItem(KEY.CMD) || '', invoke: false });
   }
 
   public componentWillUnmount() {
@@ -46,9 +31,9 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public render() {
     return (
-      <Shell cli={this.cli} tree={{}}>
+      <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <AuthState data={this.state.data} />
-      </Shell>
+      </CommandShell>
     );
   }
 }

@@ -111,7 +111,7 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
         response$.next({
           eid: this.eid,
           data: e.payload.data,
-          elapsed: timer.elapsed(),
+          elapsed: timer.elapsed.msec,
           type: this.type,
           sender: e.sender,
         });
@@ -123,7 +123,7 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
     let completed: number[] = [];
     complete$.subscribe(() => {
       this.isComplete = true;
-      this._.elapsed = timer.elapsed();
+      this._.elapsed = timer.elapsed.msec;
       response$.complete();
     });
     this.$.subscribe(e => {
@@ -214,7 +214,7 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
   }
 
   public get elapsed() {
-    return valueUtil.defaultValue(this._.elapsed, this._.timer.elapsed());
+    return valueUtil.defaultValue(this._.elapsed, this._.timer.elapsed.msec);
   }
 
   public get isTimedOut() {

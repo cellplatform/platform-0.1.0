@@ -4,20 +4,16 @@ import { expect } from 'chai';
 import { Store } from '.';
 import * as t from './types';
 
-export type IMyModel = {
-  count: number;
-};
-
-type MyEvent = IIncrementEvent | IDecrementEvent;
-type IIncrementEvent = {
+export type IMyModel = { count: number };
+export type MyEvent = IIncrementEvent | IDecrementEvent;
+export type IIncrementEvent = {
   type: 'TEST/increment';
   payload: { by: number };
 };
-type IDecrementEvent = {
+export type IDecrementEvent = {
   type: 'TEST/decrement';
   payload: { by: number };
 };
-
 const initial: IMyModel = { count: 0 };
 
 describe('Store', () => {

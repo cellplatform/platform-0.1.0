@@ -2,23 +2,28 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import * as cli from '../cli';
-import { color, CommandShell, t, ObjectView, Hr, css, Conversation } from '../common';
+import { color, Conversation, css, ObjectView, t, state } from '../common';
 
-export type ITestProps = {};
+export type ITestProps = { store: t.IThreadStore };
+export type ITestState = {};
 
-export class Test extends React.PureComponent<ITestProps, t.ITestState> {
-  public state: t.ITestState = {};
+export class Test extends React.PureComponent<ITestProps, ITestState> {
+  public state: ITestState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<t.ITestState>>();
-  private cli: t.ICommandState = cli.init({ state$: this.state$ });
+  private state$ = new Subject<Partial<ITestState>>();
+  private store = this.props.store;
+  private store$ = this.store.events$.pipe(takeUntil(this.unmounted$));
+  private Provider = state.createProvider(this.store);
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const store$ = this.store$;
+
     state$.subscribe(e => this.setState(e));
+    store$.subscribe(e => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -43,25 +48,28 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         width: 760,
         flex: 1,
         display: 'flex',
+        paddingTop: 30,
       }),
       right: css({
         boxSizing: 'border-box',
-        width: 280,
+        width: 350,
         padding: 8,
         borderLeft: `solid 1px ${color.format(-0.1)}`,
       }),
     };
     return (
-      <div {...styles.base}>
-        <div {...styles.left}>
-          <div {...styles.body}>
-            <Conversation />
+      <this.Provider>
+        <div {...styles.base}>
+          <div {...styles.left}>
+            <div {...styles.body}>
+              <Conversation />
+            </div>
+          </div>
+          <div {...styles.right}>
+            <ObjectView name={'thread'} data={this.store.state} />
           </div>
         </div>
-        <div {...styles.right}>
-          <ObjectView name={'state'} data={this.state} />
-        </div>
-      </div>
+      </this.Provider>
     );
   }
 }

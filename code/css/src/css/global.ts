@@ -1,5 +1,6 @@
 import { css as glamor } from 'glamor';
 import { CssProps, GlobalCssRules } from '../types';
+import { R } from '../common';
 
 /**
  * Applies global CSS rules.
@@ -25,14 +26,20 @@ export const global: GlobalCssRules = (
   styles: { [selector: string]: CssProps },
   options: { prefix?: string } = {},
 ) => {
+  if (R.isEmpty(styles)) {
+    return;
+  }
+
   const { prefix } = options;
   Object.keys(styles).forEach(key => {
     const style = styles[key];
-    let selector = prefix ? `${prefix} ${key}` : key;
-    selector = selector
-      .replace(/^\n/, '')
-      .replace(/\n$/, '')
-      .trim();
-    glamor.global(selector, style);
+    key.split(',').forEach(key => {
+      let selector = prefix ? `${prefix} ${key}` : key;
+      selector = selector
+        .replace(/^\n/, '')
+        .replace(/\n$/, '')
+        .trim();
+      glamor.global(selector, style);
+    });
   });
 };

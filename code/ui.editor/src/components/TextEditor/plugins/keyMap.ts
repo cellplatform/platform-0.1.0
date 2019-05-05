@@ -1,8 +1,6 @@
-import * as utils from 'prosemirror-utils';
-
 import {
-  chainCommands,
   baseKeymap,
+  chainCommands,
   exitCode,
   joinDown,
   joinUp,
@@ -16,8 +14,10 @@ import { undoInputRule } from 'prosemirror-inputrules';
 import { Schema } from 'prosemirror-model';
 import { liftListItem, sinkListItem, splitListItem, wrapInList } from 'prosemirror-schema-list';
 import { EditorState, Transaction } from 'prosemirror-state';
+import * as utils from 'prosemirror-utils';
+import { Subject } from 'rxjs';
 
-import { time } from '../../../common';
+import { t, time } from '../../../common';
 import { EditorKeyMap } from '../types';
 
 export { EditorKeyMap };
@@ -55,16 +55,15 @@ const isMac = typeof navigator !== 'undefined' ? /Mac/.test(navigator.platform) 
  * argument, which maps key names (say `"Mod-B"` to either `false`, to
  * remove the binding, or a new key name string.
  */
-export function build(
-  schema: Schema,
-  options: {
-    mapKeys?: EditorKeyMap;
-    allowEnter?: boolean;
-    allowMetaEnter?: boolean;
-    allowHeadings?: boolean;
-  },
-) {
-  const { mapKeys } = options;
+export function build(options: {
+  schema: Schema;
+  events$: Subject<t.TextEditorEvent>;
+  mapKeys?: EditorKeyMap;
+  allowEnter?: boolean;
+  allowMetaEnter?: boolean;
+  allowHeadings?: boolean;
+}) {
+  const { schema, events$, mapKeys } = options;
   const find = {
     parentListItem: utils.findParentNode(node => node.type === schema.nodes.list_item),
   };
@@ -196,14 +195,34 @@ export function build(
     return true;
   };
 
+  const fireEnter = (args: { isMeta?: boolean }) => {
+    let isCancelled = false;
+    events$.next({
+      type: 'EDITOR/keydown/enter',
+      payload: {
+        isMeta: Boolean(args.isMeta),
+        get isCancelled() {
+          return isCancelled;
+        },
+        cancel() {
+          isCancelled = true;
+        },
+      },
+    });
+    return { isCancelled };
+  };
+
   bind('Mod-Enter', (state, dispatch) => {
-    if (options.allowMetaEnter === false) {
+    const { isCancelled } = fireEnter({ isMeta: true });
+    if (isCancelled || options.allowMetaEnter === false) {
       return true; // Cancel further handlers.
     }
     return handleEnter(state, dispatch);
   });
   bind('Enter', (state, dispatch) => {
-    if (options.allowEnter === false) {
+    const { isCancelled } = fireEnter({});
+
+    if (isCancelled || options.allowEnter === false) {
       return true; // Cancel further handlers.
     }
     return handleEnter(state, dispatch);

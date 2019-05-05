@@ -2,16 +2,16 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, CommandShell, t } from '../common';
+import * as cli from '../cli';
+import { css, CommandShell, t } from '../common';
 
-export type ITestCommandShellProps = { cli: t.ICommandState; testState: t.ITestState };
-export type ITestCommandShellState = {};
+export type ITestCommandShellProps = {};
 
-export class TestShell extends React.PureComponent<ITestCommandShellProps, ITestCommandShellState> {
-  public state: ITestCommandShellState = {};
+export class TestShell extends React.PureComponent<ITestCommandShellProps, t.ITestState> {
+  public state: t.ITestState = {};
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<ITestCommandShellState>>();
-  private cli = this.props.cli;
+  private state$ = new Subject<Partial<t.ITestState>>();
+  private cli = cli.init({ state$: this.state$, getState: () => this.state });
 
   /**
    * [Lifecycle]
@@ -28,7 +28,14 @@ export class TestShell extends React.PureComponent<ITestCommandShellProps, ITest
    * [Render]
    */
   public render() {
-    const { testState } = this.props;
-    return <CommandShell cli={this.cli} tree={testState.tree || {}} localStorage={true} />;
+    const { tree = {} } = this.state;
+    const styles = {
+      body: css({ padding: 30 }),
+    };
+    return (
+      <CommandShell cli={this.cli} tree={tree} localStorage={true}>
+        <div {...styles.body}>{this.state.el}</div>
+      </CommandShell>
+    );
   }
 }

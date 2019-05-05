@@ -1,7 +1,7 @@
-import { valueUtil } from '../common';
+import { valueUtil, R } from '../common';
 import { IFormatCss, IImageOptions, IBackgroundImageStyles, Falsy, GlamorValue } from '../types';
 import { css as glamorCss } from 'glamor';
-import { arrayToEdges } from './util';
+import { toEdges } from './util';
 
 export * from './util';
 export const MEDIA_QUERY_RETINA = `@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)`;
@@ -45,7 +45,7 @@ export const image = (
   return result;
 };
 
-const mergeAndReplace = (key: string, value: any, target: any) => {
+const mergeAndReplace = (key: string, value: any, target: object) => {
   Object.assign(target, value);
   delete target[key];
   return target;
@@ -80,9 +80,8 @@ export const toPositionEdges = (
       left: number | string | undefined;
     }
   | undefined => {
-  const edges = arrayToEdges(value);
-
-  if (!edges) {
+  const edges = toEdges(value);
+  if (R.isEmpty(edges)) {
     return undefined;
   }
   const { left, top, right, bottom } = edges;
@@ -163,7 +162,7 @@ function formatSpacingPlane(
   target: any,
 ) {
   const styles = {};
-  const edges = arrayToEdges(value);
+  const edges = toEdges(value);
   if (edges && plane.includes('x')) {
     styles[`${prefix}Left`] = edges.left;
     styles[`${prefix}Right`] = edges.right;

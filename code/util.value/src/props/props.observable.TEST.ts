@@ -1,4 +1,6 @@
 import { expect } from 'chai';
+import { filter, map } from 'rxjs/operators';
+
 import { props } from '.';
 import * as t from './types';
 
@@ -61,19 +63,29 @@ describe('props.observable', () => {
 
       const obj = props.observable<IMyObject>(initial);
 
-      obj.$.getting$.subscribe(e => {
-        events.getting.push(e);
-        switch (e.key) {
-          case 'message':
-            return e.modify('hello');
-          case 'count':
-            return e.modify(123);
-        }
-      });
+      obj.$.events$
+        .pipe(
+          filter(e => e.type === 'PROP/getting'),
+          map(e => e.payload as t.IPropGetting),
+        )
+        .subscribe(e => {
+          events.getting.push(e);
+          switch (e.key) {
+            case 'message':
+              return e.modify('hello');
+            case 'count':
+              return e.modify(123);
+          }
+        });
 
-      obj.$.get$.subscribe(e => {
-        events.get.push(e);
-      });
+      obj.$.events$
+        .pipe(
+          filter(e => e.type === 'PROP/get'),
+          map(e => e.payload as t.IPropGet),
+        )
+        .subscribe(e => {
+          events.get.push(e);
+        });
 
       expect(obj.message).to.eql('hello');
       expect(obj.count).to.eql(123);
@@ -97,41 +109,41 @@ describe('props.observable', () => {
   describe('set', () => {
     it('fires [set/setting] event and stores value', () => {
       const events = {
-        setting: [] as t.IPropSetting[],
-        set: [] as t.IPropSet[],
+        changing: [] as t.IPropChanging[],
+        changed: [] as t.IPropChanged[],
       };
       const obj = props.observable<IMyObject>(initial);
 
-      obj.$.setting$.subscribe(e => events.setting.push(e));
-      obj.$.set$.subscribe(e => events.set.push(e));
+      obj.changing$.subscribe(e => events.changing.push(e));
+      obj.changed$.subscribe(e => events.changed.push(e));
 
       expect(obj.message).to.eql('');
       expect(obj.count).to.eql(0);
 
-      expect(events.setting.length).to.eql(0);
-      expect(events.set.length).to.eql(0);
+      expect(events.changing.length).to.eql(0);
+      expect(events.changed.length).to.eql(0);
 
       obj.message = 'foo';
       obj.count = 888;
 
       // BEFORE event.
-      expect(events.setting.length).to.eql(2);
-      expect(events.setting[0].key).to.eql('message');
-      expect(events.setting[0].value.from).to.eql('');
-      expect(events.setting[0].value.to).to.eql('foo');
-      expect(events.setting[0].isCancelled).to.eql(false);
-      expect(events.setting[1].key).to.eql('count');
-      expect(events.setting[1].value.from).to.eql(0);
-      expect(events.setting[1].value.to).to.eql(888);
-      expect(events.setting[1].isCancelled).to.eql(false);
+      expect(events.changing.length).to.eql(2);
+      expect(events.changing[0].key).to.eql('message');
+      expect(events.changing[0].value.from).to.eql('');
+      expect(events.changing[0].value.to).to.eql('foo');
+      expect(events.changing[0].isCancelled).to.eql(false);
+      expect(events.changing[1].key).to.eql('count');
+      expect(events.changing[1].value.from).to.eql(0);
+      expect(events.changing[1].value.to).to.eql(888);
+      expect(events.changing[1].isCancelled).to.eql(false);
 
-      expect(events.set.length).to.eql(2);
-      expect(events.set[0].key).to.eql('message');
-      expect(events.set[0].value.from).to.eql('');
-      expect(events.set[0].value.to).to.eql('foo');
-      expect(events.set[1].key).to.eql('count');
-      expect(events.set[1].value.from).to.eql(0);
-      expect(events.set[1].value.to).to.eql(888);
+      expect(events.changed.length).to.eql(2);
+      expect(events.changed[0].key).to.eql('message');
+      expect(events.changed[0].value.from).to.eql('');
+      expect(events.changed[0].value.to).to.eql('foo');
+      expect(events.changed[1].key).to.eql('count');
+      expect(events.changed[1].value.from).to.eql(0);
+      expect(events.changed[1].value.to).to.eql(888);
 
       // Written values.
       expect(obj.message).to.eql('foo');
@@ -140,16 +152,16 @@ describe('props.observable', () => {
 
     it('cancels set operation', () => {
       const events = {
-        setting: [] as t.IPropSetting[],
-        set: [] as t.IPropSet[],
+        setting: [] as t.IPropChanging[],
+        set: [] as t.IPropChanged[],
       };
       const obj = props.observable<IMyObject>(initial);
 
-      obj.$.setting$.subscribe(e => {
+      obj.changing$.subscribe(e => {
         events.setting.push(e);
         e.cancel();
       });
-      obj.$.set$.subscribe(e => events.set.push(e));
+      obj.changed$.subscribe(e => events.set.push(e));
 
       obj.message = 'foo';
 
@@ -157,5 +169,14 @@ describe('props.observable', () => {
       expect(events.set.length).to.eql(0);
       expect(events.setting[0].isCancelled).to.eql(true);
     });
+  });
+
+  it('toObject', () => {
+    const obj = props.observable<IMyObject>(initial);
+    expect(obj.toObject()).to.eql(initial);
+    expect(obj.toObject()).to.not.equal(initial);
+    obj.count = 8;
+    obj.message = 'bang';
+    expect(obj.toObject()).to.eql({ count: 8, message: 'bang' });
   });
 });

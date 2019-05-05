@@ -84,16 +84,13 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   public render() {
     const props = this.nodeProps;
     const isEnabled = this.isEnabled;
-    const padding = css.arrayToEdges(props.padding) || DEFAULT.PADDING;
+    const padding = css.toPadding(props.padding, { defaultValue: DEFAULT.PADDING });
     const opacity = this.opacity;
     const styles = {
       base: css({
+        ...padding,
         position: 'relative',
         boxSizing: 'border-box',
-        paddingTop: padding[0],
-        paddingRight: padding[1],
-        paddingBottom: padding[2],
-        paddingLeft: padding[3],
         marginTop: props.marginTop,
         marginBottom: props.marginBottom,
         userSelect: 'none',

@@ -158,7 +158,7 @@ function formatResult(args: {
   const { timer, result } = args;
   const code = getExitCode(result.errors);
   const success = code === 0;
-  const elapsed = timer.elapsed();
+  const elapsed = timer.elapsed.msec;
   const engine = args.use || result.engine;
   return { ...result, code, success, elapsed, engine };
 }

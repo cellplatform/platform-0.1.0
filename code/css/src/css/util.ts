@@ -1,5 +1,18 @@
-import { IStyle } from '../types';
+import * as t from '../types';
 import { valueUtil } from '../common';
+
+const isBlank = (value: t.EdgesInput) => {
+  if (value === undefined || value === null) {
+    return true;
+  }
+  if (typeof value === 'string' && valueUtil.isBlank(value)) {
+    return true;
+  }
+  if (Array.isArray(value) && valueUtil.compact(value).length === 0) {
+    return true;
+  }
+  return false;
+};
 
 /**
  * Takes an array of input CSS values and converts them to
@@ -11,22 +24,22 @@ import { valueUtil } from '../common';
  *  - Y/X array    (eg. [20, 5])
  *
  */
-export const arrayToEdges: IStyle['arrayToEdges'] = value => {
-  if (value === undefined || value === null) {
-    return undefined;
-  }
-  if (typeof value === 'string' && valueUtil.isBlank(value)) {
-    return undefined;
-  }
-  if (Array.isArray(value) && value.length === 0) {
-    return undefined;
-  }
-
-  if (!Array.isArray(value)) {
-    value = value.toString().split(' ');
+export const toEdges: t.ToCssEdges<t.IEdges> = (input, options = {}) => {
+  if (isBlank(input)) {
+    const { defaultValue } = options;
+    if (defaultValue && !isBlank(defaultValue)) {
+      input = defaultValue;
+    } else {
+      return {};
+    }
   }
 
-  const edges = value
+  input = input || 0;
+  if (!Array.isArray(input)) {
+    input = input.toString().split(' ');
+  }
+
+  const edges = input
     .map(item => (typeof item === 'string' && item.endsWith('px') ? item.replace(/px$/, '') : item))
     .map(item => valueUtil.toNumber(item));
   let top: number | undefined;
@@ -72,7 +85,7 @@ export const arrayToEdges: IStyle['arrayToEdges'] = value => {
   }
 
   if (top === undefined && right === undefined && bottom === undefined && left === undefined) {
-    return undefined;
+    return {};
   }
   return {
     top,
@@ -80,4 +93,29 @@ export const arrayToEdges: IStyle['arrayToEdges'] = value => {
     bottom,
     left,
   };
+};
+
+/**
+ * Prefixes each of the edge properties with the given prefix.
+ */
+export function prefixEdges<T extends {}>(prefix: string, edges: Partial<t.IEdges>): T {
+  return Object.keys(edges).reduce((acc, key) => {
+    const value = edges[key];
+    key = `${prefix}${key[0].toUpperCase()}${key.substr(1)}`;
+    return { ...acc, [key]: value };
+  }, {}) as T;
+}
+
+/**
+ * Converts input to CSS margin edges.
+ */
+export const toMargins: t.ToCssEdges<t.IMarginEdges> = (input, options = {}) => {
+  return prefixEdges<t.IMarginEdges>('margin', toEdges(input, options));
+};
+
+/**
+ * Converts input to CSS padding edges.
+ */
+export const toPadding: t.ToCssEdges<t.IPaddingEdges> = (input, options = {}) => {
+  return prefixEdges<t.IPaddingEdges>('padding', toEdges(input, options));
 };
