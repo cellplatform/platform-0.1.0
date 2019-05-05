@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { log, Button, css, CommandShell, t, value, Hr } from '../common';
+import { color, COLORS, log, Button, css, CommandShell, t, value, Hr } from '../common';
 import { Icons } from './Icons';
 
 export type ITestProps = {};
@@ -69,7 +69,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
             <Button {...common} margin={[0, 20, 0, 0]}>
               {this.iconButtonContent({ label: 'Bar' })}
             </Button>
-            <Button {...common}>{this.iconButtonContent({})}</Button>
+            <Button {...common}>{this.iconButtonContent({ color: COLORS.BLUE })}</Button>
           </div>
 
           <PinkDashed />
@@ -90,7 +90,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
             />
             <Button {...common} label={'Blue'} theme={Button.theme.BORDER.BLUE} />
             <Button {...common} theme={Button.theme.BORDER.BLUE}>
-              {this.iconButtonContent({ label: 'Blue Icon' })}
+              {this.iconButtonContent({ label: 'Blue Icon', color: 1 })}
             </Button>
           </div>
           <PinkDashed />
@@ -120,7 +120,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     );
   }
 
-  private iconButtonContent(props: { label?: string }) {
+  private iconButtonContent(props: { label?: string; color?: number | string }) {
     const { label } = props;
     const styles = {
       base: css({
@@ -133,7 +133,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const elLabel = label && <div>{props.label}</div>;
     return (
       <div {...styles.base}>
-        <Icons.Face style={styles.icon} />
+        <Icons.Face style={styles.icon} color={color.format(props.color)} />
         {elLabel}
       </div>
     );
