@@ -942,15 +942,15 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.1.52":
-  version "0.1.52"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.52.tgz#c205f044f83006db649368fea8238f860f13ccfa"
-  integrity sha512-YrBN19MsKxqh4z8D98TX/42sb8uSHf0uVVX9XsCAxCOCEkoEHHfLOwdjkFJSjAK98WoG++5X3aeafeb4nB6TrA==
+"@platform/electron@0.1.53":
+  version "0.1.53"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.53.tgz#a9bae2f31c2c5d571c9f24d6d5f2d2aa22a5a549"
+  integrity sha512-r5sUppq+cQkb0mwaHINEWK/v7jrmdp/ybdjiyhQko3uBLl2isp9/83UqEjTXlLIHS6jdmer1nUq7MD16a8xWug==
   dependencies:
     "@babel/polyfill" "7.4.4"
     "@platform/fs" "0.0.57"
     "@platform/log" "0.0.116"
-    "@platform/react" "0.1.30"
+    "@platform/react" "0.1.31"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.2.1"
     electron-log "3.0.5"
@@ -1012,18 +1012,6 @@
     "@types/semver" "6.0.0"
     semver "6.0.0"
 
-"@platform/react@0.1.30":
-  version "0.1.30"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.30.tgz#d75594f859a021c2982c8def42f0ef4521b0fa26"
-  integrity sha512-U5DfpvQWWyYjzSKpfIN2sQVY8L6+EDg4i0OUMD9AUXwrBLAdjL3VmR9zjwI710dKrRS3qBe3eh+DyssoqzXQUA==
-  dependencies:
-    "@platform/css" "0.1.2"
-    "@platform/util.is" "0.0.65"
-    "@types/react" "16.8.16"
-    "@types/react-dom" "16.8.4"
-    react "16.8.6"
-    react-dom "16.8.6"
-
 "@platform/react@0.1.31":
   version "0.1.31"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.31.tgz#849c7312a372c75b05773ec2910c80598702c6cc"
@@ -1079,12 +1067,12 @@
   dependencies:
     rxjs "6.5.1"
 
-"@platform/ui.object@0.0.102":
-  version "0.0.102"
-  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.102.tgz#1910067962ed6eeda31989057e4cbdf4efa2a489"
-  integrity sha512-EHoMr3LC0bFZZh5gYPh1sbzk+TOwJQ6zYb2+dehiLMJ75HetJyMoF4GHHLyN6jfYoJVVKpbWHWpp80w2rj2kmA==
+"@platform/ui.object@0.0.103":
+  version "0.0.103"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.103.tgz#a376863d46117f76bfa8614d19a30e09192c51e2"
+  integrity sha512-Y7NkaFwm1H9ISgjZMW86K1JsgCDfP70jq3gX64ydzmgCSodscuLgZEnv3oFgA+uBmIF1bqx/D3JNdb7pcyYPLg==
   dependencies:
-    "@platform/react" "0.1.30"
+    "@platform/react" "0.1.31"
     react-inspector "3.0.2"
 
 "@platform/util.is@0.0.65":
@@ -1279,10 +1267,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@uiharness/dev@0.2.51":
-  version "0.2.51"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.51.tgz#5d4eecc6e2cdb842c7bc95329fbfde969dfb82ec"
-  integrity sha512-alARWOP8Tew9lmsWzVelvBpyGXR540OoRPtwjbtPVciGAG/+16YmEZw3H4UJwx2wbBhp2ukcbNIzoFHbrhnz4Q==
+"@uiharness/dev@0.2.52":
+  version "0.2.52"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.52.tgz#8a3530d673e343d50a37d1b5ba57f7332b46c483"
+  integrity sha512-IPb0cmzYgeMqZRjxCQFZobtNpWv4zwHyjdzpqDGonv3v3xi1zUnIkSV5OQkC+bcB+FGG41vWGmr4NGpPwy3t8w==
   dependencies:
     "@babel/core" "7.4.4"
     "@babel/polyfill" "7.4.4"
@@ -1293,7 +1281,7 @@
     "@platform/fs" "0.0.57"
     "@platform/ts" "3.4.16"
     "@platform/util.string" "^0.1.9"
-    "@uiharness/electron" "0.4.37"
+    "@uiharness/electron" "0.4.38"
     "@uiharness/types" "0.1.25"
     create-tmpl "0.1.52"
     electron "4.1.4"
@@ -1302,15 +1290,15 @@
     parcel-bundler "1.12.3"
     serve "11.0.0"
 
-"@uiharness/electron@0.4.37":
-  version "0.4.37"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.37.tgz#e4961e786a309f912787c748c673b60afd91b34e"
-  integrity sha512-riSaTw1HyYWxgCXyvJg84UBckONbHNZuW2drKFiCIPyLs4HOOiNuoaNHT2ggT7mIXk4W2RX9ZqOoCNAwxqS80Q==
+"@uiharness/electron@0.4.38":
+  version "0.4.38"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.38.tgz#3fac999f92966eb1cf8bf679cd7f1368cb468407"
+  integrity sha512-CA9mG9atLiirH6rIEIzGsUmMzqFmbdgIkuhVH3gYSq9pdPWt4toZOj5sICP2WJVNDurnKxrW5JENeRbvh7tFQQ==
   dependencies:
-    "@platform/electron" "0.1.52"
+    "@platform/electron" "0.1.53"
     "@platform/log" "0.0.116"
-    "@platform/react" "0.1.30"
-    "@platform/ui.object" "0.0.102"
+    "@platform/react" "0.1.31"
+    "@platform/ui.object" "0.0.103"
     "@platform/util.value" "0.1.6"
     "@types/app-root-path" "1.2.4"
     "@uiharness/types" "0.1.25"
