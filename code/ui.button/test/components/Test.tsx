@@ -8,6 +8,10 @@ import { Icons } from './Icons';
 
 export type ITestProps = {};
 
+const orange = Button.theme.BORDER.SOLID;
+orange.backgroundColor.enabled = '#F6A623';
+orange.color.enabled = -0.7;
+
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = {};
   private unmounted$ = new Subject();
@@ -40,11 +44,15 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       iconContent: css({
         Flex: 'horizontal-center-center',
       }),
+      centerY: css({
+        Flex: 'horizontal-start-start',
+      }),
     };
 
     const common = {
       isEnabled,
       onClick: this.handleClick,
+      margin: [null, 10, null, null],
     };
 
     return (
@@ -61,7 +69,27 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
           <Hr.PinkDashed />
 
-          <Button {...common} label={'Base Border'} theme={Button.theme.BORDER.BASE} />
+          <div {...styles.centerY}>
+            <Button {...common} label={'Base Border'} theme={Button.theme.BORDER.BASE} />
+            <Button
+              {...common}
+              label={'Down Theme'}
+              theme={Button.theme.BORDER.BASE}
+              downTheme={orange}
+            />
+            <Button
+              {...common}
+              label={'Blue Over'}
+              theme={Button.theme.BORDER.BASE}
+              overTheme={Button.theme.BORDER.BLUE}
+            />
+            <Button {...common} label={'Blue'} theme={Button.theme.BORDER.BLUE} />
+            <Button {...common} theme={Button.theme.BORDER.BLUE}>
+              {this.iconButtonContent({ label: 'Blue Icon' })}
+            </Button>
+            <Button {...common} label={'Green'} theme={Button.theme.BORDER.GREEN} />
+            <Button {...common} label={'Dark'} theme={Button.theme.BORDER.DARK} />
+          </div>
         </div>
       </CommandShell>
     );

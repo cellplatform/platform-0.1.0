@@ -1,8 +1,8 @@
 type Spacing = string | number | Array<string | number | null>;
 
 export type IButtonTheme = {
-  enabledColor: string;
-  disabledColor: string;
+  color: { enabled: number | string; disabled?: number | string };
+  backgroundColor: { enabled?: number | string; disabled?: number | string };
   disabledOpacity: number;
   border: IButtonThemeBorder;
 };
@@ -10,7 +10,7 @@ export type IButtonTheme = {
 export type IButtonThemeBorder = {
   isVisible: boolean;
   thickness: number;
-  color: number | string;
   radius: number;
   padding: Spacing;
+  color: number | string;
 };

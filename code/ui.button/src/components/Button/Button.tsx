@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, mouse, t, value } from '../../common';
+import { css, GlamorValue, mouse, t, value, color } from '../../common';
 import { ButtonTheme } from './ButtonTheme';
+
+const defaultValue = value.defaultValue;
 
 export type IButtonProps = mouse.IMouseEventProps & {
   id?: string;
@@ -12,12 +14,15 @@ export type IButtonProps = mouse.IMouseEventProps & {
   isEnabled?: boolean;
   block?: boolean;
   theme?: Partial<t.IButtonTheme>;
+  overTheme?: Partial<t.IButtonTheme>;
+  downTheme?: Partial<t.IButtonTheme>;
   margin?: string | number | Array<string | number | null>;
   style?: GlamorValue;
 };
 
 export type IButtonState = {
   isDown?: boolean;
+  isOver?: boolean;
 };
 
 /**
@@ -43,7 +48,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
   constructor(props: IButtonProps) {
     super(props);
     this.mouse = mouse.fromProps(props, {
-      force: ['DOWN', 'UP'],
+      force: ['DOWN', 'UP', 'ENTER', 'LEAVE'],
       getEnabled: () => this.isEnabled,
     });
     const mouse$ = this.mouse.events$.pipe(
@@ -55,6 +60,10 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
     state$.subscribe(e => this.setState(e));
     mouse$.pipe(filter(e => e.type === 'DOWN')).subscribe(e => this.state$.next({ isDown: true }));
     mouse$.pipe(filter(e => e.type === 'UP')).subscribe(e => this.state$.next({ isDown: false }));
+    mouse$.pipe(filter(e => e.type === 'ENTER')).subscribe(e => this.state$.next({ isOver: true }));
+    mouse$
+      .pipe(filter(e => e.type === 'LEAVE'))
+      .subscribe(e => this.state$.next({ isOver: false }));
   }
 
   public componentWillUnmount() {
@@ -69,7 +78,12 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
   }
 
   private get theme() {
-    return ButtonTheme.merge(this.props.theme);
+    const { isOver, isDown } = this.state;
+    const { theme } = this.props;
+    const overTheme = defaultValue(this.props.overTheme, this.props.theme);
+    const downTheme = defaultValue(this.props.downTheme, overTheme);
+    const current = isDown ? downTheme : isOver ? overTheme : theme;
+    return ButtonTheme.merge(current);
   }
 
   /**
@@ -79,7 +93,10 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
     const { block = false } = this.props;
     const { isDown = false } = this.state;
     const isEnabled = this.isEnabled;
+
     const theme = this.theme;
+    const { backgroundColor: bg } = theme;
+    const backgroundColor = isEnabled ? bg.enabled : bg.disabled || bg.enabled;
 
     const styles = {
       base: css({
@@ -87,7 +104,11 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
         boxSizing: 'border-box',
         position: 'relative',
         display: block ? 'block' : 'inline-block',
-        color: isEnabled ? theme.enabledColor : theme.disabledColor,
+        color: color.format(
+          isEnabled ? theme.color.enabled : theme.color.disabled || theme.color.enabled,
+        ),
+        backgroundColor: backgroundColor && color.format(backgroundColor),
+
         cursor: isEnabled && 'pointer',
         userSelect: 'none',
       }),
@@ -95,7 +116,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
         theme.border.isVisible &&
         css({
           ...css.toPadding(theme.border.padding),
-          border: `solid ${theme.border.thickness}px ${theme.border.color}`,
+          border: `solid ${theme.border.thickness}px ${color.format(theme.border.color)}`,
           borderRadius: theme.border.radius,
         }),
       content: css({

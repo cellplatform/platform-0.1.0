@@ -1,20 +1,18 @@
-import { R, color, COLORS, t } from '../../common';
-
-const formatColor = (value: number | string) => color.format(value) as string;
+import { COLORS, R, t } from '../../common';
 
 /**
  * The base button theme.
  */
 const BASE: t.IButtonTheme = {
-  enabledColor: COLORS.BLUE,
-  disabledColor: formatColor(-0.6),
+  color: { enabled: COLORS.BLUE, disabled: -0.6 },
+  backgroundColor: {},
   disabledOpacity: 0.3,
   border: {
     isVisible: false,
     thickness: 1,
     padding: [6, 15, 5, 15],
     radius: 3,
-    color: formatColor(-0.2),
+    color: -0.1,
   },
 };
 
@@ -30,7 +28,8 @@ export class ButtonTheme {
    * [Static]
    */
   public static merge(theme: Partial<t.IButtonTheme> = {}) {
-    return R.mergeDeepRight(BASE, theme) as t.IButtonTheme;
+    const res = R.mergeDeepRight(BASE, theme) as t.IButtonTheme;
+    return R.clone(res);
   }
 
   public static get BASE() {
@@ -38,8 +37,32 @@ export class ButtonTheme {
   }
 
   public static get BORDER() {
-    const border: Partial<t.IButtonThemeBorder> = { isVisible: true };
-    const BASE = ButtonTheme.merge({ border: border as t.IButtonThemeBorder });
-    return { BASE };
+    const border = { ...BASE.border, isVisible: true };
+    const BORDER = {
+      get BASE() {
+        return ButtonTheme.merge({ border });
+      },
+      get SOLID() {
+        const theme = BORDER.BASE;
+        theme.backgroundColor.enabled = COLORS.BLUE;
+        theme.backgroundColor.disabled = -0.1;
+        theme.color = { enabled: 1, disabled: -0.5 };
+        return theme;
+      },
+      get BLUE() {
+        return BORDER.SOLID;
+      },
+      get GREEN() {
+        const theme = BORDER.SOLID;
+        theme.backgroundColor.enabled = COLORS.GREEN;
+        return theme;
+      },
+      get DARK() {
+        const theme = BORDER.SOLID;
+        theme.backgroundColor.enabled = COLORS.DARK;
+        return theme;
+      },
+    };
+    return BORDER;
   }
 }
