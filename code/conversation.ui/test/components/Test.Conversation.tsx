@@ -52,7 +52,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       }),
       right: css({
         boxSizing: 'border-box',
-        width: 280,
+        width: 350,
         padding: 8,
         borderLeft: `solid 1px ${color.format(-0.1)}`,
       }),
@@ -66,7 +66,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             </div>
           </div>
           <div {...styles.right}>
-            <ObjectView name={'state'} data={this.store.state} />
+            <ObjectView name={'thread'} data={this.store.state} />
           </div>
         </div>
       </this.Provider>

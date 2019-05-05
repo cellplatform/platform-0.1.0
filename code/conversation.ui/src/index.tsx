@@ -1,6 +1,6 @@
-import * as state from './state';
+import * as store from './store';
 
-export { state };
+export { store };
 export * from './types';
 export * from './components/Conversation';
 export * from './components/ThreadComment';

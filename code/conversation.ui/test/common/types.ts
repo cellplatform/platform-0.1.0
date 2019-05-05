@@ -11,7 +11,7 @@ export * from '../../src/types';
 export type ICommandProps = {
   state$: Subject<ITestState>;
   next(state: ITestState): void;
-  threadComment: IObservableProps<IThreadCommentTestProps>;
+  threadCommentProps: IObservableProps<IThreadCommentTestProps>;
   threadStore: t.IThreadStore;
 };
 

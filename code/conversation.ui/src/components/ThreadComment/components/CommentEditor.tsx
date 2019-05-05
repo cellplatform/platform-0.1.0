@@ -4,6 +4,7 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue, t } from '../../../common';
 import * as buttons from '../../buttons';
 import { TextEditor } from '../../primitives';
+import { Icons } from '../../Icons';
 
 export type ICommentEditorProps = {
   editor$: Subject<t.TextEditorEvent>;
@@ -19,6 +20,9 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
   public state: ICommentEditorState = { value: this.props.value };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ICommentEditorState>>();
+
+  private editor!: TextEditor;
+  private editorRef = (ref: TextEditor) => (this.editor = ref);
 
   /**
    * [Lifecycle]
@@ -98,8 +102,8 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
       }),
     };
     return (
-      <div {...css(styles.base, this.props.style)}>
-        <TextEditor value={this.state.value} events$={this.props.editor$} />
+      <div {...css(styles.base, this.props.style)} onClick={this.focusOnClick}>
+        <TextEditor ref={this.editorRef} value={this.state.value} events$={this.props.editor$} />
       </div>
     );
   }
@@ -113,14 +117,18 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
         padding: 8,
         Flex: 'horiziontal-center-spaceBetween',
       }),
+      left: css({ paddingLeft: 5 }),
+      right: css({}),
     };
 
     const isEnabled = !this.isEmpty;
 
     return (
       <div {...styles.base}>
-        <div>{/* left */}</div>
-        <div>
+        <div {...styles.left}>
+          <Icons.Markdown size={20} />
+        </div>
+        <div {...styles.right}>
           <buttons.HoverGrey
             label={'Cancel'}
             minWidth={BUTTON_WIDTH}
@@ -131,4 +139,13 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+  private focusOnClick = () => {
+    if (this.editor) {
+      this.editor.focus();
+    }
+  };
 }

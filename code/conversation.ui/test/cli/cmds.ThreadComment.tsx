@@ -16,25 +16,25 @@ export const createThreadCommentProps = () => {
  * The root of the CLI application.
  */
 export const threadComment = Command.create<P>('ThreadComment', e => {
-  const el = <Test data={e.props.threadComment} />;
+  const el = <Test data={e.props.threadCommentProps} />;
   e.props.next({ el });
 })
   .add('name', e => {
-    const data = e.props.threadComment;
+    const data = e.props.threadCommentProps;
     data.name = e.param(0, '');
   })
   .add('body', e => {
-    const data = e.props.threadComment;
+    const data = e.props.threadCommentProps;
     const p = e.param(0);
     const body = typeof p === 'number' ? BODY[`MARKDOWN_${p}`] : p;
     data.body = body;
   })
   .add('edit-mode', e => {
-    const data = e.props.threadComment;
+    const data = e.props.threadCommentProps;
     data.isEditing = true;
   })
   .add('read-mode', e => {
-    const data = e.props.threadComment;
+    const data = e.props.threadCommentProps;
     data.isEditing = false;
   });
 

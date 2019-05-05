@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Command, t } from '../common';
+import { Command, t, value, id as idUtil } from '../common';
 import { Test } from '../components/Test.Conversation';
 
 type P = t.ICommandProps;
@@ -11,8 +11,14 @@ export const conversation = Command.create<P>('Conversation', e => {
   const el = <Test store={e.props.threadStore} />;
   e.props.next({ el });
 })
-  //
   .add('add', e => {
     const store = e.props.threadStore;
-    store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
+    const id = idUtil.cuid();
+    store.dispatch({ type: 'THREAD/add', payload: { item: { kind: 'THREAD/comment', id } } });
+  })
+  .add('pop', e => {
+    const store = e.props.threadStore;
+    const items = [...store.state.items];
+    items.pop();
+    store.dispatch({ type: 'THREAD/items', payload: { items } });
   });
