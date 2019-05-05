@@ -125,6 +125,25 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     });
 
     events$
+      .pipe(
+        filter(e => e.type === 'EDITOR/keydown'),
+        map(e => e.payload as t.ITextEditorKeydown),
+      )
+      .subscribe(e => {
+        // e.cancel();
+      });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'EDITOR/keydown/enter'),
+        map(e => e.payload as t.ITextEditorEnterKey),
+        // filter(e => e.isMeta),
+      )
+      .subscribe(e => {
+        // e.cancel();
+      });
+
+    events$
       // BEFORE change.
       .pipe(
         filter(e => e.type === 'EDITOR/changing'),

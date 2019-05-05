@@ -7,8 +7,15 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { constants, containsFocus, events, GlamorValue, css, IEditorStyles } from '../../common';
-import * as markdown from './markdown';
+import {
+  constants,
+  containsFocus,
+  events,
+  GlamorValue,
+  css,
+  IEditorStyles,
+  markdown,
+} from '../../common';
 import * as plugins from './plugins';
 import * as t from './types';
 
@@ -184,6 +191,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     const state = EditorState.create({
       doc: markdown.parse(value),
       plugins: plugins.init({
+        events$: this._events$,
         schema: markdown.schema,
         allowEnter: this.props.allowEnter,
         allowMetaEnter: this.props.allowMetaEnter,
@@ -279,7 +287,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
         <div className={className} {...css(this.props.editorStyle, styles.editorOuter)}>
-          <div ref={this.elEditorRef} />
+          <div ref={this.elEditorRef} onKeyDown={this.handleKeyDown as any} />
         </div>
         {/*
             NOTE: The element below is turned into a second "hidden" editor which is
@@ -300,6 +308,24 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * [Handlers]
    */
+  private handleKeyDown = (e: KeyboardEvent) => {
+    let isCancelled = false;
+    this.fire({
+      type: 'EDITOR/keydown',
+      payload: {
+        event: events.toKeypress(e, false),
+        get isCancelled() {
+          return isCancelled;
+        },
+        cancel() {
+          isCancelled = true;
+          e.preventDefault();
+          e.stopPropagation();
+        },
+      },
+    });
+  };
+
   private dispatch = (transaction: t.Transaction<DocSchema>) => {
     const view = this.view;
     const self = this; // tslint:disable-line
