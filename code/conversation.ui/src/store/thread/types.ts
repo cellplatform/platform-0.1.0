@@ -18,6 +18,7 @@ export type IThreadComment = {
   kind: 'THREAD/comment';
   id: string;
   timestamp: Date;
+  user: { id: string; name?: string };
 };
 
 /**

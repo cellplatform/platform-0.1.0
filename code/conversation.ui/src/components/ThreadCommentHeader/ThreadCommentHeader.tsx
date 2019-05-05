@@ -38,8 +38,6 @@ export class ThreadCommentHeader extends React.PureComponent<
     this.startRedrawTimer();
   }
 
-  // public componentDidUpdate(prevProps, prevState) {}
-
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();

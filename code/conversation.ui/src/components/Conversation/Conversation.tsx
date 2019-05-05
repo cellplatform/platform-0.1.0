@@ -94,7 +94,8 @@ export class Conversation extends React.PureComponent<IConversationProps, IConve
   private renderItem(item: t.ThreadItem) {
     switch (item.kind) {
       case 'THREAD/comment':
-        const elHeader = <ThreadCommentHeader timestamp={item.timestamp} />;
+        const name = item.user.name || item.user.id;
+        const elHeader = <ThreadCommentHeader timestamp={item.timestamp} name={name} />;
         return <ThreadComment key={item.id} avatarUrl={TEMP.WOMAN_1} header={elHeader} />;
 
       default:
