@@ -31,15 +31,35 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const editor$ = this.props.editor$.pipe(takeUntil(this.unmounted$));
+    const changing$ = editor$.pipe(
+      filter(e => e.type === 'EDITOR/changing'),
+      map(e => e.payload as t.ITextEditorChanging),
+    );
     const changed$ = editor$.pipe(
       filter(e => e.type === 'EDITOR/changed'),
       map(e => e.payload as t.ITextEditorChanged),
     );
 
+    // Update state.
     state$.subscribe(e => this.setState(e));
 
     editor$.subscribe(e => {
       // console.log('e', e);
+    });
+
+    editor$
+      .pipe(
+        filter(e => e.type === 'EDITOR/keydown/enter'),
+        map(e => e.payload as t.ITextEditorEnterKey),
+        filter(e => e.isMeta),
+      )
+      .subscribe(e => {
+        e.cancel();
+        this.handleCommentClick();
+      });
+
+    changing$.subscribe(e => {
+      // console.log('changing', e);
     });
 
     changed$.subscribe(e => {
@@ -64,6 +84,10 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
    */
   public get isEmpty() {
     return !Boolean(this.state.value);
+  }
+
+  public get canComment() {
+    return !this.isEmpty;
   }
 
   /**
@@ -137,8 +161,6 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
       right: css({}),
     };
 
-    const isEnabled = !this.isEmpty;
-
     return (
       <div {...styles.base}>
         <div {...styles.left}>
@@ -153,8 +175,8 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
           <buttons.Blue
             label={'Comment'}
             minWidth={BUTTON_WIDTH}
-            isEnabled={isEnabled}
-            onClick={this.props.onComment}
+            isEnabled={this.canComment}
+            onClick={this.handleCommentClick}
           />
         </div>
       </div>
@@ -167,6 +189,13 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
   private focusOnClick = () => {
     if (this.editor) {
       this.editor.focus();
+    }
+  };
+
+  private handleCommentClick = () => {
+    const { onComment } = this.props;
+    if (onComment && this.canComment) {
+      onComment({});
     }
   };
 }
