@@ -1047,6 +1047,18 @@
     react "16.8.6"
     react-dom "16.8.6"
 
+"@platform/react@0.1.31":
+  version "0.1.31"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.31.tgz#849c7312a372c75b05773ec2910c80598702c6cc"
+  integrity sha512-CsHfvOGif6Bt2EvSyMFTH5zfsEO7LI3j0SfzfjiiE4yIds8p9c9MOOLwwqJbKlxdu4GesxX+5ZkTem0zJ/rDrQ==
+  dependencies:
+    "@platform/css" "0.1.2"
+    "@platform/util.is" "0.0.65"
+    "@types/react" "16.8.16"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
 "@platform/test@0.0.50":
   version "0.0.50"
   resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.50.tgz#43d00b05a385dd1957e55afb4ce2c19c5f57182b"
@@ -1126,6 +1138,14 @@
   integrity sha512-i8tjHmp0z28ZMlWuEQbARIc85ULlOsMQklx/i0pTunsy7NENkqjfc6S9MSGc5192xX6N6bddnoscLEc4IVED9Q==
   dependencies:
     "@platform/react" "0.1.30"
+    "@platform/util.value" "0.1.6"
+
+"@platform/ui.text@0.1.21":
+  version "0.1.21"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.1.21.tgz#9a592129652b3334f6022588686f1835e8f910f3"
+  integrity sha512-fT3c3XT8vdBHL3MjZdq8ng1QgzpKgeyEVizV0T1AHvyxnnnWpM4xuC67lb2OZ77uf8RR2ETToy8bdBMAnQLDRg==
+  dependencies:
+    "@platform/react" "0.1.31"
     "@platform/util.value" "0.1.6"
 
 "@platform/ui.tree@0.0.50":

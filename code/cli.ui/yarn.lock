@@ -1047,6 +1047,18 @@
     react "16.8.6"
     react-dom "16.8.6"
 
+"@platform/react@0.1.31":
+  version "0.1.31"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.31.tgz#849c7312a372c75b05773ec2910c80598702c6cc"
+  integrity sha512-CsHfvOGif6Bt2EvSyMFTH5zfsEO7LI3j0SfzfjiiE4yIds8p9c9MOOLwwqJbKlxdu4GesxX+5ZkTem0zJ/rDrQ==
+  dependencies:
+    "@platform/css" "0.1.2"
+    "@platform/util.is" "0.0.65"
+    "@types/react" "16.8.16"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
 "@platform/ts.libs@3.4.12":
   version "3.4.12"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.4.12.tgz#6b161d86d49ca686f51a7c9bbb824103d126b86c"
@@ -1086,6 +1098,13 @@
   dependencies:
     "@platform/react" "0.1.30"
 
+"@platform/ui.icon@0.0.47":
+  version "0.0.47"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.47.tgz#b9e42f3ecc2c1ee6d6a6c1ca413287ace7c524ee"
+  integrity sha512-hftRLgxSLIJtOwrXVaagvqQ+TU5jKOERuadiZ31xmDj17dN0Ea4MDs3r5BFWKqwT8fPMx+UabO4b/skIxYDUzA==
+  dependencies:
+    "@platform/react" "0.1.31"
+
 "@platform/ui.object@0.0.102":
   version "0.0.102"
   resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.102.tgz#1910067962ed6eeda31989057e4cbdf4efa2a489"
@@ -1102,6 +1121,14 @@
     "@platform/react" "0.1.30"
     "@platform/util.animate" "0.0.26"
 
+"@platform/ui.panel@0.0.45":
+  version "0.0.45"
+  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.0.45.tgz#9e0c133f785fea112ec37777bcf7ac9668ba9bd6"
+  integrity sha512-j+xSOhAFlauDerlFxqEGx3AXS78FywO7BmpnBfBw98b5+L3IRZqZCzNoErlhAe3zFmf0wiMGzkRz0UzLCJDMBg==
+  dependencies:
+    "@platform/react" "0.1.31"
+    "@platform/util.animate" "0.0.26"
+
 "@platform/ui.spinner@0.0.45":
   version "0.0.45"
   resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.45.tgz#67a69a85c8411b983664f24396db99480cc0d1f3"
@@ -1109,12 +1136,27 @@
   dependencies:
     "@platform/react" "0.1.30"
 
+"@platform/ui.spinner@0.0.46":
+  version "0.0.46"
+  resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.46.tgz#099f8b06bddb4935756335383f710e8b293b7b45"
+  integrity sha512-VWMWhaoo79MeoS1qPP3iajgW2iUafKZ9pu6ZbPdzlffvbE9fMQLZ1EiUyog/mEMijhfQglvpINnzRZ9xrgmZdQ==
+  dependencies:
+    "@platform/react" "0.1.31"
+
 "@platform/ui.text@0.1.20":
   version "0.1.20"
   resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.1.20.tgz#c803898c9bb4524fa975fb08266bf3885e23473b"
   integrity sha512-i8tjHmp0z28ZMlWuEQbARIc85ULlOsMQklx/i0pTunsy7NENkqjfc6S9MSGc5192xX6N6bddnoscLEc4IVED9Q==
   dependencies:
     "@platform/react" "0.1.30"
+    "@platform/util.value" "0.1.6"
+
+"@platform/ui.text@0.1.21":
+  version "0.1.21"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.1.21.tgz#9a592129652b3334f6022588686f1835e8f910f3"
+  integrity sha512-fT3c3XT8vdBHL3MjZdq8ng1QgzpKgeyEVizV0T1AHvyxnnnWpM4xuC67lb2OZ77uf8RR2ETToy8bdBMAnQLDRg==
+  dependencies:
+    "@platform/react" "0.1.31"
     "@platform/util.value" "0.1.6"
 
 "@platform/ui.tree@0.0.50":
@@ -1128,6 +1170,18 @@
     "@platform/ui.panel" "0.0.44"
     "@platform/ui.spinner" "0.0.45"
     "@platform/ui.text" "0.1.20"
+
+"@platform/ui.tree@0.0.51":
+  version "0.0.51"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.0.51.tgz#c870ce11e1709de2e25ca1a170343903cd982508"
+  integrity sha512-Ifbsui36KGF0hAcbyNW9+94vWVZwb540Vm5VCmXcIlnkA+NGPhr4eOTLLl6QZ6nonzWxknPNbCbl+vbGW+NH9Q==
+  dependencies:
+    "@platform/css" "^0.1.2"
+    "@platform/react" "0.1.31"
+    "@platform/ui.icon" "0.0.47"
+    "@platform/ui.panel" "0.0.45"
+    "@platform/ui.spinner" "0.0.46"
+    "@platform/ui.text" "0.1.21"
 
 "@platform/util.animate@0.0.26":
   version "0.0.26"

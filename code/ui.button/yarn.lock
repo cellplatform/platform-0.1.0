@@ -1047,6 +1047,18 @@
     react "16.8.6"
     react-dom "16.8.6"
 
+"@platform/react@0.1.31":
+  version "0.1.31"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.31.tgz#849c7312a372c75b05773ec2910c80598702c6cc"
+  integrity sha512-CsHfvOGif6Bt2EvSyMFTH5zfsEO7LI3j0SfzfjiiE4yIds8p9c9MOOLwwqJbKlxdu4GesxX+5ZkTem0zJ/rDrQ==
+  dependencies:
+    "@platform/css" "0.1.2"
+    "@platform/util.is" "0.0.65"
+    "@types/react" "16.8.16"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
 "@platform/ts.libs@3.4.12":
   version "3.4.12"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.4.12.tgz#6b161d86d49ca686f51a7c9bbb824103d126b86c"
@@ -1085,6 +1097,13 @@
   integrity sha512-6mjYUFGiE65Z9ZpeZs6/sWBYZuYpzPMpZINyyie4DBg7sGgN79AHymCiniy/g6Zf9XNPopjdrr6u7tUrpeQnYg==
   dependencies:
     "@platform/react" "0.1.30"
+
+"@platform/ui.icon@0.0.47":
+  version "0.0.47"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.47.tgz#b9e42f3ecc2c1ee6d6a6c1ca413287ace7c524ee"
+  integrity sha512-hftRLgxSLIJtOwrXVaagvqQ+TU5jKOERuadiZ31xmDj17dN0Ea4MDs3r5BFWKqwT8fPMx+UabO4b/skIxYDUzA==
+  dependencies:
+    "@platform/react" "0.1.31"
 
 "@platform/ui.object@0.0.102":
   version "0.0.102"

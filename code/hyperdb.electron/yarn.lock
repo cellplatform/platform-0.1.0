@@ -103,6 +103,22 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
+"@platform/electron@0.1.53":
+  version "0.1.53"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.53.tgz#a9bae2f31c2c5d571c9f24d6d5f2d2aa22a5a549"
+  integrity sha512-r5sUppq+cQkb0mwaHINEWK/v7jrmdp/ybdjiyhQko3uBLl2isp9/83UqEjTXlLIHS6jdmer1nUq7MD16a8xWug==
+  dependencies:
+    "@babel/polyfill" "7.4.4"
+    "@platform/fs" "0.0.57"
+    "@platform/log" "0.0.116"
+    "@platform/react" "0.1.31"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.2.1"
+    electron-log "3.0.5"
+    electron-store "3.2.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+
 "@platform/exec@0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.3.tgz#0574284d87bb4019478208bce59e06695123d9b6"
@@ -169,6 +185,18 @@
   version "0.1.30"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.30.tgz#d75594f859a021c2982c8def42f0ef4521b0fa26"
   integrity sha512-U5DfpvQWWyYjzSKpfIN2sQVY8L6+EDg4i0OUMD9AUXwrBLAdjL3VmR9zjwI710dKrRS3qBe3eh+DyssoqzXQUA==
+  dependencies:
+    "@platform/css" "0.1.2"
+    "@platform/util.is" "0.0.65"
+    "@types/react" "16.8.16"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
+"@platform/react@0.1.31":
+  version "0.1.31"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.31.tgz#849c7312a372c75b05773ec2910c80598702c6cc"
+  integrity sha512-CsHfvOGif6Bt2EvSyMFTH5zfsEO7LI3j0SfzfjiiE4yIds8p9c9MOOLwwqJbKlxdu4GesxX+5ZkTem0zJ/rDrQ==
   dependencies:
     "@platform/css" "0.1.2"
     "@platform/util.is" "0.0.65"
