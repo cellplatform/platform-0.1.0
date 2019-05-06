@@ -21,6 +21,7 @@ const TEMP = {
 export class ConversationView extends React.PureComponent<IConversationViewProps> {
   private unmounted$ = new Subject();
   private editor$ = new Subject<t.TextEditorEvent>();
+  private dispatch = (e: t.ThreadEvent) => this.props.dispatch$.next(e);
 
   /**
    * [Lifecycle]
@@ -84,7 +85,7 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
           {elItems}
-          {this.renderNextComment()}
+          {this.renderFooterComment()}
         </div>
       </div>
     );
@@ -93,12 +94,7 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   private renderItem(item: t.ThreadItem) {
     switch (item.kind) {
       case 'THREAD/comment':
-        const name = item.user.name || item.user.id;
-        const elHeader = <ThreadCommentHeader timestamp={item.timestamp} name={name} />;
-        const body = item.body ? item.body.markdown : undefined;
-        return (
-          <ThreadComment key={item.id} avatarUrl={TEMP.WOMAN_1} header={elHeader} body={body} />
-        );
+        return this.renderThreadComment(item);
 
       default:
         log.warn(`Item of kind '${item.kind}' not supported.`);
@@ -106,7 +102,14 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
     }
   }
 
-  private renderNextComment() {
+  private renderThreadComment(item: t.IThreadComment) {
+    const name = item.user.name || item.user.id;
+    const elHeader = <ThreadCommentHeader timestamp={item.timestamp} name={name} />;
+    const body = item.body ? item.body.markdown : undefined;
+    return <ThreadComment key={item.id} avatarUrl={TEMP.WOMAN_1} header={elHeader} body={body} />;
+  }
+
+  private renderFooterComment() {
     const body = this.draft.markdown;
     return (
       <ThreadComment
@@ -130,6 +133,4 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
     };
     this.dispatch({ type: 'THREAD/add', payload: { item } });
   };
-
-  private dispatch = (e: t.ThreadEvent) => this.props.dispatch$.next(e);
 }
