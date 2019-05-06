@@ -116,12 +116,13 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
   }
 
   private renderHeader() {
+    const { isEditing } = this.props;
     const styles = {
       base: css({
         position: 'relative',
         minHeight: SIZE.AVATAR,
         backgroundColor: COLOR.HEADER.BG,
-        borderBottom: `solid 1px ${color.format(-0.08)}`,
+        borderBottom: `solid 1px ${color.format(isEditing ? -0.12 : -0.08)}`,
         Flex: 'center-start',
       }),
       triangle: css({

@@ -98,10 +98,6 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
       base: css({
         position: 'relative',
       }),
-      editor: css({
-        position: 'relative',
-        padding: 3,
-      }),
       toolbar: css({
         borderTop: `solid 1px ${color.format(-0.1)}`,
         backgroundColor: color.format(-0.01),
@@ -124,6 +120,8 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
         position: 'relative',
         flex: 1,
         padding: 15,
+        boxShadow: `inset 0 1px 4px 0 ${color.format(-0.1)}`,
+        overflow: 'hidden',
       }),
     };
     return (
