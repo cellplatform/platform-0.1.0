@@ -1,5 +1,9 @@
-import { server } from './graphql';
-import { log, is, pkg } from './common';
+import { ApolloServer, log, is } from './common';
+import { init } from './schema';
+
+const pkg = require('../../../package.json');
+const schema = init({});
+const server = new ApolloServer({ schema });
 
 (async () => {
   const port = 5000;

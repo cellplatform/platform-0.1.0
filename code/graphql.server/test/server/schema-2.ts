@@ -1,6 +1,8 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { gql, t } from './common';
 
+let count = 0;
+
 /**
  * [Types]
  */
@@ -18,7 +20,8 @@ export const typeDefs = gql`
 export const resolvers: t.IResolvers = {
   Query: {
     json: async (_: any, args: any, ctx: t.IContext, info: any) => {
-      return { foo: 123, bar: 456 };
+      count++;
+      return { count, message: `Hello ${count}` };
     },
   },
 };

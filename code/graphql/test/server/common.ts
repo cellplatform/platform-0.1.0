@@ -1,6 +1,3 @@
-import * as t from './types';
-
-export { t };
-export * from '@platform/graphql.server';
-
-export const pkg = require('../../../package.json');
+export { ApolloServer, gql } from 'apollo-server';
+export { log } from '@platform/log/lib/server';
+export { is } from '@platform/util.is';

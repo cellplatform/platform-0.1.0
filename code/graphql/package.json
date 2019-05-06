@@ -21,7 +21,7 @@
     "graphql": "14.2.1"
   },
   "devDependencies": {
-    "@platform/graphql.server": "0.0.4",
+    "apollo-server": "^2.4.8",
     "@uiharness/dev": "0.2.52",
     "@uiharness/ui": "0.2.33"
   },
