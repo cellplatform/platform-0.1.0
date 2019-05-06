@@ -3,6 +3,7 @@ import * as t from '../types';
 export type IThreadStore = t.IStore<IThreadModel, ThreadEvent>;
 
 export type IThreadModel = {
+  id: string;
   items: ThreadItem[];
   draft: IThreadDraft;
 };

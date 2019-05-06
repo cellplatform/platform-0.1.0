@@ -5,9 +5,8 @@ import * as reducers from './reducers';
 /**
  * Initializes a new store instance for managing a conversation thread.
  */
-export function create(args: { user: t.IThreadUser }) {
-  const { user } = args;
-  const initial: t.IThreadModel = { items: [], draft: { user } };
+export function create(args: { initial: t.IThreadModel }) {
+  const { initial } = args;
   const store = state.create<t.IThreadModel, t.ThreadEvent>({ initial });
   reducers.init(store);
 

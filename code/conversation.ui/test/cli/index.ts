@@ -1,13 +1,18 @@
 import { Subject } from 'rxjs';
 
-import { CommandState, store, t } from '../common';
+import { CommandState, store, t, id as idUtil } from '../common';
 import { root } from './cmds';
 import { createThreadCommentProps } from './cmds.ThreadComment';
 
 export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   const { state$ } = args;
-  const user: t.IThreadUser = { id: 'sub|mary', name: 'mary@foo.com' };
-  const threadStore = store.thread.create({ user });
+
+  // Sample
+  const user: t.IThreadUser = { id: 'mary@foo.com' };
+  const initial: t.IThreadModel = { id: idUtil.cuid(), items: [], draft: { user } };
+
+  // Create test data stores.
+  const threadStore = store.thread.create({ initial });
   const threadCommentProps = createThreadCommentProps();
 
   // CLI.
