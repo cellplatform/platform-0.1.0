@@ -37,8 +37,6 @@ export class GraphqlClient implements t.IGqlClient {
     const { uri } = args;
     this._.uri = uri;
     this._.apollo = new ApolloClient({ uri });
-
-    console.log(`\nTODO 🐷   Mutate\n`);
   }
 
   /**
@@ -87,6 +85,16 @@ export class GraphqlClient implements t.IGqlClient {
     this.fire({ type: 'GRAPHQL/querying', payload: { req } });
     const res = await this._.apollo.query<D>(req);
     this.fire({ type: 'GRAPHQL/queried', payload: { req, res } });
+    return res;
+  }
+
+  public async mutate<D = any, V = t.IGqlVariables>(
+    req: t.IGqlMutateOptions<D, V>,
+  ): Promise<t.IGqlMutateResult<D>> {
+    this.throwIfDisposed('mutate');
+    this.fire({ type: 'GRAPHQL/mutating', payload: { req } });
+    const res = await this._.apollo.mutate<D>(req);
+    this.fire({ type: 'GRAPHQL/mutated', payload: { req, res } });
     return res;
   }
 
