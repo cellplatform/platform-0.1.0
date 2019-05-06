@@ -16,7 +16,7 @@ export const conversation = Command.create<P>('Conversation', e => {
     const store = e.props.threadStore;
     const id = idUtil.cuid();
     const timestamp = new Date();
-    const user = { id: '1234', name: 'mary@foo.com' };
+    const user = { id: '1234', name: 'bob@example.com' };
     store.dispatch({
       type: 'THREAD/add',
       payload: { item: { kind: 'THREAD/comment', id, timestamp, user } },

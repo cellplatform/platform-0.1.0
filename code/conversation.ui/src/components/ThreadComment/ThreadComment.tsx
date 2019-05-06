@@ -102,6 +102,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
               borderRadius={4}
               borderColor={-0.1}
               borderWidth={1}
+              gravatarDefault={'404'}
             />
           </div>
           <div {...styles.right}>
