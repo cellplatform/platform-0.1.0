@@ -13,4 +13,6 @@ export type ITestState = {
   borderRadius?: number;
   borderWidth?: number;
   borderColor?: number | string;
+  backgroundColor?: number | string;
+  placeholderIconColor?: number | string;
 };

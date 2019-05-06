@@ -17,6 +17,7 @@
   "dependencies": {
     "@platform/react": "0.1.31",
     "@platform/ui.icon": "0.0.47",
+    "gravatar-url": "3.0.1",
     "react-icons": "3.6.1"
   },
   "devDependencies": {
