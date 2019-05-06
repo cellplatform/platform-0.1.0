@@ -37,7 +37,10 @@ export const resolvers: t.IResolvers = {
   },
 };
 
-export function init() {
+/**
+ * [Schema]
+ */
+export function init(args: {}) {
   const schema = makeExecutableSchema({ typeDefs, resolvers });
   return schema;
 }

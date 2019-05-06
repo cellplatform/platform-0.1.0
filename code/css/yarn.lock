@@ -1090,6 +1090,13 @@
   dependencies:
     rxjs "6.5.1"
 
+"@platform/types@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.4.tgz#88d50ab7d90172b416691a587778d0b7245df47c"
+  integrity sha512-5eEbH89ISeYoaJvyfVSa8rORrqU8KXo7HxH5JpE0J0UIkgrWNdhznwFcm2k6lWOagrevWFrdpaD7ElbJnIWCVA==
+  dependencies:
+    rxjs "6.5.1"
+
 "@platform/ui.icon@0.0.47":
   version "0.0.47"
   resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.47.tgz#b9e42f3ecc2c1ee6d6a6c1ca413287ace7c524ee"
@@ -1153,6 +1160,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.65.tgz#111f54df29702c0a4ed65ff53e5801fd87931079"
   integrity sha512-3YGM+jrGvCBR/tYQVsWqfvFGtGwhm5a/NJhq6TJWcQWQBRwhpo3f60fJzVbC0ZV7EWfqvHZy53OZWmIF4K3vww==
 
+"@platform/util.is@0.0.66":
+  version "0.0.66"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.66.tgz#1e527748fe0f158060271dc9eb4447241e2f9366"
+  integrity sha512-3HsiU3gmnU71UC0yjUmsQ9ABKmgNPEujQfZJYssm4FRBfx6vWFTYxosBh2qAY1oDBgPSU1/MbdAEaJkjmzbxmg==
+
 "@platform/util.local-storage@0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.5.tgz#29017e801e99b0d48e72d0039737a74f5e9b45ad"
@@ -1191,6 +1203,19 @@
     "@platform/libs" "0.0.12"
     "@platform/types" "0.0.3"
     "@platform/util.is" "0.0.65"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.13"
+    semver "6.0.0"
+
+"@platform/util.value@0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.1.7.tgz#b3274e8371f47a21cbac5bc3107e352d15b20cb5"
+  integrity sha512-/O6kuaDaHK8vvFtbY8t8OXsxJrZRdbUuxrbsC1kNeNssfdIehms7b1hD1qJYmjXAQ9SKMHbsOWnMOVqMMBllow==
+  dependencies:
+    "@platform/libs" "0.0.12"
+    "@platform/types" "0.0.4"
+    "@platform/util.is" "0.0.66"
     "@types/semver" "6.0.0"
     cuid "2.1.6"
     dayjs "1.8.13"

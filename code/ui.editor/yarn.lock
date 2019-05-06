@@ -953,6 +953,16 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
+"@platform/cli@0.0.87":
+  version "0.0.87"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.0.87.tgz#9c0154b852326f48c7deb00564063b67a18bfacf"
+  integrity sha512-7VhJNHV2jAuuiFiS3DGvYWttvRXhaXjO7H3lBJjkJe53+QY2Sq5N/xRZyor2q98+HgcrbD5tzLDAUaB8hA6eQw==
+  dependencies:
+    "@platform/exec" "0.2.4"
+    "@platform/fs" "0.0.58"
+    "@types/yargs" "13.0.0"
+    yargs "13.2.2"
+
 "@platform/css@0.1.2", "@platform/css@^0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.2.tgz#0b04feb72bb4c859800a448b3d2e623cd62947a9"
@@ -961,6 +971,18 @@
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.65"
     "@platform/util.value" "0.1.6"
+    "@types/tinycolor2" "1.4.1"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
+"@platform/css@0.1.3", "@platform/css@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.3.tgz#6a6fcdda7c38b34e5a6df52752767a40b0a364e3"
+  integrity sha512-L41GfeMNp5LVXgC8Hr+upS3Sm+4X1AtK+6bJqWfh8AIMQA6QulYgM1egWCUVfK8WzrugvFJaWEGZ11lf6Bf+GQ==
+  dependencies:
+    "@platform/libs" "0.0.12"
+    "@platform/util.is" "0.0.66"
+    "@platform/util.value" "0.1.7"
     "@types/tinycolor2" "1.4.1"
     glamor "2.20.40"
     tinycolor2 "1.4.1"
@@ -993,12 +1015,35 @@
     chalk "2.4.2"
     listr "0.14.3"
 
+"@platform/exec@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.4.tgz#364301008cf5842e022d32c5e32a5bf282c4de4d"
+  integrity sha512-mW/8emg+OIgWK9LfpAY1Iu5+Jj738+bQskcagXZ8nb2l/mEjOF6egDbyB0Fv76c6CHjbMv6R4Mg14aksv3JzWw==
+  dependencies:
+    "@platform/libs" "0.0.12"
+    "@types/chalk" "2.2.0"
+    "@types/listr" "0.14.0"
+    ansi-regex "4.1.0"
+    chalk "2.4.2"
+    listr "0.14.3"
+
 "@platform/fs@0.0.57":
   version "0.0.57"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.57.tgz#ca9e062a351bb3f4dc2db230588166553245c605"
   integrity sha512-IZrm4VsjQ7mquevs0zW/QqwkTsNiF1zbPjQhbx9V4sdge7kN8EYuw8YagopVzvIkM8/c+pFUj4HUkHtixpQN+Q==
   dependencies:
     "@types/fs-extra" "5.0.5"
+    "@types/js-yaml" "3.12.1"
+    fast-glob "2.2.6"
+    fs-extra "7.0.1"
+    js-yaml "3.13.1"
+
+"@platform/fs@0.0.58":
+  version "0.0.58"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.58.tgz#a76aad06b99f3d315fabfff992039e470b8800ab"
+  integrity sha512-pvYLMFyj3XRgTEjfvn1xrBnxt6wbrtsM+6bbyB6529zanQwMl2JTF1m8h2pw+CBqPtQxthXNh0ng8KxTw/feUg==
+  dependencies:
+    "@types/fs-extra" "5.1.0"
     "@types/js-yaml" "3.12.1"
     fast-glob "2.2.6"
     fs-extra "7.0.1"
@@ -1047,6 +1092,18 @@
     react "16.8.6"
     react-dom "16.8.6"
 
+"@platform/react@0.1.32":
+  version "0.1.32"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.32.tgz#3a5a964792731d3662af9ad992c4db37e1c5bd76"
+  integrity sha512-KtmiTN8cChNtvcN2Enw+MI+foX6mN43dmt5+HxJs3nAHdsdw/G6EP2FlGUYlhnHfvWGjwMrRhItqBjqu7rsUsg==
+  dependencies:
+    "@platform/css" "0.1.3"
+    "@platform/util.is" "0.0.66"
+    "@types/react" "16.8.16"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
 "@platform/ts.libs@3.4.12":
   version "3.4.12"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.4.12.tgz#6b161d86d49ca686f51a7c9bbb824103d126b86c"
@@ -1072,10 +1129,28 @@
     "@platform/libs" "0.0.12"
     "@platform/ts.libs" "3.4.12"
 
+"@platform/ts@3.4.17":
+  version "3.4.17"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.4.17.tgz#9c2d5f43ad20e71d58e8238353a6874c714c0024"
+  integrity sha512-cEqimD4O9mIhbzGI5x1+MsARwp/kFCXZ8MKCcXjtp4ePnB3YnV6U88ye3WdFm3Ip12q5JJTKLEbvhxGyGI6JrA==
+  dependencies:
+    "@platform/cli" "0.0.87"
+    "@platform/exec" "0.2.4"
+    "@platform/fs" "0.0.58"
+    "@platform/libs" "0.0.12"
+    "@platform/ts.libs" "3.4.12"
+
 "@platform/types@0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.3.tgz#c87e4dbb419d496cc35c9ceb0eabde5b23789f7e"
   integrity sha512-LY4pA9AaW1s6MkBMr/7b77ZHjvPfunhRbQyD7V0/5Gwoz0sb7oZRjewjKlsPxyXzDKBUdD/tCuIkAY+/9eVXnQ==
+  dependencies:
+    rxjs "6.5.1"
+
+"@platform/types@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.4.tgz#88d50ab7d90172b416691a587778d0b7245df47c"
+  integrity sha512-5eEbH89ISeYoaJvyfVSa8rORrqU8KXo7HxH5JpE0J0UIkgrWNdhznwFcm2k6lWOagrevWFrdpaD7ElbJnIWCVA==
   dependencies:
     rxjs "6.5.1"
 
@@ -1142,6 +1217,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.65.tgz#111f54df29702c0a4ed65ff53e5801fd87931079"
   integrity sha512-3YGM+jrGvCBR/tYQVsWqfvFGtGwhm5a/NJhq6TJWcQWQBRwhpo3f60fJzVbC0ZV7EWfqvHZy53OZWmIF4K3vww==
 
+"@platform/util.is@0.0.66":
+  version "0.0.66"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.66.tgz#1e527748fe0f158060271dc9eb4447241e2f9366"
+  integrity sha512-3HsiU3gmnU71UC0yjUmsQ9ABKmgNPEujQfZJYssm4FRBfx6vWFTYxosBh2qAY1oDBgPSU1/MbdAEaJkjmzbxmg==
+
 "@platform/util.local-storage@0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.5.tgz#29017e801e99b0d48e72d0039737a74f5e9b45ad"
@@ -1185,6 +1265,19 @@
     dayjs "1.8.13"
     semver "6.0.0"
 
+"@platform/util.value@0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.1.7.tgz#b3274e8371f47a21cbac5bc3107e352d15b20cb5"
+  integrity sha512-/O6kuaDaHK8vvFtbY8t8OXsxJrZRdbUuxrbsC1kNeNssfdIehms7b1hD1qJYmjXAQ9SKMHbsOWnMOVqMMBllow==
+  dependencies:
+    "@platform/libs" "0.0.12"
+    "@platform/types" "0.0.4"
+    "@platform/util.is" "0.0.66"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.13"
+    semver "6.0.0"
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"
@@ -1208,6 +1301,13 @@
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-5.0.5.tgz#080d90a792f3fa2c5559eb44bd8ef840aae9104b"
   integrity sha512-w7iqhDH9mN8eLClQOYTkhdYUOSpp25eXxfc6VbFOGtzxW34JcvctH2bKjj4jD4++z4R5iO5D+pg48W2e03I65A==
+  dependencies:
+    "@types/node" "*"
+
+"@types/fs-extra@5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-5.1.0.tgz#2a325ef97901504a3828718c390d34b8426a10a1"
+  integrity sha512-AInn5+UBFIK9FK5xc9yP5e3TQSPNNgjHByqYcj9g5elVBnDQcQL7PlO1CIRy2gWlbwK7UPYqi7vRvFA44dCmYQ==
   dependencies:
     "@types/node" "*"
 

@@ -1,6 +1,6 @@
 {
   "name": "@platform/types",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Common types used across @platform.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.50",
-    "@platform/ts": "3.4.16"
+    "@platform/ts": "3.4.17"
   },
   "files": [
     "lib"

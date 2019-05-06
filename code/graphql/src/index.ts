@@ -1,1 +1,5 @@
-console.log('\n👋  graphql\n'); // tslint:disable-line
+import * as graphql from './graphql';
+
+export { graphql };
+export * from './graphql';
+export default graphql;
