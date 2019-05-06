@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, Conversation, css, ObjectView, t, state } from '../common';
+import { color, Conversation, css, ObjectView, t } from '../common';
 
 export type ITestProps = { store: t.IThreadStore };
 export type ITestState = {};

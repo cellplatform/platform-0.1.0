@@ -6,21 +6,21 @@ import * as buttons from '../../buttons';
 import { TextEditor } from '../../primitives';
 import { Icons } from '../../Icons';
 
-export type ICommentEditorProps = {
+export type IEditorProps = {
   editor$: Subject<t.TextEditorEvent>;
   value?: string;
   style?: GlamorValue;
   onComment?: (e: {}) => void;
 };
-export type ICommentEditorState = {
+export type IEditorState = {
   editorState?: t.EditorState;
   value?: string;
 };
 
-export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICommentEditorState> {
-  public state: ICommentEditorState = { value: this.props.value };
+export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
+  public state: IEditorState = { value: this.props.value };
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<ICommentEditorState>>();
+  private state$ = new Subject<Partial<IEditorState>>();
 
   private editor!: TextEditor;
   private editorRef = (ref: TextEditor) => (this.editor = ref);
@@ -67,7 +67,7 @@ export class CommentEditor extends React.PureComponent<ICommentEditorProps, ICom
     });
   }
 
-  public componentDidUpdate(prev: ICommentEditorState) {
+  public componentDidUpdate(prev: IEditorState) {
     const { value } = this.props;
     if (prev.value !== value) {
       this.state$.next({ value });

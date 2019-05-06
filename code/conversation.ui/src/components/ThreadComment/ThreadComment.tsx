@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { color, CSS, css, GlamorValue, markdown, t, COLORS } from '../../common';
 import { Avatar, Text } from '../primitives';
-import { CommentEditor } from './components/CommentEditor';
+import { Editor } from './components/Editor';
 import { Triangle } from './components/Triangle';
 
 export type IThreadCommentProps = {
@@ -89,7 +89,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
 
     const elBody = isEditing ? null : this.body ? this.renderBody() : this.renderEmpty();
     const elEditor = isEditing && (
-      <CommentEditor value={this.body} editor$={this.editor$} onComment={this.props.onComment} />
+      <Editor value={this.body} editor$={this.editor$} onComment={this.props.onComment} />
     );
 
     return (
