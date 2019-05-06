@@ -1,6 +1,7 @@
 import * as t from '../types';
 
 export type IThreadStore = t.IStore<IThreadModel, ThreadEvent>;
+export type IThreadStoreContext = t.IStoreContext<IThreadModel, ThreadEvent>;
 
 export type IThreadModel = {
   id: string;
@@ -20,9 +21,7 @@ export type IThreadComment = {
   id: string;
   timestamp: Date;
   user: IThreadUser;
-  body?: {
-    markdown: string;
-  };
+  body?: { markdown: string };
 };
 
 export type IThreadUser = { id: string; name?: string };

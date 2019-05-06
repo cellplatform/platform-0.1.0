@@ -1,4 +1,5 @@
-import { t, gql, log } from './common';
+import { makeExecutableSchema } from 'graphql-tools';
+import { gql, log, t } from './common';
 
 /**
  * [Types]
@@ -35,3 +36,8 @@ export const resolvers: t.IResolvers = {
     },
   },
 };
+
+export function init() {
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  return schema;
+}

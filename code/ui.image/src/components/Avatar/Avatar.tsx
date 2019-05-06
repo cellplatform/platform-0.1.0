@@ -1,17 +1,20 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { t, css, color, GlamorValue, value } from '../../common';
+import { t, css, color, GlamorValue, value, gravatar } from '../../common';
 import { Icons, IIcon } from '../Icons';
 
 export type IAvatarProps = {
-  src?: string;
+  src?: string; // URL or email (gravatar).
   size?: number;
   borderRadius?: number;
   borderWidth?: number;
   borderColor?: number | string;
+  backgroundColor?: number | string;
   block?: boolean;
   placeholderIcon?: IIcon;
+  placeholderIconColor?: number | string;
+  gravatarDefault?: gravatar.GravatarDefault;
   events$?: Subject<t.AvatarEvent>;
   style?: GlamorValue;
 };
@@ -24,6 +27,17 @@ export type IAvatarState = {
  * A picture of a user.
  */
 export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
+  /**
+   * [Static]
+   */
+  public static isGravatar(src: string) {
+    return value.isEmail(src);
+  }
+
+  /**
+   * [Fields]
+   */
+
   public state: IAvatarState = { isLoaded: false, status: 'LOADING' };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IAvatarState>>();
@@ -63,6 +77,13 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
    */
   public render() {
     const { style, borderColor = 0.4, size = 36, borderRadius = 5, block = false } = this.props;
+
+    const backgroundColor = this.props.backgroundColor
+      ? this.props.backgroundColor
+      : typeof borderColor === 'string'
+      ? borderColor
+      : color.format(borderColor);
+
     const styles = {
       base: css({
         position: 'relative',
@@ -70,7 +91,7 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
         display: block ? 'block' : 'inline-block',
         width: size,
         height: size,
-        backgroundColor: typeof borderColor === 'string' ? borderColor : color.format(borderColor),
+        backgroundColor,
         borderRadius: borderRadius,
       }),
     };
@@ -83,10 +104,12 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
   }
 
   private renderImage() {
-    const { borderWidth = 0, size = 36, borderRadius = 5 } = this.props;
-    const src = this.src;
+    const { borderWidth = 0, size = 36, borderRadius = 5, gravatarDefault = '404' } = this.props;
     const width = size - borderWidth * 2;
     const isLoaded = this.state.isLoaded;
+    const src = Avatar.isGravatar(this.src)
+      ? gravatar.url(this.src, { size, default: gravatarDefault })
+      : this.src;
 
     const styles = {
       base: css({
@@ -129,7 +152,7 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
     const Icon = this.props.placeholderIcon || Icons.Face;
     return (
       <div {...styles.base}>
-        <Icon style={styles.icon} />
+        <Icon style={styles.icon} color={this.props.placeholderIconColor} />
       </div>
     );
   }

@@ -1,6 +1,6 @@
-import { express, ApolloServer, t } from './common';
-import { resolvers, typeDefs } from './resolvers';
+import { ApolloServer, express, t } from './common';
 import { Context } from './Context';
+import * as schema from './schema';
 
 const pkg = require('../../package.json');
 
@@ -13,8 +13,7 @@ export const server = express();
  * [GraphQL] server.
  */
 export const graphql = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema: schema.init({}),
 
   /**
    * Enable playground in production.

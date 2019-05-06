@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@platform/conversation.types": "0.0.4",
+    "@platform/graphql.server": "0.0.4",
     "@platform/hyperdb": "0.1.28",
     "@platform/libs": "0.0.12"
   },

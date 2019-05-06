@@ -4,8 +4,11 @@ import { expect } from 'chai';
 import { Store } from '.';
 import * as t from './types';
 
-export type IMyModel = { count: number };
-export type MyEvent = IIncrementEvent | IDecrementEvent;
+export type IMyModel = { count: number; foo: IMyFoo };
+export type IMyFoo = { list: number[]; msg?: string };
+const initial: IMyModel = { count: 0, foo: { list: [] } };
+
+export type MyEvent = IIncrementEvent | IDecrementEvent | IChangeFooEvent;
 export type IIncrementEvent = {
   type: 'TEST/increment';
   payload: { by: number };
@@ -14,7 +17,10 @@ export type IDecrementEvent = {
   type: 'TEST/decrement';
   payload: { by: number };
 };
-const initial: IMyModel = { count: 0 };
+export type IChangeFooEvent = {
+  type: 'TEST/changeFoo';
+  payload: {};
+};
 
 describe('Store', () => {
   describe('lifecycle', () => {
@@ -122,7 +128,7 @@ describe('Store', () => {
 
     it('fires [changing] event', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
-      const events: Array<t.IStateChanging<any, any>> = [];
+      const events: t.IStateChanging[] = [];
       store.changing$.subscribe(e => events.push(e));
 
       store.on<IIncrementEvent>('TEST/increment').subscribe(e => e.change(e.state));
@@ -230,6 +236,92 @@ describe('Store', () => {
 
       await time.wait(10);
       expect(events.length).to.eql(2);
+    });
+  });
+
+  describe('lens', () => {
+    it('root lens', () => {
+      const store = Store.create<IMyModel, MyEvent>({ initial });
+      const lens = store.lens<IMyModel>(() => store.state);
+      expect(lens.state).to.eql(initial);
+      expect(lens.state).to.not.equal(initial);
+    });
+
+    it('child lens', () => {
+      const store = Store.create<IMyModel, MyEvent>({ initial });
+      const lens = store.lens<IMyFoo>(() => store.state.foo);
+      expect(lens.state).to.eql(initial.foo);
+      expect(lens.state).to.not.equal(initial.foo);
+    });
+
+    it('changes on dispatch', () => {
+      const store = Store.create<IMyModel, MyEvent>({ initial });
+      const lens = store.lens<IMyFoo>(() => store.state.foo);
+      store.on<IChangeFooEvent>('TEST/changeFoo').subscribe(e => {
+        const state = e.state;
+        const foo = { ...state.foo, msg: 'Hello' };
+        e.change({ ...state, foo });
+      });
+      expect(lens.state.msg).to.eql(undefined);
+      lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
+      expect(lens.state.msg).to.eql('Hello');
+    });
+
+    it('fires changed events', () => {
+      const events: t.IStateChange[] = [];
+      const store = Store.create<IMyModel, MyEvent>({ initial });
+      const lens = store.lens<IMyFoo>(() => store.state.foo);
+      lens.changed$.subscribe(e => events.push(e));
+
+      store.on<IChangeFooEvent>('TEST/changeFoo').subscribe(e => e.change(e.state));
+      lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
+      lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
+      expect(events.length).to.eql(2);
+    });
+
+    it('stops firing events when root store is disposed', () => {
+      const events: t.IStateChange[] = [];
+      const store = Store.create<IMyModel, MyEvent>({ initial });
+      const lens = store.lens<IMyFoo>(() => store.state.foo);
+      lens.changed$.subscribe(e => events.push(e));
+      store.on<IChangeFooEvent>('TEST/changeFoo').subscribe(e => e.change(e.state));
+
+      lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
+      expect(events.length).to.eql(1);
+
+      store.dispose();
+      lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
+      lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
+      expect(events.length).to.eql(1);
+    });
+
+    it('disposes of lens', () => {
+      const rootEvents: t.IStateChange[] = [];
+      const lensEvents: t.IStateChange[] = [];
+      const store = Store.create<IMyModel, MyEvent>({ initial });
+      const lens = store.lens<IMyFoo>(() => store.state.foo);
+
+      store.changed$.subscribe(e => rootEvents.push(e));
+      lens.changed$.subscribe(e => lensEvents.push(e));
+      store.on<IChangeFooEvent>('TEST/changeFoo').subscribe(e => e.change(e.state));
+
+      expect(store.isDisposed).to.eql(false);
+      expect(lens.isDisposed).to.eql(false);
+
+      lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
+
+      expect(rootEvents.length).to.eql(1);
+      expect(lensEvents.length).to.eql(1);
+
+      lens.dispose();
+
+      expect(store.isDisposed).to.eql(false);
+      expect(lens.isDisposed).to.eql(true);
+
+      lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
+
+      expect(rootEvents.length).to.eql(2);
+      expect(lensEvents.length).to.eql(1);
     });
   });
 });

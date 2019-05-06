@@ -54,14 +54,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
-          <Avatar
-            src={this.state.src}
-            size={this.state.size}
-            borderRadius={this.state.borderRadius}
-            borderWidth={this.state.borderWidth}
-            borderColor={this.state.borderColor}
-            events$={this.events$}
-          />
+          <Avatar {...this.state} events$={this.events$} />
         </div>
       </CommandShell>
     );
