@@ -14,7 +14,7 @@
   "dependencies": {
     "@platform/react": "0.1.31",
     "@uiharness/electron": "0.4.38",
-    "monaco-editor": "0.16.2"
+    "monaco-editor": "0.17.0"
   },
   "devDependencies": {
     "@platform/fs": "0.0.57",

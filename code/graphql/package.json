@@ -1,16 +1,17 @@
 {
-  "name": "@platform/graphql",
-  "version": "0.0.3",
+  "name": "graphql",
+  "version": "0.1.0",
   "description": "Tools for working with GraphQL.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "node .",
-    "watch": "nodemon .",
+    "ui": "ui $@",
+    "start": "ui start $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build $@",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare"
   },
   "dependencies": {
@@ -19,8 +20,8 @@
     "graphql": "14.2.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.50",
-    "@platform/ts": "3.4.16"
+    "@uiharness/dev": "0.2.52",
+    "@uiharness/ui": "0.2.33"
   },
   "files": [
     "lib"
