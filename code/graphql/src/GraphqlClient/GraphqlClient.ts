@@ -1,3 +1,13 @@
+/**
+ * NOTES:
+ * - Migrating from `apollo-boost`
+ *   Necessary when turning on "batching"
+ *   https://www.apollographql.com/docs/react/advanced/boost-migration
+ *
+ * - About batching
+ *   https://blog.apollographql.com/batching-client-graphql-queries-a685f5bcd41b
+ */
+
 import ApolloClient from 'apollo-boost';
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
@@ -15,7 +25,6 @@ export class GraphqlClient implements t.IGqlClient {
   /**
    * [Static]
    */
-
   public static create(args: IConstructorArgs) {
     return new GraphqlClient(args);
   }
@@ -29,7 +38,6 @@ export class GraphqlClient implements t.IGqlClient {
     this._.uri = uri;
     this._.apollo = new ApolloClient({ uri });
 
-    console.log(`\nTODO 🐷   Batch Query Setup \n`);
     console.log(`\nTODO 🐷   Mutate\n`);
   }
 
