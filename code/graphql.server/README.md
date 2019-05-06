@@ -6,6 +6,33 @@
 [Express](https://expressjs.com) configuration of [Apollo](https://www.apollographql.com/docs/apollo-server) [Graphql](https://graphql.org) server.
 
 <p>&nbsp;<p>
-<p>&nbsp;<p>
 
+## JSON Data
+When returning unstructured JSON data include the `scalar JSON` within the type-defs:
+
+```typescript
+export const typeDefs = gql`
+  scalar JSON
+
+  type Query {
+    myObject: JSON
+  }
+`;
+
+
+export const resolvers = {
+  Query: {
+    myObject: async (_: any, args: any, ctx: any, info: any) => {
+      return { count: 123, message: 'Any structure' };
+    },
+  },
+};
+
+```
+
+
+
+
+<p>&nbsp;<p>
+<p>&nbsp;<p>
 
