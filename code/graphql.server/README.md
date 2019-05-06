@@ -19,7 +19,6 @@ export const typeDefs = gql`
   }
 `;
 
-
 export const resolvers = {
   Query: {
     myObject: async (_: any, args: any, ctx: any, info: any) => {
@@ -27,10 +26,7 @@ export const resolvers = {
     },
   },
 };
-
 ```
-
-
 
 
 <p>&nbsp;<p>
