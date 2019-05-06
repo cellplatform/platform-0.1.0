@@ -4,8 +4,10 @@ import { t, gql, log } from './common';
  * [Types]
  */
 export const typeDefs = gql`
+  scalar JSON
+
   type Query {
-    foo: String
+    foo: JSON
   }
 
   type Mutation {
@@ -19,7 +21,7 @@ export const typeDefs = gql`
 export const resolvers: t.IResolvers = {
   Query: {
     foo: async (_: any, args: any, ctx: t.IContext, info: any) => {
-      return 'Foo';
+      return { msg: 'Foo' };
     },
   },
 
