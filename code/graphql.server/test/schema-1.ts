@@ -1,18 +1,16 @@
-import { t, gql, log } from './common';
+import { makeExecutableSchema } from 'graphql-tools';
+import { gql, log, t } from './common';
 
 /**
  * [Types]
  */
 export const typeDefs = gql`
-  scalar JSON
-
   type User {
     email: String
   }
 
   type Query {
     me: User
-    json: JSON
   }
 
   type Mutation {
@@ -28,10 +26,6 @@ export const resolvers: t.IResolvers = {
     me: async (_: any, args: any, ctx: t.IContext, info: any) => {
       return ctx.getUser();
     },
-
-    json: async (_: any, args: any, ctx: t.IContext, info: any) => {
-      return { foo: 123, bar: 456 };
-    },
   },
 
   Mutation: {
@@ -42,3 +36,8 @@ export const resolvers: t.IResolvers = {
     },
   },
 };
+
+export function init() {
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  return schema;
+}

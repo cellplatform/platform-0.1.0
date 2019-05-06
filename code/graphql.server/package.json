@@ -11,7 +11,7 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "build-test": "ts build --no-esm --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare"
   },
   "dependencies": {
