@@ -14,6 +14,7 @@ export type IAvatarProps = {
   block?: boolean;
   placeholderIcon?: IIcon;
   placeholderIconColor?: number | string;
+  gravatarDefault?: gravatar.GravatarDefault;
   events$?: Subject<t.AvatarEvent>;
   style?: GlamorValue;
 };
@@ -103,10 +104,12 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
   }
 
   private renderImage() {
-    const { borderWidth = 0, size = 36, borderRadius = 5 } = this.props;
+    const { borderWidth = 0, size = 36, borderRadius = 5, gravatarDefault = '404' } = this.props;
     const width = size - borderWidth * 2;
     const isLoaded = this.state.isLoaded;
-    const src = Avatar.isGravatar(this.src) ? gravatar.url(this.src, { size }) : this.src;
+    const src = Avatar.isGravatar(this.src)
+      ? gravatar.url(this.src, { size, default: gravatarDefault })
+      : this.src;
 
     const styles = {
       base: css({
