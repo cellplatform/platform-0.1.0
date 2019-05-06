@@ -5,9 +5,9 @@ export * from '../../src/types';
 
 export type ICommandProps = {
   state$: Subject<ITestState>;
+  next(state: ITestState): void;
 };
 
 export type ITestState = {
-  title?: string;
-  count?: number;
+  res?: any;
 };

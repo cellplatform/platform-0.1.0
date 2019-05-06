@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { CommandShell, t, MyComponent, ObjectView, Hr } from '../common';
+import { css, CommandShell, t, ObjectView, Hr } from '../common';
 
 export type ITestProps = {};
 
@@ -30,12 +30,13 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Render]
    */
   public render() {
+    const styles = {
+      base: css({ padding: 20, flex: 1 }),
+    };
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
-        <div style={{ padding: 30, flex: 1 }}>
-          <MyComponent text={this.state.title} />
-          <Hr />
-          <ObjectView name={'state'} data={this.state} />
+        <div {...styles.base}>
+          <ObjectView name={'graphql'} data={this.state} />
         </div>
       </CommandShell>
     );
