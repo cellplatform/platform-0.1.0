@@ -13,7 +13,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private state$ = new Subject<Partial<ITestState>>();
   private store = this.props.store;
   private store$ = this.store.events$.pipe(takeUntil(this.unmounted$));
-  private Provider = state.createProvider(this.store);
+  private lens: t.IThreadStoreContext = this.store.lens<t.IThreadModel>(e => e.root);
 
   /**
    * [Lifecycle]
@@ -58,18 +58,16 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       }),
     };
     return (
-      <this.Provider>
-        <div {...styles.base}>
-          <div {...styles.left}>
-            <div {...styles.body}>
-              <Conversation />
-            </div>
-          </div>
-          <div {...styles.right}>
-            <ObjectView name={'thread'} data={this.store.state} />
+      <div {...styles.base}>
+        <div {...styles.left}>
+          <div {...styles.body}>
+            <Conversation context={this.lens} />
           </div>
         </div>
-      </this.Provider>
+        <div {...styles.right}>
+          <ObjectView name={'thread'} data={this.store.state} />
+        </div>
+      </div>
     );
   }
 }

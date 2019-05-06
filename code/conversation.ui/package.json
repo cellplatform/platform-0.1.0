@@ -1,6 +1,6 @@
 {
   "name": "@platform/conversation.ui",
-  "version": "0.0.22",
+  "version": "0.0.24",
   "description": "UI components for conversation threads.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,8 +18,8 @@
   "dependencies": {
     "@platform/conversation.types": "0.0.4",
     "@platform/react": "0.1.31",
-    "@platform/state": "0.1.12",
-    "@platform/state.react": "0.1.17",
+    "@platform/state": "0.2.0",
+    "@platform/state.react": "0.2.0",
     "@platform/ui.button": "0.1.2",
     "@platform/ui.editor": "0.0.62",
     "@platform/ui.image": "0.0.15",

@@ -1058,7 +1058,7 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql.server@^0.0.4":
+"@platform/graphql.server@0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.4.tgz#219062a9a79b0ed8e3d66875c5743b5abeec6119"
   integrity sha512-daNULIJQf3V6JmalAhVCd9VwIB3R1HU4lIttSKzEHjhlvmb+PdETQfDkQtkFX+JJcKBvJ4gBQVwacPkIkcTqMg==
@@ -1145,18 +1145,18 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/state.react@0.1.17":
-  version "0.1.17"
-  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.1.17.tgz#6c12e5d40cc8b821667245f46c34a35cb14d1745"
-  integrity sha512-Q/xTwzRFZ1ZMaTdaA4SRbIMow0BS8399UQyPFKapJW2YI5YaqI/PnAKQcpCGeWxfzHcqT1Sh8KnTAs7DMt572Q==
+"@platform/state.react@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.2.0.tgz#2572800d5e0f6e892b13945139fa4cb41fad984d"
+  integrity sha512-8zpf942MAOdhTjf3z/F3aIt/IRM42JWNRK/mUFzq2HK3KVzv5rna/dCc7+Ul5Iu64cSS43rg30nt34w18yoNdw==
   dependencies:
     "@platform/react" "0.1.31"
-    "@platform/state" "0.1.12"
+    "@platform/state" "0.2.0"
 
-"@platform/state@0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.1.12.tgz#60b5df9ad9dd3d9d7f2e3a7ff86ab9490112ab05"
-  integrity sha512-wvUxuE9nAPa8gyDZbi/+IIO/h37r67vpqe+DAhWQaV191UhNyr1hO9AF0u4U9tBeZNgUAZmDSkfP8ZKKkYdK9g==
+"@platform/state@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.2.0.tgz#7225dd0654fd08c65cc635671c69ca04ed36af3d"
+  integrity sha512-26U8PnJkKrPTmn6uqLzazGRyqVDp4GVg7MEnjXydAA4yAFzHs8CVh2PapnJ0UdcfMjDtw5rCLeWbXNMDModP9A==
   dependencies:
     "@platform/util.value" "0.1.6"
 
