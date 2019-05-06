@@ -36,7 +36,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
-          <ObjectView name={'graphql'} data={this.state} />
+          <ObjectView name={'graphql'} data={this.state} expandLevel={5} />
         </div>
       </CommandShell>
     );

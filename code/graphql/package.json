@@ -18,14 +18,14 @@
   "dependencies": {
     "@platform/libs": "0.0.12",
     "@types/graphql": "14.2.0",
-    "apollo-boost": "^0.3.1",
-    "apollo-link-batch-http": "^1.2.11",
+    "apollo-boost": "0.3.1",
+    "apollo-link-batch-http": "1.2.11",
     "graphql": "14.2.1"
   },
   "devDependencies": {
     "@uiharness/dev": "0.2.52",
     "@uiharness/ui": "0.2.33",
-    "apollo-server": "^2.4.8"
+    "apollo-server": "2.4.8"
   },
   "files": [
     "lib"

@@ -1,1 +1,1 @@
-export const TEMP=123
+export { gql } from 'apollo-boost';
