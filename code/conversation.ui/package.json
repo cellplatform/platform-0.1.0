@@ -7,7 +7,7 @@
   "scripts": {
     "ui": "ui $@",
     "start": "ui start web $@",
-    "watch": "nodemon lib.test/test/server/start",
+    "watch": "nodemon --watch lib.test/test/server --watch node_modules/@platform/conversation.db lib.test/test/server/start",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",

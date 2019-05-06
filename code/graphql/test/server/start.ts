@@ -12,6 +12,7 @@ const server = new ApolloServer({ schema });
   const url = log.cyan(`http://localhost:${log.magenta(port)}${log.gray('/graphql')}`);
   log.info.gray(`\n👋  Running on ${url}`);
   log.info();
+  log.info.gray(`   - package:   ${pkg.name}`);
   log.info.gray(`   - version:   ${pkg.version}`);
   log.info.gray(`   - prod:      ${is.prod}`);
   log.info();
