@@ -3812,7 +3812,7 @@ grapheme-breaker@^0.3.2:
     brfs "^1.2.0"
     unicode-trie "^0.3.1"
 
-gravatar-url@^3.0.1:
+gravatar-url@3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/gravatar-url/-/gravatar-url-3.0.1.tgz#09cde82435b817e2eb2c55a6ece634c932748237"
   integrity sha512-4hcRvsDmoU6+TS6XksbaRhcRmr0XTgEOEpWG4AWz4zFlE+M89AkqEg09tyzL7S4mmGWSKct+ZLVrnHQrrjVIQg==
