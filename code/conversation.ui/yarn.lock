@@ -1058,7 +1058,7 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql.server@0.0.4":
+"@platform/graphql.server@^0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.4.tgz#219062a9a79b0ed8e3d66875c5743b5abeec6119"
   integrity sha512-daNULIJQf3V6JmalAhVCd9VwIB3R1HU4lIttSKzEHjhlvmb+PdETQfDkQtkFX+JJcKBvJ4gBQVwacPkIkcTqMg==

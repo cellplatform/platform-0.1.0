@@ -21,7 +21,7 @@ export const typeDefs = gql`
 export const resolvers: t.IResolvers = {
   Query: {
     foo: async (_: any, args: any, ctx: t.IContext, info: any) => {
-      return { msg: 'Foo' };
+      return { msg: 'Local' };
     },
   },
 

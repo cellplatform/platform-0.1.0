@@ -1,11 +1,11 @@
-import { server } from './graphql';
+import { app } from './graphql';
 import { log, is } from './common';
 
 const pkg = require('../../../package.json');
 
 (async () => {
   const port = 5000;
-  await server.listen({ port });
+  await app.listen({ port });
 
   const url = log.cyan(`http://localhost:${log.magenta(port)}${log.gray('/graphql')}`);
   log.info.gray(`\n👋  Running on ${url}`);

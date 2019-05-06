@@ -1,2 +1,2 @@
-import { uniq } from 'ramda';
-export const R = { uniq };
+export { log } from '@platform/log/lib/server';
+export { gql } from '@platform/graphql.server';

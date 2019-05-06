@@ -1,26 +1,33 @@
 import { ApolloServer, express } from './common';
 import { resolvers, typeDefs } from './resolvers';
 
+import { mergeSchemas, makeExecutableSchema } from 'graphql-tools';
+import * as db from '@platform/conversation.db';
+
 const pkg = require('../../../package.json');
+
+/**
+ * Prepare the schema.
+ */
+const dbSchema = db.graphql.init({}).schema;
+const localSchema = makeExecutableSchema({ typeDefs, resolvers });
+const schema = mergeSchemas({ schemas: [dbSchema, localSchema] });
 
 /**
  * [Express] web server.
  */
-export const server = express();
+export const app = express();
 
 /**
  * [GraphQL] server.
  */
-export const graphql = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
-graphql.applyMiddleware({ app: server });
+export const server = new ApolloServer({ schema });
+server.applyMiddleware({ app });
 
 /**
  * [Routes]
  */
-server.get('*', (req, res) => {
+app.get('*', (req, res) => {
   const { name, version } = pkg;
   res.send({ name, version });
 });
