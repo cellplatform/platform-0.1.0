@@ -17,6 +17,8 @@ import { ErrorResponse } from 'apollo-link-error';
 
 type IConstructorArgs = {
   uri: string;
+  name?: string;
+  version?: string;
 };
 
 /**
@@ -35,10 +37,11 @@ export class GraphqlClient implements t.IGqlClient {
    */
 
   private constructor(args: IConstructorArgs) {
-    const { uri } = args;
-    this._.uri = uri;
+    this._.args = args;
     this._.apollo = new ApolloClient({
-      uri,
+      uri: this.uri,
+      name: this.name,
+      version: this.version,
       onError: err => this.onError(err),
     });
   }
@@ -55,7 +58,7 @@ export class GraphqlClient implements t.IGqlClient {
    * [Fields]
    */
   private readonly _ = {
-    uri: '',
+    args: (undefined as unknown) as IConstructorArgs,
     apollo: (undefined as unknown) as ApolloClient<{}>,
     dispose$: new Subject(),
     events$: new Subject<t.GraphqlEvent>(),
@@ -75,7 +78,15 @@ export class GraphqlClient implements t.IGqlClient {
   }
 
   public get uri() {
-    return this._.uri;
+    return this._.args.uri;
+  }
+
+  public get name() {
+    return this._.args.name;
+  }
+
+  public get version() {
+    return this._.args.version;
   }
 
   /**
