@@ -1,1 +1,2 @@
-export type Foo = 'TEMP';
+
+export * from './GraphqlClient/types';

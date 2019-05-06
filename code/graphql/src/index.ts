@@ -1,2 +1,5 @@
-export * from './types';
-export { gql } from './common';
+import * as graphql from './graphql';
+
+export { graphql };
+export * from './graphql';
+export default graphql;
