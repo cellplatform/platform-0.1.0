@@ -66,7 +66,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - ui
   - [@platform/react](/code/react)
   - [@platform/css](/code/css)
-- ui components
+- ui (primitives)
   - [@platform/ui.button](/code/ui.button)
   - [@platform/ui.cli](/code/ui.cli)
   - [@platform/ui.codemirror](/code/ui.codemirror)
@@ -96,6 +96,9 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/npm.express](/code/npm.express)
 - auth
   - [@platform/auth0](/code/auth0)
+- collaboration
+  - [@platform/conversation.db](/code/conversation.db)
+  - [@platform/conversation.ui](/code/conversation.ui)
 
 
 <p>&nbsp;</p>
