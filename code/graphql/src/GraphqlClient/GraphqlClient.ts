@@ -13,6 +13,7 @@ import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
+import { ErrorResponse } from 'apollo-link-error';
 
 type IConstructorArgs = {
   uri: string;
@@ -36,7 +37,10 @@ export class GraphqlClient implements t.IGqlClient {
   private constructor(args: IConstructorArgs) {
     const { uri } = args;
     this._.uri = uri;
-    this._.apollo = new ApolloClient({ uri });
+    this._.apollo = new ApolloClient({
+      uri,
+      onError: err => this.onError(err),
+    });
   }
 
   /**
@@ -79,28 +83,29 @@ export class GraphqlClient implements t.IGqlClient {
    */
 
   public async query<D = any, V = t.IGqlVariables>(
-    req: t.IGqlQueryOptions<V>,
+    request: t.IGqlQueryOptions<V>,
   ): Promise<t.IGqlQueryResult<D>> {
     this.throwIfDisposed('query');
-    this.fire({ type: 'GRAPHQL/querying', payload: { req } });
-    const res = await this._.apollo.query<D>(req);
-    this.fire({ type: 'GRAPHQL/queried', payload: { req, res } });
-    return res;
+    this.fire({ type: 'GRAPHQL/querying', payload: { request } });
+    const response = await this._.apollo.query<D>(request);
+    this.fire({ type: 'GRAPHQL/queried', payload: { request, response } });
+    return response;
   }
 
   public async mutate<D = any, V = t.IGqlVariables>(
-    req: t.IGqlMutateOptions<D, V>,
+    request: t.IGqlMutateOptions<D, V>,
   ): Promise<t.IGqlMutateResult<D>> {
     this.throwIfDisposed('mutate');
-    this.fire({ type: 'GRAPHQL/mutating', payload: { req } });
-    const res = await this._.apollo.mutate<D>(req);
-    this.fire({ type: 'GRAPHQL/mutated', payload: { req, res } });
-    return res;
+    this.fire({ type: 'GRAPHQL/mutating', payload: { request } });
+    const response = await this._.apollo.mutate<D>(request);
+    this.fire({ type: 'GRAPHQL/mutated', payload: { request, response } });
+    return response;
   }
 
   /**
    * [Helpers]
    */
+
   private fire(e: t.GraphqlEvent) {
     this._.events$.next(e);
   }
@@ -109,5 +114,20 @@ export class GraphqlClient implements t.IGqlClient {
     if (this.isDisposed) {
       throw new Error(`Cannot ${action} graphql because client is disposed.`);
     }
+  }
+
+  private onError(err: ErrorResponse) {
+    const { graphQLErrors: errors = [], networkError: network, response, operation } = err;
+    const total = errors.length + (network ? 1 : 0);
+    this.fire({
+      type: 'GRAPHQL/error',
+      payload: {
+        total,
+        errors,
+        network,
+        response,
+        operation,
+      },
+    });
   }
 }

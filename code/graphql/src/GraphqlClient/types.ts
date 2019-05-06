@@ -5,7 +5,9 @@ import {
   QueryOptions,
   MutationOptions,
 } from 'apollo-client';
-import { FetchResult } from 'apollo-link';
+import { FetchResult, Operation } from 'apollo-link';
+import { GraphQLError, ExecutionResult } from 'graphql';
+import { ServerError, ServerParseError } from 'apollo-link-http-common';
 
 export type IGqlVariables = OperationVariables;
 
@@ -19,18 +21,33 @@ export type IGqlClient = {
   readonly dispose$: Observable<{}>;
   readonly isDisposed: boolean;
   dispose(): void;
-  query<D = any, V = IGqlVariables>(req: IGqlQueryOptions<V>): Promise<IGqlQueryResult<D>>;
-  mutate<D = any, V = IGqlVariables>(req: IGqlMutateOptions<D, V>): Promise<IGqlMutateResult<D>>;
+  query<D = any, V = IGqlVariables>(request: IGqlQueryOptions<V>): Promise<IGqlQueryResult<D>>;
+  mutate<D = any, V = IGqlVariables>(
+    request: IGqlMutateOptions<D, V>,
+  ): Promise<IGqlMutateResult<D>>;
 };
 
 /**
  * [Events]
  */
 export type GraphqlEvent =
+  | IGqlErrorEvent
   | IGqlQueryingEvent
   | IGqlQueryiedEvent
   | IGqlMutatingEvent
   | IGqlMutatedEvent;
+
+export type IGqlErrorEvent = {
+  type: 'GRAPHQL/error';
+  payload: IGqlError;
+};
+export type IGqlError = {
+  total: number;
+  errors?: ReadonlyArray<GraphQLError>;
+  network?: Error | ServerError | ServerParseError;
+  response?: ExecutionResult;
+  operation: Operation;
+};
 
 /**
  * [event.Query]
@@ -40,7 +57,7 @@ export type IGqlQueryingEvent<V = IGqlVariables> = {
   payload: IGqlQuerying<V>;
 };
 export type IGqlQuerying<V = IGqlVariables> = {
-  req: IGqlQueryOptions<V>;
+  request: IGqlQueryOptions<V>;
 };
 
 export type IGqlQueryiedEvent<V = IGqlVariables> = {
@@ -48,8 +65,8 @@ export type IGqlQueryiedEvent<V = IGqlVariables> = {
   payload: IGqlQueryied<V>;
 };
 export type IGqlQueryied<D = any, V = IGqlVariables> = {
-  req: IGqlQueryOptions<V>;
-  res: IGqlQueryResult<D>;
+  request: IGqlQueryOptions<V>;
+  response: IGqlQueryResult<D>;
 };
 
 /**
@@ -60,7 +77,7 @@ export type IGqlMutatingEvent<D = any, V = IGqlVariables> = {
   payload: IGqlMutating<D, V>;
 };
 export type IGqlMutating<D = any, V = IGqlVariables> = {
-  req: IGqlMutateOptions<D, V>;
+  request: IGqlMutateOptions<D, V>;
 };
 
 export type IGqlMutatedEvent<D = any, V = IGqlVariables> = {
@@ -68,6 +85,6 @@ export type IGqlMutatedEvent<D = any, V = IGqlVariables> = {
   payload: IGqlMutated<D, V>;
 };
 export type IGqlMutated<D = any, V = IGqlVariables> = {
-  req: IGqlMutateOptions<D, V>;
-  res: IGqlMutateResult<D>;
+  request: IGqlMutateOptions<D, V>;
+  response: IGqlMutateResult<D>;
 };

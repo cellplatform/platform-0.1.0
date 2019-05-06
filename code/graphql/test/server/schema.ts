@@ -2,7 +2,7 @@ import { IResolvers, makeExecutableSchema } from 'graphql-tools';
 import { gql } from './common';
 
 let count = 0;
-const cache = {
+const DATA = {
   foo: { initial: true } as any,
 };
 
@@ -14,6 +14,7 @@ export const typeDefs = gql`
 
   type Query {
     json: JSON
+    fail: Boolean
   }
 
   type Mutation {
@@ -28,13 +29,17 @@ export const resolvers: IResolvers = {
   Query: {
     json: async (_: any, args: any, ctx: any, info: any) => {
       count++;
-      return { count, message: `Hello ${count}`, foo: cache.foo };
+      return { count, message: `Hello ${count}`, foo: DATA.foo };
+    },
+
+    fail: async (_: any, args: any, ctx: any, info: any) => {
+      throw new Error('Fail!');
     },
   },
 
   Mutation: {
     change: async (_: any, args: { foo: object }, ctx: any, info: any) => {
-      cache.foo = args.foo;
+      DATA.foo = args.foo;
       return true;
     },
   },
