@@ -1,25 +1,8 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-} from 'rxjs/operators';
 import * as React from 'react';
+import { Observable } from 'rxjs';
 
+import { GlamorValue, IEditorSettings, ISize, monaco, value } from '../../../common';
 import * as config from '../../../config';
-
-import {
-  GlamorValue,
-  IEditorSettings,
-  monaco,
-  ISize,
-  value,
-} from '../../../common';
 
 export type IMonacoProps = {
   settings: IEditorSettings;

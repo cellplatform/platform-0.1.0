@@ -5,6 +5,8 @@
     "outDir": "lib",
     "target": "esnext",
     "sourceMap": false,
-    "jsx": "react"
+    "jsx": "react",
+
+    "noUnusedLocals": false
   }
 }
