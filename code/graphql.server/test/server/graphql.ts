@@ -1,6 +1,6 @@
 import { ApolloServer, express, t, pkg } from './common';
 import { Context } from './Context';
-import * as schema from './schema';
+import { init } from './schema';
 
 /**
  * [Express] web server.
@@ -10,8 +10,9 @@ export const server = express();
 /**
  * [GraphQL] server.
  */
+const schema = init({});
 export const graphql = new ApolloServer({
-  schema: schema.init({}),
+  schema,
 
   /**
    * Enable playground in production.
