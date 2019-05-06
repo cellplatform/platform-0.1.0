@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { map, share, takeUntil, filter } from 'rxjs/operators';
+import { map, share, takeUntil, filter, take } from 'rxjs/operators';
 import * as t from './types';
 
 export * from './types';
@@ -110,21 +110,49 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
   /**
    * Retrieves an observable narrowed in on a single type of dispatched event.
    */
-  public on<T extends E>(type: T['type']) {
+  public on<E2 extends E>(type: E2['type']) {
     return this.events$.pipe(
       filter(e => e.type === type),
-      map(e => e as t.IDispatch<M, T, E>),
+      map(e => e as t.IDispatch<M, E2, E>),
     );
+  }
+
+  /**
+   * Retrieves a lens into a sub-section of the state-tree.
+   */
+  public lens<S extends {}>(filter: t.LensStateFilter<M, S>): t.IStoreLens<S, E> {
+    const dispose$ = new Subject<{}>();
+    const self = this; // tslint:disable-line
+    const context: t.IStoreLens<S, E> = {
+      dispose$: dispose$.pipe(share()),
+      changed$: this.changed$.pipe(takeUntil(dispose$)),
+      get isDisposed() {
+        return dispose$.isStopped;
+      },
+      get state() {
+        const root = self.state;
+        return { ...filter({ root }) };
+      },
+      dispatch(event: E) {
+        self.dispatch(event);
+        return context;
+      },
+      dispose() {
+        dispose$.next();
+        dispose$.complete();
+      },
+    };
+    return context;
   }
 
   /**
    * [Helpers]
    */
 
-  private toDispatchEvent<T extends E>(event: T) {
+  private toDispatchEvent<E2 extends E>(event: E2) {
     const { type, payload } = event;
     const from = this.state;
-    const result: t.IDispatch<M, T, E> = {
+    const result: t.IDispatch<M, E2, E> = {
       type,
       payload,
       get state() {
@@ -135,12 +163,13 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
 
         // Fire PRE event (and check if anyone cancelled it).
         let isCancelled = false;
-        const change: t.IStateChange<M, T> = { type, event, from, to };
+        const change: t.IStateChange<M, E2> = { type, event, from, to };
         this._.changing$.next({
           change,
           isCancelled,
           cancel: () => (isCancelled = true),
         });
+
         if (isCancelled) {
           return result;
         }
