@@ -1016,30 +1016,6 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql.server@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.4.tgz#219062a9a79b0ed8e3d66875c5743b5abeec6119"
-  integrity sha512-daNULIJQf3V6JmalAhVCd9VwIB3R1HU4lIttSKzEHjhlvmb+PdETQfDkQtkFX+JJcKBvJ4gBQVwacPkIkcTqMg==
-  dependencies:
-    "@platform/graphql" "0.0.3"
-    "@platform/libs" "0.0.12"
-    "@platform/log" "0.0.116"
-    "@platform/util.is" "0.0.65"
-    "@types/express" "4.16.1"
-    "@types/graphql" "14.2.0"
-    apollo-server-express "2.4.8"
-    express "4.16.4"
-    graphql "14.2.1"
-
-"@platform/graphql@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.0.3.tgz#624c49fb0eadad62a5ad1eab2cb997df263d90a6"
-  integrity sha512-bTgwcNrppo/+dO38YTt4iqmfiXxbwNFu/hsca1qryFqVdcWhXBft462VDjRGn+E9qOjat2hRH4AIkVDiD7RKcA==
-  dependencies:
-    "@platform/libs" "0.0.12"
-    "@types/graphql" "14.2.0"
-    graphql "14.2.1"
-
 "@platform/libs@0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.12.tgz#84f224528adae402ddba30b0bfcd74dbdd22f490"
@@ -3835,7 +3811,7 @@ expand-brackets@^2.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-express@4.16.4, express@^4.0.0:
+express@^4.0.0:
   version "4.16.4"
   resolved "https://registry.yarnpkg.com/express/-/express-4.16.4.tgz#fddef61926109e24c515ea97fd2f1bdbf62df12e"
   integrity sha512-j12Uuyb4FMrd/qQAm6uCHAkPtO8FDTRJZBDd5D2KOL2eLaz1yUNdUB/NOIyq0iU4q4cFarsUCrnFDPBcnksuOg==
