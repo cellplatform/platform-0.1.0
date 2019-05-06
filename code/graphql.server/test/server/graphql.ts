@@ -1,8 +1,6 @@
-import { ApolloServer, express, t } from './common';
+import { ApolloServer, express, t, pkg } from './common';
 import { Context } from './Context';
 import * as schema from './schema';
-
-const pkg = require('../../package.json');
 
 /**
  * [Express] web server.

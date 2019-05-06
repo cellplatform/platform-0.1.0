@@ -1,7 +1,5 @@
 import { server } from './graphql';
-import { log, is } from './common';
-
-const pkg = require('../../package.json');
+import { log, is, pkg } from './common';
 
 (async () => {
   const port = 5000;
