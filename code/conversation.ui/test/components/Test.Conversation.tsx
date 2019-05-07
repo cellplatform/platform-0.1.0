@@ -40,15 +40,17 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         flex: 1,
         Flex: 'horizontal',
       }),
-      left: css({
+      main: css({
+        position: 'relative',
         flex: 1,
         Flex: 'vertical-center-stretch',
+        Scroll: true,
+        paddingTop: 30,
+        paddingBottom: 50,
       }),
-      body: css({
+      mainInner: css({
         width: 760,
         flex: 1,
-        display: 'flex',
-        paddingTop: 30,
       }),
       right: css({
         boxSizing: 'border-box',
@@ -59,8 +61,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...styles.base}>
-        <div {...styles.left}>
-          <div {...styles.body}>
+        <div {...styles.main}>
+          <div {...styles.mainInner}>
             <Conversation context={this.lens} />
           </div>
         </div>

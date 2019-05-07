@@ -71,4 +71,43 @@ export class ConversationThreadGraphql {
     console.log('variables', variables);
     console.log('res', res);
   }
+
+  /**
+   * Looks up a thread by the given ID.
+   */
+  public async findById(id: string) {
+    const query = gql`
+      query Thread($id: ID!) {
+        conversation {
+          thread(id: $id) {
+            id
+            users
+            items
+          }
+        }
+      }
+    `;
+
+    type TData = { conversation: { thread: t.IThreadModel } };
+
+    const variables = { id };
+    const res = await this.client.query<TData>({
+      query,
+      variables,
+      fetchPolicy: 'network-only',
+    });
+
+    const thread = res.data.conversation ? res.data.conversation.thread : undefined;
+    return clean(thread);
+  }
+}
+
+/**
+ * Helpers
+ */
+export function clean(obj: any) {
+  if (obj && typeof obj === 'object') {
+    delete obj.__typename;
+  }
+  return obj;
 }

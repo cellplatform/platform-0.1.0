@@ -26,10 +26,7 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
 
   // Setup graphql.
   const client = createGraphqlClient({ uri: 'http://localhost:5000/graphql' });
-  conversation.graphql.init({
-    client,
-    stores,
-  });
+  const graphql = conversation.graphql.init({ client, stores });
 
   // CLI.
   return CommandState.create({
@@ -37,6 +34,7 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
     beforeInvoke: async e => {
       const props: t.ICommandProps = {
         ...e.props,
+        graphql,
         threadCommentProps,
         threadStore: stores.thread,
         state$,

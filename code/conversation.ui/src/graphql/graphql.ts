@@ -32,7 +32,7 @@ export class ConversationGraphql {
   /**
    * [Fields]
    */
-  public readonly thread: ConversationThreadGraphql | undefined;
+  public readonly thread: ConversationThreadGraphql;
   private dispose$ = new Subject();
 
   /**

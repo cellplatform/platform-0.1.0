@@ -12,7 +12,16 @@ export type IThreadDraft = { user: t.IThreadUser; markdown?: string };
 /**
  * [Events]
  */
-export type ThreadEvent = IAddThreadItemEvent | IThreadItemsEvent | IThreadDraftEvent;
+export type ThreadEvent =
+  | IThreadLoadEvent
+  | IAddThreadItemEvent
+  | IThreadItemsEvent
+  | IThreadDraftEvent;
+
+export type IThreadLoadEvent = {
+  type: 'THREAD/load';
+  payload: { thread: t.IThreadModel };
+};
 
 export type IAddThreadItemEvent = {
   type: 'THREAD/add';

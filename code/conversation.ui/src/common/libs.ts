@@ -9,5 +9,5 @@ export { Key } from '@platform/conversation.types';
 /**
  * [Ramda]
  */
-import { equals } from 'ramda';
-export const R = { equals };
+import { equals, sortBy, prop } from 'ramda';
+export const R = { equals, sortBy, prop };

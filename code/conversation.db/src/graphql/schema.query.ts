@@ -1,4 +1,4 @@
-import { gql, t, Key } from '../common';
+import { gql, t, Key, R } from '../common';
 
 /**
  * [Types]
@@ -63,8 +63,9 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
         const values = await db.values({ pattern });
         const items = Object.keys(values)
           .map(key => values[key].value)
+          .filter(item => Boolean(item.kind))
           .filter(item => (kind ? item.kind === kind : true));
-        return items;
+        return R.sortBy(R.prop('timestamp'), items);
       },
 
       users: async (_: { id: string }, args: {}, ctx: t.IContext, info: any) => {
