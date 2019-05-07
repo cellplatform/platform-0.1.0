@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Command, idUtil, t } from '../common';
+import { Command, idUtil, t, time } from '../common';
 import { Test } from '../components/Test.Conversation';
 
 type P = t.ICommandProps;
@@ -15,7 +15,7 @@ export const conversation = Command.create<P>('Conversation', e => {
   .add('add', e => {
     const store = e.props.threadStore;
     const id = idUtil.cuid();
-    const timestamp = new Date();
+    const timestamp = time.toTimestamp();
     const user = { id: '1234', name: 'bob@example.com' };
     store.dispatch({
       type: 'THREAD/add',

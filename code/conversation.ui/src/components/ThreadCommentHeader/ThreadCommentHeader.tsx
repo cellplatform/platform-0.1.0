@@ -7,7 +7,7 @@ import { Text } from '../primitives';
 
 export type IThreadCommentHeaderProps = {
   name?: string;
-  timestamp?: Date;
+  timestamp?: number;
   style?: GlamorValue;
 };
 export type IThreadCommentHeaderState = {};
@@ -50,9 +50,14 @@ export class ThreadCommentHeader extends React.PureComponent<
     return this.props.name || 'Unnamed';
   }
 
-  public get elapsed() {
+  public get date() {
     const { timestamp } = this.props;
-    return timestamp ? time.elapsed(timestamp) : undefined;
+    return timestamp ? time.fromTimestamp(timestamp) : undefined;
+  }
+
+  public get elapsed() {
+    const date = this.date;
+    return date ? time.elapsed(date) : undefined;
   }
 
   /**

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, t, idUtil } from '../../common';
+import { GlamorValue, t, time } from '../../common';
 import { ConversationView } from './ConversationView';
 
 export type IConversationProps = {
@@ -69,7 +69,7 @@ export class Conversation extends React.PureComponent<IConversationProps> {
     const item: t.IThreadComment = {
       kind: 'THREAD/comment',
       id: '',
-      timestamp: new Date(),
+      timestamp: time.toTimestamp(),
       user: this.user,
       body: { markdown },
     };

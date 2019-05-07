@@ -49,7 +49,7 @@ export class ConversationThreadGraphql {
     const mutation = gql`
       mutation SaveThread($thread: JSON) {
         conversation {
-          thread {
+          threads {
             save(thread: $thread)
           }
         }

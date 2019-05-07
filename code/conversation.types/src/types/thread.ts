@@ -14,7 +14,7 @@ export type ThreadItem = IThreadComment;
 export type IThreadComment = {
   kind: 'THREAD/comment';
   id: string;
-  timestamp: Date;
+  timestamp: number;
   user: IThreadUser;
   body?: { markdown: string };
 };

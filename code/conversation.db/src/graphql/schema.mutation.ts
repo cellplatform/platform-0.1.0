@@ -9,10 +9,10 @@ export const typeDefs = gql`
   }
 
   type MutationConversation {
-    thread: MutationConversationThread
+    threads: MutationConversationThreads
   }
 
-  type MutationConversationThread {
+  type MutationConversationThreads {
     save(thread: JSON): Boolean
   }
 `;
@@ -34,10 +34,10 @@ export function init(args: { getDb: t.GetConverstaionDb }) {
     },
 
     MutationConversation: {
-      thread: () => ({}),
+      threads: () => ({}),
     },
 
-    MutationConversationThread: {
+    MutationConversationThreads: {
       save: async (_: any, args: { thread: t.IThreadModel }, ctx: any, info: any) => {
         const { thread } = args;
 

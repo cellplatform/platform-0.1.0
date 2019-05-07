@@ -105,10 +105,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       }),
     };
 
-    const timestamp = time
+    const date = time
       .day()
       .subtract(2, 'h')
       .toDate();
+    const timestamp = time.toTimestamp(date);
 
     const elHeader = <ThreadCommentHeader name={data.name} timestamp={timestamp} />;
 
