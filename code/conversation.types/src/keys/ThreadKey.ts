@@ -1,5 +1,8 @@
 import { t, identity } from '../common';
 
+/**
+ * Keys for conversation-threads.
+ */
 export class ThreadKey {
   /**
    * [Lifecycle]
@@ -9,26 +12,38 @@ export class ThreadKey {
   }
 
   /**
+   * [Properties]
+   */
+  public get dbPrefix() {
+    return 'MSG';
+  }
+
+  /**
    * [DB]
    */
   public dbKey(thread: t.IThreadModel | string) {
     const id = typeof thread === 'string' ? thread : thread.id;
-    return `MSG/${id}`;
+    return `${this.dbPrefix}/${id}`;
+  }
+
+  public itemsDbKey(thread: t.IThreadModel | string) {
+    const id = typeof thread === 'string' ? thread : thread.id;
+    return `${this.dbPrefix}/${id}/i`;
   }
 
   public itemDbKey(item: t.ThreadItem | string) {
     const id = typeof item === 'string' ? item : item.id;
-    return `MSG/${id}`;
+    return `${this.dbPrefix}/${id}`;
   }
 
   public usersDbKey(thread: t.IThreadModel | string) {
     const id = typeof thread === 'string' ? thread : thread.id;
-    return `MSG/${id}/users`;
+    return `${this.dbPrefix}/${id}/users`;
   }
 
   public metaDbKey(thread: t.IThreadModel | string) {
     const id = typeof thread === 'string' ? thread : thread.id;
-    return `MSG/${id}/meta`;
+    return `${this.dbPrefix}/${id}/meta`;
   }
 
   /**

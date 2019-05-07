@@ -1,4 +1,4 @@
-import { gql, t, Key, value } from '../common';
+import { gql, t, Key } from '../common';
 
 /**
  * [Types]
