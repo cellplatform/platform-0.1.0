@@ -1,1 +1,1 @@
-// Email
+export * from './types';
