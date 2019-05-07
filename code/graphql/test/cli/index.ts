@@ -7,7 +7,7 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   const { state$ } = args;
 
   const uri = 'http://localhost:5000/graphql';
-  const client = graphql.create({ uri });
+  const client = graphql.create({ uri, name: 'MyClient', version: '1.2.3' });
 
   client.events$.subscribe(e => {
     log.info('🐷', e.type, e.payload);

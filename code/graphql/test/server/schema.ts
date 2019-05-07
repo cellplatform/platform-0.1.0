@@ -1,5 +1,5 @@
 import { IResolvers, makeExecutableSchema } from 'graphql-tools';
-import { gql } from './common';
+import { gql, log } from './common';
 
 let count = 0;
 const DATA = {
@@ -39,6 +39,7 @@ export const resolvers: IResolvers = {
 
   Mutation: {
     change: async (_: any, args: { foo: object }, ctx: any, info: any) => {
+      log.info('MUTATION change/args', args);
       DATA.foo = args.foo;
       return true;
     },
