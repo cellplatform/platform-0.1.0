@@ -48,17 +48,10 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
 
     QueryConversation: {
       thread: async (_: any, args: { id: string }, ctx: t.IContext, info: any) => {
-        console.log('args', args);
-
         const id = args.id || '';
-
-        // const values = await db.values({ pattern: `MSG/${id}` });
-
-        // console.log('id', id);
-        // console.log('values', values);
-        // return null;
-
-        return { id };
+        const db = await getDb();
+        const exists = (await db.get(keys.thread.metaDbKey(id))).props.exists;
+        return exists ? { id } : null;
       },
     },
 

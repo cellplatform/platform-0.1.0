@@ -12,18 +12,23 @@ export class ThreadKey {
    * [DB]
    */
   public dbKey(thread: t.IThreadModel | string) {
-    const threadId = typeof thread === 'string' ? thread : thread.id;
-    return `MSG/${threadId}`;
+    const id = typeof thread === 'string' ? thread : thread.id;
+    return `MSG/${id}`;
   }
 
   public itemDbKey(item: t.ThreadItem | string) {
-    const itemId = typeof item === 'string' ? item : item.id;
-    return `MSG/${itemId}`;
+    const id = typeof item === 'string' ? item : item.id;
+    return `MSG/${id}`;
   }
 
   public usersDbKey(thread: t.IThreadModel | string) {
-    const threadId = typeof thread === 'string' ? thread : thread.id;
-    return `MSG/${threadId}/users`;
+    const id = typeof thread === 'string' ? thread : thread.id;
+    return `MSG/${id}/users`;
+  }
+
+  public metaDbKey(thread: t.IThreadModel | string) {
+    const id = typeof thread === 'string' ? thread : thread.id;
+    return `MSG/${id}/meta`;
   }
 
   /**

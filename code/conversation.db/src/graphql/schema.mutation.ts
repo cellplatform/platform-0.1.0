@@ -54,7 +54,10 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
 
         // Save users.
         const users = thread.users || [];
-        await db.put(keys.thread.usersDbKey(thread) as any, users);
+        await db.put(keys.thread.usersDbKey(thread), users);
+
+        // Save meta.
+        await db.put(keys.thread.metaDbKey(thread), {});
 
         // Finish up.
         return true;
