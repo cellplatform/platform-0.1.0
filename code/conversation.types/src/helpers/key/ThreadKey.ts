@@ -1,4 +1,4 @@
-import { t, idUtil } from '../../common';
+import { t, identity } from '../../common';
 
 export class ThreadKey {
   /**
@@ -36,10 +36,10 @@ export class ThreadKey {
    */
   public itemId(thread: t.IThreadModel | string, uniq?: string) {
     const threadId = typeof thread === 'string' ? thread : thread.id;
-    return `${threadId}/i/${uniq || idUtil.shortid()}`;
+    return `${threadId}/i/${uniq || identity.shortid()}`;
   }
 
   public id(uniq?: string) {
-    return `th/${uniq || idUtil.cuid()}`;
+    return `th/${uniq || identity.cuid()}`;
   }
 }

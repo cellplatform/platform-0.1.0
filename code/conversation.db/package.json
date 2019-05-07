@@ -11,6 +11,7 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
+    "build-test": "ts build",
     "prepare": "ts prepare"
   },
   "dependencies": {
