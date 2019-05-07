@@ -15,12 +15,17 @@ export const typeDefs = gql`
     address: Address
   }
 
+  type Store {
+    write(value: String): Boolean
+  }
+
   type Query {
     me: User
   }
 
   type Mutation {
     echo(message: String): String
+    store: Store
   }
 `;
 
@@ -31,6 +36,13 @@ export const resolvers: t.IResolvers = {
   User: {
     address: async (_: any, args: any, ctx: t.IContext, info: any) => {
       return { street: '221b Baker Street', city: 'London' };
+    },
+  },
+
+  Store: {
+    write: async (_: any, args: any, ctx: t.IContext, info: any) => {
+      log.info('nested mutation:', args);
+      return true;
     },
   },
 
@@ -45,6 +57,10 @@ export const resolvers: t.IResolvers = {
       const res = `Echo: ${args.message}`;
       log.info(res);
       return res;
+    },
+
+    store: async (_: any, args: any, ctx: t.IContext, info: any) => {
+      return {};
     },
   },
 };
