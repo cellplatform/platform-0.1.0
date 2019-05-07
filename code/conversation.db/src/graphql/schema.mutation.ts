@@ -13,7 +13,7 @@ export const typeDefs = gql`
   }
 
   type MutationConversationThread {
-    saveAll(thread: JSON): Boolean
+    save(thread: JSON): Boolean
   }
 `;
 
@@ -37,12 +37,12 @@ export function init(args: { getDb: t.GetConverstaionDb }) {
     },
 
     MutationConversationThread: {
-      saveAll: async (_: any, args: t.IThreadModel, ctx: any, info: any) => {
+      save: async (_: any, args: { thread: t.IThreadModel }, ctx: any, info: any) => {
         const db = await getDb();
         await db.put('FOO', args);
 
         // DATA.foo = args.foo;
-        console.log('saveThread', args);
+        console.log('thread/save:', args.thread);
         return true;
       },
     },

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Command, id as idUtil, t } from '../common';
+import { Command, idUtil, t } from '../common';
 import { Test } from '../components/Test.Conversation';
 
 type P = t.ICommandProps;

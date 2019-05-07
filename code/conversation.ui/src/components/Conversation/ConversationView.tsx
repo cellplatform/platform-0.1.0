@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, id as idUtil, log, t, value } from '../../common';
+import { css, GlamorValue, log, t, value } from '../../common';
 import { Divider } from '../Divider';
 import { ThreadComment } from '../ThreadComment';
 import { ThreadCommentHeader } from '../ThreadCommentHeader';
@@ -11,6 +11,7 @@ export type IConversationViewProps = {
   model: t.IThreadStoreModel;
   dispatch$: Subject<t.ThreadEvent>;
   style?: GlamorValue;
+  onComment?: (e: {}) => void;
 };
 
 const TEMP = {
@@ -119,20 +120,20 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
         body={body}
         isEditing={true}
         editor$={this.editor$}
-        onComment={this.handleCommentClick}
+        onComment={this.props.onComment}
       />
     );
   }
 
-  private handleCommentClick = () => {
-    const markdown = this.draft.markdown || '';
-    const item: t.IThreadComment = {
-      kind: 'THREAD/comment',
-      id: idUtil.cuid(),
-      timestamp: new Date(),
-      user: this.user,
-      body: { markdown },
-    };
-    this.dispatch({ type: 'THREAD/add', payload: { item } });
-  };
+  // private handleCommentClick = () => {
+  //   const markdown = this.draft.markdown || '';
+  //   const item: t.IThreadComment = {
+  //     kind: 'THREAD/comment',
+  //     id: idUtil.cuid(),
+  //     timestamp: new Date(),
+  //     user: this.user,
+  //     body: { markdown },
+  //   };
+  //   this.dispatch({ type: 'THREAD/add', payload: { item } });
+  // };
 }

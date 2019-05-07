@@ -1,1 +1,1 @@
-export * from './types.thread';
+export * from './types/thread';

@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { create as createGraphqlClient } from '@platform/graphql';
 
-import { CommandState, store, t, id as idUtil, conversation, gql } from '../common';
+import { CommandState, store, t, conversation } from '../common';
 import { root } from './cmds';
 import { createThreadCommentProps } from './cmds.ThreadComment';
 
@@ -10,15 +10,20 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
 
   // Sample.
   const user: t.IThreadUser = { id: 'mary@foo.com' };
-  const initial: t.IThreadStoreModel = { id: idUtil.cuid(), items: [], draft: { user } };
+  const initial: t.IThreadStoreModel = { id: '1234', items: [], draft: { user } };
 
   // Create test data stores.
-  const threadStore = store.thread.create({ initial });
+  const stores = {
+    thread: store.thread.create({ initial }),
+  };
   const threadCommentProps = createThreadCommentProps();
 
   // Setup graphql.
   const client = createGraphqlClient({ uri: 'http://localhost:5000/graphql' });
-  const graphql = conversation.graphql.init({ client, stores: { thread: threadStore } });
+  conversation.graphql.init({
+    client,
+    stores,
+  });
 
   // CLI.
   return CommandState.create({
@@ -27,7 +32,7 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
       const props: t.ICommandProps = {
         ...e.props,
         threadCommentProps,
-        threadStore,
+        threadStore: stores.thread,
         state$,
         next: (e: t.ITestState) => state$.next(e),
       };

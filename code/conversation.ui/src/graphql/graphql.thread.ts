@@ -1,16 +1,7 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
-import { t, gql, R } from '../common';
+import { Observable } from 'rxjs';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+
+import { gql, R, t } from '../common';
 
 /**
  * Manage conversation-thread interactions.
@@ -59,7 +50,7 @@ export class ConversationThreadGraphql {
       mutation SaveThread($thread: JSON) {
         conversation {
           thread {
-            saveAll(thread: $thread)
+            save(thread: $thread)
           }
         }
       }
