@@ -10,7 +10,7 @@ import { Editor } from './components/Editor';
 import { Triangle } from './components/Triangle';
 
 export type IThreadCommentProps = {
-  avatarUrl?: string;
+  avatarSrc?: string;
   bottomConnector?: number;
   header?: JSX.Element;
   body?: string;
@@ -65,7 +65,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
    * [Render]
    */
   public render() {
-    const { avatarUrl, isEditing } = this.props;
+    const { avatarSrc, isEditing } = this.props;
     const styles = {
       base: css({
         display: 'block',
@@ -97,7 +97,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
         <div {...styles.inner}>
           <div {...styles.left}>
             <Avatar
-              src={avatarUrl}
+              src={avatarSrc}
               size={SIZE.AVATAR}
               borderRadius={4}
               borderColor={-0.1}

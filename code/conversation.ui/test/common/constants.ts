@@ -1,12 +1,21 @@
+// tslint:disable no-object-literal-type-assertion
+
 export * from '../../src/common/constants';
+import * as t from './types';
 
 export const GRAPHQL = {
   URI: 'http://localhost:5000/graphql',
 };
 
-export const URL = {
-  WOMAN_1: require('../../static/images/woman-1.jpg'),
-  WOMAN_2: require('../../static/images/woman-2.jpg'),
+export const PEOPLE = {
+  MARY: {
+    id: 'sub|platform.mary@gmail.com',
+    email: 'platform.mary@gmail.com',
+    // name: 'mary',
+  } as t.IUserIdentity,
+  JEN: { id: '1234-abc', name: 'Jen Coates', email: 'platform.jen@gmail.com' } as t.IUserIdentity,
+  DOUG: { id: 'platform.doug@gmail.com' } as t.IUserIdentity,
+  MAX: { id: 'platform.max@gmail.com', name: 'Maximilian Smith' } as t.IUserIdentity,
 };
 
 export const LOREM =

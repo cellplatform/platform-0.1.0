@@ -1014,20 +1014,20 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/conversation.db@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.12.tgz#fbea676b8eee4c7a36f82870369f341589134ea0"
-  integrity sha512-SAY3axRF5YR7QX6A4kiypq5A2ganmnqsNzjdC1lRPp9AQ27wkGZ/2kcfdemSMuE79uYLs2Ua2Hz+OweNPBAyPg==
+"@platform/conversation.db@0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.13.tgz#e5120b2ec7ae9003281c8c11acd970fd241e78a1"
+  integrity sha512-/+73ysmiyu70ORbNlfcmP1yS1DzILD33F/p7PrTayioYInGWbRKLD4twJUzaiD4PHfHpPb81z8Yvgr/a75zEyQ==
   dependencies:
-    "@platform/conversation.types" "0.0.6"
+    "@platform/conversation.types" "0.0.7"
     "@platform/graphql.server" "0.0.6"
     "@platform/hyperdb" "0.1.30"
     "@platform/libs" "0.0.12"
 
-"@platform/conversation.types@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.6.tgz#3c352117632fd60e310a5f216260dec9a83bc9cb"
-  integrity sha512-lrycj2nYFfOD9dg/L1+MnBbMSW7hzHnXnFvM8ZVi98R2I4EekCVmMTSa1EsaH8uRwUqoAA/ETPEYaPdkXWb7xg==
+"@platform/conversation.types@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.7.tgz#e59e439b2ec448a7e95f35352d84224100950ca0"
+  integrity sha512-txtwZPM9z414fIeyS/gbAvzb4QcGoRHqo4MCHRtp4kvIQpxbZVUA+1SKtYHBPR2NaFtscmf5ZTLUCmt488oL8Q==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.value" "^0.2.0"

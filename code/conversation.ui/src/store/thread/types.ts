@@ -7,7 +7,7 @@ export type IThreadStoreModel = t.IThreadModel & {
   draft: IThreadDraft;
 };
 
-export type IThreadDraft = { user: t.IThreadUser; markdown?: string };
+export type IThreadDraft = { user: t.IUserIdentity; markdown?: string };
 
 /**
  * [Events]

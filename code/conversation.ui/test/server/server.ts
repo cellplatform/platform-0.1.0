@@ -11,9 +11,11 @@ import { getDb } from './db';
  *    This example shows merging the `conversation` schema into another
  *    schema which will be the typical way the GraphQL API is used.
  */
-const dbSchema = graphql.init({ getDb }).schema;
-const localSchema = makeExecutableSchema({ typeDefs, resolvers });
-const schema = mergeSchemas({ schemas: [dbSchema, localSchema] });
+const schemas = {
+  db: graphql.init({ getDb }).schema,
+  local: makeExecutableSchema({ typeDefs, resolvers }),
+};
+const schema = mergeSchemas({ schemas: [schemas.db, schemas.local] });
 
 /**
  * [Express] web server.

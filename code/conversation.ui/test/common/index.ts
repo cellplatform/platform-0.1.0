@@ -14,3 +14,4 @@ export * from '../../src';
 export { t, constants, conversation };
 
 export const LOREM = constants.LOREM;
+export const PEOPLE = constants.PEOPLE;

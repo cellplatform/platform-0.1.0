@@ -1,3 +1,5 @@
+import * as t from '../types';
+
 /**
  * A conversation thread.
  */
@@ -16,11 +18,6 @@ export type IThreadComment = {
   kind: 'THREAD/comment';
   id: string;
   timestamp: number;
-  user: IThreadUser;
+  user: t.IUserIdentity;
   body?: { markdown: string };
 };
-
-/**
- * A user that is participating in a conversation-thread.
- */
-export type IThreadUser = { id: string; name?: string };

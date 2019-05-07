@@ -1,30 +1,19 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 import {
   color,
   COLORS,
   constants,
   css,
+  state,
   t,
   ThreadComment,
   ThreadCommentHeader,
   time,
-  state,
+  PEOPLE,
 } from '../common';
-
-const { URL } = constants;
 
 export type ITestProps = {
   data: t.IObservableProps<t.IThreadCommentTestProps>;
@@ -111,14 +100,16 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       .toDate();
     const timestamp = time.toTimestamp(date);
 
-    const elHeader = <ThreadCommentHeader name={data.name} timestamp={timestamp} />;
+    const elHeader = <ThreadCommentHeader person={data.person} timestamp={timestamp} />;
+
+    const avatarSrc = PEOPLE.MARY.email;
 
     return (
       <div {...styles.base}>
         <div {...styles.outer}>
           <div {...styles.headerOuter}>{elHeader}</div>
           <ThreadComment
-            avatarUrl={URL.WOMAN_1}
+            avatarSrc={avatarSrc}
             header={elHeader}
             body={this.state.body}
             isEditing={data.isEditing}

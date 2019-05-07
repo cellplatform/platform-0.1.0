@@ -1,4 +1,4 @@
-import { t, identity } from '../../common';
+import { t, identity } from '../common';
 
 export class ThreadKey {
   /**
@@ -39,7 +39,7 @@ export class ThreadKey {
     return `${threadId}/i/${uniq || identity.shortid()}`;
   }
 
-  public id(uniq?: string) {
+  public threadId(uniq?: string) {
     return `th/${uniq || identity.cuid()}`;
   }
 }

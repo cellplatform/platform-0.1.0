@@ -21,7 +21,7 @@ export type ITestState = {
 };
 
 export type IThreadCommentTestProps = {
-  name?: string;
+  person?: t.IUserIdentity;
   body?: string;
   isEditing: boolean;
 };

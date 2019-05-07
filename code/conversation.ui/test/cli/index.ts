@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { create as createGraphqlClient } from '@platform/graphql';
 
-import { CommandState, store, t, conversation, Key } from '../common';
+import { CommandState, store, t, conversation, Key, PEOPLE } from '../common';
 import { root } from './cmds';
 import { createThreadCommentProps } from './cmds.ThreadComment';
 
@@ -10,9 +10,9 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   const keys = new Key({});
 
   // Sample.
-  const user: t.IThreadUser = { id: 'mary@foo.com' };
+  const user: t.IUserIdentity = PEOPLE.MARY;
   const initial: t.IThreadStoreModel = {
-    id: keys.thread.id('1234'),
+    id: keys.thread.threadId('1234'),
     items: [],
     users: [],
     draft: { user },

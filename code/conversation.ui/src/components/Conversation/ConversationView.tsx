@@ -14,11 +14,6 @@ export type IConversationViewProps = {
   onComment?: (e: {}) => void;
 };
 
-const TEMP = {
-  WOMAN_1: require('../../../static/images/woman-1.jpg'),
-  WOMAN_2: require('../../../static/images/woman-2.jpg'),
-};
-
 export class ConversationView extends React.PureComponent<IConversationViewProps> {
   private unmounted$ = new Subject();
   private editor$ = new Subject<t.TextEditorEvent>();
@@ -60,6 +55,10 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
 
   public get user() {
     return this.draft.user;
+  }
+
+  public get avatarSrc() {
+    return this.user.email;
   }
 
   /**
@@ -105,18 +104,17 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
 
   private renderThreadComment(item: t.IThreadComment) {
     const user = item.user;
-    const name = user.name || user.id;
-    const elHeader = <ThreadCommentHeader timestamp={item.timestamp} name={name} />;
+    const elHeader = <ThreadCommentHeader timestamp={item.timestamp} person={user} />;
     const body = item.body ? item.body.markdown : undefined;
     const avatarUrl = value.isEmail(name) ? name : undefined;
-    return <ThreadComment key={item.id} avatarUrl={avatarUrl} header={elHeader} body={body} />;
+    return <ThreadComment key={item.id} avatarSrc={avatarUrl} header={elHeader} body={body} />;
   }
 
   private renderFooterComment() {
     const body = this.draft.markdown;
     return (
       <ThreadComment
-        avatarUrl={TEMP.WOMAN_1}
+        avatarSrc={this.avatarSrc}
         body={body}
         isEditing={true}
         editor$={this.editor$}
