@@ -6,9 +6,6 @@ import { R } from '../common';
  *   - null
  *   - undefined
  *   - empty-string ('')
- *
- * @param {Array} list: The value to examine.
- * @return {Array}.
  */
 export function compact<T>(list: T[]) {
   return R.pipe(

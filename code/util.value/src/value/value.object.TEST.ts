@@ -190,3 +190,38 @@ describe('object.prune', () => {
     test('foo.bar', { foo: { bar: 123 }, baz: 456 }, { baz: 456 });
   });
 });
+
+describe('object.toArray', () => {
+  type IFoo = { count: number };
+  type IFoos = {
+    one: IFoo;
+    two: IFoo;
+  };
+  const foos: IFoos = { one: { count: 1 }, two: { count: 2 } };
+
+  it('empty', () => {
+    expect(object.toArray({})).to.eql([]);
+  });
+
+  it('converts to array (untyped)', () => {
+    const res = object.toArray(foos);
+    expect(res.length).to.eql(2);
+  });
+
+  it('converts to array (typed object)', () => {
+    const res = object.toArray<IFoos>(foos);
+    expect(res.length).to.eql(2);
+
+    expect(res[0].key).to.eql('one');
+    expect(res[1].key).to.eql('two');
+
+    expect(res[0].value).to.eql({ count: 1 });
+    expect(res[1].value).to.eql({ count: 2 });
+  });
+
+  it('converts to array (typed key)', () => {
+    type K = 'foo' | 'bar';
+    const res = object.toArray<IFoos, K>(foos);
+    expect(res.length).to.eql(2);
+  });
+});
