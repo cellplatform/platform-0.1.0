@@ -13,7 +13,8 @@
     "lint": "ts lint",
     "build": "ts build $@",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "reset": "sh sh/reset.sh"
   },
   "dependencies": {
     "@platform/conversation.types": "0.0.5",

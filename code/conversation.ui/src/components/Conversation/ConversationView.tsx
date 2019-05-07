@@ -124,16 +124,4 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
       />
     );
   }
-
-  // private handleCommentClick = () => {
-  //   const markdown = this.draft.markdown || '';
-  //   const item: t.IThreadComment = {
-  //     kind: 'THREAD/comment',
-  //     id: idUtil.cuid(),
-  //     timestamp: new Date(),
-  //     user: this.user,
-  //     body: { markdown },
-  //   };
-  //   this.dispatch({ type: 'THREAD/add', payload: { item } });
-  // };
 }

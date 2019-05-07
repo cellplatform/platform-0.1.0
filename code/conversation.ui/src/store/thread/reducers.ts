@@ -1,12 +1,18 @@
+import { Key } from '../common';
 import * as t from '../types';
 
-export function init(store: t.IThreadStore) {
+export function init(args: { store: t.IThreadStore; keys: Key }) {
+  const { store, keys } = args;
+
   store
     // Insert a new item into the thread.
     .on<t.IAddThreadItemEvent>('THREAD/add')
     .subscribe(e => {
       const state = e.state;
-      const items = [...state.items, e.payload.item];
+      // const thread = e.payload.
+      const id = e.payload.item.id || keys.thread.itemId(state.id);
+      const item = { ...e.payload.item, id };
+      const items = [...state.items, item];
       const draft = { ...state.draft };
       delete draft.markdown;
       e.change({ ...state, items, draft });

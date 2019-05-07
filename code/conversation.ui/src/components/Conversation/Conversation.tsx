@@ -68,7 +68,7 @@ export class Conversation extends React.PureComponent<IConversationProps> {
     const markdown = this.draft.markdown || '';
     const item: t.IThreadComment = {
       kind: 'THREAD/comment',
-      id: idUtil.shortid(),
+      id: '',
       timestamp: new Date(),
       user: this.user,
       body: { markdown },

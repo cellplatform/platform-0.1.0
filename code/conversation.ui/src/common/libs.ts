@@ -4,6 +4,7 @@ export { markdown } from '@platform/util.markdown';
 export { state } from '@platform/state.react';
 export { log } from '@platform/log/lib/client';
 export { gql } from '@platform/graphql';
+export { Key } from '@platform/conversation.types';
 
 /**
  * [Ramda]

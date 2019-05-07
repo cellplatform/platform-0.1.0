@@ -1,5 +1,4 @@
-import { gql, t } from '../common';
-import { ThreadDbKey } from '../keys';
+import { gql, t, Key } from '../common';
 
 /**
  * [Types]
@@ -24,7 +23,7 @@ export const typeDefs = gql`
 
 export function init(args: { getDb: t.GetConverstaionDb }) {
   const { getDb } = args;
-  const keys = new ThreadDbKey();
+  const keys = new Key({});
 
   /**
    * [Resolvers]
@@ -55,7 +54,7 @@ export function init(args: { getDb: t.GetConverstaionDb }) {
         const batch: any = {};
 
         thread.items.forEach(item => {
-          const key = keys.itemKey(thread, item);
+          const key = keys.thread.itemDbKey(item);
           console.log('key', key);
           batch[key] = item;
         });
