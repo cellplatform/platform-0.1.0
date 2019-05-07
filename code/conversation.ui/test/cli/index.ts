@@ -11,7 +11,12 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
 
   // Sample.
   const user: t.IThreadUser = { id: 'mary@foo.com' };
-  const initial: t.IThreadStoreModel = { id: keys.thread.id('1234'), items: [], draft: { user } };
+  const initial: t.IThreadStoreModel = {
+    id: keys.thread.id('1234'),
+    items: [],
+    users: [],
+    draft: { user },
+  };
 
   // Create test data stores.
   const stores = {

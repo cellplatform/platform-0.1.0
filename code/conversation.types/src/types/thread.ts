@@ -4,6 +4,7 @@
 export type IThreadModel = {
   id: string;
   items: ThreadItem[];
+  users: string[];
 };
 
 /**

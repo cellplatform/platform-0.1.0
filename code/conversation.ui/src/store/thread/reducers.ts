@@ -8,31 +8,41 @@ export function init(args: { store: t.IThreadStore; keys: Key }) {
     // Insert a new item into the thread.
     .on<t.IAddThreadItemEvent>('THREAD/add')
     .subscribe(e => {
-      const state = e.state;
-      // const thread = e.payload.
-      const id = e.payload.item.id || keys.thread.itemId(state.id);
-      const item = { ...e.payload.item, id };
-      const items = [...state.items, item];
-      const draft = { ...state.draft };
+      const s = e.state;
+      const id = e.payload.item.id || keys.thread.itemId(s.id);
+      const items = [...s.items, { ...e.payload.item, id }];
+      const draft = { ...s.draft };
       delete draft.markdown;
-      e.change({ ...state, items, draft });
+      const thread = syncUsers({ ...s, items, draft });
+      e.change(thread);
     });
 
   store
     // Update the thread-items list.
     .on<t.IThreadItemsEvent>('THREAD/items')
     .subscribe(e => {
-      const state = e.state;
+      const s = e.state;
       const items = e.payload.items;
-      e.change({ ...state, items });
+      const thread = syncUsers({ ...s, items });
+      e.change(thread);
     });
 
   store
     // Update the draft
     .on<t.IThreadDraftEvent>('THREAD/draft')
     .subscribe(e => {
-      const state = e.state;
+      const s = e.state;
       const draft = e.payload.draft;
-      e.change({ ...state, draft });
+      e.change({ ...s, draft });
     });
+}
+
+/**
+ * [Helpers]
+ */
+function syncUsers(thread: t.IThreadStoreModel) {
+  const { items } = thread;
+  const ids = items.map(m => m.user.id);
+  const users = Array.from(new Set(ids));
+  return { ...thread, users };
 }
