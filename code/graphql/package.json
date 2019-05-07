@@ -12,7 +12,7 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build $@",
-    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "build-test": "ts build --no-esm --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare"
   },
   "dependencies": {
@@ -25,7 +25,8 @@
   "devDependencies": {
     "@uiharness/dev": "0.2.52",
     "@uiharness/ui": "0.2.33",
-    "apollo-server": "2.4.8"
+    "apollo-server-express": "2.4.8",
+    "express": "4.16.4"
   },
   "files": [
     "lib"
