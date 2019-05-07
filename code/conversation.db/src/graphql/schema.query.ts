@@ -1,4 +1,4 @@
-import { gql, t } from '../common';
+import { gql, t, Key } from '../common';
 
 /**
  * [Types]
@@ -6,14 +6,25 @@ import { gql, t } from '../common';
 export const typeDefs = gql`
   type Query {
     foo: JSON
+    conversation: QueryConversation!
+  }
+
+  type QueryConversation {
+    thread(id: ID!): QueryConversationThread
+  }
+
+  type QueryConversationThread {
+    id: ID!
+    items(kind: String): [JSON]
+    users: [String]!
   }
 `;
 
 /**
  * [Initialize]
  */
-export function init(args: { getDb: t.GetConverstaionDb }) {
-  const { getDb } = args;
+export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
+  const { getDb, keys } = args;
 
   /**
    * [Resolvers]
@@ -31,8 +42,51 @@ export function init(args: { getDb: t.GetConverstaionDb }) {
 
         return values;
       },
+
+      conversation: () => ({}),
+    },
+
+    QueryConversation: {
+      thread: async (_: any, args: { id: string }, ctx: t.IContext, info: any) => {
+        console.log('args', args);
+
+        const id = args.id || '';
+
+        // const values = await db.values({ pattern: `MSG/${id}` });
+
+        // console.log('id', id);
+        // console.log('values', values);
+        // return null;
+
+        return { id };
+      },
+    },
+
+    QueryConversationThread: {
+      items: async (_: { id: string }, args: { kind?: string }, ctx: t.IContext, info: any) => {
+        const { kind } = args;
+        const db = await getDb();
+        const pattern = keys.thread.dbKey(_.id);
+        const values = await db.values({ pattern });
+        const items = Object.keys(values)
+          .map(key => values[key].value)
+          .filter(item => (kind ? item.kind === kind : true));
+        return items;
+      },
+
+      users: async (_: { id: string }, args: {}, ctx: t.IContext, info: any) => {
+        const db = await getDb();
+        const pattern = keys.thread.usersDbKey(_.id);
+        const users = (await db.get(pattern)).value;
+        return users || [];
+      },
     },
   };
 
+  // Finish up.
   return { resolvers, typeDefs };
 }
+
+/**
+ * [Helpers]
+ */

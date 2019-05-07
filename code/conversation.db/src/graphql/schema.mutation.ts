@@ -21,9 +21,8 @@ export const typeDefs = gql`
  * [Initialize]
  */
 
-export function init(args: { getDb: t.GetConverstaionDb }) {
-  const { getDb } = args;
-  const keys = new Key({});
+export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
+  const { getDb, keys } = args;
 
   /**
    * [Resolvers]
@@ -40,30 +39,24 @@ export function init(args: { getDb: t.GetConverstaionDb }) {
     MutationConversationThreads: {
       save: async (_: any, args: { thread: t.IThreadModel }, ctx: any, info: any) => {
         const { thread } = args;
-
-        console.log('thread/save:', thread);
-
         if (!thread) {
           throw new Error(`Cannot save. Conversation thread not supplied.`);
         }
-
         const db = await getDb();
-        // await db.put('FOO', thread);
-        await db.delete('FOO');
 
-        const batch: any = {};
-
+        // Save thead-items.
+        const items: any = {};
         thread.items.forEach(item => {
           const key = keys.thread.itemDbKey(item);
-          console.log('key', key);
-          batch[key] = item;
+          items[key] = item;
         });
+        await db.putMany(items);
 
-        // db.putMany()
-        console.log('batch', batch);
-        await db.putMany(batch);
+        // Save users.
+        const users = thread.users || [];
+        await db.put(keys.thread.usersDbKey(thread) as any, users);
 
-        // DATA.foo = args.foo;
+        // Finish up.
         return true;
       },
     },
