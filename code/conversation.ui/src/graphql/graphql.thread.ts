@@ -24,7 +24,7 @@ export class ConversationThreadGraphql {
 
     changed$.subscribe(e => {
       console.log('🐷', e);
-      this.TMP(e.to);
+      this.TMP({ ...e.to });
     });
   }
 
@@ -40,8 +40,12 @@ export class ConversationThreadGraphql {
    */
   public async TMP(e: any = {}) {
     const mutation = gql`
-      mutation ChangeThread($msg: JSON) {
-        thread(foo: $msg)
+      mutation SaveThread($thread: JSON) {
+        conversation {
+          thread {
+            saveAll(thread: $thread)
+          }
+        }
       }
     `;
 
@@ -50,12 +54,14 @@ export class ConversationThreadGraphql {
     // const variables: IVariables = { msg: 'hello' };
     // const res = await this.client.mutate<boolean, IVariables>({ mutation, variables });
 
-    type IVariables = { msg: object };
-    const variables: IVariables = { msg: e };
+    e = { ...e };
+    delete e.draft;
+
+    type IVariables = { thread: any };
+    const variables: IVariables = { thread: e };
     const res = await client.mutate<boolean, IVariables>({ mutation, variables });
 
     console.log('variables', variables);
-
     console.log('res', res);
   }
 }

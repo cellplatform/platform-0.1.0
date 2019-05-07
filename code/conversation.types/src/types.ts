@@ -1,1 +1,1 @@
-export type TempType = 123;
+export * from './types.thread';

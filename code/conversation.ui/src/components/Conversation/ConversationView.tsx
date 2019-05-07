@@ -8,7 +8,7 @@ import { ThreadComment } from '../ThreadComment';
 import { ThreadCommentHeader } from '../ThreadCommentHeader';
 
 export type IConversationViewProps = {
-  model: t.IThreadModel;
+  model: t.IThreadStoreModel;
   dispatch$: Subject<t.ThreadEvent>;
   style?: GlamorValue;
 };

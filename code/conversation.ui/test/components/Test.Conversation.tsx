@@ -13,7 +13,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private state$ = new Subject<Partial<ITestState>>();
   private store = this.props.store;
   private store$ = this.store.events$.pipe(takeUntil(this.unmounted$));
-  private lens: t.IThreadStoreContext = this.store.lens<t.IThreadModel>(e => e.root);
+  private lens: t.IThreadStoreContext = this.store.lens<t.IThreadStoreModel>(e => e.root);
 
   /**
    * [Lifecycle]

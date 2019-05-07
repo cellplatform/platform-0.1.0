@@ -5,7 +5,15 @@ import { gql, t } from '../common';
  */
 export const typeDefs = gql`
   type Mutation {
-    thread(foo: JSON): Boolean
+    conversation: MutationConversation
+  }
+
+  type MutationConversation {
+    thread: MutationConversationThread
+  }
+
+  type MutationConversationThread {
+    saveAll(thread: JSON): Boolean
   }
 `;
 
@@ -14,9 +22,17 @@ export const typeDefs = gql`
  */
 export const resolvers: t.IResolvers = {
   Mutation: {
-    thread: async (_: any, args: { foo: object }, ctx: any, info: any) => {
+    conversation: () => ({}),
+  },
+
+  MutationConversation: {
+    thread: () => ({}),
+  },
+
+  MutationConversationThread: {
+    saveAll: async (_: any, args: t.IThreadModel, ctx: any, info: any) => {
       // DATA.foo = args.foo;
-      console.log('db/thread', args);
+      console.log('saveThread', args);
       return true;
     },
   },

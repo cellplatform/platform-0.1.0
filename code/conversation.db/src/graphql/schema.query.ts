@@ -15,7 +15,7 @@ export const typeDefs = gql`
 export const resolvers: t.IResolvers = {
   Query: {
     foobar: async (_: any, args: any, ctx: t.IContext, info: any) => {
-      return 'db.foobar!!';
+      return 'converation.db/foobar!!';
     },
   },
 };

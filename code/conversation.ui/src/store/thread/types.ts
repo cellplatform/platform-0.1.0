@@ -1,30 +1,13 @@
 import * as t from '../types';
 
-export type IThreadStore = t.IStore<IThreadModel, ThreadEvent>;
-export type IThreadStoreContext = t.IStoreContext<IThreadModel, ThreadEvent>;
+export type IThreadStore = t.IStore<IThreadStoreModel, ThreadEvent>;
+export type IThreadStoreContext = t.IStoreContext<IThreadStoreModel, ThreadEvent>;
 
-export type IThreadModel = {
-  id: string;
-  items: ThreadItem[];
+export type IThreadStoreModel = t.IThreadModel & {
   draft: IThreadDraft;
 };
 
-export type IThreadDraft = { user: IThreadUser; markdown?: string };
-
-/**
- * [Items]
- */
-export type ThreadItem = IThreadComment;
-
-export type IThreadComment = {
-  kind: 'THREAD/comment';
-  id: string;
-  timestamp: Date;
-  user: IThreadUser;
-  body?: { markdown: string };
-};
-
-export type IThreadUser = { id: string; name?: string };
+export type IThreadDraft = { user: t.IThreadUser; markdown?: string };
 
 /**
  * [Events]
@@ -33,15 +16,15 @@ export type ThreadEvent = IAddThreadItemEvent | IThreadItemsEvent | IThreadDraft
 
 export type IAddThreadItemEvent = {
   type: 'THREAD/add';
-  payload: { item: ThreadItem };
+  payload: { item: t.ThreadItem };
 };
 
 export type IThreadItemsEvent = {
   type: 'THREAD/items';
-  payload: { items: ThreadItem[] };
+  payload: { items: t.ThreadItem[] };
 };
 
 export type IThreadDraftEvent = {
   type: 'THREAD/draft';
-  payload: { draft: IThreadDraft };
+  payload: { draft: t.IThreadDraft };
 };
