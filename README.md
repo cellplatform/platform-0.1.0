@@ -95,10 +95,12 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/npm.electron](/code/npm.electron)
   - [@platform/npm.express](/code/npm.express)
 - auth
+  - [@platform/auth](/code/auth)
   - [@platform/auth0](/code/auth0)
-- collaboration
+- communications
   - [@platform/conversation.db](/code/conversation.db)
   - [@platform/conversation.ui](/code/conversation.ui)
+  - [@platform/mail](/code/mail)
 
 
 <p>&nbsp;</p>
