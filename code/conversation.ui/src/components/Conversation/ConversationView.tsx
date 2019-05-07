@@ -78,7 +78,7 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
 
     const elItems = this.items.map((item, i) => [
       this.renderItem(item),
-      <Divider key={i} height={25} left={78} />,
+      <Divider key={i} height={30} left={78} marginY={0} />,
     ]);
 
     return (

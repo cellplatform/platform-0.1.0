@@ -1120,7 +1120,7 @@
     express "4.16.4"
     graphql "14.2.1"
 
-"@platform/graphql@0.1.1":
+"@platform/graphql@0.1.1", "@platform/graphql@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.1.1.tgz#14e1d53fd56c82dbae4ea51756cdea7f3060d4fa"
   integrity sha512-m120QmXL2o5bWQbbtdFOPr1DMFZ6Fuxu2wxtoLFzAbVgf8Sx9H4mPygjgPMtxFn+y7OZ8st+E61vM8ObhMMQZA==

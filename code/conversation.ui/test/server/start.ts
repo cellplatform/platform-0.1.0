@@ -1,4 +1,4 @@
-import { app } from './graphql';
+import { app } from './server';
 import { log, is } from './common';
 
 const pkg = require('../../../package.json');

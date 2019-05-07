@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@platform/conversation.types": "0.0.5",
+    "@platform/graphql": "0.1.1",
     "@platform/react": "0.1.32",
     "@platform/state": "0.2.1",
     "@platform/state.react": "0.2.1",
