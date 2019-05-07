@@ -2,7 +2,8 @@ import { ApolloServer, express } from './common';
 import { resolvers, typeDefs } from './resolvers';
 
 import { mergeSchemas, makeExecutableSchema } from 'graphql-tools';
-import * as db from '@platform/conversation.db';
+import { graphql } from '@platform/conversation.db';
+import { getDb } from './db';
 
 /**
  * Prepare the schema.
@@ -10,7 +11,7 @@ import * as db from '@platform/conversation.db';
  *    This example shows merging the `conversation` schema into another
  *    schema which will be the typical way the GraphQL API is used.
  */
-const dbSchema = db.graphql.init({}).schema;
+const dbSchema = graphql.init({ getDb }).schema;
 const localSchema = makeExecutableSchema({ typeDefs, resolvers });
 const schema = mergeSchemas({ schemas: [dbSchema, localSchema] });
 

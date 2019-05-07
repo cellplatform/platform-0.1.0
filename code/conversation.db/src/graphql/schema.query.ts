@@ -5,17 +5,28 @@ import { gql, t } from '../common';
  */
 export const typeDefs = gql`
   type Query {
-    foobar: String
+    foo: JSON
   }
 `;
 
 /**
- * [Resolvers]
+ * [Initialize]
  */
-export const resolvers: t.IResolvers = {
-  Query: {
-    foobar: async (_: any, args: any, ctx: t.IContext, info: any) => {
-      return 'converation.db/foobar!!';
+export function init(args: { getDb: t.GetConverstaionDb }) {
+  const { getDb } = args;
+
+  /**
+   * [Resolvers]
+   */
+  const resolvers: t.IResolvers = {
+    Query: {
+      foo: async (_: any, args: any, ctx: t.IContext, info: any) => {
+        const db = await getDb();
+        const foo = (await db.get('FOO')).value;
+        return foo;
+      },
     },
-  },
-};
+  };
+
+  return { resolvers, typeDefs };
+}

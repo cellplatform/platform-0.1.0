@@ -18,22 +18,35 @@ export const typeDefs = gql`
 `;
 
 /**
- * [Resolvers]
+ * [Initialize]
  */
-export const resolvers: t.IResolvers = {
-  Mutation: {
-    conversation: () => ({}),
-  },
 
-  MutationConversation: {
-    thread: () => ({}),
-  },
+export function init(args: { getDb: t.GetConverstaionDb }) {
+  const { getDb } = args;
 
-  MutationConversationThread: {
-    saveAll: async (_: any, args: t.IThreadModel, ctx: any, info: any) => {
-      // DATA.foo = args.foo;
-      console.log('saveThread', args);
-      return true;
+  /**
+   * [Resolvers]
+   */
+  const resolvers: t.IResolvers = {
+    Mutation: {
+      conversation: () => ({}),
     },
-  },
-};
+
+    MutationConversation: {
+      thread: () => ({}),
+    },
+
+    MutationConversationThread: {
+      saveAll: async (_: any, args: t.IThreadModel, ctx: any, info: any) => {
+        const db = await getDb();
+        await db.put('FOO', args);
+
+        // DATA.foo = args.foo;
+        console.log('saveThread', args);
+        return true;
+      },
+    },
+  };
+
+  return { resolvers, typeDefs };
+}

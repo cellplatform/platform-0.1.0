@@ -1,6 +1,16 @@
-import { Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { t, gql } from '../common';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
+import { t, gql, R } from '../common';
 
 /**
  * Manage conversation-thread interactions.
@@ -15,17 +25,23 @@ export class ConversationThreadGraphql {
     dispose$: Observable<{}>;
   }) {
     const { client, store, dispose$ } = args;
+    const changed$ = store.changed$.pipe(takeUntil(dispose$));
 
     this.store = store;
     this.client = client;
     this.dispose$ = dispose$;
 
-    const changed$ = store.changed$.pipe(takeUntil(dispose$));
-
-    changed$.subscribe(e => {
-      console.log('🐷', e);
-      this.TMP({ ...e.to });
-    });
+    let prev = store.state;
+    changed$
+      .pipe(
+        debounceTime(300),
+        filter(() => !R.equals(prev.items, store.state.items)),
+      )
+      .subscribe(e => {
+        console.log('🐷', e);
+        this.TMP(this.store.state);
+        prev = store.state;
+      });
   }
 
   /**
