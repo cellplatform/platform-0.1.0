@@ -22,8 +22,14 @@ export function init(args: { getDb: t.GetConverstaionDb }) {
     Query: {
       foo: async (_: any, args: any, ctx: t.IContext, info: any) => {
         const db = await getDb();
-        const foo = (await db.get('FOO')).value;
-        return foo;
+        // const foo = (await db.get('FOO')).value;
+
+        const values = await db.values({});
+        Object.keys(values).forEach(key => {
+          values[key] = values[key].value;
+        });
+
+        return values;
       },
     },
   };
