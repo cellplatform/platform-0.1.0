@@ -79,10 +79,10 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/conversation.types@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.6.tgz#3c352117632fd60e310a5f216260dec9a83bc9cb"
-  integrity sha512-lrycj2nYFfOD9dg/L1+MnBbMSW7hzHnXnFvM8ZVi98R2I4EekCVmMTSa1EsaH8uRwUqoAA/ETPEYaPdkXWb7xg==
+"@platform/conversation.types@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.7.tgz#e59e439b2ec448a7e95f35352d84224100950ca0"
+  integrity sha512-txtwZPM9z414fIeyS/gbAvzb4QcGoRHqo4MCHRtp4kvIQpxbZVUA+1SKtYHBPR2NaFtscmf5ZTLUCmt488oL8Q==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.value" "^0.2.0"
