@@ -39,7 +39,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
          *
          *    if (reduce) return results.length ? results.reduce(reduce) : null
          *
-         *  Should be
+         *  Should be:
          *
          *    if (reduce) return results.length ? results.reduce(reduce, []) : null
          *
