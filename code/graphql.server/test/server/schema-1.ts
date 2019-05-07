@@ -5,8 +5,14 @@ import { gql, log, t } from './common';
  * [Types]
  */
 export const typeDefs = gql`
+  type Address {
+    street: String
+    city: String
+  }
+
   type User {
     email: String
+    address: Address
   }
 
   type Query {
@@ -22,6 +28,12 @@ export const typeDefs = gql`
  * [Resolvers]
  */
 export const resolvers: t.IResolvers = {
+  User: {
+    address: async (_: any, args: any, ctx: t.IContext, info: any) => {
+      return { street: '221b Baker Street', city: 'London' };
+    },
+  },
+
   Query: {
     me: async (_: any, args: any, ctx: t.IContext, info: any) => {
       return ctx.getUser();
