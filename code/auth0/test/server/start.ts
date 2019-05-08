@@ -1,2 +1,2 @@
-import * as graphql from './graphql';
-graphql.start();
+import { start } from './server';
+start();

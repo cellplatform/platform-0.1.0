@@ -1,15 +1,17 @@
 import { AccessToken, ApolloServer, gql, log, t, time } from './common';
 
+const pkg = require('../../../package.json');
+
 /**
  * [Types]
  */
 const typeDefs = gql`
   type User {
     email: String
-    elapsed: Float
+    elapsed: String
   }
   type Query {
-    me: User
+    me: User!
   }
 `;
 
@@ -22,7 +24,7 @@ const resolvers = {
       const timer = time.timer();
       const user = await ctx.getUser();
       const email = user ? user.email : undefined;
-      const elapsed = timer.elapsed();
+      const elapsed = timer.elapsed.toString();
       return { email, elapsed };
     },
   },
@@ -38,6 +40,11 @@ export const server = new ApolloServer({
     const getToken = async () => {
       const headers = e.req.headers;
       const authorization = headers.authorization;
+
+      if (!authorization) {
+        log.info(`✋  No authorization token found.\n`);
+      }
+
       return !authorization
         ? undefined
         : AccessToken.create({
@@ -64,7 +71,10 @@ export async function start() {
   const port = 8080;
   await server.listen({ port });
 
-  const url = log.cyan(`http://localhost:${log.magenta(port)}`);
-  log.info.gray(`\n👋  Auth server on ${url}`);
+  const url = log.cyan(`http://localhost:${log.magenta(port)}${log.gray('/graphql')}`);
+  log.info.gray(`\n👋  Running on ${url}`);
+  log.info();
+  log.info.gray(`   - package:   ${pkg.name} (test)`);
+  log.info.gray(`   - version:   ${pkg.version}`);
   log.info();
 }
