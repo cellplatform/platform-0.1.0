@@ -68,7 +68,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           </div>
         </div>
         <div {...styles.right}>
-          <ObjectView name={'thread'} data={this.store.state} />
+          <ObjectView name={'thread'} data={this.store.state} expandPaths={['$', '$.ui']} />
         </div>
       </div>
     );
