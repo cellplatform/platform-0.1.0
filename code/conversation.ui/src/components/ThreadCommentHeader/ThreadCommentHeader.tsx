@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, time, UserIdentity } from '../../common';
+import { css, GlamorValue, time, UserIdentityType } from '../../common';
 import { Text } from '../primitives';
 
 export type IThreadCommentHeaderProps = {
@@ -47,7 +47,7 @@ export class ThreadCommentHeader extends React.PureComponent<
    * [Properties]
    */
   public get name() {
-    return this.props.name || UserIdentity.UNNAMED;
+    return this.props.name || UserIdentityType.UNNAMED;
   }
 
   public get date() {

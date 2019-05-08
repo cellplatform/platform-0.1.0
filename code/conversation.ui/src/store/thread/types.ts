@@ -15,6 +15,7 @@ export type IThreadDraft = { user: t.IUserIdentity; markdown?: string };
 export type ThreadEvent =
   | IThreadLoadEvent
   | IThreadLoadedEvent
+  | IThreadLoadFromIdEvent
   | IAddThreadItemAddEvent
   | IAddThreadItemAddedEvent
   | IThreadItemsEvent
@@ -27,6 +28,11 @@ export type IThreadLoadEvent = {
 export type IThreadLoadedEvent = {
   type: 'THREAD/loaded';
   payload: { thread: t.IThreadModel };
+};
+
+export type IThreadLoadFromIdEvent = {
+  type: 'THREAD/loadFromId';
+  payload: { id: string, user: t.IUserIdentity };
 };
 
 export type IAddThreadItemAddEvent = {

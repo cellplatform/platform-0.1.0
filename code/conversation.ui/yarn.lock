@@ -958,10 +958,10 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/auth@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/auth/-/auth-0.0.0.tgz#5bfa0ec8a6388374cfc91a2e124d2139a7135c77"
-  integrity sha512-+32RLMt3SIhf1VmZ6yRJGSJDCWOSlidk7fSLU+vvySZGPCf6kY4FKNE/A9vrVHXN/9KyHFnc7mKs0rZCsEwgjg==
+"@platform/auth@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/auth/-/auth-0.0.1.tgz#31931c8d17cb12a050b758b16161a1f94c785dfd"
+  integrity sha512-KdCRN8Qa0uxXn/aJK54rpltNb1UKi4VpxPrXhkSkuX4OyaRR+rZVwKOnCHsV1zU0BMTHvDdBn3Rf5I/3sCaxAQ==
   dependencies:
     "@platform/libs" "0.0.12"
 
@@ -1021,20 +1021,21 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/conversation.db@0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.15.tgz#ca6431c281ce0fa4a01e543b61d7d7723d42296e"
-  integrity sha512-7LMDw1pCqLBrQI0mXJbLzJYXa10PkEIGH5TQqkaf99UXXs1lk+/4oXEkjHbjYyxLxqufWBjLHKoZF4hI2O8IMA==
+"@platform/conversation.db@0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.17.tgz#f028e0168debb03e9921d71bee5367b5697791e0"
+  integrity sha512-VX4zZimN+SWQQpIenvwyhkOH/vi2+fvTSN1qxy4XCYfdUHs4gQrBUzaQMo0bzxjW6othRxPvAKnqCPtiGQi8Jw==
   dependencies:
-    "@platform/conversation.types" "0.0.8"
-    "@platform/graphql.server" "0.0.7"
-    "@platform/hyperdb" "0.1.30"
+    "@platform/auth" "0.0.1"
+    "@platform/conversation.types" "0.0.9"
+    "@platform/graphql.server" "0.0.8"
+    "@platform/hyperdb.types" "0.0.19"
     "@platform/libs" "0.0.12"
 
-"@platform/conversation.types@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.8.tgz#9966e436b47ce9ec18f581c7c9b88ffed8152268"
-  integrity sha512-dwJrOoru6wtxIdMdzGcMHCju8qILQaPYWuva5GQKmGpVYSTLW9o2uQlPbaNUqqOdf4HJ2fBwJ/ud8u10D1WUIA==
+"@platform/conversation.types@0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.9.tgz#1d4e09ffd8a59d43edff9fd109f81802f9d5a939"
+  integrity sha512-Jz3EQEbyhHYYLmYUeIGA/5i0nCwGBj0ZaSuehBoGC94ZUix2hW+SwLjBYcVMQfR1o2i4AdSQ1Bq2Q8/kBdgj5g==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.value" "^0.2.0"
@@ -1113,11 +1114,12 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql.server@0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.7.tgz#4900cea56c91301532a007c4e598a88d4afe443e"
-  integrity sha512-7CFvDWX7uksHN3sKio1pON7fc1gFuKiE8XzjbpFDBt9+2KlsS5cV3fCQtLPuWI47XrV1NZnYkKveoaCREBEcbw==
+"@platform/graphql.server@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.8.tgz#b9e9a2927f05e5c2f6b82dddcd9dc5a2173362f0"
+  integrity sha512-qLeLzSB9NkXDc311iw4AmrSAGENTh6U2NpAXTTuwInm9UTQ7YBwRUwijGk9hKcX7Db7I7J+i71uPGrqWxtK5dQ==
   dependencies:
+    "@platform/auth" "0.0.1"
     "@platform/graphql" "0.1.2"
     "@platform/libs" "0.0.12"
     "@platform/log" "0.0.117"
@@ -1146,7 +1148,7 @@
   dependencies:
     "@platform/libs" "0.0.12"
 
-"@platform/hyperdb@0.1.30":
+"@platform/hyperdb@^0.1.30":
   version "0.1.30"
   resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.30.tgz#32a138734a09ca8bd25b8e81938740fe4e241805"
   integrity sha512-2tzoDNeXU1c8HlfbMvJIGV1o1UZr95BLSMJXm7oYGjKGS1X1mKNlRDicmlyf6jT5zOWHkrEXOJGuplaiEO/s7A==

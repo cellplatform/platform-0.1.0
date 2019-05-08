@@ -12,13 +12,11 @@ export const conversation = Command.create<P>('Conversation', e => {
   const el = <Test store={e.props.threadStore} />;
   e.props.next({ el });
 })
-  .add('load', async e => {
-    const graphql = e.props.graphql;
-    const thread = await graphql.thread.findById('th/1234');
-    if (thread) {
-      const store = e.props.threadStore;
-      store.dispatch({ type: 'THREAD/load', payload: { thread } });
-    }
+  .add('loadFromId', async e => {
+    const id = e.param<string>(0, 'th/1234').toString();
+    const user = e.props.user;
+    const store = e.props.threadStore;
+    store.dispatch({ type: 'THREAD/loadFromId', payload: { id, user } });
   })
   .add('add', e => {
     const store = e.props.threadStore;

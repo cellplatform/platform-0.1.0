@@ -1,9 +1,40 @@
-import { Key, R, UserIdentity, time } from '../common';
+import { Key, R, UserIdentityType, time } from '../common';
 import * as t from '../types';
+import { data } from '../../data.graphql';
 
-export function init(args: { store: t.IThreadStore; keys: Key }) {
-  const { store, keys } = args;
+export function init(args: {
+  store: t.IThreadStore;
+  keys: Key;
+  getGraphql: () => data.ConversationGraphql;
+}) {
+  const { store, keys, getGraphql } = args;
   const k = keys.thread;
+
+  store
+    // Load data from server.
+    .on<t.IThreadLoadFromIdEvent>('THREAD/loadFromId')
+    .subscribe(async e => {
+      const { user } = e.payload;
+      const id = keys.thread.threadId(e.payload.id);
+
+      // Retrieve data from server.
+      const graphql = getGraphql();
+      let data = await graphql.thread.findById(id);
+
+      // If the thread does not exist in the DB yet create an initial model now.
+      if (!data) {
+        data = {
+          id,
+          items: [],
+          users: [],
+        };
+      }
+
+      // Load into the state-tree.
+      const draft = { user };
+      const thread = { ...data, draft };
+      store.dispatch({ type: 'THREAD/load', payload: { thread } });
+    });
 
   store
     // Load a complete thread.
@@ -26,7 +57,7 @@ export function init(args: { store: t.IThreadStore; keys: Key }) {
       const s = e.state;
       const id = e.payload.item.id || k.itemId(s.id);
       const user = e.payload.user;
-      const users = UserIdentity.insert(user, s.users);
+      const users = UserIdentityType.insert(user, s.users);
       const item = { ...e.payload.item, id };
       const items = [...s.items, item];
       const draft = { ...s.draft };
@@ -70,7 +101,7 @@ function formatThread(thread: t.IThreadStoreModel) {
 function formatUsers(thread: t.IThreadStoreModel) {
   thread = {
     ...thread,
-    users: UserIdentity.uniq(thread.users),
+    users: UserIdentityType.uniq(thread.users),
   };
   return thread;
 }

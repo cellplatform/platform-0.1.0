@@ -20,13 +20,17 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
 
   // Create test data stores.
   const stores = {
-    thread: store.thread.create({ initial }),
+    thread: store.thread.create({ initial, getGraphql: () => graphql }),
   };
   const threadCommentProps = createThreadCommentProps();
 
+  stores.thread.events$.subscribe(e => {
+    log.info('🐷', e.type, e.payload);
+  });
+
   const data$ = new Subject<t.ThreadDataEvent>();
   data$.subscribe(e => {
-    log.info('🌳 DATA', e.type, e.payload);
+    log.info('🌳', e.type, e.payload);
   });
 
   // Setup graphql.
@@ -39,6 +43,7 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
     beforeInvoke: async e => {
       const props: t.ICommandProps = {
         ...e.props,
+        user,
         graphql,
         threadCommentProps,
         threadStore: stores.thread,

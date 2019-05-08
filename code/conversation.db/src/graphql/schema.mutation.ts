@@ -1,5 +1,5 @@
-import { gql, t, Key } from '../common';
 import { POLICY } from '../auth';
+import { gql, Key, log, t } from '../common';
 
 /**
  * [Types]
@@ -53,7 +53,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
           auth.throw();
         }
 
-        console.log(`\nTODO 🐷  ensure user is part of the thread. \n`);
+        log.TODO('ensure user is part of the thread. 🐷');
 
         const { thread } = args;
         if (!thread) {

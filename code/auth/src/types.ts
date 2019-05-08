@@ -2,7 +2,7 @@ export type Role = string;
 export type Permission = string;
 
 /**
- * Authorization Policies
+ * Authorization policies
  * - permissions
  * - resource/attributes (future)
  */
@@ -10,8 +10,8 @@ export type AuthPolicy = IPermissionPolicy;
 export type IPermissionPolicy<P = Permission> = { permissions: P[] };
 
 /**
- * Retrieve authorization details about whether a user is
- * has access to a resource with the given permissions.
+ * Retrieve authorization details about whether a user
+ * has access to a resource with the given policy.
  */
 export type GetAuth = (request: IAuthRequest) => Promise<IAuthResult>;
 export type IAuthRequest = {

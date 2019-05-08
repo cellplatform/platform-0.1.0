@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, log, t, UserIdentity } from '../../common';
+import { css, GlamorValue, log, t, UserIdentityType } from '../../common';
 import { Divider } from '../Divider';
 import { ThreadComment } from '../ThreadComment';
 import { ThreadCommentHeader } from '../ThreadCommentHeader';
@@ -112,8 +112,8 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
 
   private renderThreadComment(item: t.IThreadComment) {
     const user = this.users.find(u => u.id === item.user);
-    const name = UserIdentity.toName(user);
-    const email = UserIdentity.toEmail(user);
+    const name = UserIdentityType.toName(user);
+    const email = UserIdentityType.toEmail(user);
     const elHeader = <ThreadCommentHeader timestamp={item.timestamp} name={name} />;
     const body = item.body ? item.body.markdown : undefined;
     return <ThreadComment key={item.id} avatarSrc={email} header={elHeader} body={body} />;
