@@ -1,4 +1,4 @@
-import { t, log } from './common';
+import { t, log, ForbiddenError } from './common';
 import { Request } from 'express';
 
 /**
@@ -27,13 +27,16 @@ export class Context implements t.IContext {
   public async authorize(policy: t.AuthPolicy) {
     const token = this.req.headers.authorization;
     if (!token) {
-      log.info(`✋  No authorization token found.\n`);
+      log.info(`✋  No authorization token.\n`);
     }
 
     const result: t.IAuthResult = {
       isAllowed: false,
       matches: [],
       user: undefined,
+      throw(message) {
+        throw new ForbiddenError(message || 'Not allowed.');
+      },
     };
     return result;
   }

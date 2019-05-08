@@ -958,6 +958,13 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@platform/auth@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/auth/-/auth-0.0.0.tgz#5bfa0ec8a6388374cfc91a2e124d2139a7135c77"
+  integrity sha512-+32RLMt3SIhf1VmZ6yRJGSJDCWOSlidk7fSLU+vvySZGPCf6kY4FKNE/A9vrVHXN/9KyHFnc7mKs0rZCsEwgjg==
+  dependencies:
+    "@platform/libs" "0.0.12"
+
 "@platform/cli.spec@0.1.22":
   version "0.1.22"
   resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.1.22.tgz#65e7d6906959d6a2ce2a0ddada562fcdcf32477a"

@@ -1,4 +1,5 @@
 import { gql, t, Key, R, value } from '../common';
+import { POLICY } from '../auth';
 
 /**
  * [Types]
@@ -55,6 +56,12 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
        */
       thread: async (_: any, args: { id: string }, ctx: t.IContext, info: any) => {
         const id = args.id || '';
+
+        const auth = await ctx.authorize(POLICY.THREAD.READ);
+        if (!auth.isAllowed) {
+          auth.throw();
+        }
+
         const db = await getDb();
         const exists = (await db.get(k.metaDbKey(id))).props.exists;
         return exists ? { id } : null;
@@ -66,6 +73,13 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
        * Retrieve thread items.
        */
       items: async (_: { id: string }, args: { kind?: string }, ctx: t.IContext, info: any) => {
+        const auth = await ctx.authorize(POLICY.THREAD.READ);
+        if (!auth.isAllowed) {
+          auth.throw();
+        }
+
+        console.log(`\nTODO 🐷  ensure user is part of the thread. \n`);
+
         const { kind } = args;
         const db = await getDb();
         const pattern = k.itemsDbKey(_.id);
@@ -82,6 +96,13 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
        * Retrieve the users of a thread.
        */
       users: async (_: { id: string }, args: {}, ctx: t.IContext, info: any) => {
+        const auth = await ctx.authorize(POLICY.THREAD.READ);
+        if (!auth.isAllowed) {
+          auth.throw();
+        }
+
+        console.log(`\nTODO 🐷  ensure user is part of the thread. \n`);
+
         const db = await getDb();
         const pattern = k.usersDbKey(_.id);
         const users = (await db.get(pattern)).value;
@@ -93,7 +114,3 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
   // Finish up.
   return { resolvers, typeDefs };
 }
-
-/**
- * [Helpers]
- */

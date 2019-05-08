@@ -26,6 +26,7 @@ export type IAuthResult<P = Permission, R = Role> = {
   isAllowed: boolean;
   matches: Array<IAuthMatch<P, R>>;
   user?: { id: string };
+  throw(message?: string): void;
 };
 
 export type IAuthMatch<P = Permission, R = Role> = {

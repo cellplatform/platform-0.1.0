@@ -30,6 +30,7 @@
     "@platform/util.value": "0.2.0"
   },
   "devDependencies": {
+    "@platform/auth": "0.0.0",
     "@platform/cli.ui": "0.1.16",
     "@platform/conversation.db": "0.0.15",
     "@platform/graphql.server": "0.0.7",

@@ -15,6 +15,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/auth": "0.0.0",
     "@platform/conversation.types": "0.0.8",
     "@platform/graphql.server": "0.0.7",
     "@platform/hyperdb.types": "0.0.19",

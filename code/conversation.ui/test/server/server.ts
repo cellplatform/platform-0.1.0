@@ -1,4 +1,4 @@
-import { ApolloServer, express, t } from './common';
+import { log, ApolloServer, express, t, ForbiddenError } from './common';
 import { resolvers, typeDefs } from './resolvers';
 
 import { mergeSchemas, makeExecutableSchema } from 'graphql-tools';
@@ -31,16 +31,30 @@ export const server = new ApolloServer({
     return {
       /**
        * Authorize the request.
-       * ☝️ Ensure server that stitches the `conversation.db` schema
-       *    implements this.
+       * ☝️ Ensure the implementing server that stitches in this
+       *    `conversation.db` schema implements this `authorize` function.
        */
       async authorize(policy) {
-        console.log('AUTH/policy:', policy);
-        return {
-          isAllowed: false,
+        const token = e.req.headers.authorization;
+        if (!token) {
+          log.info(`✋  No authorization token.\n`);
+        } else {
+          log.info(`Authorzation token: ${log.yellow(token)}`);
+        }
+
+        // const isAllowed = token === 'phil'; // NB: Obviously not this! 🐷
+        const isAllowed = true; // ALLOW everything.
+
+        const result: t.IAuthResult = {
+          isAllowed,
           matches: [],
           user: undefined,
+          throw(message) {
+            throw new ForbiddenError(message || 'Not allowed.');
+          },
         };
+
+        return result;
       },
     };
   },

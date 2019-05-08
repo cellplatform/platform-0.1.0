@@ -41,7 +41,7 @@ export const server = new ApolloServer({
       const token = headers.authorization;
 
       if (!token) {
-        log.info(`✋  No authorization token found.\n`);
+        log.info(`✋  No authorization token.\n`);
       }
 
       return !token
