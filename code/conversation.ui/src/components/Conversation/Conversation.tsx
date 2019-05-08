@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter, map, distinctUntilChanged } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { GlamorValue, t, time } from '../../common';
 import { ConversationView } from './ConversationView';
@@ -34,28 +34,12 @@ export class Conversation extends React.PureComponent<IConversationProps> {
     focus$
       // Focus.
       .pipe(filter(e => e.to.ui.focus === 'DRAFT'))
-      .subscribe(e => {
-        console.log('FOCUS >>', e);
-
-        this.focus();
-      });
+      .subscribe(e => this.focus());
 
     focus$
       // Blur.
       .pipe(filter(e => e.to.ui.focus === undefined))
-      .subscribe(e => {
-        console.log('FOCUS >>', e);
-
-        this.focus(false);
-      });
-
-    /**
-     * TODO
-     * - state :: strongly typed event type on context.
-     * - focus/blur
-     */
-
-    // distinctUntilChanged((prev, next) => prev.to
+      .subscribe(e => this.focus(false));
   }
 
   public componentWillUnmount() {
