@@ -21,16 +21,21 @@ export function init(args: { store: t.IThreadStore; keys: Key }) {
 
   store
     // Insert a new item into the thread.
-    .on<t.IAddThreadItemEvent>('THREAD/add')
-    .subscribe(e => {
+    .on<t.IAddThreadItemAddEvent>('THREAD/add')
+    .subscribe(async e => {
       const s = e.state;
       const id = e.payload.item.id || k.itemId(s.id);
-      const users = UserIdentity.insert(e.payload.user, s.users);
-      const items = [...s.items, { ...e.payload.item, id }];
+      const user = e.payload.user;
+      const users = UserIdentity.insert(user, s.users);
+      const item = { ...e.payload.item, id };
+      const items = [...s.items, item];
       const draft = { ...s.draft };
       delete draft.markdown;
       const thread = formatThread({ ...s, items, users, draft });
+
       e.change(thread);
+      await time.wait(0);
+      e.dispatch({ type: 'THREAD/added', payload: { user, item } });
     });
 
   store
