@@ -1,12 +1,11 @@
-import { gql, t, Key, R, value } from '../common';
 import { POLICY } from '../auth';
+import { gql, Key, log, R, t, value } from '../common';
 
 /**
  * [Types]
  */
 export const typeDefs = gql`
   type Query {
-    foo: JSON
     conversation: QueryConversation!
   }
 
@@ -33,20 +32,6 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
    */
   const resolvers: t.IResolvers = {
     Query: {
-      /**
-       * TEMP 🐷
-       */
-      foo: async (_: any, args: any, ctx: t.IContext, info: any) => {
-        const db = await getDb();
-
-        const values = await db.values({ pattern: 'MSG/th/1234/i' });
-        Object.keys(values).forEach(key => {
-          values[key] = values[key].value;
-        });
-
-        return values;
-      },
-
       conversation: () => ({}),
     },
 
@@ -78,7 +63,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
           auth.throw();
         }
 
-        console.log(`\nTODO 🐷  ensure user is part of the thread. \n`);
+        log.TODO('ensure user is part of the thread. 🐷');
 
         const { kind } = args;
         const db = await getDb();
@@ -101,7 +86,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
           auth.throw();
         }
 
-        console.log(`\nTODO 🐷  ensure user is part of the thread. \n`);
+        log.TODO('ensure user is part of the thread. 🐷');
 
         const db = await getDb();
         const pattern = k.usersDbKey(_.id);
