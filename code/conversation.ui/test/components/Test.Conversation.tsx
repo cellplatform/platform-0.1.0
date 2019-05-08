@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, Conversation, css, ObjectView, t } from '../common';
+import { color, Conversation, css, ObjectView, t, COLORS } from '../common';
 
 export type ITestProps = { store: t.IThreadStore };
 export type ITestState = {};
@@ -58,6 +58,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         width: 350,
         padding: 8,
         borderLeft: `solid 1px ${color.format(-0.1)}`,
+        backgroundColor: COLORS.WHITE,
       }),
     };
     return (

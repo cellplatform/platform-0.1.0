@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil, debounceTime } from 'rxjs/operators';
 
 import { css, GlamorValue, log, t, UserIdentityType } from '../../common';
 import { Divider } from '../Divider';
@@ -38,6 +38,29 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
       const draft = markdown ? { user, markdown } : { user };
       this.dispatch({ type: 'THREAD/draft', payload: { draft } });
     });
+
+    const focus$ = editor$.pipe(
+      filter(e => e.type === 'EDITOR/focus'),
+      map(e => e.payload as t.ITextEditorFocus),
+    );
+
+    focus$
+      // Keep state in sync when editor is manually focused.
+      .pipe(
+        filter(e => e.isFocused),
+        debounceTime(0),
+        filter(e => this.thread.ui.focus !== 'DRAFT'),
+      )
+      .subscribe(e => this.dispatch({ type: 'THREAD/focus', payload: { target: 'DRAFT' } }));
+
+    focus$
+      // Keep state in sync when editor is manually blurred.
+      .pipe(
+        filter(e => !e.isFocused),
+        debounceTime(0),
+        filter(e => this.thread.ui.focus === 'DRAFT'),
+      )
+      .subscribe(e => this.dispatch({ type: 'THREAD/focus', payload: { target: undefined } }));
   }
 
   public componentWillUnmount() {
@@ -48,6 +71,10 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   /**
    * [Properties]
    */
+  public get isFocused() {
+    return this.draftComment ? this.draftComment.isFocused : false;
+  }
+
   public get thread() {
     return this.props.model;
   }
@@ -75,9 +102,9 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   /**
    * [Methods]
    */
-  public focus() {
+  public focus(isFocused?: boolean) {
     if (this.draftComment) {
-      this.draftComment.focus();
+      this.draftComment.focus(isFocused);
     }
     return this;
   }

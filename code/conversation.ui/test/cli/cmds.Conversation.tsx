@@ -29,7 +29,7 @@ export const conversation = Command.create<P>('Conversation', e => {
         user,
         item: {
           kind: 'THREAD/comment',
-          id: '', // NB: Proper id is generated within resolver.
+          id: '', // NB: Proper [id] is generated within resolver.
           timestamp,
           user: user.id,
           body: { markdown },
@@ -45,5 +45,8 @@ export const conversation = Command.create<P>('Conversation', e => {
   })
   .add('focus', e => {
     const store = e.props.threadStore;
-    store.dispatch({ type: 'THREAD/draft/focus', payload: {} });
+    store.dispatch({ type: 'THREAD/focus', payload: { target: 'DRAFT' } });
+    // time.delay(1200, () => {
+    //   store.dispatch({ type: 'THREAD/focus', payload: { target: undefined } });
+    // });
   });

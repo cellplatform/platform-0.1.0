@@ -82,6 +82,10 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
   /**
    * [Properties]
    */
+  public get isFocused() {
+    return this.editor ? this.editor.isFocused : false;
+  }
+
   public get isEmpty() {
     return !Boolean(this.state.value);
   }
@@ -93,9 +97,9 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
   /**
    * [Methods]
    */
-  public focus() {
+  public focus(isFocused?: boolean) {
     if (this.editor) {
-      this.editor.focus();
+      this.editor.focus(isFocused);
     }
     return this;
   }

@@ -60,6 +60,11 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
   /**
    * [Properties]
    */
+  public get isFocused() {
+    return this.editor ? this.editor.isFocused : false;
+  }
+
+
   public get body() {
     return this.props.body || '';
   }
@@ -67,9 +72,9 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
   /**
    * [Methods]
    */
-  public focus() {
+  public focus(isFocused?: boolean) {
     if (this.editor) {
-      this.editor.focus();
+      this.editor.focus(isFocused);
     }
     return this;
   }

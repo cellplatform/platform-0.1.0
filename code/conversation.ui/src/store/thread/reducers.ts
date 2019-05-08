@@ -1,4 +1,4 @@
-import { Key, R, UserIdentityType, time } from '../common';
+import { Key, R, UserIdentityType, time, value } from '../common';
 import * as t from '../types';
 import { data } from '../../data.graphql';
 
@@ -92,6 +92,16 @@ export function init(args: {
       const s = e.state;
       const draft = e.payload.draft;
       const ui = { ...s.ui, draft };
+      e.change({ ...s, ui });
+    });
+
+  store
+    // Focus.
+    .on<t.IThreadFocusEvent>('THREAD/focus')
+    .subscribe(e => {
+      const { target } = e.payload;
+      const s = e.state;
+      const ui = value.deleteUndefined({ ...s.ui, focus: target });
       e.change({ ...s, ui });
     });
 }

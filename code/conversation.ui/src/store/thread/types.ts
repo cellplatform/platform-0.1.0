@@ -4,9 +4,12 @@ export type IThreadStore = t.IStore<IThreadStoreModel, ThreadEvent>;
 export type IThreadStoreContext = t.IStoreContext<IThreadStoreModel, ThreadEvent>;
 
 export type IThreadStoreModel = t.IThreadModel & {
-  draft: IThreadDraft;
+  ui: {
+    draft: IThreadDraft;
+    focus?: IThreadFocusTarget;
+  };
 };
-
+export type IThreadFocusTarget = 'DRAFT';
 export type IThreadDraft = { user: t.IUserIdentity; markdown?: string };
 
 /**
@@ -20,7 +23,7 @@ export type ThreadEvent =
   | IAddThreadItemAddedEvent
   | IThreadItemsEvent
   | IThreadDraftEvent
-  | IThreadDraftFocusEvent;
+  | IThreadFocusEvent;
 
 export type IThreadLoadEvent = {
   type: 'THREAD/load';
@@ -55,7 +58,9 @@ export type IThreadDraftEvent = {
   payload: { draft: t.IThreadDraft };
 };
 
-export type IThreadDraftFocusEvent = {
-  type: 'THREAD/draft/focus';
-  payload: {};
+export type IThreadFocusEvent = {
+  type: 'THREAD/focus';
+  payload: {
+    target: IThreadFocusTarget | undefined;
+  };
 };
