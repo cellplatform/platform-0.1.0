@@ -1,4 +1,4 @@
-import { t, UNNAMED, value } from '../common';
+import { R, t, UNNAMED, value } from '../common';
 
 /**
  * Helpers for working with the `IUserIdentity` type.
@@ -20,5 +20,13 @@ export class UserIdentity {
     }
     const name = UserIdentity.toName(user);
     return value.isEmail(name) ? name : EMPTY;
+  }
+
+  public static insert(user: t.IUserIdentity, users: t.IUserIdentity[]) {
+    return UserIdentity.uniq([...users, user]);
+  }
+
+  public static uniq(users: t.IUserIdentity[]) {
+    return R.uniqBy<t.IUserIdentity, any>(R.prop('id'), users);
   }
 }
