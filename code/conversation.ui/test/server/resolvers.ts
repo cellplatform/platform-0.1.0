@@ -7,11 +7,7 @@ export const typeDefs = gql`
   scalar JSON
 
   type Query {
-    foo: JSON
-  }
-
-  type Mutation {
-    foo(message: String): Boolean
+    localFoo: JSON
   }
 `;
 
@@ -20,15 +16,8 @@ export const typeDefs = gql`
  */
 export const resolvers: t.IResolvers = {
   Query: {
-    foo: async (_: any, args: any, ctx: t.IContext, info: any) => {
+    localFoo: async (_: any, args: any, ctx: t.IContext, info: any) => {
       return { msg: 'Local' };
-    },
-  },
-
-  Mutation: {
-    foo: async (_: any, args: any, ctx: t.IContext, info: any) => {
-      log.info('foo', args);
-      return true;
     },
   },
 };

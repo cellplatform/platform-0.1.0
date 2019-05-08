@@ -2,20 +2,16 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, id as idUtil, log, t, value } from '../../common';
+import { css, GlamorValue, log, t, UserIdentity } from '../../common';
 import { Divider } from '../Divider';
 import { ThreadComment } from '../ThreadComment';
 import { ThreadCommentHeader } from '../ThreadCommentHeader';
 
 export type IConversationViewProps = {
-  model: t.IThreadModel;
+  model: t.IThreadStoreModel;
   dispatch$: Subject<t.ThreadEvent>;
   style?: GlamorValue;
-};
-
-const TEMP = {
-  WOMAN_1: require('../../../static/images/woman-1.jpg'),
-  WOMAN_2: require('../../../static/images/woman-2.jpg'),
+  onComment?: (e: {}) => void;
 };
 
 export class ConversationView extends React.PureComponent<IConversationViewProps> {
@@ -49,16 +45,28 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   /**
    * [Properties]
    */
+  public get thread() {
+    return this.props.model;
+  }
+
+  public get users() {
+    return this.thread.users || [];
+  }
+
   public get items() {
-    return this.props.model.items;
+    return this.thread.items;
   }
 
   public get draft() {
-    return this.props.model.draft;
+    return this.thread.draft;
   }
 
   public get user() {
     return this.draft.user;
+  }
+
+  public get avatarSrc() {
+    return this.user.email;
   }
 
   /**
@@ -78,7 +86,7 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
 
     const elItems = this.items.map((item, i) => [
       this.renderItem(item),
-      <Divider key={i} height={25} left={78} />,
+      <Divider key={i} height={40} left={78} marginY={0} />,
     ]);
 
     return (
@@ -103,36 +111,24 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   }
 
   private renderThreadComment(item: t.IThreadComment) {
-    const user = item.user;
-    const name = user.name || user.id;
+    const user = this.users.find(u => u.id === item.user);
+    const name = UserIdentity.toName(user);
+    const email = UserIdentity.toEmail(user);
     const elHeader = <ThreadCommentHeader timestamp={item.timestamp} name={name} />;
     const body = item.body ? item.body.markdown : undefined;
-    const avatarUrl = value.isEmail(name) ? name : undefined;
-    return <ThreadComment key={item.id} avatarUrl={avatarUrl} header={elHeader} body={body} />;
+    return <ThreadComment key={item.id} avatarSrc={email} header={elHeader} body={body} />;
   }
 
   private renderFooterComment() {
     const body = this.draft.markdown;
     return (
       <ThreadComment
-        avatarUrl={TEMP.WOMAN_1}
+        avatarSrc={this.avatarSrc}
         body={body}
         isEditing={true}
         editor$={this.editor$}
-        onComment={this.handleCommentClick}
+        onComment={this.props.onComment}
       />
     );
   }
-
-  private handleCommentClick = () => {
-    const markdown = this.draft.markdown || '';
-    const item: t.IThreadComment = {
-      kind: 'THREAD/comment',
-      id: idUtil.cuid(),
-      timestamp: new Date(),
-      user: this.user,
-      body: { markdown },
-    };
-    this.dispatch({ type: 'THREAD/add', payload: { item } });
-  };
 }

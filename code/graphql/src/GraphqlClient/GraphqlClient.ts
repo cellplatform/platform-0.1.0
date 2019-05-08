@@ -113,6 +113,13 @@ export class GraphqlClient implements t.IGqlClient {
     return response;
   }
 
+  public toString() {
+    let res = 'GraphqlClient';
+    res = this.name ? `${res}:${this.name}` : res;
+    res = this.version ? `${res}@${this.version}` : res;
+    return `[${res}]`;
+  }
+
   /**
    * [Helpers]
    */

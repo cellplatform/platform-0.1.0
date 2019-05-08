@@ -1,27 +1,20 @@
+import { t, Key } from '../common';
 import { makeExecutableSchema } from 'graphql-tools';
-import { gql, t } from '../common';
+import * as common from './schema.common';
+import * as query from './schema.query';
+import * as mutation from './schema.mutation';
 
 /**
- * [Types]
+ * [Schema]
  */
-export const typeDefs = gql`
-  type Query {
-    foobar: String
-  }
-`;
+export function init(args: { getDb: t.GetConverstaionDb; keys?: Key }) {
+  const { getDb } = args;
+  const keys = (args.keys = new Key({}));
+  const options = { getDb, keys };
 
-/**
- * [Resolvers]
- */
-export const resolvers: t.IResolvers = {
-  Query: {
-    foobar: async (_: any, args: any, ctx: t.IContext, info: any) => {
-      return 'foobar';
-    },
-  },
-};
-
-export function init(args: {}) {
-  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  const schema = makeExecutableSchema({
+    typeDefs: [common.typeDefs, query.typeDefs, mutation.typeDefs],
+    resolvers: [query.init(options).resolvers, mutation.init(options).resolvers],
+  });
   return schema;
 }

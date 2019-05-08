@@ -33,11 +33,16 @@ export const root = Command.create<P>('root')
     const client = e.props.client;
     const msg = e.param(0, 'My mutated value');
     type IVariables = { msg: string };
-    const res = await client.mutate<boolean, IVariables>({ mutation, variables: { msg } });
+    const variables: IVariables = { msg };
+    const res = await client.mutate<boolean, IVariables>({ mutation, variables });
     e.props.next({ res });
   })
   .add('error', async e => {
     const client = e.props.client;
     const res = await client.query({ query: fail });
     e.props.next({ res });
+  })
+  .add('toString', async e => {
+    const client = e.props.client;
+    log.info('client.toString()', client.toString());
   });

@@ -10,7 +10,7 @@ import { Editor } from './components/Editor';
 import { Triangle } from './components/Triangle';
 
 export type IThreadCommentProps = {
-  avatarUrl?: string;
+  avatarSrc?: string;
   bottomConnector?: number;
   header?: JSX.Element;
   body?: string;
@@ -65,13 +65,12 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
    * [Render]
    */
   public render() {
-    const { avatarUrl, isEditing } = this.props;
+    const { avatarSrc, isEditing } = this.props;
     const styles = {
       base: css({
         display: 'block',
         boxSizing: 'border-box',
         userSelect: 'none',
-        backgroundColor: COLORS.WHITE,
       }),
       inner: css({
         Flex: 'horizontal',
@@ -79,11 +78,12 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
       left: css({
         width: SIZE.LEFT_MARGIN,
       }),
-      right: css({
+      main: css({
         flex: 1,
         minHeight: SIZE.AVATAR,
-        border: `solid 1px ${color.format(-0.1)}`,
+        border: `solid 1px ${color.format(-0.15)}`,
         borderRadius: 3,
+        backgroundColor: COLORS.WHITE,
       }),
     };
 
@@ -97,7 +97,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
         <div {...styles.inner}>
           <div {...styles.left}>
             <Avatar
-              src={avatarUrl}
+              src={avatarSrc}
               size={SIZE.AVATAR}
               borderRadius={4}
               borderColor={-0.1}
@@ -105,7 +105,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
               gravatarDefault={'404'}
             />
           </div>
-          <div {...styles.right}>
+          <div {...styles.main}>
             {this.renderHeader()}
             {elBody}
             {elEditor}

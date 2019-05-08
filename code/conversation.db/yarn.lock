@@ -79,12 +79,13 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/conversation.types@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.5.tgz#6ded7c5234c797a9c8b393017f38bad80caede08"
-  integrity sha512-rthT8AuolJpVT87vheHLlgnsYmgET63e7ltv1a7JMgi9hI8IeUxGEYIaFTUEnEEZqBVblMUxOukg9ML66pm6xQ==
+"@platform/conversation.types@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.8.tgz#9966e436b47ce9ec18f581c7c9b88ffed8152268"
+  integrity sha512-dwJrOoru6wtxIdMdzGcMHCju8qILQaPYWuva5GQKmGpVYSTLW9o2uQlPbaNUqqOdf4HJ2fBwJ/ud8u10D1WUIA==
   dependencies:
     "@platform/libs" "0.0.12"
+    "@platform/util.value" "^0.2.0"
 
 "@platform/exec@0.2.4":
   version "0.2.4"
@@ -109,12 +110,12 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql.server@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.6.tgz#0c2a169d6e61d3069b8232d5737f2ed0e77215e7"
-  integrity sha512-4uHO1XhPSq/9ygDai5aeSxyW5/n0mayS/P7cFJ9Hr3qHQATYhorNWpN9FWlfvgH+4Zi+fMPL5RQaM6hmxHVcXA==
+"@platform/graphql.server@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.7.tgz#4900cea56c91301532a007c4e598a88d4afe443e"
+  integrity sha512-7CFvDWX7uksHN3sKio1pON7fc1gFuKiE8XzjbpFDBt9+2KlsS5cV3fCQtLPuWI47XrV1NZnYkKveoaCREBEcbw==
   dependencies:
-    "@platform/graphql" "0.1.1"
+    "@platform/graphql" "0.1.2"
     "@platform/libs" "0.0.12"
     "@platform/log" "0.0.117"
     "@platform/util.is" "0.0.66"
@@ -124,10 +125,10 @@
     express "4.16.4"
     graphql "14.2.1"
 
-"@platform/graphql@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.1.1.tgz#14e1d53fd56c82dbae4ea51756cdea7f3060d4fa"
-  integrity sha512-m120QmXL2o5bWQbbtdFOPr1DMFZ6Fuxu2wxtoLFzAbVgf8Sx9H4mPygjgPMtxFn+y7OZ8st+E61vM8ObhMMQZA==
+"@platform/graphql@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.1.2.tgz#98ec5957cda38fae78e24aea955ccd7db540ede7"
+  integrity sha512-+JJsSr7aT8bAXDJ0zthEpyfAkbXyVJOQ4zgst7cJYk9ZvTP99CwsSeb3T53ZuBVpvYRyh171uTImxyCLHNVcgw==
   dependencies:
     "@platform/libs" "0.0.12"
     "@types/graphql" "14.2.0"
@@ -142,15 +143,15 @@
   dependencies:
     "@platform/libs" "0.0.12"
 
-"@platform/hyperdb@0.1.29":
-  version "0.1.29"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.29.tgz#1da823641a4ca66ddd18d0241981e10b0101567c"
-  integrity sha512-TEkk58KFWMoPDbRCzdOzvpULp7o7Wx3W2CGajZWBhEzKl61MYRQm0bdwRTX1RRPieR4+3/UbEqcSCnmo1VkzUA==
+"@platform/hyperdb@0.1.30":
+  version "0.1.30"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.30.tgz#32a138734a09ca8bd25b8e81938740fe4e241805"
+  integrity sha512-2tzoDNeXU1c8HlfbMvJIGV1o1UZr95BLSMJXm7oYGjKGS1X1mKNlRDicmlyf6jT5zOWHkrEXOJGuplaiEO/s7A==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.58"
     "@platform/hyperdb.types" "0.0.19"
-    "@platform/util.value" "0.1.7"
+    "@platform/util.value" "0.2.0"
     discovery-swarm "5.1.4"
     hyperdb "3.5.0"
     pump "3.0.0"
@@ -222,10 +223,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.66.tgz#1e527748fe0f158060271dc9eb4447241e2f9366"
   integrity sha512-3HsiU3gmnU71UC0yjUmsQ9ABKmgNPEujQfZJYssm4FRBfx6vWFTYxosBh2qAY1oDBgPSU1/MbdAEaJkjmzbxmg==
 
-"@platform/util.value@0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.1.7.tgz#b3274e8371f47a21cbac5bc3107e352d15b20cb5"
-  integrity sha512-/O6kuaDaHK8vvFtbY8t8OXsxJrZRdbUuxrbsC1kNeNssfdIehms7b1hD1qJYmjXAQ9SKMHbsOWnMOVqMMBllow==
+"@platform/util.value@0.2.0", "@platform/util.value@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.2.0.tgz#864d3ca9a2e664c6734d03e518f7ee852cf55848"
+  integrity sha512-BRDGcdfPyNslUO9A+rY89aZio/HUl29jCSsIpzITTor/F1J+dRRquYcFUG3ZuARrDHlHqPq8J0UIiK4ErLYkeg==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/types" "0.0.4"

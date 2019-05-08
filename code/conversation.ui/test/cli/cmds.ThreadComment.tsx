@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Command, t, LOREM, props } from '../common';
+import { Command, t, LOREM, props, PEOPLE } from '../common';
 import { Test } from '../components/Test.ThreadComment';
 
 type P = t.ICommandProps;
 
 export const createThreadCommentProps = () => {
   return props.observable<t.IThreadCommentTestProps>({
-    name: 'mary@foo.com',
+    person: PEOPLE.MARY,
     body: BODY.MARKDOWN_2,
     isEditing: false,
   });
@@ -21,7 +21,8 @@ export const threadComment = Command.create<P>('ThreadComment', e => {
 })
   .add('name', e => {
     const data = e.props.threadCommentProps;
-    data.name = e.param(0, '');
+    const value = e.param(0, '');
+    data.person = { id: value };
   })
   .add('body', e => {
     const data = e.props.threadCommentProps;

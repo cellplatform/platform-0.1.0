@@ -5,8 +5,18 @@ import { gql, log, t } from './common';
  * [Types]
  */
 export const typeDefs = gql`
+  type Address {
+    street: String
+    city: String
+  }
+
   type User {
     email: String
+    address: Address
+  }
+
+  type Store {
+    write(value: String): Boolean
   }
 
   type Query {
@@ -15,6 +25,7 @@ export const typeDefs = gql`
 
   type Mutation {
     echo(message: String): String
+    store: Store
   }
 `;
 
@@ -22,6 +33,19 @@ export const typeDefs = gql`
  * [Resolvers]
  */
 export const resolvers: t.IResolvers = {
+  User: {
+    address: async (_: any, args: any, ctx: t.IContext, info: any) => {
+      return { street: '221b Baker Street', city: 'London' };
+    },
+  },
+
+  Store: {
+    write: async (_: any, args: any, ctx: t.IContext, info: any) => {
+      log.info('nested mutation:', args);
+      return true;
+    },
+  },
+
   Query: {
     me: async (_: any, args: any, ctx: t.IContext, info: any) => {
       return ctx.getUser();
@@ -33,6 +57,10 @@ export const resolvers: t.IResolvers = {
       const res = `Echo: ${args.message}`;
       log.info(res);
       return res;
+    },
+
+    store: async (_: any, args: any, ctx: t.IContext, info: any) => {
+      return {};
     },
   },
 };

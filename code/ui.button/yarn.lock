@@ -965,14 +965,14 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.3.tgz#6a6fcdda7c38b34e5a6df52752767a40b0a364e3"
-  integrity sha512-L41GfeMNp5LVXgC8Hr+upS3Sm+4X1AtK+6bJqWfh8AIMQA6QulYgM1egWCUVfK8WzrugvFJaWEGZ11lf6Bf+GQ==
+"@platform/css@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.4.tgz#210f1cd0af0bc0da4ae028caae0c62587f87e9eb"
+  integrity sha512-hXtXQY1s58m+i+32Rrhh+uKBbiJJTQ7jJSKH5HhjL+wK6We9jkVoshLPIsa1+wB5AfxlTMlYfBaSj/C6pbcJ2Q==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.is" "0.0.66"
-    "@platform/util.value" "0.1.7"
+    "@platform/util.value" "0.2.0"
     "@types/tinycolor2" "1.4.1"
     glamor "2.20.40"
     tinycolor2 "1.4.1"
@@ -1059,12 +1059,12 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/react@0.1.32":
-  version "0.1.32"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.32.tgz#3a5a964792731d3662af9ad992c4db37e1c5bd76"
-  integrity sha512-KtmiTN8cChNtvcN2Enw+MI+foX6mN43dmt5+HxJs3nAHdsdw/G6EP2FlGUYlhnHfvWGjwMrRhItqBjqu7rsUsg==
+"@platform/react@0.1.33":
+  version "0.1.33"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.33.tgz#646b38d38440d5ac3e9005d909bf2e7207dbca19"
+  integrity sha512-9/d0JwV5c9cd7XeJy82IgZRpobogXT8zW+llcTEg1JUC+aN6qlGL85/UMz7vWIhiod0jj6tLHPq3F03UZaHTyQ==
   dependencies:
-    "@platform/css" "0.1.3"
+    "@platform/css" "0.1.4"
     "@platform/util.is" "0.0.66"
     "@types/react" "16.8.16"
     "@types/react-dom" "16.8.4"
@@ -1117,12 +1117,12 @@
   dependencies:
     "@platform/react" "0.1.31"
 
-"@platform/ui.icon@0.0.48":
-  version "0.0.48"
-  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.48.tgz#f23a5ea612553475fc5b406de9cc230e17c415d3"
-  integrity sha512-cSPIxwnM54Mk9rcEDl+ueIE0sQKV+0UqFg9xlvbfJcxCHXttvG6e2C9UcxoqUeR0e7a4BNIC6POmfbReZ+mptQ==
+"@platform/ui.icon@0.0.49":
+  version "0.0.49"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.49.tgz#8dd6ebe66ee6ea3741ea5cd99425852bb4b8c492"
+  integrity sha512-qeAponZPiP9DnxBqwzilMZO5+gq1YVUn+mc/8vq6TEfiL0gzhhW8Ov+iOD1gjsm6nLQeA0hqQbbgPKgkb/bkpw==
   dependencies:
-    "@platform/react" "0.1.32"
+    "@platform/react" "0.1.33"
 
 "@platform/ui.object@0.0.103":
   version "0.0.103"
@@ -1228,10 +1228,10 @@
     dayjs "1.8.13"
     semver "6.0.0"
 
-"@platform/util.value@0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.1.7.tgz#b3274e8371f47a21cbac5bc3107e352d15b20cb5"
-  integrity sha512-/O6kuaDaHK8vvFtbY8t8OXsxJrZRdbUuxrbsC1kNeNssfdIehms7b1hD1qJYmjXAQ9SKMHbsOWnMOVqMMBllow==
+"@platform/util.value@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.2.0.tgz#864d3ca9a2e664c6734d03e518f7ee852cf55848"
+  integrity sha512-BRDGcdfPyNslUO9A+rY89aZio/HUl29jCSsIpzITTor/F1J+dRRquYcFUG3ZuARrDHlHqPq8J0UIiK4ErLYkeg==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/types" "0.0.4"

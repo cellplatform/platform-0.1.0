@@ -14,4 +14,8 @@ web:
 sourcemaps:
   strip:
     - node_modules/rxjs
+    - node_modules/@platform/ui*
+    - node_modules/apollo*
+    - node_modules/graphql*
+    - node_modules/zen*
 

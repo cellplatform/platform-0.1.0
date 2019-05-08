@@ -1,4 +1,2 @@
-import * as thread from './thread';
-
-export { thread };
-export { createProvider } from '@platform/state.react';
+import * as store from './store';
+export { store };

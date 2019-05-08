@@ -54,7 +54,7 @@ export function build<T>(
 }
 
 /**
- * Walks the given path to retrieve a value.
+ * Walks the given (period seperated) key-path to retrieve a value.
  */
 export function pluck<T>(keyPath: string, root: { [key: string]: any }) {
   const parts = prepareKeyPath(keyPath);
@@ -155,14 +155,21 @@ export function remove(
 }
 
 /**
- * Prunes a path from the given object.
+ * Prunes values on the given priod seperated key-path from an object.
  */
 export function prune(keyPath: string, root: { [key: string]: any }) {
   return remove(keyPath, root, { type: 'PRUNE' });
 }
 
 /**
- * INTERNAL
+ * Converts an object into an array of {key,value} pairs.
+ */
+export function toArray<T = any, K = keyof T>(obj: object): Array<{ key: K; value: T[keyof T] }> {
+  return Object.keys(obj).map(key => ({ key: (key as unknown) as K, value: obj[key] }));
+}
+
+/**
+ * [Helpers]
  */
 function prepareKeyPath(keyPath: string) {
   keyPath = keyPath.trim();

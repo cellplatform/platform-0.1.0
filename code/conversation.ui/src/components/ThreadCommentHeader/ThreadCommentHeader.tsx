@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, time } from '../../common';
+import { css, GlamorValue, time, UserIdentity } from '../../common';
 import { Text } from '../primitives';
 
 export type IThreadCommentHeaderProps = {
   name?: string;
-  timestamp?: Date;
+  timestamp?: number;
   style?: GlamorValue;
 };
 export type IThreadCommentHeaderState = {};
@@ -47,12 +47,17 @@ export class ThreadCommentHeader extends React.PureComponent<
    * [Properties]
    */
   public get name() {
-    return this.props.name || 'Unnamed';
+    return this.props.name || UserIdentity.UNNAMED;
+  }
+
+  public get date() {
+    const { timestamp } = this.props;
+    return timestamp ? time.fromTimestamp(timestamp) : undefined;
   }
 
   public get elapsed() {
-    const { timestamp } = this.props;
-    return timestamp ? time.elapsed(timestamp) : undefined;
+    const date = this.date;
+    return date ? time.elapsed(date) : undefined;
   }
 
   /**

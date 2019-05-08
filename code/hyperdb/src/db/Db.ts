@@ -33,6 +33,21 @@ export class Db<D extends object = any> implements t.IDb<D> {
     return new Promise<Db<D>>(resolve => {
       const { dir, dbKey, version, valueEncoding = 'utf-8' } = args;
       const reduce = (a: t.IDbNode, b: t.IDbNode) => {
+        /**
+         * [BUG]: This does not appear to be being invoked.
+         *   - See: https://github.com/mafintosh/hyperdb/blob/8e9d99b46bd01d5616bfc2778392c3c0bb6fecab/lib/get.js#L96
+         *
+         *    if (reduce) return results.length ? results.reduce(reduce) : null
+         *
+         *  Should be:
+         *
+         *    if (reduce) return results.length ? results.reduce(reduce, []) : null
+         *
+         *   Related issue:
+         *
+         *   - https://github.com/mafintosh/hyperdb/issues/80
+         *
+         */
         return a;
       };
       const map = (node: t.IDbNode) => {
