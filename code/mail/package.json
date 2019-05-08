@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "@platform/libs": "0.0.12",
-    "@platform/types": "0.0.4"
+    "@platform/types": "0.0.4",
+    "@types/nodemailer": "^4.6.8",
+    "nodemailer": "^6.1.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.50",

@@ -91,19 +91,21 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql.server@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.8.tgz#b9e9a2927f05e5c2f6b82dddcd9dc5a2173362f0"
-  integrity sha512-qLeLzSB9NkXDc311iw4AmrSAGENTh6U2NpAXTTuwInm9UTQ7YBwRUwijGk9hKcX7Db7I7J+i71uPGrqWxtK5dQ==
+"@platform/graphql.server@0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.9.tgz#5fbb2bf65b67c09899de37a1a009945bfc5efe5e"
+  integrity sha512-kQ/kN60p79trcO0gLatULMrSX+FpUyJJBYJxsqJNDjzQ7GUfLn7+v2nVBlDNvrZ4/7Jim1I9swjhlQ7DCDYPMA==
   dependencies:
     "@platform/auth" "0.0.1"
     "@platform/graphql" "0.1.2"
     "@platform/libs" "0.0.12"
     "@platform/log" "0.0.117"
     "@platform/util.is" "0.0.66"
+    "@types/dotenv" "6.1.1"
     "@types/express" "4.16.1"
     "@types/graphql" "14.2.0"
     apollo-server-express "2.4.8"
+    dotenv "8.0.0"
     express "4.16.4"
     graphql "14.2.1"
 
@@ -305,6 +307,13 @@
   integrity sha512-GmK8AKu8i+s+EChK/uZ5IbrXPcPaQKWaNSGevDT/7o3gFObwSUQwqb1jMqxuo+YPvj0ckGzINI+EO7EHcmJjKg==
   dependencies:
     "@types/express" "*"
+
+"@types/dotenv@6.1.1":
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/@types/dotenv/-/dotenv-6.1.1.tgz#f7ce1cc4fe34f0a4373ba99fefa437b0bec54b46"
+  integrity sha512-ftQl3DtBvqHl9L16tpqqzA4YzCSXZfi7g8cQceTz5rOlYtk/IZbFjAv3mLOQlNIgOaylCQWQoBdDQHPgEBJPHg==
+  dependencies:
+    "@types/node" "*"
 
 "@types/events@*":
   version "3.0.0"
@@ -1204,6 +1213,11 @@ diff@3.5.0, diff@^3.1.0, diff@^3.2.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
   integrity sha512-A46qtFgd+g7pDZinpnwiRJtxbC1hpgf0uzP3iG89scHk0AUC7A1TGxf5OiiOUv/JMZR8GOt8hL900hV0bOy5xA==
+
+dotenv@8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.0.0.tgz#ed310c165b4e8a97bb745b0a9d99c31bda566440"
+  integrity sha512-30xVGqjLjiUOArT4+M5q9sYdvuR4riM6yK9wMcas9Vbp6zZa+ocC9dp6QoftuhTPhFAiLK/0C5Ni2nou/Bk8lg==
 
 ee-first@1.1.1:
   version "1.1.1"
