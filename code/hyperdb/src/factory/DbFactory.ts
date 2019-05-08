@@ -126,7 +126,7 @@ export class DbFactory<D extends t.IDb = t.IDb, N extends t.INetwork = t.INetwor
     this.fireChange('CREATED');
 
     // Finish up.
-    return res;
+    return res as t.ICreateDatabaseResponse<P>;
   };
 
   /**

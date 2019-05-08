@@ -1,6 +1,6 @@
 {
   "name": "@platform/conversation.ui",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "description": "UI components for conversation threads.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -34,7 +34,7 @@
     "@platform/cli.ui": "0.1.16",
     "@platform/conversation.db": "0.0.18",
     "@platform/graphql.server": "0.0.8",
-    "@platform/hyperdb": "^0.1.30",
+    "@platform/hyperdb": "^0.1.31",
     "@uiharness/dev": "0.2.52",
     "@uiharness/ui": "0.2.33"
   },
