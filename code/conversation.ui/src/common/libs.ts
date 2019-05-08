@@ -10,5 +10,5 @@ export * from '@platform/conversation.types';
 /**
  * [Ramda]
  */
-import { equals, sortBy, prop } from 'ramda';
-export const R = { equals, sortBy, prop };
+import { equals, sortBy, prop, uniqBy } from 'ramda';
+export const R = { equals, sortBy, prop, uniqBy };

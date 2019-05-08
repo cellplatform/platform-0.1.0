@@ -16,7 +16,7 @@ export const typeDefs = gql`
   type QueryConversationThread {
     id: ID!
     items(kind: String): [JSON]
-    users: [String]!
+    users: [ConversationUser]!
   }
 `;
 

@@ -13,6 +13,7 @@ import {
   ThreadCommentHeader,
   time,
   PEOPLE,
+  UserIdentity,
 } from '../common';
 
 export type ITestProps = {
@@ -100,7 +101,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       .toDate();
     const timestamp = time.toTimestamp(date);
 
-    const elHeader = <ThreadCommentHeader person={data.person} timestamp={timestamp} />;
+    const name = UserIdentity.toName(data.person);
+
+    const elHeader = <ThreadCommentHeader name={name} timestamp={timestamp} />;
 
     const avatarSrc = PEOPLE.MARY.email;
 

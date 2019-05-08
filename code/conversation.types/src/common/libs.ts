@@ -1,1 +1,1 @@
-export { id as identity } from '@platform/util.value';
+export { value, id as identity } from '@platform/util.value';

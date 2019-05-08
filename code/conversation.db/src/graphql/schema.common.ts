@@ -5,4 +5,10 @@ import { gql } from '../common';
  */
 export const typeDefs = gql`
   scalar JSON
+
+  type ConversationUser {
+    id: ID!
+    name: String
+    email: String
+  }
 `;

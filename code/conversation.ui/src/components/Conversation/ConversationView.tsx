@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, log, t, value } from '../../common';
+import { css, GlamorValue, log, t, value, UserIdentity } from '../../common';
 import { Divider } from '../Divider';
 import { ThreadComment } from '../ThreadComment';
 import { ThreadCommentHeader } from '../ThreadCommentHeader';
@@ -45,12 +45,20 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   /**
    * [Properties]
    */
+  public get thread() {
+    return this.props.model;
+  }
+
+  public get users() {
+    return this.thread.users || [];
+  }
+
   public get items() {
-    return this.props.model.items;
+    return this.thread.items;
   }
 
   public get draft() {
-    return this.props.model.draft;
+    return this.thread.draft;
   }
 
   public get user() {
@@ -103,11 +111,12 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   }
 
   private renderThreadComment(item: t.IThreadComment) {
-    const user = item.user;
-    const elHeader = <ThreadCommentHeader timestamp={item.timestamp} person={user} />;
+    const user = this.users.find(u => u.id === item.user);
+    const name = UserIdentity.toName(user);
+    const email = UserIdentity.toEmail(user);
+    const elHeader = <ThreadCommentHeader timestamp={item.timestamp} name={name} />;
     const body = item.body ? item.body.markdown : undefined;
-    const avatarUrl = value.isEmail(name) ? name : undefined;
-    return <ThreadComment key={item.id} avatarSrc={avatarUrl} header={elHeader} body={body} />;
+    return <ThreadComment key={item.id} avatarSrc={email} header={elHeader} body={body} />;
   }
 
   private renderFooterComment() {

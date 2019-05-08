@@ -6,7 +6,7 @@ import * as t from '../types';
 export type IThreadModel = {
   id: string;
   items: ThreadItem[];
-  users: string[];
+  users: t.IUserIdentity[];
 };
 
 /**
@@ -18,6 +18,6 @@ export type IThreadComment = {
   kind: 'THREAD/comment';
   id: string;
   timestamp: number;
-  user: t.IUserIdentity;
+  user: string;
   body?: { markdown: string };
 };

@@ -65,14 +65,15 @@ export class Conversation extends React.PureComponent<IConversationProps> {
    */
 
   private handleCommentClick = () => {
+    const user = this.user;
     const markdown = this.draft.markdown || '';
     const item: t.IThreadComment = {
       kind: 'THREAD/comment',
       id: '',
       timestamp: time.toTimestamp(),
-      user: this.user,
+      user: user.id,
       body: { markdown },
     };
-    this.dispatch({ type: 'THREAD/add', payload: { item } });
+    this.dispatch({ type: 'THREAD/add', payload: { user, item } });
   };
 }
