@@ -1,5 +1,5 @@
 import { log, ApolloServer, express, t, ForbiddenError } from './common';
-import { resolvers, typeDefs } from './resolvers';
+import { schema as localSchema } from './schema.local';
 
 import { mergeSchemas, makeExecutableSchema } from 'graphql-tools';
 import { graphql } from '@platform/conversation.db';
@@ -13,7 +13,7 @@ import { getDb } from './db';
  */
 const schemas = {
   db: graphql.init({ getDb }).schema,
-  local: makeExecutableSchema({ typeDefs, resolvers }),
+  local: localSchema,
 };
 const schema = mergeSchemas({ schemas: [schemas.db, schemas.local] });
 
