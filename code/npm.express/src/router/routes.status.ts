@@ -40,8 +40,9 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
 
       // Retrieve version history.
       const showVersions = queryKeys.includes('versions') && req.query.versions !== 'false';
+
       if (showVersions) {
-        let versions = await npm.getVersionHistory(name, { prerelease });
+        let versions = await npm.getVersionHistory(name, { prerelease, NPM_TOKEN });
         let total = value.toNumber(req.query.versions);
         if (typeof total === 'number') {
           total = total < 0 ? 0 : total;
