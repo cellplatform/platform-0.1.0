@@ -60,10 +60,10 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/conversation.types@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.9.tgz#1d4e09ffd8a59d43edff9fd109f81802f9d5a939"
-  integrity sha512-Jz3EQEbyhHYYLmYUeIGA/5i0nCwGBj0ZaSuehBoGC94ZUix2hW+SwLjBYcVMQfR1o2i4AdSQ1Bq2Q8/kBdgj5g==
+"@platform/conversation.types@0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.10.tgz#105202c7589f8199ad7a2b8c14864c581461247a"
+  integrity sha512-BPtbHR0qX0BYYEBY97HZH9oUDms+1rfq2OztPHW0Z8fMIMgzZtuMxIp/kLcaV6msfXTGSh1LCixZ238ZMN2ZMA==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.value" "^0.2.0"

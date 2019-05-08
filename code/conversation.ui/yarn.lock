@@ -1021,21 +1021,21 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/conversation.db@0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.17.tgz#f028e0168debb03e9921d71bee5367b5697791e0"
-  integrity sha512-VX4zZimN+SWQQpIenvwyhkOH/vi2+fvTSN1qxy4XCYfdUHs4gQrBUzaQMo0bzxjW6othRxPvAKnqCPtiGQi8Jw==
+"@platform/conversation.db@0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.18.tgz#49825d921ada627dab0c016f0ffafaada0033049"
+  integrity sha512-t7k45tjd4rQhSrdeJ4RyvmX3nOxao0iTsFeoskt7+jbzhImLtVfwuwPJ2ojttSKGI9EU7EXa0L/SnQBA2xa7vg==
   dependencies:
     "@platform/auth" "0.0.1"
-    "@platform/conversation.types" "0.0.9"
+    "@platform/conversation.types" "0.0.10"
     "@platform/graphql.server" "0.0.8"
     "@platform/hyperdb.types" "0.0.19"
     "@platform/libs" "0.0.12"
 
-"@platform/conversation.types@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.9.tgz#1d4e09ffd8a59d43edff9fd109f81802f9d5a939"
-  integrity sha512-Jz3EQEbyhHYYLmYUeIGA/5i0nCwGBj0ZaSuehBoGC94ZUix2hW+SwLjBYcVMQfR1o2i4AdSQ1Bq2Q8/kBdgj5g==
+"@platform/conversation.types@0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.10.tgz#105202c7589f8199ad7a2b8c14864c581461247a"
+  integrity sha512-BPtbHR0qX0BYYEBY97HZH9oUDms+1rfq2OztPHW0Z8fMIMgzZtuMxIp/kLcaV6msfXTGSh1LCixZ238ZMN2ZMA==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.value" "^0.2.0"
@@ -1225,18 +1225,18 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/state.react@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.2.2.tgz#16bfcbe32746f07e0e417cd70520fa118c09230e"
-  integrity sha512-1ov2EE5IB6ocoVhoTsTZag39q5o0mdHRDVgNsljm8gFWUy8Knn9SAWvNuYSwr/fcp1USiVW1tCLG9pG1n+ws+g==
+"@platform/state.react@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.2.3.tgz#cefe99c8077e019d486676790bd8d9df2bcfe9eb"
+  integrity sha512-RWxojQ+rb7OIod0n83ZNA3mhYn7+NdtgyctEIj07rv3XchFlK54pbrnZElikL4DEc7nviSsmyAUspHEd+5KI/Q==
   dependencies:
     "@platform/react" "0.1.33"
-    "@platform/state" "0.2.2"
+    "@platform/state" "0.2.3"
 
-"@platform/state@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.2.2.tgz#9a35442a6cfbcbb6e0b02563f59b9e7ee2d0f4b8"
-  integrity sha512-mDbRvWW5CYEuv2STTryManOT+brdDD4fcYzxac0fJ4PWlTsTr6JXNeXbPxLRgCcH2O3OLs9Rn3IDPvCYA1CUNA==
+"@platform/state@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.2.3.tgz#5196c3a9f4dd524a2232a8265ca510a5e391eee4"
+  integrity sha512-2SyDVXbDSqD/t6AkEQlfdptaRB/j53YPkkbGiE/+VY5TT+2pP4ImpeY+2laAbJA78vAdVz+1G2r3Q1bcyInrpA==
   dependencies:
     "@platform/util.value" "0.2.0"
 
@@ -1286,10 +1286,10 @@
   dependencies:
     "@platform/react" "0.1.33"
 
-"@platform/ui.editor@0.0.64":
-  version "0.0.64"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.64.tgz#962f2f01bf04104511461de65b7f73ebdbb2f730"
-  integrity sha512-DqTfZvTmhjI26VIq86awDvopujSnwbq09lnEo7XFs92IFgJWjPWHTurqByR/sLVyThbPDihwGJpq0O30q0DUyw==
+"@platform/ui.editor@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.0.tgz#8939c43fef52292f5665461b12b6cfb97bbf00ea"
+  integrity sha512-5LnIKyTwyvzLnL20qun9h4DVlw5j2oIjfMHVuJ8DePv/kdZUc+PtOzUb8ONtc73f+YiNESZrl5NuV7f/fI8B/Q==
   dependencies:
     "@platform/css" "^0.1.4"
     "@platform/react" "0.1.33"
