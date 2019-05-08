@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { gql, graphql, t } from '../common';
+import { gql, graphql, t, ThreadType } from '../common';
 
 /**
  * Manage conversation-thread interactions.
@@ -53,8 +53,8 @@ export class ConversationThreadGraphql {
     `;
 
     // Remove any UI specific parts of the model.
-    const thread = input ? { ...input } : this.store.state;
-    delete (thread as t.IThreadStoreModel).draft;
+    input = input ? { ...input } : this.store.state;
+    const thread = ThreadType.clean(input);
 
     // Fire PRE event.
     let isCancelled = false;
