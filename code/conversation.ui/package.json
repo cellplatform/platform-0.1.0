@@ -1,6 +1,6 @@
 {
   "name": "@platform/conversation.ui",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "description": "UI components for conversation threads.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
