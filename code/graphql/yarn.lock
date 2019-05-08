@@ -1059,7 +1059,7 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/test@^0.0.50":
+"@platform/test@0.0.50":
   version "0.0.50"
   resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.50.tgz#43d00b05a385dd1957e55afb4ce2c19c5f57182b"
   integrity sha512-US1QlUGw+R4xV2HdHI+t1gdJVlkLQYz4Qzu0rTnjeaNk6sq34BkH0sIqdTUtkltuy5ape6xhSE0y9booe/VSjQ==

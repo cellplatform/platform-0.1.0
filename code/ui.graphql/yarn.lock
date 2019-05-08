@@ -1049,10 +1049,10 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.1.1.tgz#14e1d53fd56c82dbae4ea51756cdea7f3060d4fa"
-  integrity sha512-m120QmXL2o5bWQbbtdFOPr1DMFZ6Fuxu2wxtoLFzAbVgf8Sx9H4mPygjgPMtxFn+y7OZ8st+E61vM8ObhMMQZA==
+"@platform/graphql@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.1.2.tgz#98ec5957cda38fae78e24aea955ccd7db540ede7"
+  integrity sha512-+JJsSr7aT8bAXDJ0zthEpyfAkbXyVJOQ4zgst7cJYk9ZvTP99CwsSeb3T53ZuBVpvYRyh171uTImxyCLHNVcgw==
   dependencies:
     "@platform/libs" "0.0.12"
     "@types/graphql" "14.2.0"
