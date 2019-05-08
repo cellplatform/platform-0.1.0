@@ -22,7 +22,7 @@ export type IThreadCommentProps = {
 export type IThreadCommentState = {};
 
 const SIZE = {
-  AVATAR: 44,
+  AVATAR: 45,
   LEFT_MARGIN: 60,
 };
 
@@ -63,7 +63,6 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
   public get isFocused() {
     return this.editor ? this.editor.isFocused : false;
   }
-
 
   public get body() {
     return this.props.body || '';
@@ -142,8 +141,9 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     const { isEditing } = this.props;
     const styles = {
       base: css({
+        boxSizing: 'border-box',
         position: 'relative',
-        minHeight: SIZE.AVATAR,
+        height: SIZE.AVATAR - 1,
         backgroundColor: COLOR.HEADER.BG,
         borderBottom: `solid 1px ${color.format(isEditing ? -0.12 : -0.08)}`,
         Flex: 'center-start',
