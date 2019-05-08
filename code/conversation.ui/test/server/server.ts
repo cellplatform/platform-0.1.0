@@ -1,4 +1,4 @@
-import { ApolloServer, express } from './common';
+import { ApolloServer, express, t } from './common';
 import { resolvers, typeDefs } from './resolvers';
 
 import { mergeSchemas, makeExecutableSchema } from 'graphql-tools';
@@ -25,5 +25,24 @@ export const app = express();
 /**
  * [GraphQL] server.
  */
-export const server = new ApolloServer({ schema });
+export const server = new ApolloServer({
+  schema,
+  async context(e): Promise<t.IContext> {
+    return {
+      /**
+       * Authorize the request.
+       * ☝️ Ensure server that stitches the `conversation.db` schema
+       *    implements this.
+       */
+      async auth(policy) {
+        console.log('AUTH/policy:', policy);
+        return {
+          isAllowed: false,
+          matches: [],
+          user: undefined,
+        };
+      },
+    };
+  },
+});
 server.applyMiddleware({ app });

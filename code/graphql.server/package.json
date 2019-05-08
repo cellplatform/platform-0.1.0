@@ -15,6 +15,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/auth": "0.0.0",
     "@platform/graphql": "0.1.2",
     "@platform/libs": "0.0.12",
     "@platform/log": "0.0.117",
