@@ -29,8 +29,7 @@ export class ConversationThreadGraphql {
         filter(() => !R.equals(prev.items, store.state.items)),
       )
       .subscribe(e => {
-        console.log('🐷', e);
-        this.TMP(this.store.state);
+        this.saveThread(this.store.state);
         prev = store.state;
       });
   }
@@ -45,7 +44,7 @@ export class ConversationThreadGraphql {
   /**
    * [Methods]
    */
-  public async TMP(e: any = {}) {
+  public async saveThread(input: t.IThreadModel | t.IThreadStoreModel) {
     const mutation = gql`
       mutation SaveThread($thread: JSON) {
         conversation {
@@ -56,20 +55,17 @@ export class ConversationThreadGraphql {
       }
     `;
 
-    const client = this.client;
-    // type IVariables = { msg: string };
-    // const variables: IVariables = { msg: 'hello' };
-    // const res = await this.client.mutate<boolean, IVariables>({ mutation, variables });
+    // Remove any UI specific parts of the model.
+    input = { ...input };
+    delete (input as t.IThreadStoreModel).draft;
 
-    e = { ...e };
-    delete e.draft;
+    // Send to server.
+    type IVariables = { thread: t.IThreadModel };
+    const variables: IVariables = { thread: input };
+    const res = await this.client.mutate<boolean, IVariables>({ mutation, variables });
 
-    type IVariables = { thread: any };
-    const variables: IVariables = { thread: e };
-    const res = await client.mutate<boolean, IVariables>({ mutation, variables });
-
-    console.log('variables', variables);
-    console.log('res', res);
+    // Finish up.
+    return res;
   }
 
   /**

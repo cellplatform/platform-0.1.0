@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, log, t, value, UserIdentity } from '../../common';
+import { css, GlamorValue, log, t, UserIdentity } from '../../common';
 import { Divider } from '../Divider';
 import { ThreadComment } from '../ThreadComment';
 import { ThreadCommentHeader } from '../ThreadCommentHeader';
