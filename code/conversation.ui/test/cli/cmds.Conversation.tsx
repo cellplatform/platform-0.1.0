@@ -16,7 +16,7 @@ export const conversation = Command.create<P>('Conversation', e => {
     const id = e.param<string>(0, 'th/1234').toString();
     const user = e.props.user;
     const store = e.props.threadStore;
-    store.dispatch({ type: 'THREAD/loadFromId', payload: { id, user } });
+    store.dispatch({ type: 'THREAD/loadFromId', payload: { id, user, focus: true } });
   })
   .add('add', e => {
     const store = e.props.threadStore;

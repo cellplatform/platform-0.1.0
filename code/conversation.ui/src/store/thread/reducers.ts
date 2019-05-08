@@ -14,7 +14,7 @@ export function init(args: {
     // Load data from server.
     .on<t.IThreadLoadFromIdEvent>('THREAD/loadFromId')
     .subscribe(async e => {
-      const { user } = e.payload;
+      const { user, focus } = e.payload;
       const id = keys.thread.threadId(e.payload.id);
 
       // Retrieve data from server.
@@ -34,13 +34,14 @@ export function init(args: {
       const draft = { user };
       const ui = { draft };
       const thread: t.IThreadStoreModel = { ...data, ui };
-      store.dispatch({ type: 'THREAD/load', payload: { thread } });
+      store.dispatch({ type: 'THREAD/load', payload: { thread, focus } });
     });
 
   store
     // Load a complete thread.
     .on<t.IThreadLoadEvent>('THREAD/load')
     .subscribe(async e => {
+      const { focus } = e.payload;
       const s = e.state;
       const draft = { ...s.ui.draft };
       const ui = { draft };
@@ -49,6 +50,9 @@ export function init(args: {
 
       e.change(thread);
       await time.wait(0);
+      if (focus) {
+        e.dispatch({ type: 'THREAD/focus', payload: { target: 'DRAFT' } });
+      }
       e.dispatch({ type: 'THREAD/loaded', payload: { thread } });
     });
 

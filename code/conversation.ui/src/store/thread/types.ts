@@ -27,7 +27,7 @@ export type ThreadEvent =
 
 export type IThreadLoadEvent = {
   type: 'THREAD/load';
-  payload: { thread: t.IThreadModel };
+  payload: { thread: t.IThreadModel; focus?: boolean };
 };
 export type IThreadLoadedEvent = {
   type: 'THREAD/loaded';
@@ -36,7 +36,7 @@ export type IThreadLoadedEvent = {
 
 export type IThreadLoadFromIdEvent = {
   type: 'THREAD/loadFromId';
-  payload: { id: string; user: t.IUserIdentity };
+  payload: { id: string; user: t.IUserIdentity; focus?: boolean };
 };
 
 export type IAddThreadItemAddEvent = {
