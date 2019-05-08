@@ -41,6 +41,9 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
   private state$ = new Subject<Partial<IThreadCommentState>>();
   private editor$ = this.props.editor$ || new Subject<t.TextEditorEvent>();
 
+  private editor!: Editor;
+  private editorRef = (ref: Editor) => (this.editor = ref);
+
   /**
    * [Lifecycle]
    */
@@ -59,6 +62,16 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
    */
   public get body() {
     return this.props.body || '';
+  }
+
+  /**
+   * [Methods]
+   */
+  public focus() {
+    if (this.editor) {
+      this.editor.focus();
+    }
+    return this;
   }
 
   /**
@@ -89,7 +102,12 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
 
     const elBody = isEditing ? null : this.body ? this.renderBody() : this.renderEmpty();
     const elEditor = isEditing && (
-      <Editor value={this.body} editor$={this.editor$} onComment={this.props.onComment} />
+      <Editor
+        ref={this.editorRef}
+        value={this.body}
+        editor$={this.editor$}
+        onComment={this.props.onComment}
+      />
     );
 
     return (

@@ -19,6 +19,9 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   private editor$ = new Subject<t.TextEditorEvent>();
   private dispatch = (e: t.ThreadEvent) => this.props.dispatch$.next(e);
 
+  private draftComment!: ThreadComment;
+  private draftCommentRef = (ref: ThreadComment) => (this.draftComment = ref);
+
   /**
    * [Lifecycle]
    */
@@ -57,16 +60,22 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
     return this.thread.items;
   }
 
-  public get draft() {
-    return this.thread.draft;
-  }
-
   public get user() {
-    return this.draft.user;
+    return this.thread.draft.user;
   }
 
   public get avatarSrc() {
     return this.user.email;
+  }
+
+  /**
+   * [Methods]
+   */
+  public focus() {
+    if (this.draftComment) {
+      this.draftComment.focus();
+    }
+    return this;
   }
 
   /**
@@ -120,9 +129,10 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   }
 
   private renderFooterComment() {
-    const body = this.draft.markdown;
+    const body = this.thread.draft.markdown;
     return (
       <ThreadComment
+        ref={this.draftCommentRef}
         avatarSrc={this.avatarSrc}
         body={body}
         isEditing={true}

@@ -91,6 +91,16 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
   }
 
   /**
+   * [Methods]
+   */
+  public focus() {
+    if (this.editor) {
+      this.editor.focus();
+    }
+    return this;
+  }
+
+  /**
    * [Render]
    */
   public render() {

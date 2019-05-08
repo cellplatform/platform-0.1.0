@@ -42,4 +42,8 @@ export const conversation = Command.create<P>('Conversation', e => {
     const items = [...store.state.items];
     items.pop();
     store.dispatch({ type: 'THREAD/items', payload: { items } });
+  })
+  .add('focus', e => {
+    const store = e.props.threadStore;
+    store.dispatch({ type: 'THREAD/draft/focus', payload: {} });
   });
