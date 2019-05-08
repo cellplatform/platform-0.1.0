@@ -62,7 +62,7 @@ export type IDispatch<
  */
 export type IStoreContext<M extends {} = {}, E extends IStoreEvent = IStoreEvent> = {
   state: M;
-  changed$: Observable<IStateChange>;
+  changed$: Observable<IStateChange<M, E>>;
   dispatch(event: E): IStoreContext<M, E>;
 };
 
