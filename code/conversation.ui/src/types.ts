@@ -3,4 +3,4 @@ export * from '@platform/ui.editor/lib/types';
 export * from '@platform/graphql/lib/types';
 
 export * from './store/types';
-export * from './graphql/types';
+export * from './data/types';

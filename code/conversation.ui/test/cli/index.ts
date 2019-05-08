@@ -26,7 +26,7 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
 
   // Setup graphql.
   const client = createGraphqlClient({ uri: 'http://localhost:5000/graphql' });
-  const graphql = conversation.graphql.init({ client, stores });
+  const graphql = conversation.data.init({ client, stores });
 
   // CLI.
   return CommandState.create({

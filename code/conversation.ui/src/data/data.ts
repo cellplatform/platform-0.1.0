@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { t } from '../common';
-import { ConversationThreadGraphql } from './graphql.thread';
+import { ConversationThreadGraphql } from './data.thread';
 
 export * from './types';
 

@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { gql, R, t } from '../common';
+import { gql, R, t, graphql } from '../common';
 
 /**
  * Manage conversation-thread interactions.
@@ -81,8 +81,12 @@ export class ConversationThreadGraphql {
         conversation {
           thread(id: $id) {
             id
-            users
             items
+            users {
+              id
+              name
+              email
+            }
           }
         }
       }
@@ -98,16 +102,6 @@ export class ConversationThreadGraphql {
     });
 
     const thread = res.data.conversation ? res.data.conversation.thread : undefined;
-    return clean(thread);
+    return graphql.clean(thread);
   }
-}
-
-/**
- * Helpers
- */
-export function clean(obj: any) {
-  if (obj && typeof obj === 'object') {
-    delete obj.__typename;
-  }
-  return obj;
 }
