@@ -1,5 +1,7 @@
 import { express, filesize, fs, getProcess, npm, t, value } from '../common';
 
+const pkg = require('../../package.json');
+
 export function create(args: { getContext: t.GetNpmRouteContext }) {
   const router = express.Router();
 
@@ -57,6 +59,7 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
       }
 
       // Finish up.
+      response = { ...response, 'npm.express': pkg.version };
       res.send(response);
     } catch (error) {
       res.send({ status: 500, error: error.message });
