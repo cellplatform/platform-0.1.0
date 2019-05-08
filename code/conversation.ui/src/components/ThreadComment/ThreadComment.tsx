@@ -185,8 +185,8 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
         Flex: 'center-center',
         padding: 15,
         opacity: 0.3,
-        fontStyle: 'italic',
         fontSize: 14,
+        fontStyle: 'italic',
       }),
     };
     return <div {...css(styles.base, props.style)}>{message}</div>;
