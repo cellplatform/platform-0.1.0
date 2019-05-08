@@ -1,6 +1,7 @@
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil, tap, takeWhile } from 'rxjs/operators';
-import { gql, R, t, graphql } from '../common';
+import { filter, takeUntil } from 'rxjs/operators';
+
+import { gql, graphql, t } from '../common';
 
 /**
  * Manage conversation-thread interactions.
@@ -58,7 +59,7 @@ export class ConversationThreadGraphql {
     // Fire PRE event.
     let isCancelled = false;
     this.fire({
-      type: 'THREAD/saving',
+      type: 'THREAD:DATA/saving',
       payload: {
         thread,
         get isCancelled() {
@@ -77,7 +78,7 @@ export class ConversationThreadGraphql {
     const response = await this.client.mutate<boolean, IVariables>({ mutation, variables });
 
     // Finish up.
-    this.fire({ type: 'THREAD/saved', payload: { thread } });
+    this.fire({ type: 'THREAD:DATA/saved', payload: { thread } });
     return { response, isCancelled: false };
   }
 
