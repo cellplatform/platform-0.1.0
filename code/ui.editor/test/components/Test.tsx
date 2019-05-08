@@ -2,7 +2,18 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { map, filter, takeUntil } from 'rxjs/operators';
 
-import { TextEditor, color, COLORS, css, GlamorValue, ObjectView, t, Button, Hr } from './common';
+import {
+  time,
+  TextEditor,
+  color,
+  COLORS,
+  css,
+  GlamorValue,
+  ObjectView,
+  t,
+  Button,
+  Hr,
+} from './common';
 
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
@@ -205,6 +216,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.left}>
           {this.button('tmp', () => this.state$.next({ value: 'Hello' }))}
           {this.button('focus', () => this.editor.focus())}
+          {this.button('focus > blur', () => {
+            this.editor.focus();
+            time.delay(1200, () => {
+              this.editor.focus(false);
+            });
+          })}
           {this.button('selectAll', () => this.editor.selectAll().focus())}
           {this.button('cursorToStart', () => this.editor.cursorToStart().focus())}
           {this.button('cursorToEnd', () => this.editor.cursorToEnd().focus())}

@@ -15,6 +15,7 @@ import {
   css,
   IEditorStyles,
   markdown,
+  value,
 } from '../../common';
 import * as plugins from './plugins';
 import * as t from './types';
@@ -65,6 +66,9 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * [Fields]
    */
+  private elBlurTarget!: HTMLDivElement;
+  private elBlurTargetRef = (ref: HTMLDivElement) => (this.elBlurTarget = ref);
+
   private elEditor: HTMLDivElement;
   private elEditorRef = (ref: HTMLDivElement) => (this.elEditor = ref);
 
@@ -228,12 +232,27 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * Assigns focus to the editor.
    */
-  public focus() {
+  public focus(isFocused?: boolean) {
     const { view } = this.editor;
-    if (view) {
-      view.focus();
+    isFocused = value.defaultValue(isFocused, true);
+    if (isFocused) {
+      if (view) {
+        view.focus();
+      }
+    } else {
+      if (this.elBlurTarget) {
+        this.elBlurTarget.focus();
+        this.elBlurTarget.blur();
+      }
     }
     return this;
+  }
+
+  /**
+   * Removes focus from the editor.
+   */
+  public blur() {
+    return this.focus(false);
   }
 
   public selectAll() {
@@ -277,15 +296,33 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     const className = `${CLASS.EDITOR} ${this.props.className || ''}`.trim();
     const { fontSize = 16 } = this.props;
     const styles = {
-      base: css({ fontSize, boxSizing: 'border-box' }),
+      base: css({
+        fontSize,
+        boxSizing: 'border-box',
+      }),
       editorOuter: css({
         overflow: 'hidden', // NB: Prevent margin collapsing. https://stackoverflow.com/questions/19718634/how-to-disable-margin-collapsing
       }),
-      measureOuter: css({ Absolute: 0, visibility: 'hidden' }),
+      measureOuter: css({
+        Absolute: 0,
+        visibility: 'hidden',
+      }),
+      blurTarget: css({
+        /**
+         * HACK:  This element exists as a hack to properly blur focus
+         *        away from the editor on `focus(false)`.
+         */
+        width: 0,
+        height: 0,
+        overflow: 'hidden',
+        opacity: 0,
+      }),
     };
 
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
+        <div ref={this.elBlurTargetRef} tabIndex={-1} {...styles.blurTarget} />
+
         <div className={className} {...css(this.props.editorStyle, styles.editorOuter)}>
           <div ref={this.elEditorRef} onKeyDown={this.handleKeyDown as any} />
         </div>
