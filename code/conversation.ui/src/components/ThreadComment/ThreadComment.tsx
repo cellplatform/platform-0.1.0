@@ -71,7 +71,6 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
         display: 'block',
         boxSizing: 'border-box',
         userSelect: 'none',
-        backgroundColor: COLORS.WHITE,
       }),
       inner: css({
         Flex: 'horizontal',
@@ -79,11 +78,12 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
       left: css({
         width: SIZE.LEFT_MARGIN,
       }),
-      right: css({
+      main: css({
         flex: 1,
         minHeight: SIZE.AVATAR,
-        border: `solid 1px ${color.format(-0.1)}`,
+        border: `solid 1px ${color.format(-0.15)}`,
         borderRadius: 3,
+        backgroundColor: COLORS.WHITE,
       }),
     };
 
@@ -105,7 +105,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
               gravatarDefault={'404'}
             />
           </div>
-          <div {...styles.right}>
+          <div {...styles.main}>
             {this.renderHeader()}
             {elBody}
             {elEditor}

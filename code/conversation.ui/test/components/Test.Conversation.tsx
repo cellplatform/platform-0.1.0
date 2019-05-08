@@ -39,6 +39,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       base: css({
         flex: 1,
         Flex: 'horizontal',
+        backgroundColor: color.format(-0.01),
       }),
       main: css({
         position: 'relative',
