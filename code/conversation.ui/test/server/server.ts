@@ -34,7 +34,7 @@ export const server = new ApolloServer({
        * ☝️ Ensure server that stitches the `conversation.db` schema
        *    implements this.
        */
-      async auth(policy) {
+      async authorize(policy) {
         console.log('AUTH/policy:', policy);
         return {
           isAllowed: false,

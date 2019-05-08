@@ -17,7 +17,7 @@ export const typeDefs = gql`
 export const resolvers: t.IResolvers = {
   Query: {
     localFoo: async (_: any, args: any, ctx: t.IContext, info: any) => {
-      const auth = await ctx.auth({ permissions: ['READ'] });
+      const auth = await ctx.authorize({ permissions: ['READ'] });
       return { msg: 'Local', auth };
     },
   },
