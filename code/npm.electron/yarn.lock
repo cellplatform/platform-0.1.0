@@ -1079,10 +1079,10 @@
     "@types/semver" "6.0.0"
     semver "6.0.0"
 
-"@platform/npm@0.1.18":
-  version "0.1.18"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.1.18.tgz#283c05f07ae2c82fc9f8e0a472f6821c151d4095"
-  integrity sha512-1LIZrKlWWccKcKO7oZGc1uxxVbbKGPzY1hVRIewv2LdV7fSH+BwYtFLaxAJ4OLpMcF7e/2VJ+wvnXYU42utS8Q==
+"@platform/npm@0.1.21":
+  version "0.1.21"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.1.21.tgz#f3e7600f89c8578303daa7f09e79e8c62b7e5479"
+  integrity sha512-5vlyopwAqzonpoZolvzX9My5PcgW9feS5aJhsMGIeENMi39OmIJXN/kWbs11aEbn8K6Glu6a/rmMy/RdUby/wQ==
   dependencies:
     "@platform/exec" "0.2.4"
     "@platform/fs" "0.0.58"
