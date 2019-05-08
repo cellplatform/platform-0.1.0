@@ -1,4 +1,4 @@
-import { Key, R, UserIdentity } from '../common';
+import { Key, R, UserIdentity, time } from '../common';
 import * as t from '../types';
 
 export function init(args: { store: t.IThreadStore; keys: Key }) {
@@ -8,12 +8,15 @@ export function init(args: { store: t.IThreadStore; keys: Key }) {
   store
     // Load a complete thread.
     .on<t.IThreadLoadEvent>('THREAD/load')
-    .subscribe(e => {
+    .subscribe(async e => {
       const s = e.state;
       const draft = { ...s.draft };
       let thread = { ...e.payload.thread, draft };
       thread = formatThread(thread);
+
       e.change(thread);
+      await time.wait(0);
+      e.dispatch({ type: 'THREAD/loaded', payload: { thread } });
     });
 
   store

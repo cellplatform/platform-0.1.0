@@ -1,6 +1,5 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
-
 import { gql, R, t, graphql } from '../common';
 
 /**
@@ -14,23 +13,33 @@ export class ConversationThreadGraphql {
     client: t.IGqlClient;
     store: t.IThreadStore;
     dispose$: Observable<{}>;
+    events$: Subject<t.ThreadDataEvent>;
   }) {
-    const { client, store, dispose$ } = args;
-    const changed$ = store.changed$.pipe(takeUntil(dispose$));
+    const { client, store, dispose$, events$ } = args;
+    const store$ = store.events$.pipe(takeUntil(dispose$));
+    const storeChanged$ = store.changed$.pipe(takeUntil(dispose$));
 
+    this._prev = store.state;
     this.store = store;
     this.client = client;
     this.dispose$ = dispose$;
+    this.events$ = events$;
 
-    let prev = store.state;
-    changed$
+    // Save the previous state upon load.
+    store$
+      .pipe(filter(e => e.type === 'THREAD/loaded'))
+      .subscribe(() => (this._prev = store.state));
+
+    // Save the thread when a new item is added.
+    storeChanged$
       .pipe(
         debounceTime(300),
-        filter(() => !R.equals(prev.items, store.state.items)),
+        filter(() => this.prev.items.length > 0),
+        filter(() => !R.equals(this.prev.items, store.state.items)),
       )
       .subscribe(e => {
         this.saveThread(this.store.state);
-        prev = store.state;
+        this._prev = store.state;
       });
   }
 
@@ -40,6 +49,15 @@ export class ConversationThreadGraphql {
   public readonly client: t.IGqlClient;
   public readonly store: t.IThreadStore;
   public readonly dispose$: Observable<{}>;
+  private readonly events$: Subject<t.ThreadDataEvent>;
+  private _prev: t.IThreadStoreModel;
+
+  /**
+   * [Properties]
+   */
+  private get prev() {
+    return this._prev || this.store.state;
+  }
 
   /**
    * [Methods]
@@ -56,16 +74,33 @@ export class ConversationThreadGraphql {
     `;
 
     // Remove any UI specific parts of the model.
-    input = { ...input };
-    delete (input as t.IThreadStoreModel).draft;
+    const thread = (input = { ...input });
+    delete (thread as t.IThreadStoreModel).draft;
+
+    // Fire PRE event.
+    let isCancelled = false;
+    this.fire({
+      type: 'THREAD/saving',
+      payload: {
+        thread,
+        get isCancelled() {
+          return isCancelled;
+        },
+        cancel: () => (isCancelled = true),
+      },
+    });
+    if (isCancelled) {
+      return { response: undefined, isCancelled };
+    }
 
     // Send to server.
     type IVariables = { thread: t.IThreadModel };
-    const variables: IVariables = { thread: input };
-    const res = await this.client.mutate<boolean, IVariables>({ mutation, variables });
+    const variables: IVariables = { thread };
+    const response = await this.client.mutate<boolean, IVariables>({ mutation, variables });
 
     // Finish up.
-    return res;
+    this.fire({ type: 'THREAD/saved', payload: { thread } });
+    return { response, isCancelled: false };
   }
 
   /**
@@ -99,5 +134,12 @@ export class ConversationThreadGraphql {
 
     const thread = res.data.conversation ? res.data.conversation.thread : undefined;
     return graphql.clean(thread);
+  }
+
+  /**
+   * [Helpers]
+   */
+  private fire(e: t.ThreadDataEvent) {
+    this.events$.next(e);
   }
 }

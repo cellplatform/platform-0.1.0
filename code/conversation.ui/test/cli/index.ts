@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { create as createGraphqlClient } from '@platform/graphql';
 
-import { CommandState, store, t, conversation, Key, PEOPLE } from '../common';
+import { CommandState, store, t, log, conversation, Key, PEOPLE } from '../common';
 import { root } from './cmds';
 import { createThreadCommentProps } from './cmds.ThreadComment';
 
@@ -24,9 +24,14 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   };
   const threadCommentProps = createThreadCommentProps();
 
+  const data$ = new Subject<t.ThreadDataEvent>();
+  data$.subscribe(e => {
+    log.info('🌳 DATA', e.type, e.payload);
+  });
+
   // Setup graphql.
   const client = createGraphqlClient({ uri: 'http://localhost:5000/graphql' });
-  const graphql = conversation.data.init({ client, stores });
+  const graphql = conversation.data.init({ client, stores, events$: data$ });
 
   // CLI.
   return CommandState.create({

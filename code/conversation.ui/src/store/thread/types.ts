@@ -14,12 +14,18 @@ export type IThreadDraft = { user: t.IUserIdentity; markdown?: string };
  */
 export type ThreadEvent =
   | IThreadLoadEvent
+  | IThreadLoadedEvent
   | IAddThreadItemEvent
   | IThreadItemsEvent
   | IThreadDraftEvent;
 
 export type IThreadLoadEvent = {
   type: 'THREAD/load';
+  payload: { thread: t.IThreadModel };
+};
+
+export type IThreadLoadedEvent = {
+  type: 'THREAD/loaded';
   payload: { thread: t.IThreadModel };
 };
 
