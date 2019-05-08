@@ -60,8 +60,12 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
     return this.thread.items;
   }
 
+  public get draft() {
+    return this.thread.ui.draft;
+  }
+
   public get user() {
-    return this.thread.draft.user;
+    return this.draft.user;
   }
 
   public get avatarSrc() {
@@ -129,7 +133,7 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   }
 
   private renderFooterComment() {
-    const body = this.thread.draft.markdown;
+    const body = this.draft.markdown;
     return (
       <ThreadComment
         ref={this.draftCommentRef}

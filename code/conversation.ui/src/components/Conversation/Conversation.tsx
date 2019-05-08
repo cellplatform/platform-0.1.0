@@ -39,7 +39,7 @@ export class Conversation extends React.PureComponent<IConversationProps> {
   }
 
   public get draft() {
-    return this.model.draft;
+    return this.model.ui.draft;
   }
 
   public get user() {

@@ -32,7 +32,8 @@ export function init(args: {
 
       // Load into the state-tree.
       const draft = { user };
-      const thread = { ...data, draft };
+      const ui = { draft };
+      const thread: t.IThreadStoreModel = { ...data, ui };
       store.dispatch({ type: 'THREAD/load', payload: { thread } });
     });
 
@@ -41,8 +42,9 @@ export function init(args: {
     .on<t.IThreadLoadEvent>('THREAD/load')
     .subscribe(async e => {
       const s = e.state;
-      const draft = { ...s.draft };
-      let thread = { ...e.payload.thread, draft };
+      const draft = { ...s.ui.draft };
+      const ui = { draft };
+      let thread = { ...e.payload.thread, ui };
       thread = formatThread(thread);
 
       e.change(thread);
@@ -55,14 +57,18 @@ export function init(args: {
     .on<t.IAddThreadItemAddEvent>('THREAD/add')
     .subscribe(async e => {
       const s = e.state;
-      const id = e.payload.item.id || k.itemId(s.id);
       const user = e.payload.user;
       const users = UserIdentityType.insert(user, s.users);
+
+      const id = e.payload.item.id || k.itemId(s.id);
       const item = { ...e.payload.item, id };
       const items = [...s.items, item];
-      const draft = { ...s.draft };
+
+      const draft = { ...s.ui.draft };
       delete draft.markdown;
-      const thread = formatThread({ ...s, items, users, draft });
+      const ui = { ...s.ui, draft };
+
+      const thread = formatThread({ ...s, items, users, ui });
 
       e.change(thread);
       await time.wait(0);
@@ -85,7 +91,8 @@ export function init(args: {
     .subscribe(e => {
       const s = e.state;
       const draft = e.payload.draft;
-      e.change({ ...s, draft });
+      const ui = { ...s.ui, draft };
+      e.change({ ...s, ui });
     });
 }
 

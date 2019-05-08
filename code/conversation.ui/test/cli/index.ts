@@ -15,7 +15,9 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
     id: keys.thread.threadId('1234'),
     items: [],
     users: [],
-    draft: { user },
+    ui: {
+      draft: { user },
+    },
   };
 
   // Create test data stores.
