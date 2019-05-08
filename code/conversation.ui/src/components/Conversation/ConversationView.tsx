@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil, debounceTime } from 'rxjs/operators';
 
-import { css, GlamorValue, log, t, UserIdentity } from '../../common';
+import { css, GlamorValue, log, t, UserIdentityType } from '../../common';
 import { Divider } from '../Divider';
 import { ThreadComment } from '../ThreadComment';
 import { ThreadCommentHeader } from '../ThreadCommentHeader';
@@ -18,6 +18,9 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   private unmounted$ = new Subject();
   private editor$ = new Subject<t.TextEditorEvent>();
   private dispatch = (e: t.ThreadEvent) => this.props.dispatch$.next(e);
+
+  private draftComment!: ThreadComment;
+  private draftCommentRef = (ref: ThreadComment) => (this.draftComment = ref);
 
   /**
    * [Lifecycle]
@@ -35,6 +38,29 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
       const draft = markdown ? { user, markdown } : { user };
       this.dispatch({ type: 'THREAD/draft', payload: { draft } });
     });
+
+    const focus$ = editor$.pipe(
+      filter(e => e.type === 'EDITOR/focus'),
+      map(e => e.payload as t.ITextEditorFocus),
+    );
+
+    focus$
+      // Keep state in sync when editor is manually focused.
+      .pipe(
+        filter(e => e.isFocused),
+        debounceTime(0),
+        filter(e => this.thread.ui.focus !== 'DRAFT'),
+      )
+      .subscribe(e => this.dispatch({ type: 'THREAD/focus', payload: { target: 'DRAFT' } }));
+
+    focus$
+      // Keep state in sync when editor is manually blurred.
+      .pipe(
+        filter(e => !e.isFocused),
+        debounceTime(0),
+        filter(e => this.thread.ui.focus === 'DRAFT'),
+      )
+      .subscribe(e => this.dispatch({ type: 'THREAD/focus', payload: { target: undefined } }));
   }
 
   public componentWillUnmount() {
@@ -45,6 +71,10 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   /**
    * [Properties]
    */
+  public get isFocused() {
+    return this.draftComment ? this.draftComment.isFocused : false;
+  }
+
   public get thread() {
     return this.props.model;
   }
@@ -58,7 +88,7 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
   }
 
   public get draft() {
-    return this.thread.draft;
+    return this.thread.ui.draft;
   }
 
   public get user() {
@@ -67,6 +97,16 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
 
   public get avatarSrc() {
     return this.user.email;
+  }
+
+  /**
+   * [Methods]
+   */
+  public focus(isFocused?: boolean) {
+    if (this.draftComment) {
+      this.draftComment.focus(isFocused);
+    }
+    return this;
   }
 
   /**
@@ -112,8 +152,8 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
 
   private renderThreadComment(item: t.IThreadComment) {
     const user = this.users.find(u => u.id === item.user);
-    const name = UserIdentity.toName(user);
-    const email = UserIdentity.toEmail(user);
+    const name = UserIdentityType.toName(user);
+    const email = UserIdentityType.toEmail(user);
     const elHeader = <ThreadCommentHeader timestamp={item.timestamp} name={name} />;
     const body = item.body ? item.body.markdown : undefined;
     return <ThreadComment key={item.id} avatarSrc={email} header={elHeader} body={body} />;
@@ -123,6 +163,7 @@ export class ConversationView extends React.PureComponent<IConversationViewProps
     const body = this.draft.markdown;
     return (
       <ThreadComment
+        ref={this.draftCommentRef}
         avatarSrc={this.avatarSrc}
         body={body}
         isEditing={true}

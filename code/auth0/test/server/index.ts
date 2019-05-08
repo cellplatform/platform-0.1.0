@@ -1,2 +1,2 @@
-export * from './graphql';
+export * from './server';
 export * from './types';

@@ -1,6 +1,7 @@
-import { IDb } from '@platform/hyperdb/lib/types';
+import { IDb } from '@platform/hyperdb.types';
 
-export * from '@platform/hyperdb/lib/types';
+export * from '@platform/auth/lib/types';
+export * from '@platform/hyperdb.types';
 export * from '@platform/conversation.types';
 export * from './graphql/types';
 

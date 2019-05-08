@@ -8,7 +8,7 @@ export * from '../types';
 export type ThreadDataEvent = IThreadSavingEvent | IThreadSavedEvent;
 
 export type IThreadSavingEvent = {
-  type: 'THREAD/saving';
+  type: 'THREAD:DATA/saving';
   payload: {
     thread: t.IThreadModel;
     isCancelled: boolean;
@@ -16,6 +16,6 @@ export type IThreadSavingEvent = {
   };
 };
 export type IThreadSavedEvent = {
-  type: 'THREAD/saved';
+  type: 'THREAD:DATA/saved';
   payload: { thread: t.IThreadModel };
 };

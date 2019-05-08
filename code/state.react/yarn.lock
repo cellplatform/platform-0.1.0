@@ -1071,10 +1071,10 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/state@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.2.2.tgz#9a35442a6cfbcbb6e0b02563f59b9e7ee2d0f4b8"
-  integrity sha512-mDbRvWW5CYEuv2STTryManOT+brdDD4fcYzxac0fJ4PWlTsTr6JXNeXbPxLRgCcH2O3OLs9Rn3IDPvCYA1CUNA==
+"@platform/state@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.2.3.tgz#5196c3a9f4dd524a2232a8265ca510a5e391eee4"
+  integrity sha512-2SyDVXbDSqD/t6AkEQlfdptaRB/j53YPkkbGiE/+VY5TT+2pP4ImpeY+2laAbJA78vAdVz+1G2r3Q1bcyInrpA==
   dependencies:
     "@platform/util.value" "0.2.0"
 

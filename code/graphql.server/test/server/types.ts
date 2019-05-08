@@ -1,9 +1,12 @@
 export { IResolvers } from 'graphql-tools';
+import { IGqlContext } from '../../src/types';
 
-export type IContext = {
-  getUser(): Promise<IUser>;
+export * from '../../src/types';
+
+export type IContext = IGqlContext & {
+  getUser(): Promise<IUserProfile>;
 };
 
-export type IUser = {
+export type IUserProfile = {
   email: string;
 };

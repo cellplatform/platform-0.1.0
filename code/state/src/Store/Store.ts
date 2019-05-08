@@ -120,14 +120,18 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
   /**
    * Retrieves a lens into a sub-section of the state-tree.
    */
-  public lens<S extends {}>(filter: t.LensStateFilter<M, S>): t.IStoreLens<S, E> {
-    const dispose$ = new Subject<{}>();
+  public lens<S extends {}>(filter: t.LensStateFilter<M, S>): t.IStoreLens<M, S, E> {
+    const dispose$ = new Subject();
     const self = this; // tslint:disable-line
-    const context: t.IStoreLens<S, E> = {
+    const changed$ = this.changed$.pipe(takeUntil(dispose$)) as any; // HACK: type wierdness.
+    const lens: t.IStoreLens<M, S, E> = {
       dispose$: dispose$.pipe(share()),
-      changed$: this.changed$.pipe(takeUntil(dispose$)),
+      changed$,
       get isDisposed() {
         return dispose$.isStopped;
+      },
+      get root() {
+        return self.state;
       },
       get state() {
         const root = self.state;
@@ -135,14 +139,14 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
       },
       dispatch(event: E) {
         self.dispatch(event);
-        return context;
+        return lens;
       },
       dispose() {
         dispose$.next();
         dispose$.complete();
       },
     };
-    return context;
+    return lens;
   }
 
   /**

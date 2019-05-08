@@ -14,6 +14,7 @@ export type ICommandProps = {
   threadCommentProps: IObservableProps<IThreadCommentTestProps>;
   threadStore: t.IThreadStore;
   graphql: data.ConversationGraphql;
+  user: t.IUserIdentity;
 };
 
 export type ITestState = {

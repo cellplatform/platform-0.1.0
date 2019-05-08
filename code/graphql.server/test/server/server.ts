@@ -25,7 +25,8 @@ export const graphql = new ApolloServer({
    * Generate the context that is passed to each resolver.
    */
   context(e): t.IContext {
-    return new Context({});
+    const { req } = e;
+    return new Context({ req });
   },
 });
 

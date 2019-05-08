@@ -1,4 +1,5 @@
-import { gql, t, Key } from '../common';
+import { POLICY } from '../auth';
+import { gql, Key, log, t } from '../common';
 
 /**
  * [Types]
@@ -47,6 +48,13 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
        * Save a complete conversation-thread.
        */
       save: async (_: any, args: { thread: t.IThreadModel }, ctx: any, info: any) => {
+        const auth = await ctx.authorize(POLICY.THREAD.WRITE);
+        if (!auth.isAllowed) {
+          auth.throw();
+        }
+
+        log.TODO('ensure user is part of the thread. 🐷');
+
         const { thread } = args;
         if (!thread) {
           throw new Error(`Cannot save. Conversation thread not supplied.`);

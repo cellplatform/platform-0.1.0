@@ -1,4 +1,4 @@
-import { server } from './graphql';
+import { server } from './server';
 import { log, is, pkg } from './common';
 
 (async () => {

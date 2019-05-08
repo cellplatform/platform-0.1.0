@@ -26,7 +26,8 @@ export type TextEditorEvent =
   | ITextEditorChangingEvent
   | ITextEditorChangedEvent
   | ITextEditorKeydownEvent
-  | ITextEditorEnterKeyEvent;
+  | ITextEditorEnterKeyEvent
+  | ITextEditorFocusEvent;
 
 export type ITextEditorChangingEvent<S extends Schema = any> = {
   type: 'EDITOR/changing';
@@ -72,3 +73,9 @@ export type ITextEditorEnterKey = {
   isCancelled: boolean;
   cancel(): void;
 };
+
+export type ITextEditorFocusEvent = {
+  type: 'EDITOR/focus';
+  payload: ITextEditorFocus;
+};
+export type ITextEditorFocus = { isFocused: boolean };

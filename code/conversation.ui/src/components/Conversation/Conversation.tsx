@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { GlamorValue, t, time } from '../../common';
 import { ConversationView } from './ConversationView';
@@ -15,15 +15,31 @@ export class Conversation extends React.PureComponent<IConversationProps> {
   private dispatch$ = new Subject<t.ThreadEvent>();
   private dispatch = (e: t.ThreadEvent) => this.dispatch$.next(e);
 
+  private view!: ConversationView;
+  private viewRef = (ref: ConversationView) => (this.view = ref);
+
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
     const { context } = this.props;
     const dispatch$ = this.dispatch$.pipe(takeUntil(this.unmounted$));
+    const store$ = context.changed$.pipe(takeUntil(this.unmounted$));
 
     context.changed$.subscribe(e => this.forceUpdate());
     dispatch$.subscribe(e => context.dispatch(e));
+
+    const focus$ = store$.pipe(filter(e => e.event.type === 'THREAD/focus'));
+
+    focus$
+      // Focus.
+      .pipe(filter(e => e.to.ui.focus === 'DRAFT'))
+      .subscribe(e => this.focus());
+
+    focus$
+      // Blur.
+      .pipe(filter(e => e.to.ui.focus === undefined))
+      .subscribe(e => this.focus(false));
   }
 
   public componentWillUnmount() {
@@ -34,16 +50,30 @@ export class Conversation extends React.PureComponent<IConversationProps> {
   /**
    * [Properties]
    */
+  public get isFocused() {
+    return this.view ? this.view.isFocused : false;
+  }
+
   public get model() {
     return this.props.context.state;
   }
 
   public get draft() {
-    return this.model.draft;
+    return this.model.ui.draft;
   }
 
   public get user() {
     return this.draft.user;
+  }
+
+  /**
+   * [Methods]
+   */
+  public focus(isFocused?: boolean) {
+    if (this.view) {
+      this.view.focus(isFocused);
+    }
+    return this;
   }
 
   /**
@@ -52,6 +82,7 @@ export class Conversation extends React.PureComponent<IConversationProps> {
   public render() {
     return (
       <ConversationView
+        ref={this.viewRef}
         style={this.props.style}
         model={this.props.context.state}
         dispatch$={this.dispatch$}

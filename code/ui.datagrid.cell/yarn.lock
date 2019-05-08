@@ -1185,10 +1185,10 @@
     "@platform/react" "0.1.33"
     "@platform/util.value.cell" "0.0.34"
 
-"@platform/ui.editor@^0.0.64":
-  version "0.0.64"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.64.tgz#962f2f01bf04104511461de65b7f73ebdbb2f730"
-  integrity sha512-DqTfZvTmhjI26VIq86awDvopujSnwbq09lnEo7XFs92IFgJWjPWHTurqByR/sLVyThbPDihwGJpq0O30q0DUyw==
+"@platform/ui.editor@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.0.tgz#8939c43fef52292f5665461b12b6cfb97bbf00ea"
+  integrity sha512-5LnIKyTwyvzLnL20qun9h4DVlw5j2oIjfMHVuJ8DePv/kdZUc+PtOzUb8ONtc73f+YiNESZrl5NuV7f/fI8B/Q==
   dependencies:
     "@platform/css" "^0.1.4"
     "@platform/react" "0.1.33"

@@ -1,36 +1,82 @@
-import { Key, R, UserIdentity, time } from '../common';
+import { Key, R, UserIdentityType, time, value } from '../common';
 import * as t from '../types';
+import { data } from '../../data.graphql';
 
-export function init(args: { store: t.IThreadStore; keys: Key }) {
-  const { store, keys } = args;
+export function init(args: {
+  store: t.IThreadStore;
+  keys: Key;
+  getGraphql: () => data.ConversationGraphql;
+}) {
+  const { store, keys, getGraphql } = args;
   const k = keys.thread;
+
+  store
+    // Load data from server.
+    .on<t.IThreadLoadFromIdEvent>('THREAD/loadFromId')
+    .subscribe(async e => {
+      const { user, focus } = e.payload;
+      const id = keys.thread.threadId(e.payload.id);
+
+      // Retrieve data from server.
+      const graphql = getGraphql();
+      let data = await graphql.thread.findById(id);
+
+      // If the thread does not exist in the DB yet create an initial model now.
+      if (!data) {
+        data = {
+          id,
+          items: [],
+          users: [],
+        };
+      }
+
+      // Load into the state-tree.
+      const draft = { user };
+      const ui = { draft };
+      const thread: t.IThreadStoreModel = { ...data, ui };
+      store.dispatch({ type: 'THREAD/load', payload: { thread, focus } });
+    });
 
   store
     // Load a complete thread.
     .on<t.IThreadLoadEvent>('THREAD/load')
     .subscribe(async e => {
+      const { focus } = e.payload;
       const s = e.state;
-      const draft = { ...s.draft };
-      let thread = { ...e.payload.thread, draft };
+      const draft = { ...s.ui.draft };
+      const ui = { draft };
+      let thread = { ...e.payload.thread, ui };
       thread = formatThread(thread);
 
       e.change(thread);
       await time.wait(0);
+      if (focus) {
+        e.dispatch({ type: 'THREAD/focus', payload: { target: 'DRAFT' } });
+      }
       e.dispatch({ type: 'THREAD/loaded', payload: { thread } });
     });
 
   store
     // Insert a new item into the thread.
-    .on<t.IAddThreadItemEvent>('THREAD/add')
-    .subscribe(e => {
+    .on<t.IAddThreadItemAddEvent>('THREAD/add')
+    .subscribe(async e => {
       const s = e.state;
+      const user = e.payload.user;
+      const users = UserIdentityType.insert(user, s.users);
+
       const id = e.payload.item.id || k.itemId(s.id);
-      const users = UserIdentity.insert(e.payload.user, s.users);
-      const items = [...s.items, { ...e.payload.item, id }];
-      const draft = { ...s.draft };
+      const item = { ...e.payload.item, id };
+      const items = [...s.items, item];
+
+      const draft = { ...s.ui.draft };
       delete draft.markdown;
-      const thread = formatThread({ ...s, items, users, draft });
+      const ui = { ...s.ui, draft };
+
+      const thread = formatThread({ ...s, items, users, ui });
+
       e.change(thread);
+      await time.wait(0);
+      e.dispatch({ type: 'THREAD/added', payload: { user, item } });
     });
 
   store
@@ -49,7 +95,18 @@ export function init(args: { store: t.IThreadStore; keys: Key }) {
     .subscribe(e => {
       const s = e.state;
       const draft = e.payload.draft;
-      e.change({ ...s, draft });
+      const ui = { ...s.ui, draft };
+      e.change({ ...s, ui });
+    });
+
+  store
+    // Focus.
+    .on<t.IThreadFocusEvent>('THREAD/focus')
+    .subscribe(e => {
+      const { target } = e.payload;
+      const s = e.state;
+      const ui = value.deleteUndefined({ ...s.ui, focus: target });
+      e.change({ ...s, ui });
     });
 }
 
@@ -65,7 +122,7 @@ function formatThread(thread: t.IThreadStoreModel) {
 function formatUsers(thread: t.IThreadStoreModel) {
   thread = {
     ...thread,
-    users: UserIdentity.uniq(thread.users),
+    users: UserIdentityType.uniq(thread.users),
   };
   return thread;
 }

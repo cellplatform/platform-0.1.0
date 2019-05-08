@@ -3,7 +3,7 @@ import { R, t, UNNAMED, value } from '../common';
 /**
  * Helpers for working with the `IUserIdentity` type.
  */
-export class UserIdentity {
+export class UserIdentityType {
   public static UNNAMED = UNNAMED;
 
   public static toName(user?: t.IUserIdentity) {
@@ -18,12 +18,12 @@ export class UserIdentity {
     if (user.email) {
       return user.email;
     }
-    const name = UserIdentity.toName(user);
+    const name = UserIdentityType.toName(user);
     return value.isEmail(name) ? name : EMPTY;
   }
 
   public static insert(user: t.IUserIdentity, users: t.IUserIdentity[]) {
-    return UserIdentity.uniq([...users, user]);
+    return UserIdentityType.uniq([...users, user]);
   }
 
   public static uniq(users: t.IUserIdentity[]) {

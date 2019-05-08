@@ -10,7 +10,7 @@ export const typeDefs = gql`
   scalar JSON
 
   type Query {
-    json: JSON
+    foo: JSON
   }
 `;
 
@@ -19,9 +19,10 @@ export const typeDefs = gql`
  */
 export const resolvers: t.IResolvers = {
   Query: {
-    json: async (_: any, args: any, ctx: t.IContext, info: any) => {
+    foo: async (_: any, args: any, ctx: t.IContext, info: any) => {
+      const auth = await ctx.authorize({ permissions: ['READ'] });
       count++;
-      return { count, message: `Hello ${count}` };
+      return { count, message: `Hello ${count}`, auth };
     },
   },
 };

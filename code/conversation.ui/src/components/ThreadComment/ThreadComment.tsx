@@ -22,7 +22,7 @@ export type IThreadCommentProps = {
 export type IThreadCommentState = {};
 
 const SIZE = {
-  AVATAR: 44,
+  AVATAR: 45,
   LEFT_MARGIN: 60,
 };
 
@@ -41,6 +41,9 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
   private state$ = new Subject<Partial<IThreadCommentState>>();
   private editor$ = this.props.editor$ || new Subject<t.TextEditorEvent>();
 
+  private editor!: Editor;
+  private editorRef = (ref: Editor) => (this.editor = ref);
+
   /**
    * [Lifecycle]
    */
@@ -57,8 +60,22 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
   /**
    * [Properties]
    */
+  public get isFocused() {
+    return this.editor ? this.editor.isFocused : false;
+  }
+
   public get body() {
     return this.props.body || '';
+  }
+
+  /**
+   * [Methods]
+   */
+  public focus(isFocused?: boolean) {
+    if (this.editor) {
+      this.editor.focus(isFocused);
+    }
+    return this;
   }
 
   /**
@@ -89,7 +106,12 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
 
     const elBody = isEditing ? null : this.body ? this.renderBody() : this.renderEmpty();
     const elEditor = isEditing && (
-      <Editor value={this.body} editor$={this.editor$} onComment={this.props.onComment} />
+      <Editor
+        ref={this.editorRef}
+        value={this.body}
+        editor$={this.editor$}
+        onComment={this.props.onComment}
+      />
     );
 
     return (
@@ -119,8 +141,9 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     const { isEditing } = this.props;
     const styles = {
       base: css({
+        boxSizing: 'border-box',
         position: 'relative',
-        minHeight: SIZE.AVATAR,
+        height: SIZE.AVATAR - 1,
         backgroundColor: COLOR.HEADER.BG,
         borderBottom: `solid 1px ${color.format(isEditing ? -0.12 : -0.08)}`,
         Flex: 'center-start',

@@ -55,6 +55,7 @@ export class ThreadKey {
   }
 
   public threadId(uniq?: string) {
-    return `th/${uniq || identity.cuid()}`;
+    const id = `${uniq || identity.cuid()}`.replace(/^th\//, '');
+    return `th/${id}`;
   }
 }

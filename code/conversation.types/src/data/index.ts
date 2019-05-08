@@ -1,1 +1,2 @@
-export * from './UserIdentity';
+export * from './ThreadType';
+export * from './UserIdentityType';

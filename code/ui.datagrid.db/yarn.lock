@@ -1260,15 +1260,15 @@
     codemirror "5.46.0"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.cell@0.0.29":
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.29.tgz#6df503340a218a077384c506c51c75fcfff89436"
-  integrity sha512-DhOs9jojxXs1gfDJZeVrjTP5dxs+Tc3a4UY2Eiu2Vn0Jslj6Nc7WopH53KOIBfuJ0J1wdGu4n5jsViI5l6mbUg==
+"@platform/ui.datagrid.cell@0.0.30":
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.30.tgz#98cf6550d92eb07f83715e97a1077d88557615e7"
+  integrity sha512-DApA1d8L9WejO2/hCitmiHRNGKGTJzZbs7vM3dh7oWJ232WcuhFZ6smZ2i2EmvxIEADgjjsruUB/bLpXCE0oog==
   dependencies:
     "@platform/react" "0.1.33"
     "@platform/ui.codemirror" "^0.0.43"
     "@platform/ui.datagrid.types" "0.0.29"
-    "@platform/ui.editor" "^0.0.64"
+    "@platform/ui.editor" "^0.1.0"
     "@platform/ui.text" "^0.1.23"
     "@platform/util.markdown" "^0.0.14"
 
@@ -1280,10 +1280,10 @@
     "@platform/react" "0.1.33"
     "@platform/util.value.cell" "0.0.34"
 
-"@platform/ui.datagrid@0.0.113":
-  version "0.0.113"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.113.tgz#5a3dcb74fa5c897f4496a58cde4e9514c7b309e4"
-  integrity sha512-H6+HkRxNZGRezEUUL4Veb4sQnpr7dcWEUTkYzHBhfc5oHlt7cVl+/0FAUl/sFpxDKO2fzSGT/+mFnCzZu9VUSg==
+"@platform/ui.datagrid@0.0.114":
+  version "0.0.114"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.114.tgz#06b533e3cea31d31796012b18ead1b15f0fba319"
+  integrity sha512-Ug08a5dzxHtuJu0JVHK3vkppUP2V63BZzbTGeGqCQpwQrZ16eE1xQsrfZfY5Q/iIhSAwh+7WzxlTbfw1JKe9oQ==
   dependencies:
     "@platform/react" "0.1.33"
     "@platform/ui.datagrid.types" "0.0.29"
@@ -1291,10 +1291,10 @@
     "@platform/util.value.cell" "0.0.34"
     handsontable "6.2.2"
 
-"@platform/ui.editor@^0.0.64":
-  version "0.0.64"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.0.64.tgz#962f2f01bf04104511461de65b7f73ebdbb2f730"
-  integrity sha512-DqTfZvTmhjI26VIq86awDvopujSnwbq09lnEo7XFs92IFgJWjPWHTurqByR/sLVyThbPDihwGJpq0O30q0DUyw==
+"@platform/ui.editor@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.0.tgz#8939c43fef52292f5665461b12b6cfb97bbf00ea"
+  integrity sha512-5LnIKyTwyvzLnL20qun9h4DVlw5j2oIjfMHVuJ8DePv/kdZUc+PtOzUb8ONtc73f+YiNESZrl5NuV7f/fI8B/Q==
   dependencies:
     "@platform/css" "^0.1.4"
     "@platform/react" "0.1.33"
