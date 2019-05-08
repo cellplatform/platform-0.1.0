@@ -9,7 +9,6 @@ export function clean(input: any, options: { deep?: boolean } = {}) {
   if (!input || typeof input !== 'object') {
     return input;
   }
-  input = { ...input };
 
   const clean = (obj: any) => {
     if (obj && typeof obj === 'object') {
