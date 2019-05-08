@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil, tap, takeWhile } from 'rxjs/operators';
 import { gql, R, t, graphql } from '../common';
 
 /**
@@ -26,15 +26,20 @@ export class ConversationThreadGraphql {
     this.events$ = events$;
 
     // Save the previous state upon load.
+    let isLoaded = false;
     store$
-      .pipe(filter(e => e.type === 'THREAD/loaded'))
+      .pipe(
+        filter(e => e.type === 'THREAD/loaded'),
+        takeWhile(() => !isLoaded),
+        tap(() => (isLoaded = true)),
+      )
       .subscribe(() => (this._prev = store.state));
 
     // Save the thread when a new item is added.
     storeChanged$
       .pipe(
         debounceTime(300),
-        filter(() => this.prev.items.length > 0),
+        filter(() => isLoaded || this.prev.items.length > 0),
         filter(() => !R.equals(this.prev.items, store.state.items)),
       )
       .subscribe(e => {
