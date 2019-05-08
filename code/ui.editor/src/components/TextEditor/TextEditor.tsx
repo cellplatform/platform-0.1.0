@@ -324,7 +324,12 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
         <div ref={this.elBlurTargetRef} tabIndex={-1} {...styles.blurTarget} />
 
         <div className={className} {...css(this.props.editorStyle, styles.editorOuter)}>
-          <div ref={this.elEditorRef} onKeyDown={this.handleKeyDown as any} />
+          <div
+            ref={this.elEditorRef}
+            onKeyDown={this.handleKeyDown as any}
+            onFocus={this.handleFocus(true)}
+            onBlur={this.handleFocus(false)}
+          />
         </div>
         {/*
             NOTE: The element below is turned into a second "hidden" editor which is
@@ -345,6 +350,12 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   /**
    * [Handlers]
    */
+  private handleFocus = (isFocused: boolean) => {
+    return () => {
+      this.fire({ type: 'EDITOR/focus', payload: { isFocused } });
+    };
+  };
+
   private handleKeyDown = (e: KeyboardEvent) => {
     let isCancelled = false;
     this.fire({
