@@ -1,6 +1,5 @@
 import { AccessToken, ApolloServer, gql, log, t, time } from './common';
-
-const pkg = require('../../../package.json');
+export { log };
 
 /**
  * [Types]
@@ -31,7 +30,7 @@ const resolvers = {
 };
 
 /**
- * Define the server.
+ * [Server]
  */
 export const server = new ApolloServer({
   typeDefs,
@@ -39,16 +38,16 @@ export const server = new ApolloServer({
   async context(e): Promise<t.IContext> {
     const getToken = async () => {
       const headers = e.req.headers;
-      const authorization = headers.authorization;
+      const token = headers.authorization;
 
-      if (!authorization) {
+      if (!token) {
         log.info(`✋  No authorization token found.\n`);
       }
 
-      return !authorization
+      return !token
         ? undefined
         : AccessToken.create({
-            token: authorization,
+            token,
             audience: 'https://uiharness.com/api/sample',
             issuer: 'https://test-platform.auth0.com/',
             algorithms: ['RS256'],
@@ -63,18 +62,3 @@ export const server = new ApolloServer({
     return { getUser, getToken };
   },
 });
-
-/**
- * Start the server.
- */
-export async function start() {
-  const port = 8080;
-  await server.listen({ port });
-
-  const url = log.cyan(`http://localhost:${log.magenta(port)}${log.gray('/graphql')}`);
-  log.info.gray(`\n👋  Running on ${url}`);
-  log.info();
-  log.info.gray(`   - package:   ${pkg.name} (test)`);
-  log.info.gray(`   - version:   ${pkg.version}`);
-  log.info();
-}
