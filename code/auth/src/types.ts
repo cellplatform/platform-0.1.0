@@ -23,7 +23,7 @@ export type IAuthRequest = {
  * Results of an authorization request.
  */
 export type IAuthResult<P = Permission, R = Role> = {
-  isAllowed: boolean;
+  isDenied: boolean;
   matches: Array<IAuthMatch<P, R>>;
   user?: { id: string; roles: R[] };
   throw(message?: string): void;
