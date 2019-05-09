@@ -43,7 +43,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
         const id = args.id || '';
 
         const auth = await ctx.authorize(POLICY.THREAD.READ);
-        if (!auth.isAllowed) {
+        if (auth.isDenied) {
           auth.throw();
         }
 
@@ -59,7 +59,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
        */
       items: async (_: { id: string }, args: { kind?: string }, ctx: t.IMsgContext, info: any) => {
         const auth = await ctx.authorize(POLICY.THREAD.READ);
-        if (!auth.isAllowed) {
+        if (auth.isDenied) {
           auth.throw();
         }
 
@@ -82,7 +82,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
        */
       users: async (_: { id: string }, args: {}, ctx: t.IMsgContext, info: any) => {
         const auth = await ctx.authorize(POLICY.THREAD.READ);
-        if (!auth.isAllowed) {
+        if (auth.isDenied) {
           auth.throw();
         }
 
