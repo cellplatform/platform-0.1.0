@@ -39,7 +39,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
       /**
        * Retrieve a single thread.
        */
-      thread: async (_: any, args: { id: string }, ctx: t.IContext, info: any) => {
+      thread: async (_: any, args: { id: string }, ctx: t.IMsgContext, info: any) => {
         const id = args.id || '';
 
         const auth = await ctx.authorize(POLICY.THREAD.READ);
@@ -57,7 +57,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
       /**
        * Retrieve thread items.
        */
-      items: async (_: { id: string }, args: { kind?: string }, ctx: t.IContext, info: any) => {
+      items: async (_: { id: string }, args: { kind?: string }, ctx: t.IMsgContext, info: any) => {
         const auth = await ctx.authorize(POLICY.THREAD.READ);
         if (!auth.isAllowed) {
           auth.throw();
@@ -80,7 +80,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
       /**
        * Retrieve the users of a thread.
        */
-      users: async (_: { id: string }, args: {}, ctx: t.IContext, info: any) => {
+      users: async (_: { id: string }, args: {}, ctx: t.IMsgContext, info: any) => {
         const auth = await ctx.authorize(POLICY.THREAD.READ);
         if (!auth.isAllowed) {
           auth.throw();
