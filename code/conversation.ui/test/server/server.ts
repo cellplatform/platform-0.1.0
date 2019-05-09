@@ -1,9 +1,9 @@
-import { log, ApolloServer, express, t, ForbiddenError } from './common';
-import { schema as localSchema } from './schema.local';
-
-import { mergeSchemas, makeExecutableSchema } from 'graphql-tools';
 import { graphql } from '@platform/conversation.db';
+import { mergeSchemas } from 'graphql-tools';
+
+import { ApolloServer, express, ForbiddenError, log, t } from './common';
 import { getDb } from './db';
+import { schema as localSchema } from './schema.local';
 
 /**
  * Prepare the schema.
