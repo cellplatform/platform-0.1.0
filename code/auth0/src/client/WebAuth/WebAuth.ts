@@ -308,7 +308,7 @@ export class WebAuth {
           return reject(err);
         }
         const profile: t.IAuthProfile = {
-          sub: result.sub,
+          id: result.sub,
           email: result.name,
           updatedAt: new Date(result.updated_at),
           picture: result.picture,

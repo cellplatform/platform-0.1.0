@@ -183,7 +183,7 @@ export class AccessToken implements t.IAccessToken {
     const data = result.data;
 
     const profile: t.IAuthProfile = {
-      sub: data.sub,
+      id: data.sub,
       email: data.name,
       updatedAt: new Date(data.updated_at),
       picture: data.picture,
