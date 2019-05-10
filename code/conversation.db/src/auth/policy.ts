@@ -12,7 +12,7 @@ export const userRequired = auth.policy.userRequired;
 export const read: IAuthPolicy = {
   name: 'MSG/read',
   eval(e) {
-    console.log(`\nTODO 🐷  policy - read \n`);
+    console.log(`\nTODO 🐷 MSG/read policy \n`);
   },
 };
 
@@ -22,6 +22,6 @@ export const read: IAuthPolicy = {
 export const save: IAuthPolicy = {
   name: 'MSG/save',
   eval(e) {
-    console.log(`\nTODO 🐷  policy - save \n`);
+    console.log(`\nTODO 🐷 MSG/save policy \n`);
   },
 };
