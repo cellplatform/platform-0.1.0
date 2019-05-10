@@ -1,10 +1,10 @@
-import { Key, R, UserIdentityType, time, value } from '../common';
+import { Keys, R, UserIdentityType, time, value } from '../common';
 import * as t from '../types';
 import { data } from '../../data.graphql';
 
 export function init(args: {
   store: t.IThreadStore;
-  keys: Key;
+  keys: Keys;
   getGraphql: () => data.ConversationGraphql;
 }) {
   const { store, keys, getGraphql } = args;

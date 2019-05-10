@@ -194,7 +194,7 @@ describe('parser.toParts', () => {
     invalid('Sheet1!');
     invalid('***');
     invalid('Sheet1!***');
-    invalid('sheet-1!A1'); // Hyphen in sheet now allowed.
+    invalid('sheet-1!A1'); // Hyphen in sheet not allowed.
   });
 
   describe('wildcard', () => {

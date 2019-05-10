@@ -1,7 +1,7 @@
 import { graphql } from '@platform/conversation.db';
 import { mergeSchemas } from 'graphql-tools';
 
-import { ApolloServer, express, ForbiddenError, log, t } from './common';
+import { ApolloServer, express, t } from './common';
 import { getDb } from './db';
 import { schema as localSchema } from './schema.local';
 
@@ -27,36 +27,9 @@ export const app = express();
  */
 export const server = new ApolloServer({
   schema,
-  async context(e): Promise<t.IContext> {
-    return {
-      /**
-       * Authorize the request.
-       * ☝️ Ensure the implementing server that stitches in this
-       *    `conversation.db` schema implements this `authorize` function.
-       */
-      async authorize(policy) {
-        const token = e.req.headers.authorization;
-        if (!token) {
-          log.info(`✋  No authorization token.\n`);
-        } else {
-          log.info(`Authorzation token: ${log.yellow(token)}`);
-        }
-
-        // const isAllowed = token === 'phil'; // NB: Obviously not this! 🐷
-        const isAllowed = true; // ALLOW everything.
-
-        const result: t.IAuthResult = {
-          isAllowed,
-          matches: [],
-          user: undefined,
-          throw(message) {
-            throw new ForbiddenError(message || 'Not allowed.');
-          },
-        };
-
-        return result;
-      },
-    };
+  async context(e): Promise<t.IGqlContext> {
+    const jwt = e.req.headers.authorization;
+    return { jwt };
   },
 });
 server.applyMiddleware({ app });
