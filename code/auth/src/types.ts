@@ -43,11 +43,15 @@ export type AuthPolicyHandler<V extends {}, R extends Role> = (
 ) => any | Promise<any>;
 
 export type IAuthEvalPolicyArgs<V extends {}, R extends Role> = {
+  readonly name: string;
   readonly isDenied: boolean;
   readonly user?: IAuthUser<R>;
   readonly variables: V;
   readonly result: IAuthResult<R>;
-  done(access?: AuthAccess): void;
+  access(value?: AuthAccess): IAuthEvalPolicyArgs<V, R>;
+  grant(): IAuthEvalPolicyArgs<V, R>;
+  deny(): IAuthEvalPolicyArgs<V, R>;
+  stop(): IAuthEvalPolicyArgs<V, R>;
 };
 
 export type IPolicyResult = {

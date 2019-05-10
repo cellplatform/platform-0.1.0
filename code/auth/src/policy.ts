@@ -1,4 +1,4 @@
-import * as t from './types';
+import { t } from './common';
 
 /**
  * Ensures the user is logged in.
@@ -6,6 +6,6 @@ import * as t from './types';
 export const userRequired: t.IAuthPolicy = {
   name: 'AUTH/user/required',
   eval(e) {
-    e.done(e.user ? 'GRANT' : 'DENY');
+    e.access(e.user ? 'GRANT' : 'DENY');
   },
 };
