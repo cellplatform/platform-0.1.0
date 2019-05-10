@@ -1,4 +1,4 @@
-import { POLICY } from '../auth';
+import { policy } from '../auth';
 import { gql, Key, log, t } from '../common';
 
 /**
@@ -48,7 +48,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
        * Save a complete conversation-thread.
        */
       save: async (_: any, args: { thread: t.IThreadModel }, ctx: any, info: any) => {
-        const auth = await ctx.authorize(POLICY.THREAD.WRITE);
+        const auth = await ctx.authorize({ policy: [policy.userRequired, policy.save] });
         if (!auth.isAllowed) {
           auth.throw();
         }

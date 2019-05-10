@@ -2,35 +2,57 @@ export type Role = string;
 export type Permission = string;
 
 /**
- * Authorization policies
- * - permissions
- * - resource/attributes (future)
- */
-export type AuthPolicy = IPermissionPolicy;
-export type IPermissionPolicy<P = Permission> = { permissions: P[] };
-
-/**
  * Retrieve authorization details about whether a user
  * has access to a resource with the given policy.
  */
-export type GetAuth = (request: IAuthRequest) => Promise<IAuthResult>;
-export type IAuthRequest = {
+export type GetAuth<R = Role, V = {}> = (request: IAuthRequest<V>) => Promise<IAuthResult<R>>;
+export type IAuthRequest<V = {}> = {
   token: string;
-  policy: AuthPolicy;
+  policy: IAuthPolicy;
+  variables: V;
 };
 
 /**
  * Results of an authorization request.
  */
-export type IAuthResult<P = Permission, R = Role> = {
+export type IAuthResult<R = Role> = {
   isDenied: boolean;
-  matches: Array<IAuthMatch<P, R>>;
-  user?: { id: string; roles: R[] };
+  results: IPolicyResult[];
+  user?: IAuthUser<R>;
   throw(message?: string): void;
 };
 
-export type IAuthMatch<P = Permission, R = Role> = {
-  permission: P;
-  role: R;
-  access: 'GRANT' | 'DENY';
+export type IAuthUser<R = Role> = {
+  id: string;
+  roles: R[];
 };
+
+/**
+ * Authorization policy
+ */
+export type IAuthPolicy<V extends {} = any, R extends Role = any> = {
+  name: string;
+  eval: AuthPolicyHandler<V, R>;
+};
+
+/**
+ * An executable authorization policy.
+ */
+export type AuthPolicyHandler<V extends {}, R extends Role> = (
+  args: IAuthEvalPolicyArgs<V, R>,
+) => any | Promise<any>;
+
+export type IAuthEvalPolicyArgs<V extends {}, R extends Role> = {
+  readonly isDenied: boolean;
+  readonly user?: IAuthUser<R>;
+  readonly variables: V;
+  readonly result: IAuthResult<R>;
+  done(access?: AuthAccess): void;
+};
+
+export type IPolicyResult = {
+  policy: string; // Policy "name".
+  access?: AuthAccess; // NB: Undefined indicates inclusive determination from policy.
+};
+
+export type AuthAccess = 'GRANT' | 'DENY';

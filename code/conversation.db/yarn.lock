@@ -43,10 +43,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/auth@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@platform/auth/-/auth-0.0.3.tgz#0295a40a05f99efed2bd3960b77c6e185ee857a5"
-  integrity sha512-e0A4UH2/5K2PTZw7dWRqbSiPfjalYECsc34WFp2QSpYfygxx5TrjfnxBTogz26M/XmRNTWC9IEmxsjVeM5mJkg==
+"@platform/auth@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/auth/-/auth-0.1.2.tgz#abeb14d5d0251bd9b2ccc6a484f3f973be157b2d"
+  integrity sha512-4pQxtFMiVkyoGKxaPZ8YWy/ljFWXkKBFwUTnfYBiPOfCAJMHwc64pSREjHXhHpCWZ2G2x/uZsV9NYaAYTDIh4w==
   dependencies:
     "@platform/libs" "0.0.12"
 
@@ -91,12 +91,12 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql.server@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.12.tgz#b3dfb03e966d35f5747c30c4528f81be083e1172"
-  integrity sha512-taUJDeUOkeSnSvzWqLvxgexjiEqfFz3r+96SBg7IOmH72IJTTEXr8+Cj8paRFf4CoHAfd8QkbODsgVVSG+OGKw==
+"@platform/graphql.server@0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.14.tgz#87fb12682f535f71cfa71e720beb2b117fb497a9"
+  integrity sha512-sBAOiOXHlV4UqB7gi7emKRENTctxsm6Pzq5Jmd1uqBCUSlJnRz57C8x9ba5l4KTUBeGhNtiGzGKDHE+hTQP9pA==
   dependencies:
-    "@platform/auth" "0.0.3"
+    "@platform/auth" "0.1.2"
     "@platform/graphql" "0.1.2"
     "@platform/libs" "0.0.12"
     "@platform/log" "0.0.117"

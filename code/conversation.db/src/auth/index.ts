@@ -1,1 +1,3 @@
-export * from './policy';
+import * as policy from './policy';
+
+export { policy };

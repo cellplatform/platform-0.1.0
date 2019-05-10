@@ -1,4 +1,4 @@
-import { POLICY } from '../auth';
+import { policy } from '../auth';
 import { gql, Key, log, R, t, value } from '../common';
 
 /**
@@ -42,7 +42,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
       thread: async (_: any, args: { id: string }, ctx: t.IMsgContext, info: any) => {
         const id = args.id || '';
 
-        const auth = await ctx.authorize(POLICY.THREAD.READ);
+        const auth = await ctx.authorize({ policy: [policy.userRequired, policy.read] });
         if (auth.isDenied) {
           auth.throw();
         }
@@ -58,7 +58,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
        * Retrieve thread items.
        */
       items: async (_: { id: string }, args: { kind?: string }, ctx: t.IMsgContext, info: any) => {
-        const auth = await ctx.authorize(POLICY.THREAD.READ);
+        const auth = await ctx.authorize({ policy: [policy.userRequired, policy.read] });
         if (auth.isDenied) {
           auth.throw();
         }
@@ -81,7 +81,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
        * Retrieve the users of a thread.
        */
       users: async (_: { id: string }, args: {}, ctx: t.IMsgContext, info: any) => {
-        const auth = await ctx.authorize(POLICY.THREAD.READ);
+        const auth = await ctx.authorize({ policy: [policy.userRequired, policy.read] });
         if (auth.isDenied) {
           auth.throw();
         }
