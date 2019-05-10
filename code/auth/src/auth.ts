@@ -1,5 +1,3 @@
-export * from './authorize';
-import * as policy from './policy';
-
-export { policy };
 export * from './types';
+export * from './authorize';
+export * from './policy';
