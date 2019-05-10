@@ -17,7 +17,7 @@ export async function authorize(args: {
     results: [],
     user,
     throw(message) {
-      message = message || 'Now allowed.';
+      message = message || 'Not allowed.';
       const error = getError ? getError(message) : new Error(message);
       throw error;
     },
