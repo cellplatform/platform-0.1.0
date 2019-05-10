@@ -1,11 +1,10 @@
-export type Role = string;
-export type Permission = string;
+export type AuthRole = string;
 
 /**
  * Retrieve authorization details about whether a user
  * has access to a resource with the given policy.
  */
-export type GetAuth<R = Role, V = {}> = (request: IAuthRequest<V>) => Promise<IAuthResult<R>>;
+export type GetAuth<R = AuthRole, V = {}> = (request: IAuthRequest<V>) => Promise<IAuthResult<R>>;
 export type IAuthRequest<V = {}> = {
   token: string;
   policy: IAuthPolicy;
@@ -15,14 +14,14 @@ export type IAuthRequest<V = {}> = {
 /**
  * Results of an authorization request.
  */
-export type IAuthResult<R = Role> = {
+export type IAuthResult<R = AuthRole> = {
   isDenied: boolean;
   results: IPolicyResult[];
   user?: IAuthUser<R>;
   throw(message?: string): void;
 };
 
-export type IAuthUser<R = Role> = {
+export type IAuthUser<R = AuthRole> = {
   id: string;
   roles: R[];
 };
@@ -30,7 +29,7 @@ export type IAuthUser<R = Role> = {
 /**
  * Authorization policy
  */
-export type IAuthPolicy<V extends {} = any, R extends Role = any> = {
+export type IAuthPolicy<V extends {} = any, R extends AuthRole = any> = {
   name: string;
   eval: AuthPolicyHandler<V, R>;
 };
@@ -38,11 +37,11 @@ export type IAuthPolicy<V extends {} = any, R extends Role = any> = {
 /**
  * An executable authorization policy.
  */
-export type AuthPolicyHandler<V extends {}, R extends Role> = (
+export type AuthPolicyHandler<V extends {}, R extends AuthRole> = (
   args: IAuthEvalPolicyArgs<V, R>,
 ) => any | Promise<any>;
 
-export type IAuthEvalPolicyArgs<V extends {}, R extends Role> = {
+export type IAuthEvalPolicyArgs<V extends {}, R extends AuthRole> = {
   readonly name: string;
   readonly isDenied: boolean;
   readonly user?: IAuthUser<R>;

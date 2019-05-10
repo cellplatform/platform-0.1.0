@@ -43,10 +43,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/auth@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@platform/auth/-/auth-0.1.2.tgz#abeb14d5d0251bd9b2ccc6a484f3f973be157b2d"
-  integrity sha512-4pQxtFMiVkyoGKxaPZ8YWy/ljFWXkKBFwUTnfYBiPOfCAJMHwc64pSREjHXhHpCWZ2G2x/uZsV9NYaAYTDIh4w==
+"@platform/auth@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@platform/auth/-/auth-0.1.4.tgz#4c7e18d0af38b29dd38af6d47e01f435324b2c1c"
+  integrity sha512-JnkC/GzfvO4oWlNnb7ZAdwYoTo8ENDmmO14rsxvQup16v8cHQHd2elI5Wl1RZft6U/IpfKUZtAGaVjEPMKb0bQ==
   dependencies:
     "@platform/libs" "0.0.12"
 

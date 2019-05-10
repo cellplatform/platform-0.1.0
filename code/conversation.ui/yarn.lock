@@ -958,10 +958,10 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/auth@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@platform/auth/-/auth-0.1.2.tgz#abeb14d5d0251bd9b2ccc6a484f3f973be157b2d"
-  integrity sha512-4pQxtFMiVkyoGKxaPZ8YWy/ljFWXkKBFwUTnfYBiPOfCAJMHwc64pSREjHXhHpCWZ2G2x/uZsV9NYaAYTDIh4w==
+"@platform/auth@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@platform/auth/-/auth-0.1.4.tgz#4c7e18d0af38b29dd38af6d47e01f435324b2c1c"
+  integrity sha512-JnkC/GzfvO4oWlNnb7ZAdwYoTo8ENDmmO14rsxvQup16v8cHQHd2elI5Wl1RZft6U/IpfKUZtAGaVjEPMKb0bQ==
   dependencies:
     "@platform/libs" "0.0.12"
 
@@ -1021,14 +1021,14 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/conversation.db@0.0.25":
-  version "0.0.25"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.25.tgz#67076535e31e41b476d7db876ca266b17548ba07"
-  integrity sha512-0KD1sMNnFwuUHyocfS+wEOlmz4pR79Lz2s/Uxcpvn/QJeFMoEsptBPOj2KZ0qLh1EohxcnDTIOo4nFlcfYfckQ==
+"@platform/conversation.db@0.0.28":
+  version "0.0.28"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.28.tgz#da1abac8bf2afe6d60ee8ddcce4156062a6e8c5b"
+  integrity sha512-ZyA41SJs8HYrzB2gNMfA+qzy7Q2NMOG4igZs55kNiCSre07wg+Vcpn5EOwRa9sqH/2HbKGjPBUlzwK5BjI1ZcA==
   dependencies:
-    "@platform/auth" "0.1.2"
+    "@platform/auth" "0.1.4"
     "@platform/conversation.types" "0.0.10"
-    "@platform/graphql.server" "0.0.14"
+    "@platform/graphql.server" "0.0.16"
     "@platform/hyperdb.types" "0.0.19"
     "@platform/libs" "0.0.12"
 
@@ -1103,12 +1103,12 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql.server@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.14.tgz#87fb12682f535f71cfa71e720beb2b117fb497a9"
-  integrity sha512-sBAOiOXHlV4UqB7gi7emKRENTctxsm6Pzq5Jmd1uqBCUSlJnRz57C8x9ba5l4KTUBeGhNtiGzGKDHE+hTQP9pA==
+"@platform/graphql.server@0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.16.tgz#8d24e38f4a3717d3c7f805afb3c5cc976ae3290a"
+  integrity sha512-2lEgD+lBUvcCJgHUrDbbwIgojIiSFE9bCfWKqJDlooLfu5X7wy1izNoZgejEMoeGEmjpg70LBfmVcnFIcgwf4A==
   dependencies:
-    "@platform/auth" "0.1.2"
+    "@platform/auth" "0.1.4"
     "@platform/graphql" "0.1.2"
     "@platform/libs" "0.0.12"
     "@platform/log" "0.0.117"
