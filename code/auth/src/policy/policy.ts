@@ -5,7 +5,7 @@ import { t } from '../common';
  */
 export const userRequired: t.IAuthPolicy = {
   name: 'AUTH/user/required',
-  eval(e) {
-    e.access(e.user ? 'GRANT' : 'DENY');
+  eval(auth) {
+    auth.access(auth.user ? 'GRANT' : 'DENY');
   },
 };

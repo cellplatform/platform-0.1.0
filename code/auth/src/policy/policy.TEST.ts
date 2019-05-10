@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { auth } from '..';
 
 describe('policy: userRequired', () => {
-  const userRequired = auth.policy.userRequired;
+  const { userRequired } = auth.policy;
 
   it('DENY when no user supplied', async () => {
     const res = await auth.authorize({ policy: userRequired });
