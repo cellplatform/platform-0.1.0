@@ -958,7 +958,7 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/auth@0.1.4":
+"@platform/auth@0.1.4", "@platform/auth@^0.1.4":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@platform/auth/-/auth-0.1.4.tgz#4c7e18d0af38b29dd38af6d47e01f435324b2c1c"
   integrity sha512-JnkC/GzfvO4oWlNnb7ZAdwYoTo8ENDmmO14rsxvQup16v8cHQHd2elI5Wl1RZft6U/IpfKUZtAGaVjEPMKb0bQ==
@@ -1021,24 +1021,24 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/conversation.db@0.0.28":
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.28.tgz#da1abac8bf2afe6d60ee8ddcce4156062a6e8c5b"
-  integrity sha512-ZyA41SJs8HYrzB2gNMfA+qzy7Q2NMOG4igZs55kNiCSre07wg+Vcpn5EOwRa9sqH/2HbKGjPBUlzwK5BjI1ZcA==
+"@platform/conversation.db@0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.31.tgz#935535c045681bf412a0eb1fb4bbb046365eebe3"
+  integrity sha512-P9KaVpkFl0xFCNa8oGmgHz0hgnmqVPOeixReU3Rh4WKiwOE6hFjyFclRwBOsh+4V9ErVqa/0MpTsQgBTQv5pkQ==
   dependencies:
-    "@platform/auth" "0.1.4"
-    "@platform/conversation.types" "0.0.10"
-    "@platform/graphql.server" "0.0.16"
+    "@platform/auth" "^0.1.4"
+    "@platform/conversation.types" "0.0.11"
+    "@platform/graphql.server" "0.0.18"
     "@platform/hyperdb.types" "0.0.19"
     "@platform/libs" "0.0.12"
 
-"@platform/conversation.types@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.10.tgz#105202c7589f8199ad7a2b8c14864c581461247a"
-  integrity sha512-BPtbHR0qX0BYYEBY97HZH9oUDms+1rfq2OztPHW0Z8fMIMgzZtuMxIp/kLcaV6msfXTGSh1LCixZ238ZMN2ZMA==
+"@platform/conversation.types@0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.11.tgz#bf26ef02cdb4c46eb6f0ae33bb7e2534b7b74f57"
+  integrity sha512-J/3aQ6T7u8FnJXx37ZEFVaBquUYRv00r7myWesfEFldfCSV57osJhc3yg7wIKH9NnHVI75DJ4vVG4cgzgV3Maw==
   dependencies:
     "@platform/libs" "0.0.12"
-    "@platform/util.value" "^0.2.0"
+    "@platform/util.value" "0.2.0"
 
 "@platform/css@0.1.3":
   version "0.1.3"
@@ -1103,12 +1103,11 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql.server@0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.16.tgz#8d24e38f4a3717d3c7f805afb3c5cc976ae3290a"
-  integrity sha512-2lEgD+lBUvcCJgHUrDbbwIgojIiSFE9bCfWKqJDlooLfu5X7wy1izNoZgejEMoeGEmjpg70LBfmVcnFIcgwf4A==
+"@platform/graphql.server@0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.18.tgz#ab660c5ba5b0fd69de4ae1ef6e40d1a2c087749b"
+  integrity sha512-j+fe+HKmloK8JQ1LBhVkPXxiZ/yJs/pwAqo82jN+896Bbj+6VoXI/R6Sqm4WE1EfRkeJ0fB5S0IqMz8bcCB6XQ==
   dependencies:
-    "@platform/auth" "0.1.4"
     "@platform/graphql" "0.1.2"
     "@platform/libs" "0.0.12"
     "@platform/log" "0.0.117"
@@ -1446,7 +1445,7 @@
     dayjs "1.8.13"
     semver "6.0.0"
 
-"@platform/util.value@0.2.0", "@platform/util.value@^0.2.0":
+"@platform/util.value@0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.2.0.tgz#864d3ca9a2e664c6734d03e518f7ee852cf55848"
   integrity sha512-BRDGcdfPyNslUO9A+rY89aZio/HUl29jCSsIpzITTor/F1J+dRRquYcFUG3ZuARrDHlHqPq8J0UIiK4ErLYkeg==

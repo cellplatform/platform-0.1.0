@@ -122,7 +122,7 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.66.tgz#1e527748fe0f158060271dc9eb4447241e2f9366"
   integrity sha512-3HsiU3gmnU71UC0yjUmsQ9ABKmgNPEujQfZJYssm4FRBfx6vWFTYxosBh2qAY1oDBgPSU1/MbdAEaJkjmzbxmg==
 
-"@platform/util.value@^0.2.0":
+"@platform/util.value@0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.2.0.tgz#864d3ca9a2e664c6734d03e518f7ee852cf55848"
   integrity sha512-BRDGcdfPyNslUO9A+rY89aZio/HUl29jCSsIpzITTor/F1J+dRRquYcFUG3ZuARrDHlHqPq8J0UIiK4ErLYkeg==
