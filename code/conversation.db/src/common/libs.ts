@@ -1,8 +1,9 @@
 export { log } from '@platform/log/lib/server';
-export { gql } from '@platform/graphql.server';
-export { Key } from '@platform/conversation.types';
-export { value } from '@platform/util.value';
+export { Keys } from '@platform/conversation.types';
+export { value, is } from '@platform/util.value';
 export { auth } from '@platform/auth';
+
+export { gql, ForbiddenError, AuthenticationError } from '@platform/graphql.server';
 
 /**
  * Ramda

@@ -4,8 +4,8 @@ import { init as initSchema } from './schema';
 /**
  * Initializes the graphql API.
  */
-export function init(args: { getDb: t.GetConverstaionDb }) {
-  const { getDb } = args;
-  const schema = initSchema({ getDb });
+export function init(args: { getDb: t.GetDb; keys?: t.Keys }) {
+  const { getDb, keys } = args;
+  const schema = initSchema({ getDb, keys });
   return { schema };
 }
