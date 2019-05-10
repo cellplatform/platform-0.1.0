@@ -1,8 +1,10 @@
-import { IAuthResult, IAuthPolicy } from '@platform/auth/lib/types';
-
 /**
  * The common context object passed to resolvers.
  */
-export type IGqlContext<V extends {} = any> = {
-  authorize(args: { policy: IAuthPolicy | IAuthPolicy[]; variables?: V }): Promise<IAuthResult>;
+export type IGqlContext = {
+  /**
+   * The json-web-token that represents the `accessToken` of the authenticated user.
+   * See: https://jwt.io
+   */
+  jwt?: string;
 };
