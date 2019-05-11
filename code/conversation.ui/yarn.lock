@@ -1028,21 +1028,21 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/conversation.db@0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.35.tgz#f60e246d113c2dab372f72c1e96693bf5291a30f"
-  integrity sha512-EXCgT2Jdr0hdvQj70w9yNpOLAwmR74RRgMhucW2WC3xVMTbS7rZF4wXZibaM8OrBOK7V/o+xm3UWHWzKuiMlOQ==
+"@platform/conversation.db@0.0.38":
+  version "0.0.38"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.38.tgz#5233563c054cdf37cd6f4926fa828d2f1337ecb0"
+  integrity sha512-wiN4a6W5fkUKFg0AG+tzcnCAm1SBHAgCNvdUI+7oZy/DX2jnYVxDIp6XxlCc2SKwHga6vABjJwyvRSlOC8P//g==
   dependencies:
     "@platform/auth" "0.1.4"
-    "@platform/conversation.types" "0.0.12"
+    "@platform/conversation.types" "0.0.14"
     "@platform/graphql.server" "0.0.20"
-    "@platform/hyperdb.types" "0.1.0"
+    "@platform/hyperdb.types" "0.1.1"
     "@platform/libs" "0.0.12"
 
-"@platform/conversation.types@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.12.tgz#7bf4db75f62bb423ce77c65241a7b7f692fd0447"
-  integrity sha512-jvqPkhRy+KJQs0ET2y8VTpA/F/2EWxCbmhtwvesZMKx5SPpHB261BPXrkWeC18hqrRyTk7JY8F49kLygik3fZA==
+"@platform/conversation.types@0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.14.tgz#38737b369f80c0861591f50c9c6b2093f4b2d729"
+  integrity sha512-lCigokHEMFRS6tHQGNim5rxALL8gMmX67Bqje4eTqNBu0Ujen1YXkEDYW7TjxOAPai15ou+JAZ+mKbCGy+TnCA==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/util.value" "0.2.0"
@@ -1140,21 +1140,21 @@
     apollo-link-batch-http "1.2.11"
     graphql "14.2.1"
 
-"@platform/hyperdb.types@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.1.0.tgz#b12c0ee2b80912d015ad44be0f5a343bb405539e"
-  integrity sha512-4y4AZYMI4iA/fSyCpwx52dqWBLw4mEgfXB079OZh6G1PN/TSdtwE63WimRefJPA18JPrjd/oOJlSmbJbKaOdjQ==
+"@platform/hyperdb.types@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.1.1.tgz#1a656aa18ce616dff6118b66df921ee09e1d96be"
+  integrity sha512-EJg5uJeODTJMLa2gOyP1a71+RPE/csh79wdIOfurKISv6QM44cmZAqzSRJdbu3L/IPrROjIIcZ93ypJR9SCZtg==
   dependencies:
     "@platform/libs" "0.0.12"
 
-"@platform/hyperdb@^0.1.32":
-  version "0.1.32"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.32.tgz#111ee28548943b0d78bea71935b63031bf14e540"
-  integrity sha512-HNnRnC2Y3ETNBWXFe1yLY8E00mNixQA9Ttkcc/t+0+BZcKabzaO97z7CY56gBcmZxRcw0mjx0AUrRZTAOMxoDA==
+"@platform/hyperdb@^0.1.33":
+  version "0.1.33"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.33.tgz#1d8f6bf0714c3f842b4f500eac5254ec7416eef6"
+  integrity sha512-0Nmodd2+d9V8/RzezHNZTJIgbVdn1ekhAHUwhi3SWuG6u3QIo/jpS3TkbKjPb+zxGa4S15Ohh9PKR2YYYKlApw==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.58"
-    "@platform/hyperdb.types" "0.1.0"
+    "@platform/hyperdb.types" "0.1.1"
     "@platform/util.value" "0.2.0"
     discovery-swarm "5.1.4"
     hyperdb "3.5.0"
