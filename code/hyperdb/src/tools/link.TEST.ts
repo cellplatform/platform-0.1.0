@@ -3,7 +3,7 @@ import { expect, expectError } from '@platform/test';
 import { fs, t } from '../common';
 import { Db } from '../db';
 
-import { linkOneToMany } from '.';
+import { link } from '.';
 
 const dir = 'tmp/db';
 after(async () => fs.remove('tmp'));
@@ -32,7 +32,8 @@ describe('linkOneToMany', () => {
     await db.put(userDbKey, { id: ids.user1 });
     await db.put(orgDbKey, { id: ids.org1, name: 'Acme' });
 
-    const res = await linkOneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users');
+    const oneToMany = link.oneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users');
+    const res = await oneToMany.link();
 
     expect(res.many.users).to.include(ids.user1);
     expect(res.singular.org).to.eql(ids.org1);
@@ -55,9 +56,9 @@ describe('linkOneToMany', () => {
     await db.put(userDbKey1, { id: ids.user1 });
     await db.put(userDbKey2, { id: ids.user2 });
 
-    await linkOneToMany<IUser, IOrg>(db, userDbKey1, orgDbKey, 'org', 'users');
-    await linkOneToMany<IUser, IOrg>(db, userDbKey2, orgDbKey, 'org', 'users');
-    await linkOneToMany<IUser, IOrg>(db, userDbKey2, orgDbKey, 'org', 'users'); // NB: repeat
+    await link.oneToMany<IUser, IOrg>(db, userDbKey1, orgDbKey, 'org', 'users').link();
+    await link.oneToMany<IUser, IOrg>(db, userDbKey2, orgDbKey, 'org', 'users').link();
+    await link.oneToMany<IUser, IOrg>(db, userDbKey2, orgDbKey, 'org', 'users').link(); // NB: repeat
 
     const org = (await db.get(orgDbKey)).value as IOrg;
     const user1 = (await db.get(userDbKey1)).value as IUser;
@@ -74,7 +75,7 @@ describe('linkOneToMany', () => {
       const userDbKey = getUserDbKey(ids.user1);
       const orgDbKey = getOrgDbKey(ids.org1);
       await expectError(async () => {
-        await linkOneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users');
+        await link.oneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users').link();
       });
     });
 
@@ -84,7 +85,7 @@ describe('linkOneToMany', () => {
       const orgDbKey = getOrgDbKey(ids.org1);
       await expectError(async () => {
         await db.put(orgDbKey, { id: ids.org1, name: 'Acme' });
-        await linkOneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users');
+        await link.oneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users').link();
       });
     });
 
@@ -94,7 +95,7 @@ describe('linkOneToMany', () => {
       const orgDbKey = getOrgDbKey(ids.org1);
       await expectError(async () => {
         await db.put(userDbKey, { id: ids.user1 });
-        await linkOneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users');
+        await link.oneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users').link();
       });
     });
   });
