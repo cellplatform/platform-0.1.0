@@ -321,12 +321,24 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   /**
+   * Retrieves multiple values to the DB in a single transaction.
+   */
+  public async getMany<T extends object = D>(keys: Array<keyof D>): Promise<t.IDbValues<T>> {
+    const wait = keys.map(key => this.get(key));
+    const list = await Promise.all(wait);
+    return list.reduce((acc, next) => {
+      const key = next.props.key;
+      return { ...acc, [key]: next };
+    }, {}) as t.IDbValues<T>;
+  }
+
+  /**
    * Writes multiple values to the DB in a single transaction.
    */
   public putMany<T extends object = D>(
     data: t.IDbUpdateObject<T> | t.IDbUpdateList<T>,
   ): Promise<t.IDbValues<T>> {
-    return this._update({ data, type: 'put' });
+    return this._batch({ data, type: 'put' });
   }
 
   /**
@@ -334,10 +346,10 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public async deleteMany<T extends object = D>(data: Array<keyof T>): Promise<void> {
     const list: any = data.map(key => ({ key, value: undefined }));
-    await this._update({ data: list, type: 'del' });
+    await this._batch({ data: list, type: 'del' });
   }
 
-  private _update<T extends object = D>(args: {
+  private _batch<T extends object = D>(args: {
     data: t.IDbUpdateObject<T> | t.IDbUpdateList<T>;
     type: 'put' | 'del';
   }): Promise<t.IDbValues<T>> {

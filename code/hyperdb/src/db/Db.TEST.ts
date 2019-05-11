@@ -596,6 +596,22 @@ describe('Db', () => {
     });
   });
 
+  describe('getMany', () => {
+    it('retrieves multiple values', async () => {
+      type MyObj = { foo: number; bar: number; baz: number };
+      const db = await Db.create<MyObj>({ dir });
+
+      await db.put('foo', 123);
+      await db.put('bar', 456);
+      await db.put('baz', 789);
+
+      const res = await db.getMany(['foo', 'baz']);
+      expect(res.foo.value).to.eql(123);
+      expect(res.bar).to.eql(undefined);
+      expect(res.baz.value).to.eql(789);
+    });
+  });
+
   describe('putMany', () => {
     it('updates from object', async () => {
       const db = await Db.create({ dir });

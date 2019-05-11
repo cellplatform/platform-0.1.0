@@ -58,6 +58,7 @@ export type IDbMethods<D extends {} = any> = {
   get<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
   put<K extends keyof D>(key: K, value: D[K]): Promise<IDbValue<K, D[K]>>;
   delete<K extends keyof D>(key: K): Promise<IDbValue<K, D[K]>>;
+  getMany<T extends object = D>(keys: Array<keyof D>): Promise<IDbValues<T>>;
   putMany<T extends object = D>(data: IDbUpdateObject<T> | IDbUpdateList<T>): Promise<IDbValues<T>>;
   deleteMany<T extends object = D>(data: Array<keyof T>): Promise<void>;
   watch<T extends object = D>(...pattern: Array<keyof T>): Promise<void>;
