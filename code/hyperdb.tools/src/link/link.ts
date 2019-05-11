@@ -1,4 +1,7 @@
 import { t } from '../common';
+import { link } from 'fs';
+
+const getValue = async <T>(db: t.IDb, key: string) => (await db.get(key)).value as T;
 
 /**
  * Setup a helper for performing a `[1..n]` link between models.
@@ -10,10 +13,9 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
 }) {
   const { db, one, many } = args;
 
-  const getValue = async <T>(key: string) => (await db.get(key)).value as T;
   const prepare = async () => {
-    const oneModel = await getValue<O>(one.dbKey);
-    const manyModel = await getValue<M>(many.dbKey);
+    const oneModel = await getValue<O>(db, one.dbKey);
+    const manyModel = await getValue<M>(db, many.dbKey);
     if (!oneModel) {
       throw new Error(`The [singular] target '${one.dbKey}' does not exist in the DB.`);
     }
@@ -107,6 +109,47 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
         const model = values[key].value;
         return [...acc, model];
       }, []) as M[];
+    },
+  };
+}
+
+/**
+ * Setup a helper for performing `[n..n]` links between models.
+ */
+export function manyToMany<A extends { id: string }, B extends { id: string }>(args: {
+  db: t.IDb;
+  a: { dbKey: string; field: keyof A };
+  b: { dbKey: string; field: keyof B };
+}) {
+  const { db, a, b } = args;
+
+  const prepare = async () => {
+    const oneModel = await getValue<A>(db, a.dbKey);
+    const manyModel = await getValue<B>(db, b.dbKey);
+    if (!oneModel) {
+      throw new Error(`The [singular] target '${a.dbKey}' does not exist in the DB.`);
+    }
+    if (!manyModel) {
+      throw new Error(`The [many] target '${b.dbKey}' does not exist in the DB.`);
+    }
+
+    const oneRef = oneModel[a.field];
+    const manyRefs = (manyModel[b.field] || []) as string[];
+    if (!Array.isArray(manyRefs)) {
+      throw new Error(
+        `The target field '${b.field}' for the 'many' relationship on '${
+          b.dbKey
+        }' must be an array.`,
+      );
+    }
+
+    // Finish up.
+    return { oneModel, manyModel, oneRef, manyRefs };
+  };
+
+  return {
+    async link() {
+      // TEMP 🐷 TODO
     },
   };
 }

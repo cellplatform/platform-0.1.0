@@ -4,26 +4,28 @@ import { Db, expect, expectError, fs } from '../test';
 const dir = 'tmp/db';
 after(async () => fs.remove('tmp'));
 
-type IUser = { id: string; org?: string };
+type IUser = { id: string; org?: string; friends?: [] };
 type IOrg = { id: string; users?: [] };
+
+const ids = {
+  user1: 'user-1',
+  user2: 'user-2',
+  user3: 'user-3',
+  org1: 'org-1',
+  org2: 'org-2',
+};
+
+const toUserDbKey = (id: string) => `KEY/user/${id}`;
+const toOrgDbKey = (id: string) => `KEY/org/${id}`;
 
 describe('oneToMany', () => {
   beforeEach(async () => fs.remove(dir));
 
-  const ids = {
-    user1: 'user-1',
-    user2: 'user-2',
-    org1: 'org-1',
-  };
-
-  const getUserDbKey = (id: string) => `KEY/user/${id}`;
-  const getOrgDbKey = (id: string) => `KEY/org/${id}`;
-
   describe('link', () => {
-    it('links org/user', async () => {
+    it('links org-to-user', async () => {
       const db = await Db.create({ dir });
-      const userDbKey = getUserDbKey(ids.user1);
-      const orgDbKey = getOrgDbKey(ids.org1);
+      const userDbKey = toUserDbKey(ids.user1);
+      const orgDbKey = toOrgDbKey(ids.org1);
 
       await db.put(userDbKey, { id: ids.user1 });
       await db.put(orgDbKey, { id: ids.org1, name: 'Acme' });
@@ -48,9 +50,9 @@ describe('oneToMany', () => {
     it('links several users', async () => {
       const db = await Db.create({ dir });
 
-      const orgDbKey = getOrgDbKey(ids.org1);
-      const userDbKey1 = getUserDbKey(ids.user1);
-      const userDbKey2 = getUserDbKey(ids.user2);
+      const orgDbKey = toOrgDbKey(ids.org1);
+      const userDbKey1 = toUserDbKey(ids.user1);
+      const userDbKey2 = toUserDbKey(ids.user2);
 
       await db.put(orgDbKey, { id: ids.org1, name: 'Acme' });
       await db.put(userDbKey1, { id: ids.user1 });
@@ -89,8 +91,8 @@ describe('oneToMany', () => {
 
     it('throws if the many field is not an array', async () => {
       const db = await Db.create({ dir });
-      const userDbKey = getUserDbKey(ids.user1);
-      const orgDbKey = getOrgDbKey(ids.org1);
+      const userDbKey = toUserDbKey(ids.user1);
+      const orgDbKey = toOrgDbKey(ids.org1);
 
       await db.put(userDbKey, { id: ids.user1 });
       await db.put(orgDbKey, { id: ids.org1, name: 'Acme', users: 'NOT_A_LIST' });
@@ -108,8 +110,8 @@ describe('oneToMany', () => {
     describe('throws if model does not exist', () => {
       it('neither', async () => {
         const db = await Db.create({ dir });
-        const userDbKey = getUserDbKey(ids.user1);
-        const orgDbKey = getOrgDbKey(ids.org1);
+        const userDbKey = toUserDbKey(ids.user1);
+        const orgDbKey = toOrgDbKey(ids.org1);
         await expectError(async () => {
           await link
             .oneToMany<IUser, IOrg>({
@@ -123,8 +125,8 @@ describe('oneToMany', () => {
 
       it('no "singular" model', async () => {
         const db = await Db.create({ dir });
-        const userDbKey = getUserDbKey(ids.user1);
-        const orgDbKey = getOrgDbKey(ids.org1);
+        const userDbKey = toUserDbKey(ids.user1);
+        const orgDbKey = toOrgDbKey(ids.org1);
         await expectError(async () => {
           await db.put(orgDbKey, { id: ids.org1, name: 'Acme' });
           await link
@@ -139,8 +141,8 @@ describe('oneToMany', () => {
 
       it('no "many" model', async () => {
         const db = await Db.create({ dir });
-        const userDbKey = getUserDbKey(ids.user1);
-        const orgDbKey = getOrgDbKey(ids.org1);
+        const userDbKey = toUserDbKey(ids.user1);
+        const orgDbKey = toOrgDbKey(ids.org1);
         await expectError(async () => {
           await db.put(userDbKey, { id: ids.user1 });
           await link
@@ -158,9 +160,9 @@ describe('oneToMany', () => {
   describe('unlink', () => {
     it('removes link refs', async () => {
       const db = await Db.create({ dir });
-      const orgDbKey = getOrgDbKey(ids.org1);
-      const userDbKey1 = getUserDbKey(ids.user1);
-      const userDbKey2 = getUserDbKey(ids.user2);
+      const orgDbKey = toOrgDbKey(ids.org1);
+      const userDbKey1 = toUserDbKey(ids.user1);
+      const userDbKey2 = toUserDbKey(ids.user2);
 
       await db.put(orgDbKey, { id: ids.org1, name: 'Acme' });
       await db.put(userDbKey1, { id: ids.user1 });
@@ -219,9 +221,9 @@ describe('oneToMany', () => {
     it('retrieves models', async () => {
       const db = await Db.create({ dir });
 
-      const orgDbKey = getOrgDbKey(ids.org1);
-      const userDbKey1 = getUserDbKey(ids.user1);
-      const userDbKey2 = getUserDbKey(ids.user2);
+      const orgDbKey = toOrgDbKey(ids.org1);
+      const userDbKey1 = toUserDbKey(ids.user1);
+      const userDbKey2 = toUserDbKey(ids.user2);
 
       await db.put(orgDbKey, { id: ids.org1, name: 'Acme' });
       await db.put(userDbKey1, { id: ids.user1 });
@@ -233,7 +235,7 @@ describe('oneToMany', () => {
         many: { dbKey: orgDbKey, field: 'users' },
       });
 
-      const res1 = await oneToMany1.refs(ref => getUserDbKey(ref));
+      const res1 = await oneToMany1.refs(ref => toUserDbKey(ref));
       expect(res1.length).to.eql(0);
 
       await oneToMany1.link();
@@ -244,16 +246,42 @@ describe('oneToMany', () => {
         many: { dbKey: orgDbKey, field: 'users' },
       });
 
-      const res2 = await oneToMany2.refs(ref => getUserDbKey(ref));
+      const res2 = await oneToMany2.refs(ref => toUserDbKey(ref));
       expect(res2.length).to.eql(1);
       expect(res2[0].id).to.eql(ids.user1);
 
       await oneToMany2.link();
 
-      const res3 = await oneToMany2.refs(ref => getUserDbKey(ref));
+      const res3 = await oneToMany2.refs(ref => toUserDbKey(ref));
       expect(res3.length).to.eql(2);
       expect(res3[0].id).to.eql(ids.user1);
       expect(res3[1].id).to.eql(ids.user2);
+    });
+  });
+});
+
+describe('manyToMany', () => {
+  beforeEach(async () => fs.remove(dir));
+
+  describe('link', () => {
+    it('links users-to-users', async () => {
+      const db = await Db.create({ dir });
+
+      const userDbKey1 = toUserDbKey(ids.user1);
+      const userDbKey2 = toUserDbKey(ids.user2);
+      const userDbKey3 = toUserDbKey(ids.user3);
+
+      await db.put(userDbKey1, { id: ids.user1 });
+      await db.put(userDbKey2, { id: ids.user2 });
+      await db.put(userDbKey3, { id: ids.user3 });
+
+      const manyToMany1 = link.manyToMany<IUser, IUser>({
+        db,
+        a: { dbKey: userDbKey1, field: 'friends' },
+        b: { dbKey: userDbKey2, field: 'friends' },
+      });
+
+      const res1 = await manyToMany1.link()
     });
   });
 });
