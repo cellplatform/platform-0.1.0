@@ -166,9 +166,6 @@ describe('oneToMany', () => {
       await db.put(userDbKey1, { id: ids.user1 });
       await db.put(userDbKey2, { id: ids.user2 });
 
-      const orgTmp = (await db.get(orgDbKey)).value as IOrg;
-      console.log('org', orgTmp);
-
       await link
         .oneToMany<IUser, IOrg>({
           db,

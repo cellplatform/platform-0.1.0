@@ -47,22 +47,22 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
 
       const manyId = manyModel.id as any;
       const singularId = oneModel.id as any;
-
-      console.log(`\nTODO 🐷   BATCH putMany\n`);
+      let batch: any = {};
 
       // Assign reference to the "singular" target.
       if (oneModel[one.field] !== manyId) {
         oneModel = { ...oneModel, [one.field]: manyId };
-        await db.put(one.dbKey, oneModel);
+        batch = { ...batch, [one.dbKey]: oneModel };
       }
 
       // Assign reference to the "many" target.
       if (!manyRefs.includes(singularId)) {
         manyModel = { ...manyModel, [many.field]: [...manyRefs, singularId] };
-        await db.put(many.dbKey, manyModel);
+        batch = { ...batch, [many.dbKey]: manyModel };
       }
 
       // Finish up.
+      await db.putMany(batch);
       return { one: oneModel, many: manyModel };
     },
 
@@ -76,24 +76,24 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
 
       const manyId = manyModel.id as any;
       const singularId = oneModel.id as any;
-
-      console.log(`\nTODO 🐷   BATCH putMany\n`);
+      let batch: any = {};
 
       // Remove reference from the "singular" target.
       if (oneModel[one.field] === manyId) {
         oneModel = { ...oneModel };
         delete oneModel[one.field];
-        await db.put(one.dbKey, oneModel);
+        batch = { ...batch, [one.dbKey]: oneModel };
       }
 
       // Remove reference from the "many" target.
       if (manyRefs.includes(singularId)) {
         const refs = manyRefs.filter(item => item !== singularId) as any;
         manyModel = { ...manyModel, [many.field]: refs };
-        await db.put(many.dbKey, manyModel);
+        batch = { ...batch, [many.dbKey]: manyModel };
       }
 
       // Finish up.
+      await db.putMany(batch);
       return { one: oneModel, many: manyModel };
     },
   };
