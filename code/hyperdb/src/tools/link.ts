@@ -1,4 +1,5 @@
 import { t } from '../common';
+import { unlink } from 'fs-extra';
 
 /**
  * Setup a helper for performing a `[1..n]` link between models.
@@ -36,10 +37,14 @@ export function oneToMany<S extends { id: string }, M extends { id: string }>(
       );
     }
 
+    // Finish up.
     return { model, id, list };
   };
 
   return {
+    /**
+     * Assign the link.
+     */
     async link() {
       const { id, model, list } = await prepare();
 
@@ -52,6 +57,29 @@ export function oneToMany<S extends { id: string }, M extends { id: string }>(
       // Assign reference to the "many" target.
       if (!list.includes(id.singular)) {
         model.many[manyField] = [...list, id.singular] as any;
+        await db.put(manyField, model.many);
+      }
+
+      // Finish up.
+      return model;
+    },
+
+    /**
+     * Remove the link.
+     */
+    async unlink() {
+      const { id, model, list } = await prepare();
+
+      // Remove reference from the "singular" target.
+      if (model.singular[singularField] === id.many) {
+        delete model.singular[singularField];
+        await db.put(singularField, model.singular);
+      }
+
+      // Remove reference from the "many" target.
+      if (list.includes(id.singular)) {
+        model.many[manyField] = list.filter(item => item !== id.singular) as any;
+        // model.many[manyField] = [...list, id.singular] as any;
         await db.put(manyField, model.many);
       }
 

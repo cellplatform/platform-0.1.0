@@ -114,4 +114,40 @@ describe.only('oneToMany', () => {
       });
     });
   });
+
+  describe('unlink', () => {
+    it('removes link refs', async () => {
+      const db = await Db.create({ dir });
+      const orgDbKey = getOrgDbKey(ids.org1);
+      const userDbKey1 = getUserDbKey(ids.user1);
+      const userDbKey2 = getUserDbKey(ids.user2);
+
+      await db.put(orgDbKey, { id: ids.org1, name: 'Acme' });
+      await db.put(userDbKey1, { id: ids.user1 });
+      await db.put(userDbKey2, { id: ids.user2 });
+
+      await link.oneToMany<IUser, IOrg>(db, userDbKey1, orgDbKey, 'org', 'users').link();
+      await link.oneToMany<IUser, IOrg>(db, userDbKey2, orgDbKey, 'org', 'users').link();
+
+      await link.oneToMany<IUser, IOrg>(db, userDbKey1, orgDbKey, 'org', 'users').unlink();
+
+      let org = (await db.get(orgDbKey)).value as IOrg;
+      let user1 = (await db.get(userDbKey1)).value as IUser;
+      let user2 = (await db.get(userDbKey2)).value as IUser;
+
+      expect(org.users).to.eql(['user-2']);
+      expect(user1.org).to.eql(undefined);
+      expect(user2.org).to.eql('org-1');
+
+      await link.oneToMany<IUser, IOrg>(db, userDbKey2, orgDbKey, 'org', 'users').unlink();
+
+      org = (await db.get(orgDbKey)).value as IOrg;
+      user1 = (await db.get(userDbKey1)).value as IUser;
+      user2 = (await db.get(userDbKey2)).value as IUser;
+
+      expect(org.users).to.eql([]);
+      expect(user1.org).to.eql(undefined);
+      expect(user2.org).to.eql(undefined);
+    });
+  });
 });
