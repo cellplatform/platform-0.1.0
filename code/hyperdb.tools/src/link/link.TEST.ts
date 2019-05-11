@@ -7,7 +7,7 @@ after(async () => fs.remove('tmp'));
 type IUser = { id: string; org?: string };
 type IOrg = { id: string; users?: [] };
 
-describe.only('oneToMany', () => {
+describe('oneToMany', () => {
   beforeEach(async () => fs.remove(dir));
 
   const ids = {
@@ -28,11 +28,15 @@ describe.only('oneToMany', () => {
       await db.put(userDbKey, { id: ids.user1 });
       await db.put(orgDbKey, { id: ids.org1, name: 'Acme' });
 
-      const oneToMany = link.oneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users');
+      const oneToMany = link.oneToMany<IUser, IOrg>({
+        db,
+        one: { dbKey: userDbKey, field: 'org' },
+        many: { dbKey: orgDbKey, field: 'users' },
+      });
       const res = await oneToMany.link();
 
       expect(res.many.users).to.include(ids.user1);
-      expect(res.singular.org).to.eql(ids.org1);
+      expect(res.one.org).to.eql(ids.org1);
 
       const user = (await db.get(userDbKey)).value as IUser;
       const org = (await db.get(orgDbKey)).value as IOrg;
@@ -52,9 +56,27 @@ describe.only('oneToMany', () => {
       await db.put(userDbKey1, { id: ids.user1 });
       await db.put(userDbKey2, { id: ids.user2 });
 
-      await link.oneToMany<IUser, IOrg>(db, userDbKey1, orgDbKey, 'org', 'users').link();
-      await link.oneToMany<IUser, IOrg>(db, userDbKey2, orgDbKey, 'org', 'users').link();
-      await link.oneToMany<IUser, IOrg>(db, userDbKey2, orgDbKey, 'org', 'users').link(); // NB: repeat
+      await link
+        .oneToMany<IUser, IOrg>({
+          db,
+          one: { dbKey: userDbKey1, field: 'org' },
+          many: { dbKey: orgDbKey, field: 'users' },
+        })
+        .link();
+      await link
+        .oneToMany<IUser, IOrg>({
+          db,
+          one: { dbKey: userDbKey2, field: 'org' },
+          many: { dbKey: orgDbKey, field: 'users' },
+        })
+        .link();
+      await link
+        .oneToMany<IUser, IOrg>({
+          db,
+          one: { dbKey: userDbKey2, field: 'org' },
+          many: { dbKey: orgDbKey, field: 'users' },
+        })
+        .link(); // NB: repeat (should have no effect)
 
       const org = (await db.get(orgDbKey)).value as IOrg;
       const user1 = (await db.get(userDbKey1)).value as IUser;
@@ -72,7 +94,11 @@ describe.only('oneToMany', () => {
 
       await db.put(userDbKey, { id: ids.user1 });
       await db.put(orgDbKey, { id: ids.org1, name: 'Acme', users: 'NOT_A_LIST' });
-      const oneToMany = link.oneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users');
+      const oneToMany = link.oneToMany<IUser, IOrg>({
+        db,
+        one: { dbKey: userDbKey, field: 'org' },
+        many: { dbKey: orgDbKey, field: 'users' },
+      });
 
       await expectError(async () => {
         await oneToMany.link();
@@ -85,7 +111,13 @@ describe.only('oneToMany', () => {
         const userDbKey = getUserDbKey(ids.user1);
         const orgDbKey = getOrgDbKey(ids.org1);
         await expectError(async () => {
-          await link.oneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users').link();
+          await link
+            .oneToMany<IUser, IOrg>({
+              db,
+              one: { dbKey: userDbKey, field: 'org' },
+              many: { dbKey: orgDbKey, field: 'users' },
+            })
+            .link();
         });
       });
 
@@ -95,7 +127,13 @@ describe.only('oneToMany', () => {
         const orgDbKey = getOrgDbKey(ids.org1);
         await expectError(async () => {
           await db.put(orgDbKey, { id: ids.org1, name: 'Acme' });
-          await link.oneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users').link();
+          await link
+            .oneToMany<IUser, IOrg>({
+              db,
+              one: { dbKey: userDbKey, field: 'org' },
+              many: { dbKey: orgDbKey, field: 'users' },
+            })
+            .link();
         });
       });
 
@@ -105,7 +143,13 @@ describe.only('oneToMany', () => {
         const orgDbKey = getOrgDbKey(ids.org1);
         await expectError(async () => {
           await db.put(userDbKey, { id: ids.user1 });
-          await link.oneToMany<IUser, IOrg>(db, userDbKey, orgDbKey, 'org', 'users').link();
+          await link
+            .oneToMany<IUser, IOrg>({
+              db,
+              one: { dbKey: userDbKey, field: 'org' },
+              many: { dbKey: orgDbKey, field: 'users' },
+            })
+            .link();
         });
       });
     });
@@ -122,10 +166,31 @@ describe.only('oneToMany', () => {
       await db.put(userDbKey1, { id: ids.user1 });
       await db.put(userDbKey2, { id: ids.user2 });
 
-      await link.oneToMany<IUser, IOrg>(db, userDbKey1, orgDbKey, 'org', 'users').link();
-      await link.oneToMany<IUser, IOrg>(db, userDbKey2, orgDbKey, 'org', 'users').link();
+      const orgTmp = (await db.get(orgDbKey)).value as IOrg;
+      console.log('org', orgTmp);
 
-      await link.oneToMany<IUser, IOrg>(db, userDbKey1, orgDbKey, 'org', 'users').unlink();
+      await link
+        .oneToMany<IUser, IOrg>({
+          db,
+          one: { dbKey: userDbKey1, field: 'org' },
+          many: { dbKey: orgDbKey, field: 'users' },
+        })
+        .link();
+      await link
+        .oneToMany<IUser, IOrg>({
+          db,
+          one: { dbKey: userDbKey2, field: 'org' },
+          many: { dbKey: orgDbKey, field: 'users' },
+        })
+        .link();
+
+      await link
+        .oneToMany<IUser, IOrg>({
+          db,
+          one: { dbKey: userDbKey1, field: 'org' },
+          many: { dbKey: orgDbKey, field: 'users' },
+        })
+        .unlink();
 
       let org = (await db.get(orgDbKey)).value as IOrg;
       let user1 = (await db.get(userDbKey1)).value as IUser;
@@ -135,7 +200,13 @@ describe.only('oneToMany', () => {
       expect(user1.org).to.eql(undefined);
       expect(user2.org).to.eql('org-1');
 
-      await link.oneToMany<IUser, IOrg>(db, userDbKey2, orgDbKey, 'org', 'users').unlink();
+      await link
+        .oneToMany<IUser, IOrg>({
+          db,
+          one: { dbKey: userDbKey2, field: 'org' },
+          many: { dbKey: orgDbKey, field: 'users' },
+        })
+        .unlink();
 
       org = (await db.get(orgDbKey)).value as IOrg;
       user1 = (await db.get(userDbKey1)).value as IUser;

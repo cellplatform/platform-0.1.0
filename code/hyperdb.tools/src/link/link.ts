@@ -3,34 +3,37 @@ import { t } from '../common';
 /**
  * Setup a helper for performing a `[1..n]` link between models.
  */
-export function oneToMany<S extends { id: string }, M extends { id: string }>(
-  db: t.IDb,
-  singularDbKey: string,
-  manyDbKey: string,
-  singularField: keyof S,
-  manyField: keyof M,
-) {
+export function oneToMany<O extends { id: string }, M extends { id: string }>(args: {
+  db: t.IDb;
+  one: { dbKey: string; field: keyof O };
+  many: { dbKey: string; field: keyof M };
+}) {
+  const { db, one, many } = args;
+
   const getValue = async <T>(key: string) => (await db.get(key)).value as T;
-
   const prepare = async () => {
-    const singular = await getValue<S>(singularDbKey);
-    const many = await getValue<M>(manyDbKey);
-    if (!singular) {
-      throw new Error(`The [singular] target '${singularDbKey}' does not exist in the DB.`);
+    const oneModel = await getValue<O>(one.dbKey);
+    const manyModel = await getValue<M>(many.dbKey);
+    if (!oneModel) {
+      throw new Error(`The [singular] target '${one.dbKey}' does not exist in the DB.`);
     }
-    if (!many) {
-      throw new Error(`The [many] target '${manyDbKey}' does not exist in the DB.`);
+    if (!manyModel) {
+      throw new Error(`The [many] target '${many.dbKey}' does not exist in the DB.`);
     }
 
-    const manyRefs = (many[manyField] || []) as string[];
+    const manyRefs = (manyModel[many.field] || []) as string[];
     if (!Array.isArray(manyRefs)) {
       throw new Error(
-        `The target field '${manyField}' for the 'many' relationship on '${manyDbKey}' must be an array.`,
+        `The target field '${many.field}' for the 'many' relationship on '${
+          many.dbKey
+        }' must be an array.`,
       );
     }
 
+    const oneRef = oneModel[one.field];
+
     // Finish up.
-    return { singular, many, manyRefs };
+    return { oneModel, manyModel, oneRef, manyRefs };
   };
 
   return {
@@ -40,25 +43,27 @@ export function oneToMany<S extends { id: string }, M extends { id: string }>(
     async link() {
       const res = await prepare();
       const { manyRefs } = res;
-      let { singular, many } = res;
+      let { oneModel, manyModel } = res;
 
-      const manyId = many.id as any;
-      const singularId = singular.id as any;
+      const manyId = manyModel.id as any;
+      const singularId = oneModel.id as any;
+
+      console.log(`\nTODO 🐷   BATCH putMany\n`);
 
       // Assign reference to the "singular" target.
-      if (singular[singularField] !== manyId) {
-        singular = { ...singular, [singularField]: manyId };
-        await db.put(singularDbKey, singular);
+      if (oneModel[one.field] !== manyId) {
+        oneModel = { ...oneModel, [one.field]: manyId };
+        await db.put(one.dbKey, oneModel);
       }
 
       // Assign reference to the "many" target.
       if (!manyRefs.includes(singularId)) {
-        many = { ...many, [manyField]: [...manyRefs, singularId] };
-        await db.put(manyDbKey, many);
+        manyModel = { ...manyModel, [many.field]: [...manyRefs, singularId] };
+        await db.put(many.dbKey, manyModel);
       }
 
       // Finish up.
-      return { singular, many };
+      return { one: oneModel, many: manyModel };
     },
 
     /**
@@ -67,27 +72,37 @@ export function oneToMany<S extends { id: string }, M extends { id: string }>(
     async unlink() {
       const res = await prepare();
       const { manyRefs } = res;
-      let { singular, many } = res;
+      let { oneModel, manyModel } = res;
 
-      const manyId = many.id as any;
-      const singularId = singular.id as any;
+      const manyId = manyModel.id as any;
+      const singularId = oneModel.id as any;
+
+      console.log(`\nTODO 🐷   BATCH putMany\n`);
 
       // Remove reference from the "singular" target.
-      if (singular[singularField] === manyId) {
-        singular = { ...singular };
-        delete singular[singularField];
-        await db.put(singularDbKey, singular);
+      if (oneModel[one.field] === manyId) {
+        oneModel = { ...oneModel };
+        delete oneModel[one.field];
+        await db.put(one.dbKey, oneModel);
       }
 
       // Remove reference from the "many" target.
       if (manyRefs.includes(singularId)) {
         const refs = manyRefs.filter(item => item !== singularId) as any;
-        many = { ...many, [manyField]: refs };
-        await db.put(manyDbKey, many);
+        manyModel = { ...manyModel, [many.field]: refs };
+        await db.put(many.dbKey, manyModel);
       }
 
       // Finish up.
-      return { singular, many };
+      return { one: oneModel, many: manyModel };
     },
   };
 }
+
+/**
+ * - A/B
+ * - getMany (on hyperdb)
+ * - oneToMany
+ * - manyToMany
+ * - oneToOne
+ */
