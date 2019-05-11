@@ -1,9 +1,5 @@
-import { expect, expectError } from '@platform/test';
-
-import { fs, t } from '../common';
-import { Db } from '../db';
-
 import { link } from '.';
+import { Db, expect, expectError, fs } from '../test';
 
 const dir = 'tmp/db';
 after(async () => fs.remove('tmp'));
