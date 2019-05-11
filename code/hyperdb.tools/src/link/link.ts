@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t, R } from '../common';
 
 const getValue = async <T>(db: t.IDb, key: string) => (await db.get(key)).value as T;
 
@@ -41,9 +41,9 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
      * Assign the link.
      */
     async link() {
-      const res = await prepare();
-      const { manyRefs } = res;
-      let { oneModel, manyModel } = res;
+      const prep = await prepare();
+      const { manyRefs } = prep;
+      let { oneModel, manyModel } = prep;
 
       const manyId = manyModel.id as any;
       const singularId = oneModel.id as any;
@@ -70,9 +70,9 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
      * Remove the link.
      */
     async unlink() {
-      const res = await prepare();
-      const { manyRefs } = res;
-      let { oneModel, manyModel } = res;
+      const prep = await prepare();
+      const { manyRefs } = prep;
+      let { oneModel, manyModel } = prep;
 
       const manyId = manyModel.id as any;
       const singularId = oneModel.id as any;
@@ -122,34 +122,64 @@ export function manyToMany<A extends { id: string }, B extends { id: string }>(a
 }) {
   const { db, a, b } = args;
 
-  const prepare = async () => {
-    const oneModel = await getValue<A>(db, a.dbKey);
-    const manyModel = await getValue<B>(db, b.dbKey);
-    if (!oneModel) {
-      throw new Error(`The [singular] target '${a.dbKey}' does not exist in the DB.`);
-    }
-    if (!manyModel) {
-      throw new Error(`The [many] target '${b.dbKey}' does not exist in the DB.`);
-    }
-
-    const oneRef = oneModel[a.field];
-    const manyRefs = (manyModel[b.field] || []) as string[];
-    if (!Array.isArray(manyRefs)) {
+  const getRefs = <M>(name: string, model: M, field: keyof M, dbKey: string) => {
+    const refs = (model[field] || []) as string[];
+    if (!Array.isArray(refs)) {
       throw new Error(
-        `The target field '${b.field}' for the 'many' relationship on '${
-          b.dbKey
-        }' must be an array.`,
+        `The target field '${field}' on the '${name}' side of the relationship with the DB key '${dbKey}' must be an array.`,
       );
     }
+    return refs;
+  };
 
-    // Finish up.
-    return { oneModel, manyModel, oneRef, manyRefs };
+  const prepare = async () => {
+    const modelA = await getValue<A>(db, a.dbKey);
+    const modelB = await getValue<B>(db, b.dbKey);
+    if (!modelA) {
+      throw new Error(`The [A] target '${a.dbKey}' does not exist in the DB.`);
+    }
+    if (!modelB) {
+      throw new Error(`The [B] target '${b.dbKey}' does not exist in the DB.`);
+    }
+    const refsA = getRefs<A>('A', modelA, a.field, a.dbKey);
+    const refsB = getRefs<B>('B', modelB, b.field, b.dbKey);
+    return { modelA, modelB, refsA, refsB };
   };
 
   return {
+    /**
+     * Assign the link.
+     */
     async link() {
-      // TEMP 🐷 TODO
-      await prepare();
+      const prep = await prepare();
+      const { refsA, refsB } = prep;
+      let { modelA, modelB } = prep;
+      modelA = { ...modelA, [a.field]: R.uniq([...refsA, modelB.id]) };
+      modelB = { ...modelB, [b.field]: R.uniq([...refsB, modelA.id]) };
+      const batch = {
+        [a.dbKey]: modelA,
+        [b.dbKey]: modelB,
+      };
+      await db.putMany(batch);
+      return { a: modelA, b: modelB };
+    },
+
+    /**
+     * Remove the link.
+     */
+    async unlink() {
+      const prep = await prepare();
+      const { refsA, refsB } = prep;
+      let { modelA, modelB } = prep;
+
+      modelA = { ...modelA, [a.field]: refsA.filter(ref => ref !== modelB.id) };
+      modelB = { ...modelB, [b.field]: refsB.filter(ref => ref !== modelA.id) };
+      const batch = {
+        [a.dbKey]: modelA,
+        [b.dbKey]: modelB,
+      };
+      await db.putMany(batch);
+      return { a: modelA, b: modelB };
     },
   };
 }
