@@ -1,0 +1,27 @@
+{
+  "name": "@platform/cache",
+  "version": "0.0.0",
+  "description": "Caching tools.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/libs": "0.0.12"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.50",
+    "@platform/ts": "3.4.17"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}
