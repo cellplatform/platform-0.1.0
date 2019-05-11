@@ -1,15 +1,15 @@
-import { ThreadKey } from './ThreadKey';
+import { MsgThreadKey } from './MsgThreadKey';
 
 export class MsgKeys {
   /**
    * [Lifecycle]
    */
   public constructor(args: {}) {
-    this.thread = new ThreadKey({});
+    this.thread = new MsgThreadKey({});
   }
 
   /**
    * [Fields]
    */
-  public readonly thread: ThreadKey;
+  public readonly thread: MsgThreadKey;
 }

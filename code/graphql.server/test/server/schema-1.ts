@@ -1,5 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { gql, log, t } from './common';
+import { Context } from './Context';
 
 /**
  * [Types]
@@ -34,32 +35,32 @@ export const typeDefs = gql`
  */
 export const resolvers: t.IResolvers = {
   User: {
-    address: async (_: any, args: any, ctx: t.IContext, info: any) => {
+    address: async (_: any, args: any, ctx: Context, info: any) => {
       return { street: '221b Baker Street', city: 'London' };
     },
   },
 
   Store: {
-    write: async (_: any, args: any, ctx: t.IContext, info: any) => {
+    write: async (_: any, args: any, ctx: Context, info: any) => {
       log.info('nested mutation:', args);
       return true;
     },
   },
 
   Query: {
-    me: async (_: any, args: any, ctx: t.IContext, info: any) => {
+    me: async (_: any, args: any, ctx: Context, info: any) => {
       return ctx.getUser();
     },
   },
 
   Mutation: {
-    echo: async (_: any, args: { message: string }, ctx: t.IContext, info: any) => {
+    echo: async (_: any, args: { message: string }, ctx: Context, info: any) => {
       const res = `Echo: ${args.message}`;
       log.info(res);
       return res;
     },
 
-    store: async (_: any, args: any, ctx: t.IContext, info: any) => {
+    store: async (_: any, args: any, ctx: Context, info: any) => {
       return {};
     },
   },

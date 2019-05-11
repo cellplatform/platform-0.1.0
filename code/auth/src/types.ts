@@ -34,6 +34,10 @@ export type IAuthPolicy<V extends {} = any, R extends AuthRole = any> = {
   eval: AuthPolicyHandler<V, R>;
 };
 
+export type IAuthPolicies<V extends {} = any, R extends AuthRole = any> =
+  | IAuthPolicy<V, R>
+  | Array<IAuthPolicy<V, R>>;
+
 /**
  * An executable authorization policy.
  */

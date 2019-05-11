@@ -1,19 +1,42 @@
-import { is, log, auth, ForbiddenError, t } from '../common';
+import { is, log, auth, ForbiddenError, t, MemoryCache } from '../common';
 
 export type GetContext = (ctx: t.IGqlContext) => Context;
+
+type IContextArgs = {
+  jwt?: string;
+  keys: t.MsgKeys;
+  getDb: t.GetDb;
+};
+
+const cache = new MemoryCache({ ttl: 2000 });
 
 /**
  * The Context that is passed to all GraphQL resolvers.
  */
 export class Context {
   /**
+   * [Static]
+   */
+  public static create(args: IContextArgs) {
+    return new Context(args);
+  }
+
+  public static cache(cacheKey: string) {
+    return {
+      get(args: IContextArgs) {
+        return cache.get<Context>(cacheKey, () => Context.create(args)) as Context;
+      },
+    };
+  }
+
+  /**
    * [Lifecycle]
    */
-  constructor(args: { jwt?: string; keys: t.MsgKeys; getDb: t.GetDb }) {
-    const { jwt, getDb } = args;
+  constructor(args: IContextArgs) {
+    const { jwt, getDb, keys } = args;
     this.jwt = jwt;
     this.getDb = getDb;
-    this.keys = args.keys;
+    this.keys = keys;
   }
 
   /**
