@@ -21,6 +21,7 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
       throw new Error(`The [many] target '${many.dbKey}' does not exist in the DB.`);
     }
 
+    const oneRef = oneModel[one.field];
     const manyRefs = (manyModel[many.field] || []) as string[];
     if (!Array.isArray(manyRefs)) {
       throw new Error(
@@ -29,8 +30,6 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
         }' must be an array.`,
       );
     }
-
-    const oneRef = oneModel[one.field];
 
     // Finish up.
     return { oneModel, manyModel, oneRef, manyRefs };
@@ -95,6 +94,19 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
       // Finish up.
       await db.putMany(batch);
       return { one: oneModel, many: manyModel };
+    },
+
+    /**
+     * Retrieve the `many` referenced models
+     */
+    async refs(toDbKey: (ref: string) => string) {
+      const { manyRefs } = await prepare();
+      const keys = manyRefs.map(ref => toDbKey(ref));
+      const values = keys.length > 0 ? await db.getMany(keys) : {};
+      return Object.keys(values).reduce((acc: M[], key) => {
+        const model = values[key].value;
+        return [...acc, model];
+      }, []) as M[];
     },
   };
 }

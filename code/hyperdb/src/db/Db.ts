@@ -328,7 +328,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     const list = await Promise.all(wait);
     return list.reduce((acc, next) => {
       const key = next.props.key;
-      return { ...acc, [key]: next };
+      return key ? { ...acc, [key]: next } : acc;
     }, {}) as t.IDbValues<T>;
   }
 

@@ -214,4 +214,46 @@ describe('oneToMany', () => {
       expect(user2.org).to.eql(undefined);
     });
   });
+
+  describe('refs', () => {
+    it('retrieves models', async () => {
+      const db = await Db.create({ dir });
+
+      const orgDbKey = getOrgDbKey(ids.org1);
+      const userDbKey1 = getUserDbKey(ids.user1);
+      const userDbKey2 = getUserDbKey(ids.user2);
+
+      await db.put(orgDbKey, { id: ids.org1, name: 'Acme' });
+      await db.put(userDbKey1, { id: ids.user1 });
+      await db.put(userDbKey2, { id: ids.user2 });
+
+      const oneToMany1 = link.oneToMany<IUser, IOrg>({
+        db,
+        one: { dbKey: userDbKey1, field: 'org' },
+        many: { dbKey: orgDbKey, field: 'users' },
+      });
+
+      const res1 = await oneToMany1.refs(ref => getUserDbKey(ref));
+      expect(res1.length).to.eql(0);
+
+      await oneToMany1.link();
+
+      const oneToMany2 = link.oneToMany<IUser, IOrg>({
+        db,
+        one: { dbKey: userDbKey2, field: 'org' },
+        many: { dbKey: orgDbKey, field: 'users' },
+      });
+
+      const res2 = await oneToMany2.refs(ref => getUserDbKey(ref));
+      expect(res2.length).to.eql(1);
+      expect(res2[0].id).to.eql(ids.user1);
+
+      await oneToMany2.link();
+
+      const res3 = await oneToMany2.refs(ref => getUserDbKey(ref));
+      expect(res3.length).to.eql(2);
+      expect(res3[0].id).to.eql(ids.user1);
+      expect(res3[1].id).to.eql(ids.user2);
+    });
+  });
 });

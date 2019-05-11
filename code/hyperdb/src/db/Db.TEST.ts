@@ -610,6 +610,16 @@ describe('Db', () => {
       expect(res.bar).to.eql(undefined);
       expect(res.baz.value).to.eql(789);
     });
+
+    it('retrieves nothing when keys are bogus', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', 123);
+      const res = await db.getMany(['foo', 'BOGUS']);
+
+      expect(Object.keys(res)).to.eql(['foo']);
+      expect(res.foo.value).to.eql(123);
+      expect(res.BOGUS).to.eql(undefined);
+    });
   });
 
   describe('putMany', () => {
