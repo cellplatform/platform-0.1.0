@@ -29,14 +29,19 @@ export function oneToMany<S extends { id: string }, M extends { id: string }>(
       many: model.many.id as any,
     };
 
-    const manyList = (model.many[manyField] || []) as string[];
+    const list = (model.many[manyField] || []) as string[];
+    if (!Array.isArray(list)) {
+      throw new Error(
+        `The target field '${manyField}' for the 'many' relationship on '${manyDbKey}' must be an array.`,
+      );
+    }
 
-    return { model, id, manyList };
+    return { model, id, list };
   };
 
   return {
     async link() {
-      const { id, model, manyList } = await prepare();
+      const { id, model, list } = await prepare();
 
       // Assign reference to the "singular" target.
       if (model.singular[singularField] !== id.many) {
@@ -45,13 +50,8 @@ export function oneToMany<S extends { id: string }, M extends { id: string }>(
       }
 
       // Assign reference to the "many" target.
-      if (!Array.isArray(manyList)) {
-        throw new Error(
-          `The target field '${manyField}' for the 'many' relationship on '${manyDbKey}' must be an array.`,
-        );
-      }
-      if (!manyList.includes(id.singular)) {
-        model.many[manyField] = [...manyList, id.singular] as any;
+      if (!list.includes(id.singular)) {
+        model.many[manyField] = [...list, id.singular] as any;
         await db.put(manyField, model.many);
       }
 
