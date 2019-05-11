@@ -1,6 +1,6 @@
 import { is, log, auth, ForbiddenError, t } from '../common';
 
-export type GetContext = (jwt?: string) => Promise<Context>;
+export type GetContext = (ctx: t.IGqlContext) => Context;
 
 /**
  * The Context that is passed to all GraphQL resolvers.
@@ -9,10 +9,10 @@ export class Context {
   /**
    * [Lifecycle]
    */
-  constructor(args: { jwt?: string; keys: t.Keys; db: t.IDb }) {
-    const { jwt, db } = args;
+  constructor(args: { jwt?: string; keys: t.MsgKeys; getDb: t.GetDb }) {
+    const { jwt, getDb } = args;
     this.jwt = jwt;
-    this.db = db;
+    this.getDb = getDb;
     this.keys = args.keys;
   }
 
@@ -20,8 +20,8 @@ export class Context {
    * [Fields]
    */
   public readonly jwt: string | undefined;
-  public readonly db: t.IDb;
-  public readonly keys: t.Keys;
+  public readonly getDb: t.GetDb;
+  public readonly keys: t.MsgKeys;
 
   /**
    * [Methods]

@@ -1,5 +1,5 @@
 export { log } from '@platform/log/lib/server';
-export { Keys } from '@platform/conversation.types';
+export { MsgKeys } from '@platform/conversation.types';
 export { value, is } from '@platform/util.value';
 export { auth } from '@platform/auth';
 

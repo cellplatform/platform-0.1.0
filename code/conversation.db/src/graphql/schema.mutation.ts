@@ -24,8 +24,8 @@ export const typeDefs = gql`
  * [Initialize]
  */
 
-export function init(args: { getContext: GetContext }) {
-  const { getContext } = args;
+export function init(args: { toContext: GetContext }) {
+  const { toContext } = args;
 
   /**
    * [Resolvers]
@@ -50,7 +50,7 @@ export function init(args: { getContext: GetContext }) {
        * Save a complete conversation-thread.
        */
       save: async (_: any, args: { thread: t.IThreadModel }, c: t.IGqlContext, info: any) => {
-        const ctx = await getContext(c.jwt);
+        const ctx = toContext(c);
         const k = ctx.keys.thread;
 
         const auth = await ctx.authorize({ policy: [policy.userRequired, policy.save] });
@@ -78,7 +78,8 @@ export function init(args: { getContext: GetContext }) {
         //  - meta-data
         //  - items
         //  - users
-        await ctx.db.putMany(updates);
+        const db = await ctx.getDb();
+        await db.putMany(updates);
 
         // Finish up.
         return true;

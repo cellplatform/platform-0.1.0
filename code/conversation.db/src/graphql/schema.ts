@@ -8,12 +8,15 @@ import { GetContext, Context } from './Context';
 /**
  * [Schema]
  */
-export function init(args: { getDb: t.GetDb; keys?: t.Keys }) {
+export function init(args: { getDb: t.GetDb; keys?: t.MsgKeys }) {
   const { getDb } = args;
-  const keys = (args.keys = new t.Keys({}));
+  const keys = (args.keys = new t.MsgKeys({}));
 
-  const getContext: GetContext = async jwt => new Context({ jwt, keys, db: await getDb() });
-  const o = { getContext };
+  const toContext: GetContext = ctx => {
+    const { jwt } = ctx;
+    return new Context({ jwt, keys, getDb });
+  };
+  const o = { toContext };
 
   const schema = makeExecutableSchema({
     typeDefs: [common.typeDefs, query.typeDefs, mutation.typeDefs],

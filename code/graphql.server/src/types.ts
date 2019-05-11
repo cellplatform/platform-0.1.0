@@ -7,4 +7,9 @@ export type IGqlContext = {
    * See: https://jwt.io
    */
   jwt?: string;
+
+  /**
+   * A unique ID for the request.
+   */
+  requestId: string;
 };

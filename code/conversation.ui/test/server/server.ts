@@ -1,7 +1,7 @@
 import { graphql } from '@platform/conversation.db';
 import { mergeSchemas } from 'graphql-tools';
 
-import { ApolloServer, express, t } from './common';
+import { ApolloServer, express, t, id } from './common';
 import { getDb } from './db';
 import { schema as localSchema } from './schema.local';
 
@@ -29,7 +29,8 @@ export const server = new ApolloServer({
   schema,
   async context(e): Promise<t.IGqlContext> {
     const jwt = e.req.headers.authorization;
-    return { jwt };
+    const requestId = id.shortid();
+    return { jwt, requestId };
   },
 });
 server.applyMiddleware({ app });

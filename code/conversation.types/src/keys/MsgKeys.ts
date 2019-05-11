@@ -1,6 +1,6 @@
 import { ThreadKey } from './ThreadKey';
 
-export class Keys {
+export class MsgKeys {
   /**
    * [Lifecycle]
    */
