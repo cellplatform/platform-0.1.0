@@ -264,24 +264,20 @@ describe('manyToMany', () => {
   beforeEach(async () => fs.remove(dir));
 
   describe('link', () => {
-    it('links users-to-users', async () => {
-      const db = await Db.create({ dir });
-
-      const userDbKey1 = toUserDbKey(ids.user1);
-      const userDbKey2 = toUserDbKey(ids.user2);
-      const userDbKey3 = toUserDbKey(ids.user3);
-
-      await db.put(userDbKey1, { id: ids.user1 });
-      await db.put(userDbKey2, { id: ids.user2 });
-      await db.put(userDbKey3, { id: ids.user3 });
-
-      const manyToMany1 = link.manyToMany<IUser, IUser>({
-        db,
-        a: { dbKey: userDbKey1, field: 'friends' },
-        b: { dbKey: userDbKey2, field: 'friends' },
-      });
-
-      const res1 = await manyToMany1.link()
+    it.skip('links users-to-users', async () => {
+      // const db = await Db.create({ dir });
+      // const userDbKey1 = toUserDbKey(ids.user1);
+      // const userDbKey2 = toUserDbKey(ids.user2);
+      // const userDbKey3 = toUserDbKey(ids.user3);
+      // await db.put(userDbKey1, { id: ids.user1 });
+      // await db.put(userDbKey2, { id: ids.user2 });
+      // await db.put(userDbKey3, { id: ids.user3 });
+      // const manyToMany1 = link.manyToMany<IUser, IUser>({
+      //   db,
+      //   a: { dbKey: userDbKey1, field: 'friends' },
+      //   b: { dbKey: userDbKey2, field: 'friends' },
+      // });
+      // const res1 = await manyToMany1.link();
     });
   });
 });

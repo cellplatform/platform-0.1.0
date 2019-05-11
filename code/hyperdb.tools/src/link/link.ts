@@ -1,5 +1,4 @@
 import { t } from '../common';
-import { link } from 'fs';
 
 const getValue = async <T>(db: t.IDb, key: string) => (await db.get(key)).value as T;
 
@@ -150,6 +149,7 @@ export function manyToMany<A extends { id: string }, B extends { id: string }>(a
   return {
     async link() {
       // TEMP 🐷 TODO
+      await prepare();
     },
   };
 }

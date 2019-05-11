@@ -128,10 +128,10 @@
     apollo-link-batch-http "1.2.11"
     graphql "14.2.1"
 
-"@platform/hyperdb.types@0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.0.19.tgz#adf9cf4c21e895f55a8ed5897ab26cbd024d7529"
-  integrity sha512-NRE5YLGvnHP5ofg+mSwzIqssxLyyCDlueLaF9difcLfHUnqV8JipfcbTkJ+ZUGP+CVA5Ie4KDYR9AAY2G7FtLA==
+"@platform/hyperdb.types@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.1.0.tgz#b12c0ee2b80912d015ad44be0f5a343bb405539e"
+  integrity sha512-4y4AZYMI4iA/fSyCpwx52dqWBLw4mEgfXB079OZh6G1PN/TSdtwE63WimRefJPA18JPrjd/oOJlSmbJbKaOdjQ==
   dependencies:
     "@platform/libs" "0.0.12"
 
