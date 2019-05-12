@@ -1,6 +1,12 @@
 import { t, R } from '../common';
 
-const getValue = async <T>(db: t.IDb, key: string) => (await db.get(key)).value as T;
+const getModel = async <T>(name: string, db: t.IDb, dbKey: string) => {
+  const value = (await db.get(dbKey)).value as T;
+  if (!value) {
+    throw new Error(`The [${name}] target '${dbKey}' does not exist in the DB.`);
+  }
+  return value;
+};
 
 /**
  * Setup a helper for performing a `[1..n]` link between models.
@@ -13,15 +19,8 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
   const { db, one, many } = args;
 
   const prepare = async () => {
-    const oneModel = await getValue<O>(db, one.dbKey);
-    const manyModel = await getValue<M>(db, many.dbKey);
-    if (!oneModel) {
-      throw new Error(`The [singular] target '${one.dbKey}' does not exist in the DB.`);
-    }
-    if (!manyModel) {
-      throw new Error(`The [many] target '${many.dbKey}' does not exist in the DB.`);
-    }
-
+    const oneModel = await getModel<O>('one/singular', db, one.dbKey);
+    const manyModel = await getModel<M>('many', db, many.dbKey);
     const oneRef = oneModel[one.field];
     const manyRefs = (manyModel[many.field] || []) as string[];
     if (!Array.isArray(manyRefs)) {
@@ -133,14 +132,8 @@ export function manyToMany<A extends { id: string }, B extends { id: string }>(a
   };
 
   const prepare = async () => {
-    const modelA = await getValue<A>(db, a.dbKey);
-    const modelB = await getValue<B>(db, b.dbKey);
-    if (!modelA) {
-      throw new Error(`The [A] target '${a.dbKey}' does not exist in the DB.`);
-    }
-    if (!modelB) {
-      throw new Error(`The [B] target '${b.dbKey}' does not exist in the DB.`);
-    }
+    const modelA = await getModel<A>('A', db, a.dbKey);
+    const modelB = await getModel<B>('B', db, b.dbKey);
     const refsA = getRefs<A>('A', modelA, a.field, a.dbKey);
     const refsB = getRefs<B>('B', modelB, b.field, b.dbKey);
     return { modelA, modelB, refsA, refsB };
@@ -185,9 +178,71 @@ export function manyToMany<A extends { id: string }, B extends { id: string }>(a
 }
 
 /**
- * - A/B
- * - getMany (on hyperdb)
- * - oneToMany
- * - manyToMany
- * - oneToOne
+ * Setup a helper for performing `[n..n]` links between models.
  */
+export function oneToOne<A extends { id: string }, B extends { id: string }>(args: {
+  db: t.IDb;
+  a: { dbKey: (id: string) => string; field: keyof A };
+  b: { dbKey: (id: string) => string; field: keyof B };
+}) {
+  const { db, a, b } = args;
+
+  const prepare = async (idA: string, idB: string) => {
+    const keyA = a.dbKey(idA);
+    const keyB = b.dbKey(idB);
+    const modelA = await getModel<A>('A', db, keyA);
+    const modelB = await getModel<B>('B', db, keyB);
+    return { modelA, modelB, keyA, keyB };
+  };
+
+  const link = async (idA: string, idB: string) => {
+    const prep = await prepare(idA, idB);
+    let { modelA, modelB } = prep;
+    let batch: any = {};
+
+    // Unlink any existing ref.
+    if (modelA[a.field] && modelA[a.field] !== (modelB.id as any)) {
+      await unlink(modelA.id, modelA[a.field] as any);
+    }
+    if (modelB[b.field] && modelB[b.field] !== (modelA.id as any)) {
+      const key = a.dbKey(modelB[b.field] as any);
+      let unlink = await getModel('previous', db, key);
+      unlink = { ...unlink };
+      delete unlink[a.field as any];
+      batch = {
+        ...batch,
+        [key]: unlink,
+      };
+    }
+
+    modelA = { ...modelA, [a.field]: modelB.id };
+    modelB = { ...modelB, [b.field]: modelA.id };
+    batch = {
+      ...batch,
+      [prep.keyA]: modelA,
+      [prep.keyB]: modelB,
+    };
+
+    await db.putMany(batch);
+    return { a: modelA, b: modelB };
+  };
+
+  const unlink = async (idA: string, idB: string) => {
+    const prep = await prepare(idA, idB);
+    let { modelA, modelB } = prep;
+
+    modelA = { ...modelA };
+    modelB = { ...modelB };
+    delete modelA[a.field];
+    delete modelB[b.field];
+
+    const batch = {
+      [prep.keyA]: modelA,
+      [prep.keyB]: modelB,
+    };
+    await db.putMany(batch);
+    return { a: modelA, b: modelB };
+  };
+
+  return { link, unlink };
+}

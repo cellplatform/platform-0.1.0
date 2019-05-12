@@ -4,19 +4,23 @@ import { Db, expect, expectError, fs } from '../test';
 const dir = 'tmp/db';
 after(async () => fs.remove('tmp'));
 
-type IUser = { id: string; org?: string; friends?: [] };
 type IOrg = { id: string; users?: [] };
+type IUser = { id: string; org?: string; friends?: []; profile?: string };
+type IProfile = { id: string; user?: string };
 
 const ids = {
+  org1: 'org-1',
+  org2: 'org-2',
   user1: 'user-1',
   user2: 'user-2',
   user3: 'user-3',
-  org1: 'org-1',
-  org2: 'org-2',
+  profile1: 'profile-1',
+  profile2: 'profile-2',
 };
 
-const toUserDbKey = (id: string) => `KEY/user/${id}`;
 const toOrgDbKey = (id: string) => `KEY/org/${id}`;
+const toUserDbKey = (id: string) => `KEY/user/${id}`;
+const toProfileDbKey = (id: string) => `KEY/profile/${id}`;
 
 describe('oneToMany', () => {
   beforeEach(async () => fs.remove(dir));
@@ -274,6 +278,10 @@ describe('manyToMany', () => {
       await db.put(userDbKey2, { id: ids.user2 });
       await db.put(userDbKey3, { id: ids.user3 });
 
+      expect((await db.get(userDbKey1)).value.friends).to.eql(undefined);
+      expect((await db.get(userDbKey2)).value.friends).to.eql(undefined);
+      expect((await db.get(userDbKey3)).value.friends).to.eql(undefined);
+
       const link1to2 = link.manyToMany<IUser, IUser>({
         db,
         a: { dbKey: userDbKey1, field: 'friends' },
@@ -350,6 +358,81 @@ describe('manyToMany', () => {
       expect((await db.get(userDbKey1)).value.friends).to.eql([]);
       expect((await db.get(userDbKey2)).value.friends).to.eql([]);
       expect((await db.get(userDbKey3)).value.friends).to.eql([]);
+    });
+  });
+
+  describe('oneToOne', () => {
+    beforeEach(async () => fs.remove(dir));
+
+    it('link', async () => {
+      const db = await Db.create({ dir });
+      const userKey1 = toUserDbKey(ids.user1);
+      const userKey2 = toUserDbKey(ids.user2);
+      const profileKey1 = toProfileDbKey(ids.profile1);
+      const profileKey2 = toProfileDbKey(ids.profile2);
+
+      await db.put(userKey1, { id: ids.user1 });
+      await db.put(userKey2, { id: ids.user2 });
+      await db.put(profileKey1, { id: ids.profile1 });
+      await db.put(profileKey2, { id: ids.profile2 });
+
+      const linker = link.oneToOne<IUser, IProfile>({
+        db,
+        a: { dbKey: id => toUserDbKey(id), field: 'profile' },
+        b: { dbKey: id => toProfileDbKey(id), field: 'user' },
+      });
+
+      const res1 = await linker.link(ids.user1, ids.profile1);
+
+      expect(res1.a.id).to.eql(ids.user1);
+      expect(res1.a.profile).to.eql(ids.profile1);
+      expect(res1.b.id).to.eql(ids.profile1);
+      expect(res1.b.user).to.eql(ids.user1);
+
+      expect((await db.get(userKey1)).value.profile).to.eql(ids.profile1);
+      expect((await db.get(profileKey1)).value.user).to.eql(ids.user1);
+
+      // Change link - unlink old value.
+      await linker.link(ids.user1, ids.profile2);
+
+      expect((await db.get(userKey1)).value.profile).to.eql(ids.profile2);
+      expect((await db.get(profileKey1)).value.user).to.eql(undefined); // NB: Unlinked
+      expect((await db.get(profileKey2)).value.user).to.eql(ids.user1);
+
+      // Unlink again.
+      await linker.link(ids.user2, ids.profile2);
+
+      expect((await db.get(userKey1)).value.profile).to.eql(undefined);
+      expect((await db.get(userKey2)).value.profile).to.eql(ids.profile2);
+      expect((await db.get(profileKey1)).value.user).to.eql(undefined); // NB: Unlinked
+      expect((await db.get(profileKey2)).value.user).to.eql(ids.user2);
+    });
+
+    it('unlink', async () => {
+      const db = await Db.create({ dir });
+      const userKey1 = toUserDbKey(ids.user1);
+      const profileKey1 = toProfileDbKey(ids.profile1);
+
+      await db.put(userKey1, { id: ids.user1 });
+      await db.put(profileKey1, { id: ids.profile1 });
+
+      const linker = link.oneToOne<IUser, IProfile>({
+        db,
+        a: { dbKey: id => toUserDbKey(id), field: 'profile' },
+        b: { dbKey: id => toProfileDbKey(id), field: 'user' },
+      });
+
+      await linker.link(ids.user1, ids.profile1);
+      expect((await db.get(userKey1)).value.profile).to.eql(ids.profile1);
+      expect((await db.get(profileKey1)).value.user).to.eql(ids.user1);
+
+      const res = await linker.unlink(ids.user1, ids.profile1);
+
+      expect(res.a.profile).to.eql(undefined);
+      expect(res.b.user).to.eql(undefined);
+
+      expect((await db.get(userKey1)).value.profile).to.eql(undefined);
+      expect((await db.get(profileKey1)).value.user).to.eql(undefined);
     });
   });
 });
