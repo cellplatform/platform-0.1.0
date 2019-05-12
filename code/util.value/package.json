@@ -12,9 +12,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.12",
+    "@platform/libs": "0.0.13",
     "@platform/types": "0.0.5",
-    "@platform/util.is": "0.0.66",
+    "@platform/util.is": "0.0.67",
     "@types/semver": "6.0.0",
     "cuid": "2.1.6",
     "dayjs": "1.8.14",

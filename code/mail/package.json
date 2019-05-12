@@ -14,7 +14,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.12",
+    "@platform/libs": "0.0.13",
     "@platform/types": "0.0.5",
     "@types/nodemailer": "4.6.8",
     "nodemailer": "6.1.1"

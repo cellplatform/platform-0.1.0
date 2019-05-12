@@ -21,16 +21,16 @@
     "@platform/ui.datagrid": "0.0.116",
     "@platform/ui.editor": "0.1.2",
     "@platform/ui.text": "0.1.25",
-    "@platform/util.string": "0.1.10",
+    "@platform/util.string": "0.1.11",
     "@platform/util.value": "0.2.1",
-    "@uiharness/electron": "0.4.39",
+    "@uiharness/electron": "0.4.40",
     "hjson": "3.1.2"
   },
   "devDependencies": {
     "@platform/ts": "3.4.17",
     "@types/hjson": "2.4.1",
-    "@uiharness/dev": "0.2.53",
-    "@uiharness/ui": "0.2.34"
+    "@uiharness/dev": "0.2.54",
+    "@uiharness/ui": "0.2.35"
   },
   "files": [
     "lib"

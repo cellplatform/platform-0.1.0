@@ -12,9 +12,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/exec": "0.2.4",
+    "@platform/exec": "0.2.5",
     "@platform/fs": "0.0.58",
-    "@platform/log": "0.0.117",
+    "@platform/log": "0.0.118",
     "@platform/util.value": "0.2.1",
     "@types/semver": "6.0.0",
     "semver": "6.0.0"

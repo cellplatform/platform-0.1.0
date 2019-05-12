@@ -53,6 +53,18 @@
     chalk "2.4.2"
     listr "0.14.3"
 
+"@platform/exec@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.5.tgz#a3315e9ec4d57f9b7dc58754797eca206530c79c"
+  integrity sha512-VtoMXKxvQq9b0RQaDOPFs3/bdRlhNXazdk1aaLxKNqU7sIPka2R2ptXG1dTk1hZ+nVvnsX152HsY5u0zBlTHIA==
+  dependencies:
+    "@platform/libs" "0.0.13"
+    "@types/chalk" "2.2.0"
+    "@types/listr" "0.14.0"
+    ansi-regex "4.1.0"
+    chalk "2.4.2"
+    listr "0.14.3"
+
 "@platform/fs@0.0.58":
   version "0.0.58"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.0.58.tgz#a76aad06b99f3d315fabfff992039e470b8800ab"
@@ -74,12 +86,22 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/log@0.0.117":
-  version "0.0.117"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.117.tgz#7d6496c349d968bfa35ba95d108c318a6f308227"
-  integrity sha512-bq6MwVWA6+zZd3dcXuBdyXQW1gE2jNTmuRoHq0iy6UN9Rs7Hzxx4TlcQyAq5jzshgwT6aM1hbUDNV/kp19v/WA==
+"@platform/libs@0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.13.tgz#335ff47f85ff2a82448e11781638dfcdf2dd5631"
+  integrity sha512-sQDwxqwISByqssI1GrUc8zJ9PvblIBjrLNezZUJezuDFTD5Hh7zTTpoLmSL+OWVOHQiacYCpL0P7A7RcEVrX0A==
   dependencies:
-    "@platform/libs" "0.0.12"
+    "@types/ramda" "0.26.8"
+    ramda "0.26.1"
+    rxjs "6.5.2"
+    tslib "1.9.3"
+
+"@platform/log@0.0.118":
+  version "0.0.118"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.118.tgz#5442f4d50207d33aac492febd140c0203914b5a4"
+  integrity sha512-2PVmb5wdngxOFJdad+IsEqx1hPpCa7jVExOOZi9JwmQDaIDfgVkx2v5VSZZyLb0/sB1A4pxfPqL7GPxx976egA==
+  dependencies:
+    "@platform/libs" "0.0.13"
     chalk "2.4.2"
     cli-table "0.3.1"
 
@@ -209,6 +231,11 @@
   version "0.26.6"
   resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.6.tgz#1aaf5060da8ebb99529420b6eb997c50f74c218e"
   integrity sha512-AmTHEkGo/EEufYY7MRqlgI0HLsLiAnc02pKOTVzE2D9IHf6yH2Xz71ompfEnduuaFGplYrtIOFOUOLs0AbMj9Q==
+
+"@types/ramda@0.26.8":
+  version "0.26.8"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.8.tgz#e002612cca52e52f9176d577f4d6229c8c72a10a"
+  integrity sha512-PSMkNNhB900U2xcyndlkVjJeCXpVtf1yod0Kdq/ArsLDIE0tW8pLBChmQeJs4o4dfp3AEP+AGm6zIseZPU4ndA==
 
 "@types/semver@6.0.0":
   version "6.0.0"

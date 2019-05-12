@@ -122,10 +122,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.66.tgz#1e527748fe0f158060271dc9eb4447241e2f9366"
   integrity sha512-3HsiU3gmnU71UC0yjUmsQ9ABKmgNPEujQfZJYssm4FRBfx6vWFTYxosBh2qAY1oDBgPSU1/MbdAEaJkjmzbxmg==
 
-"@platform/util.string@0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.1.10.tgz#a71fff5ca6e023d39bf8f7de2b3310c9bff74c28"
-  integrity sha512-gJpin5otZvAGGcDXjmHVMg7uJXW3RYTIZH8qKbHYUFAktwFF9zM00W4mZGfrdVETrqQTuOMAld306aKk8jjceQ==
+"@platform/util.string@0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.1.11.tgz#07570e5d231dd3a6a42609ba462d46ce374db01d"
+  integrity sha512-xHx0sUTrAgk4qQ2UN9/3RNY8/8VSAzP2Jw+Vqsyz5RzmB159oJsJ8VKVxGbQKIoB4mR1tPx05vVCVVzjsnM0TA==
   dependencies:
     "@types/underscore.string" "0.0.36"
     escape-string-regexp "2.0.0"

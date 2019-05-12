@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@platform/react": "0.2.1",
-    "@platform/util.string": "0.1.10",
+    "@platform/util.string": "0.1.11",
     "@types/jsonwebtoken": "8.3.2",
     "auth0-js": "9.10.2",
     "axios": "0.18.0",
@@ -26,8 +26,8 @@
   },
   "devDependencies": {
     "@types/auth0-js": "9.10.2",
-    "@uiharness/dev": "0.2.53",
-    "@uiharness/ui": "0.2.34",
+    "@uiharness/dev": "0.2.54",
+    "@uiharness/ui": "0.2.35",
     "apollo-server": "2.5.0",
     "graphql": "14.3.0"
   },
