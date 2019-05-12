@@ -14,9 +14,11 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   });
 
   client.headers$.subscribe(e => {
-    e.add('FOO', 1234);
-    e.merge({ bar: 'hello' });
-    e.auth('my-token-123456');
+    e
+      // Chain of manipulations to the headers.
+      .add('FOO', 1234)
+      .merge({ bar: 'hello' })
+      .auth('my-token-123456');
   });
 
   return CommandState.create({

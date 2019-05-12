@@ -48,17 +48,18 @@ export class GraphqlClient implements t.IGqlClient {
     const errorLink = onError(this.onError);
     const httpLink = createHttpLink({ uri: this.uri });
     const headersLink = setContext((operation, prev) => {
-      let headers = (prev.headers || {}) as t.IHttpHeaders;
+      const from = (prev.headers || {}) as t.IHttpHeaders;
+      let to = { ...from };
       const payload: t.IGqlHttpHeaders = {
         get headers() {
-          return { ...headers };
+          return { from, to: { ...to } };
         },
         merge(input) {
-          headers = { ...headers, ...input };
+          to = { ...to, ...input };
           return payload;
         },
         add(header, value) {
-          headers = { ...headers, [header]: value };
+          to = { ...to, [header]: value };
           return payload;
         },
         auth(token) {
@@ -66,7 +67,9 @@ export class GraphqlClient implements t.IGqlClient {
         },
       };
       this.fire({ type: 'GRAPHQL/http/headers', payload });
-      return { headers: { ...headers } };
+      return {
+        headers: payload.headers.to,
+      };
     });
 
     /**
