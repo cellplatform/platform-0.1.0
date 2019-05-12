@@ -112,8 +112,8 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
  */
 export function manyToMany<A extends { id: string }, B extends { id: string }>(args: {
   db: t.IDb;
-  a: { dbKey: string; field: keyof A };
-  b: { dbKey: string; field: keyof B };
+  a: { dbKey: (id: string) => string; field: keyof A };
+  b: { dbKey: (id: string) => string; field: keyof B };
 }) {
   const { db, a, b } = args;
 
@@ -127,27 +127,29 @@ export function manyToMany<A extends { id: string }, B extends { id: string }>(a
     return refs;
   };
 
-  const prepare = async () => {
-    const modelA = await getModel<A>('A', db, a.dbKey);
-    const modelB = await getModel<B>('B', db, b.dbKey);
-    const refsA = getRefs<A>('A', modelA, a.field, a.dbKey);
-    const refsB = getRefs<B>('B', modelB, b.field, b.dbKey);
-    return { modelA, modelB, refsA, refsB };
+  const prepare = async (idA: string, idB: string) => {
+    const keyA = a.dbKey(idA);
+    const keyB = b.dbKey(idB);
+    const modelA = await getModel<A>('A', db, keyA);
+    const modelB = await getModel<B>('B', db, keyB);
+    const refsA = getRefs<A>('A', modelA, a.field, keyA);
+    const refsB = getRefs<B>('B', modelB, b.field, keyB);
+    return { modelA, modelB, refsA, refsB, keyA, keyB };
   };
 
   return {
     /**
      * Assign the link.
      */
-    async link() {
-      const prep = await prepare();
-      const { refsA, refsB } = prep;
+    async link(idA: string, idB: string) {
+      const prep = await prepare(idA, idB);
+      const { refsA, refsB, keyA, keyB } = prep;
       let { modelA, modelB } = prep;
       modelA = { ...modelA, [a.field]: R.uniq([...refsA, modelB.id]) };
       modelB = { ...modelB, [b.field]: R.uniq([...refsB, modelA.id]) };
       const batch = {
-        [a.dbKey]: modelA,
-        [b.dbKey]: modelB,
+        [keyA]: modelA,
+        [keyB]: modelB,
       };
       await db.putMany(batch);
       return { a: modelA, b: modelB };
@@ -156,16 +158,16 @@ export function manyToMany<A extends { id: string }, B extends { id: string }>(a
     /**
      * Remove the link.
      */
-    async unlink() {
-      const prep = await prepare();
-      const { refsA, refsB } = prep;
+    async unlink(idA: string, idB: string) {
+      const prep = await prepare(idA, idB);
+      const { refsA, refsB, keyA, keyB } = prep;
       let { modelA, modelB } = prep;
 
       modelA = { ...modelA, [a.field]: refsA.filter(ref => ref !== modelB.id) };
       modelB = { ...modelB, [b.field]: refsB.filter(ref => ref !== modelA.id) };
       const batch = {
-        [a.dbKey]: modelA,
-        [b.dbKey]: modelB,
+        [keyA]: modelA,
+        [keyB]: modelB,
       };
       await db.putMany(batch);
       return { a: modelA, b: modelB };

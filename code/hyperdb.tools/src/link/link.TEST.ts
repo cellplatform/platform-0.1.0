@@ -125,7 +125,6 @@ describe('oneToMany', () => {
       it('no "many" model', async () => {
         const db = await Db.create({ dir });
         const userDbKey = toUserDbKey(ids.user1);
-        const orgDbKey = toOrgDbKey(ids.org1);
         await db.put(userDbKey, { id: ids.user1 });
 
         const linker = link.oneToMany<IUser, IOrg>({
@@ -234,19 +233,13 @@ describe('manyToMany', () => {
       expect((await db.get(userDbKey2)).value.friends).to.eql(undefined);
       expect((await db.get(userDbKey3)).value.friends).to.eql(undefined);
 
-      const link1to2 = link.manyToMany<IUser, IUser>({
+      const linker = link.manyToMany<IUser, IUser>({
         db,
-        a: { dbKey: userDbKey1, field: 'friends' },
-        b: { dbKey: userDbKey2, field: 'friends' },
+        a: { dbKey: id => toUserDbKey(id), field: 'friends' },
+        b: { dbKey: id => toUserDbKey(id), field: 'friends' },
       });
 
-      const link1to3 = link.manyToMany<IUser, IUser>({
-        db,
-        a: { dbKey: userDbKey1, field: 'friends' },
-        b: { dbKey: userDbKey3, field: 'friends' },
-      });
-
-      const res1 = await link1to2.link();
+      const res1 = await linker.link(ids.user1, ids.user2);
 
       expect(res1.a.id).to.eql('user-1');
       expect(res1.a.friends).to.eql(['user-2']);
@@ -257,14 +250,14 @@ describe('manyToMany', () => {
       expect((await db.get(userDbKey2)).value.friends).to.eql(['user-1']);
 
       // Repeat links do not cause duplicate refs to build up.
-      await link1to2.link();
-      await link1to2.link();
-      await link1to2.link();
+      await linker.link(ids.user1, ids.user2);
+      await linker.link(ids.user1, ids.user2);
+      await linker.link(ids.user1, ids.user2);
 
       expect((await db.get(userDbKey1)).value.friends).to.eql(['user-2']);
       expect((await db.get(userDbKey2)).value.friends).to.eql(['user-1']);
 
-      await link1to3.link();
+      await linker.link(ids.user1, ids.user3);
 
       expect((await db.get(userDbKey1)).value.friends).to.eql(['user-2', 'user-3']);
       expect((await db.get(userDbKey2)).value.friends).to.eql(['user-1']);
@@ -281,31 +274,26 @@ describe('manyToMany', () => {
       await db.put(userDbKey2, { id: ids.user2 });
       await db.put(userDbKey3, { id: ids.user3 });
 
-      const link1to2 = link.manyToMany<IUser, IUser>({
+      const linker = link.manyToMany<IUser, IUser>({
         db,
-        a: { dbKey: userDbKey1, field: 'friends' },
-        b: { dbKey: userDbKey2, field: 'friends' },
-      });
-      const link1to3 = link.manyToMany<IUser, IUser>({
-        db,
-        a: { dbKey: userDbKey1, field: 'friends' },
-        b: { dbKey: userDbKey3, field: 'friends' },
+        a: { dbKey: id => toUserDbKey(id), field: 'friends' },
+        b: { dbKey: id => toUserDbKey(id), field: 'friends' },
       });
 
-      await link1to2.link();
-      await link1to3.link();
+      await linker.link(ids.user1, ids.user2);
+      await linker.link(ids.user1, ids.user3);
 
       expect((await db.get(userDbKey1)).value.friends).to.eql(['user-2', 'user-3']);
       expect((await db.get(userDbKey2)).value.friends).to.eql(['user-1']);
       expect((await db.get(userDbKey3)).value.friends).to.eql(['user-1']);
 
-      await link1to3.unlink();
+      await linker.unlink(ids.user1, ids.user3);
 
       expect((await db.get(userDbKey1)).value.friends).to.eql(['user-2']);
       expect((await db.get(userDbKey2)).value.friends).to.eql(['user-1']);
       expect((await db.get(userDbKey3)).value.friends).to.eql([]);
 
-      await link1to2.unlink();
+      await linker.unlink(ids.user1, ids.user2);
 
       expect((await db.get(userDbKey1)).value.friends).to.eql([]);
       expect((await db.get(userDbKey2)).value.friends).to.eql([]);
