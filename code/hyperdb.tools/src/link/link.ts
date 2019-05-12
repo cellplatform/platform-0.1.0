@@ -13,14 +13,16 @@ const getModel = async <T>(name: string, db: t.IDb, dbKey: string) => {
  */
 export function oneToMany<O extends { id: string }, M extends { id: string }>(args: {
   db: t.IDb;
-  one: { dbKey: string; field: keyof O };
-  many: { dbKey: string; field: keyof M };
+  one: { dbKey: (id: string) => string; field: keyof O };
+  many: { dbKey: (id: string) => string; field: keyof M };
 }) {
   const { db, one, many } = args;
 
-  const prepare = async () => {
-    const oneModel = await getModel<O>('one/singular', db, one.dbKey);
-    const manyModel = await getModel<M>('many', db, many.dbKey);
+  const prepare = async (oneId: string, manyId: string) => {
+    const oneKey = one.dbKey(oneId);
+    const manyKey = many.dbKey(manyId);
+    const oneModel = await getModel<O>('one/singular', db, oneKey);
+    const manyModel = await getModel<M>('many', db, manyKey);
     const oneRef = oneModel[one.field];
     const manyRefs = (manyModel[many.field] || []) as string[];
     if (!Array.isArray(manyRefs)) {
@@ -32,32 +34,29 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
     }
 
     // Finish up.
-    return { oneModel, manyModel, oneRef, manyRefs };
+    return { oneModel, manyModel, oneRef, manyRefs, oneKey, manyKey };
   };
 
   return {
     /**
      * Assign the link.
      */
-    async link() {
-      const prep = await prepare();
-      const { manyRefs } = prep;
+    async link(oneId: string, manyId: string) {
+      const prep = await prepare(oneId, manyId);
+      const { manyRefs, oneKey, manyKey } = prep;
       let { oneModel, manyModel } = prep;
-
-      const manyId = manyModel.id as any;
-      const singularId = oneModel.id as any;
       let batch: any = {};
 
       // Assign reference to the "singular" target.
-      if (oneModel[one.field] !== manyId) {
+      if (oneModel[one.field as any] !== manyId) {
         oneModel = { ...oneModel, [one.field]: manyId };
-        batch = { ...batch, [one.dbKey]: oneModel };
+        batch = { ...batch, [oneKey]: oneModel };
       }
 
       // Assign reference to the "many" target.
-      if (!manyRefs.includes(singularId)) {
-        manyModel = { ...manyModel, [many.field]: [...manyRefs, singularId] };
-        batch = { ...batch, [many.dbKey]: manyModel };
+      if (!manyRefs.includes(oneId)) {
+        manyModel = { ...manyModel, [many.field]: [...manyRefs, oneId] };
+        batch = { ...batch, [manyKey]: manyModel };
       }
 
       // Finish up.
@@ -68,27 +67,24 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
     /**
      * Remove the link.
      */
-    async unlink() {
-      const prep = await prepare();
-      const { manyRefs } = prep;
+    async unlink(oneId: string, manyId: string) {
+      const prep = await prepare(oneId, manyId);
+      const { manyRefs, oneKey, manyKey } = prep;
       let { oneModel, manyModel } = prep;
-
-      const manyId = manyModel.id as any;
-      const singularId = oneModel.id as any;
       let batch: any = {};
 
       // Remove reference from the "singular" target.
-      if (oneModel[one.field] === manyId) {
+      if (oneModel[one.field as any] === manyId) {
         oneModel = { ...oneModel };
         delete oneModel[one.field];
-        batch = { ...batch, [one.dbKey]: oneModel };
+        batch = { ...batch, [oneKey]: oneModel };
       }
 
       // Remove reference from the "many" target.
-      if (manyRefs.includes(singularId)) {
-        const refs = manyRefs.filter(item => item !== singularId) as any;
+      if (manyRefs.includes(oneId)) {
+        const refs = manyRefs.filter(item => item !== oneId) as any;
         manyModel = { ...manyModel, [many.field]: refs };
-        batch = { ...batch, [many.dbKey]: manyModel };
+        batch = { ...batch, [manyKey]: manyModel };
       }
 
       // Finish up.
@@ -99,9 +95,9 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
     /**
      * Retrieve the `many` referenced models
      */
-    async refs(toDbKey: (ref: string) => string) {
-      const { manyRefs } = await prepare();
-      const keys = manyRefs.map(ref => toDbKey(ref));
+    async refs(oneId: string, manyId: string) {
+      const { manyRefs } = await prepare(oneId, manyId);
+      const keys = manyRefs.map(ref => one.dbKey(ref));
       const values = keys.length > 0 ? await db.getMany(keys) : {};
       return Object.keys(values).reduce((acc: M[], key) => {
         const model = values[key].value;
