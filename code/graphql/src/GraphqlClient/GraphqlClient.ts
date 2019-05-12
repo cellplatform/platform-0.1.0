@@ -1,19 +1,20 @@
 /**
- * NOTES:
- * - Migrating from `apollo-boost`
- *   Necessary when turning on "batching"
- *   https://www.apollographql.com/docs/react/advanced/boost-migration
  *
+ * NOTES:
  * - About batching
  *   https://blog.apollographql.com/batching-client-graphql-queries-a685f5bcd41b
+ *
  */
 
-import ApolloClient from 'apollo-boost';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
+import { ErrorLink, onError } from 'apollo-link-error';
+import { HttpLink } from 'apollo-link-http';
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
-import { ErrorResponse } from 'apollo-link-error';
 
 type IConstructorArgs = {
   uri: string;
@@ -39,10 +40,13 @@ export class GraphqlClient implements t.IGqlClient {
   private constructor(args: IConstructorArgs) {
     this._.args = args;
     this._.apollo = new ApolloClient({
-      uri: this.uri,
       name: this.name,
       version: this.version,
-      onError: err => this.onError(err),
+      cache: new InMemoryCache(),
+      link: ApolloLink.from([
+        onError(this.onError),
+        new HttpLink({ uri: this.uri, credentials: 'same-origin' }),
+      ]),
     });
   }
 
@@ -134,7 +138,7 @@ export class GraphqlClient implements t.IGqlClient {
     }
   }
 
-  private onError(err: ErrorResponse) {
+  private onError: ErrorLink.ErrorHandler = err => {
     const { graphQLErrors: errors = [], networkError: network, response, operation } = err;
     const total = errors.length + (network ? 1 : 0);
     this.fire({
@@ -147,5 +151,5 @@ export class GraphqlClient implements t.IGqlClient {
         operation,
       },
     });
-  }
+  };
 }
