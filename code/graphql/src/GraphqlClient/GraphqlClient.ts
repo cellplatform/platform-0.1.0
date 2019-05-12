@@ -47,30 +47,7 @@ export class GraphqlClient implements t.IGqlClient {
      */
     const errorLink = onError(this.onError);
     const httpLink = createHttpLink({ uri: this.uri });
-    const headersLink = setContext((operation, prev) => {
-      const from = (prev.headers || {}) as t.IHttpHeaders;
-      let to = { ...from };
-      const payload: t.IGqlHttpHeaders = {
-        get headers() {
-          return { from, to: { ...to } };
-        },
-        merge(input) {
-          to = { ...to, ...input };
-          return payload;
-        },
-        add(header, value) {
-          to = { ...to, [header]: value };
-          return payload;
-        },
-        auth(token) {
-          return payload.add('authorization', token);
-        },
-      };
-      this.fire({ type: 'GRAPHQL/http/headers', payload });
-      return {
-        headers: payload.headers.to,
-      };
-    });
+    const headersLink = setContext((op, prev) => this.onHeader(prev.headers));
 
     /**
      * Create Apollo client.
@@ -190,4 +167,29 @@ export class GraphqlClient implements t.IGqlClient {
       },
     });
   };
+
+  private onHeader(headers: t.IHttpHeaders = {}) {
+    const from = { ...headers };
+    let to = { ...from };
+    const payload: t.IGqlHttpHeaders = {
+      get headers() {
+        return { from, to: { ...to } };
+      },
+      merge(input) {
+        to = { ...to, ...input };
+        return payload;
+      },
+      add(header, value) {
+        to = { ...to, [header]: value };
+        return payload;
+      },
+      auth(token) {
+        return payload.add('authorization', token);
+      },
+    };
+    this.fire({ type: 'GRAPHQL/http/headers', payload });
+    return {
+      headers: payload.headers.to,
+    };
+  }
 }
