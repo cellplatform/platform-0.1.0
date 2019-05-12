@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.value.cell",
-  "version": "0.0.35",
+  "version": "0.0.38",
   "description": "Data types for working with grid cell cooridnates (eg 'A1').",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,13 +12,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/util.value": "0.2.1",
+    "@platform/util.value": "0.2.4",
     "excel-formula-ast": "1.1.1",
     "excel-formula-tokenizer": "2.3.0"
   },
   "devDependencies": {
-    "@platform/test": "0.0.50",
-    "@platform/ts": "3.4.17"
+    "@platform/test": "0.0.52",
+    "@platform/ts": "3.4.21"
   },
   "files": [
     "lib"

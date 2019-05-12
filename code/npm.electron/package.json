@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm.electron",
-  "version": "0.0.44",
+  "version": "0.0.47",
   "description": "Tools for working eith NPM within an electron app.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,9 +15,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/exec": "0.2.5",
-    "@platform/npm": "0.1.22",
-    "@platform/react": "0.2.1"
+    "@platform/exec": "0.2.8",
+    "@platform/npm": "0.1.25",
+    "@platform/react": "0.2.4"
   },
   "devDependencies": {
     "@uiharness/dev": "0.2.54",

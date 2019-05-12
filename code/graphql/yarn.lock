@@ -1048,6 +1048,16 @@
     rxjs "6.5.2"
     tslib "1.9.3"
 
+"@platform/libs@0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.14.tgz#2e67587ad9ca6236bab15dc3b29fb41f7412b169"
+  integrity sha512-dPa28aG1AihPMjT47iisZsVFDWd38winzzJCVvGPUL+VBnluu6B0ug3xu+E/Fo1MnroNCbX5pJ3TL7psTX3pcQ==
+  dependencies:
+    "@types/ramda" "0.26.8"
+    ramda "0.26.1"
+    rxjs "6.5.2"
+    tslib "1.9.3"
+
 "@platform/log@0.0.117":
   version "0.0.117"
   resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.117.tgz#7d6496c349d968bfa35ba95d108c318a6f308227"
@@ -1090,10 +1100,10 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/test@0.0.50":
-  version "0.0.50"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.50.tgz#43d00b05a385dd1957e55afb4ce2c19c5f57182b"
-  integrity sha512-US1QlUGw+R4xV2HdHI+t1gdJVlkLQYz4Qzu0rTnjeaNk6sq34BkH0sIqdTUtkltuy5ape6xhSE0y9booe/VSjQ==
+"@platform/test@0.0.52":
+  version "0.0.52"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.52.tgz#8bd6b84fa64a552ed87e96d248ff1715be678d86"
+  integrity sha512-w+OKe1pLZEkYecdfS6KIxEgX57mJeVl9LnitZExXgofKQXtfzHpQtGKDvb06cRs0CLm5FoeQd5Zu5X/e7hijjA==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.6"

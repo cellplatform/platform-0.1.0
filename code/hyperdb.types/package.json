@@ -1,6 +1,6 @@
 {
   "name": "@platform/hyperdb.types",
-  "version": "0.1.3",
+  "version": "0.1.6",
   "description": "Abstract types for @platform/hyperdb",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,10 +12,10 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.13"
+    "@platform/libs": "0.0.14"
   },
   "devDependencies": {
-    "@platform/ts": "3.4.18"
+    "@platform/ts": "3.4.21"
   },
   "files": [
     "lib"
