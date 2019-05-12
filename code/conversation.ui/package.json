@@ -35,8 +35,8 @@
     "@platform/conversation.db": "0.0.44",
     "@platform/graphql.server": "0.0.24",
     "@platform/hyperdb": "0.1.38",
-    "@uiharness/dev": "0.2.54",
-    "@uiharness/ui": "0.2.35"
+    "@uiharness/dev": "0.2.55",
+    "@uiharness/ui": "0.2.36"
   },
   "resolutions": {
     "prosemirror-state": "1.2.2"

@@ -20,8 +20,8 @@
   },
   "devDependencies": {
     "@platform/ui.icon": "0.0.54",
-    "@uiharness/dev": "0.2.54",
-    "@uiharness/ui": "0.2.35",
+    "@uiharness/dev": "0.2.55",
+    "@uiharness/ui": "0.2.36",
     "react-icons": "3.7.0"
   },
   "files": [
