@@ -1,6 +1,6 @@
 {
   "name": "@platform/types",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Common types used across @platform.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -10,9 +10,6 @@
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare"
-  },
-  "dependencies": {
-    "rxjs": "6.5.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.50",

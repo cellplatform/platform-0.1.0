@@ -22,7 +22,7 @@ export function importStylesheet(url: string) {
 }
 
 /**
- * INTERNAL
+ * [Helpers]
  */
 function exists(tag: 'style', url: string) {
   return is.browser ? Boolean(findByUrl(tag, url)) : false;

@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.animate",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "description": "Programmatic animation.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,12 +12,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.12",
+    "@platform/libs": "0.0.13",
     "dynamics.js": "1.1.5"
   },
   "devDependencies": {
     "@platform/test": "0.0.50",
-    "@platform/ts": "3.4.17"
+    "@platform/ts": "3.4.18"
   },
   "files": [
     "lib"

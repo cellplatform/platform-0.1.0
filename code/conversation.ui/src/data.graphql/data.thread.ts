@@ -79,7 +79,7 @@ export class ConversationThreadGraphql {
 
     // Finish up.
     this.fire({ type: 'THREAD:DATA/saved', payload: { thread } });
-    return { response, isCancelled: false };
+    return { data: response.data, isCancelled: false };
   }
 
   /**

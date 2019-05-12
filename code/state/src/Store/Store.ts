@@ -47,8 +47,8 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
   private readonly _ = {
     dispose$: new Subject(),
     events$: new Subject<E>(),
-    changing$: new Subject<t.IStateChanging<M>>(),
-    changed$: new Subject<t.IStateChange<M>>(),
+    changing$: new Subject<t.IStateChanging<M, E>>(),
+    changed$: new Subject<t.IStateChange<M, E>>(),
     state: (undefined as unknown) as M,
   };
 

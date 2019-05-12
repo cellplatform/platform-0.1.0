@@ -110,29 +110,29 @@
     "@platform/libs" "0.0.12"
     "@platform/ts.libs" "3.4.12"
 
-"@platform/types@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.4.tgz#88d50ab7d90172b416691a587778d0b7245df47c"
-  integrity sha512-5eEbH89ISeYoaJvyfVSa8rORrqU8KXo7HxH5JpE0J0UIkgrWNdhznwFcm2k6lWOagrevWFrdpaD7ElbJnIWCVA==
+"@platform/types@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.5.tgz#ea002f22d8ac03d2a8827be8ede80b7b9dcccde4"
+  integrity sha512-P6RrSbn/zyLOHxyZcVgr4fxv+AVbwiIugiRfxM5VzHDSd12PQtZtIZsiRT8YCQ9BjTpV+0ConwKe6lh5VXma/A==
   dependencies:
-    rxjs "6.5.1"
+    rxjs "6.5.2"
 
 "@platform/util.is@0.0.66":
   version "0.0.66"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.66.tgz#1e527748fe0f158060271dc9eb4447241e2f9366"
   integrity sha512-3HsiU3gmnU71UC0yjUmsQ9ABKmgNPEujQfZJYssm4FRBfx6vWFTYxosBh2qAY1oDBgPSU1/MbdAEaJkjmzbxmg==
 
-"@platform/util.value@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.2.0.tgz#864d3ca9a2e664c6734d03e518f7ee852cf55848"
-  integrity sha512-BRDGcdfPyNslUO9A+rY89aZio/HUl29jCSsIpzITTor/F1J+dRRquYcFUG3ZuARrDHlHqPq8J0UIiK4ErLYkeg==
+"@platform/util.value@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.2.1.tgz#a962978928d744b5647521d178f3f15ffb504e75"
+  integrity sha512-paR3c0xxE10xLBCzJBGj1nYkQtOes03k36nFq9HlQRsu7INIS/vt1kwI70orA7UbVlubR0RrTPcubqqs62QWLg==
   dependencies:
     "@platform/libs" "0.0.12"
-    "@platform/types" "0.0.4"
+    "@platform/types" "0.0.5"
     "@platform/util.is" "0.0.66"
     "@types/semver" "6.0.0"
     cuid "2.1.6"
-    dayjs "1.8.13"
+    dayjs "1.8.14"
     semver "6.0.0"
 
 "@samverschueren/stream-to-observable@^0.3.0":
@@ -519,10 +519,10 @@ date-fns@^1.27.2:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
 
-dayjs@1.8.13:
-  version "1.8.13"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.13.tgz#51b5cdad23ba508bcea939a853b492fefb7fdc47"
-  integrity sha512-JZ01l/PMU8OqwuUs2mOQ/CTekMtoXOUSylfjqjgDzbhRSxpFIrPnHn8Y8a0lfocNgAdBNZb8y0/gbzJ2riQ4WQ==
+dayjs@1.8.14:
+  version "1.8.14"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.14.tgz#43e4f62830c2c3342c3fcd25934dc9162dbe6f38"
+  integrity sha512-AVhDmRTe541iWirnoeFSSDDGvCT6HWaNQ4z2WmmzXMGZj6ph6ydao2teKq/eUtR43GPJXlYFD+C/SotG1P9wUQ==
 
 debug@3.2.6:
   version "3.2.6"
@@ -1724,7 +1724,14 @@ rxjs@6.4.0:
   dependencies:
     tslib "^1.9.0"
 
-rxjs@6.5.1, rxjs@^6.3.3, rxjs@^6.5.1:
+rxjs@6.5.2:
+  version "6.5.2"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.2.tgz#2e35ce815cd46d84d02a209fb4e5921e051dbec7"
+  integrity sha512-HUb7j3kvb7p7eCUHE3FqjoDsC1xfZQ4AHFWfTKSpZ+sAhhz5X1WX0ZuUqWbzB2QhSLp3DoLUG+hMdEDKqWo2Zg==
+  dependencies:
+    tslib "^1.9.0"
+
+rxjs@^6.3.3, rxjs@^6.5.1:
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.1.tgz#f7a005a9386361921b8524f38f54cbf80e5d08f4"
   integrity sha512-y0j31WJc83wPu31vS1VlAFW5JGrnGC+j+TtGAa1fRQphy48+fDYiDmX8tjGloToEsMkxnouOg/1IzXGKkJnZMg==
