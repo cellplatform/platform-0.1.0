@@ -2,12 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { events, GlamorValue, Keyboard, str, t } from '../../common';
+import { events, GlamorValue, Keyboard, str, t, localStorage } from '../../common';
 import { CommandPromptInput } from '../CommandPromptInput';
 import { ICommandPromptTheme } from './types';
 
 export type ICommandPromptProps = {
   cli: t.ICommandState;
+  localStorage?: boolean;
   theme?: ICommandPromptTheme | 'DARK';
   placeholder?: string;
   focusOnLoad?: boolean;
@@ -54,6 +55,14 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
 
     // Update state.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+
+    // Initialise the last command-line value, and keep a store of it as it changes.
+    if (this.props.localStorage) {
+      const text = localStorage.text;
+      this.cli.change({ text });
+      this.cli.invoke({ stepIntoNamespace: true });
+      cli$.subscribe(e => (localStorage.text = this.cli.toString()));
+    }
 
     cliChanged$
       // Redraw on CLI changes.

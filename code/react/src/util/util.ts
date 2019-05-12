@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { log } from '../common';
 
 /**
  * Determines whether any element within the child DOM hierarchy
@@ -14,5 +15,21 @@ export function containsFocus(instance: React.ReactInstance) {
     // NB:  Will fail when call with unmounted `instance`.
     //      As an unmounted component by definition it does not contain focus.
     return false;
+  }
+}
+
+/**
+ * Copies the given text to the clipboard.
+ */
+export function copyToClipboard(text: string) {
+  try {
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  } catch (error) {
+    log.error(`Failed to copy text to clipboard.\n\n${text}`);
   }
 }

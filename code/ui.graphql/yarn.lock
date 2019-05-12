@@ -1103,10 +1103,10 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/react@0.1.33":
-  version "0.1.33"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.33.tgz#646b38d38440d5ac3e9005d909bf2e7207dbca19"
-  integrity sha512-9/d0JwV5c9cd7XeJy82IgZRpobogXT8zW+llcTEg1JUC+aN6qlGL85/UMz7vWIhiod0jj6tLHPq3F03UZaHTyQ==
+"@platform/react@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.2.0.tgz#0317d9c33656e7409f883aa49b72f2ea82cf8ba0"
+  integrity sha512-r/qGczXN3nj8iUbrbpWxarYEqi/uev/c4ojjsmDPTctFMPIrBcM9l1FXIQbg0TPPx3eUdtSonm9m7q8AhqBApw==
   dependencies:
     "@platform/css" "0.1.4"
     "@platform/util.is" "0.0.66"
@@ -1176,13 +1176,13 @@
   dependencies:
     rxjs "6.5.1"
 
-"@platform/ui.codemirror@0.0.43":
-  version "0.0.43"
-  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.0.43.tgz#ab2495a86b7adc07e4858823ead1f89dacc38f18"
-  integrity sha512-DzohBAxBnvPnHuHMmaj2VmBzy9aL2hH4jbldsmvIxFpEgIhXc+1wMhTyiHV8Juw9JU6tJrVx8gmNGmfrjahwnQ==
+"@platform/ui.codemirror@0.0.44":
+  version "0.0.44"
+  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.0.44.tgz#ff39497b62b17729d2f5a8e35082fd25ea6a5b7a"
+  integrity sha512-NpAIu+qfGlT+sKBaqYkiVofv1V0j2+SgxKQNyRQW5SkKgBnFpscgmoGnJUIpcK0p9InlvRZmgFKzvH0wlDntqQ==
   dependencies:
-    "@platform/react" "0.1.33"
-    "@platform/ui.text" "0.1.23"
+    "@platform/react" "0.2.0"
+    "@platform/ui.text" "0.1.24"
     "@types/codemirror" "0.0.74"
     "@uiharness/electron" "0.4.38"
     codemirror "5.46.0"
@@ -1226,12 +1226,12 @@
     "@platform/react" "0.1.31"
     "@platform/util.value" "0.1.6"
 
-"@platform/ui.text@0.1.23":
-  version "0.1.23"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.1.23.tgz#a10580384dfd4a9b5d0d7a58e86684b2922732a7"
-  integrity sha512-ZYp8hfEyyHtktmGitQZ522ARrRD7SP8b5FCSWclNE70WVwKVaSWq/EToG6mcqicSpvsA3tAP64OJnEJXsYn6kQ==
+"@platform/ui.text@0.1.24":
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.1.24.tgz#864b0e62771db0311c1d23090148a4d709b85c1f"
+  integrity sha512-TJzmwcIY6oa8ctZ1vpcaZ7hD7xWmhw/S6oKE1KOcm+VmnKGiAM7FqQVKFDE8TPwx2Wz3szqIr1vMFmFl+bPQDw==
   dependencies:
-    "@platform/react" "0.1.33"
+    "@platform/react" "0.2.0"
     "@platform/util.value" "0.2.0"
 
 "@platform/ui.tree@0.0.51":

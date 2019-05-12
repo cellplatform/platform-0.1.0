@@ -11,10 +11,9 @@ import {
   GlamorValue,
   t,
   value,
-  localStorage,
 } from '../../common';
-import { CommandTree, ICommandTreeProps } from '../CommandTree';
 import { CommandPrompt } from '../CommandPrompt';
+import { CommandTree, ICommandTreeProps } from '../CommandTree';
 
 export type ICommandShellProps = {
   children?: React.ReactNode;
@@ -51,19 +50,11 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
   public componentWillMount() {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
+    // const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
     // const tree$ = this.tree$.pipe(takeUntil(this.unmounted$));
 
     // Update state.
     state$.subscribe(e => this.setState(e));
-
-    // Initialise the last command-line value, and keep a store of it as it changes.
-    if (this.props.localStorage) {
-      const text = localStorage.text;
-      this.cli.change({ text });
-      this.cli.invoke({ stepIntoNamespace: true });
-      cli$.subscribe(e => (localStorage.text = this.cli.toString()));
-    }
   }
 
   public componentWillUnmount() {
@@ -136,6 +127,7 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
             cli={this.cli}
             theme={'DARK'}
             focusOnLoad={focusOnLoad}
+            localStorage={this.props.localStorage}
           />
         </div>
       </div>

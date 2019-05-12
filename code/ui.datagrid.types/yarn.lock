@@ -86,10 +86,10 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/react@0.1.33":
-  version "0.1.33"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.1.33.tgz#646b38d38440d5ac3e9005d909bf2e7207dbca19"
-  integrity sha512-9/d0JwV5c9cd7XeJy82IgZRpobogXT8zW+llcTEg1JUC+aN6qlGL85/UMz7vWIhiod0jj6tLHPq3F03UZaHTyQ==
+"@platform/react@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.2.0.tgz#0317d9c33656e7409f883aa49b72f2ea82cf8ba0"
+  integrity sha512-r/qGczXN3nj8iUbrbpWxarYEqi/uev/c4ojjsmDPTctFMPIrBcM9l1FXIQbg0TPPx3eUdtSonm9m7q8AhqBApw==
   dependencies:
     "@platform/css" "0.1.4"
     "@platform/util.is" "0.0.66"
