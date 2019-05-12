@@ -13,6 +13,12 @@ export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
     log.info('🐷', e.type, e.payload);
   });
 
+  client.headers$.subscribe(e => {
+    e.add('FOO', 1234);
+    e.merge({ bar: 'hello' });
+    e.auth('my-token-123456');
+  });
+
   return CommandState.create({
     root,
     beforeInvoke: async e => {

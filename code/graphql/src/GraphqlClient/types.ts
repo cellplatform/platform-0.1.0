@@ -19,6 +19,8 @@ export type IGqlMutateResult<D> = FetchResult<D>;
 
 export type IGqlClient = {
   readonly dispose$: Observable<{}>;
+  readonly events$: Observable<GqlEvent>;
+  readonly headers$: Observable<IGqlHttpHeaders>;
   readonly isDisposed: boolean;
   dispose(): void;
   query<D = any, V = IGqlVariables>(request: IGqlQueryOptions<V>): Promise<IGqlQueryResult<D>>;
@@ -27,11 +29,14 @@ export type IGqlClient = {
   ): Promise<IGqlMutateResult<D>>;
 };
 
+export type IHttpHeaders = { [key: string]: string | number };
+
 /**
  * [Events]
  */
-export type GraphqlEvent =
+export type GqlEvent =
   | IGqlErrorEvent
+  | IGqlHttpHeadersEvent
   | IGqlQueryingEvent
   | IGqlQueryiedEvent
   | IGqlMutatingEvent
@@ -49,9 +54,21 @@ export type IGqlError = {
   operation: Operation;
 };
 
+export type IGqlHttpHeadersEvent = {
+  type: 'GRAPHQL/http/headers';
+  payload: IGqlHttpHeaders;
+};
+export type IGqlHttpHeaders = {
+  headers: IHttpHeaders;
+  merge(headers: IHttpHeaders): IGqlHttpHeaders;
+  add(header: string, value: string | number): IGqlHttpHeaders;
+  auth(token: string): IGqlHttpHeaders;
+};
+
 /**
  * [event.Query]
  */
+
 export type IGqlQueryingEvent<V = IGqlVariables> = {
   type: 'GRAPHQL/querying';
   payload: IGqlQuerying<V>;

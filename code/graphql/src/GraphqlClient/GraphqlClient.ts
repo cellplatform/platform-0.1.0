@@ -10,9 +10,10 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { ErrorLink, onError } from 'apollo-link-error';
-import { HttpLink } from 'apollo-link-http';
+import { createHttpLink } from 'apollo-link-http';
 import { Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
+import { share, takeUntil, map, filter } from 'rxjs/operators';
+import { setContext } from 'apollo-link-context';
 
 import { t } from '../common';
 
@@ -39,14 +40,43 @@ export class GraphqlClient implements t.IGqlClient {
 
   private constructor(args: IConstructorArgs) {
     this._.args = args;
+
+    /**
+     * Setup Apollo network links.
+     * - https://www.apollographql.com/docs/link
+     */
+    const errorLink = onError(this.onError);
+    const httpLink = createHttpLink({ uri: this.uri });
+    const headersLink = setContext((operation, prev) => {
+      let headers = (prev.headers || {}) as t.IHttpHeaders;
+      const payload: t.IGqlHttpHeaders = {
+        get headers() {
+          return { ...headers };
+        },
+        merge(input) {
+          headers = { ...headers, ...input };
+          return payload;
+        },
+        add(header, value) {
+          headers = { ...headers, [header]: value };
+          return payload;
+        },
+        auth(token) {
+          return payload.add('authorization', token);
+        },
+      };
+      this.fire({ type: 'GRAPHQL/http/headers', payload });
+      return { headers: { ...headers } };
+    });
+
+    /**
+     * Create Apollo client.
+     */
     this._.apollo = new ApolloClient({
       name: this.name,
       version: this.version,
       cache: new InMemoryCache(),
-      link: ApolloLink.from([
-        onError(this.onError),
-        new HttpLink({ uri: this.uri, credentials: 'same-origin' }),
-      ]),
+      link: ApolloLink.from([errorLink, headersLink, httpLink]),
     });
   }
 
@@ -65,12 +95,17 @@ export class GraphqlClient implements t.IGqlClient {
     args: (undefined as unknown) as IConstructorArgs,
     apollo: (undefined as unknown) as ApolloClient<{}>,
     dispose$: new Subject(),
-    events$: new Subject<t.GraphqlEvent>(),
+    events$: new Subject<t.GqlEvent>(),
   };
 
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
+    share(),
+  );
+  public readonly headers$ = this.events$.pipe(
+    filter(e => e.type === 'GRAPHQL/http/headers'),
+    map(e => e.payload as t.IGqlHttpHeaders),
     share(),
   );
 
@@ -128,7 +163,7 @@ export class GraphqlClient implements t.IGqlClient {
    * [Helpers]
    */
 
-  private fire(e: t.GraphqlEvent) {
+  private fire(e: t.GqlEvent) {
     this._.events$.next(e);
   }
 
