@@ -1,6 +1,6 @@
 {
   "name": "@platform/hyperdb.tools",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Tools for working with a hyperdb.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,11 +14,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/hyperdb.types": "0.1.1",
+    "@platform/hyperdb.types": "0.1.2",
     "@platform/libs": "0.0.12"
   },
   "devDependencies": {
-    "@platform/hyperdb": "0.1.33",
+    "@platform/hyperdb": "0.1.34",
     "@platform/test": "0.0.50",
     "@platform/ts": "3.4.17"
   },

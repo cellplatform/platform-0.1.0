@@ -1091,33 +1091,33 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.electron@0.1.36":
-  version "0.1.36"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.36.tgz#ed8ede397a12dc216f61519dbe720e1b5a6a12cc"
-  integrity sha512-U8uSLNVWSV10t2sN9r2s0CLJlX+9FM2xWRpMrN66+vAnPtyfyxd94G3nOBOFV0qjTatyBmch1V5Zvce/FWcLvg==
+"@platform/hyperdb.electron@0.1.37":
+  version "0.1.37"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.1.37.tgz#faad0ed6ac7e9ef813011922d9c5408304b10417"
+  integrity sha512-xWhuw3le78Xo/2BZUJRVMo0wRRMKyZ6ZIbrw7ve1+4lsXVqkpLt8Bx+5ZIKCDqcU7icoUfNy+2sQ4v/Vt0WvGw==
   dependencies:
     "@platform/electron" "0.1.55"
-    "@platform/hyperdb" "0.1.33"
-    "@platform/hyperdb.types" "0.1.1"
+    "@platform/hyperdb" "0.1.34"
+    "@platform/hyperdb.types" "0.1.2"
     "@platform/util.string" "0.1.10"
     "@platform/util.value" "0.2.0"
     "@uiharness/electron" "0.4.38"
 
-"@platform/hyperdb.types@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.1.1.tgz#1a656aa18ce616dff6118b66df921ee09e1d96be"
-  integrity sha512-EJg5uJeODTJMLa2gOyP1a71+RPE/csh79wdIOfurKISv6QM44cmZAqzSRJdbu3L/IPrROjIIcZ93ypJR9SCZtg==
+"@platform/hyperdb.types@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.1.2.tgz#8bedd93239bc0cef097ca871245cc6eee8d13741"
+  integrity sha512-Ui/1Mt/b4k3Kst8FbqJni+N5lwsUxjs7j7xsTAw9t9mkV9O+KqS5oVECIn8NI2ytvY5ahqJRBWd0TdH73hj1QQ==
   dependencies:
     "@platform/libs" "0.0.12"
 
-"@platform/hyperdb@0.1.33":
-  version "0.1.33"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.33.tgz#1d8f6bf0714c3f842b4f500eac5254ec7416eef6"
-  integrity sha512-0Nmodd2+d9V8/RzezHNZTJIgbVdn1ekhAHUwhi3SWuG6u3QIo/jpS3TkbKjPb+zxGa4S15Ohh9PKR2YYYKlApw==
+"@platform/hyperdb@0.1.34":
+  version "0.1.34"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.34.tgz#87272111455428019b15a01cb78034459ed27646"
+  integrity sha512-UFq/qhr0tCTDBeFhHXt4asoonuBHiNZqHhDQES9E3+dGDVDxUDrZ0iIL1FDhuFF82JcwbILlWsLEW5/MxH0QAA==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.58"
-    "@platform/hyperdb.types" "0.1.1"
+    "@platform/hyperdb.types" "0.1.2"
     "@platform/util.value" "0.2.0"
     discovery-swarm "5.1.4"
     hyperdb "3.5.0"

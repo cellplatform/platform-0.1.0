@@ -1,6 +1,6 @@
 {
   "name": "@platform/conversation.db",
-  "version": "0.0.38",
+  "version": "0.0.40",
   "description": "Data persistence and server-side middleware for conversation threads.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@platform/auth": "0.1.4",
-    "@platform/conversation.types": "0.0.14",
+    "@platform/conversation.types": "0.0.15",
     "@platform/graphql.server": "0.0.20",
-    "@platform/hyperdb.types": "0.1.1",
+    "@platform/hyperdb.types": "0.1.2",
     "@platform/libs": "0.0.12"
   },
   "devDependencies": {
