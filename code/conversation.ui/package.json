@@ -38,6 +38,9 @@
     "@uiharness/dev": "0.2.54",
     "@uiharness/ui": "0.2.35"
   },
+  "resolutions": {
+    "prosemirror-state": "1.2.2"
+  },
   "files": [
     "lib"
   ],
