@@ -180,7 +180,9 @@ export class GraphqlClient implements t.IGqlClient {
         return payload;
       },
       add(header, value) {
-        to = { ...to, [header]: value };
+        if (value) {
+          to = { ...to, [header]: value };
+        }
         return payload;
       },
       auth(token) {

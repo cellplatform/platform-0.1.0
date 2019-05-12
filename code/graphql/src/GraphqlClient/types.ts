@@ -61,8 +61,8 @@ export type IGqlHttpHeadersEvent = {
 export type IGqlHttpHeaders = {
   headers: { from: IHttpHeaders; to: IHttpHeaders };
   merge(headers: IHttpHeaders): IGqlHttpHeaders;
-  add(header: string, value: string | number): IGqlHttpHeaders;
-  auth(token: string): IGqlHttpHeaders;
+  add(header: string, value?: string | number): IGqlHttpHeaders;
+  auth(token?: string): IGqlHttpHeaders;
 };
 
 /**
