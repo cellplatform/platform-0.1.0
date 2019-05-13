@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 import { log, yargs } from './libs';
 
 /**
@@ -13,7 +12,7 @@ process.on('unhandledRejection', err => {
 
 const CMD = {
   INIT: 'init',
-  INIT_I: 'i',
+  INIT_ALIAS: 'i',
 };
 const CMDS = Object.keys(CMD).map(key => CMD[key]);
 
@@ -33,7 +32,7 @@ const program = yargs
    * `init`
    */
   .command(
-    [CMD.INIT, CMD.INIT_I],
+    [CMD.INIT, CMD.INIT_ALIAS],
     'Initialize the thing.',
     e =>
       e.option('force', {
