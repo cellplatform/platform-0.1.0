@@ -9,11 +9,13 @@
     "tdd": "yarn test --watch",
     "lint": "sh node_modules/@platform/ts.libs/lint.sh $@",
     "build": "sh node_modules/@platform/ts.libs/build.sh $@",
-    "prepare": "yarn build && yarn lint && yarn test"
+    "prepare": "yarn build && yarn lint && yarn test",
+    "example": "ts-node -T example $@"
   },
   "dependencies": {
-    "@platform/fs": "0.0.60",
     "@platform/exec": "0.2.8",
+    "@platform/fs": "0.0.60",
+    "@platform/log": "0.0.121",
     "@types/yargs": "13.0.0",
     "yargs": "13.2.2"
   },
