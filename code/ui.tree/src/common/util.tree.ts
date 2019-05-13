@@ -1,4 +1,4 @@
-import { ITreeNode, ITreeNodeProps, TreeNodeFactory } from '../types';
+import { ITreeNode, ITreeNodeProps, TreeNodePathFactory } from '../types';
 import { R, value as valueUtil } from './libs';
 
 export type WalkArgs = {
@@ -285,7 +285,7 @@ export function replaceChild<T extends ITreeNode>(
  */
 export function buildPath<T extends ITreeNode>(
   root: T,
-  factory: TreeNodeFactory<T>,
+  factory: TreeNodePathFactory<T>,
   path: string,
   options: { force?: boolean; delimiter?: string } = {},
 ) {
@@ -306,7 +306,7 @@ export function buildPath<T extends ITreeNode>(
     // If there is an existing node, and this is not a `force` override,
     // use the existing node as the parent, otherwise create it now.
     const existing = findById(root, id);
-    parent = !force && existing ? existing : factory(id);
+    parent = !force && existing ? existing : factory(id, { path });
     if (parent === undefined) {
       break;
     }
@@ -326,7 +326,7 @@ export function buildPath<T extends ITreeNode>(
  */
 export function pathBuilder<T extends ITreeNode>(
   root: T,
-  factory: TreeNodeFactory<T>,
+  factory: TreeNodePathFactory<T>,
   options: { delimiter?: string } = {},
 ) {
   const { delimiter } = options;

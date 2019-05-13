@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { tree as util, ITreeNode, TreeNodeFactory } from '.';
+import { tree as util, ITreeNode, TreeNodePathFactory } from '.';
 
 describe('util.tree', () => {
   describe('walk', () => {
@@ -458,7 +458,7 @@ describe('util.tree', () => {
     });
 
     it('merges paths (using path builder)', () => {
-      const factory: TreeNodeFactory<ITreeNode> = id => ({ id });
+      const factory: TreeNodePathFactory<ITreeNode> = id => ({ id });
       const builder = util.pathBuilder({ id: 'ROOT' }, factory);
 
       builder.add('project/cohort-1');
@@ -498,7 +498,7 @@ describe('util.tree', () => {
       });
 
       it('leaf node not added', () => {
-        const factory: TreeNodeFactory<ITreeNode> = id =>
+        const factory: TreeNodePathFactory<ITreeNode> = id =>
           id.split('/').length > 2 ? undefined : { id };
         const builder = util.pathBuilder({ id: 'ROOT' }, factory);
 
@@ -517,7 +517,7 @@ describe('util.tree', () => {
       });
 
       it('folder node not added (descendents stopped)', () => {
-        const factory: TreeNodeFactory<ITreeNode> = id =>
+        const factory: TreeNodePathFactory<ITreeNode> = id =>
           id.split('/').length > 2 ? undefined : { id };
         const builder = util.pathBuilder({ id: 'ROOT' }, factory);
 
