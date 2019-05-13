@@ -133,10 +133,10 @@
   dependencies:
     "@platform/libs" "0.0.14"
 
-"@platform/hyperdb@0.1.38":
-  version "0.1.38"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.1.38.tgz#3e347f39afa3ea5a2912c5a965015aeee351af56"
-  integrity sha512-R1d6wuBMOcnhoKIAcXsssLriB7f0jApQfckUo1TJmqQYj5EamBZ1CLZ9IzdJA+OhVv938RV5d+W/8W5vSjpIXw==
+"@platform/hyperdb@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.2.0.tgz#f83f2c0cc7440115f5a248eab1d5a2aaaf914f3f"
+  integrity sha512-ZfOY4/dViVdOdQh8CCXPV6562rZhhhWiwwH0OYAMr7z51ek7rA3vaZ4damOqNhzDb5Gx5da8LykYM8h7H4uH8Q==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.60"

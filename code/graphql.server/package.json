@@ -1,6 +1,6 @@
 {
   "name": "@platform/graphql.server",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "description": "Express configuration of Apollo server.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -30,7 +30,7 @@
     "graphql": "14.3.0"
   },
   "devDependencies": {
-    "@platform/auth": "0.1.8",
+    "@platform/auth": "0.1.9",
     "@platform/test": "0.0.52",
     "@platform/ts": "3.4.21"
   },

@@ -67,19 +67,27 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   /**
-   * Converts the given {values} object into a key/value list (stripping node props).
-   */
-  public static toValueList<D extends object = any>(values: t.IDbValues<D>) {
-    return Object.keys(values).map(key => ({ key, value: values[key].value }));
-  }
-
-  /**
    * Converts the given {values} object to each keys DB value (stripping node props).
    */
   public static toValues<D extends object = any>(values: t.IDbValues<D>) {
     values = { ...values };
-    Object.keys(values).forEach(key => (values[key] = values[key].value));
+    Object.keys(values).forEach(key => (values[key] = values[key].value as D));
     return values;
+  }
+
+  /**
+   * Converts the given {values} object into a key/value list (stripping node-props).
+   */
+  public static toKeyValueList<D extends object = any>(values: t.IDbValues<D>) {
+    return Object.keys(values).map(key => ({ key, value: values[key].value as D }));
+  }
+
+  /**
+   * Converts the given {values} object into a list of values (no keys or node-props).
+   */
+  public static toValueList<D extends object = any>(values: t.IDbValues<D>) {
+    const list = Db.toKeyValueList<D>(values);
+    return list.map(item => item.value);
   }
 
   /**

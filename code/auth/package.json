@@ -1,6 +1,6 @@
 {
   "name": "@platform/auth",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Tools for performing authorization role-based access control.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
