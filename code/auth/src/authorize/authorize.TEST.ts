@@ -73,4 +73,19 @@ describe('auth.authorize', () => {
     expect(res.results[0].access).to.eql('GRANT');
     expect(res.results[1].access).to.eql('DENY');
   });
+
+  it('returns an error state when policy fails', async () => {
+    const willFail: t.IAuthPolicy = {
+      name: 'AUTH/fail',
+      eval: e => {
+        throw new Error('Sad');
+      },
+    };
+    const res = await authorize({ policy: [willFail] });
+    expect(res.isDenied).to.eql(true); // NB: The error prompts the result to flipped to DENIED.
+
+    const msg = res.error ? res.error.message : '';
+    expect(msg).to.include(`Failed while executing policy 'AUTH/fail'`);
+    expect(msg).to.include('Sad');
+  });
 });

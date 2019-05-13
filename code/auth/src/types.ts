@@ -16,6 +16,7 @@ export type IAuthRequest<V = {}> = {
  */
 export type IAuthResult<R = AuthRole> = {
   isDenied: boolean;
+  error?: Error;
   results: IPolicyResult[];
   user?: IAuthUser<R>;
   throw(message?: string): void;
@@ -42,19 +43,19 @@ export type IAuthPolicies<V extends {} = any, R extends AuthRole = any> =
  * An executable authorization policy.
  */
 export type AuthPolicyHandler<V extends {}, R extends AuthRole> = (
-  args: IAuthEvalPolicyArgs<V, R>,
+  args: IAuthPolicyHandlerArgs<V, R>,
 ) => any | Promise<any>;
 
-export type IAuthEvalPolicyArgs<V extends {}, R extends AuthRole> = {
+export type IAuthPolicyHandlerArgs<V extends {}, R extends AuthRole> = {
   readonly name: string;
   readonly isDenied: boolean;
   readonly user?: IAuthUser<R>;
   readonly variables: V;
   readonly result: IAuthResult<R>;
-  access(value?: AuthAccess): IAuthEvalPolicyArgs<V, R>;
-  grant(): IAuthEvalPolicyArgs<V, R>;
-  deny(): IAuthEvalPolicyArgs<V, R>;
-  stop(): IAuthEvalPolicyArgs<V, R>;
+  access(value?: AuthAccess): IAuthPolicyHandlerArgs<V, R>;
+  grant(): IAuthPolicyHandlerArgs<V, R>;
+  deny(): IAuthPolicyHandlerArgs<V, R>;
+  stop(err?: Error): IAuthPolicyHandlerArgs<V, R>;
 };
 
 export type IPolicyResult = {

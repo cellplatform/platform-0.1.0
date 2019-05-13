@@ -26,7 +26,7 @@ export async function authorize(args: {
   for (const policy of policies) {
     let isStopped = false;
     result = { ...result };
-    const e: t.IAuthEvalPolicyArgs<any, any> = {
+    const e: t.IAuthPolicyHandlerArgs<any, any> = {
       name: policy.name,
       user,
       variables,
@@ -46,12 +46,24 @@ export async function authorize(args: {
       deny() {
         return e.access('DENY');
       },
-      stop() {
+      stop(err: Error) {
+        if (err) {
+          result.error = err;
+          result.isDenied = true;
+        }
         isStopped = true;
         return this;
       },
     };
-    await policy.eval(e);
+
+    // Execute the policy.
+    try {
+      await policy.eval(e);
+    } catch (err) {
+      const error = new Error(`Failed while executing policy '${policy.name}'. ${err.message}`);
+      e.stop(error);
+    }
+
     if (isStopped) {
       break;
     }
