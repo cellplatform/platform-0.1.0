@@ -26,7 +26,8 @@
     "apollo-link-error": "1.1.10",
     "apollo-link-http": "1.5.14",
     "graphql": "14.3.0",
-    "graphql-tag": "2.10.1"
+    "graphql-tag": "2.10.1",
+    "isomorphic-fetch": "2.2.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.52",

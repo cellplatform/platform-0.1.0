@@ -16,6 +16,7 @@ import { share, takeUntil, map, filter } from 'rxjs/operators';
 import { setContext } from 'apollo-link-context';
 
 import { t } from '../common';
+const fetch = require('isomorphic-fetch');
 
 type IConstructorArgs = {
   uri: string;
@@ -46,7 +47,7 @@ export class GraphqlClient implements t.IGqlClient {
      * - https://www.apollographql.com/docs/link
      */
     const errorLink = onError(this.onError);
-    const httpLink = createHttpLink({ uri: this.uri });
+    const httpLink = createHttpLink({ uri: this.uri, fetch });
     const headersLink = setContext((op, prev) => this.onHeader(prev.headers));
 
     /**
