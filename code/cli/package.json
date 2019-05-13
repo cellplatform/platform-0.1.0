@@ -5,11 +5,11 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "sh node_modules/@platform/test/test.sh $@",
-    "tdd": "yarn test --watch",
-    "lint": "sh node_modules/@platform/ts.libs/lint.sh $@",
-    "build": "sh node_modules/@platform/ts.libs/build.sh $@",
-    "prepare": "yarn build && yarn lint && yarn test",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare",
     "example": "ts-node -T example $@"
   },
   "dependencies": {
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.52",
-    "@platform/ts.libs": "3.4.14"
+    "@platform/ts": "3.4.21"
   },
   "files": [
     "lib"
