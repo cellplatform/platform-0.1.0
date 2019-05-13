@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { tree as util, ITreeNode, TreeNodePathFactory } from '.';
+import { t, tree as util, ITreeNode, TreeNodePathFactory } from '.';
 
 describe('util.tree', () => {
   describe('walk', () => {
@@ -396,6 +396,30 @@ describe('util.tree', () => {
       expect(child1 && child1.id).to.eql('one');
       expect(child2 && child2.id).to.eql('one/two');
       expect(child3 && child3.id).to.eql('one/two/three');
+    });
+
+    it('passes context', () => {
+      const list: t.ITreeNodePathContext[] = [];
+      const factory: t.TreeNodePathFactory = (id, context) => {
+        list.push(context);
+        return { id };
+      };
+
+      const root = { id: 'ROOT' };
+      util.buildPath(root, factory, 'one/two/three');
+
+      expect(list.length).to.eql(3);
+      expect(list[0].id).to.eql('one/two/three');
+      expect(list[1].id).to.eql('one/two');
+      expect(list[2].id).to.eql('one');
+
+      expect(list[0].path).to.eql('one/two/three');
+      expect(list[1].path).to.eql('one/two/three');
+      expect(list[2].path).to.eql('one/two/three');
+
+      expect(list[0].level).to.eql(3);
+      expect(list[1].level).to.eql(2);
+      expect(list[2].level).to.eql(1);
     });
 
     it('uses overridden delimiter (:)', () => {

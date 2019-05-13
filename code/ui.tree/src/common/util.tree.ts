@@ -1,4 +1,4 @@
-import { ITreeNode, ITreeNodeProps, TreeNodePathFactory } from '../types';
+import { ITreeNode, ITreeNodeProps, TreeNodePathFactory, ITreeNodePathContext } from '../types';
 import { R, value as valueUtil } from './libs';
 
 export type WalkArgs = {
@@ -283,7 +283,7 @@ export function replaceChild<T extends ITreeNode>(
 /**
  * Adds a hierarchy of nodes to the tree based on the given path.
  */
-export function buildPath<T extends ITreeNode>(
+export function buildPath<T extends ITreeNode = ITreeNode>(
   root: T,
   factory: TreeNodePathFactory<T>,
   path: string,
@@ -306,7 +306,17 @@ export function buildPath<T extends ITreeNode>(
     // If there is an existing node, and this is not a `force` override,
     // use the existing node as the parent, otherwise create it now.
     const existing = findById(root, id);
-    parent = !force && existing ? existing : factory(id, { path });
+
+    let level = -1;
+    const context: ITreeNodePathContext = {
+      id,
+      path,
+      get level() {
+        return level === -1 ? (level = id.split('/').length) : level;
+      },
+    };
+
+    parent = !force && existing ? existing : factory(id, context);
     if (parent === undefined) {
       break;
     }
@@ -324,7 +334,7 @@ export function buildPath<T extends ITreeNode>(
 /**
  * Creates a version of `buildPath` with the factory curried.
  */
-export function pathBuilder<T extends ITreeNode>(
+export function pathBuilder<T extends ITreeNode = ITreeNode>(
   root: T,
   factory: TreeNodePathFactory<T>,
   options: { delimiter?: string } = {},
