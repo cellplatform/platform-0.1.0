@@ -1077,10 +1077,10 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.1.tgz#fd79d34bf434a5101997f0842907944a9de0106a"
-  integrity sha512-wNye64pz9ooV8l+ugKKThsTRnS2o1O49VaPhhrY4ZX6IRzjChUjTWXa/YaxMhNlAM25BXvAYL6WDt40XfKFadw==
+"@platform/graphql@0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.2.tgz#c14beb1dfa4e1f999b0c46aed77ecacf8448c34b"
+  integrity sha512-1dQmX56Gg76j8SvN4uYx+1VDs5PNOMU/SHJ8XhwCZapGqjSSEpu9c0cU9K4QDarmgC7kPXArnRUj83RafKWM7Q==
   dependencies:
     "@platform/libs" "0.0.14"
     "@types/graphql" "14.2.0"
@@ -1093,6 +1093,7 @@
     apollo-link-http "1.5.14"
     graphql "14.3.0"
     graphql-tag "2.10.1"
+    isomorphic-fetch "2.2.1"
 
 "@platform/libs@0.0.12":
   version "0.0.12"
@@ -5032,7 +5033,7 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-isomorphic-fetch@^2.1.1:
+isomorphic-fetch@2.2.1, isomorphic-fetch@^2.1.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
   integrity sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=

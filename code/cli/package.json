@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli",
-  "version": "0.0.91",
+  "version": "0.1.0",
   "description": "Tools for building CLI (command-line-interfaces).",
   "main": "lib/index",
   "types": "lib/index.d.ts",
