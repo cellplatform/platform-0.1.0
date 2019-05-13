@@ -1,4 +1,4 @@
-import { value as valueUtil, t } from '../common';
+import { t, value as valueUtil } from '../common';
 
 export function isObject(value: any) {
   return value !== null && typeof value === 'object';
