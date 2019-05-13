@@ -8,6 +8,9 @@ export function isNil(value: any) {
   return value === undefined || value === null;
 }
 
+/**
+ * Converts a raw DB data response to a strongly typed value.
+ */
 export function toValue<K, V>(response: any, options: { parse?: boolean } = {}): t.IDbValue<K, V> {
   const isObj = isObject(response);
   const exists = isObj && !isNil(response.value) ? true : false;
@@ -34,6 +37,9 @@ function toNodeProps(response?: t.IDbNode) {
   }
 }
 
+/**
+ * Parses a JSON serialized value.
+ */
 export function parseValue<V>(value: any): V | undefined {
   if (isNil(value)) {
     return undefined;
@@ -58,6 +64,9 @@ export function parseValue<V>(value: any): V | undefined {
   }
 }
 
+/**
+ * Convert the given value to JSON for storage within the DB.
+ */
 export function serializeValue(value: any) {
   if (value === undefined || typeof value === 'boolean' || typeof value === 'number') {
     return value;
@@ -65,6 +74,9 @@ export function serializeValue(value: any) {
   return JSON.stringify({ v: value });
 }
 
+/**
+ * Cleans up and normalizes a DB watch pattern.
+ */
 export function formatWatchPatterns<T extends object = any>(pattern: Array<keyof T>) {
   const asWildcard = (pattern: string) => (pattern === '' ? '*' : pattern);
   pattern = Array.isArray(pattern) ? pattern : [pattern];
@@ -72,4 +84,28 @@ export function formatWatchPatterns<T extends object = any>(pattern: Array<keyof
   patterns = patterns.length === 0 ? ['*'] : patterns; // NB: Watch for all changes if no specific paths were given.
   patterns = patterns.map(p => p.trim()).map(p => asWildcard(p));
   return patterns;
+}
+
+/**
+ * Converts the given {values} object to each keys DB value (stripping node props).
+ */
+export function toValues<D extends object = any>(values: t.IDbValues<D>) {
+  values = { ...values };
+  Object.keys(values).forEach(key => (values[key] = values[key].value as D));
+  return values;
+}
+
+/**
+ * Converts the given {values} object into a key/value list (stripping node-props).
+ */
+export function toKeyValueList<D extends object = any>(values: t.IDbValues<D>) {
+  return Object.keys(values).map(key => ({ key, value: values[key].value as D }));
+}
+
+/**
+ * Converts the given {values} object into a list of values (no keys or node-props).
+ */
+export function toValueList<D extends object = any>(values: t.IDbValues<D>) {
+  const list = toKeyValueList<D>(values);
+  return list.map(item => item.value);
 }
