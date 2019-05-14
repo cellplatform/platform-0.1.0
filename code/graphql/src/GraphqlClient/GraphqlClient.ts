@@ -13,10 +13,8 @@ import { ErrorLink, onError } from 'apollo-link-error';
 import { createHttpLink } from 'apollo-link-http';
 import { Subject } from 'rxjs';
 import { share, takeUntil, map, filter } from 'rxjs/operators';
-import { setContext } from 'apollo-link-context';
 
-import { t } from '../common';
-const fetch = require('isomorphic-fetch');
+import { t, fetcher } from '../common';
 
 type IConstructorArgs = {
   uri: string;
@@ -42,6 +40,7 @@ export class GraphqlClient implements t.IGqlClient {
 
   private constructor(args: IConstructorArgs) {
     this._.args = args;
+    const fetch: any = fetcher({ headers: this.onHeader });
 
     /**
      * Setup Apollo network links.
@@ -49,7 +48,6 @@ export class GraphqlClient implements t.IGqlClient {
      */
     const errorLink = onError(this.onError);
     const httpLink = createHttpLink({ uri: this.uri, fetch });
-    const headersLink = setContext((op, prev) => this.onHeader(prev.headers));
 
     /**
      * Create Apollo client.
@@ -58,7 +56,7 @@ export class GraphqlClient implements t.IGqlClient {
       name: this.name,
       version: this.version,
       cache: new InMemoryCache(),
-      link: ApolloLink.from([errorLink, headersLink, httpLink]),
+      link: ApolloLink.from([errorLink, httpLink]),
     });
   }
 
@@ -175,9 +173,10 @@ export class GraphqlClient implements t.IGqlClient {
     });
   };
 
-  private onHeader(headers: t.IHttpHeaders = {}) {
+  private onHeader = async (headers: t.IHttpHeaders = {}): Promise<t.IHttpHeaders> => {
     const from = { ...headers };
     let to = { ...from };
+
     const payload: t.IGqlHttpHeaders = {
       get headers() {
         return { from, to: { ...to } };
@@ -196,9 +195,11 @@ export class GraphqlClient implements t.IGqlClient {
         return payload.add('authorization', token);
       },
     };
+
+    // Alert listeners allowing them to modify the headers.
     this.fire({ type: 'GRAPHQL/http/headers', payload });
-    return {
-      headers: payload.headers.to,
-    };
-  }
+
+    // Finish up.
+    return payload.headers.to;
+  };
 }

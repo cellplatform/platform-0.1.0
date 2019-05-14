@@ -22,7 +22,6 @@
     "apollo-client": "2.5.1",
     "apollo-link": "1.2.11",
     "apollo-link-batch-http": "1.2.11",
-    "apollo-link-context": "1.0.17",
     "apollo-link-error": "1.1.10",
     "apollo-link-http": "1.5.14",
     "graphql": "14.3.0",
