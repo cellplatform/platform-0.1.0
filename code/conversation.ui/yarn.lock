@@ -996,10 +996,10 @@
     "@platform/util.value" "0.2.4"
     react-icons "3.7.0"
 
-"@platform/cli.ui@0.1.22":
-  version "0.1.22"
-  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.1.22.tgz#460ed741ce0314db601eaa4299a529380d96e3cf"
-  integrity sha512-rvAU6eYJVrsDBOipZev7QjX3qgdqZZyy1ebADJTtzFsXM2voColvVtu1L4WPG78eek+iyBSX6hMSPrvSjUx8pw==
+"@platform/cli.ui@0.1.23":
+  version "0.1.23"
+  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.1.23.tgz#e43ba88df6ceb91e42d8083e0afbe6092755a202"
+  integrity sha512-whDFvIiE7j/mcKoLLPdyqlKMnDA0wNinkpeMJhG5doZL+GNw5L2bwuFn9X4AsHVVBvRxveEvtcyARieSQRgqhA==
   dependencies:
     "@platform/cli.spec" "0.1.28"
     "@platform/react" "0.2.4"
