@@ -22,6 +22,7 @@ type IConstructorArgs = {
   uri: string;
   name?: string;
   version?: string;
+  fetchPolicy?: t.IGqlFetchPolicy;
 };
 
 /**
@@ -117,6 +118,11 @@ export class GraphqlClient implements t.IGqlClient {
     request: t.IGqlQueryOptions<V>,
   ): Promise<t.IGqlQueryResult<D>> {
     this.throwIfDisposed('query');
+
+    request = { ...request };
+    request.fetchPolicy =
+      request.fetchPolicy === undefined ? this._.args.fetchPolicy : request.fetchPolicy;
+
     this.fire({ type: 'GRAPHQL/querying', payload: { request } });
     const response = await this._.apollo.query<D>(request);
     this.fire({ type: 'GRAPHQL/queried', payload: { request, response } });

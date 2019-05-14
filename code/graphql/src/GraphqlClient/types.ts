@@ -4,6 +4,7 @@ import {
   OperationVariables,
   QueryOptions,
   MutationOptions,
+  FetchPolicy,
 } from 'apollo-client';
 import { FetchResult, Operation } from 'apollo-link';
 import { GraphQLError, ExecutionResult } from 'graphql';
@@ -11,6 +12,7 @@ import { ServerError, ServerParseError } from 'apollo-link-http-common';
 
 export type IGqlVariables = OperationVariables;
 
+export type IGqlFetchPolicy = FetchPolicy;
 export type IGqlQueryOptions<V> = QueryOptions<V>;
 export type IGqlQueryResult<D> = ApolloQueryResult<D>;
 
