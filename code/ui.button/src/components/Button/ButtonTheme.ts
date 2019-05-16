@@ -50,11 +50,12 @@ export class ButtonTheme {
         theme.backgroundColor.enabled = COLORS.GREEN;
         return theme;
       },
-      // get WHITE() {
-      //   const theme = BORDER.SOLID;
-      //   theme.backgroundColor.enabled = COLORS.GREEN;
-      //   return theme;
-      // },
+      get WHITE() {
+        const theme = BORDER.SOLID;
+        theme.backgroundColor.enabled = COLORS.WHITE;
+        theme.color.enabled = COLORS.DARK;
+        return theme;
+      },
       get DARK() {
         const theme = BORDER.SOLID;
         theme.backgroundColor.enabled = COLORS.DARK;

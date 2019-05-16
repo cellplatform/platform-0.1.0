@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { color, COLORS, log, Button, css, CommandShell, t, value, Hr } from '../common';
+import { color, COLORS, log, Button, css, CommandShell, t, value, Hr, PINK } from '../common';
 import { Icons } from './Icons';
 
 export type ITestProps = {};
@@ -40,12 +40,18 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       base: css({
         flex: 1,
         padding: 30,
+        Scroll: true,
       }),
       iconContent: css({
         Flex: 'horizontal-center-center',
       }),
       centerY: css({
         Flex: 'horizontal-start-start',
+      }),
+      solidBg: css({
+        backgroundColor: PINK,
+        PaddingY: 50,
+        PaddingX: 20,
       }),
     };
 
@@ -114,6 +120,13 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
               theme={Button.theme.BORDER.BLUE}
               minWidth={250}
             />
+          </div>
+
+          <PinkDashed />
+
+          <div {...styles.solidBg}>
+            <Button {...common} label={'Dark'} theme={Button.theme.BORDER.DARK} />
+            <Button {...common} label={'Dark'} theme={Button.theme.BORDER.WHITE} />
           </div>
         </div>
       </CommandShell>
