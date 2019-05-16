@@ -347,6 +347,38 @@ describe('util.tree', () => {
     });
   });
 
+  describe.only('openToNode', () => {
+    it('no change when nodes are not inline', () => {
+      const root = util.buildPath({ id: 'ROOT' }, id => ({ id }), 'foo/bar/zoo').root;
+      const res = util.openToNode(root, 'foo/bar/zoo');
+      expect(res).to.eql(root);
+    });
+
+    it('sets the inline state of nodes to the given path (boolean)', () => {
+      const factory = (id: string) => ({ id, props: { inline: true } });
+      const root = util.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root as ITreeNode;
+
+      const res = util.openToNode(root, 'foo/bar') as ITreeNode;
+      const child1 = util.childAt(0, res);
+      const child2 = util.childAt(0, child1);
+
+      expect(util.props(child1).inline).to.eql({ isOpen: true });
+      expect(util.props(child2).inline).to.eql({ isOpen: true });
+    });
+
+    it('sets the inline state of nodes to the given path (object)', () => {
+      const factory = (id: string) => ({ id, props: { inline: {} } });
+      const root = util.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root;
+
+      const res = util.openToNode(root, 'foo/bar') as ITreeNode;
+      const child1 = util.childAt(0, res);
+      const child2 = util.childAt(0, child1);
+
+      expect(util.props(child1).inline).to.eql({ isOpen: true });
+      expect(util.props(child2).inline).to.eql({ isOpen: true });
+    });
+  });
+
   describe('flags', () => {
     it('isOpen', () => {
       expect(util.isOpen()).to.eql(undefined);

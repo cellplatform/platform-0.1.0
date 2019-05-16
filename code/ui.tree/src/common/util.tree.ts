@@ -399,6 +399,28 @@ export function toggleIsOpen<T extends ITreeNode>(
 }
 
 /**
+ * Ensures all inline nodes in the parent hierarchy leading to
+ * the given node are in an "toggled-open" state.
+ */
+export function openToNode<T extends ITreeNode>(
+  root: T | undefined,
+  id: ITreeNode | ITreeNode['id'] | undefined,
+): T | undefined {
+  if (!root || !id) {
+    return root;
+  }
+  const node = typeof id === 'string' ? findById(root, id) : id;
+  pathList(root, node).forEach(node => {
+    const p = props(node);
+    if (p.inline !== undefined) {
+      p.inline = typeof p.inline === 'boolean' ? {} : p.inline;
+      p.inline = { ...p.inline, isOpen: true };
+    }
+  });
+  return root;
+}
+
+/**
  * Determines if the given node is open.
  */
 export function isOpen(node?: ITreeNode) {
