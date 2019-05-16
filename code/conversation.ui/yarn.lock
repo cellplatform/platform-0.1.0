@@ -996,16 +996,16 @@
     "@platform/util.value" "0.2.4"
     react-icons "3.7.0"
 
-"@platform/cli.ui@0.1.23":
-  version "0.1.23"
-  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.1.23.tgz#e43ba88df6ceb91e42d8083e0afbe6092755a202"
-  integrity sha512-whDFvIiE7j/mcKoLLPdyqlKMnDA0wNinkpeMJhG5doZL+GNw5L2bwuFn9X4AsHVVBvRxveEvtcyARieSQRgqhA==
+"@platform/cli.ui@0.1.24":
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.1.24.tgz#f50b2230ddcde8a6692bc3b04fa05938f063fba5"
+  integrity sha512-9MWOBNEj7otm3G+Up9PXl5FZdSxa+6enAH50DyWTpkQ9g+CByXnrQ6Bku2hZ5Iqyh3G9NKLGAo/j3XwpuuGnoQ==
   dependencies:
     "@platform/cli.spec" "0.1.28"
     "@platform/react" "0.2.4"
     "@platform/ui.panel" "0.0.52"
     "@platform/ui.text" "0.1.28"
-    "@platform/ui.tree" "0.1.0"
+    "@platform/ui.tree" "0.1.1"
     "@platform/util.local-storage" "0.0.11"
     "@platform/util.value" "0.2.4"
     react-icons "3.7.0"
@@ -1030,14 +1030,14 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/conversation.db@0.0.48":
-  version "0.0.48"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.48.tgz#2e8f6efb5e740ab99ab5528660cc7ea584f5a136"
-  integrity sha512-Z0HJy6vV4P72LdJMyFNmJMwDj/+1HKMcdGiL4ZNyPhcRvHTt8XROrv1SGNLv4xo/vyi+qZAl6gOzm1c44OjeoQ==
+"@platform/conversation.db@0.0.50":
+  version "0.0.50"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.50.tgz#ce30f088191e4cb2692aa0e41bae0ff1a6f07344"
+  integrity sha512-4wdd0deml1TDscVdspSJW9SDY686FmJWRuQczQeWp2r2CeZc+pCVq4BDe5UNTDTBtLahhzYUqigP8dlymYj2SA==
   dependencies:
     "@platform/auth" "0.1.9"
     "@platform/conversation.types" "0.0.19"
-    "@platform/graphql.server" "0.0.28"
+    "@platform/graphql.server" "0.1.1"
     "@platform/hyperdb.types" "0.1.6"
     "@platform/libs" "0.0.14"
 
@@ -1135,13 +1135,13 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql.server@0.0.28":
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.0.28.tgz#15f39f96b396325ac77f9afe940749a0ed0d20eb"
-  integrity sha512-t4Gdi5wvaqlOdQGYmDfXbjAEPeXyIZZZXxoqIuROlWa5HcHsuKf1vZIgSNSoLH8hR6qolaNHuF5r30U8c8T8fA==
+"@platform/graphql.server@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.1.tgz#8da744c9f8b1b7ca8fb6a3f5d2d3e12d702eef6f"
+  integrity sha512-beDFmEtValEUs99+FEqsAGq23RmmOxQvaQopHdO4WXHJ1xDPjAKnnRG6blTV3gnbWcannW6vhwEmBAdJbddRuQ==
   dependencies:
     "@platform/cache" "0.0.4"
-    "@platform/graphql" "0.2.2"
+    "@platform/graphql" "0.2.3"
     "@platform/libs" "0.0.14"
     "@platform/log" "0.0.121"
     "@platform/util.is" "0.0.70"
@@ -1154,10 +1154,10 @@
     express "4.16.4"
     graphql "14.3.0"
 
-"@platform/graphql@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.2.tgz#c14beb1dfa4e1f999b0c46aed77ecacf8448c34b"
-  integrity sha512-1dQmX56Gg76j8SvN4uYx+1VDs5PNOMU/SHJ8XhwCZapGqjSSEpu9c0cU9K4QDarmgC7kPXArnRUj83RafKWM7Q==
+"@platform/graphql@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.3.tgz#19ce71ea905fcaca33c8da11f27f2ccee0516fce"
+  integrity sha512-4HcA8+bTbvhvjzM7j2k1feTS6J2f1Y28A40qhlAeXJH0XWdi1KHoYvQh/0CHUhiswXfa0Sx5XZKTcoU9Ef2uow==
   dependencies:
     "@platform/libs" "0.0.14"
     "@types/graphql" "14.2.0"
@@ -1165,7 +1165,6 @@
     apollo-client "2.5.1"
     apollo-link "1.2.11"
     apollo-link-batch-http "1.2.11"
-    apollo-link-context "1.0.17"
     apollo-link-error "1.1.10"
     apollo-link-http "1.5.14"
     graphql "14.3.0"
@@ -1353,10 +1352,10 @@
   dependencies:
     "@platform/react" "0.2.4"
 
-"@platform/ui.image@0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@platform/ui.image/-/ui.image-0.0.22.tgz#62ed293cc492d61609f883cc83995537c7b9d20d"
-  integrity sha512-3aaKFqekFQR0v7FbXl5oabP4KQ7V78SqluUBjdm3sh7Kgq4+kECF2ojF7s8do9tC98xBSTTYncuT6OLgiVghWA==
+"@platform/ui.image@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/ui.image/-/ui.image-0.1.1.tgz#1a67d400caf5a2a92c0fa31addfc91806fe9f3aa"
+  integrity sha512-DQFgQuxYi8Ngl0PXXc5N6Jl5bvG/8qYwd/qV6pwDGLHNK0fYCoVwwPb0011tw5Sn7uAt+cjdG61SZxuByJiVHw==
   dependencies:
     "@platform/react" "0.2.4"
     "@platform/ui.icon" "0.0.54"
@@ -1407,10 +1406,10 @@
     "@platform/ui.spinner" "0.0.53"
     "@platform/ui.text" "0.1.28"
 
-"@platform/ui.tree@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.1.0.tgz#49abbf9cb942ceac81745babe6b9d0956c647d78"
-  integrity sha512-jfvEVdAktPl++a9NFdXwuc4MaIbwXFqhi47xZYEWRGtk983AstseadFW6yIv+INuMoM6hVp+hmZNGhFVbVYcRw==
+"@platform/ui.tree@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.1.1.tgz#6ccd4144d1fceaaa9a5280981bf9ed71249bbae9"
+  integrity sha512-vkyQ9+CJrbuiDaB0xpdWEKa2hesKn6Rz30Fs+MsHOkdYVWcTS89i31jA3u/Gqph11RpClN1acovcMlPh4PhrOQ==
   dependencies:
     "@platform/css" "0.1.8"
     "@platform/react" "0.2.4"
@@ -2108,14 +2107,6 @@ apollo-link-batch@^1.1.12:
   version "1.1.12"
   resolved "https://registry.yarnpkg.com/apollo-link-batch/-/apollo-link-batch-1.1.12.tgz#64eb231082f182b0395ef7ab903600627f6c7fe8"
   integrity sha512-6NqLiB9tEGxRiyhtnX/7CPHkmFG0IXfEP7pC5kirhjV+4KxqBaWvJnJGKpGp7Owgdph7KJlV+9+niOKEkcwreg==
-  dependencies:
-    apollo-link "^1.2.11"
-    tslib "^1.9.3"
-
-apollo-link-context@1.0.17:
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/apollo-link-context/-/apollo-link-context-1.0.17.tgz#439272cfb43ec1891506dd175ed907845b7de36c"
-  integrity sha512-W5UUfHcrrlP5uqJs5X1zbf84AMXhPZGAqX/7AQDgR6wY/7//sMGfJvm36KDkpIeSOElztGtM9z6zdPN1NbT41Q==
   dependencies:
     apollo-link "^1.2.11"
     tslib "^1.9.3"

@@ -347,7 +347,7 @@ describe('util.tree', () => {
     });
   });
 
-  describe.only('openToNode', () => {
+  describe('openToNode', () => {
     it('no change when nodes are not inline', () => {
       const root = util.buildPath({ id: 'ROOT' }, id => ({ id }), 'foo/bar/zoo').root;
       const res = util.openToNode(root, 'foo/bar/zoo');

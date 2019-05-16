@@ -1077,10 +1077,10 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.2.tgz#c14beb1dfa4e1f999b0c46aed77ecacf8448c34b"
-  integrity sha512-1dQmX56Gg76j8SvN4uYx+1VDs5PNOMU/SHJ8XhwCZapGqjSSEpu9c0cU9K4QDarmgC7kPXArnRUj83RafKWM7Q==
+"@platform/graphql@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.3.tgz#19ce71ea905fcaca33c8da11f27f2ccee0516fce"
+  integrity sha512-4HcA8+bTbvhvjzM7j2k1feTS6J2f1Y28A40qhlAeXJH0XWdi1KHoYvQh/0CHUhiswXfa0Sx5XZKTcoU9Ef2uow==
   dependencies:
     "@platform/libs" "0.0.14"
     "@types/graphql" "14.2.0"
@@ -1088,7 +1088,6 @@
     apollo-client "2.5.1"
     apollo-link "1.2.11"
     apollo-link-batch-http "1.2.11"
-    apollo-link-context "1.0.17"
     apollo-link-error "1.1.10"
     apollo-link-http "1.5.14"
     graphql "14.3.0"
@@ -1819,14 +1818,6 @@ apollo-link-batch@^1.1.12:
   version "1.1.12"
   resolved "https://registry.yarnpkg.com/apollo-link-batch/-/apollo-link-batch-1.1.12.tgz#64eb231082f182b0395ef7ab903600627f6c7fe8"
   integrity sha512-6NqLiB9tEGxRiyhtnX/7CPHkmFG0IXfEP7pC5kirhjV+4KxqBaWvJnJGKpGp7Owgdph7KJlV+9+niOKEkcwreg==
-  dependencies:
-    apollo-link "^1.2.11"
-    tslib "^1.9.3"
-
-apollo-link-context@1.0.17:
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/apollo-link-context/-/apollo-link-context-1.0.17.tgz#439272cfb43ec1891506dd175ed907845b7de36c"
-  integrity sha512-W5UUfHcrrlP5uqJs5X1zbf84AMXhPZGAqX/7AQDgR6wY/7//sMGfJvm36KDkpIeSOElztGtM9z6zdPN1NbT41Q==
   dependencies:
     apollo-link "^1.2.11"
     tslib "^1.9.3"

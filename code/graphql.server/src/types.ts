@@ -1,3 +1,7 @@
+import { GraphQLResolveInfo } from 'graphql';
+
+export type IGqlInfo = GraphQLResolveInfo;
+
 /**
  * The common context object passed to resolvers.
  */
