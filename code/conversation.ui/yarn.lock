@@ -1352,10 +1352,10 @@
   dependencies:
     "@platform/react" "0.2.4"
 
-"@platform/ui.image@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/ui.image/-/ui.image-0.1.1.tgz#1a67d400caf5a2a92c0fa31addfc91806fe9f3aa"
-  integrity sha512-DQFgQuxYi8Ngl0PXXc5N6Jl5bvG/8qYwd/qV6pwDGLHNK0fYCoVwwPb0011tw5Sn7uAt+cjdG61SZxuByJiVHw==
+"@platform/ui.image@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/ui.image/-/ui.image-0.1.2.tgz#0f620f6d02805c6b77822098a255c0459b299bdc"
+  integrity sha512-bTSsdI9M5h9H0gerSvL/xHpLl6jxnmkB38c0Md0zghrBxxUw4Xuop/vNQ02euG+W/kZHgtXd4jlCojN9fEW/GA==
   dependencies:
     "@platform/react" "0.2.4"
     "@platform/ui.icon" "0.0.54"
