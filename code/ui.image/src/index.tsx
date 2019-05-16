@@ -1,2 +1,3 @@
-export * from './components/Avatar';
 export { gravatar } from './common';
+export * from './components/Avatar';
+export * from './components/Image';
