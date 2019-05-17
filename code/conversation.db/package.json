@@ -1,6 +1,6 @@
 {
   "name": "@platform/conversation.db",
-  "version": "0.0.50",
+  "version": "0.0.51",
   "description": "Data persistence and server-side middleware for conversation threads.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,15 +15,15 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/auth": "0.1.9",
-    "@platform/conversation.types": "0.0.19",
-    "@platform/graphql.server": "0.1.1",
-    "@platform/hyperdb.types": "0.1.6",
+    "@platform/auth": "0.1.10",
+    "@platform/conversation.types": "0.0.20",
+    "@platform/graphql.server": "0.1.2",
+    "@platform/hyperdb.types": "0.1.7",
     "@platform/libs": "0.0.14"
   },
   "devDependencies": {
-    "@platform/test": "0.0.52",
-    "@platform/ts": "3.4.21"
+    "@platform/test": "0.0.53",
+    "@platform/ts": "3.4.22"
   },
   "files": [
     "lib"

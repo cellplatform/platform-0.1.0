@@ -1,6 +1,6 @@
 {
   "name": "@platform/graphql",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Tools for working with GraphQL.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -29,9 +29,9 @@
     "isomorphic-fetch": "2.2.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.52",
-    "@uiharness/dev": "0.2.55",
-    "@uiharness/ui": "0.2.36",
+    "@platform/test": "0.0.53",
+    "@uiharness/dev": "0.2.56",
+    "@uiharness/ui": "0.2.37",
     "apollo-server-express": "2.5.0",
     "express": "4.16.4"
   },
