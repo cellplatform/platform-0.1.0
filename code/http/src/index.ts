@@ -1,1 +1,4 @@
-console.log('\n👋  http\n'); // tslint:disable-line
+import * as http from './http';
+
+export { http };
+export default http;
