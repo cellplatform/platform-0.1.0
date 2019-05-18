@@ -12,19 +12,24 @@ export type ICommandPromptProps = {
   theme?: ICommandPromptTheme | 'DARK';
   placeholder?: string;
   focusOnLoad?: boolean;
+  fontSize?: number;
+  fontFamily?: string;
   keyMap?: Partial<t.ICommandPromptKeyMap>;
   keyPress$?: events.KeypressObservable;
   events$?: Subject<t.CommandPromptEvent>;
   style?: GlamorValue;
 };
-export type ICommandPromptState = {};
 
-export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICommandPromptState> {
+export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
+  /**
+   * [Static]
+   */
   public static THEMES = CommandPromptInput.THEMES;
 
-  public state: ICommandPromptState = {};
+  /**
+   * [Fields]
+   */
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<ICommandPromptState>>();
   private keyPress$ = (this.props.keyPress$ || events.keyPress$).pipe(takeUntil(this.unmounted$));
   private _events$ = new Subject<t.CommandPromptEvent>();
   public events$ = this._events$.pipe(takeUntil(this.unmounted$));
@@ -52,9 +57,6 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
     if (this.props.events$) {
       this.events$.subscribe(this.props.events$);
     }
-
-    // Update state.
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
     // Initialise the last command-line value, and keep a store of it as it changes.
     if (this.props.localStorage) {
@@ -221,7 +223,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
    * [Render]
    */
   public render() {
-    const { theme, placeholder, style } = this.props;
+    const { theme, placeholder, style, fontSize, fontFamily } = this.props;
     const cli = this.cli;
     return (
       <CommandPromptInput
@@ -230,6 +232,8 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps, ICom
         theme={theme}
         placeholder={placeholder}
         text={cli.text}
+        fontSize={fontSize}
+        fontFamily={fontFamily}
         namespace={cli.namespace}
         keyPress$={this.keyPress$}
         onChange={this.change}

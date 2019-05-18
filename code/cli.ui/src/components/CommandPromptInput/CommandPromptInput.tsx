@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import {
   CommandChangeDispatcher,
+  constants,
   containsFocus,
   css,
   events,
@@ -15,9 +16,9 @@ import { TextInput, TextInputChangeEvent } from '../primitives';
 import { THEMES } from './themes';
 import { ICommandPromptTheme } from './types';
 
-const FONT_SIZE = 14;
-
 export type ICommandPromptInputProps = {
+  fontSize?: number;
+  fontFamily?: string;
   text?: string;
   namespace?: ICommandNamespace;
   theme?: ICommandPromptTheme | 'DARK';
@@ -79,6 +80,11 @@ export class CommandPromptInput extends React.PureComponent<
     throw new Error(`Theme '${theme}' not supported`);
   }
 
+  private get font() {
+    const { fontSize = 13, fontFamily = constants.FONT.MONOSPACE.FAMILY } = this.props;
+    return { fontSize, fontFamily };
+  }
+
   /**
    * [Methods]
    */
@@ -102,13 +108,14 @@ export class CommandPromptInput extends React.PureComponent<
     const { placeholder = 'command' } = this.props;
     const ns = this.props.namespace;
     const theme = this.theme;
+    const font = this.font;
     const styles = {
       base: css({
+        ...font,
         position: 'relative',
         boxSizing: 'border-box',
         flex: 1,
         height: 32,
-        fontSize: FONT_SIZE,
         Flex: 'horizontal-center-start',
         paddingLeft: 10,
       }),
@@ -138,7 +145,10 @@ export class CommandPromptInput extends React.PureComponent<
           style={styles.textbox}
           onChange={this.handleChange}
           value={this.text}
-          valueStyle={{ color: theme.color }}
+          valueStyle={{
+            ...font,
+            color: theme.color,
+          }}
           placeholder={placeholder}
           placeholderStyle={{ color: theme.placeholderColor }}
           spellCheck={false}
