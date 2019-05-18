@@ -27,7 +27,9 @@ export type ICommandPromptInputProps = {
   style?: GlamorValue;
   onChange?: CommandChangeDispatcher;
 };
-export type ICommandPromptInputState = {};
+export type ICommandPromptInputState = {
+  text?: string;
+};
 
 /**
  * Non-stateful input control for a command.
@@ -38,7 +40,7 @@ export class CommandPromptInput extends React.PureComponent<
 > {
   public static THEMES = THEMES;
 
-  public state: ICommandPromptInputState = {};
+  public state: ICommandPromptInputState = { text: this.props.text };
   private unmounted$ = new Subject();
   private state$ = new Subject<ICommandPromptInputState>();
 
@@ -53,6 +55,13 @@ export class CommandPromptInput extends React.PureComponent<
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
   }
 
+  public componentDidUpdate(prev: ICommandPromptInputProps) {
+    const { text } = this.props;
+    if (prev.text !== text) {
+      this.state$.next({ text });
+    }
+  }
+
   public componentWillUnmount() {
     this.unmounted$.next();
   }
@@ -61,7 +70,7 @@ export class CommandPromptInput extends React.PureComponent<
    * [Properties]
    */
   public get text() {
-    return this.props.text || '';
+    return this.state.text || '';
   }
 
   public get isFocused() {
@@ -160,6 +169,11 @@ export class CommandPromptInput extends React.PureComponent<
   /**
    * [Handlers]
    */
+  private handleChange = async (e: TextInputChangeEvent) => {
+    const text = e.to;
+    this.state$.next({ text });
+    this.fireChange({ text });
+  };
 
   private fireChange(args: { text?: string; invoked?: boolean; namespace?: boolean }) {
     const { onChange } = this.props;
@@ -168,10 +182,6 @@ export class CommandPromptInput extends React.PureComponent<
       onChange(e);
     }
   }
-
-  private handleChange = async (e: TextInputChangeEvent) => {
-    this.fireChange({ text: e.to });
-  };
 
   public static toChangeArgs(args: {
     text?: string;

@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
 import {
+  log,
   color,
   COLORS,
   CommandHelpList,
@@ -37,7 +38,7 @@ export class TestCommandPrompt extends React.PureComponent<ITestCommandPromptPro
     const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
 
     cli$.subscribe(e => {
-      console.log('🌳', e.type, e.payload);
+      log.info('🌳', e.type, e.payload);
     });
   }
 
@@ -95,8 +96,7 @@ export class TestCommandPrompt extends React.PureComponent<ITestCommandPromptPro
   /**
    * [Handlers]
    */
-
   private handleHelpClick = (e: t.CommandClickEvent) => {
-    console.log('help click', e);
+    log.info('help click', e);
   };
 }
