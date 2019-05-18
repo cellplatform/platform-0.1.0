@@ -1,14 +1,18 @@
-const GOOGLE_BASE = 'https://fonts.googleapis.com/css';
-const GOOGLE_ROBOTO = 'Roboto:100,300,300i,400,400i,900';
+const GOOGLE = {
+  BASE: 'https://fonts.googleapis.com/css',
+  ROBOTO: 'Roboto:100,300,300i,400,400i,900',
+  ROBOTO_MONO: 'Roboto+Mono',
+};
+const toGoogleUrl = (family: string) => `${GOOGLE.BASE}?family=${family}`;
 
 /**
- * <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,900' />
+ * Import:
+ *
+ *  - CODE: css.head.importStylesheet(ROBOTO.GOOGLE.URL)
+ *  - CSS:  <link href='https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,900&display=swap' rel='stylesheet' />
+ *
  */
 export const ROBOTO = {
-  GOOGLE_FONTS: {
-    FAMILY: GOOGLE_ROBOTO,
-    URL: `${GOOGLE_BASE}?family=${GOOGLE_ROBOTO}`,
-  },
   FAMILY: `'Roboto', sans-serif`,
   WEIGHTS: {
     THIN: 100,
@@ -16,10 +20,25 @@ export const ROBOTO = {
     NORMAL: 400,
     BOLD: 900,
   },
+  GOOGLE: {
+    FAMILY: GOOGLE.ROBOTO,
+    URL: toGoogleUrl(GOOGLE.ROBOTO),
+  },
 };
 
+/**
+ * Import:
+ *
+ *  - CODE: css.head.importStylesheet(MONOSPACE.GOOGLE.URL)
+ *  - CSS:  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
+ *
+ */
 export const MONOSPACE = {
   FAMILY: `Roboto Mono, Menlo, Monaco, 'Lucida Console', Courier, monospace`,
+  GOOGLE: {
+    FAMILY: GOOGLE.ROBOTO_MONO,
+    URL: toGoogleUrl(GOOGLE.ROBOTO_MONO),
+  },
 };
 
 export const COLORS = {
