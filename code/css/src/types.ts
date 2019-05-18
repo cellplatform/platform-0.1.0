@@ -36,7 +36,7 @@ export type CssProps = CSSProperties;
 export type ClassName = (...styles: Array<CssProps | undefined>) => string;
 
 export type ICssHead = { importStylesheet: ImportStylesheet };
-export type ImportStylesheet = (url: string) => IStyle;
+export type ImportStylesheet = (url: string) => ICssHead;
 
 export type IStyle = IFormatCss & {
   global: GlobalCssRules;
