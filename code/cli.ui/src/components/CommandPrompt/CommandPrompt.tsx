@@ -162,7 +162,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
   private get keyMap() {
     const { keyMap = {} } = this.props;
     return {
-      focus: Keyboard.parse(keyMap.focus, 'CMD+L'),
+      focus: Keyboard.parse(keyMap.focus, 'CMD+J'),
     };
   }
 
