@@ -1,6 +1,6 @@
 {
   "name": "@platform/graphql",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Tools for working with GraphQL.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,6 +16,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/http": "0.1.1",
     "@platform/libs": "0.0.14",
     "@types/graphql": "14.2.0",
     "apollo-cache-inmemory": "1.5.1",
@@ -25,8 +26,7 @@
     "apollo-link-error": "1.1.10",
     "apollo-link-http": "1.5.14",
     "graphql": "14.3.0",
-    "graphql-tag": "2.10.1",
-    "isomorphic-fetch": "2.2.1"
+    "graphql-tag": "2.10.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.53",

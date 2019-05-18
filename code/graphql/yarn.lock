@@ -1062,13 +1062,13 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/http@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.1.0.tgz#6563914937318d7aa461d75700be90f74d658ea1"
-  integrity sha512-7rGsNrPpbzR4QK3CQ9dKMF4Eg9ypgSR1s9cb5ZU2/sMSwA8JZov7kANDdMSnW87G020PUnmSv33wJgwlsE8Azg==
+"@platform/http@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.1.1.tgz#d512958dc015cf5bc2acd389478352c94205a8e8"
+  integrity sha512-+M7sZfFJS9QlzpPexXfmgtE+2HmZiY1yVUXhwg51JzNA88H3RexFrvIV2J2d36ugpeYNr8lawhiGChFf9Vd/eQ==
   dependencies:
-    "@platform/libs" "0.0.14"
     "@platform/util.value" "0.2.5"
+    "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
 
 "@platform/libs@0.0.12":
@@ -1450,6 +1450,11 @@
   dependencies:
     "@types/through" "*"
     rxjs ">=6.4.0"
+
+"@types/isomorphic-fetch@0.0.35":
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.35.tgz#c1c0d402daac324582b6186b91f8905340ea3361"
+  integrity sha512-DaZNUvLDCAnCTjgwxgiL1eQdxIKEpNLOlTNtAgnZc50bG2copGhRrFN9/PxPBuJe+tZVLCbQ7ls0xveXVRPkvw==
 
 "@types/js-yaml@3.12.1":
   version "3.12.1"
