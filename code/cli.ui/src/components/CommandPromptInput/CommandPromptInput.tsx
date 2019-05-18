@@ -161,6 +161,9 @@ export class CommandPromptInput extends React.PureComponent<
           placeholder={placeholder}
           placeholderStyle={{ color: theme.placeholderColor }}
           spellCheck={false}
+          autoCapitalize={false}
+          autoCorrect={false}
+          autoComplete={false}
         />
       </div>
     );
