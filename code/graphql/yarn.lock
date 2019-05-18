@@ -1062,6 +1062,15 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
+"@platform/http@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.1.0.tgz#6563914937318d7aa461d75700be90f74d658ea1"
+  integrity sha512-7rGsNrPpbzR4QK3CQ9dKMF4Eg9ypgSR1s9cb5ZU2/sMSwA8JZov7kANDdMSnW87G020PUnmSv33wJgwlsE8Azg==
+  dependencies:
+    "@platform/libs" "0.0.14"
+    "@platform/util.value" "0.2.5"
+    isomorphic-fetch "2.2.1"
+
 "@platform/libs@0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.12.tgz#84f224528adae402ddba30b0bfcd74dbdd22f490"

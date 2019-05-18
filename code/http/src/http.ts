@@ -2,6 +2,11 @@ import { t, value as valueUtil } from './common';
 import * as isomorphic from 'isomorphic-fetch';
 
 /**
+ * Native fetch.
+ */
+export const fetch = isomorphic;
+
+/**
  * `GET` request.
  */
 export async function get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {

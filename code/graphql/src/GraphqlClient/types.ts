@@ -9,7 +9,9 @@ import {
 import { FetchResult, Operation } from 'apollo-link';
 import { GraphQLError, ExecutionResult } from 'graphql';
 import { ServerError, ServerParseError } from 'apollo-link-http-common';
+import { IHttpHeaders } from '@platform/http';
 
+export { IHttpHeaders };
 export type IGqlVariables = OperationVariables;
 
 export type IGqlFetchPolicy = FetchPolicy;
@@ -30,8 +32,6 @@ export type IGqlClient = {
     request: IGqlMutateOptions<D, V>,
   ): Promise<IGqlMutateResult<D>>;
 };
-
-export type IHttpHeaders = { [key: string]: string | number };
 
 /**
  * [Events]

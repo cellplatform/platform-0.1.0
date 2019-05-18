@@ -14,14 +14,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.14",
     "@platform/util.value": "0.2.5",
+    "@types/isomorphic-fetch": "0.0.35",
     "isomorphic-fetch": "2.2.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.53",
-    "@platform/ts": "3.4.22",
-    "@types/isomorphic-fetch": "0.0.35"
+    "@platform/ts": "3.4.22"
   },
   "files": [
     "lib"
