@@ -177,14 +177,15 @@ export class WebAuth {
     }
   }
 
-  public logout(options: { force?: boolean; silent?: boolean } = {}) {
+  public logout(options: { force?: boolean; silent?: boolean; returnTo?: string } = {}) {
     this.throwIfDisposed('logout');
     storage.isLoggedIn = false;
     this.tokens = undefined;
     this.profile = undefined;
     this.expiresAt = -1;
     if (options.force) {
-      this._auth0.logout({});
+      const { returnTo } = options;
+      this._auth0.logout({ returnTo });
     }
     if (options.silent !== true) {
       this.fireChanged();
