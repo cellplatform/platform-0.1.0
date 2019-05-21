@@ -214,8 +214,6 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
       state,
       dispatchTransaction,
     });
-
-    this.fireChanged();
   }
 
   /**
@@ -378,6 +376,10 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     const view = this.view;
     const self = this; // tslint:disable-line
 
+    // NB: Some transaction just move the cursor around etc.
+    //     Only fire change events for actual doc changes.
+    const isDocChanged = transaction.docChanged;
+
     const state = {
       from: view.state,
       to: view.state.apply(transaction),
@@ -406,23 +408,25 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
     // Fire the BEFORE event.
     let isCancelled = false;
-    const modifierKeys = { ...this.modifierKeys };
-    this.fire({
-      type: 'EDITOR/changing',
-      payload: {
-        transaction,
-        state,
-        value,
-        modifierKeys,
-        size,
-        get isCancelled() {
-          return isCancelled;
+    if (isDocChanged) {
+      const modifierKeys = { ...this.modifierKeys };
+      this.fire({
+        type: 'EDITOR/changing',
+        payload: {
+          transaction,
+          state,
+          value,
+          modifierKeys,
+          size,
+          get isCancelled() {
+            return isCancelled;
+          },
+          cancel() {
+            isCancelled = true;
+          },
         },
-        cancel() {
-          isCancelled = true;
-        },
-      },
-    });
+      });
+    }
     if (isCancelled) {
       return;
     }
@@ -435,7 +439,9 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
     }
 
     // Fire the AFTER event.
-    this.fireChanged();
+    if (isDocChanged) {
+      this.fireChanged();
+    }
   };
 
   private fire(e: t.TextEditorEvent) {
