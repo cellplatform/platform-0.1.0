@@ -203,7 +203,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
     );
 
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div {...css(styles.base, this.props.style)} className={'p-TextInput'}>
         <div {...css(styles.inner)}>
           {elPlaceholder}
           <HtmlInput
