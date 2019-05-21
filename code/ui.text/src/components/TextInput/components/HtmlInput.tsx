@@ -189,6 +189,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         position: 'relative',
         border: 'none',
         width: '100%',
+        lineHeight: 0,
         outline: 'none',
         background: 'transparent',
         opacity: 1,

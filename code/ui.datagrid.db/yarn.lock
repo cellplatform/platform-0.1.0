@@ -1293,29 +1293,29 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.9.tgz#c77917254592f791f83ddb04b05cfa03da831ba5"
   integrity sha512-x6oqGqdtA10i33QpeWek/Bd7e9atoMoX7B+XWy25010CojhaNEnSZLS+0R54HxbB58UpBZedIKj+winOMQS4eg==
 
-"@platform/ui.codemirror@0.0.50":
-  version "0.0.50"
-  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.0.50.tgz#ce3f078a9f6584b6ba14cfa91756f7442c2b37d6"
-  integrity sha512-uHhDft6MukdFmHmQmw01JpYWcWoseWiUVd97igYCDxLn6YEp81HICc3bL854Q2dprR8AZIrzxsgLDC/18YBIIA==
+"@platform/ui.codemirror@0.0.51":
+  version "0.0.51"
+  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.0.51.tgz#a2a1f3318cb2840b4d5116139ad37951a9fc8b48"
+  integrity sha512-giU17DPEI1Zv6R0TXIcc1q39sgjx1FHhQHyUCJ02PsxBgR5oWeznhQlPhednOTX70tkN8VeBVPlDvFPvwX/Ldg==
   dependencies:
     "@platform/libs" "0.0.14"
     "@platform/react" "0.2.5"
-    "@platform/ui.text" "0.2.0"
+    "@platform/ui.text" "0.2.1"
     "@types/codemirror" "0.0.74"
     "@uiharness/electron" "0.4.42"
     codemirror "5.46.0"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.cell@0.0.37":
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.37.tgz#6c75c9d867de03004c3325ba6e9059644b254299"
-  integrity sha512-146nUcVnOAviotnjryspiqt8q2QVT7vKNf6qBcMHGaFUQBTZ4Y32NBdielc+ugV4/7JzzbI8wHgEHkP18Ugjuw==
+"@platform/ui.datagrid.cell@0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.39.tgz#09fcba607fd57946eb6c0bf779a1f0d618eade30"
+  integrity sha512-kV8Fwywia/wXULfsTRWUFub6P70jGJxXVW+xROTPZRMGy/TiczNlDtcStWQNJ43kEOtGs0HR29RTPfzNBcbjPw==
   dependencies:
     "@platform/react" "0.2.5"
-    "@platform/ui.codemirror" "0.0.50"
+    "@platform/ui.codemirror" "0.0.51"
     "@platform/ui.datagrid.types" "0.0.35"
-    "@platform/ui.editor" "0.1.6"
-    "@platform/ui.text" "0.2.0"
+    "@platform/ui.editor" "0.1.7"
+    "@platform/ui.text" "0.2.1"
     "@platform/util.markdown" "0.0.19"
 
 "@platform/ui.datagrid.types@0.0.35":
@@ -1326,21 +1326,21 @@
     "@platform/react" "0.2.5"
     "@platform/util.value.cell" "0.0.39"
 
-"@platform/ui.datagrid@0.0.121":
-  version "0.0.121"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.121.tgz#b3affce48809dc6e7b169159c7bfe1a7789ea129"
-  integrity sha512-qhNOS5aR01/Pc2+MKvncOios1E3qs2FchtQR1hViojdvqP1xCxtCeJ9tvP4mCnYqEDRcnMbda2FO3OtKfdnN5A==
+"@platform/ui.datagrid@0.0.123":
+  version "0.0.123"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.123.tgz#6c03c85c49d6dd9c86097341c362a57bbfa65ea1"
+  integrity sha512-nn6gWcTAAvY2JU3fpQfyEQnhd464pXdClH9fSxkwF2WRJIKH9Vk6J6q87jrVxjQPMpxcCBztggnSy1+XG2hKhA==
   dependencies:
     "@platform/react" "0.2.5"
     "@platform/ui.datagrid.types" "0.0.35"
-    "@platform/ui.text" "0.2.0"
+    "@platform/ui.text" "0.2.1"
     "@platform/util.value.cell" "0.0.39"
     handsontable "6.2.2"
 
-"@platform/ui.editor@0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.6.tgz#4b0cb3afbfa81f7ec0a20c65533428c5111c29c3"
-  integrity sha512-ZU441K+MsFA41LMHtxisssNXbMPPbocZRV5bdw0+hvQUkvGN8ZZ5nCv21V5jYoSZjQp15tnd3u7sbPZx1qA/ww==
+"@platform/ui.editor@0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.7.tgz#2fd1a27a31fac5d11fff98ccb234f4f29f15d6bb"
+  integrity sha512-sHfR0hon1Nqtu/kyqVkXE7jJBiIrds6XN0rHSJ3QIrh9uXZhzLHD3trMYoUyQceOzgppf/10z/y7eLrfWYUXzw==
   dependencies:
     "@platform/css" "0.1.9"
     "@platform/react" "0.2.5"
@@ -1406,10 +1406,10 @@
     "@platform/react" "0.2.5"
     "@platform/util.value" "0.2.5"
 
-"@platform/ui.text@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.0.tgz#1e3b6f97c10c4cad17724e954afa82d0d7f8dee7"
-  integrity sha512-hRln1kw73UUGCvv5gB6jh1DWoZ2Rpy9Pah7W/snMGZDSSxpJ6MBMVvJ2ggGe4jaGf+XxPmQ07KNuOS/eg8kMOg==
+"@platform/ui.text@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.1.tgz#d8fb3d578469217a3e500cb90910afa816eb3eab"
+  integrity sha512-J7njVZvo68KHNapVOdcTnm7wRhBUcF1ck3K0j02vMjFhbIsgG8s0xfhLoxAsXQJZMtrM6kqtL4088e4S31b3PA==
   dependencies:
     "@platform/libs" "0.0.14"
     "@platform/react" "0.2.5"
