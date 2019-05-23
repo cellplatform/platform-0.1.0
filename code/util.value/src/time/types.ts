@@ -8,11 +8,19 @@ export type DayFactory = (config?: ConfigType) => Dayjs;
 export type ITime = {
   delay: TimeDelay;
   wait: TimeWait;
-  timer: (start?: Date) => ITimer;
-  toTimestamp: (date?: Date) => number;
-  fromTimestamp: (timestamp: number) => Date;
   elapsed: TimeElapsed;
   day: DayFactory;
+  now: IUtc;
+  utc(input?: Date | number): IUtc;
+  timer(start?: Date, options?: { round?: number }): ITimer;
+  toTimestamp(date?: Date): number;
+  fromTimestamp(timestamp: number): Date;
+};
+
+export type IUtc = {
+  date: Date;
+  timestamp: number;
+  unix: number;
 };
 
 export type IDuration = {
