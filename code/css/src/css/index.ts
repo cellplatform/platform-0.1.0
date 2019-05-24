@@ -12,7 +12,7 @@ api.merge = merge;
 api.transform = transformStyle;
 
 api.global = global;
-api.head = head;
+api.head = head.init();
 
 api.toEdges = toEdges;
 api.toMargins = toMargins;
