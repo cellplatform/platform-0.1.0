@@ -686,4 +686,68 @@ describe('Db', () => {
       expect((await db.get('bar')).props.exists).to.eql(false);
     });
   });
+
+  describe('timestamps', () => {
+    it('no timestamps', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', { msg: 'hello' });
+      expect((await db.get('foo')).value).to.eql({ msg: 'hello' });
+    });
+
+    it('timestamp fields not used as timestamps (non-number)', async () => {
+      const db = await Db.create({ dir });
+      const model = { createdAt: 'hello', modifiedAt: { foo: 123 } };
+      await db.put('foo', model);
+      expect((await db.get('foo')).value).to.eql(model);
+    });
+
+    it('sets timestamps from default (-1)', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', { createdAt: -1, modifiedAt: -1 });
+
+      const now = time.now.timestamp;
+      const res: t.IDbTimestamps = (await db.get('foo')).value;
+
+      expect(res.createdAt).to.be.within(now - 10, now + 10);
+      expect(res.modifiedAt).to.eql(res.createdAt);
+    });
+
+    it('updates the `modifiedAt` timestamp', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', { createdAt: -1, modifiedAt: -1 });
+
+      const model1: t.IDbTimestamps = (await db.get('foo')).value;
+
+      await time.wait(50);
+      const now = time.now.timestamp;
+      await db.put('foo', { ...model1, msg: 'hello' });
+
+      const model2: t.IDbTimestamps = (await db.get('foo')).value;
+      expect(model1.createdAt).to.eql(model2.createdAt);
+      expect(model2.modifiedAt).to.be.within(now - 10, now + 10);
+    });
+
+    it('modifies timestamps on putMany', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', { createdAt: -1, modifiedAt: -1 });
+      await db.put('bar', { createdAt: -1, modifiedAt: -1 });
+
+      const res1 = await db.getMany(['foo', 'bar']);
+
+      await time.wait(50);
+      const now = time.now.timestamp;
+      await db.putMany({
+        foo: { ...res1.foo.value, msg: 'yo' },
+        bar: { ...res1.bar.value, msg: 'mama' },
+      });
+
+      const res2 = await db.getMany(['foo', 'bar']);
+
+      expect(res2.foo.value.createdAt).to.eql(res1.foo.value.createdAt);
+      expect(res2.foo.value.createdAt).to.eql(res1.foo.value.createdAt);
+
+      expect(res2.foo.value.modifiedAt).to.be.within(now - 10, now + 10);
+      expect(res2.bar.value.modifiedAt).to.be.within(now - 10, now + 10);
+    });
+  });
 });

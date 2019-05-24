@@ -274,9 +274,12 @@ export class Db<D extends object = any> implements t.IDb<D> {
     this.throwIfNoKey('put', key);
     return new Promise<t.IDbValue<K, D[K]>>(async (resolve, reject) => {
       const current = await this.get(key);
+      value = util.incrementTimestamps(value);
+
       if (equals(value, current.value)) {
         return resolve(current); // No change to the value so do not touch the DB.
       }
+
       this._.db.put(key, util.serializeValue(value), (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(util.toValue(result));
       });
@@ -366,7 +369,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
 
       list = list.map(item => {
         const type = args.type;
-        const value = util.serializeValue(item.value);
+        let value = item.value;
+        value = util.incrementTimestamps(value);
+        value = util.serializeValue(value);
         return { ...item, type, value };
       });
 
