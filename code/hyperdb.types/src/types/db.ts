@@ -75,6 +75,11 @@ export type IDbMethods<D extends {} = any> = {
 export type IDbUpdateObject<D extends object = any> = { [key in keyof D]: D[keyof D] };
 export type IDbUpdateList<D extends object = any> = Array<{ key: keyof D; value: D[keyof D] }>;
 
+export type IDbTimestamps = {
+  createdAt: number;
+  modifiedAt: number;
+};
+
 /**
  * [Events]
  */

@@ -1,4 +1,4 @@
-import { t, value as valueUtil } from '../common';
+import { t, value as valueUtil, time } from '../common';
 
 export function isObject(value: any) {
   return value !== null && typeof value === 'object';
@@ -84,6 +84,39 @@ export function formatWatchPatterns<T extends object = any>(pattern: Array<keyof
   patterns = patterns.length === 0 ? ['*'] : patterns; // NB: Watch for all changes if no specific paths were given.
   patterns = patterns.map(p => p.trim()).map(p => asWildcard(p));
   return patterns;
+}
+
+/**
+ * Ensures timestamps that may be on a model are present and represent actual dates.
+ *
+ */
+export function formatTimestamps<T extends t.IDbTimestamps = any>(
+  model: T,
+  defaultTimestamp?: number,
+): T {
+  const asTimestamp = (key?: keyof t.IDbTimestamps) => {
+    if (key && typeof model === 'object' && typeof model[key] === 'number') {
+      if (model[key] === -1) {
+        const timestamp = defaultTimestamp === undefined ? time.now.timestamp : defaultTimestamp;
+        model = { ...model, [key]: timestamp };
+      }
+    }
+  };
+  asTimestamp('createdAt');
+  asTimestamp('modifiedAt');
+  return model;
+}
+
+/**
+ * Sets the `modifiedAt` timestamp to now.
+ */
+export function incrementTimestamps<T extends t.IDbTimestamps = any>(
+  model: T,
+  defaultTimestamp?: number,
+) {
+  model = formatTimestamps(model, defaultTimestamp);
+  model = { ...model, modifiedAt: time.now.timestamp };
+  return model;
 }
 
 /**
