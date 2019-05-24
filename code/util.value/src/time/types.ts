@@ -10,14 +10,14 @@ export type ITime = {
   wait: TimeWait;
   elapsed: TimeElapsed;
   day: DayFactory;
-  now: IUtc;
-  utc(input?: Date | number): IUtc;
+  now: IDate;
+  utc(input?: Date | number): IDate;
   timer(start?: Date, options?: { round?: number }): ITimer;
   toTimestamp(date?: Date): number;
   fromTimestamp(timestamp: number): Date;
 };
 
-export type IUtc = {
+export type IDate = {
   date: Date;
   timestamp: number;
   unix: number;

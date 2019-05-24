@@ -1,4 +1,5 @@
 import * as day from 'dayjs';
+import { IDate } from './types';
 
 /**
  * Retrieves a UTC timestamp.
@@ -22,7 +23,7 @@ export function fromTimestamp(timestamp: number) {
 export function utc(input?: Date | number) {
   const date =
     input === undefined ? new Date() : typeof input === 'object' ? input : fromTimestamp(input);
-  return {
+  const res: IDate = {
     get date() {
       return date;
     },
@@ -33,4 +34,5 @@ export function utc(input?: Date | number) {
       return day(date).unix();
     },
   };
+  return res;
 }

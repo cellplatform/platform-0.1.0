@@ -1,4 +1,4 @@
-import { time, value as valueUtil } from '@platform/util.value';
+import { ITimer, time, value as valueUtil } from '@platform/util.value';
 import * as R from 'ramda';
 import { Observable, Subject, timer as ObservableTimer } from 'rxjs';
 import { filter, map, share, takeUntil, takeWhile } from 'rxjs/operators';
@@ -33,7 +33,7 @@ type Ref<D> = SendResponseInit<any> & {
   complete$: Subject<any>;
   timeout$: Subject<any>;
   results: Array<IpcHandlerResult<D>>;
-  timer: time.ITimer;
+  timer: ITimer;
   isTimedOut: boolean;
   elapsed?: number;
   promise?: Promise<IpcSending<any, any>>;

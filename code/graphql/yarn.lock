@@ -1062,12 +1062,12 @@
     fs-extra "7.0.1"
     js-yaml "3.13.1"
 
-"@platform/http@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.1.1.tgz#d512958dc015cf5bc2acd389478352c94205a8e8"
-  integrity sha512-+M7sZfFJS9QlzpPexXfmgtE+2HmZiY1yVUXhwg51JzNA88H3RexFrvIV2J2d36ugpeYNr8lawhiGChFf9Vd/eQ==
+"@platform/http@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.1.4.tgz#5f1d20815a1f296ce5ba933a5370abd4e3cb545f"
+  integrity sha512-53fvd3k9mzz3B2cBf3rTNm/OVvDCF4x0eGgvH0JTM4JlJk+0ugb5LPQ+5IThcXOiWk1M0d2t9IRGNUnIhHhtwA==
   dependencies:
-    "@platform/util.value" "0.2.5"
+    "@platform/util.value" "0.3.2"
     "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
 
@@ -1294,6 +1294,19 @@
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.2.5.tgz#527cb3eb9ed4f0147db6e3abcab32067e39a2b11"
   integrity sha512-h+zYiPABynpjQH2K6tzW3P4urKW8D+Nh/yuVsEVTKHMzqOeG3PEykccNkN9mpY9o6Z2t0a/Tnk9OdVPS0xMT3w==
+  dependencies:
+    "@platform/libs" "0.0.14"
+    "@platform/types" "0.0.9"
+    "@platform/util.is" "0.0.71"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.0.0"
+
+"@platform/util.value@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.3.2.tgz#2b60601cf0650f9cd573ef91aa5a4a3498d5ec9b"
+  integrity sha512-8NRH/USJFi3s+8hV2kD1Ww0OjbKcBkQexIJjmYWbgNJC9xkmI/GVbhgmcffNr4z+8sLxSqQEDqqpqIvIi/nl0A==
   dependencies:
     "@platform/libs" "0.0.14"
     "@platform/types" "0.0.9"

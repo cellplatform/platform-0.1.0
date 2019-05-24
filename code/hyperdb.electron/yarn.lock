@@ -65,6 +65,18 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
+"@platform/css@0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.12.tgz#3b2613e4e301efa7e2fb7ade097c78f4dd58f0b3"
+  integrity sha512-LhTba3ZzEFFc5sWMLBjrBpgQNq0zMbhSV0r1Phn281iJzTyk7SVZxmnuJcJny1nnoFtfoaugvdtfcYju0Wd84g==
+  dependencies:
+    "@platform/libs" "0.0.14"
+    "@platform/util.is" "0.0.71"
+    "@platform/util.value" "0.3.2"
+    "@types/tinycolor2" "1.4.2"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
 "@platform/css@0.1.9":
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.9.tgz#b41134f58c619c3fa17123111d6f772e8c996107"
@@ -86,6 +98,22 @@
     "@platform/fs" "0.0.61"
     "@platform/log" "0.0.122"
     "@platform/react" "0.2.5"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.2.1"
+    electron-log "3.0.5"
+    electron-store "3.2.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+
+"@platform/electron@0.1.64":
+  version "0.1.64"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.64.tgz#d1ec7ea6e288aa517ba853e908bcca66b005c827"
+  integrity sha512-PBipX//9jPBBcClF6+H/pZK9IqX7zkx3VUh6MaGpL6qzlYrjDgVFy3fMEkvQJLn8/WhWIHJfBFFs1KmlIhoXsA==
+  dependencies:
+    "@babel/polyfill" "7.4.4"
+    "@platform/fs" "0.0.61"
+    "@platform/log" "0.0.122"
+    "@platform/react" "0.2.8"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.2.1"
     electron-log "3.0.5"
@@ -123,15 +151,15 @@
   dependencies:
     "@platform/libs" "0.0.14"
 
-"@platform/hyperdb@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.2.1.tgz#d8a62ff345ef8d1331b34b2729bf3d6720a243e2"
-  integrity sha512-KeYZ1KShlRtPXJPNBpPyTe8QCyh7WKac0mR28daHL2oWjlH9EsVlmetQOQnD3x3VKJdJwGg8cMxCUIUslIGbIQ==
+"@platform/hyperdb@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.2.4.tgz#200e1d2bd7815d251859509bc93468b002f31f2e"
+  integrity sha512-GmA1yOmPfPVYY9Q3QSXF+pL2Xo3qXKECFMbirdu6kf0lCrHDbz4Qe/AoBgrqcN8mOBFMTqXjBGthiVBrps40Uw==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.0.61"
     "@platform/hyperdb.types" "0.1.7"
-    "@platform/util.value" "0.2.5"
+    "@platform/util.value" "0.3.2"
     discovery-swarm "5.1.4"
     hyperdb "3.5.0"
     pump "3.0.0"
@@ -161,6 +189,18 @@
   integrity sha512-/xGNloKVtFnLd3Y9MhyUM5XTcC1fsFnYQkvMhw6vqrJj/+niztejQMyGO1cFwLuXyTyuxJrDHxY9Z9w96nAuLA==
   dependencies:
     "@platform/css" "0.1.9"
+    "@platform/util.is" "0.0.71"
+    "@types/react" "16.8.17"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
+"@platform/react@0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.2.8.tgz#62a02b8e65f007ab2a91fe956010055e6a78402d"
+  integrity sha512-FkNYAnnglIeVnS6uOQadZLvVYXgvD3mIifJo6obkoPKeF5W01ZgtiqO4hy/TOzH5WHMo425GETRWx1z2UkPPrQ==
+  dependencies:
+    "@platform/css" "0.1.12"
     "@platform/util.is" "0.0.71"
     "@types/react" "16.8.17"
     "@types/react-dom" "16.8.4"
@@ -235,6 +275,19 @@
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.2.5.tgz#527cb3eb9ed4f0147db6e3abcab32067e39a2b11"
   integrity sha512-h+zYiPABynpjQH2K6tzW3P4urKW8D+Nh/yuVsEVTKHMzqOeG3PEykccNkN9mpY9o6Z2t0a/Tnk9OdVPS0xMT3w==
+  dependencies:
+    "@platform/libs" "0.0.14"
+    "@platform/types" "0.0.9"
+    "@platform/util.is" "0.0.71"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.0.0"
+
+"@platform/util.value@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.3.2.tgz#2b60601cf0650f9cd573ef91aa5a4a3498d5ec9b"
+  integrity sha512-8NRH/USJFi3s+8hV2kD1Ww0OjbKcBkQexIJjmYWbgNJC9xkmI/GVbhgmcffNr4z+8sLxSqQEDqqpqIvIi/nl0A==
   dependencies:
     "@platform/libs" "0.0.14"
     "@platform/types" "0.0.9"

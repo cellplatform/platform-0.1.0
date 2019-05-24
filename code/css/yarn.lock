@@ -1282,6 +1282,19 @@
     dayjs "1.8.14"
     semver "6.0.0"
 
+"@platform/util.value@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.3.2.tgz#2b60601cf0650f9cd573ef91aa5a4a3498d5ec9b"
+  integrity sha512-8NRH/USJFi3s+8hV2kD1Ww0OjbKcBkQexIJjmYWbgNJC9xkmI/GVbhgmcffNr4z+8sLxSqQEDqqpqIvIi/nl0A==
+  dependencies:
+    "@platform/libs" "0.0.14"
+    "@platform/types" "0.0.9"
+    "@platform/util.is" "0.0.71"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.0.0"
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"
@@ -1484,6 +1497,12 @@
   version "0.2.37"
   resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.2.37.tgz#37e58e873ab8334bf6af54c3cf4533b458ebfea5"
   integrity sha512-fmK9Wil3HwTm9cu1DLXIAjOYnQCxtzOWsiewTQeHZEefjdJ2aDxqF/rJOyz4BmFE+1LaqJ1Z72SuaZ0CWulCBg==
+  dependencies:
+    "@platform/cli.ui" "0.1.25"
+    "@platform/electron" "0.1.61"
+    "@platform/react" "0.2.5"
+    "@platform/ui.object" "0.0.111"
+    "@uiharness/types" "0.1.29"
 
 "@zeit/schemas@2.6.0":
   version "2.6.0"

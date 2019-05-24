@@ -73,15 +73,15 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/npm@0.1.26":
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.1.26.tgz#8597698a206f593ca4a8d8af515d16df33dc930e"
-  integrity sha512-UZRLCTuLp/vB19X5NS1KP6J8W0dcraZf1YqzgfssKMrPfWchd1QgC9c5lOfSiHEoZJKs5ZIhPBbSNpH0mDIniA==
+"@platform/npm@0.1.29":
+  version "0.1.29"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.1.29.tgz#327e59e34851bf082126ac0b13eccd223bdd7f0a"
+  integrity sha512-vtubEmbimUWyKoVzsz0BQGNknFT66X/SPf83ZpZ/YjAtUMTFiPtG2z1U22jwWGmtIa3c2peGNwnKI7YLiXtqaw==
   dependencies:
     "@platform/exec" "0.2.9"
     "@platform/fs" "0.0.61"
     "@platform/log" "0.0.122"
-    "@platform/util.value" "0.2.5"
+    "@platform/util.value" "0.3.2"
     "@types/semver" "6.0.0"
     semver "6.0.0"
 
@@ -131,10 +131,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.71.tgz#ba9c38d737df2364fd2a2bfc6246eb2859c03e06"
   integrity sha512-tAmfd1VpQ9UZspnsJAntnx2GtdgvfGQDXEDSEzFndObh7+zAYtbil0ZWN5QKMDeZB5IVHSAAr7qr9B6nqNgjcQ==
 
-"@platform/util.value@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.2.5.tgz#527cb3eb9ed4f0147db6e3abcab32067e39a2b11"
-  integrity sha512-h+zYiPABynpjQH2K6tzW3P4urKW8D+Nh/yuVsEVTKHMzqOeG3PEykccNkN9mpY9o6Z2t0a/Tnk9OdVPS0xMT3w==
+"@platform/util.value@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.3.2.tgz#2b60601cf0650f9cd573ef91aa5a4a3498d5ec9b"
+  integrity sha512-8NRH/USJFi3s+8hV2kD1Ww0OjbKcBkQexIJjmYWbgNJC9xkmI/GVbhgmcffNr4z+8sLxSqQEDqqpqIvIi/nl0A==
   dependencies:
     "@platform/libs" "0.0.14"
     "@platform/types" "0.0.9"

@@ -39,14 +39,14 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@platform/css@0.1.9":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.9.tgz#b41134f58c619c3fa17123111d6f772e8c996107"
-  integrity sha512-jSQUS7A72+nOPY92q5IS4DAhXIKUpottVVmySm2marhgTdnUtCJNnc6SwPv8+jXG7IQu0g7zIVYIjtJslSDicA==
+"@platform/css@0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.12.tgz#3b2613e4e301efa7e2fb7ade097c78f4dd58f0b3"
+  integrity sha512-LhTba3ZzEFFc5sWMLBjrBpgQNq0zMbhSV0r1Phn281iJzTyk7SVZxmnuJcJny1nnoFtfoaugvdtfcYju0Wd84g==
   dependencies:
     "@platform/libs" "0.0.14"
     "@platform/util.is" "0.0.71"
-    "@platform/util.value" "0.2.5"
+    "@platform/util.value" "0.3.2"
     "@types/tinycolor2" "1.4.2"
     glamor "2.20.40"
     tinycolor2 "1.4.1"
@@ -93,12 +93,12 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.2.5.tgz#f08ffe0399efd178fb6fecd57e2a815ac18024bf"
-  integrity sha512-/xGNloKVtFnLd3Y9MhyUM5XTcC1fsFnYQkvMhw6vqrJj/+niztejQMyGO1cFwLuXyTyuxJrDHxY9Z9w96nAuLA==
+"@platform/react@0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.2.8.tgz#62a02b8e65f007ab2a91fe956010055e6a78402d"
+  integrity sha512-FkNYAnnglIeVnS6uOQadZLvVYXgvD3mIifJo6obkoPKeF5W01ZgtiqO4hy/TOzH5WHMo425GETRWx1z2UkPPrQ==
   dependencies:
-    "@platform/css" "0.1.9"
+    "@platform/css" "0.1.12"
     "@platform/util.is" "0.0.71"
     "@types/react" "16.8.17"
     "@types/react-dom" "16.8.4"
@@ -151,10 +151,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.71.tgz#ba9c38d737df2364fd2a2bfc6246eb2859c03e06"
   integrity sha512-tAmfd1VpQ9UZspnsJAntnx2GtdgvfGQDXEDSEzFndObh7+zAYtbil0ZWN5QKMDeZB5IVHSAAr7qr9B6nqNgjcQ==
 
-"@platform/util.value@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.2.5.tgz#527cb3eb9ed4f0147db6e3abcab32067e39a2b11"
-  integrity sha512-h+zYiPABynpjQH2K6tzW3P4urKW8D+Nh/yuVsEVTKHMzqOeG3PEykccNkN9mpY9o6Z2t0a/Tnk9OdVPS0xMT3w==
+"@platform/util.value@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.3.2.tgz#2b60601cf0650f9cd573ef91aa5a4a3498d5ec9b"
+  integrity sha512-8NRH/USJFi3s+8hV2kD1Ww0OjbKcBkQexIJjmYWbgNJC9xkmI/GVbhgmcffNr4z+8sLxSqQEDqqpqIvIi/nl0A==
   dependencies:
     "@platform/libs" "0.0.14"
     "@platform/types" "0.0.9"

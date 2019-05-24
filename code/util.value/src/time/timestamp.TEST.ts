@@ -55,9 +55,10 @@ describe('time.utc', () => {
 describe('time.now', () => {
   it('now', () => {
     const d = new Date();
+    const dt = d.getTime();
     const utc = time.now;
-    expect(utc.date).to.eql(d);
-    expect(utc.timestamp).to.eql(time.toTimestamp(d));
+    expect(utc.date.getTime()).to.be.within(dt - 10, dt + 10);
+    expect(utc.timestamp).to.be.within(dt - 10, dt + 10);
     expect(utc.unix).to.eql(time.day(d).unix());
   });
 });
