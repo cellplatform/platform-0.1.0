@@ -134,10 +134,10 @@
     "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
 
-"@platform/hyperdb.types@0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.1.7.tgz#a89dc212c89c98fa8aab74177964b62cf5b22f48"
-  integrity sha512-xASD09KR1Sq5JGlTeTGUYqXccidc35vW01gUuts57Pu0Lv4ZI8th7sqCoorNGirmsu1csN1kIP7JRgXgvpBy6g==
+"@platform/hyperdb.types@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.2.0.tgz#b205c895f301157318c647865dc2a8a44e8b1c6e"
+  integrity sha512-GzZFC0yXaLyR6D7c7M4tfHo8kan2vWC6UKxjr5a1rBCKUI0339K487L5GozkU6KetXNsCYySG1IxtyRfDv5Thw==
   dependencies:
     "@platform/libs" "0.0.14"
 
