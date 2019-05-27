@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.image",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "description": "Image related components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,8 +15,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.2.8",
-    "@platform/ui.icon": "0.0.58",
+    "@platform/react": "0.2.10",
+    "@platform/ui.icon": "0.0.60",
     "gravatar-url": "3.0.1",
     "react-icons": "3.7.0"
   },

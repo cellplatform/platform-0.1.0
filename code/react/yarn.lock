@@ -964,10 +964,10 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.4"
 
-"@platform/css@0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.12.tgz#3b2613e4e301efa7e2fb7ade097c78f4dd58f0b3"
-  integrity sha512-LhTba3ZzEFFc5sWMLBjrBpgQNq0zMbhSV0r1Phn281iJzTyk7SVZxmnuJcJny1nnoFtfoaugvdtfcYju0Wd84g==
+"@platform/css@0.1.14":
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.14.tgz#da96b08024fd9446861dbf8139926aa8b02b567e"
+  integrity sha512-9fm8CYIwVCZxVacMwQZ5jvh6dTZ91sr97GLE47oBn0crqYvTmwZd/NixQJLy0GkPIapAw9EbETliaT8fkk6A0A==
   dependencies:
     "@platform/libs" "0.0.14"
     "@platform/util.is" "0.0.71"

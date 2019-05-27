@@ -69,6 +69,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
   public static toValues = util.toValues;
   public static toKeyValueList = util.toKeyValueList;
   public static toValueList = util.toValueList;
+  public static ensureTimestamps = util.ensureTimestamps;
 
   /**
    * [Constructor]

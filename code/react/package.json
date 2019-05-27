@@ -1,6 +1,6 @@
 {
   "name": "@platform/react",
-  "version": "0.2.8",
+  "version": "0.2.10",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
     "start": "ui start $@"
   },
   "dependencies": {
-    "@platform/css": "0.1.12",
+    "@platform/css": "0.1.14",
     "@platform/util.is": "0.0.71",
     "@types/react": "16.8.17",
     "@types/react-dom": "16.8.4",

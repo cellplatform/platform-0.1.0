@@ -90,7 +90,7 @@ export function formatWatchPatterns<T extends object = any>(pattern: Array<keyof
  * Ensures timestamps that may be on a model are present and represent actual dates.
  *
  */
-export function formatTimestamps<T = any>(model: T, defaultTimestamp?: number): T {
+export function ensureTimestamps<T = any>(model: T, defaultTimestamp?: number): T {
   const asTimestamp = (key?: keyof t.IDbTimestamps) => {
     if (key && typeof model === 'object' && typeof model[key] === 'number') {
       if (model[key] === -1) {
@@ -111,7 +111,7 @@ export function formatTimestamps<T = any>(model: T, defaultTimestamp?: number): 
  */
 export function incrementTimestamps<T = any>(model: T, defaultTimestamp?: number) {
   if (model !== null) {
-    model = formatTimestamps(model, defaultTimestamp);
+    model = ensureTimestamps(model, defaultTimestamp);
     if (typeof model === 'object' && typeof (model as any).modifiedAt === 'number') {
       model = { ...model, modifiedAt: time.now.timestamp };
     }
