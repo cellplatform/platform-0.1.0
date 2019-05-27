@@ -30,8 +30,11 @@ export interface IHtmlInputProps extends ITextInputFocus, ITextInputEvents, IInp
   disabledOpacity?: number;
   style?: GlamorValue;
   valueStyle?: ITextInputStyle;
-  spellCheck?: boolean;
   selectionBackground?: number | string;
+  spellCheck?: boolean;
+  autoCapitalize?: boolean;
+  autoCorrect?: boolean;
+  autoComplete?: boolean;
 }
 export interface IHtmlInputState {
   value?: string;
@@ -186,6 +189,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         position: 'relative',
         border: 'none',
         width: '100%',
+        lineHeight: 0,
         outline: 'none',
         background: 'transparent',
         opacity: 1,
@@ -213,6 +217,9 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         onChange={this.handleChange}
         maxLength={maxLength}
         spellCheck={this.props.spellCheck}
+        autoCapitalize={this.props.autoCapitalize === false ? 'off' : undefined}
+        autoCorrect={this.props.autoCorrect === false ? 'off' : undefined}
+        autoComplete={this.props.autoComplete === false ? 'off' : undefined}
         onFocus={this.handleFocus}
         onBlur={this.props.onBlur}
         onKeyPress={this.handleKeyPress}

@@ -18,6 +18,8 @@ import { IStackPanel, StackPanel, StackPanelSlideEvent } from '../primitives';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
 
+const { defaultValue } = valueUtil;
+
 export { TreeNodeMouseEvent, TreeNodeMouseEventHandler };
 export type ITreeViewProps = {
   node?: ITreeNode;
@@ -175,7 +177,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
     const props = node.props || {};
     const header = props.header || {};
-    const isHeaderVisible = valueUtil.defaultValue(header.isVisible, true);
+    const isHeaderVisible = defaultValue(header.isVisible, true);
 
     const el = renderPanel({ node, depth, isInline: false });
     if (!el || !isHeaderVisible) {
@@ -207,7 +209,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     const theme = this.theme;
     const props = node.props || {};
     const header = props.header || {};
-    const isHeaderVisible = valueUtil.defaultValue(header.isVisible, true);
+    const isHeaderVisible = defaultValue(header.isVisible, true);
     const elHeader = isHeaderVisible && this.renderHeader(node, depth);
 
     return (
@@ -221,6 +223,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         header={elHeader}
         paddingTop={isHeaderVisible ? this.headerHeight : 0}
         isBorderVisible={this.state.isSliding}
+        isScrollable={true}
         theme={theme}
         background={this.props.background}
         onNodeMouse={this.handleNodeMouse}

@@ -1,4 +1,4 @@
-import { ApolloServer, express, t, pkg } from './common';
+import { ApolloServer, express, pkg } from './common';
 import { Context } from './Context';
 import { init } from './schema';
 
@@ -24,9 +24,9 @@ export const graphql = new ApolloServer({
   /**
    * Generate the context that is passed to each resolver.
    */
-  context(e): t.IContext {
-    const { req } = e;
-    return new Context({ req });
+  context(e) {
+    const jwt = e.req.headers.authorization;
+    return new Context({ jwt });
   },
 });
 

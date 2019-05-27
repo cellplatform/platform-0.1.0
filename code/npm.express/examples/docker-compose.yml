@@ -5,7 +5,7 @@ services:
     image: teamdb/npm.express
     container_name: app
     # command: yarn start --npm-module=@platform/npm.express.example-server --url-prefix=/sys --dir=/data/app --prerelease=true --update
-    command: yarn start --url-prefix=/sys
+    command: yarn start --url-prefix=/
     env_file:
       - env/server.env
       - env/example.env

@@ -54,9 +54,17 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
-          <Avatar {...this.state} events$={this.events$} />
+          <Avatar {...this.state} events$={this.events$} onClick={this.onClick} />
         </div>
       </CommandShell>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+
+  private onClick = () => {
+    log.info('onClick');
+  };
 }

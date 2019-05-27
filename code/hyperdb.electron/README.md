@@ -22,5 +22,7 @@ See the [`/test`](./test) folder for example configuration and usage samples in 
 
 ## See Also
 
-- @platform/[hyperdb](../hyperdb)
+- @platform/[hyperdb.electron](../hyperdb)
 - @platform/[hyperdb.types](../hyperdb.types)
+- @platform/[hyperdb.tools](../hyperdb.tools)
+- @platform/[hyperdb.electron](../hyperdb.electron)

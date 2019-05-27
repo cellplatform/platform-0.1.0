@@ -1,5 +1,5 @@
 {
-  "extends": "./node_modules/@platform/ts/tsconfig.json",
+  "extends": "@platform/ts/tsconfig.json",
   "include": ["test"],
   "compilerOptions": {
     "outDir": "lib",

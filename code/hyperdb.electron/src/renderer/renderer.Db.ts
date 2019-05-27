@@ -159,6 +159,10 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
     return this.invoke('values', [args]) as Promise<t.IDbValues<T>>;
   }
 
+  public async getMany<T extends object = D>(keys: Array<keyof D>) {
+    return this.invoke('getMany', [keys]) as Promise<t.IDbValues<T>>;
+  }
+
   public async putMany<T extends object = D>(args: t.IDbUpdateObject<T> | t.IDbUpdateList<T>) {
     return this.invoke('putMany', [args]) as Promise<t.IDbValues<T>>;
   }

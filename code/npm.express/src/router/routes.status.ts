@@ -1,5 +1,7 @@
 import { express, filesize, fs, getProcess, npm, t, value } from '../common';
 
+const pkg = require('../../package.json');
+
 export function create(args: { getContext: t.GetNpmRouteContext }) {
   const router = express.Router();
 
@@ -38,8 +40,9 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
 
       // Retrieve version history.
       const showVersions = queryKeys.includes('versions') && req.query.versions !== 'false';
+
       if (showVersions) {
-        let versions = await npm.getVersionHistory(name, { prerelease });
+        let versions = await npm.getVersionHistory(name, { prerelease, NPM_TOKEN });
         let total = value.toNumber(req.query.versions);
         if (typeof total === 'number') {
           total = total < 0 ? 0 : total;
@@ -57,6 +60,7 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
       }
 
       // Finish up.
+      response = { ...response, 'npm.express': pkg.version };
       res.send(response);
     } catch (error) {
       res.send({ status: 500, error: error.message });

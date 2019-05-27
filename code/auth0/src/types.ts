@@ -7,7 +7,7 @@ export type IAuthTokens = {
 };
 
 export type IAuthProfile = {
-  sub: string;
+  id: string;
   email: string;
   picture: string;
   updatedAt: Date;

@@ -1,5 +1,7 @@
-import { POLICY } from '../auth';
-import { gql, Key, log, t } from '../common';
+import { policy } from '../auth';
+import { gql, log, t } from '../common';
+
+import { GetContext } from './Context';
 
 /**
  * [Types]
@@ -22,8 +24,8 @@ export const typeDefs = gql`
  * [Initialize]
  */
 
-export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
-  const { getDb, keys } = args;
+export function init(args: { toContext: GetContext }) {
+  const { toContext } = args;
 
   /**
    * [Resolvers]
@@ -47,9 +49,12 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
       /**
        * Save a complete conversation-thread.
        */
-      save: async (_: any, args: { thread: t.IThreadModel }, ctx: any, info: any) => {
-        const auth = await ctx.authorize(POLICY.THREAD.WRITE);
-        if (!auth.isAllowed) {
+      save: async (_: any, args: { thread: t.IThreadModel }, c: t.IGqlContext, info: any) => {
+        const ctx = toContext(c);
+        const k = ctx.keys.thread;
+
+        const auth = await ctx.authorize({ policy: [policy.userRequired, policy.save] });
+        if (auth.isDenied) {
           auth.throw();
         }
 
@@ -59,7 +64,6 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
         if (!thread) {
           throw new Error(`Cannot save. Conversation thread not supplied.`);
         }
-        const k = keys.thread;
         const items = thread.items.reduce(
           (acc, next) => ({ ...acc, [k.itemDbKey(next)]: next }),
           {},
@@ -74,7 +78,7 @@ export function init(args: { getDb: t.GetConverstaionDb; keys: Key }) {
         //  - meta-data
         //  - items
         //  - users
-        const db = await getDb();
+        const db = await ctx.getDb();
         await db.putMany(updates);
 
         // Finish up.

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { t, css, color, GlamorValue, value, gravatar } from '../../common';
+import { t, css, color, GlamorValue, value, gravatar, mouse } from '../../common';
 import { Icons, IIcon } from '../Icons';
 
-export type IAvatarProps = {
+export type IAvatarProps = mouse.IMouseEventProps & {
   src?: string; // URL or email (gravatar).
   size?: number;
   borderRadius?: number;
@@ -37,7 +37,7 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
   /**
    * [Fields]
    */
-
+  private mouse: mouse.IMouseHandlers;
   public state: IAvatarState = { isLoaded: false, status: 'LOADING' };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IAvatarState>>();
@@ -46,6 +46,11 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
   /**
    * [Lifecycle]
    */
+  constructor(props: IAvatarProps) {
+    super(props);
+    this.mouse = mouse.fromProps(props);
+  }
+
   public componentWillMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
@@ -96,7 +101,7 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
       }),
     };
     return (
-      <div {...css(styles.base, style)}>
+      <div {...css(styles.base, style)} {...this.mouse.events}>
         {this.renderImage()}
         {this.isPlaceholder && this.renderPlaceholder()}
       </div>

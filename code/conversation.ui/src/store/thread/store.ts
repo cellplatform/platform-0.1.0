@@ -1,5 +1,5 @@
 import * as t from './types';
-import { Key, state } from '../common';
+import { MsgKeys, state } from '../common';
 import * as reducers from './reducers';
 import { data } from '../../data.graphql';
 
@@ -9,10 +9,10 @@ import { data } from '../../data.graphql';
 export function create(args: {
   initial: t.IThreadStoreModel;
   getGraphql: () => data.ConversationGraphql;
-  keys?: Key;
+  keys?: MsgKeys;
 }) {
   const { initial, getGraphql } = args;
-  const keys = args.keys || new Key({});
+  const keys = args.keys || new MsgKeys({});
   const store = state.create<t.IThreadStoreModel, t.ThreadEvent>({ initial });
   reducers.init({ store, keys, getGraphql });
   return store;

@@ -163,13 +163,29 @@ export class WebAuth {
   }
 
   public get isExpired() {
+    const expiresIn = this.expiresIn;
+    return expiresIn === -1 ? false : expiresIn === 0;
+  }
+
+  /**
+   * The number of milliseconds until the token expires.
+   * Returns:
+   *    0 if expired
+   *   -1 if not logged in.
+   */
+  public get expiresIn() {
     const expiration = this.expiresAt || -1;
-    return !storage.isLoggedIn || expiration < 0 ? false : new Date().getTime() > expiration;
+    if (!storage.isLoggedIn || expiration < 0) {
+      return -1;
+    } else {
+      return expiration - new Date().getTime();
+    }
   }
 
   /**
    * [Methods]
    */
+
   public login() {
     this.throwIfDisposed('login');
     if (!this.isLoggedIn) {
@@ -177,14 +193,15 @@ export class WebAuth {
     }
   }
 
-  public logout(options: { force?: boolean; silent?: boolean } = {}) {
+  public logout(options: { force?: boolean; silent?: boolean; returnTo?: string } = {}) {
     this.throwIfDisposed('logout');
     storage.isLoggedIn = false;
     this.tokens = undefined;
     this.profile = undefined;
     this.expiresAt = -1;
     if (options.force) {
-      this._auth0.logout({});
+      const { returnTo } = options;
+      this._auth0.logout({ returnTo });
     }
     if (options.silent !== true) {
       this.fireChanged();
@@ -308,7 +325,7 @@ export class WebAuth {
           return reject(err);
         }
         const profile: t.IAuthProfile = {
-          sub: result.sub,
+          id: result.sub,
           email: result.name,
           updatedAt: new Date(result.updated_at),
           picture: result.picture,

@@ -3,7 +3,7 @@ import { value } from '../common';
 /**
  * Removes GraqphQL type annotation fields.
  */
-export function clean<T>(input: T, options: { deep?: boolean } = {}) {
+export function clean<T>(input: T | undefined, options: { deep?: boolean } = {}) {
   const deep = value.defaultValue(options.deep, true);
 
   if (!input || typeof input !== 'object') {

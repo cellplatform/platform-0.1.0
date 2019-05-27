@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { tree as util, ITreeNode, TreeNodeFactory } from '.';
+import { t, tree as util, ITreeNode, TreeNodePathFactory } from '.';
 
 describe('util.tree', () => {
   describe('walk', () => {
@@ -347,6 +347,38 @@ describe('util.tree', () => {
     });
   });
 
+  describe('openToNode', () => {
+    it('no change when nodes are not inline', () => {
+      const root = util.buildPath({ id: 'ROOT' }, id => ({ id }), 'foo/bar/zoo').root;
+      const res = util.openToNode(root, 'foo/bar/zoo');
+      expect(res).to.eql(root);
+    });
+
+    it('sets the inline state of nodes to the given path (boolean)', () => {
+      const factory = (id: string) => ({ id, props: { inline: true } });
+      const root = util.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root as ITreeNode;
+
+      const res = util.openToNode(root, 'foo/bar') as ITreeNode;
+      const child1 = util.childAt(0, res);
+      const child2 = util.childAt(0, child1);
+
+      expect(util.props(child1).inline).to.eql({ isOpen: true });
+      expect(util.props(child2).inline).to.eql({ isOpen: true });
+    });
+
+    it('sets the inline state of nodes to the given path (object)', () => {
+      const factory = (id: string) => ({ id, props: { inline: {} } });
+      const root = util.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root;
+
+      const res = util.openToNode(root, 'foo/bar') as ITreeNode;
+      const child1 = util.childAt(0, res);
+      const child2 = util.childAt(0, child1);
+
+      expect(util.props(child1).inline).to.eql({ isOpen: true });
+      expect(util.props(child2).inline).to.eql({ isOpen: true });
+    });
+  });
+
   describe('flags', () => {
     it('isOpen', () => {
       expect(util.isOpen()).to.eql(undefined);
@@ -396,6 +428,30 @@ describe('util.tree', () => {
       expect(child1 && child1.id).to.eql('one');
       expect(child2 && child2.id).to.eql('one/two');
       expect(child3 && child3.id).to.eql('one/two/three');
+    });
+
+    it('passes context', () => {
+      const list: t.ITreeNodePathContext[] = [];
+      const factory: t.TreeNodePathFactory = (id, context) => {
+        list.push(context);
+        return { id };
+      };
+
+      const root = { id: 'ROOT' };
+      util.buildPath(root, factory, 'one/two/three');
+
+      expect(list.length).to.eql(3);
+      expect(list[0].id).to.eql('one/two/three');
+      expect(list[1].id).to.eql('one/two');
+      expect(list[2].id).to.eql('one');
+
+      expect(list[0].path).to.eql('one/two/three');
+      expect(list[1].path).to.eql('one/two/three');
+      expect(list[2].path).to.eql('one/two/three');
+
+      expect(list[0].level).to.eql(3);
+      expect(list[1].level).to.eql(2);
+      expect(list[2].level).to.eql(1);
     });
 
     it('uses overridden delimiter (:)', () => {
@@ -458,7 +514,7 @@ describe('util.tree', () => {
     });
 
     it('merges paths (using path builder)', () => {
-      const factory: TreeNodeFactory<ITreeNode> = id => ({ id });
+      const factory: TreeNodePathFactory<ITreeNode> = id => ({ id });
       const builder = util.pathBuilder({ id: 'ROOT' }, factory);
 
       builder.add('project/cohort-1');
@@ -498,7 +554,7 @@ describe('util.tree', () => {
       });
 
       it('leaf node not added', () => {
-        const factory: TreeNodeFactory<ITreeNode> = id =>
+        const factory: TreeNodePathFactory<ITreeNode> = id =>
           id.split('/').length > 2 ? undefined : { id };
         const builder = util.pathBuilder({ id: 'ROOT' }, factory);
 
@@ -517,7 +573,7 @@ describe('util.tree', () => {
       });
 
       it('folder node not added (descendents stopped)', () => {
-        const factory: TreeNodeFactory<ITreeNode> = id =>
+        const factory: TreeNodePathFactory<ITreeNode> = id =>
           id.split('/').length > 2 ? undefined : { id };
         const builder = util.pathBuilder({ id: 'ROOT' }, factory);
 

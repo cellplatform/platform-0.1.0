@@ -21,7 +21,16 @@ export type TreeNodeIcon =
   | string // String is an ID passed to `renderIcon` factory.
   | null; //  Placeholder, no icon shown, but space taken up.
 
-export type TreeNodeFactory<T extends ITreeNode> = (id: T['id']) => T | undefined;
+export type TreeNodePathFactory<T extends ITreeNode = ITreeNode> = (
+  id: T['id'],
+  context: ITreeNodePathContext,
+) => T | undefined;
+
+export type ITreeNodePathContext = {
+  id: string;
+  path: string;
+  level: number;
+};
 
 /**
  * Properties for an individual leaf on the tree.

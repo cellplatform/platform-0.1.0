@@ -1,3 +1,9 @@
+import { MONOSPACE } from '@platform/ui.text/lib/common/constants';
+
+export const FONT = {
+  MONOSPACE,
+};
+
 export const COLORS = {
   WHITE: '#fff',
   BLACK: '#000',

@@ -1,2 +1,1 @@
-import { uniq } from 'ramda';
-export const R = { uniq };
+export { is } from '@platform/util.is';

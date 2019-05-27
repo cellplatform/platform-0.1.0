@@ -3,7 +3,7 @@ import { time, value as valueUtil } from '@platform/util.value';
 import { expect } from 'chai';
 
 import * as t from '../types';
-import { Db } from './Db';
+import { Db } from '.';
 
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
@@ -596,6 +596,32 @@ describe('Db', () => {
     });
   });
 
+  describe('getMany', () => {
+    it('retrieves multiple values', async () => {
+      type MyObj = { foo: number; bar: number; baz: number };
+      const db = await Db.create<MyObj>({ dir });
+
+      await db.put('foo', 123);
+      await db.put('bar', 456);
+      await db.put('baz', 789);
+
+      const res = await db.getMany(['foo', 'baz']);
+      expect(res.foo.value).to.eql(123);
+      expect(res.bar).to.eql(undefined);
+      expect(res.baz.value).to.eql(789);
+    });
+
+    it('retrieves nothing when keys are bogus', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', 123);
+      const res = await db.getMany(['foo', 'BOGUS']);
+
+      expect(Object.keys(res)).to.eql(['foo']);
+      expect(res.foo.value).to.eql(123);
+      expect(res.BOGUS).to.eql(undefined);
+    });
+  });
+
   describe('putMany', () => {
     it('updates from object', async () => {
       const db = await Db.create({ dir });
@@ -658,6 +684,98 @@ describe('Db', () => {
 
       expect((await db.get('foo')).props.exists).to.eql(false);
       expect((await db.get('bar')).props.exists).to.eql(false);
+    });
+  });
+
+  describe('timestamps', () => {
+    it('no timestamps', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', { msg: 'hello' });
+      expect((await db.get('foo')).value).to.eql({ msg: 'hello' });
+    });
+
+    it('timestamp fields not used as timestamps (non-number)', async () => {
+      const db = await Db.create({ dir });
+      const model = { createdAt: 'hello', modifiedAt: { foo: 123 } };
+      await db.put('foo', model);
+      expect((await db.get('foo')).value).to.eql(model);
+    });
+
+    it('sets timestamps from default (-1)', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', { createdAt: -1, modifiedAt: -1 });
+
+      const now = time.now.timestamp;
+      const res: t.IDbTimestamps = (await db.get('foo')).value;
+
+      expect(res.createdAt).to.be.within(now - 20, now + 20);
+      expect(res.modifiedAt).to.be.within(now - 20, now + 20);
+    });
+
+    it('updates the `modifiedAt` timestamp', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', { createdAt: -1, modifiedAt: -1 });
+
+      const model1: t.IDbTimestamps = (await db.get('foo')).value;
+
+      await time.wait(50);
+      const now = time.now.timestamp;
+      await db.put('foo', { ...model1, msg: 'hello' });
+
+      const model2: t.IDbTimestamps = (await db.get('foo')).value;
+      expect(model1.createdAt).to.eql(model2.createdAt);
+      expect(model2.modifiedAt).to.be.within(now - 10, now + 10);
+    });
+
+    it('putMany: timestamps not used as fields', async () => {
+      const db = await Db.create({ dir });
+
+      const foo = { createdAt: 'hello', modifiedAt: true };
+      const bar = { createdAt: { msg: 'boom' }, modifiedAt: 'mama' };
+
+      await db.putMany({ foo, bar });
+      await db.put('bar', bar);
+
+      const res = await db.getMany(['foo', 'bar']);
+      expect(res.foo.value).to.eql(foo);
+      expect(res.bar.value).to.eql(bar);
+    });
+
+    it('putMany: sets timestamps from default (-1)', async () => {
+      const db = await Db.create({ dir });
+      await db.putMany({
+        foo: { createdAt: -1, modifiedAt: -1 },
+        bar: { createdAt: -1, modifiedAt: -1 },
+      });
+
+      const res = await db.getMany(['foo', 'bar']);
+      const now = time.now.timestamp;
+
+      expect(res.foo.value.modifiedAt).to.be.within(now - 10, now + 10);
+      expect(res.bar.value.modifiedAt).to.be.within(now - 10, now + 10);
+    });
+
+    it('putMany: updates modifiedAt', async () => {
+      const db = await Db.create({ dir });
+      await db.put('foo', { createdAt: -1, modifiedAt: -1 });
+      await db.put('bar', { createdAt: -1, modifiedAt: -1 });
+
+      const res1 = await db.getMany(['foo', 'bar']);
+
+      await time.wait(50);
+      const now = time.now.timestamp;
+      await db.putMany({
+        foo: { ...res1.foo.value, msg: 'yo' },
+        bar: { ...res1.bar.value, msg: 'mama' },
+      });
+
+      const res2 = await db.getMany(['foo', 'bar']);
+
+      expect(res2.foo.value.createdAt).to.eql(res1.foo.value.createdAt);
+      expect(res2.foo.value.createdAt).to.eql(res1.foo.value.createdAt);
+
+      expect(res2.foo.value.modifiedAt).to.be.within(now - 10, now + 10);
+      expect(res2.bar.value.modifiedAt).to.be.within(now - 10, now + 10);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { ITreeNode, ITreeNodeProps, TreeNodeFactory } from '../types';
+import { ITreeNode, ITreeNodeProps, TreeNodePathFactory, ITreeNodePathContext } from '../types';
 import { R, value as valueUtil } from './libs';
 
 export type WalkArgs = {
@@ -283,9 +283,9 @@ export function replaceChild<T extends ITreeNode>(
 /**
  * Adds a hierarchy of nodes to the tree based on the given path.
  */
-export function buildPath<T extends ITreeNode>(
+export function buildPath<T extends ITreeNode = ITreeNode>(
   root: T,
-  factory: TreeNodeFactory<T>,
+  factory: TreeNodePathFactory<T>,
   path: string,
   options: { force?: boolean; delimiter?: string } = {},
 ) {
@@ -306,7 +306,17 @@ export function buildPath<T extends ITreeNode>(
     // If there is an existing node, and this is not a `force` override,
     // use the existing node as the parent, otherwise create it now.
     const existing = findById(root, id);
-    parent = !force && existing ? existing : factory(id);
+
+    let level = -1;
+    const context: ITreeNodePathContext = {
+      id,
+      path,
+      get level() {
+        return level === -1 ? (level = id.split('/').length) : level;
+      },
+    };
+
+    parent = !force && existing ? existing : factory(id, context);
     if (parent === undefined) {
       break;
     }
@@ -324,9 +334,9 @@ export function buildPath<T extends ITreeNode>(
 /**
  * Creates a version of `buildPath` with the factory curried.
  */
-export function pathBuilder<T extends ITreeNode>(
+export function pathBuilder<T extends ITreeNode = ITreeNode>(
   root: T,
-  factory: TreeNodeFactory<T>,
+  factory: TreeNodePathFactory<T>,
   options: { delimiter?: string } = {},
 ) {
   const { delimiter } = options;
@@ -386,6 +396,28 @@ export function toggleIsOpen<T extends ITreeNode>(
   inline = { ...inline, isOpen: !inline.isOpen };
   node = { ...node, props: { ...props, inline } };
   return replace<T>(root, node);
+}
+
+/**
+ * Ensures all inline nodes in the parent hierarchy leading to
+ * the given node are in an "toggled-open" state.
+ */
+export function openToNode<T extends ITreeNode>(
+  root: T | undefined,
+  id: ITreeNode | ITreeNode['id'] | undefined,
+): T | undefined {
+  if (!root || !id) {
+    return root;
+  }
+  const node = typeof id === 'string' ? findById(root, id) : id;
+  pathList(root, node).forEach(node => {
+    const p = props(node);
+    if (p.inline !== undefined) {
+      p.inline = typeof p.inline === 'boolean' ? {} : p.inline;
+      p.inline = { ...p.inline, isOpen: true };
+    }
+  });
+  return root;
 }
 
 /**

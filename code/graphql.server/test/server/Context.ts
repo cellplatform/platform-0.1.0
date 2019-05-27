@@ -1,43 +1,38 @@
-import { t, log, ForbiddenError } from './common';
-import { Request } from 'express';
+import { auth, ForbiddenError } from './common';
+
+type IContextArgs = {
+  jwt?: string;
+};
 
 /**
  * The Context that is passed to all GraphQL resolvers.
  */
-export class Context implements t.IContext {
+export class Context {
   /**
    * [Lifecycle]
    */
-  constructor(args: { req: Request }) {
-    this.req = args.req;
+  constructor(args: IContextArgs) {
+    this.jwt = args.jwt;
   }
 
   /**
    * [Fields]
    */
-  private req: Request;
+  public readonly jwt: string | undefined;
 
   /**
    * [Methods]
    */
   public async getUser() {
-    return { email: 'mary@example.com' };
+    return { id: '123', email: 'mary@example.com', roles: [] };
   }
 
-  public async authorize(policy: t.AuthPolicy) {
-    const token = this.req.headers.authorization;
-    if (!token) {
-      log.info(`✋  No authorization token.\n`);
-    }
-
-    const result: t.IAuthResult = {
-      isAllowed: false,
-      matches: [],
-      user: undefined,
-      throw(message) {
-        throw new ForbiddenError(message || 'Not allowed.');
-      },
-    };
-    return result;
+  /**
+   * Determine if the user is authorized via the given policies.
+   */
+  public async authorize(args: { policy: auth.IAuthPolicies; variables?: object }) {
+    const { policy, variables } = args;
+    const user = await this.getUser();
+    return auth.authorize({ policy, user, variables, getError: msg => new ForbiddenError(msg) });
   }
 }

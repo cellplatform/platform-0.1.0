@@ -1,0 +1,29 @@
+{
+  "name": "@platform/hyperdb.tools",
+  "version": "0.0.14",
+  "description": "Tools for working with a hyperdb.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/hyperdb.types": "0.2.0",
+    "@platform/libs": "0.0.14"
+  },
+  "devDependencies": {
+    "@platform/hyperdb": "0.2.5",
+    "@platform/test": "0.0.53",
+    "@platform/ts": "3.4.22"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

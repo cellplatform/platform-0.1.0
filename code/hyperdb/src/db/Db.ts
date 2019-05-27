@@ -66,6 +66,11 @@ export class Db<D extends object = any> implements t.IDb<D> {
     });
   }
 
+  public static toValues = util.toValues;
+  public static toKeyValueList = util.toKeyValueList;
+  public static toValueList = util.toValueList;
+  public static ensureTimestamps = util.ensureTimestamps;
+
   /**
    * [Constructor]
    */
@@ -270,9 +275,12 @@ export class Db<D extends object = any> implements t.IDb<D> {
     this.throwIfNoKey('put', key);
     return new Promise<t.IDbValue<K, D[K]>>(async (resolve, reject) => {
       const current = await this.get(key);
+      value = util.incrementTimestamps(value);
+
       if (equals(value, current.value)) {
         return resolve(current); // No change to the value so do not touch the DB.
       }
+
       this._.db.put(key, util.serializeValue(value), (err: Error, result: any) => {
         return err ? this.fireError(err, reject) : resolve(util.toValue(result));
       });
@@ -321,12 +329,24 @@ export class Db<D extends object = any> implements t.IDb<D> {
   }
 
   /**
+   * Retrieves multiple values to the DB in a single transaction.
+   */
+  public async getMany<T extends object = D>(keys: Array<keyof D>): Promise<t.IDbValues<T>> {
+    const wait = keys.map(key => this.get(key));
+    const list = await Promise.all(wait);
+    return list.reduce((acc, next) => {
+      const key = next.props.key;
+      return key ? { ...acc, [key]: next } : acc;
+    }, {}) as t.IDbValues<T>;
+  }
+
+  /**
    * Writes multiple values to the DB in a single transaction.
    */
   public putMany<T extends object = D>(
     data: t.IDbUpdateObject<T> | t.IDbUpdateList<T>,
   ): Promise<t.IDbValues<T>> {
-    return this._update({ data, type: 'put' });
+    return this._batch({ data, type: 'put' });
   }
 
   /**
@@ -334,10 +354,10 @@ export class Db<D extends object = any> implements t.IDb<D> {
    */
   public async deleteMany<T extends object = D>(data: Array<keyof T>): Promise<void> {
     const list: any = data.map(key => ({ key, value: undefined }));
-    await this._update({ data: list, type: 'del' });
+    await this._batch({ data: list, type: 'del' });
   }
 
-  private _update<T extends object = D>(args: {
+  private _batch<T extends object = D>(args: {
     data: t.IDbUpdateObject<T> | t.IDbUpdateList<T>;
     type: 'put' | 'del';
   }): Promise<t.IDbValues<T>> {
@@ -350,7 +370,9 @@ export class Db<D extends object = any> implements t.IDb<D> {
 
       list = list.map(item => {
         const type = args.type;
-        const value = util.serializeValue(item.value);
+        let value = item.value;
+        value = util.incrementTimestamps(value);
+        value = util.serializeValue(value);
         return { ...item, type, value };
       });
 

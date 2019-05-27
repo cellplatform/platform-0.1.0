@@ -37,6 +37,9 @@ export type ITextInputProps = ITextInputFocus &
     valueStyle?: ITextInputStyle;
     placeholderStyle?: ITextInputStyle;
     spellCheck?: boolean;
+    autoCapitalize?: boolean;
+    autoCorrect?: boolean;
+    autoComplete?: boolean;
     selectionBackground?: number | string;
     className?: string;
     style?: GlamorValue;
@@ -200,7 +203,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
     );
 
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div {...css(styles.base, this.props.style)} className={'p-TextInput'}>
         <div {...css(styles.inner)}>
           {elPlaceholder}
           <HtmlInput
@@ -224,6 +227,9 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
             onEnter={this.props.onEnter}
             onTab={this.props.onTab}
             spellCheck={this.props.spellCheck}
+            autoCapitalize={this.props.autoCapitalize}
+            autoCorrect={this.props.autoCorrect}
+            autoComplete={this.props.autoComplete}
             selectionBackground={this.props.selectionBackground}
           />
         </div>

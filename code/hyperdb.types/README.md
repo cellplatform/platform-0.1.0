@@ -11,4 +11,6 @@ Abstract [types](https://www.typescriptlang.org) for [@platform/hyperdb](../hype
 ## See Also
 
 - @platform/[hyperdb](../hyperdb)
+- @platform/[hyperdb.electron](../hyperdb.types)
+- @platform/[hyperdb.electron](../hyperdb.tools)
 - @platform/[hyperdb.electron](../hyperdb.electron)

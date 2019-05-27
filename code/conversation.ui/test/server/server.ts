@@ -1,9 +1,9 @@
-import { log, ApolloServer, express, t, ForbiddenError } from './common';
-import { resolvers, typeDefs } from './resolvers';
-
-import { mergeSchemas, makeExecutableSchema } from 'graphql-tools';
 import { graphql } from '@platform/conversation.db';
+import { mergeSchemas } from 'graphql-tools';
+
+import { ApolloServer, express, t, id } from './common';
 import { getDb } from './db';
+import { schema as localSchema } from './schema.local';
 
 /**
  * Prepare the schema.
@@ -13,7 +13,7 @@ import { getDb } from './db';
  */
 const schemas = {
   db: graphql.init({ getDb }).schema,
-  local: makeExecutableSchema({ typeDefs, resolvers }),
+  local: localSchema,
 };
 const schema = mergeSchemas({ schemas: [schemas.db, schemas.local] });
 
@@ -27,36 +27,10 @@ export const app = express();
  */
 export const server = new ApolloServer({
   schema,
-  async context(e): Promise<t.IContext> {
-    return {
-      /**
-       * Authorize the request.
-       * ☝️ Ensure the implementing server that stitches in this
-       *    `conversation.db` schema implements this `authorize` function.
-       */
-      async authorize(policy) {
-        const token = e.req.headers.authorization;
-        if (!token) {
-          log.info(`✋  No authorization token.\n`);
-        } else {
-          log.info(`Authorzation token: ${log.yellow(token)}`);
-        }
-
-        // const isAllowed = token === 'phil'; // NB: Obviously not this! 🐷
-        const isAllowed = true; // ALLOW everything.
-
-        const result: t.IAuthResult = {
-          isAllowed,
-          matches: [],
-          user: undefined,
-          throw(message) {
-            throw new ForbiddenError(message || 'Not allowed.');
-          },
-        };
-
-        return result;
-      },
-    };
+  async context(e): Promise<t.IGqlContext> {
+    const jwt = e.req.headers.authorization;
+    const requestId = id.shortid();
+    return { jwt, requestId };
   },
 });
 server.applyMiddleware({ app });

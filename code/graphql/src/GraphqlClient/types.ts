@@ -4,13 +4,17 @@ import {
   OperationVariables,
   QueryOptions,
   MutationOptions,
+  FetchPolicy,
 } from 'apollo-client';
 import { FetchResult, Operation } from 'apollo-link';
 import { GraphQLError, ExecutionResult } from 'graphql';
 import { ServerError, ServerParseError } from 'apollo-link-http-common';
+import { IHttpHeaders } from '@platform/http';
 
+export { IHttpHeaders };
 export type IGqlVariables = OperationVariables;
 
+export type IGqlFetchPolicy = FetchPolicy;
 export type IGqlQueryOptions<V> = QueryOptions<V>;
 export type IGqlQueryResult<D> = ApolloQueryResult<D>;
 
@@ -19,6 +23,8 @@ export type IGqlMutateResult<D> = FetchResult<D>;
 
 export type IGqlClient = {
   readonly dispose$: Observable<{}>;
+  readonly events$: Observable<GqlEvent>;
+  readonly headers$: Observable<IGqlHttpHeaders>;
   readonly isDisposed: boolean;
   dispose(): void;
   query<D = any, V = IGqlVariables>(request: IGqlQueryOptions<V>): Promise<IGqlQueryResult<D>>;
@@ -30,8 +36,9 @@ export type IGqlClient = {
 /**
  * [Events]
  */
-export type GraphqlEvent =
+export type GqlEvent =
   | IGqlErrorEvent
+  | IGqlHttpHeadersEvent
   | IGqlQueryingEvent
   | IGqlQueryiedEvent
   | IGqlMutatingEvent
@@ -49,9 +56,21 @@ export type IGqlError = {
   operation: Operation;
 };
 
+export type IGqlHttpHeadersEvent = {
+  type: 'GRAPHQL/http/headers';
+  payload: IGqlHttpHeaders;
+};
+export type IGqlHttpHeaders = {
+  headers: { from: IHttpHeaders; to: IHttpHeaders };
+  merge(headers: IHttpHeaders): IGqlHttpHeaders;
+  add(header: string, value?: string | number): IGqlHttpHeaders;
+  auth(token?: string): IGqlHttpHeaders;
+};
+
 /**
  * [event.Query]
  */
+
 export type IGqlQueryingEvent<V = IGqlVariables> = {
   type: 'GRAPHQL/querying';
   payload: IGqlQuerying<V>;

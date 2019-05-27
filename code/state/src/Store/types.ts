@@ -9,7 +9,7 @@ export type IStore<M extends {}, E extends IStoreEvent> = {
 
   dispose$: Observable<{}>;
   changing$: Observable<IStateChanging>;
-  changed$: Observable<IStateChange>;
+  changed$: Observable<IStateChange<M, E>>;
   events$: Observable<IDispatch<M, E, E>>;
 
   dispose(): void;

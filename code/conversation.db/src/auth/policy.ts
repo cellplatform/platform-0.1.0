@@ -1,20 +1,27 @@
-import { t } from '../common';
+import { IAuthPolicy } from '@platform/auth';
+import { auth } from '../common';
 
-export const PERMISSION = {
-  MSG_READ: 'MSG:read',
-  MSG_WRITE: 'MSG:write',
-};
+/**
+ * Ensures the user is logged in.
+ */
+export const userRequired = auth.policy.userRequired;
 
-export const POLICY = {
-  THREAD: {
-    READ: toPolicy(PERMISSION.MSG_READ),
-    WRITE: toPolicy(PERMISSION.MSG_WRITE),
+/**
+ * Ensure the user can [READ] the message.
+ */
+export const read: IAuthPolicy = {
+  name: 'MSG/read',
+  eval(e) {
+    console.log(`\nTODO 🐷 MSG/read policy \n`);
   },
 };
 
 /**
- * [Helpers]
+ * Ensure the user can [SAVE] the message.
  */
-function toPolicy(...permissions: string[]): t.IPermissionPolicy {
-  return { permissions };
-}
+export const save: IAuthPolicy = {
+  name: 'MSG/save',
+  eval(e) {
+    console.log(`\nTODO 🐷 MSG/save policy \n`);
+  },
+};

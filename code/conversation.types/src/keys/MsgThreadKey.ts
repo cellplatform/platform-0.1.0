@@ -3,7 +3,7 @@ import { t, identity } from '../common';
 /**
  * Keys for conversation-threads.
  */
-export class ThreadKey {
+export class MsgThreadKey {
   /**
    * [Lifecycle]
    */
