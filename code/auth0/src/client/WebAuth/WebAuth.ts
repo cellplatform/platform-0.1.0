@@ -163,13 +163,29 @@ export class WebAuth {
   }
 
   public get isExpired() {
+    const expiresIn = this.expiresIn;
+    return expiresIn === -1 ? false : expiresIn === 0;
+  }
+
+  /**
+   * The number of milliseconds until the token expires.
+   * Returns:
+   *    0 if expired
+   *   -1 if not logged in.
+   */
+  public get expiresIn() {
     const expiration = this.expiresAt || -1;
-    return !storage.isLoggedIn || expiration < 0 ? false : new Date().getTime() > expiration;
+    if (!storage.isLoggedIn || expiration < 0) {
+      return -1;
+    } else {
+      return expiration - new Date().getTime();
+    }
   }
 
   /**
    * [Methods]
    */
+
   public login() {
     this.throwIfDisposed('login');
     if (!this.isLoggedIn) {
