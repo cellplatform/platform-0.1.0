@@ -10,9 +10,11 @@ export const fetch = isomorphic;
  * `GET` request.
  */
 export async function get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
+  const { mode = 'same-origin' } = options;
   const res = await isomorphic(url, {
     method: 'GET',
     headers: toRawHeaders(options.headers),
+    mode,
   });
 
   const { ok, status, statusText } = res;

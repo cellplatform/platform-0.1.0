@@ -1,6 +1,6 @@
 {
   "name": "@platform/conversation.ui",
-  "version": "0.0.92",
+  "version": "0.0.93",
   "description": "UI components for conversation threads.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@platform/conversation.types": "0.0.23",
-    "@platform/graphql": "0.2.8",
+    "@platform/graphql": "0.2.9",
     "@platform/react": "0.2.10",
     "@platform/state": "0.2.13",
     "@platform/state.react": "0.2.16",
@@ -32,8 +32,8 @@
   "devDependencies": {
     "@platform/auth": "0.1.10",
     "@platform/cli.ui": "0.2.7",
-    "@platform/conversation.db": "0.0.56",
-    "@platform/graphql.server": "0.1.6",
+    "@platform/conversation.db": "0.0.57",
+    "@platform/graphql.server": "0.1.7",
     "@platform/hyperdb": "0.2.5",
     "@uiharness/dev": "0.2.56",
     "@uiharness/ui": "0.2.37"

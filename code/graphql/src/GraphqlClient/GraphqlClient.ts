@@ -132,7 +132,7 @@ export class GraphqlClient implements t.IGqlClient {
   ): Promise<t.IGqlMutateResult<D>> {
     this.throwIfDisposed('mutate');
     this.fire({ type: 'GRAPHQL/mutating', payload: { request } });
-    const response = await this._.apollo.mutate<D>(request);
+    const response = await this._.apollo.mutate<D>(request as any);
     this.fire({ type: 'GRAPHQL/mutated', payload: { request, response } });
     return response;
   }
