@@ -2,22 +2,6 @@ import * as day from 'dayjs';
 import { IDate } from './types';
 
 /**
- * Retrieves a UTC timestamp.
- *
- */
-export function toTimestamp(date?: Date) {
-  date = date || new Date();
-  return date.getTime();
-}
-
-/**
- * Converts a timestamp into a Date.
- */
-export function fromTimestamp(timestamp: number) {
-  return new Date(timestamp);
-}
-
-/**
  * Helpers for working with
  */
 export function utc(input?: Date | number) {
@@ -28,7 +12,7 @@ export function utc(input?: Date | number) {
       return date;
     },
     get timestamp() {
-      return toTimestamp(date);
+      return date.getTime();
     },
     get unix() {
       return day(date).unix();

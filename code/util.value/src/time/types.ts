@@ -13,8 +13,6 @@ export type ITime = {
   now: IDate;
   utc(input?: Date | number): IDate;
   timer(start?: Date, options?: { round?: number }): ITimer;
-  toTimestamp(date?: Date): number;
-  fromTimestamp(timestamp: number): Date;
 };
 
 export type IDate = {
