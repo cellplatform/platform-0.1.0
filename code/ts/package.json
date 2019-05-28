@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts",
-  "version": "3.4.22",
+  "version": "3.4.23",
   "description": "TypesScript build, prepare and publish toolchain.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -24,8 +24,8 @@
     "examples": "node lib/example/examples"
   },
   "dependencies": {
-    "@platform/exec": "0.2.9",
-    "@platform/fs": "0.0.61",
+    "@platform/exec": "0.2.10",
+    "@platform/fs": "0.1.0",
     "@platform/libs": "0.0.14",
     "@platform/ts.libs": "3.4.15",
     "yargs": "13.2.4"
