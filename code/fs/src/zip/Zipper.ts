@@ -1,7 +1,6 @@
 import * as archiver from 'archiver';
 import * as fs from 'fs-extra';
 import * as fsPath from 'path';
-import * as extract from 'extract-zip';
 
 export type IZipperArgs = {
   level: number;
@@ -24,32 +23,24 @@ export type IZipProgress = {
   };
 };
 
-export class Zipper {
-  /**
-   * Unzips an archive.
-   */
-  public static unzip(source: string, target: string) {
-    return new Promise((resolve, reject) => {
-      extract(fsPath.resolve(source), { dir: fsPath.resolve(target) }, err => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
-  }
+/**
+ * Creates a zip archiver.
+ */
+export function zip(source: string, dest?: string) {
+  return new Zipper().add(source, dest);
+}
 
+export class Zipper {
   /**
    * [Fields]
    */
-  private items: Array<{ source: string; target?: string }> = [];
+  private items: Array<{ source: string; dest?: string }> = [];
 
   /**
    * [Methods]
    */
   public add(source: string, target?: string) {
-    this.items = [...this.items, { source, target }];
+    this.items = [...this.items, { source, dest: target }];
     return this;
   }
 
@@ -100,10 +91,10 @@ export class Zipper {
         const source = fsPath.resolve(item.source);
         const stat = await fs.lstat(source);
         if (stat.isDirectory()) {
-          archive.directory(source, item.target || '');
+          archive.directory(source, item.dest || '');
         } else {
           let name = fsPath.basename(source);
-          name = item.target ? fsPath.join(item.target, name) : name;
+          name = item.dest ? fsPath.join(item.dest, name) : name;
           archive.file(source, { name });
         }
       }

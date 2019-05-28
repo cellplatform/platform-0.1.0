@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { fs } from '..';
-import { Zipper, IZipProgress } from './Zipper';
+import { Zipper, IZipProgress, unzip } from '.';
 
 const TMP = fs.resolve('./tmp');
 
@@ -23,14 +23,14 @@ describe('zip', () => {
     const res = await zip.save('./tmp/foo.zip');
     expect(res.bytes).to.greaterThan(140);
 
-    await Zipper.unzip('./tmp/foo.zip', './tmp/unzipped');
+    await unzip('./tmp/foo.zip', './tmp/unzipped');
     await exepectFiles(['./tmp/unzipped/foo.yaml', './tmp/unzipped/my-dir/package.json']);
   });
 
   it('zips folder', async () => {
     const zip = new Zipper().add('./test/file');
     await zip.save('./tmp/foo.zip');
-    await Zipper.unzip('./tmp/foo.zip', './tmp/unzipped');
+    await unzip('./tmp/foo.zip', './tmp/unzipped');
     await exepectFiles([
       './tmp/unzipped/fail.json',
       './tmp/unzipped/fail.yml',
@@ -44,7 +44,7 @@ describe('zip', () => {
   });
 
   it('zips folder (within sub-directory)', async () => {
-    await fs.zip.add('./test/file', 'stuff').save('./tmp/foo.zip');
+    await fs.zip('./test/file', 'stuff').save('./tmp/foo.zip');
     await fs.unzip('./tmp/foo.zip', './tmp/unzipped');
     await exepectFiles([
       './tmp/unzipped/stuff/fail.json',
