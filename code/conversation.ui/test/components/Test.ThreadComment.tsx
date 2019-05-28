@@ -99,8 +99,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       .day()
       .subtract(2, 'h')
       .toDate();
-    const timestamp = time.toTimestamp(date);
-
+    const timestamp = time.utc(date).timestamp;
     const name = UserIdentityType.toName(data.person);
 
     const elHeader = <ThreadCommentHeader name={name} timestamp={timestamp} />;
