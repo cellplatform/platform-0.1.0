@@ -1,6 +1,6 @@
 {
   "name": "@platform/auth0",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Interfaces for working with Auth0.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
