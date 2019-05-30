@@ -16,7 +16,7 @@
     "@types/js-yaml": "3.12.1",
     "archiver": "3.0.0",
     "extract-zip": "1.6.7",
-    "fast-glob": "2.2.6",
+    "fast-glob": "2.2.7",
     "fs-extra": "7.0.1",
     "js-yaml": "3.13.1"
   },

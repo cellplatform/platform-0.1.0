@@ -1,6 +1,6 @@
 {
   "name": "@platform/http",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Tools for working with HTTP.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,13 +14,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/util.value": "0.3.3",
+    "@platform/util.value": "0.3.4",
     "@types/isomorphic-fetch": "0.0.35",
     "isomorphic-fetch": "2.2.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.53",
-    "@platform/ts": "3.4.23"
+    "@platform/ts": "3.4.24"
   },
   "files": [
     "lib"

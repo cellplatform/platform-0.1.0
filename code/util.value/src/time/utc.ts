@@ -6,7 +6,7 @@ import { IDate } from './types';
  */
 export function utc(input?: Date | number) {
   const date =
-    input === undefined ? new Date() : typeof input === 'object' ? input : fromTimestamp(input);
+    input === undefined ? new Date() : typeof input === 'object' ? input : new Date(input);
   const res: IDate = {
     get date() {
       return date;
