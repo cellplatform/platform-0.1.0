@@ -1,6 +1,7 @@
 import { File } from '../file';
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
+import { zip, unzip } from '../zip';
 import { glob } from '../glob';
 import { merge } from '../merge';
 import { is } from '../is';
@@ -36,6 +37,12 @@ export const fs = {
    * Calculates the size of all files within a directory.
    */
   folderSize,
+
+  /**
+   * Zip/unzip
+   */
+  zip,
+  unzip,
 
   /**
    * Helpers for working with paths.

@@ -20,7 +20,7 @@ export const conversation = Command.create<P>('Conversation', e => {
   })
   .add('add', e => {
     const store = e.props.threadStore;
-    const timestamp = time.toTimestamp();
+    const timestamp = time.now.timestamp;
     const user = PEOPLE.DOUG;
     const markdown = e.param(0, 'Hey there 👋');
     store.dispatch({

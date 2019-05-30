@@ -52,7 +52,7 @@ export class ThreadCommentHeader extends React.PureComponent<
 
   public get date() {
     const { timestamp } = this.props;
-    return timestamp ? time.fromTimestamp(timestamp) : undefined;
+    return timestamp ? time.utc(timestamp).date : undefined;
   }
 
   public get elapsed() {

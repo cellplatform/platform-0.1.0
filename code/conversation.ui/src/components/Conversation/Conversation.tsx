@@ -101,7 +101,7 @@ export class Conversation extends React.PureComponent<IConversationProps> {
     const item: t.IThreadComment = {
       kind: 'THREAD/comment',
       id: '',
-      timestamp: time.toTimestamp(),
+      timestamp: time.now.timestamp,
       user: user.id,
       body: { markdown },
     };
