@@ -1,6 +1,6 @@
 import { timer, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { axios, jwksClient, jwt, str, t } from './common';
+import { jwksClient, jwt, str, t, http } from './common';
 
 const SEC = 1000;
 const MIN = SEC * 60;
@@ -178,9 +178,9 @@ export class AccessToken implements t.IAccessToken {
       throw new Error(`Cannot get user-info. The token did not contain a /userinfo URL.`);
     }
 
-    const authorization = `Bearer ${this.toString()}`;
-    const result = await axios.create({ headers: { Authorization: authorization } }).get(url);
-    const data = result.data;
+    const Authorization = `Bearer ${this.toString()}`;
+    const result = await http.get(url, { headers: { Authorization } });
+    const data = result.json();
 
     const profile: t.IAuthProfile = {
       id: data.sub,

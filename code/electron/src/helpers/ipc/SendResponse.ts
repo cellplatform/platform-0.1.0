@@ -56,18 +56,18 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
   constructor(args: SendResponseInit<M>) {
     const timer = time.timer();
     const { registeredClients } = args;
-    const complete$ = new Subject();
+    const complete$ = new Subject<{}>();
 
     /**
      * Setup cancel operation.
      */
-    const cancel$ = new Subject();
+    const cancel$ = new Subject<{}>();
     cancel$.subscribe(() => (this.isCancelled = true));
 
     /**
      * Setup timeout.
      */
-    const timeout$ = new Subject();
+    const timeout$ = new Subject<{}>();
     timeout$.subscribe(() => (this._.isTimedOut = true));
     ObservableTimer(args.timeout)
       .pipe(
@@ -104,7 +104,7 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
         takeUntil(cancel$),
         takeUntil(timeout$),
         filter(e => e.type === EVENT.HANDLER),
-        map(e => e as IpcEvent<IpcHandlerResponseEvent>),
+        map(e => (e as unknown) as IpcEvent<IpcHandlerResponseEvent>),
         filter(e => e.payload.eid === this.eid),
       )
       .subscribe(e => {

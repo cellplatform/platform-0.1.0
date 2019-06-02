@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import {
+  color,
   css,
   GlamorValue,
   ITreeNode,
@@ -69,7 +70,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
       base: css({
         flex: 1,
         position: 'relative',
-        backgroundColor: background === 'THEME' && theme.bg,
+        backgroundColor: background === 'THEME' ? color.format(theme.bg) : undefined,
         overflow: 'hidden',
       }),
       list: css({
@@ -88,7 +89,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
       rightBorder: css({
         Absolute: [0, 0, 0, null],
         width: 1,
-        backgroundColor: isBorderVisible ? theme.borderColor : 'transparent',
+        backgroundColor: color.format(isBorderVisible ? theme.borderColor : 'transparent'),
       }),
     };
 

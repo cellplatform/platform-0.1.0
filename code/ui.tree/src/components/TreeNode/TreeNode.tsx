@@ -94,7 +94,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         marginTop: props.marginTop,
         marginBottom: props.marginBottom,
         userSelect: 'none',
-        backgroundColor: this.backgroundColor,
+        backgroundColor: color.format(this.backgroundColor),
       }),
       body: css({
         position: 'relative',
@@ -202,7 +202,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         Absolute: [0, 0, null, null],
         width: SIZE.ICON_RIGHT,
         height: SIZE.ICON_RIGHT,
-        cursor: isActive && 'pointer',
+        cursor: isActive ? 'pointer' : undefined,
       }),
     };
 
@@ -242,9 +242,9 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         height: SIZE.LABEL,
-        color: labelColor,
+        color: color.format(labelColor),
         fontSize: 14,
-        fontWeight: props.isBold ? 900 : undefined,
+        fontWeight: props.isBold ? 'bold' : undefined,
       }),
     };
 
@@ -272,7 +272,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     const styles = {
       base: css({
         fontSize: 11,
-        color: props.descriptionColor ? color.format(props.descriptionColor) : theme.labelColor,
+        color: color.format(props.descriptionColor ? props.descriptionColor : theme.labelColor),
         lineHeight: '1.5em',
         paddingBottom: 4,
         marginRight: iconRight !== undefined ? SIZE.ICON_RIGHT : MARGIN.LABEL_RIGHT,
@@ -292,8 +292,8 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         position: 'relative',
         boxSizing: 'border-box',
         borderRadius: 10,
-        color: theme.color,
-        background: theme.bgColor,
+        color: color.format(theme.color),
+        background: color.format(theme.bgColor),
         border: `solid 1px ${theme.borderColor}`,
         textShadow: Text.toShadow([-1, theme.textShadow]),
         fontSize: 11,

@@ -36,7 +36,7 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
     this._.version = args.version;
 
     // Promise that alerts when the Db is ready to interact with.
-    const ready$ = new Subject();
+    const ready$ = new Subject<{}>();
     this.ready = ready$.toPromise();
 
     // Sync props.
@@ -72,7 +72,7 @@ export class DbRenderer<D extends object = any> implements t.IDbRenderer<D> {
   public readonly ready: Promise<{}>;
   private readonly _ = {
     ipc: (null as unknown) as t.HyperdbIpc,
-    dispose$: new Subject(),
+    dispose$: new Subject<{}>(),
     events$: new Subject<t.DbEvent>(),
     props: (null as unknown) as t.IDbProps,
     dir: '',

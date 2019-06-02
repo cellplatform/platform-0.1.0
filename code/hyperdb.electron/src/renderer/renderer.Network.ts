@@ -35,7 +35,7 @@ export class NetworkRenderer implements t.INetworkRenderer {
     this._.db = args.db;
 
     // Promise that alerts when the Db is ready to interact with.
-    const ready$ = new Subject();
+    const ready$ = new Subject<{}>();
     this.ready = ready$.toPromise();
 
     // Sync props.

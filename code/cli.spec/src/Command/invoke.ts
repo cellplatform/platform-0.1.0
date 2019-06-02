@@ -18,7 +18,7 @@ export function invoker<P extends t.ICommandProps, A extends t.CommandArgsOption
   const { command, namespace } = options;
   const invokeId = id.shortid();
   const args = typeof options.args === 'object' ? options.args : Argv.parse<A>(options.args || '');
-  const done$ = new Subject();
+  const done$ = new Subject<{}>();
   const timeout = value.defaultValue(options.timeout, DEFAULT.TIMEOUT);
 
   /**

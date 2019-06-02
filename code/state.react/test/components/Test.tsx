@@ -2,10 +2,20 @@ import * as React from 'react';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Button, ObjectView, CommandShell, css, GlamorValue, t } from '../common';
+import {
+  color,
+  Button,
+  ObjectView,
+  CommandShell,
+  css,
+  GlamorValue,
+  t,
+  COLORS,
+  tools,
+} from '../common';
 import { Child } from './Test.Child';
 
-import { Provider } from '../store';
+import { Provider, store } from '../store';
 import * as cli from '../cli';
 
 export type ITestProps = {};
@@ -34,14 +44,31 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Render]
    */
   public render() {
-    const styles = { base: css({ flex: 1, padding: 30 }) };
+    const styles = {
+      base: css({ flex: 1, Flex: 'horizontal' }),
+      left: css({
+        flex: 1,
+        padding: 30,
+      }),
+      right: css({
+        width: 300,
+        backgroundColor: COLORS.DARK,
+        borderBottom: `solid 1px ${color.format(0.15)}`,
+        display: 'flex',
+      }),
+    };
     return (
       <Provider>
         <CommandShell cli={this.cli} tree={{}}>
           <div {...styles.base}>
-            <Child>
-              <Child />
-            </Child>
+            <div {...styles.left}>
+              <Child>
+                <Child />
+              </Child>
+            </div>
+            <div {...styles.right}>
+              <tools.Panel store={store} />
+            </div>
           </div>
         </CommandShell>
       </Provider>

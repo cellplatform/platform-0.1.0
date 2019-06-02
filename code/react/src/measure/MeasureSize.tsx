@@ -128,7 +128,7 @@ export class MeasureSize extends React.PureComponent<IMeasureSizeProps> {
         display: 'inline-block',
         fontFamily,
         fontSize,
-        fontWeight,
+        fontWeight: fontWeight as any,
         fontStyle,
         lineHeight,
         letterSpacing,

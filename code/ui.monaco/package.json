@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.monaco",
-  "version": "0.0.46",
+  "version": "0.0.47",
   "description": "Strongly typed wrapper around monaco-editor.",
   "scripts": {
     "ui": "ui $@",
@@ -12,15 +12,15 @@
     "prepare ": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.2.12",
-    "@uiharness/electron": "0.4.45",
+    "@platform/react": "0.2.13",
+    "@uiharness/electron": "0.4.46",
     "monaco-editor": "0.17.0"
   },
   "devDependencies": {
-    "@platform/fs": "0.1.0",
-    "@platform/test": "0.0.53",
-    "@platform/ts": "3.4.24",
-    "@uiharness/dev": "0.2.59"
+    "@platform/fs": "0.1.1",
+    "@platform/test": "0.0.54",
+    "@platform/ts": "3.4.25",
+    "@uiharness/dev": "0.2.61"
   },
   "files": [
     "lib"

@@ -45,7 +45,7 @@ export class CommandState implements t.ICommandState {
    */
   private readonly _ = {
     beforeInvoke: (undefined as unknown) as t.BeforeInvokeCommand,
-    dispose$: new Subject(),
+    dispose$: new Subject<{}>(),
     events$: new Subject<t.CommandStateEvent>(),
     root: (undefined as unknown) as Command,
     text: '',

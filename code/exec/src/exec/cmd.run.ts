@@ -19,7 +19,7 @@ import { ChildProcess } from 'child_process';
 export function run(command: string | string[], options: IRunOptions = {}): ICommandPromise {
   const { silent } = options;
   const cwd = resolve(options.cwd || process.cwd());
-  const complete$ = new Subject();
+  const complete$ = new Subject<{}>();
   let isComplete = false;
   let error: Error | undefined;
   const result = { code: 0 };
