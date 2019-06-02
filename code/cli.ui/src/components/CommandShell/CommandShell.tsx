@@ -147,7 +147,7 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
       bg: css({
         Absolute: 0,
         backgroundColor: background.color,
-        borderBottom: background.isDark && `solid 1px ${colorUtil.format(0.2)}`,
+        borderBottom: background.isDark ? `solid 1px ${colorUtil.format(0.2)}` : undefined,
       }),
       tree: css({
         Absolute: 0,

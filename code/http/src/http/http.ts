@@ -9,6 +9,9 @@ export const fetch = isomorphic;
 export function create(options: t.IFetchOptions = {}) {
   const baseOptions = options;
   const http = {
+    create,
+    fetch,
+
     /**
      * `GET` request.
      */

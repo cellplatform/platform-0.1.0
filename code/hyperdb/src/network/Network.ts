@@ -41,7 +41,7 @@ export class Network implements t.INetwork {
       .digest();
 
     // Promise that alerts when the Db is ready to interact with.
-    const ready$ = new Subject();
+    const ready$ = new Subject<{}>();
     this.ready = ready$.toPromise();
 
     // Finish up.

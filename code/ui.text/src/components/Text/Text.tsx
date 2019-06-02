@@ -55,7 +55,7 @@ export class Text extends React.PureComponent<ITextProps> {
       base: css({
         display: block ? 'block' : 'inline-block',
         cursor,
-        userSelect: !isSelectable && 'none',
+        userSelect: isSelectable ? 'auto' : 'none',
         ...toTextCss(this.props),
       }),
     };

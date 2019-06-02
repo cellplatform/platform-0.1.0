@@ -1,6 +1,6 @@
 {
   "name": "@platform/electron.loader",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.2.12"
+    "@platform/react": "0.2.13"
   },
   "devDependencies": {
     "@uiharness/dev": "0.2.59",

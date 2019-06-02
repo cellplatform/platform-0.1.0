@@ -1,6 +1,6 @@
 {
   "name": "@platform/hyperdb",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Strongly typed interface to hyperdb.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,16 +16,16 @@
   },
   "dependencies": {
     "@hyperswarm/network": "0.0.4",
-    "@platform/fs": "0.1.0",
-    "@platform/hyperdb.types": "0.2.3",
-    "@platform/util.value": "0.3.4",
+    "@platform/fs": "0.1.1",
+    "@platform/hyperdb.types": "0.2.4",
+    "@platform/util.value": "0.3.5",
     "discovery-swarm": "5.1.4",
     "hyperdb": "3.5.0",
     "pump": "3.0.0"
   },
   "devDependencies": {
-    "@platform/test": "0.0.53",
-    "@platform/ts": "3.4.24",
+    "@platform/test": "0.0.54",
+    "@platform/ts": "3.4.25",
     "@types/filesize": "4.1.0",
     "filesize": "4.1.2"
   },

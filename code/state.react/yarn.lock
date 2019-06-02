@@ -1000,6 +1000,18 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
+"@platform/css@0.1.17":
+  version "0.1.17"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.17.tgz#5d7152a6361c0118b6474f8c54dfad2eb23f17b4"
+  integrity sha512-tig6wND6tF3W5UCH7c5LwAJvY43vW7JmJ/z+A6mdFFN2x8qipPmWG04aIndv9niS5nZ7RlhulDGggA3sT/vONQ==
+  dependencies:
+    "@platform/libs" "0.0.15"
+    "@platform/util.is" "0.0.74"
+    "@platform/util.value" "0.3.5"
+    "@types/tinycolor2" "1.4.2"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
 "@platform/electron@0.1.68":
   version "0.1.68"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.1.68.tgz#5a8ef525ae72d4e8aa8e6b4c8294faf8843ef7e9"
@@ -1084,12 +1096,24 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/state@0.2.15":
-  version "0.2.15"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.2.15.tgz#c6bf051a8a6fcf1ab2d90fa6ff5c1eacb688cbb0"
-  integrity sha512-nJtskSK9QEADCdCFpKDQRdT+joo3orfnfftASOWoE/VRmq9KqhCQLPCS9Ki1yX14ppR4we4VR5YX7F7cY0nf+Q==
+"@platform/react@0.2.13":
+  version "0.2.13"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.2.13.tgz#f515b34d72933c4e725514e762507e42a6713c9c"
+  integrity sha512-ubxuNxCcUlPEneT8b8s0EJgh1etaiia1spdJ8vhgi1y5kRjIbxN6E+SmtpGG5O6r92NBHCKzM1RKdjkRuPZoZQ==
   dependencies:
-    "@platform/util.value" "0.3.4"
+    "@platform/css" "0.1.17"
+    "@platform/util.is" "0.0.74"
+    "@types/react" "16.8.19"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
+"@platform/state@0.2.16":
+  version "0.2.16"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.2.16.tgz#751dcc74c9883aa049424d9f3779d1c5a79ff8ac"
+  integrity sha512-63FCJeUqgaIYAqgC+rnsbgu6yqyi43wUGVRJ7DpXHB7shoqX3w2js3kNh0fUYpZmL8OqX90/xGw5t+XssJU3Xg==
+  dependencies:
+    "@platform/util.value" "0.3.5"
 
 "@platform/ts.libs@3.4.15":
   version "3.4.15"
@@ -1120,6 +1144,11 @@
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.11.tgz#ba94c650d9dfc804173ef6ba1a0cd7569603312d"
   integrity sha512-8bC8BZ5ecsLoY8p8Tw6hG/FvQYFoG+G26UgpCrc1LR1V58XBKlhNrPrnSkB48x6E89c6tC7iW7rebzfrq+9+oA==
+
+"@platform/types@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.12.tgz#53a899363f50713f22f717618833b7cd83c2358c"
+  integrity sha512-MXPyYOdB+fdhU3bwcFdpC5V2Pc6M38oy5Wkb8N+i3TyrZAaCOmoyIzE8Q7F/Be8+e+aeYZedTvH5ehCMR3hxww==
 
 "@platform/ui.icon@0.0.62":
   version "0.0.62"
@@ -1185,6 +1214,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.73.tgz#c1eb061f53edd33806593e97708e09cc38b7ca68"
   integrity sha512-r8qBWHvv2cPLshkbN++QJgwy3qKVk7md1oVhsKZ8JLcUvas54mjjBGWHa0uIDLNGDdWKoVwACe1llhhJFoPMLA==
 
+"@platform/util.is@0.0.74":
+  version "0.0.74"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.74.tgz#7880b0ec66ac15221140276ec24bb19e9cc4ba60"
+  integrity sha512-6TrdODOlHMn375C+FRwRNaz7PXak8F9EB/gVG9/o0s/W97Aq0Q79IFrMbEPVmHVxVFWDu7Jvdd1Kagh5tAdkiw==
+
 "@platform/util.local-storage@0.0.17":
   version "0.0.17"
   resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.17.tgz#cc794f7bd33a091067cc46a649bd3176f24b7d4e"
@@ -1210,6 +1244,19 @@
     "@platform/libs" "0.0.15"
     "@platform/types" "0.0.11"
     "@platform/util.is" "0.0.73"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.1.1"
+
+"@platform/util.value@0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.3.5.tgz#afc64101d02d681d8aa63e9fe7c868045a0e65a5"
+  integrity sha512-o7tKPDizj9QYWibN8ja6wSF94SQecO8iacLeD0xcHNury4gLNF3PPjZ5slfD352d6uA1GlOcU2Uh7lwCUlNd6w==
+  dependencies:
+    "@platform/libs" "0.0.15"
+    "@platform/types" "0.0.12"
+    "@platform/util.is" "0.0.74"
     "@types/semver" "6.0.0"
     cuid "2.1.6"
     dayjs "1.8.14"

@@ -106,7 +106,7 @@ export class Db<D extends object = any> implements t.IDb<D> {
     dir: '',
     db: null as any,
     version: undefined as string | undefined,
-    dispose$: new Subject(),
+    dispose$: new Subject<{}>(),
     events$: new Subject<t.DbEvent>(),
     watch$: new Subject<t.IDbWatchChange>(),
     watchers: ({} as unknown) as WatcherRefs,
@@ -516,11 +516,12 @@ export class Db<D extends object = any> implements t.IDb<D> {
   public async stats(options: {} = {}) {
     this.throwIfDisposed('stats');
     const dir = this.dir;
-    const size = await fs.folderSize(dir);
+    const size = await fs.size.dir(dir);
     return {
       dir,
       size: {
         bytes: size.bytes,
+        toString: size.toString,
       },
     };
   }

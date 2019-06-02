@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import {
+  color,
   css,
   GlamorValue,
   ITreeNode,
@@ -189,7 +190,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
       base: css({
         flex: 1,
         position: 'relative',
-        backgroundColor: background === 'THEME' && theme.bg,
+        backgroundColor: background === 'THEME' ? color.format(theme.bg) : undefined,
       }),
       body: css({
         overflow: 'hidden',

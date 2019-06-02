@@ -1,7 +1,7 @@
 {
   "name": "electron.test",
   "description": "External testing module for [@platform/election].",
-  "version": "0.0.181",
+  "version": "0.0.182",
   "scripts": {
     "postinstall": "ui init",
     "ui": "ui $@",
@@ -13,12 +13,12 @@
     "tmp": "msync sync && yarn chmod"
   },
   "dependencies": {
-    "@platform/electron": "0.1.68",
-    "@platform/react": "0.2.12",
-    "@platform/util.value": "0.3.4"
+    "@platform/electron": "0.1.69",
+    "@platform/react": "0.2.13",
+    "@platform/util.value": "0.3.5"
   },
   "devDependencies": {
-    "@platform/ts": "3.4.24",
+    "@platform/ts": "3.4.25",
     "@uiharness/dev": "0.2.59",
     "@uiharness/electron": "0.4.45"
   },

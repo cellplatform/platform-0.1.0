@@ -31,7 +31,7 @@ export function toTextCss(props: ITextStyle) {
     letterSpacing,
     lineHeight,
     textShadow: toShadow(textShadow),
-    textTransform: uppercase && 'uppercase',
+    textTransform: uppercase ? ('uppercase' as React.CSSProperties['textTransform']) : undefined,
   };
 }
 

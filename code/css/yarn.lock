@@ -1084,13 +1084,13 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/test@0.0.53":
-  version "0.0.53"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.53.tgz#90b99bf5a2ba6f9bdb18a68fd1d2329020437f22"
-  integrity sha512-/IYNqBFVlIq26X+F5ZpI13rZ2hKKXwNdWiXdq8a8RigIyckFU6oHjt3ijN59Njsu4Ee8SXJA6XM/PNW8zdT/0A==
+"@platform/test@0.0.54":
+  version "0.0.54"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.54.tgz#345397fe73bf7c6b04e0c689f5e2d5f6890d9c43"
+  integrity sha512-ieeGOD2kZN3nWzUfh+7C91KP1a5j7P4ciCY8KAoBaf6P9E+1gd4jWY3bIzQYvfQHBOyxjmXtIREdG1wbqrwnQQ==
   dependencies:
     "@types/chai" "4.1.7"
-    "@types/mocha" "5.2.6"
+    "@types/mocha" "5.2.7"
     chai "4.2.0"
     findup-sync "3.0.0"
     mocha "6.1.4"
@@ -1124,6 +1124,11 @@
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.11.tgz#ba94c650d9dfc804173ef6ba1a0cd7569603312d"
   integrity sha512-8bC8BZ5ecsLoY8p8Tw6hG/FvQYFoG+G26UgpCrc1LR1V58XBKlhNrPrnSkB48x6E89c6tC7iW7rebzfrq+9+oA==
+
+"@platform/types@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.12.tgz#53a899363f50713f22f717618833b7cd83c2358c"
+  integrity sha512-MXPyYOdB+fdhU3bwcFdpC5V2Pc6M38oy5Wkb8N+i3TyrZAaCOmoyIzE8Q7F/Be8+e+aeYZedTvH5ehCMR3hxww==
 
 "@platform/ui.icon@0.0.62":
   version "0.0.62"
@@ -1189,6 +1194,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.73.tgz#c1eb061f53edd33806593e97708e09cc38b7ca68"
   integrity sha512-r8qBWHvv2cPLshkbN++QJgwy3qKVk7md1oVhsKZ8JLcUvas54mjjBGWHa0uIDLNGDdWKoVwACe1llhhJFoPMLA==
 
+"@platform/util.is@0.0.74":
+  version "0.0.74"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.74.tgz#7880b0ec66ac15221140276ec24bb19e9cc4ba60"
+  integrity sha512-6TrdODOlHMn375C+FRwRNaz7PXak8F9EB/gVG9/o0s/W97Aq0Q79IFrMbEPVmHVxVFWDu7Jvdd1Kagh5tAdkiw==
+
 "@platform/util.local-storage@0.0.17":
   version "0.0.17"
   resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.17.tgz#cc794f7bd33a091067cc46a649bd3176f24b7d4e"
@@ -1214,6 +1224,19 @@
     "@platform/libs" "0.0.15"
     "@platform/types" "0.0.11"
     "@platform/util.is" "0.0.73"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.1.1"
+
+"@platform/util.value@0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.3.5.tgz#afc64101d02d681d8aa63e9fe7c868045a0e65a5"
+  integrity sha512-o7tKPDizj9QYWibN8ja6wSF94SQecO8iacLeD0xcHNury4gLNF3PPjZ5slfD352d6uA1GlOcU2Uh7lwCUlNd6w==
+  dependencies:
+    "@platform/libs" "0.0.15"
+    "@platform/types" "0.0.12"
+    "@platform/util.is" "0.0.74"
     "@types/semver" "6.0.0"
     cuid "2.1.6"
     dayjs "1.8.14"
@@ -1271,10 +1294,10 @@
     "@types/node" "*"
     rxjs "^6.5.1"
 
-"@types/mocha@5.2.6":
-  version "5.2.6"
-  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.6.tgz#b8622d50557dd155e9f2f634b7d68fd38de5e94b"
-  integrity sha512-1axi39YdtBI7z957vdqXI4Ac25e7YihYQtJa+Clnxg1zTJEaIRbndt71O3sP4GAMgiAm0pY26/b9BrY4MR/PMw==
+"@types/mocha@5.2.7":
+  version "5.2.7"
+  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.7.tgz#315d570ccb56c53452ff8638738df60726d5b6ea"
+  integrity sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==
 
 "@types/node@*":
   version "11.13.8"

@@ -54,7 +54,7 @@ export function create(args: { getContext: t.GetNpmRouteContext }) {
       // Retrieve folder size.
       const showSize = queryKeys.includes('size') && req.query.size !== 'false';
       if (showSize) {
-        const bytes = (await fs.folderSize(downloadDir)).bytes;
+        const bytes = (await fs.size.dir(downloadDir)).bytes;
         const size = { bytes, display: filesize(bytes, { round: 0 }) };
         response = { ...response, size };
       }

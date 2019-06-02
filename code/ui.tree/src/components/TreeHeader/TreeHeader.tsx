@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, GlamorValue, ITreeNode } from '../../common';
+import { css, GlamorValue, ITreeNode, color } from '../../common';
 import * as themes from '../../themes';
 import { Icons } from '../Icons';
 import { Text } from '../Text';
@@ -38,7 +38,7 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
       }),
       background: css({
         Absolute: 0,
-        backgroundColor: theme.bg,
+        backgroundColor: color.format(theme.bg),
         borderBottom: `solid 1px ${theme.borderBottomColor}`,
         opacity: 0.95,
       }),
@@ -50,7 +50,7 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
         fontSize: 14,
         fontWeight: 'bold',
         textShadow: Text.toShadow([1, theme.textShadow]),
-        color: theme.titleColor,
+        color: color.format(theme.titleColor),
       }),
       edge: css({
         Flex: 'center-center',

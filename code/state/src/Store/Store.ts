@@ -45,7 +45,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
    * [Fields]
    */
   private readonly _ = {
-    dispose$: new Subject(),
+    dispose$: new Subject<{}>(),
     events$: new Subject<E>(),
     changing$: new Subject<t.IStateChanging<M, E>>(),
     changed$: new Subject<t.IStateChange<M, E>>(),
@@ -121,7 +121,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
    * Retrieves a lens into a sub-section of the state-tree.
    */
   public lens<S extends {}>(filter: t.LensStateFilter<M, S>): t.IStoreLens<M, S, E> {
-    const dispose$ = new Subject();
+    const dispose$ = new Subject<{}>();
     const self = this; // tslint:disable-line
     const changed$ = this.changed$.pipe(takeUntil(dispose$)) as any; // HACK: type wierdness.
     const lens: t.IStoreLens<M, S, E> = {

@@ -16,7 +16,7 @@ describe.skip('http (INTEGRATION)', function() {
     expect(res.body).to.include('"name": "foo"');
   });
 
-  it.only('GET (JSON)', async () => {
+  it('GET (JSON)', async () => {
     const res = await http.get(URL.JSON);
     expect(res.status).to.eql(200);
     expect(res.json<IFoo>().name).to.eql('foo');

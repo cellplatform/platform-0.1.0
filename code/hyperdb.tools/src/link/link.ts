@@ -204,7 +204,7 @@ export function oneToOne<A extends { id: string }, B extends { id: string }>(arg
     }
     if (modelB[b.field] && modelB[b.field] !== (modelA.id as any)) {
       const key = a.dbKey(modelB[b.field] as any);
-      let unlink = await getModel('previous', db, key);
+      let unlink: any = await getModel('previous', db, key);
       unlink = { ...unlink };
       delete unlink[a.field as any];
       batch = {
