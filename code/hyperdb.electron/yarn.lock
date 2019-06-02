@@ -453,10 +453,10 @@
   resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.8.14.tgz#bf8f24950e6705e5150756a5947dac76e5dce2c0"
   integrity sha512-xbzi6UaATVKupInG3D65/EPQ3qkJCvG2ZAzmlIYt6x93ACOEX2Y0fHW4/e8TF3G7q5KB2l7wTZgzfNjyYDMuZw==
 
-"@uiharness/electron@0.4.45":
-  version "0.4.45"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.45.tgz#cae2534e13860a5c1f4bf6ebfb209db5dd8ebbc5"
-  integrity sha512-NpOu9EK2YTtMtWKkPj3SABFnK/GI7rmjjeiTKnNvUtAMosqpYOeokW4iTmpn+B4MvBwP6pK5ZLDNtKVR9wBt3Q==
+"@uiharness/electron@0.4.46":
+  version "0.4.46"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.46.tgz#6d3c37cc2946928a0af29b5a8415e44043d1e9f4"
+  integrity sha512-VQgRQRtcUWlLAGtV7QE0M4lFGFydnyXJD+dMhbrFOz16TWneWIB/ZyF9lZKNxisVQ2alyvqutpUDFQoc3RD0tw==
   dependencies:
     "@platform/electron" "0.1.68"
     "@platform/log" "0.0.124"
@@ -464,13 +464,13 @@
     "@platform/ui.object" "0.0.118"
     "@platform/util.value" "0.3.4"
     "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.1.32"
+    "@uiharness/types" "0.1.33"
     tslib "1.9.3"
 
-"@uiharness/types@0.1.32":
-  version "0.1.32"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.1.32.tgz#14a7493b6f6bdd679596b0adc67e6886914c418b"
-  integrity sha512-Nw8yql+Nm381SOg8kKhzJcN9ekyKrJpXsIDGndaed8A+Fe7GUi37M9A+Xf/ouCouMef18BoyStqrlsF1s3xUHg==
+"@uiharness/types@0.1.33":
+  version "0.1.33"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.1.33.tgz#7ec445efccc3c16e1094a3d47394b395baae49cc"
+  integrity sha512-WoKbiqkGnlBljIvgV0Ws4/HYcXGgVLrWaGm48Cq+i9eJAAUpESI8VZVBwjBoOVCBRkpsOk9qPJUIEAponp0kgQ==
 
 ajv@^6.10.0:
   version "6.10.0"

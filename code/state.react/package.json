@@ -19,8 +19,8 @@
     "@platform/state": "0.2.16"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.2.59",
-    "@uiharness/ui": "0.2.40"
+    "@uiharness/dev": "0.2.60",
+    "@uiharness/ui": "0.2.41"
   },
   "files": [
     "lib"
