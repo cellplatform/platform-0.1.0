@@ -1,17 +1,23 @@
-import { File } from '../file';
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
-import { zip, unzip } from '../zip';
+
+import { File } from '../file';
 import { glob } from '../glob';
-import { merge } from '../merge';
 import { is } from '../is';
-import { folderSize } from './helpers';
+import { merge } from '../merge';
+import { size } from '../size';
+import { unzip, zip } from '../zip';
 
 /**
  * Extended [file-system] object.
  */
 export const fs = {
   ...fsExtra,
+
+  /**
+   * Helpers for determining the size of file-system items.
+   */
+  size,
 
   /**
    * Helpers for searching for glob patterns.
@@ -32,11 +38,6 @@ export const fs = {
    * Flag helpers
    */
   is,
-
-  /**
-   * Calculates the size of all files within a directory.
-   */
-  folderSize,
 
   /**
    * Zip/unzip
