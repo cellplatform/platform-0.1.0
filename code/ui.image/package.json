@@ -21,8 +21,8 @@
     "react-icons": "3.7.0"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.2.60",
-    "@uiharness/ui": "0.2.41"
+    "@uiharness/dev": "0.2.61",
+    "@uiharness/ui": "0.2.42"
   },
   "files": [
     "lib"
