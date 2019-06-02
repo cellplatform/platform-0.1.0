@@ -102,7 +102,7 @@
     "@platform/ts.libs" "3.4.15"
     yargs "13.2.4"
 
-"@platform/types@0.0.11":
+"@platform/types@0.0.11", "@platform/types@^0.0.11":
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.11.tgz#ba94c650d9dfc804173ef6ba1a0cd7569603312d"
   integrity sha512-8bC8BZ5ecsLoY8p8Tw6hG/FvQYFoG+G26UgpCrc1LR1V58XBKlhNrPrnSkB48x6E89c6tC7iW7rebzfrq+9+oA==

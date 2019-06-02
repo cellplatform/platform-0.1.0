@@ -6,13 +6,14 @@ import * as isomorphic from 'isomorphic-fetch';
  */
 export const fetch = isomorphic;
 
-export function create(defaultOptions: t.IFetchOptions = {}) {
+export function create(options: t.IFetchOptions = {}) {
+  const baseOptions = options;
   const http = {
     /**
      * `GET` request.
      */
     async get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const { mode = 'same-origin' } = { ...defaultOptions, ...options };
+      const { mode = 'same-origin' } = { ...baseOptions, ...options };
       const res = await isomorphic(url, {
         method: 'GET',
         headers: toRawHeaders(options.headers),
@@ -21,8 +22,9 @@ export function create(defaultOptions: t.IFetchOptions = {}) {
 
       const { ok, status, statusText } = res;
       const text = await res.text();
+      let json: any;
 
-      const result: t.IHttpResponse<string> = {
+      const result: t.IHttpResponse = {
         ok,
         status,
         statusText,
@@ -32,6 +34,16 @@ export function create(defaultOptions: t.IFetchOptions = {}) {
         get body() {
           return text || '';
         },
+        json<T>() {
+          if (!json) {
+            try {
+              json = JSON.parse(result.body) as T;
+            } catch (error) {
+              throw new Error(`Failed while parsing JSON for '${url}'. ${error.message}`);
+            }
+          }
+          return json;
+        },
       };
 
       return result;
@@ -40,29 +52,3 @@ export function create(defaultOptions: t.IFetchOptions = {}) {
 
   return http;
 }
-
-// export async function get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-//   const { mode = 'same-origin' } = options;
-//   const res = await isomorphic(url, {
-//     method: 'GET',
-//     headers: toRawHeaders(options.headers),
-//     mode,
-//   });
-
-//   const { ok, status, statusText } = res;
-//   const text = await res.text();
-
-//   const result: t.IHttpResponse = {
-//     ok,
-//     status,
-//     statusText,
-//     get headers() {
-//       return fromRawHeaders(res.headers);
-//     },
-//     get body() {
-//       return text || '';
-//     },
-//   };
-
-//   return result;
-// }
