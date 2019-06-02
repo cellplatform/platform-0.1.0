@@ -12,13 +12,13 @@
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
-    "@types/fs-extra": "5.1.0",
+    "@types/fs-extra": "7.0.0",
     "@types/js-yaml": "3.12.1",
     "archiver": "3.0.0",
     "extract-zip": "1.6.7",
     "fast-glob": "2.2.7",
     "filesize": "^4.1.2",
-    "fs-extra": "7.0.1",
+    "fs-extra": "8.0.1",
     "js-yaml": "3.13.1"
   },
   "devDependencies": {

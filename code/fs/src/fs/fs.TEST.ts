@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { fs } from '.';
 
-describe.only('size', () => {
+describe('size', () => {
   describe('file', () => {
     it('calculates the size of single file', async () => {
       const res = await fs.size.file('./src/index.ts');
