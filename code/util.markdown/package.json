@@ -12,7 +12,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "rehype-format": "2.3.1",
+    "rehype-format": "2.3.2",
     "rehype-stringify": "5.0.0",
     "remark-parse": "6.0.3",
     "remark-rehype": "4.0.0",

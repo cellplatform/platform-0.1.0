@@ -2072,10 +2072,10 @@ regex-not@^1.0.0, regex-not@^1.0.2:
     extend-shallow "^3.0.2"
     safe-regex "^1.1.0"
 
-rehype-format@2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/rehype-format/-/rehype-format-2.3.1.tgz#958925cc7e329a9126a26e96d1ec117b86fbc66d"
-  integrity sha512-BnMp0DIaDqkGqTvU5C88pSHIKgU4Ryfz6KMRLtro4mIJ0dSgJGHx0b/9FnX9n8TIot1zmAxvB90YilHrB4Yd0w==
+rehype-format@2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/rehype-format/-/rehype-format-2.3.2.tgz#92cac021a19b9af9423180972a4ceb4e5bf35d19"
+  integrity sha512-71wC07yQqSEo6gaVRiSAB6DaOv1qPZlSvK7KQv8+ABvQFVojCgFKzDYx7T66KJY5SGieZbpUoGzKrzW7pfAJhA==
   dependencies:
     hast-util-embedded "^1.0.1"
     hast-util-phrasing "^1.0.0"
