@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import { fs, time, download, t } from './common';
+import { fs, time, download, t, exec } from './common';
 const SHA256 = 'sha256';
 
 /**
@@ -42,7 +42,9 @@ export class Bundle {
    */
   public static async zip(args: { source: { main: string; renderer: string }; target: string }) {
     const { source } = args;
-    const pkg = (await fs.readJson(fs.resolve('./package.json'))) as {
+    const pkgLockPath = fs.resolve('./package-lock.json');
+    const pkgPath = fs.resolve('./package.json');
+    const pkg = (await fs.readJson(pkgPath)) as {
       name: string;
       version: string;
     };
@@ -73,10 +75,14 @@ export class Bundle {
 
     // Package both bundle and zip into a single downloadable archive.
     const downloadPath = fs.join(dir, `${pkg.version}.zip`);
-    await fs
+    const zipper = fs
       .zip(bundlePath)
       .add(infoPath)
-      .save(downloadPath);
+      .add(pkgPath);
+    if (await fs.pathExists(pkgLockPath)) {
+      zipper.add(pkgLockPath);
+    }
+    await zipper.save(downloadPath);
 
     // Delete the original bundle.
     await fs.remove(bundlePath);
@@ -114,6 +120,12 @@ export class Bundle {
 
     // Unzip the bundle.
     await fs.unzip(bundleFile, dir);
+
+    // Install dependencies.
+    console.log('installing to', dir);
+    const res = await exec.cmd.run(`cd "${dir}" && npm install`);
+    console.log('res.error', res.error);
+    console.log('installed');
 
     // Finish up.
     return { ...info, dir };

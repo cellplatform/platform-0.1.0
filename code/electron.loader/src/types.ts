@@ -1,4 +1,4 @@
-import { IpcClient } from '@platform/electron/lib/types';
+import { IpcClient, IStoreClient } from '@platform/electron/lib/types';
 export type LoaderIpc = IpcClient<ElectronLoaderEvents>;
 
 /**
@@ -14,6 +14,10 @@ export type IBundleInfo = {
   checksum: string;
   hash: 'sha256';
 };
+
+export type ILoaderSettings = IStoreClient<{
+  'LOADER/current'?: string;
+}>;
 
 /**
  * [Events]

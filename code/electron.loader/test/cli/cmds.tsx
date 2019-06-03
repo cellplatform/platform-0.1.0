@@ -19,8 +19,9 @@ export const root = Command.create<P>('root', e => {
     });
   })
   .add('open-2', e => {
+    console.log('-------------------------------------------');
     e.props.ipc.send<t.IOpenWindowEvent>('ELECTRON_LOADER/open', {
-      version: '0.0.2',
-      html: 'electron.test.renderer.one.html',
+      version: '0.0.14',
+      html: 'electron.test.renderer.two.html',
     });
   });

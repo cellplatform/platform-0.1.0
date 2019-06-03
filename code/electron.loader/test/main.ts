@@ -1,10 +1,13 @@
 import uiharness from '@uiharness/electron/lib/main';
 import { app, BrowserWindow } from 'electron';
+import { exec } from '@platform/exec';
+
+import * as appPath from 'app-root-path';
 
 // import * as path from 'app-root-path';
 import { format } from 'url';
 
-import { Bundle } from '../src/main';
+import { Bundle, Release } from '../src/main';
 import { t, log } from './common';
 import { fs } from '@platform/fs';
 
@@ -13,7 +16,6 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
 export async function start(args: any) {
   args.log.info('👨‍🚀 start from another module!!!');
 }
-
 export default start;
 
 /**
@@ -30,66 +32,64 @@ export default start;
  *
  */
 (async () => {
-  const res = await uiharness.init({ config });
-  const log = res.log;
-  log.info('main started');
-
-  const ipc = res.ipc as uiharness.IpcClient<t.ElectronLoaderEvents>;
-
-  // const path = fs.resolve('./tmp/bundle/0.0.2/main/main.js');
-  const path = '/Users/phil/code/@platform/code/electron.loader/tmp/bundle/0.0.2/main/main.js';
-  console.log('path', path);
-
-  log.info('open module at path: ', path);
-
   try {
-    const f = require(path);
-    f.start({ log });
+    const res = await uiharness.init({ config });
+    const log = res.log;
+    log.info('main started');
+
+    const p = appPath.resolve('.');
+    // console.log('p', p);
+    log.info('app root path:', p);
+
+    // const r1 = await exec.cmd.run('npm -v');
+    // log.info(r1.info);
+
+    // const TMP = 'cd /Users/phil/Dropbox/TEMP';
+    // await exec.cmd.run(`${TMP} && npm init -y`);
+    // await exec.cmd.run(`${TMP} && npm i @platform/libs`);
+    // await exec.cmd.run
+
+    // const baseDir = fs.resolve('./tmp/releases');
+    const baseDir = app.getPath('userData');
+    log.info('baseDir', baseDir);
+    const baseUrl =
+      'https://uiharness.sfo2.digitaloceanspaces.com/%40platform/electron.loader/releases';
+
+    const store = res.store as t.ILoaderSettings;
+    const current = await store.get('LOADER/current');
+    console.log('current', current);
+
+    if (current) {
+      const release = Release.create({ version: current, baseUrl, baseDir });
+      const isDownloaded = await release.isDownloaded();
+      console.log('release.dir', release.dir);
+      console.log('isDownloaded', isDownloaded);
+    }
+
+    const ipc = res.ipc as uiharness.IpcClient<t.ElectronLoaderEvents>;
+
+    ipc.on<t.IOpenWindowEvent>('ELECTRON_LOADER/open').subscribe(async e => {
+      console.log('-------------------------------------------');
+      const { version, html } = e.payload;
+      log.info('version', version);
+      log.info('html', html);
+      store.set('LOADER/current', version);
+
+      const release = Release.create({ version, baseUrl, baseDir });
+      await release.download();
+
+      const file = release.renderer.file('electron.test.renderer.one.html');
+
+      const window = new BrowserWindow({
+        width: 700,
+        height: 350,
+      });
+
+      console.log('load url', file);
+
+      window.loadURL(file);
+    });
   } catch (error) {
     console.log('error', error);
   }
-
-  // res.windows.
-
-  // ipc.on<t.IDownloadEvent>('ELECTRON_LOADER/download').subscribe(async e => {
-  //   const { version } = e.payload;
-  //   const base =
-  //     'https://uiharness.sfo2.digitaloceanspaces.com/%40platform/electron.loader/releases';
-  //   const url = `${base}/${version}/${version}.zip`;
-
-  //   try {
-  //     // const hash = '33265773d8877d9fd28ab9a888fd86a1';
-  //     const res = await await Bundle.download({ url, dir: './tmp/releases' });
-  //     log.info('download:\n', res);
-  //   } catch (error) {
-  //     log.info('DOWNLOAD ERROR:', error.message);
-  //   }
-  // });
-
-  ipc.on<t.IOpenWindowEvent>('ELECTRON_LOADER/open').subscribe(async e => {
-    const { version, html } = e.payload;
-    log.info('version', version);
-    log.info('html', html);
-
-    const dir = fs.resolve('./tmp/releases');
-    // const entry = fs.join(dir, version, 'renderer', html);
-    const entry =
-      '/Users/phil/code/@platform/code/electron.loader/tmp/releases/0.0.2/renderer/electron.test.renderer.one.html';
-    console.log('entry', entry);
-
-    const prod = format({
-      protocol: 'file:',
-      // pathname: path.resolve(entry.path),
-      pathname: entry,
-      slashes: true,
-    });
-    console.log('prod', prod);
-
-    const window = new BrowserWindow({
-      width: 500,
-      height: 300,
-    });
-
-    window.loadURL(prod);
-  });
 })();

@@ -1,5 +1,6 @@
 import { fs, http, t } from './common';
 import { Bundle } from './Bundle';
+import * as url from 'url';
 
 export type IReleaseArgs = {
   version: string;
@@ -36,14 +37,31 @@ export class Release {
   /**
    * [Fields]
    */
+
   public readonly version: string;
   public readonly dir: string;
   public readonly url: { bundle: string; info: string };
   private _cache: any = {};
 
   /**
+   * [Properties]
+   */
+
+  public get renderer() {
+    const path = fs.join(this.dir, 'renderer');
+    return {
+      path,
+      file(filename: string) {
+        const pathname = fs.join(path, filename);
+        return url.format({ protocol: 'file:', pathname, slashes: true });
+      },
+    };
+  }
+
+  /**
    * [Methods]
    */
+
   public async remote(): Promise<{ exists: boolean; info?: t.IBundleInfo }> {
     const k = 'INFO';
     try {
@@ -65,7 +83,8 @@ export class Release {
   }
 
   public async isDownloaded() {
-    return fs.pathExists(this.dir);
+    const path = fs.join(this.dir, 'info.json');
+    return fs.pathExists(path);
   }
 
   public async download(options: { checksum?: string; force?: boolean } = {}) {

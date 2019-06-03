@@ -1006,6 +1006,18 @@
     chalk "2.4.2"
     listr "0.14.3"
 
+"@platform/exec@^0.2.12":
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.12.tgz#f0ccf718ca5f8cee270eabe2a567d830eac68754"
+  integrity sha512-jlzEeZ2NhHG7WFsUL6UoXyhG4x3nitXrW4cZCLZYQvL+1sqk6U6YGf9X5oum/fKI8SU7J9TdixWKsb0nmdm9vQ==
+  dependencies:
+    "@platform/libs" "0.0.15"
+    "@types/chalk" "2.2.0"
+    "@types/listr" "0.14.0"
+    ansi-regex "4.1.0"
+    chalk "2.4.2"
+    listr "0.14.3"
+
 "@platform/fs@0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.1.0.tgz#d621f699ae99e97ead252a90ddff9ec205b2855e"
@@ -1033,7 +1045,7 @@
     fs-extra "8.0.1"
     js-yaml "3.13.1"
 
-"@platform/http@^0.2.1":
+"@platform/http@0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.1.tgz#0592cf8aecb681ef475b853291e57195588fa99d"
   integrity sha512-u3qUJkv53peD97FWn/LodL0zIA+FATzXakdQw03UuTM5eKMa1EE45xGmpVoEIGj8UUh13w/CU0HozKtt9z7P5A==
