@@ -9,15 +9,12 @@ electron:
   entry:
     main: test/main.ts
     renderer: 
-      default: test/renderer.tsx
+      default: test/renderer/one.tsx
       sample: 
-        path: test/renderer/two.tsx # Example secondary entry. Point this to another entry file.
+        path: test/renderer/two.tsx 
         title: Two (v${version})
 
 
-web:
-  port: 1234
-  entry: test/web.tsx
 
 sourcemaps:
   strip:

@@ -8,15 +8,19 @@ type P = t.ICommandProps;
 export const root = Command.create<P>('root', e => {
   // Setup initial screen.
 })
-  .add('bundle', e => {
-    e.props.ipc.send<t.IBundleEvent>('ELECTRON/bundle', {
-      source: {
-        main: './.uiharness/bundle/app.main',
-        renderer: './.uiharness/bundle/app.renderer/prod',
-      },
-      target: './tmp/bundle',
+  // .add('download', e => {
+  //   e.props.ipc.send('ELECTRON_LOADER/download', { version: '0.0.1' });
+  //   e.props.ipc.send('ELECTRON_LOADER/download', { version: '0.0.2' });
+  // })
+  .add('open-1', e => {
+    e.props.ipc.send<t.IOpenWindowEvent>('ELECTRON_LOADER/open', {
+      version: '0.0.1',
+      html: 'electron.test.renderer.one.html',
     });
   })
-  .add('download', e => {
-    e.props.ipc.send('ELECTRON/download', {});
+  .add('open-2', e => {
+    e.props.ipc.send<t.IOpenWindowEvent>('ELECTRON_LOADER/open', {
+      version: '0.0.2',
+      html: 'electron.test.renderer.one.html',
+    });
   });

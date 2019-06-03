@@ -1,10 +1,20 @@
-import { t } from './common';
-import { download } from '@platform/http/lib/download';
-import { fs } from '@platform/fs';
-import { Bundle } from '../src/main';
-
 import uiharness from '@uiharness/electron/lib/main';
+import { app, BrowserWindow } from 'electron';
+
+// import * as path from 'app-root-path';
+import { format } from 'url';
+
+import { Bundle } from '../src/main';
+import { t, log } from './common';
+import { fs } from '@platform/fs';
+
 const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
+
+export async function start(args: any) {
+  args.log.info('👨‍🚀 start from another module!!!');
+}
+
+export default start;
 
 /**
  * Initialize the default [main] window process with the [UIHarness].
@@ -16,7 +26,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
  *    https://electronjs.org/docs/tutorial/first-app#electron-development-in-a-nutshell
  *
  *  To review the [UIHarness] entry-point as a example:
- *    https://github.com/uiharness/uiharness/blob/master/code/libs/electron/src/main/index.ts
+ *    https://github.com/uiharness/uiharness/blob/master/code/libs/ELECTRON_LOADER/src/main/index.ts
  *
  */
 (async () => {
@@ -26,44 +36,60 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
 
   const ipc = res.ipc as uiharness.IpcClient<t.ElectronLoaderEvents>;
 
-  ipc.on<t.IBundleEvent>('ELECTRON/bundle').subscribe(async e => {
-    const { source, target } = e.payload;
-    // const url = 'https://uiharness.sfo2.digitaloceanspaces.com/%40platform/http/images.zip';
-    // console.log('download', e);
+  // const path = fs.resolve('./tmp/bundle/0.0.2/main/main.js');
+  const path = '/Users/phil/code/@platform/code/electron.loader/tmp/bundle/0.0.2/main/main.js';
+  console.log('path', path);
 
-    await Bundle.zip({ source, target });
+  log.info('open module at path: ', path);
 
-    // const zip =
+  try {
+    const f = require(path);
+    f.start({ log });
+  } catch (error) {
+    console.log('error', error);
+  }
 
-    // const path = fs.resolve('./tmp/images.zip');
-    // const b = bundle({path:''})
+  // res.windows.
 
-    // const res = await download(url).save(path);
-    // console.log('res', res);
+  // ipc.on<t.IDownloadEvent>('ELECTRON_LOADER/download').subscribe(async e => {
+  //   const { version } = e.payload;
+  //   const base =
+  //     'https://uiharness.sfo2.digitaloceanspaces.com/%40platform/electron.loader/releases';
+  //   const url = `${base}/${version}/${version}.zip`;
 
-    // const to = fs.resolve('./tmp/images');
-    // console.log('to', to);
-    // const r = await fs.unzip(path, to);
-    // console.log('r', r);
+  //   try {
+  //     // const hash = '33265773d8877d9fd28ab9a888fd86a1';
+  //     const res = await await Bundle.download({ url, dir: './tmp/releases' });
+  //     log.info('download:\n', res);
+  //   } catch (error) {
+  //     log.info('DOWNLOAD ERROR:', error.message);
+  //   }
+  // });
+
+  ipc.on<t.IOpenWindowEvent>('ELECTRON_LOADER/open').subscribe(async e => {
+    const { version, html } = e.payload;
+    log.info('version', version);
+    log.info('html', html);
+
+    const dir = fs.resolve('./tmp/releases');
+    // const entry = fs.join(dir, version, 'renderer', html);
+    const entry =
+      '/Users/phil/code/@platform/code/electron.loader/tmp/releases/0.0.2/renderer/electron.test.renderer.one.html';
+    console.log('entry', entry);
+
+    const prod = format({
+      protocol: 'file:',
+      // pathname: path.resolve(entry.path),
+      pathname: entry,
+      slashes: true,
+    });
+    console.log('prod', prod);
+
+    const window = new BrowserWindow({
+      width: 500,
+      height: 300,
+    });
+
+    window.loadURL(prod);
   });
-
-  ipc.on<t.IDownloadEvent>('ELECTRON/download').subscribe(async e => {
-    const url = 'https://uiharness.sfo2.digitaloceanspaces.com/%40platform/http/images.zip';
-    console.log('download', e);
-
-    // const zip =
-
-    // const path = fs.resolve('./tmp/images.zip');
-    // const b = bundle({path:''})
-
-    // const res = await download(url).save(path);
-    // console.log('res', res);
-
-    // const to = fs.resolve('./tmp/images');
-    // console.log('to', to);
-    // const r = await fs.unzip(path, to);
-    // console.log('r', r);
-  });
-
-  // ipc.on
 })();

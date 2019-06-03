@@ -1033,7 +1033,7 @@
     fs-extra "8.0.1"
     js-yaml "3.13.1"
 
-"@platform/http@0.2.1":
+"@platform/http@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.1.tgz#0592cf8aecb681ef475b853291e57195588fa99d"
   integrity sha512-u3qUJkv53peD97FWn/LodL0zIA+FATzXakdQw03UuTM5eKMa1EE45xGmpVoEIGj8UUh13w/CU0HozKtt9z7P5A==
@@ -1314,6 +1314,11 @@
   dependencies:
     "@types/node" "*"
     rxjs "^6.5.1"
+
+"@types/minimist@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
+  integrity sha1-aaI6OtKcrwCX8G7aWbNh7i8GOfY=
 
 "@types/node@*":
   version "12.0.4"

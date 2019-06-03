@@ -1,1 +1,2 @@
-export * from './bundle';
+export * from './Bundle';
+export * from './Release';
