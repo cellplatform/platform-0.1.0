@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { CommandShell, t, MyComponent, ObjectView, Hr } from '../common';
+import { CommandShell, t, ObjectView, Hr, renderer } from '../common';
 
 export type ITestProps = {};
 
@@ -11,7 +11,10 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
-  private cli: t.ICommandState = cli.init({ state$: this.state$ });
+
+  public static contextType = renderer.Context;
+  public context!: renderer.ReactContext;
+  private cli: t.ICommandState = cli.init({ state$: this.state$, ipc: this.context.ipc });
 
   /**
    * [Lifecycle]
@@ -33,7 +36,6 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div style={{ padding: 30, flex: 1 }}>
-          <MyComponent text={this.state.title} />
           <Hr />
           <ObjectView name={'state'} data={this.state} />
         </div>

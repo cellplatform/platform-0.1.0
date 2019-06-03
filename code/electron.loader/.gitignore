@@ -4,3 +4,4 @@ node_modules
 .dev
 lib
 lib.test
+/tmp

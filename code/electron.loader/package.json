@@ -15,7 +15,10 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.2.13"
+    "@platform/fs": "0.1.1",
+    "@platform/http": "0.2.1",
+    "@platform/react": "0.2.13",
+    "@platform/util.value": "0.3.5"
   },
   "devDependencies": {
     "@uiharness/dev": "0.2.61",
