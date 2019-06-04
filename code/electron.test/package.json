@@ -19,8 +19,8 @@
   },
   "devDependencies": {
     "@platform/ts": "3.4.25",
-    "@uiharness/dev": "0.2.61",
-    "@uiharness/electron": "0.4.46"
+    "@uiharness/dev": "0.2.62",
+    "@uiharness/electron": "0.4.47"
   },
   "resolutions": {
     "@types/react": "16.7.17"
