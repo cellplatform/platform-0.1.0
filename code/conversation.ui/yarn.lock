@@ -1351,10 +1351,10 @@
     "@platform/libs" "^0.0.15"
     "@platform/react" "0.2.13"
 
-"@platform/ui.editor@0.1.15":
-  version "0.1.15"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.15.tgz#e7a58f7190a89f058b3f61ebb03a3b5acbdebaa1"
-  integrity sha512-k3ekS+wLCBujPfTrhl7sUmZQ4IgwT3aRYTJCXSoxrnJWpqlAfQ4kQLbO5SknywoRfHj/A5HTegXMmO6yxiwBPA==
+"@platform/ui.editor@0.1.16":
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.16.tgz#753d92803bc28524a184897ddc2d91b4d2f9a8d0"
+  integrity sha512-CkvhXFy2QAXiEbsQk93LZPg9CPhVBRnaSTH2JXOm5B0Rcvndte9JCVljzX/5cZeq43UhyVC8cZuTH7BQVX20Ug==
   dependencies:
     "@platform/css" "0.1.17"
     "@platform/react" "0.2.13"
@@ -1901,10 +1901,10 @@
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.0.tgz#8b63ab7f1aa5321248aad5ac890a485656dcea4d"
   integrity sha512-te5lMAWii1uEJ4FwLjzdlbw3+n0FZNOvFXHxQDKeT0dilh7HOzdMzV2TrJVUzq8ep7J4Na8OUYPRLSQkJHAlrg==
 
-"@uiharness/dev@0.2.61":
-  version "0.2.61"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.61.tgz#9c66c0f63d4886db95cc67ac835286c6aeeb4f4d"
-  integrity sha512-fRyGbZ7XrPVziORTyiWkdX7iJ8Hfymgqdn+r8gnGuJ2y0e3UlHURL2kK1HGpCDVWYQngs0xaPNXUy+vnygVHqQ==
+"@uiharness/dev@0.2.62":
+  version "0.2.62"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.62.tgz#2873cad9fc83d22b728c24bd665a5e92e5510f24"
+  integrity sha512-k5VfWqkSloX8O2HTV/7Nqz0gVBaHIemp+1v4EYVTz6aXxmrOKdlvbsLaSjALfpofonpde0IRuQBrKzu5+sj7ow==
   dependencies:
     "@babel/core" "7.4.5"
     "@babel/polyfill" "7.4.4"
@@ -1915,8 +1915,8 @@
     "@platform/fs" "0.1.0"
     "@platform/ts" "3.4.24"
     "@platform/util.string" "^0.1.17"
-    "@uiharness/electron" "0.4.46"
-    "@uiharness/types" "0.1.33"
+    "@uiharness/electron" "0.4.47"
+    "@uiharness/types" "0.1.34"
     create-tmpl "0.1.56"
     electron "4.1.4"
     electron-builder "20.40.2"
@@ -1924,10 +1924,10 @@
     parcel-bundler "1.12.3"
     serve "11.0.1"
 
-"@uiharness/electron@0.4.46":
-  version "0.4.46"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.46.tgz#6d3c37cc2946928a0af29b5a8415e44043d1e9f4"
-  integrity sha512-VQgRQRtcUWlLAGtV7QE0M4lFGFydnyXJD+dMhbrFOz16TWneWIB/ZyF9lZKNxisVQ2alyvqutpUDFQoc3RD0tw==
+"@uiharness/electron@0.4.47":
+  version "0.4.47"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.47.tgz#93041b1ebcfa89a284b33b10a6afe61d27942057"
+  integrity sha512-EPKOj2srOcr+/SjAzperXILol4Jzd8P6oS3LY454SHe5AHq1i1UwbwYx5Nfoh5C1zLoXusGqGQuoyfSmIJYORA==
   dependencies:
     "@platform/electron" "0.1.68"
     "@platform/log" "0.0.124"
@@ -1935,25 +1935,25 @@
     "@platform/ui.object" "0.0.118"
     "@platform/util.value" "0.3.4"
     "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.1.33"
+    "@uiharness/types" "0.1.34"
     tslib "1.9.3"
 
-"@uiharness/types@0.1.33":
-  version "0.1.33"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.1.33.tgz#7ec445efccc3c16e1094a3d47394b395baae49cc"
-  integrity sha512-WoKbiqkGnlBljIvgV0Ws4/HYcXGgVLrWaGm48Cq+i9eJAAUpESI8VZVBwjBoOVCBRkpsOk9qPJUIEAponp0kgQ==
+"@uiharness/types@0.1.34":
+  version "0.1.34"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.1.34.tgz#affe43f2dea22c08bc593a8cc4ca07bd10f5d5f3"
+  integrity sha512-XOq2URrfo/NlF02iHVAF3GnH7Bv5xhG/9cftxLrUUsrlhRB7TNBhU1mh7MgK+aXWaC3nrH20jm5oHa14/bKqjQ==
 
-"@uiharness/ui@0.2.42":
-  version "0.2.42"
-  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.2.42.tgz#f0fe6d2077d7398528039821e086a303df30e87e"
-  integrity sha512-NEIpe4jDUYi8ErLHoEbKuTxOwJXtVmRJN0NdSagkaWNjDItlGUX/eVHKq4wspbYqmkOQcMO+JWWSlc4jdJhYwQ==
+"@uiharness/ui@0.2.43":
+  version "0.2.43"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.2.43.tgz#6a6fd85ea68fc9086639abc3855ecee67d343e08"
+  integrity sha512-XcVNd2ipGHnqOixzMBGO1TWqVH+RAQKd1voXRP270HxkBQY2B6zf+EaLaQ9ZYussM9VXT3ES3U5G9wih8e6yKQ==
   dependencies:
     "@platform/cli.ui" "0.2.9"
     "@platform/electron" "0.1.68"
     "@platform/react" "0.2.12"
     "@platform/ui.object" "0.0.118"
     "@platform/util.string" "0.1.18"
-    "@uiharness/types" "0.1.33"
+    "@uiharness/types" "0.1.34"
 
 "@wry/context@^0.4.0":
   version "0.4.1"

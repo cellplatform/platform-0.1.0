@@ -23,9 +23,7 @@ export type MyEvents =
 
 export type INewWindowEvent = {
   type: 'TEST/window/new';
-  payload: {
-    name?: string;
-  };
+  payload: { name?: string };
 };
 
 export type IMessageEvent = {

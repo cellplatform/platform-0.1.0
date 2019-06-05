@@ -1558,10 +1558,10 @@
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.0.tgz#8b63ab7f1aa5321248aad5ac890a485656dcea4d"
   integrity sha512-te5lMAWii1uEJ4FwLjzdlbw3+n0FZNOvFXHxQDKeT0dilh7HOzdMzV2TrJVUzq8ep7J4Na8OUYPRLSQkJHAlrg==
 
-"@uiharness/dev@0.2.61":
-  version "0.2.61"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.61.tgz#9c66c0f63d4886db95cc67ac835286c6aeeb4f4d"
-  integrity sha512-fRyGbZ7XrPVziORTyiWkdX7iJ8Hfymgqdn+r8gnGuJ2y0e3UlHURL2kK1HGpCDVWYQngs0xaPNXUy+vnygVHqQ==
+"@uiharness/dev@0.2.62":
+  version "0.2.62"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.2.62.tgz#2873cad9fc83d22b728c24bd665a5e92e5510f24"
+  integrity sha512-k5VfWqkSloX8O2HTV/7Nqz0gVBaHIemp+1v4EYVTz6aXxmrOKdlvbsLaSjALfpofonpde0IRuQBrKzu5+sj7ow==
   dependencies:
     "@babel/core" "7.4.5"
     "@babel/polyfill" "7.4.4"
@@ -1572,8 +1572,8 @@
     "@platform/fs" "0.1.0"
     "@platform/ts" "3.4.24"
     "@platform/util.string" "^0.1.17"
-    "@uiharness/electron" "0.4.46"
-    "@uiharness/types" "0.1.33"
+    "@uiharness/electron" "0.4.47"
+    "@uiharness/types" "0.1.34"
     create-tmpl "0.1.56"
     electron "4.1.4"
     electron-builder "20.40.2"
@@ -1581,10 +1581,10 @@
     parcel-bundler "1.12.3"
     serve "11.0.1"
 
-"@uiharness/electron@0.4.46":
-  version "0.4.46"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.46.tgz#6d3c37cc2946928a0af29b5a8415e44043d1e9f4"
-  integrity sha512-VQgRQRtcUWlLAGtV7QE0M4lFGFydnyXJD+dMhbrFOz16TWneWIB/ZyF9lZKNxisVQ2alyvqutpUDFQoc3RD0tw==
+"@uiharness/electron@0.4.47":
+  version "0.4.47"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.47.tgz#93041b1ebcfa89a284b33b10a6afe61d27942057"
+  integrity sha512-EPKOj2srOcr+/SjAzperXILol4Jzd8P6oS3LY454SHe5AHq1i1UwbwYx5Nfoh5C1zLoXusGqGQuoyfSmIJYORA==
   dependencies:
     "@platform/electron" "0.1.68"
     "@platform/log" "0.0.124"
@@ -1592,25 +1592,25 @@
     "@platform/ui.object" "0.0.118"
     "@platform/util.value" "0.3.4"
     "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.1.33"
+    "@uiharness/types" "0.1.34"
     tslib "1.9.3"
 
-"@uiharness/types@0.1.33":
-  version "0.1.33"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.1.33.tgz#7ec445efccc3c16e1094a3d47394b395baae49cc"
-  integrity sha512-WoKbiqkGnlBljIvgV0Ws4/HYcXGgVLrWaGm48Cq+i9eJAAUpESI8VZVBwjBoOVCBRkpsOk9qPJUIEAponp0kgQ==
+"@uiharness/types@0.1.34":
+  version "0.1.34"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.1.34.tgz#affe43f2dea22c08bc593a8cc4ca07bd10f5d5f3"
+  integrity sha512-XOq2URrfo/NlF02iHVAF3GnH7Bv5xhG/9cftxLrUUsrlhRB7TNBhU1mh7MgK+aXWaC3nrH20jm5oHa14/bKqjQ==
 
-"@uiharness/ui@0.2.42":
-  version "0.2.42"
-  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.2.42.tgz#f0fe6d2077d7398528039821e086a303df30e87e"
-  integrity sha512-NEIpe4jDUYi8ErLHoEbKuTxOwJXtVmRJN0NdSagkaWNjDItlGUX/eVHKq4wspbYqmkOQcMO+JWWSlc4jdJhYwQ==
+"@uiharness/ui@0.2.43":
+  version "0.2.43"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.2.43.tgz#6a6fd85ea68fc9086639abc3855ecee67d343e08"
+  integrity sha512-XcVNd2ipGHnqOixzMBGO1TWqVH+RAQKd1voXRP270HxkBQY2B6zf+EaLaQ9ZYussM9VXT3ES3U5G9wih8e6yKQ==
   dependencies:
     "@platform/cli.ui" "0.2.9"
     "@platform/electron" "0.1.68"
     "@platform/react" "0.2.12"
     "@platform/ui.object" "0.0.118"
     "@platform/util.string" "0.1.18"
-    "@uiharness/types" "0.1.33"
+    "@uiharness/types" "0.1.34"
 
 "@wry/context@^0.4.0":
   version "0.4.1"
@@ -1768,34 +1768,34 @@ apollo-cache-control@0.7.1:
     apollo-server-env "2.4.0"
     graphql-extensions "0.7.1"
 
-apollo-cache-inmemory@1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/apollo-cache-inmemory/-/apollo-cache-inmemory-1.6.0.tgz#a106cdc520f0a043be2575372d5dbb7e4790254c"
-  integrity sha512-Mr86ucMsXnRH9YRvcuuy6kc3dtyRBuVSo8gdxp2sJVuUAtvQ6r/8E+ok2qX84em9ZBAYxoyvPnKeShhvcKiiDw==
+apollo-cache-inmemory@1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/apollo-cache-inmemory/-/apollo-cache-inmemory-1.6.1.tgz#536b6f366461f6264250041f9146363e2faa1d4c"
+  integrity sha512-c/WJjh9MTWcdussCTjLKufpPjTx3qOFkBPHIDOOpQ+U0B7K1PczPl9N0LaC4ir3wAWL7s4A0t2EKtoR+6UP92g==
   dependencies:
-    apollo-cache "^1.3.0"
-    apollo-utilities "^1.3.0"
+    apollo-cache "^1.3.1"
+    apollo-utilities "^1.3.1"
     optimism "^0.9.0"
     ts-invariant "^0.4.0"
     tslib "^1.9.3"
 
-apollo-cache@1.3.0, apollo-cache@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.3.0.tgz#de5c907cbd329440c9b0aafcbe8436391b9e6142"
-  integrity sha512-voPlvSIDA2pY3+7QwtXPs7o5uSNAVjUKwimyHWoiW0MIZtPxawtOV/Y+BL85R227JqcjPic1El+QToVR8l4ytQ==
+apollo-cache@1.3.1, apollo-cache@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.3.1.tgz#c015f93a9a7f32b3eeea0c471addd6e854da754c"
+  integrity sha512-BJ/Mehr3u6XCaHYSmgZ6DM71Fh30OkW6aEr828WjHvs+7i0RUuP51/PM7K6T0jPXtuw7UbArFFPZZsNgXnyyJA==
   dependencies:
-    apollo-utilities "^1.3.0"
+    apollo-utilities "^1.3.1"
     tslib "^1.9.3"
 
-apollo-client@2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-2.6.0.tgz#9b66c04cd96d622cd72f92e584e7403c17532831"
-  integrity sha512-Z6oSD45vyw6maktMABXTaJliWdFJy4ihZGxbRh7rY65RWNz0HSm3IX66shLavdNqd4lpOcVuAufJl+w8u6RhLQ==
+apollo-client@2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-2.6.1.tgz#fcf328618d6ad82b750a988bec113fe6edc8ba94"
+  integrity sha512-Tb6ZthPZUHlGqeoH1WC8Qg/tLnkk9H5+xj4e5nzOAC6dCOW3pVU9tYXscrWdmZ65UDUg1khvTNjrQgPhdf4aTQ==
   dependencies:
     "@types/zen-observable" "^0.8.0"
-    apollo-cache "1.3.0"
+    apollo-cache "1.3.1"
     apollo-link "^1.0.0"
-    apollo-utilities "1.3.0"
+    apollo-utilities "1.3.1"
     symbol-observable "^1.0.2"
     ts-invariant "^0.4.0"
     tslib "^1.9.3"
@@ -1977,7 +1977,17 @@ apollo-tracing@0.7.1:
     apollo-server-env "2.4.0"
     graphql-extensions "0.7.1"
 
-apollo-utilities@1.3.0, apollo-utilities@^1.0.1, apollo-utilities@^1.2.1, apollo-utilities@^1.3.0:
+apollo-utilities@1.3.1, apollo-utilities@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.3.1.tgz#4c45f9b52783c324e2beef822700bdea374f82d1"
+  integrity sha512-P5cJ75rvhm9hcx9V/xCW0vlHhRd0S2icEcYPoRYNTc5djbynpuO+mQuJ4zMHgjNDpvvDxDfZxXTJ6ZUuJZodiQ==
+  dependencies:
+    fast-json-stable-stringify "^2.0.0"
+    lodash.isequal "^4.5.0"
+    ts-invariant "^0.4.0"
+    tslib "^1.9.3"
+
+apollo-utilities@^1.0.1, apollo-utilities@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.3.0.tgz#9803724c07ac94ca11dc26397edb58735d2b0211"
   integrity sha512-wQjV+FdWcTWmWUFlChG5rS0vHKy5OsXC6XlV9STRstQq6VbXANwHy6DHnTEQAfLXWAbNcPgBu+nBUpR3dFhwrA==
@@ -5677,6 +5687,11 @@ lodash.flatten@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.flatten/-/lodash.flatten-4.4.0.tgz#f31c22225a9632d2bbf8e4addbef240aa765a61f"
   integrity sha1-8xwiIlqWMtK7+OSt2+8kCqdlph8=
+
+lodash.isequal@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+  integrity sha1-QVxEePK8wwEgwizhDtMib30+GOA=
 
 lodash.isplainobject@^4.0.6:
   version "4.0.6"
