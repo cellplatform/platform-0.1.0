@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { color as colorUtil, css, events, GlamorValue, R, t, util } from '../common';
+import { color as colorUtil, css, events, GlamorValue, R, t, util, containsFocus } from '../common';
 import { ITextInputEvents, ITextInputFocus, ITextInputStyle, TextInputMaskHandler } from '../types';
 
 export const DEFAULT_TEXT_STYLE: ITextInputStyle = {
@@ -109,6 +109,13 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   }
 
   /**
+   * [Properties]
+   */
+  public get isFocused() {
+    return containsFocus(this);
+  }
+
+  /**
    * [Methods]
    */
   public focus() {
@@ -137,7 +144,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
       const el = this.input as any;
 
       if (el.setSelectionRange) {
-        // Modern browsers
+        // Modern browsers.
         el.focus();
         el.setSelectionRange(0, 0);
       } else if (el.createTextRange) {
@@ -232,6 +239,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   /**
    * [Handlers]
    */
+
   private handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { onKeyDown, onTab } = this.props;
     const modifierKeys = { ...this.modifierKeys };

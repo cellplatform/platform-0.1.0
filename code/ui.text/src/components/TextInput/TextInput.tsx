@@ -114,6 +114,14 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
   }
 
   /**
+   * Determines if the input is currently ocused.
+   */
+  public get isFocused() {
+    const input = this.input;
+    return input ? input.isFocused : false;
+  }
+
+  /**
    * [Methods]
    */
 
