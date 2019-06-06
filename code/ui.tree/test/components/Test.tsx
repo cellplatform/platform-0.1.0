@@ -168,6 +168,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
           background={'NONE'}
           renderIcon={this.renderIcon}
           renderPanel={this.renderPanel}
+          renderNodeBody={this.renderNodeBody}
           events$={this.events$}
           mouse$={this.mouse$}
         />
@@ -184,7 +185,26 @@ export class Test extends React.PureComponent<{}, ITestState> {
    */
   private renderIcon: t.RenderTreeIcon = e => Icons[e.icon];
 
-  private renderPanel = (e: t.RenderTreePanelArgs<t.ITreeNode>) => {
+  private renderNodeBody: t.RenderTreeNodeBody = e => {
+    const styles = {
+      base: css({
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        flex: 1,
+        border: `dashed 1px ${color.format(-0.1)}`,
+        borderRadius: 4,
+        Flex: 'center-center',
+        fontSize: 11,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div>{e.body}</div>
+      </div>
+    );
+    return null;
+  };
+
+  private renderPanel: t.RenderTreePanel<t.ITreeNode> = e => {
     /**
      * NOTE:  Use this flag to revent custom panel rendering if
      *        the node is opened "inline" within it's parent.

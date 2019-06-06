@@ -21,6 +21,7 @@ export type ITreeNodeListProps = {
   defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
   renderPanel?: t.RenderTreePanel;
   renderIcon?: t.RenderTreeIcon;
+  renderNodeBody?: t.RenderTreeNodeBody;
   header?: React.ReactNode;
   paddingTop?: number;
   isBorderVisible?: boolean;
@@ -250,6 +251,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
         node={node}
         iconRight={iconRight}
         renderIcon={this.props.renderIcon}
+        renderNodeBody={this.props.renderNodeBody}
         twisty={twisty}
         theme={this.theme}
         background={this.props.background}

@@ -28,6 +28,7 @@ export type ITreeViewProps = {
   current?: ITreeNode['id'];
   renderPanel?: t.RenderTreePanel;
   renderIcon?: t.RenderTreeIcon;
+  renderNodeBody?: t.RenderTreeNodeBody;
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
   events$?: Subject<t.TreeViewEvent>;
@@ -221,6 +222,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         defaultNodeProps={this.props.defaultNodeProps}
         renderPanel={this.props.renderPanel}
         renderIcon={this.props.renderIcon}
+        renderNodeBody={this.props.renderNodeBody}
         header={elHeader}
         paddingTop={isHeaderVisible ? this.headerHeight : 0}
         isBorderVisible={this.state.isSliding}
