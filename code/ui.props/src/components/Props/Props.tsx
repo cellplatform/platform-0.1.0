@@ -49,14 +49,10 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
    */
   public render() {
     const { theme = 'DARK' } = this.props;
-    // return ;
-    // const theme = this.theme;
     const styles = {
       base: css({
         position: 'relative',
         display: 'flex',
-        // color: theme.color,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       }),
     };
 

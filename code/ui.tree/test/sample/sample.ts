@@ -75,7 +75,7 @@ export const COMPREHENSIVE = (() => {
   p(children[13]).label = 'Description';
   p(children[13]).description =
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius.';
-  p(children[13]).descriptionColor = -0.3;
+  // p(children[13]).descriptionColor = -0.3;
   p(children[13]).marginBottom = 80;
 
   return root;
