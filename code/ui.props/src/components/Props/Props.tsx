@@ -9,8 +9,8 @@ const TMP: t.ITreeNode = {
   props: { header: { isVisible: false } },
   children: [
     { id: 'FOO', props: { label: 'Foo', icon: 'Box' } },
-    { id: 'BAR', props: { label: 'Bar' } },
-    { id: 'ZOO', props: { label: 'Zoo' } },
+    { id: 'BAR', props: { label: 'Bar', body: 'FOO' } },
+    { id: 'ZOO', props: { label: 'Zoo', body: 'FOO' } },
   ],
 };
 
@@ -63,10 +63,27 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
           current={'ROOT'}
           theme={theme}
           renderIcon={this.iconFactory}
+          renderNodeBody={this.nodeFactory}
         />
       </div>
     );
   }
 
   private iconFactory: t.RenderTreeIcon = e => Icons[e.icon];
+
+  private nodeFactory: t.RenderTreeNodeBody = e => {
+    console.log('e', e);
+    const styles = {
+      base: css({
+        color: 'white',
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        flex: 1,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div>Foo</div>
+      </div>
+    );
+  };
 }
