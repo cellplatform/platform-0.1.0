@@ -366,7 +366,6 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     onMouse?: TreeNodeMouseEventHandler,
   ) {
     const handlers = mouse.handlers(e => {
-      e.cancel();
       const node = getNode();
       const props = node.props || {};
       const children = tree.children(node);
