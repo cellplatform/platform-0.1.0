@@ -1,3 +1,4 @@
+import { t } from './libs';
 import { Subject } from 'rxjs';
 
 export * from '@platform/cli.ui/lib/types';
@@ -8,6 +9,7 @@ export type ICommandProps = {
 };
 
 export type ITestState = {
-  title?: string;
-  count?: number;
+  theme?: t.PropsTheme
+  
+
 };

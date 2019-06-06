@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { CommandShell, t, MyComponent, ObjectView, Hr } from '../common';
+import { color, css, CommandShell, t, ObjectView, COLORS, Props } from '../common';
 
 export type ITestProps = {};
 
@@ -30,12 +30,42 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Render]
    */
   public render() {
+    const { theme = 'DARK' } = this.state;
+    const isDark = theme === 'DARK';
+    const styles = {
+      base: css({
+        flex: 1,
+        backgroundColor: isDark ? COLORS.DARK : undefined,
+        Flex: 'horizontal-stretch-stretch',
+        borderBottom: `solid 1px ${color.format(0.15)}`,
+      }),
+      left: css({ flex: 1, Flex: 'center-center' }),
+      inner: css({
+        position: 'relative',
+        border: `solid 1px ${color.format(isDark ? 0.2 : -0.15)}`,
+        height: '85%',
+        width: 300,
+      }),
+      props: css({ Absolute: 0 }),
+      right: css({
+        Scroll: true,
+        borderLeft: `solid 1px ${color.format(isDark ? 0.15 : -0.15)}`,
+        width: 300,
+        padding: 8,
+      }),
+    };
+
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
-        <div style={{ padding: 30, flex: 1 }}>
-          <MyComponent text={this.state.title} />
-          <Hr />
-          <ObjectView name={'state'} data={this.state} />
+        <div {...styles.base}>
+          <div {...styles.left}>
+            <div {...styles.inner}>
+              <Props style={styles.props} theme={theme} />
+            </div>
+          </div>
+          <div {...styles.right}>
+            <ObjectView name={'state'} data={this.state} theme={theme} />
+          </div>
         </div>
       </CommandShell>
     );
