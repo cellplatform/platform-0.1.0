@@ -15,6 +15,7 @@ import {
   t,
   TextInput,
   util,
+  value as valueUtil,
 } from '../common';
 
 const { MONOSPACE } = constants;
@@ -54,21 +55,40 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     this.state$.next({ value: this.valueString });
 
     const value$ = this.value$.pipe(takeUntil(this.unmounted$));
+    const valueChanging$ = value$.pipe(
+      filter(e => e.type === 'TEXT_INPUT/changing'),
+      map(e => e.payload as t.ITextInputChanging),
+    );
     const valueChanged$ = value$.pipe(
       filter(e => e.type === 'TEXT_INPUT/changed'),
       map(e => e.payload as t.ITextInputChanged),
     );
 
     /**
-     * Value changed by user input.
+     * Value [changing] by user.
+     * Prevent input if not correct type.
+     */
+    valueChanging$.subscribe(e => {
+      const type = this.type;
+      if (type === 'boolean') {
+        e.cancel();
+      }
+      if (type === 'number') {
+        if (e.char !== '.' && !valueUtil.isNumeric(e.to)) {
+          e.cancel();
+        }
+      }
+    });
+
+    /**
+     * Value [changed] by user input.
      */
     valueChanged$.subscribe(e => {
       const nodeData = this.nodeData;
       const { path, key } = nodeData;
 
       const fromValue = nodeData.value;
-      const type = util.value(fromValue).type;
-      const value = { from: fromValue, to: util.toType(e.to, type) };
+      const value = { from: fromValue, to: e.to };
 
       const from = { ...this.props.rootData };
       const lens = R.lensPath(path.split('.').slice(1));
@@ -141,7 +161,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   }
 
   public get type() {
-    return util.value(this.value).type;
+    return util.getType(this.value);
   }
 
   public get isScalar() {

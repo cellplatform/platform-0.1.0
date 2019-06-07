@@ -47,56 +47,52 @@ export function buildTree(args: {
 }
 
 /**
- * Value utilities
+ * Get the type of the given value.
  */
-export function value(value: t.PropValue) {
-  return {
-    value,
-    get type(): t.PropType {
-      if (value === null) {
-        return 'null';
-      }
-      if (value === 'undefined') {
-        return 'undefined';
-      }
-      if (Array.isArray(value)) {
-        return 'array';
-      }
-      const type = typeof value;
-      if (type === 'object') {
-        return 'object';
-      }
-      if (type === 'number' || type === 'bigint') {
-        return 'number';
-      }
-      if (type === 'boolean') {
-        return 'boolean';
-      }
-      if (type === 'function') {
-        return 'function';
-      }
-      if (type === 'string') {
-        return 'string';
-      }
-      throw new Error(`Value type '${typeof value}' not supported.`);
-    },
-  };
+
+export function getType(value: t.PropValue) {
+  if (value === null) {
+    return 'null';
+  }
+  if (value === 'undefined') {
+    return 'undefined';
+  }
+  if (Array.isArray(value)) {
+    return 'array';
+  }
+  const type = typeof value;
+  if (type === 'object') {
+    return 'object';
+  }
+  if (type === 'number' || type === 'bigint') {
+    return 'number';
+  }
+  if (type === 'boolean') {
+    return 'boolean';
+  }
+  if (type === 'function') {
+    return 'function';
+  }
+  if (type === 'string') {
+    return 'string';
+  }
+  throw new Error(`Value type '${type}' not supported (value: ${value}).`);
 }
 
 /**
  * Convert the given value as a string to it's proper type.
  */
-export function toType(input: string, type: t.PropType): t.PropValue {
+export function valueToType(value: string, type: t.PropType): t.PropValue {
   if (type === 'undefined' || type === 'null' || type === 'string') {
-    return input;
+    return value;
   }
   if (type === 'boolean') {
-    return valueUtil.toBool(input);
+    return valueUtil.toBool(value);
   }
-  if (type === 'number') {
-    return valueUtil.toNumber(input);
+  if (type === 'number' && !(value.startsWith('.') || value.endsWith('.'))) {
+    return valueUtil.toNumber(value);
   }
-  throw new Error(`Value type '${typeof value}' not supported.`);
+  throw new Error(`toType: Value type '${typeof value}' not supported (value: ${value}).`);
 }
 
 /**
