@@ -1,5 +1,4 @@
 import { ITextStyle } from '../../types';
-import { IKeypressEvent } from '@platform/react/lib/types';
 
 export type ITextModifierKeys = {
   alt: boolean;

@@ -1201,6 +1201,15 @@
   dependencies:
     "@platform/react" "0.2.12"
 
+"@platform/ui.text@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.10.tgz#7c16fc45ac649eb63a5d8cc383cac3a9a463f3fc"
+  integrity sha512-Pm5q5mMq11v9Fpmicqal2QLylmaPoBDEKNm4jU6uWpZpZNaMBUB42DIS/6QIz4VhXl2nmNunE3Gfu5A5JMcooQ==
+  dependencies:
+    "@platform/libs" "0.0.15"
+    "@platform/react" "0.2.13"
+    "@platform/util.value" "0.3.5"
+
 "@platform/ui.text@0.2.8":
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.8.tgz#d594a11ea4dab0fdab8f9d1cbd63d71a8709976a"
@@ -1209,15 +1218,6 @@
     "@platform/libs" "0.0.15"
     "@platform/react" "0.2.12"
     "@platform/util.value" "0.3.4"
-
-"@platform/ui.text@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.9.tgz#17c1786cbf110b66731e741dc12d323e9c084fae"
-  integrity sha512-AojlxkkYVyKkQWACsw7XnI1wBAJ35lnHsNThlKhosA2wFcMmADxpMTRnzHbWRgBuHnjLpHHhvqgTJbm9k4/uig==
-  dependencies:
-    "@platform/libs" "0.0.15"
-    "@platform/react" "0.2.13"
-    "@platform/util.value" "0.3.5"
 
 "@platform/ui.tree@0.1.11":
   version "0.1.11"
