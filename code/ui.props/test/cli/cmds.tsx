@@ -15,12 +15,18 @@ export const root = Command.create<P>('root', e => {
     e.props.state$.next({ theme: 'LIGHT' });
   })
   .add('data-object', e => {
+    function myFunc() {
+      return true;
+    }
+
     const data = {
       message: 'Hello',
       reallyLongKeyNameTooLongInFact: 'foo',
       count: 123,
       foo: { isEnabled: true, color: 'PINK' },
       list: [1, 2, 3],
+      anon: () => true,
+      run: myFunc,
       isEnabled: true,
     };
     e.props.next({ data });

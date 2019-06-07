@@ -9,7 +9,7 @@ import {
   MdKeyboardArrowDown,
 } from 'react-icons/md';
 
-import { FiBox, FiLayers } from 'react-icons/fi';
+import { FiBox, FiLayers, FiGitPullRequest } from 'react-icons/fi';
 
 /**
  * Icon collection.
@@ -19,6 +19,7 @@ export class Icons {
   // Feather.
   public static Object = icon(FiBox);
   public static Array = icon(FiLayers);
+  public static Function = icon(FiGitPullRequest);
 
   // Chevron.
   public static ChevronLeft = icon(MdKeyboardArrowLeft);

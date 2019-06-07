@@ -2,6 +2,17 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { IIcon, COLORS, css, color, GlamorValue, TextInput, t, constants, Icons } from '../common';
+import { themes } from '../../theme';
+
+type ValueType =
+  | 'object'
+  | 'array'
+  | 'string'
+  | 'boolean'
+  | 'number'
+  | 'null'
+  | 'undefined'
+  | 'function';
 
 const { MONOSPACE } = constants;
 const FONT_STYLE = {
@@ -13,6 +24,7 @@ const FONT_STYLE = {
 export type IPropEditorProps = {
   theme: t.PropsTheme;
   node: t.IPropNode;
+  events$: Subject<t.PropsEvent>;
   style?: GlamorValue;
 };
 export type IPropEditorState = {};
@@ -41,6 +53,10 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   /**
    * [Properties]
    */
+  public get theme() {
+    return themes[this.props.theme];
+  }
+
   public get isFocused() {
     const input = this.valueInput;
     return input ? input.isFocused : false;
@@ -56,15 +72,39 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     return node.data ? node.data.value : 'UNKNOWN';
   }
 
-  public get valueType(): 'OBJECT' | 'ARRAY' | 'SIMPLE' {
+  public get valueType(): ValueType {
     const value = this.value;
+    if (value === null) {
+      return 'null';
+    }
+    if (value === 'undefined') {
+      return 'undefined';
+    }
     if (Array.isArray(value)) {
-      return 'ARRAY';
+      return 'array';
     }
-    if (typeof value === 'object') {
-      return 'OBJECT';
+    const type = typeof value;
+    if (type === 'object') {
+      return 'object';
     }
-    return 'SIMPLE';
+    if (type === 'number' || type === 'bigint') {
+      return 'number';
+    }
+    if (type === 'boolean') {
+      return 'boolean';
+    }
+    if (type === 'function') {
+      return 'function';
+    }
+    if (type === 'string') {
+      return 'string';
+    }
+    throw new Error(`Value type '${typeof value}' not supported.`);
+  }
+
+  public get isScalar() {
+    const type = this.valueType;
+    return ['object', 'array', 'function'].includes(type);
   }
 
   /**
@@ -81,6 +121,8 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
    * [Render]
    */
   public render() {
+    const isScalar = this.isScalar;
+
     const styles = {
       base: css({
         flex: 1,
@@ -111,7 +153,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
       }),
       right: css({
         flex: 2,
-        borderBottom: `solid 1px ${color.format(0.5)}`,
+        borderBottom: `solid 1px ${color.format(isScalar ? 0.1 : 0.6)}`,
       }),
     };
 
@@ -126,15 +168,22 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   }
 
   private renderValue = () => {
+    const key = this.key;
     const value = this.value;
     const valueType = this.valueType;
 
-    if (valueType === 'OBJECT') {
+    if (valueType === 'object') {
       return this.renderComplex({ icon: Icons.Object, label: '{ object }' });
     }
 
-    if (valueType === 'ARRAY') {
-      return this.renderComplex({ icon: Icons.Array, label: `[ array(${value.length}) ]` });
+    if (valueType === 'array') {
+      return this.renderComplex({ icon: Icons.Array, label: `array(${value.length})` });
+    }
+
+    if (valueType === 'function') {
+      const name = value.name;
+      const label = name === key ? 'ƒunction' : `${name}()`;
+      return this.renderComplex({ icon: Icons.Function, label, italic: true });
     }
 
     return this.renderValueInput();
@@ -157,21 +206,24 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     );
   };
 
-  private renderComplex(props: { label: string; icon: IIcon }) {
-    const Icon = props.icon;
-    const { label } = props;
+  private renderComplex(args: { label: string; icon: IIcon; italic?: boolean }) {
+    const Icon = args.icon;
+    const { label } = args;
     const styles = {
       base: css({
         Flex: 'horizontal-center-start',
         opacity: 0.5,
       }),
       icon: css({ marginRight: 6 }),
+      label: css({
+        fontStyle: args.italic ? 'italic' : undefined,
+      }),
     };
 
     return (
       <div {...styles.base}>
         <Icon size={16} color={COLORS.WHITE} style={styles.icon} />
-        {label}
+        <span {...styles.label}>{label}</span>
       </div>
     );
   }
