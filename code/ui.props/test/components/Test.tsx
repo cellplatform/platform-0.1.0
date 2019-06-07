@@ -60,7 +60,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         <div {...styles.base}>
           <div {...styles.left}>
             <div {...styles.inner}>
-              <Props style={styles.props} theme={theme} />
+              <Props data={this.state.data} style={styles.props} theme={theme} />
             </div>
           </div>
           <div {...styles.right}>

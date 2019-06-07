@@ -9,7 +9,7 @@ import {
   MdKeyboardArrowDown,
 } from 'react-icons/md';
 
-import { FiBox } from 'react-icons/fi';
+import { FiBox, FiLayers } from 'react-icons/fi';
 
 /**
  * Icon collection.
@@ -17,7 +17,8 @@ import { FiBox } from 'react-icons/fi';
 const icon = Icon.renderer;
 export class Icons {
   // Feather.
-  public static Box = icon(FiBox);
+  public static Object = icon(FiBox);
+  public static Array = icon(FiLayers);
 
   // Chevron.
   public static ChevronLeft = icon(MdKeyboardArrowLeft);

@@ -6,10 +6,10 @@ export * from '../../src/types';
 
 export type ICommandProps = {
   state$: Subject<ITestState>;
+  next(state: Partial<ITestState>): void
 };
 
 export type ITestState = {
-  theme?: t.PropsTheme
-  
-
+  theme?: t.PropsTheme;
+  data?: object | any[];
 };
