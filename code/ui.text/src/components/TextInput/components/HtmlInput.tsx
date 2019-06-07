@@ -2,10 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { color as colorUtil, css, events, GlamorValue, R, t, util, containsFocus } from '../common';
-import { ITextInputEvents, ITextInputFocus, ITextInputStyle, TextInputMaskHandler } from '../types';
+import { color as colorUtil, containsFocus, css, events, GlamorValue, R, t, util } from '../common';
 
-export const DEFAULT_TEXT_STYLE: ITextInputStyle = {
+export const DEFAULT_TEXT_STYLE: t.ITextInputStyle = {
   opacity: 1,
   color: -1,
   disabledColor: -1,
@@ -20,17 +19,17 @@ export const DEFAULT_TEXT_STYLE: ITextInputStyle = {
 export interface IInputValue {
   value?: string;
   maxLength?: number;
-  mask?: TextInputMaskHandler;
+  mask?: t.TextInputMaskHandler;
 }
 
-export interface IHtmlInputProps extends ITextInputFocus, ITextInputEvents, IInputValue {
+export interface IHtmlInputProps extends t.ITextInputFocus, t.ITextInputEvents, IInputValue {
   events$: Subject<t.TextInputEvent>;
   className?: string;
   isEnabled?: boolean;
   isPassword?: boolean;
   disabledOpacity?: number;
   style?: GlamorValue;
-  valueStyle?: ITextInputStyle;
+  valueStyle?: t.ITextInputStyle;
   selectionBackground?: number | string;
   spellCheck?: boolean;
   autoCapitalize?: boolean;

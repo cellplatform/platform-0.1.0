@@ -15,15 +15,14 @@ import {
   value as valueUtil,
 } from './common';
 import { DEFAULT_TEXT_STYLE, HtmlInput, IInputValue } from './components/HtmlInput';
-import { ITextInputEvents, ITextInputFocus, ITextInputStyle } from './types';
 
 const DEFAULT = {
   VALUE_STYLE: DEFAULT_TEXT_STYLE,
   DISABLED_OPACITY: 0.2,
 };
 
-export type ITextInputProps = ITextInputFocus &
-  ITextInputEvents &
+export type ITextInputProps = t.ITextInputFocus &
+  t.ITextInputEvents &
   IInputValue & {
     events$?: Subject<t.TextInputEvent>;
     isEnabled?: boolean;
@@ -34,8 +33,8 @@ export type ITextInputProps = ITextInputFocus &
     maxWidth?: number;
     autoSize?: boolean;
     placeholder?: string | React.ReactElement<{}>;
-    valueStyle?: ITextInputStyle;
-    placeholderStyle?: ITextInputStyle;
+    valueStyle?: t.ITextInputStyle;
+    placeholderStyle?: t.ITextInputStyle;
     spellCheck?: boolean;
     autoCapitalize?: boolean;
     autoCorrect?: boolean;
