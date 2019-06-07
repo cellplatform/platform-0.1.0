@@ -307,7 +307,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
 
     if (valueType === 'function' && typeof value === 'function') {
       const name = value.name;
-      const label = name === key ? 'ƒunction' : `${name}()`;
+      const label = !name || name === key ? 'ƒunction' : `${name}()`;
       return this.renderComplex({ icon: Icons.Function, label, italic: true });
     }
 

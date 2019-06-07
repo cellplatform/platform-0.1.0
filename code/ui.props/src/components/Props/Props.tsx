@@ -114,24 +114,20 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
   }
 
   private get root() {
-    const root: t.IPropNode = { id: ROOT, props: { header: { isVisible: false } } };
+    const data = this.props.data;
+    const root: t.IPropNode = {
+      id: ROOT,
+      props: { header: { isVisible: false } },
+      data: { path: ROOT, key: '', value: data },
+    };
     const body = BODY.PROD_EDITOR;
     return util.buildTree({
       root,
       parent: root,
-      data: this.props.data,
+      data,
       formatNode: node => ({ ...node, props: { ...node.props, body } }),
     });
   }
-
-  /**
-   * [Methods]
-   */
-  // private setCurrent(node: t.ITreeNode) {
-  //   const id = node.id;
-  //   const current = id.substring(0, id.lastIndexOf('.'));
-  //   this.state$.next({ current });
-  // }
 
   /**
    * [Render]

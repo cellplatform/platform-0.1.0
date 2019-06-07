@@ -6,7 +6,7 @@ function myFunc() {
   return true;
 }
 
-export const SAMPLE = {
+export const OBJECT = {
   message: 'Hello',
   reallyLongKey: 'foo',
   count: 123,
@@ -16,6 +16,17 @@ export const SAMPLE = {
   run: myFunc,
   isEnabled: true,
 };
+
+export const ARRAY = [
+  1,
+  'two',
+  { ...OBJECT },
+  () => true,
+  myFunc,
+  true,
+  false,
+  [1, 2, 3, ['hello', 'goodby', true, OBJECT]],
+];
 
 /**
  * Sample commands.
@@ -28,9 +39,9 @@ export const root = Command.create<P>('root')
     e.props.state$.next({ theme: 'LIGHT' });
   })
   .add('data-object', e => {
-    e.props.next({ data: { ...SAMPLE } });
+    e.props.next({ data: { ...OBJECT } });
   })
   .add('data-array', e => {
-    const data = [1, 'two', { ...SAMPLE }, () => true, myFunc, true, false];
+    const data = [...ARRAY];
     e.props.next({ data });
   });
