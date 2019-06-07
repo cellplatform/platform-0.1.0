@@ -177,7 +177,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
 
   public get parentType() {
     const { parentNode } = this.props;
-    const data = parentNode.data;
+    const data = parentNode ? parentNode.data : undefined;
     const value = data ? data.value : undefined;
     return util.getType(value);
   }
@@ -225,7 +225,8 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     const fromValue = nodeData.value;
     const value = { from: fromValue, to: valueUtil.toType(e.to) };
 
-    const from = { ...this.props.rootData };
+    const root = this.props.rootData;
+    const from = Array.isArray(root) ? [...root] : { ...this.props.rootData };
     const lens = this.lens;
     const to = R.set(lens, value.to, from);
 

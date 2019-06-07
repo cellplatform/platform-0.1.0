@@ -1,7 +1,9 @@
 import { Subject } from 'rxjs';
 
 import { CommandState, t } from '../common';
-import { root } from './cmds';
+import { root, SAMPLE } from './cmds';
+
+export { SAMPLE };
 
 export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   const { state$ } = args;
