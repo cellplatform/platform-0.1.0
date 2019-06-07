@@ -79,7 +79,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
 
     /**
      * Value [changing] by user.
-     * Prevent input if not correct type.
+     * Prevent input if not valid.
      */
     value$
       .pipe(
@@ -174,6 +174,23 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     return ['object', 'array', 'function'].includes(type);
   }
 
+  private get lens() {
+    const path = this.nodeData.path;
+    const parts = path
+      .split('.')
+      .slice(1)
+      .map(key => {
+        if (key.startsWith('[') && key.endsWith(']')) {
+          const index = key.replace(/^\[/, '').replace(/\]$/, '');
+          if (valueUtil.isNumeric(index)) {
+            return valueUtil.toNumber(index);
+          }
+        }
+        return key;
+      });
+    return R.lensPath(parts);
+  }
+
   /**
    * [Methods]
    */
@@ -201,7 +218,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     const value = { from: fromValue, to: valueUtil.toType(e.to) };
 
     const from = { ...this.props.rootData };
-    const lens = R.lensPath(path.split('.').slice(1));
+    const lens = this.lens;
     const to = R.set(lens, value.to, from);
 
     const payload: t.IPropsChange = {

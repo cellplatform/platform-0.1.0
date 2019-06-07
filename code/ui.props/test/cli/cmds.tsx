@@ -24,7 +24,7 @@ export const root = Command.create<P>('root', e => {
       reallyLongKey: 'foo',
       count: 123,
       foo: { isEnabled: true, color: 'PINK' },
-      list: [1, 2, 3],
+      list: ['one', 2, true, { foo: 456 }],
       anon: () => true,
       run: myFunc,
       isEnabled: true,

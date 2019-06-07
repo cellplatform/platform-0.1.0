@@ -26,7 +26,7 @@ export type IPropsChangedEvent<D extends PropsData = any> = {
 };
 export type IPropsChange<D extends PropsData = any> = {
   path: string;
-  key: string;
+  key: string | number;
   value: { from: PropValue; to: PropValue };
   data: { from: D; to: D };
 };

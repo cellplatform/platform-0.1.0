@@ -8,5 +8,9 @@ export * from '../types';
 import * as t from '../types';
 import { ITreeNode } from '@platform/ui.tree/lib/types';
 
-export type IPropNodeData = { path: string; key: string; value: t.PropValue };
 export type IPropNode = ITreeNode<string, IPropNodeData>;
+export type IPropNodeData = {
+  path: string;
+  key: string | number;
+  value: t.PropValue;
+};

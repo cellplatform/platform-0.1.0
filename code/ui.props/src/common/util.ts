@@ -6,40 +6,46 @@ import { COLORS } from './constants';
  * Builds a <TreeView> node structure.
  */
 export function buildTree(args: {
-  data?: object | any[];
+  data?: t.PropsData;
   parent: t.IPropNode;
   root: t.IPropNode;
   formatNode: (node: t.IPropNode) => t.IPropNode;
 }): t.IPropNode {
   const { data, root, formatNode } = args;
-  // const util = TreeView.util;
   let parent = args.parent;
 
+  const createNode = (id: string, key: string | number, value: any) => {
+    const isArray = Array.isArray(value);
+    const isObject = typeof value === 'object' && !isArray;
+    let node: t.IPropNode = formatNode({
+      id,
+      props: { label: key.toString(), borderTop: false, borderBottom: false },
+      data: { path: id, key, value },
+    });
+
+    if (isObject || isArray) {
+      const parent = node;
+      const data = value;
+      node = buildTree({ data, parent, root, formatNode }); // <== RECURSION
+    }
+
+    return node;
+  };
+
   if (Array.isArray(data)) {
-    console.log(`\nTODO 🐷   ARRAY \n`);
+    const children = data.map((value, index) => {
+      const id = `${parent.id}.[${index}]`;
+      return createNode(id, index, value);
+    });
+    parent = { ...parent, children };
   }
 
   if (typeof data === 'object' && !Array.isArray(data)) {
     const children = Object.keys(data).map(key => {
       const id = `${parent.id}.${key}`;
       const value = data[key];
-      const isArray = Array.isArray(value);
-      const isObject = typeof value === 'object' && !isArray;
-      let node: t.IPropNode = formatNode({
-        id,
-        props: { label: key, borderTop: false, borderBottom: false },
-        data: { path: id, key, value },
-      });
-
-      if (isObject || isArray) {
-        const parent = node;
-        const data = value;
-        node = buildTree({ data, parent, root, formatNode }); // <== RECURSION
-      }
-
-      return node;
+      return createNode(id, key, value);
     });
-
     parent = { ...parent, children };
   }
 
@@ -49,7 +55,6 @@ export function buildTree(args: {
 /**
  * Get the type of the given value.
  */
-
 export function getType(value: t.PropValue) {
   if (value === null) {
     return 'null';
