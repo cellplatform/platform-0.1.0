@@ -2,10 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { color as colorUtil, css, events, GlamorValue, R, t, util } from '../common';
-import { ITextInputEvents, ITextInputFocus, ITextInputStyle, TextInputMaskHandler } from '../types';
+import { color as colorUtil, containsFocus, css, events, GlamorValue, R, t, util } from '../common';
 
-export const DEFAULT_TEXT_STYLE: ITextInputStyle = {
+export const DEFAULT_TEXT_STYLE: t.ITextInputStyle = {
   opacity: 1,
   color: -1,
   disabledColor: -1,
@@ -20,16 +19,17 @@ export const DEFAULT_TEXT_STYLE: ITextInputStyle = {
 export interface IInputValue {
   value?: string;
   maxLength?: number;
-  mask?: TextInputMaskHandler;
+  mask?: t.TextInputMaskHandler;
 }
 
-export interface IHtmlInputProps extends ITextInputFocus, ITextInputEvents, IInputValue {
+export interface IHtmlInputProps extends t.ITextInputFocus, t.ITextInputEvents, IInputValue {
+  events$: Subject<t.TextInputEvent>;
   className?: string;
   isEnabled?: boolean;
   isPassword?: boolean;
   disabledOpacity?: number;
   style?: GlamorValue;
-  valueStyle?: ITextInputStyle;
+  valueStyle?: t.ITextInputStyle;
   selectionBackground?: number | string;
   spellCheck?: boolean;
   autoCapitalize?: boolean;
@@ -109,6 +109,13 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   }
 
   /**
+   * [Properties]
+   */
+  public get isFocused() {
+    return containsFocus(this);
+  }
+
+  /**
    * [Methods]
    */
   public focus() {
@@ -137,7 +144,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
       const el = this.input as any;
 
       if (el.setSelectionRange) {
-        // Modern browsers
+        // Modern browsers.
         el.focus();
         el.setSelectionRange(0, 0);
       } else if (el.createTextRange) {
@@ -232,11 +239,13 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   /**
    * [Handlers]
    */
+
   private handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { onKeyDown, onTab } = this.props;
     const modifierKeys = { ...this.modifierKeys };
+    const event = this.toKeyboardEvent(e);
     if (onKeyDown) {
-      onKeyDown({ ...e, modifierKeys });
+      onKeyDown(event);
     }
     if (onTab && e.key === 'Tab') {
       let isCancelled = false;
@@ -251,14 +260,39 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         modifierKeys,
       });
     }
+    this.fireKeyboard(event, true);
   };
 
   private handleKeyup = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { onKeyUp } = this.props;
+    const event = this.toKeyboardEvent(e);
     if (onKeyUp) {
-      const modifierKeys = { ...this.modifierKeys };
-      onKeyUp({ ...e, modifierKeys });
+      onKeyUp(event);
     }
+    this.fireKeyboard(event, false);
+  };
+
+  private fireKeyboard = (event: t.TextInputKeyEvent, isPressed: boolean) => {
+    this.props.events$.next({
+      type: 'TEXT_INPUT/keypress',
+      payload: {
+        key: event.key,
+        isPressed,
+        event,
+      },
+    });
+  };
+
+  private toKeyboardEvent = (e: React.KeyboardEvent<HTMLInputElement>): t.TextInputKeyEvent => {
+    const modifierKeys = { ...this.modifierKeys };
+    const event = {
+      ...e,
+      modifierKeys,
+      preventDefault: () => e.preventDefault(),
+      stopPropagation: () => e.stopPropagation(),
+    };
+
+    return event;
   };
 
   private handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {

@@ -61,7 +61,10 @@ export interface ITextInputEvents {
 /**
  * [Event] Observable
  */
-export type TextInputEvent = ITextInputChangingEvent | ITextInputChangedEvent;
+export type TextInputEvent =
+  | ITextInputChangingEvent
+  | ITextInputChangedEvent
+  | ITextInputKeypressEvent;
 
 export type ITextInputChangingEvent = {
   type: 'TEXT_INPUT/changing';
@@ -77,3 +80,13 @@ export type ITextInputChangedEvent = {
   payload: ITextInputChanged;
 };
 export type ITextInputChanged = TextInputChangeEvent;
+
+export type ITextInputKeypressEvent = {
+  type: 'TEXT_INPUT/keypress';
+  payload: ITextInputKeypress;
+};
+export type ITextInputKeypress = {
+  isPressed: boolean;
+  key: TextInputKeyEvent['key'];
+  event: TextInputKeyEvent;
+};

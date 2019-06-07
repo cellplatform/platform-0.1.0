@@ -39,6 +39,7 @@ export type ITreeNodeProps = {
   children?: React.ReactNode;
   node: ITreeNode;
   renderIcon?: t.RenderTreeIcon;
+  renderNodeBody?: t.RenderTreeNodeBody;
   iconRight?: IIcon | null;
   twisty?: TreeNodeTwisty;
   theme?: themes.ITreeTheme;
@@ -96,7 +97,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         userSelect: 'none',
         backgroundColor: color.format(this.backgroundColor),
       }),
-      body: css({
+      inner: css({
         position: 'relative',
         Flex: 'horizontal-start-stretch',
         opacity: isEnabled ? opacity : Math.min(0.3, opacity),
@@ -107,16 +108,16 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     const elBorders = this.renderBorders();
     const elTwisty = this.renderTwisty();
     const elIconLeft = this.renderIconLeft();
-    const elLabel = this.renderLabel();
+    const elContent = this.renderContent();
     const elIconRight = this.renderIconRight();
 
     return (
       <Text style={css(styles.base, this.props.style)} {...this.nodeHandlers}>
         {elBorders}
-        <div {...styles.body}>
+        <div {...styles.inner}>
           {elTwisty}
           {elIconLeft}
-          {elLabel}
+          {elContent}
           {elIconRight}
         </div>
       </Text>
@@ -216,13 +217,11 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     );
   }
 
-  private renderLabel() {
-    const theme = this.theme.node;
-    const { node, iconRight } = this.props;
+  private renderContent() {
+    const { iconRight, renderNodeBody, node } = this.props;
     const props = this.nodeProps;
-    const label = props.label || node.id;
-    const labelColor = props.labelColor ? color.format(props.labelColor) : theme.labelColor;
-    // const color = props.label ? color.for
+    const body = props.body;
+
     const styles = {
       base: css({
         flex: 1,
@@ -230,10 +229,43 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         overflow: 'hidden',
         marginLeft: MARGIN.LABEL_LEFT,
       }),
-      labelOuter: css({
-        Flex: 'horizontal-center-spaceBetween',
+      contentOuter: css({
+        minHeight: 24,
+        boxSizing: 'border-box',
+        position: 'relative',
+        Flex: 'horizontal-stretch-spaceBetween',
         marginRight: iconRight !== undefined ? SIZE.ICON_RIGHT : MARGIN.LABEL_RIGHT,
       }),
+      suffix: css({
+        Flex: 'center-center',
+        paddingLeft: 6,
+      }),
+    };
+
+    const elSpinner = props.isSpinning && <Spinner color={this.theme.spinner} size={18} />;
+    const elBody = renderNodeBody && body ? renderNodeBody({ body, node }) : undefined;
+    const elLabel = elBody ? elBody : this.renderLabel();
+    const elSuffix = elSpinner || this.renderBadge();
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.contentOuter}>
+          {elLabel}
+          {elSuffix && <div {...styles.suffix}>{elSuffix}</div>}
+        </div>
+        {this.renderDescription()}
+        {this.props.children}
+      </div>
+    );
+  }
+
+  private renderLabel() {
+    const theme = this.theme.node;
+    const { node } = this.props;
+    const props = this.nodeProps;
+    const label = props.label || node.id;
+    const labelColor = props.labelColor ? color.format(props.labelColor) : theme.labelColor;
+    const styles = {
       label: css({
         boxSizing: 'border-box',
         flex: 1,
@@ -247,19 +279,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         fontWeight: props.isBold ? 'bold' : undefined,
       }),
     };
-
-    const elSpinner = props.isSpinning && <Spinner color={this.theme.spinner} size={18} />;
-
-    return (
-      <div {...styles.base}>
-        <div {...styles.labelOuter}>
-          <div {...styles.label}>{label}</div>
-          {elSpinner || this.renderBadge()}
-        </div>
-        {this.renderDescription()}
-        {this.props.children}
-      </div>
-    );
+    return <div {...styles.label}>{label}</div>;
   }
 
   private renderDescription() {
@@ -298,7 +318,6 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         textShadow: Text.toShadow([-1, theme.textShadow]),
         fontSize: 11,
         margin: 0,
-        marginLeft: 6,
         padding: 0,
         paddingTop: 1,
         PaddingX: 8,
@@ -347,7 +366,6 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     onMouse?: TreeNodeMouseEventHandler,
   ) {
     const handlers = mouse.handlers(e => {
-      e.cancel();
       const node = getNode();
       const props = node.props || {};
       const children = tree.children(node);

@@ -36,6 +36,7 @@ export type ITreeNodePathContext = {
  * Properties for an individual leaf on the tree.
  */
 export type ITreeNodeProps = {
+  body?: string; // Key used in [renderNodeBody] factory.
   label?: string;
   labelColor?: string | number;
   icon?: TreeNodeIcon;
@@ -107,5 +108,20 @@ export type RenderTreeIcon<T extends ITreeNode = ITreeNode> = (
 ) => IIcon | undefined;
 export type RenderTreeIconArgs<T extends ITreeNode = ITreeNode> = {
   icon: string; // Identifier of the icon.
+  node: T;
+};
+
+/**
+ * Factory renderer of the body content of a tree-node.
+ * Return:
+ *  - Element:      The component to render.
+ *  - [null]:       Render default label.
+ *  - [undefined]:  Render default label.
+ */
+export type RenderTreeNodeBody<T extends ITreeNode = ITreeNode> = (
+  args: RenderTreeNodeBodyArgs<T>,
+) => React.ReactNode | null | undefined;
+export type RenderTreeNodeBodyArgs<T extends ITreeNode = ITreeNode> = {
+  body: string;
   node: T;
 };
