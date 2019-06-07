@@ -239,6 +239,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
             autoCorrect={this.props.autoCorrect}
             autoComplete={this.props.autoComplete}
             selectionBackground={this.props.selectionBackground}
+            events$={this._events$}
           />
         </div>
       </div>

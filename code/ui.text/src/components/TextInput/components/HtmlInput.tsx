@@ -24,6 +24,7 @@ export interface IInputValue {
 }
 
 export interface IHtmlInputProps extends ITextInputFocus, ITextInputEvents, IInputValue {
+  events$: Subject<t.TextInputEvent>;
   className?: string;
   isEnabled?: boolean;
   isPassword?: boolean;
@@ -243,8 +244,9 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   private handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { onKeyDown, onTab } = this.props;
     const modifierKeys = { ...this.modifierKeys };
+    const event = this.toKeyboardEvent(e);
     if (onKeyDown) {
-      onKeyDown({ ...e, modifierKeys });
+      onKeyDown(event);
     }
     if (onTab && e.key === 'Tab') {
       let isCancelled = false;
@@ -259,14 +261,39 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         modifierKeys,
       });
     }
+    this.fireKeyboard(event, true);
   };
 
   private handleKeyup = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { onKeyUp } = this.props;
+    const event = this.toKeyboardEvent(e);
     if (onKeyUp) {
-      const modifierKeys = { ...this.modifierKeys };
-      onKeyUp({ ...e, modifierKeys });
+      onKeyUp(event);
     }
+    this.fireKeyboard(event, false);
+  };
+
+  private fireKeyboard = (event: t.TextInputKeyEvent, isPressed: boolean) => {
+    this.props.events$.next({
+      type: 'TEXT_INPUT/keypress',
+      payload: {
+        key: event.key,
+        isPressed,
+        event,
+      },
+    });
+  };
+
+  private toKeyboardEvent = (e: React.KeyboardEvent<HTMLInputElement>): t.TextInputKeyEvent => {
+    const modifierKeys = { ...this.modifierKeys };
+    const event = {
+      ...e,
+      modifierKeys,
+      preventDefault: () => e.preventDefault(),
+      stopPropagation: () => e.stopPropagation(),
+    };
+
+    return event;
   };
 
   private handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {

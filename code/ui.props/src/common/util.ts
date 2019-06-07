@@ -64,10 +64,10 @@ export function getType(value: t.PropValue) {
   if (type === 'object') {
     return 'object';
   }
-  if (type === 'number' || type === 'bigint') {
+  if (type === 'number' || type === 'bigint' || valueUtil.isNumeric(value)) {
     return 'number';
   }
-  if (type === 'boolean') {
+  if (type === 'boolean' || (typeof value === 'string' && valueUtil.isBoolString(value))) {
     return 'boolean';
   }
   if (type === 'function') {

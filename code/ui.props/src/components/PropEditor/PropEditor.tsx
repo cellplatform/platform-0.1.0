@@ -33,14 +33,14 @@ export type IPropEditorProps = {
   style?: GlamorValue;
 };
 export type IPropEditorState = {
-  value?: string;
+  value?: t.PropValue;
 };
 
 export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEditorState> {
   public state: IPropEditorState = {};
   private state$ = new Subject<Partial<IPropEditorState>>();
   private unmounted$ = new Subject();
-  private didUpdate$ = new Subject<string>();
+  private didUpdate$ = new Subject();
   private value$ = new Subject<t.TextInputEvent>();
 
   private elValueInput!: TextInput;
@@ -52,57 +52,62 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
-    this.state$.next({ value: this.valueString });
+    this.setValue(this.value);
 
     const value$ = this.value$.pipe(takeUntil(this.unmounted$));
-    const valueChanging$ = value$.pipe(
-      filter(e => e.type === 'TEXT_INPUT/changing'),
-      map(e => e.payload as t.ITextInputChanging),
+
+    const keydown$ = value$.pipe(
+      filter(e => e.type === 'TEXT_INPUT/keypress'),
+      map(e => e.payload as t.ITextInputKeypress),
+      filter(e => e.isPressed),
     );
-    const valueChanged$ = value$.pipe(
-      filter(e => e.type === 'TEXT_INPUT/changed'),
-      map(e => e.payload as t.ITextInputChanged),
-    );
+
+    const upDownKey$ = keydown$.pipe(filter(e => ['ArrowUp', 'ArrowDown'].includes(e.key)));
+
+    upDownKey$.pipe(filter(e => this.type === 'boolean')).subscribe(e => {
+      e.event.preventDefault();
+      const to = (!valueUtil.toBool(this.value)).toString();
+      this.change({ to });
+    });
+
+    upDownKey$.pipe(filter(e => this.type === 'number')).subscribe(e => {
+      e.event.preventDefault();
+      const value = valueUtil.toNumber(this.value);
+      const to = (e.key === 'ArrowUp' ? value + 1 : value - 1).toString();
+      this.change({ to });
+    });
 
     /**
      * Value [changing] by user.
      * Prevent input if not correct type.
      */
-    valueChanging$.subscribe(e => {
-      const type = this.type;
-      if (type === 'boolean') {
-        e.cancel();
-      }
-      if (type === 'number') {
-        if (e.char !== '.' && !valueUtil.isNumeric(e.to)) {
+    value$
+      .pipe(
+        filter(e => e.type === 'TEXT_INPUT/changing'),
+        map(e => e.payload as t.ITextInputChanging),
+      )
+      .subscribe(e => {
+        const type = this.type;
+        if (type === 'boolean') {
           e.cancel();
+          if (e.char.toUpperCase() === 'T') {
+            this.change({ to: 'true' });
+          }
+          if (e.char.toUpperCase() === 'F') {
+            this.change({ to: 'false' });
+          }
         }
-      }
-    });
+      });
 
     /**
      * Value [changed] by user input.
      */
-    valueChanged$.subscribe(e => {
-      const nodeData = this.nodeData;
-      const { path, key } = nodeData;
-
-      const fromValue = nodeData.value;
-      const value = { from: fromValue, to: e.to };
-
-      const from = { ...this.props.rootData };
-      const lens = R.lensPath(path.split('.').slice(1));
-      const to = R.set(lens, value.to, from);
-
-      const payload: t.IPropsChange = {
-        path,
-        key,
-        value,
-        data: { from, to },
-      };
-      this.state$.next({ value: (value.to || '').toString() });
-      this.next({ type: 'PROPS/changed', payload });
-    });
+    value$
+      .pipe(
+        filter(e => e.type === 'TEXT_INPUT/changed'),
+        map(e => e.payload as t.ITextInputChanged),
+      )
+      .subscribe(({ to }) => this.change({ to }));
 
     /**
      * Value changed progrmatically via property.
@@ -111,15 +116,15 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
       .pipe(
         takeUntil(this.unmounted$),
         debounceTime(0),
-        filter(e => this.valueString !== this.state.value),
+        filter(e => this.value !== this.state.value),
       )
-      .subscribe(e => this.state$.next({ value: this.valueString }));
+      .subscribe(e => this.setValue(this.value));
   }
 
   public componentDidUpdate(prev: IPropEditorProps) {
-    const value = this.valueString;
+    const value = this.value;
     if (value !== this.state.value) {
-      this.didUpdate$.next(value);
+      this.didUpdate$.next();
     }
   }
 
@@ -181,6 +186,32 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
 
   private next(e: t.PropsEvent) {
     this.props.events$.next(e);
+  }
+
+  private setValue(value?: t.PropValue) {
+    value = value === false ? 'false' : value;
+    this.state$.next({ value });
+  }
+
+  private change(e: { to: string }) {
+    const nodeData = this.nodeData;
+    const { path, key } = nodeData;
+
+    const fromValue = nodeData.value;
+    const value = { from: fromValue, to: valueUtil.toType(e.to) };
+
+    const from = { ...this.props.rootData };
+    const lens = R.lensPath(path.split('.').slice(1));
+    const to = R.set(lens, value.to, from);
+
+    const payload: t.IPropsChange = {
+      path,
+      key,
+      value,
+      data: { from, to },
+    };
+    this.setValue(value.to);
+    this.next({ type: 'PROPS/changed', payload });
   }
 
   /**
@@ -259,11 +290,12 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     const styles = {
       input: css({ flex: 1 }),
     };
+    const value = (this.state.value || '').toString();
     return (
       <TextInput
         key={this.props.node.id}
         ref={this.elValueInputRef}
-        value={this.state.value}
+        value={value}
         style={styles.input}
         valueStyle={{ ...FONT_STYLE, color: this.valueColor }}
         events$={this.value$}

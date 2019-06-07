@@ -5,6 +5,7 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { css, GlamorValue, Icons, t, TreeView, util } from '../common';
 import { PropEditor } from '../PropEditor';
 
+const ROOT = 'ROOT';
 const BODY = {
   PROD_EDITOR: 'PROP_EDITOR',
 };
@@ -13,22 +14,28 @@ export type ChangedEventHandler = (e: t.IPropsChange) => void;
 
 export type IPropsProps = {
   data?: t.PropsData;
+  // path?: string;
   theme?: t.PropsTheme;
   style?: GlamorValue;
   events$?: Subject<t.PropsEvent>;
   onChange?: ChangedEventHandler;
 };
-export type IPropsState = {};
+export type IPropsState = {
+  current?: string;
+};
 
 export class Props extends React.PureComponent<IPropsProps, IPropsState> {
+  public state: IPropsState = { current: ROOT };
   private state$ = new Subject<Partial<IPropsState>>();
   private unmounted$ = new Subject();
   private events$ = new Subject<t.PropsEvent>();
+  private tree$ = new Subject<t.TreeViewEvent>();
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
+    const tree$ = this.tree$.pipe(takeUntil(this.unmounted$));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
@@ -37,6 +44,9 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
       this.events$.subscribe(this.props.events$);
     }
 
+    /**
+     * Bubble events.
+     */
     events$
       .pipe(
         filter(e => Boolean(this.props.onChange)),
@@ -47,6 +57,46 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
         if (this.props.onChange) {
           this.props.onChange(e);
         }
+      });
+
+    /**
+     * Mouse events on tree.
+     */
+    const treeMouse$ = tree$.pipe(
+      filter(e => e.type === 'TREEVIEW/mouse'),
+      map(e => e.payload as t.TreeNodeMouseEvent),
+    );
+    const treeClick$ = treeMouse$.pipe(
+      filter(e => e.type === 'CLICK'),
+      filter(e => e.button === 'LEFT'),
+    );
+    const treeDblClick$ = treeMouse$.pipe(
+      filter(e => e.type === 'DOUBLE_CLICK'),
+      filter(e => e.button === 'LEFT'),
+    );
+
+    treeClick$.pipe(filter(e => e.target === 'DRILL_IN')).subscribe(e => {
+      const current = e.node.id;
+      this.state$.next({ current });
+    });
+
+    treeClick$.pipe(filter(e => e.target === 'PARENT')).subscribe(e => {
+      const id = e.node.id;
+      const current = id.substring(0, id.lastIndexOf('.'));
+      this.state$.next({ current });
+    });
+
+    treeDblClick$
+      .pipe(
+        filter(e => e.target === 'NODE'),
+        filter(e => Boolean(e.node && e.node.children && e.node.children.length > 0)),
+        filter(e =>
+          ['object', 'array'].includes(util.getType((e.node.data as t.IPropNodeData).value)),
+        ),
+      )
+      .subscribe(e => {
+        const current = e.node.id;
+        this.state$.next({ current });
       });
   }
 
@@ -64,7 +114,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
   }
 
   private get root() {
-    const root: t.IPropNode = { id: 'ROOT', props: { header: { isVisible: false } } };
+    const root: t.IPropNode = { id: ROOT, props: { header: { isVisible: false } } };
     const body = BODY.PROD_EDITOR;
     return util.buildTree({
       root,
@@ -73,6 +123,15 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
       formatNode: node => ({ ...node, props: { ...node.props, body } }),
     });
   }
+
+  /**
+   * [Methods]
+   */
+  // private setCurrent(node: t.ITreeNode) {
+  //   const id = node.id;
+  //   const current = id.substring(0, id.lastIndexOf('.'));
+  //   this.state$.next({ current });
+  // }
 
   /**
    * [Render]
@@ -89,10 +148,11 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
       <div {...css(styles.base, this.props.style)}>
         <TreeView
           node={this.root}
-          current={'ROOT'}
+          current={this.state.current}
           theme={theme}
           renderIcon={this.iconFactory}
           renderNodeBody={this.nodeFactory}
+          events$={this.tree$}
         />
       </div>
     );

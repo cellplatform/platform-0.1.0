@@ -69,7 +69,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
             </div>
           </div>
           <div {...styles.right}>
-            <ObjectView name={'state'} data={this.state} theme={theme} />
+            <ObjectView name={'state'} data={this.state} theme={theme} expandLevel={5} />
           </div>
         </div>
       </CommandShell>
@@ -81,7 +81,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
 
   private handleChange = (e: t.IPropsChange) => {
-    console.log('!! change', e);
-    this.state$.next({ data: e.data.to });
+    const data = e.data.to;
+    this.state$.next({ data });
   };
 }
