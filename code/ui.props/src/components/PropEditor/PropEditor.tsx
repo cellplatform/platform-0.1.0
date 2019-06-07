@@ -297,12 +297,14 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     const value = this.value;
     const valueType = this.type;
 
-    if (valueType === 'object') {
-      return this.renderComplex({ icon: Icons.Object, label: '{ object }' });
-    }
-
     if (valueType === 'array' && Array.isArray(value)) {
       return this.renderComplex({ icon: Icons.Array, label: `array(${value.length})` });
+    }
+
+    if (valueType === 'object' && typeof value === 'object') {
+      const keys = Object.keys(value as object);
+      const label = `object{${keys.length}}`;
+      return this.renderComplex({ icon: Icons.Object, label });
     }
 
     if (valueType === 'function' && typeof value === 'function') {
@@ -339,7 +341,11 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         Flex: 'horizontal-center-start',
         opacity: 0.5,
       }),
-      icon: css({ marginRight: 6 }),
+      icon: css({
+        position: 'relative',
+        top: 1,
+        marginRight: 6,
+      }),
       label: css({
         fontStyle: args.italic ? 'italic' : undefined,
       }),
