@@ -59,7 +59,7 @@ export function getType(value: t.PropValue) {
   if (value === null) {
     return 'null';
   }
-  if (value === 'undefined') {
+  if (value === undefined) {
     return 'undefined';
   }
   if (Array.isArray(value)) {

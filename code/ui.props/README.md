@@ -6,6 +6,19 @@
 
 Object property editor.
 
+
+
 ## Setup
 
     yarn add @platform/ui.props
+
+
+<p>&nbsp;<p>
+
+## Example
+
+![video](https://user-images.githubusercontent.com/185555/59095947-ddf87900-896d-11e9-867c-eda4c26c5d95.gif)
+
+
+<p>&nbsp;<p>
+<p>&nbsp;<p>

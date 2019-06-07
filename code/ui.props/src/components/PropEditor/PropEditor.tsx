@@ -28,6 +28,7 @@ const FONT_STYLE = {
 export type IPropEditorProps = {
   rootData?: t.PropsData;
   theme: t.PropsTheme;
+  parentNode: t.IPropNode;
   node: t.IPropNode;
   events$: Subject<t.PropsEvent>;
   style?: GlamorValue;
@@ -174,6 +175,13 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     return ['object', 'array', 'function'].includes(type);
   }
 
+  public get parentType() {
+    const { parentNode } = this.props;
+    const data = parentNode.data;
+    const value = data ? data.value : undefined;
+    return util.getType(value);
+  }
+
   private get lens() {
     const path = this.nodeData.path;
     const parts = path
@@ -236,6 +244,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
    */
   public render() {
     const isScalar = this.isScalar;
+    const isArray = this.parentType === 'array';
 
     const styles = {
       base: css({
@@ -251,7 +260,8 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         paddingBottom: 2,
       }),
       left: css({
-        flex: 1,
+        flex: !isArray ? 1 : undefined,
+        width: isArray ? 30 : undefined,
         marginRight: 10,
         color: color.format(0.4),
         position: 'relative',

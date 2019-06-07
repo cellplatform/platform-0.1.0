@@ -163,9 +163,11 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
   private nodeFactory: t.RenderTreeNodeBody = e => {
     if (e.body === BODY.PROD_EDITOR) {
       const node = e.node as t.IPropNode;
+      const parentNode = TreeView.util.parent(this.root, node) as t.IPropNode;
       return (
         <PropEditor
           rootData={this.props.data}
+          parentNode={parentNode}
           node={node}
           theme={this.theme}
           events$={this.events$}
