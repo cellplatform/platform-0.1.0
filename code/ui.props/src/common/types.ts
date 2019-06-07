@@ -5,6 +5,8 @@ export * from '@platform/ui.icon/lib/types';
 
 export * from '../types';
 
+import * as t from '../types';
 import { ITreeNode } from '@platform/ui.tree/lib/types';
 
-export type IPropNode = ITreeNode<string, { key: string; value: any }>;
+export type IPropNodeData = { path: string; key: string; value: t.PropValue };
+export type IPropNode = ITreeNode<string, IPropNodeData>;

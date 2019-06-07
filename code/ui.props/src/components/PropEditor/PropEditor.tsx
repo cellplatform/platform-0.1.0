@@ -1,18 +1,21 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { IIcon, COLORS, css, color, GlamorValue, TextInput, t, constants, Icons } from '../common';
-import { themes } from '../../theme';
+import { filter, map, takeUntil, debounceTime } from 'rxjs/operators';
 
-type ValueType =
-  | 'object'
-  | 'array'
-  | 'string'
-  | 'boolean'
-  | 'number'
-  | 'null'
-  | 'undefined'
-  | 'function';
+import { themes } from '../../theme';
+import {
+  R,
+  color,
+  COLORS,
+  constants,
+  css,
+  GlamorValue,
+  Icons,
+  IIcon,
+  t,
+  TextInput,
+  util,
+} from '../common';
 
 const { MONOSPACE } = constants;
 const FONT_STYLE = {
@@ -22,20 +25,25 @@ const FONT_STYLE = {
 };
 
 export type IPropEditorProps = {
+  rootData?: t.PropsData;
   theme: t.PropsTheme;
   node: t.IPropNode;
   events$: Subject<t.PropsEvent>;
   style?: GlamorValue;
 };
-export type IPropEditorState = {};
+export type IPropEditorState = {
+  value?: string;
+};
 
 export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEditorState> {
   public state: IPropEditorState = {};
   private state$ = new Subject<Partial<IPropEditorState>>();
   private unmounted$ = new Subject();
+  private didUpdate$ = new Subject<string>();
+  private value$ = new Subject<t.TextInputEvent>();
 
-  private valueInput!: TextInput;
-  private elValueInputRef = (ref: TextInput) => (this.valueInput = ref);
+  private elValueInput!: TextInput;
+  private elValueInputRef = (ref: TextInput) => (this.elValueInput = ref);
 
   /**
    * [Lifecycle]
@@ -43,6 +51,56 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
+    this.state$.next({ value: this.valueString });
+
+    const value$ = this.value$.pipe(takeUntil(this.unmounted$));
+    const valueChanged$ = value$.pipe(
+      filter(e => e.type === 'TEXT_INPUT/changed'),
+      map(e => e.payload as t.ITextInputChanged),
+    );
+
+    /**
+     * Value changed by user input.
+     */
+    valueChanged$.subscribe(e => {
+      const nodeData = this.nodeData;
+      const { path, key } = nodeData;
+
+      const fromValue = nodeData.value;
+      const type = util.value(fromValue).type;
+      const value = { from: fromValue, to: util.toType(e.to, type) };
+
+      const from = { ...this.props.rootData };
+      const lens = R.lensPath(path.split('.').slice(1));
+      const to = R.set(lens, value.to, from);
+
+      const payload: t.IPropsChange = {
+        path,
+        key,
+        value,
+        data: { from, to },
+      };
+      this.state$.next({ value: (value.to || '').toString() });
+      this.next({ type: 'PROPS/changed', payload });
+    });
+
+    /**
+     * Value changed progrmatically via property.
+     */
+    this.didUpdate$
+      .pipe(
+        takeUntil(this.unmounted$),
+        debounceTime(0),
+        filter(e => this.valueString !== this.state.value),
+      )
+      .subscribe(e => this.state$.next({ value: this.valueString }));
+  }
+
+  public componentDidUpdate(prev: IPropEditorProps) {
+    const value = this.valueString;
+    if (value !== this.state.value) {
+      this.didUpdate$.next(value);
+    }
   }
 
   public componentWillUnmount() {
@@ -58,52 +116,36 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   }
 
   public get isFocused() {
-    const input = this.valueInput;
+    const input = this.elValueInput;
     return input ? input.isFocused : false;
   }
 
+  public get nodeData() {
+    return this.props.node.data as t.IPropNodeData;
+  }
+
   public get key() {
-    const { node } = this.props;
-    return node.data ? node.data.key : 'UNKNOWN';
+    return this.nodeData.key;
   }
 
   public get value() {
-    const { node } = this.props;
-    return node.data ? node.data.value : 'UNKNOWN';
+    return this.nodeData.value;
   }
 
-  public get valueType(): ValueType {
-    const value = this.value;
-    if (value === null) {
-      return 'null';
-    }
-    if (value === 'undefined') {
-      return 'undefined';
-    }
-    if (Array.isArray(value)) {
-      return 'array';
-    }
-    const type = typeof value;
-    if (type === 'object') {
-      return 'object';
-    }
-    if (type === 'number' || type === 'bigint') {
-      return 'number';
-    }
-    if (type === 'boolean') {
-      return 'boolean';
-    }
-    if (type === 'function') {
-      return 'function';
-    }
-    if (type === 'string') {
-      return 'string';
-    }
-    throw new Error(`Value type '${typeof value}' not supported.`);
+  public get valueString() {
+    return (this.value || '').toString();
+  }
+
+  public get valueColor() {
+    return util.typeColor(this.type, this.props.theme);
+  }
+
+  public get type() {
+    return util.value(this.value).type;
   }
 
   public get isScalar() {
-    const type = this.valueType;
+    const type = this.type;
     return ['object', 'array', 'function'].includes(type);
   }
 
@@ -111,10 +153,14 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
    * [Methods]
    */
   public focus() {
-    if (this.valueInput) {
-      this.valueInput.focus();
+    if (this.elValueInput) {
+      this.elValueInput.focus();
     }
     return this;
+  }
+
+  private next(e: t.PropsEvent) {
+    this.props.events$.next(e);
   }
 
   /**
@@ -170,17 +216,17 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   private renderValue = () => {
     const key = this.key;
     const value = this.value;
-    const valueType = this.valueType;
+    const valueType = this.type;
 
     if (valueType === 'object') {
       return this.renderComplex({ icon: Icons.Object, label: '{ object }' });
     }
 
-    if (valueType === 'array') {
+    if (valueType === 'array' && Array.isArray(value)) {
       return this.renderComplex({ icon: Icons.Array, label: `array(${value.length})` });
     }
 
-    if (valueType === 'function') {
+    if (valueType === 'function' && typeof value === 'function') {
       const name = value.name;
       const label = name === key ? 'ƒunction' : `${name}()`;
       return this.renderComplex({ icon: Icons.Function, label, italic: true });
@@ -190,18 +236,17 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   };
 
   private renderValueInput = () => {
-    const value = this.value;
-
     const styles = {
       input: css({ flex: 1 }),
     };
-
     return (
       <TextInput
+        key={this.props.node.id}
         ref={this.elValueInputRef}
-        value={value}
+        value={this.state.value}
         style={styles.input}
-        valueStyle={{ ...FONT_STYLE }}
+        valueStyle={{ ...FONT_STYLE, color: this.valueColor }}
+        events$={this.value$}
       />
     );
   };

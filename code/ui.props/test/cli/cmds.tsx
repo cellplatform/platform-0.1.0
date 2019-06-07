@@ -21,7 +21,7 @@ export const root = Command.create<P>('root', e => {
 
     const data = {
       message: 'Hello',
-      reallyLongKeyNameTooLongInFact: 'foo',
+      reallyLongKey: 'foo',
       count: 123,
       foo: { isEnabled: true, color: 'PINK' },
       list: [1, 2, 3],

@@ -60,7 +60,12 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         <div {...styles.base}>
           <div {...styles.left}>
             <div {...styles.inner}>
-              <Props data={this.state.data} style={styles.props} theme={theme} />
+              <Props
+                data={this.state.data}
+                style={styles.props}
+                theme={theme}
+                onChange={this.handleChange}
+              />
             </div>
           </div>
           <div {...styles.right}>
@@ -70,4 +75,13 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       </CommandShell>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+
+  private handleChange = (e: t.IPropsChange) => {
+    console.log('!! change', e);
+    this.state$.next({ data: e.data.to });
+  };
 }

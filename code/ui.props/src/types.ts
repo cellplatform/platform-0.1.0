@@ -1,6 +1,19 @@
 export * from './theme/types';
 
-export type PropsData = object | any[];
+export type PropsData = object | PropArray;
+export type PropScalar = string | boolean | number | null | undefined;
+export type PropArray = Array<PropScalar | object>;
+export type PropValue = PropScalar | PropArray | object | Function; // tslint:disable-line
+
+export type PropType =
+  | 'object'
+  | 'array'
+  | 'string'
+  | 'boolean'
+  | 'number'
+  | 'null'
+  | 'undefined'
+  | 'function';
 
 /**
  * [Events]
@@ -14,6 +27,6 @@ export type IPropsChangedEvent<D extends PropsData = any> = {
 export type IPropsChange<D extends PropsData = any> = {
   path: string;
   key: string;
-  value: string;
+  value: { from: PropValue; to: PropValue };
   data: { from: D; to: D };
 };

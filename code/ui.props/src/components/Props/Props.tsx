@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, Icons, t, TreeView } from '../common';
+import { css, GlamorValue, Icons, t, TreeView, util } from '../common';
 import { PropEditor } from '../PropEditor';
 
 const BODY = {
@@ -64,9 +64,14 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
   }
 
   private get root() {
-    const { data } = this.props;
     const root: t.IPropNode = { id: 'ROOT', props: { header: { isVisible: false } } };
-    return buildTree({ root, parent: root, data });
+    const body = BODY.PROD_EDITOR;
+    return util.buildTree({
+      root,
+      parent: root,
+      data: this.props.data,
+      formatNode: node => ({ ...node, props: { ...node.props, body } }),
+    });
   }
 
   /**
@@ -80,8 +85,6 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
         display: 'flex',
       }),
     };
-
-    console.log('this.props.data', this.props.data);
     return (
       <div {...css(styles.base, this.props.style)}>
         <TreeView
@@ -100,55 +103,15 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
   private nodeFactory: t.RenderTreeNodeBody = e => {
     if (e.body === BODY.PROD_EDITOR) {
       const node = e.node as t.IPropNode;
-      return <PropEditor node={node} theme={this.theme} events$={this.events$} />;
+      return (
+        <PropEditor
+          rootData={this.props.data}
+          node={node}
+          theme={this.theme}
+          events$={this.events$}
+        />
+      );
     }
     return null;
   };
-}
-
-/**
- * [Helpers]
- */
-
-export function buildTree(args: {
-  data?: object | any[];
-  parent: t.IPropNode;
-  root: t.IPropNode;
-}): t.IPropNode {
-  const { data, root } = args;
-  // const util = TreeView.util;
-  let parent = args.parent;
-
-  if (Array.isArray(data)) {
-    console.log(`\nTODO 🐷   ARRAY \n`);
-  }
-
-  if (typeof data === 'object' && !Array.isArray(data)) {
-    const children = Object.keys(data).map(key => {
-      const id = `${parent.id}.${key}`;
-      const value = data[key];
-      const isArray = Array.isArray(value);
-      const isObject = typeof value === 'object' && !isArray;
-      let node: t.IPropNode = {
-        id,
-        props: {
-          label: key,
-          borderTop: false,
-          borderBottom: false,
-          body: BODY.PROD_EDITOR,
-        },
-        data: { key, value },
-      };
-
-      if (isObject || isArray) {
-        node = buildTree({ data: value, parent: node, root }); // <== RECURSION
-      }
-
-      return node;
-    });
-
-    parent = { ...parent, children };
-  }
-
-  return parent;
 }
