@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { DevTools } from '../helpers/devTools/renderer';
-import { getId, init as initIpc } from '../helpers/ipc/renderer';
+import { getWindowId, init as initIpc } from '../helpers/ipc/renderer';
 import { init as initLog } from '../helpers/logger/renderer';
 import { init as initStore } from '../helpers/store/renderer';
 import * as t from '../types';
@@ -33,8 +33,8 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
     return refs.renderer;
   }
 
-  // Retrieve the ID.
-  const id = await getId();
+  // Retrieve the window ID.
+  const id = await getWindowId();
 
   // Ipc.
   const ipc = await initIpc<M>({ id });

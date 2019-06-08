@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, GlamorValue, IDevToolsEvent, renderer } from '../../common';
+import { css, GlamorValue, renderer } from '../../common';
 import { Button, ObjectView } from '../primitives';
 import { TestPanel } from '../TestPanel';
 
@@ -51,9 +51,12 @@ export class DevToolsTest extends React.PureComponent<IDevToolsTestProps> {
 
   private revealHandler = (show: boolean, focus?: boolean) => {
     return () => {
-      const { id: windowId, ipc } = this.context;
-      const target = ipc.MAIN;
-      ipc.send<IDevToolsEvent>('TEST/devTools', { windowId, show, focus }, { target });
+      const { devTools } = this.context;
+      if (show) {
+        devTools.show({ focus });
+      } else {
+        devTools.hide();
+      }
     };
   };
 

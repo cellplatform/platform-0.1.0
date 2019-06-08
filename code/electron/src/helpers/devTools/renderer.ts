@@ -14,7 +14,7 @@ export class DevTools {
   constructor(args: { ipc: t.IpcClient }) {
     const ipc = (this.ipc = args.ipc);
     ipc
-      .on<t.ClearConsoleEvent>('@platform/DEV_TOOLS/clearConsole')
+      .on<t.DevToolsClearConsoleEvent>('@platform/DEV_TOOLS/clearConsole')
       .pipe(delay(0))
       .subscribe(e => clearConsole());
   }
@@ -25,13 +25,31 @@ export class DevTools {
   public clearConsoles() {
     clearConsole();
     if (this.ipc) {
-      this.ipc.send<t.ClearConsoleEvent>('@platform/DEV_TOOLS/clearConsole', {});
+      this.ipc.send<t.DevToolsClearConsoleEvent>('@platform/DEV_TOOLS/clearConsole', {});
     }
+  }
+
+  /**
+   * Show the dev tools.
+   */
+  public show(options: { focus?: boolean } = {}) {
+    const { focus } = options;
+    this.ipc.send<t.DevToolsVisibilityEvent>('@platform/DEV_TOOLS/visibility', {
+      show: true,
+      focus,
+    });
+  }
+
+  /**
+   * Show the dev tools.
+   */
+  public hide() {
+    this.ipc.send<t.DevToolsVisibilityEvent>('@platform/DEV_TOOLS/visibility', { show: false });
   }
 }
 
 /**
- * INTERNAL
+ * [Helpers]
  */
 function clearConsole() {
   console.clear(); // tslint:disable-line
