@@ -248,6 +248,10 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     const isScalar = this.isScalar;
     const isArray = this.parentType === 'array';
 
+    const value = this.renderValue();
+    const elValue = value ? value.el : undefined;
+    const underline = (value && value.underline) || { color: isScalar ? 0.1 : 0.6, style: 'solid' };
+
     const styles = {
       base: css({
         flex: 1,
@@ -279,7 +283,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
       }),
       right: css({
         flex: 2,
-        borderBottom: `solid 1px ${color.format(isScalar ? 0.1 : 0.6)}`,
+        borderBottom: `${underline.style} 1px ${color.format(underline.color)}`,
       }),
     };
 
@@ -288,12 +292,12 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         <div {...css(styles.outer, styles.left)}>
           <div {...styles.ellipsis}>{this.key}</div>
         </div>
-        <div {...css(styles.outer, styles.right)}>{this.renderValue() || null}</div>
+        <div {...css(styles.outer, styles.right)}>{elValue}</div>
       </div>
     );
   }
 
-  private renderValue = () => {
+  private renderValue = (): t.PropValueFactoryResponse => {
     const factory = this.props.renderValue;
     const node = this.props.node;
     const path = node.id.slice(node.id.indexOf('.') + 1);
@@ -306,29 +310,49 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
       theme: this.theme,
       change: this.change,
     };
-    return (factory && factory(args)) || this.valueFactory(args);
+
+    if (factory) {
+      const res = factory(args);
+      if (res && !res.el) {
+        const local = this.valueFactory(args) as t.PropValueFactoryResponse;
+        return { ...res, ...local };
+      }
+      if (res && res.el) {
+        return res;
+      }
+    }
+
+    return this.valueFactory(args) as t.PropValueFactoryResponse;
   };
 
   private valueFactory: t.PropValueFactory = e => {
     const { type, key, value } = e;
 
+    const done = (el: React.ReactNode) => {
+      return { el };
+    };
+
     if (type === 'array' && Array.isArray(value)) {
-      return this.renderComplex({ icon: Icons.Array, label: `array(${value.length})` });
+      const el = this.renderComplex({ icon: Icons.Array, label: `array(${value.length})` });
+      return done(el);
     }
 
     if (type === 'object' && typeof value === 'object') {
       const keys = Object.keys(value as object);
       const label = `object{${keys.length}}`;
-      return this.renderComplex({ icon: Icons.Object, label });
+      const el = this.renderComplex({ icon: Icons.Object, label });
+      return done(el);
     }
 
     if (type === 'function' && typeof value === 'function') {
       const name = value.name;
       const label = !name || name === key ? 'ƒunction' : `${name}()`;
-      return this.renderComplex({ icon: Icons.Function, label, italic: true });
+      const el = this.renderComplex({ icon: Icons.Function, label, italic: true });
+      return done(el);
     }
 
-    return this.renderValueInput();
+    const el = this.renderValueInput();
+    return done(el);
   };
 
   private renderValueInput = () => {

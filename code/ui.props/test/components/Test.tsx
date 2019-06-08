@@ -89,13 +89,20 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
           Flex: 'center-center',
         }),
       };
-      return (
+      const el = (
         <div {...styles.base}>
           <div>Custom</div>
         </div>
       );
+
+      return { el, underline: { color: '#65D9EF', style: 'dashed' } };
     }
-    return undefined;
+
+    if (e.path === 'custom-props') {
+      return { underline: { color: '#F93B7E', style: 'dashed' } };
+    }
+
+    return;
   };
 
   /**

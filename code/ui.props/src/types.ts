@@ -18,7 +18,18 @@ export type PropType =
   | 'undefined'
   | 'function';
 
-export type PropValueFactory = (e: PropValueFactoryArgs) => React.ReactNode | undefined | void;
+export type PropValueFactory = (
+  e: PropValueFactoryArgs,
+) => PropValueFactoryResponse | undefined | void;
+
+export type PropValueFactoryResponse = {
+  el?: React.ReactNode;
+  underline?: {
+    color: string | number;
+    style: 'solid' | 'dashed';
+  };
+};
+
 export type PropValueFactoryArgs = {
   path: string;
   key: string | number;

@@ -16,6 +16,7 @@ export const OBJECT = {
   run: myFunc,
   isEnabled: true,
   custom: { foo: 123 },
+  'custom-props': 42,
 };
 
 export const ARRAY = [
