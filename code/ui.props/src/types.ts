@@ -1,4 +1,7 @@
+import * as React from 'react';
+
 export * from './theme/types';
+import { IPropsTheme } from './theme/types';
 
 export type PropsData = object | PropArray;
 export type PropScalar = string | boolean | number | null | undefined;
@@ -14,6 +17,16 @@ export type PropType =
   | 'null'
   | 'undefined'
   | 'function';
+
+export type PropValueFactory = (e: PropValueFactoryArgs) => React.ReactNode | undefined | void;
+export type PropValueFactoryArgs = {
+  path: string;
+  key: string | number;
+  value: PropValue;
+  type: PropType;
+  theme: IPropsTheme;
+  change(args: { to: string }): void;
+};
 
 /**
  * [Events]

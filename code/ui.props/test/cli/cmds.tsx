@@ -15,6 +15,7 @@ export const OBJECT = {
   anon: () => true,
   run: myFunc,
   isEnabled: true,
+  custom: { foo: 123 },
 };
 
 export const ARRAY = [

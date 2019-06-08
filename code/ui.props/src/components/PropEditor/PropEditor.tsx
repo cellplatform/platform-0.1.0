@@ -30,6 +30,7 @@ export type IPropEditorProps = {
   theme: t.PropsTheme;
   parentNode: t.IPropNode;
   node: t.IPropNode;
+  renderValue?: t.PropValueFactory;
   events$: Subject<t.PropsEvent>;
   style?: GlamorValue;
 };
@@ -218,12 +219,12 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     this.state$.next({ value });
   }
 
-  private change(e: { to: string }) {
+  private change: t.PropValueFactoryArgs['change'] = args => {
     const nodeData = this.nodeData;
     const { path, key } = nodeData;
 
     const fromValue = nodeData.value;
-    const value = { from: fromValue, to: valueUtil.toType(e.to) };
+    const value = { from: fromValue, to: valueUtil.toType(args.to) as t.PropValue };
 
     const root = this.props.rootData;
     const from = Array.isArray(root) ? [...root] : { ...this.props.rootData };
@@ -238,7 +239,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     };
     this.setValue(value.to);
     this.next({ type: 'PROPS/changed', payload });
-  }
+  };
 
   /**
    * [Render]
@@ -287,27 +288,41 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         <div {...css(styles.outer, styles.left)}>
           <div {...styles.ellipsis}>{this.key}</div>
         </div>
-        <div {...css(styles.outer, styles.right)}>{this.renderValue()}</div>
+        <div {...css(styles.outer, styles.right)}>{this.renderValue() || null}</div>
       </div>
     );
   }
 
   private renderValue = () => {
-    const key = this.key;
-    const value = this.value;
-    const valueType = this.type;
+    const factory = this.props.renderValue;
+    const node = this.props.node;
+    const path = node.id.slice(node.id.indexOf('.') + 1);
+    const { key, value } = this.nodeData;
+    const args: t.PropValueFactoryArgs = {
+      path,
+      key,
+      value,
+      type: this.type,
+      theme: this.theme,
+      change: this.change,
+    };
+    return (factory && factory(args)) || this.valueFactory(args);
+  };
 
-    if (valueType === 'array' && Array.isArray(value)) {
+  private valueFactory: t.PropValueFactory = e => {
+    const { type, key, value } = e;
+
+    if (type === 'array' && Array.isArray(value)) {
       return this.renderComplex({ icon: Icons.Array, label: `array(${value.length})` });
     }
 
-    if (valueType === 'object' && typeof value === 'object') {
+    if (type === 'object' && typeof value === 'object') {
       const keys = Object.keys(value as object);
       const label = `object{${keys.length}}`;
       return this.renderComplex({ icon: Icons.Object, label });
     }
 
-    if (valueType === 'function' && typeof value === 'function') {
+    if (type === 'function' && typeof value === 'function') {
       const name = value.name;
       const label = !name || name === key ? 'ƒunction' : `${name}()`;
       return this.renderComplex({ icon: Icons.Function, label, italic: true });

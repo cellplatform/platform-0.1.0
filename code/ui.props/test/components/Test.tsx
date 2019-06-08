@@ -65,6 +65,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
                 style={styles.props}
                 theme={theme}
                 onChange={this.handleChange}
+                renderValue={this.valueFactory}
               />
             </div>
           </div>
@@ -75,6 +76,27 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       </CommandShell>
     );
   }
+
+  private valueFactory: t.PropValueFactory = e => {
+    if (e.path === 'custom') {
+      const styles = {
+        base: css({
+          flex: 1,
+          backgroundColor: 'rgba(255, 0, 0, 0.2)',
+          padding: 3,
+          border: `dashed 1px ${color.format(0.2)}`,
+          borderRadius: 4,
+          Flex: 'center-center',
+        }),
+      };
+      return (
+        <div {...styles.base}>
+          <div>Custom</div>
+        </div>
+      );
+    }
+    return undefined;
+  };
 
   /**
    * [Handlers]

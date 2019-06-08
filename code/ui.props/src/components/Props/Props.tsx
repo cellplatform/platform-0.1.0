@@ -14,7 +14,7 @@ export type ChangedEventHandler = (e: t.IPropsChange) => void;
 
 export type IPropsProps = {
   data?: t.PropsData;
-  // path?: string;
+  renderValue?: t.PropValueFactory;
   theme?: t.PropsTheme;
   style?: GlamorValue;
   events$?: Subject<t.PropsEvent>;
@@ -166,6 +166,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
           parentNode={parentNode}
           node={node}
           theme={this.theme}
+          renderValue={this.props.renderValue}
           events$={this.events$}
         />
       );
