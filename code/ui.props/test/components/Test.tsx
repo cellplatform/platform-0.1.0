@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { color, css, CommandShell, t, ObjectView, COLORS, Props } from '../common';
+import { log, color, css, CommandShell, t, ObjectView, COLORS, Props } from '../common';
 
 export type ITestProps = {};
 
@@ -11,14 +11,19 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = { data: { ...cli.SAMPLE } };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
+  private events$ = new Subject<t.PropsEvent>();
   private cli: t.ICommandState = cli.init({ state$: this.state$ });
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
+    events$.subscribe(e => {
+      log.info('🌳', e.type, e.payload);
+    });
   }
 
   public componentWillUnmount() {
@@ -65,6 +70,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
                 style={styles.props}
                 theme={theme}
                 onChange={this.handleChange}
+                renderValue={this.valueFactory}
+                events$={this.events$}
               />
             </div>
           </div>
@@ -75,6 +82,34 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       </CommandShell>
     );
   }
+
+  private valueFactory: t.PropValueFactory = e => {
+    if (e.path === 'custom') {
+      const styles = {
+        base: css({
+          flex: 1,
+          backgroundColor: 'rgba(255, 0, 0, 0.2)',
+          padding: 3,
+          border: `dashed 1px ${color.format(0.2)}`,
+          borderRadius: 4,
+          Flex: 'center-center',
+        }),
+      };
+      const el = (
+        <div {...styles.base}>
+          <div>Custom</div>
+        </div>
+      );
+
+      return { el, underline: { color: '#65D9EF', style: 'dashed' } };
+    }
+
+    if (e.path === 'custom-props') {
+      return { underline: { color: '#F93B7E', style: 'dashed' } };
+    }
+
+    return;
+  };
 
   /**
    * [Handlers]

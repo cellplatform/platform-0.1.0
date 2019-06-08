@@ -30,6 +30,7 @@ export type IPropEditorProps = {
   theme: t.PropsTheme;
   parentNode: t.IPropNode;
   node: t.IPropNode;
+  renderValue?: t.PropValueFactory;
   events$: Subject<t.PropsEvent>;
   style?: GlamorValue;
 };
@@ -150,6 +151,11 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     return this.props.node.data as t.IPropNodeData;
   }
 
+  public get path() {
+    const node = this.props.node;
+    return node.id.slice(node.id.indexOf('.') + 1);
+  }
+
   public get key() {
     return this.nodeData.key;
   }
@@ -218,12 +224,12 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     this.state$.next({ value });
   }
 
-  private change(e: { to: string }) {
+  private change: t.PropValueFactoryArgs['change'] = args => {
     const nodeData = this.nodeData;
     const { path, key } = nodeData;
 
     const fromValue = nodeData.value;
-    const value = { from: fromValue, to: valueUtil.toType(e.to) };
+    const value = { from: fromValue, to: valueUtil.toType(args.to) as t.PropValue };
 
     const root = this.props.rootData;
     const from = Array.isArray(root) ? [...root] : { ...this.props.rootData };
@@ -238,7 +244,12 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     };
     this.setValue(value.to);
     this.next({ type: 'PROPS/changed', payload });
-  }
+  };
+
+  private onFocus: t.PropValueFactoryArgs['onFocus'] = isFocused => {
+    const path = this.path;
+    this.next({ type: 'PROPS/focus', payload: { path, isFocused } });
+  };
 
   /**
    * [Render]
@@ -246,6 +257,10 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   public render() {
     const isScalar = this.isScalar;
     const isArray = this.parentType === 'array';
+
+    const value = this.renderValue();
+    const elValue = value ? value.el : undefined;
+    const underline = (value && value.underline) || { color: isScalar ? 0.1 : 0.6, style: 'solid' };
 
     const styles = {
       base: css({
@@ -278,7 +293,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
       }),
       right: css({
         flex: 2,
-        borderBottom: `solid 1px ${color.format(isScalar ? 0.1 : 0.6)}`,
+        borderBottom: `${underline.style} 1px ${color.format(underline.color)}`,
       }),
     };
 
@@ -287,33 +302,67 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         <div {...css(styles.outer, styles.left)}>
           <div {...styles.ellipsis}>{this.key}</div>
         </div>
-        <div {...css(styles.outer, styles.right)}>{this.renderValue()}</div>
+        <div {...css(styles.outer, styles.right)}>{elValue}</div>
       </div>
     );
   }
 
-  private renderValue = () => {
-    const key = this.key;
-    const value = this.value;
-    const valueType = this.type;
+  private renderValue = (): t.PropValueFactoryResponse => {
+    const factory = this.props.renderValue;
+    const path = this.path;
+    const { key, value } = this.nodeData;
+    const args: t.PropValueFactoryArgs = {
+      path,
+      key,
+      value,
+      type: this.type,
+      theme: this.theme,
+      change: this.change,
+      onFocus: this.onFocus,
+    };
 
-    if (valueType === 'array' && Array.isArray(value)) {
-      return this.renderComplex({ icon: Icons.Array, label: `array(${value.length})` });
+    if (factory) {
+      const res = factory(args);
+      if (res && !res.el) {
+        const local = this.valueFactory(args) as t.PropValueFactoryResponse;
+        return { ...res, ...local };
+      }
+      if (res && res.el) {
+        return res;
+      }
     }
 
-    if (valueType === 'object' && typeof value === 'object') {
+    return this.valueFactory(args) as t.PropValueFactoryResponse;
+  };
+
+  private valueFactory: t.PropValueFactory = e => {
+    const { type, key, value } = e;
+
+    const done = (el: React.ReactNode) => {
+      return { el };
+    };
+
+    if (type === 'array' && Array.isArray(value)) {
+      const el = this.renderComplex({ icon: Icons.Array, label: `array(${value.length})` });
+      return done(el);
+    }
+
+    if (type === 'object' && typeof value === 'object') {
       const keys = Object.keys(value as object);
       const label = `object{${keys.length}}`;
-      return this.renderComplex({ icon: Icons.Object, label });
+      const el = this.renderComplex({ icon: Icons.Object, label });
+      return done(el);
     }
 
-    if (valueType === 'function' && typeof value === 'function') {
+    if (type === 'function' && typeof value === 'function') {
       const name = value.name;
       const label = !name || name === key ? 'ƒunction' : `${name}()`;
-      return this.renderComplex({ icon: Icons.Function, label, italic: true });
+      const el = this.renderComplex({ icon: Icons.Function, label, italic: true });
+      return done(el);
     }
 
-    return this.renderValueInput();
+    const el = this.renderValueInput();
+    return done(el);
   };
 
   private renderValueInput = () => {
@@ -329,6 +378,8 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         style={styles.input}
         valueStyle={{ ...FONT_STYLE, color: this.valueColor }}
         events$={this.value$}
+        onFocus={this.focusHandler(true)}
+        onBlur={this.focusHandler(false)}
       />
     );
   };
@@ -358,4 +409,14 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+
+  private focusHandler = (isFocused: boolean) => {
+    return () => {
+      this.onFocus(isFocused);
+    };
+  };
 }
