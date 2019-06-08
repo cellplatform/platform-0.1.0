@@ -37,12 +37,13 @@ export type PropValueFactoryArgs = {
   type: PropType;
   theme: IPropsTheme;
   change(args: { to: string }): void;
+  onFocus(isFocused: boolean): void;
 };
 
 /**
  * [Events]
  */
-export type PropsEvent = IPropsChangedEvent;
+export type PropsEvent = IPropsChangedEvent | IPropsFocusEvent;
 
 export type IPropsChangedEvent<D extends PropsData = any> = {
   type: 'PROPS/changed';
@@ -53,4 +54,13 @@ export type IPropsChange<D extends PropsData = any> = {
   key: string | number;
   value: { from: PropValue; to: PropValue };
   data: { from: D; to: D };
+};
+
+export type IPropsFocusEvent = {
+  type: 'PROPS/focus';
+  payload: IPropsFocus;
+};
+export type IPropsFocus = {
+  isFocused: boolean;
+  path: string;
 };

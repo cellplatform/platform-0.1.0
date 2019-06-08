@@ -151,6 +151,11 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     return this.props.node.data as t.IPropNodeData;
   }
 
+  public get path() {
+    const node = this.props.node;
+    return node.id.slice(node.id.indexOf('.') + 1);
+  }
+
   public get key() {
     return this.nodeData.key;
   }
@@ -241,6 +246,11 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     this.next({ type: 'PROPS/changed', payload });
   };
 
+  private onFocus: t.PropValueFactoryArgs['onFocus'] = isFocused => {
+    const path = this.path;
+    this.next({ type: 'PROPS/focus', payload: { path, isFocused } });
+  };
+
   /**
    * [Render]
    */
@@ -299,8 +309,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
 
   private renderValue = (): t.PropValueFactoryResponse => {
     const factory = this.props.renderValue;
-    const node = this.props.node;
-    const path = node.id.slice(node.id.indexOf('.') + 1);
+    const path = this.path;
     const { key, value } = this.nodeData;
     const args: t.PropValueFactoryArgs = {
       path,
@@ -309,6 +318,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
       type: this.type,
       theme: this.theme,
       change: this.change,
+      onFocus: this.onFocus,
     };
 
     if (factory) {
@@ -368,6 +378,8 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         style={styles.input}
         valueStyle={{ ...FONT_STYLE, color: this.valueColor }}
         events$={this.value$}
+        onFocus={this.focusHandler(true)}
+        onBlur={this.focusHandler(false)}
       />
     );
   };
@@ -397,4 +409,14 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+
+  private focusHandler = (isFocused: boolean) => {
+    return () => {
+      this.onFocus(isFocused);
+    };
+  };
 }
