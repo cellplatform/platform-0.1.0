@@ -1,6 +1,6 @@
 {
   "name": "@platform/state.react",
-  "version": "0.2.20",
+  "version": "0.2.21",
   "description": "React bindings for @platform/state.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,8 +15,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.3.0",
-    "@platform/state": "0.2.16"
+    "@platform/react": "0.3.1",
+    "@platform/state": "0.2.17"
   },
   "devDependencies": {
     "@uiharness/dev": "0.3.4",

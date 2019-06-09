@@ -18,13 +18,13 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/ts.libs@3.4.16":
-  version "3.4.16"
-  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.4.16.tgz#08b069c34aaa56293526da3e849bbafd184cc654"
-  integrity sha512-e2IlAjCM6E5TAgYczxjOfJTFI4kfEnB6LYUi0rXRgP4o3Qhyn8fppsKLkK1j29m/PEifoRCGdjNaDWEeKJ+gzQ==
+"@platform/ts.libs@3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.5.0.tgz#52c748856e9ccb012d88c2925e9a5ebc0d5e8e85"
+  integrity sha512-UI5sl1Vo6eZae5dMpIxBUyrStmLPHPJ7GwORHKUMM5UcfpeHS1MIitUAmwf9E50tv6jHmBnKeYZLI3Q8dFy6GA==
   dependencies:
-    "@types/node" "12.0.4"
-    prettier "1.17.1"
+    "@types/node" "12.0.7"
+    prettier "1.18.2"
     ts-node "8.2.0"
     tslib "1.9.3"
     tslint "5.17.0"
@@ -42,10 +42,10 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.7.tgz#315d570ccb56c53452ff8638738df60726d5b6ea"
   integrity sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==
 
-"@types/node@12.0.4":
-  version "12.0.4"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.0.4.tgz#46832183115c904410c275e34cf9403992999c32"
-  integrity sha512-j8YL2C0fXq7IONwl/Ud5Kt0PeXw22zGERt+HSSnwbKOJVsAGkEz3sFCYwaF9IOuoG1HOtE0vKCj6sXF7Q0+Vaw==
+"@types/node@12.0.7":
+  version "12.0.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.0.7.tgz#4f2563bad652b2acb1722d7e7aae2b0ff62d192c"
+  integrity sha512-1YKeT4JitGgE4SOzyB9eMwO0nGVNkNEsm9qlIt1Lqm/tG2QEiSMTD4kS3aO6L+w5SClLVxALmIBESK6Mk5wX0A==
 
 ansi-colors@3.2.3:
   version "3.2.3"
@@ -1214,10 +1214,10 @@ posix-character-classes@^0.1.0:
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
   integrity sha1-AerA/jta9xoqbAL+q7jB/vfgDqs=
 
-prettier@1.17.1:
-  version "1.17.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.17.1.tgz#ed64b4e93e370cb8a25b9ef7fef3e4fd1c0995db"
-  integrity sha512-TzGRNvuUSmPgwivDqkZ9tM/qTGW9hqDKWOE9YHiyQdixlKbv7kvEqsmDPrcHJTKwthU774TQwZXVtaQ/mMsvjg==
+prettier@1.18.2:
+  version "1.18.2"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.18.2.tgz#6823e7c5900017b4bd3acf46fe9ac4b4d7bda9ea"
+  integrity sha512-OeHeMc0JhFE9idD4ZdtNibzY0+TPHSpSSb9h8FqtP+YnoZZ1sl8Vc9b1sasjfymH3SonAF4QcA2+mzHPhMvIiw==
 
 pump@^3.0.0:
   version "3.0.0"

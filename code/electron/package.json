@@ -1,7 +1,7 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "@babel/polyfill": "7.4.4",
-    "@platform/fs": "0.1.1",
-    "@platform/log": "0.0.125",
-    "@platform/react": "0.3.0",
+    "@platform/fs": "0.1.2",
+    "@platform/log": "0.0.126",
+    "@platform/react": "0.3.1",
     "@types/app-root-path": "1.2.4",
     "app-root-path": "2.2.1",
     "electron-log": "3.0.6",
@@ -24,9 +24,9 @@
     "is-electron": "2.2.0"
   },
   "devDependencies": {
-    "@platform/test": "0.0.54",
-    "@platform/ts": "3.4.25",
-    "electron": "4.1.4"
+    "@platform/test": "0.0.55",
+    "@platform/ts": "3.4.26",
+    "electron": "5.0.3"
   },
   "files": [
     "lib",

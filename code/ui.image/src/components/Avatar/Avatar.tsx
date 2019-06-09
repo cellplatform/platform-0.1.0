@@ -96,8 +96,8 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
         display: block ? 'block' : 'inline-block',
         width: size,
         height: size,
-        backgroundColor,
-        borderRadius: borderRadius,
+        backgroundColor: backgroundColor as string,
+        borderRadius,
       }),
     };
     return (

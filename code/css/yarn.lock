@@ -1130,10 +1130,10 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/test@0.0.54":
-  version "0.0.54"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.54.tgz#345397fe73bf7c6b04e0c689f5e2d5f6890d9c43"
-  integrity sha512-ieeGOD2kZN3nWzUfh+7C91KP1a5j7P4ciCY8KAoBaf6P9E+1gd4jWY3bIzQYvfQHBOyxjmXtIREdG1wbqrwnQQ==
+"@platform/test@0.0.55":
+  version "0.0.55"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.55.tgz#f1c0b0ee12c5393ff7873bfe5e67d4e2daff656b"
+  integrity sha512-dWhQeeD/0xvX1RIH9GLiGAUNwZJACQ81GqmqIfMiy3wVUm30lrI2/Ssqck0lhzEuvM+9dcjlyqUbuOdfA/igSQ==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.7"
@@ -1175,6 +1175,11 @@
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.12.tgz#53a899363f50713f22f717618833b7cd83c2358c"
   integrity sha512-MXPyYOdB+fdhU3bwcFdpC5V2Pc6M38oy5Wkb8N+i3TyrZAaCOmoyIzE8Q7F/Be8+e+aeYZedTvH5ehCMR3hxww==
+
+"@platform/types@0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.13.tgz#7662bfa71dd7aea652bce46f5e8be6de97587e85"
+  integrity sha512-bfRGnkX6fhKVCObvraPvHEr+1niintZ1sHnmNYSEyCdCBeL988Ky8fui0JCMWdBUsYTqrMQ6OXGwcnr3I9BvAg==
 
 "@platform/ui.icon@0.0.64":
   version "0.0.64"
@@ -1245,6 +1250,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.74.tgz#7880b0ec66ac15221140276ec24bb19e9cc4ba60"
   integrity sha512-6TrdODOlHMn375C+FRwRNaz7PXak8F9EB/gVG9/o0s/W97Aq0Q79IFrMbEPVmHVxVFWDu7Jvdd1Kagh5tAdkiw==
 
+"@platform/util.is@0.0.75":
+  version "0.0.75"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.75.tgz#5b318cebd27a8c74376b95aab6a694a073af2997"
+  integrity sha512-U9kNuqdMKzNxY8JL0b2vJYELdhwomjH8ikZ1rsTBXJ0Hlb/ljSPwR1+43tEhF1jjMWBpJpU1a4NZA//Qe4gsZg==
+
 "@platform/util.local-storage@0.0.18":
   version "0.0.18"
   resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.18.tgz#b59a1079f397d2e5cfb6e56c672af3129c9955c2"
@@ -1283,6 +1293,19 @@
     "@platform/libs" "0.0.15"
     "@platform/types" "0.0.12"
     "@platform/util.is" "0.0.74"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.1.1"
+
+"@platform/util.value@0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.3.6.tgz#02aece634c52df506f336c7b45bf6fa05393c663"
+  integrity sha512-xBKdOPu56eXtBdYnuFon55et+E6GwNYlWzynHnIcm3fg7F4+LH4JnamNoAVU768j5t3dYgmGPdtarua79KKR/Q==
+  dependencies:
+    "@platform/libs" "0.0.15"
+    "@platform/types" "0.0.13"
+    "@platform/util.is" "0.0.75"
     "@types/semver" "6.0.0"
     cuid "2.1.6"
     dayjs "1.8.14"
