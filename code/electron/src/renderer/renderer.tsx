@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { DevTools } from '../helpers/devTools/renderer';
+import { DevTools, IDevToolsOptions } from '../helpers/devTools/renderer';
 import { getWindowId, init as initIpc } from '../helpers/ipc/renderer';
 import { init as initLog } from '../helpers/logger/renderer';
 import { init as initStore } from '../helpers/store/renderer';
@@ -27,7 +27,7 @@ type GetContext<M extends t.IpcMessage = any, S extends t.StoreJson = any> = (ar
  * Initializes [Renderer] process systems (safely).
  */
 export async function init<M extends t.IpcMessage = any, S extends t.StoreJson = any>(
-  args: { getContext?: GetContext<M, S> } = {},
+  args: { getContext?: GetContext<M, S>; devTools?: IDevToolsOptions } = {},
 ): Promise<t.IRenderer<M, S>> {
   if (refs.renderer) {
     return refs.renderer;
@@ -45,11 +45,11 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
   // Store.
   const store = initStore<S>({ ipc });
 
-  // Dev tools.
-  const devTools = new DevTools({ ipc });
-
   // Windows manager.
   const windows = new WindowsRenderer({ ipc });
+
+  // Dev tools.
+  const devTools = new DevTools({ ipc, windows, log, ...args.devTools });
 
   // React <Provider>.
   const getContext = async (context: t.IRendererContext) => {
@@ -110,7 +110,7 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
 export async function render(
   element: React.ReactElement<any>,
   container: Element | string,
-  options: { getContext?: GetContext } = {},
+  options: { getContext?: GetContext; devTools?: IDevToolsOptions } = {},
 ) {
   // Setup initial conditions.
   const renderer = await init(options);

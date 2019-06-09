@@ -22,6 +22,7 @@ describe('keyboard', () => {
       test('ComMand+l', ['L'], ['META']);
       test('cmd+l+alt', ['L'], ['META', 'ALT']);
       test('cmd+ALT+Shift+l+aLt+P+ctrl+SHIFT', ['L', 'P'], ['META', 'ALT', 'SHIFT', 'CTRL']);
+      test('CMD+ALT+J', ['J'], ['META', 'ALT']);
     });
 
     it('boolean', () => {
