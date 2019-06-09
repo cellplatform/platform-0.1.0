@@ -13,14 +13,14 @@
   },
   "dependencies": {
     "@platform/react": "0.3.0",
-    "@uiharness/electron": "0.4.50",
+    "@uiharness/electron": "0.4.52",
     "monaco-editor": "0.17.0"
   },
   "devDependencies": {
     "@platform/fs": "0.1.1",
     "@platform/test": "0.0.54",
     "@platform/ts": "3.4.25",
-    "@uiharness/dev": "0.2.64"
+    "@uiharness/dev": "0.3.4"
   },
   "files": [
     "lib"

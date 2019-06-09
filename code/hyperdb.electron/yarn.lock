@@ -77,10 +77,10 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.2.3.tgz#5a8a4b30c143e0fbd7e1fd1c3a6c0162269a3558"
-  integrity sha512-U8HYGi8uy2H74uiYRLi1q7xIPXVDapuEqcH3VDAp0B2CTXAS3B5UVSeCxrubljmIWfLADo7l6ahO+7DT8KVW9Q==
+"@platform/electron@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.2.5.tgz#08e4b1aae310318b8c60412954adb2f052b8a7a3"
+  integrity sha512-rtJ4s8mjhOtc1fBosCSHb9matyqFaCCFFNcxJG9ECaB+BvjBc5sS2gH/cbwMRO25uSK7uDgsNpW81RJRcESnUA==
   dependencies:
     "@babel/polyfill" "7.4.4"
     "@platform/fs" "0.1.1"
@@ -88,7 +88,7 @@
     "@platform/react" "0.3.0"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.2.1"
-    electron-log "3.0.5"
+    electron-log "3.0.6"
     electron-store "3.2.0"
     electron-window-state "5.0.3"
     is-electron "2.2.0"
@@ -361,24 +361,24 @@
   resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.8.14.tgz#bf8f24950e6705e5150756a5947dac76e5dce2c0"
   integrity sha512-xbzi6UaATVKupInG3D65/EPQ3qkJCvG2ZAzmlIYt6x93ACOEX2Y0fHW4/e8TF3G7q5KB2l7wTZgzfNjyYDMuZw==
 
-"@uiharness/electron@0.4.50":
-  version "0.4.50"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.50.tgz#f36853c617ae8d344891c80304af9c81c0e3db44"
-  integrity sha512-7tlQy1q543JvJrLV9m8YoPKYtXg6yyG7JnoKWDWwji+BuBVZpyoquQvP9iCIvQSxfAw38ze0PF5L1V9PCQJuCA==
+"@uiharness/electron@0.4.52":
+  version "0.4.52"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.52.tgz#b9fd757034b4163bb40584bda862e81d914f0fad"
+  integrity sha512-mAQsREllRZoxLPiBwcVMpZls2o2pIUzahHHiz7UdvaQYuP/qW7OMLcZ3ROFfm868kbF7/pDUCd4XuCXkuX4UBg==
   dependencies:
-    "@platform/electron" "0.2.3"
+    "@platform/electron" "0.2.5"
     "@platform/log" "0.0.125"
     "@platform/react" "0.3.0"
     "@platform/ui.object" "0.0.120"
     "@platform/util.value" "0.3.5"
     "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.1.35"
+    "@uiharness/types" "0.2.1"
     tslib "1.9.3"
 
-"@uiharness/types@0.1.35":
-  version "0.1.35"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.1.35.tgz#d9305ddb3cfd854faf5453fad956b7e6ba62bd47"
-  integrity sha512-unJSYlOqmmJ/CalEwBRhE+54MhV8nL4eNOX1HrHlxZLz9nY22MWbMwpuap+FD/fO5QwjUbNCNjt1fHL0iuEbFg==
+"@uiharness/types@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.2.1.tgz#87f03b4d04000a88a338c589797ca7eb9ee19a4a"
+  integrity sha512-d5jXrHBQ3F5hKv4GC0cPGzjR1rVLbGgCUgfpoLH6M/cnYq00xc0+xKC1UtuKhY0wRNJpYkpSEMXPoSrjSqH0Ow==
 
 ajv@^6.10.0:
   version "6.10.0"
@@ -1169,10 +1169,10 @@ dot-prop@^5.0.0:
   dependencies:
     is-obj "^1.0.0"
 
-electron-log@3.0.5:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.5.tgz#9bdd307f1f1aec85c0873babd6bdfffb1a661436"
-  integrity sha512-wWOPNBVGh7NJx/OLXdgtuYrqxoG9ZWO+kZYloIHi66B5W9EgXZw71jdZ1ddeWNg4CkABypa8tkrRGqCKF+9tYg==
+electron-log@3.0.6:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.6.tgz#2291375572f6be5889f06fb32a35eab2930a1728"
+  integrity sha512-osPLk8m9+Ylo0k/okevdHUGsKpCNGxg206TxG2Ch8slGvlTZLI0955Ig4e+nJ6fHVDxFMv5dWkn2y8hwi0aENg==
 
 electron-store@3.2.0:
   version "3.2.0"
