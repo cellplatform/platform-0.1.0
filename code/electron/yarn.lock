@@ -96,10 +96,10 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.2.13.tgz#f515b34d72933c4e725514e762507e42a6713c9c"
-  integrity sha512-ubxuNxCcUlPEneT8b8s0EJgh1etaiia1spdJ8vhgi1y5kRjIbxN6E+SmtpGG5O6r92NBHCKzM1RKdjkRuPZoZQ==
+"@platform/react@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.0.tgz#a19f9ba252b00fd755f17e0e3495410a2cca6c94"
+  integrity sha512-YnOt1Qmd/1e5VQ3LoxPQcfqOym6WwfJnFrWIxgdgLpdq6um0lrA977DRUdpJcNs4ePbUQysE/1vLKg3j3chShA==
   dependencies:
     "@platform/css" "0.1.17"
     "@platform/util.is" "0.0.74"
@@ -153,13 +153,6 @@
   version "0.0.74"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.74.tgz#7880b0ec66ac15221140276ec24bb19e9cc4ba60"
   integrity sha512-6TrdODOlHMn375C+FRwRNaz7PXak8F9EB/gVG9/o0s/W97Aq0Q79IFrMbEPVmHVxVFWDu7Jvdd1Kagh5tAdkiw==
-
-"@platform/util.local-storage@^0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.18.tgz#b59a1079f397d2e5cfb6e56c672af3129c9955c2"
-  integrity sha512-5TAVbLyH94B4Pd67USeCcZh4NkTlEbtl8GaFIkYmawfLRCHEqTybn4cO+BKJZHhR81a9VNNYW6AvO2ZM5htqmQ==
-  dependencies:
-    "@platform/util.value" "0.3.5"
 
 "@platform/util.value@0.3.5":
   version "0.3.5"

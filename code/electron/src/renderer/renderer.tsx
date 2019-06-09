@@ -19,15 +19,11 @@ export * from '../types';
 type Refs = { renderer?: t.IRenderer };
 const refs: Refs = {};
 
-type GetContext<M extends t.IpcMessage = any, S extends t.StoreJson = any> = (args: {
-  context: t.IRendererContext<M, S>;
-}) => Promise<any>;
-
 /**
  * Initializes [Renderer] process systems (safely).
  */
 export async function init<M extends t.IpcMessage = any, S extends t.StoreJson = any>(
-  args: { getContext?: GetContext<M, S>; devTools?: IDevToolsOptions } = {},
+  args: { getContext?: t.GetContext<M, S>; devTools?: IDevToolsOptions } = {},
 ): Promise<t.IRenderer<M, S>> {
   if (refs.renderer) {
     return refs.renderer;
@@ -110,7 +106,7 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
 export async function render(
   element: React.ReactElement<any>,
   container: Element | string,
-  options: { getContext?: GetContext; devTools?: IDevToolsOptions } = {},
+  options: { getContext?: t.GetContext; devTools?: IDevToolsOptions } = {},
 ) {
   // Setup initial conditions.
   const renderer = await init(options);

@@ -1,6 +1,6 @@
 {
   "name": "@platform/auth0",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "Interfaces for working with Auth0.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -25,10 +25,10 @@
     "jwks-rsa": "1.5.1"
   },
   "devDependencies": {
-    "@platform/react": "^0.2.13",
+    "@platform/react": "^0.3.0",
     "@types/auth0-js": "9.10.2",
-    "@uiharness/dev": "0.2.62",
-    "@uiharness/ui": "0.2.43",
+    "@uiharness/dev": "0.2.64",
+    "@uiharness/ui": "0.2.45",
     "apollo-server": "2.6.1",
     "graphql": "14.3.1"
   },

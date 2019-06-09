@@ -47,11 +47,11 @@ export class DevTools {
     let bindings: Array<KeyBinding<DevToolKeyCommands>> = [];
     if (keyboard) {
       if (keyboard.toggle) {
-        const key = keyboard.toggle === true ? 'CMD+ALT+I' : keyboard.toggle;
+        const key = keyboard.toggle === true ? 'CMD+SHIFT+I' : keyboard.toggle;
         bindings = [...bindings, { command: 'TOGGLE', key }];
       }
       if (keyboard.clearConsole) {
-        const key = keyboard.clearConsole === true ? 'CMD+ALT+K' : keyboard.clearConsole;
+        const key = keyboard.clearConsole === true ? 'CMD+SHIFT+K' : keyboard.clearConsole;
         bindings = [...bindings, { command: 'CLEAR_CONSOLE', key }];
       }
     }
@@ -59,10 +59,16 @@ export class DevTools {
       // Invoke key commands.
       .create<DevToolKeyCommands>({ bindings })
       .bindingPress$.subscribe(e => {
+        const stopDefault = () => {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        };
         switch (e.command) {
           case 'CLEAR_CONSOLE':
+            stopDefault();
             return this.clearConsoles();
           case 'TOGGLE':
+            stopDefault();
             return this.toggle();
         }
       });

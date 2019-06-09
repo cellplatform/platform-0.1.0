@@ -11,3 +11,7 @@ export type IRenderer<M extends IpcMessage = any, S extends StoreJson = any> = I
 };
 
 export * from '../types';
+
+export type GetContext<M extends IpcMessage = any, S extends StoreJson = any> = (args: {
+  context: IRendererContext<M, S>;
+}) => Promise<any>;

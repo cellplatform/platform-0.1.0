@@ -1,5 +1,5 @@
 productName: My Test App
-appId: team.db.lib.electron
+appId: electron.test
 publish:
   provider: github
   owner: philcockfield
@@ -18,7 +18,7 @@ win:
   artifactName: '${productName}-win.${ext}'
   icon: static/build/app.ico
 files:
-  - .uiharness/.bundle/app.main/**
-  - .uiharness/.bundle/app.renderer/prod/**
+  - bundle/app.main/**
+  - bundle/app.renderer/prod/**
 directories:
-  output: .uiharness/dist
+  output: dist
