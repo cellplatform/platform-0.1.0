@@ -1,7 +1,7 @@
 {
   "name": "electron.test",
   "description": "External testing module for [@platform/election].",
-  "version": "0.0.190",
+  "version": "0.0.193",
   "scripts": {
     "postinstall": "ui init",
     "ui": "ui $@",
@@ -10,10 +10,11 @@
     "lint": "ts lint",
     "build": "ts build",
     "build-test": "ts build --tsconfig tsconfig.test.json",
+    "rebuild": "platform.electron rebuild",
     "tmp": "msync sync && yarn chmod"
   },
   "dependencies": {
-    "@platform/electron": "0.2.6",
+    "@platform/electron": "0.2.9",
     "@platform/react": "0.3.1",
     "@platform/util.value": "0.3.6"
   },
@@ -22,9 +23,9 @@
     "@uiharness/dev": "0.3.5",
     "@uiharness/electron": "0.4.53"
   },
-  "resolutions": {
-    "@types/react": "16.7.17"
-  },
+  "browserslist": [
+    "electron >= 5"
+  ],
   "license": "MIT",
   "private": true
 }

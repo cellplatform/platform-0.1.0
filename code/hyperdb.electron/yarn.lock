@@ -93,6 +93,23 @@
     electron-window-state "5.0.3"
     is-electron "2.2.0"
 
+"@platform/electron@0.2.9":
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.2.9.tgz#9afe8fbd47c1f4a81c1e3444fb207d6dd57ef6ce"
+  integrity sha512-MIucbnuN8PB23p9K05AhvkgnVlJmcSvbaXN/Yhjlxl6oG4feTptoJC2k/2anxY4Fpp9kPYqxLD2ywlxF7XbfAg==
+  dependencies:
+    "@babel/polyfill" "7.4.4"
+    "@platform/fs" "0.1.2"
+    "@platform/log" "0.0.126"
+    "@platform/react" "0.3.1"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.2.1"
+    electron-log "3.0.6"
+    electron-store "3.2.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+    minimist "1.2.0"
+
 "@platform/exec@0.2.13":
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.13.tgz#97f2957accc961d1551ee98de8d0395b2b0e5871"
@@ -2386,7 +2403,7 @@ minimist@0.0.8:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
   integrity sha1-hX/Kv8M5fSYluCKCYuhqp6ARsF0=
 
-minimist@^1.2.0:
+minimist@1.2.0, minimist@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
   integrity sha1-o1AIsg9BOD7sH7kU9M1d95omQoQ=

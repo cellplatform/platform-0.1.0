@@ -1,6 +1,6 @@
 {
   "name": "hyperdb.electron.test",
-  "version": "0.0.120",
+  "version": "0.0.123",
   "description": "",
   "scripts": {
     "ui": "ui $@",
@@ -13,11 +13,12 @@
     "prepare": "ts prepare",
     "reset": "ts-node -T scripts/reset",
     "tmp": "ts-node -T scripts/tmp $@",
-    "rebuild": "ts-node -T scripts/rebuild"
+    "rebuild": "platform.electron rebuild"
   },
   "dependencies": {
+    "@platform/electron": "^0.2.9",
     "@platform/hyperdb": "0.2.10",
-    "@platform/hyperdb.electron": "0.1.62",
+    "@platform/hyperdb.electron": "0.1.65",
     "@platform/react": "0.3.1",
     "@platform/ui.datagrid": "0.0.135",
     "@platform/ui.editor": "0.1.18",
@@ -25,17 +26,17 @@
     "@platform/util.string": "0.1.19",
     "@platform/util.value": "0.3.6",
     "@uiharness/electron": "0.4.53",
-    "hjson": "3.1.2",
-    "sodium-native": "^2.4.2",
-    "sodium-universal": "^2.0.0"
+    "hjson": "3.1.2"
   },
   "devDependencies": {
     "@platform/ts": "3.4.26",
     "@types/hjson": "2.4.1",
     "@uiharness/dev": "0.3.5",
-    "@uiharness/ui": "0.3.5",
-    "electron-rebuild": "^1.8.5"
+    "@uiharness/ui": "0.3.5"
   },
+  "browserslist": [
+    "electron >= 5"
+  ],
   "files": [
     "lib"
   ],

@@ -18,11 +18,13 @@ Optionally add a [browserslist](https://github.com/browserslist/browserslist) re
 ```json
 {
   "browserslist": [
-    "electron >= 4"
+    "electron >= 5"
   ]
 }
 ```
 - https://www.npmjs.com/package/electron-to-chromium
+
+<p>&nbsp;<p>
 
 ## Polyfill
 The `babel-polyfill` is included to ensure [Parcel](https://parceljs.org) bundles correctly without causing certain errors when building a production distribution, for example  this [issue](https://github.com/parcel-bundler/parcel/issues/871#issuecomment-367899522):
@@ -30,6 +32,24 @@ The `babel-polyfill` is included to ensure [Parcel](https://parceljs.org) bundle
 ```
 regeneratorRuntime is not defined 😩
 ```
+
+<p>&nbsp;<p>
+
+
+## Building for Electron
+If you encounter `dist` build issues you may need to re-compile native modules.  
+See [Using Native Node Modules](https://electronjs.org/docs/tutorial/using-native-node-modules) for background.
+
+Run the `rebuild` script against your module.  For example, in your `package.json`:
+
+```json
+{
+  "scripts": {
+    "rebuild": "platform.electron rebuild"
+  }
+}
+```
+This will need to be done every time after `npm install` or `yarn install` has been run.
 
 
 <p>&nbsp;<p>
