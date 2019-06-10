@@ -77,26 +77,10 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.2.6.tgz#e2bc94949eaf0662400721542095c40f3812c479"
-  integrity sha512-b+kcMIUSx4ku9dRcB/5wDFoTHz9WJtQdG6r5zF+rcUMNQAVuesaQQkcSQUpiRFx9X+nmyQ6cogKmQacJlMIwIw==
-  dependencies:
-    "@babel/polyfill" "7.4.4"
-    "@platform/fs" "0.1.2"
-    "@platform/log" "0.0.126"
-    "@platform/react" "0.3.1"
-    "@types/app-root-path" "1.2.4"
-    app-root-path "2.2.1"
-    electron-log "3.0.6"
-    electron-store "3.2.0"
-    electron-window-state "5.0.3"
-    is-electron "2.2.0"
-
-"@platform/electron@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.2.9.tgz#9afe8fbd47c1f4a81c1e3444fb207d6dd57ef6ce"
-  integrity sha512-MIucbnuN8PB23p9K05AhvkgnVlJmcSvbaXN/Yhjlxl6oG4feTptoJC2k/2anxY4Fpp9kPYqxLD2ywlxF7XbfAg==
+"@platform/electron@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.3.0.tgz#1c88980117e3013dfa883902bafd6c0df7a93418"
+  integrity sha512-SCus5BsOzY++VsyM9zjwydNdyGyW7dKsq2ZskU97xhwTbJIix3GxDBcRY2Zn9YJO0rFkEFwVsNqSYv87M0f3OQ==
   dependencies:
     "@babel/polyfill" "7.4.4"
     "@platform/fs" "0.1.2"
@@ -378,12 +362,12 @@
   resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.8.14.tgz#bf8f24950e6705e5150756a5947dac76e5dce2c0"
   integrity sha512-xbzi6UaATVKupInG3D65/EPQ3qkJCvG2ZAzmlIYt6x93ACOEX2Y0fHW4/e8TF3G7q5KB2l7wTZgzfNjyYDMuZw==
 
-"@uiharness/electron@0.4.53":
-  version "0.4.53"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.53.tgz#59bafe927f0a4a6f79f4098acf22cc16c2c36437"
-  integrity sha512-YwNKFvmsSJNboRiLDuWGqSzO2+yq5q9nzpqkDtym0xkqIB1lGa6KSTLVE/FRGhzrgZtqI1y6Ij0Jq//CYxpayw==
+"@uiharness/electron@0.4.55":
+  version "0.4.55"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.55.tgz#66cd917eb81882025ecd144ca4004f9eca032458"
+  integrity sha512-zHoaeISEIs6uIH2DkvH/1+yEP9V5Wh9EP5y95OiwqqaCRJIGcC2flyr9yowQU3M17RxgGYX8JUCJ9MLtMzRBqA==
   dependencies:
-    "@platform/electron" "0.2.6"
+    "@platform/electron" "0.3.0"
     "@platform/log" "0.0.126"
     "@platform/react" "0.3.1"
     "@platform/ui.object" "0.0.121"

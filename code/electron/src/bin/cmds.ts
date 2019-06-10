@@ -4,10 +4,10 @@ import { log } from '@platform/log/lib/server';
 const pkg = require('../../package.json') as { devDependencies: { [key: string]: string } };
 
 /**
- * Background
+ * Background:
  *   - https://electronjs.org/docs/tutorial/using-native-node-modules
  *
- * Requires `libtool`
+ * Requires `libtool`:
  *   - brew install libtool
  *
  * Found via similar fix in Beaker Browser:
