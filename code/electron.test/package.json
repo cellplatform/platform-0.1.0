@@ -26,6 +26,7 @@
   "browserslist": [
     "electron >= 5"
   ],
+  "repository": "uiharness/platform",
   "license": "MIT",
   "private": true
 }

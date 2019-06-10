@@ -1092,7 +1092,7 @@
     fs-extra "8.0.1"
     js-yaml "3.13.1"
 
-"@platform/libs@0.0.15":
+"@platform/libs@0.0.15", "@platform/libs@^0.0.15":
   version "0.0.15"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.15.tgz#059c61070125a0101d7b281945bc015a4ced7cfb"
   integrity sha512-wRPiDxa5pkyTj/WCf8TXCIWJ6Lz5F/rgMFTpUxJX3MhU3fC6br6xqFYNl8xRYuSp569J/cBgxmMVb0Bb1Tiicw==
@@ -1355,7 +1355,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-select@^2.0.19":
+"@types/react-select@2.0.19":
   version "2.0.19"
   resolved "https://registry.yarnpkg.com/@types/react-select/-/react-select-2.0.19.tgz#59a80ef81a4a5cb37f59970c53a4894d15065199"
   integrity sha512-5GGBO3npQ0G/poQmEn+kI3Vn3DoJ9WjRXCeGcpwLxd5rYmjYPH235lbYPX5aclXE2RqEXyFxd96oh0wYwPXYpg==
@@ -6649,7 +6649,7 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-select@^3.0.4:
+react-select@3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-select/-/react-select-3.0.4.tgz#16bde37c24fd4f6444914d4681e78f15ffbc86d3"
   integrity sha512-fbVISKa/lSUlLsltuatfUiKcWCNvdLXxFFyrzVQCBUsjxJZH/m7UMPdw/ywmRixAmwXAP++MdbNNZypOsiDEfA==
