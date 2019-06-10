@@ -23,9 +23,6 @@
     "@uiharness/dev": "0.3.8",
     "@uiharness/electron": "0.4.55"
   },
-  "browserslist": [
-    "electron >= 5"
-  ],
   "repository": "uiharness/platform",
   "license": "MIT",
   "private": true

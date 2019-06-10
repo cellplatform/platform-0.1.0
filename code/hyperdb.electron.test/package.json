@@ -34,9 +34,6 @@
     "@uiharness/dev": "0.3.8",
     "@uiharness/ui": "0.3.8"
   },
-  "browserslist": [
-    "electron >= 5"
-  ],
   "files": [
     "lib"
   ],

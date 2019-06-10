@@ -9,6 +9,7 @@ import { WindowsMain } from '../helpers/windows/main';
 import * as t from '../types';
 
 export * from '../types';
+export * from '../helpers/screen/main';
 export { is } from '../helpers/is/main';
 export { devTools, logger };
 
@@ -43,7 +44,7 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
 }
 
 /**
- * Factory for creating windows.
+ * Factory for creating `windows` manager.
  */
 export function createWindows(args: { ipc: t.IpcClient }) {
   const { ipc } = args;

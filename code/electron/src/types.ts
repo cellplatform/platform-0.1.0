@@ -6,6 +6,7 @@ import { IWindows } from './helpers/windows/types';
 
 export * from './renderer/types';
 export * from './main/types';
+export * from './helpers/screen/main/types';
 
 export { IStoreClient, IMainStoreClient, StoreJson } from './helpers/store/types';
 
