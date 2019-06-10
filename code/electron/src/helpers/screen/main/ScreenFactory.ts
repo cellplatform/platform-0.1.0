@@ -7,7 +7,7 @@ import { t, defaultValue } from './common';
 const WindowState = require('electron-window-state');
 
 export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson = any>
-  implements t.IScreenContext<M, S> {
+  implements t.IScreenFactory<M, S> {
   /**
    * [Lifecycle]
    */

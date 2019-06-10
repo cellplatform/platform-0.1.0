@@ -25,22 +25,32 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
     windows?: t.IWindows;
   } = {},
 ): Promise<t.IMain<M, S>> {
-  const { appName } = args;
-  const id = MAIN_ID;
+  return new Promise<t.IMain<M, S>>((resolve, reject) => {
+    const run = async () => {
+      const { appName } = args;
+      const id = MAIN_ID;
 
-  // Initiaize modules.
-  const ipc = args.ipc || initIpc<M>();
-  const store = args.store || initStore<S>({ ipc });
-  const windows = args.windows || createWindows({ ipc });
-  const log =
-    typeof args.log === 'object'
-      ? args.log // Logger already exists and was provided.
-      : initLog({ ipc, dir: args.log, appName }); // Initialize a new log.
-  devTools.listen({ ipc, windows });
+      // Initiaize modules.
+      const ipc = args.ipc || initIpc<M>();
+      const store = args.store || initStore<S>({ ipc });
+      const windows = args.windows || createWindows({ ipc });
+      const log =
+        typeof args.log === 'object'
+          ? args.log // Logger already exists and was provided.
+          : initLog({ ipc, dir: args.log, appName }); // Initialize a new log.
+      devTools.listen({ ipc, windows });
 
-  // Finish up.
-  const res: t.IMain<M, S> = { id, ipc, log, store, windows };
-  return res;
+      // Finish up.
+      resolve({ id, ipc, log, store, windows });
+    };
+
+    // Ensure the app is in a ready state before initializing.
+    if (app.isReady()) {
+      run();
+    } else {
+      app.on('ready', async () => run());
+    }
+  });
 }
 
 /**

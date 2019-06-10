@@ -1,6 +1,5 @@
 export { IContext, IpcInternal, IpcClient, ILog, IWindows } from '../types';
 
-
 /**
  * IPC Events.
  */
