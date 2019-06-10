@@ -35,5 +35,6 @@
     "lib",
     "import.css"
   ],
+  "repository": "uiharness/platform",
   "license": "MIT"
 }

@@ -21,5 +21,6 @@
   "files": [
     "lib"
   ],
+  "repository": "uiharness/platform",
   "license": "MIT"
 }

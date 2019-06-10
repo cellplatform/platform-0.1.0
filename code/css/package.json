@@ -32,5 +32,6 @@
     "css",
     "reset.css"
   ],
+  "repository": "uiharness/platform",
   "license": "MIT"
 }
