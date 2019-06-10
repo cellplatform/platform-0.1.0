@@ -27,9 +27,7 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
     const manyRefs = (manyModel[many.field] || []) as string[];
     if (!Array.isArray(manyRefs)) {
       throw new Error(
-        `The target field '${many.field}' for the 'many' relationship on '${
-          many.dbKey
-        }' must be an array.`,
+        `The target field '${many.field}' for the 'many' relationship on '${many.dbKey}' must be an array.`,
       );
     }
 

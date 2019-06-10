@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { DevTools } from '../helpers/devTools/renderer';
-import { getId, init as initIpc } from '../helpers/ipc/renderer';
+import { DevTools, IDevToolsOptions } from '../helpers/devTools/renderer';
+import { getWindowId, init as initIpc } from '../helpers/ipc/renderer';
 import { init as initLog } from '../helpers/logger/renderer';
 import { init as initStore } from '../helpers/store/renderer';
 import * as t from '../types';
@@ -19,22 +19,18 @@ export * from '../types';
 type Refs = { renderer?: t.IRenderer };
 const refs: Refs = {};
 
-type GetContext<M extends t.IpcMessage = any, S extends t.StoreJson = any> = (args: {
-  context: t.IRendererContext<M, S>;
-}) => Promise<any>;
-
 /**
  * Initializes [Renderer] process systems (safely).
  */
 export async function init<M extends t.IpcMessage = any, S extends t.StoreJson = any>(
-  args: { getContext?: GetContext<M, S> } = {},
+  args: { getContext?: t.GetContext<M, S>; devTools?: IDevToolsOptions } = {},
 ): Promise<t.IRenderer<M, S>> {
   if (refs.renderer) {
     return refs.renderer;
   }
 
-  // Retrieve the ID.
-  const id = await getId();
+  // Retrieve the window ID.
+  const id = await getWindowId();
 
   // Ipc.
   const ipc = await initIpc<M>({ id });
@@ -45,11 +41,11 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
   // Store.
   const store = initStore<S>({ ipc });
 
-  // Dev tools.
-  const devTools = new DevTools({ ipc });
-
   // Windows manager.
   const windows = new WindowsRenderer({ ipc });
+
+  // Dev tools.
+  const devTools = new DevTools({ ipc, windows, log, ...args.devTools });
 
   // React <Provider>.
   const getContext = async (context: t.IRendererContext) => {
@@ -110,7 +106,7 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
 export async function render(
   element: React.ReactElement<any>,
   container: Element | string,
-  options: { getContext?: GetContext } = {},
+  options: { getContext?: t.GetContext; devTools?: IDevToolsOptions } = {},
 ) {
   // Setup initial conditions.
   const renderer = await init(options);

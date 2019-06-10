@@ -14,6 +14,7 @@ export type INpmPackageJson = {
   peerDependencies?: INpmPackageFields;
   resolutions?: INpmPackageFields;
   license?: string;
+  private?: boolean;
 };
 export type INpmPackageFields = { [key: string]: string };
 export type NpmPackageFieldsKey =

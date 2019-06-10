@@ -50,7 +50,7 @@ export class AccessToken implements t.IAccessToken {
       const maxAge = 5 * MIN;
       const timeout = SEC * 30;
 
-      const expire$ = new Subject();
+      const expire$ = new Subject<{}>();
       CACHE[key] = { token: result, expire$ };
 
       const removeFromCache = () => {

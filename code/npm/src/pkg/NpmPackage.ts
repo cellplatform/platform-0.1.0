@@ -1,15 +1,10 @@
 import { R, fs, value } from '../common';
-import {
-  INpmPackageFields,
-  NpmPackageFieldsKey,
-  INpmPackageJson,
-  NpmDepenciesFieldKey,
-} from './types';
+import * as t from './types';
 import { getVersions } from '../get';
 
 export type INpmPackageInit = {
   dir?: string;
-  json?: INpmPackageJson;
+  json?: t.INpmPackageJson;
 };
 
 /**
@@ -38,7 +33,7 @@ export class NpmPackage {
     this.exists = fs.existsSync(this.path);
 
     const loadFile = () => {
-      return this.exists ? fs.file.loadAndParseSync<INpmPackageJson>(this.path, {}) : {};
+      return this.exists ? fs.file.loadAndParseSync<t.INpmPackageJson>(this.path, {}) : {};
     };
     this.json = args.json ? args.json : loadFile();
     this._original = { ...this.json };
@@ -50,8 +45,8 @@ export class NpmPackage {
   public readonly path: string;
   public readonly exists: boolean;
 
-  public json: INpmPackageJson;
-  private readonly _original: INpmPackageJson;
+  public json: t.INpmPackageJson;
+  private readonly _original: t.INpmPackageJson;
 
   /**
    * [Properties]
@@ -121,13 +116,13 @@ export class NpmPackage {
    * Adds fields to the specified field-set.
    */
   public setFields(
-    key: NpmPackageFieldsKey,
-    fields: INpmPackageFields,
+    key: t.NpmPackageFieldsKey,
+    fields: t.INpmPackageFields,
     options: { force?: boolean } = {},
   ) {
     const { force } = options;
     const json = { ...this.json };
-    const target = (this.json[key] || {}) as INpmPackageFields;
+    const target = (this.json[key] || {}) as t.INpmPackageFields;
     json[key] = NpmPackage.setFields(fields, target, { force });
     this.json = json;
     return this;
@@ -137,8 +132,8 @@ export class NpmPackage {
    * Removes fields from the specified field-set.
    */
   public removeFields(
-    key: NpmPackageFieldsKey,
-    fields: INpmPackageFields | string[],
+    key: t.NpmPackageFieldsKey,
+    fields: t.INpmPackageFields | string[],
     options: {
       force?: boolean;
       exclude?: string | string[];
@@ -146,7 +141,7 @@ export class NpmPackage {
   ) {
     const { force, exclude } = options;
     const json = { ...this.json };
-    const target = (this.json[key] || {}) as INpmPackageFields;
+    const target = (this.json[key] || {}) as t.INpmPackageFields;
     json[key] = NpmPackage.removeFields(fields, target, { force, exclude });
     this.json = json;
     return this;
@@ -157,7 +152,7 @@ export class NpmPackage {
    */
   public async updateVersions(
     args: {
-      types?: NpmDepenciesFieldKey[];
+      types?: t.NpmDepenciesFieldKey[];
       filter?: (name: string, version: string) => boolean;
       updateState?: boolean;
     } = {},
@@ -166,7 +161,7 @@ export class NpmPackage {
     const types = args.types || ['dependencies', 'devDependencies', 'peerDependencies'];
 
     type VersionChange = {
-      type: NpmDepenciesFieldKey;
+      type: t.NpmDepenciesFieldKey;
       name: string;
       from: string;
       to: string;
@@ -174,7 +169,7 @@ export class NpmPackage {
     type VersionUpdateResult = {
       isChanged: boolean;
       total: number;
-      types: NpmDepenciesFieldKey[];
+      types: t.NpmDepenciesFieldKey[];
       changed: VersionChange[];
       unchanged: VersionChange[];
     };
@@ -187,7 +182,7 @@ export class NpmPackage {
       unchanged: [],
     };
 
-    const getLatest = async (type: NpmDepenciesFieldKey, fields?: INpmPackageFields) => {
+    const getLatest = async (type: t.NpmDepenciesFieldKey, fields?: t.INpmPackageFields) => {
       if (!fields) {
         return;
       }
@@ -241,8 +236,8 @@ export class NpmPackage {
    * Adds a set of fields to a target object.
    */
   public static setFields(
-    source: INpmPackageFields,
-    target: INpmPackageFields,
+    source: t.INpmPackageFields,
+    target: t.INpmPackageFields,
     options: { force?: boolean } = {},
   ) {
     const { force = false } = options;
@@ -260,8 +255,8 @@ export class NpmPackage {
    * Removes a set of fields from a target object.
    */
   public static removeFields(
-    source: INpmPackageFields | string[],
-    target: INpmPackageFields,
+    source: t.INpmPackageFields | string[],
+    target: t.INpmPackageFields,
     options: { force?: boolean; exclude?: string | string[] } = {},
   ) {
     const {
@@ -293,7 +288,7 @@ export class NpmPackage {
    * Finds the latest versions for the given set of fields
    */
   public static async getLatestVersions(
-    fields: INpmPackageFields,
+    fields: t.INpmPackageFields,
     filter?: (name: string, version: string) => boolean,
   ) {
     // Setup initial conditions.

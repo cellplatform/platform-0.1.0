@@ -74,7 +74,7 @@ export class GraphqlClient implements t.IGqlClient {
   private readonly _ = {
     args: (undefined as unknown) as IConstructorArgs,
     apollo: (undefined as unknown) as ApolloClient<{}>,
-    dispose$: new Subject(),
+    dispose$: new Subject<{}>(),
     events$: new Subject<t.GqlEvent>(),
   };
 
@@ -121,9 +121,20 @@ export class GraphqlClient implements t.IGqlClient {
     request.fetchPolicy =
       request.fetchPolicy === undefined ? this._.args.fetchPolicy : request.fetchPolicy;
 
-    this.fire({ type: 'GRAPHQL/querying', payload: { request } });
+    const before: t.IGqlQueryingEvent<any> = {
+      type: 'GRAPHQL/querying',
+      payload: { request },
+    };
+    this.fire(before);
+
     const response = await this._.apollo.query<D>(request);
-    this.fire({ type: 'GRAPHQL/queried', payload: { request, response } });
+
+    const after: t.IGqlQueryiedEvent<any> = {
+      type: 'GRAPHQL/queried',
+      payload: { request, response },
+    };
+    this.fire(after);
+
     return response;
   }
 
@@ -131,9 +142,21 @@ export class GraphqlClient implements t.IGqlClient {
     request: t.IGqlMutateOptions<D, V>,
   ): Promise<t.IGqlMutateResult<D>> {
     this.throwIfDisposed('mutate');
-    this.fire({ type: 'GRAPHQL/mutating', payload: { request } });
+
+    const before: t.IGqlMutatingEvent<any, any> = {
+      type: 'GRAPHQL/mutating',
+      payload: { request },
+    };
+    this.fire(before);
+
     const response = await this._.apollo.mutate<D>(request as any);
-    this.fire({ type: 'GRAPHQL/mutated', payload: { request, response } });
+
+    const after: t.IGqlMutatedEvent<any, any> = {
+      type: 'GRAPHQL/mutated',
+      payload: { request, response },
+    };
+    this.fire(after);
+
     return response;
   }
 

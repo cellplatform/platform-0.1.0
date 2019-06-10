@@ -5,12 +5,13 @@ import { takeUntil } from 'rxjs/operators';
 import { IKeyBindingEvent, IKeypressEvent, KeyBindings, Keyboard } from '../../src';
 import { color, css, ObjectView } from './common';
 
-type MyCommands = 'SAVE' | 'PASTE' | 'FOO' | 'BAR';
+type MyCommands = 'SAVE' | 'PASTE' | 'FOO' | 'BAR' | 'JAM';
 const bindings: KeyBindings<MyCommands> = [
   { command: 'SAVE', key: 'CMD+S' },
   { command: 'PASTE', key: 'CMD+V' },
   { command: 'FOO', key: 'CMD+SHIFT+V' },
   { command: 'BAR', key: 'CMD+SHIFT+V+B' },
+  { command: 'JAM', key: 'CMD+ALT+J' },
 ];
 const keyboard = Keyboard.create({ bindings });
 

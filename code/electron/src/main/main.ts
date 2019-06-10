@@ -35,6 +35,7 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
     typeof args.log === 'object'
       ? args.log // Logger already exists and was provided.
       : initLog({ ipc, dir: args.log, appName }); // Initialize a new log.
+  devTools.listen({ ipc, windows });
 
   // Finish up.
   const res: t.IMain<M, S> = { id, ipc, log, store, windows };
@@ -50,7 +51,7 @@ export function createWindows(args: { ipc: t.IpcClient }) {
 }
 
 /**
- * INTERNAL
+ * [Internal]
  */
 function initLog(args: { ipc: IpcClient; dir?: string; appName?: string }) {
   const { ipc } = args;

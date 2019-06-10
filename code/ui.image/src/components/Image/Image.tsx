@@ -21,7 +21,7 @@ export const image = (src: t.ImageSrc) => {
     const styles = {
       base: css({
         opacity: props.opacity,
-        transform: typeof props.scale === 'number' && `scale(${props.scale})`,
+        transform: typeof props.scale === 'number' ? `scale(${props.scale})` : undefined,
         transformOrigin: props.origin,
       }),
     };

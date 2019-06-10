@@ -18,6 +18,31 @@ See the [`/test`](./test) folder for example configuration and usage samples in 
 
 ![diagram](https://user-images.githubusercontent.com/185555/56322016-03fa6c00-61bc-11e9-8aa3-2a365e4fd3cb.png)
 
+
+<p>&nbsp;<p>
+
+## Building for Electron
+Run the `rebuild` script that fixes `dist` build issues with `sodium-native`.  See [issue #5851](https://github.com/electron/electron/issues/5851).
+
+In your `package.json`:
+
+```json
+{
+  "scripts": {
+    "rebuild": "platform.electron rebuild"
+  }
+}
+```
+You may require `libtool` to complete as well as the XCode command-line tools that contains `gcc`:
+
+```
+brew install libtool
+```
+
+
+
+
+
 <p>&nbsp;<p><p>&nbsp;<p>
 
 ## See Also

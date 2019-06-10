@@ -6,4 +6,4 @@ export {
   CommandHelpList,
   CommandClickEvent,
   CommandClickEventHandler,
-} from '@platform/ui.cli';
+} from '@platform/cli.ui';

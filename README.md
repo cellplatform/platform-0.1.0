@@ -68,7 +68,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/css](/code/css)
 - ui (primitives)
   - [@platform/ui.button](/code/ui.button)
-  - [@platform/ui.cli](/code/ui.cli)
   - [@platform/ui.codemirror](/code/ui.codemirror)
   - [@platform/ui.editor](/code/ui.editor)
   - [@platform/ui.graphql](/code/ui.graphql)
@@ -91,6 +90,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - cli
   - [@platform/cli](/code/cli)
   - [@platform/cli.spec](/code/cli.spec)
+  - [@platform/cli.ui](/code/cli.ui)
 - npm
   - [@platform/npm](/code/npm)
   - [@platform/npm.electron](/code/npm.electron)

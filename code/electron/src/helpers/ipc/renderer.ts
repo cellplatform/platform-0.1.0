@@ -28,7 +28,7 @@ export async function init<M extends IpcMessage>(
 
   const stop$ = new Subject();
   const events$ = new Subject<IpcEvent>();
-  const id = args.id === undefined ? await getId() : args.id;
+  const id = args.id === undefined ? await getWindowId() : args.id;
 
   /**
    * Store references to event-handlers as they are registered.
@@ -79,7 +79,7 @@ export async function init<M extends IpcMessage>(
 /**
  * Retrieves the ID of the current window.
  */
-export function getId() {
+export function getWindowId() {
   return new Promise<number>((resolve, reject) => {
     ipcRenderer.send(GLOBAL.IPC.ID.REQUEST);
     ipcRenderer.on(GLOBAL.IPC.ID.RESPONSE, (e: Electron.Event, args: { id?: number } = {}) => {

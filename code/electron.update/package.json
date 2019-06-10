@@ -1,6 +1,6 @@
 {
-  "name": "@platform/electron.loader",
-  "version": "0.0.14",
+  "name": "@platform/electron.update",
+  "version": "0.0.16",
   "description": "",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,16 +18,16 @@
     "download": "ts-node -T scripts/download $@"
   },
   "dependencies": {
-    "@platform/exec": "^0.2.12",
-    "@platform/fs": "0.1.1",
-    "@platform/http": "0.2.1",
-    "@platform/react": "0.2.13",
-    "@platform/util.value": "0.3.5"
+    "@platform/exec": "^0.2.13",
+    "@platform/fs": "0.1.2",
+    "@platform/http": "0.2.2",
+    "@platform/react": "0.3.1",
+    "@platform/util.value": "0.3.6"
   },
   "devDependencies": {
     "@types/minimist": "^1.2.0",
-    "@uiharness/dev": "0.2.62",
-    "@uiharness/ui": "0.2.43",
+    "@uiharness/dev": "0.3.8",
+    "@uiharness/ui": "0.3.8",
     "minimist": "^1.2.0"
   },
   "files": [

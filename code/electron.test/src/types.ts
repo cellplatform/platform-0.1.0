@@ -13,13 +13,7 @@ export type IMyStore = {
 /**
  * EVENTS
  */
-export type MyEvents =
-  | SystemEvents
-  | INewWindowEvent
-  | IMessageEvent
-  | IDevToolsEvent
-  | IFooEvent
-  | IBarEvent;
+export type MyEvents = SystemEvents | INewWindowEvent | IMessageEvent | IFooEvent | IBarEvent;
 
 export type INewWindowEvent = {
   type: 'TEST/window/new';
@@ -29,11 +23,6 @@ export type INewWindowEvent = {
 export type IMessageEvent = {
   type: 'TEST/message';
   payload: { text: string };
-};
-
-export type IDevToolsEvent = {
-  type: 'TEST/devTools';
-  payload: { windowId: number; show: boolean; focus?: boolean };
 };
 
 export type IFooEvent = {

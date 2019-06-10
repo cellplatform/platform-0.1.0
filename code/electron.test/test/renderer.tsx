@@ -10,7 +10,10 @@ import { Test } from '../src/components';
  */
 const el = <Test />;
 renderer
-  .render(el, 'root', { getContext: async c => ({ foo: 123 }) })
+  .render(el, 'root', {
+    getContext: async c => ({ foo: 123 }),
+    devTools: { keyboard: { toggle: true, clearConsole: true } },
+  })
   .then(context => {
     console.log('renderer loaded:', context); // tslint:disable-line
   })

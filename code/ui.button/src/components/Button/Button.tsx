@@ -108,8 +108,8 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
         color: color.format(
           isEnabled ? theme.color.enabled : theme.color.disabled || theme.color.enabled,
         ),
-        backgroundColor: backgroundColor && color.format(backgroundColor),
-        cursor: isEnabled && 'pointer',
+        backgroundColor: backgroundColor ? color.format(backgroundColor) : undefined,
+        cursor: isEnabled ? 'pointer' : undefined,
         userSelect: 'none',
       }),
       inner: css({
@@ -124,7 +124,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
           borderRadius: theme.border.radius,
         }),
       content: css({
-        transform: isEnabled && `translateY(${isDown ? 1 : 0}px)`,
+        transform: isEnabled ? `translateY(${isDown ? 1 : 0}px)` : undefined,
         opacity: isEnabled ? 1 : theme.disabledOpacity,
       }),
     };

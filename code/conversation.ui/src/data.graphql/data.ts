@@ -41,7 +41,7 @@ export class ConversationGraphql {
    * [Fields]
    */
   public readonly thread: ConversationThreadGraphql;
-  private readonly dispose$ = new Subject();
+  private readonly dispose$ = new Subject<{}>();
 
   private readonly _events$ = new Subject<t.ThreadDataEvent>();
   public readonly events$ = this._events$.pipe(

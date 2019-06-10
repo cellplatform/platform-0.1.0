@@ -1,9 +1,11 @@
 import { BrowserWindow } from 'electron';
 import * as WindowState from 'electron-window-state';
 import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { IWindows } from '../windows/main';
+import { debounceTime, filter } from 'rxjs/operators';
+
 import { TAG_DEV_TOOLS as DEV_TOOLS } from '../constants';
+import { IWindows } from '../windows/main';
+import * as t from './types';
 
 type Ref = {
   parent: BrowserWindow;
@@ -11,9 +13,37 @@ type Ref = {
 };
 const refs: { [key: string]: Ref } = {};
 
-export type ICreateDevToolResponse = {
-  id: number;
-};
+let isListening = false;
+
+/**
+ * Sets up the listener.
+ */
+export function listen(args: { ipc: t.IpcClient; windows: t.IWindows }) {
+  if (isListening) {
+    return;
+  }
+  isListening = true;
+  const { ipc, windows } = args;
+
+  ipc
+    // Show/hide the dev-tools window.
+    .on<t.DevToolsVisibilityEvent>('@platform/DEV_TOOLS/visibility')
+    .pipe(filter(e => e.sender.process === 'RENDERER'))
+    .subscribe(e => {
+      const id = e.sender.id;
+      const { show, focus } = e.payload;
+      const all = BrowserWindow.getAllWindows();
+      const parent = all.find(window => window.id === id);
+      if (!parent) {
+        return;
+      }
+      if (show) {
+        create({ parent, windows, focus });
+      } else {
+        hide({ parent, windows });
+      }
+    });
+}
 
 /**
  * Control the position of the detached dev-tools.
@@ -25,6 +55,7 @@ export type ICreateDevToolResponse = {
  *    https://github.com/electron/electron/blob/master/docs/tutorial/devtools-extension.md
  *
  */
+export type ICreateDevToolResponse = { id: number };
 export function create(args: {
   parent: BrowserWindow;
   windows: IWindows;

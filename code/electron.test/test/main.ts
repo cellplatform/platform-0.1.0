@@ -45,8 +45,8 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
     ipc.on('TEST/window/new').subscribe(e => {
       const all = BrowserWindow.getAllWindows();
       if (e.type === 'TEST/window/new') {
-        const name = `New Window (${all.length})`;
-        newWindow({ name, devTools: true });
+        const title = `New Window (${all.length})`;
+        newWindow({ title, devTools: true });
       }
     });
 
@@ -76,25 +76,6 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
       // await time.wait(1000);
       return `response FOO (MAIN) 🤖`;
     });
-
-    /**
-     * Dev tools.
-     */
-    ipc
-      .on<t.IDevToolsEvent>('TEST/devTools')
-      .pipe(map(e => e.payload))
-      .subscribe(e => {
-        const id = e.windowId;
-        const all = BrowserWindow.getAllWindows();
-        const parent = all.find(window => window.id === id);
-        if (parent) {
-          if (e.show) {
-            main.devTools.create({ parent, windows, focus: e.focus });
-          } else {
-            main.devTools.hide({ parent, windows });
-          }
-        }
-      });
   } catch (error) {
     log.error(error.message);
   }

@@ -193,7 +193,12 @@ export class Keyboard<T extends t.KeyCommand> {
           pressedKeys = [];
         }
         if (!e.isModifier && hasModifier) {
-          pressedKeys = e.isPressed ? R.uniq([...pressedKeys, e.key.toUpperCase()]) : [];
+          let key = e.code;
+          key = key.startsWith('Key') ? e.code.replace(/^Key/, '') : key;
+          key = key.startsWith('Numpad') ? e.code.replace(/^Numpad/, '') : key;
+          key = key.startsWith('Digit') ? e.code.replace(/^Digit/, '') : key;
+          key = key.toUpperCase();
+          pressedKeys = e.isPressed ? R.uniq([...pressedKeys, key]) : [];
         }
       });
 

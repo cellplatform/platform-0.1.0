@@ -1,32 +1,39 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.1.69",
+  "version": "0.3.0",
   "main": "lib/index",
   "types": "lib/index.d.ts",
+  "bin": {
+    "platform.electron": "lib/bin/index.js"
+  },
   "scripts": {
     "test": "echo no-op",
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "platform.electron": "node lib/bin/index.js $@",
+    "rebuild": "yarn platform.electron rebuild"
   },
   "dependencies": {
     "@babel/polyfill": "7.4.4",
-    "@platform/fs": "0.1.1",
-    "@platform/log": "0.0.125",
-    "@platform/react": "0.2.13",
+    "@platform/fs": "0.1.2",
+    "@platform/log": "0.0.126",
+    "@platform/react": "0.3.1",
     "@types/app-root-path": "1.2.4",
     "app-root-path": "2.2.1",
-    "electron-log": "3.0.5",
+    "electron-log": "3.0.6",
     "electron-store": "3.2.0",
     "electron-window-state": "5.0.3",
-    "is-electron": "2.2.0"
+    "is-electron": "2.2.0",
+    "minimist": "1.2.0"
   },
   "devDependencies": {
-    "@platform/test": "0.0.54",
-    "@platform/ts": "3.4.25",
-    "electron": "4.1.4"
+    "@platform/test": "0.0.55",
+    "@platform/ts": "3.4.26",
+    "@types/minimist": "1.2.0",
+    "electron": "5.0.3"
   },
   "files": [
     "lib",
