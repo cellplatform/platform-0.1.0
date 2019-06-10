@@ -35,10 +35,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
   });
 
   try {
-    app.on('ready', () => {
-      defaultFactory.create({ uid: 'foo' });
-    });
-
+    defaultFactory.create({ uid: 'foo' });
     log.info.blue('started');
 
     /**
