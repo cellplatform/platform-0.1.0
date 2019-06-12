@@ -26,6 +26,8 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
   } = {},
 ): Promise<t.IMain<M, S>> {
   return new Promise<t.IMain<M, S>>((resolve, reject) => {
+    
+
     const run = async () => {
       const { appName } = args;
       const id = MAIN_ID;

@@ -30,8 +30,8 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.55",
-    "@uiharness/dev": "0.3.8",
-    "@uiharness/ui": "0.3.8",
+    "@uiharness/dev": "0.4.0",
+    "@uiharness/ui": "0.4.0",
     "apollo-server-express": "2.6.2",
     "express": "4.17.1"
   },

@@ -966,10 +966,10 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.3.0.tgz#1c88980117e3013dfa883902bafd6c0df7a93418"
-  integrity sha512-SCus5BsOzY++VsyM9zjwydNdyGyW7dKsq2ZskU97xhwTbJIix3GxDBcRY2Zn9YJO0rFkEFwVsNqSYv87M0f3OQ==
+"@platform/electron@0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.3.6.tgz#28f0bc86e14492834ea25b8ffe2eb49474d21eb1"
+  integrity sha512-8U8q1d294KaOWyaGQJ4Q2wyzO8yv1hBfBp0BfzD1UupyoGO9H+leAK2G6JXtQLa+y//IeFmBmGzDauEaIN16DA==
   dependencies:
     "@babel/polyfill" "7.4.4"
     "@platform/fs" "0.1.2"
@@ -978,7 +978,7 @@
     "@types/app-root-path" "1.2.4"
     app-root-path "2.2.1"
     electron-log "3.0.6"
-    electron-store "3.2.0"
+    electron-store "3.3.0"
     electron-window-state "5.0.3"
     is-electron "2.2.0"
     minimist "1.2.0"
@@ -1366,10 +1366,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@uiharness/dev@0.3.8":
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.3.8.tgz#db2813f277b4a8e800f62fb52bbb172a3bd20e8b"
-  integrity sha512-7TlP8t4uMx9kxLBe+XdpM88T6o2UrdgroC+vLWGWpfJ0gDmjrfnFRh9Yd4mNgpY6rYah58lxDLME4VZWm/uJCQ==
+"@uiharness/dev@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.4.0.tgz#38da2f87f368ec539980bf7890e38578de94223f"
+  integrity sha512-gywmGtdQe31Cco6KgWvLlE29ZvaxYXawfI8AE6ZMZrbol81scWdoWFVwgq9mZnLnMC7h2cIWDP50ch2glxojsA==
   dependencies:
     "@babel/core" "7.4.5"
     "@babel/polyfill" "7.4.4"
@@ -1380,8 +1380,8 @@
     "@platform/fs" "0.1.2"
     "@platform/ts" "3.4.26"
     "@platform/util.string" "^0.1.19"
-    "@uiharness/electron" "0.4.55"
-    "@uiharness/types" "0.2.2"
+    "@uiharness/electron" "0.4.57"
+    "@uiharness/types" "0.4.0"
     create-tmpl "0.1.57"
     electron "5.0.3"
     electron-builder "20.43.0"
@@ -1389,36 +1389,36 @@
     parcel-bundler "1.12.3"
     serve "11.0.1"
 
-"@uiharness/electron@0.4.55":
-  version "0.4.55"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.55.tgz#66cd917eb81882025ecd144ca4004f9eca032458"
-  integrity sha512-zHoaeISEIs6uIH2DkvH/1+yEP9V5Wh9EP5y95OiwqqaCRJIGcC2flyr9yowQU3M17RxgGYX8JUCJ9MLtMzRBqA==
+"@uiharness/electron@0.4.57":
+  version "0.4.57"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.57.tgz#e83be343c1548c44f509e90a0933f90104a0ce28"
+  integrity sha512-dgu4c+iu1iGxyv+KIxwhCKdtd5IqpYV5AeafEMyz7gWP/Quj+gBJ8bjOeDHlCIpqxmr32PzaFX8bNYekipUqug==
   dependencies:
-    "@platform/electron" "0.3.0"
+    "@platform/electron" "0.3.6"
     "@platform/log" "0.0.126"
     "@platform/react" "0.3.1"
     "@platform/ui.object" "0.0.121"
     "@platform/util.value" "0.3.6"
     "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.2.2"
-    tslib "1.9.3"
+    "@uiharness/types" "0.4.0"
+    tslib "1.10.0"
 
-"@uiharness/types@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.2.2.tgz#6b4c4e5bd40e01ed299d0e19361230cb5c0116e0"
-  integrity sha512-7QjniXqSBBZzG6GjoAXiPyjMJFh9cDZjEbzGm25i2Q5bp8LVwulkTO3IA+W7D4Wi/S5bcoIhy5qkfaVu6JMxeA==
+"@uiharness/types@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.4.0.tgz#831b67d6180817e5b107e5d913e9fa440d3b8aea"
+  integrity sha512-YkWkx1jHmRkaNTFL9eZ0Nc7xYAiS0wZRlJ5Vi885UoNAD0euCIlx6S9jIm9NDgXmxU5wEf0u6wUxRMcYS8e5DQ==
 
-"@uiharness/ui@0.3.8":
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.3.8.tgz#4a8511c87cbc521d1f7f0dc8a4e76f23599edeba"
-  integrity sha512-rq9lQsbGqfuTF9DS1ypK4MEiVEXdUP1z3JlFe0TSdWA03UhOQy+PP/26FqrMq6FYQwxjtGC584NY7Km3ujfDmQ==
+"@uiharness/ui@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.4.0.tgz#29cc41bdbec4ec5d3639cbe8e0beb9be89380a7c"
+  integrity sha512-k1vzdRjkqFakMqNXr3tJJM9IAZ3C7Bpn4Q3tdGxKEyLDCfOqGDDwOS68ckuOI8paKCAdbxFiKHKRZTrGwK9Bww==
   dependencies:
     "@platform/cli.ui" "0.2.13"
-    "@platform/electron" "0.3.0"
+    "@platform/electron" "0.3.6"
     "@platform/react" "0.3.1"
     "@platform/ui.object" "0.0.121"
     "@platform/util.string" "0.1.19"
-    "@uiharness/types" "0.2.2"
+    "@uiharness/types" "0.4.0"
 
 "@zeit/schemas@2.6.0":
   version "2.6.0"
@@ -2571,10 +2571,10 @@ concat-stream@1.6.2, concat-stream@~1.6.0:
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
 
-conf@^4.0.1:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/conf/-/conf-4.0.2.tgz#cc25649295259fc77f4606840b7718cca5c1d5bd"
-  integrity sha512-SVEWGdAlA+BNfpJ5vF7S6SbkXA7Qk1ycWV6+UAWkC3vQvjxx7xxuYNriKnShjlbIPStUiTK0MZWdQYYtTYdwZw==
+conf@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/conf/-/conf-4.1.0.tgz#c7029f629d7158eaf03ae118484d100f878c28b2"
+  integrity sha512-/G++SsVVt4MkKYZ1E+XdNEyCYghM7e7SSgx4PA55lQrmJjUY1APGGfz42YX9YpRkhLFvlhkJ5S341FWsufZZ5w==
   dependencies:
     ajv "^6.10.0"
     dot-prop "^5.0.0"
@@ -2582,7 +2582,7 @@ conf@^4.0.1:
     json-schema-typed "^7.0.0"
     make-dir "^3.0.0"
     pkg-up "^3.0.1"
-    write-file-atomic "^2.4.2"
+    write-file-atomic "^3.0.0"
 
 config-chain@^1.1.12:
   version "1.1.12"
@@ -3362,12 +3362,12 @@ electron-publish@20.43.0:
     lazy-val "^1.0.4"
     mime "^2.4.3"
 
-electron-store@3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/electron-store/-/electron-store-3.2.0.tgz#50d2d6677beb46293c15814f2d230b65c6ca555e"
-  integrity sha512-+goKW06sPo8KyPd9ctozRQGjctJ+M4qDpZ0Dx02X08AMf6lSlHQRmYHMYbKXpVpoq4y250wRfEHNxtP72HbfVQ==
+electron-store@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/electron-store/-/electron-store-3.3.0.tgz#8727bad42ae0b6a95bdd702087878105ef5e8934"
+  integrity sha512-++k1MjcNya7e7Q/xHm2ys8t2CZZZJDMnihvsonbHJ/7WIQatVaspYzF0oDO0hUmMCNXhHaLbKduPBYkRDXVbXA==
   dependencies:
-    conf "^4.0.1"
+    conf "^4.1.0"
     type-fest "^0.3.1"
 
 electron-to-chromium@^1.3.137:
@@ -4716,7 +4716,7 @@ is-symbol@^1.0.2:
   dependencies:
     has-symbols "^1.0.0"
 
-is-typedarray@~1.0.0:
+is-typedarray@^1.0.0, is-typedarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-typedarray/-/is-typedarray-1.0.0.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
   integrity sha1-5HnICFjfDBsR3dppQPlgEfzaSpo=
@@ -7913,6 +7913,11 @@ ts-node@8.2.0:
     source-map-support "^0.5.6"
     yn "^3.0.0"
 
+tslib@1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
+  integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
+
 tslib@1.9.3, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
@@ -7996,6 +8001,13 @@ type-fest@^0.3.0, type-fest@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.3.1.tgz#63d00d204e059474fe5e1b7c011112bbd1dc29e1"
   integrity sha512-cUGJnCdr4STbePCgqNFbpVNCepa+kAVohJs1sLhxzdH+gnEoOd8VhbYa7pD3zZYGiURWM2xzEII3fQcRizDkYQ==
+
+typedarray-to-buffer@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/typedarray-to-buffer/-/typedarray-to-buffer-3.1.5.tgz#a97ee7a9ff42691b9f783ff1bc5112fe3fca9080"
+  integrity sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
+  dependencies:
+    is-typedarray "^1.0.0"
 
 typedarray@^0.0.6:
   version "0.0.6"
@@ -8370,7 +8382,7 @@ wrappy@1:
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 
-write-file-atomic@^2.0.0, write-file-atomic@^2.4.2:
+write-file-atomic@^2.0.0:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/write-file-atomic/-/write-file-atomic-2.4.3.tgz#1fd2e9ae1df3e75b8d8c367443c692d4ca81f481"
   integrity sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ==
@@ -8378,6 +8390,16 @@ write-file-atomic@^2.0.0, write-file-atomic@^2.4.2:
     graceful-fs "^4.1.11"
     imurmurhash "^0.1.4"
     signal-exit "^3.0.2"
+
+write-file-atomic@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/write-file-atomic/-/write-file-atomic-3.0.0.tgz#1b64dbbf77cb58fd09056963d63e62667ab4fb21"
+  integrity sha512-EIgkf60l2oWsffja2Sf2AL384dx328c0B+cIYPTQq5q2rOYuDV00/iPFBOUiDKKwKMOhkymH8AidPaRvzfxY+Q==
+  dependencies:
+    imurmurhash "^0.1.4"
+    is-typedarray "^1.0.0"
+    signal-exit "^3.0.2"
+    typedarray-to-buffer "^3.1.5"
 
 ws@^5.1.1, ws@^5.2.0:
   version "5.2.2"

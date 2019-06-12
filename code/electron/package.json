@@ -1,7 +1,7 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.3.0",
+  "version": "0.3.6",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
@@ -24,7 +24,7 @@
     "@types/app-root-path": "1.2.4",
     "app-root-path": "2.2.1",
     "electron-log": "3.0.6",
-    "electron-store": "3.2.0",
+    "electron-store": "3.3.0",
     "electron-window-state": "5.0.3",
     "is-electron": "2.2.0",
     "minimist": "1.2.0"
