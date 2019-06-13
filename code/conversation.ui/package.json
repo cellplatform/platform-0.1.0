@@ -36,7 +36,8 @@
     "@platform/graphql.server": "0.1.14",
     "@platform/hyperdb": "0.2.10",
     "@uiharness/dev": "0.5.0",
-    "@uiharness/ui": "0.5.0"
+    "@uiharness/ui": "0.5.0",
+    "electron": "5.0.0"
   },
   "resolutions": {
     "prosemirror-state": "1.2.2"

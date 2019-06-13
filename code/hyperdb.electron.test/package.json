@@ -28,13 +28,15 @@
     "core-js": "^3.1.3",
     "hjson": "3.1.2",
     "regenerator-runtime": "^0.13.2",
-    "sodium-native": "^2.4.2"
+    "sodium-native": "^2.4.2",
+    "sodium-universal": "^2.0.0"
   },
   "devDependencies": {
     "@platform/ts": "3.4.26",
     "@types/hjson": "2.4.1",
     "@uiharness/dev": "0.5.0",
-    "@uiharness/ui": "0.5.0"
+    "@uiharness/ui": "0.5.0",
+    "electron": "5.0.0"
   },
   "resolutions": {
     "sodium-native": "2.4.2"

@@ -23,7 +23,8 @@
     "@platform/ts": "3.4.26",
     "@uiharness/dev": "0.5.0",
     "@uiharness/ui": "0.5.0",
-    "react-icons": "3.7.0"
+    "react-icons": "3.7.0",
+    "electron": "5.0.0"
   },
   "files": [
     "lib"

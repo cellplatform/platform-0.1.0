@@ -29,8 +29,9 @@
     "@types/auth0-js": "9.10.2",
     "@uiharness/dev": "0.5.0",
     "@uiharness/ui": "0.5.0",
-    "apollo-server": "2.6.2",
-    "graphql": "14.3.1"
+    "apollo-server": "2.6.3",
+    "graphql": "14.3.1",
+    "electron": "5.0.0"
   },
   "files": [
     "lib"

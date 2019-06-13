@@ -18,17 +18,18 @@
     "download": "ts-node -T scripts/download $@"
   },
   "dependencies": {
-    "@platform/exec": "^0.2.13",
+    "@platform/exec": "0.2.13",
     "@platform/fs": "0.1.2",
     "@platform/http": "0.2.2",
     "@platform/react": "0.3.1",
     "@platform/util.value": "0.3.6"
   },
   "devDependencies": {
-    "@types/minimist": "^1.2.0",
+    "@types/minimist": "1.2.0",
     "@uiharness/dev": "0.5.0",
     "@uiharness/ui": "0.5.0",
-    "minimist": "^1.2.0"
+    "minimist": "1.2.0",
+    "electron": "5.0.0"
   },
   "files": [
     "lib"

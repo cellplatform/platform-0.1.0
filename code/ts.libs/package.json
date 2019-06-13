@@ -9,10 +9,10 @@
     "prepare": "yarn build && yarn lint"
   },
   "dependencies": {
-    "@types/node": "12.0.7",
+    "@types/node": "12.0.8",
     "prettier": "1.18.2",
     "ts-node": "8.2.0",
-    "tslib": "1.9.3",
+    "tslib": "1.10.0",
     "tslint": "5.17.0",
     "tslint-config-prettier": "1.18.0",
     "tslint-react": "4.0.0",

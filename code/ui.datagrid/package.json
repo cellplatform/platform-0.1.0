@@ -27,7 +27,8 @@
     "@platform/ts": "3.4.26",
     "@platform/ui.datagrid.cell": "0.0.51",
     "@uiharness/dev": "0.5.0",
-    "@uiharness/ui": "0.5.0"
+    "@uiharness/ui": "0.5.0",
+    "electron": "5.0.0"
   },
   "files": [
     "lib",
