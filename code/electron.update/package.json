@@ -1,6 +1,6 @@
 {
   "name": "@platform/electron.update",
-  "version": "0.0.19",
+  "version": "0.0.22",
   "description": "",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -26,8 +26,8 @@
   },
   "devDependencies": {
     "@types/minimist": "^1.2.0",
-    "@uiharness/dev": "0.4.4",
-    "@uiharness/ui": "0.4.4",
+    "@uiharness/dev": "0.5.0",
+    "@uiharness/ui": "0.5.0",
     "minimist": "^1.2.0"
   },
   "files": [

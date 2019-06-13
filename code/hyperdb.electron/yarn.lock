@@ -77,27 +77,10 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.3.6.tgz#28f0bc86e14492834ea25b8ffe2eb49474d21eb1"
-  integrity sha512-8U8q1d294KaOWyaGQJ4Q2wyzO8yv1hBfBp0BfzD1UupyoGO9H+leAK2G6JXtQLa+y//IeFmBmGzDauEaIN16DA==
-  dependencies:
-    "@babel/polyfill" "7.4.4"
-    "@platform/fs" "0.1.2"
-    "@platform/log" "0.0.126"
-    "@platform/react" "0.3.1"
-    "@types/app-root-path" "1.2.4"
-    app-root-path "2.2.1"
-    electron-log "3.0.6"
-    electron-store "3.3.0"
-    electron-window-state "5.0.3"
-    is-electron "2.2.0"
-    minimist "1.2.0"
-
-"@platform/electron@0.3.7":
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.3.7.tgz#a7ba27d1a0cb025e3329149fc81fce1fc84a19ea"
-  integrity sha512-0xrTV5/nX6eoKNQiC4VN3zjVDgeJffcy9wMJ0mDGm7BP0giZM/tB4TSSSn3PuoBWYNR8Z02IDPKH8zVRvgMhhQ==
+"@platform/electron@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.0.tgz#34246dd5cbd03d4020b021d38145a6853554611b"
+  integrity sha512-IbJoStqQCobZWKEmvMhDRbqKLpbwXikwl8K5lWyj3HpvZyPTKsvJucpN2HhfJjCK0kOOsM/ZAGD3rU/EgRmOlw==
   dependencies:
     "@babel/polyfill" "7.4.4"
     "@platform/fs" "0.1.2"
@@ -379,24 +362,24 @@
   resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.8.14.tgz#bf8f24950e6705e5150756a5947dac76e5dce2c0"
   integrity sha512-xbzi6UaATVKupInG3D65/EPQ3qkJCvG2ZAzmlIYt6x93ACOEX2Y0fHW4/e8TF3G7q5KB2l7wTZgzfNjyYDMuZw==
 
-"@uiharness/electron@0.4.57":
-  version "0.4.57"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.57.tgz#e83be343c1548c44f509e90a0933f90104a0ce28"
-  integrity sha512-dgu4c+iu1iGxyv+KIxwhCKdtd5IqpYV5AeafEMyz7gWP/Quj+gBJ8bjOeDHlCIpqxmr32PzaFX8bNYekipUqug==
+"@uiharness/electron@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.5.0.tgz#dd7bd701e1d1a1b242603ed2cd557790d11e8cd6"
+  integrity sha512-3l7N+vOS5Lj0crqPPI2w0wBYxlOCDBV2WdMGjPQCH4k1E8me9I+WqIPDz09XO7Y1sMRLOE4lpNQL3eCnGMWTpQ==
   dependencies:
-    "@platform/electron" "0.3.6"
+    "@platform/electron" "0.4.0"
     "@platform/log" "0.0.126"
     "@platform/react" "0.3.1"
     "@platform/ui.object" "0.0.121"
     "@platform/util.value" "0.3.6"
     "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.4.0"
+    "@uiharness/types" "0.5.0"
     tslib "1.10.0"
 
-"@uiharness/types@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.4.0.tgz#831b67d6180817e5b107e5d913e9fa440d3b8aea"
-  integrity sha512-YkWkx1jHmRkaNTFL9eZ0Nc7xYAiS0wZRlJ5Vi885UoNAD0euCIlx6S9jIm9NDgXmxU5wEf0u6wUxRMcYS8e5DQ==
+"@uiharness/types@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.5.0.tgz#2832daf153d81236efff1b549b0665217d46ea55"
+  integrity sha512-8ybAe6BkeZ6+khTY6P4uCUpXMPS1EhAt7xInYPOkM7k6AM/wgZ4YiJxZy5OtkPx02JNOsCwhLUvsGboOGwQ4bA==
 
 ajv@^6.10.0:
   version "6.10.0"

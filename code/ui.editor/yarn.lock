@@ -1000,10 +1000,10 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.3.6.tgz#28f0bc86e14492834ea25b8ffe2eb49474d21eb1"
-  integrity sha512-8U8q1d294KaOWyaGQJ4Q2wyzO8yv1hBfBp0BfzD1UupyoGO9H+leAK2G6JXtQLa+y//IeFmBmGzDauEaIN16DA==
+"@platform/electron@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.0.tgz#34246dd5cbd03d4020b021d38145a6853554611b"
+  integrity sha512-IbJoStqQCobZWKEmvMhDRbqKLpbwXikwl8K5lWyj3HpvZyPTKsvJucpN2HhfJjCK0kOOsM/ZAGD3rU/EgRmOlw==
   dependencies:
     "@babel/polyfill" "7.4.4"
     "@platform/fs" "0.1.2"
@@ -1506,59 +1506,59 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@uiharness/dev@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.4.0.tgz#38da2f87f368ec539980bf7890e38578de94223f"
-  integrity sha512-gywmGtdQe31Cco6KgWvLlE29ZvaxYXawfI8AE6ZMZrbol81scWdoWFVwgq9mZnLnMC7h2cIWDP50ch2glxojsA==
+"@uiharness/dev@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.5.0.tgz#ca8e738b67f25529f2260e41515f364481cd22c5"
+  integrity sha512-eYhCQrBtWyuC/TJO7KzrajPvHywyYyIGgTUdbNBFEoOtbhutsYIklwSFywXqHcZ4f9i/fIkCTzMJiQBucHewUg==
   dependencies:
     "@babel/core" "7.4.5"
-    "@babel/polyfill" "7.4.4"
     "@babel/preset-env" "7.4.5"
     "@babel/preset-react" "7.0.0"
     "@babel/preset-typescript" "7.3.3"
     "@platform/cli" "0.1.5"
+    "@platform/electron" "0.4.0"
     "@platform/fs" "0.1.2"
     "@platform/ts" "3.4.26"
     "@platform/util.string" "^0.1.19"
-    "@uiharness/electron" "0.4.57"
-    "@uiharness/types" "0.4.0"
+    "@uiharness/electron" "0.5.0"
+    "@uiharness/types" "0.5.0"
     create-tmpl "0.1.57"
-    electron "5.0.3"
+    electron "5.0.0"
     electron-builder "20.43.0"
     filesize "4.1.2"
     parcel-bundler "1.12.3"
     serve "11.0.1"
 
-"@uiharness/electron@0.4.57":
-  version "0.4.57"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.4.57.tgz#e83be343c1548c44f509e90a0933f90104a0ce28"
-  integrity sha512-dgu4c+iu1iGxyv+KIxwhCKdtd5IqpYV5AeafEMyz7gWP/Quj+gBJ8bjOeDHlCIpqxmr32PzaFX8bNYekipUqug==
+"@uiharness/electron@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.5.0.tgz#dd7bd701e1d1a1b242603ed2cd557790d11e8cd6"
+  integrity sha512-3l7N+vOS5Lj0crqPPI2w0wBYxlOCDBV2WdMGjPQCH4k1E8me9I+WqIPDz09XO7Y1sMRLOE4lpNQL3eCnGMWTpQ==
   dependencies:
-    "@platform/electron" "0.3.6"
+    "@platform/electron" "0.4.0"
     "@platform/log" "0.0.126"
     "@platform/react" "0.3.1"
     "@platform/ui.object" "0.0.121"
     "@platform/util.value" "0.3.6"
     "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.4.0"
+    "@uiharness/types" "0.5.0"
     tslib "1.10.0"
 
-"@uiharness/types@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.4.0.tgz#831b67d6180817e5b107e5d913e9fa440d3b8aea"
-  integrity sha512-YkWkx1jHmRkaNTFL9eZ0Nc7xYAiS0wZRlJ5Vi885UoNAD0euCIlx6S9jIm9NDgXmxU5wEf0u6wUxRMcYS8e5DQ==
+"@uiharness/types@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.5.0.tgz#2832daf153d81236efff1b549b0665217d46ea55"
+  integrity sha512-8ybAe6BkeZ6+khTY6P4uCUpXMPS1EhAt7xInYPOkM7k6AM/wgZ4YiJxZy5OtkPx02JNOsCwhLUvsGboOGwQ4bA==
 
-"@uiharness/ui@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.4.0.tgz#29cc41bdbec4ec5d3639cbe8e0beb9be89380a7c"
-  integrity sha512-k1vzdRjkqFakMqNXr3tJJM9IAZ3C7Bpn4Q3tdGxKEyLDCfOqGDDwOS68ckuOI8paKCAdbxFiKHKRZTrGwK9Bww==
+"@uiharness/ui@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.5.0.tgz#b063745f4f2bcd693926a33473a4aa8ba62c0ccb"
+  integrity sha512-uX8HTAKDNQ6J75u3kOUYVg/VhbOVK19Tp3AuelMEFyloaPYBfUeKTlbATnBiCUaav4SutZMc4naTxuCK7uuilQ==
   dependencies:
     "@platform/cli.ui" "0.2.13"
-    "@platform/electron" "0.3.6"
+    "@platform/electron" "0.4.0"
     "@platform/react" "0.3.1"
     "@platform/ui.object" "0.0.121"
     "@platform/util.string" "0.1.19"
-    "@uiharness/types" "0.4.0"
+    "@uiharness/types" "0.5.0"
 
 "@zeit/schemas@2.6.0":
   version "2.6.0"
@@ -3475,10 +3475,10 @@ electron-window-state@5.0.3:
     jsonfile "^4.0.0"
     mkdirp "^0.5.1"
 
-electron@5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.3.tgz#919818962caffbd909af15bc8a3034be972fa76e"
-  integrity sha512-kgnxPQoTNzu0lKC8ToAktt93mTimgqHZGFCVmTaFjs1G2Bk9VqKHljbQemH+REKAaw1aEgIRn2JCrTe0Dy7fVQ==
+electron@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.0.tgz#d8352e2c9625b3be0112ce0c1bf5c9b6f692557e"
+  integrity sha512-++emIe4vLihiYiAVL+E8DT5vSNVFEIuQCRxA+VfpDRVBcog85UB28vi4ogRmMOK3UffzKdWV6e1jqp3T0KpBoA==
   dependencies:
     "@types/node" "^10.12.18"
     electron-download "^4.1.0"

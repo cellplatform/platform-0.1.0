@@ -1,7 +1,7 @@
 {
   "name": "electron.test",
   "description": "External testing module for [@platform/election].",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "scripts": {
     "postinstall": "ui init",
     "ui": "ui $@",
@@ -20,8 +20,8 @@
   },
   "devDependencies": {
     "@platform/ts": "3.4.26",
-    "@uiharness/dev": "0.4.4",
-    "@uiharness/electron": "0.4.60"
+    "@uiharness/dev": "0.5.0",
+    "@uiharness/electron": "0.5.0"
   },
   "repository": "uiharness/platform",
   "license": "MIT",
