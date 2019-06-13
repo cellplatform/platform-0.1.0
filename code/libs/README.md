@@ -3,5 +3,19 @@
 [![NPM](https://img.shields.io/npm/v/@platform/libs.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/libs)
 
 # libs
-Common external toolbelt libs used accross modules.  
+Common external low-level libs used accross all modules.  
 Referenced in this one module so that consistent versions across [@platform](https://www.npmjs.com/org/platform) are maintained.
+
+## Setup
+
+```
+yarn add @platform/libs
+```
+
+
+## Polyfills
+
+```typescript
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+```
