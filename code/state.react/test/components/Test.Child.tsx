@@ -11,7 +11,7 @@ export type IChildState = {};
 
 export class Child extends React.PureComponent<IChildProps, IChildState> {
   public state: IChildState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IChildState>>();
 
   public static contextType = state.Context;

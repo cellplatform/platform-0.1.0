@@ -17,7 +17,7 @@ export type ITestTreeState = {
 
 export class TestTree extends React.PureComponent<{}, ITestTreeState> {
   public state: ITestTreeState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestTreeState>>();
   private events$ = new Subject<t.CommandTreeEvent>();
 

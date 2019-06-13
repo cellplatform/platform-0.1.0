@@ -40,7 +40,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
    * [Fields]
    */
   public state: IFormulaInputState = { isLoaded: false };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IFormulaInputState>>();
 
   private editor: CodeMirror.Editor;

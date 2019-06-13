@@ -26,7 +26,7 @@ const BORDER = {
 
 export class DbGridEditor extends React.PureComponent<IDbGridEditorProps, IDbGridEditorState> {
   public state: IDbGridEditorState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IDbGridEditorState>>();
 
   public static contextType = datagrid.EditorContext;

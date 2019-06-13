@@ -63,7 +63,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    * [Fields]
    */
   public state: ITreeViewState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
 
   private _events$ = new Subject<t.TreeViewEvent>();
   public readonly events$ = this._events$.pipe(

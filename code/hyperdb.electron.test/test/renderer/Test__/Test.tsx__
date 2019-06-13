@@ -31,7 +31,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
   public static contextType = renderer.Context;
   public context!: t.IRendererContext;
 
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestState>>();
   public db: IRendererDb;
   // public swarm: renderer.ISwarm;

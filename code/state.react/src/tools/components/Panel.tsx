@@ -21,7 +21,7 @@ export type IPanelState = {
 };
 
 export class Panel extends React.PureComponent<IPanelProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   public state: IPanelState = {};
   private state$ = new Subject<Partial<IPanelState>>();
 

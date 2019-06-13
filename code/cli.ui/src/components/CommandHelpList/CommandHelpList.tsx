@@ -17,7 +17,7 @@ export class CommandHelpList extends React.PureComponent<
   ICommandHelpListState
 > {
   public state: ICommandHelpListState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<ICommandHelpListState>();
 
   /**

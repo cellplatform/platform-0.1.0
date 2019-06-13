@@ -20,7 +20,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     theme: 'LIGHT',
     // current: 'root.1.1',
   };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.TreeViewEvent>();
   private mouse$ = new Subject<t.TreeNodeMouseEvent>();

@@ -39,7 +39,7 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
    */
   private mouse: mouse.IMouseHandlers;
   public state: IAvatarState = { isLoaded: false, status: 'LOADING' };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IAvatarState>>();
   private events$ = new Subject<t.AvatarEvent>();
 

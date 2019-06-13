@@ -1021,14 +1021,28 @@
     fs-extra "8.0.1"
     js-yaml "3.13.1"
 
-"@platform/http@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.2.tgz#9ef803d4365d54e3e3cb4f458cc4808e3518a287"
-  integrity sha512-LgfPllKMW7mjNF3y00k4gc7Zo9Pip6adv8m7KR8+r8Z1/QWUVW8W9I3ET2C2iYBW0TFfP7MdggE57mI0aA9aWA==
+"@platform/fs@0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.1.3.tgz#cff7fb3a4cd259e683ece43586d7d3c2219d34f3"
+  integrity sha512-OeZk3NWjw2Ed0NAyW3Gn9qpOHokL1D669to4BiPIVOg+WfmsTSP3sXg2PxaSbeXy0E40yhGuyvZNGEL8cJ/waw==
   dependencies:
-    "@platform/fs" "0.1.2"
-    "@platform/types" "0.0.13"
-    "@platform/util.value" "0.3.6"
+    "@types/fs-extra" "7.0.0"
+    "@types/js-yaml" "3.12.1"
+    archiver "3.0.0"
+    extract-zip "1.6.7"
+    fast-glob "2.2.7"
+    filesize "^4.1.2"
+    fs-extra "8.0.1"
+    js-yaml "3.13.1"
+
+"@platform/http@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.4.tgz#19d2f9c5f894dc3823ee28779eec116a66ed82aa"
+  integrity sha512-wUN+LYkiDKTGDy42GpDxm7ztYBp5FRq/+/YvWwIALI1ffAWkMQz+m4fbiSPa/KgHBn8hNhpWjuCRN3OBi0Mi4Q==
+  dependencies:
+    "@platform/fs" "0.1.3"
+    "@platform/types" "0.0.15"
+    "@platform/util.value" "0.3.8"
     "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
 
@@ -1041,6 +1055,18 @@
     ramda "0.26.1"
     rxjs "6.5.2"
     tslib "1.9.3"
+
+"@platform/libs@0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.16.tgz#1208b45883e1a39b4cfa5c4ceedcfbdba6cd34d6"
+  integrity sha512-oofCIj5eWAuX/CvbO4b5ijw591EhTMEhFZNwwcl2MOO6ymllifurATe9QnABvb/2RuoRwX+aJ3St6jEYwDslyA==
+  dependencies:
+    "@types/ramda" "0.26.9"
+    core-js "3.1.3"
+    ramda "0.26.1"
+    regenerator-runtime "0.13.2"
+    rxjs "6.5.2"
+    tslib "1.10.0"
 
 "@platform/log@0.0.126":
   version "0.0.126"
@@ -1075,10 +1101,10 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/test@0.0.55":
-  version "0.0.55"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.55.tgz#f1c0b0ee12c5393ff7873bfe5e67d4e2daff656b"
-  integrity sha512-dWhQeeD/0xvX1RIH9GLiGAUNwZJACQ81GqmqIfMiy3wVUm30lrI2/Ssqck0lhzEuvM+9dcjlyqUbuOdfA/igSQ==
+"@platform/test@0.0.56":
+  version "0.0.56"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.56.tgz#4b6114aca63f1ec2c390febeff90e341ad1c6654"
+  integrity sha512-J53ydjKPhAEaa/KaTz72ZsGJ9MgFoEDBuEmJlBZeGsLjuW0LzMcgOw/za9K4qx3UqDWmNvRDBNrhGCVcY5DtnA==
   dependencies:
     "@types/chai" "4.1.7"
     "@types/mocha" "5.2.7"
@@ -1115,6 +1141,11 @@
   version "0.0.13"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.13.tgz#7662bfa71dd7aea652bce46f5e8be6de97587e85"
   integrity sha512-bfRGnkX6fhKVCObvraPvHEr+1niintZ1sHnmNYSEyCdCBeL988Ky8fui0JCMWdBUsYTqrMQ6OXGwcnr3I9BvAg==
+
+"@platform/types@0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.15.tgz#6dd9e5649be4ddb04ab9a975080126c9b83f2a19"
+  integrity sha512-G/bQx8Ood/yRgpK92XhnjCqvLFwy3i8u1L0vmJpH7hJPR5VEEaXb09RXh42kfAMfTdMLN2PsE8ZUoOom+6KZfA==
 
 "@platform/ui.icon@0.0.65":
   version "0.0.65"
@@ -1180,6 +1211,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.75.tgz#5b318cebd27a8c74376b95aab6a694a073af2997"
   integrity sha512-U9kNuqdMKzNxY8JL0b2vJYELdhwomjH8ikZ1rsTBXJ0Hlb/ljSPwR1+43tEhF1jjMWBpJpU1a4NZA//Qe4gsZg==
 
+"@platform/util.is@0.0.77":
+  version "0.0.77"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.77.tgz#a8735341d645ee340027608ed54a6368b779e5b5"
+  integrity sha512-tcFu+kqWi1CVpiTUaig4FDOZxf4SrUV03Xm0j8YYdHL9fOlZHGAKqbLVpuej+bwPLaQS/3PnNU7kN6DJ40j0Yw==
+
 "@platform/util.local-storage@0.0.19":
   version "0.0.19"
   resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.19.tgz#21f31bee29b5154db2083482799b79386e5a7163"
@@ -1205,6 +1241,19 @@
     "@platform/libs" "0.0.15"
     "@platform/types" "0.0.13"
     "@platform/util.is" "0.0.75"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.1.1"
+
+"@platform/util.value@0.3.8":
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.3.8.tgz#809af98e51045b4b84cfb82e769d5ad1cbe5d93a"
+  integrity sha512-1MHOz/Ha+lm8yZ51Xmv5+9lhbDYp2+BiEDDZyk4Vo55c36HyPkjfLzrRahgW+SpfFqhTo2slu+cbu7ERUBU0LQ==
+  dependencies:
+    "@platform/libs" "0.0.16"
+    "@platform/types" "0.0.15"
+    "@platform/util.is" "0.0.77"
     "@types/semver" "6.0.0"
     cuid "2.1.6"
     dayjs "1.8.14"
@@ -3135,6 +3184,11 @@ core-js-pure@3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.1.3.tgz#4c90752d5b9471f641514f3728f51c1e0783d0b5"
   integrity sha512-k3JWTrcQBKqjkjI0bkfXS0lbpWPxYuHWfMMjC1VDmzU4Q58IwSbuXSo99YO/hUHlw/EB4AlfA2PVxOGkrIq6dA==
+
+core-js@3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.1.3.tgz#95700bca5f248f5f78c0ec63e784eca663ec4138"
+  integrity sha512-PWZ+ZfuaKf178BIAg+CRsljwjIMRV8MY00CbZczkR6Zk5LfkSkjGoaab3+bqRQWVITNZxQB7TFYz+CFcyuamvA==
 
 core-js@^1.0.0:
   version "1.2.7"
@@ -7558,6 +7612,11 @@ regenerate@^1.2.1, regenerate@^1.4.0:
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.0.tgz#4a856ec4b56e4077c557589cae85e7a4c8869a11"
   integrity sha512-1G6jJVDWrt0rK99kBjvEtziZNCICAuvIPkSiUFIQxVP06RCVpq3dmDo2oi6ABpYaDYaTRr67BEhL8r1wgEZZKg==
 
+regenerator-runtime@0.13.2, regenerator-runtime@^0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.2.tgz#32e59c9a6fb9b1a4aff09b4930ca2d4477343447"
+  integrity sha512-S/TQAZJO+D3m9xeN1WTI8dLKBBiRgXBlTJvbWjCThHWZj9EvHK70Ff50/tYj2J/fvBY6JtFVwRuazHN2E7M9BA==
+
 regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
@@ -7567,11 +7626,6 @@ regenerator-runtime@^0.12.0:
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
   integrity sha512-odxIc1/vDlo4iZcfXqRYFj0vpXFNoGdKMAUieAlFYO6m/nl5e9KR/beGf41z4a1FI+aQgtjhuaSlDxQ0hmkrHg==
-
-regenerator-runtime@^0.13.2:
-  version "0.13.2"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.2.tgz#32e59c9a6fb9b1a4aff09b4930ca2d4477343447"
-  integrity sha512-S/TQAZJO+D3m9xeN1WTI8dLKBBiRgXBlTJvbWjCThHWZj9EvHK70Ff50/tYj2J/fvBY6JtFVwRuazHN2E7M9BA==
 
 regenerator-transform@^0.14.0:
   version "0.14.0"

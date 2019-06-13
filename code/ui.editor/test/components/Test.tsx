@@ -116,7 +116,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     // value: '* one\n* two',
     // value: LOREM,
   };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.TextEditorEvent>();
 

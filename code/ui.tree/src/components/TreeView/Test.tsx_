@@ -268,7 +268,7 @@ export class Content extends React.PureComponent<IContentProps, IContentState> {
     node: this.props.node,
   };
 
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private treeView: TreeView;
   private treeViewRef = (ref: TreeView) => (this.treeView = ref);
 

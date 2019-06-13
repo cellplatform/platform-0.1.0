@@ -10,7 +10,7 @@ export type ITestProps = {};
 
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<t.ITestState>>();
   private cli = cli.init({ state$: this.state$ });
 

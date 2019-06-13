@@ -27,7 +27,7 @@ export type IPropsState = {
 export class Props extends React.PureComponent<IPropsProps, IPropsState> {
   public state: IPropsState = { current: ROOT };
   private state$ = new Subject<Partial<IPropsState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private events$ = new Subject<t.PropsEvent>();
   private tree$ = new Subject<t.TreeViewEvent>();
 

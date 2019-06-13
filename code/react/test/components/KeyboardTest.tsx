@@ -26,7 +26,7 @@ export interface IKeyboardTestState {
 export class KeyboardTest extends React.PureComponent<IKeyboardTestProps, IKeyboardTestState> {
   public state: IKeyboardTestState = {};
   private state$ = new Subject<Partial<IKeyboardTestState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private keyboard = this.props.keyboard || keyboard;
 
   public componentDidMount() {

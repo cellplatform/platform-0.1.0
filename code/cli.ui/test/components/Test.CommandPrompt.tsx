@@ -19,7 +19,7 @@ export type ITestCommandPromptProps = {};
 
 export class TestCommandPrompt extends React.PureComponent<ITestCommandPromptProps, t.ITestState> {
   public state: t.ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<t.ITestState>>();
   private events$ = new Subject<t.CommandPromptEvent>();
   private cli = cli.init({ state$: this.state$, getState: () => this.state });

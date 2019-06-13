@@ -17,7 +17,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     borderWidth: 5,
     borderColor: 0.2,
   };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<t.ITestState>>();
   private events$ = new Subject<t.AvatarEvent>();
   private cli: t.ICommandState = cli.init({ state$: this.state$ });

@@ -23,7 +23,7 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
   public context!: renderer.ReactContext;
   public state: IWindowsTestState = { current: { refs: [] } };
 
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
 
   public componentDidMount() {
     this.setState({

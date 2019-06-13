@@ -11,7 +11,7 @@ export type IAuthStateProps = {
 
 export class AuthState extends React.PureComponent<IAuthStateProps, t.ITestState> {
   public state: t.ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<t.ITestState>>();
 
   /**

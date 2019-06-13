@@ -37,7 +37,7 @@ const COLOR = {
 
 export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThreadCommentState> {
   public state: IThreadCommentState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IThreadCommentState>>();
   private editor$ = this.props.editor$ || new Subject<t.TextEditorEvent>();
 

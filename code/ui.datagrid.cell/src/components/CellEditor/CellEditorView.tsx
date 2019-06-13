@@ -40,7 +40,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   /**
    * [Fields]
    */
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
 
   private formula$ = new Subject<p.FormulaInputEvent>();
   private formula!: p.FormulaInput;

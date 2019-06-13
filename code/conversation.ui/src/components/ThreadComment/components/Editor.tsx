@@ -19,7 +19,7 @@ export type IEditorState = {
 
 export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
   public state: IEditorState = { value: this.props.value };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IEditorState>>();
 
   private editor!: TextEditor;

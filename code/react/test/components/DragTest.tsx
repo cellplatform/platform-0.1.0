@@ -22,7 +22,7 @@ export type IDragTestState = { event?: drag.IDragPositionEvent };
 
 export class DragTest extends React.PureComponent<IDragTestProps, IDragTestState> {
   public state: IDragTestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IDragTestState>>();
 
   /**

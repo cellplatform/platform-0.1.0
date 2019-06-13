@@ -15,7 +15,7 @@ export type IDebugEditorState = {
 
 export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEditorState> {
   public state: IDebugEditorState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IDebugEditorState>>();
 
   public static contextType = datagrid.EditorContext;

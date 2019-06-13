@@ -17,7 +17,7 @@ export type INetworkBulletState = {
 
 export class NetworkBullet extends React.PureComponent<INetworkBulletProps, INetworkBulletState> {
   public state: INetworkBulletState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<INetworkBulletState>>();
 
   /**

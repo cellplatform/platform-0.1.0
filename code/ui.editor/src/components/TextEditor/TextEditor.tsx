@@ -81,7 +81,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   private _prevState: t.EditorState | undefined;
   private _prevSize: t.IEditorSize = { width: -1, height: -1 };
 
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
 
   private _events$ = new Subject<t.TextEditorEvent>();

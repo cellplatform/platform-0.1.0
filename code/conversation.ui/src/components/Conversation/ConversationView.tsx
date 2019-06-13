@@ -15,7 +15,7 @@ export type IConversationViewProps = {
 };
 
 export class ConversationView extends React.PureComponent<IConversationViewProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private editor$ = new Subject<t.TextEditorEvent>();
   private dispatch = (e: t.ThreadEvent) => this.props.dispatch$.next(e);
 

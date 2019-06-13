@@ -14,7 +14,7 @@ export type ITestState = { view?: View };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestState>>();
 
   /**

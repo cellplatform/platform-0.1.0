@@ -36,7 +36,7 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
   public static contextType = renderer.Context;
   public context!: t.ITestRendererContext;
   public state: IShellIndexState = { items: [] };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IShellIndexState>();
 
   /**

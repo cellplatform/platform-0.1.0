@@ -48,7 +48,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     rows: DEFAULT.ROWS,
   };
   public state$ = new Subject<Partial<ITestGridViewState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private events$ = this.props.events$ || new Subject<t.GridEvent>();
 
   public datagrid!: datagrid.DataGrid;

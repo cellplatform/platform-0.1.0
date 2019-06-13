@@ -14,7 +14,7 @@ export type IDialogState = {};
 
 export class Dialog extends React.PureComponent<IDialogProps, IDialogState> {
   public state: IDialogState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IDialogState>();
 
   /**

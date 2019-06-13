@@ -12,7 +12,7 @@ export type ITestState = { value?: string };
 
 export class Test extends React.PureComponent<ITestState> {
   public state: ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.TextInputEvent>();
 

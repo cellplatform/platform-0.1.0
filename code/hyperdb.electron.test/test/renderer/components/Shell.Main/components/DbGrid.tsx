@@ -14,7 +14,7 @@ const PATTERN = {
 
 export class DbGrid extends React.PureComponent<IDbGridProps, IDbGridState> {
   public state: IDbGridState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IDbGridState>>();
   private grid$ = new Subject<datagrid.GridEvent>();
 

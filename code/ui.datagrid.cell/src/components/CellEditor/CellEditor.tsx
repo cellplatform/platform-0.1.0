@@ -25,7 +25,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
   public context!: t.ReactEditorContext;
 
   public state: ICellEditorState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ICellEditorState>>();
   private _events$ = new Subject<t.CellEditorEvent>();
   public events$ = this._events$.pipe(

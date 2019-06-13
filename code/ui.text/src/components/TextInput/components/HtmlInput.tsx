@@ -48,7 +48,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
    * [Fields]
    */
   public state: IHtmlInputState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IHtmlInputState>>();
 
   private input: HTMLInputElement;

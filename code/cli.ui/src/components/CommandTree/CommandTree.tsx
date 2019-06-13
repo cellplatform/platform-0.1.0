@@ -16,7 +16,7 @@ export type ICommandTreeState = {};
 
 export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommandTreeState> {
   public state: ICommandTreeState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ICommandTreeState>>();
 
   private _events$ = new Subject<t.CommandTreeEvent>();

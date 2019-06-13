@@ -8,7 +8,7 @@ import { TestCellEditor } from './Test.CellEditor';
 
 export class Test extends React.PureComponent<{}, t.ITestState> {
   public state: t.ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<t.ITestState>>();
   private events$ = new Subject<t.CellEditorEvent>();
   private cli: t.ICommandState = cli.init({

@@ -15,7 +15,7 @@ export type ITestGridState = {
 
 export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState> {
   public state: ITestGridState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestGridState>>();
   private events$ = new Subject<t.GridEvent>();
 

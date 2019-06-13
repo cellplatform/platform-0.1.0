@@ -21,7 +21,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
   public state: IShellMainState = {};
   public static contextType = renderer.Context;
   public context!: t.ITestRendererContext;
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IShellMainState>();
 
   /**

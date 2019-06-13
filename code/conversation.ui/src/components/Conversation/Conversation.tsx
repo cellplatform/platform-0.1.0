@@ -11,7 +11,7 @@ export type IConversationProps = {
 };
 
 export class Conversation extends React.PureComponent<IConversationProps> {
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private dispatch$ = new Subject<t.ThreadEvent>();
   private dispatch = (e: t.ThreadEvent) => this.dispatch$.next(e);
 
