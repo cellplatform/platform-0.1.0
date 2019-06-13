@@ -1,3 +1,5 @@
+import { semver } from '../common';
+
 /**
  * Initialize a new version
  */
@@ -19,19 +21,20 @@ export class Version {
   /**
    * [Lifecycle]
    */
-  private constructor(value: string) {
-    this.value = value;
+  private constructor(raw: string) {
+    raw = (raw || '').trim();
+    this.raw = raw;
   }
 
   /**
    * [Fields]
    */
-  public readonly value: string;
+  public readonly raw: string;
 
   /**
    * [Methods]
    */
   public toString() {
-    return this.value;
+    return this.raw;
   }
 }
