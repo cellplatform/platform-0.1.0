@@ -37,7 +37,7 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
    */
 
   public state: ICommandShellState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ICommandShellState>>();
   private tree$ = new Subject<t.CommandTreeEvent>();
 

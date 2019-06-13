@@ -53,7 +53,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   public grid!: Grid;
   public factory!: FactoryManager;
 
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IDataGridState>>();
 
   private el!: HTMLDivElement;

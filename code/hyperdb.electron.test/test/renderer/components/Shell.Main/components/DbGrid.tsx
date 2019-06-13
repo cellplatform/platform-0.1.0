@@ -14,7 +14,7 @@ const PATTERN = {
 
 export class DbGrid extends React.PureComponent<IDbGridProps, IDbGridState> {
   public state: IDbGridState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IDbGridState>>();
   private grid$ = new Subject<datagrid.GridEvent>();
 
@@ -53,8 +53,8 @@ export class DbGrid extends React.PureComponent<IDbGridProps, IDbGridState> {
     // Update the DB when the GRID changes.
     grid$
       .pipe(
-        filter(e => e.type === 'GRID/change'),
-        map(e => e.payload as datagrid.IGridChange),
+        filter(e => e.type === 'GRID/cell/change'),
+        map(e => e.payload as datagrid.IGridCellChange),
         filter(e => e.isChanged),
         filter(e => !e.isCancelled),
         // delay(0),
@@ -103,7 +103,7 @@ export class DbGrid extends React.PureComponent<IDbGridProps, IDbGridState> {
         return acc;
       }, {});
 
-      grid.loadValues(values);
+      grid.changeValues(values);
     }
   }
 

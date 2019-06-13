@@ -15,7 +15,7 @@ export type IActionState = {
 
 export class Action extends React.PureComponent<IActionProps, IActionState> {
   public state: IActionState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IActionState>>();
 
   /**

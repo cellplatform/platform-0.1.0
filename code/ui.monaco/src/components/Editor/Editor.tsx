@@ -38,7 +38,7 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
   /**
    * Fields.
    */
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private _size$ = new Subject<ISize>();
   private size$ = this._size$.pipe(
     share(),

@@ -40,7 +40,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
    */
   public state: IButtonState = {};
   private mouse: mouse.IMouseHandlers;
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IButtonState>();
 
   /**

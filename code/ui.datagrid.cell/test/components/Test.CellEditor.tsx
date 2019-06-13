@@ -23,7 +23,7 @@ export class TestCellEditor extends React.PureComponent<
   ITestCellEditorState
 > {
   public state: ITestCellEditorState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestCellEditorState>>();
   private events$ = new Subject<t.CellEditorEvent>();
 

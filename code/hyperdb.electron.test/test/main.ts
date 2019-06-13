@@ -8,7 +8,7 @@ import * as t from './types';
 
 const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
 
-(async () => {
+app.on('ready', async () => {
   const context = await uiharness.init({ config });
   const { log, ipc } = context;
   const store = context.store as t.ITestStore;
@@ -30,15 +30,15 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
     const { events$ } = await hyperdb.listen({ ipc, log });
     const created$ = events$.pipe(filter(e => e.type === 'DB/main/created'));
 
-    // Keep the store object in sync when a new DB is created.
+    // Keep the store object in-sync when a new DB is created.
     created$.subscribe(e => updateDatabaseList(store));
   } catch (error) {
     log.error('failed during startup', error);
   }
-})();
+});
 
 /**
- * INTERNAL
+ * [Internal]
  */
 export async function updateDatabaseList(store: t.ITestStore) {
   const dir = await store.get('dir');

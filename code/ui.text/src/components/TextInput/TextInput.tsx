@@ -67,7 +67,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
    * [Fields]
    */
   public state: ITextInputState = { width: toInitialWidth(this.props) };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITextInputState>>();
   private _events$ = new Subject<t.TextInputEvent>();
   public events = this._events$.pipe(takeUntil(this.unmounted$));

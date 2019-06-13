@@ -17,7 +17,7 @@ export type IJoinDialogState = {
 
 export class JoinDialog extends React.PureComponent<IJoinDialogProps, IJoinDialogState> {
   public state: IJoinDialogState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IJoinDialogState>();
 
   private elKeyTextbox: TextInput | undefined;

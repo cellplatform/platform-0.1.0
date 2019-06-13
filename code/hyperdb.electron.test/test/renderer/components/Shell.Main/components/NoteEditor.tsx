@@ -27,7 +27,7 @@ export type INoteEditorState = {
 
 export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEditorState> {
   public state: INoteEditorState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<INoteEditorState>>();
   private editorEvents$ = new Subject<TextEditorEvent>();
   private editor: TextEditor | undefined;

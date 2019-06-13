@@ -41,7 +41,7 @@ export type IPropEditorState = {
 export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEditorState> {
   public state: IPropEditorState = {};
   private state$ = new Subject<Partial<IPropEditorState>>();
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private didUpdate$ = new Subject();
   private value$ = new Subject<t.TextInputEvent>();
 

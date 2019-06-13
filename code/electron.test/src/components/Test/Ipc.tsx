@@ -21,7 +21,7 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
   private id!: number;
   private log!: renderer.ILog;
   private ipc!: renderer.IpcClient;
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
 
   public componentWillMount() {
     const { id, log, ipc } = this.context;

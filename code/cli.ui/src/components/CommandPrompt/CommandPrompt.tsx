@@ -29,7 +29,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
   /**
    * [Fields]
    */
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private keyPress$ = (this.props.keyPress$ || events.keyPress$).pipe(takeUntil(this.unmounted$));
   private _events$ = new Subject<t.CommandPromptEvent>();
   public events$ = this._events$.pipe(takeUntil(this.unmounted$));

@@ -24,7 +24,7 @@ export type IGraphqlEditorState = {};
 
 export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGraphqlEditorState> {
   public state: IGraphqlEditorState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IGraphqlEditorState>>();
 
   private _result: t.IJsonMap | undefined;

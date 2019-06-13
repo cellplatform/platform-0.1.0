@@ -10,7 +10,7 @@ import { Npm, renderer, CommandShell, t } from '../common';
  */
 export class Test extends React.PureComponent<{}, t.ITestState> {
   public state: t.ITestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<t.ITestState>>();
 
   public static contextType = renderer.Context;

@@ -13,16 +13,6 @@ yarn ui start
 ```
 
 
-## package.json
-Optionally add a [browserslist](https://github.com/browserslist/browserslist) reference:
-```json
-{
-  "browserslist": [
-    "electron >= 5"
-  ]
-}
-```
-- https://www.npmjs.com/package/electron-to-chromium
 
 <p>&nbsp;<p>
 

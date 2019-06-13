@@ -17,7 +17,7 @@ export type IDbHeaderState = {
 
 export class DbHeader extends React.PureComponent<IDbHeaderProps, IDbHeaderState> {
   public state: IDbHeaderState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IDbHeaderState>();
 
   /**

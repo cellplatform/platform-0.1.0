@@ -13,7 +13,7 @@ export type ITestTextState = {};
 
 export class TestText extends React.PureComponent<ITestTextProps, ITestTextState> {
   public state: ITestTextState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestTextState>>();
 
   /**

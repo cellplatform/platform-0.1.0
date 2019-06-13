@@ -17,7 +17,7 @@ export class ThreadCommentHeader extends React.PureComponent<
   IThreadCommentHeaderState
 > {
   public state: IThreadCommentHeaderState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IThreadCommentHeaderState>>();
   private redraw$ = new Subject();
 

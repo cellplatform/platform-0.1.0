@@ -21,7 +21,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
   public state: IShellMainState = {};
   public static contextType = renderer.Context;
   public context!: t.ITestRendererContext;
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IShellMainState>();
 
   /**
@@ -62,7 +62,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
       base: css({
         flex: 1,
         Flex: 'vertical-stretch-stretch',
-        paddingTop: !db && 20,
+        paddingTop: !db ? 20 : undefined,
       }),
       header: css({ padding: 20 }),
       body: css({

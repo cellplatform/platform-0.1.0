@@ -1,6 +1,6 @@
 {
   "name": "@platform/auth",
-  "version": "0.1.14",
+  "version": "0.1.18",
   "description": "Tools for performing authorization role-based access control.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,12 +14,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.15",
-    "@platform/util.is": "0.0.75"
+    "@platform/libs": "0.0.16",
+    "@platform/util.is": "0.0.77"
   },
   "devDependencies": {
-    "@platform/test": "0.0.55",
-    "@platform/ts": "3.4.26"
+    "@platform/test": "0.0.56",
+    "@platform/ts": "3.4.28"
   },
   "files": [
     "lib"

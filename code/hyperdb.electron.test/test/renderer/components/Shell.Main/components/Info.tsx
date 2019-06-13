@@ -17,7 +17,7 @@ export type IInfoState = {
 
 export class Info extends React.PureComponent<IInfoProps, IInfoState> {
   public state: IInfoState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IInfoState>();
   public static contextType = renderer.Context;
   public context!: t.ITestRendererContext;

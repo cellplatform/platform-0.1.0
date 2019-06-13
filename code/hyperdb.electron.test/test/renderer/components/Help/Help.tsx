@@ -20,7 +20,7 @@ export type IHelpState = {};
 
 export class Help extends React.PureComponent<IHelpProps, IHelpState> {
   public state: IHelpState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IHelpState>();
 
   /**

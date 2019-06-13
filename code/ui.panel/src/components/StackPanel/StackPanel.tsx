@@ -31,7 +31,7 @@ export class StackPanel extends React.PureComponent<IStackPanelProps> {
   /**
    * [Fields]
    */
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private props$ = new BehaviorSubject<IStackPanelProps>(this.props);
   private previous = this.index;
 

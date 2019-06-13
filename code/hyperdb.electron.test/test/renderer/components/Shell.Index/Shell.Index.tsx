@@ -36,7 +36,7 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
   public static contextType = renderer.Context;
   public context!: t.ITestRendererContext;
   public state: IShellIndexState = { items: [] };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IShellIndexState>();
 
   /**
@@ -172,8 +172,8 @@ export class ShellIndex extends React.PureComponent<IShellIndexProps, IShellInde
         borderBottom: `solid 1px ${color.format(-0.1)}`,
         padding: 8,
         Flex: 'horizontal-spaceBetween-center',
-        cursor: !isSelected && 'pointer',
-        backgroundColor: isSelected && COLORS.BLUE,
+        cursor: !isSelected ? 'pointer' : undefined,
+        backgroundColor: isSelected ? COLORS.BLUE : undefined,
         color: isSelected ? color.format(0.5) : color.format(-0.4),
       }),
       content: css({

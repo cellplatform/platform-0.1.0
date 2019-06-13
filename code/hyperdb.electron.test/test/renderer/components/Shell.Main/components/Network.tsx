@@ -15,7 +15,7 @@ export type INetworkState = {
 
 export class Network extends React.PureComponent<INetworkProps, INetworkState> {
   public state: INetworkState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<INetworkState>();
 
   /**

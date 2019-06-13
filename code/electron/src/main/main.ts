@@ -9,6 +9,7 @@ import { WindowsMain } from '../helpers/windows/main';
 import * as t from '../types';
 
 export * from '../types';
+export * from '../helpers/screen/main';
 export { is } from '../helpers/is/main';
 export { devTools, logger };
 
@@ -24,6 +25,7 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
     windows?: t.IWindows;
   } = {},
 ): Promise<t.IMain<M, S>> {
+  await ready();
   const { appName } = args;
   const id = MAIN_ID;
 
@@ -38,16 +40,29 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
   devTools.listen({ ipc, windows });
 
   // Finish up.
-  const res: t.IMain<M, S> = { id, ipc, log, store, windows };
-  return res;
+  const main: t.IMain<M, S> = { id, ipc, log, store, windows };
+  return main;
 }
 
 /**
- * Factory for creating windows.
+ * Factory for creating `windows` manager.
  */
 export function createWindows(args: { ipc: t.IpcClient }) {
   const { ipc } = args;
   return new WindowsMain({ ipc });
+}
+
+/**
+ * Promise that waits until the app is ready or returns immediately if already `ready`.
+ */
+export function ready() {
+  return new Promise((resolve, reject) => {
+    if (app.isReady()) {
+      resolve();
+    } else {
+      app.on('ready', () => resolve());
+    }
+  });
 }
 
 /**

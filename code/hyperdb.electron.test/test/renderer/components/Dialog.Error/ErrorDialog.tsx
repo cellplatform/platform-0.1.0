@@ -15,7 +15,7 @@ export type IErrorDialogState = {};
 
 export class ErrorDialog extends React.PureComponent<IErrorDialogProps, IErrorDialogState> {
   public state: IErrorDialogState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IErrorDialogState>();
 
   /**

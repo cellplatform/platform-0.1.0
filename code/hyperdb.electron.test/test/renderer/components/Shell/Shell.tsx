@@ -26,7 +26,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public state: IShellState = {};
   public static contextType = renderer.Context;
   public context!: t.ITestRendererContext;
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IShellState>>();
   private commandPrompt: CommandPrompt | undefined;
   private commandPromptRef = (ref: CommandPrompt) => (this.commandPrompt = ref);

@@ -52,7 +52,7 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
    * [Fields]
    */
   public state: IPanelState = { opacity: 1 };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IPanelState>>();
 
   /**

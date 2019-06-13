@@ -41,7 +41,7 @@ export class CommandPromptInput extends React.PureComponent<
   public static THEMES = THEMES;
 
   public state: ICommandPromptInputState = { text: this.props.text };
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<ICommandPromptInputState>();
 
   private elInput: TextInput | undefined;

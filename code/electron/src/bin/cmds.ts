@@ -1,9 +1,13 @@
 import { exec } from '@platform/exec';
 import { log } from '@platform/log/lib/server';
+import { value } from '@platform/util.value';
 
+const { defaultValue } = value;
 const pkg = require('../../package.json') as { devDependencies: { [key: string]: string } };
 
 /**
+ * Runs the build command.
+ *
  * Background:
  *   - https://electronjs.org/docs/tutorial/using-native-node-modules
  *
@@ -15,7 +19,35 @@ const pkg = require('../../package.json') as { devDependencies: { [key: string]:
  *   - https://github.com/electron/electron/issues/5851
  *
  */
-export async function rebuild() {
+export async function rebuild(options: { silent?: boolean; run?: boolean; cwd?: string } = {}) {
+  const { silent, cwd } = options;
+  const run = defaultValue(options.run, true);
+  const { cmd, env, version } = rebuildCommand();
+
+  const write = () => {
+    if (silent) {
+      return;
+    }
+    log.info();
+    log.info.gray('electron', log.yellow(version));
+    log.info.gray('env: ', env);
+    log.info.gray(`command: ${log.cyan(cmd)}`);
+    log.info();
+  };
+
+  if (run) {
+    write();
+    await exec.cmd.run(cmd, { cwd, env, silent });
+    write();
+  }
+
+  return { cmd, env, version };
+}
+
+/**
+ * Generates the rebuild command.
+ */
+export function rebuildCommand() {
   const version = pkg.devDependencies.electron;
   const env = {
     CXXFLAGS: '-mmacosx-version-min=10.10',
@@ -30,17 +62,5 @@ export async function rebuild() {
       --build-from-source
   `;
 
-  // const cmd = `npm rebuild --runtime=electron --target=${version} --disturl=https://atom.io/download/atom-shell --build-from-source`;
-
-  const write = () => {
-    log.info();
-    log.info.gray('electron', log.yellow(version));
-    log.info.gray('env: ', env);
-    log.info.gray(`command: ${log.cyan(cmd)}`);
-    log.info();
-  };
-
-  write();
-  await exec.cmd.run(cmd, { env });
-  write();
+  return { cmd, env, version };
 }

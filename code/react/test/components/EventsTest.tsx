@@ -9,7 +9,7 @@ export type IEventsTestState = { keyPress?: any; mouseDown?: any; focus?: any };
 
 export class EventsTest extends React.PureComponent<IEventsTestProps, IEventsTestState> {
   public state: IEventsTestState = {};
-  private unmounted$ = new Subject();
+  private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IEventsTestState>>();
 
   /**

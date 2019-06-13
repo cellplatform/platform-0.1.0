@@ -1,10 +1,9 @@
-import { interval } from 'rxjs';
-
 import main from '@platform/electron/lib/main';
 import { time } from '@platform/util.value';
 import * as uiharness from '@uiharness/electron/lib/main';
-import { BrowserWindow } from 'electron';
-import { map } from 'rxjs/operators';
+import { BrowserWindow, app } from 'electron';
+import { format } from 'url';
+import * as root from 'app-root-path';
 
 import * as t from '../src/types';
 
@@ -22,22 +21,22 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
   //        that contains [log] and [ipc].
   const { log, ipc, store, windows } = await main.init<t.MyEvents>({ appName });
 
+  const settings = store;
+  const factory = new main.ScreenFactory<t.MyEvents>({ log, settings, ipc, windows });
+
+  const defaultFactory = factory.type({
+    type: 'default',
+    url: fromKey('default'),
+    window: {
+      title: 'Debug',
+      width: 1200,
+      height: 600,
+    },
+  });
+
   try {
-    const { newWindow } = await uiharness.init({
-      config,
-      log,
-      ipc,
-      windows,
-      // devTools: true,
-    });
-
+    defaultFactory.create({ uid: 'foo' });
     log.info.blue('started');
-    // log.info('store.count', log.cyan(store.get('count') || 0));
-
-    // TEMP 🐷
-    // interval(1000).subscribe(() => {
-    //   windows.refresh();
-    // });
 
     /**
      * Filter (new window).
@@ -46,7 +45,18 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
       const all = BrowserWindow.getAllWindows();
       if (e.type === 'TEST/window/new') {
         const title = `New Window (${all.length})`;
-        newWindow({ title, devTools: true });
+
+        const focused = windows.focused;
+        const current = BrowserWindow.fromId(focused ? focused.id : -1);
+        const bounds = current ? { ...current.getBounds() } : undefined;
+        const x = bounds ? bounds.x + 40 : undefined;
+        const y = bounds ? bounds.y + 40 : undefined;
+
+        defaultFactory.create({
+          uid: 'foo-1',
+          window: { title },
+          bounds: { x, y }, // Override default window and state values.
+        });
       }
     });
 
@@ -80,3 +90,26 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
     log.error(error.message);
   }
 })();
+
+/**
+ * [Helpers]
+ */
+
+export function fromKey(key: string) {
+  const item = config.electron.renderer[key];
+  if (!item) {
+    throw new Error(`Renderer entry point not found for '${key}' in configuration JSON.`);
+  }
+  const { path } = item;
+  if (main.is.prod) {
+    return format({
+      protocol: 'file:',
+      pathname: root.resolve(path),
+      slashes: true,
+    });
+  } else {
+    const filename = path.substr(path.lastIndexOf('/') + 1);
+    const port = config.electron.port;
+    return `http://localhost:${port}/${filename}`;
+  }
+}
