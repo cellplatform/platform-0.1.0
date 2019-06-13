@@ -1,7 +1,7 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.3.6",
+  "version": "0.4.0",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
@@ -33,7 +33,7 @@
     "@platform/test": "0.0.55",
     "@platform/ts": "3.4.26",
     "@types/minimist": "1.2.0",
-    "electron": "5.0.3"
+    "electron": "5.0.0"
   },
   "files": [
     "lib",

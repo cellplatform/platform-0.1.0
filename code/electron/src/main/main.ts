@@ -25,34 +25,23 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
     windows?: t.IWindows;
   } = {},
 ): Promise<t.IMain<M, S>> {
-  return new Promise<t.IMain<M, S>>((resolve, reject) => {
-    
+  await ready();
+  const { appName } = args;
+  const id = MAIN_ID;
 
-    const run = async () => {
-      const { appName } = args;
-      const id = MAIN_ID;
+  // Initiaize modules.
+  const ipc = args.ipc || initIpc<M>();
+  const store = args.store || initStore<S>({ ipc });
+  const windows = args.windows || createWindows({ ipc });
+  const log =
+    typeof args.log === 'object'
+      ? args.log // Logger already exists and was provided.
+      : initLog({ ipc, dir: args.log, appName }); // Initialize a new log.
+  devTools.listen({ ipc, windows });
 
-      // Initiaize modules.
-      const ipc = args.ipc || initIpc<M>();
-      const store = args.store || initStore<S>({ ipc });
-      const windows = args.windows || createWindows({ ipc });
-      const log =
-        typeof args.log === 'object'
-          ? args.log // Logger already exists and was provided.
-          : initLog({ ipc, dir: args.log, appName }); // Initialize a new log.
-      devTools.listen({ ipc, windows });
-
-      // Finish up.
-      resolve({ id, ipc, log, store, windows });
-    };
-
-    // Ensure the app is in a ready state before initializing.
-    if (app.isReady()) {
-      run();
-    } else {
-      app.on('ready', async () => run());
-    }
-  });
+  // Finish up.
+  const main: t.IMain<M, S> = { id, ipc, log, store, windows };
+  return main;
 }
 
 /**
@@ -61,6 +50,19 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
 export function createWindows(args: { ipc: t.IpcClient }) {
   const { ipc } = args;
   return new WindowsMain({ ipc });
+}
+
+/**
+ * Promise that waits until the app is ready or returns immediately if already `ready`.
+ */
+export function ready() {
+  return new Promise((resolve, reject) => {
+    if (app.isReady()) {
+      resolve();
+    } else {
+      app.on('ready', () => resolve());
+    }
+  });
 }
 
 /**

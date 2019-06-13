@@ -31,6 +31,6 @@ process.on('unhandledRejection', err => {
 
     default:
       log.info.gray(`Not found.\n`);
-      break;
+      return;
   }
 })();
