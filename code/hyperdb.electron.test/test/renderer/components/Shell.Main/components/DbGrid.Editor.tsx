@@ -41,7 +41,7 @@ export class DbGridEditor extends React.PureComponent<IDbGridEditorProps, IDbGri
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
-    state$.subscribe(e => this.context.set(this.value));
+    state$.subscribe(e => this.context.set({ value: this.value }));
 
     // Update <input> on keypress.
     const keys$ = this.context.keys$;

@@ -62,7 +62,7 @@ export class ShellMain extends React.PureComponent<IShellMainProps, IShellMainSt
       base: css({
         flex: 1,
         Flex: 'vertical-stretch-stretch',
-        paddingTop: !db && 20,
+        paddingTop: !db ? 20 : undefined,
       }),
       header: css({ padding: 20 }),
       body: css({

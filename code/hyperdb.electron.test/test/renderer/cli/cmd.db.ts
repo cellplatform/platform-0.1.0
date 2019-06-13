@@ -66,7 +66,7 @@ export const update = Command.create<P>('update', async e => {
         data[param.toString()] = params[i + 1];
       }
     });
-    await db.update(data);
+    await db.putMany(data);
     await updateWatch({ db, addKeys: Object.keys(data) });
   }
 });

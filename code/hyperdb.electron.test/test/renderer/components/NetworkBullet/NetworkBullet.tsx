@@ -63,7 +63,9 @@ export class NetworkBullet extends React.PureComponent<INetworkBulletProps, INet
         height: BULLET_SIZE,
         borderRadius: BULLET_SIZE,
         backgroundColor: color.format(0.2),
-        backgroundImage: isConnected && `linear-gradient(-180deg, #70EB07 0%, #35AF06 100%)`,
+        backgroundImage: isConnected
+          ? `linear-gradient(-180deg, #70EB07 0%, #35AF06 100%)`
+          : undefined,
         border: `solid 1px ${color.format(1)}`,
         boxSizing: 'border-box',
       }),
