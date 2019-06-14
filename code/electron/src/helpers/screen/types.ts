@@ -21,8 +21,11 @@ export type IScreenFactory<
   M extends t.IpcMessage = any,
   S extends t.StoreJson = any
 > = IScreenContext<M, S> & {
-  events$: Observable<ScreenEvent>;
-  instances: Array<t.IScreen<M, S>>;
+  readonly instances: Array<t.IScreen<M, S>>;
+  readonly events$: Observable<ScreenEvent>;
+  readonly change$: Observable<IScreenChange>;
+  readonly created$: Observable<IScreenChange>;
+  readonly closed$: Observable<IScreenChange>;
   create(args: {
     type: string;
     url: string;
@@ -46,9 +49,12 @@ export type IScreenTypeFactory<
   M extends t.IpcMessage = any,
   S extends t.StoreJson = any
 > = IScreenContext<M, S> & {
-  type: string;
-  events$: Observable<ScreenEvent>;
-  instances: Array<t.IScreen<M, S>>;
+  readonly type: string;
+  readonly instances: Array<t.IScreen<M, S>>;
+  readonly events$: Observable<ScreenEvent>;
+  readonly change$: Observable<IScreenChange>;
+  readonly created$: Observable<IScreenChange>;
+  readonly closed$: Observable<IScreenChange>;
   create(args: {
     uid: string;
     isStateful?: boolean;
@@ -71,7 +77,7 @@ export type IScreen<M extends t.IpcMessage = any, S extends t.StoreJson = any> =
   readonly dispose$: Observable<{}>;
   readonly events$: Observable<ScreenEvent>;
   readonly change$: Observable<IScreenChange>;
-  readonly close$: Observable<IScreenChange>;
+  readonly closed$: Observable<IScreenChange>;
 };
 
 /**

@@ -207,8 +207,15 @@ export class WindowsMain implements IWindows {
   /**
    * Filter by window-id.
    */
-  public byId(...windowId: number[]) {
+  public byIds(...windowId: number[]) {
     return util.filterById(this.refs, windowId);
+  }
+
+  /**
+   * Find single by it's window-id.
+   */
+  public byId(windowId: number) {
+    return this.byIds(windowId)[0];
   }
 
   /**
@@ -216,7 +223,7 @@ export class WindowsMain implements IWindows {
    */
   public visible(isVisible: boolean, ...windowId: number[]) {
     const all = BrowserWindow.getAllWindows();
-    const refs = windowId.length === 0 ? this.refs : this.byId(...windowId);
+    const refs = windowId.length === 0 ? this.refs : this.byIds(...windowId);
     refs.forEach(ref => {
       try {
         const window = all.find(window => window.id === ref.id);
@@ -240,12 +247,13 @@ export class WindowsMain implements IWindows {
    */
   private handleWindowCreated = (e: Electron.Event, window: BrowserWindow) => {
     const windowId = window.id;
-    this._refs = [...this._refs, { id: windowId, tags: [], children: [], isVisible: false }];
-    this.fireChange('CREATED', windowId);
+    const ref: IWindowRef = { id: windowId, tags: [], children: [], isVisible: false };
+    this._refs = [...this._refs, ref];
+    this.fireChange('CREATED', ref);
 
     window.on('show', () => this.changeVisibility(windowId, true));
     window.on('hide', () => this.changeVisibility(windowId, false));
-    window.on('closed', () => {
+    window.once('closed', () => {
       const ref = this.refs.find(ref => ref.id === windowId);
       this._refs = this.refs.filter(ref => ref.id !== windowId);
       if (ref) {

@@ -160,8 +160,15 @@ export class WindowsRenderer implements IWindows {
   /**
    * Filter by window-id.
    */
-  public byId(...windowId: number[]) {
+  public byIds(...windowId: number[]) {
     return util.filterById(this.refs, windowId);
+  }
+
+  /**
+   * Find single by it's window-id.
+   */
+  public byId(windowId: number) {
+    return this.byIds(windowId)[0];
   }
 
   /**

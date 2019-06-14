@@ -31,7 +31,7 @@ export class Screen<M extends t.IpcMessage = any, S extends t.StoreJson = any>
     this.ipc = ctx.ipc;
     this.windows = ctx.windows;
 
-    this.close$
+    this.closed$
       // NB: Delay before disposing to allow other listeners on this observable to fire.
       .pipe(delay(0))
       .subscribe(e => this.dispose());
@@ -72,7 +72,7 @@ export class Screen<M extends t.IpcMessage = any, S extends t.StoreJson = any>
     share(),
   );
 
-  public readonly close$ = this.change$.pipe(
+  public readonly closed$ = this.change$.pipe(
     filter(e => e.type === 'CLOSED'),
     share(),
   );
@@ -86,7 +86,7 @@ export class Screen<M extends t.IpcMessage = any, S extends t.StoreJson = any>
   }
 
   private get ref() {
-    return this.windows.byId(this.id)[0];
+    return this.windows.byIds(this.id)[0];
   }
 
   /**

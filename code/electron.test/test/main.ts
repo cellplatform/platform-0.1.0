@@ -38,6 +38,10 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
     defaultFactory.create({ uid: 'foo' });
     log.info.blue('started');
 
+    // defaultFactory.change$.subscribe(e => {
+    //   console.log('defaultFactory.change$', e.type);
+    // });
+
     /**
      * Filter (new window).
      */

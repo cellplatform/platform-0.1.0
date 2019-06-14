@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import * as S from 'electron-window-state';
 import { Subject } from 'rxjs';
-import { debounceTime, filter, share, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, share, takeUntil, map } from 'rxjs/operators';
 
 import { defaultValue, t } from './common';
 import { Screen } from './Screen';
@@ -60,6 +60,22 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
   private readonly _events$ = new Subject<t.ScreenEvent>();
   public readonly events$ = this._events$.pipe(
     takeUntil(this.dispose$),
+    share(),
+  );
+
+  public readonly change$ = this.events$.pipe(
+    filter(e => e.type === '@platform/SCREEN/window/change'),
+    map(e => e.payload as t.IScreenChange),
+    share(),
+  );
+
+  public readonly created$ = this.change$.pipe(
+    filter(e => e.type === 'CREATED'),
+    share(),
+  );
+
+  public readonly closed$ = this.change$.pipe(
+    filter(e => e.type === 'CLOSED'),
     share(),
   );
 
@@ -146,6 +162,20 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
       if (options.title) {
         window.setTitle(options.title);
       }
+
+      // NB:  The initial CREATED event is not fired through the screen
+      //      objects because that 'type' tag did not exist on the window
+      //      at time of creation.
+      this.fire({
+        type: '@platform/SCREEN/window/change',
+        payload: {
+          type: 'CREATED',
+          screen: type,
+          window: this.windows.byId(window.id),
+          state: this.windows.toObject(),
+        },
+      });
+
       window.show();
     });
 
@@ -191,9 +221,12 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
     isStateful?: boolean;
     window?: Electron.BrowserWindowConstructorOptions;
   }): t.IScreenTypeFactory<M, S> {
+    const self = this; // tslint:disable-line
     const { type, url, isStateful, window: options } = args;
     const events$ = this.events$.pipe(filter(e => includesType(type, e.payload.window.tags)));
-    const self = this; // tslint:disable-line
+    const change$ = this.change$.pipe(filter(e => includesType(type, e.window.tags)));
+    const created$ = change$.pipe(filter(e => e.type === 'CREATED'));
+    const closed$ = change$.pipe(filter(e => e.type === 'CLOSED'));
     return {
       type,
       log: this.log,
@@ -201,6 +234,9 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
       ipc: this.ipc,
       windows: this.windows,
       events$,
+      change$,
+      created$,
+      closed$,
       get instances() {
         return self.instances.filter(s => s.type === type);
       },
