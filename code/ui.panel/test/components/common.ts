@@ -1,5 +1,5 @@
 import '../../node_modules/@platform/css/reset.css';
-import '@babel/polyfill';
+import '@platform/libs/polyfill';
 
 export { Button } from '@uiharness/ui';
 export { Foo } from '@platform/react';

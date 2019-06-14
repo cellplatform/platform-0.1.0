@@ -1,5 +1,5 @@
 import '../../node_modules/@platform/css/reset.css';
-import '@babel/polyfill';
+import '@platform/libs/polyfill';
 
 import * as constants from './constants';
 import * as t from './types';
