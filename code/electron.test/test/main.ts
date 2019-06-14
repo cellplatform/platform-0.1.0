@@ -1,9 +1,9 @@
 import main from '@platform/electron/lib/main';
 import { time } from '@platform/util.value';
 import * as uiharness from '@uiharness/electron/lib/main';
-import { BrowserWindow, app } from 'electron';
-import { format } from 'url';
 import * as root from 'app-root-path';
+import { BrowserWindow } from 'electron';
+import { format } from 'url';
 
 import * as t from '../src/types';
 
@@ -61,6 +61,30 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
     });
 
     /**
+     * Refresh windows from MAIN.
+     */
+    ipc.on('TEST/windows/refresh').subscribe(e => {
+      windows.refresh();
+    });
+
+    /**
+     * Log the windows state on MAIN.
+     */
+    ipc.on('TEST/windows/write/main').subscribe(e => {
+      const state = windows.toObject();
+      log.info();
+      log.info(`windows:`);
+      log.info('focused:', state.focused ? state.focused.id : undefined);
+      state.refs.forEach(e => {
+        log.info(`- id:`, e.id);
+        log.info(`- children:`, e.children);
+        log.info(`- tags:`, e.tags.length);
+        e.tags.forEach(tag => log.info(`  -`, tag));
+        log.info();
+      });
+    });
+
+    /**
      * Subscribe to all events.
      */
     ipc
@@ -76,7 +100,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
      */
     time.delay(3000, () => {
       const msg = { text: '🌳 delayed message from main to window-1' };
-      ipc.send<t.IMessageEvent>('TEST/message', msg, { target: 1 });
+      ipc.send<t.ITestMessageEvent>('TEST/message', msg, { target: 1 });
     });
 
     /**

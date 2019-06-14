@@ -13,16 +13,33 @@ export type IMyStore = {
 /**
  * EVENTS
  */
-export type MyEvents = SystemEvents | INewWindowEvent | IMessageEvent | IFooEvent | IBarEvent;
+export type MyEvents =
+  | SystemEvents
+  | ITestNewWindowEvent
+  | ITestMessageEvent
+  | ITestWindowsRefreshEvent
+  | ITestWindowsWriteMainEvent
+  | IFooEvent
+  | IBarEvent;
 
-export type INewWindowEvent = {
+export type ITestNewWindowEvent = {
   type: 'TEST/window/new';
   payload: { name?: string };
 };
 
-export type IMessageEvent = {
+export type ITestMessageEvent = {
   type: 'TEST/message';
   payload: { text: string };
+};
+
+export type ITestWindowsRefreshEvent = {
+  type: 'TEST/windows/refresh';
+  payload: {};
+};
+
+export type ITestWindowsWriteMainEvent = {
+  type: 'TEST/windows/write/main';
+  payload: {};
 };
 
 export type IFooEvent = {

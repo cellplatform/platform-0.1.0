@@ -66,7 +66,7 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
       // const from = e.sender.id;
       // this.log.info('⚡️ from:', from, e);
     });
-    this.ipc.filter<t.IMessageEvent>('TEST/message').subscribe(e => {
+    this.ipc.filter<t.ITestMessageEvent>('TEST/message').subscribe(e => {
       this.log.info('filtered event', e);
     });
 
@@ -80,12 +80,12 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
   };
 
   private sendMessage = () => {
-    this.ipc.send<t.IMessageEvent>('TEST/message', { text: 'Hello' });
+    this.ipc.send<t.ITestMessageEvent>('TEST/message', { text: 'Hello' });
   };
 
   private sendToHandler = (...target: number[]) => {
     return () => {
-      this.ipc.send<t.IMessageEvent>('TEST/message', { text: 'Hello' }, { target });
+      this.ipc.send<t.ITestMessageEvent>('TEST/message', { text: 'Hello' }, { target });
     };
   };
 

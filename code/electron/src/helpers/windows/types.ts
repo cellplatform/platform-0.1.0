@@ -41,8 +41,9 @@ export type IWindowTag = {
 /**
  * IPC Events.
  */
-export type WindowsEvents =
+export type WindowsEvent =
   | IWindowChangedEvent
+  | IWindowsRefreshEvent
   | IWindowsGetEvent
   | IWindowsTagEvent
   | IWindowsVisibleEvent;
@@ -52,9 +53,15 @@ export type IWindowChangedEvent = {
   payload: IWindowChange;
 };
 export type IWindowChange = {
-  type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS' | 'REFRESH' | 'VISIBILITY';
-  windowId?: number;
+  type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS' | 'VISIBILITY';
+  windowId: number;
+  window?: IWindowRef;
   state: IWindowsState;
+};
+
+export type IWindowsRefreshEvent = {
+  type: '@platform/WINDOWS/refresh';
+  payload: {};
 };
 
 export type IWindowsGetEvent = {

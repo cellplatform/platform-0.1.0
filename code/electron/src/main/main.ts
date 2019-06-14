@@ -32,7 +32,7 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
   // Initiaize modules.
   const ipc = args.ipc || initIpc<M>();
   const store = args.store || initStore<S>({ ipc });
-  const windows = args.windows || createWindows({ ipc });
+  const windows = args.windows || WindowsMain.instance({ ipc });
   const log =
     typeof args.log === 'object'
       ? args.log // Logger already exists and was provided.
@@ -42,14 +42,6 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
   // Finish up.
   const main: t.IMain<M, S> = { id, ipc, log, store, windows };
   return main;
-}
-
-/**
- * Factory for creating `windows` manager.
- */
-export function createWindows(args: { ipc: t.IpcClient }) {
-  const { ipc } = args;
-  return new WindowsMain({ ipc });
 }
 
 /**
