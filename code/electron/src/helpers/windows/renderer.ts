@@ -52,8 +52,8 @@ export class WindowsRenderer implements IWindows {
       .on<IWindowChangedEvent>('@platform/WINDOWS/change')
       .pipe(takeUntil(this.dispose$))
       .subscribe(e => {
-        const { type, state, windowId } = e.payload;
-        this.change(type, windowId, state);
+        const { type, state, window } = e.payload;
+        this.change(type, window.id, state);
       });
 
     ipc
@@ -179,8 +179,10 @@ export class WindowsRenderer implements IWindows {
     state = { ...state };
     this._state = state;
     const window = state.refs.find(({ id }) => id === windowId);
-    const payload: IWindowChange = { type, windowId, window, state };
-    this.fire({ type: '@platform/WINDOWS/change', payload });
+    if (window) {
+      const payload: IWindowChange = { type, window, state };
+      this.fire({ type: '@platform/WINDOWS/change', payload });
+    }
   }
 
   private fire(e: WindowsEvent) {

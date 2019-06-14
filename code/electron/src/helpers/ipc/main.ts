@@ -113,7 +113,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   windows.change$
     // Listen for browser-windows closing and unregister their handlers.
     .pipe(filter(e => e.type === 'CLOSED'))
-    .subscribe(e => (e.windowId ? removeHandlerRef(e.windowId) : undefined));
+    .subscribe(e => (e.window.id ? removeHandlerRef(e.window.id) : undefined));
 
   // Finish up.
   return client;

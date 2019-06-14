@@ -272,8 +272,10 @@ export class WindowsMain implements IWindows {
     if (!this.isDisposed) {
       const state = this.toObject();
       const window = state.refs.find(({ id }) => id === windowId);
-      const payload: IWindowChange = { type, windowId, window, state };
-      this.fire({ type: '@platform/WINDOWS/change', payload });
+      if (window) {
+        const payload: IWindowChange = { type, window, state };
+        this.fire({ type: '@platform/WINDOWS/change', payload });
+      }
     }
   }
 

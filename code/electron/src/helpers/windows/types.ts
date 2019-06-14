@@ -54,8 +54,7 @@ export type IWindowChangedEvent = {
 };
 export type IWindowChange = {
   type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS' | 'VISIBILITY';
-  windowId: number;
-  window?: IWindowRef;
+  window: IWindowRef;
   state: IWindowsState;
 };
 
