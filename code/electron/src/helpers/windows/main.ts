@@ -257,6 +257,7 @@ export class WindowsMain implements IWindows {
       const ref = this.refs.find(ref => ref.id === windowId);
       this._refs = this.refs.filter(ref => ref.id !== windowId);
       if (ref) {
+        // NB: Do not fire the closed event if the app was quit.
         this.fireChange('CLOSED', ref);
       }
     });
