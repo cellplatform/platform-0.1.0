@@ -1083,6 +1083,23 @@
     is-electron "2.2.0"
     minimist "1.2.0"
 
+"@platform/electron@0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.3.tgz#0e3d704d7883a8a2cd272a1dd2beac8db3e42835"
+  integrity sha512-IJ+iDC07XfjfMPpwY3DA4CpPXDEXP4vToRQar3B5RgMsBDdTMMQ9yWBJqHsVWnxBqHAKdRDeARE4Ktz8paLnYg==
+  dependencies:
+    "@platform/fs" "0.1.3"
+    "@platform/libs" "^0.0.16"
+    "@platform/log" "0.0.128"
+    "@platform/react" "0.3.3"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.2.1"
+    electron-log "3.0.6"
+    electron-store "3.3.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+    minimist "1.2.0"
+
 "@platform/exec@0.2.13":
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.13.tgz#97f2957accc961d1551ee98de8d0395b2b0e5871"
@@ -1135,17 +1152,17 @@
     fs-extra "8.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.electron@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.2.9.tgz#9f7160e6a970ad0cd2e5cef81211a65d84205023"
-  integrity sha512-ow0U5pEmts2k/rwGLk/qIYh8Ka1mboQfDTOQuBxQoRRUA7GAMHYKEDgkEsgcXNB6Z+huEZlap+rkjQZeoF47Xw==
+"@platform/hyperdb.electron@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.2.10.tgz#bf80721b44f7cec08560a27330760a08779c30d0"
+  integrity sha512-wMZPStpZu50VeroiSq9U/frdV6HlWf1vBPwy3XmzeIuAqlwO/Ykj8sqhRSJYpzaNMITxIYGG92Vej6gL+ClwQw==
   dependencies:
-    "@platform/electron" "0.4.2"
+    "@platform/electron" "0.4.3"
     "@platform/hyperdb" "0.2.12"
     "@platform/hyperdb.types" "0.2.7"
     "@platform/util.string" "0.1.21"
     "@platform/util.value" "0.3.8"
-    "@uiharness/electron" "0.5.0"
+    "@uiharness/electron" "0.5.1"
 
 "@platform/hyperdb.types@0.2.7":
   version "0.2.7"
