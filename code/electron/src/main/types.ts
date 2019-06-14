@@ -1,4 +1,4 @@
-export * from '../helpers/screen/main/types';
+export * from '../helpers/screen/types';
 
 import { IpcMessage, StoreJson, IContext, IMainLog } from '../types';
 

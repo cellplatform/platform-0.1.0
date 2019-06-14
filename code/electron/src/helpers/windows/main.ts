@@ -42,15 +42,15 @@ export class WindowsMain implements IWindows {
 
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
-  private readonly _events$ = new Subject<WindowsEvent>();
 
+  private readonly _events$ = new Subject<WindowsEvent>();
   public readonly events$ = this._events$.pipe(
     takeUntil(this.dispose$),
     share(),
   );
 
   public readonly change$ = this.events$.pipe(
-    filter(e => e.type === '@platform/WINDOWS/change'),
+    filter(e => e.type === '@platform/WINDOW/change'),
     map(e => e.payload as IWindowChange),
     share(),
   );
@@ -77,7 +77,7 @@ export class WindowsMain implements IWindows {
      */
     const broadcast: Array<WindowsEvent['type']> = [
       '@platform/WINDOWS/refresh',
-      '@platform/WINDOWS/change',
+      '@platform/WINDOW/change',
     ];
     this.events$.pipe(filter(e => broadcast.includes(e.type))).subscribe(e => {
       ipc.send(e.type, e.payload);
@@ -274,7 +274,7 @@ export class WindowsMain implements IWindows {
       const window = state.refs.find(({ id }) => id === windowId);
       if (window) {
         const payload: IWindowChange = { type, window, state };
-        this.fire({ type: '@platform/WINDOWS/change', payload });
+        this.fire({ type: '@platform/WINDOW/change', payload });
       }
     }
   }

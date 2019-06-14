@@ -5,7 +5,7 @@ import { debounceTime, distinctUntilChanged, filter, map, share, takeUntil } fro
 import * as t from '../types';
 import {
   IWindowChange,
-  IWindowChangedEvent,
+  IWindowChangeEvent,
   IWindowRef,
   IWindows,
   IWindowsGetEvent,
@@ -36,7 +36,7 @@ export class WindowsRenderer implements IWindows {
   );
 
   public readonly change$ = this.events$.pipe(
-    filter(e => e.type === '@platform/WINDOWS/change'),
+    filter(e => e.type === '@platform/WINDOW/change'),
     map(e => e.payload as IWindowChange),
     distinctUntilChanged((prev, next) => equals(prev.state, next.state)),
     debounceTime(0),
@@ -49,7 +49,7 @@ export class WindowsRenderer implements IWindows {
   constructor(args: { ipc: t.IpcClient }) {
     const ipc = (this.ipc = args.ipc);
     ipc
-      .on<IWindowChangedEvent>('@platform/WINDOWS/change')
+      .on<IWindowChangeEvent>('@platform/WINDOW/change')
       .pipe(takeUntil(this.dispose$))
       .subscribe(e => {
         const { type, state, window } = e.payload;
@@ -181,7 +181,7 @@ export class WindowsRenderer implements IWindows {
     const window = state.refs.find(({ id }) => id === windowId);
     if (window) {
       const payload: IWindowChange = { type, window, state };
-      this.fire({ type: '@platform/WINDOWS/change', payload });
+      this.fire({ type: '@platform/WINDOW/change', payload });
     }
   }
 

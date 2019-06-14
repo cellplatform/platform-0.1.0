@@ -42,14 +42,14 @@ export type IWindowTag = {
  * IPC Events.
  */
 export type WindowsEvent =
-  | IWindowChangedEvent
+  | IWindowChangeEvent
   | IWindowsRefreshEvent
   | IWindowsGetEvent
   | IWindowsTagEvent
   | IWindowsVisibleEvent;
 
-export type IWindowChangedEvent = {
-  type: '@platform/WINDOWS/change';
+export type IWindowChangeEvent = {
+  type: '@platform/WINDOW/change';
   payload: IWindowChange;
 };
 export type IWindowChange = {
