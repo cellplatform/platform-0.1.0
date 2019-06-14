@@ -49,6 +49,8 @@ export type IScreenTypeFactory<
   S extends t.StoreJson = any
 > = IScreenContext<M, S> & {
   type: string;
+  events$: Observable<ScreenEvent>;
+  change$: Observable<IScreenChange>;
   create(args: {
     uid: string;
     isStateful?: boolean;

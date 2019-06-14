@@ -170,12 +170,21 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
     window?: Electron.BrowserWindowConstructorOptions;
   }): t.IScreenTypeFactory<M, S> {
     const { type, url, isStateful, window: options } = args;
+
+    const events$ = this.events$.pipe(filter(e => e.payload.type === type));
+    const change$ = events$.pipe(
+      filter(e => e.type === '@platform/SCREEN/window/change'),
+      map(e => e.payload as t.IScreenChange),
+    );
+
     return {
       type,
       log: this.log,
       settings: this.settings,
       ipc: this.ipc,
       windows: this.windows,
+      events$,
+      change$,
       create: args => {
         return this.create({
           type,
