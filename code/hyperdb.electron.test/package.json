@@ -1,6 +1,6 @@
 {
   "name": "hyperdb.electron.test",
-  "version": "0.0.138",
+  "version": "0.0.139",
   "description": "",
   "scripts": {
     "ui": "ui $@",
@@ -15,9 +15,9 @@
     "tmp": "ts-node -T scripts/tmp $@"
   },
   "dependencies": {
-    "@platform/electron": "^0.4.6",
+    "@platform/electron": "^0.4.7",
     "@platform/hyperdb": "0.2.12",
-    "@platform/hyperdb.electron": "0.2.13",
+    "@platform/hyperdb.electron": "0.2.14",
     "@platform/react": "0.3.3",
     "@platform/ui.datagrid": "0.0.137",
     "@platform/ui.editor": "0.1.20",
@@ -34,8 +34,8 @@
   "devDependencies": {
     "@platform/ts": "3.4.28",
     "@types/hjson": "2.4.1",
-    "@uiharness/dev": "0.5.3",
-    "@uiharness/ui": "0.5.3",
+    "@uiharness/dev": "0.5.4",
+    "@uiharness/ui": "0.5.4",
     "electron": "5.0.0"
   },
   "resolutions": {
