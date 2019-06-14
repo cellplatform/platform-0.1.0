@@ -227,6 +227,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
     const change$ = this.change$.pipe(filter(e => includesType(type, e.window.tags)));
     const created$ = change$.pipe(filter(e => e.type === 'CREATED'));
     const closed$ = change$.pipe(filter(e => e.type === 'CLOSED'));
+
     return {
       type,
       log: this.log,
