@@ -24,7 +24,6 @@ export type IScreenFactory<
   S extends t.StoreJson = any
 > = IScreenContext<M, S> & {
   events$: Observable<ScreenEvent>;
-  change$: Observable<IScreenChange>;
   create(args: {
     type: string;
     url: string;
@@ -32,7 +31,7 @@ export type IScreenFactory<
     isStateful?: boolean;
     window?: Electron.BrowserWindowConstructorOptions;
     bounds?: Partial<Electron.Rectangle>; // Explicit bounds to use that override state and/or the default bounds in the `window` options.
-  }): BrowserWindow;
+  }): IScreen<M, S>;
   type(args: {
     type: string;
     url: string;
@@ -50,13 +49,27 @@ export type IScreenTypeFactory<
 > = IScreenContext<M, S> & {
   type: string;
   events$: Observable<ScreenEvent>;
-  change$: Observable<IScreenChange>;
   create(args: {
     uid: string;
     isStateful?: boolean;
     window?: Electron.BrowserWindowConstructorOptions;
     bounds?: Partial<Electron.Rectangle>; // Explicit bounds to use that override state and/or the default bounds in the `window` options.
-  }): BrowserWindow;
+  }): IScreen<M, S>;
+};
+
+/**
+ * A screen instance.
+ */
+export type IScreen<M extends t.IpcMessage = any, S extends t.StoreJson = any> = IScreenContext<
+  M,
+  S
+> & {
+  readonly id: number;
+  readonly type: string;
+  readonly window: BrowserWindow;
+  readonly events$: Observable<ScreenEvent>;
+  readonly change$: Observable<IScreenChange>;
+  readonly dispose$: Observable<{}>;
 };
 
 /**

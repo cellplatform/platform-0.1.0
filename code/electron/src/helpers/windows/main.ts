@@ -87,9 +87,6 @@ export class WindowsMain implements IWindows {
      * Handle requests from windows for window information.
      */
     ipc.handle<IWindowsGetEvent>('@platform/WINDOWS/get', async e => {
-      const o = this.toObject();
-      console.log('GET', o);
-
       return this.toObject() as IWindowsGetResponse;
     });
 
@@ -249,8 +246,11 @@ export class WindowsMain implements IWindows {
     window.on('show', () => this.changeVisibility(windowId, true));
     window.on('hide', () => this.changeVisibility(windowId, false));
     window.on('closed', () => {
+      const ref = this.refs.find(ref => ref.id === windowId);
       this._refs = this.refs.filter(ref => ref.id !== windowId);
-      this.fireChange('CLOSED', windowId);
+      if (ref) {
+        this.fireChange('CLOSED', ref);
+      }
     });
   };
 
@@ -268,10 +268,10 @@ export class WindowsMain implements IWindows {
     this.fireChange('FOCUS', window.id);
   };
 
-  private fireChange(type: IWindowChange['type'], windowId: number) {
+  private fireChange(type: IWindowChange['type'], ref: IWindowRef | number) {
     if (!this.isDisposed) {
       const state = this.toObject();
-      const window = state.refs.find(({ id }) => id === windowId);
+      const window = typeof ref === 'object' ? ref : state.refs.find(({ id }) => id === ref);
       if (window) {
         const payload: IWindowChange = { type, window, state };
         this.fire({ type: '@platform/WINDOW/change', payload });

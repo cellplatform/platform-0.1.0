@@ -1,9 +1,10 @@
 import { app, BrowserWindow } from 'electron';
 import * as S from 'electron-window-state';
 import { Subject } from 'rxjs';
-import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, share, takeUntil } from 'rxjs/operators';
 
 import { defaultValue, t } from './common';
+import { Screen } from './Screen';
 
 const TAG_TYPE = 'type';
 const WindowState = require('electron-window-state');
@@ -52,7 +53,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
   public readonly ipc: t.IpcClient<M>;
   public readonly windows: t.IWindows;
 
-  private readonly _dispose$ = new Subject();
+  private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.ScreenEvent>();
@@ -61,11 +62,17 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
     share(),
   );
 
-  public readonly change$ = this.events$.pipe(
-    filter(e => e.type === '@platform/SCREEN/window/change'),
-    map(e => e.payload as t.IScreenChange),
-    share(),
-  );
+  /**
+   * [Properties]
+   */
+  public get context(): t.IScreenContext<M, S> {
+    return {
+      log: this.log,
+      ipc: this.ipc,
+      settings: this.settings,
+      windows: this.windows,
+    };
+  }
 
   /**
    * [Methods]
@@ -157,7 +164,12 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
      * Load URL.
      */
     window.loadURL(args.url);
-    return window;
+
+    // Finish up.
+    const ctx = this.context;
+    const events$ = this.events$.pipe(filter(e => includesType(type, e.payload.window.tags)));
+    const screen = new Screen({ ctx, type, window, events$ });
+    return screen;
   }
 
   /**
@@ -170,13 +182,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
     window?: Electron.BrowserWindowConstructorOptions;
   }): t.IScreenTypeFactory<M, S> {
     const { type, url, isStateful, window: options } = args;
-
-    const events$ = this.events$.pipe(filter(e => e.payload.type === type));
-    const change$ = events$.pipe(
-      filter(e => e.type === '@platform/SCREEN/window/change'),
-      map(e => e.payload as t.IScreenChange),
-    );
-
+    const events$ = this.events$.pipe(filter(e => includesType(type, e.payload.window.tags)));
     return {
       type,
       log: this.log,
@@ -184,7 +190,6 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
       ipc: this.ipc,
       windows: this.windows,
       events$,
-      change$,
       create: args => {
         return this.create({
           type,
@@ -198,10 +203,13 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
     };
   }
 
-  /**
-   * [Helpers]
-   */
   private fire(e: t.ScreenEvent) {
     this._events$.next(e);
   }
 }
+
+/**
+ * [Helpers]
+ */
+const includesType = (type: string, tags: t.IWindowTag[]) =>
+  tags.some(item => item.tag === TAG_TYPE && item.value === type);
