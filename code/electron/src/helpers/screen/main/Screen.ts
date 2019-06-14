@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 import { Observable, Subject } from 'rxjs';
-import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { filter, map, share, takeUntil, delay } from 'rxjs/operators';
 
 import { t } from './common';
 
@@ -14,14 +14,16 @@ export class Screen<M extends t.IpcMessage = any, S extends t.StoreJson = any>
    */
   constructor(args: {
     ctx: t.IScreenContext<M, S>;
+    uid: string;
     type: string;
     window: BrowserWindow;
     events$: Observable<t.ScreenEvent>;
   }) {
     const { ctx, window } = args;
     this.type = args.type;
-    this.window = window;
+    this.uid = args.uid;
     this.id = window.id;
+    this.window = window;
     args.events$.subscribe(this._events$);
 
     this.log = ctx.log;
@@ -29,9 +31,10 @@ export class Screen<M extends t.IpcMessage = any, S extends t.StoreJson = any>
     this.ipc = ctx.ipc;
     this.windows = ctx.windows;
 
-    this.change$.pipe(filter(e => e.type === 'CLOSED')).subscribe(e => {
-      this.dispose();
-    });
+    this.close$
+      // NB: Delay before disposing to allow other listeners on this observable to fire.
+      .pipe(delay(0))
+      .subscribe(e => this.dispose());
   }
 
   public dispose() {
@@ -42,7 +45,8 @@ export class Screen<M extends t.IpcMessage = any, S extends t.StoreJson = any>
   /**
    * [Fields]
    */
-  public readonly id: number;
+  private id: number; // Browser window ID.
+  public readonly uid: string;
   public readonly type: string;
   public readonly window: BrowserWindow;
 
@@ -67,4 +71,28 @@ export class Screen<M extends t.IpcMessage = any, S extends t.StoreJson = any>
     map(e => e.payload as t.IScreenChange),
     share(),
   );
+
+  public readonly close$ = this.change$.pipe(
+    filter(e => e.type === 'CLOSED'),
+    share(),
+  );
+
+  /**
+   * [Properties]
+   */
+  public get tags() {
+    const ref = this.ref;
+    return ref ? ref.tags : [];
+  }
+
+  private get ref() {
+    return this.windows.byId(this.id)[0];
+  }
+
+  /**
+   * [Methods]
+   */
+  public toString() {
+    return `[Screen:${this.uid}(${this.id})]`;
+  }
 }

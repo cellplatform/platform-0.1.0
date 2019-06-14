@@ -1,8 +1,6 @@
 import { BrowserWindow } from 'electron';
 import { Observable } from 'rxjs';
-
 import * as t from '../../types';
-import { IWindowChange } from '../windows/types';
 
 export * from '../../types';
 
@@ -24,6 +22,7 @@ export type IScreenFactory<
   S extends t.StoreJson = any
 > = IScreenContext<M, S> & {
   events$: Observable<ScreenEvent>;
+  instances: Array<t.IScreen<M, S>>;
   create(args: {
     type: string;
     url: string;
@@ -49,6 +48,7 @@ export type IScreenTypeFactory<
 > = IScreenContext<M, S> & {
   type: string;
   events$: Observable<ScreenEvent>;
+  instances: Array<t.IScreen<M, S>>;
   create(args: {
     uid: string;
     isStateful?: boolean;
@@ -64,12 +64,14 @@ export type IScreen<M extends t.IpcMessage = any, S extends t.StoreJson = any> =
   M,
   S
 > & {
-  readonly id: number;
+  readonly uid: string;
   readonly type: string;
   readonly window: BrowserWindow;
+  readonly tags: t.IWindowTag[];
+  readonly dispose$: Observable<{}>;
   readonly events$: Observable<ScreenEvent>;
   readonly change$: Observable<IScreenChange>;
-  readonly dispose$: Observable<{}>;
+  readonly close$: Observable<IScreenChange>;
 };
 
 /**
@@ -81,4 +83,4 @@ export type IScreenChangeEvent = {
   type: '@platform/SCREEN/window/change';
   payload: IScreenChange;
 };
-export type IScreenChange = IWindowChange & { screen: string };
+export type IScreenChange = t.IWindowChange & { screen: string };

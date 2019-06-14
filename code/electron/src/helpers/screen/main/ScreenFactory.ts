@@ -52,6 +52,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
   public readonly settings: t.IStoreClient<S>;
   public readonly ipc: t.IpcClient<M>;
   public readonly windows: t.IWindows;
+  public instances: Array<t.IScreen<M, S>> = [];
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -157,7 +158,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
       state$.pipe(debounceTime(200)).subscribe(() => saveState());
       window.on('moved', () => state$.next());
       window.on('resize', () => state$.next());
-      window.on('closed', () => saveState());
+      window.once('closed', () => saveState());
     }
 
     /**
@@ -165,11 +166,20 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
      */
     window.loadURL(args.url);
 
-    // Finish up.
+    // Screen the [Screen] instance.
+    const id = window.id;
     const ctx = this.context;
     const events$ = this.events$.pipe(filter(e => includesType(type, e.payload.window.tags)));
-    const screen = new Screen({ ctx, type, window, events$ });
-    return screen;
+    const instance = new Screen({ ctx, uid, type, window, events$ });
+
+    // Store reference to [Screen] instance.
+    this.instances = [...this.instances, instance];
+    window.once('close', () => {
+      this.instances = this.instances.filter(s => s.window.id !== id);
+    });
+
+    // Finish up.
+    return instance;
   }
 
   /**
@@ -183,6 +193,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
   }): t.IScreenTypeFactory<M, S> {
     const { type, url, isStateful, window: options } = args;
     const events$ = this.events$.pipe(filter(e => includesType(type, e.payload.window.tags)));
+    const self = this; // tslint:disable-line
     return {
       type,
       log: this.log,
@@ -190,6 +201,9 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
       ipc: this.ipc,
       windows: this.windows,
       events$,
+      get instances() {
+        return self.instances.filter(s => s.type === type);
+      },
       create: args => {
         return this.create({
           type,
