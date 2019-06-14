@@ -41,7 +41,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
     /**
      * Filter (new window).
      */
-    ipc.on('TEST/window/new').subscribe(e => {
+    ipc.on('TEST/window/new').subscribe(async e => {
       const all = BrowserWindow.getAllWindows();
       if (e.type === 'TEST/window/new') {
         const title = `New Window (${all.length})`;
@@ -52,7 +52,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
         const x = bounds ? bounds.x + 40 : undefined;
         const y = bounds ? bounds.y + 40 : undefined;
 
-        defaultFactory.create({
+        const screen = defaultFactory.create({
           uid: 'foo-1',
           window: { title },
           bounds: { x, y }, // Override default window and state values.
