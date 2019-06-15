@@ -1,6 +1,6 @@
 {
   "name": "hyperdb.electron.test",
-  "version": "0.0.141",
+  "version": "0.0.142",
   "description": "",
   "scripts": {
     "ui": "ui $@",
@@ -15,9 +15,9 @@
     "tmp": "ts-node -T scripts/tmp $@"
   },
   "dependencies": {
-    "@platform/electron": "^0.4.9",
+    "@platform/electron": "^0.4.10",
     "@platform/hyperdb": "0.2.14",
-    "@platform/hyperdb.electron": "0.2.16",
+    "@platform/hyperdb.electron": "0.2.17",
     "@platform/react": "0.3.5",
     "@platform/ui.datagrid": "0.0.139",
     "@platform/ui.editor": "0.1.22",

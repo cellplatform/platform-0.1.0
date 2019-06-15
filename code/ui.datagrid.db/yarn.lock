@@ -1049,6 +1049,24 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
+"@platform/electron@0.4.10":
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.10.tgz#057bc0c8ed3ab69b4a7591e65668ca143cabd4e9"
+  integrity sha512-eDM9YmtgALotQNcVVGXk3wjOtRLoxfK220fAdLZNVibbT+FN8H9dEWJ702EoyejY9Kg1MF9tlOSpz+gYQRfeGg==
+  dependencies:
+    "@platform/fs" "0.1.4"
+    "@platform/libs" "^0.0.17"
+    "@platform/log" "0.0.130"
+    "@platform/react" "0.3.5"
+    "@platform/types" "0.0.17"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.2.1"
+    electron-log "3.0.6"
+    electron-store "3.3.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+    minimist "1.2.0"
+
 "@platform/electron@0.4.7":
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.7.tgz#4dae76efdf2aedbb162f5e6046839226b41e193d"
@@ -1149,17 +1167,17 @@
     fs-extra "8.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.electron@0.2.16":
-  version "0.2.16"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.2.16.tgz#1a7e6e5a526237e786dbae14bdf414aa896aa4e1"
-  integrity sha512-/cHSGBXQuPDRYWAYQ1Ip5oyyr9F6McE3QZw5hPTDuQ1576hzOaaCHgkYCUxQghZUb487FQtJFwEjNfxqCHGl7g==
+"@platform/hyperdb.electron@0.2.17":
+  version "0.2.17"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.2.17.tgz#d3b9d67e5429b2d69dcf55bdb7245ce90e30b137"
+  integrity sha512-y6Jvaj1QdyPSb+iykwRhEblNHfqeYvkawakF316cvuRSAnO46EEYHTBmbQZOeh8SSDmeizP+gHTpbuAEI1KV0w==
   dependencies:
-    "@platform/electron" "0.4.9"
+    "@platform/electron" "0.4.10"
     "@platform/hyperdb" "0.2.14"
     "@platform/hyperdb.types" "0.2.9"
     "@platform/util.string" "0.1.23"
     "@platform/util.value" "0.3.10"
-    "@uiharness/electron" "0.5.3"
+    "@uiharness/electron" "0.5.4"
 
 "@platform/hyperdb.types@0.2.9":
   version "0.2.9"

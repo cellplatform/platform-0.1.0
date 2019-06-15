@@ -138,7 +138,7 @@
     "@platform/ts.libs" "3.5.2"
     yargs "13.2.4"
 
-"@platform/types@0.0.17", "@platform/types@^0.0.17":
+"@platform/types@0.0.17":
   version "0.0.17"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.17.tgz#a5c4f480271a32e84f87acfc2130434cad86de38"
   integrity sha512-SZFLbO1gVOn8z0Rx2jRMJ3rLrYeFmOLsz4AX/f4NL28/ooQX9D7tpBlHWQXeCy4OU3L/5058WoNFXBqjPEp3xg==
