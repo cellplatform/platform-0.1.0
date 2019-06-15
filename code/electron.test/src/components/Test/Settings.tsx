@@ -10,37 +10,34 @@ import { TestPanel } from '../TestPanel';
 /**
  * Test component.
  */
-export type IStoreTestProps = {
-  style?: GlamorValue;
-};
-
-export type IStoreTestState = {
+export type ISettingsProps = { style?: GlamorValue };
+export type ISettingsState = {
   count?: number;
   data?: object;
 };
 
-export class StoreTest extends React.PureComponent<IStoreTestProps, IStoreTestState> {
+export class SettingsTest extends React.PureComponent<ISettingsProps, ISettingsState> {
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
 
-  public state: IStoreTestState = {};
+  public state: ISettingsState = {};
   private readonly unmounted$ = new Subject();
 
   private log!: renderer.ILog;
-  private store!: renderer.IStoreClient<t.IMyStore>;
+  private settings!: renderer.ISettingsClient<t.IMyStore>;
 
   public componentWillMount() {
-    const { log, store } = this.context;
+    const { log, settings } = this.context;
     this.log = log;
-    this.store = store;
+    this.settings = settings;
   }
 
   public componentDidMount() {
     this.read();
 
-    const events$ = this.store.change$.pipe(takeUntil(this.unmounted$));
+    const events$ = this.settings.change$.pipe(takeUntil(this.unmounted$));
     events$.subscribe(e => {
-      this.log.info('store.change$: ', e);
+      this.log.info('settings.change$: ', e);
       if (e.keys.includes('count')) {
         // const count = (e.values.count || 0) as number;
         // this.setState({ count });
@@ -72,7 +69,7 @@ export class StoreTest extends React.PureComponent<IStoreTestProps, IStoreTestSt
     };
 
     return (
-      <TestPanel title={`Store ${this.state.count}`}>
+      <TestPanel title={`Settings (count: ${this.state.count || 0})`}>
         <div {...styles.columns}>
           <div {...styles.colButtons}>
             <Button label={'keys'} onClick={this.keys} />
@@ -86,7 +83,7 @@ export class StoreTest extends React.PureComponent<IStoreTestProps, IStoreTestSt
             <Button label={'open in editor'} onClick={this.openInEditor} />
           </div>
           <div {...styles.colObject}>
-            <ObjectView name={'store'} data={this.state.data} expandLevel={5} />
+            <ObjectView name={'settings'} data={this.state.data} expandLevel={5} />
           </div>
         </div>
       </TestPanel>
@@ -94,50 +91,50 @@ export class StoreTest extends React.PureComponent<IStoreTestProps, IStoreTestSt
   }
 
   private async updateState() {
-    const data = await this.store.read();
+    const data = await this.settings.read();
     const count = data.count;
     this.setState({ count, data });
   }
 
   private keys = async () => {
-    const res = await this.store.keys();
+    const res = await this.settings.keys();
     this.log.info('🌳 keys:', res);
   };
 
   private read = async () => {
-    const res = await this.store.read('count', 'foo');
-    this.log.info('🌳 store.read:', res);
+    const res = await this.settings.read('count', 'foo');
+    this.log.info('🌳 settings.read:', res);
     this.setState({ count: res.count || 0 });
   };
 
   private readAll = async () => {
-    const res = await this.store.read();
+    const res = await this.settings.read();
     this.log.info('🌳 read (all):', res);
   };
 
   private changeCount = async () => {
     const value = (this.state.count || 0) + 1;
-    const res = await this.store.write({ key: 'count', value });
+    const res = await this.settings.write({ key: 'count', value });
     this.log.info('🌼  change count:', res);
   };
 
   private changeFoo = async () => {
-    const foo = await this.store.get('foo', { bar: false });
+    const foo = await this.settings.get('foo', { bar: false });
     foo.bar = !foo.bar;
-    await this.store.set('foo', foo);
+    await this.settings.put('foo', foo);
   };
 
   private deleteHandler = (key: string) => {
     return async () => {
-      await this.store.delete(key as any);
+      await this.settings.delete(key as any);
     };
   };
 
   private clear = async () => {
-    await this.store.clear();
+    await this.settings.clear();
   };
 
   private openInEditor = () => {
-    this.store.openInEditor();
+    this.settings.openInEditor();
   };
 }

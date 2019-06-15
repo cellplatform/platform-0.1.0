@@ -15,7 +15,8 @@ export type IWindows = IWindowsState & {
   tag(windowId: number, ...tag: IWindowTag[]): Promise<void>;
   byTag(tag: IWindowTag['tag'], value?: IWindowTag['value']): IWindowRef[];
   byTag(...tags: IWindowTag[]): IWindowRef[];
-  byId(...windowId: number[]): IWindowRef[];
+  byIds(...windowId: number[]): IWindowRef[];
+  byId(windowId: number): IWindowRef;
   visible(isVisible: boolean, ...windowId: number[]): IWindows;
 };
 
@@ -41,20 +42,26 @@ export type IWindowTag = {
 /**
  * IPC Events.
  */
-export type WindowsEvents =
-  | IWindowChangedEvent
+export type WindowsEvent =
+  | IWindowChangeEvent
+  | IWindowsRefreshEvent
   | IWindowsGetEvent
   | IWindowsTagEvent
   | IWindowsVisibleEvent;
 
-export type IWindowChangedEvent = {
-  type: '@platform/WINDOWS/change';
+export type IWindowChangeEvent = {
+  type: '@platform/WINDOW/change';
   payload: IWindowChange;
 };
 export type IWindowChange = {
-  type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS' | 'REFRESH' | 'VISIBILITY';
-  windowId?: number;
+  type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS' | 'VISIBILITY';
+  window: IWindowRef;
   state: IWindowsState;
+};
+
+export type IWindowsRefreshEvent = {
+  type: '@platform/WINDOWS/refresh';
+  payload: {};
 };
 
 export type IWindowsGetEvent = {

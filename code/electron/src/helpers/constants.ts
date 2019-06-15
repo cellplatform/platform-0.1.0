@@ -3,11 +3,11 @@ import { IWindowTag } from './types';
 /**
  * Keys used for storing values on the global (window) object.
  *
- *    DO NOT TOUCH THESE - unless you know what you're doing.
+ *    ☝️ `DO NOT TOUCH THESE` - unless you know what you're doing.
  *
  */
 export const GLOBAL = {
-  STORE_CLIENT: '@platform/STORE/CLIENT',
+  SETTINGS_CLIENT: '@platform/SETTINGS/CLIENT',
 
   IPC_CHANNEL: '@platform/IPC',
   IPC_CLIENT: '@platform/IPC/CLIENT',

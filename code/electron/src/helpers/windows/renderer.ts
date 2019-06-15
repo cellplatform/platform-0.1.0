@@ -1,19 +1,21 @@
 import { equals } from 'ramda';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, share, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import * as t from '../types';
 import {
   IWindowChange,
-  IWindowChangedEvent,
+  IWindowChangeEvent,
+  IWindowRef,
   IWindows,
   IWindowsGetEvent,
   IWindowsGetResponse,
+  IWindowsRefreshEvent,
   IWindowsState,
   IWindowsTagEvent,
-  IWindowTag,
-  IWindowRef,
   IWindowsVisibleEvent,
+  IWindowTag,
+  WindowsEvent,
 } from './types';
 import * as util from './util';
 
@@ -26,11 +28,16 @@ export class WindowsRenderer implements IWindows {
 
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
-  public isDisposed = false;
 
-  private readonly _change$ = new Subject<IWindowChange>();
-  public readonly change$ = this._change$.pipe(
+  private readonly _events$ = new Subject<WindowsEvent>();
+  public readonly events$ = this._events$.pipe(
     takeUntil(this.dispose$),
+    share(),
+  );
+
+  public readonly change$ = this.events$.pipe(
+    filter(e => e.type === '@platform/WINDOW/change'),
+    map(e => e.payload as IWindowChange),
     distinctUntilChanged((prev, next) => equals(prev.state, next.state)),
     debounceTime(0),
     share(),
@@ -42,19 +49,39 @@ export class WindowsRenderer implements IWindows {
   constructor(args: { ipc: t.IpcClient }) {
     const ipc = (this.ipc = args.ipc);
     ipc
-      .on<IWindowChangedEvent>('@platform/WINDOWS/change')
+      .on<IWindowChangeEvent>('@platform/WINDOW/change')
       .pipe(takeUntil(this.dispose$))
       .subscribe(e => {
-        const { type, state, windowId } = e.payload;
-        this.change(type, windowId, state);
+        const { type, state, window } = e.payload;
+        this.change(type, window.id, state);
+      });
+
+    ipc
+      .on<IWindowsRefreshEvent>('@platform/WINDOWS/refresh')
+      .pipe(takeUntil(this.dispose$))
+      .subscribe(e => {
+        this.fire(e);
+        this.refresh();
       });
 
     this.refresh();
   }
 
   /**
+   * Disposes of the object and frees up references.
+   */
+  public dispose() {
+    this._dispose$.next();
+    this._dispose$.complete();
+  }
+
+  /**
    * [Properties]
    */
+  public get isDisposed() {
+    return this._dispose$.isStopped;
+  }
+
   public get refs() {
     return this._state.refs;
   }
@@ -79,7 +106,9 @@ export class WindowsRenderer implements IWindows {
 
       if (isFocusedChanged) {
         const focusedWindowId = remoteState.focused ? remoteState.focused.id : undefined;
-        this.change('FOCUS', focusedWindowId, remoteState);
+        if (focusedWindowId) {
+          this.change('FOCUS', focusedWindowId, remoteState);
+        }
       }
 
       if (isRefsChanges) {
@@ -131,8 +160,15 @@ export class WindowsRenderer implements IWindows {
   /**
    * Filter by window-id.
    */
-  public byId(...windowId: number[]) {
+  public byIds(...windowId: number[]) {
     return util.filterById(this.refs, windowId);
+  }
+
+  /**
+   * Find single by it's window-id.
+   */
+  public byId(windowId: number) {
+    return this.byIds(windowId)[0];
   }
 
   /**
@@ -144,10 +180,19 @@ export class WindowsRenderer implements IWindows {
   }
 
   /**
-   * [INTERNAL]
+   * [Internal]
    */
-  private change(type: IWindowChange['type'], windowId: number | undefined, state: IWindowsState) {
-    this._state = { ...state };
-    this._change$.next({ type, windowId, state });
+  private change(type: IWindowChange['type'], windowId: number, state: IWindowsState) {
+    state = { ...state };
+    this._state = state;
+    const window = state.refs.find(({ id }) => id === windowId);
+    if (window) {
+      const payload: IWindowChange = { type, window, state };
+      this.fire({ type: '@platform/WINDOW/change', payload });
+    }
+  }
+
+  private fire(e: WindowsEvent) {
+    this._events$.next(e);
   }
 }

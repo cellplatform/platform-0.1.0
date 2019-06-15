@@ -62,6 +62,8 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
           <div {...styles.colButtons}>
             <Button label={'new window'} onClick={this.newWindow} />
             <Button label={'refresh'} onClick={this.refresh} />
+            <Button label={'refresh (MAIN)'} onClick={this.refreshMain} />
+            <Button label={'write (MAIN)'} onClick={this.writeMain} />
             <Button
               label={'tag (this, "FOO=123")'}
               onClick={this.tagHandler(this.context.id, 'FOO', 123)}
@@ -93,11 +95,21 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
 
   private newWindow = () => {
     const { ipc } = this.context;
-    ipc.send<t.INewWindowEvent>('TEST/window/new', {}, { target: ipc.MAIN });
+    ipc.send<t.ITestNewWindowEvent>('TEST/window/new', {}, { target: ipc.MAIN });
   };
 
   private refresh = () => {
     this.context.windows.refresh();
+  };
+
+  private refreshMain = () => {
+    const { ipc } = this.context;
+    ipc.send<t.ITestWindowsRefreshEvent>('TEST/windows/refresh', {}, { target: ipc.MAIN });
+  };
+
+  private writeMain = () => {
+    const { ipc } = this.context;
+    ipc.send<t.ITestWindowsWriteMainEvent>('TEST/windows/write/main', {}, { target: ipc.MAIN });
   };
 
   private tagHandler = (windowId: number, tag: string, value: string | number | boolean) => {

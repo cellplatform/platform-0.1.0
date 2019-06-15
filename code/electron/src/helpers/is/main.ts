@@ -16,10 +16,15 @@ export const is = {
     return !is.prod;
   },
 
+  get mac() {
+    return process.platform === 'darwin';
+  },
+
   toObject() {
     return {
       dev: is.dev,
       prod: is.prod,
+      mac: is.mac,
     };
   },
 };

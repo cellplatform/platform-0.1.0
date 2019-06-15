@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { t, css, color, GlamorValue, MONOSPACE } from '../common';
+
+import { color, css, GlamorValue, MONOSPACE, t } from '../common';
 import { ObjectView } from './primitives';
 
 export type IActionProps = {
@@ -54,7 +55,7 @@ export class Action extends React.PureComponent<IActionProps, IActionState> {
       }),
       object: css({
         marginTop: 5,
-        paddingLeft: 10,
+        paddingLeft: 15,
       }),
     };
 

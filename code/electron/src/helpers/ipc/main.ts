@@ -44,7 +44,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   };
 
   // Construct the [Main] client.
-  const main = new IPC({
+  const client = new IPC({
     id: MAIN_ID,
     process: 'MAIN',
     onSend: sendHandler,
@@ -52,23 +52,23 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
     onHandlerRegistered,
     getHandlerRefs: () => Global.handlerRefs,
   });
-  refs.main = main;
+  refs.main = client;
 
   // Ferry IPC events into the client.
   const listener = (e: Electron.Event, args: IpcEvent) => events$.next(args);
-  ipcMain.on(main.channel, listener);
+  ipcMain.on(client.channel, listener);
 
   // Unwire events when client is diposed.
-  main.disposed$.subscribe(() => stop());
+  client.disposed$.subscribe(() => stop());
   const stop = () => {
     stop$.next();
-    ipcMain.removeListener(main.channel, listener);
+    ipcMain.removeListener(client.channel, listener);
   };
 
   /**
    * Listen for messages coming in on the [main] IPC channel.
    */
-  ipcMain.on(main.channel, (e: Electron.Event, args: IpcEvent) => {
+  ipcMain.on(client.channel, (e: Electron.Event, args: IpcEvent) => {
     sendToWindows(e.sender.id, args);
   });
 
@@ -84,7 +84,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
       .filter(window => window.id !== senderId)
       .filter(window => (target.length === 0 ? true : target.includes(window.id)))
       .forEach(window => {
-        window.webContents.send(main.channel, e);
+        window.webContents.send(client.channel, e);
       });
   };
 
@@ -92,7 +92,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
    * Listen for handler registrations on client-windows and ferry
    * then onto the global registration manager.
    */
-  main.on<IpcRegisterHandlerEvent>('@platform/IPC/register-handler').subscribe(e => {
+  client.on<IpcRegisterHandlerEvent>('@platform/IPC/register-handler').subscribe(e => {
     const type = e.payload.type;
     const client = e.sender;
     onHandlerRegistered({ type, client });
@@ -109,18 +109,18 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   /**
    * Monitor browser-windows.
    */
-  const windows = new WindowsMain({ ipc: main });
+  const windows = WindowsMain.instance({ ipc: client });
   windows.change$
     // Listen for browser-windows closing and unregister their handlers.
     .pipe(filter(e => e.type === 'CLOSED'))
-    .subscribe(e => (e.windowId ? removeHandlerRef(e.windowId) : undefined));
+    .subscribe(e => (e.window.id ? removeHandlerRef(e.window.id) : undefined));
 
   // Finish up.
-  return main;
+  return client;
 };
 
 /**
- * INTERNAL
+ * [Helpers]
  */
 
 /**

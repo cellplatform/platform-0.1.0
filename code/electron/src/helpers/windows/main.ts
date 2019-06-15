@@ -1,48 +1,64 @@
 import { app, BrowserWindow } from 'electron';
 import { uniq } from 'ramda';
 import { Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import * as t from '../types';
 import {
   IWindowChange,
-  IWindowChangedEvent,
   IWindowRef,
   IWindows,
   IWindowsGetEvent,
   IWindowsGetResponse,
   IWindowsState,
   IWindowsTagEvent,
-  IWindowTag,
   IWindowsVisibleEvent,
+  IWindowTag,
+  WindowsEvent,
 } from './types';
 import * as util from './util';
 
 export * from './types';
 
 let uid = 0;
+let instance: WindowsMain | undefined;
 
 /**
  * [main] Maintains a set of reference to all windows.
  */
 export class WindowsMain implements IWindows {
+  /**
+   * [Static]
+   */
+  public static instance(args: { ipc: t.IpcClient }) {
+    return instance || (instance = new WindowsMain(args));
+  }
+
+  /**
+   * [Fields]
+   */
   public readonly uid = uid;
   private _refs: IWindowRef[] = [];
 
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
-  public isDisposed = false;
 
-  private readonly _change$ = new Subject<IWindowChange>();
-  public readonly change$ = this._change$.pipe(
+  private readonly _events$ = new Subject<WindowsEvent>();
+  public readonly events$ = this._events$.pipe(
     takeUntil(this.dispose$),
+    share(),
+  );
+
+  public readonly change$ = this.events$.pipe(
+    filter(e => e.type === '@platform/WINDOW/change'),
+    map(e => e.payload as IWindowChange),
     share(),
   );
 
   /**
    * [Constructor]
    */
-  constructor(args: { ipc: t.IpcClient }) {
+  private constructor(args: { ipc: t.IpcClient }) {
     uid++;
     const ipc: t.IpcInternal = args.ipc;
 
@@ -57,10 +73,14 @@ export class WindowsMain implements IWindows {
     app.on('browser-window-focus', this.handleFocusChanged);
 
     /**
-     * Broadcast changes through IPC event.
+     * Broadcast events through the IPC channel.
      */
-    this.change$.subscribe(change => {
-      ipc.send<IWindowChangedEvent>('@platform/WINDOWS/change', change);
+    const broadcast: Array<WindowsEvent['type']> = [
+      '@platform/WINDOWS/refresh',
+      '@platform/WINDOW/change',
+    ];
+    this.events$.pipe(filter(e => broadcast.includes(e.type))).subscribe(e => {
+      ipc.send(e.type, e.payload);
     });
 
     /**
@@ -93,13 +113,18 @@ export class WindowsMain implements IWindows {
   public dispose() {
     app.removeListener('browser-window-created', this.handleWindowCreated);
     app.removeListener('browser-window-focus', this.handleFocusChanged);
-    this.isDisposed = true;
     this._dispose$.next();
+    this._dispose$.complete();
   }
 
   /**
    * [Properties]
    */
+
+  public get isDisposed() {
+    return this._dispose$.isStopped;
+  }
+
   public get refs() {
     const all = BrowserWindow.getAllWindows();
     return this._refs
@@ -129,7 +154,7 @@ export class WindowsMain implements IWindows {
       return window ? this.refs.find(ref => ref.id === window.id) : undefined;
     } catch (error) {
       // Ignore.
-      // May throw if invoked while application is shutting down.
+      // NB: This may throw if invoked while the application is shutting down.
       return undefined;
     }
   }
@@ -138,7 +163,7 @@ export class WindowsMain implements IWindows {
    * [Methods]
    */
   public async refresh() {
-    this.fireChange('REFRESH');
+    this.fire({ type: '@platform/WINDOWS/refresh', payload: {} });
   }
 
   /**
@@ -182,8 +207,15 @@ export class WindowsMain implements IWindows {
   /**
    * Filter by window-id.
    */
-  public byId(...windowId: number[]) {
+  public byIds(...windowId: number[]) {
     return util.filterById(this.refs, windowId);
+  }
+
+  /**
+   * Find single by it's window-id.
+   */
+  public byId(windowId: number) {
+    return this.byIds(windowId)[0];
   }
 
   /**
@@ -191,7 +223,7 @@ export class WindowsMain implements IWindows {
    */
   public visible(isVisible: boolean, ...windowId: number[]) {
     const all = BrowserWindow.getAllWindows();
-    const refs = windowId.length === 0 ? this.refs : this.byId(...windowId);
+    const refs = windowId.length === 0 ? this.refs : this.byIds(...windowId);
     refs.forEach(ref => {
       try {
         const window = all.find(window => window.id === ref.id);
@@ -211,18 +243,23 @@ export class WindowsMain implements IWindows {
   }
 
   /**
-   * [INTERNAL]
+   * [Internal]
    */
   private handleWindowCreated = (e: Electron.Event, window: BrowserWindow) => {
     const windowId = window.id;
-    this._refs = [...this._refs, { id: windowId, tags: [], children: [], isVisible: false }];
-    this.fireChange('CREATED', windowId);
+    const ref: IWindowRef = { id: windowId, tags: [], children: [], isVisible: false };
+    this._refs = [...this._refs, ref];
+    this.fireChange('CREATED', ref);
 
     window.on('show', () => this.changeVisibility(windowId, true));
     window.on('hide', () => this.changeVisibility(windowId, false));
-    window.on('closed', () => {
+    window.once('closed', () => {
+      const ref = this.refs.find(ref => ref.id === windowId);
       this._refs = this.refs.filter(ref => ref.id !== windowId);
-      this.fireChange('CLOSED', windowId);
+      if (ref) {
+        // NB: Do not fire the closed event if the app was quit.
+        this.fireChange('CLOSED', ref);
+      }
     });
   };
 
@@ -240,11 +277,18 @@ export class WindowsMain implements IWindows {
     this.fireChange('FOCUS', window.id);
   };
 
-  private fireChange(type: IWindowChange['type'], windowId?: number) {
+  private fireChange(type: IWindowChange['type'], ref: IWindowRef | number) {
     if (!this.isDisposed) {
       const state = this.toObject();
-      const payload: IWindowChange = { type, windowId, state };
-      this._change$.next(payload);
+      const window = typeof ref === 'object' ? ref : state.refs.find(({ id }) => id === ref);
+      if (window) {
+        const payload: IWindowChange = { type, window, state };
+        this.fire({ type: '@platform/WINDOW/change', payload });
+      }
     }
+  }
+
+  private fire(e: WindowsEvent) {
+    this._events$.next(e);
   }
 }

@@ -1,4 +1,4 @@
-import * as t from './types';
+import * as t from '../types';
 import { value } from '@platform/util.value';
 
 const { defaultValue } = value;

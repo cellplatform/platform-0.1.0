@@ -1,9 +1,9 @@
 import main from '@platform/electron/lib/main';
 import { time } from '@platform/util.value';
 import * as uiharness from '@uiharness/electron/lib/main';
-import { BrowserWindow, app } from 'electron';
-import { format } from 'url';
 import * as root from 'app-root-path';
+import { BrowserWindow } from 'electron';
+import { format } from 'url';
 
 import * as t from '../src/types';
 
@@ -19,9 +19,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
   // NOTE:  You could also get [log, ipc] from `uiharness.init`.
   //        Calling these here as this is about testing the module
   //        that contains [log] and [ipc].
-  const { log, ipc, store, windows } = await main.init<t.MyEvents>({ appName });
-
-  const settings = store;
+  const { log, ipc, settings, windows } = await main.init<t.MyEvents>({ appName });
   const factory = new main.ScreenFactory<t.MyEvents>({ log, settings, ipc, windows });
 
   const defaultFactory = factory.type({
@@ -38,10 +36,14 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
     defaultFactory.create({ uid: 'foo' });
     log.info.blue('started');
 
+    // defaultFactory.change$.subscribe(e => {
+    //   console.log('defaultFactory.change$', e.type);
+    // });
+
     /**
      * Filter (new window).
      */
-    ipc.on('TEST/window/new').subscribe(e => {
+    ipc.on('TEST/window/new').subscribe(async e => {
       const all = BrowserWindow.getAllWindows();
       if (e.type === 'TEST/window/new') {
         const title = `New Window (${all.length})`;
@@ -52,12 +54,36 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
         const x = bounds ? bounds.x + 40 : undefined;
         const y = bounds ? bounds.y + 40 : undefined;
 
-        defaultFactory.create({
+        const screen = defaultFactory.create({
           uid: 'foo-1',
           window: { title },
           bounds: { x, y }, // Override default window and state values.
         });
       }
+    });
+
+    /**
+     * Refresh windows from MAIN.
+     */
+    ipc.on('TEST/windows/refresh').subscribe(e => {
+      windows.refresh();
+    });
+
+    /**
+     * Log the windows state on MAIN.
+     */
+    ipc.on('TEST/windows/write/main').subscribe(e => {
+      const state = windows.toObject();
+      log.info();
+      log.info(`windows:`);
+      log.info('focused:', state.focused ? state.focused.id : undefined);
+      state.refs.forEach(e => {
+        log.info(`- id:`, e.id);
+        log.info(`- children:`, e.children);
+        log.info(`- tags:`, e.tags.length);
+        e.tags.forEach(tag => log.info(`  -`, tag));
+        log.info();
+      });
     });
 
     /**
@@ -76,7 +102,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
      */
     time.delay(3000, () => {
       const msg = { text: '🌳 delayed message from main to window-1' };
-      ipc.send<t.IMessageEvent>('TEST/message', msg, { target: 1 });
+      ipc.send<t.ITestMessageEvent>('TEST/message', msg, { target: 1 });
     });
 
     /**

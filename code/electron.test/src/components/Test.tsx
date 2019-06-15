@@ -3,7 +3,7 @@ import * as React from 'react';
 import { css, GlamorValue, renderer } from '../common';
 import { IpcTest } from './Test/Ipc';
 import { DevToolsTest } from './Test/DevTools';
-import { StoreTest } from './Test/Store';
+import { SettingsTest } from './Test/Settings';
 import { WindowsTest } from './Test/Windows';
 
 export type ITestProps = {
@@ -27,7 +27,7 @@ export class Test extends React.PureComponent<ITestProps> {
         <WindowsTest />
         <DevToolsTest />
         <IpcTest />
-        <StoreTest />
+        <SettingsTest />
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import './styles';
-import '@babel/polyfill';
+import '@platform/libs/polyfill';
 
 import * as t from './types';
 export { t };

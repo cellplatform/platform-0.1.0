@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.image",
-  "version": "0.1.15",
+  "version": "0.1.17",
   "description": "Image related components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,14 +15,14 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.3.3",
-    "@platform/ui.icon": "0.0.67",
+    "@platform/react": "0.3.5",
+    "@platform/ui.icon": "0.0.69",
     "gravatar-url": "3.0.1",
     "react-icons": "3.7.0"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.5.1",
-    "@uiharness/ui": "0.5.1",
+    "@uiharness/dev": "0.5.8",
+    "@uiharness/ui": "0.5.8",
     "electron": "5.0.0"
   },
   "files": [

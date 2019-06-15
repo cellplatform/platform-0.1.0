@@ -18,7 +18,7 @@ win:
   artifactName: '${productName}-win.${ext}'
   icon: static/build/app.ico
 files:
-  - bundle/app.main/**
+  - bundle/app.main/prod/**
   - bundle/app.renderer/prod/**
 directories:
   output: dist

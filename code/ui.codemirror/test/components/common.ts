@@ -1,6 +1,6 @@
 import '../../import.css';
 import '../../node_modules/@platform/css/reset.css';
-import '@babel/polyfill';
+import '@platform/libs/polyfill';
 
 import * as t from './types';
 export * from '../../src/common';
