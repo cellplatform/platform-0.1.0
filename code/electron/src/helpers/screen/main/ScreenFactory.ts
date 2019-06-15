@@ -232,7 +232,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
     window?: Electron.BrowserWindowConstructorOptions;
   }): t.IScreenTypeFactory<M, S> {
     const self = this; // tslint:disable-line
-    const { type, url, isStateful, window: options } = args;
+    const { type, url, isStateful, window } = args;
     const events$ = this.events$.pipe(filter(e => includesType(type, e.payload.window.tags)));
     const change$ = this.change$.pipe(filter(e => includesType(type, e.window.tags)));
     const created$ = change$.pipe(filter(e => e.type === 'CREATED'));
@@ -253,14 +253,14 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
       },
       instance: this.instance,
       exists: this.exists,
-      create: args => {
+      create: (options = {}) => {
         return this.create({
           type,
           url,
-          uid: args.uid || type,
-          isStateful: defaultValue(args.isStateful, isStateful),
-          window: { ...options, ...args.window },
-          bounds: args.bounds,
+          uid: options.uid || type,
+          isStateful: defaultValue(options.isStateful, isStateful),
+          window: { ...window, ...options.window },
+          bounds: options.bounds,
         });
       },
     };
