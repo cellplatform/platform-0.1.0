@@ -21,17 +21,17 @@
     "@types/graphql": "14.2.0",
     "apollo-cache-inmemory": "1.6.2",
     "apollo-client": "2.6.2",
-    "apollo-link": "1.2.11",
-    "apollo-link-batch-http": "1.2.11",
-    "apollo-link-error": "1.1.10",
-    "apollo-link-http": "1.5.14",
+    "apollo-link": "1.2.12",
+    "apollo-link-batch-http": "1.2.12",
+    "apollo-link-error": "1.1.11",
+    "apollo-link-http": "1.5.15",
     "graphql": "14.3.1",
     "graphql-tag": "2.10.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.57",
-    "@uiharness/dev": "0.5.6",
-    "@uiharness/ui": "0.5.6",
+    "@uiharness/dev": "0.5.8",
+    "@uiharness/ui": "0.5.8",
     "apollo-server-express": "2.6.3",
     "express": "4.17.1",
     "electron": "5.0.0"
