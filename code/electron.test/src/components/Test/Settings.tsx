@@ -121,7 +121,7 @@ export class SettingsTest extends React.PureComponent<ISettingsProps, ISettingsS
   private changeFoo = async () => {
     const foo = await this.settings.get('foo', { bar: false });
     foo.bar = !foo.bar;
-    await this.settings.set('foo', foo);
+    await this.settings.put('foo', foo);
   };
 
   private deleteHandler = (key: string) => {

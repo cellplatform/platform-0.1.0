@@ -14,7 +14,7 @@ export type ISettingsClient<T extends SettingsJson = any> = {
 
   keys: () => Promise<Array<keyof T>>;
   get: <K extends keyof T>(key: K, defaultValue?: T[K]) => Promise<T[K]>;
-  set: <K extends keyof T>(key: K, value: T[K]) => Promise<T[K]>;
+  put: <K extends keyof T>(key: K, value: T[K]) => Promise<T[K]>;
   delete: <K extends keyof T>(...keys: K[]) => Promise<{}>;
   clear: () => Promise<{}>;
   openInEditor: () => ISettingsClient<T>;

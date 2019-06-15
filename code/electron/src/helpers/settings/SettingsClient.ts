@@ -86,7 +86,7 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
   /**
    * Saves the given value.
    */
-  public async set<K extends keyof T>(key: K, value: T[K]) {
+  public async put<K extends keyof T>(key: K, value: T[K]) {
     await this.write({ key, value });
     return value;
   }
