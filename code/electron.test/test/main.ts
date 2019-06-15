@@ -19,9 +19,7 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
   // NOTE:  You could also get [log, ipc] from `uiharness.init`.
   //        Calling these here as this is about testing the module
   //        that contains [log] and [ipc].
-  const { log, ipc, store, windows } = await main.init<t.MyEvents>({ appName });
-
-  const settings = store;
+  const { log, ipc, settings, windows } = await main.init<t.MyEvents>({ appName });
   const factory = new main.ScreenFactory<t.MyEvents>({ log, settings, ipc, windows });
 
   const defaultFactory = factory.type({

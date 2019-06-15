@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { DevTools, IDevToolsOptions } from '../helpers/devTools/renderer';
 import { getWindowId, init as initIpc } from '../helpers/ipc/renderer';
 import { init as initLog } from '../helpers/logger/renderer';
-import { init as initStore } from '../helpers/store/renderer';
+import { init as initSettings } from '../helpers/store/renderer';
 import * as t from '../types';
 import { Context, createProvider, ReactContext } from './Context';
 import { WindowsRenderer } from '../helpers/windows/renderer';
@@ -38,8 +38,8 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
   // Log.
   const log = initLog({ ipc });
 
-  // Store.
-  const store = initStore<S>({ ipc });
+  // Settings.
+  const settings = initSettings<S>({ ipc });
 
   // Windows manager.
   const windows = new WindowsRenderer({ ipc });
@@ -58,7 +58,7 @@ export async function init<M extends t.IpcMessage = any, S extends t.StoreJson =
   let context: t.IRendererContext<M, S> = {
     id,
     ipc,
-    store,
+    settings,
     log,
     devTools,
     windows,

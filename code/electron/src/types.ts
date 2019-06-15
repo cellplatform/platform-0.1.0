@@ -24,7 +24,7 @@ export type ProcessType = 'MAIN' | 'RENDERER';
 export type IContext<M extends IpcMessage = any, S extends StoreJson = any> = {
   id: number;
   ipc: IpcClient<M>;
-  store: IStoreClient<S>;
+  settings: IStoreClient<S>;
   log: ILog;
   windows: IWindows;
 };

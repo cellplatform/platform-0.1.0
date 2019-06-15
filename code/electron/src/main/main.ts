@@ -4,7 +4,7 @@ import { app } from 'electron';
 import * as devTools from '../helpers/devTools/main';
 import { init as initIpc, IpcClient, IpcMessage, MAIN_ID } from '../helpers/ipc/main';
 import * as logger from '../helpers/logger/main';
-import { init as initStore } from '../helpers/store/main';
+import { init as initSettings } from '../helpers/store/main';
 import { WindowsMain } from '../helpers/windows/main';
 import * as t from '../types';
 
@@ -21,7 +21,7 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
     appName?: string;
     ipc?: t.IpcClient<M>;
     log?: t.IMainLog | string;
-    store?: t.IMainStoreClient<S>;
+    settings?: t.IMainStoreClient<S>;
     windows?: t.IWindows;
   } = {},
 ): Promise<t.IMain<M, S>> {
@@ -31,7 +31,7 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
 
   // Initiaize modules.
   const ipc = args.ipc || initIpc<M>();
-  const store = args.store || initStore<S>({ ipc });
+  const settings = args.settings || initSettings<S>({ ipc });
   const windows = args.windows || WindowsMain.instance({ ipc });
   const log =
     typeof args.log === 'object'
@@ -40,7 +40,7 @@ export async function init<M extends IpcMessage = any, S extends t.StoreJson = a
   devTools.listen({ ipc, windows });
 
   // Finish up.
-  const main: t.IMain<M, S> = { id, ipc, log, store, windows };
+  const main: t.IMain<M, S> = { id, ipc, log, settings, windows };
   return main;
 }
 
