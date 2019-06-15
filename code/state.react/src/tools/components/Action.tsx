@@ -55,7 +55,7 @@ export class Action extends React.PureComponent<IActionProps, IActionState> {
       }),
       object: css({
         marginTop: 5,
-        paddingLeft: 10,
+        paddingLeft: 15,
       }),
     };
 
