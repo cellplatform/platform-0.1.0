@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, t, GlamorValue } from '../common';
+
+import { css, GlamorValue, t, value } from '../common';
 import { Action } from './Action';
 
 export type IActionsProps = {
-  total: number;
   events: t.IStoreEvent[];
+  total?: number;
+  direction?: 'ASC' | 'DESC';
   style?: GlamorValue;
 };
 export type IActionsState = {};
@@ -33,15 +35,21 @@ export class Actions extends React.PureComponent<IActionsProps, IActionsState> {
    * [Render]
    */
   public render() {
+    const { direction = 'ASC' } = this.props;
     const styles = {
       base: css({}),
     };
-    const { total, events } = this.props;
+    const { events = [] } = this.props;
+    const total = value.defaultValue(this.props.total, events.length);
     const start = Math.max(0, total - events.length);
-    const elList = events.map((e, i) => {
+
+    let elList = events.map((e, i) => {
       const index = start + i;
       return <Action key={index} event={e} index={index} />;
     });
-    return <div {...styles.base}>{elList}</div>;
+
+    elList = direction === 'DESC' ? elList.reverse() : elList;
+
+    return <div {...css(styles.base, this.props.style)}>{elList}</div>;
   }
 }
