@@ -21,15 +21,17 @@ export type IScreenFactory<
   M extends t.IpcMessage = any,
   S extends t.StoreJson = any
 > = IScreenContext<M, S> & {
-  readonly instances: Array<t.IScreen<M, S>>;
   readonly events$: Observable<ScreenEvent>;
   readonly change$: Observable<IScreenChange>;
   readonly created$: Observable<IScreenChange>;
   readonly closed$: Observable<IScreenChange>;
+  readonly instances: Array<t.IScreen<M, S>>;
+  instance(uid: string): IScreen<M, S> | undefined;
+  exists(uid: string): boolean;
   create(args: {
     type: string;
     url: string;
-    uid: string;
+    uid?: string;
     isStateful?: boolean;
     window?: Electron.BrowserWindowConstructorOptions;
     bounds?: Partial<Electron.Rectangle>; // Explicit bounds to use that override state and/or the default bounds in the `window` options.
@@ -50,13 +52,15 @@ export type IScreenTypeFactory<
   S extends t.StoreJson = any
 > = IScreenContext<M, S> & {
   readonly type: string;
-  readonly instances: Array<t.IScreen<M, S>>;
   readonly events$: Observable<ScreenEvent>;
   readonly change$: Observable<IScreenChange>;
   readonly created$: Observable<IScreenChange>;
   readonly closed$: Observable<IScreenChange>;
-  create(args: {
-    uid: string;
+  readonly instances: Array<t.IScreen<M, S>>;
+  instance(uid: string): IScreen<M, S> | undefined;
+  exists(uid: string): boolean;
+  create(args?: {
+    uid?: string;
     isStateful?: boolean;
     window?: Electron.BrowserWindowConstructorOptions;
     bounds?: Partial<Electron.Rectangle>; // Explicit bounds to use that override state and/or the default bounds in the `window` options.

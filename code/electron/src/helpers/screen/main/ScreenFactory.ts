@@ -94,19 +94,29 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
   /**
    * [Methods]
    */
+  public instance = (uid: string) => this.instances.find(s => s.uid === uid);
+  public exists = (uid: string) => Boolean(this.instance(uid));
+
   public create(args: {
     type: string;
     url: string;
-    uid: string;
+    uid?: string;
     isStateful?: boolean;
     window?: Electron.BrowserWindowConstructorOptions;
     bounds?: Partial<Electron.Rectangle>; // Explicit bounds to use that override state and/or the default bounds in the `window` options.
   }) {
-    const { window: options = {}, uid, type, bounds = {} } = args;
+    const { window: options = {}, type, bounds = {} } = args;
+    const uid = args.uid || type;
     const isStateful = defaultValue(args.isStateful, true);
 
     if (!app.isReady) {
       throw new Error(`Cannot create window '${type}:${uid}' before app is ready.`);
+    }
+
+    const existing = this.instances.find(s => s.uid === uid);
+    if (existing) {
+      existing.window.focus();
+      return existing;
     }
 
     /**
@@ -241,11 +251,13 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
       get instances() {
         return self.instances.filter(s => s.type === type);
       },
+      instance: this.instance,
+      exists: this.exists,
       create: args => {
         return this.create({
           type,
           url,
-          uid: args.uid,
+          uid: args.uid || type,
           isStateful: defaultValue(args.isStateful, isStateful),
           window: { ...options, ...args.window },
           bounds: args.bounds,
