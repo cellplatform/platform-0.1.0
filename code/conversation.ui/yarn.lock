@@ -1276,10 +1276,10 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/state.react@0.2.25":
-  version "0.2.25"
-  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.2.25.tgz#5bee52f89ed711ce172543793b24e401d5e2a72f"
-  integrity sha512-nubVV/BiBa4MaF0xKzNn7zfgUjGrWv9mNvYh4js+xGD4J8uhv1m5suJ7+SdUuYc2Tv6K8pQK5gudDr70ghxf0w==
+"@platform/state.react@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.3.0.tgz#8d1eb3fefe08aff7a3f3910154059a7da1e63d2a"
+  integrity sha512-uVBnjsC70lTOUJAXVRrwdwCOTMWW/v73koP0Ibsw0Lsp6u7uBSBjbCj0RuhEtmFK/vqmYDDgCxd52yaKsWZDdQ==
   dependencies:
     "@platform/react" "0.3.5"
     "@platform/state" "0.2.21"
