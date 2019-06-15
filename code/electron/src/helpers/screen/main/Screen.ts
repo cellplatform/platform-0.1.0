@@ -7,7 +7,7 @@ import { t } from './common';
 /**
  * Represents a screen instance.
  */
-export class Screen<M extends t.IpcMessage = any, S extends t.StoreJson = any>
+export class Screen<M extends t.IpcMessage = any, S extends t.SettingsJson = any>
   implements t.IScreen<M, S> {
   /**
    * [Lifecycle]
@@ -52,7 +52,7 @@ export class Screen<M extends t.IpcMessage = any, S extends t.StoreJson = any>
 
   // Context.
   public readonly log: t.ILog;
-  public readonly settings: t.IStoreClient<S>;
+  public readonly settings: t.ISettingsClient<S>;
   public readonly ipc: t.IpcClient<M>;
   public readonly windows: t.IWindows;
 

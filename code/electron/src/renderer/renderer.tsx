@@ -22,7 +22,7 @@ const refs: Refs = {};
 /**
  * Initializes [Renderer] process systems (safely).
  */
-export async function init<M extends t.IpcMessage = any, S extends t.StoreJson = any>(
+export async function init<M extends t.IpcMessage = any, S extends t.SettingsJson = any>(
   args: { getContext?: t.GetContext<M, S>; devTools?: IDevToolsOptions } = {},
 ): Promise<t.IRenderer<M, S>> {
   if (refs.renderer) {

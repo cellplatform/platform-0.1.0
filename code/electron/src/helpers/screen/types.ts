@@ -7,9 +7,9 @@ export * from '../../types';
 /**
  * General context accompanying a screen.
  */
-export type IScreenContext<M extends t.IpcMessage = any, S extends t.StoreJson = any> = {
+export type IScreenContext<M extends t.IpcMessage = any, S extends t.SettingsJson = any> = {
   readonly log: t.ILog;
-  readonly settings: t.IStoreClient<S>;
+  readonly settings: t.ISettingsClient<S>;
   readonly ipc: t.IpcClient<M>;
   readonly windows: t.IWindows;
 };
@@ -19,7 +19,7 @@ export type IScreenContext<M extends t.IpcMessage = any, S extends t.StoreJson =
  */
 export type IScreenFactory<
   M extends t.IpcMessage = any,
-  S extends t.StoreJson = any
+  S extends t.SettingsJson = any
 > = IScreenContext<M, S> & {
   readonly events$: Observable<ScreenEvent>;
   readonly change$: Observable<IScreenChange>;
@@ -49,7 +49,7 @@ export type IScreenFactory<
  */
 export type IScreenTypeFactory<
   M extends t.IpcMessage = any,
-  S extends t.StoreJson = any
+  S extends t.SettingsJson = any
 > = IScreenContext<M, S> & {
   readonly type: string;
   readonly events$: Observable<ScreenEvent>;
@@ -70,7 +70,7 @@ export type IScreenTypeFactory<
 /**
  * A screen instance.
  */
-export type IScreen<M extends t.IpcMessage = any, S extends t.StoreJson = any> = IScreenContext<
+export type IScreen<M extends t.IpcMessage = any, S extends t.SettingsJson = any> = IScreenContext<
   M,
   S
 > & {

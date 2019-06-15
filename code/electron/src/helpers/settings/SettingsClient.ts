@@ -5,10 +5,10 @@ import { share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import * as t from './types';
 
 /**
- * An abstract representation of the configuration store
+ * An abstract representation of the configuration settings store
  * that works on either the [main] or [renderer] processes.
  */
-export class Store<T extends t.SettingsJson = {}> implements t.ISettingsClient<T> {
+export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISettingsClient<T> {
   /**
    * [Fields]
    */

@@ -9,7 +9,7 @@ import { Screen } from './Screen';
 const TAG_TYPE = 'type';
 const WindowState = require('electron-window-state');
 
-export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson = any>
+export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJson = any>
   implements t.IScreenFactory<M, S> {
   /**
    * [Lifecycle]
@@ -17,7 +17,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
   constructor(args: {
     log: t.ILog;
     ipc: t.IpcClient<M>;
-    settings: t.IStoreClient<S>;
+    settings: t.ISettingsClient<S>;
     windows: t.IWindows;
   }) {
     const { windows } = args;
@@ -49,7 +49,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.StoreJson =
    * [Fields]
    */
   public readonly log: t.ILog;
-  public readonly settings: t.IStoreClient<S>;
+  public readonly settings: t.ISettingsClient<S>;
   public readonly ipc: t.IpcClient<M>;
   public readonly windows: t.IWindows;
   public instances: Array<t.IScreen<M, S>> = [];

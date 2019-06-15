@@ -33,7 +33,7 @@ export type ISettingsFile = {
 };
 
 /**
- * The store client with extended [main] properties.
+ * The settings client with extended [main] properties.
  */
 export type IMainSettingsClient<T extends SettingsJson = any> = ISettingsClient<T> & {
   path: string;
@@ -73,17 +73,17 @@ export type ISettingsChange = {
   action: SettingsSetAction;
 };
 export type ISettingsChangeEvent = {
-  type: '@platform/STORE/change';
+  type: '@platform/SETTINGS/change';
   payload: ISettingsChange;
 };
 
 export type ISettingsGetKeysEvent = {
-  type: '@platform/STORE/keys';
+  type: '@platform/SETTINGS/keys';
   payload: {};
 };
 
 export type ISettingsGetValuesEvent = {
-  type: '@platform/STORE/get';
+  type: '@platform/SETTINGS/get';
   payload: { keys: string[] };
 };
 export type ISettingsGetValuesResponse = {
@@ -95,7 +95,7 @@ export type ISettingsGetValuesResponse = {
 };
 
 export type ISettingsSetValuesEvent = {
-  type: '@platform/STORE/set';
+  type: '@platform/SETTINGS/set';
   payload: { values: ISettingsKeyValue[]; action: SettingsSetAction };
 };
 export type ISettingsSetValuesResponse<T extends SettingsJson = any> = {
@@ -104,6 +104,6 @@ export type ISettingsSetValuesResponse<T extends SettingsJson = any> = {
 };
 
 export type IOpenSettingsFileInEditorEvent = {
-  type: '@platform/STORE/openInEditor';
+  type: '@platform/SETTINGS/openInEditor';
   payload: {};
 };

@@ -16,12 +16,12 @@ export { devTools, logger };
 /**
  * Initializes [Main] process systems (safely).
  */
-export async function init<M extends IpcMessage = any, S extends t.StoreJson = any>(
+export async function init<M extends IpcMessage = any, S extends t.SettingsJson = any>(
   args: {
     appName?: string;
     ipc?: t.IpcClient<M>;
     log?: t.IMainLog | string;
-    settings?: t.IMainStoreClient<S>;
+    settings?: t.IMainSettingsClient<S>;
     windows?: t.IWindows;
   } = {},
 ): Promise<t.IMain<M, S>> {

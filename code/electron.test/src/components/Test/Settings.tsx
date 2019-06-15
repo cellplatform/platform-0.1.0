@@ -24,7 +24,7 @@ export class SettingsTest extends React.PureComponent<ISettingsProps, ISettingsS
   private readonly unmounted$ = new Subject();
 
   private log!: renderer.ILog;
-  private settings!: renderer.IStoreClient<t.IMyStore>;
+  private settings!: renderer.ISettingsClient<t.IMyStore>;
 
   public componentWillMount() {
     const { log, settings } = this.context;

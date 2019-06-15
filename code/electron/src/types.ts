@@ -7,11 +7,7 @@ import { IWindows } from './helpers/windows/types';
 export * from './renderer/types';
 export * from './main/types';
 
-export {
-  ISettingsClient as IStoreClient,
-  IMainSettingsClient as IMainStoreClient,
-  SettingsJson as StoreJson,
-} from './helpers/settings/types';
+export { ISettingsClient, IMainSettingsClient, SettingsJson } from './helpers/settings/types';
 
 export { IpcMessage } from './helpers/ipc/types';
 export {

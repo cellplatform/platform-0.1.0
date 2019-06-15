@@ -2,13 +2,13 @@ import { Subject } from 'rxjs';
 
 import { GLOBAL } from '../constants';
 import { IpcClient } from '../ipc/Client';
-import { Store } from './Client';
+import { SettingsClient } from './SettingsClient';
 import * as t from './types';
 
 export * from './types';
 
 /**
- * Initializes a store [renderer] client.
+ * Initializes a SettingsClient on the [renderer] process.
  */
 export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISettingsClient<T> {
   /**
@@ -16,8 +16,8 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
    *        This will only happen during development.
    */
   const global: any = window;
-  if (global[GLOBAL.STORE_CLIENT]) {
-    return global[GLOBAL.STORE_CLIENT] as t.ISettingsClient<T>;
+  if (global[GLOBAL.SETTINGS_CLIENT]) {
+    return global[GLOBAL.SETTINGS_CLIENT] as t.ISettingsClient<T>;
   }
   const ipc = args.ipc as IpcClient<t.SettingsEvent>;
   const change$ = new Subject<t.ISettingsChange>();
@@ -27,7 +27,7 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
       // Fire the event requesting data.
       const payload = { keys: keys as string[] };
       const res = await ipc.send<t.ISettingsGetValuesEvent, t.ISettingsGetValuesResponse>(
-        '@platform/STORE/get',
+        '@platform/SETTINGS/get',
         payload,
         { target: 0 },
       ).promise;
@@ -38,14 +38,14 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
 
       // Ensure main responded with data.
       if (data && (!data.ok || data.error)) {
-        const message = data.error || `Failed while getting store values for [${keys}].`;
+        const message = data.error || `Failed while getting settings values for [${keys}].`;
         throw new Error(message);
       }
 
       // Finish up.
       return !data || !data.exists ? {} : data.body;
     } catch (error) {
-      let msg = `Failed while getting store values for [${keys}]. `;
+      let msg = `Failed while getting settings values for [${keys}]. `;
       msg += error.message;
       throw new Error(msg);
     }
@@ -63,7 +63,7 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
         action,
       };
       const res = await ipc.send<t.ISettingsSetValuesEvent, t.ISettingsSetValuesResponse<T>>(
-        '@platform/STORE/set',
+        '@platform/SETTINGS/set',
         payload,
         { target: 0 },
       ).promise;
@@ -78,7 +78,7 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
       // Finish up.
       return result.data;
     } catch (error) {
-      let msg = `Failed while settings store values for [${keys}]. `;
+      let msg = `Failed while settings settings values for [${keys}]. `;
       msg += error.message;
       throw new Error(msg);
     }
@@ -86,7 +86,7 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
 
   const getKeys: t.GetSettingsKeys<T> = async () => {
     const res = await ipc.send<t.ISettingsGetKeysEvent, Array<keyof T>>(
-      '@platform/STORE/keys',
+      '@platform/SETTINGS/keys',
       {},
       { target: 0 },
     ).promise;
@@ -95,15 +95,17 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
   };
 
   const openInEditor: t.OpenSettingsInEditor = () => {
-    ipc.send<t.IOpenSettingsFileInEditorEvent>('@platform/STORE/openInEditor', {});
+    ipc.send<t.IOpenSettingsFileInEditorEvent>('@platform/SETTINGS/openInEditor', {});
   };
 
-  ipc.on<t.ISettingsChangeEvent>('@platform/STORE/change').subscribe(e => change$.next(e.payload));
+  ipc
+    .on<t.ISettingsChangeEvent>('@platform/SETTINGS/change')
+    .subscribe(e => change$.next(e.payload));
 
   /**
    * Create the client.
    */
-  const client = new Store<T>({
+  const client = new SettingsClient<T>({
     getKeys,
     getValues,
     setValues,
@@ -112,6 +114,6 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
   });
 
   // Finish up.
-  global[GLOBAL.STORE_CLIENT] = client;
+  global[GLOBAL.SETTINGS_CLIENT] = client;
   return client;
 }

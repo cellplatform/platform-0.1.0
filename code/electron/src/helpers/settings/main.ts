@@ -3,7 +3,7 @@ import { app, shell } from 'electron';
 import { Subject } from 'rxjs';
 
 import { IpcClient } from '../ipc/Client';
-import { Store } from './Client';
+import { SettingsClient } from './SettingsClient';
 import * as t from './types';
 import { is } from '../is/main';
 
@@ -13,7 +13,7 @@ type Refs = { client?: t.ISettingsClient };
 const refs: Refs = {};
 
 /**
- * Initializes a store [renderer] client.
+ * Initializes a SettingsClient on the [main] process.
  */
 export function init<T extends t.SettingsJson>(args: {
   ipc: IpcClient;
@@ -122,7 +122,7 @@ export function init<T extends t.SettingsJson>(args: {
         keys,
         values: values.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {}),
       };
-      ipc.send<t.ISettingsChangeEvent>('@platform/STORE/change', change);
+      ipc.send<t.ISettingsChangeEvent>('@platform/SETTINGS/change', change);
       change$.next(change);
 
       // Finish up.
@@ -146,7 +146,7 @@ export function init<T extends t.SettingsJson>(args: {
   };
 
   // Create the client.
-  const client = (new Store<T>({
+  const client = (new SettingsClient<T>({
     change$,
     getValues,
     setValues,
@@ -159,7 +159,7 @@ export function init<T extends t.SettingsJson>(args: {
   const dir =
     args.dir || is.prod
       ? fs.resolve(args.dir || app.getPath('userData'))
-      : fs.resolve('./.dev/store');
+      : fs.resolve('./.dev/settings');
   const path = fs.join(dir, name);
   client.path = path;
 
@@ -173,26 +173,26 @@ export function init<T extends t.SettingsJson>(args: {
   /**
    * Handle GET keys requests.
    */
-  ipc.handle<t.ISettingsGetKeysEvent>('@platform/STORE/keys', e => getKeys());
+  ipc.handle<t.ISettingsGetKeysEvent>('@platform/SETTINGS/keys', e => getKeys());
 
   /**
    * Handle GET value requests.
    */
-  ipc.handle<t.ISettingsGetValuesEvent>('@platform/STORE/get', e =>
+  ipc.handle<t.ISettingsGetValuesEvent>('@platform/SETTINGS/get', e =>
     getValuesHandler(e.payload.keys),
   );
 
   /**
    * Handle SET value requests.
    */
-  ipc.handle<t.ISettingsSetValuesEvent>('@platform/STORE/set', e =>
+  ipc.handle<t.ISettingsSetValuesEvent>('@platform/SETTINGS/set', e =>
     setValues(e.payload.values, e.payload.action),
   );
 
   /**
    * Handle `open in editor` requests.
    */
-  ipc.handle<t.IOpenSettingsFileInEditorEvent>('@platform/STORE/openInEditor', async e =>
+  ipc.handle<t.IOpenSettingsFileInEditorEvent>('@platform/SETTINGS/openInEditor', async e =>
     openInEditor(),
   );
 
