@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.db",
-  "version": "0.0.102",
+  "version": "0.0.104",
   "description": "Abstract synchronization mapper between [ui.datagrid] and a [hyperdb].",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,18 +15,18 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/hyperdb.types": "0.2.9",
+    "@platform/hyperdb.types": "0.2.10",
     "@platform/libs": "0.0.17",
-    "@platform/ui.datagrid.types": "0.0.49",
+    "@platform/ui.datagrid.types": "0.0.50",
     "@platform/util.value.cell": "0.0.50"
   },
   "devDependencies": {
-    "@platform/hyperdb": "0.2.14",
-    "@platform/hyperdb.electron": "0.2.18",
+    "@platform/hyperdb": "0.2.15",
+    "@platform/hyperdb.electron": "0.2.19",
     "@platform/test": "0.0.57",
     "@platform/ts": "3.4.30",
-    "@platform/ui.datagrid": "0.0.139",
-    "@platform/ui.datagrid.cell": "0.0.55",
+    "@platform/ui.datagrid": "0.0.140",
+    "@platform/ui.datagrid.cell": "0.0.56",
     "@uiharness/dev": "0.5.8",
     "@uiharness/ui": "0.5.8",
     "electron": "5.0.0"
