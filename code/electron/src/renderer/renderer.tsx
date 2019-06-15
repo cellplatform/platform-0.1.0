@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 import { DevTools, IDevToolsOptions } from '../helpers/devTools/renderer';
 import { getWindowId, init as initIpc } from '../helpers/ipc/renderer';
 import { init as initLog } from '../helpers/logger/renderer';
-import { init as initSettings } from '../helpers/store/renderer';
+import { init as initSettings } from '../helpers/settings/renderer';
 import * as t from '../types';
 import { Context, createProvider, ReactContext } from './Context';
 import { WindowsRenderer } from '../helpers/windows/renderer';

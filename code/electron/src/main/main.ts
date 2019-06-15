@@ -4,7 +4,7 @@ import { app } from 'electron';
 import * as devTools from '../helpers/devTools/main';
 import { init as initIpc, IpcClient, IpcMessage, MAIN_ID } from '../helpers/ipc/main';
 import * as logger from '../helpers/logger/main';
-import { init as initSettings } from '../helpers/store/main';
+import { init as initSettings } from '../helpers/settings/main';
 import { WindowsMain } from '../helpers/windows/main';
 import * as t from '../types';
 

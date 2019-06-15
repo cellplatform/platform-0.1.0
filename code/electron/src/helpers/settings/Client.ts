@@ -8,29 +8,29 @@ import * as t from './types';
  * An abstract representation of the configuration store
  * that works on either the [main] or [renderer] processes.
  */
-export class Store<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
+export class Store<T extends t.SettingsJson = {}> implements t.ISettingsClient<T> {
   /**
    * [Fields]
    */
-  private readonly _getKeys!: t.GetStoreKeys<T>;
-  private readonly _getValues!: t.GetStoreValues<T>;
-  private readonly _setValues!: t.SetStoreValues<T>;
-  private readonly _openInEditor!: t.OpenStoreInEditor;
+  private readonly _getKeys!: t.GetSettingsKeys<T>;
+  private readonly _getValues!: t.GetSettingsValues<T>;
+  private readonly _setValues!: t.SetSettingsValues<T>;
+  private readonly _openInEditor!: t.OpenSettingsInEditor;
 
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
   public isDisposed = false;
-  public readonly change$: Observable<t.IStoreChange>;
+  public readonly change$: Observable<t.ISettingsChange>;
 
   /**
    * [Constructor]
    */
   constructor(args: {
-    change$: Subject<t.IStoreChange>;
-    getKeys: t.GetStoreKeys<T>;
-    getValues: t.GetStoreValues<T>;
-    setValues: t.SetStoreValues<T>;
-    openInEditor: t.OpenStoreInEditor;
+    change$: Subject<t.ISettingsChange>;
+    getKeys: t.GetSettingsKeys<T>;
+    getValues: t.GetSettingsValues<T>;
+    setValues: t.SetSettingsValues<T>;
+    openInEditor: t.OpenSettingsInEditor;
   }) {
     this._getKeys = args.getKeys;
     this._getValues = args.getValues;
@@ -62,9 +62,9 @@ export class Store<T extends t.StoreJson = {}> implements t.IStoreClient<T> {
   /**
    * Writes values to disk.
    */
-  public async write(...values: Array<t.IStoreKeyValue<T>>) {
+  public async write(...values: Array<t.ISettingsKeyValue<T>>) {
     const res = await this._setValues(values, 'UPDATE');
-    return res as t.IStoreSetValuesResponse<T>;
+    return res as t.ISettingsSetValuesResponse<T>;
   }
 
   /**

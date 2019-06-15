@@ -9,18 +9,18 @@ import { is } from '../is/main';
 
 export * from './types';
 
-type Refs = { client?: t.IStoreClient };
+type Refs = { client?: t.ISettingsClient };
 const refs: Refs = {};
 
 /**
  * Initializes a store [renderer] client.
  */
-export function init<T extends t.StoreJson>(args: {
+export function init<T extends t.SettingsJson>(args: {
   ipc: IpcClient;
   dir?: string;
   name?: string;
-}): t.IMainStoreClient<T> {
-  type IClientMain = t.IMainStoreClient<T>;
+}): t.IMainSettingsClient<T> {
+  type IClientMain = t.IMainSettingsClient<T>;
 
   /**
    * HACK:  Ensure multiple clients are not initialized on HMR (hot-module-reloads).
@@ -29,14 +29,14 @@ export function init<T extends t.StoreJson>(args: {
   if (refs.client) {
     return refs.client as IClientMain;
   }
-  const ipc = args.ipc as IpcClient<t.StoreEvents>;
-  const change$ = new Subject<t.IStoreChange>();
+  const ipc = args.ipc as IpcClient<t.SettingsEvent>;
+  const change$ = new Subject<t.ISettingsChange>();
 
   /**
    * Read values from storage.
    */
   const getValuesHandler = async (keys: Array<keyof T>) => {
-    const res: t.IStoreGetValuesResponse = {
+    const res: t.ISettingsGetValuesResponse = {
       ok: true,
       exists: true,
       version: -1,
@@ -68,18 +68,18 @@ export function init<T extends t.StoreJson>(args: {
     }
   };
 
-  const getValues: t.GetStoreValues<T> = async keys => {
+  const getValues: t.GetSettingsValues<T> = async keys => {
     const res = await getValuesHandler(keys);
     return res.body || {};
   };
   /**
    * Save values to storage.
    */
-  const setValues: t.SetStoreValues<T> = async (
-    values: t.IStoreKeyValue[],
-    action: t.StoreSetAction,
+  const setValues: t.SetSettingsValues<T> = async (
+    values: t.ISettingsKeyValue[],
+    action: t.SettingsSetAction,
   ) => {
-    const res: t.IStoreSetValuesResponse = { ok: true };
+    const res: t.ISettingsSetValuesResponse = { ok: true };
     const keys = values.map(({ key }) => key.toString());
 
     try {
@@ -117,12 +117,12 @@ export function init<T extends t.StoreJson>(args: {
       await fs.file.stringifyAndSave(path, data);
 
       // Alert listeners.
-      const change: t.IStoreChange = {
+      const change: t.ISettingsChange = {
         action,
         keys,
         values: values.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {}),
       };
-      ipc.send<t.IStoreChangeEvent>('@platform/STORE/change', change);
+      ipc.send<t.ISettingsChangeEvent>('@platform/STORE/change', change);
       change$.next(change);
 
       // Finish up.
@@ -136,12 +136,12 @@ export function init<T extends t.StoreJson>(args: {
     }
   };
 
-  const getKeys: t.GetStoreKeys<T> = async () => {
+  const getKeys: t.GetSettingsKeys<T> = async () => {
     const file = await getFile();
     return file.exists ? Object.keys(file.data.body) : [];
   };
 
-  const openInEditor: t.OpenStoreInEditor = () => {
+  const openInEditor: t.OpenSettingsInEditor = () => {
     shell.openItem(path);
   };
 
@@ -164,33 +164,35 @@ export function init<T extends t.StoreJson>(args: {
   client.path = path;
 
   const getFile = async () => {
-    const file = await fs.file.loadAndParse<t.IStoreFile>(path);
+    const file = await fs.file.loadAndParse<t.ISettingsFile>(path);
     const exists = Boolean(file);
-    const data: t.IStoreFile = exists ? file : { version: -1, body: {} };
+    const data: t.ISettingsFile = exists ? file : { version: -1, body: {} };
     return { exists, data };
   };
 
   /**
    * Handle GET keys requests.
    */
-  ipc.handle<t.IStoreGetKeysEvent>('@platform/STORE/keys', e => getKeys());
+  ipc.handle<t.ISettingsGetKeysEvent>('@platform/STORE/keys', e => getKeys());
 
   /**
    * Handle GET value requests.
    */
-  ipc.handle<t.IStoreGetValuesEvent>('@platform/STORE/get', e => getValuesHandler(e.payload.keys));
+  ipc.handle<t.ISettingsGetValuesEvent>('@platform/STORE/get', e =>
+    getValuesHandler(e.payload.keys),
+  );
 
   /**
    * Handle SET value requests.
    */
-  ipc.handle<t.IStoreSetValuesEvent>('@platform/STORE/set', e =>
+  ipc.handle<t.ISettingsSetValuesEvent>('@platform/STORE/set', e =>
     setValues(e.payload.values, e.payload.action),
   );
 
   /**
    * Handle `open in editor` requests.
    */
-  ipc.handle<t.IOpenStoreFileInEditorEvent>('@platform/STORE/openInEditor', async e =>
+  ipc.handle<t.IOpenSettingsFileInEditorEvent>('@platform/STORE/openInEditor', async e =>
     openInEditor(),
   );
 

@@ -10,23 +10,23 @@ export * from './types';
 /**
  * Initializes a store [renderer] client.
  */
-export function init<T extends t.StoreJson>(args: { ipc: IpcClient }): t.IStoreClient<T> {
+export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISettingsClient<T> {
   /**
    * HACK:  Ensure multiple clients are not initialized on HMR (hot-module-reloads).
    *        This will only happen during development.
    */
   const global: any = window;
   if (global[GLOBAL.STORE_CLIENT]) {
-    return global[GLOBAL.STORE_CLIENT] as t.IStoreClient<T>;
+    return global[GLOBAL.STORE_CLIENT] as t.ISettingsClient<T>;
   }
-  const ipc = args.ipc as IpcClient<t.StoreEvents>;
-  const change$ = new Subject<t.IStoreChange>();
+  const ipc = args.ipc as IpcClient<t.SettingsEvent>;
+  const change$ = new Subject<t.ISettingsChange>();
 
-  const getValues: t.GetStoreValues<T> = async keys => {
+  const getValues: t.GetSettingsValues<T> = async keys => {
     try {
       // Fire the event requesting data.
       const payload = { keys: keys as string[] };
-      const res = await ipc.send<t.IStoreGetValuesEvent, t.IStoreGetValuesResponse>(
+      const res = await ipc.send<t.ISettingsGetValuesEvent, t.ISettingsGetValuesResponse>(
         '@platform/STORE/get',
         payload,
         { target: 0 },
@@ -51,18 +51,18 @@ export function init<T extends t.StoreJson>(args: { ipc: IpcClient }): t.IStoreC
     }
   };
 
-  const setValues: t.SetStoreValues<T> = async (
-    values: t.IStoreKeyValue[],
-    action: t.StoreSetAction,
+  const setValues: t.SetSettingsValues<T> = async (
+    values: t.ISettingsKeyValue[],
+    action: t.SettingsSetAction,
   ) => {
     const keys = values.map(({ key }) => key);
     try {
       // Fire the event requesting data.
-      const payload: t.IStoreSetValuesEvent['payload'] = {
+      const payload: t.ISettingsSetValuesEvent['payload'] = {
         values,
         action,
       };
-      const res = await ipc.send<t.IStoreSetValuesEvent, t.IStoreSetValuesResponse<T>>(
+      const res = await ipc.send<t.ISettingsSetValuesEvent, t.ISettingsSetValuesResponse<T>>(
         '@platform/STORE/set',
         payload,
         { target: 0 },
@@ -84,8 +84,8 @@ export function init<T extends t.StoreJson>(args: { ipc: IpcClient }): t.IStoreC
     }
   };
 
-  const getKeys: t.GetStoreKeys<T> = async () => {
-    const res = await ipc.send<t.IStoreGetKeysEvent, Array<keyof T>>(
+  const getKeys: t.GetSettingsKeys<T> = async () => {
+    const res = await ipc.send<t.ISettingsGetKeysEvent, Array<keyof T>>(
       '@platform/STORE/keys',
       {},
       { target: 0 },
@@ -94,11 +94,11 @@ export function init<T extends t.StoreJson>(args: { ipc: IpcClient }): t.IStoreC
     return main && main.data ? main.data : [];
   };
 
-  const openInEditor: t.OpenStoreInEditor = () => {
-    ipc.send<t.IOpenStoreFileInEditorEvent>('@platform/STORE/openInEditor', {});
+  const openInEditor: t.OpenSettingsInEditor = () => {
+    ipc.send<t.IOpenSettingsFileInEditorEvent>('@platform/STORE/openInEditor', {});
   };
 
-  ipc.on<t.IStoreChangeEvent>('@platform/STORE/change').subscribe(e => change$.next(e.payload));
+  ipc.on<t.ISettingsChangeEvent>('@platform/STORE/change').subscribe(e => change$.next(e.payload));
 
   /**
    * Create the client.
