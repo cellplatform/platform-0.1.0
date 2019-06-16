@@ -1,14 +1,15 @@
 ![Module](https://img.shields.io/badge/%40platform-state.react-%23EA4E7E.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![NPM](https://img.shields.io/npm/v/@platform/state.react.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/state.react)
-![banner](https://user-images.githubusercontent.com/185555/56843053-43c5ff80-68f0-11e9-9f81-59c62a2a394b.png)
+![banner](https://uiharness.sfo2.digitaloceanspaces.com/%40platform/repo-banners/state.react.png)
 
 [React](https://reactjs.org) bindings for [@platform/state](../state).
 
 
 ## Install
 
-    yarn add @platform/react.state
+    yarn add @platform/state
+    yarn add @platform/state.react
 
 Run example:
 
