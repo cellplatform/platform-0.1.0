@@ -1,3 +1,6 @@
+import { value } from './value';
+export const defaultValue = value.defaultValue;
+
 export { is } from '@platform/util.is';
 
 export * from './types';

@@ -15,9 +15,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.3.5"
+    "@platform/react": "0.3.5",
+    "react-sortable-hoc": "1.9.1"
   },
   "devDependencies": {
+    "@types/react-sortable-hoc": "0.6.5",
     "@uiharness/dev": "0.5.8",
     "@uiharness/ui": "0.5.8"
   },

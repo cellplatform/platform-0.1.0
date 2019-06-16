@@ -3,7 +3,9 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { CommandShell, t, MyComponent, ObjectView, Hr } from '../common';
+import { css, CommandShell, t, ObjectView, Hr, TabStrip, ITabStripProps, color } from '../common';
+
+export type IMyData = { name: string };
 
 export type ITestProps = {};
 
@@ -30,14 +32,58 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Render]
    */
   public render() {
+    const styles = {
+      base: css({
+        flex: 1,
+        padding: 30,
+        userSelect: 'none',
+      }),
+      vertical: css({
+        width: 120,
+      }),
+    };
+
+    const items = [{ name: 'One' }, { name: 'Two' }, { name: 'Three' }];
+
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
-        <div style={{ padding: 30, flex: 1 }}>
-          <MyComponent text={this.state.title} />
-          <Hr />
-          <ObjectView name={'state'} data={this.state} />
+        <div {...styles.base}>
+          <TabStrip items={items} renderTab={this.renderTab} isDraggable={this.state.isDraggable} />
+
+          <Hr margin={'50 0'} thickness={5} />
+
+          <div {...styles.vertical}>
+            <TabStrip
+              items={items}
+              axis={'y'}
+              renderTab={this.renderTab}
+              isDraggable={this.state.isDraggable}
+            />
+          </div>
         </div>
       </CommandShell>
     );
   }
+
+  private renderTab: t.TabFactory<IMyData> = e => {
+    const styles = {
+      base: css({ padding: 10 }),
+      x:
+        e.isHorizontal &&
+        css({
+          borderRight: !e.isLast ? `solid 1px ${color.format(-0.1)}` : undefined,
+          PaddingX: 30,
+        }),
+      y:
+        e.isVertical &&
+        css({
+          borderBottom: !e.isLast ? `solid 1px ${color.format(-0.1)}` : undefined,
+        }),
+    };
+    return (
+      <div {...css(styles.base, styles.x, styles.y)}>
+        <div>{e.data.name}</div>
+      </div>
+    );
+  };
 }

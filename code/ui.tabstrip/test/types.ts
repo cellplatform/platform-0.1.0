@@ -8,6 +8,5 @@ export type ICommandProps = {
 };
 
 export type ITestState = {
-  title?: string;
-  count?: number;
+  isDraggable?: boolean;
 };
