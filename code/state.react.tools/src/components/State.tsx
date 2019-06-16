@@ -23,7 +23,7 @@ export class State extends React.PureComponent<IStateProps> {
       }),
     };
     return (
-      <div {...styles.base}>
+      <div {...css(styles.base, this.props.style)}>
         <ObjectView
           name={name}
           data={data}

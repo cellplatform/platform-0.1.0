@@ -7,12 +7,9 @@ export type IChildProps = {
   children?: React.ReactNode;
   style?: GlamorValue;
 };
-export type IChildState = {};
 
-export class Child extends React.PureComponent<IChildProps, IChildState> {
-  public state: IChildState = {};
+export class Child extends React.PureComponent<IChildProps> {
   private unmounted$ = new Subject<{}>();
-  private state$ = new Subject<Partial<IChildState>>();
 
   public static contextType = state.Context;
   public context!: state.ReactContext;
@@ -22,10 +19,7 @@ export class Child extends React.PureComponent<IChildProps, IChildState> {
    * [Lifecycle]
    */
   public componentWillMount() {
-    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const changed$ = this.store.changed$.pipe(takeUntil(this.unmounted$));
-
-    state$.subscribe(e => this.setState(e));
     changed$.subscribe(e => this.forceUpdate());
   }
 

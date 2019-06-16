@@ -1,0 +1,33 @@
+{
+  "name": "@platform/state.react.tools",
+  "version": "0.4.1",
+  "description": "Tools and debug UI for working with `state.react`.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build $@",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/react": "0.3.5",
+    "@platform/state": "0.4.0",
+    "@platform/state.react": "0.4.0",
+    "@platform/ui.button": "0.1.24",
+    "@platform/ui.icon": "0.0.69",
+    "@platform/ui.text": "0.2.16"
+  },
+  "devDependencies": {
+    "@uiharness/dev": "0.5.8",
+    "@uiharness/ui": "0.5.8"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}
