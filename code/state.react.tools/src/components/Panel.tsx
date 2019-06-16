@@ -2,16 +2,15 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, css, GlamorValue, t } from '../common';
+import { COLORS, css, GlamorValue, t, value } from '../common';
 import { Actions } from './Actions';
 import { State } from './State';
-
-const MAX_ACTIONS = 10;
 
 export type IPanelProps = {
   store: t.IStoreContext;
   name?: string;
   expandPaths?: string | string[];
+  maxActions?: number;
   style?: GlamorValue;
 };
 
@@ -38,7 +37,8 @@ export class Panel extends React.PureComponent<IPanelProps> {
     store$.subscribe(e => {
       const total = (this.state.total || 0) + 1;
       let events = [...(this.state.events || []), e.event];
-      events = events.length > MAX_ACTIONS ? events.splice(events.length - MAX_ACTIONS) : events;
+      const max = this.maxEvents;
+      events = events.length > max ? events.splice(events.length - max) : events;
       this.state$.next({ total, events });
     });
   }
@@ -59,9 +59,14 @@ export class Panel extends React.PureComponent<IPanelProps> {
     return this.store.state;
   }
 
+  public get maxEvents() {
+    return value.defaultValue(this.props.maxActions, 10);
+  }
+
   public get events() {
     const actions = this.state.events || [];
-    return actions.length > 10 ? actions.slice(actions.length - MAX_ACTIONS) : actions;
+    const max = this.maxEvents;
+    return actions.length > max ? actions.slice(actions.length - max) : actions;
   }
 
   /**

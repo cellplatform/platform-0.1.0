@@ -1,6 +1,11 @@
 import { state, t, log } from './common';
 
-export const store = state.create<t.IMyModel, t.MyEvent>({ initial: { count: 0 } });
+export const store = state.create<t.IMyModel, t.MyEvent>({
+  initial: {
+    count: 0,
+    debug: 'SPLIT',
+  },
+});
 export const Provider = state.createProvider(store);
 
 /**
@@ -12,7 +17,7 @@ store
   .on<t.IMyIncrementEvent>('TEST/increment')
   .subscribe(e => {
     const count = e.state.count + (e.payload.by || 1);
-    const next = { ...e.state, count };
+    const next: t.IMyModel = { ...e.state, count };
     e.change(next);
   });
 
@@ -21,7 +26,16 @@ store
   .on<t.IMyDecrementEvent>('TEST/decrement')
   .subscribe(e => {
     const count = e.state.count - (e.payload.by || 1);
-    const next = { ...e.state, count };
+    const next: t.IMyModel = { ...e.state, count };
+    e.change(next);
+  });
+
+store
+  // Change the debug view.
+  .on<t.IDebugEvent>('TEST/debug')
+  .subscribe(e => {
+    const { debug } = e.payload;
+    const next: t.IMyModel = { ...e.state, debug };
     e.change(next);
   });
 

@@ -8,9 +8,10 @@ export type ITestCommandProps = {
 
 export type IMyModel = {
   count: number;
+  debug: 'SINGLE' | 'SPLIT';
 };
 
-export type MyEvent = IMyIncrementEvent | IMyDecrementEvent;
+export type MyEvent = IMyIncrementEvent | IMyDecrementEvent | IDebugEvent;
 export type IMyIncrementEvent = {
   type: 'TEST/increment';
   payload: { by?: number };
@@ -18,4 +19,8 @@ export type IMyIncrementEvent = {
 export type IMyDecrementEvent = {
   type: 'TEST/decrement';
   payload: { by?: number };
+};
+export type IDebugEvent = {
+  type: 'TEST/debug';
+  payload: { debug: IMyModel['debug'] };
 };
