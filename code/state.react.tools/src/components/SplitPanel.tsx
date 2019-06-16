@@ -73,14 +73,7 @@ export class SplitPanel extends React.PureComponent<ISplitPanelProps> {
           <div {...css(styles.fill)}>{this.renderActions()}</div>
         </div>
         <div {...styles.right}>
-          <div {...styles.fill}>
-            {this.renderState()}
-            {/* <div {...styles.state}>
-              <div {...styles.object}>
-                <ObjectView name={'state'} theme={'DARK'} data={this.props.data} />
-              </div>
-            </div> */}
-          </div>
+          <div {...styles.fill}>{this.renderState()}</div>
         </div>
       </Text>
     );
@@ -89,18 +82,36 @@ export class SplitPanel extends React.PureComponent<ISplitPanelProps> {
   private renderActions() {
     const styles = {
       base: css({ flex: 1, Flex: 'vertical' }),
-      actionsTitle: css({
+      title: css({
         paddingLeft: 10,
         paddingTop: 10,
         paddingBottom: 11,
         opacity: 0.3,
         fontSize: 12,
+        fontWeight: 'bold',
+      }),
+      empty: css({
+        opacity: 0.3,
+        fontSize: 12,
+        textAlign: 'center',
+        fontStyle: 'italic',
+        borderTop: `solid 1px ${color.format(0.3)}`,
+        paddingTop: 10,
       }),
     };
+
+    const actions = this.actions;
+    const isEmpty = actions.length === 0;
+    const elEmpty = isEmpty && <div {...styles.empty}>Nothing to display</div>;
+    const elActions = !isEmpty && (
+      <Actions events={this.actions} total={this.total} direction={'DESC'} />
+    );
+
     return (
       <div {...styles.base}>
-        <div {...styles.actionsTitle}>ACTIONS</div>
-        <Actions events={this.actions} total={this.total} direction={'DESC'} />
+        <div {...styles.title}>ACTIONS</div>
+        {elEmpty}
+        {elActions}
       </div>
     );
   }
