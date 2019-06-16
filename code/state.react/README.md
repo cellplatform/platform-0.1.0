@@ -8,12 +8,10 @@
 
 ## Install
 
-    yarn add @platform/state
     yarn add @platform/state.react
 
-Run example:
+To see example running in UI see [@platform/state.react.tools](../state.react.tools)
 
-    yarn ui
 
 <p>&nbsp;<p>
 

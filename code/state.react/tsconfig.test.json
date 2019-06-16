@@ -1,9 +1,0 @@
-{
-  "extends": "@platform/ts/tsconfig.json",
-  "include": ["test", "src"],
-  "compilerOptions": {
-    "outDir": "lib.test",
-    "target": "esnext",
-    "noUnusedLocals": false
-  }
-}
