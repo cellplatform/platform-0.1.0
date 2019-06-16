@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { GlamorValue, t, value } from '../common';
 import { SplitPanel } from './SplitPanel';
+import { Panel } from './Panel';
 
 export type IStoreProps = {
   store: t.IStoreContext;
@@ -86,6 +87,19 @@ export class Store extends React.PureComponent<IStoreProps, IStoreState> {
     if (layout === 'SPLIT') {
       return (
         <SplitPanel
+          actions={actions}
+          data={data}
+          total={total}
+          name={this.props.name}
+          expandPaths={this.props.expandPaths}
+          style={this.props.style}
+        />
+      );
+    }
+
+    if (layout === 'SINGLE') {
+      return (
+        <Panel
           actions={actions}
           data={data}
           total={total}

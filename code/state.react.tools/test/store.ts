@@ -3,7 +3,7 @@ import { state, t, log } from './common';
 export const store = state.create<t.IMyModel, t.MyEvent>({
   initial: {
     count: 0,
-    debug: 'SPLIT',
+    debug: 'SINGLE',
   },
 });
 export const Provider = state.createProvider(store);

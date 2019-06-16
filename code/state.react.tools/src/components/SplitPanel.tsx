@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { color, css, GlamorValue, t, value, COLORS } from '../common';
-import { ObjectView, Text } from './primitives';
+import { color, COLORS, css, GlamorValue, t, value } from '../common';
 import { Actions } from './Actions';
+import { Text } from './primitives';
 import { State } from './State';
 
 export type ISplitPanelProps = {
@@ -24,17 +24,16 @@ export class SplitPanel extends React.PureComponent<ISplitPanelProps> {
   }
 
   public get total() {
-    const { total = 0 } = this.props;
-    return total;
+    return this.props.total ||0
   }
 
   public get actions() {
     const MAX = this.max;
-    let events = this.props.actions || [];
+    let actions = this.props.actions || [];
     if (this.total > MAX) {
-      events = events.slice(events.length - MAX);
+      actions = actions.slice(actions.length - MAX);
     }
-    return events;
+    return actions;
   }
 
   /**
