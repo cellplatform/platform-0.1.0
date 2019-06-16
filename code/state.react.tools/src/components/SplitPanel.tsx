@@ -6,10 +6,10 @@ import { Text } from './primitives';
 import { State } from './State';
 
 export type ISplitPanelProps = {
-  total: number;
   actions: t.IStoreEvent[];
-  data: object;
+  actionsTotal?: number;
   maxActions?: number;
+  data: object;
   name?: string;
   expandPaths?: string | string[];
   style?: GlamorValue;
@@ -24,7 +24,8 @@ export class SplitPanel extends React.PureComponent<ISplitPanelProps> {
   }
 
   public get total() {
-    return this.props.total ||0
+    const actions = this.props.actions || [];
+    return value.defaultValue(this.props.actionsTotal, actions.length);
   }
 
   public get actions() {
@@ -53,7 +54,8 @@ export class SplitPanel extends React.PureComponent<ISplitPanelProps> {
       }),
       left: css({
         flex: 1.5,
-        minWidth: 200,
+        minWidth: 180,
+        maxWidth: 300,
         position: 'relative',
         borderRight: `solid 1px ${color.format(0.1)}`,
         Scroll: true,

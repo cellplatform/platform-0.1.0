@@ -89,7 +89,7 @@ export class Store extends React.PureComponent<IStoreProps, IStoreState> {
         <SplitPanel
           actions={actions}
           data={data}
-          total={total}
+          actionsTotal={total}
           name={this.props.name}
           expandPaths={this.props.expandPaths}
           style={this.props.style}
