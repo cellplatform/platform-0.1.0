@@ -6,6 +6,8 @@
 Tools and debug UI for working with [@platform/state.react](../state.react).
 
 
+
+
 ## Install
 
     yarn add @platform/state
@@ -14,7 +16,7 @@ Tools and debug UI for working with [@platform/state.react](../state.react).
 
 Run example:
 
-    yarn ui
+    yarn ui start
 
 <p>&nbsp;<p>
 

@@ -1,13 +1,21 @@
-import { Subject } from 'rxjs';
+import { Store } from '@platform/state';
 
 export * from '@platform/cli.ui/lib/types';
-export * from '../src/types';
 
-export type ICommandProps = {
-  state$: Subject<ITestState>;
+export type ITestCommandProps = {
+  store: Store<IMyModel, MyEvent>;
 };
 
-export type ITestState = {
-  title?: string;
-  count?: number;
+export type IMyModel = {
+  count: number;
+};
+
+export type MyEvent = IMyIncrementEvent | IMyDecrementEvent;
+export type IMyIncrementEvent = {
+  type: 'TEST/increment';
+  payload: { by?: number };
+};
+export type IMyDecrementEvent = {
+  type: 'TEST/decrement';
+  payload: { by?: number };
 };

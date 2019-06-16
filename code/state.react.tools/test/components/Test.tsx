@@ -1,24 +1,38 @@
 import * as React from 'react';
+
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import {
+  color,
+  Button,
+  ObjectView,
+  CommandShell,
+  css,
+  GlamorValue,
+  t,
+  COLORS,
+  tools,
+} from '../common';
+import { Child } from './Test.Child';
 
+import { Provider, store } from '../store';
 import * as cli from '../cli';
-import { CommandShell, t, MyComponent, ObjectView, Hr } from '../common';
 
 export type ITestProps = {};
+export type ITestState = {};
 
-export class Test extends React.PureComponent<ITestProps, t.ITestState> {
-  public state: t.ITestState = {};
-  private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<t.ITestState>>();
-  private cli: t.ICommandState = cli.init({ state$: this.state$ });
+export class Test extends React.PureComponent<ITestProps, ITestState> {
+  public state: ITestState = {};
+  private unmounted$ = new Subject<{}>();
+  private state$ = new Subject<Partial<ITestState>>();
+  private cli!: t.ICommandState;
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
-    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.cli = cli.init({});
   }
 
   public componentWillUnmount() {
@@ -30,14 +44,34 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Render]
    */
   public render() {
+    const styles = {
+      base: css({ flex: 1, Flex: 'horizontal' }),
+      left: css({
+        flex: 1,
+        padding: 30,
+      }),
+      right: css({
+        width: 300,
+        backgroundColor: COLORS.DARK,
+        borderBottom: `solid 1px ${color.format(0.15)}`,
+        display: 'flex',
+      }),
+    };
     return (
-      <CommandShell cli={this.cli} tree={{}} localStorage={true}>
-        <div style={{ padding: 30, flex: 1 }}>
-          <MyComponent text={this.state.title} />
-          <Hr />
-          <ObjectView name={'state'} data={this.state} />
-        </div>
-      </CommandShell>
+      <Provider>
+        <CommandShell cli={this.cli} tree={{}}>
+          <div {...styles.base}>
+            <div {...styles.left}>
+              <Child>
+                <Child />
+              </Child>
+            </div>
+            <div {...styles.right}>
+              <tools.Panel store={store} />
+            </div>
+          </div>
+        </CommandShell>
+      </Provider>
     );
   }
 }

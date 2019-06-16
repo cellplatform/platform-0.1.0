@@ -1,4 +1,6 @@
+export { MONOSPACE } from '@platform/ui.text/lib/common/constants';
+
 export const COLORS = {
-  DARK: '#293042', // Inky blue/black.
-  BLUE: '#4B89FF',
+  WHITE: '#fff',
+  DARK: '#293042', // Black with a slight blue tinge.
 };
