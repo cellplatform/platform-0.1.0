@@ -3,10 +3,9 @@ import * as S from 'electron-window-state';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, share, takeUntil, map } from 'rxjs/operators';
 
-import { defaultValue, t } from './common';
+import { defaultValue, t, TAG } from './common';
 import { Screen } from './Screen';
 
-const TAG_TYPE = 'type';
 const WindowState = require('electron-window-state');
 
 export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJson = any>
@@ -31,7 +30,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
      * Pipe window events.
      */
     windows.change$.pipe(takeUntil(this.dispose$)).subscribe(e => {
-      const tag = e.window.tags.find(({ tag }) => tag === TAG_TYPE);
+      const tag = e.window.tags.find(({ tag }) => tag === TAG.TYPE);
       if (tag && typeof tag.value === 'string') {
         const screen = tag.value as string;
         const payload: t.IScreenChange = { ...e, screen };
@@ -166,8 +165,9 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
     });
 
     window.once('ready-to-show', () => {
+      this.windows.tag(window.id, { tag: TAG.UID, value: uid });
       if (type) {
-        this.windows.tag(window.id, { tag: TAG_TYPE, value: type });
+        this.windows.tag(window.id, { tag: TAG.TYPE, value: type });
       }
       if (options.title) {
         window.setTitle(options.title);
@@ -275,4 +275,4 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
  * [Helpers]
  */
 const includesType = (type: string, tags: t.IWindowTag[]) =>
-  tags.some(item => item.tag === TAG_TYPE && item.value === type);
+  tags.some(item => item.tag === TAG.TYPE && item.value === type);

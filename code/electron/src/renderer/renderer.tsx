@@ -9,6 +9,7 @@ import * as t from '../types';
 import { Context, createProvider, ReactContext } from './Context';
 import { WindowsRenderer } from '../helpers/windows/renderer';
 import * as keyboard from './keyboard';
+import { TAG } from '../helpers/constants';
 
 const electron = (window as any).require('electron');
 const remote = electron.remote as Electron.Remote;
@@ -55,8 +56,18 @@ export async function init<M extends t.IpcMessage = any, S extends t.SettingsJso
     }
     return {};
   };
+
+  const uid = () => {
+    const ref = windows.byId(id);
+    const tag = ref ? ref.tags.find(({ tag }) => tag === TAG.UID) : undefined;
+    return (tag ? tag.value || '' : '') as string;
+  };
+
   let context: t.IRendererContext<M, S> = {
     id,
+    get uid() {
+      return uid();
+    },
     ipc,
     settings,
     log,
@@ -64,7 +75,13 @@ export async function init<M extends t.IpcMessage = any, S extends t.SettingsJso
     windows,
     remote,
   };
-  context = { ...context, ...(await getContext(context)) };
+  context = {
+    ...context,
+    ...(await getContext(context)),
+    get uid() {
+      return uid();
+    },
+  };
   const Provider = createProvider(context);
 
   // Finish up.
