@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { MouseEventType } from '@platform/react/lib/types';
 
 export type TabstripAxis = 'x' | 'y';
 
@@ -18,7 +19,10 @@ export type TabFactoryArgs<D = any> = {
 /**
  * [Events]
  */
-export type TabstripEvent = ITabstripSortStartEvent | ITabstripSortCompleteEvent;
+export type TabstripEvent =
+  | ITabstripSortStartEvent
+  | ITabstripSortCompleteEvent
+  | ITabstripTabMouseEvent;
 
 export type ITabstripSortStartEvent<D = any> = {
   type: 'TABSTRIP/sort/start';
@@ -41,4 +45,17 @@ export type ITabstripSortComplete<D = any> = {
   collection?: string | number;
   data: D;
   items: { from: D[]; to: D[] };
+};
+
+export type ITabstripTabMouseEvent<D = any> = {
+  type: 'TABSTRIP/tab/mouse';
+  payload: ITabMouse<D>;
+};
+export type ITabMouse<D = any> = {
+  index: number;
+  type: MouseEventType;
+  button: 'LEFT' | 'RIGHT';
+  data: D;
+  axis: TabstripAxis;
+  cancel: () => void;
 };

@@ -79,10 +79,12 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
     const items = this.items;
     const axis = this.axis;
     const total = items.length;
+    const events$ = this.events$;
     const { List } = sortable({
       axis,
       renderTab,
       total,
+      events$,
       getDraggingTabIndex: () => this.draggingTabIndex,
     });
 

@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { Subject } from 'rxjs';
 
-import { css, t, s } from '../../common';
+import { css, s, t } from '../../common';
 
 export type IElement<V = any> = s.SortableElementProps & { value: V };
 export type IContainer<V = any> = s.SortableContainerProps & { items: V[] };
@@ -10,11 +11,31 @@ export function sortable(args: {
   renderTab: t.TabFactory;
   total: number;
   getDraggingTabIndex: () => number;
+  events$: Subject<t.TabstripEvent>;
 }) {
-  const { axis, renderTab, total, getDraggingTabIndex } = args;
+  const { axis, renderTab, total, getDraggingTabIndex, events$ } = args;
   const direction = axis === 'y' ? 'vertical' : 'horizontal';
   const isVertical = axis === 'y';
   const isHorizontal = axis === 'x';
+
+  const mouseHandler = (type: t.MouseEventType, args: { index: number; data: any }) => {
+    return (e: React.MouseEvent) => {
+      const { index, data } = args;
+      const button = e.button === 2 ? 'RIGHT' : 'LEFT';
+      const payload: t.ITabMouse = {
+        index,
+        type,
+        data,
+        button,
+        axis,
+        cancel() {
+          e.preventDefault();
+          e.stopPropagation();
+        },
+      };
+      events$.next({ type: 'TABSTRIP/tab/mouse', payload });
+    };
+  };
 
   /**
    * Single item within a list.
@@ -27,7 +48,7 @@ export function sortable(args: {
     const isFirst = index === 0;
     const isLast = index === total - 1;
     const isDragging = getDraggingTabIndex() === index;
-
+    const mouse = (type: t.MouseEventType) => mouseHandler(type, { index, data });
     const el = renderTab({
       axis,
       index,
@@ -39,7 +60,19 @@ export function sortable(args: {
       isLast,
       isDragging,
     });
-    return <div {...styles.base}>{el}</div>;
+    return (
+      <div
+        {...styles.base}
+        onClick={mouse('CLICK')}
+        onDoubleClick={mouse('DOUBLE_CLICK')}
+        onMouseDown={mouse('DOWN')}
+        onMouseUp={mouse('UP')}
+        onMouseEnter={mouse('ENTER')}
+        onMouseLeave={mouse('LEAVE')}
+      >
+        {el}
+      </div>
+    );
   });
 
   /**
