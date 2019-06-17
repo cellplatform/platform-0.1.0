@@ -10,6 +10,7 @@ export function sortable(args: {
   axis: t.TabstripAxis;
   renderTab: t.TabFactory;
   total: number;
+  selected?: number;
   getDraggingTabIndex: () => number;
   events$: Subject<t.TabstripEvent>;
 }) {
@@ -48,6 +49,7 @@ export function sortable(args: {
     const isFirst = index === 0;
     const isLast = index === total - 1;
     const isDragging = getDraggingTabIndex() === index;
+    const isSelected = index === args.selected;
     const mouse = (type: t.MouseEventType) => mouseHandler(type, { index, data });
     const el = renderTab({
       axis,
@@ -59,6 +61,7 @@ export function sortable(args: {
       isFirst,
       isLast,
       isDragging,
+      isSelected,
     });
     return (
       <div

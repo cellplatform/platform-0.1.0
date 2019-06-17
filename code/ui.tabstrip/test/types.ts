@@ -7,10 +7,10 @@ export type ICommandProps = {
   state$: Subject<ITestState>;
 };
 
-export type IMyData = { name: string };
-
+export type IMyTab = { name: string };
 
 export type ITestState = {
   isDraggable?: boolean;
-  items?: IMyData[]
+  items?: IMyTab[];
+  selected?: number;
 };

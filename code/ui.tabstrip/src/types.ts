@@ -14,6 +14,7 @@ export type TabFactoryArgs<D = any> = {
   isFirst: boolean;
   isLast: boolean;
   isDragging: boolean;
+  isSelected: boolean;
 };
 
 /**
@@ -22,7 +23,8 @@ export type TabFactoryArgs<D = any> = {
 export type TabstripEvent =
   | ITabstripSortStartEvent
   | ITabstripSortCompleteEvent
-  | ITabstripTabMouseEvent;
+  | ITabstripTabMouseEvent
+  | ITabstripSelectionChangeEvent;
 
 export type ITabstripSortStartEvent<D = any> = {
   type: 'TABSTRIP/sort/start';
@@ -45,6 +47,7 @@ export type ITabstripSortComplete<D = any> = {
   collection?: string | number;
   data: D;
   items: { from: D[]; to: D[] };
+  selected: { from?: number; to?: number };
 };
 
 export type ITabstripTabMouseEvent<D = any> = {
@@ -58,4 +61,14 @@ export type ITabMouse<D = any> = {
   data: D;
   axis: TabstripAxis;
   cancel: () => void;
+};
+
+export type ITabstripSelectionChangeEvent<D = any> = {
+  type: 'TABSTRIP/tab/selection';
+  payload: ITabstripSelectionChange<D>;
+};
+export type ITabstripSelectionChange<D = any> = {
+  from?: number;
+  to?: number;
+  data: D;
 };

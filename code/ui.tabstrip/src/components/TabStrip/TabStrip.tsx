@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter, map } from 'rxjs/operators';
 
 import { css, defaultValue, GlamorValue, R, s, t } from '../../common';
 import { sortable } from './sortable';
@@ -9,14 +9,13 @@ export type ITabStripProps<D = any> = {
   axis?: t.TabstripAxis;
   items: D[];
   renderTab: t.TabFactory;
-  debounce?: number;
+  selected?: number;
+  dragDebounce?: number;
   isDraggable?: boolean;
   events$?: Subject<t.TabstripEvent>;
   style?: GlamorValue;
 };
-export type ITabStripState = {
-  // draggingTab?: number;
-};
+export type ITabStripState = {};
 
 export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState> {
   public state: ITabStripState = {};
@@ -30,11 +29,28 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
    */
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    const mouse$ = events$.pipe(
+      filter(e => e.type === 'TABSTRIP/tab/mouse'),
+      map(e => e.payload as t.ITabMouse),
+    );
+    const click$ = mouse$.pipe(
+      filter(e => e.button === 'LEFT'),
+      filter(e => e.type === 'DOWN'),
+    );
+
     state$.subscribe(e => this.setState(e));
 
     if (this.props.events$) {
       this.events$.subscribe(this.props.events$);
     }
+
+    click$.subscribe(e => {
+      const { data } = e;
+      const from = this.selected;
+      const to = e.index;
+      this.fire({ type: 'TABSTRIP/tab/selection', payload: { from, to, data } });
+    });
   }
 
   public componentWillUnmount() {
@@ -58,6 +74,10 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
     return items;
   }
 
+  public get selected() {
+    return this.props.selected;
+  }
+
   /**
    * [Methods]
    */
@@ -74,8 +94,8 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
    * [Render]
    */
   public render() {
-    const { renderTab } = this.props;
-    const distance = defaultValue(this.props.debounce, 10);
+    const { renderTab, selected } = this.props;
+    const distance = defaultValue(this.props.dragDebounce, 10);
     const items = this.items;
     const axis = this.axis;
     const total = items.length;
@@ -84,6 +104,7 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
       axis,
       renderTab,
       total,
+      selected,
       events$,
       getDraggingTabIndex: () => this.draggingTabIndex,
     });
@@ -141,7 +162,13 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
       to: R.move(index.from, index.to, this.items),
     };
 
-    const payload: t.ITabstripSortComplete = { index, collection, data, axis, items };
+    const isSelected = index.from === this.selected;
+    const selected = {
+      from: this.selected,
+      to: isSelected ? index.to : this.selected,
+    };
+
+    const payload: t.ITabstripSortComplete = { index, collection, data, axis, items, selected };
 
     this.fire({ type: 'TABSTRIP/sort/complete', payload });
     this.forceUpdate();
