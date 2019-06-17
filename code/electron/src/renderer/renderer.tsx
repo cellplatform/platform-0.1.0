@@ -1,15 +1,15 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import { TAG } from '../helpers/constants';
 import { DevTools, IDevToolsOptions } from '../helpers/devTools/renderer';
 import { getWindowId, init as initIpc } from '../helpers/ipc/renderer';
 import { init as initLog } from '../helpers/logger/renderer';
 import { init as initSettings } from '../helpers/settings/renderer';
+import { WindowsRenderer } from '../helpers/windows/renderer';
 import * as t from '../types';
 import { Context, createProvider, ReactContext } from './Context';
-import { WindowsRenderer } from '../helpers/windows/renderer';
 import * as keyboard from './keyboard';
-import { TAG } from '../helpers/constants';
 
 const electron = (window as any).require('electron');
 const remote = electron.remote as Electron.Remote;
@@ -44,30 +44,15 @@ export async function init<M extends t.IpcMessage = any, S extends t.SettingsJso
 
   // Windows manager.
   const windows = new WindowsRenderer({ ipc });
+  await windows.refresh();
 
   // Dev tools.
   const devTools = new DevTools({ ipc, windows, log, ...args.devTools });
 
-  // React <Provider>.
-  const getContext = async (context: t.IRendererContext) => {
-    if (args.getContext) {
-      const res = await args.getContext({ context });
-      return typeof res === 'object' ? res : {};
-    }
-    return {};
-  };
-
-  const uid = () => {
-    const ref = windows.byId(id);
-    const tag = ref ? ref.tags.find(({ tag }) => tag === TAG.UID) : undefined;
-    return (tag ? tag.value || '' : '') as string;
-  };
-
-  const context: t.IRendererContext<M, S> = {
+  // Prepare <Provider> context.
+  let context: t.IRendererContext<M, S> = {
     id,
-    get uid() {
-      return uid();
-    },
+    uid: getUidFromTag(windows, id),
     ipc,
     settings,
     log,
@@ -76,14 +61,21 @@ export async function init<M extends t.IpcMessage = any, S extends t.SettingsJso
     remote,
   };
 
+  const getContext = async (context: t.IRendererContext) => {
+    if (args.getContext) {
+      const res = await args.getContext({ context });
+      return typeof res === 'object' ? res : {};
+    }
+    return {};
+  };
+
   // Add extended context properties.
   const extended = await getContext(context);
   if (typeof extended === 'object') {
-    Object.keys(extended).forEach(key => {
-      context[key] = extended[key];
-    });
+    context = { ...context, ...extended };
   }
 
+  // React <Provider>.
   const Provider = createProvider(context);
 
   // Finish up.
@@ -157,3 +149,12 @@ export async function render(
   // Finish up.
   return renderer;
 }
+
+/**
+ * [Helpers]
+ */
+const getUidFromTag = (windows: t.IWindows, windowId: number) => {
+  const ref = windows.byId(windowId);
+  const tag = ref ? ref.tags.find(({ tag }) => tag === TAG.UID) : undefined;
+  return (tag ? tag.value || '' : '') as string;
+};
