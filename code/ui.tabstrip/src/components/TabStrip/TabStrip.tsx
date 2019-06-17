@@ -53,16 +53,18 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
 
     // Fire seletion-change when tab is clicked.
     click$.subscribe(e => {
+      const data = e.data;
       const from = this.selected;
       const to = e.index;
-      this.fire({ type: 'TABSTRIP/tab/selection', payload: { from, to } });
+      this.fire({ type: 'TABSTRIP/tab/selection', payload: { from, to, data } });
     });
 
     // Fire selection-change when re-ordered.
     reorder$.pipe(filter(e => e.selected.to !== this.selected)).subscribe(e => {
       const from = this.selected;
       const to = e.selected.to;
-      this.fire({ type: 'TABSTRIP/tab/selection', payload: { from, to } });
+      const data = this.data(to);
+      this.fire({ type: 'TABSTRIP/tab/selection', payload: { from, to, data } });
     });
   }
 
@@ -95,8 +97,8 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
    * [Methods]
    */
 
-  public data<D = any>(index: number): D | undefined {
-    return this.items[index];
+  public data<D = any>(index?: number): D | undefined {
+    return index === undefined ? undefined : this.items[index];
   }
 
   private fire(e: t.TabstripEvent) {
