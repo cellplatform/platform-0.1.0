@@ -5,8 +5,13 @@ import { css, t, s } from '../../common';
 export type IElement<V = any> = s.SortableElementProps & { value: V };
 export type IContainer<V = any> = s.SortableContainerProps & { items: V[] };
 
-export function sortable(args: { axis: t.TabstripAxis; renderTab: t.TabFactory; total: number }) {
-  const { axis, renderTab, total } = args;
+export function sortable(args: {
+  axis: t.TabstripAxis;
+  renderTab: t.TabFactory;
+  total: number;
+  getDraggingTabIndex: () => number;
+}) {
+  const { axis, renderTab, total, getDraggingTabIndex } = args;
   const direction = axis === 'y' ? 'vertical' : 'horizontal';
   const isVertical = axis === 'y';
   const isHorizontal = axis === 'x';
@@ -21,6 +26,7 @@ export function sortable(args: { axis: t.TabstripAxis; renderTab: t.TabFactory; 
     const { index, value: data, collection } = e;
     const isFirst = index === 0;
     const isLast = index === total - 1;
+    const isDragging = getDraggingTabIndex() === index;
 
     const el = renderTab({
       axis,
@@ -31,6 +37,7 @@ export function sortable(args: { axis: t.TabstripAxis; renderTab: t.TabFactory; 
       isHorizontal,
       isFirst,
       isLast,
+      isDragging,
     });
     return <div {...styles.base}>{el}</div>;
   });

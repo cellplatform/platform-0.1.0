@@ -1,26 +1,41 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { css, CommandShell, t, ObjectView, Hr, TabStrip, ITabStripProps, color } from '../common';
-
-export type IMyData = { name: string };
+import { color, CommandShell, css, Hr, log, t, TabStrip } from '../common';
 
 export type ITestProps = {};
 
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
-  public state: t.ITestState = {};
+  public state: t.ITestState = {
+    items: [{ name: 'One' }, { name: 'Two' }, { name: 'Three' }],
+  };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
   private cli: t.ICommandState = cli.init({ state$: this.state$ });
+  private events$ = new Subject<t.TabstripEvent>();
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
+
+    events$.subscribe(e => {
+      log.info('🌳', e.type, e.payload);
+    });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'TABSTRIP/sort/complete'),
+        map(e => e.payload as t.ITabstripSortComplete),
+      )
+      .subscribe(e => {
+        this.state$.next({ items: e.items.to });
+      });
   }
 
   public componentWillUnmount() {
@@ -32,6 +47,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Render]
    */
   public render() {
+    const { items = [] } = this.state;
     const styles = {
       base: css({
         flex: 1,
@@ -43,12 +59,15 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       }),
     };
 
-    const items = [{ name: 'One' }, { name: 'Two' }, { name: 'Three' }];
-
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
-          <TabStrip items={items} renderTab={this.renderTab} isDraggable={this.state.isDraggable} />
+          <TabStrip
+            items={items}
+            renderTab={this.renderTab}
+            isDraggable={this.state.isDraggable}
+            events$={this.events$}
+          />
 
           <Hr margin={'50 0'} thickness={5} />
 
@@ -58,6 +77,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
               axis={'y'}
               renderTab={this.renderTab}
               isDraggable={this.state.isDraggable}
+              events$={this.events$}
             />
           </div>
         </div>
@@ -65,19 +85,22 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     );
   }
 
-  private renderTab: t.TabFactory<IMyData> = e => {
+  private renderTab: t.TabFactory<t.IMyData> = e => {
     const styles = {
-      base: css({ padding: 10 }),
+      base: css({
+        padding: 10,
+        backgroundColor: e.isDragging ? 'rgba(255, 0, 0, 0.3)' : undefined, // NB: Not working.
+      }),
       x:
         e.isHorizontal &&
         css({
-          borderRight: !e.isLast ? `solid 1px ${color.format(-0.1)}` : undefined,
+          borderRight: !e.isLast && !e.isDragging ? `solid 1px ${color.format(-0.1)}` : undefined,
           PaddingX: 30,
         }),
       y:
         e.isVertical &&
         css({
-          borderBottom: !e.isLast ? `solid 1px ${color.format(-0.1)}` : undefined,
+          borderBottom: !e.isLast && !e.isDragging ? `solid 1px ${color.format(-0.1)}` : undefined,
         }),
     };
     return (
