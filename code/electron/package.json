@@ -11,7 +11,8 @@
     "test": "echo no-op",
     "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build $@",
+    "build-test": "ts build $@",
     "prepare": "ts prepare",
     "platform.electron": "node lib/bin/index.js $@",
     "rebuild": "yarn platform.electron rebuild"

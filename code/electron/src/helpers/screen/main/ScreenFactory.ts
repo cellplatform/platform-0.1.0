@@ -164,11 +164,18 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
       },
     });
 
+    /**
+     * Assign tags to window.
+     */
+    this.windows.tag(window.id, { tag: TAG.UID, value: uid });
+    if (type) {
+      this.windows.tag(window.id, { tag: TAG.TYPE, value: type });
+    }
+
+    /**
+     * Reveal window when loaded.
+     */
     window.once('ready-to-show', () => {
-      this.windows.tag(window.id, { tag: TAG.UID, value: uid });
-      if (type) {
-        this.windows.tag(window.id, { tag: TAG.TYPE, value: type });
-      }
       if (options.title) {
         window.setTitle(options.title);
       }
@@ -190,7 +197,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
     });
 
     /**
-     * Update state on change.
+     * Update stored state on change to window.
      */
     if (isStateful) {
       const saveState = () => state.saveState(window);

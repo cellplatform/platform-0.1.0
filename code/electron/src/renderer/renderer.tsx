@@ -63,7 +63,7 @@ export async function init<M extends t.IpcMessage = any, S extends t.SettingsJso
     return (tag ? tag.value || '' : '') as string;
   };
 
-  let context: t.IRendererContext<M, S> = {
+  const context: t.IRendererContext<M, S> = {
     id,
     get uid() {
       return uid();
@@ -75,13 +75,15 @@ export async function init<M extends t.IpcMessage = any, S extends t.SettingsJso
     windows,
     remote,
   };
-  context = {
-    ...context,
-    ...(await getContext(context)),
-    get uid() {
-      return uid();
-    },
-  };
+
+  // Add extended context properties.
+  const extended = await getContext(context);
+  if (typeof extended === 'object') {
+    Object.keys(extended).forEach(key => {
+      context[key] = extended[key];
+    });
+  }
+
   const Provider = createProvider(context);
 
   // Finish up.
