@@ -70,5 +70,4 @@ export type ITabstripSelectionChangeEvent<D = any> = {
 export type ITabstripSelectionChange<D = any> = {
   from?: number;
   to?: number;
-  data: D;
 };

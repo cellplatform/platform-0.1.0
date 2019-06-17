@@ -38,18 +38,31 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
       filter(e => e.button === 'LEFT'),
       filter(e => e.type === 'DOWN'),
     );
+    const reorder$ = events$.pipe(
+      filter(e => e.type === 'TABSTRIP/sort/complete'),
+      map(e => e.payload as t.ITabstripSortComplete),
+    );
 
+    // Update state.
     state$.subscribe(e => this.setState(e));
 
+    // Bubble events.
     if (this.props.events$) {
       this.events$.subscribe(this.props.events$);
     }
 
+    // Fire seletion-change when tab is clicked.
     click$.subscribe(e => {
-      const { data } = e;
       const from = this.selected;
       const to = e.index;
-      this.fire({ type: 'TABSTRIP/tab/selection', payload: { from, to, data } });
+      this.fire({ type: 'TABSTRIP/tab/selection', payload: { from, to } });
+    });
+
+    // Fire selection-change when re-ordered.
+    reorder$.pipe(filter(e => e.selected.to !== this.selected)).subscribe(e => {
+      const from = this.selected;
+      const to = e.selected.to;
+      this.fire({ type: 'TABSTRIP/tab/selection', payload: { from, to } });
     });
   }
 

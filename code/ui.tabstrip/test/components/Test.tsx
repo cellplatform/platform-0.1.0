@@ -37,10 +37,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         map(e => e.payload as t.ITabstripSortComplete),
       )
       .subscribe(e => {
-        this.state$.next({
-          items: e.items.to,
-          selected: e.selected.to,
-        });
+        this.state$.next({ items: e.items.to });
       });
 
     events$
