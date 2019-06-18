@@ -33,6 +33,7 @@ export type IRendererContext<M extends IpcMessage = any, S extends SettingsJson 
   M,
   S
 > & {
+  uid: string;
   devTools: DevTools;
   remote: Electron.Remote;
 };

@@ -22,6 +22,7 @@ export const GLOBAL = {
 };
 
 /**
- * Window tags
+ * Window tags.
  */
 export const TAG_DEV_TOOLS: IWindowTag = { tag: 'type', value: 'DEV_TOOLS' };
+export const TAG = { TYPE: 'type', UID: 'uid' };
