@@ -1,4 +1,4 @@
-import { COLORS, R, t } from '../../common';
+import { COLORS, R, t } from '../common';
 
 /**
  * The base button theme.

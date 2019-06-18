@@ -1,5 +1,9 @@
+import { value } from '@platform/util.value';
+
+export { value };
 export { color, css, GlamorValue, mouse } from '@platform/react';
-export { value } from '@platform/util.value';
+
+export const defaultValue = value.defaultValue;
 
 /**
  * [Ramda]

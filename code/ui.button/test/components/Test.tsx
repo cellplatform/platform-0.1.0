@@ -3,10 +3,12 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { color, COLORS, log, Button, css, CommandShell, t, value, Hr, PINK } from '../common';
+import { color, log, Button, Switch, css, CommandShell, t, value, Hr, COLORS } from '../common';
 import { Icons } from './Icons';
 
 export type ITestProps = {};
+
+const PINK = '#CD638D';
 
 const orange = Button.theme.BORDER.SOLID;
 orange.backgroundColor.enabled = '#F6A623';
@@ -48,9 +50,14 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       centerY: css({
         Flex: 'horizontal-start-start',
       }),
-      solidBg: css({
+      pinkBg: css({
         backgroundColor: PINK,
-        PaddingY: 50,
+        PaddingY: 30,
+        PaddingX: 20,
+      }),
+      darkBg: css({
+        backgroundColor: COLORS.DARK,
+        PaddingY: 30,
         PaddingX: 20,
       }),
     };
@@ -124,9 +131,21 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
           <PinkDashed />
 
-          <div {...styles.solidBg}>
+          <div {...styles.pinkBg}>
             <Button {...common} label={'Dark'} theme={Button.theme.BORDER.DARK} />
             <Button {...common} label={'Dark'} theme={Button.theme.BORDER.WHITE} />
+          </div>
+
+          <PinkDashed />
+
+          <div {...styles.centerY}>
+            <Switch />
+          </div>
+
+          <PinkDashed />
+
+          <div {...css(styles.centerY, styles.darkBg)}>
+            <Switch />
           </div>
         </div>
       </CommandShell>

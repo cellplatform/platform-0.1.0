@@ -5,5 +5,3 @@ import * as t from './types';
 
 export * from './libs';
 export { t };
-
-export const PINK = '#CD638D';
