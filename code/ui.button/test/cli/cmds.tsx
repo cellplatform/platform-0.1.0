@@ -11,4 +11,10 @@ export const root = Command.create<P>('root')
   })
   .add('disabled', e => {
     e.props.state$.next({ isEnabled: false });
+  })
+  .add('checked', e => {
+    e.props.state$.next({ isChecked: true });
+  })
+  .add('unchecked', e => {
+    e.props.state$.next({ isChecked: false });
   });

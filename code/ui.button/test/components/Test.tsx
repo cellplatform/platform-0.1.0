@@ -3,7 +3,19 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { color, log, Button, Switch, css, CommandShell, t, value, Hr, COLORS } from '../common';
+import {
+  color,
+  log,
+  Button,
+  Switch,
+  ISwitchProps,
+  css,
+  CommandShell,
+  t,
+  value,
+  Hr,
+  COLORS,
+} from '../common';
 import { Icons } from './Icons';
 
 export type ITestProps = {};
@@ -133,19 +145,17 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
           <div {...styles.pinkBg}>
             <Button {...common} label={'Dark'} theme={Button.theme.BORDER.DARK} />
-            <Button {...common} label={'Dark'} theme={Button.theme.BORDER.WHITE} />
+            <Button {...common} label={'White'} theme={Button.theme.BORDER.WHITE} />
           </div>
 
           <PinkDashed />
 
-          <div {...styles.centerY}>
-            <Switch />
-          </div>
+          <div {...styles.centerY}>{this.renderSwitches({})}</div>
 
           <PinkDashed />
 
           <div {...css(styles.centerY, styles.darkBg)}>
-            <Switch />
+            {this.renderSwitches({ theme: 'DARK' })}
           </div>
         </div>
       </CommandShell>
@@ -167,6 +177,28 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       <div {...styles.base}>
         <Icons.Face style={styles.icon} color={color.format(props.color)} />
         {elLabel}
+      </div>
+    );
+  }
+
+  private renderSwitches(args: { theme?: t.SwitchThemeName }) {
+    const { theme } = args;
+    const styles = {
+      base: css({ Flex: 'horizontal-center-center' }),
+      switch: css({ marginRight: 20 }),
+    };
+
+    const render = (props: ISwitchProps) => {
+      return <Switch theme={theme} style={styles.switch} value={this.state.isChecked} {...props} />;
+    };
+
+    return (
+      <div {...styles.base}>
+        {render({})}
+        {render({ track: { heightOffset: 6 } })}
+        {render({ height: 16 })}
+        {render({ height: 16, width: 35 })}
+        {render({ height: 16, width: 35, track: { heightOffset: 4 } })}
       </div>
     );
   }

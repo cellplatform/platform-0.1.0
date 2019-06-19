@@ -1,20 +1,39 @@
-import { t, COLORS, R } from '../common';
-
-/**
- * The base switch theme.
- */
-const BASE: t.ISwitchTheme = {};
+import { COLORS, t } from '../common';
 
 export class SwitchTheme {
   /**
    * [Static]
    */
-  public static merge(theme: Partial<t.ISwitchTheme>, base: t.ISwitchTheme = BASE) {
-    const res = R.mergeDeepRight(base, theme) as t.ISwitchTheme;
-    return R.clone(res);
+  public static fromString(theme: t.SwitchThemeName) {
+    switch (theme) {
+      case 'LIGHT':
+        return SwitchTheme.LIGHT;
+      case 'DARK':
+        return SwitchTheme.DARK;
+      default:
+        throw new Error(`Theme name '${theme}' not supported.`);
+    }
   }
 
-  public static get BASE() {
-    return R.clone(BASE);
+  public static get LIGHT(): t.ISwitchTheme {
+    return {
+      track: {
+        color: {
+          on: COLORS.GREEN,
+          off: -0.1,
+        },
+      },
+    };
+  }
+
+  public static get DARK(): t.ISwitchTheme {
+    return {
+      track: {
+        color: {
+          on: COLORS.GREEN,
+          off: 0.2,
+        },
+      },
+    };
   }
 }
