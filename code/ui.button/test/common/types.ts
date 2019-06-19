@@ -9,4 +9,5 @@ export type ICommandProps = {
 
 export type ITestState = {
   isEnabled?: boolean;
+  isChecked?: boolean;
 };

@@ -3,10 +3,26 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { color, COLORS, log, Button, css, CommandShell, t, value, Hr, PINK } from '../common';
+import {
+  color,
+  log,
+  Button,
+  Switch,
+  ISwitchProps,
+  css,
+  CommandShell,
+  t,
+  value,
+  Hr,
+  COLORS,
+  SwitchTheme,
+} from '../common';
 import { Icons } from './Icons';
 
 export type ITestProps = {};
+
+const PINK = '#CD638D';
+const ORANGE = '#F6A623';
 
 const orange = Button.theme.BORDER.SOLID;
 orange.backgroundColor.enabled = '#F6A623';
@@ -48,16 +64,21 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       centerY: css({
         Flex: 'horizontal-start-start',
       }),
-      solidBg: css({
+      pinkBg: css({
         backgroundColor: PINK,
-        PaddingY: 50,
+        PaddingY: 30,
+        PaddingX: 20,
+      }),
+      darkBg: css({
+        backgroundColor: COLORS.DARK,
+        PaddingY: 30,
         PaddingX: 20,
       }),
     };
 
     const common = {
       isEnabled,
-      onClick: this.handleClick,
+      onClick: this.onButtonClick,
       margin: [null, 10, null, null],
     };
 
@@ -124,9 +145,19 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
           <PinkDashed />
 
-          <div {...styles.solidBg}>
+          <div {...styles.pinkBg}>
             <Button {...common} label={'Dark'} theme={Button.theme.BORDER.DARK} />
-            <Button {...common} label={'Dark'} theme={Button.theme.BORDER.WHITE} />
+            <Button {...common} label={'White'} theme={Button.theme.BORDER.WHITE} />
+          </div>
+
+          <PinkDashed />
+
+          <div {...styles.centerY}>{this.renderSwitches({})}</div>
+
+          <PinkDashed />
+
+          <div {...css(styles.centerY, styles.darkBg)}>
+            {this.renderSwitches({ theme: 'DARK' })}
           </div>
         </div>
       </CommandShell>
@@ -136,12 +167,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private iconButtonContent(props: { label?: string; color?: number | string }) {
     const { label } = props;
     const styles = {
-      base: css({
-        Flex: 'horizontal-center-center',
-      }),
-      icon: css({
-        marginRight: label && 3,
-      }),
+      base: css({ Flex: 'horizontal-center-center' }),
+      icon: css({ marginRight: label && 3 }),
     };
     const elLabel = label && <div>{props.label}</div>;
     return (
@@ -152,8 +179,62 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     );
   }
 
-  private handleClick = () => {
+  private renderSwitches(args: { theme?: t.SwitchThemeName }) {
+    const { theme } = args;
+    const styles = {
+      base: css({ Flex: 'horizontal-center-center' }),
+      switch: css({ marginRight: 20 }),
+    };
+
+    const render = (props: ISwitchProps) => {
+      return (
+        <Switch
+          theme={theme}
+          style={styles.switch}
+          isEnabled={this.state.isEnabled}
+          value={this.state.isChecked}
+          {...props}
+          onClick={this.onSwitchClick}
+        />
+      );
+    };
+
+    const blueTheme = theme === 'DARK' ? SwitchTheme.DARK.BLUE : SwitchTheme.LIGHT.BLUE;
+
+    return (
+      <div {...styles.base}>
+        {render({})}
+        {render({ theme: blueTheme })}
+        {render({ track: { borderWidth: { off: 2 } } })}
+        {render({
+          track: { borderWidth: { on: 2, off: 2 } },
+          thumb: { color: { on: ORANGE, off: COLORS.WHITE, disabled: -0.1 } },
+        })}
+        {render({ track: { heightOffset: 6 }, thumb: { xOffset: 0, yOffset: 0 } })}
+        {render({ height: 16 })}
+        {render({ height: 16, theme: blueTheme })}
+        {render({ height: 16, track: { borderWidth: { off: 2 } } })}
+        {render({ height: 16, width: 35 })}
+        {render({
+          height: 16,
+          width: 35,
+          track: { heightOffset: 4 },
+          thumb: { xOffset: 0, yOffset: 0 },
+        })}
+      </div>
+    );
+  }
+
+  /**
+   * [Handlers]
+   */
+  private onButtonClick = () => {
     log.info('click');
+  };
+
+  private onSwitchClick = () => {
+    const isChecked = !this.state.isChecked;
+    this.state$.next({ isChecked });
   };
 }
 

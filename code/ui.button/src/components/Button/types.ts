@@ -1,4 +1,4 @@
-type Spacing = string | number | Array<string | number | null>;
+import * as t from '../../common/types';
 
 export type IButtonTheme = {
   color: { enabled: number | string; disabled?: number | string };
@@ -11,6 +11,6 @@ export type IButtonThemeBorder = {
   isVisible: boolean;
   thickness: number;
   radius: number;
-  padding: Spacing;
+  padding: t.Spacing;
   color: number | string;
 };

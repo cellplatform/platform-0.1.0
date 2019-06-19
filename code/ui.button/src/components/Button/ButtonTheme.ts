@@ -1,4 +1,4 @@
-import { COLORS, R, t } from '../../common';
+import { COLORS, R, t } from '../common';
 
 /**
  * The base button theme.
@@ -18,13 +18,16 @@ const BASE: t.IButtonTheme = {
 
 export class ButtonTheme {
   /**
-   * [Static]
+   * [Static.Methods]
    */
-  public static merge(theme: Partial<t.IButtonTheme>, base: t.IButtonTheme = BASE) {
+  public static merge(base: t.IButtonTheme, theme: Partial<t.IButtonTheme>) {
     const res = R.mergeDeepRight(base, theme) as t.IButtonTheme;
     return R.clone(res);
   }
 
+  /**
+   * [Static.Properties]
+   */
   public static get BASE() {
     return R.clone(BASE);
   }
@@ -33,7 +36,7 @@ export class ButtonTheme {
     const border = { ...BASE.border, isVisible: true };
     const BORDER = {
       get BASE() {
-        return ButtonTheme.merge({ border });
+        return ButtonTheme.merge(BASE, { border });
       },
       get SOLID() {
         const theme = BORDER.BASE;
@@ -62,7 +65,7 @@ export class ButtonTheme {
         return theme;
       },
       merge(theme: Partial<t.IButtonTheme>, base?: t.IButtonTheme) {
-        return ButtonTheme.merge(theme, base || BORDER.BASE);
+        return ButtonTheme.merge(base || BORDER.BASE, theme);
       },
     };
     return BORDER;
