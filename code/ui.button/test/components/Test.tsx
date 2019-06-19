@@ -195,8 +195,11 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     return (
       <div {...styles.base}>
         {render({})}
+        {render({ track: { borderWidth: { off: 2 } } })}
+        {render({ track: { borderWidth: { on: 2, off: 2 } } })}
         {render({ track: { heightOffset: 6 } })}
         {render({ height: 16 })}
+        {render({ height: 16, track: { borderWidth: { off: 2 } } })}
         {render({ height: 16, width: 35 })}
         {render({ height: 16, width: 35, track: { heightOffset: 4 } })}
       </div>

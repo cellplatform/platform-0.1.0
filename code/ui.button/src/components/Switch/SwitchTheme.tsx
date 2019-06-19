@@ -17,22 +17,18 @@ export class SwitchTheme {
 
   public static get LIGHT(): t.ISwitchTheme {
     return {
-      track: {
-        color: {
-          on: COLORS.GREEN,
-          off: -0.1,
-        },
+      trackColor: {
+        on: COLORS.GREEN,
+        off: -0.1,
       },
     };
   }
 
   public static get DARK(): t.ISwitchTheme {
     return {
-      track: {
-        color: {
-          on: COLORS.GREEN,
-          off: 0.2,
-        },
+      trackColor: {
+        on: COLORS.GREEN,
+        off: 0.2,
       },
     };
   }

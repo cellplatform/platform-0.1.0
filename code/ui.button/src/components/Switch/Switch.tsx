@@ -66,8 +66,6 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
   }
 
   public get width() {
-    // const width = this.props.width
-    // return 50;
     const height = this.height;
     return defaultValue(this.props.width, height * 2 - height * 0.4);
   }
@@ -84,19 +82,15 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
     let theme = this.props.theme || 'LIGHT';
     theme = typeof theme === 'string' ? SwitchTheme.fromString(theme as t.SwitchThemeName) : theme;
     return theme as t.ISwitchTheme;
-
-    // const overTheme = defaultValue(this.props.overTheme, this.props.theme);
-    // const downTheme = defaultValue(this.props.downTheme, overTheme);
-    // const current = isDown ? downTheme : isOver ? overTheme : theme;
-    // return SwitchTheme.merge(current || {});
   }
 
   public get track() {
     const theme = this.theme;
     const defaultTrack: t.ISwitchTrack = {
       heightOffset: 0,
+      color: theme.trackColor,
       borderRadius: this.height / 2,
-      color: theme.track.color,
+      borderWidth: { on: undefined, off: undefined }, // NB: Background fill.
     };
     const res = R.mergeDeepRight(defaultTrack, this.props.track || {}) as t.ISwitchTrack;
     return R.clone(res);
@@ -127,16 +121,29 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
 
   private renderTrack() {
     const { isLoaded } = this.state;
-    const value = this.value;
+    const on = this.value;
     const track = this.track;
     const x = 0;
     const y = track.heightOffset;
+
+    const themeColor = color.format(on ? track.color.on : track.color.off);
+    const borderWidth = on ? track.borderWidth.on : track.borderWidth.off;
+    const backgroundColor = borderWidth ? undefined : themeColor;
+
+    const speed = `${this.transitionSpeed}ms`;
+    const transition = `border-color ${speed}, background-color ${speed}`;
+
     const styles = {
       base: css({
         Absolute: [y, x, y, x],
+        boxSizing: 'border-box',
         borderRadius: track.borderRadius,
-        backgroundColor: color.format(value ? track.color.on : track.color.off),
-        transition: isLoaded ? `background-color ${this.transitionSpeed}ms` : undefined,
+        borderWidth,
+        borderStyle: borderWidth ? 'solid' : undefined,
+        borderColor: themeColor,
+        backgroundColor,
+        transition: isLoaded ? transition : undefined,
+        overflow: 'hidden',
       }),
     };
     return (
