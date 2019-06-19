@@ -196,12 +196,20 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       <div {...styles.base}>
         {render({})}
         {render({ track: { borderWidth: { off: 2 } } })}
-        {render({ track: { borderWidth: { on: 2, off: 2 } } })}
-        {render({ track: { heightOffset: 6 } })}
+        {render({
+          track: { borderWidth: { on: 2, off: 2 }, color: { on: -0.1, off: -0.1 } },
+          thumb: { color: { on: COLORS.GREEN, off: COLORS.BLUE } },
+        })}
+        {render({ track: { heightOffset: 6 }, thumb: { xOffset: 0, yOffset: 0 } })}
         {render({ height: 16 })}
         {render({ height: 16, track: { borderWidth: { off: 2 } } })}
         {render({ height: 16, width: 35 })}
-        {render({ height: 16, width: 35, track: { heightOffset: 4 } })}
+        {render({
+          height: 16,
+          width: 35,
+          track: { heightOffset: 4 },
+          thumb: { xOffset: 0, yOffset: 0 },
+        })}
       </div>
     );
   }

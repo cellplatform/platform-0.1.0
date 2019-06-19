@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Button } from '../Button';
-import { R, color, css, defaultValue, GlamorValue, mouse, t } from '../common';
+import { color, css, defaultValue, GlamorValue, mouse, R, t } from '../common';
 import { SwitchTheme } from './SwitchTheme';
 
 export type ISwitchProps = mouse.IMouseEventProps & {
@@ -12,6 +12,7 @@ export type ISwitchProps = mouse.IMouseEventProps & {
   height?: number;
   isEnabled?: boolean;
   track?: Partial<t.ISwitchTrack>;
+  thumb?: Partial<t.ISwitchThumb>;
   theme?: t.SwitchThemeName | Partial<t.ISwitchTheme>;
   transitionSpeed?: number;
   style?: GlamorValue;
@@ -84,15 +85,49 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
     return theme as t.ISwitchTheme;
   }
 
-  public get track() {
+  private get track() {
     const theme = this.theme;
+    const track = this.props.track || {};
+
+    const offset = {
+      width: defaultValue(track.widthOffset, 0),
+      height: defaultValue(track.heightOffset, 0),
+    };
+
     const defaultTrack: t.ISwitchTrack = {
-      heightOffset: 0,
+      widthOffset: offset.width,
+      heightOffset: offset.height,
       color: theme.trackColor,
       borderRadius: this.height / 2,
-      borderWidth: { on: undefined, off: undefined }, // NB: Background fill.
+      borderWidth: { on: undefined, off: undefined }, // NB: undefined === fill background
     };
-    const res = R.mergeDeepRight(defaultTrack, this.props.track || {}) as t.ISwitchTrack;
+
+    const res = R.mergeDeepRight(defaultTrack, track) as t.ISwitchTrack;
+    return R.clone(res);
+  }
+
+  private get thumb() {
+    const theme = this.theme;
+    const thumb = this.props.thumb || {};
+
+    const offset = {
+      x: defaultValue(thumb.xOffset, 2),
+      y: defaultValue(thumb.yOffset, 2),
+    };
+
+    const height = this.height - offset.y * 2;
+    const width = height;
+
+    const defaultThumb: t.ISwitchThumb = {
+      width,
+      height,
+      xOffset: offset.x,
+      yOffset: offset.y,
+      color: theme.thumbColor,
+      borderRadius: this.height / 2,
+      shadow: { x: 0, y: 2, blur: 4, color: theme.shadowColor },
+    };
+    const res = R.mergeDeepRight(defaultThumb, thumb) as t.ISwitchThumb;
     return R.clone(res);
   }
 
@@ -107,7 +142,6 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
         position: 'relative',
         boxSizing: 'border-box',
         display: 'inline-block',
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         width,
         height,
       }),
@@ -115,15 +149,16 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
     return (
       <div {...css(styles.base, this.props.style)} {...this.mouse.events}>
         {this.renderTrack()}
+        {this.renderThumb()}
       </div>
     );
   }
 
   private renderTrack() {
     const { isLoaded } = this.state;
-    const on = this.value;
     const track = this.track;
-    const x = 0;
+    const on = this.value;
+    const x = track.widthOffset;
     const y = track.heightOffset;
 
     const themeColor = color.format(on ? track.color.on : track.color.off);
@@ -146,10 +181,36 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
         overflow: 'hidden',
       }),
     };
-    return (
-      <div {...styles.base}>
-        <div />
-      </div>
-    );
+    return <div {...styles.base} />;
+  }
+
+  private renderThumb() {
+    const { isLoaded } = this.state;
+    const thumb = this.thumb;
+    const on = this.value;
+    const themeColor = color.format(on ? thumb.color.on : thumb.color.off);
+
+    const width = thumb.width;
+    const height = thumb.height;
+
+    const x = on ? this.width - (width + thumb.xOffset) : 0 + thumb.xOffset;
+    const y = thumb.yOffset;
+
+    const speed = `${this.transitionSpeed}ms`;
+    const transition = `left ${speed}, background-color ${speed}`;
+
+    const styles = {
+      base: css({
+        Absolute: [y, null, null, x],
+        width,
+        height,
+        boxSizing: 'border-box',
+        borderRadius: thumb.borderRadius,
+        backgroundColor: themeColor,
+        transition: isLoaded ? transition : undefined,
+        boxShadow: SwitchTheme.toShadowCss(thumb.shadow),
+      }),
+    };
+    return <div {...styles.base} />;
   }
 }

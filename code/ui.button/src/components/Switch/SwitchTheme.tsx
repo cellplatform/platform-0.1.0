@@ -1,8 +1,10 @@
-import { COLORS, t } from '../common';
+import { color, COLORS, t } from '../common';
+
+const { GREEN, WHITE } = COLORS;
 
 export class SwitchTheme {
   /**
-   * [Static]
+   * [Static.Methods]
    */
   public static fromString(theme: t.SwitchThemeName) {
     switch (theme) {
@@ -15,21 +17,27 @@ export class SwitchTheme {
     }
   }
 
+  public static toShadowCss(shadow: t.IShadow) {
+    const { x, y, blur } = shadow;
+    return `${x}px ${y}px ${blur}px 0 ${color.format(shadow.color)}`;
+  }
+
+  /**
+   * [Static.Properties]
+   */
   public static get LIGHT(): t.ISwitchTheme {
     return {
-      trackColor: {
-        on: COLORS.GREEN,
-        off: -0.1,
-      },
+      trackColor: { on: GREEN, off: -0.1 },
+      thumbColor: { on: WHITE, off: WHITE },
+      shadowColor: -0.35,
     };
   }
 
   public static get DARK(): t.ISwitchTheme {
     return {
-      trackColor: {
-        on: COLORS.GREEN,
-        off: 0.2,
-      },
+      trackColor: { on: GREEN, off: 0.2 },
+      thumbColor: { on: WHITE, off: WHITE },
+      shadowColor: -0.6,
     };
   }
 }
