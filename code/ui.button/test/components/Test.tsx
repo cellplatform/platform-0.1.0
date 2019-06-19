@@ -189,7 +189,15 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     };
 
     const render = (props: ISwitchProps) => {
-      return <Switch theme={theme} style={styles.switch} value={this.state.isChecked} {...props} />;
+      return (
+        <Switch
+          theme={theme}
+          style={styles.switch}
+          isEnabled={this.state.isEnabled}
+          value={this.state.isChecked}
+          {...props}
+        />
+      );
     };
 
     return (
@@ -197,8 +205,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         {render({})}
         {render({ track: { borderWidth: { off: 2 } } })}
         {render({
-          track: { borderWidth: { on: 2, off: 2 }, color: { on: -0.1, off: -0.1 } },
-          thumb: { color: { on: COLORS.GREEN, off: COLORS.BLUE } },
+          track: { borderWidth: { on: 2, off: 2 }, color: { on: -0.1, off: -0.1, disabled: -0.1 } },
+          thumb: { color: { on: COLORS.GREEN, off: COLORS.BLUE, disabled: -0.1 } },
         })}
         {render({ track: { heightOffset: 6 }, thumb: { xOffset: 0, yOffset: 0 } })}
         {render({ height: 16 })}

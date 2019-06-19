@@ -26,18 +26,23 @@ export class SwitchTheme {
    * [Static.Properties]
    */
   public static get LIGHT(): t.ISwitchTheme {
-    return {
-      trackColor: { on: GREEN, off: -0.1 },
-      thumbColor: { on: WHITE, off: WHITE },
+    const BASE: t.ISwitchTheme = {
+      trackColor: { on: GREEN, off: -0.1, disabled: -0.1 },
+      thumbColor: { on: WHITE, off: WHITE, disabled: WHITE },
       shadowColor: -0.35,
+      disabledOpacity: 0.45,
     };
+
+    return BASE;
   }
 
   public static get DARK(): t.ISwitchTheme {
-    return {
-      trackColor: { on: GREEN, off: 0.2 },
-      thumbColor: { on: WHITE, off: WHITE },
+    const BASE: t.ISwitchTheme = {
+      trackColor: { on: GREEN, off: 0.2, disabled: 0.2 },
+      thumbColor: { on: WHITE, off: WHITE, disabled: WHITE },
       shadowColor: -0.6,
+      disabledOpacity: 0.3,
     };
+    return BASE;
   }
 }

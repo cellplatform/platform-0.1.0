@@ -135,6 +135,8 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
    * [Render]
    */
   public render() {
+    const theme = this.theme;
+    const isEnabled = this.isEnabled;
     const width = this.width;
     const height = this.height;
     const styles = {
@@ -144,6 +146,7 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
         display: 'inline-block',
         width,
         height,
+        opacity: isEnabled ? 1 : theme.disabledOpacity,
       }),
     };
     return (
@@ -156,12 +159,15 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
 
   private renderTrack() {
     const { isLoaded } = this.state;
+    const isEnabled = this.isEnabled;
     const track = this.track;
     const on = this.value;
     const x = track.widthOffset;
     const y = track.heightOffset;
 
-    const themeColor = color.format(on ? track.color.on : track.color.off);
+    const themeColor = color.format(
+      isEnabled ? (on ? track.color.on : track.color.off) : track.color.disabled,
+    );
     const borderWidth = on ? track.borderWidth.on : track.borderWidth.off;
     const backgroundColor = borderWidth ? undefined : themeColor;
 
@@ -171,6 +177,7 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
     const styles = {
       base: css({
         Absolute: [y, x, y, x],
+        cursor: isEnabled ? 'pointer' : 'undefined',
         boxSizing: 'border-box',
         borderRadius: track.borderRadius,
         borderWidth,
@@ -186,9 +193,13 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
 
   private renderThumb() {
     const { isLoaded } = this.state;
+    const isEnabled = this.isEnabled;
+
     const thumb = this.thumb;
     const on = this.value;
-    const themeColor = color.format(on ? thumb.color.on : thumb.color.off);
+    const themeColor = color.format(
+      isEnabled ? (on ? thumb.color.on : thumb.color.off) : thumb.color.disabled,
+    );
 
     const width = thumb.width;
     const height = thumb.height;
@@ -202,6 +213,7 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
     const styles = {
       base: css({
         Absolute: [y, null, null, x],
+        cursor: isEnabled ? 'pointer' : 'undefined',
         width,
         height,
         boxSizing: 'border-box',
