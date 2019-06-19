@@ -1,11 +1,16 @@
-import { color, COLORS, t } from '../common';
+import { R, color, COLORS, t } from '../common';
 
-const { GREEN, WHITE } = COLORS;
+const { GREEN, WHITE, BLUE } = COLORS;
 
 export class SwitchTheme {
   /**
    * [Static.Methods]
    */
+  public static merge(base: t.ISwitchTheme, theme: Partial<t.ISwitchTheme>) {
+    const res = R.mergeDeepRight(base, theme) as t.ISwitchTheme;
+    return R.clone(res);
+  }
+
   public static fromString(theme: t.SwitchThemeName) {
     switch (theme) {
       case 'LIGHT':
@@ -25,24 +30,31 @@ export class SwitchTheme {
   /**
    * [Static.Properties]
    */
-  public static get LIGHT(): t.ISwitchTheme {
+  public static get LIGHT() {
     const BASE: t.ISwitchTheme = {
       trackColor: { on: GREEN, off: -0.1, disabled: -0.1 },
       thumbColor: { on: WHITE, off: WHITE, disabled: WHITE },
       shadowColor: -0.35,
       disabledOpacity: 0.45,
     };
-
-    return BASE;
+    return {
+      DEFAULT: BASE,
+      GREEN: BASE,
+      BLUE: SwitchTheme.merge(BASE, { trackColor: { on: BLUE, off: -0.1, disabled: -0.1 } }),
+    };
   }
 
-  public static get DARK(): t.ISwitchTheme {
+  public static get DARK() {
     const BASE: t.ISwitchTheme = {
       trackColor: { on: GREEN, off: 0.2, disabled: 0.2 },
       thumbColor: { on: WHITE, off: WHITE, disabled: WHITE },
       shadowColor: -0.6,
       disabledOpacity: 0.3,
     };
-    return BASE;
+    return {
+      DEFAULT: BASE,
+      GREEN: BASE,
+      BLUE: SwitchTheme.merge(BASE, { trackColor: { on: BLUE, off: 0.2, disabled: 0.2 } }),
+    };
   }
 }

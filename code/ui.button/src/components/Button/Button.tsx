@@ -92,7 +92,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
     const overTheme = defaultValue(this.props.overTheme, this.props.theme);
     const downTheme = defaultValue(this.props.downTheme, overTheme);
     const current = isDown ? downTheme : isOver ? overTheme : theme;
-    return ButtonTheme.merge(current || {});
+    return ButtonTheme.merge(ButtonTheme.BASE, current || {});
   }
 
   /**

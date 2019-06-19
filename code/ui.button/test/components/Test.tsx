@@ -15,12 +15,14 @@ import {
   value,
   Hr,
   COLORS,
+  SwitchTheme,
 } from '../common';
 import { Icons } from './Icons';
 
 export type ITestProps = {};
 
 const PINK = '#CD638D';
+const ORANGE = '#F6A623';
 
 const orange = Button.theme.BORDER.SOLID;
 orange.backgroundColor.enabled = '#F6A623';
@@ -200,16 +202,20 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       );
     };
 
+    const blueTheme = theme === 'DARK' ? SwitchTheme.DARK.BLUE : SwitchTheme.LIGHT.BLUE;
+
     return (
       <div {...styles.base}>
         {render({})}
+        {render({ theme: blueTheme })}
         {render({ track: { borderWidth: { off: 2 } } })}
         {render({
-          track: { borderWidth: { on: 2, off: 2 }, color: { on: -0.1, off: -0.1, disabled: -0.1 } },
-          thumb: { color: { on: COLORS.GREEN, off: COLORS.BLUE, disabled: -0.1 } },
+          track: { borderWidth: { on: 2, off: 2 } },
+          thumb: { color: { on: ORANGE, off: COLORS.WHITE, disabled: -0.1 } },
         })}
         {render({ track: { heightOffset: 6 }, thumb: { xOffset: 0, yOffset: 0 } })}
         {render({ height: 16 })}
+        {render({ height: 16, theme: blueTheme })}
         {render({ height: 16, track: { borderWidth: { off: 2 } } })}
         {render({ height: 16, width: 35 })}
         {render({

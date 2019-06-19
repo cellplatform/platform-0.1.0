@@ -81,7 +81,8 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
 
   private get theme() {
     let theme = this.props.theme || 'LIGHT';
-    theme = typeof theme === 'string' ? SwitchTheme.fromString(theme as t.SwitchThemeName) : theme;
+    theme =
+      typeof theme === 'string' ? SwitchTheme.fromString(theme as t.SwitchThemeName).GREEN : theme;
     return theme as t.ISwitchTheme;
   }
 
