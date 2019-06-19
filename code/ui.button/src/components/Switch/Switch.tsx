@@ -44,6 +44,8 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
     this.mouse = Button.mouseState(this.props, this.state$, this.unmounted$, () => this.isEnabled);
+
+    
   }
 
   public componentDidMount() {

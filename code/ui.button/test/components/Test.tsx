@@ -78,7 +78,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
     const common = {
       isEnabled,
-      onClick: this.handleClick,
+      onClick: this.onButtonClick,
       margin: [null, 10, null, null],
     };
 
@@ -167,12 +167,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private iconButtonContent(props: { label?: string; color?: number | string }) {
     const { label } = props;
     const styles = {
-      base: css({
-        Flex: 'horizontal-center-center',
-      }),
-      icon: css({
-        marginRight: label && 3,
-      }),
+      base: css({ Flex: 'horizontal-center-center' }),
+      icon: css({ marginRight: label && 3 }),
     };
     const elLabel = label && <div>{props.label}</div>;
     return (
@@ -198,6 +194,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
           isEnabled={this.state.isEnabled}
           value={this.state.isChecked}
           {...props}
+          onClick={this.onSwitchClick}
         />
       );
     };
@@ -228,8 +225,16 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     );
   }
 
-  private handleClick = () => {
+  /**
+   * [Handlers]
+   */
+  private onButtonClick = () => {
     log.info('click');
+  };
+
+  private onSwitchClick = () => {
+    const isChecked = !this.state.isChecked;
+    this.state$.next({ isChecked });
   };
 }
 
