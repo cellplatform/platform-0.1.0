@@ -116,6 +116,19 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
       });
 
     keydown$
+      // History back ("up").
+      .pipe(filter(e => Keyboard.matchEvent(keyMap.historyUp, e)))
+      .subscribe(e => {
+        e.preventDefault();
+        console.log('History Up.');
+        // if (this.isFocused) {
+        //   this.blur();
+        // } else {
+        //   this.focus();
+        // }
+      });
+
+    keydown$
       // Invoke on [Enter]
       .pipe(
         filter(e => e.key === 'Enter'),
