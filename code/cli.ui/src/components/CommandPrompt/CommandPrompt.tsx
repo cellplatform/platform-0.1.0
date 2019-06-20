@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil, map } from 'rxjs/operators';
+import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 
-import { events, GlamorValue, Keyboard, str, t, localStorage } from '../../common';
+import { events, GlamorValue, Keyboard, str, t } from '../../common';
 import { CommandPromptInput } from '../CommandPromptInput';
+import { History } from './History';
 import { ICommandPromptTheme } from './types';
 
 export type ICommandPromptProps = {
@@ -33,7 +34,8 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
   private unmounted$ = new Subject<{}>();
   private keyPress$ = (this.props.keyPress$ || events.keyPress$).pipe(takeUntil(this.unmounted$));
   private _events$ = new Subject<t.CommandPromptEvent>();
-  public events$ = this._events$.pipe(takeUntil(this.unmounted$));
+  private events$ = this._events$.pipe(takeUntil(this.unmounted$));
+  private history = new History({ id: this.props.id });
 
   private input: CommandPromptInput | undefined;
   private inputRef = (ref: CommandPromptInput) => (this.input = ref);
@@ -66,10 +68,13 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
 
     // Initialise the last command-line value, and keep a store of it as it changes.
     if (this.props.localStorage) {
+      const localStorage = this.history.localStorage;
       const text = localStorage.text;
       this.cli.change({ text });
       this.cli.invoke({ stepIntoNamespace: true });
-      cli$.subscribe(e => (localStorage.text = this.cli.toString()));
+      cli$.subscribe(e => {
+        localStorage.text = this.cli.toString();
+      });
     }
 
     cliChanged$
@@ -93,7 +98,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
         filter(e => !e.isNamespaceChanged),
         filter(e => Boolean((this.cli.text || '').trim())),
       )
-      .subscribe(e => this.change({ text: '' }));
+      .subscribe(e => {
+        this.history.add(this.cli.namespace, this.cli.text);
+        this.change({ text: '' });
+      });
 
     keydown$
       // Focus or blur on CMD+L

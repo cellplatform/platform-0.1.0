@@ -1,9 +1,21 @@
-import { localStorage as init } from '@platform/util.local-storage';
+import { localStorage, ILocalStorage } from '@platform/util.local-storage';
 
-const prefix = '@PLATFORM/cli/';
-
-type IStorage = {
+export type IStorage = ILocalStorage<IStorageProps>;
+export type IStorageProps = {
   text: string;
+  history: string[];
 };
 
-export const localStorage = init<IStorage>({ text: { default: '' } }, { prefix });
+const PREFIX = '@PLATFORM/cli/';
+
+export function init(id?: string): IStorage {
+  let prefix = PREFIX;
+  prefix = id ? `${prefix}${id}/` : prefix;
+  return localStorage<IStorageProps>(
+    {
+      text: { default: '' },
+      history: { default: [] },
+    },
+    { prefix },
+  );
+}

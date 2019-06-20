@@ -80,6 +80,7 @@ export class TestCommandPrompt extends React.PureComponent<ITestCommandPromptPro
         <div {...styles.prompt}>
           <CommandPrompt
             id={'top'}
+            localStorage={true}
             ref={this.promptRef}
             cli={cli}
             keyMap={{ focus: 'CMD+SHIFT+L' }}
