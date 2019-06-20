@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CLASS_NAME } from './styles';
 
 import {
   CommandChangeDispatcher,
@@ -140,13 +141,14 @@ export class CommandPromptInput extends React.PureComponent<
       }),
       textbox: css({
         flex: 1,
+        lineHeight: 1,
       }),
     };
 
     const elNamespace = ns && <div {...styles.namespace}>{ns.toString({ delimiter: '.' })}</div>;
 
     return (
-      <div {...css(styles.base, this.props.style)} onClick={this.focus}>
+      <div {...css(styles.base, this.props.style)} onClick={this.focus} className={CLASS_NAME}>
         {elNamespace}
         <div {...styles.prefix}>{'>'}</div>
         <TextInput
