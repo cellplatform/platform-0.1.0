@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs';
-import { filter, map, share, take, takeUntil } from 'rxjs/operators';
+import { tap, filter, map, share, take, takeUntil } from 'rxjs/operators';
 
 import { R } from '../common';
 import { events } from '../events';
@@ -63,11 +63,18 @@ export class Keyboard<T extends t.KeyCommand> {
       .split('+')
       .map(key => key.trim())
       .filter(key => Boolean(key))
-      .map(key => key.toUpperCase())
       .map(key => {
+        // Capitalize modifiers.
+        const modifiers = ['CMD', 'COMMAND', 'META', 'CONTROL', 'CTRL', 'ALT', 'SHIFT'];
+        key = modifiers.includes(key.toUpperCase()) ? key.toUpperCase() : key;
+
+        // Normaize modifier variants.
         key = key === 'CMD' ? 'META' : key;
         key = key === 'COMMAND' ? 'META' : key;
         key = key === 'CONTROL' ? 'CTRL' : key;
+
+        // Ensure key characters are upper-case.
+        key = key.length === 1 ? key.toUpperCase() : key;
         return key;
       });
     const modifiers = Array.from(new Set(parts.filter(Keyboard.isModifier))) as t.ModifierKey[];
@@ -130,7 +137,7 @@ export class Keyboard<T extends t.KeyCommand> {
   /**
    * [Fields]
    */
-  private readonly _dispose$ = new Subject();
+  private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   public readonly keyPress$: Observable<t.IKeypressEvent>;
@@ -185,6 +192,7 @@ export class Keyboard<T extends t.KeyCommand> {
   private monitorBindings(fire: (e: t.IKeyBindingEvent<T>) => void) {
     const keyPress$ = this.keyPress$;
     let pressedKeys: string[] = [];
+
     keyPress$
       // Cache up the currently pressed set of keys with modifier.
       .subscribe(e => {
@@ -192,12 +200,12 @@ export class Keyboard<T extends t.KeyCommand> {
         if (e.isModifier && !e.isPressed && !hasModifier) {
           pressedKeys = [];
         }
-        if (!e.isModifier && hasModifier) {
+        if (!e.isModifier) {
           let key = e.code;
           key = key.startsWith('Key') ? e.code.replace(/^Key/, '') : key;
           key = key.startsWith('Numpad') ? e.code.replace(/^Numpad/, '') : key;
           key = key.startsWith('Digit') ? e.code.replace(/^Digit/, '') : key;
-          key = key.toUpperCase();
+          key = key.length === 1 ? key.toUpperCase() : key;
           pressedKeys = e.isPressed ? R.uniq([...pressedKeys, key]) : [];
         }
       });
@@ -205,7 +213,6 @@ export class Keyboard<T extends t.KeyCommand> {
     keyPress$
       .pipe(
         filter(e => e.isPressed),
-        filter(e => !e.isModifier),
         map(e => ({ event: e, binding: this.matchBinding(e, pressedKeys) })),
       )
       .subscribe(({ event, binding }) => {

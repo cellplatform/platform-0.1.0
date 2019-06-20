@@ -5,13 +5,16 @@ import { takeUntil } from 'rxjs/operators';
 import { IKeyBindingEvent, IKeypressEvent, KeyBindings, Keyboard } from '../../src';
 import { color, css, ObjectView } from './common';
 
-type MyCommands = 'SAVE' | 'PASTE' | 'FOO' | 'BAR' | 'JAM';
+type MyCommands = 'SAVE' | 'PASTE' | 'FOO' | 'BAR' | 'JAM' | 'BACK';
 const bindings: KeyBindings<MyCommands> = [
+  { command: 'SAVE', key: 'S' },
   { command: 'SAVE', key: 'CMD+S' },
   { command: 'PASTE', key: 'CMD+V' },
   { command: 'FOO', key: 'CMD+SHIFT+V' },
   { command: 'BAR', key: 'CMD+SHIFT+V+B' },
   { command: 'JAM', key: 'CMD+ALT+J' },
+  { command: 'BACK', key: 'ArrowUp' },
+  { command: 'BACK', key: 'CMD+ArrowUp' },
 ];
 const keyboard = Keyboard.create({ bindings });
 
@@ -61,6 +64,7 @@ export class KeyboardTest extends React.PureComponent<IKeyboardTestProps, IKeybo
         borderBottom: `solid 1px ${color.format(-0.1)}`,
       }),
     };
+
     const data = {
       key: keyPress && keyPress.code,
       latest: this.formatKey(this.keyboard.latest),

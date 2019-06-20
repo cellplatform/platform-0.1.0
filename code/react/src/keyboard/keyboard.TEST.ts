@@ -23,6 +23,8 @@ describe('keyboard', () => {
       test('cmd+l+alt', ['L'], ['META', 'ALT']);
       test('cmd+ALT+Shift+l+aLt+P+ctrl+SHIFT', ['L', 'P'], ['META', 'ALT', 'SHIFT', 'CTRL']);
       test('CMD+ALT+J', ['J'], ['META', 'ALT']);
+      test('ArrowUp', ['ArrowUp']);
+      test('CMD+ArrowUp', ['ArrowUp'], ['META']);
     });
 
     it('boolean', () => {
