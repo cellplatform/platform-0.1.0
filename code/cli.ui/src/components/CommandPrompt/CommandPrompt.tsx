@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil, map } from 'rxjs/operators';
 
 import { events, GlamorValue, Keyboard, str, t, localStorage } from '../../common';
 import { CommandPromptInput } from '../CommandPromptInput';
 import { ICommandPromptTheme } from './types';
 
 export type ICommandPromptProps = {
+  id?: string;
   cli: t.ICommandState;
   localStorage?: boolean;
   theme?: ICommandPromptTheme | 'DARK';
@@ -46,6 +47,11 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
     // Setup observables.
     const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
     const cliChanged$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
+    const cliInvoked$ = cli$.pipe(
+      filter(e => e.type === 'COMMAND_STATE/invoked'),
+      map(e => e.payload as t.ICommandStateInvokeResponse),
+    );
+
     const keydown$ = this.keyPress$.pipe(filter(e => e.isPressed === true));
     const tab$ = keydown$.pipe(
       filter(e => e.key === 'Tab'),
@@ -78,6 +84,16 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
         filter(e => this.isFocused),
       )
       .subscribe(e => this.cli.invoke());
+
+    cliInvoked$
+      // Clear the text of a command after it is invoked.
+      // NB:  This is the standard behavior of a CLI.
+      //      Using the UP key can retrieve the last command from this history.
+      .pipe(
+        filter(e => !e.isNamespaceChanged),
+        filter(e => Boolean((this.cli.text || '').trim())),
+      )
+      .subscribe(e => this.change({ text: '' }));
 
     keydown$
       // Focus or blur on CMD+L
@@ -227,6 +243,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
     const cli = this.cli;
     return (
       <CommandPromptInput
+        id={this.props.id}
         ref={this.inputRef}
         style={style}
         theme={theme}

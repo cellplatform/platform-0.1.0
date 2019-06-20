@@ -18,6 +18,7 @@ import { THEMES } from './themes';
 import { ICommandPromptTheme } from './types';
 
 export type ICommandPromptInputProps = {
+  id?: string;
   fontSize?: number;
   fontFamily?: string;
   text?: string;
@@ -148,7 +149,12 @@ export class CommandPromptInput extends React.PureComponent<
     const elNamespace = ns && <div {...styles.namespace}>{ns.toString({ delimiter: '.' })}</div>;
 
     return (
-      <div {...css(styles.base, this.props.style)} onClick={this.focus} className={CLASS_NAME}>
+      <div
+        {...css(styles.base, this.props.style)}
+        onClick={this.focus}
+        className={CLASS_NAME}
+        data-id={this.props.id}
+      >
         {elNamespace}
         <div {...styles.prefix}>{'>'}</div>
         <TextInput
