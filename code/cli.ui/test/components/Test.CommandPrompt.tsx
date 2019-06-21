@@ -80,10 +80,11 @@ export class TestCommandPrompt extends React.PureComponent<ITestCommandPromptPro
         <div {...styles.prompt}>
           <CommandPrompt
             id={'top'}
-            localStorage={true}
             ref={this.promptRef}
             cli={cli}
             keyMap={{ focus: 'CMD+SHIFT+L' }}
+            localStorage={true}
+            focusOnLoad={true}
           />
         </div>
         <div {...styles.body}>
@@ -93,13 +94,7 @@ export class TestCommandPrompt extends React.PureComponent<ITestCommandPromptPro
           </div>
         </div>
         <div {...styles.prompt}>
-          <CommandPrompt
-            id={'bottom'}
-            ref={this.promptRef}
-            cli={cli}
-            events$={this.events$}
-            focusOnLoad={true}
-          />
+          {/* <CommandPrompt id={'bottom'} ref={this.promptRef} cli={cli} events$={this.events$} /> */}
         </div>
       </div>
     );

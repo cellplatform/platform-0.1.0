@@ -2,14 +2,30 @@ import { localStorage, t, defaultValue } from '../../common';
 
 const ROOT = 'ROOT';
 
+export type IHistoryItem = {
+  namespace: string;
+  command: string;
+};
+
 export class History {
   /**
    * [Static]
    */
-  public static toPrefix(namespace: string | t.ICommandNamespace) {
-    let ns = typeof namespace === 'object' ? namespace.toString() : namespace;
+  public static toPrefix(namespace?: string | t.ICommandNamespace) {
+    let ns = typeof namespace === 'object' ? namespace.toString() : namespace || '';
     ns = (ns || '').trim() ? ns : ROOT;
+    ns = ns.replace(/\:/g, '_');
     return `[${ns}]:`;
+  }
+
+  public static toObject(item: string) {
+    const parts = (item || '').split(':');
+    const namespace = parts[0]
+      .replace(/\:$/, '')
+      .replace(/^\[/, '')
+      .replace(/\]$/, '');
+    const command = parts[1];
+    return { namespace, command };
   }
 
   /**
@@ -65,8 +81,16 @@ export class History {
   /**
    * Retrieves the history list for the given namespace.
    */
-  public namespace(namespace: string | t.ICommandNamespace) {
+  public namespace(namespace?: string | t.ICommandNamespace) {
     const prefix = History.toPrefix(namespace);
     return this.items.filter(item => item.startsWith(prefix));
+  }
+
+  /**
+   * Retrieve the previous item
+   */
+  public get(index: number, namespace?: string | t.ICommandNamespace) {
+    const first = this.namespace(namespace)[index];
+    return first ? History.toObject(first) : undefined;
   }
 }

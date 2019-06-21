@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 
-import { events, GlamorValue, Keyboard, str, t } from '../../common';
+import { events, GlamorValue, Keyboard, str, t, defaultValue } from '../../common';
 import { CommandPromptInput } from '../CommandPromptInput';
 import { History } from './History';
 import { ICommandPromptTheme } from './types';
@@ -88,7 +88,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
         filter(e => e.invoke),
         filter(e => this.isFocused),
       )
-      .subscribe(e => this.cli.invoke());
+      .subscribe(e => {
+        historyIndex = -1;
+        this.cli.invoke();
+      });
 
     cliInvoked$
       // Clear the text of a command after it is invoked.
@@ -108,24 +111,39 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
       .pipe(filter(e => Keyboard.matchEvent(keyMap.focus, e)))
       .subscribe(e => {
         e.preventDefault();
-        if (this.isFocused) {
-          this.blur();
+        this.focus(!this.isFocused);
+      });
+
+    let historyIndex = -1;
+    keydown$
+      // History up ("back").
+      .pipe(filter(e => Keyboard.matchEvent(keyMap.historyUp, e)))
+      .subscribe(e => {
+        e.preventDefault();
+        historyIndex++;
+        const prev = this.history.get(historyIndex, this.cli.namespace);
+        if (prev) {
+          this.change({ text: prev.command });
         } else {
-          this.focus();
+          historyIndex--; // NB: If outside the bounds of available history keep the nav index where it is.
         }
       });
 
     keydown$
-      // History back ("up").
-      .pipe(filter(e => Keyboard.matchEvent(keyMap.historyUp, e)))
+      // History down ("next").
+      .pipe(filter(e => Keyboard.matchEvent(keyMap.historyDown, e)))
       .subscribe(e => {
         e.preventDefault();
-        console.log('History Up.');
-        // if (this.isFocused) {
-        //   this.blur();
-        // } else {
-        //   this.focus();
-        // }
+        historyIndex = Math.max(-1, historyIndex - 1);
+
+        if (historyIndex < 0) {
+          this.change({ text: '' });
+        } else {
+          const prev = this.history.get(historyIndex, this.cli.namespace);
+          if (prev) {
+            this.change({ text: prev.command });
+          }
+        }
       });
 
     keydown$
@@ -201,22 +219,29 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
     return {
       focus: Keyboard.parse(keyMap.focus, 'CMD+J'),
       historyUp: Keyboard.parse(keyMap.historyUp, 'ArrowUp'),
+      historyDown: Keyboard.parse(keyMap.historyDown, 'ArrowDown'),
     };
   }
 
   /**
    * [Methods]
    */
-  public focus = () => {
+  public focus = (isFocused?: boolean) => {
     if (this.input) {
-      this.input.focus();
+      if (defaultValue(isFocused, true)) {
+        this.input.focus();
+      } else {
+        this.blur();
+      }
     }
+    return this;
   };
 
   public blur = () => {
     if (this.input) {
       this.input.blur();
     }
+    return this;
   };
 
   public invoke = () => {
