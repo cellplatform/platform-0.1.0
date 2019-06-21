@@ -49,8 +49,6 @@ export class Test extends React.PureComponent<ITestProps> {
       }),
     };
 
-    // const elSplit = isSplit && <tools.Store store={store} layout={'SPLIT'} />
-
     return (
       <Provider>
         <CommandShell cli={this.cli} tree={{}}>

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, ObjectView, state, t, Button, Hr } from '../common';
+import { css, color, GlamorValue, ObjectView, state, t, Button, Hr, log } from '../common';
 
 export type IChildProps = {
   children?: React.ReactNode;
@@ -12,7 +12,8 @@ export class Child extends React.PureComponent<IChildProps> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = state.Context;
-  public context!: state.ReactContext;
+  // public context!: state.ReactContext;
+  public context!: t.IMyContext;
   public store = this.context.getStore<t.IMyModel, t.MyEvent>();
 
   /**
@@ -21,6 +22,13 @@ export class Child extends React.PureComponent<IChildProps> {
   public componentWillMount() {
     const changed$ = this.store.changed$.pipe(takeUntil(this.unmounted$));
     changed$.subscribe(e => this.forceUpdate());
+
+    const context = this.context;
+    log.group('Context');
+    log.info('- context:', context);
+    log.info('- context.foo:', context.foo);
+    log.info('- context.getAsync:', context.getAsync());
+    log.groupEnd();
   }
 
   public componentWillUnmount() {
