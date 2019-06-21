@@ -124,10 +124,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.79.tgz#bfc9070b7f835b5a2ee37b657e8763885d4a6359"
   integrity sha512-InEHJ0Av0Fg/vibbUypG5ligkJUCLdmzOIF/rc2XhFKjvaavTHJ2PEWZLHd0EBFirV+zRmjudz3vhHU1Dxow8A==
 
-"@platform/util.value@0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.3.10.tgz#3db45f32a2d02668ec85b5afafabb2848295b81b"
-  integrity sha512-g3uq4ll3WrZynOY6STLBaYOfwQeiYVDLSWcM21apUyy+QYRXAXBrpc3udnMucs4DsbrRUuSf+lN0n6ZFEL8UTg==
+"@platform/util.value@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.0.tgz#222883a5a2a3e82d31cce8814408c19f04eaf05e"
+  integrity sha512-a0DcaT0lTG3xQk/C2VH92w57vQfgqWd0UP+Cmzoua3JiDdoK26DeB6c9teFhbPHd5L2aZ3elBdF8enSvyhczeg==
   dependencies:
     "@platform/libs" "0.0.17"
     "@platform/types" "0.0.17"

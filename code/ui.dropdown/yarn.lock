@@ -1052,6 +1052,18 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
+"@platform/css@0.1.23":
+  version "0.1.23"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.23.tgz#9399231c3feaf065c2f6e5e937f5ce2d59db8c4c"
+  integrity sha512-Ql1xNvOSR9wnN5SFpkBZKG/AAMsAd/cVC8G7ZKXYiu9xC6fvCN3ayFeytQAU0fCk/3c6js61vvE4vK+fF6l18A==
+  dependencies:
+    "@platform/libs" "0.0.17"
+    "@platform/util.is" "0.0.79"
+    "@platform/util.value" "0.4.0"
+    "@types/tinycolor2" "1.4.2"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
 "@platform/electron@0.4.11":
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.11.tgz#2d2fd3481c29af51000ff5045fc92e6022c1580a"
@@ -1180,6 +1192,18 @@
   integrity sha512-Cs9EvGuLQWBX+FVKK1b3UzPzfSdXYSpyaCaTPVNaubhbuSrNy2vQS4hd0ti1M1y82UsjEouUQrvYyGplX5XoxQ==
   dependencies:
     "@platform/css" "0.1.22"
+    "@platform/util.is" "0.0.79"
+    "@types/react" "16.8.20"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
+"@platform/react@0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.7.tgz#9af549f19cfb4c0398649f17117422d9c98ee808"
+  integrity sha512-zaQzBVfZvnF8sK5hQjV7IKOyL3dIUi0kxwgDgEY3SF0gE97BTRQ92e8VyvvVucedKKBWLKHNTjO5Ya91rNBMZA==
+  dependencies:
+    "@platform/css" "0.1.23"
     "@platform/util.is" "0.0.79"
     "@types/react" "16.8.20"
     "@types/react-dom" "16.8.4"
@@ -1328,6 +1352,19 @@
     "@platform/libs" "0.0.15"
     "@platform/types" "0.0.13"
     "@platform/util.is" "0.0.75"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.1.1"
+
+"@platform/util.value@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.0.tgz#222883a5a2a3e82d31cce8814408c19f04eaf05e"
+  integrity sha512-a0DcaT0lTG3xQk/C2VH92w57vQfgqWd0UP+Cmzoua3JiDdoK26DeB6c9teFhbPHd5L2aZ3elBdF8enSvyhczeg==
+  dependencies:
+    "@platform/libs" "0.0.17"
+    "@platform/types" "0.0.17"
+    "@platform/util.is" "0.0.79"
     "@types/semver" "6.0.0"
     cuid "2.1.6"
     dayjs "1.8.14"

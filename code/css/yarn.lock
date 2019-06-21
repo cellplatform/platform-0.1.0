@@ -1295,6 +1295,19 @@
     dayjs "1.8.14"
     semver "6.1.1"
 
+"@platform/util.value@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.0.tgz#222883a5a2a3e82d31cce8814408c19f04eaf05e"
+  integrity sha512-a0DcaT0lTG3xQk/C2VH92w57vQfgqWd0UP+Cmzoua3JiDdoK26DeB6c9teFhbPHd5L2aZ3elBdF8enSvyhczeg==
+  dependencies:
+    "@platform/libs" "0.0.17"
+    "@platform/types" "0.0.17"
+    "@platform/util.is" "0.0.79"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.1.1"
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"

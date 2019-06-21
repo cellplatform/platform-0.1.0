@@ -1051,14 +1051,14 @@
     fs-extra "8.0.1"
     js-yaml "3.13.1"
 
-"@platform/http@0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.6.tgz#d2783bbb8d2276dfd6471621fbcc8e7f37da2e04"
-  integrity sha512-GMrhU557CMWMXovjfE8BxAfVYbINT3Gf3j9FnYymo+wLC4OkWXqaOfCDyJluJhrgK4hyuY5igtlDl84qEy0Ymw==
+"@platform/http@0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.7.tgz#a737b47b21f70f4c03ae46d92bdced656834d1a1"
+  integrity sha512-QAo6+H9VAFxMPb1a6H2V/2gXMqRZLenBLDYMSL0xivqDphTBZ7WR61q1idG4ydDBtOBXh003Tt6TV55l+1mhyQ==
   dependencies:
     "@platform/fs" "0.1.4"
     "@platform/types" "0.0.17"
-    "@platform/util.value" "0.3.10"
+    "@platform/util.value" "0.4.0"
     "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
 
@@ -1279,6 +1279,19 @@
     "@platform/libs" "0.0.15"
     "@platform/types" "0.0.13"
     "@platform/util.is" "0.0.75"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.1.1"
+
+"@platform/util.value@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.0.tgz#222883a5a2a3e82d31cce8814408c19f04eaf05e"
+  integrity sha512-a0DcaT0lTG3xQk/C2VH92w57vQfgqWd0UP+Cmzoua3JiDdoK26DeB6c9teFhbPHd5L2aZ3elBdF8enSvyhczeg==
+  dependencies:
+    "@platform/libs" "0.0.17"
+    "@platform/types" "0.0.17"
+    "@platform/util.is" "0.0.79"
     "@types/semver" "6.0.0"
     cuid "2.1.6"
     dayjs "1.8.14"
