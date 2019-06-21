@@ -1031,16 +1031,16 @@
     "@platform/util.value" "0.3.10"
     react-icons "3.7.0"
 
-"@platform/cli.ui@0.2.23":
-  version "0.2.23"
-  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.2.23.tgz#d998f7b66ef143d92941a5fbe555854b53304632"
-  integrity sha512-3YNtoYFT5vVn6xCvpt+qtGuCB3Nt3eu+1Pnf9Bk2T/W3RcjxDEhbdSUOgJeqS2tXz5H1S+KzT4GIfg8meePgUg==
+"@platform/cli.ui@0.2.24":
+  version "0.2.24"
+  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.2.24.tgz#05d40ba2f0a07d0fc154a47fab6040ef576304b9"
+  integrity sha512-cUPHpTiPdAq7SM2VdRoYV7xq2r+nC3HTSB0dgb527xjnpZcYgNcqVNIji46URhcvPffgWbiFCMuD5X0E2nBi9Q==
   dependencies:
     "@platform/cli.spec" "0.1.41"
     "@platform/react" "0.3.8"
     "@platform/ui.panel" "0.0.70"
     "@platform/ui.text" "0.2.19"
-    "@platform/ui.tree" "0.2.2"
+    "@platform/ui.tree" "0.2.3"
     "@platform/util.local-storage" "0.0.24"
     "@platform/util.value" "0.4.0"
     react-icons "3.7.0"
@@ -1502,10 +1502,10 @@
     "@platform/ui.spinner" "0.0.68"
     "@platform/ui.text" "0.2.16"
 
-"@platform/ui.tree@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.2.tgz#9de52080b8be54fb9f22f93666adb0f156034ddc"
-  integrity sha512-qTq1PJ1ZlDZ4npQ56na0i0YW5i1E7xwyj1+mo8kdlrk0IEeIckaRzllWTXOdFk6wpKuu1nwtSFIbKLqhKfB86g==
+"@platform/ui.tree@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.3.tgz#25f287a8e07703c27945519fb5545ebf56ec5069"
+  integrity sha512-7HU1yzPpKs1TbmOl0Vi2kQ8mWXm3xYkhC0T2O3RnShkobMBmqygthJTXUzKnBoQYbGc4rmng61iAxL+saedtlw==
   dependencies:
     "@platform/css" "0.1.23"
     "@platform/react" "0.3.8"

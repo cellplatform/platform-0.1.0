@@ -1252,10 +1252,10 @@
     "@platform/ui.spinner" "0.0.68"
     "@platform/ui.text" "0.2.16"
 
-"@platform/ui.tree@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.2.tgz#9de52080b8be54fb9f22f93666adb0f156034ddc"
-  integrity sha512-qTq1PJ1ZlDZ4npQ56na0i0YW5i1E7xwyj1+mo8kdlrk0IEeIckaRzllWTXOdFk6wpKuu1nwtSFIbKLqhKfB86g==
+"@platform/ui.tree@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.3.tgz#25f287a8e07703c27945519fb5545ebf56ec5069"
+  integrity sha512-7HU1yzPpKs1TbmOl0Vi2kQ8mWXm3xYkhC0T2O3RnShkobMBmqygthJTXUzKnBoQYbGc4rmng61iAxL+saedtlw==
   dependencies:
     "@platform/css" "0.1.23"
     "@platform/react" "0.3.8"
