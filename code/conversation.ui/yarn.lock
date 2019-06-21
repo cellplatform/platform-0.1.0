@@ -1330,10 +1330,10 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/state.react@0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.4.3.tgz#213d29dece7c8afefcfd39f54a02b90602a1f4ba"
-  integrity sha512-xgM0EFdEEmKi05DG1SQULrnbEONdCsmlsiQPjtQkcSKjvymxajrQTUJURdkCTngbqHXY0yu8nbq/b5qQmmFBmw==
+"@platform/state.react@0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.4.4.tgz#d6d4db9119cdba6fbfb755bdf9cc2d585133ed31"
+  integrity sha512-QicuCn4HiUt3FVMeMhY912U9K46p41AYEN7L78dPJdr9xse4TAtab7xudVm4cmrge0XIkpy83aC751aJ6BcZXw==
   dependencies:
     "@platform/react" "0.3.8"
     "@platform/state" "0.4.1"
