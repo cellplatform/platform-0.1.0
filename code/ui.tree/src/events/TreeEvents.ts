@@ -13,8 +13,11 @@ export class TreeEvents<N extends t.ITreeNode = any> {
   /**
    * [Lifecycle]
    */
-  constructor(events$: Observable<t.TreeViewEvent>) {
+  constructor(events$: Observable<t.TreeViewEvent>, dispose$?: Observable<{}>) {
     this.events$ = events$.pipe(takeUntil(this.dispose$));
+    if (dispose$) {
+      dispose$.subscribe(() => this.dispose());
+    }
   }
 
   public dispose() {
@@ -96,20 +99,5 @@ export class TreeEvents<N extends t.ITreeNode = any> {
         return targets('LEAVE');
       },
     };
-  }
-
-  public click(options: { button?: Button[]; isDouble?: boolean } = {}) {
-    const type = options.isDouble ? 'DOUBLE_CLICK' : 'CLICK';
-    return {
-      all$: this.mouse$({ ...options, type }),
-      node$: this.mouse$({ ...options, type, target: 'NODE' }),
-      drillIn$: this.mouse$({ ...options, type, target: 'DRILL_IN' }),
-      parent$: this.mouse$({ ...options, type, target: 'PARENT' }),
-      twisty$: this.mouse$({ ...options, type, target: 'TWISTY' }),
-    };
-  }
-
-  public dblclick(options: { button?: Button[] } = {}) {
-    return this.click({ ...options, isDouble: true });
   }
 }
