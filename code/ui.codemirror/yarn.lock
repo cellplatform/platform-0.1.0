@@ -1115,10 +1115,10 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/react@0.3.7":
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.7.tgz#9af549f19cfb4c0398649f17117422d9c98ee808"
-  integrity sha512-zaQzBVfZvnF8sK5hQjV7IKOyL3dIUi0kxwgDgEY3SF0gE97BTRQ92e8VyvvVucedKKBWLKHNTjO5Ya91rNBMZA==
+"@platform/react@0.3.8":
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.8.tgz#cabea8df6b6173938fcac542a44aa19a03e0c29a"
+  integrity sha512-/m0Z0rriNWsqjy3hKp5DHfsVkwtPwHmR25GeQ+LIJFqfXgi7V41wflLJY/3MAi6gtE4kZRJD+mpJHW9h1fxBvg==
   dependencies:
     "@platform/css" "0.1.23"
     "@platform/util.is" "0.0.79"
@@ -1212,13 +1212,13 @@
     "@platform/react" "0.3.5"
     "@platform/util.value" "0.3.10"
 
-"@platform/ui.text@0.2.18":
-  version "0.2.18"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.18.tgz#000f29a19388b62e306a67a65d8d159b1121728a"
-  integrity sha512-lWXrgwRXLbuG6TKpFz69upBGcnffWMkOju03jK9dry5vXefJ6WVnD4qaOmSPtEL4PJ4T2RQLCuhEEEDbIDympg==
+"@platform/ui.text@0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.19.tgz#68b7dd89b1611f139983bfc45d6b9a5d16ccec7c"
+  integrity sha512-oUnNivTEPV7+OSprJi67b0rXYCV746Nl5zG3ctMyoJc5y7S6rHyuCIsisYMxI1pWpqraZ0NlM51QNddJ3ZQ3Ng==
   dependencies:
     "@platform/libs" "0.0.17"
-    "@platform/react" "0.3.7"
+    "@platform/react" "0.3.8"
     "@platform/util.value" "0.4.0"
 
 "@platform/ui.tree@0.1.19":

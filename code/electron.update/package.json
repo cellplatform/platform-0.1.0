@@ -1,6 +1,6 @@
 {
   "name": "@platform/electron.update",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "description": "",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -21,7 +21,7 @@
     "@platform/exec": "0.2.17",
     "@platform/fs": "0.1.4",
     "@platform/http": "0.2.7",
-    "@platform/react": "0.3.7",
+    "@platform/react": "0.3.8",
     "@platform/util.value": "0.4.0"
   },
   "devDependencies": {

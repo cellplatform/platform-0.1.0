@@ -1122,10 +1122,10 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/react@0.3.7":
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.7.tgz#9af549f19cfb4c0398649f17117422d9c98ee808"
-  integrity sha512-zaQzBVfZvnF8sK5hQjV7IKOyL3dIUi0kxwgDgEY3SF0gE97BTRQ92e8VyvvVucedKKBWLKHNTjO5Ya91rNBMZA==
+"@platform/react@0.3.8":
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.8.tgz#cabea8df6b6173938fcac542a44aa19a03e0c29a"
+  integrity sha512-/m0Z0rriNWsqjy3hKp5DHfsVkwtPwHmR25GeQ+LIJFqfXgi7V41wflLJY/3MAi6gtE4kZRJD+mpJHW9h1fxBvg==
   dependencies:
     "@platform/css" "0.1.23"
     "@platform/util.is" "0.0.79"

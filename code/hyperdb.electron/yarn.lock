@@ -99,15 +99,15 @@
     is-electron "2.2.0"
     minimist "1.2.0"
 
-"@platform/electron@0.4.14":
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.14.tgz#819f704e7151504c9fe829501648d23063715639"
-  integrity sha512-vqDZbTFLU/4UELJTY1xqb88UDO8MTdrHFlK/v6kry1bysWAz4az0mOaEVxLCWC2LpfDFPjAlD8S/CFGN6T8Xxw==
+"@platform/electron@0.4.15":
+  version "0.4.15"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.15.tgz#ef1ba0e49ae0376a6e5c9643b7a95493a1dd0171"
+  integrity sha512-HxVfbJXRg0fU2VHFVFBAWB46YYkIr7Nenu1qr9X3GQo97JgPD+tpneRE9lMOUa1LcWrx/4NpZK3KLS2+mjy6Zw==
   dependencies:
     "@platform/fs" "0.1.4"
     "@platform/libs" "^0.0.17"
     "@platform/log" "0.0.130"
-    "@platform/react" "0.3.7"
+    "@platform/react" "0.3.8"
     "@platform/types" "0.0.17"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.2.1"
@@ -196,10 +196,10 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/react@0.3.7":
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.7.tgz#9af549f19cfb4c0398649f17117422d9c98ee808"
-  integrity sha512-zaQzBVfZvnF8sK5hQjV7IKOyL3dIUi0kxwgDgEY3SF0gE97BTRQ92e8VyvvVucedKKBWLKHNTjO5Ya91rNBMZA==
+"@platform/react@0.3.8":
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.8.tgz#cabea8df6b6173938fcac542a44aa19a03e0c29a"
+  integrity sha512-/m0Z0rriNWsqjy3hKp5DHfsVkwtPwHmR25GeQ+LIJFqfXgi7V41wflLJY/3MAi6gtE4kZRJD+mpJHW9h1fxBvg==
   dependencies:
     "@platform/css" "0.1.23"
     "@platform/util.is" "0.0.79"
