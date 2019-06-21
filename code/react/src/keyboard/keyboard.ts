@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs';
-import { tap, filter, map, share, take, takeUntil } from 'rxjs/operators';
+import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
 import { R } from '../common';
 import { events } from '../events';
@@ -63,20 +63,7 @@ export class Keyboard<T extends t.KeyCommand> {
       .split('+')
       .map(key => key.trim())
       .filter(key => Boolean(key))
-      .map(key => {
-        // Capitalize modifiers.
-        const modifiers = ['CMD', 'COMMAND', 'META', 'CONTROL', 'CTRL', 'ALT', 'SHIFT'];
-        key = modifiers.includes(key.toUpperCase()) ? key.toUpperCase() : key;
-
-        // Normaize modifier variants.
-        key = key === 'CMD' ? 'META' : key;
-        key = key === 'COMMAND' ? 'META' : key;
-        key = key === 'CONTROL' ? 'CTRL' : key;
-
-        // Ensure key characters are upper-case.
-        key = key.length === 1 ? key.toUpperCase() : key;
-        return key;
-      });
+      .map(key => Keyboard.formatKey(key));
     const modifiers = Array.from(new Set(parts.filter(Keyboard.isModifier))) as t.ModifierKey[];
     let keys = parts.filter(key => !modifiers.some(item => item === key));
     keys = Array.from(new Set(keys));
@@ -87,9 +74,9 @@ export class Keyboard<T extends t.KeyCommand> {
    * Determines if the given keyboard event matches the given pattern.
    */
   public static matchEvent(pattern: t.IKeyPattern | string, event: Partial<t.IKeyMatchEventArgs>) {
-    const key = (event.key || '').toUpperCase();
-
+    const key = Keyboard.formatKey(event.key);
     pattern = typeof pattern === 'string' ? Keyboard.parse(pattern) : pattern;
+
     if (!pattern.keys.includes(key)) {
       return false;
     }
@@ -111,6 +98,26 @@ export class Keyboard<T extends t.KeyCommand> {
     }
 
     return true;
+  }
+
+  /**
+   * Normalizes a key value.
+   */
+  public static formatKey(key?: string) {
+    key = key || '';
+
+    // Capitalize modifiers.
+    const MODIFIERS = ['CMD', 'COMMAND', 'META', 'CONTROL', 'CTRL', 'ALT', 'SHIFT'];
+    key = MODIFIERS.includes(key.toUpperCase()) ? key.toUpperCase() : key;
+
+    // Normaize modifier variants.
+    key = key === 'CMD' ? 'META' : key;
+    key = key === 'COMMAND' ? 'META' : key;
+    key = key === 'CONTROL' ? 'CTRL' : key;
+
+    // Ensure key characters are upper-case.
+    key = key.length === 1 ? key.toUpperCase() : key;
+    return key;
   }
 
   /**
