@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import {
@@ -18,6 +18,7 @@ import * as themes from '../../themes';
 import { IStackPanel, StackPanel, StackPanelSlideEvent } from '../primitives';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
+import { TreeEvents } from '../../events';
 
 const { defaultValue } = valueUtil;
 
@@ -51,6 +52,10 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    * [Static]
    */
   public static util = treeUtil;
+
+  public static events<N extends t.ITreeNode = any>(events$: Observable<t.TreeViewEvent>) {
+    return new TreeEvents<N>(events$);
+  }
 
   private static current(props: ITreeViewProps) {
     const { node } = props;

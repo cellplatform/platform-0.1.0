@@ -1,4 +1,4 @@
-import * as t from '../types';
+import * as t from './types';
 import * as constants from './constants';
 import * as tree from './util.tree';
 

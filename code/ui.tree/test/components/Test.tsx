@@ -35,6 +35,14 @@ export class Test extends React.PureComponent<{}, ITestState> {
     const mouse$ = this.mouse$.pipe(takeUntil(this.unmounted$));
     const click$ = mouse$.pipe(filter(e => e.button === 'LEFT'));
 
+    /**
+     * NB: Alternative helper for pealing off events.
+     */
+    const tree = TreeView.events(events$);
+    tree.mouse().click.node$.subscribe(e => {
+      log.info('🐷 CLICK from TreeEvents helper', e);
+    });
+
     // Update state.
     state$.subscribe(e => this.setState(e));
 

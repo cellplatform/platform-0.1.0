@@ -60,7 +60,6 @@ export class Test extends React.PureComponent<ITestProps> {
             </div>
             <div {...styles.right}>
               <tools.Store store={store} layout={debug} />
-              {/* <tools.Panel store={store} /> */}
             </div>
           </div>
         </CommandShell>
