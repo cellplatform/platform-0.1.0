@@ -102,7 +102,9 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
         filter(e => Boolean((this.cli.text || '').trim())),
       )
       .subscribe(e => {
-        this.history.add(this.cli.namespace, this.cli.text);
+        if (this.props.localStorage) {
+          this.history.add(this.cli.namespace, this.cli.text);
+        }
         this.change({ text: '' });
       });
 
@@ -117,7 +119,11 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
     let historyIndex = -1;
     keydown$
       // History up ("back").
-      .pipe(filter(e => Keyboard.matchEvent(keyMap.historyUp, e)))
+      .pipe(
+        filter(e => this.isFocused),
+        filter(e => Boolean(this.props.localStorage)),
+        filter(e => Keyboard.matchEvent(keyMap.historyUp, e)),
+      )
       .subscribe(e => {
         e.preventDefault();
         historyIndex++;
@@ -131,7 +137,11 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
 
     keydown$
       // History down ("next").
-      .pipe(filter(e => Keyboard.matchEvent(keyMap.historyDown, e)))
+      .pipe(
+        filter(e => this.isFocused),
+        filter(e => Boolean(this.props.localStorage)),
+        filter(e => Keyboard.matchEvent(keyMap.historyDown, e)),
+      )
       .subscribe(e => {
         e.preventDefault();
         historyIndex = Math.max(-1, historyIndex - 1);

@@ -94,7 +94,7 @@ export class TestCommandPrompt extends React.PureComponent<ITestCommandPromptPro
           </div>
         </div>
         <div {...styles.prompt}>
-          {/* <CommandPrompt id={'bottom'} ref={this.promptRef} cli={cli} events$={this.events$} /> */}
+          <CommandPrompt id={'bottom'} ref={this.promptRef} cli={cli} events$={this.events$} />
         </div>
       </div>
     );
