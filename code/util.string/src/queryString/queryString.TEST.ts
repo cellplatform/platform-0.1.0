@@ -1,7 +1,12 @@
 import { expect } from 'chai';
 import { queryString } from '.';
+import { str } from '..';
 
 describe('queryString', () => {
+  it('is exposed from module', () => {
+    expect(str.queryString.toObject).to.be.an.instanceof(Function);
+  });
+
   describe('toObject', () => {
     it('handles empty/nothing', () => {
       expect(queryString.toObject('')).to.eql({});
