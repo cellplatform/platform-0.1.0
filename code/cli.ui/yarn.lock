@@ -921,12 +921,12 @@
     "@platform/util.value" "0.3.10"
     minimist "1.2.0"
 
-"@platform/cli.spec@0.1.41":
-  version "0.1.41"
-  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.1.41.tgz#df206bb97eb7c92166f02164b778669d307e7f42"
-  integrity sha512-Pdf0w7sASzjOkbvBcz8ay/ecwjJYdQk3FlKWYyNgcubX4nZxomeSqHyznFzgs5rRK6K8m8kvuXvqHOx3oRkkcA==
+"@platform/cli.spec@0.1.43":
+  version "0.1.43"
+  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.1.43.tgz#d263b64027762a354f8f6bed82a524fcf3b88500"
+  integrity sha512-nGJZilGf732U/qmFL8LlvrBS9UDalUe6RVxFillL/G/uRungpGLawdNrfBR5JNivOSDZRiDA0vv27Cf1kHNNjA==
   dependencies:
-    "@platform/util.string" "0.1.23"
+    "@platform/util.string" "0.2.1"
     "@platform/util.value" "0.4.0"
     minimist "1.2.0"
 
@@ -1301,6 +1301,16 @@
   version "0.1.23"
   resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.1.23.tgz#3c212d850abfffd8cd5acb905c1650d809f6290a"
   integrity sha512-MpFYW/xtk7Ib+Fddk6QZZkkVNCun3kzA6mrTf+DBkWQINy+Litk9bFZ7AJ8tYax5rxerCoyMRS7E7LFKpibRBw==
+  dependencies:
+    "@types/underscore.string" "0.0.37"
+    escape-string-regexp "2.0.0"
+    fuzzy "0.1.3"
+    underscore.string "3.3.5"
+
+"@platform/util.string@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.2.1.tgz#953f760838112b181cda5748188ef8185eb47705"
+  integrity sha512-AWpacDFhxDf6UNUhW9VA35puZXvwktLBgVyGUeHcV9JPIJrLy4oKnqob4APT2by4fHaeBRrVCzD/er8eM4Vz0A==
   dependencies:
     "@types/underscore.string" "0.0.37"
     escape-string-regexp "2.0.0"

@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-import { queryString } from '.';
-import { str } from '..';
+import { str, queryString } from '..';
 
 describe('queryString', () => {
   it('is exposed from module', () => {
+    expect(queryString.toObject).to.be.an.instanceof(Function);
     expect(str.queryString.toObject).to.be.an.instanceof(Function);
   });
 

@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.string",
-  "version": "0.1.23",
+  "version": "0.2.1",
   "description": "String helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
