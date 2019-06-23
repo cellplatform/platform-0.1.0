@@ -100,6 +100,7 @@ describe('keyboard', () => {
       test('CMD+SHIFT+L', { key: 'L', metaKey: true, shiftKey: true }, true);
       test('CMD+SHIFT+L', { key: 'L', metaKey: true }, false);
       test('CMD+L', { key: 'L', metaKey: true, shiftKey: true }, false);
+      test('CMD+K', { key: 'k', metaKey: true }, true);
 
       test('s', { key: 's' }, true);
       test('s', { key: 'S' }, true);
