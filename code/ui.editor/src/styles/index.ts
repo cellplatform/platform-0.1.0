@@ -22,5 +22,11 @@ export function init(args: { styles: Partial<t.IEditorStyles>; className?: strin
  * Insert `default global` styles.
  */
 const prefix = toPrefix();
-css.global({ [prefix]: { outline: 'none', fontSize: '1em' } });
+css.global({
+  [prefix]: {
+    outline: 'none',
+    fontSize: '1em',
+    whiteSpace: 'pre-wrap', // See: https://github.com/ProseMirror/prosemirror/issues/651#issuecomment-313436150
+  },
+});
 css.global(markdown.styles, { prefix: `.${CLASS.MARKDOWN}` });
