@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.dropdown",
-  "version": "0.0.4",
+  "version": "0.0.9",
   "description": "Dropdown selection component.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,14 +15,14 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.17",
-    "@platform/react": "0.3.5",
+    "@platform/libs": "0.0.18",
+    "@platform/react": "0.3.10",
     "react-select": "3.0.4"
   },
   "devDependencies": {
     "@types/react-select": "2.0.19",
-    "@uiharness/dev": "0.5.8",
-    "@uiharness/ui": "0.5.8",
+    "@uiharness/dev": "0.5.9",
+    "@uiharness/ui": "0.5.9",
     "electron": "5.0.0"
   },
   "files": [

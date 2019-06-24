@@ -7,6 +7,7 @@ import {
   css,
   GlamorValue,
   MeasureSize,
+  mouse,
   R,
   t,
   time,
@@ -23,7 +24,8 @@ const DEFAULT = {
 
 export type ITextInputProps = t.ITextInputFocus &
   t.ITextInputEvents &
-  IInputValue & {
+  IInputValue &
+  t.IMouseEventProps & {
     events$?: Subject<t.TextInputEvent>;
     isEnabled?: boolean;
     isPassword?: boolean;
@@ -69,8 +71,8 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
   public state: ITextInputState = { width: toInitialWidth(this.props) };
   private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITextInputState>>();
-  private _events$ = new Subject<t.TextInputEvent>();
-  public events = this._events$.pipe(takeUntil(this.unmounted$));
+  private events$ = new Subject<t.TextInputEvent>();
+  private mouse = mouse.fromProps(this.props, { force: true });
 
   private input: HtmlInput;
   private inputRef = (el: HtmlInput) => (this.input = el);
@@ -79,10 +81,18 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    const mouse$ = this.mouse.events$.pipe(takeUntil(this.unmounted$));
+    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+
+    state$.subscribe(e => this.setState(e));
+
+    // Bubble events.
     if (this.props.events$) {
-      this.events.subscribe(this.props.events$);
+      this.events$.subscribe(this.props.events$);
     }
+
+    // Bubble mouse events.
+    mouse$.subscribe(payload => this.fire({ type: 'TEXT_INPUT/mouse', payload }));
   }
 
   public componentDidMount() {
@@ -210,7 +220,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
     );
 
     return (
-      <div {...css(styles.base, this.props.style)} className={'p-TextInput'}>
+      <div {...css(styles.base, this.props.style)} className={'p-TextInput'} {...this.mouse.events}>
         <div {...css(styles.inner)}>
           {elPlaceholder}
           <HtmlInput
@@ -238,7 +248,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
             autoCorrect={this.props.autoCorrect}
             autoComplete={this.props.autoComplete}
             selectionBackground={this.props.selectionBackground}
-            events$={this._events$}
+            events$={this.events$}
           />
         </div>
       </div>
@@ -249,7 +259,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
    * [Handlers]
    */
   private fire(e: t.TextInputEvent) {
-    this._events$.next(e);
+    this.events$.next(e);
   }
 
   private handleChange = (e: t.TextInputChangeEvent) => {

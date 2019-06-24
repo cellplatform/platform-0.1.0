@@ -23,6 +23,8 @@ describe('keyboard', () => {
       test('cmd+l+alt', ['L'], ['META', 'ALT']);
       test('cmd+ALT+Shift+l+aLt+P+ctrl+SHIFT', ['L', 'P'], ['META', 'ALT', 'SHIFT', 'CTRL']);
       test('CMD+ALT+J', ['J'], ['META', 'ALT']);
+      test('ArrowUp', ['ArrowUp']);
+      test('CMD+ArrowUp', ['ArrowUp'], ['META']);
     });
 
     it('boolean', () => {
@@ -98,6 +100,15 @@ describe('keyboard', () => {
       test('CMD+SHIFT+L', { key: 'L', metaKey: true, shiftKey: true }, true);
       test('CMD+SHIFT+L', { key: 'L', metaKey: true }, false);
       test('CMD+L', { key: 'L', metaKey: true, shiftKey: true }, false);
+      test('CMD+K', { key: 'k', metaKey: true }, true);
+
+      test('s', { key: 's' }, true);
+      test('s', { key: 'S' }, true);
+      test('S', { key: 's' }, true);
+
+      test('ArrowUp', { key: 'ArrowUp' }, true);
+      test('CMD+ArrowUp', { key: 'ArrowUp' }, false);
+      test('CMD+ArrowUp', { key: 'ArrowUp', metaKey: true }, true);
     });
   });
 });

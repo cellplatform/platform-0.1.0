@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CLASS_NAME } from './styles';
 
 import {
   CommandChangeDispatcher,
@@ -17,6 +18,7 @@ import { THEMES } from './themes';
 import { ICommandPromptTheme } from './types';
 
 export type ICommandPromptInputProps = {
+  id?: string;
   fontSize?: number;
   fontFamily?: string;
   text?: string;
@@ -140,13 +142,19 @@ export class CommandPromptInput extends React.PureComponent<
       }),
       textbox: css({
         flex: 1,
+        lineHeight: 1,
       }),
     };
 
     const elNamespace = ns && <div {...styles.namespace}>{ns.toString({ delimiter: '.' })}</div>;
 
     return (
-      <div {...css(styles.base, this.props.style)} onClick={this.focus}>
+      <div
+        {...css(styles.base, this.props.style)}
+        onClick={this.focus}
+        className={CLASS_NAME}
+        data-id={this.props.id}
+      >
         {elNamespace}
         <div {...styles.prefix}>{'>'}</div>
         <TextInput

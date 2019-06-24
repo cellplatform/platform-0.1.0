@@ -1,20 +1,21 @@
 import * as React from 'react';
+
 import {
+  color,
   css,
   GlamorValue,
-  mouse,
-  TreeNodeMouseEvent,
-  TreeNodeMouseEventHandler,
   ITreeNode,
+  mouse,
   t,
   tree,
+  TreeNodeMouseEvent,
+  TreeNodeMouseEventHandler,
   value,
-  color,
 } from '../../common';
 import * as themes from '../../themes';
-import { Text } from '../Text';
 import { Icons, IIcon } from '../Icons';
 import { Spinner } from '../primitives';
+import { Text } from '../Text';
 
 const DEFAULT = {
   PADDING: [5, 0, 5, 5],
@@ -62,12 +63,16 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   private get backgroundColor() {
+    const props = this.nodeProps;
+    if (props.bgColor) {
+      return props.bgColor;
+    }
+
     const { background = 'THEME' } = this.props;
     if (background === 'NONE') {
       return;
     }
     const theme = this.theme;
-    const props = this.nodeProps;
     return props.isSelected ? theme.node.selected.bgColor : undefined;
   }
 
@@ -139,9 +144,10 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         transition: `transform 0.2s`,
       }),
     };
-    const elIcon = twisty !== null && (
-      <Icons.PlayArrow size={SIZE.TWISTY_ICON} color={theme.chevronColor} />
-    );
+
+    const nodeProps = this.nodeProps;
+    const color = nodeProps.twistyColor || nodeProps.chevronColor || theme.chevronColor;
+    const elIcon = twisty !== null && <Icons.PlayArrow size={SIZE.TWISTY_ICON} color={color} />;
     return (
       <div {...styles.base} {...this.twistyHandlers}>
         {elIcon}
@@ -207,7 +213,9 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
       }),
     };
 
-    const elIcon = iconRight && iconRight({ color: theme.chevronColor });
+    const nodeProps = this.nodeProps;
+    const color = nodeProps.chevronColor || theme.chevronColor;
+    const elIcon = iconRight && iconRight({ color });
     const handlers = isActive && this.drillInHandlers;
 
     return (

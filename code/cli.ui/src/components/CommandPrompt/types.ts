@@ -3,6 +3,8 @@ export * from '../CommandPromptInput/types';
 
 export type ICommandPromptKeyMap = {
   focus: string | boolean;
+  historyUp: string | boolean;
+  historyDown: string | boolean;
 };
 
 /**

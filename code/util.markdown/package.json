@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.markdown",
-  "version": "0.0.27",
+  "version": "0.0.29",
   "description": "Strongly typed tools for working with markdown.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,12 +15,12 @@
     "rehype-format": "2.3.2",
     "rehype-stringify": "6.0.0",
     "remark-parse": "6.0.3",
-    "remark-rehype": "4.0.0",
+    "remark-rehype": "4.0.1",
     "unified": "7.1.0"
   },
   "devDependencies": {
-    "@platform/test": "0.0.57",
-    "@platform/ts": "3.4.30"
+    "@platform/test": "0.0.58",
+    "@platform/ts": "3.4.32"
   },
   "files": [
     "lib"

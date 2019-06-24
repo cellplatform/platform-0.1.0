@@ -18,7 +18,7 @@ export const SIMPLE: t.ITreeNode = {
 
 export const COMPREHENSIVE = (() => {
   const p = TreeView.util.props;
-  const root = createRoot([17, 5, 3, 2]);
+  const root = createRoot([18, 5, 3, 2]);
 
   // p(root).header = { isVisible: false };
 
@@ -91,7 +91,15 @@ export const COMPREHENSIVE = (() => {
   p(children[16]).label = 'Custom Body';
   p(children[16]).isSpinning = true;
   p(children[16]).chevron = { isVisible: true };
-  p(children[16]).marginBottom = 80;
+
+  p(children[17]).label = 'Color Props';
+  p(children[17]).labelColor = COLORS.WHITE;
+  p(children[17]).iconColor = COLORS.PINK;
+  p(children[17]).bgColor = -0.8;
+  p(children[17]).twistyColor = COLORS.CYAN;
+  p(children[17]).chevronColor = COLORS.PINK;
+  p(children[17]).chevron = { isVisible: true };
+  p(children[17]).marginBottom = 80;
 
   return root;
 })();

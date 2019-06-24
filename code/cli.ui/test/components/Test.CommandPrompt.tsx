@@ -78,7 +78,14 @@ export class TestCommandPrompt extends React.PureComponent<ITestCommandPromptPro
     return (
       <div {...styles.base}>
         <div {...styles.prompt}>
-          <CommandPrompt ref={this.promptRef} cli={cli} keyMap={{ focus: 'CMD+SHIFT+L' }} />
+          <CommandPrompt
+            id={'top'}
+            ref={this.promptRef}
+            cli={cli}
+            keyMap={{ focus: 'CMD+SHIFT+L' }}
+            localStorage={true}
+            focusOnLoad={true}
+          />
         </div>
         <div {...styles.body}>
           <CommandHelpList cli={cli} onCommandClick={this.handleHelpClick} />
@@ -87,7 +94,7 @@ export class TestCommandPrompt extends React.PureComponent<ITestCommandPromptPro
           </div>
         </div>
         <div {...styles.prompt}>
-          <CommandPrompt ref={this.promptRef} cli={cli} events$={this.events$} focusOnLoad={true} />
+          <CommandPrompt id={'bottom'} ref={this.promptRef} cli={cli} events$={this.events$} />
         </div>
       </div>
     );

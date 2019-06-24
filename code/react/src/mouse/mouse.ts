@@ -10,6 +10,8 @@ import {
 } from './types';
 export { MouseEvent, MouseEventHandler, MouseEventType, IMouseEventProps, IMouseHandlers };
 
+const EVENT_TYPES: MouseEventType[] = ['CLICK', 'DOUBLE_CLICK', 'UP', 'DOWN', 'ENTER', 'LEAVE'];
+
 export type MouseHandlerFactory = (args: {
   type: MouseEvent['type'];
   handlers?: MouseEventHandler[];
@@ -46,11 +48,12 @@ const dummy = () => null;
 export function fromProps(
   props: IMouseEventProps,
   args: {
-    force?: MouseEventType[]; // Ensures a handler for the event-type is created, even if one is not passed as a prop.
+    force?: MouseEventType[] | boolean; // Ensures a handler for the event-type is created, even if one is not passed as a prop.
     getEnabled?: () => boolean;
   } = {},
 ) {
-  const { force = [], getEnabled } = args;
+  const { getEnabled } = args;
+  const force = args.force === true ? EVENT_TYPES : Array.isArray(args.force) ? args.force : [];
   const prep = (type: MouseEventType, handler?: React.MouseEventHandler) => {
     return handler ? handler : force.includes(type) ? dummy : undefined;
   };

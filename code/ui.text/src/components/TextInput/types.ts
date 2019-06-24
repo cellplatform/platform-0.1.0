@@ -1,4 +1,4 @@
-import { ITextStyle } from '../../types';
+import * as t from '../../common/types';
 
 export type ITextModifierKeys = {
   alt: boolean;
@@ -18,7 +18,7 @@ export interface ITextInputMask {
 }
 export type TextInputMaskHandler = (e: ITextInputMask) => boolean; // True - OK, False - disallow.
 
-export interface ITextInputStyle extends ITextStyle {
+export interface ITextInputStyle extends t.ITextStyle {
   disabledColor?: number | string;
 }
 
@@ -59,12 +59,13 @@ export interface ITextInputEvents {
 }
 
 /**
- * [Event] Observable
+ * [Events]
  */
 export type TextInputEvent =
   | ITextInputChangingEvent
   | ITextInputChangedEvent
-  | ITextInputKeypressEvent;
+  | ITextInputKeypressEvent
+  | ITextInputMouseEvent;
 
 export type ITextInputChangingEvent = {
   type: 'TEXT_INPUT/changing';
@@ -89,4 +90,9 @@ export type ITextInputKeypress = {
   isPressed: boolean;
   key: TextInputKeyEvent['key'];
   event: TextInputKeyEvent;
+};
+
+export type ITextInputMouseEvent = {
+  type: 'TEXT_INPUT/mouse';
+  payload: t.MouseEvent;
 };

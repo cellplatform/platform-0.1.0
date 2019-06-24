@@ -1,6 +1,5 @@
 import { IIcon } from '@platform/ui.icon';
 
-export { IIcon };
 export * from './themes/types';
 export * from './components/TreeView/types';
 export * from './components/TreeNode/types';
@@ -38,9 +37,7 @@ export type ITreeNodePathContext = {
 export type ITreeNodeProps = {
   body?: string; // Key used in [renderNodeBody] factory.
   label?: string;
-  labelColor?: string | number;
   icon?: TreeNodeIcon;
-  iconColor?: string | number;
   title?: string; // For <Header> if different from `label`.
   description?: string;
   descriptionColor?: string | number;
@@ -66,9 +63,15 @@ export type ITreeNodeProps = {
   badge?: string | number;
   isEnabled?: boolean;
   isVisible?: boolean;
-  isSelected?: boolean;
   isBold?: boolean;
   isSpinning?: boolean;
+  isSelected?: boolean;
+
+  labelColor?: string | number;
+  iconColor?: string | number;
+  bgColor?: string | number; // Explicit BG color overrides the theme's `isSelected` bg color.
+  twistyColor?: string | number;
+  chevronColor?: string | number;
 };
 
 /**

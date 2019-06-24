@@ -6,7 +6,11 @@ export const store = state.create<t.IMyModel, t.MyEvent>({
     debug: 'SINGLE',
   },
 });
-export const Provider = state.createProvider(store);
+
+export const Provider = state.createProvider<t.IMyContextProps>(store, {
+  foo: 123,
+  getAsync: async () => true,
+});
 
 /**
  * [Reducers]

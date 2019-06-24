@@ -45,9 +45,13 @@ export const size = {
    * Calculates the size of all files within a directory.
    */
   async dir(path: string) {
-    const pattern = resolve(join(path), '**');
-    const wait = (await glob.find(pattern)).map(async path => size.file(path));
-    const files = await Promise.all(wait);
+    const getFiles = async () => {
+      const pattern = resolve(join(path), '**');
+      const wait = (await glob.find(pattern)).map(async path => size.file(path));
+      return Promise.all(wait);
+    };
+    const exists = await fsExtra.pathExists(path);
+    const files = exists ? await getFiles() : [];
     const bytes = files.reduce((acc, next) => acc + next.bytes, 0);
     return {
       path,

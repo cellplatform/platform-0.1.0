@@ -38,11 +38,13 @@ export type ReactContext = React.ContextType<typeof Context>;
 
 /**
  * Factory for creating a <Provider> component to pass a
- * state store through the react hierarchy to child components.
+ * store (and optionally additional props) through the react
+ * hierarchy to child components.
  */
-export function createProvider(store: t.IStoreContext): React.FunctionComponent {
+export function createProvider<P = {}>(store: t.IStoreContext, ctx?: P): React.FunctionComponent {
   const context: t.IStateContext = {
     getStore: () => store as t.IStoreContext<any, any>,
+    ...(ctx || {}), // Optional props to extend the context with.
   };
   return (props: { children?: React.ReactNode } = {}) => (
     <Context.Provider value={context}>{props.children}</Context.Provider>
