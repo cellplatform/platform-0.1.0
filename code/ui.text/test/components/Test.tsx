@@ -14,7 +14,7 @@ export class Test extends React.PureComponent<ITestState> {
   public state: ITestState = {};
   private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestState>>();
-  private events$ = new Subject<t.TextInputEvent>();
+  private input$ = new Subject<t.TextInputEvent>();
 
   private inputs: TextInput[] = [];
   private inputRef = (ref: TextInput) => (this.inputs = ref ? [...this.inputs, ref] : this.inputs);
@@ -23,15 +23,15 @@ export class Test extends React.PureComponent<ITestState> {
    * [Lifecycle]
    */
   public componentWillMount() {
-    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    const input$ = this.input$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
 
-    events$.subscribe(e => {
+    input$.subscribe(e => {
       log.info('🌳', e);
     });
 
-    events$
+    input$
       .pipe(
         filter(e => e.type === 'TEXT_INPUT/changing'),
         map(e => e.payload as t.ITextInputChanging),
@@ -40,7 +40,7 @@ export class Test extends React.PureComponent<ITestState> {
         // e.cancel();
       });
 
-    events$
+    input$
       .pipe(
         filter(e => e.type === 'TEXT_INPUT/changed'),
         map(e => e.payload as t.ITextInputChanged),
@@ -132,7 +132,7 @@ export class Test extends React.PureComponent<ITestState> {
           value={this.state.value}
           placeholder={'TextInput'}
           placeholderStyle={{ color: color.format(-0.2) }}
-          events$={this.events$}
+          events$={this.input$}
           {...props}
         />
       </div>
