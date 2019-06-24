@@ -1003,7 +1003,19 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.4.11", "@platform/electron@^0.4.11":
+"@platform/css@0.1.23":
+  version "0.1.23"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.23.tgz#9399231c3feaf065c2f6e5e937f5ce2d59db8c4c"
+  integrity sha512-Ql1xNvOSR9wnN5SFpkBZKG/AAMsAd/cVC8G7ZKXYiu9xC6fvCN3ayFeytQAU0fCk/3c6js61vvE4vK+fF6l18A==
+  dependencies:
+    "@platform/libs" "0.0.17"
+    "@platform/util.is" "0.0.79"
+    "@platform/util.value" "0.4.0"
+    "@types/tinycolor2" "1.4.2"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
+"@platform/electron@0.4.11":
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.11.tgz#2d2fd3481c29af51000ff5045fc92e6022c1580a"
   integrity sha512-eattwyMNNSeAqd3xu69fcYhx8+I1WK3feRlWUP8SvbYmlW+4XCplFg56TGhbD3DNca++tfgUnmy6Y1dh7mvZFA==
@@ -1021,15 +1033,16 @@
     is-electron "2.2.0"
     minimist "1.2.0"
 
-"@platform/electron@0.4.9":
-  version "0.4.9"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.9.tgz#34bdc2561ca07758f825125a9d1e4fcf03c0dc8d"
-  integrity sha512-9mwSCqyJeBpT7mGoITGOV7/6z9YkrA0DZu1kxyq6PDdM8CsryBI4+hL4fJOhaToEU7VT1bBqcKOSz0tjrBLVxg==
+"@platform/electron@0.4.15", "@platform/electron@^0.4.15":
+  version "0.4.15"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.15.tgz#ef1ba0e49ae0376a6e5c9643b7a95493a1dd0171"
+  integrity sha512-HxVfbJXRg0fU2VHFVFBAWB46YYkIr7Nenu1qr9X3GQo97JgPD+tpneRE9lMOUa1LcWrx/4NpZK3KLS2+mjy6Zw==
   dependencies:
     "@platform/fs" "0.1.4"
     "@platform/libs" "^0.0.17"
     "@platform/log" "0.0.130"
-    "@platform/react" "0.3.5"
+    "@platform/react" "0.3.8"
+    "@platform/types" "0.0.17"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.2.1"
     electron-log "3.0.6"
@@ -1090,34 +1103,34 @@
     fs-extra "8.0.1"
     js-yaml "3.13.1"
 
-"@platform/hyperdb.electron@0.2.18":
-  version "0.2.18"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.2.18.tgz#091c49ae126e533651a7ff81f55ad81adce8397e"
-  integrity sha512-/SgkEOQgtnl6MBxhSyg4YKpstB3o2yZdRwzLU8MVGV7DM/QhVVHDjMIbX/RqGsUsmSaYwY27+zCA3ycJKQHIpg==
+"@platform/hyperdb.electron@0.2.25":
+  version "0.2.25"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.electron/-/hyperdb.electron-0.2.25.tgz#9372ae9a286cf7399bc1e4f3b0dd8a610f0d602e"
+  integrity sha512-KoXXv+uQTasV4kGPo9Y43EwD41KdTuBhGhdg2cjhziUSSobSNvEEKV8AkYYFfLf5iYbvSi/hSZvyND1UUHtClA==
   dependencies:
-    "@platform/electron" "0.4.11"
-    "@platform/hyperdb" "0.2.14"
-    "@platform/hyperdb.types" "0.2.9"
-    "@platform/util.string" "0.1.23"
-    "@platform/util.value" "0.3.10"
-    "@uiharness/electron" "0.5.4"
+    "@platform/electron" "0.4.15"
+    "@platform/hyperdb" "0.2.16"
+    "@platform/hyperdb.types" "0.2.10"
+    "@platform/util.string" "0.2.1"
+    "@platform/util.value" "0.4.0"
+    "@uiharness/electron" "0.5.5"
 
-"@platform/hyperdb.types@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.2.9.tgz#83423b25ce4e8c9df796175a46e4935530bf9965"
-  integrity sha512-NJ7Jcdqxv3Lv94t3O8RAkx0xHj/lUB/AmZzfug1g37X877NTYpOyN7/lKWLfbQf0QG5eyy8Oaw01adHmoEgNnw==
+"@platform/hyperdb.types@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb.types/-/hyperdb.types-0.2.10.tgz#fbaf75fe731dabb6cd837490363d42c1c9a20bb6"
+  integrity sha512-qbKjHRR5aYCfYUD1aY5X02PdKYpx9cijse5HyqjQ2Y0di3D+KTMNT9jHvljN3WA/ZEtJozPWEdI0EjMGsG759A==
   dependencies:
     "@platform/libs" "0.0.17"
 
-"@platform/hyperdb@0.2.14":
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.2.14.tgz#e0fb916a601948ed15ad1c2043fa966ecacd940b"
-  integrity sha512-+SYYXu99lba405m4PBtVjc7fAe8Vcx9wmeT5pbYo0N4weCb4Z/u+mtuYyrYvpfWBTh7vdgSekykDrKlY9iDEYA==
+"@platform/hyperdb@0.2.16":
+  version "0.2.16"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.2.16.tgz#60680c43192bb63fc5750dd28585e7837092df9f"
+  integrity sha512-zlEZGulrLGbZcJx04BPo9INBfo78m8niN32CDl9q4Q54TpIaw3IFLyZF+oJWjl7iviCQnfxAibIVPPfD/KYteA==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.1.4"
-    "@platform/hyperdb.types" "0.2.9"
-    "@platform/util.value" "0.3.10"
+    "@platform/hyperdb.types" "0.2.10"
+    "@platform/util.value" "0.4.0"
     discovery-swarm "6.0.0"
     hyperdb "3.5.0"
     pump "3.0.0"
@@ -1186,6 +1199,18 @@
     react "16.8.6"
     react-dom "16.8.6"
 
+"@platform/react@0.3.8":
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.8.tgz#cabea8df6b6173938fcac542a44aa19a03e0c29a"
+  integrity sha512-/m0Z0rriNWsqjy3hKp5DHfsVkwtPwHmR25GeQ+LIJFqfXgi7V41wflLJY/3MAi6gtE4kZRJD+mpJHW9h1fxBvg==
+  dependencies:
+    "@platform/css" "0.1.23"
+    "@platform/util.is" "0.0.79"
+    "@types/react" "16.8.20"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
 "@platform/ts.libs@3.5.2":
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.5.2.tgz#92a745b81c1f868e59e6243199d6eac11ee24a2e"
@@ -1221,34 +1246,34 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.17.tgz#a5c4f480271a32e84f87acfc2130434cad86de38"
   integrity sha512-SZFLbO1gVOn8z0Rx2jRMJ3rLrYeFmOLsz4AX/f4NL28/ooQX9D7tpBlHWQXeCy4OU3L/5058WoNFXBqjPEp3xg==
 
-"@platform/ui.datagrid.types@0.0.49":
-  version "0.0.49"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.49.tgz#e9702941227fa28de7bac72b6e712eed16792e53"
-  integrity sha512-Wcd2f77Y3O4AnA67ofxpJ39FYnWo8ehPKJSj7jxbLFMtumlf3P4WShVyU2n3R9USwW9XpOvHGSOxfXem+qFwAw==
+"@platform/ui.datagrid.types@0.0.53":
+  version "0.0.53"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.0.53.tgz#118186ff9d59e95d627adc7d0206b33854d7b5e3"
+  integrity sha512-uA3VhTJK5E13Vkuj4CcFvm56oDszPnKj6puS1yABlrZDwIQkwVBffxxhZsAsIqV+g8zRfylT7Kd9JVV1nduvMg==
   dependencies:
-    "@platform/react" "0.3.5"
-    "@platform/util.value.cell" "0.0.50"
+    "@platform/react" "0.3.8"
+    "@platform/util.value.cell" "0.0.51"
 
-"@platform/ui.datagrid@0.0.139":
-  version "0.0.139"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.139.tgz#e9b23f1a0d22bc4e96ab70964f6351aa44a0708c"
-  integrity sha512-GYn9hWziWC3hpmPTG34hzrn+hz27e9QG/hk0ptOdAMhIQcfj1Fyc4ww/30fGNi5eQUhglWq02tFVNxCAQ2XL0Q==
+"@platform/ui.datagrid@0.0.146":
+  version "0.0.146"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.146.tgz#578bb76dd49817b8d36933e5419cc8b667c31150"
+  integrity sha512-0V33T5QS0bIh7OpBWxdOR1B86b7GGZ1+MGiMP83LHteNvMzYVkVxdrBvD+CMkOCxUM1JQYiwL2QJwa+Q5YG2Zg==
   dependencies:
     "@babel/polyfill" "^7.4.4"
     "@platform/libs" "^0.0.17"
-    "@platform/react" "0.3.5"
-    "@platform/ui.datagrid.types" "0.0.49"
-    "@platform/ui.text" "0.2.16"
-    "@platform/util.value.cell" "0.0.50"
+    "@platform/react" "0.3.8"
+    "@platform/ui.datagrid.types" "0.0.53"
+    "@platform/ui.text" "0.2.19"
+    "@platform/util.value.cell" "0.0.51"
     handsontable "6.2.2"
 
-"@platform/ui.editor@0.1.22":
-  version "0.1.22"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.22.tgz#7cb349dc34d83fd62237c3dd7e7960fe13af991f"
-  integrity sha512-q6mj/VQrg5zCZk5lugqBGzI0Y4E/3hE/31BG1zDe/cb/jauE1Kugksq+Yk9QxzAMe6uFDbyXEulfuf1YL4eoOA==
+"@platform/ui.editor@0.1.26":
+  version "0.1.26"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.26.tgz#29b9556f6e74f87ee17d10474cceac89936af823"
+  integrity sha512-u5Yakqo5s9TWZrAuIl5aAlZKjKlZI8LMgZpUUVxq8CFEjNUfr5TFOzEF7RymyhFQB6w4JOlppKClb2Yahcmtng==
   dependencies:
-    "@platform/css" "0.1.22"
-    "@platform/react" "0.3.5"
+    "@platform/css" "0.1.23"
+    "@platform/react" "0.3.8"
     prosemirror-commands "1.0.7"
     prosemirror-dropcursor "1.1.1"
     prosemirror-gapcursor "1.0.3"
@@ -1303,6 +1328,15 @@
     "@platform/react" "0.3.5"
     "@platform/util.value" "0.3.10"
 
+"@platform/ui.text@0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.19.tgz#68b7dd89b1611f139983bfc45d6b9a5d16ccec7c"
+  integrity sha512-oUnNivTEPV7+OSprJi67b0rXYCV746Nl5zG3ctMyoJc5y7S6rHyuCIsisYMxI1pWpqraZ0NlM51QNddJ3ZQ3Ng==
+  dependencies:
+    "@platform/libs" "0.0.17"
+    "@platform/react" "0.3.8"
+    "@platform/util.value" "0.4.0"
+
 "@platform/ui.tree@0.1.19":
   version "0.1.19"
   resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.1.19.tgz#55c3a053d7edea8d9a06a20ae236b7461f686ea7"
@@ -1350,12 +1384,22 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value.cell@0.0.50":
-  version "0.0.50"
-  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.0.50.tgz#7521e466af4fba768da5063c155327f8240f0cf2"
-  integrity sha512-mD4k1iWoZV215wPkmD7rOxCARYI3AJt+CBemTMviFZXQquA6dGW+J9/Rcjb2NA8zB2FeA2c57a7HJ181MxORjA==
+"@platform/util.string@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.2.1.tgz#953f760838112b181cda5748188ef8185eb47705"
+  integrity sha512-AWpacDFhxDf6UNUhW9VA35puZXvwktLBgVyGUeHcV9JPIJrLy4oKnqob4APT2by4fHaeBRrVCzD/er8eM4Vz0A==
   dependencies:
-    "@platform/util.value" "0.3.10"
+    "@types/underscore.string" "0.0.37"
+    escape-string-regexp "2.0.0"
+    fuzzy "0.1.3"
+    underscore.string "3.3.5"
+
+"@platform/util.value.cell@0.0.51":
+  version "0.0.51"
+  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.0.51.tgz#4e485be9da4b22c72013c28544e856971b8ce487"
+  integrity sha512-ahrxbni7oCR2+5BIUGu4OmafPDmE0IoJwB4qGF26/++QWPBOV+Qp7YNu6TET1OD805QX91LCtJB5hGMKqfqvWw==
+  dependencies:
+    "@platform/util.value" "0.4.0"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
 
@@ -1380,6 +1424,19 @@
     "@platform/libs" "0.0.15"
     "@platform/types" "0.0.13"
     "@platform/util.is" "0.0.75"
+    "@types/semver" "6.0.0"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.1.1"
+
+"@platform/util.value@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.0.tgz#222883a5a2a3e82d31cce8814408c19f04eaf05e"
+  integrity sha512-a0DcaT0lTG3xQk/C2VH92w57vQfgqWd0UP+Cmzoua3JiDdoK26DeB6c9teFhbPHd5L2aZ3elBdF8enSvyhczeg==
+  dependencies:
+    "@platform/libs" "0.0.17"
+    "@platform/types" "0.0.17"
+    "@platform/util.is" "0.0.79"
     "@types/semver" "6.0.0"
     cuid "2.1.6"
     dayjs "1.8.14"
@@ -1566,20 +1623,6 @@
     parcel-bundler "1.12.3"
     serve "11.0.1"
 
-"@uiharness/electron@0.5.4":
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.5.4.tgz#6f256cea7345b5abc305d536f197af6a933e7fab"
-  integrity sha512-NvYiwxFtqxT9r0XTuVesPrbPw/e/nEhq1oyKEy7T75YyxKlAtpB8cUqZYxk71UjbFpgXrbLrSLdEXCFjFq3wiw==
-  dependencies:
-    "@platform/electron" "0.4.9"
-    "@platform/log" "0.0.130"
-    "@platform/react" "0.3.5"
-    "@platform/ui.object" "0.0.125"
-    "@platform/util.value" "0.3.10"
-    "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.5.4"
-    tslib "1.10.0"
-
 "@uiharness/electron@0.5.5":
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.5.5.tgz#c77b9ae653e842ee2d4938b681899cd3d9be642f"
@@ -1593,11 +1636,6 @@
     "@types/app-root-path" "1.2.4"
     "@uiharness/types" "0.5.5"
     tslib "1.10.0"
-
-"@uiharness/types@0.5.4":
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.5.4.tgz#f928eaea5804cae8961e530c9891059bb60741fa"
-  integrity sha512-C/r2irg75Cn9gfilxO96wzfaVpZoMhVyP3v0WU7G/U3OKx+s3u+dqtEAqyuEvawm4Dl7HRJuT6znT/Es12hcpA==
 
 "@uiharness/types@0.5.5":
   version "0.5.5"
@@ -2899,7 +2937,7 @@ core-js-pure@3.1.3:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.1.3.tgz#4c90752d5b9471f641514f3728f51c1e0783d0b5"
   integrity sha512-k3JWTrcQBKqjkjI0bkfXS0lbpWPxYuHWfMMjC1VDmzU4Q58IwSbuXSo99YO/hUHlw/EB4AlfA2PVxOGkrIq6dA==
 
-core-js@3.1.3, core-js@^3.1.3:
+core-js@3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.1.3.tgz#95700bca5f248f5f78c0ec63e784eca663ec4138"
   integrity sha512-PWZ+ZfuaKf178BIAg+CRsljwjIMRV8MY00CbZczkR6Zk5LfkSkjGoaab3+bqRQWVITNZxQB7TFYz+CFcyuamvA==
@@ -2913,6 +2951,11 @@ core-js@^2.4.0, core-js@^2.6.5:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.9.tgz#6b4b214620c834152e179323727fc19741b084f2"
   integrity sha512-HOpZf6eXmnl7la+cUdMnLvUxKNqLUzJvgIziQ0DiF3JwSImNphIqdGqzj6hIKyX04MmV0poclQ7+wjWvxQyR2A==
+
+core-js@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.1.4.tgz#3a2837fc48e582e1ae25907afcd6cf03b0cc7a07"
+  integrity sha512-YNZN8lt82XIMLnLirj9MhKDFZHalwzzrL9YLt6eb0T5D0EDl4IQ90IGkua8mHbnxNrkj1d8hbdizMc0Qmg1WnQ==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"

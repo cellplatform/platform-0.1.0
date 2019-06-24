@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "File system tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,14 +16,14 @@
     "@types/js-yaml": "3.12.1",
     "archiver": "3.0.0",
     "extract-zip": "1.6.7",
-    "fast-glob": "2.2.7",
+    "fast-glob": "3.0.2",
     "filesize": "^4.1.2",
     "fs-extra": "8.0.1",
     "js-yaml": "3.13.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.57",
-    "@platform/ts.libs": "3.5.2",
+    "@platform/test": "0.0.58",
+    "@platform/ts.libs": "3.5.3",
     "@types/archiver": "3.0.0",
     "@types/extract-zip": "1.6.2",
     "@types/filesize": "^4.1.0"

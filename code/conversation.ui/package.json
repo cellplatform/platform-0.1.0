@@ -1,6 +1,6 @@
 {
   "name": "@platform/conversation.ui",
-  "version": "0.0.125",
+  "version": "0.0.127",
   "description": "UI components for conversation threads.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,24 +17,24 @@
     "reset": "sh sh/reset.sh"
   },
   "dependencies": {
-    "@platform/conversation.types": "0.0.32",
-    "@platform/graphql": "0.2.21",
-    "@platform/react": "0.3.8",
-    "@platform/state": "0.4.1",
-    "@platform/state.react": "0.4.4",
-    "@platform/ui.button": "0.2.3",
-    "@platform/ui.editor": "0.1.26",
-    "@platform/ui.image": "0.1.20",
-    "@platform/ui.text": "0.2.19",
-    "@platform/util.markdown": "0.0.27",
-    "@platform/util.value": "0.4.0"
+    "@platform/conversation.types": "0.0.34",
+    "@platform/graphql": "0.2.23",
+    "@platform/react": "0.3.10",
+    "@platform/state": "0.4.3",
+    "@platform/state.react": "0.4.6",
+    "@platform/ui.button": "0.2.5",
+    "@platform/ui.editor": "0.1.28",
+    "@platform/ui.image": "0.1.22",
+    "@platform/ui.text": "0.2.21",
+    "@platform/util.markdown": "0.0.29",
+    "@platform/util.value": "0.4.2"
   },
   "devDependencies": {
-    "@platform/auth": "0.1.20",
-    "@platform/cli.ui": "0.2.27",
-    "@platform/conversation.db": "0.0.71",
-    "@platform/graphql.server": "0.1.20",
-    "@platform/hyperdb": "0.2.16",
+    "@platform/auth": "0.1.22",
+    "@platform/cli.ui": "0.2.29",
+    "@platform/conversation.db": "0.0.73",
+    "@platform/graphql.server": "0.1.22",
+    "@platform/hyperdb": "0.2.18",
     "@uiharness/dev": "0.5.8",
     "@uiharness/ui": "0.5.8",
     "electron": "5.0.0"
