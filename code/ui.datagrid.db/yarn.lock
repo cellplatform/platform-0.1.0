@@ -1304,15 +1304,15 @@
     codemirror "5.47.0"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.cell@0.0.59":
-  version "0.0.59"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.59.tgz#f54ec76c71e4af406a74a00b08b599deb85ed9c4"
-  integrity sha512-GTUmpE3+h9G6ASGr/KspC6u4ducPgZfoe8gQ/AnHW+i5CBl2PSgjViz9A4DlrHlSuQFFmpiei0h1SDTZAQm3Dw==
+"@platform/ui.datagrid.cell@0.0.60":
+  version "0.0.60"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.60.tgz#d7e77abb4dd5ffc9947d3aa4d421da717ba7a910"
+  integrity sha512-xyKMeKYCuGQveAvPwyaWWlI9QC4UVJhCWtcgtYllUYb7xF56CP6gpGtoQC5fU1Kx+e0CWu19c7EFPqATK57mdA==
   dependencies:
     "@platform/react" "0.3.8"
     "@platform/ui.codemirror" "0.0.69"
     "@platform/ui.datagrid.types" "0.0.53"
-    "@platform/ui.editor" "0.1.25"
+    "@platform/ui.editor" "0.1.26"
     "@platform/ui.text" "0.2.19"
     "@platform/util.markdown" "0.0.27"
 
@@ -1324,10 +1324,10 @@
     "@platform/react" "0.3.8"
     "@platform/util.value.cell" "0.0.51"
 
-"@platform/ui.datagrid@0.0.145":
-  version "0.0.145"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.145.tgz#71a2487c89212502a0bc0242f2fca6a4aa1f9fcd"
-  integrity sha512-LJbi3w34YOqVwT8rf7TiN4ek26Zju+WxigWOKZHK9uwUDOSLrEUG2EffVh8cFhfhpwt0L661m+CjfBmRb78OdA==
+"@platform/ui.datagrid@0.0.146":
+  version "0.0.146"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.146.tgz#578bb76dd49817b8d36933e5419cc8b667c31150"
+  integrity sha512-0V33T5QS0bIh7OpBWxdOR1B86b7GGZ1+MGiMP83LHteNvMzYVkVxdrBvD+CMkOCxUM1JQYiwL2QJwa+Q5YG2Zg==
   dependencies:
     "@babel/polyfill" "^7.4.4"
     "@platform/libs" "^0.0.17"
@@ -1337,10 +1337,10 @@
     "@platform/util.value.cell" "0.0.51"
     handsontable "6.2.2"
 
-"@platform/ui.editor@0.1.25":
-  version "0.1.25"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.25.tgz#f30218beb9b42bdcbeb98940827d5fb7c5737947"
-  integrity sha512-LQUp1dAzWSlureF9sb8iwAzaHOARcR4tQa+QOeF9J5IWk+W0wECA+xlby4VgRqhKwvBhf76+gP0asIdqx9evYA==
+"@platform/ui.editor@0.1.26":
+  version "0.1.26"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.26.tgz#29b9556f6e74f87ee17d10474cceac89936af823"
+  integrity sha512-u5Yakqo5s9TWZrAuIl5aAlZKjKlZI8LMgZpUUVxq8CFEjNUfr5TFOzEF7RymyhFQB6w4JOlppKClb2Yahcmtng==
   dependencies:
     "@platform/css" "0.1.23"
     "@platform/react" "0.3.8"
