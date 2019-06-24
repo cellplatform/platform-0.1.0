@@ -1,6 +1,5 @@
 import { IIcon } from '@platform/ui.icon';
 
-export { IIcon };
 export * from './themes/types';
 export * from './components/TreeView/types';
 export * from './components/TreeNode/types';
