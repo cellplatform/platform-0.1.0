@@ -21,8 +21,8 @@
   },
   "devDependencies": {
     "@types/react-select": "2.0.19",
-    "@uiharness/dev": "0.5.8",
-    "@uiharness/ui": "0.5.8",
+    "@uiharness/dev": "0.5.9",
+    "@uiharness/ui": "0.5.9",
     "electron": "5.0.0"
   },
   "files": [

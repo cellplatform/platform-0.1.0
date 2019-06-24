@@ -35,8 +35,8 @@
     "@platform/conversation.db": "0.0.73",
     "@platform/graphql.server": "0.1.22",
     "@platform/hyperdb": "0.2.18",
-    "@uiharness/dev": "0.5.8",
-    "@uiharness/ui": "0.5.8",
+    "@uiharness/dev": "0.5.9",
+    "@uiharness/ui": "0.5.9",
     "electron": "5.0.0"
   },
   "resolutions": {
