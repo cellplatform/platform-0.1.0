@@ -1200,10 +1200,10 @@
     "@platform/react" "0.3.10"
     "@platform/util.value" "0.4.2"
 
-"@platform/ui.text@0.2.22":
-  version "0.2.22"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.22.tgz#142c5dcc5658ed0c594491cc40f07ee30e83a1d1"
-  integrity sha512-852uvX0KRBhbgYOVBplm+bcfFrmxe2Ig+zv/ZlEyV1ZDyKIHPM1Twf3z49a7bef8Xb298c2HdKueG/Ccng8PpQ==
+"@platform/ui.text@0.2.23":
+  version "0.2.23"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.23.tgz#cd0f921c30164acf0de79a7cfa9d6cdb988741e0"
+  integrity sha512-bTJomYuBE/snkFqnu12Rlt8mtJqn+eAZFk3UZ4Hdps8DFa92Q/6U6souZusTX/uBZMMtUEuYQewlOkAwmv1xRw==
   dependencies:
     "@platform/libs" "0.0.18"
     "@platform/react" "0.3.10"
@@ -1221,25 +1221,17 @@
     "@platform/ui.spinner" "0.0.73"
     "@platform/ui.text" "0.2.21"
 
-"@platform/ui.tree@0.2.7":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.7.tgz#145a86f7adce680074af714b81d0d23e94951298"
-  integrity sha512-E/W0pU41uh2m37/AnO8629cwm4qmD+r1wTp5fXLJfy8lXAFnbg+sFALSP4PmZ4QdJNdrh5G2XSzYdMafyDz3GA==
+"@platform/ui.tree@0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.8.tgz#292bff3e2315f36ac4017e7d7502c82269eed2a8"
+  integrity sha512-qaDfRD/rKiyza5O1fGkZ11xaV04O2XQeuYICwvi6vda6KaCbFp6o26ZXUbOzng+h13S8quE9JjBI2MDGYCmTVw==
   dependencies:
     "@platform/css" "0.1.25"
     "@platform/react" "0.3.10"
     "@platform/ui.icon" "0.0.74"
     "@platform/ui.panel" "0.0.72"
     "@platform/ui.spinner" "0.0.73"
-    "@platform/ui.text" "0.2.22"
-
-"@platform/util.animate@0.0.42":
-  version "0.0.42"
-  resolved "https://registry.yarnpkg.com/@platform/util.animate/-/util.animate-0.0.42.tgz#9de3861528e6a1003bbb0e55aa11fec3f72873e1"
-  integrity sha512-DUCfyPhpAhHrNF1p1hpjKXHTBjVC+9QAxcfDcHKSIpEMA9VwzYdFUOGFspzoyu7YrXBS6oF2p8g6anHPPsLc5A==
-  dependencies:
-    "@platform/libs" "0.0.18"
-    dynamics.js "1.1.5"
+    "@platform/ui.text" "0.2.23"
 
 "@platform/util.is@0.0.81":
   version "0.0.81"
@@ -3284,11 +3276,6 @@ duplexer3@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
   integrity sha1-7gHdHKwO08vH/b6jfcCo8c4ALOI=
-
-dynamics.js@1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/dynamics.js/-/dynamics.js-1.1.5.tgz#b90bdc33605cefe652b8416e701f79bf6eefce32"
-  integrity sha1-uQvcM2Bc7+ZSuEFucB95v27vzjI=
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
@@ -7190,7 +7177,7 @@ set-value@^2.0.0:
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
 
-setimmediate@^1.0.4, setimmediate@^1.0.5:
+setimmediate@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
   integrity sha1-KQy7Iy4waULX1+qbg3Mqt4VvgoU=
