@@ -24,7 +24,8 @@ export type TabstripEvent =
   | ITabstripSortStartEvent
   | ITabstripSortCompleteEvent
   | ITabstripTabMouseEvent
-  | ITabstripSelectionChangeEvent;
+  | ITabstripSelectionChangeEvent
+  | ITabstripFocusEvent;
 
 export type ITabstripSortStartEvent<D = any> = {
   type: 'TABSTRIP/sort/start';
@@ -72,3 +73,9 @@ export type ITabstripSelectionChange<D = any> = {
   to?: number;
   data: D;
 };
+
+export type ITabstripFocusEvent = {
+  type: 'TABSTRIP/focus';
+  payload: ITabstripFocus;
+};
+export type ITabstripFocus = { isFocused: boolean };
