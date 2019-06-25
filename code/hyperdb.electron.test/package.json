@@ -1,6 +1,6 @@
 {
   "name": "hyperdb.electron.test",
-  "version": "0.0.154",
+  "version": "0.0.155",
   "description": "",
   "scripts": {
     "ui": "ui $@",
@@ -19,9 +19,9 @@
     "@platform/hyperdb": "0.2.18",
     "@platform/hyperdb.electron": "0.2.27",
     "@platform/react": "0.3.10",
-    "@platform/ui.datagrid": "0.0.148",
+    "@platform/ui.datagrid": "0.0.149",
     "@platform/ui.editor": "0.1.28",
-    "@platform/ui.text": "0.2.21",
+    "@platform/ui.text": "0.2.22",
     "@platform/util.string": "0.2.3",
     "@platform/util.value": "0.4.2",
     "@uiharness/electron": "0.5.6",

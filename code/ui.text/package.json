@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.text",
   "description": "Text components.",
-  "version": "0.2.21",
+  "version": "0.2.22",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
