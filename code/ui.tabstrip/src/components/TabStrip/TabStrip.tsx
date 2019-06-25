@@ -41,6 +41,7 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
 
   private el!: HTMLDivElement;
   private elRef = (ref: HTMLDivElement) => (this.el = ref);
+
   /**
    * [Lifecycle]
    */
@@ -268,8 +269,8 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
       <div
         ref={this.elRef}
         {...css(styles.base, this.props.style)}
-        onFocus={this.onFocusChange}
-        onBlur={this.onFocusChange}
+        onFocus={this.handleFocusChange}
+        onBlur={this.handleFocusChange}
         tabIndex={tabIndex}
       >
         <List
@@ -335,5 +336,5 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
     this.forceUpdate();
   };
 
-  private onFocusChange = () => this.focus$.next(this.isFocused);
+  private handleFocusChange = () => this.focus$.next(this.isFocused);
 }
