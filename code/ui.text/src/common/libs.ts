@@ -14,4 +14,4 @@ export {
   IMeasureSizeStyle,
   containsFocus,
 } from '@platform/react';
-export { time, value } from '@platform/util.value';
+export { time, value, defaultValue } from '@platform/util.value';

@@ -40,13 +40,15 @@ export type ITreeNodeProps = {
   icon?: TreeNodeIcon;
   title?: string; // For <Header> if different from `label`.
   description?: string;
-  descriptionColor?: string | number;
   opacity?: number;
   padding?: number | number[]; // [top, right, bottom left].
   marginTop?: number;
   marginBottom?: number;
-  borderTop?: number | string | boolean; //    Color (true === theme color).
-  borderBottom?: number | string | boolean; // Color (true === theme color).
+
+  // TEMP 🐷
+  // borderTop?: number | string | boolean; //    Color (true === theme color).
+  // borderBottom?: number | string | boolean; // Color (true === theme color).
+
   chevron?: {
     isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
   };
@@ -67,11 +69,19 @@ export type ITreeNodeProps = {
   isSpinning?: boolean;
   isSelected?: boolean;
 
-  labelColor?: string | number;
-  iconColor?: string | number;
-  bgColor?: string | number; // Explicit BG color overrides the theme's `isSelected` bg color.
-  twistyColor?: string | number;
-  chevronColor?: string | number;
+  colors?: ITreeNodeColors;
+  focusColors?: ITreeNodeColors;
+};
+
+export type ITreeNodeColors = {
+  label?: string | number;
+  description?: string | number;
+  icon?: string | number;
+  bg?: string | number; // Explicit BG color overrides the theme's `isSelected` bg color.
+  twisty?: string | number;
+  chevron?: string | number;
+  borderTop?: number | string | boolean; //    Color (true === theme color).
+  borderBottom?: number | string | boolean; // Color (true === theme color).
 };
 
 /**
@@ -127,4 +137,5 @@ export type RenderTreeNodeBody<T extends ITreeNode = ITreeNode> = (
 export type RenderTreeNodeBodyArgs<T extends ITreeNode = ITreeNode> = {
   body: string;
   node: T;
+  isFocused: boolean;
 };

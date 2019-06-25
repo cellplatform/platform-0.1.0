@@ -67,10 +67,10 @@ export const COMPREHENSIVE = (() => {
   p(children[10]).opacity = 0.6;
 
   p(children[11]).label = 'icon color';
-  p(children[11]).iconColor = COLORS.BLUE;
+  p(children[11]).colors = { icon: COLORS.BLUE };
 
   p(children[12]).label = 'label color';
-  p(children[12]).labelColor = COLORS.BLUE;
+  p(children[12]).colors = { label: COLORS.BLUE };
 
   p(children[13]).label = 'Description';
   p(children[13]).description =
@@ -93,12 +93,19 @@ export const COMPREHENSIVE = (() => {
   p(children[16]).chevron = { isVisible: true };
 
   p(children[17]).label = 'Color Props';
-  p(children[17]).labelColor = COLORS.WHITE;
-  p(children[17]).iconColor = COLORS.PINK;
-  p(children[17]).bgColor = -0.8;
-  p(children[17]).twistyColor = COLORS.CYAN;
-  p(children[17]).chevronColor = COLORS.PINK;
   p(children[17]).chevron = { isVisible: true };
+  p(children[17]).colors = {
+    label: COLORS.WHITE,
+    icon: COLORS.PINK,
+    bg: -0.8,
+    twisty: COLORS.CYAN,
+    chevron: COLORS.PINK,
+  };
+  p(children[17]).focusColors = {
+    label: COLORS.WHITE,
+    // icon: COLORS.PINK,
+    bg: COLORS.BLUE,
+  };
   p(children[17]).marginBottom = 80;
 
   return root;

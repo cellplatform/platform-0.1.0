@@ -11,7 +11,13 @@ export type ITestProps = {};
 
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = {
-    items: [{ name: 'One' }, { name: 'Two' }, { name: 'Three' }],
+    items: [
+      { name: 'One' },
+      { name: 'Two' },
+      { name: 'Three' },
+      { name: 'Four' },
+      { name: 'Five' },
+    ],
     selected: 0,
   };
   private unmounted$ = new Subject();
@@ -66,9 +72,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         padding: 30,
         userSelect: 'none',
       }),
-      vertical: css({
-        width: 120,
-      }),
+      columns: css({ Flex: 'horizontal' }),
     };
 
     return (
@@ -84,22 +88,39 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
           <Hr margin={'50 0'} thickness={5} />
 
-          <div {...styles.vertical}>
-            <TabStrip
-              axis={'y'}
-              items={items}
-              selected={this.state.selected}
-              isDraggable={this.state.isDraggable}
-              renderTab={this.renderTab}
-              events$={this.events$}
-            />
+          <div {...styles.columns}>
+            {this.renderVertical()}
+            {this.renderVertical()}
           </div>
         </div>
       </CommandShell>
     );
   }
 
+  private renderVertical = () => {
+    const { items = [] } = this.state;
+    const styles = {
+      base: css({ width: 120, marginRight: 200 }),
+    };
+
+    return (
+      <div {...styles.base}>
+        <TabStrip
+          axis={'y'}
+          items={items}
+          selected={this.state.selected}
+          tabIndex={0}
+          isDraggable={this.state.isDraggable}
+          renderTab={this.renderTab}
+          events$={this.events$}
+        />
+      </div>
+    );
+  };
+
   private renderTab: t.TabFactory<t.IMyTab> = e => {
+    const selectedColor = e.isFocused ? BLUE : color.format(-0.4);
+
     const styles = {
       base: css({
         boxSizing: 'border-box',
@@ -112,14 +133,14 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
           PaddingX: 30,
           borderRight: !e.isLast && !e.isDragging ? `solid 1px ${color.format(-0.1)}` : undefined,
           borderBottom: `solid 3px`,
-          borderBottomColor: e.isSelected ? BLUE : 'transparent',
+          borderBottomColor: e.isSelected ? selectedColor : 'transparent',
         }),
       y:
         e.isVertical &&
         css({
           borderBottom: !e.isLast && !e.isDragging ? `solid 1px ${color.format(-0.1)}` : undefined,
-          borderLeft: `solid 3px`,
-          borderLeftColor: e.isSelected ? BLUE : 'transparent',
+          borderLeft: `solid 6px`,
+          borderLeftColor: e.isSelected ? selectedColor : 'transparent',
         }),
     };
     return (

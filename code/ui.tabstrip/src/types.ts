@@ -15,6 +15,12 @@ export type TabFactoryArgs<D = any> = {
   isLast: boolean;
   isDragging: boolean;
   isSelected: boolean;
+  isFocused: boolean;
+};
+
+export type ITabstripKeymap = {
+  selectNext: string | boolean;
+  selectPrevious: string | boolean;
 };
 
 /**
@@ -24,7 +30,8 @@ export type TabstripEvent =
   | ITabstripSortStartEvent
   | ITabstripSortCompleteEvent
   | ITabstripTabMouseEvent
-  | ITabstripSelectionChangeEvent;
+  | ITabstripSelectionChangeEvent
+  | ITabstripFocusEvent;
 
 export type ITabstripSortStartEvent<D = any> = {
   type: 'TABSTRIP/sort/start';
@@ -70,5 +77,11 @@ export type ITabstripSelectionChangeEvent<D = any> = {
 export type ITabstripSelectionChange<D = any> = {
   from?: number;
   to?: number;
-  data: D;
+  data?: D;
 };
+
+export type ITabstripFocusEvent = {
+  type: 'TABSTRIP/focus';
+  payload: ITabstripFocus;
+};
+export type ITabstripFocus = { isFocused: boolean };

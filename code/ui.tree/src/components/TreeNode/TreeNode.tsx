@@ -45,6 +45,7 @@ export type ITreeNodeProps = {
   twisty?: TreeNodeTwisty;
   theme?: themes.ITreeTheme;
   background?: 'THEME' | 'NONE';
+  isFocused: boolean;
   style?: GlamorValue;
   onMouse?: TreeNodeMouseEventHandler;
 };
@@ -53,19 +54,26 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   /**
    * [Properties]
    */
-  private get theme() {
-    return themes.themeOrDefault(this.props);
-  }
-
   private get nodeProps() {
     const { node } = this.props;
     return node.props || {};
   }
 
+  private get theme() {
+    return themes.themeOrDefault(this.props);
+  }
+
+  private get colors() {
+    const props = this.nodeProps;
+    const colors = props.colors || {};
+    return this.props.isFocused ? { ...colors, ...props.focusColors } : colors;
+  }
+
   private get backgroundColor() {
     const props = this.nodeProps;
-    if (props.bgColor) {
-      return props.bgColor;
+    const color = this.colors;
+    if (color.bg) {
+      return color.bg;
     }
 
     const { background = 'THEME' } = this.props;
@@ -87,6 +95,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   /**
    * [Render]
    */
+
   public render() {
     const props = this.nodeProps;
     const isEnabled = this.isEnabled;
@@ -145,8 +154,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
       }),
     };
 
-    const nodeProps = this.nodeProps;
-    const color = nodeProps.twistyColor || nodeProps.chevronColor || theme.chevronColor;
+    const color = this.colors.twisty || this.colors.chevron || theme.chevronColor;
     const elIcon = twisty !== null && <Icons.PlayArrow size={SIZE.TWISTY_ICON} color={color} />;
     return (
       <div {...styles.base} {...this.twistyHandlers}>
@@ -183,12 +191,13 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     }
 
     if (fn) {
+      const colors = this.colors;
       return (
         <div {...styles.base}>
           {fn({
             style: styles.icon,
             size: SIZE.ICON_LEFT,
-            color: props.iconColor ? color.format(props.iconColor) : theme.labelColor,
+            color: colors.icon ? color.format(colors.icon) : theme.labelColor,
           })}
         </div>
       );
@@ -213,8 +222,8 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
       }),
     };
 
-    const nodeProps = this.nodeProps;
-    const color = nodeProps.chevronColor || theme.chevronColor;
+    const colors = this.colors;
+    const color = colors.chevron || theme.chevronColor;
     const elIcon = iconRight && iconRight({ color });
     const handlers = isActive && this.drillInHandlers;
 
@@ -226,10 +235,9 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   private renderContent() {
-    const { iconRight, renderNodeBody, node } = this.props;
+    const { iconRight, renderNodeBody, node, isFocused } = this.props;
     const props = this.nodeProps;
     const body = props.body;
-
     const styles = {
       base: css({
         flex: 1,
@@ -251,7 +259,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     };
 
     const elSpinner = props.isSpinning && <Spinner color={this.theme.spinner} size={18} />;
-    const elBody = renderNodeBody && body ? renderNodeBody({ body, node }) : undefined;
+    const elBody = renderNodeBody && body ? renderNodeBody({ body, node, isFocused }) : undefined;
     const elLabel = elBody ? elBody : this.renderLabel();
     const elSuffix = elSpinner || this.renderBadge();
 
@@ -272,7 +280,8 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     const { node } = this.props;
     const props = this.nodeProps;
     const label = props.label || node.id;
-    const labelColor = props.labelColor ? color.format(props.labelColor) : theme.labelColor;
+    const colors = this.colors;
+    const labelColor = colors.label ? color.format(colors.label) : theme.labelColor;
     const styles = {
       label: css({
         boxSizing: 'border-box',
@@ -297,10 +306,11 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     }
     const theme = this.theme.node;
     const { iconRight } = this.props;
+    const colors = this.colors;
     const styles = {
       base: css({
         fontSize: 11,
-        color: color.format(props.descriptionColor ? props.descriptionColor : theme.labelColor),
+        color: color.format(colors.description ? colors.description : theme.labelColor),
         lineHeight: '1.5em',
         paddingBottom: 4,
         marginRight: iconRight !== undefined ? SIZE.ICON_RIGHT : MARGIN.LABEL_RIGHT,
@@ -339,10 +349,9 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
 
   private renderBorders() {
     const theme = this.theme.node;
-    const props = this.nodeProps;
-
-    const borderTopColor = themes.color(props.borderTop, theme.borderTopColor);
-    const borderBottomColor = themes.color(props.borderBottom, theme.borderBottomColor);
+    const colors = this.colors;
+    const borderTopColor = themes.color(colors.borderTop, theme.borderTopColor);
+    const borderBottomColor = themes.color(colors.borderBottom, theme.borderBottomColor);
 
     const styles = {
       top: css({

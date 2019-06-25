@@ -7,7 +7,7 @@ export type ITextModifierKeys = {
   meta: boolean;
 };
 
-export interface ITextInputFocus {
+export interface ITextInputFocusAction {
   focusOnLoad?: boolean;
   focusAction?: 'SELECT' | 'END';
 }
@@ -65,7 +65,8 @@ export type TextInputEvent =
   | ITextInputChangingEvent
   | ITextInputChangedEvent
   | ITextInputKeypressEvent
-  | ITextInputMouseEvent;
+  | ITextInputMouseEvent
+  | ITextInputFocusEvent;
 
 export type ITextInputChangingEvent = {
   type: 'TEXT_INPUT/changing';
@@ -95,4 +96,12 @@ export type ITextInputKeypress = {
 export type ITextInputMouseEvent = {
   type: 'TEXT_INPUT/mouse';
   payload: t.MouseEvent;
+};
+
+export type ITextInputFocusEvent = {
+  type: 'TEXT_INPUT/focus';
+  payload: ITextInputFocus;
+};
+export type ITextInputFocus = {
+  isFocused: boolean;
 };

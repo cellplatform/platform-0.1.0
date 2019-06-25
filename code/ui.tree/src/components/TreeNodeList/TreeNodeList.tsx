@@ -26,6 +26,7 @@ export type ITreeNodeListProps = {
   paddingTop?: number;
   isBorderVisible?: boolean;
   isScrollable?: boolean;
+  isFocused: boolean;
   theme?: themes.ITreeTheme;
   background?: 'THEME' | 'NONE';
   style?: GlamorValue;
@@ -41,12 +42,21 @@ type IRenderNodeProps = {
 };
 
 export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
+  /**
+   * [Properties]
+   */
   private get theme() {
     return themes.themeOrDefault(this.props);
   }
 
   private get nodeProps() {
     return this.props.node.props || {};
+  }
+
+  private get colors() {
+    const props = this.nodeProps;
+    const colors = props.colors || {};
+    return this.props.isFocused ? { ...colors, ...props.focusColors } : colors;
   }
 
   private get nodes() {
@@ -59,6 +69,9 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     return depth;
   }
 
+  /**
+   * [Render]
+   */
   public render() {
     const theme = this.theme;
     const { isBorderVisible = false, background = 'THEME' } = this.props;
@@ -161,12 +174,18 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     props = { ...defaultNodeProps, ...props };
 
     // Top/bottom border values.
-    const borderTop = valueUtil.defaultValue(props.borderTop, isFirst ? 'transparent' : undefined);
+    const borderTop = valueUtil.defaultValue(
+      this.colors.borderTop,
+      isFirst ? 'transparent' : undefined,
+    );
     const borderBottom = valueUtil.defaultValue(
-      props.borderBottom,
+      this.colors.borderBottom,
       isLast ? undefined : 'transparent',
     );
-    props = { ...props, borderTop, borderBottom };
+    props = {
+      ...props,
+      colors: { ...props.colors, borderTop, borderBottom },
+    };
 
     // Determine the icons to show.
     const iconRight = this.toRightIcon(props, node.children);
@@ -255,6 +274,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
         twisty={twisty}
         theme={this.theme}
         background={this.props.background}
+        isFocused={this.props.isFocused}
         onMouse={this.props.onNodeMouse}
         children={el}
       />
@@ -273,6 +293,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
         renderIcon={this.props.renderIcon}
         theme={theme}
         background={this.props.background}
+        isFocused={this.props.isFocused}
         isScrollable={false}
         onNodeMouse={this.props.onNodeMouse}
       />
@@ -287,7 +308,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
       props = { ...props, padding: [padding[0], padding[1], padding[2], 0] };
     }
     if (e.isLast) {
-      props = { ...props, borderBottom: 0 };
+      props = { ...props, colors: { ...props.colors, borderBottom: 0 } };
     }
     return props;
   };

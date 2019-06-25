@@ -179,6 +179,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
           renderNodeBody={this.renderNodeBody}
           events$={this.events$}
           mouse$={this.mouse$}
+          tabIndex={0}
         />
       </div>
     );

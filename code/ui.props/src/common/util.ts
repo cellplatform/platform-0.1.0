@@ -19,7 +19,7 @@ export function buildTree(args: {
     const isObject = typeof value === 'object' && !isArray;
     let node: t.IPropNode = formatNode({
       id,
-      props: { label: key.toString(), borderTop: false, borderBottom: false },
+      props: { label: key.toString(), colors: { borderTop: false, borderBottom: false } },
       data: { path: id, key, value },
     });
 

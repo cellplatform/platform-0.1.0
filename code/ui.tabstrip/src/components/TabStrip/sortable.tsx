@@ -11,10 +11,11 @@ export function sortable(args: {
   renderTab: t.TabFactory;
   total: number;
   selected?: number;
+  isFocused: boolean;
   getDraggingTabIndex: () => number;
   events$: Subject<t.TabstripEvent>;
 }) {
-  const { axis, renderTab, total, getDraggingTabIndex, events$ } = args;
+  const { axis, renderTab, total, getDraggingTabIndex, isFocused, events$ } = args;
   const direction = axis === 'y' ? 'vertical' : 'horizontal';
   const isVertical = axis === 'y';
   const isHorizontal = axis === 'x';
@@ -62,6 +63,7 @@ export function sortable(args: {
       isLast,
       isDragging,
       isSelected,
+      isFocused,
     });
     return (
       <div

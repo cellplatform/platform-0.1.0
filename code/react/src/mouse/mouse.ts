@@ -54,6 +54,7 @@ export function fromProps(
 ) {
   const { getEnabled } = args;
   const force = args.force === true ? EVENT_TYPES : Array.isArray(args.force) ? args.force : [];
+
   const prep = (type: MouseEventType, handler?: React.MouseEventHandler) => {
     return handler ? handler : force.includes(type) ? dummy : undefined;
   };
