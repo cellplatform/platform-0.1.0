@@ -24,7 +24,7 @@ export type ITabStripProps<D = any> = {
   isDraggable?: boolean;
   isKeyboardEnabled?: boolean;
   keyMap?: Partial<t.ITabstripKeymap>;
-  tabIndex?: number | null;
+  tabIndex?: number;
   events$?: Subject<t.TabstripEvent>;
   keyPress$?: events.KeypressObservable;
   style?: GlamorValue;
@@ -164,11 +164,11 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
   }
 
   public get tabIndex() {
-    return defaultValue(this.props.tabIndex, 0);
+    return this.props.tabIndex;
   }
 
   public get isFocusable() {
-    return this.tabIndex !== null;
+    return typeof this.tabIndex === 'number';
   }
 
   public get isFocused() {

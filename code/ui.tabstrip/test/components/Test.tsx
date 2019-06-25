@@ -82,7 +82,6 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
             items={items}
             selected={this.state.selected}
             isDraggable={this.state.isDraggable}
-            tabIndex={null}
             renderTab={this.renderTab}
             events$={this.events$}
           />
@@ -110,6 +109,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
           axis={'y'}
           items={items}
           selected={this.state.selected}
+          tabIndex={0}
           isDraggable={this.state.isDraggable}
           renderTab={this.renderTab}
           events$={this.events$}
