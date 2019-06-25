@@ -119,6 +119,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   };
 
   private renderTab: t.TabFactory<t.IMyTab> = e => {
+    const selectedColor = e.isFocused ? BLUE : color.format(-0.4);
+
     const styles = {
       base: css({
         boxSizing: 'border-box',
@@ -131,14 +133,14 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
           PaddingX: 30,
           borderRight: !e.isLast && !e.isDragging ? `solid 1px ${color.format(-0.1)}` : undefined,
           borderBottom: `solid 3px`,
-          borderBottomColor: e.isSelected ? BLUE : 'transparent',
+          borderBottomColor: e.isSelected ? selectedColor : 'transparent',
         }),
       y:
         e.isVertical &&
         css({
           borderBottom: !e.isLast && !e.isDragging ? `solid 1px ${color.format(-0.1)}` : undefined,
-          borderLeft: `solid 3px`,
-          borderLeftColor: e.isSelected ? BLUE : 'transparent',
+          borderLeft: `solid 6px`,
+          borderLeftColor: e.isSelected ? selectedColor : 'transparent',
         }),
     };
     return (

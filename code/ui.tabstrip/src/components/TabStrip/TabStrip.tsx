@@ -2,7 +2,17 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, filter, map, distinctUntilChanged, delay, debounceTime } from 'rxjs/operators';
 
-import { css, defaultValue, GlamorValue, R, s, t, containsFocus } from '../../common';
+import {
+  css,
+  defaultValue,
+  GlamorValue,
+  R,
+  s,
+  t,
+  containsFocus,
+  Keyboard,
+  events,
+} from '../../common';
 import { sortable } from './sortable';
 
 export type ITabStripProps<D = any> = {
@@ -12,8 +22,11 @@ export type ITabStripProps<D = any> = {
   selected?: number;
   dragDebounce?: number;
   isDraggable?: boolean;
+  isKeyboardEnabled?: boolean;
+  keyMap?: Partial<t.ITabstripKeymap>;
   tabIndex?: number | null;
   events$?: Subject<t.TabstripEvent>;
+  keyPress$?: events.KeypressObservable;
   style?: GlamorValue;
 };
 export type ITabStripState = {};
@@ -32,9 +45,15 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
    * [Lifecycle]
    */
   public componentWillMount() {
+    const keyMap = this.keyMap;
+
+    // Setup observables.
+    const keyPress$ = (this.props.keyPress$ || events.keyPress$).pipe(takeUntil(this.unmounted$));
+    const keydown$ = keyPress$.pipe(filter(e => e.isPressed === true));
     const focus$ = this.focus$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+
     const mouse$ = events$.pipe(
       filter(e => e.type === 'TABSTRIP/tab/mouse'),
       map(e => e.payload as t.ITabMouse),
@@ -56,31 +75,22 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
       this.events$.subscribe(this.props.events$);
     }
 
-    // Fire seletion-change when tab is clicked.
+    /**
+     * Mouse interaction.
+     */
     click$
-      .pipe(
-        map(e => {
-          const data = e.data;
-          const from = this.selected;
-          const to = e.index;
-          const payload: t.ITabstripSelectionChange = { from, to, data };
-          return payload;
-        }),
-        distinctUntilChanged((prev, next) => prev.to === next.to),
-      )
-      .subscribe(payload => {
-        this.fire({ type: 'TABSTRIP/tab/selection', payload });
-      });
+      // Fire seletion-change when tab is clicked.
+      .pipe(distinctUntilChanged((prev, next) => prev.index === next.index))
+      .subscribe(e => this.fireSelection(e.index));
 
-    // Fire selection-change when re-ordered.
-    reorder$.pipe(filter(e => e.selected.to !== this.selected)).subscribe(e => {
-      const from = this.selected;
-      const to = e.selected.to;
-      const data = this.data(to);
-      this.fire({ type: 'TABSTRIP/tab/selection', payload: { from, to, data } });
-    });
+    reorder$
+      // Fire selection-change when re-ordered.
+      .pipe(filter(e => e.selected.to !== this.selected))
+      .subscribe(e => this.fireSelection(e.selected.to));
 
-    // Handle focus change.
+    /**
+     * Focus.
+     */
     focus$
       .pipe(
         debounceTime(0),
@@ -89,14 +99,39 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
       .subscribe(e => {
         const isFocused = this.isFocused;
         this.fire({ type: 'TABSTRIP/focus', payload: { isFocused } });
+        this.forceUpdate();
       });
-
     mouse$
       .pipe(
         filter(e => e.type === 'DOWN'),
         delay(0), // NB: Ensure the tabstrip is focused when any tab is clicked.
       )
       .subscribe(e => this.focus());
+
+    /**
+     * Keyboard navigation.
+     */
+    keydown$
+      // Select next.
+      .pipe(
+        filter(() => this.isFocused && this.isKeyboardEnabled),
+        filter(e => Keyboard.matchEvent(keyMap.selectNext, e)),
+      )
+      .subscribe(e => {
+        e.preventDefault();
+        this.selectNext();
+      });
+
+    keydown$
+      // Select previous.
+      .pipe(
+        filter(() => this.isFocused && this.isKeyboardEnabled),
+        filter(e => Keyboard.matchEvent(keyMap.selectPrevious, e)),
+      )
+      .subscribe(e => {
+        e.preventDefault();
+        this.selectPrevious();
+      });
   }
 
   public componentWillUnmount() {
@@ -114,6 +149,10 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
   public get items() {
     const { items = [] } = this.props;
     return items;
+  }
+
+  public get total() {
+    return this.items.length;
   }
 
   public get selected() {
@@ -134,6 +173,18 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
 
   public get isFocused() {
     return containsFocus(this);
+  }
+
+  private get keyMap() {
+    const { keyMap = {} } = this.props;
+    return {
+      selectPrevious: Keyboard.parse(keyMap.selectPrevious, 'ArrowUp'),
+      selectNext: Keyboard.parse(keyMap.selectNext, 'ArrowDown'),
+    };
+  }
+
+  private get isKeyboardEnabled() {
+    return defaultValue(this.props.isKeyboardEnabled, true);
   }
 
   /**
@@ -161,9 +212,26 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
     return index === undefined ? undefined : this.items[index];
   }
 
-  private fire(e: t.TabstripEvent) {
-    this.events$.next(e);
+  public selectNext() {
+    const total = this.total;
+    let to = defaultValue(this.selected, 0) + 1;
+    to = to > total - 1 ? total - 1 : to;
+    this.fireSelection(to);
   }
+
+  public selectPrevious() {
+    let to = defaultValue(this.selected, 0) - 1;
+    to = to < 0 ? 0 : to;
+    this.fireSelection(to);
+  }
+
+  private fire = (e: t.TabstripEvent) => this.events$.next(e);
+
+  private fireSelection = (to?: number) => {
+    const from = this.selected;
+    const data = this.data(to);
+    this.fire({ type: 'TABSTRIP/tab/selection', payload: { from, to, data } });
+  };
 
   /**
    * [Render]
@@ -177,6 +245,7 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
     const total = items.length;
     const events$ = this.events$;
     const tabIndex = typeof this.tabIndex === 'number' ? this.tabIndex : undefined;
+    const isFocused = this.isFocused;
 
     const { List } = sortable({
       axis,
@@ -184,6 +253,7 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
       total,
       selected,
       events$,
+      isFocused,
       getDraggingTabIndex: () => this.draggingTabIndex,
     });
 

@@ -15,6 +15,12 @@ export type TabFactoryArgs<D = any> = {
   isLast: boolean;
   isDragging: boolean;
   isSelected: boolean;
+  isFocused: boolean;
+};
+
+export type ITabstripKeymap = {
+  selectNext: string | boolean;
+  selectPrevious: string | boolean;
 };
 
 /**
@@ -71,7 +77,7 @@ export type ITabstripSelectionChangeEvent<D = any> = {
 export type ITabstripSelectionChange<D = any> = {
   from?: number;
   to?: number;
-  data: D;
+  data?: D;
 };
 
 export type ITabstripFocusEvent = {

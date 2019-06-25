@@ -109,7 +109,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
       });
 
     keydown$
-      // Focus or blur on CMD+L
+      // Focus or blur on key-command.
       .pipe(filter(e => Keyboard.matchEvent(keyMap.focus, e)))
       .subscribe(e => {
         e.preventDefault();
@@ -118,7 +118,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
 
     let historyIndex = -1;
     keydown$
-      // History up ("back").
+      // History ("back") on key-command.
       .pipe(
         filter(e => this.isFocused),
         filter(e => Boolean(this.props.localStorage)),
