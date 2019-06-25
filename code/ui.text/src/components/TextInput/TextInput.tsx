@@ -13,7 +13,7 @@ import {
   time,
   toTextCss,
   util,
-  value as valueUtil,
+  defaultValue,
 } from './common';
 import { DEFAULT_TEXT_STYLE, HtmlInput, IInputValue } from './components/HtmlInput';
 
@@ -22,7 +22,7 @@ const DEFAULT = {
   DISABLED_OPACITY: 0.2,
 };
 
-export type ITextInputProps = t.ITextInputFocus &
+export type ITextInputProps = t.ITextInputFocusAction &
   t.ITextInputEvents &
   IInputValue &
   t.IMouseEventProps & {
@@ -72,7 +72,9 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
   private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITextInputState>>();
   private events$ = new Subject<t.TextInputEvent>();
-  private mouse = mouse.fromProps(this.props, { force: true });
+  private mouse = mouse.fromProps(this.props, {
+    force: ['CLICK', 'DOUBLE_CLICK', 'UP', 'DOWN', 'ENTER', 'LEAVE'],
+  });
 
   private input: HtmlInput;
   private inputRef = (el: HtmlInput) => (this.input = el);
@@ -134,9 +136,13 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
    * [Methods]
    */
 
-  public focus() {
+  public focus(isFocused?: boolean) {
     if (this.input) {
-      this.input.focus();
+      if (defaultValue(isFocused, true)) {
+        this.input.focus();
+      } else {
+        this.blur();
+      }
     }
     return this;
   }
@@ -187,7 +193,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
    */
 
   public render() {
-    const isEnabled = valueUtil.defaultValue(this.props.isEnabled, true);
+    const isEnabled = defaultValue(this.props.isEnabled, true);
     const {
       value = '',
       isPassword = false,
@@ -301,7 +307,7 @@ function toWidth(props: ITextInputProps) {
   }
 
   const value = props.value;
-  const maxWidth = valueUtil.defaultValue(props.maxWidth, -1);
+  const maxWidth = defaultValue(props.maxWidth, -1);
 
   let width = TextInput.measure(props).width;
   width = value === undefined || value === '' ? toMinWidth(props) : width;
@@ -336,7 +342,7 @@ function toInitialWidth(props: ITextInputProps) {
 }
 
 function placeholderStyle(props: ITextInputProps) {
-  const isEnabled = valueUtil.defaultValue(props.isEnabled, true);
+  const isEnabled = defaultValue(props.isEnabled, true);
   const { valueStyle = DEFAULT.VALUE_STYLE, placeholderStyle } = props;
   return util.toTextInputCss(isEnabled, R.merge(R.clone(valueStyle), placeholderStyle));
 }

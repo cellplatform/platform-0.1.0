@@ -22,7 +22,7 @@ export interface IInputValue {
   mask?: t.TextInputMaskHandler;
 }
 
-export interface IHtmlInputProps extends t.ITextInputFocus, t.ITextInputEvents, IInputValue {
+export interface IHtmlInputProps extends t.ITextInputFocusAction, t.ITextInputEvents, IInputValue {
   events$: Subject<t.TextInputEvent>;
   className?: string;
   isEnabled?: boolean;
@@ -228,7 +228,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         autoCorrect={this.props.autoCorrect === false ? 'off' : undefined}
         autoComplete={this.props.autoComplete === false ? 'off' : undefined}
         onFocus={this.handleFocus}
-        onBlur={this.props.onBlur}
+        onBlur={this.handleBlur}
         onKeyPress={this.handleKeyPress}
         onKeyDown={this.handleKeydown}
         onKeyUp={this.handleKeyup}
@@ -273,14 +273,14 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   };
 
   private fireKeyboard = (event: t.TextInputKeyEvent, isPressed: boolean) => {
-    this.props.events$.next({
+    this.fire({
       type: 'TEXT_INPUT/keypress',
-      payload: {
-        key: event.key,
-        isPressed,
-        event,
-      },
+      payload: { key: event.key, isPressed, event },
     });
+  };
+
+  private fire = (event: t.TextInputEvent) => {
+    this.props.events$.next(event);
   };
 
   private toKeyboardEvent = (e: React.KeyboardEvent<HTMLInputElement>): t.TextInputKeyEvent => {
@@ -291,7 +291,6 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
       preventDefault: () => e.preventDefault(),
       stopPropagation: () => e.stopPropagation(),
     };
-
     return event;
   };
 
@@ -344,6 +343,15 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
     if (onFocus) {
       onFocus(e);
     }
+    this.fire({ type: 'TEXT_INPUT/focus', payload: { isFocused: true } });
+  };
+
+  private handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { onBlur } = this.props;
+    if (onBlur) {
+      onBlur(e);
+    }
+    this.fire({ type: 'TEXT_INPUT/focus', payload: { isFocused: false } });
   };
 }
 
