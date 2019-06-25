@@ -57,12 +57,20 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
     }
 
     // Fire seletion-change when tab is clicked.
-    click$.subscribe(e => {
-      const data = e.data;
-      const from = this.selected;
-      const to = e.index;
-      this.fire({ type: 'TABSTRIP/tab/selection', payload: { from, to, data } });
-    });
+    click$
+      .pipe(
+        map(e => {
+          const data = e.data;
+          const from = this.selected;
+          const to = e.index;
+          const payload: t.ITabstripSelectionChange = { from, to, data };
+          return payload;
+        }),
+        distinctUntilChanged((prev, next) => prev.to === next.to),
+      )
+      .subscribe(payload => {
+        this.fire({ type: 'TABSTRIP/tab/selection', payload });
+      });
 
     // Fire selection-change when re-ordered.
     reorder$.pipe(filter(e => e.selected.to !== this.selected)).subscribe(e => {
