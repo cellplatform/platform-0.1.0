@@ -127,4 +127,5 @@ export type RenderTreeNodeBody<T extends ITreeNode = ITreeNode> = (
 export type RenderTreeNodeBodyArgs<T extends ITreeNode = ITreeNode> = {
   body: string;
   node: T;
+  isFocused: boolean;
 };

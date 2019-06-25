@@ -45,6 +45,7 @@ export type ITreeNodeProps = {
   twisty?: TreeNodeTwisty;
   theme?: themes.ITreeTheme;
   background?: 'THEME' | 'NONE';
+  isFocused: boolean;
   style?: GlamorValue;
   onMouse?: TreeNodeMouseEventHandler;
 };
@@ -226,10 +227,9 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   private renderContent() {
-    const { iconRight, renderNodeBody, node } = this.props;
+    const { iconRight, renderNodeBody, node, isFocused } = this.props;
     const props = this.nodeProps;
     const body = props.body;
-
     const styles = {
       base: css({
         flex: 1,
@@ -251,7 +251,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     };
 
     const elSpinner = props.isSpinning && <Spinner color={this.theme.spinner} size={18} />;
-    const elBody = renderNodeBody && body ? renderNodeBody({ body, node }) : undefined;
+    const elBody = renderNodeBody && body ? renderNodeBody({ body, node, isFocused }) : undefined;
     const elLabel = elBody ? elBody : this.renderLabel();
     const elSuffix = elSpinner || this.renderBadge();
 

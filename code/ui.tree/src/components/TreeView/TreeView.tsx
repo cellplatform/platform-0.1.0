@@ -316,6 +316,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         paddingTop={isHeaderVisible ? this.headerHeight : 0}
         isBorderVisible={this.state.isSliding}
         isScrollable={true}
+        isFocused={this.isFocused}
         theme={theme}
         background={this.props.background}
         onNodeMouse={this.handleNodeMouse}
@@ -340,6 +341,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         showParentButton={showParentButton}
         theme={theme}
         background={this.props.background}
+        isFocused={this.isFocused}
         onMouseParent={this.handleNodeMouse}
       />
     );

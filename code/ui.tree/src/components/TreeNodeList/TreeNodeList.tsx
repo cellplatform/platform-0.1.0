@@ -26,6 +26,7 @@ export type ITreeNodeListProps = {
   paddingTop?: number;
   isBorderVisible?: boolean;
   isScrollable?: boolean;
+  isFocused: boolean;
   theme?: themes.ITreeTheme;
   background?: 'THEME' | 'NONE';
   style?: GlamorValue;
@@ -255,6 +256,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
         twisty={twisty}
         theme={this.theme}
         background={this.props.background}
+        isFocused={this.props.isFocused}
         onMouse={this.props.onNodeMouse}
         children={el}
       />
@@ -273,6 +275,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
         renderIcon={this.props.renderIcon}
         theme={theme}
         background={this.props.background}
+        isFocused={this.props.isFocused}
         isScrollable={false}
         onNodeMouse={this.props.onNodeMouse}
       />

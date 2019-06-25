@@ -17,6 +17,7 @@ export interface ITreeHeaderProps {
   showParentButton?: boolean;
   theme?: themes.ITreeTheme;
   background?: 'THEME' | 'NONE';
+  isFocused: boolean;
   style?: GlamorValue;
   onMouseParent?: TreeNodeMouseEventHandler;
 }
