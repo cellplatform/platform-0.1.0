@@ -64,7 +64,9 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   private get colors() {
-    return this.nodeProps.colors || {};
+    const props = this.nodeProps;
+    const colors = props.colors || {};
+    return this.props.isFocused ? { ...colors, ...props.focusColors } : colors;
   }
 
   private get backgroundColor() {
@@ -93,6 +95,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   /**
    * [Render]
    */
+
   public render() {
     const props = this.nodeProps;
     const isEnabled = this.isEnabled;

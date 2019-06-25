@@ -93,6 +93,7 @@ export const COMPREHENSIVE = (() => {
   p(children[16]).chevron = { isVisible: true };
 
   p(children[17]).label = 'Color Props';
+  p(children[17]).chevron = { isVisible: true };
   p(children[17]).colors = {
     label: COLORS.WHITE,
     icon: COLORS.PINK,
@@ -100,8 +101,12 @@ export const COMPREHENSIVE = (() => {
     twisty: COLORS.CYAN,
     chevron: COLORS.PINK,
   };
+  p(children[17]).focusColors = {
+    label: COLORS.WHITE,
+    // icon: COLORS.PINK,
+    bg: COLORS.BLUE,
+  };
   p(children[17]).marginBottom = 80;
-  p(children[17]).chevron = { isVisible: true };
 
   return root;
 })();

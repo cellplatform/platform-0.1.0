@@ -54,7 +54,9 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
   }
 
   private get colors() {
-    return this.nodeProps.colors || {};
+    const props = this.nodeProps;
+    const colors = props.colors || {};
+    return this.props.isFocused ? { ...colors, ...props.focusColors } : colors;
   }
 
   private get nodes() {

@@ -70,6 +70,7 @@ export type ITreeNodeProps = {
   isSelected?: boolean;
 
   colors?: ITreeNodeColors;
+  focusColors?: ITreeNodeColors;
 };
 
 export type ITreeNodeColors = {

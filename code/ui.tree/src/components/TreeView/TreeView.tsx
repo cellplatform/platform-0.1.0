@@ -1,20 +1,20 @@
 import * as React from 'react';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
+  debounceTime,
   delay,
   distinctUntilChanged,
-  debounceTime,
+  filter,
+  map,
+  share,
+  takeUntil,
 } from 'rxjs/operators';
 
 import {
   color,
+  containsFocus,
   css,
+  defaultValue,
   GlamorValue,
   ITreeNode,
   R,
@@ -22,14 +22,12 @@ import {
   tree as treeUtil,
   TreeNodeMouseEvent,
   TreeNodeMouseEventHandler,
-  defaultValue,
-  containsFocus,
 } from '../../common';
+import { TreeEvents } from '../../events';
 import * as themes from '../../themes';
 import { IStackPanel, StackPanel, StackPanelSlideEvent } from '../primitives';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
-import { TreeEvents } from '../../events';
 
 export { TreeNodeMouseEvent, TreeNodeMouseEventHandler };
 export type ITreeViewProps = {
@@ -125,8 +123,8 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
       )
       .subscribe(e => {
         const isFocused = containsFocus(this);
+        this.setState({ isFocused });
         this.fire({ type: 'TREEVIEW/focus', payload: { isFocused } });
-        this.forceUpdate();
       });
     this.mouse$
       .pipe(
