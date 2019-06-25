@@ -192,7 +192,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   }
 
   public get isFocused() {
-    return this.state.isFocused;
+    return Boolean(this.state.isFocused);
   }
 
   /**

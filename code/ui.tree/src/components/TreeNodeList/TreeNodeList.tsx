@@ -42,12 +42,19 @@ type IRenderNodeProps = {
 };
 
 export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
+  /**
+   * [Properties]
+   */
   private get theme() {
     return themes.themeOrDefault(this.props);
   }
 
   private get nodeProps() {
     return this.props.node.props || {};
+  }
+
+  private get colors() {
+    return this.nodeProps.colors || {};
   }
 
   private get nodes() {
@@ -60,6 +67,9 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     return depth;
   }
 
+  /**
+   * [Render]
+   */
   public render() {
     const theme = this.theme;
     const { isBorderVisible = false, background = 'THEME' } = this.props;
@@ -162,12 +172,18 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     props = { ...defaultNodeProps, ...props };
 
     // Top/bottom border values.
-    const borderTop = valueUtil.defaultValue(props.borderTop, isFirst ? 'transparent' : undefined);
+    const borderTop = valueUtil.defaultValue(
+      this.colors.borderTop,
+      isFirst ? 'transparent' : undefined,
+    );
     const borderBottom = valueUtil.defaultValue(
-      props.borderBottom,
+      this.colors.borderBottom,
       isLast ? undefined : 'transparent',
     );
-    props = { ...props, borderTop, borderBottom };
+    props = {
+      ...props,
+      colors: { ...props.colors, borderTop, borderBottom },
+    };
 
     // Determine the icons to show.
     const iconRight = this.toRightIcon(props, node.children);
@@ -290,7 +306,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
       props = { ...props, padding: [padding[0], padding[1], padding[2], 0] };
     }
     if (e.isLast) {
-      props = { ...props, borderBottom: 0 };
+      props = { ...props, colors: { ...props.colors, borderBottom: 0 } };
     }
     return props;
   };
