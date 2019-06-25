@@ -29,7 +29,9 @@ export type ITabStripProps<D = any> = {
   keyPress$?: events.KeypressObservable;
   style?: GlamorValue;
 };
-export type ITabStripState = {};
+export type ITabStripState = {
+  isFocused?: boolean;
+};
 
 export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState> {
   public state: ITabStripState = {};
@@ -98,9 +100,9 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
         distinctUntilChanged((prev, next) => prev === next),
       )
       .subscribe(e => {
-        const isFocused = this.isFocused;
+        const isFocused = containsFocus(this);
+        this.state$.next({ isFocused });
         this.fire({ type: 'TABSTRIP/focus', payload: { isFocused } });
-        this.forceUpdate();
       });
     mouse$
       .pipe(
@@ -173,7 +175,7 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
   }
 
   public get isFocused() {
-    return containsFocus(this);
+    return Boolean(this.state.isFocused);
   }
 
   private get keyMap() {
@@ -336,5 +338,5 @@ export class TabStrip extends React.PureComponent<ITabStripProps, ITabStripState
     this.forceUpdate();
   };
 
-  private handleFocusChange = () => this.focus$.next(this.isFocused);
+  private handleFocusChange = () => this.focus$.next(containsFocus(this));
 }
