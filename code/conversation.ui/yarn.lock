@@ -1043,16 +1043,17 @@
     "@platform/util.value" "0.4.2"
     react-icons "3.7.0"
 
-"@platform/cli.ui@0.2.31":
-  version "0.2.31"
-  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.2.31.tgz#1118185e344943d24d7da4a09e8a61af90eefd47"
-  integrity sha512-6/nkcZq8ibuMrNYJ4t+iO4SG9gsnOaYazZnGo0CggtVmLT9WDven4Ri34uXPykTKbZjDDPHv7nlfQU40tHGbzw==
+"@platform/cli.ui@0.2.32":
+  version "0.2.32"
+  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.2.32.tgz#587286e5548f811d4a9fb7b763256a8745db4a4e"
+  integrity sha512-7SqvSzFAPO1y1NcIw44TERH85lzZbCre9ofm5ttf6pBriVlq1peIZ1iSzkkI78Z0d9wpLWFnbYb3Few6512Pxw==
   dependencies:
     "@platform/cli.spec" "0.1.45"
     "@platform/react" "0.3.10"
     "@platform/ui.panel" "0.0.72"
     "@platform/ui.text" "0.2.23"
-    "@platform/ui.tree" "0.2.8"
+    "@platform/ui.tree" "0.2.9"
+    "@platform/util.animate" "0.0.42"
     "@platform/util.local-storage" "0.0.26"
     "@platform/util.value" "0.4.2"
     react-icons "3.7.0"
@@ -1455,10 +1456,10 @@
     "@platform/ui.spinner" "0.0.73"
     "@platform/ui.text" "0.2.21"
 
-"@platform/ui.tree@0.2.8":
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.8.tgz#292bff3e2315f36ac4017e7d7502c82269eed2a8"
-  integrity sha512-qaDfRD/rKiyza5O1fGkZ11xaV04O2XQeuYICwvi6vda6KaCbFp6o26ZXUbOzng+h13S8quE9JjBI2MDGYCmTVw==
+"@platform/ui.tree@0.2.9":
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.9.tgz#da200dd11baa6a1f8f75765ea8834dac592f2e9b"
+  integrity sha512-RM+9C31yLDFR3iIt2Losz5DC/dQRvlXZVoX4vNXJe/QZ18Qty8kFbESJ9L+djmPHl5YkpteQSzF2/H9DPXkypg==
   dependencies:
     "@platform/css" "0.1.25"
     "@platform/react" "0.3.10"
@@ -1466,6 +1467,15 @@
     "@platform/ui.panel" "0.0.72"
     "@platform/ui.spinner" "0.0.73"
     "@platform/ui.text" "0.2.23"
+    "@platform/util.animate" "^0.0.42"
+
+"@platform/util.animate@0.0.42", "@platform/util.animate@^0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@platform/util.animate/-/util.animate-0.0.42.tgz#9de3861528e6a1003bbb0e55aa11fec3f72873e1"
+  integrity sha512-DUCfyPhpAhHrNF1p1hpjKXHTBjVC+9QAxcfDcHKSIpEMA9VwzYdFUOGFspzoyu7YrXBS6oF2p8g6anHPPsLc5A==
+  dependencies:
+    "@platform/libs" "0.0.18"
+    dynamics.js "1.1.5"
 
 "@platform/util.is@0.0.81":
   version "0.0.81"
@@ -4317,6 +4327,11 @@ duplexer3@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
   integrity sha1-7gHdHKwO08vH/b6jfcCo8c4ALOI=
+
+dynamics.js@1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/dynamics.js/-/dynamics.js-1.1.5.tgz#b90bdc33605cefe652b8416e701f79bf6eefce32"
+  integrity sha1-uQvcM2Bc7+ZSuEFucB95v27vzjI=
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"

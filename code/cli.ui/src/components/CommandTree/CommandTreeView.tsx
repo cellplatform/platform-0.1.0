@@ -150,8 +150,7 @@ export class CommandTreeView extends React.PureComponent<
       // Highlight the current command.
       if (node.id === currentCommandId) {
         const color = this.props.theme === 'DARK' ? COLORS.CLI.CYAN : COLORS.BLUE;
-        p(node).iconColor = color;
-        p(node).labelColor = color;
+        p(node).colors = { ...p(node).colors, icon: color, label: color };
         p(node).description = command.description;
       }
     });
