@@ -36,7 +36,7 @@
     "@platform/graphql.server": "0.1.22",
     "@platform/hyperdb": "0.2.18",
     "@uiharness/dev": "0.5.9",
-    "@uiharness/ui": "0.5.9",
+    "@uiharness/ui": "0.5.10",
     "electron": "5.0.0"
   },
   "resolutions": {

@@ -976,16 +976,17 @@
     "@platform/util.value" "0.4.2"
     minimist "1.2.0"
 
-"@platform/cli.ui@0.2.29":
-  version "0.2.29"
-  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.2.29.tgz#068d680138ae5ac6af41c97f85613b8843c2bd7b"
-  integrity sha512-wT/p0ykBMwibohL5K52Lz5YJCYpXIneVWn6nQmbYa8S71uw8x0f2apZPmIzMFHWjx90KvpJnWJf3O4MXCi5+ig==
+"@platform/cli.ui@0.2.32":
+  version "0.2.32"
+  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.2.32.tgz#587286e5548f811d4a9fb7b763256a8745db4a4e"
+  integrity sha512-7SqvSzFAPO1y1NcIw44TERH85lzZbCre9ofm5ttf6pBriVlq1peIZ1iSzkkI78Z0d9wpLWFnbYb3Few6512Pxw==
   dependencies:
     "@platform/cli.spec" "0.1.45"
     "@platform/react" "0.3.10"
     "@platform/ui.panel" "0.0.72"
-    "@platform/ui.text" "0.2.21"
-    "@platform/ui.tree" "0.2.6"
+    "@platform/ui.text" "0.2.23"
+    "@platform/ui.tree" "0.2.9"
+    "@platform/util.animate" "0.0.42"
     "@platform/util.local-storage" "0.0.26"
     "@platform/util.value" "0.4.2"
     react-icons "3.7.0"
@@ -1217,28 +1218,29 @@
   dependencies:
     "@platform/react" "0.3.10"
 
-"@platform/ui.text@0.2.21":
-  version "0.2.21"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.21.tgz#3ac65cd38afe5de41b474c479669fa425074ec10"
-  integrity sha512-AatHgE3q1+nE2jGG+LZ/5fiMvyxut/hFUy1zMmgJ41zaOBwqZPsWobG62oghOkr/f/bvT5O1XkmhIZtbjoslYA==
+"@platform/ui.text@0.2.23":
+  version "0.2.23"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.23.tgz#cd0f921c30164acf0de79a7cfa9d6cdb988741e0"
+  integrity sha512-bTJomYuBE/snkFqnu12Rlt8mtJqn+eAZFk3UZ4Hdps8DFa92Q/6U6souZusTX/uBZMMtUEuYQewlOkAwmv1xRw==
   dependencies:
     "@platform/libs" "0.0.18"
     "@platform/react" "0.3.10"
     "@platform/util.value" "0.4.2"
 
-"@platform/ui.tree@0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.6.tgz#fffe2eb1a2a901d3aa555d87ecbf81ff859c714e"
-  integrity sha512-NP7BRYgWtA3mA+AoTnHVtmERXPQbKM3K9i5k9QgHml7vf3uMNyvuohIAQO+utfPhAT3mlIuU5NXr5FgJ6nZymA==
+"@platform/ui.tree@0.2.9":
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.9.tgz#da200dd11baa6a1f8f75765ea8834dac592f2e9b"
+  integrity sha512-RM+9C31yLDFR3iIt2Losz5DC/dQRvlXZVoX4vNXJe/QZ18Qty8kFbESJ9L+djmPHl5YkpteQSzF2/H9DPXkypg==
   dependencies:
     "@platform/css" "0.1.25"
     "@platform/react" "0.3.10"
     "@platform/ui.icon" "0.0.74"
     "@platform/ui.panel" "0.0.72"
     "@platform/ui.spinner" "0.0.73"
-    "@platform/ui.text" "0.2.21"
+    "@platform/ui.text" "0.2.23"
+    "@platform/util.animate" "^0.0.42"
 
-"@platform/util.animate@0.0.42":
+"@platform/util.animate@0.0.42", "@platform/util.animate@^0.0.42":
   version "0.0.42"
   resolved "https://registry.yarnpkg.com/@platform/util.animate/-/util.animate-0.0.42.tgz#9de3861528e6a1003bbb0e55aa11fec3f72873e1"
   integrity sha512-DUCfyPhpAhHrNF1p1hpjKXHTBjVC+9QAxcfDcHKSIpEMA9VwzYdFUOGFspzoyu7YrXBS6oF2p8g6anHPPsLc5A==
@@ -1481,12 +1483,12 @@
   resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.5.6.tgz#d5580c682a8eef3173da00f2a7c2234c002d40d9"
   integrity sha512-pAF+dnI/XQVq5Y3563xZMPMU/LGyzxb9g1beY4boJ4tYyBcQa29qVCfUcwQ5588B/w/AQgtdvFhSqUqXhCE44w==
 
-"@uiharness/ui@0.5.9":
-  version "0.5.9"
-  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.5.9.tgz#75ec78134e5d472994abbe5045d6f6485bfb5e99"
-  integrity sha512-inkUAmtH9coHykQN/KaIIGJvm62qImkM0XYwWHuhVu8/rRjIbStkb3uXQMgxCCKNwG0PhWZ21h9L0BWKIGwR2w==
+"@uiharness/ui@0.5.10":
+  version "0.5.10"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.5.10.tgz#6ce94f1e0e49ab132a162a584ac05e5c5f54446c"
+  integrity sha512-yoHnEnfN2pq6PbrasFzvWpT8B4VcILtXyaNTchb6Vw6/vVc0J3qs/ZU+ljBAb9ie77MmfkRQ+/Y3g7MgNXaJsA==
   dependencies:
-    "@platform/cli.ui" "0.2.29"
+    "@platform/cli.ui" "0.2.32"
     "@platform/electron" "0.4.17"
     "@platform/react" "0.3.10"
     "@platform/ui.object" "0.0.130"
@@ -7282,7 +7284,7 @@ set-value@^2.0.0:
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
 
-setimmediate@^1.0.4, setimmediate@^1.0.5:
+setimmediate@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
   integrity sha1-KQy7Iy4waULX1+qbg3Mqt4VvgoU=
