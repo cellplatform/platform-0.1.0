@@ -1,5 +1,4 @@
 export type TreeTheme = 'DARK' | 'LIGHT';
-
 export type ThemeColor = string | number;
 
 export type ITreeTheme = {

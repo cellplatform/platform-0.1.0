@@ -40,7 +40,7 @@ export type ITreeNodeProps = {
   icon?: TreeNodeIcon;
   title?: string; // For <Header> if different from `label`.
   description?: string;
-  descriptionColor?: string | number;
+  // descriptionColor?: string | number;
   opacity?: number;
   padding?: number | number[]; // [top, right, bottom left].
   marginTop?: number;
@@ -67,11 +67,22 @@ export type ITreeNodeProps = {
   isSpinning?: boolean;
   isSelected?: boolean;
 
-  labelColor?: string | number;
-  iconColor?: string | number;
-  bgColor?: string | number; // Explicit BG color overrides the theme's `isSelected` bg color.
-  twistyColor?: string | number;
-  chevronColor?: string | number;
+  color?: ITreeNodeColors;
+
+  // labelColor?: string | number;
+  // iconColor?: string | number;
+  // bgColor?: string | number; // Explicit BG color overrides the theme's `isSelected` bg color.
+  // twistyColor?: string | number;
+  // chevronColor?: string | number;
+};
+
+export type ITreeNodeColors = {
+  label?: string | number;
+  description?: string | number;
+  icon?: string | number;
+  bg?: string | number; // Explicit BG color overrides the theme's `isSelected` bg color.
+  twisty?: string | number;
+  chevron?: string | number;
 };
 
 /**

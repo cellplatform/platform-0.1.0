@@ -53,6 +53,7 @@ export type ITreeViewState = {
   renderedPath?: ITreeNode[];
   index?: number;
   isSliding?: boolean;
+  isFocused?: boolean;
 };
 
 const HEADER_HEIGHT = 36;
@@ -123,7 +124,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         distinctUntilChanged((prev, next) => prev === next),
       )
       .subscribe(e => {
-        const isFocused = this.isFocused;
+        const isFocused = containsFocus(this);
         this.fire({ type: 'TREEVIEW/focus', payload: { isFocused } });
         this.forceUpdate();
       });
@@ -191,7 +192,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   }
 
   public get isFocused() {
-    return containsFocus(this);
+    return this.state.isFocused;
   }
 
   /**
@@ -387,5 +388,5 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     this.setState({ isSliding });
   };
 
-  private handleFocusChange = () => this.focus$.next(this.isFocused);
+  private handleFocusChange = () => this.focus$.next(containsFocus(this));
 }
