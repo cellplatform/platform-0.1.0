@@ -1,0 +1,19 @@
+name: ui.mapbox
+
+electron:
+  port: 9759
+  entry:
+    main: test/main.ts
+    renderer: 
+      default: test/renderer.tsx
+
+
+web:
+  port: 1234
+  entry: test/web.tsx
+
+
+sourcemaps:
+  strip:
+    - node_modules/rxjs
+
