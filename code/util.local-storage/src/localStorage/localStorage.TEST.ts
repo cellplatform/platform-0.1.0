@@ -2,9 +2,15 @@ import { expect } from 'chai';
 import { localStorage } from '.';
 import * as t from '../types';
 
-export type IMyObject = { message: string; count: number; obj: { force?: boolean } | undefined };
+export type IMyObject = {
+  count: number;
+  width: number;
+  message: string;
+  obj: { force?: boolean } | undefined;
+};
 const config = {
   count: { default: 0, key: 'KEY/count' },
+  width: { default: 350, key: 'KEY/width' },
   message: 'KEY/message',
   obj: { default: { force: true } },
 };
@@ -40,6 +46,7 @@ describe('localStorage', () => {
     const local = localStorage<IMyObject>(config, { provider });
 
     expect(local.count).to.eql(123);
+    expect(local.width).to.eql(350);
     expect(local.message).to.eql('hello');
     expect(local.obj).to.eql({ force: true });
   });
@@ -49,9 +56,11 @@ describe('localStorage', () => {
     const local = localStorage<IMyObject>(config, { provider });
 
     local.count = 888;
+    local.width = 0;
     local.message = 'foo';
 
     expect(local.count).to.eql(888);
+    expect(local.width).to.eql(0);
     expect(local.message).to.eql('foo');
   });
 
@@ -77,7 +86,12 @@ describe('localStorage', () => {
       'FOO/message': 'hello',
     });
     const local = localStorage<IMyObject>(
-      { message: { default: '' }, count: { default: 0 }, obj: { default: { force: true } } },
+      {
+        message: { default: '' },
+        count: { default: 0 },
+        width: { default: 350 },
+        obj: { default: { force: true } },
+      },
       { provider, prefix: 'FOO/' },
     );
 
