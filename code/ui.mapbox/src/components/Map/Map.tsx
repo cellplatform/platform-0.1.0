@@ -54,6 +54,13 @@ export class Map extends React.PureComponent<IMapProps, IMapState> {
   }
 
   /**
+   * [Properties]
+   */
+  public get mapStyle() {
+    return this.map.getStyle();
+  }
+
+  /**
    * [Render]
    */
   public render() {
