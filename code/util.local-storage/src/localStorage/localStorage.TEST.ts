@@ -26,6 +26,7 @@ const initial = {
 const testProvider = (initial?: t.IJsonMap) => {
   const data = initial ? { ...initial } : {};
   const provider: t.ILocalStorageProvider = {
+    type: 'TEST',
     get(key: string) {
       return data[key];
     },

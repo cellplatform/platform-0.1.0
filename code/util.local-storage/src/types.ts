@@ -16,6 +16,7 @@ export type ILocalStorage<P extends ILocalStorageProps<P>> = ILocalStorageProps<
 };
 
 export type ILocalStorageProvider = {
+  type: string;
   get(key: string): Json | undefined;
   set(key: string, value: Json): Json | undefined;
   delete(key: string): void;

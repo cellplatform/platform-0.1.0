@@ -105,11 +105,12 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
  * [Helpers]
  */
 const defaultStorage: t.ILocalStorageProvider = {
+  type: 'browser',
   get(key: string) {
     try {
       const json = is.browser ? window.localStorage.getItem(key) : undefined;
       const value = json ? JSON.parse(json).value : undefined;
-      return value ? valueUtil.toType(value) : undefined;
+      return value === undefined ? undefined : valueUtil.toType(value);
     } catch (error) {
       throw new Error(`Failed while de-serializing localStorage JSON for key '${key}'.`);
     }
