@@ -17,7 +17,7 @@ const DEFAULT = {
 
 export type IMapProps = {
   accessToken: string;
-  mapStyle?: mapboxgl.Style | string;
+  mapStyle?: mapboxgl.Style | string; // https://docs.mapbox.com/api/maps/#styles
   style?: GlamorValue;
 };
 export type IMapState = {};
@@ -54,11 +54,6 @@ export class Map extends React.PureComponent<IMapProps, IMapState> {
    * [Render]
    */
   public render() {
-    const styles = {
-      base: css({
-        flex: 1,
-      }),
-    };
-    return <div ref={this.elRef} {...css(styles.base, this.props.style)} />;
+    return <div ref={this.elRef} {...css(this.props.style)} />;
   }
 }

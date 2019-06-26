@@ -31,17 +31,11 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public render() {
     const styles = {
-      base: css({
-        flex: 1,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-        display: 'flex',
-      }),
+      map: css({ flex: 1 }),
     };
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
-        <div {...styles.base}>
-          <Map accessToken={ACCESS_TOKEN} />
-        </div>
+        <Map accessToken={ACCESS_TOKEN} style={styles.map} />
       </CommandShell>
     );
   }
