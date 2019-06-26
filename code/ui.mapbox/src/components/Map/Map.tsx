@@ -1,6 +1,9 @@
 /**
  * Documentation:
- *  - https://docs.mapbox.com/mapbox-gl-js/overview/
+ *  - https://docs.mapbox.com/mapbox-gl-js/overview
+ *
+ * API Explorer:
+ *  - https://docs.mapbox.com/api-playground/#/?_k=dmxd1m
  */
 
 import '../../styles';
