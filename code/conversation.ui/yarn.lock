@@ -1044,6 +1044,21 @@
     "@platform/util.value" "0.4.2"
     react-icons "3.7.0"
 
+"@platform/cli.ui@0.2.33":
+  version "0.2.33"
+  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.2.33.tgz#5dfc019cf992dc6bdc73e60f2c61abbfc4f09624"
+  integrity sha512-DidhbebUY5puwoav6n7Sgraln+p0ANY3inJkBR28LSrR4V+9i0fUVYGHKHme1+/ilGnhbsKZ+V6txznVf+HwWA==
+  dependencies:
+    "@platform/cli.spec" "0.1.45"
+    "@platform/react" "0.3.10"
+    "@platform/ui.panel" "0.0.72"
+    "@platform/ui.text" "0.2.23"
+    "@platform/ui.tree" "0.2.9"
+    "@platform/util.animate" "0.0.42"
+    "@platform/util.local-storage" "0.0.27"
+    "@platform/util.value" "0.4.2"
+    react-icons "3.7.0"
+
 "@platform/cli@0.1.11":
   version "0.1.11"
   resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.1.11.tgz#79f0fd40cc0920af227ba23f97396579ff258d29"
@@ -1451,6 +1466,13 @@
   version "0.0.26"
   resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.26.tgz#4fbfffc47784a839c63688416031f2041e3a60c3"
   integrity sha512-Gc/MOPATk7ugi5Nm7pu/6iQoKTH31QDGSatLGA2wJgfgcFjcgN47lYy6HPPwTXwsUAzZDx5vV4F+WrSaXFBxIQ==
+  dependencies:
+    "@platform/util.value" "0.4.2"
+
+"@platform/util.local-storage@0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.27.tgz#a3c0b551a84ec5104f37bb7b06707291868e4c20"
+  integrity sha512-3DGwZjOehCeCeGG2P5Sl7+hKfA8UYWnyMeiUhh1SyaFUvuoWB5uwZdp4QwYpCUm/tBQ6mpzHpdMz9+xkS5MNrw==
   dependencies:
     "@platform/util.value" "0.4.2"
 
