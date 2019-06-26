@@ -16,7 +16,7 @@
 
 ## Refs
 
-- [mapbox-gl-js](https://docs.mapbox.com/mapbox-gl-js/overview/)
+- [mapbox-gl-js](https://docs.mapbox.com/mapbox-gl-js/overview/) documentation
 
 
 <p>&nbsp;<p>

@@ -15,7 +15,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.3.10"
+    "@platform/react": "0.3.10",
+    "@types/mapbox-gl": "0.51.7",
+    "mapbox-gl": "1.1.0-beta.2"
   },
   "devDependencies": {
     "@uiharness/dev": "0.5.9",
