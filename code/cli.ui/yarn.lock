@@ -1226,6 +1226,13 @@
   dependencies:
     "@platform/util.value" "0.4.2"
 
+"@platform/util.local-storage@0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.27.tgz#a3c0b551a84ec5104f37bb7b06707291868e4c20"
+  integrity sha512-3DGwZjOehCeCeGG2P5Sl7+hKfA8UYWnyMeiUhh1SyaFUvuoWB5uwZdp4QwYpCUm/tBQ6mpzHpdMz9+xkS5MNrw==
+  dependencies:
+    "@platform/util.value" "0.4.2"
+
 "@platform/util.string@0.2.3", "@platform/util.string@^0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.2.3.tgz#6d989662ac83cca30dff57d6b131649a192c5aed"
