@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter, map } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { Button } from '../Button';
 import { color, css, defaultValue, GlamorValue, mouse, R, t } from '../common';

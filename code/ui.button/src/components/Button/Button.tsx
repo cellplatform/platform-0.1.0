@@ -41,7 +41,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
     getEnabled: () => boolean,
   ) {
     const res = mouse.fromProps(props, {
-      force: ['DOWN', 'UP', 'ENTER', 'LEAVE'],
+      force: true,
       getEnabled,
     });
 
