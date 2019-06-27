@@ -1360,10 +1360,10 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.19.tgz#dc9322295802c16331d5ecc13ddd77112aa0781e"
   integrity sha512-NDeHId8ZnShETmBfbHdQVRYkFhtSb6Fx7N02WvlWliSMRm/QyxWoyTLp9gzqG5JnkoJDOS+5JRVsKzO1Z+BFkQ==
 
-"@platform/ui.button@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.2.5.tgz#0ccc85efb8fb7ae691b92cde90c815e15120d040"
-  integrity sha512-iugtLtndTl4bQ61PTSbV8kiJAz2HisYmwfmubFV2HtNInlQC6KbFWEu+Q3bi8e0s1UvkejRvnf8A4rPfmJc13A==
+"@platform/ui.button@0.2.6":
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.2.6.tgz#ce2cecc60f19854052136695c4ebe60c02b832a2"
+  integrity sha512-PlCExTCvslL8mAxBLFywbtqvQIjk44YO34XDPwk2O62Q4KmJ7pzuZWXG1Ir6xWplquHcbFe07pHqGvqpMYw+Sg==
   dependencies:
     "@platform/libs" "^0.0.18"
     "@platform/react" "0.3.10"
