@@ -16,6 +16,7 @@ export type IButtonProps = mouse.IMouseEventProps & {
   downTheme?: Partial<t.IButtonTheme>;
   margin?: string | number | Array<string | number | null>;
   minWidth?: number;
+  events$?: Subject<t.ButtonEvent>;
   style?: GlamorValue;
 };
 
@@ -63,15 +64,29 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
   public state: IButtonState = {};
   private unmounted$ = new Subject<{}>();
   private state$ = new Subject<IButtonState>();
+  private events$ = new Subject<t.ButtonEvent>();
   private mouse: mouse.IMouseHandlers;
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
+    // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+
+    // Bubble events through given observable.
+    if (this.props.events$) {
+      events$.subscribe(this.props.events$);
+    }
+
+    // Update state.
     state$.subscribe(e => this.setState(e));
+
+    // Setup mouse.
     this.mouse = Button.mouseState(this.props, this.state$, this.unmounted$, () => this.isEnabled);
+    const mouse$ = this.mouse.events$.pipe(takeUntil(this.unmounted$));
+    mouse$.subscribe(e => this.fire({ type: 'BUTTON/mouse', payload: { ...e, id: this.id } }));
   }
 
   public componentWillUnmount() {
@@ -82,6 +97,10 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
   /**
    * [Properties]
    */
+  public get id() {
+    return this.props.id || '';
+  }
+
   public get isEnabled() {
     return defaultValue(this.props.isEnabled, true);
   }
@@ -93,6 +112,13 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
     const downTheme = defaultValue(this.props.downTheme, overTheme);
     const current = isDown ? downTheme : isOver ? overTheme : theme;
     return ButtonTheme.merge(ButtonTheme.BASE, current || {});
+  }
+
+  /**
+   * [Methods]
+   */
+  private fire(e: t.ButtonEvent) {
+    this.events$.next(e);
   }
 
   /**
