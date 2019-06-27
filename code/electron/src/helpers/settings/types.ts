@@ -7,7 +7,7 @@ import { IJsonMap } from '@platform/types';
  * that works on either the [main] or [renderer] processes.
  */
 export type ISettingsClient<T extends SettingsJson = any> = {
-  change$: Observable<ISettingsChange>;
+  change$: Observable<ISettingsChange<T>>;
 
   read: (...keys: Array<keyof T>) => Promise<Partial<T>>;
   write: (...values: Array<ISettingsKeyValue<T>>) => Promise<ISettingsSetValuesResponse>;
@@ -67,14 +67,14 @@ export type SettingsEvent =
   | ISettingsSetValuesEvent
   | IOpenSettingsFileInEditorEvent;
 
-export type ISettingsChange = {
-  keys: string[];
-  values: SettingsJson;
-  action: SettingsSetAction;
-};
-export type ISettingsChangeEvent = {
+export type ISettingsChangeEvent<T extends SettingsJson = any> = {
   type: '@platform/SETTINGS/change';
-  payload: ISettingsChange;
+  payload: ISettingsChange<T>;
+};
+export type ISettingsChange<T extends SettingsJson = any> = {
+  keys: Array<keyof T>;
+  values: T;
+  action: SettingsSetAction;
 };
 
 export type ISettingsGetKeysEvent = {

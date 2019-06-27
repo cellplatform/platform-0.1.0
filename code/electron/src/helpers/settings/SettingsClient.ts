@@ -20,7 +20,7 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
   public isDisposed = false;
-  public readonly change$: Observable<t.ISettingsChange>;
+  public readonly change$: Observable<t.ISettingsChange<T>>;
 
   /**
    * [Constructor]
