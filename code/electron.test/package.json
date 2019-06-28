@@ -1,7 +1,7 @@
 {
   "name": "electron.test",
   "description": "External testing module for [@platform/election].",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "scripts": {
     "postinstall": "ui init",
     "ui": "ui $@",
@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@platform/ts": "3.4.32",
-    "@uiharness/dev": "0.5.9",
+    "@uiharness/dev": "0.5.10",
     "@uiharness/electron": "0.5.6",
     "electron": "5.0.5"
   },
