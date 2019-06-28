@@ -16,6 +16,7 @@ export type IButtonProps = mouse.IMouseEventProps & {
   downTheme?: Partial<t.IButtonTheme>;
   margin?: string | number | Array<string | number | null>;
   minWidth?: number;
+  tooltip?: string;
   events$?: Subject<t.ButtonEvent>;
   style?: GlamorValue;
 };
@@ -164,7 +165,11 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
     };
 
     return (
-      <div {...css(styles.base, styles.border, this.props.style)} {...this.mouse.events}>
+      <div
+        {...css(styles.base, styles.border, this.props.style)}
+        {...this.mouse.events}
+        title={this.props.tooltip}
+      >
         <div {...styles.inner}>
           <div {...styles.content}>
             {this.props.label}

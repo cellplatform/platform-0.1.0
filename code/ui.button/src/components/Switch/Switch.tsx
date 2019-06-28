@@ -12,6 +12,7 @@ export type ISwitchProps = mouse.IMouseEventProps & {
   width?: number;
   height?: number;
   isEnabled?: boolean;
+  tooltip?: string;
   track?: Partial<t.ISwitchTrack>;
   thumb?: Partial<t.ISwitchThumb>;
   theme?: t.SwitchThemeName | Partial<t.ISwitchTheme>;
@@ -194,7 +195,11 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
       }),
     };
     return (
-      <div {...css(styles.base, this.props.style)} {...this.mouse.events}>
+      <div
+        {...css(styles.base, this.props.style)}
+        {...this.mouse.events}
+        title={this.props.tooltip}
+      >
         {this.renderTrack()}
         {this.renderThumb()}
       </div>
