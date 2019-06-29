@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.button",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Button components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

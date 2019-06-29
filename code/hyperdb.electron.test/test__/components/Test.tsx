@@ -1,5 +1,5 @@
 import '../../node_modules/@platform/css/reset.css';
-import '@babel/polyfill';
+import '@platform/libs/polyfill';
 
 import { Button, ObjectView } from '@uiharness/ui';
 import * as React from 'react';

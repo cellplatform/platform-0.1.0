@@ -95,10 +95,10 @@
     is-electron "2.2.0"
     minimist "1.2.0"
 
-"@platform/electron@0.4.19":
-  version "0.4.19"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.19.tgz#0100f3fe41621a92c6bc02a29b336b1fb9516f77"
-  integrity sha512-vlaBHjWXIewQpDvrFpQ/fiwP3MvHUYtU/KIFaSRLj8w+KAsEbFRYPkUsmp9Nwsi9xXvomylax21AyADNSbcR0Q==
+"@platform/electron@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.5.0.tgz#9fd1c45d5c62843324f8c7182df7262ca75d7a1a"
+  integrity sha512-OTYJelPTlmPsUse9+OOq9riMrtSC3HWjm1kDQLOJ6MJ6KrMqW6twvYhYD177ToNrQH8FXjT6NnLdiIJkqzkJRA==
   dependencies:
     "@platform/fs" "0.1.5"
     "@platform/libs" "^0.0.18"
