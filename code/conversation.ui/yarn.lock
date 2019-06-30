@@ -1044,16 +1044,16 @@
     "@platform/util.value" "0.4.2"
     react-icons "3.7.0"
 
-"@platform/cli.ui@0.2.34":
-  version "0.2.34"
-  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.2.34.tgz#e4f4091a1cda2e6b7e4702c526483dfc4b338713"
-  integrity sha512-iyDRrWKKo5RzNPtPN2qZ8YKUIiXnZorxLvMakop65TCxU3f/A0/RMjphb7NqvYW9z7MMR8SjtF31B56N7AmKeA==
+"@platform/cli.ui@0.2.35":
+  version "0.2.35"
+  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.2.35.tgz#0965f791e8c394bbd89a07f1ee9156be4041fe00"
+  integrity sha512-h66jfhOnnpNcXrNhIhLDPpt8FnQIEZyjP7MwgCS3KtnbhV30BUfxLpppYBl0r3hPfK1Q95q3DQwf2BKPuUOWqQ==
   dependencies:
     "@platform/cli.spec" "0.1.45"
     "@platform/react" "0.3.10"
     "@platform/ui.panel" "0.0.72"
     "@platform/ui.text" "0.2.23"
-    "@platform/ui.tree" "0.2.9"
+    "@platform/ui.tree" "0.2.10"
     "@platform/util.animate" "0.0.42"
     "@platform/util.local-storage" "0.0.27"
     "@platform/util.value" "0.4.2"
@@ -1419,6 +1419,9 @@
   version "0.0.72"
   resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.0.72.tgz#afbd777439d8e9b06d4992417147907dcc21ddbd"
   integrity sha512-m4fW2YC5nuSapQ8ucHIXsfZ1ulh5Sch0mo3oW+9Wolmzh2u6EhdXww4x4JBiGNxQvNEjy89OKmpMEmZw0bgMcA==
+  dependencies:
+    "@platform/react" "0.3.10"
+    "@platform/util.animate" "0.0.42"
 
 "@platform/ui.spinner@0.0.73":
   version "0.0.73"
@@ -1435,6 +1438,19 @@
     "@platform/libs" "0.0.18"
     "@platform/react" "0.3.10"
     "@platform/util.value" "0.4.2"
+
+"@platform/ui.tree@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.10.tgz#b993b8764dae7e6e210d0b87f297e4f171606a0c"
+  integrity sha512-kxnx7XmwDoPmMqpgtJXFXfrMX2qrp2bAm6MzqdSBop1Xj0vKv2l080Dz5LzDJPnPKVTb17+18DYuKRa03//RNQ==
+  dependencies:
+    "@platform/css" "0.1.25"
+    "@platform/react" "0.3.10"
+    "@platform/ui.icon" "0.0.74"
+    "@platform/ui.panel" "0.0.72"
+    "@platform/ui.spinner" "0.0.73"
+    "@platform/ui.text" "0.2.23"
+    "@platform/util.animate" "^0.0.42"
 
 "@platform/ui.tree@0.2.9":
   version "0.2.9"
@@ -6385,6 +6401,10 @@ k-rpc-socket@^1.7.2:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/k-rpc-socket/-/k-rpc-socket-1.8.0.tgz#9a4dd6a4f3795ed847ffa156579cc389990bd1f2"
   integrity sha512-f/9TynsO8YYjZ6JjNNtSSH7CJcIHcio1buy3zqByGxb/GX8AWLdL6FZEWTrN8V3/J7W4/E0ZTQQ+Jt2rVq7ELg==
+  dependencies:
+    bencode "^2.0.0"
+    buffer-equals "^1.0.4"
+    safe-buffer "^5.1.1"
 
 k-rpc@^4.2.1:
   version "4.3.1"
@@ -8014,6 +8034,10 @@ postcss-normalize-timing-functions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/postcss-normalize-timing-functions/-/postcss-normalize-timing-functions-4.0.2.tgz#8e009ca2a3949cdaf8ad23e6b6ab99cb5e7d28d9"
   integrity sha512-acwJY95edP762e++00Ehq9L4sZCEcOPyaHwoaFOhIwWCDfik6YvqsYNxckee65JHLKzuNSSmAdxwD2Cud1Z54A==
+  dependencies:
+    cssnano-util-get-match "^4.0.0"
+    postcss "^7.0.0"
+    postcss-value-parser "^3.0.0"
 
 postcss-normalize-unicode@^4.0.1:
   version "4.0.1"
@@ -9918,6 +9942,8 @@ timers-browserify@^2.0.4:
   version "2.0.10"
   resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.10.tgz#1d28e3d2aadf1d5a5996c4e9f95601cd053480ae"
   integrity sha512-YvC1SV1XdOUaL6gx5CoGroT3Gu49pK9+TZ38ErPldOWW4j49GI1HKs9DV+KGq/w6y+LZ72W1c8cKz2vzY+qpzg==
+  dependencies:
+    setimmediate "^1.0.4"
 
 timsort@^0.3.0:
   version "0.3.0"
