@@ -3,7 +3,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { css, CommandShell, t, Map, ACCESS_TOKEN } from '../common';
+import { css, CommandShell, t, Map } from '../common';
+import { TOKEN } from '../TOKEN';
+
+/**
+ * token name:        @platform/ui.mapbox
+ * manage:            https://account.mapbox.com/access-tokens
+ * url restrictions:  http://localhost
+ */
 
 export type ITestProps = {};
 
@@ -33,9 +40,13 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const styles = {
       map: css({ flex: 1 }),
     };
+
+    // const accessToken =
+    //   'pk.eyJ1IjoicGhpbGNvY2tmaWVsZCIsImEiOiJjanhpYmg5bTgxZ2FjM29wNmZweG1qc2FzIn0.EBTWmmKgxg9jXKXJw7KIlQ';
+
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
-        <Map accessToken={ACCESS_TOKEN} style={styles.map} />
+        <Map accessToken={TOKEN} style={styles.map} />
       </CommandShell>
     );
   }

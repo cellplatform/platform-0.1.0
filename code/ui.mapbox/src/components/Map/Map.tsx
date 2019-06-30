@@ -4,10 +4,15 @@
  *
  * API Explorer:
  *  - https://docs.mapbox.com/api-playground/#/?_k=dmxd1m
+ *
+ * Manage:
+ *  - https://account.mapbox.com/access-tokens
  */
 
 import '../../styles';
 const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
+
+console.log('process', process);
 
 import * as React from 'react';
 import { Subject } from 'rxjs';
@@ -43,8 +48,8 @@ export class Map extends React.PureComponent<IMapProps, IMapState> {
   }
 
   public componentDidMount() {
-    const { mapStyle = DEFAULT.MAP_STYLE } = this.props;
-    mapboxgl.accessToken = this.props.accessToken;
+    const { mapStyle = DEFAULT.MAP_STYLE, accessToken } = this.props;
+    mapboxgl.accessToken = accessToken;
     this.map = new mapboxgl.Map({ container: this.el, style: mapStyle });
   }
 

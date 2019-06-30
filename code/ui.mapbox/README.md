@@ -11,6 +11,24 @@
 
     yarn add @platform/ui.mapbox
 
+If you experience issues with parceljs bundling, try adding the contents of [`.babelrc`](./.babelrc). 
+See [issue](https://github.com/parcel-bundler/parcel/issues/1128#issuecomment-497251288).
+
+<p>&nbsp;<p>
+
+## Token
+Include a file at `/test/TOKEN.ts` containing your mapbox access-token:
+
+```typescript
+/**
+ * manage:  https://account.mapbox.com/access-tokens
+ */
+export const TOKEN = '...';
+
+```
+NB: This is excluded from the repo for obvious reasons.  
+Get your own token at https://account.mapbox.com/access-tokens
+
 
 <p>&nbsp;<p>
 
