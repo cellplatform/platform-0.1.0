@@ -7,45 +7,57 @@ import { COLORS } from './constants';
  */
 export function buildTree(args: {
   data?: t.PropsData;
+  filter?: t.PropFilter;
   parent: t.IPropNode;
   root: t.IPropNode;
   formatNode: (node: t.IPropNode) => t.IPropNode;
 }): t.IPropNode {
-  const { data, root, formatNode } = args;
+  const { data, root, formatNode, filter } = args;
   let parent = args.parent;
 
   const createNode = (id: string, key: string | number, value: any) => {
+    const data = { path: id, key, value, type: getType(value) };
+
+    if (filter && !filter(data)) {
+      return undefined;
+    }
+
     const isArray = Array.isArray(value);
     const isObject = typeof value === 'object' && !isArray;
     let node: t.IPropNode = formatNode({
       id,
       props: { label: key.toString(), colors: { borderTop: false, borderBottom: false } },
-      data: { path: id, key, value },
+      data,
     });
 
     if (isObject || isArray) {
       const parent = node;
       const data = value;
-      node = buildTree({ data, parent, root, formatNode }); // <== RECURSION
+      node = buildTree({ data, parent, root, formatNode, filter }); // <== RECURSION
     }
 
     return node;
   };
 
   if (Array.isArray(data)) {
-    const children = data.map((value, index) => {
-      const id = `${parent.id}.[${index}]`;
-      return createNode(id, index, value);
-    });
+    const children = data
+      .map((value, index) => {
+        const id = `${parent.id}.[${index}]`;
+        return createNode(id, index, value) as t.IPropNode;
+      })
+      .filter(e => Boolean(e));
     parent = { ...parent, children };
   }
 
   if (typeof data === 'object' && !Array.isArray(data)) {
-    const children = Object.keys(data).map(key => {
-      const id = `${parent.id}.${key}`;
-      const value = data[key];
-      return createNode(id, key, value);
-    });
+    const children = Object.keys(data)
+      .map(key => {
+        const id = `${parent.id}.${key}`;
+        const value = data[key];
+        return createNode(id, key, value) as t.IPropNode;
+      })
+      .filter(e => Boolean(e));
+
     parent = { ...parent, children };
   }
 
@@ -55,7 +67,7 @@ export function buildTree(args: {
 /**
  * Get the type of the given value.
  */
-export function getType(value: t.PropValue) {
+export function getType(value: t.PropValue): t.PropType {
   if (value === null) {
     return 'null';
   }

@@ -10,13 +10,14 @@ export const OBJECT = {
   message: 'Hello',
   reallyLongKey: 'foo',
   count: 123,
-  foo: { isEnabled: true, color: 'PINK' },
+  foo: { isEnabled: true, color: 'PINK', isFiltered: 'WILL NOT SHOW', hide: true },
   list: ['one', 2, true, { foo: 456 }],
   anon: () => true,
   run: myFunc,
   isEnabled: true,
   custom: { foo: 123 },
   'custom-props': 42,
+  isFiltered: 'WILL NOT SHOW',
 };
 
 export const ARRAY = [
