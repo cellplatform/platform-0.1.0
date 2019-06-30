@@ -4,18 +4,17 @@ import { IDate } from './types';
 /**
  * Helpers for working with
  */
-export function utc(input?: Date | number) {
-  const date =
-    input === undefined ? new Date() : typeof input === 'object' ? input : new Date(input);
+export function utc(input?: number | string | Date | day.Dayjs) {
+  const date = day(input);
   const res: IDate = {
     get date() {
-      return date;
+      return date.toDate();
     },
     get timestamp() {
-      return date.getTime();
+      return date.toDate().getTime();
     },
     get unix() {
-      return day(date).unix();
+      return date.unix();
     },
   };
   return res;

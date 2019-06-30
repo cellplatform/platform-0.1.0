@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { Version, version } from '.';
 
-describe.only('Version', () => {
+describe('Version', () => {
   it('has version value', () => {
     const res = version('0.1.2');
     expect(res.raw).to.eql('0.1.2');
