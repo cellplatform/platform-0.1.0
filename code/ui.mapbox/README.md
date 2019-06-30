@@ -11,7 +11,7 @@
 
     yarn add @platform/ui.mapbox
 
-If you experience issues with parceljs bundling, try adding the contents of [`.babelrc`](./.babelrc). 
+If you experience issues with parceljs bundling, try adding the contents of [`.babelrc`](./.babelrc).  
 See [issue](https://github.com/parcel-bundler/parcel/issues/1128#issuecomment-497251288).
 
 <p>&nbsp;<p>

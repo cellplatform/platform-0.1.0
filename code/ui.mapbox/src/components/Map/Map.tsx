@@ -12,12 +12,10 @@
 import '../../styles';
 const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
-console.log('process', process);
-
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, GlamorValue } from '../../common';
+import { css, GlamorValue, t } from '../../common';
 
 const DEFAULT = {
   MAP_STYLE: 'mapbox://styles/mapbox/streets-v11',
@@ -25,7 +23,9 @@ const DEFAULT = {
 
 export type IMapProps = {
   accessToken: string;
+  center?: mapboxgl.LngLatLike;
   mapStyle?: mapboxgl.Style | string; // https://docs.mapbox.com/api/maps/#styles
+  zoom?: number;
   style?: GlamorValue;
 };
 export type IMapState = {};
@@ -48,9 +48,15 @@ export class Map extends React.PureComponent<IMapProps, IMapState> {
   }
 
   public componentDidMount() {
-    const { mapStyle = DEFAULT.MAP_STYLE, accessToken } = this.props;
+    const { mapStyle = DEFAULT.MAP_STYLE, accessToken, center, zoom = 0 } = this.props;
     mapboxgl.accessToken = accessToken;
-    this.map = new mapboxgl.Map({ container: this.el, style: mapStyle });
+
+    this.map = new mapboxgl.Map({
+      container: this.el,
+      style: mapStyle,
+      center,
+      zoom,
+    });
   }
 
   public componentWillUnmount() {
@@ -63,6 +69,24 @@ export class Map extends React.PureComponent<IMapProps, IMapState> {
    */
   public get mapStyle() {
     return this.map.getStyle();
+  }
+
+  public get zoom() {
+    return this.map.getZoom();
+  }
+  public set zoom(value: number) {
+    if (typeof value === 'number') {
+      this.map.setZoom(value);
+    }
+  }
+
+  public get center(): t.ILngLat {
+    return this.map.getCenter();
+  }
+  public set center(value: t.ILngLat) {
+    if (value && typeof value.lat === 'number' && typeof value.lng === 'number') {
+      this.map.setCenter(value);
+    }
   }
 
   /**

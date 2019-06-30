@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.mapbox",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Mapbox UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
