@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.mapbox",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Mapbox UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,12 +16,12 @@
   },
   "dependencies": {
     "@platform/react": "0.3.10",
-    "@types/mapbox-gl": "0.51.7",
+    "@types/mapbox-gl": "0.51.9",
     "mapbox-gl": "1.0.0"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.5.9",
-    "@uiharness/ui": "0.5.10",
+    "@uiharness/dev": "0.5.12",
+    "@uiharness/ui": "0.5.13",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0"
   },
