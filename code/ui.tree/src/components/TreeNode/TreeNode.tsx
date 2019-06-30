@@ -10,7 +10,7 @@ import {
   tree,
   TreeNodeMouseEvent,
   TreeNodeMouseEventHandler,
-  value,
+  defaultValue,
 } from '../../common';
 import * as themes from '../../themes';
 import { Icons, IIcon } from '../Icons';
@@ -46,6 +46,9 @@ export type ITreeNodeProps = {
   theme?: themes.ITreeTheme;
   background?: 'THEME' | 'NONE';
   isFocused: boolean;
+  isInline?: boolean;
+  isFirst: boolean;
+  isLast: boolean;
   style?: GlamorValue;
   onMouse?: TreeNodeMouseEventHandler;
 };
@@ -54,6 +57,10 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   /**
    * [Properties]
    */
+  public get id() {
+    return this.props.node.id;
+  }
+
   private get nodeProps() {
     const { node } = this.props;
     return node.props || {};
@@ -85,11 +92,11 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   private get isEnabled() {
-    return value.defaultValue(this.nodeProps.isEnabled, true);
+    return defaultValue(this.nodeProps.isEnabled, true);
   }
 
   private get opacity() {
-    return value.defaultValue(this.nodeProps.opacity, 1);
+    return defaultValue(this.nodeProps.opacity, 1);
   }
 
   /**
@@ -350,19 +357,34 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   private renderBorders() {
     const theme = this.theme.node;
     const colors = this.colors;
-    const borderTopColor = themes.color(colors.borderTop, theme.borderTopColor);
-    const borderBottomColor = themes.color(colors.borderBottom, theme.borderBottomColor);
+    const { isFirst } = this.props;
+
+    type Color = string | number | boolean | undefined;
+    let topColor: Color;
+    let bottomColor: Color;
+
+    if (colors.borderTop !== undefined) {
+      topColor = colors.borderTop;
+    } else if (isFirst) {
+      topColor = false;
+    }
+
+    if (colors.borderBottom !== undefined) {
+      bottomColor = colors.borderBottom;
+    }
+
+    topColor = themes.color(topColor, theme.borderTopColor);
 
     const styles = {
       top: css({
         Absolute: [0, 0, null, 0],
         height: 1,
-        borderTop: `solid 1px ${borderTopColor || 'transparent'}`,
+        borderTop: `solid 1px ${color.format(topColor)}`,
       }),
       bottom: css({
         Absolute: [null, 0, 0, 0],
         height: 1,
-        borderBottom: `solid 1px ${borderBottomColor || 'transparent'}`,
+        borderBottom: `solid 1px ${color.format(bottomColor)}`,
       }),
     };
     return (
