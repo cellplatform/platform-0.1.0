@@ -16,6 +16,9 @@ export function utc(input?: t.DateInput) {
     get unix() {
       return date.unix();
     },
+    format(template?: string) {
+      return date.format(template);
+    },
   };
   return res;
 }

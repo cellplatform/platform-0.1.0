@@ -24,6 +24,7 @@ export type IDate = {
   date: Date;
   timestamp: number;
   unix: number;
+  format(template?: string): string;
 };
 
 export type IDuration = {
