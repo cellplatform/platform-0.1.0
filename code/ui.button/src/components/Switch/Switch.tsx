@@ -1,20 +1,23 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { Button } from '../Button';
 import { color, css, defaultValue, GlamorValue, mouse, R, t } from '../common';
 import { SwitchTheme } from './SwitchTheme';
 
 export type ISwitchProps = mouse.IMouseEventProps & {
+  id?: string;
   value?: boolean;
   width?: number;
   height?: number;
   isEnabled?: boolean;
+  tooltip?: string;
   track?: Partial<t.ISwitchTrack>;
   thumb?: Partial<t.ISwitchThumb>;
   theme?: t.SwitchThemeName | Partial<t.ISwitchTheme>;
   transitionSpeed?: number;
+  events$?: Subject<t.SwitchEvent>;
   style?: GlamorValue;
 };
 export type ISwitchState = {
@@ -35,15 +38,44 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
   public state: ISwitchState = {};
   private state$ = new Subject<Partial<ISwitchState>>();
   private unmounted$ = new Subject<{}>();
+  private events$ = new Subject<t.SwitchEvent>();
   private mouse: mouse.IMouseHandlers;
 
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
+    // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+
+    // Bubble events through given observable.
+    if (this.props.events$) {
+      events$.subscribe(this.props.events$);
+    }
+
+    // Update state.
     state$.subscribe(e => this.setState(e));
+
+    // Setup mouse.
     this.mouse = Button.mouseState(this.props, this.state$, this.unmounted$, () => this.isEnabled);
+    const mouse$ = this.mouse.events$.pipe(takeUntil(this.unmounted$));
+    mouse$.subscribe(e => this.fire({ type: 'SWITCH/mouse', payload: { ...e, id: this.id } }));
+    mouse$
+      .pipe(
+        filter(e => e.type === 'CLICK'),
+        filter(e => e.button === 'LEFT'),
+      )
+      .subscribe(e => {
+        this.fire({
+          type: 'SWITCH/change',
+          payload: {
+            id: this.id,
+            from: this.value,
+            to: !this.value,
+          },
+        });
+      });
   }
 
   public componentDidMount() {
@@ -58,6 +90,11 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
   /**
    * [Properties]
    */
+
+  public get id() {
+    return this.props.id || '';
+  }
+
   public get value() {
     return defaultValue(this.props.value, false);
   }
@@ -133,6 +170,13 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
   }
 
   /**
+   * [Methods]
+   */
+  private fire(e: t.SwitchEvent) {
+    this.events$.next(e);
+  }
+
+  /**
    * [Render]
    */
   public render() {
@@ -151,7 +195,11 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
       }),
     };
     return (
-      <div {...css(styles.base, this.props.style)} {...this.mouse.events}>
+      <div
+        {...css(styles.base, this.props.style)}
+        {...this.mouse.events}
+        title={this.props.tooltip}
+      >
         {this.renderTrack()}
         {this.renderThumb()}
       </div>

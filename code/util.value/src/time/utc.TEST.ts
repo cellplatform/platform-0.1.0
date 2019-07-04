@@ -35,4 +35,11 @@ describe('time.now', () => {
     expect(utc.timestamp).to.be.within(dt - 10, dt + 10);
     expect(utc.unix).to.eql(time.day(d).unix());
   });
+
+  it('now.format()', () => {
+    const d = time.day();
+    const template = 'YYYY-MM-DD';
+    const res = time.now.format(template);
+    expect(res).to.eql(d.format(template));
+  });
 });

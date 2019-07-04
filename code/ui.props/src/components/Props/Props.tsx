@@ -14,6 +14,7 @@ export type ChangedEventHandler = (e: t.IPropsChange) => void;
 
 export type IPropsProps = {
   data?: t.PropsData;
+  filter?: t.PropFilter;
   renderValue?: t.PropValueFactory;
   theme?: t.PropsTheme;
   style?: GlamorValue;
@@ -118,13 +119,14 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     const root: t.IPropNode = {
       id: ROOT,
       props: { header: { isVisible: false } },
-      data: { path: ROOT, key: '', value: data },
+      data: { path: ROOT, key: '', value: data, type: util.getType(data) },
     };
     const body = BODY.PROD_EDITOR;
     return util.buildTree({
       root,
       parent: root,
       data,
+      filter: this.props.filter,
       formatNode: node => ({ ...node, props: { ...node.props, body } }),
     });
   }

@@ -1,7 +1,7 @@
 name: ui.mapbox
 
 electron:
-  port: 9759
+  port: 9999
   entry:
     main: test/main.ts
     renderer: 

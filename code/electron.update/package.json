@@ -1,6 +1,6 @@
 {
   "name": "@platform/electron.update",
-  "version": "0.0.41",
+  "version": "0.0.45",
   "description": "",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -20,14 +20,14 @@
   "dependencies": {
     "@platform/exec": "0.2.19",
     "@platform/fs": "0.1.5",
-    "@platform/http": "0.2.9",
-    "@platform/react": "0.3.10",
-    "@platform/util.value": "0.4.2"
+    "@platform/http": "0.2.10",
+    "@platform/react": "0.3.11",
+    "@platform/util.value": "0.4.3"
   },
   "devDependencies": {
     "@types/minimist": "1.2.0",
-    "@uiharness/dev": "0.5.9",
-    "@uiharness/ui": "0.5.10",
+    "@uiharness/dev": "0.5.12",
+    "@uiharness/ui": "0.5.13",
     "minimist": "1.2.0",
     "electron": "5.0.5"
   },

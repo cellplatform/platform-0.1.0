@@ -7,6 +7,7 @@ import {
   color,
   log,
   Button,
+  IButtonProps,
   Switch,
   ISwitchProps,
   css,
@@ -34,12 +35,25 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private state$ = new Subject<Partial<t.ITestState>>();
   private cli: t.ICommandState = cli.init({ state$: this.state$ });
 
+  private button$ = new Subject<t.ButtonEvent>();
+  private switch$ = new Subject<t.SwitchEvent>();
+
   /**
    * [Lifecycle]
    */
   public componentWillMount() {
+    const button$ = this.button$.pipe(takeUntil(this.unmounted$));
+    const switch$ = this.switch$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
+
+    button$.subscribe(e => {
+      log.info('🌳 button$', e.payload.id, e);
+    });
+
+    switch$.subscribe(e => {
+      log.info('🐷 switch$', e.payload.id, e);
+    });
   }
 
   public componentWillUnmount() {
@@ -76,16 +90,17 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       }),
     };
 
-    const common = {
+    const common: Partial<IButtonProps> = {
       isEnabled,
       onClick: this.onButtonClick,
       margin: [null, 10, null, null],
+      events$: this.button$,
     };
 
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
-          <Button {...common} label={'Click Me'} />
+          <Button id={'simple-label'} {...common} label={'Click Me'} />
 
           <PinkDashed />
 
@@ -189,6 +204,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const render = (props: ISwitchProps) => {
       return (
         <Switch
+          events$={this.switch$}
           theme={theme}
           style={styles.switch}
           isEnabled={this.state.isEnabled}
@@ -203,7 +219,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
     return (
       <div {...styles.base}>
-        {render({})}
+        {render({ id: 'my-switch' })}
         {render({ theme: blueTheme })}
         {render({ track: { borderWidth: { off: 2 } } })}
         {render({

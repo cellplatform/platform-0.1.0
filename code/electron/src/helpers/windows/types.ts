@@ -54,7 +54,7 @@ export type IWindowChangeEvent = {
   payload: IWindowChange;
 };
 export type IWindowChange = {
-  type: 'CREATED' | 'CLOSED' | 'TAG' | 'FOCUS' | 'VISIBILITY';
+  type: 'CREATED' | 'CLOSED' | 'TAG' | 'VISIBILITY' | 'FOCUS' | 'BLUR';
   window: IWindowRef;
   state: IWindowsState;
 };

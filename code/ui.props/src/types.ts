@@ -40,6 +40,14 @@ export type PropValueFactoryArgs = {
   onFocus(isFocused: boolean): void;
 };
 
+export type PropFilter = (e: PropFilterArgs) => boolean;
+export type PropFilterArgs = {
+  path: string;
+  key: string | number;
+  value: PropValue;
+  type: PropType;
+};
+
 /**
  * [Events]
  */

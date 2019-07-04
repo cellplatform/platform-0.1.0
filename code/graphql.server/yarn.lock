@@ -92,12 +92,12 @@
     fs-extra "8.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql@0.2.23":
-  version "0.2.23"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.23.tgz#2904603f40e4cf86bfe4d37ca99ca3dbe3b92593"
-  integrity sha512-8iKKd9ENGfPeCzMLDVUWR4LBAluxRWUj8eaGxITLOWxFyUqH3yl1FWyZxyRC0kFyh648zH43f+dDrQLHXLCUaw==
+"@platform/graphql@0.2.24":
+  version "0.2.24"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.24.tgz#53c03da32c63ca95a5bf1dacd067f84b56b9f539"
+  integrity sha512-dV47Pp7RT1ntaWZ/5bKnZwo8Povypd5hgLXuprf97xXtT+Y26jZwS9cGXEz8kQDoTsWMjWAlMsE1PWG4+mZHtg==
   dependencies:
-    "@platform/http" "0.2.9"
+    "@platform/http" "0.2.10"
     "@platform/libs" "0.0.18"
     "@types/graphql" "14.2.1"
     apollo-cache-inmemory "1.6.2"
@@ -109,14 +109,14 @@
     graphql "14.3.1"
     graphql-tag "2.10.1"
 
-"@platform/http@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.9.tgz#cf9312d5f013c22b4a761dc56643c5f900509267"
-  integrity sha512-bYG5NIEfG1V9F5gHLnMk+jjQVfoz/P+yEBxe7Vvfi+xgQuQwyCN3wijkabqOlkP01vh6l/JVlc6TKqj9/ItbVw==
+"@platform/http@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.10.tgz#f12aa7756c0a7a911d8b36b1566bf30f10c452e4"
+  integrity sha512-bHlpkLgqSdwUsJWXcW4ACrBHZ6Kr7OOFFaDowW5YKrzJ7wNqCqre58bEJqvk3ZyvoMjfaB/xhYFi4rVWtPJ4oA==
   dependencies:
     "@platform/fs" "0.1.5"
     "@platform/types" "0.0.19"
-    "@platform/util.value" "0.4.2"
+    "@platform/util.value" "0.4.3"
     "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
 
@@ -187,10 +187,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.81.tgz#31e720bb1769ea6805d583cc44acc0e95c69e636"
   integrity sha512-JQIUVU+24HEiVBgZQoxe1+twd8+KyWfmeZYT6xt9xnqKv4gEaQnF5suWiOoLPCN03C9zOHiz2rQ0eFFEXE7ifg==
 
-"@platform/util.value@0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.2.tgz#3633679b30d08267fb3a13d6fb369abe0a81ac15"
-  integrity sha512-7pGl8n8TFB4vslxNGIigXlGxXks7TF4w0iW1i4+rEB5GRYOcqUaaY2CyPckk+zc4z4mKcsZe29b7IVt+L3VoPw==
+"@platform/util.value@0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.3.tgz#5f4d62ace9c30ef8c3b192c3e76b352bdd2814a6"
+  integrity sha512-ECm8xF/bK2Eo1BjkW+PLE81Nd9plSueqsuNx4GCI0gI/45FlhssVYhgG1Ndn/wiN2Fd/GXRma1PeBJfR1V5ljg==
   dependencies:
     "@platform/libs" "0.0.18"
     "@platform/types" "0.0.19"

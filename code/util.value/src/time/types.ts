@@ -2,8 +2,13 @@ import { Dayjs, ConfigType } from 'dayjs';
 
 export type TimeDelay = (msecs: number, callback?: () => void) => Promise<{}>;
 export type TimeWait = (msecs: number) => Promise<{}>;
-export type TimeElapsed = (from: Date) => IDuration;
+export type TimeElapsed = (
+  from: DateInput,
+  options?: { to?: DateInput; round?: number },
+) => IDuration;
 export type DayFactory = (config?: ConfigType) => Dayjs;
+
+export type DateInput = number | string | Date | Dayjs;
 
 export type ITime = {
   delay: TimeDelay;
@@ -19,6 +24,7 @@ export type IDate = {
   date: Date;
   timestamp: number;
   unix: number;
+  format(template?: string): string;
 };
 
 export type IDuration = {

@@ -1,21 +1,23 @@
 import * as day from 'dayjs';
-import { IDate } from './types';
+import * as t from './types';
 
 /**
  * Helpers for working with
  */
-export function utc(input?: Date | number) {
-  const date =
-    input === undefined ? new Date() : typeof input === 'object' ? input : new Date(input);
-  const res: IDate = {
+export function utc(input?: t.DateInput) {
+  const date = day(input);
+  const res: t.IDate = {
     get date() {
-      return date;
+      return date.toDate();
     },
     get timestamp() {
-      return date.getTime();
+      return date.toDate().getTime();
     },
     get unix() {
-      return day(date).unix();
+      return date.unix();
+    },
+    format(template?: string) {
+      return date.format(template);
     },
   };
   return res;

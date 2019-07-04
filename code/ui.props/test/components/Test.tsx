@@ -67,6 +67,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
             <div {...styles.inner}>
               <Props
                 data={this.state.data}
+                filter={this.filter}
                 style={styles.props}
                 theme={theme}
                 onChange={this.handleChange}
@@ -114,6 +115,17 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   /**
    * [Handlers]
    */
+
+  private filter: t.PropFilter = e => {
+    if (e.path.includes('foo.hide')) {
+      return false;
+    }
+
+    if (e.key === 'isFiltered') {
+      return false;
+    }
+    return true;
+  };
 
   private handleChange = (e: t.IPropsChange) => {
     const data = e.data.to;

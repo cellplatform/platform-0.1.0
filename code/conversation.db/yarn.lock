@@ -66,13 +66,13 @@
   dependencies:
     "@platform/libs" "0.0.18"
 
-"@platform/conversation.types@0.0.34":
-  version "0.0.34"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.34.tgz#af868069c49f8450d9e681d72653c01478536e3c"
-  integrity sha512-7VU66Lvjd6q6uKs7d5cH7IbB+qQ5YTci+uAmwX6kvAfaJPEIKK0sYMykJogFfqTzacgGbsQJHqIc7y3t+qq+aQ==
+"@platform/conversation.types@0.0.35":
+  version "0.0.35"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.35.tgz#3e7ff144b83c428e90ec1476a96b9b860933e24f"
+  integrity sha512-FpUSIGWf8PSSOeAnZGygVA+h6+QnozhB6+wz8ctn3DTUiY4owfXj2T5TIE848cIXgGJu7TBIAVG59iy8rW5F7A==
   dependencies:
     "@platform/libs" "0.0.18"
-    "@platform/util.value" "0.4.2"
+    "@platform/util.value" "0.4.3"
 
 "@platform/exec@0.2.19":
   version "0.2.19"
@@ -100,17 +100,17 @@
     fs-extra "8.0.1"
     js-yaml "3.13.1"
 
-"@platform/graphql.server@0.1.22":
-  version "0.1.22"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.22.tgz#e0b6f0ea90f5462893850b466f28635671b64b2a"
-  integrity sha512-t33bz1yc1FgxIztUoCfiBNezu3TvxyiRsDe4HidyrJHHrGz6adLHc+JSpdpuLRk4rABy0khIvH/Mrn23nEqFnA==
+"@platform/graphql.server@0.1.23":
+  version "0.1.23"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.23.tgz#34cbb451181f6f2bce886939b853478af4953a06"
+  integrity sha512-H3WfVM0Ff3EgNDKyhSIj9dEd73AaXPM7c2T7CJvlS+QjoSc8kcaLx+p9z7Cu+QnNMnC7APj71VvPeN1XcaN/Ow==
   dependencies:
     "@platform/cache" "0.0.15"
-    "@platform/graphql" "0.2.23"
+    "@platform/graphql" "0.2.24"
     "@platform/libs" "0.0.18"
     "@platform/log" "0.0.132"
     "@platform/util.is" "0.0.81"
-    "@platform/util.value" "0.4.2"
+    "@platform/util.value" "0.4.3"
     "@types/dotenv" "6.1.1"
     "@types/express" "4.17.0"
     "@types/graphql" "14.2.1"
@@ -119,12 +119,12 @@
     express "4.17.1"
     graphql "14.3.1"
 
-"@platform/graphql@0.2.23":
-  version "0.2.23"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.23.tgz#2904603f40e4cf86bfe4d37ca99ca3dbe3b92593"
-  integrity sha512-8iKKd9ENGfPeCzMLDVUWR4LBAluxRWUj8eaGxITLOWxFyUqH3yl1FWyZxyRC0kFyh648zH43f+dDrQLHXLCUaw==
+"@platform/graphql@0.2.24":
+  version "0.2.24"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.24.tgz#53c03da32c63ca95a5bf1dacd067f84b56b9f539"
+  integrity sha512-dV47Pp7RT1ntaWZ/5bKnZwo8Povypd5hgLXuprf97xXtT+Y26jZwS9cGXEz8kQDoTsWMjWAlMsE1PWG4+mZHtg==
   dependencies:
-    "@platform/http" "0.2.9"
+    "@platform/http" "0.2.10"
     "@platform/libs" "0.0.18"
     "@types/graphql" "14.2.1"
     apollo-cache-inmemory "1.6.2"
@@ -136,14 +136,14 @@
     graphql "14.3.1"
     graphql-tag "2.10.1"
 
-"@platform/http@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.9.tgz#cf9312d5f013c22b4a761dc56643c5f900509267"
-  integrity sha512-bYG5NIEfG1V9F5gHLnMk+jjQVfoz/P+yEBxe7Vvfi+xgQuQwyCN3wijkabqOlkP01vh6l/JVlc6TKqj9/ItbVw==
+"@platform/http@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.10.tgz#f12aa7756c0a7a911d8b36b1566bf30f10c452e4"
+  integrity sha512-bHlpkLgqSdwUsJWXcW4ACrBHZ6Kr7OOFFaDowW5YKrzJ7wNqCqre58bEJqvk3ZyvoMjfaB/xhYFi4rVWtPJ4oA==
   dependencies:
     "@platform/fs" "0.1.5"
     "@platform/types" "0.0.19"
-    "@platform/util.value" "0.4.2"
+    "@platform/util.value" "0.4.3"
     "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
 
@@ -221,10 +221,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.81.tgz#31e720bb1769ea6805d583cc44acc0e95c69e636"
   integrity sha512-JQIUVU+24HEiVBgZQoxe1+twd8+KyWfmeZYT6xt9xnqKv4gEaQnF5suWiOoLPCN03C9zOHiz2rQ0eFFEXE7ifg==
 
-"@platform/util.value@0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.2.tgz#3633679b30d08267fb3a13d6fb369abe0a81ac15"
-  integrity sha512-7pGl8n8TFB4vslxNGIigXlGxXks7TF4w0iW1i4+rEB5GRYOcqUaaY2CyPckk+zc4z4mKcsZe29b7IVt+L3VoPw==
+"@platform/util.value@0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.3.tgz#5f4d62ace9c30ef8c3b192c3e76b352bdd2814a6"
+  integrity sha512-ECm8xF/bK2Eo1BjkW+PLE81Nd9plSueqsuNx4GCI0gI/45FlhssVYhgG1Ndn/wiN2Fd/GXRma1PeBJfR1V5ljg==
   dependencies:
     "@platform/libs" "0.0.18"
     "@platform/types" "0.0.19"

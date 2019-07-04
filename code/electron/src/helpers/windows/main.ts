@@ -70,7 +70,8 @@ export class WindowsMain implements IWindows {
     /**
      * Monitor change of focus.
      */
-    app.on('browser-window-focus', this.handleFocusChanged);
+    app.on('browser-window-focus', this.handleFocus);
+    app.on('browser-window-blur', this.handleBlur);
 
     /**
      * Broadcast events through the IPC channel.
@@ -112,7 +113,8 @@ export class WindowsMain implements IWindows {
    */
   public dispose() {
     app.removeListener('browser-window-created', this.handleWindowCreated);
-    app.removeListener('browser-window-focus', this.handleFocusChanged);
+    app.removeListener('browser-window-focus', this.handleFocus);
+    app.removeListener('browser-window-blur', this.handleBlur);
     this._dispose$.next();
     this._dispose$.complete();
   }
@@ -273,8 +275,12 @@ export class WindowsMain implements IWindows {
     this.fireChange('VISIBILITY', windowId);
   };
 
-  private handleFocusChanged = (e: Electron.Event, window: BrowserWindow) => {
+  private handleFocus = (e: Electron.Event, window: BrowserWindow) => {
     this.fireChange('FOCUS', window.id);
+  };
+
+  private handleBlur = (e: Electron.Event, window: BrowserWindow) => {
+    this.fireChange('BLUR', window.id);
   };
 
   private fireChange(type: IWindowChange['type'], ref: IWindowRef | number) {

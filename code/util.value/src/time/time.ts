@@ -14,6 +14,6 @@ export const time: ITime = {
   elapsed,
   utc,
   get now() {
-    return utc(new Date());
+    return utc();
   },
 };

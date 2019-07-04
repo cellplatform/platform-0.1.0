@@ -57,31 +57,50 @@ export class Sync {
       map(e => e.payload as t.IRowsChanged),
     );
 
+    console.log(`\nTODO 🐷  fire change events for Row/Column changes \n`);
+
     /**
      * Save to DB when grid cells are edited.
      */
     gridCellChanges$.subscribe(async e => {
-      const list = e.changes.map(change => ({
+      const changes = e.changes.map(change => ({
         key: this.keys.db.toCellKey(change.cell),
         value: change.value.to,
       }));
-      await db.putMany(list);
+
+      let isCancelled = false;
+      this.fire({
+        type: 'GRID/sync/changed/grid/cells',
+        payload: {
+          changes,
+          get isCancelled() {
+            return isCancelled;
+          },
+          cancel() {
+            isCancelled = true;
+          },
+        },
+      });
+
+      if (!isCancelled) {
+        await db.putMany(changes);
+      }
     });
 
     gridColumnsChanges$.subscribe(async e => {
-      const list = e.changes.map(change => ({
+      const changes = e.changes.map(change => ({
         key: this.keys.db.toColumnKey(change.column),
         value: change.to,
       }));
-      await db.putMany(list);
+      await db.putMany(changes);
     });
 
     gridRowsChanges$.subscribe(async e => {
-      const list = e.changes.map(change => ({
+      const changes = e.changes.map(change => ({
         key: this.keys.db.toRowKey(change.row),
         value: change.to,
       }));
-      await db.putMany(list);
+      await db.putMany(changes);
     });
 
     /**
@@ -90,7 +109,25 @@ export class Sync {
     db.watch('cell/');
     dbWatch$.pipe(filter(e => e.pattern === 'cell/')).subscribe(e => {
       const key = this.keys.grid.toCellKey(e.key.toString());
-      grid.cell(key).value = e.value.to;
+      const value = e.value.to;
+
+      let isCancelled = false;
+      this.fire({
+        type: 'GRID/sync/changed/db/cell',
+        payload: {
+          cell: { key, value },
+          get isCancelled() {
+            return isCancelled;
+          },
+          cancel() {
+            isCancelled = true;
+          },
+        },
+      });
+
+      if (!isCancelled) {
+        grid.cell(key).value = value;
+      }
     });
 
     // Finish up.
@@ -171,7 +208,7 @@ export class Sync {
   /**
    * [Helpers]
    */
-  // private fire(e: t.SyncEvent) {
-  //   this._.events$.next(e);
-  // }
+  private fire(e: t.SyncEvent) {
+    this._.events$.next(e);
+  }
 }

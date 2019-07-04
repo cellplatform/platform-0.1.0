@@ -13,4 +13,5 @@ export type IPropNodeData = {
   path: string;
   key: string | number;
   value: t.PropValue;
+  type: t.PropType;
 };

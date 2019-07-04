@@ -1,4 +1,4 @@
-import { value as valueUtil, color as colorUtil } from '../common';
+import { color as colorUtil, defaultValue } from '../common';
 import { ITreeTheme, TreeTheme } from './types';
 import { LIGHT, DARK } from './themes';
 
@@ -12,8 +12,7 @@ export function color(
   prop: number | string | boolean | undefined,
   theme: number | string | undefined,
 ) {
-  const result =
-    prop === true ? theme : prop === false ? 'transparent' : valueUtil.defaultValue(prop, theme);
+  const result = prop === true ? theme : prop === false ? 'transparent' : defaultValue(prop, theme);
   return colorUtil.format(result);
 }
 
