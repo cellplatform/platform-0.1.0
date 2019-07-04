@@ -396,7 +396,7 @@ export class Grid implements t.IGrid {
    */
   public focus() {
     const last = this._.lastSelection;
-    const cell = last.cell || 'A1';
+    const cell = (last && last.cell) || 'A1';
     const ranges = last.ranges || [];
     this.select({ cell, ranges });
     return this;

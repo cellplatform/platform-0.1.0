@@ -1,6 +1,6 @@
 {
   "name": "@platform/conversation.types",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "Abstract types for conversation threads.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.0.18",
-    "@platform/util.value": "0.4.2"
+    "@platform/util.value": "0.4.3"
   },
   "devDependencies": {
     "@platform/test": "0.0.58",

@@ -39,14 +39,14 @@
     "@nodelib/fs.scandir" "2.1.0"
     fastq "^1.6.0"
 
-"@platform/css@0.1.25":
-  version "0.1.25"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.25.tgz#05b6846c4d5d8560e7c91f5a235c6300f904dd2d"
-  integrity sha512-8gLMzoe69TWUTt7la8LQLu4qwlecHFru/HhCCX4Ph1iFrNi3WtoEtPtfdR7/c5TJiWnfBQb5yzPdcsTV4ZJcYA==
+"@platform/css@0.1.26":
+  version "0.1.26"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.26.tgz#0837afb331c7372394d8e8f6899bee0bd2a5dc83"
+  integrity sha512-869on1OuPb7T4nRYgZGaph/HJPY2NwlaxvlbsCan/8krcf81Hg2/Kt2fOzNQRy0tkjNfkBARM7a3SqRAPie23A==
   dependencies:
     "@platform/libs" "0.0.18"
     "@platform/util.is" "0.0.81"
-    "@platform/util.value" "0.4.2"
+    "@platform/util.value" "0.4.3"
     "@types/tinycolor2" "1.4.2"
     glamor "2.20.40"
     tinycolor2 "1.4.1"
@@ -98,12 +98,12 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.10.tgz#194bed56a351cac761cb3fb9b1b168af16c701ca"
-  integrity sha512-1FfAgerZQJVMUQA+JLAvlL6cqGuMQWn8UmId/P7Bbu0GjIJKcoWFQ5bi5xfq6hCV0CgLR/0XFuCI/hLRWbmaAA==
+"@platform/react@0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.11.tgz#d80c6c71925e4c98532d1e54e02e5caf67d90714"
+  integrity sha512-43qm+0iroTkdHgGN2KnLAHRub6wqRe2HSFBZCM99xuwfJDe3FDm3QIoj7/Pp63vi2mOk30eDaRLSnKbwOewjoA==
   dependencies:
-    "@platform/css" "0.1.25"
+    "@platform/css" "0.1.26"
     "@platform/util.is" "0.0.81"
     "@types/react" "16.8.22"
     "@types/react-dom" "16.8.4"
@@ -156,10 +156,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.81.tgz#31e720bb1769ea6805d583cc44acc0e95c69e636"
   integrity sha512-JQIUVU+24HEiVBgZQoxe1+twd8+KyWfmeZYT6xt9xnqKv4gEaQnF5suWiOoLPCN03C9zOHiz2rQ0eFFEXE7ifg==
 
-"@platform/util.value@0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.2.tgz#3633679b30d08267fb3a13d6fb369abe0a81ac15"
-  integrity sha512-7pGl8n8TFB4vslxNGIigXlGxXks7TF4w0iW1i4+rEB5GRYOcqUaaY2CyPckk+zc4z4mKcsZe29b7IVt+L3VoPw==
+"@platform/util.value@0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.3.tgz#5f4d62ace9c30ef8c3b192c3e76b352bdd2814a6"
+  integrity sha512-ECm8xF/bK2Eo1BjkW+PLE81Nd9plSueqsuNx4GCI0gI/45FlhssVYhgG1Ndn/wiN2Fd/GXRma1PeBJfR1V5ljg==
   dependencies:
     "@platform/libs" "0.0.18"
     "@platform/types" "0.0.19"

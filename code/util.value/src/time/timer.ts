@@ -1,3 +1,4 @@
+import * as day from 'dayjs';
 import { value as valueUtil } from '../value';
 import * as t from './types';
 
@@ -30,9 +31,13 @@ export function timer(start?: Date, options: { round?: number } = {}) {
 /**
  * Retrieves the elapsed milliseconds from the given date.
  */
-export function elapsed(from: Date, options: { round?: number } = {}): t.IDuration {
-  const now = new Date();
-  const msec = now.getTime() - from.getTime();
+export function elapsed(
+  from: t.DateInput,
+  options: { to?: t.DateInput; round?: number } = {},
+): t.IDuration {
+  const start = to.date(from);
+  const end = options.to ? to.date(options.to) : new Date();
+  const msec = end.getTime() - start.getTime();
   const defaultPrecision = options.round === undefined ? 1 : options.round;
   const duration: t.IDuration = {
     get msec() {
@@ -113,4 +118,5 @@ const to = {
   min: (msec: number, precision: number) => round(msec / 1000 / 60, precision),
   hour: (msec: number, precision: number) => round(msec / 1000 / 60 / 60, precision),
   day: (msec: number, precision: number) => round(msec / 1000 / 60 / 60 / 24, precision),
+  date: (input: t.DateInput) => day(input).toDate(),
 };

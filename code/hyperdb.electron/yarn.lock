@@ -77,6 +77,18 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
+"@platform/css@0.1.26":
+  version "0.1.26"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.26.tgz#0837afb331c7372394d8e8f6899bee0bd2a5dc83"
+  integrity sha512-869on1OuPb7T4nRYgZGaph/HJPY2NwlaxvlbsCan/8krcf81Hg2/Kt2fOzNQRy0tkjNfkBARM7a3SqRAPie23A==
+  dependencies:
+    "@platform/libs" "0.0.18"
+    "@platform/util.is" "0.0.81"
+    "@platform/util.value" "0.4.3"
+    "@types/tinycolor2" "1.4.2"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
 "@platform/electron@0.4.17":
   version "0.4.17"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.17.tgz#b3ebd5eb08fcafa35aeb7eff68b54b1757dea7c0"
@@ -95,15 +107,15 @@
     is-electron "2.2.0"
     minimist "1.2.0"
 
-"@platform/electron@0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.5.0.tgz#9fd1c45d5c62843324f8c7182df7262ca75d7a1a"
-  integrity sha512-OTYJelPTlmPsUse9+OOq9riMrtSC3HWjm1kDQLOJ6MJ6KrMqW6twvYhYD177ToNrQH8FXjT6NnLdiIJkqzkJRA==
+"@platform/electron@0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.5.1.tgz#1501b29a60e564e86588272eb7c21168de9487f8"
+  integrity sha512-eXV1EypPUZo9iicdyJMkh6zTKYZcND9tR1TgVQ15xxET9goEsX+O41ecMynDyHh8Yuzr9LCDN3sUQlTr+rgq/g==
   dependencies:
     "@platform/fs" "0.1.5"
     "@platform/libs" "^0.0.18"
     "@platform/log" "0.0.132"
-    "@platform/react" "0.3.10"
+    "@platform/react" "0.3.11"
     "@platform/types" "0.0.19"
     "@types/app-root-path" "1.2.4"
     app-root-path "2.2.1"
@@ -146,15 +158,15 @@
   dependencies:
     "@platform/libs" "0.0.18"
 
-"@platform/hyperdb@0.2.18":
-  version "0.2.18"
-  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.2.18.tgz#9837aa2b314b613d8e5e0aa5fd583460d07151ce"
-  integrity sha512-ljlofO4aqeFYItVGmIq5Sg2Tx7uZ1c8A2hbj0lbGpz7GtxfqF69Uji7xpHRQVhHIoiyUsIm6V/R8xVOVwuFfzA==
+"@platform/hyperdb@0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@platform/hyperdb/-/hyperdb-0.2.19.tgz#e7650f42a16ae4f6cccfd0bd0965b782b84000b8"
+  integrity sha512-SNPsV5WkjC7f/6AFZshTZh64FGy9OBXtNUhCTdkCusY0p+BlQJHNOWwsNZX6el9SlYjtwR9fNyEH5Ft+HOAG3Q==
   dependencies:
     "@hyperswarm/network" "0.0.4"
     "@platform/fs" "0.1.5"
     "@platform/hyperdb.types" "0.2.12"
-    "@platform/util.value" "0.4.2"
+    "@platform/util.value" "0.4.3"
     discovery-swarm "6.0.0"
     hyperdb "3.5.0"
     pump "3.0.0"
@@ -186,6 +198,18 @@
   integrity sha512-1FfAgerZQJVMUQA+JLAvlL6cqGuMQWn8UmId/P7Bbu0GjIJKcoWFQ5bi5xfq6hCV0CgLR/0XFuCI/hLRWbmaAA==
   dependencies:
     "@platform/css" "0.1.25"
+    "@platform/util.is" "0.0.81"
+    "@types/react" "16.8.22"
+    "@types/react-dom" "16.8.4"
+    react "16.8.6"
+    react-dom "16.8.6"
+
+"@platform/react@0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.11.tgz#d80c6c71925e4c98532d1e54e02e5caf67d90714"
+  integrity sha512-43qm+0iroTkdHgGN2KnLAHRub6wqRe2HSFBZCM99xuwfJDe3FDm3QIoj7/Pp63vi2mOk30eDaRLSnKbwOewjoA==
+  dependencies:
+    "@platform/css" "0.1.26"
     "@platform/util.is" "0.0.81"
     "@types/react" "16.8.22"
     "@types/react-dom" "16.8.4"
@@ -260,6 +284,19 @@
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.2.tgz#3633679b30d08267fb3a13d6fb369abe0a81ac15"
   integrity sha512-7pGl8n8TFB4vslxNGIigXlGxXks7TF4w0iW1i4+rEB5GRYOcqUaaY2CyPckk+zc4z4mKcsZe29b7IVt+L3VoPw==
+  dependencies:
+    "@platform/libs" "0.0.18"
+    "@platform/types" "0.0.19"
+    "@platform/util.is" "0.0.81"
+    "@types/semver" "6.0.1"
+    cuid "2.1.6"
+    dayjs "1.8.14"
+    semver "6.1.2"
+
+"@platform/util.value@0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.3.tgz#5f4d62ace9c30ef8c3b192c3e76b352bdd2814a6"
+  integrity sha512-ECm8xF/bK2Eo1BjkW+PLE81Nd9plSueqsuNx4GCI0gI/45FlhssVYhgG1Ndn/wiN2Fd/GXRma1PeBJfR1V5ljg==
   dependencies:
     "@platform/libs" "0.0.18"
     "@platform/types" "0.0.19"
@@ -2139,6 +2176,10 @@ k-rpc-socket@^1.7.2:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/k-rpc-socket/-/k-rpc-socket-1.8.0.tgz#9a4dd6a4f3795ed847ffa156579cc389990bd1f2"
   integrity sha512-f/9TynsO8YYjZ6JjNNtSSH7CJcIHcio1buy3zqByGxb/GX8AWLdL6FZEWTrN8V3/J7W4/E0ZTQQ+Jt2rVq7ELg==
+  dependencies:
+    bencode "^2.0.0"
+    buffer-equals "^1.0.4"
+    safe-buffer "^5.1.1"
 
 k-rpc@^4.2.1:
   version "4.3.1"
@@ -3041,6 +3082,8 @@ rxjs@^6.3.3, rxjs@^6.5.1:
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.1.tgz#f7a005a9386361921b8524f38f54cbf80e5d08f4"
   integrity sha512-y0j31WJc83wPu31vS1VlAFW5JGrnGC+j+TtGAa1fRQphy48+fDYiDmX8tjGloToEsMkxnouOg/1IzXGKkJnZMg==
+  dependencies:
+    tslib "^1.9.0"
 
 safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"

@@ -1,12 +1,12 @@
 import * as day from 'dayjs';
-import { IDate } from './types';
+import * as t from './types';
 
 /**
  * Helpers for working with
  */
-export function utc(input?: number | string | Date | day.Dayjs) {
+export function utc(input?: t.DateInput) {
   const date = day(input);
-  const res: IDate = {
+  const res: t.IDate = {
     get date() {
       return date.toDate();
     },
