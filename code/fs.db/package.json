@@ -1,5 +1,5 @@
 {
-  "name": "fs.db",
+  "name": "@platform/fs.db",
   "version": "1.0.0",
   "description": "DB like interface that persists to the file-system as JSON.",
   "main": "lib/index",

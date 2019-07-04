@@ -3,7 +3,7 @@ import { share } from 'rxjs/operators';
 import { util, fs, t } from '../common';
 
 /**
- * A DB that write to the file-system.
+ * A DB that writes to the file-system.
  */
 export class FileDb {
   /**
