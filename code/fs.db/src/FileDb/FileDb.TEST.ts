@@ -5,17 +5,19 @@ import * as t from '../types';
 
 const dir = fs.resolve('./.dev/unit-test');
 
-const testDb = () => {
-  return new FileDb({ dir });
+const testDb = (args: { isMemoized?: boolean } = {}) => {
+  const { isMemoized } = args;
+  return new FileDb({ dir, cache: isMemoized });
 };
 
 describe('FileDb', () => {
   beforeEach(async () => fs.remove(dir));
   afterEach(async () => fs.remove(dir));
 
-  it('creates', async () => {
+  it('creates', () => {
     const db = testDb();
     expect(db.dir).to.eql(dir);
+    expect(db.cache.isEnabled).to.eql(false);
   });
 
   it('get/put', async () => {
@@ -146,6 +148,9 @@ describe('FileDb', () => {
     expect(events[2].payload.value).to.eql(123);
     expect(events[3].payload.value).to.eql(123);
     expect(events[4].payload.value).to.eql(undefined);
+
+    const get = events[0] as t.IFileDbGetEvent;
+    expect(get.payload.cached).to.eql(false);
   });
 
   describe('many', () => {
@@ -241,6 +246,73 @@ describe('FileDb', () => {
       expect(res.keys).to.eql([]);
       expect(res.list).to.eql([]);
       expect(res.map).to.eql({});
+    });
+  });
+
+  describe('caching (memoize)', () => {
+    it('creates memoized', () => {
+      const db1 = testDb({});
+      const db2 = testDb({ isMemoized: true });
+      expect(db1.cache.isEnabled).to.eql(false);
+      expect(db2.cache.isEnabled).to.eql(true);
+    });
+
+    it('puts value in cache on get', async () => {
+      const db = testDb({ isMemoized: true });
+      expect(db.cache.values).to.eql({});
+
+      await db.put('foo', 1);
+      expect(db.cache.values).to.eql({});
+
+      await db.get('foo');
+      expect(db.cache.values.foo.value).to.eql(1);
+    });
+
+    it('reads from cache value', async () => {
+      const db = testDb({ isMemoized: true });
+      await db.put('foo', 1);
+
+      const res1 = await db.getValue('foo');
+      expect(res1).to.eql(1);
+
+      db.cache.values.foo.value = 2; // Fake out the cache value.
+
+      const res2 = await db.getValue('foo');
+      expect(res2).to.eql(2);
+    });
+
+    it('invalidates cache on put', async () => {
+      const db = testDb({ isMemoized: true });
+
+      await db.put('foo', 1);
+      expect(await db.getValue('foo')).to.eql(1);
+      expect(await db.getValue('foo')).to.eql(1);
+
+      await db.put('foo', 2);
+      expect(await db.getValue('foo')).to.eql(2);
+    });
+
+    it('observable events (while caching)', async () => {
+      const db = testDb({ isMemoized: true });
+      const events: t.FileDbEvent[] = [];
+      db.events$.subscribe(e => events.push(e));
+
+      const key = 'foo/bar';
+      await db.put(key, 123);
+      await db.get(key);
+      await db.get(key);
+
+      expect(events.length).to.eql(3);
+
+      expect(events[0].type).to.eql('DB/put');
+      expect(events[1].type).to.eql('DB/get');
+      expect(events[2].type).to.eql('DB/get');
+
+      const get1 = events[1] as t.IFileDbGetEvent;
+      const get2 = events[2] as t.IFileDbGetEvent;
+
+      expect(get1.payload.cached).to.eql(false);
+      expect(get2.payload.cached).to.eql(true);
     });
   });
 });

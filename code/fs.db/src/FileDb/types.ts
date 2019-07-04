@@ -24,8 +24,18 @@ export type IFileDbFindArgs = {
 
 export type IFileDbFindResult = {
   keys: string[];
+  paths: string[];
   list: IFileDbValue[];
   map: { [key: string]: Json | undefined };
+};
+
+/**
+ * Cache
+ */
+export type IFileDbCache = {
+  isEnabled: boolean;
+  values: { [key: string]: IFileDbValue };
+  clear(keys?: string[]): void;
 };
 
 /**
@@ -58,6 +68,6 @@ export type IFileDbAction = {
   value?: Json;
   props: IFileDbValueProps;
 };
-export type IFileDbActionGet = IFileDbAction & { action: 'get' };
+export type IFileDbActionGet = IFileDbAction & { action: 'get'; cached: boolean };
 export type IFileDbActionPut = IFileDbAction & { action: 'put' };
 export type IFileDbActionDelete = IFileDbAction & { action: 'delete' };

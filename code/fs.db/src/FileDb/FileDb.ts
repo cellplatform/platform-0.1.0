@@ -2,6 +2,7 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { util, fs, t, defaultValue } from '../common';
 
+
 /**
  * A DB that writes to the file-system.
  */
@@ -16,14 +17,23 @@ export class FileDb {
   /**
    * [Lifecycle]
    */
-  constructor(args: { dir: string }) {
+  constructor(args: { dir: string; cache?: boolean }) {
     this.dir = args.dir;
+    this.cache.isEnabled = Boolean(args.cache);
   }
 
   /**
    * [Fields]
    */
   public readonly dir: string;
+
+  public readonly cache: IFileDbCache = {
+    isEnabled: false,
+    values: {},
+    clear: () => {
+      this.cache.values = {};
+    },
+  };
 
   private readonly _events$ = new Subject<t.FileDbEvent>();
   public readonly events$ = this._events$.pipe(share());
@@ -48,11 +58,32 @@ export class FileDb {
    * [Get]
    */
   public async get(key: string): Promise<t.IFileDbValue> {
+    const cachedValue = this.cache.isEnabled ? this.cache.values[key] : undefined;
+
+    const fire = (result: t.IFileDbValue, cached: boolean) => {
+      const { value, props } = result;
+      this.fire({
+        type: 'DB/get',
+        payload: { action: 'get', key, value, props, cached },
+      });
+    };
+
+    // Return value from cache.
+    if (this.cache.isEnabled && cachedValue !== undefined) {
+      fire(cachedValue, true);
+      return cachedValue;
+    }
+
+    // Read value from file-system.
     const res = await FileDb.get(this.dir, key.toString());
-    this.fire({
-      type: 'DB/get',
-      payload: { action: 'get', key, value: res.value, props: res.props },
-    });
+    fire(res, false);
+
+    // Store value in cache (if required).
+    if (this.cache.isEnabled) {
+      this.cache.values[key] = res;
+    }
+
+    // Finish up.
     return res;
   }
   public static async get(dir: string, key: string): Promise<t.IFileDbValue> {
@@ -91,6 +122,8 @@ export class FileDb {
       type: 'DB/put',
       payload: { action: 'put', key, value: res.value, props: res.props },
     });
+
+    delete this.cache.values[key]; // Invalidate cache.
     return res;
   }
   public static async put(dir: string, key: string, value?: t.Json): Promise<t.IFileDbValue> {
@@ -137,7 +170,7 @@ export class FileDb {
   }
 
   /**
-   * Find (glob)
+   * Find (glob).
    */
   public async find(args: t.IFileDbFindArgs): Promise<t.IFileDbFindResult> {
     const { pattern = '' } = args;
@@ -169,6 +202,7 @@ export class FileDb {
     let obj: t.IFileDbFindResult['map'] | undefined;
     return {
       keys,
+      paths,
       list,
       get map() {
         if (!obj) {
