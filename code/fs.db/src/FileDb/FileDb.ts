@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
-import { util, fs, t } from '../common';
+import { util, fs, t, defaultValue } from '../common';
 
 /**
  * A DB that writes to the file-system.
@@ -134,6 +134,52 @@ export class FileDb {
   }
   public async deleteMany(keys: string[]): Promise<t.IFileDbValue[]> {
     return Promise.all(keys.map(key => this.delete(key)));
+  }
+
+  /**
+   * Find (glob)
+   */
+  public async find(args: t.IFileDbFindArgs): Promise<t.IFileDbFindResult> {
+    const { pattern = '' } = args;
+    const recursive = defaultValue(args.recursive, true);
+    let paths: string[] = [];
+
+    if (pattern) {
+      const dir = fs.join(this.dir, pattern);
+      const isFile = await fs.is.file(dir);
+      if (isFile) {
+        paths = [dir];
+      } else {
+        const isDir = await fs.is.dir(dir);
+        if (isDir) {
+          const glob = recursive ? fs.join(dir, '**') : fs.join(dir, '*');
+          paths = await fs.glob.find(glob);
+        }
+      }
+    } else {
+      paths = await fs.glob.find(fs.join(this.dir, '**'));
+    }
+
+    paths = paths.filter(path => path.endsWith('.json'));
+    const keys = paths
+      .map(path => path.substr(this.dir.length + 1))
+      .map(path => path.substr(0, path.length - '.json'.length));
+
+    const list = await this.getMany(keys);
+    let obj: t.IFileDbFindResult['map'] | undefined;
+    return {
+      keys,
+      list,
+      get map() {
+        if (!obj) {
+          obj = list.reduce((acc, next) => {
+            acc[next.props.key] = next.value;
+            return acc;
+          }, {});
+        }
+        return obj;
+      },
+    };
   }
 
   /**

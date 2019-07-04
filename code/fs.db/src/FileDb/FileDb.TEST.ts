@@ -197,4 +197,50 @@ describe('FileDb', () => {
       expect(res2[1].props.exists).to.eql(false);
     });
   });
+
+  describe('find (glob)', () => {
+    const prepare = async () => {
+      const db = testDb();
+      await db.put('cell/A1', 1);
+      await db.put('cell/A2', 2);
+      await db.put('cell/A2/meta', { foo: 123 });
+      await db.put('foo', 'hello');
+      return db;
+    };
+
+    it('no pattern', async () => {
+      const db = await prepare();
+      const res = await db.find({});
+      expect(res.keys).to.eql(['foo', 'cell/A1', 'cell/A2', 'cell/A2/meta']);
+      expect(res.map.foo).to.eql('hello');
+      expect(res.map['cell/A1']).to.eql(1);
+      expect(res.map['cell/A2']).to.eql(2);
+      expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
+    });
+
+    it('pattern (recursive, default)', async () => {
+      const db = await prepare();
+      const res: any = await db.find({ pattern: 'cell' });
+      expect(res.keys).to.eql(['cell/A1', 'cell/A2', 'cell/A2/meta']);
+      expect(res.map['cell/A1']).to.eql(1);
+      expect(res.map['cell/A2']).to.eql(2);
+      expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
+    });
+
+    it('pattern (not recursive)', async () => {
+      const db = await prepare();
+      const res: any = await db.find({ pattern: 'cell', recursive: false });
+      expect(res.keys).to.eql(['cell/A1', 'cell/A2']);
+      expect(res.map['cell/A1']).to.eql(1);
+      expect(res.map['cell/A2']).to.eql(2);
+    });
+
+    it('no match', async () => {
+      const db = await prepare();
+      const res: any = await db.find({ pattern: 'YO' });
+      expect(res.keys).to.eql([]);
+      expect(res.list).to.eql([]);
+      expect(res.map).to.eql({});
+    });
+  });
 });

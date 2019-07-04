@@ -1,9 +1,8 @@
 import { Json } from '../types';
 
 /**
- * FileDb
+ * Value
  */
-
 export type IFileDbValue = {
   value?: Json;
   props: IFileDbValueProps;
@@ -13,6 +12,20 @@ export type IFileDbValueProps = {
   path: string;
   exists: boolean;
   deleted: boolean;
+};
+
+/**
+ * Find
+ */
+export type IFileDbFindArgs = {
+  pattern?: string;
+  recursive?: boolean;
+};
+
+export type IFileDbFindResult = {
+  keys: string[];
+  list: IFileDbValue[];
+  map: { [key: string]: Json | undefined };
 };
 
 /**
