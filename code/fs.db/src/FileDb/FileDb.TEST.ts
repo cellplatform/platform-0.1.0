@@ -20,6 +20,19 @@ describe('FileDb', () => {
     expect(db.cache.isEnabled).to.eql(false);
   });
 
+  it('dispose', () => {
+    const db = testDb();
+    let count = 0;
+    db.dispose$.subscribe(() => count++);
+    expect(db.isDisposed).to.eql(false);
+
+    db.dispose();
+    db.dispose();
+
+    expect(db.isDisposed).to.eql(true);
+    expect(count).to.eql(1);
+  });
+
   it('get/put', async () => {
     const db = testDb();
 
@@ -125,8 +138,8 @@ describe('FileDb', () => {
 
   it('observable events', async () => {
     const db = testDb();
-    const events: t.FileDbEvent[] = [];
-    db.events$.subscribe(e => events.push(e));
+    const events: t.FileDbActionEvent[] = [];
+    db.events$.subscribe(e => events.push(e as t.FileDbActionEvent));
 
     const key = 'foo/bar';
     await db.get(key);
@@ -285,11 +298,16 @@ describe('FileDb', () => {
       const db = testDb({ isMemoized: true });
 
       await db.put('foo', 1);
+      await db.put('bar', 'hello');
+
       expect(await db.getValue('foo')).to.eql(1);
-      expect(await db.getValue('foo')).to.eql(1);
+      expect(await db.getValue('bar')).to.eql('hello');
 
       await db.put('foo', 2);
       expect(await db.getValue('foo')).to.eql(2);
+
+      expect(db.cache.values.foo.value).to.eql(2);
+      expect(db.cache.values.bar.value).to.eql('hello');
     });
 
     it('observable events (while caching)', async () => {
@@ -301,12 +319,15 @@ describe('FileDb', () => {
       await db.put(key, 123);
       await db.get(key);
       await db.get(key);
+      await db.put(key, 456);
 
-      expect(events.length).to.eql(3);
+      expect(events.length).to.eql(5);
 
       expect(events[0].type).to.eql('DB/put');
       expect(events[1].type).to.eql('DB/get');
       expect(events[2].type).to.eql('DB/get');
+      expect(events[3].type).to.eql('DB/put');
+      expect(events[4].type).to.eql('DB/cache/removed');
 
       const get1 = events[1] as t.IFileDbGetEvent;
       const get2 = events[2] as t.IFileDbGetEvent;

@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.db",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "DB like interface that persists to the file-system as JSON.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

@@ -2,7 +2,6 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { util, fs, t, defaultValue } from '../common';
 
-
 /**
  * A DB that writes to the file-system.
  */
@@ -27,11 +26,18 @@ export class FileDb {
    */
   public readonly dir: string;
 
-  public readonly cache: IFileDbCache = {
+  public readonly cache: t.IFileDbCache = {
     isEnabled: false,
     values: {},
-    clear: () => {
-      this.cache.values = {};
+    exists: (key: string) => this.cache.values[key] !== undefined,
+    clear: (keys?: string[]) => {
+      const remove = (key: string) => {
+        if (this.cache.exists(key)) {
+          delete this.cache.values[key];
+          this.fire({ type: 'DB/cache/removed', payload: { key, dir: this.dir } });
+        }
+      };
+      (keys || Object.keys(this.cache.values)).forEach(remove);
     },
   };
 
@@ -123,7 +129,9 @@ export class FileDb {
       payload: { action: 'put', key, value: res.value, props: res.props },
     });
 
-    delete this.cache.values[key]; // Invalidate cache.
+    if (this.cache.isEnabled) {
+      this.cache.clear([key]); // Invalidate cache.
+    }
     return res;
   }
   public static async put(dir: string, key: string, value?: t.Json): Promise<t.IFileDbValue> {

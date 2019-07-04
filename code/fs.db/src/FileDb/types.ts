@@ -35,13 +35,15 @@ export type IFileDbFindResult = {
 export type IFileDbCache = {
   isEnabled: boolean;
   values: { [key: string]: IFileDbValue };
+  exists(key: string): boolean;
   clear(keys?: string[]): void;
 };
 
 /**
  * Events
  */
-export type FileDbEvent = IFileDbGetEvent | IFileDbPutEvent | IFileDbDeleteEvent;
+export type FileDbActionEvent = IFileDbGetEvent | IFileDbPutEvent | IFileDbDeleteEvent;
+export type FileDbEvent = FileDbActionEvent | IFileDbCacheKeyRemovedEvent;
 
 export type IFileDbGetEvent = {
   type: 'DB/get';
@@ -57,6 +59,12 @@ export type IFileDbDeleteEvent = {
   type: 'DB/delete';
   payload: IFileDbActionDelete;
 };
+
+export type IFileDbCacheKeyRemovedEvent = {
+  type: 'DB/cache/removed';
+  payload: IFileDbCacheKeyRemoved;
+};
+export type IFileDbCacheKeyRemoved = { key: string; dir: string };
 
 /**
  * Action
