@@ -1,9 +1,6 @@
-import { Json } from '@platform/types';
-
-export { Json };
 export * from './FileDb/types';
 
-export type ITimestamps = {
+export type IFileTimestamps = {
   createdAt: number;
   modifiedAt: number;
 };

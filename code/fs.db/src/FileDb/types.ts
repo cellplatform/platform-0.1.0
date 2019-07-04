@@ -1,4 +1,4 @@
-import { Json } from '../types';
+import { Json } from '../common/types';
 
 /**
  * Value
