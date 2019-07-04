@@ -1,6 +1,6 @@
 {
   "name": "fs.db",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "DB like interface that persists to the file-system as JSON.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "@platform/fs": "0.1.5",
-    "@platform/libs": "0.0.18"
+    "@platform/libs": "0.0.18",
+    "@platform/types": "0.0.19",
+    "@platform/util.value": "0.4.3"
   },
   "devDependencies": {
     "@platform/test": "0.0.58",
