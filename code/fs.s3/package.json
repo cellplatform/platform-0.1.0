@@ -9,18 +9,22 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "tmp": "ts-node -T scripts/tmp"
   },
   "dependencies": {
     "@platform/fs": "0.1.5",
     "@platform/libs": "0.0.18",
+    "@platform/log": "0.0.132",
     "@platform/types": "0.0.19",
     "@platform/util.value": "0.4.3",
-    "aws-sdk": "^2.488.0"
+    "aws-sdk": "2.488.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.58",
-    "@platform/ts": "3.4.32"
+    "@platform/ts": "3.4.32",
+    "@types/dotenv": "6.1.1",
+    "dotenv": "8.0.0"
   },
   "files": [
     "lib"
