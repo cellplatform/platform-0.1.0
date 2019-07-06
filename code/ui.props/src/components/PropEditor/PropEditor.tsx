@@ -378,6 +378,10 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         style={styles.input}
         valueStyle={{ ...FONT_STYLE, color: this.valueColor }}
         events$={this.value$}
+        spellCheck={false}
+        autoCapitalize={false}
+        autoComplete={false}
+        autoCorrect={false}
         onFocus={this.focusHandler(true)}
         onBlur={this.focusHandler(false)}
       />
