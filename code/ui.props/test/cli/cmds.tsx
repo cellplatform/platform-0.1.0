@@ -48,9 +48,7 @@ export const root = Command.create<P>('root')
     const data = [...ARRAY];
     e.props.next({ data });
   })
-  .add('is-insertable', e => {
-    e.props.next({ isInsertable: true });
-  })
-  .add('not-insertable', e => {
-    e.props.next({ isInsertable: false });
-  });
+  .add('is-insertable', e => e.props.next({ isInsertable: true }))
+  .add('not-insertable', e => e.props.next({ isInsertable: false }))
+  .add('is-deletable', e => e.props.next({ isDeletable: true }))
+  .add('not-deletable', e => e.props.next({ isDeletable: false }));

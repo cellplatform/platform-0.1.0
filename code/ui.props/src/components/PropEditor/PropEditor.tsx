@@ -178,7 +178,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   }
 
   public get type() {
-    return util.getType(this.value);
+    return util.toType(this.value);
   }
 
   public get isScalar() {
@@ -190,7 +190,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     const { parentNode } = this.props;
     const data = parentNode ? parentNode.data : undefined;
     const value = data ? data.value : undefined;
-    return util.getType(value);
+    return util.toType(value);
   }
 
   private get lens() {
@@ -253,7 +253,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     this.fire({ type: 'PROPS/changed', payload });
 
     if (data.isInsert && data.parentType) {
-      const into = data.parentType as t.PropInsertType;
+      const into = data.parentType as t.PropDataObjectType;
       this.fire({ type: 'PROPS/inserted', payload: { ...payload, into } });
     }
   };

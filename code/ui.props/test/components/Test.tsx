@@ -74,14 +74,15 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
                 style={styles.props}
                 theme={theme}
                 onChange={this.handleChange}
-                insertable={this.state.isInsertable}
                 renderValue={this.valueFactory}
                 events$={this.events$}
+                insertable={this.state.isInsertable}
+                deletable={this.state.isDeletable}
               />
             </div>
           </div>
           <div {...styles.right}>
-            <ObjectView name={'state'} data={this.state} theme={theme} expandLevel={5} />
+            <ObjectView name={'state'} data={this.state.data} theme={theme} expandLevel={5} />
           </div>
         </div>
       </CommandShell>

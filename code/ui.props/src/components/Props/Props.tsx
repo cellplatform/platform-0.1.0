@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { defaultValue, css, GlamorValue, Icons, t, TreeView, util } from '../common';
+import { css, GlamorValue, Icons, t, TreeView, util } from '../common';
 import { PropEditor } from '../PropEditor';
 
 const ROOT = 'ROOT';
@@ -16,8 +16,8 @@ export type IPropsProps = {
   data?: t.PropsData;
   filter?: t.PropFilter;
   renderValue?: t.PropValueFactory;
-  insertable?: boolean | t.PropInsertType | t.PropInsertType[];
-  // deletable?: boolean | t.PropInsertType | t.PropInsertType[];
+  insertable?: boolean | t.PropDataObjectType | t.PropDataObjectType[];
+  deletable?: boolean | t.PropDataObjectType | t.PropDataObjectType[];
   theme?: t.PropsTheme;
   style?: GlamorValue;
   events$?: Subject<t.PropsEvent>;
@@ -97,7 +97,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
         filter(e => e.target === 'NODE'),
         filter(e => Boolean(e.node && e.node.children && e.node.children.length > 0)),
         filter(e =>
-          ['object', 'array'].includes(util.getType((e.node.data as t.IPropNodeData).value)),
+          ['object', 'array'].includes(util.toType((e.node.data as t.IPropNodeData).value)),
         ),
       )
       .subscribe(e => {
@@ -119,9 +119,12 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     return theme;
   }
 
-  public get insertTypes(): t.PropInsertType[] {
-    const insert = defaultValue(this.props.insertable, []);
-    return insert === true ? ['object', 'array'] : Array.isArray(insert) ? insert : [];
+  public get insertableTypes(): t.PropDataObjectType[] {
+    return util.toEditableTypes(this.props.insertable);
+  }
+
+  public get deletableTypes(): t.PropDataObjectType[] {
+    return util.toEditableTypes(this.props.deletable);
   }
 
   private get root() {
@@ -129,15 +132,19 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     const root: t.IPropNode = {
       id: ROOT,
       props: { header: { isVisible: false } },
-      data: { path: ROOT, key: '', value: data, type: util.getType(data), isInsert: false },
+      data: { path: ROOT, key: '', value: data, type: util.toType(data), isInsert: false },
     };
+
+    console.log('this.deletableTypes', this.deletableTypes);
+
     const body = BODY.PROD_EDITOR;
     return util.buildTree({
       root,
       parent: root,
       data,
       filter,
-      insert: this.insertTypes,
+      insertable: this.insertableTypes,
+      deletable: this.deletableTypes,
       formatNode: node => ({ ...node, props: { ...node.props, body } }),
     });
   }

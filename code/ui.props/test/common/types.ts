@@ -13,4 +13,5 @@ export type ITestState = {
   theme?: t.PropsTheme;
   data?: object | any[];
   isInsertable?: boolean;
+  isDeletable?: boolean;
 };

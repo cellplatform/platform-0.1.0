@@ -1,11 +1,11 @@
 import * as t from './types';
-import { value as valueUtil } from './libs';
+import { value as valueUtil, defaultValue } from './libs';
 import { COLORS } from './constants';
 
 /**
  * Get the type of the given value.
  */
-export function getType(value: t.PropValue): t.PropType {
+export function toType(value: t.PropValue): t.PropType {
   if (value === null) {
     return 'null';
   }
@@ -61,4 +61,13 @@ export function typeColor(type: t.PropType, theme: t.PropsTheme) {
     return COLORS.DARK_RED;
   }
   return theme === 'DARK' ? COLORS.WHITE : COLORS.WHITE;
+}
+
+/**
+ * Converts to an editable type.
+ */
+export function toEditableTypes(input?: boolean | t.PropDataObjectType | t.PropDataObjectType[]) {
+  const types = defaultValue(input, []);
+  const res = types === true ? ['object', 'array'] : Array.isArray(types) ? types : [];
+  return res as t.PropDataObjectType[];
 }

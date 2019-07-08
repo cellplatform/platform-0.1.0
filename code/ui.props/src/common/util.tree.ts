@@ -1,5 +1,5 @@
 import * as t from './types';
-import { getType } from './util.type';
+import { toType } from './util.type';
 
 /**
  * Builds a <TreeView> node structure.
@@ -9,10 +9,11 @@ export function buildTree(args: {
   filter?: t.PropFilter;
   parent: t.IPropNode;
   root: t.IPropNode;
-  insert: t.PropInsertType[];
+  insertable: t.PropDataObjectType[];
+  deletable: t.PropDataObjectType[];
   formatNode: (node: t.IPropNode) => t.IPropNode;
 }): t.IPropNode {
-  const { data, root, formatNode, filter, insert } = args;
+  const { data, root, formatNode, filter, insertable, deletable } = args;
   let parent = args.parent;
 
   const createNode = (
@@ -22,7 +23,7 @@ export function buildTree(args: {
     options: { isInsert?: boolean } = {},
   ) => {
     const isInsert = Boolean(options.isInsert);
-    const type = getType(value);
+    const type = toType(value);
     const parentType = parent && parent.data ? parent.data.type : undefined;
     const data: t.IPropNodeData = { path: id, key, value, type, parentType, isInsert };
 
@@ -41,7 +42,7 @@ export function buildTree(args: {
     if (isObject || isArray) {
       const parent = node;
       const data = value;
-      node = buildTree({ data, parent, root, formatNode, filter, insert }); // <== RECURSION
+      node = buildTree({ data, parent, root, formatNode, filter, insertable, deletable }); // <== RECURSION
     }
 
     return node;
@@ -56,7 +57,7 @@ export function buildTree(args: {
       .filter(e => Boolean(e));
     parent = { ...parent, children };
 
-    if (insert.includes('array')) {
+    if (insertable.includes('array')) {
       const id = toChildNodeId(parent.id, children.length);
       const newNode = createNode(id, data.length, undefined, { isInsert: true });
       if (newNode) {

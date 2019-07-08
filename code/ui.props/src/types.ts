@@ -8,16 +8,11 @@ export type PropScalar = string | boolean | number | null | undefined;
 export type PropArray = Array<PropScalar | object>;
 export type PropValue = PropScalar | PropArray | object | Function; // tslint:disable-line
 
-export type PropInsertType = 'object' | 'array';
-export type PropType =
-  | 'object'
-  | 'array'
-  | 'string'
-  | 'boolean'
-  | 'number'
-  | 'null'
-  | 'undefined'
-  | 'function';
+export type PropDataObjectType = 'object' | 'array';
+export type PropObjectType = PropDataObjectType | 'function';
+export type PropTypeScalar = 'string' | 'boolean' | 'number';
+export type PropEmptyType = 'null' | 'undefined';
+export type PropType = PropTypeScalar | PropEmptyType | PropObjectType;
 
 export type PropValueFactory = (
   e: PropValueFactoryArgs,
@@ -79,5 +74,5 @@ export type IPropsInsertedEvent = {
   payload: IPropsInsert;
 };
 export type IPropsInsert<D extends PropsData = any> = IPropsChange<D> & {
-  into: PropInsertType;
+  into: PropDataObjectType;
 };
