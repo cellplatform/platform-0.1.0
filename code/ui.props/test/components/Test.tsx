@@ -74,7 +74,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
                 style={styles.props}
                 theme={theme}
                 onChange={this.handleChange}
-                insert={this.state.isInsertable}
+                insertable={this.state.isInsertable}
                 renderValue={this.valueFactory}
                 events$={this.events$}
               />

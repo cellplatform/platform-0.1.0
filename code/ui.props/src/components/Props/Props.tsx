@@ -16,7 +16,8 @@ export type IPropsProps = {
   data?: t.PropsData;
   filter?: t.PropFilter;
   renderValue?: t.PropValueFactory;
-  insert?: boolean | t.PropInsertType | t.PropInsertType[];
+  insertable?: boolean | t.PropInsertType | t.PropInsertType[];
+  // deletable?: boolean | t.PropInsertType | t.PropInsertType[];
   theme?: t.PropsTheme;
   style?: GlamorValue;
   events$?: Subject<t.PropsEvent>;
@@ -119,7 +120,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
   }
 
   public get insertTypes(): t.PropInsertType[] {
-    const insert = defaultValue(this.props.insert, []);
+    const insert = defaultValue(this.props.insertable, []);
     return insert === true ? ['object', 'array'] : Array.isArray(insert) ? insert : [];
   }
 

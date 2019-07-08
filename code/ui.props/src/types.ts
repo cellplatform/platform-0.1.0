@@ -52,7 +52,7 @@ export type PropFilterArgs = {
 /**
  * [Events]
  */
-export type PropsEvent = IPropsChangedEvent | IPropsFocusEvent | IPropsInsertEvent;
+export type PropsEvent = IPropsChangedEvent | IPropsFocusEvent | IPropsInsertedEvent;
 
 export type IPropsChangedEvent<D extends PropsData = any> = {
   type: 'PROPS/changed';
@@ -74,8 +74,8 @@ export type IPropsFocus = {
   path: string;
 };
 
-export type IPropsInsertEvent = {
-  type: 'PROPS/insert';
+export type IPropsInsertedEvent = {
+  type: 'PROPS/inserted';
   payload: IPropsInsert;
 };
 export type IPropsInsert<D extends PropsData = any> = IPropsChange<D> & {

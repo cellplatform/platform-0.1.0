@@ -254,7 +254,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
 
     if (data.isInsert && data.parentType) {
       const into = data.parentType as t.PropInsertType;
-      this.fire({ type: 'PROPS/insert', payload: { ...payload, into } });
+      this.fire({ type: 'PROPS/inserted', payload: { ...payload, into } });
     }
   };
 

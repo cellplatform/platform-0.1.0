@@ -50,14 +50,14 @@ export function buildTree(args: {
   if (Array.isArray(data)) {
     const children = data
       .map((value, index) => {
-        const id = `${parent.id}.[${index}]`;
+        const id = toChildNodeId(parent.id, index);
         return createNode(id, index, value) as t.IPropNode;
       })
       .filter(e => Boolean(e));
     parent = { ...parent, children };
 
     if (insert.includes('array')) {
-      const id = `${parent.id}.[${children.length}]`;
+      const id = toChildNodeId(parent.id, children.length);
       const newNode = createNode(id, data.length, undefined, { isInsert: true });
       if (newNode) {
         parent = { ...parent, children: [...(parent.children || []), newNode] };
@@ -68,14 +68,20 @@ export function buildTree(args: {
   if (typeof data === 'object' && !Array.isArray(data)) {
     const children = Object.keys(data)
       .map(key => {
-        const id = `${parent.id}.${key}`;
+        const id = toChildNodeId(parent.id, key);
         const value = data[key];
         return createNode(id, key, value) as t.IPropNode;
       })
       .filter(e => Boolean(e));
-
     parent = { ...parent, children };
   }
 
   return parent;
+}
+
+/**
+ * Generates the ID of a child node.
+ */
+function toChildNodeId(parentId: string, child: string | number) {
+  return typeof child === 'number' ? `${parentId}.[${child}]` : `${parentId}.${child}`;
 }
