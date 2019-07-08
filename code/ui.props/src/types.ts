@@ -8,6 +8,8 @@ export type PropScalar = string | boolean | number | null | undefined;
 export type PropArray = Array<PropScalar | object>;
 export type PropValue = PropScalar | PropArray | object | Function; // tslint:disable-line
 
+export type PropInsertTarget = 'object' | 'array';
+
 export type PropType =
   | 'object'
   | 'array'

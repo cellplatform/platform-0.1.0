@@ -41,10 +41,16 @@ export const root = Command.create<P>('root')
   .add('LIGHT', e => {
     e.props.state$.next({ theme: 'LIGHT' });
   })
-  .add('data-object', e => {
+  .add('object', e => {
     e.props.next({ data: { ...OBJECT } });
   })
-  .add('data-array', e => {
+  .add('array', e => {
     const data = [...ARRAY];
     e.props.next({ data });
+  })
+  .add('is-insertable', e => {
+    e.props.next({ isInsertable: true });
+  })
+  .add('not-insertable', e => {
+    e.props.next({ isInsertable: false });
   });

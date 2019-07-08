@@ -14,4 +14,6 @@ export type IPropNodeData = {
   key: string | number;
   value: t.PropValue;
   type: t.PropType;
+  parentType?: t.PropType;
+  isInsert: boolean;
 };

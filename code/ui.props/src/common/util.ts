@@ -10,13 +10,22 @@ export function buildTree(args: {
   filter?: t.PropFilter;
   parent: t.IPropNode;
   root: t.IPropNode;
+  insert: t.PropInsertTarget[];
   formatNode: (node: t.IPropNode) => t.IPropNode;
 }): t.IPropNode {
-  const { data, root, formatNode, filter } = args;
+  const { data, root, formatNode, filter, insert } = args;
   let parent = args.parent;
 
-  const createNode = (id: string, key: string | number, value: any) => {
-    const data = { path: id, key, value, type: getType(value) };
+  const createNode = (
+    id: string,
+    key: string | number,
+    value: any,
+    options: { isInsert?: boolean } = {},
+  ) => {
+    const isInsert = Boolean(options.isInsert);
+    const type = getType(value);
+    const parentType = parent && parent.data ? parent.data.type : undefined;
+    const data: t.IPropNodeData = { path: id, key, value, type, parentType, isInsert };
 
     if (filter && !filter(data)) {
       return undefined;
@@ -33,7 +42,7 @@ export function buildTree(args: {
     if (isObject || isArray) {
       const parent = node;
       const data = value;
-      node = buildTree({ data, parent, root, formatNode, filter }); // <== RECURSION
+      node = buildTree({ data, parent, root, formatNode, filter, insert }); // <== RECURSION
     }
 
     return node;
@@ -47,6 +56,14 @@ export function buildTree(args: {
       })
       .filter(e => Boolean(e));
     parent = { ...parent, children };
+
+    if (insert.includes('array')) {
+      const id = `${parent.id}.[${children.length}]`;
+      const newNode = createNode(id, data.length, undefined, { isInsert: true });
+      if (newNode) {
+        parent = { ...parent, children: [...(parent.children || []), newNode] };
+      }
+    }
   }
 
   if (typeof data === 'object' && !Array.isArray(data)) {

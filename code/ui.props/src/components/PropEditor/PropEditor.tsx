@@ -34,9 +34,8 @@ export type IPropEditorProps = {
   events$: Subject<t.PropsEvent>;
   style?: GlamorValue;
 };
-export type IPropEditorState = {
-  value?: t.PropValue;
-};
+
+export type IPropEditorState = { value?: t.PropValue };
 
 export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEditorState> {
   public state: IPropEditorState = {};
@@ -109,7 +108,9 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         filter(e => e.type === 'TEXT_INPUT/changed'),
         map(e => e.payload as t.ITextInputChanged),
       )
-      .subscribe(({ to }) => this.change({ to }));
+      .subscribe(e => {
+        this.change({ to: e.to });
+      });
 
     /**
      * Value changed progrmatically via property.
@@ -145,6 +146,10 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   public get isFocused() {
     const input = this.elValueInput;
     return input ? input.isFocused : false;
+  }
+
+  public get id() {
+    return this.props.node.id;
   }
 
   public get nodeData() {
@@ -225,10 +230,11 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   }
 
   private change: t.PropValueFactoryArgs['change'] = args => {
-    const nodeData = this.nodeData;
-    const { path, key } = nodeData;
+    const data = this.nodeData;
+    const key = data.key;
+    const { path } = data;
 
-    const fromValue = nodeData.value;
+    const fromValue = data.value;
     const value = { from: fromValue, to: valueUtil.toType(args.to) as t.PropValue };
 
     const root = this.props.rootData;
@@ -242,8 +248,13 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
       value,
       data: { from, to },
     };
+
     this.setValue(value.to);
     this.next({ type: 'PROPS/changed', payload });
+
+    if (data.isInsert) {
+      console.log(`\nTODO 🐷  fire "new value" event \n`);
+    }
   };
 
   private onFocus: t.PropValueFactoryArgs['onFocus'] = isFocused => {
@@ -257,10 +268,13 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   public render() {
     const isScalar = this.isScalar;
     const isArray = this.parentType === 'array';
-
+    const data = this.nodeData;
     const value = this.renderValue();
     const elValue = value ? value.el : undefined;
-    const underline = (value && value.underline) || { color: isScalar ? 0.1 : 0.6, style: 'solid' };
+    const underline = (value && value.underline) || {
+      color: isScalar || data.isInsert ? 0.1 : 0.6,
+      style: 'solid',
+    };
 
     const styles = {
       base: css({
@@ -366,17 +380,25 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   };
 
   private renderValueInput = () => {
+    const data = this.nodeData;
     const styles = {
       input: css({ flex: 1 }),
     };
     const value = (this.state.value || '').toString();
+    const valueColor = this.valueColor;
     return (
       <TextInput
         key={this.props.node.id}
         ref={this.elValueInputRef}
         value={value}
+        placeholder={data.isInsert ? 'New value' : ''}
         style={styles.input}
-        valueStyle={{ ...FONT_STYLE, color: this.valueColor }}
+        valueStyle={{ ...FONT_STYLE, color: valueColor }}
+        placeholderStyle={{
+          ...FONT_STYLE,
+          color: color.alpha(valueColor, 0.2),
+          italic: true,
+        }}
         events$={this.value$}
         spellCheck={false}
         autoCapitalize={false}

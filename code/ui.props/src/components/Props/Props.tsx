@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, Icons, t, TreeView, util } from '../common';
+import { defaultValue, css, GlamorValue, Icons, t, TreeView, util } from '../common';
 import { PropEditor } from '../PropEditor';
 
 const ROOT = 'ROOT';
@@ -16,6 +16,7 @@ export type IPropsProps = {
   data?: t.PropsData;
   filter?: t.PropFilter;
   renderValue?: t.PropValueFactory;
+  insert?: boolean | t.PropInsertTarget | t.PropInsertTarget[];
   theme?: t.PropsTheme;
   style?: GlamorValue;
   events$?: Subject<t.PropsEvent>;
@@ -114,19 +115,26 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     return theme;
   }
 
+  public get insert(): t.PropInsertTarget[] {
+    const insert = defaultValue(this.props.insert, []);
+    return insert === true ? ['object', 'array'] : Array.isArray(insert) ? insert : [];
+  }
+
   private get root() {
-    const data = this.props.data;
+    const { filter, data } = this.props;
+    // const data = this.props.data;
     const root: t.IPropNode = {
       id: ROOT,
       props: { header: { isVisible: false } },
-      data: { path: ROOT, key: '', value: data, type: util.getType(data) },
+      data: { path: ROOT, key: '', value: data, type: util.getType(data), isInsert: false },
     };
     const body = BODY.PROD_EDITOR;
     return util.buildTree({
       root,
       parent: root,
       data,
-      filter: this.props.filter,
+      filter,
+      insert: this.insert,
       formatNode: node => ({ ...node, props: { ...node.props, body } }),
     });
   }
@@ -147,6 +155,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
         <TreeView
           node={this.root}
           current={this.state.current}
+          background={'NONE'}
           theme={theme}
           renderIcon={this.iconFactory}
           renderNodeBody={this.nodeFactory}
