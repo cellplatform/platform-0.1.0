@@ -9,7 +9,7 @@ export function buildTree(args: {
   filter?: t.PropFilter;
   parent: t.IPropNode;
   root: t.IPropNode;
-  insert: t.PropInsertTarget[];
+  insert: t.PropInsertType[];
   formatNode: (node: t.IPropNode) => t.IPropNode;
 }): t.IPropNode {
   const { data, root, formatNode, filter, insert } = args;

@@ -220,7 +220,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     return this;
   }
 
-  private next(e: t.PropsEvent) {
+  private fire(e: t.PropsEvent) {
     this.props.events$.next(e);
   }
 
@@ -250,16 +250,17 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     };
 
     this.setValue(value.to);
-    this.next({ type: 'PROPS/changed', payload });
+    this.fire({ type: 'PROPS/changed', payload });
 
-    if (data.isInsert) {
-      console.log(`\nTODO 🐷  fire "new value" event \n`);
+    if (data.isInsert && data.parentType) {
+      const into = data.parentType as t.PropInsertType;
+      this.fire({ type: 'PROPS/insert', payload: { ...payload, into } });
     }
   };
 
   private onFocus: t.PropValueFactoryArgs['onFocus'] = isFocused => {
     const path = this.path;
-    this.next({ type: 'PROPS/focus', payload: { path, isFocused } });
+    this.fire({ type: 'PROPS/focus', payload: { path, isFocused } });
   };
 
   /**

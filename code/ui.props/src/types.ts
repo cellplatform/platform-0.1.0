@@ -8,8 +8,7 @@ export type PropScalar = string | boolean | number | null | undefined;
 export type PropArray = Array<PropScalar | object>;
 export type PropValue = PropScalar | PropArray | object | Function; // tslint:disable-line
 
-export type PropInsertTarget = 'object' | 'array';
-
+export type PropInsertType = 'object' | 'array';
 export type PropType =
   | 'object'
   | 'array'
@@ -53,7 +52,7 @@ export type PropFilterArgs = {
 /**
  * [Events]
  */
-export type PropsEvent = IPropsChangedEvent | IPropsFocusEvent;
+export type PropsEvent = IPropsChangedEvent | IPropsFocusEvent | IPropsInsertEvent;
 
 export type IPropsChangedEvent<D extends PropsData = any> = {
   type: 'PROPS/changed';
@@ -73,4 +72,12 @@ export type IPropsFocusEvent = {
 export type IPropsFocus = {
   isFocused: boolean;
   path: string;
+};
+
+export type IPropsInsertEvent = {
+  type: 'PROPS/insert';
+  payload: IPropsInsert;
+};
+export type IPropsInsert<D extends PropsData = any> = IPropsChange<D> & {
+  into: PropInsertType;
 };

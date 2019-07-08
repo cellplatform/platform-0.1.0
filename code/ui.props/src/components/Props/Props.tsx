@@ -16,7 +16,7 @@ export type IPropsProps = {
   data?: t.PropsData;
   filter?: t.PropFilter;
   renderValue?: t.PropValueFactory;
-  insert?: boolean | t.PropInsertTarget | t.PropInsertTarget[];
+  insert?: boolean | t.PropInsertType | t.PropInsertType[];
   theme?: t.PropsTheme;
   style?: GlamorValue;
   events$?: Subject<t.PropsEvent>;
@@ -40,8 +40,11 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     const tree$ = this.tree$.pipe(takeUntil(this.unmounted$));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
+
+    // Update state.
     state$.subscribe(e => this.setState(e));
 
+    // Bubble events.
     if (this.props.events$) {
       this.events$.subscribe(this.props.events$);
     }
@@ -115,14 +118,13 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     return theme;
   }
 
-  public get insert(): t.PropInsertTarget[] {
+  public get insertTypes(): t.PropInsertType[] {
     const insert = defaultValue(this.props.insert, []);
     return insert === true ? ['object', 'array'] : Array.isArray(insert) ? insert : [];
   }
 
   private get root() {
     const { filter, data } = this.props;
-    // const data = this.props.data;
     const root: t.IPropNode = {
       id: ROOT,
       props: { header: { isVisible: false } },
@@ -134,7 +136,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
       parent: root,
       data,
       filter,
-      insert: this.insert,
+      insert: this.insertTypes,
       formatNode: node => ({ ...node, props: { ...node.props, body } }),
     });
   }
