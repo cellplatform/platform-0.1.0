@@ -69,22 +69,22 @@ export type DocDbEvent = DocDbActionEvent | IDocDbCacheKeyRemovedEvent;
 export type DocDbActionEvent = IDocDbGetEvent | IDocDbPutEvent | IDocDbDeleteEvent;
 
 export type IDocDbGetEvent = {
-  type: 'DB/get';
+  type: 'DOC/get';
   payload: IDocDbActionGet;
 };
 
 export type IDocDbPutEvent = {
-  type: 'DB/put';
+  type: 'DOC/put';
   payload: IDocDbActionPut;
 };
 
 export type IDocDbDeleteEvent = {
-  type: 'DB/delete';
+  type: 'DOC/delete';
   payload: IDocDbActionDelete;
 };
 
 export type IDocDbCacheKeyRemovedEvent = {
-  type: 'DB/cache/removed';
+  type: 'DOC/cache/removed';
   payload: IDocDbCacheKeyRemoved;
 };
 export type IDocDbCacheKeyRemoved = { key: string; dir: string };

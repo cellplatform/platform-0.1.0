@@ -153,11 +153,11 @@ describe('DocDb', () => {
 
     expect(events.length).to.eql(5);
 
-    expect(events[0].type).to.eql('DB/get');
-    expect(events[1].type).to.eql('DB/put');
-    expect(events[2].type).to.eql('DB/get');
-    expect(events[3].type).to.eql('DB/delete');
-    expect(events[4].type).to.eql('DB/get');
+    expect(events[0].type).to.eql('DOC/get');
+    expect(events[1].type).to.eql('DOC/put');
+    expect(events[2].type).to.eql('DOC/get');
+    expect(events[3].type).to.eql('DOC/delete');
+    expect(events[4].type).to.eql('DOC/get');
 
     expect(events[0].payload.value).to.eql(undefined);
     expect(events[1].payload.value).to.eql(123);
@@ -335,11 +335,11 @@ describe('DocDb', () => {
 
       expect(events.length).to.eql(5);
 
-      expect(events[0].type).to.eql('DB/put');
-      expect(events[1].type).to.eql('DB/get');
-      expect(events[2].type).to.eql('DB/get');
-      expect(events[3].type).to.eql('DB/put');
-      expect(events[4].type).to.eql('DB/cache/removed');
+      expect(events[0].type).to.eql('DOC/put');
+      expect(events[1].type).to.eql('DOC/get');
+      expect(events[2].type).to.eql('DOC/get');
+      expect(events[3].type).to.eql('DOC/put');
+      expect(events[4].type).to.eql('DOC/cache/removed');
 
       const get1 = events[1] as t.IDocDbGetEvent;
       const get2 = events[2] as t.IDocDbGetEvent;

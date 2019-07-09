@@ -34,7 +34,7 @@ export class DocDb implements t.IDocDb {
       const remove = (key: string) => {
         if (this.cache.exists(key)) {
           delete this.cache.values[key];
-          this.fire({ type: 'DB/cache/removed', payload: { key, dir: this.dir } });
+          this.fire({ type: 'DOC/cache/removed', payload: { key, dir: this.dir } });
         }
       };
       (keys || Object.keys(this.cache.values)).forEach(remove);
@@ -69,7 +69,7 @@ export class DocDb implements t.IDocDb {
     const fire = (result: t.IDocDbValue, cached: boolean) => {
       const { value, props } = result;
       this.fire({
-        type: 'DB/get',
+        type: 'DOC/get',
         payload: { action: 'get', key, value, props, cached },
       });
     };
@@ -125,7 +125,7 @@ export class DocDb implements t.IDocDb {
 
     const res = await DocDb.put(this.dir, key.toString(), value);
     this.fire({
-      type: 'DB/put',
+      type: 'DOC/put',
       payload: { action: 'put', key, value: res.value, props: res.props },
     });
 
@@ -154,7 +154,7 @@ export class DocDb implements t.IDocDb {
   public async delete(key: string): Promise<t.IDocDbValue> {
     const res = await DocDb.delete(this.dir, key.toString());
     this.fire({
-      type: 'DB/delete',
+      type: 'DOC/delete',
       payload: { action: 'delete', key, value: res.value, props: res.props },
     });
     return res;
