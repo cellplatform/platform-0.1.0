@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, Icons, t, TreeView, util } from '../common';
+import { css, GlamorValue, Icons, t, TreeView, util, R } from '../common';
 import { PropEditor } from '../PropEditor';
 
 const ROOT = 'ROOT';
@@ -132,10 +132,8 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     const root: t.IPropNode = {
       id: ROOT,
       props: { header: { isVisible: false } },
-      data: { path: ROOT, key: '', value: data, type: util.toType(data), isInsert: false },
+      data: { path: ROOT, key: '', value: data, type: util.toType(data), action: 'CHANGE' },
     };
-
-    console.log('this.deletableTypes', this.deletableTypes);
 
     const body = BODY.PROD_EDITOR;
     return util.buildTree({
@@ -181,6 +179,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     if (e.body === BODY.PROD_EDITOR) {
       const node = e.node as t.IPropNode;
       const parentNode = TreeView.util.parent(this.root, node) as t.IPropNode;
+      const isDeletable = node.data ? node.data.isDeletable : false;
       return (
         <PropEditor
           rootData={this.props.data}
@@ -188,6 +187,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
           node={node}
           theme={this.theme}
           renderValue={this.props.renderValue}
+          isDeletable={isDeletable}
           events$={this.events$}
         />
       );

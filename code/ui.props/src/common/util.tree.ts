@@ -20,12 +20,14 @@ export function buildTree(args: {
     id: string,
     key: string | number,
     value: any,
-    options: { isInsert?: boolean } = {},
+    options: { action?: t.PropChangeAction } = {},
   ) => {
-    const isInsert = Boolean(options.isInsert);
+    // const isInsert = Boolean(options.isInsert);
+    const { action } = options;
     const type = toType(value);
     const parentType = parent && parent.data ? parent.data.type : undefined;
-    const data: t.IPropNodeData = { path: id, key, value, type, parentType, isInsert };
+    const isDeletable = deletable.includes(parentType as t.PropDataObjectType);
+    const data: t.IPropNodeData = { path: id, key, value, type, parentType, action, isDeletable };
 
     if (filter && !filter(data)) {
       return undefined;
@@ -59,7 +61,7 @@ export function buildTree(args: {
 
     if (insertable.includes('array')) {
       const id = toChildNodeId(parent.id, children.length);
-      const newNode = createNode(id, data.length, undefined, { isInsert: true });
+      const newNode = createNode(id, data.length, undefined, { action: 'INSERT' });
       if (newNode) {
         parent = { ...parent, children: [...(parent.children || []), newNode] };
       }

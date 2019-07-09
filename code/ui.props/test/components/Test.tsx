@@ -82,7 +82,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
             </div>
           </div>
           <div {...styles.right}>
-            <ObjectView name={'state'} data={this.state.data} theme={theme} expandLevel={5} />
+            <ObjectView name={'state'} data={this.state} theme={theme} expandLevel={5} />
           </div>
         </div>
       </CommandShell>

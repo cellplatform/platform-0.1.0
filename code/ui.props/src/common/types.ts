@@ -15,5 +15,6 @@ export type IPropNodeData = {
   value: t.PropValue;
   type: t.PropType;
   parentType?: t.PropType;
-  isInsert: boolean;
+  action?: t.PropChangeAction;
+  isDeletable?: boolean;
 };

@@ -11,6 +11,7 @@ import {
   css,
   GlamorValue,
   Icons,
+  Button,
   IIcon,
   t,
   TextInput,
@@ -31,11 +32,15 @@ export type IPropEditorProps = {
   parentNode: t.IPropNode;
   node: t.IPropNode;
   renderValue?: t.PropValueFactory;
+  isDeletable?: boolean;
   events$: Subject<t.PropsEvent>;
   style?: GlamorValue;
 };
 
-export type IPropEditorState = { value?: t.PropValue };
+export type IPropEditorState = {
+  value?: t.PropValue;
+  isOver?: boolean;
+};
 
 export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEditorState> {
   public state: IPropEditorState = {};
@@ -232,7 +237,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   private change: t.PropValueFactoryArgs['change'] = args => {
     const data = this.nodeData;
     const key = data.key;
-    const { path } = data;
+    const { path, action = 'CHANGE' } = data;
 
     const fromValue = data.value;
     const value = { from: fromValue, to: valueUtil.toType(args.to) as t.PropValue };
@@ -243,6 +248,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     const to = R.set(lens, value.to, from);
 
     const payload: t.IPropsChange = {
+      action,
       path,
       key,
       value,
@@ -251,11 +257,6 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
 
     this.setValue(value.to);
     this.fire({ type: 'PROPS/changed', payload });
-
-    if (data.isInsert && data.parentType) {
-      const into = data.parentType as t.PropDataObjectType;
-      this.fire({ type: 'PROPS/inserted', payload: { ...payload, into } });
-    }
   };
 
   private onFocus: t.PropValueFactoryArgs['onFocus'] = isFocused => {
@@ -273,7 +274,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     const value = this.renderValue();
     const elValue = value ? value.el : undefined;
     const underline = (value && value.underline) || {
-      color: isScalar || data.isInsert ? 0.1 : 0.6,
+      color: isScalar || data.action === 'INSERT' ? 0.1 : 0.6,
       style: 'solid',
     };
 
@@ -313,11 +314,16 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     };
 
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div
+        {...css(styles.base, this.props.style)}
+        onMouseEnter={this.overDeleteHandler(true)}
+        onMouseLeave={this.overDeleteHandler(false)}
+      >
         <div {...css(styles.outer, styles.left)}>
           <div {...styles.ellipsis}>{this.key}</div>
         </div>
         <div {...css(styles.outer, styles.right)}>{elValue}</div>
+        {this.renderDelete()}
       </div>
     );
   }
@@ -392,7 +398,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         key={this.props.node.id}
         ref={this.elValueInputRef}
         value={value}
-        placeholder={data.isInsert ? 'New value' : ''}
+        placeholder={data.action === 'INSERT' ? 'New value' : ''}
         style={styles.input}
         valueStyle={{ ...FONT_STYLE, color: valueColor }}
         placeholderStyle={{
@@ -437,13 +443,46 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     );
   }
 
+  private renderDelete() {
+    if (!this.props.isDeletable) {
+      return null;
+    }
+    const isOver = this.state.isOver;
+    const styles = {
+      base: css({
+        cursor: 'pointer',
+        opacity: isOver ? 0.6 : 0,
+        transition: `opacity 0.7s`,
+      }),
+      icon: css({
+        position: 'relative',
+        top: 2,
+        marginLeft: 3,
+      }),
+    };
+    return (
+      <Button style={styles.base} onClick={this.handleDeleteClick}>
+        <Icons.Delete color={COLORS.WHITE} size={18} style={styles.icon} />
+      </Button>
+    );
+  }
+
   /**
    * [Handlers]
    */
-
   private focusHandler = (isFocused: boolean) => {
     return () => {
       this.onFocus(isFocused);
     };
+  };
+
+  private overDeleteHandler = (isOverDelete: boolean) => {
+    return () => {
+      this.state$.next({ isOver: isOverDelete });
+    };
+  };
+
+  private handleDeleteClick = () => {
+    console.log('Delete');
   };
 }

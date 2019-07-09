@@ -1,2 +1,2 @@
-import { set, lensPath } from 'ramda';
-export const R = { set, lensPath };
+import { set, lensPath, equals } from 'ramda';
+export const R = { set, lensPath, equals };
