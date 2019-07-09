@@ -1,16 +1,16 @@
 import { expect } from 'chai';
 import { fs, time } from '../common';
-import { FileDb } from '..';
+import { DocDb } from '..';
 import * as t from '../types';
 
 const dir = fs.resolve('./.dev/unit-test');
 
 const testDb = (args: { isMemoized?: boolean } = {}) => {
   const { isMemoized } = args;
-  return new FileDb({ dir, cache: isMemoized });
+  return new DocDb({ dir, cache: isMemoized });
 };
 
-describe('FileDb', () => {
+describe('DocDb', () => {
   beforeEach(async () => fs.remove(dir));
   afterEach(async () => fs.remove(dir));
 
@@ -44,12 +44,12 @@ describe('FileDb', () => {
       expect(res.props.key).to.eql(key);
       expect(res.value).to.eql(value);
 
-      const getStatic = await FileDb.get(dir, key);
+      const getStatic = await DocDb.get(dir, key);
       expect(getStatic.props.key).to.eql(key);
       expect(getStatic.value).to.eql(value);
       expect(getStatic.props.exists).to.eql(true);
 
-      const getInstance = await FileDb.get(dir, key);
+      const getInstance = await DocDb.get(dir, key);
       expect(getInstance.props.key).to.eql(key);
       expect(getInstance.value).to.eql(value);
       expect(getInstance.props.exists).to.eql(true);
@@ -81,12 +81,15 @@ describe('FileDb', () => {
 
   it('getValue', async () => {
     const db = testDb();
-
     expect(await db.getValue('foo')).to.eql(undefined);
+
     await db.put('foo', 1);
     expect(await db.getValue('foo')).to.eql(1);
+
     await db.put('foo', { msg: 'hello' });
     expect((await db.getValue<{ msg: string }>('foo')).msg).to.eql('hello');
+
+    expect(await db.getValue('NO_EXIST')).to.eql(undefined);
   });
 
   it('put (overwrite)', async () => {
@@ -138,8 +141,8 @@ describe('FileDb', () => {
 
   it('observable events', async () => {
     const db = testDb();
-    const events: t.FileDbActionEvent[] = [];
-    db.events$.subscribe(e => events.push(e as t.FileDbActionEvent));
+    const events: t.DocDbActionEvent[] = [];
+    db.events$.subscribe(e => events.push(e as t.DocDbActionEvent));
 
     const key = 'foo/bar';
     await db.get(key);
@@ -162,7 +165,7 @@ describe('FileDb', () => {
     expect(events[3].payload.value).to.eql(123);
     expect(events[4].payload.value).to.eql(undefined);
 
-    const get = events[0] as t.IFileDbGetEvent;
+    const get = events[0] as t.IDocDbGetEvent;
     expect(get.payload.cached).to.eql(false);
   });
 
@@ -312,7 +315,7 @@ describe('FileDb', () => {
 
     it('observable events (while caching)', async () => {
       const db = testDb({ isMemoized: true });
-      const events: t.FileDbEvent[] = [];
+      const events: t.DocDbEvent[] = [];
       db.events$.subscribe(e => events.push(e));
 
       const key = 'foo/bar';
@@ -329,8 +332,8 @@ describe('FileDb', () => {
       expect(events[3].type).to.eql('DB/put');
       expect(events[4].type).to.eql('DB/cache/removed');
 
-      const get1 = events[1] as t.IFileDbGetEvent;
-      const get2 = events[2] as t.IFileDbGetEvent;
+      const get1 = events[1] as t.IDocDbGetEvent;
+      const get2 = events[2] as t.IDocDbGetEvent;
 
       expect(get1.payload.cached).to.eql(false);
       expect(get2.payload.cached).to.eql(true);

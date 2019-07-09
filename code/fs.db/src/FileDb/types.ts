@@ -1,13 +1,30 @@
 import { Json } from '../common/types';
 
 /**
+ * Database
+ */
+export type IDocDb = IDocDbRead & IDocDbWrite;
+
+export type IDocDbRead = {
+  get(key: string): Promise<IDocDbValue>;
+  getValue(key: string): Promise<Json>;
+  getMany(keys: string[]): Promise<IDocDbValue[]>;
+};
+
+export type IDocDbWrite = {
+  put(key: string, value?: Json): Promise<IDocDbValue>;
+  putMany(items: Array<{ key: string; value?: Json }>): Promise<IDocDbValue[]>;
+  delete(key: string): Promise<IDocDbValue>;
+};
+
+/**
  * Value
  */
-export type IFileDbValue = {
+export type IDocDbValue = {
   value?: Json;
-  props: IFileDbValueProps;
+  props: IDocDbValueProps;
 };
-export type IFileDbValueProps = {
+export type IDocDbValueProps = {
   key: string;
   path: string;
   exists: boolean;
@@ -17,24 +34,24 @@ export type IFileDbValueProps = {
 /**
  * Find
  */
-export type IFileDbFindArgs = {
+export type IDocDbFindArgs = {
   pattern?: string;
   recursive?: boolean;
 };
 
-export type IFileDbFindResult = {
+export type IDocDbFindResult = {
   keys: string[];
   paths: string[];
-  list: IFileDbValue[];
+  list: IDocDbValue[];
   map: { [key: string]: Json | undefined };
 };
 
 /**
  * Cache
  */
-export type IFileDbCache = {
+export type IDocDbCache = {
   isEnabled: boolean;
-  values: { [key: string]: IFileDbValue };
+  values: { [key: string]: IDocDbValue };
   exists(key: string): boolean;
   clear(keys?: string[]): void;
 };
@@ -42,40 +59,40 @@ export type IFileDbCache = {
 /**
  * Events
  */
-export type FileDbActionEvent = IFileDbGetEvent | IFileDbPutEvent | IFileDbDeleteEvent;
-export type FileDbEvent = FileDbActionEvent | IFileDbCacheKeyRemovedEvent;
+export type DocDbEvent = DocDbActionEvent | IDocDbCacheKeyRemovedEvent;
+export type DocDbActionEvent = IDocDbGetEvent | IDocDbPutEvent | IDocDbDeleteEvent;
 
-export type IFileDbGetEvent = {
+export type IDocDbGetEvent = {
   type: 'DB/get';
-  payload: IFileDbActionGet;
+  payload: IDocDbActionGet;
 };
 
-export type IFileDbPutEvent = {
+export type IDocDbPutEvent = {
   type: 'DB/put';
-  payload: IFileDbActionPut;
+  payload: IDocDbActionPut;
 };
 
-export type IFileDbDeleteEvent = {
+export type IDocDbDeleteEvent = {
   type: 'DB/delete';
-  payload: IFileDbActionDelete;
+  payload: IDocDbActionDelete;
 };
 
-export type IFileDbCacheKeyRemovedEvent = {
+export type IDocDbCacheKeyRemovedEvent = {
   type: 'DB/cache/removed';
-  payload: IFileDbCacheKeyRemoved;
+  payload: IDocDbCacheKeyRemoved;
 };
-export type IFileDbCacheKeyRemoved = { key: string; dir: string };
+export type IDocDbCacheKeyRemoved = { key: string; dir: string };
 
 /**
  * Action
  */
-export type FileDbAction = IFileDbActionGet | IFileDbActionPut | IFileDbActionDelete;
+export type DocDbAction = IDocDbActionGet | IDocDbActionPut | IDocDbActionDelete;
 
-export type IFileDbAction = {
+export type IDocDbAction = {
   key: string;
   value?: Json;
-  props: IFileDbValueProps;
+  props: IDocDbValueProps;
 };
-export type IFileDbActionGet = IFileDbAction & { action: 'get'; cached: boolean };
-export type IFileDbActionPut = IFileDbAction & { action: 'put' };
-export type IFileDbActionDelete = IFileDbAction & { action: 'delete' };
+export type IDocDbActionGet = IDocDbAction & { action: 'get'; cached: boolean };
+export type IDocDbActionPut = IDocDbAction & { action: 'put' };
+export type IDocDbActionDelete = IDocDbAction & { action: 'delete' };

@@ -5,7 +5,7 @@ import { util, fs, t, defaultValue } from '../common';
 /**
  * A DB that writes to the file-system.
  */
-export class FileDb {
+export class DocDb implements t.IDocDb {
   /**
    * [Static]
    */
@@ -26,7 +26,7 @@ export class FileDb {
    */
   public readonly dir: string;
 
-  public readonly cache: t.IFileDbCache = {
+  public readonly cache: t.IDocDbCache = {
     isEnabled: false,
     values: {},
     exists: (key: string) => this.cache.values[key] !== undefined,
@@ -41,7 +41,7 @@ export class FileDb {
     },
   };
 
-  private readonly _events$ = new Subject<t.FileDbEvent>();
+  private readonly _events$ = new Subject<t.DocDbEvent>();
   public readonly events$ = this._events$.pipe(share());
 
   private readonly _dispose$ = new Subject<{}>();
@@ -63,10 +63,10 @@ export class FileDb {
   /**
    * [Get]
    */
-  public async get(key: string): Promise<t.IFileDbValue> {
+  public async get(key: string): Promise<t.IDocDbValue> {
     const cachedValue = this.cache.isEnabled ? this.cache.values[key] : undefined;
 
-    const fire = (result: t.IFileDbValue, cached: boolean) => {
+    const fire = (result: t.IDocDbValue, cached: boolean) => {
       const { value, props } = result;
       this.fire({
         type: 'DB/get',
@@ -81,7 +81,7 @@ export class FileDb {
     }
 
     // Read value from file-system.
-    const res = await FileDb.get(this.dir, key.toString());
+    const res = await DocDb.get(this.dir, key.toString());
     fire(res, false);
 
     // Store value in cache (if required).
@@ -92,10 +92,10 @@ export class FileDb {
     // Finish up.
     return res;
   }
-  public static async get(dir: string, key: string): Promise<t.IFileDbValue> {
-    const path = FileDb.toPath(dir, key);
+  public static async get(dir: string, key: string): Promise<t.IDocDbValue> {
+    const path = DocDb.toPath(dir, key);
     const exists = await fs.pathExists(path);
-    const props: t.IFileDbValueProps = { key, path, exists, deleted: false };
+    const props: t.IDocDbValueProps = { key, path, exists, deleted: false };
     if (!exists) {
       return { value: undefined, props: { ...props, exists: false } };
     }
@@ -107,23 +107,23 @@ export class FileDb {
       throw new Error(`Failed to get value for key '${key}'. ${error.message}`);
     }
   }
-  public async getValue<T extends t.Json>(key: string): Promise<T> {
+  public async getValue<T extends t.Json | undefined>(key: string): Promise<T> {
     const res = await this.get(key);
     return res.value as T;
   }
-  public async getMany(keys: string[]): Promise<t.IFileDbValue[]> {
+  public async getMany(keys: string[]): Promise<t.IDocDbValue[]> {
     return Promise.all(keys.map(key => this.get(key)));
   }
 
   /**
    * [Put]
    */
-  public async put(key: string, value?: t.Json): Promise<t.IFileDbValue> {
+  public async put(key: string, value?: t.Json): Promise<t.IDocDbValue> {
     if (typeof value === 'object' && value !== null) {
       value = util.incrementTimestamps(value);
     }
 
-    const res = await FileDb.put(this.dir, key.toString(), value);
+    const res = await DocDb.put(this.dir, key.toString(), value);
     this.fire({
       type: 'DB/put',
       payload: { action: 'put', key, value: res.value, props: res.props },
@@ -134,37 +134,37 @@ export class FileDb {
     }
     return res;
   }
-  public static async put(dir: string, key: string, value?: t.Json): Promise<t.IFileDbValue> {
-    const path = FileDb.toPath(dir, key);
+  public static async put(dir: string, key: string, value?: t.Json): Promise<t.IDocDbValue> {
+    const path = DocDb.toPath(dir, key);
     const json = { data: value };
 
     await fs.ensureDir(fs.dirname(path));
     await fs.writeFile(path, JSON.stringify(json, null, '  '));
 
-    const props: t.IFileDbValueProps = { key, path, exists: true, deleted: false };
+    const props: t.IDocDbValueProps = { key, path, exists: true, deleted: false };
     return { value, props };
   }
-  public async putMany(items: Array<{ key: string; value?: t.Json }>): Promise<t.IFileDbValue[]> {
+  public async putMany(items: Array<{ key: string; value?: t.Json }>): Promise<t.IDocDbValue[]> {
     return Promise.all(items.map(({ key, value }) => this.put(key, value)));
   }
 
   /**
    * [Delete]
    */
-  public async delete(key: string): Promise<t.IFileDbValue> {
-    const res = await FileDb.delete(this.dir, key.toString());
+  public async delete(key: string): Promise<t.IDocDbValue> {
+    const res = await DocDb.delete(this.dir, key.toString());
     this.fire({
       type: 'DB/delete',
       payload: { action: 'delete', key, value: res.value, props: res.props },
     });
     return res;
   }
-  public static async delete(dir: string, key: string): Promise<t.IFileDbValue> {
-    const path = FileDb.toPath(dir, key);
-    const existing = await FileDb.get(dir, key);
+  public static async delete(dir: string, key: string): Promise<t.IDocDbValue> {
+    const path = DocDb.toPath(dir, key);
+    const existing = await DocDb.get(dir, key);
     let deleted = false;
     if (existing.props.exists) {
-      const rename = `${path}${FileDb.DELETED_SUFFIX}`;
+      const rename = `${path}${DocDb.DELETED_SUFFIX}`;
       await fs.rename(path, rename);
       deleted = true;
     }
@@ -173,14 +173,14 @@ export class FileDb {
       props: { path, key, exists: false, deleted },
     };
   }
-  public async deleteMany(keys: string[]): Promise<t.IFileDbValue[]> {
+  public async deleteMany(keys: string[]): Promise<t.IDocDbValue[]> {
     return Promise.all(keys.map(key => this.delete(key)));
   }
 
   /**
    * Find (glob).
    */
-  public async find(args: t.IFileDbFindArgs): Promise<t.IFileDbFindResult> {
+  public async find(args: t.IDocDbFindArgs): Promise<t.IDocDbFindResult> {
     const { pattern = '' } = args;
     const recursive = defaultValue(args.recursive, true);
     let paths: string[] = [];
@@ -207,7 +207,7 @@ export class FileDb {
       .map(path => path.substr(0, path.length - '.json'.length));
 
     const list = await this.getMany(keys);
-    let obj: t.IFileDbFindResult['map'] | undefined;
+    let obj: t.IDocDbFindResult['map'] | undefined;
     return {
       keys,
       paths,
@@ -229,14 +229,14 @@ export class FileDb {
    */
 
   public toPath(key: string) {
-    return FileDb.toPath(this.dir, (key || '').toString());
+    return DocDb.toPath(this.dir, (key || '').toString());
   }
 
   public static toPath(dir: string, key: string) {
     return fs.join(dir, `${key}.json`);
   }
 
-  private fire(e: t.FileDbEvent) {
+  private fire(e: t.DocDbEvent) {
     this._events$.next(e);
   }
 }
