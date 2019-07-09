@@ -3,7 +3,8 @@ import { fs, time } from '../common';
 import { FileDb } from '..';
 import * as t from '../types';
 
-const dir = fs.resolve('./.dev/unit-test');
+const dir = 'tmp/db';
+after(async () => fs.remove('tmp'));
 
 const testDb = (args: { isMemoized?: boolean } = {}) => {
   const { isMemoized } = args;

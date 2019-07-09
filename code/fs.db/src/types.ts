@@ -20,7 +20,7 @@ export type IDocDbRead = {
 
 export type IDocDbWrite = {
   put(key: string, value?: Json): Promise<IDocDbValue>;
-  putMany(items: Array<{ key: string; value?: Json }>): Promise<IDocDbValue[]>;
+  putMany(items: IDocDbKeyValue[]): Promise<IDocDbValue[]>;
   delete(key: string): Promise<IDocDbValue>;
 };
 
@@ -40,6 +40,11 @@ export type IDocDbValueProps = {
   path: string;
   exists: boolean;
   deleted: boolean;
+};
+
+export type IDocDbKeyValue = {
+  key: string;
+  value?: Json;
 };
 
 /**
