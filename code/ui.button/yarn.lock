@@ -1037,28 +1037,10 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.4.17":
-  version "0.4.17"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.17.tgz#b3ebd5eb08fcafa35aeb7eff68b54b1757dea7c0"
-  integrity sha512-rpJQ+cPG6mV9AU2VuiWlEWGKRZsJLnXczoEOAvC+FlQiFE3fywORlUeqxWwVqLQ9sbRp4CUmBN+PCI1AG0SbsQ==
-  dependencies:
-    "@platform/fs" "0.1.5"
-    "@platform/libs" "^0.0.18"
-    "@platform/log" "0.0.132"
-    "@platform/react" "0.3.10"
-    "@platform/types" "0.0.19"
-    "@types/app-root-path" "1.2.4"
-    app-root-path "2.2.1"
-    electron-log "3.0.6"
-    electron-store "3.3.0"
-    electron-window-state "5.0.3"
-    is-electron "2.2.0"
-    minimist "1.2.0"
-
-"@platform/electron@0.4.19":
-  version "0.4.19"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.19.tgz#0100f3fe41621a92c6bc02a29b336b1fb9516f77"
-  integrity sha512-vlaBHjWXIewQpDvrFpQ/fiwP3MvHUYtU/KIFaSRLj8w+KAsEbFRYPkUsmp9Nwsi9xXvomylax21AyADNSbcR0Q==
+"@platform/electron@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.5.0.tgz#9fd1c45d5c62843324f8c7182df7262ca75d7a1a"
+  integrity sha512-OTYJelPTlmPsUse9+OOq9riMrtSC3HWjm1kDQLOJ6MJ6KrMqW6twvYhYD177ToNrQH8FXjT6NnLdiIJkqzkJRA==
   dependencies:
     "@platform/fs" "0.1.5"
     "@platform/libs" "^0.0.18"
@@ -1506,21 +1488,21 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@uiharness/dev@0.5.10":
-  version "0.5.10"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.5.10.tgz#5752b505da106ce234c653e08df426a174269d1c"
-  integrity sha512-NgCRhpGlSMjBzgIliHkr5VDWroak5+3xjJs1JuyjNUdlGGWeN7PUdrbtqkECFXH71O2GSJfIujEE6Q4D4GA7rQ==
+"@uiharness/dev@0.5.12":
+  version "0.5.12"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.5.12.tgz#49eada7b05274fc2e034334e67377f13b094ba39"
+  integrity sha512-u0/y1Y2F0KXQGJy7y+9mBNGaGOmcu8vpxFHznGTxvK7aBMTVqKIDtFAu8NH0PKTJwisu/aTGk6bUnnNvgE7E/g==
   dependencies:
     "@babel/core" "7.4.5"
     "@babel/preset-env" "7.4.5"
     "@babel/preset-react" "7.0.0"
     "@babel/preset-typescript" "7.3.3"
     "@platform/cli" "0.1.11"
-    "@platform/electron" "0.4.19"
+    "@platform/electron" "0.5.0"
     "@platform/fs" "0.1.5"
     "@platform/ts" "3.4.32"
     "@platform/util.string" "^0.2.3"
-    "@uiharness/electron" "0.5.6"
+    "@uiharness/electron" "0.5.8"
     "@uiharness/types" "0.5.6"
     create-tmpl "0.1.59"
     electron "5.0.5"
@@ -1529,12 +1511,12 @@
     parcel-bundler "1.12.3"
     serve "11.0.2"
 
-"@uiharness/electron@0.5.6":
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.5.6.tgz#60c3125f82b7ac2e61e088270990be90097c45f3"
-  integrity sha512-lINDPmfSwYOWXNohU5D7F9unar6jqss1eNzWrHAxaRLciCX5c5k7HXbfBQ9ggjubDz5jDKIK8cShx6TiRW9y6w==
+"@uiharness/electron@0.5.8":
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.5.8.tgz#9dff82aff71d192407b221e1d27dd48e2eaea77f"
+  integrity sha512-UXz0JFl8d1Xs8fKBufrpSxB/CZKiSepP7iad7z3Cnq2b10bRSP/TkmbprU9/pZDgCHLxG/JkDeLmUWcXpz2NOw==
   dependencies:
-    "@platform/electron" "0.4.17"
+    "@platform/electron" "0.5.0"
     "@platform/log" "0.0.132"
     "@platform/react" "0.3.10"
     "@platform/ui.object" "0.0.130"
@@ -1548,13 +1530,13 @@
   resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.5.6.tgz#d5580c682a8eef3173da00f2a7c2234c002d40d9"
   integrity sha512-pAF+dnI/XQVq5Y3563xZMPMU/LGyzxb9g1beY4boJ4tYyBcQa29qVCfUcwQ5588B/w/AQgtdvFhSqUqXhCE44w==
 
-"@uiharness/ui@0.5.11":
-  version "0.5.11"
-  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.5.11.tgz#6701834847f96b725294d3a793d9dfff7e9f0ca7"
-  integrity sha512-CcYPKx31reNvSIduU69Yn32l1XLoEJhShD7P53uA6l9qEXmXBe0pB2/CqE4SMOLBgzY+n3Zpxi6qwmPTYQrTnQ==
+"@uiharness/ui@0.5.13":
+  version "0.5.13"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.5.13.tgz#3007414a5638ebc3e052aa8625d7d45568cd849f"
+  integrity sha512-nBcrA/rtBovSYCz1TQb36fF5YyWMAieSAuVMkn7eVXdhO0SEzJZsOCmB058M76Lq84R89XsC1gw27Zx8BsKtsg==
   dependencies:
     "@platform/cli.ui" "0.2.34"
-    "@platform/electron" "0.4.19"
+    "@platform/electron" "0.5.0"
     "@platform/react" "0.3.10"
     "@platform/ui.object" "0.0.130"
     "@platform/util.string" "0.2.3"
@@ -2690,19 +2672,6 @@ concat-stream@1.6.2, concat-stream@~1.6.0:
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
 
-conf@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/conf/-/conf-4.1.0.tgz#c7029f629d7158eaf03ae118484d100f878c28b2"
-  integrity sha512-/G++SsVVt4MkKYZ1E+XdNEyCYghM7e7SSgx4PA55lQrmJjUY1APGGfz42YX9YpRkhLFvlhkJ5S341FWsufZZ5w==
-  dependencies:
-    ajv "^6.10.0"
-    dot-prop "^5.0.0"
-    env-paths "^2.2.0"
-    json-schema-typed "^7.0.0"
-    make-dir "^3.0.0"
-    pkg-up "^3.0.1"
-    write-file-atomic "^3.0.0"
-
 conf@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/conf/-/conf-5.0.0.tgz#6530308a36041bf010ab96b05a0f4aff5101c65d"
@@ -3491,14 +3460,6 @@ electron-publish@20.44.4:
     fs-extra-p "^8.0.2"
     lazy-val "^1.0.4"
     mime "^2.4.4"
-
-electron-store@3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/electron-store/-/electron-store-3.3.0.tgz#8727bad42ae0b6a95bdd702087878105ef5e8934"
-  integrity sha512-++k1MjcNya7e7Q/xHm2ys8t2CZZZJDMnihvsonbHJ/7WIQatVaspYzF0oDO0hUmMCNXhHaLbKduPBYkRDXVbXA==
-  dependencies:
-    conf "^4.1.0"
-    type-fest "^0.3.1"
 
 electron-store@4.0.0:
   version "4.0.0"
@@ -7376,7 +7337,7 @@ set-value@^2.0.0:
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
 
-setimmediate@^1.0.5:
+setimmediate@^1.0.4, setimmediate@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
   integrity sha1-KQy7Iy4waULX1+qbg3Mqt4VvgoU=
@@ -8101,7 +8062,7 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
-type-fest@^0.3.0, type-fest@^0.3.1:
+type-fest@^0.3.0:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.3.1.tgz#63d00d204e059474fe5e1b7c011112bbd1dc29e1"
   integrity sha512-cUGJnCdr4STbePCgqNFbpVNCepa+kAVohJs1sLhxzdH+gnEoOd8VhbYa7pD3zZYGiURWM2xzEII3fQcRizDkYQ==

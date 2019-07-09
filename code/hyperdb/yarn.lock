@@ -28,21 +28,22 @@
     protocol-buffers-encodings "^1.1.0"
     record-cache "^1.1.0"
 
-"@hyperswarm/discovery@^1.1.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@hyperswarm/discovery/-/discovery-1.2.0.tgz#50b03777e9543eec2925e185fc624cd26c1297e5"
-  integrity sha512-PJfsF/lflqmiEJZTmD1TtxR5ZBKL/DYMhOOfEko23KUnLyFD/7IYUTQ/C51vZAKFY6eRTvaU56DBBLeodDJkeA==
+"@hyperswarm/discovery@^1.2.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@hyperswarm/discovery/-/discovery-1.3.0.tgz#fa7b2e1a198170a8d5058ba407fb6438d7465f76"
+  integrity sha512-SRk9mEmbbon0d6UNqj0DWVnX0cdPfTzj4niuJ32FJadsnMdoGrI2vel6NQFm0TJajRV6Vbk4Hf5Q/pAZCJesqg==
   dependencies:
     "@hyperswarm/dht" "0.0.1"
     multicast-dns "^7.2.0"
 
-"@hyperswarm/network@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@hyperswarm/network/-/network-0.0.4.tgz#60328be9178e32b8023d4f009dee3af3e45fb907"
-  integrity sha512-7+ove2aC16d3fDEunNsBmuS8tx1SQwuqtQn6O9HhCuTSe54iVsI6CnwGiSnJAFFY6lhghxNUV/CiqQyGoMxg7g==
+"@hyperswarm/network@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@hyperswarm/network/-/network-1.0.1.tgz#6b6824a45fb9531f86aa662ce96af21ac2c8db03"
+  integrity sha512-IM4Gq7woF8sDIVEqJsJr7T0s8TDXt5109YeaXe5hBhQsmfx3ss+S8KhBuoc+G1tU3dSCYcjJy9LBB0NCtlxxAA==
   dependencies:
-    "@hyperswarm/discovery" "^1.1.0"
-    utp-native "^2.0.1"
+    "@hyperswarm/discovery" "^1.2.0"
+    nanoresource "^1.0.0"
+    utp-native "^2.1.3"
 
 "@nodelib/fs.scandir@2.1.0":
   version "2.1.0"
@@ -2143,6 +2144,11 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
+nanoresource@^1.0.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/nanoresource/-/nanoresource-1.2.0.tgz#59a8bac28a1302179cdce49d95fd3393aa74f5bd"
+  integrity sha512-6DJTce5okL9IQlVcswSsrLP4lQER52GkRMHAnkmHQNX1AqpT6VOE8y0MBartHJW3SV0ppC0wy0u4eAK3JARfpA==
+
 napi-macros@^1.8.1, napi-macros@^1.8.2:
   version "1.8.2"
   resolved "https://registry.yarnpkg.com/napi-macros/-/napi-macros-1.8.2.tgz#299265c1d8aa401351ad0675107d751228c03eda"
@@ -3085,7 +3091,7 @@ util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
 
-utp-native@^2.0.1, utp-native@^2.1.3:
+utp-native@^2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/utp-native/-/utp-native-2.1.3.tgz#139f8724a171091aa3f8be580ccce1174ee252f2"
   integrity sha512-lXjmAJxlaz58GDFlEqKYkNzO5rqttA+/TVHl7UUAs8Saj1QJq/3D4IckuVpsmCsjjZod5N7sE8QMUCYScVHDpg==

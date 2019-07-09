@@ -1417,10 +1417,10 @@
     "@types/node" "*"
     rxjs "^6.5.1"
 
-"@types/mapbox-gl@0.51.9":
-  version "0.51.9"
-  resolved "https://registry.yarnpkg.com/@types/mapbox-gl/-/mapbox-gl-0.51.9.tgz#1be6e73907f81a8210b6ac2bc9eae82b98d5c25c"
-  integrity sha512-pIosJM1usb40n1Y0xTxdDlGt5ORAr9WcOCYc45vJZEwkuCWzgXJ0JxuLEZVEaM/lMTkPZK8NhsuHwJIzwX0waw==
+"@types/mapbox-gl@0.51.10":
+  version "0.51.10"
+  resolved "https://registry.yarnpkg.com/@types/mapbox-gl/-/mapbox-gl-0.51.10.tgz#60e36068a94f956f01125a948fa1d78683f7925c"
+  integrity sha512-ITs/qrMnM0uscU8/r09bfxYthLZP/6Cr2VeShmc/X0HX0bprEDqYdkCMrsMhLHxYGuN8haEv5paxk1NUNZrRMg==
   dependencies:
     "@types/geojson" "*"
 
@@ -5892,10 +5892,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mapbox-gl@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-1.0.0.tgz#646df3e1812899f4331ab8ea695b182f4a4ea7d9"
-  integrity sha512-+sfg6e3Ud6G9PNcdA56r6U0j2SJEQrnTTx/V8xt0xedIN9hrGIceKIukWz+tAgrw0KS5GKi6ThkWXPuwcGi36g==
+mapbox-gl@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-1.1.0.tgz#01b907fa025e49e2000c91878de3b68245ce9770"
+  integrity sha512-ODwesguQJM7FobmSlv/qGJkmrzUTlIRe92dEBy587RV2k2QGsQDQUCk6/KE+lzVJuyk7WQappNkzhgagaxY5Eg==
   dependencies:
     "@mapbox/geojson-rewind" "^0.4.0"
     "@mapbox/geojson-types" "^1.0.2"

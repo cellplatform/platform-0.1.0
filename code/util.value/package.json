@@ -17,8 +17,8 @@
     "@platform/util.is": "0.0.81",
     "@types/semver": "6.0.1",
     "cuid": "2.1.6",
-    "dayjs": "1.8.14",
-    "semver": "6.1.2"
+    "dayjs": "1.8.15",
+    "semver": "6.2.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.58",

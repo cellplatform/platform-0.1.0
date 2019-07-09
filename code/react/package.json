@@ -17,7 +17,7 @@
   "dependencies": {
     "@platform/css": "0.1.26",
     "@platform/util.is": "0.0.81",
-    "@types/react": "16.8.22",
+    "@types/react": "16.8.23",
     "@types/react-dom": "16.8.4",
     "react": "16.8.6",
     "react-dom": "16.8.6"
@@ -25,8 +25,8 @@
   "devDependencies": {
     "@platform/test": "0.0.58",
     "@platform/ts": "3.4.32",
-    "@uiharness/dev": "0.5.9",
-    "@uiharness/ui": "0.5.10",
+    "@uiharness/dev": "0.5.12",
+    "@uiharness/ui": "0.5.13",
     "electron": "5.0.0"
   },
   "files": [

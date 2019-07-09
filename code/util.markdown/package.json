@@ -16,7 +16,7 @@
     "rehype-stringify": "6.0.0",
     "remark-parse": "6.0.3",
     "remark-rehype": "4.0.1",
-    "unified": "7.1.0"
+    "unified": "8.0.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.58",

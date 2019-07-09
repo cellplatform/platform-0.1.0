@@ -17,7 +17,7 @@
     "@platform/log": "0.0.132",
     "@platform/util.value": "0.4.3",
     "@types/semver": "6.0.1",
-    "semver": "6.1.2"
+    "semver": "6.2.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.58",

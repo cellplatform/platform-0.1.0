@@ -89,10 +89,10 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.4.17":
-  version "0.4.17"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.4.17.tgz#b3ebd5eb08fcafa35aeb7eff68b54b1757dea7c0"
-  integrity sha512-rpJQ+cPG6mV9AU2VuiWlEWGKRZsJLnXczoEOAvC+FlQiFE3fywORlUeqxWwVqLQ9sbRp4CUmBN+PCI1AG0SbsQ==
+"@platform/electron@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.5.0.tgz#9fd1c45d5c62843324f8c7182df7262ca75d7a1a"
+  integrity sha512-OTYJelPTlmPsUse9+OOq9riMrtSC3HWjm1kDQLOJ6MJ6KrMqW6twvYhYD177ToNrQH8FXjT6NnLdiIJkqzkJRA==
   dependencies:
     "@platform/fs" "0.1.5"
     "@platform/libs" "^0.0.18"
@@ -102,7 +102,7 @@
     "@types/app-root-path" "1.2.4"
     app-root-path "2.2.1"
     electron-log "3.0.6"
-    electron-store "3.3.0"
+    electron-store "4.0.0"
     electron-window-state "5.0.3"
     is-electron "2.2.0"
     minimist "1.2.0"
@@ -420,12 +420,12 @@
   resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.8.14.tgz#bf8f24950e6705e5150756a5947dac76e5dce2c0"
   integrity sha512-xbzi6UaATVKupInG3D65/EPQ3qkJCvG2ZAzmlIYt6x93ACOEX2Y0fHW4/e8TF3G7q5KB2l7wTZgzfNjyYDMuZw==
 
-"@uiharness/electron@0.5.6":
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.5.6.tgz#60c3125f82b7ac2e61e088270990be90097c45f3"
-  integrity sha512-lINDPmfSwYOWXNohU5D7F9unar6jqss1eNzWrHAxaRLciCX5c5k7HXbfBQ9ggjubDz5jDKIK8cShx6TiRW9y6w==
+"@uiharness/electron@0.5.8":
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.5.8.tgz#9dff82aff71d192407b221e1d27dd48e2eaea77f"
+  integrity sha512-UXz0JFl8d1Xs8fKBufrpSxB/CZKiSepP7iad7z3Cnq2b10bRSP/TkmbprU9/pZDgCHLxG/JkDeLmUWcXpz2NOw==
   dependencies:
-    "@platform/electron" "0.4.17"
+    "@platform/electron" "0.5.0"
     "@platform/log" "0.0.132"
     "@platform/react" "0.3.10"
     "@platform/ui.object" "0.0.130"
@@ -634,6 +634,13 @@ bencode@^1.0.0:
   dependencies:
     safe-buffer "^5.1.1"
 
+bencode@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/bencode/-/bencode-2.0.1.tgz#667a6a31c5e038d558608333da6b7c94e836c85b"
+  integrity sha512-2uhEl8FdjSBUyb69qDTgOEeeqDTa+n3yMQzLW0cOzNf1Ow5bwcg3idf+qsWisIKRH8Bk8oC7UXL8irRcPA8ZEQ==
+  dependencies:
+    safe-buffer "^5.1.1"
+
 bitfield-rle@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/bitfield-rle/-/bitfield-rle-2.2.1.tgz#07c910f7e650c005c46d18ee5ca6e62c4baf8310"
@@ -740,7 +747,7 @@ buffer-crc32@^0.2.1:
   resolved "https://registry.yarnpkg.com/buffer-crc32/-/buffer-crc32-0.2.13.tgz#0d333e3f00eac50aa1454abd30ef8c2a5d9a7242"
   integrity sha1-DTM+PwDqxQqhRUq9MO+MKl2ackI=
 
-buffer-equals@^1.0.3:
+buffer-equals@^1.0.3, buffer-equals@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/buffer-equals/-/buffer-equals-1.0.4.tgz#0353b54fd07fd9564170671ae6f66b9cf10d27f5"
   integrity sha1-A1O1T9B/2VZBcGca5vZrnPENJ/U=
@@ -965,19 +972,6 @@ concat-stream@1.6.2:
     inherits "^2.0.3"
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
-
-conf@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/conf/-/conf-4.1.0.tgz#c7029f629d7158eaf03ae118484d100f878c28b2"
-  integrity sha512-/G++SsVVt4MkKYZ1E+XdNEyCYghM7e7SSgx4PA55lQrmJjUY1APGGfz42YX9YpRkhLFvlhkJ5S341FWsufZZ5w==
-  dependencies:
-    ajv "^6.10.0"
-    dot-prop "^5.0.0"
-    env-paths "^2.2.0"
-    json-schema-typed "^7.0.0"
-    make-dir "^3.0.0"
-    pkg-up "^3.0.1"
-    write-file-atomic "^3.0.0"
 
 conf@^5.0.0:
   version "5.0.0"
@@ -1245,14 +1239,6 @@ electron-log@3.0.6:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-3.0.6.tgz#2291375572f6be5889f06fb32a35eab2930a1728"
   integrity sha512-osPLk8m9+Ylo0k/okevdHUGsKpCNGxg206TxG2Ch8slGvlTZLI0955Ig4e+nJ6fHVDxFMv5dWkn2y8hwi0aENg==
-
-electron-store@3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/electron-store/-/electron-store-3.3.0.tgz#8727bad42ae0b6a95bdd702087878105ef5e8934"
-  integrity sha512-++k1MjcNya7e7Q/xHm2ys8t2CZZZJDMnihvsonbHJ/7WIQatVaspYzF0oDO0hUmMCNXhHaLbKduPBYkRDXVbXA==
-  dependencies:
-    conf "^4.1.0"
-    type-fest "^0.3.1"
 
 electron-store@4.0.0:
   version "4.0.0"
@@ -3584,11 +3570,6 @@ type-detect@^4.0.0, type-detect@^4.0.5:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.8.tgz#7646fb5f18871cfbb7749e69bd39a6388eb7450c"
   integrity sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==
-
-type-fest@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-0.3.1.tgz#63d00d204e059474fe5e1b7c011112bbd1dc29e1"
-  integrity sha512-cUGJnCdr4STbePCgqNFbpVNCepa+kAVohJs1sLhxzdH+gnEoOd8VhbYa7pD3zZYGiURWM2xzEII3fQcRizDkYQ==
 
 type-fest@^0.5.2:
   version "0.5.2"

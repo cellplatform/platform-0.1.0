@@ -20,8 +20,8 @@
   },
   "devDependencies": {
     "@types/react-sortable-hoc": "0.6.5",
-    "@uiharness/dev": "0.5.9",
-    "@uiharness/ui": "0.5.10"
+    "@uiharness/dev": "0.5.12",
+    "@uiharness/ui": "0.5.13"
   },
   "files": [
     "lib"

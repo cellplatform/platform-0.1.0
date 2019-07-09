@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@platform/test": "0.0.58",
-    "@types/jsdom": "12.2.3",
+    "@types/jsdom": "12.2.4",
     "jsdom": "15.1.1",
     "jsdom-global": "3.0.2"
   },

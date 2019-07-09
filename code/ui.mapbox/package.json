@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@platform/react": "0.3.11",
-    "@types/mapbox-gl": "0.51.9",
-    "mapbox-gl": "1.0.0"
+    "@types/mapbox-gl": "0.51.10",
+    "mapbox-gl": "1.1.0"
   },
   "devDependencies": {
     "@uiharness/dev": "0.5.12",

@@ -23,9 +23,9 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.58",
-    "@types/react": "16.8.22",
-    "@uiharness/dev": "0.5.9",
-    "@uiharness/ui": "0.5.10"
+    "@types/react": "16.8.23",
+    "@uiharness/dev": "0.5.12",
+    "@uiharness/ui": "0.5.13"
   },
   "files": [
     "lib",

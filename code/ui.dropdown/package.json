@@ -20,9 +20,9 @@
     "react-select": "3.0.4"
   },
   "devDependencies": {
-    "@types/react-select": "2.0.19",
-    "@uiharness/dev": "0.5.9",
-    "@uiharness/ui": "0.5.10",
+    "@types/react-select": "3.0.0",
+    "@uiharness/dev": "0.5.12",
+    "@uiharness/ui": "0.5.13",
     "electron": "5.0.0"
   },
   "files": [
