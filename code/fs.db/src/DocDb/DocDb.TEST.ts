@@ -239,7 +239,7 @@ describe('DocDb', () => {
       expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
     });
 
-    it('pattern (recursive, default)', async () => {
+    it('pattern (deep, default)', async () => {
       const db = await prepare();
       const res: any = await db.find({ pattern: 'cell' });
       expect(res.keys).to.eql(['cell/A1', 'cell/A2', 'cell/A2/meta']);
@@ -248,9 +248,18 @@ describe('DocDb', () => {
       expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
     });
 
-    it('pattern (not recursive)', async () => {
+    it('pattern (string parameter, deep/default)', async () => {
       const db = await prepare();
-      const res: any = await db.find({ pattern: 'cell', recursive: false });
+      const res: any = await db.find('cell');
+      expect(res.keys).to.eql(['cell/A1', 'cell/A2', 'cell/A2/meta']);
+      expect(res.map['cell/A1']).to.eql(1);
+      expect(res.map['cell/A2']).to.eql(2);
+      expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
+    });
+
+    it('pattern (not deep)', async () => {
+      const db = await prepare();
+      const res: any = await db.find({ pattern: 'cell', deep: false });
       expect(res.keys).to.eql(['cell/A1', 'cell/A2']);
       expect(res.map['cell/A1']).to.eql(1);
       expect(res.map['cell/A2']).to.eql(2);

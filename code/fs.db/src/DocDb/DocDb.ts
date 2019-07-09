@@ -180,9 +180,9 @@ export class DocDb implements t.IDocDb {
   /**
    * Find (glob).
    */
-  public async find(args: t.IDocDbFindArgs): Promise<t.IDocDbFindResult> {
-    const { pattern = '' } = args;
-    const recursive = defaultValue(args.recursive, true);
+  public async find(args: string | t.IDocDbFindArgs): Promise<t.IDocDbFindResult> {
+    const pattern = (typeof args === 'object' ? args.pattern : args) || '';
+    const deep = typeof args === 'object' ? defaultValue(args.deep, true) : true;
     let paths: string[] = [];
 
     if (pattern) {
@@ -193,7 +193,7 @@ export class DocDb implements t.IDocDb {
       } else {
         const isDir = await fs.is.dir(dir);
         if (isDir) {
-          const glob = recursive ? fs.join(dir, '**') : fs.join(dir, '*');
+          const glob = deep ? fs.join(dir, '**') : fs.join(dir, '*');
           paths = await fs.glob.find(glob);
         }
       }

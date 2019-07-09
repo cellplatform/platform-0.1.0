@@ -1,4 +1,4 @@
-import { Json } from '@platform/types';
+import { Json, IDisposable } from '@platform/types';
 
-export { Json };
+export { Json, IDisposable };
 export * from '../types';

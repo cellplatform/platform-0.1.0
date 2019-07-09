@@ -6,7 +6,7 @@ import * as t from '../types';
  *
  */
 export function ensureTimestamps<T = any>(model: T, defaultTimestamp?: number): T {
-  const asTimestamp = (key?: keyof t.IFileTimestamps) => {
+  const asTimestamp = (key?: keyof t.IDocTimestamps) => {
     if (key && typeof model === 'object' && typeof model[key] === 'number') {
       if (model[key] === -1) {
         const timestamp = defaultTimestamp === undefined ? time.now.timestamp : defaultTimestamp;

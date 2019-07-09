@@ -1,6 +1,6 @@
-export * from './FileDb/types';
+export * from './DocDb/types';
 
-export type IFileTimestamps = {
+export type IDocTimestamps = {
   createdAt: number;
   modifiedAt: number;
 };

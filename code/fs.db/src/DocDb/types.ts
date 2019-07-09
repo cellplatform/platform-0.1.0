@@ -1,20 +1,26 @@
-import { Json } from '../common/types';
+import { Json, IDisposable } from '../common/types';
+import { Observable } from 'rxjs';
 
 /**
  * Database
  */
-export type IDocDb = IDocDbRead & IDocDbWrite;
+export type IDocDb = IDocDbRead & IDocDbWrite & IDisposable & IDocDbEvents;
 
 export type IDocDbRead = {
   get(key: string): Promise<IDocDbValue>;
   getValue(key: string): Promise<Json>;
   getMany(keys: string[]): Promise<IDocDbValue[]>;
+  find(args: string | IDocDbFindArgs): Promise<IDocDbFindResult>;
 };
 
 export type IDocDbWrite = {
   put(key: string, value?: Json): Promise<IDocDbValue>;
   putMany(items: Array<{ key: string; value?: Json }>): Promise<IDocDbValue[]>;
   delete(key: string): Promise<IDocDbValue>;
+};
+
+export type IDocDbEvents = {
+  readonly events$: Observable<DocDbEvent>;
 };
 
 /**
@@ -36,7 +42,7 @@ export type IDocDbValueProps = {
  */
 export type IDocDbFindArgs = {
   pattern?: string;
-  recursive?: boolean;
+  deep?: boolean;
 };
 
 export type IDocDbFindResult = {
