@@ -3,7 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/fs.db.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/fs.db)
 ![banner](https://uiharness.sfo2.digitaloceanspaces.com/%40platform/repo-banners/fs.db.png)
 
-Database like interface that persists to the file-system as JSON.
+Common dataase interface for persisting JSON to a store.
 
 ## Setup
 

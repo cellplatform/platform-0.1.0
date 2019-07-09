@@ -1,7 +1,7 @@
 {
   "name": "@platform/fs.db",
   "version": "1.2.3",
-  "description": "DB like interface that persists to the file-system as JSON.",
+  "description": "Common dataase interface for persisting JSON to a store.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -9,6 +9,7 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
+    "build-test": "ts build",
     "prepare": "ts prepare"
   },
   "dependencies": {

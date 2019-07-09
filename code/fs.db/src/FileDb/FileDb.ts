@@ -5,7 +5,7 @@ import { util, fs, t, defaultValue } from '../common';
 /**
  * A DB that writes to the file-system.
  */
-export class DocDb implements t.IDocDb {
+export class FileDb implements t.IDocDb {
   /**
    * [Static]
    */
@@ -81,7 +81,7 @@ export class DocDb implements t.IDocDb {
     }
 
     // Read value from file-system.
-    const res = await DocDb.get(this.dir, key.toString());
+    const res = await FileDb.get(this.dir, key.toString());
     fire(res, false);
 
     // Store value in cache (if required).
@@ -93,7 +93,7 @@ export class DocDb implements t.IDocDb {
     return res;
   }
   public static async get(dir: string, key: string): Promise<t.IDocDbValue> {
-    const path = DocDb.toPath(dir, key);
+    const path = FileDb.toPath(dir, key);
     const exists = await fs.pathExists(path);
     const props: t.IDocDbValueProps = { key, path, exists, deleted: false };
     if (!exists) {
@@ -123,7 +123,7 @@ export class DocDb implements t.IDocDb {
       value = util.incrementTimestamps(value);
     }
 
-    const res = await DocDb.put(this.dir, key.toString(), value);
+    const res = await FileDb.put(this.dir, key.toString(), value);
     this.fire({
       type: 'DOC/put',
       payload: { action: 'put', key, value: res.value, props: res.props },
@@ -135,7 +135,7 @@ export class DocDb implements t.IDocDb {
     return res;
   }
   public static async put(dir: string, key: string, value?: t.Json): Promise<t.IDocDbValue> {
-    const path = DocDb.toPath(dir, key);
+    const path = FileDb.toPath(dir, key);
     const json = { data: value };
 
     await fs.ensureDir(fs.dirname(path));
@@ -152,7 +152,7 @@ export class DocDb implements t.IDocDb {
    * [Delete]
    */
   public async delete(key: string): Promise<t.IDocDbValue> {
-    const res = await DocDb.delete(this.dir, key.toString());
+    const res = await FileDb.delete(this.dir, key.toString());
     this.fire({
       type: 'DOC/delete',
       payload: { action: 'delete', key, value: res.value, props: res.props },
@@ -160,11 +160,11 @@ export class DocDb implements t.IDocDb {
     return res;
   }
   public static async delete(dir: string, key: string): Promise<t.IDocDbValue> {
-    const path = DocDb.toPath(dir, key);
-    const existing = await DocDb.get(dir, key);
+    const path = FileDb.toPath(dir, key);
+    const existing = await FileDb.get(dir, key);
     let deleted = false;
     if (existing.props.exists) {
-      const rename = `${path}${DocDb.DELETED_SUFFIX}`;
+      const rename = `${path}${FileDb.DELETED_SUFFIX}`;
       await fs.rename(path, rename);
       deleted = true;
     }
@@ -229,7 +229,7 @@ export class DocDb implements t.IDocDb {
    */
 
   public toPath(key: string) {
-    return DocDb.toPath(this.dir, (key || '').toString());
+    return FileDb.toPath(this.dir, (key || '').toString());
   }
 
   public static toPath(dir: string, key: string) {
