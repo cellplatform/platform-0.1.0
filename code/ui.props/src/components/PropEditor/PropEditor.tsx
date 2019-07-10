@@ -11,6 +11,7 @@ import {
   css,
   GlamorValue,
   Icons,
+  Button,
   IIcon,
   t,
   TextInput,
@@ -31,11 +32,14 @@ export type IPropEditorProps = {
   parentNode: t.IPropNode;
   node: t.IPropNode;
   renderValue?: t.PropValueFactory;
+  isDeletable?: boolean;
   events$: Subject<t.PropsEvent>;
   style?: GlamorValue;
 };
+
 export type IPropEditorState = {
   value?: t.PropValue;
+  isOver?: boolean;
 };
 
 export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEditorState> {
@@ -109,7 +113,9 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         filter(e => e.type === 'TEXT_INPUT/changed'),
         map(e => e.payload as t.ITextInputChanged),
       )
-      .subscribe(({ to }) => this.change({ to }));
+      .subscribe(e => {
+        this.change({ to: e.to });
+      });
 
     /**
      * Value changed progrmatically via property.
@@ -147,6 +153,10 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     return input ? input.isFocused : false;
   }
 
+  public get id() {
+    return this.props.node.id;
+  }
+
   public get nodeData() {
     return this.props.node.data as t.IPropNodeData;
   }
@@ -173,7 +183,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   }
 
   public get type() {
-    return util.getType(this.value);
+    return util.toType(this.value);
   }
 
   public get isScalar() {
@@ -185,7 +195,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     const { parentNode } = this.props;
     const data = parentNode ? parentNode.data : undefined;
     const value = data ? data.value : undefined;
-    return util.getType(value);
+    return util.toType(value);
   }
 
   private get lens() {
@@ -215,7 +225,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     return this;
   }
 
-  private next(e: t.PropsEvent) {
+  private fire(e: t.PropsEvent) {
     this.props.events$.next(e);
   }
 
@@ -225,10 +235,11 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   }
 
   private change: t.PropValueFactoryArgs['change'] = args => {
-    const nodeData = this.nodeData;
-    const { path, key } = nodeData;
+    const data = this.nodeData;
+    const key = data.key;
+    const { path, action = 'CHANGE' } = data;
 
-    const fromValue = nodeData.value;
+    const fromValue = data.value;
     const value = { from: fromValue, to: valueUtil.toType(args.to) as t.PropValue };
 
     const root = this.props.rootData;
@@ -237,18 +248,20 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     const to = R.set(lens, value.to, from);
 
     const payload: t.IPropsChange = {
+      action,
       path,
       key,
       value,
       data: { from, to },
     };
+
     this.setValue(value.to);
-    this.next({ type: 'PROPS/changed', payload });
+    this.fire({ type: 'PROPS/changed', payload });
   };
 
   private onFocus: t.PropValueFactoryArgs['onFocus'] = isFocused => {
     const path = this.path;
-    this.next({ type: 'PROPS/focus', payload: { path, isFocused } });
+    this.fire({ type: 'PROPS/focus', payload: { path, isFocused } });
   };
 
   /**
@@ -257,10 +270,13 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   public render() {
     const isScalar = this.isScalar;
     const isArray = this.parentType === 'array';
-
+    const data = this.nodeData;
     const value = this.renderValue();
     const elValue = value ? value.el : undefined;
-    const underline = (value && value.underline) || { color: isScalar ? 0.1 : 0.6, style: 'solid' };
+    const underline = (value && value.underline) || {
+      color: isScalar || data.action === 'INSERT' ? 0.1 : 0.6,
+      style: 'solid',
+    };
 
     const styles = {
       base: css({
@@ -298,11 +314,16 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     };
 
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div
+        {...css(styles.base, this.props.style)}
+        onMouseEnter={this.overDeleteHandler(true)}
+        onMouseLeave={this.overDeleteHandler(false)}
+      >
         <div {...css(styles.outer, styles.left)}>
           <div {...styles.ellipsis}>{this.key}</div>
         </div>
         <div {...css(styles.outer, styles.right)}>{elValue}</div>
+        {this.renderDelete()}
       </div>
     );
   }
@@ -366,18 +387,30 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   };
 
   private renderValueInput = () => {
+    const data = this.nodeData;
     const styles = {
       input: css({ flex: 1 }),
     };
     const value = (this.state.value || '').toString();
+    const valueColor = this.valueColor;
     return (
       <TextInput
         key={this.props.node.id}
         ref={this.elValueInputRef}
         value={value}
+        placeholder={data.action === 'INSERT' ? 'New value' : ''}
         style={styles.input}
-        valueStyle={{ ...FONT_STYLE, color: this.valueColor }}
+        valueStyle={{ ...FONT_STYLE, color: valueColor }}
+        placeholderStyle={{
+          ...FONT_STYLE,
+          color: color.alpha(valueColor, 0.2),
+          italic: true,
+        }}
         events$={this.value$}
+        spellCheck={false}
+        autoCapitalize={false}
+        autoComplete={false}
+        autoCorrect={false}
         onFocus={this.focusHandler(true)}
         onBlur={this.focusHandler(false)}
       />
@@ -410,13 +443,46 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     );
   }
 
+  private renderDelete() {
+    if (!this.props.isDeletable) {
+      return null;
+    }
+    const isOver = this.state.isOver;
+    const styles = {
+      base: css({
+        cursor: 'pointer',
+        opacity: isOver ? 0.6 : 0,
+        transition: `opacity 0.7s`,
+      }),
+      icon: css({
+        position: 'relative',
+        top: 2,
+        marginLeft: 3,
+      }),
+    };
+    return (
+      <Button style={styles.base} onClick={this.handleDeleteClick}>
+        <Icons.Delete color={COLORS.WHITE} size={18} style={styles.icon} />
+      </Button>
+    );
+  }
+
   /**
    * [Handlers]
    */
-
   private focusHandler = (isFocused: boolean) => {
     return () => {
       this.onFocus(isFocused);
     };
+  };
+
+  private overDeleteHandler = (isOverDelete: boolean) => {
+    return () => {
+      this.state$.next({ isOver: isOverDelete });
+    };
+  };
+
+  private handleDeleteClick = () => {
+    // console.log('Delete');
   };
 }

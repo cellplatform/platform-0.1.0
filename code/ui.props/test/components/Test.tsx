@@ -39,32 +39,35 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const isDark = theme === 'DARK';
     const styles = {
       base: css({
-        flex: 1,
+        Absolute: 0,
         backgroundColor: isDark ? COLORS.DARK : undefined,
         Flex: 'horizontal-stretch-stretch',
         borderBottom: `solid 1px ${color.format(0.15)}`,
       }),
-      left: css({ flex: 1, Flex: 'center-center' }),
-      inner: css({
-        position: 'relative',
-        border: `solid 1px ${color.format(isDark ? 0.2 : -0.15)}`,
-        height: '85%',
-        width: 300,
+      left: css({
+        flex: 1,
+        Flex: 'center-center',
       }),
-      props: css({ Absolute: 0 }),
       right: css({
         Scroll: true,
         borderLeft: `solid 1px ${color.format(isDark ? 0.15 : -0.15)}`,
         width: 300,
         padding: 8,
       }),
+      propsOuter: css({
+        position: 'relative',
+        border: `solid 1px ${color.format(isDark ? 0.2 : -0.15)}`,
+        height: '85%',
+        width: 300,
+      }),
+      props: css({ Absolute: 0 }),
     };
 
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
           <div {...styles.left}>
-            <div {...styles.inner}>
+            <div {...styles.propsOuter}>
               <Props
                 data={this.state.data}
                 filter={this.filter}
@@ -73,6 +76,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
                 onChange={this.handleChange}
                 renderValue={this.valueFactory}
                 events$={this.events$}
+                insertable={this.state.isInsertable}
+                deletable={this.state.isDeletable}
               />
             </div>
           </div>

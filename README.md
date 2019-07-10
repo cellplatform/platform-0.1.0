@@ -47,7 +47,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 - [@platform/types](/code/types) 
 - [@platform/ts](/code/ts) 
-- [@platform/fs](/code/fs)
 - [@platform/log](/code/log)
 - [@platform/exec](/code/exec)
 - [@platform/electron](/code/electron)
@@ -60,6 +59,10 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/util.string](/code/util.string)
   - [@platform/util.value](/code/util.value)
   - [@platform/util.value.cell](/code/util.value.cell)
+- fs
+  - [@platform/fs](/code/fs)
+  - [@platform/fs.db](/code/fs.db)
+  - [@platform/fs.s3](/code/fs.s3)
 - network
   - [@platform/http](/code/http)
   - [@platform/graphql](/code/graphql)
