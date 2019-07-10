@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, Icons, t, TreeView, util, R } from '../common';
+import { css, GlamorValue, Icons, t, TreeView, util } from '../common';
 import { PropEditor } from '../PropEditor';
 
 const ROOT = 'ROOT';

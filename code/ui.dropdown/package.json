@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.dropdown",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Dropdown selection component.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.0.18",
-    "@platform/react": "0.3.11",
+    "@platform/react": "0.3.12",
     "react-select": "3.0.4"
   },
   "devDependencies": {

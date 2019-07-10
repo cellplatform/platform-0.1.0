@@ -57,7 +57,7 @@ export class Sync {
       map(e => e.payload as t.IRowsChanged),
     );
 
-    console.log(`\nTODO 🐷  fire change events for Row/Column changes \n`);
+    // console.log(`\nTODO 🐷  fire change events for Row/Column changes \n`);
 
     /**
      * Save to DB when grid cells are edited.

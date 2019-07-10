@@ -483,6 +483,6 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   };
 
   private handleDeleteClick = () => {
-    console.log('Delete');
+    // console.log('Delete');
   };
 }

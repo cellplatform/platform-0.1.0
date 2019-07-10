@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.markdown",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "Strongly typed tools for working with markdown.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,8 +19,8 @@
     "unified": "8.0.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.58",
-    "@platform/ts": "3.4.32"
+    "@platform/test": "0.0.59",
+    "@platform/ts": "3.4.33"
   },
   "files": [
     "lib"

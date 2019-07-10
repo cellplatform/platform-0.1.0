@@ -1,6 +1,6 @@
 {
   "name": "hyperdb.electron.test",
-  "version": "0.0.161",
+  "version": "0.0.162",
   "description": "",
   "scripts": {
     "ui": "ui $@",
@@ -15,15 +15,15 @@
     "tmp": "ts-node -T scripts/tmp $@"
   },
   "dependencies": {
-    "@platform/electron": "^0.5.1",
-    "@platform/hyperdb": "0.2.19",
-    "@platform/hyperdb.electron": "0.2.31",
-    "@platform/react": "0.3.11",
-    "@platform/ui.datagrid": "0.0.152",
-    "@platform/ui.editor": "0.1.29",
-    "@platform/ui.text": "0.2.24",
-    "@platform/util.string": "0.2.3",
-    "@platform/util.value": "0.4.3",
+    "@platform/electron": "^0.5.2",
+    "@platform/hyperdb": "0.2.20",
+    "@platform/hyperdb.electron": "0.2.32",
+    "@platform/react": "0.3.12",
+    "@platform/ui.datagrid": "0.0.153",
+    "@platform/ui.editor": "0.1.30",
+    "@platform/ui.text": "0.2.25",
+    "@platform/util.string": "0.2.4",
+    "@platform/util.value": "0.4.4",
     "@uiharness/electron": "0.5.8",
     "core-js": "^3.1.4",
     "hjson": "3.1.2",
@@ -32,7 +32,7 @@
     "sodium-universal": "^2.0.0"
   },
   "devDependencies": {
-    "@platform/ts": "3.4.32",
+    "@platform/ts": "3.4.33",
     "@types/hjson": "2.4.1",
     "@uiharness/dev": "0.5.12",
     "@uiharness/ui": "0.5.13",

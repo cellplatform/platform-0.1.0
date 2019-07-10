@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.panel",
-  "version": "0.0.73",
+  "version": "0.0.74",
   "scripts": {
     "ui": "ui $@",
     "start": "ui start $@",
@@ -12,11 +12,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.3.11",
-    "@platform/util.animate": "0.0.42"
+    "@platform/react": "0.3.12",
+    "@platform/util.animate": "0.0.43"
   },
   "devDependencies": {
-    "@platform/ts": "3.4.32",
+    "@platform/ts": "3.4.33",
     "@uiharness/dev": "0.5.12",
     "@uiharness/ui": "0.5.13",
     "electron": "5.0.0"
