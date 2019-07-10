@@ -9,7 +9,7 @@ export async function put(args: {
   bucket: string;
   key: string;
   acl?: t.S3Permissions;
-}): Promise<t.IS3PutResponse> {
+}): Promise<t.S3PutResponse> {
   const { s3, bucket, key } = args;
   const Body = typeof args.source === 'string' ? await fs.readFile(args.source) : args.source;
   try {

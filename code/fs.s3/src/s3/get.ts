@@ -7,11 +7,11 @@ export async function get(args: {
   s3: AWS.S3;
   bucket: string;
   key: string;
-}): Promise<t.IS3GetResponse> {
+}): Promise<t.S3GetResponse> {
   const { s3, bucket, key } = args;
   let json: t.Json | undefined;
 
-  const response: t.IS3GetResponse = {
+  const response: t.S3GetResponse = {
     ok: true,
     key,
     modifiedAt: -1,
