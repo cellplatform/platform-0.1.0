@@ -61,8 +61,9 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/util.value.cell](/code/util.value.cell)
 - fs
   - [@platform/fs](/code/fs)
-  - [@platform/fs.db](/code/fs.db)
   - [@platform/fs.s3](/code/fs.s3)
+  - [@platform/fs.db](/code/fs.db)
+  - [@platform/fs.db.electron](/code/fs.db.electron)
 - network
   - [@platform/http](/code/http)
   - [@platform/graphql](/code/graphql)
