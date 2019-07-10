@@ -17,8 +17,8 @@ describe('FileDb (file-system)', () => {
 
   it('creates', () => {
     const db = testDb();
-    expect(db.dir).to.eql(dir);
     expect(db.cache.isEnabled).to.eql(false);
+    expect(db.dir).to.eql(fs.resolve(dir));
   });
 
   it('dispose', () => {
@@ -132,6 +132,9 @@ describe('FileDb (file-system)', () => {
     const res1 = await db.delete(key);
     const res2 = await db.delete(key);
 
+    expect(res1.value).to.eql(undefined);
+    expect(res2.value).to.eql(undefined);
+
     expect(res1.props.deleted).to.eql(true);
     expect(res2.props.deleted).to.eql(false);
 
@@ -163,10 +166,10 @@ describe('FileDb (file-system)', () => {
     expect(events[0].payload.value).to.eql(undefined);
     expect(events[1].payload.value).to.eql(123);
     expect(events[2].payload.value).to.eql(123);
-    expect(events[3].payload.value).to.eql(123);
+    expect(events[3].payload.value).to.eql(undefined);
     expect(events[4].payload.value).to.eql(undefined);
 
-    const get = events[0] as t.IDocDbGetEvent;
+    const get = events[0] as t.IDbGetEvent;
     expect(get.payload.cached).to.eql(false);
   });
 
@@ -325,7 +328,7 @@ describe('FileDb (file-system)', () => {
 
     it('observable events (while caching)', async () => {
       const db = testDb({ isMemoized: true });
-      const events: t.DocDbEvent[] = [];
+      const events: t.DbEvent[] = [];
       db.events$.subscribe(e => events.push(e));
 
       const key = 'foo/bar';
@@ -340,10 +343,12 @@ describe('FileDb (file-system)', () => {
       expect(events[1].type).to.eql('DOC/get');
       expect(events[2].type).to.eql('DOC/get');
       expect(events[3].type).to.eql('DOC/put');
-      expect(events[4].type).to.eql('DOC/cache/removed');
 
-      const get1 = events[1] as t.IDocDbGetEvent;
-      const get2 = events[2] as t.IDocDbGetEvent;
+      expect(events[4].type).to.eql('DOC/cache');
+      expect(events[4].payload.action).to.eql('REMOVED');
+
+      const get1 = events[1] as t.IDbGetEvent;
+      const get2 = events[2] as t.IDbGetEvent;
 
       expect(get1.payload.cached).to.eql(false);
       expect(get2.payload.cached).to.eql(true);

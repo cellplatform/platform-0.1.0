@@ -1,0 +1,16 @@
+name: fs.db.electron
+
+electron:
+  port: 3917
+  entry:
+    main: test/main.ts
+    renderer: 
+      default: test/renderer.tsx
+
+
+
+
+sourcemaps:
+  strip:
+    - node_modules/rxjs
+

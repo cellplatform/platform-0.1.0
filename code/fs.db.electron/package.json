@@ -1,0 +1,32 @@
+{
+  "name": "@platform/fs.db.electron",
+  "version": "0.0.0",
+  "description": "",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build $@",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/electron": "^0.5.2",
+    "@platform/fs.db": "^1.2.5",
+    "@platform/react": "0.3.12",
+    "@platform/types": "^0.0.20"
+  },
+  "devDependencies": {
+    "@uiharness/dev": "0.5.13",
+    "@uiharness/ui": "0.5.14",
+    "electron": "5.0.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

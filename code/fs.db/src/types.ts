@@ -1,7 +1,7 @@
 import { Json, IDisposable } from './common/types';
 import { Observable } from 'rxjs';
 
-export type IDocTimestamps = {
+export type IDbTimestamps = {
   createdAt: number;
   modifiedAt: number;
 };
@@ -9,40 +9,40 @@ export type IDocTimestamps = {
 /**
  * Database
  */
-export type IDocDb = IDocDbRead & IDocDbWrite & IDisposable & IDocDbEvents;
+export type IDb = IDbRead & IDbWrite & IDisposable & IDbEvents;
 
-export type IDocDbRead = {
-  get(key: string): Promise<IDocDbValue>;
-  getValue(key: string): Promise<Json>;
-  getMany(keys: string[]): Promise<IDocDbValue[]>;
-  find(args: string | IDocDbFindArgs): Promise<IDocDbFindResult>;
+export type IDbRead = {
+  get(key: string): Promise<IDbValue>;
+  getValue<T extends Json | undefined>(key: string): Promise<T>;
+  getMany(keys: string[]): Promise<IDbValue[]>;
+  find(query: string | IDbQuery): Promise<IDbFindResult>;
 };
 
-export type IDocDbWrite = {
-  put(key: string, value?: Json): Promise<IDocDbValue>;
-  putMany(items: IDocDbKeyValue[]): Promise<IDocDbValue[]>;
-  delete(key: string): Promise<IDocDbValue>;
+export type IDbWrite = {
+  put(key: string, value?: Json): Promise<IDbValue>;
+  putMany(items: IDbKeyValue[]): Promise<IDbValue[]>;
+  delete(key: string): Promise<IDbValue>;
+  deleteMany(keys: string[]): Promise<IDbValue[]>;
 };
 
-export type IDocDbEvents = {
-  readonly events$: Observable<DocDbEvent>;
+export type IDbEvents = {
+  readonly events$: Observable<DbEvent>;
 };
 
 /**
  * Value
  */
-export type IDocDbValue = {
+export type IDbValue = {
   value?: Json;
-  props: IDocDbValueProps;
+  props: IDbValueProps;
 };
-export type IDocDbValueProps = {
+export type IDbValueProps = {
   key: string;
-  path: string;
   exists: boolean;
   deleted: boolean;
 };
 
-export type IDocDbKeyValue = {
+export type IDbKeyValue = {
   key: string;
   value?: Json;
 };
@@ -50,24 +50,23 @@ export type IDocDbKeyValue = {
 /**
  * Find
  */
-export type IDocDbFindArgs = {
+export type IDbQuery = {
   pattern?: string;
   deep?: boolean;
 };
 
-export type IDocDbFindResult = {
+export type IDbFindResult = {
   keys: string[];
-  paths: string[];
-  list: IDocDbValue[];
+  list: IDbValue[];
   map: { [key: string]: Json | undefined };
 };
 
 /**
  * Cache
  */
-export type IDocDbCache = {
+export type IDbCache = {
   isEnabled: boolean;
-  values: { [key: string]: IDocDbValue };
+  values: { [key: string]: IDbValue };
   exists(key: string): boolean;
   clear(keys?: string[]): void;
 };
@@ -75,40 +74,40 @@ export type IDocDbCache = {
 /**
  * Events
  */
-export type DocDbEvent = DocDbActionEvent | IDocDbCacheKeyRemovedEvent;
-export type DocDbActionEvent = IDocDbGetEvent | IDocDbPutEvent | IDocDbDeleteEvent;
+export type DbEvent = DocDbActionEvent | IDbCacheEvent;
+export type DocDbActionEvent = IDbGetEvent | IDbPutEvent | IDbDeleteEvent;
 
-export type IDocDbGetEvent = {
+export type IDbGetEvent = {
   type: 'DOC/get';
-  payload: IDocDbActionGet;
+  payload: IDbActionGet;
 };
 
-export type IDocDbPutEvent = {
+export type IDbPutEvent = {
   type: 'DOC/put';
-  payload: IDocDbActionPut;
+  payload: IDbActionPut;
 };
 
-export type IDocDbDeleteEvent = {
+export type IDbDeleteEvent = {
   type: 'DOC/delete';
-  payload: IDocDbActionDelete;
+  payload: IDbActionDelete;
 };
 
-export type IDocDbCacheKeyRemovedEvent = {
-  type: 'DOC/cache/removed';
-  payload: IDocDbCacheKeyRemoved;
+export type IDbCacheEvent = {
+  type: 'DOC/cache';
+  payload: IDbCacheAction;
 };
-export type IDocDbCacheKeyRemoved = { key: string; dir: string };
+export type IDbCacheAction = { key: string; action: 'REMOVED' };
 
 /**
  * Action
  */
-export type DocDbAction = IDocDbActionGet | IDocDbActionPut | IDocDbActionDelete;
+export type DocDbAction = IDbActionGet | IDbActionPut | IDbActionDelete;
 
-export type IDocDbAction = {
+export type IDbAction = {
   key: string;
   value?: Json;
-  props: IDocDbValueProps;
+  props: IDbValueProps;
 };
-export type IDocDbActionGet = IDocDbAction & { action: 'get'; cached: boolean };
-export type IDocDbActionPut = IDocDbAction & { action: 'put' };
-export type IDocDbActionDelete = IDocDbAction & { action: 'delete' };
+export type IDbActionGet = IDbAction & { action: 'get'; cached: boolean };
+export type IDbActionPut = IDbAction & { action: 'put' };
+export type IDbActionDelete = IDbAction & { action: 'delete' };
