@@ -7,7 +7,7 @@
 
 import { log, fs } from './common';
 
-const dir = fs.resolve('./.dev/tmp');
+const dir = fs.resolve('./tmp');
 fs.ensureDirSync(dir);
 
 const ACCESS = {
