@@ -6,6 +6,11 @@
  */
 
 import { AWS, log, fs } from './common';
+import * as multer from 'multer';
+import * as multerS3 from 'multer-s3';
+
+const dir = fs.resolve('./.dev/tmp');
+fs.ensureDirSync(dir);
 
 const ACCESS = {
   KEY: process.env.SPACES_KEY,
@@ -30,3 +35,26 @@ s3.listBuckets((err, data) => {
 });
 
 log.info();
+
+async function testUpload() {
+  const path = fs.join(dir, 'db.zip');
+  console.log('\n\nuploading', path);
+
+  const data = await fs.readFile(path);
+  // const buffer = new Buffer(data, 'binary');
+
+  const params = {
+    Bucket: 'uih',
+    Key: 'tmp/db.zip',
+    // Body: JSON.stringify(data, null, 2),
+    Body: data,
+  };
+
+  const res = await s3.upload(params).promise();
+  console.log('res', res);
+
+  // const res = await s3.upload(params).promise();
+  // console.log('uploaded: ', res);
+}
+
+testUpload();
