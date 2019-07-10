@@ -39,9 +39,6 @@
     "@uiharness/ui": "0.5.13",
     "electron": "5.0.0"
   },
-  "resolutions": {
-    "prosemirror-state": "1.2.2"
-  },
   "files": [
     "lib"
   ],
