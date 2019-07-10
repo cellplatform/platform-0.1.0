@@ -340,7 +340,9 @@ describe('FileDb (file-system)', () => {
       expect(events[1].type).to.eql('DOC/get');
       expect(events[2].type).to.eql('DOC/get');
       expect(events[3].type).to.eql('DOC/put');
-      expect(events[4].type).to.eql('DOC/cache/removed');
+
+      expect(events[4].type).to.eql('DOC/cache');
+      expect(events[4].payload.action).to.eql('REMOVED');
 
       const get1 = events[1] as t.IDocDbGetEvent;
       const get2 = events[2] as t.IDocDbGetEvent;

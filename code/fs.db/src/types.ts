@@ -75,7 +75,7 @@ export type IDocDbCache = {
 /**
  * Events
  */
-export type DocDbEvent = DocDbActionEvent | IDocDbCacheKeyRemovedEvent;
+export type DocDbEvent = DocDbActionEvent | IDocDbCacheEvent;
 export type DocDbActionEvent = IDocDbGetEvent | IDocDbPutEvent | IDocDbDeleteEvent;
 
 export type IDocDbGetEvent = {
@@ -93,11 +93,11 @@ export type IDocDbDeleteEvent = {
   payload: IDocDbActionDelete;
 };
 
-export type IDocDbCacheKeyRemovedEvent = {
-  type: 'DOC/cache/removed';
-  payload: IDocDbCacheKeyRemoved;
+export type IDocDbCacheEvent = {
+  type: 'DOC/cache';
+  payload: IDocDbCacheAction;
 };
-export type IDocDbCacheKeyRemoved = { key: string; dir: string };
+export type IDocDbCacheAction = { key: string; action: 'REMOVED' };
 
 /**
  * Action
