@@ -27,7 +27,7 @@ export const root = Command.create<P>('root', e => {
   })
   .add('find', async e => {
     const db = e.props.current;
-    const pattern = e.param<string>(0) || 'foo';
+    const pattern = e.param<string>(0);
     const res = await db.find(pattern);
 
     log.info('\nFIND', res);
