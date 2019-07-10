@@ -23,8 +23,8 @@
     "react-icons": "3.7.0"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.5.12",
-    "@uiharness/ui": "0.5.13",
+    "@uiharness/dev": "0.5.13",
+    "@uiharness/ui": "0.5.14",
     "electron": "5.0.0"
   },
   "files": [
