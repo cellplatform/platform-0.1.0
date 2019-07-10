@@ -1,6 +1,6 @@
 import { t, R } from '../common';
 
-const getModel = async <T extends t.Json>(name: string, db: t.IDocDb, dbKey: string) => {
+const getModel = async <T extends t.Json>(name: string, db: t.IDb, dbKey: string) => {
   const value = (await db.get(dbKey)).value as T;
   if (!value) {
     throw new Error(`The [${name}] target '${dbKey}' does not exist in the DB.`);
@@ -12,7 +12,7 @@ const getModel = async <T extends t.Json>(name: string, db: t.IDocDb, dbKey: str
  * Setup a helper for performing a `[1..n]` link between models.
  */
 export function oneToMany<O extends { id: string }, M extends { id: string }>(args: {
-  db: t.IDocDb;
+  db: t.IDb;
   one: { dbKey: (id: string) => string; field: keyof O };
   many: { dbKey: (id: string) => string; field: keyof M };
 }) {
@@ -27,7 +27,9 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
     const manyRefs = (manyModel[many.field] || []) as string[];
     if (!Array.isArray(manyRefs)) {
       throw new Error(
-        `The target field '${many.field}' for the 'many' relationship on '${many.dbKey}' must be an array.`,
+        `The target field '${many.field}' for the 'many' relationship on '${
+          many.dbKey
+        }' must be an array.`,
       );
     }
 
@@ -43,7 +45,7 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
       const prep = await prepare(oneId, manyId);
       const { manyRefs, oneKey, manyKey } = prep;
       let { oneModel, manyModel } = prep;
-      let batch: t.IDocDbKeyValue[] = [];
+      let batch: t.IDbKeyValue[] = [];
 
       // Assign reference to the "singular" target.
       if (oneModel[one.field as any] !== manyId) {
@@ -69,7 +71,7 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
       const prep = await prepare(oneId, manyId);
       const { manyRefs, oneKey, manyKey } = prep;
       let { oneModel, manyModel } = prep;
-      let batch: t.IDocDbKeyValue[] = [];
+      let batch: t.IDbKeyValue[] = [];
 
       // Remove reference from the "singular" target.
       if (oneModel[one.field as any] === manyId) {
@@ -109,7 +111,7 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
  * Setup a helper for performing `[n..n]` links between models.
  */
 export function manyToMany<A extends { id: string }, B extends { id: string }>(args: {
-  db: t.IDocDb;
+  db: t.IDb;
   a: { dbKey: (id: string) => string; field: keyof A };
   b: { dbKey: (id: string) => string; field: keyof B };
 }) {
@@ -169,7 +171,7 @@ export function manyToMany<A extends { id: string }, B extends { id: string }>(a
  * Setup a helper for performing `[n..n]` links between models.
  */
 export function oneToOne<A extends { id: string }, B extends { id: string }>(args: {
-  db: t.IDocDb;
+  db: t.IDb;
   a: { dbKey: (id: string) => string; field: keyof A };
   b: { dbKey: (id: string) => string; field: keyof B };
 }) {
@@ -187,7 +189,7 @@ export function oneToOne<A extends { id: string }, B extends { id: string }>(arg
     const prep = await prepare(idA, idB);
     let { modelA, modelB } = prep;
     // let batch: any = {};
-    let batch: t.IDocDbKeyValue[] = [];
+    let batch: t.IDbKeyValue[] = [];
 
     // Unlink any existing ref.
     if (modelA[a.field] && modelA[a.field] !== (modelB.id as any)) {

@@ -5,7 +5,7 @@ import { util, fs, t, defaultValue } from '../common';
 /**
  * A DB that writes to the file-system.
  */
-export class FileDb implements t.IDocDb {
+export class FileDb implements t.IDb {
   /**
    * [Static]
    */
@@ -26,7 +26,7 @@ export class FileDb implements t.IDocDb {
    */
   public readonly dir: string;
 
-  public readonly cache: t.IDocDbCache = {
+  public readonly cache: t.IDbCache = {
     isEnabled: false,
     values: {},
     exists: (key: string) => this.cache.values[key] !== undefined,
@@ -41,7 +41,7 @@ export class FileDb implements t.IDocDb {
     },
   };
 
-  private readonly _events$ = new Subject<t.DocDbEvent>();
+  private readonly _events$ = new Subject<t.DbEvent>();
   public readonly events$ = this._events$.pipe(share());
 
   private readonly _dispose$ = new Subject<{}>();
@@ -63,10 +63,10 @@ export class FileDb implements t.IDocDb {
   /**
    * [Get]
    */
-  public async get(key: string): Promise<t.IDocDbValue> {
+  public async get(key: string): Promise<t.IDbValue> {
     const cachedValue = this.cache.isEnabled ? this.cache.values[key] : undefined;
 
-    const fire = (result: t.IDocDbValue, cached: boolean) => {
+    const fire = (result: t.IDbValue, cached: boolean) => {
       const { value, props } = result;
       this.fire({
         type: 'DOC/get',
@@ -92,10 +92,10 @@ export class FileDb implements t.IDocDb {
     // Finish up.
     return res;
   }
-  public static async get(dir: string, key: string): Promise<t.IDocDbValue> {
+  public static async get(dir: string, key: string): Promise<t.IDbValue> {
     const path = FileDb.toPath(dir, key);
     const exists = await fs.pathExists(path);
-    const props: t.IDocDbValueProps = { key, path, exists, deleted: false };
+    const props: t.IDbValueProps = { key, exists, deleted: false };
     if (!exists) {
       return { value: undefined, props: { ...props, exists: false } };
     }
@@ -111,14 +111,14 @@ export class FileDb implements t.IDocDb {
     const res = await this.get(key);
     return res.value as T;
   }
-  public async getMany(keys: string[]): Promise<t.IDocDbValue[]> {
+  public async getMany(keys: string[]): Promise<t.IDbValue[]> {
     return Promise.all(keys.map(key => this.get(key)));
   }
 
   /**
    * [Put]
    */
-  public async put(key: string, value?: t.Json): Promise<t.IDocDbValue> {
+  public async put(key: string, value?: t.Json): Promise<t.IDbValue> {
     if (typeof value === 'object' && value !== null) {
       value = util.incrementTimestamps(value);
     }
@@ -134,24 +134,24 @@ export class FileDb implements t.IDocDb {
     }
     return res;
   }
-  public static async put(dir: string, key: string, value?: t.Json): Promise<t.IDocDbValue> {
+  public static async put(dir: string, key: string, value?: t.Json): Promise<t.IDbValue> {
     const path = FileDb.toPath(dir, key);
     const json = { data: value };
 
     await fs.ensureDir(fs.dirname(path));
     await fs.writeFile(path, JSON.stringify(json, null, '  '));
 
-    const props: t.IDocDbValueProps = { key, path, exists: true, deleted: false };
+    const props: t.IDbValueProps = { key, exists: true, deleted: false };
     return { value, props };
   }
-  public async putMany(items: Array<{ key: string; value?: t.Json }>): Promise<t.IDocDbValue[]> {
+  public async putMany(items: Array<{ key: string; value?: t.Json }>): Promise<t.IDbValue[]> {
     return Promise.all(items.map(({ key, value }) => this.put(key, value)));
   }
 
   /**
    * [Delete]
    */
-  public async delete(key: string): Promise<t.IDocDbValue> {
+  public async delete(key: string): Promise<t.IDbValue> {
     const res = await FileDb.delete(this.dir, key.toString());
     this.fire({
       type: 'DOC/delete',
@@ -159,7 +159,7 @@ export class FileDb implements t.IDocDb {
     });
     return res;
   }
-  public static async delete(dir: string, key: string): Promise<t.IDocDbValue> {
+  public static async delete(dir: string, key: string): Promise<t.IDbValue> {
     const path = FileDb.toPath(dir, key);
     const existing = await FileDb.get(dir, key);
     let deleted = false;
@@ -170,17 +170,17 @@ export class FileDb implements t.IDocDb {
     }
     return {
       value: existing.value,
-      props: { path, key, exists: false, deleted },
+      props: { key, exists: false, deleted },
     };
   }
-  public async deleteMany(keys: string[]): Promise<t.IDocDbValue[]> {
+  public async deleteMany(keys: string[]): Promise<t.IDbValue[]> {
     return Promise.all(keys.map(key => this.delete(key)));
   }
 
   /**
    * Find (glob).
    */
-  public async find(args: string | t.IDocDbFindArgs): Promise<t.IDocDbFindResult> {
+  public async find(args: string | t.IDbFindArgs): Promise<t.IDbFindResult> {
     const pattern = (typeof args === 'object' ? args.pattern : args) || '';
     const deep = typeof args === 'object' ? defaultValue(args.deep, true) : true;
     let paths: string[] = [];
@@ -207,10 +207,9 @@ export class FileDb implements t.IDocDb {
       .map(path => path.substr(0, path.length - '.json'.length));
 
     const list = await this.getMany(keys);
-    let obj: t.IDocDbFindResult['map'] | undefined;
+    let obj: t.IDbFindResult['map'] | undefined;
     return {
       keys,
-      paths,
       list,
       get map() {
         if (!obj) {
@@ -236,7 +235,7 @@ export class FileDb implements t.IDocDb {
     return fs.join(dir, `${key}.json`);
   }
 
-  private fire(e: t.DocDbEvent) {
+  private fire(e: t.DbEvent) {
     this._events$.next(e);
   }
 }

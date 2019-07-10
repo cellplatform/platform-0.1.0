@@ -166,7 +166,7 @@ describe('FileDb (file-system)', () => {
     expect(events[3].payload.value).to.eql(123);
     expect(events[4].payload.value).to.eql(undefined);
 
-    const get = events[0] as t.IDocDbGetEvent;
+    const get = events[0] as t.IDbGetEvent;
     expect(get.payload.cached).to.eql(false);
   });
 
@@ -325,7 +325,7 @@ describe('FileDb (file-system)', () => {
 
     it('observable events (while caching)', async () => {
       const db = testDb({ isMemoized: true });
-      const events: t.DocDbEvent[] = [];
+      const events: t.DbEvent[] = [];
       db.events$.subscribe(e => events.push(e));
 
       const key = 'foo/bar';
@@ -344,8 +344,8 @@ describe('FileDb (file-system)', () => {
       expect(events[4].type).to.eql('DOC/cache');
       expect(events[4].payload.action).to.eql('REMOVED');
 
-      const get1 = events[1] as t.IDocDbGetEvent;
-      const get2 = events[2] as t.IDocDbGetEvent;
+      const get1 = events[1] as t.IDbGetEvent;
+      const get2 = events[2] as t.IDbGetEvent;
 
       expect(get1.payload.cached).to.eql(false);
       expect(get2.payload.cached).to.eql(true);
