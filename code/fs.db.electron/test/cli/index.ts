@@ -1,4 +1,15 @@
-import { Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import { renderer } from '../../src/renderer';
 
 import { CommandState, t } from '../common';
@@ -10,7 +21,25 @@ export function init(args: {
   getState: () => t.ITestState;
 }) {
   const { state$, ipc } = args;
-  const { db } = renderer.init({ ipc });
+  const { db } = renderer.init({ ipc, onCreate: e => monitor(e.dir, e.db) });
+
+  const monitor = (dir: string, db: t.IDb) => {
+    db.events$
+      .pipe(
+        filter(e => e.type === 'DOC/put' || e.type === 'DOC/delete'),
+        map(e => e.payload as t.IDbAction),
+      )
+      .subscribe(e => {
+        // e.payload.
+        let databases = { ...(args.getState().databases || {}) };
+        const db = { ...(databases[dir] || {}) };
+
+        db[e.key] = e.value;
+        databases = { ...databases, [dir]: db };
+
+        state$.next({ databases });
+      });
+  };
 
   return CommandState.create({
     root,

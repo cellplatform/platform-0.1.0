@@ -14,7 +14,7 @@ export class FileDb implements t.IDb {
   /**
    * [Static]
    */
-  public static DELETED_SUFFIX = '._deleted';
+  public static DELETED_SUFFIX = '._del';
   public static ensureTimestamps = util.ensureTimestamps;
   public static incrementTimestamps = util.incrementTimestamps;
 
@@ -178,7 +178,7 @@ export class FileDb implements t.IDb {
       deleted = true;
     }
     return {
-      value: existing.value,
+      value: undefined,
       props: { key, exists: false, deleted },
     };
   }

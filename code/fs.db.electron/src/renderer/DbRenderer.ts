@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { filter, share, takeUntil } from 'rxjs/operators';
 
 import { t } from './common';
 
@@ -24,8 +24,17 @@ export class DbRenderer implements t.IDb {
    */
 
   private constructor(args: IDbRendererArgs) {
-    this.dir = args.dir;
-    this.ipc = args.ipc;
+    const { dir, ipc } = args;
+    this.dir = dir;
+    this.ipc = ipc;
+
+    ipc
+      .on<t.IDbIpcDbFiredEvent>('DB/fired')
+      .pipe(
+        takeUntil(this.dispose$),
+        filter(e => e.payload.dir === dir),
+      )
+      .subscribe(e => this._events$.next(e.payload.event));
   }
 
   public dispose() {
@@ -55,7 +64,6 @@ export class DbRenderer implements t.IDb {
   /**
    * [Methods]
    */
-
   public async get(key: string): Promise<t.IDbValue> {
     return (await this.getMany([key]))[0];
   }

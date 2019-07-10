@@ -1,14 +1,25 @@
-import { IDbValue, IDbKeyValue, IDbQuery, IDb, IDbFindResult } from '@platform/fs.db/lib/types';
 import { IpcClient } from '@platform/electron/lib/types';
+import {
+  DbEvent,
+  IDb,
+  IDbFindResult,
+  IDbKeyValue,
+  IDbQuery,
+  IDbValue,
+} from '@platform/fs.db/lib/types';
 
 export type DbIpc = IpcClient<DbIpcEvent>;
-
 export type DbFactory = (dir: string) => IDb;
 
 /**
  * IPC Events
  */
-export type DbIpcEvent = IDbIpcGetEvent | IDbIpcFindEvent | IDbIpcPutEvent | IDbIpcDeleteEvent;
+export type DbIpcEvent =
+  | IDbIpcGetEvent
+  | IDbIpcFindEvent
+  | IDbIpcPutEvent
+  | IDbIpcDeleteEvent
+  | IDbIpcDbFiredEvent;
 
 export type IDbIpcGetResponse = { values: IDbValue[] };
 export type IDbIpcGetEvent = {
@@ -33,3 +44,9 @@ export type IDbIpcDeleteEvent = {
   type: 'DB/delete';
   payload: { dir: string; keys: string[] };
 };
+
+export type IDbIpcDbFiredEvent = {
+  type: 'DB/fired';
+  payload: IDbIpcDbFired;
+};
+export type IDbIpcDbFired = { dir: string; event: DbEvent };

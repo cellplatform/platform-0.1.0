@@ -41,7 +41,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div style={{ padding: 30, flex: 1 }}>
-          <ObjectView name={'state'} data={this.state} />
+          <ObjectView name={'state'} data={this.state} expandLevel={5} />
         </div>
       </CommandShell>
     );

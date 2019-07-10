@@ -132,6 +132,9 @@ describe('FileDb (file-system)', () => {
     const res1 = await db.delete(key);
     const res2 = await db.delete(key);
 
+    expect(res1.value).to.eql(undefined);
+    expect(res2.value).to.eql(undefined);
+
     expect(res1.props.deleted).to.eql(true);
     expect(res2.props.deleted).to.eql(false);
 
@@ -163,7 +166,7 @@ describe('FileDb (file-system)', () => {
     expect(events[0].payload.value).to.eql(undefined);
     expect(events[1].payload.value).to.eql(123);
     expect(events[2].payload.value).to.eql(123);
-    expect(events[3].payload.value).to.eql(123);
+    expect(events[3].payload.value).to.eql(undefined);
     expect(events[4].payload.value).to.eql(undefined);
 
     const get = events[0] as t.IDbGetEvent;
