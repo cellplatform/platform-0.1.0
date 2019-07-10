@@ -17,8 +17,8 @@ describe('FileDb (file-system)', () => {
 
   it('creates', () => {
     const db = testDb();
-    expect(db.dir).to.eql(dir);
     expect(db.cache.isEnabled).to.eql(false);
+    expect(db.dir).to.eql(fs.resolve(dir));
   });
 
   it('dispose', () => {

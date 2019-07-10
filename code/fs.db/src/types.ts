@@ -13,15 +13,16 @@ export type IDb = IDbRead & IDbWrite & IDisposable & IDbEvents;
 
 export type IDbRead = {
   get(key: string): Promise<IDbValue>;
-  getValue(key: string): Promise<Json>;
+  getValue<T extends Json | undefined>(key: string): Promise<T>;
   getMany(keys: string[]): Promise<IDbValue[]>;
-  find(args: string | IDbFindArgs): Promise<IDbFindResult>;
+  find(query: string | IDbQuery): Promise<IDbFindResult>;
 };
 
 export type IDbWrite = {
   put(key: string, value?: Json): Promise<IDbValue>;
   putMany(items: IDbKeyValue[]): Promise<IDbValue[]>;
   delete(key: string): Promise<IDbValue>;
+  deleteMany(keys: string[]): Promise<IDbValue[]>;
 };
 
 export type IDbEvents = {
@@ -49,7 +50,7 @@ export type IDbKeyValue = {
 /**
  * Find
  */
-export type IDbFindArgs = {
+export type IDbQuery = {
   pattern?: string;
   deep?: boolean;
 };

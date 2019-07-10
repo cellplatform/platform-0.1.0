@@ -2,6 +2,11 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { util, fs, t, defaultValue } from '../common';
 
+export type IFileDbArgs = {
+  dir: string;
+  cache?: boolean;
+};
+
 /**
  * A DB that writes to the file-system.
  */
@@ -13,11 +18,15 @@ export class FileDb implements t.IDb {
   public static ensureTimestamps = util.ensureTimestamps;
   public static incrementTimestamps = util.incrementTimestamps;
 
+  public static create(args: IFileDbArgs) {
+    return new FileDb(args);
+  }
+
   /**
    * [Lifecycle]
    */
-  constructor(args: { dir: string; cache?: boolean }) {
-    this.dir = args.dir;
+  constructor(args: IFileDbArgs) {
+    this.dir = fs.resolve(args.dir);
     this.cache.isEnabled = Boolean(args.cache);
   }
 
@@ -144,7 +153,7 @@ export class FileDb implements t.IDb {
     const props: t.IDbValueProps = { key, exists: true, deleted: false };
     return { value, props };
   }
-  public async putMany(items: Array<{ key: string; value?: t.Json }>): Promise<t.IDbValue[]> {
+  public async putMany(items: t.IDbKeyValue[]): Promise<t.IDbValue[]> {
     return Promise.all(items.map(({ key, value }) => this.put(key, value)));
   }
 
@@ -180,7 +189,7 @@ export class FileDb implements t.IDb {
   /**
    * Find (glob).
    */
-  public async find(args: string | t.IDbFindArgs): Promise<t.IDbFindResult> {
+  public async find(args: string | t.IDbQuery): Promise<t.IDbFindResult> {
     const pattern = (typeof args === 'object' ? args.pattern : args) || '';
     const deep = typeof args === 'object' ? defaultValue(args.deep, true) : true;
     let paths: string[] = [];

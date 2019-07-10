@@ -1,13 +1,17 @@
-import { Subject } from 'rxjs';
-
 export * from '@platform/cli.ui/lib/types';
+export * from '@platform/electron/lib/types';
 export * from '../src/types';
 
+import * as t from '../src/types';
+import { IDb } from '@platform/fs.db/lib/types';
+
 export type ICommandProps = {
-  state$: Subject<ITestState>;
+  db: t.DbFactory;
+  state: ITestState;
+  current: IDb;
+  next(state: Partial<ITestState>): void;
 };
 
 export type ITestState = {
-  title?: string;
-  count?: number;
+  current?: string;
 };
