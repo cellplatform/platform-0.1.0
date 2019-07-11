@@ -23,8 +23,8 @@ export function init(args: {
     populate(dir, db);
     db.events$
       .pipe(
-        filter(e => e.type === 'DOC/put' || e.type === 'DOC/delete'),
-        map(e => e.payload as t.IDbAction),
+        filter(e => e.type === 'DOC/change'),
+        map(e => e.payload as t.IDbActionChange),
       )
       .subscribe(e => {
         let databases = { ...(args.getState().databases || {}) };

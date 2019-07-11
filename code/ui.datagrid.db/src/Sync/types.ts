@@ -1,25 +1,32 @@
-import * as t from '../types';
+import * as t from '../common/types';
+
+// export type ISyncCancel = {
+//   isCancelled: boolean;
+//   cancel(): void;
+// };
+
+/**
+ * Change
+ */
+export type SyncChangeType = ISyncChangeCell | ISyncChangeColumn | ISyncChangeRow;
+export type ISyncChange<V = any> = { source: 'DB' | 'GRID'; key: string; value: V };
+export type ISyncChangeCell = { kind: 'cell' } & ISyncChange<t.CellValue>;
+export type ISyncChangeColumn = { kind: 'column' } & ISyncChange<t.IGridColumn>;
+export type ISyncChangeRow = { kind: 'row' } & ISyncChange<t.IGridRow>;
+
 /**
  * [Events]
  */
-export type SyncEvent = ISyncGridCellsChangedEvent | ISyncGridDbCellChangedEvent;
+export type SyncEvent = ISyncingEvent; // | ISyncChangedEvent;
 
-export type ISyncGridCellsChangedEvent = {
-  type: 'GRID/sync/changed/grid/cells';
-  payload: ISyncGridCellsChanged;
-};
-export type ISyncGridCellsChanged = {
-  changes: Array<{ key: string; value: t.CellValue }>;
-  isCancelled: boolean;
-  cancel(): void;
+export type ISyncing = SyncChangeType; // & ISyncCancel;
+export type ISyncingEvent = {
+  type: 'DB/syncing';
+  payload: ISyncing;
 };
 
-export type ISyncGridDbCellChangedEvent = {
-  type: 'GRID/sync/changed/db/cell';
-  payload: ISyncGridDbCellChanged;
-};
-export type ISyncGridDbCellChanged = {
-  cell: { key: string; value: t.CellValue };
-  isCancelled: boolean;
-  cancel(): void;
-};
+// export type ISyncChanged = SyncChangeType;
+// export type ISyncChangedEvent = {
+//   type: 'SYNC/changed';
+//   payload: ISyncChanged;
+// };

@@ -302,7 +302,9 @@ export class Grid implements t.IGrid {
       }
     });
     this._.columns = to;
-    this.fire({ type: 'GRID/columns/changed', payload: { from, to, changes } });
+    if (!R.equals(from, to)) {
+      this.fire({ type: 'GRID/columns/changed', payload: { from, to, changes } });
+    }
     return this;
   }
 
@@ -314,7 +316,6 @@ export class Grid implements t.IGrid {
     const from = { ...this._.rows };
     const to = { ...from };
     let changes: t.IRowChange[] = [];
-
     Object.keys(rows).forEach(key => {
       const prev = from[key];
       const next = rows[key];
@@ -330,7 +331,9 @@ export class Grid implements t.IGrid {
       }
     });
     this._.rows = to;
-    this.fire({ type: 'GRID/rows/changed', payload: { from, to, changes } });
+    if (!R.equals(from, to)) {
+      this.fire({ type: 'GRID/rows/changed', payload: { from, to, changes } });
+    }
     return this;
   }
 

@@ -1,7 +1,7 @@
 {
-  "name": "@platform/fs.db",
-  "version": "1.2.8",
-  "description": "File-system backing store for a JSON document database.",
+  "name": "@platform/fs.db.types",
+  "version": "0.0.3",
+  "description": "Common types for a file-system like JSON document database.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -9,15 +9,11 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "build-test": "ts build",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/fs": "0.1.6",
-    "@platform/fs.db.types": "0.0.3",
-    "@platform/libs": "0.0.18",
-    "@platform/types": "0.0.20",
-    "@platform/util.value": "0.4.4"
+    "@platform/libs": "^0.0.18",
+    "@platform/types": "^0.0.20"
   },
   "devDependencies": {
     "@platform/test": "0.0.59",
@@ -26,5 +22,6 @@
   "files": [
     "lib"
   ],
+  "repository": "uiharness/platform",
   "license": "MIT"
 }

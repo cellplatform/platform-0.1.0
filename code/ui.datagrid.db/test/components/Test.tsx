@@ -1,6 +1,16 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 
 import * as cli from '../cli';
 import {
@@ -16,6 +26,7 @@ import {
   CommandShell,
   Sync,
   t,
+  COLORS,
 } from '../common';
 
 const storage = {
@@ -43,7 +54,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
 
   public static contextType = renderer.Context;
-  public context!: renderer.ReactContext;
+  public context!: t.ILocalContext;
+  private databases = this.context.databases;
 
   /**
    * [Lifecycle]
@@ -73,26 +85,40 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     // Events.
     sync$.subscribe(e => {
       console.log('🌳', e.type, e.payload);
+      // e.payload.
     });
 
+    // sync$
+    //   .pipe(
+    //     filter(e => e.type === 'SYNC/changing'),
+    //     map(e => e.payload as t.ISyncChanging),
+    //   )
+    //   .subscribe(e => {
+    //     // console.log('cancel', e);
+    //     // e.cancel();
+    //   });
+
+    // // Setup syncer.
+    // const dir = constants.DB.DIR;
+    // const db = this.databases(dir);
+    // console.log('this.datagrid', this.datagrid);
+    // // const grid = this.datagrid.grid;
+    // // this.sync = Sync.create({ db, grid, events$: this.sync$ });
+  }
+
+  public componentDidMount() {
     // Setup syncer.
     const dir = constants.DB.DIR;
-    const db = (await this.databases.getOrCreate({ dir, connect: false })).db;
+    const db = this.databases(dir);
     const grid = this.datagrid.grid;
-    this.sync = Sync.create({ db, grid, events$: this.sync$ });
+    const events$ = this.sync$;
+    this.sync = Sync.create({ db, grid, events$ });
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
     this.sync.dispose();
-  }
-
-  /**
-   * [Properties]
-   */
-  public get databases() {
-    return (this.context as any).databases as t.IDbFactory;
   }
 
   /**
@@ -117,7 +143,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const elRight = showDebug && this.renderDebug();
 
     return (
-      <CommandShell cli={this.cli} tree={tree}>
+      <CommandShell cli={this.cli} tree={tree} localStorage={true}>
         <div {...styles.base}>
           <div {...styles.left}>{this.renderGrid()}</div>
           {elRight}
@@ -130,9 +156,10 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const styles = {
       base: css({
         width: 300,
-        padding: 8,
-        backgroundColor: color.format(-0.03),
-        borderLeft: `solid 1px ${color.format(-0.1)}`,
+        paddingLeft: 10,
+        paddingTop: 7,
+        backgroundColor: COLORS.DARK,
+        borderBottom: `solid 1px ${color.format(0.1)}`,
         Scroll: true,
       }),
     };
@@ -153,7 +180,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
     return (
       <div {...styles.base}>
-        <ObjectView name={'state'} data={data} expandLevel={2} />
+        <ObjectView name={'state'} data={data} expandLevel={2} theme={'DARK'} />
       </div>
     );
   }

@@ -7,13 +7,20 @@ type P = t.ICommandProps & {};
  * Manipulate the DB directly.
  */
 const db = Command.create<P>('db')
-  .add('a1', async e => {
-    const value = (e.args.params[0] || '').toString();
-    await e.props.db.put<any>('cell/A1', value);
+  .add('cell', async e => {
+    const key = `cell/${e.param<string>(0, 'A1').toUpperCase()}`;
+    const value = e.param(1);
+    await e.props.db.put(key, value);
   })
-  .add('b2', async e => {
-    const value = (e.args.params[0] || '').toString();
-    await e.props.db.put<any>('cell/B2', value);
+  .add('column', async e => {
+    const key = `column/${e.param<string>(0, 'A').toUpperCase()}`;
+    const width = e.param(1, 120);
+    await e.props.db.put(key, { width });
+  })
+  .add('row', async e => {
+    const key = `row/${e.param<number>(0, 0)}`;
+    const height = e.param(1, 80);
+    await e.props.db.put(key, { height });
   });
 
 /**
@@ -31,9 +38,6 @@ export const root = Command.create<P>('root', e => {
 })
   .add(db)
   .add(debug)
-  .add('dir', async e => {
+  .add('open-dir', async e => {
     shell.showItemInFolder(constants.DB.DIR);
-  })
-  .add('beep', async e => {
-    shell.beep();
   });

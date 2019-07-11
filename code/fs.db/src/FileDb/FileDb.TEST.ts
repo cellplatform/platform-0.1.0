@@ -8,7 +8,7 @@ after(async () => fs.remove('tmp'));
 
 const testDb = (args: { isMemoized?: boolean } = {}) => {
   const { isMemoized } = args;
-  return new FileDb({ dir, cache: isMemoized });
+  return FileDb.create({ dir, cache: isMemoized });
 };
 
 describe('FileDb (file-system)', () => {
@@ -115,9 +115,8 @@ describe('FileDb (file-system)', () => {
     const key = 'delete/foo';
     await db.put(key, { msg: 'hello' });
     expect((await db.get(key)).props.exists).to.eql(true);
-    const res1 = await db.delete(key);
 
-    expect(res1.props.deleted).to.eql(true);
+    const res1 = await db.delete(key);
     expect(res1.props.exists).to.eql(false);
 
     const res2 = await db.get('delete/foo');
@@ -134,9 +133,6 @@ describe('FileDb (file-system)', () => {
 
     expect(res1.value).to.eql(undefined);
     expect(res2.value).to.eql(undefined);
-
-    expect(res1.props.deleted).to.eql(true);
-    expect(res2.props.deleted).to.eql(false);
 
     await db.put(key, 2);
     await db.delete(key);
@@ -157,20 +153,17 @@ describe('FileDb (file-system)', () => {
 
     expect(events.length).to.eql(5);
 
-    expect(events[0].type).to.eql('DOC/get');
-    expect(events[1].type).to.eql('DOC/put');
-    expect(events[2].type).to.eql('DOC/get');
-    expect(events[3].type).to.eql('DOC/delete');
-    expect(events[4].type).to.eql('DOC/get');
+    expect(events[0].type).to.eql('DOC/read');
+    expect(events[1].type).to.eql('DOC/change');
+    expect(events[2].type).to.eql('DOC/read');
+    expect(events[3].type).to.eql('DOC/change');
+    expect(events[4].type).to.eql('DOC/read');
 
     expect(events[0].payload.value).to.eql(undefined);
     expect(events[1].payload.value).to.eql(123);
     expect(events[2].payload.value).to.eql(123);
     expect(events[3].payload.value).to.eql(undefined);
     expect(events[4].payload.value).to.eql(undefined);
-
-    const get = events[0] as t.IDbGetEvent;
-    expect(get.payload.cached).to.eql(false);
   });
 
   describe('many', () => {
@@ -210,9 +203,13 @@ describe('FileDb (file-system)', () => {
     it('deleteMany', async () => {
       const db = testDb();
       await db.putMany([{ key: 'foo', value: 100 }, { key: 'bar', value: 200 }]);
+      const res0 = await db.getMany(['foo', 'bar']);
+      expect(res0[0].props.exists).to.eql(true);
+      expect(res0[1].props.exists).to.eql(true);
+
       const res1 = await db.deleteMany(['foo', 'bar']);
-      expect(res1[0].props.deleted).to.eql(true);
-      expect(res1[1].props.deleted).to.eql(true);
+      expect(res1[0].props.exists).to.eql(false);
+      expect(res1[1].props.exists).to.eql(false);
 
       const res2 = await db.getMany(['foo', 'bar']);
       expect(res2.length).to.eql(2);
@@ -237,10 +234,10 @@ describe('FileDb (file-system)', () => {
       const db = await prepare();
       const res = await db.find({});
       expect(res.keys).to.eql(['foo', 'cell/A1', 'cell/A2', 'cell/A2/meta']);
-      expect(res.map.foo).to.eql('hello');
       expect(res.map['cell/A1']).to.eql(1);
       expect(res.map['cell/A2']).to.eql(2);
       expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
+      expect(res.map.foo).to.eql('hello');
     });
 
     it('pattern (deep, default)', async () => {
@@ -252,7 +249,7 @@ describe('FileDb (file-system)', () => {
       expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
     });
 
-    it('pattern (string parameter, deep/default)', async () => {
+    it('pattern (parameter as string, deep/default)', async () => {
       const db = await prepare();
       const res: any = await db.find('cell');
       expect(res.keys).to.eql(['cell/A1', 'cell/A2', 'cell/A2/meta']);
@@ -339,19 +336,13 @@ describe('FileDb (file-system)', () => {
 
       expect(events.length).to.eql(5);
 
-      expect(events[0].type).to.eql('DOC/put');
-      expect(events[1].type).to.eql('DOC/get');
-      expect(events[2].type).to.eql('DOC/get');
-      expect(events[3].type).to.eql('DOC/put');
+      expect(events[0].type).to.eql('DOC/change');
+      expect(events[1].type).to.eql('DOC/read');
+      expect(events[2].type).to.eql('DOC/read');
+      expect(events[3].type).to.eql('DOC/change');
 
       expect(events[4].type).to.eql('DOC/cache');
       expect(events[4].payload.action).to.eql('REMOVED');
-
-      const get1 = events[1] as t.IDbGetEvent;
-      const get2 = events[2] as t.IDbGetEvent;
-
-      expect(get1.payload.cached).to.eql(false);
-      expect(get2.payload.cached).to.eql(true);
     });
   });
 });

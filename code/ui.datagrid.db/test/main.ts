@@ -1,5 +1,7 @@
 import { fs } from '@platform/fs';
-import hyperdb from '@platform/hyperdb.electron/lib/main';
+// import hyperdb from '@platform/hyperdb.electron/lib/main';
+import dbMain from '@platform/fs.db.electron/lib/main';
+
 import uiharness from '@uiharness/electron/lib/main';
 import { app } from 'electron';
 import { filter } from 'rxjs/operators';
@@ -13,7 +15,8 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
   /**
    * Initialise the HyperDB on the [main] process.
    */
-  const { creating$ } = await hyperdb.listen({ ipc, log });
+  // const { creating$ } = await hyperdb.listen({ ipc, log });
+  await dbMain.listen({ ipc, log });
 
   // creating$
   //   // Change the DB directory when running in production.

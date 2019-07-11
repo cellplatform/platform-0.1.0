@@ -1013,7 +1013,7 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.5.2", "@platform/electron@^0.5.2":
+"@platform/electron@0.5.2":
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.5.2.tgz#620a450d7c002888377c17dc73b1b9c8fdb59d6c"
   integrity sha512-aINadl2BIHdf234QOAY+945e+gnSs5WtsW3nEX/++6ZnQPZIrVRuI0DkzkTwPRrzhXyuOaj95duR44SJyME6Wg==
@@ -1043,12 +1043,21 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db@^1.2.5":
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db/-/fs.db-1.2.5.tgz#0efdf849fba1949b1e316532f481e29ab558711f"
-  integrity sha512-dUQtOfJ5LzpC/HeisMv0yRifzk8LuRDOQZZ6hqyDiqkK6VM1oompCGRf+R5dR8lnup5oIM5kAw7AbcVGJkvS3A==
+"@platform/fs.db.types@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.0.3.tgz#b0375665bdab435976b38c7274d87a60060c95bc"
+  integrity sha512-xoUjspdbED/gZTurmhvbFDremzEzcQxi5YdPxgi1Qen1hX3mCOQclBtcxrTUq7OunfSAWX5rFk4hco9z/VaQ0g==
+  dependencies:
+    "@platform/libs" "^0.0.18"
+    "@platform/types" "^0.0.20"
+
+"@platform/fs.db@1.2.8":
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db/-/fs.db-1.2.8.tgz#b5465e96bbb1ba8cffa0d2f7181deedc6a1bfda1"
+  integrity sha512-26OBj142i3Mu8FQ4dZNpy03osd04jfX/yaOw+AokhSxD47zOVknlx3vyRU5OWJwn4Ruo641zdeEc1w7VFL1e5g==
   dependencies:
     "@platform/fs" "0.1.6"
+    "@platform/fs.db.types" "0.0.3"
     "@platform/libs" "0.0.18"
     "@platform/types" "0.0.20"
     "@platform/util.value" "0.4.4"

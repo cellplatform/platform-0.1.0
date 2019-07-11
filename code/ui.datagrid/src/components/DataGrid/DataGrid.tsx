@@ -143,7 +143,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     // NB:  Running init after a tick prevents unnecessary work if the component
     //      is caught in a reload loop which may happen with HMR.  In which case the
     //      component will be `disposed` by the time `init` is called and hence bypassed.
-    time.delay(0, () => this.init());
+    // time.delay(0, () => this.init());
+    this.init();
 
     // Clear selection when another element outside the grid receives focus.
     events.focus$

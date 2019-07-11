@@ -1,17 +1,48 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { t, value } from '../common';
+import { t, R, value } from '../common';
 import { Keys } from '../keys';
 
 export type ISyncArgs = {
   db: t.IDb;
   grid: t.IGrid;
-  initGrid?: boolean;
+  loadGrid?: boolean;
   events$?: Subject<t.SyncEvent>;
 };
 
-export class Sync {
+type GridPart = 'CELLS' | 'COLUMNS' | 'ROWS';
+
+type IActivityFlags<F> = {
+  currently(...part: F[]): boolean;
+  add(part: F): void;
+  remove(part: F): void;
+};
+
+const flags = <F>(): IActivityFlags<F> => {
+  let flags: F[] = [];
+  return {
+    currently(...input: F[]) {
+      return input.length === 0 && input.length > 0
+        ? true
+        : input.some(flag => flags.includes(flag));
+    },
+    add(flag: F) {
+      flags = [...flags, flag];
+    },
+    remove(flag: F) {
+      const index = flags.indexOf(flag);
+      if (index > -1) {
+        flags = [...flags.slice(0, index), ...flags.slice(index + 1)];
+      }
+    },
+  };
+};
+
+/**
+ * Manages syncing a DB and Grid.
+ */
+export class Sync implements t.IDisposable {
   /**
    * [Static]
    */
@@ -24,7 +55,8 @@ export class Sync {
    */
   private constructor(args: ISyncArgs) {
     const { db, grid } = args;
-    const loadGrid = value.defaultValue(args.initGrid, true);
+    const loadGrid = value.defaultValue(args.loadGrid, true);
+    const events$ = this.events$.pipe(takeUntil(this._dispose$));
 
     // Store refs;
     this.db = db;
@@ -38,9 +70,9 @@ export class Sync {
 
     // Setup observables.
     const db$ = db.events$.pipe(takeUntil(this.dispose$));
-    const dbWatch$ = db$.pipe(
-      filter(e => e.type === 'DB/watch'),
-      map(e => e.payload as t.IDbWatchChange),
+    const dbChange$ = db$.pipe(
+      filter(e => e.type === 'DOC/change'),
+      map(e => e.payload as t.IDbActionChange),
     );
 
     const grid$ = grid.events$.pipe(takeUntil(this.dispose$));
@@ -57,105 +89,222 @@ export class Sync {
       map(e => e.payload as t.IRowsChanged),
     );
 
-    // console.log(`\nTODO 🐷  fire change events for Row/Column changes \n`);
+    const syncing$ = events$.pipe(
+      filter(e => e.type === 'DB/syncing'),
+      map(e => e.payload as t.ISyncing),
+    );
 
     /**
-     * Save to DB when grid cells are edited.
+     * Cell sync.
      */
-    gridCellChanges$.subscribe(async e => {
-      const changes = e.changes.map(change => ({
-        key: this.keys.db.toCellKey(change.cell),
-        value: change.value.to,
-      }));
-
-      let isCancelled = false;
-      this.fire({
-        type: 'GRID/sync/changed/grid/cells',
-        payload: {
-          changes,
-          get isCancelled() {
-            return isCancelled;
-          },
-          cancel() {
-            isCancelled = true;
-          },
-        },
+    gridCellChanges$
+      // Cells changed in Grid UI.
+      .pipe(filter(e => !this.is.loading.currently('CELLS')))
+      .subscribe(async e => {
+        e.changes.forEach(change => {
+          this.fireSyncing({
+            source: 'GRID',
+            kind: 'cell',
+            key: this.keys.db.toCellKey(change.cell),
+            value: change.value.to,
+          });
+        });
       });
 
-      if (!isCancelled) {
-        await db.putMany(changes);
-      }
-    });
+    dbChange$
+      // Cell changed in DB.
+      .pipe(
+        filter(e => e.key.startsWith('cell/')),
+        filter(e => !this.is.loading.currently('CELLS')),
+      )
+      .subscribe(e => {
+        this.fireSyncing({
+          source: 'DB',
+          kind: 'cell',
+          key: this.keys.grid.toCellKey(e.key),
+          value: e.value,
+        });
+      });
 
-    gridColumnsChanges$.subscribe(async e => {
-      const changes = e.changes.map(change => ({
-        key: this.keys.db.toColumnKey(change.column),
-        value: change.to,
-      }));
-      await db.putMany(changes);
-    });
+    syncing$
+      // Update DB when Grid UI changes a cell.
+      .pipe(
+        filter(e => e.source === 'GRID'),
+        filter(e => e.kind === 'cell'),
+      )
+      .subscribe(async e => {
+        const key = this.keys.db.toCellKey(e.key);
+        const existing = (await db.get(key)).value;
+        if (!R.equals(existing, e.value)) {
+          await db.put(e.key, e.value as t.Json);
+        }
+      });
 
-    gridRowsChanges$.subscribe(async e => {
-      const changes = e.changes.map(change => ({
-        key: this.keys.db.toRowKey(change.row),
-        value: change.to,
-      }));
-      await db.putMany(changes);
-    });
+    syncing$
+      // Update Grid UI when the DB changes a cell.
+      .pipe(
+        filter(e => e.source === 'DB'),
+        filter(e => e.kind === 'cell'),
+      )
+      .subscribe(async e => {
+        const cell = grid.cell(this.keys.grid.toCellKey(e.key));
+        if (!R.equals(e.value, cell.value)) {
+          cell.value = e.value;
+        }
+      });
 
     /**
-     * Watch for DB changes.
+     * Column sync
      */
-    db.watch('cell/');
-    dbWatch$.pipe(filter(e => e.pattern === 'cell/')).subscribe(e => {
-      const key = this.keys.grid.toCellKey(e.key.toString());
-      const value = e.value.to;
-
-      let isCancelled = false;
-      this.fire({
-        type: 'GRID/sync/changed/db/cell',
-        payload: {
-          cell: { key, value },
-          get isCancelled() {
-            return isCancelled;
-          },
-          cancel() {
-            isCancelled = true;
-          },
-        },
+    gridColumnsChanges$
+      // Columns changed in Grid UI.
+      .pipe(filter(e => !this.is.loading.currently('COLUMNS')))
+      .subscribe(async e => {
+        e.changes.forEach(change => {
+          this.fireSyncing({
+            source: 'GRID',
+            kind: 'column',
+            key: this.keys.db.toColumnKey(change.column),
+            value: change.to,
+          });
+        });
       });
 
-      if (!isCancelled) {
-        grid.cell(key).value = value;
-      }
-    });
+    dbChange$
+      // Column changed in DB.
+      .pipe(
+        filter(e => e.key.startsWith('column/')),
+        filter(e => !this.is.loading.currently('COLUMNS')),
+      )
+      .subscribe(e => {
+        this.fireSyncing({
+          source: 'DB',
+          kind: 'column',
+          key: this.keys.grid.toColumnKey(e.key),
+          value: e.value as t.IGridColumn,
+        });
+      });
 
-    // Finish up.
+    syncing$
+      // Update DB when Grid UI changes a column.
+      .pipe(
+        filter(e => e.source === 'GRID'),
+        filter(e => e.kind === 'column'),
+      )
+      .subscribe(async e => {
+        const key = this.keys.db.toColumnKey(e.key);
+        const existing = (await db.get(key)).value;
+        if (!R.equals(existing, e.value)) {
+          await db.put(key, e.value as t.Json);
+        }
+      });
+
+    syncing$
+      // Update Grid UI when the DB changes a column.
+      .pipe(
+        filter(e => e.source === 'DB'),
+        filter(e => e.kind === 'column'),
+      )
+      .subscribe(async e => {
+        const key = this.keys.grid.toColumnKey(e.key);
+        const column = grid.columns[key];
+        if (!R.equals(e.value, column)) {
+          grid.changeColumns({ [key]: e.value as t.IGridColumn });
+          grid.redraw();
+        }
+      });
+
+    /**
+     * Row change.
+     */
+    gridRowsChanges$
+      // Rows changed in Grid UI.
+      .pipe(filter(e => !this.is.loading.currently('ROWS')))
+      .subscribe(async e => {
+        e.changes.forEach(change => {
+          this.fireSyncing({
+            source: 'GRID',
+            kind: 'row',
+            key: this.keys.db.toRowKey(change.row),
+            value: change.to,
+          });
+        });
+      });
+
+    dbChange$
+      // Row changed in DB.
+      .pipe(
+        filter(e => e.key.startsWith('row/')),
+        filter(e => !this.is.loading.currently('ROWS')),
+      )
+      .subscribe(e => {
+        this.fireSyncing({
+          source: 'DB',
+          kind: 'row',
+          key: this.keys.grid.toRowKey(e.key),
+          value: e.value as t.IGridRow,
+        });
+      });
+
+    syncing$
+      // Update DB when Grid UI changes a row.
+      .pipe(
+        filter(e => e.source === 'GRID'),
+        filter(e => e.kind === 'row'),
+      )
+      .subscribe(async e => {
+        const key = this.keys.db.toRowKey(e.key);
+        const existing = (await db.get(key)).value;
+        if (!R.equals(existing, e.value)) {
+          await db.put(key, e.value as t.Json);
+        }
+      });
+
+    syncing$
+      // Update Grid UI when the DB changes a row.
+      .pipe(
+        filter(e => e.source === 'DB'),
+        filter(e => e.kind === 'row'),
+      )
+      .subscribe(async e => {
+        const key = this.keys.grid.toRowKey(e.key);
+        const row = grid.rows[key];
+        if (!R.equals(e.value, row)) {
+          grid.changeRows({ [key]: e.value as t.IGridRow });
+          grid.redraw();
+        }
+      });
+
+    /**
+     * Finish up.
+     */
     if (loadGrid) {
-      this.loadGrid();
-      this.loadColumns();
-      this.loadRows();
+      this.load();
     }
   }
 
   public dispose() {
-    this._.dispose$.next();
-    this._.dispose$.complete();
+    this._dispose$.next();
+    this._dispose$.complete();
   }
 
   /**
    * [Fields]
    */
-  private readonly _ = {
-    dispose$: new Subject(),
-    events$: new Subject<t.SyncEvent>(),
-  };
   public readonly grid: t.IGrid;
   public readonly db: t.IDb;
   private keys!: Keys;
 
-  public readonly dispose$ = this._.dispose$.pipe(share());
-  public readonly events$ = this._.events$.pipe(
+  private is = {
+    loading: flags<GridPart>(),
+    changingByGrid: flags<{ key: string; part: GridPart }>(),
+  };
+
+  private readonly _dispose$ = new Subject<{}>();
+  public readonly dispose$ = this._dispose$.pipe(share());
+
+  private readonly _events$ = new Subject<t.SyncEvent>();
+  public readonly events$ = this._events$.pipe(
     takeUntil(this.dispose$),
     share(),
   );
@@ -164,51 +313,83 @@ export class Sync {
    * [Properties]
    */
   public get isDisposed() {
-    return this._.dispose$.isStopped;
+    return this._dispose$.isStopped;
   }
 
   /**
    * [Methods]
    */
-  public async loadGrid() {
-    const cells = await this.db.values({ pattern: this.keys.db.prefix.cell });
-    const values = Object.keys(cells)
-      .map(key => ({ key: this.keys.grid.toCellKey(key), value: cells[key].value }))
-      .reduce((acc, next) => {
-        acc[next.key] = next.value;
-        return acc;
-      }, {});
+
+  public async load() {
+    await Promise.all([this.loadCells(), this.loadColumns(), this.loadRows()]);
+    this.grid.redraw();
+  }
+
+  public async loadCells() {
+    if (this.is.loading.currently('CELLS')) {
+      return;
+    }
+    this.is.loading.add('CELLS');
+
+    const pattern = this.keys.db.prefix.cell;
+    const cells = await this.db.find({ pattern });
+    const values = cells.list.reduce((acc, next) => {
+      const key = this.keys.grid.toCellKey(next.props.key);
+      acc[key] = next.value;
+      return acc;
+    }, {});
+
     this.grid.values = values;
+    this.is.loading.remove('CELLS');
   }
 
   public async loadColumns() {
-    // const columns = await this.db.values({ pattern: PREFIX.COLUMN });
-    const columns = await this.db.values({ pattern: this.keys.db.prefix.column });
-    const values = Object.keys(columns)
-      .map(key => ({ key: this.keys.grid.toColumnKey(key), value: columns[key].value }))
-      .reduce((acc, next) => {
-        acc[next.key] = next.value;
-        return acc;
-      }, {});
+    if (this.is.loading.currently('COLUMNS')) {
+      return;
+    }
+    this.is.loading.add('COLUMNS');
+
+    const pattern = this.keys.db.prefix.column;
+    const columns = await this.db.find({ pattern });
+    const values = columns.list.reduce((acc, next) => {
+      const key = this.keys.grid.toColumnKey(next.props.key);
+      acc[key] = next.value;
+      return acc;
+    }, {});
+
     this.grid.columns = values;
+    this.is.loading.remove('COLUMNS');
   }
 
   public async loadRows() {
-    // const rows = await this.db.values({ pattern: PREFIX.ROW });
-    const rows = await this.db.values({ pattern: this.keys.db.prefix.row });
-    const values = Object.keys(rows)
-      .map(key => ({ key: this.keys.grid.toRowKey(key), value: rows[key].value }))
-      .reduce((acc, next) => {
-        acc[next.key] = next.value;
-        return acc;
-      }, {});
+    if (this.is.loading.currently('ROWS')) {
+      return;
+    }
+    this.is.loading.add('ROWS');
+
+    const pattern = this.keys.db.prefix.row;
+    const rows = await this.db.find({ pattern });
+    const values = rows.list.reduce((acc, next) => {
+      const key = this.keys.grid.toRowKey(next.props.key);
+      acc[key] = next.value;
+      return acc;
+    }, {});
+
     this.grid.rows = values;
+    this.is.loading.remove('ROWS');
   }
 
   /**
    * [Helpers]
    */
   private fire(e: t.SyncEvent) {
-    this._.events$.next(e);
+    this._events$.next(e);
+  }
+
+  private fireSyncing(payload: t.SyncChangeType) {
+    this.fire({
+      type: 'DB/syncing',
+      payload,
+    });
   }
 }

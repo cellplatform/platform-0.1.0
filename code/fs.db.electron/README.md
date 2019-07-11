@@ -9,7 +9,10 @@ Electron proxies for [fs.db](../fs.db).
 
     yarn add @platform/fs.db.electron
 
+<p>&nbsp;<p>
 
+
+![Diagram](https://uih.sfo2.digitaloceanspaces.com/%40platform/repo-diagrams/fs.db.electron-diagram.png)
 
 <p>&nbsp;<p>
 <p>&nbsp;<p>
