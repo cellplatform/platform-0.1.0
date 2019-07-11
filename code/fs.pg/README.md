@@ -12,6 +12,22 @@
 
 
 <p>&nbsp;<p>
+
+## Testing
+To run intergration tests ensure you have a postgres server on the default port (`5432`) running at:
+
+    host:     localhost
+    database: test
+
+Then run:
+
+    yarn ti
+
+or in watch mode:
+
+    yarn tddi
+
+<p>&nbsp;<p>
 <p>&nbsp;<p>
 
 
