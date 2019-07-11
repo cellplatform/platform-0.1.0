@@ -31,9 +31,6 @@ export const root = Command.create<P>('root', e => {
 })
   .add(db)
   .add(debug)
-  .add('dir', async e => {
+  .add('open-dir', async e => {
     shell.showItemInFolder(constants.DB.DIR);
-  })
-  .add('beep', async e => {
-    shell.beep();
   });

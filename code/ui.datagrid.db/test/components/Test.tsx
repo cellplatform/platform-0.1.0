@@ -117,7 +117,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const elRight = showDebug && this.renderDebug();
 
     return (
-      <CommandShell cli={this.cli} tree={tree}>
+      <CommandShell cli={this.cli} tree={tree} localStorage={true}>
         <div {...styles.base}>
           <div {...styles.left}>{this.renderGrid()}</div>
           {elRight}
