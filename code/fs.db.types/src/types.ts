@@ -75,21 +75,16 @@ export type IDbCache = {
  * Events
  */
 export type DbEvent = DocDbActionEvent | IDbCacheEvent;
-export type DocDbActionEvent = IDbGetEvent | IDbPutEvent | IDbDeleteEvent;
+export type DocDbActionEvent = IDbReadEvent | IDbChangeEvent;
 
-export type IDbGetEvent = {
-  type: 'DOC/get';
+export type IDbReadEvent = {
+  type: 'DOC/read';
   payload: IDbActionGet;
 };
 
-export type IDbPutEvent = {
-  type: 'DOC/put';
-  payload: IDbActionPut;
-};
-
-export type IDbDeleteEvent = {
-  type: 'DOC/delete';
-  payload: IDbActionDelete;
+export type IDbChangeEvent = {
+  type: 'DOC/change';
+  payload: IDbActionChange;
 };
 
 export type IDbCacheEvent = {
@@ -111,3 +106,4 @@ export type IDbAction = {
 export type IDbActionGet = IDbAction & { action: 'get' };
 export type IDbActionPut = IDbAction & { action: 'put' };
 export type IDbActionDelete = IDbAction & { action: 'delete' };
+export type IDbActionChange = IDbActionPut | IDbActionDelete;

@@ -43,7 +43,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
 
   public static contextType = renderer.Context;
-  public context!: renderer.ReactContext;
+  public context!: t.ILocalContext;
+  private databases = this.context.databases;
 
   /**
    * [Lifecycle]
@@ -75,24 +76,27 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       console.log('🌳', e.type, e.payload);
     });
 
+    // // Setup syncer.
+    // const dir = constants.DB.DIR;
+    // const db = this.databases(dir);
+    // console.log('this.datagrid', this.datagrid);
+    // // const grid = this.datagrid.grid;
+    // // this.sync = Sync.create({ db, grid, events$: this.sync$ });
+  }
+
+  public componentDidMount() {
     // Setup syncer.
     const dir = constants.DB.DIR;
-    const db = (await this.databases.getOrCreate({ dir, connect: false })).db;
+    const db = this.databases(dir);
     const grid = this.datagrid.grid;
-    this.sync = Sync.create({ db, grid, events$: this.sync$ });
+    const events$ = this.sync$;
+    this.sync = Sync.create({ db, grid, events$ });
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
     this.sync.dispose();
-  }
-
-  /**
-   * [Properties]
-   */
-  public get databases() {
-    return (this.context as any).databases as t.IDbFactory;
   }
 
   /**

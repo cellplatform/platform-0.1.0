@@ -6,8 +6,8 @@ export * from '@platform/ui.datagrid.cell';
 
 import renderer from '@platform/electron/lib/renderer';
 import datagrid from '@platform/ui.datagrid';
-import hyperdb from '@platform/hyperdb.electron/lib/renderer';
-export { datagrid, hyperdb, renderer };
+import database from '@platform/fs.db.electron/lib/renderer';
+export { datagrid, database, renderer };
 
 export * from '../../src/common';
 export * from '../../src';

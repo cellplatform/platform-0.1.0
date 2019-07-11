@@ -78,7 +78,7 @@ export class FileDb implements t.IDb {
     const fire = (result: t.IDbValue) => {
       const { value, props } = result;
       this.fire({
-        type: 'DOC/get',
+        type: 'DOC/read',
         payload: { action: 'get', key, value, props },
       });
     };
@@ -134,7 +134,7 @@ export class FileDb implements t.IDb {
 
     const res = await FileDb.put(this.dir, key.toString(), value);
     this.fire({
-      type: 'DOC/put',
+      type: 'DOC/change',
       payload: { action: 'put', key, value: res.value, props: res.props },
     });
 
@@ -163,7 +163,7 @@ export class FileDb implements t.IDb {
   public async delete(key: string): Promise<t.IDbValue> {
     const res = await FileDb.delete(this.dir, key.toString());
     this.fire({
-      type: 'DOC/delete',
+      type: 'DOC/change',
       payload: { action: 'delete', key, value: res.value, props: res.props },
     });
     return res;

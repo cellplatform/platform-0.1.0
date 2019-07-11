@@ -1,13 +1,19 @@
 import { Subject } from 'rxjs';
-import * as t from '../../src/types';
+import * as t from '../../src/common/types';
+import { DbFactory } from '@platform/fs.db.electron/lib/types';
+import { IRendererContext } from '@platform/electron/lib/types';
 
 export * from '@platform/cli.ui/lib/types';
-export * from '../../src/types';
+export * from '@platform/fs.db.types';
+export * from '@platform/fs.db.electron/lib/types';
+export * from '@platform/electron/lib/types';
+
+export * from '../../src/common/types';
 
 export type ICommandProps = {
   state$: Subject<ITestState>;
-  databases: t.IDbFactory;
-  db: IDb;
+  databases: DbFactory;
+  db: t.IDb;
 };
 
 export type ITestState = {
@@ -20,7 +26,6 @@ export type ITestState = {
   };
 };
 
-export type IDb = t.IDb<IDbSchema>;
-export type IDbSchema = {
-  foo: number;
+export type ILocalContext = IRendererContext & {
+  databases: DbFactory;
 };

@@ -9,11 +9,11 @@ type P = t.ICommandProps & {};
 const db = Command.create<P>('db')
   .add('a1', async e => {
     const value = (e.args.params[0] || '').toString();
-    await e.props.db.put<any>('cell/A1', value);
+    await e.props.db.put('cell/A1', value);
   })
   .add('b2', async e => {
     const value = (e.args.params[0] || '').toString();
-    await e.props.db.put<any>('cell/B2', value);
+    await e.props.db.put('cell/B2', value);
   });
 
 /**

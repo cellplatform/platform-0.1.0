@@ -157,11 +157,11 @@ describe('FileDb (file-system)', () => {
 
     expect(events.length).to.eql(5);
 
-    expect(events[0].type).to.eql('DOC/get');
-    expect(events[1].type).to.eql('DOC/put');
-    expect(events[2].type).to.eql('DOC/get');
-    expect(events[3].type).to.eql('DOC/delete');
-    expect(events[4].type).to.eql('DOC/get');
+    expect(events[0].type).to.eql('DOC/read');
+    expect(events[1].type).to.eql('DOC/change');
+    expect(events[2].type).to.eql('DOC/read');
+    expect(events[3].type).to.eql('DOC/change');
+    expect(events[4].type).to.eql('DOC/read');
 
     expect(events[0].payload.value).to.eql(undefined);
     expect(events[1].payload.value).to.eql(123);
@@ -336,10 +336,10 @@ describe('FileDb (file-system)', () => {
 
       expect(events.length).to.eql(5);
 
-      expect(events[0].type).to.eql('DOC/put');
-      expect(events[1].type).to.eql('DOC/get');
-      expect(events[2].type).to.eql('DOC/get');
-      expect(events[3].type).to.eql('DOC/put');
+      expect(events[0].type).to.eql('DOC/change');
+      expect(events[1].type).to.eql('DOC/read');
+      expect(events[2].type).to.eql('DOC/read');
+      expect(events[3].type).to.eql('DOC/change');
 
       expect(events[4].type).to.eql('DOC/cache');
       expect(events[4].payload.action).to.eql('REMOVED');
