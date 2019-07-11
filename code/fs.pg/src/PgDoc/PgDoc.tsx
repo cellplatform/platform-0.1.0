@@ -69,7 +69,6 @@ export class PgDoc implements t.IDb {
           const query = `SELECT * FROM "${key.table}" WHERE path = '${key.path}'`;
           const res = await this.pool.query(query);
           const { rows } = res;
-
           return { rows, path: key.toString() };
         }),
     );
@@ -80,7 +79,7 @@ export class PgDoc implements t.IDb {
 
     return keys.map(key => {
       const row = rows.find(item => item.path === key);
-      const value = row && row.data ? row.data.data : undefined;
+      const value = row && typeof row.data === 'object' ? (row.data as any).data : undefined;
       const res: t.IDbValue = { value, props: { key, exists: Boolean(value) } };
       return res;
     });
@@ -127,12 +126,24 @@ export class PgDoc implements t.IDb {
   }
   public async deleteMany(keys: string[]): Promise<t.IDbValue[]> {
     this.throwIfDisposed('deleteMany');
-    // const dir = this.dir;
-    // const res = await this.invoke<t.IDbIpcDeleteResponse>({
-    //   type: 'DB/delete',
-    //   payload: { dir, keys },
-    // });
-    // return res.values;
+    keys = R.uniq(keys);
+    await this.ensureTables(keys);
+
+    await Promise.all(
+      keys
+        .map(key => PgDoc.parseKey(key))
+        .map(async key => {
+          const query = `DELETE FROM "${key.table}" WHERE path = '${key.path}'`;
+          const res = await this.pool.query(query);
+          const { rows } = res;
+          return { rows, path: key.toString() };
+        }),
+    );
+
+    return keys.map(key => {
+      const res: t.IDbValue = { value: undefined, props: { key, exists: false } };
+      return res;
+    });
   }
 
   public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {

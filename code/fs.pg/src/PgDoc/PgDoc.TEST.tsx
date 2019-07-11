@@ -22,6 +22,15 @@ describe('PgDoc (integration)', () => {
   });
   afterEach(() => db.dispose());
 
+  it('get (not exist)', async () => {
+    const key = 'NO_EXIST/foo';
+    const res = await db.get(key);
+
+    expect(res.value).to.eql(undefined);
+    expect(res.props.exists).to.eql(false);
+    expect(await db.getValue(key)).to.eql(undefined);
+  });
+
   it('put => get (props)', async () => {
     const key = 'FOO/bar';
     const res1 = await db.get(key);
@@ -87,6 +96,47 @@ describe('PgDoc (integration)', () => {
     expect(res2[0].props.exists).to.eql(true);
     expect(res2[1].value).to.eql(456);
     expect(res2[1].props.exists).to.eql(true);
+  });
+
+  it('put => delete', async () => {
+    const key = 'FOO/bar';
+    await db.put(key, 123);
+
+    const res1 = await db.get(key);
+    expect(res1.value).to.eql(123);
+    expect(res1.props.exists).to.eql(true);
+
+    const res2 = await db.delete(key);
+    expect(res2.value).to.eql(undefined);
+    expect(res2.props.exists).to.eql(false);
+
+    const res3 = await db.get(key);
+    expect(res3.value).to.eql(undefined);
+    expect(res3.props.exists).to.eql(false);
+  });
+
+  it('putMany => deleteMany', async () => {
+    const items = [{ key: 'FOO/1', value: 123 }, { key: 'FOO/2', value: 456 }];
+    const keys = items.map(item => item.key);
+
+    await db.putMany(items);
+    const res1 = await db.getMany(keys);
+    expect(res1[0].value).to.eql(123);
+    expect(res1[0].props.exists).to.eql(true);
+    expect(res1[1].value).to.eql(456);
+    expect(res1[1].props.exists).to.eql(true);
+
+    const res2 = await db.deleteMany([...keys, 'NO_EXIST/foo']);
+    expect(res2[0].value).to.eql(undefined);
+    expect(res2[0].props.exists).to.eql(false);
+    expect(res2[1].value).to.eql(undefined);
+    expect(res2[1].props.exists).to.eql(false);
+
+    const res3 = await db.getMany(keys);
+    expect(res3[0].value).to.eql(undefined);
+    expect(res3[0].props.exists).to.eql(false);
+    expect(res3[1].value).to.eql(undefined);
+    expect(res3[1].props.exists).to.eql(false);
   });
 });
 
