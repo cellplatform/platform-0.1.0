@@ -19,6 +19,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       const db = (CACHE[dir] = FileDb.create({ dir, cache: false }));
       db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[dir]);
       db.events$.subscribe(event => events$.next({ dir, event }));
+      log.info.yellow(`cached file-database: ${log.gray(dir)}`);
     }
     return CACHE[dir];
   };

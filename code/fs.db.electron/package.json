@@ -15,10 +15,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/electron": "^0.5.2",
-    "@platform/fs.db": "^1.2.5",
+    "@platform/electron": "0.5.2",
+    "@platform/fs.db": "1.2.5",
+    "@platform/fs.db.types": "0.0.0",
     "@platform/react": "0.3.12",
-    "@platform/types": "^0.0.20"
+    "@platform/types": "0.0.20"
   },
   "devDependencies": {
     "@uiharness/dev": "0.5.13",

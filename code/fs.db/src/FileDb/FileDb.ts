@@ -75,23 +75,23 @@ export class FileDb implements t.IDb {
   public async get(key: string): Promise<t.IDbValue> {
     const cachedValue = this.cache.isEnabled ? this.cache.values[key] : undefined;
 
-    const fire = (result: t.IDbValue, cached: boolean) => {
+    const fire = (result: t.IDbValue) => {
       const { value, props } = result;
       this.fire({
         type: 'DOC/get',
-        payload: { action: 'get', key, value, props, cached },
+        payload: { action: 'get', key, value, props },
       });
     };
 
     // Return value from cache.
     if (this.cache.isEnabled && cachedValue !== undefined) {
-      fire(cachedValue, true);
+      fire(cachedValue);
       return cachedValue;
     }
 
     // Read value from file-system.
     const res = await FileDb.get(this.dir, key.toString());
-    fire(res, false);
+    fire(res);
 
     // Store value in cache (if required).
     if (this.cache.isEnabled) {
