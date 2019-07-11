@@ -1043,21 +1043,21 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db.types@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.0.2.tgz#fb84123835dafcb2e80846d41b52eacefaafd618"
-  integrity sha512-TPMA+EPtt47UZ2zwfsoN/Ou9euNadBAUDivDg/4zL2K9t3j+/GdrdAFIQFBSIlX3anV33TBLM38ZvVq5zw8elg==
+"@platform/fs.db.types@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.0.3.tgz#b0375665bdab435976b38c7274d87a60060c95bc"
+  integrity sha512-xoUjspdbED/gZTurmhvbFDremzEzcQxi5YdPxgi1Qen1hX3mCOQclBtcxrTUq7OunfSAWX5rFk4hco9z/VaQ0g==
   dependencies:
     "@platform/libs" "^0.0.18"
     "@platform/types" "^0.0.20"
 
-"@platform/fs.db@1.2.7":
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db/-/fs.db-1.2.7.tgz#d655243bae14b3dd143830bd71590432bc1b6e3f"
-  integrity sha512-NW84IxS4sAonMl4YbHBO1c5jR47qlnDOFD/miM3IFlsjDXz7p76brkN/sluNkZVZHpD6a1lOcMgmz+U7Yvo3ZQ==
+"@platform/fs.db@1.2.8":
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db/-/fs.db-1.2.8.tgz#b5465e96bbb1ba8cffa0d2f7181deedc6a1bfda1"
+  integrity sha512-26OBj142i3Mu8FQ4dZNpy03osd04jfX/yaOw+AokhSxD47zOVknlx3vyRU5OWJwn4Ruo641zdeEc1w7VFL1e5g==
   dependencies:
     "@platform/fs" "0.1.6"
-    "@platform/fs.db.types" "0.0.2"
+    "@platform/fs.db.types" "0.0.3"
     "@platform/libs" "0.0.18"
     "@platform/types" "0.0.20"
     "@platform/util.value" "0.4.4"
