@@ -1,13 +1,13 @@
 import * as pg from 'pg';
 
 (async () => {
-  const client = new pg.Client({
+  const client = new pg.Pool({
     user: 'dev',
     host: 'localhost',
     database: 'fs',
   });
 
-  await client.connect();
+  // await client.connect();
 
   await client.query(`    DROP TABLE IF EXISTS cards  `);
 

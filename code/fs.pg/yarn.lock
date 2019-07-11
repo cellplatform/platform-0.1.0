@@ -74,6 +74,14 @@
     chalk "2.4.2"
     listr "0.14.3"
 
+"@platform/fs.db.types@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.0.2.tgz#fb84123835dafcb2e80846d41b52eacefaafd618"
+  integrity sha512-TPMA+EPtt47UZ2zwfsoN/Ou9euNadBAUDivDg/4zL2K9t3j+/GdrdAFIQFBSIlX3anV33TBLM38ZvVq5zw8elg==
+  dependencies:
+    "@platform/libs" "^0.0.18"
+    "@platform/types" "^0.0.20"
+
 "@platform/fs.db@1.2.5":
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/@platform/fs.db/-/fs.db-1.2.5.tgz#0efdf849fba1949b1e316532f481e29ab558711f"
@@ -119,7 +127,7 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/libs@0.0.18":
+"@platform/libs@0.0.18", "@platform/libs@^0.0.18":
   version "0.0.18"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.0.18.tgz#b75d287c746243e0758f3da4493202acfc1b805c"
   integrity sha512-DN8fVuSu5e+ntkCUiBB6q7+dPNRuYtUyRNi/XfUVTByEEzhvya2FtTeaGl6+q/rv48JBQWtUxTpudX2aLvXpFQ==
@@ -167,7 +175,7 @@
     "@platform/libs" "0.0.12"
     "@platform/ts.libs" "3.4.12"
 
-"@platform/types@0.0.20":
+"@platform/types@0.0.20", "@platform/types@^0.0.20":
   version "0.0.20"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.20.tgz#ce279bdfc98311de2e19470ad86fbc1190332023"
   integrity sha512-YAt7g3YqcyYcGzX8JJwqTiwt32Z6jkocl8yVX9IpSFxFoGNPOHdqxP02jph6VSYw2Bt5JereEQcfDVBz+RwnRQ==

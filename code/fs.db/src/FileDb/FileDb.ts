@@ -25,9 +25,17 @@ export class FileDb implements t.IDb {
   /**
    * [Lifecycle]
    */
-  constructor(args: IFileDbArgs) {
+  private constructor(args: IFileDbArgs) {
     this.dir = fs.resolve(args.dir);
     this.cache.isEnabled = Boolean(args.cache);
+  }
+
+  public dispose() {
+    this._dispose$.next();
+    this._dispose$.complete();
+  }
+  public get isDisposed() {
+    return this._dispose$.isStopped;
   }
 
   /**
@@ -50,21 +58,16 @@ export class FileDb implements t.IDb {
     },
   };
 
-  private readonly _events$ = new Subject<t.DbEvent>();
-  public readonly events$ = this._events$.pipe(share());
-
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
-  public dispose() {
-    this._dispose$.next();
-    this._dispose$.complete();
-  }
+  private readonly _events$ = new Subject<t.DbEvent>();
+  public readonly events$ = this._events$.pipe(share());
 
-  public get isDisposed() {
-    return this._dispose$.isStopped;
-  }
 
+  /**
+   * [Methods]
+   */
   public toString() {
     return `[DB:${this.dir}]`;
   }
