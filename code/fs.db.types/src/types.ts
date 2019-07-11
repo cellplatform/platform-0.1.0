@@ -39,7 +39,6 @@ export type IDbValue = {
 export type IDbValueProps = {
   key: string;
   exists: boolean;
-  deleted: boolean;
 };
 
 export type IDbKeyValue = {

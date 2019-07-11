@@ -80,8 +80,8 @@ export class PgDoc implements t.IDb {
 
     return keys.map(key => {
       const row = rows.find(item => item.path === key);
-      const value = row ? row.data : undefined;
-      const res: t.IDbValue = { value, props: { key, exists: Boolean(value), deleted: false } };
+      const value = row && row.data ? row.data.data : undefined;
+      const res: t.IDbValue = { value, props: { key, exists: Boolean(value) } };
       return res;
     });
   }
@@ -102,9 +102,10 @@ export class PgDoc implements t.IDb {
       items
         .map(item => ({ key: PgDoc.parseKey(item.key), value: item.value }))
         .map(item => {
+          const data = { data: item.value };
           return `
             INSERT INTO "${item.key.table}" (path, data)
-              VALUES ('${item.key.path}', '${JSON.stringify(item.value)}')
+              VALUES ('${item.key.path}', '${JSON.stringify(data)}')
               ON CONFLICT (path)
               DO
                 UPDATE
@@ -115,7 +116,7 @@ export class PgDoc implements t.IDb {
     );
     return items.map(item => {
       const { key, value } = item;
-      const res: t.IDbValue = { value, props: { key, exists: Boolean(value), deleted: false } };
+      const res: t.IDbValue = { value, props: { key, exists: Boolean(value) } };
       return res;
     });
   }

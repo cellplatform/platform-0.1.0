@@ -6,14 +6,14 @@ import { PgDoc } from '../src';
   const client = new pg.Pool({
     user: 'dev',
     host: 'localhost',
-    database: 'fs',
+    database: 'test',
   });
 
   const db = PgDoc.create({
     db: {
       user: 'dev',
       host: 'localhost',
-      database: 'fs',
+      database: 'test',
     },
   });
 
@@ -23,13 +23,12 @@ import { PgDoc } from '../src';
   ]);
 
   await db.put('BOO/2', 888);
-
-  console.log('putRes', putRes);
+  // console.log('putRes', putRes);
   // await db.put('BOO/2', 123);
 
-  console.log('-------------------------------------------');
-  const getMany = await db.getMany(['FOO/bar', 'FOO/bax', 'BOO/2']);
-  console.log('getMany', getMany);
+  // console.log('-------------------------------------------');
+  // const getMany = await db.getMany(['FOO/bar', 'FOO/bax', 'BOO/2']);
+  // console.log('getMany', getMany);
 
   db.dispose();
 
@@ -38,7 +37,7 @@ import { PgDoc } from '../src';
 
   // await client.connect();
 
-  //   await client.query(`    DROP TABLE IF EXISTS cards  `);
+  await client.query(`    DROP TABLE IF EXISTS "FOO"  `);
 
   //   // return;
 
@@ -78,5 +77,5 @@ import { PgDoc } from '../src';
 
   //   // console.log('res', res);
 
-  //   await client.end();
+  await client.end();
 })();

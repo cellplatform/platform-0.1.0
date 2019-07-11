@@ -8,7 +8,7 @@ after(async () => fs.remove('tmp'));
 
 const testDb = (args: { isMemoized?: boolean } = {}) => {
   const { isMemoized } = args;
-  return new FileDb({ dir, cache: isMemoized });
+  return FileDb.create({ dir, cache: isMemoized });
 };
 
 describe('FileDb (file-system)', () => {
@@ -115,9 +115,8 @@ describe('FileDb (file-system)', () => {
     const key = 'delete/foo';
     await db.put(key, { msg: 'hello' });
     expect((await db.get(key)).props.exists).to.eql(true);
-    const res1 = await db.delete(key);
 
-    expect(res1.props.deleted).to.eql(true);
+    const res1 = await db.delete(key);
     expect(res1.props.exists).to.eql(false);
 
     const res2 = await db.get('delete/foo');
@@ -134,9 +133,6 @@ describe('FileDb (file-system)', () => {
 
     expect(res1.value).to.eql(undefined);
     expect(res2.value).to.eql(undefined);
-
-    expect(res1.props.deleted).to.eql(true);
-    expect(res2.props.deleted).to.eql(false);
 
     await db.put(key, 2);
     await db.delete(key);
@@ -207,9 +203,13 @@ describe('FileDb (file-system)', () => {
     it('deleteMany', async () => {
       const db = testDb();
       await db.putMany([{ key: 'foo', value: 100 }, { key: 'bar', value: 200 }]);
+      const res0 = await db.getMany(['foo', 'bar']);
+      expect(res0[0].props.exists).to.eql(true);
+      expect(res0[1].props.exists).to.eql(true);
+
       const res1 = await db.deleteMany(['foo', 'bar']);
-      expect(res1[0].props.deleted).to.eql(true);
-      expect(res1[1].props.deleted).to.eql(true);
+      expect(res1[0].props.exists).to.eql(false);
+      expect(res1[1].props.exists).to.eql(false);
 
       const res2 = await db.getMany(['foo', 'bar']);
       expect(res2.length).to.eql(2);

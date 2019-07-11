@@ -64,7 +64,6 @@ export class FileDb implements t.IDb {
   private readonly _events$ = new Subject<t.DbEvent>();
   public readonly events$ = this._events$.pipe(share());
 
-
   /**
    * [Methods]
    */
@@ -107,7 +106,7 @@ export class FileDb implements t.IDb {
   public static async get(dir: string, key: string): Promise<t.IDbValue> {
     const path = FileDb.toPath(dir, key);
     const exists = await fs.pathExists(path);
-    const props: t.IDbValueProps = { key, exists, deleted: false };
+    const props: t.IDbValueProps = { key, exists };
     if (!exists) {
       return { value: undefined, props: { ...props, exists: false } };
     }
@@ -153,7 +152,7 @@ export class FileDb implements t.IDb {
     await fs.ensureDir(fs.dirname(path));
     await fs.writeFile(path, JSON.stringify(json, null, '  '));
 
-    const props: t.IDbValueProps = { key, exists: true, deleted: false };
+    const props: t.IDbValueProps = { key, exists: true };
     return { value, props };
   }
   public async putMany(items: t.IDbKeyValue[]): Promise<t.IDbValue[]> {
@@ -174,15 +173,13 @@ export class FileDb implements t.IDb {
   public static async delete(dir: string, key: string): Promise<t.IDbValue> {
     const path = FileDb.toPath(dir, key);
     const existing = await FileDb.get(dir, key);
-    let deleted = false;
     if (existing.props.exists) {
       const rename = `${path}${FileDb.DELETED_SUFFIX}`;
       await fs.rename(path, rename);
-      deleted = true;
     }
     return {
       value: undefined,
-      props: { key, exists: false, deleted },
+      props: { key, exists: false },
     };
   }
   public async deleteMany(keys: string[]): Promise<t.IDbValue[]> {

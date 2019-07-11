@@ -8,7 +8,7 @@ after(async () => fs.remove('tmp'));
 
 const testDb = async (args: { dir: string }) => {
   const { dir } = args;
-  return new FileDb({ dir });
+  return FileDb.create({ dir });
 };
 
 type IOrg = { id: string; users?: [] };
