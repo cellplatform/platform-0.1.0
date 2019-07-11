@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { http } from '..';
 
 const URL = {
-  JSON: 'https://uiharness.sfo2.digitaloceanspaces.com/%40platform/http/foo.json',
+  JSON: 'https://uih.sfo2.digitaloceanspaces.com/%40platform/http/foo.json',
 };
 
 type IFoo = { name: string; version: string; list: number[] };

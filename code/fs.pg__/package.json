@@ -1,7 +1,7 @@
 {
   "name": "@platform/fs.pg",
   "version": "0.0.0",
-  "description": "Postgres backing store for a file-system like document database.",
+  "description": "Postgres backing store for a file-system like JSON document database.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -16,16 +16,18 @@
     "tmp": "ts-node -T scripts/tmp"
   },
   "dependencies": {
+    "@platform/fs.db": "1.2.5",
     "@platform/libs": "0.0.12",
-    "pg": "^7.11.0"
+    "pg": "7.11.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.50",
     "@platform/ts": "3.4.17",
-    "@types/pg": "^7.4.14"
+    "@types/pg": "7.4.14"
   },
   "files": [
     "lib"
   ],
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "private": true
 }

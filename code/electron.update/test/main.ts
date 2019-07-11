@@ -53,7 +53,7 @@ export default start;
     const baseDir = app.getPath('userData');
     log.info('baseDir', baseDir);
     const baseUrl =
-      'https://uiharness.sfo2.digitaloceanspaces.com/%40platform/electron.loader/releases';
+      'https://uih.sfo2.digitaloceanspaces.com/%40platform/electron.loader/releases';
 
     const store = res.store as t.ILoaderSettings;
     const current = await store.get('LOADER/current');
