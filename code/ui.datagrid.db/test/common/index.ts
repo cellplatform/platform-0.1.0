@@ -7,3 +7,5 @@ export { t, constants };
 
 export * from './types';
 export * from './libs';
+
+export const COLORS = constants.COLORS;
