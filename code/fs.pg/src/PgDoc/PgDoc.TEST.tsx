@@ -1,11 +1,11 @@
-import { expect } from 'chai';
+import { expect, expectError } from '@platform/test';
 import { PgDoc } from '.';
 import { pg } from '../common';
 
 const params = { user: 'dev', host: 'localhost', database: 'test' };
 const tables = ['FOO', 'BAR', 'BOO'];
 
-const createDb = () => PgDoc.create({ db: params });
+const testDb = () => PgDoc.create({ db: params });
 const dropTables = async () => {
   const client = new pg.Pool(params);
   const drop = (table: string) => client.query(`DROP TABLE IF EXISTS "${table}"`);
@@ -14,11 +14,11 @@ const dropTables = async () => {
 };
 
 describe('PgDoc (integration)', () => {
-  let db: PgDoc = createDb();
+  let db: PgDoc = testDb();
 
   beforeEach(async () => {
     await dropTables();
-    db = createDb();
+    db = testDb();
   });
   afterEach(() => db.dispose());
 
@@ -138,12 +138,74 @@ describe('PgDoc (integration)', () => {
     expect(res3[1].value).to.eql(undefined);
     expect(res3[1].props.exists).to.eql(false);
   });
+
+  describe('find', () => {
+    const prepare = async () => {
+      const db = testDb();
+      await db.put('FOO/cell/A1', 1);
+      await db.put('FOO/cell/A2', 2);
+      await db.put('FOO/cell/A2/meta', { foo: 123 });
+      await db.put('FOO/bar', 'hello');
+      await db.put('BAR/1', 1);
+      await db.put('BAR/2', 2);
+      return db;
+    };
+
+    it('no pattern (throws)', async () => {
+      const db = await prepare();
+      expectError(() => db.find({}));
+    });
+
+    it('no path (deep, default)', async () => {
+      const db = await prepare();
+      const res = await db.find({ pattern: 'FOO' });
+      expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta', 'FOO/bar']);
+      expect(res.map['FOO/bar']).to.eql('hello');
+      expect(res.map['FOO/cell/A1']).to.eql(1);
+      expect(res.map['FOO/cell/A2']).to.eql(2);
+      expect(res.map['FOO/cell/A2/meta']).to.eql({ foo: 123 });
+    });
+
+    it('path (deep, default)', async () => {
+      const db = await prepare();
+      const res = await db.find({ pattern: 'FOO/cell' });
+      expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta']);
+      expect(res.map['FOO/cell/A1']).to.eql(1);
+      expect(res.map['FOO/cell/A2']).to.eql(2);
+      expect(res.map['FOO/cell/A2/meta']).to.eql({ foo: 123 });
+    });
+
+    it('path (parameter as string, deep/default)', async () => {
+      const db = await prepare();
+      const res = await db.find('FOO/cell');
+      expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta']);
+      expect(res.map['FOO/cell/A1']).to.eql(1);
+      expect(res.map['FOO/cell/A2']).to.eql(2);
+      expect(res.map['FOO/cell/A2/meta']).to.eql({ foo: 123 });
+    });
+
+    it('path (not deep)', async () => {
+      const db = await prepare();
+      const res = await db.find({ pattern: 'FOO/cell', deep: false });
+      expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2']);
+      expect(res.map['FOO/cell/A1']).to.eql(1);
+      expect(res.map['FOO/cell/A2']).to.eql(2);
+    });
+
+    it('no match', async () => {
+      const db = await prepare();
+      const res = await db.find({ pattern: 'FOO/yo' });
+      expect(res.keys).to.eql([]);
+      expect(res.list).to.eql([]);
+      expect(res.map).to.eql({});
+    });
+  });
 });
 
 describe('PgDoc', () => {
   describe('lifecycle', () => {
     it('disposal', () => {
-      const db = createDb();
+      const db = testDb();
       let count = 0;
       db.dispose$.subscribe(() => count++);
       expect(db.isDisposed).to.eql(false);
@@ -155,7 +217,7 @@ describe('PgDoc', () => {
     });
   });
 
-  describe('parseKey', () => {
+  describe('parseKey (static)', () => {
     it('parses the table key ', () => {
       const test = (key: string, expectTable: string, expectPath: string) => {
         const res = PgDoc.parseKey(key);

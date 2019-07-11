@@ -234,10 +234,10 @@ describe('FileDb (file-system)', () => {
       const db = await prepare();
       const res = await db.find({});
       expect(res.keys).to.eql(['foo', 'cell/A1', 'cell/A2', 'cell/A2/meta']);
-      expect(res.map.foo).to.eql('hello');
       expect(res.map['cell/A1']).to.eql(1);
       expect(res.map['cell/A2']).to.eql(2);
       expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
+      expect(res.map.foo).to.eql('hello');
     });
 
     it('pattern (deep, default)', async () => {
@@ -249,7 +249,7 @@ describe('FileDb (file-system)', () => {
       expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
     });
 
-    it('pattern (string parameter, deep/default)', async () => {
+    it('pattern (parameter as string, deep/default)', async () => {
       const db = await prepare();
       const res: any = await db.find('cell');
       expect(res.keys).to.eql(['cell/A1', 'cell/A2', 'cell/A2/meta']);

@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
-import { R, t, pg } from '../common';
+import { R, t, pg, defaultValue } from '../common';
 
 export type IPgDocArgs = {
   db: pg.PoolConfig;
@@ -51,9 +51,8 @@ export class PgDoc implements t.IDb {
   public readonly events$ = this._events$.pipe(share());
 
   /**
-   * [DB_Methods]
+   * [Methods]
    */
-
   public async get(key: string): Promise<t.IDbValue> {
     this.throwIfDisposed('get');
     return (await this.getMany([key]))[0];
@@ -66,8 +65,8 @@ export class PgDoc implements t.IDb {
       keys
         .map(key => PgDoc.parseKey(key))
         .map(async key => {
-          const query = `SELECT * FROM "${key.table}" WHERE path = '${key.path}'`;
-          const res = await this.pool.query(query);
+          const sql = `SELECT * FROM "${key.table}" WHERE path = '${key.path}'`;
+          const res = await this.pool.query(sql);
           const { rows } = res;
           return { rows, path: key.toString() };
         }),
@@ -111,7 +110,7 @@ export class PgDoc implements t.IDb {
                 SET data = EXCLUDED.data;
           `;
         })
-        .map(query => this.pool.query(query)),
+        .map(sql => this.pool.query(sql)),
     );
     return items.map(item => {
       const { key, value } = item;
@@ -133,8 +132,8 @@ export class PgDoc implements t.IDb {
       keys
         .map(key => PgDoc.parseKey(key))
         .map(async key => {
-          const query = `DELETE FROM "${key.table}" WHERE path = '${key.path}'`;
-          const res = await this.pool.query(query);
+          const sql = `DELETE FROM "${key.table}" WHERE path = '${key.path}'`;
+          const res = await this.pool.query(sql);
           const { rows } = res;
           return { rows, path: key.toString() };
         }),
@@ -148,18 +147,55 @@ export class PgDoc implements t.IDb {
 
   public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
     this.throwIfDisposed('find');
-    // const dir = this.dir;
-    // query = typeof query === 'string' ? { pattern: query } : query;
-    // const res = await this.invoke<t.IDbIpcFindResponse>({
-    //   type: 'DB/find',
-    //   payload: { dir, query },
-    // });
-    // return res.result;
-  }
+    const pattern = (typeof query === 'object' ? query.pattern : query) || '';
+    const deep = typeof query === 'object' ? defaultValue(query.deep, true) : true;
+    if (!pattern) {
+      throw new Error(`A query pattern must contain at least a root TABLE name.`);
+    }
 
-  /**
-   * Methods
-   */
+    // Prepare search SQL statement.
+    const key = PgDoc.parseKey(pattern, { requirePath: false });
+    let sql = `SELECT * FROM "${key.table}"`;
+    sql = key.path ? `${sql} WHERE path ~ '^${key.path}'` : sql;
+    sql = `${sql};`;
+
+    // Query the database.
+    const res = await this.pool.query(sql);
+    const list = res.rows
+      .filter(row => {
+        // NB: This may be able to be done in a more advanced regex in SQL above.
+        return deep
+          ? true // Deep: All child paths accepted.
+          : !row.path.substring(key.path.length + 1).includes('/'); // Not deep: ensure this is not deeper than the given path.
+      })
+      .map(row => {
+        const value = row && typeof row.data === 'object' ? (row.data as any).data : undefined;
+        const res: t.IDbValue = {
+          value,
+          props: { key: PgDoc.join(key.table, row.path), exists: Boolean(value) },
+        };
+        return res;
+      });
+
+    // Return data structure.
+    let keys: string[] | undefined;
+    let map: t.IDbFindResult['map'] | undefined;
+    return {
+      list,
+      get keys() {
+        if (!keys) {
+          keys = list.map(item => item.props.key);
+        }
+        return keys;
+      },
+      get map() {
+        if (!map) {
+          map = list.reduce((acc, next) => ({ ...acc, [next.props.key]: next.value }), {});
+        }
+        return map;
+      },
+    };
+  }
 
   public toString() {
     const { host, database } = this._args.db;
@@ -187,13 +223,10 @@ export class PgDoc implements t.IDb {
     `);
   }
 
-  public static parseKey(key: string) {
+  public static parseKey(key: string, options: { requirePath?: boolean } = {}) {
     key = (key || '').trim().replace(/^\/*/, '');
     const index = key.indexOf('/');
-    if (index < 0) {
-      throw new Error(`The key does not have a path like structure (eg "TABLE/foo/bar"): ${key}`);
-    }
-    const table = key.substring(0, index).trim();
+    const table = index > -1 ? key.substring(0, index).trim() : key;
     const path = key
       .substr(table.length)
       .replace(/\/*$/, '')
@@ -203,7 +236,7 @@ export class PgDoc implements t.IDb {
       throw new Error(`The key path does not have a root table name: ${key}`);
     }
 
-    if (!path) {
+    if (!path && defaultValue(options.requirePath, true)) {
       throw new Error(`The key for table '${table}' does not have path name: ${key}`);
     }
 
@@ -222,10 +255,12 @@ export class PgDoc implements t.IDb {
     return {
       table,
       path,
-      toString() {
-        return key;
-      },
+      toString: () => key,
     };
+  }
+
+  public static join(...parts: string[]) {
+    return parts.map(part => part.replace(/^\/*/, '').replace(/\/*$/, '')).join('/');
   }
 
   private throwIfDisposed(action: string) {

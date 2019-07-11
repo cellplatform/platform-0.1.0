@@ -189,9 +189,9 @@ export class FileDb implements t.IDb {
   /**
    * Find (glob).
    */
-  public async find(args: string | t.IDbQuery): Promise<t.IDbFindResult> {
-    const pattern = (typeof args === 'object' ? args.pattern : args) || '';
-    const deep = typeof args === 'object' ? defaultValue(args.deep, true) : true;
+  public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
+    const pattern = (typeof query === 'object' ? query.pattern : query) || '';
+    const deep = typeof query === 'object' ? defaultValue(query.deep, true) : true;
     let paths: string[] = [];
 
     if (pattern) {
