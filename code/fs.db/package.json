@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.db",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "File-system backing store for a JSON document database.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@platform/fs": "0.1.6",
-    "@platform/fs.db.types": "0.0.0",
+    "@platform/fs.db.types": "0.0.1",
     "@platform/libs": "0.0.18",
     "@platform/types": "0.0.20",
     "@platform/util.value": "0.4.4"
