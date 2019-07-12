@@ -95,7 +95,7 @@ export class Sync implements t.IDisposable {
     );
 
     /**
-     * Cell sync.
+     * `Cell Sync`
      */
     gridCellChanges$
       // Cells changed in Grid UI.
@@ -105,7 +105,7 @@ export class Sync implements t.IDisposable {
           this.fireSyncing({
             source: 'GRID',
             kind: 'cell',
-            key: this.keys.db.toCellKey(change.cell),
+            key: this.keys.grid.toCellKey(change.cell.key),
             value: change.value.to,
           });
         });
@@ -134,9 +134,9 @@ export class Sync implements t.IDisposable {
       )
       .subscribe(async e => {
         const key = this.keys.db.toCellKey(e.key);
-        const existing = (await db.get(key)).value;
+        const existing = await db.getValue(key);
         if (!R.equals(existing, e.value)) {
-          await db.put(e.key, e.value as t.Json);
+          await db.put(key, e.value as t.Json);
         }
       });
 
@@ -154,7 +154,7 @@ export class Sync implements t.IDisposable {
       });
 
     /**
-     * Column sync
+     * `Column Sync`
      */
     gridColumnsChanges$
       // Columns changed in Grid UI.
@@ -164,7 +164,7 @@ export class Sync implements t.IDisposable {
           this.fireSyncing({
             source: 'GRID',
             kind: 'column',
-            key: this.keys.db.toColumnKey(change.column),
+            key: this.keys.grid.toColumnKey(change.column),
             value: change.to,
           });
         });
@@ -193,7 +193,7 @@ export class Sync implements t.IDisposable {
       )
       .subscribe(async e => {
         const key = this.keys.db.toColumnKey(e.key);
-        const existing = (await db.get(key)).value;
+        const existing = await db.getValue(key);
         if (!R.equals(existing, e.value)) {
           await db.put(key, e.value as t.Json);
         }
@@ -215,7 +215,7 @@ export class Sync implements t.IDisposable {
       });
 
     /**
-     * Row change.
+     * `Row Sync`
      */
     gridRowsChanges$
       // Rows changed in Grid UI.
@@ -225,7 +225,7 @@ export class Sync implements t.IDisposable {
           this.fireSyncing({
             source: 'GRID',
             kind: 'row',
-            key: this.keys.db.toRowKey(change.row),
+            key: this.keys.grid.toRowKey(change.row),
             value: change.to,
           });
         });
@@ -254,7 +254,7 @@ export class Sync implements t.IDisposable {
       )
       .subscribe(async e => {
         const key = this.keys.db.toRowKey(e.key);
-        const existing = (await db.get(key)).value;
+        const existing = await db.getValue(key);
         if (!R.equals(existing, e.value)) {
           await db.put(key, e.value as t.Json);
         }
