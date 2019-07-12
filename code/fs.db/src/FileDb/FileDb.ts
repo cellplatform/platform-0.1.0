@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
-import { util, fs, t, defaultValue } from '../common';
+import { timestamp, fs, t, defaultValue } from '../common';
 
 export type IFileDbArgs = {
   dir: string;
@@ -15,8 +15,7 @@ export class FileDb implements t.IDb {
    * [Static]
    */
   public static DELETED_SUFFIX = '._del';
-  public static ensureTimestamps = util.ensureTimestamps;
-  public static incrementTimestamps = util.incrementTimestamps;
+  public static timestamp = timestamp;
 
   public static create(args: IFileDbArgs) {
     return new FileDb(args);
@@ -135,7 +134,7 @@ export class FileDb implements t.IDb {
    */
   public async put(key: string, value?: t.Json): Promise<t.IDbValue> {
     if (typeof value === 'object' && value !== null) {
-      value = util.incrementTimestamps(value);
+      value = timestamp.increment(value);
     }
 
     const res = await FileDb.put(this.dir, key.toString(), value);
@@ -153,7 +152,7 @@ export class FileDb implements t.IDb {
     const existing = await FileDb.get(dir, key);
     const path = FileDb.toPath(dir, key);
 
-    const json = util.incrementTimestamps({
+    const json = timestamp.increment({
       data: value,
       createdAt: existing.props.createdAt,
       modifiedAt: existing.props.modifiedAt,

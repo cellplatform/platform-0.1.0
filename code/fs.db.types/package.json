@@ -12,8 +12,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "^0.0.18",
-    "@platform/types": "^0.0.20"
+    "@platform/libs": "0.0.18",
+    "@platform/types": "0.0.20"
   },
   "devDependencies": {
     "@platform/test": "0.0.59",
