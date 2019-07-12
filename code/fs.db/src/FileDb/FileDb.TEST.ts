@@ -1,37 +1,50 @@
 import { expect } from 'chai';
 import { fs, time } from '../common';
-import { FileDb } from '..';
+import { FileDb, FileDbSchema } from '..';
 import * as t from '../types';
 
 const dir = 'tmp/db';
 // after(async () => fs.remove('tmp'));
 
-const testDb = (args: { cache?: boolean } = {}) => {
-  const { cache } = args;
-  return FileDb.create({ dir, cache });
+const testDb = (args: { cache?: boolean; schema?: t.IFileDbSchema } = {}) => {
+  const { cache, schema } = args;
+  return FileDb.create({ dir, cache, schema });
 };
 
 describe('FileDb', () => {
   beforeEach(async () => fs.remove(dir));
   // afterEach(async () => fs.remove(dir));
 
-  it('creates', () => {
-    const db = testDb();
-    expect(db.cache.isEnabled).to.eql(false);
-    expect(db.dir).to.eql(fs.resolve(dir));
-  });
+  describe('lifecycle', () => {
+    it('creates', () => {
+      const db = testDb();
+      expect(db.cache.isEnabled).to.eql(false);
+      expect(db.dir).to.eql(fs.resolve(dir));
+    });
 
-  it('dispose', () => {
-    const db = testDb();
-    let count = 0;
-    db.dispose$.subscribe(() => count++);
-    expect(db.isDisposed).to.eql(false);
+    it('has default schema', () => {
+      const db = testDb();
+      expect(db.schema).to.eql(FileDbSchema.DEFAULT);
+    });
 
-    db.dispose();
-    db.dispose();
+    it('has custom schema', () => {
+      const schema: t.IFileDbSchema = { paths: { cell: { file: 'sheet' } } };
+      const db = testDb({ schema });
+      expect(db.schema).to.eql(schema);
+    });
 
-    expect(db.isDisposed).to.eql(true);
-    expect(count).to.eql(1);
+    it('dispose', () => {
+      const db = testDb();
+      let count = 0;
+      db.dispose$.subscribe(() => count++);
+      expect(db.isDisposed).to.eql(false);
+
+      db.dispose();
+      db.dispose();
+
+      expect(db.isDisposed).to.eql(true);
+      expect(count).to.eql(1);
+    });
   });
 
   it('get/put', async () => {
@@ -45,12 +58,12 @@ describe('FileDb', () => {
       expect(res.props.key).to.eql(key);
       expect(res.value).to.eql(value);
 
-      const getStatic = await FileDb.get(dir, key);
-      expect(getStatic.props.key).to.eql(key);
-      expect(getStatic.value).to.eql(value);
-      expect(getStatic.props.exists).to.eql(true);
+      // const getStatic = await FileDb.get(dir, key);
+      // expect(getStatic.props.key).to.eql(key);
+      // expect(getStatic.value).to.eql(value);
+      // expect(getStatic.props.exists).to.eql(true);
 
-      const getInstance = await FileDb.get(dir, key);
+      const getInstance = await db.get(key);
       expect(getInstance.props.key).to.eql(key);
       expect(getInstance.value).to.eql(value);
       expect(getInstance.props.exists).to.eql(true);
@@ -371,7 +384,15 @@ describe('FileDb', () => {
   });
 
   describe('file-schema', () => {
-    it.only('FOO', async () => {
+    it('FOO', async () => {
+      // const schema: t.IFileDbSchema = {
+      //   paths: {
+      //     cell: { path: 'cells' },
+      //     column: { path: 'meta' },
+      //     row: { path: 'meta' },
+      //   },
+      // };
+
       const db = testDb();
       await db.put('foo', 123);
 
@@ -380,6 +401,8 @@ describe('FileDb', () => {
         { key: 'cell/A2', value: 2 },
         { key: 'cell/A3', value: 3 },
         { key: 'cell/A3/meta', value: { info: 456 } },
+        { key: 'column/A', value: 120 },
+        { key: 'row/0', value: 50 },
       ]);
     });
   });

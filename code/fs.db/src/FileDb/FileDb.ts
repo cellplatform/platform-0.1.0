@@ -1,10 +1,12 @@
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { timestamp, fs, t, defaultValue } from '../common';
+import { FileDbSchema } from '../FileDbSchema';
 
 export type IFileDbArgs = {
   dir: string;
   cache?: boolean;
+  schema?: t.IFileDbSchema;
 };
 
 /**
@@ -27,6 +29,7 @@ export class FileDb implements t.IDb {
   private constructor(args: IFileDbArgs) {
     this.dir = fs.resolve(args.dir);
     this.cache.isEnabled = Boolean(args.cache);
+    this.schema = args.schema || FileDbSchema.DEFAULT;
   }
 
   public dispose() {
@@ -41,6 +44,7 @@ export class FileDb implements t.IDb {
    * [Fields]
    */
   public readonly dir: string;
+  public readonly schema: t.IFileDbSchema;
 
   public readonly cache: t.IFileDbCache = {
     isEnabled: false,
@@ -91,7 +95,7 @@ export class FileDb implements t.IDb {
     }
 
     // Read value from file-system.
-    const res = await FileDb.get(this.dir, key.toString());
+    const res = await FileDb.get({ dir: this.dir, key: key.toString(), schema: this.schema });
     fire(res);
 
     // Store value in cache (if required).
@@ -102,7 +106,13 @@ export class FileDb implements t.IDb {
     // Finish up.
     return res;
   }
-  public static async get(dir: string, key: string): Promise<t.IDbValue> {
+
+  public static async get(args: {
+    schema: t.IFileDbSchema;
+    dir: string;
+    key: string;
+  }): Promise<t.IDbValue> {
+    const { dir, key } = args;
     const path = FileDb.toPath(dir, key);
     const exists = await fs.pathExists(path);
     const props: t.IDbValueProps = { key, exists, createdAt: -1, modifiedAt: -1 };
@@ -121,10 +131,12 @@ export class FileDb implements t.IDb {
       throw new Error(`Failed to get value for key '${key}'. ${error.message}`);
     }
   }
+
   public async getValue<T extends t.Json | undefined>(key: string): Promise<T> {
     const res = await this.get(key);
     return res.value as T;
   }
+
   public async getMany(keys: string[]): Promise<t.IDbValue[]> {
     return Promise.all(keys.map(key => this.get(key)));
   }
@@ -137,7 +149,12 @@ export class FileDb implements t.IDb {
       value = timestamp.increment(value);
     }
 
-    const res = await FileDb.put(this.dir, key.toString(), value);
+    const res = await FileDb.put({
+      schema: this.schema,
+      dir: this.dir,
+      key,
+      value,
+    });
     this.fire({
       type: 'DOC/change',
       payload: { action: 'put', key, value: res.value, props: res.props },
@@ -148,8 +165,15 @@ export class FileDb implements t.IDb {
     }
     return res;
   }
-  public static async put(dir: string, key: string, value?: t.Json): Promise<t.IDbValue> {
-    const existing = await FileDb.get(dir, key);
+
+  public static async put(args: {
+    schema: t.IFileDbSchema;
+    dir: string;
+    key: string;
+    value?: t.Json;
+  }): Promise<t.IDbValue> {
+    const { schema, dir, key, value } = args;
+    const existing = await FileDb.get({ schema, dir, key });
     const path = FileDb.toPath(dir, key);
 
     const json = timestamp.increment({
@@ -169,6 +193,7 @@ export class FileDb implements t.IDb {
     };
     return { value, props };
   }
+
   public async putMany(items: t.IDbKeyValue[]): Promise<t.IDbValue[]> {
     return Promise.all(items.map(({ key, value }) => this.put(key, value)));
   }
@@ -177,16 +202,22 @@ export class FileDb implements t.IDb {
    * [Delete]
    */
   public async delete(key: string): Promise<t.IDbValue> {
-    const res = await FileDb.delete(this.dir, key.toString());
+    const res = await FileDb.delete({ schema: this.schema, dir: this.dir, key });
     this.fire({
       type: 'DOC/change',
       payload: { action: 'delete', key, value: res.value, props: res.props },
     });
     return res;
   }
-  public static async delete(dir: string, key: string): Promise<t.IDbValue> {
+
+  public static async delete(args: {
+    schema: t.IFileDbSchema;
+    dir: string;
+    key: string;
+  }): Promise<t.IDbValue> {
+    const { schema, dir, key } = args;
     const path = FileDb.toPath(dir, key);
-    const existing = await FileDb.get(dir, key);
+    const existing = await FileDb.get({ schema, dir, key });
     if (existing.props.exists) {
       const rename = `${path}${FileDb.DELETED_SUFFIX}`;
       await fs.rename(path, rename);

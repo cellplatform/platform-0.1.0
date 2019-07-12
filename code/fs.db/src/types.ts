@@ -10,3 +10,13 @@ export type IFileDbCache = {
   exists(key: string): boolean;
   clear(keys?: string[]): void;
 };
+
+/**
+ * Schema
+ */
+export type IFileDbSchema = {
+  paths: IFileDbSchemaPaths;
+};
+
+export type IFileDbSchemaPaths = { [key: string]: IFileDbSchemaPath };
+export type IFileDbSchemaPath = { file: string };
