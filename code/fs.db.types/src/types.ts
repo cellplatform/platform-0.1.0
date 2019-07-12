@@ -36,7 +36,7 @@ export type IDbValue = {
   value?: Json;
   props: IDbValueProps;
 };
-export type IDbValueProps = {
+export type IDbValueProps = IDbTimestamps & {
   key: string;
   exists: boolean;
 };

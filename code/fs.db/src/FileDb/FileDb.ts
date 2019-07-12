@@ -106,13 +106,17 @@ export class FileDb implements t.IDb {
   public static async get(dir: string, key: string): Promise<t.IDbValue> {
     const path = FileDb.toPath(dir, key);
     const exists = await fs.pathExists(path);
-    const props: t.IDbValueProps = { key, exists };
+    const props: t.IDbValueProps = { key, exists, createdAt: -1, modifiedAt: -1 };
     if (!exists) {
       return { value: undefined, props: { ...props, exists: false } };
     }
     try {
       const text = (await fs.readFile(path)).toString();
       const json = JSON.parse(text);
+      if (typeof json === 'object') {
+        props.createdAt = typeof json.createdAt === 'number' ? json.createdAt : props.createdAt;
+        props.modifiedAt = typeof json.modifiedAt === 'number' ? json.modifiedAt : props.modifiedAt;
+      }
       return typeof json === 'object' ? { value: json.data, props } : { value: undefined, props };
     } catch (error) {
       throw new Error(`Failed to get value for key '${key}'. ${error.message}`);
@@ -146,13 +150,24 @@ export class FileDb implements t.IDb {
     return res;
   }
   public static async put(dir: string, key: string, value?: t.Json): Promise<t.IDbValue> {
+    const existing = await FileDb.get(dir, key);
     const path = FileDb.toPath(dir, key);
-    const json = { data: value };
+
+    const json = util.incrementTimestamps({
+      data: value,
+      createdAt: existing.props.createdAt,
+      modifiedAt: existing.props.modifiedAt,
+    });
 
     await fs.ensureDir(fs.dirname(path));
     await fs.writeFile(path, JSON.stringify(json, null, '  '));
 
-    const props: t.IDbValueProps = { key, exists: true };
+    const props: t.IDbValueProps = {
+      key,
+      exists: true,
+      createdAt: json.createdAt,
+      modifiedAt: json.modifiedAt,
+    };
     return { value, props };
   }
   public async putMany(items: t.IDbKeyValue[]): Promise<t.IDbValue[]> {
@@ -179,7 +194,7 @@ export class FileDb implements t.IDb {
     }
     return {
       value: undefined,
-      props: { key, exists: false },
+      props: { key, exists: false, createdAt: -1, modifiedAt: -1 },
     };
   }
   public async deleteMany(keys: string[]): Promise<t.IDbValue[]> {
