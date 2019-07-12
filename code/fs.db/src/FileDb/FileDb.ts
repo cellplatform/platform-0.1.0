@@ -112,8 +112,8 @@ export class FileDb implements t.IDb {
     dir: string;
     key: string;
   }): Promise<t.IDbValue> {
-    const { dir, key } = args;
-    const path = FileDb.toPath(dir, key);
+    const { schema, dir, key } = args;
+    const path = FileDbSchema.path({ schema, dir, key });
     const exists = await fs.pathExists(path);
     const props: t.IDbValueProps = { key, exists, createdAt: -1, modifiedAt: -1 };
     if (!exists) {
@@ -174,7 +174,7 @@ export class FileDb implements t.IDb {
   }): Promise<t.IDbValue> {
     const { schema, dir, key, value } = args;
     const existing = await FileDb.get({ schema, dir, key });
-    const path = FileDb.toPath(dir, key);
+    const path = FileDbSchema.path({ schema, dir, key });
 
     const json = timestamp.increment({
       data: value,
@@ -216,7 +216,7 @@ export class FileDb implements t.IDb {
     key: string;
   }): Promise<t.IDbValue> {
     const { schema, dir, key } = args;
-    const path = FileDb.toPath(dir, key);
+    const path = FileDbSchema.path({ schema, dir, key });
     const existing = await FileDb.get({ schema, dir, key });
     if (existing.props.exists) {
       const rename = `${path}${FileDb.DELETED_SUFFIX}`;
@@ -281,13 +281,10 @@ export class FileDb implements t.IDb {
    * [Helpers]
    */
 
-  public toPath(key: string) {
-    return FileDb.toPath(this.dir, (key || '').toString());
-  }
-
-  public static toPath(dir: string, key: string) {
-    return fs.join(dir, `${key}.json`);
-  }
+  // public static toPath(dir: string, key: string) {
+  //   key = (key || '').toString();
+  //   return fs.join(dir, `${key}.json`);
+  // }
 
   private fire(e: t.DbEvent) {
     this._events$.next(e);
