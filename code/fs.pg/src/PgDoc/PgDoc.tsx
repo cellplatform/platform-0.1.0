@@ -1,3 +1,10 @@
+/**
+ * NOTIFY event stream
+ * - https://github.com/andywer/pg-listen
+ * - https://www.postgresql.org/docs/current/sql-notify.html
+ * - https://www.postgresql.org/docs/current/sql-listen.html
+ */
+
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
