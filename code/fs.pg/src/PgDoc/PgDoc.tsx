@@ -1,13 +1,20 @@
+/**
+ * NOTIFY event stream
+ * - https://github.com/andywer/pg-listen
+ * - https://www.postgresql.org/docs/current/sql-notify.html
+ * - https://www.postgresql.org/docs/current/sql-listen.html
+ */
+
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
-import { R, t, pg, defaultValue } from '../common';
+import { R, t, pg, defaultValue, time, value as valueUtil } from '../common';
 
 export type IPgDocArgs = {
   db: pg.PoolConfig;
 };
 
-type IRow = { id: number; path: string; data: t.Json };
+type IRow = { id: number; path: string; data: t.Json; createdAt: number; modifiedAt: number };
 
 /**
  * A file-system like document store backed by Postgres.
@@ -19,6 +26,52 @@ export class PgDoc implements t.IDb {
   public static create(args: IPgDocArgs) {
     const db = new PgDoc(args);
     return db;
+  }
+
+  public static parseKey(key: string, options: { requirePath?: boolean } = {}) {
+    key = (key || '').trim().replace(/^\/*/, '');
+    const index = key.indexOf('/');
+    const table = index > -1 ? key.substring(0, index).trim() : key;
+    const path = key
+      .substr(table.length)
+      .replace(/\/*$/, '')
+      .trim();
+
+    if (!table) {
+      throw new Error(`The key path does not have a root table name: ${key}`);
+    }
+
+    if (!path && defaultValue(options.requirePath, true)) {
+      throw new Error(`The key for table '${table}' does not have path name: ${key}`);
+    }
+
+    if (path.includes('//')) {
+      throw new Error(`The key path contains "//": ${key}`);
+    }
+
+    /**
+     * TODO
+     * - ensure valid characters (??)
+     * - no:
+     *    - quote markes "" or ''
+     *    - anything that the file-system rejects (OSX)
+     */
+
+    return {
+      table,
+      path,
+      toString: () => key,
+    };
+  }
+
+  public static join(...parts: string[]) {
+    return parts.map(part => part.replace(/^\/*/, '').replace(/\/*$/, '')).join('/');
+  }
+
+  private static toTimestamps(row?: IRow) {
+    const createdAt = valueUtil.toNumber(row ? row.createdAt : -1);
+    const modifiedAt = valueUtil.toNumber(row ? row.modifiedAt : -1);
+    return { createdAt, modifiedAt };
   }
 
   /**
@@ -79,7 +132,12 @@ export class PgDoc implements t.IDb {
     return keys.map(key => {
       const row = rows.find(item => item.path === key);
       const value = row && typeof row.data === 'object' ? (row.data as any).data : undefined;
-      const res: t.IDbValue = { value, props: { key, exists: Boolean(value) } };
+      const exists = Boolean(value);
+      const { createdAt, modifiedAt } = PgDoc.toTimestamps(row);
+      const res: t.IDbValue = {
+        value,
+        props: { key, exists, createdAt, modifiedAt },
+      };
       return res;
     });
   }
@@ -96,27 +154,24 @@ export class PgDoc implements t.IDb {
   public async putMany(items: t.IDbKeyValue[]): Promise<t.IDbValue[]> {
     this.throwIfDisposed('putMany');
     await this.ensureTables(items.map(item => item.key));
+    const now = time.now.timestamp;
     await Promise.all(
       items
         .map(item => ({ key: PgDoc.parseKey(item.key), value: item.value }))
         .map(item => {
           const data = { data: item.value };
           return `
-            INSERT INTO "${item.key.table}" (path, data)
-              VALUES ('${item.key.path}', '${JSON.stringify(data)}')
+            INSERT INTO "${item.key.table}" ("path", "data", "createdAt", "modifiedAt")
+              VALUES ('${item.key.path}', '${JSON.stringify(data)}', ${now}, ${now})
               ON CONFLICT (path)
               DO
                 UPDATE
-                SET data = EXCLUDED.data;
+                SET "data" = EXCLUDED.data, "modifiedAt" = ${now};
           `;
         })
         .map(sql => this.pool.query(sql)),
     );
-    return items.map(item => {
-      const { key, value } = item;
-      const res: t.IDbValue = { value, props: { key, exists: Boolean(value) } };
-      return res;
-    });
+    return this.getMany(items.map(item => item.key));
   }
 
   public async delete(key: string): Promise<t.IDbValue> {
@@ -140,7 +195,10 @@ export class PgDoc implements t.IDb {
     );
 
     return keys.map(key => {
-      const res: t.IDbValue = { value: undefined, props: { key, exists: false } };
+      const res: t.IDbValue = {
+        value: undefined,
+        props: { key, exists: false, createdAt: -1, modifiedAt: -1 },
+      };
       return res;
     });
   }
@@ -170,9 +228,15 @@ export class PgDoc implements t.IDb {
       })
       .map(row => {
         const value = row && typeof row.data === 'object' ? (row.data as any).data : undefined;
+        const { createdAt, modifiedAt } = PgDoc.toTimestamps(row);
         const res: t.IDbValue = {
           value,
-          props: { key: PgDoc.join(key.table, row.path), exists: Boolean(value) },
+          props: {
+            key: PgDoc.join(key.table, row.path),
+            exists: Boolean(value),
+            createdAt,
+            modifiedAt,
+          },
         };
         return res;
       });
@@ -216,51 +280,13 @@ export class PgDoc implements t.IDb {
       CREATE TABLE IF NOT EXISTS "public"."${table}" (
         "id" serial,
         "path" text NOT NULL,
+        "createdAt" bigint NOT NULL,
+        "modifiedAt" bigint NOT NULL,
         "data" jsonb,
         PRIMARY KEY ("id"),
         UNIQUE ("path")
       );
     `);
-  }
-
-  public static parseKey(key: string, options: { requirePath?: boolean } = {}) {
-    key = (key || '').trim().replace(/^\/*/, '');
-    const index = key.indexOf('/');
-    const table = index > -1 ? key.substring(0, index).trim() : key;
-    const path = key
-      .substr(table.length)
-      .replace(/\/*$/, '')
-      .trim();
-
-    if (!table) {
-      throw new Error(`The key path does not have a root table name: ${key}`);
-    }
-
-    if (!path && defaultValue(options.requirePath, true)) {
-      throw new Error(`The key for table '${table}' does not have path name: ${key}`);
-    }
-
-    if (path.includes('//')) {
-      throw new Error(`The key path contains "//": ${key}`);
-    }
-
-    /**
-     * TODO
-     * - ensure valid characters (??)
-     * - no:
-     *    - quote markes "" or ''
-     *    - anything that the file-system rejects (OSX)
-     */
-
-    return {
-      table,
-      path,
-      toString: () => key,
-    };
-  }
-
-  public static join(...parts: string[]) {
-    return parts.map(part => part.replace(/^\/*/, '').replace(/\/*$/, '')).join('/');
   }
 
   private throwIfDisposed(action: string) {

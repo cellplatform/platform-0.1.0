@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.db.types",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Common types for a file-system like JSON document database.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

@@ -1,6 +1,6 @@
 import { expect, expectError } from '@platform/test';
 import { PgDoc } from '.';
-import { pg } from '../common';
+import { pg, time } from '../common';
 
 const params = { user: 'dev', host: 'localhost', database: 'test' };
 const tables = ['FOO', 'BAR', 'BOO'];
@@ -55,6 +55,30 @@ describe('PgDoc (integration)', () => {
     await db.put(key, undefined);
     const res5 = await db.get(key);
     expect(res5.value).to.eql(undefined);
+  });
+
+  it('put => timestamps (implicit)', async () => {
+    const key = 'FOO/bar';
+    const res1 = await db.get(key);
+
+    expect(res1.value).to.eql(undefined);
+    expect(res1.props.exists).to.eql(false);
+    expect(res1.props.createdAt).to.eql(-1);
+    expect(res1.props.modifiedAt).to.eql(-1);
+
+    const now = time.now.timestamp;
+    const res2 = await db.put(key, 123);
+    expect(res2.props.createdAt).to.be.within(now - 5, now + 20);
+    expect(res2.props.modifiedAt).to.be.within(now - 5, now + 20);
+
+    const res3 = await db.get(key);
+    expect(res3.props.createdAt).to.eql(res2.props.createdAt);
+    expect(res3.props.modifiedAt).to.eql(res2.props.modifiedAt);
+
+    await time.wait(100);
+    const res4 = await db.put(key, 456);
+    expect(res4.props.createdAt).to.eql(res2.props.createdAt);
+    expect(res4.props.modifiedAt).to.be.within(now + 90, now + 120);
   });
 
   it('put => getValue (types)', async () => {
@@ -157,6 +181,7 @@ describe('PgDoc (integration)', () => {
     });
 
     it('no path (deep, default)', async () => {
+      const now = time.now.timestamp;
       const db = await prepare();
       const res = await db.find({ pattern: 'FOO' });
       expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta', 'FOO/bar']);
@@ -164,6 +189,10 @@ describe('PgDoc (integration)', () => {
       expect(res.map['FOO/cell/A1']).to.eql(1);
       expect(res.map['FOO/cell/A2']).to.eql(2);
       expect(res.map['FOO/cell/A2/meta']).to.eql({ foo: 123 });
+
+      const A1 = res.list[0];
+      expect(A1.props.createdAt).to.be.within(now - 5, now + 20);
+      expect(A1.props.modifiedAt).to.be.within(now - 5, now + 20);
     });
 
     it('path (deep, default)', async () => {

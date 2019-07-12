@@ -101,13 +101,37 @@ describe('FileDb (file-system)', () => {
     expect(res.value).to.eql(2);
   });
 
-  it('put (timestamps)', async () => {
+  it('put (value timestamps)', async () => {
     const db = testDb();
     const now = time.now.timestamp;
     const res1 = await db.put('foo', { msg: 'hello', createdAt: -1, modifiedAt: -1 });
     const value = res1.value as any;
     expect(value.createdAt).to.be.within(now - 5, now + 20);
     expect(value.modifiedAt).to.be.within(now - 5, now + 20);
+  });
+
+  it('timestamps (implicit)', async () => {
+    const db = testDb();
+    const key = 'foo';
+    const res1 = await db.get(key);
+
+    expect(res1.props.exists).to.eql(false);
+    expect(res1.props.createdAt).to.eql(-1);
+    expect(res1.props.modifiedAt).to.eql(-1);
+
+    const now = time.now.timestamp;
+    const res2 = await db.put(key, 123);
+    expect(res2.props.createdAt).to.be.within(now - 5, now + 20);
+    expect(res2.props.modifiedAt).to.be.within(now - 5, now + 20);
+
+    const res3 = await db.get(key);
+    expect(res3.props.createdAt).to.eql(res2.props.createdAt);
+    expect(res3.props.modifiedAt).to.eql(res2.props.modifiedAt);
+
+    await time.wait(100);
+    const res4 = await db.put(key, 456);
+    expect(res4.props.createdAt).to.eql(res2.props.createdAt);
+    expect(res4.props.modifiedAt).to.be.within(now + 90, now + 120);
   });
 
   it('delete', async () => {
