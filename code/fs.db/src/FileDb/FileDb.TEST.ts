@@ -383,17 +383,17 @@ describe('FileDb', () => {
     });
   });
 
-  describe('file-schema', () => {
-    it('FOO', async () => {
-      // const schema: t.IFileDbSchema = {
-      //   paths: {
-      //     cell: { path: 'cells' },
-      //     column: { path: 'meta' },
-      //     row: { path: 'meta' },
-      //   },
-      // };
+  describe('schema (key mapping to single file)', () => {
+    it('collapsed namespace to single file', async () => {
+      const schema: t.IFileDbSchema = {
+        paths: {
+          cell: { file: 'sheet' },
+          column: { file: 'meta' },
+          row: { file: 'meta' },
+        },
+      };
 
-      const db = testDb();
+      const db = testDb({ schema });
       await db.put('foo', 123);
 
       await db.putMany([
@@ -404,6 +404,26 @@ describe('FileDb', () => {
         { key: 'column/A', value: 120 },
         { key: 'row/0', value: 50 },
       ]);
+
+      const foo = await db.getValue('foo');
+      const A1 = await db.getValue('cell/A1');
+      const A2 = await db.getValue('cell/A2');
+      const A3 = await db.getValue('cell/A3');
+      const column = await db.getValue('column/A');
+      const row = await db.getValue('row/0');
+
+      expect(foo).to.eql(123);
+      expect(A1).to.eql(1);
+      expect(A2).to.eql(2);
+      expect(A3).to.eql(3);
+      expect(column).to.eql(120);
+      expect(row).to.eql(50);
+
+      const cells = await db.find('cell'); // NB: not found, because schema maps to different file.
+      const sheet = await db.find('sheet');
+
+      expect(cells.keys).to.eql([]);
+      expect(sheet.keys).to.eql(['cell/A1', 'cell/A2', 'cell/A3', 'cell/A3/meta']);
     });
   });
 });

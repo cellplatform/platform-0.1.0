@@ -3,7 +3,6 @@ import { FileDbSchema } from '.';
 import { t } from '../common';
 
 const DEFAULT = FileDbSchema.DEFAULT;
-
 const dir = 'tmp/db';
 
 describe('FileDbSchema', () => {
@@ -13,7 +12,7 @@ describe('FileDbSchema', () => {
       expect(path).to.eql('tmp/db/cell/A1.json');
     });
 
-    it.only('maps to different file', () => {
+    it('maps to different file', () => {
       const schema: t.IFileDbSchema = { paths: { cell: { file: 'sheet' } } };
 
       const path1 = FileDbSchema.path({ dir, schema, key: 'cell/A1' });
