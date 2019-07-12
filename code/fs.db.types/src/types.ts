@@ -61,16 +61,6 @@ export type IDbFindResult = {
 };
 
 /**
- * Cache
- */
-export type IDbCache = {
-  isEnabled: boolean;
-  values: { [key: string]: IDbValue };
-  exists(key: string): boolean;
-  clear(keys?: string[]): void;
-};
-
-/**
  * Events
  */
 export type DbEvent = DocDbActionEvent | IDbCacheEvent;

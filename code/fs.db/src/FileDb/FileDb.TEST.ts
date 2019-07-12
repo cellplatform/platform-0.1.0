@@ -4,16 +4,16 @@ import { FileDb } from '..';
 import * as t from '../types';
 
 const dir = 'tmp/db';
-after(async () => fs.remove('tmp'));
+// after(async () => fs.remove('tmp'));
 
-const testDb = (args: { isMemoized?: boolean } = {}) => {
-  const { isMemoized } = args;
-  return FileDb.create({ dir, cache: isMemoized });
+const testDb = (args: { cache?: boolean } = {}) => {
+  const { cache } = args;
+  return FileDb.create({ dir, cache });
 };
 
-describe('FileDb (file-system)', () => {
+describe('FileDb', () => {
   beforeEach(async () => fs.remove(dir));
-  afterEach(async () => fs.remove(dir));
+  // afterEach(async () => fs.remove(dir));
 
   it('creates', () => {
     const db = testDb();
@@ -302,13 +302,13 @@ describe('FileDb (file-system)', () => {
   describe('caching (memoize)', () => {
     it('creates memoized', () => {
       const db1 = testDb({});
-      const db2 = testDb({ isMemoized: true });
+      const db2 = testDb({ cache: true });
       expect(db1.cache.isEnabled).to.eql(false);
       expect(db2.cache.isEnabled).to.eql(true);
     });
 
     it('puts value in cache on get', async () => {
-      const db = testDb({ isMemoized: true });
+      const db = testDb({ cache: true });
       expect(db.cache.values).to.eql({});
 
       await db.put('foo', 1);
@@ -319,7 +319,7 @@ describe('FileDb (file-system)', () => {
     });
 
     it('reads from cache value', async () => {
-      const db = testDb({ isMemoized: true });
+      const db = testDb({ cache: true });
       await db.put('foo', 1);
 
       const res1 = await db.getValue('foo');
@@ -332,7 +332,7 @@ describe('FileDb (file-system)', () => {
     });
 
     it('invalidates cache on put', async () => {
-      const db = testDb({ isMemoized: true });
+      const db = testDb({ cache: true });
 
       await db.put('foo', 1);
       await db.put('bar', 'hello');
@@ -348,7 +348,7 @@ describe('FileDb (file-system)', () => {
     });
 
     it('observable events (while caching)', async () => {
-      const db = testDb({ isMemoized: true });
+      const db = testDb({ cache: true });
       const events: t.DbEvent[] = [];
       db.events$.subscribe(e => events.push(e));
 
@@ -367,6 +367,20 @@ describe('FileDb (file-system)', () => {
 
       expect(events[4].type).to.eql('DOC/cache');
       expect(events[4].payload.action).to.eql('REMOVED');
+    });
+  });
+
+  describe('file-schema', () => {
+    it.only('FOO', async () => {
+      const db = testDb();
+      await db.put('foo', 123);
+
+      await db.putMany([
+        { key: 'cell/A1', value: 1 },
+        { key: 'cell/A2', value: 2 },
+        { key: 'cell/A3', value: 3 },
+        { key: 'cell/A3/meta', value: { info: 456 } },
+      ]);
     });
   });
 });

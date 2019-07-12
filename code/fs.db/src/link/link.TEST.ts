@@ -3,8 +3,7 @@ import { expect, expectError } from '@platform/test';
 import { fs } from '../common';
 import { FileDb } from '../FileDb';
 
-const dir = 'tmp/db';
-after(async () => fs.remove('tmp'));
+const dir = 'tmp/db-link';
 
 const testDb = async (args: { dir: string }) => {
   const { dir } = args;

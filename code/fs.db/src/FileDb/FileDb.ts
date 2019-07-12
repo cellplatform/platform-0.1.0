@@ -42,7 +42,7 @@ export class FileDb implements t.IDb {
    */
   public readonly dir: string;
 
-  public readonly cache: t.IDbCache = {
+  public readonly cache: t.IFileDbCache = {
     isEnabled: false,
     values: {},
     exists: (key: string) => this.cache.values[key] !== undefined,
