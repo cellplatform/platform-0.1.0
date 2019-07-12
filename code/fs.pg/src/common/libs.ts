@@ -1,6 +1,6 @@
 import * as pg from 'pg';
 export { pg };
-export { defaultValue } from '@platform/util.value';
+export { defaultValue, time, value } from '@platform/util.value';
 
 /**
  * Ramda
