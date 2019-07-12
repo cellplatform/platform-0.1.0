@@ -1,6 +1,5 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-
 import { t, R, value } from '../common';
 import { Keys } from '../keys';
 
@@ -104,7 +103,7 @@ export class Sync implements t.IDisposable {
         e.changes.forEach(change => {
           this.fireSyncing({
             source: 'GRID',
-            kind: 'cell',
+            kind: 'CELL',
             key: this.keys.grid.toCellKey(change.cell.key),
             value: change.value.to,
           });
@@ -120,7 +119,7 @@ export class Sync implements t.IDisposable {
       .subscribe(e => {
         this.fireSyncing({
           source: 'DB',
-          kind: 'cell',
+          kind: 'CELL',
           key: this.keys.grid.toCellKey(e.key),
           value: e.value,
         });
@@ -130,7 +129,7 @@ export class Sync implements t.IDisposable {
       // Update DB when Grid UI changes a cell.
       .pipe(
         filter(e => e.source === 'GRID'),
-        filter(e => e.kind === 'cell'),
+        filter(e => e.kind === 'CELL'),
       )
       .subscribe(async e => {
         const key = this.keys.db.toCellKey(e.key);
@@ -144,7 +143,7 @@ export class Sync implements t.IDisposable {
       // Update Grid UI when the DB changes a cell.
       .pipe(
         filter(e => e.source === 'DB'),
-        filter(e => e.kind === 'cell'),
+        filter(e => e.kind === 'CELL'),
       )
       .subscribe(async e => {
         const cell = grid.cell(this.keys.grid.toCellKey(e.key));
@@ -163,7 +162,7 @@ export class Sync implements t.IDisposable {
         e.changes.forEach(change => {
           this.fireSyncing({
             source: 'GRID',
-            kind: 'column',
+            kind: 'COLUMN',
             key: this.keys.grid.toColumnKey(change.column),
             value: change.to,
           });
@@ -179,7 +178,7 @@ export class Sync implements t.IDisposable {
       .subscribe(e => {
         this.fireSyncing({
           source: 'DB',
-          kind: 'column',
+          kind: 'COLUMN',
           key: this.keys.grid.toColumnKey(e.key),
           value: e.value as t.IGridColumn,
         });
@@ -189,7 +188,7 @@ export class Sync implements t.IDisposable {
       // Update DB when Grid UI changes a column.
       .pipe(
         filter(e => e.source === 'GRID'),
-        filter(e => e.kind === 'column'),
+        filter(e => e.kind === 'COLUMN'),
       )
       .subscribe(async e => {
         const key = this.keys.db.toColumnKey(e.key);
@@ -203,7 +202,7 @@ export class Sync implements t.IDisposable {
       // Update Grid UI when the DB changes a column.
       .pipe(
         filter(e => e.source === 'DB'),
-        filter(e => e.kind === 'column'),
+        filter(e => e.kind === 'COLUMN'),
       )
       .subscribe(async e => {
         const key = this.keys.grid.toColumnKey(e.key);
@@ -224,7 +223,7 @@ export class Sync implements t.IDisposable {
         e.changes.forEach(change => {
           this.fireSyncing({
             source: 'GRID',
-            kind: 'row',
+            kind: 'ROW',
             key: this.keys.grid.toRowKey(change.row),
             value: change.to,
           });
@@ -240,7 +239,7 @@ export class Sync implements t.IDisposable {
       .subscribe(e => {
         this.fireSyncing({
           source: 'DB',
-          kind: 'row',
+          kind: 'ROW',
           key: this.keys.grid.toRowKey(e.key),
           value: e.value as t.IGridRow,
         });
@@ -250,7 +249,7 @@ export class Sync implements t.IDisposable {
       // Update DB when Grid UI changes a row.
       .pipe(
         filter(e => e.source === 'GRID'),
-        filter(e => e.kind === 'row'),
+        filter(e => e.kind === 'ROW'),
       )
       .subscribe(async e => {
         const key = this.keys.db.toRowKey(e.key);
@@ -264,7 +263,7 @@ export class Sync implements t.IDisposable {
       // Update Grid UI when the DB changes a row.
       .pipe(
         filter(e => e.source === 'DB'),
-        filter(e => e.kind === 'row'),
+        filter(e => e.kind === 'ROW'),
       )
       .subscribe(async e => {
         const key = this.keys.grid.toRowKey(e.key);
