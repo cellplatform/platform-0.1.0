@@ -25,6 +25,14 @@ describe('PgDoc (integration)', () => {
     expect(await db.getValue(key)).to.eql(undefined);
   });
 
+  it("put (escaped ' character)", async () => {
+    const key = 'FOO/char';
+    const msg = `'"?<>\`~:\\/!@#$%^&*()_-+=`;
+    await db.put(key, { msg });
+    const res = await db.getValue<{ msg: string }>(key);
+    expect(res.msg).to.eql(msg);
+  });
+
   it('put => get (props)', async () => {
     const key = 'FOO/bar';
     const res1 = await db.get(key);
@@ -212,8 +220,8 @@ describe('PgDoc (integration)', () => {
       expect(res.map['FOO/cell/A2/meta']).to.eql({ foo: 123 });
 
       const A1 = res.list[0];
-      expect(A1.props.createdAt).to.be.within(now - 5, now + 20);
-      expect(A1.props.modifiedAt).to.be.within(now - 5, now + 20);
+      expect(A1.props.createdAt).to.be.within(now - 5, now + 30);
+      expect(A1.props.modifiedAt).to.be.within(now - 5, now + 30);
     });
 
     it('path (deep, default)', async () => {

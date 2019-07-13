@@ -3,6 +3,7 @@ import { pg, time } from '../common';
 
 export { time };
 export { expect, expectError } from '@platform/test';
+import { Pg } from '../PgDoc';
 
 export const params = {
   user: 'dev',
@@ -16,10 +17,9 @@ export const test = {
   },
 
   async dropTables(tables: string[]) {
-    const client = new pg.Pool(params);
-    const drop = (table: string) => client.query(`DROP TABLE IF EXISTS "${table}"`);
-    await Promise.all(tables.map(table => drop(table)));
-    client.end();
+    const db = Pg.create({ db: params });
+    await db.dropTable(...tables);
+    db.dispose();
   },
 };
 

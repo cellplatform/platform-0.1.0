@@ -14,11 +14,20 @@ export async function importFiles(args: { db: PgDoc; dir: string }) {
   const paths = await fs.glob.find(fs.join(dir, '**/*.json'));
 
   const toItem = (key: string, json: any) => {
+    const value = json.data;
+    const isObject = typeof value === 'object';
+
+    let createdAt = json.createdAt || -1;
+    let modifiedAt = json.modifiedAt || -1;
+
+    createdAt = createdAt === -1 && isObject && value.createdAt ? value.createdAt : createdAt;
+    modifiedAt = modifiedAt === -1 && isObject && value.modifiedAt ? value.modifiedAt : modifiedAt;
+
     const item: t.IDbPutItem = {
       key,
-      value: json.data,
-      createdAt: json.createdAt || -1,
-      modifiedAt: json.modifiedAt || -1,
+      value,
+      createdAt,
+      modifiedAt,
     };
     return item;
   };
@@ -31,15 +40,22 @@ export async function importFiles(args: { db: PgDoc; dir: string }) {
   };
 
   let count = 0;
+  const errors: Array<{ path: string; error: Error }> = [];
   for (const path of paths) {
     const file = await fs.readJson(path);
     if (typeof file === 'object') {
       const items = toItems(file);
-      await db.putMany(items);
-      count += items.length;
+
+      try {
+        await db.putMany(items);
+        count += items.length;
+      } catch (error) {
+        errors.push({ path, error });
+      }
     }
   }
 
   // Finish up.
-  return { count };
+  const ok = errors.length === 0;
+  return { ok, count, errors };
 }

@@ -6,9 +6,10 @@
  */
 
 import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { take, share } from 'rxjs/operators';
 
 import { R, t, pg, defaultValue, time, value as valueUtil } from '../common';
+import { Pg } from './Pg';
 
 export type IPgDocArgs = {
   db: pg.PoolConfig;
@@ -23,7 +24,6 @@ export class PgDoc implements t.IDb {
   /**
    * [Static]
    */
-
   public static create(args: IPgDocArgs) {
     const db = new PgDoc(args);
     return db;
@@ -81,13 +81,14 @@ export class PgDoc implements t.IDb {
    */
   private constructor(args: IPgDocArgs) {
     this._args = args;
-    this.pool = new pg.Pool(args.db);
+    this.db = Pg.create({ db: args.db });
+    this.db.dispose$.pipe(take(1)).subscribe(() => this.dispose());
   }
 
   public dispose() {
+    this.db.dispose();
     this._dispose$.next();
     this._dispose$.complete();
-    this.pool.end();
   }
   public get isDisposed() {
     return this._dispose$.isStopped;
@@ -97,7 +98,7 @@ export class PgDoc implements t.IDb {
    * [Fields]
    */
   private readonly _args: IPgDocArgs;
-  private readonly pool: pg.Pool;
+  public readonly db: Pg;
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -120,8 +121,9 @@ export class PgDoc implements t.IDb {
       keys
         .map(key => PgDoc.parseKey(key))
         .map(async key => {
-          const sql = `SELECT * FROM "${key.table}" WHERE path = '${key.path}'`;
-          const res = await this.pool.query(sql);
+          const variables = [key.path];
+          const sql = `SELECT * FROM "${key.table}" WHERE path = $1`;
+          const res = await this.db.query(sql, variables);
           const { rows } = res;
           return { rows, path: key.toString() };
         }),
@@ -171,16 +173,18 @@ export class PgDoc implements t.IDb {
           const table = item.key.table;
           const path = item.key.path;
           const json = JSON.stringify(data);
-          return `
+          const variables = [path, json, createdAt, modifiedAt];
+          const sql = `
             INSERT INTO "${table}" ("path", "data", "createdAt", "modifiedAt")
-              VALUES ('${path}', '${json}', ${createdAt}, ${modifiedAt})
+              VALUES ($1, $2, $3, $4)
               ON CONFLICT (path)
               DO
                 UPDATE
                 SET "data" = EXCLUDED.data, "modifiedAt" = ${now};
           `;
+          return { sql, variables };
         })
-        .map(sql => this.pool.query(sql)),
+        .map(({ sql, variables }) => this.db.query(sql, variables)),
     );
     return this.getMany(items.map(item => item.key));
   }
@@ -199,7 +203,7 @@ export class PgDoc implements t.IDb {
         .map(key => PgDoc.parseKey(key))
         .map(async key => {
           const sql = `DELETE FROM "${key.table}" WHERE path = '${key.path}'`;
-          const res = await this.pool.query(sql);
+          const res = await this.db.query(sql);
           const { rows } = res;
           return { rows, path: key.toString() };
         }),
@@ -236,7 +240,7 @@ export class PgDoc implements t.IDb {
       sql = `${sql};`;
 
       // Query the database.
-      const res = await this.pool.query(sql);
+      const res = await this.db.query(sql);
       list = res.rows
         .filter(row => {
           // NB: This may be able to be done in a more advanced regex in SQL above.
@@ -300,7 +304,7 @@ export class PgDoc implements t.IDb {
   }
 
   private async ensureTable(table: string) {
-    await this.pool.query(`
+    await this.db.query(`
       CREATE TABLE IF NOT EXISTS "public"."${table}" (
         "id" serial,
         "path" text NOT NULL,
