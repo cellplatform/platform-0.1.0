@@ -1,10 +1,9 @@
 import { PgDoc } from '..';
-import { pg, time } from '../common';
+import { time } from '../common';
+import { Pg } from '../PgDoc';
 
 export { time };
 export { expect, expectError } from '@platform/test';
-import { Pg } from '../PgDoc';
-
 export const params = {
   user: 'dev',
   host: 'localhost',

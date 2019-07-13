@@ -44,6 +44,14 @@ export class Pg {
   public readonly dispose$ = this._dispose$.pipe(share());
 
   /**
+   * [Properties]
+   */
+  public get info() {
+    const { user, host, database } = this._args.db;
+    return { user, host, database };
+  }
+
+  /**
    * [Methods]
    */
   public query(query: string | pg.QueryConfig, values?: any[]): Promise<pg.QueryResult> {
@@ -53,5 +61,10 @@ export class Pg {
   public async dropTable(...tables: string[]) {
     const drop = (table: string) => this.pool.query(`DROP TABLE IF EXISTS "${table}"`);
     await Promise.all(tables.map(table => drop(table)));
+  }
+
+  public toString() {
+    const { host, database } = this._args.db;
+    return `[pg:${host}/${database}]`;
   }
 }
