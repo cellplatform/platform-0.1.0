@@ -1,37 +1,50 @@
 import { expect } from 'chai';
 import { fs, time } from '../common';
-import { FileDb } from '..';
+import { FileDb, FileDbSchema } from '..';
 import * as t from '../types';
 
 const dir = 'tmp/db';
-after(async () => fs.remove('tmp'));
+// after(async () => fs.remove('tmp'));
 
-const testDb = (args: { isMemoized?: boolean } = {}) => {
-  const { isMemoized } = args;
-  return FileDb.create({ dir, cache: isMemoized });
+const testDb = (args: { cache?: boolean; schema?: t.IFileDbSchema } = {}) => {
+  const { cache, schema } = args;
+  return FileDb.create({ dir, cache, schema });
 };
 
-describe('FileDb (file-system)', () => {
+describe('FileDb', () => {
   beforeEach(async () => fs.remove(dir));
-  afterEach(async () => fs.remove(dir));
+  // afterEach(async () => fs.remove(dir));
 
-  it('creates', () => {
-    const db = testDb();
-    expect(db.cache.isEnabled).to.eql(false);
-    expect(db.dir).to.eql(fs.resolve(dir));
-  });
+  describe('lifecycle', () => {
+    it('creates', () => {
+      const db = testDb();
+      expect(db.cache.isEnabled).to.eql(false);
+      expect(db.dir).to.eql(fs.resolve(dir));
+    });
 
-  it('dispose', () => {
-    const db = testDb();
-    let count = 0;
-    db.dispose$.subscribe(() => count++);
-    expect(db.isDisposed).to.eql(false);
+    it('has default schema', () => {
+      const db = testDb();
+      expect(db.schema).to.eql(FileDbSchema.DEFAULT);
+    });
 
-    db.dispose();
-    db.dispose();
+    it('has custom schema', () => {
+      const schema: t.IFileDbSchema = { paths: { cell: { file: 'sheet' } } };
+      const db = testDb({ schema });
+      expect(db.schema).to.eql(schema);
+    });
 
-    expect(db.isDisposed).to.eql(true);
-    expect(count).to.eql(1);
+    it('dispose', () => {
+      const db = testDb();
+      let count = 0;
+      db.dispose$.subscribe(() => count++);
+      expect(db.isDisposed).to.eql(false);
+
+      db.dispose();
+      db.dispose();
+
+      expect(db.isDisposed).to.eql(true);
+      expect(count).to.eql(1);
+    });
   });
 
   it('get/put', async () => {
@@ -45,12 +58,12 @@ describe('FileDb (file-system)', () => {
       expect(res.props.key).to.eql(key);
       expect(res.value).to.eql(value);
 
-      const getStatic = await FileDb.get(dir, key);
-      expect(getStatic.props.key).to.eql(key);
-      expect(getStatic.value).to.eql(value);
-      expect(getStatic.props.exists).to.eql(true);
+      // const getStatic = await FileDb.get(dir, key);
+      // expect(getStatic.props.key).to.eql(key);
+      // expect(getStatic.value).to.eql(value);
+      // expect(getStatic.props.exists).to.eql(true);
 
-      const getInstance = await FileDb.get(dir, key);
+      const getInstance = await db.get(key);
       expect(getInstance.props.key).to.eql(key);
       expect(getInstance.value).to.eql(value);
       expect(getInstance.props.exists).to.eql(true);
@@ -302,13 +315,13 @@ describe('FileDb (file-system)', () => {
   describe('caching (memoize)', () => {
     it('creates memoized', () => {
       const db1 = testDb({});
-      const db2 = testDb({ isMemoized: true });
+      const db2 = testDb({ cache: true });
       expect(db1.cache.isEnabled).to.eql(false);
       expect(db2.cache.isEnabled).to.eql(true);
     });
 
     it('puts value in cache on get', async () => {
-      const db = testDb({ isMemoized: true });
+      const db = testDb({ cache: true });
       expect(db.cache.values).to.eql({});
 
       await db.put('foo', 1);
@@ -319,7 +332,7 @@ describe('FileDb (file-system)', () => {
     });
 
     it('reads from cache value', async () => {
-      const db = testDb({ isMemoized: true });
+      const db = testDb({ cache: true });
       await db.put('foo', 1);
 
       const res1 = await db.getValue('foo');
@@ -332,7 +345,7 @@ describe('FileDb (file-system)', () => {
     });
 
     it('invalidates cache on put', async () => {
-      const db = testDb({ isMemoized: true });
+      const db = testDb({ cache: true });
 
       await db.put('foo', 1);
       await db.put('bar', 'hello');
@@ -348,7 +361,7 @@ describe('FileDb (file-system)', () => {
     });
 
     it('observable events (while caching)', async () => {
-      const db = testDb({ isMemoized: true });
+      const db = testDb({ cache: true });
       const events: t.DbEvent[] = [];
       db.events$.subscribe(e => events.push(e));
 
@@ -367,6 +380,50 @@ describe('FileDb (file-system)', () => {
 
       expect(events[4].type).to.eql('DOC/cache');
       expect(events[4].payload.action).to.eql('REMOVED');
+    });
+  });
+
+  describe('schema (key mapping to single file)', () => {
+    it('collapsed namespace to single file', async () => {
+      const schema: t.IFileDbSchema = {
+        paths: {
+          cell: { file: 'sheet' },
+          column: { file: 'meta' },
+          row: { file: 'meta' },
+        },
+      };
+
+      const db = testDb({ schema });
+      await db.put('foo', 123);
+
+      await db.putMany([
+        { key: 'cell/A1', value: 1 },
+        { key: 'cell/A2', value: 2 },
+        { key: 'cell/A3', value: 3 },
+        { key: 'cell/A3/meta', value: { info: 456 } },
+        { key: 'column/A', value: 120 },
+        { key: 'row/0', value: 50 },
+      ]);
+
+      const foo = await db.getValue('foo');
+      const A1 = await db.getValue('cell/A1');
+      const A2 = await db.getValue('cell/A2');
+      const A3 = await db.getValue('cell/A3');
+      const column = await db.getValue('column/A');
+      const row = await db.getValue('row/0');
+
+      expect(foo).to.eql(123);
+      expect(A1).to.eql(1);
+      expect(A2).to.eql(2);
+      expect(A3).to.eql(3);
+      expect(column).to.eql(120);
+      expect(row).to.eql(50);
+
+      const cells = await db.find('cell'); // NB: not found, because schema maps to different file.
+      const sheet = await db.find('sheet');
+
+      expect(cells.keys).to.eql([]);
+      expect(sheet.keys).to.eql(['cell/A1', 'cell/A2', 'cell/A3', 'cell/A3/meta']);
     });
   });
 });

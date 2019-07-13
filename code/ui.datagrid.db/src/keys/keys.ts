@@ -52,7 +52,7 @@ export class GridKeys {
   public toColumnKey(key: string) {
     return lastPart(key, '/').toUpperCase();
   }
-  public toRowKey(key: string) {
+  public toRowKey(key: string | number) {
     return lastPart(key, '/').toUpperCase();
   }
 }
@@ -60,7 +60,7 @@ export class GridKeys {
 /**
  * [Helpers]
  */
-function lastPart(text: string, delimiter: string) {
-  const parts = (text || '').split(delimiter);
+function lastPart(text: string | number, delimiter: string) {
+  const parts = (text || '').toString().split(delimiter);
   return parts[parts.length - 1];
 }

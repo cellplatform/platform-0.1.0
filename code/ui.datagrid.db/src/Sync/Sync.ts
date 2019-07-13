@@ -1,6 +1,5 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-
 import { t, R, value } from '../common';
 import { Keys } from '../keys';
 
@@ -12,31 +11,10 @@ export type ISyncArgs = {
 };
 
 type GridPart = 'CELLS' | 'COLUMNS' | 'ROWS';
-
 type IActivityFlags<F> = {
   currently(...part: F[]): boolean;
   add(part: F): void;
   remove(part: F): void;
-};
-
-const flags = <F>(): IActivityFlags<F> => {
-  let flags: F[] = [];
-  return {
-    currently(...input: F[]) {
-      return input.length === 0 && input.length > 0
-        ? true
-        : input.some(flag => flags.includes(flag));
-    },
-    add(flag: F) {
-      flags = [...flags, flag];
-    },
-    remove(flag: F) {
-      const index = flags.indexOf(flag);
-      if (index > -1) {
-        flags = [...flags.slice(0, index), ...flags.slice(index + 1)];
-      }
-    },
-  };
 };
 
 /**
@@ -95,7 +73,7 @@ export class Sync implements t.IDisposable {
     );
 
     /**
-     * Cell sync.
+     * `Cell Sync`
      */
     gridCellChanges$
       // Cells changed in Grid UI.
@@ -104,8 +82,8 @@ export class Sync implements t.IDisposable {
         e.changes.forEach(change => {
           this.fireSyncing({
             source: 'GRID',
-            kind: 'cell',
-            key: this.keys.db.toCellKey(change.cell),
+            kind: 'CELL',
+            key: this.keys.grid.toCellKey(change.cell.key),
             value: change.value.to,
           });
         });
@@ -120,7 +98,7 @@ export class Sync implements t.IDisposable {
       .subscribe(e => {
         this.fireSyncing({
           source: 'DB',
-          kind: 'cell',
+          kind: 'CELL',
           key: this.keys.grid.toCellKey(e.key),
           value: e.value,
         });
@@ -130,13 +108,13 @@ export class Sync implements t.IDisposable {
       // Update DB when Grid UI changes a cell.
       .pipe(
         filter(e => e.source === 'GRID'),
-        filter(e => e.kind === 'cell'),
+        filter(e => e.kind === 'CELL'),
       )
       .subscribe(async e => {
         const key = this.keys.db.toCellKey(e.key);
-        const existing = (await db.get(key)).value;
+        const existing = await db.getValue(key);
         if (!R.equals(existing, e.value)) {
-          await db.put(e.key, e.value as t.Json);
+          await db.put(key, e.value as t.Json);
         }
       });
 
@@ -144,7 +122,7 @@ export class Sync implements t.IDisposable {
       // Update Grid UI when the DB changes a cell.
       .pipe(
         filter(e => e.source === 'DB'),
-        filter(e => e.kind === 'cell'),
+        filter(e => e.kind === 'CELL'),
       )
       .subscribe(async e => {
         const cell = grid.cell(this.keys.grid.toCellKey(e.key));
@@ -154,7 +132,7 @@ export class Sync implements t.IDisposable {
       });
 
     /**
-     * Column sync
+     * `Column Sync`
      */
     gridColumnsChanges$
       // Columns changed in Grid UI.
@@ -163,8 +141,8 @@ export class Sync implements t.IDisposable {
         e.changes.forEach(change => {
           this.fireSyncing({
             source: 'GRID',
-            kind: 'column',
-            key: this.keys.db.toColumnKey(change.column),
+            kind: 'COLUMN',
+            key: this.keys.grid.toColumnKey(change.column),
             value: change.to,
           });
         });
@@ -179,7 +157,7 @@ export class Sync implements t.IDisposable {
       .subscribe(e => {
         this.fireSyncing({
           source: 'DB',
-          kind: 'column',
+          kind: 'COLUMN',
           key: this.keys.grid.toColumnKey(e.key),
           value: e.value as t.IGridColumn,
         });
@@ -189,11 +167,11 @@ export class Sync implements t.IDisposable {
       // Update DB when Grid UI changes a column.
       .pipe(
         filter(e => e.source === 'GRID'),
-        filter(e => e.kind === 'column'),
+        filter(e => e.kind === 'COLUMN'),
       )
       .subscribe(async e => {
         const key = this.keys.db.toColumnKey(e.key);
-        const existing = (await db.get(key)).value;
+        const existing = await db.getValue(key);
         if (!R.equals(existing, e.value)) {
           await db.put(key, e.value as t.Json);
         }
@@ -203,7 +181,7 @@ export class Sync implements t.IDisposable {
       // Update Grid UI when the DB changes a column.
       .pipe(
         filter(e => e.source === 'DB'),
-        filter(e => e.kind === 'column'),
+        filter(e => e.kind === 'COLUMN'),
       )
       .subscribe(async e => {
         const key = this.keys.grid.toColumnKey(e.key);
@@ -215,7 +193,7 @@ export class Sync implements t.IDisposable {
       });
 
     /**
-     * Row change.
+     * `Row Sync`
      */
     gridRowsChanges$
       // Rows changed in Grid UI.
@@ -224,8 +202,8 @@ export class Sync implements t.IDisposable {
         e.changes.forEach(change => {
           this.fireSyncing({
             source: 'GRID',
-            kind: 'row',
-            key: this.keys.db.toRowKey(change.row),
+            kind: 'ROW',
+            key: this.keys.grid.toRowKey(change.row),
             value: change.to,
           });
         });
@@ -240,7 +218,7 @@ export class Sync implements t.IDisposable {
       .subscribe(e => {
         this.fireSyncing({
           source: 'DB',
-          kind: 'row',
+          kind: 'ROW',
           key: this.keys.grid.toRowKey(e.key),
           value: e.value as t.IGridRow,
         });
@@ -250,11 +228,11 @@ export class Sync implements t.IDisposable {
       // Update DB when Grid UI changes a row.
       .pipe(
         filter(e => e.source === 'GRID'),
-        filter(e => e.kind === 'row'),
+        filter(e => e.kind === 'ROW'),
       )
       .subscribe(async e => {
         const key = this.keys.db.toRowKey(e.key);
-        const existing = (await db.get(key)).value;
+        const existing = await db.getValue(key);
         if (!R.equals(existing, e.value)) {
           await db.put(key, e.value as t.Json);
         }
@@ -264,7 +242,7 @@ export class Sync implements t.IDisposable {
       // Update Grid UI when the DB changes a row.
       .pipe(
         filter(e => e.source === 'DB'),
-        filter(e => e.kind === 'row'),
+        filter(e => e.kind === 'ROW'),
       )
       .subscribe(async e => {
         const key = this.keys.grid.toRowKey(e.key);
@@ -393,3 +371,27 @@ export class Sync implements t.IDisposable {
     });
   }
 }
+
+/**
+ * [Helpers]
+ */
+
+const flags = <F>(): IActivityFlags<F> => {
+  let flags: F[] = [];
+  return {
+    currently(...input: F[]) {
+      return input.length === 0 && input.length > 0
+        ? true
+        : input.some(flag => flags.includes(flag));
+    },
+    add(flag: F) {
+      flags = [...flags, flag];
+    },
+    remove(flag: F) {
+      const index = flags.indexOf(flag);
+      if (index > -1) {
+        flags = [...flags.slice(0, index), ...flags.slice(index + 1)];
+      }
+    },
+  };
+};
