@@ -27,14 +27,14 @@ describe('PgDoc', () => {
         expect(res.path).to.eql(expectPath);
       };
 
-      test('FOO/foo/bar', 'FOO', '/foo/bar');
-      test('  FOO/foo/bar  ', 'FOO', '/foo/bar');
-      test('/FOO/foo/bar', 'FOO', '/foo/bar');
-      test('  /FOO/foo/bar', 'FOO', '/foo/bar');
-      test(' ////FOO/foo/bar', 'FOO', '/foo/bar');
-      test('FOO/foo', 'FOO', '/foo');
-      test('FOO/foo/', 'FOO', '/foo');
-      test('FOO/foo///', 'FOO', '/foo');
+      test('FOO/foo/bar', 'FOO', 'foo/bar');
+      test('  FOO/foo/bar  ', 'FOO', 'foo/bar');
+      test('/FOO/foo/bar', 'FOO', 'foo/bar');
+      test('  /FOO/foo/bar', 'FOO', 'foo/bar');
+      test(' ////FOO/foo/bar', 'FOO', 'foo/bar');
+      test('FOO/foo', 'FOO', 'foo');
+      test('FOO/foo/', 'FOO', 'foo');
+      test('FOO/foo///', 'FOO', 'foo');
     });
 
     it('throws', () => {
@@ -48,7 +48,7 @@ describe('PgDoc', () => {
       fail('/TABLE');
       fail('/TABLE/');
       fail('TABLE/');
-      fail('TABLE//foo');
+      fail('TABLE///foo');
       fail('TABLE/foo//bar');
     });
   });

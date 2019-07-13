@@ -6,9 +6,10 @@
  */
 
 import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { take, share } from 'rxjs/operators';
 
 import { R, t, pg, defaultValue, time, value as valueUtil } from '../common';
+import { Pg } from './Pg';
 
 export type IPgDocArgs = {
   db: pg.PoolConfig;
@@ -33,7 +34,7 @@ export class PgDoc implements t.IDb {
     const index = key.indexOf('/');
     const table = index > -1 ? key.substring(0, index).trim() : key;
     const path = key
-      .substr(table.length)
+      .substr(table.length + 1)
       .replace(/\/*$/, '')
       .trim();
 
@@ -60,6 +61,7 @@ export class PgDoc implements t.IDb {
     return {
       table,
       path,
+      value: key,
       toString: () => key,
     };
   }
@@ -79,13 +81,14 @@ export class PgDoc implements t.IDb {
    */
   private constructor(args: IPgDocArgs) {
     this._args = args;
-    this.pool = new pg.Pool(args.db);
+    this.db = Pg.create({ db: args.db });
+    this.db.dispose$.pipe(take(1)).subscribe(() => this.dispose());
   }
 
   public dispose() {
+    this.db.dispose();
     this._dispose$.next();
     this._dispose$.complete();
-    this.pool.end();
   }
   public get isDisposed() {
     return this._dispose$.isStopped;
@@ -95,7 +98,7 @@ export class PgDoc implements t.IDb {
    * [Fields]
    */
   private readonly _args: IPgDocArgs;
-  private readonly pool: pg.Pool;
+  public readonly db: Pg;
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -118,8 +121,9 @@ export class PgDoc implements t.IDb {
       keys
         .map(key => PgDoc.parseKey(key))
         .map(async key => {
-          const sql = `SELECT * FROM "${key.table}" WHERE path = '${key.path}'`;
-          const res = await this.pool.query(sql);
+          const variables = [key.path];
+          const sql = `SELECT * FROM "${key.table}" WHERE path = $1`;
+          const res = await this.db.query(sql, variables);
           const { rows } = res;
           return { rows, path: key.toString() };
         }),
@@ -147,29 +151,40 @@ export class PgDoc implements t.IDb {
     return (res ? res.value : undefined) as T;
   }
 
-  public async put(key: string, value?: t.Json): Promise<t.IDbValue> {
+  public async put(key: string, value?: t.Json, options?: t.IDbPutOptions): Promise<t.IDbValue> {
     this.throwIfDisposed('put');
-    return (await this.putMany([{ key, value }]))[0];
+    return (await this.putMany([{ key, value, ...options }]))[0];
   }
-  public async putMany(items: t.IDbKeyValue[]): Promise<t.IDbValue[]> {
+  public async putMany(items: t.IDbPutItem[]): Promise<t.IDbValue[]> {
     this.throwIfDisposed('putMany');
     await this.ensureTables(items.map(item => item.key));
     const now = time.now.timestamp;
     await Promise.all(
       items
-        .map(item => ({ key: PgDoc.parseKey(item.key), value: item.value }))
+        .map(item => ({
+          key: PgDoc.parseKey(item.key),
+          value: item.value,
+          createdAt: defaultValue(item.createdAt, now),
+          modifiedAt: defaultValue(item.modifiedAt, now),
+        }))
         .map(item => {
           const data = { data: item.value };
-          return `
-            INSERT INTO "${item.key.table}" ("path", "data", "createdAt", "modifiedAt")
-              VALUES ('${item.key.path}', '${JSON.stringify(data)}', ${now}, ${now})
+          const { createdAt, modifiedAt } = item;
+          const table = item.key.table;
+          const path = item.key.path;
+          const json = JSON.stringify(data);
+          const variables = [path, json, createdAt, modifiedAt];
+          const sql = `
+            INSERT INTO "${table}" ("path", "data", "createdAt", "modifiedAt")
+              VALUES ($1, $2, $3, $4)
               ON CONFLICT (path)
               DO
                 UPDATE
                 SET "data" = EXCLUDED.data, "modifiedAt" = ${now};
           `;
+          return { sql, variables };
         })
-        .map(sql => this.pool.query(sql)),
+        .map(({ sql, variables }) => this.db.query(sql, variables)),
     );
     return this.getMany(items.map(item => item.key));
   }
@@ -188,7 +203,7 @@ export class PgDoc implements t.IDb {
         .map(key => PgDoc.parseKey(key))
         .map(async key => {
           const sql = `DELETE FROM "${key.table}" WHERE path = '${key.path}'`;
-          const res = await this.pool.query(sql);
+          const res = await this.db.query(sql);
           const { rows } = res;
           return { rows, path: key.toString() };
         }),
@@ -205,46 +220,55 @@ export class PgDoc implements t.IDb {
 
   public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
     this.throwIfDisposed('find');
-    const pattern = (typeof query === 'object' ? query.pattern : query) || '';
-    const deep = typeof query === 'object' ? defaultValue(query.deep, true) : true;
-    if (!pattern) {
-      throw new Error(`A query pattern must contain at least a root TABLE name.`);
-    }
 
-    // Prepare search SQL statement.
-    const key = PgDoc.parseKey(pattern, { requirePath: false });
-    let sql = `SELECT * FROM "${key.table}"`;
-    sql = key.path ? `${sql} WHERE path ~ '^${key.path}'` : sql;
-    sql = `${sql};`;
-
-    // Query the database.
-    const res = await this.pool.query(sql);
-    const list = res.rows
-      .filter(row => {
-        // NB: This may be able to be done in a more advanced regex in SQL above.
-        return deep
-          ? true // Deep: All child paths accepted.
-          : !row.path.substring(key.path.length + 1).includes('/'); // Not deep: ensure this is not deeper than the given path.
-      })
-      .map(row => {
-        const value = row && typeof row.data === 'object' ? (row.data as any).data : undefined;
-        const { createdAt, modifiedAt } = PgDoc.toTimestamps(row);
-        const res: t.IDbValue = {
-          value,
-          props: {
-            key: PgDoc.join(key.table, row.path),
-            exists: Boolean(value),
-            createdAt,
-            modifiedAt,
-          },
-        };
-        return res;
-      });
-
-    // Return data structure.
     let keys: string[] | undefined;
     let map: t.IDbFindResult['map'] | undefined;
-    return {
+    let error: Error | undefined;
+    let list: t.IDbValue[] = [];
+
+    try {
+      const pattern = (typeof query === 'object' ? query.pattern : query) || '';
+      const deep = typeof query === 'object' ? defaultValue(query.deep, true) : true;
+      if (!pattern) {
+        throw new Error(`A query pattern must contain at least a root TABLE name.`);
+      }
+
+      // Prepare search SQL statement.
+      const key = PgDoc.parseKey(pattern, { requirePath: false });
+      let sql = `SELECT * FROM "${key.table}"`;
+      sql = key.path ? `${sql} WHERE path ~ '^${key.path}'` : sql;
+      sql = `${sql};`;
+
+      // Query the database.
+      const res = await this.db.query(sql);
+      list = res.rows
+        .filter(row => {
+          // NB: This may be able to be done in a more advanced regex in SQL above.
+          return deep
+            ? true // Deep: All child paths accepted.
+            : !row.path.substring(key.path.length + 1).includes('/'); // Not deep: ensure this is not deeper than the given path.
+        })
+        .map(row => {
+          const value = row && typeof row.data === 'object' ? (row.data as any).data : undefined;
+          const { createdAt, modifiedAt } = PgDoc.toTimestamps(row);
+          const res: t.IDbValue = {
+            value,
+            props: {
+              key: PgDoc.join(key.table, row.path),
+              exists: Boolean(value),
+              createdAt,
+              modifiedAt,
+            },
+          };
+          return res;
+        });
+    } catch (err) {
+      error = err;
+    }
+
+    // Return data structure.
+    const result: t.IDbFindResult = {
+      length: list.length,
       list,
       get keys() {
         if (!keys) {
@@ -258,7 +282,11 @@ export class PgDoc implements t.IDb {
         }
         return map;
       },
+      error,
     };
+
+    // Finish up.
+    return result;
   }
 
   public toString() {
@@ -276,7 +304,7 @@ export class PgDoc implements t.IDb {
   }
 
   private async ensureTable(table: string) {
-    await this.pool.query(`
+    await this.db.query(`
       CREATE TABLE IF NOT EXISTS "public"."${table}" (
         "id" serial,
         "path" text NOT NULL,

@@ -19,8 +19,8 @@ export type IDbRead = {
 };
 
 export type IDbWrite = {
-  put(key: string, value?: Json): Promise<IDbValue>;
-  putMany(items: IDbKeyValue[]): Promise<IDbValue[]>;
+  put(key: string, value?: Json, options?: IDbPutOptions): Promise<IDbValue>;
+  putMany(items: IDbPutItem[]): Promise<IDbValue[]>;
   delete(key: string): Promise<IDbValue>;
   deleteMany(keys: string[]): Promise<IDbValue[]>;
 };
@@ -46,6 +46,12 @@ export type IDbKeyValue = {
   value?: Json;
 };
 
+export type IDbPutItem = IDbKeyValue & IDbPutOptions;
+export type IDbPutOptions = {
+  createdAt?: number;
+  modifiedAt?: number;
+};
+
 /**
  * Find
  */
@@ -55,9 +61,11 @@ export type IDbQuery = {
 };
 
 export type IDbFindResult = {
+  length: number;
   keys: string[];
   list: IDbValue[];
   map: { [key: string]: Json | undefined };
+  error?: Error;
 };
 
 /**

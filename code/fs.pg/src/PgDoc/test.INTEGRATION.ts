@@ -1,24 +1,18 @@
-import { expect, expectError } from '@platform/test';
 import { PgDoc } from '.';
-import { pg, time } from '../common';
+import { time } from '../common';
+import test, { expect } from '../test';
 
-const params = { user: 'dev', host: 'localhost', database: 'test' };
-const tables = ['FOO', 'BAR', 'BOO'];
-
-const testDb = () => PgDoc.create({ db: params });
 const dropTables = async () => {
-  const client = new pg.Pool(params);
-  const drop = (table: string) => client.query(`DROP TABLE IF EXISTS "${table}"`);
-  await Promise.all(tables.map(table => drop(table)));
-  client.end();
+  const tables = ['FOO', 'BAR', 'BOO'];
+  await test.dropTables(tables);
 };
 
 describe('PgDoc (integration)', () => {
-  let db: PgDoc = testDb();
+  let db: PgDoc = test.db();
 
   beforeEach(async () => {
     await dropTables();
-    db = testDb();
+    db = test.db();
   });
   afterEach(() => db.dispose());
 
@@ -29,6 +23,14 @@ describe('PgDoc (integration)', () => {
     expect(res.value).to.eql(undefined);
     expect(res.props.exists).to.eql(false);
     expect(await db.getValue(key)).to.eql(undefined);
+  });
+
+  it("put (escaped ' character)", async () => {
+    const key = 'FOO/char';
+    const msg = `'"?<>\`~:\\/!@#$%^&*()_-+=`;
+    await db.put(key, { msg });
+    const res = await db.getValue<{ msg: string }>(key);
+    expect(res.msg).to.eql(msg);
   });
 
   it('put => get (props)', async () => {
@@ -79,6 +81,29 @@ describe('PgDoc (integration)', () => {
     const res4 = await db.put(key, 456);
     expect(res4.props.createdAt).to.eql(res2.props.createdAt);
     expect(res4.props.modifiedAt).to.be.within(now + 90, now + 120);
+  });
+
+  it('put (custom timestamps)', async () => {
+    const key = 'FOO/bar';
+
+    const res1 = await db.put(key, 'hello', { createdAt: 123, modifiedAt: 456 });
+    expect(res1.props.createdAt).to.eql(123);
+    expect(res1.props.modifiedAt).to.eql(456);
+
+    const res2 = await db.get(key);
+    expect(res2.props.createdAt).to.eql(123);
+    expect(res2.props.modifiedAt).to.eql(456);
+  });
+
+  it('putMany (custom timestamps)', async () => {
+    const key = 'FOO/bar';
+    const res1 = await db.putMany([{ key, value: 'hello', createdAt: 123, modifiedAt: 456 }]);
+    expect(res1[0].props.createdAt).to.eql(123);
+    expect(res1[0].props.modifiedAt).to.eql(456);
+
+    const res2 = await db.get(key);
+    expect(res2.props.createdAt).to.eql(123);
+    expect(res2.props.modifiedAt).to.eql(456);
   });
 
   it('put => getValue (types)', async () => {
@@ -165,7 +190,7 @@ describe('PgDoc (integration)', () => {
 
   describe('find', () => {
     const prepare = async () => {
-      const db = testDb();
+      const db = test.db();
       await db.put('FOO/cell/A1', 1);
       await db.put('FOO/cell/A2', 2);
       await db.put('FOO/cell/A2/meta', { foo: 123 });
@@ -177,13 +202,17 @@ describe('PgDoc (integration)', () => {
 
     it('no pattern (throws)', async () => {
       const db = await prepare();
-      expectError(() => db.find({}));
+      const res = await db.find({});
+      expect(res.length).to.eql(0);
+      expect(res.error && res.error.message).to.include('must contain at least a root TABLE name');
     });
 
     it('no path (deep, default)', async () => {
       const now = time.now.timestamp;
       const db = await prepare();
       const res = await db.find({ pattern: 'FOO' });
+      expect(res.error).to.eql(undefined);
+      expect(res.length).to.eql(4);
       expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta', 'FOO/bar']);
       expect(res.map['FOO/bar']).to.eql('hello');
       expect(res.map['FOO/cell/A1']).to.eql(1);
@@ -191,13 +220,15 @@ describe('PgDoc (integration)', () => {
       expect(res.map['FOO/cell/A2/meta']).to.eql({ foo: 123 });
 
       const A1 = res.list[0];
-      expect(A1.props.createdAt).to.be.within(now - 5, now + 20);
-      expect(A1.props.modifiedAt).to.be.within(now - 5, now + 20);
+      expect(A1.props.createdAt).to.be.within(now - 5, now + 30);
+      expect(A1.props.modifiedAt).to.be.within(now - 5, now + 30);
     });
 
     it('path (deep, default)', async () => {
       const db = await prepare();
       const res = await db.find({ pattern: 'FOO/cell' });
+      expect(res.error).to.eql(undefined);
+      expect(res.length).to.eql(3);
       expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta']);
       expect(res.map['FOO/cell/A1']).to.eql(1);
       expect(res.map['FOO/cell/A2']).to.eql(2);
@@ -207,26 +238,43 @@ describe('PgDoc (integration)', () => {
     it('path (parameter as string, deep/default)', async () => {
       const db = await prepare();
       const res = await db.find('FOO/cell');
+      expect(res.error).to.eql(undefined);
+      expect(res.length).to.eql(3);
       expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta']);
       expect(res.map['FOO/cell/A1']).to.eql(1);
       expect(res.map['FOO/cell/A2']).to.eql(2);
       expect(res.map['FOO/cell/A2/meta']).to.eql({ foo: 123 });
+      expect(res.error).to.eql(undefined);
     });
 
     it('path (not deep)', async () => {
       const db = await prepare();
       const res = await db.find({ pattern: 'FOO/cell', deep: false });
+      expect(res.error).to.eql(undefined);
+      expect(res.length).to.eql(2);
       expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2']);
       expect(res.map['FOO/cell/A1']).to.eql(1);
       expect(res.map['FOO/cell/A2']).to.eql(2);
+      expect(res.error).to.eql(undefined);
     });
 
     it('no match', async () => {
       const db = await prepare();
       const res = await db.find({ pattern: 'FOO/yo' });
+      expect(res.error).to.eql(undefined);
+      expect(res.length).to.eql(0);
       expect(res.keys).to.eql([]);
       expect(res.list).to.eql([]);
       expect(res.map).to.eql({});
+      expect(res.error).to.eql(undefined);
+    });
+
+    it('no table (error)', async () => {
+      await dropTables();
+      const res = await db.find({ pattern: 'FOO/yo' });
+      const error = res.error;
+      expect(res.length).to.eql(0);
+      expect(error && error.message).to.includes('relation "FOO" does not exist');
     });
   });
 });
