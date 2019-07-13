@@ -117,6 +117,7 @@ export class FileDb implements t.IDb {
     const exists = await fs.pathExists(path);
     const props: t.IDbValueProps = { key, exists, createdAt: -1, modifiedAt: -1 };
     const NO_EXIST = { value: undefined, props: { ...props, exists: false } };
+
     if (!exists) {
       return NO_EXIST;
     }
