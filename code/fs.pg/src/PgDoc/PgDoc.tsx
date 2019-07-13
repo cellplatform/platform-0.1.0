@@ -33,7 +33,7 @@ export class PgDoc implements t.IDb {
     const index = key.indexOf('/');
     const table = index > -1 ? key.substring(0, index).trim() : key;
     const path = key
-      .substr(table.length)
+      .substr(table.length + 1)
       .replace(/\/*$/, '')
       .trim();
 
@@ -60,6 +60,7 @@ export class PgDoc implements t.IDb {
     return {
       table,
       path,
+      value: key,
       toString: () => key,
     };
   }

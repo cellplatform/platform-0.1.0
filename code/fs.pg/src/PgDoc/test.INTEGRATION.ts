@@ -1,24 +1,18 @@
-import { expect, expectError } from '@platform/test';
 import { PgDoc } from '.';
-import { pg, time } from '../common';
+import { time } from '../common';
+import test, { expect, expectError } from '../test';
 
-const params = { user: 'dev', host: 'localhost', database: 'test' };
-const tables = ['FOO', 'BAR', 'BOO'];
-
-const testDb = () => PgDoc.create({ db: params });
 const dropTables = async () => {
-  const client = new pg.Pool(params);
-  const drop = (table: string) => client.query(`DROP TABLE IF EXISTS "${table}"`);
-  await Promise.all(tables.map(table => drop(table)));
-  client.end();
+  const tables = ['FOO', 'BAR', 'BOO'];
+  await test.dropTables(tables);
 };
 
 describe('PgDoc (integration)', () => {
-  let db: PgDoc = testDb();
+  let db: PgDoc = test.db();
 
   beforeEach(async () => {
     await dropTables();
-    db = testDb();
+    db = test.db();
   });
   afterEach(() => db.dispose());
 
@@ -165,7 +159,7 @@ describe('PgDoc (integration)', () => {
 
   describe('find', () => {
     const prepare = async () => {
-      const db = testDb();
+      const db = test.db();
       await db.put('FOO/cell/A1', 1);
       await db.put('FOO/cell/A2', 2);
       await db.put('FOO/cell/A2/meta', { foo: 123 });

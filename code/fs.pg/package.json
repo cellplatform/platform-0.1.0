@@ -18,12 +18,14 @@
     "tmp": "ts-node -T scripts/tmp"
   },
   "dependencies": {
+    "@platform/fs": "^0.1.6",
     "@platform/fs.db.types": "0.0.5",
     "@platform/libs": "0.0.12",
     "@platform/util.value": "0.4.4",
     "pg": "7.11.0"
   },
   "devDependencies": {
+    "@platform/fs.db": "^1.2.10",
     "@platform/test": "0.0.50",
     "@platform/ts": "3.4.17",
     "@types/pg": "7.4.14"
@@ -31,6 +33,6 @@
   "files": [
     "lib"
   ],
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": true
 }
