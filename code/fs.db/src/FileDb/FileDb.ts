@@ -148,7 +148,9 @@ export class FileDb implements t.IDb {
   /**
    * [Put]
    */
-  public async put(key: string, value?: t.Json): Promise<t.IDbValue> {
+  public async put(key: string, value?: t.Json, options?: t.IDbPutOptions): Promise<t.IDbValue> {
+    const { createdAt, modifiedAt } = (options || {}) as t.IDbPutOptions;
+
     if (typeof value === 'object' && value !== null) {
       value = timestamp.increment(value);
     }
@@ -158,6 +160,8 @@ export class FileDb implements t.IDb {
       dir: this.dir,
       key,
       value,
+      createdAt,
+      modifiedAt,
     });
     this.fire({
       type: 'DOC/change',
@@ -175,6 +179,8 @@ export class FileDb implements t.IDb {
     dir: string;
     key: string;
     value?: t.Json;
+    createdAt?: number;
+    modifiedAt?: number;
   }): Promise<t.IDbValue> {
     const { schema, dir, key, value } = args;
     const path = FileDbSchema.path({ schema, dir, key });
@@ -184,9 +190,12 @@ export class FileDb implements t.IDb {
     const current = await FileDb.get({ schema, dir, key });
     let json = timestamp.increment({
       data: value,
-      createdAt: current.props.createdAt,
-      modifiedAt: current.props.modifiedAt,
+      createdAt: defaultValue(args.createdAt, current.props.createdAt),
+      modifiedAt: defaultValue(args.modifiedAt, current.props.modifiedAt),
     });
+
+    json.createdAt = args.createdAt ? args.createdAt : json.createdAt;
+    json.modifiedAt = args.modifiedAt ? args.modifiedAt : json.modifiedAt;
 
     // If the key is mapped to a different file (via the schema)
     // place it as the sub-field on the object.
@@ -206,14 +215,14 @@ export class FileDb implements t.IDb {
     return { value, props };
   }
 
-  public async putMany(items: t.IDbKeyValue[]): Promise<t.IDbValue[]> {
+  public async putMany(items: t.IDbPutItem[]): Promise<t.IDbValue[]> {
     let results: t.IDbValue[] = [];
     for (const item of items) {
       // NB:  This is done in serial in case there are cells that map into the
       //      same file (via the schema) to prevent overriding while another key/file
       //      is in the process of being written.
-      const { key, value } = item;
-      results = [...results, await this.put(key, value)];
+      const { key, value, createdAt, modifiedAt } = item;
+      results = [...results, await this.put(key, value, { createdAt, modifiedAt })];
     }
     return results;
   }
@@ -258,32 +267,41 @@ export class FileDb implements t.IDb {
     const pattern = (typeof query === 'object' ? query.pattern : query) || '';
     const deep = typeof query === 'object' ? defaultValue(query.deep, true) : true;
     let paths: string[] = [];
+    let obj: t.IDbFindResult['map'] | undefined;
+    let list: t.IDbValue[] = [];
+    let keys: string[] = [];
+    let error: Error | undefined;
 
-    if (pattern) {
-      const dir = fs.join(this.dir, pattern);
-      const file = `${dir}.json`;
-      if (await fs.is.file(file)) {
-        paths = [file];
-      } else {
-        if (await fs.is.dir(dir)) {
-          const glob = deep ? fs.join(dir, '**') : fs.join(dir, '*');
-          paths = await fs.glob.find(glob);
+    try {
+      if (pattern) {
+        const dir = fs.join(this.dir, pattern);
+        const file = `${dir}.json`;
+        if (await fs.is.file(file)) {
+          paths = [file];
+        } else {
+          if (await fs.is.dir(dir)) {
+            const glob = deep ? fs.join(dir, '**') : fs.join(dir, '*');
+            paths = await fs.glob.find(glob);
+          }
         }
+      } else {
+        paths = await fs.glob.find(fs.join(this.dir, '**'));
       }
-    } else {
-      paths = await fs.glob.find(fs.join(this.dir, '**'));
+
+      paths = paths.filter(path => path.endsWith('.json'));
+      const files = await Promise.all(paths.map(path => fs.readJson(path)));
+      keys = files.reduce((acc, next) => {
+        const keys = Object.keys(next);
+        return [...acc, ...keys];
+      }, []);
+
+      list = await this.getMany(keys);
+    } catch (err) {
+      error = err;
     }
 
-    paths = paths.filter(path => path.endsWith('.json'));
-    const files = await Promise.all(paths.map(path => fs.readJson(path)));
-    const keys = files.reduce((acc, next) => {
-      const keys = Object.keys(next);
-      return [...acc, ...keys];
-    }, []);
-
-    const list = await this.getMany(keys);
-    let obj: t.IDbFindResult['map'] | undefined;
-    return {
+    const result: t.IDbFindResult = {
+      length: keys.length,
       keys,
       list,
       get map() {
@@ -295,7 +313,10 @@ export class FileDb implements t.IDb {
         }
         return obj;
       },
+      error,
     };
+
+    return result;
   }
 
   /**

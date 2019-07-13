@@ -14,6 +14,7 @@ export async function exportFiles(args: { db: PgDoc; dir: string; query: string 
   const data = await db.find(args.query);
 
   // Export each item.
+  let total = 0;
   await Promise.all(
     data.list.map(async ({ value, props }) => {
       const key = PgDoc.parseKey(props.key);
@@ -28,6 +29,10 @@ export async function exportFiles(args: { db: PgDoc; dir: string; query: string 
       };
       await fs.ensureDir(fs.dirname(file));
       await fs.writeFile(file, JSON.stringify(json, null, '  '));
+      total++;
     }),
   );
+
+  // Finish up.
+  return { total };
 }
