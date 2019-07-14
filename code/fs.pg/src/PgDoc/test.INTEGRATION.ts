@@ -207,10 +207,10 @@ describe('PgDoc (integration)', () => {
       expect(res.error && res.error.message).to.include('must contain at least a root TABLE name');
     });
 
-    it('no path (deep, default)', async () => {
+    it('no path (deep)', async () => {
       const now = time.now.timestamp;
       const db = await prepare();
-      const res = await db.find({ pattern: 'FOO' });
+      const res = await db.find({ query: 'FOO/**' });
       expect(res.error).to.eql(undefined);
       expect(res.length).to.eql(4);
       expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta', 'FOO/bar']);
@@ -224,9 +224,9 @@ describe('PgDoc (integration)', () => {
       expect(A1.props.modifiedAt).to.be.within(now - 5, now + 30);
     });
 
-    it('path (deep, default)', async () => {
+    it('path (deep)', async () => {
       const db = await prepare();
-      const res = await db.find({ pattern: 'FOO/cell' });
+      const res = await db.find({ query: 'FOO/cell/**' });
       expect(res.error).to.eql(undefined);
       expect(res.length).to.eql(3);
       expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta']);
@@ -237,7 +237,7 @@ describe('PgDoc (integration)', () => {
 
     it('path (parameter as string, deep/default)', async () => {
       const db = await prepare();
-      const res = await db.find('FOO/cell');
+      const res = await db.find('FOO/cell/**');
       expect(res.error).to.eql(undefined);
       expect(res.length).to.eql(3);
       expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta']);
@@ -247,9 +247,9 @@ describe('PgDoc (integration)', () => {
       expect(res.error).to.eql(undefined);
     });
 
-    it('path (not deep)', async () => {
+    it('path (shallow)', async () => {
       const db = await prepare();
-      const res = await db.find({ pattern: 'FOO/cell', deep: false });
+      const res = await db.find({ query: 'FOO/cell' });
       expect(res.error).to.eql(undefined);
       expect(res.length).to.eql(2);
       expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2']);
@@ -260,7 +260,7 @@ describe('PgDoc (integration)', () => {
 
     it('no match', async () => {
       const db = await prepare();
-      const res = await db.find({ pattern: 'FOO/yo' });
+      const res = await db.find({ query: 'FOO/yo' });
       expect(res.error).to.eql(undefined);
       expect(res.length).to.eql(0);
       expect(res.keys).to.eql([]);
@@ -271,7 +271,7 @@ describe('PgDoc (integration)', () => {
 
     it('no table (error)', async () => {
       await dropTables();
-      const res = await db.find({ pattern: 'FOO/yo' });
+      const res = await db.find({ query: 'FOO/yo' });
       const error = res.error;
       expect(res.length).to.eql(0);
       expect(error && error.message).to.includes('relation "FOO" does not exist');
