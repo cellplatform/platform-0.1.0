@@ -184,7 +184,7 @@ export class DocDb {
 
     let keys: string[] | undefined;
     let map: t.IDbFindResult['map'] | undefined;
-    let error: Error | undefined;
+    const error: Error | undefined = undefined;
     const list: t.IDbValue[] = [];
 
     // try {
