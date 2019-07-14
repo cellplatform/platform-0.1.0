@@ -1,6 +1,8 @@
 import { Json, IDisposable } from '@platform/types';
 import { Observable } from 'rxjs';
 
+export * from './DbUri/types';
+
 export type IDbTimestamps = {
   createdAt: number;
   modifiedAt: number;
