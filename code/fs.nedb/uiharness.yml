@@ -1,0 +1,22 @@
+name: fs.nedb
+
+electron:
+  port: 8888
+  entry:
+    main: test/main.ts
+    renderer: 
+      default: test/renderer.tsx
+      sample: 
+        path: test/renderer.tsx # Example secondary entry. Point this to another entry file.
+        title: __NAME__ (v${version})
+
+
+web:
+  port: 1234
+  entry: test/web.tsx
+
+
+sourcemaps:
+  strip:
+    - node_modules/rxjs
+
