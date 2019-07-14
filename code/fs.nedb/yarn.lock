@@ -1043,10 +1043,10 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db.types@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.0.6.tgz#8dd29b5ce119710cf5a4eef0464b5a3f4807e8a2"
-  integrity sha512-QNoogmQyn73PklvaiGKeSFtm/h9zgW+lGU3mpUSxPlE3p4x+NaTlT+iuYjkPJsR9hnP7ktFg0KWfBk5idN1JfQ==
+"@platform/fs.db.types@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.1.0.tgz#92572949c393e8f676fcbdcfe14b626e303e802e"
+  integrity sha512-/dxJ+aTObm8TFz01O8a6ENJrhp0RHbbWh/RFDEj50LeZ/p8APtaJDofF1ChjopAgzJDwFF1qM7i6O97XcAhWRA==
   dependencies:
     "@platform/libs" "0.0.18"
     "@platform/types" "0.0.20"

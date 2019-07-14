@@ -100,7 +100,7 @@ export class DbRenderer implements t.IDb {
 
   public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
     const dir = this.dir;
-    query = typeof query === 'string' ? { pattern: query } : query;
+    query = typeof query === 'string' ? { query } : query;
     const res = await this.invoke<t.IDbIpcFindResponse>({
       type: 'DB/find',
       payload: { dir, query },

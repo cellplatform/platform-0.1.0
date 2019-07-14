@@ -309,8 +309,8 @@ export class Sync implements t.IDisposable {
     }
     this.is.loading.add('CELLS');
 
-    const pattern = this.keys.db.prefix.cell;
-    const cells = await this.db.find({ pattern });
+    const query = this.keys.db.prefix.cell;
+    const cells = await this.db.find({ query });
     const values = cells.list.reduce((acc, next) => {
       const key = this.keys.grid.toCellKey(next.props.key);
       acc[key] = next.value;
@@ -327,8 +327,8 @@ export class Sync implements t.IDisposable {
     }
     this.is.loading.add('COLUMNS');
 
-    const pattern = this.keys.db.prefix.column;
-    const columns = await this.db.find({ pattern });
+    const query = this.keys.db.prefix.column;
+    const columns = await this.db.find({ query });
     const values = columns.list.reduce((acc, next) => {
       const key = this.keys.grid.toColumnKey(next.props.key);
       acc[key] = next.value;
@@ -345,8 +345,8 @@ export class Sync implements t.IDisposable {
     }
     this.is.loading.add('ROWS');
 
-    const pattern = this.keys.db.prefix.row;
-    const rows = await this.db.find({ pattern });
+    const query = this.keys.db.prefix.row;
+    const rows = await this.db.find({ query });
     const values = rows.list.reduce((acc, next) => {
       const key = this.keys.grid.toRowKey(next.props.key);
       acc[key] = next.value;

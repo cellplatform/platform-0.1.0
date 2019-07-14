@@ -51,10 +51,10 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db.types@0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.0.7.tgz#410e95e0343c203911ba07fc3297d262e5afe785"
-  integrity sha512-Ku8rJXl1+Zr1o4wg5k6Z4C+OfFnlCj7dFg/GuTmSoBYhuiMtBlWSfCkJG80UGM+69iC7Gr5ZH3dQD4l+/uiZ0w==
+"@platform/fs.db.types@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.1.0.tgz#92572949c393e8f676fcbdcfe14b626e303e802e"
+  integrity sha512-/dxJ+aTObm8TFz01O8a6ENJrhp0RHbbWh/RFDEj50LeZ/p8APtaJDofF1ChjopAgzJDwFF1qM7i6O97XcAhWRA==
   dependencies:
     "@platform/libs" "0.0.18"
     "@platform/types" "0.0.20"

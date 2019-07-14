@@ -71,7 +71,7 @@ export class DocDb {
     this.throwIfDisposed('getMany');
 
     const uris = keys.map(key => this.uri.parse(key));
-    const paths = uris.map(uri => uri.path.text);
+    const paths = uris.map(uri => uri.path.dir);
     const docs = await this.store.find({ path: { $in: paths } });
 
     /**
@@ -81,7 +81,7 @@ export class DocDb {
 
     return uris.map(uri => {
       const key = uri.text;
-      const doc = docs.find(item => item.path === uri.path.text);
+      const doc = docs.find(item => item.path === uri.path.dir);
       const value = typeof doc === 'object' ? doc.data : undefined;
       const exists = Boolean(value);
       const { createdAt, modifiedAt } = DocDb.toTimestamps(doc);
@@ -112,7 +112,7 @@ export class DocDb {
 
     let inserts = items.map(item => {
       const uri = this.uri.parse(item.key);
-      const path = uri.path.text;
+      const path = uri.path.dir;
       const createdAt = defaultValue(item.createdAt, now);
       const modifiedAt = defaultValue(item.modifiedAt, now);
       const data = item.value;
@@ -161,7 +161,7 @@ export class DocDb {
     this.throwIfDisposed('deleteMany');
 
     const uris = keys.map(key => this.uri.parse(key));
-    const paths = uris.map(uri => uri.path.text);
+    const paths = uris.map(uri => uri.path.dir);
     const multi = paths.length > 0;
     await this.store.remove({ path: { $in: paths } }, { multi });
 
