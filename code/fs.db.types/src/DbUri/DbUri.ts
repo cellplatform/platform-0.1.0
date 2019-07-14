@@ -87,7 +87,7 @@ export class DbUri {
       ok,
       text,
       path: {
-        text: path,
+        dir: path,
         suffix: pathSuffix,
         toString: () => path,
       },

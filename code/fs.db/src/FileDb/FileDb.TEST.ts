@@ -304,46 +304,47 @@ describe('FileDb', () => {
       expect(res.error).to.eql(undefined);
     });
 
-    it('pattern (deep, default)', async () => {
+    it('pattern (shallow)', async () => {
       const db = await prepare();
-      const res: any = await db.find({ pattern: 'cell' });
-      expect(res.length).to.eql(3);
-      expect(res.keys).to.eql(['cell/A1', 'cell/A2', 'cell/A2/meta']);
-      expect(res.map['cell/A1']).to.eql(1);
-      expect(res.map['cell/A2']).to.eql(2);
-      expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
-      expect(res.error).to.eql(undefined);
-    });
+      const test = async (input: t.IDbQuery | string) => {
+        const res: any = await db.find(input);
+        expect(res.length).to.eql(2);
+        expect(res.keys).to.eql(['cell/A1', 'cell/A2']);
+        expect(res.map['cell/A1']).to.eql(1);
+        expect(res.map['cell/A2']).to.eql(2);
+        expect(res.error).to.eql(undefined);
+      };
 
-    it('pattern (parameter as string, deep/default)', async () => {
-      const db = await prepare();
-      const res: any = await db.find('cell');
-      expect(res.length).to.eql(3);
-      expect(res.keys).to.eql(['cell/A1', 'cell/A2', 'cell/A2/meta']);
-      expect(res.map['cell/A1']).to.eql(1);
-      expect(res.map['cell/A2']).to.eql(2);
-      expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
-      expect(res.error).to.eql(undefined);
-    });
-
-    it('pattern (not deep)', async () => {
-      const db = await prepare();
-      const res: any = await db.find({ pattern: 'cell', deep: false });
-      expect(res.length).to.eql(2);
-      expect(res.keys).to.eql(['cell/A1', 'cell/A2']);
-      expect(res.map['cell/A1']).to.eql(1);
-      expect(res.map['cell/A2']).to.eql(2);
-      expect(res.error).to.eql(undefined);
+      await test('cell');
+      await test('cell/');
+      await test('cell/*');
+      await test({ query: 'cell' });
     });
 
     it('no match', async () => {
       const db = await prepare();
-      const res: any = await db.find({ pattern: 'YO' });
+      const res: any = await db.find({ query: 'YO' });
       expect(res.length).to.eql(0);
       expect(res.keys).to.eql([]);
       expect(res.list).to.eql([]);
       expect(res.map).to.eql({});
       expect(res.error).to.eql(undefined);
+    });
+
+    it('pattern (deep)', async () => {
+      const db = await prepare();
+      const test = async (input: t.IDbQuery | string) => {
+        const res: any = await db.find(input);
+        expect(res.length).to.eql(3);
+        expect(res.keys).to.eql(['cell/A1', 'cell/A2', 'cell/A2/meta']);
+        expect(res.map['cell/A1']).to.eql(1);
+        expect(res.map['cell/A2']).to.eql(2);
+        expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
+        expect(res.error).to.eql(undefined);
+      };
+
+      await test('cell/**');
+      await test({ query: 'cell/**' });
     });
   });
 

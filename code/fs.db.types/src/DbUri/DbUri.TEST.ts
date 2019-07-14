@@ -35,9 +35,12 @@ describe.only('DbUri', () => {
     it('path', () => {
       const test = (input: string, path: string) => {
         const res = uri.parse(input);
-        expect(res.path.text).to.eql(path);
+        expect(res.path.dir).to.eql(path);
         expect(res.path.toString()).to.eql(path);
       };
+      test('foo', 'foo');
+      test('/foo', 'foo');
+      test('//foo/bar/', 'foo/bar');
       test('data:foo', 'foo');
       test('data:foo/', 'foo');
       test('data:foo//', 'foo');
@@ -81,7 +84,7 @@ describe.only('DbUri', () => {
 
     it('no scheme, read out as path', () => {
       const res = uri.parse(' foo/bar  ');
-      expect(res.path.text).to.eql('foo/bar');
+      expect(res.path.dir).to.eql('foo/bar');
       expect(res.path.toString()).to.eql('foo/bar');
       expect(res.ok).to.eql(false); // Has a path, but is not a valid data-uri
       expect(res.errors).to.eql(['NO_SCHEME']);
@@ -102,11 +105,14 @@ describe.only('DbUri', () => {
       const test = (input: string, suffix: string) => {
         const res = uri.parse(input);
         const path = res.path;
-        expect(path.text).to.eql('foo/bar');
+        expect(path.dir).to.eql('foo/bar');
         expect(path.suffix).to.eql(suffix);
       };
+      test('foo/bar', '*');
+      test('//foo/bar///', '*');
       test('data:foo/bar', '*');
       test('data:foo/bar/', '*');
+      test('data://foo/bar/', '*');
       test('data:foo/bar/*', '*');
       test('data:foo/bar/**', '**');
       test('data:foo/bar/***', '**');

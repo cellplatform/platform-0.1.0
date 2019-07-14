@@ -17,7 +17,7 @@ export type IDbRead = {
   get(key: string): Promise<IDbValue>;
   getValue<T extends Json | undefined>(key: string): Promise<T>;
   getMany(keys: string[]): Promise<IDbValue[]>;
-  find(query: string | IDbQuery): Promise<IDbFindResult>;
+  find(query: DbFindArg): Promise<IDbFindResult>;
 };
 
 export type IDbWrite = {
@@ -57,10 +57,8 @@ export type IDbPutOptions = {
 /**
  * Find
  */
-export type IDbQuery = {
-  pattern?: string;
-  deep?: boolean;
-};
+export type IDbQuery = { query?: string };
+export type DbFindArg = IDbQuery | string;
 
 export type IDbFindResult = {
   length: number;

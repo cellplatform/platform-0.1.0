@@ -239,7 +239,7 @@ export class PgDoc implements t.IDb {
    * [Find]
    */
 
-  public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
+  public async find(query: t.DbFindArg): Promise<t.IDbFindResult> {
     this.throwIfDisposed('find');
 
     let keys: string[] | undefined;

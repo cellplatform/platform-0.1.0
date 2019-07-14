@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
-import { timestamp, fs, t, defaultValue } from '../common';
+import { timestamp, fs, t, defaultValue, DbUri } from '../common';
 import { FileDbSchema } from '../FileDbSchema';
 
 export type IFileDbArgs = {
@@ -45,6 +45,7 @@ export class FileDb implements t.IDb {
    */
   public readonly dir: string;
   public readonly schema: t.IFileDbSchema;
+  private readonly uri = DbUri.create();
 
   public readonly cache: t.IFileDbCache = {
     isEnabled: false,
@@ -263,24 +264,27 @@ export class FileDb implements t.IDb {
   /**
    * Find (glob).
    */
-  public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
-    const pattern = (typeof query === 'object' ? query.pattern : query) || '';
-    const deep = typeof query === 'object' ? defaultValue(query.deep, true) : true;
+  public async find(query: t.DbFindArg): Promise<t.IDbFindResult> {
+    const pattern = (typeof query === 'object' ? query.query : query) || '';
+
+    // Results.
     let paths: string[] = [];
     let obj: t.IDbFindResult['map'] | undefined;
     let list: t.IDbValue[] = [];
     let keys: string[] = [];
     let error: Error | undefined;
 
+    // Query file system using glob.
     try {
       if (pattern) {
-        const dir = fs.join(this.dir, pattern);
+        const uri = this.uri.parse(pattern);
+        const dir = fs.join(this.dir, uri.path.dir);
         const file = `${dir}.json`;
         if (await fs.is.file(file)) {
           paths = [file];
         } else {
           if (await fs.is.dir(dir)) {
-            const glob = deep ? fs.join(dir, '**') : fs.join(dir, '*');
+            const glob = fs.join(dir, uri.path.suffix);
             paths = await fs.glob.find(glob);
           }
         }
@@ -288,18 +292,19 @@ export class FileDb implements t.IDb {
         paths = await fs.glob.find(fs.join(this.dir, '**'));
       }
 
+      // Retrieve matching files.
       paths = paths.filter(path => path.endsWith('.json'));
       const files = await Promise.all(paths.map(path => fs.readJson(path)));
       keys = files.reduce((acc, next) => {
         const keys = Object.keys(next);
         return [...acc, ...keys];
       }, []);
-
       list = await this.getMany(keys);
     } catch (err) {
       error = err;
     }
 
+    // Construct return data-structure.
     const result: t.IDbFindResult = {
       length: keys.length,
       keys,
@@ -316,6 +321,7 @@ export class FileDb implements t.IDb {
       error,
     };
 
+    // Finish up.
     return result;
   }
 
