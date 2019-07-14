@@ -1,9 +1,14 @@
 import * as DocumentStore from 'nedb';
 
+// NB: Hack import because [parceljs] has problem importing using typescript `import` above.
+const NedbStore = require('nedb');
+
 export type IStoreArgs = string | Nedb.DataStoreOptions;
 
 /**
- * A promise-based wrapper around the `nedb` library.
+ * [INTERNAL]
+ *    A promise-based wrapper around the `nedb` library.
+ *    Used internally by ther classes for cleaner async/await flow.
  */
 export class Store<G = any> {
   /**
@@ -17,13 +22,13 @@ export class Store<G = any> {
    * [Lifecycle]
    */
   private constructor(args: IStoreArgs) {
-    this.store = new DocumentStore(args);
+    this.store = new NedbStore(args);
   }
 
   /**
    * [Fields]
    */
-  public store: DocumentStore;
+  public store: DocumentStore; // NB: Do not access this externally.
 
   /**
    * [Methods]
