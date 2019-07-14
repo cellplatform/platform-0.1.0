@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.nedb",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Standard IDb abstraction over nedb.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/fs.db.types": "0.0.6",
+    "@platform/fs.db.types": "0.0.7",
     "@platform/react": "0.3.12",
     "@platform/types": "0.0.20",
     "@platform/util.value": "0.4.4",
