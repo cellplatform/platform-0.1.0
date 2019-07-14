@@ -1,20 +1,30 @@
-import { PgDoc } from '.';
-import { time } from '../common';
-import test, { expect } from '../test';
+import { expect, fs, time } from '../../test/test';
+import { DocDb } from '.';
 
-const dropTables = async () => {
-  const tables = ['FOO', 'BAR', 'BOO'];
-  await test.dropTables(tables);
-};
+const dir = fs.resolve('tmp/doc');
+const filename = fs.join(dir, 'file.db');
+const removeDir = () => fs.remove(dir);
 
-describe('PgDoc (integration)', () => {
-  let db: PgDoc = test.db();
+describe('DocDb', () => {
+  let db: DocDb;
 
   beforeEach(async () => {
-    await dropTables();
-    db = test.db();
+    db = DocDb.create();
   });
   afterEach(() => db.dispose());
+
+  it('constructs', () => {
+    const db = DocDb.create();
+    expect(db).to.be.an.instanceof(DocDb);
+  });
+
+  it('toString', () => {
+    const db1 = DocDb.create();
+    const db2 = DocDb.create({ filename });
+
+    expect(db1.toString()).to.eql('[db:memory]');
+    expect(db2.toString()).to.include(filename);
+  });
 
   it('get (not exist)', async () => {
     const key = 'NO_EXIST/foo';
@@ -25,7 +35,7 @@ describe('PgDoc (integration)', () => {
     expect(await db.getValue(key)).to.eql(undefined);
   });
 
-  it('put (escaped \' character)', async () => {
+  it('put (escaped characters)', async () => {
     const key = 'FOO/char';
     const msg = `'"?<>\`~:\\/!@#$%^&*()_-+=`;
     await db.put(key, { msg });
@@ -79,6 +89,7 @@ describe('PgDoc (integration)', () => {
 
     await time.wait(100);
     const res4 = await db.put(key, 456);
+
     expect(res4.props.createdAt).to.eql(res2.props.createdAt);
     expect(res4.props.modifiedAt).to.be.within(now + 90, now + 120);
   });
@@ -188,93 +199,7 @@ describe('PgDoc (integration)', () => {
     expect(res3[1].props.exists).to.eql(false);
   });
 
-  describe('find', () => {
-    const prepare = async () => {
-      const db = test.db();
-      await db.put('FOO/cell/A1', 1);
-      await db.put('FOO/cell/A2', 2);
-      await db.put('FOO/cell/A2/meta', { foo: 123 });
-      await db.put('FOO/bar', 'hello');
-      await db.put('BAR/1', 1);
-      await db.put('BAR/2', 2);
-      return db;
-    };
-
-    it('no pattern (throws)', async () => {
-      const db = await prepare();
-      const res = await db.find({});
-      expect(res.length).to.eql(0);
-      expect(res.error && res.error.message).to.include('must contain at least a root TABLE name');
-    });
-
-    it('no path (deep, default)', async () => {
-      const now = time.now.timestamp;
-      const db = await prepare();
-      const res = await db.find({ pattern: 'FOO' });
-      expect(res.error).to.eql(undefined);
-      expect(res.length).to.eql(4);
-      expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta', 'FOO/bar']);
-      expect(res.map['FOO/bar']).to.eql('hello');
-      expect(res.map['FOO/cell/A1']).to.eql(1);
-      expect(res.map['FOO/cell/A2']).to.eql(2);
-      expect(res.map['FOO/cell/A2/meta']).to.eql({ foo: 123 });
-
-      const A1 = res.list[0];
-      expect(A1.props.createdAt).to.be.within(now - 5, now + 30);
-      expect(A1.props.modifiedAt).to.be.within(now - 5, now + 30);
-    });
-
-    it('path (deep, default)', async () => {
-      const db = await prepare();
-      const res = await db.find({ pattern: 'FOO/cell' });
-      expect(res.error).to.eql(undefined);
-      expect(res.length).to.eql(3);
-      expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta']);
-      expect(res.map['FOO/cell/A1']).to.eql(1);
-      expect(res.map['FOO/cell/A2']).to.eql(2);
-      expect(res.map['FOO/cell/A2/meta']).to.eql({ foo: 123 });
-    });
-
-    it('path (parameter as string, deep/default)', async () => {
-      const db = await prepare();
-      const res = await db.find('FOO/cell');
-      expect(res.error).to.eql(undefined);
-      expect(res.length).to.eql(3);
-      expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2', 'FOO/cell/A2/meta']);
-      expect(res.map['FOO/cell/A1']).to.eql(1);
-      expect(res.map['FOO/cell/A2']).to.eql(2);
-      expect(res.map['FOO/cell/A2/meta']).to.eql({ foo: 123 });
-      expect(res.error).to.eql(undefined);
-    });
-
-    it('path (not deep)', async () => {
-      const db = await prepare();
-      const res = await db.find({ pattern: 'FOO/cell', deep: false });
-      expect(res.error).to.eql(undefined);
-      expect(res.length).to.eql(2);
-      expect(res.keys).to.eql(['FOO/cell/A1', 'FOO/cell/A2']);
-      expect(res.map['FOO/cell/A1']).to.eql(1);
-      expect(res.map['FOO/cell/A2']).to.eql(2);
-      expect(res.error).to.eql(undefined);
-    });
-
-    it('no match', async () => {
-      const db = await prepare();
-      const res = await db.find({ pattern: 'FOO/yo' });
-      expect(res.error).to.eql(undefined);
-      expect(res.length).to.eql(0);
-      expect(res.keys).to.eql([]);
-      expect(res.list).to.eql([]);
-      expect(res.map).to.eql({});
-      expect(res.error).to.eql(undefined);
-    });
-
-    it('no table (error)', async () => {
-      await dropTables();
-      const res = await db.find({ pattern: 'FOO/yo' });
-      const error = res.error;
-      expect(res.length).to.eql(0);
-      expect(error && error.message).to.includes('relation "FOO" does not exist');
-    });
+  it.skip('find', async () => {
+    // TEMP 🐷 TODO find
   });
 });

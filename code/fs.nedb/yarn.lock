@@ -1043,7 +1043,15 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs@0.1.6", "@platform/fs@^0.1.6":
+"@platform/fs.db.types@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.0.6.tgz#8dd29b5ce119710cf5a4eef0464b5a3f4807e8a2"
+  integrity sha512-QNoogmQyn73PklvaiGKeSFtm/h9zgW+lGU3mpUSxPlE3p4x+NaTlT+iuYjkPJsR9hnP7ktFg0KWfBk5idN1JfQ==
+  dependencies:
+    "@platform/libs" "0.0.18"
+    "@platform/types" "0.0.20"
+
+"@platform/fs@0.1.6":
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.1.6.tgz#89550d3f495445eb6340b4c79ea9d27c8fc603c1"
   integrity sha512-WkVBWjugSZ6QsxRzbhjZA36KsQj4BOcAglruOPVPvZ0GOLDywNBqESjr+ExY1oIEBe86QSS0Ka1IkyaGEw2CUg==
@@ -1102,7 +1110,7 @@
     react "16.8.6"
     react-dom "16.8.6"
 
-"@platform/test@^0.0.59":
+"@platform/test@0.0.59":
   version "0.0.59"
   resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.0.59.tgz#c1afa92f0425c9c50ecc7f7e9b35553bcaadb04a"
   integrity sha512-RU78deJ1NBQNqndwdG1AUsUO8RbM5ekw13HtvlByiXBavYdX2OuNwd1obOAlw0lXpLftfB7VrmBkwRiKgwc3GA==
@@ -1225,7 +1233,7 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value@0.4.4", "@platform/util.value@^0.4.4":
+"@platform/util.value@0.4.4":
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.4.tgz#9c52378f5822f310909aeb893adfb276f3d6aab7"
   integrity sha512-6H34looIrCFo64+x7/mXLKgrnmM9bCZyFNAEydl/ozhYJ+yy5dE/rLOo6h8R2Yfw8BFZWLxT/y+rZ7gu8y82Wg==
@@ -1312,7 +1320,7 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.7.tgz#315d570ccb56c53452ff8638738df60726d5b6ea"
   integrity sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==
 
-"@types/nedb@^1.8.8":
+"@types/nedb@1.8.8":
   version "1.8.8"
   resolved "https://registry.yarnpkg.com/@types/nedb/-/nedb-1.8.8.tgz#54770bf0df40185291bc0b108beb224846f5b04c"
   integrity sha512-krZu5LWqkLVlKPlmK/LozSMCZsKrMHIDNnjCctrG61/fnuSWFV2X190ry1xR7++ZUcJSNWOKZMH+Qs75xSNLFw==
@@ -5657,7 +5665,7 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-nedb@^1.8.0:
+nedb@1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/nedb/-/nedb-1.8.0.tgz#0e3502cd82c004d5355a43c9e55577bd7bd91d88"
   integrity sha1-DjUCzYLABNU1WkPJ5VV3vXvZHYg=
