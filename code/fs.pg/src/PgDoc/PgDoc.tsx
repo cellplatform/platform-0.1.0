@@ -109,6 +109,15 @@ export class PgDoc implements t.IDb {
   /**
    * [Methods]
    */
+
+  public toString() {
+    const { host, database } = this._args.db;
+    return `[db:${host}/${database}]`;
+  }
+
+  /**
+   * [Get]
+   */
   public async get(key: string): Promise<t.IDbValue> {
     this.throwIfDisposed('get');
     return (await this.getMany([key]))[0];
@@ -151,6 +160,10 @@ export class PgDoc implements t.IDb {
     return (res ? res.value : undefined) as T;
   }
 
+  /**
+   * [Put]
+   */
+
   public async put(key: string, value?: t.Json, options?: t.IDbPutOptions): Promise<t.IDbValue> {
     this.throwIfDisposed('put');
     return (await this.putMany([{ key, value, ...options }]))[0];
@@ -189,6 +202,10 @@ export class PgDoc implements t.IDb {
     return this.getMany(items.map(item => item.key));
   }
 
+  /**
+   * [Delete]
+   */
+
   public async delete(key: string): Promise<t.IDbValue> {
     this.throwIfDisposed('delete');
     return (await this.deleteMany([key]))[0];
@@ -217,6 +234,10 @@ export class PgDoc implements t.IDb {
       return res;
     });
   }
+
+  /**
+   * [Find]
+   */
 
   public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
     this.throwIfDisposed('find');
@@ -287,11 +308,6 @@ export class PgDoc implements t.IDb {
 
     // Finish up.
     return result;
-  }
-
-  public toString() {
-    const { host, database } = this._args.db;
-    return `[PgDoc:${host}/${database}]`;
   }
 
   /**
