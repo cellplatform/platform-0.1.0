@@ -1,7 +1,7 @@
 {
   "name": "@platform/fs.nedb",
   "version": "0.0.0",
-  "description": "Standard IDb abstraction over nedb",
+  "description": "Standard IDb abstraction over nedb.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {

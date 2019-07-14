@@ -9,7 +9,7 @@ describe.skip('download (INTEGRATION)', function() {
   afterEach(async () => fs.remove(TMP));
 
   it('downloads zip file', async () => {
-    const url = 'https://uih.sfo2.digitaloceanspaces.com/%40platform/http/images.zip';
+    const url = 'https://platform.sfo2.digitaloceanspaces.com/http/images.zip';
     const path = fs.join(TMP, 'images.zip');
     await download(url).save(path);
 
