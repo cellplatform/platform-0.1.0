@@ -39,6 +39,15 @@ describe.only('DbUri', () => {
         expect(res.path.toString()).to.eql(path);
       };
       test('data:foo', 'foo');
+      test('data:foo/', 'foo');
+      test('data:foo//', 'foo');
+      test('data:/foo/', 'foo');
+      test('data://foo/bar', 'foo/bar');
+      test('data://foo/bar/', 'foo/bar');
+      test('data:///foo/', 'foo');
+      test('data:///foo/bar///////', 'foo/bar');
+      test('data:foo/*', 'foo');
+      test('data:foo/**', 'foo');
       test('data:', '');
       test('data', 'data'); // No "scheme", not a URI so path is assumed.
       test('data:foo:name.first', 'foo'); // Does not include object-path.
@@ -87,6 +96,21 @@ describe.only('DbUri', () => {
       test(' data:foo  ', 'data:foo');
       test('', '');
       test('  ', '');
+    });
+
+    it('path depth (*, **)', () => {
+      const test = (input: string, suffix: string) => {
+        const res = uri.parse(input);
+        const path = res.path;
+        expect(path.text).to.eql('foo/bar');
+        expect(path.suffix).to.eql(suffix);
+      };
+      test('data:foo/bar', '*');
+      test('data:foo/bar/', '*');
+      test('data:foo/bar/*', '*');
+      test('data:foo/bar/**', '**');
+      test('data:foo/bar/***', '**');
+      test('data:foo/bar/****************', '**');
     });
   });
 });
