@@ -10,12 +10,12 @@ export type IStoreArgs = string | Nedb.DataStoreOptions;
  *    A promise-based wrapper around the `nedb` library.
  *    Used internally by ther classes for cleaner async/await flow.
  */
-export class Store<G = any> {
+export class Nedb<G = any> {
   /**
    * [Static]
    */
   public static create<G = any>(args: IStoreArgs = {}) {
-    return new Store<G>(args);
+    return new Nedb<G>(args);
   }
 
   /**

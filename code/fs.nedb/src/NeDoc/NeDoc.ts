@@ -1,18 +1,18 @@
 import { Subject } from 'rxjs';
 import { take, share } from 'rxjs/operators';
-import { Store } from '../store';
+import { Nedb } from '../db';
 import { t, R, time, defaultValue, DbUri, value as valueUtil } from '../common';
 
-export type IDbDocArgs = {
+export type INeDocArgs = {
   filename?: string;
 };
 
-export class DocDb {
+export class NeDoc {
   /**
    * [Static]
    */
-  public static create(args: IDbDocArgs = {}) {
-    return new DocDb(args);
+  public static create(args: INeDocArgs = {}) {
+    return new NeDoc(args);
   }
 
   private static toTimestamps(doc?: t.IDoc) {
@@ -24,10 +24,10 @@ export class DocDb {
   /**
    * [Lifecycle]
    */
-  private constructor(args: IDbDocArgs) {
+  private constructor(args: INeDocArgs) {
     const { filename } = args;
     const autoload = Boolean(filename);
-    this.store = Store.create<t.IDoc>({ filename, autoload });
+    this.store = Nedb.create<t.IDoc>({ filename, autoload });
     this.store.ensureIndex({ fieldName: 'path', unique: true });
   }
 
@@ -42,7 +42,7 @@ export class DocDb {
   /**
    * [Fields]
    */
-  private readonly store: Store<t.IDoc>;
+  private readonly store: Nedb<t.IDoc>;
   private readonly uri = DbUri.create();
 
   private readonly _dispose$ = new Subject<{}>();
@@ -86,7 +86,7 @@ export class DocDb {
       const doc = docs.find(item => item.path === uri.path.dir);
       const value = typeof doc === 'object' ? doc.data : undefined;
       const exists = Boolean(value);
-      const { createdAt, modifiedAt } = DocDb.toTimestamps(doc);
+      const { createdAt, modifiedAt } = NeDoc.toTimestamps(doc);
       const res: t.IDbValue = {
         value,
         props: { key, exists, createdAt, modifiedAt },

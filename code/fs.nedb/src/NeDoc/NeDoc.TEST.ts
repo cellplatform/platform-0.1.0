@@ -1,26 +1,26 @@
-import { expect, fs, time, t } from '../../test/test';
-import { DocDb } from '.';
+import { expect, fs, time, t } from '../test';
+import { NeDoc } from '.';
 
 const dir = fs.resolve('tmp/doc');
 const filename = fs.join(dir, 'file.db');
 const removeDir = () => fs.remove(dir);
 
-describe('DocDb', () => {
-  let db: DocDb;
+describe('NeDoc', () => {
+  let db: NeDoc;
 
   beforeEach(async () => {
-    db = DocDb.create();
+    db = NeDoc.create();
   });
   afterEach(() => db.dispose());
 
   it('constructs', () => {
-    const db = DocDb.create();
-    expect(db).to.be.an.instanceof(DocDb);
+    const db = NeDoc.create();
+    expect(db).to.be.an.instanceof(NeDoc);
   });
 
   it('toString', () => {
-    const db1 = DocDb.create();
-    const db2 = DocDb.create({ filename });
+    const db1 = NeDoc.create();
+    const db2 = NeDoc.create({ filename });
 
     expect(db1.toString()).to.eql('[db:memory]');
     expect(db2.toString()).to.include(filename);

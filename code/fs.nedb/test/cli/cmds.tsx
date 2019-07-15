@@ -1,4 +1,4 @@
-import { log, Command, t, Store } from '../common';
+import { log, Command, t, Nedb } from '../common';
 
 type P = t.ICommandProps;
 
@@ -8,7 +8,7 @@ type P = t.ICommandProps;
 export const root = Command.create<P>('root')
   //
   .add('store', async e => {
-    const db = Store.create({ filename: 'tmp/client.db', autoload: true });
+    const db = Nedb.create({ filename: 'tmp/client.db', autoload: true });
 
     const name = 'foo';
     const value = e.param(0, 'my-value');
