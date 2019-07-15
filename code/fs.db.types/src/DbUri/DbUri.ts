@@ -68,10 +68,11 @@ export class DbUri {
     }
 
     // Clean path and extract glob suffix information (depth, eg "/foo/**").
-    let pathSuffix = '';
+    type Suffix = t.IDbUriPath['suffix'];
+    let pathSuffix: Suffix = '';
     if (path) {
       const match = path.match(/\/\*+$/);
-      pathSuffix = match ? match[0].slice(1, 3) : '*';
+      pathSuffix = match ? (match[0].slice(1, 3) as Suffix) : '*';
       path = path
         .replace(/^\/*/, '')
         .replace(/\**$/, '')

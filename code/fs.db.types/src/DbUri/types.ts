@@ -37,7 +37,7 @@ export type DbUriError = 'NO_SCHEME' | 'NO_PATH';
 
 export type IDbUriPath = {
   dir: string;
-  suffix: string;
+  suffix: '' | '*' | '**';
   toString(): string;
 };
 export type IDbUriObject = {
