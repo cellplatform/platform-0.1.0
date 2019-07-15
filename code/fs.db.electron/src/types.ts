@@ -10,7 +10,7 @@ import {
 
 export type DbIpc = IpcClient<DbIpcEvent>;
 export type DbFactory = (dir: string) => IDb;
-export type DbKind = 'FS' | 'NEDB';
+export type DbKind = 'FSDB' | 'NEDB';
 
 /**
  * IPC Events

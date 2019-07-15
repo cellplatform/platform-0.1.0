@@ -9,10 +9,10 @@ describe('util', () => {
       expect(res.kind).to.eql(kind);
     };
 
-    test(undefined, '', 'FS');
-    test('  ', '', 'FS');
-    test('/foo/bar', '/foo/bar', 'FS');
+    test(undefined, '', 'FSDB');
+    test('  ', '', 'FSDB');
+    test('/foo/bar', '/foo/bar', 'FSDB');
     test('nedb:/foo/bar', '/foo/bar', 'NEDB');
-    test('fs:/foo/bar', '/foo/bar', 'FS');
+    test('fs:/foo/bar', '/foo/bar', 'FSDB');
   });
 });

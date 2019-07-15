@@ -24,7 +24,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     if (!CACHE[path]) {
       // Construct the database.
       let db: t.IDb;
-      if (kind === 'FS') {
+      if (kind === 'FSDB') {
         db = FileDb.create({ dir: path, cache: false });
       } else if (kind === 'NEDB') {
         db = NeDoc.create({ filename: path });
@@ -37,7 +37,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[path]);
       db.events$.subscribe(event => events$.next({ db: input, event }));
 
-      log.info.gray(`${log.yellow('database')} [${kind}] ${path}`);
+      log.info.gray(`${log.green(kind)}: ${path}`);
     }
     return CACHE[path];
   };
