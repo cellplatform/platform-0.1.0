@@ -63,13 +63,15 @@ export class DbUri {
     // Path.
     let path = (scheme ? getChunk(chunk) : text).trim();
     chunk = chunk.substring(path.length + 1);
-    if (!path) {
-      errors = [...errors, 'NO_PATH'];
-    }
 
     // Clean path and extract glob suffix information (depth, eg "/foo/**").
     type Suffix = t.IDbUriPath['suffix'];
     let pathSuffix: Suffix = '';
+    if (path.replace(/\*/g, '').length === 0) {
+      // All "*" characters.
+      pathSuffix = path.substring(0, 2) as Suffix;
+      path = '';
+    }
     if (path) {
       const match = path.match(/\/\*+$/);
       pathSuffix = match ? (match[0].slice(1, 3) as Suffix) : '*';
@@ -77,6 +79,10 @@ export class DbUri {
         .replace(/^\/*/, '')
         .replace(/\**$/, '')
         .replace(/\/*$/, '');
+    }
+
+    if (!path) {
+      errors = [...errors, 'NO_PATH'];
     }
 
     // Object.

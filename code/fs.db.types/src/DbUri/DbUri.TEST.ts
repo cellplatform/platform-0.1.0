@@ -118,5 +118,18 @@ describe.only('DbUri', () => {
       test('data:foo/bar/***', '**');
       test('data:foo/bar/****************', '**');
     });
+
+    it('path depth empty (*, **)', async () => {
+      const test = (input: string, suffix: string) => {
+        const res = uri.parse(input);
+        const path = res.path;
+        expect(path.dir).to.eql('');
+        expect(path.suffix).to.eql(suffix);
+        expect(res.errors).to.eql(['NO_SCHEME', 'NO_PATH']);
+      };
+      test('*', '*');
+      test('**', '**');
+      test('*********', '**');
+    });
   });
 });

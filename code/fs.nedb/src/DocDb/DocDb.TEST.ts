@@ -199,7 +199,92 @@ describe('DocDb', () => {
     expect(res3[1].props.exists).to.eql(false);
   });
 
-  it.skip('find', async () => {
-    // TEMP 🐷 TODO find
+  describe('find', () => {
+    it('nothing (no match)', async () => {
+      const items = [
+        { key: 'cell/A1', value: 123 },
+        { key: 'cell/A2', value: 456 },
+        { key: 'cell/A2/meta', value: { msg: 'hello' } },
+      ];
+      await db.putMany(items);
+
+      const test = async (query: string) => {
+        const res = await db.find(query);
+        expect(res.length).to.eql(0);
+        expect(res.list).to.eql([]);
+      };
+      await test('BOO');
+      await test('BAR');
+      await test('');
+    });
+
+    it('shallow ("cell/*")', async () => {
+      const items = [
+        { key: 'cell/A1', value: 123 },
+        { key: 'cell/A2', value: 456 },
+        { key: 'cell/A2/meta', value: { msg: 'hello' } },
+      ];
+      await db.putMany(items);
+
+      const test = async (query: string) => {
+        const res = await db.find(query);
+        expect(res.length).to.eql(2);
+        const values = res.list.map(item => item.value);
+        expect(values.includes(123)).to.eql(true);
+        expect(values.includes(456)).to.eql(true);
+      };
+      await test('cell');
+      await test('cell/');
+      await test('cell/*');
+    });
+
+    it('deep ("cell/**")', async () => {
+      const items = [
+        { key: 'cell/A1', value: 123 },
+        { key: 'cell/A2', value: 456 },
+        { key: 'cell/A2/meta', value: 'meta' },
+        { key: 'foo', value: 'boo' },
+      ];
+      await db.putMany(items);
+
+      const res = await db.find('cell/**');
+      expect(res.length).to.eql(3);
+
+      const values = res.list.map(item => item.value);
+      expect(values.includes(123)).to.eql(true);
+      expect(values.includes(456)).to.eql(true);
+      expect(values.includes('meta')).to.eql(true);
+      expect(values.includes('boo')).to.eql(false);
+    });
+
+    it('deep: entire database (**)', async () => {
+      const items = [
+        { key: 'cell/A1', value: 123 },
+        { key: 'cell/A2', value: 456 },
+        { key: 'cell/A2/meta', value: 'meta' },
+        { key: 'foo', value: 'boo' },
+      ];
+      await db.putMany(items);
+      const res = await db.find('**');
+      expect(res.length).to.eql(4);
+    });
+
+    it('shallow: root documents (*)', async () => {
+      const items = [
+        { key: 'foo', value: 'foo' },
+        { key: 'cell/A1', value: 123 },
+        { key: 'bar', value: 'bar' },
+      ];
+      await db.putMany(items);
+      const res = await db.find('*');
+
+      expect(res.length).to.eql(2);
+      expect(res.keys.includes('foo')).to.eql(true);
+      expect(res.keys.includes('bar')).to.eql(true);
+
+      const values = res.list.map(item => item.value);
+      expect(values.includes('foo')).to.eql(true);
+      expect(values.includes('bar')).to.eql(true);
+    });
   });
 });

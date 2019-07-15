@@ -184,48 +184,52 @@ export class DocDb {
 
     let keys: string[] | undefined;
     let map: t.IDbFindResult['map'] | undefined;
-    const error: Error | undefined = undefined;
-    const list: t.IDbValue[] = [];
+    let error: Error | undefined;
+    let list: t.IDbValue[] = [];
 
-    // try {
-    //   const pattern = (typeof query === 'object' ? query.pattern : query) || '';
-    //   const deep = typeof query === 'object' ? defaultValue(query.deep, true) : true;
-    //   if (!pattern) {
-    //     throw new Error(`A query pattern must contain at least a root TABLE name.`);
-    //   }
+    try {
+      // Prepare the query.
+      const pattern = (typeof query === 'object' ? query.query : query) || '';
+      const uri = this.uri.parse(pattern);
+      const { dir, suffix } = uri.path;
 
-    //   // Prepare search SQL statement.
-    //   const key = PgDoc.parseKey(pattern, { requirePath: false });
-    //   let sql = `SELECT * FROM "${key.table}"`;
-    //   sql = key.path ? `${sql} WHERE path ~ '^${key.path}'` : sql;
-    //   sql = `${sql};`;
+      const buildQuery = () => {
+        if (dir === '') {
+          if (suffix === '') {
+            return undefined;
+          }
+          if (suffix === '**') {
+            return {}; // All documents in DB.
+          }
+          if (suffix === '*') {
+            return { path: { $regex: /^([^/]*)$/ } }; // Only root level paths (eg "foo" not "foo/bar").
+          }
+          return;
+        } else {
+          const expr = suffix === '**' ? `^${dir}\/*` : `^${dir}\/([^/]*)$`;
+          return { path: { $regex: new RegExp(expr) } };
+        }
+      };
 
-    //   // Query the database.
-    //   const res = await this.db.query(sql);
-    //   list = res.rows
-    //     .filter(row => {
-    //       // NB: This may be able to be done in a more advanced regex in SQL above.
-    //       return deep
-    //         ? true // Deep: All child paths accepted.
-    //         : !row.path.substring(key.path.length + 1).includes('/'); // Not deep: ensure this is not deeper than the given path.
-    //     })
-    //     .map(row => {
-    //       const value = row && typeof row.data === 'object' ? (row.data as any).data : undefined;
-    //       const { createdAt, modifiedAt } = PgDoc.toTimestamps(row);
-    //       const res: t.IDbValue = {
-    //         value,
-    //         props: {
-    //           key: PgDoc.join(key.table, row.path),
-    //           exists: Boolean(value),
-    //           createdAt,
-    //           modifiedAt,
-    //         },
-    //       };
-    //       return res;
-    //     });
-    // } catch (err) {
-    //   error = err;
-    // }
+      // Query the database.
+      const q = buildQuery();
+      const res = q ? await this.store.find(q) : [];
+
+      // Convert into response list.
+      list = res.map(doc => {
+        const key = doc.path;
+        const value = doc.data;
+        const exists = Boolean(value);
+        const { createdAt, modifiedAt } = doc;
+        const res: t.IDbValue = {
+          value,
+          props: { key, exists, createdAt, modifiedAt },
+        };
+        return res;
+      });
+    } catch (err) {
+      error = err;
+    }
 
     // Return data structure.
     const result: t.IDbFindResult = {
