@@ -1,1 +1,1 @@
-export { value } from '@platform/util.value';
+export { value, defaultValue } from '@platform/util.value';

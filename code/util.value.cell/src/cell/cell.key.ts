@@ -1,6 +1,6 @@
 import { alpha } from '../alpha';
 import { parser } from '../parser';
-import { t } from '../common';
+import { t, defaultValue } from '../common';
 
 /**
  * Converts indexes into alpha-numeric cell code.
@@ -58,4 +58,29 @@ export function isRangeKey(key: string) {
     return false;
   }
   return true;
+}
+
+/**
+ * Converts the given key to a type.
+ */
+export function toType(
+  cell: string | { column?: number; row?: number },
+): t.GridCellType | undefined {
+  const coord = typeof cell === 'string' ? fromKey(cell) : cell;
+  const column = defaultValue(coord.column, -1);
+  const row = defaultValue(coord.row, -1);
+
+  if (column < 0 && row < 0) {
+    return undefined;
+  }
+  if (column >= 0 && row >= 0) {
+    return 'CELL';
+  }
+  if (column >= 0) {
+    return 'COLUMN';
+  }
+  if (row >= 0) {
+    return 'ROW';
+  }
+  return undefined;
 }
