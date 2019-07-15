@@ -63,12 +63,7 @@ function toGridKeydown(e: Event, grid: Grid): t.IGridKeydown {
   const isDelete = key === 'Delete';
   const { metaKey, shiftKey, ctrlKey, altKey } = event;
 
-  const cancel = () => {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-  };
-
-  return {
+  const payload: t.IGridKeydown = {
     key,
     grid,
     event,
@@ -79,6 +74,13 @@ function toGridKeydown(e: Event, grid: Grid): t.IGridKeydown {
     shiftKey,
     ctrlKey,
     altKey,
-    cancel,
+    isCancelled: false,
+    cancel: () => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      payload.isCancelled = true;
+    },
   };
+
+  return payload;
 }

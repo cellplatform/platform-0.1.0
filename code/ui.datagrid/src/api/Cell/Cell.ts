@@ -1,5 +1,4 @@
-import { cell as util, parser } from '@platform/util.value.cell';
-import { t, R } from '../../common';
+import { t, R, cellUtil } from '../../common';
 
 /**
  * API for accessing and manipulating a cell.
@@ -14,16 +13,16 @@ export class Cell implements t.ICell {
 
   public static createFromKey(args: { table: Handsontable; cellKey: string }) {
     const { table, cellKey } = args;
-    const { row, column } = util.fromKey(cellKey);
+    const { row, column } = cellUtil.cell.fromKey(cellKey);
     return new Cell({ table, row, column });
   }
 
   public static toKey(args: { row: number; column: number }) {
-    return util.toKey(args.column, args.row);
+    return cellUtil.cell.toKey(args.column, args.row);
   }
 
   public static fromKey(cellKey: string) {
-    return util.fromKey(cellKey);
+    return cellUtil.cell.fromKey(cellKey);
   }
 
   public static toPosition(ref: t.CellRef) {
@@ -31,7 +30,7 @@ export class Cell implements t.ICell {
   }
 
   public static toRangePositions(rangeKey: string) {
-    const parts = parser.toRangeParts(rangeKey);
+    const parts = cellUtil.parser.toRangeParts(rangeKey);
     const start = Cell.toPosition(parts.left);
     const end = Cell.toPosition(parts.right);
     return { start, end };

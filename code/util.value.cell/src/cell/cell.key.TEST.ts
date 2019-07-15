@@ -109,7 +109,7 @@ describe('isRangeKey', () => {
       expect(cell.toType({ row: 123, column: 456 })).to.eql('CELL');
     });
 
-    it('non valid input returns nothing', () => {
+    it('non-valid input returns nothing', () => {
       expect(cell.toType('')).to.eql(undefined);
       expect(cell.toType('  ')).to.eql(undefined);
       expect(cell.toType({ row: -1, column: -1 })).to.eql(undefined);

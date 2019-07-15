@@ -73,6 +73,12 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
     afterRowResize,
     modifyColWidth,
     modifyRowHeight,
+
+    // Mouse.
+    beforeOnCellMouseDown: hooks.mouseCell(getGrid, 'DOWN'),
+    beforeOnCellMouseUp: hooks.mouseCell(getGrid, 'UP'),
+    beforeOnCellMouseOver: hooks.mouseCell(getGrid, 'ENTER'),
+    beforeOnCellMouseOut: hooks.mouseCell(getGrid, 'LEAVE'),
   };
 
   return settings;

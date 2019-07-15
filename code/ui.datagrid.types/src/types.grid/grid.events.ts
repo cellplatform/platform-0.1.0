@@ -1,3 +1,4 @@
+import { MouseEvent, MouseEventType } from '@platform/react/lib/types';
 import { t } from '../common';
 
 /**
@@ -8,6 +9,7 @@ export type GridEvent =
   | IGridReadyEvent
   | IGridRedrawEvent
   | IGridKeydownEvent
+  | IGridMouseEvent
   | IGridCellChangeEvent
   | IGridChangeSetEvent
   | IColumnsChangedEvent
@@ -27,7 +29,7 @@ export type IGridRedrawEvent = {
 };
 
 /**
- * Keyboard
+ * Keyboard.
  */
 export type IGridKeydownEvent = {
   type: 'GRID/keydown';
@@ -44,6 +46,24 @@ export type IGridKeydown = {
   shiftKey: boolean;
   ctrlKey: boolean;
   altKey: boolean;
+  isCancelled: boolean;
+  cancel: () => void;
+};
+
+/**
+ * Mouse.
+ */
+export type IGridMouseEvent = {
+  type: 'GRID/mouse';
+  payload: IGridMouse;
+};
+
+export type IGridMouse = MouseEvent & {
+  cell: t.GridCellKey;
+  cellType: t.GridCellType;
+  type: MouseEventType;
+  grid: t.IGrid;
+  isCancelled: boolean;
   cancel: () => void;
 };
 
