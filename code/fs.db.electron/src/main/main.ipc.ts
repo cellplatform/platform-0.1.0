@@ -20,7 +20,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       const db = (CACHE[dir] = FileDb.create({ dir, cache: false }));
       db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[dir]);
       db.events$.subscribe(event => events$.next({ dir, event }));
-      log.info.gray(`${log.yellow('cached file-database')}: ${dir}`);
+      log.info.gray(`${log.yellow('database')}: ${dir}`);
     }
     return CACHE[dir];
   };
@@ -28,21 +28,19 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   /**
    * Broadcast all DB events to renderers.
    */
-  events$.subscribe(payload => {
-    ipc.send('DB/fired', payload);
-  });
+  events$.subscribe(payload => ipc.send('DB/fired', payload));
 
   /**
    * GET
    */
   ipc.handle<t.IDbIpcGetEvent, t.IDbIpcGetResponse>('DB/get', async e => {
-    const db = factory(e.payload.dir);
+    const db = factory(e.payload.db);
     const values = await db.getMany(e.payload.keys);
     return { values };
   });
 
   ipc.handle<t.IDbIpcFindEvent, t.IDbIpcFindResponse>('DB/find', async e => {
-    const db = factory(e.payload.dir);
+    const db = factory(e.payload.db);
     const result = await db.find(e.payload.query);
     return { result };
   });
@@ -51,7 +49,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
    * PUT
    */
   ipc.handle<t.IDbIpcPutEvent, t.IDbIpcPutResponse>('DB/put', async e => {
-    const db = factory(e.payload.dir);
+    const db = factory(e.payload.db);
     const values = await db.putMany(e.payload.items);
     return { values };
   });
@@ -60,7 +58,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
    * DELETE
    */
   ipc.handle<t.IDbIpcDeleteEvent, t.IDbIpcDeleteResponse>('DB/delete', async e => {
-    const db = factory(e.payload.dir);
+    const db = factory(e.payload.db);
     const values = await db.deleteMany(e.payload.keys);
     return { values };
   });

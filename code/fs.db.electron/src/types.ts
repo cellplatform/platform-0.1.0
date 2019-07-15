@@ -25,25 +25,25 @@ export type DbIpcEvent =
 export type IDbIpcGetResponse = { values: IDbValue[] };
 export type IDbIpcGetEvent = {
   type: 'DB/get';
-  payload: { dir: string; keys: string[] };
+  payload: { db: string; keys: string[] };
 };
 
 export type IDbIpcFindResponse = { result: IDbFindResult };
 export type IDbIpcFindEvent = {
   type: 'DB/find';
-  payload: { dir: string; query: IDbQuery };
+  payload: { db: string; query: IDbQuery };
 };
 
 export type IDbIpcPutResponse = { values: IDbValue[] };
 export type IDbIpcPutEvent = {
   type: 'DB/put';
-  payload: { dir: string; items: IDbKeyValue[] };
+  payload: { db: string; items: IDbKeyValue[] };
 };
 
 export type IDbIpcDeleteResponse = { values: IDbValue[] };
 export type IDbIpcDeleteEvent = {
   type: 'DB/delete';
-  payload: { dir: string; keys: string[] };
+  payload: { db: string; keys: string[] };
 };
 
 export type IDbIpcDbFired = { dir: string; event: DbEvent };
