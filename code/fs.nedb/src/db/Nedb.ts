@@ -35,6 +35,14 @@ export class Nedb<G = any> {
   /**
    * [Methods]
    */
+
+  public compact() {
+    return new Promise((resolve, reject) => {
+      this.store.once('compaction.done', () => resolve());
+      this.store.persistence.compactDatafile();
+    });
+  }
+
   public insert<T extends G>(doc: T) {
     return new Promise<T>((resolve, reject) => {
       this.store.insert(doc, (err: Error, doc: T) => {

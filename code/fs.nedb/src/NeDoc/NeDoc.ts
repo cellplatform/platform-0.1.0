@@ -60,6 +60,10 @@ export class NeDoc {
     return `[db:${filename ? filename : 'memory'}]`;
   }
 
+  public async compact() {
+    await this.store.compact();
+  }
+
   /**
    * [Get]
    */
