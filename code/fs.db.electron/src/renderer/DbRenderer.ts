@@ -32,7 +32,7 @@ export class DbRenderer implements t.IDb {
       .on<t.IDbIpcDbFiredEvent>('DB/fired')
       .pipe(
         takeUntil(this.dispose$),
-        filter(e => e.payload.dir === dir),
+        filter(e => e.payload.db === dir),
       )
       .subscribe(e => this._events$.next(e.payload.event));
   }

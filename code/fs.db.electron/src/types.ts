@@ -10,6 +10,7 @@ import {
 
 export type DbIpc = IpcClient<DbIpcEvent>;
 export type DbFactory = (dir: string) => IDb;
+export type DbKind = 'FS' | 'NEDB';
 
 /**
  * IPC Events
@@ -46,7 +47,7 @@ export type IDbIpcDeleteEvent = {
   payload: { db: string; keys: string[] };
 };
 
-export type IDbIpcDbFired = { dir: string; event: DbEvent };
+export type IDbIpcDbFired = { db: string; event: DbEvent };
 export type IDbIpcDbFiredEvent = {
   type: 'DB/fired';
   payload: IDbIpcDbFired;

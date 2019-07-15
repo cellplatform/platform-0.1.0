@@ -49,7 +49,7 @@ export function init(args: {
           return args.getState();
         },
         get current() {
-          return db(args.getState().current || './tmp/db-1');
+          return db(args.getState().current || 'fs:tmp/db-1');
         },
       };
       return { props };

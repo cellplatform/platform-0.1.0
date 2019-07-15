@@ -3,7 +3,7 @@ import { log, Command, t } from '../common';
 type P = t.ICommandProps;
 
 const DEFAULT = {
-  DB: './tmp/db-1',
+  DB: 'fs:tmp/db-1',
 };
 
 /**
@@ -16,9 +16,11 @@ export const root = Command.create<P>('root', e => {
   .add('db', e => {
     const param = e.param(0, 'db-1');
     const name = typeof param === 'number' ? `db-${param}` : param;
-    const dir = `./tmp/${name}`;
-    e.props.db(dir).dispose();
-    e.props.next({ current: dir });
+    const kind = e.param<string>(1, 'nedb');
+    const db = `${kind}:tmp/${name}`;
+    log.info(db);
+    e.props.db(db).dispose();
+    e.props.next({ current: db });
   })
   .add('get', async e => {
     const db = e.props.current;
@@ -27,13 +29,15 @@ export const root = Command.create<P>('root', e => {
   })
   .add('find', async e => {
     const db = e.props.current;
-    const pattern = e.param<string>(0);
+    const pattern = e.param<string>(0, '**');
     const res = await db.find(pattern);
 
     log.info('\nFIND', res);
-    res.list.forEach(item =>
-      log.info(' >', item.props.key, item.value, '| exists', item.props.exists),
-    );
+
+    if (e.props.state.current) {
+      const databases = { ...(e.props.state.databases || {}), [e.props.state.current]: res.map };
+      e.props.next({ databases });
+    }
   })
   .add('put', e => {
     const db = e.props.current;

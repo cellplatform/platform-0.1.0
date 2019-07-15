@@ -2,7 +2,7 @@ import { shell } from 'electron';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { FileDb, fs, t } from './common';
+import { FileDb, fs, t, parseDbPath, NeDoc } from './common';
 
 /**
  * Start the HyperDB IPC handler's listening on the [main] process.
@@ -14,15 +14,32 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
 
   log.info(`listening for ${log.yellow('db events')}`);
 
-  const CACHE: { [dir: string]: t.IDb } = {};
-  const factory = (dir: string) => {
-    if (!CACHE[dir]) {
-      const db = (CACHE[dir] = FileDb.create({ dir, cache: false }));
-      db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[dir]);
-      db.events$.subscribe(event => events$.next({ dir, event }));
-      log.info.gray(`${log.yellow('database')}: ${dir}`);
+  /**
+   * Database client cache.
+   */
+  const CACHE: { [path: string]: t.IDb } = {};
+  const factory = (input: string) => {
+    const { path, kind } = parseDbPath(input);
+
+    if (!CACHE[path]) {
+      // Construct the database.
+      let db: t.IDb;
+      if (kind === 'FS') {
+        db = FileDb.create({ dir: path, cache: false });
+      } else if (kind === 'NEDB') {
+        db = NeDoc.create({ filename: path });
+      } else {
+        throw new Error(`DB of kind '${kind}' not supported.`);
+      }
+      CACHE[path] = db;
+
+      // Monitor events.
+      db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[path]);
+      db.events$.subscribe(event => events$.next({ db: input, event }));
+
+      log.info.gray(`${log.yellow('database')} [${kind}] ${path}`);
     }
-    return CACHE[dir];
+    return CACHE[path];
   };
 
   /**
