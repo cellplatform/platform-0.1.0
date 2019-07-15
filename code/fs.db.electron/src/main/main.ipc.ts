@@ -1,7 +1,8 @@
+import { shell } from 'electron';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { FileDb, t } from './common';
+import { FileDb, fs, t } from './common';
 
 /**
  * Start the HyperDB IPC handler's listening on the [main] process.
@@ -62,5 +63,14 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     const db = factory(e.payload.dir);
     const values = await db.deleteMany(e.payload.keys);
     return { values };
+  });
+
+  /**
+   * Open folder.
+   */
+  ipc.on<t.IDbIpcOpenFolderEvent>('DB/open/folder').subscribe(async e => {
+    let dir = fs.resolve(e.payload.db);
+    dir = (await fs.is.dir(dir)) ? dir : fs.dirname(dir);
+    shell.openItem(dir);
   });
 }

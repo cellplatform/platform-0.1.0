@@ -42,4 +42,8 @@ export const root = Command.create<P>('root', e => {
   .add('delete', e => {
     const db = e.props.current;
     db.delete(e.param(0) || 'foo');
+  })
+  .add('open-folder', e => {
+    const db = e.props.state.current;
+    e.props.ipc.send<t.IDbIpcOpenFolderEvent>('DB/open/folder', { db });
   });

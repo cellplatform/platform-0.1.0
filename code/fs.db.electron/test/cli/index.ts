@@ -40,6 +40,7 @@ export function init(args: {
     beforeInvoke: async e => {
       const props: t.ICommandProps = {
         ...e.props,
+        ipc,
         db,
         next(state: Partial<t.ITestState>) {
           state$.next(state);

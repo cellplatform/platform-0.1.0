@@ -19,7 +19,8 @@ export type DbIpcEvent =
   | IDbIpcFindEvent
   | IDbIpcPutEvent
   | IDbIpcDeleteEvent
-  | IDbIpcDbFiredEvent;
+  | IDbIpcDbFiredEvent
+  | IDbIpcOpenFolderEvent;
 
 export type IDbIpcGetResponse = { values: IDbValue[] };
 export type IDbIpcGetEvent = {
@@ -45,8 +46,14 @@ export type IDbIpcDeleteEvent = {
   payload: { dir: string; keys: string[] };
 };
 
+export type IDbIpcDbFired = { dir: string; event: DbEvent };
 export type IDbIpcDbFiredEvent = {
   type: 'DB/fired';
   payload: IDbIpcDbFired;
 };
-export type IDbIpcDbFired = { dir: string; event: DbEvent };
+
+export type IDbIpcOpenFolder = { db: string };
+export type IDbIpcOpenFolderEvent = {
+  type: 'DB/open/folder';
+  payload: IDbIpcOpenFolder;
+};

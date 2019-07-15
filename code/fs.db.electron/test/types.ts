@@ -11,6 +11,7 @@ export type ICommandProps = {
   state: ITestState;
   current: IDb;
   next(state: Partial<ITestState>): void;
+  ipc: t.DbIpc;
 };
 
 export type ITestState = {
