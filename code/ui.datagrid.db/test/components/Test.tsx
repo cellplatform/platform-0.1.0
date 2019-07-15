@@ -108,8 +108,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
   public componentDidMount() {
     // Setup syncer.
-    const dir = constants.DB.DIR;
-    const db = this.databases(dir);
+    const file = constants.DB.FILE;
+    const db = this.databases(file);
     const grid = this.datagrid.grid;
     const events$ = this.sync$;
     this.sync = Sync.create({ db, grid, events$ });

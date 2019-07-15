@@ -1,8 +1,10 @@
 const { app } = require('electron').remote;
-const userData = app.getPath('userData');
+const USER_DATA = app.getPath('userData');
 
+const DB_DIR = `${USER_DATA}/db`;
 export const DB = {
-  DIR: `${userData}/db-test`,
+  DIR: DB_DIR,
+  FILE: `nedb:${DB_DIR}/test.db`,
 };
 
 export const COLORS = {

@@ -1,19 +1,9 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+
 import { CommandState, constants, t } from '../common';
 import { root } from './cmds';
 
-const dir = constants.DB.DIR;
 
 export function init(args: {
   state$: Subject<Partial<t.ITestState>>;
@@ -28,7 +18,7 @@ export function init(args: {
     if (db) {
       return db;
     }
-    db = await databases(dir);
+    db = await databases(constants.DB.FILE);
 
     /**
      * Watch for changes to raw DB and update debug state.

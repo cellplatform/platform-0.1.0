@@ -7,6 +7,7 @@ export * from '@platform/ui.datagrid.cell';
 import renderer from '@platform/electron/lib/renderer';
 import datagrid from '@platform/ui.datagrid';
 import database from '@platform/fs.db.electron/lib/renderer';
+export { log } from '@platform/log/lib/client';
 export { datagrid, database, renderer };
 
 export * from '../../src/common';

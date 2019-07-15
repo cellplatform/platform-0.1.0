@@ -61,6 +61,7 @@ export class GridKeys {
  * [Helpers]
  */
 function lastPart(text: string | number, delimiter: string) {
-  const parts = (text || '').toString().split(delimiter);
+  text = text === undefined ? '' : text;
+  const parts = text.toString().split(delimiter);
   return parts[parts.length - 1];
 }

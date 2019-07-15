@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import { t, R, value } from '../common';
+import { t, R, value, time } from '../common';
 import { Keys } from '../keys';
 
 export type ISyncArgs = {
@@ -200,10 +200,11 @@ export class Sync implements t.IDisposable {
       .pipe(filter(e => !this.is.loading.currently('ROWS')))
       .subscribe(async e => {
         e.changes.forEach(change => {
+          const key = this.keys.grid.toRowKey(change.row);
           this.fireSyncing({
             source: 'GRID',
             kind: 'ROW',
-            key: this.keys.grid.toRowKey(change.row),
+            key,
             value: change.to,
           });
         });
@@ -257,7 +258,7 @@ export class Sync implements t.IDisposable {
      * Finish up.
      */
     if (loadGrid) {
-      this.load();
+      time.delay(0, () => this.load());
     }
   }
 
@@ -309,8 +310,7 @@ export class Sync implements t.IDisposable {
     }
     this.is.loading.add('CELLS');
 
-    const query = this.keys.db.prefix.cell;
-    const cells = await this.db.find({ query });
+    const cells = await this.db.find(`${this.keys.db.prefix.cell}*`);
     const values = cells.list.reduce((acc, next) => {
       const key = this.keys.grid.toCellKey(next.props.key);
       acc[key] = next.value;
@@ -327,8 +327,7 @@ export class Sync implements t.IDisposable {
     }
     this.is.loading.add('COLUMNS');
 
-    const query = this.keys.db.prefix.column;
-    const columns = await this.db.find({ query });
+    const columns = await this.db.find(`${this.keys.db.prefix.column}*`);
     const values = columns.list.reduce((acc, next) => {
       const key = this.keys.grid.toColumnKey(next.props.key);
       acc[key] = next.value;
@@ -345,8 +344,7 @@ export class Sync implements t.IDisposable {
     }
     this.is.loading.add('ROWS');
 
-    const query = this.keys.db.prefix.row;
-    const rows = await this.db.find({ query });
+    const rows = await this.db.find(`${this.keys.db.prefix.row}*`);
     const values = rows.list.reduce((acc, next) => {
       const key = this.keys.grid.toRowKey(next.props.key);
       acc[key] = next.value;

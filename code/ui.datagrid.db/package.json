@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.db",
-  "version": "0.1.13",
+  "version": "0.1.15",
   "description": "Abstract synchronization mapper between [ui.datagrid] and a [hyperdb].",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@platform/fs.db": "1.2.14",
-    "@platform/fs.db.electron": "0.0.11",
+    "@platform/fs.db.electron": "0.1.0",
     "@platform/test": "0.0.59",
     "@platform/ts": "3.4.33",
     "@platform/ui.datagrid": "0.0.154",
