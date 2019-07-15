@@ -55,7 +55,6 @@ export class FileDb implements t.IDb {
       const remove = (key: string) => {
         if (this.cache.exists(key)) {
           delete this.cache.values[key];
-          this.fire({ type: 'DOC/cache', payload: { key, action: 'REMOVED' } });
         }
       };
       (keys || Object.keys(this.cache.values)).forEach(remove);

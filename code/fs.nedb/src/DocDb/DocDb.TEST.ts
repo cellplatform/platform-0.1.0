@@ -1,4 +1,4 @@
-import { expect, fs, time } from '../../test/test';
+import { expect, fs, time, t } from '../../test/test';
 import { DocDb } from '.';
 
 const dir = fs.resolve('tmp/doc');
@@ -286,5 +286,37 @@ describe('DocDb', () => {
       expect(values.includes('foo')).to.eql(true);
       expect(values.includes('bar')).to.eql(true);
     });
+  });
+
+  it('observable events', async () => {
+    const events: t.DocDbActionEvent[] = [];
+    db.events$.subscribe(e => events.push(e as t.DocDbActionEvent));
+
+    const key = 'foo/bar';
+    await db.get(key);
+    await db.put(key, 123);
+    await db.get(key);
+    await db.delete(key);
+    await db.get(key);
+
+    expect(events.length).to.eql(5);
+
+    expect(events[0].type).to.eql('DOC/read');
+    expect(events[1].type).to.eql('DOC/change');
+    expect(events[2].type).to.eql('DOC/read');
+    expect(events[3].type).to.eql('DOC/change');
+    expect(events[4].type).to.eql('DOC/read');
+
+    expect(events[0].payload.action).to.eql('get');
+    expect(events[1].payload.action).to.eql('put');
+    expect(events[2].payload.action).to.eql('get');
+    expect(events[3].payload.action).to.eql('delete');
+    expect(events[4].payload.action).to.eql('get');
+
+    expect(events[0].payload.value).to.eql(undefined);
+    expect(events[1].payload.value).to.eql(123);
+    expect(events[2].payload.value).to.eql(123);
+    expect(events[3].payload.value).to.eql(undefined);
+    expect(events[4].payload.value).to.eql(undefined);
   });
 });

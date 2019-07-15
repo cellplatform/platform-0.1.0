@@ -67,9 +67,10 @@ export class DocDb {
     this.throwIfDisposed('get');
     return (await this.getMany([key]))[0];
   }
-  public async getMany(keys: string[]): Promise<t.IDbValue[]> {
+  public async getMany(keys: string[], options: { silent?: boolean } = {}): Promise<t.IDbValue[]> {
     this.throwIfDisposed('getMany');
 
+    // Query the DB.
     const uris = keys.map(key => this.uri.parse(key));
     const paths = uris.map(uri => uri.path.dir);
     const docs = await this.store.find({ path: { $in: paths } });
@@ -79,7 +80,8 @@ export class DocDb {
      * - URI. object path
      */
 
-    return uris.map(uri => {
+    // Convert items to return data-structures.
+    const items = uris.map(uri => {
       const key = uri.text;
       const doc = docs.find(item => item.path === uri.path.dir);
       const value = typeof doc === 'object' ? doc.data : undefined;
@@ -91,7 +93,23 @@ export class DocDb {
       };
       return res;
     });
+
+    // Fire read events.
+    if (!options.silent) {
+      items.forEach(item => {
+        const { value, props } = item;
+        const key = props.key;
+        this.fire({
+          type: 'DOC/read',
+          payload: { action: 'get', key, value, props },
+        });
+      });
+    }
+
+    // Finish up.
+    return items;
   }
+
   public async getValue<T extends t.Json | undefined>(key: string): Promise<T> {
     this.throwIfDisposed('putValue');
     const res = await this.get(key);
@@ -106,7 +124,10 @@ export class DocDb {
     this.throwIfDisposed('put');
     return (await this.putMany([{ key, value, ...options }]))[0];
   }
-  public async putMany(items: t.IDbPutItem[]): Promise<t.IDbValue[]> {
+  public async putMany(
+    items: t.IDbPutItem[],
+    options: { silent?: boolean } = {},
+  ): Promise<t.IDbValue[]> {
     this.throwIfDisposed('putMany');
     const now = time.now.timestamp;
 
@@ -146,7 +167,25 @@ export class DocDb {
       await this.store.insertMany(inserts);
     }
 
-    return this.getMany(items.map(item => item.key));
+    // return this.getMany(items.map(item => item.key));
+
+    // Retrieve result set.
+    const result = await this.getMany(items.map(item => item.key), { silent: true });
+
+    // Fire events.
+    if (!options.silent) {
+      result.forEach(item => {
+        const { value, props } = item;
+        const key = props.key;
+        this.fire({
+          type: 'DOC/change',
+          payload: { action: 'put', key, value, props },
+        });
+      });
+    }
+
+    // Finish up.
+    return result;
   }
 
   /**
@@ -157,15 +196,20 @@ export class DocDb {
     this.throwIfDisposed('delete');
     return (await this.deleteMany([key]))[0];
   }
-  public async deleteMany(keys: string[]): Promise<t.IDbValue[]> {
+  public async deleteMany(
+    keys: string[],
+    options: { silent?: boolean } = {},
+  ): Promise<t.IDbValue[]> {
     this.throwIfDisposed('deleteMany');
 
+    // Remove docs from DB.
     const uris = keys.map(key => this.uri.parse(key));
     const paths = uris.map(uri => uri.path.dir);
     const multi = paths.length > 0;
     await this.store.remove({ path: { $in: paths } }, { multi });
 
-    return uris.map(uri => {
+    // Prepare result set.
+    const result = uris.map(uri => {
       const key = uri.text;
       const res: t.IDbValue = {
         value: undefined,
@@ -173,6 +217,21 @@ export class DocDb {
       };
       return res;
     });
+
+    // Fire read events.
+    if (!options.silent) {
+      result.forEach(item => {
+        const { value, props } = item;
+        const key = props.key;
+        this.fire({
+          type: 'DOC/change',
+          payload: { action: 'delete', key, value, props },
+        });
+      });
+    }
+
+    // Finish up.
+    return result;
   }
 
   /**
@@ -261,5 +320,9 @@ export class DocDb {
     if (this.isDisposed) {
       throw new Error(`Cannot ${action} because the ${this.toString()} has been disposed.`);
     }
+  }
+
+  private fire(e: t.DbEvent) {
+    this._events$.next(e);
   }
 }
