@@ -3,5 +3,5 @@ export { value, defaultValue } from '@platform/util.value';
 /**
  * Ramda.
  */
-import { clamp } from 'ramda';
-export const R = { clamp };
+import { clamp, sortWith, prop, ascend, descend } from 'ramda';
+export const R = { clamp, sortWith, prop, ascend, descend };

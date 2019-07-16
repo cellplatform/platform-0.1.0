@@ -1,2 +1,2 @@
 export * from './cell/types';
-export * from './sheet/types';
+export * from './table/types';

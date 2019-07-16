@@ -5,4 +5,4 @@ export * from './ast';
 export * from './parser';
 
 export * from './cell';
-export * from './sheet';
+export * from './table';
