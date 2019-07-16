@@ -19,7 +19,7 @@ export function init(args: {
   /**
    * Retrieves a DB proxy at the given directory.
    */
-  const db: DbFactory = dir => {
+  const factory: DbFactory = dir => {
     if (!CACHE[dir]) {
       const db = (CACHE[dir] = DbRenderer.create({ ipc, dir }));
       db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[dir]);
@@ -30,5 +30,5 @@ export function init(args: {
     return CACHE[dir];
   };
 
-  return { db };
+  return { factory };
 }

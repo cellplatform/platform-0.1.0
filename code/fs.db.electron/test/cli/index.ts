@@ -11,7 +11,7 @@ export function init(args: {
   getState: () => t.ITestState;
 }) {
   const { state$, ipc } = args;
-  const { db } = renderer.init({ ipc, onCreate: e => monitor(e.dir, e.db) });
+  const { factory } = renderer.init({ ipc, onCreate: e => monitor(e.dir, e.db) });
 
   const populate = async (dir: string, db: t.IDb) => {
     const res = await db.find({});
@@ -41,7 +41,7 @@ export function init(args: {
       const props: t.ICommandProps = {
         ...e.props,
         ipc,
-        db,
+        db: factory,
         next(state: Partial<t.ITestState>) {
           state$.next(state);
         },
@@ -49,7 +49,7 @@ export function init(args: {
           return args.getState();
         },
         get current() {
-          return db(args.getState().current || 'fs:tmp/db-1');
+          return factory(args.getState().current || 'fs:tmp/db-1');
         },
       };
       return { props };
