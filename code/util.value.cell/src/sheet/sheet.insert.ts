@@ -1,6 +1,4 @@
-
-
-
-export function insert() {
-  
-}
+/**
+ * Inserts a row into a sheet
+ */
+export function insertRow() {}
