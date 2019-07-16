@@ -1062,10 +1062,10 @@
     "@platform/types" "0.0.20"
     "@platform/util.value" "0.4.4"
 
-"@platform/fs.nedb@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/fs.nedb/-/fs.nedb-0.1.1.tgz#7c0d0b45ef9aaa267c2645cb0c2eb0954ed26be2"
-  integrity sha512-qB9NSxdKXYKTXrx/cvrMTvP2u2LQG566DNGaBnX5pg6icrfW6NDNWQvcs9HsIXLjtoSUIVAbkGgX+gmGa6m3UA==
+"@platform/fs.nedb@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/fs.nedb/-/fs.nedb-0.1.2.tgz#f02db8ec8035f2011dab609146fa4b53c0f36b2f"
+  integrity sha512-r5aHfdH5RFaSdHGAuqK3I2K8VcUq+ArE9pK+pzOdKSFgDOZxx5lg5e2vDXeS9plExTa+qiOSY7uC1YAKfcZhbQ==
   dependencies:
     "@platform/fs.db.types" "0.1.2"
     "@platform/react" "0.3.12"
