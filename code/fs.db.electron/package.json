@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.db.electron",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@platform/electron": "0.5.2",
-    "@platform/fs.db": "1.2.14",
-    "@platform/fs.db.types": "0.1.1",
-    "@platform/fs.nedb": "0.0.6",
+    "@platform/fs.db": "1.2.15",
+    "@platform/fs.db.types": "0.1.2",
+    "@platform/fs.nedb": "0.1.1",
     "@platform/react": "0.3.12",
     "@platform/types": "0.0.20"
   },

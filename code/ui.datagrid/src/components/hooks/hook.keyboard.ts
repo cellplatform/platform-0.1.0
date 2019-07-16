@@ -15,7 +15,7 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
     // @ts-ignore
     const table = this as Handsontable;
     const grid = getGrid();
-    const payload = toGridKeydown(e, grid);
+    const payload = toKeydownPayload(e, grid);
     const { cancel, key } = payload;
 
     // Fire event.
@@ -52,10 +52,10 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
 }
 
 /**
- * [Internal]
+ * [Helpers]
  */
 
-function toGridKeydown(e: Event, grid: Grid): t.IGridKeydown {
+function toKeydownPayload(e: Event, grid: Grid): t.IGridKeydown {
   const event = e as KeyboardEvent;
   const key = event.key;
   const isEnter = key === 'Enter';

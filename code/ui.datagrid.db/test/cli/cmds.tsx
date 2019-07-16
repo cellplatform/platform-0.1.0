@@ -44,4 +44,10 @@ export const root = Command.create<P>('root', e => {
     log.info(`database file: ${DB.FILE}`);
     log.info(`opening folder: ${dir}`);
     shell.showItemInFolder(dir);
+  })
+  .add('move-right', async e => {
+    const db = e.props.db;
+    console.log('db', db);
+
+    await db.putMany([{ key: 'cell/A1', value: undefined }, { key: 'cell/B1', value: 44 }]);
   });
