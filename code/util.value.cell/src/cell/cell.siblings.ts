@@ -4,7 +4,10 @@ import { fromKey, toKey } from './cell.key';
 /**
  * Retrieves the contiguous cells.
  */
-export function siblings(cell: string, options: t.ICellSiblingOptions = {}): t.ICellSiblings {
+export function siblings(
+  cell: string,
+  options: t.IGridCellSiblingOptions = {},
+): t.IGridCellSiblings {
   const top = sibling(cell, 'TOP', options);
   const right = sibling(cell, 'RIGHT', options);
   const bottom = sibling(cell, 'BOTTOM', options);
@@ -32,8 +35,8 @@ export function siblings(cell: string, options: t.ICellSiblingOptions = {}): t.I
  */
 export function sibling(
   cell: string,
-  edge: t.CellEdge,
-  options: t.ICellSiblingOptions = {},
+  edge: t.GridCellEdge,
+  options: t.IGridCellSiblingOptions = {},
 ): string | undefined {
   const shift = !options.offset ? 1 : Math.abs(options.offset);
   switch (edge) {
@@ -57,7 +60,7 @@ export function offset(
   cell: string,
   columnOffset: number,
   rowOffset: number,
-  options: t.ICellOffsetOptions = {},
+  options: t.IGridCellOffsetOptions = {},
 ) {
   const { totalColumns, totalRows, clamp = false } = options;
 

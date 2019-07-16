@@ -10,7 +10,7 @@ export type IGridCellPosition = {
 /**
  * Siblings
  */
-export interface ICellSiblings {
+export interface IGridCellSiblings {
   cell: string;
   top?: string;
   right?: string;
@@ -19,16 +19,11 @@ export interface ICellSiblings {
   toString: () => string;
 }
 
-export type CellEdge = 'TOP' | 'RIGHT' | 'BOTTOM' | 'LEFT';
+export type GridCellEdge = 'TOP' | 'RIGHT' | 'BOTTOM' | 'LEFT';
 
-export type ICellOffsetOptions = {
+export type IGridCellOffsetOptions = {
   totalColumns?: number;
   totalRows?: number;
   clamp?: boolean; // Always return siblings, clipped to the edges (eg. [0,0] or [totalColumns,totalRows])
 };
-
-export type ICellSiblingOptions = ICellOffsetOptions & {
-  offset?: number;
-};
-
-export type ICellSiblingArgs = {};
+export type IGridCellSiblingOptions = IGridCellOffsetOptions & { offset?: number };

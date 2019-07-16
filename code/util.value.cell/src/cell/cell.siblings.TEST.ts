@@ -7,7 +7,7 @@ describe('cell.offset', () => {
     columnOffset: number,
     rowOffset: number,
     result: undefined | string,
-    options?: cell.ICellOffsetOptions,
+    options?: cell.IGridCellOffsetOptions,
   ) => {
     const res = cell.offset(cellKey, columnOffset, rowOffset, options);
     const msg = `cell: "${cellKey}", columnOffset: "${columnOffset}", rowOffset: ${rowOffset}`;
@@ -50,9 +50,9 @@ describe('cell.offset', () => {
 describe('sibling', () => {
   const test = (
     cellKey: string,
-    edge: cell.CellEdge,
+    edge: cell.GridCellEdge,
     result: undefined | string,
-    options?: cell.ICellSiblingOptions,
+    options?: cell.IGridCellSiblingOptions,
   ) => {
     const res = cell.sibling(cellKey, edge, options);
     const msg = `cell: "${cellKey}", edge: "${edge}"`;
