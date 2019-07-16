@@ -36,7 +36,6 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       // Monitor events.
       db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[path]);
       db.events$.subscribe(event => events$.next({ conn, event }));
-
       log.info.gray(`${log.green(kind)}: ${path}`);
     }
     return CACHE[path];
