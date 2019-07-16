@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { offset, sibling, siblings } from '.';
+import { offset, sibling, siblings } from './cell';
 import { t } from '../common';
 
 describe('cell.offset', () => {

@@ -1,5 +1,5 @@
 import { t, R } from '../common';
-import { fromKey, toKey } from '../cell/cell.key';
+import { fromKey, toKey } from './cell.key';
 
 /**
  * Retrieves the contiguous cells.
