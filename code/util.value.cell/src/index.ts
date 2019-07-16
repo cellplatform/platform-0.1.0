@@ -1,5 +1,8 @@
+export * from './types';
+
 export * from './alpha';
 export * from './ast';
-export * from './cell';
 export * from './parser';
-export * from './types';
+
+export * from './cell';
+export * from './sheet';
