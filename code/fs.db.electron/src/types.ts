@@ -9,7 +9,7 @@ import {
 } from '@platform/fs.db/lib/types';
 
 export type DbIpc = IpcClient<DbIpcEvent>;
-export type DbFactory = (dir: string) => IDb;
+export type DbFactory = (conn: string) => IDb;
 export type DbKind = 'FSDB' | 'NEDB';
 
 /**

@@ -1081,10 +1081,10 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db.electron@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db.electron/-/fs.db.electron-0.1.2.tgz#c2c6428bf43a8292085c1a19632e82ba621d87c4"
-  integrity sha512-zOuzN4ZS1ZQuTogsa0Ua/OE+ryGUNSXKu478oigD0lCMJoPN5tG8nbaNvrkVZX9QMcDsR3Grub6vHWmBWpsEwg==
+"@platform/fs.db.electron@0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db.electron/-/fs.db.electron-0.1.3.tgz#719f63fb27a5465c356c1809192c7c9cfebd9c8b"
+  integrity sha512-NK/BbL09aLeh7BOs6ki72R8VOXODjzA2uHaFNspl63xTLPU5rTzF5MLGpD6sfTw0iw1bLNfhCp92B4uuu6+AeA==
   dependencies:
     "@platform/electron" "0.5.2"
     "@platform/fs.db" "1.2.15"
