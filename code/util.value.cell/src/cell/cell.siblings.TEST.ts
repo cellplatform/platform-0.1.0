@@ -1,18 +1,16 @@
 import { expect } from 'chai';
-
-import { offset, sibling, siblings } from './cell';
-import { t } from '../common';
+import { cell } from '.';
 
 describe('cell.offset', () => {
   const test = (
-    cell: string,
+    cellKey: string,
     columnOffset: number,
     rowOffset: number,
     result: undefined | string,
-    options?: t.ICellOffsetOptions,
+    options?: cell.ICellOffsetOptions,
   ) => {
-    const res = offset(cell, columnOffset, rowOffset, options);
-    const msg = `cell: "${cell}", columnOffset: "${columnOffset}", rowOffset: ${rowOffset}`;
+    const res = cell.offset(cellKey, columnOffset, rowOffset, options);
+    const msg = `cell: "${cellKey}", columnOffset: "${columnOffset}", rowOffset: ${rowOffset}`;
     if (result === undefined) {
       expect(res).to.eql(undefined, msg);
     } else {
@@ -51,13 +49,13 @@ describe('cell.offset', () => {
 
 describe('sibling', () => {
   const test = (
-    cell: string,
-    edge: t.CellEdge,
+    cellKey: string,
+    edge: cell.CellEdge,
     result: undefined | string,
-    options?: t.ICellSiblingOptions,
+    options?: cell.ICellSiblingOptions,
   ) => {
-    const res = sibling(cell, edge, options);
-    const msg = `cell: "${cell}", edge: "${edge}"`;
+    const res = cell.sibling(cellKey, edge, options);
+    const msg = `cell: "${cellKey}", edge: "${edge}"`;
     if (result === undefined) {
       expect(res).to.eql(undefined, msg);
     } else {
@@ -96,7 +94,7 @@ describe('sibling', () => {
 
 describe('siblings', () => {
   it('top/left', () => {
-    const res = siblings('A$1');
+    const res = cell.siblings('A$1');
     expect(res.top).to.eql(undefined);
     expect(res.left).to.eql(undefined);
     expect(res.right).to.eql('B1');
@@ -104,7 +102,7 @@ describe('siblings', () => {
   });
 
   it('top/right', () => {
-    const res = siblings('E1', { totalColumns: 5, totalRows: 10 });
+    const res = cell.siblings('E1', { totalColumns: 5, totalRows: 10 });
     expect(res.top).to.eql(undefined);
     expect(res.right).to.eql(undefined);
     expect(res.left).to.eql('D1');
@@ -112,7 +110,7 @@ describe('siblings', () => {
   });
 
   it('bottom/right', () => {
-    const res = siblings('$E10', { totalColumns: 5, totalRows: 10 });
+    const res = cell.siblings('$E10', { totalColumns: 5, totalRows: 10 });
     expect(res.right).to.eql(undefined);
     expect(res.bottom).to.eql(undefined);
     expect(res.left).to.eql('D10');
@@ -120,7 +118,7 @@ describe('siblings', () => {
   });
 
   it('bottom/left', () => {
-    const res = siblings('A10', { totalColumns: 5, totalRows: 10 });
+    const res = cell.siblings('A10', { totalColumns: 5, totalRows: 10 });
     expect(res.left).to.eql(undefined);
     expect(res.bottom).to.eql(undefined);
     expect(res.right).to.eql('B10');
@@ -128,7 +126,7 @@ describe('siblings', () => {
   });
 
   it('middle (all sides)', () => {
-    const res = siblings('B3', { totalColumns: 5, totalRows: 10 });
+    const res = cell.siblings('B3', { totalColumns: 5, totalRows: 10 });
     expect(res.left).to.eql('A3');
     expect(res.right).to.eql('C3');
     expect(res.top).to.eql('B2');
@@ -136,7 +134,7 @@ describe('siblings', () => {
   });
 
   it('no upper bounds - has all sides (totalColumns, totalRows)', () => {
-    const res = siblings('AAA999');
+    const res = cell.siblings('AAA999');
     expect(res.left).to.eql('ZZ999');
     expect(res.right).to.eql('AAB999');
     expect(res.top).to.eql('AAA998');
@@ -147,7 +145,7 @@ describe('siblings', () => {
 describe('siblings (offset)', () => {
   it('offset: 0/undefined', () => {
     const offset = (offset?: number) => {
-      const res = siblings('E10', { offset: 0 });
+      const res = cell.siblings('E10', { offset: 0 });
       expect(res.left).to.eql('D10');
       expect(res.right).to.eql('F10');
       expect(res.top).to.eql('E9');
@@ -158,7 +156,7 @@ describe('siblings (offset)', () => {
   });
 
   it('offsets by 3', () => {
-    const res = siblings('E10', { offset: 3 });
+    const res = cell.siblings('E10', { offset: 3 });
     expect(res.left).to.eql('B10');
     expect(res.right).to.eql('H10');
     expect(res.top).to.eql('E7');
@@ -166,7 +164,7 @@ describe('siblings (offset)', () => {
   });
 
   it('clamp (undefined siblings clamp to closest sibling Cell)', () => {
-    const res = siblings('C3', {
+    const res = cell.siblings('C3', {
       offset: 20,
       totalColumns: 5,
       totalRows: 5,
