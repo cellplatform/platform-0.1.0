@@ -1,8 +1,8 @@
 import { shell } from 'electron';
 import { Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { share, take } from 'rxjs/operators';
 
-import { FileDb, fs, t, parseDbPath, NeDoc } from './common';
+import { FileDb, fs, NeDoc, parseDbPath, t } from './common';
 
 /**
  * Start the HyperDB IPC handler's listening on the [main] process.
@@ -88,4 +88,10 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
     dir = (await fs.is.dir(dir)) ? dir : fs.dirname(dir);
     shell.openItem(dir);
   });
+
+  // Finish up.
+  return {
+    events$: events$.pipe(share()),
+    factory,
+  };
 }
