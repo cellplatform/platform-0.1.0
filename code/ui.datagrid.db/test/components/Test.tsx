@@ -104,30 +104,25 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       filter(e => e.type === 'DOWN'),
     );
 
-    gridRightClick$
-      .pipe(
-        filter(e => e.button === 'RIGHT'),
-        filter(e => e.cellType === 'COLUMN'),
-      )
-      .subscribe(e => {
-        e.cancel();
+    gridRightClick$.pipe(filter(e => e.cellType === 'COLUMN')).subscribe(e => {
+      e.cancel();
 
-        const selection = this.grid.selection;
-        console.log('selection', selection);
+      const selection = this.grid.selection;
+      console.log('selection', selection);
 
-        // Temp show popup-menu.
-        const remote = this.context.remote;
-        const menu = new remote.Menu();
-        const menuItem = new remote.MenuItem({
-          label: 'Insert 1 left',
-          click: () => {
-            console.log('insert');
-            // remote.getCurrentWindow().inspectElement(rightClickPosition.x, rightClickPosition.y)
-          },
-        });
-        menu.append(menuItem);
-        menu.popup();
+      // Temp show popup-menu.
+      const remote = this.context.remote;
+      const menu = new remote.Menu();
+      const menuItem = new remote.MenuItem({
+        label: 'Insert 1 left',
+        click: () => {
+          console.log('insert');
+          // remote.getCurrentWindow().inspectElement(rightClickPosition.x, rightClickPosition.y)
+        },
       });
+      menu.append(menuItem);
+      menu.popup();
+    });
   }
 
   public componentDidMount() {

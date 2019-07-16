@@ -18,8 +18,8 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
    * Database client cache.
    */
   const CACHE: { [path: string]: t.IDb } = {};
-  const factory = (input: string) => {
-    const { path, kind } = parseDbPath(input);
+  const factory = (conn: string) => {
+    const { path, kind } = parseDbPath(conn);
 
     if (!CACHE[path]) {
       // Construct the database.
@@ -35,7 +35,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
 
       // Monitor events.
       db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[path]);
-      db.events$.subscribe(event => events$.next({ db: input, event }));
+      db.events$.subscribe(event => events$.next({ conn, event }));
 
       log.info.gray(`${log.green(kind)}: ${path}`);
     }
@@ -45,46 +45,69 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   /**
    * Broadcast all DB events to renderers.
    */
-  events$.subscribe(payload => ipc.send('DB/fired', payload));
+  events$.subscribe(payload => {
+    // console.log('payload', payload);
+    ipc.send('DB/fired', payload);
+  });
 
   /**
    * GET
    */
   ipc.handle<t.IDbIpcGetEvent, t.IDbIpcGetResponse>('DB/get', async e => {
-    const db = factory(e.payload.db);
-    const values = await db.getMany(e.payload.keys);
-    return { values };
+    try {
+      const db = factory(e.payload.conn);
+      const values = await db.getMany(e.payload.keys);
+      return { values };
+    } catch (error) {
+      log.error(`[db:error/get] ${error.message}`);
+      throw error;
+    }
   });
 
   ipc.handle<t.IDbIpcFindEvent, t.IDbIpcFindResponse>('DB/find', async e => {
-    const db = factory(e.payload.db);
-    const result = await db.find(e.payload.query);
-    return { result };
+    try {
+      const db = factory(e.payload.conn);
+      const result = await db.find(e.payload.query);
+      return { result };
+    } catch (error) {
+      log.error(`[db:error/find] ${error.message}`);
+      throw error;
+    }
   });
 
   /**
    * PUT
    */
   ipc.handle<t.IDbIpcPutEvent, t.IDbIpcPutResponse>('DB/put', async e => {
-    const db = factory(e.payload.db);
-    const values = await db.putMany(e.payload.items);
-    return { values };
+    try {
+      const db = factory(e.payload.conn);
+      const values = await db.putMany(e.payload.items);
+      return { values };
+    } catch (error) {
+      log.error(`[db:error/put] ${error.message}`);
+      throw error;
+    }
   });
 
   /**
    * DELETE
    */
   ipc.handle<t.IDbIpcDeleteEvent, t.IDbIpcDeleteResponse>('DB/delete', async e => {
-    const db = factory(e.payload.db);
-    const values = await db.deleteMany(e.payload.keys);
-    return { values };
+    try {
+      const db = factory(e.payload.conn);
+      const values = await db.deleteMany(e.payload.keys);
+      return { values };
+    } catch (error) {
+      log.error(`[db:error/delete]: ${error.message}`);
+      throw error;
+    }
   });
 
   /**
    * Open folder.
    */
   ipc.on<t.IDbIpcOpenFolderEvent>('DB/open/folder').subscribe(async e => {
-    let dir = fs.resolve(e.payload.db);
+    let dir = fs.resolve(parseDbPath(e.payload.conn).path);
     dir = (await fs.is.dir(dir)) ? dir : fs.dirname(dir);
     shell.openItem(dir);
   });

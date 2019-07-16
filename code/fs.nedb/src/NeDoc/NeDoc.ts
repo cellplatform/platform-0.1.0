@@ -1,7 +1,8 @@
 import { Subject } from 'rxjs';
-import { take, share } from 'rxjs/operators';
+import { share } from 'rxjs/operators';
+
+import { DbUri, defaultValue, t, time, value as valueUtil } from '../common';
 import { Nedb } from '../db';
-import { t, R, time, defaultValue, DbUri, value as valueUtil } from '../common';
 
 export type INeDocArgs = {
   filename?: string;
@@ -28,7 +29,7 @@ export class NeDoc {
     const { filename } = args;
     const autoload = Boolean(filename);
     this.store = Nedb.create<t.IDoc>({ filename, autoload });
-    this.store.ensureIndex({ fieldName: 'path', unique: true });
+    this.store.ensureIndex({ fieldName: 'path', unique: true, sparse: true });
   }
 
   public dispose() {
@@ -162,16 +163,14 @@ export class NeDoc {
         }),
       );
 
-      // Remove the existing updates from the new isnerts.
-      inserts = inserts.filter(d1 => existing.some(d2 => d2.path !== d1.path));
+      // Remove the existing updates from the new inserts.
+      inserts = inserts.filter(d1 => !existing.some(d2 => d2.path === d1.path));
     }
 
     // Perform inserts.
     if (inserts.length > 0) {
       await this.store.insertMany(inserts);
     }
-
-    // return this.getMany(items.map(item => item.key));
 
     // Retrieve result set.
     const result = await this.getMany(items.map(item => item.key), { silent: true });

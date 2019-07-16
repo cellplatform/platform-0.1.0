@@ -26,34 +26,34 @@ export type DbIpcEvent =
 export type IDbIpcGetResponse = { values: IDbValue[] };
 export type IDbIpcGetEvent = {
   type: 'DB/get';
-  payload: { db: string; keys: string[] };
+  payload: { conn: string; keys: string[] };
 };
 
 export type IDbIpcFindResponse = { result: IDbFindResult };
 export type IDbIpcFindEvent = {
   type: 'DB/find';
-  payload: { db: string; query: IDbQuery };
+  payload: { conn: string; query: IDbQuery };
 };
 
 export type IDbIpcPutResponse = { values: IDbValue[] };
 export type IDbIpcPutEvent = {
   type: 'DB/put';
-  payload: { db: string; items: IDbKeyValue[] };
+  payload: { conn: string; items: IDbKeyValue[] };
 };
 
 export type IDbIpcDeleteResponse = { values: IDbValue[] };
 export type IDbIpcDeleteEvent = {
   type: 'DB/delete';
-  payload: { db: string; keys: string[] };
+  payload: { conn: string; keys: string[] };
 };
 
-export type IDbIpcDbFired = { db: string; event: DbEvent };
+export type IDbIpcDbFired = { conn: string; event: DbEvent };
 export type IDbIpcDbFiredEvent = {
   type: 'DB/fired';
   payload: IDbIpcDbFired;
 };
 
-export type IDbIpcOpenFolder = { db: string };
+export type IDbIpcOpenFolder = { conn: string };
 export type IDbIpcOpenFolderEvent = {
   type: 'DB/open/folder';
   payload: IDbIpcOpenFolder;

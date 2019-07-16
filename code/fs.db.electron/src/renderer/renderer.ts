@@ -7,27 +7,27 @@ export * from './DbRenderer';
 export { DbRenderer };
 
 /**
- * Initialize the renderer
+ * Initialize the renderer.
  */
 export function init(args: {
   ipc: IpcClient;
-  onCreate?: (args: { dir: string; db: IDb }) => void;
+  onCreate?: (args: { conn: string; db: IDb }) => void;
 }) {
-  const CACHE: { [dir: string]: DbRenderer } = {};
   const { ipc } = args;
+  const CACHE: { [conn: string]: DbRenderer } = {};
 
   /**
    * Retrieves a DB proxy at the given directory.
    */
-  const factory: DbFactory = dir => {
-    if (!CACHE[dir]) {
-      const db = (CACHE[dir] = DbRenderer.create({ ipc, dir }));
-      db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[dir]);
+  const factory: DbFactory = conn => {
+    if (!CACHE[conn]) {
+      const db = (CACHE[conn] = DbRenderer.create({ ipc, conn: conn }));
+      db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[conn]);
       if (args.onCreate) {
-        args.onCreate({ dir, db });
+        args.onCreate({ conn: conn, db });
       }
     }
-    return CACHE[dir];
+    return CACHE[conn];
   };
 
   return { factory };

@@ -12,11 +12,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
-  private cli: t.ICommandState = cli.init({
-    ipc: this.context.ipc,
-    state$: this.state$,
-    getState: () => this.state,
-  });
+  private cli!: t.ICommandState;
 
   public static contextType = renderer.Context;
   public context!: renderer.ReactContext;
@@ -27,6 +23,12 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
+
+    this.cli = cli.init({
+      ipc: this.context.ipc,
+      state$: this.state$,
+      getState: () => this.state,
+    });
   }
 
   public componentWillUnmount() {
@@ -41,7 +43,9 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div style={{ padding: 30, flex: 1 }}>
-          <ObjectView name={'state'} data={this.state} expandLevel={5} />
+          <div>{this.state.current}</div>
+          <Hr />
+          <ObjectView name={'databases'} data={this.state.databases} expandLevel={5} />
         </div>
       </CommandShell>
     );
