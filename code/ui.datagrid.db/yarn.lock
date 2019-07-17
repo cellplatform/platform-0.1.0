@@ -1069,6 +1069,24 @@
     is-electron "2.2.0"
     minimist "1.2.0"
 
+"@platform/electron@0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.5.3.tgz#46c18d9ba9fcf96d09e67e31b2b4a9a4c1aee83b"
+  integrity sha512-m7C940Y/1G2oL7k23UOdhtXovzUIIwMQeXMzliCCCvjIcUcGfGWgpKH0S5KzCBJkQQwXwthR9U21eWxKjS/2Dg==
+  dependencies:
+    "@platform/fs" "0.1.6"
+    "@platform/libs" "^0.0.18"
+    "@platform/log" "0.0.133"
+    "@platform/react" "0.3.12"
+    "@platform/types" "0.0.20"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.2.1"
+    electron-log "3.0.6"
+    electron-store "4.0.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+    minimist "1.2.0"
+
 "@platform/exec@0.2.20":
   version "0.2.20"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.20.tgz#5ac7598d199d8313b8743d52ea1918e1dd223705"
@@ -1081,12 +1099,12 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db.electron@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db.electron/-/fs.db.electron-0.2.1.tgz#dd3ce8fed938135d03e24bc29f393582487d029b"
-  integrity sha512-AH3iZQsXGnDEidTdIlvlzuhFl3uVglC6LDU5ZPi2fGekHQ526hLgEV3y7pHgnhjmt09+XdFO9tkcfR/SWGybCQ==
+"@platform/fs.db.electron@0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db.electron/-/fs.db.electron-0.2.2.tgz#46d186c07d28497958d6f3bde9360cbd2792fc5f"
+  integrity sha512-1FmcSG7TV2T9qmaFxY1bZIp0WP6ba1DK9haQoNHrFiZQWTBPBjdtn379YB7kbXPbDxx/p4SEpYg5jf2kiM4+Yw==
   dependencies:
-    "@platform/electron" "0.5.2"
+    "@platform/electron" "0.5.3"
     "@platform/fs.db" "1.2.15"
     "@platform/fs.db.types" "0.1.2"
     "@platform/fs.nedb" "0.1.2"
@@ -1276,37 +1294,37 @@
     codemirror "5.48.0"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.cell@0.0.70":
-  version "0.0.70"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.70.tgz#9e02c0bddfb02e773153ba6b534ed3124fa40d48"
-  integrity sha512-bi7ngaoF2EbonV87XcRnOrUcNwArsgsUcA+dd6B2KmfsJWiLl3EWJ9piT4s8wA7Xm9R++5AqtvcZiwCqQV6c9Q==
+"@platform/ui.datagrid.cell@0.0.71":
+  version "0.0.71"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.71.tgz#4c568bf59eece98436a1158b95cf15c420b899df"
+  integrity sha512-50YJ2jyc3mpdZc5+j5itBALWqE708ivU2uMu/KQRLgruRGNvZeb9o9vmrArDjGjG92NfEPKjqUtzQKtmls76nQ==
   dependencies:
     "@platform/react" "0.3.12"
     "@platform/ui.codemirror" "0.0.75"
-    "@platform/ui.datagrid.types" "0.1.2"
+    "@platform/ui.datagrid.types" "0.1.3"
     "@platform/ui.editor" "0.1.30"
     "@platform/ui.text" "0.2.25"
     "@platform/util.markdown" "0.0.30"
 
-"@platform/ui.datagrid.types@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.1.2.tgz#06fa0183b10af1602b31085d196054f977259545"
-  integrity sha512-Ih3nJIddhjtxV1SZ2FUBiKIRuflSm5kNydNjIvoof/hETIO+7+UzPve9kHIsyX34B8KKVNdOVX/FkJxl3vo28A==
+"@platform/ui.datagrid.types@0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.1.3.tgz#605fae6568d002515220ff699a604a65b730943f"
+  integrity sha512-P27gMpC5HGRT6gsSuu5DDhVIY4cCGPbhce8PxH1+MYUThczcgvP8aGAyJRWFuSkv1yr3v8h2UJ9Don4mk5hmnQ==
   dependencies:
     "@platform/react" "0.3.12"
-    "@platform/util.value.cell" "0.1.1"
+    "@platform/util.value.cell" "0.2.0"
 
-"@platform/ui.datagrid@0.0.157":
-  version "0.0.157"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.157.tgz#55042a805424b4e7d6dc734a485a5c1edeb77c61"
-  integrity sha512-nxioiuBwPWrkEmuW3oyWmtEykljaU+eJOGJAIOoO/qEfjOWVKvVvMurQ4CcRSc0XZ4huIgsK/O43ZJ/Qq7VHLw==
+"@platform/ui.datagrid@0.0.158":
+  version "0.0.158"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.0.158.tgz#28a344cd48f5680d49fb8edd2f49956762b5f964"
+  integrity sha512-1oxpuGHbIH8luKqYsPj8GhmpIY+vzYDhyauhnYNAJ5WI8iUeTsI4nHDEg78e6xDFnAKovsmdlwF3EKzTHEhG2w==
   dependencies:
     "@babel/polyfill" "7.4.4"
     "@platform/libs" "0.0.18"
     "@platform/react" "0.3.12"
-    "@platform/ui.datagrid.types" "0.1.2"
+    "@platform/ui.datagrid.types" "0.1.3"
     "@platform/ui.text" "0.2.25"
-    "@platform/util.value.cell" "0.1.1"
+    "@platform/util.value.cell" "0.2.0"
     handsontable "6.2.2"
 
 "@platform/ui.editor@0.1.30":
@@ -1437,10 +1455,10 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value.cell@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.1.1.tgz#3251da82d5cdf3af48d09e96b2eda771ac5e0e29"
-  integrity sha512-xoZY0Mo4osWb6MR6N5kTVATbmQ7hfG8nJCVVnpUxEG9swXDnZZFPXVBtPYexWxINVdYd6Hz1iecHsB52JZwdwg==
+"@platform/util.value.cell@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.2.0.tgz#26f28be67e46bdec1b946c99485e9054699cf9a9"
+  integrity sha512-f+7Eg2hRCWW4dv76yzeONKLBm/eZ9XeZZ74ipuq/9aYxAMdonl9mNAqnFO+UjS+IEP4GgubHSbWv52djhfY37g==
   dependencies:
     "@platform/util.value" "0.4.4"
     excel-formula-ast "1.1.1"
