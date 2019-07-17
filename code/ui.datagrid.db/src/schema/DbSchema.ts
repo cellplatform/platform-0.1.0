@@ -7,7 +7,6 @@ export class DbSchema {
   public static create = (args: {}) => new DbSchema(args);
   private constructor(args: {}) {}
 
-
   public static toKey(prefix: string, key: string | number | { key: string }) {
     key = typeof key === 'number' ? key.toString() : key;
     key = typeof key === 'object' ? key.key : (key || '').toString();
