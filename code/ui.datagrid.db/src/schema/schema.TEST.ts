@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-import { Keys } from './keys';
+import { SyncSchema } from '.';
 
 describe('keys', () => {
   it('toDbCellKey', () => {
-    const keys = Keys.create({});
+    const keys = SyncSchema.create({});
     const test = (key: any, expected: any) => {
       const res = keys.db.toCellKey(key);
       expect(res).to.eql(expected);
@@ -19,7 +19,7 @@ describe('keys', () => {
   });
 
   it('toDbRowKey', () => {
-    const keys = Keys.create({});
+    const keys = SyncSchema.create({});
     const test = (key: any, expected: any) => {
       const res = keys.db.toRowKey(key);
       expect(res).to.eql(expected);
@@ -30,7 +30,7 @@ describe('keys', () => {
   });
 
   it('toDbColumnKey', () => {
-    const keys = Keys.create({});
+    const keys = SyncSchema.create({});
     const test = (key: any, expected: any) => {
       const res = keys.db.toColumnKey(key);
       expect(res).to.eql(expected);
@@ -43,7 +43,7 @@ describe('keys', () => {
   });
 
   it('toGridCellKey', () => {
-    const keys = Keys.create({});
+    const keys = SyncSchema.create({});
     const test = (key: any, expected: any) => {
       const res = keys.grid.toCellKey(key);
       expect(res).to.eql(expected);
@@ -57,14 +57,14 @@ describe('keys', () => {
 
   describe('db', () => {
     it('all (find)', () => {
-      const keys = Keys.create({});
+      const keys = SyncSchema.create({});
       expect(keys.db.all.cells).to.eql('cell/*');
       expect(keys.db.all.rows).to.eql('row/*');
       expect(keys.db.all.columns).to.eql('column/*');
     });
 
     describe('is', () => {
-      const keys = Keys.create({});
+      const keys = SyncSchema.create({});
       it('is.cell', () => {
         const test = (input: string, output: boolean) => {
           expect(keys.db.is.cell(input)).to.eql(output);

@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { t, R, rx } from '../common';
-import { Keys } from '../keys';
+import { SyncSchema } from '../schema';
 
 export type ISyncArgs = {
   db: t.IDb;
@@ -37,7 +37,7 @@ export class Sync implements t.IDisposable {
     // Store refs;
     this.db = db;
     this.grid = grid;
-    this.keys = Keys.create({});
+    this.keys = SyncSchema.create({});
 
     // Bubble events.
     if (args.events$) {
@@ -325,7 +325,7 @@ export class Sync implements t.IDisposable {
    */
   public readonly grid: t.IGrid;
   public readonly db: t.IDb;
-  private keys!: Keys;
+  private keys!: SyncSchema;
 
   private is = {
     loading: flags<GridPart>(),
