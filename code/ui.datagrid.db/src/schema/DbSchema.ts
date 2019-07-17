@@ -4,24 +4,44 @@ import { lastPart, coord } from './common';
  * Keys for items within the database.
  */
 export class DbSchema {
-  public static create = (args: {}) => new DbSchema(args);
-  private constructor(args: {}) {}
-
+  /**
+   * [Static]
+   */
   public static toKey(prefix: string, key: string | number | { key: string }) {
     key = typeof key === 'number' ? key.toString() : key;
     key = typeof key === 'object' ? key.key : (key || '').toString();
     key = lastPart(key, '/');
-    return !key ? '' : `${prefix}${key}`;
+    return !key ? '' : `${prefix}/${key}`;
   }
 
+  /**
+   * [Lifecycle]
+   */
+  public static create = (args: {}) => new DbSchema(args);
+  private constructor(args: {}) {}
+
+  /**
+   * [Properties]
+   */
   private get prefix() {
     return {
-      cell: 'cell/',
-      column: 'column/',
-      row: 'row/',
+      cell: 'cell',
+      column: 'column',
+      row: 'row',
     };
   }
 
+  public get is() {
+    return {
+      cell: (key: string) => key.startsWith(this.prefix.cell),
+      column: (key: string) => key.startsWith(this.prefix.column),
+      row: (key: string) => key.startsWith(this.prefix.row),
+    };
+  }
+
+  /**
+   * [Methods]
+   */
   public toCellKey(key: string | { key: string }) {
     return DbSchema.toKey(this.prefix.cell, key);
   }
@@ -37,17 +57,9 @@ export class DbSchema {
 
   public get all() {
     return {
-      cells: `${this.prefix.cell}*`,
-      columns: `${this.prefix.column}*`,
-      rows: `${this.prefix.row}*`,
-    };
-  }
-
-  public get is() {
-    return {
-      cell: (key: string) => key.startsWith(this.prefix.cell),
-      column: (key: string) => key.startsWith(this.prefix.column),
-      row: (key: string) => key.startsWith(this.prefix.row),
+      cells: `${this.prefix.cell}/*`,
+      columns: `${this.prefix.column}/*`,
+      rows: `${this.prefix.row}/*`,
     };
   }
 }

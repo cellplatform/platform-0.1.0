@@ -37,7 +37,7 @@ export class Sync implements t.IDisposable {
     // Store refs;
     this.db = db;
     this.grid = grid;
-    this.keys = SyncSchema.create({});
+    this.schema = SyncSchema.create({});
 
     // Bubble events.
     if (args.events$) {
@@ -139,7 +139,7 @@ export class Sync implements t.IDisposable {
             this.fireSync({
               source: 'GRID',
               kind: 'CELL',
-              key: this.keys.grid.toCellKey(change.cell.key),
+              key: this.schema.grid.toCellKey(change.cell.key),
               value: change.value.to,
             });
           });
@@ -148,14 +148,14 @@ export class Sync implements t.IDisposable {
       dbChange$
         // Cell changed in DB.
         .pipe(
-          filter(e => this.keys.db.is.cell(e.key)),
+          filter(e => this.schema.db.is.cell(e.key)),
           filter(e => !this.is.loading.currently('CELLS')),
         )
         .subscribe(e => {
           this.fireSync({
             source: 'DB',
             kind: 'CELL',
-            key: this.keys.grid.toCellKey(e.key),
+            key: this.schema.grid.toCellKey(e.key),
             value: e.value,
           });
         });
@@ -167,7 +167,7 @@ export class Sync implements t.IDisposable {
           filter(e => e.kind === 'CELL'),
         )
         .subscribe(async e => {
-          const key = this.keys.db.toCellKey(e.key);
+          const key = this.schema.db.toCellKey(e.key);
           const existing = await db.getValue(key);
           if (!R.equals(existing, e.value)) {
             save$.next({ key, value: e.value });
@@ -181,7 +181,7 @@ export class Sync implements t.IDisposable {
           filter(e => e.kind === 'CELL'),
         )
         .subscribe(async e => {
-          const key = this.keys.grid.toCellKey(e.key);
+          const key = this.schema.grid.toCellKey(e.key);
           const cell = grid.cell(key);
           if (!R.equals(e.value, cell.value)) {
             changeGrid$.next({ type: 'CELL', key, value: e.value });
@@ -201,7 +201,7 @@ export class Sync implements t.IDisposable {
             this.fireSync({
               source: 'GRID',
               kind: 'COLUMN',
-              key: this.keys.grid.toColumnKey(change.column),
+              key: this.schema.grid.toColumnKey(change.column),
               value: change.to,
             });
           });
@@ -210,14 +210,14 @@ export class Sync implements t.IDisposable {
       dbChange$
         // Column changed in DB.
         .pipe(
-          filter(e => this.keys.db.is.column(e.key)),
+          filter(e => this.schema.db.is.column(e.key)),
           filter(e => !this.is.loading.currently('COLUMNS')),
         )
         .subscribe(e => {
           this.fireSync({
             source: 'DB',
             kind: 'COLUMN',
-            key: this.keys.grid.toColumnKey(e.key),
+            key: this.schema.grid.toColumnKey(e.key),
             value: e.value as t.IGridColumn,
           });
         });
@@ -229,7 +229,7 @@ export class Sync implements t.IDisposable {
           filter(e => e.kind === 'COLUMN'),
         )
         .subscribe(async e => {
-          const key = this.keys.db.toColumnKey(e.key);
+          const key = this.schema.db.toColumnKey(e.key);
           const existing = await db.getValue(key);
           if (!R.equals(existing, e.value)) {
             save$.next({ key, value: e.value });
@@ -243,7 +243,7 @@ export class Sync implements t.IDisposable {
           filter(e => e.kind === 'COLUMN'),
         )
         .subscribe(async e => {
-          const key = this.keys.grid.toColumnKey(e.key);
+          const key = this.schema.grid.toColumnKey(e.key);
           const column = grid.columns[key];
           if (!R.equals(e.value, column)) {
             changeGrid$.next({ type: 'COLUMN', key, value: e.value });
@@ -260,7 +260,7 @@ export class Sync implements t.IDisposable {
         .pipe(filter(e => !this.is.loading.currently('ROWS')))
         .subscribe(async e => {
           e.changes.forEach(change => {
-            const key = this.keys.grid.toRowKey(change.row);
+            const key = this.schema.grid.toRowKey(change.row);
             this.fireSync({
               source: 'GRID',
               kind: 'ROW',
@@ -273,14 +273,14 @@ export class Sync implements t.IDisposable {
       dbChange$
         // Row changed in DB.
         .pipe(
-          filter(e => this.keys.db.is.row(e.key)),
+          filter(e => this.schema.db.is.row(e.key)),
           filter(e => !this.is.loading.currently('ROWS')),
         )
         .subscribe(e => {
           this.fireSync({
             source: 'DB',
             kind: 'ROW',
-            key: this.keys.grid.toRowKey(e.key),
+            key: this.schema.grid.toRowKey(e.key),
             value: e.value as t.IGridRow,
           });
         });
@@ -292,7 +292,7 @@ export class Sync implements t.IDisposable {
           filter(e => e.kind === 'ROW'),
         )
         .subscribe(async e => {
-          const key = this.keys.db.toRowKey(e.key);
+          const key = this.schema.db.toRowKey(e.key);
           const existing = await db.getValue(key);
           if (!R.equals(existing, e.value)) {
             save$.next({ key, value: e.value });
@@ -306,7 +306,7 @@ export class Sync implements t.IDisposable {
           filter(e => e.kind === 'ROW'),
         )
         .subscribe(async e => {
-          const key = this.keys.grid.toRowKey(e.key);
+          const key = this.schema.grid.toRowKey(e.key);
           const row = grid.rows[key];
           if (!R.equals(e.value, row)) {
             changeGrid$.next({ type: 'ROW', key, value: e.value });
@@ -325,7 +325,7 @@ export class Sync implements t.IDisposable {
    */
   public readonly grid: t.IGrid;
   public readonly db: t.IDb;
-  private keys!: SyncSchema;
+  private readonly schema: SyncSchema;
 
   private is = {
     loading: flags<GridPart>(),
@@ -362,9 +362,9 @@ export class Sync implements t.IDisposable {
     }
     this.is.loading.add('CELLS');
 
-    const cells = await this.db.find(this.keys.db.all.cells);
+    const cells = await this.db.find(this.schema.db.all.cells);
     const values = cells.list.reduce((acc, next) => {
-      const key = this.keys.grid.toCellKey(next.props.key);
+      const key = this.schema.grid.toCellKey(next.props.key);
       acc[key] = next.value;
       return acc;
     }, {});
@@ -379,9 +379,9 @@ export class Sync implements t.IDisposable {
     }
     this.is.loading.add('COLUMNS');
 
-    const columns = await this.db.find(this.keys.db.all.columns);
+    const columns = await this.db.find(this.schema.db.all.columns);
     const values = columns.list.reduce((acc, next) => {
-      const key = this.keys.grid.toColumnKey(next.props.key);
+      const key = this.schema.grid.toColumnKey(next.props.key);
       acc[key] = next.value;
       return acc;
     }, {});
@@ -396,9 +396,9 @@ export class Sync implements t.IDisposable {
     }
     this.is.loading.add('ROWS');
 
-    const rows = await this.db.find(this.keys.db.all.rows);
+    const rows = await this.db.find(this.schema.db.all.rows);
     const values = rows.list.reduce((acc, next) => {
-      const key = this.keys.grid.toRowKey(next.props.key);
+      const key = this.schema.grid.toRowKey(next.props.key);
       acc[key] = next.value;
       return acc;
     }, {});
@@ -411,7 +411,7 @@ export class Sync implements t.IDisposable {
    * Deletes all "empty" values from the database.
    */
   public async compact() {
-    const cells = await this.db.find(this.keys.db.all.cells);
+    const cells = await this.db.find(this.schema.db.all.cells);
     const empty = cells.list.filter(item => isEmptyValue(item.value));
     const keys = empty.map(item => item.props.key);
     await this.db.deleteMany(keys);
