@@ -56,6 +56,17 @@ describe('table.insert', () => {
       expect(res.D1).to.eql('B1');
       expect(res.E1).to.eql('C1');
     });
+
+    it('does nothing if total less than 1', () => {
+      const table = {
+        A1: 'A1',
+        B1: 'B1',
+        C1: 'C1',
+      };
+      expect(insertColumn({ table, index: 1, total: 0 })).to.equal(table);
+      expect(insertColumn({ table, index: 1, total: -1 })).to.equal(table);
+      expect(insertColumn({ table, index: 1, total: -99 })).to.equal(table);
+    });
   });
 
   describe('insertRow', () => {

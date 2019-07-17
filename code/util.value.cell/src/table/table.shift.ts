@@ -1,8 +1,8 @@
 import { cell } from '../cell';
 import { t, defaultValue } from '../common';
 
+type Dimension = 'row' | 'column';
 type TableItem<V = any> = { key: string; value: V; column: number; row: number };
-
 type IInsertArgs = {
   table: t.IGridTable;
   index: number;
@@ -24,13 +24,25 @@ export function insertRow(args: IInsertArgs) {
   return insert({ ...args, type: 'row' });
 }
 
+export function insert(args: IInsertArgs & { type: Dimension }) {
+  const { type, table, index, emptyValue } = args;
+  const by = Math.max(0, defaultValue(args.total, 1));
+  return by < 1 ? table : shift({ by, type, table, index, emptyValue });
+}
+
 /**
- * Inserts a row or column into a table.
+ * Shifts the given row/column in a table.
  */
-export function insert(args: { type: 'row' | 'column' } & IInsertArgs): t.IGridTable {
+export function shift(args: {
+  type: Dimension;
+  table: t.IGridTable;
+  index: number;
+  by?: number;
+  emptyValue?: any; // The empty value that inserts are replaced with.
+}): t.IGridTable {
   const result: t.IGridTable = {};
   const { type, table } = args;
-  const total = defaultValue(args.total, 1);
+  const by = defaultValue(args.by, 1);
 
   if (args.index < 0) {
     throw new Error(`Index must be >= 0.`);
@@ -63,7 +75,7 @@ export function insert(args: { type: 'row' | 'column' } & IInsertArgs): t.IGridT
 
   // Overwrite all shifted values with the new key/value after the shift.
   set.after.forEach(item => {
-    const index = item[type] + total;
+    const index = item[type] + by;
     const column = type === 'column' ? index : item.column;
     const row = type === 'row' ? index : item.row;
     const key = cell.toKey(column, row);

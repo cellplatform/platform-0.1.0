@@ -1,2 +1,2 @@
 export * from './types';
-export * from './table.insert';
+export * from './table.shift';
