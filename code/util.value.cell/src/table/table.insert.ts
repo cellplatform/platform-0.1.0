@@ -1,11 +1,12 @@
 import { cell } from '../cell';
-import { t } from '../common';
+import { t, defaultValue } from '../common';
 
 type TableItem<V = any> = { key: string; value: V; column: number; row: number };
 
 type IInsertArgs = {
   table: t.IGridTable;
   index: number;
+  total?: number;
   emptyValue?: any; // The empty value that inserts are replaced with.
 };
 
@@ -26,13 +27,17 @@ export function insertRow(args: IInsertArgs) {
 /**
  * Inserts a row or column into a table.
  */
-
 export function insert(args: { type: 'row' | 'column' } & IInsertArgs): t.IGridTable {
   const result: t.IGridTable = {};
   const { type, table } = args;
+  const total = defaultValue(args.total, 1);
+
   if (args.index < 0) {
     throw new Error(`Index must be >= 0.`);
   }
+  // if (total < 1) {
+  //   return table;
+  // }
 
   // Convert table to list.
   const items: TableItem[] = Object.keys(table).map(key => {
@@ -58,7 +63,7 @@ export function insert(args: { type: 'row' | 'column' } & IInsertArgs): t.IGridT
 
   // Overwrite all shifted values with the new key/value after the shift.
   set.after.forEach(item => {
-    const index = item[type] + 1;
+    const index = item[type] + total;
     const column = type === 'column' ? index : item.column;
     const row = type === 'row' ? index : item.row;
     const key = cell.toKey(column, row);
