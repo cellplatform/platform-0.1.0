@@ -1,17 +1,25 @@
-import { t, R } from '../common';
 import { cell } from '../cell';
+import { t } from '../common';
+
+type TableItem<V = any> = { key: string; value: V; column: number; row: number };
+
+type IInsertArgs = {
+  table: t.IGridTable;
+  index: number;
+  emptyValue?: any; // The empty value that inserts are replaced with.
+};
 
 /**
  * Inserts a column into a table
  */
-export function insertColumn(args: { table: t.IGridTable; index: number }) {
+export function insertColumn(args: IInsertArgs) {
   return insert({ ...args, type: 'column' });
 }
 
 /**
  * Inserts a row into a table
  */
-export function insertRow(args: { table: t.IGridTable; index: number }) {
+export function insertRow(args: IInsertArgs) {
   return insert({ ...args, type: 'row' });
 }
 
@@ -19,44 +27,45 @@ export function insertRow(args: { table: t.IGridTable; index: number }) {
  * Inserts a row or column into a table.
  */
 
-export function insert(args: {
-  type: 'row' | 'column';
-  table: t.IGridTable;
-  index: number;
-}): t.IGridTable {
+export function insert(args: { type: 'row' | 'column' } & IInsertArgs): t.IGridTable {
+  const result: t.IGridTable = {};
   const { type, table } = args;
   if (args.index < 0) {
     throw new Error(`Index must be >= 0.`);
   }
 
-  const items = Object.keys(table).map(key => {
+  // Convert table to list.
+  const items: TableItem[] = Object.keys(table).map(key => {
     const { row, column } = cell.fromKey(key);
     const value = table[key];
     return { key, value, row, column };
   });
 
-  const before = items.filter(item => item[type] < args.index);
-  const after = R.sortWith(
-    [R.descend(R.prop(type))],
-    items.filter(item => item[type] >= args.index),
-  ).map(item => {
+  // Extract the set of cells before the insertion-point, and after the insertion-point.
+  const set = {
+    before: items.filter(item => item[type] < args.index),
+    after: items.filter(item => item[type] >= args.index),
+  };
+
+  // Write all shifted values to the table as "empty".
+  set.after.forEach(item => {
+    const index = item[type];
+    const column = type === 'column' ? index : item.column;
+    const row = type === 'row' ? index : item.row;
+    const key = cell.toKey(column, row);
+    result[key] = args.emptyValue;
+  });
+
+  // Overwrite all shifted values with the new key/value after the shift.
+  set.after.forEach(item => {
     const index = item[type] + 1;
     const column = type === 'column' ? index : item.column;
     const row = type === 'row' ? index : item.row;
     const key = cell.toKey(column, row);
-    return {
-      ...item,
-      [type]: index,
-      key,
-    };
+    result[key] = item.value;
   });
 
-  // console.log('before', before);
-  // console.log('-------------------------------------------');
-  // console.log('after', after);
-
-  return {
-    ...before.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {}),
-    ...after.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {}),
-  };
+  // Finish up.
+  const before = set.before.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {});
+  return { ...before, ...result };
 }
