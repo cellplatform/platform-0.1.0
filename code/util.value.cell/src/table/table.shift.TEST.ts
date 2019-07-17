@@ -1,11 +1,11 @@
 import { expect } from 'chai';
-import { insertRow, insertColumn } from './table';
+import { insert } from './table';
 
 describe('table.insert', () => {
   it('throws on index out-of-range.', () => {
     const table = { A1: 123 };
-    expect(() => insertColumn({ table, index: -1 })).to.throw();
-    expect(() => insertRow({ table, index: -1 })).to.throw();
+    expect(() => insert.column({ table, index: -1 })).to.throw();
+    expect(() => insert.row({ table, index: -1 })).to.throw();
   });
 
   describe('insertColumn', () => {
@@ -15,7 +15,7 @@ describe('table.insert', () => {
         B1: 'B1',
         C1: 'C1',
       };
-      const res = insertColumn({ table, index: 0 });
+      const res = insert.column({ table, index: 0 });
       expect(res.A1).to.eql(undefined);
       expect(res.B1).to.eql('A1');
       expect(res.C1).to.eql('B1');
@@ -28,7 +28,7 @@ describe('table.insert', () => {
         B1: 'B1',
         C1: 'C1',
       };
-      const res = insertColumn({ table, index: 1 });
+      const res = insert.column({ table, index: 1 });
       expect(res.A1).to.eql('A1');
       expect(res.B1).to.eql(undefined);
       expect(res.C1).to.eql('B1');
@@ -37,7 +37,7 @@ describe('table.insert', () => {
 
     it('inserts custom empty value', () => {
       const table = { A1: 'A1', B1: 'B1', C1: 'C1' };
-      const res = insertColumn({ table, index: 1, emptyValue: 'hello' });
+      const res = insert.column({ table, index: 1, emptyValue: 'hello' });
       expect(res.A1).to.eql('A1');
       expect(res.B1).to.eql('hello');
       expect(res.C1).to.eql('B1');
@@ -49,7 +49,7 @@ describe('table.insert', () => {
         B1: 'B1',
         C1: 'C1',
       };
-      const res = insertColumn({ table, index: 1, total: 2 });
+      const res = insert.column({ table, index: 1, total: 2 });
       expect(res.A1).to.eql('A1');
       expect(res.B1).to.eql(undefined);
       expect(res.C1).to.eql(undefined);
@@ -63,9 +63,9 @@ describe('table.insert', () => {
         B1: 'B1',
         C1: 'C1',
       };
-      expect(insertColumn({ table, index: 1, total: 0 })).to.equal(table);
-      expect(insertColumn({ table, index: 1, total: -1 })).to.equal(table);
-      expect(insertColumn({ table, index: 1, total: -99 })).to.equal(table);
+      expect(insert.column({ table, index: 1, total: 0 })).to.equal(table);
+      expect(insert.column({ table, index: 1, total: -1 })).to.equal(table);
+      expect(insert.column({ table, index: 1, total: -99 })).to.equal(table);
     });
   });
 
@@ -76,7 +76,7 @@ describe('table.insert', () => {
         A2: 'A2',
         A3: 'A3',
       };
-      const res = insertRow({ table, index: 0 });
+      const res = insert.row({ table, index: 0 });
       expect(res.A1).to.eql(undefined);
       expect(res.A2).to.eql('A1');
       expect(res.A3).to.eql('A2');
@@ -89,7 +89,7 @@ describe('table.insert', () => {
         A2: 'A2',
         A3: 'A3',
       };
-      const res = insertRow({ table, index: 1 });
+      const res = insert.row({ table, index: 1 });
       expect(res.A1).to.eql('A1');
       expect(res.A2).to.eql(undefined);
       expect(res.A3).to.eql('A2');
@@ -102,12 +102,27 @@ describe('table.insert', () => {
         A2: 'A2',
         A3: 'A3',
       };
-      const res = insertRow({ table, index: 1, total: 2 });
+      const res = insert.row({ table, index: 1, total: 2 });
       expect(res.A1).to.eql('A1');
       expect(res.A2).to.eql(undefined);
       expect(res.A3).to.eql(undefined);
       expect(res.A4).to.eql('A2');
       expect(res.A5).to.eql('A3');
+    });
+  });
+
+  describe('deleteColumn', () => {
+    it('delete at 0', () => {
+      const table = {
+        A1: 'A1',
+        B1: 'B1',
+        C1: 'C1',
+      };
+      const res = insert.column({ table, index: 0 });
+      expect(res.A1).to.eql(undefined);
+      expect(res.B1).to.eql('A1');
+      expect(res.C1).to.eql('B1');
+      expect(res.D1).to.eql('C1');
     });
   });
 });

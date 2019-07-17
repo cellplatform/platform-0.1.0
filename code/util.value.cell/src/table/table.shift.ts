@@ -11,20 +11,25 @@ type IInsertArgs = {
 };
 
 /**
- * Inserts a column into a table
+ * Inserts column/row(s) into a table
  */
-export function insertColumn(args: IInsertArgs) {
-  return insert({ ...args, type: 'column' });
-}
+export const insert = {
+  /**
+   * Insert a column(s) into a table
+   */
+  column(args: IInsertArgs) {
+    return shiftInsert({ ...args, type: 'column' });
+  },
 
-/**
- * Inserts a row into a table
- */
-export function insertRow(args: IInsertArgs) {
-  return insert({ ...args, type: 'row' });
-}
+  /**
+   * Insert a row(s) into a table
+   */
+  row(args: IInsertArgs) {
+    return shiftInsert({ ...args, type: 'row' });
+  },
+};
 
-export function insert(args: IInsertArgs & { type: Dimension }) {
+function shiftInsert(args: IInsertArgs & { type: Dimension }) {
   const { type, table, index, emptyValue } = args;
   const by = Math.max(0, defaultValue(args.total, 1));
   return by < 1 ? table : shift({ by, type, table, index, emptyValue });
@@ -45,11 +50,11 @@ export function shift(args: {
   const by = defaultValue(args.by, 1);
 
   if (args.index < 0) {
-    throw new Error(`Index must be >= 0.`);
+    throw new Error(`Index must be >= 0`);
   }
-  // if (total < 1) {
-  //   return table;
-  // }
+  if (by === 0) {
+    return table; // No change.
+  }
 
   // Convert table to list.
   const items: TableItem[] = Object.keys(table).map(key => {
