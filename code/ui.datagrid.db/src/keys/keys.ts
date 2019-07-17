@@ -48,6 +48,14 @@ export class DbKeys {
       rows: `${this.prefix.row}*`,
     };
   }
+
+  public get is() {
+    return {
+      cell: (key: string) => key.startsWith(this.prefix.cell),
+      column: (key: string) => key.startsWith(this.prefix.column),
+      row: (key: string) => key.startsWith(this.prefix.row),
+    };
+  }
 }
 
 /**

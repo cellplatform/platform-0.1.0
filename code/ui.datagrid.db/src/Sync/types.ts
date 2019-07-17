@@ -13,7 +13,7 @@ export type ISyncChangeRow = { kind: 'ROW' } & ISyncChange<t.IGridRow>;
 /**
  * [Events]
  */
-export type SyncEvent = ISyncChangeEvent | ISyncedDbEvent|ISyncedGridEvent;
+export type SyncEvent = ISyncChangeEvent | ISyncedDbEvent | ISyncedGridEvent;
 
 export type ISyncChangeEvent = {
   type: 'SYNC/change';

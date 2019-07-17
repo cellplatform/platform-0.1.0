@@ -150,7 +150,7 @@ export class Sync implements t.IDisposable {
       dbChange$
         // Cell changed in DB.
         .pipe(
-          filter(e => e.key.startsWith('cell/')),
+          filter(e => this.keys.db.is.cell(e.key)),
           filter(e => !this.is.loading.currently('CELLS')),
         )
         .subscribe(e => {
@@ -212,7 +212,7 @@ export class Sync implements t.IDisposable {
       dbChange$
         // Column changed in DB.
         .pipe(
-          filter(e => e.key.startsWith('column/')),
+          filter(e => this.keys.db.is.column(e.key)),
           filter(e => !this.is.loading.currently('COLUMNS')),
         )
         .subscribe(e => {
@@ -275,7 +275,7 @@ export class Sync implements t.IDisposable {
       dbChange$
         // Row changed in DB.
         .pipe(
-          filter(e => e.key.startsWith('row/')),
+          filter(e => this.keys.db.is.row(e.key)),
           filter(e => !this.is.loading.currently('ROWS')),
         )
         .subscribe(e => {
