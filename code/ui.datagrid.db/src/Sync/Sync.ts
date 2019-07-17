@@ -95,8 +95,6 @@ export class Sync implements t.IDisposable {
         await this.db.putMany(updates);
       }
 
-      console.log('buffer db', e);
-
       // Alert listeners.
       this.fire({ type: 'SYNCED/db', payload: { updates, deletes } });
     });
