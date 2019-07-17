@@ -1,7 +1,7 @@
-export { value, time } from '@platform/util.value';
+export { value, time, rx } from '@platform/util.value';
 
 /**
  * Ramda
  */
-import { uniq, equals } from 'ramda';
-export const R = { uniq, equals };
+import { uniq, equals, groupBy, prop } from 'ramda';
+export const R = { uniq, equals, groupBy, prop };

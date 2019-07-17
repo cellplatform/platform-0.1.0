@@ -9,11 +9,13 @@ export * from '@platform/fs.db.electron/lib/types';
 export * from '@platform/electron/lib/types';
 
 export * from '../../src/common/types';
+import { Sync } from '../../src';
 
 export type ICommandProps = {
   state$: Subject<ITestState>;
   databases: DbFactory;
   db: t.IDb;
+  sync: Sync;
 };
 
 export type ITestState = {

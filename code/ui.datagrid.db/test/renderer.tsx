@@ -8,7 +8,7 @@ renderer
   .render(<Test />, 'root', {
     getContext: async e => {
       const { ipc } = e.context;
-      const databases: t.DbFactory = dbRenderer.init({ ipc }).db;
+      const databases: t.DbFactory = dbRenderer.init({ ipc }).factory;
       return { databases };
     },
   })

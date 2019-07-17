@@ -45,9 +45,13 @@ export const root = Command.create<P>('root', e => {
     log.info(`opening folder: ${dir}`);
     shell.showItemInFolder(dir);
   })
-  .add('move-right', async e => {
+  .add('find', async e => {
     const db = e.props.db;
-    console.log('db', db);
-
-    await db.putMany([{ key: 'cell/A1', value: undefined }, { key: 'cell/B1', value: 44 }]);
+    const res = await db.find('cell/**');
+    log.info('find:', res);
+  })
+  .add('compact', async e => {
+    const sync = e.props.sync;
+    const res = await sync.compact();
+    log.info('compact', res);
   });

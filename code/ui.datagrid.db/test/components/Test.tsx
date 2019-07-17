@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
 import {
@@ -11,6 +11,7 @@ import {
   constants,
   css,
   datagrid,
+  log,
   markdown,
   ObjectView,
   renderer,
@@ -52,19 +53,15 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public async componentWillMount() {
     this.cli = cli.init({
+      getSync: () => this.sync,
       state$: this.state$,
       databases: this.databases,
       getState: () => this.state,
     });
 
-    // Setup ovservables.
+    // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const sync$ = this.sync$.pipe(takeUntil(this.unmounted$));
-    const grid$ = this.grid$.pipe(takeUntil(this.unmounted$));
-    const gridMouse$ = grid$.pipe(
-      filter(e => e.type === 'GRID/mouse'),
-      map(e => e.payload as t.IGridMouse),
-    );
 
     // Update state.
     state$.subscribe(e => this.setState(e));
@@ -79,59 +76,23 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
     // Events.
     sync$.subscribe(e => {
-      console.log('🌳', e.type, e.payload);
+      // console.log('🌳', e.type, e.payload);
     });
 
-    // sync$
-    //   .pipe(
-    //     filter(e => e.type === 'SYNC/changing'),
-    //     map(e => e.payload as t.ISyncChanging),
-    //   )
-    //   .subscribe(e => {
-    //     // console.log('cancel', e);
-    //     // e.cancel();
-    //   });
-
-    // // Setup syncer.
-    // const dir = constants.DB.DIR;
-    // const db = this.databases(dir);
-    // console.log('this.datagrid', this.datagrid);
-    // // const grid = this.datagrid.grid;
-    // // this.sync = Sync.create({ db, grid, events$: this.sync$ });
-
-    const gridRightClick$ = gridMouse$.pipe(
-      filter(e => e.button === 'RIGHT'),
-      filter(e => e.type === 'DOWN'),
-    );
-
-    gridRightClick$.pipe(filter(e => e.cellType === 'COLUMN')).subscribe(e => {
-      e.cancel();
-
-      const selection = this.grid.selection;
-      console.log('selection', selection);
-
-      // Temp show popup-menu.
-      const remote = this.context.remote;
-      const menu = new remote.Menu();
-      const menuItem = new remote.MenuItem({
-        label: 'Insert 1 left',
-        click: () => {
-          console.log('insert');
-          // remote.getCurrentWindow().inspectElement(rightClickPosition.x, rightClickPosition.y)
-        },
-      });
-      menu.append(menuItem);
-      menu.popup();
+    sync$.pipe(filter(e => e.type !== 'SYNC/change')).subscribe(e => {
+      log.info('🌳', e.type, e.payload);
     });
   }
 
-  public componentDidMount() {
+  public async componentDidMount() {
     // Setup syncer.
     const file = constants.DB.FILE;
     const db = this.databases(file);
     const grid = this.datagrid.grid;
     const events$ = this.sync$;
     this.sync = Sync.create({ db, grid, events$ });
+    await this.sync.compact();
+    await this.sync.load();
   }
 
   public componentWillUnmount() {

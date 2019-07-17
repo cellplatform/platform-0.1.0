@@ -20,7 +20,7 @@ export class DbKeys {
     return !key ? '' : `${prefix}${key}`;
   }
 
-  public get prefix() {
+  private get prefix() {
     return {
       cell: 'cell/',
       column: 'column/',
@@ -39,6 +39,14 @@ export class DbKeys {
 
   public toRowKey(key: number | string) {
     return DbKeys.toKey(this.prefix.row, key);
+  }
+
+  public get all() {
+    return {
+      cells: `${this.prefix.cell}*`,
+      columns: `${this.prefix.column}*`,
+      rows: `${this.prefix.row}*`,
+    };
   }
 }
 
