@@ -34,7 +34,8 @@ export const insert = {
   },
 };
 function shiftInsert(args: IInsertArgs & { axis: Axis }) {
-  const { axis, table, index, emptyValue } = args;
+  const { axis, table, emptyValue } = args;
+  const index = Math.max(0, args.index);
   const by = Math.max(0, defaultValue(args.total, 1));
   return by < 1 ? table : shift({ index, by, axis, table, emptyValue });
 }
@@ -51,9 +52,16 @@ export const remove = {
   },
 };
 function shiftRemove(args: IInsertArgs & { axis: Axis }) {
-  const { axis, table, emptyValue } = args;
+  const { axis, emptyValue } = args;
   const total = Math.max(0, defaultValue(args.total, 1));
-  const index = args.index + total;
+  let table = args.table;
+
+  // Zero out items within the delete range.
+  let index = Math.max(0, args.index);
+  table = overwrite({ table, axis, from: index, to: index + total - 1 });
+
+  // Shift cells into deleted space.
+  index = index + total;
   const by = 0 - total;
   return total < 1 ? table : shift({ index, by, axis, table, emptyValue });
 }
@@ -71,13 +79,6 @@ export function shift(args: {
   const result: t.IGridTable = {};
   const { axis, table, by } = args;
 
-  // console.log('\nindex', args.index);
-  // console.log('by', by);
-  // console.log();
-
-  if (args.index < 0) {
-    throw new Error(`Index must be >= 0`);
-  }
   if (by === 0) {
     return table; // No change.
   }
@@ -94,9 +95,6 @@ export function shift(args: {
     before: items.filter(item => item[axis] < args.index),
     after: items.filter(item => item[axis] >= args.index),
   };
-
-  // console.log('before', SET.before.map(item => item.key));
-  // console.log('after', SET.after.map(item => item.key));
 
   // Write all shifted values to the table as "empty".
   SET.after.forEach(item => {
@@ -119,4 +117,37 @@ export function shift(args: {
   // Finish up.
   const before = SET.before.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {});
   return { ...before, ...result };
+}
+
+/**
+ * [Helpers]
+ */
+
+/**
+ * Overrites the range of values
+ */
+function overwrite(args: {
+  axis: Axis;
+  table: t.IGridTable;
+  from: number;
+  to: number;
+  value?: undefined;
+}) {
+  const { axis, table, from, to } = args;
+
+  const items: TableItem[] = Object.keys(table).map(key => {
+    const { row, column } = cell.fromKey(key);
+    const value = table[key];
+    return { key, value, row, column };
+  });
+
+  const range = items.filter(item => {
+    const index = item[axis];
+    return index >= from && index <= to;
+  });
+
+  const result: t.IGridTable = { ...table };
+  range.forEach(item => (result[item.key] = args.value));
+
+  return result;
 }

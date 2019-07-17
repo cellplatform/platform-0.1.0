@@ -2,12 +2,6 @@ import { expect } from 'chai';
 import { insert, shift, remove } from './table';
 
 describe('table.insert', () => {
-  it('throws on index out-of-range.', () => {
-    const table = { A1: 123 };
-    expect(() => insert.column({ table, index: -1 })).to.throw();
-    expect(() => insert.row({ table, index: -1 })).to.throw();
-  });
-
   describe('insertColumn', () => {
     const table = {
       A1: 'A1',
@@ -141,6 +135,13 @@ describe('table.insert', () => {
       expect(res.C1).to.eql('E1'); // etc.
       expect(res.D1).to.eql(undefined);
       expect(res.E1).to.eql(undefined);
+    });
+
+    it('removes a single column (no siblings)', () => {
+      const table = { A1: '123', A2: 456 };
+      const res = remove.column({ table, index: 0 });
+      expect(res.A1).to.eql(undefined);
+      expect(res.A2).to.eql(undefined);
     });
   });
 
