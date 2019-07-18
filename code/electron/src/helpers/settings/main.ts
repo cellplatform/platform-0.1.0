@@ -141,9 +141,8 @@ export function init<T extends t.SettingsJson>(args: {
     return file.exists ? Object.keys(file.data.body) : [];
   };
 
-  const openInEditor: t.OpenSettingsInEditor = () => {
-    shell.openItem(path);
-  };
+  const openInEditor: t.OpenSettings = () => shell.openItem(path);
+  const openFolder: t.OpenSettings = () => shell.openItem(dir);
 
   // Create the client.
   const client = (new SettingsClient<T>({
@@ -152,6 +151,7 @@ export function init<T extends t.SettingsJson>(args: {
     setValues,
     getKeys,
     openInEditor,
+    openFolder,
   }) as unknown) as IClientMain;
 
   // Store the path to the settings file.
@@ -192,9 +192,17 @@ export function init<T extends t.SettingsJson>(args: {
   /**
    * Handle `open in editor` requests.
    */
-  ipc.handle<t.IOpenSettingsFileInEditorEvent>('@platform/SETTINGS/openInEditor', async e =>
-    openInEditor(),
-  );
+  ipc.handle<t.ISettingsOpenEvent>('@platform/SETTINGS/open', async e => {
+    const { target } = e.payload;
+    switch (target) {
+      case 'EDITOR':
+        return openInEditor();
+      case 'FOLDER':
+        return openFolder();
+      default:
+        throw new Error(`Open target '${target}' not supported.`);
+    }
+  });
 
   // Finish up.
   refs.client = client;

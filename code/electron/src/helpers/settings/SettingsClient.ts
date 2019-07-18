@@ -15,7 +15,8 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
   private readonly _getKeys!: t.GetSettingsKeys<T>;
   private readonly _getValues!: t.GetSettingsValues<T>;
   private readonly _setValues!: t.SetSettingsValues<T>;
-  private readonly _openInEditor!: t.OpenSettingsInEditor;
+  private readonly _openInEditor!: t.OpenSettings;
+  private readonly _openFolder!: t.OpenSettings;
 
   private readonly _dispose$ = new Subject();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -30,12 +31,14 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
     getKeys: t.GetSettingsKeys<T>;
     getValues: t.GetSettingsValues<T>;
     setValues: t.SetSettingsValues<T>;
-    openInEditor: t.OpenSettingsInEditor;
+    openInEditor: t.OpenSettings;
+    openFolder: t.OpenSettings;
   }) {
     this._getKeys = args.getKeys;
     this._getValues = args.getValues;
     this._setValues = args.setValues;
     this._openInEditor = args.openInEditor;
+    this._openFolder = args.openFolder;
     this.dispose$.subscribe(() => (this.isDisposed = true));
     this.change$ = args.change$.pipe(
       takeUntil(this.dispose$),
@@ -116,6 +119,14 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
    */
   public openInEditor() {
     this._openInEditor();
+    return this;
+  }
+
+  /**
+   * Opens the folder containing the settings JSON.
+   */
+  public openFolder() {
+    this._openFolder();
     return this;
   }
 }

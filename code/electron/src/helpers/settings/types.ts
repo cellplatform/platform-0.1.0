@@ -18,6 +18,7 @@ export type ISettingsClient<T extends SettingsJson = any> = {
   delete: <K extends keyof T>(...keys: K[]) => Promise<{}>;
   clear: () => Promise<{}>;
   openInEditor: () => ISettingsClient<T>;
+  openFolder: () => ISettingsClient<T>;
 };
 
 export type ISettingsKeyValue<T extends SettingsJson = any> = {
@@ -55,7 +56,7 @@ export type SetSettingsValues<T extends SettingsJson> = (
 
 export type GetSettingsKeys<T extends SettingsJson> = () => Promise<Array<keyof T>>;
 
-export type OpenSettingsInEditor = () => void;
+export type OpenSettings = () => void;
 
 /**
  * [Events].
@@ -65,7 +66,7 @@ export type SettingsEvent =
   | ISettingsGetKeysEvent
   | ISettingsGetValuesEvent
   | ISettingsSetValuesEvent
-  | IOpenSettingsFileInEditorEvent;
+  | ISettingsOpenEvent;
 
 export type ISettingsChangeEvent<T extends SettingsJson = any> = {
   type: '@platform/SETTINGS/change';
@@ -103,7 +104,7 @@ export type ISettingsSetValuesResponse<T extends SettingsJson = any> = {
   error?: string;
 };
 
-export type IOpenSettingsFileInEditorEvent = {
-  type: '@platform/SETTINGS/openInEditor';
-  payload: {};
+export type ISettingsOpenEvent = {
+  type: '@platform/SETTINGS/open';
+  payload: { target: 'EDITOR' | 'FOLDER' };
 };

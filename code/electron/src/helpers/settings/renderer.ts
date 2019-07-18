@@ -94,8 +94,12 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
     return main && main.data ? main.data : [];
   };
 
-  const openInEditor: t.OpenSettingsInEditor = () => {
-    ipc.send<t.IOpenSettingsFileInEditorEvent>('@platform/SETTINGS/openInEditor', {});
+  const openInEditor: t.OpenSettings = () => {
+    ipc.send<t.ISettingsOpenEvent>('@platform/SETTINGS/open', { target: 'EDITOR' });
+  };
+
+  const openFolder: t.OpenSettings = () => {
+    ipc.send<t.ISettingsOpenEvent>('@platform/SETTINGS/open', { target: 'FOLDER' });
   };
 
   ipc
@@ -111,6 +115,7 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
     setValues,
     change$,
     openInEditor,
+    openFolder,
   });
 
   // Finish up.
