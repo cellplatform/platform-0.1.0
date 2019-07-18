@@ -1,9 +1,14 @@
 import { expect } from 'chai';
-import { insert, shift, remove } from './table';
+
+import { insert, remove } from './table';
 
 describe('table.insert', () => {
   describe('insertColumn', () => {
     const table = {
+      A: 'COL-A',
+      B: 'COL-B',
+      C: 'COL-C',
+
       A1: 'A1',
       B1: 'B1',
       C1: 'C1',
@@ -11,8 +16,16 @@ describe('table.insert', () => {
       E1: 'E1',
     };
 
+    // it('shifts columns', () => {});
+
     it('insert at 0', () => {
       const res = insert.column({ table, index: 0 });
+
+      expect(res.A).to.eql(undefined);
+      expect(res.B).to.eql('COL-A');
+      expect(res.C).to.eql('COL-B');
+      expect(res.D).to.eql('COL-C');
+
       expect(res.A1).to.eql(undefined);
       expect(res.B1).to.eql('A1');
       expect(res.C1).to.eql('B1');
@@ -24,6 +37,12 @@ describe('table.insert', () => {
 
     it('insert at 1', () => {
       const res = insert.column({ table, index: 1 });
+
+      expect(res.A).to.eql('COL-A');
+      expect(res.B).to.eql(undefined);
+      expect(res.C).to.eql('COL-B');
+      expect(res.D).to.eql('COL-C');
+
       expect(res.A1).to.eql('A1');
       expect(res.B1).to.eql(undefined);
       expect(res.C1).to.eql('B1');
@@ -67,6 +86,11 @@ describe('table.insert', () => {
 
   describe('insertRow', () => {
     const table = {
+      '1': 'ROW-1',
+      '2': 'ROW-2',
+      '3': 'ROW-3',
+      '4': 'ROW-4',
+
       A1: 'A1',
       A2: 'A2',
       A3: 'A3',
@@ -74,6 +98,13 @@ describe('table.insert', () => {
     };
     it('insert at 0', () => {
       const res = insert.row({ table, index: 0 });
+
+      expect(res['1']).to.eql(undefined);
+      expect(res['2']).to.eql('ROW-1');
+      expect(res['3']).to.eql('ROW-2');
+      expect(res['4']).to.eql('ROW-3');
+      expect(res['5']).to.eql('ROW-4');
+
       expect(res.A1).to.eql(undefined);
       expect(res.A2).to.eql('A1');
       expect(res.A3).to.eql('A2');
@@ -84,6 +115,13 @@ describe('table.insert', () => {
 
     it('insert at 1', () => {
       const res = insert.row({ table, index: 1 });
+
+      expect(res['1']).to.eql('ROW-1');
+      expect(res['2']).to.eql(undefined);
+      expect(res['3']).to.eql('ROW-2');
+      expect(res['4']).to.eql('ROW-3');
+      expect(res['5']).to.eql('ROW-4');
+
       expect(res.A1).to.eql('A1');
       expect(res.A2).to.eql(undefined);
       expect(res.A3).to.eql('A2');
