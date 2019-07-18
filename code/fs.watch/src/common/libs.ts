@@ -1,2 +1,2 @@
-import { uniq } from 'ramda';
-export const R = { uniq };
+import * as chokidar from 'chokidar';
+export { chokidar };

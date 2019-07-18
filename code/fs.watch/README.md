@@ -3,7 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/fs.watch.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/fs.watch)
 ![banner](https://platform.sfo2.digitaloceanspaces.com/repo-banners/fs.watch.png)
 
-File-system watcher.
+An observable based file-system watcher.
 
 <p>&nbsp;<p>
 
