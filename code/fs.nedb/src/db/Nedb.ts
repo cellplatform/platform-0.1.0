@@ -22,8 +22,14 @@ export class Nedb<G = any> {
    * [Lifecycle]
    */
   private constructor(args: IStoreArgs) {
-    this.filename = typeof args === 'string' ? args : args.filename;
-    this.store = new NedbStore(args);
+    // Format the filename.
+    let filename = typeof args === 'string' ? args : args.filename;
+    filename = filename ? filename.replace(/^nedb\:/, '') : filename;
+    this.filename = filename;
+
+    // Construct the underlying data-store.
+    const config = typeof args === 'object' ? args : {};
+    this.store = new NedbStore({ ...config, filename });
   }
 
   /**

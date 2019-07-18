@@ -19,6 +19,12 @@ describe('Store (nedb)', () => {
     expect(db).to.be.an.instanceof(Nedb);
   });
 
+  it('strips "nedb:" prefix from filename', () => {
+    const db = Nedb.create({ filename: `nedb:${filename}` });
+    const text = db.filename;
+    expect(text).to.not.include('nedb:');
+  });
+
   it('inserts a single document', async () => {
     type MyDoc = { name: string; _id?: string };
     const db = Nedb.create<MyDoc>({});

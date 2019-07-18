@@ -18,6 +18,12 @@ describe('NeDoc', () => {
     expect(db).to.be.an.instanceof(NeDoc);
   });
 
+  it('strips "nedb:" prefix from filename', () => {
+    const db = NeDoc.create({ filename: `nedb:${filename}` });
+    const text = db.toString();
+    expect(text).to.not.include('nedb:');
+  });
+
   it('toString', () => {
     const db1 = NeDoc.create();
     const db2 = NeDoc.create({ filename });
