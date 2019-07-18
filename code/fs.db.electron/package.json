@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.db.electron",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/electron": "0.6.0",
+    "@platform/electron": "0.6.1",
     "@platform/fs.db": "1.2.15",
     "@platform/fs.db.types": "0.1.2",
     "@platform/fs.nedb": "0.2.0",

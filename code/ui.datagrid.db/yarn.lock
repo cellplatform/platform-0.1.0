@@ -1189,6 +1189,24 @@
     is-electron "2.2.0"
     minimist "1.2.0"
 
+"@platform/electron@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.6.1.tgz#fef3a1785d7b951b659649dd5d7a8e31dc7f24d9"
+  integrity sha512-YrLkeIe8JUac0Ygn2FFdptGyq3XrJCA/f9MjbGI+0+JCV+ehk+/sJTzxmrUzoEWlU39bYLma/byWmNvqeEDH8A==
+  dependencies:
+    "@platform/fs" "0.1.6"
+    "@platform/libs" "^0.0.18"
+    "@platform/log" "0.0.133"
+    "@platform/react" "0.3.12"
+    "@platform/types" "0.0.20"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.2.1"
+    electron-log "3.0.6"
+    electron-store "4.0.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+    minimist "1.2.0"
+
 "@platform/exec@0.2.20":
   version "0.2.20"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.20.tgz#5ac7598d199d8313b8743d52ea1918e1dd223705"
@@ -1201,12 +1219,12 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db.electron@0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db.electron/-/fs.db.electron-0.2.4.tgz#63bf2213b274367959400d7170bbe23974cec8ec"
-  integrity sha512-DIllw3UBwE+ajmWz+F0QTrJ5X3kSEqwp/VqU1ENLUcfuQtyGXllzMMfZu7tX5Y2QTwqZlkm+PXm9zD+Rn1ISAw==
+"@platform/fs.db.electron@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db.electron/-/fs.db.electron-0.2.5.tgz#1f633f798298d0ee11c008a3d67fe07758e7a9ac"
+  integrity sha512-58kkiQDPn8otCMRHOL0ayo+035jwPs4UNaL1Fc1ND7ExI/xTNX27Au1s1XkIq1ybzZAokRxPgJOlFT7rhpKkIQ==
   dependencies:
-    "@platform/electron" "0.6.0"
+    "@platform/electron" "0.6.1"
     "@platform/fs.db" "1.2.15"
     "@platform/fs.db.types" "0.1.2"
     "@platform/fs.nedb" "0.2.0"

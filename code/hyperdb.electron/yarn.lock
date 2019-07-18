@@ -96,6 +96,24 @@
     is-electron "2.2.0"
     minimist "1.2.0"
 
+"@platform/electron@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.6.1.tgz#fef3a1785d7b951b659649dd5d7a8e31dc7f24d9"
+  integrity sha512-YrLkeIe8JUac0Ygn2FFdptGyq3XrJCA/f9MjbGI+0+JCV+ehk+/sJTzxmrUzoEWlU39bYLma/byWmNvqeEDH8A==
+  dependencies:
+    "@platform/fs" "0.1.6"
+    "@platform/libs" "^0.0.18"
+    "@platform/log" "0.0.133"
+    "@platform/react" "0.3.12"
+    "@platform/types" "0.0.20"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.2.1"
+    electron-log "3.0.6"
+    electron-store "4.0.0"
+    electron-window-state "5.0.3"
+    is-electron "2.2.0"
+    minimist "1.2.0"
+
 "@platform/exec@0.2.20":
   version "0.2.20"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.20.tgz#5ac7598d199d8313b8743d52ea1918e1dd223705"
