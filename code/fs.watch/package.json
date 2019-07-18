@@ -1,0 +1,26 @@
+{
+  "name": "fs.watch",
+  "version": "0.0.0",
+  "description": "File-system watcher.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/fs": "0.1.6",
+    "@platform/libs": "0.0.18"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.59",
+    "@platform/ts": "3.4.33"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

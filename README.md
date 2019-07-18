@@ -61,10 +61,14 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/util.value.cell](/code/util.value.cell)
 - fs
   - [@platform/fs](/code/fs)
-  - [@platform/fs.db](/code/fs.db)
-  - [@platform/fs.db.electron](/code/fs.db.electron)
-  - [@platform/fs.pg](/code/fs.pg)
+  - [@platform/fs.watch](/code/fs.watch)
   - [@platform/fs.s3](/code/fs.s3)
+- fs.db
+  - [@platform/fs.db](/code/fs.db)
+  - [@platform/fs.db.types](/code/fs.db.types)
+  - [@platform/fs.db.electron](/code/fs.db.electron)
+  - [@platform/fs.nedb](/code/fs.pg)
+  - [@platform/fs.pg](/code/fs.pg)
 - network
   - [@platform/http](/code/http)
   - [@platform/graphql](/code/graphql)

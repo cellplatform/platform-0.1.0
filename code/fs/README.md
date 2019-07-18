@@ -3,7 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/fs.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/fs)
 ![banner](https://platform.sfo2.digitaloceanspaces.com/repo-banners/fs.png)
 
-File system tools.
+File-system tools.
 
 ## Setup
 
