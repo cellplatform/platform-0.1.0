@@ -1,26 +1,32 @@
-import { expect, fs, time } from '../../test/test';
-import { DocDb } from '.';
+import { expect, fs, time, t } from '../test';
+import { NeDoc } from '.';
 
 const dir = fs.resolve('tmp/doc');
 const filename = fs.join(dir, 'file.db');
 const removeDir = () => fs.remove(dir);
 
-describe('DocDb', () => {
-  let db: DocDb;
+describe('NeDoc', () => {
+  let db: NeDoc;
 
   beforeEach(async () => {
-    db = DocDb.create();
+    db = await NeDoc.create();
   });
   afterEach(() => db.dispose());
 
   it('constructs', () => {
-    const db = DocDb.create();
-    expect(db).to.be.an.instanceof(DocDb);
+    const db = NeDoc.create();
+    expect(db).to.be.an.instanceof(NeDoc);
+  });
+
+  it('strips "nedb:" prefix from filename', () => {
+    const db = NeDoc.create({ filename: `nedb:${filename}` });
+    const text = db.toString();
+    expect(text).to.not.include('nedb:');
   });
 
   it('toString', () => {
-    const db1 = DocDb.create();
-    const db2 = DocDb.create({ filename });
+    const db1 = NeDoc.create();
+    const db2 = NeDoc.create({ filename });
 
     expect(db1.toString()).to.eql('[db:memory]');
     expect(db2.toString()).to.include(filename);
@@ -199,7 +205,124 @@ describe('DocDb', () => {
     expect(res3[1].props.exists).to.eql(false);
   });
 
-  it.skip('find', async () => {
-    // TEMP 🐷 TODO find
+  describe('find', () => {
+    it('nothing (no match)', async () => {
+      const items = [
+        { key: 'cell/A1', value: 123 },
+        { key: 'cell/A2', value: 456 },
+        { key: 'cell/A2/meta', value: { msg: 'hello' } },
+      ];
+      await db.putMany(items);
+
+      const test = async (query: string) => {
+        const res = await db.find(query);
+        expect(res.length).to.eql(0);
+        expect(res.list).to.eql([]);
+      };
+      await test('BOO');
+      await test('BAR');
+      await test('');
+    });
+
+    it('shallow ("cell/*")', async () => {
+      const items = [
+        { key: 'cell/A1', value: 123 },
+        { key: 'cell/A2', value: 456 },
+        { key: 'cell/A2/meta', value: { msg: 'hello' } },
+      ];
+      await db.putMany(items);
+
+      const test = async (query: string) => {
+        const res = await db.find(query);
+        expect(res.length).to.eql(2);
+        const values = res.list.map(item => item.value);
+        expect(values.includes(123)).to.eql(true);
+        expect(values.includes(456)).to.eql(true);
+      };
+      await test('cell');
+      await test('cell/');
+      await test('cell/*');
+    });
+
+    it('deep ("cell/**")', async () => {
+      const items = [
+        { key: 'cell/A1', value: 123 },
+        { key: 'cell/A2', value: 456 },
+        { key: 'cell/A2/meta', value: 'meta' },
+        { key: 'foo', value: 'boo' },
+      ];
+      await db.putMany(items);
+
+      const res = await db.find('cell/**');
+      expect(res.length).to.eql(3);
+
+      const values = res.list.map(item => item.value);
+      expect(values.includes(123)).to.eql(true);
+      expect(values.includes(456)).to.eql(true);
+      expect(values.includes('meta')).to.eql(true);
+      expect(values.includes('boo')).to.eql(false);
+    });
+
+    it('deep: entire database (**)', async () => {
+      const items = [
+        { key: 'cell/A1', value: 123 },
+        { key: 'cell/A2', value: 456 },
+        { key: 'cell/A2/meta', value: 'meta' },
+        { key: 'foo', value: 'boo' },
+      ];
+      await db.putMany(items);
+      const res = await db.find('**');
+      expect(res.length).to.eql(4);
+    });
+
+    it('shallow: root documents (*)', async () => {
+      const items = [
+        { key: 'foo', value: 'foo' },
+        { key: 'cell/A1', value: 123 },
+        { key: 'bar', value: 'bar' },
+      ];
+      await db.putMany(items);
+      const res = await db.find('*');
+
+      expect(res.length).to.eql(2);
+      expect(res.keys.includes('foo')).to.eql(true);
+      expect(res.keys.includes('bar')).to.eql(true);
+
+      const values = res.list.map(item => item.value);
+      expect(values.includes('foo')).to.eql(true);
+      expect(values.includes('bar')).to.eql(true);
+    });
+  });
+
+  it('observable events', async () => {
+    const events: t.DocDbActionEvent[] = [];
+    db.events$.subscribe(e => events.push(e as t.DocDbActionEvent));
+
+    const key = 'foo/bar';
+    await db.get(key);
+    await db.put(key, 123);
+    await db.get(key);
+    await db.delete(key);
+    await db.get(key);
+
+    expect(events.length).to.eql(5);
+
+    expect(events[0].type).to.eql('DOC/read');
+    expect(events[1].type).to.eql('DOC/change');
+    expect(events[2].type).to.eql('DOC/read');
+    expect(events[3].type).to.eql('DOC/change');
+    expect(events[4].type).to.eql('DOC/read');
+
+    expect(events[0].payload.action).to.eql('get');
+    expect(events[1].payload.action).to.eql('put');
+    expect(events[2].payload.action).to.eql('get');
+    expect(events[3].payload.action).to.eql('delete');
+    expect(events[4].payload.action).to.eql('get');
+
+    expect(events[0].payload.value).to.eql(undefined);
+    expect(events[1].payload.value).to.eql(123);
+    expect(events[2].payload.value).to.eql(123);
+    expect(events[3].payload.value).to.eql(undefined);
+    expect(events[4].payload.value).to.eql(undefined);
   });
 });

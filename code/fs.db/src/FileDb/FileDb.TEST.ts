@@ -221,6 +221,12 @@ describe('FileDb', () => {
     expect(events[3].type).to.eql('DOC/change');
     expect(events[4].type).to.eql('DOC/read');
 
+    expect(events[0].payload.action).to.eql('get');
+    expect(events[1].payload.action).to.eql('put');
+    expect(events[2].payload.action).to.eql('get');
+    expect(events[3].payload.action).to.eql('delete');
+    expect(events[4].payload.action).to.eql('get');
+
     expect(events[0].payload.value).to.eql(undefined);
     expect(events[1].payload.value).to.eql(123);
     expect(events[2].payload.value).to.eql(123);
@@ -407,15 +413,12 @@ describe('FileDb', () => {
       await db.get(key);
       await db.put(key, 456);
 
-      expect(events.length).to.eql(5);
+      expect(events.length).to.eql(4);
 
       expect(events[0].type).to.eql('DOC/change');
       expect(events[1].type).to.eql('DOC/read');
       expect(events[2].type).to.eql('DOC/read');
       expect(events[3].type).to.eql('DOC/change');
-
-      expect(events[4].type).to.eql('DOC/cache');
-      expect(events[4].payload.action).to.eql('REMOVED');
     });
   });
 

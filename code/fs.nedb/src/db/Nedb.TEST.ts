@@ -1,5 +1,5 @@
-import { expect, fs, time } from '../../test/test';
-import { Store } from '.';
+import { expect, fs, time } from '../test';
+import { Nedb } from '.';
 
 const dir = fs.resolve('tmp/store');
 const filename = fs.join(dir, 'file.db');
@@ -15,13 +15,19 @@ describe('Store (nedb)', () => {
   });
 
   it('constructs', () => {
-    const db = Store.create({});
-    expect(db).to.be.an.instanceof(Store);
+    const db = Nedb.create({});
+    expect(db).to.be.an.instanceof(Nedb);
+  });
+
+  it('strips "nedb:" prefix from filename', () => {
+    const db = Nedb.create({ filename: `nedb:${filename}` });
+    const text = db.filename;
+    expect(text).to.not.include('nedb:');
   });
 
   it('inserts a single document', async () => {
     type MyDoc = { name: string; _id?: string };
-    const db = Store.create<MyDoc>({});
+    const db = Nedb.create<MyDoc>({});
 
     const res1 = await db.find({ name: 'foo' });
     expect(res1).to.eql([]);
@@ -39,7 +45,7 @@ describe('Store (nedb)', () => {
 
   it('inserts multiple documents', async () => {
     type MyDoc = { name: string; _id?: string };
-    const db = Store.create<MyDoc>({});
+    const db = Nedb.create<MyDoc>({});
 
     const res1 = await db.insertMany([{ name: 'foo' }, { name: 'bar' }]);
     expect(res1[0].name).to.eql('foo');
@@ -54,12 +60,12 @@ describe('Store (nedb)', () => {
     await removeDir();
     expect(await fs.pathExists(filename)).to.eql(false);
 
-    const db1 = Store.create({ filename, autoload: true });
+    const db1 = Nedb.create({ filename, autoload: true });
     const res1 = await db1.insert({ name: 'foo' });
     expect(res1.name).to.eql('foo');
     expect(await fs.pathExists(filename)).to.eql(true);
 
-    const db2 = Store.create({ filename, autoload: true });
+    const db2 = Nedb.create({ filename, autoload: true });
 
     const res2 = await db2.findOne({ name: 'foo' });
     expect(res2.name).to.eql('foo');
@@ -67,7 +73,7 @@ describe('Store (nedb)', () => {
 
   it('update (multi)', async () => {
     type MyDoc = { name: string; _id?: string };
-    const db = Store.create<MyDoc>({});
+    const db = Nedb.create<MyDoc>({});
 
     await db.insertMany([{ name: 'foo' }, { name: 'zoo' }, { name: 'foo' }]);
 
@@ -94,7 +100,7 @@ describe('Store (nedb)', () => {
 
   it('upsert', async () => {
     type MyDoc = { name: string; _id?: string };
-    const db = Store.create<MyDoc>({});
+    const db = Nedb.create<MyDoc>({});
 
     const res1 = await db.find({});
     expect(res1).to.eql([]);
@@ -114,7 +120,7 @@ describe('Store (nedb)', () => {
   });
 
   it('delete', async () => {
-    const db = Store.create();
+    const db = Nedb.create();
 
     await db.insertMany([{ name: 'foo' }, { name: 'bar' }, { name: 'zoo' }]);
     const res1 = await db.find({});

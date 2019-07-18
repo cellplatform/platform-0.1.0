@@ -344,7 +344,9 @@ export class Grid implements t.IGrid {
     const args = typeof key === 'string' ? Cell.fromKey(key) : key;
     const { row, column } = args;
     if (row < 0 || column < 0) {
-      throw new Error(`Cell does not exist at row:${row}, column:${column}.`);
+      let msg = `Cell does not exist at row:${row}, column:${column}.`;
+      msg = typeof key === 'string' ? `${msg} key: "${key}"` : msg;
+      throw new Error(msg);
     }
     return Cell.create({ table: this._.table, row, column });
   }
@@ -402,6 +404,12 @@ export class Grid implements t.IGrid {
     const cell = (last && last.cell) || 'A1';
     const ranges = last.ranges || [];
     this.select({ cell, ranges });
+    return this;
+  }
+
+  public blur() {
+    this.fire({ type: 'GRID/blur', payload: { grid: this } });
+    this.deselect();
     return this;
   }
 

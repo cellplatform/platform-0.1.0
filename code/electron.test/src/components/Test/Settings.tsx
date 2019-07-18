@@ -81,6 +81,7 @@ export class SettingsTest extends React.PureComponent<ISettingsProps, ISettingsS
             <Button label={'delete: foo'} onClick={this.deleteHandler('foo')} />
             <Button label={'clear'} onClick={this.clear} />
             <Button label={'open in editor'} onClick={this.openInEditor} />
+            <Button label={'open folder'} onClick={this.openFolder} />
           </div>
           <div {...styles.colObject}>
             <ObjectView name={'settings'} data={this.state.data} expandLevel={5} />
@@ -130,11 +131,7 @@ export class SettingsTest extends React.PureComponent<ISettingsProps, ISettingsS
     };
   };
 
-  private clear = async () => {
-    await this.settings.clear();
-  };
-
-  private openInEditor = () => {
-    this.settings.openInEditor();
-  };
+  private clear = async () => this.settings.clear();
+  private openInEditor = () => this.settings.openInEditor();
+  private openFolder = () => this.settings.openFolder();
 }

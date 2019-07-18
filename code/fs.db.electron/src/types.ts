@@ -9,7 +9,8 @@ import {
 } from '@platform/fs.db/lib/types';
 
 export type DbIpc = IpcClient<DbIpcEvent>;
-export type DbFactory = (dir: string) => IDb;
+export type DbFactory = (conn: string) => IDb;
+export type DbKind = 'FSDB' | 'NEDB';
 
 /**
  * IPC Events
@@ -19,34 +20,41 @@ export type DbIpcEvent =
   | IDbIpcFindEvent
   | IDbIpcPutEvent
   | IDbIpcDeleteEvent
-  | IDbIpcDbFiredEvent;
+  | IDbIpcDbFiredEvent
+  | IDbIpcOpenFolderEvent;
 
 export type IDbIpcGetResponse = { values: IDbValue[] };
 export type IDbIpcGetEvent = {
   type: 'DB/get';
-  payload: { dir: string; keys: string[] };
+  payload: { conn: string; keys: string[] };
 };
 
 export type IDbIpcFindResponse = { result: IDbFindResult };
 export type IDbIpcFindEvent = {
   type: 'DB/find';
-  payload: { dir: string; query: IDbQuery };
+  payload: { conn: string; query: IDbQuery };
 };
 
 export type IDbIpcPutResponse = { values: IDbValue[] };
 export type IDbIpcPutEvent = {
   type: 'DB/put';
-  payload: { dir: string; items: IDbKeyValue[] };
+  payload: { conn: string; items: IDbKeyValue[] };
 };
 
 export type IDbIpcDeleteResponse = { values: IDbValue[] };
 export type IDbIpcDeleteEvent = {
   type: 'DB/delete';
-  payload: { dir: string; keys: string[] };
+  payload: { conn: string; keys: string[] };
 };
 
+export type IDbIpcDbFired = { conn: string; event: DbEvent };
 export type IDbIpcDbFiredEvent = {
   type: 'DB/fired';
   payload: IDbIpcDbFired;
 };
-export type IDbIpcDbFired = { dir: string; event: DbEvent };
+
+export type IDbIpcOpenFolder = { conn: string };
+export type IDbIpcOpenFolderEvent = {
+  type: 'DB/open/folder';
+  payload: IDbIpcOpenFolder;
+};

@@ -1,34 +1,24 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
-import { CommandState, constants, t } from '../common';
+import { Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+
+import { CommandState, constants, t, Sync } from '../common';
 import { root } from './cmds';
 
-const dir = constants.DB.DIR;
-
 export function init(args: {
+  getSync: () => Sync;
   state$: Subject<Partial<t.ITestState>>;
   databases: t.DbFactory;
   getState: () => t.ITestState;
   // ipc: t.IpcClient;
 }) {
-  const { state$, databases, getState } = args;
+  const { state$, databases, getState, getSync } = args;
 
   let db: t.IDb | undefined;
   const getDb = async () => {
     if (db) {
       return db;
     }
-    db = await databases(dir);
+    db = await databases(constants.DB.FILE);
 
     /**
      * Watch for changes to raw DB and update debug state.
@@ -83,7 +73,15 @@ export function init(args: {
     root,
     beforeInvoke: async e => {
       const db = await getDb();
-      const props: t.ICommandProps = { ...e.props, db, state$, databases };
+      const props: t.ICommandProps = {
+        ...e.props,
+        db,
+        state$,
+        databases,
+        get sync() {
+          return getSync();
+        },
+      };
       return { props };
     },
   });

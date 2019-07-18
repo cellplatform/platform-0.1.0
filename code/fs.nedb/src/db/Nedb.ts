@@ -10,20 +10,26 @@ export type IStoreArgs = string | Nedb.DataStoreOptions;
  *    A promise-based wrapper around the `nedb` library.
  *    Used internally by ther classes for cleaner async/await flow.
  */
-export class Store<G = any> {
+export class Nedb<G = any> {
   /**
    * [Static]
    */
   public static create<G = any>(args: IStoreArgs = {}) {
-    return new Store<G>(args);
+    return new Nedb<G>(args);
   }
 
   /**
    * [Lifecycle]
    */
   private constructor(args: IStoreArgs) {
-    this.filename = typeof args === 'string' ? args : args.filename;
-    this.store = new NedbStore(args);
+    // Format the filename.
+    let filename = typeof args === 'string' ? args : args.filename;
+    filename = filename ? filename.replace(/^nedb\:/, '') : filename;
+    this.filename = filename;
+
+    // Construct the underlying data-store.
+    const config = typeof args === 'object' ? args : {};
+    this.store = new NedbStore({ ...config, filename });
   }
 
   /**
@@ -35,6 +41,14 @@ export class Store<G = any> {
   /**
    * [Methods]
    */
+
+  public compact() {
+    return new Promise((resolve, reject) => {
+      this.store.once('compaction.done', () => resolve());
+      this.store.persistence.compactDatafile();
+    });
+  }
+
   public insert<T extends G>(doc: T) {
     return new Promise<T>((resolve, reject) => {
       this.store.insert(doc, (err: Error, doc: T) => {

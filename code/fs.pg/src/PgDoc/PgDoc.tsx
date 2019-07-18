@@ -8,7 +8,7 @@
 import { Subject } from 'rxjs';
 import { take, share } from 'rxjs/operators';
 
-import { R, t, pg, defaultValue, time, value as valueUtil } from '../common';
+import { R, t, pg, defaultValue, time, value as valueUtil, DbUri } from '../common';
 import { Pg } from './Pg';
 
 export type IPgDocArgs = {
@@ -30,7 +30,8 @@ export class PgDoc implements t.IDb {
   }
 
   public static parseKey(key: string, options: { requirePath?: boolean } = {}) {
-    key = (key || '').trim().replace(/^\/*/, '');
+    const uri = DbUri.create().parse(key);
+    key = uri.path.dir;
     const index = key.indexOf('/');
     const table = index > -1 ? key.substring(0, index).trim() : key;
     const path = key
@@ -99,6 +100,7 @@ export class PgDoc implements t.IDb {
    */
   private readonly _args: IPgDocArgs;
   public readonly db: Pg;
+  private readonly uri = DbUri.create();
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -248,11 +250,12 @@ export class PgDoc implements t.IDb {
     let list: t.IDbValue[] = [];
 
     try {
-      const pattern = (typeof query === 'object' ? query.pattern : query) || '';
-      const deep = typeof query === 'object' ? defaultValue(query.deep, true) : true;
+      const pattern = (typeof query === 'object' ? query.query : query) || '';
       if (!pattern) {
         throw new Error(`A query pattern must contain at least a root TABLE name.`);
       }
+      const uri = this.uri.parse(pattern);
+      const deep = uri.path.suffix === '**';
 
       // Prepare search SQL statement.
       const key = PgDoc.parseKey(pattern, { requirePath: false });

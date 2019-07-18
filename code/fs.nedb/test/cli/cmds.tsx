@@ -1,4 +1,4 @@
-import { log, Command, t, Store } from '../common';
+import { log, Command, t, Nedb } from '../common';
 
 type P = t.ICommandProps;
 
@@ -8,8 +8,7 @@ type P = t.ICommandProps;
 export const root = Command.create<P>('root')
   //
   .add('store', async e => {
-    const db = Store.create({ filename: 'tmp/client.db', autoload: true });
-
+    const db = e.props.db;
     const name = 'foo';
     const value = e.param(0, 'my-value');
 
@@ -20,4 +19,8 @@ export const root = Command.create<P>('root')
 
     const res2 = await db.findOne({ name });
     log.info(`AFTER insert`, res1);
+  })
+  .add('compact', async e => {
+    const db = e.props.db;
+    await db.compact();
   });

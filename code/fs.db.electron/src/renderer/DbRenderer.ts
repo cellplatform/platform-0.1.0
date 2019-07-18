@@ -1,10 +1,9 @@
 import { Subject } from 'rxjs';
 import { filter, share, takeUntil } from 'rxjs/operators';
-
 import { t } from './common';
 
 export type IDbRendererArgs = {
-  dir: string;
+  conn: string;
   ipc: t.DbIpc;
 };
 
@@ -24,15 +23,15 @@ export class DbRenderer implements t.IDb {
    */
 
   private constructor(args: IDbRendererArgs) {
-    const { dir, ipc } = args;
-    this.dir = dir;
+    const { conn, ipc } = args;
+    this.conn = conn;
     this.ipc = ipc;
 
     ipc
       .on<t.IDbIpcDbFiredEvent>('DB/fired')
       .pipe(
         takeUntil(this.dispose$),
-        filter(e => e.payload.dir === dir),
+        filter(e => e.payload.conn === conn),
       )
       .subscribe(e => this._events$.next(e.payload.event));
   }
@@ -45,7 +44,7 @@ export class DbRenderer implements t.IDb {
   /**
    * [Fields]
    */
-  public readonly dir: string;
+  public readonly conn: string;
   private readonly ipc: t.DbIpc;
 
   private readonly _dispose$ = new Subject<{}>();
@@ -68,8 +67,11 @@ export class DbRenderer implements t.IDb {
     return (await this.getMany([key]))[0];
   }
   public async getMany(keys: string[]): Promise<t.IDbValue[]> {
-    const dir = this.dir;
-    const res = await this.invoke<t.IDbIpcGetResponse>({ type: 'DB/get', payload: { dir, keys } });
+    const conn = this.conn;
+    const res = await this.invoke<t.IDbIpcGetResponse>({
+      type: 'DB/get',
+      payload: { conn, keys },
+    });
     return res.values;
   }
   public async getValue<T extends t.Json | undefined>(key: string): Promise<T> {
@@ -81,8 +83,11 @@ export class DbRenderer implements t.IDb {
     return (await this.putMany([{ key, value }]))[0];
   }
   public async putMany(items: t.IDbKeyValue[]): Promise<t.IDbValue[]> {
-    const dir = this.dir;
-    const res = await this.invoke<t.IDbIpcPutResponse>({ type: 'DB/put', payload: { dir, items } });
+    const conn = this.conn;
+    const res = await this.invoke<t.IDbIpcPutResponse>({
+      type: 'DB/put',
+      payload: { conn, items },
+    });
     return res.values;
   }
 
@@ -90,20 +95,20 @@ export class DbRenderer implements t.IDb {
     return (await this.deleteMany([key]))[0];
   }
   public async deleteMany(keys: string[]): Promise<t.IDbValue[]> {
-    const dir = this.dir;
+    const conn = this.conn;
     const res = await this.invoke<t.IDbIpcDeleteResponse>({
       type: 'DB/delete',
-      payload: { dir, keys },
+      payload: { conn, keys },
     });
     return res.values;
   }
 
   public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
-    const dir = this.dir;
-    query = typeof query === 'string' ? { pattern: query } : query;
+    const conn = this.conn;
+    query = typeof query === 'string' ? { query } : query;
     const res = await this.invoke<t.IDbIpcFindResponse>({
       type: 'DB/find',
-      payload: { dir, query },
+      payload: { conn, query },
     });
     return res.result;
   }

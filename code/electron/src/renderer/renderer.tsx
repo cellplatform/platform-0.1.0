@@ -14,7 +14,7 @@ import * as keyboard from './keyboard';
 const electron = (window as any).require('electron');
 const remote = electron.remote as Electron.Remote;
 
-export { Context, ReactContext };
+export { Context, ReactContext, remote };
 export * from '../types';
 
 type Refs = { renderer?: t.IRenderer };

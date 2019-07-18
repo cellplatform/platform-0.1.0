@@ -20,8 +20,8 @@
   },
   "devDependencies": {
     "@platform/ts": "3.4.33",
-    "@uiharness/dev": "0.5.13",
-    "@uiharness/ui": "0.5.14",
+    "@uiharness/dev": "0.5.14",
+    "@uiharness/ui": "0.5.15",
     "electron": "5.0.0"
   },
   "files": [

@@ -1,32 +1,23 @@
 import * as React from 'react';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
 import {
-  value,
   CellEditor,
   color,
+  COLORS,
+  CommandShell,
   constants,
   css,
   datagrid,
+  log,
   markdown,
   ObjectView,
   renderer,
-  CommandShell,
   Sync,
   t,
-  COLORS,
+  value as valueUtil,
 } from '../common';
 
 const storage = {
@@ -62,12 +53,13 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public async componentWillMount() {
     this.cli = cli.init({
+      getSync: () => this.sync,
       state$: this.state$,
       databases: this.databases,
       getState: () => this.state,
     });
 
-    // Setup ovservables.
+    // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const sync$ = this.sync$.pipe(takeUntil(this.unmounted$));
 
@@ -84,41 +76,36 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
     // Events.
     sync$.subscribe(e => {
-      console.log('🌳', e.type, e.payload);
-      // e.payload.
+      // console.log('🌳', e.type, e.payload);
     });
 
-    // sync$
-    //   .pipe(
-    //     filter(e => e.type === 'SYNC/changing'),
-    //     map(e => e.payload as t.ISyncChanging),
-    //   )
-    //   .subscribe(e => {
-    //     // console.log('cancel', e);
-    //     // e.cancel();
-    //   });
-
-    // // Setup syncer.
-    // const dir = constants.DB.DIR;
-    // const db = this.databases(dir);
-    // console.log('this.datagrid', this.datagrid);
-    // // const grid = this.datagrid.grid;
-    // // this.sync = Sync.create({ db, grid, events$: this.sync$ });
+    sync$.pipe(filter(e => e.type !== 'SYNC/change')).subscribe(e => {
+      log.info('🌳', e.type, e.payload);
+    });
   }
 
-  public componentDidMount() {
+  public async componentDidMount() {
     // Setup syncer.
-    const dir = constants.DB.DIR;
-    const db = this.databases(dir);
+    const file = constants.DB.FILE;
+    const db = this.databases(file);
     const grid = this.datagrid.grid;
     const events$ = this.sync$;
     this.sync = Sync.create({ db, grid, events$ });
+    await this.sync.compact();
+    await this.sync.load();
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
     this.sync.dispose();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get grid() {
+    return this.datagrid.grid;
   }
 
   /**
@@ -167,7 +154,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const data = { ...this.state };
     delete data.showDebug;
     if (data.db && data.db.cells) {
-      const cells = value.deleteEmpty(data.db.cells);
+      const cells = valueUtil.deleteEmpty(data.db.cells);
       Object.keys(cells).forEach(key => {
         const MAX = 15;
         const value = cells[key];

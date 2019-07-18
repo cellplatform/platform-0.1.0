@@ -1,7 +1,8 @@
+import { shell } from 'electron';
 import { Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { share, take } from 'rxjs/operators';
 
-import { FileDb, t } from './common';
+import { FileDb, fs, NeDoc, parseDbPath, t } from './common';
 
 /**
  * Start the HyperDB IPC handler's listening on the [main] process.
@@ -13,21 +14,38 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
 
   log.info(`listening for ${log.yellow('db events')}`);
 
-  const CACHE: { [dir: string]: t.IDb } = {};
-  const factory = (dir: string) => {
-    if (!CACHE[dir]) {
-      const db = (CACHE[dir] = FileDb.create({ dir, cache: false }));
-      db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[dir]);
-      db.events$.subscribe(event => events$.next({ dir, event }));
-      log.info.gray(`${log.yellow('cached file-database')}: ${dir}`);
+  /**
+   * Database client cache.
+   */
+  const CACHE: { [path: string]: t.IDb } = {};
+  const factory = (conn: string) => {
+    const { path, kind } = parseDbPath(conn);
+
+    if (!CACHE[path]) {
+      // Construct the database.
+      let db: t.IDb;
+      if (kind === 'FSDB') {
+        db = FileDb.create({ dir: path, cache: false });
+      } else if (kind === 'NEDB') {
+        db = NeDoc.create({ filename: path });
+      } else {
+        throw new Error(`DB of kind '${kind}' not supported.`);
+      }
+      CACHE[path] = db;
+
+      // Monitor events.
+      db.dispose$.pipe(take(1)).subscribe(() => delete CACHE[path]);
+      db.events$.subscribe(event => events$.next({ conn, event }));
+      log.info.gray(`${log.green(kind)}: ${path}`);
     }
-    return CACHE[dir];
+    return CACHE[path];
   };
 
   /**
    * Broadcast all DB events to renderers.
    */
   events$.subscribe(payload => {
+    // console.log('payload', payload);
     ipc.send('DB/fired', payload);
   });
 
@@ -35,32 +53,67 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
    * GET
    */
   ipc.handle<t.IDbIpcGetEvent, t.IDbIpcGetResponse>('DB/get', async e => {
-    const db = factory(e.payload.dir);
-    const values = await db.getMany(e.payload.keys);
-    return { values };
+    try {
+      const db = factory(e.payload.conn);
+      const values = await db.getMany(e.payload.keys);
+      return { values };
+    } catch (error) {
+      log.error(`[db:error/get] ${error.message}`);
+      throw error;
+    }
   });
 
   ipc.handle<t.IDbIpcFindEvent, t.IDbIpcFindResponse>('DB/find', async e => {
-    const db = factory(e.payload.dir);
-    const result = await db.find(e.payload.query);
-    return { result };
+    try {
+      const db = factory(e.payload.conn);
+      const result = await db.find(e.payload.query);
+      return { result };
+    } catch (error) {
+      log.error(`[db:error/find] ${error.message}`);
+      throw error;
+    }
   });
 
   /**
    * PUT
    */
   ipc.handle<t.IDbIpcPutEvent, t.IDbIpcPutResponse>('DB/put', async e => {
-    const db = factory(e.payload.dir);
-    const values = await db.putMany(e.payload.items);
-    return { values };
+    try {
+      const db = factory(e.payload.conn);
+      const values = await db.putMany(e.payload.items);
+      return { values };
+    } catch (error) {
+      log.error(`[db:error/put] ${error.message}`);
+      throw error;
+    }
   });
 
   /**
    * DELETE
    */
   ipc.handle<t.IDbIpcDeleteEvent, t.IDbIpcDeleteResponse>('DB/delete', async e => {
-    const db = factory(e.payload.dir);
-    const values = await db.deleteMany(e.payload.keys);
-    return { values };
+    try {
+      const db = factory(e.payload.conn);
+      const values = await db.deleteMany(e.payload.keys);
+      return { values };
+    } catch (error) {
+      log.error(`[db:error/delete]: ${error.message}`);
+      throw error;
+    }
   });
+
+  /**
+   * Open folder.
+   */
+  ipc.on<t.IDbIpcOpenFolderEvent>('DB/open/folder').subscribe(async e => {
+    let dir = fs.resolve(parseDbPath(e.payload.conn).path);
+    dir = (await fs.is.dir(dir)) ? dir : fs.dirname(dir);
+    shell.openItem(dir);
+  });
+
+  // Finish up.
+  return {
+    events$: events$.pipe(share()),
+    factory,
+  };
 }

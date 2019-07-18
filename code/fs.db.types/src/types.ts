@@ -71,7 +71,7 @@ export type IDbFindResult = {
 /**
  * Events
  */
-export type DbEvent = DocDbActionEvent | IDbCacheEvent;
+export type DbEvent = DocDbActionEvent;
 export type DocDbActionEvent = IDbReadEvent | IDbChangeEvent;
 
 export type IDbReadEvent = {
@@ -83,12 +83,6 @@ export type IDbChangeEvent = {
   type: 'DOC/change';
   payload: IDbActionChange;
 };
-
-export type IDbCacheEvent = {
-  type: 'DOC/cache';
-  payload: IDbCacheAction;
-};
-export type IDbCacheAction = { key: string; action: 'REMOVED' };
 
 /**
  * Action

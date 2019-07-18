@@ -23,7 +23,7 @@ linux:
   category: Development
   artifactName: '${productName}-${version}-linux.${ext}'
 files:
-  - bundle/app.main/**
+  - bundle/app.main/prod/**
   - bundle/app.renderer/prod/**
 directories:
   output: dist

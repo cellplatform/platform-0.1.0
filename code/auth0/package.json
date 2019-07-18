@@ -27,8 +27,8 @@
   "devDependencies": {
     "@platform/react": "^0.3.12",
     "@types/auth0-js": "9.10.2",
-    "@uiharness/dev": "0.5.13",
-    "@uiharness/ui": "0.5.14",
+    "@uiharness/dev": "0.5.14",
+    "@uiharness/ui": "0.5.15",
     "apollo-server": "2.6.8",
     "graphql": "14.4.2",
     "electron": "5.0.0"

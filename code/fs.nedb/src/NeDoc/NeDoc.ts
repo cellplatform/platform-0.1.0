@@ -1,18 +1,19 @@
 import { Subject } from 'rxjs';
-import { take, share } from 'rxjs/operators';
-import { Store } from '../store';
-import { t, R, time, defaultValue, DbUri, value as valueUtil } from '../common';
+import { share } from 'rxjs/operators';
 
-export type IDbDocArgs = {
+import { DbUri, defaultValue, t, time, value as valueUtil } from '../common';
+import { Nedb } from '../db';
+
+export type INeDocArgs = {
   filename?: string;
 };
 
-export class DocDb {
+export class NeDoc {
   /**
    * [Static]
    */
-  public static create(args: IDbDocArgs = {}) {
-    return new DocDb(args);
+  public static create(args: INeDocArgs = {}) {
+    return new NeDoc(args);
   }
 
   private static toTimestamps(doc?: t.IDoc) {
@@ -24,11 +25,11 @@ export class DocDb {
   /**
    * [Lifecycle]
    */
-  private constructor(args: IDbDocArgs) {
+  private constructor(args: INeDocArgs) {
     const { filename } = args;
     const autoload = Boolean(filename);
-    this.store = Store.create<t.IDoc>({ filename, autoload });
-    this.store.ensureIndex({ fieldName: 'path', unique: true });
+    this.store = Nedb.create<t.IDoc>({ filename, autoload });
+    this.store.ensureIndex({ fieldName: 'path', unique: true, sparse: true });
   }
 
   public dispose() {
@@ -42,7 +43,7 @@ export class DocDb {
   /**
    * [Fields]
    */
-  private readonly store: Store<t.IDoc>;
+  private readonly store: Nedb<t.IDoc>;
   private readonly uri = DbUri.create();
 
   private readonly _dispose$ = new Subject<{}>();
@@ -60,6 +61,10 @@ export class DocDb {
     return `[db:${filename ? filename : 'memory'}]`;
   }
 
+  public async compact() {
+    await this.store.compact();
+  }
+
   /**
    * [Get]
    */
@@ -67,11 +72,12 @@ export class DocDb {
     this.throwIfDisposed('get');
     return (await this.getMany([key]))[0];
   }
-  public async getMany(keys: string[]): Promise<t.IDbValue[]> {
+  public async getMany(keys: string[], options: { silent?: boolean } = {}): Promise<t.IDbValue[]> {
     this.throwIfDisposed('getMany');
 
+    // Query the DB.
     const uris = keys.map(key => this.uri.parse(key));
-    const paths = uris.map(uri => uri.path.text);
+    const paths = uris.map(uri => uri.path.dir);
     const docs = await this.store.find({ path: { $in: paths } });
 
     /**
@@ -79,19 +85,36 @@ export class DocDb {
      * - URI. object path
      */
 
-    return uris.map(uri => {
+    // Convert items to return data-structures.
+    const items = uris.map(uri => {
       const key = uri.text;
-      const doc = docs.find(item => item.path === uri.path.text);
+      const doc = docs.find(item => item.path === uri.path.dir);
       const value = typeof doc === 'object' ? doc.data : undefined;
       const exists = Boolean(value);
-      const { createdAt, modifiedAt } = DocDb.toTimestamps(doc);
+      const { createdAt, modifiedAt } = NeDoc.toTimestamps(doc);
       const res: t.IDbValue = {
         value,
         props: { key, exists, createdAt, modifiedAt },
       };
       return res;
     });
+
+    // Fire read events.
+    if (!options.silent) {
+      items.forEach(item => {
+        const { value, props } = item;
+        const key = props.key;
+        this.fire({
+          type: 'DOC/read',
+          payload: { action: 'get', key, value, props },
+        });
+      });
+    }
+
+    // Finish up.
+    return items;
   }
+
   public async getValue<T extends t.Json | undefined>(key: string): Promise<T> {
     this.throwIfDisposed('putValue');
     const res = await this.get(key);
@@ -106,13 +129,16 @@ export class DocDb {
     this.throwIfDisposed('put');
     return (await this.putMany([{ key, value, ...options }]))[0];
   }
-  public async putMany(items: t.IDbPutItem[]): Promise<t.IDbValue[]> {
+  public async putMany(
+    items: t.IDbPutItem[],
+    options: { silent?: boolean } = {},
+  ): Promise<t.IDbValue[]> {
     this.throwIfDisposed('putMany');
     const now = time.now.timestamp;
 
     let inserts = items.map(item => {
       const uri = this.uri.parse(item.key);
-      const path = uri.path.text;
+      const path = uri.path.dir;
       const createdAt = defaultValue(item.createdAt, now);
       const modifiedAt = defaultValue(item.modifiedAt, now);
       const data = item.value;
@@ -137,8 +163,8 @@ export class DocDb {
         }),
       );
 
-      // Remove the existing updates from the new isnerts.
-      inserts = inserts.filter(d1 => existing.some(d2 => d2.path !== d1.path));
+      // Remove the existing updates from the new inserts.
+      inserts = inserts.filter(d1 => !existing.some(d2 => d2.path === d1.path));
     }
 
     // Perform inserts.
@@ -146,7 +172,23 @@ export class DocDb {
       await this.store.insertMany(inserts);
     }
 
-    return this.getMany(items.map(item => item.key));
+    // Retrieve result set.
+    const result = await this.getMany(items.map(item => item.key), { silent: true });
+
+    // Fire events.
+    if (!options.silent) {
+      result.forEach(item => {
+        const { value, props } = item;
+        const key = props.key;
+        this.fire({
+          type: 'DOC/change',
+          payload: { action: 'put', key, value, props },
+        });
+      });
+    }
+
+    // Finish up.
+    return result;
   }
 
   /**
@@ -157,15 +199,20 @@ export class DocDb {
     this.throwIfDisposed('delete');
     return (await this.deleteMany([key]))[0];
   }
-  public async deleteMany(keys: string[]): Promise<t.IDbValue[]> {
+  public async deleteMany(
+    keys: string[],
+    options: { silent?: boolean } = {},
+  ): Promise<t.IDbValue[]> {
     this.throwIfDisposed('deleteMany');
 
+    // Remove docs from DB.
     const uris = keys.map(key => this.uri.parse(key));
-    const paths = uris.map(uri => uri.path.text);
+    const paths = uris.map(uri => uri.path.dir);
     const multi = paths.length > 0;
     await this.store.remove({ path: { $in: paths } }, { multi });
 
-    return uris.map(uri => {
+    // Prepare result set.
+    const result = uris.map(uri => {
       const key = uri.text;
       const res: t.IDbValue = {
         value: undefined,
@@ -173,6 +220,21 @@ export class DocDb {
       };
       return res;
     });
+
+    // Fire read events.
+    if (!options.silent) {
+      result.forEach(item => {
+        const { value, props } = item;
+        const key = props.key;
+        this.fire({
+          type: 'DOC/change',
+          payload: { action: 'delete', key, value, props },
+        });
+      });
+    }
+
+    // Finish up.
+    return result;
   }
 
   /**
@@ -184,48 +246,52 @@ export class DocDb {
 
     let keys: string[] | undefined;
     let map: t.IDbFindResult['map'] | undefined;
-    const error: Error | undefined = undefined;
-    const list: t.IDbValue[] = [];
+    let error: Error | undefined;
+    let list: t.IDbValue[] = [];
 
-    // try {
-    //   const pattern = (typeof query === 'object' ? query.pattern : query) || '';
-    //   const deep = typeof query === 'object' ? defaultValue(query.deep, true) : true;
-    //   if (!pattern) {
-    //     throw new Error(`A query pattern must contain at least a root TABLE name.`);
-    //   }
+    try {
+      // Prepare the query.
+      const pattern = (typeof query === 'object' ? query.query : query) || '';
+      const uri = this.uri.parse(pattern);
+      const { dir, suffix } = uri.path;
 
-    //   // Prepare search SQL statement.
-    //   const key = PgDoc.parseKey(pattern, { requirePath: false });
-    //   let sql = `SELECT * FROM "${key.table}"`;
-    //   sql = key.path ? `${sql} WHERE path ~ '^${key.path}'` : sql;
-    //   sql = `${sql};`;
+      const buildQuery = () => {
+        if (dir === '') {
+          if (suffix === '') {
+            return undefined;
+          }
+          if (suffix === '**') {
+            return {}; // All documents in DB.
+          }
+          if (suffix === '*') {
+            return { path: { $regex: /^([^/]*)$/ } }; // Only root level paths (eg "foo" not "foo/bar").
+          }
+          return;
+        } else {
+          const expr = suffix === '**' ? `^${dir}\/*` : `^${dir}\/([^/]*)$`;
+          return { path: { $regex: new RegExp(expr) } };
+        }
+      };
 
-    //   // Query the database.
-    //   const res = await this.db.query(sql);
-    //   list = res.rows
-    //     .filter(row => {
-    //       // NB: This may be able to be done in a more advanced regex in SQL above.
-    //       return deep
-    //         ? true // Deep: All child paths accepted.
-    //         : !row.path.substring(key.path.length + 1).includes('/'); // Not deep: ensure this is not deeper than the given path.
-    //     })
-    //     .map(row => {
-    //       const value = row && typeof row.data === 'object' ? (row.data as any).data : undefined;
-    //       const { createdAt, modifiedAt } = PgDoc.toTimestamps(row);
-    //       const res: t.IDbValue = {
-    //         value,
-    //         props: {
-    //           key: PgDoc.join(key.table, row.path),
-    //           exists: Boolean(value),
-    //           createdAt,
-    //           modifiedAt,
-    //         },
-    //       };
-    //       return res;
-    //     });
-    // } catch (err) {
-    //   error = err;
-    // }
+      // Query the database.
+      const q = buildQuery();
+      const res = q ? await this.store.find(q) : [];
+
+      // Convert into response list.
+      list = res.map(doc => {
+        const key = doc.path;
+        const value = doc.data;
+        const exists = Boolean(value);
+        const { createdAt, modifiedAt } = doc;
+        const res: t.IDbValue = {
+          value,
+          props: { key, exists, createdAt, modifiedAt },
+        };
+        return res;
+      });
+    } catch (err) {
+      error = err;
+    }
 
     // Return data structure.
     const result: t.IDbFindResult = {
@@ -257,5 +323,9 @@ export class DocDb {
     if (this.isDisposed) {
       throw new Error(`Cannot ${action} because the ${this.toString()} has been disposed.`);
     }
+  }
+
+  private fire(e: t.DbEvent) {
+    this._events$.next(e);
   }
 }

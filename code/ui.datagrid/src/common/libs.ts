@@ -15,13 +15,20 @@ export { Handsontable };
 import 'handsontable'; // tslint:disable-line
 
 /**
- * Util
+ * Util.
  */
 export { css, color, GlamorValue, events, containsFocus } from '@platform/react';
-export { value, time } from '@platform/util.value';
+export { value, time, defaultValue } from '@platform/util.value';
+export { log } from '@platform/log/lib/client';
 
 /**
- * Ramda
+ * Ramda.
  */
 import { equals, clamp } from 'ramda';
 export const R = { equals, clamp };
+
+/**
+ * Cell coords (eg "A1")
+ */
+import * as cellUtil from '@platform/util.value.cell';
+export { cellUtil };

@@ -1,0 +1,29 @@
+{
+  "name": "@platform/fs.watch",
+  "version": "0.2.0",
+  "description": "An observable based file-system watcher.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "test:integration": "ts test --suffix INTEGRATION",
+    "tddi": "ts test --suffix INTEGRATION --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/libs": "0.0.18",
+    "chokidar": "3.0.2"
+  },
+  "devDependencies": {
+    "@platform/fs": "0.1.6",
+    "@platform/test": "0.0.59",
+    "@platform/ts": "3.4.33"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

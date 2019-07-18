@@ -89,4 +89,32 @@ describe('isRangeKey', () => {
     expect(cell.isRangeKey('A$1')).to.eql(false);
     expect(cell.isRangeKey('$A1')).to.eql(false);
   });
+
+  describe('toType (COLUMM, ROW)', () => {
+    it('converts to type cell type', () => {
+      expect(cell.toType('A')).to.eql('COLUMN');
+      expect(cell.toType('AA')).to.eql('COLUMN');
+      expect(cell.toType('1')).to.eql('ROW');
+      expect(cell.toType('99')).to.eql('ROW');
+      expect(cell.toType('A1')).to.eql('CELL');
+      expect(cell.toType('Z9')).to.eql('CELL');
+
+      expect(cell.toType({ row: 0, column: -1 })).to.eql('ROW');
+      expect(cell.toType({ row: 0 })).to.eql('ROW');
+
+      expect(cell.toType({ row: -1, column: 0 })).to.eql('COLUMN');
+      expect(cell.toType({ column: 0 })).to.eql('COLUMN');
+
+      expect(cell.toType({ row: 0, column: 0 })).to.eql('CELL');
+      expect(cell.toType({ row: 123, column: 456 })).to.eql('CELL');
+    });
+
+    it('non-valid input returns nothing', () => {
+      expect(cell.toType('')).to.eql(undefined);
+      expect(cell.toType('  ')).to.eql(undefined);
+      expect(cell.toType({ row: -1, column: -1 })).to.eql(undefined);
+      expect(cell.toType({ row: undefined, column: undefined })).to.eql(undefined);
+      expect(cell.toType({})).to.eql(undefined);
+    });
+  });
 });

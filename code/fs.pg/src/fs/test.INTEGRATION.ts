@@ -23,7 +23,7 @@ describe('fs (integration)', () => {
   afterEach(() => db.dispose());
 
   it('export', async () => {
-    expect((await fsdb.find('FOO')).keys).to.eql([]);
+    expect((await fsdb.find('FOO/**')).keys).to.eql([]);
 
     // Setup a postgres DB with sample data.
     await db.putMany([
@@ -32,7 +32,7 @@ describe('fs (integration)', () => {
       { key: 'FOO/bar/baz/info', value: { count: 456 } },
     ]);
 
-    const query = 'FOO';
+    const query = 'FOO/**';
     const res1 = await db.find(query);
     expect(res1.keys.length).to.eql(3);
 
@@ -54,7 +54,8 @@ describe('fs (integration)', () => {
     ]);
 
     // Confirm the postgres DB is empty.
-    const res1 = await db.find('SHEET');
+    const query = 'SHEET/**';
+    const res1 = await db.find(query);
     expect(res1.length).to.eql(0);
 
     // Run the file-system importer.
@@ -62,7 +63,7 @@ describe('fs (integration)', () => {
     expect(res2.count).to.eql(3);
 
     // Ensure values exist in postgres DB.
-    const res3 = await db.find('SHEET');
+    const res3 = await db.find(query);
     expect(res3.length).to.eql(3);
     expect(res3.map['SHEET/cell/A1']).to.eql({ msg: 'hello' });
     expect(res3.map['SHEET/cell/A2']).to.eql(123);

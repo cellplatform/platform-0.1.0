@@ -1,7 +1,10 @@
-export { value } from '@platform/util.value';
+import * as coord from '@platform/util.value.cell';
+export { coord };
+
+export { value, time, rx } from '@platform/util.value';
 
 /**
  * Ramda
  */
-import { uniq, equals } from 'ramda';
-export const R = { uniq, equals };
+import { uniq, equals, groupBy, prop } from 'ramda';
+export const R = { uniq, equals, groupBy, prop };
