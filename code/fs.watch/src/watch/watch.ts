@@ -1,5 +1,7 @@
+import { basename } from 'path';
 import { Subject } from 'rxjs';
-import { share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged, share, takeUntil } from 'rxjs/operators';
+
 import { chokidar, t } from '../common';
 
 export * from '../types';
@@ -27,8 +29,15 @@ export function start(args: {
     persistent: true,
   });
 
+  // Monitor ready state.
+  let isReady = false;
+  watcher.on('ready', () => {
+    isReady = true;
+  });
+
   const next = (type: t.FsWatchAction, path: string, isDir: boolean) => {
-    events$.next({ type, path, isDir, isFile: !isDir });
+    const name = basename(path);
+    events$.next({ type, path, name, isDir, isFile: !isDir });
   };
 
   // Connect to events.
@@ -44,7 +53,8 @@ export function start(args: {
     watcher.on('unlinkDir', path => next('remove', path, true));
   }
 
-  return {
+  // API.
+  const res: t.FsWatcher = {
     pattern,
     actions,
     events$: events$.pipe(
@@ -52,6 +62,9 @@ export function start(args: {
       distinctUntilChanged((prev, next) => prev.type === next.type && prev.path === next.path),
       share(),
     ),
+    get isReady() {
+      return isReady && !res.isDisposed;
+    },
     get isDisposed() {
       return dispose$.isStopped;
     },
@@ -61,4 +74,5 @@ export function start(args: {
       dispose$.complete();
     },
   };
+  return res;
 }

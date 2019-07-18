@@ -38,6 +38,10 @@ describe('watch', () => {
     expect(events[1].path.endsWith('foo.txt')).to.eql(true);
     expect(events[2].path.endsWith('bar.txt')).to.eql(true);
 
+    expect(events[0].name).to.eql('foo.txt');
+    expect(events[1].name).to.eql('foo.txt');
+    expect(events[2].name).to.eql('bar.txt');
+
     expect(events.every(e => e.isFile)).to.eql(true);
     expect(events.every(e => e.isDir)).to.eql(false);
 
@@ -81,6 +85,7 @@ describe('watch', () => {
 
     await wait(500);
     expect(events[0].type).to.eql('add');
+    expect(events[0].name).to.eql('foo');
 
     await fs.remove(fs.join(dir, 'foo'));
 

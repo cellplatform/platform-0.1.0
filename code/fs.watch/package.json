@@ -1,6 +1,6 @@
 {
-  "name": "fs.watch",
-  "version": "0.0.0",
+  "name": "@platform/fs.watch",
+  "version": "0.1.0",
   "description": "An observable based file-system watcher.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
