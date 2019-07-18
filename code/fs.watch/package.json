@@ -1,12 +1,14 @@
 {
   "name": "@platform/fs.watch",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An observable based file-system watcher.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "ts test",
     "tdd": "ts test --watch",
+    "test:integration": "ts test --suffix INTEGRATION",
+    "tddi": "ts test --suffix INTEGRATION --watch",
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare"

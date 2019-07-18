@@ -9,7 +9,7 @@ describe('NeDoc', () => {
   let db: NeDoc;
 
   beforeEach(async () => {
-    db = NeDoc.create();
+    db = await NeDoc.create();
   });
   afterEach(() => db.dispose());
 

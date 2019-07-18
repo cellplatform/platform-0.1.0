@@ -1031,10 +1031,10 @@
     is-electron "2.2.0"
     minimist "1.2.0"
 
-"@platform/electron@0.5.3":
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.5.3.tgz#46c18d9ba9fcf96d09e67e31b2b4a9a4c1aee83b"
-  integrity sha512-m7C940Y/1G2oL7k23UOdhtXovzUIIwMQeXMzliCCCvjIcUcGfGWgpKH0S5KzCBJkQQwXwthR9U21eWxKjS/2Dg==
+"@platform/electron@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.6.0.tgz#a420ac0f0c8fce59dd19834be6898ef195829037"
+  integrity sha512-0b1iX8Jitug95je2/ODXOWP8OKaC7kULlGiTI3cmn/wvqtpB4eIMqz0cmdG9WtAKcu9eirhxu1ghuIxARzl0Ig==
   dependencies:
     "@platform/fs" "0.1.6"
     "@platform/libs" "^0.0.18"
@@ -1080,10 +1080,10 @@
     "@platform/types" "0.0.20"
     "@platform/util.value" "0.4.4"
 
-"@platform/fs.nedb@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@platform/fs.nedb/-/fs.nedb-0.1.2.tgz#f02db8ec8035f2011dab609146fa4b53c0f36b2f"
-  integrity sha512-r5aHfdH5RFaSdHGAuqK3I2K8VcUq+ArE9pK+pzOdKSFgDOZxx5lg5e2vDXeS9plExTa+qiOSY7uC1YAKfcZhbQ==
+"@platform/fs.nedb@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.nedb/-/fs.nedb-0.2.0.tgz#03a4e80d0a50f2ffb0c4840719bb2f0c34266cf6"
+  integrity sha512-CLAtRoS50jiZd/VGjAggn59TUG49lCDnkQg10lhWuXelPdOha2E5kVBxRWPFgt+xPhfanAWjuC/5Qv2I8MJvRA==
   dependencies:
     "@platform/fs.db.types" "0.1.2"
     "@platform/react" "0.3.12"
