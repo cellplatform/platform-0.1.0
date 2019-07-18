@@ -2,17 +2,19 @@ import { expect, fs, time } from '../test';
 import { Nedb } from '.';
 
 const dir = fs.resolve('tmp/store');
-const filename = fs.join(dir, 'file.db');
 const removeDir = () => fs.remove(dir);
 
-describe('Store (nedb)', () => {
-  beforeEach(async () => {
-    // await removeDir();
-  });
+/**
+ * NOTE:  Filename is incremented to avoid NEDB internal error
+ *        when working with multiple instances of the same file-name.
+ *        See: https://github.com/louischatriot/nedb/issues/462
+ */
+let count = 0;
+const getFilename = () => fs.join(dir, `file-${count++}.db`);
 
-  afterEach(async () => {
-    // await removeDir();
-  });
+describe('Store (nedb)', () => {
+  beforeEach(async () => removeDir());
+  after(async () => removeDir());
 
   it('constructs', () => {
     const db = Nedb.create({});
@@ -20,6 +22,7 @@ describe('Store (nedb)', () => {
   });
 
   it('strips "nedb:" prefix from filename', () => {
+    const filename = getFilename();
     const db = Nedb.create({ filename: `nedb:${filename}` });
     const text = db.filename;
     expect(text).to.not.include('nedb:');
@@ -58,6 +61,8 @@ describe('Store (nedb)', () => {
 
   it('persists to file-system', async () => {
     await removeDir();
+
+    const filename = getFilename();
     expect(await fs.pathExists(filename)).to.eql(false);
 
     const db1 = Nedb.create({ filename, autoload: true });

@@ -9,6 +9,8 @@
     "start": "ui start $@",
     "test": "ts test",
     "tdd": "ts test --watch",
+    "test:integration": "ts test --suffix INTEGRATION",
+    "tddi": "ts test --suffix INTEGRATION --watch",
     "lint": "ts lint",
     "build": "ts build $@",
     "build-test": "ts build --tsconfig=tsconfig.test $@",

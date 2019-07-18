@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { DbUri, defaultValue, t, time, value as valueUtil } from '../common';
-import { Nedb } from '../db';
+import { Nedb } from '../Nedb';
 
 export type INeDocArgs = {
   filename?: string;
