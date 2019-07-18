@@ -20,8 +20,8 @@
     "@platform/react": "0.3.12"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.5.13",
-    "@uiharness/ui": "0.5.14",
+    "@uiharness/dev": "0.5.14",
+    "@uiharness/ui": "0.5.15",
     "electron": "5.0.0"
   },
   "files": [
