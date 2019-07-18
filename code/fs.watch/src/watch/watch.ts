@@ -58,6 +58,7 @@ export function start(args: {
     dispose() {
       watcher.close();
       dispose$.next();
+      dispose$.complete();
     },
   };
 }

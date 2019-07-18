@@ -92,7 +92,7 @@ describe('watch', () => {
     watcher.dispose();
   });
 
-  it('stop watching', async () => {
+  it('stop watching (dispose)', async () => {
     const pattern = fs.join(dir, '*');
     const watcher = watch.start({ pattern });
 
@@ -110,5 +110,7 @@ describe('watch', () => {
     await fs.writeFile(fs.join(dir, 'foo.txt'), 'Bar');
     await fs.writeFile(fs.join(dir, 'foo.txt'), 'Baz');
     expect(events.length).to.eql(0); // No more events.
+
+    expect(watcher.isDisposed).to.eql(true);
   });
 });
