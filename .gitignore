@@ -1,16 +1,15 @@
 .DS_Store
+node_modules
 
 dist
 lib
 lib.test
-tmp 
-node_modules
-.cache
+
 .build
-.uiharness
+.cache
 .dev
+.uiharness
 .publish
-.tmp.*
 
 .env
 .env*
@@ -19,6 +18,6 @@ node_modules
 npm-debug.log
 yarn-error.log
 sync.yaml
-/TMP.md
 
-code/ui.editor/src/components/TextEditor/plugins/keyMap.ts
+tmp/
+.tmp.*
