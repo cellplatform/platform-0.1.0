@@ -407,6 +407,12 @@ export class Grid implements t.IGrid {
     return this;
   }
 
+  public blur() {
+    this.fire({ type: 'GRID/blur', payload: { grid: this } });
+    this.deselect();
+    return this;
+  }
+
   /**
    * Requests that the grid be redrawn.
    */

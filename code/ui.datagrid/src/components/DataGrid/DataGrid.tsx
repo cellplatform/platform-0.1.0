@@ -16,6 +16,7 @@ import {
   t,
   time,
   value,
+  defaultValue,
 } from '../../common';
 import { FactoryManager } from '../factory';
 import * as render from '../render';
@@ -220,18 +221,22 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   public get totalColumns() {
-    return value.defaultValue(this.props.totalColumns, DEFAULT.TOTAL_COLUMNS);
+    return defaultValue(this.props.totalColumns, DEFAULT.TOTAL_COLUMNS);
   }
 
   public get totalRows() {
-    return value.defaultValue(this.props.totalRows, DEFAULT.TOTAL_ROWS);
+    return defaultValue(this.props.totalRows, DEFAULT.TOTAL_ROWS);
   }
 
   /**
    * [Methods]
    */
-  public focus() {
-    this.grid.focus();
+  public focus(isFocused?: boolean) {
+    if (defaultValue(isFocused, true)) {
+      this.grid.focus();
+    } else {
+      this.grid.blur();
+    }
     return this;
   }
 
