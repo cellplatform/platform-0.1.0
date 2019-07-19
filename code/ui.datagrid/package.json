@@ -28,8 +28,8 @@
     "@platform/test.dom": "0.0.42",
     "@platform/ts": "3.4.33",
     "@platform/ui.datagrid.cell": "0.0.73",
-    "@uiharness/dev": "0.5.14",
-    "@uiharness/ui": "0.5.15",
+    "@uiharness/dev": "0.5.15",
+    "@uiharness/ui": "0.5.16",
     "electron": "5.0.0"
   },
   "files": [
