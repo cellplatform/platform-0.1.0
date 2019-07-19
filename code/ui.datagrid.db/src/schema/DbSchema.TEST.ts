@@ -4,6 +4,23 @@ import { SyncSchema } from '.';
 describe('schema.db', () => {
   const schema = SyncSchema.create({});
 
+  it('toKey (derive type)', () => {
+    const test = (key: any, expected: any) => {
+      const res = schema.db.toKey(key);
+      expect(res).to.eql(expected);
+    };
+    test('A1', 'cell/A1');
+    test('A', 'column/A');
+    test('1', 'row/1');
+    test(1, 'row/1');
+    test({ key: 'A1' }, 'cell/A1');
+    test({ key: 'A' }, 'column/A');
+    test({ key: '1' }, 'row/1');
+    test({ key: 1 }, 'row/1');
+    test(undefined, '');
+    test({ key: undefined }, '');
+  });
+
   it('toCellKey', () => {
     const test = (key: any, expected: any) => {
       const res = schema.db.toCellKey(key);

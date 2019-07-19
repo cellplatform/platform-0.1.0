@@ -1346,13 +1346,13 @@
     codemirror "5.48.0"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.1.4.tgz#8fb5b2b1d4a41cdc299692798f81feef9aba9b28"
-  integrity sha512-hWpzWv80B9R3+M+dIvEDnTRJsGzxseLGfSLWi+mWqw2DzHrcRCaGiYJKMXoz93nhYEvvlzmidM85ThdWhy7G7Q==
+"@platform/ui.datagrid.types@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.1.5.tgz#c41ab02899ef9953c4833eddcfe8c5a448840ab7"
+  integrity sha512-7eYBj9bpCjdj49vs9ymTn4aMEAAu4O0peRYyK6Fz6E614HLiD0V0eUN7YT1XugjDP5ZS31jsn3PrQFFhCbOtUg==
   dependencies:
     "@platform/react" "0.3.12"
-    "@platform/util.value.cell" "0.2.1"
+    "@platform/util.value.cell" "0.2.2"
 
 "@platform/ui.editor@0.1.30":
   version "0.1.30"
@@ -1482,10 +1482,10 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value.cell@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.2.1.tgz#f69d7bef0e19612c61697966a30bdb9c08fa375b"
-  integrity sha512-L1y+vQ3tMItQCcUZ4HXwUA3Sfr1P3AGtZsFJZoaCjcVXFXo3ThRyz+WRUvQa3dZPiqqfWJdCkDB2dyUUBMkmWA==
+"@platform/util.value.cell@0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.2.2.tgz#6d1d44ba3e1b61eddc43a188b9cba8a5e735a7bc"
+  integrity sha512-IsCm6GDpIkHpIrZBf4kultCxqhZZ7gTQvWdKDRAb8V/VeNIlFLzyXtmpYXfI+JcxMyFgo/Uw/poe8gbAnsTtsg==
   dependencies:
     "@platform/util.value" "0.4.4"
     excel-formula-ast "1.1.1"

@@ -29,7 +29,7 @@ describe('toKey', () => {
 
 describe('fromKey', () => {
   it('parses from string', () => {
-    const test = (key: string, row: number, column: number) => {
+    const test = (key: string | number, row: number, column: number) => {
       const res = cell.fromKey(key);
       expect(res.row).to.eql(row);
       expect(res.column).to.eql(column);
@@ -39,6 +39,9 @@ describe('fromKey', () => {
     test('$A$1', 0, 0);
     test('A$1', 0, 0);
     test('Sheet1!A1', 0, 0);
+    test('1', 0, -1);
+    test(1, 0, -1);
+    test('A', -1, 0);
   });
 
   it('is invalid', () => {
@@ -95,6 +98,7 @@ describe('isRangeKey', () => {
       expect(cell.toType('A')).to.eql('COLUMN');
       expect(cell.toType('AA')).to.eql('COLUMN');
       expect(cell.toType('1')).to.eql('ROW');
+      expect(cell.toType(1)).to.eql('ROW');
       expect(cell.toType('99')).to.eql('ROW');
       expect(cell.toType('A1')).to.eql('CELL');
       expect(cell.toType('Z9')).to.eql('CELL');
@@ -110,6 +114,7 @@ describe('isRangeKey', () => {
     });
 
     it('non-valid input returns nothing', () => {
+      expect(cell.toType(undefined as any)).to.eql(undefined);
       expect(cell.toType('')).to.eql(undefined);
       expect(cell.toType('  ')).to.eql(undefined);
       expect(cell.toType({ row: -1, column: -1 })).to.eql(undefined);

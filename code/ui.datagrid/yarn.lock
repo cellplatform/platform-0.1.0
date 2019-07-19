@@ -1364,25 +1364,25 @@
     codemirror "5.48.0"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.cell@0.0.72":
-  version "0.0.72"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.72.tgz#b37a3225cb4ebddff1b389cb32acaf3f980ecd49"
-  integrity sha512-OKedXE7ucX+hz+6ioqOSoxuYkaHEeyh/RgWoCCpJAu3008jZPtJJjP6l+cTvps8zMBO8oR9yG9eFsDvrhtk9aA==
+"@platform/ui.datagrid.cell@0.0.73":
+  version "0.0.73"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.73.tgz#476891cf00a39e65b7dc74bd5f3e1ac285a771a8"
+  integrity sha512-GxId2cHcjKTApNx62tIawKWQVKxw7ZDaho9Cxec3rENgGmivBn5uSpxSACeuHzvecSUPcKSJ+OVvhH7+BsL4rA==
   dependencies:
     "@platform/react" "0.3.12"
     "@platform/ui.codemirror" "0.0.75"
-    "@platform/ui.datagrid.types" "0.1.4"
+    "@platform/ui.datagrid.types" "0.1.5"
     "@platform/ui.editor" "0.1.30"
     "@platform/ui.text" "0.2.25"
     "@platform/util.markdown" "0.0.30"
 
-"@platform/ui.datagrid.types@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.1.4.tgz#8fb5b2b1d4a41cdc299692798f81feef9aba9b28"
-  integrity sha512-hWpzWv80B9R3+M+dIvEDnTRJsGzxseLGfSLWi+mWqw2DzHrcRCaGiYJKMXoz93nhYEvvlzmidM85ThdWhy7G7Q==
+"@platform/ui.datagrid.types@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.1.5.tgz#c41ab02899ef9953c4833eddcfe8c5a448840ab7"
+  integrity sha512-7eYBj9bpCjdj49vs9ymTn4aMEAAu4O0peRYyK6Fz6E614HLiD0V0eUN7YT1XugjDP5ZS31jsn3PrQFFhCbOtUg==
   dependencies:
     "@platform/react" "0.3.12"
-    "@platform/util.value.cell" "0.2.1"
+    "@platform/util.value.cell" "0.2.2"
 
 "@platform/ui.editor@0.1.30":
   version "0.1.30"
@@ -1512,10 +1512,10 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value.cell@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.2.1.tgz#f69d7bef0e19612c61697966a30bdb9c08fa375b"
-  integrity sha512-L1y+vQ3tMItQCcUZ4HXwUA3Sfr1P3AGtZsFJZoaCjcVXFXo3ThRyz+WRUvQa3dZPiqqfWJdCkDB2dyUUBMkmWA==
+"@platform/util.value.cell@0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.2.2.tgz#6d1d44ba3e1b61eddc43a188b9cba8a5e735a7bc"
+  integrity sha512-IsCm6GDpIkHpIrZBf4kultCxqhZZ7gTQvWdKDRAb8V/VeNIlFLzyXtmpYXfI+JcxMyFgo/Uw/poe8gbAnsTtsg==
   dependencies:
     "@platform/util.value" "0.4.4"
     excel-formula-ast "1.1.1"

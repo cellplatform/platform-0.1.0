@@ -7,6 +7,7 @@ export type ISyncArgs = {
   db: t.IDb;
   grid: t.IGrid;
   events$?: Subject<t.SyncEvent>;
+  schema?: SyncSchema;
 };
 
 type GridPart = 'CELLS' | 'COLUMNS' | 'ROWS';
@@ -23,13 +24,12 @@ export class Sync implements t.IDisposable {
   /**
    * [Static]
    */
-  public static create(args: ISyncArgs) {
-    return new Sync(args);
-  }
+  public static schema = SyncSchema.create;
 
   /**
    * [Lifecycle]
    */
+  public static create = (args: ISyncArgs) => new Sync(args);
   private constructor(args: ISyncArgs) {
     const { db, grid } = args;
     const events$ = this.events$.pipe(takeUntil(this._dispose$));
@@ -37,7 +37,7 @@ export class Sync implements t.IDisposable {
     // Store refs;
     this.db = db;
     this.grid = grid;
-    this.schema = SyncSchema.create({});
+    this.schema = args.schema || SyncSchema.create({});
 
     // Bubble events.
     if (args.events$) {

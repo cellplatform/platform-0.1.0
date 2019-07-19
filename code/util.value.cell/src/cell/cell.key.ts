@@ -39,8 +39,8 @@ export function toKey(column?: number, row?: number) {
 /**
  * Attempts to parse the given cell key.
  */
-export function fromKey(key: string): t.IGridCellPosition {
-  const parts = parser.toParts(key);
+export function fromKey(key: string | number): t.IGridCellPosition {
+  const parts = parser.toParts((key || '').toString());
   const row = parts.row.index;
   const column = parts.column.index;
   return { row, column };
@@ -64,9 +64,15 @@ export function isRangeKey(key: string) {
  * Converts the given key to a type.
  */
 export function toType(
-  cell: string | { column?: number; row?: number },
+  cell: string | number | { column?: number; row?: number },
 ): t.GridCellType | undefined {
-  const coord = typeof cell === 'string' ? fromKey(cell) : cell;
+  const type = typeof cell;
+
+  if (!['string', 'number', 'object'].includes(type)) {
+    return undefined;
+  }
+
+  const coord = type === 'object' ? (cell as t.IGridCellPosition) : fromKey(cell.toString());
   const column = defaultValue(coord.column, -1);
   const row = defaultValue(coord.row, -1);
 

@@ -289,8 +289,8 @@ export class Grid implements t.IGrid {
     let changes: t.IColumnChange[] = [];
 
     Object.keys(columns).forEach(key => {
-      const prev = from[key];
-      const next = columns[key];
+      const prev = from[key] || { width: -1 };
+      const next = columns[key] || { width: DEFAULT.COLUMN_WIDTH };
       const isDefault = next.width === DEFAULT.COLUMN_WIDTH;
       if (isDefault) {
         delete to[key];
@@ -317,8 +317,8 @@ export class Grid implements t.IGrid {
     const to = { ...from };
     let changes: t.IRowChange[] = [];
     Object.keys(rows).forEach(key => {
-      const prev = from[key];
-      const next = rows[key];
+      const prev = from[key] || { height: -1 };
+      const next = rows[key] || { height: DEFAULT.ROW_HEIGHT };
       const isDefault = next.height === DEFAULT.ROW_HEIGHT;
       if (isDefault) {
         delete to[key];
