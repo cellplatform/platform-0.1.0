@@ -104,17 +104,17 @@ describe('CellRangeUnion', () => {
   describe('cellKeys', () => {
     it('caches response', () => {
       const union = fromKey('A1:B3, B1:B3');
-      const keys1 = union.cellKeys;
-      const keys2 = union.cellKeys;
+      const keys1 = union.keys;
+      const keys2 = union.keys;
       expect(keys1).to.equal(keys2);
     });
     it('is empty (for non-CELL range types)', () => {
       const union = fromKey('A:A, 3:3, A3:A, A3:3, *:*, A3:*, A3:**, *:A3, *:A3');
-      expect(union.cellKeys).to.eql([]);
+      expect(union.keys).to.eql([]);
     });
     it('combines several ranges (unique keys)', () => {
       const union = fromKey('A1:B3, B2:C4');
-      const keys = union.cellKeys;
+      const keys = union.keys;
       expect(keys).to.eql(['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'B4', 'C2', 'C3', 'C4']);
     });
   });

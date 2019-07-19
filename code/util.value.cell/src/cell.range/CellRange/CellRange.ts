@@ -345,9 +345,7 @@ export class CellRange {
    *      not incur the cost of calcualting the set of keys.
    */
 
-  // TEMP 🐷 rename to "keys"
-
-  public get cellKeys(): string[] {
+  public get keys(): string[] {
     if (this.internal.cellKeys) {
       return this.internal.cellKeys;
     }

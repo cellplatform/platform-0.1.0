@@ -28,7 +28,7 @@ export class CellRangeUnion {
     return ranges.some(range => range.contains(key));
   }
 
-  private internal: { key?: string; cellKeys?: string[] } = {};
+  private internal: { key?: string; keys?: string[] } = {};
 
   private constructor(options: { ranges: CellRange[] }) {
     const { ranges } = options;
@@ -71,16 +71,16 @@ export class CellRangeUnion {
    *    - The result is cached, future calls to this property do
    *      not incur the cost of calcualting the set of keys.
    */
-  public get cellKeys() {
-    if (this.internal.cellKeys) {
-      return this.internal.cellKeys;
+  public get keys() {
+    if (this.internal.keys) {
+      return this.internal.keys;
     }
     const done = (result: string[]) => {
-      this.internal.cellKeys = result;
+      this.internal.keys = result;
       return result;
     };
 
-    const keys = this.ranges.map(range => range.cellKeys);
+    const keys = this.ranges.map(range => range.keys);
     return done(R.uniq(valueUtil.flatten(keys)));
   }
 

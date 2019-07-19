@@ -538,39 +538,39 @@ describe('CellRange', () => {
   describe('keys', () => {
     it('caches result', () => {
       const range = fromKey('A1:A3');
-      const keys1 = range.cellKeys;
-      const keys2 = range.cellKeys;
+      const keys1 = range.keys;
+      const keys2 = range.keys;
       expect(keys1).to.equal(keys2);
     });
 
     describe('infinity ranges returns empty array', () => {
       it('COLUMN (A:A)', () => {
-        expect(fromKey('A:A').cellKeys).to.eql([]);
+        expect(fromKey('A:A').keys).to.eql([]);
       });
 
       it('ROW (3:3)', () => {
-        expect(fromKey('3:3').cellKeys).to.eql([]);
+        expect(fromKey('3:3').keys).to.eql([]);
       });
 
       it('PARTIAL_COLUMN (A3:A)', () => {
-        expect(fromKey('A3:A').cellKeys).to.eql([]);
-        expect(fromKey('A:A3').cellKeys).to.eql([]);
+        expect(fromKey('A3:A').keys).to.eql([]);
+        expect(fromKey('A:A3').keys).to.eql([]);
       });
 
       it('PARTIAL_ROW (A3:3)', () => {
-        expect(fromKey('A3:3').cellKeys).to.eql([]);
-        expect(fromKey('3:A3').cellKeys).to.eql([]);
+        expect(fromKey('A3:3').keys).to.eql([]);
+        expect(fromKey('3:A3').keys).to.eql([]);
       });
 
       it('ALL (*:*)', () => {
-        expect(fromKey('*:*').cellKeys).to.eql([]);
+        expect(fromKey('*:*').keys).to.eql([]);
       });
 
       it('PARTIAL_ALL', () => {
-        expect(fromKey('A3:*').cellKeys).to.eql([]);
-        expect(fromKey('A3:**').cellKeys).to.eql([]);
-        expect(fromKey('*:A3').cellKeys).to.eql([]);
-        expect(fromKey('**:A3').cellKeys).to.eql([]);
+        expect(fromKey('A3:*').keys).to.eql([]);
+        expect(fromKey('A3:**').keys).to.eql([]);
+        expect(fromKey('*:A3').keys).to.eql([]);
+        expect(fromKey('**:A3').keys).to.eql([]);
       });
     });
 
@@ -578,18 +578,18 @@ describe('CellRange', () => {
       const SORTED = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3'];
       it('A1:C3 (lowest to highest)', () => {
         const range = fromKey('A1:C3');
-        expect(range.cellKeys).to.eql(SORTED);
+        expect(range.keys).to.eql(SORTED);
       });
 
       it('A1:C3 (out of order)', () => {
         const range = fromKey('C3:A1');
-        expect(range.cellKeys).to.eql(SORTED);
+        expect(range.keys).to.eql(SORTED);
       });
     });
 
     it('CELL - B2:D4', () => {
       const range = fromKey('B2:D4');
-      const cells = range.cellKeys;
+      const cells = range.keys;
       expect(cells.length).to.eql(9);
       expect(cells[0]).to.eql('B2');
       expect(cells[1]).to.eql('B3');
@@ -604,12 +604,12 @@ describe('CellRange', () => {
 
     it('CELL - D4:B2 (inverted to square => )', () => {
       const range = fromKey('D4:B2'); // NB: inverted range, `square` used to calculate.
-      expect(range.cellKeys).to.eql(range.square.cellKeys);
+      expect(range.keys).to.eql(range.square.keys);
     });
 
     it('CELL - A1:A1 (single)', () => {
       const range = fromKey('A1:A1');
-      expect(range.cellKeys).to.eql(['A1']);
+      expect(range.keys).to.eql(['A1']);
     });
   });
 
