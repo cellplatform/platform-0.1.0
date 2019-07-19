@@ -1,26 +1,25 @@
 import { t, Observable } from '../common';
 
-export type IGrid = {
-  /**
-   * [Properties]
-   */
+export type IGrid = IGridProperties & IGridMethods & {};
+export type IGridProperties = {
   readonly id: string;
   readonly totalColumns: number;
   readonly totalRows: number;
   readonly isDisposed: boolean;
   readonly isReady: boolean;
   readonly isEditing: boolean;
+
   readonly selection: t.IGridSelection;
+  readonly selectedValues: t.IGridValues;
+
+  readonly values: t.IGridValues;
+  readonly columns: IGridColumns;
+  readonly rows: IGridRows;
+
   readonly events$: Observable<t.GridEvent>;
   readonly keys$: Observable<t.IGridKeydown>;
-
-  values: t.IGridValues;
-  columns: IGridColumns;
-  rows: IGridRows;
-
-  /**
-   * [Methods]
-   */
+};
+export type IGridMethods = {
   dispose(): void;
   changeValues(changes: t.IGridValues, options?: { redraw?: boolean }): IGrid;
   changeColumns(columns: t.IGridColumns, options?: { type?: t.IColumnChange['type'] }): IGrid;
