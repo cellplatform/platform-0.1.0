@@ -1,5 +1,5 @@
 import { Grid } from '../../api';
-import { t, cellUtil } from '../../common';
+import { t, coord } from '../../common';
 
 /**
  * Handles bubbling mouse events.
@@ -43,8 +43,8 @@ function toMousePayload(
   column: number,
   row: number,
 ): t.IGridMouse | undefined {
-  const cell = cellUtil.cell.toKey(column, row);
-  const cellType = cellUtil.cell.toType({ row, column }) as t.GridCellType;
+  const cell = coord.cell.toKey(column, row);
+  const cellType = coord.cell.toType({ row, column }) as t.GridCellType;
   if (!cellType) {
     // const json = JSON.stringify(coords);
     // const msg = `Mouse: The cell type could not be derived for "${type}" event on ${json}.`;

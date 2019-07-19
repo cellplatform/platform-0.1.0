@@ -28,7 +28,7 @@ import { equals, clamp } from 'ramda';
 export const R = { equals, clamp };
 
 /**
- * Cell coords (eg "A1")
+ * Cell coords (eg "A1", "A1:C9")
  */
-import * as cellUtil from '@platform/util.value.cell';
-export { cellUtil };
+import * as coord from '@platform/util.value.cell';
+export { coord };
