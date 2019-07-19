@@ -1,6 +1,6 @@
 import { t, Observable } from '../common';
 
-export type IGrid = IGridProperties & IGridMethods & {};
+export type IGrid = IGridProperties & IGridMethods;
 export type IGridProperties = {
   readonly id: string;
   readonly totalColumns: number;
@@ -8,16 +8,13 @@ export type IGridProperties = {
   readonly isDisposed: boolean;
   readonly isReady: boolean;
   readonly isEditing: boolean;
-
   readonly selection: t.IGridSelection;
   readonly selectedValues: t.IGridValues;
-
-  readonly values: t.IGridValues;
-  readonly columns: IGridColumns;
-  readonly rows: IGridRows;
-
   readonly events$: Observable<t.GridEvent>;
-  readonly keys$: Observable<t.IGridKeydown>;
+  readonly keyboard$: Observable<t.IGridKeydown>;
+  values: t.IGridValues;
+  columns: IGridColumns;
+  rows: IGridRows;
 };
 export type IGridMethods = {
   dispose(): void;
@@ -30,7 +27,7 @@ export type IGridMethods = {
   deselect(): IGrid;
   focus(): IGrid;
   redraw(): IGrid;
-  toPosition(ref: t.CellRef): t.IGridCellPosition;
+  toPosition(ref: t.CellRef): t.ICoord;
 };
 
 export type IGridSelection = {

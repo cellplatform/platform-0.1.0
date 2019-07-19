@@ -171,8 +171,10 @@ export class CellRangeUnion {
       });
     });
 
-    return Object.keys(map)
-      // Reduce map to final set of [CellEdge] items.
-      .filter(key => map[key].within.length > 0) as t.CoordEdge[];
+    return (
+      Object.keys(map)
+        // Reduce map to final set of [CellEdge] items.
+        .filter(key => map[key].within.length > 0) as t.CoordEdge[]
+    );
   }
 }

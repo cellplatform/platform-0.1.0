@@ -156,7 +156,7 @@ export class Grid implements t.IGrid {
     takeUntil(this.dispose$),
     share(),
   );
-  public readonly keys$ = this._.events$.pipe(
+  public readonly keyboard$ = this._.events$.pipe(
     filter(e => e.type === 'GRID/keydown'),
     map(e => e.payload as t.IGridKeydown),
     share(),
