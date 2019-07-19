@@ -5,4 +5,5 @@ export * from './ast';
 export * from './parser';
 
 export * from './cell';
+export * from './range';
 export * from './table';

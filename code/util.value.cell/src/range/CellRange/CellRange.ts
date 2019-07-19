@@ -8,6 +8,10 @@ import { alpha } from '../../alpha';
  */
 export class CellRange {
   /**
+   * [Static]
+   */
+
+  /**
    * Create from key (eg: "A1:C4", "A:B", "2:99" etc).
    */
   public static fromKey = (key: string) => new CellRange({ key });
@@ -28,6 +32,10 @@ export class CellRange {
    * Determines whether the given key represents a range.
    */
   public static isRangeKey = cell.isRangeKey;
+
+  /**
+   * [Fields]
+   */
 
   /**
    * The range key, stripped of any absolute position characters ("$")
@@ -67,6 +75,9 @@ export class CellRange {
     cellKeys?: string[];
   } = {};
 
+  /**
+   * [Lifecycle]
+   */
   private constructor(options: { key: string }) {
     // Setup initial conditions.
     const key = options.key.replace(/^[\s\=\!]*/, '').trimRight();
@@ -154,6 +165,61 @@ export class CellRange {
   }
 
   /**
+   * [Properties]
+   */
+
+  /**
+   * Retrieves a sorted array of cell-keys for the range square
+   * (eg. [A1, A2, B1...]).
+   *  Note:
+   *    - Returns empty array when the range is COLUMN or ROW as
+   *      these are logical ranges and the array would be infinite.
+   *    - The result is cached, future calls to this property do
+   *      not incur the cost of calcualting the set of keys.
+   */
+  public get keys(): string[] {
+    if (this.internal.cellKeys) {
+      return this.internal.cellKeys;
+    }
+    const done = (result: string[]) => {
+      this.internal.cellKeys = result;
+      return result;
+    };
+
+    const toKeys = (min: t.IGridCellPosition, max: t.IGridCellPosition): string[] => {
+      const totalColumns = max.column - min.column + 1;
+      const totalRows = max.row - min.row + 1;
+      const result = Array.from({ length: totalColumns })
+        .map((v, i) => min.column + i)
+        .map(columnIndex =>
+          Array.from({ length: totalRows })
+            .map((v, i) => min.row + i)
+            .map(rowIndex => {
+              return cell.toKey(columnIndex, rowIndex);
+            }),
+        );
+      return valueUtil.flatten(result);
+    };
+
+    switch (this.type) {
+      case 'ALL':
+      case 'COLUMN':
+      case 'ROW':
+      case 'PARTIAL_COLUMN':
+      case 'PARTIAL_ROW':
+      case 'PARTIAL_ALL':
+        return done([]); // NB: Only CELL ranges can be calculated, otherwise infinity.
+
+      case 'CELL':
+        const range = this.square;
+        return done(toKeys(range.left, range.right));
+
+      default:
+        throw new Error(`Type '${this.type}' not supported.`);
+    }
+  }
+
+  /**
    * Creates a range string ensuring the values form a square (top-left/bottom-right).
    */
   public get square() {
@@ -234,6 +300,10 @@ export class CellRange {
     this.internal.square = result;
     return result;
   }
+
+  /**
+   * [Methods]
+   */
 
   /**
    * Determines if the given cell-key exists within the range.
@@ -329,58 +399,6 @@ export class CellRange {
         return patialRowContains(pos);
       case 'PARTIAL_ALL':
         return partialAllContains(pos);
-
-      default:
-        throw new Error(`Type '${this.type}' not supported.`);
-    }
-  }
-
-  /**
-   * Retrieves a sorted array of cell-keys for the range square
-   * (eg. [A1, A2, B1...]).
-   *  Note:
-   *    - Returns empty array when the range is COLUMN or ROW as
-   *      these are logical ranges and the array would be infinite.
-   *    - The result is cached, future calls to this property do
-   *      not incur the cost of calcualting the set of keys.
-   */
-
-  public get keys(): string[] {
-    if (this.internal.cellKeys) {
-      return this.internal.cellKeys;
-    }
-    const done = (result: string[]) => {
-      this.internal.cellKeys = result;
-      return result;
-    };
-
-    const toKeys = (min: t.IGridCellPosition, max: t.IGridCellPosition): string[] => {
-      const totalColumns = max.column - min.column + 1;
-      const totalRows = max.row - min.row + 1;
-      const result = Array.from({ length: totalColumns })
-        .map((v, i) => min.column + i)
-        .map(columnIndex =>
-          Array.from({ length: totalRows })
-            .map((v, i) => min.row + i)
-            .map(rowIndex => {
-              return cell.toKey(columnIndex, rowIndex);
-            }),
-        );
-      return valueUtil.flatten(result);
-    };
-
-    switch (this.type) {
-      case 'ALL':
-      case 'COLUMN':
-      case 'ROW':
-      case 'PARTIAL_COLUMN':
-      case 'PARTIAL_ROW':
-      case 'PARTIAL_ALL':
-        return done([]); // NB: Only CELL ranges can be calculated, otherwise infinity.
-
-      case 'CELL':
-        const range = this.square;
-        return done(toKeys(range.left, range.right));
 
       default:
         throw new Error(`Type '${this.type}' not supported.`);

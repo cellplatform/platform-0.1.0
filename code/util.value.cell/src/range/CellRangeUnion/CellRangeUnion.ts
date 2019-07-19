@@ -7,6 +7,10 @@ import { cell as cellUtil } from '../../cell';
  */
 export class CellRangeUnion {
   /**
+   * [Static]
+   */
+
+  /**
    * Creates the set of ranges from a series of range-keys.
    */
   public static fromKeys = (rangeKeys: string[]) => {
@@ -28,26 +32,27 @@ export class CellRangeUnion {
     return ranges.some(range => range.contains(key));
   }
 
-  private internal: { key?: string; keys?: string[] } = {};
-
+  /**
+   * [Lifecycle]
+   */
   private constructor(options: { ranges: CellRange[] }) {
     const { ranges } = options;
     this.ranges = ranges;
   }
 
   /**
-   * Retrieves the key of all ranges.
+   * [Fields]
    */
-  public get key() {
-    return this.internal.key
-      ? this.internal.key
-      : (this.internal.key = this.ranges.map(r => r.key).join(', '));
-  }
+  private readonly _: { key?: string; keys?: string[] } = {};
+
   /**
    * The list of [CellRange] items within the set.
    */
   public readonly ranges: CellRange[] = [];
 
+  /**
+   * [Properties]
+   */
   /**
    * Retrieves the number of ranges within the set.
    */
@@ -56,10 +61,10 @@ export class CellRangeUnion {
   }
 
   /**
-   * Determines whether the given cell is contained within the set.
+   * Retrieves the key of all ranges.
    */
-  public contains(cell: t.IGridCellPosition | string): boolean {
-    return CellRangeUnion.contains(this.ranges, cell);
+  public get key() {
+    return this._.key ? this._.key : (this._.key = this.ranges.map(r => r.key).join(', '));
   }
 
   /**
@@ -72,16 +77,27 @@ export class CellRangeUnion {
    *      not incur the cost of calcualting the set of keys.
    */
   public get keys() {
-    if (this.internal.keys) {
-      return this.internal.keys;
+    if (this._.keys) {
+      return this._.keys;
     }
     const done = (result: string[]) => {
-      this.internal.keys = result;
+      this._.keys = result;
       return result;
     };
 
     const keys = this.ranges.map(range => range.keys);
     return done(R.uniq(valueUtil.flatten(keys)));
+  }
+
+  /**
+   * [Methods]
+   */
+
+  /**
+   * Determines whether the given cell is contained within the set.
+   */
+  public contains(cell: t.IGridCellPosition | string): boolean {
+    return CellRangeUnion.contains(this.ranges, cell);
   }
 
   /**
