@@ -5,7 +5,7 @@ import { fromKey, toKey } from './cell.key';
  * Retrieves the contiguous cells.
  */
 export function siblings(
-  cell: string,
+  cell: string | t.IGridCellPosition,
   options: t.IGridCellSiblingOptions = {},
 ): t.IGridCellSiblings {
   const top = sibling(cell, 'TOP', options);
@@ -13,7 +13,9 @@ export function siblings(
   const bottom = sibling(cell, 'BOTTOM', options);
   const left = sibling(cell, 'LEFT', options);
   return {
-    cell,
+    get cell() {
+      return typeof cell === 'string' ? cell : toKey(cell.column, cell.row);
+    },
     top,
     right,
     bottom,
@@ -34,7 +36,7 @@ export function siblings(
  * Retrives the contiguous cell on the given edge.
  */
 export function sibling(
-  cell: string,
+  cell: string | t.IGridCellPosition,
   edge: t.GridCellEdge,
   options: t.IGridCellSiblingOptions = {},
 ): string | undefined {
@@ -57,14 +59,14 @@ export function sibling(
  * Retrieves the cell at the given offset to the current cell.
  */
 export function offset(
-  cell: string,
+  cell: string | t.IGridCellPosition,
   columnOffset: number,
   rowOffset: number,
   options: t.IGridCellOffsetOptions = {},
 ) {
   const { totalColumns, totalRows, clamp = false } = options;
 
-  const res = fromKey(cell);
+  const res = typeof cell === 'string' ? fromKey(cell) : cell;
   let column = res.column + columnOffset;
   let row = res.row + rowOffset;
 
@@ -85,4 +87,23 @@ export function offset(
   };
 
   return isWithinBounds(column, row) ? toKey(column, row) : undefined;
+}
+
+/**
+ * Retrieves the opposite of the given edge.
+ */
+export function oppositeEdge(edge: t.GridCellEdge) {
+  switch (edge) {
+    case 'TOP':
+      return 'BOTTOM';
+    case 'RIGHT':
+      return 'LEFT';
+    case 'BOTTOM':
+      return 'TOP';
+    case 'LEFT':
+      return 'RIGHT';
+
+    default:
+      throw new Error(`Edge '${edge}' not supported.`);
+  }
 }

@@ -93,6 +93,13 @@ describe('sibling', () => {
 });
 
 describe('siblings', () => {
+  it('oppositeEdge', () => {
+    expect(cell.oppositeEdge('TOP')).to.eql('BOTTOM');
+    expect(cell.oppositeEdge('RIGHT')).to.eql('LEFT');
+    expect(cell.oppositeEdge('BOTTOM')).to.eql('TOP');
+    expect(cell.oppositeEdge('LEFT')).to.eql('RIGHT');
+  });
+
   it('top/left', () => {
     const res = cell.siblings('A$1');
     expect(res.top).to.eql(undefined);
