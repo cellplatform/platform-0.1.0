@@ -19,8 +19,10 @@ export class CellRange {
   /**
    * Create from left/right cell addresses.
    */
-  public static fromCells = (left: t.IGridCell, right: t.IGridCell) => {
-    return CellRange.fromKey(`${left.key}:${right.key}`);
+  public static fromCells = (left: string | { key: string }, right: string | { key: string }) => {
+    const leftKey = typeof left === 'object' ? left.key : left;
+    const rightKey = typeof right === 'object' ? right.key : right;
+    return CellRange.fromKey(`${leftKey}:${rightKey}`);
   };
 
   /**
@@ -46,17 +48,17 @@ export class CellRange {
   /**
    * The category of range this value represents.
    */
-  public readonly type: t.RangeAddressType;
+  public readonly type: t.CoordRangeType;
 
   /**
    * The left side Cell of the range.
    */
-  public readonly left: t.IGridCell;
+  public readonly left: t.ICoordCell;
 
   /**
    * The right side Cell of the range.
    */
-  public readonly right: t.IGridCell;
+  public readonly right: t.ICoordCell;
 
   /**
    * Flag indicating if the range is valid.
@@ -104,9 +106,9 @@ export class CellRange {
     // Derive the category of range.
     const getType = (
       rangeKey: string,
-      left: t.IGridCell,
-      right: t.IGridCell,
-    ): t.RangeAddressType => {
+      left: t.ICoordCell,
+      right: t.ICoordCell,
+    ): t.CoordRangeType => {
       if (rangeKey === '*:*') {
         return 'ALL';
       }
@@ -130,7 +132,7 @@ export class CellRange {
       ) {
         return 'PARTIAL_ALL';
       }
-      return leftType as t.RangeAddressType;
+      return leftType as t.CoordRangeType;
     };
     this.type = getType(this.key, left, right);
 
@@ -186,7 +188,7 @@ export class CellRange {
       return result;
     };
 
-    const toKeys = (min: t.IGridCellPosition, max: t.IGridCellPosition): string[] => {
+    const toKeys = (min: t.ICoord, max: t.ICoord): string[] => {
       const totalColumns = max.column - min.column + 1;
       const totalRows = max.row - min.row + 1;
       const result = Array.from({ length: totalColumns })
@@ -323,21 +325,21 @@ export class CellRange {
     const start = this.left;
     const end = this.right;
 
-    const columnContains = (cell: t.IGridCellPosition) => {
+    const columnContains = (cell: t.ICoord) => {
       const index = cell.column;
       return start.column === undefined || end.column === undefined
         ? false
         : index >= start.column && index <= end.column;
     };
 
-    const rowContains = (cell: t.IGridCellPosition) => {
+    const rowContains = (cell: t.ICoord) => {
       const index = cell.row;
       return start.row === undefined || end.row === undefined
         ? false
         : index >= start.row && index <= end.row;
     };
 
-    const cellsContain = (cell: t.IGridCellPosition) => {
+    const cellsContain = (cell: t.ICoord) => {
       if (!columnContains(cell)) {
         return false;
       }
@@ -347,7 +349,7 @@ export class CellRange {
       return true;
     };
 
-    const patialColumnContains = (cell: t.IGridCellPosition) => {
+    const patialColumnContains = (cell: t.ICoord) => {
       if (!columnContains(cell)) {
         return false;
       }
@@ -355,7 +357,7 @@ export class CellRange {
       return start.row === undefined ? false : index >= start.row;
     };
 
-    const patialRowContains = (cell: t.IGridCellPosition) => {
+    const patialRowContains = (cell: t.ICoord) => {
       if (!rowContains(cell)) {
         return false;
       }
@@ -363,7 +365,7 @@ export class CellRange {
       return start.column === undefined ? false : index >= start.column;
     };
 
-    const partialAllContains = (cell: t.IGridCellPosition) => {
+    const partialAllContains = (cell: t.ICoord) => {
       if (start.key === '*') {
         // Top/left to cell.
         return cell.column <= end.column && cell.row <= end.row;
@@ -408,10 +410,10 @@ export class CellRange {
   /**
    * Retrieves the edge(s) the given cell is on.
    */
-  public edge(input: string | t.IGridCellPosition): t.GridCellEdge[] {
+  public edge(input: string | t.ICoord): t.CoordEdge[] {
     const { column, row } = cell.toCell(input);
 
-    let result: t.GridCellEdge[] = [];
+    let result: t.CoordEdge[] = [];
     if (!this.contains(column, row)) {
       return result;
     }
@@ -438,7 +440,7 @@ export class CellRange {
    * Creates a new range with the given edge adjusted.
    */
   public adjustSize(
-    edge: t.GridCellEdge,
+    edge: t.CoordEdge,
     amount: number,
     options: { totalColumns?: number; totalRows?: number } = {},
   ) {

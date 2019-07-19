@@ -1,2 +1,2 @@
-export * from './CellRange';
-export * from './CellRangeUnion';
+import * as range from './range';
+export { range };

@@ -13,21 +13,19 @@ export class CellRangeUnion {
   /**
    * Creates the set of ranges from a series of range-keys.
    */
-  public static fromKeys = (rangeKeys: string[]) => {
-    const keys = rangeKeys.filter(key => !valueUtil.isBlank(key)).map(key => key.trim());
-    const ranges = R.uniq(keys).map(key => CellRange.fromKey(key));
+  public static fromKey = (rangeKeys: string | string[]) => {
+    let keys = Array.isArray(rangeKeys)
+      ? rangeKeys
+      : valueUtil.compact(rangeKeys.trim().split(','));
+    keys = keys.filter(key => !valueUtil.isBlank(key)).map(key => key.trim());
+    const ranges = R.uniq(keys).map(key => CellRange.fromKey(key).square);
     return new CellRangeUnion({ ranges });
-  };
-
-  public static fromKey = (rangeKeys: string) => {
-    const keys = valueUtil.compact(rangeKeys.trim().split(','));
-    return CellRangeUnion.fromKeys(keys);
   };
 
   /**
    * Determines whether the given cell is contained within the given set.
    */
-  public static contains(ranges: CellRange[], cell: t.IGridCellPosition | string) {
+  public static contains(ranges: CellRange[], cell: t.ICoord | string) {
     const key = cellUtil.toCell(cell).key;
     return ranges.some(range => range.contains(key));
   }
@@ -96,30 +94,30 @@ export class CellRangeUnion {
   /**
    * Determines whether the given cell is contained within the set.
    */
-  public contains(cell: t.IGridCellPosition | string): boolean {
+  public contains(cell: t.ICoord | string): boolean {
     return CellRangeUnion.contains(this.ranges, cell);
   }
 
   /**
    * Retrieves the edge(s) the given cell is on.
    */
-  public edge(cell: string | t.IGridCellPosition): t.GridCellEdge[] {
+  public edge(cell: string | t.ICoord): t.CoordEdge[] {
     const cellAddress = cellUtil.toCell(cell);
     if (!this.contains(cellAddress)) {
       return [];
     }
 
-    const siblingEdges = (range: CellRange, edge: t.GridCellEdge) => {
+    const siblingEdges = (range: CellRange, edge: t.CoordEdge) => {
       const sibling = cellUtil.sibling(cellAddress, edge);
       return sibling ? range.edge(sibling) : undefined;
     };
 
-    const siblingIncludesOppositeEdge = (range: CellRange, edge: t.GridCellEdge) => {
+    const siblingIncludesOppositeEdge = (range: CellRange, edge: t.CoordEdge) => {
       const edges = siblingEdges(range, edge);
       return edges ? edges.includes(cellUtil.oppositeEdge(edge)) : undefined;
     };
 
-    const siblingIncludesCellWithoutEdge = (range: CellRange, edge: t.GridCellEdge) => {
+    const siblingIncludesCellWithoutEdge = (range: CellRange, edge: t.CoordEdge) => {
       if (!range.contains(cellAddress.key)) {
         return false;
       }
@@ -158,7 +156,7 @@ export class CellRangeUnion {
     // Filter out edges for cells that are included in other ranges within the set.
     Object.keys(map).forEach((key: string) => {
       const item = map[key];
-      const edge = key as t.GridCellEdge;
+      const edge = key as t.CoordEdge;
       const { within, without } = item;
       item.within = within.filter(range => {
         return !without.some(otherRange => {
@@ -175,6 +173,6 @@ export class CellRangeUnion {
 
     return Object.keys(map)
       // Reduce map to final set of [CellEdge] items.
-      .filter(key => map[key].within.length > 0) as t.GridCellEdge[];
+      .filter(key => map[key].within.length > 0) as t.CoordEdge[];
   }
 }

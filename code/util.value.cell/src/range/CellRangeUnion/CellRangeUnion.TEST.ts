@@ -2,30 +2,29 @@ import { expect } from 'chai';
 import { CellRangeUnion } from '.';
 import { t } from '../../common';
 
-const fromKeys = CellRangeUnion.fromKeys;
 const fromKey = CellRangeUnion.fromKey;
 
 describe('CellRangeUnion', () => {
   describe('fromKeys (array)', () => {
     it('has no regions', () => {
-      expect(fromKeys([]).length).to.eql(0);
-      expect(fromKeys([]).ranges).to.eql([]);
-      expect(fromKeys(['']).ranges).to.eql([]);
-      expect(fromKeys([' ']).ranges).to.eql([]);
-      expect(fromKeys([' ', '']).ranges).to.eql([]);
+      expect(fromKey([]).length).to.eql(0);
+      expect(fromKey([]).ranges).to.eql([]);
+      expect(fromKey(['']).ranges).to.eql([]);
+      expect(fromKey([' ']).ranges).to.eql([]);
+      expect(fromKey([' ', '']).ranges).to.eql([]);
     });
     it('has one region (single string param)', () => {
-      const union = fromKeys(['A1:A5']);
+      const union = fromKey(['A1:A5']);
       expect(union.length).to.eql(1);
       expect(union.ranges[0].key).to.eql('A1:A5');
     });
     it('has one region (array)', () => {
-      const union = fromKeys(['A1:A5']);
+      const union = fromKey(['A1:A5']);
       expect(union.length).to.eql(1);
       expect(union.ranges[0].key).to.eql('A1:A5');
     });
     it('has several regions', () => {
-      const union = fromKeys(['A1:A5', 'B:B', '5:5']);
+      const union = fromKey(['A1:A5', 'B:B', '5:5']);
       expect(union.length).to.eql(3);
       expect(union.ranges[0].key).to.eql('A1:A5');
       expect(union.ranges[1].key).to.eql('B:B');
@@ -58,6 +57,15 @@ describe('CellRangeUnion', () => {
       expect(union.ranges[1].key).to.eql('B:B');
       expect(union.ranges[2].key).to.eql('5:5');
     });
+    it('inverts each range to a square', () => {
+      const test = (input: string, output: string) => {
+        const res = fromKey(input);
+        expect(res.key).to.eql(output);
+      };
+      test('A1:B2', 'A1:B2');
+      test('B2:A1', 'A1:B2');
+      test('B2:A1,ZZ99:C1', 'A1:B2, C1:ZZ99');
+    });
   });
   it('constructs consistent key from all unions', () => {
     const hasKey = (input: string, expected: string) => {
@@ -76,8 +84,8 @@ describe('CellRangeUnion', () => {
 
   describe('contains', () => {
     const tester = (result: boolean) => {
-      return (cell: t.IGridCellPosition | string, rangeKeys: string[]) => {
-        const union = fromKeys(rangeKeys);
+      return (cell: t.ICoord | string, rangeKeys: string[]) => {
+        const union = fromKey(rangeKeys);
         expect(union.contains(cell)).to.eql(result, `cell "${cell}", rangeKeys: ${rangeKeys} `);
       };
     };
@@ -120,7 +128,7 @@ describe('CellRangeUnion', () => {
   });
 
   describe('edge', () => {
-    const edge = (cellKey: string, rangeKey: string, edges: t.GridCellEdge[]) => {
+    const edge = (cellKey: string, rangeKey: string, edges: t.CoordEdge[]) => {
       const union = fromKey(rangeKey);
       const res = union.edge(cellKey);
       expect(res).to.eql(edges, `Cell "${cellKey}", range "${rangeKey}".`);

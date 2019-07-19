@@ -1,3 +1,3 @@
-export type IGridTable<V = any> = {
+export type ICoordTable<V = any> = {
   [cell: string]: V;
 };

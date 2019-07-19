@@ -1,4 +1,4 @@
-export type RangeAddressType =
+export type CoordRangeType =
   | 'ALL'
   | 'CELL'
   | 'COLUMN'

@@ -1,20 +1,28 @@
 import { expect } from 'chai';
 
-import { cell } from '../..';
-
 import { t } from '../../common';
 import { CellRange } from '.';
 
 const fromKey = CellRange.fromKey;
 
 describe('CellRange', () => {
-  describe('static helpers', () => {
+  describe('static', () => {
     it('isRangeKey', () => {
       expect(CellRange.isRangeKey('F39:F41')).to.eql(true);
       expect(CellRange.isRangeKey('F:F')).to.eql(true);
       expect(CellRange.isRangeKey('A1')).to.eql(false);
       expect(CellRange.isRangeKey('1')).to.eql(false);
       expect(CellRange.isRangeKey('A')).to.eql(false);
+    });
+
+    it('fromCells', () => {
+      type Input = string | { key: string };
+      const test = (left: Input, right: Input, output: string) => {
+        const res = CellRange.fromCells(left, right);
+        expect(res.key).to.eql(output);
+      };
+      test({ key: 'A1' }, { key: 'B2' }, 'A1:B2');
+      test('A1', 'B2', 'A1:B2');
     });
   });
 
@@ -698,7 +706,7 @@ describe('CellRange', () => {
 
   describe('edge', () => {
     it('is an edge', () => {
-      const isEdge = (cellKey: string, rangeKey: string, edges: t.GridCellEdge[]) => {
+      const isEdge = (cellKey: string, rangeKey: string, edges: t.CoordEdge[]) => {
         const range = fromKey(rangeKey);
         const res = range.edge(cellKey);
         expect(res).to.eql(edges, `Cell "${cellKey}", range "${range.key}".`);
