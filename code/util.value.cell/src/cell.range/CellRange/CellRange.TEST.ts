@@ -16,35 +16,6 @@ describe('CellRange', () => {
       expect(CellRange.isRangeKey('1')).to.eql(false);
       expect(CellRange.isRangeKey('A')).to.eql(false);
     });
-
-    // it('fromCells', () => {
-    //   const left = CellUri.fromString('A$1');
-    //   const right = CellUri.fromString('$B3');
-    //   const range = CellRange.fromCells(left, right);
-    // });
-
-    // it('fromCells (with sheet)', () => {
-    //   const left = CellUri.fromString('Sheet1!A$1');
-    //   const right = CellUri.fromString('Sheet1!$B3');
-    //   const range = CellRange.fromCells(left, right);
-    // });
-
-    // it('toId', () => {
-    //   expect(CellRange.toId(' A1:A5 ')).to.eql('A1:A5');
-    //   expect(CellRange.toId(' !A1:A5 ')).to.eql('A1:A5');
-    //   expect(CellRange.toId(' !!!A1:A5 ')).to.eql('A1:A5');
-    //   expect(CellRange.toId(' Sheet1!A1:A5 ')).to.eql('Sheet1!A1:A5');
-    //   expect(CellRange.toId(' A1:A5 ', ' Sheet2 ')).to.eql('Sheet2!A1:A5');
-    //   expect(CellRange.toId('Sheet1!A1:A5', 'Sheet99')).to.eql('Sheet1!A1:A5');
-    // });
-
-    // it('toId (instance version)', () => {
-    //   const range1 = fromKey(' A1:A5 ');
-    //   const range2 = fromKey(' Sheet1!A1:A5  ');
-
-    //   expect(range1.toId('Foo')).to.eql('Foo!A1:A5');
-    //   expect(range2.toId('Foo')).to.eql('Sheet1!A1:A5');
-    // });
   });
 
   describe('range types', () => {
@@ -156,54 +127,54 @@ describe('CellRange', () => {
     });
   });
 
-  // describe('errors', () => {
-  //   it('error: INVALID RANGE', () => {
-  //     const range = fromKey('..');
-  //     expect(range.isValid).to.eql(false);
-  //     expect(range.error).to.contain('INVALID RANGE ".."');
-  //   });
+  describe('errors', () => {
+    it('error: INVALID RANGE', () => {
+      const range = fromKey('..');
+      expect(range.isValid).to.eql(false);
+      expect(range.error).to.contain('INVALID RANGE ".."');
+    });
 
-  //   it('error: range spans different sheets', () => {
-  //     const range = fromKey('Sheet1!A1:Sheet2!B5');
-  //     expect(range.isValid).to.eql(false);
-  //     expect(range.error).to.contain(`Ranges can only exist on a single sheet.`);
-  //   });
-  // });
+    it('error: range spans different sheets', () => {
+      const range = fromKey('Sheet1!A1:Sheet2!B5');
+      expect(range.isValid).to.eql(false);
+      expect(range.error).to.contain(`Ranges can only exist on a single sheet.`);
+    });
+  });
 
-  // it('valid', () => {
-  //   const valid = (key: string) => {
-  //     const range = fromKey(key);
-  //     expect(range.isValid).to.eql(true, `key '${key}' should be valid.`);
-  //   };
-  //   valid('A:A');
-  //   valid('A:B');
-  //   valid('1:1');
-  //   valid('1:999');
-  //   valid('A1:Z99');
-  //   valid('A$1:B2');
-  //   valid('$A$1:$B$2');
-  //   valid('$A:B');
-  //   valid('A:$B');
-  //   valid('$1:3');
-  //   valid('1:$3');
+  it('valid', () => {
+    const valid = (key: string) => {
+      const range = fromKey(key);
+      expect(range.isValid).to.eql(true, `key '${key}' should be valid.`);
+    };
+    valid('A:A');
+    valid('A:B');
+    valid('1:1');
+    valid('1:999');
+    valid('A1:Z99');
+    valid('A$1:B2');
+    valid('$A$1:$B$2');
+    valid('$A:B');
+    valid('A:$B');
+    valid('$1:3');
+    valid('1:$3');
 
-  //   valid('*:*');
-  //   valid('Sheet1!*:*');
-  //   valid('*:H3');
-  //   valid('**:H3');
-  //   valid('H3:*');
-  //   valid('H3:**');
+    valid('*:*');
+    valid('Sheet1!*:*');
+    valid('*:H3');
+    valid('**:H3');
+    valid('H3:*');
+    valid('H3:**');
 
-  //   valid('A1:B'); // Mixing CELL and COLUMN.
-  //   valid('1:A1');
-  //   valid('1:A');
-  //   valid('A1:A');
-  //   valid('A:A3');
-  //   valid('3:A3');
-  //   valid('Sheet1!A:B');
-  //   valid('Sheet1!A:Sheet1!B');
-  //   valid('A:Sheet1!B');
-  // });
+    valid('A1:B'); // Mixing CELL and COLUMN.
+    valid('1:A1');
+    valid('1:A');
+    valid('A1:A');
+    valid('A:A3');
+    valid('3:A3');
+    valid('Sheet1!A:B');
+    valid('Sheet1!A:Sheet1!B');
+    valid('A:Sheet1!B');
+  });
 
   it('invalid', () => {
     const invalid = (key: string) => {

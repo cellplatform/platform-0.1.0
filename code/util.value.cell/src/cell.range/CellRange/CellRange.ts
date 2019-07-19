@@ -1,11 +1,7 @@
 import { R, t, value as valueUtil } from '../../common';
-// import * as util from '../util';
-// import { CellUri, ICellUri } from '../CellUri';
 import { parser } from '../../parser';
 import { cell } from '../../cell';
 import { alpha } from '../../alpha';
-
-const URI_PREFIX = 'hri'; // TEMP 🐷
 
 /**
  * Represents a range of cells.
@@ -22,33 +18,6 @@ export class CellRange {
   public static fromCells = (left: t.IGridCell, right: t.IGridCell) => {
     return CellRange.fromKey(`${left.key}:${right.key}`);
   };
-
-  /**
-   * Converts range parts into a properly formatted range ID,
-   * eg.
-   *
-   *    ("A1:A5", "Sheet1")        => "Sheet1!A1:A5"
-   *    ("Sheet2!A1:A5", "Sheet1") => "Sheet2!A1:A5"    NB: Existing sheet within cell-key overrides `sheet` parameter.
-   *
-   */
-  // public static toId = (key: string, sheet?: string) => {
-  //   key = key && key.trim();
-  //   if (!key) {
-  //     throw new Error(`A range key must be specified.`);
-  //   }
-  //   key = key.replace(/^!+/, '');
-  //   if (key.includes('!')) {
-  //     const range = CellRange.fromKey(key);
-  //     key = range.key;
-  //     sheet = range.sheetId;
-  //   } else {
-  //     sheet = sheet ? sheet.trim() : sheet;
-  //     if (sheet) {
-  //       sheet = sheet.replace(/\!+$/, '');
-  //     }
-  //   }
-  //   return sheet ? `${sheet}!${key}` : key;
-  // };
 
   /**
    * Parses the given key into it's constituent parts.
@@ -105,10 +74,9 @@ export class CellRange {
     this.isValid = true;
 
     // Parse the key into constituent parts.
-    const uriPrefix = URI_PREFIX;
     const rangeParts = parser.toRangeParts(key);
-    const leftParts = parser.toParts(rangeParts.left, { uriPrefix });
-    const rightParts = parser.toParts(rangeParts.right, { uriPrefix });
+    const leftParts = parser.toParts(rangeParts.left);
+    const rightParts = parser.toParts(rangeParts.right);
     const leftSheet = leftParts.sheet || rightParts.sheet;
     const rightSheet = rightParts.sheet || leftParts.sheet;
 
@@ -116,14 +84,6 @@ export class CellRange {
     if (leftSheet !== rightSheet) {
       this.setError(`Ranges can only exist on a single sheet.`);
     }
-
-    // TEMP 🐷
-
-    // Construct fully formatted left/right keys.
-    // const toCellKey = (cellKey: string, sheetId: string) =>
-    //   cellKey ? CellUri.toId(cellKey, sheetId) : '';
-    // const leftKey = toCellKey(leftParts.cell, leftSheet);
-    // const rightKey = toCellKey(rightParts.cell, rightSheet);
 
     // Store values.
     const left = (this.left = cell.toCell(leftParts.cell, { relative: true }));
@@ -192,32 +152,6 @@ export class CellRange {
     };
     checkWildcards();
   }
-
-  // TEMP 🐷
-  /**
-   * Retrieves the fully qualified identifier of the range ("{sheet}!{left}:{right}")
-   * stripped of any absolute position characters ("$").
-   */
-  // public get id() {
-  //   return CellRange.toId(this.key, this.sheetId);
-  // }
-
-  // TEMP 🐷
-  /**
-   * Formats the fully qualified ID inserting the given sheet if one is
-   * not already present within the cell-range.
-   */
-  // public toId(sheet?: string) {
-  //   return CellUri.toId(this.key, this.sheetId || sheet);
-  // }
-
-  // TEMP 🐷
-  /**
-   * Retrieves the sheet the range exists on (or empty string).
-   */
-  // public get sheetId() {
-  //   return this.left.sheetId;
-  // }
 
   /**
    * Creates a range string ensuring the values form a square (top-left/bottom-right).
