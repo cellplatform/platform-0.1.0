@@ -16,7 +16,8 @@ export type GridEvent =
   | IRowsChangedEvent
   | IGridSelectionChangeEvent
   | IGridFocusEvent
-  | IGridBlurEvent;
+  | IGridBlurEvent
+  | IGridClipboardEvent;
 
 export type IGridReadyEvent = {
   type: 'GRID/ready';
@@ -153,4 +154,17 @@ export type IGridFocusEvent = {
 export type IGridBlurEvent = {
   type: 'GRID/blur';
   payload: { grid: t.IGrid };
+};
+
+/**
+ * Clipboard.
+ */
+export type IGridClipboardEvent = {
+  type: 'GRID/clipboard';
+  payload: IGridClipboard;
+};
+export type IGridClipboard = {
+  action: 'COPY' | 'CUT' | 'PASTE';
+  grid: t.IGrid;
+  selection: t.IGridSelection;
 };

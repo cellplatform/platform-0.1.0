@@ -4,6 +4,7 @@ import { filter, map, share, takeUntil, debounceTime } from 'rxjs/operators';
 import { t, value as valueUtil, R } from '../../common';
 import { Cell } from '../Cell';
 import { DEFAULT } from '../../common/constants';
+import { keyboard } from './keyboard';
 
 export type IGridArgs = {
   table: Handsontable;
@@ -58,6 +59,11 @@ export class Grid implements t.IGrid {
     this.events$
       .pipe(filter(e => e.type === 'GRID/ready'))
       .subscribe(() => (this._.isReady = true));
+
+    /**
+     * Keyboard controllers.
+     */
+    keyboard.clipboard({ grid: this, events$: this._.events$, dispose$: this.dispose$ });
 
     /**
      * Debounced redraw.
@@ -131,7 +137,7 @@ export class Grid implements t.IGrid {
    */
   private readonly _ = {
     table: (undefined as unknown) as Handsontable,
-    dispose$: new Subject(),
+    dispose$: new Subject<{}>(),
     events$: new Subject<t.GridEvent>(),
     redraw$: new Subject(),
     isReady: false,

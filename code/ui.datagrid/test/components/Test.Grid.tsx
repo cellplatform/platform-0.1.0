@@ -1,8 +1,18 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
-import { Button, color, css, GlamorValue, Hr, ObjectView, t } from '../common';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
+import { log, Button, color, css, GlamorValue, Hr, ObjectView, t } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
 export type ITestGridProps = {
@@ -26,12 +36,25 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    * [Lifecycle]
    */
   public componentWillMount() {
-    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    // Update state.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
 
+    /**
+     * Grid events.
+     */
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     events$.subscribe(e => {
-      console.log('🌳', e.type, e.payload);
+      // console.log('🌳', e.type, e.payload);
+    });
+
+    const clipboard$ = events$.pipe(
+      filter(e => e.type === 'GRID/clipboard'),
+      map(e => e.payload as t.IGridClipboard),
+    );
+
+    clipboard$.subscribe(e => {
+      log.info('CLIPBOARD', e);
     });
   }
 
