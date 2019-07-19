@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { Keyboard, t } from '../../common';
+import { Keyboard, t, coord } from '../../common';
 
 /**
  * Manages clipboard operations
@@ -36,9 +36,20 @@ export function clipboard(args: {
 
   const fire = (action: t.IGridClipboard['action']) => {
     const selection = grid.selection;
+    let union: coord.range.CellRangeUnion | undefined;
+    const payload: t.IGridClipboard = {
+      action,
+      grid,
+      selection,
+      get keys() {
+        union = union || coord.range.union(selection.ranges);
+        return union.keys;
+      },
+    };
+
     args.events$.next({
       type: 'GRID/clipboard',
-      payload: { action, grid, selection },
+      payload,
     });
   };
 }

@@ -167,4 +167,5 @@ export type IGridClipboard = {
   action: 'COPY' | 'CUT' | 'PASTE';
   grid: t.IGrid;
   selection: t.IGridSelection;
+  keys: string[];
 };

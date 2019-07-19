@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil, debounceTime } from 'rxjs/operators';
 
-import { t, value as valueUtil, R } from '../../common';
+import { coord, t, value as valueUtil, R } from '../../common';
 import { Cell } from '../Cell';
 import { DEFAULT } from '../../common/constants';
 import { keyboard } from './keyboard';
@@ -252,6 +252,23 @@ export class Grid implements t.IGrid {
   }
 
   /**
+   * Retrieves the currently selected key/value pairs.
+   */
+  public get selectedValues(): t.IGridValues {
+    const selection = this.selection;
+    if (selection.all) {
+      return this.values;
+    }
+
+    const values = this.values;
+    const union = coord.range.union(this.selection.ranges);
+    return union.keys.reduce((acc, key) => {
+      const value = values[key];
+      return value === undefined ? acc : { ...acc, [key]: value };
+    }, {});
+  }
+
+  /**
    * [Methods]
    */
 
@@ -390,7 +407,6 @@ export class Grid implements t.IGrid {
     const current = [pos.row, pos.column, pos.row, pos.column];
     const selection = [...ranges, current] as any;
     table.selectCells(selection, scrollToCell);
-
     return this;
   }
 

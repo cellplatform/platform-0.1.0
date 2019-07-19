@@ -12,7 +12,7 @@ import {
   distinctUntilChanged,
   debounceTime,
 } from 'rxjs/operators';
-import { log, Button, color, css, GlamorValue, Hr, ObjectView, t } from '../common';
+import { log, Button, color, css, GlamorValue, Hr, ObjectView, t, coord } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
 export type ITestGridProps = {
@@ -54,7 +54,12 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     );
 
     clipboard$.subscribe(e => {
-      log.info('CLIPBOARD', e);
+      log.group('🐷 CLIPBOARD');
+      log.info('e', e);
+      log.info('selection', e.selection);
+      log.info('keys', e.keys);
+      log.info('selectedValues', e.grid.selectedValues);
+      log.groupEnd();
     });
   }
 
