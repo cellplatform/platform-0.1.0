@@ -3,8 +3,13 @@
  */
 export type GridCellType = 'CELL' | 'COLUMN' | 'ROW';
 export type IGridCellPosition = {
-  row: number;
   column: number;
+  row: number;
+};
+export type IGridCell = {
+  key: string;
+  column: number;
+  row: number;
 };
 
 /**

@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { cell } from '.';
+import { t } from '../common';
 
 describe('toKey', () => {
   it('CELL (0, 0) => "A1"', () => {
@@ -52,6 +53,44 @@ describe('fromKey', () => {
     };
     test('');
     test('Sheet1!');
+  });
+});
+
+describe('toCell', () => {
+  it('toCell', () => {
+    const test = (
+      input: string | number | { column?: number; row?: number },
+      key: string,
+      column: number,
+      row: number,
+    ) => {
+      const res = cell.toCell(input);
+      expect(res.key).to.eql(key);
+      expect(res.column).to.eql(column);
+      expect(res.row).to.eql(row);
+    };
+    test('A1', 'A1', 0, 0);
+    test('$A$1', '$A$1', 0, 0);
+    test('A$1', 'A$1', 0, 0);
+    test('$A1', '$A1', 0, 0);
+    test('A', 'A', 0, -1);
+    test('1', '1', -1, 0);
+    test(1, '1', -1, 0);
+    test({ column: 0, row: 0 }, 'A1', 0, 0);
+    test({ column: 0 }, 'A', 0, -1);
+    test({ row: 0 }, '1', -1, 0);
+  });
+
+  it('strips "$"', () => {
+    const test = (input: string, key: string) => {
+      const res = cell.toCell(input, { relative: true });
+      expect(res.key).to.eql(key);
+    };
+    test('$A$1', 'A1');
+    test('A$1', 'A1');
+    test('$A1', 'A1');
+    test('$A', 'A');
+    test('$1', '1');
   });
 });
 

@@ -37,6 +37,19 @@ export function toKey(column?: number, row?: number) {
 }
 
 /**
+ * Converts various input types to a cell data-type.
+ */
+export function toCell(
+  input: string | number | { column?: number; row?: number },
+  options: { relative?: boolean } = {},
+): t.IGridCell {
+  let key = typeof input === 'object' ? toKey(input.column, input.row) : input.toString();
+  key = options.relative ? key.replace(/\$/g, '') : key;
+  const { row, column } = fromKey(key);
+  return { key, row, column };
+}
+
+/**
  * Attempts to parse the given cell key.
  */
 export function fromKey(key: string | number): t.IGridCellPosition {
