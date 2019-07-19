@@ -13,7 +13,6 @@ import * as keyboard from './keyboard';
 
 const electron = (window as any).require('electron');
 const remote = electron.remote as Electron.Remote;
-const { BrowserWindow } = remote;
 
 export { Context, ReactContext, remote };
 export * from '../types';
@@ -61,7 +60,7 @@ export async function init<M extends t.IpcMessage = any, S extends t.SettingsJso
     windows,
     remote,
     get window() {
-      return BrowserWindow.getAllWindows().find(w => w.id === id) as Electron.BrowserWindow;
+      return remote.getCurrentWindow();
     },
   };
 
