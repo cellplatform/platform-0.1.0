@@ -76,4 +76,27 @@ describe('Grid', () => {
       expect(grid.values.B1).to.eql('hello');
     });
   });
+
+  describe('selection', () => {
+    const values = {
+      A1: 123,
+      A2: 456,
+      A3: 789,
+      A5: 'hello',
+    };
+
+    it('has no selection', () => {
+      const grid = createGrid({ values });
+      const res = grid.selection;
+      expect(res.cell).to.eql(undefined);
+      expect(res.ranges).to.eql([]);
+    });
+
+    it('selection: single cell', () => {
+      const grid = createGrid({ values });
+      grid.select({ cell: 'A1' });
+      const res = grid.selection;
+      expect(res.cell).to.eql('A1');
+    });
+  });
 });
