@@ -2,6 +2,14 @@ import { expect } from './libs';
 
 /**
  * Checks for an error within an async function.
+ * Example:
+ *    Return the result of this function to the test-runner (mocha).
+ *
+ *        it('should throw', () =>
+ *            expectError(async () => {
+ *              // ...code that throws here...
+ *          }, 'my error message'));
+ *
  */
 export async function expectError(fn: () => Promise<any>, message?: string) {
   try {

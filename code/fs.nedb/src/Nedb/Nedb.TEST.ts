@@ -1,4 +1,4 @@
-import { expect, fs, time } from '../test';
+import { expect, fs, time, expectError } from '../test';
 import { Nedb } from '.';
 
 const dir = fs.resolve('tmp/store');
@@ -44,6 +44,13 @@ describe('Store (nedb)', () => {
 
     const res4 = await db.findOne({ name: 'foo' });
     expect(res4.name).to.eql('foo');
+  });
+
+  it('throws when inserting a document with (.) in field name', () => {
+    return expectError(async () => {
+      const db = Nedb.create({});
+      return db.insert({ 'foo.bar': 123 });
+    }, 'Field names cannot contain a .');
   });
 
   it('inserts multiple documents', async () => {
