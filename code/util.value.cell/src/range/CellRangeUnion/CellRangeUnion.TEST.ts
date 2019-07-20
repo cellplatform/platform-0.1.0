@@ -125,13 +125,30 @@ describe('CellRangeUnion', () => {
       const keys = union.keys;
       expect(keys).to.eql(['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'B4', 'C2', 'C3', 'C4']);
     });
-
-    it.only('sorts (lowest to highest)', () => {
-      const union1 = fromKey('A1:B3, B2:C4');
+    it('sorts (lowest to highest)', () => {
+      const union1 = fromKey('A1:B3,    B2:C4');
       const union2 = fromKey('C4:B2,B3:A1');
       const keys = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'B4', 'C2', 'C3', 'C4'];
       expect(union1.keys).to.eql(keys);
       expect(union2.keys).to.eql(keys);
+    });
+  });
+
+  describe.only('square', () => {
+    it('undefined (empty, no ranges)', () => {
+      const union = fromKey('');
+      expect(union.keys).to.eql([]);
+      expect(union.square).to.eql(undefined);
+    });
+
+    it('square', () => {
+      const test = (input: string, output: string) => {
+        const union = fromKey(input);
+        const square = union.square;
+        expect(square && square.key).to.eql(output);
+      };
+      test('A1:A1', 'A1:A1');
+      test('C4:B2,B3:A1', 'A1:C4');
     });
   });
 

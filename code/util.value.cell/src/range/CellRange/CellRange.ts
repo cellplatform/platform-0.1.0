@@ -222,7 +222,7 @@ export class CellRange {
   }
 
   /**
-   * Creates a range string ensuring the values form a square (top-left/bottom-right).
+   * Creates a range ensuring the values form a square (top-left/bottom-right).
    */
   public get square() {
     // Reuse existing square if already calculated.

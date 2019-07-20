@@ -87,6 +87,14 @@ export class CellRangeUnion {
   }
 
   /**
+   * Creates a range enclosing all ranges in the union (top-left to bottom-right).
+   */
+  public get square() {
+    const keys = this.keys;
+    return keys.length === 0 ? undefined : CellRange.fromCells(keys[0], keys[keys.length - 1]);
+  }
+
+  /**
    * [Methods]
    */
 
