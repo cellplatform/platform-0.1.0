@@ -134,7 +134,7 @@ describe('CellRangeUnion', () => {
     });
   });
 
-  describe.only('square', () => {
+  describe('square', () => {
     it('undefined (empty, no ranges)', () => {
       const union = fromKey('');
       expect(union.keys).to.eql([]);
