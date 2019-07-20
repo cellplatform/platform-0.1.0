@@ -109,7 +109,7 @@ describe('CellRangeUnion', () => {
     });
   });
 
-  describe('cellKeys', () => {
+  describe('keys', () => {
     it('caches response', () => {
       const union = fromKey('A1:B3, B1:B3');
       const keys1 = union.keys;
@@ -124,6 +124,14 @@ describe('CellRangeUnion', () => {
       const union = fromKey('A1:B3, B2:C4');
       const keys = union.keys;
       expect(keys).to.eql(['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'B4', 'C2', 'C3', 'C4']);
+    });
+
+    it.only('sorts (lowest to highest)', () => {
+      const union1 = fromKey('A1:B3, B2:C4');
+      const union2 = fromKey('C4:B2,B3:A1');
+      const keys = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'B4', 'C2', 'C3', 'C4'];
+      expect(union1.keys).to.eql(keys);
+      expect(union2.keys).to.eql(keys);
     });
   });
 

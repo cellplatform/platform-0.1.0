@@ -1,6 +1,6 @@
 import { R, value as valueUtil, t } from '../../common';
 import { CellRange } from '../CellRange';
-import { cell as cellUtil } from '../../cell';
+import { cell as cellUtil, cell } from '../../cell';
 
 /**
  * Represents a set of unions.
@@ -69,22 +69,21 @@ export class CellRangeUnion {
    * Retrieves a sorted array of unique cell-keys across all ranges
    * within the set (eg. [A1, A2, B1...]).
    *  Note:
+   *
    *    - Returns empty array when the range is COLUMN or ROW as
    *      these are logical ranges and the array would be infinite.
+   *
    *    - The result is cached, future calls to this property do
    *      not incur the cost of calcualting the set of keys.
    */
   public get keys() {
-    if (this._.keys) {
-      return this._.keys;
+    if (!this._.keys) {
+      const keySets = this.ranges.map(range => range.keys);
+      let keys: string[] = R.uniq(valueUtil.flatten(keySets));
+      keys = cell.sort<string>(keys);
+      this._.keys = keys;
     }
-    const done = (result: string[]) => {
-      this._.keys = result;
-      return result;
-    };
-
-    const keys = this.ranges.map(range => range.keys);
-    return done(R.uniq(valueUtil.flatten(keys)));
+    return this._.keys as string[];
   }
 
   /**
@@ -171,10 +170,8 @@ export class CellRangeUnion {
       });
     });
 
-    return (
-      Object.keys(map)
-        // Reduce map to final set of [CellEdge] items.
-        .filter(key => map[key].within.length > 0) as t.CoordEdge[]
-    );
+    return Object.keys(map)
+      // Reduce map to final set of [CellEdge] items.
+      .filter(key => map[key].within.length > 0) as t.CoordEdge[];
   }
 }

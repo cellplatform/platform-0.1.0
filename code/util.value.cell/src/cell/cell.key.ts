@@ -2,6 +2,8 @@ import { alpha } from '../alpha';
 import { parser } from '../parser';
 import { t, defaultValue } from '../common';
 
+type CellInput = string | number | { column?: number; row?: number };
+
 /**
  * Converts indexes into alpha-numeric cell code.
  *  eg:
@@ -39,10 +41,7 @@ export function toKey(column?: number, row?: number) {
 /**
  * Converts various input types to a cell data-type.
  */
-export function toCell(
-  input: string | number | { column?: number; row?: number },
-  options: { relative?: boolean } = {},
-): t.ICoordCell {
+export function toCell(input: CellInput, options: { relative?: boolean } = {}): t.ICoordCell {
   let key = typeof input === 'object' ? toKey(input.column, input.row) : input.toString();
   key = options.relative ? key.replace(/\$/g, '') : key;
   const { row, column } = fromKey(key);
@@ -76,9 +75,7 @@ export function isRangeKey(key: string) {
 /**
  * Converts the given key to a type.
  */
-export function toType(
-  cell: string | number | { column?: number; row?: number },
-): t.CoordCellType | undefined {
+export function toType(cell: CellInput): t.CoordCellType | undefined {
   const type = typeof cell;
 
   if (!['string', 'number', 'object'].includes(type)) {
@@ -102,4 +99,50 @@ export function toType(
     return 'ROW';
   }
   return undefined;
+}
+
+/**
+ * A cell sorter comparison.
+ */
+export const compare = {
+  by: (axis: 'COLUMN' | 'ROW') => (axis === 'COLUMN' ? compare.byColumn : compare.byRow),
+  byColumn: (a: CellInput, b: CellInput) => comparer(a, b, { by: 'COLUMN' }),
+  byRow: (a: CellInput, b: CellInput) => comparer(a, b, { by: 'ROW' }),
+};
+
+export function comparer<T extends CellInput>(
+  left: T,
+  right: T,
+  options: { by?: 'COLUMN' | 'ROW' } = {},
+): -1 | 0 | 1 {
+  const { by = 'COLUMN' } = options;
+  const a = toCell(left);
+  const b = toCell(right);
+
+  if (a.key === b.key) {
+    return 0;
+  }
+
+  if (by === 'COLUMN') {
+    // Keys sorted by column, then row.
+    const cols = compareNumber(a.column, b.column);
+    return cols === 0 ? compareNumber(a.row, b.row) : cols;
+  }
+
+  if (by === 'ROW') {
+    // Keys sorted by row, then column.
+    const rows = compareNumber(a.row, b.row);
+    return rows === 0 ? compareNumber(a.column, b.column) : rows;
+  }
+
+  throw new Error(`Sort by '${by}' not supported.`);
+}
+const compareNumber = (a: number, b: number) => (a === b ? 0 : a < b ? -1 : 1);
+
+/**
+ * Sorts a list of cells.
+ */
+export function sort<T extends CellInput>(list: T[], options: { by?: 'COLUMN' | 'ROW' } = {}) {
+  const axis = options.by || 'COLUMN';
+  return list.sort(compare.by(axis));
 }

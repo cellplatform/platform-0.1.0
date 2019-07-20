@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { cell } from '.';
-import { t } from '../common';
+
+type CellInput = string | number | { column?: number; row?: number };
 
 describe('toKey', () => {
   it('CELL (0, 0) => "A1"', () => {
@@ -160,5 +161,70 @@ describe('isRangeKey', () => {
       expect(cell.toType({ row: undefined, column: undefined })).to.eql(undefined);
       expect(cell.toType({})).to.eql(undefined);
     });
+  });
+});
+
+describe('compare', () => {
+  it('by COLUMN (default)', () => {
+    const test = (a: CellInput, b: CellInput, output: number) => {
+      expect(cell.comparer(a, b)).to.eql(output);
+    };
+
+    test('A', 'A', 0);
+    test({ column: 0, row: -1 }, { column: 0, row: -1 }, 0);
+
+    test('1', '1', 0);
+    test(1, 1, 0);
+    test({ column: -1, row: 0 }, { column: -1, row: 0 }, 0);
+
+    test('A1', 'A1', 0);
+    test('Z9', 'Z9', 0);
+    test({ column: 0, row: 0 }, { column: 0, row: 0 }, 0);
+
+    test('A1', 'A2', -1);
+    test('A1', 'B1', -1);
+    test('A1', 'ZZ99', -1);
+    test({ column: 0, row: 0 }, { column: 1, row: 0 }, -1);
+    test({ column: 0, row: 0 }, { column: 1, row: 1 }, -1);
+    test({ column: 1, row: 0 }, { column: 1, row: 1 }, -1);
+
+    test('A2', 'A1', 1);
+    test('B1', 'A1', 1);
+    test('ZZ99', 'A1', 1);
+    test({ column: 1, row: 0 }, { column: 0, row: 0 }, 1);
+    test({ column: 1, row: 2 }, { column: 0, row: 0 }, 1);
+  });
+
+  it('by ROW', () => {
+    const test = (a: CellInput, b: CellInput, output: number) => {
+      expect(cell.comparer(a, b, { by: 'ROW' })).to.eql(output);
+    };
+
+    test('A1', 'A1', 0);
+    test('A', 'A', 0);
+    test('1', '1', 0);
+
+    test('A1', 'B1', -1);
+    test('A1', 'A2', -1);
+    test('A', 'B', -1);
+    test('1', '2', -1);
+
+    test('B1', 'A1', 1);
+    test('A2', 'A1', 1);
+    test('B', 'A', 1);
+    test('2', '1', 1);
+  });
+});
+
+describe('sort', () => {
+  const list = ['C1', 'A2', 'B2', 'B1', 'A1', 'B3', 'A9'];
+  it('by COLUMN (default)', () => {
+    const res = cell.sort(list);
+    expect(res).to.eql(['A1', 'A2', 'A9', 'B1', 'B2', 'B3', 'C1']);
+  });
+
+  it('by ROW', () => {
+    const res = cell.sort(list, { by: 'ROW' });
+    expect(res).to.eql(['A1', 'B1', 'C1', 'A2', 'B2', 'B3', 'A9']);
   });
 });
