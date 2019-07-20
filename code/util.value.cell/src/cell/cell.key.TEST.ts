@@ -1,7 +1,8 @@
 import { expect } from 'chai';
 import { cell } from '.';
+import { R } from '../common';
 
-type CellInput = string | number | { column?: number; row?: number };
+type CellInput = string | number | { column?: number; row?: number } | { key: string };
 
 describe('toKey', () => {
   it('CELL (0, 0) => "A1"', () => {
@@ -59,19 +60,16 @@ describe('fromKey', () => {
 
 describe('toCell', () => {
   it('toCell', () => {
-    const test = (
-      input: string | number | { column?: number; row?: number },
-      key: string,
-      column: number,
-      row: number,
-    ) => {
+    const test = (input: CellInput, key: string, column: number, row: number) => {
       const res = cell.toCell(input);
       expect(res.key).to.eql(key);
       expect(res.column).to.eql(column);
       expect(res.row).to.eql(row);
     };
     test('A1', 'A1', 0, 0);
+    test({ key: 'A1' }, 'A1', 0, 0);
     test('$A$1', '$A$1', 0, 0);
+    test({ key: '$A$1' }, '$A$1', 0, 0);
     test('A$1', 'A$1', 0, 0);
     test('$A1', '$A1', 0, 0);
     test('A', 'A', 0, -1);
@@ -83,7 +81,7 @@ describe('toCell', () => {
   });
 
   it('strips "$"', () => {
-    const test = (input: string, key: string) => {
+    const test = (input: CellInput, key: string) => {
       const res = cell.toCell(input, { relative: true });
       expect(res.key).to.eql(key);
     };
@@ -171,19 +169,23 @@ describe('compare', () => {
     };
 
     test('A', 'A', 0);
+    test({ key: 'A' }, 'A', 0);
     test({ column: 0, row: -1 }, { column: 0, row: -1 }, 0);
 
     test('1', '1', 0);
     test(1, 1, 0);
+    test({ key: '1' }, '1', 0);
     test({ column: -1, row: 0 }, { column: -1, row: 0 }, 0);
 
     test('A1', 'A1', 0);
     test('Z9', 'Z9', 0);
+    test({ key: 'A1' }, 'A1', 0);
     test({ column: 0, row: 0 }, { column: 0, row: 0 }, 0);
 
     test('A1', 'A2', -1);
     test('A1', 'B1', -1);
     test('A1', 'ZZ99', -1);
+    test({ key: 'A1' }, 'A2', -1);
     test({ column: 0, row: 0 }, { column: 1, row: 0 }, -1);
     test({ column: 0, row: 0 }, { column: 1, row: 1 }, -1);
     test({ column: 1, row: 0 }, { column: 1, row: 1 }, -1);
@@ -191,40 +193,62 @@ describe('compare', () => {
     test('A2', 'A1', 1);
     test('B1', 'A1', 1);
     test('ZZ99', 'A1', 1);
+    test({ key: 'A2' }, 'A1', 1);
     test({ column: 1, row: 0 }, { column: 0, row: 0 }, 1);
     test({ column: 1, row: 2 }, { column: 0, row: 0 }, 1);
   });
 
   it('by ROW', () => {
     const test = (a: CellInput, b: CellInput, output: number) => {
-      expect(cell.comparer(a, b, { by: 'ROW' })).to.eql(output);
+      expect(cell.comparer(a, b, { axis: 'ROW' })).to.eql(output);
     };
 
     test('A1', 'A1', 0);
     test('A', 'A', 0);
     test('1', '1', 0);
+    test({ key: '1' }, '1', 0);
 
     test('A1', 'B1', -1);
     test('A1', 'A2', -1);
     test('A', 'B', -1);
     test('1', '2', -1);
+    test({ key: '1' }, '2', -1);
 
     test('B1', 'A1', 1);
     test('A2', 'A1', 1);
     test('B', 'A', 1);
     test('2', '1', 1);
+    test({ key: '2' }, '1', 1);
   });
 });
 
 describe('sort', () => {
   const list = ['C1', 'A2', 'B2', 'B1', 'A1', 'B3', 'A9'];
+  const sorted = {
+    byColumn: ['A1', 'A2', 'A9', 'B1', 'B2', 'B3', 'C1'],
+    byRow: ['A1', 'B1', 'C1', 'A2', 'B2', 'B3', 'A9'],
+  };
+
   it('by COLUMN (default)', () => {
     const res = cell.sort(list);
-    expect(res).to.eql(['A1', 'A2', 'A9', 'B1', 'B2', 'B3', 'C1']);
+    expect(res).to.eql(sorted.byColumn);
   });
 
   it('by ROW', () => {
     const res = cell.sort(list, { by: 'ROW' });
-    expect(res).to.eql(['A1', 'B1', 'C1', 'A2', 'B2', 'B3', 'A9']);
+    expect(res).to.eql(sorted.byRow);
+  });
+
+  it('sorts by {key}', () => {
+    const keys = list.map(key => ({ key, value: `value-${key}` }));
+
+    const byColumn = cell.sort(keys); // Default: by COLUMN
+    const byRow = cell.sort(keys, { by: 'ROW' });
+
+    const columns = byColumn.map(m => m.key);
+    const rows = byRow.map(m => m.key);
+
+    expect(columns).to.eql(sorted.byColumn);
+    expect(rows).to.eql(sorted.byRow);
   });
 });

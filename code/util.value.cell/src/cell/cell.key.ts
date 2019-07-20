@@ -2,7 +2,9 @@ import { alpha } from '../alpha';
 import { parser } from '../parser';
 import { t, defaultValue } from '../common';
 
-type CellInput = string | number | { column?: number; row?: number };
+type ICellCoord = { column?: number; row?: number };
+type ICellKeyObject = { key: string };
+type CellInput = string | number | ICellCoord | ICellKeyObject;
 
 /**
  * Converts indexes into alpha-numeric cell code.
@@ -42,10 +44,49 @@ export function toKey(column?: number, row?: number) {
  * Converts various input types to a cell data-type.
  */
 export function toCell(input: CellInput, options: { relative?: boolean } = {}): t.ICoordCell {
-  let key = typeof input === 'object' ? toKey(input.column, input.row) : input.toString();
-  key = options.relative ? key.replace(/\$/g, '') : key;
-  const { row, column } = fromKey(key);
+  let key = '';
+  let column = -1;
+  let row = -1;
+
+  // Wrangle input into values.
+  if (typeof input === 'object') {
+    const keys = Object.keys(input);
+    if (keys.includes('key')) {
+      // Type: { key }.
+      const obj = input as ICellKeyObject;
+      key = obj.key;
+      const pos = fromKey(key);
+      row = pos.row;
+      column = pos.column;
+    } else if (keys.includes('row') || keys.includes('column')) {
+      // Type: { row, column }.
+      const obj = input as ICellCoord;
+      key = toKey(obj.column, obj.row);
+      column = obj.column === undefined ? -1 : obj.column;
+      row = obj.row === undefined ? -1 : obj.row;
+    } else {
+      throw new Error(`Could not derive coord position for cell input. ${JSON.stringify(input)}`);
+    }
+  } else {
+    // Type: string/number.
+    key = input.toString();
+    const pos = fromKey(key);
+    row = pos.row;
+    column = pos.column;
+  }
+
+  // Strip absolute "$" characters (if required).
+  key = options.relative ? toRelative(key) : key;
+
+  // Finish up.
   return { key, row, column };
+}
+
+/**
+ * Strip absolute "$" characters.
+ */
+export function toRelative(key: string): string {
+  return typeof key === 'string' ? key.replace(/\$/g, '') : key;
 }
 
 /**
@@ -106,16 +147,16 @@ export function toType(cell: CellInput): t.CoordCellType | undefined {
  */
 export const compare = {
   by: (axis: 'COLUMN' | 'ROW') => (axis === 'COLUMN' ? compare.byColumn : compare.byRow),
-  byColumn: (a: CellInput, b: CellInput) => comparer(a, b, { by: 'COLUMN' }),
-  byRow: (a: CellInput, b: CellInput) => comparer(a, b, { by: 'ROW' }),
+  byColumn: (a: CellInput, b: CellInput) => comparer(a, b, { axis: 'COLUMN' }),
+  byRow: (a: CellInput, b: CellInput) => comparer(a, b, { axis: 'ROW' }),
 };
 
 export function comparer<T extends CellInput>(
   left: T,
   right: T,
-  options: { by?: 'COLUMN' | 'ROW' } = {},
+  options: { axis?: 'COLUMN' | 'ROW' } = {},
 ): -1 | 0 | 1 {
-  const { by = 'COLUMN' } = options;
+  const { axis: by = 'COLUMN' } = options;
   const a = toCell(left);
   const b = toCell(right);
 
@@ -144,5 +185,5 @@ const compareNumber = (a: number, b: number) => (a === b ? 0 : a < b ? -1 : 1);
  */
 export function sort<T extends CellInput>(list: T[], options: { by?: 'COLUMN' | 'ROW' } = {}) {
   const axis = options.by || 'COLUMN';
-  return list.sort(compare.by(axis));
+  return [...list].sort(compare.by(axis));
 }
