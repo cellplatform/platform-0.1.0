@@ -182,4 +182,13 @@ export class CellRangeUnion {
       // Reduce map to final set of [CellEdge] items.
       .filter(key => map[key].within.length > 0) as t.CoordEdge[];
   }
+
+  /**
+   * Converts the union to a display string.
+   */
+  public toString() {
+    const square = this.square;
+    const keys = square ? square.key : '[]';
+    return `[union:${keys}]`;
+  }
 }
