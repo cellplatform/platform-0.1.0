@@ -7,8 +7,5 @@
   "repository": "github.com/uiharness/platform",
   "license": "MIT",
   "files": [],
-  "private": true,
-  "dependencies": {
-    "@platform/fs": "^0.1.6"
-  }
+  "private": true
 }

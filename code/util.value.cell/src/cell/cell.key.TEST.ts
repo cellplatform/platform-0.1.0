@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { cell } from '.';
-import { R } from '../common';
 
 type CellInput = string | number | { column?: number; row?: number } | { key: string };
 
