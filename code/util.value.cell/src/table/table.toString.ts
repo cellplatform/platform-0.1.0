@@ -1,14 +1,18 @@
 import { cell } from '../cell';
 import { range } from '../range';
-import { R } from '../common';
+import { R, value as valueUtil } from '../common';
 
 type Item = { key: string; value: any };
-type ItemCell = Item & { column: number; row: number };
+type ItemPosition = Item & { column: number; row: number };
 
 /**
  * Converts a list of items to a string table of rows (CSV/TSV).
  */
-export function toString(args: { items: Item[]; delimiter?: string }) {
+export function toString(args: {
+  items: Item[];
+  delimiter?: string;
+  transform?: (item: Item) => string;
+}) {
   if (typeof args !== 'object') {
     // Prevent error if no args supplied.
     // NB:  This should only happen if some other process calls
@@ -25,9 +29,10 @@ export function toString(args: { items: Item[]; delimiter?: string }) {
 
   // Get a complete square of keys as the given list by have holes in it.
   const square = range.fromKey(`${items[0].key}:${items[items.length - 1].key}`).square;
-  const list: ItemCell[] = square.keys.map(key => {
+  const list: ItemPosition[] = square.keys.map(key => {
     let item = items.find(item => item.key === key);
     item = item ? item : { key, value: undefined };
+    item = args.transform ? { ...item, value: args.transform(item) } : item;
     const { column, row } = cell.fromKey(key);
     return { ...item, column, row };
   });
@@ -43,7 +48,7 @@ export function toString(args: { items: Item[]; delimiter?: string }) {
       acc[acc.length - 1].push(next);
       return acc;
     },
-    [] as ItemCell[][],
+    [] as ItemPosition[][],
   );
 
   // Collapse into string.
@@ -54,4 +59,34 @@ export function toString(args: { items: Item[]; delimiter?: string }) {
   }, '');
 
   return text;
+}
+
+/**
+ * Converts a string table into a list of values.
+ */
+export function fromString(args: { text: string; key: string; delimiter?: string }): Item[] {
+  const { delimiter = '\t' } = args;
+  if (typeof args.text !== 'string') {
+    return [];
+  }
+  const text = args.text || '';
+  if (!text) {
+    return [];
+  }
+
+  const toCell = (rowKey: string, value: string, index: number) => {
+    const offset = index >= 1 ? index : -1;
+    const key = offset > -1 ? cell.sibling(rowKey, 'RIGHT', { offset }) : rowKey;
+    return { key, value };
+  };
+
+  const toLine = (line: string, index: number) => {
+    const offset = index >= 1 ? index : -1;
+    const rowKey =
+      offset > -1 ? (cell.sibling(args.key, 'BOTTOM', { offset }) as string) : args.key;
+    return line.split(delimiter).map((value, i) => toCell(rowKey, value, i));
+  };
+
+  const rows = text.split('\n').map((line, i) => toLine(line, i));
+  return valueUtil.flatten(rows);
 }

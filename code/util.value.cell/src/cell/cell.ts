@@ -1,3 +1,3 @@
 export * from './cell.key';
-export * from './cell.siblings';
+export * from './cell.sibling';
 export * from './types';
