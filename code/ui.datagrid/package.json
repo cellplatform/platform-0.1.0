@@ -30,7 +30,7 @@
     "@platform/ui.datagrid.cell": "0.0.80",
     "@uiharness/dev": "0.5.15",
     "@uiharness/ui": "0.5.16",
-    "electron": "5.0.0"
+    "electron": "5.0.7"
   },
   "files": [
     "lib",

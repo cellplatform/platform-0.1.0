@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { table } from '.';
 
 describe('table', () => {
-  describe.only('toString', () => {
+  describe('toString', () => {
     const keys = ['B3', 'A2', 'B1', 'A1', 'A3', 'B3']; // Duplicate B3, no B2.
     const items = keys.map(key => ({ key, value: key }));
 
@@ -47,7 +47,7 @@ A3,B3`.substring(1);
     });
   });
 
-  describe.only('fromString', () => {
+  describe('fromString', () => {
     const text = `
 A1	B1	C1
 A2		C2	D2

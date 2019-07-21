@@ -26,6 +26,18 @@ export class CellRange {
   };
 
   /**
+   * Create a region that is the square around all given keys.
+   */
+  public static square(keys: Array<string | { key: string }>) {
+    if (keys.length === 0) {
+      throw new Error(`To create a region-square at least one key must be passed.`);
+    }
+    let list = keys.map(item => (typeof item === 'string' ? item : item.key));
+    list = cell.sort(list);
+    return CellRange.fromKey(`${list[0]}:${list[list.length - 1]}`);
+  }
+
+  /**
    * Parses the given key into it's constituent parts.
    */
   public static parseKeyParts = parser.toRangeParts;

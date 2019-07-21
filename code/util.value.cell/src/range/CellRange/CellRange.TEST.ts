@@ -24,6 +24,16 @@ describe('CellRange', () => {
       test({ key: 'A1' }, { key: 'B2' }, 'A1:B2');
       test('A1', 'B2', 'A1:B2');
     });
+
+    it('square', () => {
+      const test = (keys: Array<string | { key: string }>, output: string) => {
+        const res = CellRange.square(keys);
+        expect(res.key).to.eql(output);
+      };
+      test(['A1'], 'A1:A1');
+      test([{ key: 'A1' }], 'A1:A1');
+      test(['Z9', 'A1'], 'A1:Z9');
+    });
   });
 
   describe('range types', () => {
