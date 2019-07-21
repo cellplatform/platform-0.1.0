@@ -186,8 +186,13 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             )}
             <Hr margin={5} />
             {this.button(
-              'changeBorders (uniform)',
+              'changeBorders - B2:D4 (red)',
               () => (this.grid.borders = [{ range: 'B2:D4', style: { width: 2, color: 'red' } }]),
+            )}
+            {this.button(
+              'changeBorders - B2:D4 (orange)',
+              () =>
+                (this.grid.borders = [{ range: 'B2:D4', style: { width: 2, color: 'orange' } }]),
             )}
             {this.button(
               'changeBorders (different edges)',

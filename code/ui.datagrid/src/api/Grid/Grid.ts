@@ -277,9 +277,7 @@ export class Grid implements t.IGrid {
     if (!Array.isArray(current)) {
       return [];
     }
-
     return current.map(item => {
-      console.log('item', item);
       const from = coord.cell.toKey(item.range.from.col, item.range.from.row);
       const to = coord.cell.toKey(item.range.to.col, item.range.to.row);
       const range = `${from}:${to}`;
@@ -322,15 +320,21 @@ export class Grid implements t.IGrid {
       const style = input as t.IGridBorderStyle;
       return { top: style, right: style, bottom: style, left: style };
     };
-    const customBorders = borders.map(item => {
-      const range = toRange(item.range);
-      return { range, ...toStyles(item.style) };
-    });
 
-    
+    const toBorders = (items: t.IGridBorder[]) => {
+      return items.map(item => {
+        const range = toRange(item.range);
+        return { range, ...toStyles(item.style) };
+      });
+    };
+    const update = (items: t.IGridBorder[]) => {
+      const customBorders = toBorders(items);
+      table.updateSettings({ customBorders }, false);
+    };
+
     // Update table.
-    table.updateSettings({ customBorders }, false);
-    this.fire({ type: 'GRID/borders/changed', payload: { from, to: this.borders } });
+    update(borders);
+    this.fire({ type: 'GRID/borders/changed', payload: { from, to: borders } });
   }
 
   /**
@@ -370,7 +374,7 @@ export class Grid implements t.IGrid {
   /**
    * Updates columns.
    */
-  public changeColumns(columns: t.IGridColumns, options: { type?: t.IColumnChange.type } = {}) {
+  public changeColumns(columns: t.IGridColumns, options: { type?: t.IColumnChange['type'] } = {}) {
     const { type = 'UPDATE' } = options;
     const from = { ...this._.columns };
     const to = { ...from };
@@ -399,7 +403,7 @@ export class Grid implements t.IGrid {
   /**
    *  Updates rows.
    */
-  public changeRows(rows: t.IGridRows, options: { type?: t.IColumnChange.type } = {}) {
+  public changeRows(rows: t.IGridRows, options: { type?: t.IColumnChange['type'] } = {}) {
     const { type = 'UPDATE' } = options;
     const from = { ...this._.rows };
     const to = { ...from };

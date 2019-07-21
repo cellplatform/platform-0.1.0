@@ -2,7 +2,7 @@ import { cell } from '../cell';
 import { range } from '../range';
 import { R, value as valueUtil } from '../common';
 
-type Item = { key: string; value: any };
+type Item = { key: string; value?: any };
 type ItemPosition = Item & { column: number; row: number };
 
 /**
