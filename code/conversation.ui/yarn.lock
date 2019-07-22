@@ -1148,21 +1148,22 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.4"
 
-"@platform/conversation.db@0.0.75":
-  version "0.0.75"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.75.tgz#b930dfb2f4e42430e212e0c77c15010ab912cd01"
-  integrity sha512-7qxXZ6uRNe56IVPKSUDfOzXVDj4RBFxcuxk+uQL3WOEwQ8dpRLZAqehIX59MoXzoKyoMYFRKCygxlqHYGkmxIA==
+"@platform/conversation.db@0.0.76":
+  version "0.0.76"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.76.tgz#9a9fa5fd6f084eda0f5b2b130f54ff732c312c04"
+  integrity sha512-r4PDit4rZ3+zjEEvCgciA7zAUSGE4hyxQvHv6AEwEzc1CTOOssdf+7QgQwAi15ZyY4+I4lNbuJGSuQp9t6ZSpA==
   dependencies:
     "@platform/auth" "0.1.23"
-    "@platform/conversation.types" "0.0.36"
+    "@platform/conversation.types" "0.0.37"
+    "@platform/fs.db.types" "^0.1.2"
     "@platform/graphql.server" "0.1.24"
     "@platform/hyperdb.types" "0.2.13"
     "@platform/libs" "0.0.18"
 
-"@platform/conversation.types@0.0.36":
-  version "0.0.36"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.36.tgz#96e61f6413378141d12dace1b562c322394a038d"
-  integrity sha512-vueoH2kZJQ7TcnkuBQFYh270qFCW+uhDr0PZTRvadV/swKehpxCKqMcVTCNSEWBi2KG8N42TKN+VBF3O7HIQ7g==
+"@platform/conversation.types@0.0.37":
+  version "0.0.37"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.types/-/conversation.types-0.0.37.tgz#166070f8b5ec65ff1b94b0b0e1ce26f4f19419ec"
+  integrity sha512-gsXjvlPu81dmdMh2684QLKA1f+VJTudhEyK/o+EhXE+vUh8eA0iuuiYkSf8864w8JnfT6gmAlnaYPnpp6nshRw==
   dependencies:
     "@platform/libs" "0.0.18"
     "@platform/util.value" "0.4.4"
@@ -1209,7 +1210,7 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db.types@0.1.2":
+"@platform/fs.db.types@0.1.2", "@platform/fs.db.types@^0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.1.2.tgz#3d30779e75b81f0e7d4aa97edff328926cbae3b3"
   integrity sha512-SKcnJptZjwJa1nLg3v5gbgxYu5Xk5LvydS7iXndUmVJzhRjOwqUyP7pzT4AoTdrMVKRbPzpUyXpWw70psaVwdQ==

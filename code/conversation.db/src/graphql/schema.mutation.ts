@@ -64,16 +64,6 @@ export function init(args: { toContext: GetContext }) {
         if (!thread) {
           throw new Error(`Cannot save. Conversation thread not supplied.`);
         }
-        const items_OLD = thread.items.reduce(
-          (acc, next) => ({ ...acc, [k.itemDbKey(next)]: next }),
-          {},
-        );
-
-        const updates_OLD = {
-          [k.metaDbKey(thread)]: {}, // NB: Future meta-data. Included now to make the root thread item searchable.
-          [k.usersDbKey(thread)]: thread.users || [],
-          ...items_OLD,
-        };
 
         const items = thread.items.map(value => ({ key: k.itemDbKey(value), value }));
         const updates = [
@@ -81,15 +71,10 @@ export function init(args: { toContext: GetContext }) {
           { key: k.metaDbKey(thread), value: {} }, // NB: Future meta-data. Included now to make the root thread item searchable.
         ];
 
-        console.log('updates', updates_OLD);
-        console.log('-------------------------------------------');
-        console.log('items2', items);
-
-        // Save:
+        // Save details:
         //  - meta-data
         //  - items
         //  - users
-
         const db = await ctx.getDb();
         await db.putMany(updates);
 
