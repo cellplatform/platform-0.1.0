@@ -1,9 +1,19 @@
-import hyperdb from '@platform/hyperdb';
-import { fs } from './common';
+import { NeDoc } from '@platform/fs.nedb';
+import { t, fs, log } from './common';
 
-const dir = fs.resolve('./.dev/db');
+let db: t.IDb | undefined;
 
 export const getDb = async () => {
-  const res = await hyperdb.getOrCreate({ dir, connect: false });
-  return res.db;
+  if (!db) {
+    // TEMP 🐷 have this path configurable
+
+    const dir = fs.resolve('./.dev/db');
+    const filename = fs.join(dir, 'conversations.db');
+    fs.ensureDirSync(dir);
+    db = NeDoc.create({ filename });
+
+    log.info.gray(`database created: ${filename}`);
+  }
+
+  return db;
 };

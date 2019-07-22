@@ -6,6 +6,23 @@
 UI components for conversation threads.
 
 <p>&nbsp;<p>
+
+## Developing Locally
+Start the graphql server:
+
+    yarn watch    
+
+Run the uiharness, in electron:
+
+    yarn ui start
+
+or in the browser
+
+   yarn ui start web
+
+
+
+<p>&nbsp;<p>
 <p>&nbsp;<p>
 
 

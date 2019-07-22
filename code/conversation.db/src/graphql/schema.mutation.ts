@@ -64,17 +64,14 @@ export function init(args: { toContext: GetContext }) {
         if (!thread) {
           throw new Error(`Cannot save. Conversation thread not supplied.`);
         }
-        const items = thread.items.reduce(
-          (acc, next) => ({ ...acc, [k.itemDbKey(next)]: next }),
-          {},
-        );
-        const updates = {
-          [k.metaDbKey(thread)]: {}, // NB: Future meta-data. Included now to make the root thread item searchable.
-          [k.usersDbKey(thread)]: thread.users || [],
-          ...items,
-        };
 
-        // Save:
+        const items = thread.items.map(value => ({ key: k.itemDbKey(value), value }));
+        const updates = [
+          ...items,
+          { key: k.metaDbKey(thread), value: {} }, // NB: Future meta-data. Included now to make the root thread item searchable.
+        ];
+
+        // Save details:
         //  - meta-data
         //  - items
         //  - users

@@ -72,13 +72,14 @@ export function init(args: { toContext: GetContext }) {
         log.TODO('ensure user is part of the thread. 🐷');
 
         const { kind } = args;
-        const pattern = k.itemsDbKey(_.id);
-        const values = await db.values({ pattern });
-        const items = value.object
-          .toArray<{ value: { value: t.ThreadItem } }>(values)
+        const query = `${k.itemsDbKey(_.id)}/**`;
+
+        const res = await db.find({ query });
+        const items = res.list
+          .map(item => item.value as t.ThreadItem)
           .filter(m => Boolean(m))
-          .map(m => m.value.value)
           .filter(m => (kind ? m.kind === kind : true));
+
         return R.sortBy<t.ThreadItem>(R.prop('timestamp'), items);
       },
 
