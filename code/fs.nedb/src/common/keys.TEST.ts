@@ -29,7 +29,7 @@ describe('keys', () => {
       expect(res.decoded).to.eql(input);
     };
 
-    test(null, null);
+    test(null as any, null as any);
     test({ foo: 123 }, { foo: 123 });
     test([{ foo: 123 }], [{ foo: 123 }]);
     test({ 'foo.bar': 123 }, { 'foo\\bar': 123 });

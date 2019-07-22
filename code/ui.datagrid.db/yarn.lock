@@ -1219,15 +1219,15 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db.electron@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db.electron/-/fs.db.electron-0.2.5.tgz#1f633f798298d0ee11c008a3d67fe07758e7a9ac"
-  integrity sha512-58kkiQDPn8otCMRHOL0ayo+035jwPs4UNaL1Fc1ND7ExI/xTNX27Au1s1XkIq1ybzZAokRxPgJOlFT7rhpKkIQ==
+"@platform/fs.db.electron@0.2.6":
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db.electron/-/fs.db.electron-0.2.6.tgz#5879d4695d8fcc33257382d509d5e60282a3bacc"
+  integrity sha512-NJIHZmWie0BrKPpU8qF6J3ogwINM2XaKsF09CzbAzasbjPZDE5YqoUwfrmyvTliUdvvXYJ7sy2ircZsnwGUznQ==
   dependencies:
     "@platform/electron" "0.6.1"
     "@platform/fs.db" "1.2.15"
     "@platform/fs.db.types" "0.1.2"
-    "@platform/fs.nedb" "0.2.0"
+    "@platform/fs.nedb" "0.3.0"
     "@platform/react" "0.3.12"
     "@platform/types" "0.0.20"
 
@@ -1250,10 +1250,10 @@
     "@platform/types" "0.0.20"
     "@platform/util.value" "0.4.4"
 
-"@platform/fs.nedb@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@platform/fs.nedb/-/fs.nedb-0.2.0.tgz#03a4e80d0a50f2ffb0c4840719bb2f0c34266cf6"
-  integrity sha512-CLAtRoS50jiZd/VGjAggn59TUG49lCDnkQg10lhWuXelPdOha2E5kVBxRWPFgt+xPhfanAWjuC/5Qv2I8MJvRA==
+"@platform/fs.nedb@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.nedb/-/fs.nedb-0.3.0.tgz#560a5e5e0eebd62c1bbc8e43206598db996da4d0"
+  integrity sha512-bwBhNb3bmrhxM/isYsdumt+3MjtS09BTlafjDwtNLy830YH6ilnD+BF1v+5NJqoCMnvr13pIeCV/7lrAkqQ8tw==
   dependencies:
     "@platform/fs.db.types" "0.1.2"
     "@platform/react" "0.3.12"
