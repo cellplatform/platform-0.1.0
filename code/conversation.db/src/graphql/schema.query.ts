@@ -60,26 +60,45 @@ export function init(args: { toContext: GetContext }) {
        * Retrieve thread items.
        */
       items: async (_: { id: string }, args: { kind?: string }, c: t.IGqlContext, info: any) => {
-        const ctx = toContext(c);
-        const db = await ctx.getDb();
-        const k = ctx.keys.thread;
+        try {
+          const ctx = toContext(c);
+          const db = await ctx.getDb();
+          const k = ctx.keys.thread;
 
-        const auth = await ctx.authorize({ policy: [policy.userRequired, policy.read] });
-        if (auth.isDenied) {
-          auth.throw();
+          const auth = await ctx.authorize({ policy: [policy.userRequired, policy.read] });
+          if (auth.isDenied) {
+            auth.throw();
+          }
+
+          log.TODO('ensure user is part of the thread. 🐷');
+
+          const { kind } = args;
+
+          const query = `${k.itemsDbKey(_.id)}/**`;
+
+          console.log('query', query);
+
+          const res = await db.find({ query });
+
+          // console.log('values', values);
+
+          const items = res.list
+            .map(item => item.value as t.ThreadItem)
+            .filter(m => Boolean(m))
+            .filter(m => (kind ? m.kind === kind : true));
+
+          // const items = value.object
+          //   .toArray<{ value: { value: t.ThreadItem } }>(values)
+          //   .filter(m => Boolean(m))
+          //   .map(m => m.value.value)
+          //   .filter(m => (kind ? m.kind === kind : true));
+
+          console.log('items', items);
+
+          return R.sortBy<t.ThreadItem>(R.prop('timestamp'), items);
+        } catch (error) {
+          console.log('error', error);
         }
-
-        log.TODO('ensure user is part of the thread. 🐷');
-
-        const { kind } = args;
-        const pattern = k.itemsDbKey(_.id);
-        const values = await db.values({ pattern });
-        const items = value.object
-          .toArray<{ value: { value: t.ThreadItem } }>(values)
-          .filter(m => Boolean(m))
-          .map(m => m.value.value)
-          .filter(m => (kind ? m.kind === kind : true));
-        return R.sortBy<t.ThreadItem>(R.prop('timestamp'), items);
       },
 
       /**

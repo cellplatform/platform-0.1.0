@@ -5,8 +5,6 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "node .",
-    "watch": "nodemon .",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
@@ -17,6 +15,7 @@
   "dependencies": {
     "@platform/auth": "0.1.23",
     "@platform/conversation.types": "0.0.36",
+    "@platform/fs.db.types": "^0.1.2",
     "@platform/graphql.server": "0.1.24",
     "@platform/hyperdb.types": "0.2.13",
     "@platform/libs": "0.0.18"

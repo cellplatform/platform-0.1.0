@@ -37,6 +37,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public render() {
     const styles = {
       base: css({
+        position: 'relative',
         flex: 1,
         Flex: 'horizontal',
         backgroundColor: color.format(-0.01),
@@ -45,13 +46,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         position: 'relative',
         flex: 1,
         Flex: 'vertical-center-stretch',
-        Scroll: true,
-        paddingTop: 30,
-        paddingBottom: 50,
       }),
       mainInner: css({
-        width: 760,
-        flex: 1,
+        padding: 50,
+        paddingBottom: 80,
+        position: 'relative',
+        Absolute: 0,
+        Scroll: true,
       }),
       right: css({
         boxSizing: 'border-box',
