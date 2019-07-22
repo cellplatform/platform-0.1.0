@@ -1,7 +1,7 @@
 import { importFiles } from './import';
 import { exportFiles } from './export';
 
-export const fs = {
+export const io = {
   import: importFiles,
   export: exportFiles,
 };
