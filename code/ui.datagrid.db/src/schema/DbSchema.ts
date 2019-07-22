@@ -8,10 +8,15 @@ export class DbSchema {
    * [Static]
    */
   public static toKey(prefix: string, key: string | number | { key: string }) {
-    key = typeof key === 'number' ? key.toString() : key;
-    key = typeof key === 'object' ? key.key : (key || '').toString();
+    key = DbSchema.asString(key);
     key = lastPart(key, '/');
     return !key ? '' : `${prefix}/${key}`;
+  }
+
+  public static asString(key: string | number | { key: string }) {
+    key = typeof key === 'number' ? key.toString() : key;
+    key = typeof key === 'object' ? key.key : (key || '').toString();
+    return key;
   }
 
   /**
@@ -42,6 +47,29 @@ export class DbSchema {
   /**
    * [Methods]
    */
+
+  public toKey(key: string | { key: string }) {
+    key = DbSchema.asString(key);
+    if (key === undefined || key === '') {
+      return '';
+    }
+
+    const type = coord.cell.toType(key);
+    switch (type) {
+      case 'CELL':
+        return this.toCellKey(key);
+
+      case 'COLUMN':
+        return this.toColumnKey(key);
+
+      case 'ROW':
+        return this.toRowKey(key);
+
+      default:
+        throw new Error(`Cell type '${type}' not supported.`);
+    }
+  }
+
   public toCellKey(key: string | { key: string }) {
     return DbSchema.toKey(this.prefix.cell, key);
   }

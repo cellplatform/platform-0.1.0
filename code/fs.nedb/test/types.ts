@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { Nedb } from '../src/db/Nedb';
+import { Nedb } from '../src/Nedb';
 import { NeDoc } from '../src';
 
 export * from '@platform/cli.ui/lib/types';

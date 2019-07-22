@@ -4,13 +4,13 @@ import { t, defaultValue } from '../common';
 type Axis = 'row' | 'column';
 type TableItem<V = any> = { key: string; value: V; column: number; row: number };
 type IInsertArgs = {
-  table: t.IGridTable;
+  table: t.ICoordTable;
   index: number;
   total?: number;
   emptyValue?: any; // The empty value that inserted cells are replaced with.
 };
 type IRemoveArgs = {
-  table: t.IGridTable;
+  table: t.ICoordTable;
   index: number;
   total?: number;
 };
@@ -71,12 +71,12 @@ function shiftRemove(args: IInsertArgs & { axis: Axis }) {
  */
 export function shift(args: {
   axis: Axis;
-  table: t.IGridTable;
+  table: t.ICoordTable;
   index: number;
   by: number;
   emptyValue?: any; // The empty value that inserts are replaced with.
-}): t.IGridTable {
-  const result: t.IGridTable = {};
+}): t.ICoordTable {
+  const result: t.ICoordTable = {};
   const { axis, table, by } = args;
 
   if (by === 0) {
@@ -128,7 +128,7 @@ export function shift(args: {
  */
 function overwrite(args: {
   axis: Axis;
-  table: t.IGridTable;
+  table: t.ICoordTable;
   from: number;
   to: number;
   value?: undefined;
@@ -146,7 +146,7 @@ function overwrite(args: {
     return index >= from && index <= to;
   });
 
-  const result: t.IGridTable = { ...table };
+  const result: t.ICoordTable = { ...table };
   range.forEach(item => (result[item.key] = args.value));
 
   return result;

@@ -1,9 +1,7 @@
 import { t, Observable } from '../common';
 
-export type IGrid = {
-  /**
-   * [Properties]
-   */
+export type IGrid = IGridProperties & IGridMethods;
+export type IGridProperties = {
   readonly id: string;
   readonly totalColumns: number;
   readonly totalRows: number;
@@ -11,16 +9,15 @@ export type IGrid = {
   readonly isReady: boolean;
   readonly isEditing: boolean;
   readonly selection: t.IGridSelection;
+  readonly selectedValues: t.IGridValues;
   readonly events$: Observable<t.GridEvent>;
-  readonly keys$: Observable<t.IGridKeydown>;
-
+  readonly keyboard$: Observable<t.IGridKeydown>;
   values: t.IGridValues;
   columns: IGridColumns;
   rows: IGridRows;
-
-  /**
-   * [Methods]
-   */
+  borders: IGridBorder[];
+};
+export type IGridMethods = {
   dispose(): void;
   changeValues(changes: t.IGridValues, options?: { redraw?: boolean }): IGrid;
   changeColumns(columns: t.IGridColumns, options?: { type?: t.IColumnChange['type'] }): IGrid;
@@ -31,7 +28,7 @@ export type IGrid = {
   deselect(): IGrid;
   focus(): IGrid;
   redraw(): IGrid;
-  toPosition(ref: t.CellRef): t.IGridCellPosition;
+  toPosition(ref: t.CellRef): t.ICoord;
 };
 
 export type IGridSelection = {
@@ -46,3 +43,15 @@ export type IGridRows = { [key: string]: IGridRow };
 
 export type IGridColumn = { width?: number };
 export type IGridRow = { height?: number };
+
+export type IGridBorder = {
+  range: string;
+  style: IGridBorderStyle | IGridBorderEdgeStyles;
+};
+export type IGridBorderStyle = { color: string; width?: number };
+export type IGridBorderEdgeStyles = {
+  top: IGridBorderStyle;
+  right: IGridBorderStyle;
+  bottom: IGridBorderStyle;
+  left: IGridBorderStyle;
+};

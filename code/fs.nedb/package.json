@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.nedb",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Standard IDb abstraction over nedb.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -9,6 +9,8 @@
     "start": "ui start $@",
     "test": "ts test",
     "tdd": "ts test --watch",
+    "test:integration": "ts test --suffix INTEGRATION",
+    "tddi": "ts test --suffix INTEGRATION --watch",
     "lint": "ts lint",
     "build": "ts build $@",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
@@ -25,9 +27,9 @@
     "@platform/fs": "0.1.6",
     "@platform/test": "0.0.59",
     "@types/nedb": "1.8.8",
-    "@uiharness/dev": "0.5.14",
-    "@uiharness/ui": "0.5.15",
-    "electron": "5.0.0"
+    "@uiharness/dev": "0.5.15",
+    "@uiharness/ui": "0.5.16",
+    "electron": "5.0.7"
   },
   "files": [
     "lib"

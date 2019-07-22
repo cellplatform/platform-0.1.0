@@ -1,16 +1,21 @@
 /**
  * Cell
  */
-export type GridCellType = 'CELL' | 'COLUMN' | 'ROW';
-export type IGridCellPosition = {
-  row: number;
+export type CoordCellType = 'CELL' | 'COLUMN' | 'ROW';
+export type ICoord = {
   column: number;
+  row: number;
+};
+export type ICoordCell = {
+  key: string;
+  column: number;
+  row: number;
 };
 
 /**
  * Siblings
  */
-export interface IGridCellSiblings {
+export interface ICoordSiblings {
   cell: string;
   top?: string;
   right?: string;
@@ -19,11 +24,11 @@ export interface IGridCellSiblings {
   toString: () => string;
 }
 
-export type GridCellEdge = 'TOP' | 'RIGHT' | 'BOTTOM' | 'LEFT';
+export type CoordEdge = 'TOP' | 'RIGHT' | 'BOTTOM' | 'LEFT';
 
-export type IGridCellOffsetOptions = {
+export type ICoordOffsetOptions = {
   totalColumns?: number;
   totalRows?: number;
   clamp?: boolean; // Always return siblings, clipped to the edges (eg. [0,0] or [totalColumns,totalRows])
 };
-export type IGridCellSiblingOptions = IGridCellOffsetOptions & { offset?: number };
+export type ICoordSiblingOptions = ICoordOffsetOptions & { offset?: number };

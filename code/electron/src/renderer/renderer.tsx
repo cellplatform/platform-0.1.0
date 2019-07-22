@@ -59,6 +59,9 @@ export async function init<M extends t.IpcMessage = any, S extends t.SettingsJso
     devTools,
     windows,
     remote,
+    get window() {
+      return remote.getCurrentWindow();
+    },
   };
 
   const getContext = async (context: t.IRendererContext) => {

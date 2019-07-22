@@ -7,7 +7,7 @@ describe('cell.offset', () => {
     columnOffset: number,
     rowOffset: number,
     result: undefined | string,
-    options?: cell.IGridCellOffsetOptions,
+    options?: cell.ICoordOffsetOptions,
   ) => {
     const res = cell.offset(cellKey, columnOffset, rowOffset, options);
     const msg = `cell: "${cellKey}", columnOffset: "${columnOffset}", rowOffset: ${rowOffset}`;
@@ -50,9 +50,9 @@ describe('cell.offset', () => {
 describe('sibling', () => {
   const test = (
     cellKey: string,
-    edge: cell.GridCellEdge,
+    edge: cell.CoordEdge,
     result: undefined | string,
-    options?: cell.IGridCellSiblingOptions,
+    options?: cell.ICoordSiblingOptions,
   ) => {
     const res = cell.sibling(cellKey, edge, options);
     const msg = `cell: "${cellKey}", edge: "${edge}"`;
@@ -93,6 +93,13 @@ describe('sibling', () => {
 });
 
 describe('siblings', () => {
+  it('oppositeEdge', () => {
+    expect(cell.oppositeEdge('TOP')).to.eql('BOTTOM');
+    expect(cell.oppositeEdge('RIGHT')).to.eql('LEFT');
+    expect(cell.oppositeEdge('BOTTOM')).to.eql('TOP');
+    expect(cell.oppositeEdge('LEFT')).to.eql('RIGHT');
+  });
+
   it('top/left', () => {
     const res = cell.siblings('A$1');
     expect(res.top).to.eql(undefined);

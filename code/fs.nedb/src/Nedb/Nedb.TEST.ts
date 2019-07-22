@@ -1,18 +1,20 @@
-import { expect, fs, time } from '../test';
 import { Nedb } from '.';
+import { expect, expectError, fs } from '../test';
 
 const dir = fs.resolve('tmp/store');
-const filename = fs.join(dir, 'file.db');
 const removeDir = () => fs.remove(dir);
 
-describe('Store (nedb)', () => {
-  beforeEach(async () => {
-    // await removeDir();
-  });
+/**
+ * NOTE:  Filename is incremented to avoid NEDB internal error
+ *        when working with multiple instances of the same file-name.
+ *        See: https://github.com/louischatriot/nedb/issues/462
+ */
+let count = 0;
+const getFilename = () => fs.join(dir, `file-${count++}.db`);
 
-  afterEach(async () => {
-    // await removeDir();
-  });
+describe('Store (nedb)', () => {
+  beforeEach(async () => removeDir());
+  after(async () => removeDir());
 
   it('constructs', () => {
     const db = Nedb.create({});
@@ -20,6 +22,7 @@ describe('Store (nedb)', () => {
   });
 
   it('strips "nedb:" prefix from filename', () => {
+    const filename = getFilename();
     const db = Nedb.create({ filename: `nedb:${filename}` });
     const text = db.filename;
     expect(text).to.not.include('nedb:');
@@ -43,6 +46,40 @@ describe('Store (nedb)', () => {
     expect(res4.name).to.eql('foo');
   });
 
+  it('throws when inserting a document with (.) in field name', () => {
+    return expectError(async () => {
+      const db = Nedb.create({});
+      await db.insert({ 'foo.bar': 123 }, { escapeKeys: false });
+    }, 'Field names cannot contain a .');
+  });
+
+  it('encodes (.) characters in field names (by default)', async () => {
+    const db = Nedb.create({});
+    const obj = {
+      name: 'mary',
+      foo: {
+        count: 0,
+        'bar.boo': {
+          msg: 'hello',
+          zoo: { 'a.b': null, z: null },
+          'my.array': [{ 'mary.barnes': 23, 'zoe.smith': { scale: 34 }, bob: null }],
+        },
+      },
+    };
+
+    // Single.
+    const res1 = await db.insert(obj); // NB: No "Field names cannot contain a ." error.
+    const res2 = await db.findOne({ name: 'mary' });
+    expect(res2).to.eql({ ...obj, _id: (res1 as any)._id });
+
+    // Many (array).
+    await db.insertMany([obj, obj]);
+    const res4 = await db.find({ name: 'mary' });
+    res4.forEach(item => {
+      expect(item).to.eql({ ...obj, _id: item._id });
+    });
+  });
+
   it('inserts multiple documents', async () => {
     type MyDoc = { name: string; _id?: string };
     const db = Nedb.create<MyDoc>({});
@@ -58,6 +95,8 @@ describe('Store (nedb)', () => {
 
   it('persists to file-system', async () => {
     await removeDir();
+
+    const filename = getFilename();
     expect(await fs.pathExists(filename)).to.eql(false);
 
     const db1 = Nedb.create({ filename, autoload: true });

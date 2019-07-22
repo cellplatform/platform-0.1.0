@@ -16,7 +16,9 @@ export type GridEvent =
   | IRowsChangedEvent
   | IGridSelectionChangeEvent
   | IGridFocusEvent
-  | IGridBlurEvent;
+  | IGridBlurEvent
+  | IGridClipboardEvent
+  | IGridBordersChangedEvent;
 
 export type IGridReadyEvent = {
   type: 'GRID/ready';
@@ -131,6 +133,18 @@ export type IRowChange = {
 };
 
 /**
+ * Borders.
+ */
+export type IGridBordersChangedEvent = {
+  type: 'GRID/borders/changed';
+  payload: IGridBordersChanged;
+};
+export type IGridBordersChanged = {
+  from: t.IGridBorder[];
+  to: t.IGridBorder[];
+};
+
+/**
  * Selection.
  */
 export type IGridSelectionChangeEvent = {
@@ -153,4 +167,18 @@ export type IGridFocusEvent = {
 export type IGridBlurEvent = {
   type: 'GRID/blur';
   payload: { grid: t.IGrid };
+};
+
+/**
+ * Clipboard.
+ */
+export type IGridClipboardEvent = {
+  type: 'GRID/clipboard';
+  payload: IGridClipboard;
+};
+export type IGridClipboard = {
+  action: 'COPY' | 'CUT' | 'PASTE';
+  grid: t.IGrid;
+  selection: t.IGridSelection;
+  keys: string[];
 };

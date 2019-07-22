@@ -17,7 +17,7 @@ import 'handsontable'; // tslint:disable-line
 /**
  * Util.
  */
-export { css, color, GlamorValue, events, containsFocus } from '@platform/react';
+export { css, color, GlamorValue, events, containsFocus, Keyboard } from '@platform/react';
 export { value, time, defaultValue } from '@platform/util.value';
 export { log } from '@platform/log/lib/client';
 
@@ -28,7 +28,7 @@ import { equals, clamp } from 'ramda';
 export const R = { equals, clamp };
 
 /**
- * Cell coords (eg "A1")
+ * Cell coords (eg "A1", "A1:C9")
  */
-import * as cellUtil from '@platform/util.value.cell';
-export { cellUtil };
+import * as coord from '@platform/util.value.cell';
+export { coord };

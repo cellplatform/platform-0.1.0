@@ -1,17 +1,23 @@
 import { expect, fs, time, t } from '../test';
 import { NeDoc } from '.';
 
-const dir = fs.resolve('tmp/doc');
-const filename = fs.join(dir, 'file.db');
+const dir = fs.resolve('tmp/NeDoc');
 const removeDir = () => fs.remove(dir);
+
+/**
+ * NOTE:  Filename is incremented to avoid NEDB internal error
+ *        when working with multiple instances of the same file-name.
+ *        See: https://github.com/louischatriot/nedb/issues/462
+ */
+let count = 0;
+const getFilename = () => fs.join(dir, `file-${count++}.db`);
 
 describe('NeDoc', () => {
   let db: NeDoc;
 
-  beforeEach(async () => {
-    db = await NeDoc.create();
-  });
+  beforeEach(async () => (db = await NeDoc.create()));
   afterEach(() => db.dispose());
+  after(async () => removeDir());
 
   it('constructs', () => {
     const db = NeDoc.create();
@@ -19,12 +25,14 @@ describe('NeDoc', () => {
   });
 
   it('strips "nedb:" prefix from filename', () => {
+    const filename = getFilename();
     const db = NeDoc.create({ filename: `nedb:${filename}` });
     const text = db.toString();
     expect(text).to.not.include('nedb:');
   });
 
   it('toString', () => {
+    const filename = getFilename();
     const db1 = NeDoc.create();
     const db2 = NeDoc.create({ filename });
 

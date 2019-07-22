@@ -1,4 +1,4 @@
-import { value, GridCellType } from '../common';
+import { value, CoordCellType } from '../common';
 import { alpha } from '../alpha';
 import { ast } from '../ast';
 
@@ -7,7 +7,7 @@ export function toParts(input: string, options: { uriPrefix?: string } = {}) {
   const DEFAULT_RELATIVE = true as boolean | undefined;
   const result = {
     input,
-    type: 'CELL' as GridCellType,
+    type: 'CELL' as CoordCellType,
     space: '',
     sheet: '',
     cell: '',
@@ -104,7 +104,7 @@ export function toParts(input: string, options: { uriPrefix?: string } = {}) {
 function parseCellKey(cellKey: string = '') {
   const DEFAULT_RELATIVE = true as boolean | undefined;
   const result = {
-    type: 'CELL' as GridCellType,
+    type: 'CELL' as CoordCellType,
     error: '',
     column: { value: '', index: -1, isRelative: DEFAULT_RELATIVE },
     row: { value: '', index: -1, isRelative: DEFAULT_RELATIVE },

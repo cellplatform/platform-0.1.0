@@ -1,9 +1,10 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil, debounceTime } from 'rxjs/operators';
 
-import { t, value as valueUtil, R } from '../../common';
+import { coord, t, value as valueUtil, R, time } from '../../common';
 import { Cell } from '../Cell';
 import { DEFAULT } from '../../common/constants';
+import { keyboard } from './keyboard';
 
 export type IGridArgs = {
   table: Handsontable;
@@ -58,6 +59,11 @@ export class Grid implements t.IGrid {
     this.events$
       .pipe(filter(e => e.type === 'GRID/ready'))
       .subscribe(() => (this._.isReady = true));
+
+    /**
+     * Keyboard controllers.
+     */
+    keyboard.clipboard({ grid: this, events$: this._.events$, dispose$: this.dispose$ });
 
     /**
      * Debounced redraw.
@@ -131,7 +137,7 @@ export class Grid implements t.IGrid {
    */
   private readonly _ = {
     table: (undefined as unknown) as Handsontable,
-    dispose$: new Subject(),
+    dispose$: new Subject<{}>(),
     events$: new Subject<t.GridEvent>(),
     redraw$: new Subject(),
     isReady: false,
@@ -150,7 +156,7 @@ export class Grid implements t.IGrid {
     takeUntil(this.dispose$),
     share(),
   );
-  public readonly keys$ = this._.events$.pipe(
+  public readonly keyboard$ = this._.events$.pipe(
     filter(e => e.type === 'GRID/keydown'),
     map(e => e.payload as t.IGridKeydown),
     share(),
@@ -246,6 +252,92 @@ export class Grid implements t.IGrid {
   }
 
   /**
+   * Retrieves the currently selected key/value pairs.
+   */
+  public get selectedValues(): t.IGridValues {
+    const selection = this.selection;
+    if (selection.all) {
+      return this.values;
+    }
+
+    const values = this.values;
+    const union = coord.range.union(this.selection.ranges);
+    return union.keys.reduce((acc, key) => {
+      const value = values[key];
+      return value === undefined ? acc : { ...acc, [key]: value };
+    }, {});
+  }
+
+  /**
+   * Custom border styles for cell ranges.
+   */
+  public get borders(): t.IGridBorder[] {
+    const settings = this._.table.getSettings();
+    const current = settings.customBorders;
+    if (!Array.isArray(current)) {
+      return [];
+    }
+    return current.map(item => {
+      const from = coord.cell.toKey(item.range.from.col, item.range.from.row);
+      const to = coord.cell.toKey(item.range.to.col, item.range.to.row);
+      const range = `${from}:${to}`;
+
+      const { top, right, bottom, left } = item;
+      const all = [top, right, bottom, left];
+      const allEqual = all.every(a => all.every(b => R.equals(a, b)));
+
+      const border: t.IGridBorder = {
+        range,
+        style: allEqual ? top : { top, right, bottom, left },
+      };
+      return border;
+    });
+  }
+  public set borders(borders: t.IGridBorder[]) {
+    const from = this.borders;
+    const table = this._.table;
+
+    // Check for no change.
+    if (borders.length === 0) {
+      table.updateSettings({ customBorders: false }, false);
+      this.fire({ type: 'GRID/borders/changed', payload: { from, to: this.borders } });
+      return;
+    }
+
+    // Convert input into format Handsontable understands.
+    const toRange = (input: string) => {
+      const range = coord.range.fromKey(input);
+      const { left, right } = range;
+      return {
+        from: { row: left.row, col: left.column },
+        to: { row: right.row, col: right.column },
+      };
+    };
+    const toStyles = (input: t.IGridBorder['style']) => {
+      if (typeof (input as t.IGridBorderEdgeStyles).top === 'object') {
+        return input as t.IGridBorderEdgeStyles;
+      }
+      const style = input as t.IGridBorderStyle;
+      return { top: style, right: style, bottom: style, left: style };
+    };
+
+    const toBorders = (items: t.IGridBorder[]) => {
+      return items.map(item => {
+        const range = toRange(item.range);
+        return { range, ...toStyles(item.style) };
+      });
+    };
+    const update = (items: t.IGridBorder[]) => {
+      const customBorders = toBorders(items);
+      table.updateSettings({ customBorders }, false);
+    };
+
+    // Update table.
+    update(borders);
+    this.fire({ type: 'GRID/borders/changed', payload: { from, to: borders } });
+  }
+
+  /**
    * [Methods]
    */
 
@@ -289,8 +381,8 @@ export class Grid implements t.IGrid {
     let changes: t.IColumnChange[] = [];
 
     Object.keys(columns).forEach(key => {
-      const prev = from[key];
-      const next = columns[key];
+      const prev = from[key] || { width: -1 };
+      const next = columns[key] || { width: DEFAULT.COLUMN_WIDTH };
       const isDefault = next.width === DEFAULT.COLUMN_WIDTH;
       if (isDefault) {
         delete to[key];
@@ -317,8 +409,8 @@ export class Grid implements t.IGrid {
     const to = { ...from };
     let changes: t.IRowChange[] = [];
     Object.keys(rows).forEach(key => {
-      const prev = from[key];
-      const next = rows[key];
+      const prev = from[key] || { height: -1 };
+      const next = rows[key] || { height: DEFAULT.ROW_HEIGHT };
       const isDefault = next.height === DEFAULT.ROW_HEIGHT;
       if (isDefault) {
         delete to[key];
@@ -384,7 +476,6 @@ export class Grid implements t.IGrid {
     const current = [pos.row, pos.column, pos.row, pos.column];
     const selection = [...ranges, current] as any;
     table.selectCells(selection, scrollToCell);
-
     return this;
   }
 

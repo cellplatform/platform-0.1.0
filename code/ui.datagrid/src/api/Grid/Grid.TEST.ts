@@ -1,8 +1,10 @@
 import '../../test/dom';
+
 import { expect } from 'chai';
-import { Handsontable } from '../../common';
 import { DefaultSettings } from 'handsontable';
+
 import { Grid, IGridArgs } from '.';
+import { Handsontable } from '../../common';
 
 const createGrid = (args: Partial<IGridArgs> = {}) => {
   const el = document.createElement('div');
@@ -74,6 +76,28 @@ describe('Grid', () => {
       grid.changeValues({ B1: 'hello' });
       expect(grid.values.A1).to.eql(123);
       expect(grid.values.B1).to.eql('hello');
+    });
+  });
+
+  describe('selection', () => {
+    const values = {
+      A1: 123,
+      A2: 456,
+      A3: 789,
+      A5: 'hello',
+    };
+
+    it('no selection', () => {
+      const grid = createGrid({ values });
+      const res = grid.selection;
+      expect(res.cell).to.eql(undefined);
+      expect(res.ranges).to.eql([]);
+    });
+
+    it('select: single cell', () => {
+      const grid = createGrid({ values }).select({ cell: 'A1' });
+      const res = grid.selection;
+      expect(res.cell).to.eql('A1');
     });
   });
 });

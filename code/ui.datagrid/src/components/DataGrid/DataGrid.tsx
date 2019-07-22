@@ -102,7 +102,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     (table as any).__gridRefs = refs;
 
     // Setup observables.
-    const { events$, keys$ } = grid;
+    const { events$, keyboard$ } = grid;
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
 
     // Bubble events.
@@ -122,7 +122,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       .subscribe(() => this.redraw());
 
     // Disallow select all (CMD+A) unless requested by prop.
-    keys$
+    keyboard$
       .pipe(
         filter(e => e.metaKey && e.key === 'a'),
         filter(e => this.props.canSelectAll !== true),

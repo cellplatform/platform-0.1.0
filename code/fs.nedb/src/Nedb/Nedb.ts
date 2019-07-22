@@ -1,4 +1,5 @@
 import * as DocumentStore from 'nedb';
+import { defaultValue, keys, R } from '../common';
 
 // NB: Hack import because [parceljs] has problem importing using typescript `import` above.
 const NedbStore = require('nedb');
@@ -49,8 +50,13 @@ export class Nedb<G = any> {
     });
   }
 
-  public insert<T extends G>(doc: T) {
+  public insert<T extends G>(doc: T, options: { escapeKeys?: boolean } = {}) {
     return new Promise<T>((resolve, reject) => {
+      const escapeKeys = defaultValue(options.escapeKeys, true);
+      if (escapeKeys) {
+        doc = keys.encodeObjectKeys<any>(doc);
+      }
+
       this.store.insert(doc, (err: Error, doc: T) => {
         if (err) {
           reject(err);
@@ -94,6 +100,8 @@ export class Nedb<G = any> {
         if (err) {
           reject(err);
         } else {
+          docs = keys.decodeObjectKeys<any>(docs);
+
           resolve(docs);
         }
       });
@@ -106,6 +114,7 @@ export class Nedb<G = any> {
         if (err) {
           reject(err);
         } else {
+          doc = keys.decodeObjectKeys<any>(doc);
           resolve(doc);
         }
       });

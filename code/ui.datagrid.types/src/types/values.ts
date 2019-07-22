@@ -1,5 +1,5 @@
-import { IGridCellPosition } from '@platform/util.value.cell/lib/types';
-export { IGridCellPosition };
+import { ICoord } from '@platform/util.value.cell/lib/types';
+export { ICoord };
 
 export type ISize = { width: number; height: number };
 
@@ -7,4 +7,4 @@ export type GridCellType = 'CELL' | 'COLUMN' | 'ROW';
 export type GridCellKey = string;
 export type GridCellRangeKey = string;
 export type CellValue = string | boolean | number | object | null | undefined;
-export type CellRef = IGridCellPosition | GridCellKey;
+export type CellRef = ICoord | GridCellKey;

@@ -1,8 +1,18 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
-import { Button, color, css, GlamorValue, Hr, ObjectView, t } from '../common';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
+import { log, Button, color, css, GlamorValue, Hr, ObjectView, t, coord } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
 export type ITestGridProps = {
@@ -26,12 +36,30 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    * [Lifecycle]
    */
   public componentWillMount() {
-    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    // Update state.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
 
+    /**
+     * Grid events.
+     */
+    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     events$.subscribe(e => {
-      console.log('🌳', e.type, e.payload);
+      // console.log('🌳', e.type, e.payload);
+    });
+
+    const clipboard$ = events$.pipe(
+      filter(e => e.type === 'GRID/clipboard'),
+      map(e => e.payload as t.IGridClipboard),
+    );
+
+    clipboard$.subscribe(e => {
+      log.group('🐷 CLIPBOARD');
+      log.info('e', e);
+      log.info('selection', e.selection);
+      log.info('keys', e.keys);
+      log.info('selectedValues', e.grid.selectedValues);
+      log.groupEnd();
     });
   }
 
@@ -61,7 +89,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    */
   public updateState() {
     const grid = this.grid;
-    const { selection, values, rows, columns } = grid;
+    const { selection, values, rows, columns, borders } = grid;
     const { editorType } = this.props;
     const data = {
       grid: {
@@ -70,6 +98,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         rows,
         columns,
         selection,
+        borders,
       },
       debug: { editorType },
     };
@@ -155,6 +184,32 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
                 cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
               }),
             )}
+            <Hr margin={5} />
+            {this.button(
+              'changeBorders - B2:D4 (red)',
+              () => (this.grid.borders = [{ range: 'B2:D4', style: { width: 2, color: 'red' } }]),
+            )}
+            {this.button(
+              'changeBorders - B2:D4 (orange)',
+              () =>
+                (this.grid.borders = [{ range: 'B2:D4', style: { width: 2, color: 'orange' } }]),
+            )}
+            {this.button(
+              'changeBorders (different edges)',
+              () =>
+                (this.grid.borders = [
+                  {
+                    range: 'C8:E12',
+                    style: {
+                      top: { width: 2, color: 'red' },
+                      right: { width: 2, color: 'blue' },
+                      bottom: { width: 2, color: 'orange' },
+                      left: { width: 2, color: 'green' },
+                    },
+                  },
+                ]),
+            )}
+            {this.button('changeBorders (clear)', () => (this.grid.borders = []))}
           </div>
           {this.renderState()}
         </div>
