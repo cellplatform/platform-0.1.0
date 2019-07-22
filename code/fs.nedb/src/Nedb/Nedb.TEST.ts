@@ -1,5 +1,5 @@
-import { expect, fs, time, expectError } from '../test';
 import { Nedb } from '.';
+import { expect, expectError, fs } from '../test';
 
 const dir = fs.resolve('tmp/store');
 const removeDir = () => fs.remove(dir);
@@ -49,8 +49,35 @@ describe('Store (nedb)', () => {
   it('throws when inserting a document with (.) in field name', () => {
     return expectError(async () => {
       const db = Nedb.create({});
-      return db.insert({ 'foo.bar': 123 });
+      await db.insert({ 'foo.bar': 123 }, { escapeKeys: false });
     }, 'Field names cannot contain a .');
+  });
+
+  it('encodes (.) characters in field names (by default)', async () => {
+    const db = Nedb.create({});
+    const obj = {
+      name: 'mary',
+      foo: {
+        count: 0,
+        'bar.boo': {
+          msg: 'hello',
+          zoo: { 'a.b': null, z: null },
+          'my.array': [{ 'mary.barnes': 23, 'zoe.smith': { scale: 34 }, bob: null }],
+        },
+      },
+    };
+
+    // Single.
+    const res1 = await db.insert(obj); // NB: No "Field names cannot contain a ." error.
+    const res2 = await db.findOne({ name: 'mary' });
+    expect(res2).to.eql({ ...obj, _id: (res1 as any)._id });
+
+    // Many (array).
+    await db.insertMany([obj, obj]);
+    const res4 = await db.find({ name: 'mary' });
+    res4.forEach(item => {
+      expect(item).to.eql({ ...obj, _id: item._id });
+    });
   });
 
   it('inserts multiple documents', async () => {
