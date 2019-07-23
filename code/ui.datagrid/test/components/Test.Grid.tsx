@@ -44,9 +44,16 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
      * Grid events.
      */
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
-    events$.subscribe(e => {
-      console.log('🌳', e.type, e.payload);
-    });
+    events$
+      .pipe(
+        filter(() => true),
+        // filter(e => e.type === 'GRID/cell/change'), // Filter
+      )
+      .subscribe(e => {
+        // console.log('🌳', e.type, e.payload);
+        // const change = e.payload as t.IGridCellChange;
+        // change.modify('hello');
+      });
 
     const clipboard$ = events$.pipe(
       filter(e => e.type === 'GRID/clipboard'),

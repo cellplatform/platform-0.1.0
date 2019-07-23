@@ -14,6 +14,8 @@ export function beforeChangeHandler(getGrid: () => Grid) {
     const grid = getGrid();
     const source = src as TableEventSource;
 
+    console.log('sourceChanges', sourceChanges);
+
     // Prepare individual change events.
     const changes = sourceChanges
       .map((change, i) => {
@@ -33,9 +35,18 @@ export function beforeChangeHandler(getGrid: () => Grid) {
           value,
           isChanged,
           isCancelled: false,
+          isModified: false,
           cancel() {
             payload.isCancelled = true;
             sourceChanges[i] = null;
+          },
+          modify(value: t.CellValue) {
+            if (Array.isArray(sourceChanges[i])) {
+              const change = [...(sourceChanges[i] as any[])];
+              change[3] = value;
+              sourceChanges[i] = change as any;
+              payload.isModified = true;
+            }
           },
         };
         return payload;

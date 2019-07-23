@@ -92,7 +92,9 @@ export type IGridCellChange = {
   value: { from?: t.CellValue; to?: t.CellValue };
   isCancelled: boolean;
   isChanged: boolean;
+  isModified: boolean;
   cancel(): void;
+  modify(value: t.CellValue): void;
 };
 
 /**
