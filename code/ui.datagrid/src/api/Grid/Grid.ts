@@ -99,7 +99,7 @@ export class Grid implements t.IGrid {
       )
       .subscribe(e => {
         // Select next cell (below) when use ends and edit, typcially with ENTER key.
-        const below = e.cell.sibling.bottom;
+        const below = e.cell.siblings.bottom;
         if (below) {
           this.select({ cell: below });
         }

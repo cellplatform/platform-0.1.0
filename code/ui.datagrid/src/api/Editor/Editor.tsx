@@ -136,7 +136,7 @@ export class Editor extends editors.TextEditor {
         filter(e => e.type === 'GRID/cell/change'),
         map(e => e.payload as t.IGridCellChange),
         filter(e => e.isCancelled),
-        filter(e => e.cell.isPosition({ row, column })),
+        filter(e => e.cell.row === row && e.cell.column === column),
       )
       .subscribe(e => {
         isCancelled = true;
