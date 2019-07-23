@@ -12,7 +12,6 @@ import { TestPanel } from '../TestPanel';
  */
 export type ISettingsProps = { style?: GlamorValue };
 export type ISettingsState = {
-  count?: number;
   data?: object;
 };
 
@@ -69,14 +68,16 @@ export class SettingsTest extends React.PureComponent<ISettingsProps, ISettingsS
     };
 
     return (
-      <TestPanel title={`Settings (count: ${this.state.count || 0})`}>
+      <TestPanel title={`Settings`}>
         <div {...styles.columns}>
           <div {...styles.colButtons}>
             <Button label={'keys'} onClick={this.keys} />
             <Button label={'read'} onClick={this.read} />
             <Button label={'read (all)'} onClick={this.readAll} />
-            <Button label={'change (count)'} onClick={this.changeCount} />
-            <Button label={'change (foo)'} onClick={this.changeFoo} />
+            <Button label={'change (count)'} onClick={this.changeCountHandler()} />
+            <Button label={'change (foo)'} onClick={this.changeFooHandler()} />
+            <Button label={'ns: change (count)'} onClick={this.changeCountHandler('my-ns')} />
+            <Button label={'ns: change (foo)'} onClick={this.changeFooHandler('my-ns')} />
             <Button label={'delete: count'} onClick={this.deleteHandler('count')} />
             <Button label={'delete: foo'} onClick={this.deleteHandler('foo')} />
             <Button label={'clear'} onClick={this.clear} />
@@ -93,8 +94,7 @@ export class SettingsTest extends React.PureComponent<ISettingsProps, ISettingsS
 
   private async updateState() {
     const data = await this.settings.read();
-    const count = data.count;
-    this.setState({ count, data });
+    this.setState({ data });
   }
 
   private keys = async () => {
@@ -103,9 +103,9 @@ export class SettingsTest extends React.PureComponent<ISettingsProps, ISettingsS
   };
 
   private read = async () => {
-    const res = await this.settings.read('count', 'foo');
+    const res = await this.settings.read();
     this.log.info('🌳 settings.read:', res);
-    this.setState({ count: res.count || 0 });
+    this.updateState();
   };
 
   private readAll = async () => {
@@ -113,16 +113,27 @@ export class SettingsTest extends React.PureComponent<ISettingsProps, ISettingsS
     this.log.info('🌳 read (all):', res);
   };
 
-  private changeCount = async () => {
-    const value = (this.state.count || 0) + 1;
-    const res = await this.settings.write({ key: 'count', value });
-    this.log.info('🌼  change count:', res);
+  private changeCountHandler = (ns?: string) => {
+    return async () => {
+      const settings = ns ? this.settings.namespace(ns) : this.settings;
+
+      const r = await settings.get('count', 0);
+      console.log('r', r);
+
+      const value = (await settings.get('count', 0)) + 1;
+      // const value = (this.state.count || 0) + 1;
+      const res = await settings.write({ key: 'count', value });
+      this.log.info('🌼  change count:', res);
+    };
   };
 
-  private changeFoo = async () => {
-    const foo = await this.settings.get('foo', { bar: false });
-    foo.bar = !foo.bar;
-    await this.settings.put('foo', foo);
+  private changeFooHandler = (ns?: string) => {
+    return async () => {
+      const settings = ns ? this.settings.namespace(ns) : this.settings;
+      const foo = await settings.get('foo', { bar: false });
+      foo.bar = !foo.bar;
+      await settings.put('foo', foo);
+    };
   };
 
   private deleteHandler = (key: string) => {

@@ -116,6 +116,7 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
     change$,
     openInEditor,
     openFolder,
+    namespace: '',
   });
 
   // Finish up.

@@ -15,10 +15,11 @@ export type ISettingsClient<T extends SettingsJson = any> = {
   keys: () => Promise<Array<keyof T>>;
   get: <K extends keyof T>(key: K, defaultValue?: T[K]) => Promise<T[K]>;
   put: <K extends keyof T>(key: K, value: T[K]) => Promise<T[K]>;
-  delete: <K extends keyof T>(...keys: K[]) => Promise<{}>;
+  delete: <K extends keyof T>(...keys: Array<keyof T>) => Promise<{}>;
   clear: () => Promise<{}>;
   openInEditor: () => ISettingsClient<T>;
   openFolder: () => ISettingsClient<T>;
+  namespace(namespace: string): ISettingsClient<T>;
 };
 
 export type ISettingsKeyValue<T extends SettingsJson = any> = {

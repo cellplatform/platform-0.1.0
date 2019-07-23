@@ -152,6 +152,7 @@ export function init<T extends t.SettingsJson>(args: {
     getKeys,
     openInEditor,
     openFolder,
+    namespace: '',
   }) as unknown) as IClientMain;
 
   // Store the path to the settings file.
