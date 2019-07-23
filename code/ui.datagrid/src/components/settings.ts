@@ -62,7 +62,7 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
     renderAllRows: false, // Virtual scrolling.
 
     /**
-     * Event Hooks
+     * Event Hooks.
      * - https://handsontable.com/docs/6.2.2/Hooks.html
      */
     beforeKeyDown: hooks.beforeKeyDownHandler(getGrid),
@@ -79,6 +79,12 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
     beforeOnCellMouseUp: hooks.mouseCell(getGrid, 'UP'),
     beforeOnCellMouseOver: hooks.mouseCell(getGrid, 'ENTER'),
     beforeOnCellMouseOut: hooks.mouseCell(getGrid, 'LEAVE'),
+
+    // Undo.
+    beforeUndo: hooks.undo(getGrid, 'BEFORE', 'UNDO'),
+    afterUndo: hooks.undo(getGrid, 'AFTER', 'UNDO'),
+    beforeRedo: hooks.undo(getGrid, 'BEFORE', 'REDO'),
+    afterRedo: hooks.undo(getGrid, 'AFTER', 'REDO'),
   };
 
   return settings;
