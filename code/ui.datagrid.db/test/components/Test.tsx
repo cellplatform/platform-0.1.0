@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
 import {
@@ -17,7 +17,6 @@ import {
   renderer,
   Sync,
   t,
-  value as valueUtil,
 } from '../common';
 
 const storage = {
@@ -31,11 +30,15 @@ const storage = {
 };
 
 export type ITestProps = {};
+export type ITestState = t.ITestState & {
+  db?: any;
+  grid?: any;
+};
 
-export class Test extends React.PureComponent<ITestProps, t.ITestState> {
-  public state: t.ITestState = { showDebug: storage.showDebug };
+export class Test extends React.PureComponent<ITestProps, ITestState> {
+  public state: ITestState = { showDebug: storage.showDebug };
   private unmounted$ = new Subject<{}>();
-  private state$ = new Subject<Partial<t.ITestState>>();
+  private state$ = new Subject<Partial<ITestState>>();
   private grid$ = new Subject<t.GridEvent>();
   private sync$ = new Subject<t.SyncEvent>();
   private cli!: t.ICommandState;
@@ -47,6 +50,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public static contextType = renderer.Context;
   public context!: t.ILocalContext;
   private databases = this.context.databases;
+  private db = this.databases(constants.DB.FILE);
 
   /**
    * [Lifecycle]
@@ -82,17 +86,19 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     sync$.pipe(filter(e => e.type !== 'SYNC/change')).subscribe(e => {
       log.info('🌳', e.type, e.payload);
     });
+
+    sync$.pipe(debounceTime(200)).subscribe(e => this.updateState());
   }
 
   public async componentDidMount() {
     // Setup syncer.
-    const file = constants.DB.FILE;
-    const db = this.databases(file);
+    const db = this.db;
     const grid = this.datagrid.grid;
     const events$ = this.sync$;
     this.sync = Sync.create({ db, grid, events$ });
     await this.sync.compact();
     await this.sync.load();
+    this.updateState();
   }
 
   public componentWillUnmount() {
@@ -106,6 +112,35 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public get grid() {
     return this.datagrid.grid;
+  }
+
+  /**
+   * [Methods]
+   */
+  public async updateState() {
+    const processValues = (obj: object) => {
+      Object.keys(obj).map(key => {
+        const MAX = 15;
+        const value = obj[key];
+        if (typeof value === 'string' && value.length > MAX) {
+          obj[key] = `${value.substring(0, MAX).trim()}...`;
+        }
+      });
+    };
+
+    // Database.
+    const db = (await this.db.find('**')).map;
+    processValues({ ...db });
+
+    // Grid.
+    const grid = {
+      ...this.grid.columns,
+      ...this.grid.rows,
+      ...this.grid.values,
+    };
+
+    // Finish up.
+    this.state$.next({ db, grid });
   }
 
   /**
@@ -142,7 +177,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private renderDebug() {
     const styles = {
       base: css({
-        width: 300,
+        width: 350,
         paddingLeft: 10,
         paddingTop: 7,
         backgroundColor: COLORS.DARK,
@@ -151,19 +186,19 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
       }),
     };
 
-    const data = { ...this.state };
-    delete data.showDebug;
-    if (data.db && data.db.cells) {
-      const cells = valueUtil.deleteEmpty(data.db.cells);
-      Object.keys(cells).forEach(key => {
-        const MAX = 15;
-        const value = cells[key];
-        if (typeof value === 'string' && value.length > MAX) {
-          cells[key] = `${value.substring(0, MAX).trim()}...`;
-        }
-      });
-      data.db.cells = cells;
-    }
+    const data = { db: this.state.db, grid: this.state.grid };
+    // delete data.showDebug;
+    // if (data.db && data.db.cells) {
+    //   const cells = valueUtil.deleteEmpty(data.db.cells);
+    //   Object.keys(cells).forEach(key => {
+    //     const MAX = 15;
+    //     const value = cells[key];
+    //     if (typeof value === 'string' && value.length > MAX) {
+    //       cells[key] = `${value.substring(0, MAX).trim()}...`;
+    //     }
+    //   });
+    //   data.db.cells = cells;
+    // }
 
     return (
       <div {...styles.base}>
@@ -176,7 +211,6 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     return (
       <datagrid.DataGrid
         ref={this.datagridRef}
-        values={this.state.values}
         events$={this.grid$}
         factory={this.factory}
         initial={{ selection: 'A1' }}
