@@ -14,8 +14,6 @@ export function beforeChangeHandler(getGrid: () => Grid) {
     const grid = getGrid();
     const source = src as TableEventSource;
 
-    console.log('sourceChanges', sourceChanges);
-
     const modify = (index: number, value: t.CellValue) => {
       if (Array.isArray(sourceChanges[index])) {
         const change = [...(sourceChanges[index] as any[])];
