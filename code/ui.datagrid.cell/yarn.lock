@@ -1346,10 +1346,10 @@
     codemirror "5.48.0"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.3.1.tgz#36fe84207742c59941c8b957a2df363fc5c59b9e"
-  integrity sha512-nxPmE+TmLb4bR8GyrfCveAZdGR+NTxpFOH39Fgu9PFSSg7naQ3WSO1wMD+QECIkzwsncQLrzjIV11/kQqt2YMQ==
+"@platform/ui.datagrid.types@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.3.2.tgz#a33eac34df96491b57c4a3a24496555923da727d"
+  integrity sha512-9RU6s2tN+S/R2Q81nl62nxWqymk7NguTae7dmQwbxDm/FdTMWUC4/QFUw5c+IfMiPJxS7vytxVFrXkLl3RINTQ==
   dependencies:
     "@platform/react" "0.3.12"
     "@platform/util.value.cell" "0.6.1"
@@ -3843,10 +3843,10 @@ electron@5.0.5:
     electron-download "^4.1.0"
     extract-zip "^1.0.3"
 
-electron@5.0.7:
-  version "5.0.7"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.7.tgz#a48fcbd13d30f16f7d7887908b68e52156e90259"
-  integrity sha512-OMMz8DhatxLuBFbnW7KYcAUjflGYFn0IQEtKR0iZhMAm89FgNOd9SVbxXWAGNxvRR6C0gORXwhTh6BCqqqcR6Q==
+electron@5.0.8:
+  version "5.0.8"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.8.tgz#b240726ce9e3510d3af30a981486c9850462c718"
+  integrity sha512-wkUVE2GaYCsqQTsISSHWkIkcdpwLwZ1jhzAXSFFoSzsTgugmzhX60rJjIccotUmZ0iPzw+u4ahfcaJ0eslrPNQ==
   dependencies:
     "@types/node" "^10.12.18"
     electron-download "^4.1.0"
