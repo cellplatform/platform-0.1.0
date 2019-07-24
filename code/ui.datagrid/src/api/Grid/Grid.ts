@@ -408,6 +408,7 @@ export class Grid implements t.IGrid {
     const from = { ...this._.rows };
     const to = { ...from };
     let changes: t.IRowChange[] = [];
+
     Object.keys(rows).forEach(key => {
       const prev = from[key] || { height: -1 };
       const next = rows[key] || { height: DEFAULT.ROW_HEIGHT };
@@ -418,13 +419,17 @@ export class Grid implements t.IGrid {
         to[key] = next;
       }
       if (!R.equals(prev, next)) {
-        const row = parseInt(key, 10);
+        const row = coord.cell.fromKey(key).row;
         changes = [...changes, { row, type, from: prev, to: next }];
       }
     });
     this._.rows = to;
+
     if (!R.equals(from, to)) {
-      this.fire({ type: 'GRID/rows/changed', payload: { from, to, changes } });
+      this.fire({
+        type: 'GRID/rows/changed',
+        payload: { from, to, changes },
+      });
     }
     return this;
   }

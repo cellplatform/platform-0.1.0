@@ -4,6 +4,7 @@ import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/oper
 
 import * as cli from '../cli';
 import {
+  R,
   CellEditor,
   color,
   COLORS,
@@ -57,9 +58,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public async componentWillMount() {
     this.cli = cli.init({
-      getSync: () => this.sync,
       state$: this.state$,
       databases: this.databases,
+      getSync: () => this.sync,
       getState: () => this.state,
     });
 
@@ -87,7 +88,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       log.info('🌳', e.type, e.payload);
     });
 
-    sync$.pipe(debounceTime(200)).subscribe(e => this.updateState());
+    sync$
+      // Update debug state after changes.
+      .pipe(debounceTime(200))
+      .subscribe(e => this.updateState());
   }
 
   public async componentDidMount() {
@@ -95,7 +99,21 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const db = this.db;
     const grid = this.datagrid.grid;
     const events$ = this.sync$;
-    this.sync = Sync.create({ db, grid, events$ });
+    this.sync = Sync.create({
+      db,
+      grid,
+      events$,
+      isDefaultValue: e => {
+        switch (e.kind) {
+          case 'COLUMN':
+            return R.equals(e.value, { width: 120 });
+          case 'ROW':
+            return R.equals(e.value, { height: 26 });
+          default:
+            return false;
+        }
+      },
+    });
     await this.sync.compact();
     await this.sync.load();
     this.updateState();
@@ -177,32 +195,26 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private renderDebug() {
     const styles = {
       base: css({
+        position: 'relative',
         width: 350,
-        paddingLeft: 10,
-        paddingTop: 7,
         backgroundColor: COLORS.DARK,
         borderBottom: `solid 1px ${color.format(0.1)}`,
+      }),
+      inner: css({
+        paddingLeft: 10,
+        paddingTop: 7,
+        Absolute: 0,
         Scroll: true,
       }),
     };
 
     const data = { db: this.state.db, grid: this.state.grid };
-    // delete data.showDebug;
-    // if (data.db && data.db.cells) {
-    //   const cells = valueUtil.deleteEmpty(data.db.cells);
-    //   Object.keys(cells).forEach(key => {
-    //     const MAX = 15;
-    //     const value = cells[key];
-    //     if (typeof value === 'string' && value.length > MAX) {
-    //       cells[key] = `${value.substring(0, MAX).trim()}...`;
-    //     }
-    //   });
-    //   data.db.cells = cells;
-    // }
 
     return (
       <div {...styles.base}>
-        <ObjectView name={'state'} data={data} expandLevel={2} theme={'DARK'} />
+        <div {...styles.inner}>
+          <ObjectView name={'state'} data={data} expandLevel={2} theme={'DARK'} />
+        </div>
       </div>
     );
   }

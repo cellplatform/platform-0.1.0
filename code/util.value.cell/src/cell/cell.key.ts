@@ -52,14 +52,18 @@ export function toCell(input: CellInput, options: { relative?: boolean } = {}): 
   if (typeof input === 'object') {
     const keys = Object.keys(input);
     if (keys.includes('key')) {
+      //
       // Type: { key }.
+      //
       const obj = input as ICellKeyObject;
       key = obj.key;
       const pos = fromKey(key);
       row = pos.row;
       column = pos.column;
     } else if (keys.includes('row') || keys.includes('column')) {
+      //
       // Type: { row, column }.
+      //
       const obj = input as ICellCoord;
       key = toKey(obj.column, obj.row);
       column = obj.column === undefined ? -1 : obj.column;
@@ -68,7 +72,9 @@ export function toCell(input: CellInput, options: { relative?: boolean } = {}): 
       throw new Error(`Could not derive coord position for cell input. ${JSON.stringify(input)}`);
     }
   } else {
+    //
     // Type: string/number.
+    //
     key = input.toString();
     const pos = fromKey(key);
     row = pos.row;
