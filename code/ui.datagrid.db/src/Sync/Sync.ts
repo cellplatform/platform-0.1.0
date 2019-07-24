@@ -400,6 +400,12 @@ export class Sync implements t.IDisposable {
     const rows = await this.db.find(this.schema.db.all.rows);
     const values = rows.list.reduce((acc, next) => {
       const key = this.schema.grid.toRowKey(next.props.key);
+
+      // Ensure is within bounds for rows.
+      if (key === '0') {
+        return acc;
+      }
+
       acc[key] = next.value;
       return acc;
     }, {});
