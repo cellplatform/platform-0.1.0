@@ -667,33 +667,18 @@ describe('CellRange', () => {
   });
 
   describe('toString', () => {
-    it('CELL', () => {
-      expect(fromKey('A1:B5').toString()).to.eql('[CELL_RANGE/A1:B5]');
-    });
-
-    it('COLUMN', () => {
-      expect(fromKey('A:B').toString()).to.eql('[COLUMN_RANGE/A:B]');
-    });
-
-    it('ROW', () => {
-      expect(fromKey('2:2').toString()).to.eql('[ROW_RANGE/2:2]');
-    });
-
-    it('PARTIAL_ROW', () => {
-      expect(fromKey('2:A2').toString()).to.eql('[PARTIAL_ROW_RANGE/2:A2]');
-      expect(fromKey('A2:2').toString()).to.eql('[PARTIAL_ROW_RANGE/A2:2]');
-    });
-
-    it('PARTIAL_COLUMN', () => {
-      expect(fromKey('A:A2').toString()).to.eql('[PARTIAL_COLUMN_RANGE/A:A2]');
-      expect(fromKey('A2:A').toString()).to.eql('[PARTIAL_COLUMN_RANGE/A2:A]');
-    });
-
-    it('PARTIAL_ALL', () => {
-      expect(fromKey('A3:*').toString()).to.eql('[PARTIAL_ALL_RANGE/A3:*]');
-      expect(fromKey('A3:**').toString()).to.eql('[PARTIAL_ALL_RANGE/A3:**]');
-      expect(fromKey('*:A3').toString()).to.eql('[PARTIAL_ALL_RANGE/*:A3]');
-      expect(fromKey('**:A3').toString()).to.eql('[PARTIAL_ALL_RANGE/**:A3]');
+    it('string', () => {
+      expect(fromKey('A1:B5').toString()).to.eql('[RANGE/A1:B5]');
+      expect(fromKey('A:B').toString()).to.eql('[RANGE/A:B]');
+      expect(fromKey('2:2').toString()).to.eql('[RANGE/2:2]');
+      expect(fromKey('2:A2').toString()).to.eql('[RANGE/2:A2]');
+      expect(fromKey('A2:2').toString()).to.eql('[RANGE/A2:2]');
+      expect(fromKey('A:A2').toString()).to.eql('[RANGE/A:A2]');
+      expect(fromKey('A2:A').toString()).to.eql('[RANGE/A2:A]');
+      expect(fromKey('A3:*').toString()).to.eql('[RANGE/A3:*]');
+      expect(fromKey('A3:**').toString()).to.eql('[RANGE/A3:**]');
+      expect(fromKey('*:A3').toString()).to.eql('[RANGE/*:A3]');
+      expect(fromKey('**:A3').toString()).to.eql('[RANGE/**:A3]');
     });
 
     it('error', () => {

@@ -533,7 +533,7 @@ export class CellRange {
    * Converts the object into a representative string.
    */
   public toString() {
-    return !this.error ? `[${this.type}_RANGE/${this.key}]` : `[${this.error}]`;
+    return !this.error ? `[RANGE/${this.key}]` : `[${this.error}]`;
   }
 
   /**
