@@ -1,5 +1,6 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { gql, t } from './common';
+import { db } from './db';
 
 /**
  * [Types]
@@ -8,7 +9,11 @@ export const typeDefs = gql`
   scalar JSON
 
   type Query {
-    localFoo: JSON
+    read: JSON
+  }
+
+  type Mutation {
+    change: JSON
   }
 `;
 
@@ -17,8 +22,19 @@ export const typeDefs = gql`
  */
 export const resolvers: t.IResolvers = {
   Query: {
-    localFoo: async (_: any, args: any, c: t.IGqlContext, info: any) => {
-      return { msg: 'Local' };
+    read: async (_: any, args: any, c: t.IGqlContext, info: any) => {
+      const res = await db.find('**');
+      console.log('res.list', res.list);
+      return { items: res.list };
+    },
+  },
+
+  Mutation: {
+    change: async (_: any, args: any, c: t.IGqlContext, info: any) => {
+      let value = (await db.getValue<any>('foo/bar')) || { count: 0 };
+      value = { ...value, count: value.count + 1 };
+      await db.put('foo/bar', value);
+      return value;
     },
   },
 };

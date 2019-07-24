@@ -3,6 +3,7 @@ import { Nedb } from '../src/Nedb';
 import { NeDoc } from '../src';
 
 export * from '@platform/cli.ui/lib/types';
+export * from '@platform/fs.db.types';
 export * from '../src/types';
 
 export type ICommandProps = {
@@ -11,4 +12,6 @@ export type ICommandProps = {
   doc: NeDoc;
 };
 
-export type ITestState = {};
+export type ITestState = {
+  docs?: any;
+};

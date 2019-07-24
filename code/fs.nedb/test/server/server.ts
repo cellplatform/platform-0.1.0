@@ -1,8 +1,10 @@
-import { ApolloServer, express, t, id } from './common';
+import { NeDoc, ApolloServer, express, t, fs, id } from './common';
 import { schema } from './schema';
 
+/**
+ * Server
+ */
 export const app = express();
-
 export const server = new ApolloServer({
   schema,
   async context(e): Promise<t.IGqlContext> {

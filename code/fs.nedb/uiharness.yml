@@ -1,7 +1,7 @@
 name: fs.nedb
 
 electron:
-  port: 3367
+  port: 6714
   entry:
     main: test/main.ts
     renderer: 
