@@ -1,4 +1,4 @@
-import { lastPart } from './common';
+import { lastPart, coord } from './common';
 
 /**
  * Keys for items within the grid.
@@ -10,10 +10,16 @@ export class GridSchema {
   public toCellKey(key: string) {
     return lastPart(key, '/').toUpperCase();
   }
-  public toColumnKey(key: string) {
-    return lastPart(key, '/').toUpperCase();
+
+  public toColumnKey(indexOrKey: number | string) {
+    return typeof indexOrKey === 'number'
+      ? coord.cell.toKey(indexOrKey, undefined)
+      : lastPart(indexOrKey, '/');
   }
-  public toRowKey(key: string | number) {
-    return lastPart(key, '/').toUpperCase();
+
+  public toRowKey(indexOrKey: number | string) {
+    return typeof indexOrKey === 'number'
+      ? coord.cell.toKey(undefined, indexOrKey)
+      : lastPart(indexOrKey, '/');
   }
 }

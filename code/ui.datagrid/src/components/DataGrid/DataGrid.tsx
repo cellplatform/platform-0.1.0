@@ -31,6 +31,7 @@ export type IDataGridProps = {
   values?: t.IGridValues;
   columns?: t.IGridColumns;
   rows?: t.IGridRows;
+  defaults?: Partial<t.IGridDefaults>;
   Handsontable?: Handsontable;
   factory?: t.GridFactory;
   events$?: Subject<t.GridEvent>;
@@ -75,7 +76,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const Table = this.props.Handsontable || TableLib;
     const totalColumns = this.totalColumns;
     const totalRows = this.totalRows;
-    const settings = getSettings({ totalColumns, getGrid: () => this.grid });
+    const defaults = Grid.defaults(this.props.defaults);
+    const settings = getSettings({ totalColumns, defaults, getGrid: () => this.grid });
     const table = (this.table = new Table(this.el as Element, settings));
     const grid = (this.grid = Grid.create({
       table,
@@ -84,6 +86,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       values,
       columns,
       rows,
+      defaults,
     }));
     this.unmounted$.subscribe(() => grid.dispose());
 

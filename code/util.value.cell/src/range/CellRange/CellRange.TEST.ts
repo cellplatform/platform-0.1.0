@@ -145,6 +145,41 @@ describe('CellRange', () => {
     });
   });
 
+  describe('is', () => {
+    it('is.column', () => {
+      const test = (key: string, total: number, result: boolean) => {
+        const range = fromKey(key);
+        const res = range.is.column(total);
+        expect(res).to.eql(result);
+      };
+      test('A1:*', 10, true);
+      test('A1:**', 10, true);
+      test('A1:A10', 10, true);
+      test('A1:B10', 10, true);
+      test('A1:A99', 10, true); // Overshoot.
+
+      test('A2:*', 10, false);
+      test('A1:A9', 10, false);
+      test('A2:A10', 10, false);
+    });
+
+    it('is.row', () => {
+      const test = (key: string, total: number, result: boolean) => {
+        const range = fromKey(key);
+        const res = range.is.row(total);
+        expect(res).to.eql(result);
+      };
+      test('A1:*', 10, true);
+      test('A1:**', 10, true);
+      test('A1:J1', 10, true);
+      test('A1:ZZ1', 10, true); // Overshoot.
+
+      test('A1:H1', 10, false);
+      test('B1:J1', 10, false);
+      test('B1:*', 10, false);
+    });
+  });
+
   describe('errors', () => {
     it('error: INVALID RANGE', () => {
       const range = fromKey('..');

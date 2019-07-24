@@ -27,6 +27,27 @@ export class Sync implements t.IDisposable {
   public static schema = SyncSchema.create;
 
   /**
+   * [Fields]
+   */
+  public readonly grid: t.IGrid;
+  public readonly db: t.IDb;
+  private readonly schema: SyncSchema;
+
+  private is = {
+    loading: flags<GridPart>(),
+    changingByGrid: flags<{ key: string; part: GridPart }>(),
+  };
+
+  private readonly _dispose$ = new Subject<{}>();
+  public readonly dispose$ = this._dispose$.pipe(share());
+
+  private readonly _events$ = new Subject<t.SyncEvent>();
+  public readonly events$ = this._events$.pipe(
+    takeUntil(this.dispose$),
+    share(),
+  );
+
+  /**
    * [Lifecycle]
    */
   public static create = (args: ISyncArgs) => new Sync(args);
@@ -73,13 +94,13 @@ export class Sync implements t.IDisposable {
     /**
      * Buffer writes to the DB.
      */
-    const save$ = new Subject<{ key: string; value?: any }>();
+    const save$ = new Subject<{ kind: t.GridCellType; key: string; value?: any }>();
     rx.debounceBuffer(save$.pipe(takeUntil(this.dispose$)), 0).subscribe(async e => {
       // Get the latest value for each of the buffered changes.
       const grouped = R.groupBy(R.prop('key'), e);
       const latest = Object.keys(grouped)
         .map(key => grouped[key][grouped[key].length - 1])
-        .map(item => ({ ...item, value: formatValue(item.value) }));
+        .map(item => ({ ...item, value: this.formatValue(item.value) }));
 
       // Extract distinct lists for delete/update operations.
       const deletes = latest
@@ -120,7 +141,7 @@ export class Sync implements t.IDisposable {
 
       if (rows.length > 0) {
         const changes = rows.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {});
-        grid.changeColumns(changes);
+        grid.changeRows(changes);
       }
 
       grid.redraw();
@@ -136,10 +157,11 @@ export class Sync implements t.IDisposable {
         .pipe(filter(e => !this.is.loading.currently('CELLS')))
         .subscribe(async e => {
           e.changes.forEach(change => {
+            const key = this.schema.grid.toCellKey(change.cell.key);
             this.fireSync({
               source: 'GRID',
               kind: 'CELL',
-              key: this.schema.grid.toCellKey(change.cell.key),
+              key,
               value: change.value.to,
             });
           });
@@ -152,10 +174,11 @@ export class Sync implements t.IDisposable {
           filter(e => !this.is.loading.currently('CELLS')),
         )
         .subscribe(e => {
+          const key = this.schema.grid.toCellKey(e.key);
           this.fireSync({
             source: 'DB',
             kind: 'CELL',
-            key: this.schema.grid.toCellKey(e.key),
+            key,
             value: e.value,
           });
         });
@@ -170,7 +193,7 @@ export class Sync implements t.IDisposable {
           const key = this.schema.db.toCellKey(e.key);
           const existing = await db.getValue(key);
           if (!R.equals(existing, e.value)) {
-            save$.next({ key, value: e.value });
+            save$.next({ kind: 'CELL', key, value: e.value });
           }
         });
 
@@ -198,10 +221,11 @@ export class Sync implements t.IDisposable {
         .pipe(filter(e => !this.is.loading.currently('COLUMNS')))
         .subscribe(async e => {
           e.changes.forEach(change => {
+            const key = this.schema.grid.toColumnKey(change.column);
             this.fireSync({
               source: 'GRID',
               kind: 'COLUMN',
-              key: this.schema.grid.toColumnKey(change.column),
+              key,
               value: change.to,
             });
           });
@@ -214,10 +238,11 @@ export class Sync implements t.IDisposable {
           filter(e => !this.is.loading.currently('COLUMNS')),
         )
         .subscribe(e => {
+          const key = this.schema.grid.toColumnKey(e.key);
           this.fireSync({
             source: 'DB',
             kind: 'COLUMN',
-            key: this.schema.grid.toColumnKey(e.key),
+            key,
             value: e.value as t.IGridColumn,
           });
         });
@@ -232,7 +257,7 @@ export class Sync implements t.IDisposable {
           const key = this.schema.db.toColumnKey(e.key);
           const existing = await db.getValue(key);
           if (!R.equals(existing, e.value)) {
-            save$.next({ key, value: e.value });
+            save$.next({ kind: 'COLUMN', key, value: e.value });
           }
         });
 
@@ -277,10 +302,11 @@ export class Sync implements t.IDisposable {
           filter(e => !this.is.loading.currently('ROWS')),
         )
         .subscribe(e => {
+          const key = this.schema.grid.toRowKey(e.key);
           this.fireSync({
             source: 'DB',
             kind: 'ROW',
-            key: this.schema.grid.toRowKey(e.key),
+            key,
             value: e.value as t.IGridRow,
           });
         });
@@ -295,7 +321,7 @@ export class Sync implements t.IDisposable {
           const key = this.schema.db.toRowKey(e.key);
           const existing = await db.getValue(key);
           if (!R.equals(existing, e.value)) {
-            save$.next({ key, value: e.value });
+            save$.next({ kind: 'ROW', key, value: e.value });
           }
         });
 
@@ -320,30 +346,6 @@ export class Sync implements t.IDisposable {
     this._dispose$.complete();
   }
 
-  /**
-   * [Fields]
-   */
-  public readonly grid: t.IGrid;
-  public readonly db: t.IDb;
-  private readonly schema: SyncSchema;
-
-  private is = {
-    loading: flags<GridPart>(),
-    changingByGrid: flags<{ key: string; part: GridPart }>(),
-  };
-
-  private readonly _dispose$ = new Subject<{}>();
-  public readonly dispose$ = this._dispose$.pipe(share());
-
-  private readonly _events$ = new Subject<t.SyncEvent>();
-  public readonly events$ = this._events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
-
-  /**
-   * [Properties]
-   */
   public get isDisposed() {
     return this._dispose$.isStopped;
   }
@@ -399,6 +401,12 @@ export class Sync implements t.IDisposable {
     const rows = await this.db.find(this.schema.db.all.rows);
     const values = rows.list.reduce((acc, next) => {
       const key = this.schema.grid.toRowKey(next.props.key);
+
+      // Ensure is within bounds for rows.
+      if (key === '0') {
+        return acc;
+      }
+
       acc[key] = next.value;
       return acc;
     }, {});
@@ -411,9 +419,27 @@ export class Sync implements t.IDisposable {
    * Deletes all "empty" values from the database.
    */
   public async compact() {
-    const cells = await this.db.find(this.schema.db.all.cells);
-    const empty = cells.list.filter(item => isEmptyValue(item.value));
-    const keys = empty.map(item => item.props.key);
+    const getEmptyKeys = async (kind: t.GridCellType, query: string) => {
+      const res = await this.db.find(query);
+      const empty = res.list.filter(
+        item =>
+          isEmptyValue(item.value) ||
+          this.isDefaultValue({
+            kind,
+            key: item.props.key,
+            value: item.value,
+          }),
+      );
+      return empty.map(item => item.props.key);
+    };
+
+    const res = await Promise.all([
+      getEmptyKeys('CELL', this.schema.db.all.cells),
+      getEmptyKeys('ROW', this.schema.db.all.rows),
+      getEmptyKeys('COLUMN', this.schema.db.all.columns),
+    ]);
+    const keys = R.flatten<string>(res);
+
     await this.db.deleteMany(keys);
     return { deleted: keys };
   }
@@ -427,12 +453,35 @@ export class Sync implements t.IDisposable {
   }
 
   private fireSync(payload: t.SyncChangeType) {
-    const value = formatValue(payload.value);
+    const { kind, key } = payload;
+
+    let value = this.formatValue(payload.value);
+    value = this.isDefaultValue({ kind, key, value }) ? undefined : value;
+
     this.fire({
       type: 'SYNC/change',
       payload: { ...payload, value },
     });
   }
+
+  private formatValue = (value?: any) => {
+    value = isEmptyValue(value) ? undefined : value;
+    return value;
+  };
+
+  private isDefaultValue = (e: { kind: t.GridCellType; key: string; value?: any }) => {
+    const defaults = this.grid.defaults;
+    switch (e.kind) {
+      case 'COLUMN':
+        return R.equals(e.value, { width: defaults.columWidth });
+      case 'ROW':
+        return R.equals(e.value, { height: defaults.rowHeight });
+
+      case 'CELL':
+      default:
+        return isEmptyValue(e.value);
+    }
+  };
 }
 
 /**
@@ -459,13 +508,6 @@ const flags = <F>(): IActivityFlags<F> => {
   };
 };
 
-function formatValue(value?: any) {
-  if (isEmptyValue(value)) {
-    value = undefined;
-  }
-  return value;
-}
-
-export function isEmptyValue(value?: any) {
+function isEmptyValue(value?: any) {
   return value === '' || value === undefined;
 }

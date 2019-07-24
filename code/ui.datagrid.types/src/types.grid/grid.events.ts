@@ -18,7 +18,8 @@ export type GridEvent =
   | IGridFocusEvent
   | IGridBlurEvent
   | IGridClipboardEvent
-  | IGridBordersChangedEvent;
+  | IGridBordersChangedEvent
+  | IGridUndoEvent;
 
 export type IGridReadyEvent = {
   type: 'GRID/ready';
@@ -91,7 +92,9 @@ export type IGridCellChange = {
   value: { from?: t.CellValue; to?: t.CellValue };
   isCancelled: boolean;
   isChanged: boolean;
+  isModified: boolean;
   cancel(): void;
+  modify(value: t.CellValue): void;
 };
 
 /**
@@ -181,4 +184,18 @@ export type IGridClipboard = {
   grid: t.IGrid;
   selection: t.IGridSelection;
   keys: string[];
+};
+
+export type IGridUndoEvent = {
+  type: 'GRID/undo';
+  payload: IGridUndo;
+};
+export type IGridUndo = {
+  kind: 'UNDO' | 'REDO';
+  changes: IGridUndoChange;
+};
+export type IGridUndoChange = {
+  key: string;
+  from?: t.CellValue;
+  to?: t.CellValue;
 };

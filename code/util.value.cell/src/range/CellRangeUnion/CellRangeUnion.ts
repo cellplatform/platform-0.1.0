@@ -192,6 +192,6 @@ export class CellRangeUnion {
   public toString() {
     const square = this.square;
     const keys = square ? square.key : '[]';
-    return `[union:${keys}]`;
+    return `[union(${this.length}):${keys}]`;
   }
 }

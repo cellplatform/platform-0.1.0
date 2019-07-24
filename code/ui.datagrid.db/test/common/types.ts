@@ -19,13 +19,7 @@ export type ICommandProps = {
 };
 
 export type ITestState = {
-  values?: t.IGridValues;
   showDebug?: boolean;
-  db?: {
-    cells: {};
-    columns: {};
-    rows: {};
-  };
 };
 
 export type ILocalContext = IRendererContext & {

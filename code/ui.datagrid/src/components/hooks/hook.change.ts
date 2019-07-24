@@ -14,6 +14,24 @@ export function beforeChangeHandler(getGrid: () => Grid) {
     const grid = getGrid();
     const source = src as TableEventSource;
 
+    const modify = (index: number, value: t.CellValue) => {
+      if (Array.isArray(sourceChanges[index])) {
+        const change = [...(sourceChanges[index] as any[])];
+        change[3] = value;
+        sourceChanges[index] = change as any;
+      }
+    };
+
+    // Convert all changes that are to the value  [null] to be [undefined].
+    //    NB: [undefined] is the primary value for "nothing".
+    //    Transforming [null] here prevents the grid from rendering
+    //    the next "null".
+    sourceChanges.forEach((item, i) => {
+      if (Array.isArray(item) && item[3] === null) {
+        modify(i, undefined);
+      }
+    });
+
     // Prepare individual change events.
     const changes = sourceChanges
       .map((change, i) => {
@@ -33,9 +51,14 @@ export function beforeChangeHandler(getGrid: () => Grid) {
           value,
           isChanged,
           isCancelled: false,
+          isModified: false,
           cancel() {
             payload.isCancelled = true;
             sourceChanges[i] = null;
+          },
+          modify(value: t.CellValue) {
+            modify(i, value);
+            payload.isModified = true;
           },
         };
         return payload;

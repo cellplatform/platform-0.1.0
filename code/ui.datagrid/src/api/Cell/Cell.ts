@@ -68,7 +68,7 @@ export class Cell implements t.ICell {
     return this._.table.isDestroyed;
   }
 
-  public get td() {
+  private get td() {
     this._.td = this._.td || (this._.table.getCell(this.row, this.column) as HTMLTableCellElement);
     return this._.td;
   }
@@ -96,7 +96,7 @@ export class Cell implements t.ICell {
     }
   }
 
-  public get sibling() {
+  public get siblings() {
     const table = this._.table;
     const cell = this; // tslint:disable-line
     const row = cell.row;
@@ -129,13 +129,6 @@ export class Cell implements t.ICell {
    * Display string representation of the cell.
    */
   public toString() {
-    return `[Cell|row:${this.row}, column:${this.column}]`;
-  }
-
-  /**
-   * Determines if the cell matches the given position coordinates.
-   */
-  public isPosition(args: { row: number; column: number }) {
-    return this.row === args.row && this.column === args.column;
+    return `[Cell|${this.key}]`;
   }
 }

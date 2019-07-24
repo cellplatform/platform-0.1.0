@@ -29,11 +29,15 @@ export const CSS = {
 };
 
 export const DEFAULT = {
+  CELL_RENDERER: 'cell',
   TOTAL_COLUMNS: 52,
   TOTAL_ROWS: 1000,
-  ROW_HEIGHT: 26,
-  ROW_HEIGHT_MIN: 26,
-  COLUMN_WIDTH: 120,
-  COLUMN_WIDTH_MIN: 5,
-  CELL_RENDERER: 'cell',
+  ROW: {
+    HEIGHT: 26,
+    HEIGHT_MIN: 26,
+  },
+  COLUMN: {
+    WIDTH: 120,
+    WIDTH_MIN: 5,
+  },
 };
