@@ -12,8 +12,11 @@ import {
   distinctUntilChanged,
   debounceTime,
 } from 'rxjs/operators';
-import { log, Button, color, css, GlamorValue, Hr, ObjectView, t, coord } from '../common';
+import { constants, log, Button, color, css, GlamorValue, Hr, ObjectView, t, coord } from '../common';
 import { TestGridView } from './Test.Grid.view';
+
+const { DEFAULT } = constants;
+
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;

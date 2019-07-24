@@ -12,6 +12,7 @@ export type IGridProperties = {
   readonly selectedValues: t.IGridValues;
   readonly events$: Observable<t.GridEvent>;
   readonly keyboard$: Observable<t.IGridKeydown>;
+  readonly defaults: IGridDefaults;
   values: t.IGridValues;
   columns: IGridColumns;
   rows: IGridRows;
@@ -29,6 +30,13 @@ export type IGridMethods = {
   focus(): IGrid;
   redraw(): IGrid;
   toPosition(ref: t.CellRef): t.ICoord;
+};
+
+export type IGridDefaults = {
+  columWidth: number;
+  columnWidthMin: number;
+  rowHeight: number;
+  rowHeightMin: number;
 };
 
 export type IGridSelection = {

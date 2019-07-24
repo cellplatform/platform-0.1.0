@@ -15,7 +15,9 @@ export function sizeHandlers(getGrid: () => Grid) {
     if (grid) {
       const key = coord.cell.toKey(index, undefined);
       let column = grid.columns[key];
-      width = isDoubleClick ? DEFAULT.COLUMN_WIDTH : Math.max(DEFAULT.COLUMN_WIDTH_MIN, width);
+      width = isDoubleClick
+        ? grid.defaults.columWidth
+        : Math.max(grid.defaults.columnWidthMin, width);
       column = { ...(column || {}), width };
       grid
         .changeColumns(
@@ -35,7 +37,9 @@ export function sizeHandlers(getGrid: () => Grid) {
     if (grid) {
       const key = coord.cell.toKey(undefined, index);
       let row = grid.rows[key];
-      height = isDoubleClick ? DEFAULT.ROW_HEIGHT : Math.max(DEFAULT.ROW_HEIGHT_MIN, height);
+      height = isDoubleClick
+        ? grid.defaults.rowHeight
+        : Math.max(grid.defaults.rowHeightMin, height);
       row = { ...(row || {}), height };
       grid
         .changeRows(
@@ -55,7 +59,7 @@ export function sizeHandlers(getGrid: () => Grid) {
     if (grid) {
       const key = coord.cell.toKey(index, undefined);
       const column = grid.columns[key];
-      width = column && column.width !== undefined ? column.width : DEFAULT.COLUMN_WIDTH;
+      width = column && column.width !== undefined ? column.width : grid.defaults.columWidth;
     }
     return width;
   }
@@ -69,7 +73,7 @@ export function sizeHandlers(getGrid: () => Grid) {
     if (grid) {
       const key = coord.cell.toKey(undefined, index);
       const row = grid.rows[key];
-      height = row && row.height !== undefined ? row.height : DEFAULT.ROW_HEIGHT;
+      height = row && row.height !== undefined ? row.height : grid.defaults.rowHeight;
     }
     return height;
   }

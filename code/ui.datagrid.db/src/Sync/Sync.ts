@@ -8,7 +8,6 @@ export type ISyncArgs = {
   grid: t.IGrid;
   events$?: Subject<t.SyncEvent>;
   schema?: SyncSchema;
-  isDefaultValue?: t.SyncIsDefaultValue;
 };
 
 type GridPart = 'CELLS' | 'COLUMNS' | 'ROWS';
@@ -38,7 +37,6 @@ export class Sync implements t.IDisposable {
     loading: flags<GridPart>(),
     changingByGrid: flags<{ key: string; part: GridPart }>(),
   };
-  private _isDefault: t.SyncIsDefaultValue | undefined;
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -61,7 +59,6 @@ export class Sync implements t.IDisposable {
     this.db = db;
     this.grid = grid;
     this.schema = args.schema || SyncSchema.create({});
-    this._isDefault = args.isDefaultValue;
 
     // Bubble events.
     if (args.events$) {
@@ -427,7 +424,7 @@ export class Sync implements t.IDisposable {
       const empty = res.list.filter(
         item =>
           isEmptyValue(item.value) ||
-          this.isDefault({
+          this.isDefaultValue({
             kind,
             key: item.props.key,
             value: item.value,
@@ -459,7 +456,7 @@ export class Sync implements t.IDisposable {
     const { kind, key } = payload;
 
     let value = this.formatValue(payload.value);
-    value = this.isDefault({ kind, key, value }) ? undefined : value;
+    value = this.isDefaultValue({ kind, key, value }) ? undefined : value;
 
     this.fire({
       type: 'SYNC/change',
@@ -472,8 +469,18 @@ export class Sync implements t.IDisposable {
     return value;
   };
 
-  private isDefault: t.SyncIsDefaultValue = args => {
-    return this._isDefault ? this._isDefault(args) : false;
+  private isDefaultValue = (e: { kind: t.GridCellType; key: string; value?: any }) => {
+    const defaults = this.grid.defaults;
+    switch (e.kind) {
+      case 'COLUMN':
+        return R.equals(e.value, { width: defaults.columWidth });
+      case 'ROW':
+        return R.equals(e.value, { height: defaults.rowHeight });
+
+      case 'CELL':
+      default:
+        return isEmptyValue(e.value);
+    }
   };
 }
 

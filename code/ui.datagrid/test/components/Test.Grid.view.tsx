@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import {
+  constants,
   CellEditor,
   datagrid,
   GlamorValue,
@@ -146,6 +147,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         rows={this.state.rows}
         events$={this.events$}
         factory={this.factory}
+        // defaults={{ rowHeight: 200 }}
         // totalColumns={52}
         // totalRows={5}
         Handsontable={this.Table}

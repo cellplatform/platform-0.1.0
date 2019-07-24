@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil, debounceTime } from 'rxjs/operators';
 
-import { coord, t, value as valueUtil, R, time } from '../../common';
+import { coord, t, value as valueUtil, R, time, defaultValue } from '../../common';
 import { Cell } from '../Cell';
 import { DEFAULT } from '../../common/constants';
 import { keyboard } from './keyboard';
@@ -13,6 +13,7 @@ export type IGridArgs = {
   values?: t.IGridValues;
   columns?: t.IGridColumns;
   rows?: t.IGridRows;
+  defaults?: Partial<t.IGridDefaults>;
 };
 
 /**
@@ -25,6 +26,19 @@ export class Grid implements t.IGrid {
    */
   public static create(args: IGridArgs) {
     return new Grid(args);
+  }
+
+  /**
+   * Generate a complete defaults object from partial input.
+   */
+  public static defaults(input?: Partial<t.IGridDefaults>): t.IGridDefaults {
+    const partial = input || {};
+    return {
+      columWidth: defaultValue(partial.columWidth, DEFAULT.COLUMN.WIDTH),
+      columnWidthMin: defaultValue(partial.columnWidthMin, DEFAULT.COLUMN.WIDTH_MIN),
+      rowHeight: defaultValue(partial.rowHeight, DEFAULT.ROW.HEIGHT),
+      rowHeightMin: defaultValue(partial.rowHeightMin, DEFAULT.ROW.HEIGHT_MIN),
+    };
   }
 
   /**
@@ -54,7 +68,9 @@ export class Grid implements t.IGrid {
     this._.values = args.values || {};
     this._.columns = args.columns || {};
     this._.rows = args.rows || {};
+
     this.id = `grid/${(this._.table as any).guid.replace(/^ht_/, '')}`;
+    this.defaults = Grid.defaults(args.defaults);
 
     this.events$
       .pipe(filter(e => e.type === 'GRID/ready'))
@@ -151,6 +167,8 @@ export class Grid implements t.IGrid {
   public readonly id: string;
   public readonly totalColumns: number;
   public readonly totalRows: number;
+  public readonly defaults: t.IGridDefaults;
+
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
@@ -382,8 +400,8 @@ export class Grid implements t.IGrid {
 
     Object.keys(columns).forEach(key => {
       const prev = from[key] || { width: -1 };
-      const next = columns[key] || { width: DEFAULT.COLUMN_WIDTH };
-      const isDefault = next.width === DEFAULT.COLUMN_WIDTH;
+      const next = columns[key] || { width: this.defaults.columWidth };
+      const isDefault = next.width === this.defaults.columWidth;
       if (isDefault) {
         delete to[key];
       } else {
@@ -411,8 +429,8 @@ export class Grid implements t.IGrid {
 
     Object.keys(rows).forEach(key => {
       const prev = from[key] || { height: -1 };
-      const next = rows[key] || { height: DEFAULT.ROW_HEIGHT };
-      const isDefault = next.height === DEFAULT.ROW_HEIGHT;
+      const next = rows[key] || { height: this.defaults.rowHeight };
+      const isDefault = next.height === this.defaults.rowHeight;
       if (isDefault) {
         delete to[key];
       } else {

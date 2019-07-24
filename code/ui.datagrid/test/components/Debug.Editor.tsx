@@ -90,7 +90,7 @@ export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEd
     const textWidth = textSize.width;
 
     const cell = this.context.cell;
-    const rightCell = cell.sibling.right;
+    const rightCell = cell.siblings.right;
     const width = cell.width + (rightCell ? rightCell.width : 0) - PADDING * 2 - 10;
 
     this.state$.next({ textWidth, width });

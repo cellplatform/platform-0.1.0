@@ -2,15 +2,19 @@ import { cell as util } from '@platform/util.value.cell';
 
 import { Grid, Editor } from '../api';
 import * as hooks from './hooks';
-import { constants } from '../common';
+import { constants, t } from '../common';
 
 const { DEFAULT } = constants;
 
 /**
  * Retrieves `handsontable` settings for a grid.
  */
-export function getSettings(args: { totalColumns: number; getGrid: () => Grid }) {
-  const { getGrid, totalColumns } = args;
+export function getSettings(args: {
+  totalColumns: number;
+  defaults: t.IGridDefaults;
+  getGrid: () => Grid;
+}) {
+  const { getGrid, totalColumns, defaults } = args;
   const selectionHandler = hooks.afterSelectionHandler(getGrid);
 
   const createColumns = (length: number) => {
@@ -22,8 +26,8 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
   };
 
   const rowHeights: any = (index: number) => {
-    let height = DEFAULT.ROW_HEIGHT;
     const grid = getGrid();
+    let height = defaults.rowHeight;
     if (grid) {
       const row = grid.rows[index];
       height = row && row.height !== undefined ? row.height : height;
@@ -32,8 +36,8 @@ export function getSettings(args: { totalColumns: number; getGrid: () => Grid })
   };
 
   const colWidths: any = (index: number) => {
-    let width = DEFAULT.COLUMN_WIDTH;
     const grid = getGrid();
+    let width = defaults.columWidth;
     if (grid) {
       const key = util.toKey(index);
       const column = grid.columns[key];

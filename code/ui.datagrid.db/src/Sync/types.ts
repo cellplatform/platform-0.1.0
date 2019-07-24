@@ -10,9 +10,6 @@ export type ISyncChangeCell = { kind: 'CELL' } & ISyncChange<t.CellValue>;
 export type ISyncChangeColumn = { kind: 'COLUMN' } & ISyncChange<t.IGridColumn>;
 export type ISyncChangeRow = { kind: 'ROW' } & ISyncChange<t.IGridRow>;
 
-export type SyncIsDefaultValue = (args: SyncIsDefaultValueArgs) => boolean;
-export type SyncIsDefaultValueArgs = { kind: t.GridCellType; key: string; value?: any };
-
 /**
  * [Events]
  */

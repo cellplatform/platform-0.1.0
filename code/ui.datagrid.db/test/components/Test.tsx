@@ -99,21 +99,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const db = this.db;
     const grid = this.datagrid.grid;
     const events$ = this.sync$;
-    this.sync = Sync.create({
-      db,
-      grid,
-      events$,
-      isDefaultValue: e => {
-        switch (e.kind) {
-          case 'COLUMN':
-            return R.equals(e.value, { width: 120 });
-          case 'ROW':
-            return R.equals(e.value, { height: 26 });
-          default:
-            return false;
-        }
-      },
-    });
+    this.sync = Sync.create({ db, grid, events$ });
     await this.sync.compact();
     await this.sync.load();
     this.updateState();
