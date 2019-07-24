@@ -13,7 +13,7 @@ export class GridSchema {
   public toColumnKey(key: string) {
     return lastPart(key, '/').toUpperCase();
   }
-  public toRowKey(key: string | number) {
+  public toRowKey(key: string) {
     return lastPart(key, '/').toUpperCase();
   }
 }

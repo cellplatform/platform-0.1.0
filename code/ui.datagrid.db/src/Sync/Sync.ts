@@ -260,7 +260,8 @@ export class Sync implements t.IDisposable {
         .pipe(filter(e => !this.is.loading.currently('ROWS')))
         .subscribe(async e => {
           e.changes.forEach(change => {
-            const key = this.schema.grid.toRowKey(change.row);
+            const row = (change.row + 1).toString();
+            const key = this.schema.grid.toRowKey(row);
             this.fireSync({
               source: 'GRID',
               kind: 'ROW',
