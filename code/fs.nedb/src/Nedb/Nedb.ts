@@ -1,5 +1,5 @@
 import * as DocumentStore from 'nedb';
-import { defaultValue, keys, R } from '../common';
+import { defaultValue, keys } from '../common';
 
 // NB: Hack import because [parceljs] has problem importing using typescript `import` above.
 const NedbStore = require('nedb');

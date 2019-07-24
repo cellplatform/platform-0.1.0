@@ -6,8 +6,8 @@ import { root } from './cmds';
 export function init(args: { state$: Subject<Partial<t.ITestState>> }) {
   const { state$ } = args;
 
-  const db = Nedb.create({ filename: 'tmp/store.db', autoload: true });
-  const doc = NeDoc.create({ filename: 'tmp/doc.db' });
+  const db = Nedb.create({ filename: 'tmp/client.store.db', autoload: true });
+  const doc = NeDoc.create({ filename: 'tmp/client.doc.db' });
 
   return CommandState.create({
     root,
