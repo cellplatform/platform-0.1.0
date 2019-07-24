@@ -8,6 +8,6 @@
     "target": "esnext",
     "jsx": "react",
 
-    "noUnusedLocals": false
+    "noUnusedLocals": true
   }
 }

@@ -15,7 +15,8 @@
     "lint": "ts lint",
     "build": "ts build $@",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "tmp": "ts-node -T scripts/tmp"
   },
   "dependencies": {
     "@platform/fs.db.types": "0.1.2",
