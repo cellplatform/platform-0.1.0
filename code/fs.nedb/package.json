@@ -7,6 +7,7 @@
   "scripts": {
     "ui": "ui $@",
     "start": "ui start $@",
+    "watch": "nodemon lib.test/test/server/start",
     "test": "ts test",
     "tdd": "ts test --watch",
     "test:integration": "ts test --suffix INTEGRATION",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@platform/fs": "0.1.6",
+    "@platform/graphql.server": "^0.1.24",
     "@platform/test": "0.0.59",
     "@types/nedb": "1.8.8",
     "@uiharness/dev": "0.5.15",
