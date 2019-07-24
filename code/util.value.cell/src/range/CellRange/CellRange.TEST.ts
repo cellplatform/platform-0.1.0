@@ -152,12 +152,16 @@ describe('CellRange', () => {
         const res = range.is.column(total);
         expect(res).to.eql(result);
       };
+
+      test('A:A', 10, true);
+
       test('A1:*', 10, true);
       test('A1:**', 10, true);
       test('A1:A10', 10, true);
       test('A1:B10', 10, true);
       test('A1:A99', 10, true); // Overshoot.
 
+      test('1:1', 10, false);
       test('A2:*', 10, false);
       test('A1:A9', 10, false);
       test('A2:A10', 10, false);
@@ -169,11 +173,15 @@ describe('CellRange', () => {
         const res = range.is.row(total);
         expect(res).to.eql(result);
       };
+
+      test('1:1', 10, true);
+
       test('A1:*', 10, true);
       test('A1:**', 10, true);
       test('A1:J1', 10, true);
       test('A1:ZZ1', 10, true); // Overshoot.
 
+      test('A:A', 10, false);
       test('A1:H1', 10, false);
       test('B1:J1', 10, false);
       test('B1:*', 10, false);

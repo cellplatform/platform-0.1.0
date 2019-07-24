@@ -325,6 +325,9 @@ export class CellRange {
       const type = this.type;
 
       if (axis === 'COLUMN') {
+        if (type === 'COLUMN') {
+          return true;
+        }
         if (left.row > 0) {
           return false;
         }
@@ -333,6 +336,9 @@ export class CellRange {
         }
       }
       if (axis === 'ROW') {
+        if (type === 'ROW') {
+          return true;
+        }
         if (left.column > 0) {
           return false;
         }
@@ -340,6 +346,7 @@ export class CellRange {
           return false;
         }
       }
+
       return true;
     };
 

@@ -149,6 +149,10 @@ describe('CellRangeUnion', () => {
       };
       test('A1:A1', 'A1:A1');
       test('C4:B2,B3:A1', 'A1:C4');
+      test('C:C', 'C:C');
+      test('C:C,A:A', 'A:C');
+      test('1:1', '1:1');
+      test('5:5, 1:1', '1:5');
     });
   });
 
@@ -276,6 +280,27 @@ describe('CellRangeUnion', () => {
       edge('C3', RANGE, ['RIGHT']);
       edge('C4', RANGE, ['RIGHT', 'BOTTOM']);
       edge('C5', RANGE, []);
+    });
+  });
+
+  describe('filter', () => {
+    it('filters on columns', () => {
+      const union = fromKey('  A1:A10, B3:B10, C:C ');
+      const res = union.filter(range => range.is.column(10));
+
+      expect(res).to.not.equal(union); // NB: Different instance.
+      expect(res.length).to.eql(2);
+
+      const square = res.square;
+      expect(square && square.left.key).to.eql('A1');
+      expect(square && square.right.key).to.eql('C');
+    });
+
+    it('no change', () => {
+      const union = fromKey('  A1:A10, B3:B10, C:C ');
+      const res = union.filter(range => true);
+      expect(res).to.not.equal(union); // NB: Different instance.
+      expect(res.toString()).to.eql(res.toString());
     });
   });
 });

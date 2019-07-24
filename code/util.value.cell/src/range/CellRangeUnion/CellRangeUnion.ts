@@ -90,7 +90,11 @@ export class CellRangeUnion {
    * Creates a range enclosing all ranges in the union (top-left to bottom-right).
    */
   public get square() {
-    const keys = this.keys;
+    let keys = this.ranges.reduce(
+      (acc, next) => [...acc, next.left.key, next.right.key],
+      [] as string[],
+    );
+    keys = cell.sort(keys);
     return keys.length === 0 ? undefined : CellRange.fromCells(keys[0], keys[keys.length - 1]);
   }
 
@@ -178,12 +182,18 @@ export class CellRangeUnion {
       });
     });
 
-    return (
-      Object
-        // Reduce map to final set of [CellEdge] items.
-        .keys(map)
-        .filter(key => map[key].within.length > 0) as t.CoordEdge[]
-    );
+    return Object
+      // Reduce map to final set of [CellEdge] items.
+      .keys(map)
+      .filter(key => map[key].within.length > 0) as t.CoordEdge[];
+  }
+
+  /**
+   * Filters the set of ranges returning a new [CellRangeUnion].
+   */
+  public filter(fn: (range: CellRange, i: number) => boolean) {
+    const keys = this.ranges.filter((range, i) => fn(range, i)).map(range => range.key);
+    return CellRangeUnion.fromKey(keys);
   }
 
   /**
@@ -192,6 +202,6 @@ export class CellRangeUnion {
   public toString() {
     const square = this.square;
     const keys = square ? square.key : '[]';
-    return `[union(${this.length}):${keys}]`;
+    return `[UNION(${this.length})/${keys}]`;
   }
 }
