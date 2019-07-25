@@ -24,8 +24,8 @@ export { log } from '@platform/log/lib/client';
 /**
  * Ramda.
  */
-import { equals, clamp } from 'ramda';
-export const R = { equals, clamp };
+import { equals, clamp, uniq } from 'ramda';
+export const R = { equals, clamp, uniq };
 
 /**
  * Cell coords (eg "A1", "A1:C9")

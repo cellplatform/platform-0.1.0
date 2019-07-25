@@ -265,7 +265,7 @@ export class Grid implements t.IGrid {
 
     // Format and de-dupe ranges.
     if (ranges.length > 0) {
-      // Convert full row/columns to proper range syntax.
+      // Convert full row/columns selections to proper range syntax (eg "A:A" or "1:1").
       const totalColumns = this.totalColumns;
       const totalRows = this.totalRows;
       const union = coord.range.union(ranges).formated({ totalColumns, totalRows });
@@ -275,6 +275,9 @@ export class Grid implements t.IGrid {
       if (cell) {
         ranges = ranges.filter(range => range !== `${cell}:${cell}`);
       }
+
+      // De-dupe.
+      ranges = R.uniq(ranges);
     }
 
     // Finish up.
