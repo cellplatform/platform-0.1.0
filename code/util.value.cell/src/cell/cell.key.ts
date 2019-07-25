@@ -120,7 +120,25 @@ export function isRangeKey(key: string) {
 }
 
 /**
- * Converts a cell-key into it's correposnding axis (COLUMN/ROW),
+ * Converts a cell input into the index number for the given axis.
+ * eg:
+ *    COLUMN: "A3" => 0
+ *    ROW:    "A3" => 2
+ */
+export function toAxisIndex(axis: t.CoordAxis, input: CellInput) {
+  const cell = toCell(input);
+  switch (axis) {
+    case 'COLUMN':
+      return cell.column;
+    case 'ROW':
+      return cell.row;
+    default:
+      throw new Error(`Axis '${axis}' not supported.`);
+  }
+}
+
+/**
+ * Converts a cell input into it's corresponding axis (COLUMN/ROW),
  * eg
  *    COLUMN: "A1" => "A"
  *    ROW:    "A1" => "1"
@@ -137,7 +155,7 @@ export function toAxisKey(axis: t.CoordAxis, input: CellInput) {
 }
 
 /**
- * Converts a cell-key into it's corresponding COLUMN part (eg "A1" => "A").
+ * Converts a cell input into it's corresponding COLUMN part (eg "A1" => "A").
  */
 export function toColumnKey(input: CellInput) {
   if (typeof input === 'number') {
@@ -149,7 +167,7 @@ export function toColumnKey(input: CellInput) {
 }
 
 /**
- * Converts a cell-key into it's corresponding ROW part (eg "A1" => "1").
+ * Converts a cell input into it's corresponding ROW part (eg "A1" => "1").
  */
 export function toRowKey(input: CellInput) {
   const cell = toCell(input);
@@ -157,7 +175,7 @@ export function toRowKey(input: CellInput) {
 }
 
 /**
- * Converts a cell-key into it's corresponding COLUMN/ROW range
+ * Converts a cell input into it's corresponding COLUMN/ROW range
  * eg
  *    COLUMN: "A3" => "A:A"
  *    ROW:    "A3" => "3:3"
@@ -175,7 +193,7 @@ export function toAxisRangeKey(axis: t.CoordAxis, input: CellInput) {
 }
 
 /**
- * Converts a cell-key into it's corresponding COLUMN range (eg. "A3" => "A:A").
+ * Converts a cell input into it's corresponding COLUMN range (eg. "A3" => "A:A").
  */
 export function toColumnRangeKey(input: CellInput) {
   const key = toColumnKey(input);
@@ -183,7 +201,7 @@ export function toColumnRangeKey(input: CellInput) {
 }
 
 /**
- * Converts a cell-key into it's corresponding ROW range (eg. "A3" => "3:3").
+ * Converts a cell input into it's corresponding ROW range (eg. "A3" => "3:3").
  */
 export function toRowRangeKey(input: CellInput) {
   const key = toRowKey(input);

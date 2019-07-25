@@ -255,6 +255,21 @@ describe('sort', () => {
 });
 
 describe('to column/row', () => {
+  it('toAxisIndex', () => {
+    const test = (axis: t.CoordAxis, input: CellInput, output: number) => {
+      const res = cell.toAxisIndex(axis, input);
+      expect(res).to.eql(output);
+    };
+    test('COLUMN', 'A', 0);
+    test('COLUMN', 'A3', 0);
+    test('COLUMN', '1', -1);
+    test('COLUMN', 1, -1);
+
+    test('ROW', 'A3', 2);
+    test('ROW', '3', 2);
+    test('ROW', 2, 2);
+  });
+
   it('toAxisKey', () => {
     const test = (axis: t.CoordAxis, input: CellInput, output: string) => {
       const res = cell.toAxisKey(axis, input);

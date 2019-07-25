@@ -4,6 +4,19 @@ import { SyncSchema } from '.';
 describe('schema.grid', () => {
   const schema = SyncSchema.create({});
 
+  it('toKey', () => {
+    const test = (key: any, expected: any) => {
+      const res = schema.grid.toKey(key);
+      expect(res).to.eql(expected);
+    };
+
+    test('A1', 'A1');
+    test('cell/A1', 'A1');
+    test('cell///A1', 'A1');
+    test('row/1', '1');
+    test('column/A', 'A');
+  });
+
   it('toCellKey', () => {
     const test = (key: any, expected: any) => {
       const res = schema.grid.toCellKey(key);

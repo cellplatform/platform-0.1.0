@@ -1,4 +1,4 @@
-import { lastPart, coord } from './common';
+import { coord, lastPart, t, toList, toMap } from './common';
 
 /**
  * Keys for items within the database.
@@ -90,4 +90,10 @@ export class DbSchema {
       rows: `${this.prefix.row}/*`,
     };
   }
+
+  /**
+   * [Helpers]
+   */
+  public toList = (map: t.Map) => toList(map, key => this.toKey(key));
+  public toMap = (list: t.List) => toMap(list, key => this.toKey(key));
 }
