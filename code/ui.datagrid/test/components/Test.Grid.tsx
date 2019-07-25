@@ -12,11 +12,21 @@ import {
   distinctUntilChanged,
   debounceTime,
 } from 'rxjs/operators';
-import { constants, log, Button, color, css, GlamorValue, Hr, ObjectView, t, coord } from '../common';
+import {
+  constants,
+  log,
+  Button,
+  color,
+  css,
+  GlamorValue,
+  Hr,
+  ObjectView,
+  t,
+  coord,
+} from '../common';
 import { TestGridView } from './Test.Grid.view';
 
 const { DEFAULT } = constants;
-
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;
@@ -185,6 +195,12 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
               this.grid.select({
                 cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
               }),
+            )}
+            {this.button('select column: B:B', () =>
+              this.grid.select({ cell: 'B1', ranges: ['B:B'] }),
+            )}
+            {this.button('select row: 3:3', () =>
+              this.grid.select({ cell: 'A3', ranges: ['3:3'] }),
             )}
             <Hr margin={5} />
             {this.button('scrollTo: A1', () => this.grid.scrollTo({ cell: 'A1' }))}

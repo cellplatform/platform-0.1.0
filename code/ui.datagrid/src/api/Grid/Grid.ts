@@ -1,9 +1,9 @@
 import { Subject } from 'rxjs';
-import { filter, map, share, takeUntil, debounceTime } from 'rxjs/operators';
+import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { coord, t, value as valueUtil, R, time, defaultValue } from '../../common';
-import { Cell } from '../Cell';
+import { coord, defaultValue, R, t, value as valueUtil } from '../../common';
 import { DEFAULT } from '../../common/constants';
+import { Cell } from '../Cell';
 import { keyboard } from './keyboard';
 
 export type IGridArgs = {
@@ -484,12 +484,14 @@ export class Grid implements t.IGrid {
    * Selects the specific cell(s).
    */
   public select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }) {
+    const totalColumns = this.totalColumns;
+    const totalRows = this.totalRows;
     const table = this._.table;
     const scrollToCell = valueUtil.defaultValue(args.scrollToCell, true);
 
     // Select requested ranges.
     const ranges = (args.ranges || [])
-      .map(rangeKey => Cell.toRangePositions(rangeKey))
+      .map(range => Cell.toRangePositions({ range, totalColumns, totalRows }))
       .map(({ start, end }) => {
         return [start.row, start.column, end.row, end.column];
       });
