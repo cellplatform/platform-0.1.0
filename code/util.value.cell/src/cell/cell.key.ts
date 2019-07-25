@@ -75,7 +75,7 @@ export function toCell(input: CellInput, options: { relative?: boolean } = {}): 
     //
     // Type: string/number.
     //
-    key = input.toString();
+    key = typeof input === 'number' ? (input + 1).toString() : input;
     const pos = fromKey(key);
     row = pos.row;
     column = pos.column;

@@ -73,7 +73,8 @@ describe('toCell', () => {
     test('$A1', '$A1', 0, 0);
     test('A', 'A', 0, -1);
     test('1', '1', -1, 0);
-    test(1, '1', -1, 0);
+    test(0, '1', -1, 0);
+    test(1, '2', -1, 1);
     test({ column: 0, row: 0 }, 'A1', 0, 0);
     test({ column: 0 }, 'A', 0, -1);
     test({ row: 0 }, '1', -1, 0);
@@ -272,7 +273,8 @@ describe('to column/row', () => {
     test('A', '');
     test('A3', '3');
     test('1', '1');
-    test(1, '1');
+    test(0, '1');
+    test(1, '2');
   });
 
   it('toColumnRangeKey', () => {
@@ -294,6 +296,7 @@ describe('to column/row', () => {
     test('A3', '3:3');
     test('A', '');
     test('1', '1:1');
-    test(1, '1:1');
+    test(0, '1:1');
+    test(1, '2:2');
   });
 });
