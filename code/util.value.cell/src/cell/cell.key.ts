@@ -123,8 +123,12 @@ export function isRangeKey(key: string) {
  * Converts a cell-key into it's corresponding COLUMN part (eg "A1" => "A").
  */
 export function toColumnKey(input: CellInput) {
-  const cell = toCell(input);
-  return cell.column === -1 ? '' : cell.row === -1 ? cell.key : toKey(cell.column, undefined);
+  if (typeof input === 'number') {
+    return alpha.toCharacter(input);
+  } else {
+    const cell = toCell(input);
+    return cell.column === -1 ? '' : cell.row === -1 ? cell.key : toKey(cell.column, undefined);
+  }
 }
 
 /**

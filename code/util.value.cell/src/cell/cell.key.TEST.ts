@@ -261,8 +261,9 @@ describe('to column/row', () => {
     };
     test('A', 'A');
     test('A3', 'A');
-    test('1', '');
-    test(1, '');
+    test('1', ''); // Row - not valid.
+    test(0, 'A');
+    test(1, 'B');
   });
 
   it('toRowKey', () => {
@@ -270,7 +271,7 @@ describe('to column/row', () => {
       const res = cell.toRowKey(input);
       expect(res).to.eql(output);
     };
-    test('A', '');
+    test('A', ''); // Column - not valid.
     test('A3', '3');
     test('1', '1');
     test(0, '1');
@@ -284,8 +285,9 @@ describe('to column/row', () => {
     };
     test('A3', 'A:A');
     test('A', 'A:A');
-    test('1', '');
-    test(1, '');
+    test('1', ''); // Row - not valid.
+    test(0, 'A:A');
+    test(1, 'B:B');
   });
 
   it('toRowRangeKey', () => {
@@ -294,7 +296,7 @@ describe('to column/row', () => {
       expect(res).to.eql(output);
     };
     test('A3', '3:3');
-    test('A', '');
+    test('A', ''); // Column - not valid.
     test('1', '1:1');
     test(0, '1:1');
     test(1, '2:2');
