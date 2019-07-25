@@ -838,4 +838,49 @@ describe('CellRange', () => {
       test('1:99', 10, 10); // Clipped.
     });
   });
+
+  describe('axis', () => {
+    it('axis.keys', () => {
+      const test = (axis: t.CoordAxis, input: string, output: string[]) => {
+        const range = fromKey(input);
+        expect(range.axis(axis).keys).to.eql(output);
+      };
+
+      test('COLUMN', 'A:A', ['A']);
+      test('COLUMN', 'A1:A10', ['A']);
+      test('COLUMN', 'A1:B10', ['A', 'B']);
+      test('COLUMN', 'B1:D1', ['B', 'C', 'D']);
+      test('COLUMN', 'B1:F10', ['B', 'C', 'D', 'E', 'F']);
+      test('COLUMN', '1:1', []); // Not a column.
+      test('COLUMN', '5:20', []);
+
+      test('ROW', '1:1', ['1']);
+      test('ROW', '1:2', ['1', '2']);
+      test('ROW', 'A1:A1', ['1']);
+      test('ROW', '1:5', ['1', '2', '3', '4', '5']);
+      test('ROW', 'B2:ZZ4', ['2', '3', '4']);
+      test('ROW', 'A:A', []); // Not a row.
+      test('ROW', 'A:Z', []); // Not a row.
+    });
+
+    it('column.keys', () => {
+      const test = (axis: t.CoordAxis, input: string, output: string[]) => {
+        const range = fromKey(input);
+        expect(range.column.keys).to.eql(output);
+      };
+      test('COLUMN', 'A:A', ['A']);
+      test('COLUMN', 'B1:D1', ['B', 'C', 'D']);
+      test('COLUMN', '5:20', []); // Not a column
+    });
+
+    it('row', () => {
+      const test = (axis: t.CoordAxis, input: string, output: string[]) => {
+        const range = fromKey(input);
+        expect(range.row.keys).to.eql(output);
+      };
+      test('ROW', 'A1:A1', ['1']);
+      test('ROW', 'B2:ZZ4', ['2', '3', '4']);
+      test('ROW', 'A:Z', []); // Not a row.
+    });
+  });
 });

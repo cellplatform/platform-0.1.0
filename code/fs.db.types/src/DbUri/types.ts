@@ -11,16 +11,16 @@
  *   - object property path:
  *
  *        data:path/doc:object.prop
- *        data:sheet/123/cell/A1:value
+ *        data:sheet/123/cell/A1:info
  *        data:sheet/123/cell/A1:info.name
  *
- *   - object property filters:
+ *   - object property filters/query:
  *
  *        data:sheet/123/cell/A1:info.{name=fred && count>=3}  // equal, AND, greater-then-or-equal
  *        data:sheet/123/cell/A1:info.{name=fred || count<3}   // equal, OR, less-than
  *        data:sheet/123/cell/A1:info.{name!="fred" }          // not-equal
  *        data:sheet/123/cell/A1:info.{types[=cell]}           // Types array includes ($in)
- *        data:sheet/123/cell/A1:info.{types[=!fred, bob]}     // Types array includes bob, and not fred ($nin)
+ *        data:sheet/123/cell/A1:info.{types[=!fred, bob]}     // Types array includes "bob", and not "fred" ($nin)
  *
  */
 export type IDbUri = {

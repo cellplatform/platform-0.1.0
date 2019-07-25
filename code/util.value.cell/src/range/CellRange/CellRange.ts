@@ -182,6 +182,14 @@ export class CellRange {
    * [Properties]
    */
 
+  public get column() {
+    return this.axis('COLUMN');
+  }
+
+  public get row() {
+    return this.axis('ROW');
+  }
+
   /**
    * Retrieves a sorted array of cell-keys for the range square
    * (eg. [A1, A2, B1...]).
@@ -573,6 +581,38 @@ export class CellRange {
     const height = start.row === -1 ? totalRows : endRow - startRow + 1;
 
     return { width, height };
+  }
+
+  /**
+   * Retrieves details about a single axis (COLUMN/ROW).
+   */
+  public axis(axis: t.CoordAxis) {
+    const self = this; // tslint:disable-line
+
+    const res = {
+      get left() {
+        return axis === 'COLUMN' ? self.left.column : self.left.row;
+      },
+
+      get right() {
+        return axis === 'COLUMN' ? self.right.column : self.right.row;
+      },
+
+      /**
+       * Retrieves the keys for the given axis (ROW/COLUMN) represented by the range.
+       */
+      get keys(): string[] {
+        const start = res.left;
+        const end = res.right;
+        return start < 0 || end < 0
+          ? []
+          : Array.from({ length: end + 1 - start })
+              .map((v, i) => i + start)
+              .map(i => cell.toAxisKey(axis, i) as string);
+      },
+    };
+
+    return res;
   }
 
   /**
