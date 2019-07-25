@@ -773,4 +773,36 @@ describe('CellRange', () => {
       notEdge('B2', 'C3:B2'); // Not a square (inverted left > right).
     });
   });
+
+  describe('formatted', () => {
+    it('no change', () => {
+      const range = fromKey('A2:A10');
+      const res = range.formated({ totalColumns: 10, totalRows: 10 });
+      expect(res).to.equal(range); // Same instance.
+    });
+
+    it('adusts column', () => {
+      const test = (input: string, output: string) => {
+        const range = fromKey(input);
+        const res = range.formated({ totalColumns: 10, totalRows: 10 });
+        expect(res).to.not.equal(range); // Different instance.
+        expect(res.key).to.eql(output);
+      };
+      test('A1:A10', 'A:A');
+      test('A1:B10', 'A:B');
+      test('A1:F10', 'A:F');
+    });
+
+    it('adusts row', () => {
+      const test = (input: string, output: string) => {
+        const range = fromKey(input);
+        const res = range.formated({ totalColumns: 10, totalRows: 10 });
+        expect(res).to.not.equal(range); // Different instance.
+        expect(res.key).to.eql(output);
+      };
+      test('A1:J1', '1:1');
+      test('A1:J2', '1:2');
+      test('A1:J9', '1:9');
+    });
+  });
 });

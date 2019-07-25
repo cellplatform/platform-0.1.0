@@ -537,6 +537,23 @@ export class CellRange {
   }
 
   /**
+   * Formats range keys based on table size, returning a new [Range] object.
+   */
+  public formated(args: { totalColumns: number; totalRows: number }) {
+    if (this.is.column(args.totalRows)) {
+      const left = cell.toKey(this.left.column, undefined);
+      const right = cell.toKey(this.right.column, undefined);
+      return CellRange.fromKey(`${left}:${right}`);
+    }
+    if (this.is.row(args.totalColumns)) {
+      const left = cell.toKey(undefined, this.left.row);
+      const right = cell.toKey(undefined, this.right.row);
+      return CellRange.fromKey(`${left}:${right}`);
+    }
+    return this; // No change.
+  }
+
+  /**
    * Converts the object into a representative string.
    */
   public toString() {
