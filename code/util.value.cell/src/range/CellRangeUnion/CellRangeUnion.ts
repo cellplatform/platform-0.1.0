@@ -51,6 +51,15 @@ export class CellRangeUnion {
   /**
    * [Properties]
    */
+
+  public get column() {
+    return this.axis('COLUMN');
+  }
+
+  public get row() {
+    return this.axis('ROW');
+  }
+
   /**
    * Retrieves the number of ranges within the set.
    */
@@ -182,12 +191,10 @@ export class CellRangeUnion {
       });
     });
 
-    return (
-      Object
-        // Reduce map to final set of [CellEdge] items.
-        .keys(map)
-        .filter(key => map[key].within.length > 0) as t.CoordEdge[]
-    );
+    return Object
+      // Reduce map to final set of [CellEdge] items.
+      .keys(map)
+      .filter(key => map[key].within.length > 0) as t.CoordEdge[];
   }
 
   /**
@@ -204,6 +211,25 @@ export class CellRangeUnion {
   public formated(args: { totalColumns: number; totalRows: number }) {
     const keys = this.ranges.map(range => range.formated(args)).map(range => range.key);
     return CellRangeUnion.fromKey(keys);
+  }
+
+  /**
+   * Retrieves details about a single axis (COLUMN/ROW).
+   */
+  public axis(axis: t.CoordAxis) {
+    const self = this; // tslint:disable-line
+
+    const res = {
+      /**
+       * Retrieves the ROW or COLUMN keys represented by the ranges (de-duped).
+       */
+      get keys(): string[] {
+        const keys = R.flatten<string>(self.ranges.map(range => range.axis(axis).keys));
+        return R.uniq(keys);
+      },
+    };
+
+    return res;
   }
 
   /**

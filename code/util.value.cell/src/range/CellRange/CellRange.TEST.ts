@@ -864,23 +864,23 @@ describe('CellRange', () => {
     });
 
     it('column.keys', () => {
-      const test = (axis: t.CoordAxis, input: string, output: string[]) => {
+      const test = (input: string, output: string[]) => {
         const range = fromKey(input);
         expect(range.column.keys).to.eql(output);
       };
-      test('COLUMN', 'A:A', ['A']);
-      test('COLUMN', 'B1:D1', ['B', 'C', 'D']);
-      test('COLUMN', '5:20', []); // Not a column
+      test('A:A', ['A']);
+      test('B1:D1', ['B', 'C', 'D']);
+      test('5:20', []); // Not a column
     });
 
     it('row', () => {
-      const test = (axis: t.CoordAxis, input: string, output: string[]) => {
+      const test = (input: string, output: string[]) => {
         const range = fromKey(input);
         expect(range.row.keys).to.eql(output);
       };
-      test('ROW', 'A1:A1', ['1']);
-      test('ROW', 'B2:ZZ4', ['2', '3', '4']);
-      test('ROW', 'A:Z', []); // Not a row.
+      test('A1:A1', ['1']);
+      test('B2:ZZ4', ['2', '3', '4']);
+      test('A:Z', []); // Not a row.
     });
   });
 });

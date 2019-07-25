@@ -334,4 +334,36 @@ describe('CellRangeUnion', () => {
       test('A1:A10, A1:J1, B2:C4', 'A:A, 1:1, B2:C4');
     });
   });
+
+  describe('axis', () => {
+    it('axis.keys', () => {
+      const test = (axis: t.CoordAxis, input: string, output: string[]) => {
+        const union = fromKey(input);
+        expect(union.axis(axis).keys).to.eql(output);
+      };
+      test('COLUMN', 'A:B', ['A', 'B']);
+      test('COLUMN', 'A:B, A:C, C:D, B2:D5', ['A', 'B', 'C', 'D']);
+
+      test('ROW', '1:2', ['1', '2']);
+      test('ROW', '1:3, 2:4, B2:Z5', ['1', '2', '3', '4', '5']);
+    });
+
+    it('column.keys', () => {
+      const test = (input: string, output: string[]) => {
+        const union = fromKey(input);
+        expect(union.column.keys).to.eql(output);
+      };
+      test('A:B', ['A', 'B']);
+      test('A:B, A:C, C:D, B2:D5', ['A', 'B', 'C', 'D']);
+    });
+
+    it('row.keys', () => {
+      const test = (input: string, output: string[]) => {
+        const union = fromKey(input);
+        expect(union.row.keys).to.eql(output);
+      };
+      test('1:2', ['1', '2']);
+      test('1:3, 2:4, B2:Z5', ['1', '2', '3', '4', '5']);
+    });
+  });
 });

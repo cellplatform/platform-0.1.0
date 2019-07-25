@@ -599,7 +599,7 @@ export class CellRange {
       },
 
       /**
-       * Retrieves the keys for the given axis (ROW/COLUMN) represented by the range.
+       * Retrieves the ROW or COLUMN keys represented by the range.
        */
       get keys(): string[] {
         const start = res.left;
