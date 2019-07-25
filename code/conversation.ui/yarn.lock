@@ -1122,12 +1122,36 @@
     "@platform/util.value" "0.4.4"
     minimist "1.2.0"
 
+"@platform/cli.spec@0.1.48":
+  version "0.1.48"
+  resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.1.48.tgz#4b11c692e43b34c4bbf49d083f2cfaabed675682"
+  integrity sha512-SgIC6LGdz/A/pvBYZQQuwYQg961TTanr1kkcenR0LbYdf6NKVKscNis9FZucZiWfu/O348QZu2I3dXG+8tIrWQ==
+  dependencies:
+    "@platform/util.string" "0.3.0"
+    "@platform/util.value" "0.4.4"
+    minimist "1.2.0"
+
 "@platform/cli.ui@0.2.37":
   version "0.2.37"
   resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.2.37.tgz#ab813bdb63a381dfdf13f2f2674369edd738432b"
   integrity sha512-uidN/KQJdT0JmyAv8UISaS/tgCfPEf08xscPPBrdNI5aq7jeA5B2Lg2c83hJP6h15Gxul5RGX1uL5fOgYduCEg==
   dependencies:
     "@platform/cli.spec" "0.1.47"
+    "@platform/react" "0.3.12"
+    "@platform/ui.panel" "0.0.74"
+    "@platform/ui.text" "0.2.25"
+    "@platform/ui.tree" "0.2.12"
+    "@platform/util.animate" "0.0.43"
+    "@platform/util.local-storage" "0.0.29"
+    "@platform/util.value" "0.4.4"
+    react-icons "3.7.0"
+
+"@platform/cli.ui@0.2.38":
+  version "0.2.38"
+  resolved "https://registry.yarnpkg.com/@platform/cli.ui/-/cli.ui-0.2.38.tgz#ae77d94d0cfd40e35b3db7ca414f3dc2c3b3c116"
+  integrity sha512-Mop+Bmjy9GVwi/T98t6smhtp9Jd8b0zxOEdupM7Klto7UgvzcsRlkXiDiqekuEmSJ8H96Q6QmSwKQ/L0j0hNOw==
+  dependencies:
+    "@platform/cli.spec" "0.1.48"
     "@platform/react" "0.3.12"
     "@platform/ui.panel" "0.0.74"
     "@platform/ui.text" "0.2.25"
@@ -1514,6 +1538,16 @@
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.2.4.tgz#aeb3ed7e7ab3ef07e4e30426d79b4a796536b041"
   integrity sha512-2IfLkeWNgenoIK9OExkcdW6OlNgoJnN0qBWp3wAgQB0cm7BUXV6rfJ6l+cdK+nRVPEs4uI9f6yvTXkj+wrqAmQ==
+  dependencies:
+    "@types/underscore.string" "0.0.38"
+    escape-string-regexp "2.0.0"
+    fuzzy "0.1.3"
+    underscore.string "3.3.5"
+
+"@platform/util.string@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.3.0.tgz#c52ca2b98c4a70874915b589446d705fd55d8869"
+  integrity sha512-ivIVqDUeijab1PBH6Fvcg97XSYAJHFguO6VAEz2vdat+d33iHCNEj2en2mwdjjWbCZIQlS3b80/g9S2G5jUXqg==
   dependencies:
     "@types/underscore.string" "0.0.38"
     escape-string-regexp "2.0.0"
