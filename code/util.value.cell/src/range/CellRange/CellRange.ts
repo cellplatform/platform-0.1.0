@@ -83,7 +83,7 @@ export class CellRange {
    */
   public error: string | undefined;
 
-  private internal: {
+  private readonly _: {
     key?: string;
     square?: CellRange;
     cellKeys?: string[];
@@ -95,7 +95,7 @@ export class CellRange {
   private constructor(options: { key: string }) {
     // Setup initial conditions.
     const key = options.key.replace(/^[\s\=\!]*/, '').trimRight();
-    this.internal.key = key;
+    this._.key = key;
     this.isValid = true;
 
     // Parse the key into constituent parts.
@@ -192,11 +192,11 @@ export class CellRange {
    *      not incur the cost of calcualting the set of keys.
    */
   public get keys(): string[] {
-    if (this.internal.cellKeys) {
-      return this.internal.cellKeys;
+    if (this._.cellKeys) {
+      return this._.cellKeys;
     }
     const done = (result: string[]) => {
-      this.internal.cellKeys = result;
+      this._.cellKeys = result;
       return result;
     };
 
@@ -238,8 +238,8 @@ export class CellRange {
    */
   public get square() {
     // Reuse existing square if already calculated.
-    if (this.internal.square) {
-      return this.internal.square;
+    if (this._.square) {
+      return this._.square;
     }
 
     const toCellSquare = () => {
@@ -311,7 +311,7 @@ export class CellRange {
 
     const range = getRangeKey();
     const result = range === this.key ? this : CellRange.fromKey(range); // NB: Return same Range if already a square.
-    this.internal.square = result;
+    this._.square = result;
     return result;
   }
 
@@ -319,7 +319,7 @@ export class CellRange {
    * API for determing boolean values about the range.
    */
   public get is() {
-    const axis = (axis: 'COLUMN' | 'ROW', total: number) => {
+    const axis = (axis: t.CoordAxis, total: number) => {
       const left = this.left;
       const right = this.right;
       const type = this.type;
@@ -554,6 +554,28 @@ export class CellRange {
   }
 
   /**
+   * Converts the range to a width/height size.
+   */
+  public toSize(args: { totalColumns: number; totalRows: number }) {
+    const { totalColumns, totalRows } = args;
+
+    const square = this.square;
+    const start = square.left;
+    const end = square.right;
+
+    const startColumn = Math.max(0, start.column);
+    const endColumn = Math.min(end.column, totalColumns - 1);
+
+    const startRow = Math.max(0, start.row);
+    const endRow = Math.min(end.row, totalRows - 1);
+
+    const width = start.column === -1 ? totalColumns : endColumn - startColumn + 1;
+    const height = start.row === -1 ? totalRows : endRow - startRow + 1;
+
+    return { width, height };
+  }
+
+  /**
    * Converts the object into a representative string.
    */
   public toString() {
@@ -567,7 +589,7 @@ export class CellRange {
     if (message.startsWith('INVALID')) {
       message = message.substr(message.indexOf('.') + 2);
     }
-    message = `INVALID RANGE "${this.internal.key}". ${message}`;
+    message = `INVALID RANGE "${this._.key}". ${message}`;
     this.isValid = false;
     this.error = message;
   }

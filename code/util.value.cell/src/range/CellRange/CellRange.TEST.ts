@@ -805,4 +805,37 @@ describe('CellRange', () => {
       test('A1:J9', '1:9');
     });
   });
+
+  describe('toSize', () => {
+    it('calculate size', () => {
+      const test = (input: string, width: number, height: number) => {
+        const range = fromKey(input);
+        const size = range.toSize({ totalColumns: 10, totalRows: 10 });
+        expect(size.width).to.eql(width);
+        expect(size.height).to.eql(height);
+      };
+
+      test('A1:A10', 1, 10);
+      test('A1:B10', 2, 10);
+      test('A1:B5', 2, 5);
+      test('B2:C4', 2, 3);
+      test('C5:J10', 8, 6);
+
+      // Clip to max table size.
+      test('A1:A50', 1, 10);
+      test('A1:ZZ1', 10, 1);
+      test('C5:ZZ99', 8, 6); // Clipped
+
+      // Full row/column.
+      test('A:A', 1, 10);
+      test('A:B', 2, 10);
+      test('A:E', 5, 10);
+      test('A:ZZ', 10, 10); // Clipped.
+
+      test('1:1', 10, 1);
+      test('1:2', 10, 2);
+      test('1:5', 10, 5);
+      test('1:99', 10, 10); // Clipped.
+    });
+  });
 });

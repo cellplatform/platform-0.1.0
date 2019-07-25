@@ -120,6 +120,23 @@ export function isRangeKey(key: string) {
 }
 
 /**
+ * Converts a cell-key into it's correposnding axis (COLUMN/ROW),
+ * eg
+ *    COLUMN: "A1" => "A"
+ *    ROW:    "A1" => "1"
+ */
+export function toAxisKey(axis: t.CoordAxis, input: CellInput) {
+  switch (axis) {
+    case 'COLUMN':
+      return toColumnKey(input);
+    case 'ROW':
+      return toRowKey(input);
+    default:
+      throw new Error(`Axis '${axis}' not supported.`);
+  }
+}
+
+/**
  * Converts a cell-key into it's corresponding COLUMN part (eg "A1" => "A").
  */
 export function toColumnKey(input: CellInput) {
@@ -137,6 +154,24 @@ export function toColumnKey(input: CellInput) {
 export function toRowKey(input: CellInput) {
   const cell = toCell(input);
   return cell.row === -1 ? '' : cell.column === -1 ? cell.key : toKey(undefined, cell.row);
+}
+
+/**
+ * Converts a cell-key into it's corresponding COLUMN/ROW range
+ * eg
+ *    COLUMN: "A3" => "A:A"
+ *    ROW:    "A3" => "3:3"
+ *
+ */
+export function toAxisRangeKey(axis: t.CoordAxis, input: CellInput) {
+  switch (axis) {
+    case 'COLUMN':
+      return toColumnRangeKey(input);
+    case 'ROW':
+      return toRowRangeKey(input);
+    default:
+      throw new Error(`Axis '${axis}' not supported.`);
+  }
 }
 
 /**
@@ -188,7 +223,7 @@ export function toType(cell: CellInput): t.CoordCellType | undefined {
  * A cell sorter comparison.
  */
 export const compare = {
-  by: (axis: 'COLUMN' | 'ROW') => (axis === 'COLUMN' ? compare.byColumn : compare.byRow),
+  by: (axis: t.CoordAxis) => (axis === 'COLUMN' ? compare.byColumn : compare.byRow),
   byColumn: (a: CellInput, b: CellInput) => comparer(a, b, { axis: 'COLUMN' }),
   byRow: (a: CellInput, b: CellInput) => comparer(a, b, { axis: 'ROW' }),
 };
@@ -196,7 +231,7 @@ export const compare = {
 export function comparer<T extends CellInput>(
   left: T,
   right: T,
-  options: { axis?: 'COLUMN' | 'ROW' } = {},
+  options: { axis?: t.CoordAxis } = {},
 ): -1 | 0 | 1 {
   const { axis: by = 'COLUMN' } = options;
   const a = toCell(left);
@@ -225,7 +260,7 @@ const compareNumber = (a: number, b: number) => (a === b ? 0 : a < b ? -1 : 1);
 /**
  * Sorts a list of cells.
  */
-export function sort<T extends CellInput>(list: T[], options: { by?: 'COLUMN' | 'ROW' } = {}) {
+export function sort<T extends CellInput>(list: T[], options: { by?: t.CoordAxis } = {}) {
   const axis = options.by || 'COLUMN';
   return [...list].sort(compare.by(axis));
 }

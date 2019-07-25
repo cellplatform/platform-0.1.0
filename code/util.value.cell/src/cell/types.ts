@@ -1,6 +1,8 @@
 /**
  * Cell
  */
+
+export type CoordAxis = 'COLUMN' | 'ROW';
 export type CoordCellType = 'CELL' | 'COLUMN' | 'ROW';
 export type ICoord = {
   column: number;
