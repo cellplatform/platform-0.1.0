@@ -202,6 +202,9 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             {this.button('select row: 3:3', () =>
               this.grid.select({ cell: 'A3', ranges: ['3:3'] }),
             )}
+            {this.button('select row and column', () =>
+              this.grid.select({ cell: 'B1', ranges: ['3:3', 'B:B'], scrollToCell: false }),
+            )}
             <Hr margin={5} />
             {this.button('scrollTo: A1', () => this.grid.scrollTo({ cell: 'A1' }))}
             {this.button('scrollTo: B5', () => this.grid.scrollTo({ cell: 'B5' }))}

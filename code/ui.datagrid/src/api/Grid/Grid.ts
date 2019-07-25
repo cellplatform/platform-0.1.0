@@ -263,6 +263,20 @@ export class Grid implements t.IGrid {
       }
     }
 
+    // Format and de-dupe ranges.
+    if (ranges.length > 0) {
+      // Convert full row/columns to proper range syntax.
+      const totalColumns = this.totalColumns;
+      const totalRows = this.totalRows;
+      const union = coord.range.union(ranges).formated({ totalColumns, totalRows });
+      ranges = union.ranges.map(range => range.key);
+
+      // Ensure the selected single "cell" is not included within the set of ranges.
+      if (cell) {
+        ranges = ranges.filter(range => range !== `${cell}:${cell}`);
+      }
+    }
+
     // Finish up.
     let result: t.IGridSelection = { cell, ranges };
     result = all ? { ...result, all } : result;
@@ -501,6 +515,7 @@ export class Grid implements t.IGrid {
     const current = [pos.row, pos.column, pos.row, pos.column];
     const selection = [...ranges, current] as any;
     table.selectCells(selection, scrollToCell);
+
     return this;
   }
 
