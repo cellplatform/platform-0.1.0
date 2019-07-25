@@ -197,6 +197,14 @@ export class CellRangeUnion {
   }
 
   /**
+   * Formats range keys based on table size, returning a new [Range] object.
+   */
+  public formated(args: { totalColumns: number; totalRows: number }) {
+    const keys = this.ranges.map(range => range.formated(args)).map(range => range.key);
+    return CellRangeUnion.fromKey(keys);
+  }
+
+  /**
    * Converts the union to a display string.
    */
   public toString() {

@@ -303,4 +303,35 @@ describe('CellRangeUnion', () => {
       expect(res.toString()).to.eql(res.toString());
     });
   });
+
+  describe('formatted', () => {
+    it('no change', () => {
+      const input = 'A2:A10, B4:J4';
+      const union = fromKey(input);
+      const res = union.formated({ totalColumns: 10, totalRows: 10 });
+      const keys = res.ranges.map(range => range.key).join(', ');
+      expect(keys).to.eql(input);
+    });
+
+    it('adjusts rows/columns', () => {
+      const test = (input: string, output: string) => {
+        const union = fromKey(input);
+        const res = union.formated({ totalColumns: 10, totalRows: 10 });
+        const keys = res.ranges.map(range => range.key).join(', ');
+        expect(keys).to.eql(output);
+      };
+
+      test('A1:A10', 'A:A');
+      test('A1:B10', 'A:B');
+      test('A1:F10', 'A:F');
+
+      test('A1:J1', '1:1');
+      test('A1:J2', '1:2');
+      test('A1:J9', '1:9');
+
+      test('A1:A10, B1:B10', 'A:A, B:B');
+      test('A1:A10, A1:J1', 'A:A, 1:1');
+      test('A1:A10, A1:J1, B2:C4', 'A:A, 1:1, B2:C4');
+    });
+  });
 });
