@@ -194,6 +194,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       grid.rows = next.rows || {};
       redraw = true;
     }
+
     if (redraw) {
       this.redraw();
     }

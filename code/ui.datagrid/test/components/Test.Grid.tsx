@@ -26,14 +26,14 @@ import {
 } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
-const { DEFAULT } = constants;
-
 export type ITestGridProps = {
   editorType: t.TestEditorType;
   style?: GlamorValue;
 };
 export type ITestGridState = {
   data?: any;
+  totalColumns?: number;
+  totalRows?: number;
 };
 
 export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState> {
@@ -167,6 +167,14 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           <div {...styles.leftTop}>
             {this.button('redraw', () => this.grid.redraw())}
             {this.button('focus', () => this.grid.focus())}
+            {this.button('total row/columns', () => {
+              if (typeof this.state.totalColumns === 'number') {
+                this.state$.next({ totalColumns: undefined, totalRows: undefined });
+              } else {
+                this.state$.next({ totalColumns: 5, totalRows: 5 });
+              }
+              // this.grid.focus();
+            })}
             <Hr margin={5} />
             {this.button('values', () => (this.grid.values = { A1: 'loaded value' }))}
             {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
@@ -249,6 +257,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
               style={styles.grid}
               editorType={this.props.editorType}
               events$={this.events$}
+              totalColumns={this.state.totalColumns}
+              totalRows={this.state.totalRows}
             />
           </div>
         </div>
