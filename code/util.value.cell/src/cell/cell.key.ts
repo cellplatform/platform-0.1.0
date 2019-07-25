@@ -120,6 +120,38 @@ export function isRangeKey(key: string) {
 }
 
 /**
+ * Converts a cell-key into it's corresponding COLUMN part (eg "A1" => "A").
+ */
+export function toColumnKey(input: CellInput) {
+  const cell = toCell(input);
+  return cell.column === -1 ? '' : cell.row === -1 ? cell.key : toKey(cell.column, undefined);
+}
+
+/**
+ * Converts a cell-key into it's corresponding ROW part (eg "A1" => "1").
+ */
+export function toRowKey(input: CellInput) {
+  const cell = toCell(input);
+  return cell.row === -1 ? '' : cell.column === -1 ? cell.key : toKey(undefined, cell.row);
+}
+
+/**
+ * Converts a cell-key into it's corresponding COLUMN range (eg. "A3" => "A:A").
+ */
+export function toColumnRangeKey(input: CellInput) {
+  const key = toColumnKey(input);
+  return key ? `${key}:${key}` : '';
+}
+
+/**
+ * Converts a cell-key into it's corresponding ROW range (eg. "A3" => "3:3").
+ */
+export function toRowRangeKey(input: CellInput) {
+  const key = toRowKey(input);
+  return key ? `${key}:${key}` : '';
+}
+
+/**
  * Converts the given key to a type.
  */
 export function toType(cell: CellInput): t.CoordCellType | undefined {

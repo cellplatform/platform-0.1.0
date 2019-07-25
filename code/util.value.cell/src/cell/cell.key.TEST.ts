@@ -251,3 +251,49 @@ describe('sort', () => {
     expect(rows).to.eql(sorted.byRow);
   });
 });
+
+describe('to column/row', () => {
+  it('toColumnKey', () => {
+    const test = (input: CellInput, output: string) => {
+      const res = cell.toColumnKey(input);
+      expect(res).to.eql(output);
+    };
+    test('A', 'A');
+    test('A3', 'A');
+    test('1', '');
+    test(1, '');
+  });
+
+  it('toRowKey', () => {
+    const test = (input: CellInput, output: string) => {
+      const res = cell.toRowKey(input);
+      expect(res).to.eql(output);
+    };
+    test('A', '');
+    test('A3', '3');
+    test('1', '1');
+    test(1, '1');
+  });
+
+  it('toColumnRangeKey', () => {
+    const test = (input: CellInput, output: string) => {
+      const res = cell.toColumnRangeKey(input);
+      expect(res).to.eql(output);
+    };
+    test('A3', 'A:A');
+    test('A', 'A:A');
+    test('1', '');
+    test(1, '');
+  });
+
+  it('toRowRangeKey', () => {
+    const test = (input: CellInput, output: string) => {
+      const res = cell.toRowRangeKey(input);
+      expect(res).to.eql(output);
+    };
+    test('A3', '3:3');
+    test('A', '');
+    test('1', '1:1');
+    test(1, '1:1');
+  });
+});
