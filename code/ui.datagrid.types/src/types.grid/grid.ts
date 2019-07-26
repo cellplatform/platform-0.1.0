@@ -16,7 +16,7 @@ export type IGridProperties = {
   values: t.IGridValues;
   columns: IGridColumns;
   rows: IGridRows;
-  borders: IGridBorder[];
+  // borders: IGridBorder[];
 };
 export type IGridMethods = {
   dispose(): void;
@@ -52,14 +52,14 @@ export type IGridRows = { [key: string]: IGridRow };
 export type IGridColumn = { width?: number };
 export type IGridRow = { height?: number };
 
-export type IGridBorder = {
-  range: string;
-  style: IGridBorderStyle | IGridBorderEdgeStyles;
-};
-export type IGridBorderStyle = { color: string; width?: number };
-export type IGridBorderEdgeStyles = {
-  top: IGridBorderStyle;
-  right: IGridBorderStyle;
-  bottom: IGridBorderStyle;
-  left: IGridBorderStyle;
-};
+// export type IGridBorder = {
+//   range: string;
+//   style: IGridBorderStyle | IGridBorderEdgeStyles;
+// };
+// export type IGridBorderStyle = { color: string; width?: number };
+// export type IGridBorderEdgeStyles = {
+//   top: IGridBorderStyle;
+//   right: IGridBorderStyle;
+//   bottom: IGridBorderStyle;
+//   left: IGridBorderStyle;
+// };

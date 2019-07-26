@@ -109,7 +109,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    */
   public updateState() {
     const grid = this.grid;
-    const { selection, values, rows, columns, borders } = grid;
+    const { selection, values, rows, columns } = grid;
     const { editorType } = this.props;
     const data = {
       grid: {
@@ -118,7 +118,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         rows,
         columns,
         selection,
-        borders,
       },
       debug: { editorType },
     };
@@ -221,7 +220,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
                 cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
               }),
             )}
-            <Hr margin={5} />
+            {/* <Hr margin={5} />
             {this.button(
               'changeBorders - B2:D4 (red)',
               () => (this.grid.borders = [{ range: 'B2:D4', style: { width: 2, color: 'red' } }]),
@@ -246,7 +245,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
                   },
                 ]),
             )}
-            {this.button('changeBorders (clear)', () => (this.grid.borders = []))}
+            {this.button('changeBorders (clear)', () => (this.grid.borders = []))} */}
           </div>
           {this.renderState()}
         </div>

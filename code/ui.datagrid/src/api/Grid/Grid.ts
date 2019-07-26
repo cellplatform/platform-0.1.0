@@ -306,71 +306,71 @@ export class Grid implements t.IGrid {
   /**
    * Custom border styles for cell ranges.
    */
-  public get borders(): t.IGridBorder[] {
-    const settings = this._.table.getSettings();
-    const current = settings.customBorders;
-    if (!Array.isArray(current)) {
-      return [];
-    }
-    return current.map(item => {
-      const from = coord.cell.toKey(item.range.from.col, item.range.from.row);
-      const to = coord.cell.toKey(item.range.to.col, item.range.to.row);
-      const range = `${from}:${to}`;
+  // public get borders(): t.IGridBorder[] {
+  //   const settings = this._.table.getSettings();
+  //   const current = settings.customBorders;
+  //   if (!Array.isArray(current)) {
+  //     return [];
+  //   }
+  //   return current.map(item => {
+  //     const from = coord.cell.toKey(item.range.from.col, item.range.from.row);
+  //     const to = coord.cell.toKey(item.range.to.col, item.range.to.row);
+  //     const range = `${from}:${to}`;
 
-      const { top, right, bottom, left } = item;
-      const all = [top, right, bottom, left];
-      const allEqual = all.every(a => all.every(b => R.equals(a, b)));
+  //     const { top, right, bottom, left } = item;
+  //     const all = [top, right, bottom, left];
+  //     const allEqual = all.every(a => all.every(b => R.equals(a, b)));
 
-      const border: t.IGridBorder = {
-        range,
-        style: allEqual ? top : { top, right, bottom, left },
-      };
-      return border;
-    });
-  }
-  public set borders(borders: t.IGridBorder[]) {
-    const from = this.borders;
-    const table = this._.table;
+  //     const border: t.IGridBorder = {
+  //       range,
+  //       style: allEqual ? top : { top, right, bottom, left },
+  //     };
+  //     return border;
+  //   });
+  // }
+  // public set borders(borders: t.IGridBorder[]) {
+  //   const from = this.borders;
+  //   const table = this._.table;
 
-    // Check for no change.
-    if (borders.length === 0) {
-      table.updateSettings({ customBorders: false }, false);
-      this.fire({ type: 'GRID/borders/changed', payload: { from, to: this.borders } });
-      return;
-    }
+  //   // Check for no change.
+  //   if (borders.length === 0) {
+  //     table.updateSettings({ customBorders: false }, false);
+  //     this.fire({ type: 'GRID/borders/changed', payload: { from, to: this.borders } });
+  //     return;
+  //   }
 
-    // Convert input into format Handsontable understands.
-    const toRange = (input: string) => {
-      const range = coord.range.fromKey(input);
-      const { left, right } = range;
-      return {
-        from: { row: left.row, col: left.column },
-        to: { row: right.row, col: right.column },
-      };
-    };
-    const toStyles = (input: t.IGridBorder['style']) => {
-      if (typeof (input as t.IGridBorderEdgeStyles).top === 'object') {
-        return input as t.IGridBorderEdgeStyles;
-      }
-      const style = input as t.IGridBorderStyle;
-      return { top: style, right: style, bottom: style, left: style };
-    };
+  //   // Convert input into format Handsontable understands.
+  //   const toRange = (input: string) => {
+  //     const range = coord.range.fromKey(input);
+  //     const { left, right } = range;
+  //     return {
+  //       from: { row: left.row, col: left.column },
+  //       to: { row: right.row, col: right.column },
+  //     };
+  //   };
+  //   const toStyles = (input: t.IGridBorder['style']) => {
+  //     if (typeof (input as t.IGridBorderEdgeStyles).top === 'object') {
+  //       return input as t.IGridBorderEdgeStyles;
+  //     }
+  //     const style = input as t.IGridBorderStyle;
+  //     return { top: style, right: style, bottom: style, left: style };
+  //   };
 
-    const toBorders = (items: t.IGridBorder[]) => {
-      return items.map(item => {
-        const range = toRange(item.range);
-        return { range, ...toStyles(item.style) };
-      });
-    };
-    const update = (items: t.IGridBorder[]) => {
-      const customBorders = toBorders(items);
-      table.updateSettings({ customBorders }, false);
-    };
+  //   const toBorders = (items: t.IGridBorder[]) => {
+  //     return items.map(item => {
+  //       const range = toRange(item.range);
+  //       return { range, ...toStyles(item.style) };
+  //     });
+  //   };
+  //   const update = (items: t.IGridBorder[]) => {
+  //     const customBorders = toBorders(items);
+  //     table.updateSettings({ customBorders }, false);
+  //   };
 
-    // Update table.
-    update(borders);
-    this.fire({ type: 'GRID/borders/changed', payload: { from, to: borders } });
-  }
+  //   // Update table.
+  //   update(borders);
+  //   this.fire({ type: 'GRID/borders/changed', payload: { from, to: borders } });
+  // }
 
   /**
    * [Methods]

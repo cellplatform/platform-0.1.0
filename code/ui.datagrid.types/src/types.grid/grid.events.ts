@@ -18,7 +18,7 @@ export type GridEvent =
   | IGridFocusEvent
   | IGridBlurEvent
   | IGridClipboardEvent
-  | IGridBordersChangedEvent
+  // | IGridBordersChangedEvent
   | IGridUndoEvent;
 
 export type IGridReadyEvent = {
@@ -138,14 +138,14 @@ export type IRowChange = {
 /**
  * Borders.
  */
-export type IGridBordersChangedEvent = {
-  type: 'GRID/borders/changed';
-  payload: IGridBordersChanged;
-};
-export type IGridBordersChanged = {
-  from: t.IGridBorder[];
-  to: t.IGridBorder[];
-};
+// export type IGridBordersChangedEvent = {
+//   type: 'GRID/borders/changed';
+//   payload: IGridBordersChanged;
+// };
+// export type IGridBordersChanged = {
+//   from: t.IGridBorder[];
+//   to: t.IGridBorder[];
+// };
 
 /**
  * Selection.
