@@ -129,14 +129,6 @@ export class Sync implements t.IDisposable {
       const columns = e.filter(({ type }) => type === 'COLUMN');
       const rows = e.filter(({ type }) => type === 'ROW');
 
-      if (cells.length > 0) {
-        const changes = cells.reduce((acc, next) => {
-          acc[next.key] = next.value;
-          return acc;
-        }, {});
-        this.grid.changeValues(changes, { redraw: true });
-      }
-
       if (columns.length > 0) {
         const changes = columns.reduce((acc, next) => {
           acc[next.key] = next.value;
@@ -151,6 +143,14 @@ export class Sync implements t.IDisposable {
           return acc;
         }, {});
         grid.changeRows(changes);
+      }
+
+      if (cells.length > 0) {
+        const changes = cells.reduce((acc, next) => {
+          acc[next.key] = next.value;
+          return acc;
+        }, {});
+        this.grid.changeValues(changes, { redraw: true });
       }
 
       grid.redraw();
