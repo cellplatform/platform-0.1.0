@@ -327,52 +327,57 @@ export class CellRange {
    * API for determing boolean values about the range.
    */
   public get is() {
-    const axis = (axis: t.CoordAxis, total: number) => {
-      const left = this.left;
-      const right = this.right;
-      const type = this.type;
-
-      if (axis === 'COLUMN') {
-        if (type === 'COLUMN') {
-          return true;
-        }
-        if (left.row > 0) {
-          return false;
-        }
-        if (type !== 'PARTIAL_ALL' && right.row + 1 < total) {
-          return false;
-        }
-      }
-      if (axis === 'ROW') {
-        if (type === 'ROW') {
-          return true;
-        }
-        if (left.column > 0) {
-          return false;
-        }
-        if (type !== 'PARTIAL_ALL' && right.column + 1 < total) {
-          return false;
-        }
-      }
-
-      return true;
-    };
-
-    return {
+    const res = {
       /**
        * Determines if the range is a complete column.
        */
       column: (totalRows: number) => {
-        return axis('COLUMN', totalRows);
+        return res.axis('COLUMN', totalRows);
       },
 
       /**
        * Determines if the range is a complete row.
        */
       row: (totalColumns: number) => {
-        return axis('ROW', totalColumns);
+        return res.axis('ROW', totalColumns);
+      },
+
+      /**
+       * Determines if the range is a complete axis (ROW/COLUMN).
+       */
+      axis: (axis: t.CoordAxis, total: number) => {
+        const left = this.left;
+        const right = this.right;
+        const type = this.type;
+
+        if (axis === 'COLUMN') {
+          if (type === 'COLUMN') {
+            return true;
+          }
+          if (left.row > 0) {
+            return false;
+          }
+          if (type !== 'PARTIAL_ALL' && right.row + 1 < total) {
+            return false;
+          }
+        }
+        if (axis === 'ROW') {
+          if (type === 'ROW') {
+            return true;
+          }
+          if (left.column > 0) {
+            return false;
+          }
+          if (type !== 'PARTIAL_ALL' && right.column + 1 < total) {
+            return false;
+          }
+        }
+
+        return true;
       },
     };
+
+    return res;
   }
 
   /**
