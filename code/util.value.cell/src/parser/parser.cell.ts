@@ -1,8 +1,10 @@
-import { value, CoordCellType } from '../common';
+import { R, value, CoordCellType } from '../common';
 import { alpha } from '../alpha';
 import { ast } from '../ast';
 
-export function toParts(input: string, options: { uriPrefix?: string } = {}) {
+export const toParts = R.memoizeWith(R.identity, parse);
+
+function parse(input: string, options: { uriPrefix?: string } = {}) {
   const { uriPrefix = 'uri' } = options;
   const DEFAULT_RELATIVE = true as boolean | undefined;
   const result = {

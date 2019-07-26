@@ -1,7 +1,11 @@
+import { R } from '../common';
+
+export const toRangeParts = R.memoizeWith(R.identity, parse);
+
 /**
  * Extracts constituent parts from a range key.
  */
-export function toRangeParts(value: string) {
+export function parse(value: string) {
   if (value === undefined) {
     throw new Error(`Cannot parse range, key value not provided.`);
   }
