@@ -149,6 +149,10 @@ describe('CellRangeUnion', () => {
       };
       test('A1:A1', 'A1:A1');
       test('C4:B2,B3:A1', 'A1:C4');
+      test('C:C', 'C:C');
+      test('C:C,A:A', 'A:C');
+      test('1:1', '1:1');
+      test('5:5, 1:1', '1:5');
     });
   });
 
@@ -276,6 +280,90 @@ describe('CellRangeUnion', () => {
       edge('C3', RANGE, ['RIGHT']);
       edge('C4', RANGE, ['RIGHT', 'BOTTOM']);
       edge('C5', RANGE, []);
+    });
+  });
+
+  describe('filter', () => {
+    it('filters on columns', () => {
+      const union = fromKey('  A1:A10, B3:B10, C:C ');
+      const res = union.filter(range => range.is.column(10));
+
+      expect(res).to.not.equal(union); // NB: Different instance.
+      expect(res.length).to.eql(2);
+
+      const square = res.square;
+      expect(square && square.left.key).to.eql('A1');
+      expect(square && square.right.key).to.eql('C');
+    });
+
+    it('no change', () => {
+      const union = fromKey('  A1:A10, B3:B10, C:C ');
+      const res = union.filter(range => true);
+      expect(res).to.not.equal(union); // NB: Different instance.
+      expect(res.toString()).to.eql(res.toString());
+    });
+  });
+
+  describe('formatted', () => {
+    it('no change', () => {
+      const input = 'A2:A10, B4:J4';
+      const union = fromKey(input);
+      const res = union.formated({ totalColumns: 10, totalRows: 10 });
+      const keys = res.ranges.map(range => range.key).join(', ');
+      expect(keys).to.eql(input);
+    });
+
+    it('adjusts rows/columns', () => {
+      const test = (input: string, output: string) => {
+        const union = fromKey(input);
+        const res = union.formated({ totalColumns: 10, totalRows: 10 });
+        const keys = res.ranges.map(range => range.key).join(', ');
+        expect(keys).to.eql(output);
+      };
+
+      test('A1:A10', 'A:A');
+      test('A1:B10', 'A:B');
+      test('A1:F10', 'A:F');
+
+      test('A1:J1', '1:1');
+      test('A1:J2', '1:2');
+      test('A1:J9', '1:9');
+
+      test('A1:A10, B1:B10', 'A:A, B:B');
+      test('A1:A10, A1:J1', 'A:A, 1:1');
+      test('A1:A10, A1:J1, B2:C4', 'A:A, 1:1, B2:C4');
+    });
+  });
+
+  describe('axis', () => {
+    it('axis.keys', () => {
+      const test = (axis: t.CoordAxis, input: string, output: string[]) => {
+        const union = fromKey(input);
+        expect(union.axis(axis).keys).to.eql(output);
+      };
+      test('COLUMN', 'A:B', ['A', 'B']);
+      test('COLUMN', 'A:B, A:C, C:D, B2:D5', ['A', 'B', 'C', 'D']);
+
+      test('ROW', '1:2', ['1', '2']);
+      test('ROW', '1:3, 2:4, B2:Z5', ['1', '2', '3', '4', '5']);
+    });
+
+    it('column.keys', () => {
+      const test = (input: string, output: string[]) => {
+        const union = fromKey(input);
+        expect(union.column.keys).to.eql(output);
+      };
+      test('A:B', ['A', 'B']);
+      test('A:B, A:C, C:D, B2:D5', ['A', 'B', 'C', 'D']);
+    });
+
+    it('row.keys', () => {
+      const test = (input: string, output: string[]) => {
+        const union = fromKey(input);
+        expect(union.row.keys).to.eql(output);
+      };
+      test('1:2', ['1', '2']);
+      test('1:3, 2:4, B2:Z5', ['1', '2', '3', '4', '5']);
     });
   });
 });

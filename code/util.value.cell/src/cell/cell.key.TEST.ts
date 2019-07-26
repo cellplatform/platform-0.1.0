@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { cell } from '.';
+import { t } from '../common';
 
 type CellInput = string | number | { column?: number; row?: number } | { key: string };
 
@@ -73,7 +74,8 @@ describe('toCell', () => {
     test('$A1', '$A1', 0, 0);
     test('A', 'A', 0, -1);
     test('1', '1', -1, 0);
-    test(1, '1', -1, 0);
+    test(0, '1', -1, 0);
+    test(1, '2', -1, 1);
     test({ column: 0, row: 0 }, 'A1', 0, 0);
     test({ column: 0 }, 'A', 0, -1);
     test({ row: 0 }, '1', -1, 0);
@@ -249,5 +251,106 @@ describe('sort', () => {
 
     expect(columns).to.eql(sorted.byColumn);
     expect(rows).to.eql(sorted.byRow);
+  });
+});
+
+describe('to column/row', () => {
+  it('toAxisIndex', () => {
+    const test = (axis: t.CoordAxis, input: CellInput, output: number) => {
+      const res = cell.toAxisIndex(axis, input);
+      expect(res).to.eql(output);
+    };
+    test('COLUMN', 'A', 0);
+    test('COLUMN', 'A3', 0);
+    test('COLUMN', '1', -1);
+    test('COLUMN', 1, -1);
+
+    test('ROW', 'A3', 2);
+    test('ROW', '3', 2);
+    test('ROW', 2, 2);
+  });
+
+  it('toAxisKey', () => {
+    const test = (axis: t.CoordAxis, input: CellInput, output: string) => {
+      const res = cell.toAxisKey(axis, input);
+      expect(res).to.eql(output);
+    };
+    test('COLUMN', 'A', 'A');
+    test('COLUMN', 'A3', 'A');
+    test('COLUMN', '1', ''); // Row - not valid.
+    test('COLUMN', 0, 'A');
+    test('COLUMN', 1, 'B');
+
+    test('ROW', 'A', ''); // Column - not valid.
+    test('ROW', 'A3', '3');
+    test('ROW', '1', '1');
+    test('ROW', 0, '1');
+    test('ROW', 1, '2');
+  });
+
+  it('toColumnKey', () => {
+    const test = (input: CellInput, output: string) => {
+      const res = cell.toColumnKey(input);
+      expect(res).to.eql(output);
+    };
+    test('A', 'A');
+    test('A3', 'A');
+    test('1', ''); // Row - not valid.
+    test(0, 'A');
+    test(1, 'B');
+  });
+
+  it('toRowKey', () => {
+    const test = (input: CellInput, output: string) => {
+      const res = cell.toRowKey(input);
+      expect(res).to.eql(output);
+    };
+    test('A', ''); // Column - not valid.
+    test('A3', '3');
+    test('1', '1');
+    test(0, '1');
+    test(1, '2');
+  });
+
+  it('toAxisRangeKey', () => {
+    const test = (axis: t.CoordAxis, input: CellInput, output: string) => {
+      const res = cell.toAxisRangeKey(axis, input);
+      expect(res).to.eql(output);
+    };
+    test('COLUMN', 'A3', 'A:A');
+    test('COLUMN', 'A', 'A:A');
+    test('COLUMN', '1', ''); // Row - not valid.
+    test('COLUMN', 0, 'A:A');
+    test('COLUMN', 1, 'B:B');
+
+    test('ROW', 'A3', '3:3');
+    test('ROW', 'A', ''); // Column - not valid.
+    test('ROW', '1', '1:1');
+    test('ROW', 0, '1:1');
+    test('ROW', 1, '2:2');
+  });
+
+  it('toColumnRangeKey', () => {
+    const test = (input: CellInput, output: string) => {
+      const res = cell.toColumnRangeKey(input);
+      expect(res).to.eql(output);
+    };
+    test('A3', 'A:A');
+    test('A', 'A:A');
+    test('1', ''); // Row - not valid.
+    test(0, 'A:A');
+    test(1, 'B:B');
+  });
+
+  it('toRowRangeKey', () => {
+    const test = (input: CellInput, output: string) => {
+      const res = cell.toRowRangeKey(input);
+      expect(res).to.eql(output);
+    };
+    test('A3', '3:3');
+    test('A', ''); // Column - not valid.
+    test('1', '1:1');
+    test(0, '1:1');
+    test(1, '2:2');
   });
 });

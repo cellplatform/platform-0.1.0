@@ -18,6 +18,8 @@ export type DataGrid = datagrid.DataGrid;
 export type ITestGridViewProps = {
   events$?: Subject<t.GridEvent>;
   editorType: t.TestEditorType;
+  totalColumns?: number;
+  totalRows?: number;
   style?: GlamorValue;
   Table?: Handsontable;
 };
@@ -138,6 +140,8 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
    * [Render]
    */
   public render() {
+    const { totalColumns, totalRows } = this.props;
+
     return (
       <datagrid.DataGrid
         key={'test.grid'}
@@ -148,8 +152,8 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         events$={this.events$}
         factory={this.factory}
         // defaults={{ rowHeight: 200 }}
-        // totalColumns={10}
-        // totalRows={10}
+        totalColumns={totalColumns}
+        totalRows={totalRows}
         Handsontable={this.Table}
         initial={{ selection: 'A1' }}
         style={this.props.style}

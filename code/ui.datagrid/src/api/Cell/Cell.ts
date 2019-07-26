@@ -1,4 +1,4 @@
-import { t, R, coord } from '../../common';
+import { coord, R, t } from '../../common';
 
 /**
  * API for accessing and manipulating a cell.
@@ -29,10 +29,21 @@ export class Cell implements t.ICell {
     return typeof ref === 'string' ? Cell.fromKey(ref) : ref;
   }
 
-  public static toRangePositions(rangeKey: string) {
-    const parts = coord.parser.toRangeParts(rangeKey);
-    const start = Cell.toPosition(parts.left);
-    const end = Cell.toPosition(parts.right);
+  public static toRangePositions(args: { range: string; totalColumns: number; totalRows: number }) {
+    const range = coord.range.fromKey(args.range);
+    const start = range.left;
+    const end = range.right;
+
+    if (range.type === 'COLUMN') {
+      start.row = 0;
+      end.row = args.totalRows - 1;
+    }
+
+    if (range.type === 'ROW') {
+      start.column = 0;
+      end.column = args.totalColumns - 1;
+    }
+
     return { start, end };
   }
 

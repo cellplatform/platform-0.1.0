@@ -1,4 +1,4 @@
-export { coord } from '../common/libs';
+export * from '../common';
 
 /**
  * Extract the last path of a path, eg "bar" from "foo/bar".

@@ -83,7 +83,7 @@ export class CellRange {
    */
   public error: string | undefined;
 
-  private internal: {
+  private readonly _: {
     key?: string;
     square?: CellRange;
     cellKeys?: string[];
@@ -95,7 +95,7 @@ export class CellRange {
   private constructor(options: { key: string }) {
     // Setup initial conditions.
     const key = options.key.replace(/^[\s\=\!]*/, '').trimRight();
-    this.internal.key = key;
+    this._.key = key;
     this.isValid = true;
 
     // Parse the key into constituent parts.
@@ -182,6 +182,14 @@ export class CellRange {
    * [Properties]
    */
 
+  public get column() {
+    return this.axis('COLUMN');
+  }
+
+  public get row() {
+    return this.axis('ROW');
+  }
+
   /**
    * Retrieves a sorted array of cell-keys for the range square
    * (eg. [A1, A2, B1...]).
@@ -192,11 +200,11 @@ export class CellRange {
    *      not incur the cost of calcualting the set of keys.
    */
   public get keys(): string[] {
-    if (this.internal.cellKeys) {
-      return this.internal.cellKeys;
+    if (this._.cellKeys) {
+      return this._.cellKeys;
     }
     const done = (result: string[]) => {
-      this.internal.cellKeys = result;
+      this._.cellKeys = result;
       return result;
     };
 
@@ -238,8 +246,8 @@ export class CellRange {
    */
   public get square() {
     // Reuse existing square if already calculated.
-    if (this.internal.square) {
-      return this.internal.square;
+    if (this._.square) {
+      return this._.square;
     }
 
     const toCellSquare = () => {
@@ -311,7 +319,7 @@ export class CellRange {
 
     const range = getRangeKey();
     const result = range === this.key ? this : CellRange.fromKey(range); // NB: Return same Range if already a square.
-    this.internal.square = result;
+    this._.square = result;
     return result;
   }
 
@@ -319,45 +327,57 @@ export class CellRange {
    * API for determing boolean values about the range.
    */
   public get is() {
-    const axis = (axis: 'COLUMN' | 'ROW', total: number) => {
-      const left = this.left;
-      const right = this.right;
-      const type = this.type;
-
-      if (axis === 'COLUMN') {
-        if (left.row > 0) {
-          return false;
-        }
-        if (type !== 'PARTIAL_ALL' && right.row + 1 < total) {
-          return false;
-        }
-      }
-      if (axis === 'ROW') {
-        if (left.column > 0) {
-          return false;
-        }
-        if (type !== 'PARTIAL_ALL' && right.column + 1 < total) {
-          return false;
-        }
-      }
-      return true;
-    };
-
-    return {
+    const res = {
       /**
        * Determines if the range is a complete column.
        */
       column: (totalRows: number) => {
-        return axis('COLUMN', totalRows);
+        return res.axis('COLUMN', totalRows);
       },
 
       /**
        * Determines if the range is a complete row.
        */
       row: (totalColumns: number) => {
-        return axis('ROW', totalColumns);
+        return res.axis('ROW', totalColumns);
+      },
+
+      /**
+       * Determines if the range is a complete axis (ROW/COLUMN).
+       */
+      axis: (axis: t.CoordAxis, total: number) => {
+        const left = this.left;
+        const right = this.right;
+        const type = this.type;
+
+        if (axis === 'COLUMN') {
+          if (type === 'COLUMN') {
+            return true;
+          }
+          if (left.row > 0) {
+            return false;
+          }
+          if (type !== 'PARTIAL_ALL' && right.row + 1 < total) {
+            return false;
+          }
+        }
+        if (axis === 'ROW') {
+          if (type === 'ROW') {
+            return true;
+          }
+          if (left.column > 0) {
+            return false;
+          }
+          if (type !== 'PARTIAL_ALL' && right.column + 1 < total) {
+            return false;
+          }
+        }
+
+        return true;
       },
     };
+
+    return res;
   }
 
   /**
@@ -530,10 +550,81 @@ export class CellRange {
   }
 
   /**
+   * Formats range keys based on table size, returning a new [Range] object.
+   */
+  public formated(args: { totalColumns: number; totalRows: number }) {
+    if (this.is.column(args.totalRows)) {
+      const left = cell.toKey(this.left.column, undefined);
+      const right = cell.toKey(this.right.column, undefined);
+      return CellRange.fromKey(`${left}:${right}`);
+    }
+    if (this.is.row(args.totalColumns)) {
+      const left = cell.toKey(undefined, this.left.row);
+      const right = cell.toKey(undefined, this.right.row);
+      return CellRange.fromKey(`${left}:${right}`);
+    }
+    return this; // No change.
+  }
+
+  /**
+   * Converts the range to a width/height size.
+   */
+  public toSize(args: { totalColumns: number; totalRows: number }) {
+    const { totalColumns, totalRows } = args;
+
+    const square = this.square;
+    const start = square.left;
+    const end = square.right;
+
+    const startColumn = Math.max(0, start.column);
+    const endColumn = Math.min(end.column, totalColumns - 1);
+
+    const startRow = Math.max(0, start.row);
+    const endRow = Math.min(end.row, totalRows - 1);
+
+    const width = start.column === -1 ? totalColumns : endColumn - startColumn + 1;
+    const height = start.row === -1 ? totalRows : endRow - startRow + 1;
+
+    return { width, height };
+  }
+
+  /**
+   * Retrieves details about a single axis (COLUMN/ROW).
+   */
+  public axis(axis: t.CoordAxis) {
+    const self = this; // tslint:disable-line
+
+    const res = {
+      get left() {
+        return axis === 'COLUMN' ? self.left.column : self.left.row;
+      },
+
+      get right() {
+        return axis === 'COLUMN' ? self.right.column : self.right.row;
+      },
+
+      /**
+       * Retrieves the ROW or COLUMN keys represented by the range.
+       */
+      get keys(): string[] {
+        const start = res.left;
+        const end = res.right;
+        return start < 0 || end < 0
+          ? []
+          : Array.from({ length: end + 1 - start })
+              .map((v, i) => i + start)
+              .map(i => cell.toAxisKey(axis, i) as string);
+      },
+    };
+
+    return res;
+  }
+
+  /**
    * Converts the object into a representative string.
    */
   public toString() {
-    return !this.error ? `[${this.type}_RANGE/${this.key}]` : `[${this.error}]`;
+    return !this.error ? `[RANGE/${this.key}]` : `[${this.error}]`;
   }
 
   /**
@@ -543,7 +634,7 @@ export class CellRange {
     if (message.startsWith('INVALID')) {
       message = message.substr(message.indexOf('.') + 2);
     }
-    message = `INVALID RANGE "${this.internal.key}". ${message}`;
+    message = `INVALID RANGE "${this._.key}". ${message}`;
     this.isValid = false;
     this.error = message;
   }

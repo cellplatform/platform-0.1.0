@@ -12,11 +12,19 @@ import {
   distinctUntilChanged,
   debounceTime,
 } from 'rxjs/operators';
-import { constants, log, Button, color, css, GlamorValue, Hr, ObjectView, t, coord } from '../common';
+import {
+  constants,
+  log,
+  Button,
+  color,
+  css,
+  GlamorValue,
+  Hr,
+  ObjectView,
+  t,
+  coord,
+} from '../common';
 import { TestGridView } from './Test.Grid.view';
-
-const { DEFAULT } = constants;
-
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;
@@ -24,6 +32,8 @@ export type ITestGridProps = {
 };
 export type ITestGridState = {
   data?: any;
+  totalColumns?: number;
+  totalRows?: number;
 };
 
 export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState> {
@@ -157,6 +167,14 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           <div {...styles.leftTop}>
             {this.button('redraw', () => this.grid.redraw())}
             {this.button('focus', () => this.grid.focus())}
+            {this.button('total row/columns', () => {
+              if (typeof this.state.totalColumns === 'number') {
+                this.state$.next({ totalColumns: undefined, totalRows: undefined });
+              } else {
+                this.state$.next({ totalColumns: 5, totalRows: 5 });
+              }
+              // this.grid.focus();
+            })}
             <Hr margin={5} />
             {this.button('values', () => (this.grid.values = { A1: 'loaded value' }))}
             {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
@@ -185,6 +203,15 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
               this.grid.select({
                 cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
               }),
+            )}
+            {this.button('select column: B:B', () =>
+              this.grid.select({ cell: 'B1', ranges: ['B:B'] }),
+            )}
+            {this.button('select row: 3:3', () =>
+              this.grid.select({ cell: 'A3', ranges: ['3:3'] }),
+            )}
+            {this.button('select row and column', () =>
+              this.grid.select({ cell: 'B1', ranges: ['3:3', 'B:B'], scrollToCell: false }),
             )}
             <Hr margin={5} />
             {this.button('scrollTo: A1', () => this.grid.scrollTo({ cell: 'A1' }))}
@@ -230,6 +257,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
               style={styles.grid}
               editorType={this.props.editorType}
               events$={this.events$}
+              totalColumns={this.state.totalColumns}
+              totalRows={this.state.totalRows}
             />
           </div>
         </div>

@@ -51,6 +51,15 @@ export class CellRangeUnion {
   /**
    * [Properties]
    */
+
+  public get column() {
+    return this.axis('COLUMN');
+  }
+
+  public get row() {
+    return this.axis('ROW');
+  }
+
   /**
    * Retrieves the number of ranges within the set.
    */
@@ -90,7 +99,11 @@ export class CellRangeUnion {
    * Creates a range enclosing all ranges in the union (top-left to bottom-right).
    */
   public get square() {
-    const keys = this.keys;
+    let keys = this.ranges.reduce(
+      (acc, next) => [...acc, next.left.key, next.right.key],
+      [] as string[],
+    );
+    keys = cell.sort(keys);
     return keys.length === 0 ? undefined : CellRange.fromCells(keys[0], keys[keys.length - 1]);
   }
 
@@ -178,12 +191,45 @@ export class CellRangeUnion {
       });
     });
 
-    return (
-      Object
-        // Reduce map to final set of [CellEdge] items.
-        .keys(map)
-        .filter(key => map[key].within.length > 0) as t.CoordEdge[]
-    );
+    return Object
+      // Reduce map to final set of [CellEdge] items.
+      .keys(map)
+      .filter(key => map[key].within.length > 0) as t.CoordEdge[];
+  }
+
+  /**
+   * Filters the set of ranges returning a new [CellRangeUnion].
+   */
+  public filter(fn: (range: CellRange, i: number) => boolean) {
+    const keys = this.ranges.filter((range, i) => fn(range, i)).map(range => range.key);
+    return CellRangeUnion.fromKey(keys);
+  }
+
+  /**
+   * Formats range keys based on table size, returning a new [Range] object.
+   */
+  public formated(args: { totalColumns: number; totalRows: number }) {
+    const keys = this.ranges.map(range => range.formated(args)).map(range => range.key);
+    return CellRangeUnion.fromKey(keys);
+  }
+
+  /**
+   * Retrieves details about a single axis (COLUMN/ROW).
+   */
+  public axis(axis: t.CoordAxis) {
+    const self = this; // tslint:disable-line
+
+    const res = {
+      /**
+       * Retrieves the ROW or COLUMN keys represented by the ranges (de-duped).
+       */
+      get keys(): string[] {
+        const keys = R.flatten<string>(self.ranges.map(range => range.axis(axis).keys));
+        return R.uniq(keys);
+      },
+    };
+
+    return res;
   }
 
   /**
@@ -192,6 +238,6 @@ export class CellRangeUnion {
   public toString() {
     const square = this.square;
     const keys = square ? square.key : '[]';
-    return `[union(${this.length}):${keys}]`;
+    return `[UNION(${this.length})/${keys}]`;
   }
 }

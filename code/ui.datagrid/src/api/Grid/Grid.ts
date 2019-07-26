@@ -1,9 +1,9 @@
 import { Subject } from 'rxjs';
-import { filter, map, share, takeUntil, debounceTime } from 'rxjs/operators';
+import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { coord, t, value as valueUtil, R, time, defaultValue } from '../../common';
-import { Cell } from '../Cell';
+import { coord, defaultValue, R, t, value as valueUtil } from '../../common';
 import { DEFAULT } from '../../common/constants';
+import { Cell } from '../Cell';
 import { keyboard } from './keyboard';
 
 export type IGridArgs = {
@@ -263,6 +263,23 @@ export class Grid implements t.IGrid {
       }
     }
 
+    // Format and de-dupe ranges.
+    if (ranges.length > 0) {
+      // Convert full row/columns selections to proper range syntax (eg "A:A" or "1:1").
+      const totalColumns = this.totalColumns;
+      const totalRows = this.totalRows;
+      const union = coord.range.union(ranges).formated({ totalColumns, totalRows });
+      ranges = union.ranges.map(range => range.key);
+
+      // Ensure the selected single "cell" is not included within the set of ranges.
+      if (cell) {
+        ranges = ranges.filter(range => range !== `${cell}:${cell}`);
+      }
+
+      // De-dupe.
+      ranges = R.uniq(ranges);
+    }
+
     // Finish up.
     let result: t.IGridSelection = { cell, ranges };
     result = all ? { ...result, all } : result;
@@ -484,12 +501,14 @@ export class Grid implements t.IGrid {
    * Selects the specific cell(s).
    */
   public select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }) {
+    const totalColumns = this.totalColumns;
+    const totalRows = this.totalRows;
     const table = this._.table;
     const scrollToCell = valueUtil.defaultValue(args.scrollToCell, true);
 
     // Select requested ranges.
     const ranges = (args.ranges || [])
-      .map(rangeKey => Cell.toRangePositions(rangeKey))
+      .map(range => Cell.toRangePositions({ range, totalColumns, totalRows }))
       .map(({ start, end }) => {
         return [start.row, start.column, end.row, end.column];
       });
@@ -499,6 +518,7 @@ export class Grid implements t.IGrid {
     const current = [pos.row, pos.column, pos.row, pos.column];
     const selection = [...ranges, current] as any;
     table.selectCells(selection, scrollToCell);
+
     return this;
   }
 

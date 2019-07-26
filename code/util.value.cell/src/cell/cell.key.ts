@@ -75,7 +75,7 @@ export function toCell(input: CellInput, options: { relative?: boolean } = {}): 
     //
     // Type: string/number.
     //
-    key = input.toString();
+    key = typeof input === 'number' ? (input + 1).toString() : input;
     const pos = fromKey(key);
     row = pos.row;
     column = pos.column;
@@ -120,6 +120,95 @@ export function isRangeKey(key: string) {
 }
 
 /**
+ * Converts a cell input into the index number for the given axis.
+ * eg:
+ *    COLUMN: "A3" => 0
+ *    ROW:    "A3" => 2
+ */
+export function toAxisIndex(axis: t.CoordAxis, input: CellInput) {
+  const cell = toCell(input);
+  switch (axis) {
+    case 'COLUMN':
+      return cell.column;
+    case 'ROW':
+      return cell.row;
+    default:
+      throw new Error(`Axis '${axis}' not supported.`);
+  }
+}
+
+/**
+ * Converts a cell input into it's corresponding axis (COLUMN/ROW),
+ * eg
+ *    COLUMN: "A1" => "A"
+ *    ROW:    "A1" => "1"
+ */
+export function toAxisKey(axis: t.CoordAxis, input: CellInput) {
+  switch (axis) {
+    case 'COLUMN':
+      return toColumnKey(input);
+    case 'ROW':
+      return toRowKey(input);
+    default:
+      throw new Error(`Axis '${axis}' not supported.`);
+  }
+}
+
+/**
+ * Converts a cell input into it's corresponding COLUMN part (eg "A1" => "A").
+ */
+export function toColumnKey(input: CellInput) {
+  if (typeof input === 'number') {
+    return alpha.toCharacter(input);
+  } else {
+    const cell = toCell(input);
+    return cell.column === -1 ? '' : cell.row === -1 ? cell.key : toKey(cell.column, undefined);
+  }
+}
+
+/**
+ * Converts a cell input into it's corresponding ROW part (eg "A1" => "1").
+ */
+export function toRowKey(input: CellInput) {
+  const cell = toCell(input);
+  return cell.row === -1 ? '' : cell.column === -1 ? cell.key : toKey(undefined, cell.row);
+}
+
+/**
+ * Converts a cell input into it's corresponding COLUMN/ROW range
+ * eg
+ *    COLUMN: "A3" => "A:A"
+ *    ROW:    "A3" => "3:3"
+ *
+ */
+export function toAxisRangeKey(axis: t.CoordAxis, input: CellInput) {
+  switch (axis) {
+    case 'COLUMN':
+      return toColumnRangeKey(input);
+    case 'ROW':
+      return toRowRangeKey(input);
+    default:
+      throw new Error(`Axis '${axis}' not supported.`);
+  }
+}
+
+/**
+ * Converts a cell input into it's corresponding COLUMN range (eg. "A3" => "A:A").
+ */
+export function toColumnRangeKey(input: CellInput) {
+  const key = toColumnKey(input);
+  return key ? `${key}:${key}` : '';
+}
+
+/**
+ * Converts a cell input into it's corresponding ROW range (eg. "A3" => "3:3").
+ */
+export function toRowRangeKey(input: CellInput) {
+  const key = toRowKey(input);
+  return key ? `${key}:${key}` : '';
+}
+
+/**
  * Converts the given key to a type.
  */
 export function toType(cell: CellInput): t.CoordCellType | undefined {
@@ -152,7 +241,7 @@ export function toType(cell: CellInput): t.CoordCellType | undefined {
  * A cell sorter comparison.
  */
 export const compare = {
-  by: (axis: 'COLUMN' | 'ROW') => (axis === 'COLUMN' ? compare.byColumn : compare.byRow),
+  by: (axis: t.CoordAxis) => (axis === 'COLUMN' ? compare.byColumn : compare.byRow),
   byColumn: (a: CellInput, b: CellInput) => comparer(a, b, { axis: 'COLUMN' }),
   byRow: (a: CellInput, b: CellInput) => comparer(a, b, { axis: 'ROW' }),
 };
@@ -160,7 +249,7 @@ export const compare = {
 export function comparer<T extends CellInput>(
   left: T,
   right: T,
-  options: { axis?: 'COLUMN' | 'ROW' } = {},
+  options: { axis?: t.CoordAxis } = {},
 ): -1 | 0 | 1 {
   const { axis: by = 'COLUMN' } = options;
   const a = toCell(left);
@@ -189,7 +278,7 @@ const compareNumber = (a: number, b: number) => (a === b ? 0 : a < b ? -1 : 1);
 /**
  * Sorts a list of cells.
  */
-export function sort<T extends CellInput>(list: T[], options: { by?: 'COLUMN' | 'ROW' } = {}) {
+export function sort<T extends CellInput>(list: T[], options: { by?: t.CoordAxis } = {}) {
   const axis = options.by || 'COLUMN';
   return [...list].sort(compare.by(axis));
 }
