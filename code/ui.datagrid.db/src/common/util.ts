@@ -19,6 +19,7 @@ export function toList(map: t.Map, transformKey?: TransformKey): t.List {
 export function toMap(list: t.List, transformKey?: TransformKey): t.Map {
   return list.reduce((acc, next) => {
     const key = transformKey ? transformKey(next.key) : next.key;
-    return { ...acc, [key]: next.value };
+    acc[key] = next.value;
+    return acc;
   }, {});
 }

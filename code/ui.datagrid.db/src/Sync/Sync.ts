@@ -130,17 +130,26 @@ export class Sync implements t.IDisposable {
       const rows = e.filter(({ type }) => type === 'ROW');
 
       if (cells.length > 0) {
-        const changes = cells.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {});
+        const changes = cells.reduce((acc, next) => {
+          acc[next.key] = next.value;
+          return acc;
+        }, {});
         this.grid.changeValues(changes, { redraw: true });
       }
 
       if (columns.length > 0) {
-        const changes = columns.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {});
+        const changes = columns.reduce((acc, next) => {
+          acc[next.key] = next.value;
+          return acc;
+        }, {});
         grid.changeColumns(changes);
       }
 
       if (rows.length > 0) {
-        const changes = rows.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {});
+        const changes = rows.reduce((acc, next) => {
+          acc[next.key] = next.value;
+          return acc;
+        }, {});
         grid.changeRows(changes);
       }
 
