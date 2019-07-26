@@ -1,29 +1,8 @@
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
-import {
-  constants,
-  log,
-  Button,
-  color,
-  css,
-  GlamorValue,
-  Hr,
-  ObjectView,
-  t,
-  coord,
-} from '../common';
+import { Button, color, css, GlamorValue, Hr, log, ObjectView, t, testData } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
 export type ITestGridProps = {
@@ -180,6 +159,11 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             {this.button('change values (via prop)', () =>
               this.test$.next({ values: { A1: 'happy' } }),
             )}
+            {this.button('values (large)', () => {
+              const data = testData({ totalColumns: 52, totalRows: 1000 });
+              this.grid.values = data.values;
+            })}
+
             <Hr margin={5} />
             {this.button('columns (width) - A:200', () =>
               this.test$.next({ columns: { A: { width: 200 } } }),

@@ -294,12 +294,14 @@ export class Grid implements t.IGrid {
     if (selection.all) {
       return this.values;
     }
-
     const values = this.values;
     const union = coord.range.union(this.selection.ranges);
     return union.keys.reduce((acc, key) => {
       const value = values[key];
-      return value === undefined ? acc : { ...acc, [key]: value };
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
     }, {});
   }
 
