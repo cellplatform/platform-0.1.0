@@ -16,13 +16,18 @@ export type IGridProperties = {
   values: t.IGridValues;
   columns: IGridColumns;
   rows: IGridRows;
-  // borders: IGridBorder[];
 };
 export type IGridMethods = {
   dispose(): void;
-  changeValues(changes: t.IGridValues, options?: { redraw?: boolean }): IGrid;
-  changeColumns(columns: t.IGridColumns, options?: { type?: t.IColumnChange['type'] }): IGrid;
-  changeRows(rows: t.IGridRows, options?: { type?: t.IRowChange['type'] }): IGrid;
+  changeCells(
+    changes: t.IGridValues,
+    options?: { source?: t.GridCellChangeType; silent?: boolean },
+  ): IGrid;
+  changeColumns(
+    columns: t.IGridColumns,
+    options?: { source?: t.IGridColumnChange['source'] },
+  ): IGrid;
+  changeRows(rows: t.IGridRows, options?: { source?: t.IGridRowChange['source'] }): IGrid;
   cell(key: t.CellRef): t.ICell;
   scrollTo(args: { cell: t.CellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
   select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }): IGrid;
@@ -51,15 +56,3 @@ export type IGridRows = { [key: string]: IGridRow };
 
 export type IGridColumn = { width?: number };
 export type IGridRow = { height?: number };
-
-// export type IGridBorder = {
-//   range: string;
-//   style: IGridBorderStyle | IGridBorderEdgeStyles;
-// };
-// export type IGridBorderStyle = { color: string; width?: number };
-// export type IGridBorderEdgeStyles = {
-//   top: IGridBorderStyle;
-//   right: IGridBorderStyle;
-//   bottom: IGridBorderStyle;
-//   left: IGridBorderStyle;
-// };

@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "Isolated tabular DataGrid.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

@@ -133,10 +133,10 @@ export class Editor extends editors.TextEditor {
     this.grid.events$
       .pipe(
         takeUntil(context.end$),
-        filter(e => e.type === 'GRID/cell/change'),
-        map(e => e.payload as t.IGridCellChange),
+        filter(e => e.type === 'GRID/cells/changed'),
+        map(e => e.payload as t.IGridCellsChanged),
         filter(e => e.isCancelled),
-        filter(e => e.cell.row === row && e.cell.column === column),
+        filter(e => e.changes.some(({ cell }) => cell.row === row && cell.column === column)),
       )
       .subscribe(e => {
         isCancelled = true;
@@ -193,7 +193,7 @@ export class Editor extends editors.TextEditor {
       const index = this.row;
       const row = { ...grid.rows[index], height: size.height };
       const change = { [index]: row };
-      grid.changeRows(change, { type: 'UPDATE/cellEdited' }).redraw();
+      grid.changeRows(change, { source: 'UPDATE/cellEdited' }).redraw();
     }
 
     // Alert listeners.
@@ -208,8 +208,8 @@ export class Editor extends editors.TextEditor {
         return grid.cell({ row, column });
       },
       cancel() {
+        grid.changeCells({ [payload.cell.key]: from }, { silent: true });
         payload.isCancelled = true;
-        grid.cell({ row, column }).value = from; // NB: Revert the value.
       },
     };
     const e: t.IEndEditingEvent = { type: 'GRID/EDITOR/end', payload };

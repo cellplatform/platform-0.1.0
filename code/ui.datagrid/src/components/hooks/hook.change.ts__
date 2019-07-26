@@ -11,6 +11,9 @@ import { TableEventSource } from '../DataGrid/types.private';
  */
 export function beforeChangeHandler(getGrid: () => Grid) {
   return (sourceChanges: Array<[number, string | number, any, any] | null>, src: string) => {
+    // Ignore - handled entirely in [Grid] and [Cell] api.
+    return;
+
     const grid = getGrid();
     const source = src as TableEventSource;
 
@@ -43,8 +46,8 @@ export function beforeChangeHandler(getGrid: () => Grid) {
         const value = { from: change[2], to: change[3] };
         const isChanged = !R.equals(value.from, value.to);
         const payload: t.IGridCellChange = {
-          source: toSource(source),
-          grid,
+          // source: 'EDIT',
+          // grid,
           get cell() {
             return grid.cell({ row, column });
           },
@@ -71,24 +74,22 @@ export function beforeChangeHandler(getGrid: () => Grid) {
     changes.forEach(payload => grid.fire({ type: 'GRID/cell/change', payload }));
 
     // Fire changes as a set.
-    if (changes.length > 0) {
-      grid.fire({
-        type: 'GRID/cell/change/set',
-        payload: {
-          changes,
-          cancel: () => changes.forEach(change => change.cancel()),
-        },
-      });
-    }
+    grid.fire({
+      type: 'GRID/cell/change/set',
+      payload: {
+        changes,
+        cancel: () => changes.forEach(change => change.cancel()),
+      },
+    });
   };
 }
 
-function toSource(source: TableEventSource): t.GridChangeType {
-  switch (source) {
-    case 'edit':
-      return 'EDIT';
+// function toSource(source: TableEventSource): t.GridCellChangeType {
+//   switch (source) {
+//     case 'edit':
+//       return 'EDIT';
 
-    default:
-      return 'OTHER';
-  }
-}
+//     default:
+//       return 'OTHER';
+//   }
+// }

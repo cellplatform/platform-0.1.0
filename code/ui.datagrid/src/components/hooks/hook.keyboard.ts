@@ -28,13 +28,15 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
       e.stopImmediatePropagation();
     }
 
-    // Supress "key cycling".
-    //    This is when arrow keys at the edges of the grid jump to the other side of the grid.
-    //    Incredibly disorienting for the user - here the madness stops!
+    // Handle specific keys.
     const last = table.getSelectedLast();
     if (last && !grid.isEditing) {
       const row = last[0];
       const column = last[1];
+
+      // Supress "key cycling".
+      //    This is when arrow keys at the edges of the grid jump to the other side of the grid.
+      //    Incredibly disorienting for the user - here the madness stops!
       if (key === 'ArrowUp' && row === 0) {
         cancel();
       }
@@ -46,6 +48,11 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
       }
       if (key === 'ArrowRight' && column === grid.totalColumns - 1) {
         cancel();
+      }
+
+      // Deletion.
+      if (key === 'Backspace') {
+        handleDelete({ grid, keydown: payload });
       }
     }
   };
@@ -83,4 +90,14 @@ function toKeydownPayload(e: Event, grid: Grid): t.IGridKeydown {
   };
 
   return payload;
+}
+
+function handleDelete(args: { grid: Grid; keydown: t.IGridKeydown }) {
+  const { grid, keydown } = args;
+  keydown.cancel();
+
+  // Delete the values from the grid..
+  const deleted = {};
+  Object.keys(grid.selectedValues).forEach(key => (deleted[key] = undefined));
+  grid.changeCells(deleted, { source: 'DELETE' });
 }

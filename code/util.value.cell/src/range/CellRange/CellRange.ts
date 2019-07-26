@@ -342,6 +342,10 @@ export class CellRange {
         return res.axis('ROW', totalColumns);
       },
 
+      cell: (totalColumns: number, totalRows: number) => {
+        return !res.column(totalRows) && !res.row(totalColumns);
+      },
+
       /**
        * Determines if the range is a complete axis (ROW/COLUMN).
        */

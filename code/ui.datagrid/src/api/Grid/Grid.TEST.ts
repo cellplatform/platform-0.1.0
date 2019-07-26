@@ -65,7 +65,7 @@ describe('Grid', () => {
       const values1 = grid.values;
       expect(values1).to.eql({ A1: 123 });
 
-      grid.changeValues({ A1: 456 });
+      grid.changeCells({ A1: 456 });
       const values2 = grid.values;
       expect(values1).to.not.equal(values2);
       expect(values2.A1).to.eql(456);
@@ -73,7 +73,7 @@ describe('Grid', () => {
 
     it('adds a new value', () => {
       const grid = createGrid({ values: { A1: 123 } });
-      grid.changeValues({ B1: 'hello' });
+      grid.changeCells({ B1: 'hello' });
       expect(grid.values.A1).to.eql(123);
       expect(grid.values.B1).to.eql('hello');
     });

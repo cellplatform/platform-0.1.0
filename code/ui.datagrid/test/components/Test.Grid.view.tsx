@@ -32,9 +32,10 @@ export type ITestGridViewState = {
 const DEFAULT = {
   VALUES: {
     A1: 'A1',
+    A2: 'A2',
     // A2: '* one\n * two',
     // A2: '# Heading\nhello',
-    // A3: '## Heading\nhello',
+    A3: 'A3',
     B1: 'locked',
     B2: 'cancel',
   },
@@ -93,13 +94,8 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     });
 
     const change$ = events$.pipe(
-      filter(e => e.type === 'GRID/cell/change'),
-      map(e => e.payload as t.IGridCellChange),
-    );
-
-    const changeSet$ = events$.pipe(
-      filter(e => e.type === 'GRID/cell/change/set'),
-      map(e => e.payload as t.IGridCellChangeSet),
+      filter(e => e.type === 'GRID/cells/changed'),
+      map(e => e.payload as t.IGridCellsChanged),
     );
 
     const selection$ = events$.pipe(
@@ -112,12 +108,12 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
       // console.log('CHANGE', e);
     });
 
-    change$.pipe(filter(e => e.cell.key === 'B2')).subscribe(e => {
-      console.log('Cancel [B2]');
-      e.cancel();
+    change$.pipe().subscribe(e => {
+      const B2 = e.changes.find(change => change.cell.key === 'B2');
+      if (B2) {
+        B2.cancel();
+      }
     });
-
-    // changeSet$.subscribe(e => {});
   }
 
   public componentWillUnmount() {

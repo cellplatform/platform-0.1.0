@@ -39,13 +39,30 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     events$
       .pipe(
         filter(() => true),
-        // filter(e => e.type === 'GRID/cell/change'), // Filter
+        filter(e => e.type === 'GRID/cells/changed'), // Filter
+        map(e => e.payload as t.IGridCellsChanged),
       )
       .subscribe(e => {
+        console.log('IGridCellsChanged', e);
+
+        // e.cancel();
+        // e.changes[0].modify('foo');
+
         // console.log('🌳', e.type, e.payload);
         // const change = e.payload as t.IGridCellChange;
         // change.modify('hello');
       });
+
+    // events$
+    //   .pipe(
+    //     filter(() => true),
+    //     filter(e => e.type === 'GRID/EDITOR/end'), // Filter
+    //     map(e => e.payload as t.IEndEditing),
+    //   )
+    //   .subscribe(e => {
+    //     console.log('cancel edit');
+    //     e.cancel();
+    //   });
 
     const clipboard$ = events$.pipe(
       filter(e => e.type === 'GRID/clipboard'),
@@ -155,7 +172,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             })}
             <Hr margin={5} />
             {this.button('values', () => (this.grid.values = { A1: 'loaded value' }))}
-            {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
+            {this.button('changeValues', () => this.grid.changeCells({ A1: 'hello' }))}
             {this.button('change values (via prop)', () =>
               this.test$.next({ values: { A1: 'happy' } }),
             )}
