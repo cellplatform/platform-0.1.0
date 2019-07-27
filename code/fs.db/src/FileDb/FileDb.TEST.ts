@@ -324,12 +324,12 @@ describe('FileDb', () => {
       await test('cell');
       await test('cell/');
       await test('cell/*');
-      await test({ query: 'cell' });
+      await test({ path: 'cell' });
     });
 
     it('no match', async () => {
       const db = await prepare();
-      const res: any = await db.find({ query: 'YO' });
+      const res: any = await db.find({ path: 'YO' });
       expect(res.length).to.eql(0);
       expect(res.keys).to.eql([]);
       expect(res.list).to.eql([]);
@@ -350,7 +350,7 @@ describe('FileDb', () => {
       };
 
       await test('cell/**');
-      await test({ query: 'cell/**' });
+      await test({ path: 'cell/**' });
     });
   });
 

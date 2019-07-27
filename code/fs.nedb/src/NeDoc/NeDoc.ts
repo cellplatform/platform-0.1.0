@@ -9,7 +9,7 @@ export type INeDocArgs = {
   filename?: string;
 };
 
-export class NeDoc {
+export class NeDoc implements t.IDb {
   /**
    * [Static]
    */
@@ -286,7 +286,7 @@ export class NeDoc {
 
     try {
       // Prepare the query.
-      const pattern = (typeof query === 'object' ? query.query : query) || '';
+      const pattern = (typeof query === 'object' ? query.path : query) || '';
       const uri = this.uri.parse(pattern);
       const { dir, suffix } = uri.path;
 
