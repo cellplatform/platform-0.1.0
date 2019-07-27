@@ -100,7 +100,10 @@ export function shift(args: {
   });
 
   // Finish up.
-  const before = SET.before.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {});
+  const before = SET.before.reduce((acc, next) => {
+    acc[next.key] = next.value;
+    return acc;
+  }, {});
   return { ...before, ...result };
 }
 

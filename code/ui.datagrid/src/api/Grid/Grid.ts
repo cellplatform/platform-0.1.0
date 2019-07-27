@@ -49,11 +49,10 @@ export class Grid implements t.IGrid {
     totalColumns: number;
     totalRows: number;
   }) {
-    const { totalColumns, totalRows, values } = args;
-    return Array.from({ length: totalRows }).map((v, row) =>
-      Array.from({ length: totalColumns }).map((v, column) => {
+    return Array.from({ length: args.totalRows }).map((v, row) =>
+      Array.from({ length: args.totalColumns }).map((v, column) => {
         const key = Cell.toKey({ row, column });
-        return values[key];
+        return args.values[key];
       }),
     );
   }
@@ -106,7 +105,7 @@ export class Grid implements t.IGrid {
     editEnd$.subscribe(() => (this._.isEditing = false));
     editEnd$.pipe(filter(e => e.isChanged)).subscribe(e => {
       const key = e.cell.key;
-      this.changeValues({ [key]: e.value.to }, { redraw: false });
+      this.changeCells({ [key]: e.value.to }, { source: 'EDIT' });
     });
     editEnd$
       .pipe(
@@ -214,7 +213,7 @@ export class Grid implements t.IGrid {
   }
   public set columns(value: t.IGridColumns) {
     this._.columns = {}; // Reset.
-    this.changeColumns(value, { type: 'RESET' });
+    this.changeColumns(value, { source: 'RESET' });
   }
 
   public get rows() {
@@ -222,7 +221,7 @@ export class Grid implements t.IGrid {
   }
   public set rows(value: t.IGridRows) {
     this._.rows = {}; // Reset.
-    this.changeRows(value, { type: 'RESET' });
+    this.changeRows(value, { source: 'RESET' });
   }
 
   public get selection(): t.IGridSelection {
@@ -291,86 +290,95 @@ export class Grid implements t.IGrid {
    */
   public get selectedValues(): t.IGridValues {
     const selection = this.selection;
+    const values = this.values;
     if (selection.all) {
-      return this.values;
+      return values;
     }
 
-    const values = this.values;
-    const union = coord.range.union(this.selection.ranges);
-    return union.keys.reduce((acc, key) => {
+    const ranges = coord.range.union(this.selection.ranges);
+    const res = Object.keys(values).reduce((acc, key) => {
       const value = values[key];
-      return value === undefined ? acc : { ...acc, [key]: value };
+      if (value !== undefined && ranges.contains(key)) {
+        acc[key] = value;
+      }
+      return acc;
     }, {});
+
+    if (selection.cell && values[selection.cell] !== undefined) {
+      res[selection.cell] = values[selection.cell];
+    }
+
+    return res;
   }
 
   /**
    * Custom border styles for cell ranges.
    */
-  public get borders(): t.IGridBorder[] {
-    const settings = this._.table.getSettings();
-    const current = settings.customBorders;
-    if (!Array.isArray(current)) {
-      return [];
-    }
-    return current.map(item => {
-      const from = coord.cell.toKey(item.range.from.col, item.range.from.row);
-      const to = coord.cell.toKey(item.range.to.col, item.range.to.row);
-      const range = `${from}:${to}`;
+  // public get borders(): t.IGridBorder[] {
+  //   const settings = this._.table.getSettings();
+  //   const current = settings.customBorders;
+  //   if (!Array.isArray(current)) {
+  //     return [];
+  //   }
+  //   return current.map(item => {
+  //     const from = coord.cell.toKey(item.range.from.col, item.range.from.row);
+  //     const to = coord.cell.toKey(item.range.to.col, item.range.to.row);
+  //     const range = `${from}:${to}`;
 
-      const { top, right, bottom, left } = item;
-      const all = [top, right, bottom, left];
-      const allEqual = all.every(a => all.every(b => R.equals(a, b)));
+  //     const { top, right, bottom, left } = item;
+  //     const all = [top, right, bottom, left];
+  //     const allEqual = all.every(a => all.every(b => R.equals(a, b)));
 
-      const border: t.IGridBorder = {
-        range,
-        style: allEqual ? top : { top, right, bottom, left },
-      };
-      return border;
-    });
-  }
-  public set borders(borders: t.IGridBorder[]) {
-    const from = this.borders;
-    const table = this._.table;
+  //     const border: t.IGridBorder = {
+  //       range,
+  //       style: allEqual ? top : { top, right, bottom, left },
+  //     };
+  //     return border;
+  //   });
+  // }
+  // public set borders(borders: t.IGridBorder[]) {
+  //   const from = this.borders;
+  //   const table = this._.table;
 
-    // Check for no change.
-    if (borders.length === 0) {
-      table.updateSettings({ customBorders: false }, false);
-      this.fire({ type: 'GRID/borders/changed', payload: { from, to: this.borders } });
-      return;
-    }
+  //   // Check for no change.
+  //   if (borders.length === 0) {
+  //     table.updateSettings({ customBorders: false }, false);
+  //     this.fire({ type: 'GRID/borders/changed', payload: { from, to: this.borders } });
+  //     return;
+  //   }
 
-    // Convert input into format Handsontable understands.
-    const toRange = (input: string) => {
-      const range = coord.range.fromKey(input);
-      const { left, right } = range;
-      return {
-        from: { row: left.row, col: left.column },
-        to: { row: right.row, col: right.column },
-      };
-    };
-    const toStyles = (input: t.IGridBorder['style']) => {
-      if (typeof (input as t.IGridBorderEdgeStyles).top === 'object') {
-        return input as t.IGridBorderEdgeStyles;
-      }
-      const style = input as t.IGridBorderStyle;
-      return { top: style, right: style, bottom: style, left: style };
-    };
+  //   // Convert input into format Handsontable understands.
+  //   const toRange = (input: string) => {
+  //     const range = coord.range.fromKey(input);
+  //     const { left, right } = range;
+  //     return {
+  //       from: { row: left.row, col: left.column },
+  //       to: { row: right.row, col: right.column },
+  //     };
+  //   };
+  //   const toStyles = (input: t.IGridBorder['style']) => {
+  //     if (typeof (input as t.IGridBorderEdgeStyles).top === 'object') {
+  //       return input as t.IGridBorderEdgeStyles;
+  //     }
+  //     const style = input as t.IGridBorderStyle;
+  //     return { top: style, right: style, bottom: style, left: style };
+  //   };
 
-    const toBorders = (items: t.IGridBorder[]) => {
-      return items.map(item => {
-        const range = toRange(item.range);
-        return { range, ...toStyles(item.style) };
-      });
-    };
-    const update = (items: t.IGridBorder[]) => {
-      const customBorders = toBorders(items);
-      table.updateSettings({ customBorders }, false);
-    };
+  //   const toBorders = (items: t.IGridBorder[]) => {
+  //     return items.map(item => {
+  //       const range = toRange(item.range);
+  //       return { range, ...toStyles(item.style) };
+  //     });
+  //   };
+  //   const update = (items: t.IGridBorder[]) => {
+  //     const customBorders = toBorders(items);
+  //     table.updateSettings({ customBorders }, false);
+  //   };
 
-    // Update table.
-    update(borders);
-    this.fire({ type: 'GRID/borders/changed', payload: { from, to: borders } });
-  }
+  //   // Update table.
+  //   update(borders);
+  //   this.fire({ type: 'GRID/borders/changed', payload: { from, to: borders } });
+  // }
 
   /**
    * [Methods]
@@ -391,17 +399,47 @@ export class Grid implements t.IGrid {
   /**
    * Updates values.
    */
-  public changeValues(changes: t.IGridValues, options: { redraw?: boolean } = {}) {
-    if (changes) {
-      const redraw = valueUtil.defaultValue(options.redraw, true);
-      this._.values = { ...this.values };
-      Object.keys(changes).forEach(key => {
-        const value = changes[key];
-        this._.values[key] = value;
-        if (redraw) {
-          this.cell(key).value = value;
-        }
-      });
+  public changeCells(
+    values: t.IGridValues,
+    options: { source?: t.GridCellChangeType; silent?: boolean } = {},
+  ) {
+    if (values) {
+      values = { ...values };
+
+      // Fire change event.
+      if (!options.silent) {
+        const current = this.values;
+        const changes = Object.keys(values).map(key => {
+          const cell = this.cell(key);
+          const from = current[key];
+          const to = values[key];
+          return Cell.changeEvent({ cell, from, to });
+        });
+        const payload: t.IGridCellsChanged = {
+          source: defaultValue(options.source, 'EDIT'),
+          changes,
+          get isCancelled() {
+            return changes.some(change => change.isCancelled);
+          },
+          cancel() {
+            changes.forEach(change => change.cancel());
+          },
+        };
+        this.fire({ type: 'GRID/cells/changed', payload });
+
+        // Adjust any modified values.
+        changes
+          .filter(change => change.isModified)
+          .forEach(change => (values[change.cell.key] = change.value.to));
+
+        // Revert any cancelled events.
+        changes
+          .filter(change => change.isCancelled)
+          .forEach(change => (values[change.cell.key] = change.value.from));
+      }
+
+      // Update the UI.
+      this.values = { ...this.values, ...values };
     }
     return this;
   }
@@ -409,11 +447,14 @@ export class Grid implements t.IGrid {
   /**
    * Updates columns.
    */
-  public changeColumns(columns: t.IGridColumns, options: { type?: t.IColumnChange['type'] } = {}) {
-    const { type = 'UPDATE' } = options;
+  public changeColumns(
+    columns: t.IGridColumns,
+    options: { source?: t.IGridColumnChange['source'] } = {},
+  ) {
+    const { source = 'UPDATE' } = options;
     const from = { ...this._.columns };
     const to = { ...from };
-    let changes: t.IColumnChange[] = [];
+    let changes: t.IGridColumnChange[] = [];
 
     Object.keys(columns).forEach(key => {
       const prev = from[key] || { width: -1 };
@@ -425,7 +466,7 @@ export class Grid implements t.IGrid {
         to[key] = next;
       }
       if (!R.equals(prev, next)) {
-        changes = [...changes, { column: key, type, from: prev, to: next }];
+        changes = [...changes, { column: key, source, from: prev, to: next }];
       }
     });
     this._.columns = to;
@@ -438,11 +479,11 @@ export class Grid implements t.IGrid {
   /**
    *  Updates rows.
    */
-  public changeRows(rows: t.IGridRows, options: { type?: t.IColumnChange['type'] } = {}) {
-    const { type = 'UPDATE' } = options;
+  public changeRows(rows: t.IGridRows, options: { source?: t.IGridColumnChange['source'] } = {}) {
+    const { source = 'UPDATE' } = options;
     const from = { ...this._.rows };
     const to = { ...from };
-    let changes: t.IRowChange[] = [];
+    let changes: t.IGridRowChange[] = [];
 
     Object.keys(rows).forEach(key => {
       const prev = from[key] || { height: -1 };
@@ -455,7 +496,7 @@ export class Grid implements t.IGrid {
       }
       if (!R.equals(prev, next)) {
         const row = coord.cell.fromKey(key).row;
-        changes = [...changes, { row, type, from: prev, to: next }];
+        changes = [...changes, { row, source, from: prev, to: next }];
       }
     });
     this._.rows = to;

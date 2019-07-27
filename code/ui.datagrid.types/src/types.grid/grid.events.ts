@@ -10,15 +10,13 @@ export type GridEvent =
   | IGridRedrawEvent
   | IGridKeydownEvent
   | IGridMouseEvent
-  | IGridCellChangeEvent
-  | IGridChangeSetEvent
-  | IColumnsChangedEvent
+  | IGridCellsChangedEvent
+  | IGridColumnsChangedEvent
   | IRowsChangedEvent
   | IGridSelectionChangeEvent
   | IGridFocusEvent
   | IGridBlurEvent
   | IGridClipboardEvent
-  | IGridBordersChangedEvent
   | IGridUndoEvent;
 
 export type IGridReadyEvent = {
@@ -73,21 +71,19 @@ export type IGridMouse = MouseEvent & {
 /**
  * Cell.
  */
-export type GridChangeType = 'EDIT' | 'OTHER';
-export type IGridChangeSetEvent = {
-  type: 'GRID/cell/change/set';
-  payload: IGridCellChangeSet;
+export type GridCellChangeType = 'EDIT' | 'DELETE';
+export type IGridCellsChangedEvent = {
+  type: 'GRID/cells/changed';
+  payload: IGridCellsChanged;
+};
+export type IGridCellsChanged = {
+  source: GridCellChangeType;
+  changes: IGridCellChange[];
+  isCancelled: boolean;
+  cancel(): void;
 };
 
-export type IGridCellChangeEvent = {
-  type: 'GRID/cell/change';
-  payload: IGridCellChange;
-};
-
-export type IGridCellChangeSet = { changes: IGridCellChange[]; cancel(): void };
 export type IGridCellChange = {
-  source: GridChangeType;
-  grid: t.IGrid;
   cell: t.ICell;
   value: { from?: t.CellValue; to?: t.CellValue };
   isCancelled: boolean;
@@ -100,51 +96,39 @@ export type IGridCellChange = {
 /**
  * Column.
  */
-export type IColumnsChangedEvent = {
+export type IGridColumnsChangedEvent = {
   type: 'GRID/columns/changed';
-  payload: IColumnsChanged;
+  payload: IGridColumnsChanged;
 };
-export type IColumnsChanged = {
+export type IGridColumnsChanged = {
   from: t.IGridColumns;
   to: t.IGridColumns;
-  changes: IColumnChange[];
+  changes: IGridColumnChange[];
 };
-export type IColumnChange = {
+export type IGridColumnChange = {
   column: string;
-  type: 'UPDATE' | 'RESET' | 'RESET/doubleClick';
+  source: 'UPDATE' | 'RESET' | 'RESET/doubleClick';
   from: t.IGridColumn;
   to: t.IGridColumn;
 };
 
 /**
- * Rows.
+ * Row.
  */
 export type IRowsChangedEvent = {
   type: 'GRID/rows/changed';
-  payload: IRowsChanged;
+  payload: IGridRowsChanged;
 };
-export type IRowsChanged = {
+export type IGridRowsChanged = {
   from: t.IGridRows;
   to: t.IGridRows;
-  changes: IRowChange[];
+  changes: IGridRowChange[];
 };
-export type IRowChange = {
+export type IGridRowChange = {
   row: number;
-  type: 'UPDATE' | 'UPDATE/cellEdited' | 'RESET' | 'RESET/doubleClick';
+  source: 'UPDATE' | 'UPDATE/cellEdited' | 'RESET' | 'RESET/doubleClick';
   from: t.IGridRow;
   to: t.IGridRow;
-};
-
-/**
- * Borders.
- */
-export type IGridBordersChangedEvent = {
-  type: 'GRID/borders/changed';
-  payload: IGridBordersChanged;
-};
-export type IGridBordersChanged = {
-  from: t.IGridBorder[];
-  to: t.IGridBorder[];
 };
 
 /**

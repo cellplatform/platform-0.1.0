@@ -8,7 +8,7 @@ export type ICell = {
   readonly width: number;
   readonly height: number;
   readonly siblings: ICellSiblings;
-  value: t.CellValue;
+  readonly value: t.CellValue;
 };
 
 export type ICellSiblings = {

@@ -64,13 +64,13 @@ export function getSettings(args: {
     manualRowResize: true,
     manualColumnResize: true,
     renderAllRows: false, // Virtual scrolling.
+    undo: false, // Handled manually through events.
 
     /**
      * Event Hooks.
      * - https://handsontable.com/docs/6.2.2/Hooks.html
      */
     beforeKeyDown: hooks.beforeKeyDownHandler(getGrid),
-    beforeChange: hooks.beforeChangeHandler(getGrid),
     afterSelection,
     afterDeselect,
     afterColumnResize,

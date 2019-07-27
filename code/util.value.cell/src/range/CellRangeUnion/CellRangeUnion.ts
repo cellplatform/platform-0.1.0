@@ -100,7 +100,11 @@ export class CellRangeUnion {
    */
   public get square() {
     let keys = this.ranges.reduce(
-      (acc, next) => [...acc, next.left.key, next.right.key],
+      (acc, next) => {
+        acc.push(next.left.key);
+        acc.push(next.right.key);
+        return acc;
+      },
       [] as string[],
     );
     keys = cell.sort(keys);
@@ -191,10 +195,12 @@ export class CellRangeUnion {
       });
     });
 
-    return Object
-      // Reduce map to final set of [CellEdge] items.
-      .keys(map)
-      .filter(key => map[key].within.length > 0) as t.CoordEdge[];
+    return (
+      Object
+        // Reduce map to final set of [CellEdge] items.
+        .keys(map)
+        .filter(key => map[key].within.length > 0) as t.CoordEdge[]
+    );
   }
 
   /**

@@ -147,9 +147,9 @@ describe('CellRange', () => {
 
   describe('is', () => {
     it('is.column', () => {
-      const test = (key: string, total: number, result: boolean) => {
+      const test = (key: string, totalRows: number, result: boolean) => {
         const range = fromKey(key);
-        const res = range.is.column(total);
+        const res = range.is.column(totalRows);
         expect(res).to.eql(result);
       };
 
@@ -168,9 +168,9 @@ describe('CellRange', () => {
     });
 
     it('is.row', () => {
-      const test = (key: string, total: number, result: boolean) => {
+      const test = (key: string, totalColumns: number, result: boolean) => {
         const range = fromKey(key);
-        const res = range.is.row(total);
+        const res = range.is.row(totalColumns);
         expect(res).to.eql(result);
       };
 
@@ -185,6 +185,20 @@ describe('CellRange', () => {
       test('A1:H1', 10, false);
       test('B1:J1', 10, false);
       test('B1:*', 10, false);
+    });
+
+    it('is.cell', () => {
+      const test = (key: string, totalColumns: number, totalRows: number, result: boolean) => {
+        const range = fromKey(key);
+        const res = range.is.cell(totalColumns, totalRows);
+        expect(res).to.eql(result);
+      };
+
+      test('A:A', 10, 10, false);
+      test('1:5', 10, 10, false);
+
+      test('A1:A1', 10, 10, true);
+      test('A2:D8', 10, 10, true);
     });
   });
 

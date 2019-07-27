@@ -22,7 +22,7 @@ export function sizeHandlers(getGrid: () => Grid) {
       grid
         .changeColumns(
           { [key]: { ...(column || {}), width } },
-          { type: isDoubleClick ? 'RESET/doubleClick' : 'UPDATE' },
+          { source: isDoubleClick ? 'RESET/doubleClick' : 'UPDATE' },
         )
         .redraw();
     }
@@ -44,7 +44,7 @@ export function sizeHandlers(getGrid: () => Grid) {
       grid
         .changeRows(
           { [key]: { ...(row || {}), height } },
-          { type: isDoubleClick ? 'RESET/doubleClick' : 'UPDATE' },
+          { source: isDoubleClick ? 'RESET/doubleClick' : 'UPDATE' },
         )
         .redraw();
     }

@@ -1,29 +1,8 @@
 import * as React from 'react';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
-import {
-  constants,
-  log,
-  Button,
-  color,
-  css,
-  GlamorValue,
-  Hr,
-  ObjectView,
-  t,
-  coord,
-} from '../common';
+import { Button, color, css, GlamorValue, Hr, log, ObjectView, t, testData } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
 export type ITestGridProps = {
@@ -60,13 +39,30 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     events$
       .pipe(
         filter(() => true),
-        // filter(e => e.type === 'GRID/cell/change'), // Filter
+        filter(e => e.type === 'GRID/cells/changed'), // Filter
+        map(e => e.payload as t.IGridCellsChanged),
       )
       .subscribe(e => {
+        console.log('IGridCellsChanged', e);
+
+        // e.cancel();
+        // e.changes[0].modify('foo');
+
         // console.log('🌳', e.type, e.payload);
         // const change = e.payload as t.IGridCellChange;
         // change.modify('hello');
       });
+
+    // events$
+    //   .pipe(
+    //     filter(() => true),
+    //     filter(e => e.type === 'GRID/EDITOR/end'), // Filter
+    //     map(e => e.payload as t.IEndEditing),
+    //   )
+    //   .subscribe(e => {
+    //     console.log('cancel edit');
+    //     e.cancel();
+    //   });
 
     const clipboard$ = events$.pipe(
       filter(e => e.type === 'GRID/clipboard'),
@@ -109,7 +105,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    */
   public updateState() {
     const grid = this.grid;
-    const { selection, values, rows, columns, borders } = grid;
+    const { selection, values, rows, columns } = grid;
     const { editorType } = this.props;
     const data = {
       grid: {
@@ -118,7 +114,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         rows,
         columns,
         selection,
-        borders,
       },
       debug: { editorType },
     };
@@ -177,10 +172,15 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             })}
             <Hr margin={5} />
             {this.button('values', () => (this.grid.values = { A1: 'loaded value' }))}
-            {this.button('changeValues', () => this.grid.changeValues({ A1: 'hello' }))}
+            {this.button('changeValues', () => this.grid.changeCells({ A1: 'hello' }))}
             {this.button('change values (via prop)', () =>
               this.test$.next({ values: { A1: 'happy' } }),
             )}
+            {this.button('values (large)', () => {
+              const data = testData({ totalColumns: 52, totalRows: 1000 });
+              this.grid.values = data.values;
+            })}
+
             <Hr margin={5} />
             {this.button('columns (width) - A:200', () =>
               this.test$.next({ columns: { A: { width: 200 } } }),
@@ -221,7 +221,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
                 cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
               }),
             )}
-            <Hr margin={5} />
+            {/* <Hr margin={5} />
             {this.button(
               'changeBorders - B2:D4 (red)',
               () => (this.grid.borders = [{ range: 'B2:D4', style: { width: 2, color: 'red' } }]),
@@ -246,7 +246,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
                   },
                 ]),
             )}
-            {this.button('changeBorders (clear)', () => (this.grid.borders = []))}
+            {this.button('changeBorders (clear)', () => (this.grid.borders = []))} */}
           </div>
           {this.renderState()}
         </div>

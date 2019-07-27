@@ -73,17 +73,17 @@ export class Sync implements t.IDisposable {
     );
 
     const grid$ = grid.events$.pipe(takeUntil(this.dispose$));
-    const gridCellChanges$ = grid$.pipe(
-      filter(e => e.type === 'GRID/cell/change/set'),
-      map(e => e.payload as t.IGridCellChangeSet),
+    const gridCellsChanges$ = grid$.pipe(
+      filter(e => e.type === 'GRID/cells/changed'),
+      map(e => e.payload as t.IGridCellsChanged),
     );
     const gridColumnsChanges$ = grid$.pipe(
       filter(e => e.type === 'GRID/columns/changed'),
-      map(e => e.payload as t.IColumnsChanged),
+      map(e => e.payload as t.IGridColumnsChanged),
     );
     const gridRowsChanges$ = grid$.pipe(
       filter(e => e.type === 'GRID/rows/changed'),
-      map(e => e.payload as t.IRowsChanged),
+      map(e => e.payload as t.IGridRowsChanged),
     );
 
     const syncChange$ = events$.pipe(
@@ -129,22 +129,45 @@ export class Sync implements t.IDisposable {
       const columns = e.filter(({ type }) => type === 'COLUMN');
       const rows = e.filter(({ type }) => type === 'ROW');
 
-      if (cells.length > 0) {
-        const changes = cells.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {});
-        this.grid.changeValues(changes, { redraw: true });
+      const isChanged = columns.length > 0 || rows.length > 0 || cells.length > 0;
+      if (!isChanged) {
+        return;
       }
 
+      // Build change-sets.
+      const changes = { columns: {}, rows: {}, cells: {} };
+
       if (columns.length > 0) {
-        const changes = columns.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {});
-        grid.changeColumns(changes);
+        changes.columns = columns.reduce((acc, next) => {
+          acc[next.key] = next.value;
+          return acc;
+        }, {});
       }
 
       if (rows.length > 0) {
-        const changes = rows.reduce((acc, next) => ({ ...acc, [next.key]: next.value }), {});
-        grid.changeRows(changes);
+        changes.rows = rows.reduce((acc, next) => {
+          acc[next.key] = next.value;
+          return acc;
+        }, {});
       }
 
-      grid.redraw();
+      if (cells.length > 0) {
+        changes.cells = cells.reduce((acc, next) => {
+          acc[next.key] = next.value;
+          return acc;
+        }, {});
+      }
+
+      // Pass changes to the grid.
+      const values = {
+        ...grid.values,
+        ...changes.columns,
+        ...changes.rows,
+        ...changes.cells,
+      };
+      grid.values = values;
+
+      // Alert listeners.
       this.fire({ type: 'SYNCED/grid', payload: { updates: e } });
     });
 
@@ -152,7 +175,7 @@ export class Sync implements t.IDisposable {
      * `Cell Sync`
      */
     (() => {
-      gridCellChanges$
+      gridCellsChanges$
         // Cells changed in Grid UI.
         .pipe(filter(e => !this.is.loading.currently('CELLS')))
         .subscribe(async e => {

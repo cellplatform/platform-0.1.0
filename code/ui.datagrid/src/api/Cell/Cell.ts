@@ -47,13 +47,40 @@ export class Cell implements t.ICell {
     return { start, end };
   }
 
+  public static changeEvent(args: { cell: t.ICell; from?: t.CellValue; to?: t.CellValue }) {
+    const { cell, from, to } = args;
+    const value = { from, to };
+    const isChanged = !R.equals(value.from, value.to);
+
+    const payload: t.IGridCellChange = {
+      cell,
+      value,
+      isChanged,
+      isCancelled: false,
+      isModified: false,
+      cancel() {
+        payload.isCancelled = true;
+      },
+      modify(change: t.CellValue) {
+        value.to = change;
+        payload.isModified = true;
+      },
+    };
+
+    return payload;
+  }
+
   /**
-   * [Constructor]
+   * [Lifecycle]
    */
   private constructor(args: { table: Handsontable; row: number; column: number }) {
     this._.table = args.table;
     this.row = args.row;
     this.column = args.column;
+  }
+
+  public get isDisposed() {
+    return this._.table.isDestroyed;
   }
 
   /**
@@ -73,10 +100,6 @@ export class Cell implements t.ICell {
     const row = this.row;
     const column = this.column;
     return Cell.toKey({ column, row });
-  }
-
-  public get isDisposed() {
-    return this._.table.isDestroyed;
   }
 
   private get td() {
@@ -100,11 +123,6 @@ export class Cell implements t.ICell {
 
   public get value(): t.CellValue {
     return this._.table.getDataAtCell(this.row, this.column);
-  }
-  public set value(value: t.CellValue) {
-    if (!R.equals(value, this.value)) {
-      this._.table.setDataAtCell(this.row, this.column, value);
-    }
   }
 
   public get siblings() {
