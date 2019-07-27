@@ -3,6 +3,7 @@ import { share } from 'rxjs/operators';
 
 import { DbUri, defaultValue, t, time, value as valueUtil } from '../common';
 import { Nedb } from '../Nedb';
+import { Schema } from './schema';
 
 export type INeDocArgs = {
   filename?: string;
@@ -45,12 +46,45 @@ export class NeDoc {
    */
   private readonly store: Nedb<t.IDoc>;
   private readonly uri = DbUri.create();
+  private readonly schema = Schema.create();
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.DbEvent>();
   public readonly events$ = this._events$.pipe(share());
+
+  /**
+   * [Properties]
+   */
+  public get sys() {
+    const schema = this.schema.sys;
+
+    const sys = {
+      timestamps: async () => {
+        const res = await this.store.findOne({ path: schema.timestamps });
+        const data: t.IDbTimestamps = res || { createdAt: -1, modifiedAt: -1 };
+        const { createdAt, modifiedAt } = data;
+        return { createdAt, modifiedAt };
+      },
+      increment: async () => {
+        let timestamps = await sys.timestamps();
+        const now = time.now.timestamp;
+        timestamps = {
+          createdAt: timestamps.createdAt === -1 ? now : timestamps.createdAt,
+          modifiedAt: now,
+        };
+        const query: any = { path: schema.timestamps };
+        await this.store.update(
+          query,
+          { path: schema.timestamps, ...timestamps, data: true },
+          { upsert: true },
+        );
+        return timestamps;
+      },
+    };
+    return sys;
+  }
 
   /**
    * [Methods]
@@ -170,6 +204,7 @@ export class NeDoc {
     // Perform inserts.
     if (inserts.length > 0) {
       await this.store.insertMany(inserts);
+      await this.sys.increment();
     }
 
     // Retrieve result set.
