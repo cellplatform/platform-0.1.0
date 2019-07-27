@@ -32,7 +32,7 @@
     "@types/nedb": "1.8.8",
     "@uiharness/dev": "0.5.15",
     "@uiharness/ui": "0.5.16",
-    "electron": "5.0.7"
+    "electron": "5.0.8"
   },
   "files": [
     "lib"
