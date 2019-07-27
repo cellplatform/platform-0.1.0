@@ -1,3 +1,10 @@
-import { IDb } from '@platform/fs.db.types/lib/types';
+import { IDb, IDbQuery } from '@platform/fs.db.types/lib/types';
 
-export type IDocDb = IDb & {};
+export type INeDb = IDb<INeQuery>;
+
+/**
+ * Query
+ */
+export type INeQuery = IDbQuery & {
+  foo?: boolean; // TEMP 🐷
+};

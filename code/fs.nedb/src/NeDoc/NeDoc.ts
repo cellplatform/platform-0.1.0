@@ -9,7 +9,7 @@ export type INeDocArgs = {
   filename?: string;
 };
 
-export class NeDoc implements t.IDb {
+export class NeDoc implements t.INeDb {
   /**
    * [Static]
    */
@@ -276,18 +276,18 @@ export class NeDoc implements t.IDb {
    * [Find]
    */
 
-  public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
+  public async find(input: string | t.INeQuery): Promise<t.IDbFindResult> {
     this.throwIfDisposed('find');
 
     let keys: string[] | undefined;
     let map: t.IDbFindResult['map'] | undefined;
     let error: Error | undefined;
     let list: t.IDbValue[] = [];
+    const query = typeof input === 'string' ? { path: input } : input;
 
     try {
       // Prepare the query.
-      const pattern = (typeof query === 'object' ? query.path : query) || '';
-      const uri = this.uri.parse(pattern);
+      const uri = this.uri.parse(query.path);
       const { dir, suffix } = uri.path;
 
       const buildQuery = () => {
@@ -348,7 +348,7 @@ export class NeDoc implements t.IDb {
     };
 
     // Finish up.
-    return result;
+    return valueUtil.deleteUndefined(result);
   }
 
   /**
