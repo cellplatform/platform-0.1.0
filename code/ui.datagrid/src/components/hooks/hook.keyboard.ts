@@ -96,7 +96,7 @@ function handleDelete(args: { grid: Grid; keydown: t.IGridKeydown }) {
   const { grid, keydown } = args;
   keydown.cancel();
 
-  // Delete the values from the grid..
+  // Delete the values from the grid.
   const deleted = {};
   Object.keys(grid.selectedValues).forEach(key => (deleted[key] = undefined));
   grid.changeCells(deleted, { source: 'DELETE' });
