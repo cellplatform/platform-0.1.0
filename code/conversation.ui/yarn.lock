@@ -1172,14 +1172,14 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.4"
 
-"@platform/conversation.db@0.0.77":
-  version "0.0.77"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.77.tgz#49227a9f5c852a7ec871dac6ef0b8da54d7e16fb"
-  integrity sha512-mDJfO5rSGBcrPP4HOsV5F2dup+7hFihfiEKWyLzikdeTPcuY0/wgXL16AaMyJX5ARq2q353EFpLuQTc6JBRj7w==
+"@platform/conversation.db@0.0.78":
+  version "0.0.78"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.78.tgz#b67d3f76d7081c17a11c7828714abd4d7261cce2"
+  integrity sha512-7E05vc2ooASZV9jDOpKQl7z+6K3MQcFfARa0/l1u1wUNrG+uDO09t4VYkNQiSD+KrU+w0/ej3/3I+0UPCc/J2w==
   dependencies:
     "@platform/auth" "0.1.23"
     "@platform/conversation.types" "0.0.37"
-    "@platform/fs.db.types" "^0.1.3"
+    "@platform/fs.db.types" "^0.2.0"
     "@platform/graphql.server" "0.1.24"
     "@platform/hyperdb.types" "0.2.13"
     "@platform/libs" "0.0.18"
@@ -1234,20 +1234,20 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db.types@0.1.3", "@platform/fs.db.types@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.1.3.tgz#058b7bf072676819c7dae8a1a3ee948b2c6b7eb2"
-  integrity sha512-i0MoMCkua2x8saogDu/zS8oKNgccLs6YO155asu0ESvQPOrt0zNlRqUsXHIP7D+teJqLKECo1CbizdqmSjekIQ==
+"@platform/fs.db.types@0.2.0", "@platform/fs.db.types@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.db.types/-/fs.db.types-0.2.0.tgz#acbaf1cc4b0603688464f94793dabdd91f91ace9"
+  integrity sha512-yNqFGE1+jF+cJv3oIaulbnskmA1Z2LJdb/Scb2QFRBnFyJ8ph8haJLADc/Li3npX5lTypnbIohOPey3s2fjqOw==
   dependencies:
     "@platform/libs" "0.0.18"
     "@platform/types" "0.0.20"
 
-"@platform/fs.nedb@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@platform/fs.nedb/-/fs.nedb-0.4.1.tgz#51fb2c5b6618f2055a3fb129d5f1f2f52f6933bc"
-  integrity sha512-zu91wSF+OXvtamjDIw6UhdEMJgqRfVfuTtQnvft+lh2XsOQdF/gcM9gCCq0uqSPQr1BoErYtR4Uj1cuhJxCLew==
+"@platform/fs.nedb@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.nedb/-/fs.nedb-0.5.0.tgz#11f47f4b7d8b20fb8ddf60b73ea9baebab66c625"
+  integrity sha512-OcdyrjwPYlGJM3AcvMjLTeUMuopswIP/U4PtY10JH6Sp/H8j2P7ULaHtmRq/23/7yQqwg51/vxtbxwk71NcJ4w==
   dependencies:
-    "@platform/fs.db.types" "0.1.3"
+    "@platform/fs.db.types" "0.2.0"
     "@platform/react" "0.3.12"
     "@platform/types" "0.0.20"
     "@platform/util.value" "0.4.4"

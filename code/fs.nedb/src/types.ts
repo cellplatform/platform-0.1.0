@@ -10,7 +10,7 @@ export type INeQuery = IDbQuery & {
 };
 
 export type INeQueryFilter = {
-  [field: string]: INeQueryOperators;
+  [field: string]: INeQueryOperators | string | number | boolean | null | undefined;
 };
 
 /**

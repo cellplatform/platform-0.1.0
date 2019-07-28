@@ -307,6 +307,7 @@ describe('NeDoc', () => {
       { key: 'cell/A1', value: { count: 1 } },
       { key: 'cell/A2', value: { count: 2 } },
       { key: 'column/A', value: { count: 3 } },
+      { key: 'foo', value: { obj: { msg: 'hello' } } },
     ];
 
     beforeEach(() => db.putMany(items));
@@ -321,6 +322,20 @@ describe('NeDoc', () => {
     it('filters only on path matched docs', async () => {
       const res = await db.find({ path: 'cell/*', filter: { count: { $gte: 2 } } });
       expect(res.keys).to.eql(['cell/A2']);
+    });
+
+    describe('equality', () => {
+      it('equals', async () => {
+        const res = await db.find({ path: '**', filter: { count: 2 } });
+        expect(res.keys).to.eql(['cell/A2']);
+      });
+
+      it('not-equals', async () => {
+        const res = await db.find({ path: '**', filter: { count: { $ne: 2 } } });
+        expect(res.keys).to.include('cell/A1');
+        expect(res.keys).to.include('column/A');
+        expect(res.keys).to.not.include('cell/A2');
+      });
     });
 
     describe('greater-than / less-than', () => {
