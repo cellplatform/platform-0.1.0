@@ -213,7 +213,7 @@ describe('NeDoc', () => {
     expect(res3[1].props.exists).to.eql(false);
   });
 
-  describe('find', () => {
+  describe('find (path)', () => {
     it('nothing (no match)', async () => {
       const items = [
         { key: 'cell/A1', value: 123 },
@@ -299,6 +299,56 @@ describe('NeDoc', () => {
       const values = res.list.map(item => item.value);
       expect(values.includes('foo')).to.eql(true);
       expect(values.includes('bar')).to.eql(true);
+    });
+  });
+
+  describe('find (path + filter)', () => {
+    const items = [
+      { key: 'cell/A1', value: { count: 1 } },
+      { key: 'cell/A2', value: { count: 2 } },
+      { key: 'column/A', value: { count: 3 } },
+    ];
+
+    beforeEach(() => db.putMany(items));
+
+    it('filters on path all docs', async () => {
+      const res = await db.find({ path: '**', filter: { count: { $gte: 2 } } });
+      expect(res.length).to.eql(2);
+      expect(res.keys).to.include('cell/A2');
+      expect(res.keys).to.include('column/A');
+    });
+
+    it('filters only on path matched docs', async () => {
+      const res = await db.find({ path: 'cell/*', filter: { count: { $gte: 2 } } });
+      expect(res.keys).to.eql(['cell/A2']);
+    });
+
+    describe('greater-than / less-than', () => {
+      it('gt', async () => {
+        const res = await db.find({ path: '**', filter: { count: { $gt: 1 } } });
+        expect(res.length).to.eql(2);
+        expect(res.keys).to.include('cell/A2');
+        expect(res.keys).to.include('column/A');
+      });
+
+      it('gte', async () => {
+        const res = await db.find({ path: '**', filter: { count: { $gte: 2 } } });
+        expect(res.length).to.eql(2);
+        expect(res.keys).to.include('cell/A2');
+        expect(res.keys).to.include('column/A');
+      });
+
+      it('lt', async () => {
+        const res = await db.find({ path: '**', filter: { count: { $lt: 2 } } });
+        expect(res.keys).to.eql(['cell/A1']);
+      });
+
+      it('lte', async () => {
+        const res = await db.find({ path: '**', filter: { count: { $lte: 2 } } });
+        expect(res.length).to.eql(2);
+        expect(res.keys).to.include('cell/A1');
+        expect(res.keys).to.include('cell/A2');
+      });
     });
   });
 

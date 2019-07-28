@@ -7,6 +7,9 @@ export function encodeKey(input: string): string {
   input = input.replace(/\./g, '\\'); // Period (.) characters are not allowed.
   return input;
 }
+function shouldEncode(input: string) {
+  return input.includes('.');
+}
 
 /**
  * Converts escaped key values back to their original form.
@@ -14,6 +17,9 @@ export function encodeKey(input: string): string {
 export function decodeKey(input: string): string {
   input = input.replace(/\\/g, '.');
   return input;
+}
+function shouldDecode(input: string) {
+  return input.includes('\\');
 }
 
 /**
@@ -28,6 +34,13 @@ export function encodeObjectKeys<T extends object>(input: T | T[]): T | T[] {
  */
 export function decodeObjectKeys<T extends object>(input: T | T[]): T | T[] {
   return changeObjectKeys<T>(input, shouldDecode, decodeKey);
+}
+
+/**
+ * Ensures keys are prefixed.
+ */
+export function prefixFilterKeys<T extends object>(prefix: string, input: T) {
+  return changeObjectKeys(input, key => !key.startsWith('$'), key => `${prefix}.${key}`);
 }
 
 /**
@@ -69,12 +82,4 @@ function changeObjectKeys<T extends object>(
     }
   });
   return res;
-}
-
-function shouldEncode(input: string) {
-  return input.includes('.');
-}
-
-function shouldDecode(input: string) {
-  return input.includes('\\');
 }

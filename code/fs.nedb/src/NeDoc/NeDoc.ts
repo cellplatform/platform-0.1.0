@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
-import { DbUri, defaultValue, t, time, value as valueUtil } from '../common';
+import { DbUri, defaultValue, t, time, value as valueUtil, keys as keysUtil } from '../common';
 import { Nedb } from '../Nedb';
 import { Schema } from './schema';
 
@@ -290,7 +290,7 @@ export class NeDoc implements t.INeDb {
       const uri = this.uri.parse(query.path);
       const { dir, suffix } = uri.path;
 
-      const buildQuery = () => {
+      const pathQuery = () => {
         if (dir === '') {
           if (suffix === '') {
             return undefined;
@@ -306,6 +306,16 @@ export class NeDoc implements t.INeDb {
           const expr = suffix === '**' ? `^${dir}\/*` : `^${dir}\/([^/]*)$`;
           return { path: { $regex: new RegExp(expr) } };
         }
+      };
+
+      const filterQuery = () => {
+        const filter = query.filter;
+        return filter ? keysUtil.prefixFilterKeys('data', filter) : undefined;
+      };
+
+      const buildQuery = () => {
+        const path = pathQuery();
+        return path ? { ...path, ...filterQuery() } : undefined;
       };
 
       // Query the database.
