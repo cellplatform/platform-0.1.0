@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { IJsonMap } from '@platform/types';
-import { IDbTimestamps, IDbValue } from '@platform/fs.db.types/lib/types';
+import { IDbTimestamps } from '@platform/fs.db.types/lib/types';
 import { INeDb } from '@platform/fs.nedb/lib/types';
 
 /**
@@ -15,9 +15,9 @@ export type IModelProps<P extends object, L extends ILinkedModelSchema = any> = 
   readonly exists: boolean | undefined;
   readonly dispose$: Observable<{}>;
   readonly events$: Observable<ModelEvent>;
-  readonly doc: IJsonMap;
-  readonly props: P;
-  readonly links: ILinkedModels<L>;
+  readonly doc: IJsonMap; // Raw DB data.
+  readonly props: P; // Property API.
+  readonly links: ILinkedModels<L>; // Relationships (JOINs).
 };
 export type IModelMethods<D extends object> = {
   load(options?: { force?: boolean; links?: boolean }): Promise<D>;
@@ -28,7 +28,7 @@ export type IModelMethods<D extends object> = {
  * [Links]
  */
 export type ILinkedModelResolvers<P extends object, L extends ILinkedModelSchema> = {
-  [K in keyof L]: LinkedModelResolver<P, L>;
+  [K in keyof L]: LinkedModelResolver<P, L>
 };
 export type LinkedModelResolver<P extends object, L extends ILinkedModelSchema> = (
   args: ILinkedModelResolverArgs<P, L>,
@@ -38,7 +38,6 @@ export type ILinkedModelResolverArgs<P extends object, L extends ILinkedModelSch
   db: INeDb;
   model: IModel<P, L>;
   prop: keyof L;
-  data: IDbValue['value'];
 };
 
 export type ILinkedModelSchema = { [key: string]: IModel | IModel[] };

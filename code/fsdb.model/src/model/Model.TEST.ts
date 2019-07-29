@@ -4,7 +4,7 @@ import { Model } from '.';
 import { expect, getTestDb, t, time } from '../test';
 
 type IMyThingFields = { count: number };
-type IMyOrgFields = { id: string; name: string; refs: string[]; ref?: string };
+type IMyOrgFields = { id: string; name: string };
 
 export type IMyThing = t.IModel<IMyThingFields>;
 export type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
@@ -15,7 +15,7 @@ describe('model', () => {
   beforeEach(async () => (db = await getTestDb({ file: false })));
 
   const id = '123';
-  const org: IMyOrgFields = { id, name: 'MyOrg', refs: [] };
+  const org: IMyOrgFields = { id, name: 'MyOrg' };
   const orgPath = 'ORG/123';
 
   it('model (load)', async () => {
@@ -31,6 +31,7 @@ describe('model', () => {
     await model.load();
     expect(model.isReady).to.eql(true);
     expect(model.exists).to.eql(false);
+    expect(model.doc).to.eql({});
     expect(model.props).to.eql({}); // NB: Default empty object, even though no backing data yet.
 
     // Load again, with data in DB, but not `force` reload.
@@ -38,12 +39,14 @@ describe('model', () => {
     await model.load();
     expect(model.isReady).to.eql(true);
     expect(model.exists).to.eql(false);
+    expect(model.doc).to.eql({});
     expect(model.props).to.eql({});
 
     // Load again after force refresh - data actually loaded now.
     await model.load({ force: true });
     expect(model.isReady).to.eql(true);
     expect(model.exists).to.eql(true);
+    expect(model.doc).to.eql(org);
     expect(model.props).to.eql(org);
     expect(model.props.name).to.eql(org.name); // Strongly typed.
   });
@@ -140,13 +143,15 @@ describe('model', () => {
 
     const links: t.ILinkedModelResolvers<IMyOrgFields, IMyOrgLinks> = {
       thing: async e => {
+        // NB: `ref` is on underlying document, but not the model's pulic <P> type.
+        const path = e.model.doc.ref as string;
         const db = e.db;
-        const path = e.model.props.ref;
         return path ? Model.create<IMyThingFields>({ db, path }) : undefined;
       },
       things: async e => {
+        // NB: `refs` is on underlying document, but not the model's public <P> type.
+        const paths = (e.model.doc.refs || []) as string[];
         const db = e.db;
-        const paths = e.model.props.refs || [];
         return Promise.all(paths.map(path => Model.create<IMyThingFields>({ db, path }).ready));
       },
     };

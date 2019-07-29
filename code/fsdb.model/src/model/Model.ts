@@ -107,7 +107,7 @@ export class Model<F extends object, L extends t.ILinkedModelSchema = any>
   public get doc(): t.IJsonMap {
     const item = this._item;
     const res = item ? ((item.value as unknown) as F) : undefined;
-    return res || ({} as any);
+    return (res || {}) as t.IJsonMap;
   }
 
   public get props(): F {
@@ -203,14 +203,7 @@ export class Model<F extends object, L extends t.ILinkedModelSchema = any>
       await this.load();
     }
 
-    const res = !this._item
-      ? undefined
-      : resolver({
-          prop,
-          model: this,
-          db: this.db,
-          data: this._item.value,
-        });
+    const res = !this._item ? undefined : resolver({ prop, model: this, db: this.db });
 
     this._linkCache[prop] = res;
     this.fire({ type: 'MODEL/loaded/link', payload: { model: this, prop } });
