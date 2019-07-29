@@ -104,10 +104,15 @@ export class Model<F extends object, L extends t.ILinkedModelSchema = any>
     return this._item ? this._item.props.modifiedAt : -1;
   }
 
-  public get props(): F {
+  public get doc(): t.IJsonMap {
     const item = this._item;
     const res = item ? ((item.value as unknown) as F) : undefined;
     return res || ({} as any);
+  }
+
+  public get props(): F {
+    // TEMP 🐷- Build dynamic read/write property object from doc
+    return this.doc as F;
   }
 
   public get links(): t.ILinkedModels<L> {
