@@ -28,7 +28,7 @@ export type IModelMethods<D extends object> = {
  * [Links]
  */
 export type ILinkedModelResolvers<P extends object, L extends ILinkedModelSchema> = {
-  [K in keyof L]: LinkedModelResolver<P, L>
+  [K in keyof L]: LinkedModelResolver<P, L>;
 };
 export type LinkedModelResolver<P extends object, L extends ILinkedModelSchema> = (
   args: ILinkedModelResolverArgs<P, L>,
