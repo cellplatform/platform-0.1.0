@@ -72,9 +72,9 @@ export function init(args: { toContext: GetContext }) {
         log.TODO('ensure user is part of the thread. 🐷');
 
         const { kind } = args;
-        const query = `${k.itemsDbKey(_.id)}/**`;
+        const path = `${k.itemsDbKey(_.id)}/**`;
 
-        const res = await db.find({ query });
+        const res = await db.find({ path });
         const items = res.list
           .map(item => item.value as t.ThreadItem)
           .filter(m => Boolean(m))

@@ -241,7 +241,7 @@ export class PgDoc implements t.IDb {
    * [Find]
    */
 
-  public async find(query: t.DbFindArg): Promise<t.IDbFindResult> {
+  public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
     this.throwIfDisposed('find');
 
     let keys: string[] | undefined;
@@ -250,7 +250,7 @@ export class PgDoc implements t.IDb {
     let list: t.IDbValue[] = [];
 
     try {
-      const pattern = (typeof query === 'object' ? query.query : query) || '';
+      const pattern = (typeof query === 'object' ? query.path : query) || '';
       if (!pattern) {
         throw new Error(`A query pattern must contain at least a root TABLE name.`);
       }

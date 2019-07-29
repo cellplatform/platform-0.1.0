@@ -263,8 +263,8 @@ export class FileDb implements t.IDb {
   /**
    * Find (glob).
    */
-  public async find(query: t.DbFindArg): Promise<t.IDbFindResult> {
-    const pattern = (typeof query === 'object' ? query.query : query) || '';
+  public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
+    const pattern = (typeof query === 'object' ? query.path : query) || '';
 
     // Results.
     let paths: string[] = [];

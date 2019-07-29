@@ -11,13 +11,20 @@ export type IDbTimestamps = {
 /**
  * Database
  */
-export type IDb = IDbRead & IDbWrite & IDisposable & IDbEvents;
+export type IDb<Q extends IDbQuery = IDbQuery> = IDbRead &
+  IDbWrite &
+  IDbSearch<Q> &
+  IDisposable &
+  IDbEvents;
 
 export type IDbRead = {
   get(key: string): Promise<IDbValue>;
   getValue<T extends Json | undefined>(key: string): Promise<T>;
   getMany(keys: string[]): Promise<IDbValue[]>;
-  find(query: DbFindArg): Promise<IDbFindResult>;
+};
+
+export type IDbSearch<Q extends IDbQuery = IDbQuery> = {
+  find(query: Q | string): Promise<IDbFindResult>;
 };
 
 export type IDbWrite = {
@@ -55,10 +62,9 @@ export type IDbPutOptions = {
 };
 
 /**
- * Find
+ * Query
  */
-export type IDbQuery = { query?: string };
-export type DbFindArg = IDbQuery | string;
+export type IDbQuery = { path?: string };
 
 export type IDbFindResult = {
   length: number;

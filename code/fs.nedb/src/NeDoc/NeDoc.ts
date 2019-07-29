@@ -1,14 +1,15 @@
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
-import { DbUri, defaultValue, t, time, value as valueUtil } from '../common';
+import { DbUri, defaultValue, t, time, value as valueUtil, keys as keysUtil } from '../common';
 import { Nedb } from '../Nedb';
+import { Schema } from './schema';
 
 export type INeDocArgs = {
   filename?: string;
 };
 
-export class NeDoc {
+export class NeDoc implements t.INeDb {
   /**
    * [Static]
    */
@@ -45,12 +46,45 @@ export class NeDoc {
    */
   private readonly store: Nedb<t.IDoc>;
   private readonly uri = DbUri.create();
+  private readonly schema = Schema.create();
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.DbEvent>();
   public readonly events$ = this._events$.pipe(share());
+
+  /**
+   * [Properties]
+   */
+  public get sys() {
+    const schema = this.schema.sys;
+
+    const sys = {
+      timestamps: async () => {
+        const res = await this.store.findOne({ path: schema.timestamps });
+        const data: t.IDbTimestamps = res || { createdAt: -1, modifiedAt: -1 };
+        const { createdAt, modifiedAt } = data;
+        return { createdAt, modifiedAt };
+      },
+      increment: async () => {
+        let timestamps = await sys.timestamps();
+        const now = time.now.timestamp;
+        timestamps = {
+          createdAt: timestamps.createdAt === -1 ? now : timestamps.createdAt,
+          modifiedAt: now,
+        };
+        const query: any = { path: schema.timestamps };
+        await this.store.update(
+          query,
+          { path: schema.timestamps, ...timestamps, data: true },
+          { upsert: true },
+        );
+        return timestamps;
+      },
+    };
+    return sys;
+  }
 
   /**
    * [Methods]
@@ -170,6 +204,7 @@ export class NeDoc {
     // Perform inserts.
     if (inserts.length > 0) {
       await this.store.insertMany(inserts);
+      await this.sys.increment();
     }
 
     // Retrieve result set.
@@ -241,21 +276,21 @@ export class NeDoc {
    * [Find]
    */
 
-  public async find(query: string | t.IDbQuery): Promise<t.IDbFindResult> {
+  public async find(input: string | t.INeQuery): Promise<t.IDbFindResult> {
     this.throwIfDisposed('find');
 
     let keys: string[] | undefined;
     let map: t.IDbFindResult['map'] | undefined;
     let error: Error | undefined;
     let list: t.IDbValue[] = [];
+    const query = typeof input === 'string' ? { path: input } : input;
 
     try {
       // Prepare the query.
-      const pattern = (typeof query === 'object' ? query.query : query) || '';
-      const uri = this.uri.parse(pattern);
+      const uri = this.uri.parse(query.path);
       const { dir, suffix } = uri.path;
 
-      const buildQuery = () => {
+      const pathQuery = () => {
         if (dir === '') {
           if (suffix === '') {
             return undefined;
@@ -271,6 +306,16 @@ export class NeDoc {
           const expr = suffix === '**' ? `^${dir}\/*` : `^${dir}\/([^/]*)$`;
           return { path: { $regex: new RegExp(expr) } };
         }
+      };
+
+      const filterQuery = () => {
+        const filter = query.filter;
+        return filter ? keysUtil.prefixFilterKeys('data', filter) : undefined;
+      };
+
+      const buildQuery = () => {
+        const path = pathQuery();
+        return path ? { ...path, ...filterQuery() } : undefined;
       };
 
       // Query the database.
@@ -313,7 +358,7 @@ export class NeDoc {
     };
 
     // Finish up.
-    return result;
+    return valueUtil.deleteUndefined(result);
   }
 
   /**

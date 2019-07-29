@@ -213,7 +213,7 @@ describe('NeDoc', () => {
     expect(res3[1].props.exists).to.eql(false);
   });
 
-  describe('find', () => {
+  describe('find (path)', () => {
     it('nothing (no match)', async () => {
       const items = [
         { key: 'cell/A1', value: 123 },
@@ -280,7 +280,7 @@ describe('NeDoc', () => {
       ];
       await db.putMany(items);
       const res = await db.find('**');
-      expect(res.length).to.eql(4);
+      expect(res.length).to.eql(5); // NB: 5 (not 4) because results include the system timestamps.
     });
 
     it('shallow: root documents (*)', async () => {
@@ -299,6 +299,76 @@ describe('NeDoc', () => {
       const values = res.list.map(item => item.value);
       expect(values.includes('foo')).to.eql(true);
       expect(values.includes('bar')).to.eql(true);
+    });
+  });
+
+  describe('find (path + filter)', () => {
+    const items = [
+      { key: 'cell/A1', value: { count: 1 } },
+      { key: 'cell/A2', value: { count: 2 } },
+      { key: 'column/A', value: { count: 3 } },
+      { key: 'foo', value: { obj: { msg: 'hello' } } },
+    ];
+
+    beforeEach(() => db.putMany(items));
+
+    it('filters on path all docs', async () => {
+      const res = await db.find({ path: '**', filter: { count: { $gte: 2 } } });
+      expect(res.length).to.eql(2);
+      expect(res.keys).to.include('cell/A2');
+      expect(res.keys).to.include('column/A');
+    });
+
+    it('filters only on path matched docs', async () => {
+      const res = await db.find({ path: 'cell/*', filter: { count: { $gte: 2 } } });
+      expect(res.keys).to.eql(['cell/A2']);
+    });
+
+    it('ignores filter if empty object ({})', async () => {
+      const res = await db.find({ path: '**', filter: {} });
+      expect(res.length).to.greaterThan(items.length);
+    });
+
+    describe('equality', () => {
+      it('equals', async () => {
+        const res = await db.find({ path: '**', filter: { count: 2 } });
+        expect(res.keys).to.eql(['cell/A2']);
+      });
+
+      it('not-equals', async () => {
+        const res = await db.find({ path: '**', filter: { count: { $ne: 2 } } });
+        expect(res.keys).to.include('cell/A1');
+        expect(res.keys).to.include('column/A');
+        expect(res.keys).to.not.include('cell/A2');
+      });
+    });
+
+    describe('greater-than / less-than', () => {
+      it('gt', async () => {
+        const res = await db.find({ path: '**', filter: { count: { $gt: 1 } } });
+        expect(res.length).to.eql(2);
+        expect(res.keys).to.include('cell/A2');
+        expect(res.keys).to.include('column/A');
+      });
+
+      it('gte', async () => {
+        const res = await db.find({ path: '**', filter: { count: { $gte: 2 } } });
+        expect(res.length).to.eql(2);
+        expect(res.keys).to.include('cell/A2');
+        expect(res.keys).to.include('column/A');
+      });
+
+      it('lt', async () => {
+        const res = await db.find({ path: '**', filter: { count: { $lt: 2 } } });
+        expect(res.keys).to.eql(['cell/A1']);
+      });
+
+      it('lte', async () => {
+        const res = await db.find({ path: '**', filter: { count: { $lte: 2 } } });
+        expect(res.length).to.eql(2);
+        expect(res.keys).to.include('cell/A1');
+        expect(res.keys).to.include('cell/A2');
+      });
     });
   });
 
@@ -332,5 +402,58 @@ describe('NeDoc', () => {
     expect(events[2].payload.value).to.eql(123);
     expect(events[3].payload.value).to.eql(undefined);
     expect(events[4].payload.value).to.eql(undefined);
+  });
+
+  describe('system fields (SYS)', () => {
+    describe('timestamps', () => {
+      it('timestamps are -1 by default (prior to initial write)', async () => {
+        expect(await db.sys.timestamps()).to.eql({ createdAt: -1, modifiedAt: -1 });
+      });
+
+      it('increments timestamps ', async () => {
+        const now = time.now.timestamp;
+
+        const res1 = await db.sys.increment();
+        const ts1 = await db.sys.timestamps();
+        expect(ts1).to.eql(res1);
+        expect(ts1.createdAt).to.be.within(now - 5, now + 10);
+        expect(ts1.modifiedAt).to.eql(ts1.createdAt);
+
+        await time.wait(50);
+
+        const res2 = await db.sys.increment();
+        const ts2 = await db.sys.timestamps();
+        expect(ts2).to.eql(res2);
+        expect(ts2.createdAt).to.eql(ts1.createdAt);
+        expect(ts2.modifiedAt).to.be.within(now - 45, now + 60);
+      });
+
+      it('increments timestamps on put', async () => {
+        const now = time.now.timestamp;
+
+        const ts0 = await db.sys.timestamps();
+        expect(ts0.createdAt).to.eql(-1);
+        expect(ts0.modifiedAt).to.eql(-1);
+
+        await db.put('foo', 123);
+        const ts1 = await db.sys.timestamps();
+        expect(ts1.createdAt).to.be.within(now - 5, now + 10);
+        expect(ts1.modifiedAt).to.eql(ts1.createdAt);
+
+        await time.wait(50);
+        await db.putMany([{ key: 'foo', value: 456 }, { key: 'bar', value: 789 }]);
+
+        const ts2 = await db.sys.timestamps();
+        expect(ts2.createdAt).to.eql(ts1.createdAt);
+        expect(ts2.modifiedAt).to.be.within(now - 45, now + 60);
+
+        const res = await db.find('**');
+        const ts3 = res.list.find(item => item.props.key === '~sys/timestamps');
+
+        expect(ts3 && ts3.value).to.eql(true);
+        expect(ts3 && ts3.props.createdAt).to.eql(ts2.createdAt);
+        expect(ts3 && ts3.props.modifiedAt).to.eql(ts2.modifiedAt);
+      });
+    });
   });
 });
