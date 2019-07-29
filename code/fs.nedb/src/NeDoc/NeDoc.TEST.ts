@@ -324,6 +324,11 @@ describe('NeDoc', () => {
       expect(res.keys).to.eql(['cell/A2']);
     });
 
+    it('ignores filter if empty object ({})', async () => {
+      const res = await db.find({ path: '**', filter: {} });
+      expect(res.length).to.greaterThan(items.length);
+    });
+
     describe('equality', () => {
       it('equals', async () => {
         const res = await db.find({ path: '**', filter: { count: 2 } });
