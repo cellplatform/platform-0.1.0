@@ -24,28 +24,28 @@ describe('model', () => {
     // Not read yet.
     expect(model.isReady).to.eql(false);
     expect(model.exists).to.eql(undefined);
-    expect(model.data).to.eql({});
+    expect(model.props).to.eql({});
     expect(model.path).to.eql(orgPath);
 
     // Load, but not in DB.
     await model.load();
     expect(model.isReady).to.eql(true);
     expect(model.exists).to.eql(false);
-    expect(model.data).to.eql({}); // NB: Default empty object, even though no backing data yet.
+    expect(model.props).to.eql({}); // NB: Default empty object, even though no backing data yet.
 
     // Load again, with data in DB, but not `force` reload.
     await db.put(orgPath, org);
     await model.load();
     expect(model.isReady).to.eql(true);
     expect(model.exists).to.eql(false);
-    expect(model.data).to.eql({});
+    expect(model.props).to.eql({});
 
     // Load again after force refresh - data actually loaded now.
     await model.load({ force: true });
     expect(model.isReady).to.eql(true);
     expect(model.exists).to.eql(true);
-    expect(model.data).to.eql(org);
-    expect(model.data.name).to.eql(org.name); // Strongly typed.
+    expect(model.props).to.eql(org);
+    expect(model.props.name).to.eql(org.name); // Strongly typed.
   });
 
   it('model (load on creation, default)', async () => {
@@ -141,12 +141,12 @@ describe('model', () => {
     const links: t.ILinkedModelResolvers<IMyOrgFields, IMyOrgLinks> = {
       thing: async e => {
         const db = e.db;
-        const path = e.model.data.ref;
+        const path = e.model.props.ref;
         return path ? Model.create<IMyThingFields>({ db, path }) : undefined;
       },
       things: async e => {
         const db = e.db;
-        const paths = e.model.data.refs || [];
+        const paths = e.model.props.refs || [];
         return Promise.all(paths.map(path => Model.create<IMyThingFields>({ db, path }).ready));
       },
     };
@@ -164,8 +164,8 @@ describe('model', () => {
       const thing = await model.links.thing;
       const things = await model.links.things;
 
-      expect(thing.data).to.eql({ count: 2 });
-      expect(things.map(m => m.data)).to.eql([{ count: 1 }, { count: 3 }]);
+      expect(thing.props).to.eql({ count: 2 });
+      expect(things.map(m => m.props)).to.eql([{ count: 1 }, { count: 3 }]);
     });
 
     it('fires link-loaded event', async () => {
@@ -211,8 +211,8 @@ describe('model', () => {
       const res1 = await readLinks();
       const res2 = await readLinks();
 
-      expect(res1.thing.data).to.eql({ count: 2 });
-      expect(res1.things.map(m => m.data)).to.eql([{ count: 1 }, { count: 3 }]);
+      expect(res1.thing.props).to.eql({ count: 2 });
+      expect(res1.things.map(m => m.props)).to.eql([{ count: 1 }, { count: 3 }]);
 
       expect(res1.thing).to.equal(res2.thing);
       expect(res1.things).to.equal(res2.things);
@@ -224,8 +224,8 @@ describe('model', () => {
       expect(res3.thing).to.not.equal(res2.thing);
       expect(res3.things).to.not.equal(res2.things);
 
-      expect(res3.thing.data).to.eql({ count: 2 });
-      expect(res3.things.map(m => m.data)).to.eql([{ count: 1 }, { count: 3 }]);
+      expect(res3.thing.props).to.eql({ count: 2 });
+      expect(res3.things.map(m => m.props)).to.eql([{ count: 1 }, { count: 3 }]);
 
       await model.load({ force: true });
       const res4 = await readLinks();

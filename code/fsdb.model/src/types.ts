@@ -5,16 +5,16 @@ import { INeDb } from '@platform/fs.nedb/lib/types';
 /**
  * [Model]
  */
-export type IModel<D extends object = {}, L extends ILinkedModelSchema = any> = IModelProps<D, L> &
-  IModelMethods<D>;
+export type IModel<P extends object = {}, L extends ILinkedModelSchema = any> = IModelProps<P, L> &
+  IModelMethods<P>;
 
-export type IModelProps<D extends object, L extends ILinkedModelSchema = any> = IDbTimestamps & {
+export type IModelProps<P extends object, L extends ILinkedModelSchema = any> = IDbTimestamps & {
   readonly isDisposed: boolean;
   readonly isReady: boolean;
   readonly exists: boolean | undefined;
   readonly dispose$: Observable<{}>;
   readonly events$: Observable<ModelEvent>;
-  readonly data: D;
+  readonly props: P;
   readonly links: ILinkedModels<L>;
 };
 export type IModelMethods<D extends object> = {
@@ -25,16 +25,16 @@ export type IModelMethods<D extends object> = {
 /**
  * [Links]
  */
-export type ILinkedModelResolvers<D extends object, L extends ILinkedModelSchema> = {
-  [K in keyof L]: LinkedModelResolver<D, L>
+export type ILinkedModelResolvers<P extends object, L extends ILinkedModelSchema> = {
+  [K in keyof L]: LinkedModelResolver<P, L>
 };
-export type LinkedModelResolver<D extends object, L extends ILinkedModelSchema> = (
-  args: ILinkedModelResolverArgs<D, L>,
+export type LinkedModelResolver<P extends object, L extends ILinkedModelSchema> = (
+  args: ILinkedModelResolverArgs<P, L>,
 ) => Promise<L[keyof L] | undefined>;
 
-export type ILinkedModelResolverArgs<D extends object, L extends ILinkedModelSchema> = {
+export type ILinkedModelResolverArgs<P extends object, L extends ILinkedModelSchema> = {
   db: INeDb;
-  model: IModel<D, L>;
+  model: IModel<P, L>;
   prop: keyof L;
   data: IDbValue['value'];
 };

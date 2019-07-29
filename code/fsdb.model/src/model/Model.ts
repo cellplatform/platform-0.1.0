@@ -2,17 +2,23 @@ import { Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 import { defaultValue, t } from './common';
 
-export type IModelArgs<F extends object, L extends t.ILinkedModelSchema = any> = {
+export type IModelArgs<P extends object, L extends t.ILinkedModelSchema = any> = {
   db: t.IDb;
   path: string;
   load?: boolean;
   events$?: Subject<t.ModelEvent>;
-  links?: t.ILinkedModelResolvers<F, L>;
+  links?: t.ILinkedModelResolvers<P, L>;
 };
 
 /**
  * A strongly typed wrapper around a database representing a
  * single conceptual "model", and it's relationships.
+ *
+ *  - data
+ *  - links (join relationships)
+ *  - read/write (change management)
+ *  - caching
+ *
  */
 export class Model<F extends object, L extends t.ILinkedModelSchema = any>
   implements t.IModel<F, L> {
@@ -98,7 +104,7 @@ export class Model<F extends object, L extends t.ILinkedModelSchema = any>
     return this._item ? this._item.props.modifiedAt : -1;
   }
 
-  public get data(): F {
+  public get props(): F {
     const item = this._item;
     const res = item ? ((item.value as unknown) as F) : undefined;
     return res || ({} as any);
@@ -153,7 +159,7 @@ export class Model<F extends object, L extends t.ILinkedModelSchema = any>
     }
 
     // Finish up.
-    return this.data;
+    return this.props;
   }
 
   /**
