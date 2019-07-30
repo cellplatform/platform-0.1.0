@@ -20,9 +20,10 @@ export type IModelProps<P extends object, L extends ILinkedModelSchema = any> = 
   readonly props: P; // Data as read/write properties.
   readonly links: ILinkedModels<L>; // Relationships (JOIN's).
 };
-export type IModelMethods<D extends object> = {
-  load(options?: { force?: boolean; links?: boolean }): Promise<D>;
+export type IModelMethods<P extends object> = {
+  load(options?: { force?: boolean; links?: boolean }): Promise<P>;
   reset(): void;
+  toObject(): P;
 };
 
 /**

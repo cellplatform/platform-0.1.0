@@ -5,7 +5,7 @@ import { defaultValue, t } from './common';
 export type IModelArgs<P extends object, L extends t.ILinkedModelSchema = any> = {
   db: t.IDb;
   path: string;
-  // initial: P;
+  initial: P;
   load?: boolean;
   events$?: Subject<t.ModelEvent>;
   links?: t.ILinkedModelResolvers<P, L>;
@@ -50,6 +50,7 @@ export class Model<P extends object, L extends t.ILinkedModelSchema = any>
    */
   private _args: IModelArgs<P, L>;
   private _item: t.IDbValue | undefined;
+  private _props: P;
   private _links: t.ILinkedModels<L>;
   private _linkCache = {};
 
@@ -112,8 +113,16 @@ export class Model<P extends object, L extends t.ILinkedModelSchema = any>
   }
 
   public get props(): P {
-    // TEMP 🐷- Build dynamic read/write property object from doc
-    return this.doc as P;
+    if (!this._props) {
+      const res = {} as any;
+      Object.keys(this._args.initial).forEach(key => {
+        Object.defineProperty(res, key, {
+          get: () => this.doc[key],
+        });
+      });
+      this._props = res;
+    }
+    return this._props;
   }
 
   public get links(): t.ILinkedModels<L> {
@@ -175,6 +184,21 @@ export class Model<P extends object, L extends t.ILinkedModelSchema = any>
     this.throwIfDisposed('reset');
     this._item = undefined;
     this._linkCache = {};
+  }
+
+  /**
+   * Convert the model props to a simple object.
+   */
+  public toObject(): P {
+    if (!this.isReady || !this.exists) {
+      return ({} as any) as P;
+    }
+
+    const props = this.props;
+    return Object.keys(this._args.initial).reduce((acc, key) => {
+      acc[key] = props[key];
+      return acc;
+    }, {}) as P;
   }
 
   /**

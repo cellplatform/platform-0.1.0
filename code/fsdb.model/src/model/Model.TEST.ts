@@ -2,37 +2,44 @@ import { filter, map } from 'rxjs/operators';
 import { Model } from '.';
 import { expect, getTestDb, t, time } from '../test';
 
-type IMyThingFields = { count: number };
-type IMyOrgFields = { id: string; name: string };
+type IMyThingProps = { count: number };
+type IMyOrgProps = { id: string; name: string };
 
-export type IMyThing = t.IModel<IMyThingFields>;
+export type IMyThing = t.IModel<IMyThingProps>;
 export type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
-export type IMyOrg = t.IModel<IMyOrgFields, IMyOrgLinks>;
+export type IMyOrg = t.IModel<IMyOrgProps, IMyOrgLinks>;
 
 describe('model', () => {
   let db: t.INeDb;
   beforeEach(async () => (db = await getTestDb({ file: false })));
 
   const org = {
-    doc: { id: '123', name: 'MyOrg' },
     path: 'ORG/123',
+    doc: { id: '123', name: 'MyOrg' },
+    initial: { id: '', name: '' },
   };
+  const createOrg = () => Model.create<IMyOrgProps>({ db, path: org.path, initial: org.initial });
 
   it('model (load)', async () => {
-    const model = Model.create<IMyOrgFields>({ db, path: org.path, load: false });
+    const model = Model.create<IMyOrgProps>({
+      db,
+      path: org.path,
+      initial: org.initial,
+      load: false,
+    });
 
     // Not read yet.
     expect(model.isReady).to.eql(false);
     expect(model.exists).to.eql(undefined);
-    expect(model.props).to.eql({});
     expect(model.path).to.eql(org.path);
+    expect(model.toObject()).to.eql({});
 
     // Load, but not in DB.
     await model.load();
     expect(model.isReady).to.eql(true);
     expect(model.exists).to.eql(false);
     expect(model.doc).to.eql({});
-    expect(model.props).to.eql({}); // NB: Default empty object, even though no backing data yet.
+    expect(model.toObject()).to.eql({}); // NB: Default empty object, even though no backing data yet.
 
     // Load again, with data in DB, but not `force` reload.
     await db.put(org.path, org.doc);
@@ -40,20 +47,21 @@ describe('model', () => {
     expect(model.isReady).to.eql(true);
     expect(model.exists).to.eql(false);
     expect(model.doc).to.eql({});
-    expect(model.props).to.eql({});
+    expect(model.toObject()).to.eql({});
 
     // Load again after force refresh - data actually loaded now.
     await model.load({ force: true });
     expect(model.isReady).to.eql(true);
     expect(model.exists).to.eql(true);
     expect(model.doc).to.eql(org.doc);
-    expect(model.props).to.eql(org.doc);
+    expect(model.props.id).to.eql(org.doc.id); // Strongly typed.
     expect(model.props.name).to.eql(org.doc.name); // Strongly typed.
+    expect(model.toObject()).to.eql(org.doc);
   });
 
   it('model (load on creation, default)', async () => {
     await db.put(org.path, org.doc);
-    const model = Model.create<IMyOrgFields>({ db, path: org.path });
+    const model = createOrg();
     expect(model.isReady).to.eql(false);
 
     await time.wait(5);
@@ -63,7 +71,12 @@ describe('model', () => {
   describe('ready (promise)', () => {
     it('resolves promise', async () => {
       await db.put(org.path, org.doc);
-      const model = Model.create<IMyOrgFields>({ db, path: org.path, load: false });
+      const model = Model.create<IMyOrgProps>({
+        db,
+        path: org.path,
+        initial: org.initial,
+        load: false,
+      });
 
       let count = 0;
       model.ready.then(() => count++);
@@ -75,7 +88,12 @@ describe('model', () => {
 
     it('returns immediately if already loaded', async () => {
       await db.put(org.path, org.doc);
-      const model = Model.create<IMyOrgFields>({ db, path: org.path, load: false });
+      const model = Model.create<IMyOrgProps>({
+        db,
+        path: org.path,
+        initial: org.initial,
+        load: false,
+      });
       await model.load();
       await model.ready;
       expect(model.isReady).to.eql(true);
@@ -83,13 +101,36 @@ describe('model', () => {
 
     it('fires after autoload', async () => {
       await db.put(org.path, org.doc);
-      const model = await Model.create<IMyOrgFields>({ db, path: org.path }).ready;
+      const model = await Model.create<IMyOrgProps>({ db, path: org.path, initial: org.initial })
+        .ready;
       expect(model.isReady).to.eql(true);
     });
   });
 
+  describe('prop (synthetic object)', () => {
+    it('get', async () => {
+      await db.put(org.path, org.doc);
+      const model = createOrg();
+      await model.ready;
+      expect(model.props.id).to.eql(org.doc.id);
+      expect(model.props.name).to.eql(org.doc.name);
+    });
+
+    it('cached props object', () => {
+      const model = createOrg();
+      const res1 = model.props;
+      const res2 = model.props;
+      expect(res1).to.equal(res2);
+    });
+  });
+
   it('fires loaded event', async () => {
-    const model = Model.create<IMyOrgFields>({ db, path: org.path, load: false });
+    const model = Model.create<IMyOrgProps>({
+      db,
+      path: org.path,
+      initial: org.initial,
+      load: false,
+    });
 
     const events: t.IModelDataLoaded[] = [];
     model.events$
@@ -114,7 +155,12 @@ describe('model', () => {
   });
 
   it('timestamps', async () => {
-    const model = Model.create<IMyOrgFields>({ db, path: org.path, load: false });
+    const model = Model.create<IMyOrgProps>({
+      db,
+      path: org.path,
+      initial: org.initial,
+      load: false,
+    });
     expect(model.createdAt).to.eql(-1);
     expect(model.modifiedAt).to.eql(-1);
 
@@ -141,14 +187,16 @@ describe('model', () => {
       ]);
     });
 
-    const links: t.ILinkedModelResolvers<IMyOrgFields, IMyOrgLinks> = {
+    const links: t.ILinkedModelResolvers<IMyOrgProps, IMyOrgLinks> = {
       thing: {
         relationship: '1:1',
         resolve: async e => {
           // NB: `ref` is on underlying document, but not the model's pulic <P> type.
           const path = e.model.doc.ref as string;
           const db = e.db;
-          return path ? Model.create<IMyThingFields>({ db, path }) : undefined;
+          return path
+            ? Model.create<IMyThingProps>({ db, path, initial: { count: -1 } })
+            : undefined;
         },
       },
       things: {
@@ -157,13 +205,17 @@ describe('model', () => {
           // NB: `refs` is on underlying document, but not the model's public <P> type.
           const paths = (e.model.doc.refs || []) as string[];
           const db = e.db;
-          return Promise.all(paths.map(path => Model.create<IMyThingFields>({ db, path }).ready));
+          return Promise.all(
+            paths.map(
+              path => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }).ready,
+            ),
+          );
         },
       },
     };
 
     it('has no links', async () => {
-      const model = Model.create<IMyOrgFields>({ db, path: org.path });
+      const model = createOrg();
       expect(model.links).to.eql({});
     });
 
@@ -173,14 +225,19 @@ describe('model', () => {
         refs: ['THING/1', 'THING/3'],
         ref: 'THING/2',
       });
-      const model = Model.create<IMyOrgFields, IMyOrgLinks>({ db, path: org.path, links });
+      const model = Model.create<IMyOrgProps, IMyOrgLinks>({
+        db,
+        path: org.path,
+        initial: org.initial,
+        links,
+      });
       await model.ready;
 
       const thing = await model.links.thing;
       const things = await model.links.things;
 
-      expect(thing.props).to.eql({ count: 2 });
-      expect(things.map(m => m.props)).to.eql([{ count: 1 }, { count: 3 }]);
+      expect(thing.toObject()).to.eql({ count: 2 });
+      expect(things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 3 }]);
     });
 
     it('fires link-loaded event', async () => {
@@ -189,9 +246,10 @@ describe('model', () => {
         refs: ['THING/1', 'THING/3'],
         ref: 'THING/2',
       });
-      const model = Model.create<IMyOrgFields, IMyOrgLinks>({
+      const model = Model.create<IMyOrgProps, IMyOrgLinks>({
         db,
         path: org.path,
+        initial: org.initial,
         links,
         load: false,
       });
@@ -221,7 +279,12 @@ describe('model', () => {
         refs: ['THING/1', 'THING/3'],
         ref: 'THING/2',
       });
-      const model = Model.create<IMyOrgFields, IMyOrgLinks>({ db, path: org.path, links });
+      const model = Model.create<IMyOrgProps, IMyOrgLinks>({
+        db,
+        path: org.path,
+        initial: org.initial,
+        links,
+      });
       await model.ready;
 
       const readLinks = async () => {
@@ -234,8 +297,8 @@ describe('model', () => {
       const res1 = await readLinks();
       const res2 = await readLinks();
 
-      expect(res1.thing.props).to.eql({ count: 2 });
-      expect(res1.things.map(m => m.props)).to.eql([{ count: 1 }, { count: 3 }]);
+      expect(res1.thing.toObject()).to.eql({ count: 2 });
+      expect(res1.things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 3 }]);
 
       expect(res1.thing).to.equal(res2.thing);
       expect(res1.things).to.equal(res2.things);
@@ -247,8 +310,8 @@ describe('model', () => {
       expect(res3.thing).to.not.equal(res2.thing);
       expect(res3.things).to.not.equal(res2.things);
 
-      expect(res3.thing.props).to.eql({ count: 2 });
-      expect(res3.things.map(m => m.props)).to.eql([{ count: 1 }, { count: 3 }]);
+      expect(res3.thing.toObject()).to.eql({ count: 2 });
+      expect(res3.things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 3 }]);
 
       await model.load({ force: true });
       const res4 = await readLinks();
@@ -264,9 +327,10 @@ describe('model', () => {
         refs: ['THING/1', 'THING/3'],
         ref: 'THING/2',
       });
-      const model = Model.create<IMyOrgFields, IMyOrgLinks>({
+      const model = Model.create<IMyOrgProps, IMyOrgLinks>({
         db,
         path: org.path,
+        initial: org.initial,
         links,
         load: false,
       });
