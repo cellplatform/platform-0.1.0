@@ -61,8 +61,10 @@ export class Sync implements t.IDisposable {
     this.schema = args.schema || SyncSchema.create({});
 
     // Bubble events.
-    if (args.events$) {
-      this.events$.subscribe(args.events$);
+    const bubble$ = args.events$;
+    if (bubble$) {
+      // NB: Not passed directly to [subscribe] to event it being stopped upon sync dispose.
+      this.events$.subscribe(e => bubble$.next(e));
     }
 
     // Setup observables.
