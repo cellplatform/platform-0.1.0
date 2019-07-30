@@ -13,18 +13,19 @@ describe('model', () => {
   let db: t.INeDb;
   beforeEach(async () => (db = await getTestDb({ file: false })));
 
-  const id = '123';
-  const org: IMyOrgFields = { id, name: 'MyOrg' };
-  const orgPath = 'ORG/123';
+  const org = {
+    doc: { id: '123', name: 'MyOrg' },
+    path: 'ORG/123',
+  };
 
   it('model (load)', async () => {
-    const model = Model.create<IMyOrgFields>({ db, path: orgPath, load: false });
+    const model = Model.create<IMyOrgFields>({ db, path: org.path, load: false });
 
     // Not read yet.
     expect(model.isReady).to.eql(false);
     expect(model.exists).to.eql(undefined);
     expect(model.props).to.eql({});
-    expect(model.path).to.eql(orgPath);
+    expect(model.path).to.eql(org.path);
 
     // Load, but not in DB.
     await model.load();
@@ -34,7 +35,7 @@ describe('model', () => {
     expect(model.props).to.eql({}); // NB: Default empty object, even though no backing data yet.
 
     // Load again, with data in DB, but not `force` reload.
-    await db.put(orgPath, org);
+    await db.put(org.path, org.doc);
     await model.load();
     expect(model.isReady).to.eql(true);
     expect(model.exists).to.eql(false);
@@ -45,14 +46,14 @@ describe('model', () => {
     await model.load({ force: true });
     expect(model.isReady).to.eql(true);
     expect(model.exists).to.eql(true);
-    expect(model.doc).to.eql(org);
-    expect(model.props).to.eql(org);
-    expect(model.props.name).to.eql(org.name); // Strongly typed.
+    expect(model.doc).to.eql(org.doc);
+    expect(model.props).to.eql(org.doc);
+    expect(model.props.name).to.eql(org.doc.name); // Strongly typed.
   });
 
   it('model (load on creation, default)', async () => {
-    await db.put(orgPath, org);
-    const model = Model.create<IMyOrgFields>({ db, path: orgPath });
+    await db.put(org.path, org.doc);
+    const model = Model.create<IMyOrgFields>({ db, path: org.path });
     expect(model.isReady).to.eql(false);
 
     await time.wait(5);
@@ -61,8 +62,8 @@ describe('model', () => {
 
   describe('ready (promise)', () => {
     it('resolves promise', async () => {
-      await db.put(orgPath, org);
-      const model = Model.create<IMyOrgFields>({ db, path: orgPath, load: false });
+      await db.put(org.path, org.doc);
+      const model = Model.create<IMyOrgFields>({ db, path: org.path, load: false });
 
       let count = 0;
       model.ready.then(() => count++);
@@ -73,22 +74,22 @@ describe('model', () => {
     });
 
     it('returns immediately if already loaded', async () => {
-      await db.put(orgPath, org);
-      const model = Model.create<IMyOrgFields>({ db, path: orgPath, load: false });
+      await db.put(org.path, org.doc);
+      const model = Model.create<IMyOrgFields>({ db, path: org.path, load: false });
       await model.load();
       await model.ready;
       expect(model.isReady).to.eql(true);
     });
 
     it('fires after autoload', async () => {
-      await db.put(orgPath, org);
-      const model = await Model.create<IMyOrgFields>({ db, path: orgPath }).ready;
+      await db.put(org.path, org.doc);
+      const model = await Model.create<IMyOrgFields>({ db, path: org.path }).ready;
       expect(model.isReady).to.eql(true);
     });
   });
 
   it('fires loaded event', async () => {
-    const model = Model.create<IMyOrgFields>({ db, path: orgPath, load: false });
+    const model = Model.create<IMyOrgFields>({ db, path: org.path, load: false });
 
     const events: t.IModelDataLoaded[] = [];
     model.events$
@@ -105,7 +106,7 @@ describe('model', () => {
     expect(events.length).to.eql(1);
     expect(events[0].withLinks).to.eql(false);
 
-    await db.put(orgPath, org);
+    await db.put(org.path, org.doc);
     await model.load({ force: true, withLinks: true });
     expect(model.exists).to.eql(true);
     expect(events.length).to.eql(2);
@@ -113,20 +114,20 @@ describe('model', () => {
   });
 
   it('timestamps', async () => {
-    const model = Model.create<IMyOrgFields>({ db, path: orgPath, load: false });
+    const model = Model.create<IMyOrgFields>({ db, path: org.path, load: false });
     expect(model.createdAt).to.eql(-1);
     expect(model.modifiedAt).to.eql(-1);
 
     const now = time.now.timestamp;
 
-    await db.put(orgPath, org);
+    await db.put(org.path, org.doc);
     await model.load();
 
     expect(model.createdAt).to.be.within(now - 5, now + 10);
     expect(model.modifiedAt).to.be.within(now - 5, now + 10);
 
     await time.wait(50);
-    await db.put(orgPath, org);
+    await db.put(org.path, org.doc);
     await model.load({ force: true });
     expect(model.modifiedAt).to.be.within(now + 45, now + 65);
   });
@@ -162,13 +163,17 @@ describe('model', () => {
     };
 
     it('has no links', async () => {
-      const model = Model.create<IMyOrgFields>({ db, path: orgPath });
+      const model = Model.create<IMyOrgFields>({ db, path: org.path });
       expect(model.links).to.eql({});
     });
 
     it('link', async () => {
-      await db.put(orgPath, { id, name: 'MyOrg', refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
-      const model = Model.create<IMyOrgFields, IMyOrgLinks>({ db, path: orgPath, links });
+      await db.put(org.path, {
+        ...org.doc,
+        refs: ['THING/1', 'THING/3'],
+        ref: 'THING/2',
+      });
+      const model = Model.create<IMyOrgFields, IMyOrgLinks>({ db, path: org.path, links });
       await model.ready;
 
       const thing = await model.links.thing;
@@ -179,10 +184,14 @@ describe('model', () => {
     });
 
     it('fires link-loaded event', async () => {
-      await db.put(orgPath, { id, name: 'MyOrg', refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
+      await db.put(org.path, {
+        ...org.doc,
+        refs: ['THING/1', 'THING/3'],
+        ref: 'THING/2',
+      });
       const model = Model.create<IMyOrgFields, IMyOrgLinks>({
         db,
-        path: orgPath,
+        path: org.path,
         links,
         load: false,
       });
@@ -207,8 +216,12 @@ describe('model', () => {
     });
 
     it('caches', async () => {
-      await db.put(orgPath, { id, name: 'MyOrg', refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
-      const model = Model.create<IMyOrgFields, IMyOrgLinks>({ db, path: orgPath, links });
+      await db.put(org.path, {
+        ...org.doc,
+        refs: ['THING/1', 'THING/3'],
+        ref: 'THING/2',
+      });
+      const model = Model.create<IMyOrgFields, IMyOrgLinks>({ db, path: org.path, links });
       await model.ready;
 
       const readLinks = async () => {
@@ -246,10 +259,14 @@ describe('model', () => {
     });
 
     it('gets links via `load` method', async () => {
-      await db.put(orgPath, { id, name: 'MyOrg', refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
+      await db.put(org.path, {
+        ...org,
+        refs: ['THING/1', 'THING/3'],
+        ref: 'THING/2',
+      });
       const model = Model.create<IMyOrgFields, IMyOrgLinks>({
         db,
-        path: orgPath,
+        path: org.path,
         links,
         load: false,
       });

@@ -5,6 +5,7 @@ import { defaultValue, t } from './common';
 export type IModelArgs<P extends object, L extends t.ILinkedModelSchema = any> = {
   db: t.IDb;
   path: string;
+  // initial: P;
   load?: boolean;
   events$?: Subject<t.ModelEvent>;
   links?: t.ILinkedModelResolvers<P, L>;
