@@ -16,8 +16,8 @@ export type IModelProps<P extends object, L extends ILinkedModelSchema = any> = 
   readonly exists: boolean | undefined;
   readonly dispose$: Observable<{}>;
   readonly events$: Observable<ModelEvent>;
-  readonly doc: IJsonMap; // Raw DB data.
-  readonly props: P; // Property API.
+  readonly doc: IJsonMap; // Raw DB document.
+  readonly props: P; // Data as read/write properties.
   readonly links: ILinkedModels<L>; // Relationships (JOIN's).
 };
 export type IModelMethods<D extends object> = {
@@ -29,7 +29,10 @@ export type IModelMethods<D extends object> = {
  * [Links]
  */
 export type ILinkedModelResolvers<P extends object, L extends ILinkedModelSchema> = {
-  [K in keyof L]: { resolve: LinkedModelResolver<P, L> }
+  [K in keyof L]: {
+    relationship: '1:1' | '*:1' | '1:*' | '*:*';
+    resolve: LinkedModelResolver<P, L>;
+  }
 };
 export type LinkedModelResolver<P extends object, L extends ILinkedModelSchema> = (
   args: ILinkedModelResolverArgs<P, L>,
@@ -48,14 +51,14 @@ export type ILinkedModels<L extends ILinkedModelSchema> = { [P in keyof L]: Prom
  */
 export type ModelEvent = IModelDataLoadedEvent | IModelLinkLoadedEvent;
 
+export type IModelDataLoaded = { model: IModel; withLinks: boolean };
 export type IModelDataLoadedEvent = {
   type: 'MODEL/loaded/data';
   payload: IModelDataLoaded;
 };
-export type IModelDataLoaded = { model: IModel; withLinks: boolean };
 
+export type IModelLinkLoaded = { model: IModel; prop: string };
 export type IModelLinkLoadedEvent = {
   type: 'MODEL/loaded/link';
   payload: IModelLinkLoaded;
 };
-export type IModelLinkLoaded = { model: IModel; prop: string };

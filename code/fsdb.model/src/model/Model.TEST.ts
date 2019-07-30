@@ -1,5 +1,4 @@
 import { filter, map } from 'rxjs/operators';
-
 import { Model } from '.';
 import { expect, getTestDb, t, time } from '../test';
 
@@ -143,6 +142,7 @@ describe('model', () => {
 
     const links: t.ILinkedModelResolvers<IMyOrgFields, IMyOrgLinks> = {
       thing: {
+        relationship: '1:1',
         resolve: async e => {
           // NB: `ref` is on underlying document, but not the model's pulic <P> type.
           const path = e.model.doc.ref as string;
@@ -151,6 +151,7 @@ describe('model', () => {
         },
       },
       things: {
+        relationship: '1:*',
         resolve: async e => {
           // NB: `refs` is on underlying document, but not the model's public <P> type.
           const paths = (e.model.doc.refs || []) as string[];
