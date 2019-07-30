@@ -15,21 +15,21 @@ export type IModelArgs<P extends object, L extends t.ILinkedModelSchema = any> =
  * single conceptual "model", and it's relationships.
  *
  *  - data
- *  - links (join relationships)
+ *  - links (JOIN relationships)
  *  - read/write (change management)
  *  - caching
  *
  */
-export class Model<F extends object, L extends t.ILinkedModelSchema = any>
-  implements t.IModel<F, L> {
+export class Model<P extends object, L extends t.ILinkedModelSchema = any>
+  implements t.IModel<P, L> {
   /**
    * [Lifecycle]
    */
-  public static create = <F extends object, L extends t.ILinkedModelSchema = any>(
-    args: IModelArgs<F, L>,
-  ) => new Model<F, L>(args);
+  public static create = <P extends object, L extends t.ILinkedModelSchema = any>(
+    args: IModelArgs<P, L>,
+  ) => new Model<P, L>(args);
 
-  private constructor(args: IModelArgs<F, L>) {
+  private constructor(args: IModelArgs<P, L>) {
     this._args = args;
     if (args.events$) {
       this.events$.subscribe(args.events$); // Bubble events.
@@ -47,7 +47,7 @@ export class Model<F extends object, L extends t.ILinkedModelSchema = any>
   /**
    * [Fields]
    */
-  private _args: IModelArgs<F, L>;
+  private _args: IModelArgs<P, L>;
   private _item: t.IDbValue | undefined;
   private _links: t.ILinkedModels<L>;
   private _linkCache = {};
@@ -81,7 +81,7 @@ export class Model<F extends object, L extends t.ILinkedModelSchema = any>
   }
 
   public get ready() {
-    return new Promise<t.IModel<F, L>>((resolve, reject) => {
+    return new Promise<t.IModel<P, L>>(resolve => {
       if (this.isReady) {
         resolve(this);
       } else {
@@ -106,22 +106,22 @@ export class Model<F extends object, L extends t.ILinkedModelSchema = any>
 
   public get doc(): t.IJsonMap {
     const item = this._item;
-    const res = item ? ((item.value as unknown) as F) : undefined;
+    const res = item ? ((item.value as unknown) as P) : undefined;
     return (res || {}) as t.IJsonMap;
   }
 
-  public get props(): F {
+  public get props(): P {
     // TEMP 🐷- Build dynamic read/write property object from doc
-    return this.doc as F;
+    return this.doc as P;
   }
 
   public get links(): t.ILinkedModels<L> {
     if (!this._links) {
       this._links = {} as any;
-      const links = this._args.links || [];
+      const links = (this._args.links || {}) as t.ILinkedModelResolvers<P, L>;
       Object.keys(links).forEach(key => {
         Object.defineProperty(this._links, key, {
-          get: () => this.getLink(key, links[key]),
+          get: () => this.getLink(key, links[key].resolve),
         });
       });
     }
@@ -191,7 +191,7 @@ export class Model<F extends object, L extends t.ILinkedModelSchema = any>
 
   private async getLink(
     prop: string,
-    resolver: t.LinkedModelResolver<F, L>,
+    resolver: t.LinkedModelResolver<P, L>,
     options: { autoLoad?: boolean } = {},
   ) {
     const cached = this._linkCache[prop];

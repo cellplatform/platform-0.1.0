@@ -142,17 +142,21 @@ describe('model', () => {
     });
 
     const links: t.ILinkedModelResolvers<IMyOrgFields, IMyOrgLinks> = {
-      thing: async e => {
-        // NB: `ref` is on underlying document, but not the model's pulic <P> type.
-        const path = e.model.doc.ref as string;
-        const db = e.db;
-        return path ? Model.create<IMyThingFields>({ db, path }) : undefined;
+      thing: {
+        resolve: async e => {
+          // NB: `ref` is on underlying document, but not the model's pulic <P> type.
+          const path = e.model.doc.ref as string;
+          const db = e.db;
+          return path ? Model.create<IMyThingFields>({ db, path }) : undefined;
+        },
       },
-      things: async e => {
-        // NB: `refs` is on underlying document, but not the model's public <P> type.
-        const paths = (e.model.doc.refs || []) as string[];
-        const db = e.db;
-        return Promise.all(paths.map(path => Model.create<IMyThingFields>({ db, path }).ready));
+      things: {
+        resolve: async e => {
+          // NB: `refs` is on underlying document, but not the model's public <P> type.
+          const paths = (e.model.doc.refs || []) as string[];
+          const db = e.db;
+          return Promise.all(paths.map(path => Model.create<IMyThingFields>({ db, path }).ready));
+        },
       },
     };
 

@@ -6,6 +6,7 @@ import { INeDb } from '@platform/fs.nedb/lib/types';
 /**
  * [Model]
  */
+
 export type IModel<P extends object = {}, L extends ILinkedModelSchema = any> = IModelProps<P, L> &
   IModelMethods<P>;
 
@@ -17,7 +18,7 @@ export type IModelProps<P extends object, L extends ILinkedModelSchema = any> = 
   readonly events$: Observable<ModelEvent>;
   readonly doc: IJsonMap; // Raw DB data.
   readonly props: P; // Property API.
-  readonly links: ILinkedModels<L>; // Relationships (JOINs).
+  readonly links: ILinkedModels<L>; // Relationships (JOIN's).
 };
 export type IModelMethods<D extends object> = {
   load(options?: { force?: boolean; links?: boolean }): Promise<D>;
@@ -28,12 +29,11 @@ export type IModelMethods<D extends object> = {
  * [Links]
  */
 export type ILinkedModelResolvers<P extends object, L extends ILinkedModelSchema> = {
-  [K in keyof L]: LinkedModelResolver<P, L>;
+  [K in keyof L]: { resolve: LinkedModelResolver<P, L> }
 };
 export type LinkedModelResolver<P extends object, L extends ILinkedModelSchema> = (
   args: ILinkedModelResolverArgs<P, L>,
 ) => Promise<L[keyof L] | undefined>;
-
 export type ILinkedModelResolverArgs<P extends object, L extends ILinkedModelSchema> = {
   db: INeDb;
   model: IModel<P, L>;
