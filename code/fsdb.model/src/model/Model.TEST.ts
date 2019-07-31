@@ -157,6 +157,7 @@ describe('model', () => {
       expect(list[0].doc.from).to.eql(org.doc);
       expect(list[0].doc.to).to.eql({ ...org.doc, name: 'Acme' });
       expect(list[0].modifiedAt).to.be.within(now - 5, now + 10);
+      expect(list[0].kind).to.eql('VALUE');
 
       expect(events.length).to.eql(1);
       expect(events[0].payload).to.equal(model.changes.list[0]);

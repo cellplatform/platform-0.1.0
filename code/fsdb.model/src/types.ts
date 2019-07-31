@@ -73,6 +73,7 @@ export type IModelChange<P extends object, D extends P, L extends ILinkedModelSc
   value: { from?: any; to?: any };
   doc: { from: D; to: D };
   modifiedAt: number;
+  kind: 'VALUE' | 'REF';
 };
 
 /**

@@ -264,7 +264,9 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
   private getChange(key: string, value: any): t.IModelChange<P, D, L> {
     const to = { ...this.doc, [key]: value };
     const doc = { from: { ...this.doc }, to };
+    const isRef = Object.keys(this._args.links || {}).includes(key);
     return {
+      kind: isRef ? 'REF' : 'VALUE',
       modifiedAt: time.now.timestamp,
       model: this,
       field: key,
