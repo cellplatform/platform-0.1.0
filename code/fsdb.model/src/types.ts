@@ -30,6 +30,7 @@ export type IModelProps<
 export type IModelMethods<P extends object> = {
   load(options?: { force?: boolean; links?: boolean }): Promise<P>;
   reset(): void;
+  save(): Promise<{ saved: boolean }>;
   toObject(): P;
 };
 
@@ -79,7 +80,11 @@ export type IModelChange<P extends object, D extends P, L extends ILinkedModelSc
 /**
  * [Events]
  */
-export type ModelEvent = IModelDataLoadedEvent | IModelLinkLoadedEvent | IModelChangedEvent;
+export type ModelEvent =
+  | IModelDataLoadedEvent
+  | IModelLinkLoadedEvent
+  | IModelChangedEvent
+  | IModelSavedEvent;
 
 export type IModelDataLoaded = { model: IModel; withLinks: boolean };
 export type IModelDataLoadedEvent = {
@@ -100,4 +105,21 @@ export type IModelChangedEvent<
 > = {
   type: 'MODEL/changed';
   payload: IModelChange<P, D, L>;
+};
+
+export type IModelSavedEvent<
+  P extends object = {},
+  D extends P = P,
+  L extends ILinkedModelSchema = any
+> = {
+  type: 'MODEL/saved';
+  payload: IModelSaved<P, D, L>;
+};
+export type IModelSaved<
+  P extends object = {},
+  D extends P = P,
+  L extends ILinkedModelSchema = any
+> = {
+  model: IModel<P, D, L>;
+  changes: IModelChanges<P, D, L>;
 };

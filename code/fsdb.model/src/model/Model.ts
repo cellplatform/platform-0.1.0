@@ -137,7 +137,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
       Object.keys(this._args.initial).forEach(key => {
         Object.defineProperty(res, key, {
           get: () => {
-            return this.isChanged ? this.changes.map[key] : this.doc[key];
+            return this.isChanged ? this.changes.map[key] || this.doc[key] : this.doc[key];
           },
           set: value => {
             const payload = this.getChange(key, value);
@@ -213,13 +213,35 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
   }
 
   /**
+   * Persists changes to the underlying store.
+   */
+  public async save() {
+    if (!this.isChanged) {
+      return { saved: false };
+    }
+
+    // Save to the DB.
+    const changes = this.changes;
+    const doc = this.exists
+      ? { ...this.doc, ...changes.map }
+      : { ...this._args.initial, ...changes.map };
+    await this.db.put(this.path, doc as any);
+
+    // Reset the change state.
+    this._changes = [];
+
+    // Finish up.
+    this.fire({ type: 'MODEL/saved', payload: { model: this, changes } });
+    return { saved: true };
+  }
+
+  /**
    * Convert the model props to a simple object.
    */
   public toObject(): P {
     if (!this.isReady || !this.exists) {
       return ({} as any) as P;
     }
-
     const props = this.props;
     return Object.keys(this._args.initial).reduce((acc, key) => {
       acc[key] = props[key];

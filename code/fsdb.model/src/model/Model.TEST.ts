@@ -405,4 +405,43 @@ describe('model', () => {
       expect(linkEvents[1].payload.field).to.eql('things');
     });
   });
+
+  describe('save', () => {
+    it('does not save when no changes exist', async () => {
+      const model = await createOrg({ put: true });
+      const res = await model.save();
+      expect(res.saved).to.eql(false);
+    });
+
+    it('saves changes to underlying DB', async () => {
+      const model = await createOrg({ put: true });
+      await model.ready;
+
+      model.props.name = 'Acme';
+      const changes = model.changes;
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
+      const res = await model.save();
+      expect(res.saved).to.eql(true);
+
+      const dbValue = await db.getValue<IMyOrgProps>(org.path);
+      expect(dbValue.name).to.eql('Acme');
+
+      expect(events.length).to.eql(1);
+      expect(events[0].type).to.eql('MODEL/saved');
+
+      const e = events[0].payload as t.IModelSaved;
+      expect(e.model).to.equal(model);
+      expect(e.changes).to.eql(changes);
+
+      /**
+       * - save when exists in DB
+       * - save when not exists in DB
+       * - reset changed state 🐷
+       *
+       */
+    });
+  });
 });
