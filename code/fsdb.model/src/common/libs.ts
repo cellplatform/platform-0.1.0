@@ -1,2 +1,2 @@
 export { NeDoc } from '@platform/fs.nedb';
-export { value, defaultValue } from '@platform/util.value';
+export { value, defaultValue, time } from '@platform/util.value';
