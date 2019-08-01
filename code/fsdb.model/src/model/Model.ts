@@ -284,19 +284,19 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
         await this.load();
       }
 
-      let res: any;
+      let model: any;
       if (isOne) {
         const path = this.doc[key] as string;
-        res = path ? await def.create({ db, path }).ready : undefined;
+        model = path ? await def.create({ db, path }).ready : undefined;
       }
       if (isMany) {
         const paths = (this.doc[key] || []) as string[];
-        res = await Promise.all(paths.map(path => def.create({ db, path }).ready));
+        model = await Promise.all(paths.map(path => def.create({ db, path }).ready));
       }
-      this._linkCache[field] = res;
+      this._linkCache[field] = model;
 
       this.fire({ type: 'MODEL/loaded/link', payload: { model: this, field } });
-      return resolve(res);
+      return resolve(model);
     });
 
     // Add and remove API for links.
