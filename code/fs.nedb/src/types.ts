@@ -1,4 +1,4 @@
-import { IDb, IDbQuery } from '@platform/fs.db.types/lib/types';
+import { IDb, IDbQuery } from '@platform/fsdb.types/lib/types';
 
 export type INeDb = IDb<INeQuery>;
 

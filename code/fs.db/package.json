@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@platform/fs": "0.1.6",
-    "@platform/fs.db.types": "0.2.0",
+    "@platform/fsdb.types": "0.2.0",
     "@platform/libs": "0.0.18",
     "@platform/types": "0.0.20",
     "@platform/util.value": "0.4.4"

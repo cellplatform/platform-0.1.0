@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { IDb, IDbTimestamps } from '@platform/fs.db.types/lib/types';
+import { IDb, IDbTimestamps } from '@platform/fsdb.types/lib/types';
 
 /**
  * [Model]
@@ -30,7 +30,7 @@ export type IModelProps<
   readonly links: ILinkedModels<L>; // Relationships (JOIN's).
 };
 export type IModelMethods<P extends object> = {
-  load(options?: { force?: boolean; links?: boolean, silent?:boolean }): Promise<P>;
+  load(options?: { force?: boolean; links?: boolean; silent?: boolean }): Promise<P>;
   reset(): void;
   save(): Promise<{ saved: boolean }>;
   toObject(): P;

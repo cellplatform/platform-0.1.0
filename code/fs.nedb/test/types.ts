@@ -3,7 +3,7 @@ import { Nedb } from '../src/Nedb';
 import { NeDoc } from '../src';
 
 export * from '@platform/cli.ui/lib/types';
-export * from '@platform/fs.db.types';
+export * from '@platform/fsdb.types';
 export * from '../src/types';
 
 export type ICommandProps = {
