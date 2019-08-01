@@ -5,10 +5,10 @@ import { defaultValue, t, time } from './common';
 export type IModelArgs<P extends object, D extends P = P, L extends t.ILinkedModelSchema = any> = {
   db: t.IDb;
   path: string;
-  initial: P;
+  initial: D;
   load?: boolean;
   events$?: Subject<t.ModelEvent>;
-  links?: t.ILinkedModelResolvers<P, D, L>;
+  links?: t.ILinkedModelDefs<L>;
 };
 
 /**
@@ -71,7 +71,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     return this._dispose$.isStopped;
   }
 
-  public get isReady() {
+  public get isLoaded() {
     return Boolean(this._item);
   }
 
@@ -93,7 +93,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
 
   public get ready() {
     return new Promise<t.IModel<P, D, L>>(resolve => {
-      if (this.isReady) {
+      if (this.isLoaded) {
         resolve(this);
       } else {
         this.events$
@@ -154,12 +154,12 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
   public get links(): t.ILinkedModels<L> {
     if (!this._links) {
       this._links = {} as any;
-      const links = (this._args.links || {}) as t.ILinkedModelResolvers<P, D, L>;
-      Object.keys(links).forEach(key => {
-        Object.defineProperty(this._links, key, {
-          get: () => this.getLink(key, links[key].resolve),
-        });
-      });
+      const defs = this._args.links || {};
+      Object.keys(defs).forEach(field =>
+        Object.defineProperty(this._links, field, {
+          get: () => this.resolveLink(field),
+        }),
+      );
     }
     return this._links as t.ILinkedModels<L>;
   }
@@ -188,9 +188,9 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     const withLinks = Boolean(options.withLinks);
     const cachedLinks = Object.keys(this._linkCache);
     if (withLinks) {
-      const links = this._args.links || [];
-      fireEvent = cachedLinks.length < links.length ? true : fireEvent;
-      const wait = Object.keys(links).map(key => this.links[key]);
+      const defs = this._args.links || [];
+      fireEvent = cachedLinks.length < defs.length ? true : fireEvent;
+      const wait = Object.keys(defs).map(key => this.links[key]);
       await Promise.all(wait);
     }
 
@@ -216,7 +216,8 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
    * Persists changes to the underlying store.
    */
   public async save() {
-    if (!this.isChanged) {
+    this.throwIfDisposed('save');
+    if (this.exists && !this.isChanged) {
       return { saved: false };
     }
 
@@ -239,7 +240,8 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
    * Convert the model props to a simple object.
    */
   public toObject(): P {
-    if (!this.isReady || !this.exists) {
+    this.throwIfDisposed('toObject');
+    if (!this.isLoaded || !this.exists) {
       return ({} as any) as P;
     }
     const props = this.props;
@@ -262,25 +264,65 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     this._events$.next(e);
   }
 
-  private async getLink(
-    field: string,
-    resolver: t.LinkedModelResolver<P, D, L>,
-    options: { autoLoad?: boolean } = {},
-  ) {
-    const cached = this._linkCache[field];
-    if (cached) {
-      return cached;
+  private resolveLink(field: string, options: { autoLoad?: boolean } = {}) {
+    const db = this.db;
+    const defs = (this._args.links || {}) as t.ILinkedModelDefs<L>;
+    const def = defs[field];
+    const { relationship } = def;
+
+    const key = def.field || field;
+    const isOne = relationship === '1:1' || relationship === '*:1';
+    const isMany = relationship === '*:*' || relationship === '1:*';
+
+    if (!def) {
+      throw new Error(`A link definition for field '${field}' could not be found.`);
     }
 
-    if (!this.isReady && defaultValue(options.autoLoad, true)) {
-      await this.load();
+    // Link resolver.
+    const promise: any = new Promise<L[keyof L] | undefined>(async (resolve, reject) => {
+      const cached = this._linkCache[field];
+      if (cached) {
+        return resolve(cached);
+      }
+      if (!this.isLoaded && defaultValue(options.autoLoad, true)) {
+        await this.load();
+      }
+
+      let res: any;
+      if (isOne) {
+        const path = this.doc[key] as string;
+        res = path ? await def.create({ db, path }).ready : undefined;
+      }
+      if (isMany) {
+        const paths = (this.doc[key] || []) as string[];
+        res = await Promise.all(paths.map(path => def.create({ db, path }).ready));
+      }
+      this._linkCache[field] = res;
+
+      this.fire({ type: 'MODEL/loaded/link', payload: { model: this, field } });
+      return resolve(res);
+    });
+
+    // Add and remove API for links.
+    if (isOne) {
+      promise.link = (path: string) => {
+        console.log('link', relationship, path);
+      };
+      promise.unlink = (path: string) => {
+        console.log('link', relationship, path);
+      };
+    }
+    if (isMany) {
+      promise.link = (paths: string[]) => {
+        console.log('link', relationship, paths);
+      };
+      promise.unlink = (paths?: string[]) => {
+        console.log('link', relationship, paths);
+      };
     }
 
-    const res = !this._item ? undefined : resolver({ field, model: this, db: this.db });
-
-    this._linkCache[field] = res;
-    this.fire({ type: 'MODEL/loaded/link', payload: { model: this, field } });
-    return res;
+    // Finish up.
+    return promise;
   }
 
   private getChange(key: string, value: any): t.IModelChange<P, D, L> {

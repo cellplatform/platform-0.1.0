@@ -7,7 +7,7 @@ type IMyOrgProps = { id: string; name: string };
 
 type IMyThing = t.IModel<IMyThingProps>;
 type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
-type IMyOrgDoc = IMyOrgProps & { ref: string; refs: [] };
+type IMyOrgDoc = IMyOrgProps & { ref?: string; refs?: [] };
 
 describe('model', () => {
   let db: t.INeDb;
@@ -25,54 +25,86 @@ describe('model', () => {
     return Model.create<IMyOrgProps, IMyOrgDoc>({ db, path: org.path, initial: org.initial });
   };
 
-  it('model (load)', async () => {
-    const model = Model.create<IMyOrgProps>({
-      db,
-      path: org.path,
-      initial: org.initial,
-      load: false,
+  describe('load', () => {
+    it('not loaded → load → loaded', async () => {
+      const model = Model.create<IMyOrgProps>({
+        db,
+        path: org.path,
+        initial: org.initial,
+        load: false,
+      });
+
+      // Not loaded yet.
+      expect(model.path).to.eql(org.path);
+      expect(model.exists).to.eql(undefined);
+      expect(model.isLoaded).to.eql(false);
+      expect(model.isChanged).to.eql(false);
+      expect(model.toObject()).to.eql({});
+
+      // Load while there is no data for the model in the DB.
+      await model.load();
+      expect(model.isLoaded).to.eql(true);
+      expect(model.exists).to.eql(false);
+      expect(model.doc).to.eql({});
+      expect(model.toObject()).to.eql({}); // NB: Default empty object, even though no backing data yet.
+
+      // Load again, with data in DB, but not `force` reload.
+      await db.put(org.path, org.doc);
+      await model.load();
+      expect(model.isLoaded).to.eql(true);
+      expect(model.exists).to.eql(false);
+      expect(model.doc).to.eql({});
+      expect(model.toObject()).to.eql({});
+
+      // Load again after force refresh - data actually loaded now.
+      await model.load({ force: true });
+      expect(model.isLoaded).to.eql(true);
+      expect(model.isChanged).to.eql(false);
+      expect(model.exists).to.eql(true);
+      expect(model.doc).to.eql(org.doc);
+      expect(model.props.id).to.eql(org.doc.id); // Strongly typed.
+      expect(model.props.name).to.eql(org.doc.name); // Strongly typed.
+      expect(model.toObject()).to.eql(org.doc);
     });
 
-    // Not loaded yet.
-    expect(model.path).to.eql(org.path);
-    expect(model.exists).to.eql(undefined);
-    expect(model.isReady).to.eql(false);
-    expect(model.isChanged).to.eql(false);
-    expect(model.toObject()).to.eql({});
+    it('default loading on creation', async () => {
+      const model = await createOrg({ put: true });
+      expect(model.isLoaded).to.eql(false);
 
-    // Load while there is no data for the model in the DB.
-    await model.load();
-    expect(model.isReady).to.eql(true);
-    expect(model.exists).to.eql(false);
-    expect(model.doc).to.eql({});
-    expect(model.toObject()).to.eql({}); // NB: Default empty object, even though no backing data yet.
+      await time.wait(5);
+      expect(model.isLoaded).to.eql(true);
+      expect(model.isChanged).to.eql(false);
+    });
 
-    // Load again, with data in DB, but not `force` reload.
-    await db.put(org.path, org.doc);
-    await model.load();
-    expect(model.isReady).to.eql(true);
-    expect(model.exists).to.eql(false);
-    expect(model.doc).to.eql({});
-    expect(model.toObject()).to.eql({});
+    it('fires loaded event', async () => {
+      const model = Model.create<IMyOrgProps>({
+        db,
+        path: org.path,
+        initial: org.initial,
+        load: false,
+      });
 
-    // Load again after force refresh - data actually loaded now.
-    await model.load({ force: true });
-    expect(model.isReady).to.eql(true);
-    expect(model.isChanged).to.eql(false);
-    expect(model.exists).to.eql(true);
-    expect(model.doc).to.eql(org.doc);
-    expect(model.props.id).to.eql(org.doc.id); // Strongly typed.
-    expect(model.props.name).to.eql(org.doc.name); // Strongly typed.
-    expect(model.toObject()).to.eql(org.doc);
-  });
+      const events: t.IModelDataLoaded[] = [];
+      model.events$
+        .pipe(
+          filter(e => e.type === 'MODEL/loaded/data'),
+          map(e => e.payload as t.IModelDataLoaded),
+        )
+        .subscribe(e => events.push(e));
 
-  it('model (load on creation, default)', async () => {
-    const model = await createOrg({ put: true });
-    expect(model.isReady).to.eql(false);
+      await model.load();
+      await model.load();
+      await model.load();
+      expect(model.exists).to.eql(false);
+      expect(events.length).to.eql(1);
+      expect(events[0].withLinks).to.eql(false);
 
-    await time.wait(5);
-    expect(model.isReady).to.eql(true);
-    expect(model.isChanged).to.eql(false);
+      await db.put(org.path, org.doc);
+      await model.load({ force: true, withLinks: true });
+      expect(model.exists).to.eql(true);
+      expect(events.length).to.eql(2);
+      expect(events[1].withLinks).to.eql(true);
+    });
   });
 
   describe('ready (promise)', () => {
@@ -103,14 +135,40 @@ describe('model', () => {
       });
       await model.load();
       await model.ready;
-      expect(model.isReady).to.eql(true);
+      expect(model.isLoaded).to.eql(true);
     });
 
     it('fires after autoload', async () => {
       await db.put(org.path, org.doc);
       const model = await Model.create<IMyOrgProps>({ db, path: org.path, initial: org.initial })
         .ready;
-      expect(model.isReady).to.eql(true);
+      expect(model.isLoaded).to.eql(true);
+    });
+  });
+
+  describe('system properties', () => {
+    it('timestamps', async () => {
+      const model = Model.create<IMyOrgProps>({
+        db,
+        path: org.path,
+        initial: org.initial,
+        load: false,
+      });
+      expect(model.createdAt).to.eql(-1);
+      expect(model.modifiedAt).to.eql(-1);
+
+      const now = time.now.timestamp;
+
+      await db.put(org.path, org.doc);
+      await model.load();
+
+      expect(model.createdAt).to.be.within(now - 5, now + 10);
+      expect(model.modifiedAt).to.be.within(now - 5, now + 10);
+
+      await time.wait(50);
+      await db.put(org.path, org.doc);
+      await model.load({ force: true });
+      expect(model.modifiedAt).to.be.within(now + 45, now + 65);
     });
   });
 
@@ -176,58 +234,70 @@ describe('model', () => {
     });
   });
 
-  it('fires loaded event', async () => {
-    const model = Model.create<IMyOrgProps>({
-      db,
-      path: org.path,
-      initial: org.initial,
-      load: false,
+  describe('save', () => {
+    it('does not save when nothing changed (but does exist in DB)', async () => {
+      const model = await createOrg({ put: true });
+      await model.ready;
+      expect(model.exists).to.eql(true);
+
+      const res = await model.save();
+      expect(res.saved).to.eql(false);
     });
 
-    const events: t.IModelDataLoaded[] = [];
-    model.events$
-      .pipe(
-        filter(e => e.type === 'MODEL/loaded/data'),
-        map(e => e.payload as t.IModelDataLoaded),
-      )
-      .subscribe(e => events.push(e));
+    it('saves when changed (already exists in DB)', async () => {
+      const model = await createOrg({ put: true });
+      await model.ready;
+      expect(model.exists).to.eql(true);
 
-    await model.load();
-    await model.load();
-    await model.load();
-    expect(model.exists).to.eql(false);
-    expect(events.length).to.eql(1);
-    expect(events[0].withLinks).to.eql(false);
+      model.props.name = 'Acme';
+      const changes = model.changes;
 
-    await db.put(org.path, org.doc);
-    await model.load({ force: true, withLinks: true });
-    expect(model.exists).to.eql(true);
-    expect(events.length).to.eql(2);
-    expect(events[1].withLinks).to.eql(true);
-  });
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
 
-  it('timestamps', async () => {
-    const model = Model.create<IMyOrgProps>({
-      db,
-      path: org.path,
-      initial: org.initial,
-      load: false,
+      expect(model.isChanged).to.eql(true);
+      const res = await model.save();
+      expect(res.saved).to.eql(true);
+      expect(model.isChanged).to.eql(false);
+
+      const dbValue = await db.getValue<IMyOrgProps>(org.path);
+      expect(dbValue.name).to.eql('Acme');
+
+      expect(events.length).to.eql(1);
+      expect(events[0].type).to.eql('MODEL/saved');
+
+      const e = events[0].payload as t.IModelSaved;
+      expect(e.model).to.equal(model);
+      expect(e.changes).to.eql(changes);
     });
-    expect(model.createdAt).to.eql(-1);
-    expect(model.modifiedAt).to.eql(-1);
 
-    const now = time.now.timestamp;
+    it('initial save (new instance, default values)', async () => {
+      const model = await createOrg({ put: false });
 
-    await db.put(org.path, org.doc);
-    await model.load();
+      const res1 = await db.getValue<IMyOrgProps>(org.path);
+      expect(res1).to.eql(undefined);
 
-    expect(model.createdAt).to.be.within(now - 5, now + 10);
-    expect(model.modifiedAt).to.be.within(now - 5, now + 10);
+      const res2 = await model.save();
+      expect(res2.saved).to.eql(true);
 
-    await time.wait(50);
-    await db.put(org.path, org.doc);
-    await model.load({ force: true });
-    expect(model.modifiedAt).to.be.within(now + 45, now + 65);
+      const res3 = await db.getValue<IMyOrgProps>(org.path);
+      expect(res3).to.eql(org.initial);
+    });
+
+    it('initial save (changed values)', async () => {
+      const model = await createOrg({ put: false });
+
+      const res1 = await db.getValue<IMyOrgProps>(org.path);
+      expect(res1).to.eql(undefined);
+
+      model.props.name = 'Hello';
+
+      const res2 = await model.save();
+      expect(res2.saved).to.eql(true);
+
+      const res3 = await db.getValue<IMyOrgProps>(org.path);
+      expect(res3.name).to.eql('Hello');
+    });
   });
 
   describe('link (JOIN)', () => {
@@ -239,31 +309,32 @@ describe('model', () => {
       ]);
     });
 
-    const links: t.ILinkedModelResolvers<IMyOrgProps, IMyOrgDoc, IMyOrgLinks> = {
+    const links: t.ILinkedModelDefs<IMyOrgLinks> = {
       thing: {
         relationship: '1:1',
-        resolve: async e => {
-          // NB: `ref` is on underlying document, but not the model's pulic <P> type.
-          const path = e.model.doc.ref as string;
-          const db = e.db;
-          return path
-            ? Model.create<IMyThingProps>({ db, path, initial: { count: -1 } })
-            : undefined;
-        },
+        field: 'ref',
+        create: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
       },
       things: {
         relationship: '1:*',
-        resolve: async e => {
-          // NB: `refs` is on underlying document, but not the model's public <P> type.
-          const paths = (e.model.doc.refs || []) as string[];
-          const db = e.db;
-          return Promise.all(
-            paths.map(
-              path => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }).ready,
-            ),
-          );
-        },
+        field: 'refs',
+        create: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
       },
+    };
+
+    const createLinkedOrg = async (
+      options: { refs?: string[]; ref?: string; path?: string } = {},
+    ) => {
+      const { refs, ref, path = org.path } = options;
+      await db.put(org.path, { ...org.doc, refs, ref });
+      const model = Model.create<IMyOrgProps, IMyOrgDoc, IMyOrgLinks>({
+        db,
+        path,
+        initial: org.initial,
+        links,
+        load: false,
+      });
+      return model;
     };
 
     it('has no links', async () => {
@@ -271,20 +342,11 @@ describe('model', () => {
       expect(model.links).to.eql({});
     });
 
-    it('link', async () => {
-      await db.put(org.path, {
-        ...org.doc,
+    it('links: get when values exist (doc exists)', async () => {
+      const model = await createLinkedOrg({
         refs: ['THING/1', 'THING/3'],
         ref: 'THING/2',
       });
-      const model = Model.create<IMyOrgProps, IMyOrgDoc, IMyOrgLinks>({
-        db,
-        path: org.path,
-        initial: org.initial,
-        links,
-      });
-      await model.ready;
-
       const thing = await model.links.thing;
       const things = await model.links.things;
 
@@ -292,20 +354,34 @@ describe('model', () => {
       expect(things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 3 }]);
     });
 
-    it('fires link-loaded event', async () => {
-      await db.put(org.path, {
-        ...org.doc,
-        refs: ['THING/1', 'THING/3'],
-        ref: 'THING/2',
-      });
-      const model = Model.create<IMyOrgProps, IMyOrgDoc, IMyOrgLinks>({
-        db,
-        path: org.path,
-        initial: org.initial,
-        links,
-        load: false,
-      });
+    it('links: get when no values exists (doc exists)', async () => {
+      const model = await createLinkedOrg();
+      expect(model.isLoaded).to.eql(false);
 
+      const thing = await model.links.thing;
+      const things = await model.links.things;
+
+      expect(thing).to.eql(undefined);
+      expect(things).to.eql([]);
+      expect(model.isLoaded).to.eql(true);
+    });
+
+    it('links: get when underlying doc does not exist', async () => {
+      const model = await createLinkedOrg({ path: 'NO_EXIST' });
+      await model.load();
+
+      expect(model.isLoaded).to.eql(true);
+      expect(model.exists).to.eql(false);
+
+      const thing = await model.links.thing;
+      const things = await model.links.things;
+
+      expect(thing).to.eql(undefined);
+      expect(things).to.eql([]);
+    });
+
+    it('fires link-loaded event', async () => {
+      const model = await createLinkedOrg();
       const events: t.IModelLinkLoaded[] = [];
       model.events$
         .pipe(
@@ -325,19 +401,9 @@ describe('model', () => {
       expect(events[1].field).to.eql('things');
     });
 
-    it('caches', async () => {
-      await db.put(org.path, {
-        ...org.doc,
-        refs: ['THING/1', 'THING/3'],
-        ref: 'THING/2',
-      });
-      const model = Model.create<IMyOrgProps, IMyOrgDoc, IMyOrgLinks>({
-        db,
-        path: org.path,
-        initial: org.initial,
-        links,
-      });
-      await model.ready;
+    it('caches linked model', async () => {
+      const model = await createLinkedOrg({ refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
+      await model.load();
 
       const readLinks = async () => {
         return {
@@ -374,18 +440,7 @@ describe('model', () => {
     });
 
     it('gets links via `load` method', async () => {
-      await db.put(org.path, {
-        ...org,
-        refs: ['THING/1', 'THING/3'],
-        ref: 'THING/2',
-      });
-      const model = Model.create<IMyOrgProps, IMyOrgDoc, IMyOrgLinks>({
-        db,
-        path: org.path,
-        initial: org.initial,
-        links,
-        load: false,
-      });
+      const model = await createLinkedOrg({ refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
 
       const events: t.ModelEvent[] = [];
       model.events$.subscribe(e => events.push(e));
@@ -404,44 +459,30 @@ describe('model', () => {
       expect(linkEvents[0].payload.field).to.eql('thing');
       expect(linkEvents[1].payload.field).to.eql('things');
     });
-  });
 
-  describe('save', () => {
-    it('does not save when no changes exist', async () => {
-      const model = await createOrg({ put: true });
-      const res = await model.save();
-      expect(res.saved).to.eql(false);
-    });
+    it.skip('write: link/unlink', async () => {
+      const model = await createLinkedOrg();
 
-    it('saves changes to underlying DB', async () => {
-      const model = await createOrg({ put: true });
-      await model.ready;
+      // await db.put(org.path, {
+      //   ...org.doc,
+      //   // refs: ['THING/1', 'THING/3'],
+      //   // ref: 'THING/2',
+      // });
+      // const model = Model.create<IMyOrgProps, IMyOrgDoc, IMyOrgLinks>({
+      //   db,
+      //   path: org.path,
+      //   initial: org.initial,
+      //   links,
+      // });
+      // await model.ready;
 
-      model.props.name = 'Acme';
-      const changes = model.changes;
+      const l = model.links;
+      const thing = model.links.thing;
+      const things = model.links.things;
 
-      const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
+      thing.link('foo');
 
-      const res = await model.save();
-      expect(res.saved).to.eql(true);
-
-      const dbValue = await db.getValue<IMyOrgProps>(org.path);
-      expect(dbValue.name).to.eql('Acme');
-
-      expect(events.length).to.eql(1);
-      expect(events[0].type).to.eql('MODEL/saved');
-
-      const e = events[0].payload as t.IModelSaved;
-      expect(e.model).to.equal(model);
-      expect(e.changes).to.eql(changes);
-
-      /**
-       * - save when exists in DB
-       * - save when not exists in DB
-       * - reset changed state 🐷
-       *
-       */
+      // things.link(['THING/1', 'THING/3']);
     });
   });
 });

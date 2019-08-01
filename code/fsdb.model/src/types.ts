@@ -17,14 +17,15 @@ export type IModelProps<
   L extends ILinkedModelSchema
 > = IDbTimestamps & {
   readonly isDisposed: boolean;
-  readonly isReady: boolean;
+  readonly isLoaded: boolean;
   readonly isChanged: boolean;
   readonly exists: boolean | undefined;
+  readonly ready: Promise<IModel<P, D, L>>;
   readonly changes: IModelChanges<P, D, L>;
   readonly dispose$: Observable<{}>;
   readonly events$: Observable<ModelEvent>;
   readonly doc: D; // Raw DB document.
-  readonly props: P; // Data as read/write properties.
+  readonly props: P; // Data as read|write properties.
   readonly links: ILinkedModels<L>; // Relationships (JOIN's).
 };
 export type IModelMethods<P extends object> = {
@@ -37,27 +38,27 @@ export type IModelMethods<P extends object> = {
 /**
  * [Links]
  */
-export type ILinkedModelResolvers<P extends object, D extends P, L extends ILinkedModelSchema> = {
-  [K in keyof L]: {
-    relationship: '1:1' | '*:1' | '1:*' | '*:*';
-    resolve: LinkedModelResolver<P, D, L>;
-  }
-};
-export type LinkedModelResolver<P extends object, D extends P, L extends ILinkedModelSchema> = (
-  args: ILinkedModelResolverArgs<P, D, L>,
-) => Promise<L[keyof L] | undefined>;
-export type ILinkedModelResolverArgs<
-  P extends object,
-  D extends P,
-  L extends ILinkedModelSchema
-> = {
-  db: IDb;
-  model: IModel<P, D, L>;
-  field: keyof L;
+export type LinkedModelRelationship = '1:1' | '*:1' | '1:*' | '*:*';
+
+export type ILinkedModelDefs<L extends ILinkedModelSchema> = { [K in keyof L]: ILinkedModelDef };
+
+export type ILinkedModelDef = {
+  relationship: LinkedModelRelationship;
+  create: (args: { path: string; db: IDb }) => IModel;
+  field?: string; // If different from field on the [ILinkedModelSchema]
 };
 
 export type ILinkedModelSchema = { [key: string]: IModel | IModel[] };
-export type ILinkedModels<L extends ILinkedModelSchema> = { [P in keyof L]: Promise<L[P]> };
+export type ILinkedModels<L extends ILinkedModelSchema> = {
+  [K in keyof L]: LinkedModelPromise<L, K>
+};
+
+export type LinkedModelPromise<
+  L extends ILinkedModelSchema,
+  K extends keyof L
+> = L[K] extends IModel
+  ? Promise<L[K]> & { link(path: string): void; unlink(): void } // 1:1 relationship.
+  : Promise<L[K]> & { link(paths: string[]): void; unlink(paths?: []): void }; // 1:* or *:* relationship.
 
 /**
  * [Changes]
