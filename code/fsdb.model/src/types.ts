@@ -16,6 +16,7 @@ export type IModelProps<
   D extends P,
   L extends ILinkedModelSchema
 > = IDbTimestamps & {
+  readonly path: string;
   readonly isDisposed: boolean;
   readonly isLoaded: boolean;
   readonly isChanged: boolean;
@@ -29,7 +30,7 @@ export type IModelProps<
   readonly links: ILinkedModels<L>; // Relationships (JOIN's).
 };
 export type IModelMethods<P extends object> = {
-  load(options?: { force?: boolean; links?: boolean }): Promise<P>;
+  load(options?: { force?: boolean; links?: boolean, silent?:boolean }): Promise<P>;
   reset(): void;
   save(): Promise<{ saved: boolean }>;
   toObject(): P;
@@ -38,7 +39,7 @@ export type IModelMethods<P extends object> = {
 /**
  * [Links]
  */
-export type LinkedModelRelationship = '1:1' | '*:1' | '1:*' | '*:*';
+export type LinkedModelRelationship = '1:1' | '1:*';
 
 export type ILinkedModelDefs<L extends ILinkedModelSchema> = { [K in keyof L]: ILinkedModelDef };
 
@@ -58,7 +59,7 @@ export type LinkedModelPromise<
   K extends keyof L
 > = L[K] extends IModel
   ? Promise<L[K]> & { link(path: string): void; unlink(): void } // 1:1 relationship.
-  : Promise<L[K]> & { link(paths: string[]): void; unlink(paths?: []): void }; // 1:* or *:* relationship.
+  : Promise<L[K]> & { link(paths: string[]): void; unlink(paths?: string[]): void }; // 1:* or *:* relationship.
 
 /**
  * [Changes]

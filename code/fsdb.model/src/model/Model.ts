@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
-import { defaultValue, t, time } from './common';
+import { R, defaultValue, t, time } from './common';
 
 export type IModelArgs<P extends object, D extends P = P, L extends t.ILinkedModelSchema = any> = {
   db: t.IDb;
@@ -167,7 +167,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
   /**
    * Loads the model's data from the DB.
    */
-  public async load(options: { force?: boolean; withLinks?: boolean } = {}) {
+  public async load(options: { force?: boolean; withLinks?: boolean; silent?: boolean } = {}) {
     this.throwIfDisposed('load');
     let fireEvent = false;
     if (options.force) {
@@ -191,7 +191,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     }
 
     // Alert listeners.
-    if (fireEvent) {
+    if (fireEvent && !options.silent) {
       this.fire({ type: 'MODEL/loaded/data', payload: { model: this, withLinks } });
     }
 
@@ -224,8 +224,9 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
       : { ...this._args.initial, ...changes.map };
     await this.db.put(this.path, doc as any);
 
-    // Reset the change state.
+    // Update model state.
     this._changes = [];
+    await this.load({ force: true, silent: true });
 
     // Finish up.
     this.fire({ type: 'MODEL/saved', payload: { model: this, changes } });
@@ -267,16 +268,16 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     const { relationship } = def;
 
     const key = def.field || field;
-    const isOne = relationship === '1:1' || relationship === '*:1';
-    const isMany = relationship === '*:*' || relationship === '1:*';
+    const isOne = relationship === '1:1';
+    const isMany = relationship === '1:*';
 
     if (!def) {
       throw new Error(`A link definition for field '${field}' could not be found.`);
     }
 
     // Link resolver.
-    const promise: any = new Promise<L[keyof L] | undefined>(async (resolve, reject) => {
-      const cached = this._linkCache[field];
+    const promise: any = new Promise<L[keyof L] | undefined>(async resolve => {
+      const cached = this._linkCache[key];
       if (cached) {
         return resolve(cached);
       }
@@ -286,30 +287,60 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
 
       let model: any;
       if (isOne) {
-        const path = this.doc[key] as string;
+        const path = this.currentValue<string>(key);
         model = path ? await def.create({ db, path }).ready : undefined;
       }
       if (isMany) {
-        const paths = (this.doc[key] || []) as string[];
+        const paths = this.currentValue<string[]>(key) || [];
         model = await Promise.all(paths.map(path => def.create({ db, path }).ready));
       }
-      this._linkCache[field] = model;
+      this._linkCache[key] = model;
 
       this.fire({ type: 'MODEL/loaded/link', payload: { model: this, field } });
       return resolve(model);
     });
 
-    // Add and remove API for links.
+    // Add and remove API for model-relationship links.
     if (isOne) {
       promise.link = (path: string) => this.changeField('LINK', key, path);
       promise.unlink = () => this.changeField('LINK', key, undefined);
     }
     if (isMany) {
+      const getChanges = (field: string, paths?: string[]) => {
+        const changes = this.changes;
+        const changeExists = Object.keys(this.changes.map).includes(field);
+        const current = this.currentValue<string[]>(field) || [];
+        const isChanged =
+          changeExists && Array.isArray(paths)
+            ? !paths.every(path => current.includes(path))
+            : true;
+        return { changes, isChanged, current, paths: R.uniq([...current, ...(paths || [])]) };
+      };
+
       promise.link = (paths: string[]) => {
-        console.log('link', relationship, paths); // TEMP 🐷
+        if ((paths || []).length > 0) {
+          const changes = getChanges(key, paths);
+          if (changes.isChanged) {
+            this.changeField('LINK', key, changes.paths);
+          }
+        }
       };
       promise.unlink = (paths?: string[]) => {
-        console.log('link', relationship, paths); // TEMP 🐷
+        paths = (paths || []).length === 0 ? undefined : paths;
+        const changes = getChanges(key, paths);
+        if (Array.isArray(paths)) {
+          if (changes.isChanged) {
+            // Remove specific links.
+            paths = changes.paths.filter(path => !(paths || []).includes(path));
+            paths = paths.length === 0 ? undefined : paths;
+            this.changeField('LINK', key, paths);
+          }
+        } else {
+          if (changes.isChanged) {
+            // Clear all links.
+            this.changeField('LINK', key, undefined);
+          }
+        }
       };
     }
 
@@ -317,11 +348,23 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     return promise;
   }
 
+  private currentValue<T>(field: string) {
+    const changes = this.changes.map;
+    const isChanged = Object.keys(changes).includes(field);
+    return (isChanged ? changes[field] : this.doc[field]) as T;
+  }
+
   private changeField(kind: t.ModelChangeKind, field: string, value: any) {
     const changes = this.changes.map;
     if (Object.keys(changes).includes(field) && changes[field] === value) {
-      return false;
+      return false; // No change from current modification.
     } else {
+      // Remove from cache.
+      if (Object.keys(this._linkCache).includes(field)) {
+        delete this._linkCache[field];
+      }
+
+      // Generate change entry.
       const payload = this.getChange(kind, field, value);
       this._changes = [...this._changes, payload];
       this.fire({ type: 'MODEL/changed', payload });
