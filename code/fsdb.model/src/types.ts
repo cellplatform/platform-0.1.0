@@ -65,7 +65,7 @@ export type LinkedModelPromise<
  */
 
 export type IModelChanges<P extends object, D extends P, L extends ILinkedModelSchema> = {
-  total: number;
+  length: number;
   list: Array<IModelChange<P, D, L>>;
   map: { [K in keyof D]: D[K] };
 };
@@ -75,8 +75,9 @@ export type IModelChange<P extends object, D extends P, L extends ILinkedModelSc
   value: { from?: any; to?: any };
   doc: { from: D; to: D };
   modifiedAt: number;
-  kind: 'VALUE' | 'REF';
+  kind: ModelChangeKind;
 };
+export type ModelChangeKind = 'PROP' | 'LINK';
 
 /**
  * [Events]

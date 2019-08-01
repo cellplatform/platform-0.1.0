@@ -195,7 +195,7 @@ describe('model', () => {
       model.events$.subscribe(e => events.push(e));
 
       expect(model.isChanged).to.eql(false);
-      expect(model.changes.total).to.eql(0);
+      expect(model.changes.length).to.eql(0);
       expect(model.changes.list).to.eql([]);
       expect(model.changes.map).to.eql({});
 
@@ -203,7 +203,7 @@ describe('model', () => {
       model.props.name = 'Acme';
 
       expect(model.isChanged).to.eql(true);
-      expect(model.changes.total).to.eql(1);
+      expect(model.changes.length).to.eql(1);
 
       const { list, map } = model.changes;
       expect(map).to.eql({ name: 'Acme' });
@@ -215,7 +215,7 @@ describe('model', () => {
       expect(list[0].doc.from).to.eql(org.doc);
       expect(list[0].doc.to).to.eql({ ...org.doc, name: 'Acme' });
       expect(list[0].modifiedAt).to.be.within(now - 5, now + 10);
-      expect(list[0].kind).to.eql('VALUE');
+      expect(list[0].kind).to.eql('PROP');
 
       expect(events.length).to.eql(1);
       expect(events[0].payload).to.equal(model.changes.list[0]);
@@ -226,11 +226,27 @@ describe('model', () => {
       expect(events[1].payload).to.equal(model.changes.list[1]);
 
       expect(model.isChanged).to.eql(true);
-      expect(model.changes.total).to.eql(2);
+      expect(model.changes.length).to.eql(2);
       expect(model.changes.list.length).to.eql(2);
       expect(model.changes.map).to.eql({ name: 'Foo' });
 
       expect(model.doc).to.eql(org.doc); // No change to underlying doc.
+    });
+
+    it('only fires [changed] event when different value is set', async () => {
+      const model = await createOrg({ put: true });
+      await model.ready;
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
+      model.props.name = 'foo';
+      expect(events.length).to.eql(1);
+
+      model.props.name = 'foo';
+      model.props.name = 'foo';
+      model.props.name = 'foo';
+      expect(events.length).to.eql(1);
     });
   });
 
@@ -460,29 +476,43 @@ describe('model', () => {
       expect(linkEvents[1].payload.field).to.eql('things');
     });
 
-    it.skip('write: link/unlink', async () => {
+    it('change: 1:1', async () => {
       const model = await createLinkedOrg();
+      expect(model.changes.map).to.eql({});
 
-      // await db.put(org.path, {
-      //   ...org.doc,
-      //   // refs: ['THING/1', 'THING/3'],
-      //   // ref: 'THING/2',
-      // });
-      // const model = Model.create<IMyOrgProps, IMyOrgDoc, IMyOrgLinks>({
-      //   db,
-      //   path: org.path,
-      //   initial: org.initial,
-      //   links,
-      // });
-      // await model.ready;
+      const doc1 = await db.getValue<any>(org.path);
+      expect(doc1.ref).to.eql(undefined);
 
-      const l = model.links;
       const thing = model.links.thing;
-      const things = model.links.things;
-
+      thing.link('foo');
+      thing.link('foo');
       thing.link('foo');
 
-      // things.link(['THING/1', 'THING/3']);
+      expect(model.changes.length).to.eql(1); // Called 3-times, only one change registered.
+      expect(model.isChanged).to.eql(true);
+      expect(model.changes.map).to.eql({ ref: 'foo' });
+      expect(model.changes.list[0].kind).to.eql('LINK');
+
+      await model.save();
+      expect(model.isChanged).to.eql(false);
+
+      const doc2 = await db.getValue<any>(org.path);
+      expect(doc2.ref).to.eql('foo');
+
+      thing.unlink();
+      thing.unlink();
+      thing.unlink();
+
+      expect(model.changes.length).to.eql(1);
+      expect(model.isChanged).to.eql(true);
+      expect(model.changes.map).to.eql({ ref: undefined });
+      expect(model.changes.list[0].kind).to.eql('LINK');
+
+      await model.save();
+      expect(model.isChanged).to.eql(false);
+
+      const doc3 = await db.getValue<any>(org.path);
+      expect(doc3.ref).to.eql(undefined);
     });
   });
 });

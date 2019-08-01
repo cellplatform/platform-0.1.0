@@ -113,9 +113,9 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
 
   public get changes(): t.IModelChanges<P, D, L> {
     const list = this._changes || [];
-    const total = list.length;
+    const length = list.length;
     return {
-      total,
+      length,
       list,
       get map() {
         return list.reduce((acc, next) => {
@@ -134,16 +134,12 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
   public get props(): P {
     if (!this._props) {
       const res = {} as any;
-      Object.keys(this._args.initial).forEach(key => {
-        Object.defineProperty(res, key, {
+      Object.keys(this._args.initial).forEach(field => {
+        Object.defineProperty(res, field, {
           get: () => {
-            return this.isChanged ? this.changes.map[key] || this.doc[key] : this.doc[key];
+            return this.isChanged ? this.changes.map[field] || this.doc[field] : this.doc[field];
           },
-          set: value => {
-            const payload = this.getChange(key, value);
-            this._changes = [...this._changes, payload];
-            this.fire({ type: 'MODEL/changed', payload });
-          },
+          set: value => this.changeField('PROP', field, value),
         });
       });
       this._props = res;
@@ -305,19 +301,15 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
 
     // Add and remove API for links.
     if (isOne) {
-      promise.link = (path: string) => {
-        console.log('link', relationship, path);
-      };
-      promise.unlink = (path: string) => {
-        console.log('link', relationship, path);
-      };
+      promise.link = (path: string) => this.changeField('LINK', key, path);
+      promise.unlink = () => this.changeField('LINK', key, undefined);
     }
     if (isMany) {
       promise.link = (paths: string[]) => {
-        console.log('link', relationship, paths);
+        console.log('link', relationship, paths); // TEMP 🐷
       };
       promise.unlink = (paths?: string[]) => {
-        console.log('link', relationship, paths);
+        console.log('link', relationship, paths); // TEMP 🐷
       };
     }
 
@@ -325,17 +317,28 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     return promise;
   }
 
-  private getChange(key: string, value: any): t.IModelChange<P, D, L> {
-    const to = { ...this.doc, [key]: value };
+  private changeField(kind: t.ModelChangeKind, field: string, value: any) {
+    const changes = this.changes.map;
+    if (Object.keys(changes).includes(field) && changes[field] === value) {
+      return false;
+    } else {
+      const payload = this.getChange(kind, field, value);
+      this._changes = [...this._changes, payload];
+      this.fire({ type: 'MODEL/changed', payload });
+      return true;
+    }
+  }
+
+  private getChange(kind: t.ModelChangeKind, field: string, value: any): t.IModelChange<P, D, L> {
+    const to = { ...this.doc, [field]: value };
     const doc = { from: { ...this.doc }, to };
-    const isRef = Object.keys(this._args.links || {}).includes(key);
     return {
-      kind: isRef ? 'REF' : 'VALUE',
+      kind,
       modifiedAt: time.now.timestamp,
-      model: this,
-      field: key,
-      value: { from: this.doc[key], to: value },
+      field,
+      value: { from: this.doc[field], to: value },
       doc,
+      model: this,
     };
   }
 }
