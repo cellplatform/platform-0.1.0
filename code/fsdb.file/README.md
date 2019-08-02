@@ -3,7 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/fs.db.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/fs.db)
 ![banner](https://platform.sfo2.digitaloceanspaces.com/repo-banners/fs.db.png)
 
-File-system backing store for a JSON document database.
+File-system backing store for an IDb interface.
 
 ## Setup
 

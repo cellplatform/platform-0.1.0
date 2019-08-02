@@ -1,4 +1,4 @@
-import { FileDb } from '@platform/fs.db';
+import { FileDb } from '@platform/fsdb.file';
 
 import { pg } from '..';
 import { fs } from '../common';

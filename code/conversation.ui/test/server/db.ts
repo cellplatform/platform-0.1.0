@@ -1,4 +1,4 @@
-import { NeDoc } from '@platform/fs.nedb';
+import { NeDoc } from '@platform/fsdb.nedb';
 import { t, fs, log } from './common';
 
 let db: t.IDb | undefined;

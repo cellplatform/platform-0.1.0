@@ -33,7 +33,7 @@
     "@platform/auth": "0.1.25",
     "@platform/cli.ui": "0.2.40",
     "@platform/conversation.db": "0.0.80",
-    "@platform/fs.nedb": "0.5.2",
+    "@platform/fsdb.nedb": "0.5.2",
     "@platform/graphql.server": "0.1.26",
     "@uiharness/dev": "0.5.16",
     "@uiharness/ui": "0.5.17",

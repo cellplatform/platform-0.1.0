@@ -1,4 +1,4 @@
-export { NeDoc } from '@platform/fs.nedb';
+export { NeDoc } from '@platform/fsdb.nedb';
 export { value, defaultValue, time } from '@platform/util.value';
 
 /**

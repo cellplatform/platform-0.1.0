@@ -6,7 +6,7 @@ import {
   IDbKeyValue,
   IDbQuery,
   IDbValue,
-} from '@platform/fs.db/lib/types';
+} from '@platform/fsdb.file/lib/types';
 
 export type DbIpc = IpcClient<DbIpcEvent>;
 export type DbFactory = (conn: string) => IDb;
