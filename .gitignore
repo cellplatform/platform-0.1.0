@@ -21,3 +21,4 @@ sync.yaml
 
 tmp/
 .tmp.*
+/vscode

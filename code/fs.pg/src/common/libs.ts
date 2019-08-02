@@ -3,7 +3,7 @@ export { pg };
 
 export { defaultValue, time, value } from '@platform/util.value';
 export { fs } from '@platform/fs';
-export { DbUri } from '@platform/fs.db.types';
+export { DbUri } from '@platform/fsdb.types';
 
 /**
  * Ramda

@@ -1,5 +1,5 @@
 export { value, defaultValue, time } from '@platform/util.value';
-export { DbUri } from '@platform/fs.db.types';
+export { DbUri } from '@platform/fsdb.types';
 
 /**
  * Ramda

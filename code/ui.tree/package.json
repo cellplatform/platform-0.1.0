@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.tree",
   "description": "Hierarchical tree view.",
-  "version": "0.2.12",
+  "version": "0.2.14",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -15,19 +15,19 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "0.1.27",
-    "@platform/react": "0.3.12",
-    "@platform/ui.icon": "0.0.76",
-    "@platform/ui.panel": "0.0.74",
-    "@platform/ui.spinner": "0.0.75",
-    "@platform/ui.text": "0.2.25",
-    "@platform/util.animate": "^0.0.43"
+    "@platform/css": "0.1.29",
+    "@platform/react": "0.3.14",
+    "@platform/ui.icon": "0.0.78",
+    "@platform/ui.panel": "0.0.76",
+    "@platform/ui.spinner": "0.0.77",
+    "@platform/ui.text": "0.2.27",
+    "@platform/util.animate": "^0.0.45"
   },
   "devDependencies": {
-    "@platform/test": "0.0.59",
-    "@platform/ts": "3.4.33",
-    "@uiharness/dev": "0.5.14",
-    "@uiharness/ui": "0.5.15",
+    "@platform/test": "0.0.60",
+    "@platform/ts": "3.4.35",
+    "@uiharness/dev": "0.5.16",
+    "@uiharness/ui": "0.5.17",
     "electron": "5.0.0",
     "react-icons": "3.7.0"
   },

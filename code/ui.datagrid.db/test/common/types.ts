@@ -4,7 +4,7 @@ import { DbFactory } from '@platform/fs.db.electron/lib/types';
 import { IRendererContext } from '@platform/electron/lib/types';
 
 export * from '@platform/cli.ui/lib/types';
-export * from '@platform/fs.db.types';
+export * from '@platform/fsdb.types';
 export * from '@platform/fs.db.electron/lib/types';
 export * from '@platform/electron/lib/types';
 

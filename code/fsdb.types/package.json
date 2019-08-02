@@ -1,6 +1,6 @@
 {
-  "name": "@platform/fs.db.types",
-  "version": "0.2.0",
+  "name": "@platform/fsdb.types",
+  "version": "0.2.2",
   "description": "Common types for a file-system like JSON document database.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,12 +12,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.18",
-    "@platform/types": "0.0.20"
+    "@platform/libs": "0.1.0",
+    "@platform/types": "0.0.22"
   },
   "devDependencies": {
-    "@platform/test": "0.0.59",
-    "@platform/ts": "3.4.33"
+    "@platform/test": "0.0.60",
+    "@platform/ts": "3.4.35"
   },
   "files": [
     "lib"

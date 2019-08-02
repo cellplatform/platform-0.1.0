@@ -77,8 +77,9 @@ export class AccessToken implements t.IAccessToken {
       const { token, audience, issuer, algorithms } = args;
 
       // JSON web-key-set.
+      const jwksUri = `${issuer.replace(/\/$/, '')}/.well-known/jwks.json`;
       const jwks = jwksClient({
-        jwksUri: `${issuer.replace(/\/$/, '')}/.well-known/jwks.json`,
+        jwksUri,
         strictSsl: true,
         cache: true,
         rateLimit: true, // To prevent attackers to send many random values (brute force attack).
@@ -88,9 +89,13 @@ export class AccessToken implements t.IAccessToken {
       });
 
       // Retrieves the signing key.
+      type Key = { publicKey?: string; rsaPublicKey?: string };
       const getKey: jwt.GetPublicKeyOrSecret = (header, callback) => {
-        jwks.getSigningKey(header.kid || '', (err, key) => {
+        jwks.getSigningKey(header.kid || '', (err, key: Key) => {
           const signingKey = key.publicKey || key.rsaPublicKey;
+          if (!signingKey) {
+            throw new Error(`Failed to decode JWT. A signing-key could not be found.`);
+          }
           callback(null, signingKey);
         });
       };

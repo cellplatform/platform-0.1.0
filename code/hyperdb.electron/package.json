@@ -1,7 +1,7 @@
 {
   "name": "@platform/hyperdb.electron",
   "description": "Strongly typed, electron enabled interface to hyperdb.",
-  "version": "0.2.37",
+  "version": "0.2.39",
   "main": "lib/index",
   "scripts": {
     "test": "ts test",
@@ -12,16 +12,16 @@
     "rebuild": "platform.electron rebuild"
   },
   "dependencies": {
-    "@platform/electron": "0.7.0",
-    "@platform/hyperdb": "0.2.20",
-    "@platform/hyperdb.types": "0.2.13",
-    "@platform/util.string": "0.3.0",
-    "@platform/util.value": "0.4.4",
-    "@uiharness/electron": "0.5.10"
+    "@platform/electron": "0.7.2",
+    "@platform/hyperdb": "0.2.22",
+    "@platform/hyperdb.types": "0.2.15",
+    "@platform/util.string": "0.3.2",
+    "@platform/util.value": "0.4.6",
+    "@uiharness/electron": "0.5.11"
   },
   "devDependencies": {
-    "@platform/test": "0.0.59",
-    "@platform/ts": "3.4.33"
+    "@platform/test": "0.0.60",
+    "@platform/ts": "3.4.35"
   },
   "files": [
     "lib",
