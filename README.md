@@ -63,11 +63,11 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/fs](/code/fs)
   - [@platform/fs.watch](/code/fs.watch)
   - [@platform/fs.s3](/code/fs.s3)
-- fs.db
+- fsdb
   - [@platform/fs.db](/code/fs.db)
-  - [@platform/fs.db.types](/code/fs.db.types)
+  - [@platform/fs.db.types](/code/fsdb.types)
   - [@platform/fs.db.electron](/code/fs.db.electron)
-  - [@platform/fs.nedb](/code/fs.pg)
+  - [@platform/fsdb.nedb](/code/fsdb.nedb)
   - [@platform/fs.pg](/code/fs.pg)
 - network
   - [@platform/http](/code/http)
