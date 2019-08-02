@@ -51,17 +51,6 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db@^1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db/-/fs.db-1.3.4.tgz#60410467ba50fda72b8f61d484084afca6dc8968"
-  integrity sha512-K4f/gO+HfniN9SZHaC2BnW0etqduty5ufJ9hytU577Q1UlMz7nODsgysGJA9g8dz+YLmtKG+xUENX5DuDlbeuA==
-  dependencies:
-    "@platform/fs" "0.1.7"
-    "@platform/fsdb.types" "0.2.2"
-    "@platform/libs" "0.1.0"
-    "@platform/types" "0.0.22"
-    "@platform/util.value" "0.4.6"
-
 "@platform/fs@0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.1.7.tgz#af9c04db639916589dda585963c7519fb79c632d"
@@ -75,6 +64,17 @@
     filesize "4.1.2"
     fs-extra "8.1.0"
     js-yaml "3.13.1"
+
+"@platform/fsdb.file@^1.3.4":
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.file/-/fsdb.file-1.3.4.tgz#2029697bec1b592b8b2261c013b35d414ed24b7d"
+  integrity sha512-d22kg9RnjuaWdukUjhrQENJRbEt9QBvdFlHgSRF9EiEwbkLQQJp7wlsBBQEI04/QUnWJQYsuqe5ScNxz5MVJ9A==
+  dependencies:
+    "@platform/fs" "0.1.7"
+    "@platform/fsdb.types" "0.2.2"
+    "@platform/libs" "0.1.0"
+    "@platform/types" "0.0.22"
+    "@platform/util.value" "0.4.6"
 
 "@platform/fsdb.types@0.2.2":
   version "0.2.2"

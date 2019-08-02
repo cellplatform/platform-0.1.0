@@ -7,7 +7,7 @@ Standard `IDb` abstraction over [nedb](https://github.com/louischatriot/nedb). R
 
 ## Setup
 
-    yarn add @platform/fs.nedb
+    yarn add @platform/fsdb.nedb
 
 
 

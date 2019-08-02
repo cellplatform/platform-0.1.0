@@ -7,7 +7,7 @@
 
 ## Setup
 
-    yarn add @platform/fs.pg
+    yarn add @platform/fsdb.pg
 
 
 

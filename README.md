@@ -65,10 +65,10 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/fs.s3](/code/fs.s3)
 - fsdb
   - [@platform/fs.db.types](/code/fsdb.types)
-  - [@platform/fsdb.nedb](/code/fsdb.nedb)
   - [@platform/fsdb.file](/code/fsdb.file)
-  - [@platform/fs.db.electron](/code/fs.db.electron)
-  - [@platform/fs.pg](/code/fs.pg)
+  - [@platform/fsdb.nedb](/code/fsdb.nedb)
+  - [@platform/fsdb.pg](/code/fsdb.pg)
+  - [@platform/fs.db.electron](/code/fsdb.electron)
 - network
   - [@platform/http](/code/http)
   - [@platform/graphql](/code/graphql)

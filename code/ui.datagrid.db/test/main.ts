@@ -1,5 +1,5 @@
 import { Menu, MenuItem, app, BrowserWindow } from 'electron';
-import db from '@platform/fs.db.electron/lib/main';
+import db from '@platform/fsdb.electron/lib/main';
 import uiharness from '@uiharness/electron/lib/main';
 
 const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;

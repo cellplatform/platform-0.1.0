@@ -1,5 +1,5 @@
 {
-  "name": "@platform/fs.db.electron",
+  "name": "@platform/fsdb.electron",
   "version": "0.2.14",
   "description": "",
   "main": "lib/index",

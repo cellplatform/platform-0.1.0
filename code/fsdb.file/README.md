@@ -7,7 +7,7 @@ File-system backing store for an IDb interface.
 
 ## Setup
 
-    yarn add @platform/fs.db
+    yarn add @platform/fsdb.file
 
 
 

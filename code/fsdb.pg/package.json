@@ -1,5 +1,5 @@
 {
-  "name": "@platform/fs.pg",
+  "name": "@platform/fsdb.pg",
   "version": "0.1.10",
   "description": "Postgres backing store for a file-system like JSON document database.",
   "main": "lib/index",
