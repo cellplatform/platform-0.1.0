@@ -51,7 +51,7 @@ export type ILinkedModelDef = {
 
 export type ILinkedModelSchema = { [key: string]: IModel | IModel[] };
 export type ILinkedModels<L extends ILinkedModelSchema> = {
-  [K in keyof L]: LinkedModelPromise<L, K>
+  [K in keyof L]: LinkedModelPromise<L, K>;
 };
 
 export type LinkedModelPromise<

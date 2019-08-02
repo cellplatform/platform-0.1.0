@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.db",
-  "version": "1.3.2",
+  "version": "1.3.4",
   "description": "File-system backing store for a JSON document database.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,15 +13,15 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/fs": "0.1.6",
-    "@platform/fsdb.types": "0.2.0",
-    "@platform/libs": "0.0.18",
-    "@platform/types": "0.0.20",
-    "@platform/util.value": "0.4.4"
+    "@platform/fs": "0.1.7",
+    "@platform/fsdb.types": "0.2.2",
+    "@platform/libs": "0.1.0",
+    "@platform/types": "0.0.22",
+    "@platform/util.value": "0.4.6"
   },
   "devDependencies": {
-    "@platform/test": "0.0.59",
-    "@platform/ts": "3.4.33"
+    "@platform/test": "0.0.60",
+    "@platform/ts": "3.4.35"
   },
   "files": [
     "lib"

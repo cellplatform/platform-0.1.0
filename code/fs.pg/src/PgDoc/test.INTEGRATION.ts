@@ -25,7 +25,7 @@ describe('PgDoc (integration)', () => {
     expect(await db.getValue(key)).to.eql(undefined);
   });
 
-  it("put (escaped ' character)", async () => {
+  it('put (escaped \' character)', async () => {
     const key = 'FOO/char';
     const msg = `'"?<>\`~:\\/!@#$%^&*()_-+=`;
     await db.put(key, { msg });
