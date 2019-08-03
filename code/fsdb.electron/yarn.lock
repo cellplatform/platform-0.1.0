@@ -1161,28 +1161,6 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.db@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@platform/fs.db/-/fs.db-1.3.4.tgz#60410467ba50fda72b8f61d484084afca6dc8968"
-  integrity sha512-K4f/gO+HfniN9SZHaC2BnW0etqduty5ufJ9hytU577Q1UlMz7nODsgysGJA9g8dz+YLmtKG+xUENX5DuDlbeuA==
-  dependencies:
-    "@platform/fs" "0.1.7"
-    "@platform/fsdb.types" "0.2.2"
-    "@platform/libs" "0.1.0"
-    "@platform/types" "0.0.22"
-    "@platform/util.value" "0.4.6"
-
-"@platform/fs.nedb@0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@platform/fs.nedb/-/fs.nedb-0.5.2.tgz#147179ca4f95751f6793c58ac198034510897b0d"
-  integrity sha512-zF0CaATGN9D+W0xEtji43O3HsJLbv+qphCco/JBWkHAuqkELS7p3zrlIPFDc/BdqMzq2l9HNGrYyCzBF1AUTYQ==
-  dependencies:
-    "@platform/fsdb.types" "0.2.2"
-    "@platform/react" "0.3.14"
-    "@platform/types" "0.0.22"
-    "@platform/util.value" "0.4.6"
-    nedb "1.8.0"
-
 "@platform/fs@0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.1.7.tgz#af9c04db639916589dda585963c7519fb79c632d"
@@ -1197,10 +1175,32 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/fsdb.types@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.2.2.tgz#02d4065684d5450c55728472de365adefe5d9f95"
-  integrity sha512-rcKqQsnsfQTBqd/sJLzCH4KqqEgaroKo30WQluQJebFDGqE5vu1rSY4sv5WcuYeqGftooQpKFlGdeWNwca3vGg==
+"@platform/fsdb.file@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.file/-/fsdb.file-1.3.5.tgz#c5073949e3b843660ca3f1a0f056ab3c390711db"
+  integrity sha512-Z5VyByBT8jZG0y8lU0Ldy8f6pjWCcQsp1DqlUFGY5qtXcGmHmplDKa8yAT9u7lOcodpNl6MWpjez2hVOBxnTRQ==
+  dependencies:
+    "@platform/fs" "0.1.7"
+    "@platform/fsdb.types" "0.2.3"
+    "@platform/libs" "0.1.0"
+    "@platform/types" "0.0.22"
+    "@platform/util.value" "0.4.6"
+
+"@platform/fsdb.nedb@0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-0.5.3.tgz#54b831ea1756aa309212eb5eaf35c197a9c41e38"
+  integrity sha512-adPvq70CrgVz0HH4fBNAjNcHU4/zprb93zSMOHCp2pCn/y6TIjWpK0a7larg7hX4cMV5CGid5zjJNK7Oyx3jjg==
+  dependencies:
+    "@platform/fsdb.types" "0.2.3"
+    "@platform/react" "0.3.14"
+    "@platform/types" "0.0.22"
+    "@platform/util.value" "0.4.6"
+    nedb "1.8.0"
+
+"@platform/fsdb.types@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.2.3.tgz#b84659fa575438988f86e4ae379b10ce3979f8b6"
+  integrity sha512-Nnhft0U+vvWdntBCGKSMoZA0+hn/zQsBsG6vcwT/H1eqOA7LVuh7R9TEPFDghOSddGQCxqIdlVGbPFUiW7sB5g==
   dependencies:
     "@platform/libs" "0.1.0"
     "@platform/types" "0.0.22"

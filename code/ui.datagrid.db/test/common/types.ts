@@ -1,11 +1,11 @@
 import { Subject } from 'rxjs';
 import * as t from '../../src/common/types';
-import { DbFactory } from '@platform/fs.db.electron/lib/types';
+import { DbFactory } from '@platform/fsdb.electron/lib/types';
 import { IRendererContext } from '@platform/electron/lib/types';
 
 export * from '@platform/cli.ui/lib/types';
 export * from '@platform/fsdb.types';
-export * from '@platform/fs.db.electron/lib/types';
+export * from '@platform/fsdb.electron/lib/types';
 export * from '@platform/electron/lib/types';
 
 export * from '../../src/common/types';
