@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { DbUri, defaultValue, t, time, value as valueUtil, keys as keysUtil } from '../common';
-import { Nedb } from '../Nedb';
+import { Store } from '../Store';
 import { Schema } from './schema';
 
 export type INeDocArgs = {
@@ -29,7 +29,7 @@ export class NeDoc implements t.INeDb {
   private constructor(args: INeDocArgs) {
     const { filename } = args;
     const autoload = Boolean(filename);
-    this.store = Nedb.create<t.IDoc>({ filename, autoload });
+    this.store = Store.create<t.IDoc>({ filename, autoload });
     this.store.ensureIndex({ fieldName: 'path', unique: true, sparse: true });
   }
 
@@ -44,7 +44,7 @@ export class NeDoc implements t.INeDb {
   /**
    * [Fields]
    */
-  private readonly store: Nedb<t.IDoc>;
+  private readonly store: Store<t.IDoc>;
   private readonly uri = DbUri.create();
   private readonly schema = Schema.create();
 
