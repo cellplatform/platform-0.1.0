@@ -30,7 +30,6 @@ export class NeDb implements t.INeDb {
     const { filename } = args;
     const autoload = Boolean(filename);
     this.store = Store.create<t.IDoc>({ filename, autoload });
-    this.store.ensureIndex({ fieldName: 'path', unique: true, sparse: true });
   }
 
   public dispose() {
@@ -59,7 +58,6 @@ export class NeDb implements t.INeDb {
    */
   public get sys() {
     const schema = this.schema.sys;
-
     const sys = {
       timestamps: async () => {
         const res = await this.store.findOne({ path: schema.timestamps });
@@ -112,7 +110,9 @@ export class NeDb implements t.INeDb {
     // Query the DB.
     const uris = keys.map(key => this.uri.parse(key));
     const paths = uris.map(uri => uri.path.dir);
-    const docs = await this.store.find({ path: { $in: paths } });
+    const docs = await this.store.find({ _id: { $in: paths } });
+
+    // console.log('docs', docs);
 
     /**
      * TODO 🐷
@@ -122,7 +122,7 @@ export class NeDb implements t.INeDb {
     // Convert items to return data-structures.
     const items = uris.map(uri => {
       const key = uri.text;
-      const doc = docs.find(item => item.path === uri.path.dir);
+      const doc = docs.find(item => item._id === uri.path.dir);
       const value = typeof doc === 'object' ? doc.data : undefined;
       const exists = Boolean(value);
       const { createdAt, modifiedAt } = NeDb.toTimestamps(doc);
@@ -176,7 +176,7 @@ export class NeDb implements t.INeDb {
       const createdAt = defaultValue(item.createdAt, now);
       const modifiedAt = defaultValue(item.modifiedAt, now);
       const data = item.value;
-      const doc: t.IDoc = { path, data, createdAt, modifiedAt };
+      const doc: t.IDoc = { _id: path, path, data, createdAt, modifiedAt };
       return doc;
     });
 

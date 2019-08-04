@@ -50,6 +50,16 @@ describe.only('NeDb', () => {
       expect(await db.getValue(key)).to.eql(undefined);
     });
 
+    it('FOO', async () => {
+      const key = 'FOO/bar';
+
+      await db.put(key, { msg: 'hello' });
+
+      const res = await db.get(key);
+
+      console.log('res', res);
+    });
+
     it('put => get (props)', async () => {
       const key = 'FOO/bar';
       const res1 = await db.get(key);
