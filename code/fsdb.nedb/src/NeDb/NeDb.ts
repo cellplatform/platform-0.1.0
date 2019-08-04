@@ -5,16 +5,16 @@ import { DbUri, defaultValue, t, time, value as valueUtil, keys as keysUtil } fr
 import { Store } from '../Store';
 import { Schema } from './schema';
 
-export type INeDocArgs = {
+export type INeDbArgs = {
   filename?: string;
 };
 
-export class NeDoc implements t.INeDb {
+export class NeDb implements t.INeDb {
   /**
    * [Static]
    */
-  public static create(args: INeDocArgs = {}) {
-    return new NeDoc(args);
+  public static create(args: INeDbArgs = {}) {
+    return new NeDb(args);
   }
 
   private static toTimestamps(doc?: t.IDoc) {
@@ -26,7 +26,7 @@ export class NeDoc implements t.INeDb {
   /**
    * [Lifecycle]
    */
-  private constructor(args: INeDocArgs) {
+  private constructor(args: INeDbArgs) {
     const { filename } = args;
     const autoload = Boolean(filename);
     this.store = Store.create<t.IDoc>({ filename, autoload });
@@ -125,7 +125,7 @@ export class NeDoc implements t.INeDb {
       const doc = docs.find(item => item.path === uri.path.dir);
       const value = typeof doc === 'object' ? doc.data : undefined;
       const exists = Boolean(value);
-      const { createdAt, modifiedAt } = NeDoc.toTimestamps(doc);
+      const { createdAt, modifiedAt } = NeDb.toTimestamps(doc);
       const res: t.IDbValue = {
         value,
         props: { key, exists, createdAt, modifiedAt },
