@@ -50,16 +50,6 @@ describe.only('NeDb', () => {
       expect(await db.getValue(key)).to.eql(undefined);
     });
 
-    it('FOO', async () => {
-      const key = 'FOO/bar';
-
-      await db.put(key, { msg: 'hello' });
-
-      const res = await db.get(key);
-
-      console.log('res', res);
-    });
-
     it('put => get (props)', async () => {
       const key = 'FOO/bar';
       const res1 = await db.get(key);
@@ -140,6 +130,30 @@ describe.only('NeDb', () => {
       await db.put(key, { msg });
       const res = await db.getValue<{ msg: string }>(key);
       expect(res.msg).to.eql(msg);
+    });
+
+    it('put (leading forward-slash removed)', async () => {
+      await db.put('/FOO/bar', 123);
+
+      const res1 = await db.get('/FOO/bar');
+      const res2 = await db.get('FOO/bar');
+
+      expect(res1.props.key).to.eql('FOO/bar');
+      expect(res2.props.key).to.eql('FOO/bar');
+
+      expect(res1.value).to.eql(123);
+      expect(res2.value).to.eql(123);
+
+      await db.put('FOO/bar', 456);
+
+      const res3 = await db.get('/FOO/bar');
+      const res4 = await db.get('FOO/bar');
+
+      expect(res3.props.key).to.eql('FOO/bar');
+      expect(res4.props.key).to.eql('FOO/bar');
+
+      expect(res3.value).to.eql(456);
+      expect(res4.value).to.eql(456);
     });
 
     it('put => getValue (types)', async () => {
@@ -225,6 +239,16 @@ describe.only('NeDb', () => {
     });
   });
 
+  // describe('key/path validity', () => {
+
+  //   it('is valid', () => {});
+
+  //   it('is not valid', () => {
+
+  //   });
+
+  // });
+
   describe('find (path)', () => {
     it('nothing (no match)', async () => {
       const items = [
@@ -286,7 +310,7 @@ describe.only('NeDb', () => {
     it('deep: entire database (**)', async () => {
       const items = [
         { key: 'cell/A1', value: 123 },
-        { key: 'cell/A2', value: 456 },
+        { key: '/cell/A2', value: 456 }, // NB: leading forward-slash removed.
         { key: 'cell/A2/meta', value: 'meta' },
         { key: 'foo', value: 'boo' },
       ];
@@ -299,9 +323,10 @@ describe.only('NeDb', () => {
       const items = [
         { key: 'foo', value: 'foo' },
         { key: 'cell/A1', value: 123 },
-        { key: 'bar', value: 'bar' },
+        { key: '/bar', value: 'bar' },
       ];
       await db.putMany(items);
+
       const res = await db.find('*');
 
       expect(res.length).to.eql(2);

@@ -60,7 +60,7 @@ export class NeDb implements t.INeDb {
     const schema = this.schema.sys;
     const sys = {
       timestamps: async () => {
-        const res = await this.store.findOne({ path: schema.timestamps });
+        const res = await this.store.findOne({ _id: schema.timestamps });
         const data: t.IDbTimestamps = res || { createdAt: -1, modifiedAt: -1 };
         const { createdAt, modifiedAt } = data;
         return { createdAt, modifiedAt };
@@ -72,10 +72,10 @@ export class NeDb implements t.INeDb {
           createdAt: timestamps.createdAt === -1 ? now : timestamps.createdAt,
           modifiedAt: now,
         };
-        const query: any = { path: schema.timestamps };
+        const query: any = { _id: schema.timestamps };
         await this.store.update(
           query,
-          { path: schema.timestamps, ...timestamps, data: true },
+          { _id: schema.timestamps, ...timestamps, data: true },
           { upsert: true },
         );
         return timestamps;
@@ -112,8 +112,6 @@ export class NeDb implements t.INeDb {
     const paths = uris.map(uri => uri.path.dir);
     const docs = await this.store.find({ _id: { $in: paths } });
 
-    // console.log('docs', docs);
-
     /**
      * TODO 🐷
      * - URI. object path
@@ -121,7 +119,7 @@ export class NeDb implements t.INeDb {
 
     // Convert items to return data-structures.
     const items = uris.map(uri => {
-      const key = uri.text;
+      const key = uri.path.dir;
       const doc = docs.find(item => item._id === uri.path.dir);
       const value = typeof doc === 'object' ? doc.data : undefined;
       const exists = Boolean(value);
@@ -181,16 +179,16 @@ export class NeDb implements t.INeDb {
     });
 
     // Check for existing docs that need to updated (rather than inserted).
-    const paths = inserts.map(doc => doc.path);
-    const existing = await this.store.find({ path: { $in: paths } });
+    const paths = inserts.map(doc => doc._id);
+    const existing = await this.store.find({ _id: { $in: paths } });
 
     // Perform updates.
     if (existing.length > 0) {
       const updates = inserts.filter(d1 => existing.some(d2 => d2.path === d1.path));
       await Promise.all(
         updates.map(update => {
-          const query: any = { path: update.path };
-          const current = existing.find(doc => doc.path === update.path);
+          const query: any = { _id: update.path };
+          const current = existing.find(doc => doc._id === update.path);
           const createdAt = current ? current.createdAt : update.createdAt;
           update = { ...update, createdAt, modifiedAt: now };
           return this.store.update(query, update);
@@ -244,7 +242,7 @@ export class NeDb implements t.INeDb {
     const uris = keys.map(key => this.uri.parse(key));
     const paths = uris.map(uri => uri.path.dir);
     const multi = paths.length > 0;
-    await this.store.remove({ path: { $in: paths } }, { multi });
+    await this.store.remove({ _id: { $in: paths } }, { multi });
 
     // Prepare result set.
     const result = uris.map(uri => {
@@ -299,12 +297,14 @@ export class NeDb implements t.INeDb {
             return {}; // All documents in DB.
           }
           if (suffix === '*') {
-            return { path: { $regex: /^([^/]*)$/ } }; // Only root level paths (eg "foo" not "foo/bar").
+            // Only root level paths (eg "foo" not "foo/bar").
+            const $regex = /^([^/]*)$/;
+            return { _id: { $regex } };
           }
           return;
         } else {
           const expr = suffix === '**' ? `^${dir}\/*` : `^${dir}\/([^/]*)$`;
-          return { path: { $regex: new RegExp(expr) } };
+          return { _id: { $regex: new RegExp(expr) } };
         }
       };
 
@@ -324,7 +324,7 @@ export class NeDb implements t.INeDb {
 
       // Convert into response list.
       list = res.map(doc => {
-        const key = doc.path;
+        const key = doc._id;
         const value = doc.data;
         const exists = Boolean(value);
         const { createdAt, modifiedAt } = doc;
