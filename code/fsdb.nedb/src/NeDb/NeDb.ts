@@ -174,7 +174,7 @@ export class NeDb implements t.INeDb {
       const createdAt = defaultValue(item.createdAt, now);
       const modifiedAt = defaultValue(item.modifiedAt, now);
       const data = item.value;
-      const doc: t.IDoc = { _id: path, path, data, createdAt, modifiedAt };
+      const doc: t.IDoc = { _id: path, data, createdAt, modifiedAt };
       return doc;
     });
 
@@ -184,11 +184,11 @@ export class NeDb implements t.INeDb {
 
     // Perform updates.
     if (existing.length > 0) {
-      const updates = inserts.filter(d1 => existing.some(d2 => d2.path === d1.path));
+      const updates = inserts.filter(d1 => existing.some(d2 => d2._id === d1._id));
       await Promise.all(
         updates.map(update => {
-          const query: any = { _id: update.path };
-          const current = existing.find(doc => doc._id === update.path);
+          const query: any = { _id: update._id };
+          const current = existing.find(doc => doc._id === update._id);
           const createdAt = current ? current.createdAt : update.createdAt;
           update = { ...update, createdAt, modifiedAt: now };
           return this.store.update(query, update);
@@ -196,7 +196,7 @@ export class NeDb implements t.INeDb {
       );
 
       // Remove the existing updates from the new inserts.
-      inserts = inserts.filter(d1 => !existing.some(d2 => d2.path === d1.path));
+      inserts = inserts.filter(d1 => !existing.some(d2 => d2._id === d1._id));
     }
 
     // Perform inserts.

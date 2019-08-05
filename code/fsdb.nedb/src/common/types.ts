@@ -7,7 +7,6 @@ import { Json } from '@platform/types';
 import { IDbTimestamps } from '@platform/fsdb.types/lib/types';
 
 export type IDoc<D = Json> = IDbTimestamps & {
-  _id: string; // path.
-  path: string; // TEMP 🐷
+  _id: string; // "path" field.
   data?: D;
 };

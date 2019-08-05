@@ -1,5 +1,6 @@
 import { expect, fs, time, t } from '../test';
 import { NeDb } from '.';
+import { Store } from '../store';
 
 const dir = fs.resolve('tmp/NeDb');
 const removeDir = () => fs.remove(dir);
@@ -74,6 +75,22 @@ describe.only('NeDb', () => {
       await db.put(key, undefined);
       const res5 = await db.get(key);
       expect(res5.value).to.eql(undefined);
+    });
+
+    it('stores [path] in [_id] field', async () => {
+      await db.put('FOO/1', 1);
+      await db.putMany([{ key: 'FOO/2', value: 2 }, { key: 'FOO/3', value: 3 }]);
+
+      const store = (db as any).store as Store;
+      const docs = await store.find({});
+
+      expect(docs[0]._id).to.eql('FOO/1');
+      expect(docs[1]._id).to.eql('FOO/2');
+      expect(docs[2]._id).to.eql('FOO/3');
+
+      expect(docs[0].path).to.eql(undefined);
+      expect(docs[1].path).to.eql(undefined);
+      expect(docs[2].path).to.eql(undefined);
     });
 
     it('put => timestamps (implicit)', async () => {
