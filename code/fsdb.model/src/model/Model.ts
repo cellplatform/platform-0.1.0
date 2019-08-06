@@ -265,7 +265,11 @@ export class Model<
     // Alert listeners.
     if (fireEvent && !options.silent) {
       const typename = this.typename;
-      this.fire({ type: 'MODEL/loaded/data', typename, payload: { model: this, withLinks } });
+      this.fire({
+        type: 'MODEL/loaded/data',
+        typename,
+        payload: { model: this, withLinks, withChildren },
+      });
     }
 
     // Finish up.
@@ -371,8 +375,11 @@ export class Model<
       }
       this._linkCache[key] = model;
 
-      const typename = this.typename;
-      this.fire({ type: 'MODEL/loaded/link', typename, payload: { model: this, field } });
+      this.fire({
+        type: 'MODEL/loaded/link',
+        typename: this.typename,
+        payload: { model: this, field },
+      });
       return resolve(model);
     });
 
@@ -450,11 +457,15 @@ export class Model<
       }
 
       const paths = (await db.find(query)).list.map(item => item.props.key);
-      const models = await Promise.all(paths.map(path => def.factory({ db, path }).ready));
-      this._childrenCache[field] = models;
+      const children = await Promise.all(paths.map(path => def.factory({ db, path }).ready));
+      this._childrenCache[field] = children;
 
-      // Finish up.
-      resolve(models as any);
+      this.fire({
+        type: 'MODEL/loaded/children',
+        typename: this.typename,
+        payload: { model: this, children, field },
+      });
+      resolve(children as any);
     });
 
     // Finish up.

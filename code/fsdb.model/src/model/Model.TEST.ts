@@ -791,7 +791,28 @@ describe('model', () => {
       ]);
     });
 
-    it.skip('fires children-loaded event', async () => {});
+    it('fires children-loaded event', async () => {
+      const model = await createOrgWithChildren();
+
+      const events: t.IModelChildrenLoaded[] = [];
+      model.events$
+        .pipe(
+          filter(e => e.type === 'MODEL/loaded/children'),
+          map(e => e.payload as t.IModelChildrenLoaded),
+        )
+        .subscribe(e => events.push(e));
+
+      await model.load();
+      expect(events.length).to.eql(0);
+
+      await model.children.all;
+      await model.children.things;
+
+      expect(events.length).to.eql(2);
+      expect(events[0].field).to.eql('all');
+      expect(events[1].field).to.eql('things');
+    });
+
     it.skip('caches children', async () => {});
     it.skip('gets children via `load` method', async () => {});
   });

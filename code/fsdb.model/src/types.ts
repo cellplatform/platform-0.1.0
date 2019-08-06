@@ -107,6 +107,7 @@ export type IModelChange<
 export type ModelEvent =
   | IModelDataLoadedEvent
   | IModelLinkLoadedEvent
+  | IModelChildrenLoadedEvent
   | IModelReadPropEvent
   | IModelChangingEvent
   | IModelChangedEvent
@@ -115,7 +116,7 @@ export type ModelEvent =
 /**
  * Data loading.
  */
-export type IModelDataLoaded = { model: IModel; withLinks: boolean };
+export type IModelDataLoaded = { model: IModel; withLinks: boolean; withChildren: boolean };
 export type IModelDataLoadedEvent = {
   type: 'MODEL/loaded/data';
   typename: string;
@@ -127,6 +128,13 @@ export type IModelLinkLoadedEvent = {
   type: 'MODEL/loaded/link';
   typename: string;
   payload: IModelLinkLoaded;
+};
+
+export type IModelChildrenLoaded = { model: IModel; children: IModel[]; field: string };
+export type IModelChildrenLoadedEvent = {
+  type: 'MODEL/loaded/children';
+  typename: string;
+  payload: IModelChildrenLoaded;
 };
 
 /**
