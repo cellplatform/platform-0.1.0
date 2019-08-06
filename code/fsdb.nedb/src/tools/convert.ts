@@ -1,5 +1,7 @@
 import { Store } from '../store';
 
+export { Store };
+
 /**
  * Updates all documents in the given NeDb to use `_id` fields instead of `path`.
  * Notes:

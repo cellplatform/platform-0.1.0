@@ -4,5 +4,5 @@ export { DbUri } from '@platform/fsdb.types';
 /**
  * Ramda
  */
-import { uniq, is } from 'ramda';
-export const R = { uniq, is };
+import { uniq, is, sortWith, ascend, descend, prop } from 'ramda';
+export const R = { uniq, is, sortWith, ascend, descend, prop };

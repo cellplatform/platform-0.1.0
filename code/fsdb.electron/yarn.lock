@@ -1186,10 +1186,10 @@
     "@platform/types" "0.0.22"
     "@platform/util.value" "0.4.6"
 
-"@platform/fsdb.nedb@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.0.0.tgz#797f9993d465882fbf0acbf085a92b4ba32af6d8"
-  integrity sha512-0bhhLsaeb3C7xqmW7G5I5w2JYbeEvImWkoOGShOk1Ry9XZqnsgknlvuL5SLxfQO5EfbD/zIJ/4La3dWUw9gSsA==
+"@platform/fsdb.nedb@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.1.0.tgz#914fcdb4121b7f361e686499f5537ea44199273a"
+  integrity sha512-zdrhuFgSu9IVQqmlL/UjjccxhsoN901EYlLnwefyx/4sJ9B8RAv+Ptb6PlVK36Y1/zcn1eR2FKh9Ihac7ybB8g==
   dependencies:
     "@platform/fsdb.types" "0.3.0"
     "@platform/react" "0.3.14"
