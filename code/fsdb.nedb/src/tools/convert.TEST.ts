@@ -1,12 +1,27 @@
 import { convert } from '.';
 import { Store } from '../store';
-import { expect, R } from '../test';
+import { expect, fs, R } from '../test';
+
+const dir = fs.resolve('tmp/convert');
+const removeDir = () => fs.remove(dir);
+
+/**
+ * NOTE:  Filename is incremented to avoid NEDB internal error
+ *        when working with multiple instances of the same file-name.
+ *        See: https://github.com/louischatriot/nedb/issues/462
+ */
+let count = 0;
+const getFilename = () => fs.join(dir, `file-${count++}.db`);
 
 describe('tools.convert', () => {
   let store: Store;
 
+  beforeEach(async () => removeDir());
+  after(async () => removeDir());
+
   it('path => _id', async () => {
-    store = await Store.create({});
+    const filename = getFilename();
+    store = await Store.create({ filename });
 
     await store.insertMany([
       { msg: 'hello', createdAt: 999 },

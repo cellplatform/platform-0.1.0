@@ -14,7 +14,7 @@ const getFilename = () => fs.join(dir, `file-${count++}.db`);
 
 describe('Store (nedb)', () => {
   beforeEach(async () => removeDir());
-  // after(async () => removeDir());
+  after(async () => removeDir());
 
   it('constructs', () => {
     const db = Store.create({});
@@ -99,21 +99,73 @@ describe('Store (nedb)', () => {
     expect(await db.findOne({ name: 'boo' })).to.eql(null);
   });
 
-  it('persists to file-system', async () => {
-    await removeDir();
+  it('when in-memory only isLoaded is never true', async () => {
+    const db = Store.create({});
+    expect(db.isFileLoaded).to.eql(false);
 
+    await db.insert({ name: 'foo' });
+    await db.findOne({ name: 'foo' });
+    expect(db.isFileLoaded).to.eql(false);
+  });
+
+  it('persists to file-system (autoload upon creation)', async () => {
+    await removeDir();
     const filename = getFilename();
     expect(await fs.pathExists(filename)).to.eql(false);
 
     const db1 = Store.create({ filename, autoload: true });
+    expect(db1.isFileLoaded).to.eql(false);
+
     const res1 = await db1.insert({ name: 'foo' });
     expect(res1.name).to.eql('foo');
     expect(await fs.pathExists(filename)).to.eql(true);
+    expect(db1.isFileLoaded).to.eql(true);
 
     const db2 = Store.create({ filename, autoload: true });
 
     const res2 = await db2.findOne({ name: 'foo' });
     expect(res2.name).to.eql('foo');
+    expect(db2.isFileLoaded).to.eql(true);
+  });
+
+  it('loadFile', async () => {
+    await removeDir();
+    const filename = getFilename();
+    expect(await fs.pathExists(filename)).to.eql(false);
+
+    const db = Store.create({ filename });
+    expect(db.isFileLoaded).to.eql(false);
+
+    await db.loadFile();
+    expect(db.isFileLoaded).to.eql(true);
+
+    await db.insert({ name: 'foo' });
+    await db.findOne({ name: 'foo' });
+    expect(await fs.pathExists(filename)).to.eql(true);
+  });
+
+  it('loadFile (no filename)', async () => {
+    await removeDir();
+
+    const db = Store.create({});
+    expect(db.isFileLoaded).to.eql(false);
+
+    await db.loadFile();
+    expect(db.isFileLoaded).to.eql(false);
+
+    await db.insert({ name: 'foo' });
+    await db.findOne({ name: 'foo' });
+  });
+
+  it('autoloads before method calls', async () => {
+    await removeDir();
+    const filename = getFilename();
+
+    const db = Store.create({ filename });
+    expect(db.isFileLoaded).to.eql(false);
+
+    await db.insert({ name: 'foo' });
+    await db.findOne({ name: 'foo' });
   });
 
   it('update (multi)', async () => {
