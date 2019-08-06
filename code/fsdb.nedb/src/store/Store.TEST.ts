@@ -14,11 +14,17 @@ const getFilename = () => fs.join(dir, `file-${count++}.db`);
 
 describe('Store (nedb)', () => {
   beforeEach(async () => removeDir());
-  after(async () => removeDir());
+  // after(async () => removeDir());
 
   it('constructs', () => {
     const db = Store.create({});
     expect(db).to.be.an.instanceof(Store);
+  });
+
+  it('creates with filename', () => {
+    const filename = getFilename();
+    const db = Store.create({ filename });
+    expect(db.filename).to.eql(filename);
   });
 
   it('strips "nedb:" prefix from filename', () => {

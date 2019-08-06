@@ -1,29 +1,31 @@
-import { expect, fs, time, t } from '../test';
+import { convert } from '.';
 import { Store } from '../store';
-
-const dir = fs.resolve('tmp/convert');
-const removeDir = () => fs.remove(dir);
-
-/**
- * NOTE:  Filename is incremented to avoid NEDB internal error
- *        when working with multiple instances of the same file-name.
- *        See: https://github.com/louischatriot/nedb/issues/462
- */
-let count = 0;
-const getFilename = () => fs.join(dir, `file-${count++}.db`);
+import { expect } from '../test';
 
 describe('tools.convert', () => {
-  let db: Store;
-
-  beforeEach(async () => (db = await Store.create({ filename: getFilename() })));
-  // afterEach(() => {});
-  after(async () => removeDir());
+  let store: Store;
 
   it('path => _id', async () => {
-    // const store = Store.create({});
+    store = await Store.create({});
 
-    // db.update({_id:'123', path: 'FOO/bar'})
-    // db.insert({ _id: '123', path: 'FOO/bar' });
-    console.log('db', db);
+    await store.insertMany([
+      { msg: 'hello' },
+      { _id: '123', path: 'FOO/1', createdAt: 123 },
+      { _id: '456', path: 'FOO/2', createdAt: 456 },
+    ]);
+
+    await convert.pathsToId({ store });
+
+    const res = await store.find({});
+
+    expect(res.length).to.eql(3);
+
+    expect(res[0].msg).to.eql('hello');
+
+    expect(res[1]._id).to.eql('FOO/1');
+    expect(res[2]._id).to.eql('FOO/2');
+
+    expect(res[1].createdAt).to.eql(123);
+    expect(res[2].createdAt).to.eql(456);
   });
 });

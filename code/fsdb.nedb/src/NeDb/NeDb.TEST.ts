@@ -13,7 +13,7 @@ const removeDir = () => fs.remove(dir);
 let count = 0;
 const getFilename = () => fs.join(dir, `file-${count++}.db`);
 
-describe.only('NeDb', () => {
+describe('NeDb', () => {
   let db: NeDb;
 
   beforeEach(async () => (db = await NeDb.create()));
