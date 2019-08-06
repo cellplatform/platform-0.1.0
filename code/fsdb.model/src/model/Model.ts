@@ -32,12 +32,23 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
   ) => new Model<P, D, L>(args);
 
   private constructor(args: IModelArgs<P, D, L>) {
+    // Prepare path.
+    const path = (args.path || '').trim();
+    args = args.path === path ? args : { ...args, path };
+    if (!path) {
+      throw new Error(`A model must have a path.`);
+    }
+
+    // Store args.
     this._args = args;
 
+    // Bubble events.
     const events$ = args.events$;
     if (events$) {
-      this.events$.subscribe(e => events$.next(e)); // Bubble events.
+      this.events$.subscribe(e => events$.next(e));
     }
+
+    // Load data from storage.
     if (defaultValue(args.load, true)) {
       this.load();
     }
