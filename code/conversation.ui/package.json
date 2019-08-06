@@ -1,6 +1,6 @@
 {
   "name": "@platform/conversation.ui",
-  "version": "0.0.146",
+  "version": "0.0.148",
   "description": "UI components for conversation threads.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -32,8 +32,8 @@
   "devDependencies": {
     "@platform/auth": "0.1.25",
     "@platform/cli.ui": "0.2.40",
-    "@platform/conversation.db": "0.0.81",
-    "@platform/fsdb.nedb": "0.5.3",
+    "@platform/conversation.db": "0.0.82",
+    "@platform/fsdb.nedb": "1.0.0",
     "@platform/graphql.server": "0.1.26",
     "@uiharness/dev": "0.5.16",
     "@uiharness/ui": "0.5.17",

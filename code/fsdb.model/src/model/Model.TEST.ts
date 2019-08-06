@@ -10,7 +10,7 @@ type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
 type IMyOrgDoc = IMyOrgProps & { ref?: string; refs?: [] };
 
 describe('model', () => {
-  let db: t.INeDb;
+  let db: t.IDb;
   beforeEach(async () => (db = await getTestDb({ file: false })));
 
   const org = {

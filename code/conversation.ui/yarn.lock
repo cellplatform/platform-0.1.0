@@ -1148,14 +1148,14 @@
     "@types/yargs" "13.0.2"
     yargs "13.3.0"
 
-"@platform/conversation.db@0.0.81":
-  version "0.0.81"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.81.tgz#c1ff7091b5e3ce5d9c95a362cb7d46bdbc8dc901"
-  integrity sha512-AiFnabYO12rHILm5oXr/oYMdlGLIsVA+AB0ZzfBn9mZu6S/nemlw/5qVjhp1UtdrJ9tGBjkHKp4V1frZQOP/Vw==
+"@platform/conversation.db@0.0.82":
+  version "0.0.82"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.82.tgz#0c2392e1939723683b998a9d60bcbdbcef6e2862"
+  integrity sha512-VdeYk0+orINKVWGwG0MgIz3NIuTEWDbdCXaP7xlyHITccbVBrYqGIirqnlGZtSHlVpEedVsvFhqD3ZEkk4rO+w==
   dependencies:
     "@platform/auth" "0.1.25"
     "@platform/conversation.types" "0.0.39"
-    "@platform/fsdb.types" "0.2.3"
+    "@platform/fsdb.types" "0.3.0"
     "@platform/graphql.server" "0.1.26"
     "@platform/hyperdb.types" "0.2.15"
     "@platform/libs" "0.1.0"
@@ -1222,21 +1222,21 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/fsdb.nedb@0.5.3":
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-0.5.3.tgz#54b831ea1756aa309212eb5eaf35c197a9c41e38"
-  integrity sha512-adPvq70CrgVz0HH4fBNAjNcHU4/zprb93zSMOHCp2pCn/y6TIjWpK0a7larg7hX4cMV5CGid5zjJNK7Oyx3jjg==
+"@platform/fsdb.nedb@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.0.0.tgz#797f9993d465882fbf0acbf085a92b4ba32af6d8"
+  integrity sha512-0bhhLsaeb3C7xqmW7G5I5w2JYbeEvImWkoOGShOk1Ry9XZqnsgknlvuL5SLxfQO5EfbD/zIJ/4La3dWUw9gSsA==
   dependencies:
-    "@platform/fsdb.types" "0.2.3"
+    "@platform/fsdb.types" "0.3.0"
     "@platform/react" "0.3.14"
     "@platform/types" "0.0.22"
     "@platform/util.value" "0.4.6"
     nedb "1.8.0"
 
-"@platform/fsdb.types@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.2.3.tgz#b84659fa575438988f86e4ae379b10ce3979f8b6"
-  integrity sha512-Nnhft0U+vvWdntBCGKSMoZA0+hn/zQsBsG6vcwT/H1eqOA7LVuh7R9TEPFDghOSddGQCxqIdlVGbPFUiW7sB5g==
+"@platform/fsdb.types@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.3.0.tgz#55cc8194de4b8bd017918abb3a89eb86c46896b6"
+  integrity sha512-PvrL0zmBxqjnuIJvxY53jKis/t5CJXwIKN35AJAjoyiUza0dI1d1KUIuILYDu/1h5rKogaoo/vxAjBmFPm1mMA==
   dependencies:
     "@platform/libs" "0.1.0"
     "@platform/types" "0.0.22"
