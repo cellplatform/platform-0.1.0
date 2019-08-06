@@ -2,11 +2,7 @@ import { Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 import { R, defaultValue, t, time } from './common';
 
-export type IModelArgs<
-  P extends object,
-  D extends P = P,
-  L extends t.IModelRelationshipsSchema = any
-> = {
+export type IModelArgs<P extends object, D extends P = P, L extends t.IModelLinksSchema = any> = {
   db: t.IDb;
   path: string;
   initial: D;
@@ -26,16 +22,12 @@ export type IModelArgs<
  *  - caching
  *
  */
-export class Model<P extends object, D extends P = P, L extends t.IModelRelationshipsSchema = any>
+export class Model<P extends object, D extends P = P, L extends t.IModelLinksSchema = any>
   implements t.IModel<P, D, L> {
   /**
    * [Lifecycle]
    */
-  public static create = <
-    P extends object,
-    D extends P = P,
-    L extends t.IModelRelationshipsSchema = any
-  >(
+  public static create = <P extends object, D extends P = P, L extends t.IModelLinksSchema = any>(
     args: IModelArgs<P, D, L>,
   ) => new Model<P, D, L>(args);
 
