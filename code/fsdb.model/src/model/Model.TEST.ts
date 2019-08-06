@@ -356,8 +356,8 @@ describe('model', () => {
     });
   });
 
-  describe('reading events', () => {
-    it('read/prop', async () => {
+  describe('reading (events)', () => {
+    it('read/prop => modify', async () => {
       const model = await createOrg({ put: true });
       await model.ready;
 
@@ -382,11 +382,6 @@ describe('model', () => {
       expect(events.length).to.eql(2);
       expect(reads[1].isModified).to.eql(true);
       expect(res).to.eql('Boo');
-    });
-
-    it.skip('read/link', async () => {
-      const model = await createLinkedOrg();
-      await model.load();
     });
   });
 
