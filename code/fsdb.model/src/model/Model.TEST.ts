@@ -18,11 +18,45 @@ describe('model', () => {
     doc: { id: '123', name: 'MyOrg' },
     initial: { id: '', name: '' },
   };
+
+  const links: t.ILinkedModelDefs<IMyOrgLinks> = {
+    thing: {
+      relationship: '1:1',
+      field: 'ref',
+      create: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
+    },
+    things: {
+      relationship: '1:*',
+      field: 'refs',
+      create: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
+    },
+  };
+
   const createOrg = async (options: { put?: boolean } = {}) => {
     if (options.put) {
       await db.put(org.path, org.doc);
     }
     return Model.create<IMyOrgProps, IMyOrgDoc>({ db, path: org.path, initial: org.initial });
+  };
+
+  const createLinkedOrg = async (
+    options: { refs?: string[]; ref?: string; path?: string } = {},
+  ) => {
+    const { refs, ref, path = org.path } = options;
+    await db.put(org.path, { ...org.doc, refs, ref });
+    await db.putMany([
+      { key: 'THING/1', value: { count: 1 } },
+      { key: 'THING/2', value: { count: 2 } },
+      { key: 'THING/3', value: { count: 3 } },
+    ]);
+    const model = Model.create<IMyOrgProps, IMyOrgDoc, IMyOrgLinks>({
+      db,
+      path,
+      initial: org.initial,
+      links,
+      load: false,
+    });
+    return model;
   };
 
   describe('path', () => {
@@ -31,7 +65,7 @@ describe('model', () => {
       expect(model.path).to.eql('FOO/1');
     });
 
-    it('throws if there is not path', () => {
+    it('throws if there is no path', () => {
       const test = (path: string) => {
         const fn = () => {
           Model.create<IMyOrgProps>({
@@ -310,9 +344,7 @@ describe('model', () => {
           filter(e => e.type === 'MODEL/changing'),
           map(e => e.payload as t.IModelChanging),
         )
-        .subscribe(e => {
-          e.cancel();
-        });
+        .subscribe(e => e.cancel());
 
       model.props.name = 'foo';
 
@@ -321,6 +353,40 @@ describe('model', () => {
       const event = events[0].payload as t.IModelChanging;
       expect(event.isCancelled).to.eql(true);
       expect(model.isChanged).to.eql(false);
+    });
+  });
+
+  describe('reading events', () => {
+    it('read/prop', async () => {
+      const model = await createOrg({ put: true });
+      await model.ready;
+
+      const read$ = model.events$.pipe(
+        filter(e => e.type === 'MODEL/read/prop'),
+        map(e => e.payload as t.IModelReadProp),
+      );
+
+      const events: t.ModelEvent[] = [];
+      const reads: t.IModelReadProp[] = [];
+
+      model.events$.subscribe(e => events.push(e));
+      read$.subscribe(e => reads.push(e));
+
+      expect(model.props.name).to.eql('MyOrg');
+      expect(events.length).to.eql(1);
+      expect(events[0].type).to.eql('MODEL/read/prop');
+
+      read$.subscribe(e => e.modify('Boo'));
+
+      const res = model.props.name;
+      expect(events.length).to.eql(2);
+      expect(reads[1].isModified).to.eql(true);
+      expect(res).to.eql('Boo');
+    });
+
+    it.skip('read/link', async () => {
+      const model = await createLinkedOrg();
+      await model.load();
     });
   });
 
@@ -398,42 +464,6 @@ describe('model', () => {
   });
 
   describe('link (JOIN relationship)', () => {
-    beforeEach(async () => {
-      await db.putMany([
-        { key: 'THING/1', value: { count: 1 } },
-        { key: 'THING/2', value: { count: 2 } },
-        { key: 'THING/3', value: { count: 3 } },
-      ]);
-    });
-
-    const links: t.ILinkedModelDefs<IMyOrgLinks> = {
-      thing: {
-        relationship: '1:1',
-        field: 'ref',
-        create: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
-      },
-      things: {
-        relationship: '1:*',
-        field: 'refs',
-        create: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
-      },
-    };
-
-    const createLinkedOrg = async (
-      options: { refs?: string[]; ref?: string; path?: string } = {},
-    ) => {
-      const { refs, ref, path = org.path } = options;
-      await db.put(org.path, { ...org.doc, refs, ref });
-      const model = Model.create<IMyOrgProps, IMyOrgDoc, IMyOrgLinks>({
-        db,
-        path,
-        initial: org.initial,
-        links,
-        load: false,
-      });
-      return model;
-    };
-
     it('has no links', async () => {
       const model = await createOrg();
       expect(model.links).to.eql({});

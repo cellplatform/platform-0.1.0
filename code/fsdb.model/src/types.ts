@@ -72,13 +72,13 @@ export type IModelChanges<P extends object, D extends P, L extends ILinkedModelS
 };
 export type IModelChange<P extends object, D extends P, L extends ILinkedModelSchema> = {
   model: IModel<P, D, L>;
+  kind: ModelValueKind;
   field: string;
   value: { from?: any; to?: any };
   doc: { from: D; to: D };
   modifiedAt: number;
-  kind: ModelChangeKind;
 };
-export type ModelChangeKind = 'PROP' | 'LINK';
+export type ModelValueKind = 'PROP' | 'LINK';
 
 /**
  * [Events]
@@ -86,6 +86,7 @@ export type ModelChangeKind = 'PROP' | 'LINK';
 export type ModelEvent =
   | IModelDataLoadedEvent
   | IModelLinkLoadedEvent
+  | IModelReadPropEvent
   | IModelChangingEvent
   | IModelChangedEvent
   | IModelSavedEvent;
@@ -105,6 +106,31 @@ export type IModelLinkLoadedEvent = {
   type: 'MODEL/loaded/link';
   typename: string;
   payload: IModelLinkLoaded;
+};
+
+/**
+ * Reading.
+ */
+export type IModelReadPropEvent<
+  P extends object = {},
+  D extends P = P,
+  L extends ILinkedModelSchema = any
+> = {
+  type: 'MODEL/read/prop';
+  typename: string;
+  payload: IModelReadProp<P, D, L>;
+};
+export type IModelReadProp<
+  P extends object = {},
+  D extends P = P,
+  L extends ILinkedModelSchema = any
+> = {
+  model: IModel<P, D, L>;
+  field: string;
+  value?: any;
+  doc: D;
+  isModified: boolean;
+  modify(value: any): void;
 };
 
 /**

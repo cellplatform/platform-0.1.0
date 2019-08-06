@@ -158,9 +158,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
       const res = {} as any;
       Object.keys(this._args.initial).forEach(field => {
         Object.defineProperty(res, field, {
-          get: () => {
-            return this.isChanged ? this.changes.map[field] || this.doc[field] : this.doc[field];
-          },
+          get: () => this.readField(field),
           set: value => this.changeField('PROP', field, value),
         });
       });
@@ -379,7 +377,24 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     return (isChanged ? changes[field] : this.doc[field]) as T;
   }
 
-  private changeField(kind: t.ModelChangeKind, field: string, value: any) {
+  private readField(field: string) {
+    let res = this.isChanged ? this.changes.map[field] || this.doc[field] : this.doc[field];
+    const payload: t.IModelReadProp<P, D, L> = {
+      model: this,
+      field,
+      value: res,
+      doc: this.doc,
+      isModified: false,
+      modify(value: any) {
+        res = value;
+        payload.isModified = true;
+      },
+    };
+    this.fire({ type: 'MODEL/read/prop', typename: this.typename, payload });
+    return res;
+  }
+
+  private changeField(kind: t.ModelValueKind, field: string, value: any) {
     const typename = this.typename;
     const changes = this.changes.map;
     let isCancelled = false;
@@ -421,7 +436,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     }
   }
 
-  private getChange(kind: t.ModelChangeKind, field: string, value: any): t.IModelChange<P, D, L> {
+  private getChange(kind: t.ModelValueKind, field: string, value: any): t.IModelChange<P, D, L> {
     const to = { ...this.doc, [field]: value };
     const doc = { from: { ...this.doc }, to };
     return {
