@@ -40,6 +40,9 @@ export type IModelMethods<P extends object> = {
   toObject(): P;
 };
 
+export type ModelFactory = (args: ModelFactoryArgs) => IModel;
+export type ModelFactoryArgs = { path: string; db: IDb };
+
 /**
  * [Children]
  */
@@ -48,7 +51,10 @@ export type IModelChildren<C extends IModelLinksSchema> = { [K in keyof C]: Prom
 export type IModelChildrenDefs<L extends IModelChildrenSchema> = {
   [K in keyof L]: IModelChildrenDef
 };
-export type IModelChildrenDef = { query: string };
+export type IModelChildrenDef = {
+  query: string;
+  factory: ModelFactory;
+};
 
 /**
  * [Links]
@@ -65,7 +71,7 @@ export type IModelLinkDefs<L extends IModelLinksSchema> = { [K in keyof L]: IMod
 export type IModelLinkDef = {
   relationship: ModelLinkRelationship;
   field?: string; // If different from field on the Schema.
-  factory: (args: { path: string; db: IDb }) => IModel;
+  factory: ModelFactory;
 };
 
 /**

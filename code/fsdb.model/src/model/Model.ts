@@ -45,7 +45,7 @@ export class Model<
     C extends t.IModelChildrenSchema = any
   >(
     args: IModelArgs<P, D, L, C>,
-  ) => new Model<P, D, L>(args);
+  ) => new Model<P, D, L, C>(args);
 
   private constructor(args: IModelArgs<P, D, L, C>) {
     // Prepare path.
@@ -84,6 +84,7 @@ export class Model<
   private _links: t.IModelLinks<L>;
   private _children: t.IModelChildren<C>;
   private _linkCache = {};
+  private _childrenCache = {};
   private _changes: Array<t.IModelChange<P, D, L, C>> = [];
   private _typename: string;
 
@@ -151,6 +152,7 @@ export class Model<
   }
 
   public get changes(): t.IModelChanges<P, D, L, C> {
+    this.throwIfDisposed('changes');
     const list = this._changes || [];
     const length = list.length;
     return {
@@ -171,6 +173,7 @@ export class Model<
   }
 
   public get props(): P {
+    this.throwIfDisposed('props');
     if (!this._props) {
       const res = {} as any;
       Object.keys(this._args.initial).forEach(field => {
@@ -185,6 +188,7 @@ export class Model<
   }
 
   public get links(): t.IModelLinks<L> {
+    this.throwIfDisposed('links');
     if (!this._links) {
       this._links = {} as any;
       const defs = this._args.links || {};
@@ -198,8 +202,15 @@ export class Model<
   }
 
   public get children(): t.IModelChildren<C> {
+    this.throwIfDisposed('children');
     if (!this._children) {
       this._children = {} as any;
+      const defs = this._args.children || {};
+      Object.keys(defs).forEach(field =>
+        Object.defineProperty(this._children, field, {
+          get: () => this.resolveChildren(field),
+        }),
+      );
     }
     return this._children;
   }
@@ -211,7 +222,14 @@ export class Model<
   /**
    * Loads the model's data from the DB.
    */
-  public async load(options: { force?: boolean; withLinks?: boolean; silent?: boolean } = {}) {
+  public async load(
+    options: {
+      force?: boolean;
+      withLinks?: boolean;
+      withChildren?: boolean;
+      silent?: boolean;
+    } = {},
+  ) {
     this.throwIfDisposed('load');
     let fireEvent = false;
     if (options.force) {
@@ -224,13 +242,23 @@ export class Model<
       fireEvent = true;
     }
 
-    // Load links if required.
+    // Load links (if required).
     const withLinks = Boolean(options.withLinks);
-    const cachedLinks = Object.keys(this._linkCache);
     if (withLinks) {
-      const defs = this._args.links || [];
-      fireEvent = cachedLinks.length < defs.length ? true : fireEvent;
+      const cachedLinks = Object.keys(this._linkCache);
+      const defs = this._args.links || {};
+      fireEvent = cachedLinks.length < Object.keys(defs).length ? true : fireEvent;
       const wait = Object.keys(defs).map(key => this.links[key]);
+      await Promise.all(wait);
+    }
+
+    // Load children (if required).
+    const withChildren = Boolean(options.withChildren);
+    if (withChildren) {
+      const cachedChildren = Object.keys(this._childrenCache);
+      const defs = this._args.children || {};
+      fireEvent = cachedChildren.length < Object.keys(defs).length ? true : fireEvent;
+      const wait = Object.keys(defs).map(key => this.children[key]);
       await Promise.all(wait);
     }
 
@@ -251,6 +279,7 @@ export class Model<
     this.throwIfDisposed('reset');
     this._item = undefined;
     this._linkCache = {};
+    this._childrenCache = {};
   }
 
   /**
@@ -395,6 +424,43 @@ export class Model<
     return promise;
   }
 
+  private resolveChildren(field: string, options: { autoLoad?: boolean } = {}) {
+    const db = this.db;
+    const defs = (this._args.children || {}) as t.IModelChildrenDefs<C>;
+    const def = defs[field];
+    if (!def) {
+      throw new Error(`A children definition for field '${field}' could not be found.`);
+    }
+
+    // Prepare the child descendents query.
+    let query = (def.query || '')
+      .trim()
+      .replace(/^\/*/, '')
+      .trim();
+    query = `${this.path}/${query}`;
+
+    // Children resolver.
+    const promise: any = new Promise<C[keyof C] | undefined>(async resolve => {
+      const cached = this._childrenCache[field];
+      if (cached) {
+        return resolve(cached);
+      }
+      if (!this.isLoaded && defaultValue(options.autoLoad, true)) {
+        await this.load();
+      }
+
+      const paths = (await db.find(query)).list.map(item => item.props.key);
+      const models = await Promise.all(paths.map(path => def.factory({ db, path }).ready));
+      this._childrenCache[field] = models;
+
+      // Finish up.
+      resolve(models as any);
+    });
+
+    // Finish up.
+    return promise;
+  }
+
   private currentValue<T>(field: string) {
     const changes = this.changes.map;
     const isChanged = Object.keys(changes).includes(field);
@@ -462,14 +528,13 @@ export class Model<
 
   private getChange(kind: t.ModelValueKind, field: string, value: any): t.IModelChange<P, D, L, C> {
     const to = { ...this.doc, [field]: value };
-    const doc = { from: { ...this.doc }, to };
     return {
       kind,
-      modifiedAt: time.now.timestamp,
       field,
-      value: { from: this.doc[field], to: value },
-      doc,
       model: this,
+      doc: { from: { ...this.doc }, to },
+      modifiedAt: time.now.timestamp,
+      value: { from: this.doc[field], to: value },
     };
   }
 }

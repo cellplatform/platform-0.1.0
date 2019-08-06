@@ -6,6 +6,7 @@ type IMyThingProps = { count: number };
 type IMyOrgProps = { id: string; name: string };
 
 type IMyThing = t.IModel<IMyThingProps>;
+type IMyOrgChildren = { things: IMyThing[]; subthings: IMyThing[]; all: IMyThing[] };
 type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
 type IMyOrgDoc = IMyOrgProps & { ref?: string; refs?: [] };
 
@@ -19,17 +20,26 @@ describe('model', () => {
     initial: { id: '', name: '' },
   };
 
+  const thingFactory: t.ModelFactory = ({ path, db }) =>
+    Model.create<IMyThingProps>({ db, path, initial: { count: -1 } });
+
   const links: t.IModelLinkDefs<IMyOrgLinks> = {
     thing: {
       relationship: '1:1',
       field: 'ref',
-      factory: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
+      factory: thingFactory,
     },
     things: {
       relationship: '1:*',
       field: 'refs',
-      factory: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
+      factory: thingFactory,
     },
+  };
+
+  const children: t.IModelChildrenDefs<IMyOrgChildren> = {
+    things: { query: '//// *', factory: thingFactory },
+    subthings: { query: '/info/*', factory: thingFactory },
+    all: { query: '**', factory: thingFactory },
   };
 
   const createOrg = async (options: { put?: boolean } = {}) => {
@@ -54,6 +64,27 @@ describe('model', () => {
       path,
       initial: org.initial,
       links,
+      load: false,
+    });
+    return model;
+  };
+
+  const createOrgWithChildren = async (options: { path?: string } = {}) => {
+    const { path = org.path } = options;
+    await db.put(org.path, { ...org.doc });
+    await db.putMany([
+      { key: `${path}/1`, value: { count: 1 } },
+      { key: `${path}/2`, value: { count: 2 } },
+      { key: `${path}/3`, value: { count: 3 } },
+
+      { key: `${path}/info/a`, value: { count: 123 } },
+      { key: `${path}/info/b`, value: { count: 456 } },
+    ]);
+    const model = Model.create<IMyOrgProps, IMyOrgDoc, {}, IMyOrgChildren>({
+      db,
+      path,
+      initial: org.initial,
+      children,
       load: false,
     });
     return model;
@@ -732,6 +763,36 @@ describe('model', () => {
       expect(model.children).to.eql({});
     });
 
-    it('has children', async () => {});
+    it('children: direct-descendents', async () => {
+      const model = await createOrgWithChildren();
+      const res = await model.children.things;
+      const paths = res.map(model => model.path);
+      expect(paths).to.eql(['ORG/123/1', 'ORG/123/2', 'ORG/123/3']);
+    });
+
+    it('children: sub-descendents', async () => {
+      const model = await createOrgWithChildren();
+      const res = await model.children.subthings;
+      const paths = res.map(model => model.path);
+      expect(paths).to.eql(['ORG/123/info/a', 'ORG/123/info/b']);
+    });
+
+    it('children: all-descendents', async () => {
+      const model = await createOrgWithChildren();
+      const res = await model.children.all;
+      const paths = res.map(model => model.path);
+      expect(paths).to.eql([
+        'ORG/123',
+        'ORG/123/1',
+        'ORG/123/2',
+        'ORG/123/3',
+        'ORG/123/info/a',
+        'ORG/123/info/b',
+      ]);
+    });
+
+    it.skip('fires children-loaded event', async () => {});
+    it.skip('caches children', async () => {});
+    it.skip('gets children via `load` method', async () => {});
   });
 });
