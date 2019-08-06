@@ -380,21 +380,44 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
   }
 
   private changeField(kind: t.ModelChangeKind, field: string, value: any) {
+    const typename = this.typename;
     const changes = this.changes.map;
+    let isCancelled = false;
+
     if (Object.keys(changes).includes(field) && changes[field] === value) {
-      return false; // No change from current modification.
+      // No change from current modification.
+      return { isValueChanged: false, isCancelled };
     } else {
+      const change = this.getChange(kind, field, value);
+
+      // Fire BEFORE event.
+      this.fire({
+        type: 'MODEL/changing',
+        typename,
+        payload: {
+          change,
+          get isCancelled() {
+            return isCancelled;
+          },
+          cancel() {
+            isCancelled = true;
+          },
+        },
+      });
+
+      if (isCancelled) {
+        return { isValueChanged: false, isCancelled: true };
+      }
+
       // Remove from cache.
       if (Object.keys(this._linkCache).includes(field)) {
         delete this._linkCache[field];
       }
 
-      // Generate change entry.
-      const payload = this.getChange(kind, field, value);
-      this._changes = [...this._changes, payload];
-      const typename = this.typename;
-      this.fire({ type: 'MODEL/changed', typename, payload });
-      return true;
+      // Store the change entry.
+      this._changes = [...this._changes, change];
+      this.fire({ type: 'MODEL/changed', typename, payload: change });
+      return { isValueChanged: true, isCancelled };
     }
   }
 

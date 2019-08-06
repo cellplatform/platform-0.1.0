@@ -86,6 +86,7 @@ export type ModelChangeKind = 'PROP' | 'LINK';
 export type ModelEvent =
   | IModelDataLoadedEvent
   | IModelLinkLoadedEvent
+  | IModelChangingEvent
   | IModelChangedEvent
   | IModelSavedEvent;
 
@@ -109,6 +110,25 @@ export type IModelLinkLoadedEvent = {
 /**
  * Changes.
  */
+export type IModelChangingEvent<
+  P extends object = {},
+  D extends P = P,
+  L extends ILinkedModelSchema = any
+> = {
+  type: 'MODEL/changing';
+  typename: string;
+  payload: IModelChanging<P, D, L>;
+};
+export type IModelChanging<
+  P extends object = {},
+  D extends P = P,
+  L extends ILinkedModelSchema = any
+> = {
+  change: IModelChange<P, D, L>;
+  isCancelled: boolean;
+  cancel(): void;
+};
+
 export type IModelChangedEvent<
   P extends object = {},
   D extends P = P,
