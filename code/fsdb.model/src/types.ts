@@ -8,13 +8,13 @@ import { IDb, IDbTimestamps } from '@platform/fsdb.types/lib/types';
 export type IModel<
   P extends object = {},
   D extends P = P,
-  L extends ILinkedModelSchema = any
+  L extends IModelRelationshipsSchema = any
 > = IModelProps<P, D, L> & IModelMethods<P>;
 
 export type IModelProps<
   P extends object,
   D extends P,
-  L extends ILinkedModelSchema
+  L extends IModelRelationshipsSchema
 > = IDbTimestamps & {
   readonly path: string;
   readonly isDisposed: boolean;
@@ -27,7 +27,7 @@ export type IModelProps<
   readonly events$: Observable<ModelEvent>;
   readonly doc: D; // Raw DB document.
   readonly props: P; // Data as read|write properties.
-  readonly links: ILinkedModels<L>; // Relationships (JOIN's).
+  readonly links: IModelLinks<L>; // Relationships (JOIN's).
 };
 export type IModelMethods<P extends object> = {
   load(options?: { force?: boolean; links?: boolean; silent?: boolean }): Promise<P>;
@@ -37,40 +37,41 @@ export type IModelMethods<P extends object> = {
 };
 
 /**
- * [Links]
+ * [Relationships]
  */
-export type LinkedModelRelationship = '1:1' | '1:*';
+export type ModelRelationship = '1:1' | '1:*';
+export type IModelRelationshipsSchema = { [key: string]: IModel | IModel[] };
 
-export type ILinkedModelDefs<L extends ILinkedModelSchema> = { [K in keyof L]: ILinkedModelDef };
-
-export type ILinkedModelDef = {
-  relationship: LinkedModelRelationship;
-  create: (args: { path: string; db: IDb }) => IModel;
-  field?: string; // If different from field on the [ILinkedModelSchema]
-};
-
-export type ILinkedModelSchema = { [key: string]: IModel | IModel[] };
-export type ILinkedModels<L extends ILinkedModelSchema> = {
+/**
+ * Links
+ */
+export type IModelLinks<L extends IModelRelationshipsSchema> = {
   [K in keyof L]: LinkedModelPromise<L, K>
 };
-
 export type LinkedModelPromise<
-  L extends ILinkedModelSchema,
+  L extends IModelRelationshipsSchema,
   K extends keyof L
 > = L[K] extends IModel
   ? Promise<L[K]> & { link(path: string): void; unlink(): void } // 1:1 relationship.
   : Promise<L[K]> & { link(paths: string[]): void; unlink(paths?: string[]): void }; // 1:* or *:* relationship.
 
+export type IModelLinkDefs<L extends IModelRelationshipsSchema> = { [K in keyof L]: IModelLinkDef };
+export type IModelLinkDef = {
+  relationship: ModelRelationship;
+  field?: string; // If different from field on the [ILinkedModelSchema]
+  factory: (args: { path: string; db: IDb }) => IModel;
+};
+
 /**
  * [Changes]
  */
 
-export type IModelChanges<P extends object, D extends P, L extends ILinkedModelSchema> = {
+export type IModelChanges<P extends object, D extends P, L extends IModelRelationshipsSchema> = {
   length: number;
   list: Array<IModelChange<P, D, L>>;
   map: { [K in keyof D]: D[K] };
 };
-export type IModelChange<P extends object, D extends P, L extends ILinkedModelSchema> = {
+export type IModelChange<P extends object, D extends P, L extends IModelRelationshipsSchema> = {
   model: IModel<P, D, L>;
   kind: ModelValueKind;
   field: string;
@@ -114,7 +115,7 @@ export type IModelLinkLoadedEvent = {
 export type IModelReadPropEvent<
   P extends object = {},
   D extends P = P,
-  L extends ILinkedModelSchema = any
+  L extends IModelRelationshipsSchema = any
 > = {
   type: 'MODEL/read/prop';
   typename: string;
@@ -123,7 +124,7 @@ export type IModelReadPropEvent<
 export type IModelReadProp<
   P extends object = {},
   D extends P = P,
-  L extends ILinkedModelSchema = any
+  L extends IModelRelationshipsSchema = any
 > = {
   model: IModel<P, D, L>;
   field: string;
@@ -139,7 +140,7 @@ export type IModelReadProp<
 export type IModelChangingEvent<
   P extends object = {},
   D extends P = P,
-  L extends ILinkedModelSchema = any
+  L extends IModelRelationshipsSchema = any
 > = {
   type: 'MODEL/changing';
   typename: string;
@@ -148,7 +149,7 @@ export type IModelChangingEvent<
 export type IModelChanging<
   P extends object = {},
   D extends P = P,
-  L extends ILinkedModelSchema = any
+  L extends IModelRelationshipsSchema = any
 > = {
   change: IModelChange<P, D, L>;
   isCancelled: boolean;
@@ -158,7 +159,7 @@ export type IModelChanging<
 export type IModelChangedEvent<
   P extends object = {},
   D extends P = P,
-  L extends ILinkedModelSchema = any
+  L extends IModelRelationshipsSchema = any
 > = {
   type: 'MODEL/changed';
   typename: string;
@@ -171,7 +172,7 @@ export type IModelChangedEvent<
 export type IModelSavedEvent<
   P extends object = {},
   D extends P = P,
-  L extends ILinkedModelSchema = any
+  L extends IModelRelationshipsSchema = any
 > = {
   type: 'MODEL/saved';
   typename: string;
@@ -180,7 +181,7 @@ export type IModelSavedEvent<
 export type IModelSaved<
   P extends object = {},
   D extends P = P,
-  L extends ILinkedModelSchema = any
+  L extends IModelRelationshipsSchema = any
 > = {
   model: IModel<P, D, L>;
   changes: IModelChanges<P, D, L>;

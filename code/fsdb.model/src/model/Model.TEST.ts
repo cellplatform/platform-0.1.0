@@ -19,16 +19,16 @@ describe('model', () => {
     initial: { id: '', name: '' },
   };
 
-  const links: t.ILinkedModelDefs<IMyOrgLinks> = {
+  const links: t.IModelLinkDefs<IMyOrgLinks> = {
     thing: {
       relationship: '1:1',
       field: 'ref',
-      create: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
+      factory: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
     },
     things: {
       relationship: '1:*',
       field: 'refs',
-      create: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
+      factory: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
     },
   };
 
@@ -464,7 +464,7 @@ describe('model', () => {
       expect(model.links).to.eql({});
     });
 
-    it('links: get when values exist (doc exists)', async () => {
+    it('links: get when model is loaded (underlying linked doc exists)', async () => {
       const model = await createLinkedOrg({
         refs: ['THING/1', 'THING/3'],
         ref: 'THING/2',
@@ -476,7 +476,7 @@ describe('model', () => {
       expect(things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 3 }]);
     });
 
-    it('links: get when no values exists (doc exists)', async () => {
+    it('links: get when model is not loaded (underlying linked doc exists)', async () => {
       const model = await createLinkedOrg();
       expect(model.isLoaded).to.eql(false);
 
@@ -488,7 +488,7 @@ describe('model', () => {
       expect(model.isLoaded).to.eql(true);
     });
 
-    it('links: get when underlying doc does not exist', async () => {
+    it('links: get when underlying underlying model doc does not exist', async () => {
       const model = await createLinkedOrg({ path: 'NO_EXIST' });
       await model.load();
 

@@ -2,14 +2,18 @@ import { Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 import { R, defaultValue, t, time } from './common';
 
-export type IModelArgs<P extends object, D extends P = P, L extends t.ILinkedModelSchema = any> = {
+export type IModelArgs<
+  P extends object,
+  D extends P = P,
+  L extends t.IModelRelationshipsSchema = any
+> = {
   db: t.IDb;
   path: string;
   initial: D;
   typename?: string;
   load?: boolean;
   events$?: Subject<t.ModelEvent>;
-  links?: t.ILinkedModelDefs<L>;
+  links?: t.IModelLinkDefs<L>;
 };
 
 /**
@@ -22,12 +26,16 @@ export type IModelArgs<P extends object, D extends P = P, L extends t.ILinkedMod
  *  - caching
  *
  */
-export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSchema = any>
+export class Model<P extends object, D extends P = P, L extends t.IModelRelationshipsSchema = any>
   implements t.IModel<P, D, L> {
   /**
    * [Lifecycle]
    */
-  public static create = <P extends object, D extends P = P, L extends t.ILinkedModelSchema = any>(
+  public static create = <
+    P extends object,
+    D extends P = P,
+    L extends t.IModelRelationshipsSchema = any
+  >(
     args: IModelArgs<P, D, L>,
   ) => new Model<P, D, L>(args);
 
@@ -65,7 +73,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
   private _args: IModelArgs<P, D, L>;
   private _item: t.IDbValue | undefined;
   private _props: P;
-  private _links: t.ILinkedModels<L>;
+  private _links: t.IModelLinks<L>;
   private _linkCache = {};
   private _changes: Array<t.IModelChange<P, D, L>> = [];
   private _typename: string;
@@ -167,7 +175,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     return this._props;
   }
 
-  public get links(): t.ILinkedModels<L> {
+  public get links(): t.IModelLinks<L> {
     if (!this._links) {
       this._links = {} as any;
       const defs = this._args.links || {};
@@ -177,7 +185,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
         }),
       );
     }
-    return this._links as t.ILinkedModels<L>;
+    return this._links as t.IModelLinks<L>;
   }
 
   /**
@@ -285,7 +293,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
 
   private resolveLink(field: string, options: { autoLoad?: boolean } = {}) {
     const db = this.db;
-    const defs = (this._args.links || {}) as t.ILinkedModelDefs<L>;
+    const defs = (this._args.links || {}) as t.IModelLinkDefs<L>;
     const def = defs[field];
     const { relationship } = def;
 
@@ -310,11 +318,11 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
       let model: any;
       if (isOne) {
         const path = this.currentValue<string>(key);
-        model = path ? await def.create({ db, path }).ready : undefined;
+        model = path ? await def.factory({ db, path }).ready : undefined;
       }
       if (isMany) {
         const paths = this.currentValue<string[]>(key) || [];
-        model = await Promise.all(paths.map(path => def.create({ db, path }).ready));
+        model = await Promise.all(paths.map(path => def.factory({ db, path }).ready));
       }
       this._linkCache[key] = model;
 
