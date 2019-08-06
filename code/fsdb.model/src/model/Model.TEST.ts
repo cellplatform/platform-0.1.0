@@ -851,6 +851,27 @@ describe('model', () => {
       expect(res4.all).to.not.equal(res3.all);
     });
 
-    it.skip('gets children via `load` method', async () => {});
+    it('gets children via `load` method', async () => {
+      const model = await createOrgWithChildren();
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+      expect(events.length).to.eql(0);
+
+      await model.load({ withChildren: true });
+
+      expect(events.length).to.eql(4);
+      expect(events[0].type).to.eql('MODEL/loaded/children');
+      expect(events[1].type).to.eql('MODEL/loaded/children');
+      expect(events[2].type).to.eql('MODEL/loaded/children');
+      expect(events[3].type).to.eql('MODEL/loaded/data');
+
+      expect((events[3].payload as t.IModelDataLoaded).withChildren).to.eql(true);
+
+      const linkEvents = events as t.IModelChildrenLoadedEvent[];
+      expect(linkEvents[0].payload.field).to.eql('things');
+      expect(linkEvents[1].payload.field).to.eql('subthings');
+      expect(linkEvents[2].payload.field).to.eql('all');
+    });
   });
 });
