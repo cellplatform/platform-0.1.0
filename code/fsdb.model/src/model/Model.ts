@@ -22,7 +22,7 @@ export type IModelArgs<
  * A strongly typed wrapper around a database representing a
  * single conceptual "model", and it's relationships.
  *
- *  - data
+ *  - data (doc)
  *  - links (JOIN relationships)
  *  - children (path descendent relationships)
  *  - read/write (change management)
