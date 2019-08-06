@@ -214,7 +214,8 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
 
     // Alert listeners.
     if (fireEvent && !options.silent) {
-      this.fire({ type: 'MODEL/loaded/data', payload: { model: this, withLinks } });
+      const typename = this.typename;
+      this.fire({ type: 'MODEL/loaded/data', typename, payload: { model: this, withLinks } });
     }
 
     // Finish up.
@@ -251,7 +252,8 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     await this.load({ force: true, silent: true });
 
     // Finish up.
-    this.fire({ type: 'MODEL/saved', payload: { model: this, changes } });
+    const typename = this.typename;
+    this.fire({ type: 'MODEL/saved', typename, payload: { model: this, changes } });
     return { saved: true };
   }
 
@@ -318,7 +320,8 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
       }
       this._linkCache[key] = model;
 
-      this.fire({ type: 'MODEL/loaded/link', payload: { model: this, field } });
+      const typename = this.typename;
+      this.fire({ type: 'MODEL/loaded/link', typename, payload: { model: this, field } });
       return resolve(model);
     });
 
@@ -389,7 +392,8 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
       // Generate change entry.
       const payload = this.getChange(kind, field, value);
       this._changes = [...this._changes, payload];
-      this.fire({ type: 'MODEL/changed', payload });
+      const typename = this.typename;
+      this.fire({ type: 'MODEL/changed', typename, payload });
       return true;
     }
   }

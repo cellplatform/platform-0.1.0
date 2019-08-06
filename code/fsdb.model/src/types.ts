@@ -89,37 +89,46 @@ export type ModelEvent =
   | IModelChangedEvent
   | IModelSavedEvent;
 
+/**
+ * Data loading.
+ */
 export type IModelDataLoaded = { model: IModel; withLinks: boolean };
 export type IModelDataLoadedEvent = {
   type: 'MODEL/loaded/data';
-  // model: string;
+  typename: string;
   payload: IModelDataLoaded;
 };
 
 export type IModelLinkLoaded = { model: IModel; field: string };
 export type IModelLinkLoadedEvent = {
   type: 'MODEL/loaded/link';
-  // model: string;
+  typename: string;
   payload: IModelLinkLoaded;
 };
 
+/**
+ * Changes.
+ */
 export type IModelChangedEvent<
   P extends object = {},
   D extends P = P,
   L extends ILinkedModelSchema = any
 > = {
   type: 'MODEL/changed';
-  // model: string;
+  typename: string;
   payload: IModelChange<P, D, L>;
 };
 
+/**
+ * Save.
+ */
 export type IModelSavedEvent<
   P extends object = {},
   D extends P = P,
   L extends ILinkedModelSchema = any
 > = {
   type: 'MODEL/saved';
-  // model: string;
+  typename: string;
   payload: IModelSaved<P, D, L>;
 };
 export type IModelSaved<
