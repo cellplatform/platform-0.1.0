@@ -6,6 +6,7 @@ export type IModelArgs<P extends object, D extends P = P, L extends t.ILinkedMod
   db: t.IDb;
   path: string;
   initial: D;
+  typename?: string;
   load?: boolean;
   events$?: Subject<t.ModelEvent>;
   links?: t.ILinkedModelDefs<L>;
@@ -32,8 +33,10 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
 
   private constructor(args: IModelArgs<P, D, L>) {
     this._args = args;
-    if (args.events$) {
-      this.events$.subscribe(args.events$); // Bubble events.
+
+    const events$ = args.events$;
+    if (events$) {
+      this.events$.subscribe(e => events$.next(e)); // Bubble events.
     }
     if (defaultValue(args.load, true)) {
       this.load();
@@ -89,6 +92,10 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
 
   public get path() {
     return this._args.path;
+  }
+
+  public get typename() {
+    return this._args.typename;
   }
 
   public get ready() {

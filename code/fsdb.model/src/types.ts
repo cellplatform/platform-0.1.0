@@ -51,7 +51,7 @@ export type ILinkedModelDef = {
 
 export type ILinkedModelSchema = { [key: string]: IModel | IModel[] };
 export type ILinkedModels<L extends ILinkedModelSchema> = {
-  [K in keyof L]: LinkedModelPromise<L, K>;
+  [K in keyof L]: LinkedModelPromise<L, K>
 };
 
 export type LinkedModelPromise<
@@ -92,12 +92,14 @@ export type ModelEvent =
 export type IModelDataLoaded = { model: IModel; withLinks: boolean };
 export type IModelDataLoadedEvent = {
   type: 'MODEL/loaded/data';
+  // model: string;
   payload: IModelDataLoaded;
 };
 
 export type IModelLinkLoaded = { model: IModel; field: string };
 export type IModelLinkLoadedEvent = {
   type: 'MODEL/loaded/link';
+  // model: string;
   payload: IModelLinkLoaded;
 };
 
@@ -107,6 +109,7 @@ export type IModelChangedEvent<
   L extends ILinkedModelSchema = any
 > = {
   type: 'MODEL/changed';
+  // model: string;
   payload: IModelChange<P, D, L>;
 };
 
@@ -116,6 +119,7 @@ export type IModelSavedEvent<
   L extends ILinkedModelSchema = any
 > = {
   type: 'MODEL/saved';
+  // model: string;
   payload: IModelSaved<P, D, L>;
 };
 export type IModelSaved<
