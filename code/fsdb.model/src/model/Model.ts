@@ -2,7 +2,12 @@ import { Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 import { R, defaultValue, t, time } from './common';
 
-export type IModelArgs<P extends object, D extends P = P, L extends t.IModelLinksSchema = any> = {
+export type IModelArgs<
+  P extends object,
+  D extends P,
+  L extends t.IModelLinksSchema,
+  C extends t.IModelChildrenSchema
+> = {
   db: t.IDb;
   path: string;
   initial: D;
@@ -10,6 +15,7 @@ export type IModelArgs<P extends object, D extends P = P, L extends t.IModelLink
   load?: boolean;
   events$?: Subject<t.ModelEvent>;
   links?: t.IModelLinkDefs<L>;
+  children?: t.IModelChildrenDefs<C>;
 };
 
 /**
@@ -18,20 +24,30 @@ export type IModelArgs<P extends object, D extends P = P, L extends t.IModelLink
  *
  *  - data
  *  - links (JOIN relationships)
+ *  - children (path descendent relationships)
  *  - read/write (change management)
  *  - caching
  *
  */
-export class Model<P extends object, D extends P = P, L extends t.IModelLinksSchema = any>
-  implements t.IModel<P, D, L> {
+export class Model<
+  P extends object,
+  D extends P = P,
+  L extends t.IModelLinksSchema = any,
+  C extends t.IModelChildrenSchema = any
+> implements t.IModel<P, D, L, C> {
   /**
    * [Lifecycle]
    */
-  public static create = <P extends object, D extends P = P, L extends t.IModelLinksSchema = any>(
-    args: IModelArgs<P, D, L>,
+  public static create = <
+    P extends object,
+    D extends P = P,
+    L extends t.IModelLinksSchema = any,
+    C extends t.IModelChildrenSchema = any
+  >(
+    args: IModelArgs<P, D, L, C>,
   ) => new Model<P, D, L>(args);
 
-  private constructor(args: IModelArgs<P, D, L>) {
+  private constructor(args: IModelArgs<P, D, L, C>) {
     // Prepare path.
     const path = (args.path || '').trim();
     args = args.path === path ? args : { ...args, path };
@@ -62,12 +78,12 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
   /**
    * [Fields]
    */
-  private _args: IModelArgs<P, D, L>;
+  private _args: IModelArgs<P, D, L, C>;
   private _item: t.IDbValue | undefined;
   private _props: P;
   private _links: t.IModelLinks<L>;
   private _linkCache = {};
-  private _changes: Array<t.IModelChange<P, D, L>> = [];
+  private _changes: Array<t.IModelChange<P, D, L, C>> = [];
   private _typename: string;
 
   private readonly _dispose$ = new Subject<{}>();
@@ -133,7 +149,7 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
     return this._item ? this._item.props.modifiedAt : -1;
   }
 
-  public get changes(): t.IModelChanges<P, D, L> {
+  public get changes(): t.IModelChanges<P, D, L, C> {
     const list = this._changes || [];
     const length = list.length;
     return {
@@ -142,7 +158,7 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
       get map() {
         return list.reduce((acc, next) => {
           return { ...acc, [next.field]: next.value.to };
-        }, {}) as t.IModelChanges<P, D, L>['map'];
+        }, {}) as t.IModelChanges<P, D, L, C>['map'];
       },
     };
   }
@@ -436,7 +452,7 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
     }
   }
 
-  private getChange(kind: t.ModelValueKind, field: string, value: any): t.IModelChange<P, D, L> {
+  private getChange(kind: t.ModelValueKind, field: string, value: any): t.IModelChange<P, D, L, C> {
     const to = { ...this.doc, [field]: value };
     const doc = { from: { ...this.doc }, to };
     return {

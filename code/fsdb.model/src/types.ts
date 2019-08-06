@@ -9,26 +9,28 @@ export type ModelValueKind = 'PROP' | 'LINK';
 export type IModel<
   P extends object = {},
   D extends P = P,
-  L extends IModelLinksSchema = any
-> = IModelProps<P, D, L> & IModelMethods<P>;
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
+> = IModelProps<P, D, L, C> & IModelMethods<P>;
 
 export type IModelProps<
   P extends object,
   D extends P,
-  L extends IModelLinksSchema
+  L extends IModelLinksSchema,
+  C extends IModelChildrenSchema = any
 > = IDbTimestamps & {
   readonly path: string;
   readonly isDisposed: boolean;
   readonly isLoaded: boolean;
   readonly isChanged: boolean;
   readonly exists: boolean | undefined;
-  readonly ready: Promise<IModel<P, D, L>>;
-  readonly changes: IModelChanges<P, D, L>;
+  readonly ready: Promise<IModel<P, D, L, C>>;
+  readonly changes: IModelChanges<P, D, L, C>;
   readonly dispose$: Observable<{}>;
   readonly events$: Observable<ModelEvent>;
   readonly doc: D; // Raw DB document.
   readonly props: P; // Data as read|write properties.
-  readonly links: IModelLinks<L>; // Relationships (JOIN's).
+  readonly links: IModelLinks<L>; // Relationships (JOINs).
 };
 export type IModelMethods<P extends object> = {
   load(options?: { force?: boolean; links?: boolean; silent?: boolean }): Promise<P>;
@@ -68,14 +70,23 @@ export type IModelLinkDef = {
 /**
  * [Changes]
  */
-
-export type IModelChanges<P extends object, D extends P, L extends IModelLinksSchema> = {
+export type IModelChanges<
+  P extends object,
+  D extends P,
+  L extends IModelLinksSchema,
+  C extends IModelChildrenSchema
+> = {
   length: number;
-  list: Array<IModelChange<P, D, L>>;
+  list: Array<IModelChange<P, D, L, C>>;
   map: { [K in keyof D]: D[K] };
 };
-export type IModelChange<P extends object, D extends P, L extends IModelLinksSchema> = {
-  model: IModel<P, D, L>;
+export type IModelChange<
+  P extends object,
+  D extends P,
+  L extends IModelLinksSchema,
+  C extends IModelChildrenSchema
+> = {
+  model: IModel<P, D, L, C>;
   kind: ModelValueKind;
   field: string;
   value: { from?: any; to?: any };
@@ -117,18 +128,20 @@ export type IModelLinkLoadedEvent = {
 export type IModelReadPropEvent<
   P extends object = {},
   D extends P = P,
-  L extends IModelLinksSchema = any
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
 > = {
   type: 'MODEL/read/prop';
   typename: string;
-  payload: IModelReadProp<P, D, L>;
+  payload: IModelReadProp<P, D, L, C>;
 };
 export type IModelReadProp<
   P extends object = {},
   D extends P = P,
-  L extends IModelLinksSchema = any
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
 > = {
-  model: IModel<P, D, L>;
+  model: IModel<P, D, L, C>;
   field: string;
   value?: any;
   doc: D;
@@ -142,18 +155,20 @@ export type IModelReadProp<
 export type IModelChangingEvent<
   P extends object = {},
   D extends P = P,
-  L extends IModelLinksSchema = any
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
 > = {
   type: 'MODEL/changing';
   typename: string;
-  payload: IModelChanging<P, D, L>;
+  payload: IModelChanging<P, D, L, C>;
 };
 export type IModelChanging<
   P extends object = {},
   D extends P = P,
-  L extends IModelLinksSchema = any
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
 > = {
-  change: IModelChange<P, D, L>;
+  change: IModelChange<P, D, L, C>;
   isCancelled: boolean;
   cancel(): void;
 };
@@ -161,11 +176,12 @@ export type IModelChanging<
 export type IModelChangedEvent<
   P extends object = {},
   D extends P = P,
-  L extends IModelLinksSchema = any
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
 > = {
   type: 'MODEL/changed';
   typename: string;
-  payload: IModelChange<P, D, L>;
+  payload: IModelChange<P, D, L, C>;
 };
 
 /**
@@ -174,17 +190,19 @@ export type IModelChangedEvent<
 export type IModelSavedEvent<
   P extends object = {},
   D extends P = P,
-  L extends IModelLinksSchema = any
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
 > = {
   type: 'MODEL/saved';
   typename: string;
-  payload: IModelSaved<P, D, L>;
+  payload: IModelSaved<P, D, L, C>;
 };
 export type IModelSaved<
   P extends object = {},
   D extends P = P,
-  L extends IModelLinksSchema = any
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
 > = {
   model: IModel<P, D, L>;
-  changes: IModelChanges<P, D, L>;
+  changes: IModelChanges<P, D, L, C>;
 };
