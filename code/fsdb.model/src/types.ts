@@ -40,17 +40,16 @@ export type IModelMethods<P extends object> = {
 /**
  * [Children]
  */
-// export type IModelChildren<C extends IModelLinksSchema> = {
-//   [K in keyof C]: LinkedModelPromise<C, K>
-// };
-// export type ChildModelsPromise<C extends IModelLinksSchema, K extends keyof C> = C[K] extends IModel
-//   ? Promise<C[K]> & { link(path: string): void; unlink(): void } // 1:1 relationship.
-//   : Promise<C[K]> & { link(paths: string[]): void; unlink(paths?: string[]): void }; // 1:* or *:* relationship.
+export type IModelChildrenSchema = { [key: string]: IModel[] };
+export type IModelChildren<C extends IModelLinksSchema> = { [K in keyof C]: Promise<C[K]> };
+export type IModelChildrenDefs<L extends IModelChildrenSchema> = {
+  [K in keyof L]: IModelChildrenDef
+};
+export type IModelChildrenDef = { query: string };
 
 /**
  * [Links]
  */
-export type ModelLinkRelationship = '1:1' | '1:*';
 export type IModelLinksSchema = { [key: string]: IModel | IModel[] };
 
 export type IModelLinks<L extends IModelLinksSchema> = { [K in keyof L]: LinkedModelPromise<L, K> };
@@ -58,10 +57,11 @@ export type LinkedModelPromise<L extends IModelLinksSchema, K extends keyof L> =
   ? Promise<L[K]> & { link(path: string): void; unlink(): void } // 1:1 relationship.
   : Promise<L[K]> & { link(paths: string[]): void; unlink(paths?: string[]): void }; // 1:* or *:* relationship.
 
+export type ModelLinkRelationship = '1:1' | '1:*';
 export type IModelLinkDefs<L extends IModelLinksSchema> = { [K in keyof L]: IModelLinkDef };
 export type IModelLinkDef = {
   relationship: ModelLinkRelationship;
-  field?: string; // If different from field on the [ILinkedModelSchema]
+  field?: string; // If different from field on the Schema.
   factory: (args: { path: string; db: IDb }) => IModel;
 };
 
