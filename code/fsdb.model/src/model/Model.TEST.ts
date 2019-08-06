@@ -793,7 +793,6 @@ describe('model', () => {
 
     it('fires children-loaded event', async () => {
       const model = await createOrgWithChildren();
-
       const events: t.IModelChildrenLoaded[] = [];
       model.events$
         .pipe(
@@ -813,7 +812,45 @@ describe('model', () => {
       expect(events[1].field).to.eql('things');
     });
 
-    it.skip('caches children', async () => {});
+    it('caches children', async () => {
+      const model = await createOrgWithChildren();
+
+      const readChildren = async () => {
+        return {
+          things: await model.children.things,
+          subthings: await model.children.subthings,
+          all: await model.children.all,
+        };
+      };
+
+      const res1 = await readChildren();
+      const res2 = await readChildren();
+
+      expect(res1.things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 2 }, { count: 3 }]);
+
+      expect(res1.things).to.equal(res2.things);
+      expect(res1.subthings).to.equal(res2.subthings);
+      expect(res1.all).to.equal(res2.all);
+
+      model.reset();
+      const res3 = await readChildren();
+
+      // New instances after [reset].
+      expect(res2.things).to.not.equal(res3.things);
+      expect(res2.subthings).to.not.equal(res3.subthings);
+      expect(res2.all).to.not.equal(res3.all);
+
+      expect(res3.things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 2 }, { count: 3 }]);
+
+      await model.load({ force: true });
+      const res4 = await readChildren();
+
+      // New instances after force [load].
+      expect(res4.things).to.not.equal(res3.things);
+      expect(res4.subthings).to.not.equal(res3.subthings);
+      expect(res4.all).to.not.equal(res3.all);
+    });
+
     it.skip('gets children via `load` method', async () => {});
   });
 });
