@@ -57,6 +57,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
   private _links: t.ILinkedModels<L>;
   private _linkCache = {};
   private _changes: Array<t.IModelChange<P, D, L>> = [];
+  private _typename: string;
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -95,7 +96,10 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
   }
 
   public get typename() {
-    return this._args.typename;
+    if (!this._typename) {
+      this._typename = (this._args.typename || this.path.split('/')[0]).trim();
+    }
+    return this._typename;
   }
 
   public get ready() {

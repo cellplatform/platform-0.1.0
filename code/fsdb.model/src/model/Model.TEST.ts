@@ -25,6 +25,32 @@ describe('model', () => {
     return Model.create<IMyOrgProps, IMyOrgDoc>({ db, path: org.path, initial: org.initial });
   };
 
+  describe('typename', () => {
+    it('is derived from path', async () => {
+      const test = (path: string, result: string) => {
+        const model = Model.create<IMyOrgProps>({ db, path, initial: org.initial });
+        expect(model.typename).to.eql(result);
+      };
+      test('ORG', 'ORG');
+      test('ORG/1', 'ORG');
+      test(' ORG  /1', 'ORG');
+    });
+
+    it('is explicitly declared', async () => {
+      const test = (typename: string, result: string) => {
+        const model = Model.create<IMyOrgProps>({
+          db,
+          path: org.path,
+          initial: org.initial,
+          typename,
+        });
+        expect(model.typename).to.eql(result);
+      };
+      test('FOO', 'FOO');
+      test('  FOO  ', 'FOO');
+    });
+  });
+
   describe('load', () => {
     it('not loaded → load → loaded', async () => {
       const model = Model.create<IMyOrgProps>({
