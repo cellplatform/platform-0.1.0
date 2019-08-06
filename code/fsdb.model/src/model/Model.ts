@@ -2,13 +2,14 @@ import { Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 import { R, defaultValue, t, time } from './common';
 
-export type IModelArgs<P extends object, D extends P = P, L extends t.ILinkedModelSchema = any> = {
+export type IModelArgs<P extends object, D extends P = P, L extends t.IModelLinksSchema = any> = {
   db: t.IDb;
   path: string;
   initial: D;
+  typename?: string;
   load?: boolean;
   events$?: Subject<t.ModelEvent>;
-  links?: t.ILinkedModelDefs<L>;
+  links?: t.IModelLinkDefs<L>;
 };
 
 /**
@@ -21,20 +22,33 @@ export type IModelArgs<P extends object, D extends P = P, L extends t.ILinkedMod
  *  - caching
  *
  */
-export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSchema = any>
+export class Model<P extends object, D extends P = P, L extends t.IModelLinksSchema = any>
   implements t.IModel<P, D, L> {
   /**
    * [Lifecycle]
    */
-  public static create = <P extends object, D extends P = P, L extends t.ILinkedModelSchema = any>(
+  public static create = <P extends object, D extends P = P, L extends t.IModelLinksSchema = any>(
     args: IModelArgs<P, D, L>,
   ) => new Model<P, D, L>(args);
 
   private constructor(args: IModelArgs<P, D, L>) {
-    this._args = args;
-    if (args.events$) {
-      this.events$.subscribe(args.events$); // Bubble events.
+    // Prepare path.
+    const path = (args.path || '').trim();
+    args = args.path === path ? args : { ...args, path };
+    if (!path) {
+      throw new Error(`A model must have a path.`);
     }
+
+    // Store args.
+    this._args = args;
+
+    // Bubble events.
+    const events$ = args.events$;
+    if (events$) {
+      this.events$.subscribe(e => events$.next(e));
+    }
+
+    // Load data from storage.
     if (defaultValue(args.load, true)) {
       this.load();
     }
@@ -51,9 +65,10 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
   private _args: IModelArgs<P, D, L>;
   private _item: t.IDbValue | undefined;
   private _props: P;
-  private _links: t.ILinkedModels<L>;
+  private _links: t.IModelLinks<L>;
   private _linkCache = {};
   private _changes: Array<t.IModelChange<P, D, L>> = [];
+  private _typename: string;
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -89,6 +104,13 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
 
   public get path() {
     return this._args.path;
+  }
+
+  public get typename() {
+    if (!this._typename) {
+      this._typename = (this._args.typename || this.path.split('/')[0]).trim();
+    }
+    return this._typename;
   }
 
   public get ready() {
@@ -136,9 +158,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
       const res = {} as any;
       Object.keys(this._args.initial).forEach(field => {
         Object.defineProperty(res, field, {
-          get: () => {
-            return this.isChanged ? this.changes.map[field] || this.doc[field] : this.doc[field];
-          },
+          get: () => this.readField(field),
           set: value => this.changeField('PROP', field, value),
         });
       });
@@ -147,7 +167,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     return this._props;
   }
 
-  public get links(): t.ILinkedModels<L> {
+  public get links(): t.IModelLinks<L> {
     if (!this._links) {
       this._links = {} as any;
       const defs = this._args.links || {};
@@ -157,7 +177,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
         }),
       );
     }
-    return this._links as t.ILinkedModels<L>;
+    return this._links as t.IModelLinks<L>;
   }
 
   /**
@@ -192,7 +212,8 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
 
     // Alert listeners.
     if (fireEvent && !options.silent) {
-      this.fire({ type: 'MODEL/loaded/data', payload: { model: this, withLinks } });
+      const typename = this.typename;
+      this.fire({ type: 'MODEL/loaded/data', typename, payload: { model: this, withLinks } });
     }
 
     // Finish up.
@@ -229,7 +250,8 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     await this.load({ force: true, silent: true });
 
     // Finish up.
-    this.fire({ type: 'MODEL/saved', payload: { model: this, changes } });
+    const typename = this.typename;
+    this.fire({ type: 'MODEL/saved', typename, payload: { model: this, changes } });
     return { saved: true };
   }
 
@@ -263,7 +285,7 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
 
   private resolveLink(field: string, options: { autoLoad?: boolean } = {}) {
     const db = this.db;
-    const defs = (this._args.links || {}) as t.ILinkedModelDefs<L>;
+    const defs = (this._args.links || {}) as t.IModelLinkDefs<L>;
     const def = defs[field];
     const { relationship } = def;
 
@@ -288,15 +310,16 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
       let model: any;
       if (isOne) {
         const path = this.currentValue<string>(key);
-        model = path ? await def.create({ db, path }).ready : undefined;
+        model = path ? await def.factory({ db, path }).ready : undefined;
       }
       if (isMany) {
         const paths = this.currentValue<string[]>(key) || [];
-        model = await Promise.all(paths.map(path => def.create({ db, path }).ready));
+        model = await Promise.all(paths.map(path => def.factory({ db, path }).ready));
       }
       this._linkCache[key] = model;
 
-      this.fire({ type: 'MODEL/loaded/link', payload: { model: this, field } });
+      const typename = this.typename;
+      this.fire({ type: 'MODEL/loaded/link', typename, payload: { model: this, field } });
       return resolve(model);
     });
 
@@ -354,25 +377,66 @@ export class Model<P extends object, D extends P = P, L extends t.ILinkedModelSc
     return (isChanged ? changes[field] : this.doc[field]) as T;
   }
 
-  private changeField(kind: t.ModelChangeKind, field: string, value: any) {
+  private readField(field: string) {
+    let res = this.isChanged ? this.changes.map[field] || this.doc[field] : this.doc[field];
+    const payload: t.IModelReadProp<P, D, L> = {
+      model: this,
+      field,
+      value: res,
+      doc: this.doc,
+      isModified: false,
+      modify(value: any) {
+        res = value;
+        payload.isModified = true;
+      },
+    };
+    this.fire({ type: 'MODEL/read/prop', typename: this.typename, payload });
+    return res;
+  }
+
+  private changeField(kind: t.ModelValueKind, field: string, value: any) {
+    const typename = this.typename;
     const changes = this.changes.map;
+    let isCancelled = false;
+
     if (Object.keys(changes).includes(field) && changes[field] === value) {
-      return false; // No change from current modification.
+      // No change from current modification.
+      return { isValueChanged: false, isCancelled };
     } else {
+      const change = this.getChange(kind, field, value);
+
+      // Fire BEFORE event.
+      this.fire({
+        type: 'MODEL/changing',
+        typename,
+        payload: {
+          change,
+          get isCancelled() {
+            return isCancelled;
+          },
+          cancel() {
+            isCancelled = true;
+          },
+        },
+      });
+
+      if (isCancelled) {
+        return { isValueChanged: false, isCancelled: true };
+      }
+
       // Remove from cache.
       if (Object.keys(this._linkCache).includes(field)) {
         delete this._linkCache[field];
       }
 
-      // Generate change entry.
-      const payload = this.getChange(kind, field, value);
-      this._changes = [...this._changes, payload];
-      this.fire({ type: 'MODEL/changed', payload });
-      return true;
+      // Store the change entry.
+      this._changes = [...this._changes, change];
+      this.fire({ type: 'MODEL/changed', typename, payload: change });
+      return { isValueChanged: true, isCancelled };
     }
   }
 
-  private getChange(kind: t.ModelChangeKind, field: string, value: any): t.IModelChange<P, D, L> {
+  private getChange(kind: t.ModelValueKind, field: string, value: any): t.IModelChange<P, D, L> {
     const to = { ...this.doc, [field]: value };
     const doc = { from: { ...this.doc }, to };
     return {

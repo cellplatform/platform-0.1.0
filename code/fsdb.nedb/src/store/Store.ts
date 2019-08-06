@@ -11,12 +11,12 @@ export type IStoreArgs = string | Nedb.DataStoreOptions;
  *    A promise-based wrapper around the `nedb` library.
  *    Used internally by ther classes for cleaner async/await flow.
  */
-export class Nedb<G = any> {
+export class Store<G = any> {
   /**
    * [Static]
    */
   public static create<G = any>(args: IStoreArgs = {}) {
-    return new Nedb<G>(args);
+    return new Store<G>(args);
   }
 
   /**
@@ -30,14 +30,28 @@ export class Nedb<G = any> {
 
     // Construct the underlying data-store.
     const config = typeof args === 'object' ? args : {};
-    this.store = new NedbStore({ ...config, filename });
+    const autoload = Boolean(filename) ? config.autoload : false;
+    this.store = new NedbStore({
+      ...config,
+      filename,
+      autoload,
+      onload: this.onload,
+    });
   }
+
+  private onload = (err: Error) => {
+    if (err) {
+      throw err;
+    }
+    this.isFileLoaded = true;
+  };
 
   /**
    * [Fields]
    */
   public store: DocumentStore; // NB: Do not access this externally.
   public filename: string | undefined;
+  public isFileLoaded = false;
 
   /**
    * [Methods]
@@ -50,8 +64,32 @@ export class Nedb<G = any> {
     });
   }
 
+  public loadFile() {
+    return new Promise((resolve, reject) => {
+      if (this.isFileLoaded || !this.filename) {
+        return resolve();
+      }
+      this.store.loadDatabase(err => {
+        if (err) {
+          reject(err);
+        } else {
+          this.isFileLoaded = true;
+          resolve();
+        }
+      });
+    });
+  }
+
+  public async ensureFileLoaded() {
+    if (this.isFileLoaded || !this.filename) {
+      return;
+    }
+    await this.loadFile();
+  }
+
   public insert<T extends G>(doc: T, options: { escapeKeys?: boolean } = {}) {
-    return new Promise<T>((resolve, reject) => {
+    return new Promise<T>(async (resolve, reject) => {
+      await this.ensureFileLoaded();
       const escapeKeys = defaultValue(options.escapeKeys, true);
       if (escapeKeys) {
         doc = keys.encodeObjectKeys<any>(doc);
@@ -73,7 +111,8 @@ export class Nedb<G = any> {
 
   public update<T extends G>(query: T | T[], updates: T | T[], options: Nedb.UpdateOptions = {}) {
     type Response = { total: number; upsert: boolean; docs: T[] };
-    return new Promise<Response>((resolve, reject) => {
+    return new Promise<Response>(async (resolve, reject) => {
+      await this.ensureFileLoaded();
       this.store.update(
         query,
         updates,
@@ -95,7 +134,8 @@ export class Nedb<G = any> {
   }
 
   public async find<T extends G>(query: any) {
-    return new Promise<T[]>((resolve, reject) => {
+    return new Promise<T[]>(async (resolve, reject) => {
+      await this.ensureFileLoaded();
       this.store.find(query, (err: Error, docs: T[]) => {
         if (err) {
           reject(err);
@@ -109,7 +149,8 @@ export class Nedb<G = any> {
   }
 
   public async findOne<T extends G>(query: any) {
-    return new Promise<T>((resolve, reject) => {
+    return new Promise<T>(async (resolve, reject) => {
+      await this.ensureFileLoaded();
       this.store.findOne(query, (err: Error, doc: T) => {
         if (err) {
           reject(err);
@@ -135,7 +176,8 @@ export class Nedb<G = any> {
 
   public remove(query: any, options: Nedb.RemoveOptions = {}) {
     type Response = { total: number };
-    return new Promise<Response>((resolve, reject) => {
+    return new Promise<Response>(async (resolve, reject) => {
+      await this.ensureFileLoaded();
       this.store.remove(query, options, (err: Error, total: number) => {
         if (err) {
           reject(err);

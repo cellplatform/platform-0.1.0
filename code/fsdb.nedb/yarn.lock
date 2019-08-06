@@ -1081,10 +1081,10 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/fsdb.types@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.2.3.tgz#b84659fa575438988f86e4ae379b10ce3979f8b6"
-  integrity sha512-Nnhft0U+vvWdntBCGKSMoZA0+hn/zQsBsG6vcwT/H1eqOA7LVuh7R9TEPFDghOSddGQCxqIdlVGbPFUiW7sB5g==
+"@platform/fsdb.types@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.3.0.tgz#55cc8194de4b8bd017918abb3a89eb86c46896b6"
+  integrity sha512-PvrL0zmBxqjnuIJvxY53jKis/t5CJXwIKN35AJAjoyiUza0dI1d1KUIuILYDu/1h5rKogaoo/vxAjBmFPm1mMA==
   dependencies:
     "@platform/libs" "0.1.0"
     "@platform/types" "0.0.22"

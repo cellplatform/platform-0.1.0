@@ -1,5 +1,5 @@
 /**
- * Internal schema for an NeDoc
+ * Internal schema for an NeDb document store.
  */
 export class Schema {
   /**

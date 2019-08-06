@@ -1175,32 +1175,32 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/fsdb.file@1.3.5":
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.file/-/fsdb.file-1.3.5.tgz#c5073949e3b843660ca3f1a0f056ab3c390711db"
-  integrity sha512-Z5VyByBT8jZG0y8lU0Ldy8f6pjWCcQsp1DqlUFGY5qtXcGmHmplDKa8yAT9u7lOcodpNl6MWpjez2hVOBxnTRQ==
+"@platform/fsdb.file@1.3.6":
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.file/-/fsdb.file-1.3.6.tgz#e192a266a3152dab22d40db4d602d430309795d5"
+  integrity sha512-aFfUF8IYiLU/cDy5WtNaWHk5nrLxnUAlFeJFDTOGemnOcF88ryd+29jA+7Yqhba/gXkhvor1P55qNosdbmaa6w==
   dependencies:
     "@platform/fs" "0.1.7"
-    "@platform/fsdb.types" "0.2.3"
+    "@platform/fsdb.types" "0.3.0"
     "@platform/libs" "0.1.0"
     "@platform/types" "0.0.22"
     "@platform/util.value" "0.4.6"
 
-"@platform/fsdb.nedb@0.5.3":
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-0.5.3.tgz#54b831ea1756aa309212eb5eaf35c197a9c41e38"
-  integrity sha512-adPvq70CrgVz0HH4fBNAjNcHU4/zprb93zSMOHCp2pCn/y6TIjWpK0a7larg7hX4cMV5CGid5zjJNK7Oyx3jjg==
+"@platform/fsdb.nedb@1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.2.0.tgz#518d72b3263ff13a626b127edf4709a751814880"
+  integrity sha512-rNjtVX+RKmgTFBIdUCjOc3d/IVRCh11h7vrFu2Q239WiXAsjgI7VfVygGkRGUT5ll6+ghxnA7AvN0HHQbB15zg==
   dependencies:
-    "@platform/fsdb.types" "0.2.3"
+    "@platform/fsdb.types" "0.3.0"
     "@platform/react" "0.3.14"
     "@platform/types" "0.0.22"
     "@platform/util.value" "0.4.6"
     nedb "1.8.0"
 
-"@platform/fsdb.types@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.2.3.tgz#b84659fa575438988f86e4ae379b10ce3979f8b6"
-  integrity sha512-Nnhft0U+vvWdntBCGKSMoZA0+hn/zQsBsG6vcwT/H1eqOA7LVuh7R9TEPFDghOSddGQCxqIdlVGbPFUiW7sB5g==
+"@platform/fsdb.types@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.3.0.tgz#55cc8194de4b8bd017918abb3a89eb86c46896b6"
+  integrity sha512-PvrL0zmBxqjnuIJvxY53jKis/t5CJXwIKN35AJAjoyiUza0dI1d1KUIuILYDu/1h5rKogaoo/vxAjBmFPm1mMA==
   dependencies:
     "@platform/libs" "0.1.0"
     "@platform/types" "0.0.22"

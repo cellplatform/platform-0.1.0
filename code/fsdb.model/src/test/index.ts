@@ -1,5 +1,6 @@
-import { NeDoc } from '../common';
 import { fs } from '@platform/fs';
+import { NeDb } from '@platform/fsdb.nedb';
+
 export { fs };
 
 export { expect, expectError } from '@platform/test';
@@ -21,6 +22,6 @@ export async function getTestDb(options: { file?: boolean } = {}) {
     await fs.ensureDir(dir);
     filename = fs.join(dir, file);
   }
-  const db = NeDoc.create({ filename });
+  const db = NeDb.create({ filename });
   return db;
 }

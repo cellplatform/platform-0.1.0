@@ -1,2 +1,2 @@
 export * from './types';
-export * from './NeDoc';
+export * from './NeDb';

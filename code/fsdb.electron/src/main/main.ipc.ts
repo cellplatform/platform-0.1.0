@@ -2,7 +2,7 @@ import { shell } from 'electron';
 import { Subject } from 'rxjs';
 import { share, take } from 'rxjs/operators';
 
-import { FileDb, fs, NeDoc, parseDbPath, t } from './common';
+import { FileDb, fs, NeDb, parseDbPath, t } from './common';
 
 /**
  * Start the HyperDB IPC handler's listening on the [main] process.
@@ -27,7 +27,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
       if (kind === 'FSDB') {
         db = FileDb.create({ dir: path, cache: false });
       } else if (kind === 'NEDB') {
-        db = NeDoc.create({ filename: path });
+        db = NeDb.create({ filename: path });
       } else {
         throw new Error(`DB of kind '${kind}' not supported.`);
       }

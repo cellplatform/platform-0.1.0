@@ -1,4 +1,4 @@
-import { log, Command, t, Nedb, gql, GraphqlClient } from '../common';
+import { Command, gql, GraphqlClient, log, t } from '../common';
 
 const client = GraphqlClient.create({
   uri: 'http://localhost:5000/graphql',
