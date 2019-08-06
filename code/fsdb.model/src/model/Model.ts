@@ -25,7 +25,7 @@ export type IModelArgs<
  *  - data (doc)
  *  - links (JOIN relationships)
  *  - children (path descendent relationships)
- *  - read/write (change management)
+ *  - read|write (change management)
  *  - caching
  *
  */
@@ -82,6 +82,7 @@ export class Model<
   private _item: t.IDbValue | undefined;
   private _props: P;
   private _links: t.IModelLinks<L>;
+  private _children: t.IModelChildren<C>;
   private _linkCache = {};
   private _changes: Array<t.IModelChange<P, D, L, C>> = [];
   private _typename: string;
@@ -193,7 +194,14 @@ export class Model<
         }),
       );
     }
-    return this._links as t.IModelLinks<L>;
+    return this._links;
+  }
+
+  public get children(): t.IModelChildren<C> {
+    if (!this._children) {
+      this._children = {} as any;
+    }
+    return this._children;
   }
 
   /**

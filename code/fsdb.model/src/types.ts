@@ -31,6 +31,7 @@ export type IModelProps<
   readonly doc: D; // Raw DB document.
   readonly props: P; // Data as read|write properties.
   readonly links: IModelLinks<L>; // Relationships (JOINs).
+  readonly children: IModelChildren<C>; // Relationships (path descendents).
 };
 export type IModelMethods<P extends object> = {
   load(options?: { force?: boolean; links?: boolean; silent?: boolean }): Promise<P>;

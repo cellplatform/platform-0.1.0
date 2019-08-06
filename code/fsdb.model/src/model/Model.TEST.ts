@@ -39,7 +39,7 @@ describe('model', () => {
     return Model.create<IMyOrgProps, IMyOrgDoc>({ db, path: org.path, initial: org.initial });
   };
 
-  const createLinkedOrg = async (
+  const createOrgWithLinks = async (
     options: { refs?: string[]; ref?: string; path?: string } = {},
   ) => {
     const { refs, ref, path = org.path } = options;
@@ -465,7 +465,7 @@ describe('model', () => {
     });
 
     it('links: get when model is loaded (underlying linked doc exists)', async () => {
-      const model = await createLinkedOrg({
+      const model = await createOrgWithLinks({
         refs: ['THING/1', 'THING/3'],
         ref: 'THING/2',
       });
@@ -477,7 +477,7 @@ describe('model', () => {
     });
 
     it('links: get when model is not loaded (underlying linked doc exists)', async () => {
-      const model = await createLinkedOrg();
+      const model = await createOrgWithLinks();
       expect(model.isLoaded).to.eql(false);
 
       const thing = await model.links.thing;
@@ -489,7 +489,7 @@ describe('model', () => {
     });
 
     it('links: get when underlying underlying model doc does not exist', async () => {
-      const model = await createLinkedOrg({ path: 'NO_EXIST' });
+      const model = await createOrgWithLinks({ path: 'NO_EXIST' });
       await model.load();
 
       expect(model.isLoaded).to.eql(true);
@@ -503,7 +503,7 @@ describe('model', () => {
     });
 
     it('fires link-loaded event', async () => {
-      const model = await createLinkedOrg();
+      const model = await createOrgWithLinks();
       const events: t.IModelLinkLoaded[] = [];
       model.events$
         .pipe(
@@ -524,7 +524,7 @@ describe('model', () => {
     });
 
     it('caches linked model', async () => {
-      const model = await createLinkedOrg({ refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
+      const model = await createOrgWithLinks({ refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
       await model.load();
 
       const readLinks = async () => {
@@ -562,7 +562,7 @@ describe('model', () => {
     });
 
     it('gets links via `load` method', async () => {
-      const model = await createLinkedOrg({ refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
+      const model = await createOrgWithLinks({ refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
 
       const events: t.ModelEvent[] = [];
       model.events$.subscribe(e => events.push(e));
@@ -583,7 +583,7 @@ describe('model', () => {
     });
 
     it('change 1:1', async () => {
-      const model = await createLinkedOrg();
+      const model = await createOrgWithLinks();
       expect(model.changes.map).to.eql({});
       expect((await db.getValue<any>(org.path)).ref).to.eql(undefined);
 
@@ -648,7 +648,7 @@ describe('model', () => {
     });
 
     it('change 1:*', async () => {
-      const model = await createLinkedOrg();
+      const model = await createOrgWithLinks();
       expect(model.changes.map).to.eql({});
       expect((await db.getValue<any>(org.path)).refs).to.eql(undefined);
 
@@ -724,5 +724,14 @@ describe('model', () => {
       expect(await model.links.things).to.eql([]);
       expect(model.isChanged).to.eql(false);
     });
+  });
+
+  describe('children', () => {
+    it('has no children', async () => {
+      const model = await createOrg();
+      expect(model.children).to.eql({});
+    });
+
+    it('has children', async () => {});
   });
 });
