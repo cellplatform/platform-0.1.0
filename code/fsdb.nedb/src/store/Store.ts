@@ -1,28 +1,26 @@
 import * as DocumentStore from 'nedb';
-import { defaultValue, keys } from '../common';
+import { t, defaultValue, keys } from '../common';
 
 // NB: Hack import because [parceljs] has problem importing using typescript `import` above.
 const NedbStore = require('nedb');
-
-export type IStoreArgs = string | Nedb.DataStoreOptions;
 
 /**
  * [INTERNAL]
  *    A promise-based wrapper around the `nedb` library.
  *    Used internally by ther classes for cleaner async/await flow.
  */
-export class Store<G = any> {
+export class Store<G = any> implements t.IStore<G> {
   /**
    * [Static]
    */
-  public static create<G = any>(args: IStoreArgs = {}) {
+  public static create<G = any>(args: t.IStoreArgs = {}) {
     return new Store<G>(args);
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: IStoreArgs) {
+  private constructor(args: t.IStoreArgs) {
     // Format the filename.
     let filename = typeof args === 'string' ? args : args.filename;
     filename = filename ? filename.replace(/^nedb\:/, '') : filename;
@@ -32,7 +30,6 @@ export class Store<G = any> {
     const config = typeof args === 'object' ? args : {};
     const autoload = Boolean(filename) ? config.autoload : false;
     this.store = new NedbStore({
-      ...config,
       filename,
       autoload,
       onload: this.onload,
@@ -49,8 +46,8 @@ export class Store<G = any> {
   /**
    * [Fields]
    */
-  public store: DocumentStore; // NB: Do not access this externally.
-  public filename: string | undefined;
+  private store: DocumentStore;
+  public readonly filename: string | undefined;
   public isFileLoaded = false;
 
   /**
@@ -94,7 +91,6 @@ export class Store<G = any> {
       if (escapeKeys) {
         doc = keys.encodeObjectKeys<any>(doc);
       }
-
       this.store.insert(doc, (err: Error, doc: T) => {
         if (err) {
           reject(err);
@@ -105,11 +101,15 @@ export class Store<G = any> {
     });
   }
 
-  public insertMany<T extends G>(docs: T[]) {
-    return this.insert<any>(docs) as Promise<T[]>;
+  public insertMany<T extends G>(docs: T[], options: { escapeKeys?: boolean } = {}) {
+    return this.insert<any>(docs, options) as Promise<T[]>;
   }
 
-  public update<T extends G>(query: T | T[], updates: T | T[], options: Nedb.UpdateOptions = {}) {
+  public update<T extends G>(
+    query: T | T[],
+    updates: T | T[],
+    options: t.IStoreUpdateOptions = {},
+  ) {
     type Response = { total: number; upsert: boolean; docs: T[] };
     return new Promise<Response>(async (resolve, reject) => {
       await this.ensureFileLoaded();

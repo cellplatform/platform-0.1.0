@@ -14,6 +14,16 @@ export type INeQueryFilter = {
 };
 
 /**
+ * Ensure index.
+ */
+export type INeEnsureIndexOptions = {
+  fieldName: string;
+  unique?: boolean;
+  sparse?: boolean;
+  expireAfterSeconds?: number;
+};
+
+/**
  * - https://github.com/louischatriot/nedb/#operators-lt-lte-gt-gte-in-nin-ne-exists-regex
  */
 export type INeQueryOperators = {
