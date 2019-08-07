@@ -2,7 +2,12 @@ import { Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 import { R, defaultValue, t, time } from './common';
 
-export type IModelArgs<P extends object, D extends P = P, L extends t.IModelLinksSchema = any> = {
+export type IModelArgs<
+  P extends object,
+  D extends P,
+  L extends t.IModelLinksSchema,
+  C extends t.IModelChildrenSchema
+> = {
   db: t.IDb;
   path: string;
   initial: D;
@@ -10,28 +15,39 @@ export type IModelArgs<P extends object, D extends P = P, L extends t.IModelLink
   load?: boolean;
   events$?: Subject<t.ModelEvent>;
   links?: t.IModelLinkDefs<L>;
+  children?: t.IModelChildrenDefs<C>;
 };
 
 /**
  * A strongly typed wrapper around a database representing a
  * single conceptual "model", and it's relationships.
  *
- *  - data
+ *  - data (doc)
  *  - links (JOIN relationships)
- *  - read/write (change management)
+ *  - children (path descendent relationships)
+ *  - read|write (change management)
  *  - caching
  *
  */
-export class Model<P extends object, D extends P = P, L extends t.IModelLinksSchema = any>
-  implements t.IModel<P, D, L> {
+export class Model<
+  P extends object,
+  D extends P = P,
+  L extends t.IModelLinksSchema = any,
+  C extends t.IModelChildrenSchema = any
+> implements t.IModel<P, D, L, C> {
   /**
    * [Lifecycle]
    */
-  public static create = <P extends object, D extends P = P, L extends t.IModelLinksSchema = any>(
-    args: IModelArgs<P, D, L>,
-  ) => new Model<P, D, L>(args);
+  public static create = <
+    P extends object,
+    D extends P = P,
+    L extends t.IModelLinksSchema = any,
+    C extends t.IModelChildrenSchema = any
+  >(
+    args: IModelArgs<P, D, L, C>,
+  ) => new Model<P, D, L, C>(args);
 
-  private constructor(args: IModelArgs<P, D, L>) {
+  private constructor(args: IModelArgs<P, D, L, C>) {
     // Prepare path.
     const path = (args.path || '').trim();
     args = args.path === path ? args : { ...args, path };
@@ -62,12 +78,14 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
   /**
    * [Fields]
    */
-  private _args: IModelArgs<P, D, L>;
+  private _args: IModelArgs<P, D, L, C>;
   private _item: t.IDbValue | undefined;
   private _props: P;
   private _links: t.IModelLinks<L>;
+  private _children: t.IModelChildren<C>;
   private _linkCache = {};
-  private _changes: Array<t.IModelChange<P, D, L>> = [];
+  private _childrenCache = {};
+  private _changes: Array<t.IModelChange<P, D, L, C>> = [];
   private _typename: string;
 
   private readonly _dispose$ = new Subject<{}>();
@@ -133,7 +151,8 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
     return this._item ? this._item.props.modifiedAt : -1;
   }
 
-  public get changes(): t.IModelChanges<P, D, L> {
+  public get changes(): t.IModelChanges<P, D, L, C> {
+    this.throwIfDisposed('changes');
     const list = this._changes || [];
     const length = list.length;
     return {
@@ -142,7 +161,7 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
       get map() {
         return list.reduce((acc, next) => {
           return { ...acc, [next.field]: next.value.to };
-        }, {}) as t.IModelChanges<P, D, L>['map'];
+        }, {}) as t.IModelChanges<P, D, L, C>['map'];
       },
     };
   }
@@ -154,6 +173,7 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
   }
 
   public get props(): P {
+    this.throwIfDisposed('props');
     if (!this._props) {
       const res = {} as any;
       Object.keys(this._args.initial).forEach(field => {
@@ -168,6 +188,7 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
   }
 
   public get links(): t.IModelLinks<L> {
+    this.throwIfDisposed('links');
     if (!this._links) {
       this._links = {} as any;
       const defs = this._args.links || {};
@@ -177,7 +198,21 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
         }),
       );
     }
-    return this._links as t.IModelLinks<L>;
+    return this._links;
+  }
+
+  public get children(): t.IModelChildren<C> {
+    this.throwIfDisposed('children');
+    if (!this._children) {
+      this._children = {} as any;
+      const defs = this._args.children || {};
+      Object.keys(defs).forEach(field =>
+        Object.defineProperty(this._children, field, {
+          get: () => this.resolveChildren(field),
+        }),
+      );
+    }
+    return this._children;
   }
 
   /**
@@ -187,7 +222,14 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
   /**
    * Loads the model's data from the DB.
    */
-  public async load(options: { force?: boolean; withLinks?: boolean; silent?: boolean } = {}) {
+  public async load(
+    options: {
+      force?: boolean;
+      withLinks?: boolean;
+      withChildren?: boolean;
+      silent?: boolean;
+    } = {},
+  ) {
     this.throwIfDisposed('load');
     let fireEvent = false;
     if (options.force) {
@@ -200,20 +242,34 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
       fireEvent = true;
     }
 
-    // Load links if required.
+    // Load links (if required).
     const withLinks = Boolean(options.withLinks);
-    const cachedLinks = Object.keys(this._linkCache);
     if (withLinks) {
-      const defs = this._args.links || [];
-      fireEvent = cachedLinks.length < defs.length ? true : fireEvent;
+      const cachedLinks = Object.keys(this._linkCache);
+      const defs = this._args.links || {};
+      fireEvent = cachedLinks.length < Object.keys(defs).length ? true : fireEvent;
       const wait = Object.keys(defs).map(key => this.links[key]);
+      await Promise.all(wait);
+    }
+
+    // Load children (if required).
+    const withChildren = Boolean(options.withChildren);
+    if (withChildren) {
+      const cachedChildren = Object.keys(this._childrenCache);
+      const defs = this._args.children || {};
+      fireEvent = cachedChildren.length < Object.keys(defs).length ? true : fireEvent;
+      const wait = Object.keys(defs).map(key => this.children[key]);
       await Promise.all(wait);
     }
 
     // Alert listeners.
     if (fireEvent && !options.silent) {
       const typename = this.typename;
-      this.fire({ type: 'MODEL/loaded/data', typename, payload: { model: this, withLinks } });
+      this.fire({
+        type: 'MODEL/loaded/data',
+        typename,
+        payload: { model: this, withLinks, withChildren },
+      });
     }
 
     // Finish up.
@@ -227,6 +283,7 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
     this.throwIfDisposed('reset');
     this._item = undefined;
     this._linkCache = {};
+    this._childrenCache = {};
   }
 
   /**
@@ -318,8 +375,11 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
       }
       this._linkCache[key] = model;
 
-      const typename = this.typename;
-      this.fire({ type: 'MODEL/loaded/link', typename, payload: { model: this, field } });
+      this.fire({
+        type: 'MODEL/loaded/link',
+        typename: this.typename,
+        payload: { model: this, field },
+      });
       return resolve(model);
     });
 
@@ -366,6 +426,47 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
         }
       };
     }
+
+    // Finish up.
+    return promise;
+  }
+
+  private resolveChildren(field: string, options: { autoLoad?: boolean } = {}) {
+    const db = this.db;
+    const defs = (this._args.children || {}) as t.IModelChildrenDefs<C>;
+    const def = defs[field];
+    if (!def) {
+      throw new Error(`A children definition for field '${field}' could not be found.`);
+    }
+
+    // Prepare the child descendents query.
+    let query = (def.query || '')
+      .trim()
+      .replace(/^\/*/, '')
+      .trim();
+    query = `${this.path}/${query}`;
+
+    // Children resolver.
+    const promise: any = new Promise<C[keyof C] | undefined>(async resolve => {
+      const cached = this._childrenCache[field];
+      if (cached) {
+        return resolve(cached);
+      }
+      if (!this.isLoaded && defaultValue(options.autoLoad, true)) {
+        await this.load();
+      }
+
+      const paths = (await db.find(query)).list.map(item => item.props.key);
+      const children = await Promise.all(paths.map(path => def.factory({ db, path }).ready));
+      this._childrenCache[field] = children;
+
+      this.fire({
+        type: 'MODEL/loaded/children',
+        typename: this.typename,
+        payload: { model: this, children, field },
+      });
+      resolve(children as any);
+    });
 
     // Finish up.
     return promise;
@@ -436,16 +537,15 @@ export class Model<P extends object, D extends P = P, L extends t.IModelLinksSch
     }
   }
 
-  private getChange(kind: t.ModelValueKind, field: string, value: any): t.IModelChange<P, D, L> {
+  private getChange(kind: t.ModelValueKind, field: string, value: any): t.IModelChange<P, D, L, C> {
     const to = { ...this.doc, [field]: value };
-    const doc = { from: { ...this.doc }, to };
     return {
       kind,
-      modifiedAt: time.now.timestamp,
       field,
-      value: { from: this.doc[field], to: value },
-      doc,
       model: this,
+      doc: { from: { ...this.doc }, to },
+      modifiedAt: time.now.timestamp,
+      value: { from: this.doc[field], to: value },
     };
   }
 }

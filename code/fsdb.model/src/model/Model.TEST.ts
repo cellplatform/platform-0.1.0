@@ -6,6 +6,7 @@ type IMyThingProps = { count: number };
 type IMyOrgProps = { id: string; name: string };
 
 type IMyThing = t.IModel<IMyThingProps>;
+type IMyOrgChildren = { things: IMyThing[]; subthings: IMyThing[]; all: IMyThing[] };
 type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
 type IMyOrgDoc = IMyOrgProps & { ref?: string; refs?: [] };
 
@@ -19,17 +20,26 @@ describe('model', () => {
     initial: { id: '', name: '' },
   };
 
+  const thingFactory: t.ModelFactory = ({ path, db }) =>
+    Model.create<IMyThingProps>({ db, path, initial: { count: -1 } });
+
   const links: t.IModelLinkDefs<IMyOrgLinks> = {
     thing: {
       relationship: '1:1',
       field: 'ref',
-      factory: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
+      factory: thingFactory,
     },
     things: {
       relationship: '1:*',
       field: 'refs',
-      factory: ({ path, db }) => Model.create<IMyThingProps>({ db, path, initial: { count: -1 } }),
+      factory: thingFactory,
     },
+  };
+
+  const children: t.IModelChildrenDefs<IMyOrgChildren> = {
+    things: { query: '//// *', factory: thingFactory },
+    subthings: { query: '/info/*', factory: thingFactory },
+    all: { query: '**', factory: thingFactory },
   };
 
   const createOrg = async (options: { put?: boolean } = {}) => {
@@ -39,7 +49,7 @@ describe('model', () => {
     return Model.create<IMyOrgProps, IMyOrgDoc>({ db, path: org.path, initial: org.initial });
   };
 
-  const createLinkedOrg = async (
+  const createOrgWithLinks = async (
     options: { refs?: string[]; ref?: string; path?: string } = {},
   ) => {
     const { refs, ref, path = org.path } = options;
@@ -54,6 +64,27 @@ describe('model', () => {
       path,
       initial: org.initial,
       links,
+      load: false,
+    });
+    return model;
+  };
+
+  const createOrgWithChildren = async (options: { path?: string } = {}) => {
+    const { path = org.path } = options;
+    await db.put(org.path, { ...org.doc });
+    await db.putMany([
+      { key: `${path}/1`, value: { count: 1 } },
+      { key: `${path}/2`, value: { count: 2 } },
+      { key: `${path}/3`, value: { count: 3 } },
+
+      { key: `${path}/info/a`, value: { count: 123 } },
+      { key: `${path}/info/b`, value: { count: 456 } },
+    ]);
+    const model = Model.create<IMyOrgProps, IMyOrgDoc, {}, IMyOrgChildren>({
+      db,
+      path,
+      initial: org.initial,
+      children,
       load: false,
     });
     return model;
@@ -465,7 +496,7 @@ describe('model', () => {
     });
 
     it('links: get when model is loaded (underlying linked doc exists)', async () => {
-      const model = await createLinkedOrg({
+      const model = await createOrgWithLinks({
         refs: ['THING/1', 'THING/3'],
         ref: 'THING/2',
       });
@@ -477,7 +508,7 @@ describe('model', () => {
     });
 
     it('links: get when model is not loaded (underlying linked doc exists)', async () => {
-      const model = await createLinkedOrg();
+      const model = await createOrgWithLinks();
       expect(model.isLoaded).to.eql(false);
 
       const thing = await model.links.thing;
@@ -489,7 +520,7 @@ describe('model', () => {
     });
 
     it('links: get when underlying underlying model doc does not exist', async () => {
-      const model = await createLinkedOrg({ path: 'NO_EXIST' });
+      const model = await createOrgWithLinks({ path: 'NO_EXIST' });
       await model.load();
 
       expect(model.isLoaded).to.eql(true);
@@ -503,7 +534,7 @@ describe('model', () => {
     });
 
     it('fires link-loaded event', async () => {
-      const model = await createLinkedOrg();
+      const model = await createOrgWithLinks();
       const events: t.IModelLinkLoaded[] = [];
       model.events$
         .pipe(
@@ -524,7 +555,7 @@ describe('model', () => {
     });
 
     it('caches linked model', async () => {
-      const model = await createLinkedOrg({ refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
+      const model = await createOrgWithLinks({ refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
       await model.load();
 
       const readLinks = async () => {
@@ -562,7 +593,7 @@ describe('model', () => {
     });
 
     it('gets links via `load` method', async () => {
-      const model = await createLinkedOrg({ refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
+      const model = await createOrgWithLinks({ refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
 
       const events: t.ModelEvent[] = [];
       model.events$.subscribe(e => events.push(e));
@@ -583,7 +614,7 @@ describe('model', () => {
     });
 
     it('change 1:1', async () => {
-      const model = await createLinkedOrg();
+      const model = await createOrgWithLinks();
       expect(model.changes.map).to.eql({});
       expect((await db.getValue<any>(org.path)).ref).to.eql(undefined);
 
@@ -648,7 +679,7 @@ describe('model', () => {
     });
 
     it('change 1:*', async () => {
-      const model = await createLinkedOrg();
+      const model = await createOrgWithLinks();
       expect(model.changes.map).to.eql({});
       expect((await db.getValue<any>(org.path)).refs).to.eql(undefined);
 
@@ -723,6 +754,124 @@ describe('model', () => {
       expect((await db.getValue<any>(org.path)).refs).to.eql(undefined);
       expect(await model.links.things).to.eql([]);
       expect(model.isChanged).to.eql(false);
+    });
+  });
+
+  describe('children', () => {
+    it('has no children', async () => {
+      const model = await createOrg();
+      expect(model.children).to.eql({});
+    });
+
+    it('children: direct-descendents', async () => {
+      const model = await createOrgWithChildren();
+      const res = await model.children.things;
+      const paths = res.map(model => model.path);
+      expect(paths).to.eql(['ORG/123/1', 'ORG/123/2', 'ORG/123/3']);
+    });
+
+    it('children: sub-descendents', async () => {
+      const model = await createOrgWithChildren();
+      const res = await model.children.subthings;
+      const paths = res.map(model => model.path);
+      expect(paths).to.eql(['ORG/123/info/a', 'ORG/123/info/b']);
+    });
+
+    it('children: all-descendents', async () => {
+      const model = await createOrgWithChildren();
+      const res = await model.children.all;
+      const paths = res.map(model => model.path);
+      expect(paths).to.eql([
+        'ORG/123',
+        'ORG/123/1',
+        'ORG/123/2',
+        'ORG/123/3',
+        'ORG/123/info/a',
+        'ORG/123/info/b',
+      ]);
+    });
+
+    it('fires children-loaded event', async () => {
+      const model = await createOrgWithChildren();
+      const events: t.IModelChildrenLoaded[] = [];
+      model.events$
+        .pipe(
+          filter(e => e.type === 'MODEL/loaded/children'),
+          map(e => e.payload as t.IModelChildrenLoaded),
+        )
+        .subscribe(e => events.push(e));
+
+      await model.load();
+      expect(events.length).to.eql(0);
+
+      await model.children.all;
+      await model.children.things;
+
+      expect(events.length).to.eql(2);
+      expect(events[0].field).to.eql('all');
+      expect(events[1].field).to.eql('things');
+    });
+
+    it('caches children', async () => {
+      const model = await createOrgWithChildren();
+
+      const readChildren = async () => {
+        return {
+          things: await model.children.things,
+          subthings: await model.children.subthings,
+          all: await model.children.all,
+        };
+      };
+
+      const res1 = await readChildren();
+      const res2 = await readChildren();
+
+      expect(res1.things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 2 }, { count: 3 }]);
+
+      expect(res1.things).to.equal(res2.things);
+      expect(res1.subthings).to.equal(res2.subthings);
+      expect(res1.all).to.equal(res2.all);
+
+      model.reset();
+      const res3 = await readChildren();
+
+      // New instances after [reset].
+      expect(res2.things).to.not.equal(res3.things);
+      expect(res2.subthings).to.not.equal(res3.subthings);
+      expect(res2.all).to.not.equal(res3.all);
+
+      expect(res3.things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 2 }, { count: 3 }]);
+
+      await model.load({ force: true });
+      const res4 = await readChildren();
+
+      // New instances after force [load].
+      expect(res4.things).to.not.equal(res3.things);
+      expect(res4.subthings).to.not.equal(res3.subthings);
+      expect(res4.all).to.not.equal(res3.all);
+    });
+
+    it('gets children via `load` method', async () => {
+      const model = await createOrgWithChildren();
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+      expect(events.length).to.eql(0);
+
+      await model.load({ withChildren: true });
+
+      expect(events.length).to.eql(4);
+      expect(events[0].type).to.eql('MODEL/loaded/children');
+      expect(events[1].type).to.eql('MODEL/loaded/children');
+      expect(events[2].type).to.eql('MODEL/loaded/children');
+      expect(events[3].type).to.eql('MODEL/loaded/data');
+
+      expect((events[3].payload as t.IModelDataLoaded).withChildren).to.eql(true);
+
+      const linkEvents = events as t.IModelChildrenLoadedEvent[];
+      expect(linkEvents[0].payload.field).to.eql('things');
+      expect(linkEvents[1].payload.field).to.eql('subthings');
+      expect(linkEvents[2].payload.field).to.eql('all');
     });
   });
 });
