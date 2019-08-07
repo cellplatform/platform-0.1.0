@@ -1,5 +1,5 @@
 import { convert } from '.';
-import { Store } from '../store';
+import { NedbStore } from '../store';
 import { expect, fs, R } from '../test';
 
 const dir = fs.resolve('tmp/convert');
@@ -14,14 +14,14 @@ let count = 0;
 const getFilename = () => fs.join(dir, `file-${count++}.db`);
 
 describe('tools.convert', () => {
-  let store: Store;
+  let store: NedbStore;
 
   beforeEach(async () => removeDir());
   after(async () => removeDir());
 
   it('path => _id', async () => {
     const filename = getFilename();
-    store = await Store.create({ filename });
+    store = await NedbStore.create({ filename });
 
     await store.insertMany([
       { msg: 'hello', createdAt: 999 },

@@ -1,6 +1,6 @@
-import { Store } from '../store';
+import { NedbStore } from '../store';
 
-export { Store };
+export { NedbStore as Store };
 
 /**
  * Updates all documents in the given NeDb to use `_id` fields instead of `path`.
@@ -8,7 +8,7 @@ export { Store };
  *        This corrects older models that were stored
  *        with the path not used as the explicit _id.
  */
-export async function pathsToId(args: { store: Store }) {
+export async function pathsToId(args: { store: NedbStore }) {
   const { store } = args;
   const docs = await store.find({ path: { $exists: true } });
 

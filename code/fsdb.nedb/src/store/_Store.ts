@@ -2,19 +2,19 @@ import * as DocumentStore from 'nedb';
 import { t, defaultValue, keys } from '../common';
 
 // NB: Hack import because [parceljs] has problem importing using typescript `import` above.
-const NedbStore = require('nedb');
+const Nedb = require('nedb');
 
 /**
  * [INTERNAL]
  *    A promise-based wrapper around the `nedb` library.
  *    Used internally by ther classes for cleaner async/await flow.
  */
-export class Store<G = any> implements t.IStore<G> {
+export class NedbStore<G = any> implements t.IStore<G> {
   /**
    * [Static]
    */
   public static create<G = any>(args: t.IStoreArgs = {}) {
-    return new Store<G>(args);
+    return new NedbStore<G>(args);
   }
 
   /**
@@ -29,7 +29,7 @@ export class Store<G = any> implements t.IStore<G> {
     // Construct the underlying data-store.
     const config = typeof args === 'object' ? args : {};
     const autoload = Boolean(filename) ? config.autoload : false;
-    this.store = new NedbStore({
+    this.store = new Nedb({
       filename,
       autoload,
       onload: this.onload,
