@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { DbUri, defaultValue, t, time, value as valueUtil, keys as keysUtil } from '../common';
-import { NedbStore } from '../Store';
+import { NedbStore } from '../store';
 import { Schema } from './schema';
 
 export type INeDbArgs = {
