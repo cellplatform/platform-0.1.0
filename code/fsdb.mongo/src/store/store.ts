@@ -162,7 +162,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
     });
   }
 
-  public ensureIndex(options: t.INedbEnsureIndexOptions) {
+  public ensureIndex(options: Nedb.EnsureIndexOptions) {
     return new Promise<{}>((resolve, reject) => {
       this.store.ensureIndex(options, (err: Error) => {
         if (err) {
@@ -174,7 +174,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
     });
   }
 
-  public remove(query: any, options: t.INedbStoreRemoveOptions = {}) {
+  public remove(query: any, options: Nedb.RemoveOptions = {}) {
     type Response = { total: number };
     return new Promise<Response>(async (resolve, reject) => {
       await this.ensureFileLoaded();
