@@ -49,7 +49,7 @@ export type ModelFactoryArgs = { path: string; db: IDb };
 export type IModelChildrenSchema = { [key: string]: IModel[] };
 export type IModelChildren<C extends IModelLinksSchema> = { [K in keyof C]: Promise<C[K]> };
 export type IModelChildrenDefs<L extends IModelChildrenSchema> = {
-  [K in keyof L]: IModelChildrenDef
+  [K in keyof L]: IModelChildrenDef;
 };
 export type IModelChildrenDef = {
   query: string;
