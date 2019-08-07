@@ -9,18 +9,18 @@ const Nedb = require('nedb');
  *    A promise-based wrapper around the `nedb` library.
  *    Used internally by ther classes for cleaner async/await flow.
  */
-export class NedbStore<G = any> implements t.IStore<G> {
+export class NedbStore<G = any> implements t.INedbStore<G> {
   /**
    * [Static]
    */
-  public static create<G = any>(args: t.IStoreArgs = {}) {
+  public static create<G = any>(args: t.INedbStoreArgs = {}) {
     return new NedbStore<G>(args);
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: t.IStoreArgs) {
+  private constructor(args: t.INedbStoreArgs) {
     // Format the filename.
     let filename = typeof args === 'string' ? args : args.filename;
     filename = filename ? filename.replace(/^nedb\:/, '') : filename;
@@ -108,7 +108,7 @@ export class NedbStore<G = any> implements t.IStore<G> {
   public update<T extends G>(
     query: T | T[],
     updates: T | T[],
-    options: t.IStoreUpdateOptions = {},
+    options: t.INedbStoreUpdateOptions = {},
   ) {
     type Response = { total: number; upsert: boolean; docs: T[] };
     return new Promise<Response>(async (resolve, reject) => {

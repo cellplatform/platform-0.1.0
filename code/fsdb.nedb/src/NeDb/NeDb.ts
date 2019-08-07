@@ -97,7 +97,7 @@ export class NeDb implements t.INeDb {
     await this.store.compact();
   }
 
-  public ensureIndex(options: t.INeEnsureIndexOptions) {
+  public ensureIndex(options: t.INedbEnsureIndexOptions) {
     return this.store.ensureIndex(options);
   }
 
@@ -278,7 +278,7 @@ export class NeDb implements t.INeDb {
    * [Find]
    */
 
-  public async find(input: string | t.INeQuery): Promise<t.IDbFindResult> {
+  public async find(input: string | t.INedbQuery): Promise<t.IDbFindResult> {
     this.throwIfDisposed('find');
 
     let keys: string[] | undefined;
