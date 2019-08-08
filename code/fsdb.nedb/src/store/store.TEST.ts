@@ -221,16 +221,16 @@ describe('Store (nedb)', () => {
     const res1 = await db.find({});
     expect(res1.length).to.eql(3);
 
-    const res2 = await db.remove({ name: 'foo' });
-    expect(res2.total).to.eql(1);
+    await db.remove({ name: 'foo' });
+    const res2 = await db.find({});
+    expect(res2.length).to.eql(2);
 
-    const res3 = await db.remove({ name: 'NO_EXIST' });
-    expect(res3.total).to.eql(0);
+    await db.remove({ name: 'NO_EXIST' });
+    const res3 = await db.find({});
+    expect(res3.length).to.eql(2);
 
-    const res4 = await db.remove({ name: { $in: ['bar', 'zoo', 'other'] } }, { multi: true });
-    expect(res4.total).to.eql(2);
-
-    const res5 = await db.find({});
-    expect(res5).to.eql([]);
+    await db.remove({ name: { $in: ['bar', 'zoo', 'other'] } }, { multi: true });
+    const res4 = await db.find({});
+    expect(res4.length).to.eql(0);
   });
 });

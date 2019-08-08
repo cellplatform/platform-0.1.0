@@ -77,10 +77,10 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/fsdb.nedb@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.2.1.tgz#c84e8d1e6f011cf26f12ab39334800d660812171"
-  integrity sha512-ZpAkW7MXjc8yy5gmg2vROQofIAKYP1tjJ1LVxGAjJAqV2Vekv4ufJ1gVFOek+Rjwpu9S2anvbNJa3wJ4cHl9jA==
+"@platform/fsdb.nedb@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.0.tgz#74262cffdc3c639983bde9e3d6fa07147a3ddf4f"
+  integrity sha512-dvjktD7Og80Czz8SAnBnV1M3Vk+RrCp2SsWsK4uu0//207EjI0ZpH1dnF+zt6j0D3/ZAFc/bpN/fi8lzABUv6A==
   dependencies:
     "@platform/fsdb.types" "0.3.0"
     "@platform/react" "0.3.14"

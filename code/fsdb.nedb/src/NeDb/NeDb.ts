@@ -97,7 +97,7 @@ export class NeDb implements t.INeDb {
     await this.store.compact();
   }
 
-  public ensureIndex(options: t.INedbEnsureIndexOptions) {
+  public ensureIndex(options: t.IIndexOptions) {
     return this.store.ensureIndex(options);
   }
 

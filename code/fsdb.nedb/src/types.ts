@@ -14,16 +14,6 @@ export type INedbQueryFilter = {
 };
 
 /**
- * Ensure index.
- */
-export type INedbEnsureIndexOptions = {
-  fieldName: string;
-  unique?: boolean;
-  sparse?: boolean;
-  expireAfterSeconds?: number;
-};
-
-/**
  * - https://github.com/louischatriot/nedb/#operators-lt-lte-gt-gte-in-nin-ne-exists-regex
  */
 export type INedbQueryOperators = {
@@ -68,8 +58,8 @@ export type INedbStore<G = any> = {
   find<T extends G>(query: any): Promise<T[]>;
   findOne<T extends G>(query: any): Promise<T | undefined>;
 
-  remove(query: any, options?: INedbStoreRemoveOptions): Promise<INedbStoreRemoveResponse>;
-  ensureIndex(options: INedbEnsureIndexOptions): Promise<{}>;
+  remove(query: any, options?: INedbStoreRemoveOptions): Promise<{}>;
+  // ensureIndex(options: INedbEnsureIndexOptions): Promise<{}>;
 };
 
 /**
@@ -88,5 +78,4 @@ export type INedbStoreUpdateOptions = {
 /**
  * Remove.
  */
-export type INedbStoreRemoveResponse = { total: number };
 export type INedbStoreRemoveOptions = { multi?: boolean };
