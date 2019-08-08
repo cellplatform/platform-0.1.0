@@ -7,6 +7,7 @@ import { Schema } from './schema';
 
 export type INeDbArgs = {
   filename?: string;
+  store?: t.INedbStore;
 };
 
 export class NeDb implements t.INeDb {
@@ -28,8 +29,8 @@ export class NeDb implements t.INeDb {
    */
   private constructor(args: INeDbArgs) {
     const { filename } = args;
-    const autoload = Boolean(filename);
-    this.store = NedbStore.create<t.IDoc>({ filename, autoload });
+    this._args = args;
+    this.store = args.store || NedbStore.create<t.IDoc>({ filename, autoload: Boolean(filename) });
   }
 
   public dispose() {
@@ -43,7 +44,8 @@ export class NeDb implements t.INeDb {
   /**
    * [Fields]
    */
-  private readonly store: NedbStore<t.IDoc>;
+  private readonly _args: INeDbArgs;
+  private readonly store: t.INedbStore<t.IDoc>;
   private readonly uri = DbUri.create();
   private readonly schema = Schema.create();
 
@@ -89,16 +91,22 @@ export class NeDb implements t.INeDb {
    */
 
   public toString() {
-    const filename = this.store.filename;
+    const filename = NedbStore.formatFilename(this._args.filename);
     return `[db:${filename ? filename : 'memory'}]`;
   }
 
   public async compact() {
-    await this.store.compact();
+    const store = this.store as NedbStore;
+    if (typeof store.compact === 'function') {
+      await store.compact();
+    }
   }
 
-  public ensureIndex(options: t.IIndexOptions) {
-    return this.store.ensureIndex(options);
+  public async ensureIndex(options: t.IIndexOptions) {
+    const store = this.store as NedbStore;
+    if (typeof store.ensureIndex === 'function') {
+      await store.ensureIndex(options);
+    }
   }
 
   /**

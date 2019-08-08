@@ -5,9 +5,10 @@ import { t, defaultValue, keys } from '../common';
 const Nedb = require('nedb');
 
 /**
- * [INTERNAL]
+ * [Internal]
+ *
  *    A promise-based wrapper around the `nedb` library.
- *    Used internally by ther classes for cleaner async/await flow.
+ *    Used internally by for cleaner consistent async/await flow.
  */
 export class NedbStore<G = any> implements t.INedbStore<G> {
   /**
@@ -17,14 +18,17 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
     return new NedbStore<G>(args);
   }
 
+  public static formatFilename(filename?: string) {
+    return filename ? filename.replace(/^nedb\:/, '') : filename;
+  }
+
   /**
    * [Lifecycle]
    */
   private constructor(args: t.INedbStoreArgs) {
     // Format the filename.
-    let filename = typeof args === 'string' ? args : args.filename;
-    filename = filename ? filename.replace(/^nedb\:/, '') : filename;
-    this.filename = filename;
+    const filename = typeof args === 'string' ? args : args.filename;
+    this.filename = NedbStore.formatFilename(filename);
 
     // Construct the underlying data-store.
     const config = typeof args === 'object' ? args : {};

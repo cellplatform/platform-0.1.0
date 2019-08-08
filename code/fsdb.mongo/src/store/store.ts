@@ -15,8 +15,8 @@ export type IMongoStoreArgs = {
 /**
  * [Internal]
  *
- *    A promise-based wrapper around the `nedb` library.
- *    Used internally by for cleaner async/await flow.
+ *    A promise-based wrapper around the `mongo` library.
+ *    Used internally by for cleaner consistent async/await flow.
  *
  */
 export class MongoStore<G = any> implements t.IMongoStore<G> {
