@@ -1,160 +1,156 @@
-import * as DocumentStore from 'nedb';
-import { t, defaultValue, keys } from '../common';
+import { Subject } from 'rxjs';
+import { share } from 'rxjs/operators';
 
-// NB: Hack import because [parceljs] has problem importing using typescript `import` above.
-const Nedb = require('nedb');
+import { defaultValue, keys, mongodb, t } from '../common';
+
+const MongoClient = mongodb.MongoClient;
+
+export type IMongoStoreArgs = {
+  uri: string;
+  db: string;
+  collection: string;
+  connect?: boolean;
+};
 
 /**
- * [INTERNAL]
+ * [Internal]
+ *
  *    A promise-based wrapper around the `nedb` library.
- *    Used internally by ther classes for cleaner async/await flow.
+ *    Used internally by for cleaner async/await flow.
+ *
  */
-export class NedbStore<G = any> implements t.INedbStore<G> {
+export class MongoStore<G = any> implements t.IMongoStore<G> {
   /**
    * [Static]
    */
-  public static create<G = any>(args: t.INedbStoreArgs = {}) {
-    return new NedbStore<G>(args);
+  public static create<G = any>(args: IMongoStoreArgs) {
+    return new MongoStore<G>(args);
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: t.INedbStoreArgs) {
-    // Format the filename.
-    let filename = typeof args === 'string' ? args : args.filename;
-    filename = filename ? filename.replace(/^nedb\:/, '') : filename;
-    this.filename = filename;
-
-    // Construct the underlying data-store.
-    const config = typeof args === 'object' ? args : {};
-    const autoload = Boolean(filename) ? config.autoload : false;
-    this.store = new Nedb({
-      filename,
-      autoload,
-      onload: this.onload,
-    });
+  private constructor(args: IMongoStoreArgs) {
+    const { uri } = args;
+    this.client = new MongoClient(uri, { useNewUrlParser: true });
+    this._args = args;
+    if (args.connect) {
+      this.ensureConnected();
+    }
   }
 
-  private onload = (err: Error) => {
-    if (err) {
-      throw err;
-    }
-    this.isFileLoaded = true;
-  };
+  public dispose() {
+    this.client.close();
+    this._dispose$.next();
+    this._dispose$.complete();
+  }
 
   /**
    * [Fields]
    */
-  private store: DocumentStore;
-  public readonly filename: string | undefined;
-  public isFileLoaded = false;
+  private readonly _dispose$ = new Subject<{}>();
+  public readonly dispose$ = this._dispose$.pipe(share());
+
+  private _args: IMongoStoreArgs;
+  private client: mongodb.MongoClient;
+  private db: mongodb.Db;
+  private collection: mongodb.Collection<G>;
+  private isConnected = false;
+
+  /**
+   * [Properties]
+   */
+  public get isDisposed() {
+    return this._dispose$.isStopped;
+  }
 
   /**
    * [Methods]
    */
-
-  public compact() {
+  private ensureConnected() {
+    this.throwIfDisposed('ensureConnected');
     return new Promise((resolve, reject) => {
-      this.store.once('compaction.done', () => resolve());
-      this.store.persistence.compactDatafile();
-    });
-  }
-
-  public loadFile() {
-    return new Promise((resolve, reject) => {
-      if (this.isFileLoaded || !this.filename) {
+      if (this.isConnected) {
         return resolve();
       }
-      this.store.loadDatabase(err => {
+      this.client.connect(err => {
         if (err) {
           reject(err);
-        } else {
-          this.isFileLoaded = true;
-          resolve();
         }
+        this.db = this.client.db(this._args.db);
+        this.collection = this.db.collection(this._args.collection);
+        this.isConnected = true;
+        resolve();
       });
     });
   }
 
-  public async ensureFileLoaded() {
-    if (this.isFileLoaded || !this.filename) {
-      return;
-    }
-    await this.loadFile();
-  }
-
-  public insert<T extends G>(doc: T, options: { escapeKeys?: boolean } = {}) {
-    return new Promise<T>(async (resolve, reject) => {
-      await this.ensureFileLoaded();
-      const escapeKeys = defaultValue(options.escapeKeys, true);
-      if (escapeKeys) {
-        doc = keys.encodeObjectKeys<any>(doc);
-      }
-      this.store.insert(doc, (err: Error, doc: T) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(doc);
-        }
-      });
-    });
+  /**
+   * [INedbStore]
+   */
+  public async insert<T extends G>(doc: T, options: { escapeKeys?: boolean } = {}) {
+    this.throwIfDisposed('insert');
+    return (await this.insertMany([doc], options))[0];
   }
 
   public insertMany<T extends G>(docs: T[], options: { escapeKeys?: boolean } = {}) {
-    return this.insert<any>(docs, options) as Promise<T[]>;
-  }
-
-  public update<T extends G>(
-    query: T | T[],
-    updates: T | T[],
-    options: t.INedbStoreUpdateOptions = {},
-  ) {
-    type Response = { total: number; upsert: boolean; docs: T[] };
-    return new Promise<Response>(async (resolve, reject) => {
-      await this.ensureFileLoaded();
-      this.store.update(
-        query,
-        updates,
-        options,
-        (err: Error, total: number, docs: T[], upsert: boolean) => {
-          if (err) {
-            reject(err);
-          } else {
-            const res: Response = {
-              total,
-              upsert: Boolean(upsert),
-              docs: docs === undefined ? [] : docs,
-            };
-            resolve(res);
-          }
-        },
-      );
-    });
-  }
-
-  public async find<T extends G>(query: any) {
+    this.throwIfDisposed('insertMany');
     return new Promise<T[]>(async (resolve, reject) => {
-      await this.ensureFileLoaded();
-      this.store.find(query, (err: Error, docs: T[]) => {
+      await this.ensureConnected();
+      if (defaultValue(options.escapeKeys, true)) {
+        docs = keys.encodeObjectKeys<any>(docs);
+      }
+      this.collection.insertMany(docs, (err, res) => {
         if (err) {
           reject(err);
         } else {
-          docs = keys.decodeObjectKeys<any>(docs);
-
-          resolve(docs);
+          resolve(res.ops);
         }
       });
     });
   }
 
-  public async findOne<T extends G>(query: any) {
-    return new Promise<T>(async (resolve, reject) => {
-      await this.ensureFileLoaded();
-      this.store.findOne(query, (err: Error, doc: T) => {
+  public updateOne<T extends G>(query: any, update: any, options: t.INedbStoreUpdateOptions = {}) {
+    this.throwIfDisposed('update');
+    return new Promise<t.INedbStoreUpdateResponse<T>>(async (resolve, reject) => {
+      await this.ensureConnected();
+      this.collection.updateOne(query, { $set: update }, options, (err, res) => {
         if (err) {
           reject(err);
         } else {
+          const upsert = res.upsertedCount > 0;
+          const modified = upsert ? res.upsertedCount > 0 : res.modifiedCount > 0;
+          const doc = upsert ? { ...update, _id: res.upsertedId._id.toString() } : undefined;
+          resolve({ modified, upsert, doc });
+        }
+      });
+    });
+  }
+
+  public find<T extends G>(query: any) {
+    this.throwIfDisposed('find');
+    return new Promise<T[]>(async (resolve, reject) => {
+      await this.ensureConnected();
+      try {
+        const cursor = this.collection.find(query);
+        const docs: T[] = [];
+        await cursor.forEach((doc: any) => docs.push(doc));
+        resolve(docs);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  public findOne<T extends G>(query: any) {
+    this.throwIfDisposed('findOne');
+    return new Promise<T | undefined>(async (resolve, reject) => {
+      await this.ensureConnected();
+      this.collection.findOne(query, (err, res) => {
+        if (err) {
+          reject(err);
+        } else {
+          let doc: any = res ? { ...res, _id: (res as any)._id.toString() } : undefined;
           doc = keys.decodeObjectKeys<any>(doc);
           resolve(doc);
         }
@@ -162,9 +158,10 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
     });
   }
 
-  public ensureIndex(options: Nedb.EnsureIndexOptions) {
+  public ensureIndex(options: t.INedbEnsureIndexOptions) {
+    this.throwIfDisposed('ensureIndex');
     return new Promise<{}>((resolve, reject) => {
-      this.store.ensureIndex(options, (err: Error) => {
+      this.collection.createIndex(options, (err: Error) => {
         if (err) {
           reject(err);
         } else {
@@ -174,17 +171,51 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
     });
   }
 
-  public remove(query: any, options: Nedb.RemoveOptions = {}) {
-    type Response = { total: number };
-    return new Promise<Response>(async (resolve, reject) => {
-      await this.ensureFileLoaded();
-      this.store.remove(query, options, (err: Error, total: number) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve({ total });
-        }
-      });
+  public remove(query: any, options: t.INedbStoreRemoveOptions = {}) {
+    this.throwIfDisposed('remove');
+    return new Promise<t.INedbStoreRemoveResponse>(async (resolve, reject) => {
+      await this.ensureConnected();
+      // this.store.remove(query, options, (err: Error, total: number) => {
+      //   if (err) {
+      //     reject(err);
+      //   } else {
+      //     resolve({ total });
+      //   }
+      // });
     });
+  }
+
+  /**
+   * [IMongoStoreMethods] specific API (not in Nedb)
+   */
+
+  /**
+   * Drop the current collection if it exists.
+   * - https://docs.mongodb.com/manual/reference/method/db.collection.drop
+   */
+  public async drop() {
+    await this.ensureConnected();
+    const exists = await this.exists();
+    if (exists) {
+      await this.collection.drop();
+    }
+  }
+
+  /**
+   * Determine if the collection exists.
+   */
+  public async exists() {
+    await this.ensureConnected();
+    const name = this._args.collection;
+    return (await this.db.collections()).some(c => c.collectionName === name);
+  }
+
+  /**
+   * [Helpers]
+   */
+  private throwIfDisposed(action: string) {
+    if (this.isDisposed) {
+      throw new Error(`Cannot ${action} because MongoStore is disposed.`);
+    }
   }
 }
