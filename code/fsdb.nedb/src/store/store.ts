@@ -53,7 +53,6 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
   /**
    * [Methods]
    */
-
   public compact() {
     return new Promise((resolve, reject) => {
       this.store.once('compaction.done', () => resolve());
@@ -78,12 +77,14 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
   }
 
   public async ensureFileLoaded() {
-    if (this.isFileLoaded || !this.filename) {
-      return;
+    if (this.filename && !this.isFileLoaded) {
+      await this.loadFile();
     }
-    await this.loadFile();
   }
 
+  /**
+   * [INedbStore]
+   */
   public insert<T extends G>(doc: T, options: { escapeKeys?: boolean } = {}) {
     return new Promise<T>(async (resolve, reject) => {
       await this.ensureFileLoaded();
@@ -105,28 +106,19 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
     return this.insert<any>(docs, options) as Promise<T[]>;
   }
 
-  public update<T extends G>(
-    query: T | T[],
-    updates: T | T[],
-    options: t.INedbStoreUpdateOptions = {},
-  ) {
-    type Response = { total: number; upsert: boolean; docs: T[] };
-    return new Promise<Response>(async (resolve, reject) => {
+  public updateOne<T extends G>(query: T, update: T, options: t.INedbStoreUpdateOptions = {}) {
+    return new Promise<t.INedbStoreUpdateResponse<T>>(async (resolve, reject) => {
       await this.ensureFileLoaded();
       this.store.update(
         query,
-        updates,
-        options,
-        (err: Error, total: number, docs: T[], upsert: boolean) => {
+        update,
+        { ...options, returnUpdatedDocs: true },
+        (err: Error, total: number, doc: T, upsert: boolean) => {
           if (err) {
             reject(err);
           } else {
-            const res: Response = {
-              total,
-              upsert: Boolean(upsert),
-              docs: docs === undefined ? [] : docs,
-            };
-            resolve(res);
+            const modified = total > 0;
+            resolve({ modified, upsert: Boolean(upsert), doc });
           }
         },
       );
@@ -175,8 +167,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
   }
 
   public remove(query: any, options: t.INedbStoreRemoveOptions = {}) {
-    type Response = { total: number };
-    return new Promise<Response>(async (resolve, reject) => {
+    return new Promise<t.INedbStoreRemoveResponse>(async (resolve, reject) => {
       await this.ensureFileLoaded();
       this.store.remove(query, options, (err: Error, total: number) => {
         if (err) {

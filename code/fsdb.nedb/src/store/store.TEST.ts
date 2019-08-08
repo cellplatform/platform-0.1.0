@@ -168,52 +168,46 @@ describe('Store (nedb)', () => {
     await db.findOne({ name: 'foo' });
   });
 
-  it('update (multi)', async () => {
+  it('updateOne', async () => {
     type MyDoc = { name: string; _id?: string };
     const db = NedbStore.create<MyDoc>({});
+    await db.insertMany([{ name: 'foo' }, { name: 'zoo' }]);
 
-    await db.insertMany([{ name: 'foo' }, { name: 'zoo' }, { name: 'foo' }]);
+    const res0 = await db.updateOne({ name: 'no-exist' }, { name: 'boo' });
+    expect(res0.modified).to.eql(false);
+    expect(res0.upsert).to.eql(false);
 
-    const res1 = await db.update(
-      { name: 'foo' },
-      { name: 'boo' },
-      { returnUpdatedDocs: true, multi: true },
-    );
-
-    expect(res1.total).to.eql(2);
+    const res1 = await db.updateOne({ name: 'foo' }, { name: 'boo' });
+    expect(res1.modified).to.eql(true);
     expect(res1.upsert).to.eql(false);
-
-    let names = res1.docs.map(doc => doc.name);
-    expect(names.filter(name => name === 'boo').length).to.eql(2);
-    expect(names).to.eql(['boo', 'boo']);
+    expect(res1.doc && res1.doc.name).to.eql('boo');
 
     const res2 = await db.find({});
 
-    names = res2.map(doc => doc.name);
+    const names = res2.map(doc => doc.name);
     expect(names.filter(name => name === 'zoo').length).to.eql(1);
-    expect(names.filter(name => name === 'boo').length).to.eql(2);
+    expect(names.filter(name => name === 'boo').length).to.eql(1);
     expect(names.filter(name => name === 'foo').length).to.eql(0); // Changed.
   });
 
-  it('upsert', async () => {
+  it('updateOne (upsert)', async () => {
     type MyDoc = { name: string; _id?: string };
     const db = NedbStore.create<MyDoc>({});
 
     const res1 = await db.find({});
     expect(res1).to.eql([]);
 
-    const docs = [{ name: 'foo' }, { name: 'bar' }];
-    const res2 = await db.update(docs, docs, { upsert: true });
+    const doc = { name: 'foo' };
+    const res2 = await db.updateOne<MyDoc>(doc, doc, { upsert: true });
 
-    expect(res2.total).to.eql(1);
+    expect(res2.modified).to.eql(true);
     expect(res2.upsert).to.eql(true);
-    expect(res2.docs.length).to.eql(2);
+    expect(res2.doc && res2.doc.name).to.eql('foo');
+    expect(res2.doc && res2.doc._id).to.not.eql(undefined);
 
     const res3 = await db.find({});
-    expect(res3.length).to.eql(2);
-    const names = res3.map(doc => doc.name);
-    expect(names.includes('foo')).to.eql(true);
-    expect(names.includes('bar')).to.eql(true);
+    expect(res3.length).to.eql(1);
+    expect(res3[0].name).to.eql('foo');
   });
 
   it('delete', async () => {

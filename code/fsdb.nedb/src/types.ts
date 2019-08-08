@@ -58,13 +58,16 @@ export type INedbStoreArgs =
 export type INedbStore<G = any> = {
   insert<T extends G>(doc: T, options?: { escapeKeys?: boolean }): Promise<T>;
   insertMany<T extends G>(doc: T[], options?: { escapeKeys?: boolean }): Promise<T[]>;
-  update<T extends G>(
-    query: T | T[],
-    updates: T | T[],
+
+  updateOne<T extends G>(
+    query: any,
+    update: any,
     options?: INedbStoreUpdateOptions,
   ): Promise<INedbStoreUpdateResponse<T>>;
+
   find<T extends G>(query: any): Promise<T[]>;
   findOne<T extends G>(query: any): Promise<T>;
+
   remove(query: any, options?: INedbStoreRemoveOptions): Promise<INedbStoreRemoveResponse>;
   ensureIndex(options: INedbEnsureIndexOptions): Promise<{}>;
 };
@@ -73,15 +76,13 @@ export type INedbStore<G = any> = {
  * Update.
  */
 export type INedbStoreUpdateResponse<T> = {
-  total: number;
+  modified: boolean;
   upsert: boolean;
-  docs: T[];
+  doc?: T;
 };
 
 export type INedbStoreUpdateOptions = {
-  multi?: boolean;
   upsert?: boolean;
-  returnUpdatedDocs?: boolean;
 };
 
 /**

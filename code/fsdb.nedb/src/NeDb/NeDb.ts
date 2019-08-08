@@ -73,7 +73,7 @@ export class NeDb implements t.INeDb {
           modifiedAt: now,
         };
         const query: any = { _id: schema.timestamps };
-        await this.store.update(
+        await this.store.updateOne(
           query,
           { _id: schema.timestamps, ...timestamps, data: true },
           { upsert: true },
@@ -195,7 +195,7 @@ export class NeDb implements t.INeDb {
           const current = existing.find(doc => doc._id === update._id);
           const createdAt = current ? current.createdAt : update.createdAt;
           update = { ...update, createdAt, modifiedAt: now };
-          return this.store.update(query, update);
+          return this.store.updateOne(query, update);
         }),
       );
 
