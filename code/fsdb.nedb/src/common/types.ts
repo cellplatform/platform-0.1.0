@@ -10,3 +10,10 @@ export type IDoc<D = Json> = IDbTimestamps & {
   _id: string; // "path" field.
   data?: D;
 };
+
+export type IIndexOptions = {
+  fieldName: string;
+  unique?: boolean;
+  sparse?: boolean;
+  expireAfterSeconds?: number;
+};

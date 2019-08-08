@@ -1,38 +1,39 @@
 import * as DocumentStore from 'nedb';
-import { defaultValue, keys } from '../common';
+import { t, defaultValue, keys } from '../common';
 
 // NB: Hack import because [parceljs] has problem importing using typescript `import` above.
-const NedbStore = require('nedb');
-
-export type IStoreArgs = string | Nedb.DataStoreOptions;
+const Nedb = require('nedb');
 
 /**
- * [INTERNAL]
+ * [Internal]
+ *
  *    A promise-based wrapper around the `nedb` library.
- *    Used internally by ther classes for cleaner async/await flow.
+ *    Used internally by for cleaner consistent async/await flow.
  */
-export class Store<G = any> {
+export class NedbStore<G = any> implements t.INedbStore<G> {
   /**
    * [Static]
    */
-  public static create<G = any>(args: IStoreArgs = {}) {
-    return new Store<G>(args);
+  public static create<G = any>(args: t.INedbStoreArgs = {}) {
+    return new NedbStore<G>(args);
+  }
+
+  public static formatFilename(filename?: string) {
+    return filename ? filename.replace(/^nedb\:/, '') : filename;
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: IStoreArgs) {
+  private constructor(args: t.INedbStoreArgs) {
     // Format the filename.
-    let filename = typeof args === 'string' ? args : args.filename;
-    filename = filename ? filename.replace(/^nedb\:/, '') : filename;
-    this.filename = filename;
+    const filename = typeof args === 'string' ? args : args.filename;
+    this.filename = NedbStore.formatFilename(filename);
 
     // Construct the underlying data-store.
     const config = typeof args === 'object' ? args : {};
     const autoload = Boolean(filename) ? config.autoload : false;
-    this.store = new NedbStore({
-      ...config,
+    this.store = new Nedb({
       filename,
       autoload,
       onload: this.onload,
@@ -49,14 +50,13 @@ export class Store<G = any> {
   /**
    * [Fields]
    */
-  public store: DocumentStore; // NB: Do not access this externally.
-  public filename: string | undefined;
+  private store: DocumentStore;
+  public readonly filename: string | undefined;
   public isFileLoaded = false;
 
   /**
    * [Methods]
    */
-
   public compact() {
     return new Promise((resolve, reject) => {
       this.store.once('compaction.done', () => resolve());
@@ -81,12 +81,14 @@ export class Store<G = any> {
   }
 
   public async ensureFileLoaded() {
-    if (this.isFileLoaded || !this.filename) {
-      return;
+    if (this.filename && !this.isFileLoaded) {
+      await this.loadFile();
     }
-    await this.loadFile();
   }
 
+  /**
+   * [INedbStore]
+   */
   public insert<T extends G>(doc: T, options: { escapeKeys?: boolean } = {}) {
     return new Promise<T>(async (resolve, reject) => {
       await this.ensureFileLoaded();
@@ -94,7 +96,6 @@ export class Store<G = any> {
       if (escapeKeys) {
         doc = keys.encodeObjectKeys<any>(doc);
       }
-
       this.store.insert(doc, (err: Error, doc: T) => {
         if (err) {
           reject(err);
@@ -105,35 +106,30 @@ export class Store<G = any> {
     });
   }
 
-  public insertMany<T extends G>(docs: T[]) {
-    return this.insert<any>(docs) as Promise<T[]>;
+  public insertMany<T extends G>(docs: T[], options: { escapeKeys?: boolean } = {}) {
+    return this.insert<any>(docs, options) as Promise<T[]>;
   }
 
-  public update<T extends G>(query: T | T[], updates: T | T[], options: Nedb.UpdateOptions = {}) {
-    type Response = { total: number; upsert: boolean; docs: T[] };
-    return new Promise<Response>(async (resolve, reject) => {
+  public updateOne<T extends G>(query: T, update: T, options: t.INedbStoreUpdateOptions = {}) {
+    return new Promise<t.INedbStoreUpdateResponse<T>>(async (resolve, reject) => {
       await this.ensureFileLoaded();
       this.store.update(
         query,
-        updates,
-        options,
-        (err: Error, total: number, docs: T[], upsert: boolean) => {
+        update,
+        { ...options, returnUpdatedDocs: true },
+        (err: Error, total: number, doc: T, upsert: boolean) => {
           if (err) {
             reject(err);
           } else {
-            const res: Response = {
-              total,
-              upsert: Boolean(upsert),
-              docs: docs === undefined ? [] : docs,
-            };
-            resolve(res);
+            const modified = total > 0;
+            resolve({ modified, upsert: Boolean(upsert), doc });
           }
         },
       );
     });
   }
 
-  public async find<T extends G>(query: any) {
+  public find<T extends G>(query: any) {
     return new Promise<T[]>(async (resolve, reject) => {
       await this.ensureFileLoaded();
       this.store.find(query, (err: Error, docs: T[]) => {
@@ -141,28 +137,27 @@ export class Store<G = any> {
           reject(err);
         } else {
           docs = keys.decodeObjectKeys<any>(docs);
-
           resolve(docs);
         }
       });
     });
   }
 
-  public async findOne<T extends G>(query: any) {
-    return new Promise<T>(async (resolve, reject) => {
+  public findOne<T extends G>(query: any) {
+    return new Promise<T | undefined>(async (resolve, reject) => {
       await this.ensureFileLoaded();
       this.store.findOne(query, (err: Error, doc: T) => {
         if (err) {
           reject(err);
         } else {
           doc = keys.decodeObjectKeys<any>(doc);
-          resolve(doc);
+          resolve(doc ? doc : undefined);
         }
       });
     });
   }
 
-  public ensureIndex(options: Nedb.EnsureIndexOptions) {
+  public ensureIndex(options: t.IIndexOptions) {
     return new Promise<{}>((resolve, reject) => {
       this.store.ensureIndex(options, (err: Error) => {
         if (err) {
@@ -174,15 +169,14 @@ export class Store<G = any> {
     });
   }
 
-  public remove(query: any, options: Nedb.RemoveOptions = {}) {
-    type Response = { total: number };
-    return new Promise<Response>(async (resolve, reject) => {
+  public remove(query: any, options: t.INedbStoreRemoveOptions = {}) {
+    return new Promise<{}>(async (resolve, reject) => {
       await this.ensureFileLoaded();
       this.store.remove(query, options, (err: Error, total: number) => {
         if (err) {
           reject(err);
         } else {
-          resolve({ total });
+          resolve({});
         }
       });
     });

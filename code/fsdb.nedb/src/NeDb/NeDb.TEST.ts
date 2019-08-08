@@ -1,6 +1,6 @@
 import { expect, fs, time, t } from '../test';
 import { NeDb } from '.';
-import { Store } from '../store';
+import { NedbStore } from '../store';
 
 const dir = fs.resolve('tmp/NeDb');
 const removeDir = () => fs.remove(dir);
@@ -81,7 +81,7 @@ describe('NeDb', () => {
       await db.put('FOO/1', 1);
       await db.putMany([{ key: 'FOO/2', value: 2 }, { key: 'FOO/3', value: 3 }]);
 
-      const store = (db as any).store as Store;
+      const store = (db as any).store as NedbStore;
       const docs = await store.find({});
 
       expect(docs[0]._id).to.eql('FOO/1');

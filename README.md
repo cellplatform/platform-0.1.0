@@ -67,6 +67,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/fsdb.types](/code/fsdb.types)
   - [@platform/fsdb.file](/code/fsdb.file)
   - [@platform/fsdb.nedb](/code/fsdb.nedb)
+  - [@platform/fsdb.mongo](/code/fsdb.mongo)
   - [@platform/fsdb.pg](/code/fsdb.pg)
   - [@platform/fsdb.electron](/code/fsdb.electron)
 - network

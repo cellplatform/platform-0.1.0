@@ -2,11 +2,12 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { DbUri, defaultValue, t, time, value as valueUtil, keys as keysUtil } from '../common';
-import { Store } from '../Store';
+import { NedbStore } from '../store';
 import { Schema } from './schema';
 
 export type INeDbArgs = {
   filename?: string;
+  store?: t.INedbStore;
 };
 
 export class NeDb implements t.INeDb {
@@ -28,8 +29,8 @@ export class NeDb implements t.INeDb {
    */
   private constructor(args: INeDbArgs) {
     const { filename } = args;
-    const autoload = Boolean(filename);
-    this.store = Store.create<t.IDoc>({ filename, autoload });
+    this._args = args;
+    this.store = args.store || NedbStore.create<t.IDoc>({ filename, autoload: Boolean(filename) });
   }
 
   public dispose() {
@@ -43,7 +44,8 @@ export class NeDb implements t.INeDb {
   /**
    * [Fields]
    */
-  private readonly store: Store<t.IDoc>;
+  private readonly _args: INeDbArgs;
+  private readonly store: t.INedbStore<t.IDoc>;
   private readonly uri = DbUri.create();
   private readonly schema = Schema.create();
 
@@ -73,7 +75,7 @@ export class NeDb implements t.INeDb {
           modifiedAt: now,
         };
         const query: any = { _id: schema.timestamps };
-        await this.store.update(
+        await this.store.updateOne(
           query,
           { _id: schema.timestamps, ...timestamps, data: true },
           { upsert: true },
@@ -89,12 +91,22 @@ export class NeDb implements t.INeDb {
    */
 
   public toString() {
-    const filename = this.store.filename;
+    const filename = NedbStore.formatFilename(this._args.filename);
     return `[db:${filename ? filename : 'memory'}]`;
   }
 
   public async compact() {
-    await this.store.compact();
+    const store = this.store as NedbStore;
+    if (typeof store.compact === 'function') {
+      await store.compact();
+    }
+  }
+
+  public async ensureIndex(options: t.IIndexOptions) {
+    const store = this.store as NedbStore;
+    if (typeof store.ensureIndex === 'function') {
+      await store.ensureIndex(options);
+    }
   }
 
   /**
@@ -191,7 +203,7 @@ export class NeDb implements t.INeDb {
           const current = existing.find(doc => doc._id === update._id);
           const createdAt = current ? current.createdAt : update.createdAt;
           update = { ...update, createdAt, modifiedAt: now };
-          return this.store.update(query, update);
+          return this.store.updateOne(query, update);
         }),
       );
 
@@ -274,7 +286,7 @@ export class NeDb implements t.INeDb {
    * [Find]
    */
 
-  public async find(input: string | t.INeQuery): Promise<t.IDbFindResult> {
+  public async find(input: string | t.INedbQuery): Promise<t.IDbFindResult> {
     this.throwIfDisposed('find');
 
     let keys: string[] | undefined;

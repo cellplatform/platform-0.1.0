@@ -1,4 +1,4 @@
-import { Store } from '.';
+import { NedbStore } from '.';
 import { expect, expectError, fs } from '../test';
 
 const dir = fs.resolve('tmp/store');
@@ -17,26 +17,26 @@ describe('Store (nedb)', () => {
   after(async () => removeDir());
 
   it('constructs', () => {
-    const db = Store.create({});
-    expect(db).to.be.an.instanceof(Store);
+    const db = NedbStore.create({});
+    expect(db).to.be.an.instanceof(NedbStore);
   });
 
   it('creates with filename', () => {
     const filename = getFilename();
-    const db = Store.create({ filename });
+    const db = NedbStore.create({ filename });
     expect(db.filename).to.eql(filename);
   });
 
   it('strips "nedb:" prefix from filename', () => {
     const filename = getFilename();
-    const db = Store.create({ filename: `nedb:${filename}` });
+    const db = NedbStore.create({ filename: `nedb:${filename}` });
     const text = db.filename;
     expect(text).to.not.include('nedb:');
   });
 
   it('inserts a single document', async () => {
     type MyDoc = { name: string; _id?: string };
-    const db = Store.create<MyDoc>({});
+    const db = NedbStore.create<MyDoc>({});
 
     const res1 = await db.find({ name: 'foo' });
     expect(res1).to.eql([]);
@@ -49,18 +49,18 @@ describe('Store (nedb)', () => {
     expect(res3[0].name).to.eql('foo');
 
     const res4 = await db.findOne({ name: 'foo' });
-    expect(res4.name).to.eql('foo');
+    expect(res4 && res4.name).to.eql('foo');
   });
 
   it('throws when inserting a document with (.) in field name', () => {
     return expectError(async () => {
-      const db = Store.create({});
+      const db = NedbStore.create({});
       await db.insert({ 'foo.bar': 123 }, { escapeKeys: false });
     }, 'Field names cannot contain a .');
   });
 
   it('encodes (.) characters in field names (by default)', async () => {
-    const db = Store.create({});
+    const db = NedbStore.create({});
     const obj = {
       name: 'mary',
       foo: {
@@ -88,19 +88,23 @@ describe('Store (nedb)', () => {
 
   it('inserts multiple documents', async () => {
     type MyDoc = { name: string; _id?: string };
-    const db = Store.create<MyDoc>({});
+    const db = NedbStore.create<MyDoc>({});
 
     const res1 = await db.insertMany([{ name: 'foo' }, { name: 'bar' }]);
     expect(res1[0].name).to.eql('foo');
     expect(res1[1].name).to.eql('bar');
 
-    expect((await db.findOne({ name: 'foo' })).name).to.eql('foo');
-    expect((await db.findOne({ name: 'bar' })).name).to.eql('bar');
-    expect(await db.findOne({ name: 'boo' })).to.eql(null);
+    const res2 = await db.findOne({ name: 'foo' });
+    const res3 = await db.findOne({ name: 'bar' });
+    const res4 = await db.findOne({ name: 'boo' });
+
+    expect(res2 && res2.name).to.eql('foo');
+    expect(res3 && res3.name).to.eql('bar');
+    expect(res4 && res4.name).to.eql(undefined);
   });
 
   it('when in-memory only isLoaded is never true', async () => {
-    const db = Store.create({});
+    const db = NedbStore.create({});
     expect(db.isFileLoaded).to.eql(false);
 
     await db.insert({ name: 'foo' });
@@ -113,7 +117,7 @@ describe('Store (nedb)', () => {
     const filename = getFilename();
     expect(await fs.pathExists(filename)).to.eql(false);
 
-    const db1 = Store.create({ filename, autoload: true });
+    const db1 = NedbStore.create({ filename, autoload: true });
     expect(db1.isFileLoaded).to.eql(false);
 
     const res1 = await db1.insert({ name: 'foo' });
@@ -121,7 +125,7 @@ describe('Store (nedb)', () => {
     expect(await fs.pathExists(filename)).to.eql(true);
     expect(db1.isFileLoaded).to.eql(true);
 
-    const db2 = Store.create({ filename, autoload: true });
+    const db2 = NedbStore.create({ filename, autoload: true });
 
     const res2 = await db2.findOne({ name: 'foo' });
     expect(res2.name).to.eql('foo');
@@ -133,7 +137,7 @@ describe('Store (nedb)', () => {
     const filename = getFilename();
     expect(await fs.pathExists(filename)).to.eql(false);
 
-    const db = Store.create({ filename });
+    const db = NedbStore.create({ filename });
     expect(db.isFileLoaded).to.eql(false);
 
     await db.loadFile();
@@ -147,7 +151,7 @@ describe('Store (nedb)', () => {
   it('loadFile (no filename)', async () => {
     await removeDir();
 
-    const db = Store.create({});
+    const db = NedbStore.create({});
     expect(db.isFileLoaded).to.eql(false);
 
     await db.loadFile();
@@ -161,78 +165,72 @@ describe('Store (nedb)', () => {
     await removeDir();
     const filename = getFilename();
 
-    const db = Store.create({ filename });
+    const db = NedbStore.create({ filename });
     expect(db.isFileLoaded).to.eql(false);
 
     await db.insert({ name: 'foo' });
     await db.findOne({ name: 'foo' });
   });
 
-  it('update (multi)', async () => {
+  it('updateOne', async () => {
     type MyDoc = { name: string; _id?: string };
-    const db = Store.create<MyDoc>({});
+    const db = NedbStore.create<MyDoc>({});
+    await db.insertMany([{ name: 'foo' }, { name: 'zoo' }]);
 
-    await db.insertMany([{ name: 'foo' }, { name: 'zoo' }, { name: 'foo' }]);
+    const res0 = await db.updateOne({ name: 'no-exist' }, { name: 'boo' });
+    expect(res0.modified).to.eql(false);
+    expect(res0.upsert).to.eql(false);
 
-    const res1 = await db.update(
-      { name: 'foo' },
-      { name: 'boo' },
-      { returnUpdatedDocs: true, multi: true },
-    );
-
-    expect(res1.total).to.eql(2);
+    const res1 = await db.updateOne({ name: 'foo' }, { name: 'boo' });
+    expect(res1.modified).to.eql(true);
     expect(res1.upsert).to.eql(false);
-
-    let names = res1.docs.map(doc => doc.name);
-    expect(names.filter(name => name === 'boo').length).to.eql(2);
-    expect(names).to.eql(['boo', 'boo']);
+    expect(res1.doc && res1.doc.name).to.eql('boo');
 
     const res2 = await db.find({});
 
-    names = res2.map(doc => doc.name);
+    const names = res2.map(doc => doc.name);
     expect(names.filter(name => name === 'zoo').length).to.eql(1);
-    expect(names.filter(name => name === 'boo').length).to.eql(2);
+    expect(names.filter(name => name === 'boo').length).to.eql(1);
     expect(names.filter(name => name === 'foo').length).to.eql(0); // Changed.
   });
 
-  it('upsert', async () => {
+  it('updateOne (upsert)', async () => {
     type MyDoc = { name: string; _id?: string };
-    const db = Store.create<MyDoc>({});
+    const db = NedbStore.create<MyDoc>({});
 
     const res1 = await db.find({});
     expect(res1).to.eql([]);
 
-    const docs = [{ name: 'foo' }, { name: 'bar' }];
-    const res2 = await db.update(docs, docs, { upsert: true });
+    const doc = { name: 'foo' };
+    const res2 = await db.updateOne<MyDoc>(doc, doc, { upsert: true });
 
-    expect(res2.total).to.eql(1);
+    expect(res2.modified).to.eql(true);
     expect(res2.upsert).to.eql(true);
-    expect(res2.docs.length).to.eql(2);
+    expect(res2.doc && res2.doc.name).to.eql('foo');
+    expect(res2.doc && res2.doc._id).to.not.eql(undefined);
 
     const res3 = await db.find({});
-    expect(res3.length).to.eql(2);
-    const names = res3.map(doc => doc.name);
-    expect(names.includes('foo')).to.eql(true);
-    expect(names.includes('bar')).to.eql(true);
+    expect(res3.length).to.eql(1);
+    expect(res3[0].name).to.eql('foo');
   });
 
   it('delete', async () => {
-    const db = Store.create();
+    const db = NedbStore.create();
 
     await db.insertMany([{ name: 'foo' }, { name: 'bar' }, { name: 'zoo' }]);
     const res1 = await db.find({});
     expect(res1.length).to.eql(3);
 
-    const res2 = await db.remove({ name: 'foo' });
-    expect(res2.total).to.eql(1);
+    await db.remove({ name: 'foo' });
+    const res2 = await db.find({});
+    expect(res2.length).to.eql(2);
 
-    const res3 = await db.remove({ name: 'NO_EXIST' });
-    expect(res3.total).to.eql(0);
+    await db.remove({ name: 'NO_EXIST' });
+    const res3 = await db.find({});
+    expect(res3.length).to.eql(2);
 
-    const res4 = await db.remove({ name: { $in: ['bar', 'zoo', 'other'] } }, { multi: true });
-    expect(res4.total).to.eql(2);
-
-    const res5 = await db.find({});
-    expect(res5).to.eql([]);
+    await db.remove({ name: { $in: ['bar', 'zoo', 'other'] } }, { multi: true });
+    const res4 = await db.find({});
+    expect(res4.length).to.eql(0);
   });
 });
