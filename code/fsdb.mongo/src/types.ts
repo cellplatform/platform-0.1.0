@@ -1,4 +1,9 @@
-import { INedbStore } from '@platform/fsdb.nedb/lib/types';
+import { INedbStore, INeDb } from '@platform/fsdb.nedb/lib/types';
+
+/**
+ * [Mongo]
+ */
+export type IMongoDb = INeDb;
 
 /**
  * [Store]

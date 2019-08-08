@@ -1,17 +1,17 @@
-import { expect, mongodb, dotenv } from '../test';
+import { expect, dotenv } from '../test';
 import { MongoStore } from '.';
 
 dotenv.config();
+const uri = process.env.MONGO_TEST as string;
+const db = 'test';
+const collection = 'test.store';
 
 describe('Store (Mongo)', function() {
   this.timeout(20000);
   let store: MongoStore;
 
   before(() => {
-    const uri = process.env.MONGO_TEST as string;
-    const dbName = 'test';
-    const collection = 'test.store';
-    store = MongoStore.create({ uri, db: dbName, collection });
+    store = MongoStore.create({ uri, db, collection });
   });
 
   const drop = async () => {
@@ -19,7 +19,7 @@ describe('Store (Mongo)', function() {
   };
 
   after(async () => {
-    // await drop();
+    await drop();
     store.dispose();
   });
 
