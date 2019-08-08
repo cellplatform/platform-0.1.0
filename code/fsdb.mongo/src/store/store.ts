@@ -7,8 +7,8 @@ const MongoClient = mongodb.MongoClient;
 
 export type IMongoStoreArgs = {
   uri: string;
-  db: string;
-  collection: string;
+  db: string; // Name.
+  collection: string; // Name.
   connect?: boolean;
 };
 
@@ -41,6 +41,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
 
   public dispose() {
     this.client.close();
+    this.isConnected = false;
     this._dispose$.next();
     this._dispose$.complete();
   }
@@ -88,11 +89,15 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
   /**
    * [INedbStore]
    */
+
   public async insert<T extends G>(doc: T, options: { escapeKeys?: boolean } = {}) {
     this.throwIfDisposed('insert');
     return (await this.insertMany([doc], options))[0];
   }
 
+  /**
+   * - https://docs.mongodb.com/manual/reference/method/db.collection.createIndex
+   */
   public insertMany<T extends G>(docs: T[], options: { escapeKeys?: boolean } = {}) {
     this.throwIfDisposed('insertMany');
     return new Promise<T[]>(async (resolve, reject) => {
@@ -110,6 +115,9 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
     });
   }
 
+  /**
+   * - https://docs.mongodb.com/manual/reference/method/db.collection.updateOne
+   */
   public updateOne<T extends G>(query: any, update: any, options: t.INedbStoreUpdateOptions = {}) {
     this.throwIfDisposed('update');
     return new Promise<t.INedbStoreUpdateResponse<T>>(async (resolve, reject) => {
@@ -127,6 +135,9 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
     });
   }
 
+  /**
+   * - https://docs.mongodb.com/manual/reference/method/db.collection.find
+   */
   public find<T extends G>(query: any) {
     this.throwIfDisposed('find');
     return new Promise<T[]>(async (resolve, reject) => {
@@ -142,6 +153,9 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
     });
   }
 
+  /**
+   * - https://docs.mongodb.com/manual/reference/method/db.collection.findOne
+   */
   public findOne<T extends G>(query: any) {
     this.throwIfDisposed('findOne');
     return new Promise<T | undefined>(async (resolve, reject) => {
@@ -158,35 +172,26 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
     });
   }
 
-  public ensureIndex(options: t.INedbEnsureIndexOptions) {
-    this.throwIfDisposed('ensureIndex');
-    return new Promise<{}>((resolve, reject) => {
-      this.collection.createIndex(options, (err: Error) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve({});
-        }
-      });
-    });
-  }
-
+  /**
+   * - https://docs.mongodb.com/manual/reference/method/db.collection.remove
+   */
   public remove(query: any, options: t.INedbStoreRemoveOptions = {}) {
     this.throwIfDisposed('remove');
-    return new Promise<t.INedbStoreRemoveResponse>(async (resolve, reject) => {
+    return new Promise<{}>(async (resolve, reject) => {
       await this.ensureConnected();
-      // this.store.remove(query, options, (err: Error, total: number) => {
-      //   if (err) {
-      //     reject(err);
-      //   } else {
-      //     resolve({ total });
-      //   }
-      // });
+      const { multi } = options;
+      const single = !Boolean(multi);
+      try {
+        await this.collection.remove(query, { single });
+        resolve({});
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
   /**
-   * [IMongoStoreMethods] specific API (not in Nedb)
+   * [IMongoStoreMethods] specific API for Mongo (extended beyond `nedb`).
    */
 
   /**

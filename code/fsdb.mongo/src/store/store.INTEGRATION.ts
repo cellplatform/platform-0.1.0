@@ -14,20 +14,24 @@ describe('Store (Mongo)', function() {
     store = MongoStore.create({ uri, db: dbName, collection });
   });
 
+  const drop = async () => {
+    await store.drop();
+  };
+
   after(async () => {
-    await store.dispose();
+    // await drop();
     store.dispose();
   });
 
   it('insert', async () => {
-    await store.drop();
+    await drop();
     const res = await store.insert({ name: 'insert' });
     expect(res.name).to.eql('insert');
     expect((res as any)._id).to.not.eql(undefined);
   });
 
   it('insertMany', async () => {
-    await store.drop();
+    await drop();
     const docs = [{ name: 'insertMany', count: 1 }, { name: 'insertMany', count: 2 }];
     const res = await store.insertMany(docs);
 
@@ -39,7 +43,7 @@ describe('Store (Mongo)', function() {
   });
 
   it('updateOne (existing doc)', async () => {
-    await store.drop();
+    await drop();
     const doc = await store.insert<any>({ name: 'update' });
     const res = await store.updateOne({ _id: doc._id }, { name: 'update => foo' });
 
@@ -49,7 +53,7 @@ describe('Store (Mongo)', function() {
   });
 
   it('updateOne (upsert)', async () => {
-    await store.drop();
+    await drop();
     const res = await store.updateOne({}, { name: 'new doc' }, { upsert: true });
 
     expect(res.modified).to.eql(true);
@@ -60,7 +64,7 @@ describe('Store (Mongo)', function() {
   });
 
   it('findOne', async () => {
-    await store.drop();
+    await drop();
     type Doc = { _id: string; foo: number };
 
     const res1 = await store.findOne({});
@@ -73,7 +77,7 @@ describe('Store (Mongo)', function() {
   });
 
   it('find', async () => {
-    await store.drop();
+    await drop();
     type Doc = { _id: string; foo: number };
 
     const res1 = await store.find({});
@@ -95,5 +99,41 @@ describe('Store (Mongo)', function() {
 
     const res4 = await store.find<Doc>({ foo: -1 });
     expect(res4).to.eql([]);
+  });
+
+  it('remove (single, default)', async () => {
+    await drop();
+
+    await store.remove({ foo: 123 });
+    const res0 = await store.find({});
+    expect(res0).to.eql([]);
+
+    await store.insertMany([{ foo: 123 }, { foo: 456 }, { foo: 789 }]);
+
+    await store.remove({}); // query "all", first item only removed.
+    const res1 = await store.find({});
+    expect(res1.length).to.eql(2);
+    expect(res1[0].foo).to.eql(456);
+    expect(res1[1].foo).to.eql(789);
+
+    await store.remove({ foo: 456 });
+    const res2 = await store.find({});
+    expect(res2.length).to.eql(1);
+    expect(res2[0].foo).to.eql(789);
+  });
+
+  it('remove (multi)', async () => {
+    await drop();
+    await store.insertMany([{ foo: 123 }, { foo: 456 }, { foo: 123 }, { foo: 888 }]);
+
+    await store.remove({ foo: 123 }, { multi: true });
+    const res1 = await store.find({});
+    expect(res1.length).to.eql(2);
+    expect(res1[0].foo).to.eql(456);
+    expect(res1[1].foo).to.eql(888);
+
+    await store.remove({}, { multi: true }); // query "all" items.
+    const res2 = await store.find({});
+    expect(res2).to.eql([]);
   });
 });
