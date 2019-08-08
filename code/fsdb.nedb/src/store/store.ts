@@ -125,7 +125,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
     });
   }
 
-  public async find<T extends G>(query: any) {
+  public find<T extends G>(query: any) {
     return new Promise<T[]>(async (resolve, reject) => {
       await this.ensureFileLoaded();
       this.store.find(query, (err: Error, docs: T[]) => {
@@ -133,22 +133,21 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
           reject(err);
         } else {
           docs = keys.decodeObjectKeys<any>(docs);
-
           resolve(docs);
         }
       });
     });
   }
 
-  public async findOne<T extends G>(query: any) {
-    return new Promise<T>(async (resolve, reject) => {
+  public findOne<T extends G>(query: any) {
+    return new Promise<T | undefined>(async (resolve, reject) => {
       await this.ensureFileLoaded();
       this.store.findOne(query, (err: Error, doc: T) => {
         if (err) {
           reject(err);
         } else {
           doc = keys.decodeObjectKeys<any>(doc);
-          resolve(doc);
+          resolve(doc ? doc : undefined);
         }
       });
     });

@@ -49,7 +49,7 @@ describe('Store (nedb)', () => {
     expect(res3[0].name).to.eql('foo');
 
     const res4 = await db.findOne({ name: 'foo' });
-    expect(res4.name).to.eql('foo');
+    expect(res4 && res4.name).to.eql('foo');
   });
 
   it('throws when inserting a document with (.) in field name', () => {
@@ -94,9 +94,13 @@ describe('Store (nedb)', () => {
     expect(res1[0].name).to.eql('foo');
     expect(res1[1].name).to.eql('bar');
 
-    expect((await db.findOne({ name: 'foo' })).name).to.eql('foo');
-    expect((await db.findOne({ name: 'bar' })).name).to.eql('bar');
-    expect(await db.findOne({ name: 'boo' })).to.eql(null);
+    const res2 = await db.findOne({ name: 'foo' });
+    const res3 = await db.findOne({ name: 'bar' });
+    const res4 = await db.findOne({ name: 'boo' });
+
+    expect(res2 && res2.name).to.eql('foo');
+    expect(res3 && res3.name).to.eql('bar');
+    expect(res4 && res4.name).to.eql(undefined);
   });
 
   it('when in-memory only isLoaded is never true', async () => {
