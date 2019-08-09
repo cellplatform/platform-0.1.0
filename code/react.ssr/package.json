@@ -1,0 +1,44 @@
+{
+  "name": "@platform/react.ssr",
+  "version": "0.0.0",
+  "description": "An SSR (server-side-render) server for react apps bundled with ParcelJS and hosted on S3.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "ui": "ui $@",
+    "dev": "ui start web $@",
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "build-test": "ts build --tsconfig tsconfig.test.json",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/fs": "0.1.7",
+    "@platform/libs": "0.1.0",
+    "@platform/log": "0.0.135",
+    "@platform/react": "0.3.14",
+    "bowser": "2.5.3",
+    "cheerio": "1.0.0-rc.3",
+    "cors": "2.8.5",
+    "express": "4.17.1",
+    "helmet": "3.20.0"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.50",
+    "@platform/ts": "3.4.17",
+    "@types/bowser": "1.1.1",
+    "@types/cheerio": "0.22.12",
+    "@types/cors": "2.8.5",
+    "@types/express": "4.17.0",
+    "@types/helmet": "0.0.43",
+    "@uiharness/dev": "0.7.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}
