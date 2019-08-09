@@ -1,4 +1,4 @@
-name: react.server
+name: react.ssr
 
 web:
   port: 1234
