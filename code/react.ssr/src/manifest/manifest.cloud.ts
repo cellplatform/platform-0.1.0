@@ -20,7 +20,11 @@ export function reset() {
 /**
  * Gets the manifest (from cache if already pulled).
  */
-export async function get(args: { url: string; baseUrl?: string; force?: boolean }) {
+export async function get(args: {
+  url: string; // URL to the manifest.yml (NB: don't use a caching CDN).
+  baseUrl?: string; // If different from `url` (use this to pass in the Edge/CDN alternative URL).
+  force?: boolean;
+}) {
   const { url } = args;
 
   let manifest = CACHE[url] as t.IManifest;
@@ -53,6 +57,7 @@ export async function pull(args: { url: string; baseUrl?: string }): Promise<IPu
   const { url } = args;
   const empty: t.IManifest = { sites: [] };
   const base = args.baseUrl || fs.dirname(url);
+
   const errorResponse = (status: number, error: string): IPullResonse => {
     const manifest = empty;
     return { ok: false, status, error: new Error(error), manifest };
@@ -118,7 +123,7 @@ function formatSite(args: { input: any; base: string }): t.ISiteManifest | undef
 
   // Bundle.
   let bundle = asString(input.bundle);
-  bundle = bundle ? fs.join(base, bundle) : bundle;
+  bundle = (bundle ? `${base}/${bundle}` : bundle).replace(/\/*$/, '');
 
   // Routes.
   let routes = typeof input.routes === 'object' ? input.routes : {};

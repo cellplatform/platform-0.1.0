@@ -59,6 +59,11 @@ export function init(args: { bundle: string }) {
     //
     // console.log('s1', s1);
     console.log('s2', s2);
+    if (s2) {
+      const e = await s2.entry();
+      console.log('-------------------------------------------');
+      console.log('e', e);
+    }
   })();
 
   app.get('/', async (req, res) => {
