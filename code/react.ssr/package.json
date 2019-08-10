@@ -14,7 +14,8 @@
     "lint": "ts lint",
     "build": "ts build",
     "build-test": "ts build --tsconfig tsconfig.test.json",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "bundle": "ui bundle web"
   },
   "dependencies": {
     "@platform/fs": "0.1.7",
@@ -28,14 +29,14 @@
     "helmet": "3.20.0"
   },
   "devDependencies": {
-    "@platform/test": "0.0.50",
-    "@platform/ts": "3.4.17",
+    "@platform/test": "0.0.60",
+    "@platform/ts": "3.4.35",
     "@types/bowser": "1.1.1",
-    "@types/cheerio": "0.22.12",
+    "@types/cheerio": "0.22.13",
     "@types/cors": "2.8.5",
     "@types/express": "4.17.0",
     "@types/helmet": "0.0.43",
-    "@uiharness/dev": "0.7.0"
+    "@uiharness/dev": "0.8.1"
   },
   "files": [
     "lib"

@@ -3,7 +3,15 @@ name: react.ssr
 web:
   port: 1234
   entry: test/web.tsx
-
+  head:
+    stylesheets:
+      - /static/css/normalize.css
+      - /static/css/global.css
+  static:
+    - images
+    - favicon.ico
+  bundle:
+    output: bundle
 
 sourcemaps:
   strip:

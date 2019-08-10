@@ -22,7 +22,7 @@
     "@platform/fsdb.types": "0.3.0",
     "@platform/libs": "0.1.0",
     "@platform/util.value": "0.4.6",
-    "pg": "7.12.0"
+    "pg": "7.12.1"
   },
   "devDependencies": {
     "@platform/fsdb.file": "^1.3.6",

@@ -39,7 +39,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       base: css({
         fontSize: 50,
         PaddingX: 50,
-        PaddingY: 10,
+        PaddingY: 15,
       }),
       image: css({ borderRadius: 8 }),
     };

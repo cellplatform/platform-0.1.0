@@ -9,5 +9,17 @@ An SSR (server-side-render) server for react apps bundled with ParcelJS and host
 
     yarn add @platform/react.ssr
 
+
+<p>&nbsp;<p>
+
+
+## Workflow
+
+1. Develop you app using [UIHarness](https://uiharness.com) (local example: `yarn dev`)
+2. Bundle the app (local example: `yarn bundle`)
+3. Run app within SSR server (local example: `yarn start` or `yarn watch`)
+
 <p>&nbsp;<p>
 <p>&nbsp;<p>
+
+
