@@ -1,7 +1,6 @@
-import * as constants from './constants';
 import * as t from './types';
 
-export { constants, t };
-export * from './libs';
+const PKG = require('../../../package.json') as { name: string; version: string };
 
-export const COLORS = constants.COLORS;
+export { t, PKG };
+export * from './libs';

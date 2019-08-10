@@ -7,8 +7,8 @@
   "scripts": {
     "ui": "ui $@",
     "dev": "ui start web $@",
-    "start": "node .",
-    "watch": "nodemon .",
+    "start": "node lib.test/test/server",
+    "watch": "nodemon lib.test/test/server",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@platform/fs": "0.1.7",
+    "@platform/http": "0.2.13",
     "@platform/libs": "0.1.0",
     "@platform/log": "0.0.135",
     "@platform/react": "0.3.14",

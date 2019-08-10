@@ -1,0 +1,8 @@
+# 
+# Sample manifest for `@platform/react.ssr`
+# 
+
+sites:
+  - domain: localhost:3000
+    bundle: 
+

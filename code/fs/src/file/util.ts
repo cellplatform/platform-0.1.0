@@ -88,7 +88,7 @@ export function stringifyAndSaveSync<T extends object>(
 }
 
 /**
- * INTERNAL
+ * [Internal]
  */
 function parse(path: string, text: string) {
   const ext = extension(path);
