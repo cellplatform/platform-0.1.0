@@ -3,7 +3,7 @@ import * as React from 'react';
 // import { Temp } from '../entry/Temp';
 import { cors, express, fs, helmet, is, log, PKG } from '../common';
 import * as render from './render';
-import { manifest } from '../manifest';
+import { Manifest } from '../manifest';
 
 export * from '../types';
 
@@ -45,25 +45,41 @@ export function init(args: { bundle: string }) {
 
   (async () => {
     const url = 'https://platform.sfo2.digitaloceanspaces.com/modules/react.ssr/manifest.yml';
-    // const m = await manifest.cloud.get({ url });
-    const m = await manifest.cloud.get({ url });
-    // console.log('m.manifest', m.manifest);
-    m.manifest.sites.forEach(site => {
-      console.log('-------------------------------------------');
-      console.log('site', site);
-      console.log('site.routes', site.routes);
-    });
 
-    // const s1 = m.route('localhost');
-    const s2 = m.route({ domain: 'localhost:3000', path: '/foo' });
-    //
-    // console.log('s1', s1);
-    console.log('s2', s2);
-    if (s2) {
-      const e = await s2.entry();
+    const m = await Manifest.get({ url, baseUrl: url });
+
+    console.log('m', m);
+    console.log('m.manifest', m);
+
+    // const m = await manifest.cloud.get({ url });
+    // const m = await manifest.cloud.get({ url });
+    // // console.log('m.manifest', m.manifest);
+    // m.manifest.sites.forEach(site => {
+    //   console.log('-------------------------------------------');
+    //   console.log('site', site);
+    //   console.log('site.routes', site.routes);
+    // });
+
+    const site = m.site('localhost:3000');
+
+    const route = site ? site.route('/foo') : undefined;
+    if (route) {
+      const e = await route.entry();
       console.log('-------------------------------------------');
       console.log('e', e);
     }
+    // const entry = await site.e
+
+    // // const s1 = m.route('localhost');
+    // const s2 = m.route({ domain: 'localhost:3000', path: '/foo' });
+    // //
+    // // console.log('s1', s1);
+    // console.log('s2', s2);
+    // if (s2) {
+    //   const e = await s2.entry();
+    //   console.log('-------------------------------------------');
+    //   console.log('e', e);
+    // }
   })();
 
   app.get('/', async (req, res) => {

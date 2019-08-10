@@ -1,4 +1,7 @@
 import { t, fs, http } from '../common';
+import * as util from './util';
+
+export type IRouteArgs = { site: t.ISiteManifest; route: t.ISiteManifestRoute };
 
 export type IRemoteFile = {
   ok: boolean;
@@ -12,9 +15,26 @@ export type IRemoteFile = {
  */
 export class Route {
   /**
+   * [Static]
+   */
+  public static format(args: { input: any }): t.ISiteManifestRoute | undefined {
+    const { input } = args;
+    if (typeof input !== 'object') {
+      return undefined;
+    }
+
+    const entry = util.asString(input.entry);
+    const paths: any[] = Array.isArray(input.path) ? input.path : [input.path];
+    const path = paths.filter(path => Boolean(path) && typeof path === 'string');
+
+    return { entry, path };
+  }
+
+  /**
    * [Lifecycle]
    */
-  public constructor(args: { site: t.ISiteManifest; route: t.ISiteManifestRoute }) {
+  public static create = (args: IRouteArgs) => new Route(args);
+  private constructor(args: IRouteArgs) {
     this.site = args.site;
     this.def = args.route;
   }
