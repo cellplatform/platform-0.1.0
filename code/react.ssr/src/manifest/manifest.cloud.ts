@@ -1,5 +1,5 @@
 import { fs, http, jsYaml, t, value } from '../common';
-import { Site } from './Site';
+import { Route } from './Route';
 
 export type IPullResonse = {
   ok: boolean;
@@ -8,13 +8,13 @@ export type IPullResonse = {
   error?: Error;
 };
 
-const CACHE: any = {};
+let CACHE: any = {};
 
 /**
  * Clears the cache.
  */
 export function reset() {
-  Object.keys(CACHE).forEach(key => delete CACHE[key]);
+  CACHE = {};
 }
 
 /**
@@ -31,9 +31,17 @@ export async function get(args: { url: string; baseUrl?: string; force?: boolean
 
   return {
     manifest,
-    site(domain: string) {
-      const def = manifest.sites.find(item => item.domain === domain);
-      return def ? new Site({ def }) : undefined;
+    route(args: { domain: string; path: string; force?: boolean }) {
+      const { domain, path } = args;
+      const key = `${url}:${domain}:${path}`;
+
+      let route = CACHE[key] as Route | undefined;
+      if (!route || args.force) {
+        route = Route.find({ manifest, domain, path });
+        CACHE[key] = route;
+      }
+
+      return route;
     },
   };
 }

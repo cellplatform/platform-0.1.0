@@ -54,10 +54,10 @@ export function init(args: { bundle: string }) {
       console.log('site.routes', site.routes);
     });
 
-    const s1 = m.site('localhost');
-    const s2 = m.site('localhost:3000');
-
-    console.log('s1', s1);
+    // const s1 = m.route('localhost');
+    const s2 = m.route({ domain: 'localhost:3000', path: '/foo' });
+    //
+    // console.log('s1', s1);
     console.log('s2', s2);
   })();
 
