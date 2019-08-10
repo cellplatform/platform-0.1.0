@@ -1589,10 +1589,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@uiharness/dev@0.8.1":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.8.1.tgz#4ecb1d8a67c2195d442d0a0cb83f0d56144da582"
-  integrity sha512-/j8iUroSmYoMPdoeCn6pdgYNeNWElpKvHQsRzfaG/jkLXLmLldQlo0UeJiQjAZ3mYimSJ47qWavKVALfGi5dcQ==
+"@uiharness/dev@0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.8.2.tgz#b492ac760b6cbc887ed4526718a4f6647f3cc21c"
+  integrity sha512-3nAVOv2cAxDQKXN5m/ZkUX9RikSt9c+HTEp0M0ZAHdadlXUeGvEJNKLCa0njeVbJpf+SyQWyZO6PqjWUfF6hbw==
   dependencies:
     "@babel/core" "7.5.5"
     "@babel/preset-env" "7.5.5"
@@ -1631,10 +1631,10 @@
   resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.6.0.tgz#330e744f628cd397a0645d8c9deb2f18e05b96be"
   integrity sha512-EsSyMApF9fBXf6ryB20tzlR79Ev0lnONUXyj9BSBVyhcDNy0dNqTWKfk+j4jPk4fpE6ezzxoGXr8ctf6MqkYpQ==
 
-"@uiharness/ui@0.6.4":
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.6.4.tgz#190aac3d074fb3ba888c39d344ed98eae316a04c"
-  integrity sha512-pnXKFCITYA1QqHLsw740aJo/CxZJDcqP0ILGEeYhTStfsoex0eqDBjjBgEKn4i0EAQQN2XKvH8hzEkF+JMGK/Q==
+"@uiharness/ui@0.6.5":
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/@uiharness/ui/-/ui-0.6.5.tgz#4be359feadfb37cb8d7757d7c327c42d89e27016"
+  integrity sha512-B12CtSXTgKN4/Ih4fof6GMslG9iV1pfv3/lozA80EKOeqxXWdZk+b4/nUO2O5HXk257Q4HpzndNQbG4iAICVWg==
   dependencies:
     "@platform/cli.ui" "0.2.40"
     "@platform/electron" "0.7.2"

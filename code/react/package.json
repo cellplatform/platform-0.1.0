@@ -25,8 +25,8 @@
   "devDependencies": {
     "@platform/test": "0.0.60",
     "@platform/ts": "3.4.35",
-    "@uiharness/dev": "0.8.1",
-    "@uiharness/ui": "0.6.4",
+    "@uiharness/dev": "0.8.2",
+    "@uiharness/ui": "0.6.5",
     "electron": "6.0.1"
   },
   "files": [

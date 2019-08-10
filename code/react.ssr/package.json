@@ -37,7 +37,7 @@
     "@types/cors": "2.8.5",
     "@types/express": "4.17.0",
     "@types/helmet": "0.0.43",
-    "@uiharness/dev": "0.8.1"
+    "@uiharness/dev": "0.8.2"
   },
   "files": [
     "lib"

@@ -1046,7 +1046,7 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/http@^0.2.13":
+"@platform/http@0.2.13":
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.13.tgz#53618ab9eb262b7ff9d7317ec408073c07906e29"
   integrity sha512-VXxFU03LWhUfj+ftg0X8KuNJoZa6NkhEuF82QIIjCHFEfQjmjpmkWmvaRuY6/s8RI38pFkWYrqzbnmJin7eTOQ==
@@ -1430,10 +1430,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@uiharness/dev@0.8.1":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.8.1.tgz#4ecb1d8a67c2195d442d0a0cb83f0d56144da582"
-  integrity sha512-/j8iUroSmYoMPdoeCn6pdgYNeNWElpKvHQsRzfaG/jkLXLmLldQlo0UeJiQjAZ3mYimSJ47qWavKVALfGi5dcQ==
+"@uiharness/dev@0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.8.2.tgz#b492ac760b6cbc887ed4526718a4f6647f3cc21c"
+  integrity sha512-3nAVOv2cAxDQKXN5m/ZkUX9RikSt9c+HTEp0M0ZAHdadlXUeGvEJNKLCa0njeVbJpf+SyQWyZO6PqjWUfF6hbw==
   dependencies:
     "@babel/core" "7.5.5"
     "@babel/preset-env" "7.5.5"
