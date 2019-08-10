@@ -45,10 +45,20 @@ export function init(args: { bundle: string }) {
 
   (async () => {
     const url = 'https://platform.sfo2.digitaloceanspaces.com/modules/react.ssr/manifest.yml';
-    const m = await manifest.cloud.pull({ url });
-    console.log('-------------------------------------------');
-    console.log(m);
-    console.log('m.manifest', m.manifest);
+    // const m = await manifest.cloud.get({ url });
+    const m = await manifest.cloud.get({ url });
+    // console.log('m.manifest', m.manifest);
+    m.manifest.sites.forEach(site => {
+      console.log('-------------------------------------------');
+      console.log('site', site);
+      console.log('site.routes', site.routes);
+    });
+
+    const s1 = m.site('localhost');
+    const s2 = m.site('localhost:3000');
+
+    console.log('s1', s1);
+    console.log('s2', s2);
   })();
 
   app.get('/', async (req, res) => {

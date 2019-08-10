@@ -4,5 +4,9 @@
 
 sites:
   - domain: localhost:3000
-    bundle: 
+    bundle: bundle/0.0.0
+    routes:
+      default:
+        entry: index.html
+        path: ["/", "/foo"]
 
