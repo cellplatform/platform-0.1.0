@@ -68,21 +68,22 @@ export function init(args: { bundle: string }) {
 
   app.get('/', async (req, res) => {
     try {
-      const el = <div>TEMP</div>;
-      const entry = fs.join(args.bundle, 'index.html');
+      // const el = <div>TEMP</div>;
+      // const entry = fs.join(args.bundle, 'index.html');
+      res.send({ foo: 123 });
 
-      const page = await manifest.bundle.fromFile(entry);
-      console.log('manifest', page);
+      // const page = await manifest.bundle.fromFile(entry);
+      // console.log('manifest', page);
 
-      const scripts = page.scripts.map(file => fs.join('app', file));
-      // console.log('scripts', scripts);
-      const html = render.toHtml({
-        el,
-        title: 'Hypersheet',
-        scripts,
-        stylesheets: ['/css/normalize.css', '/css/global.css'],
-      });
-      res.send(html);
+      // const scripts = page.scripts.map(file => fs.join('app', file));
+      // // console.log('scripts', scripts);
+      // const html = render.toHtml({
+      //   el,
+      //   title: 'Hypersheet',
+      //   scripts,
+      //   stylesheets: ['/css/normalize.css', '/css/global.css'],
+      // });
+      // res.send(html);
     } catch (error) {
       console.log('-------------------------------------------');
       console.log('error.message', error.message);

@@ -17,52 +17,52 @@ export function reset() {
   CACHE = {};
 }
 
-/**
- * Gets the manifest (from cache if already pulled).
- */
-export async function get(args: {
-  url: string; // URL to the manifest.yml (NB: don't use a caching CDN).
-  baseUrl?: string; // If different from `url` (use this to pass in the Edge/CDN alternative URL).
-  force?: boolean;
-}) {
-  const { url } = args;
-  let manifest = CACHE[url] as t.IManifest;
-  if (!manifest || args.force) {
-    manifest = (await pull(args)).manifest;
-    CACHE[url] = manifest;
-  }
+// /**
+//  * Gets the manifest (from cache if already pulled).
+//  */
+// export async function get(args: {
+//   url: string; // URL to the manifest.yml (NB: don't use a caching CDN).
+//   baseUrl?: string; // If different from `url` (use this to pass in the Edge/CDN alternative URL).
+//   force?: boolean;
+// }) {
+//   const { url } = args;
+//   let manifest = CACHE[url] as t.IManifest;
+//   if (!manifest || args.force) {
+//     manifest = (await pull(args)).manifest;
+//     CACHE[url] = manifest;
+//   }
 
-  const res = {
-    manifest,
+//   const res = {
+//     manifest,
 
-    /**
-     * Retrieve the Site with the given domain.
-     */
-    site(args: { domain: string; force?: boolean }) {
-      const { domain } = args;
-      const key = `${url}:${domain}`;
+//     /**
+//      * Retrieve the Site with the given domain.
+//      */
+//     site(args: { domain: string; force?: boolean }) {
+//       const { domain } = args;
+//       const key = `${url}:${domain}`;
 
-      let site = CACHE[key] as Site | undefined;
-      if (!site || args.force) {
-        site = Site.find({ manifest, domain });
-        CACHE[key] = site;
-      }
+//       let site = CACHE[key] as Site | undefined;
+//       if (!site || args.force) {
+//         site = Site.find({ manifest, domain });
+//         CACHE[key] = site;
+//       }
 
-      return site;
-    },
+//       return site;
+//     },
 
-    /**
-     * Retrieve the route at the given domain/path.
-     */
-    route(args: { domain: string; path: string; force?: boolean }) {
-      const { domain, path, force } = args;
-      const site = res.site({ domain, force });
-      return site ? site.route({ path }) : undefined;
-    },
-  };
+//     /**
+//      * Retrieve the route at the given domain/path.
+//      */
+//     route(args: { domain: string; path: string; force?: boolean }) {
+//       const { domain, path, force } = args;
+//       const site = res.site({ domain, force });
+//       return site ? site.route({ path }) : undefined;
+//     },
+//   };
 
-  return res;
-}
+//   return res;
+// }
 
 /**
  * Pulls the and parses the YAML manifest from the given url.

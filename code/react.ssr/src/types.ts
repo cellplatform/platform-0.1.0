@@ -24,6 +24,8 @@ export type ISiteManifest = {
   domain: string;
   bundle: string; // Path to the bundle folder.
   routes: { [key: string]: ISiteManifestRoute };
+  files: string[];
+  dirs: string[];
 };
 
 export type ISiteManifestRoute = {
