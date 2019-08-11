@@ -1,12 +1,12 @@
-import { http, t, util, pathToRegex } from '../common';
+import { http, t, util, pathToRegex, cheerio } from '../common';
 
 export type IRouteArgs = { site: t.ISiteManifest; route: t.ISiteManifestRoute };
 
-export type IRemoteFile = {
+type IEntry = {
   ok: boolean;
   status: number;
   url: string;
-  body: string;
+  html: string;
 };
 
 /**
@@ -43,7 +43,7 @@ export class Route {
    */
   private readonly site: t.ISiteManifest;
   private readonly def: t.ISiteManifestRoute;
-  private _entry: IRemoteFile | undefined;
+  private _entry: IEntry | undefined;
   private _regexps: RegExp[] | undefined;
 
   /**
@@ -67,20 +67,26 @@ export class Route {
 
     // Read in the entry-file HTML.
     let status = 200;
-    const url = `${this.site.bundle}/${this.def.entry}`;
+    const filename = this.def.entry;
+    const url = `${this.site.bundle}/${filename}`;
     const res = await http.get(url);
     if (!res.ok) {
       status = res.status;
     }
-    const body = res.ok ? res.body : '';
+    let html = res.ok ? res.body : '';
+    html = this.formatHtml({ html, filename });
+
+    // console.log('this.def.entry', this.def.entry);
+
+    // Insert the SSR entry html.
 
     // Prepare the entry-object.
     const ok = status.toString().startsWith('2');
-    const entry: IRemoteFile = {
+    const entry: IEntry = {
       ok,
       status,
       url,
-      body,
+      html,
     };
 
     // Finish up.
@@ -103,5 +109,19 @@ export class Route {
    */
   public toObject() {
     return { ...this.def };
+  }
+
+  /**
+   * [Helpers]
+   */
+  private formatHtml(args: { filename: string; html: string }) {
+    const entry = this.site.entries.find(item => item.file === args.filename);
+    if (!args.html || !entry) {
+      return args.html;
+    }
+    const $ = cheerio.load(args.html);
+    $(`div#${entry.id}`).html(entry.html);
+    $(`head`).append(`<style>${entry.css}</style>`);
+    return $.html();
   }
 }

@@ -1,6 +1,6 @@
 import { parse as parseUrl } from 'url';
 
-import { express } from '../common';
+import { express, cheerio } from '../common';
 import { Manifest } from '../manifest';
 
 /**
@@ -60,7 +60,7 @@ export function init(args: { manifestUrl: string; cdnUrl?: string; apiSecret?: s
     if (route) {
       const entry = await route.entry();
       if (entry.ok) {
-        return res.set('Content-Type', 'text/html; charset=utf-8').send(entry.body);
+        return res.set('Content-Type', 'text/html; charset=utf-8').send(entry.html);
       }
     }
 

@@ -16,9 +16,11 @@
     "build-test": "ts build --tsconfig tsconfig.test.json",
     "prepare": "ts prepare",
     "bundle": "ui bundle web && yarn prep",
-    "prep": "ts-node -T scripts/prepare",
-    "p": "ts-node -T scripts/push",
-    "pm": "ts-node -T scripts/pushManifest"
+    "prep": "ts-node -T scripts/prep",
+    "push": "ts-node -T scripts/push",
+    "pm": "ts-node -T scripts/push-manifest",
+    "deploy": "sh sh/deploy.sh",
+    "release": "now alias"
   },
   "dependencies": {
     "@platform/fs": "0.1.7",

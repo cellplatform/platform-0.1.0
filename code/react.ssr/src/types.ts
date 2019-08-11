@@ -3,7 +3,11 @@ export type IBundleManifest = {
   bytes: number;
   size: string;
   files: string[];
+  entries: IBundleEntryHtml[];
 };
+
+export type IBundleEntryElement = { file: string; el: JSX.Element; id?: string };
+export type IBundleEntryHtml = { id: string; file: string; html: string; css: string };
 
 /**
  * The manigest YAML hosted on S3.
@@ -20,6 +24,7 @@ export type ISiteManifest = {
   bundle: string; // Path to the bundle folder.
   routes: { [key: string]: ISiteManifestRoute };
   files: string[];
+  entries: IBundleEntryHtml[];
 };
 
 export type ISiteManifestRoute = {

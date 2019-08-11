@@ -1,4 +1,4 @@
-import { fs, Listr, log, S3, time, util } from '../common';
+import { t, fs, Listr, log, S3, time, util } from '../common';
 import { prepare } from './bundler.prepare';
 
 /**
@@ -15,9 +15,6 @@ export async function bundle(args: {
   const timer = time.timer();
   const bucket = args.s3.bucket(args.bucket);
   const bundleDir = fs.resolve(args.bundleDir);
-
-  // Prepare the bundle.
-  const { manifest } = await prepare({ bundleDir });
 
   // Calculate the list of files to push.
   const files = await fs.glob.find(fs.join(bundleDir, '**'));

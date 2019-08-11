@@ -37,15 +37,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public render() {
     const styles = {
       base: css({
-        fontSize: 50,
+        fontSize: 34,
         PaddingX: 50,
-        PaddingY: 15,
+        PaddingY: 20,
       }),
       image: css({ borderRadius: 8 }),
     };
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
-        <div>Count: {this.count || 0}</div>
+        <div>cat: {this.count || 0}</div>
         <img src='/images/cat.jpg' {...styles.image} />
       </div>
     );

@@ -59,10 +59,11 @@ export class Site {
     // Pull the bundle manifest from the network to get [files] and [dirs].
     const res = await http.get(`${bundle}/${constants.PATH.BUNDLE_MANIFEST}`);
     const manifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
-    const files = manifest ? manifest.files : [];
+    const files = manifest ? manifest.files || [] : [];
+    const entries = manifest ? manifest.entries || [] : [];
 
     // Finish up.
-    const site: t.ISiteManifest = { domain, bundle, routes, files };
+    const site: t.ISiteManifest = { domain, bundle, routes, files, entries };
     return site;
   }
 
