@@ -1,13 +1,14 @@
-import { bundler, s3, fs } from './common';
+import { bundler, lastDir, log } from './common';
 
 (async () => {
-  bundler.prepare({ bundleDir: 'bundle/0.0.0' });
+  const bundleDir = await lastDir('bundle');
+  const res = await bundler.prepare({ bundleDir });
 
-  /**
-   * Push. TEMP 🐷
-   */
-  const bundleDir = fs.resolve('bundle/0.0.0');
-  const bucket = 'platform';
-  const bucketKey = 'modules/react.ssr/bundle/0.0.0';
-  await bundler.push({ s3, bucket, bundleDir, bucketKey });
+  log.info();
+  log.info.gray(res.bundle);
+  log.info.gray(res.manifest.size);
+  res.manifest.files.forEach(file => {
+    log.info.gray(` - ${log.green(file)}`);
+  });
+  log.info();
 })();

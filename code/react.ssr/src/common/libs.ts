@@ -4,8 +4,9 @@ import * as helmet from 'helmet';
 import * as cors from 'cors';
 import * as cheerio from 'cheerio';
 import * as jsYaml from 'js-yaml';
+import * as Listr from 'listr';
 
-export { express, Bowser, helmet, cors, cheerio, jsYaml };
+export { express, Bowser, helmet, cors, cheerio, jsYaml, Listr };
 
 export { fs, S3, S3Bucket } from '@platform/fs.s3';
 export { log } from '@platform/log/lib/server';

@@ -16,3 +16,9 @@ export const s3 = fs.s3({
   accessKey: ACCESS.KEY,
   secret: ACCESS.SECRET,
 });
+
+export async function lastDir(parentDir: string) {
+  parentDir = fs.resolve(parentDir);
+  const dirs = await fs.glob.find(fs.join(parentDir, '*'), { type: 'DIRS' });
+  return dirs[dirs.length - 1];
+}

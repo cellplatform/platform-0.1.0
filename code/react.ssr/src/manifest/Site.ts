@@ -56,7 +56,7 @@ export class Site {
       return acc;
     }, {});
 
-    // Pull the file manifest.
+    // Pull the bundle manifest from the network to get [files] and [dirs].
     const res = await http.get(`${bundle}/${constants.PATH.BUNDLE_MANIFEST}`);
     const manifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
     const files = manifest ? manifest.files : [];

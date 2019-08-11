@@ -1,4 +1,4 @@
-import { fs, log, time, jsYaml, constants, t, S3, util } from '../common';
+import { constants, fs, Listr, log, S3, time, util } from '../common';
 import * as bundleManifest from './bundleManifest';
 
 /**
@@ -11,7 +11,11 @@ export async function prepare(args: { bundleDir: string }) {
   }
 
   // Write a YAML file describing the contents of the bundle.
-  await bundleManifest.write({ path: fs.join(dir, constants.PATH.BUNDLE_MANIFEST) });
+  const path = fs.join(dir, constants.PATH.BUNDLE_MANIFEST);
+  const manifest = await bundleManifest.write({ path });
+
+  // Finish up.
+  return { bundle: dir, manifest };
 }
 
 /**
@@ -29,7 +33,10 @@ export async function push(args: {
   const bundleDir = fs.resolve(args.bundleDir);
   const timer = time.timer();
 
-  // Prepare the list of files to push.
+  // Prepare the bundle.
+  const { manifest } = await prepare({ bundleDir });
+
+  // Calculate the list of files to push.
   const files = await fs.glob.find(fs.join(bundleDir, '**'));
   const items = files.map(source => {
     const key = fs.join(bucketKey, source.substring(bundleDir.length + 1));
@@ -38,27 +45,49 @@ export async function push(args: {
 
   // Log task.
   if (!args.silent) {
+    const { formatPath } = util;
     const size = await fs.size.dir(bundleDir);
+    const endpoint = fs.join(bucket.endpoint, args.bucket, args.bucketKey);
     log.info();
     log.info.cyan(`Pushing to S3 ☝`);
     log.info();
-    log.info.gray(`  size:      ${log.magenta(size.toString())}`);
-    log.info.gray(`  dir:       ${bundleDir}`);
-    log.info.gray(`  endpoint:  ${bucket.endpoint}`);
-    log.info.gray(`  bucket:    ${args.bucket}`);
-    log.info();
-    for (const item of items) {
-      log.info.gray(`   - ${util.formatPath(item.key)}`);
-    }
+    log.info.gray(`  size:   ${log.magenta(size.toString())}`);
+    log.info.gray(`  from:   ${formatPath(bundleDir)}`);
+    log.info.gray(`  to:     ${formatPath(endpoint)}`);
     log.info();
   }
 
   // Push to S3.
-  const putting = items.map(({ source, key }) => bucket.put({ source, key, acl: 'public-read' }));
-  await Promise.all(putting);
+  const tasks = new Listr(
+    items.map(item => {
+      const { source, key } = item;
+      return {
+        title: item.key.substring(args.bucketKey.length + 1),
+        task: () => bucket.put({ source, key, acl: 'public-read' }),
+      };
+    }),
+    { concurrent: true, renderer: args.silent ? 'silent' : undefined },
+  );
 
-  if (!args.silent) {
-    log.info.gray(`${log.green('pushed')} ${timer.elapsed.toString()}`);
+  try {
+    await tasks.run();
+  } catch (error) {
+    log.error(`Failed while pushing to S3`);
+    log.warn(error.message);
     log.info();
   }
+
+  if (!args.silent) {
+    log.info();
+    log.info.gray(`${log.green('done')} ${timer.elapsed.toString()}`);
+    log.info();
+  }
+
+  // Finish up.
+  return {
+    bucket: args.bucket,
+    endpoint: bucket.endpoint,
+    s3: items,
+    manifest,
+  };
 }

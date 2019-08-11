@@ -16,7 +16,8 @@
     "build-test": "ts build --tsconfig tsconfig.test.json",
     "prepare": "ts prepare",
     "bundle": "ui bundle web && yarn prep",
-    "prep": "ts-node -T scripts/prepare"
+    "prep": "ts-node -T scripts/prepare",
+    "push": "ts-node -T scripts/push"
   },
   "dependencies": {
     "@platform/fs": "0.1.7",
@@ -29,7 +30,8 @@
     "cheerio": "1.0.0-rc.3",
     "cors": "2.8.5",
     "express": "4.17.1",
-    "helmet": "3.20.0"
+    "helmet": "3.20.0",
+    "listr": "0.14.3"
   },
   "devDependencies": {
     "@platform/test": "0.0.60",
