@@ -1,10 +1,10 @@
 import * as React from 'react';
 
 import { Test } from '../test/components/Test';
-import { bundler, lastDir, t } from './common';
+import { bundler, t } from './common';
 
 (async () => {
-  const bundleDir = await lastDir('bundle');
+  const bundleDir = await bundler.lastDir('bundle');
   await bundler.prepare({ bundleDir, entries: [entry] });
 })();
 

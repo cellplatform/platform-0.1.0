@@ -63,23 +63,25 @@ export async function bundle(args: {
       const { source, key } = item;
       return {
         title: item.key.substring(args.bucketKey.length + 1),
-        task: () => bucket.put({ source, key, acl: 'public-read' }),
+        task: async () => {
+          const res = await bucket.put({ source, key, acl: 'public-read' });
+          if (!res.ok) {
+            throw res.error;
+          }
+        },
       };
     }),
-    { concurrent: true, renderer },
+    { concurrent: true, renderer, exitOnError: false },
   );
   try {
     await tasks.run();
+    if (!args.silent) {
+      log.info();
+      log.info.gray(`${log.green('done')} ${timer.elapsed.toString()}`);
+      log.info();
+    }
   } catch (error) {
-    log.error(`Failed while pushing to S3`);
-    log.warn(error.message);
-    log.info();
-  }
-
-  if (!args.silent) {
-    log.info();
-    log.info.gray(`${log.green('done')} ${timer.elapsed.toString()}`);
-    log.info();
+    log.error(`\nFailed while pushing to S3.\n`);
   }
 
   // Finish up.
@@ -136,15 +138,12 @@ export async function manifest(args: {
   );
   try {
     await tasks.run();
+    if (!args.silent) {
+      log.info();
+      log.info.gray(`${log.green('done')} ${timer.elapsed.toString()}`);
+      log.info();
+    }
   } catch (error) {
-    log.error(`Failed while pushing to S3`);
-    log.warn(error.message);
-    log.info();
-  }
-
-  if (!args.silent) {
-    log.info();
-    log.info.gray(`${log.green('done')} ${timer.elapsed.toString()}`);
-    log.info();
+    log.error(`\nFailed while pushing to S3.\n`);
   }
 }
