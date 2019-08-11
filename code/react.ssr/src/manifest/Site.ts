@@ -61,9 +61,10 @@ export class Site {
     const manifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
     const files = manifest ? manifest.files || [] : [];
     const entries = manifest ? manifest.entries || [] : [];
+    const version = manifest ? manifest.version || '0.0.0' : '0.0.0';
 
     // Finish up.
-    const site: t.ISiteManifest = { domain, bundle, routes, files, entries };
+    const site: t.ISiteManifest = { version, domain, bundle, routes, files, entries };
     return site;
   }
 

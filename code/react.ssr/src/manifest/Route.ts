@@ -66,19 +66,17 @@ export class Route {
     }
 
     // Read in the entry-file HTML.
-    let status = 200;
     const filename = this.def.entry;
     const url = `${this.site.bundle}/${filename}`;
     const res = await http.get(url);
+
+    let status = 200;
     if (!res.ok) {
       status = res.status;
     }
     let html = res.ok ? res.body : '';
-    html = this.formatHtml({ html, filename });
-
-    // console.log('this.def.entry', this.def.entry);
-
-    // Insert the SSR entry html.
+    const version = this.site.version;
+    html = this.formatHtml({ html, filename, version });
 
     // Prepare the entry-object.
     const ok = status.toString().startsWith('2');
@@ -114,14 +112,19 @@ export class Route {
   /**
    * [Helpers]
    */
-  private formatHtml(args: { filename: string; html: string }) {
-    const entry = this.site.entries.find(item => item.file === args.filename);
-    if (!args.html || !entry) {
-      return args.html;
+  private formatHtml(args: { filename: string; html: string; version: string }) {
+    const { filename, html, version } = args;
+
+    const entry = this.site.entries.find(item => item.file === filename);
+    if (!html || !entry) {
+      return html;
     }
-    const $ = cheerio.load(args.html);
-    $(`div#${entry.id}`).html(entry.html);
-    $(`head`).append(`<style>${entry.css}</style>`);
+
+    const $ = cheerio.load(html);
+    const root = $(`div#${entry.id}`);
+    root.attr('data-version', version);
+    root.html(entry.html);
+    $('head').append(`<style>${entry.css}</style>`);
     return $.html();
   }
 }

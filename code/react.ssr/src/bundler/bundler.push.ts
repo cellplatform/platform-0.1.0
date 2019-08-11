@@ -21,7 +21,7 @@ export function push(args: t.IS3Config) {
 }
 
 /**
- * Pushes the specified bundle to S3
+ * Pushes the specified bundle to S3.
  */
 export async function bundle(args: {
   s3: S3;
@@ -92,7 +92,7 @@ export async function bundle(args: {
 }
 
 /**
- * Pushes the overall manifest to S3
+ * Pushes the overall manifest to S3.
  */
 export async function manifest(args: {
   s3: S3;

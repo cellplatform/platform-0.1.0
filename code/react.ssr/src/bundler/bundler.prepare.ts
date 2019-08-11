@@ -29,6 +29,7 @@ export async function prepare(args: { bundleDir: string; entries?: t.IBundleEntr
 const bundleManifest = {
   async create(args: { path: string; entries?: t.IBundleEntryElement[] }) {
     const dir = fs.dirname(args.path);
+    const version = fs.basename(dir);
     const size = await fs.size.dir(dir);
 
     let files = await fs.glob.find(fs.join(dir, '**'));
@@ -39,6 +40,7 @@ const bundleManifest = {
       .map(entry => renderEntry(entry));
 
     const manifest: t.IBundleManifest = {
+      version,
       createdAt: time.now.timestamp,
       bytes: size.bytes,
       size: size.toString(),

@@ -11,6 +11,7 @@ export type IS3Config = {
  * Bundle
  */
 export type IBundleManifest = {
+  version: string;
   createdAt: number;
   bytes: number;
   size: string;
@@ -32,6 +33,7 @@ export type IManifest = {
  * The manifest of a single url-end-point.
  */
 export type ISiteManifest = {
+  version: string;
   domain: string;
   bundle: string; // Path to the bundle folder.
   routes: { [key: string]: ISiteManifestRoute };
