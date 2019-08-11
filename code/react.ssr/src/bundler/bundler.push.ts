@@ -1,5 +1,4 @@
-import { t, fs, Listr, log, S3, time, util } from '../common';
-import { prepare } from './bundler.prepare';
+import { fs, Listr, log, S3, time, util } from '../common';
 
 /**
  * Pushes the specified bundle to S3

@@ -1,6 +1,6 @@
 import { parse as parseUrl } from 'url';
 
-import { express, cheerio } from '../common';
+import { express } from '../common';
 import { Manifest } from '../manifest';
 
 /**

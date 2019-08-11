@@ -1,4 +1,3 @@
-import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
 
 import { constants, fs, jsYaml, t, time } from '../common';

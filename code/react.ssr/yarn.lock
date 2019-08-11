@@ -1032,10 +1032,10 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.s3@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.1.2.tgz#86c4c0a3d32f5159064a1f4dfc26bae9ee2be408"
-  integrity sha512-9i3JumERSfP0YKNks26vf5NPwfeGrJUuXZpyg+DUtE+OSmZNkypEKkPFTy2SjYDbPT+RIenl28897bp9/v8gOw==
+"@platform/fs.s3@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.2.0.tgz#ba138580c321ed46df65766e32937d8c1aaed554"
+  integrity sha512-chlLPZphqUTFP8xwh8BnY88ZUwnayL4iXBH8CY3pLg4XSh1SrkOvj0r6QbkyXmnzv7IklbUWY/y9AenPu2wKdg==
   dependencies:
     "@platform/fs" "^0.1.7"
     "@platform/libs" "0.1.0"
