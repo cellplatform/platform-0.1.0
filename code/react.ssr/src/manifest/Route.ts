@@ -1,4 +1,4 @@
-import { http, t, util } from '../common';
+import { http, t, util, pathToRegex } from '../common';
 
 export type IRouteArgs = { site: t.ISiteManifest; route: t.ISiteManifestRoute };
 
@@ -44,6 +44,7 @@ export class Route {
   private readonly site: t.ISiteManifest;
   private readonly def: t.ISiteManifestRoute;
   private _entry: IRemoteFile | undefined;
+  private _regexps: RegExp[] | undefined;
 
   /**
    * [Properties]
@@ -85,5 +86,22 @@ export class Route {
     // Finish up.
     this._entry = entry;
     return entry;
+  }
+
+  /**
+   * Determines if the given path matches the route.
+   */
+  public isMatch(path: string) {
+    if (!this._regexps) {
+      this._regexps = this.paths.map(pattern => pathToRegex(pattern));
+    }
+    return this._regexps.some(regex => Boolean(regex.exec(path)));
+  }
+
+  /**
+   * Object representation of the Route.
+   */
+  public toObject() {
+    return { ...this.def };
   }
 }

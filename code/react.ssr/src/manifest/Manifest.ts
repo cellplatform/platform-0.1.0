@@ -123,11 +123,18 @@ export class Manifest {
   /**
    * [Methods]
    */
+
+  /**
+   * Retrieve the site definition for the domain (hostname).
+   */
   public site(domain: string) {
     domain = util.stripHttp(domain);
     return this.sites.find(site => site.domain === domain);
   }
 
+  /**
+   * Object representation of the Manifest.
+   */
   public toObject() {
     return {
       status: this.status,

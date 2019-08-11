@@ -1,6 +1,7 @@
-import { express, S3 } from '../common';
-import { Manifest } from '../manifest';
 import { parse as parseUrl } from 'url';
+
+import { express } from '../common';
+import { Manifest } from '../manifest';
 
 /**
  * Router
@@ -23,7 +24,7 @@ export function init(args: { manifestUrl: string; cdnUrl?: string; apiSecret?: s
   };
 
   /**
-   * [POST] update.
+   * [POST] update manifest (reset cache).
    */
   router.post('/.update', async (req, res) => {
     if (!isAllowed(req, res)) {
@@ -53,12 +54,25 @@ export function init(args: { manifestUrl: string; cdnUrl?: string; apiSecret?: s
       return res.status(status).send({ status, error });
     }
 
-    // Look up the resource.
+    // Check if there is a direct route match and if found SSR the HTML.
     const url = parseUrl(req.url);
+    const route = site.route(url.pathname);
+    if (route) {
+      const entry = await route.entry();
+      if (entry.ok) {
+        return res.set('Content-Type', 'text/html; charset=utf-8').send(entry.body);
+      }
+    }
 
-    // const url
+    // [307] redirect the resource-request to S3.
+    const redirect = site.redirectUrl(url.pathname);
+    if (redirect) {
+      return res.status(307).redirect(redirect);
+    }
 
-    return res.send({ hostname, url, base: req.baseUrl, manifest: manifest.toObject() });
+    // No matching resource.
+    const status = 404;
+    return res.status(status).send({ status, error: 'Not found.' });
   });
 
   // Finish up.

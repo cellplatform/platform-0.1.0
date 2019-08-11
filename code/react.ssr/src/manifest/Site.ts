@@ -60,10 +60,9 @@ export class Site {
     const res = await http.get(`${bundle}/${constants.PATH.BUNDLE_MANIFEST}`);
     const manifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
     const files = manifest ? manifest.files : [];
-    const dirs = manifest ? manifest.dirs : [];
 
     // Finish up.
-    const site: t.ISiteManifest = { domain, bundle, routes, files, dirs };
+    const site: t.ISiteManifest = { domain, bundle, routes, files };
     return site;
   }
 
@@ -93,10 +92,6 @@ export class Site {
     return this.def.files;
   }
 
-  public get dirs() {
-    return this.def.dirs;
-  }
-
   public get routes() {
     if (!this._routes) {
       const site = this.def;
@@ -109,7 +104,27 @@ export class Site {
   /**
    * [Methods]
    */
-  public route(path: string) {
-    return this.routes.find(route => route.paths.includes(path));
+
+  /**
+   * Look up the route at the given path.
+   */
+  public route(path?: string) {
+    return path ? this.routes.find(route => route.isMatch(path)) : undefined;
+  }
+
+  /**
+   * Scan the manifest looking for a match with the given resource.
+   */
+  public redirectUrl(path?: string) {
+    path = (path || '').replace(/^\/*/, '').replace(/\/*$/, '');
+    const exists = this.files.includes(path);
+    return exists ? `${this.def.bundle}/${path}` : '';
+  }
+
+  /**
+   * Object representation of the Site.
+   */
+  public toObject() {
+    return { ...this.def };
   }
 }

@@ -32,7 +32,8 @@
     "cors": "2.8.5",
     "express": "4.17.1",
     "helmet": "3.20.0",
-    "listr": "0.14.3"
+    "listr": "0.14.3",
+    "path-to-regexp": "3.0.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.60",

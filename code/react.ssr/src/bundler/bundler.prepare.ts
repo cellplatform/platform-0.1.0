@@ -23,25 +23,17 @@ export async function prepare(args: { bundleDir: string }) {
  */
 const bundleManifest = {
   async create(args: { path: string }) {
-    const filename = fs.basename(args.path);
     const dir = fs.dirname(args.path);
-    const names = (await fs.readdir(dir)).filter(name => name !== filename);
     const size = await fs.size.dir(dir);
 
-    const isFile = (name: string) => fs.is.file(fs.join(dir, name));
-    const files = (await Promise.all(
-      names.map(async name => ({ name, isFile: await isFile(name) })),
-    ))
-      .filter(item => item.isFile)
-      .map(item => item.name);
-    const dirs = names.filter(name => !files.includes(name));
+    let files = await fs.glob.find(fs.join(dir, '**'));
+    files = files.map(path => path.substring(dir.length + 1));
 
     const manifest: t.IBundleManifest = {
       createdAt: time.now.timestamp,
       bytes: size.bytes,
       size: size.toString(),
       files,
-      dirs,
     };
     return manifest;
   },
