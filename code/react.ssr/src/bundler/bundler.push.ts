@@ -1,4 +1,24 @@
-import { fs, Listr, log, S3, time, util } from '../common';
+import { t, fs, Listr, log, S3, time, util } from '../common';
+
+type IBundleArgs = {
+  bundleDir: string;
+  bucket: string;
+  bucketKey: string;
+  silent?: boolean;
+};
+
+type IManifestArgs = { bucket: string; source: string; target: string; silent?: boolean };
+
+/**
+ * Push API.
+ */
+export function push(args: t.IS3Config) {
+  const s3 = fs.s3(args);
+  return {
+    bundle: (args: IBundleArgs) => bundle({ ...args, s3 }),
+    manifest: (args: IManifestArgs) => manifest({ ...args, s3 }),
+  };
+}
 
 /**
  * Pushes the specified bundle to S3

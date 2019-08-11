@@ -1,4 +1,2 @@
-import * as push from './bundler.push';
-
-export { push };
+export { push } from './bundler.push';
 export { prepare } from './bundler.prepare';

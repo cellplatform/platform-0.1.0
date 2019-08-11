@@ -1,3 +1,15 @@
+/**
+ * S3 object storage.
+ */
+export type IS3Config = {
+  endpoint: string;
+  accessKey: string;
+  secret: string;
+};
+
+/**
+ * Bundle
+ */
 export type IBundleManifest = {
   createdAt: number;
   bytes: number;

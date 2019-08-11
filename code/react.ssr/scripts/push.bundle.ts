@@ -5,5 +5,5 @@ import { bundler, fs, lastDir, s3 } from './common';
   const version = fs.basename(bundleDir);
   const bucket = 'platform';
   const bucketKey = fs.join('modules/react.ssr/bundle', version);
-  await bundler.push.bundle({ s3, bundleDir, bucket, bucketKey, silent: false });
+  await bundler.push(s3).bundle({ bundleDir, bucket, bucketKey, silent: false });
 })();

@@ -8,16 +8,11 @@ export * from '../src/common';
 
 import { fs } from '../src/common';
 
-const ACCESS = {
-  KEY: process.env.SPACES_KEY,
-  SECRET: process.env.SPACES_SECRET,
-};
-
-export const s3 = fs.s3({
+export const s3: t.IS3Config = {
   endpoint: 'sfo2.digitaloceanspaces.com',
-  accessKey: ACCESS.KEY,
-  secret: ACCESS.SECRET,
-});
+  accessKey: process.env.SPACES_KEY,
+  secret: process.env.SPACES_SECRET,
+};
 
 export async function lastDir(parentDir: string) {
   parentDir = fs.resolve(parentDir);
