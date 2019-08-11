@@ -16,8 +16,10 @@ export async function put(args: {
     const res = await s3.upload({ Bucket: bucket, Key: key, Body, ACL: args.acl }).promise();
     const url = res.Location;
     const etag = formatETag(res.ETag);
-    return { ok: true, key, bucket, url, etag };
-  } catch (error) {
-    return { ok: false, key, bucket, error };
+    return { ok: true, status: 200, key, bucket, url, etag };
+  } catch (err) {
+    const status = err.statusCode;
+    const error = new Error(err.code);
+    return { ok: false, status, key, bucket, error };
   }
 }

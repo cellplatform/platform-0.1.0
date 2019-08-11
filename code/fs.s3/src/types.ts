@@ -4,6 +4,7 @@ export type S3Permissions = 'private' | 'public-read' | 'public-read-write';
 
 export type S3GetResponse = {
   ok: boolean;
+  status: number;
   key: string;
   modifiedAt: number;
   etag?: string;
@@ -16,6 +17,7 @@ export type S3GetResponse = {
 
 export type S3PutResponse = {
   ok: boolean;
+  status: number;
   key: string;
   bucket: string;
   url?: string;

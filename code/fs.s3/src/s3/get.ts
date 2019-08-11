@@ -13,6 +13,7 @@ export async function get(args: {
 
   const response: t.S3GetResponse = {
     ok: true,
+    status: 200,
     key,
     modifiedAt: -1,
     content: { type: '', length: -1 },
@@ -36,7 +37,9 @@ export async function get(args: {
   try {
     const obj = await s3.getObject({ Bucket: bucket, Key: key }).promise();
     response.data = obj.Body instanceof Buffer ? obj.Body : undefined;
-  } catch (error) {
+  } catch (err) {
+    const error = new Error(err.code);
+    response.status = err.statusCode;
     response.ok = false;
     response.error = error;
   }
