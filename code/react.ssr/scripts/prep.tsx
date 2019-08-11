@@ -1,17 +1,11 @@
 import * as React from 'react';
 
 import { Test } from '../test/components/Test';
-import { bundler, lastDir, log, t } from './common';
+import { bundler, lastDir, t } from './common';
 
 (async () => {
   const bundleDir = await lastDir('bundle');
-  const res = await bundler.prepare({ bundleDir, entries: [entry] });
-  log.info();
-  log.info.gray(res.manifest.size);
-  res.manifest.files.forEach(file => {
-    log.info.gray(` - ${log.green(file)}`);
-  });
-  log.info();
+  await bundler.prepare({ bundleDir, entries: [entry] });
 })();
 
 /**
