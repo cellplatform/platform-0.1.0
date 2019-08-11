@@ -3,7 +3,7 @@
 # 
 
 sites:
-  - domain: localhost:3000
+  - domain: localhost
     bundle: bundle/0.0.0
     routes:
       default:
