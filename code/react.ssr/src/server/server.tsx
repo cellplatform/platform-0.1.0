@@ -1,9 +1,11 @@
 import * as React from 'react';
 
 // import { Temp } from '../entry/Temp';
-import { cors, express, fs, helmet, is, log, PKG } from '../common';
+import { cors, express, fs, helmet, is, log } from '../common';
 import * as render from './render';
 import { Manifest } from '../manifest';
+
+const PKG = require(fs.resolve('package.json')) as { name: string; version: string };
 
 export * from '../types';
 
@@ -51,16 +53,12 @@ export function init(args: { bundle: string }) {
     console.log('m', m);
     console.log('m.manifest', m);
 
-    // const m = await manifest.cloud.get({ url });
-    // const m = await manifest.cloud.get({ url });
-    // // console.log('m.manifest', m.manifest);
-    // m.manifest.sites.forEach(site => {
-    //   console.log('-------------------------------------------');
-    //   console.log('site', site);
-    //   console.log('site.routes', site.routes);
-    // });
-
     const site = m.site('localhost:3000');
+
+    if (site) {
+      console.log('site.files', site.files);
+      console.log('site.dirs', site.dirs);
+    }
 
     const route = site ? site.route('/foo') : undefined;
     if (route) {

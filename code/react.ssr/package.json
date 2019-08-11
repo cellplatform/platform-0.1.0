@@ -15,10 +15,12 @@
     "build": "ts build",
     "build-test": "ts build --tsconfig tsconfig.test.json",
     "prepare": "ts prepare",
-    "bundle": "ui bundle web"
+    "bundle": "ui bundle web && yarn prep",
+    "prep": "ts-node -T scripts/prepare"
   },
   "dependencies": {
     "@platform/fs": "0.1.7",
+    "@platform/fs.s3": "0.1.2",
     "@platform/http": "0.2.13",
     "@platform/libs": "0.1.0",
     "@platform/log": "0.0.135",
@@ -35,9 +37,11 @@
     "@types/bowser": "1.1.1",
     "@types/cheerio": "0.22.13",
     "@types/cors": "2.8.5",
+    "@types/dotenv": "6.1.1",
     "@types/express": "4.17.0",
     "@types/helmet": "0.0.43",
-    "@uiharness/dev": "0.8.3"
+    "@uiharness/dev": "0.8.4",
+    "dotenv": "8.0.0"
   },
   "files": [
     "lib"

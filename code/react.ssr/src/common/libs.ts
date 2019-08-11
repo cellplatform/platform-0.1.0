@@ -7,9 +7,9 @@ import * as jsYaml from 'js-yaml';
 
 export { express, Bowser, helmet, cors, cheerio, jsYaml };
 
-export { fs } from '@platform/fs';
+export { fs, S3, S3Bucket } from '@platform/fs.s3';
 export { log } from '@platform/log/lib/server';
 export { is } from '@platform/util.is';
-export { value } from '@platform/util.value';
+export { value, time, defaultValue } from '@platform/util.value';
 export { css, GlamorValue } from '@platform/react';
 export { http } from '@platform/http';

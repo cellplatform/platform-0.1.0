@@ -1,13 +1,9 @@
-/**
- * The parts of a bundle entry HTML.
- */
-export type IBundleEntry = {
-  scripts: string[];
-  stylesheets: string[];
-};
-export type IBundleEntryFile = IBundleEntry & {
-  exists: boolean;
-  entry: string;
+export type IBundleManifest = {
+  createdAt: number;
+  bytes: number;
+  size: string;
+  files: string[];
+  dirs: string[];
 };
 
 /**

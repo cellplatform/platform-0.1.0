@@ -1,5 +1,4 @@
-import { t, fs, http } from '../common';
-import * as util from './util';
+import { http, t, util } from '../common';
 
 export type IRouteArgs = { site: t.ISiteManifest; route: t.ISiteManifestRoute };
 

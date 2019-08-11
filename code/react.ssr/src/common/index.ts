@@ -1,6 +1,6 @@
+import * as constants from './constants';
 import * as t from './types';
+import * as util from './util';
 
-const PKG = require('../../../package.json') as { name: string; version: string };
-
-export { t, PKG };
+export { t, constants, util };
 export * from './libs';

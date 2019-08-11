@@ -1,6 +1,5 @@
-import { t, http, jsYaml } from '../common';
+import { constants, http, jsYaml, t, util } from '../common';
 import { Route } from './Route';
-import * as util from './util';
 
 export type ISiteArgs = { def: t.ISiteManifest };
 
@@ -58,8 +57,8 @@ export class Site {
     }, {});
 
     // Pull the file manifest.
-    const res = await http.get(`${bundle}/manifest.yml`);
-    const manifest = res.ok ? jsYaml.safeLoad(res.body) : undefined;
+    const res = await http.get(`${bundle}/${constants.PATH.BUNDLE_MANIFEST}`);
+    const manifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
     const files = manifest ? manifest.files : [];
     const dirs = manifest ? manifest.dirs : [];
 
@@ -88,6 +87,14 @@ export class Site {
    */
   public get domain() {
     return this.def.domain;
+  }
+
+  public get files() {
+    return this.def.files;
+  }
+
+  public get dirs() {
+    return this.def.dirs;
   }
 
   public get routes() {

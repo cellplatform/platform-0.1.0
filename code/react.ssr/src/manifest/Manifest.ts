@@ -1,7 +1,5 @@
+import { http, t, util } from '../common';
 import { Site } from './Site';
-import { Route } from './Route';
-import { t, fs, http } from '../common';
-import * as util from './util';
 
 type IPullResonse = {
   ok: boolean;
