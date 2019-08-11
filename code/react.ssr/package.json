@@ -17,7 +17,8 @@
     "prepare": "ts prepare",
     "bundle": "ui bundle web && yarn prep",
     "prep": "ts-node -T scripts/prepare",
-    "push": "ts-node -T scripts/push"
+    "p": "ts-node -T scripts/push",
+    "pm": "ts-node -T scripts/pushManifest"
   },
   "dependencies": {
     "@platform/fs": "0.1.7",
