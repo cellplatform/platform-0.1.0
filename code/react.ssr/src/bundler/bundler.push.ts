@@ -82,6 +82,7 @@ export async function bundle(args: {
     }
   } catch (error) {
     log.error(`\nFailed while pushing to S3.\n`);
+    process.exit(1);
   }
 
   // Finish up.
@@ -145,5 +146,6 @@ export async function manifest(args: {
     }
   } catch (error) {
     log.error(`\nFailed while pushing to S3.\n`);
+    process.exit(1);
   }
 }
