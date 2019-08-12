@@ -111,17 +111,13 @@ export class Site {
    * [Methods]
    */
   public isMatch(domain: string | string[]) {
-    const isRegexMatch = (domain: string, regex: RegExp) => {
+    const isMatch = (domain: string, regex: RegExp) => {
       const res = regex.exec(domain);
       return Array.isArray(res) && res[0] === domain;
     };
-
     const domains = Array.isArray(domain) ? domain : [domain];
-    if (this._regexes.length > 0) {
-      return this._regexes.some(regex => domains.some(domain => isRegexMatch(domain, regex)));
-    } else {
-      return this.domain.some(domain => domains.includes(domain));
-    }
+    const regexes = this._regexes;
+    return domains.some(d => this.domain.includes(d) || regexes.some(r => isMatch(d, r)));
   }
 
   /**

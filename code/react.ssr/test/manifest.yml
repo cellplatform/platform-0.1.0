@@ -3,7 +3,7 @@
 # 
 
 sites:
-  - domain: [/local.*/, foo]
+  - domain: [localhost, /.*\.now\.sh$/]
     bundle: bundle/0.0.6
     routes:
       default:
