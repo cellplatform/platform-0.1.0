@@ -8,8 +8,9 @@ const toGoogleUrl = (family: string) => `${GOOGLE.BASE}?family=${family}`;
 /**
  * Import:
  *
- *  - CODE: css.head.importStylesheet(ROBOTO.GOOGLE.URL)
- *  - CSS:  <link href='https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,900&display=swap' rel='stylesheet' />
+ *  - CODE:   css.head.importStylesheet(ROBOTO.GOOGLE.URL)
+ *  - LINK:   <link href='https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,900&display=swap' rel='stylesheet' />
+ *  - IMPORT: @import url('https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,900&display=swap')
  *
  */
 export const ROBOTO = {
@@ -29,8 +30,9 @@ export const ROBOTO = {
 /**
  * Import:
  *
- *  - CODE: css.head.importStylesheet(MONOSPACE.GOOGLE.URL)
- *  - CSS:  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
+ *  - CODE:   css.head.importStylesheet(MONOSPACE.GOOGLE.URL)
+ *  - LINK:   <link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
+ *  - IMPORT: @import url('https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap')
  *
  */
 export const MONOSPACE = {
