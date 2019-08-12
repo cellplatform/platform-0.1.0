@@ -4,7 +4,7 @@
 
 sites:
   - domain: localhost
-    bundle: bundle/0.0.0
+    bundle: bundle/0.0.4
     routes:
       default:
         entry: index.html
