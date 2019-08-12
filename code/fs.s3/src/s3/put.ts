@@ -43,6 +43,14 @@ export function toContentType(key: string) {
     return 'application/json';
   }
 
+  if (key.endsWith('.yaml') || key.endsWith('.yml')) {
+    return 'text/plain';
+  }
+
+  if (key.endsWith('.txt')) {
+    return 'text/plain';
+  }
+
   if (key.endsWith('.html') || key.endsWith('.htm')) {
     return 'text/html';
   }
@@ -69,10 +77,6 @@ export function toContentType(key: string) {
 
   if (key.endsWith('.pdf')) {
     return 'application/pdf';
-  }
-
-  if (key.endsWith('.txt')) {
-    return 'text/plain';
   }
 
   if (key.endsWith('.csv') || key.endsWith('.tsv')) {

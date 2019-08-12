@@ -57,12 +57,17 @@ export async function bundle(args: {
   }
 
   // Push to S3.
+  const dirSize = await fs.size.dir(bundleDir);
   const renderer = args.silent ? 'silent' : undefined;
   const tasks = new Listr(
     items.map(item => {
       const { source, key } = item;
+      const file = item.key.substring(args.bucketKey.length + 1);
+      const fileSize = dirSize.files.find(item => item.path.endsWith(`/${file}`));
+      let size = fileSize ? fileSize.toString({ round: 0, spacer: '' }) : '';
+      size = `${size}        `.substring(0, 8);
       return {
-        title: item.key.substring(args.bucketKey.length + 1),
+        title: `${size} ${file}`,
         task: async () => {
           const res = await bucket.put({ source, key, acl: 'public-read' });
           if (!res.ok) {

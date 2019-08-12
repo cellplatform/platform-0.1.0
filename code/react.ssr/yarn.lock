@@ -1032,10 +1032,10 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.s3@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.2.1.tgz#ce404d4c2781d1fab56e5eb7bbfe90a62d674cc2"
-  integrity sha512-HPQGGHnKSKRWGtpu2nQGKv1/c9niALJSxMup9oJtJI+lxhp4DQcnLowjsRehEnfdksINkibb7VleN24EiA+SpA==
+"@platform/fs.s3@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.2.3.tgz#7591102bd3d732ee0021f849c00cd3b175cbb1ec"
+  integrity sha512-XfA5DprUAaDSeAxNlN1+a7tjCLFDn5M1RBPG1Nt5Z/t0Awa0aOEZJDBSUddgHJ8hy8hR9tOIrC2f3+RFmwYeng==
   dependencies:
     "@platform/fs" "^0.1.7"
     "@platform/libs" "0.1.0"
@@ -1449,10 +1449,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@uiharness/dev@0.8.5":
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.8.5.tgz#a24803d26c09a6807f5ce88e12ace47d0dae9bd3"
-  integrity sha512-BbqjU3qmfxKyk9PWPjfUuJNkQo0ikg02SAXeqn6nSdiCHr8i0iafkEVTijRonOJRHGwKehJN2cbCEkJlPgm7tg==
+"@uiharness/dev@0.8.6":
+  version "0.8.6"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.8.6.tgz#a46bb2e53fdbf6087d9ec15cc4829e2d5b5e4a9a"
+  integrity sha512-UtiPfa1R4KQ1IXar4F0a5t17CrNzRIrqMo1gDVW7ZKKXd7bAPnViuLDzPFG0cuE94i5FmLaUSUvuC456ZZPxWQ==
   dependencies:
     "@babel/core" "7.5.5"
     "@babel/preset-env" "7.5.5"
