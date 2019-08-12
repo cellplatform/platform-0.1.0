@@ -76,7 +76,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - ui
   - [@platform/css](/code/css)
   - [@platform/react](/code/react)
-  - [@platform/react](/code/react.ssr)
+  - [@platform/react.ssr](/code/react.ssr)
 - ui (primitives)
   - [@platform/ui.button](/code/ui.button)
   - [@platform/ui.codemirror](/code/ui.codemirror)
