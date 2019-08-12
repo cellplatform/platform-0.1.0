@@ -37,7 +37,9 @@ export class Site {
     }
 
     // Domain name.
-    const domain = util.stripHttp(input.domain);
+    let domain = input.domain || '';
+    domain = Array.isArray(domain) ? domain : [domain];
+    domain = domain.map((hostname: string) => util.stripHttp(hostname));
 
     // Bundle.
     let bundle = util.asString(input.bundle);
@@ -75,12 +77,7 @@ export class Site {
   private constructor(args: ISiteArgs) {
     const { def } = args;
     this.def = def;
-
-    // If the domain was expressed as a regular expression generate it now.
-    if (def.domain.startsWith('/') && def.domain.endsWith('/')) {
-      const domain = def.domain.replace(/^\//, '').replace(/\/$/, '');
-      this._regex = new RegExp(domain);
-    }
+    this._regexes = toDomainRegexes(def.domain);
   }
 
   /**
@@ -88,7 +85,7 @@ export class Site {
    */
   private readonly def: t.ISiteManifest;
   private _routes: Route[];
-  private _regex: RegExp | undefined;
+  private _regexes: RegExp[];
 
   /**
    * [Properties]
@@ -113,12 +110,17 @@ export class Site {
   /**
    * [Methods]
    */
-  public isMatch(domain: string) {
-    if (this._regex) {
-      const res = this._regex.exec(domain);
+  public isMatch(domain: string | string[]) {
+    const isRegexMatch = (domain: string, regex: RegExp) => {
+      const res = regex.exec(domain);
       return Array.isArray(res) && res[0] === domain;
+    };
+
+    const domains = Array.isArray(domain) ? domain : [domain];
+    if (this._regexes.length > 0) {
+      return this._regexes.some(regex => domains.some(domain => isRegexMatch(domain, regex)));
     } else {
-      return domain === this.domain;
+      return this.domain.some(domain => domains.includes(domain));
     }
   }
 
@@ -144,4 +146,16 @@ export class Site {
   public toObject() {
     return { ...this.def };
   }
+}
+
+/**
+ * [Helpers]
+ */
+export function toDomainRegexes(domains: string[]) {
+  const isRegex = (domain: string) => domain.startsWith('/') && domain.endsWith('/');
+  const toRegex = (domain: string) => {
+    domain = domain.replace(/^\//, '').replace(/\/$/, '');
+    return new RegExp(domain);
+  };
+  return domains.filter(domain => isRegex(domain)).map(domain => toRegex(domain));
 }
