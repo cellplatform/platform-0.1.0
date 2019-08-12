@@ -1,6 +1,6 @@
 {
   "name": "@platform/react.ssr",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "An SSR (server-side-render) server for react apps bundled with ParcelJS and hosted on S3.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@platform/fs": "0.1.7",
-    "@platform/fs.s3": "0.2.3",
+    "@platform/fs.s3": "0.2.4",
     "@platform/http": "0.2.13",
     "@platform/libs": "0.1.0",
     "@platform/log": "0.0.135",
