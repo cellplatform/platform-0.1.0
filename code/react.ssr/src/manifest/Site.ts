@@ -75,6 +75,12 @@ export class Site {
   private constructor(args: ISiteArgs) {
     const { def } = args;
     this.def = def;
+
+    // If the domain was expressed as a regular expression generate it now.
+    if (def.domain.startsWith('/') && def.domain.endsWith('/')) {
+      const domain = def.domain.replace(/^\//, '').replace(/\/$/, '');
+      this._regex = new RegExp(domain);
+    }
   }
 
   /**
@@ -82,6 +88,7 @@ export class Site {
    */
   private readonly def: t.ISiteManifest;
   private _routes: Route[];
+  private _regex: RegExp | undefined;
 
   /**
    * [Properties]
@@ -106,6 +113,14 @@ export class Site {
   /**
    * [Methods]
    */
+  public isMatch(domain: string) {
+    if (this._regex) {
+      const res = this._regex.exec(domain);
+      return Array.isArray(res) && res[0] === domain;
+    } else {
+      return domain === this.domain;
+    }
+  }
 
   /**
    * Look up the route at the given path.

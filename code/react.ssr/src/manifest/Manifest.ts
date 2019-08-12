@@ -129,7 +129,7 @@ export class Manifest {
    */
   public site(domain: string) {
     domain = util.stripHttp(domain);
-    return this.sites.find(site => site.domain === domain);
+    return this.sites.find(site => site.isMatch(domain));
   }
 
   /**
