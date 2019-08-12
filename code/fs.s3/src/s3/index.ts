@@ -25,6 +25,7 @@ export function init(args: { accessKey: string; secret: string; endpoint: string
     bucket(name: string) {
       const bucket = name;
       return {
+        bucket,
         endpoint,
         get(args: { key: string }) {
           return res.get({ ...args, bucket });

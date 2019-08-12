@@ -1,0 +1,12 @@
+# 
+# Sample manifest for `@platform/react.ssr`
+# 
+
+sites:
+  - domain: [localhost, /.*\.now\.sh$/]
+    bundle: bundle/0.0.6
+    routes:
+      default:
+        entry: index.html
+        path: ["/", "/foo"]
+

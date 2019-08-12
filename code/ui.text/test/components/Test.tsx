@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { Button, color, css, Hr, ITextInputProps, log, t, TextInput } from '../common';
+import { COLORS, Button, color, css, Hr, ITextInputProps, log, t, TextInput } from '../common';
 import { TestText } from './Test.Text';
 
 const LOREM =
@@ -106,6 +106,12 @@ export class Test extends React.PureComponent<ITestState> {
         padding: 30,
         Scroll: true,
       }),
+      dark: css({
+        boxSizing: 'border-box',
+        backgroundColor: COLORS.DARK,
+        padding: 15,
+        marginTop: 20,
+      }),
     };
     return (
       <div {...styles.base}>
@@ -113,7 +119,18 @@ export class Test extends React.PureComponent<ITestState> {
           {this.renderInput({ focusOnLoad: true })}
           {this.renderInput({ maxLength: 5, placeholder: 'maxLength: 5' })}
         </div>
-        <Hr margin={50} />
+        <div {...styles.dark}>
+          {this.renderInput({
+            valueStyle: { color: COLORS.WHITE },
+            placeholderStyle: { color: color.format(0.2), italic: true },
+          })}
+          {this.renderInput({
+            isEnabled: false,
+            valueStyle: { color: 1, disabledColor: 1 },
+            disabledOpacity: 0.2,
+            placeholderStyle: { color: color.format(0.2), italic: true },
+          })}
+        </div>
         <TestText />
       </div>
     );
@@ -123,6 +140,7 @@ export class Test extends React.PureComponent<ITestState> {
     const styles = {
       base: css({
         marginBottom: 20,
+        ':last-child': { marginBottom: 0 },
       }),
     };
     return (
@@ -130,8 +148,9 @@ export class Test extends React.PureComponent<ITestState> {
         <TextInput
           ref={this.inputRef}
           value={this.state.value}
+          valueStyle={{ ...props.valueStyle }}
           placeholder={'TextInput'}
-          placeholderStyle={{ color: color.format(-0.2) }}
+          placeholderStyle={{ color: color.format(-0.2), ...props.placeholderStyle }}
           events$={this.input$}
           {...props}
         />
