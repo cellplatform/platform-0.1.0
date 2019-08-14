@@ -4,7 +4,9 @@ import * as prompt from './util';
 /**
  * Prompt via the CLI to increment the NPM version.
  */
-export async function incrementVersion(options: { path?: string; save?: boolean } = {}) {
+export async function incrementVersion(
+  options: { path?: string; save?: boolean; noChange?: boolean } = {},
+) {
   const path = fs.resolve(options.path || './package.json');
   const pkg = await fs.file.loadAndParse<{ version: string }>(path);
   const version = pkg.version;
@@ -26,12 +28,16 @@ export async function incrementVersion(options: { path?: string; save?: boolean 
     asOption('prerelease', 'beta'),
   ];
 
+  if (options.noChange) {
+    items.push({ name: 'no change', value: version });
+  }
+
   // Prompt the user.
   const message = `increment version (${version})`;
   const next = await prompt.list({ message, items });
 
   // Save the change.
-  if (options.save) {
+  if (options.save && next !== version) {
     pkg.version = next;
     await fs.file.stringifyAndSave(path, pkg);
   }
