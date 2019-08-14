@@ -1,6 +1,9 @@
 import { equals } from 'ramda';
 export const R = { equals };
 
+import * as inquirer from 'inquirer';
+export { inquirer };
+
 export { fs } from '@platform/fs';
 export { exec } from '@platform/exec';
 

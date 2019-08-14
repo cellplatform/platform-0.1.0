@@ -1,0 +1,28 @@
+{
+  "name": "@platform/util.cli",
+  "version": "0.0.0",
+  "description": "Helpers for making CLI's.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare",
+    "prompt": "ts-node -T scripts/prompt"
+  },
+  "dependencies": {
+    "@platform/libs": "0.1.0",
+    "inquirer": "6.5.1"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.60",
+    "@platform/ts": "3.4.35",
+    "@types/inquirer": "6.5.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}

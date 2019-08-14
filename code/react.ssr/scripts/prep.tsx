@@ -5,7 +5,11 @@ import { bundler, t } from './common';
 
 (async () => {
   const bundleDir = await bundler.lastDir('bundle');
-  await bundler.prepare({ bundleDir, entries: [entry] });
+  await bundler.prepare({
+    bundleDir,
+    entries: [entry],
+    promptVersion: true,
+  });
 })();
 
 /**
