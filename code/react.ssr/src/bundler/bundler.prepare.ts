@@ -1,5 +1,6 @@
 import * as ReactDOMServer from 'react-dom/server';
 import { util, constants, fs, jsYaml, t, time, log } from '../common';
+import { prompt } from '@platform/npm';
 
 const renderStatic = require('glamor/server').renderStatic;
 
@@ -10,12 +11,18 @@ export async function prepare(args: {
   bundleDir: string;
   entries?: t.IBundleEntryElement[];
   silent?: boolean;
+  promptVersion?: boolean;
 }) {
   const { entries } = args;
 
   const dir = fs.resolve(args.bundleDir);
   if (!(await fs.pathExists(dir))) {
     throw new Error(`Cannot prepare, the directory does not exist. ${dir}`);
+  }
+
+  // Increment NPM version.
+  if (args.promptVersion) {
+    await prompt.incrementVersion({ save: true, noChange: true });
   }
 
   // Write a YAML file describing the contents of the bundle.
