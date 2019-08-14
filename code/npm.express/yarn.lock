@@ -86,14 +86,15 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/npm@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.1.tgz#4f79d2f703f341977d8b91c2ebcc5d90fdf8af1c"
-  integrity sha512-OOUGZ9g/dBFpFG4PIE8NV3ydb0UI3QRJERx/Q1Qd9R9qcI8A0qxoBB0ALeetOiEHyp3MKSqQ4miV+No2lDXPkw==
+"@platform/npm@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.3.tgz#98a7232a1366a80d793af7dfa13a1c428d9097b3"
+  integrity sha512-0A/tvROokjv0rLYAkx9LCFoGz+Y1TE0cnhRNoJfd3I8cyzd1TZvQwH+pJEtLDsINJ9Kd5L7JPEXFRUVEPBnXzw==
   dependencies:
     "@platform/exec" "0.2.22"
     "@platform/fs" "0.1.7"
     "@platform/log" "0.0.135"
+    "@platform/util.cli" "^0.0.0"
     "@platform/util.value" "0.4.6"
     "@types/semver" "6.0.1"
     inquirer "6.5.1"
@@ -139,6 +140,14 @@
   version "0.0.22"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.22.tgz#4e0862fc1686370043f043b377c65f26366a0295"
   integrity sha512-GVvckw7WM1mzxCi+XSnbMa4EGGdB3rvMjkaW50P5Lpw8VuJjD8LvwnrTqOjoeymv9qrRPBaBQNoy/hFRPRLfNw==
+
+"@platform/util.cli@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.cli/-/util.cli-0.0.0.tgz#ff235ba0bda42053b2954ff227765e1af674483c"
+  integrity sha512-g3HPlutwkvC6HRDELa6JUOVhJ6wDlfFRALcyKDgWYNu0cTZFDP7zcws9L/upp3QArFJZUKK1y5YOLqhCqOyhsg==
+  dependencies:
+    "@platform/libs" "0.1.0"
+    inquirer "6.5.1"
 
 "@platform/util.is@0.0.84":
   version "0.0.84"

@@ -127,6 +127,14 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.22.tgz#4e0862fc1686370043f043b377c65f26366a0295"
   integrity sha512-GVvckw7WM1mzxCi+XSnbMa4EGGdB3rvMjkaW50P5Lpw8VuJjD8LvwnrTqOjoeymv9qrRPBaBQNoy/hFRPRLfNw==
 
+"@platform/util.cli@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.cli/-/util.cli-0.0.0.tgz#ff235ba0bda42053b2954ff227765e1af674483c"
+  integrity sha512-g3HPlutwkvC6HRDELa6JUOVhJ6wDlfFRALcyKDgWYNu0cTZFDP7zcws9L/upp3QArFJZUKK1y5YOLqhCqOyhsg==
+  dependencies:
+    "@platform/libs" "0.1.0"
+    inquirer "6.5.1"
+
 "@platform/util.is@0.0.84":
   version "0.0.84"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.84.tgz#5eba0411cfd6a46fded88f51b96951213b4f9933"

@@ -1102,14 +1102,15 @@
     "@types/semver" "6.0.1"
     semver "6.3.0"
 
-"@platform/npm@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.1.tgz#4f79d2f703f341977d8b91c2ebcc5d90fdf8af1c"
-  integrity sha512-OOUGZ9g/dBFpFG4PIE8NV3ydb0UI3QRJERx/Q1Qd9R9qcI8A0qxoBB0ALeetOiEHyp3MKSqQ4miV+No2lDXPkw==
+"@platform/npm@0.2.3", "@platform/npm@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.3.tgz#98a7232a1366a80d793af7dfa13a1c428d9097b3"
+  integrity sha512-0A/tvROokjv0rLYAkx9LCFoGz+Y1TE0cnhRNoJfd3I8cyzd1TZvQwH+pJEtLDsINJ9Kd5L7JPEXFRUVEPBnXzw==
   dependencies:
     "@platform/exec" "0.2.22"
     "@platform/fs" "0.1.7"
     "@platform/log" "0.0.135"
+    "@platform/util.cli" "^0.0.0"
     "@platform/util.value" "0.4.6"
     "@types/semver" "6.0.1"
     inquirer "6.5.1"
@@ -1176,12 +1177,20 @@
     "@platform/react" "0.3.14"
     react-inspector "3.0.2"
 
+"@platform/util.cli@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.cli/-/util.cli-0.0.0.tgz#ff235ba0bda42053b2954ff227765e1af674483c"
+  integrity sha512-g3HPlutwkvC6HRDELa6JUOVhJ6wDlfFRALcyKDgWYNu0cTZFDP7zcws9L/upp3QArFJZUKK1y5YOLqhCqOyhsg==
+  dependencies:
+    "@platform/libs" "0.1.0"
+    inquirer "6.5.1"
+
 "@platform/util.is@0.0.84":
   version "0.0.84"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.84.tgz#5eba0411cfd6a46fded88f51b96951213b4f9933"
   integrity sha512-Tzzq9x2VFRAau7gOXKLYHeCFpRKH0pDMIP3zMBr49VB0p6nChIy4H0a2r73Hrtbu0OKJSTOjyzNRFPFfejMCqw==
 
-"@platform/util.string@^0.3.2":
+"@platform/util.string@0.3.2":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.3.2.tgz#ce3e5db76742b3413fda7e8d5319cff5116db40c"
   integrity sha512-L4sHHVIFzavvN1hZj+mgTxbfQnIdoLrdMC4+VJsflXGmAfEdoFhwo/VnGmfbLidum4DXtAH3TFzacrfVTCJ1Lw==
@@ -1462,10 +1471,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@uiharness/dev@0.8.7":
-  version "0.8.7"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.8.7.tgz#794eb7cb57d1578050eebaeb88c933c32a471f8a"
-  integrity sha512-dTDj3CD9K9LHTl/u6Oi9vXKCEBDyPrVxJa1OSWzfFbpWLQBoxykEA65Dcev//U1fN9V6I9WSTyWvAdpf6b4/GA==
+"@uiharness/dev@0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.9.0.tgz#7f4a47604dafe78b1034803ece4cdff17f4015d0"
+  integrity sha512-1XODBPzaoopA6fLvwyVMI+frXyr9yIxm4HzfgqpCPwOp+4UKq0VHHF7wI6eT4tbQll2mUanKfsjp3E1BVCPHhQ==
   dependencies:
     "@babel/core" "7.5.5"
     "@babel/preset-env" "7.5.5"
@@ -1474,12 +1483,13 @@
     "@platform/cli" "0.1.14"
     "@platform/electron" "0.7.2"
     "@platform/fs" "0.1.7"
+    "@platform/npm" "^0.2.3"
     "@platform/ts" "3.4.35"
-    "@platform/util.string" "^0.3.2"
+    "@platform/util.string" "0.3.2"
     "@uiharness/electron" "0.6.1"
     "@uiharness/types" "0.6.0"
     create-tmpl "0.1.62"
-    electron "6.0.1"
+    electron "6.0.2"
     electron-builder "21.2.0"
     filesize "4.1.2"
     parcel-bundler "1.12.3"
@@ -3555,10 +3565,10 @@ electron-window-state@5.0.3:
     jsonfile "^4.0.0"
     mkdirp "^0.5.1"
 
-electron@6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-6.0.1.tgz#9dcdb3773e933890f432403f2ff5851cffbea126"
-  integrity sha512-XY69rI5IThIxsOS2BD+1ZkHE9hqkm4xN5a3WQFSmFRr2by4q5CnIe9vXmptlouGPTLs3tb7ySX/+K9CvH3szvg==
+electron@6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-6.0.2.tgz#437f3ac2bcb42116d92a3f1084280e0b2cff1493"
+  integrity sha512-2SV10JlUsEGZ8CePeQIllFBwrOmm1EONne3Ev7Ro1F4tuS9sF184d3/3wZjEtwOs7hsM6elceYnNuZfx93++YA==
   dependencies:
     "@types/node" "^10.12.18"
     electron-download "^4.1.0"
