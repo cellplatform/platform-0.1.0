@@ -1,5 +1,5 @@
 import { fs, semver } from '../common';
-import * as prompt from './util';
+import { prompt } from '@platform/util.cli';
 
 /**
  * Prompt via the CLI to increment the NPM version.
@@ -17,24 +17,26 @@ export async function incrementVersion(
     let name = (prerelease ? prerelease : level) as string;
     name = `${name}    `.substring(0, 5);
     name = `${name}  ➜  ${value}`;
-    const option: prompt.IOption = { name, value };
+    const option: prompt.IPromptListOption = { name, value };
     return option;
   };
   const items = [
-    asOption('major'),
-    asOption('minor'),
     asOption('patch'),
+    asOption('minor'),
+    asOption('major'),
+    '----',
     asOption('prerelease', 'alpha'),
     asOption('prerelease', 'beta'),
   ];
 
   if (options.noChange) {
+    items.push('----');
     items.push({ name: 'no change', value: version });
   }
 
   // Prompt the user.
   const message = `increment version (${version})`;
-  const next = await prompt.list({ message, items });
+  const next = await prompt.list({ message, items, pageSize: 10 });
 
   // Save the change.
   if (options.save && next !== version) {
