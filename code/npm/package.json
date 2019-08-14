@@ -9,7 +9,8 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "pv": "ts-node -T scripts/prompt-version.ts"
   },
   "dependencies": {
     "@platform/exec": "0.2.22",
@@ -17,12 +18,14 @@
     "@platform/log": "0.0.135",
     "@platform/util.value": "0.4.6",
     "@types/semver": "6.0.1",
+    "inquirer": "6.5.1",
     "semver": "6.3.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.60",
     "@platform/ts": "3.4.35",
     "@types/dotenv": "6.1.1",
+    "@types/inquirer": "6.5.0",
     "dotenv": "8.0.0"
   },
   "files": [
