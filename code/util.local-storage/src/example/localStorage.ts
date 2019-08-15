@@ -1,6 +1,6 @@
 import { localStorage as init } from '..';
 
-const prefix = '@TDB/slc/';
+const prefix = '@platform/ns/';
 
 type IStorage = {
   text: string;

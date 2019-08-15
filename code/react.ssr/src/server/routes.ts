@@ -19,8 +19,6 @@ export function init(args: {
 
   const isDenied = (req: t.IncomingMessage): t.RouteResponse | undefined => {
     const { secret } = args;
-
-    // req.headers
     const auth = req.headers.authorization;
     const isAuthorized = !secret ? true : auth === secret;
     if (!isAuthorized) {
@@ -42,6 +40,21 @@ export function init(args: {
     await getManifest(true);
     const status = 200;
     return { status, data: { status, message: 'Manifest updated' } };
+  });
+
+  /**
+   * [GET] manifest.
+   */
+  router.get('/.manifest', async res => {
+    const manifest = await getManifest();
+    const sites = manifest.sites
+      .map(site => site.toObject())
+      .map(site => {
+        const { domain, version, routes } = site;
+        return { domain, version, routes };
+      });
+    const data = { sites };
+    return { data };
   });
 
   /**

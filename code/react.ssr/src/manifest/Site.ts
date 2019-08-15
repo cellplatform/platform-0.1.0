@@ -94,6 +94,10 @@ export class Site {
     return this.def.domain;
   }
 
+  public get version() {
+    return this.def.version;
+  }
+
   public get files() {
     return this.def.files;
   }
