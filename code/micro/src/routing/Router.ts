@@ -17,7 +17,7 @@ export class Router {
     const match = this.find(req);
     return match
       ? match.handler(req)
-      : { status: 404, data: { status: 404, description: 'Not found.' } };
+      : { status: 404, data: { status: 404, message: 'Not found.' } };
   };
 
   /**

@@ -25,8 +25,8 @@ export function init(args: {
     const isAuthorized = !secret ? true : auth === secret;
     if (!isAuthorized) {
       const status = 403;
-      const description = `Not allowed. Ensure you have the correct token in the authorization header.`;
-      return { status, data: { status, description } };
+      const message = `Not allowed. Ensure you have the correct token in the authorization header.`;
+      return { status, data: { status, message } };
     }
     return undefined;
   };
