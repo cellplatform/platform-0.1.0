@@ -13,18 +13,18 @@ export type IRoute = {
 /**
  * Router
  */
-export function init(args: { manifestUrl: string; cdnUrl?: string; apiSecret?: string }) {
+export function init(args: { manifest: string; cdn?: string; secret?: string }) {
   const router = Router.create();
 
   const getManifest = (force?: boolean) =>
-    Manifest.get({ url: args.manifestUrl, baseUrl: args.cdnUrl, force });
+    Manifest.get({ url: args.manifest, baseUrl: args.cdn, force });
 
   const isDenied = (req: t.IncomingMessage): t.RouteResponse | undefined => {
-    const { apiSecret } = args;
+    const { secret } = args;
 
     // req.headers
     const auth = req.headers.authorization;
-    const isAuthorized = !apiSecret ? true : auth === apiSecret;
+    const isAuthorized = !secret ? true : auth === secret;
     if (!isAuthorized) {
       const status = 403;
       const description = `Not allowed. Ensure you have the correct token in the authorization header.`;
