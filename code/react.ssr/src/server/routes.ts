@@ -4,12 +4,6 @@ import { t } from '../common';
 import { Manifest } from '../manifest';
 import { Router } from './Router';
 
-export type IRoute = {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  pattern: RegExp;
-  handler: t.RouteHandler;
-};
-
 /**
  * Router
  */
