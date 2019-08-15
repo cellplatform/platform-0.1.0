@@ -1090,10 +1090,10 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/micro@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.2.0.tgz#99b0dd613b6a74f8316dfe66f1c35c68ddb4547d"
-  integrity sha512-XGHgohx75frQ37ktCF/qg7vIC/ze8WSIBWLl8mOp1FoHDa3TKunr7aksIjsqDhs9J/AcM3Z3MHyWgHwmnSU9gw==
+"@platform/micro@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.2.1.tgz#136aad01f93fe7dc4a1efc4d96aa41648ffc484a"
+  integrity sha512-HayIS9KdvbZcdm44CwJNYMP+Ou6mlUluBmQH/v99lRqkbMLqrD3W1zrGGZ33zH4XzU8NTDP9iVL22A9f23J98w==
   dependencies:
     "@platform/libs" "0.1.0"
     "@platform/log" "0.0.135"
