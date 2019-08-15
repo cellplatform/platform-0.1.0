@@ -1,0 +1,31 @@
+{
+  "name": "@platform/micro",
+  "version": "0.0.0",
+  "description": "Wrapper and helpers around micro.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node lib/example/start",
+    "watch": "nodemon lib/example/start",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/libs": "0.1.0",
+    "@platform/log": "0.0.135",
+    "micro": "9.3.4",
+    "path-to-regexp": "3.0.0"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.50",
+    "@platform/ts": "3.4.17",
+    "@types/micro": "7.3.3"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT"
+}
