@@ -12,7 +12,7 @@ An SSR (server-side-renderer) server for react apps bundled with ParcelJS and ho
 
 <p>&nbsp;<p>
 
-![diagram](https://platform.sfo2.digitaloceanspaces.com/repo-diagrams/react.ssr.png)
+![diagram](https://user-images.githubusercontent.com/185555/63076383-2beeb600-bf89-11e9-843f-b221e95d1840.png)
 
 
 ## Workflow
