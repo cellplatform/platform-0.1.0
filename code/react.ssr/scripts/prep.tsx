@@ -8,7 +8,6 @@ import { bundler, t } from './common';
   await bundler.prepare({
     bundleDir,
     entries: [entry],
-    promptVersion: true,
   });
 })();
 
