@@ -4,6 +4,8 @@ import { log, t } from '../common';
 import { Router } from '../routing';
 export * from '../types';
 
+const cors = require('micro-cors')();
+
 const IS_PROD = process.env.NODE_ENV === 'production';
 const NOT_FOUND = {
   status: 404,
@@ -15,9 +17,11 @@ type ILogProps = { [key: string]: string | number | boolean };
 /**
  * Initialize the [server].
  */
-export function init(args: { port?: number; log?: ILogProps } = {}) {
+export function init(args: { port?: number; log?: ILogProps; cors?: boolean } = {}) {
   const router = Router.create();
-  const handler = requestHandler(router);
+  let handler = requestHandler(router);
+  handler = args.cors ? cors(handler) : handler;
+
   const server = micro(handler);
 
   /**
