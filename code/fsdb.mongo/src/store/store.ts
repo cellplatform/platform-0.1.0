@@ -32,7 +32,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
    */
   private constructor(args: IMongoStoreArgs) {
     const { uri } = args;
-    this.client = new MongoClient(uri, { useNewUrlParser: true });
+    this.client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     this._args = args;
     if (args.connect) {
       this.ensureConnected();
