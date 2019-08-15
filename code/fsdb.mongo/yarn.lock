@@ -77,10 +77,10 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/fsdb.nedb@1.3.2":
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.2.tgz#8c8eab18c7e5643e08ee55423e8b05abf53e50a8"
-  integrity sha512-ACEU0neNbfFpfV6apGDZlKzgj8FKeigLv6/FdELlTMDrDgPIaxfORNkn1FI1JmiQIuJZ7NOhHG3FU8TGTLpEKw==
+"@platform/fsdb.nedb@1.3.3":
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.3.tgz#33da104c05aefe3af6d789981f5275070fc552b4"
+  integrity sha512-zlOkfR62b781I+ZSV0vqmBdpGm67RN7fAQMx/NHlhGJpGFgwb66C9nlIDFGy7X4rvvMk2s0krIld+RhgT81LBQ==
   dependencies:
     "@platform/fsdb.types" "0.3.0"
     "@platform/react" "0.3.14"
@@ -237,10 +237,10 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.7.tgz#315d570ccb56c53452ff8638738df60726d5b6ea"
   integrity sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==
 
-"@types/mongodb@3.1.32":
-  version "3.1.32"
-  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.1.32.tgz#f57cf9ab3fba2ed3bf0345e64ed46bca98e49c9f"
-  integrity sha512-4epw+XB6XbpeTeK4dvsBO0hGwKOA+1QJF2Dt2Dl0HCOjqgAKx8/9ohuiWLi14TjXtBjo4hO7ibXbnbkQepVyeA==
+"@types/mongodb@3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.2.2.tgz#5c40510d8c0407423f1a29f820dd99f5573066fd"
+  integrity sha512-0XBUoXM2yQxagOSIWCczsGmSpZomqWWgM/mH7Xgvr6hkVONflaEuC+OJwIgZm4A5wD6s56n9Re+oXK5Wy3mXMg==
   dependencies:
     "@types/bson" "*"
     "@types/node" "*"
@@ -1463,10 +1463,10 @@ mocha@6.2.0:
     yargs-parser "13.0.0"
     yargs-unparser "1.5.0"
 
-mongodb@3.3.0-beta2:
-  version "3.3.0-beta2"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.3.0-beta2.tgz#e18b2f2b21c2d4b5041962f1b38599ed768c6ee8"
-  integrity sha512-Z8L7VwLx4omRw4twLQ00tPxVrfDi6pELFR4oCDAu8rDUjhtmH7vsBtS9idqBTbvkcx7w9eaN+m2h4aPkXlnpDg==
+mongodb@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.3.0.tgz#3ec6fa6260405b16fe76cc37b5d09684d13d8c11"
+  integrity sha512-QYa8YEN5uiJyIFdnn1vmBtiSveyygmQghsaL/RDnHqUzjGvkYe0vRg6UikCKba06cg6El/Lu7qzOYnR3vMhwlA==
   dependencies:
     bson "^1.1.1"
     require_optional "^1.0.1"
