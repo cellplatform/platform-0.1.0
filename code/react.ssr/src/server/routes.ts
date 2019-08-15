@@ -1,6 +1,6 @@
 import { parse as parseUrl } from 'url';
 
-import { express, t } from '../common';
+import { t } from '../common';
 import { Manifest } from '../manifest';
 import { Router } from './Router';
 
