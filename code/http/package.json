@@ -1,6 +1,6 @@
 {
   "name": "@platform/http",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Tools for working with HTTP.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
