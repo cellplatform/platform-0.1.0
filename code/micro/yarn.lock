@@ -86,7 +86,7 @@
     rxjs "6.5.2"
     tslib "1.10.0"
 
-"@platform/log@^0.0.135":
+"@platform/log@0.0.135":
   version "0.0.135"
   resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.135.tgz#3e22e9ec1370e8d2a3d3e3592705e55a8d62f369"
   integrity sha512-aiK4mjGEVKBKN8gnfwK0GwUPd2oF4Cr6/s6wCMkuDRDkGz4t78yzdrE2liBiCAKmyLRe5wvBWeAyFv4Gs69oNw==
@@ -170,7 +170,7 @@
     "@types/node" "*"
     rxjs "^6.5.1"
 
-"@types/micro@^7.3.3":
+"@types/micro@7.3.3":
   version "7.3.3"
   resolved "https://registry.yarnpkg.com/@types/micro/-/micro-7.3.3.tgz#31ead8df18ac10d58b7be1186d4b2d977b13a938"
   integrity sha512-I3n3QYT7lqAxkyAoTZyg1yrvo38BxW/7ZafLAXZF/zZQOnAnQzg6j9XOuSmUEL5GGVFKWw4iqM+ZLnqb2154TA==
@@ -1390,7 +1390,7 @@ merge2@^1.2.3:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.2.4.tgz#c9269589e6885a60cf80605d9522d4b67ca646e3"
   integrity sha512-FYE8xI+6pjFOhokZu0We3S5NKCirLbCzSh2Usf3qEyr4X8U+0jNg9P8RZ4qz+V2UoECLVwSyzU3LxXBaLGtD3A==
 
-micro@^9.3.4:
+micro@9.3.4:
   version "9.3.4"
   resolved "https://registry.yarnpkg.com/micro/-/micro-9.3.4.tgz#745a494e53c8916f64fb6a729f8cbf2a506b35ad"
   integrity sha512-smz9naZwTG7qaFnEZ2vn248YZq9XR+XoOH3auieZbkhDL4xLOxiE+KqG8qqnBeKfXA9c1uEFGCxPN1D+nT6N7w==
@@ -1690,7 +1690,7 @@ path-parse@^1.0.6:
   resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
   integrity sha512-GSmOT2EbHrINBf9SR7CDELwlJ8AENk3Qn7OikK4nFYAu3Ote2+JYNVvkpAEQm3/TLNEJFD/xZJjzyxg3KBWOzw==
 
-path-to-regexp@^3.0.0:
+path-to-regexp@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-3.0.0.tgz#c981a218f3df543fa28696be2f88e0c58d2e012a"
   integrity sha512-ZOtfhPttCrqp2M1PBBH4X13XlvnfhIwD7yCLx+GoGoXRPQyxGOTdQMpIzPSPKXAJT/JQrdfFrgdJOyAzvgpQ9A==

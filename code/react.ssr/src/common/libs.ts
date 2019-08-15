@@ -12,3 +12,4 @@ export { is } from '@platform/util.is';
 export { value, time, defaultValue } from '@platform/util.value';
 export { css, GlamorValue } from '@platform/react';
 export { http } from '@platform/http';
+export { micro } from '@platform/micro';

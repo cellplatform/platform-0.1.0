@@ -1,14 +1,18 @@
 import { parse as parseUrl } from 'url';
 
-import { t } from '../common';
+import { t, micro } from '../common';
 import { Manifest } from '../manifest';
-import { Router } from './Router';
 
 /**
  * Router
  */
-export function init(args: { manifest: string; cdn?: string; secret?: string }) {
-  const router = Router.create();
+export function init(args: {
+  router: micro.Router;
+  manifest: string;
+  cdn?: string;
+  secret?: string;
+}) {
+  const { router } = args;
 
   const getManifest = (force?: boolean) =>
     Manifest.get({ url: args.manifest, baseUrl: args.cdn, force });
@@ -71,7 +75,7 @@ export function init(args: { manifest: string; cdn?: string; secret?: string }) 
       }
     }
 
-    // [307] redirect the resource-request to S3.
+    // Redirect the resource-request to S3.
     const location = site.redirectUrl(url.pathname);
     if (location) {
       const status = 307;
