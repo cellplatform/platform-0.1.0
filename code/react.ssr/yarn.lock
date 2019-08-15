@@ -1090,14 +1090,15 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/micro@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.1.0.tgz#7704c4193f4999fd4aca313ed958e90bba5f3e19"
-  integrity sha512-JTBVm5l1N2CsXgXa5XKKWMZpGQ0ToMpLshacyBMgTCcs5IPMXRK6bxL4eVJhlez/6/lNAXdMwSqpKmgmg9P5bA==
+"@platform/micro@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.2.0.tgz#99b0dd613b6a74f8316dfe66f1c35c68ddb4547d"
+  integrity sha512-XGHgohx75frQ37ktCF/qg7vIC/ze8WSIBWLl8mOp1FoHDa3TKunr7aksIjsqDhs9J/AcM3Z3MHyWgHwmnSU9gw==
   dependencies:
     "@platform/libs" "0.1.0"
     "@platform/log" "0.0.135"
     micro "9.3.4"
+    micro-cors "0.1.1"
     path-to-regexp "3.0.0"
 
 "@platform/npm@0.1.46":
@@ -5425,6 +5426,11 @@ merge2@^1.2.3:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.2.4.tgz#c9269589e6885a60cf80605d9522d4b67ca646e3"
   integrity sha512-FYE8xI+6pjFOhokZu0We3S5NKCirLbCzSh2Usf3qEyr4X8U+0jNg9P8RZ4qz+V2UoECLVwSyzU3LxXBaLGtD3A==
+
+micro-cors@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/micro-cors/-/micro-cors-0.1.1.tgz#af7a480182c114ffd1ada84ad9dffc52bb4f4054"
+  integrity sha512-6WqIahA5sbQR1Gjexp1VuWGFDKbZZleJb/gy1khNGk18a6iN1FdTcr3Q8twaxkV5H94RjxIBjirYbWCehpMBFw==
 
 micro@9.3.4:
   version "9.3.4"
