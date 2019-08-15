@@ -1,4 +1,4 @@
-import { t, toRawHeaders, fromRawHeaders } from '../common';
+import { t, toRawHeaders, fromRawHeaders, stringify } from '../common';
 import * as isomorphic from 'isomorphic-fetch';
 
 /**
@@ -19,11 +19,24 @@ export function create(options: t.IFetchOptions = {}) {
     fetch,
 
     /**
-     * `GET` request.
+     * `GET`
      */
     async get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const { mode, headers } = mergeOptions(options);
       const res = await isomorphic(url, { method: 'GET', headers, mode });
+      return toResponse(url, res);
+    },
+
+    /**
+     * `POST`
+     */
+    async post(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
+      const { mode, headers } = mergeOptions(options);
+      const body = stringify(
+        data,
+        () => `Failed to POST to '${url}', the data could not be serialized to JSON.`,
+      );
+      const res = await isomorphic(url, { method: 'POST', body, headers, mode });
       return toResponse(url, res);
     },
   };
