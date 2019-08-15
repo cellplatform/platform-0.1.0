@@ -1,80 +1,62 @@
 import { parse as parseUrl } from 'url';
+import { t, pathToRegex } from '../common';
 
-import { express } from '../common';
-import { Manifest } from '../manifest';
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+export type IRoute = {
+  method: HttpMethod;
+  path: string;
+  regex: RegExp;
+  handler: t.RouteHandler;
+};
 
-/**
- * Router
- */
-export function init(args: { manifestUrl: string; cdnUrl?: string; apiSecret?: string }) {
-  const router = express.Router();
-  const getManifest = (force?: boolean) =>
-    Manifest.get({ url: args.manifestUrl, baseUrl: args.cdnUrl, force });
+export class Router {
+  /**
+   * [Lifecycle]
+   */
+  public static create = () => new Router();
+  private constructor() {}
 
-  const isAllowed = (req: express.Request, res: express.Response) => {
-    const { apiSecret } = args;
-    const auth = req.header('authorization');
-    const isAuthorized = auth ? auth === apiSecret : true;
-    if (!isAuthorized) {
-      const status = 403;
-      const error = `Not allowed. Ensure you have the correct token in the authorization header.`;
-      res.status(status).send({ status, error });
-    }
-    return isAuthorized;
+  /**
+   * [Fields]
+   */
+  public routes: IRoute[] = [];
+
+  public handler: t.RouteHandler = async req => {
+    const match = this.find(req);
+    return match
+      ? match.handler(req)
+      : { status: 404, data: { status: 404, description: 'Not found.' } };
   };
 
   /**
-   * [POST] update manifest (reset cache).
+   * [Properties]
    */
-  router.post('/.update', async (req, res) => {
-    if (!isAllowed(req, res)) {
-      return;
-    }
-    await getManifest(true);
-    res.send({ status: 200, message: 'Manifest updated.' });
-  });
+  public get wildcard() {
+    return this.routes.find(route => route.path === '*');
+  }
 
   /**
-   * [GET] resource.
+   * [Methods]
    */
-  router.get('*', async (req, res) => {
-    // Load the manifest.
-    const manifest = await getManifest();
-    if (!manifest.ok) {
-      const status = manifest.status;
-      return res.status(status).send({ status, error: 'Manifest could not be loaded.' });
-    }
+  public add(method: HttpMethod, path: string, handler: t.RouteHandler) {
+    const regex = pathToRegex(path);
+    this.routes = [...this.routes, { method, path, regex, handler }];
+    return this;
+  }
+  public get = (path: string, handler: t.RouteHandler) => this.add('GET', path, handler);
+  public put = (path: string, handler: t.RouteHandler) => this.add('PUT', path, handler);
+  public post = (path: string, handler: t.RouteHandler) => this.add('POST', path, handler);
+  public delete = (path: string, handler: t.RouteHandler) => this.add('DELETE', path, handler);
 
-    // Retrieve the site definition.
-    const { hostname } = req;
-    const site = manifest.site(hostname);
-    if (!site) {
-      const status = 404;
-      const error = `A site definition for the domain '${hostname}' does not exist in the manifest.`;
-      return res.status(status).send({ status, error });
-    }
-
-    // Check if there is a direct route match and if found SSR the HTML.
-    const url = parseUrl(req.url);
-    const route = site.route(url.pathname);
-    if (route) {
-      const entry = await route.entry();
-      if (entry.ok) {
-        return res.set('Content-Type', 'text/html; charset=utf-8').send(entry.html);
-      }
-    }
-
-    // [307] redirect the resource-request to S3.
-    const redirect = site.redirectUrl(url.pathname);
-    if (redirect) {
-      return res.status(307).redirect(redirect);
-    }
-
-    // No matching resource.
-    const status = 404;
-    return res.status(status).send({ status, error: 'Not found.' });
-  });
-
-  // Finish up.
-  return router;
+  public find(req: t.IncomingMessage) {
+    const route = this.routes.find(route => {
+      return req.method === route.method && route.regex.test(toPath(req.url));
+    });
+    return route || this.wildcard;
+  }
 }
+
+/**
+ * [Helpers]
+ */
+const toPath = (url?: string) => parseUrl(url || '', false).pathname || '';

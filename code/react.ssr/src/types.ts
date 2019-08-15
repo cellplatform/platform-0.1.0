@@ -1,3 +1,13 @@
+import { IncomingMessage, ServerResponse } from 'http';
+
+export type RequestHandler = (req: IncomingMessage, res: ServerResponse) => any;
+
+export type RouteHandler = (req: IncomingMessage) => Promise<RouteResponse | undefined>;
+export type RouteResponse = {
+  status?: number;
+  data?: any;
+};
+
 /**
  * S3 object storage.
  */

@@ -12,14 +12,26 @@ export async function pathsToId(args: { store: NedbStore }) {
   const { store } = args;
   const docs = await store.find({ path: { $exists: true } });
 
-  for (const item of docs) {
-    // Insert version of doc with the path as the ID.
-    const path = item.path;
-    const doc = { ...item, _id: path };
-    delete doc.path;
-    await store.insert(doc);
+  let total = 0;
 
-    // Remove the old doc.
-    await store.remove({ _id: item._id });
+  for (const item of docs) {
+    if (item.path) {
+      // Insert version of doc with the path as the ID.
+      const path = item.path;
+      const exists = Boolean(await store.findOne({ _id: path }));
+      if (!exists) {
+        const doc = { ...item, _id: path };
+        delete doc.path;
+        await store.insert(doc);
+
+        // Remove the old doc.
+        await store.remove({ _id: item._id });
+
+        // Finish up.
+        total++;
+      }
+    }
   }
+
+  return { total };
 }

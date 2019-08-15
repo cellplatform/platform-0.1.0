@@ -4,7 +4,7 @@ import { MongoDb } from '.';
 dotenv.config();
 
 const testDb = () => {
-  const uri = process.env.MONGO_TEST as string;
+  const uri = process.env.MONGO_TEST || '';
   return MongoDb.create({
     uri,
     db: 'test',

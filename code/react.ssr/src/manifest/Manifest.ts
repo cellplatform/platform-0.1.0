@@ -127,9 +127,9 @@ export class Manifest {
   /**
    * Retrieve the site definition for the domain (hostname).
    */
-  public site(domain: string) {
-    domain = util.stripHttp(domain);
-    return this.sites.find(site => site.isMatch(domain));
+  public site(domain?: string) {
+    domain = util.stripHttp(domain || '');
+    return this.sites.find(site => site.isMatch(domain || ''));
   }
 
   /**
