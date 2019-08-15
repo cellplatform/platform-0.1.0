@@ -16,7 +16,7 @@ export function create(options: t.IFetchOptions = {}) {
      * `GET` request.
      */
     async get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const { mode = 'same-origin' } = { ...baseOptions, ...options };
+      const { mode = 'cors' } = { ...baseOptions, ...options };
       const res = await isomorphic(url, {
         method: 'GET',
         headers: toRawHeaders(options.headers),

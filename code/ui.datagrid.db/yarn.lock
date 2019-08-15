@@ -1235,14 +1235,14 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/fsdb.electron@0.2.25":
-  version "0.2.25"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.electron/-/fsdb.electron-0.2.25.tgz#f519f1c85d496725153a562bd459d621ba408901"
-  integrity sha512-p+4cKXF2BBjyqURh2gVResHrNrznufdP0axzuPktZjVFI8xGWiSQZhQmC9c3dzBPPTNNDo/8LNnlgukr20pggw==
+"@platform/fsdb.electron@0.2.26":
+  version "0.2.26"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.electron/-/fsdb.electron-0.2.26.tgz#dd38316d45ad4907cb5a227290fbb85b8208496d"
+  integrity sha512-NdPfupMJi2XKihrzWkB8cW8qLwWvfbJow+MQAMYSM+LHxk2LmUHonVo2Lg9INA6u20mDILMnnuNL7KOMcYL/Yg==
   dependencies:
     "@platform/electron" "0.7.2"
     "@platform/fsdb.file" "1.3.6"
-    "@platform/fsdb.nedb" "1.3.3"
+    "@platform/fsdb.nedb" "1.3.4"
     "@platform/fsdb.types" "0.3.0"
     "@platform/react" "0.3.14"
     "@platform/types" "0.0.22"
@@ -1258,10 +1258,10 @@
     "@platform/types" "0.0.22"
     "@platform/util.value" "0.4.6"
 
-"@platform/fsdb.nedb@1.3.3":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.3.tgz#33da104c05aefe3af6d789981f5275070fc552b4"
-  integrity sha512-zlOkfR62b781I+ZSV0vqmBdpGm67RN7fAQMx/NHlhGJpGFgwb66C9nlIDFGy7X4rvvMk2s0krIld+RhgT81LBQ==
+"@platform/fsdb.nedb@1.3.4":
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.4.tgz#59ed78948190f59b75d180bfb7b3f871bb92d36e"
+  integrity sha512-GeNsjdLdwhDCItEVmgSlfT73jcPUJUv7LBMXcZN7YEZTCvB2WHeRTk5tmQ/2xcBLc9TSGfAFq1n1c+o73+XSrQ==
   dependencies:
     "@platform/fsdb.types" "0.3.0"
     "@platform/react" "0.3.14"

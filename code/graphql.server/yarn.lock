@@ -92,12 +92,12 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/graphql@0.2.27":
-  version "0.2.27"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.27.tgz#3408321eba6895f1d892d688e5a7c6ca3ed69d9f"
-  integrity sha512-irQn9KtcpW+AgXe8wM03Tjsp3QqqiyuYrvZFCm6ZigQL+DXKtjU3df6WV0ImGLUN2DrP2PM2np90m9m9YYSrLQ==
+"@platform/graphql@0.2.28":
+  version "0.2.28"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.28.tgz#b566a74456bfec36aa717b8e929e6944b049003e"
+  integrity sha512-gJ0MsehvCKqFaoLDW1xKGAFqFeVbMPdfLLdCwjs46tHku3Hr9qDxi89LtSC+k9A/p9xHeHA6VC066+RkcE1UmA==
   dependencies:
-    "@platform/http" "0.2.13"
+    "@platform/http" "0.3.0"
     "@platform/libs" "0.1.0"
     "@types/graphql" "14.2.3"
     apollo-cache-inmemory "1.6.2"
@@ -109,10 +109,10 @@
     graphql "14.4.2"
     graphql-tag "2.10.1"
 
-"@platform/http@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.13.tgz#53618ab9eb262b7ff9d7317ec408073c07906e29"
-  integrity sha512-VXxFU03LWhUfj+ftg0X8KuNJoZa6NkhEuF82QIIjCHFEfQjmjpmkWmvaRuY6/s8RI38pFkWYrqzbnmJin7eTOQ==
+"@platform/http@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.3.0.tgz#6ceb7d288c0b5a6422559a35096e4d61080a153f"
+  integrity sha512-YaglYeLTUWsG9W2dDHOE3GBvOij7IWaUMO2ZC1qtSU0aGGu5AwjzFW/muX1rgzvcb2UJM5nPlof+D6NEPYK47A==
   dependencies:
     "@platform/fs" "0.1.7"
     "@platform/types" "0.0.22"
