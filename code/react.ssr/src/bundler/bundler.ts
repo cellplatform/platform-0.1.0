@@ -3,5 +3,5 @@ dotenv.config();
 
 export { push } from './bundler.push';
 export { prepare } from './bundler.prepare';
-export { lastDir } from './util';
+export { latestDir as lastDir } from './util';
 export * from '../types';
