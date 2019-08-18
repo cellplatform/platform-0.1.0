@@ -33,6 +33,7 @@ export type IManifest = {
  * The manifest of a single url-end-point.
  */
 export type ISiteManifest = {
+  name: string;
   version: string;
   domain: string[]; // string or "/regex/".
   bundle: string; // Path to the bundle folder.

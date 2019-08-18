@@ -132,6 +132,10 @@ export class Manifest {
         domain = util.stripHttp(domain || '');
         return this.sites.find(site => site.isMatch(domain || ''));
       },
+      byName: (name?: string) => {
+        name = (name || '').trim();
+        return this.sites.find(site => site.name.trim() === name);
+      },
     };
   }
 

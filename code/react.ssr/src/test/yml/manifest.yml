@@ -3,7 +3,8 @@
 # 
 
 sites:
-  - domain: [localhost, /.*\.now\.sh$/]
+  - name: dev
+    domain: [localhost, /.*\.now\.sh$/]
     bundle: bundle/1.2.3-alpha.0
     routes:
       default:

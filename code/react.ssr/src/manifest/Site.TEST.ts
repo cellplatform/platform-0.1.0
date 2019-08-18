@@ -8,11 +8,20 @@ const testSite = async () => {
 };
 
 describe('Site', () => {
-  it('props', async () => {
+  it('props (default)', async () => {
     const site = await testSite();
     expect(site.domain).to.include('localhost');
     expect(site.version).to.eql('1.2.3-alpha.0');
     expect(site.files).to.eql([]);
+    expect(site.name).to.eql('dev');
+  });
+
+  it('no name', async () => {
+    const def = await testManifestDef();
+    delete def.sites[0].name;
+    const manifest = Manifest.create({ def });
+    const site = manifest.site.byHost('localhost');
+    expect(site && site.name).to.eql('');
   });
 
   it('routes', async () => {
@@ -25,13 +34,12 @@ describe('Site', () => {
     it('from bundle path', async () => {
       const def = await testManifestDef();
       delete def.sites[0].version; // Ensure no version for test.
-
       const manifest = Manifest.create({ def });
       const site = manifest.site.byHost('localhost');
       expect(site && site.version).to.eql('1.2.3-alpha.0');
     });
 
-    it('explicitly declared on manifest def', async () => {
+    it('explicitly declared on manifest def (overrides bundle path)', async () => {
       const def = await testManifestDef();
       def.sites[0].version = '4.5.6';
 

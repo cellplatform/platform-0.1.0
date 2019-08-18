@@ -36,7 +36,10 @@ export class Site {
       return;
     }
 
-    // Domain name.
+    // Name.
+    const name = input.name || '';
+
+    // Domain (host).
     let domain = input.domain || '';
     domain = Array.isArray(domain) ? domain : [domain];
     domain = domain.map((hostname: string) => util.stripHttp(hostname));
@@ -67,7 +70,7 @@ export class Site {
     const version = bundleManifest ? bundleManifest.version || '0.0.0' : '0.0.0';
 
     // Finish up.
-    const site: t.ISiteManifest = { version, domain, bundle, routes, files, entries };
+    const site: t.ISiteManifest = { name, version, domain, bundle, routes, files, entries };
     return site;
   }
 
@@ -91,6 +94,11 @@ export class Site {
   /**
    * [Properties]
    */
+
+  public get name() {
+    return this.def.name || '';
+  }
+
   public get domain() {
     return this.def.domain;
   }
