@@ -9,6 +9,8 @@
     "watch": "nodemon .",
     "test": "ts test",
     "tdd": "ts test --watch",
+    "test:integration": "ts test --suffix INTEGRATION",
+    "tddi": "ts test --suffix INTEGRATION --watch",
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare"
