@@ -46,7 +46,9 @@
     "@uiharness/dev": "0.9.0"
   },
   "files": [
-    "lib"
+    "lib",
+    "!*.TEST.js",
+    "!lib/test"
   ],
   "license": "MIT"
 }

@@ -8,6 +8,8 @@ type IPullResonse = {
   error?: Error;
 };
 
+type IManifestArgs = { def: t.IManifest; status?: number };
+
 let CACHE: any = {};
 
 export class Manifest {
@@ -94,9 +96,10 @@ export class Manifest {
   /**
    * [Lifecycle]
    */
-  private constructor(args: { def: t.IManifest; status: number }) {
+  public static create = (args: IManifestArgs) => new Manifest(args);
+  private constructor(args: IManifestArgs) {
     this.def = args.def;
-    this.status = args.status;
+    this.status = args.status || 200;
   }
 
   /**
@@ -121,16 +124,20 @@ export class Manifest {
   }
 
   /**
-   * [Methods]
-   */
-
-  /**
    * Retrieve the site definition for the domain (hostname).
    */
-  public site(domain?: string) {
-    domain = util.stripHttp(domain || '');
-    return this.sites.find(site => site.isMatch(domain || ''));
+  public get site() {
+    return {
+      byDomain: (domain?: string) => {
+        domain = util.stripHttp(domain || '');
+        return this.sites.find(site => site.isMatch(domain || ''));
+      },
+    };
   }
+
+  /**
+   * [Methods]
+   */
 
   /**
    * Object representation of the Manifest.

@@ -71,7 +71,7 @@ export function init(args: {
 
     // Retrieve the site definition.
     const hostname = (req.headers.host || '').split(':')[0];
-    const site = manifest.site(hostname);
+    const site = manifest.site.byDomain(hostname);
     if (!site) {
       const status = 404;
       const message = `A site definition for the domain '${hostname}' does not exist in the manifest.`;
