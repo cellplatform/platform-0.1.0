@@ -1,9 +1,9 @@
-import { expect, fs, YAML_MANIFEST, t, getTestManifest } from '../test';
+import { expect, testManifest, testManifestDef } from '../test';
 import { Manifest } from './Manifest';
 
 describe('Manifest', () => {
   it('loads from file', async () => {
-    const def = await fs.file.loadAndParse<t.IManifest>(YAML_MANIFEST);
+    const def = await testManifestDef();
     const manifest = Manifest.create({ def });
     expect(manifest.ok).to.eql(true);
     expect(manifest.status).to.eql(200);
@@ -12,9 +12,9 @@ describe('Manifest', () => {
 
   describe('site()', () => {
     it('undefined', async () => {
-      const manifest = await getTestManifest();
+      const manifest = await testManifest();
       const test = (domain?: string) => {
-        const site = manifest.site.byDomain(domain);
+        const site = manifest.site.byHost(domain);
         expect(site).to.eql(undefined);
       };
       test();
@@ -23,9 +23,9 @@ describe('Manifest', () => {
     });
 
     it('finds given domain', async () => {
-      const manifest = await getTestManifest();
+      const manifest = await testManifest();
       const test = (domain?: string) => {
-        const site = manifest.site.byDomain(domain);
+        const site = manifest.site.byHost(domain);
         expect(site).to.not.eql(undefined);
       };
       test('localhost');

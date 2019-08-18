@@ -96,11 +96,11 @@ export class Site {
   }
 
   public get version() {
-    return this.def.version;
+    return util.firstSemver(this.def.version, this.def.bundle);
   }
 
   public get files() {
-    return this.def.files;
+    return this.def.files || [];
   }
 
   public get routes() {

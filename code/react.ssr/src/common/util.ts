@@ -1,4 +1,4 @@
-import { jsYaml, fs, log } from './libs';
+import { jsYaml, fs, log, semver } from './libs';
 
 /**
  * Convert a value safely to a string.
@@ -35,4 +35,17 @@ export function formatPath(path: string) {
   const file = fs.basename(path);
   const dir = fs.dirname(path);
   return log.gray(`${dir}/${log.cyan(file)}`);
+}
+
+/**
+ * Finds the first semver from the list of strings (version/path value).
+ */
+export function firstSemver(...versionOrPath: Array<string | undefined>) {
+  const values = versionOrPath
+    .filter(value => typeof value === ('string' as string))
+    .map(value => (value as string).trim() as string)
+    .filter(value => Boolean(value))
+    .map(value => fs.basename(value));
+
+  return values.find(value => semver.valid(value));
 }

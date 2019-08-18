@@ -128,7 +128,7 @@ export class Manifest {
    */
   public get site() {
     return {
-      byDomain: (domain?: string) => {
+      byHost: (domain?: string) => {
         domain = util.stripHttp(domain || '');
         return this.sites.find(site => site.isMatch(domain || ''));
       },
