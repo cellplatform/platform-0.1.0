@@ -108,13 +108,13 @@
     "@platform/libs" "0.1.0"
     "@platform/types" "0.0.22"
 
-"@platform/graphql.server@0.1.26":
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.26.tgz#c864aa2fde4750421c1353435b942e8b47d5c1ca"
-  integrity sha512-+OMXdcytGZIZXgUIy/qcIG7Qw9cqy9m+VPm8lZ/Jkd7pnKje3ReFFpzTTlJWchl2BV91kzWye/Hfm7WNyAZ7mQ==
+"@platform/graphql.server@0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.28.tgz#6b7f8e4bda0c28b125321873b6383e56b40662e8"
+  integrity sha512-/qa5CU8yZAOKnaIi0zV5v9UwOzYjFCI1/hLRDCxI4nzYDYCfQTaoRAy2Smt3RgvLHeho1t36jefD7blpue6VLw==
   dependencies:
     "@platform/cache" "0.0.18"
-    "@platform/graphql" "0.2.27"
+    "@platform/graphql" "0.2.29"
     "@platform/libs" "0.1.0"
     "@platform/log" "0.0.135"
     "@platform/util.is" "0.0.84"
@@ -127,12 +127,12 @@
     express "4.17.1"
     graphql "14.4.2"
 
-"@platform/graphql@0.2.27":
-  version "0.2.27"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.27.tgz#3408321eba6895f1d892d688e5a7c6ca3ed69d9f"
-  integrity sha512-irQn9KtcpW+AgXe8wM03Tjsp3QqqiyuYrvZFCm6ZigQL+DXKtjU3df6WV0ImGLUN2DrP2PM2np90m9m9YYSrLQ==
+"@platform/graphql@0.2.29":
+  version "0.2.29"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.29.tgz#64c3cc0139bce19acb45d738ff266355a158df06"
+  integrity sha512-KRTPLeGFsNouDhgio8ZEnv9FD47AUTnF5eLeeXTICDDrBZSlLE4pBaob46VsIy0FgNAOSYIc1+m8hx9V4EkFbA==
   dependencies:
-    "@platform/http" "0.2.13"
+    "@platform/http" "0.4.0"
     "@platform/libs" "0.1.0"
     "@types/graphql" "14.2.3"
     apollo-cache-inmemory "1.6.2"
@@ -144,10 +144,10 @@
     graphql "14.4.2"
     graphql-tag "2.10.1"
 
-"@platform/http@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.13.tgz#53618ab9eb262b7ff9d7317ec408073c07906e29"
-  integrity sha512-VXxFU03LWhUfj+ftg0X8KuNJoZa6NkhEuF82QIIjCHFEfQjmjpmkWmvaRuY6/s8RI38pFkWYrqzbnmJin7eTOQ==
+"@platform/http@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.0.tgz#e2b81ce1c958d0167d9aa38a35fceeea3a21f2e7"
+  integrity sha512-CL5P4xbb8jNOB0Oy9thERolyiNQfNHWJrCoLIp1Q7DNUtXdao332V8FP523X9bxljUKPTQYp9Ve9aQiLHXmdCQ==
   dependencies:
     "@platform/fs" "0.1.7"
     "@platform/types" "0.0.22"

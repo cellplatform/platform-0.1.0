@@ -1148,15 +1148,15 @@
     "@types/yargs" "13.0.2"
     yargs "13.3.0"
 
-"@platform/conversation.db@0.0.82":
-  version "0.0.82"
-  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.82.tgz#0c2392e1939723683b998a9d60bcbdbcef6e2862"
-  integrity sha512-VdeYk0+orINKVWGwG0MgIz3NIuTEWDbdCXaP7xlyHITccbVBrYqGIirqnlGZtSHlVpEedVsvFhqD3ZEkk4rO+w==
+"@platform/conversation.db@0.0.84":
+  version "0.0.84"
+  resolved "https://registry.yarnpkg.com/@platform/conversation.db/-/conversation.db-0.0.84.tgz#6c7a462d3a793619bf86e0fe4602ec927c84f8fb"
+  integrity sha512-cZZGRgSa1SuKg/gmpnAZ96lQMuBdE1QN8IDOMMQNxtSzib6EqF9DLLT+g+q3FOGaza0zuZjLy1TTIZI2PMTOvg==
   dependencies:
     "@platform/auth" "0.1.25"
     "@platform/conversation.types" "0.0.39"
     "@platform/fsdb.types" "0.3.0"
-    "@platform/graphql.server" "0.1.26"
+    "@platform/graphql.server" "0.1.28"
     "@platform/hyperdb.types" "0.2.15"
     "@platform/libs" "0.1.0"
 
@@ -1222,10 +1222,10 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/fsdb.nedb@1.3.3":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.3.tgz#33da104c05aefe3af6d789981f5275070fc552b4"
-  integrity sha512-zlOkfR62b781I+ZSV0vqmBdpGm67RN7fAQMx/NHlhGJpGFgwb66C9nlIDFGy7X4rvvMk2s0krIld+RhgT81LBQ==
+"@platform/fsdb.nedb@1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.5.tgz#b8ede3c30e4b81b2a719895b8af5bca130edfe05"
+  integrity sha512-e4CFoToM5v5doYsBoaNdhcIOtNilxAvuhA3Q95Mx444Mg3uXvYN03CVNrrVZ6xcu5ThF/1Kj+I4uvwcNFLjq0Q==
   dependencies:
     "@platform/fsdb.types" "0.3.0"
     "@platform/react" "0.3.14"
@@ -1241,13 +1241,13 @@
     "@platform/libs" "0.1.0"
     "@platform/types" "0.0.22"
 
-"@platform/graphql.server@0.1.26":
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.26.tgz#c864aa2fde4750421c1353435b942e8b47d5c1ca"
-  integrity sha512-+OMXdcytGZIZXgUIy/qcIG7Qw9cqy9m+VPm8lZ/Jkd7pnKje3ReFFpzTTlJWchl2BV91kzWye/Hfm7WNyAZ7mQ==
+"@platform/graphql.server@0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.28.tgz#6b7f8e4bda0c28b125321873b6383e56b40662e8"
+  integrity sha512-/qa5CU8yZAOKnaIi0zV5v9UwOzYjFCI1/hLRDCxI4nzYDYCfQTaoRAy2Smt3RgvLHeho1t36jefD7blpue6VLw==
   dependencies:
     "@platform/cache" "0.0.18"
-    "@platform/graphql" "0.2.27"
+    "@platform/graphql" "0.2.29"
     "@platform/libs" "0.1.0"
     "@platform/log" "0.0.135"
     "@platform/util.is" "0.0.84"
@@ -1260,12 +1260,12 @@
     express "4.17.1"
     graphql "14.4.2"
 
-"@platform/graphql@0.2.27":
-  version "0.2.27"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.27.tgz#3408321eba6895f1d892d688e5a7c6ca3ed69d9f"
-  integrity sha512-irQn9KtcpW+AgXe8wM03Tjsp3QqqiyuYrvZFCm6ZigQL+DXKtjU3df6WV0ImGLUN2DrP2PM2np90m9m9YYSrLQ==
+"@platform/graphql@0.2.29":
+  version "0.2.29"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.29.tgz#64c3cc0139bce19acb45d738ff266355a158df06"
+  integrity sha512-KRTPLeGFsNouDhgio8ZEnv9FD47AUTnF5eLeeXTICDDrBZSlLE4pBaob46VsIy0FgNAOSYIc1+m8hx9V4EkFbA==
   dependencies:
-    "@platform/http" "0.2.13"
+    "@platform/http" "0.4.0"
     "@platform/libs" "0.1.0"
     "@types/graphql" "14.2.3"
     apollo-cache-inmemory "1.6.2"
@@ -1277,10 +1277,10 @@
     graphql "14.4.2"
     graphql-tag "2.10.1"
 
-"@platform/http@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.13.tgz#53618ab9eb262b7ff9d7317ec408073c07906e29"
-  integrity sha512-VXxFU03LWhUfj+ftg0X8KuNJoZa6NkhEuF82QIIjCHFEfQjmjpmkWmvaRuY6/s8RI38pFkWYrqzbnmJin7eTOQ==
+"@platform/http@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.0.tgz#e2b81ce1c958d0167d9aa38a35fceeea3a21f2e7"
+  integrity sha512-CL5P4xbb8jNOB0Oy9thERolyiNQfNHWJrCoLIp1Q7DNUtXdao332V8FP523X9bxljUKPTQYp9Ve9aQiLHXmdCQ==
   dependencies:
     "@platform/fs" "0.1.7"
     "@platform/types" "0.0.22"

@@ -1,4 +1,4 @@
-import { t, toRawHeaders, fromRawHeaders } from '../common';
+import { t, toRawHeaders, fromRawHeaders, stringify } from '../common';
 import * as isomorphic from 'isomorphic-fetch';
 
 /**
@@ -7,51 +7,76 @@ import * as isomorphic from 'isomorphic-fetch';
 export const fetch = isomorphic;
 
 export function create(options: t.IFetchOptions = {}) {
-  const baseOptions = options;
+  const mergeOptions = (methodOptions: t.IFetchOptions) => {
+    const res = { ...options, ...methodOptions };
+    const { mode = 'cors' } = res;
+    const headers = toRawHeaders(res.headers);
+    return { mode, headers };
+  };
+
   const http = {
     create,
     fetch,
 
     /**
-     * `GET` request.
+     * `GET`
      */
     async get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const { mode = 'same-origin' } = { ...baseOptions, ...options };
-      const res = await isomorphic(url, {
-        method: 'GET',
-        headers: toRawHeaders(options.headers),
-        mode,
-      });
+      const { mode, headers } = mergeOptions(options);
+      const res = await isomorphic(url, { method: 'GET', headers, mode });
+      return toResponse(url, res);
+    },
 
-      const { ok, status, statusText } = res;
-      const text = await res.text();
-      let json: any;
-
-      const result: t.IHttpResponse = {
-        ok,
-        status,
-        statusText,
-        get headers() {
-          return fromRawHeaders(res.headers);
-        },
-        get body() {
-          return text || '';
-        },
-        json<T>() {
-          if (!json) {
-            try {
-              json = JSON.parse(result.body) as T;
-            } catch (error) {
-              throw new Error(`Failed while parsing JSON for '${url}'. ${error.message}`);
-            }
-          }
-          return json;
-        },
-      };
-
-      return result;
+    /**
+     * `POST`
+     */
+    async post(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
+      const { mode, headers } = mergeOptions(options);
+      const body = stringify(
+        data,
+        () => `Failed to POST to '${url}', the data could not be serialized to JSON.`,
+      );
+      const res = await isomorphic(url, { method: 'POST', body, headers, mode });
+      return toResponse(url, res);
     },
   };
 
+  /**
+   * [API]
+   */
   return http;
+}
+
+/**
+ * [Helpers]
+ */
+
+async function toResponse(url: string, res: Response) {
+  const { ok, status, statusText } = res;
+  const text = await res.text();
+  let json: any;
+
+  const result: t.IHttpResponse = {
+    ok,
+    status,
+    statusText,
+    get headers() {
+      return fromRawHeaders(res.headers);
+    },
+    get body() {
+      return text || '';
+    },
+    json<T>() {
+      if (!json) {
+        try {
+          json = JSON.parse(result.body) as T;
+        } catch (error) {
+          throw new Error(`Failed while parsing JSON for '${url}'. ${error.message}`);
+        }
+      }
+      return json;
+    },
+  };
+
+  return result;
 }

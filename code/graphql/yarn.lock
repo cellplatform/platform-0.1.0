@@ -1222,10 +1222,10 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/http@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.13.tgz#53618ab9eb262b7ff9d7317ec408073c07906e29"
-  integrity sha512-VXxFU03LWhUfj+ftg0X8KuNJoZa6NkhEuF82QIIjCHFEfQjmjpmkWmvaRuY6/s8RI38pFkWYrqzbnmJin7eTOQ==
+"@platform/http@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.0.tgz#e2b81ce1c958d0167d9aa38a35fceeea3a21f2e7"
+  integrity sha512-CL5P4xbb8jNOB0Oy9thERolyiNQfNHWJrCoLIp1Q7DNUtXdao332V8FP523X9bxljUKPTQYp9Ve9aQiLHXmdCQ==
   dependencies:
     "@platform/fs" "0.1.7"
     "@platform/types" "0.0.22"

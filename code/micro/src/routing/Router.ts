@@ -1,14 +1,6 @@
 import { parse as parseUrl } from 'url';
 import { t, pathToRegex } from '../common';
 
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
-export type IRoute = {
-  method: HttpMethod;
-  path: string;
-  regex: RegExp;
-  handler: t.RouteHandler;
-};
-
 export class Router {
   /**
    * [Lifecycle]
@@ -19,13 +11,13 @@ export class Router {
   /**
    * [Fields]
    */
-  public routes: IRoute[] = [];
+  public routes: t.IRoute[] = [];
 
   public handler: t.RouteHandler = async req => {
     const match = this.find(req);
     return match
       ? match.handler(req)
-      : { status: 404, data: { status: 404, description: 'Not found.' } };
+      : { status: 404, data: { status: 404, message: 'Not found.' } };
   };
 
   /**
@@ -38,7 +30,11 @@ export class Router {
   /**
    * [Methods]
    */
-  public add(method: HttpMethod, path: string, handler: t.RouteHandler) {
+  public add(method: t.HttpMethod, path: string, handler: t.RouteHandler) {
+    const exists = this.routes.find(route => route.method === method && route.path === path);
+    if (exists) {
+      throw new Error(`A ${method} route for path '${path}' already exists.`);
+    }
     const regex = pathToRegex(path);
     this.routes = [...this.routes, { method, path, regex, handler }];
     return this;
@@ -48,7 +44,10 @@ export class Router {
   public post = (path: string, handler: t.RouteHandler) => this.add('POST', path, handler);
   public delete = (path: string, handler: t.RouteHandler) => this.add('DELETE', path, handler);
 
-  public find(req: t.IncomingMessage) {
+  /**
+   * Find the route at the given url.
+   */
+  public find(req: { method?: string; url?: string }) {
     const route = this.routes.find(route => {
       return req.method === route.method && route.regex.test(toPath(req.url));
     });

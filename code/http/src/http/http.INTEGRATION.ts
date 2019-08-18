@@ -2,12 +2,12 @@ import { expect } from 'chai';
 import { http } from '..';
 
 const URL = {
-  JSON: 'https://platform.sfo2.digitaloceanspaces.com/http/foo.json',
+  JSON: 'https://platform.sfo2.digitaloceanspaces.com/modules/http/foo.json',
 };
 
 type IFoo = { name: string; version: string; list: number[] };
 
-describe.skip('http (INTEGRATION)', function() {
+describe('http (INTEGRATION)', function() {
   this.timeout(30000);
 
   it('GET (string)', async () => {

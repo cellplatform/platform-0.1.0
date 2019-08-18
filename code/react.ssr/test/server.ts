@@ -1,5 +1,5 @@
 import { server } from '../src';
+import { MANIFEST, SECRET } from './constants';
 
-const manifestUrl = 'https://platform.sfo2.digitaloceanspaces.com/modules/react.ssr/manifest.yml';
-const app = server.init({ manifest: manifestUrl, secret: '1234' });
-app.listen();
+const app = server.init({ manifest: MANIFEST, secret: SECRET });
+app.listen({ port: 3000 });

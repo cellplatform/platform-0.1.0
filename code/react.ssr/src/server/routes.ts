@@ -1,34 +1,30 @@
 import { parse as parseUrl } from 'url';
 
-import { t } from '../common';
+import { t, micro } from '../common';
 import { Manifest } from '../manifest';
-import { Router } from './Router';
-
-export type IRoute = {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  pattern: RegExp;
-  handler: t.RouteHandler;
-};
 
 /**
  * Router
  */
-export function init(args: { manifest: string; cdn?: string; secret?: string }) {
-  const router = Router.create();
+export function init(args: {
+  router: micro.Router;
+  manifest: string;
+  cdn?: string;
+  secret?: string;
+}) {
+  const { router } = args;
 
   const getManifest = (force?: boolean) =>
     Manifest.get({ url: args.manifest, baseUrl: args.cdn, force });
 
   const isDenied = (req: t.IncomingMessage): t.RouteResponse | undefined => {
     const { secret } = args;
-
-    // req.headers
     const auth = req.headers.authorization;
     const isAuthorized = !secret ? true : auth === secret;
     if (!isAuthorized) {
       const status = 403;
-      const description = `Not allowed. Ensure you have the correct token in the authorization header.`;
-      return { status, data: { status, description } };
+      const message = `Not allowed. Ensure you have the correct token in the authorization header.`;
+      return { status, data: { status, message } };
     }
     return undefined;
   };
@@ -44,6 +40,21 @@ export function init(args: { manifest: string; cdn?: string; secret?: string }) 
     await getManifest(true);
     const status = 200;
     return { status, data: { status, message: 'Manifest updated' } };
+  });
+
+  /**
+   * [GET] manifest.
+   */
+  router.get('/.manifest', async res => {
+    const manifest = await getManifest();
+    const sites = manifest.sites
+      .map(site => site.toObject())
+      .map(site => {
+        const { domain, version, bundle, routes } = site;
+        return { domain, version, bundle, routes };
+      });
+    const data = { sites };
+    return { data };
   });
 
   /**
@@ -77,7 +88,7 @@ export function init(args: { manifest: string; cdn?: string; secret?: string }) 
       }
     }
 
-    // [307] redirect the resource-request to S3.
+    // Redirect the resource-request to S3.
     const location = site.redirectUrl(url.pathname);
     if (location) {
       const status = 307;
