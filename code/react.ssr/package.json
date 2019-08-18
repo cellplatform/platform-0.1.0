@@ -18,7 +18,8 @@
     "bundle": "ui bundle web --increment && yarn prep",
     "prep": "ts-node -T scripts/prep",
     "pb": "ts-node -T scripts/push.bundle",
-    "pm": "ts-node -T scripts/push.manifest"
+    "pm": "ts-node -T scripts/push.manifest",
+    "now": "cd test/now && now dev --port 8080"
   },
   "dependencies": {
     "@platform/fs": "0.1.7",
