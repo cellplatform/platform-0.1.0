@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@nodelib/fs.scandir@2.1.1":
+"@nodelib/fs.scandir@2.1.1", "@nodelib/fs.scandir@^2.1.1":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.1.tgz#7fa8fed654939e1a39753d286b48b4836d00e0eb"
   integrity sha512-NT/skIZjgotDSiXs0WqYhgcuBKhUMgfekCmCGtkUAiLqZdOnrdjmZr9wRl3ll64J9NF79uZ4fk16Dx0yMc/Xbg==
@@ -15,7 +15,7 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-2.0.1.tgz#814f71b1167390cfcb6a6b3d9cdeb0951a192c14"
   integrity sha512-+RqhBlLn6YRBGOIoVYthsG0J9dfpO79eJyN7BYBkZJtfqrBwf2KK+rD/M/yjZR6WBmIhAgOV7S60eCgaSWtbFw==
 
-"@nodelib/fs.walk@^1.2.1":
+"@nodelib/fs.walk@^1.2.1", "@nodelib/fs.walk@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.walk/-/fs.walk-1.2.2.tgz#6a6450c5e17012abd81450eb74949a4d970d2807"
   integrity sha512-J/DR3+W12uCzAJkw7niXDcqcKBg6+5G5Q/ZpThpGNzAUz70eOR6RV4XnnSN01qHZiVl0eavoxJsBypQoKsV2QQ==
@@ -80,10 +80,10 @@
     fs-extra "8.1.0"
     js-yaml "3.13.1"
 
-"@platform/http@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.2.13.tgz#53618ab9eb262b7ff9d7317ec408073c07906e29"
-  integrity sha512-VXxFU03LWhUfj+ftg0X8KuNJoZa6NkhEuF82QIIjCHFEfQjmjpmkWmvaRuY6/s8RI38pFkWYrqzbnmJin7eTOQ==
+"@platform/http@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.0.tgz#e2b81ce1c958d0167d9aa38a35fceeea3a21f2e7"
+  integrity sha512-CL5P4xbb8jNOB0Oy9thERolyiNQfNHWJrCoLIp1Q7DNUtXdao332V8FP523X9bxljUKPTQYp9Ve9aQiLHXmdCQ==
   dependencies:
     "@platform/fs" "0.1.7"
     "@platform/types" "0.0.22"
@@ -112,7 +112,7 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/micro@^0.2.4":
+"@platform/micro@0.2.4", "@platform/micro@^0.2.4":
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.2.4.tgz#f327776933f33f013258072d40213b20d887aedf"
   integrity sha512-lDP6r7Ih2v+ijFY+AeLwoVsu8vgEyvKuCzTl6HDFslddUhuh2zBv1H3qqu7b3mHpYzsDNbaDkgwFukUpqux5nQ==
@@ -137,24 +137,25 @@
     inquirer "6.5.1"
     semver "6.3.0"
 
-"@platform/react.ssr@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-0.4.0.tgz#90bfe266689db872504c407a76fc531320e6af5f"
-  integrity sha512-O83SwZ/TPRSQBjRkXLA70l5apV5eubWD28ZuBjW9CTCvUz/NsgdpA01j5Uw2ddk63yLbXLlq23PMOOgOe2WEYw==
+"@platform/react.ssr@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-0.5.3.tgz#839e565cb3f2284fcca7cae12f0f0b03dd64ef8c"
+  integrity sha512-4WmfhQD8LWmIM/TJ11EDxKZhot/xMyfQZIAndR+ohWcsDo/KUiFSj2w5b3bBXt2P0/ONSxLeNm8f6anY9vXgNg==
   dependencies:
     "@platform/fs" "0.1.7"
     "@platform/fs.s3" "0.2.4"
-    "@platform/http" "0.2.13"
+    "@platform/http" "0.4.0"
     "@platform/libs" "0.1.0"
     "@platform/log" "0.0.135"
+    "@platform/micro" "0.2.4"
     "@platform/npm" "0.2.3"
     "@platform/react" "0.3.14"
     bowser "2.5.3"
     cheerio "1.0.0-rc.3"
     dotenv "8.0.0"
     listr "0.14.3"
-    micro "9.3.4"
     path-to-regexp "3.0.0"
+    semver "^6.3.0"
 
 "@platform/react@0.3.14":
   version "0.3.14"
@@ -807,7 +808,7 @@ extract-zip@1.6.7:
     mkdirp "0.5.1"
     yauzl "2.4.1"
 
-fast-glob@3.0.4:
+fast-glob@3.0.4, fast-glob@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.0.4.tgz#d484a41005cb6faeb399b951fd1bd70ddaebb602"
   integrity sha512-wkIbV6qg37xTJwqSsdnIphL1e+LaGz4AIQqr00mIubMaEhv1/HEmJ0uuCGZRNRUkZZmOB5mJKO0ZUTVq+SxMQg==
@@ -1569,7 +1570,7 @@ scheduler@^0.13.6:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
-semver@6.3.0:
+semver@6.3.0, semver@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"
   integrity sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
