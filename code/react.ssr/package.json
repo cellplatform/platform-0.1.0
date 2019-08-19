@@ -4,7 +4,11 @@
   "description": "An SSR (server-side-render) server for react apps bundled with ParcelJS and hosted on S3.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
+  "bin": {
+    "ssr": "lib/bin/bin.js"
+  },
   "scripts": {
+    "ssr": "ssr $@",
     "ui": "ui $@",
     "dev": "ui start web $@",
     "start": "node lib.test/test/server",
@@ -30,11 +34,9 @@
     "@platform/micro": "0.2.7",
     "@platform/npm": "0.2.6",
     "@platform/react": "0.3.17",
-    "@types/glob": "^7.1.1",
     "bowser": "2.5.3",
     "cheerio": "1.0.0-rc.3",
     "dotenv": "8.1.0",
-    "glob": "^7.1.4",
     "listr": "0.14.3",
     "path-to-regexp": "3.0.0",
     "semver": "6.3.0"

@@ -1,5 +1,6 @@
-import { fs, log, micro } from '../common';
+import { log, micro } from '../common';
 import * as routes from './routes';
+
 export * from '../types';
 
 /**
