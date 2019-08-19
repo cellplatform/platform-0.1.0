@@ -69,26 +69,50 @@ describe.only('ancestor', () => {
     });
   });
 
-  describe('closestFile', () => {
+  describe('closest', () => {
     const dir = 'test/ancestor/1/2/3';
-    it('same level', async () => {
-      const res = await fs.ancestor(dir).closestFile('3.yml');
+    it('file: same level', async () => {
+      const res = await fs.ancestor(dir).closest('3.yml');
       expect(res).to.eql(fs.resolve('test/ancestor/1/2/3/3.yml'));
     });
 
-    it('two levels up', async () => {
-      const res = await fs.ancestor(dir).closestFile('1.yml');
+    it('file: multiple levels up', async () => {
+      const res = await fs.ancestor(dir).closest('1.yml');
       expect(res).to.eql(fs.resolve('test/ancestor/1/1.yml'));
     });
 
+    it('dir: parent', async () => {
+      const res = await fs.ancestor(dir).closest('3');
+      expect(res).to.eql(fs.resolve(dir));
+    });
+
+    it('dir: multiple levels up', async () => {
+      const res = await fs.ancestor(dir).closest('test');
+      expect(res).to.eql(fs.resolve('test'));
+    });
+
     it('match with regex', async () => {
-      const res = await fs.ancestor(dir).closestFile(/^foo.*\.yml$/);
+      const res = await fs.ancestor(dir).closest(/^foo.*\.yml$/);
       expect(res.endsWith('foobar.yml')).to.eql(true);
     });
 
-    it('no match', async () => {
-      const res = await fs.ancestor(dir).closestFile('NO_EXIST');
+    it('type: files only', async () => {
+      const res = await fs.ancestor(dir).closest('test', { type: 'FILE' });
       expect(res).to.eql('');
+    });
+
+    it('type: folders only', async () => {
+      const res = await fs.ancestor(dir).closest('1.yml', { type: 'DIR' });
+      expect(res).to.eql('');
+    });
+
+    it('no match', async () => {
+      const test = async (input: string | RegExp) => {
+        const res = await fs.ancestor(dir).closest(input);
+        expect(res).to.eql('');
+      };
+      await test('/NO_EXIST');
+      await test(/^NO_EXIST$/);
     });
   });
 });

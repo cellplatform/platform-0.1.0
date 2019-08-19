@@ -72,17 +72,33 @@ export function ancestor(dir: string) {
     walkUp: (fn: Visitor) => walkUp(fn, dir),
 
     /**
-     * Walks up the folder tree looking for the given file.
+     * Walks up the folder tree looking for the given file or folder
+     * within each folder in the hierarchy.
      */
-    closestFile: async (filename: string | RegExp) => {
+    closest: async (name: string | RegExp, options: { type?: 'FILE' | 'DIR' } = {}) => {
       let res = '';
-      const isMatch = (name: string) =>
-        typeof filename === 'string' ? name === filename : filename.test(name);
+      const isMatch = (input: string) =>
+        typeof name === 'string' ? input === name : name.test(input);
+
+      const isType = async (path: string) => {
+        switch (options.type) {
+          case 'FILE':
+            return is.file(path);
+          case 'DIR':
+            return is.dir(path);
+          default:
+            return true; // Accept any.
+        }
+      };
+
       await api.walkUp(async e => {
         const name = (await fs.readdir(e.dir)).find(name => isMatch(name));
         if (name) {
-          res = join(e.dir, name);
-          e.stop();
+          const path = join(e.dir, name);
+          if (await isType(path)) {
+            res = path;
+            e.stop();
+          }
         }
       });
       return res;
