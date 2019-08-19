@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "File-system tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -23,8 +23,8 @@
     "minimatch": "3.0.4"
   },
   "devDependencies": {
-    "@platform/test": "0.0.60",
-    "@platform/ts.libs": "3.5.5",
+    "@platform/test": "0.0.61",
+    "@platform/ts.libs": "3.5.6",
     "@types/archiver": "3.0.0",
     "@types/extract-zip": "1.6.2",
     "@types/filesize": "4.1.0",

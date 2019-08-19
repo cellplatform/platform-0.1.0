@@ -15,14 +15,21 @@ export type IGlobOptions = {
  */
 export function find(pattern: string, options: IGlobOptions = {}): Promise<string[]> {
   return new Promise<string[]>(async (resolve, reject) => {
-    const { dot = false, includeDirs, cache, statCache, realpathCache } = options;
-    const nodir = !Boolean(includeDirs);
+    const { dot = false, cache, statCache, realpathCache } = options;
+    const includeDirs =
+      typeof options.includeDirs === 'boolean'
+        ? options.includeDirs
+        : pattern.endsWith('/')
+        ? true
+        : Boolean(options.includeDirs);
+    const nodir = !includeDirs;
     const args = { dot, nodir, cache, statCache, realpathCache };
     glob(pattern, args, (err, paths) => {
       if (err) {
-        return reject(err);
+        reject(err);
+      } else {
+        resolve(paths);
       }
-      resolve(paths);
     });
   });
 }

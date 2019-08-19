@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.cli",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "description": "Helpers for making CLI's.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,12 +13,12 @@
     "prompt": "ts-node -T scripts/prompt"
   },
   "dependencies": {
-    "@platform/libs": "0.1.0",
+    "@platform/libs": "0.1.1",
     "inquirer": "6.5.1"
   },
   "devDependencies": {
-    "@platform/test": "0.0.60",
-    "@platform/ts": "3.4.35",
+    "@platform/test": "0.0.61",
+    "@platform/ts": "3.4.38",
     "@types/inquirer": "6.5.0"
   },
   "files": [

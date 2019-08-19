@@ -301,8 +301,11 @@ describe('FileDb', () => {
     it('no pattern', async () => {
       const db = await prepare();
       const res = await db.find({});
+      const keys = res.keys.sort();
+
       expect(res.length).to.eql(4);
-      expect(res.keys).to.eql(['foo', 'cell/A1', 'cell/A2', 'cell/A2/meta']);
+      expect(keys).to.eql(['cell/A1', 'cell/A2', 'cell/A2/meta', 'foo']);
+
       expect(res.map['cell/A1']).to.eql(1);
       expect(res.map['cell/A2']).to.eql(2);
       expect(res.map['cell/A2/meta']).to.eql({ foo: 123 });
