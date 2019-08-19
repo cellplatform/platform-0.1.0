@@ -1,8 +1,11 @@
-import * as fg from 'fast-glob';
+import * as glob from 'glob';
 
 export type IGlobOptions = {
-  type?: 'FILES' | 'DIRS';
+  includeDirs?: boolean;
   dot?: boolean;
+  cache?: {};
+  statCache?: {};
+  realpathCache?: {};
 };
 
 /**
@@ -11,11 +14,15 @@ export type IGlobOptions = {
  *    https://www.npmjs.com/package/glob
  */
 export function find(pattern: string, options: IGlobOptions = {}): Promise<string[]> {
-  return new Promise<string[]>(async resolve => {
-    const { type = 'FILES', dot = false } = options;
-    const onlyDirectories = type === 'DIRS' ? true : false;
-    const args = { onlyDirectories, unique: true, dot };
-    const res = await fg(pattern, args);
-    resolve(res as string[]);
+  return new Promise<string[]>(async (resolve, reject) => {
+    const { dot = false, includeDirs, cache, statCache, realpathCache } = options;
+    const nodir = !Boolean(includeDirs);
+    const args = { dot, nodir, cache, statCache, realpathCache };
+    glob(pattern, args, (err, paths) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(paths);
+    });
   });
 }

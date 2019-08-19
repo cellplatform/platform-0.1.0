@@ -69,50 +69,46 @@ describe.only('ancestor', () => {
     });
   });
 
-  describe('closest', () => {
+  describe('first', () => {
     const dir = 'test/ancestor/1/2/3';
     it('file: same level', async () => {
-      const res = await fs.ancestor(dir).closest('3.yml');
+      const res = await fs.ancestor(dir).first('3.yml');
       expect(res).to.eql(fs.resolve('test/ancestor/1/2/3/3.yml'));
     });
 
     it('file: multiple levels up', async () => {
-      const res = await fs.ancestor(dir).closest('1.yml');
+      const res = await fs.ancestor(dir).first('1.yml');
       expect(res).to.eql(fs.resolve('test/ancestor/1/1.yml'));
     });
 
     it('dir: parent', async () => {
-      const res = await fs.ancestor(dir).closest('3');
+      const res = await fs.ancestor(dir).first('3');
       expect(res).to.eql(fs.resolve(dir));
     });
 
     it('dir: multiple levels up', async () => {
-      const res = await fs.ancestor(dir).closest('test');
+      const res = await fs.ancestor(dir).first('test');
       expect(res).to.eql(fs.resolve('test'));
     });
 
-    it('match with regex', async () => {
-      const res = await fs.ancestor(dir).closest(/^foo.*\.yml$/);
-      expect(res.endsWith('foobar.yml')).to.eql(true);
-    });
-
     it('type: files only', async () => {
-      const res = await fs.ancestor(dir).closest('test', { type: 'FILE' });
+      const res = await fs.ancestor(dir).first('test', { type: 'FILE' });
       expect(res).to.eql('');
     });
 
     it('type: folders only', async () => {
-      const res = await fs.ancestor(dir).closest('1.yml', { type: 'DIR' });
+      const res = await fs.ancestor(dir).first('1.yml', { type: 'DIR' });
       expect(res).to.eql('');
     });
 
     it('no match', async () => {
-      const test = async (input: string | RegExp) => {
-        const res = await fs.ancestor(dir).closest(input);
+      const test = async (input: string) => {
+        const res = await fs.ancestor(dir).first(input);
         expect(res).to.eql('');
       };
       await test('/NO_EXIST');
-      await test(/^NO_EXIST$/);
+      await test('');
+      await test(' ');
     });
   });
 });

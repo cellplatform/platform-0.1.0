@@ -75,10 +75,12 @@ export function ancestor(dir: string) {
      * Walks up the folder tree looking for the given file or folder
      * within each folder in the hierarchy.
      */
-    closest: async (name: string | RegExp, options: { type?: 'FILE' | 'DIR' } = {}) => {
+    first: async (name: string, options: { type?: 'FILE' | 'DIR' } = {}) => {
       let res = '';
-      const isMatch = (input: string) =>
-        typeof name === 'string' ? input === name : name.test(input);
+      const isMatch = (input: string) => {
+        // TEMP 🐷 - todo, use minimatch
+        return input === name;
+      };
 
       const isType = async (path: string) => {
         switch (options.type) {
