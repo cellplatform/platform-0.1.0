@@ -18,7 +18,7 @@ export type VisitorArgs = {
 export function ancestor(dir: string) {
   dir = resolve(dir);
 
-  const walkUp = async (fn: Visitor, path: string, state?: VisitorArgs) => {
+  const walk = async (fn: Visitor, path: string, state?: VisitorArgs) => {
     let args: VisitorArgs = state
       ? state
       : {
@@ -54,7 +54,7 @@ export function ancestor(dir: string) {
     if (!args.isStopped) {
       args.levels++;
       const parent = dirname(path);
-      args = await walkUp(fn, parent, args); // <== RECURSION.
+      args = await walk(fn, parent, args); // <== RECURSION.
     }
 
     // Finish up.
@@ -70,7 +70,7 @@ export function ancestor(dir: string) {
     /**
      * Walks up the tree.
      */
-    walkUp: (fn: Visitor) => walkUp(fn, dir),
+    walk: (fn: Visitor) => walk(fn, dir),
 
     /**
      * Walks up the folder tree looking for the given file or folder
@@ -92,7 +92,7 @@ export function ancestor(dir: string) {
         }
       };
 
-      await api.walkUp(async e => {
+      await api.walk(async e => {
         const name = (await fs.readdir(e.dir)).find(name => isMatch(name));
         if (name) {
           const path = join(e.dir, name);
