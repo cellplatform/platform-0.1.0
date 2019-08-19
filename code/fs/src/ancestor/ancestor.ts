@@ -1,6 +1,7 @@
 import { fs } from '../common';
 import { resolve, dirname, join } from 'path';
 import { is } from '../is';
+import { match } from '../match';
 
 export type Visitor = (e: VisitorArgs) => any | Promise<any>;
 export type VisitorArgs = {
@@ -77,10 +78,8 @@ export function ancestor(dir: string) {
      */
     first: async (name: string, options: { type?: 'FILE' | 'DIR' } = {}) => {
       let res = '';
-      const isMatch = (input: string) => {
-        // TEMP 🐷 - todo, use minimatch
-        return input === name;
-      };
+      const matcher = match(name);
+      const isMatch = (input: string) => matcher.base(input);
 
       const isType = async (path: string) => {
         switch (options.type) {

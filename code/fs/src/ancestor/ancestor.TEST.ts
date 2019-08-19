@@ -81,6 +81,11 @@ describe('ancestor', () => {
       expect(res).to.eql(fs.resolve('test/ancestor/1/1.yml'));
     });
 
+    it('file: minimatch', async () => {
+      const res = await fs.ancestor(dir).first('2.{yml,yaml}');
+      expect(res).to.eql(fs.resolve('test/ancestor/1/2/2.yml'));
+    });
+
     it('dir: parent', async () => {
       const res = await fs.ancestor(dir).first('3');
       expect(res).to.eql(fs.resolve(dir));
