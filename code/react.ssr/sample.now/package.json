@@ -1,0 +1,13 @@
+{
+  "name": "test-now-react.ssr",
+  "version": "1.0.4",
+  "devDependencies": {
+    "@now/node": "^0.12.6"
+  },
+  "dependencies": {
+    "@platform/micro": "^0.2.7",
+    "@platform/react.ssr": "^0.5.7"
+  },
+  "license": "MIT",
+  "private": true
+}

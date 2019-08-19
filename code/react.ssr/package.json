@@ -1,6 +1,6 @@
 {
   "name": "@platform/react.ssr",
-  "version": "0.5.2",
+  "version": "0.5.7",
   "description": "An SSR (server-side-render) server for react apps bundled with ParcelJS and hosted on S3.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,37 +18,40 @@
     "bundle": "ui bundle web --increment && yarn prep",
     "prep": "ts-node -T scripts/prep",
     "pb": "ts-node -T scripts/push.bundle",
-    "pm": "ts-node -T scripts/push.manifest"
+    "pm": "ts-node -T scripts/push.manifest",
+    "now": "cd sample.now && now dev --port 8080"
   },
   "dependencies": {
-    "@platform/fs": "0.1.7",
-    "@platform/fs.s3": "0.2.4",
-    "@platform/http": "0.4.0",
-    "@platform/libs": "0.1.0",
-    "@platform/log": "0.0.135",
-    "@platform/micro": "0.2.4",
-    "@platform/npm": "0.2.3",
-    "@platform/react": "0.3.14",
+    "@platform/fs": "0.2.0",
+    "@platform/fs.s3": "0.2.7",
+    "@platform/http": "0.4.3",
+    "@platform/libs": "0.1.1",
+    "@platform/log": "0.0.138",
+    "@platform/micro": "0.2.7",
+    "@platform/npm": "0.2.6",
+    "@platform/react": "0.3.17",
+    "@types/glob": "^7.1.1",
     "bowser": "2.5.3",
     "cheerio": "1.0.0-rc.3",
-    "dotenv": "8.0.0",
+    "dotenv": "8.1.0",
+    "glob": "^7.1.4",
     "listr": "0.14.3",
     "path-to-regexp": "3.0.0",
-    "semver": "^6.3.0"
+    "semver": "6.3.0"
   },
   "devDependencies": {
-    "@platform/test": "0.0.60",
-    "@platform/ts": "3.4.35",
+    "@platform/test": "0.0.61",
+    "@platform/ts": "3.4.38",
     "@types/bowser": "1.1.1",
     "@types/cheerio": "0.22.13",
     "@types/dotenv": "6.1.1",
-    "@types/semver": "^6.0.1",
+    "@types/semver": "6.0.1",
     "@uiharness/dev": "0.9.0"
   },
   "files": [
     "lib",
-    "!*.TEST.js",
-    "!lib/test"
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }

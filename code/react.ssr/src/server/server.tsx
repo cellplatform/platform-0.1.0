@@ -8,11 +8,8 @@ export * from '../types';
 export function init(args: { manifest: string; cdn?: string; secret?: string }) {
   const { manifest, cdn, secret } = args;
 
-  const PKG = require(fs.resolve('package.json')) as { name: string; version: string };
   const res = micro.init({
     log: {
-      package: log.white(PKG.name),
-      version: PKG.version,
       secret: Boolean(secret),
       manifest,
       cdn: cdn ? cdn : 'false',
