@@ -1,8 +1,8 @@
 import { fs } from '../common';
-import { resolve, dirname } from 'path';
+import { resolve, dirname, join } from 'path';
 import { is } from '../is';
 
-export type Visitor = (e: VisitorArgs) => Promise<any>;
+export type Visitor = (e: VisitorArgs) => any | Promise<any>;
 export type VisitorArgs = {
   levels: number;
   dir: string;
@@ -11,24 +11,21 @@ export type VisitorArgs = {
   stop(): void;
 };
 
-const isRoot = (path: string) => path === '/' || !path;
-
 /**
  * Walks up the ancestor tree
  */
 export function ancestor(dir: string) {
   dir = resolve(dir);
 
-  /**
-   * Walks up the tree.
-   */
   const walkUp = async (fn: Visitor, path: string, state?: VisitorArgs) => {
     let args: VisitorArgs = state
       ? state
       : {
           levels: 0,
           dir: path,
-          stop: () => (args.isStopped = true),
+          stop() {
+            this.isStopped = true;
+          },
           isStopped: false,
           isRoot: false,
         };
@@ -50,7 +47,7 @@ export function ancestor(dir: string) {
     }
 
     // Visit the current level.
-    fn(args);
+    await fn(args);
 
     // Step up a level.
     if (!args.isStopped) {
@@ -63,9 +60,40 @@ export function ancestor(dir: string) {
     return args;
   };
 
-  // Finish up.
-  return {
+  /**
+   * Ancestor API.
+   */
+  const api = {
     dir,
+
+    /**
+     * Walks up the tree.
+     */
     walkUp: (fn: Visitor) => walkUp(fn, dir),
+
+    /**
+     * Walks up the folder tree looking for the given file.
+     */
+    closestFile: async (filename: string | RegExp) => {
+      let res = '';
+      const isMatch = (name: string) =>
+        typeof filename === 'string' ? name === filename : filename.test(name);
+      await api.walkUp(async e => {
+        const name = (await fs.readdir(e.dir)).find(name => isMatch(name));
+        if (name) {
+          res = join(e.dir, name);
+          e.stop();
+        }
+      });
+      return res;
+    },
   };
+
+  // Finish up.
+  return api;
 }
+
+/**
+ * [Helpers]
+ */
+const isRoot = (path: string) => path === '/' || !path;

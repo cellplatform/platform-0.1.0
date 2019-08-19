@@ -17,10 +17,20 @@ describe.only('ancestor', () => {
 
   describe('walkUp', () => {
     const dir = 'test/ancestor/1/2/3';
-
-    it('stops immediately', async () => {
+    it('stops immediately (sync)', async () => {
       const ancestor = fs.ancestor(dir);
-      const res = await ancestor.walkUp(async e => e.stop());
+      const res = await ancestor.walkUp(e => e.stop());
+      expect(res.levels).to.eql(0);
+      expect(res.isStopped).to.eql(true);
+      expect(res.isRoot).to.eql(false);
+      expect(res.dir).to.eql(fs.resolve(dir));
+    });
+
+    it('stops immediately (async)', async () => {
+      const ancestor = fs.ancestor(dir);
+      const res = await ancestor.walkUp(async e => {
+        await delay(10, () => e.stop());
+      });
       expect(res.levels).to.eql(0);
       expect(res.isStopped).to.eql(true);
       expect(res.isRoot).to.eql(false);
@@ -59,19 +69,44 @@ describe.only('ancestor', () => {
     });
   });
 
-  describe('closestAncestor', () => {});
+  describe('closestFile', () => {
+    const dir = 'test/ancestor/1/2/3';
+    it('same level', async () => {
+      const res = await fs.ancestor(dir).closestFile('3.yml');
+      expect(res).to.eql(fs.resolve('test/ancestor/1/2/3/3.yml'));
+    });
+
+    it('two levels up', async () => {
+      const res = await fs.ancestor(dir).closestFile('1.yml');
+      expect(res).to.eql(fs.resolve('test/ancestor/1/1.yml'));
+    });
+
+    it('match with regex', async () => {
+      const res = await fs.ancestor(dir).closestFile(/^foo.*\.yml$/);
+      expect(res.endsWith('foobar.yml')).to.eql(true);
+    });
+
+    it('no match', async () => {
+      const res = await fs.ancestor(dir).closestFile('NO_EXIST');
+      expect(res).to.eql('');
+    });
+  });
 });
 
 /**
- * Walks up the folder tree looking for the given file.
+ * [Helpers]
  */
-// export async function findClosestAncestor____(startDir: string, fileName: string) {
-//   const find = async (dir: string): Promise<string | undefined> => {
-//     if (!dir || dir === '/') {
-//       return;
-//     }
-//     const path = fs.join(dir, fileName);
-//     return (await fs.pathExists(path)) ? path : find(fs.resolve(dir, '..'));
-//   };
-//   return find(startDir);
-// }
+const delay = (msecs: number, callback: () => any) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        if (callback) {
+          callback();
+        }
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    }, msecs);
+  });
+};
