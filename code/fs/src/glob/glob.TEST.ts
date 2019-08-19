@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { glob } from '.';
 import { basename, resolve } from 'path';
 
-describe.only('glob', () => {
+describe('glob', () => {
   it('finds several files', async () => {
     const pattern = `${__dirname}/glob*.ts`;
     const res = await glob.find(pattern);

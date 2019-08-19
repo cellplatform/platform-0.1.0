@@ -1,7 +1,7 @@
 import { expect, expectError } from '@platform/test';
 import { fs } from '..';
 
-describe.only('ancestor', () => {
+describe('ancestor', () => {
   describe('starting directory', () => {
     it('uses given directory (resolves)', () => {
       const res = fs.ancestor('test/ancestor');

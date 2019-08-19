@@ -8,6 +8,7 @@ import { merge } from '../merge';
 import { size } from '../size';
 import { unzip, zip } from '../zip';
 import { ancestor } from '../ancestor';
+import { match } from '../match';
 
 /**
  * Extended [file-system] object.
@@ -39,6 +40,11 @@ export const fs = {
    * Merges directories.
    */
   merge,
+
+  /**
+   * Match file patterns.
+   */
+  match,
 
   /**
    * Flag helpers.

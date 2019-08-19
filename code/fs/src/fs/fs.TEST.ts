@@ -2,11 +2,18 @@ import { expect } from 'chai';
 import { fs } from '.';
 
 describe('size', () => {
+  it('match', () => {
+    const match = fs.match('**/*.js');
+    expect(match.path('foo.js')).to.eql(true);
+    expect(match.base('foo.txt')).to.eql(false);
+  });
+
   describe('file', () => {
     it('calculates the size of single file', async () => {
-      const res = await fs.size.file('./src/index.ts');
+      const path = './src/fs/fs.TEST.ts';
+      const res = await fs.size.file(path);
       expect(res.bytes).to.greaterThan(30);
-      expect(res.path).to.eql('./src/index.ts');
+      expect(res.path).to.eql(path);
     });
 
     it('toString', async () => {

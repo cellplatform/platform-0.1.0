@@ -19,7 +19,8 @@
     "filesize": "4.1.2",
     "fs-extra": "8.1.0",
     "glob": "7.1.4",
-    "js-yaml": "3.13.1"
+    "js-yaml": "3.13.1",
+    "minimatch": "3.0.4"
   },
   "devDependencies": {
     "@platform/test": "0.0.60",
