@@ -11,7 +11,7 @@ export type IGlobOptions = {
  *    https://www.npmjs.com/package/glob
  */
 export function find(pattern: string, options: IGlobOptions = {}): Promise<string[]> {
-  return new Promise<string[]>(async (resolve, reject) => {
+  return new Promise<string[]>(async resolve => {
     const { type = 'FILES', dot = false } = options;
     const onlyDirectories = type === 'DIRS' ? true : false;
     const args = { onlyDirectories, unique: true, dot };

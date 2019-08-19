@@ -1,12 +1,13 @@
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 
-import { File } from '../file';
+import { File as file } from '../file';
 import { glob } from '../glob';
 import { is } from '../is';
 import { merge } from '../merge';
 import { size } from '../size';
 import { unzip, zip } from '../zip';
+import { ancestor } from '../ancestor';
 
 /**
  * Extended [file-system] object.
@@ -27,7 +28,12 @@ export const fs = {
   /**
    * Helpers for working with file content.
    */
-  file: File,
+  file,
+
+  /**
+   * Helpers for walking up the ancestor hierarchy.
+   */
+  ancestor,
 
   /**
    * Merges directories.
@@ -35,12 +41,12 @@ export const fs = {
   merge,
 
   /**
-   * Flag helpers
+   * Flag helpers.
    */
   is,
 
   /**
-   * Zip/unzip
+   * Zipping.
    */
   zip,
   unzip,

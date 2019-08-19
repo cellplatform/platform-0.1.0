@@ -48,8 +48,8 @@
   },
   "files": [
     "lib",
-    "!*.TEST.{js, mjs, d.ts}",
-    "!lib/test"
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }
