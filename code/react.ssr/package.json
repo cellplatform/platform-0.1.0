@@ -8,7 +8,7 @@
     "ssr": "lib/bin/bin.js"
   },
   "scripts": {
-    "ssr": "ssr $@",
+    "ssr": "node lib.test/src/bin $@",
     "ui": "ui $@",
     "dev": "ui start web $@",
     "start": "node lib.test/test/server",
@@ -23,7 +23,7 @@
     "prep": "ts-node -T scripts/prep",
     "pb": "ts-node -T scripts/push.bundle",
     "pm": "ts-node -T scripts/push.manifest",
-    "now": "cd sample.now && now dev --port 8080"
+    "now": "cd test.now && now dev --port 8080"
   },
   "dependencies": {
     "@platform/fs": "0.2.0",

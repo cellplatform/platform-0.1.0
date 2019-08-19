@@ -1,0 +1,19 @@
+{
+  "name": "react.ssr-test",
+  "version": 2,
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.ts"
+    }
+  ],
+  "builds": [
+    {
+      "src": "**/*.{ts,tsx}",
+      "use": "@now/node",
+      "config": {
+        "includeFiles": ["**/*.{yml}"]
+      }
+    }
+  ]
+}

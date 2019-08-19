@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { init } from '.';
+// import { init } from '.';
 
 /**
  * Makes the script crash on unhandled rejections instead of silently
@@ -17,4 +17,5 @@ process.on('unhandledRejection', err => {
  *  delegates out to the actual application.
  */
 const args = process.argv.slice(2);
-init(args);
+console.log('args', args);
+// init(args);
