@@ -16,12 +16,12 @@
   },
   "dependencies": {
     "@platform/react": "0.3.14",
-    "@types/mapbox-gl": "0.54.1",
-    "mapbox-gl": "1.2.0"
+    "@types/mapbox-gl": "0.54.2",
+    "mapbox-gl": "1.2.1"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.5.16",
-    "@uiharness/ui": "0.5.17",
+    "@uiharness/dev": "0.9.0",
+    "@uiharness/ui": "0.6.11",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0"
   },

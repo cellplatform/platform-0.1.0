@@ -12,7 +12,7 @@
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
-    "@types/chai": "4.1.7",
+    "@types/chai": "4.2.0",
     "@types/mocha": "5.2.7",
     "chai": "4.2.0",
     "findup-sync": "4.0.0",

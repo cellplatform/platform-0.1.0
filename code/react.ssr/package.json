@@ -33,7 +33,7 @@
     "@types/glob": "^7.1.1",
     "bowser": "2.5.3",
     "cheerio": "1.0.0-rc.3",
-    "dotenv": "8.0.0",
+    "dotenv": "8.1.0",
     "glob": "^7.1.4",
     "listr": "0.14.3",
     "path-to-regexp": "3.0.0",
