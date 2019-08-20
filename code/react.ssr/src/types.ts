@@ -46,3 +46,13 @@ export type ISiteManifestRoute = {
   entry: string; // Entry filename (.html)
   path: string[]; // URL pathname.
 };
+
+/**
+ * SSR configuration.
+ */
+export type ISsrConfig = {
+  builder: {
+    bundles: string; // Path to the folder containing built JS bundle-dirs.
+    entries: string; // Path to a JS file to execute that produces the IBundleEntryElement[].
+  };
+};

@@ -23,7 +23,7 @@ export async function prepare(args: {
   const manifest = await bundleManifest.write({ path, entries });
   const dirSize = await fs.size.dir(dir);
 
-  if (!args.silent) {
+  const write = () => {
     log.info();
     log.info.cyan(`Preparing bundle 👌`);
     log.info();
@@ -40,10 +40,14 @@ export async function prepare(args: {
       log.info.gray(`         - ${size} ${name}`);
     });
     log.info();
+  };
+
+  if (!args.silent) {
+    write();
   }
 
   // Finish up.
-  return { manifest };
+  return { manifest, write };
 }
 
 /**
@@ -92,3 +96,4 @@ function renderEntry(args: t.IBundleEntryElement): t.IBundleEntryHtml {
   const { html, css } = renderStatic(() => ReactDOMServer.renderToString(args.el));
   return { file, id, html, css };
 }
+

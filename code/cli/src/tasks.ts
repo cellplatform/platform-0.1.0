@@ -1,31 +1,18 @@
 import { Subject } from 'rxjs';
-import { Listr, value, time } from './common';
+import { Listr, value, time, log, t } from './common';
 
-export type Task = (args: TaskArgs) => Promise<any> | any;
-export type TaskArgs = {
-  message: (text: string) => void;
-  done: () => void;
-  error: (err: Error | string) => void;
-};
-
-export type ITaskError = {
-  index: number;
-  title: string;
-  error: string;
-};
-
-type ITaskItem = { title: string; task: Task };
+type ITaskItem = { title: string; task: t.Task };
 
 /**
  * Initializes a list of spinner tasks.
  */
 export function tasks() {
   let list: ITaskItem[] = [];
-  let errors: ITaskError[] = [];
+  let errors: t.ITaskError[] = [];
 
-  const run = (index: number, title: string, task: Task) => {
+  const run = (index: number, title: string, task: t.Task) => {
     const $ = new Subject<string>();
-    const args: TaskArgs = {
+    const args: t.TaskArgs = {
       message: text => $.next(text),
       done: () => $.complete(),
       error: (err: Error | string) => {
@@ -36,7 +23,7 @@ export function tasks() {
     };
 
     // Invoke the task.
-    // NB:  Started after a delay so that any message piped through the
+    // NB:  Started after a delay so that any messages piped through the
     //      observable are displayed in the UI immediately.
     time.delay(0, () => {
       const res = task(args);
@@ -61,8 +48,16 @@ export function tasks() {
     /**
      * Add an execution task to the list.
      */
-    task(title: string, task: Task) {
+    task(title: string, task: t.Task) {
       list = [...list, { title, task }];
+      return api;
+    },
+
+    /**
+     * Debugging alternative that does not add the task.
+     */
+    skip(title: string, task: t.Task) {
+      log.info.yellow(`SKIPPED TASK: "${title}"`);
       return api;
     },
 

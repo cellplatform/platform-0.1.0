@@ -4,7 +4,7 @@
 
 sites:
   - domain: [localhost, /.*\.now\.sh$/]
-    bundle: bundle/0.4.12-alpha.0
+    bundle: bundle/0.5.9
     routes:
       default:
         entry: index.html

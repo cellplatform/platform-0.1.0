@@ -1,0 +1,5 @@
+builder:
+  bundles: bundle
+  entries: lib.test/test/entries.js
+
+  

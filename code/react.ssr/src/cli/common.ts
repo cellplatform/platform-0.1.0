@@ -1,3 +1,6 @@
+import * as t from '../types';
+
+export { t };
 export { time } from '@platform/util.value';
 export { fs } from '@platform/fs';
 export { S3 } from '@platform/fs.s3';
