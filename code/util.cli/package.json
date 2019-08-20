@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.cli",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Helpers for making CLI's.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.61",
-    "@platform/ts": "3.4.38",
+    "@platform/ts": "3.5.0",
     "@types/inquirer": "6.5.0"
   },
   "files": [

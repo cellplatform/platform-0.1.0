@@ -9,4 +9,4 @@ process.on('unhandledRejection', err => {
   throw err;
 });
 
-import './cli';
+import './cli/cmds';

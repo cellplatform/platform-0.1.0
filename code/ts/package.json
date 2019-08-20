@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts",
-  "version": "3.4.39",
+  "version": "3.5.0",
   "description": "TypesScript build, prepare and publish toolchain.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

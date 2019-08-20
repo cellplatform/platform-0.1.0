@@ -1,7 +1,7 @@
 import * as t from '../types';
 import { Argv } from 'yargs';
 
-export type ICli = {
+export type IApp = {
   program: Argv<{}>;
   command: Argv<{}>['command'];
   option: Argv<{}>['option'];

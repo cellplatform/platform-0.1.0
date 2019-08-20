@@ -1,6 +1,7 @@
 import { log, yargs, t } from '../common';
 import { tasks } from '../tasks';
 
+export { tasks };
 export { fs, exec, inquirer, yargs, log, Listr } from '../common';
 export * from '../types';
 
@@ -32,7 +33,7 @@ export function create(name: string) {
 
   const { command, option } = program;
 
-  const api: t.ICli = {
+  const api: t.IApp = {
     program,
     command,
     option,
