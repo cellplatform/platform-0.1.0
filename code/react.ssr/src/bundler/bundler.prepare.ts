@@ -15,20 +15,20 @@ export async function prepare(args: {
 }) {
   const { entries } = args;
 
-  const dir = fs.resolve(args.bundleDir);
-  if (!(await fs.pathExists(dir))) {
-    throw new Error(`Cannot prepare, the directory does not exist. ${dir}`);
+  const bundleDir = fs.resolve(args.bundleDir);
+  if (!(await fs.pathExists(bundleDir))) {
+    throw new Error(`Cannot prepare, the directory does not exist. ${bundleDir}`);
   }
 
   // Write a YAML file describing the contents of the bundle.
-  const path = fs.join(dir, constants.PATH.BUNDLE_MANIFEST);
+  const path = fs.join(bundleDir, constants.PATH.BUNDLE_MANIFEST);
   const manifest = await bundleManifest.write({ path, entries });
 
   // Finish up.
   if (!args.silent) {
-    logger.bundle({ dir, manifest });
+    logger.bundle({ bundleDir, manifest });
   }
-  return { dir, manifest };
+  return { bundleDir, manifest };
 }
 
 /**

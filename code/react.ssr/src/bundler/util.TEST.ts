@@ -20,17 +20,17 @@ describe('bundler.util', () => {
 
     describe('sortedSemverChildren', () => {
       it('empty', async () => {
-        const res1 = await util.sortedSemverChildren(tmp);
+        const res1 = await util.sortedBySemver(tmp);
         expect(res1).to.eql([]);
 
         await fs.ensureDir(fs.join(tmp, 'foo')); // Not a semver.
-        const res2 = await util.sortedSemverChildren(tmp);
+        const res2 = await util.sortedBySemver(tmp);
         expect(res2).to.eql([]);
       });
 
       it('sorted', async () => {
         await createDirs();
-        const res = await util.sortedSemverChildren(tmp);
+        const res = await util.sortedBySemver(tmp);
         const dirnames = res.map(path => fs.basename(path));
         expect(dirnames).to.eql(['0.1.0', '0.1.1-alpha.0', '0.1.1']);
       });

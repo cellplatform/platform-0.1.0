@@ -1,4 +1,5 @@
 import * as bundle from './cmd.bundle';
+import * as pushBundle from './cmd.pushBundle';
 import { cli, log } from './common';
 
 const app = cli.create('ssr');
@@ -14,7 +15,7 @@ app
       return yargs;
     },
     async argv => {
-      log.info('status', argv);
+      log.info('TODO status ', argv); // TEMP 🐷
     },
   )
 
@@ -23,14 +24,26 @@ app
    */
   .command(
     ['bundle', 'b'],
-    'Bundles and prepare javascript.',
+    'Prepare and bundle javascript.',
     yargs => {
       return yargs;
     },
     async argv => bundle.run(),
+  )
+
+  /**
+   * Push.
+   */
+  .command(
+    ['push', 'p'],
+    'Push bundle to S3.',
+    yargs => {
+      return yargs;
+    },
+    async argv => pushBundle.run({ prompt: true }),
   );
 
 /**
- * Run
+ * Run.
  */
 app.run();

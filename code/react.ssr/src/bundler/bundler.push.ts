@@ -45,10 +45,11 @@ export async function bundle(args: {
   // Log activity.
   if (!args.silent) {
     const { formatPath } = util;
+    const version = fs.basename(bundleDir);
     const size = await fs.size.dir(bundleDir);
     const endpoint = fs.join(bucket.endpoint, args.bucket, args.bucketKey);
     log.info();
-    log.info.cyan(`Pushing bundle to S3 ☝`);
+    log.info.cyan(`Pushing bundle ${log.white(version)} to S3 ☝`);
     log.info();
     log.info.gray(`  size:  ${log.magenta(size.toString())}`);
     log.info.gray(`  from:  ${formatPath(bundleDir)}`);

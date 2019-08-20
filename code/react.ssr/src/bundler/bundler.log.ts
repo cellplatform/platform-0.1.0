@@ -1,13 +1,12 @@
 import { fs, log, t, util } from '../common';
-import { manifest } from './bundler.push';
 
-export async function bundle(args: { dir: string; manifest: t.IBundleManifest }) {
-  const { dir, manifest } = args;
-  const dirSize = await fs.size.dir(dir);
+export async function bundle(args: { bundleDir: string; manifest: t.IBundleManifest }) {
+  const { bundleDir, manifest } = args;
+  const dirSize = await fs.size.dir(bundleDir);
 
   log.info();
   log.info.gray(`  size:  ${log.magenta(dirSize.toString())}`);
-  log.info.gray(`  dir:   ${util.formatPath(dir)}`);
+  log.info.gray(`  dir:   ${util.formatPath(bundleDir)}`);
   log.info();
   manifest.files.forEach(file => {
     let name = file;

@@ -32,7 +32,6 @@ export async function run() {
     .task('manifest', async e => {
       const entries = await getEntries(config);
       const res = await bundler.prepare({ bundleDir, entries, silent: true });
-      // manifestLogger = res.write;
       manifest = res.manifest;
     });
 
@@ -43,7 +42,7 @@ export async function run() {
   if (push) {
     await pushBundle.run({ version });
   } else if (manifest) {
-    bundler.log.bundle({ dir: bundleDir, manifest });
+    bundler.log.bundle({ bundleDir, manifest });
   }
 }
 

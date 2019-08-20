@@ -1,18 +1,26 @@
 import { bundler } from '../bundler';
 import { Config } from '../config';
-import { cli, exec, fs, log, npm, t } from './common';
+import { cli, fs } from './common';
 
 /**
  * Push a bundle to S3.
  */
-export async function run(options: { version?: string; silent?: boolean } = {}) {
+export async function run(options: { version?: string; prompt?: boolean; silent?: boolean } = {}) {
   const { silent } = options;
   const config = await Config.create();
-
-  // Source.
   const bundlesDir = config.builder.bundles;
-  const version = options.version || fs.basename(await bundler.lastDir(bundlesDir));
-  const bundleDir = fs.resolve(fs.join(config.builder.bundles, version));
+
+  const promptForVersion = async () => {
+    const paths = await bundler.sortedBySemver(bundlesDir);
+    const items = paths.map(path => fs.basename(path)).reverse();
+    const res = await cli.prompt.list<string>({ message: 'bundle version', items });
+    return res;
+  };
+
+  // Derive the bundle-version to push.
+  const version = options.prompt
+    ? await promptForVersion()
+    : options.version || fs.basename(await bundler.latestDir(bundlesDir));
 
   // S3 config.
   const { endpoint, accessKey, secret, bucket } = config.s3;
@@ -20,5 +28,9 @@ export async function run(options: { version?: string; silent?: boolean } = {}) 
   const bucketKey = fs.join(config.s3.bucketKey, version);
 
   // Push.
+  const bundleDir = fs.resolve(fs.join(bundlesDir, version));
   await bundler.push(s3).bundle({ bundleDir, bucket, bucketKey, silent });
+
+  // Finish up.
+  return { version, bundleDir };
 }
