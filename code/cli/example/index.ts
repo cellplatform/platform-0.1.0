@@ -1,66 +1,43 @@
 #!/usr/bin/env node
-import { log, yargs } from './libs';
+import { log, yargs, cli } from './libs';
 
 /**
- * Makes the script crash on unhandled rejections instead of silently
- * ignoring them. In the future, promise rejections that are not handled will
- * terminate the Node.js process with a non-zero exit code.
+ * Initialize.
  */
-process.on('unhandledRejection', err => {
-  throw err;
-});
-
-const CMD = {
-  INIT: 'init',
-  INIT_ALIAS: 'i',
-};
-const CMDS = Object.keys(CMD).map(key => CMD[key]);
+const app = cli.create('my-app');
 
 /**
- * Cheat sheet.
- * https://devhints.io/yargs
+ * Configure.
  */
-const SCRIPT = log.magenta('my-app');
-const COMMAND = log.cyan('<command>');
-const OPTIONS = log.gray('[options]');
-const program = yargs
-  .scriptName('')
-  .usage(`${'Usage:'} ${SCRIPT} ${COMMAND} ${OPTIONS}`)
-  .recommendCommands()
-
-  /**
-   * `init`
-   */
+app
   .command(
-    [CMD.INIT, CMD.INIT_ALIAS],
+    ['init', 'i'],
     'Initialize the thing.',
-    e =>
-      e.option('force', {
+    yargs =>
+      yargs.option('force', {
         alias: 'f',
         describe: 'Overwrite existing files.',
         boolean: true,
       }),
-    e => {
-      const { force } = e;
+    argv => {
+      const { force } = argv;
       log.info();
-      log.info('🌼  init', e);
+      log.info('🌼  init', argv);
+      log.info();
+    },
+  )
+  .command(
+    'foo',
+    'Sample command',
+    yargs => yargs,
+    argv => {
+      log.info();
+      log.info('🐷  foo', argv);
       log.info();
     },
   );
 
 /**
- * Show full list of commands if none was provided.
+ * Run.
  */
-if (!CMDS.includes(program.argv._[0])) {
-  program.showHelp();
-  exit(0);
-}
-
-/**
- * [Helpers]
- */
-
-function exit(code: number) {
-  log.info();
-  process.exit(code);
-}
+app.run();
