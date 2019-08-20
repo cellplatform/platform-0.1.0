@@ -1,5 +1,7 @@
 import * as ReactDOMServer from 'react-dom/server';
-import { util, constants, fs, jsYaml, t, time, log } from '../common';
+
+import { constants, fs, jsYaml, t, time } from '../common';
+import * as logger from './bundler.log';
 
 const renderStatic = require('glamor/server').renderStatic;
 
@@ -21,31 +23,12 @@ export async function prepare(args: {
   // Write a YAML file describing the contents of the bundle.
   const path = fs.join(dir, constants.PATH.BUNDLE_MANIFEST);
   const manifest = await bundleManifest.write({ path, entries });
-  const dirSize = await fs.size.dir(dir);
-
-  const write = () => {
-    log.info();
-    log.info.gray(`  size:  ${log.magenta(dirSize.toString())}`);
-    log.info.gray(`  dir:   ${util.formatPath(dir)}`);
-    log.info();
-    manifest.files.forEach(file => {
-      let name = file;
-      name = name.endsWith('.js') ? log.yellow(name) : name;
-      name = name.endsWith('.html') ? log.green(name) : name;
-      const fileSize = dirSize.files.find(item => item.path.endsWith(`/${file}`));
-      let size = fileSize ? fileSize.toString({ round: 0, spacer: '' }) : '';
-      size = `${size}        `.substring(0, 8);
-      log.info.gray(`         - ${size} ${name}`);
-    });
-    log.info();
-  };
-
-  if (!args.silent) {
-    write();
-  }
 
   // Finish up.
-  return { manifest, write };
+  if (!args.silent) {
+    logger.bundle({ dir, manifest });
+  }
+  return { dir, manifest };
 }
 
 /**

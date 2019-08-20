@@ -3,8 +3,6 @@ import { Config } from '../config';
 import { cli, exec, fs, log, npm, t } from './common';
 import * as pushBundle from './cmd.pushBundle';
 
-type Logger = () => void;
-
 /**
  * Bundle script.
  */
@@ -12,8 +10,7 @@ export async function run() {
   // Setup initial conditions.
   const config = await Config.create();
   const { endpoint } = config.s3;
-
-  let manifestLogger: Logger | undefined;
+  let manifest: t.IBundleManifest | undefined;
 
   // Prompt user for version.
   const version = await npm.prompt.incrementVersion({ noChange: true, save: true });
@@ -35,7 +32,8 @@ export async function run() {
     .task('manifest', async e => {
       const entries = await getEntries(config);
       const res = await bundler.prepare({ bundleDir, entries, silent: true });
-      manifestLogger = res.write;
+      // manifestLogger = res.write;
+      manifest = res.manifest;
     });
 
   // Run tasks.
@@ -44,11 +42,8 @@ export async function run() {
   // Push to S3.
   if (push) {
     await pushBundle.run({ version });
-  } else {
-    if (manifestLogger) {
-      manifestLogger();
-      log.info();
-    }
+  } else if (manifest) {
+    bundler.log.bundle({ dir: bundleDir, manifest });
   }
 }
 
