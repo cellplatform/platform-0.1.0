@@ -1,6 +1,7 @@
 import { bundler } from '../bundler';
 import { Config } from '../config';
 import { cli, exec, fs, log, npm, t } from './common';
+import * as pushBundle from './cmd.pushBundle';
 
 type Logger = () => void;
 
@@ -10,15 +11,15 @@ type Logger = () => void;
 export async function run() {
   // Setup initial conditions.
   const config = await Config.create();
-  const builder = config.builder;
-  // const loggers: Logger[] = [];
-  const bundleDir = await bundler.lastDir(fs.resolve(builder.bundles));
   const { endpoint } = config.s3;
 
   let manifestLogger: Logger | undefined;
 
-  // Prompt user for input.
-  await npm.prompt.incrementVersion({ noChange: true, save: true });
+  // Prompt user for version.
+  const version = await npm.prompt.incrementVersion({ noChange: true, save: true });
+  const bundleDir = fs.resolve(fs.join(config.builder.bundles, version));
+
+  // Prompt the user whether to push to S3.
   const push = (await cli.prompt.list({ message: 'push to S3', items: ['yes', 'no'] })) === 'yes';
 
   // Ensure endpoint exists.
@@ -42,11 +43,7 @@ export async function run() {
 
   // Push to S3.
   if (push) {
-    const { accessKey, secret, bucket } = config.s3;
-    const s3 = { endpoint, accessKey, secret };
-    const version = fs.basename(bundleDir);
-    const bucketKey = fs.join(config.s3.bucketKey, version);
-    await bundler.push(s3).bundle({ bundleDir, bucket, bucketKey, silent: false });
+    await pushBundle.run({ version });
   } else {
     if (manifestLogger) {
       manifestLogger();
