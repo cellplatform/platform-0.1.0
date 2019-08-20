@@ -1,3 +1,5 @@
+manifest: test/manifest.yml
+
 builder:
   bundles: bundle
   entries: lib.test/test/entries.js
@@ -6,5 +8,8 @@ s3:
   endpoint: sfo2.digitaloceanspaces.com
   accessKey: SPACES_KEY
   secret: SPACES_SECRET
-  path: platform/modules/react.ssr/bundle
-  
+  bucket: platform
+  path: 
+    manifest: modules/react.ssr/manifest.yml 
+    bundles: modules/react.ssr/bundle
+

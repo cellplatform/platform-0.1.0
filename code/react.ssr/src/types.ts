@@ -51,6 +51,7 @@ export type ISiteManifestRoute = {
  * SSR configuration.
  */
 export type ISsrConfig = {
+  manifest: string; // Path to the [manifest.yml] file.
   builder: {
     bundles: string; // Path to the folder containing built JS bundle-dirs.
     entries: string; // Path to a JS file to execute that produces the IBundleEntryElement[].
@@ -59,6 +60,10 @@ export type ISsrConfig = {
     endpoint: string;
     accessKey: string;
     secret: string;
-    path: string;
+    bucket: string;
+    path: {
+      manifest: string;
+      bundles: string;
+    };
   };
 };

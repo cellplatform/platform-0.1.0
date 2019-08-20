@@ -1,6 +1,8 @@
 import { Manifest, Site } from '.';
 import { expect, testManifest, testManifestDef } from '../test';
 
+const url = 'https://sfo2.digitaloceanspaces.com/platform/modules/react.ssr/manifest.yml';
+
 const testSite = async () => {
   const manifest = await testManifest();
   const site = await manifest.site.byHost('localhost');
@@ -19,7 +21,7 @@ describe('Site', () => {
   it('no name', async () => {
     const def = await testManifestDef();
     delete def.sites[0].name;
-    const manifest = Manifest.create({ def });
+    const manifest = Manifest.create({ def, url });
     const site = manifest.site.byHost('localhost');
     expect(site && site.name).to.eql('');
   });
@@ -34,7 +36,7 @@ describe('Site', () => {
     it('from bundle path', async () => {
       const def = await testManifestDef();
       delete def.sites[0].version; // Ensure no version for test.
-      const manifest = Manifest.create({ def });
+      const manifest = Manifest.create({ def, url });
       const site = manifest.site.byHost('localhost');
       expect(site && site.version).to.eql('1.2.3-alpha.0');
     });
@@ -43,7 +45,7 @@ describe('Site', () => {
       const def = await testManifestDef();
       def.sites[0].version = '4.5.6';
 
-      const manifest = Manifest.create({ def });
+      const manifest = Manifest.create({ def, url });
       const site = manifest.site.byHost('localhost');
       expect(site && site.version).to.eql('4.5.6');
     });

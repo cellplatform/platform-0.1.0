@@ -1,10 +1,12 @@
 import { expect, testManifest, testManifestDef } from '../test';
 import { Manifest } from './Manifest';
 
+const url = 'https://sfo2.digitaloceanspaces.com/platform/modules/react.ssr/manifest.yml';
+
 describe('Manifest', () => {
   it('loads from file', async () => {
     const def = await testManifestDef();
-    const manifest = Manifest.create({ def });
+    const manifest = Manifest.create({ def, url });
     expect(manifest.ok).to.eql(true);
     expect(manifest.status).to.eql(200);
     expect(manifest.sites.length).to.greaterThan(0);

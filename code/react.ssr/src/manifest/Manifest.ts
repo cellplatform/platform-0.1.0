@@ -1,4 +1,4 @@
-import { http, t, util } from '../common';
+import { fs, http, t, util } from '../common';
 import { Site } from './Site';
 
 type IPullResonse = {
@@ -8,7 +8,7 @@ type IPullResonse = {
   error?: Error;
 };
 
-type IManifestArgs = { def: t.IManifest; status?: number };
+type IManifestArgs = { url: string; def: t.IManifest; status?: number };
 
 let CACHE: any = {};
 
@@ -24,13 +24,29 @@ export class Manifest {
     CACHE = {};
   }
 
+  public static async fromFile(args: { file: string; url: string }) {
+    const { url } = args;
+    const path = fs.resolve(args.file);
+    if (!(await fs.pathExists(path))) {
+      throw new Error(`Manifest file does not exist: '${args.file}'`);
+    }
+
+    const text = await fs.readFile(path, 'utf-8');
+    const res = await Manifest.parse({ text, baseUrl: url });
+    if (!res.ok) {
+      return;
+    }
+
+    const def = res.manifest;
+    return Manifest.create({ def, url });
+  }
+
   /**
    * Pulls the manifest at the given url end-point.
    */
   public static async pull(args: { url: string; baseUrl?: string }): Promise<IPullResonse> {
     const { url } = args;
     const empty: t.IManifest = { sites: [] };
-    const baseUrl = (args.baseUrl || url).replace(/\/manifest.yml$/, '');
 
     const errorResponse = (status: number, error: string): IPullResonse => {
       const manifest = empty;
@@ -49,7 +65,28 @@ export class Manifest {
       }
 
       // Attempt to parse the yaml.
-      const yaml = util.parseYaml(res.body);
+      const baseUrl = args.baseUrl || url;
+      return await Manifest.parse({ text: res.body, baseUrl });
+    } catch (error) {
+      return errorResponse(500, error);
+    }
+  }
+
+  /**
+   * Pulls the manifest at the given url end-point.
+   */
+  public static async parse(args: { text: string; baseUrl: string }): Promise<IPullResonse> {
+    const empty: t.IManifest = { sites: [] };
+    const baseUrl = args.baseUrl.replace(/\/manifest.yml$/, '');
+
+    const errorResponse = (status: number, error: string): IPullResonse => {
+      const manifest = empty;
+      return { ok: false, status, error: new Error(error), manifest };
+    };
+
+    try {
+      // Attempt to parse the yaml.
+      const yaml = util.parseYaml(args.text);
       if (!yaml.ok || !yaml.data) {
         const error = `Failed to parse manifest YAML. ${yaml.error.message}`;
         return errorResponse(500, error);
@@ -87,7 +124,7 @@ export class Manifest {
     const res = await Manifest.pull(args);
     if (res.manifest) {
       const { status, manifest: def } = res;
-      manifest = new Manifest({ def, status });
+      manifest = new Manifest({ url, def, status });
       CACHE[url] = manifest;
     }
     return manifest;
@@ -99,6 +136,7 @@ export class Manifest {
   public static create = (args: IManifestArgs) => new Manifest(args);
   private constructor(args: IManifestArgs) {
     this.def = args.def;
+    this.url = args.url;
     this.status = args.status || 200;
   }
 
@@ -106,6 +144,7 @@ export class Manifest {
    * [Fields]
    */
   public readonly status: number;
+  public readonly url: string;
   private readonly def: t.IManifest;
   private _sites: Site[];
 

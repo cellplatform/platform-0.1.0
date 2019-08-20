@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import { t, fs } from '../common';
+import { Manifest } from '../manifest';
 
 dotenv.config();
 
@@ -40,25 +41,55 @@ export class Config {
   }
 
   public get s3() {
-    const def = this.def;
+    const s3 = this.def.s3 || {};
+    const path = s3.path || {};
+
     const toValue = (value?: string) => {
       value = value || '';
       value = process.env[value] ? process.env[value] : value;
       return value || '';
     };
 
-    const path = def.s3.path || '';
-    const index = path.indexOf('/');
-
-    const bucket = index > -1 ? path.substring(0, index) : '';
-    const bucketKey = index > -1 ? path.substring(index + 1) : '';
-
     return {
-      endpoint: toValue(def.s3.endpoint),
-      accessKey: toValue(def.s3.accessKey),
-      secret: toValue(def.s3.secret),
-      bucket,
-      bucketKey,
+      endpoint: toValue(s3.endpoint),
+      accessKey: toValue(s3.accessKey),
+      secret: toValue(s3.secret),
+      bucket: s3.bucket || '',
+      path: {
+        manifest: path.manifest || '',
+        bundles: path.bundles || '',
+      },
     };
+  }
+
+  public get manifestUrl() {
+    const s3 = this.s3;
+    const endpoint = s3.endpoint.replace(/\/*$/, '');
+    const path = s3.path.manifest.replace(/^\/*/, '');
+    const bucket = s3.bucket;
+    return `https://${endpoint}/${bucket}/${path}`;
+  }
+
+  public get manifest() {
+    const file = fs.resolve(this.def.manifest || 'manifest.yml');
+    const url = this.manifestUrl;
+    console.log('url', url);
+
+    let manifest: Manifest | undefined;
+    const api = {
+      file,
+      url,
+      get exists() {
+        return fs.pathExists(file);
+      },
+      async load() {
+        if (!manifest && (await api.exists)) {
+          // TEMP 🐷
+          manifest = await Manifest.fromFile({ file, url });
+        }
+        return manifest;
+      },
+    };
+    return api;
   }
 }
