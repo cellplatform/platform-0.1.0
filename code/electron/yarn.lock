@@ -78,15 +78,15 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/react@0.3.18":
-  version "0.3.18"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.18.tgz#49c373872f95b7706ac982fcd548918abae3b77d"
-  integrity sha512-NkZesxbKB0J7zSrFt6A2sZ2H9nYrMpeao86EJiB24e6bfihoD/ATnJ+sUTMvXonmbvWjTsbxPrODD7D29Iejew==
+"@platform/react@0.3.19":
+  version "0.3.19"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.19.tgz#f6d9a3ece1c0ad52dcfe9d44e4435d668c69b2bb"
+  integrity sha512-IYaD1DoegPGfc2+PSbbYbCL/TPylUrP3KJfD1LLRZMhtlSPNByneSAUx93zqOHcW4BhQBJGgr+tHyRvT3T+YDQ==
   dependencies:
     "@platform/css" "0.1.33"
     "@platform/util.is" "0.0.88"
     "@types/react" "16.9.2"
-    "@types/react-dom" "16.8.5"
+    "@types/react-dom" "16.9.0"
     react "16.9.0"
     react-dom "16.9.0"
 
@@ -229,10 +229,10 @@
   dependencies:
     ts-toolbelt "^3.2.22"
 
-"@types/react-dom@16.8.5":
-  version "16.8.5"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.5.tgz#3e3f4d99199391a7fb40aa3a155c8dd99b899cbd"
-  integrity sha512-idCEjROZ2cqh29+trmTmZhsBAUNQuYrF92JHKzZ5+aiFM1mlSk3bb23CK7HhYuOY75Apgap5y2jTyHzaM2AJGA==
+"@types/react-dom@16.9.0":
+  version "16.9.0"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.0.tgz#ba6ddb00bf5de700b0eb91daa452081ffccbfdea"
+  integrity sha512-OL2lk7LYGjxn4b0efW3Pvf2KBVP0y1v3wip1Bp7nA79NkOpElH98q3WdCEdDj93b2b0zaeBG9DvriuKjIK5xDA==
   dependencies:
     "@types/react" "*"
 

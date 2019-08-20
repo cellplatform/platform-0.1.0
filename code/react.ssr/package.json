@@ -1,6 +1,6 @@
 {
   "name": "@platform/react.ssr",
-  "version": "0.5.14",
+  "version": "0.5.17-beta.0",
   "description": "An SSR (server-side-render) system for react apps bundled with ParcelJS and hosted on S3.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -25,7 +25,7 @@
     "pm": "ts-node -T scripts/push.manifest"
   },
   "dependencies": {
-    "@platform/cli": "^0.3.3",
+    "@platform/cli": "^0.3.4",
     "@platform/exec": "0.2.25",
     "@platform/fs": "0.2.0",
     "@platform/fs.s3": "0.2.9",
@@ -33,7 +33,7 @@
     "@platform/libs": "0.1.1",
     "@platform/log": "0.0.139",
     "@platform/micro": "0.2.8",
-    "@platform/npm": "0.2.7",
+    "@platform/npm": "0.2.8",
     "@platform/react": "0.3.19",
     "bowser": "2.5.3",
     "cheerio": "1.0.0-rc.3",

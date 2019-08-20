@@ -55,4 +55,10 @@ export type ISsrConfig = {
     bundles: string; // Path to the folder containing built JS bundle-dirs.
     entries: string; // Path to a JS file to execute that produces the IBundleEntryElement[].
   };
+  s3: {
+    endpoint: string;
+    accessKey: string;
+    secret: string;
+    path: string;
+  };
 };

@@ -18,6 +18,14 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
+"@platform/cli.prompt@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.0.5.tgz#8acca0d1ea24eccefe07fc59543ee7c7618f7fa9"
+  integrity sha512-N0HxtXDwmL8/c9YMisGdId/fHQ3MCMDT8qwAPL8s1vrJlJL1bDx3G/jjI6OAL6zROv1d8IgYnxWKjTIoxX2AFQ==
+  dependencies:
+    "@platform/libs" "0.1.1"
+    inquirer "6.5.1"
+
 "@platform/exec@0.2.25":
   version "0.2.25"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.25.tgz#fa1472465216c3a372de87825ea9cb8c4159cc78"
@@ -105,14 +113,6 @@
   version "0.0.26"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.26.tgz#cd725db692eb00a72d7c99577978104bd00ecc76"
   integrity sha512-kX/2uT3qDNon70rxg7rOeYKH+M0Qvz2pLS5mFRujZFN9boP94CpayEicEVEJikkiCtlXmoV/ta6NGh0xROCm7g==
-
-"@platform/util.cli@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@platform/util.cli/-/util.cli-0.0.4.tgz#c57db2f1397a8796d25f8c985b9c54efc0a576b9"
-  integrity sha512-zRVfjK/Q3Fbo8xFoNVrtzE2MpGDQlaOKcX1RWP+TIr/x2TlL1TfXjHxs+2OzILHjGzuzQ/rwOHYPCdILbR01Bw==
-  dependencies:
-    "@platform/libs" "0.1.1"
-    inquirer "6.5.1"
 
 "@platform/util.is@0.0.88":
   version "0.0.88"

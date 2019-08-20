@@ -7,3 +7,4 @@ export { fs } from '@platform/fs';
 export { exec } from '@platform/exec';
 export { log } from '@platform/log/lib/server';
 export { value, defaultValue, time } from '@platform/util.value';
+export { prompt } from '@platform/cli.prompt';

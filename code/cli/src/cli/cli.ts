@@ -2,7 +2,7 @@ import { log, yargs, t } from '../common';
 import { tasks } from '../tasks';
 
 export { tasks };
-export { fs, exec, inquirer, yargs, log, Listr } from '../common';
+export { fs, exec, inquirer, yargs, log, Listr, prompt } from '../common';
 export * from '../types';
 
 /**

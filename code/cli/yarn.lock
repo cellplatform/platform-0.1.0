@@ -18,6 +18,14 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
+"@platform/cli.prompt@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.0.4.tgz#d772b2437295e604a263d82356d1fbb9510ed71f"
+  integrity sha512-QJ62hAlVcPOsZEQQqtuGfckq/sBbonpC/mpx2Qz5smr9w3ptOHl97Vp7A7JyI88XcJbHHHtiL9USHtq/K4XbVw==
+  dependencies:
+    "@platform/libs" "0.1.1"
+    inquirer "6.5.1"
+
 "@platform/exec@0.2.25":
   version "0.2.25"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.25.tgz#fa1472465216c3a372de87825ea9cb8c4159cc78"
@@ -45,7 +53,7 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/libs@0.1.1", "@platform/libs@^0.1.1":
+"@platform/libs@0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.1.1.tgz#dba22185395adcecba2857c4b91165f5699e71e0"
   integrity sha512-jw8+zvLijqc2TBZbVoxoqilQNkxDLLEUAwiz5IwQhHWPxTjE0mvRIjdxgBSUw6JAMqfCg/dqld0vf6l8CfDwsw==

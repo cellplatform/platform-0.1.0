@@ -1250,12 +1250,24 @@
     react "16.9.0"
     react-dom "16.9.0"
 
-"@platform/state.react@0.4.14":
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.4.14.tgz#823c8ffff9374654c4d7267cc14f50f8b8f8a5f5"
-  integrity sha512-2T7DMKdzJlz9fcyn7y9f8w+xLDUAutDTo4/dL+dzP4JNCJzg9nAHZNwcqnH/q/U26ny+RFCLufCxIKhTgDGPAA==
+"@platform/react@0.3.19":
+  version "0.3.19"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.19.tgz#f6d9a3ece1c0ad52dcfe9d44e4435d668c69b2bb"
+  integrity sha512-IYaD1DoegPGfc2+PSbbYbCL/TPylUrP3KJfD1LLRZMhtlSPNByneSAUx93zqOHcW4BhQBJGgr+tHyRvT3T+YDQ==
   dependencies:
-    "@platform/react" "0.3.18"
+    "@platform/css" "0.1.33"
+    "@platform/util.is" "0.0.88"
+    "@types/react" "16.9.2"
+    "@types/react-dom" "16.9.0"
+    react "16.9.0"
+    react-dom "16.9.0"
+
+"@platform/state.react@0.4.15":
+  version "0.4.15"
+  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.4.15.tgz#51ac9fa62abad7f7c2de8ec96a530b3b1c2d2e67"
+  integrity sha512-Jr1ADsIZpEAcoGgU57iG4RQPrN13A0vSf1VUaaE3qIn8zBVxke7rPB5Ia2qWPt1k0ewC9YVSuJt3wZe7dJDM9A==
+  dependencies:
+    "@platform/react" "0.3.19"
     "@platform/state" "0.4.11"
 
 "@platform/state@0.4.11":
@@ -1294,13 +1306,13 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.26.tgz#cd725db692eb00a72d7c99577978104bd00ecc76"
   integrity sha512-kX/2uT3qDNon70rxg7rOeYKH+M0Qvz2pLS5mFRujZFN9boP94CpayEicEVEJikkiCtlXmoV/ta6NGh0xROCm7g==
 
-"@platform/ui.button@0.2.15":
-  version "0.2.15"
-  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.2.15.tgz#11086f2b7d36a65d54a888f465a6a4e770e8cda0"
-  integrity sha512-5E2DAUWkK6RVuSGi2pOCoXe67shQukM6d2Gr+AUc6FezgyBNTuYV6oWJQoXUFf2y9WPCyqmPBXLp5rUlVLbIOw==
+"@platform/ui.button@0.2.16":
+  version "0.2.16"
+  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.2.16.tgz#b5e58f7e12d7029ddc1ff95b0c97dfe1b58a511e"
+  integrity sha512-nrS6s5D+FoOy3J7LINQiOfQIh3BMisY/LXLQE/misGEIv+mI12UoutSRKwW6qwh/rO6vW97Y7Hedw6bOQoJFCg==
   dependencies:
     "@platform/libs" "^0.1.1"
-    "@platform/react" "0.3.18"
+    "@platform/react" "0.3.19"
 
 "@platform/ui.icon@0.0.82":
   version "0.0.82"
@@ -1308,6 +1320,13 @@
   integrity sha512-2AQHAWe4BLvKtAjXPQjk1G0cfxS4nltKZIdakLb8xSSPvitS/u5F9FhqND0vXtsVaId8SRGr1Pvgm8uKaQSQyA==
   dependencies:
     "@platform/react" "0.3.18"
+
+"@platform/ui.icon@0.0.83":
+  version "0.0.83"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.83.tgz#4032f711c866a9014ac71f70dbbe2bd4daeea92a"
+  integrity sha512-4+Fu78iJeYstJeMq5N+De8ticBDBHnvLOg3SMiaTwUL9W3vMeCfcWM338+4mB1aXXIWFbpk2cDR2O/VDZLPr+Q==
+  dependencies:
+    "@platform/react" "0.3.19"
 
 "@platform/ui.object@0.0.138":
   version "0.0.138"
@@ -1339,6 +1358,15 @@
   dependencies:
     "@platform/libs" "0.1.1"
     "@platform/react" "0.3.18"
+    "@platform/util.value" "0.4.10"
+
+"@platform/ui.text@0.2.32":
+  version "0.2.32"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.2.32.tgz#15bbac74f1d372a9fe5cf427c01ef888f4c09f92"
+  integrity sha512-mlPgCsThoDE9all0pFm7OJ88HckoC3/8H82jb8QVGEmKVoLL6B4apqUNt9jLN9TAWQvwOJW30zrBFnW6JHiJ4Q==
+  dependencies:
+    "@platform/libs" "0.1.1"
+    "@platform/react" "0.3.19"
     "@platform/util.value" "0.4.10"
 
 "@platform/ui.tree@0.2.18":
@@ -1505,6 +1533,13 @@
   version "16.8.5"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.5.tgz#3e3f4d99199391a7fb40aa3a155c8dd99b899cbd"
   integrity sha512-idCEjROZ2cqh29+trmTmZhsBAUNQuYrF92JHKzZ5+aiFM1mlSk3bb23CK7HhYuOY75Apgap5y2jTyHzaM2AJGA==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-dom@16.9.0":
+  version "16.9.0"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.0.tgz#ba6ddb00bf5de700b0eb91daa452081ffccbfdea"
+  integrity sha512-OL2lk7LYGjxn4b0efW3Pvf2KBVP0y1v3wip1Bp7nA79NkOpElH98q3WdCEdDj93b2b0zaeBG9DvriuKjIK5xDA==
   dependencies:
     "@types/react" "*"
 

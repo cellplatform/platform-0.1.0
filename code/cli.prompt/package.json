@@ -1,7 +1,7 @@
 {
-  "name": "@platform/util.cli",
-  "version": "0.0.4",
-  "description": "Helpers for making CLI's.",
+  "name": "@platform/cli.prompt",
+  "version": "0.0.5",
+  "description": "Helpers for raising user prompts within a command-line-interface.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
