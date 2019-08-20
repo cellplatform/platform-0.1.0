@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { Listr, value, time, log, t } from './common';
+import { Listr, value, time, log, t } from '../common';
 
 type ITaskItem = { title: string; task: t.Task };
 
@@ -40,7 +40,7 @@ export function tasks() {
     return $;
   };
 
-  const api = {
+  const api: t.ITasks = {
     get length() {
       return list.length;
     },
@@ -64,9 +64,9 @@ export function tasks() {
     /**
      * Executes the list of tasks.
      */
-    async run(args: { concurrent?: boolean; silent?: boolean; exitOnError?: boolean } = {}) {
-      const renderer = args.silent ? 'silent' : 'default';
-      const { concurrent, exitOnError = false } = args;
+    async run(options: { concurrent?: boolean; silent?: boolean; exitOnError?: boolean } = {}) {
+      const renderer = options.silent ? 'silent' : 'default';
+      const { concurrent, exitOnError = false } = options;
       const runner = new Listr(
         list.map(({ title, task }, i) => {
           return {
