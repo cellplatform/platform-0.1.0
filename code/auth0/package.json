@@ -1,6 +1,6 @@
 {
   "name": "@platform/auth0",
-  "version": "0.2.33",
+  "version": "0.2.34",
   "description": "Interfaces for working with Auth0.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -25,7 +25,7 @@
     "jwks-rsa": "1.6.0"
   },
   "devDependencies": {
-    "@platform/react": "^0.3.18",
+    "@platform/react": "^0.3.19",
     "@types/auth0-js": "9.10.6",
     "@uiharness/dev": "0.9.1",
     "@uiharness/ui": "0.6.12",

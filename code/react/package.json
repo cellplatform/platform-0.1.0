@@ -1,6 +1,6 @@
 {
   "name": "@platform/react",
-  "version": "0.3.18",
+  "version": "0.3.19",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,7 +18,7 @@
     "@platform/css": "0.1.33",
     "@platform/util.is": "0.0.88",
     "@types/react": "16.9.2",
-    "@types/react-dom": "16.8.5",
+    "@types/react-dom": "16.9.0",
     "react": "16.9.0",
     "react-dom": "16.9.0"
   },
