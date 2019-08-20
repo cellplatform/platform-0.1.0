@@ -25,8 +25,6 @@ export async function prepare(args: {
 
   const write = () => {
     log.info();
-    log.info.cyan(`Preparing bundle 👌`);
-    log.info();
     log.info.gray(`  size:  ${log.magenta(dirSize.toString())}`);
     log.info.gray(`  dir:   ${util.formatPath(dir)}`);
     log.info();
@@ -96,4 +94,3 @@ function renderEntry(args: t.IBundleEntryElement): t.IBundleEntryHtml {
   const { html, css } = renderStatic(() => ReactDOMServer.renderToString(args.el));
   return { file, id, html, css };
 }
-

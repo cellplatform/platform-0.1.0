@@ -91,16 +91,15 @@
     tslint-react "4.0.0"
     typescript "3.5.3"
 
-"@platform/ts@3.4.38":
-  version "3.4.38"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.4.38.tgz#e4a8de662972b4ee77c09883239d44cb9d5996e6"
-  integrity sha512-8Yy95Rkf5x+R1FwP/vJ8oaz8SINiOPfvHOXccaKkfrsaQAZ7xWkcgjxqh77ctXksuSkabVEHpteowvyp37yyqw==
+"@platform/ts@3.4.39":
+  version "3.4.39"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.4.39.tgz#5c0de118b5f2cfa5723f60fa3ee3136c764a3be3"
+  integrity sha512-+Ne0bp1gTV8fe6tA8mIAV9FZ8RL2heECbRZEnnGPS879+87N5EQwuQwB1dXRBswtAz4AIGclXz6RYpkMVgQ0Aw==
   dependencies:
     "@platform/exec" "0.2.25"
     "@platform/fs" "0.2.0"
     "@platform/libs" "0.1.1"
     "@platform/ts.libs" "3.5.6"
-    yargs "13.3.0"
 
 "@platform/types@0.0.25":
   version "0.0.25"
@@ -2025,22 +2024,6 @@ yargs@13.2.2:
     which-module "^2.0.0"
     y18n "^4.0.0"
     yargs-parser "^13.0.0"
-
-yargs@13.3.0:
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/yargs/-/yargs-13.3.0.tgz#4c657a55e07e5f2cf947f8a366567c04a0dedc83"
-  integrity sha512-2eehun/8ALW8TLoIl7MVaRUrg+yCnenu8B4kBlRxj3GJGDKU1Og7sMXPNm1BYyM1DOJmTZ4YeN/Nwxv+8XJsUA==
-  dependencies:
-    cliui "^5.0.0"
-    find-up "^3.0.0"
-    get-caller-file "^2.0.1"
-    require-directory "^2.1.1"
-    require-main-filename "^2.0.0"
-    set-blocking "^2.0.0"
-    string-width "^3.0.0"
-    which-module "^2.0.0"
-    y18n "^4.0.0"
-    yargs-parser "^13.1.1"
 
 yargs@14.0.0:
   version "14.0.0"

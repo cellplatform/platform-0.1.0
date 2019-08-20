@@ -1,6 +1,6 @@
 {
   "name": "@platform/react.ssr",
-  "version": "0.5.9",
+  "version": "0.5.11",
   "description": "An SSR (server-side-render) system for react apps bundled with ParcelJS and hosted on S3.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,14 +19,13 @@
     "build": "ts build",
     "build-test": "ts build --tsconfig tsconfig.test.json",
     "prepare": "ts prepare",
-    "bundle__": "ui bundle web --increment && yarn prep",
     "bundle": "ui bundle web",
     "prep": "ts-node -T scripts/prep",
     "pb": "ts-node -T scripts/push.bundle",
     "pm": "ts-node -T scripts/push.manifest"
   },
   "dependencies": {
-    "@platform/cli": "^0.3.0",
+    "@platform/cli": "^0.3.2",
     "@platform/exec": "0.2.25",
     "@platform/fs": "0.2.0",
     "@platform/fs.s3": "0.2.7",
@@ -45,7 +44,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.61",
-    "@platform/ts": "3.4.38",
+    "@platform/ts": "3.4.39",
     "@types/bowser": "1.1.1",
     "@types/cheerio": "0.22.13",
     "@types/dotenv": "6.1.1",

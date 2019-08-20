@@ -41,18 +41,18 @@ app
 
       // Run bundling tasks.
       await app
-        .task('js build', async e => execScript(e, 'build'))
-        .task('js bundle', async e => execScript(e, 'bundle'))
-        .task('bundle manifest', async e => {
+        .task('build', async e => execScript(e, 'build'))
+        .task('bundle', async e => execScript(e, 'bundle'))
+        .task('manifest', async e => {
           const getEntries = async () => {
             let path = builder.entries;
             if (!path) {
               return [];
             }
+            path = fs.resolve(path);
             const err = `Failed to load bundle entries at path: ${path}.`;
             try {
-              path = fs.resolve(path);
-              const res = await import(path);
+              const res = require(path);
               if (Array.isArray(res.default)) {
                 return res.default as t.IBundleEntryElement[];
               }
@@ -97,16 +97,5 @@ async function execScript(e: cli.TaskArgs, scriptName: string) {
   }
 
   // Run the bundle script.
-  const cmd = exec.command('yarn build').run({ silent: true });
-  cmd.output$.subscribe(args => e.message(args.text));
-  await cmd;
-}
-
-function ensureScript(e: cli.TaskArgs, scriptName: string) {
-  const pkg = npm.pkg();
-  const exists = Boolean(pkg.scripts.bundle);
-  if (!exists) {
-    e.error(`Package.json does not have a "${scriptName}" script.`);
-  }
-  return exists;
+  await exec.command(`yarn ${scriptName}`).run({ silent: true });
 }

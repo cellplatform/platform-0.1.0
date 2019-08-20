@@ -992,10 +992,10 @@
     "@types/yargs" "13.0.2"
     yargs "13.3.0"
 
-"@platform/cli@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.3.0.tgz#2d816d33e7e83a80c3db9f0d9f3dd7e661de7b2c"
-  integrity sha512-DA7L405BKInKL/bAjUG/a1JVilhR4NS6jjjUXr8iTe+VLCCgiInRLc5r4akspR4l/Rl4cHNBCkTnS/JBjT4ojA==
+"@platform/cli@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.3.2.tgz#125395bf421e1de5378fd48e4e9f2da19945bad5"
+  integrity sha512-kVyqQPVLIEvnU337e6GUUXr41ME+KYwcdJF0gE3OYqk4C1pbBSbEeXJm13dqpwmLHb3jQa8Fd4Yd6MtcVH33pQ==
   dependencies:
     "@platform/exec" "0.2.25"
     "@platform/fs" "0.2.0"
@@ -1291,16 +1291,15 @@
     "@platform/ts.libs" "3.5.5"
     yargs "13.3.0"
 
-"@platform/ts@3.4.38":
-  version "3.4.38"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.4.38.tgz#e4a8de662972b4ee77c09883239d44cb9d5996e6"
-  integrity sha512-8Yy95Rkf5x+R1FwP/vJ8oaz8SINiOPfvHOXccaKkfrsaQAZ7xWkcgjxqh77ctXksuSkabVEHpteowvyp37yyqw==
+"@platform/ts@3.4.39":
+  version "3.4.39"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.4.39.tgz#5c0de118b5f2cfa5723f60fa3ee3136c764a3be3"
+  integrity sha512-+Ne0bp1gTV8fe6tA8mIAV9FZ8RL2heECbRZEnnGPS879+87N5EQwuQwB1dXRBswtAz4AIGclXz6RYpkMVgQ0Aw==
   dependencies:
     "@platform/exec" "0.2.25"
     "@platform/fs" "0.2.0"
     "@platform/libs" "0.1.1"
     "@platform/ts.libs" "3.5.6"
-    yargs "13.3.0"
 
 "@platform/types@0.0.22":
   version "0.0.22"
