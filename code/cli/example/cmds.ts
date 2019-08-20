@@ -59,6 +59,10 @@ app
             await time.wait(800);
           }
         })
+        .task('immediate message', async e => {
+          e.message('lorem ipsum dolar sit amet...');
+          await time.wait(2500);
+        })
         .run({ concurrent: true, silent: false, exitOnError: false });
 
       log.info.gray('\n-------------------------------------------');

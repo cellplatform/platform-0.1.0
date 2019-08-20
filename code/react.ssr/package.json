@@ -1,31 +1,33 @@
 {
   "name": "@platform/react.ssr",
-  "version": "0.5.7",
-  "description": "An SSR (server-side-render) server for react apps bundled with ParcelJS and hosted on S3.",
+  "version": "0.5.9",
+  "description": "An SSR (server-side-render) system for react apps bundled with ParcelJS and hosted on S3.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
-    "ssr": "lib/bin/bin.js"
+    "ssr": "lib/bin.js"
   },
   "scripts": {
     "ssr": "node lib.test/src/bin $@",
     "ui": "ui $@",
     "dev": "ui start web $@",
-    "start": "node lib.test/test/server",
-    "watch": "nodemon lib.test/test/server",
+    "start": "cd test.now && now dev --port 8080",
+    "watch": "yarn start",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
     "build-test": "ts build --tsconfig tsconfig.test.json",
     "prepare": "ts prepare",
-    "bundle": "ui bundle web --increment && yarn prep",
+    "bundle__": "ui bundle web --increment && yarn prep",
+    "bundle": "ui bundle web",
     "prep": "ts-node -T scripts/prep",
     "pb": "ts-node -T scripts/push.bundle",
-    "pm": "ts-node -T scripts/push.manifest",
-    "now": "cd test.now && now dev --port 8080"
+    "pm": "ts-node -T scripts/push.manifest"
   },
   "dependencies": {
+    "@platform/cli": "^0.3.0",
+    "@platform/exec": "0.2.25",
     "@platform/fs": "0.2.0",
     "@platform/fs.s3": "0.2.7",
     "@platform/http": "0.4.3",

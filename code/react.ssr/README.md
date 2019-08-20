@@ -3,7 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/react.ssr.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/react.ssr)
 ![banner](https://user-images.githubusercontent.com/185555/63076436-66585300-bf89-11e9-8bca-0b80ae5313d0.png)
 
-An SSR (server-side-renderer) server for react apps bundled with ParcelJS and hosted on S3.
+An SSR (server-side-renderer) system for react apps bundled with ParcelJS and hosted on S3.
 
 <p>&nbsp;<p>
 

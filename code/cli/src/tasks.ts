@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { Listr, value } from './common';
+import { Listr, value, time } from './common';
 
 export type Task = (args: TaskArgs) => Promise<any> | any;
 export type TaskArgs = {
@@ -36,14 +36,18 @@ export function tasks() {
     };
 
     // Invoke the task.
-    const res = task(args);
-    if (value.isPromise(res)) {
-      (res as any).then(args.done).catch((err: Error) => {
-        args.error(err);
-      });
-    } else {
-      args.done();
-    }
+    // NB:  Started after a delay so that any message piped through the
+    //      observable are displayed in the UI immediately.
+    time.delay(0, () => {
+      const res = task(args);
+      if (value.isPromise(res)) {
+        (res as any).then(args.done).catch((err: Error) => {
+          args.error(err);
+        });
+      } else {
+        args.done();
+      }
+    });
 
     // Finish up.
     return $;

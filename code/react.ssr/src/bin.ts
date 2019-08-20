@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-// import { init } from '.';
 
 /**
  * Makes the script crash on unhandled rejections instead of silently
@@ -10,12 +9,4 @@ process.on('unhandledRejection', err => {
   throw err;
 });
 
-/**
- * Run the bin script.
- * NOTE:
- *  This entry point is a bare-bones starter script that
- *  delegates out to the actual application.
- */
-const args = process.argv.slice(2);
-console.log('args', args);
-// init(args);
+import './cli';
