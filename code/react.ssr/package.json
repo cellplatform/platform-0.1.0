@@ -20,8 +20,6 @@
     "build-test": "ts build --tsconfig tsconfig.test.json",
     "prepare": "ts prepare",
     "bundle": "ui bundle web",
-    "prep": "ts-node -T scripts/prep",
-    "pb": "ts-node -T scripts/push.bundle",
     "pm": "ts-node -T scripts/push.manifest"
   },
   "dependencies": {

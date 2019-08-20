@@ -1,7 +1,6 @@
 import { bundler } from '../bundler';
 import { Config } from '../config';
 import { cli, exec, fs, log, npm, t } from './common';
-import { tasks } from '@platform/cli/lib/tasks';
 
 type Logger = () => void;
 
