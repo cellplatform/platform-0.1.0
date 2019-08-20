@@ -45,7 +45,7 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/libs@0.1.1":
+"@platform/libs@0.1.1", "@platform/libs@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.1.1.tgz#dba22185395adcecba2857c4b91165f5699e71e0"
   integrity sha512-jw8+zvLijqc2TBZbVoxoqilQNkxDLLEUAwiz5IwQhHWPxTjE0mvRIjdxgBSUw6JAMqfCg/dqld0vf6l8CfDwsw==
@@ -112,7 +112,7 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.87.tgz#ae0aa4deb39614890a031c042d1c7315eae1e231"
   integrity sha512-PkMwY0ncIey9tp25gdGwe+aclibBgfQvkmaE0lFgQXQH/ZBfu+DK6qiPttL0oziXXRxpZSBsfIwSn3Yoew+wzg==
 
-"@platform/util.value@^0.4.9":
+"@platform/util.value@0.4.9":
   version "0.4.9"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.9.tgz#abe4984092318df386c8ce36e876d6c0afef039b"
   integrity sha512-X12qCuQ/NRRzN6J1/kxB+a43qz/QPw4ncv5eXj4t5fJjPocPTg7V3+Vkmkn3WKbouDULECOhPTz9txcdobF0uQ==

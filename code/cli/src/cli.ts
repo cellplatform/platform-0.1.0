@@ -1,5 +1,6 @@
 import { log, yargs } from './common';
-export { fs, exec, inquirer, yargs, log } from './common';
+export { fs, exec, inquirer, yargs, log, Listr } from './common';
+import { tasks, Task } from './tasks';
 
 /**
  * Makes the script crash on unhandled rejections instead of silently
@@ -33,6 +34,9 @@ export function create(name: string) {
     program,
     command,
     option,
+    task(title: string, task: Task) {
+      return tasks().task(title, task);
+    },
     run() {
       const argv = program.argv;
       if (!argv._[0]) {
