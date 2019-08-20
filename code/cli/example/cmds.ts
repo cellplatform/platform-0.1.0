@@ -71,6 +71,20 @@ app
 
       cli.exit(res.code);
     },
+  )
+  .command(
+    'list',
+    'Prompt: list',
+    yargs => yargs,
+    async argv => {
+      const res = await cli.prompt.list({
+        message: 'my list',
+        items: ['one', { name: 'two', value: 2 }, '---', 'three'],
+      });
+      log.info('-------------------------------------------');
+      log.info('result: ', res);
+      log.info();
+    },
   );
 
 /**
