@@ -1,8 +1,8 @@
-import { log, yargs, t } from './common';
-import { tasks } from './tasks';
+import { log, yargs, t } from '../common';
+import { tasks } from '../tasks';
 
-export { fs, exec, inquirer, yargs, log, Listr } from './common';
-export * from './types';
+export { fs, exec, inquirer, yargs, log, Listr } from '../common';
+export * from '../types';
 
 /**
  * Makes the script crash on unhandled rejections instead of silently
@@ -32,10 +32,11 @@ export function create(name: string) {
 
   const { command, option } = program;
 
-  return {
+  const api: t.ICli = {
     program,
     command,
     option,
+    exit,
     task(title: string, task: t.Task) {
       return tasks().task(title, task);
     },
@@ -50,6 +51,8 @@ export function create(name: string) {
       }
     },
   };
+
+  return api;
 }
 
 /**
