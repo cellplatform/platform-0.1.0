@@ -45,7 +45,7 @@ export function init(args: {
   /**
    * [GET] manifest.
    */
-  router.get('/.manifest', async res => {
+  router.get('/.manifest', async req => {
     const manifest = await getManifest();
     const sites = manifest.sites
       .map(site => site.toObject())
@@ -54,7 +54,14 @@ export function init(args: {
         return { domain, version, bundle, routes };
       });
     const data = { sites };
-    return { data };
+    return {
+      status: 200,
+      headers: {
+        // See: https://zeit.co/docs/v2/network/caching/#stale-while-revalidate
+        'Cache-Control': 's-maxage=1, stale-while-revalidate',
+      },
+      data,
+    };
   });
 
   /**
