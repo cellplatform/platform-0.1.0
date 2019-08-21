@@ -80,8 +80,6 @@ export class Config {
   public get manifest() {
     const file = fs.resolve(this.def.manifest || 'manifest.yml');
     const url = this.manifestUrl;
-    console.log('url', url);
-
     let manifest: Manifest | undefined;
     const api = {
       file,
@@ -91,7 +89,6 @@ export class Config {
       },
       async load() {
         if (!manifest && (await api.exists)) {
-          // TEMP 🐷
           manifest = await Manifest.fromFile({ file, url });
         }
         return manifest;

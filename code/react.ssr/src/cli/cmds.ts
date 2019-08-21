@@ -1,8 +1,7 @@
+import { Config } from '../config';
 import * as bundle from './cmd.bundle';
 import * as pushBundle from './cmd.pushBundle';
-import { R, cli, log, fs, semver } from './common';
-import { Config } from '../config';
-import { bundler } from '../bundler';
+import { cli, fs, log, semver } from './common';
 
 const app = cli.create('ssr');
 
@@ -22,11 +21,11 @@ app
       const config = await Config.create();
 
       // const manifest = await config.manifest.load();
-      // console.log('manifest', manifest);
+      // log.info('manifest', manifest);
 
       const s3 = config.s3.fs;
 
-      console.log('-------------------------------------------');
+      log.info('-------------------------------------------');
       const list = s3.list({
         bucket: config.s3.bucket,
         prefix: config.s3.path.bundles,
@@ -38,24 +37,24 @@ app
       // dirs = R.sortWith([R.prop('version')])
       const items = semver.sort(dirs.map(item => item.version)).reverse();
 
-      // console.log('versions', items);
+      // log.info('versions', items);
 
       const res = await cli.prompt.list({ message: 'version', items: [...items, '---'] });
 
-      console.log('-------------------------------------------');
-      console.log('res', res);
+      log.info('-------------------------------------------');
+      log.info('res', res);
 
-      // console.log('-------------------------------------------');
-      // console.log('objects', objects);
-      // console.log('-------------------------------------------');
-      // console.log('dirs', dirs);
+      // log.info('-------------------------------------------');
+      // log.info('objects', objects);
+      // log.info('-------------------------------------------');
+      // log.info('dirs', dirs);
 
       // const res2 = await s3.get({
       //   bucket: 'platform',
       //   key: 'modules/react.ssr/manifest.yml',
       //   // max: 3,
       // });
-      // console.log('res2', res2);
+      // log.info('res2', res2);
     },
   )
 

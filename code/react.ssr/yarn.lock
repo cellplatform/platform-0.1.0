@@ -992,10 +992,10 @@
     listr "0.14.3"
     yargs "14.0.0"
 
-"@platform/cli@^0.3.4":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.3.4.tgz#4239fc8b3fc3229117d359a2fc0fbf7df1145533"
-  integrity sha512-HEb4pamVxFc06SWOEW7eZewgt08SpZWN10ilLcZi/8r5UCVm8vOhRZyutpWtB+1cCVvf/Y+XyupBwTmEE4U88A==
+"@platform/cli@^0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.3.5.tgz#d3c3edde5aa2a95190787a7c38be40aea26c053f"
+  integrity sha512-mRruZbEytSEwbMYzGboPwO5Y4YoSu+nBPi+eJ6QOd7ymbBCTmFK2TbUmKofzHmcADeGi7OBe9jQoG9Q73uOlJA==
   dependencies:
     "@platform/cli.prompt" "0.0.4"
     "@platform/exec" "0.2.25"
@@ -1049,10 +1049,10 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs.s3@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.2.9.tgz#353fa7631fd0eb203d231a2661a1ec4cc5f5ab45"
-  integrity sha512-h/SkqwGK4KK9267TsosUD11Pib+enspX5s2H8upxBvXQ0Nn+mj3HkqeTtRWRS01vBjFgaSOfziklDX28BcRriA==
+"@platform/fs.s3@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.3.0.tgz#970fd00a4e3aebacc32012af55c10a918f29985e"
+  integrity sha512-IAsmvuZooLXoQjHYX5iYchIUbXlYUaGhyBHRgl+dr5kkBU1GaOkUtiasGLg8y1HKG1dRBg1DBFQZ6HageS4wsQ==
   dependencies:
     "@platform/fs" "^0.2.0"
     "@platform/libs" "0.1.1"
