@@ -19,7 +19,7 @@ export type S3 = {
     source: string | Buffer;
     acl?: S3Permissions;
   }): Promise<S3PutResponse>;
-  list(args: { bucket: string; prefix?: string; max?: number }): Promise<S3ListResponse>;
+  list(args: { bucket: string; prefix?: string; max?: number }): S3List;
   bucket(name: string): S3Bucket;
 };
 
@@ -27,6 +27,12 @@ export type S3Bucket = {
   endpoint: string;
   get(args: { key: string }): Promise<S3GetResponse>;
   put(args: { key: string; source: string | Buffer; acl?: S3Permissions }): Promise<S3PutResponse>;
+  list(args: { bucket: string; prefix?: string; max?: number }): S3List;
+};
+
+export type S3List = {
+  objects: Promise<S3ListObjectsResponse>;
+  dirs: Promise<S3ListDirsResponse>;
 };
 
 /**
@@ -66,14 +72,17 @@ export type S3ListResponse = {
   status: number;
   prefix: string;
   max: number;
-  items: S3ListItem[];
   error?: Error;
 };
 
-export type S3ListItem = {
+export type S3ListObjectsResponse = S3ListResponse & { items: S3ListObject[] };
+export type S3ListObject = {
   key: string;
   modifiedAt: number;
   etag: string;
   storage: S3StorageClass;
   owner: { id: string; displayName: string };
 };
+
+export type S3ListDirsResponse = S3ListResponse & { items: S3ListDir[] };
+export type S3ListDir = { key: string };
