@@ -50,14 +50,21 @@ export class Config {
       return value || '';
     };
 
+    const endpoint = toValue(s3.endpoint);
+    const accessKey = toValue(s3.accessKey);
+    const secret = toValue(s3.secret);
+
     return {
-      endpoint: toValue(s3.endpoint),
-      accessKey: toValue(s3.accessKey),
-      secret: toValue(s3.secret),
+      endpoint,
+      accessKey,
+      secret,
       bucket: s3.bucket || '',
       path: {
         manifest: path.manifest || '',
         bundles: path.bundles || '',
+      },
+      get fs() {
+        return fs.s3({ endpoint, accessKey, secret });
       },
     };
   }

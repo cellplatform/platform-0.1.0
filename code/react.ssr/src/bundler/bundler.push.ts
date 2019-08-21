@@ -30,10 +30,12 @@ export async function bundle(args: {
   bucketKey: string;
   silent?: boolean;
 }) {
-  const { bucketKey } = args;
   const timer = time.timer();
   const bucket = args.s3.bucket(args.bucket);
   const bundleDir = fs.resolve(args.bundleDir);
+
+  // Ensure the key is not pre-pended with the bucket name.
+  const bucketKey = args.bucketKey.replace(new RegExp(`^${args.bucket}\/`), '');
 
   // Calculate the list of files to push.
   const files = await fs.glob.find(fs.join(bundleDir, '**'));
@@ -63,7 +65,7 @@ export async function bundle(args: {
   const tasks = new Listr(
     items.map(item => {
       const { source, key } = item;
-      const file = item.key.substring(args.bucketKey.length + 1);
+      const file = fs.basename(key);
       const fileSize = dirSize.files.find(item => item.path.endsWith(`/${file}`));
       let size = fileSize ? fileSize.toString({ round: 0, spacer: '' }) : '';
       size = `${size}        `.substring(0, 8);

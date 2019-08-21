@@ -11,7 +11,7 @@ export async function run(options: { version?: string; prompt?: boolean; silent?
   const bundlesDir = config.builder.bundles;
 
   const promptForVersion = async () => {
-    const paths = await bundler.sortedBySemver(bundlesDir);
+    const paths = await bundler.dir(bundlesDir).semver();
     const items = paths.map(path => fs.basename(path)).reverse();
     const res = await cli.prompt.list<string>({ message: 'bundle version', items });
     return res;
@@ -20,12 +20,12 @@ export async function run(options: { version?: string; prompt?: boolean; silent?
   // Derive the bundle-version to push.
   const version = options.prompt
     ? await promptForVersion()
-    : options.version || fs.basename(await bundler.latestDir(bundlesDir));
+    : options.version || fs.basename(await bundler.dir(bundlesDir).latest());
 
   // S3 config.
   const { endpoint, accessKey, secret, bucket } = config.s3;
   const s3 = { endpoint, accessKey, secret };
-  const bucketKey = fs.join(config.s3.bucket, config.s3.path.bundles, version);
+  const bucketKey = fs.join(config.s3.path.bundles, version);
 
   // Push.
   const bundleDir = fs.resolve(fs.join(bundlesDir, version));

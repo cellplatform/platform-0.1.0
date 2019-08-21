@@ -1,6 +1,7 @@
+import * as semver from 'semver';
 import * as t from '../types';
 
-export { t };
+export { t, semver };
 export { time } from '@platform/util.value';
 export { fs } from '@platform/fs';
 export { S3 } from '@platform/fs.s3';
