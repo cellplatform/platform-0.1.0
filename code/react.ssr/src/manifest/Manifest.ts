@@ -30,21 +30,15 @@ export class Manifest {
     if (!(await fs.pathExists(path))) {
       throw new Error(`Manifest file does not exist: '${args.file}'`);
     }
-
     const text = await fs.readFile(path, 'utf-8');
-    const res = await Manifest.parse({ text, baseUrl: url });
-    if (!res.ok) {
-      return;
-    }
-
-    const def = res.manifest;
+    const def = await Manifest.parse({ text, baseUrl: url });
     return Manifest.create({ def, url });
   }
 
   /**
-   * Pulls the manifest at the given url end-point.
+   * Pulls the manifest from the given url end-point.
    */
-  public static async pull(args: { url: string; baseUrl?: string }): Promise<IPullResonse> {
+  public static async fromUrl(args: { url: string; baseUrl?: string }): Promise<IPullResonse> {
     const { url } = args;
     const empty: t.IManifest = { sites: [] };
 
@@ -66,7 +60,15 @@ export class Manifest {
 
       // Attempt to parse the yaml.
       const baseUrl = args.baseUrl || url;
-      return await Manifest.parse({ text: res.body, baseUrl });
+      const text = res.body;
+      const manifest = await Manifest.parse({ text, baseUrl });
+
+      // Finish up.
+      return {
+        ok: true,
+        status: 200,
+        manifest,
+      };
     } catch (error) {
       return errorResponse(500, error);
     }
@@ -75,37 +77,24 @@ export class Manifest {
   /**
    * Pulls the manifest at the given url end-point.
    */
-  public static async parse(args: { text: string; baseUrl: string }): Promise<IPullResonse> {
-    const empty: t.IManifest = { sites: [] };
+  public static async parse(args: { text: string; baseUrl: string }) {
     const baseUrl = args.baseUrl.replace(/\/manifest.yml$/, '');
 
-    const errorResponse = (status: number, error: string): IPullResonse => {
-      const manifest = empty;
-      return { ok: false, status, error: new Error(error), manifest };
-    };
-
-    try {
-      // Attempt to parse the yaml.
-      const yaml = util.parseYaml(args.text);
-      if (!yaml.ok || !yaml.data) {
-        const error = `Failed to parse manifest YAML. ${yaml.error.message}`;
-        return errorResponse(500, error);
-      }
-
-      // Process the set of sites.
-      let sites: t.ISiteManifest[] = [];
-      try {
-        sites = await Site.formatMany({ input: yaml.data.sites, baseUrl });
-      } catch (error) {
-        return errorResponse(500, error);
-      }
-
-      // Finish up.
-      const manifest: t.IManifest = { sites };
-      return { ok: true, status: 200, manifest };
-    } catch (error) {
-      return errorResponse(500, error);
+    // Attempt to parse the yaml.
+    const yaml = util.parseYaml(args.text);
+    if (!yaml.ok || !yaml.data) {
+      const error = `Failed to parse manifest YAML. ${yaml.error.message}`;
+      throw new Error(error);
     }
+
+    // Process the set of sites.
+    let sites: t.ISiteManifest[] = [];
+    const input = yaml.data.sites;
+    sites = await Site.formatMany({ input, baseUrl });
+
+    // Finish up.
+    const manifest: t.IManifest = { sites };
+    return manifest;
   }
 
   /**
@@ -121,7 +110,7 @@ export class Manifest {
     if (manifest && !args.force) {
       return manifest;
     }
-    const res = await Manifest.pull(args);
+    const res = await Manifest.fromUrl(args);
     if (res.manifest) {
       const { status, manifest: def } = res;
       manifest = new Manifest({ url, def, status });

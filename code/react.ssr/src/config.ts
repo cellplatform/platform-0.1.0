@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
-import { t, fs } from '../common';
-import { Manifest } from '../manifest';
+import { t, fs } from './common';
+import { Manifest } from './manifest';
 
 dotenv.config();
 
@@ -16,9 +16,7 @@ export class Config {
     if (!(await fs.pathExists(path))) {
       throw new Error(`An "ssr.yml" configuration file does not exist at: ${path}`);
     }
-
     const def = await fs.file.loadAndParse<t.ISsrConfig>(path);
-
     return new Config({ def });
   };
   private constructor(args: { def: t.ISsrConfig }) {
@@ -69,29 +67,34 @@ export class Config {
     };
   }
 
-  public get manifestUrl() {
+  public get manifest() {
+    // Manifest file.
+    const file = fs.resolve(this.def.manifest || 'manifest.yml');
+
+    // Manifest URL.
     const s3 = this.s3;
     const endpoint = s3.endpoint.replace(/\/*$/, '');
     const path = s3.path.manifest.replace(/^\/*/, '');
     const bucket = s3.bucket;
-    return `https://${endpoint}/${bucket}/${path}`;
-  }
+    const url = `https://${endpoint}/${bucket}/${path}`;
 
-  public get manifest() {
-    const file = fs.resolve(this.def.manifest || 'manifest.yml');
-    const url = this.manifestUrl;
-    let manifest: Manifest | undefined;
+    // TEMP 🐷CDN URL from config..pass to Manifest.get
+
     const api = {
-      file,
-      url,
-      get exists() {
-        return fs.pathExists(file);
+      local: {
+        file,
+        get exists() {
+          return fs.pathExists(file);
+        },
+        async load() {
+          return Manifest.fromFile({ file, url });
+        },
       },
-      async load() {
-        if (!manifest && (await api.exists)) {
-          manifest = await Manifest.fromFile({ file, url });
-        }
-        return manifest;
+      s3: {
+        url,
+        async get(args: { force?: boolean } = {}) {
+          return Manifest.get({ ...args, url });
+        },
       },
     };
     return api;

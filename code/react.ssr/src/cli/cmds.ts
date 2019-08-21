@@ -20,8 +20,19 @@ app
 
       const config = await Config.create();
 
-      // const manifest = await config.manifest.load();
+      const manifest = await config.manifest.s3.get();
       // log.info('manifest', manifest);
+
+      const sites = manifest.sites.map(site => site.name || 'Unnamed');
+
+      const res1 = await cli.prompt.list({ message: 'site', items: sites });
+      console.log('-------------------------------------------');
+      console.log('res1', res1);
+      // manifest.
+
+      // manifest.site.
+
+      // manifest.
 
       const s3 = config.s3.fs;
 
@@ -32,7 +43,7 @@ app
         // max: 5,
       });
 
-      const objects = await list.objects;
+      // const objects = await list.objects;
       const dirs = (await list.dirs).items.map(({ key }) => ({ key, version: fs.basename(key) }));
       // dirs = R.sortWith([R.prop('version')])
       const items = semver.sort(dirs.map(item => item.version)).reverse();

@@ -3,7 +3,16 @@
 # 
 
 sites:
-  - domain: [localhost, /.*\.now\.sh$/]
+  - name: dev
+    domain: [localhost, /.*\.now\.sh$/]
+    bundle: bundle/0.5.17-beta.0
+    routes:
+      default:
+        entry: index.html
+        path: ["/", "/foo"]
+
+  - name: prod
+    domain: [platform.uiharness.com, /.*\.now\.sh$/]
     bundle: bundle/0.5.17-beta.0
     routes:
       default:
