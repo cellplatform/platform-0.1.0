@@ -12,6 +12,7 @@ export async function put(args: {
 }): Promise<t.S3PutResponse> {
   const { s3, bucket, key } = args;
   const Body = typeof args.source === 'string' ? await fs.readFile(args.source) : args.source;
+
   try {
     const ContentType = toContentType(key);
     const res = await s3
