@@ -1,10 +1,9 @@
 import { expect, testManifest, testManifestDef } from '../test';
 import { Manifest } from './Manifest';
 
-const url = 'https://sfo2.digitaloceanspaces.com/platform/modules/react.ssr/manifest.yml';
-
 describe('Manifest', () => {
   it('loads from file', async () => {
+    const url = 'https://sfo2.digitaloceanspaces.com/platform/modules/react.ssr/manifest.yml';
     const def = await testManifestDef();
     const manifest = Manifest.create({ def, url });
     expect(manifest.ok).to.eql(true);

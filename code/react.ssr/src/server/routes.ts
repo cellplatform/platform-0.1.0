@@ -50,8 +50,8 @@ export function init(args: {
     const sites = manifest.sites
       .map(site => site.toObject())
       .map(site => {
-        const { domain, version, bundle, routes } = site;
-        return { domain, version, bundle, routes };
+        const { domain, bundle, routes } = site;
+        return { domain, bundle, routes };
       });
     const data = { sites };
     return {

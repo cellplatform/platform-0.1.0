@@ -53,6 +53,10 @@ export class Route {
     return this.def.path;
   }
 
+  public get version() {
+    return util.firstSemver(this.site.bundle) || '0.0.0';
+  }
+
   /**
    * [Methods]
    */
@@ -75,7 +79,7 @@ export class Route {
       status = res.status;
     }
     let html = res.ok ? res.body : '';
-    const version = this.site.version;
+    const version = this.version;
     html = this.formatHtml({ html, filename, version });
 
     // Prepare the entry-object.

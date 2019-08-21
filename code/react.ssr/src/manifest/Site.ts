@@ -1,7 +1,10 @@
 import { constants, http, jsYaml, t, util } from '../common';
 import { Route } from './Route';
 
-export type ISiteArgs = { def: t.ISiteManifest };
+export type ISiteArgs = {
+  index: number;
+  manifest: t.IManifest;
+};
 
 /**
  * Definition of a site.
@@ -67,10 +70,9 @@ export class Site {
     const bundleManifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
     const files = bundleManifest ? bundleManifest.files || [] : [];
     const entries = bundleManifest ? bundleManifest.entries || [] : [];
-    const version = bundleManifest ? bundleManifest.version || '0.0.0' : '0.0.0';
 
     // Finish up.
-    const site: t.ISiteManifest = { name, version, domain, bundle, routes, files, entries };
+    const site: t.ISiteManifest = { name, domain, bundle, routes, files, entries };
     return site;
   }
 
@@ -79,21 +81,26 @@ export class Site {
    */
   public static create = (args: ISiteArgs) => new Site(args);
   private constructor(args: ISiteArgs) {
-    const { def } = args;
-    this.def = def;
-    this._regexes = toDomainRegexes(def.domain);
+    const { index, manifest } = args;
+    this.index = index;
+    this.manifest = manifest;
+    this._regexes = toDomainRegexes(this.def.domain);
   }
 
   /**
    * [Fields]
    */
-  private readonly def: t.ISiteManifest;
+  private readonly index: number;
+  private readonly manifest: t.IManifest;
   private _routes: Route[];
   private _regexes: RegExp[];
 
   /**
    * [Properties]
    */
+  private get def() {
+    return this.manifest.sites[this.index];
+  }
 
   public get name() {
     return this.def.name || '';
@@ -104,7 +111,7 @@ export class Site {
   }
 
   public get version() {
-    return util.firstSemver(this.def.version, this.def.bundle);
+    return util.firstSemver(this.def.bundle) || '0.0.0';
   }
 
   public get files() {

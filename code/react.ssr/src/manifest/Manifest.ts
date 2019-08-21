@@ -8,7 +8,11 @@ type IPullResonse = {
   error?: Error;
 };
 
-type IManifestArgs = { url: string; def: t.IManifest; status?: number };
+type IManifestArgs = {
+  url: string;
+  def: t.IManifest;
+  status?: number;
+};
 
 let CACHE: any = {};
 
@@ -146,7 +150,8 @@ export class Manifest {
 
   public get sites() {
     if (!this._sites) {
-      this._sites = this.def.sites.map(def => Site.create({ def }));
+      const manifest = this.def;
+      this._sites = this.def.sites.map((def, index) => Site.create({ index, manifest }));
     }
     return this._sites;
   }

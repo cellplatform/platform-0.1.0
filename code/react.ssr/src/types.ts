@@ -34,7 +34,6 @@ export type IManifest = {
  */
 export type ISiteManifest = {
   name: string;
-  version: string;
   domain: string[]; // string or "/regex/".
   bundle: string; // Path to the bundle folder.
   routes: { [key: string]: ISiteManifestRoute };

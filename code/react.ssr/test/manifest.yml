@@ -17,5 +17,5 @@ sites:
     routes:
       default:
         entry: index.html
-        path: ["/", "/foo"]
+        path: "/"
 
