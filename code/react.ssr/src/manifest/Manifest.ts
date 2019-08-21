@@ -28,11 +28,11 @@ export class Manifest {
     CACHE = {};
   }
 
-  public static async fromFile(args: { file: string; url: string }) {
+  public static async fromFile(args: { path: string; url: string }) {
     const { url } = args;
-    const path = fs.resolve(args.file);
+    const path = fs.resolve(args.path);
     if (!(await fs.pathExists(path))) {
-      throw new Error(`Manifest file does not exist: '${args.file}'`);
+      throw new Error(`Manifest file does not exist: '${args.path}'`);
     }
     const text = await fs.readFile(path, 'utf-8');
     const def = await Manifest.parse({ text, baseUrl: url });
@@ -161,13 +161,46 @@ export class Manifest {
    */
   public get site() {
     return {
+      byName: (name?: string) => {
+        name = (name || '').trim();
+        return this.sites.find(site => site.name.trim() === name);
+      },
       byHost: (domain?: string) => {
         domain = util.stripHttp(domain || '');
         return this.sites.find(site => site.isMatch(domain || ''));
       },
-      byName: (name?: string) => {
-        name = (name || '').trim();
-        return this.sites.find(site => site.name.trim() === name);
+    };
+  }
+
+  /**
+   * Methods for changing and saving values.
+   */
+  public get change() {
+    return {
+      site: (name: string) => {
+        return {
+          version: async (args: { version: string; saveTo: string }) => {
+            // Find the site.
+            const site = this.site.byName(name);
+            if (!site) {
+              return { ok: false, status: 404 };
+            }
+
+            // Update the bundle version.
+            const bundle = fs.join(fs.dirname(site.bundle), args.version);
+            const def = { ...this.def };
+            def.sites[site.index].bundle = bundle;
+
+            // Save to local file-system.
+            const path = fs.resolve(args.saveTo);
+            await fs.ensureDir(fs.dirname(path));
+            await fs.file.stringifyAndSave(path, def);
+
+            // Finish up.
+            const result = { ok: true, status: 200 };
+            return result;
+          },
+        };
       },
     };
   }

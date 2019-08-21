@@ -87,7 +87,7 @@ export class Config {
           return fs.pathExists(file);
         },
         async load() {
-          return Manifest.fromFile({ file, url });
+          return Manifest.fromFile({ path: file, url });
         },
       },
       s3: {

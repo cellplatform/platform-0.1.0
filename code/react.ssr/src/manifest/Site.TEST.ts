@@ -18,12 +18,13 @@ describe('Site', () => {
     expect(site.name).to.eql('dev');
   });
 
-  it('no name', async () => {
+  it('throws when no name', async () => {
     const def = await testManifestDef();
     delete def.sites[0].name;
     const manifest = Manifest.create({ def, url });
-    const site = manifest.site.byHost('localhost');
-    expect(site && site.name).to.eql('');
+
+    const fn = () => manifest.site.byHost('localhost');
+    expect(fn).to.throw(/must have a name/);
   });
 
   it('routes', async () => {

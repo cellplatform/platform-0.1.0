@@ -40,7 +40,7 @@ export class Site {
     }
 
     // Name.
-    const name = input.name || '';
+    const name = (input.name || '').trim();
 
     // Domain (host).
     let domain = input.domain || '';
@@ -85,12 +85,16 @@ export class Site {
     this.index = index;
     this.manifest = manifest;
     this._regexes = toDomainRegexes(this.def.domain);
+
+    if (!this.name) {
+      throw new Error(`A site definition must have a name.`);
+    }
   }
 
   /**
    * [Fields]
    */
-  private readonly index: number;
+  public readonly index: number;
   private readonly manifest: t.IManifest;
   private _routes: Route[];
   private _regexes: RegExp[];
@@ -103,15 +107,19 @@ export class Site {
   }
 
   public get name() {
-    return this.def.name || '';
+    return (this.def.name || '').trim();
   }
 
   public get domain() {
     return this.def.domain;
   }
 
+  public get bundle() {
+    return this.def.bundle;
+  }
+
   public get version() {
-    return util.firstSemver(this.def.bundle) || '0.0.0';
+    return util.firstSemver(this.bundle) || '0.0.0';
   }
 
   public get files() {
