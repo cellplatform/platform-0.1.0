@@ -63,7 +63,9 @@ export async function listObjects(args: {
 
     // Format results.
     response.max = data.MaxKeys || response.max;
-    response.items = (data.Contents as any[]).map(data => toItem(data));
+    response.items = (data.Contents as any[])
+      .map(data => toItem(data))
+      .filter(item => !item.key.endsWith('/')); // NB: Don't include containers (eg. "dirs").  See `dirs` listing method below.
   } catch (err) {
     const error = new Error(err.code);
     response.status = err.statusCode;
