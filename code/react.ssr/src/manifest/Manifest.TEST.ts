@@ -56,27 +56,32 @@ describe('Manifest', () => {
   describe('change.version', () => {
     const saveTo = fs.join(tmp, 'manifest.yml');
 
-    it('not found', async () => {
+    beforeEach(async () => fs.remove(saveTo));
+
+    it('site not found (undefined)', async () => {
       const manifest = await testManifest();
       const res = await manifest.change.site('NO_EXIST').version({ version: '2.0.0', saveTo });
-      expect(res.ok).to.eql(false);
-      expect(res.status).to.eql(404);
+      expect(res).to.eql(undefined);
     });
 
     it('changes and saves', async () => {
       const manifest = await testManifest();
 
-      let site = manifest.site.byName('dev');
-      expect(site && site.version).to.eql('1.2.3-alpha.0');
+      const site1 = manifest.site.byName('dev');
+      expect(site1 && site1.version).to.eql('1.2.3-alpha.0');
 
+      // Saved and new manifest instance returned.
       const res = await manifest.change.site('dev').version({ version: '2.0.0', saveTo });
-      expect(res.ok).to.eql(true);
-      expect(res.status).to.eql(200);
+      expect(res).to.be.an.instanceof(Manifest);
+      expect(res).to.not.equal(manifest); // Different instance.
+
+      const site2 = res && res.site.byName('dev');
+      expect(site2 && site2.version).to.eql('2.0.0');
 
       // Check the saved file.
-      const m = await Manifest.fromFile({ path: saveTo, url });
-      site = m.site.byName('dev');
-      expect(site && site.version).to.eql('2.0.0');
+      const fromFile = await Manifest.fromFile({ path: saveTo, url });
+      const site3 = fromFile.site.byName('dev');
+      expect(site3 && site3.version).to.eql('2.0.0');
     });
   });
 });

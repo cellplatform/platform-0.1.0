@@ -179,11 +179,11 @@ export class Manifest {
     return {
       site: (name: string) => {
         return {
-          version: async (args: { version: string; saveTo: string }) => {
+          version: async (args: { version: string; saveTo?: string }) => {
             // Find the site.
             const site = this.site.byName(name);
             if (!site) {
-              return { ok: false, status: 404 };
+              return undefined;
             }
 
             // Update the bundle version.
@@ -191,14 +191,16 @@ export class Manifest {
             const def = { ...this.def };
             def.sites[site.index].bundle = bundle;
 
+            // Clone of manifest with updated def.
+            const manifest = Manifest.create({ def, url: this.url });
+
             // Save to local file-system.
-            const path = fs.resolve(args.saveTo);
-            await fs.ensureDir(fs.dirname(path));
-            await fs.file.stringifyAndSave(path, def);
+            if (args.saveTo) {
+              await manifest.save(args.saveTo);
+            }
 
             // Finish up.
-            const result = { ok: true, status: 200 };
-            return result;
+            return manifest;
           },
         };
       },
@@ -217,5 +219,11 @@ export class Manifest {
       status: this.status,
       ...this.def,
     };
+  }
+
+  public async save(path: string) {
+    path = fs.resolve(path);
+    await fs.ensureDir(fs.dirname(path));
+    await fs.file.stringifyAndSave(path, this.def);
   }
 }
