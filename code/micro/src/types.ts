@@ -6,7 +6,10 @@ export type RouteHandler = (req: IncomingMessage) => Promise<RouteResponse | und
 export type RouteResponse = {
   status?: number;
   data?: any;
+  headers?: IHttpHeaders;
 };
+
+export type IHttpHeaders = { [key: string]: string };
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type IRoute = {
