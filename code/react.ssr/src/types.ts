@@ -57,11 +57,11 @@ export type ISsrConfig = {
   };
   s3: {
     endpoint: string;
+    cdn?: string;
     accessKey: string;
     secret: string;
     bucket: string;
     path: {
-      cdn?: string;
       manifest: string;
       bundles: string;
     };

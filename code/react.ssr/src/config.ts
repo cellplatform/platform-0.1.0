@@ -19,14 +19,14 @@ export class Config {
     const def = await fs.file.loadAndParse<t.ISsrConfig>(path);
     return new Config({ def });
   };
-  public static createSync = (options: { path?: string } = {}) => {
-    const path = fs.resolve(options.path || './ssr.yml');
-    if (!fs.pathExistsSync(path)) {
-      throw new Error(`An "ssr.yml" configuration file does not exist at: ${path}`);
-    }
-    const def = fs.file.loadAndParseSync<t.ISsrConfig>(path);
-    return new Config({ def });
-  };
+  // public static createSync = (options: { path?: string } = {}) => {
+  //   const path = fs.resolve(options.path || './ssr.yml');
+  //   if (!fs.pathExistsSync(path)) {
+  //     throw new Error(`An "ssr.yml" configuration file does not exist at: ${path}`);
+  //   }
+  //   const def = fs.file.loadAndParseSync<t.ISsrConfig>(path);
+  //   return new Config({ def });
+  // };
   private constructor(args: { def: t.ISsrConfig }) {
     this.def = args.def;
   }
@@ -62,11 +62,11 @@ export class Config {
 
     return {
       endpoint,
+      cdn: s3.cdn,
       accessKey,
       secret,
       bucket: s3.bucket || '',
       path: {
-        cdn: path.cdn,
         manifest: path.manifest || '',
         bundles: path.bundles || '',
       },
@@ -82,12 +82,16 @@ export class Config {
 
     // Manifest URL.
     const s3 = this.s3;
-    const endpoint = s3.endpoint.replace(/\/*$/, '');
-    const path = s3.path.manifest.replace(/^\/*/, '');
-    const bucket = s3.bucket;
-    const url = `https://${endpoint}/${bucket}/${path}`;
-
-    // TEMP 🐷CDN URL from config..pass to Manifest.get
+    const clean = (text: string) =>
+      text
+        .replace(/^http\:\/\//, '')
+        .replace(/^https\:\/\//, '')
+        .replace(/^\/*/, '')
+        .replace(/\/*$/, '');
+    const toUrl = (endpoint: string) =>
+      `https://${clean(endpoint)}/${clean(s3.bucket)}/${clean(s3.path.manifest)}`;
+    const url = toUrl(s3.endpoint);
+    const cdn = toUrl(s3.cdn || s3.endpoint);
 
     const api = {
       local: {
@@ -96,13 +100,13 @@ export class Config {
           return fs.pathExists(filePath);
         },
         async load() {
-          return Manifest.fromFile({ path: filePath, url });
+          return Manifest.fromFile({ path: filePath, url: cdn });
         },
       },
       s3: {
         url,
         async get(args: { force?: boolean } = {}) {
-          return Manifest.get({ ...args, url });
+          return Manifest.get({ ...args, url, baseUrl: cdn });
         },
       },
     };

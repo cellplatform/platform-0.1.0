@@ -6,11 +6,11 @@ builder:
 
 s3:
   endpoint: sfo2.digitaloceanspaces.com
+  cdn: platform.sfo2.cdn.digitaloceanspaces.com
   accessKey: SPACES_KEY
   secret: SPACES_SECRET
   bucket: platform
   path: 
-    cdn: platform.sfo2.cdn.digitaloceanspaces.com
     manifest: modules/react.ssr/manifest.yml 
     bundles: modules/react.ssr/bundle
 
