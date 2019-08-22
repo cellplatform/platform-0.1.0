@@ -10,6 +10,7 @@ s3:
   secret: SPACES_SECRET
   bucket: platform
   path: 
+    cdn: platform.sfo2.cdn.digitaloceanspaces.com
     manifest: modules/react.ssr/manifest.yml 
     bundles: modules/react.ssr/bundle
 

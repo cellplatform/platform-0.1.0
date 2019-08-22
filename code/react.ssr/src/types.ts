@@ -61,6 +61,7 @@ export type ISsrConfig = {
     secret: string;
     bucket: string;
     path: {
+      cdn?: string;
       manifest: string;
       bundles: string;
     };

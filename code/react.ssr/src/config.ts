@@ -48,7 +48,7 @@ export class Config {
       return value || '';
     };
 
-    const endpoint = toValue(s3.endpoint);
+    const endpoint = s3.endpoint || '';
     const accessKey = toValue(s3.accessKey);
     const secret = toValue(s3.secret);
 
@@ -58,6 +58,7 @@ export class Config {
       secret,
       bucket: s3.bucket || '',
       path: {
+        cdn: path.cdn,
         manifest: path.manifest || '',
         bundles: path.bundles || '',
       },
@@ -69,7 +70,7 @@ export class Config {
 
   public get manifest() {
     // Manifest file.
-    const file = fs.resolve(this.def.manifest || 'manifest.yml');
+    const filePath = fs.resolve(this.def.manifest || 'manifest.yml');
 
     // Manifest URL.
     const s3 = this.s3;
@@ -82,12 +83,12 @@ export class Config {
 
     const api = {
       local: {
-        file,
+        file: filePath,
         get exists() {
-          return fs.pathExists(file);
+          return fs.pathExists(filePath);
         },
         async load() {
-          return Manifest.fromFile({ path: file, url });
+          return Manifest.fromFile({ path: filePath, url });
         },
       },
       s3: {

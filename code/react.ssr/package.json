@@ -8,7 +8,7 @@
     "ssr": "lib/bin.js"
   },
   "scripts": {
-    "ssr": "node lib.test/src/bin.js $@",
+    "ssr": "node lib/bin.js $@",
     "ui": "ui $@",
     "dev": "ui start web $@",
     "start": "cd test.now && now dev --port 8080",
