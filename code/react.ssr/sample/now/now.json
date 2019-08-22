@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "name": "react.ssr-test",
+  "alias": "ssr.platform.uiharness.com",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.ts"
+    }
+  ],
+  "builds": [
+    {
+      "src": "**/*.{ts,tsx}",
+      "use": "@now/node",
+      "config": {
+        "includeFiles": ["**/*.{yml}"]
+      }
+    }
+  ]
+}

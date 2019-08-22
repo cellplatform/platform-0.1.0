@@ -1,5 +1,3 @@
-.env
-sample/.env
 node_modules
 .uiharness
 .cache
@@ -8,5 +6,3 @@ node_modules
 lib
 lib.test
 dist
-bundle
-/tmp

@@ -70,7 +70,7 @@ async function promptForSite(args: { manifest: Manifest }) {
 async function promptForVersion(args: { current: string; versions: string[] }) {
   const { current } = args;
   const versions = args.versions.map(value => ({
-    name: `${value} ${value === current ? '🌼  CURRENT' : ''}`,
+    name: `${value} ${value === current ? '🌼' : ''}`,
     value,
   }));
   return cli.prompt.list<string>({

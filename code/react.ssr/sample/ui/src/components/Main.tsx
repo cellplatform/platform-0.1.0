@@ -2,20 +2,20 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue } from './common';
+import { css, GlamorValue } from '../common';
 
-export type ITestProps = { style?: GlamorValue };
-export type ITestState = { count?: number; foo?: JSX.Element };
+export type IMainProps = { style?: GlamorValue };
+export type IMainState = { count?: number; foo?: JSX.Element };
 
-export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = {};
-  private state$ = new Subject<Partial<ITestState>>();
+export class Main extends React.PureComponent<IMainProps, IMainState> {
+  public state: IMainState = {};
+  private state$ = new Subject<Partial<IMainState>>();
   private unmounted$ = new Subject<{}>();
 
   /**
    * [Lifecycle]
    */
-  constructor(props: ITestProps) {
+  constructor(props: IMainProps) {
     super(props);
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));

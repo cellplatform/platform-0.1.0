@@ -1,0 +1,13 @@
+{
+  "name": "react.ssr-sample-now",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "now dev --listen 8080",
+    "deploy": "now --prod"
+  },
+  "dependencies": {
+    "@platform/react.ssr": "^0.9.3"
+  },
+  "license": "MIT",
+  "private": true
+}
