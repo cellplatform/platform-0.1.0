@@ -19,6 +19,14 @@ export class Config {
     const def = await fs.file.loadAndParse<t.ISsrConfig>(path);
     return new Config({ def });
   };
+  public static createSync = (options: { path?: string } = {}) => {
+    const path = fs.resolve(options.path || './ssr.yml');
+    if (!fs.pathExistsSync(path)) {
+      throw new Error(`An "ssr.yml" configuration file does not exist at: ${path}`);
+    }
+    const def = fs.file.loadAndParseSync<t.ISsrConfig>(path);
+    return new Config({ def });
+  };
   private constructor(args: { def: t.ISsrConfig }) {
     this.def = args.def;
   }
