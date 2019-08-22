@@ -17,7 +17,7 @@ export async function run() {
   log.info();
   await cli
     .tasks()
-    .task('pull latest manifest', async e => {
+    .task('pull manifest', async e => {
       manifest = await config.manifest.local.ensureLatest({ minimal: true });
     })
     .task('pull version list', async e => {

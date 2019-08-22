@@ -101,9 +101,8 @@ export class Config {
 
     // Manifest URL.
     const s3 = this.s3;
-    const urlPath = `${s3.bucket}/${s3.path.base}`;
-    const manifestUrl = `https://${s3.endpoint}/${urlPath}/${s3.path.manifest}`;
-    const baseUrl = `https://${s3.cdn || s3.endpoint}/${urlPath}`;
+    const manifestUrl = `https://${s3.endpoint}/${s3.bucket}/${s3.path.base}/${s3.path.manifest}`;
+    const baseUrl = `https://${s3.cdn || s3.endpoint}/${s3.path.base}`;
 
     const config = this; // tslint:disable-line
     const api = {

@@ -26,6 +26,7 @@ export class Site {
     }
 
     let sites: t.ISiteManifest[] = [];
+
     for (const input of args.input) {
       const site = await Site.formatOne({ input, baseUrl, loadBundleManifest });
       sites = site ? [...sites, site] : sites;
@@ -76,10 +77,12 @@ export class Site {
     let entries: t.IBundleEntryHtml[] = [];
     let size = '-';
     let bytes = -1;
+
     if (args.loadBundleManifest) {
       const bundleUrl = `${baseUrl}/${bundle}/${constants.PATH.BUNDLE_MANIFEST}`;
       const res = await http.get(bundleUrl);
       const bundleManifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
+
       if (bundleManifest) {
         size = bundleManifest.size;
         bytes = bundleManifest.bytes;
@@ -95,6 +98,8 @@ export class Site {
       baseUrl,
       bundle,
       routes,
+
+      // Extended bundle props.
       size,
       bytes,
       files,

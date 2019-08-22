@@ -24,9 +24,10 @@ export function init(args: {
    */
   router.get('/.manifest/summary', async req => {
     const manifest = await manifestFromCacheOrS3();
-    const sites = manifest.sites.reduce((acc, next) => {
-      const { name, version, size } = next;
-      return { ...acc, [name]: { version, size } };
+    const sites = manifest.sites.reduce((acc, site) => {
+      const { name, version, size } = site;
+      const domain = site.domain.join(', ');
+      return { ...acc, [name]: { version, size, domain } };
     }, {});
     return {
       status: 200,

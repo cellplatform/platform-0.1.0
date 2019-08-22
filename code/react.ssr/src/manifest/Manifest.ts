@@ -34,8 +34,8 @@ export class Manifest {
     if (!(await fs.pathExists(path))) {
       throw new Error(`Manifest file does not exist: '${args.path}'`);
     }
-    const text = await fs.readFile(path, 'utf-8');
-    const def = await Manifest.parse({ yaml: text, baseUrl });
+    const yaml = await fs.readFile(path, 'utf-8');
+    const def = await Manifest.parse({ yaml, baseUrl });
     return Manifest.create({ def, baseUrl });
   }
 
@@ -84,8 +84,8 @@ export class Manifest {
     baseUrl: string;
     loadBundleManifest?: boolean;
   }) {
-    const { yaml: text, baseUrl, loadBundleManifest } = args;
-    const def = await Manifest.parse({ yaml: text, baseUrl, loadBundleManifest });
+    const { yaml, baseUrl, loadBundleManifest } = args;
+    const def = await Manifest.parse({ yaml, baseUrl, loadBundleManifest });
     return Manifest.create({ def, baseUrl });
   }
 
@@ -122,7 +122,7 @@ export class Manifest {
     force?: boolean;
     loadBundleManifest?: boolean;
   }) {
-    const key = `${args.manifestUrl}::${args.loadBundleManifest || 'false'}`;
+    const key = `${args.manifestUrl}:${args.loadBundleManifest || 'false'}`;
 
     let manifest = URL_CACHE[key] as Manifest;
     if (manifest && !args.force) {
@@ -142,7 +142,7 @@ export class Manifest {
   public static create = (args: IManifestArgs) => new Manifest(args);
   private constructor(args: IManifestArgs) {
     this.def = args.def;
-    this.baseUrl = args.baseUrl;
+    this.baseUrl = util.stripSlashes(args.baseUrl);
     this.status = args.status || 200;
   }
 

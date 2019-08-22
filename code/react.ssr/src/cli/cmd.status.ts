@@ -13,8 +13,8 @@ export async function run() {
   log.info();
   await cli
     .tasks()
-    .task('pull latest manifest', async e => {
-      manifest = await config.manifest.local.ensureLatest({ minimal: true });
+    .task('pull manifest', async e => {
+      manifest = await config.manifest.s3.get({ force: true, loadBundleManifest: true });
     })
     .run({ concurrent: true });
 
@@ -26,8 +26,17 @@ export async function run() {
 
   log.info();
 
-  console.log('manifest', manifest);
-
-  // Finish up.
+  log.info.gray(`url:    ${config.manifest.s3.url}`);
+  log.info.gray(`local:  ${config.manifest.local.path}`);
   log.info();
+
+  manifest.sites.forEach(site => {
+    const { name, version, size } = site;
+    const domain = site.domain.join(', ');
+    log.info(name);
+    log.info.gray(` - version:   ${log.cyan(version)}`);
+    log.info.gray(` - size:      ${size}`);
+    log.info.gray(` - domain:    ${domain}`);
+    log.info();
+  });
 }
