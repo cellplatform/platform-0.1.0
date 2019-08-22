@@ -14,7 +14,7 @@ type IManifestArgs = {
   status?: number;
 };
 
-let CACHE: any = {};
+let URL_CACHE: any = {};
 
 export class Manifest {
   /**
@@ -25,7 +25,7 @@ export class Manifest {
    * Reset the cache.
    */
   public static reset() {
-    CACHE = {};
+    URL_CACHE = {};
   }
 
   public static async fromFile(args: { path: string; baseUrl: string }) {
@@ -124,14 +124,14 @@ export class Manifest {
   }) {
     const key = `${args.manifestUrl}::${args.loadBundleManifest || 'false'}`;
 
-    let manifest = CACHE[key] as Manifest;
+    let manifest = URL_CACHE[key] as Manifest;
     if (manifest && !args.force) {
       return manifest;
     }
     const res = await Manifest.fromUrl(args);
     if (res.manifest) {
       manifest = res.manifest;
-      CACHE[key] = manifest;
+      URL_CACHE[key] = manifest;
     }
     return manifest;
   }

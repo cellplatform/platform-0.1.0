@@ -10,3 +10,4 @@ export { log } from '@platform/log/lib/server';
 export { exec } from '@platform/exec';
 export { cli } from '@platform/cli';
 export { npm } from '@platform/npm';
+export { http } from '@platform/http';

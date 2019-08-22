@@ -1,6 +1,6 @@
 import { parse as parseUrl } from 'url';
 
-import { micro } from '../common';
+import { micro, log } from '../common';
 import { Manifest } from '../manifest';
 
 /**
@@ -34,8 +34,9 @@ export function init(args: {
   /**
    * [POST] manifest (reset cache).
    */
-  router.get('/.manifest', async req => {
+  router.post('/.manifest', async req => {
     const manifest = await manifestFromCacheOrS3({ force: true });
+    log.info(`Manifest cache reset.`);
     return {
       status: 200,
       data: manifest.toObject(),

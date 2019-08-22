@@ -2,6 +2,7 @@ import { bundler } from '../bundler';
 import { Config } from '../config';
 import { Manifest } from '../manifest';
 import { cli, log, fs } from './common';
+import * as reset from './cmd.reset';
 
 /**
  * Release new version script.
@@ -51,10 +52,11 @@ export async function run() {
   // Push change to S3.
   const bucket = s3.bucket;
   const source = config.manifest.local.path;
-  const target = s3.path.manifest;
+  const target = fs.join(s3.path.base, s3.path.manifest);
   await bundler.push(s3.config).manifest({ bucket, source, target, silent: false });
 
   // Finish up.
+  await reset.run({ config, manifest, site });
   log.info();
 }
 

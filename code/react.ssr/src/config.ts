@@ -81,7 +81,6 @@ export class Config {
       async versions(options: { sort?: 'ASC' | 'DESC' } = {}) {
         const s3 = api.fs;
         const prefix = `${api.path.base}/${api.path.bundles}`;
-        console.log('prefix:', prefix);
         const list = s3.list({
           bucket,
           prefix,

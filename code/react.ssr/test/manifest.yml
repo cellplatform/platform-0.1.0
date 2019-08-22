@@ -20,7 +20,7 @@ sites:
       - /.*\.now\.sh$/
     baseUrl: >-
       https://platform.sfo2.cdn.digitaloceanspaces.com/platform/modules/react.ssr
-    bundle: bundle/0.5.17-beta.0
+    bundle: bundle/0.7.5
     routes:
       default:
         entry: index.html

@@ -25,6 +25,7 @@ export async function run() {
   }
 
   // Task list.
+  log.info();
   const tasks = cli
     .tasks()
     .task('build', async e => execScript(e, 'build'))

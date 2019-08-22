@@ -34,7 +34,7 @@ export async function bundle(args: {
   const bucket = args.s3.bucket(args.bucket);
   const bundleDir = fs.resolve(args.bundleDir);
 
-  // Ensure the key is not pre-pended with the bucket name.
+  // Ensure the key is not prepended with the bucket name.
   const bucketKey = args.bucketKey.replace(new RegExp(`^${args.bucket}\/`), '');
 
   // Calculate the list of files to push.
@@ -83,11 +83,6 @@ export async function bundle(args: {
   );
   try {
     await tasks.run();
-    if (!args.silent) {
-      log.info();
-      log.info.gray(`${log.green('done')} ${timer.elapsed.toString()}`);
-      log.info();
-    }
   } catch (error) {
     log.error(`\nFailed while pushing to S3.\n`);
     process.exit(1);
@@ -147,11 +142,6 @@ export async function manifest(args: {
   );
   try {
     await tasks.run();
-    if (!args.silent) {
-      log.info();
-      log.info.gray(`${log.green('done')} ${timer.elapsed.toString()}`);
-      log.info();
-    }
   } catch (error) {
     log.error(`\nFailed while pushing to S3.\n`);
     process.exit(1);
