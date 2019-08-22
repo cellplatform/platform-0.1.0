@@ -1,2 +1,2 @@
-export * from '@platform/exec';
-export { fs } from './common';
+export * from './cli';
+export { log } from './common';

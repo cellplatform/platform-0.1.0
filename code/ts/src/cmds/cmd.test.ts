@@ -45,6 +45,7 @@ export async function test(
     export NODE_ENV=test
     export TS_NODE_TRANSPILE_ONLY=true
     export TS_NODE_FAST=true
+    export TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }'
     
     ${mocha} \\
       ${flags}

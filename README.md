@@ -90,8 +90,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/ui.spinner](/code/ui.spinner)
   - [@platform/ui.text](/code/ui.text)
 - state
-  - [@platform/hyperdb](/code/hyperdb)
-  - [@platform/hyperdb.electron](/code/hyperdb.electron)
   - [@platform/state](/code/state)
   - [@platform/state.react](/code/state.react)
   - [@platform/cache](/code/cache)

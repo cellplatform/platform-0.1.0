@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.animate",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "description": "Programmatic animation.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.61",
-    "@platform/ts": "3.4.38"
+    "@platform/ts": "3.5.0"
   },
   "files": [
     "lib"

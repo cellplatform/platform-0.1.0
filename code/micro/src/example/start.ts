@@ -9,7 +9,11 @@ const app = micro.init({
 });
 
 app.router.get('/foo', async req => {
-  return { status: 200, data: { message: 'hello' } };
+  return {
+    status: 200,
+    headers: { 'x-foo': 'hello' },
+    data: { message: 'hello' },
+  };
 });
 
 app.listen({ port: 1234 });

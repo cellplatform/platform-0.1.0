@@ -18,14 +18,14 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/css@0.1.32":
-  version "0.1.32"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.32.tgz#26dd06bc523729da08a2209c0c66d5848ac6059e"
-  integrity sha512-MCikAEei8bVjlRKQgwgxqGAYlgBeO018BDiZZO6EfsuGwm47P1o6HfoWncTuNHDADeV8i8mMoy/DouBT2Ff8Ng==
+"@platform/css@0.1.33":
+  version "0.1.33"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.33.tgz#073f5872248d39d0d8cc4a376846b9c81f1420e8"
+  integrity sha512-F/JbLq4eMcpZ3Pv6SQfLBQdAYsSSMV2916bviONelYFzcn80Z4jc38RdKSZ70N3guSOqUSNve0odg8Og938VBQ==
   dependencies:
     "@platform/libs" "0.1.1"
-    "@platform/util.is" "0.0.87"
-    "@platform/util.value" "0.4.9"
+    "@platform/util.is" "0.0.88"
+    "@platform/util.value" "0.4.10"
     "@types/tinycolor2" "1.4.2"
     glamor "2.20.40"
     tinycolor2 "1.4.1"
@@ -57,24 +57,24 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.nedb@1.3.8":
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.8.tgz#79a166b984997470891e1269d986a6d951169855"
-  integrity sha512-b6Rzd8g89x88Y6d6PY7nuP2C4plkrhg5pMWT9XB/EYjPfRJFd7QrOWgIUiQyfqgXhABN3wQCBOtJ/hFSFgJKyg==
+"@platform/fsdb.nedb@1.3.10":
+  version "1.3.10"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.10.tgz#94247baf313b833296ec257554ab1c4998fd9720"
+  integrity sha512-9dO5/ycZXa5H3keYsa7dY/dDe1TQUGdIe/f8Xuaa1G9NZbv0b6gYsQpI5B/9HNj1TBn/RR418SF4onadzijDkw==
   dependencies:
-    "@platform/fsdb.types" "0.3.3"
-    "@platform/react" "0.3.17"
-    "@platform/types" "0.0.25"
-    "@platform/util.value" "0.4.9"
+    "@platform/fsdb.types" "0.3.4"
+    "@platform/react" "0.3.19"
+    "@platform/types" "0.0.26"
+    "@platform/util.value" "0.4.10"
     nedb "1.8.0"
 
-"@platform/fsdb.types@0.3.3":
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.3.3.tgz#4b06d7def8741e546a6b6ef0a0dfb288f87636fe"
-  integrity sha512-QbqMByy8HsWKNRoCOu9+Z9YwhaNQZfrkkzgd3P6mC2qR2WdCN/d6eEOuCF+SxCwTNNIMX8GS2jKbPfY7SZXPFQ==
+"@platform/fsdb.types@0.3.4":
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.3.4.tgz#31e47433d887834840076dc049406c5513cb45c7"
+  integrity sha512-7ZF+TZw9tfZLendPLJLfSXjZD1HcuKmRKAOdy1FRUXc5f6YiIITWAcLg9nNxcbrpppzTbQiDv8GzsHxTBSj8fw==
   dependencies:
     "@platform/libs" "0.1.1"
-    "@platform/types" "0.0.25"
+    "@platform/types" "0.0.26"
 
 "@platform/libs@0.1.1":
   version "0.1.1"
@@ -88,15 +88,15 @@
     rxjs "6.5.2"
     tslib "1.10.0"
 
-"@platform/react@0.3.17":
-  version "0.3.17"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.17.tgz#6f04204431699298979cfda1d46cf4b7aaf05903"
-  integrity sha512-bmDDZtMMiXadFN3IdC9cvWA9F1PR4AuqR+OuF8CqvlzfhcSWz9Fzhzwh+C/t1WVRcKP/KkdZwAqUQfmkXDXlvg==
+"@platform/react@0.3.19":
+  version "0.3.19"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.19.tgz#f6d9a3ece1c0ad52dcfe9d44e4435d668c69b2bb"
+  integrity sha512-IYaD1DoegPGfc2+PSbbYbCL/TPylUrP3KJfD1LLRZMhtlSPNByneSAUx93zqOHcW4BhQBJGgr+tHyRvT3T+YDQ==
   dependencies:
-    "@platform/css" "0.1.32"
-    "@platform/util.is" "0.0.87"
+    "@platform/css" "0.1.33"
+    "@platform/util.is" "0.0.88"
     "@types/react" "16.9.2"
-    "@types/react-dom" "16.8.5"
+    "@types/react-dom" "16.9.0"
     react "16.9.0"
     react-dom "16.9.0"
 
@@ -125,35 +125,34 @@
     tslint-react "4.0.0"
     typescript "3.5.3"
 
-"@platform/ts@3.4.38":
-  version "3.4.38"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.4.38.tgz#e4a8de662972b4ee77c09883239d44cb9d5996e6"
-  integrity sha512-8Yy95Rkf5x+R1FwP/vJ8oaz8SINiOPfvHOXccaKkfrsaQAZ7xWkcgjxqh77ctXksuSkabVEHpteowvyp37yyqw==
+"@platform/ts@3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.5.0.tgz#1a0fe9d5c96c6dbf4b61f327209acac2e373e776"
+  integrity sha512-Lkrdjte9Trm7YELhrcfIjbQpQ4vL6guzWM+Is+SIV7CX+ayeigPAAPqMJ4fKjINhZdtmy3aL6vzWWedYndXQOQ==
   dependencies:
     "@platform/exec" "0.2.25"
     "@platform/fs" "0.2.0"
     "@platform/libs" "0.1.1"
     "@platform/ts.libs" "3.5.6"
-    yargs "13.3.0"
 
-"@platform/types@0.0.25":
-  version "0.0.25"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.25.tgz#bb13b344620c0006db7f3fc6947898c8d49df7d2"
-  integrity sha512-qIwuwyoweYf0I+67LGMU9T0qrRzLsQokqkHzYDVRaN+SBZhvi4ej5VVqWbl1WB+hFp8W4BD83ktkBx5As65v5A==
+"@platform/types@0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.26.tgz#cd725db692eb00a72d7c99577978104bd00ecc76"
+  integrity sha512-kX/2uT3qDNon70rxg7rOeYKH+M0Qvz2pLS5mFRujZFN9boP94CpayEicEVEJikkiCtlXmoV/ta6NGh0xROCm7g==
 
-"@platform/util.is@0.0.87":
-  version "0.0.87"
-  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.87.tgz#ae0aa4deb39614890a031c042d1c7315eae1e231"
-  integrity sha512-PkMwY0ncIey9tp25gdGwe+aclibBgfQvkmaE0lFgQXQH/ZBfu+DK6qiPttL0oziXXRxpZSBsfIwSn3Yoew+wzg==
+"@platform/util.is@0.0.88":
+  version "0.0.88"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.88.tgz#cf23cd7719564afdf8ba12c3883977cf2d2c070e"
+  integrity sha512-kvBU7enzjLeucK/0U1VN3RbnrkMCSoiTmKvVbUrtrWIb18CHsyBSj5Yt9CVUGj2UYxgCuJkgnfhDFxqCPFUKyQ==
 
-"@platform/util.value@0.4.9":
-  version "0.4.9"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.9.tgz#abe4984092318df386c8ce36e876d6c0afef039b"
-  integrity sha512-X12qCuQ/NRRzN6J1/kxB+a43qz/QPw4ncv5eXj4t5fJjPocPTg7V3+Vkmkn3WKbouDULECOhPTz9txcdobF0uQ==
+"@platform/util.value@0.4.10":
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.4.10.tgz#610fec49317b393c260bd33b0af8ced858fc2844"
+  integrity sha512-lc35enaiTiV0Kzonz7hDYthXk53kzusOvMlJo7eFtbsl5Bf9xBqRxUTo8Ru01cufqj1uwtS1gLXPLZeRPNnJlg==
   dependencies:
     "@platform/libs" "0.1.1"
-    "@platform/types" "0.0.25"
-    "@platform/util.is" "0.0.87"
+    "@platform/types" "0.0.26"
+    "@platform/util.is" "0.0.88"
     "@types/semver" "6.0.1"
     cuid "2.1.6"
     dayjs "1.8.15"
@@ -225,10 +224,10 @@
   dependencies:
     ts-toolbelt "^3.2.22"
 
-"@types/react-dom@16.8.5":
-  version "16.8.5"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.5.tgz#3e3f4d99199391a7fb40aa3a155c8dd99b899cbd"
-  integrity sha512-idCEjROZ2cqh29+trmTmZhsBAUNQuYrF92JHKzZ5+aiFM1mlSk3bb23CK7HhYuOY75Apgap5y2jTyHzaM2AJGA==
+"@types/react-dom@16.9.0":
+  version "16.9.0"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.0.tgz#ba6ddb00bf5de700b0eb91daa452081ffccbfdea"
+  integrity sha512-OL2lk7LYGjxn4b0efW3Pvf2KBVP0y1v3wip1Bp7nA79NkOpElH98q3WdCEdDj93b2b0zaeBG9DvriuKjIK5xDA==
   dependencies:
     "@types/react" "*"
 
@@ -288,7 +287,7 @@ ansi-styles@^2.2.1:
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
   integrity sha1-tDLdM1i2NM914eRmQ2gkBTPB3b4=
 
-ansi-styles@^3.2.0, ansi-styles@^3.2.1:
+ansi-styles@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-3.2.1.tgz#41fbb20243e50b12be0f04b8dedbf07520ce841d"
   integrity sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==
@@ -500,15 +499,6 @@ cliui@^4.0.0:
     string-width "^2.1.1"
     strip-ansi "^4.0.0"
     wrap-ansi "^2.0.0"
-
-cliui@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/cliui/-/cliui-5.0.0.tgz#deefcfdb2e800784aa34f46fa08e06851c7bbbc5"
-  integrity sha512-PYeGSEmmHM6zvoef2w8TPzlrnNpXIjTipYK780YswmIP9vjxmd6Y2a3CB2Ks6/AU8NHjZugXvo8w3oWM2qnwXA==
-  dependencies:
-    string-width "^3.1.0"
-    strip-ansi "^5.2.0"
-    wrap-ansi "^5.1.0"
 
 code-point-at@^1.0.0:
   version "1.1.0"
@@ -1814,7 +1804,7 @@ string-width@^1.0.1:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^4.0.0"
 
-string-width@^3.0.0, string-width@^3.1.0:
+string-width@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-3.1.0.tgz#22767be21b62af1081574306f69ac51b62203961"
   integrity sha512-vafcv6KjVZKSgz06oM/H6GDBrAtz8vdhQakGjFIvNrHA6y3HCF1CInLy+QLq8dTJPQ1b+KDUqDFctkdRW44e1w==
@@ -1851,7 +1841,7 @@ strip-ansi@^4.0.0:
   dependencies:
     ansi-regex "^3.0.0"
 
-strip-ansi@^5.0.0, strip-ansi@^5.1.0, strip-ansi@^5.2.0:
+strip-ansi@^5.1.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-5.2.0.tgz#8c9a536feb6afc962bdfa5b104a5091c1ad9c0ae"
   integrity sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==
@@ -2061,15 +2051,6 @@ wrap-ansi@^3.0.1:
     string-width "^2.1.1"
     strip-ansi "^4.0.0"
 
-wrap-ansi@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-5.1.0.tgz#1fd1f67235d5b6d0fee781056001bfb694c03b09"
-  integrity sha512-QC1/iN/2/RPVJ5jYK8BGttj5z83LmSKmvbvrXPNCLZSEb32KKVDJDl/MOt2N01qU2H/FkzEa9PKto1BqDjtd7Q==
-  dependencies:
-    ansi-styles "^3.2.0"
-    string-width "^3.0.0"
-    strip-ansi "^5.0.0"
-
 wrappy@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
@@ -2096,7 +2077,7 @@ yargs-parser@^11.1.1:
     camelcase "^5.0.0"
     decamelize "^1.2.0"
 
-yargs-parser@^13.0.0, yargs-parser@^13.1.1:
+yargs-parser@^13.0.0:
   version "13.1.1"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-13.1.1.tgz#d26058532aa06d365fe091f6a1fc06b2f7e5eca0"
   integrity sha512-oVAVsHz6uFrg3XQheFII8ESO2ssAf9luWuAd6Wexsu4F3OtIW0o8IribPXYrD4WC24LWtPrJlGy87y5udK+dxQ==
@@ -2129,22 +2110,6 @@ yargs@13.2.2:
     which-module "^2.0.0"
     y18n "^4.0.0"
     yargs-parser "^13.0.0"
-
-yargs@13.3.0:
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/yargs/-/yargs-13.3.0.tgz#4c657a55e07e5f2cf947f8a366567c04a0dedc83"
-  integrity sha512-2eehun/8ALW8TLoIl7MVaRUrg+yCnenu8B4kBlRxj3GJGDKU1Og7sMXPNm1BYyM1DOJmTZ4YeN/Nwxv+8XJsUA==
-  dependencies:
-    cliui "^5.0.0"
-    find-up "^3.0.0"
-    get-caller-file "^2.0.1"
-    require-directory "^2.1.1"
-    require-main-filename "^2.0.0"
-    set-blocking "^2.0.0"
-    string-width "^3.0.0"
-    which-module "^2.0.0"
-    y18n "^4.0.0"
-    yargs-parser "^13.1.1"
 
 yargs@^12.0.5:
   version "12.0.5"

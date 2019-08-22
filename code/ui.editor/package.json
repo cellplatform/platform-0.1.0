@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.editor",
   "description": "Rich text/markdown editor for web and electron.",
-  "version": "0.1.35",
+  "version": "0.1.37",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -14,8 +14,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "0.1.32",
-    "@platform/react": "0.3.17",
+    "@platform/css": "0.1.33",
+    "@platform/react": "0.3.19",
     "prosemirror-commands": "1.0.8",
     "prosemirror-dropcursor": "1.1.1",
     "prosemirror-gapcursor": "1.0.4",
@@ -32,7 +32,7 @@
     "prosemirror-view": "1.10.0"
   },
   "devDependencies": {
-    "@platform/ts": "3.4.38",
+    "@platform/ts": "3.5.0",
     "@types/prosemirror-commands": "1.0.1",
     "@types/prosemirror-dropcursor": "1.0.0",
     "@types/prosemirror-gapcursor": "1.0.1",
@@ -45,8 +45,8 @@
     "@types/prosemirror-schema-list": "1.0.1",
     "@types/prosemirror-state": "1.2.3",
     "@types/prosemirror-view": "1.9.0",
-    "@uiharness/dev": "0.9.0",
-    "@uiharness/ui": "0.6.11",
+    "@uiharness/dev": "0.9.1",
+    "@uiharness/ui": "0.6.12",
     "electron": "5.0.0"
   },
   "files": [

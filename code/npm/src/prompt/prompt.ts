@@ -1,5 +1,5 @@
 import { fs, semver } from '../common';
-import { prompt } from '@platform/util.cli';
+import { prompt } from '@platform/cli.prompt';
 
 /**
  * Prompt via the CLI to increment the NPM version.

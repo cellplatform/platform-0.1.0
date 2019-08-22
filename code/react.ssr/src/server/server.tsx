@@ -1,23 +1,24 @@
-import { fs, log, micro } from '../common';
+import { micro } from '../common';
 import * as routes from './routes';
+
 export * from '../types';
 
 /**
  * Initialize the [server].
  */
-export function init(args: { manifest: string; cdn?: string; secret?: string }) {
-  const { manifest, cdn, secret } = args;
+export function init(args: { manifestUrl: string; baseUrl: string; secret?: string }) {
+  const { manifestUrl, baseUrl, secret } = args;
 
   const res = micro.init({
     log: {
       secret: Boolean(secret),
-      manifest,
-      cdn: cdn ? cdn : 'false',
+      manifestUrl,
+      baseUrl,
     },
   });
 
   const { router } = res;
-  routes.init({ router, manifest, cdn, secret });
+  routes.init({ router, manifestUrl, baseUrl, secret });
 
   return res;
 }

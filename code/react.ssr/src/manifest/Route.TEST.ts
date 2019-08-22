@@ -1,5 +1,17 @@
-import { expect, fs, YAML_MANIFEST, t, testManifest } from '../test';
+import { Site } from '.';
+import { expect, testManifest } from '../test';
+
+const testSite = async () => {
+  const manifest = await testManifest();
+  const site = await manifest.site.byHost('localhost');
+  return site as Site;
+};
 
 describe('Route', () => {
-  // it('foo', async () => {});
+  it('route props', async () => {
+    const site = await testSite();
+    const route = site.route('/');
+    expect(route && route.paths).to.eql(['/', '/foo']);
+    expect(route && route.version).to.eql('1.2.3-alpha.0');
+  });
 });

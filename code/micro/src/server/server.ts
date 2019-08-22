@@ -7,7 +7,7 @@ export * from '../types';
 const cors = require('micro-cors')();
 
 const IS_PROD = process.env.NODE_ENV === 'production';
-const NOT_FOUND = {
+const NOT_FOUND: t.RouteResponse = {
   status: 404,
   data: { status: 404, message: 'Not found.' },
 };
@@ -68,6 +68,7 @@ function redirect(res: t.ServerResponse, statusCode: number, location: string) {
 function requestHandler(router: Router): t.RequestHandler {
   return async (req, res) => {
     const handled = (await router.handler(req)) || NOT_FOUND;
+    setHeaders(res, handled.headers);
     const status = handled.status || 200;
     if (status.toString().startsWith('3')) {
       return redirect(res, status, handled.data);
@@ -75,4 +76,10 @@ function requestHandler(router: Router): t.RequestHandler {
       return send(res, status, handled.data);
     }
   };
+}
+
+function setHeaders(res: t.ServerResponse, headers?: t.IHttpHeaders) {
+  if (headers) {
+    Object.keys(headers).forEach(key => res.setHeader(key, headers[key]));
+  }
 }

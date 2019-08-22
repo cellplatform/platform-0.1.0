@@ -21,11 +21,20 @@ export function parseYaml(text: string) {
 /**
  * Strip an "http://" prefix.
  */
-export function stripHttp(input: string) {
+export function stripHttp(input?: string) {
   return asString(input)
     .replace(/^https/, '')
     .replace(/^http/, '')
     .replace(/^\:\/\//, '');
+}
+
+/**
+ * Strips "/" characters.
+ */
+export function stripSlashes(input?: string) {
+  return asString(input)
+    .replace(/^\/*/, '')
+    .replace(/\/*$/, '');
 }
 
 /**
@@ -48,4 +57,11 @@ export function firstSemver(...versionOrPath: Array<string | undefined>) {
     .map(value => fs.basename(value));
 
   return values.find(value => semver.valid(value));
+}
+
+/**
+ * Determines if the given domain is a regex.
+ */
+export function isDomainRegex(domain?: string) {
+  return domain ? domain.startsWith('/') && domain.endsWith('/') : false;
 }

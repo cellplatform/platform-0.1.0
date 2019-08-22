@@ -1,0 +1,49 @@
+{
+  "name": "hyperdb.electron.test",
+  "version": "0.0.207",
+  "description": "",
+  "scripts": {
+    "ui": "ui $@",
+    "start": "ui start $@",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build $@",
+    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "prepare": "ts prepare",
+    "reset": "ts-node -T scripts/reset",
+    "tmp": "ts-node -T scripts/tmp $@"
+  },
+  "dependencies": {
+    "@platform/electron": "0.7.6",
+    "@platform/hyperdb": "0.2.26",
+    "@platform/hyperdb.electron": "0.2.43",
+    "@platform/react": "0.3.18",
+    "@platform/ui.datagrid": "0.5.6",
+    "@platform/ui.editor": "0.1.36",
+    "@platform/ui.text": "0.2.31",
+    "@platform/util.string": "0.3.6",
+    "@platform/util.value": "0.4.10",
+    "@uiharness/electron": "0.6.1",
+    "core-js": "3.2.1",
+    "hjson": "3.1.2",
+    "regenerator-runtime": "0.13.3",
+    "sodium-native": "2.4.6",
+    "sodium-universal": "2.0.0"
+  },
+  "devDependencies": {
+    "@platform/ts": "3.5.0",
+    "@types/hjson": "2.4.1",
+    "@uiharness/dev": "0.9.0",
+    "@uiharness/ui": "0.6.11",
+    "electron": "5.0.0"
+  },
+  "resolutions": {
+    "sodium-native": "2.4.2"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT",
+  "private": true
+}

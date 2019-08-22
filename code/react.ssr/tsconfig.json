@@ -6,8 +6,7 @@
     "moduleResolution": "node",
     "skipLibCheck": true,
     "target": "esnext",
-    "jsx": "react",
-
-    "noUnusedLocals": false
+    "module": "commonjs",
+    "jsx": "react"
   }
 }

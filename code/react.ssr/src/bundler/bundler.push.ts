@@ -1,4 +1,4 @@
-import { t, fs, Listr, log, S3, time, util } from '../common';
+import { fs, Listr, log, S3, t, util } from '../common';
 
 type IBundleArgs = {
   bundleDir: string;
@@ -30,10 +30,11 @@ export async function bundle(args: {
   bucketKey: string;
   silent?: boolean;
 }) {
-  const { bucketKey } = args;
-  const timer = time.timer();
   const bucket = args.s3.bucket(args.bucket);
   const bundleDir = fs.resolve(args.bundleDir);
+
+  // Ensure the key is not prepended with the bucket name.
+  const bucketKey = args.bucketKey.replace(new RegExp(`^${args.bucket}\/`), '');
 
   // Calculate the list of files to push.
   const files = await fs.glob.find(fs.join(bundleDir, '**'));
@@ -45,10 +46,11 @@ export async function bundle(args: {
   // Log activity.
   if (!args.silent) {
     const { formatPath } = util;
+    const version = fs.basename(bundleDir);
     const size = await fs.size.dir(bundleDir);
     const endpoint = fs.join(bucket.endpoint, args.bucket, args.bucketKey);
     log.info();
-    log.info.cyan(`Pushing bundle to S3 ☝`);
+    log.info.cyan(`Pushing bundle ${log.white(version)} to S3 ☝`);
     log.info();
     log.info.gray(`  size:  ${log.magenta(size.toString())}`);
     log.info.gray(`  from:  ${formatPath(bundleDir)}`);
@@ -62,7 +64,7 @@ export async function bundle(args: {
   const tasks = new Listr(
     items.map(item => {
       const { source, key } = item;
-      const file = item.key.substring(args.bucketKey.length + 1);
+      const file = fs.basename(key);
       const fileSize = dirSize.files.find(item => item.path.endsWith(`/${file}`));
       let size = fileSize ? fileSize.toString({ round: 0, spacer: '' }) : '';
       size = `${size}        `.substring(0, 8);
@@ -80,11 +82,6 @@ export async function bundle(args: {
   );
   try {
     await tasks.run();
-    if (!args.silent) {
-      log.info();
-      log.info.gray(`${log.green('done')} ${timer.elapsed.toString()}`);
-      log.info();
-    }
   } catch (error) {
     log.error(`\nFailed while pushing to S3.\n`);
     process.exit(1);
@@ -109,7 +106,6 @@ export async function manifest(args: {
   target: string;
   silent?: boolean;
 }) {
-  const timer = time.timer();
   const source = fs.resolve(args.source);
   const bucket = args.s3.bucket(args.bucket);
 
@@ -144,11 +140,6 @@ export async function manifest(args: {
   );
   try {
     await tasks.run();
-    if (!args.silent) {
-      log.info();
-      log.info.gray(`${log.green('done')} ${timer.elapsed.toString()}`);
-      log.info();
-    }
   } catch (error) {
     log.error(`\nFailed while pushing to S3.\n`);
     process.exit(1);

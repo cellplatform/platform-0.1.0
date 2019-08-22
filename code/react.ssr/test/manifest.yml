@@ -1,12 +1,34 @@
-# 
-# Sample manifest for `@platform/react.ssr`
-# 
-
 sites:
-  - domain: [localhost, /.*\.now\.sh$/]
-    bundle: bundle/0.4.12-alpha.0
+  - name: dev
+    domain:
+      - localhost
+      - /.*\.now\.sh$/
+    baseUrl: >-
+      https://platform.sfo2.cdn.digitaloceanspaces.com/platform/modules/react.ssr
+    bundle: bundle/0.7.0
     routes:
       default:
         entry: index.html
-        path: ["/", "/foo"]
-
+        path:
+          - /
+          - /foo
+    size: '-'
+    bytes: -1
+    files: []
+    entries: []
+  - name: prod
+    domain:
+      - platform.uiharness.com
+      - /.*\.now\.sh$/
+    baseUrl: >-
+      https://platform.sfo2.cdn.digitaloceanspaces.com/platform/modules/react.ssr
+    bundle: bundle/0.8.7
+    routes:
+      default:
+        entry: index.html
+        path:
+          - /
+    size: '-'
+    bytes: -1
+    files: []
+    entries: []

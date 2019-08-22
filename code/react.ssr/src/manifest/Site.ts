@@ -1,7 +1,10 @@
 import { constants, http, jsYaml, t, util } from '../common';
 import { Route } from './Route';
 
-export type ISiteArgs = { def: t.ISiteManifest };
+export type ISiteArgs = {
+  index: number;
+  manifest: t.IManifest;
+};
 
 /**
  * Definition of a site.
@@ -10,8 +13,12 @@ export class Site {
   /**
    * Format the "sites" field from YAML.
    */
-  public static async formatMany(args: { input: any; baseUrl: string }) {
-    const { baseUrl } = args;
+  public static async formatMany(args: {
+    input: any;
+    baseUrl: string;
+    loadBundleManifest?: boolean;
+  }) {
+    const { baseUrl, loadBundleManifest } = args;
 
     if (!Array.isArray(args.input)) {
       const error = `The manifest YAML "sites" field is not an array.`;
@@ -20,7 +27,7 @@ export class Site {
 
     let sites: t.ISiteManifest[] = [];
     for (const input of args.input) {
-      const site = await Site.formatOne({ input, baseUrl });
+      const site = await Site.formatOne({ input, baseUrl, loadBundleManifest });
       sites = site ? [...sites, site] : sites;
     }
 
@@ -30,14 +37,18 @@ export class Site {
   /**
    * Format a single "site" from YAML.
    */
-  public static async formatOne(args: { input: any; baseUrl: string }) {
+  public static async formatOne(args: {
+    input: any;
+    baseUrl: string;
+    loadBundleManifest?: boolean;
+  }) {
     const { input, baseUrl } = args;
     if (typeof input !== 'object') {
       return;
     }
 
     // Name.
-    const name = input.name || '';
+    const name = (input.name || '').trim();
 
     // Domain (host).
     let domain = input.domain || '';
@@ -45,8 +56,7 @@ export class Site {
     domain = domain.map((hostname: string) => util.stripHttp(hostname));
 
     // Bundle.
-    let bundle = util.asString(input.bundle);
-    bundle = (bundle ? `${baseUrl}/${bundle}` : bundle).replace(/\/*$/, '');
+    const bundle = util.asString(input.bundle).replace(/\/*$/, '');
 
     // Routes.
     let routes = typeof input.routes === 'object' ? input.routes : {};
@@ -62,15 +72,34 @@ export class Site {
     }, {});
 
     // Pull the bundle manifest from the network to get [files] and [dirs].
-    const bundleUrl = `${bundle}/${constants.PATH.BUNDLE_MANIFEST}`;
-    const res = await http.get(bundleUrl);
-    const bundleManifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
-    const files = bundleManifest ? bundleManifest.files || [] : [];
-    const entries = bundleManifest ? bundleManifest.entries || [] : [];
-    const version = bundleManifest ? bundleManifest.version || '0.0.0' : '0.0.0';
+    let files: string[] = [];
+    let entries: t.IBundleEntryHtml[] = [];
+    let size = '-';
+    let bytes = -1;
+    if (args.loadBundleManifest) {
+      const bundleUrl = `${baseUrl}/${bundle}/${constants.PATH.BUNDLE_MANIFEST}`;
+      const res = await http.get(bundleUrl);
+      const bundleManifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
+      if (bundleManifest) {
+        size = bundleManifest.size;
+        bytes = bundleManifest.bytes;
+        files = bundleManifest.files || [];
+        entries = bundleManifest.entries || [];
+      }
+    }
 
     // Finish up.
-    const site: t.ISiteManifest = { name, version, domain, bundle, routes, files, entries };
+    const site: t.ISiteManifest = {
+      name,
+      domain,
+      baseUrl,
+      bundle,
+      routes,
+      size,
+      bytes,
+      files,
+      entries,
+    };
     return site;
   }
 
@@ -79,32 +108,55 @@ export class Site {
    */
   public static create = (args: ISiteArgs) => new Site(args);
   private constructor(args: ISiteArgs) {
-    const { def } = args;
-    this.def = def;
-    this._regexes = toDomainRegexes(def.domain);
+    const { index, manifest } = args;
+    this.index = index;
+    this.manifest = manifest;
+    this._regexes = toDomainRegexes(this.def.domain);
+
+    if (!this.name) {
+      throw new Error(`A site definition must have a name.`);
+    }
   }
 
   /**
    * [Fields]
    */
-  private readonly def: t.ISiteManifest;
+  public readonly index: number;
+  private readonly manifest: t.IManifest;
   private _routes: Route[];
   private _regexes: RegExp[];
 
   /**
    * [Properties]
    */
+  private get def() {
+    return this.manifest.sites[this.index];
+  }
 
   public get name() {
-    return this.def.name || '';
+    return (this.def.name || '').trim();
   }
 
   public get domain() {
     return this.def.domain;
   }
 
+  public get bundle() {
+    return this.def.bundle;
+  }
+
+  public get bundleUrl() {
+    const base = util.stripSlashes(this.def.baseUrl);
+    const path = util.stripSlashes(this.bundle);
+    return `${base}/${path}`;
+  }
+
   public get version() {
-    return util.firstSemver(this.def.version, this.def.bundle);
+    return util.firstSemver(this.bundle) || '0.0.0';
+  }
+
+  public get size() {
+    return this.def.size;
   }
 
   public get files() {
@@ -146,7 +198,7 @@ export class Site {
   public redirectUrl(path?: string) {
     path = (path || '').replace(/^\/*/, '').replace(/\/*$/, '');
     const exists = this.files.includes(path);
-    return exists ? `${this.def.bundle}/${path}` : '';
+    return exists ? `${this.bundleUrl}/${path}` : '';
   }
 
   /**
@@ -161,10 +213,6 @@ export class Site {
  * [Helpers]
  */
 export function toDomainRegexes(domains: string[]) {
-  const isRegex = (domain: string) => domain.startsWith('/') && domain.endsWith('/');
-  const toRegex = (domain: string) => {
-    domain = domain.replace(/^\//, '').replace(/\/$/, '');
-    return new RegExp(domain);
-  };
-  return domains.filter(domain => isRegex(domain)).map(domain => toRegex(domain));
+  const toRegex = (domain: string) => new RegExp(util.stripSlashes(domain));
+  return domains.filter(domain => util.isDomainRegex(domain)).map(domain => toRegex(domain));
 }

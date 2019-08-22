@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from './common';
+
+import { css, GlamorValue } from './common';
 
 export type ITestProps = { style?: GlamorValue };
-export type ITestState = { count?: number };
+export type ITestState = { count?: number; foo?: JSX.Element };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
@@ -14,7 +15,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  constructor(props: ITestProps) {
+    super(props);
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
   }
@@ -45,8 +47,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
-        <div>cat: {this.count || 0}</div>
+        <div>kitty don’t care: {this.count || 0}</div>
         <img src='/images/cat.jpg' {...styles.image} />
+        {this.state.foo}
       </div>
     );
   }
@@ -54,7 +57,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Handlers]
    */
-  private handleClick = () => {
+  private handleClick = async () => {
     this.state$.next({ count: this.count + 1 });
+
+    const foo = import('./Foo');
+    const Foo: any = await foo;
+    const el = <Foo.Foo />;
+
+    this.state$.next({ foo: el });
   };
 }
