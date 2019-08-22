@@ -1,6 +1,6 @@
 import * as bundle from './cmd.bundle';
 import * as pull from './cmd.pull';
-import * as pushBundle from './cmd.pushBundle';
+import * as push from './cmd.push';
 import * as release from './cmd.release';
 import * as reset from './cmd.reset';
 import * as status from './cmd.status';
@@ -38,11 +38,33 @@ app
    */
   .command(
     ['push', 'p'],
-    'Push bundle to S3.',
+    'Push bundle or manifest to S3.',
     yargs => {
-      return yargs;
+      return yargs
+        .option('manifest', {
+          alias: 'm',
+          describe: 'Push the local manifest to S3.',
+          boolean: false,
+        })
+        .option('bundle', {
+          alias: 'b',
+          describe: 'Push a bundle to S3.',
+          boolean: false,
+        });
     },
-    async argv => pushBundle.run({ prompt: true }),
+    async argv => {
+      const { bundle, manifest } = argv;
+      if (bundle) {
+        await push.run({ type: 'BUNDLE' });
+      }
+      if (manifest) {
+        await push.run({ type: 'MANIFEST' });
+      }
+      if (!bundle && !manifest) {
+        // No options specified, run with prompts.
+        await push.run();
+      }
+    },
   )
 
   /**

@@ -111,10 +111,11 @@ export class Config {
         get exists() {
           return fs.pathExists(filePath);
         },
-        async load() {
-          return Manifest.fromFile({ path: filePath, baseUrl: baseUrl });
+        async load(args: { loadBundleManifest?: boolean } = {}) {
+          const { loadBundleManifest } = args;
+          return Manifest.fromFile({ path: filePath, baseUrl, loadBundleManifest });
         },
-        async ensureLatest(options: { minimal?: boolean } = {}) {
+        async ensureLatest(args: { minimal?: boolean } = {}) {
           // Ensure local exists.
           if (!(await api.local.exists)) {
             await config.createFromTemplate();
@@ -123,7 +124,7 @@ export class Config {
           // Overwrite with latest cloud content (if it exists).
           const remote = await api.s3.get({ force: true });
           if (remote.ok) {
-            const { minimal } = options;
+            const { minimal } = args;
             await remote.save(filePath, { minimal });
           }
 

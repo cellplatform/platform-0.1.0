@@ -3,6 +3,7 @@ import { Config } from '../config';
 import { Manifest } from '../manifest';
 import { cli, log, fs } from './common';
 import * as reset from './cmd.reset';
+import * as push from './cmd.push';
 
 /**
  * Release new version script.
@@ -49,14 +50,11 @@ export async function run() {
   const saveTo = config.manifest.local.path;
   await manifest.change.site(site).bundle({ value: bundle, saveTo });
 
-  // Push change to S3.
-  const bucket = s3.bucket;
-  const source = config.manifest.local.path;
-  const target = fs.join(s3.path.base, s3.path.manifest);
-  await bundler.push(s3.config).manifest({ bucket, source, target, silent: false });
+  // Push change to S3 and reset cache.
+  await push.manifest({ config, silent: false });
+  await reset.run({ config, manifest, site });
 
   // Finish up.
-  await reset.run({ config, manifest, site });
   log.info();
 }
 

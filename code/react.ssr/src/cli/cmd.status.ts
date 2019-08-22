@@ -5,8 +5,8 @@ import { cli, log } from './common';
 /**
  * Print status summary of the manifest.
  */
-export async function run() {
-  const config = await Config.create();
+export async function run(args: { config?: Config } = {}) {
+  const config = args.config || (await Config.create());
   let manifest: Manifest | undefined;
 
   // Pull data from cloud.
@@ -24,8 +24,16 @@ export async function run() {
     return cli.exit(1);
   }
 
-  log.info();
+  // Log output.
+  await print({ config, manifest });
+}
 
+/**
+ * Print the status of the given manifest
+ */
+export async function print(args: { config: Config; manifest: Manifest }) {
+  const { config, manifest } = args;
+  log.info();
   log.info.gray(`url:    ${config.manifest.s3.url}`);
   log.info.gray(`local:  ${config.manifest.local.path}`);
   log.info();

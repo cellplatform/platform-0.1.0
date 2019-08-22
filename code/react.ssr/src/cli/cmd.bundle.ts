@@ -1,7 +1,7 @@
 import { bundler } from '../bundler';
 import { Config } from '../config';
 import { cli, exec, fs, log, npm, t } from './common';
-import * as pushBundle from './cmd.pushBundle';
+import * as push from './cmd.push';
 
 /**
  * Bundle script.
@@ -17,10 +17,10 @@ export async function run() {
   const bundleDir = fs.resolve(fs.join(config.builder.bundles, version));
 
   // Prompt the user whether to push to S3.
-  const push = (await cli.prompt.list({ message: 'push to S3', items: ['yes', 'no'] })) === 'yes';
+  const isPush = (await cli.prompt.list({ message: 'push to S3', items: ['yes', 'no'] })) === 'yes';
 
   // Ensure endpoint exists.
-  if (push && !endpoint) {
+  if (isPush && !endpoint) {
     throw new Error(`The S3 endpoint has not been configured in [ssr.yml].`);
   }
 
@@ -40,8 +40,8 @@ export async function run() {
   await tasks.run({ concurrent: false });
 
   // Push to S3.
-  if (push) {
-    await pushBundle.run({ version });
+  if (isPush) {
+    await push.bundle({ config, version });
   } else if (manifest) {
     bundler.log.bundle({ bundleDir, manifest });
   }

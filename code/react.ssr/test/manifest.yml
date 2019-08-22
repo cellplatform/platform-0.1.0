@@ -3,6 +3,7 @@ sites:
     domain:
       - localhost
       - /.*\.now\.sh$/
+    baseUrl: 'https://platform.sfo2.cdn.digitaloceanspaces.com/modules/react.ssr'
     bundle: bundle/0.7.0
     routes:
       default:
@@ -10,13 +11,22 @@ sites:
         path:
           - /
           - /foo
+    size: '-'
+    bytes: -1
+    files: []
+    entries: []
   - name: prod
     domain:
       - platform.uiharness.com
       - /.*\.now\.sh$/
-    bundle: bundle/0.9.2
+    baseUrl: 'https://platform.sfo2.cdn.digitaloceanspaces.com/modules/react.ssr'
+    bundle: bundle/0.9.1
     routes:
       default:
         entry: index.html
         path:
           - /
+    size: '-'
+    bytes: -1
+    files: []
+    entries: []

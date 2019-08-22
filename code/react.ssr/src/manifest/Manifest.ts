@@ -28,14 +28,18 @@ export class Manifest {
     URL_CACHE = {};
   }
 
-  public static async fromFile(args: { path: string; baseUrl: string }) {
-    const { baseUrl } = args;
+  public static async fromFile(args: {
+    path: string;
+    baseUrl: string;
+    loadBundleManifest?: boolean;
+  }) {
+    const { baseUrl, loadBundleManifest } = args;
     const path = fs.resolve(args.path);
     if (!(await fs.pathExists(path))) {
       throw new Error(`Manifest file does not exist: '${args.path}'`);
     }
     const yaml = await fs.readFile(path, 'utf-8');
-    const def = await Manifest.parse({ yaml, baseUrl });
+    const def = await Manifest.parse({ yaml, baseUrl, loadBundleManifest });
     return Manifest.create({ def, baseUrl });
   }
 
