@@ -15,6 +15,13 @@ process.on('unhandledRejection', err => {
 });
 
 /**
+ * Starts a task list.
+ */
+export function task(title: string, task: t.Task) {
+  return tasks().task(title, task);
+}
+
+/**
  * Initializes a new command line.
  *
  *    Cheat sheet.

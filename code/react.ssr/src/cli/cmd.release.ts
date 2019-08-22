@@ -1,9 +1,8 @@
-import { bundler } from '../bundler';
 import { Config } from '../config';
 import { Manifest } from '../manifest';
-import { cli, log, fs } from './common';
-import * as reset from './cmd.reset';
 import * as push from './cmd.push';
+import * as reset from './cmd.reset';
+import { cli, fs, log } from './common';
 
 /**
  * Release new version script.
