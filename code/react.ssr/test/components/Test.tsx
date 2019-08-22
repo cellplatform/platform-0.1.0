@@ -47,7 +47,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
-        <div>kitty don’t care: {this.count || 0}</div>
+        <div>kitty: {this.count || 0}</div>
         <img src='/images/cat.jpg' {...styles.image} />
         {this.state.foo}
       </div>
