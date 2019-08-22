@@ -1,7 +1,8 @@
 import * as dotenv from 'dotenv';
-import { t, fs, semver } from './common';
+import { t, fs, semver, util } from './common';
 import { Manifest } from './manifest';
 
+const { stripSlashes } = util;
 dotenv.config();
 
 /**
@@ -39,6 +40,10 @@ export class Config {
   /**
    * [Properties]
    */
+  public get secret() {
+    return toValue(this.def.secret);
+  }
+
   public get builder() {
     const builder = this.def.builder || {};
     builder.bundles = builder.bundles || 'bundles';
@@ -50,26 +55,22 @@ export class Config {
     const s3 = this.def.s3 || {};
     const path = s3.path || {};
 
-    const toValue = (value?: string) => {
-      value = value || '';
-      value = process.env[value] ? process.env[value] : value;
-      return value || '';
-    };
-
-    const endpoint = s3.endpoint || '';
+    const endpoint = util.stripHttp(s3.endpoint || '');
+    const cdn = util.stripHttp(s3.cdn || '');
     const accessKey = toValue(s3.accessKey);
     const secret = toValue(s3.secret);
     const bucket = s3.bucket || '';
 
     const api = {
       endpoint,
-      cdn: s3.cdn,
+      cdn,
       accessKey,
       secret,
       bucket,
       path: {
-        manifest: path.manifest || '',
-        bundles: path.bundles || '',
+        base: stripSlashes(path.base || ''),
+        manifest: stripSlashes(path.manifest || ''),
+        bundles: stripSlashes(path.bundles || ''),
       },
       get config(): t.IS3Config {
         return { endpoint, accessKey, secret };
@@ -98,16 +99,9 @@ export class Config {
 
     // Manifest URL.
     const s3 = this.s3;
-    const clean = (text: string) =>
-      text
-        .replace(/^http\:\/\//, '')
-        .replace(/^https\:\/\//, '')
-        .replace(/^\/*/, '')
-        .replace(/\/*$/, '');
-    const toUrl = (endpoint: string) =>
-      `https://${clean(endpoint)}/${clean(s3.bucket)}/${clean(s3.path.manifest)}`;
-    const url = toUrl(s3.endpoint);
-    const cdn = toUrl(s3.cdn || s3.endpoint);
+    const urlPath = `${s3.bucket}/${s3.path.base}`;
+    const manifestUrl = `https://${s3.endpoint}/${urlPath}/${s3.path.manifest}`;
+    const baseUrl = `https://${s3.cdn || s3.endpoint}/${urlPath}`;
 
     const config = this; // tslint:disable-line
     const api = {
@@ -117,7 +111,7 @@ export class Config {
           return fs.pathExists(filePath);
         },
         async load() {
-          return Manifest.fromFile({ path: filePath, url: cdn });
+          return Manifest.fromFile({ path: filePath, baseUrl: baseUrl });
         },
         async ensureLatest(options: { minimal?: boolean } = {}) {
           // Ensure local exists.
@@ -137,9 +131,9 @@ export class Config {
         },
       },
       s3: {
-        url,
-        async get(args: { force?: boolean } = {}) {
-          return Manifest.get({ ...args, url, baseUrl: cdn });
+        url: manifestUrl,
+        async get(args: { force?: boolean; loadBundleManifest?: boolean } = {}) {
+          return Manifest.get({ ...args, manifestUrl, baseUrl });
         },
       },
     };
@@ -158,3 +152,12 @@ export class Config {
     return { source, target };
   }
 }
+
+/**
+ * [Helpers]
+ */
+const toValue = (value?: string) => {
+  value = value || '';
+  value = process.env[value] ? process.env[value] : value;
+  return value || '';
+};

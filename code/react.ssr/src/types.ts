@@ -37,6 +37,9 @@ export type ISiteManifest = {
   domain: string[]; // string or "/regex/".
   bundle: string; // Path to the bundle folder.
   routes: { [key: string]: ISiteManifestRoute };
+
+  // Extended.
+  baseUrl: string;
   files: string[];
   entries: IBundleEntryHtml[];
 };
@@ -51,6 +54,7 @@ export type ISiteManifestRoute = {
  */
 export type ISsrConfig = {
   manifest: string; // Path to the [manifest.yml] file.
+  secret: string; // API secret.
   builder: {
     bundles: string; // Path to the folder containing built JS bundle-dirs.
     entries: string; // Path to a JS file to execute that produces the IBundleEntryElement[].
@@ -62,6 +66,7 @@ export type ISsrConfig = {
     secret: string;
     bucket: string;
     path: {
+      base: string;
       manifest: string;
       bundles: string;
     };

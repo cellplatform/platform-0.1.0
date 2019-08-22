@@ -3,26 +3,20 @@ sites:
     domain:
       - localhost
       - /.*\.now\.sh$/
-    bundle: >-
-      https:/platform.sfo2.cdn.digitaloceanspaces.com/platform/modules/react.ssr/https:/platform.sfo2.cdn.digitaloceanspaces.com/platform/modules/react.ssr/https:/platform.sfo2.cdn.digitaloceanspaces.com/platform/modules/react.ssr/https:/platform.sfo2.cdn.digitaloceanspaces.com/platform/modules/react.ssr/bundle/0.6.0
+    bundle: bundle/0.7.0
     routes:
       default:
         entry: index.html
         path:
           - /
           - /foo
-    files: []
-    entries: []
   - name: prod
     domain:
       - platform.uiharness.com
       - /.*\.now\.sh$/
-    bundle: >-
-      https://platform.sfo2.cdn.digitaloceanspaces.com/platform/modules/react.ssr/https://platform.sfo2.cdn.digitaloceanspaces.com/platform/modules/react.ssr/https://platform.sfo2.cdn.digitaloceanspaces.com/platform/modules/react.ssr/https://platform.sfo2.cdn.digitaloceanspaces.com/platform/modules/react.ssr/bundle/0.5.17-beta.0
+    bundle: bundle/0.5.17-beta.0
     routes:
       default:
         entry: index.html
         path:
           - /
-    files: []
-    entries: []

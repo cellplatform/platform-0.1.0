@@ -60,18 +60,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     this.state$.next({ count: this.count + 1 });
 
     const foo = import('./Foo');
-
-    // const foo = pages.Foo;
-    // console.log('foo', foo);
-
     const Foo: any = await foo;
-    // console.log('foo', foo);
-    console.log('Foo', Foo);
-    console.log('Foo', Foo.Foo);
-
     const el = <Foo.Foo />;
 
-    console.log('el', el);
     this.state$.next({ foo: el });
   };
 }

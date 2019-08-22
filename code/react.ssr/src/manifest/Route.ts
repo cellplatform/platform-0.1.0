@@ -57,6 +57,12 @@ export class Route {
     return util.firstSemver(this.site.bundle) || '0.0.0';
   }
 
+  public get bundleUrl() {
+    const base = util.stripSlashes(this.site.baseUrl);
+    const path = util.stripSlashes(this.site.bundle);
+    return `${base}/${path}`;
+  }
+
   /**
    * [Methods]
    */
@@ -71,7 +77,7 @@ export class Route {
 
     // Read in the entry-file HTML.
     const filename = this.def.entry;
-    const url = `${this.site.bundle}/${filename}`;
+    const url = `${this.bundleUrl}/${filename}`;
     const res = await http.get(url);
 
     let status = 200;

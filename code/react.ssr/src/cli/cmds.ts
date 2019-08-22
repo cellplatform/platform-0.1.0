@@ -1,6 +1,8 @@
 import * as bundle from './cmd.bundle';
 import * as pushBundle from './cmd.pushBundle';
 import * as release from './cmd.release';
+import * as reset from './cmd.reset';
+import * as pull from './cmd.pull';
 import { cli, log } from './common';
 
 const app = cli.create('ssr');
@@ -10,14 +12,12 @@ app
    * Status.
    */
   .command(
-    ['status', 's'],
-    'Current status of the service.',
+    ['pull'],
+    'Pull the latet version of the manifest from the cloud.',
     yargs => {
       return yargs;
     },
-    async argv => {
-      log.info('TODO status ', argv); // TEMP 🐷
-    },
+    async argv => pull.run(),
   )
 
   /**
@@ -54,6 +54,18 @@ app
       return yargs;
     },
     async argv => release.run(),
+  )
+
+  /**
+   * Reset cache.
+   */
+  .command(
+    ['reset'],
+    'Reset the cache on sites.',
+    yargs => {
+      return yargs;
+    },
+    async argv => reset.run(),
   );
 
 /**

@@ -1,6 +1,7 @@
 import { server } from '@platform/react.ssr';
 
-const manifest = 'https://platform.sfo2.digitaloceanspaces.com/modules/react.ssr/manifest.yml';
-const cdn = 'https://platform.sfo2.cdn.digitaloceanspaces.com/modules/react.ssr';
-const app = server.init({ manifest, cdn });
+const manifestUrl = 'https://platform.sfo2.digitaloceanspaces.com/modules/react.ssr/manifest.yml';
+const baseUrl = 'https://platform.sfo2.cdn.digitaloceanspaces.com/modules/react.ssr';
+const secret = process.env.SECRET;
+const app = server.init({ manifestUrl, baseUrl, secret });
 export default app.server;

@@ -9,7 +9,7 @@ type IPullResonse = {
 };
 
 type IManifestArgs = {
-  url: string;
+  baseUrl: string;
   def: t.IManifest;
   status?: number;
 };
@@ -28,22 +28,26 @@ export class Manifest {
     CACHE = {};
   }
 
-  public static async fromFile(args: { path: string; url: string }) {
-    const { url } = args;
+  public static async fromFile(args: { path: string; baseUrl: string }) {
+    const { baseUrl } = args;
     const path = fs.resolve(args.path);
     if (!(await fs.pathExists(path))) {
       throw new Error(`Manifest file does not exist: '${args.path}'`);
     }
     const text = await fs.readFile(path, 'utf-8');
-    const def = await Manifest.parse({ text, baseUrl: url });
-    return Manifest.create({ def, url });
+    const def = await Manifest.parse({ text, baseUrl });
+    return Manifest.create({ def, baseUrl });
   }
 
   /**
    * Pulls the manifest from the given url end-point.
    */
-  public static async fromUrl(args: { url: string; baseUrl?: string }): Promise<IPullResonse> {
-    const { url } = args;
+  public static async fromUrl(args: {
+    manifestUrl: string;
+    baseUrl?: string;
+    loadBundleManifest?: boolean;
+  }): Promise<IPullResonse> {
+    const { manifestUrl, loadBundleManifest } = args;
     const empty: t.IManifest = { sites: [] };
 
     const errorResponse = (status: number, error: string): IPullResonse => {
@@ -53,7 +57,7 @@ export class Manifest {
 
     try {
       // Retrieve manifiest from network.
-      const res = await http.get(args.url);
+      const res = await http.get(args.manifestUrl);
       if (!res.ok) {
         const error =
           res.status === 403
@@ -63,9 +67,9 @@ export class Manifest {
       }
 
       // Attempt to parse the yaml.
-      const baseUrl = args.baseUrl || url;
       const text = res.body;
-      const manifest = await Manifest.parse({ text, baseUrl });
+      const baseUrl = args.baseUrl || manifestUrl;
+      const manifest = await Manifest.parse({ text, baseUrl, loadBundleManifest });
 
       // Finish up.
       return {
@@ -81,7 +85,8 @@ export class Manifest {
   /**
    * Pulls the manifest at the given url end-point.
    */
-  public static async parse(args: { text: string; baseUrl: string }) {
+  public static async parse(args: { text: string; baseUrl: string; loadBundleManifest?: boolean }) {
+    const { loadBundleManifest } = args;
     const baseUrl = args.baseUrl.replace(/\/manifest.yml$/, '');
 
     // Attempt to parse the yaml.
@@ -94,7 +99,7 @@ export class Manifest {
     // Process the set of sites.
     let sites: t.ISiteManifest[] = [];
     const input = yaml.data.sites;
-    sites = await Site.formatMany({ input, baseUrl });
+    sites = await Site.formatMany({ input, baseUrl, loadBundleManifest });
 
     // Finish up.
     const manifest: t.IManifest = { sites };
@@ -105,20 +110,23 @@ export class Manifest {
    * Gets the manifest (from cache if already pulled).
    */
   public static async get(args: {
-    url: string; // URL to the manifest.yml (NB: don't use a caching CDN).
-    baseUrl?: string; // If different from `url` (use this to pass in the Edge/CDN alternative URL).
+    manifestUrl: string; // URL to the manifest.yml (NB: don't use a caching CDN).
+    baseUrl: string; // If different from `url` (use this to pass in the Edge/CDN alternative URL).
     force?: boolean;
+    loadBundleManifest?: boolean;
   }) {
-    const { url } = args;
-    let manifest = CACHE[url] as Manifest;
+    const { baseUrl } = args;
+    const key = `${args.manifestUrl}::${args.loadBundleManifest || 'false'}`;
+
+    let manifest = CACHE[key] as Manifest;
     if (manifest && !args.force) {
       return manifest;
     }
     const res = await Manifest.fromUrl(args);
     if (res.manifest) {
       const { status, manifest: def } = res;
-      manifest = new Manifest({ url, def, status });
-      CACHE[url] = manifest;
+      manifest = new Manifest({ baseUrl, def, status });
+      CACHE[key] = manifest;
     }
     return manifest;
   }
@@ -129,7 +137,7 @@ export class Manifest {
   public static create = (args: IManifestArgs) => new Manifest(args);
   private constructor(args: IManifestArgs) {
     this.def = args.def;
-    this.url = args.url;
+    this.baseUrl = args.baseUrl;
     this.status = args.status || 200;
   }
 
@@ -137,7 +145,7 @@ export class Manifest {
    * [Fields]
    */
   public readonly status: number;
-  public readonly url: string;
+  public readonly baseUrl: string;
   private readonly def: t.IManifest;
   private _sites: Site[];
 
@@ -180,7 +188,7 @@ export class Manifest {
       site: (id: string | Site) => {
         const name = typeof id === 'string' ? id : id.name;
         return {
-          version: async (args: { version: string; saveTo?: string }) => {
+          bundle: async (args: { value: string; saveTo?: string }) => {
             // Find the site.
             const site = this.site.byName(name);
             if (!site) {
@@ -188,12 +196,12 @@ export class Manifest {
             }
 
             // Update the bundle version.
-            const bundle = fs.join(fs.dirname(site.bundle), args.version);
+            const bundle = args.value;
             const def = { ...this.def };
             def.sites[site.index].bundle = bundle;
 
             // Clone of manifest with updated def.
-            const manifest = Manifest.create({ def, url: this.url });
+            const manifest = Manifest.create({ def, baseUrl: this.baseUrl });
 
             // Save to local file-system.
             if (args.saveTo) {
@@ -229,6 +237,7 @@ export class Manifest {
       def.sites.forEach(site => {
         delete site.files;
         delete site.entries;
+        delete site.baseUrl;
       });
     }
 
