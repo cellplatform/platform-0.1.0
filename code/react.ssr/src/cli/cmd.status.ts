@@ -14,7 +14,7 @@ export async function run(args: { config?: Config } = {}) {
   await cli
     .tasks()
     .task('pull manifest', async e => {
-      manifest = await config.manifest.s3.get({ force: true, loadBundleManifest: true });
+      manifest = await config.manifest.s3.pull({ force: true, loadBundleManifest: true });
     })
     .run({ concurrent: true });
 

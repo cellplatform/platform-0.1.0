@@ -16,9 +16,7 @@ sites:
     files: []
     entries: []
   - name: prod
-    domain:
-      - platform.uiharness.com
-      - /.*\.now\.sh$/
+    domain: platform.uiharness.com
     baseUrl: 'https://platform.sfo2.cdn.digitaloceanspaces.com/modules/react.ssr'
     bundle: bundle/0.9.1
     routes:

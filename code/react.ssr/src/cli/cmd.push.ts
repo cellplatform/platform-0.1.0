@@ -94,7 +94,7 @@ export async function manifest(args: { config?: Config; silent?: boolean } = {})
 
   // Finish up.
   if (!silent) {
-    const manifest = await config.manifest.local.load({ loadBundleManifest: true });
+    const manifest = await config.manifest.s3.pull({ loadBundleManifest: true });
     await status.print({ config, manifest });
   }
 }

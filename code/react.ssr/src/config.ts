@@ -122,7 +122,7 @@ export class Config {
           }
 
           // Overwrite with latest cloud content (if it exists).
-          const remote = await api.s3.get({ force: true });
+          const remote = await api.s3.pull({ force: true });
           if (remote.ok) {
             const { minimal } = args;
             await remote.save(filePath, { minimal });
@@ -134,7 +134,7 @@ export class Config {
       },
       s3: {
         url: manifestUrl,
-        async get(args: { force?: boolean; loadBundleManifest?: boolean } = {}) {
+        async pull(args: { force?: boolean; loadBundleManifest?: boolean } = {}) {
           return Manifest.get({ ...args, manifestUrl, baseUrl });
         },
       },
