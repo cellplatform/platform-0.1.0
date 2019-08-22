@@ -88,10 +88,15 @@ export function init(args: {
     // Check if there is a direct route match and if found SSR the HTML.
     const url = parseUrl(req.url || '', false);
     const route = site.route(url.pathname);
+
     if (route) {
       const entry = await route.entry();
       if (entry.ok) {
         return { data: entry.html };
+      } else {
+        const { status, url } = entry;
+        const message = `Failed to get entry HTML from CDN.`;
+        return { status, data: { status, message, url } };
       }
     }
 
