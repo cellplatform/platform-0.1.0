@@ -1,5 +1,4 @@
 .env
-sample/.env
 node_modules
 .uiharness
 .cache

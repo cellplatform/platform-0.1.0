@@ -8,23 +8,15 @@
     "ssr": "lib/bin.js"
   },
   "scripts": {
-    "ssr": "node lib/bin.js $@",
-    "ui": "ui $@",
-    "dev": "ui start web $@",
-    "start": "cd test.now && now dev --port 8080",
-    "watch": "yarn start",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "build-test": "ts build --tsconfig tsconfig.test.json",
-    "prepare": "ts prepare",
-    "bundle": "ui bundle web",
-    "deploy": "cd test.now && now",
-    "release": "cd test.now && now alias"
+    "build-test": "ts build",
+    "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cli": "^0.3.5",
+    "@platform/cli": "0.3.5",
     "@platform/exec": "0.2.25",
     "@platform/fs": "0.2.0",
     "@platform/fs.s3": "0.3.0",
@@ -47,8 +39,7 @@
     "@types/bowser": "1.1.1",
     "@types/cheerio": "0.22.13",
     "@types/dotenv": "6.1.1",
-    "@types/semver": "6.0.1",
-    "@uiharness/dev": "0.9.1"
+    "@types/semver": "6.0.1"
   },
   "files": [
     "lib",

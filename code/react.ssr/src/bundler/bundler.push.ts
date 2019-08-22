@@ -1,6 +1,4 @@
 import { fs, Listr, log, S3, t, util, cli } from '../common';
-import { Manifest } from '../manifest';
-import { config } from 'dotenv';
 
 type IBundleArgs = {
   bundleDir: string;
