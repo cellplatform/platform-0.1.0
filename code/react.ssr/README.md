@@ -3,9 +3,17 @@
 [![NPM](https://img.shields.io/npm/v/@platform/react.ssr.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/react.ssr)
 ![banner](https://user-images.githubusercontent.com/185555/63076436-66585300-bf89-11e9-8bca-0b80ae5313d0.png)
 
-An SSR (server-side-renderer) system for react apps bundled with ParcelJS and hosted on S3.
+A lightweight SSR (server-side-rendering) system for react apps bundled with ParcelJS and hosted on S3.
+
+- Serve from assets hosted in S3/CDN
+- Bundle and push to S3 via command-line.
+- Simple management of release versions (and roll-backs) across multiple sites/environments.
 
 <p>&nbsp;<p>
+
+
+
+![diagram](https://user-images.githubusercontent.com/185555/63076383-2beeb600-bf89-11e9-843f-b221e95d1840.png)
 
 
 ## Setup
@@ -15,7 +23,37 @@ An SSR (server-side-renderer) system for react apps bundled with ParcelJS and ho
 
 <p>&nbsp;<p>
 
-![diagram](https://user-images.githubusercontent.com/185555/63076383-2beeb600-bf89-11e9-843f-b221e95d1840.png)
+
+## Sample
+
+Develop UI components on local dev-server within the [UIHarness](https://uiharness.com):
+
+```bash
+cd sample/ui
+yarn start
+```
+
+
+Bundle and push to S3
+
+```
+cd sample/now
+yarn ssr bundle
+```
+
+Start local SSR server for testing bundle:
+
+```
+cd sample/now
+yarn start
+```
+
+Release bundled version by updating manifest:
+
+```
+cd sample/now
+yarn ssr release
+```
 
 
 
