@@ -45,6 +45,9 @@ export async function run() {
   } else if (manifest) {
     bundler.log.bundle({ bundleDir, manifest });
   }
+
+  // Finish up.
+  log.info();
 }
 
 /**

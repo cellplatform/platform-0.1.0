@@ -1,9 +1,9 @@
 import * as bundle from './cmd.bundle';
+import * as pull from './cmd.pull';
 import * as pushBundle from './cmd.pushBundle';
 import * as release from './cmd.release';
 import * as reset from './cmd.reset';
-import * as pull from './cmd.pull';
-import { cli, log } from './common';
+import { cli } from './common';
 
 const app = cli.create('ssr');
 
