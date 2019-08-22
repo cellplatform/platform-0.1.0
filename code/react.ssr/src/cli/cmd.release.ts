@@ -1,7 +1,7 @@
+import { bundler } from '../bundler';
 import { Config } from '../config';
-import * as bundle from './cmd.bundle';
-import * as pushBundle from './cmd.pushBundle';
-import { cli, fs, log, semver } from './common';
+import { Manifest } from '../manifest';
+import { cli, log } from './common';
 
 /**
  * Release new version script.
@@ -9,40 +9,61 @@ import { cli, fs, log, semver } from './common';
 export async function run() {
   const config = await Config.create();
 
-  // config.p
+  let manifest: Manifest | undefined;
+  let versions: string[] = [];
 
-  const manifest = await config.manifest.s3.get();
-  // log.info('manifest', manifest);
+  // Pull data from cloud.
+  log.info();
+  await cli
+    .tasks()
+    .task('pull latest manifest', async e => {
+      manifest = await config.manifest.local.ensureLatest({ minimal: true });
+    })
+    .task('pull version list', async e => {
+      versions = await config.s3.versions({ sort: 'DESC' });
+    })
+    .run({ concurrent: true });
 
+  // Ensure the local manifest is up-to-date.
+  if (!manifest) {
+    log.error(`The manifest could not be found.`);
+    return cli.exit(1);
+  }
+
+  log.info();
+
+  // Prompt for which site to update.
   const sites = manifest.sites.map(site => site.name || 'Unnamed');
+  const name = await cli.prompt.list<string>({ message: 'site', items: sites });
+  const site = manifest.site.byName(name);
+  if (!site) {
+    log.error(`The site named '${name}' does not exist in the manifest.`);
+    return cli.exit(1);
+  }
 
-  const site = await cli.prompt.list<string>({ message: 'site', items: sites });
-  console.log('-------------------------------------------');
-  console.log('res1', site);
-  // manifest.
-
-  // manifest.site.
-
-  // manifest.
-
-  const s3 = config.s3.fs;
-
-  log.info('-------------------------------------------');
-  const list = s3.list({
-    bucket: config.s3.bucket,
-    prefix: config.s3.path.bundles,
-    // max: 5,
+  // Prompt for which version to update to.
+  const version = await cli.prompt.list<string>({
+    message: 'version',
+    items: [
+      ...versions.map(value => ({
+        name: `${value} ${value === site.version ? '🌼  CURRENT' : ''}`,
+        value,
+      })),
+      '---',
+    ],
   });
 
-  // const objects = await list.objects;
-  const dirs = (await list.dirs).items.map(({ key }) => ({ key, version: fs.basename(key) }));
-  // dirs = R.sortWith([R.prop('version')])
-  const items = semver.sort(dirs.map(item => item.version)).reverse();
+  // Save change to the manifest.
+  const saveTo = config.manifest.local.path;
+  await manifest.change.site(site).version({ version, saveTo });
 
-  // log.info('versions', items);
+  // Push change to S3.
+  const s3 = config.s3;
+  const bucket = s3.bucket;
+  const source = config.manifest.local.path;
+  const target = s3.path.manifest;
+  await bundler.push(s3.config).manifest({ bucket, source, target, silent: false });
 
-  const res = await cli.prompt.list({ message: 'version', items: [...items, '---'] });
-
-  log.info('-------------------------------------------');
-  log.info('res', res);
+  // Finish up.
+  log.info();
 }

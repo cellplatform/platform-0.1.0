@@ -177,7 +177,8 @@ export class Manifest {
    */
   public get change() {
     return {
-      site: (name: string) => {
+      site: (id: string | Site) => {
+        const name = typeof id === 'string' ? id : id.name;
         return {
           version: async (args: { version: string; saveTo?: string }) => {
             // Find the site.
@@ -221,9 +222,19 @@ export class Manifest {
     };
   }
 
-  public async save(path: string) {
+  public async save(path: string, options: { minimal?: boolean } = {}) {
+    // Prepare content.
+    const def = { ...this.def };
+    if (options.minimal) {
+      def.sites.forEach(site => {
+        delete site.files;
+        delete site.entries;
+      });
+    }
+
+    // Save to file-system.
     path = fs.resolve(path);
     await fs.ensureDir(fs.dirname(path));
-    await fs.file.stringifyAndSave(path, this.def);
+    await fs.file.stringifyAndSave(path, def);
   }
 }

@@ -52,7 +52,8 @@
   "files": [
     "lib",
     "!lib/test",
-    "!*.TEST.{js, mjs, d.ts}"
+    "!*.TEST.{js, mjs, d.ts}",
+    "tmpl"
   ],
   "license": "MIT"
 }
