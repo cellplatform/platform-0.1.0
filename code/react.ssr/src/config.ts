@@ -80,10 +80,13 @@ export class Config {
       },
       async versions(options: { sort?: 'ASC' | 'DESC' } = {}) {
         const s3 = api.fs;
+        const prefix = `${api.path.base}/${api.path.bundles}`;
+        console.log('prefix:', prefix);
         const list = s3.list({
           bucket,
-          prefix: api.path.bundles,
+          prefix,
         });
+
         const dirs = (await list.dirs).items.map(({ key }) => ({ key, version: fs.basename(key) }));
         const versions = semver.sort(dirs.map(item => item.version));
         return options.sort === 'DESC' ? versions.reverse() : versions;

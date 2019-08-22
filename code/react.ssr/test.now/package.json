@@ -1,11 +1,11 @@
 {
   "name": "test-now-react.ssr",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "devDependencies": {
     "@now/node": "^0.12.6"
   },
   "dependencies": {
-    "@platform/react.ssr": "^0.6.4"
+    "@platform/react.ssr": "^0.7.4"
   },
   "license": "MIT",
   "private": true

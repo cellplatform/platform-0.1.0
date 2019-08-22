@@ -25,11 +25,16 @@ export async function run(options: { version?: string; prompt?: boolean; silent?
   // S3 config.
   const { endpoint, accessKey, secret, bucket } = config.s3;
   const s3 = { endpoint, accessKey, secret };
-  const bucketKey = fs.join(config.s3.path.bundles, version);
+  const bucketKey = fs.join(config.s3.path.base, config.s3.path.bundles, version);
 
   // Push.
   const bundleDir = fs.resolve(fs.join(bundlesDir, version));
-  await bundler.push(s3).bundle({ bundleDir, bucket, bucketKey, silent });
+  await bundler.push(s3).bundle({
+    bundleDir,
+    bucket,
+    bucketKey,
+    silent,
+  });
 
   // Finish up.
   return { version, bundleDir };

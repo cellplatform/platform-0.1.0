@@ -1,6 +1,6 @@
 import { parse as parseUrl } from 'url';
 
-import { t, micro } from '../common';
+import { micro } from '../common';
 import { Manifest } from '../manifest';
 
 /**
@@ -8,59 +8,37 @@ import { Manifest } from '../manifest';
  */
 export function init(args: {
   router: micro.Router;
-  manifest: string;
-  cdn?: string;
+  manifestUrl: string;
+  baseUrl: string;
   secret?: string;
 }) {
-  const { router } = args;
+  const { router, manifestUrl, baseUrl } = args;
 
-  const getManifest = (force?: boolean) =>
-    Manifest.get({ url: args.manifest, baseUrl: args.cdn, force });
-
-  const isDenied = (req: t.IncomingMessage): t.RouteResponse | undefined => {
-    const { secret } = args;
-    const auth = req.headers.authorization;
-    const isAuthorized = !secret ? true : auth === secret;
-    if (!isAuthorized) {
-      const status = 403;
-      const message = `Not allowed. Ensure you have the correct token in the authorization header.`;
-      return { status, data: { status, message } };
-    }
-    return undefined;
+  const manifestFromCacheOrS3 = (args: { force?: boolean } = {}) => {
+    const { force } = args;
+    return Manifest.get({ manifestUrl, baseUrl, force, loadBundleManifest: true });
   };
-
-  /**
-   * [POST] update manifest (reset cache).
-   */
-  router.post('/.update', async req => {
-    const denied = isDenied(req);
-    if (denied) {
-      return denied;
-    }
-    await getManifest(true);
-    const status = 200;
-    return { status, data: { status, message: 'Manifest updated' } };
-  });
 
   /**
    * [GET] manifest.
    */
   router.get('/.manifest', async req => {
-    const manifest = await getManifest();
-    const sites = manifest.sites
-      .map(site => site.toObject())
-      .map(site => {
-        const { domain, bundle, routes } = site;
-        return { domain, bundle, routes };
-      });
-    const data = { sites };
+    const manifest = await manifestFromCacheOrS3();
     return {
       status: 200,
-      headers: {
-        // See: https://zeit.co/docs/v2/network/caching/#stale-while-revalidate
-        'Cache-Control': 's-maxage=1, stale-while-revalidate',
-      },
-      data,
+      headers: { 'Cache-Control': `s-maxage=10, stale-while-revalidate` },
+      data: manifest.toObject(),
+    };
+  });
+
+  /**
+   * [POST] manifest (reset cache).
+   */
+  router.get('/.manifest', async req => {
+    const manifest = await manifestFromCacheOrS3({ force: true });
+    return {
+      status: 200,
+      data: manifest.toObject(),
     };
   });
 
@@ -69,7 +47,7 @@ export function init(args: {
    */
   router.get('*', async req => {
     // Load the manifest.
-    const manifest = await getManifest();
+    const manifest = await manifestFromCacheOrS3();
     if (!manifest.ok) {
       const status = manifest.status;
       const message = 'Manifest could not be loaded.';
@@ -88,11 +66,12 @@ export function init(args: {
     // Check if there is a direct route match and if found SSR the HTML.
     const url = parseUrl(req.url || '', false);
     const route = site.route(url.pathname);
+    const headers = { 'Cache-Control': `s-maxage=10, stale-while-revalidate` };
 
     if (route) {
       const entry = await route.entry();
       if (entry.ok) {
-        return { data: entry.html };
+        return { headers, data: entry.html };
       } else {
         const { status, url } = entry;
         const message = `Failed to get entry HTML from CDN.`;
@@ -104,7 +83,7 @@ export function init(args: {
     const location = site.redirectUrl(url.pathname);
     if (location) {
       const status = 307;
-      return { status, data: location };
+      return { status, headers, data: location };
     }
 
     // No matching resource.

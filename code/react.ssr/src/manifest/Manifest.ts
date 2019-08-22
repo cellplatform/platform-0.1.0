@@ -4,7 +4,7 @@ import { Site } from './Site';
 type IPullResonse = {
   ok: boolean;
   status: number;
-  manifest: t.IManifest;
+  manifest?: Manifest;
   error?: Error;
 };
 
@@ -35,7 +35,7 @@ export class Manifest {
       throw new Error(`Manifest file does not exist: '${args.path}'`);
     }
     const text = await fs.readFile(path, 'utf-8');
-    const def = await Manifest.parse({ text, baseUrl });
+    const def = await Manifest.parse({ yaml: text, baseUrl });
     return Manifest.create({ def, baseUrl });
   }
 
@@ -48,11 +48,9 @@ export class Manifest {
     loadBundleManifest?: boolean;
   }): Promise<IPullResonse> {
     const { manifestUrl, loadBundleManifest } = args;
-    const empty: t.IManifest = { sites: [] };
 
     const errorResponse = (status: number, error: string): IPullResonse => {
-      const manifest = empty;
-      return { ok: false, status, error: new Error(error), manifest };
+      return { ok: false, status, error: new Error(error) };
     };
 
     try {
@@ -67,9 +65,8 @@ export class Manifest {
       }
 
       // Attempt to parse the yaml.
-      const text = res.body;
       const baseUrl = args.baseUrl || manifestUrl;
-      const manifest = await Manifest.parse({ text, baseUrl, loadBundleManifest });
+      const manifest = await Manifest.fromYaml({ yaml: res.body, baseUrl, loadBundleManifest });
 
       // Finish up.
       return {
@@ -82,15 +79,25 @@ export class Manifest {
     }
   }
 
+  public static async fromYaml(args: {
+    yaml: string;
+    baseUrl: string;
+    loadBundleManifest?: boolean;
+  }) {
+    const { yaml: text, baseUrl, loadBundleManifest } = args;
+    const def = await Manifest.parse({ yaml: text, baseUrl, loadBundleManifest });
+    return Manifest.create({ def, baseUrl });
+  }
+
   /**
    * Pulls the manifest at the given url end-point.
    */
-  public static async parse(args: { text: string; baseUrl: string; loadBundleManifest?: boolean }) {
+  public static async parse(args: { yaml: string; baseUrl: string; loadBundleManifest?: boolean }) {
     const { loadBundleManifest } = args;
     const baseUrl = args.baseUrl.replace(/\/manifest.yml$/, '');
 
     // Attempt to parse the yaml.
-    const yaml = util.parseYaml(args.text);
+    const yaml = util.parseYaml(args.yaml);
     if (!yaml.ok || !yaml.data) {
       const error = `Failed to parse manifest YAML. ${yaml.error.message}`;
       throw new Error(error);
@@ -115,7 +122,6 @@ export class Manifest {
     force?: boolean;
     loadBundleManifest?: boolean;
   }) {
-    const { baseUrl } = args;
     const key = `${args.manifestUrl}::${args.loadBundleManifest || 'false'}`;
 
     let manifest = CACHE[key] as Manifest;
@@ -124,8 +130,7 @@ export class Manifest {
     }
     const res = await Manifest.fromUrl(args);
     if (res.manifest) {
-      const { status, manifest: def } = res;
-      manifest = new Manifest({ baseUrl, def, status });
+      manifest = res.manifest;
       CACHE[key] = manifest;
     }
     return manifest;
