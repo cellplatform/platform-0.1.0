@@ -243,6 +243,8 @@ export class Manifest {
         delete site.files;
         delete site.entries;
         delete site.baseUrl;
+        delete site.size;
+        delete site.bytes;
       });
     }
 

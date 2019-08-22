@@ -20,13 +20,29 @@ export function init(args: {
   };
 
   /**
+   * [GET] manifest/summary.
+   */
+  router.get('/.manifest/summary', async req => {
+    const manifest = await manifestFromCacheOrS3();
+    const sites = manifest.sites.reduce((acc, next) => {
+      const { name, version, size } = next;
+      return { ...acc, [name]: { version, size } };
+    }, {});
+    return {
+      status: 200,
+      headers: { 'Cache-Control': `s-maxage=5, stale-while-revalidate` },
+      data: { sites },
+    };
+  });
+
+  /**
    * [GET] manifest.
    */
   router.get('/.manifest', async req => {
     const manifest = await manifestFromCacheOrS3();
     return {
       status: 200,
-      headers: { 'Cache-Control': `s-maxage=10, stale-while-revalidate` },
+      headers: { 'Cache-Control': `s-maxage=5, stale-while-revalidate` },
       data: manifest.toObject(),
     };
   });
@@ -67,7 +83,7 @@ export function init(args: {
     // Check if there is a direct route match and if found SSR the HTML.
     const url = parseUrl(req.url || '', false);
     const route = site.route(url.pathname);
-    const headers = { 'Cache-Control': `s-maxage=10, stale-while-revalidate` };
+    const headers = { 'Cache-Control': `s-maxage=5, stale-while-revalidate` };
 
     if (route) {
       const entry = await route.entry();

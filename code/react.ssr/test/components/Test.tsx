@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from './common';
+
+import { css, GlamorValue } from './common';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = { count?: number; foo?: JSX.Element };
@@ -46,7 +47,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
-        <div>next: {this.count || 0}</div>
+        <div>kitty don’t care: {this.count || 0}</div>
         <img src='/images/cat.jpg' {...styles.image} />
         {this.state.foo}
       </div>

@@ -74,16 +74,32 @@ export class Site {
     // Pull the bundle manifest from the network to get [files] and [dirs].
     let files: string[] = [];
     let entries: t.IBundleEntryHtml[] = [];
+    let size = '-';
+    let bytes = -1;
     if (args.loadBundleManifest) {
       const bundleUrl = `${baseUrl}/${bundle}/${constants.PATH.BUNDLE_MANIFEST}`;
       const res = await http.get(bundleUrl);
       const bundleManifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
-      files = bundleManifest ? bundleManifest.files || [] : [];
-      entries = bundleManifest ? bundleManifest.entries || [] : [];
+      if (bundleManifest) {
+        size = bundleManifest.size;
+        bytes = bundleManifest.bytes;
+        files = bundleManifest.files || [];
+        entries = bundleManifest.entries || [];
+      }
     }
 
     // Finish up.
-    const site: t.ISiteManifest = { name, domain, baseUrl, bundle, routes, files, entries };
+    const site: t.ISiteManifest = {
+      name,
+      domain,
+      baseUrl,
+      bundle,
+      routes,
+      size,
+      bytes,
+      files,
+      entries,
+    };
     return site;
   }
 
@@ -137,6 +153,10 @@ export class Site {
 
   public get version() {
     return util.firstSemver(this.bundle) || '0.0.0';
+  }
+
+  public get size() {
+    return this.def.size;
   }
 
   public get files() {

@@ -39,6 +39,8 @@ export type ISiteManifest = {
   routes: { [key: string]: ISiteManifestRoute };
 
   // Extended.
+  size: string;
+  bytes: number;
   baseUrl: string;
   files: string[];
   entries: IBundleEntryHtml[];

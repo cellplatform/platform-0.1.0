@@ -150,10 +150,10 @@
     inquirer "6.5.1"
     semver "6.3.0"
 
-"@platform/react.ssr@^0.7.4":
-  version "0.7.4"
-  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-0.7.4.tgz#4e68d658665849296880195007e0ce155b2265f3"
-  integrity sha512-zoas0YSzqqGjG3V6s58iwnz0MTc/15IcyYtKEhYcWK057fF/dpnjyi/It9WbEZhjIXm1kMPGCjiqrl12Vdcs/A==
+"@platform/react.ssr@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-0.8.0.tgz#1e54bb782ba1589e4edbea6970ae8241a63ca919"
+  integrity sha512-8nR1HHmwoBKp2hCzJT/AF+F3bjvAID08YBVYUz6P5K7GsmqC+aPiT8WfgYLcXZEt4G/uTxCmvXLAPMcPUI3ryw==
   dependencies:
     "@platform/cli" "^0.3.5"
     "@platform/exec" "0.2.25"

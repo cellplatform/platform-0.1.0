@@ -1,6 +1,6 @@
 {
   "name": "@platform/react.ssr",
-  "version": "0.8.0",
+  "version": "0.8.7",
   "description": "An SSR (server-side-render) system for react apps bundled with ParcelJS and hosted on S3.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,7 +19,9 @@
     "build": "ts build",
     "build-test": "ts build --tsconfig tsconfig.test.json",
     "prepare": "ts prepare",
-    "bundle": "ui bundle web"
+    "bundle": "ui bundle web",
+    "deploy": "cd test.now && now",
+    "release": "cd test.now && now alias"
   },
   "dependencies": {
     "@platform/cli": "^0.3.5",

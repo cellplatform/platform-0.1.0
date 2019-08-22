@@ -1,4 +1,4 @@
-import { log, micro } from '../common';
+import { micro } from '../common';
 import * as routes from './routes';
 
 export * from '../types';

@@ -1,4 +1,4 @@
-import { t, fs, Listr, log, S3, time, util } from '../common';
+import { fs, Listr, log, S3, t, util } from '../common';
 
 type IBundleArgs = {
   bundleDir: string;
@@ -30,7 +30,6 @@ export async function bundle(args: {
   bucketKey: string;
   silent?: boolean;
 }) {
-  const timer = time.timer();
   const bucket = args.s3.bucket(args.bucket);
   const bundleDir = fs.resolve(args.bundleDir);
 
@@ -107,7 +106,6 @@ export async function manifest(args: {
   target: string;
   silent?: boolean;
 }) {
-  const timer = time.timer();
   const source = fs.resolve(args.source);
   const bucket = args.s3.bucket(args.bucket);
 
