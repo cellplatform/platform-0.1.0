@@ -72,8 +72,28 @@ const bundleManifest = {
 /**
  * [Helpers]
  */
+
 function renderEntry(args: t.IBundleEntryElement): t.IBundleEntryHtml {
-  const { id = 'root', file } = args;
-  const { html, css } = renderStatic(() => ReactDOMServer.renderToString(args.el));
+  // try {
+  const { id = 'root', file, el } = args;
+
+  // console.log('args.el', args.el);
+  // console.log('-------------------------------------------');
+  // console.log('el', el);
+
+  // console.log('args.el >>>', args.el);
+  const { html, css } = renderStatic(() => ReactDOMServer.renderToString(el));
+
+  // console.log('-------------------------------------------');
+  // console.log('html', html);
+  // console.log('css', css);
+  // process.exit(0);
+
   return { file, id, html, css };
+  // } catch (error) {
+  //   console.log('-------------------------------------------');
+  //   console.log('error', error);
+  //   process.exit(1);
+  //   throw error();
+  // }
 }

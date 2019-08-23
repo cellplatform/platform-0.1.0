@@ -1,8 +1,7 @@
-import { bundler } from '../bundler';
 import { Config } from '../config';
 import { Manifest } from '../manifest';
-import { cli, log, fs } from './common';
-import * as reset from './cmd.reset';
+import * as push from './cmd.push';
+import { cli, fs, log } from './common';
 
 /**
  * Release new version script.
@@ -17,17 +16,18 @@ export async function run() {
   log.info();
   await cli
     .tasks()
-    .task('pull latest manifest', async e => {
+    .task('pull manifest', async e => {
       manifest = await config.manifest.local.ensureLatest({ minimal: true });
     })
-    .task('pull version list', async e => {
+    .task('pull versions', async e => {
       versions = await config.s3.versions({ sort: 'DESC' });
     })
     .run({ concurrent: true });
 
   // Ensure the local manifest is up-to-date.
   if (!manifest) {
-    log.error(`Manifest could not be found.`);
+    log.error('\nManifest could not be found.');
+    log.info.gray(config.manifest.s3.url);
     return cli.exit(1);
   }
 
@@ -49,14 +49,10 @@ export async function run() {
   const saveTo = config.manifest.local.path;
   await manifest.change.site(site).bundle({ value: bundle, saveTo });
 
-  // Push change to S3.
-  const bucket = s3.bucket;
-  const source = config.manifest.local.path;
-  const target = fs.join(s3.path.base, s3.path.manifest);
-  await bundler.push(s3.config).manifest({ bucket, source, target, silent: false });
+  // Push change to S3 and reset cache.
+  await push.manifest({ config, silent: false });
 
   // Finish up.
-  await reset.run({ config, manifest, site });
   log.info();
 }
 
@@ -73,7 +69,7 @@ async function promptForSite(args: { manifest: Manifest }) {
 async function promptForVersion(args: { current: string; versions: string[] }) {
   const { current } = args;
   const versions = args.versions.map(value => ({
-    name: `${value} ${value === current ? '🌼  CURRENT' : ''}`,
+    name: `${value} ${value === current ? '🌼' : ''}`,
     value,
   }));
   return cli.prompt.list<string>({

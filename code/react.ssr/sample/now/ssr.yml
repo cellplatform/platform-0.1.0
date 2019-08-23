@@ -1,8 +1,8 @@
-manifest: test/manifest.yml
+manifest: ../manifest.yml
 
 builder:
-  bundles: bundle
-  entries: lib.test/test/entries.js
+  bundles: ../ui/bundle
+  entries: ../ui/lib/builder.entries.js
 
 s3:
   endpoint: sfo2.digitaloceanspaces.com

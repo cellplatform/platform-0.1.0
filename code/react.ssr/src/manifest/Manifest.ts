@@ -1,4 +1,4 @@
-import { fs, http, t, util } from '../common';
+import { defaultValue, fs, http, t, time, util } from '../common';
 import { Site } from './Site';
 
 type IPullResonse = {
@@ -14,7 +14,8 @@ type IManifestArgs = {
   status?: number;
 };
 
-let URL_CACHE: any = {};
+type IManifestCache = { time: number; manifest: Manifest };
+let URL_CACHE: { [key: string]: IManifestCache } = {};
 
 export class Manifest {
   /**
@@ -28,14 +29,18 @@ export class Manifest {
     URL_CACHE = {};
   }
 
-  public static async fromFile(args: { path: string; baseUrl: string }) {
-    const { baseUrl } = args;
+  public static async fromFile(args: {
+    path: string;
+    baseUrl: string;
+    loadBundleManifest?: boolean;
+  }) {
+    const { baseUrl, loadBundleManifest } = args;
     const path = fs.resolve(args.path);
     if (!(await fs.pathExists(path))) {
       throw new Error(`Manifest file does not exist: '${args.path}'`);
     }
-    const text = await fs.readFile(path, 'utf-8');
-    const def = await Manifest.parse({ yaml: text, baseUrl });
+    const yaml = await fs.readFile(path, 'utf-8');
+    const def = await Manifest.parse({ yaml, baseUrl, loadBundleManifest });
     return Manifest.create({ def, baseUrl });
   }
 
@@ -84,8 +89,8 @@ export class Manifest {
     baseUrl: string;
     loadBundleManifest?: boolean;
   }) {
-    const { yaml: text, baseUrl, loadBundleManifest } = args;
-    const def = await Manifest.parse({ yaml: text, baseUrl, loadBundleManifest });
+    const { yaml, baseUrl, loadBundleManifest } = args;
+    const def = await Manifest.parse({ yaml, baseUrl, loadBundleManifest });
     return Manifest.create({ def, baseUrl });
   }
 
@@ -121,19 +126,27 @@ export class Manifest {
     baseUrl: string; // If different from `url` (use this to pass in the Edge/CDN alternative URL).
     force?: boolean;
     loadBundleManifest?: boolean;
+    ttl?: number; // msecs
   }) {
-    const key = `${args.manifestUrl}::${args.loadBundleManifest || 'false'}`;
+    const { ttl } = args;
+    const key = `${args.manifestUrl}:${args.loadBundleManifest || 'false'}`;
 
-    let manifest = URL_CACHE[key] as Manifest;
-    if (manifest && !args.force) {
-      return manifest;
+    // Check the cache.
+    let cached = URL_CACHE[key];
+    if (!args.force && cached && !isCacheExpired({ key, ttl })) {
+      return cached.manifest;
     }
+
+    // Retrieve from S3.
     const res = await Manifest.fromUrl(args);
     if (res.manifest) {
-      manifest = res.manifest;
-      URL_CACHE[key] = manifest;
+      const manifest = res.manifest;
+      cached = { manifest, time: time.now.timestamp };
+      URL_CACHE[key] = cached;
     }
-    return manifest;
+
+    // Finish up.
+    return URL_CACHE[key].manifest;
   }
 
   /**
@@ -142,7 +155,7 @@ export class Manifest {
   public static create = (args: IManifestArgs) => new Manifest(args);
   private constructor(args: IManifestArgs) {
     this.def = args.def;
-    this.baseUrl = args.baseUrl;
+    this.baseUrl = util.stripSlashes(args.baseUrl);
     this.status = args.status || 200;
   }
 
@@ -238,7 +251,7 @@ export class Manifest {
   public async save(path: string, options: { minimal?: boolean } = {}) {
     // Prepare content.
     const def = { ...this.def };
-    if (options.minimal) {
+    if (defaultValue(options.minimal, true)) {
       def.sites.forEach(site => {
         delete site.files;
         delete site.entries;
@@ -253,4 +266,17 @@ export class Manifest {
     await fs.ensureDir(fs.dirname(path));
     await fs.file.stringifyAndSave(path, def);
   }
+}
+
+/**
+ * [Helpers]
+ */
+function isCacheExpired(args: { key: string; ttl?: number }) {
+  const { key, ttl } = args;
+  const cached = URL_CACHE[key];
+  if (!cached || typeof ttl !== 'number') {
+    return false;
+  }
+  const age = time.now.timestamp - cached.time;
+  return age > ttl;
 }

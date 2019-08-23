@@ -1,8 +1,8 @@
 import * as bundle from './cmd.bundle';
 import * as pull from './cmd.pull';
-import * as pushBundle from './cmd.pushBundle';
+import * as push from './cmd.push';
 import * as release from './cmd.release';
-import * as reset from './cmd.reset';
+import * as status from './cmd.status';
 import { cli } from './common';
 
 const app = cli.create('ssr');
@@ -12,12 +12,12 @@ app
    * Status.
    */
   .command(
-    ['pull'],
-    'Pull the latet version of the manifest from the cloud.',
+    ['status', 's'],
+    'Current status of the cloud manifest.',
     yargs => {
       return yargs;
     },
-    async argv => pull.run(),
+    async argv => status.run(),
   )
 
   /**
@@ -27,9 +27,21 @@ app
     ['bundle', 'b'],
     'Prepare, bundle and push javascript.',
     yargs => {
-      return yargs;
+      return yargs
+        .option('v', {
+          describe: 'The bundle version to push.',
+          type: 'string',
+        })
+        .option('push', {
+          alias: 'p',
+          describe: 'Push the bundle to S3.',
+          type: 'boolean',
+        });
     },
-    async argv => bundle.run(),
+    async argv => {
+      const { v: version, push } = argv;
+      return bundle.run({ version, push });
+    },
   )
 
   /**
@@ -37,11 +49,33 @@ app
    */
   .command(
     ['push', 'p'],
-    'Push bundle to S3.',
+    'Push bundle or manifest to S3.',
     yargs => {
-      return yargs;
+      return yargs
+        .option('manifest', {
+          alias: 'm',
+          describe: 'Push the local manifest to S3.',
+          type: 'boolean',
+        })
+        .option('bundle', {
+          alias: 'b',
+          describe: 'Push a bundle to S3.',
+          type: 'boolean',
+        });
     },
-    async argv => pushBundle.run({ prompt: true }),
+    async argv => {
+      const { bundle, manifest } = argv;
+      if (bundle) {
+        await push.run({ type: 'BUNDLE' });
+      }
+      if (manifest) {
+        await push.run({ type: 'MANIFEST' });
+      }
+      if (!bundle && !manifest) {
+        // No options specified, run with prompts.
+        await push.run();
+      }
+    },
   )
 
   /**
@@ -49,7 +83,7 @@ app
    */
   .command(
     ['release', 'r'],
-    'Change the release version of a site.',
+    'Change release version of a site.',
     yargs => {
       return yargs;
     },
@@ -57,15 +91,15 @@ app
   )
 
   /**
-   * Reset cache.
+   * Pull.
    */
   .command(
-    ['reset'],
-    'Reset the cache on sites.',
+    ['pull'],
+    'Pull the latet version of the manifest locally.',
     yargs => {
       return yargs;
     },
-    async argv => reset.run(),
+    async argv => pull.run(),
   );
 
 /**

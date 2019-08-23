@@ -1,4 +1,4 @@
-import { fs, Listr, log, S3, t, util } from '../common';
+import { fs, Listr, log, S3, t, util, cli } from '../common';
 
 type IBundleArgs = {
   bundleDir: string;
@@ -84,7 +84,7 @@ export async function bundle(args: {
     await tasks.run();
   } catch (error) {
     log.error(`\nFailed while pushing to S3.\n`);
-    process.exit(1);
+    cli.exit(1);
   }
 
   // Finish up.
@@ -106,6 +106,7 @@ export async function manifest(args: {
   target: string;
   silent?: boolean;
 }) {
+  const { silent } = args;
   const source = fs.resolve(args.source);
   const bucket = args.s3.bucket(args.bucket);
 
@@ -128,20 +129,11 @@ export async function manifest(args: {
   }
 
   // Push to S3.
-  const renderer = args.silent ? 'silent' : undefined;
-  const tasks = new Listr(
-    [
-      {
-        title: fs.basename(source),
-        task: async () => bucket.put({ source, key: target, acl: 'public-read' }),
-      },
-    ],
-    { renderer },
-  );
-  try {
-    await tasks.run();
-  } catch (error) {
-    log.error(`\nFailed while pushing to S3.\n`);
-    process.exit(1);
-  }
+  const title = `push ${fs.basename(source)}`;
+  const tasks = cli.task(title, async e => {
+    await bucket.put({ source, key: target, acl: 'public-read' });
+  });
+
+  await tasks.run({ silent });
+  return { manifest };
 }

@@ -19,3 +19,8 @@ export async function testManifestDef(filename: string = 'manifest.yml') {
   const def = await fs.file.loadAndParse<t.IManifest>(path);
   return def;
 }
+
+/**
+ * Clean away temp data after complete.
+ */
+after(async () => fs.remove(fs.resolve('tmp')));

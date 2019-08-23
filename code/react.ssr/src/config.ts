@@ -1,9 +1,16 @@
 import * as dotenv from 'dotenv';
-import { t, fs, semver, util } from './common';
+import { defaultValue, t, fs, semver, util } from './common';
 import { Manifest } from './manifest';
 
-const { stripSlashes } = util;
 dotenv.config();
+
+const { stripSlashes } = util;
+const DEFAULT = {
+  FILE: 'ssr.yml',
+};
+const ERROR = {
+  noFile: (path: string) => `An "${DEFAULT.FILE}" configuration file does not exist at: ${path}`,
+};
 
 /**
  * A parser for the `ssr.yml` configuration file.
@@ -13,21 +20,25 @@ export class Config {
    * [Lifecycle]
    */
   public static create = async (options: { path?: string } = {}) => {
-    const path = fs.resolve(options.path || './ssr.yml');
+    const path = fs.resolve(options.path || DEFAULT.FILE);
     if (!(await fs.pathExists(path))) {
-      throw new Error(`An "ssr.yml" configuration file does not exist at: ${path}`);
+      throw new Error(ERROR.noFile(path));
+    } else {
+      const def = await fs.file.loadAndParse<t.ISsrConfig>(path);
+      return new Config({ def });
     }
-    const def = await fs.file.loadAndParse<t.ISsrConfig>(path);
-    return new Config({ def });
   };
-  // public static createSync = (options: { path?: string } = {}) => {
-  //   const path = fs.resolve(options.path || './ssr.yml');
-  //   if (!fs.pathExistsSync(path)) {
-  //     throw new Error(`An "ssr.yml" configuration file does not exist at: ${path}`);
-  //   }
-  //   const def = fs.file.loadAndParseSync<t.ISsrConfig>(path);
-  //   return new Config({ def });
-  // };
+
+  public static createSync = (options: { path?: string } = {}) => {
+    const path = fs.resolve(options.path || DEFAULT.FILE);
+    if (!fs.pathExistsSync(path)) {
+      throw new Error(`An "ssr.yml" configuration file does not exist at: ${path}`);
+    } else {
+      const def = fs.file.loadAndParseSync<t.ISsrConfig>(path);
+      return new Config({ def });
+    }
+  };
+
   private constructor(args: { def: t.ISsrConfig }) {
     this.def = args.def;
   }
@@ -95,15 +106,19 @@ export class Config {
     return api;
   }
 
+  public get baseUrl() {
+    const s3 = this.s3;
+    return `https://${s3.cdn || s3.endpoint}/${s3.path.base}`;
+  }
+
   public get manifest() {
     // Manifest file.
     const filePath = fs.resolve(this.def.manifest || 'manifest.yml');
 
     // Manifest URL.
     const s3 = this.s3;
-    const urlPath = `${s3.bucket}/${s3.path.base}`;
-    const manifestUrl = `https://${s3.endpoint}/${urlPath}/${s3.path.manifest}`;
-    const baseUrl = `https://${s3.cdn || s3.endpoint}/${urlPath}`;
+    const manifestUrl = `https://${s3.endpoint}/${s3.bucket}/${s3.path.base}/${s3.path.manifest}`;
+    const baseUrl = this.baseUrl;
 
     const config = this; // tslint:disable-line
     const api = {
@@ -112,19 +127,20 @@ export class Config {
         get exists() {
           return fs.pathExists(filePath);
         },
-        async load() {
-          return Manifest.fromFile({ path: filePath, baseUrl: baseUrl });
+        async load(args: { loadBundleManifest?: boolean } = {}) {
+          const { loadBundleManifest } = args;
+          return Manifest.fromFile({ path: filePath, baseUrl, loadBundleManifest });
         },
-        async ensureLatest(options: { minimal?: boolean } = {}) {
+        async ensureLatest(args: { minimal?: boolean } = {}) {
           // Ensure local exists.
           if (!(await api.local.exists)) {
             await config.createFromTemplate();
           }
 
           // Overwrite with latest cloud content (if it exists).
-          const remote = await api.s3.get({ force: true });
+          const remote = await api.s3.pull({ force: true });
           if (remote.ok) {
-            const { minimal } = options;
+            const minimal = defaultValue(args.minimal, true);
             await remote.save(filePath, { minimal });
           }
 
@@ -134,7 +150,7 @@ export class Config {
       },
       s3: {
         url: manifestUrl,
-        async get(args: { force?: boolean; loadBundleManifest?: boolean } = {}) {
+        async pull(args: { force?: boolean; loadBundleManifest?: boolean } = {}) {
           return Manifest.get({ ...args, manifestUrl, baseUrl });
         },
       },

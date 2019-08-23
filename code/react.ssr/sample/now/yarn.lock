@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-"@now/node@^0.12.6":
-  version "0.12.6"
-  resolved "https://registry.yarnpkg.com/@now/node/-/node-0.12.6.tgz#6feecd767c56d9e4b1f58f38be19398a75b01dc0"
-  integrity sha512-CdOfJFZXOjwRgvn24LNCgN+NFcDEu2WTk7diZzrsYXcQcdMgFkLh+A42F/nn4sPNGkgfcfSi83N0ra5OkL/y/A==
-  dependencies:
-    "@types/node" "*"
-
 "@platform/cli.prompt@0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.0.4.tgz#d772b2437295e604a263d82356d1fbb9510ed71f"
@@ -25,10 +18,10 @@
     "@platform/libs" "0.1.1"
     inquirer "6.5.1"
 
-"@platform/cli@^0.3.5":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.3.5.tgz#d3c3edde5aa2a95190787a7c38be40aea26c053f"
-  integrity sha512-mRruZbEytSEwbMYzGboPwO5Y4YoSu+nBPi+eJ6QOd7ymbBCTmFK2TbUmKofzHmcADeGi7OBe9jQoG9Q73uOlJA==
+"@platform/cli@0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.3.6.tgz#ce0b76c4b9dccd043310cc32e332a8c9be999c4e"
+  integrity sha512-dh6AYBRFxkezIwLOuzjpUied0AXI84MTukdSGsZK3tVvMf09FzlXJglTvS/0+Fs6HGPqCAn0QABwKPihAakWfw==
   dependencies:
     "@platform/cli.prompt" "0.0.4"
     "@platform/exec" "0.2.25"
@@ -125,10 +118,10 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/micro@0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.3.1.tgz#55d577bbd8ff9820f9895380d26d246c3c660286"
-  integrity sha512-4g0h5nhoW2poBBPJMYFUI0b5rOJaNInwtCPU2rlJ+3qgy3xBgR+FyIKRepWsbKz45zm5TCIAfdDKIGpHdea6RA==
+"@platform/micro@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.4.0.tgz#dc0776187696f5947849653a9f69722b38bef902"
+  integrity sha512-ttNX8v1P8NlwKDMIYjfjEm4xxav75iPrlndr6pe4IapRE74SRKHPPSTuS5bVaroHtxXzSD/UjMA8ArkDZ5ZXxA==
   dependencies:
     "@platform/libs" "0.1.1"
     "@platform/log" "0.0.139"
@@ -150,19 +143,19 @@
     inquirer "6.5.1"
     semver "6.3.0"
 
-"@platform/react.ssr@^0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-0.8.0.tgz#1e54bb782ba1589e4edbea6970ae8241a63ca919"
-  integrity sha512-8nR1HHmwoBKp2hCzJT/AF+F3bjvAID08YBVYUz6P5K7GsmqC+aPiT8WfgYLcXZEt4G/uTxCmvXLAPMcPUI3ryw==
+"@platform/react.ssr@^0.9.14":
+  version "0.9.14"
+  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-0.9.14.tgz#99e86ad1728945b2810cd0f6e6ba0c6376d99e10"
+  integrity sha512-pYyMTC+5mLl6jQozkZY6xm9wmxpEhh+nf2dccjoPbbpUTcQqNSsLiAE8tdIie70B8CrYU9Hy9/7nZRenQ+CAbQ==
   dependencies:
-    "@platform/cli" "^0.3.5"
+    "@platform/cli" "0.3.6"
     "@platform/exec" "0.2.25"
     "@platform/fs" "0.2.0"
     "@platform/fs.s3" "0.3.0"
     "@platform/http" "0.4.4"
     "@platform/libs" "0.1.1"
     "@platform/log" "0.0.139"
-    "@platform/micro" "0.3.1"
+    "@platform/micro" "0.4.0"
     "@platform/npm" "0.2.8"
     "@platform/react" "0.3.19"
     bowser "2.5.3"
@@ -1370,9 +1363,9 @@ os-tmpdir@~1.0.2:
   integrity sha1-u+Z0BseaqFxc/sdm/lc0VV36EnQ=
 
 p-limit@^2.0.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-2.2.0.tgz#417c9941e6027a9abcba5092dd2904e255b5fbc2"
-  integrity sha512-pZbTJpoUsCzV48Mc9Nh51VbwO0X9cuPFE8gYwx9BTCt9SF8/b7Zljd2fVgOxhIF/HDTKgpVzs+GPhyKfjLLFRQ==
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-2.2.1.tgz#aa07a788cc3151c939b5131f63570f0dd2009537"
+  integrity sha512-85Tk+90UCVWvbDavCLKPOLC9vvY8OwEX/RtKF+/1OADJMVlFfEHOiMTPVyxg7mk/dKa+ipdHm0OUkTvCpMTuwg==
   dependencies:
     p-try "^2.0.0"
 
@@ -1746,9 +1739,9 @@ tmp@^0.0.33:
     os-tmpdir "~1.0.2"
 
 ts-toolbelt@^3.2.22:
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-3.8.0.tgz#bda726025341a5677d49be04fac536d82dfaaf61"
-  integrity sha512-Gjlx1VZR91Ll7FWT0vnJawC/RH6e4Uj7w6605QaIwC7djhkpR765ju1V+pZiejwjf3JFOzMJi78pZ0mfOzVjMg==
+  version "3.8.4"
+  resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-3.8.4.tgz#ada10a013693e5493b7febb72cbc7f29481ab3e3"
+  integrity sha512-JdM3qMor3jrJqtTDiOktBUsMG8GVwrN3NJA/cXlFWW7pcxwDRk0IATF5Co1hSykCphmVZ/aUWBdmhZvxgwBXhw==
 
 tslib@1.10.0, tslib@^1.9.0:
   version "1.10.0"

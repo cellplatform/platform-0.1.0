@@ -13,14 +13,15 @@ export async function run() {
   log.info();
   await cli
     .tasks()
-    .task('pull latest manifest', async e => {
+    .task('pull manifest', async e => {
       manifest = await config.manifest.local.ensureLatest({ minimal: true });
     })
     .run({ concurrent: true });
   log.info();
 
   if (!manifest) {
-    log.error(`Manifest could not be found.`);
+    log.error('\nManifest could not be found.');
+    log.info.gray(config.manifest.s3.url);
     return cli.exit(1);
   }
 

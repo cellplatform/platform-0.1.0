@@ -1,11 +1,11 @@
 {
   "version": 2,
   "name": "react.ssr-test",
-  "alias": "platform.uiharness.com",
+  "alias": "ssr.platform.uiharness.com",
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/index.ts"
+      "dest": "/index.ts"
     }
   ],
   "builds": [
@@ -13,7 +13,7 @@
       "src": "**/*.{ts,tsx}",
       "use": "@now/node",
       "config": {
-        "includeFiles": ["**/*.{yml}"]
+        "includeFiles": ["*.yml"]
       }
     }
   ]
