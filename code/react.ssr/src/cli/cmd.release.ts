@@ -1,7 +1,6 @@
 import { Config } from '../config';
 import { Manifest } from '../manifest';
 import * as push from './cmd.push';
-import * as reset from './cmd.reset';
 import { cli, fs, log } from './common';
 
 /**
@@ -52,7 +51,6 @@ export async function run() {
 
   // Push change to S3 and reset cache.
   await push.manifest({ config, silent: false });
-  await reset.run({ config, manifest, site });
 
   // Finish up.
   log.info();

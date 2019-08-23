@@ -1,4 +1,4 @@
-import { defaultValue, fs, http, t, util } from '../common';
+import { defaultValue, fs, http, t, time, util } from '../common';
 import { Site } from './Site';
 
 type IPullResonse = {
@@ -14,7 +14,8 @@ type IManifestArgs = {
   status?: number;
 };
 
-let URL_CACHE: any = {};
+type IManifestCache = { time: number; manifest: Manifest };
+let URL_CACHE: { [key: string]: IManifestCache } = {};
 
 export class Manifest {
   /**
@@ -125,19 +126,27 @@ export class Manifest {
     baseUrl: string; // If different from `url` (use this to pass in the Edge/CDN alternative URL).
     force?: boolean;
     loadBundleManifest?: boolean;
+    ttl?: number; // msecs
   }) {
+    const { ttl } = args;
     const key = `${args.manifestUrl}:${args.loadBundleManifest || 'false'}`;
 
-    let manifest = URL_CACHE[key] as Manifest;
-    if (manifest && !args.force) {
-      return manifest;
+    // Check the cache.
+    let cached = URL_CACHE[key];
+    if (!args.force && cached && !isCacheExpired({ key, ttl })) {
+      return cached.manifest;
     }
+
+    // Retrieve from S3.
     const res = await Manifest.fromUrl(args);
     if (res.manifest) {
-      manifest = res.manifest;
-      URL_CACHE[key] = manifest;
+      const manifest = res.manifest;
+      cached = { manifest, time: time.now.timestamp };
+      URL_CACHE[key] = cached;
     }
-    return manifest;
+
+    // Finish up.
+    return URL_CACHE[key].manifest;
   }
 
   /**
@@ -257,4 +266,17 @@ export class Manifest {
     await fs.ensureDir(fs.dirname(path));
     await fs.file.stringifyAndSave(path, def);
   }
+}
+
+/**
+ * [Helpers]
+ */
+function isCacheExpired(args: { key: string; ttl?: number }) {
+  const { key, ttl } = args;
+  const cached = URL_CACHE[key];
+  if (!cached || typeof ttl !== 'number') {
+    return false;
+  }
+  const age = time.now.timestamp - cached.time;
+  return age > ttl;
 }

@@ -2,7 +2,6 @@ import * as bundle from './cmd.bundle';
 import * as pull from './cmd.pull';
 import * as push from './cmd.push';
 import * as release from './cmd.release';
-import * as reset from './cmd.reset';
 import * as status from './cmd.status';
 import { cli } from './common';
 
@@ -101,18 +100,6 @@ app
       return yargs;
     },
     async argv => pull.run(),
-  )
-
-  /**
-   * Reset cache.
-   */
-  .command(
-    ['reset'],
-    'Reset the cache on sites.',
-    yargs => {
-      return yargs;
-    },
-    async argv => reset.run(),
   );
 
 /**

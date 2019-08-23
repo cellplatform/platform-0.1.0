@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue } from '../common';
+import { css, GlamorValue, is } from '../common';
 
 export type IMainProps = { style?: GlamorValue };
 export type IMainState = { count?: number; foo?: JSX.Element };
@@ -33,22 +33,35 @@ export class Main extends React.PureComponent<IMainProps, IMainState> {
     return this.state.count || 0;
   }
 
+  public get version() {
+    const el = is.browser ? document.getElementById('root') : undefined;
+    return (el && el.getAttribute('data-version')) || 'loading';
+  }
+
   /**
    * [Render]
    */
   public render() {
     const styles = {
       base: css({
-        fontSize: 34,
+        position: 'relative',
         PaddingX: 50,
         PaddingY: 20,
+        userSelect: 'none',
       }),
-      title: css({ marginBottom: 10 }),
+      title: css({
+        fontSize: 34,
+        marginBottom: 10,
+      }),
       image: css({ borderRadius: 8 }),
+      version: css({
+        Absolute: [5, 10, null, null],
+      }),
     };
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
         <div {...styles.title}>Kitty: {this.count || 0}</div>
+        <div {...styles.version}>{this.version}</div>
         <img src='/images/cat.jpg' {...styles.image} />
         {this.state.foo}
       </div>

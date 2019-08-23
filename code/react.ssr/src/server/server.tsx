@@ -6,19 +6,18 @@ export * from '../types';
 /**
  * Initialize the [server].
  */
-export function init(args: { manifestUrl: string; baseUrl: string; secret?: string }) {
-  const { manifestUrl, baseUrl, secret } = args;
+export function init(args: { manifestUrl: string; baseUrl: string }) {
+  const { manifestUrl, baseUrl } = args;
 
   const res = micro.init({
     log: {
-      secret: Boolean(secret),
       manifestUrl,
       baseUrl,
     },
   });
 
   const { router } = res;
-  routes.init({ router, manifestUrl, baseUrl, secret });
+  routes.init({ router, manifestUrl, baseUrl });
 
   return res;
 }

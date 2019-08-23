@@ -36,7 +36,11 @@ export class Foo extends React.PureComponent<IFooProps, IFooState> {
    * [Render]
    */
   public render() {
-    const styles = { base: css({}) };
+    const styles = {
+      base: css({
+        paddingTop: 30,
+      }),
+    };
     return (
       <div {...css(styles.base, this.props.style)}>
         <div>Dynamic load: {FOO}</div>
