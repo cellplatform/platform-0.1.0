@@ -1,7 +1,7 @@
 import { parse as parseUrl } from 'url';
 import { t, fs } from './common';
 
-const CACHE = { 'Cache-Control': `s-maxage=5000, stale-while-revalidate` };
+const CACHE = { 'Cache-Control': `s-maxage=5, stale-while-revalidate` };
 
 export function init(args: { router: t.IRouter; getManifest: t.GetManifest }) {
   const { router, getManifest } = args;

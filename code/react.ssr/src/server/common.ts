@@ -1,5 +1,5 @@
 import * as t from './types';
 
 export * from '../common';
-export { Manifest } from '../manifest';
+export { Manifest, Site } from '../manifest';
 export { t };
