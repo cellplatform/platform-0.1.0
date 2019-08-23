@@ -61,6 +61,17 @@ yarn ssr release
 ```
 
 
+<p>&nbsp;<p>
+
+## Routes
+The follow system routes are exposed for examining meta-data about the current state and configuration of the server.
+
+```
+https://domain.com/.manifest
+https://domain.com/.manifest/summary
+https://domain.com/.manifest/summary/<site>
+```
+
 
 <p>&nbsp;<p>
 <p>&nbsp;<p>
