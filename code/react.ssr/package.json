@@ -1,7 +1,7 @@
 {
   "name": "@platform/react.ssr",
-  "version": "0.9.3",
-  "description": "An SSR (server-side-render) system for react apps bundled with ParcelJS and hosted on S3.",
+  "version": "0.9.4",
+  "description": "A lightweight SSR (server-side-rendering) system for react apps bundled with ParcelJS and hosted on S3.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
@@ -16,7 +16,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cli": "0.3.5",
+    "@platform/cli": "0.3.6",
     "@platform/exec": "0.2.25",
     "@platform/fs": "0.2.0",
     "@platform/fs.s3": "0.3.0",
