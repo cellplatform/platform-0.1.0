@@ -86,9 +86,10 @@ export function init(args: { router: micro.Router; manifestUrl: string; baseUrl:
     // Redirect the resource-request to S3.
     const location = site.redirectUrl(url.pathname);
     if (location) {
-      const status = 307;
-      const data = location;
-      return { status, headers: CACHE, data };
+      return {
+        status: 307,
+        data: location,
+      };
     }
 
     // No matching resource.

@@ -3,19 +3,20 @@ sites:
     domain:
       - localhost
       - /.*\.now\.sh$/
-    bundle: bundle/0.0.3
+    bundle: bundle/0.0.10
     routes:
       default:
         entry: index.html
         path:
           - /
-          - /foo
+          - /foo/(.*)
   - name: prod
     domain:
       - ssr.platform.uiharness.com
-    bundle: bundle/0.0.9
+    bundle: bundle/0.0.10
     routes:
       default:
         entry: index.html
         path:
           - /
+          - /foo/(.*)
