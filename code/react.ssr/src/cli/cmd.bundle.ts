@@ -13,6 +13,7 @@ export async function run(args: { config?: Config; version?: string; push?: bool
   let manifest: t.IBundleManifest | undefined;
 
   // Load the NPM package closest to the bundle.
+  await fs.ensureDir(config.builder.bundles);
   const pkgPath = await fs.ancestor(config.builder.bundles).first('package.json');
   const pkg = npm.pkg(pkgPath);
   log.info.gray(fs.dirname(pkgPath));

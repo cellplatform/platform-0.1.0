@@ -73,7 +73,7 @@ export class Site {
     }, {});
 
     // Pull the bundle manifest from the network to get [files] and [dirs].
-    let files: string[] = [];
+    let files: t.IBundleFile[] = [];
     let entries: t.IBundleEntryHtml[] = [];
     let size = '-';
     let bytes = -1;
@@ -82,7 +82,6 @@ export class Site {
       const bundleUrl = `${baseUrl}/${bundle}/${constants.PATH.BUNDLE_MANIFEST}`;
       const res = await http.get(bundleUrl);
       const bundleManifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
-
       if (bundleManifest) {
         size = bundleManifest.size;
         bytes = bundleManifest.bytes;
@@ -202,8 +201,8 @@ export class Site {
    */
   public redirectUrl(pathname?: string) {
     const path = util.stripSlashes(pathname);
-    const file = this.files.find(file => path.endsWith(file));
-    return file ? `${this.bundleUrl}/${file}` : '';
+    const file = this.files.find(file => path.endsWith(file.path));
+    return file ? `${this.bundleUrl}/${file.path}` : '';
   }
 
   /**

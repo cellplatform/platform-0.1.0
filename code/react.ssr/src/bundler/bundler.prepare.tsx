@@ -38,20 +38,27 @@ const bundleManifest = {
   async create(args: { path: string; entries?: t.IBundleEntryElement[] }) {
     const dir = fs.dirname(args.path);
     const version = fs.basename(dir);
-    const size = await fs.size.dir(dir);
+    const dirSize = await fs.size.dir(dir);
 
-    let files = await fs.glob.find(fs.join(dir, '**'));
-    files = files.map(path => path.substring(dir.length + 1));
+    const paths = await fs.glob.find(fs.join(dir, '**'));
+    const files = paths.map(path => {
+      const size = dirSize.files.find(item => item.path === path);
+      const file: t.IBundleFile = {
+        path: path.substring(dir.length + 1),
+        bytes: size ? size.bytes : -1,
+      };
+      return file;
+    });
 
     const entries = (args.entries || [])
-      .filter(entry => files.includes(entry.file))
+      .filter(entry => files.some(file => file.path === entry.file))
       .map(entry => renderEntry(entry));
 
     const manifest: t.IBundleManifest = {
       version,
       createdAt: time.now.timestamp,
-      bytes: size.bytes,
-      size: size.toString(),
+      bytes: dirSize.bytes,
+      size: dirSize.toString(),
       files,
       entries,
     };
@@ -74,26 +81,7 @@ const bundleManifest = {
  */
 
 function renderEntry(args: t.IBundleEntryElement): t.IBundleEntryHtml {
-  // try {
   const { id = 'root', file, el } = args;
-
-  // console.log('args.el', args.el);
-  // console.log('-------------------------------------------');
-  // console.log('el', el);
-
-  // console.log('args.el >>>', args.el);
   const { html, css } = renderStatic(() => ReactDOMServer.renderToString(el));
-
-  // console.log('-------------------------------------------');
-  // console.log('html', html);
-  // console.log('css', css);
-  // process.exit(0);
-
   return { file, id, html, css };
-  // } catch (error) {
-  //   console.log('-------------------------------------------');
-  //   console.log('error', error);
-  //   process.exit(1);
-  //   throw error();
-  // }
 }

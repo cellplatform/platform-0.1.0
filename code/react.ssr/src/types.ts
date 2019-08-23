@@ -15,12 +15,13 @@ export type IBundleManifest = {
   createdAt: number;
   bytes: number;
   size: string;
-  files: string[];
   entries: IBundleEntryHtml[];
+  files: IBundleFile[];
 };
 
-export type IBundleEntryElement = { file: string; el: JSX.Element; id?: string };
 export type IBundleEntryHtml = { id: string; file: string; html: string; css: string };
+export type IBundleEntryElement = { file: string; el: JSX.Element; id?: string };
+export type IBundleFile = { path: string; bytes: number };
 
 /**
  * The manigest YAML hosted on S3.
@@ -42,7 +43,7 @@ export type ISiteManifest = {
   size: string;
   bytes: number;
   baseUrl: string;
-  files: string[];
+  files: IBundleFile[];
   entries: IBundleEntryHtml[];
 };
 
