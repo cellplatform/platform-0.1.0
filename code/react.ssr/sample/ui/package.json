@@ -21,5 +21,6 @@
   "files": [
     "lib"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }
