@@ -2,8 +2,15 @@ import * as dotenv from 'dotenv';
 import { defaultValue, t, fs, semver, util } from './common';
 import { Manifest } from './manifest';
 
-const { stripSlashes } = util;
 dotenv.config();
+
+const { stripSlashes } = util;
+const DEFAULT = {
+  FILE: 'ssr.yml',
+};
+const ERROR = {
+  noFile: (path: string) => `An "${DEFAULT.FILE}" configuration file does not exist at: ${path}`,
+};
 
 /**
  * A parser for the `ssr.yml` configuration file.
@@ -13,21 +20,25 @@ export class Config {
    * [Lifecycle]
    */
   public static create = async (options: { path?: string } = {}) => {
-    const path = fs.resolve(options.path || './ssr.yml');
+    const path = fs.resolve(options.path || DEFAULT.FILE);
     if (!(await fs.pathExists(path))) {
-      throw new Error(`An "ssr.yml" configuration file does not exist at: ${path}`);
+      throw new Error(ERROR.noFile(path));
+    } else {
+      const def = await fs.file.loadAndParse<t.ISsrConfig>(path);
+      return new Config({ def });
     }
-    const def = await fs.file.loadAndParse<t.ISsrConfig>(path);
-    return new Config({ def });
   };
-  // public static createSync = (options: { path?: string } = {}) => {
-  //   const path = fs.resolve(options.path || './ssr.yml');
-  //   if (!fs.pathExistsSync(path)) {
-  //     throw new Error(`An "ssr.yml" configuration file does not exist at: ${path}`);
-  //   }
-  //   const def = fs.file.loadAndParseSync<t.ISsrConfig>(path);
-  //   return new Config({ def });
-  // };
+
+  public static createSync = (options: { path?: string } = {}) => {
+    const path = fs.resolve(options.path || DEFAULT.FILE);
+    if (!fs.pathExistsSync(path)) {
+      throw new Error(`An "ssr.yml" configuration file does not exist at: ${path}`);
+    } else {
+      const def = fs.file.loadAndParseSync<t.ISsrConfig>(path);
+      return new Config({ def });
+    }
+  };
+
   private constructor(args: { def: t.ISsrConfig }) {
     this.def = args.def;
   }
@@ -95,6 +106,11 @@ export class Config {
     return api;
   }
 
+  public get baseUrl() {
+    const s3 = this.s3;
+    return `https://${s3.cdn || s3.endpoint}/${s3.path.base}`;
+  }
+
   public get manifest() {
     // Manifest file.
     const filePath = fs.resolve(this.def.manifest || 'manifest.yml');
@@ -102,7 +118,7 @@ export class Config {
     // Manifest URL.
     const s3 = this.s3;
     const manifestUrl = `https://${s3.endpoint}/${s3.bucket}/${s3.path.base}/${s3.path.manifest}`;
-    const baseUrl = `https://${s3.cdn || s3.endpoint}/${s3.path.base}`;
+    const baseUrl = this.baseUrl;
 
     const config = this; // tslint:disable-line
     const api = {

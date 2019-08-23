@@ -118,10 +118,10 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/micro@0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.3.1.tgz#55d577bbd8ff9820f9895380d26d246c3c660286"
-  integrity sha512-4g0h5nhoW2poBBPJMYFUI0b5rOJaNInwtCPU2rlJ+3qgy3xBgR+FyIKRepWsbKz45zm5TCIAfdDKIGpHdea6RA==
+"@platform/micro@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.4.0.tgz#dc0776187696f5947849653a9f69722b38bef902"
+  integrity sha512-ttNX8v1P8NlwKDMIYjfjEm4xxav75iPrlndr6pe4IapRE74SRKHPPSTuS5bVaroHtxXzSD/UjMA8ArkDZ5ZXxA==
   dependencies:
     "@platform/libs" "0.1.1"
     "@platform/log" "0.0.139"
@@ -143,10 +143,10 @@
     inquirer "6.5.1"
     semver "6.3.0"
 
-"@platform/react.ssr@^0.9.8":
-  version "0.9.8"
-  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-0.9.8.tgz#8945b8b87f2b26ce9d0fdaa0861cdc8f51f0e4b6"
-  integrity sha512-buo2g1jCI3O+9l8NDEba6bQmDBBMbvDWGK1uUku5t2rud60gZ/EXzgXAGx12gTpNKWjy1rYCxfXqg3eeJogrKw==
+"@platform/react.ssr@^0.9.13":
+  version "0.9.13"
+  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-0.9.13.tgz#ef35bf3b48f8598f779e7abb086f0a0b1b04b5a2"
+  integrity sha512-Ll911E5xcNO9oMphW9brG6IRbjURMMQGuXHAKU0VzUmQtKLc8aPgIGUAOHTS4p0YHyZKCFZtEpR6YeLnMApMTQ==
   dependencies:
     "@platform/cli" "0.3.6"
     "@platform/exec" "0.2.25"
@@ -155,7 +155,7 @@
     "@platform/http" "0.4.4"
     "@platform/libs" "0.1.1"
     "@platform/log" "0.0.139"
-    "@platform/micro" "0.3.1"
+    "@platform/micro" "0.4.0"
     "@platform/npm" "0.2.8"
     "@platform/react" "0.3.19"
     bowser "2.5.3"

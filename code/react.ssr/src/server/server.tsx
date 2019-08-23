@@ -1,4 +1,5 @@
 import { micro } from '../common';
+import { Config } from '../config';
 import * as routes from './routes';
 
 export * from '../types';
@@ -6,18 +7,16 @@ export * from '../types';
 /**
  * Initialize the [server].
  */
-export function init(args: { manifestUrl: string; baseUrl: string }) {
+export function create(args: { manifestUrl: string; baseUrl: string }) {
   const { manifestUrl, baseUrl } = args;
+  const app = micro.init();
+  routes.init({ router: app.router, manifestUrl, baseUrl });
+  return app;
+}
 
-  const res = micro.init({
-    log: {
-      manifestUrl,
-      baseUrl,
-    },
-  });
-
-  const { router } = res;
-  routes.init({ router, manifestUrl, baseUrl });
-
-  return res;
+export function fromConfig() {
+  const config = Config.createSync();
+  const manifestUrl = config.manifest.s3.url;
+  const baseUrl = config.baseUrl;
+  return create({ manifestUrl, baseUrl });
 }

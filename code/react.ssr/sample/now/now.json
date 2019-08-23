@@ -13,7 +13,7 @@
       "src": "**/*.{ts,tsx}",
       "use": "@now/node",
       "config": {
-        "includeFiles": ["**/*.{yml}"]
+        "includeFiles": ["*.yml"]
       }
     }
   ]

@@ -19,7 +19,7 @@ export async function run() {
     .task('pull manifest', async e => {
       manifest = await config.manifest.local.ensureLatest({ minimal: true });
     })
-    .task('pull version list', async e => {
+    .task('pull versions', async e => {
       versions = await config.s3.versions({ sort: 'DESC' });
     })
     .run({ concurrent: true });

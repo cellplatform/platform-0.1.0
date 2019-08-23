@@ -1,13 +1,16 @@
 {
   "name": "sample.ssr.now",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "scripts": {
     "ssr": "ssr $@",
     "start": "now dev --listen 8080",
     "deploy": "now --prod"
   },
   "dependencies": {
-    "@platform/react.ssr": "^0.9.12"
+    "@platform/react.ssr": "^0.9.13"
+  },
+  "engines": {
+    "node": "10.x"
   },
   "license": "MIT",
   "private": true
