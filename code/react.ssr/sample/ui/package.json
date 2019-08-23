@@ -1,13 +1,13 @@
 {
   "name": "ui",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "ui": "ui $@",
     "start": "ui start web $@",
-    "build": "ts build $@",
+    "build": "ts build $@ --no-esm",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
     "bundle": "ui bundle web"
   },

@@ -1,4 +1,4 @@
-import { fs, http, t, util } from '../common';
+import { defaultValue, fs, http, t, util } from '../common';
 import { Site } from './Site';
 
 type IPullResonse = {
@@ -242,7 +242,7 @@ export class Manifest {
   public async save(path: string, options: { minimal?: boolean } = {}) {
     // Prepare content.
     const def = { ...this.def };
-    if (options.minimal) {
+    if (defaultValue(options.minimal, true)) {
       def.sites.forEach(site => {
         delete site.files;
         delete site.entries;

@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { t, fs, semver, util } from './common';
+import { defaultValue, t, fs, semver, util } from './common';
 import { Manifest } from './manifest';
 
 const { stripSlashes } = util;
@@ -124,7 +124,7 @@ export class Config {
           // Overwrite with latest cloud content (if it exists).
           const remote = await api.s3.pull({ force: true });
           if (remote.ok) {
-            const { minimal } = args;
+            const minimal = defaultValue(args.minimal, true);
             await remote.save(filePath, { minimal });
           }
 

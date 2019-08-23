@@ -12,15 +12,17 @@ export async function run(args: { config?: Config; version?: string; push?: bool
   const { endpoint } = config.s3;
   let manifest: t.IBundleManifest | undefined;
 
-  // Prompt user for version.
-  const version =
-    args.version || (await npm.prompt.incrementVersion({ noChange: true, save: true }));
-  const bundleDir = fs.resolve(fs.join(config.builder.bundles, version));
-
   // Load the NPM package closest to the bundle.
-  const pkgPath = await fs.ancestor(bundleDir).first('package.json');
+  const pkgPath = await fs.ancestor(config.builder.bundles).first('package.json');
   const pkg = npm.pkg(pkgPath);
   log.info.gray(fs.dirname(pkgPath));
+  log.info();
+
+  // Prompt user for version.
+  const version =
+    args.version ||
+    (await npm.prompt.incrementVersion({ path: pkgPath, noChange: true, save: true }));
+  const bundleDir = fs.resolve(fs.join(config.builder.bundles, version));
 
   // Prompt the user whether to push to S3.
   const isPush =
@@ -39,7 +41,7 @@ export async function run(args: { config?: Config; version?: string; push?: bool
     .tasks()
     .task('build', async e => execScript(pkg, e, 'build'))
     .task('bundle', async e => execScript(pkg, e, 'bundle'))
-    .skip('manifest', async e => {
+    .task('manifest', async e => {
       const entries = await getEntries(config);
       const res = await bundler.prepare({ bundleDir, entries, silent: true });
       manifest = res.manifest;
