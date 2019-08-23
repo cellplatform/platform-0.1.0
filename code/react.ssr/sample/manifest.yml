@@ -13,7 +13,7 @@ sites:
   - name: prod
     domain:
       - ssr.platform.uiharness.com
-    bundle: bundle/0.0.10
+    bundle: bundle/0.0.12
     routes:
       default:
         entry: index.html
