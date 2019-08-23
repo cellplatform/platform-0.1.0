@@ -1,7 +1,7 @@
 import { parse as parseUrl } from 'url';
 import { t, pathToRegex } from '../common';
 
-export class Router {
+export class Router implements t.IRouter {
   /**
    * [Lifecycle]
    */

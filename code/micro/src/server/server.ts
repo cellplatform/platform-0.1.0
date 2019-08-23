@@ -5,29 +5,25 @@ import { Router } from '../routing';
 export * from '../types';
 
 const cors = require('micro-cors')();
-
 const IS_PROD = process.env.NODE_ENV === 'production';
 const NOT_FOUND: t.RouteResponse = {
   status: 404,
   data: { status: 404, message: 'Not found.' },
 };
 
-type ILogProps = { [key: string]: string | number | boolean };
-
 /**
  * Initialize the [server].
  */
-export function init(args: { port?: number; log?: ILogProps; cors?: boolean } = {}) {
+export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } = {}) {
   const router = Router.create();
   let handler = requestHandler(router);
   handler = args.cors ? cors(handler) : handler;
-
   const server = micro(handler);
 
   /**
    * [Start] the server listening for requests.
    */
-  const listen = async (options: { port?: number; log?: ILogProps; silent?: boolean } = {}) => {
+  const listen: t.Listen = async (options = {}) => {
     const port = options.port || args.port || 3000;
     await server.listen({ port });
 
@@ -47,10 +43,12 @@ export function init(args: { port?: number; log?: ILogProps; cors?: boolean } = 
       });
       log.info();
     }
+    return api;
   };
 
   // Finish up.
-  return { listen, server, router, handler };
+  const api: t.IMicro = { listen, server, router, handler };
+  return api;
 }
 
 /**
