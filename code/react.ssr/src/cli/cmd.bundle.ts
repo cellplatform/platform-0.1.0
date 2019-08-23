@@ -6,20 +6,29 @@ import * as push from './cmd.push';
 /**
  * Bundle script.
  */
-export async function run() {
+export async function run(args: { config?: Config; version?: string; push?: boolean } = {}) {
   // Setup initial conditions.
-  const config = await Config.create();
+  const config = args.config || (await Config.create());
   const { endpoint } = config.s3;
   let manifest: t.IBundleManifest | undefined;
 
   // Prompt user for version.
-  const version = await npm.prompt.incrementVersion({ noChange: true, save: true });
+  const version =
+    args.version || (await npm.prompt.incrementVersion({ noChange: true, save: true }));
   const bundleDir = fs.resolve(fs.join(config.builder.bundles, version));
 
-  // Prompt the user whether to push to S3.
-  const isPush = (await cli.prompt.list({ message: 'push to S3', items: ['yes', 'no'] })) === 'yes';
+  // Load the NPM package closest to the bundle.
+  const pkgPath = await fs.ancestor(bundleDir).first('package.json');
+  const pkg = npm.pkg(pkgPath);
+  log.info.gray(fs.dirname(pkgPath));
 
-  // Ensure endpoint exists.
+  // Prompt the user whether to push to S3.
+  const isPush =
+    args.push !== undefined
+      ? args.push
+      : (await cli.prompt.list({ message: 'push to S3', items: ['yes', 'no'] })) === 'yes';
+
+  // Ensure end-point exists.
   if (isPush && !endpoint) {
     throw new Error(`The S3 endpoint has not been configured in [ssr.yml].`);
   }
@@ -28,9 +37,9 @@ export async function run() {
   log.info();
   const tasks = cli
     .tasks()
-    .task('build', async e => execScript(e, 'build'))
-    .task('bundle', async e => execScript(e, 'bundle'))
-    .task('manifest', async e => {
+    .task('build', async e => execScript(pkg, e, 'build'))
+    .task('bundle', async e => execScript(pkg, e, 'bundle'))
+    .skip('manifest', async e => {
       const entries = await getEntries(config);
       const res = await bundler.prepare({ bundleDir, entries, silent: true });
       manifest = res.manifest;
@@ -54,9 +63,7 @@ export async function run() {
  * [Helpers]
  */
 
-async function execScript(e: cli.TaskArgs, scriptName: string) {
-  const pkg = npm.pkg();
-
+async function execScript(pkg: npm.NpmPackage, e: cli.TaskArgs, scriptName: string) {
   // Ensure the script exists.
   const exists = Boolean(pkg.scripts.bundle);
   if (!exists) {
@@ -65,7 +72,8 @@ async function execScript(e: cli.TaskArgs, scriptName: string) {
   }
 
   // Run the bundle script.
-  await exec.command(`yarn ${scriptName}`).run({ silent: true });
+  const cwd = pkg.dir;
+  await exec.command(`yarn ${scriptName}`).run({ cwd, silent: true });
 }
 
 const getEntries = async (config: Config) => {

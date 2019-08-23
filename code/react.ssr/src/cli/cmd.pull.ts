@@ -20,7 +20,8 @@ export async function run() {
   log.info();
 
   if (!manifest) {
-    log.error(`Manifest could not be found.`);
+    log.error('\nManifest could not be found.');
+    log.info.gray(config.manifest.s3.url);
     return cli.exit(1);
   }
 

@@ -62,8 +62,15 @@ export async function bundle(
   const s3 = { endpoint, accessKey, secret };
   const bucketKey = fs.join(config.s3.path.base, config.s3.path.bundles, version);
 
-  // Push.
+  // Ensure the bundle exists.
   const bundleDir = fs.resolve(fs.join(bundlesDir, version));
+  if (!(await fs.pathExists(bundleDir))) {
+    log.error(`\nBundle does not exist.`);
+    log.info.gray(bundleDir);
+    cli.exit(1);
+  }
+
+  // Push.
   await bundler.push(s3).bundle({
     bundleDir,
     bucket,

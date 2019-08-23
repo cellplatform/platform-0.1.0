@@ -27,7 +27,8 @@ export async function run() {
 
   // Ensure the local manifest is up-to-date.
   if (!manifest) {
-    log.error(`Manifest could not be found.`);
+    log.error('\nManifest could not be found.');
+    log.info.gray(config.manifest.s3.url);
     return cli.exit(1);
   }
 

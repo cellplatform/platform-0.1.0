@@ -28,9 +28,21 @@ app
     ['bundle', 'b'],
     'Prepare, bundle and push javascript.',
     yargs => {
-      return yargs;
+      return yargs
+        .option('v', {
+          describe: 'The bundle version to push.',
+          type: 'string',
+        })
+        .option('push', {
+          alias: 'p',
+          describe: 'Push the bundle to S3.',
+          type: 'boolean',
+        });
     },
-    async argv => bundle.run(),
+    async argv => {
+      const { v: version, push } = argv;
+      return bundle.run({ version, push });
+    },
   )
 
   /**
@@ -44,12 +56,12 @@ app
         .option('manifest', {
           alias: 'm',
           describe: 'Push the local manifest to S3.',
-          boolean: false,
+          type: 'boolean',
         })
         .option('bundle', {
           alias: 'b',
           describe: 'Push a bundle to S3.',
-          boolean: false,
+          type: 'boolean',
         });
     },
     async argv => {
