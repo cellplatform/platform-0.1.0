@@ -1,7 +1,6 @@
 name: ui
 
 
-
 web:
   port: 1234
   entry: src/entry.tsx
@@ -15,7 +14,6 @@ web:
     - favicon.ico
   bundle:
     output: bundle
-
 
 
 sourcemaps:
