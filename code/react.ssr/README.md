@@ -29,9 +29,15 @@ A lightweight SSR (server-side-rendering) system for react apps bundled with Par
 <p>&nbsp;<p>
 
 
-## Sample
+## Workflow
 
-Develop UI components on local dev-server within the [UIHarness](https://uiharness.com):
+- Develop UI components on local dev-server within the [UIHarness](https://uiharness.com) or anything that can produce a javascript bundle (eg [ParcelJS](https://parceljs.org)):
+
+- Ensure the UI module has a `bundle` script within it's `package.json`.
+
+- Create an `ssr.yml` configuration file for the server.
+
+## Sample
 
 ```bash
 cd sample/ui
@@ -41,21 +47,21 @@ yarn start
 
 Bundle and push to S3
 
-```
+```bash
 cd sample/now
 yarn ssr bundle
 ```
 
 Start local SSR server for testing bundle:
 
-```
+```bash
 cd sample/now
 yarn start
 ```
 
 Release bundled version by updating manifest:
 
-```
+```bash
 cd sample/now
 yarn ssr release
 ```
@@ -64,7 +70,7 @@ yarn ssr release
 <p>&nbsp;<p>
 
 ## Routes
-The follow system routes are exposed for examining meta-data about the current state and configuration of the server.
+The following system routes are exposed for examining meta-data about the current state and configuration of the server.
 
 ```
 https://domain.com/.manifest
