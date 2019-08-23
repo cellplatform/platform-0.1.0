@@ -18,7 +18,7 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
   const router = Router.create();
   let handler = requestHandler(router);
   handler = args.cors ? cors(handler) : handler;
-  const server = micro(handler);
+  const server = micro(handler as any);
 
   /**
    * [Start] the server listening for requests.

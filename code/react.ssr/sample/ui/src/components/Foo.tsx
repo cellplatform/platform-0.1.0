@@ -43,7 +43,9 @@ export class Foo extends React.PureComponent<IFooProps, IFooState> {
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>Dynamic load: {FOO}</div>
+        <div>
+          <strong>Dynamic load:</strong> {FOO}
+        </div>
       </div>
     );
   }

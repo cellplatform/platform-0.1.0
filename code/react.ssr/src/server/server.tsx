@@ -9,7 +9,12 @@ export * from '../types';
  */
 export function create(args: { manifestUrl: string; baseUrl: string }) {
   const { manifestUrl, baseUrl } = args;
-  const app = micro.init();
+  const app = micro.init({
+    log: {
+      manifest: manifestUrl,
+      base: baseUrl,
+    },
+  });
   routes.init({ router: app.router, manifestUrl, baseUrl });
   return app;
 }

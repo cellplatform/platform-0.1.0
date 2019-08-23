@@ -35,7 +35,7 @@ export class Main extends React.PureComponent<IMainProps, IMainState> {
 
   public get version() {
     const el = is.browser ? document.getElementById('root') : undefined;
-    return (el && el.getAttribute('data-version')) || 'loading';
+    return (el && el.getAttribute('data-version')) || 'loading...';
   }
 
   /**

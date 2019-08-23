@@ -3,6 +3,21 @@ import { t, pathToRegex } from '../common';
 
 export class Router implements t.IRouter {
   /**
+   * [Static]
+   */
+  public static params(args: { route: t.IRoute; url: string }) {
+    const { route, url } = args;
+    const { tokens, regex } = route;
+    const parts = regex.exec(url) || [];
+    return tokens.reduce((acc, next, i) => {
+      if (typeof next === 'object') {
+        acc[next.name] = parts[i];
+      }
+      return acc;
+    }, {});
+  }
+
+  /**
    * [Lifecycle]
    */
   public static create = () => new Router();
@@ -13,11 +28,21 @@ export class Router implements t.IRouter {
    */
   public routes: t.IRoute[] = [];
 
-  public handler: t.RouteHandler = async req => {
-    const match = this.find(req);
-    return match
-      ? match.handler(req)
-      : { status: 404, data: { status: 404, message: 'Not found.' } };
+  public handler: t.RouteHandler = async incoming => {
+    const route = this.find(incoming) as t.IRoute;
+    if (!route) {
+      return { status: 404, data: { status: 404, message: 'Not found.' } };
+    }
+
+    const req = {
+      ...incoming,
+      get params() {
+        const url = incoming.url || '';
+        return Router.params({ route, url });
+      },
+    };
+
+    return route.handler(req as t.Request);
   };
 
   /**
@@ -35,8 +60,23 @@ export class Router implements t.IRouter {
     if (exists) {
       throw new Error(`A ${method} route for path '${path}' already exists.`);
     }
-    const regex = pathToRegex(path);
-    this.routes = [...this.routes, { method, path, regex, handler }];
+
+    // Lazy create path pattern matchers.
+    let regex: RegExp | undefined;
+    let tokens: t.Token[] | undefined;
+
+    const route: t.IRoute = {
+      method,
+      path,
+      handler,
+      get regex() {
+        return regex ? regex : (regex = pathToRegex(path));
+      },
+      get tokens() {
+        return tokens ? tokens : (tokens = pathToRegex.parse(path));
+      },
+    };
+    this.routes = [...this.routes, route];
     return this;
   }
   public get = (path: string, handler: t.RouteHandler) => this.add('GET', path, handler);
