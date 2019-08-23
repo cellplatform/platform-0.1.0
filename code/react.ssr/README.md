@@ -5,15 +5,20 @@
 
 A lightweight SSR (server-side-rendering) system for react apps bundled with ParcelJS and hosted on S3.
 
-- Serve from assets hosted in S3/CDN
-- Bundle and push to S3 via command-line.
-- Simple management of release versions (and roll-backs) across multiple sites/environments.
+#### Highlights:
+
+- Store assets on [S3](https://aws.amazon.com/s3/) (or Digital Ocean [Spaces](https://www.digitalocean.com/products/spaces/)).
+- Serve entry HTML from server (immediate load from "server-side-render").
+- `307` redirect all other assets to S3/CDN.
+- Manage lifecycle with simple command-line tools:
+    - Bundle and push to S3 via command-line.
+    - Manage version release (and roll-backs) across multiple sites/environments.
 
 <p>&nbsp;<p>
 
 
 
-![diagram](https://user-images.githubusercontent.com/185555/63076383-2beeb600-bf89-11e9-843f-b221e95d1840.png)
+![diagram](https://user-images.githubusercontent.com/185555/63561626-c6b14b00-c5ae-11e9-9102-796597f4e28c.png)
 
 
 ## Setup
