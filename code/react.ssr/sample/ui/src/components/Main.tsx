@@ -43,11 +43,12 @@ export class Main extends React.PureComponent<IMainProps, IMainState> {
         PaddingX: 50,
         PaddingY: 20,
       }),
+      title: css({ marginBottom: 10 }),
       image: css({ borderRadius: 8 }),
     };
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
-        <div>kitty: {this.count || 0}</div>
+        <div {...styles.title}>Kitty: {this.count || 0}</div>
         <img src='/images/cat.jpg' {...styles.image} />
         {this.state.foo}
       </div>
