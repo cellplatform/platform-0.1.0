@@ -78,15 +78,41 @@ async function execScript(pkg: npm.NpmPackage, e: cli.TaskArgs, scriptName: stri
   await exec.command(`yarn ${scriptName}`).run({ cwd, silent: true });
 }
 
+const getRootDir = async (source: string) => {
+  let path = '';
+  await fs.ancestor(source).walk(async e => {
+    if ((await fs.readdir(e.dir)).includes('package.json')) {
+      return e.stop();
+    } else {
+      path = e.dir;
+    }
+  });
+  return path;
+};
+
 const getEntries = async (config: Config) => {
-  let path = config.builder.entries;
-  if (!path) {
+  let source = config.builder.entries;
+  if (!source) {
     return [];
   }
-  path = fs.resolve(path);
-  const err = `Failed to load bundle entries at path: ${path}.`;
+
+  // Copy the source libs locally.
+  // NB: This is necessary to ensure the [require] import works correctly.
+  source = fs.resolve(source);
+
+  const sourceRoot = await getRootDir(source);
+  const sourcePath = source.substring(sourceRoot.length);
+  const localRoot = fs.resolve(`tmp/${fs.basename(sourceRoot)}`);
+  const localPath = fs.join(localRoot, sourcePath);
+
+  await fs.ensureDir(fs.dirname(localRoot));
+  await fs.remove(localRoot);
+  await fs.copy(sourceRoot, localRoot);
+
+  // Import the entry react element(s).
+  const err = `Failed to load bundle entries at path: ${source}.`;
   try {
-    const res = require(path);
+    const res = require(localPath);
     if (Array.isArray(res.default)) {
       return res.default as t.IBundleEntryElement[];
     }
@@ -95,5 +121,8 @@ const getEntries = async (config: Config) => {
   } catch (error) {
     log.error(`${err} ${error.message}`);
     return [];
+  } finally {
+    // Clean up.
+    await fs.remove(fs.resolve('tmp'));
   }
 };
