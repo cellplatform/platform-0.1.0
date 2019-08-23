@@ -1,0 +1,17 @@
+{
+  "name": "sample.ssr.server",
+  "version": "0.0.0",
+  "scripts": {
+    "ssr": "ssr $@",
+    "start": "ts-node -T index.ts",
+    "watch": "nodemon --watch ../../src -ext ts,tsx yarn start"
+  },
+  "dependencies": {
+    "@platform/react.ssr": "^0.9.15"
+  },
+  "devDependencies": {
+    "ts-node": "^8.3.0"
+  },
+  "license": "MIT",
+  "private": true
+}
