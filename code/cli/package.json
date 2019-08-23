@@ -13,7 +13,7 @@
     "example": "ts-node -T example/cmds $@"
   },
   "dependencies": {
-    "@platform/cli.prompt": "0.0.4",
+    "@platform/cli.prompt": "0.0.5",
     "@platform/exec": "0.2.25",
     "@platform/fs": "0.2.0",
     "@platform/libs": "0.1.1",
