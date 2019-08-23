@@ -4,7 +4,7 @@
   "scripts": {
     "ssr": "ssr $@",
     "start": "ts-node -T index.ts",
-    "watch": "nodemon --watch ../../src -ext ts,tsx yarn start"
+    "watch": "nodemon --watch ../../src -e ts,tsx --delay 2 yarn start"
   },
   "dependencies": {
     "@platform/react.ssr": "^0.9.15"

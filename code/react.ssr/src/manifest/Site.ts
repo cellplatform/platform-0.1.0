@@ -193,17 +193,17 @@ export class Site {
   /**
    * Look up the route at the given path.
    */
-  public route(path?: string) {
-    return path ? this.routes.find(route => route.isMatch(path)) : undefined;
+  public route(pathname?: string) {
+    return pathname ? this.routes.find(route => route.isMatch(pathname)) : undefined;
   }
 
   /**
    * Scan the manifest looking for a match with the given resource.
    */
-  public redirectUrl(path?: string) {
-    path = (path || '').replace(/^\/*/, '').replace(/\/*$/, '');
-    const exists = this.files.includes(path);
-    return exists ? `${this.bundleUrl}/${path}` : '';
+  public redirectUrl(pathname?: string) {
+    const path = util.stripSlashes(pathname);
+    const file = this.files.find(file => path.endsWith(file));
+    return file ? `${this.bundleUrl}/${file}` : '';
   }
 
   /**

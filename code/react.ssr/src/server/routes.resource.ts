@@ -1,5 +1,5 @@
 import { parse as parseUrl } from 'url';
-import * as t from './types';
+import { t, fs } from './common';
 
 const CACHE = { 'Cache-Control': `s-maxage=5000, stale-while-revalidate` };
 
@@ -19,7 +19,8 @@ export function init(args: { router: t.IRouter; getManifest: t.GetManifest }) {
     }
 
     // Retrieve the site definition.
-    const hostname = (req.headers.host || '').split(':')[0];
+    const host = req.headers.host;
+    const hostname = (host || '').split(':')[0];
     const site = manifest.site.byHost(hostname);
     if (!site) {
       const status = 404;
@@ -27,11 +28,12 @@ export function init(args: { router: t.IRouter; getManifest: t.GetManifest }) {
       return { status, data: { status, message } };
     }
 
-    // Check if there is a direct route match and if found SSR the HTML.
+    // Check if there is a direct route match and if found "server-side-render" the HTML.
     const url = parseUrl(req.url || '', false);
     const route = site.route(url.pathname);
+    const ext = fs.extname(url.pathname || ''); // NB: an extension indicates an asset resource, not the entry HTML.
 
-    if (route) {
+    if (route && !ext) {
       const entry = await route.entry();
       if (entry.ok) {
         return {

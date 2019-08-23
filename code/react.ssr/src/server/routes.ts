@@ -1,5 +1,4 @@
-import { Manifest } from '../manifest';
-import * as t from './types';
+import { t, Manifest } from './common';
 import * as meta from './routes.meta';
 import * as resource from './routes.resource';
 

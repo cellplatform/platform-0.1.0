@@ -1,4 +1,4 @@
-import * as t from './types';
+import { t } from './common';
 
 const CACHE = { 'Cache-Control': `s-maxage=5000, stale-while-revalidate` };
 
