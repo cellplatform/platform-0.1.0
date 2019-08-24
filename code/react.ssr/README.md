@@ -39,6 +39,20 @@ A lightweight SSR (server-side-rendering) system for react apps bundled with Par
 
 ## Sample
 
+The `/sample/now` and `/sample/server` are expecting a `.env` file with your S3 account information:
+
+```
+# 
+# Digital Ocean "SPACES" or AWS "S3" connection secrets.
+# 
+SPACES_KEY="..."
+SPACES_SECRET="..."
+
+```
+
+
+#### Examples:
+
 ```bash
 cd sample/ui
 yarn start
