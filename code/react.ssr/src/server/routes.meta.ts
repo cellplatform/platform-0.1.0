@@ -74,7 +74,7 @@ function toSiteInfo(args: { site: Site; name?: boolean; files?: boolean }) {
     const files = site.files.map(file => {
       const { path, bytes } = file;
       const size = fs.size.toString(bytes);
-      return { path, size, bytes };
+      return { path, size };
     });
     info = { ...info, files };
   }
