@@ -9,7 +9,7 @@ A lightweight SSR (server-side-rendering) system for react apps bundled with Par
 
 - Store assets on [S3](https://aws.amazon.com/s3/) (or Digital Ocean [Spaces](https://www.digitalocean.com/products/spaces/)).
 - Serve entry HTML from server (immediate load from "server-side-render").
-- `307` redirect all other assets to S3/CDN.
+- `307` redirect all other assets to S3/CDN (geo-edge cache).
 - Manage lifecycle with simple command-line tools:
     - Bundle and push to S3 via command-line.
     - Manage version release (and roll-backs) across multiple sites/environments.
@@ -53,7 +53,7 @@ SPACES_SECRET="..."
 These are referenced within the `ssr.yml` config file.
 
 
-#### Examples Sequence:
+#### Example sequence:
 
 ```bash
 🌼
