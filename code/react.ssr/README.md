@@ -50,35 +50,43 @@ SPACES_SECRET="..."
 
 ```
 
+These are referenced within the `ssr.yml` config file.
 
-#### Examples:
+
+#### Examples Sequence:
 
 ```bash
+🌼
 cd sample/ui
 yarn start
 ```
 
 
-Bundle and push to S3
+Bundle a version and push it to S3:
 
 ```bash
+🌳
 cd sample/now
 yarn ssr bundle
-```
-
-Start local SSR server for testing bundle:
-
-```bash
-cd sample/now
-yarn start
 ```
 
 Release bundled version by updating manifest:
 
 ```bash
+🌳
 cd sample/now
 yarn ssr release
 ```
+
+Start local SSR server to test the bundle:
+
+```bash
+🌼
+cd sample/now  # or "sample/server"
+yarn start
+```
+
+Open in `http://localhost` browser (address/port exposed in server startup log).
 
 
 <p>&nbsp;<p>
