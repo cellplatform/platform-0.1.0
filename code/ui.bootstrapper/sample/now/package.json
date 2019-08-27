@@ -1,0 +1,17 @@
+{
+  "name": "sample.bootstrapper.now",
+  "version": "0.0.3",
+  "scripts": {
+    "ssr": "ssr $@",
+    "start": "now dev --listen 8080",
+    "deploy": "now --prod"
+  },
+  "dependencies": {
+    "@platform/react.ssr": "^1.0.1"
+  },
+  "engines": {
+    "node": "10.x"
+  },
+  "license": "MIT",
+  "private": true
+}
