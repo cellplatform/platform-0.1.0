@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "name": "ui.bootsrapper-test",
+  "name": "sample.bootstrapper.server",
   "alias": "bootstrapper.platform.uiharness.com",
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/now.ts"
+      "dest": "/src/now.ts"
     }
   ],
   "builds": [
