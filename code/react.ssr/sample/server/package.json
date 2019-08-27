@@ -5,7 +5,7 @@
     "ssr": "ssr $@",
     "now": "now dev --listen 8080",
     "deploy": "now --prod",
-    "start": "ts-node -T server.ts",
+    "start": "ts-node -T src/server",
     "watch": "nodemon --watch ../../src -e ts,tsx --delay 2"
   },
   "dependencies": {
