@@ -12,7 +12,7 @@ export type VisitorArgs = {
   stop(): void;
 };
 
-type FirstAncestorOptions = { type?: 'FILE' | 'DIR' };
+type FirstAncestorOptions = { type?: 'FILE' | 'DIR'; max?: number };
 
 /**
  * Walks up the ancestor tree
@@ -111,15 +111,20 @@ export function ancestor(dir: string) {
 
   const first = async (name: string, options: FirstAncestorOptions = {}) => {
     let res = '';
+    const { max } = options;
     const matcher = match(name);
     const isMatch = (input: string) => matcher.base(input);
     await api.walk(async e => {
+      if (typeof max === 'number' && e.levels > max) {
+        res = '';
+        return e.stop();
+      }
       const name = (await fs.readdir(e.dir)).find(name => isMatch(name));
       if (name) {
         const path = join(e.dir, name);
         if (await is.type(path, options.type)) {
           res = path;
-          e.stop();
+          return e.stop();
         }
       }
     });
@@ -128,9 +133,14 @@ export function ancestor(dir: string) {
 
   const firstSync = (name: string, options: FirstAncestorOptions = {}) => {
     let res = '';
+    const { max } = options;
     const matcher = match(name);
     const isMatch = (input: string) => matcher.base(input);
     api.walkSync(e => {
+      if (typeof max === 'number' && e.levels > max) {
+        res = '';
+        return e.stop();
+      }
       const name = fs.readdirSync(e.dir).find(name => isMatch(name));
       if (name) {
         const path = join(e.dir, name);

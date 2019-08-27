@@ -118,74 +118,103 @@ describe('ancestor', () => {
 
   describe('first', () => {
     const dir = 'test/ancestor/1/2/3';
-    it('file: same level', async () => {
-      const res = await fs.ancestor(dir).first('3.yml');
-      expect(res).to.eql(fs.resolve('test/ancestor/1/2/3/3.yml'));
+
+    describe('file', () => {
+      it('same level', async () => {
+        const res = await fs.ancestor(dir).first('3.yml');
+        expect(res).to.eql(fs.resolve('test/ancestor/1/2/3/3.yml'));
+      });
+
+      it('SYNC same level', () => {
+        const res = fs.ancestor(dir).firstSync('3.yml');
+        expect(res).to.eql(fs.resolve('test/ancestor/1/2/3/3.yml'));
+      });
+
+      it('multiple levels up', async () => {
+        const res = await fs.ancestor(dir).first('1.yml');
+        expect(res).to.eql(fs.resolve('test/ancestor/1/1.yml'));
+      });
+
+      it('SYNC multiple levels up', () => {
+        const res = fs.ancestor(dir).firstSync('1.yml');
+        expect(res).to.eql(fs.resolve('test/ancestor/1/1.yml'));
+      });
+
+      it('minimatch', async () => {
+        const res = await fs.ancestor(dir).first('2.{yml,yaml}');
+        expect(res).to.eql(fs.resolve('test/ancestor/1/2/2.yml'));
+      });
+
+      it('SYNC minimatch', () => {
+        const res = fs.ancestor(dir).firstSync('2.{yml,yaml}');
+        expect(res).to.eql(fs.resolve('test/ancestor/1/2/2.yml'));
+      });
+
+      it('max levels up', async () => {
+        const res1 = await fs.ancestor(dir).first('1.yml', { max: 1 });
+        const res2 = await fs.ancestor(dir).first('1.yml', { max: 2 });
+        const res3 = await fs.ancestor(dir).first('1.yml', { max: 3 });
+        const res4 = await fs.ancestor(dir).first('2.yml', { max: 2 });
+        expect(res1).to.eql('');
+        expect(res2).to.eql(fs.resolve('test/ancestor/1/1.yml'));
+        expect(res3).to.eql(fs.resolve('test/ancestor/1/1.yml'));
+        expect(res4).to.eql(fs.resolve('test/ancestor/1/2/2.yml'));
+      });
+
+      it('SYNC max levels up', () => {
+        const res1 = fs.ancestor(dir).firstSync('1.yml', { max: 1 });
+        const res2 = fs.ancestor(dir).firstSync('1.yml', { max: 2 });
+        const res3 = fs.ancestor(dir).firstSync('1.yml', { max: 3 });
+        const res4 = fs.ancestor(dir).firstSync('2.yml', { max: 2 });
+        expect(res1).to.eql('');
+        expect(res2).to.eql(fs.resolve('test/ancestor/1/1.yml'));
+        expect(res3).to.eql(fs.resolve('test/ancestor/1/1.yml'));
+        expect(res4).to.eql(fs.resolve('test/ancestor/1/2/2.yml'));
+      });
     });
 
-    it('SYNC file: same level', () => {
-      const res = fs.ancestor(dir).firstSync('3.yml');
-      expect(res).to.eql(fs.resolve('test/ancestor/1/2/3/3.yml'));
+    describe('dir', () => {
+      it('parent', async () => {
+        const res = await fs.ancestor(dir).first('3');
+        expect(res).to.eql(fs.resolve(dir));
+      });
+
+      it('SYNC parent', () => {
+        const res = fs.ancestor(dir).firstSync('3');
+        expect(res).to.eql(fs.resolve(dir));
+      });
+
+      it('multiple levels up', async () => {
+        const res = await fs.ancestor(dir).first('test');
+        expect(res).to.eql(fs.resolve('test'));
+      });
+
+      it('SYNC multiple levels up', () => {
+        const res = fs.ancestor(dir).firstSync('test');
+        expect(res).to.eql(fs.resolve('test'));
+      });
     });
 
-    it('file: multiple levels up', async () => {
-      const res = await fs.ancestor(dir).first('1.yml');
-      expect(res).to.eql(fs.resolve('test/ancestor/1/1.yml'));
-    });
+    describe('type', () => {
+      it('files only', async () => {
+        const res = await fs.ancestor(dir).first('test', { type: 'FILE' });
+        expect(res).to.eql('');
+      });
 
-    it('SYNC file: multiple levels up', () => {
-      const res = fs.ancestor(dir).firstSync('1.yml');
-      expect(res).to.eql(fs.resolve('test/ancestor/1/1.yml'));
-    });
+      it('SYNC files only', () => {
+        const res = fs.ancestor(dir).firstSync('test', { type: 'FILE' });
+        expect(res).to.eql('');
+      });
 
-    it('file: minimatch', async () => {
-      const res = await fs.ancestor(dir).first('2.{yml,yaml}');
-      expect(res).to.eql(fs.resolve('test/ancestor/1/2/2.yml'));
-    });
+      it('folders only', async () => {
+        const res = await fs.ancestor(dir).first('1.yml', { type: 'DIR' });
+        expect(res).to.eql('');
+      });
 
-    it('SYNC file: minimatch', () => {
-      const res = fs.ancestor(dir).firstSync('2.{yml,yaml}');
-      expect(res).to.eql(fs.resolve('test/ancestor/1/2/2.yml'));
-    });
-
-    it('dir: parent', async () => {
-      const res = await fs.ancestor(dir).first('3');
-      expect(res).to.eql(fs.resolve(dir));
-    });
-
-    it('SYNC dir: parent', () => {
-      const res = fs.ancestor(dir).firstSync('3');
-      expect(res).to.eql(fs.resolve(dir));
-    });
-
-    it('dir: multiple levels up', async () => {
-      const res = await fs.ancestor(dir).first('test');
-      expect(res).to.eql(fs.resolve('test'));
-    });
-
-    it('SYNC dir: multiple levels up', () => {
-      const res = fs.ancestor(dir).firstSync('test');
-      expect(res).to.eql(fs.resolve('test'));
-    });
-
-    it('type: files only', async () => {
-      const res = await fs.ancestor(dir).first('test', { type: 'FILE' });
-      expect(res).to.eql('');
-    });
-
-    it('SYNC type: files only', () => {
-      const res = fs.ancestor(dir).firstSync('test', { type: 'FILE' });
-      expect(res).to.eql('');
-    });
-
-    it('type: folders only', async () => {
-      const res = await fs.ancestor(dir).first('1.yml', { type: 'DIR' });
-      expect(res).to.eql('');
-    });
-
-    it('SYNC type: folders only', () => {
-      const res = fs.ancestor(dir).firstSync('1.yml', { type: 'DIR' });
-      expect(res).to.eql('');
+      it('SYNC folders only', () => {
+        const res = fs.ancestor(dir).firstSync('1.yml', { type: 'DIR' });
+        expect(res).to.eql('');
+      });
     });
 
     it('no match', async () => {
