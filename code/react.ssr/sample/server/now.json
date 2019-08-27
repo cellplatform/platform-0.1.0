@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "react.ssr-test",
+  "name": "sample.ssr.server",
   "alias": "ssr.platform.uiharness.com",
   "routes": [
     {

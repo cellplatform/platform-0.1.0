@@ -1,16 +1,21 @@
 {
   "name": "sample.ssr.server",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "scripts": {
     "ssr": "ssr $@",
+    "now": "now dev --listen 8080",
+    "deploy": "now --prod",
     "start": "ts-node -T server.ts",
-    "watch": "nodemon --watch ../../src -e ts,tsx --delay 2 yarn start"
+    "watch": "nodemon --watch ../../src -e ts,tsx --delay 2"
   },
   "dependencies": {
-    "@platform/react.ssr": "^1.0.2"
+    "@platform/react.ssr": "^1.0.4"
   },
   "devDependencies": {
     "ts-node": "^8.3.0"
+  },
+  "engines": {
+    "node": "10.x"
   },
   "license": "MIT",
   "private": true

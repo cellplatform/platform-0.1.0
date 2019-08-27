@@ -136,10 +136,10 @@
     inquirer "6.5.1"
     semver "6.3.0"
 
-"@platform/react.ssr@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-1.0.2.tgz#e9a3ff686a1fefc283b06f24ae11c4b668e5b1cd"
-  integrity sha512-5iC14lWxdb+Sbogzdy/ZAZPimIg+nx59Sv7bi26Thr8k97wvhn6uCWNWqzw+f3XsckUduIoTc5T7V4Tco1HxWQ==
+"@platform/react.ssr@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-1.0.4.tgz#80e0d53a432c20cf4136d3e7d9989697256ef5aa"
+  integrity sha512-lG7VeN3062jk0ue1d5J6bYOyPT7rG4X5+x718hczmwf4vmovAo2oI5CgoIjrxK+5hoqo09CNuxF59fOApEXDBA==
   dependencies:
     "@platform/cli" "0.3.7"
     "@platform/exec" "0.2.26"
@@ -153,7 +153,6 @@
     "@platform/react" "0.3.20"
     bowser "2.5.3"
     cheerio "1.0.0-rc.3"
-    dotenv "8.1.0"
     listr "0.14.3"
     path-to-regexp "3.0.0"
     semver "6.3.0"

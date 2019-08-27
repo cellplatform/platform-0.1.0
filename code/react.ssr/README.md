@@ -66,7 +66,7 @@ Bundle a version and push it to S3:
 
 ```bash
 🌳
-cd sample/now
+cd sample/server
 yarn ssr bundle
 ```
 
@@ -74,7 +74,7 @@ Release bundled version by updating manifest:
 
 ```bash
 🌳
-cd sample/now
+cd sample/server
 yarn ssr release
 ```
 
@@ -82,7 +82,7 @@ Start local SSR server to test the bundle:
 
 ```bash
 🌼
-cd sample/now  # or "sample/server"
+cd sample/server 
 yarn start
 ```
 
