@@ -123,8 +123,18 @@ describe('ancestor', () => {
       expect(res).to.eql(fs.resolve('test/ancestor/1/2/3/3.yml'));
     });
 
+    it('SYNC file: same level', () => {
+      const res = fs.ancestor(dir).firstSync('3.yml');
+      expect(res).to.eql(fs.resolve('test/ancestor/1/2/3/3.yml'));
+    });
+
     it('file: multiple levels up', async () => {
       const res = await fs.ancestor(dir).first('1.yml');
+      expect(res).to.eql(fs.resolve('test/ancestor/1/1.yml'));
+    });
+
+    it('SYNC file: multiple levels up', () => {
+      const res = fs.ancestor(dir).firstSync('1.yml');
       expect(res).to.eql(fs.resolve('test/ancestor/1/1.yml'));
     });
 
@@ -133,8 +143,18 @@ describe('ancestor', () => {
       expect(res).to.eql(fs.resolve('test/ancestor/1/2/2.yml'));
     });
 
+    it('SYNC file: minimatch', () => {
+      const res = fs.ancestor(dir).firstSync('2.{yml,yaml}');
+      expect(res).to.eql(fs.resolve('test/ancestor/1/2/2.yml'));
+    });
+
     it('dir: parent', async () => {
       const res = await fs.ancestor(dir).first('3');
+      expect(res).to.eql(fs.resolve(dir));
+    });
+
+    it('SYNC dir: parent', () => {
+      const res = fs.ancestor(dir).firstSync('3');
       expect(res).to.eql(fs.resolve(dir));
     });
 
@@ -143,13 +163,28 @@ describe('ancestor', () => {
       expect(res).to.eql(fs.resolve('test'));
     });
 
+    it('SYNC dir: multiple levels up', () => {
+      const res = fs.ancestor(dir).firstSync('test');
+      expect(res).to.eql(fs.resolve('test'));
+    });
+
     it('type: files only', async () => {
       const res = await fs.ancestor(dir).first('test', { type: 'FILE' });
       expect(res).to.eql('');
     });
 
+    it('SYNC type: files only', () => {
+      const res = fs.ancestor(dir).firstSync('test', { type: 'FILE' });
+      expect(res).to.eql('');
+    });
+
     it('type: folders only', async () => {
       const res = await fs.ancestor(dir).first('1.yml', { type: 'DIR' });
+      expect(res).to.eql('');
+    });
+
+    it('SYNC type: folders only', () => {
+      const res = fs.ancestor(dir).firstSync('1.yml', { type: 'DIR' });
       expect(res).to.eql('');
     });
 
@@ -161,6 +196,16 @@ describe('ancestor', () => {
       await test('/NO_EXIST');
       await test('');
       await test(' ');
+    });
+
+    it('SYNC no match', () => {
+      const test = (input: string) => {
+        const res = fs.ancestor(dir).firstSync(input);
+        expect(res).to.eql('');
+      };
+      test('/NO_EXIST');
+      test('');
+      test(' ');
     });
   });
 });

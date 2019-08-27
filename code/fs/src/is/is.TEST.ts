@@ -31,4 +31,22 @@ describe('is', () => {
     expect(is.fileSync('')).to.eql(false);
     expect(is.fileSync('/NO_EXIST')).to.eql(false);
   });
+
+  it('is type', async () => {
+    expect(await is.type('src')).to.eql(true);
+    expect(await is.type('src', 'DIR')).to.eql(true);
+    expect(await is.type('src', 'FILE')).to.eql(false);
+
+    expect(await is.type('src/index.ts')).to.eql(true);
+    expect(await is.type('src/index.ts', 'FILE')).to.eql(true);
+    expect(await is.type('src/index.ts', 'DIR')).to.eql(false);
+
+    expect(is.typeSync('src')).to.eql(true);
+    expect(is.typeSync('src', 'DIR')).to.eql(true);
+    expect(is.typeSync('src', 'FILE')).to.eql(false);
+
+    expect(is.typeSync('src/index.ts')).to.eql(true);
+    expect(is.typeSync('src/index.ts', 'FILE')).to.eql(true);
+    expect(is.typeSync('src/index.ts', 'DIR')).to.eql(false);
+  });
 });

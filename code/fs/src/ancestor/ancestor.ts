@@ -12,6 +12,8 @@ export type VisitorArgs = {
   stop(): void;
 };
 
+type FirstAncestorOptions = { type?: 'FILE' | 'DIR' };
+
 /**
  * Walks up the ancestor tree
  */
@@ -107,6 +109,40 @@ export function ancestor(dir: string) {
     return args;
   };
 
+  const first = async (name: string, options: FirstAncestorOptions = {}) => {
+    let res = '';
+    const matcher = match(name);
+    const isMatch = (input: string) => matcher.base(input);
+    await api.walk(async e => {
+      const name = (await fs.readdir(e.dir)).find(name => isMatch(name));
+      if (name) {
+        const path = join(e.dir, name);
+        if (await is.type(path, options.type)) {
+          res = path;
+          e.stop();
+        }
+      }
+    });
+    return res;
+  };
+
+  const firstSync = (name: string, options: FirstAncestorOptions = {}) => {
+    let res = '';
+    const matcher = match(name);
+    const isMatch = (input: string) => matcher.base(input);
+    api.walkSync(e => {
+      const name = fs.readdirSync(e.dir).find(name => isMatch(name));
+      if (name) {
+        const path = join(e.dir, name);
+        if (is.typeSync(path, options.type)) {
+          res = path;
+          e.stop();
+        }
+      }
+    });
+    return res;
+  };
+
   /**
    * Ancestor API.
    */
@@ -123,34 +159,8 @@ export function ancestor(dir: string) {
      * Walks up the folder tree looking for the given file or folder
      * within each folder in the hierarchy.
      */
-    first: async (name: string, options: { type?: 'FILE' | 'DIR' } = {}) => {
-      let res = '';
-      const matcher = match(name);
-      const isMatch = (input: string) => matcher.base(input);
-
-      const isType = async (path: string) => {
-        switch (options.type) {
-          case 'FILE':
-            return is.file(path);
-          case 'DIR':
-            return is.dir(path);
-          default:
-            return true; // Accept any.
-        }
-      };
-
-      await api.walk(async e => {
-        const name = (await fs.readdir(e.dir)).find(name => isMatch(name));
-        if (name) {
-          const path = join(e.dir, name);
-          if (await isType(path)) {
-            res = path;
-            e.stop();
-          }
-        }
-      });
-      return res;
-    },
+    first,
+    firstSync,
   };
 
   // Finish up.

@@ -19,3 +19,27 @@ export async function file(path: string) {
 export function fileSync(path: string) {
   return fs.pathExistsSync(path) ? fs.lstatSync(path).isFile() : false;
 }
+
+/**
+ * Determines if type of path is the given type of file-system object.
+ */
+export async function type(path: string, type?: 'FILE' | 'DIR') {
+  switch (type) {
+    case 'FILE':
+      return file(path);
+    case 'DIR':
+      return dir(path);
+    default:
+      return true; // Accept any.
+  }
+}
+export function typeSync(path: string, type?: 'FILE' | 'DIR') {
+  switch (type) {
+    case 'FILE':
+      return fileSync(path);
+    case 'DIR':
+      return dirSync(path);
+    default:
+      return true; // Accept any.
+  }
+}
