@@ -9,6 +9,7 @@ import { size } from '../size';
 import { unzip, zip } from '../zip';
 import { ancestor } from '../ancestor';
 import { match } from '../match';
+import { env } from '../env';
 
 /**
  * Extended [file-system] object.
@@ -50,6 +51,11 @@ export const fs = {
    * Flag helpers.
    */
   is,
+
+  /**
+   * Load .env files into process.env.
+   */
+  env,
 
   /**
    * Zipping.
