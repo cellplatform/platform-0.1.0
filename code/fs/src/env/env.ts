@@ -2,6 +2,13 @@ import * as dotenv from 'dotenv';
 import { resolve, join } from 'path';
 import { ancestor } from '../ancestor';
 
+/**
+ * TODO
+ * - NOW - no run
+ * - test on ancestor (number)
+ * - values<T>(): {...}
+ */
+
 export type IEnvLoadArgs = {
   debug?: boolean;
   ancestor?: boolean | number;
@@ -9,35 +16,60 @@ export type IEnvLoadArgs = {
   file?: string;
 };
 
+export type IEnvVariables = { [key: string]: string | number | boolean };
+
+let IS_LOADED: { [key: string]: boolean } = {};
+
+/**
+ * Resets the `load` cache.
+ */
+export function reset() {
+  IS_LOADED = {};
+}
+
 /**
  * Loads the [.env] file into [process.env] with the
  * ability to walk up the file-hierarchy looking for
  * the first file match.
  */
-export async function load(args: IEnvLoadArgs = {}) {
-  const { debug, file = '.env' } = args;
-  const dir = args.dir === undefined ? resolve('.') : resolve(args.dir);
+export async function load(options: IEnvLoadArgs = {}) {
+  const { debug, file = '.env' } = options;
+
+  // Exit if running on `zeit/now`.
+  // NB: [.env] files should not be used on zeit, rather `now secrets` should be used.
+  //     Skipping this step now avoid a synchronous file-system call.
+  if (isZeitNow()) {
+    return;
+  }
+
+  // Retrieve path.
+  const dir = options.dir === undefined ? resolve('.') : resolve(options.dir);
   let path: string | undefined;
 
+  // Check if these args have already been run.
+  const key = `${dir}:${options.file || ''}:${options.ancestor || false}`;
+  if (IS_LOADED[key]) {
+    return;
+  }
+
   // Build the file path to load.
-  if (args.ancestor === true || typeof args.ancestor === 'number') {
-    const max = typeof args.ancestor === 'number' ? args.ancestor : undefined;
+  if (options.ancestor === true || typeof options.ancestor === 'number') {
+    const max = typeof options.ancestor === 'number' ? options.ancestor : undefined;
     path = ancestor(dir).firstSync(file, { type: 'FILE', max });
     path = path ? path : undefined;
   } else {
     path = join(dir, file);
   }
 
-  const res = dotenv.config({ path, debug });
-  const { parsed, error } = res;
-  const ok = !Boolean(error);
-  return { ok, path, parsed, error };
+  // Load.
+  dotenv.config({ path, debug });
+  IS_LOADED[key] = true;
 }
 
 /**
- * Strongly typed way of retrieving environment variables.
+ * Strongly typed method of retrieving a single environment variables.
  */
-export function value<T extends string | number | boolean>(
+export function value<T extends string | number | boolean = string>(
   key: string,
   options: { throw?: boolean } = {},
 ): T {
@@ -68,3 +100,24 @@ export function value<T extends string | number | boolean>(
 
   return done(res);
 }
+
+/**
+ * Loads and reads strongly configuration values.
+ */
+export function values<T extends IEnvVariables>(keys: Array<keyof T>, options: IEnvLoadArgs = {}) {
+  load(options);
+  return keys.reduce((acc, next) => {
+    const key = next as string;
+    acc[key] = value(key);
+    return acc;
+  }, {}) as T;
+}
+
+/**
+ * [Helpers]
+ */
+
+const isZeitNow = () => {
+  const region = value('NOW_REGION');
+  return typeof region === 'string' && region.length > 0 && !region.startsWith('dev');
+};
