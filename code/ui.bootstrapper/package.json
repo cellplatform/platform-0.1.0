@@ -5,6 +5,7 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
+    "ssr": "cd sample/now && yarn ssr $@",
     "start": "node .",
     "watch": "nodemon .",
     "test": "ts test",

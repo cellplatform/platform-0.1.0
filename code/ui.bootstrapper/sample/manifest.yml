@@ -9,7 +9,6 @@ sites:
         entry: index.html
         path:
           - /
-          - /foo/(.*)
   - name: prod
     domain:
       - bootstrapper.platform.uiharness.com
@@ -19,4 +18,3 @@ sites:
         entry: index.html
         path:
           - /
-          - /foo/(.*)

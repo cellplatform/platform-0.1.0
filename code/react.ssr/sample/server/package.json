@@ -3,7 +3,7 @@
   "version": "0.0.4",
   "scripts": {
     "ssr": "ssr $@",
-    "start": "ts-node -T local.ts",
+    "start": "ts-node -T server.ts",
     "watch": "nodemon --watch ../../src -e ts,tsx --delay 2 yarn start"
   },
   "dependencies": {

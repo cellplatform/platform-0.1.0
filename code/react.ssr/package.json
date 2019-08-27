@@ -28,7 +28,6 @@
     "@platform/react": "0.3.20",
     "bowser": "2.5.3",
     "cheerio": "1.0.0-rc.3",
-    "dotenv": "8.1.0",
     "listr": "0.14.3",
     "path-to-regexp": "3.0.0",
     "semver": "6.3.0"
@@ -38,7 +37,6 @@
     "@platform/ts": "3.5.1",
     "@types/bowser": "1.1.1",
     "@types/cheerio": "0.22.13",
-    "@types/dotenv": "6.1.1",
     "@types/semver": "6.0.1"
   },
   "files": [

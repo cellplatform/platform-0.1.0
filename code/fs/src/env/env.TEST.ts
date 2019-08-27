@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { fs } from '../common';
-import { resolve, join } from 'path';
+import { join, resolve } from 'path';
+
 import { env } from '.';
 
 type IMyVars = {
@@ -11,13 +11,7 @@ type IMyVars = {
 };
 
 const dir = resolve('test/env');
-const file = join(dir, '.env');
-const content = `
-FS_ENV_TEXT="foo"
-FS_ENV_NUMBER=123
-FS_ENV_TRUE=true
-FS_ENV_FALSE= False
-`;
+const file = '.test.env';
 
 const removeVars = () => {
   delete process.env.FS_ENV_TEXT;
@@ -29,7 +23,6 @@ const removeVars = () => {
 
 const setup = async () => {
   removeVars();
-  await fs.writeFile(file, content);
   env.reset();
 };
 
@@ -46,7 +39,7 @@ describe('env', () => {
       env.reset();
       delete process.env.FS_ENV_TEXT;
       expect(process.env.FS_ENV_TEXT).to.eql(undefined);
-      env.load(args);
+      env.load({ file, ...args });
       expect(process.env.FS_ENV_TEXT).to.eql(expected);
     };
 
@@ -76,7 +69,7 @@ describe('env', () => {
 
   describe('value', () => {
     it('read (types)', () => {
-      env.load({ dir });
+      env.load({ dir, file });
 
       expect(env.value('NO_EXIST')).to.eql(undefined);
 
@@ -90,7 +83,7 @@ describe('env', () => {
     });
 
     it('value (throws if not found)', () => {
-      env.load({ dir });
+      env.load({ dir, file });
       const fn = () => env.value('NO_EXIST', { throw: true });
       expect(fn).to.throw(/The process\.env\[\"NO_EXIST\"\] variable does not exist/);
     });
@@ -113,7 +106,7 @@ describe('env', () => {
     it('values', () => {
       const res = env.values<IMyVars>(
         ['FS_ENV_TEXT', 'FS_ENV_TRUE', 'FS_ENV_FALSE', 'FS_ENV_NUMBER'],
-        { dir },
+        { dir, file },
       );
       expect(res.FS_ENV_TEXT).to.eql('foo');
       expect(res.FS_ENV_NUMBER).to.eql(123);

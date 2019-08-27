@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/exec@0.2.25":
-  version "0.2.25"
-  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.25.tgz#fa1472465216c3a372de87825ea9cb8c4159cc78"
-  integrity sha512-+f4bOTQb6mfByMFziJ97yiDKlugXSaxZNx8k/De+/ETHPQvJhQRcZHigdqOzBEVCqKDJYViqu8MViUenhKUqpg==
+"@platform/exec@0.2.26":
+  version "0.2.26"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.26.tgz#84de37afee4f9541e045ac70e4464440d7c862ee"
+  integrity sha512-PXlLPT4B3wNvVXK3QWvRD6zS6P9sesjYEw/3aPsl8YkyRKV7rscUGWjbWSGNMYexJbvcHi0sTs2IhxBfnjq0Mg==
   dependencies:
     "@platform/libs" "0.1.1"
     "@types/chalk" "2.2.0"
@@ -30,14 +30,15 @@
     chalk "2.4.2"
     listr "0.14.3"
 
-"@platform/fs@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.2.0.tgz#36adbd3806531c62277681505ad92c39341c53e8"
-  integrity sha512-uynXc7m5FJFemOTnEdGCxn5ZADp2S16PcaYt6jiYwCPS4k6/84091OvHC6fqku0mfNGj87Z4BSGzPO2DYqHfBw==
+"@platform/fs@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.3.0.tgz#cf854d2ba081057be9cd5d90f358e5f5eac523ff"
+  integrity sha512-vQXjcYzOqSJiNzpls0Ljvpaf8NH8ZVYW6XpVixceoWw2fO0KSp8M6s0OwiWD2V4OBdFuuLr6nSt8IVMvp+qXjg==
   dependencies:
     "@types/fs-extra" "8.0.0"
     "@types/js-yaml" "3.12.1"
     archiver "3.1.1"
+    dotenv "8.1.0"
     extract-zip "1.6.7"
     filesize "4.1.2"
     fs-extra "8.1.0"
@@ -82,13 +83,13 @@
     tslint-react "4.0.0"
     typescript "3.5.3"
 
-"@platform/ts@3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.5.0.tgz#1a0fe9d5c96c6dbf4b61f327209acac2e373e776"
-  integrity sha512-Lkrdjte9Trm7YELhrcfIjbQpQ4vL6guzWM+Is+SIV7CX+ayeigPAAPqMJ4fKjINhZdtmy3aL6vzWWedYndXQOQ==
+"@platform/ts@3.5.1":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.5.1.tgz#0a057754a55b87edfe172604b5ddba10f16b25e3"
+  integrity sha512-7wzoVhQYvy7Y+LTdP7h0SwyagFssNVUGTTVvNdT2AvEkFd/HKdR+Ssgl7khTPM4jdERK7bveq45LCh/AHVxF2g==
   dependencies:
-    "@platform/exec" "0.2.25"
-    "@platform/fs" "0.2.0"
+    "@platform/exec" "0.2.26"
+    "@platform/fs" "0.3.0"
     "@platform/libs" "0.1.1"
     "@platform/ts.libs" "3.5.6"
 
@@ -509,6 +510,11 @@ diff@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/diff/-/diff-4.0.1.tgz#0c667cb467ebbb5cea7f14f135cc2dba7780a8ff"
   integrity sha512-s2+XdvhPCOF01LRQBC8hf4vhbVmI2CGS5aZnxLJlT5FtdhPCDFq80q++zK2KlrVorVDdL5BOGZ/VfLrVtYNF+Q==
+
+dotenv@8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.1.0.tgz#d811e178652bfb8a1e593c6dd704ec7e90d85ea2"
+  integrity sha512-GUE3gqcDCaMltj2++g6bRQ5rBJWtkWTmqmD0fo1RnnMuUqHNCt2oTPeDnS9n6fKYvlhn7AeBkb38lymBtWBQdA==
 
 dynamics.js@1.1.5:
   version "1.1.5"
