@@ -70,7 +70,7 @@
     rxjs "6.5.2"
     tslib "1.10.0"
 
-"@platform/react@^0.3.20":
+"@platform/react@0.3.20":
   version "0.3.20"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.20.tgz#910c952017d27be41578c0c8c01e11f2796fc81d"
   integrity sha512-b+u7uPrNjTJGIS3f5h6s+aajkK/ENAgEru5KdOo8fNn2TurzYoJ05ytGyTRnCHkC26gh8wsowpbVfpoa85IOxA==
@@ -121,6 +121,13 @@
   version "0.0.27"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.27.tgz#6fcea781f67010b7b35436013394048f5e893556"
   integrity sha512-sGDmX/Y3HZOIk5Whhw1jnHo+n7dV8iTQ+eyruB9Am2T18isgoLRt0vdUFsAka6AJeklp6+27eYkEzaJSYA3GHg==
+
+"@platform/ui.spinner@^0.0.83":
+  version "0.0.83"
+  resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.83.tgz#7bf17a86ae8287e5385f68c6ea1e259c82992d55"
+  integrity sha512-yHFp6quJTZSA60CGPD6OZdrv9Xz6xim0VUfnw3KWkQqwf7Tw4UxMYwdVYtorZb4y9aWxFuvbFoEsUDYYIiIl/A==
+  dependencies:
+    "@platform/react" "0.3.20"
 
 "@platform/util.is@0.0.89":
   version "0.0.89"

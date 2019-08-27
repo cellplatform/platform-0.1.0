@@ -1,7 +1,7 @@
 {
-  "name": "@platform/ui.bootstrapper",
+  "name": "@platform/ui.loader",
   "version": "0.0.1",
-  "description": "Module loader for progressively loading UI modules dynamically.",
+  "description": "Module bootstrapper for progressively loading UI modules dynamically.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@platform/libs": "0.1.1",
-    "@platform/react": "0.3.20"
+    "@platform/react": "0.3.20",
+    "@platform/ui.spinner": "^0.0.83"
   },
   "devDependencies": {
     "@platform/test": "0.0.61",

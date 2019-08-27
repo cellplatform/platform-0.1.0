@@ -11,7 +11,7 @@ s3:
   secret: SPACES_SECRET
   bucket: platform
   path: 
-    base: modules/ui.bootstrapper
+    base: modules/ui.loader
     manifest: manifest.yml 
     bundles: bundle
 
