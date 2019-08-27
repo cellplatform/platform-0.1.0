@@ -33,3 +33,38 @@ export async function load(args: IEnvLoadArgs = {}) {
   const ok = !Boolean(error);
   return { ok, path, parsed, error };
 }
+
+/**
+ * Strongly typed way of retrieving environment variables.
+ */
+export function value<T extends string | number | boolean>(
+  key: string,
+  options: { throw?: boolean } = {},
+): T {
+  const done = (value: any) => {
+    if (options.throw && !Boolean(value)) {
+      throw new Error(`The process.env["${key}"] variable does not exist.`);
+    }
+    return value as T;
+  };
+
+  const res = process.env[key as string];
+  if (!res) {
+    return done(undefined);
+  }
+
+  const upper = res.toUpperCase();
+  if (upper === 'TRUE') {
+    return done(true);
+  }
+  if (upper === 'FALSE') {
+    return done(false);
+  }
+
+  const num = parseFloat(res);
+  if (num !== undefined && num.toString().length === res.length && !Number.isNaN(num)) {
+    return done(num);
+  }
+
+  return done(res);
+}
