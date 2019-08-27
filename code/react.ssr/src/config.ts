@@ -1,8 +1,5 @@
-import * as dotenv from 'dotenv';
 import { defaultValue, t, fs, semver, util } from './common';
 import { Manifest } from './manifest';
-
-dotenv.config();
 
 const { stripSlashes } = util;
 const DEFAULT = {

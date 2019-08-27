@@ -1,3 +1,5 @@
+import './env';
+
 import * as constants from './constants';
 import * as t from './types';
 import * as util from './util';
