@@ -1,14 +1,14 @@
 {
   "name": "sample.ssr.server",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
     "ssr": "ssr $@",
     "start": "ts-node -T index.ts",
     "watch": "nodemon --watch ../../src -e ts,tsx --delay 2 yarn start"
   },
   "dependencies": {
-    "@platform/micro": "^0.4.1",
-    "@platform/react.ssr": "^1.0.1"
+    "@platform/micro": "^0.4.2",
+    "@platform/react.ssr": "^1.0.2"
   },
   "devDependencies": {
     "ts-node": "^8.3.0"

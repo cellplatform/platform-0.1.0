@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli.prompt",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Helpers for raising user prompts within a command-line-interface.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.0.61",
-    "@platform/ts": "3.5.0",
+    "@platform/ts": "3.5.1",
     "@types/inquirer": "6.5.0"
   },
   "files": [

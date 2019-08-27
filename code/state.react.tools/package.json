@@ -1,6 +1,6 @@
 {
   "name": "@platform/state.react.tools",
-  "version": "0.4.21",
+  "version": "0.4.22",
   "description": "Tools and debug UI for working with `state.react`.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,12 +15,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.3.19",
-    "@platform/state": "0.4.11",
-    "@platform/state.react": "0.4.15",
-    "@platform/ui.button": "0.2.16",
-    "@platform/ui.icon": "0.0.83",
-    "@platform/ui.text": "0.2.32"
+    "@platform/react": "0.3.20",
+    "@platform/state": "0.4.12",
+    "@platform/state.react": "0.4.16",
+    "@platform/ui.button": "0.2.17",
+    "@platform/ui.icon": "0.0.84",
+    "@platform/ui.text": "0.2.33"
   },
   "devDependencies": {
     "@uiharness/dev": "0.9.2",
