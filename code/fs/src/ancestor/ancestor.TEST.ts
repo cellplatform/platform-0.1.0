@@ -26,6 +26,15 @@ describe('ancestor', () => {
       expect(res.dir).to.eql(fs.resolve(dir));
     });
 
+    it('SYNC: stops immediately (sync)', () => {
+      const ancestor = fs.ancestor(dir);
+      const res = ancestor.walkSync(e => e.stop());
+      expect(res.levels).to.eql(0);
+      expect(res.isStopped).to.eql(true);
+      expect(res.isRoot).to.eql(false);
+      expect(res.dir).to.eql(fs.resolve(dir));
+    });
+
     it('stops immediately (async)', async () => {
       const ancestor = fs.ancestor(dir);
       const res = await ancestor.walk(async e => {
@@ -37,9 +46,25 @@ describe('ancestor', () => {
       expect(res.dir).to.eql(fs.resolve(dir));
     });
 
+    it('SYNC: throws when visitor is (async)', async () => {
+      const ancestor = fs.ancestor(dir);
+      const fn = () => ancestor.walkSync(async e => true);
+      expect(fn).to.throw(/Sync version of walk should not return a promise/);
+    });
+
     it('stop at module root', async () => {
       const ancestor = fs.ancestor(dir);
       const res = await ancestor.walk(async e => {
+        if (e.dir.endsWith('/fs/test')) {
+          e.stop();
+        }
+      });
+      expect(res.levels).to.eql(4);
+    });
+
+    it('SYNC: stop at module root', () => {
+      const ancestor = fs.ancestor(dir);
+      const res = ancestor.walkSync(e => {
         if (e.dir.endsWith('/fs/test')) {
           e.stop();
         }
@@ -56,6 +81,15 @@ describe('ancestor', () => {
       expect(res.isRoot).to.eql(true);
     });
 
+    it('SYNC: walks up to root (not stopped)', () => {
+      const ancestor = fs.ancestor(dir);
+      const res = ancestor.walkSync(e => false);
+      expect(res.levels).to.greaterThan(6);
+      expect(res.dir).to.eql('/');
+      expect(res.isStopped).to.eql(false);
+      expect(res.isRoot).to.eql(true);
+    });
+
     it('starting path is a file (not a directory)', async () => {
       const dir = 'test/ancestor/1/1.yml';
       const ancestor = fs.ancestor(dir);
@@ -63,9 +97,22 @@ describe('ancestor', () => {
       expect(res.dir).to.eql(fs.resolve('test/ancestor/1'));
     });
 
+    it('SYNC: starting path is a file (not a directory)', () => {
+      const dir = 'test/ancestor/1/1.yml';
+      const ancestor = fs.ancestor(dir);
+      const res = ancestor.walkSync(e => e.stop());
+      expect(res.dir).to.eql(fs.resolve('test/ancestor/1'));
+    });
+
     it('starting path does not exist', async () => {
       const ancestor = fs.ancestor('/no/exist');
       return expectError(() => ancestor.walk(async e => false), 'Path does not exist');
+    });
+
+    it('SYNC: starting path does not exist', () => {
+      const ancestor = fs.ancestor('/no/exist');
+      const fn = () => ancestor.walkSync(e => false);
+      expect(fn).to.throw(/Path does not exist/);
     });
   });
 

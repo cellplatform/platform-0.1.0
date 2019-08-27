@@ -37,7 +37,7 @@ export function ancestor(dir: string) {
     }
 
     // Ensure the path exists.
-    if (!(await fs.existsSync(path))) {
+    if (!(await fs.pathExists(path))) {
       throw new Error(`Path does not exist: "${path}".`);
     }
 
@@ -61,6 +61,52 @@ export function ancestor(dir: string) {
     return args;
   };
 
+  const walkSync = (fn: Visitor, path: string, state?: VisitorArgs) => {
+    let args: VisitorArgs = state
+      ? state
+      : {
+          levels: 0,
+          dir: path,
+          stop() {
+            this.isStopped = true;
+          },
+          isStopped: false,
+          isRoot: false,
+        };
+    args.dir = path;
+    args.isRoot = isRoot(path);
+    if (args.isStopped || args.isRoot) {
+      return args;
+    }
+
+    // Ensure the path exists.
+    if (!fs.pathExistsSync(path)) {
+      throw new Error(`Path does not exist: "${path}".`);
+    }
+
+    // Set the path of the directory being examined.
+    if (args.levels === 0 && is.fileSync(path)) {
+      path = dirname(path);
+      args.dir = path;
+    }
+
+    // Visit the current level.
+    const res = fn(args);
+    if (res && typeof res.then === 'function') {
+      throw new Error(`Sync version of walk should not return a promise.`);
+    }
+
+    // Step up a level.
+    if (!args.isStopped) {
+      args.levels++;
+      const parent = dirname(path);
+      args = walkSync(fn, parent, args); // <== RECURSION.
+    }
+
+    // Finish up.
+    return args;
+  };
+
   /**
    * Ancestor API.
    */
@@ -71,6 +117,7 @@ export function ancestor(dir: string) {
      * Walks up the tree.
      */
     walk: (fn: Visitor) => walk(fn, dir),
+    walkSync: (fn: Visitor) => walkSync(fn, dir),
 
     /**
      * Walks up the folder tree looking for the given file or folder
