@@ -3,11 +3,10 @@
   "version": "0.0.4",
   "scripts": {
     "ssr": "ssr $@",
-    "start": "ts-node -T index.ts",
+    "start": "ts-node -T local.ts",
     "watch": "nodemon --watch ../../src -e ts,tsx --delay 2 yarn start"
   },
   "dependencies": {
-    "@platform/micro": "^0.4.2",
     "@platform/react.ssr": "^1.0.2"
   },
   "devDependencies": {

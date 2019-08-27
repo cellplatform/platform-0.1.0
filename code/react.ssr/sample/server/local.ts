@@ -1,2 +1,4 @@
 import { fromConfig } from '@platform/react.ssr';
-fromConfig().listen();
+
+const app = fromConfig();
+app.listen();

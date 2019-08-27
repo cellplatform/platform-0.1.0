@@ -96,7 +96,7 @@ describe('env', () => {
     });
   });
 
-  describe.only('values (load and read)', () => {
+  describe('values (load and read)', () => {
     it('nothing loaded, no .env var', () => {
       const res = env.values<IMyVars>([
         'FS_ENV_TEXT',
