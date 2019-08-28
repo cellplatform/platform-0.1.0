@@ -8,6 +8,7 @@
     "ssr": "cd test.server && yarn ssr $@",
     "ui": "ui $@",
     "start": "ui start web $@",
+    "watch": "cd test.server && yarn watch $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",

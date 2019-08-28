@@ -124,25 +124,24 @@ export class Route {
    */
   private formatHtml(args: { filename: string; html: string; version: string }) {
     const { filename, html, version } = args;
-    const site = this.site;
-    const files = site.files;
-
-    const entry = site.entries.find(item => item.file === filename);
-    if (!html || !entry) {
+    if (!html) {
       return html;
     }
 
+    const site = this.site;
+    const files = site.files;
+    const entry = site.entries.find(item => item.file === filename);
+
     // Load the page HTML.
     const $ = cheerio.load(html);
+    $('html').attr('data-version', version);
+    $('html').attr('data-size', site.size);
 
-    // Setup root react DIV container.
-    const root = $(`div#${entry.id}`);
-    root.attr('data-version', version);
-    root.html(entry.html);
-
-    // Setup the <head>.
-    const head = $('head');
-    head.append(`<style>${entry.css}</style>`);
+    // Setup "server-side-rendering" with entry HTML/CSS.
+    if (entry) {
+      $(`div#${entry.id}`).html(entry.html);
+      $('head').append(`<style>${entry.css}</style>`);
+    }
 
     // Assign informational file-size attributes to referenced assets.
     // NB: This is helpful for monitoring initial load size of an app.

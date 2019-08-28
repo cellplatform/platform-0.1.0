@@ -6,7 +6,7 @@
     "now": "now dev --listen 8080",
     "deploy": "now --prod",
     "start": "ts-node -T src/server",
-    "watch": "nodemon --watch ../../src -e ts,tsx --delay 2"
+    "watch": "nodemon --watch ../src -e ts,tsx --delay 2"
   },
   "dependencies": {
     "@platform/react.ssr": "^1.0.5"
