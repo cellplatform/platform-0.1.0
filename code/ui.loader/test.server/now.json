@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "name": "react.ssr-test",
-  "alias": "ssr.platform.uiharness.com",
+  "name": "sample.loader",
+  "alias": "loader.platform.uiharness.com",
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/index.ts"
+      "dest": "/src/now.ts"
     }
   ],
   "builds": [

@@ -9,7 +9,7 @@ A lightweight SSR (server-side-rendering) system for react apps bundled with Par
 
 - Store assets on [S3](https://aws.amazon.com/s3/) (or Digital Ocean [Spaces](https://www.digitalocean.com/products/spaces/)).
 - Serve entry HTML from server (immediate load from "server-side-render").
-- `307` redirect all other assets to S3/CDN.
+- `307` redirect all other assets to S3/CDN (geo-edge cache).
 - Manage lifecycle with simple command-line tools:
     - Bundle and push to S3 via command-line.
     - Manage version release (and roll-backs) across multiple sites/environments.
@@ -39,32 +39,54 @@ A lightweight SSR (server-side-rendering) system for react apps bundled with Par
 
 ## Sample
 
+The `/sample/now` and `/sample/server` are expecting a `.env` file with your S3 account information:
+
+```
+# 
+# Digital Ocean "SPACES" or AWS "S3" connection secrets.
+# 
+SPACES_KEY="..."
+SPACES_SECRET="..."
+
+```
+
+These are referenced within the `ssr.yml` config file.
+
+
+#### Example sequence:
+
 ```bash
+🌼
 cd sample/ui
 yarn start
 ```
 
 
-Bundle and push to S3
+Bundle a version and push it to S3:
 
 ```bash
-cd sample/now
+🌳
+cd sample/server
 yarn ssr bundle
-```
-
-Start local SSR server for testing bundle:
-
-```bash
-cd sample/now
-yarn start
 ```
 
 Release bundled version by updating manifest:
 
 ```bash
-cd sample/now
+🌳
+cd sample/server
 yarn ssr release
 ```
+
+Start local SSR server to test the bundle:
+
+```bash
+🌼
+cd sample/server 
+yarn start
+```
+
+Open in `http://localhost` browser (address/port exposed in server startup log).
 
 
 <p>&nbsp;<p>
