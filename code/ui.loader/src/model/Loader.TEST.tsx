@@ -65,11 +65,50 @@ describe('Loader', () => {
   it('render', async () => {
     const el = <Foo />;
     const loader = Loader.create().add('foo', async () => el);
-
     const res1 = await loader.render('foo');
-    const res2 = await loader.render('bar');
 
     expect(res1).to.eql(el);
-    expect(res2).to.eql(undefined);
+    expect(await loader.render('bar')).to.eql(undefined);
+  });
+
+  it('renders only once (cached)', async () => {
+    const loader = Loader.create().add('foo', async () => <Foo />);
+    const res1 = await loader.render('foo');
+    const res2 = await loader.render('foo');
+    expect(res1).to.equal(res2);
+  });
+
+  it('isLoaded', async () => {
+    const el = <Foo />;
+    const loader = Loader.create();
+    expect(loader.isLoaded('foo')).to.eql(false);
+
+    loader.add('foo', async () => el);
+    expect(loader.isLoaded('foo')).to.eql(false);
+
+    const res1 = loader.get('foo');
+    expect(res1 && res1.isLoaded).to.eql(false);
+
+    await loader.render('foo');
+    const res2 = loader.get('foo');
+    expect(res2 && res2.isLoaded).to.eql(true);
+    expect(loader.isLoaded('foo')).to.eql(true);
+  });
+
+  it('loaded event', async () => {
+    const el = <Foo />;
+    const loader = Loader.create().add('foo', async () => el);
+
+    const events: t.IModuleLoadedEvent[] = [];
+    loader.events$.subscribe(e => events.push(e as any));
+
+    await loader.render('foo');
+    await loader.render('foo');
+    await loader.render('foo');
+
+    expect(events.length).to.eql(1);
+    expect(events[0].payload.el).to.eql(el);
+    expect(events[0].payload.module.id).to.eql('foo');
+    expect(events[0].payload.module.isLoaded).to.eql(true);
   });
 });

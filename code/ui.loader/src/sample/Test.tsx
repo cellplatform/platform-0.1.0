@@ -91,7 +91,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     }
 
     if (type === 'BOTTOM_RIGHT') {
-      const style = css({ Image: logo, marginRight: 15, marginBottom: 10 });
+      const style = css({ Image: logo, marginRight: 20, marginBottom: 18 });
       return <div {...style} />;
     }
 

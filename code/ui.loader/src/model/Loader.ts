@@ -4,6 +4,13 @@ import { t } from '../common';
 
 export type ILoaderArgs = {};
 
+type IItem = {
+  id: string;
+  module: t.IDynamicModule;
+  render: t.DynamicRender;
+  el?: JSX.Element;
+};
+
 /**
  * Manages configuring and loading dynamic modules.
  */
@@ -22,7 +29,7 @@ export class Loader {
   /**
    * [Fields]
    */
-  private _modules: t.IDynamicModule[] = [];
+  private _items: IItem[] = [];
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -45,7 +52,7 @@ export class Loader {
   }
 
   public get modules() {
-    return this._modules || [];
+    return this._items.map(item => item.module) || [];
   }
 
   /**
@@ -56,15 +63,31 @@ export class Loader {
     if (this.exists(id)) {
       throw new Error(`A module with the id '${id}' has already been added.`);
     }
-    const item: t.IDynamicModule = { id, render };
-    this._modules = [...this._modules, item];
-    this.fire({ type: 'LOADER/added', payload: { id, module: item } });
+    const item: IItem = {
+      id,
+      module: { id, render, isLoaded: false },
+      render: async () => {
+        if (item.el) {
+          return item.el;
+        }
+        item.el = await render();
+        item.module.isLoaded = true;
+        this.fire({ type: 'LOADER/loaded', payload: { id, module: item.module, el: item.el } });
+        return item.el;
+      },
+    };
+    this._items = [...this._items, item];
+    this.fire({ type: 'LOADER/added', payload: { id, module: item.module } });
     return this;
   }
 
   public get(id: string | number) {
     this.throwIfDisposed('get');
-    return typeof id === 'number' ? this.modules[id] : this.modules.find(m => m.id === id);
+    const item = this.item(id);
+    return item ? item.module : undefined;
+  }
+  private item(id: string | number) {
+    return typeof id === 'number' ? this._items[id] : this._items.find(m => m.id === id);
   }
 
   public exists(id: string | number) {
@@ -74,8 +97,13 @@ export class Loader {
 
   public async render(id: string | number) {
     this.throwIfDisposed('render');
-    const item = this.get(id);
+    const item = this.item(id);
     return item ? item.render() : undefined;
+  }
+
+  public isLoaded(id: string | number) {
+    const item = this.get(id);
+    return item ? item.isLoaded : false;
   }
 
   /**
