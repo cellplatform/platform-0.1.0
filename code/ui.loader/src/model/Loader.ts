@@ -8,7 +8,6 @@ type IItem = {
   id: string;
   module: t.IDynamicModule;
   render: t.DynamicRender;
-  el?: JSX.Element;
 };
 
 /**
@@ -67,13 +66,10 @@ export class Loader {
       id,
       module: { id, render, isLoaded: false },
       render: async () => {
-        if (item.el) {
-          return item.el;
-        }
-        item.el = await render();
+        const el = await render();
         item.module.isLoaded = true;
-        this.fire({ type: 'LOADER/loaded', payload: { id, module: item.module, el: item.el } });
-        return item.el;
+        this.fire({ type: 'LOADER/loaded', payload: { id, module: item.module, el } });
+        return el;
       },
     };
     this._items = [...this._items, item];

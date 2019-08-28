@@ -31,6 +31,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     state$.subscribe(e => this.setState(e));
   }
 
+  public async componentDidMount() {
+    const foo = await loader.render('foo');
+    this.state$.next({ foo });
+  }
+
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();

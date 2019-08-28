@@ -71,11 +71,15 @@ describe('Loader', () => {
     expect(await loader.render('bar')).to.eql(undefined);
   });
 
-  it('renders only once (cached)', async () => {
+  it('renders multiple times', async () => {
     const loader = Loader.create().add('foo', async () => <Foo />);
+    expect(loader.isLoaded('foo')).to.eql(false);
+
     const res1 = await loader.render('foo');
+    expect(loader.isLoaded('foo')).to.eql(true);
+
     const res2 = await loader.render('foo');
-    expect(res1).to.equal(res2);
+    expect(res1).to.not.equal(res2);
   });
 
   it('isLoaded', async () => {
@@ -106,7 +110,7 @@ describe('Loader', () => {
     await loader.render('foo');
     await loader.render('foo');
 
-    expect(events.length).to.eql(1);
+    expect(events.length).to.eql(3);
     expect(events[0].payload.el).to.eql(el);
     expect(events[0].payload.module.id).to.eql('foo');
     expect(events[0].payload.module.isLoaded).to.eql(true);
