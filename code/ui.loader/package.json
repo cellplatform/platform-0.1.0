@@ -1,14 +1,14 @@
 {
   "name": "@platform/ui.loader",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.4",
   "description": "Module bootstrapper for progressively loading UI modules dynamically.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "ssr": "cd test.server && yarn ssr $@",
+    "ssr": "cd sample.server && yarn ssr $@",
     "ui": "ui $@",
     "start": "ui start web $@",
-    "watch": "cd test.server && yarn watch $@",
+    "watch": "cd sample.server && yarn watch $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",

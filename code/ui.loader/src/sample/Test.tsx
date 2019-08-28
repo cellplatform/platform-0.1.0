@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue } from '../common';
+// import { css, GlamorValue } from '../common';
 
-export type ITestProps = { style?: GlamorValue };
+import { css } from '@platform/css';
+
+export type ITestProps = {};
 export type ITestState = {};
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -30,14 +32,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public render() {
     const styles = {
       base: css({
+        Absolute: 0,
         backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-        fontSize: 50,
       }),
     };
-    return (
-      <div {...css(styles.base, this.props.style)}>
-        <div>Test</div>
-      </div>
-    );
+
+    return <div {...styles.base}>Test!!!</div>;
   }
 }

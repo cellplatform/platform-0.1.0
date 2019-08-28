@@ -2,7 +2,7 @@ manifest: manifest.yml
 
 builder:
   bundles: ../bundle
-  entries: ../lib.test/test/web.entries.js
+  entries: ../lib/sample/entry.ssr.js
 
 s3:
   endpoint: sfo2.digitaloceanspaces.com
