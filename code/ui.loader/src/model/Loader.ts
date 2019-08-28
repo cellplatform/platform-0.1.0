@@ -65,8 +65,8 @@ export class Loader {
     const item: IItem = {
       id,
       module: { id, render, isLoaded: false },
-      render: async () => {
-        const el = await render();
+      render: async (props: {}) => {
+        const el = await render(props || {});
         item.module.isLoaded = true;
         this.fire({ type: 'LOADER/loaded', payload: { id, module: item.module, el } });
         return el;
@@ -91,10 +91,10 @@ export class Loader {
     return Boolean(this.get(id));
   }
 
-  public async render(id: string | number) {
+  public async render<P = {}>(id: string | number, props?: P) {
     this.throwIfDisposed('render');
     const item = this.item(id);
-    return item ? item.render() : undefined;
+    return item ? item.render(props || {}) : undefined;
   }
 
   public isLoaded(id: string | number) {

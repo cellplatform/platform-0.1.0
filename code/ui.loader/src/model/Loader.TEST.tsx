@@ -64,11 +64,18 @@ describe('Loader', () => {
 
   it('render', async () => {
     const el = <Foo />;
-    const loader = Loader.create().add('foo', async () => el);
-    const res1 = await loader.render('foo');
-
-    expect(res1).to.eql(el);
+    let props: any;
+    const loader = Loader.create().add('foo', async p => {
+      props = p;
+      return el;
+    });
     expect(await loader.render('bar')).to.eql(undefined);
+
+    type MyProps = { msg: string };
+    const res = await loader.render<MyProps>('foo', { msg: 'hello' });
+
+    expect(res).to.eql(el);
+    expect(props).to.eql({ msg: 'hello' });
   });
 
   it('renders multiple times', async () => {
