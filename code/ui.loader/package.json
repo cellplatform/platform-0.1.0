@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.loader",
-  "version": "0.0.1-beta.1",
+  "version": "0.0.1-beta.2",
   "description": "Module bootstrapper for progressively loading UI modules dynamically.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,7 +15,8 @@
     "build": "ts build $@",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare",
-    "bundle": "ui bundle web"
+    "bundle": "ui bundle web",
+    "deploy": "cd sample.server && yarn deploy"
   },
   "dependencies": {
     "@platform/react": "0.3.20",
