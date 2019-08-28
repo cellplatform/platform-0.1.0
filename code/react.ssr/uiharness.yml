@@ -1,5 +1,6 @@
 name: react.ssr
 
+
 web:
   port: 1234
   entry: test/web.tsx
@@ -13,6 +14,8 @@ web:
     - favicon.ico
   bundle:
     output: bundle
+    treeshake: true
+
 
 sourcemaps:
   strip:

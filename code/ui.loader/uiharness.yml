@@ -1,5 +1,6 @@
 name: ui.loader
 
+
 web:
   port: 1234
   entry: src/sample/entry.tsx
@@ -14,7 +15,6 @@ web:
   bundle:
     output: bundle
     treeshake: true
-
 
     
 sourcemaps:
