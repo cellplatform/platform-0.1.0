@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
-import { css, color, GlamorValue } from '@platform/react';
-import { Spinner } from '@platform/ui.spinner';
+import { css, color, GlamorValue } from '../common';
+import { Splash } from '../components/Splash';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {};
@@ -16,7 +15,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  constructor(props: ITestProps) {
+    super(props);
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
   }
@@ -30,17 +30,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Render]
    */
   public render() {
-    const styles = {
-      base: css({
-        Absolute: 0,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-        Flex: 'center-center',
-      }),
-    };
-
+    const styles = { base: css({}) };
     return (
-      <div {...styles.base}>
-        <Spinner />
+      <div {...css(styles.base, this.props.style)}>
+        <Splash theme={'DARK'} />
       </div>
     );
   }

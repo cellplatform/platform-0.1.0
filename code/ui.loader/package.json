@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.loader",
-  "version": "0.0.1-beta.0",
+  "version": "0.0.1-beta.1",
   "description": "Module bootstrapper for progressively loading UI modules dynamically.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,7 +18,8 @@
     "bundle": "ui bundle web"
   },
   "dependencies": {
-    "@platform/react": "0.3.20"
+    "@platform/react": "0.3.20",
+    "@platform/util.value": "^0.4.11"
   },
   "devDependencies": {
     "@uiharness/dev": "0.9.3",

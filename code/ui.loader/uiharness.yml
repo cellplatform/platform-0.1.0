@@ -1,6 +1,5 @@
 name: ui.loader
 
-
 web:
   port: 1234
   entry: src/sample/entry.tsx
@@ -14,10 +13,8 @@ web:
     - favicon.ico
   bundle:
     output: bundle
-    treeshake: true
+    treeshake: false
 
-    
 sourcemaps:
   strip:
     - node_modules/rxjs
-
