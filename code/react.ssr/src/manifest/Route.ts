@@ -1,4 +1,4 @@
-import { http, t, util, pathToRegex, cheerio } from '../common';
+import { fs, http, t, util, pathToRegex, cheerio } from '../common';
 
 export type IRouteArgs = { site: t.ISiteManifest; route: t.ISiteManifestRoute };
 
@@ -124,17 +124,43 @@ export class Route {
    */
   private formatHtml(args: { filename: string; html: string; version: string }) {
     const { filename, html, version } = args;
+    const site = this.site;
+    const files = site.files;
 
-    const entry = this.site.entries.find(item => item.file === filename);
+    const entry = site.entries.find(item => item.file === filename);
     if (!html || !entry) {
       return html;
     }
 
+    // Load the page HTML.
     const $ = cheerio.load(html);
+
+    // Setup root react DIV container.
     const root = $(`div#${entry.id}`);
     root.attr('data-version', version);
     root.html(entry.html);
-    $('head').append(`<style>${entry.css}</style>`);
+
+    // Setup the <head>.
+    const head = $('head');
+    head.append(`<style>${entry.css}</style>`);
+
+    // Assign informational file-size attributes to referenced assets.
+    // NB: This is helpful for monitoring initial load size of an app.
+    files
+      .filter(file => file.path.endsWith('.js'))
+      .forEach(file => sizeAttr(file.bytes, $(`script[src="${fs.basename(file.path)}"]`)));
+
+    files
+      .filter(file => file.path.endsWith('.css'))
+      .forEach(file => sizeAttr(file.bytes, $(`link[href="${fs.basename(file.path)}"]`)));
+
+    // Finish up.
     return $.html();
+  }
+}
+
+function sizeAttr(bytes: number, el: Cheerio) {
+  if (el.length > 0) {
+    el.attr('data-size', fs.size.toString(bytes, { round: 0 }));
   }
 }
