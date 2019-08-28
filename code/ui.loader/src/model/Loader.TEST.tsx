@@ -27,12 +27,24 @@ describe('Loader', () => {
     expect(events[2].payload.id).to.eql('baz');
   });
 
-  it('get', () => {
+  it('get (by id)', () => {
     const loader = Loader.create().add('foo', async () => <Foo />);
     const res1 = loader.get('foo');
     const res2 = loader.get('bar');
     expect(res1 && res1.id).to.eql('foo');
     expect(res2).to.eql(undefined);
+  });
+
+  it('get (by index)', async () => {
+    const loader = Loader.create()
+      .add('foo', async () => <Foo />)
+      .add('bar', async () => <Foo />);
+    const res1 = loader.get(0);
+    const res2 = loader.get(1);
+    const res3 = loader.get(2);
+    expect(res1 && res1.id).to.eql('foo');
+    expect(res2 && res2.id).to.eql('bar');
+    expect(res3).to.eql(undefined);
   });
 
   it('exists', () => {

@@ -62,17 +62,18 @@ export class Loader {
     return this;
   }
 
-  public get(id: string) {
-    this.throwIfDisposed('module');
-    return this.modules.find(m => m.id === id);
+  public get(id: string | number) {
+    this.throwIfDisposed('get');
+    return typeof id === 'number' ? this.modules[id] : this.modules.find(m => m.id === id);
   }
 
-  public exists(id: string) {
+  public exists(id: string | number) {
     this.throwIfDisposed('exists');
     return Boolean(this.get(id));
   }
 
-  public async render(id: string) {
+  public async render(id: string | number) {
+    this.throwIfDisposed('render');
     const item = this.get(id);
     return item ? item.render() : undefined;
   }
