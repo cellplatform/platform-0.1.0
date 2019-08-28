@@ -1,12 +1,15 @@
 {
   "extends": "@platform/ts/tsconfig.json",
-  "include": ["src"],
+  "include": [
+    "test",
+    "src"
+  ],
   "compilerOptions": {
-    "outDir": "lib",
+    "outDir": "lib.test",
     "moduleResolution": "node",
     "skipLibCheck": true,
     "target": "esnext",
-    "module": "esnext",
-    "jsx": "react"
+    "jsx": "react",
+    "noUnusedLocals": false
   }
 }

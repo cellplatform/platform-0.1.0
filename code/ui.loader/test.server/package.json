@@ -1,5 +1,5 @@
 {
-  "name": "sample.bootstrapper.server",
+  "name": "loader.sample.server",
   "version": "0.0.4",
   "scripts": {
     "ssr": "ssr $@",

@@ -1,9 +1,8 @@
 name: ui.loader
 
-
 web:
   port: 1234
-  entry: src/entry.tsx
+  entry: test/web.tsx
   head:
     stylesheets:
       - /static/css/normalize.css

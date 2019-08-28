@@ -1,1 +1,3 @@
-export { css, GlamorValue, color } from '@platform/react';
+import '@platform/libs/polyfill';
+
+export { css, color, GlamorValue } from '@platform/react';

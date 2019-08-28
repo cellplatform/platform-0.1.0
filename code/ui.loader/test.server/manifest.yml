@@ -11,7 +11,7 @@ sites:
           - /
   - name: prod
     domain:
-      - bootstrapper.platform.uiharness.com
+      - loader.platform.uiharness.com
     bundle: bundle/0.1.1
     routes:
       default:

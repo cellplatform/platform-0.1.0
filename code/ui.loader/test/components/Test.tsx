@@ -3,12 +3,12 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue } from '../common';
 
-export type IMainProps = { style?: GlamorValue };
-export type IMainState = {};
+export type ITestProps = { style?: GlamorValue };
+export type ITestState = {};
 
-export class Main extends React.PureComponent<IMainProps, IMainState> {
-  public state: IMainState = {};
-  private state$ = new Subject<Partial<IMainState>>();
+export class Test extends React.PureComponent<ITestProps, ITestState> {
+  public state: ITestState = {};
+  private state$ = new Subject<Partial<ITestState>>();
   private unmounted$ = new Subject<{}>();
 
   /**
@@ -28,10 +28,15 @@ export class Main extends React.PureComponent<IMainProps, IMainState> {
    * [Render]
    */
   public render() {
-    const styles = { base: css({}) };
+    const styles = {
+      base: css({
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        fontSize: 50,
+      }),
+    };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>Main</div>
+        <div>Test</div>
       </div>
     );
   }

@@ -1,1 +1,1 @@
-export type TEMP = string;
+export type Foo = 'TEMP';

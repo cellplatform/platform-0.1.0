@@ -1,9 +1,9 @@
 node_modules
+.uiharness
+.cache
+.dev
+.build
 lib
-.DS_Store
-.npmrc
-.env
-*.log
-/TEMP.md
-/tmp
-bundle/
+lib.test
+dist
+bundle
