@@ -1,5 +1,5 @@
 {
-  "name": "loader.sample.server",
+  "name": "sample.loader.server",
   "version": "0.0.4",
   "scripts": {
     "ssr": "ssr $@",
