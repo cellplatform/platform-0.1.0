@@ -5,14 +5,25 @@ import { takeUntil } from 'rxjs/operators';
 import { COLORS, css, color, GlamorValue, defaultValue, time } from '../../common';
 import { Spinner } from '@platform/ui.spinner';
 
+export type SplashTheme = 'LIGHT' | 'DARK';
+
+export type SplashFactory = (args: SplashFactoryArgs) => JSX.Element | undefined;
+export type SplashFactoryArgs = {
+  type: 'TOP_LEFT' | 'TOP_RIGHT' | 'BOTTOM_LEFT' | 'BOTTOM_RIGHT';
+  theme: SplashTheme;
+};
+
 export type ISplashProps = {
-  theme?: 'LIGHT' | 'DARK';
+  theme?: SplashTheme;
   isSpinning?: boolean;
+  factory?: SplashFactory;
   style?: GlamorValue;
 };
 export type ISplashState = {
   isLoaded?: boolean;
 };
+
+const nullFactory: SplashFactory = args => undefined;
 
 export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   public state: ISplashState = { isLoaded: false };
@@ -55,6 +66,10 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
     return defaultValue(this.props.isSpinning, true);
   }
 
+  private get factory() {
+    return this.props.factory || nullFactory;
+  }
+
   /**
    * [Render]
    */
@@ -69,6 +84,7 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
       <div {...css(styles.base, this.props.style)}>
         {this.renderCircle()}
         {this.renderSpinner()}
+        {this.renderLogos()}
       </div>
     );
   }
@@ -115,6 +131,30 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
     return (
       <div {...styles.base}>
         <Spinner color={color} />
+      </div>
+    );
+  }
+
+  private renderLogos() {
+    if (!this.props.factory) {
+      return null;
+    }
+    const factory = this.factory;
+    const styles = {
+      base: css({ Absolute: 0 }),
+      topLeft: css({ Absolute: [0, null, null, 0] }),
+      topRight: css({ Absolute: [0, 0, null, null] }),
+      bottomLeft: css({ Absolute: [null, null, 0, 0] }),
+      bottomRight: css({ Absolute: [null, 0, 0, null] }),
+    };
+    const theme = this.theme;
+    const args = { theme };
+    return (
+      <div {...styles.base}>
+        <div {...styles.topLeft}>{factory({ ...args, type: 'TOP_LEFT' })}</div>
+        <div {...styles.topRight}>{factory({ ...args, type: 'TOP_RIGHT' })}</div>
+        <div {...styles.bottomLeft}>{factory({ ...args, type: 'BOTTOM_LEFT' })}</div>
+        <div {...styles.bottomRight}>{factory({ ...args, type: 'BOTTOM_RIGHT' })}</div>
       </div>
     );
   }
