@@ -1,16 +1,17 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, COLORS } from '../common';
-import { Splash, SplashFactory } from '../components/Splash';
+
 import { loader } from '..';
+import { color, COLORS, css, GlamorValue } from '../common';
+import { Splash, SplashFactory } from '../components/Splash';
 
 // const modules = {
 //   Foo: import('./Foo'),
 // };
 
 loader.add('foo', async () => {
-  const Foo = (await import('./Foo')).Foo;
+  const Foo = (await import('./module.A')).Foo;
   return <Foo />;
 });
 
@@ -32,8 +33,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   public async componentDidMount() {
-    const foo = await loader.render('foo');
-    this.state$.next({ foo });
+    // TEMP 🐷
+    // const foo = await loader.load('foo');
+    // this.state$.next({ foo });
   }
 
   public componentWillUnmount() {
@@ -107,7 +109,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Handlers]
    */
   private handleClick = async () => {
-    const foo = await loader.render('foo');
+    const foo = (await loader.render('foo')).result;
     this.state$.next({ foo });
+    // TEMP 🐷
   };
 }

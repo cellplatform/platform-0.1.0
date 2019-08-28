@@ -1,13 +1,22 @@
+import * as React from 'react';
+
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
-import { t } from '../common';
+
+import { defaultValue, id as idUtil, t } from '../common';
 
 export type ILoaderArgs = {};
 
+const DEFAULT = {
+  TIMEOUT: 10000, // 10-seconds.
+};
+
 /**
- * Manages configuring and loading dynamic modules.
+ * Manages loading dynamic modules.
  */
 export class Loader {
+  public static DEFAULT = DEFAULT;
+
   /**
    * [Lifecycle]
    */
@@ -22,7 +31,7 @@ export class Loader {
   /**
    * [Fields]
    */
-  private _modules: t.IDynamicModule[] = [];
+  private _modules: Array<t.IDynamicModule<any>> = [];
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -40,7 +49,7 @@ export class Loader {
     return this._dispose$.isStopped;
   }
 
-  public get count() {
+  public get length() {
     return this.modules.length;
   }
 
@@ -51,46 +60,97 @@ export class Loader {
   /**
    * [Methods]
    */
-  public add(id: string, render: t.DynamicRender) {
+  public add(moduleId: string, load: t.DynamicImport, options: { timeout?: number } = {}) {
     this.throwIfDisposed('add');
-    if (this.exists(id)) {
-      throw new Error(`A module with the id '${id}' has already been added.`);
+    if (this.exists(moduleId)) {
+      throw new Error(`A module with the id '${moduleId}' has already been added.`);
     }
 
-    const toElement: t.DynamicRender = async (props?: {}) => {
-      const el = await render(props || {});
-      item.isLoaded = true;
-      this.fire({ type: 'LOADER/loaded', payload: { id, module: item, el } });
-      return el;
+    // Store a reference to the module.
+    const item: t.IDynamicModule = {
+      id: moduleId,
+      load: async (props: {} = {}) => this.invoke(item, load, props),
+      timeout: defaultValue(options.timeout, DEFAULT.TIMEOUT),
+      count: 0,
+      isLoaded: false,
     };
-
-    const item: t.IDynamicModule = { id, render: toElement, isLoaded: false };
     this._modules = [...this._modules, item];
-    this.fire({ type: 'LOADER/added', payload: { id, module: item } });
+
+    // Finish up.
+    this.fire({ type: 'LOADER/added', payload: { module: item } });
     return this;
   }
 
-  public get(id: string | number) {
+  public get<T = any>(moduleId: string | number) {
     this.throwIfDisposed('get');
-    return typeof id === 'number' ? this.modules[id] : this.modules.find(m => m.id === id);
+    const res =
+      typeof moduleId === 'number'
+        ? this.modules[moduleId]
+        : this.modules.find(m => m.id === moduleId);
+    return res ? (res as t.IDynamicModule<T>) : undefined;
   }
 
-  public exists(id: string | number) {
+  public exists(moduleId: string | number) {
     this.throwIfDisposed('exists');
-    return Boolean(this.get(id));
+    return Boolean(this.get(moduleId));
   }
 
-  public async render<P = {}>(id: string | number, props?: P) {
+  public count(moduleId: string | number) {
+    this.throwIfDisposed('count');
+    const item = this.get(moduleId);
+    return item ? item.count : -1;
+  }
+
+  public isLoaded(moduleId: string | number) {
+    this.throwIfDisposed('isLoaded');
+    const item = this.get(moduleId);
+    return item ? item.isLoaded : false;
+  }
+
+  public async load<T = any, P = {}>(
+    moduleId: string | number,
+    props?: P,
+  ): Promise<t.LoadModuleResponse<T>> {
+    this.throwIfDisposed('load');
+
+    const item = this.get<T>(moduleId);
+    return item
+      ? item.load(props || {})
+      : {
+          ok: false,
+          count: -1,
+          error: new Error(`Module '${moduleId}' does not exist.`),
+          timedOut: false,
+        };
+  }
+
+  public async render<P = {}>(
+    moduleId: string | number,
+    props?: P,
+  ): Promise<t.LoadModuleResponse<JSX.Element>> {
+    this.throwIfDisposed('render');
+    const res = await this.load<JSX.Element, P>(moduleId, props);
+
     // TEMP 🐷 TODO - render with context (passing the loader down)
 
-    this.throwIfDisposed('render');
-    const item = this.get(id);
-    return item ? item.render(props || {}) : undefined;
-  }
+    // Convert [undefined] to [null].
+    // NB:  This is safer for React as rendering `null` does nothing, whereas
+    //      undefined throws an error.
+    res.result = res.result === undefined ? (null as any) : res.result;
 
-  public isLoaded(id: string | number) {
-    const item = this.get(id);
-    return item ? item.isLoaded : false;
+    // Update error state if nothing was rendered.
+    if (res.result === undefined || (res.result === null && !res.error)) {
+      res.error = new Error(`The module '${moduleId}' did not render a JSX element.`);
+    }
+
+    // Ensure the returned value is a React element.
+    if (res.result && !React.isValidElement(res.result)) {
+      res.error = new Error(`The module '${moduleId}' returned a result that was not JSX element.`);
+    }
+
+    // Finish up.
+    res.ok = !Boolean(res.error);
+    return res;
   }
 
   /**
@@ -104,5 +164,54 @@ export class Loader {
 
   private fire(e: t.LoaderEvent) {
     this._events$.next(e);
+  }
+
+  private async invoke(item: t.IDynamicModule, load: t.DynamicImport, props: {}) {
+    // Fire pre-event.
+    const id = idUtil.shortid();
+    item.count++;
+    const count = item.count;
+    this.fire({
+      type: 'LOADER/loading',
+      payload: { module: item.id, id, count },
+    });
+
+    // Invoke the load operation.
+    const { result, error, timedOut } = await this.invokeOrTimeout(item, load, props);
+    const ok = !Boolean(error);
+    const response: t.LoadModuleResponse = {
+      ok,
+      count,
+      result,
+      error,
+      timedOut,
+    };
+
+    // Finish up.
+    item.isLoaded = true;
+    this.fire({
+      type: 'LOADER/loaded',
+      payload: { module: item.id, id, count, result, error, timedOut },
+    });
+    return response;
+  }
+
+  private async invokeOrTimeout(item: t.IDynamicModule, load: t.DynamicImport, props: {}) {
+    return new Promise<{ timedOut: boolean; error?: Error; result?: any }>(resolve => {
+      const done = (args: { result?: any; error?: Error; timedOut?: boolean }) => {
+        clearTimeout(timeout);
+        const { result, error, timedOut = false } = args;
+        resolve({ result, error, timedOut });
+      };
+
+      const timeout = setTimeout(() => {
+        const error = new Error(`Loading '${item.id}' timed out.`);
+        done({ error, timedOut: true });
+      }, item.timeout);
+
+      load(props)
+        .then(result => done({ result }))
+        .catch(error => done({ error }));
+    });
   }
 }
