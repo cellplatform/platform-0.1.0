@@ -1,1 +1,1 @@
-export type Foo = 'TEMP';
+export * from './model/types';

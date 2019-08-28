@@ -3,7 +3,7 @@ sites:
     domain:
       - localhost
       - /.*\.now\.sh$/
-    bundle: bundle/0.0.1-beta.2
+    bundle: bundle/0.0.1-beta.3
     routes:
       default:
         entry: index.html

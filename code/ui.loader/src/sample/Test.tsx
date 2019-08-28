@@ -3,9 +3,19 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue, COLORS } from '../common';
 import { Splash, SplashFactory } from '../components/Splash';
+import { loader } from '..';
+
+// const modules = {
+//   Foo: import('./Foo'),
+// };
+
+loader.add('foo', async () => {
+  const Foo = (await import('./Foo')).Foo;
+  return <Foo />;
+});
 
 export type ITestProps = { style?: GlamorValue };
-export type ITestState = {};
+export type ITestState = { foo?: JSX.Element };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
@@ -30,10 +40,24 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Render]
    */
   public render() {
-    const styles = { base: css({}) };
+    const { foo } = this.state;
+
+    const styles = {
+      base: css({
+        Absolute: 0,
+      }),
+      foo: css({
+        Absolute: 0,
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+      }),
+    };
+
+    const elFoo = foo && <div {...styles.foo}>{foo}</div>;
+
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
         <Splash theme={'DARK'} factory={this.splashFactory} />
+        {elFoo}
       </div>
     );
   }
@@ -60,6 +84,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         fontSize: 14,
         opacity: 0.4,
         color: theme === 'DARK' ? COLORS.WHITE : COLORS.DARK,
+        userSelect: 'none',
       });
       const message = `© ${new Date().getFullYear()}, Acme Inc.`;
       return <div {...style}>{message}</div>;
@@ -71,5 +96,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     }
 
     return undefined;
+  };
+
+  /**
+   * [Handlers]
+   */
+  private handleClick = async () => {
+    const foo = await loader.render('foo');
+    this.state$.next({ foo });
   };
 }

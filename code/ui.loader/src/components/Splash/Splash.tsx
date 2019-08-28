@@ -40,7 +40,7 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   }
 
   public componentDidMount() {
-    time.delay(500, () => {
+    time.delay(0, () => {
       this.state$.next({ isLoaded: true });
     });
   }
@@ -90,7 +90,7 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   }
 
   private renderCircle() {
-    const SPEED = '0.6s';
+    const SPEED = '0.8s';
     const { isLoaded } = this.state;
     const size = 14;
     const styles = {
@@ -117,15 +117,16 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   }
 
   private renderSpinner() {
-    const SPEED = '0.8s';
+    const SPEED = '0.6s';
     const color = this.isDark ? 1 : -1;
     const { isLoaded } = this.state;
     const styles = {
       base: css({
         Absolute: 0,
         Flex: 'center-center',
+        transform: `scale(${isLoaded ? 1 : 0.2})`,
         opacity: isLoaded && this.isSpinning ? 1 : 0,
-        transition: `opacity ${SPEED}`,
+        transition: `transform ${SPEED}, opacity ${SPEED}`,
       }),
     };
     return (
