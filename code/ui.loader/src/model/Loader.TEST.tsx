@@ -115,7 +115,11 @@ describe('Loader', () => {
 
     await loader.render('foo');
     await loader.render('foo');
-    await loader.render('foo');
+
+    const item = loader.get('foo');
+    if (item) {
+      await item.render();
+    }
 
     expect(events.length).to.eql(3);
     expect(events[0].payload.el).to.eql(el);

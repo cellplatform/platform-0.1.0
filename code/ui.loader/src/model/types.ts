@@ -1,4 +1,4 @@
-export type DynamicRender<P = {}> = (props: P) => Promise<JSX.Element>;
+export type DynamicRender<P = {}> = (props?: P) => Promise<JSX.Element>;
 
 export type IDynamicModule = {
   id: string;

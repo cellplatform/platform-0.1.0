@@ -4,12 +4,6 @@ import { t } from '../common';
 
 export type ILoaderArgs = {};
 
-type IItem = {
-  id: string;
-  module: t.IDynamicModule;
-  render: t.DynamicRender;
-};
-
 /**
  * Manages configuring and loading dynamic modules.
  */
@@ -28,7 +22,7 @@ export class Loader {
   /**
    * [Fields]
    */
-  private _items: IItem[] = [];
+  private _modules: t.IDynamicModule[] = [];
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -51,7 +45,7 @@ export class Loader {
   }
 
   public get modules() {
-    return this._items.map(item => item.module) || [];
+    return this._modules;
   }
 
   /**
@@ -62,28 +56,23 @@ export class Loader {
     if (this.exists(id)) {
       throw new Error(`A module with the id '${id}' has already been added.`);
     }
-    const item: IItem = {
-      id,
-      module: { id, render, isLoaded: false },
-      render: async (props: {}) => {
-        const el = await render(props || {});
-        item.module.isLoaded = true;
-        this.fire({ type: 'LOADER/loaded', payload: { id, module: item.module, el } });
-        return el;
-      },
+
+    const toElement: t.DynamicRender = async (props?: {}) => {
+      const el = await render(props || {});
+      item.isLoaded = true;
+      this.fire({ type: 'LOADER/loaded', payload: { id, module: item, el } });
+      return el;
     };
-    this._items = [...this._items, item];
-    this.fire({ type: 'LOADER/added', payload: { id, module: item.module } });
+
+    const item: t.IDynamicModule = { id, render: toElement, isLoaded: false };
+    this._modules = [...this._modules, item];
+    this.fire({ type: 'LOADER/added', payload: { id, module: item } });
     return this;
   }
 
   public get(id: string | number) {
     this.throwIfDisposed('get');
-    const item = this.item(id);
-    return item ? item.module : undefined;
-  }
-  private item(id: string | number) {
-    return typeof id === 'number' ? this._items[id] : this._items.find(m => m.id === id);
+    return typeof id === 'number' ? this.modules[id] : this.modules.find(m => m.id === id);
   }
 
   public exists(id: string | number) {
@@ -95,7 +84,7 @@ export class Loader {
     // TEMP 🐷 TODO - render with context (passing the loader down)
 
     this.throwIfDisposed('render');
-    const item = this.item(id);
+    const item = this.get(id);
     return item ? item.render(props || {}) : undefined;
   }
 
