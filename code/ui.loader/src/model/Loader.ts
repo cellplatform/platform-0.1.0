@@ -92,6 +92,8 @@ export class Loader {
   }
 
   public async render<P = {}>(id: string | number, props?: P) {
+    // TEMP 🐷 TODO - render with context (passing the loader down)
+
     this.throwIfDisposed('render');
     const item = this.item(id);
     return item ? item.render(props || {}) : undefined;
