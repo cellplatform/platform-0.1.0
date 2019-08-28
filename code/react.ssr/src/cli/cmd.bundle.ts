@@ -49,7 +49,7 @@ export async function run(args: { config?: Config; version?: string; push?: bool
     });
 
   // Run tasks.
-  await tasks.run({ concurrent: false });
+  await tasks.run({ concurrent: false, exitOnError: true });
 
   // Push to S3.
   if (isPush) {
@@ -76,7 +76,12 @@ async function execScript(pkg: npm.NpmPackage, e: cli.TaskArgs, scriptName: stri
 
   // Run the bundle script.
   const cwd = pkg.dir;
-  await exec.command(`yarn ${scriptName}`).run({ cwd, silent: true });
+  const res = await exec.command(`yarn ${scriptName}`).run({ cwd, silent: true });
+
+  // Ensure the command completed successfully.
+  if (!res.ok) {
+    throw new Error(`Failed while executing '${scriptName}' script of package '${pkg.name}'`);
+  }
 }
 
 const getRootDir = async (source: string) => {
