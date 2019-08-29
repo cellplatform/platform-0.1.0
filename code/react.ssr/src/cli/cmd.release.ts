@@ -41,7 +41,8 @@ export async function run() {
   }
 
   // Prompt for which version to update to.
-  const version = await promptForVersion({ current: sites.map(s => s.version), versions });
+  const current = sites.map(({ version, name }) => ({ version, name }));
+  const version = await promptForVersion({ current, versions });
 
   // Save change to the manifest.
   const s3 = config.s3;
@@ -74,12 +75,23 @@ async function promptForSites(args: { manifest: Manifest }) {
   }
 }
 
-async function promptForVersion(args: { current: string[]; versions: string[] }) {
-  const { current } = args;
-  const versions = args.versions.map(value => ({
-    name: `${value} ${current.includes(value) ? '🌼' : ''}`,
-    value,
-  }));
+async function promptForVersion(args: {
+  current: Array<{ version: string; name: string }>;
+  versions: string[];
+}) {
+  const versions = args.versions.map(value => {
+    const matches = args.current.filter(item => item.version === value);
+    const current =
+      matches.length === 0
+        ? ''
+        : matches.length === 1
+        ? matches[0].name
+        : matches.map(m => m.name).join(',');
+    return {
+      name: `${value} ${matches.length > 0 ? `🌼  ${current.toUpperCase()}` : ''}`,
+      value,
+    };
+  });
   return cli.prompt.list<string>({
     message: 'version',
     items: [...versions, '---'],
