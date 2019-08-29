@@ -14,7 +14,7 @@ const DEFAULT = {
 /**
  * Manages loading dynamic modules.
  */
-export class Loader {
+export class Loader implements t.ILoader {
   public static DEFAULT = DEFAULT;
 
   /**
@@ -127,7 +127,7 @@ export class Loader {
   public async render<P = {}>(
     moduleId: string | number,
     props?: P,
-  ): Promise<t.LoadModuleResponse<JSX.Element>> {
+  ): Promise<t.RenderModuleResponse> {
     this.throwIfDisposed('render');
     const res = await this.load<JSX.Element, P>(moduleId, props);
 

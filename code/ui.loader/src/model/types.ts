@@ -8,6 +8,7 @@ export type LoadModuleResponse<T = any> = {
   error?: Error;
   timedOut: boolean;
 };
+export type RenderModuleResponse = LoadModuleResponse<JSX.Element>;
 
 export type IDynamicModule<T = any> = {
   id: string;
@@ -15,6 +16,18 @@ export type IDynamicModule<T = any> = {
   isLoaded: boolean;
   count: number; // Number of times invoked/loaded.
   timeout: number; // Milliseconds.
+};
+
+export type ILoader = {
+  length: number;
+  modules: IDynamicModule[];
+  add(moduleId: string, load: DynamicImport, options?: { timeout?: number }): ILoader;
+  get<T = any>(moduleId: string | number): IDynamicModule<T> | undefined;
+  exists(moduleId: string | number): boolean;
+  count(moduleId: string | number): number;
+  isLoaded(moduleId: string | number): boolean;
+  load<T = any, P = {}>(moduleId: string | number, props?: P): Promise<LoadModuleResponse<T>>;
+  render<P = {}>(moduleId: string | number, props?: P): Promise<RenderModuleResponse>;
 };
 
 /**
