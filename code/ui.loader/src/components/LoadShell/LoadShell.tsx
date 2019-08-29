@@ -130,6 +130,7 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
     const styles = {
       base: css({
         Absolute: 0,
+        Scroll: true,
       }),
     };
     return <div {...styles.base}>{this.state.el}</div>;

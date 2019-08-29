@@ -2,19 +2,16 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { loader, LoadShell } from '..';
+import { LoadShell } from '..';
 import { color, COLORS, css, GlamorValue, t, time, is, log } from '../common';
+import { loader } from './loader';
+
 // import { LoadShell } from '..';
 // import { Splash, SplashFactory } from '../components/Splash';
 
 // const modules = {
 //   Foo: import('./Foo'),
 // };
-
-loader.add('foo', async () => {
-  const Foo = (await import('./module.A')).Foo;
-  return <Foo />;
-});
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = { foo?: JSX.Element };
@@ -59,7 +56,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Properties]
    */
   private get loadDelay() {
-    const delay = is.dev ? 1500 : 0; // NB: Simulate latency.
+    const delay = is.dev ? 1500 : 500; // NB: Simulate latency.
     return delay;
   }
 
