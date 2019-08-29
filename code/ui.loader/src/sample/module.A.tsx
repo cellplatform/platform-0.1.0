@@ -57,13 +57,23 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
       base: css({
         padding: 30,
         color: COLORS.WHITE,
+      }),
+      button: css({
+        marginTop: 15,
+        marginBottom: 5,
+        marginRight: 20,
+        color: '#FF0067',
         cursor: 'pointer',
+        userSelect: 'none',
       }),
     };
     return (
-      <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
+      <div {...css(styles.base, this.props.style)}>
         <div>
           <strong>Dynamic load (Module A):</strong>
+          <div {...styles.button} onClick={this.handleClick}>
+            Load more
+          </div>
           <p>{LOREM}</p>
           {(this.state.more || []).map((text, i) => (
             <p key={i}>{text}</p>
