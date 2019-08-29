@@ -43,13 +43,20 @@ export async function run(args: { config?: Config; version?: string; push?: bool
     .task('build', async e => execScript(pkg, e, 'build'))
     .task('bundle', async e => execScript(pkg, e, 'bundle'))
     .task('manifest', async e => {
-      const entries = await getEntries(config);
-      const res = await bundler.prepare({ bundleDir, entries, silent: true });
-      manifest = res.manifest;
+      const { entries, error } = await getEntries(config);
+      if (error) {
+        throw error;
+      } else {
+        const res = await bundler.prepare({ bundleDir, entries, silent: true });
+        manifest = res.manifest;
+      }
     });
 
   // Run tasks.
-  await tasks.run({ concurrent: false, exitOnError: true });
+  const res = await tasks.run({ concurrent: false, exitOnError: true });
+  if (!res.ok) {
+    return cli.exit(1);
+  }
 
   // Push to S3.
   if (isPush) {
@@ -96,10 +103,17 @@ const getRootDir = async (source: string) => {
   return path;
 };
 
+// type EntriesResponse = { entries: bundler.IBundleEntryElement[]; error?: Error };
+
 const getEntries = async (config: Config) => {
+  const done = (entries: bundler.IBundleEntryElement[], errorMessage?: string) => {
+    const error = errorMessage ? new Error(errorMessage) : undefined;
+    return { ok: !Boolean(error), entries, error };
+  };
+
   let source = config.builder.entries;
   if (!source) {
-    return [];
+    return done([]);
   }
 
   // Copy the source libs locally.
@@ -120,13 +134,11 @@ const getEntries = async (config: Config) => {
   try {
     const res = require(localPath);
     if (Array.isArray(res.default)) {
-      return res.default as t.IBundleEntryElement[];
+      return done(res.default);
     }
-    log.error(`${err} Ensure the array is exported as the module default.`);
-    return [];
+    return done([], `${err} Ensure the array is exported as the module default.`);
   } catch (error) {
-    log.error(`${err} ${error.message}`);
-    return [];
+    return done([], `${err} ${error.message}`);
   } finally {
     // Clean up.
     await fs.remove(fs.resolve('tmp'));
