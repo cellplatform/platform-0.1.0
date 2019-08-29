@@ -37,7 +37,7 @@ SPACES_KEY="..."
 SPACES_SECRET="..."
 ```
 
-Bundle and deploy:
+Bundle, deploy and release:
 
 ```bash
 yarn ssr bundle
