@@ -1,6 +1,6 @@
 {
   "name": "@platform/react.ssr",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "description": "A lightweight SSR (server-side-rendering) system for react apps bundled with ParcelJS and hosted on S3.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

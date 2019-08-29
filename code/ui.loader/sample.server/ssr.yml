@@ -2,7 +2,7 @@ manifest: manifest.yml
 
 builder:
   bundles: ../bundle
-  entries: ../lib.test/test/web.entries.js
+  entries: ../lib/sample/entry.html.js
 
 s3:
   endpoint: sfo2.digitaloceanspaces.com
@@ -10,8 +10,7 @@ s3:
   accessKey: SPACES_KEY
   secret: SPACES_SECRET
   bucket: platform
-  path: 
+  path:
     base: modules/ui.loader
-    manifest: manifest.yml 
+    manifest: manifest.yml
     bundles: bundle
-

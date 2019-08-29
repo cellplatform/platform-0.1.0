@@ -1,33 +1,37 @@
 {
   "name": "@platform/ui.loader",
-  "version": "0.0.1-alpha.0",
+  "version": "0.1.0",
   "description": "Module bootstrapper for progressively loading UI modules dynamically.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "ssr": "cd test.server && yarn ssr $@",
+    "ssr": "cd sample.server && yarn ssr $@",
     "ui": "ui $@",
     "start": "ui start web $@",
+    "watch": "cd sample.server && yarn watch $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build $@",
+    "build": "ts build --no-esm $@",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare",
-    "bundle": "ui bundle web"
+    "bundle": "ui bundle web",
+    "deploy": "cd sample.server && yarn deploy"
   },
   "dependencies": {
-    "@platform/react": "0.3.20"
+    "@platform/react": "0.3.20",
+    "@platform/util.value": "0.4.11"
   },
   "devDependencies": {
+    "@platform/test": "0.0.61",
+    "@platform/ts": "3.5.1",
     "@uiharness/dev": "0.9.3",
     "@uiharness/ui": "0.6.14"
   },
   "files": [
     "lib",
-    "!lib/test",
+    "!lib/sample",
     "!*.TEST.{js, mjs, d.ts}"
   ],
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }

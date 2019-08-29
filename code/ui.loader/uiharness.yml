@@ -2,7 +2,7 @@ name: ui.loader
 
 web:
   port: 1234
-  entry: test/web.tsx
+  entry: src/sample/entry.tsx
   head:
     stylesheets:
       - /static/css/normalize.css
@@ -13,10 +13,8 @@ web:
     - favicon.ico
   bundle:
     output: bundle
+    treeshake: false
 
-
-    
 sourcemaps:
   strip:
     - node_modules/rxjs
-
