@@ -33,6 +33,7 @@ export class Loader implements t.ILoader {
    */
   private _modules: Array<t.IDynamicModule<any>> = [];
   private _loading: string[] = [];
+  private _getContext: Array<t.SetLoaderContext<any>> = [];
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -83,6 +84,11 @@ export class Loader implements t.ILoader {
 
     // Finish up.
     this.fire({ type: 'LOADER/added', payload: { module: item } });
+    return this;
+  }
+
+  public context<P extends object = any>(fn: t.SetLoaderContext<P>) {
+    this._getContext = [...this._getContext, fn];
     return this;
   }
 
@@ -162,6 +168,13 @@ export class Loader implements t.ILoader {
     const element = res.result as t.RenderModuleResponse['element'];
     const { count, error, timedOut } = res;
     return { ok, count, element, error, timedOut };
+  }
+
+  public getContextProps<P extends object = any>() {
+    const props = {};
+    const loader = this; // tslint:disable-line
+    this._getContext.forEach(fn => fn({ loader, props }));
+    return props as P;
   }
 
   /**

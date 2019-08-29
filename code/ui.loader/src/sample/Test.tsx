@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { LoadShell } from '..';
-import { color, COLORS, css, GlamorValue, t, time, is, log } from '../common';
+import { color, COLORS, css, GlamorValue, is, log, t } from './common';
 import { loader } from './loader';
 
 export type ITestProps = { style?: GlamorValue };
@@ -58,8 +57,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public render() {
     return (
-      <LoadShell
-        loader={loader}
+      <loader.LoadShell
+        loader={loader.singleton}
         splash={this.splashFactory}
         theme={'DARK'}
         loadDelay={this.loadDelay}

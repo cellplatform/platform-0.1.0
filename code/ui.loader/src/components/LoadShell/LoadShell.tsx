@@ -2,8 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { log, time, COLORS, css, GlamorValue, t } from '../common';
+import { log, time, COLORS, css, GlamorValue, t } from '../../common';
 import { Splash } from '../Splash';
+import { createProvider } from '../Context';
 
 export type ILoadShellProps = {
   loader: t.ILoader;
@@ -67,6 +68,12 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
     return this.theme === 'DARK';
   }
 
+  private get Provider() {
+    const loader = this.loader;
+    const ctx = loader.getContextProps();
+    return createProvider({ loader, ctx });
+  }
+
   /**
    * [Methods]
    */
@@ -106,7 +113,7 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
     };
 
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div {...css(styles.base, this.props.style)} className={'loader'}>
         {this.renderBody()}
         {this.renderSplash()}
       </div>
@@ -133,6 +140,12 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
         Scroll: true,
       }),
     };
-    return <div {...styles.base}>{this.state.el}</div>;
+    return (
+      <this.Provider>
+        <div {...styles.base} className={'loader-root'}>
+          {this.state.el}
+        </div>
+      </this.Provider>
+    );
   }
 }

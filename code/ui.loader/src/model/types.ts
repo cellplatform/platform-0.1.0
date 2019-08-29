@@ -1,7 +1,8 @@
 import { Observable } from 'rxjs';
 
-export type DynamicImport<T = any, P = {}> = (props?: P) => Promise<T>;
-
+/**
+ * Load exeution.
+ */
 export type LoadModule<T = any, P = {}> = (props?: P) => Promise<LoadModuleResponse<T>>;
 export type LoadModuleResponse<T = any> = {
   ok: boolean;
@@ -26,12 +27,17 @@ export type IDynamicModule<T = any> = {
   timeout: number; // Milliseconds.
 };
 
+/**
+ * Module loader.
+ */
+export type DynamicImport<T = any, P = {}> = (props?: P) => Promise<T>;
 export type ILoader = {
   length: number;
   modules: IDynamicModule[];
   loading: string[];
   events$: Observable<LoaderEvent>;
   add(moduleId: string, load: DynamicImport, options?: { timeout?: number }): ILoader;
+  context<P extends object = any>(fn: SetLoaderContext<P>): ILoader;
   get<T = any>(moduleId: string | number): IDynamicModule<T> | undefined;
   exists(moduleId: string | number): boolean;
   count(moduleId: string | number): number;
@@ -39,7 +45,16 @@ export type ILoader = {
   isLoaded(moduleId: string | number): boolean;
   load<T = any, P = {}>(moduleId: string | number, props?: P): Promise<LoadModuleResponse<T>>;
   render<P = {}>(moduleId: string | number, props?: P): Promise<RenderModuleResponse>;
+  getContextProps<P extends object = any>(): P;
 };
+
+/**
+ * The context object that is passed down through the React hierarchy.
+ */
+export type ILoaderContext = {
+  loader: ILoader;
+};
+export type SetLoaderContext<P extends object> = (args: { loader: ILoader; props: P }) => void;
 
 /**
  * [Events]

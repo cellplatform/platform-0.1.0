@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, css, color, GlamorValue, defaultValue, time, t } from '../common';
+import { COLORS, css, color, GlamorValue, defaultValue, time, t } from '../../common';
 import { Spinner } from '@platform/ui.spinner';
 
 export type ISplashProps = {
@@ -75,7 +75,7 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
       }),
     };
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div {...css(styles.base, this.props.style)} className={'loader-splash'}>
         {this.renderCircle()}
         {this.renderSpinner()}
         {this.renderLogos()}
