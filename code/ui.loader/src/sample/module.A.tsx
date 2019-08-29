@@ -47,6 +47,10 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
     return this.context.loader;
   }
 
+  public get theme() {
+    return this.context.theme;
+  }
+
   /**
    * [Render]
    */
@@ -54,7 +58,7 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
     const styles = {
       base: css({
         padding: 30,
-        color: COLORS.WHITE,
+        color: this.theme === 'DARK' ? COLORS.WHITE : COLORS.DARK,
       }),
       buttons: css({
         marginLeft: 30,
@@ -85,12 +89,13 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
   }
 
   private renderSplash() {
+    const isDark = this.theme === 'DARK';
     const styles = {
       base: css({
         padding: 30,
         minWidth: 300,
-        backgroundColor: color.format(0.08),
-        border: `dashed 1px ${color.format(0.2)}`,
+        backgroundColor: color.format(isDark ? 0.08 : -0.04),
+        border: `dashed 1px ${color.format(isDark ? 0.2 : -0.2)}`,
         borderRadius: 5,
       }),
     };

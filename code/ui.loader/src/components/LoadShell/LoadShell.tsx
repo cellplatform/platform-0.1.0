@@ -87,8 +87,9 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
     if (!this._provider) {
       const loader = this.loader;
       const splash = this.splash;
+      const theme = this.theme;
       const ctx = loader.getContextProps();
-      this._provider = createProvider({ loader, splash, ctx });
+      this._provider = createProvider({ loader, splash, theme, ctx });
     }
     return this._provider;
   }

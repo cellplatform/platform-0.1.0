@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { LoaderTheme } from '../types';
 
 /**
  * Load exeution.
@@ -54,6 +55,7 @@ export type ILoader = {
 export type ILoaderContext = {
   loader: ILoader;
   splash: ISplash;
+  theme: LoaderTheme;
 };
 export type SetLoaderContext<P extends object> = (args: { loader: ILoader; props: P }) => void;
 

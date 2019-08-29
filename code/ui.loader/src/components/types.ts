@@ -1,4 +1,4 @@
-export type LoaderTheme = 'LIGHT' | 'DARK';
+import { LoaderTheme } from '../types';
 
 /**
  * Splash screen.
