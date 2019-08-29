@@ -4,7 +4,7 @@ import * as push from './cmd.push';
 import { cli, fs, log } from './common';
 
 /**
- * Release new version script.
+ * Release new version.
  */
 export async function run() {
   const config = await Config.create();

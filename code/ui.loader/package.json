@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.loader",
-  "version": "0.1.2-beta.4",
+  "version": "0.1.2",
   "description": "Bootstrapper for progressively loading UI modules dynamically.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
