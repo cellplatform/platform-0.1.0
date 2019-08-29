@@ -28,7 +28,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   public async componentDidMount() {
-    // TEMP 🐷
+    // 🐷 SAMPLE: Configure after component mounted.
+    //
     // const foo = await loader.load('foo');
     // this.state$.next({ foo });
     // time.delay(1500, () => {
@@ -59,14 +60,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <loader.LoadShell
         loader={loader.singleton}
-        splash={this.splashFactory}
+        splash={this.splash}
         theme={'DARK'}
         loadDelay={this.loadDelay}
       />
     );
   }
 
-  private splashFactory: t.SplashFactory = args => {
+  private splash: t.SplashFactory = args => {
     const { theme, type } = args;
     const filename = theme === 'LIGHT' ? 'acme-dark' : 'acme-light';
     const logo = [`/images/logo/${filename}.png`, `/images/logo/${filename}@2x.png`, 169, 32];
