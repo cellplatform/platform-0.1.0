@@ -29,7 +29,7 @@ To run the sample within [UIHarness](https://uiharness.com/):
 yarn start
 ```
 
-To bundle and test using [react.ssr](../react.ssr) ensure you have a `.env` file in the root of the project with S3 connection values configured within `sample.server/ssr.yml`
+To bundle and test using [@platform/react.ssr](../react.ssr) ensure you have a `.env` file in the root of the project with S3 connection values configured within `sample.server/ssr.yml`
 
 ```
 # .env
