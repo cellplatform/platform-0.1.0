@@ -12,7 +12,8 @@ A lightweight SSR (server-side-rendering) system for react apps bundled with Par
 - `307` redirect all other assets to S3/CDN (geo-edge cache).
 - Manage lifecycle with simple command-line tools:
     - Bundle and push to S3 via command-line.
-    - Manage versioned releases (with simple roll-backs) across multiple sites/environments (eg. `dev`, `staging`, `prod`).
+    - Manage versioned releases (with simple roll-backs) across multiple sites/environments.  
+    (eg. `dev`, `staging`, `prod`)
 
 <p>&nbsp;<p>
 
