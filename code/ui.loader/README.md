@@ -23,18 +23,34 @@ Bootstrapper for progressively loading UI modules dynamically.
 
 ## Sample
 
-To run the sample within [UIHarness](https://uiharness.com/): 
+#### Sample UI
+To run the sample within [UIHarness](https://uiharness.com): 
 
 ```bash
 yarn start
 ```
 
+The UI entry point to start exploring from is at `/src/sample/entry.tsx` (see `uiharness.yml`).
+
+<p>&nbsp;<p>
+
+
+#### Sample Server
+
 To bundle and test using [@platform/react.ssr](../react.ssr) ensure you have a `.env` file in the root of the project with S3 connection details configured within `sample.server/ssr.yml`
+
 
 ```
 # .env
 SPACES_KEY="..."
 SPACES_SECRET="..."
+```
+
+ensure node modules are installed within the sample server folder:
+
+```bash
+cd sample.server
+yarn
 ```
 
 Bundle, deploy and release:
@@ -45,9 +61,15 @@ yarn ssr bundle
 
 yarn ssr release
 # ... follow prompts ...
-
 ```
 
+Run the production server locally:
+
+```bash
+yarn watch
+```
+
+For more details on how to operate the SSR server see [@platform/react.ssr](../react.ssr)
 
 <p>&nbsp;<p>
 <p>&nbsp;<p>
