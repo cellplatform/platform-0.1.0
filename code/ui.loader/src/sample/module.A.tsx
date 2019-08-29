@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, css, GlamorValue, t } from './common';
+import { color, COLORS, css, GlamorValue, t } from './common';
 import { loader } from './loader';
 
 const LOREM =
@@ -59,6 +59,7 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
         color: COLORS.WHITE,
       }),
       button: css({
+        marginLeft: 20,
         marginTop: 15,
         marginBottom: 5,
         marginRight: 20,
@@ -71,8 +72,11 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
       <div {...css(styles.base, this.props.style)}>
         <div>
           <strong>Dynamic load (Module A):</strong>
-          <div {...styles.button} onClick={this.handleClick}>
+          <div {...styles.button} onClick={this.loadMore}>
             Load more
+          </div>
+          <div {...styles.button} onClick={this.showSplash}>
+            Show splash
           </div>
           <p>{LOREM}</p>
           {(this.state.more || []).map((text, i) => (
@@ -87,11 +91,15 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
    * [Handlers]
    */
 
-  private handleClick = async () => {
+  private loadMore = async () => {
     const res = await this.loader.load<string[]>('B');
     if (res.result) {
       const more = [...(this.state.more || []), ...res.result];
       this.state$.next({ more });
     }
+  };
+
+  private showSplash = () => {
+    console.log('splash');
   };
 }
