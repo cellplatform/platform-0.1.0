@@ -149,8 +149,10 @@ export class Loader implements t.ILoader {
     }
 
     // Finish up.
-    res.ok = !Boolean(res.error);
-    return res;
+    const ok = !Boolean(res.error);
+    const element = res.result as t.RenderModuleResponse['element'];
+    const { count, error, timedOut } = res;
+    return { ok, count, element, error, timedOut };
   }
 
   /**

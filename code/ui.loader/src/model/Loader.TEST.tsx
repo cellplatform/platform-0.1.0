@@ -205,7 +205,7 @@ describe('Loader', () => {
       const res = await loader.render<MyProps>('foo', { msg: 'hello' });
 
       expect(res.count).to.eql(1);
-      expect(res.result).to.eql(el);
+      expect(res.element).to.eql(el);
       expect(props).to.eql({ msg: 'hello' });
     });
 
@@ -213,7 +213,7 @@ describe('Loader', () => {
       const loader = Loader.create().add('foo', async () => undefined);
       const res = await loader.render<MyProps>('foo', { msg: 'hello' });
 
-      expect(res.result).to.eql(null);
+      expect(res.element).to.eql(null);
       expect(res.ok).to.eql(false);
       expect(res.error && res.error.message).to.include('did not render a JSX element');
     });
@@ -222,7 +222,7 @@ describe('Loader', () => {
       const loader = Loader.create().add('foo', async () => ({}));
       const res = await loader.render<MyProps>('foo', { msg: 'hello' });
 
-      expect(res.result).to.eql({});
+      expect(res.element).to.eql({});
       expect(res.ok).to.eql(false);
       expect(res.error && res.error.message).to.include(
         'returned a result that was not JSX element',

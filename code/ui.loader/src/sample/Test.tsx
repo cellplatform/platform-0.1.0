@@ -109,8 +109,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Handlers]
    */
   private handleClick = async () => {
-    const foo = (await loader.render('foo')).result;
+    const foo = (await loader.render('foo')).element;
     this.state$.next({ foo });
-    // TEMP 🐷
   };
 }

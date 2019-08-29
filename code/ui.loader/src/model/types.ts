@@ -8,7 +8,13 @@ export type LoadModuleResponse<T = any> = {
   error?: Error;
   timedOut: boolean;
 };
-export type RenderModuleResponse = LoadModuleResponse<JSX.Element>;
+export type RenderModuleResponse = {
+  ok: boolean;
+  count: number;
+  element?: JSX.Element;
+  error?: Error;
+  timedOut: boolean;
+};
 
 export type IDynamicModule<T = any> = {
   id: string;
