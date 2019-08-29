@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, is, log, t } from './common';
-import { loader } from './loader';
+import { color, COLORS, css, GlamorValue, is, log, t, loader } from './common';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = { foo?: JSX.Element };
@@ -72,27 +71,36 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const filename = theme === 'LIGHT' ? 'acme-dark' : 'acme-light';
     const logo = [`/images/logo/${filename}.png`, `/images/logo/${filename}@2x.png`, 169, 32];
 
-    // if (type === 'TOP_LEFT') {
-    //   const style = css({ Image: logo, marginLeft: 15, marginTop: 10 });
-    //   return <div {...style} />;
-    // }
+    const attr = (tag: string, key: string) => {
+      return is.browser ? document.getElementsByTagName(tag)[0].getAttribute(key) : '';
+    };
 
-    // if (type === 'TOP_RIGHT') {
-    //   const style = css({ Image: logo, marginRight: 15, marginTop: 10 });
-    //   return <div {...style} />;
-    // }
-
-    if (type === 'BOTTOM_LEFT') {
+    const renderText = (args: { text: string; margin?: string }) => {
       const style = css({
-        marginLeft: 10,
-        marginBottom: 10,
+        margin: args.margin || 10,
         fontSize: 14,
         opacity: 0.4,
         color: theme === 'DARK' ? COLORS.WHITE : COLORS.DARK,
         userSelect: 'none',
       });
-      const message = `© ${new Date().getFullYear()}, Acme Inc.`;
-      return <div {...style}>{message}</div>;
+      return <div {...style}>{args.text}</div>;
+    };
+
+    if (type === 'TOP_LEFT') {
+      const version = attr('html', 'data-size') || '- KB';
+      const text = `size ${version}`;
+      return renderText({ text });
+    }
+
+    if (type === 'TOP_RIGHT') {
+      const version = attr('html', 'data-version') || '-';
+      const text = `version ${version}`;
+      return renderText({ text });
+    }
+
+    if (type === 'BOTTOM_LEFT') {
+      const text = `© ${new Date().getFullYear()}, Acme Inc.`;
+      return renderText({ text });
     }
 
     if (type === 'BOTTOM_RIGHT') {

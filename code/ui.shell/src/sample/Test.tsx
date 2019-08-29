@@ -49,7 +49,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Properties]
    */
   private get loadDelay() {
-    const delay = is.dev ? 1500 : 500; // NB: Simulate latency.
+    const delay = is.dev ? 2500 : 500; // NB: Simulate latency.
     return delay;
   }
 
@@ -71,28 +71,34 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const { theme, type } = args;
     const filename = theme === 'LIGHT' ? 'acme-dark' : 'acme-light';
     const logo = [`/images/logo/${filename}.png`, `/images/logo/${filename}@2x.png`, 169, 32];
+    const html = document.getElementsByTagName('html')[0];
 
-    // if (type === 'TOP_LEFT') {
-    //   const style = css({ Image: logo, marginLeft: 15, marginTop: 10 });
-    //   return <div {...style} />;
-    // }
-
-    // if (type === 'TOP_RIGHT') {
-    //   const style = css({ Image: logo, marginRight: 15, marginTop: 10 });
-    //   return <div {...style} />;
-    // }
-
-    if (type === 'BOTTOM_LEFT') {
+    const renderText = (args: { text: string; margin?: string }) => {
       const style = css({
-        marginLeft: 10,
-        marginBottom: 10,
+        margin: args.margin || 10,
         fontSize: 14,
         opacity: 0.4,
         color: theme === 'DARK' ? COLORS.WHITE : COLORS.DARK,
         userSelect: 'none',
       });
-      const message = `© ${new Date().getFullYear()}, Acme Inc.`;
-      return <div {...style}>{message}</div>;
+      return <div {...style}>{args.text}</div>;
+    };
+
+    if (type === 'TOP_LEFT') {
+      const version = html.getAttribute('data-size') || '- KB';
+      const text = `size ${version}`;
+      return renderText({ text });
+    }
+
+    if (type === 'TOP_RIGHT') {
+      const version = html.getAttribute('data-version') || '0.0.0';
+      const text = `version ${version}`;
+      return renderText({ text });
+    }
+
+    if (type === 'BOTTOM_LEFT') {
+      const text = `© ${new Date().getFullYear()}, Acme Inc.`;
+      return renderText({ text });
     }
 
     if (type === 'BOTTOM_RIGHT') {
