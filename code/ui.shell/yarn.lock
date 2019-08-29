@@ -1230,6 +1230,14 @@
   dependencies:
     "@platform/react" "0.3.20"
 
+"@platform/ui.loader@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.loader/-/ui.loader-0.1.0.tgz#a8c26e4611a973bd67d5bb3f42de1c74a9d3bea8"
+  integrity sha512-zcsbTqsHKcETnc64/+A6VMOj5YzYj9K+FS9xtMEvXLBHzuAwi2PAJtOw/W3ijOvoHT8ws+ZCA9We31hLE9OjVw==
+  dependencies:
+    "@platform/react" "0.3.20"
+    "@platform/util.value" "0.4.11"
+
 "@platform/ui.object@0.0.140":
   version "0.0.140"
   resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.140.tgz#a442f0f85ed4e546118e2970becd88ddf233a8a4"
@@ -1262,7 +1270,7 @@
     "@platform/react" "0.3.20"
     "@platform/util.value" "0.4.11"
 
-"@platform/ui.tree@0.2.20":
+"@platform/ui.tree@0.2.20", "@platform/ui.tree@^0.2.20":
   version "0.2.20"
   resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.2.20.tgz#a96f93f2e0d0a3e7f744f3d7b16d7138eea9167c"
   integrity sha512-/yvuTOkK1oCdkONeTzwSAI5NrXPa46RxH3DKE/wQCley8+Nne4Mbb2kqUaxyIkwozeb/cCzyZ2ET+M6Dxe3r0Q==

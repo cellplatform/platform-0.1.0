@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "@platform/react": "0.3.20",
+    "@platform/ui.loader": "0.1.0",
+    "@platform/ui.tree": "0.2.20",
     "@platform/util.value": "0.4.11"
   },
   "devDependencies": {
@@ -33,5 +35,6 @@
     "!lib/sample",
     "!*.TEST.{js, mjs, d.ts}"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }
