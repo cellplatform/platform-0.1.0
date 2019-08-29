@@ -34,20 +34,22 @@ export async function run() {
   log.info();
 
   // Prompt for which site to update.
-  const site = await promptForSite({ manifest });
-  if (!site) {
+  const sites = await promptForSites({ manifest });
+  if (sites.length === 0) {
     log.error(`The site named '${name}' does not exist in the manifest.`);
     return cli.exit(1);
   }
 
   // Prompt for which version to update to.
-  const version = await promptForVersion({ current: site.version, versions });
+  const version = await promptForVersion({ current: sites.map(s => s.version), versions });
 
   // Save change to the manifest.
   const s3 = config.s3;
   const bundle = fs.join(s3.path.bundles, version);
   const saveTo = config.manifest.local.path;
-  await manifest.change.site(site).bundle({ value: bundle, saveTo });
+  for (const site of sites) {
+    await manifest.change.site(site).bundle({ value: bundle, saveTo });
+  }
 
   // Push change to S3 and reset cache.
   await push.manifest({ config, silent: false });
@@ -59,17 +61,23 @@ export async function run() {
 /**
  * [Helpers]
  */
-async function promptForSite(args: { manifest: Manifest }) {
+async function promptForSites(args: { manifest: Manifest }) {
   const { manifest } = args;
-  const sites = manifest.sites.map(site => site.name || 'Unnamed');
+  let sites = manifest.sites.map(site => site.name || 'Unnamed');
+  sites = ['all', ...sites];
   const name = await cli.prompt.list<string>({ message: 'site', items: sites });
-  return manifest.site.byName(name);
+  if (name === 'all') {
+    return manifest.sites;
+  } else {
+    const site = manifest.site.byName(name);
+    return site ? [site] : [];
+  }
 }
 
-async function promptForVersion(args: { current: string; versions: string[] }) {
+async function promptForVersion(args: { current: string[]; versions: string[] }) {
   const { current } = args;
   const versions = args.versions.map(value => ({
-    name: `${value} ${value === current ? '🌼' : ''}`,
+    name: `${value} ${current.includes(value) ? '🌼' : ''}`,
     value,
   }));
   return cli.prompt.list<string>({
