@@ -81,7 +81,7 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   public render() {
     const opacity = this.opacity;
     const isVisible = this.isVisible;
-    const speed = defaultValue(this.props.fadeSpeed, 500);
+    const speed = defaultValue(this.props.fadeSpeed, 200);
     const isDark = this.isDark;
     const styles = {
       base: css({
