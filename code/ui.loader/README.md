@@ -3,7 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/ui.loader.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/ui.loader)
 ![banner](https://user-images.githubusercontent.com/185555/63812045-43f90900-c97d-11e9-9983-7fb4f85c0b01.png)
 
-Module bootstrapper for progressively loading UI modules dynamically.
+Bootstrapper for progressively loading UI modules dynamically.
 
 <p>&nbsp;<p>
 
