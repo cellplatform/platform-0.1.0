@@ -6,13 +6,6 @@ import { LoadShell } from '..';
 import { color, COLORS, css, GlamorValue, t, time, is, log } from '../common';
 import { loader } from './loader';
 
-// import { LoadShell } from '..';
-// import { Splash, SplashFactory } from '../components/Splash';
-
-// const modules = {
-//   Foo: import('./Foo'),
-// };
-
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = { foo?: JSX.Element };
 
