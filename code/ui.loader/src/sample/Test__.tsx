@@ -2,10 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { loader, LoadShell } from '..';
-import { color, COLORS, css, GlamorValue, t, time, is, log } from '../common';
-// import { LoadShell } from '..';
-// import { Splash, SplashFactory } from '../components/Splash';
+import { loader } from '..';
+import { color, COLORS, css, GlamorValue } from '../common';
+import { Splash, SplashFactory } from '../components/Splash';
 
 // const modules = {
 //   Foo: import('./Foo'),
@@ -31,23 +30,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     super(props);
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
-
-    log.group('LoadShell');
-    log.info('dev', is.dev);
-    log.info('loadDelay', this.loadDelay);
-    log.groupEnd();
   }
 
   public async componentDidMount() {
     // TEMP 🐷
     // const foo = await loader.load('foo');
     // this.state$.next({ foo });
-    // time.delay(1500, () => {
-    //   loader.add('foo', async () => {
-    //     const Foo = (await import('./module.A')).Foo;
-    //     return <Foo />;
-    //   });
-    // });
   }
 
   public componentWillUnmount() {
@@ -56,28 +44,32 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   /**
-   * [Properties]
-   */
-  private get loadDelay() {
-    const delay = is.dev ? 1500 : 0; // NB: Simulate latency.
-    return delay;
-  }
-
-  /**
    * [Render]
    */
   public render() {
+    const { foo } = this.state;
+
+    const styles = {
+      base: css({
+        Absolute: 0,
+      }),
+      foo: css({
+        Absolute: 0,
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+      }),
+    };
+
+    const elFoo = foo && <div {...styles.foo}>{foo}</div>;
+
     return (
-      <LoadShell
-        loader={loader}
-        splash={this.splashFactory}
-        theme={'DARK'}
-        loadDelay={this.loadDelay}
-      />
+      <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
+        <Splash theme={'DARK'} factory={this.splashFactory} />
+        {elFoo}
+      </div>
     );
   }
 
-  private splashFactory: t.SplashFactory = args => {
+  private splashFactory: SplashFactory = args => {
     const { theme, type } = args;
     const filename = theme === 'LIGHT' ? 'acme-dark' : 'acme-light';
     const logo = [`/images/logo/${filename}.png`, `/images/logo/${filename}@2x.png`, 169, 32];
@@ -111,5 +103,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     }
 
     return undefined;
+  };
+
+  /**
+   * [Handlers]
+   */
+  private handleClick = async () => {
+    const foo = (await loader.render('foo')).element;
+    this.state$.next({ foo });
   };
 }

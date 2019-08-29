@@ -132,7 +132,7 @@ describe('Loader', () => {
       expect(loader.isLoaded('foo')).to.eql(true);
     });
 
-    it('loading/loaded event', async () => {
+    it('events: loading/loaded', async () => {
       const el = <Foo />;
       const loader = Loader.create().add('foo', async () => el);
       const item = loader.get('foo');
@@ -165,6 +165,41 @@ describe('Loader', () => {
       expect(e1.payload.error).to.eql(undefined);
 
       expect(e1.payload.id).to.eql(e0.payload.id);
+    });
+
+    it('props: loading/isLoading', async () => {
+      const loader = Loader.create()
+        .add('foo', async () => time.wait(10))
+        .add('bar', async () => time.wait(10));
+
+      expect(loader.isLoading()).to.eql(false);
+      expect(loader.loading).to.eql([]);
+
+      loader.load('foo');
+      expect(loader.loading).to.eql(['foo']);
+      expect(loader.isLoading()).to.eql(true);
+      expect(loader.isLoading('foo')).to.eql(true);
+      expect(loader.isLoading('bar')).to.eql(false);
+
+      loader.load('foo');
+      expect(loader.loading).to.eql(['foo']); // NB: does not duplicate "foo" id.
+      expect(loader.isLoading()).to.eql(true);
+      expect(loader.isLoading('foo')).to.eql(true);
+      expect(loader.isLoading('bar')).to.eql(false);
+
+      loader.load('bar');
+      expect(loader.loading).to.eql(['foo', 'bar']);
+      expect(loader.isLoading()).to.eql(true);
+      expect(loader.isLoading('foo')).to.eql(true);
+      expect(loader.isLoading('bar')).to.eql(true);
+
+      await time.delay(50);
+
+      expect(loader.loading).to.eql([]);
+      expect(loader.isLoading()).to.eql(false);
+      expect(loader.isLoading('foo')).to.eql(false);
+      expect(loader.isLoading('bar')).to.eql(false);
+      expect(loader.isLoading('NO_EXIST')).to.eql(false);
     });
 
     it('error on load', async () => {

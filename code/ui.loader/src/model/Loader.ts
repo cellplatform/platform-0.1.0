@@ -32,6 +32,7 @@ export class Loader implements t.ILoader {
    * [Fields]
    */
   private _modules: Array<t.IDynamicModule<any>> = [];
+  private _loading: string[] = [];
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -55,6 +56,10 @@ export class Loader implements t.ILoader {
 
   public get modules() {
     return this._modules;
+  }
+
+  public get loading() {
+    return this._loading;
   }
 
   /**
@@ -81,7 +86,7 @@ export class Loader implements t.ILoader {
     return this;
   }
 
-  public get<T = any>(moduleId: string | number) {
+  public get<T = any>(moduleId?: string | number) {
     this.throwIfDisposed('get');
     const res =
       typeof moduleId === 'number'
@@ -101,6 +106,13 @@ export class Loader implements t.ILoader {
     return item ? item.count : -1;
   }
 
+  public isLoading(moduleId?: string | number) {
+    const item = this.get(moduleId);
+    const id = item ? item.id : undefined;
+    const ids = this.loading;
+    return moduleId === undefined ? ids.length > 0 : ids.some(item => item === id);
+  }
+
   public isLoaded(moduleId: string | number) {
     this.throwIfDisposed('isLoaded');
     const item = this.get(moduleId);
@@ -112,7 +124,6 @@ export class Loader implements t.ILoader {
     props?: P,
   ): Promise<t.LoadModuleResponse<T>> {
     this.throwIfDisposed('load');
-
     const item = this.get<T>(moduleId);
     return item
       ? item.load(props || {})
@@ -130,8 +141,6 @@ export class Loader implements t.ILoader {
   ): Promise<t.RenderModuleResponse> {
     this.throwIfDisposed('render');
     const res = await this.load<JSX.Element, P>(moduleId, props);
-
-    // TEMP 🐷 TODO - render with context (passing the loader down)
 
     // Convert [undefined] to [null].
     // NB:  This is safer for React as rendering `null` does nothing, whereas
@@ -169,6 +178,10 @@ export class Loader implements t.ILoader {
   }
 
   private async invoke(item: t.IDynamicModule, load: t.DynamicImport, props: {}) {
+    if (!this.isLoading(item.id)) {
+      this._loading = [...this._loading, item.id];
+    }
+
     // Fire pre-event.
     const id = idUtil.shortid();
     item.count++;
@@ -191,6 +204,7 @@ export class Loader implements t.ILoader {
 
     // Finish up.
     item.isLoaded = true;
+    this._loading = this._loading.filter(id => id !== item.id);
     this.fire({
       type: 'LOADER/loaded',
       payload: { module: item.id, id, count, result, error, timedOut },

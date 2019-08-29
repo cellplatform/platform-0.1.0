@@ -2,28 +2,20 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, css, color, GlamorValue, defaultValue, time } from '../../common';
+import { COLORS, css, color, GlamorValue, defaultValue, time, t } from '../common';
 import { Spinner } from '@platform/ui.spinner';
 
-export type SplashTheme = 'LIGHT' | 'DARK';
-
-export type SplashFactory = (args: SplashFactoryArgs) => JSX.Element | undefined;
-export type SplashFactoryArgs = {
-  type: 'TOP_LEFT' | 'TOP_RIGHT' | 'BOTTOM_LEFT' | 'BOTTOM_RIGHT';
-  theme: SplashTheme;
-};
-
 export type ISplashProps = {
-  theme?: SplashTheme;
+  theme?: t.LoaderTheme;
   isSpinning?: boolean;
-  factory?: SplashFactory;
+  factory?: t.SplashFactory;
   style?: GlamorValue;
 };
 export type ISplashState = {
   isLoaded?: boolean;
 };
 
-const nullFactory: SplashFactory = args => undefined;
+const NULL_FACTORY: t.SplashFactory = args => undefined;
 
 export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   public state: ISplashState = { isLoaded: false };
@@ -67,17 +59,19 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   }
 
   private get factory() {
-    return this.props.factory || nullFactory;
+    return this.props.factory || NULL_FACTORY;
   }
 
   /**
    * [Render]
    */
   public render() {
+    const isDark = this.isDark;
     const styles = {
       base: css({
         Absolute: 0,
-        backgroundColor: this.isDark ? COLORS.DARK : COLORS.WHITE,
+        color: isDark ? COLORS.WHITE : COLORS.DARK,
+        backgroundColor: isDark ? COLORS.DARK : COLORS.WHITE,
       }),
     };
     return (

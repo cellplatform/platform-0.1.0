@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue } from '../common';
+import { COLORS, css, GlamorValue } from '../common';
 
 const LOREM = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.',
@@ -39,6 +39,7 @@ export class Foo extends React.PureComponent<IFooProps, IFooState> {
     const styles = {
       base: css({
         padding: 30,
+        color: COLORS.WHITE,
       }),
     };
     return (
