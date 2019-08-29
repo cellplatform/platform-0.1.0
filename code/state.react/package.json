@@ -20,7 +20,8 @@
     "@platform/ts": "3.5.1"
   },
   "files": [
-    "lib"
+    "lib",
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"
