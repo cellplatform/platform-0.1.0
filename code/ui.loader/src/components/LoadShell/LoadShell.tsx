@@ -141,13 +141,11 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
 
   private renderSplash() {
     const isVisible = this.isSplashVisible;
-    const fadeSpeed = defaultValue(this.splash.fadeSpeed, 200);
     return (
       <Splash
         theme={this.theme}
         isSpinning={this.splash.isSpinning}
         opacity={isVisible ? 1 : 0}
-        fadeSpeed={fadeSpeed}
         factory={this.props.splash}
         children={this.splash.el}
       />

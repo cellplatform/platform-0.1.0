@@ -9,7 +9,6 @@ export type ISplashProps = {
   children?: React.ReactNode;
   theme?: t.LoaderTheme;
   opacity?: number;
-  fadeSpeed?: number;
   isSpinning?: boolean;
   factory?: t.SplashFactory;
   style?: GlamorValue;
@@ -81,7 +80,6 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   public render() {
     const opacity = this.opacity;
     const isVisible = this.isVisible;
-    const speed = defaultValue(this.props.fadeSpeed, 200);
     const isDark = this.isDark;
     const styles = {
       base: css({
@@ -89,7 +87,8 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
         color: isDark ? COLORS.WHITE : COLORS.DARK,
         backgroundColor: isDark ? COLORS.DARK : COLORS.WHITE,
         opacity,
-        transition: `opacity ${speed}ms`,
+        transition: `opacity 200ms`,
+        transitionTimingFunction: isVisible ? 'ease-in' : 'ease-out',
         pointerEvents: isVisible ? 'auto' : 'none', // NB: click-through splash when not showing.
       }),
     };
@@ -151,15 +150,18 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   }
 
   private renderChildren() {
-    const SPEED = '0.6s';
     const { children } = this.props;
     const hasChildren = Boolean(children);
+    const isVisible = this.isVisible;
+
     const styles = {
       base: css({
         Absolute: 0,
         Flex: 'center-center',
         opacity: hasChildren ? 1 : 0,
-        transition: `opacity ${SPEED}`,
+        transform: `scale(${isVisible ? 1 : 1.2})`,
+        transition: `opacity 600ms, transform 200ms`,
+        transitionTimingFunction: isVisible ? 'ease-in' : 'ease-out',
       }),
       inner: css({ position: 'relative' }),
     };

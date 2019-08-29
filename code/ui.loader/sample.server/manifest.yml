@@ -12,7 +12,7 @@ sites:
   - name: prod
     domain:
       - loader.platform.uiharness.com
-    bundle: bundle/0.0.3-beta.0
+    bundle: bundle/0.1.1-beta.0
     routes:
       default:
         entry: index.html

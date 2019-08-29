@@ -135,10 +135,12 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
 
   private hideSplash = () => {
     const splash = this.context.splash;
-    splash.fadeSpeed = 200;
     splash.isVisible = false;
     splash.isSpinning = false;
-    splash.el = undefined;
+
+    time.delay(200, () => {
+      splash.el = undefined;
+    });
   };
 }
 
