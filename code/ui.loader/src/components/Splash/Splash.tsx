@@ -6,7 +6,10 @@ import { COLORS, css, color, GlamorValue, defaultValue, time, t } from '../../co
 import { Spinner } from '@platform/ui.spinner';
 
 export type ISplashProps = {
+  children?: React.ReactNode;
   theme?: t.LoaderTheme;
+  opacity?: number;
+  fadeSpeed?: number;
   isSpinning?: boolean;
   factory?: t.SplashFactory;
   style?: GlamorValue;
@@ -55,7 +58,17 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   }
 
   public get isSpinning() {
-    return defaultValue(this.props.isSpinning, true);
+    const { children } = this.props;
+    return children ? false : defaultValue(this.props.isSpinning, true);
+  }
+
+  public get opacity() {
+    const { opacity = 1 } = this.props;
+    return opacity;
+  }
+
+  public get isVisible() {
+    return this.opacity > 0;
   }
 
   private get factory() {
@@ -66,12 +79,18 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
    * [Render]
    */
   public render() {
+    const opacity = this.opacity;
+    const isVisible = this.isVisible;
+    const speed = defaultValue(this.props.fadeSpeed, 500);
     const isDark = this.isDark;
     const styles = {
       base: css({
         Absolute: 0,
         color: isDark ? COLORS.WHITE : COLORS.DARK,
         backgroundColor: isDark ? COLORS.DARK : COLORS.WHITE,
+        opacity,
+        transition: `opacity ${speed}ms`,
+        pointerEvents: isVisible ? 'auto' : 'none', // NB: click-through splash when not showing.
       }),
     };
     return (
@@ -79,6 +98,7 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
         {this.renderCircle()}
         {this.renderSpinner()}
         {this.renderLogos()}
+        {this.renderChildren()}
       </div>
     );
   }
@@ -126,6 +146,26 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
     return (
       <div {...styles.base}>
         <Spinner color={color} />
+      </div>
+    );
+  }
+
+  private renderChildren() {
+    const SPEED = '0.6s';
+    const { children } = this.props;
+    const hasChildren = Boolean(children);
+    const styles = {
+      base: css({
+        Absolute: 0,
+        Flex: 'center-center',
+        opacity: hasChildren ? 1 : 0,
+        transition: `opacity ${SPEED}`,
+      }),
+      inner: css({ position: 'relative' }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.inner}>{children}</div>
       </div>
     );
   }

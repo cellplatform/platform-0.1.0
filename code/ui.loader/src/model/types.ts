@@ -53,8 +53,18 @@ export type ILoader = {
  */
 export type ILoaderContext = {
   loader: ILoader;
+  splash: ISplash;
 };
 export type SetLoaderContext<P extends object> = (args: { loader: ILoader; props: P }) => void;
+
+/**
+ * Splash screen.
+ */
+export type ISplash = {
+  isVisible: boolean;
+  isSpinning?: boolean;
+  el?: JSX.Element;
+};
 
 /**
  * [Events]

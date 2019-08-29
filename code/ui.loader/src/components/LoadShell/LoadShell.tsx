@@ -5,6 +5,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { log, time, COLORS, css, GlamorValue, t } from '../../common';
 import { Splash } from '../Splash';
 import { createProvider } from '../Context';
+import { createSplash } from '../../model';
 
 export type ILoadShellProps = {
   loader: t.ILoader;
@@ -22,6 +23,7 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
   public state: ILoadShellState = {};
   private state$ = new Subject<Partial<ILoadShellState>>();
   private unmounted$ = new Subject<{}>();
+  private splash = createSplash({ isVisible: false, isSpinning: true });
 
   /**
    * [Lifecycle]
@@ -34,6 +36,10 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
 
   public componentDidMount() {
     const loader$ = this.loader.events$.pipe(takeUntil(this.unmounted$));
+    const splash$ = this.splash.changed$.pipe(takeUntil(this.unmounted$));
+
+    // Redraw when splash API is changed.
+    splash$.subscribe(e => this.forceUpdate());
 
     loader$
       // Ensure the default module is loaded.
@@ -50,28 +56,34 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+    this.splash.dispose();
   }
 
   /**
    * [Properties]
    */
-  public get loader() {
+  private get loader() {
     return this.props.loader;
   }
 
-  public get theme() {
+  private get theme() {
     const { theme = 'LIGHT' } = this.props;
     return theme;
   }
 
-  public get isDark() {
+  private get isDark() {
     return this.theme === 'DARK';
+  }
+
+  private get isSplashVisible() {
+    return !Boolean(this.state.el) || this.splash.isVisible;
   }
 
   private get Provider() {
     const loader = this.loader;
+    const splash = this.splash;
     const ctx = loader.getContextProps();
-    return createProvider({ loader, ctx });
+    return createProvider({ loader, splash, ctx });
   }
 
   /**
@@ -79,7 +91,6 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
    */
   public async load(moduleId?: string | number) {
     const { loadDelay = 0 } = this.props;
-
     const loader = this.loader;
     if (this.state.isLoaded || loader.length === 0 || loader.isLoading(0)) {
       return;
@@ -92,7 +103,10 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
     // Update the UI.
     const el = res.result;
     if (React.isValidElement(el)) {
-      time.delay(loadDelay, () => this.state$.next({ el }));
+      time.delay(loadDelay, () => {
+        this.splash.isSpinning = false;
+        this.state$.next({ el });
+      });
     } else {
       log.error(`LOADER: The default module did not render a JSX.Element`);
     }
@@ -121,16 +135,17 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
   }
 
   private renderSplash() {
-    const SPEED = 0.5;
-    const isVisible = !Boolean(this.state.el);
-    const styles = {
-      base: css({
-        pointerEvents: isVisible ? 'auto' : 'none', // NB: click-through splash when not showing.
-        opacity: isVisible ? 1 : 0,
-        transition: `opacity ${SPEED}s`,
-      }),
-    };
-    return <Splash theme={this.theme} style={styles.base} factory={this.props.splash} />;
+    const isVisible = this.isSplashVisible;
+    return (
+      <Splash
+        theme={this.theme}
+        isSpinning={this.splash.isSpinning}
+        opacity={isVisible ? 1 : 0}
+        fadeSpeed={500}
+        factory={this.props.splash}
+        children={this.splash.el}
+      />
+    );
   }
 
   private renderBody() {

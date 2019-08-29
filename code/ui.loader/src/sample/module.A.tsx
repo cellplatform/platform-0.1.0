@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, t } from './common';
+import { color, COLORS, css, GlamorValue, t, time } from './common';
 import { loader } from './loader';
 
 const LOREM =
@@ -58,30 +58,47 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
         padding: 30,
         color: COLORS.WHITE,
       }),
-      button: css({
-        marginLeft: 20,
-        marginTop: 15,
-        marginBottom: 5,
-        marginRight: 20,
-        color: '#FF0067',
-        cursor: 'pointer',
-        userSelect: 'none',
-      }),
+      splash: css({}),
     };
+
+    const elSplash = this.renderSplash();
+
     return (
       <div {...css(styles.base, this.props.style)}>
         <div>
           <strong>Dynamic load (Module A):</strong>
-          <div {...styles.button} onClick={this.loadMore}>
-            Load more
-          </div>
-          <div {...styles.button} onClick={this.showSplash}>
-            Show splash
+          <div>
+            <Button label={'Load more'} onClick={this.loadMore} />
+            <Button
+              label={'Show splash (spinning)'}
+              onClick={this.showSplash({ isSpinning: true, timeout: 1500 })}
+            />
+            <Button label={'Show splash (el)'} onClick={this.showSplash({ el: elSplash })} />
           </div>
           <p>{LOREM}</p>
           {(this.state.more || []).map((text, i) => (
             <p key={i}>{text}</p>
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  private renderSplash() {
+    const styles = {
+      base: css({
+        padding: 30,
+        minWidth: 300,
+        backgroundColor: color.format(0.08),
+        border: `dashed 1px ${color.format(0.2)}`,
+        borderRadius: 5,
+      }),
+    };
+    return (
+      <div {...styles.base} onClick={this.hideSplash}>
+        <div>My splash component</div>
+        <div>
+          <Button label={'Hide'} />
         </div>
       </div>
     );
@@ -99,7 +116,47 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
     }
   };
 
-  private showSplash = () => {
-    console.log('splash');
+  private showSplash = (args: { isSpinning?: boolean; el?: JSX.Element; timeout?: number }) => {
+    return () => {
+      const { isSpinning, el, timeout } = args;
+      const splash = this.context.splash;
+      splash.isVisible = true;
+      splash.isSpinning = isSpinning;
+      splash.el = el;
+      if (timeout) {
+        time.delay(timeout, () => this.hideSplash());
+      }
+    };
+  };
+
+  private hideSplash = () => {
+    const splash = this.context.splash;
+    splash.isVisible = false;
+    splash.isSpinning = false;
+    splash.el = undefined;
   };
 }
+
+/**
+ * [Helpers]
+ */
+
+const Button = (props: { label?: React.ReactNode; onClick?: () => void }) => {
+  const styles = {
+    base: css({
+      display: 'inline-block',
+      // marginLeft: 20,
+      marginTop: 15,
+      // marginBottom: 5,
+      marginRight: 20,
+      color: '#FF0067',
+      cursor: 'pointer',
+      userSelect: 'none',
+    }),
+  };
+  return (
+    <div {...styles.base} onClick={props.onClick}>
+      {props.label}
+    </div>
+  );
+};

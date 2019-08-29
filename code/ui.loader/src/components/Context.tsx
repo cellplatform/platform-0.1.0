@@ -41,11 +41,13 @@ export type ReactContext = React.ContextType<typeof Context>;
  */
 export function createProvider<P = {}>(args: {
   loader: t.ILoader;
+  splash: t.ISplash;
   ctx?: P;
 }): React.FunctionComponent {
-  const { loader } = args;
+  const { loader, splash } = args;
   const context: t.ILoaderContext = {
     loader,
+    splash,
     ...(args.ctx || {}), // Optional props to extend the context with.
   };
   return (props: { children?: React.ReactNode } = {}) => (
