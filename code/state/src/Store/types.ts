@@ -15,7 +15,6 @@ export type IStore<M extends {}, E extends IStoreEvent> = {
   dispose(): void;
   dispatch(event: E): IStore<M, E>;
   on<E2 extends E>(type: E2['type']): Observable<IDispatch<M, E2, E>>;
-  lens<S extends {}>(filter: LensStateFilter<M, S>): IStoreLens<M, S, E>;
 };
 
 /**
