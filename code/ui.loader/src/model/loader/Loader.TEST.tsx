@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { expect } from 'chai';
 import { Loader } from './Loader';
-import { t, time } from '../common';
+import { t, time } from '../../common';
 
 const Foo = (props: {}) => <div />;
 

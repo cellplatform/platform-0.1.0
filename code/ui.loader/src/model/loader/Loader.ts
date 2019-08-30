@@ -1,9 +1,7 @@
 import * as React from 'react';
-
 import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
-
-import { defaultValue, id as idUtil, t } from '../common';
+import { defaultValue, id as idUtil, t } from '../../common';
 
 export type ILoaderArgs = {};
 
