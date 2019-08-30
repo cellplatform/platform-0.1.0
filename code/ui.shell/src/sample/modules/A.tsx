@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, t, time, log } from './common';
-import { loader } from './loader';
+import { loader, color, COLORS, css, GlamorValue, t, time, log } from '../common';
 
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
@@ -30,7 +29,7 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
   }
 
   public async componentDidMount() {
-    log.group('🌳 ComponentA');
+    log.group('🌳 module.A');
     log.info('context', this.context);
     log.groupEnd();
   }
@@ -70,9 +69,8 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
     return (
       <div {...css(styles.base, this.props.style)}>
         <div>
-          <strong>Dynamic load (Module A):</strong>
+          <strong>Shell // Dynamic load (Module A):</strong>
           <div {...styles.buttons}>
-            <Button label={'Load more'} onClick={this.loadMore} />
             <Button
               label={'Show splash (spinning)'}
               onClick={this.showSplash({ isSpinning: true, timeout: 1500 })}
@@ -112,14 +110,6 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
   /**
    * [Handlers]
    */
-  private loadMore = async () => {
-    const res = await this.loader.load<string[]>('B');
-    if (res.result) {
-      const more = [...(this.state.more || []), ...res.result];
-      this.state$.next({ more });
-    }
-  };
-
   private showSplash = (args: { isSpinning?: boolean; el?: JSX.Element; timeout?: number }) => {
     return () => {
       const { isSpinning, el, timeout } = args;
@@ -152,9 +142,7 @@ const Button = (props: { label?: React.ReactNode; onClick?: () => void }) => {
   const styles = {
     base: css({
       display: 'inline-block',
-      // marginLeft: 20,
       marginTop: 15,
-      // marginBottom: 5,
       marginRight: 20,
       color: '#FF0067',
       cursor: 'pointer',

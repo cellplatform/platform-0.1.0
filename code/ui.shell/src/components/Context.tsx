@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as t from '../types';
+import * as t from '../common/types';
 
 /**
  * The React [Context] used to pass down common modules to components.
@@ -17,7 +17,7 @@ import * as t from '../types';
  * See:
  *    https://reactjs.org/docs/context.html
  */
-export const Context = React.createContext<t.ILoaderContext>({} as any);
+export const Context = React.createContext<t.IShellContext>({} as any);
 Context.displayName = '@platform/shell/Context';
 
 /**
@@ -42,11 +42,11 @@ export type ReactContext = React.ContextType<typeof Context>;
 export function createProvider<P = {}>(args: {
   loader: t.ILoader;
   splash: t.ISplash;
-  theme: t.LoaderTheme;
+  theme: t.ShellTheme;
   ctx?: P;
 }): React.FunctionComponent {
   const { loader, splash, theme } = args;
-  const context: t.ILoaderContext = {
+  const context: t.IShellContext = {
     loader,
     splash,
     theme,

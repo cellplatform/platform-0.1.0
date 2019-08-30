@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, is, log, t } from './common';
-import { loader } from './loader';
+import { color, COLORS, css, GlamorValue, is, log, t, loader, shell } from './common';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = { foo?: JSX.Element };
@@ -49,7 +48,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Properties]
    */
   private get loadDelay() {
-    const delay = is.dev ? 2500 : 500; // NB: Simulate latency.
+    const delay = is.dev ? 1500 : 500; // NB: Simulate latency.
     return delay;
   }
 
@@ -67,11 +66,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     );
   }
 
-  private splash: t.SplashFactory = args => {
+  private splash: shell.SplashFactory = args => {
     const { theme, type } = args;
     const filename = theme === 'LIGHT' ? 'acme-dark' : 'acme-light';
     const logo = [`/images/logo/${filename}.png`, `/images/logo/${filename}@2x.png`, 169, 32];
-    const html = document.getElementsByTagName('html')[0];
+
+    const attr = (tag: string, key: string) => {
+      return is.browser ? document.getElementsByTagName(tag)[0].getAttribute(key) : '';
+    };
 
     const renderText = (args: { text: string; margin?: string }) => {
       const style = css({
@@ -85,13 +87,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
 
     if (type === 'TOP_LEFT') {
-      const version = html.getAttribute('data-size') || '- KB';
+      const version = attr('html', 'data-size') || '- KB';
       const text = `size ${version}`;
       return renderText({ text });
     }
 
     if (type === 'TOP_RIGHT') {
-      const version = html.getAttribute('data-version') || '0.0.0';
+      const version = attr('html', 'data-version') || '-';
       const text = `version ${version}`;
       return renderText({ text });
     }

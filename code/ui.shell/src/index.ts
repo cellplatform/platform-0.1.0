@@ -1,3 +1,2 @@
-import * as loader from './loader';
-
-export { loader };
+import * as shell from './shell';
+export { shell };

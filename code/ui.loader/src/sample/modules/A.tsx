@@ -151,9 +151,7 @@ const Button = (props: { label?: React.ReactNode; onClick?: () => void }) => {
   const styles = {
     base: css({
       display: 'inline-block',
-      // marginLeft: 20,
       marginTop: 15,
-      // marginBottom: 5,
       marginRight: 20,
       color: '#FF0067',
       cursor: 'pointer',
