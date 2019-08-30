@@ -1,3 +1,6 @@
 import * as t from '../common/types';
 
-export type ITemp = {}; // TEMP 🐷
+/**
+ * Model for controlling the <Shell>.
+ */
+export type IShell = {};

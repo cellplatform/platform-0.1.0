@@ -40,17 +40,12 @@ export type ReactContext = React.ContextType<typeof Context>;
  * hierarchy to child components.
  */
 export function createProvider<P = {}>(args: {
-  loader: t.ILoader;
-  splash: t.ISplash;
-  theme: t.ShellTheme;
-  ctx?: P;
+  ctx: t.IShellContext;
+  props?: P;
 }): React.FunctionComponent {
-  const { loader, splash, theme } = args;
   const context: t.IShellContext = {
-    loader,
-    splash,
-    theme,
-    ...(args.ctx || {}), // Optional props to extend the context with.
+    ...args.ctx,
+    ...(args.props || {}), // Optional props to extend the context with.
   };
   return (props: { children?: React.ReactNode } = {}) => (
     <Context.Provider value={context}>{props.children}</Context.Provider>

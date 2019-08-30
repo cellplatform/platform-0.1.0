@@ -27,7 +27,7 @@ export const factory: shell.SplashFactory = args => {
   }
 
   if (type === 'BOTTOM:RIGHT') {
-    const style = css({ Image: logo, marginRight: 20, marginBottom: 18 });
+    const style = css({ Image: logo, marginRight: 25, marginBottom: 18 });
     return <div {...style} />;
   }
 

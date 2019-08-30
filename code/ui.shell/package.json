@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.shell",
-  "version": "0.0.2",
+  "version": "0.0.3-beta.0",
   "description": "Modular application shell structure with tree navigation.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { GlamorValue, loader, t } from '../../common';
+import { GlamorValue, loader, t } from '../common';
 
 const DEFAULT = {
   MODULE: '.sys.shell',

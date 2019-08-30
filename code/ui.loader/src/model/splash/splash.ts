@@ -1,5 +1,7 @@
 import { props, t } from '../../common';
 
-export function createSplash(initial: t.ISplash) {
-  return props.observable<t.ISplash>(initial);
+const DEFAULT: t.ISplash = { isVisible: false, isSpinning: true };
+
+export function create(initial: Partial<t.ISplash>) {
+  return props.observable<t.ISplash>({ ...DEFAULT, ...initial });
 }

@@ -4,7 +4,7 @@ import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
 import { COLORS, css, GlamorValue, log, t, time } from '../../common';
 import { createProvider } from '../../context/Context';
-import { createSplash } from '../../model';
+import { splash } from '../../model';
 import { Splash } from '../Splash';
 
 export type ILoaderShellProps = {
@@ -25,7 +25,7 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
   private state$ = new Subject<Partial<ILoaderShellState>>();
   private unmounted$ = new Subject<{}>();
 
-  private splash = createSplash({ isVisible: false, isSpinning: true });
+  private splash = splash.create({ isVisible: false, isSpinning: true });
   private _provider: React.FunctionComponent;
 
   /**
@@ -94,8 +94,10 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
       const loader = this.loader;
       const splash = this.splash;
       const theme = this.theme;
-      const ctx = loader.getContextProps();
-      this._provider = createProvider({ loader, splash, theme, ctx });
+      this._provider = createProvider({
+        ctx: { loader, splash, theme },
+        props: loader.getContextProps(),
+      });
     }
     return this._provider;
   }
