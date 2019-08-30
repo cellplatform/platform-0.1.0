@@ -8,7 +8,11 @@ export type ILoaderContext = {
   splash: t.ISplash;
   theme: t.LoaderTheme;
 };
+
+/**
+ * Callback function that manipulates assigns context properties.
+ * (extensibility book)
+ */
 export type LoaderContextUpdateProps<P extends object> = (args: {
   loader: t.ILoader;
-  props: P;
-}) => void;
+}) => Partial<P> | void;

@@ -4,7 +4,7 @@ import { filter, takeUntil, debounceTime } from 'rxjs/operators';
 
 import { log, time, COLORS, css, GlamorValue, t } from '../../common';
 import { Splash } from '../Splash';
-import { createProvider } from '../../Context';
+import { createProvider } from '../../context/Context';
 import { createSplash } from '../../model';
 
 export type ILoadShellProps = {
@@ -100,6 +100,7 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
   public async load(moduleId?: string | number) {
     const { loadDelay = 0 } = this.props;
     const loader = this.loader;
+
     if (this.state.isLoaded || loader.length === 0 || loader.isLoading(0)) {
       return;
     }

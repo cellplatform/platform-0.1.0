@@ -57,11 +57,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public render() {
     return (
-      <loader.LoadShell
+      <loader.Shell
         loader={loader.singleton}
         splash={this.splash}
-        theme={'DARK'}
         loadDelay={this.loadDelay}
+        theme={'DARK'}
       />
     );
   }

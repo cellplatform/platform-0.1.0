@@ -171,9 +171,14 @@ export class Loader implements t.ILoader {
   }
 
   public getContextProps<P extends object = any>() {
-    const props = {};
+    let props = {};
     const loader = this; // tslint:disable-line
-    this._getContext.forEach(fn => fn({ loader, props }));
+    this._getContext.forEach(fn => {
+      const res = fn({ loader });
+      if (typeof res === 'object') {
+        props = { ...props, ...res };
+      }
+    });
     return props as P;
   }
 
