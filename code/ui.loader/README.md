@@ -7,6 +7,12 @@ Bootstrapper for progressively loading UI modules dynamically.
 
 <p>&nbsp;<p>
 
+#### Live Demo:
+https://loader.platform.uiharness.com
+
+
+<p>&nbsp;<p>
+
 
 <div style="text-align:center"><img src="https://user-images.githubusercontent.com/185555/63910765-29f22000-ca7c-11e9-9d41-ac0ef2741cf1.gif" /></div>
 
