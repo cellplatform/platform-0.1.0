@@ -16,6 +16,3 @@ export type ILoaderContext = {
 export type LoaderContextUpdateProps<P extends object> = (args: {
   loader: t.ILoader;
 }) => Partial<P> | void;
-
-
-

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, is, log, t, loader } from './common';
+import { color, COLORS, css, GlamorValue, is, log, t, loader, time } from './common';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = { foo?: JSX.Element };
@@ -59,14 +59,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <loader.Shell
         loader={loader.singleton}
-        splash={this.splash}
+        splash={this.splashFactory}
         loadDelay={this.loadDelay}
         theme={'DARK'}
       />
     );
   }
 
-  private splash: t.SplashFactory = args => {
+  private splashFactory: t.SplashFactory = args => {
     const { theme, type } = args;
     const filename = theme === 'LIGHT' ? 'acme-dark' : 'acme-light';
     const logo = [`/images/logo/${filename}.png`, `/images/logo/${filename}@2x.png`, 169, 32];
@@ -86,24 +86,24 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       return <div {...style}>{args.text}</div>;
     };
 
-    if (type === 'TOP_LEFT') {
+    if (type === 'TOP:LEFT') {
       const version = attr('html', 'data-size') || '- KB';
       const text = `size ${version}`;
       return renderText({ text });
     }
 
-    if (type === 'TOP_RIGHT') {
+    if (type === 'TOP:RIGHT') {
       const version = attr('html', 'data-version') || '-';
       const text = `version ${version}`;
       return renderText({ text });
     }
 
-    if (type === 'BOTTOM_LEFT') {
+    if (type === 'BOTTOM:LEFT') {
       const text = `© ${new Date().getFullYear()}, Acme Inc.`;
       return renderText({ text });
     }
 
-    if (type === 'BOTTOM_RIGHT') {
+    if (type === 'BOTTOM:RIGHT') {
       const style = css({ Image: logo, marginRight: 20, marginBottom: 18 });
       return <div {...style} />;
     }

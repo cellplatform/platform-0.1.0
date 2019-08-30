@@ -188,10 +188,10 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
     const args = { theme };
     return (
       <div {...styles.base}>
-        <div {...styles.topLeft}>{factory({ ...args, type: 'TOP_LEFT' })}</div>
-        <div {...styles.topRight}>{factory({ ...args, type: 'TOP_RIGHT' })}</div>
-        <div {...styles.bottomLeft}>{factory({ ...args, type: 'BOTTOM_LEFT' })}</div>
-        <div {...styles.bottomRight}>{factory({ ...args, type: 'BOTTOM_RIGHT' })}</div>
+        <div {...styles.topLeft}>{factory({ ...args, type: 'TOP:LEFT' })}</div>
+        <div {...styles.topRight}>{factory({ ...args, type: 'TOP:RIGHT' })}</div>
+        <div {...styles.bottomLeft}>{factory({ ...args, type: 'BOTTOM:LEFT' })}</div>
+        <div {...styles.bottomRight}>{factory({ ...args, type: 'BOTTOM:RIGHT' })}</div>
       </div>
     );
   }

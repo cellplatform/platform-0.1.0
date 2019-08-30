@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { filter, takeUntil, debounceTime } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { filter, takeUntil, debounceTime, share } from 'rxjs/operators';
 
 import { log, time, COLORS, css, GlamorValue, t } from '../../common';
 import { Splash } from '../Splash';
@@ -97,6 +97,7 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
   /**
    * [Methods]
    */
+
   public async load(moduleId?: string | number) {
     const { loadDelay = 0 } = this.props;
     const loader = this.loader;
