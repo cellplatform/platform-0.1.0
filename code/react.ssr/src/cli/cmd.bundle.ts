@@ -55,6 +55,13 @@ export async function run(args: { config?: Config; version?: string; push?: bool
   // Run tasks.
   const res = await tasks.run({ concurrent: false, exitOnError: true });
   if (!res.ok) {
+    // Task(s) failed.
+    log.info();
+    res.errors.forEach(item => {
+      log.error(`ERROR ${item.title}`);
+      log.warn(item.error);
+      log.info();
+    });
     return cli.exit(1);
   }
 
