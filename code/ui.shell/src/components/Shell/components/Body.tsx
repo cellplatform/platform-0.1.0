@@ -24,7 +24,6 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
   }
 
   public componentDidMount() {
-    console.log('mount');
     this.model.changed$
       .pipe(
         takeUntil(this.unmounted$),

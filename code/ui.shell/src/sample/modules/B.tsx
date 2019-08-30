@@ -22,8 +22,6 @@ export class ComponentB extends React.PureComponent<IComponentBProps, IComponent
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
   }
 
-  public componentDidMount() {}
-
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();

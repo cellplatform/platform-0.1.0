@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.shell",
-  "version": "0.0.5-beta.7",
+  "version": "0.0.6-beta.0",
   "description": "Modular application shell structure with tree navigation.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -21,7 +21,7 @@
   "dependencies": {
     "@platform/react": "0.3.20",
     "@platform/ui.icon": "^0.0.84",
-    "@platform/ui.loader": "^0.1.4",
+    "@platform/ui.loader": "^0.1.5",
     "@platform/ui.tree": "0.2.21",
     "@platform/util.value": "0.4.11"
   },
@@ -36,6 +36,5 @@
     "!lib/sample",
     "!*.TEST.{js, mjs, d.ts}"
   ],
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }
