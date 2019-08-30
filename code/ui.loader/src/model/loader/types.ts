@@ -38,7 +38,6 @@ export type ILoader = {
   loading: string[];
   events$: Observable<LoaderEvents>;
   add(moduleId: string, load: DynamicImport, options?: { timeout?: number }): ILoader;
-  context<P extends object = any>(fn: t.LoaderContextUpdateProps<P>): ILoader;
   get<T = any>(moduleId: string | number): IDynamicModule<T> | undefined;
   exists(moduleId: string | number): boolean;
   count(moduleId: string | number): number;
@@ -46,7 +45,6 @@ export type ILoader = {
   isLoaded(moduleId: string | number): boolean;
   load<T = any, P = {}>(moduleId: string | number, props?: P): Promise<LoadModuleResponse<T>>;
   render<P = {}>(moduleId: string | number, props?: P): Promise<RenderModuleResponse>;
-  getContextProps<P extends object = any>(): P;
 };
 
 /**

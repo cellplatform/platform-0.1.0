@@ -7,10 +7,6 @@ import { shell, t } from './common';
  * Configure loader.
  */
 shell.loader
-  //
-  .context<t.IMyContext>(e => {
-    return { foo: 'hello', bar: 123 };
-  })
   .add('A', async () => {
     const Component = (await import('./modules/A')).ComponentA;
     return <Component />;

@@ -50,7 +50,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       const theme = this.context.theme;
       this._provider = createProvider({
         ctx: { loader, shell, splash, theme },
-        props: loader.getContextProps(),
+        props: {}, // NB: Extended props if necessary (not used).
       });
     }
     return this._provider;

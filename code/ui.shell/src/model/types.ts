@@ -3,13 +3,15 @@ import * as t from '../common/types';
 /**
  * Model for controlling the <Shell>.
  */
-export type IShell = {
-  body: IShellBody;
-  aside: IShellAside;
+export type IShellState = {
+  body: IShellBodyState;
+  aside: IShellAsideState;
 };
 
-export type IShellBody = {
+export type IShellBodyState = {
   el?: JSX.Element;
 };
 
-export type IShellAside = { el?: JSX.Element };
+export type IShellAsideState = {
+  el?: JSX.Element;
+};

@@ -41,7 +41,7 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
    * [Properties]
    */
   public get model() {
-    return this.context.shell.body as t.IObservableProps<t.IShellBody>;
+    return this.context.shell.body as t.IObservableProps<t.IShellBodyState>;
   }
 
   /**
