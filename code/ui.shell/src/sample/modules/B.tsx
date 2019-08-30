@@ -40,6 +40,7 @@ export class ComponentB extends React.PureComponent<IComponentBProps, IComponent
         color: 'white',
         padding: 12,
         fontSize: 14,
+        Scroll: true,
       }),
     };
     return (

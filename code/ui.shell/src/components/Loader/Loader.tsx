@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { GlamorValue, loader, t } from '../common';
+import { css, loader, t } from '../common';
 
 const DEFAULT = {
   MODULE: '.sys.shell',
@@ -10,7 +10,6 @@ export type ILoaderProps = {
   theme?: t.ShellTheme;
   splash?: t.SplashFactory;
   loadDelay?: number;
-  style?: GlamorValue;
 };
 
 export class Loader extends React.PureComponent<ILoaderProps> {
@@ -40,7 +39,6 @@ export class Loader extends React.PureComponent<ILoaderProps> {
         theme={this.props.theme}
         defaultModule={DEFAULT.MODULE}
         loadDelay={this.props.loadDelay}
-        style={this.props.style}
       />
     );
   }
