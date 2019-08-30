@@ -57,7 +57,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public render() {
     return (
-      <loader.LoadShell
+      <loader.Shell
         loader={loader.singleton}
         splash={this.splash}
         theme={'DARK'}
@@ -86,24 +86,24 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       return <div {...style}>{args.text}</div>;
     };
 
-    if (type === 'TOP_LEFT') {
+    if (type === 'TOP:LEFT') {
       const version = attr('html', 'data-size') || '- KB';
       const text = `size ${version}`;
       return renderText({ text });
     }
 
-    if (type === 'TOP_RIGHT') {
+    if (type === 'TOP:RIGHT') {
       const version = attr('html', 'data-version') || '-';
       const text = `version ${version}`;
       return renderText({ text });
     }
 
-    if (type === 'BOTTOM_LEFT') {
+    if (type === 'BOTTOM:LEFT') {
       const text = `© ${new Date().getFullYear()}, Acme Inc.`;
       return renderText({ text });
     }
 
-    if (type === 'BOTTOM_RIGHT') {
+    if (type === 'BOTTOM:RIGHT') {
       const style = css({ Image: logo, marginRight: 20, marginBottom: 18 });
       return <div {...style} />;
     }

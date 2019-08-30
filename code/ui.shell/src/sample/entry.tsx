@@ -5,14 +5,8 @@ import { loader, t } from './common';
 
 loader.singleton
   .context<t.IMyContext>(e => {
-    // Set context values that are passed through the React hierarchy here.
-    e.props.foo = 'Hello';
+    return { foo: 'hello', bar: 123 };
   })
-  .context<t.IMyContext>(e => {
-    // Set context values that are passed through the React hierarchy here.
-    e.props.bar = 123;
-  })
-
   .add('A', async () => {
     const Foo = (await import('./modules/A')).ComponentA;
     return <Foo />;
