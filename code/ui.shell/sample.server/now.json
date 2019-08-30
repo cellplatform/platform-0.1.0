@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "name": "sample.loader",
-  "alias": "loader.platform.uiharness.com",
+  "name": "sample.shell",
+  "alias": "shell.platform.uiharness.com",
   "routes": [
     {
       "src": "/(.*)",
