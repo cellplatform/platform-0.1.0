@@ -61,6 +61,7 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
   }
 
   private renderPage() {
+    const margin = 70;
     const styles = {
       base: css({
         Absolute: [35, 0, 0, 0],
@@ -68,16 +69,39 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
         borderBottom: 'none',
         backgroundColor: color.format(1),
         borderRadius: '3px 3px 0 0',
-        padding: 30,
         boxSizing: 'border-box',
         boxShadow: `0 0 12px 0 ${color.format(-0.15)}`,
+        padding: 40,
+        paddingLeft: 90,
+      }),
+      margin: css({
+        Absolute: [0, null, 0, margin],
+        borderLeft: `solid 1px #FF257B`,
+        opacity: 0.25,
+      }),
+      header: css({
+        borderRadius: '3px 3px 0 0',
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
+        Absolute: [0, 0, null, 0],
+        height: 40,
+        backgroundColor: color.format(0.9),
+      }),
+      body: css({
+        marginTop: 30,
       }),
     };
     return (
       <div {...styles.base}>
-        <p>{LOREM}</p>
-        <p>{LOREM}</p>
-        <p>{LOREM}</p>
+        <div {...styles.margin} />
+        <div {...css(styles.margin, { left: margin + 2 })} />
+        <div {...styles.header}>
+          <div />
+        </div>
+        <div {...styles.body}>
+          <p>{LOREM}</p>
+          <p>{LOREM}</p>
+          <p>{LOREM}</p>
+        </div>
       </div>
     );
   }
