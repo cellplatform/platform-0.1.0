@@ -1,0 +1,20 @@
+sites:
+  - name: dev
+    domain:
+      - localhost
+      - /.*\.now\.sh$/
+    bundle: bundle/0.0.6-beta.1
+    routes:
+      default:
+        entry: index.html
+        path:
+          - /
+  - name: prod
+    domain:
+      - shell.platform.uiharness.com
+    bundle: bundle/0.0.6-beta.1
+    routes:
+      default:
+        entry: index.html
+        path:
+          - /

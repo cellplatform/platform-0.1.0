@@ -1,4 +1,4 @@
-import { t, fs, Site } from './common';
+import { t, fs, Site, R } from './common';
 
 const CACHE = { 'Cache-Control': `s-maxage=5, stale-while-revalidate` };
 
@@ -76,7 +76,23 @@ function toSiteInfo(args: { site: Site; name?: boolean; files?: boolean }) {
       const size = fs.size.toString(bytes);
       return { path, size };
     });
-    info = { ...info, files };
+
+    const groups = [
+      { ext: ['js'], group: 'javascript' },
+      { ext: ['html', 'htm'], group: 'html' },
+      { ext: ['css'], group: 'css' },
+      { ext: ['png', 'jpeg', 'jpg', 'gif', 'ico'], group: 'images' },
+    ];
+    const findGroup = (path: string) => {
+      const ext = fs.extname(path).replace(/^\./, '');
+      const item = groups.find(item => item.ext.includes(ext));
+      return item ? item.group : 'asset';
+    };
+
+    info = {
+      ...info,
+      files: R.groupBy(file => findGroup(file.path), files),
+    };
   }
 
   return info;

@@ -1,4 +1,4 @@
 export * from './types';
-export * from './model';
-export * from './components/LoadShell';
-export * from './components/Context';
+export * from './context/Context';
+export { Loader, singleton } from './model';
+export { LoaderShell } from './components/LoaderShell';

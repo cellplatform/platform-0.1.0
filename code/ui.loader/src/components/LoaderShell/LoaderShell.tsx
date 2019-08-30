@@ -1,36 +1,38 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil, debounceTime } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { defaultValue, log, time, COLORS, css, GlamorValue, t } from '../../common';
+import { COLORS, log, t, time, constants } from '../../common';
+import { createProvider } from '../../context/Context';
+import { splash } from '../../model';
 import { Splash } from '../Splash';
-import { createProvider } from '../Context';
-import { createSplash } from '../../model';
 
-export type ILoadShellProps = {
+export type ILoaderShellProps = {
   loader: t.ILoader;
-  loadDelay?: number;
   theme?: t.LoaderTheme;
   splash?: t.SplashFactory;
-  style?: GlamorValue;
+  defaultModule?: number | string;
+  loadDelay?: number;
 };
-export type ILoadShellState = {
+export type ILoaderShellState = {
   isLoaded?: boolean;
   el?: JSX.Element;
 };
 
-export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellState> {
-  public state: ILoadShellState = {};
-  private state$ = new Subject<Partial<ILoadShellState>>();
+const { CSS } = constants;
+
+export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderShellState> {
+  public state: ILoaderShellState = {};
+  private state$ = new Subject<Partial<ILoaderShellState>>();
   private unmounted$ = new Subject<{}>();
 
-  private splash = createSplash({ isVisible: false, isSpinning: true });
+  private splash = splash.create({ isVisible: false, isSpinning: true });
   private _provider: React.FunctionComponent;
 
   /**
    * [Lifecycle]
    */
-  constructor(props: ILoadShellProps) {
+  constructor(props: ILoaderShellProps) {
     super(props);
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
@@ -51,10 +53,10 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
         filter(e => e.type === 'LOADER/added'),
         filter(e => !this.state.isLoaded),
       )
-      .subscribe(() => this.load(0));
+      .subscribe(() => this.load(this.defaultModule));
 
     // Finish up.
-    this.load(0);
+    this.load(this.defaultModule);
   }
 
   public componentWillUnmount() {
@@ -68,6 +70,11 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
    */
   private get loader() {
     return this.props.loader;
+  }
+
+  private get defaultModule() {
+    const { defaultModule = 0 } = this.props;
+    return defaultModule;
   }
 
   private get theme() {
@@ -88,8 +95,10 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
       const loader = this.loader;
       const splash = this.splash;
       const theme = this.theme;
-      const ctx = loader.getContextProps();
-      this._provider = createProvider({ loader, splash, theme, ctx });
+      this._provider = createProvider({
+        ctx: { loader, splash, theme },
+        props: loader.getContextProps(),
+      });
     }
     return this._provider;
   }
@@ -97,9 +106,11 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
   /**
    * [Methods]
    */
+
   public async load(moduleId?: string | number) {
     const { loadDelay = 0 } = this.props;
     const loader = this.loader;
+
     if (this.state.isLoaded || loader.length === 0 || loader.isLoading(0)) {
       return;
     }
@@ -125,14 +136,15 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
    */
   public render() {
     const styles = {
-      base: css({
-        Absolute: 0,
+      base: {
+        ...CSS.ABSOLUTE,
         backgroundColor: this.isDark ? COLORS.DARK : COLORS.WHITE,
-      }),
+        overflow: 'hidden',
+      },
     };
 
     return (
-      <div {...css(styles.base, this.props.style)} className={'loader'}>
+      <div style={styles.base as any} className={'loader'}>
         {this.renderBody()}
         {this.renderSplash()}
       </div>
@@ -141,13 +153,11 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
 
   private renderSplash() {
     const isVisible = this.isSplashVisible;
-    const fadeSpeed = defaultValue(this.splash.fadeSpeed, 200);
     return (
       <Splash
         theme={this.theme}
         isSpinning={this.splash.isSpinning}
         opacity={isVisible ? 1 : 0}
-        fadeSpeed={fadeSpeed}
         factory={this.props.splash}
         children={this.splash.el}
       />
@@ -156,11 +166,14 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
 
   private renderBody() {
     const styles = {
-      base: css({ Absolute: 0, Scroll: true }),
+      base: {
+        ...CSS.ABSOLUTE,
+        ...CSS.SCROLL,
+      },
     };
     return (
       <this.Provider>
-        <div {...styles.base} className={'loader-root'}>
+        <div style={styles.base as any} className={'loader-root'}>
           {this.state.el}
         </div>
       </this.Provider>

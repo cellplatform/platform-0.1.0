@@ -2,23 +2,22 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, css, color, GlamorValue, defaultValue, time, t } from '../../common';
+import { COLORS, color, defaultValue, time, t, constants } from '../../common';
 import { Spinner } from '@platform/ui.spinner';
 
 export type ISplashProps = {
   children?: React.ReactNode;
   theme?: t.LoaderTheme;
   opacity?: number;
-  fadeSpeed?: number;
   isSpinning?: boolean;
   factory?: t.SplashFactory;
-  style?: GlamorValue;
 };
 export type ISplashState = {
   isLoaded?: boolean;
 };
 
 const NULL_FACTORY: t.SplashFactory = args => undefined;
+const { CSS } = constants;
 
 export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   public state: ISplashState = { isLoaded: false };
@@ -81,20 +80,20 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   public render() {
     const opacity = this.opacity;
     const isVisible = this.isVisible;
-    const speed = defaultValue(this.props.fadeSpeed, 200);
     const isDark = this.isDark;
     const styles = {
-      base: css({
-        Absolute: 0,
+      base: {
+        ...CSS.ABSOLUTE,
         color: isDark ? COLORS.WHITE : COLORS.DARK,
         backgroundColor: isDark ? COLORS.DARK : COLORS.WHITE,
         opacity,
-        transition: `opacity ${speed}ms`,
+        transition: `opacity 200ms`,
+        transitionTimingFunction: isVisible ? 'ease-in' : 'ease-out',
         pointerEvents: isVisible ? 'auto' : 'none', // NB: click-through splash when not showing.
-      }),
+      },
     };
     return (
-      <div {...css(styles.base, this.props.style)} className={'loader-splash'}>
+      <div style={styles.base as any} className={'loader-splash'}>
         {this.renderCircle()}
         {this.renderSpinner()}
         {this.renderLogos()}
@@ -108,11 +107,11 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
     const { isLoaded } = this.state;
     const size = 14;
     const styles = {
-      base: css({
-        Absolute: 0,
-        Flex: 'center-center',
-      }),
-      circle: css({
+      base: {
+        ...CSS.ABSOLUTE,
+        ...CSS.FLEX.CENTER,
+      },
+      circle: {
         width: size,
         height: size,
         backgroundColor: color.format(this.isDark ? 0.2 : -0.15),
@@ -120,12 +119,12 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
         transform: `scale(${isLoaded ? 8 : 1})`,
         opacity: isLoaded ? 0 : 1,
         transition: `transform ${SPEED}, opacity ${SPEED}`,
-      }),
+      },
     };
 
     return (
-      <div {...styles.base}>
-        <div {...styles.circle} />
+      <div style={styles.base as any} className={'FOO'}>
+        <div style={styles.circle} />
       </div>
     );
   }
@@ -135,37 +134,40 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
     const color = this.isDark ? 1 : -1;
     const { isLoaded } = this.state;
     const styles = {
-      base: css({
-        Absolute: 0,
-        Flex: 'center-center',
+      base: {
+        ...CSS.ABSOLUTE,
+        ...CSS.FLEX.CENTER,
         transform: `scale(${isLoaded ? 1 : 0.2})`,
         opacity: isLoaded && this.isSpinning ? 1 : 0,
         transition: `transform ${SPEED}, opacity ${SPEED}`,
-      }),
+      },
     };
     return (
-      <div {...styles.base}>
+      <div style={styles.base as any}>
         <Spinner color={color} />
       </div>
     );
   }
 
   private renderChildren() {
-    const SPEED = '0.6s';
     const { children } = this.props;
     const hasChildren = Boolean(children);
+    const isVisible = this.isVisible;
+
     const styles = {
-      base: css({
-        Absolute: 0,
-        Flex: 'center-center',
+      base: {
+        ...CSS.ABSOLUTE,
+        ...CSS.FLEX.CENTER,
         opacity: hasChildren ? 1 : 0,
-        transition: `opacity ${SPEED}`,
-      }),
-      inner: css({ position: 'relative' }),
+        transform: `scale(${isVisible ? 1 : 1.2})`,
+        transition: `opacity 600ms, transform 200ms`,
+        transitionTimingFunction: isVisible ? 'ease-in' : 'ease-out',
+      },
+      inner: { position: 'relative' },
     };
     return (
-      <div {...styles.base}>
-        <div {...styles.inner}>{children}</div>
+      <div style={styles.base as any}>
+        <div style={styles.inner as any}>{children}</div>
       </div>
     );
   }
@@ -176,20 +178,36 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
     }
     const factory = this.factory;
     const styles = {
-      base: css({ Absolute: 0 }),
-      topLeft: css({ Absolute: [0, null, null, 0] }),
-      topRight: css({ Absolute: [0, 0, null, null] }),
-      bottomLeft: css({ Absolute: [null, null, 0, 0] }),
-      bottomRight: css({ Absolute: [null, 0, 0, null] }),
+      base: { ...CSS.ABSOLUTE },
+      topLeft: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+      },
+      topRight: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+      },
+      bottomLeft: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+      },
+      bottomRight: {
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+      },
     };
     const theme = this.theme;
     const args = { theme };
     return (
       <div {...styles.base}>
-        <div {...styles.topLeft}>{factory({ ...args, type: 'TOP_LEFT' })}</div>
-        <div {...styles.topRight}>{factory({ ...args, type: 'TOP_RIGHT' })}</div>
-        <div {...styles.bottomLeft}>{factory({ ...args, type: 'BOTTOM_LEFT' })}</div>
-        <div {...styles.bottomRight}>{factory({ ...args, type: 'BOTTOM_RIGHT' })}</div>
+        <div style={styles.topLeft as any}>{factory({ ...args, type: 'TOP:LEFT' })}</div>
+        <div style={styles.topRight as any}>{factory({ ...args, type: 'TOP:RIGHT' })}</div>
+        <div style={styles.bottomLeft as any}>{factory({ ...args, type: 'BOTTOM:LEFT' })}</div>
+        <div style={styles.bottomRight as any}>{factory({ ...args, type: 'BOTTOM:RIGHT' })}</div>
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as t from '../types';
+import * as t from '../common/types';
 
 /**
  * The React [Context] used to pass down common modules to components.
@@ -7,28 +7,28 @@ import * as t from '../types';
  * To use add a static `contextType` to the consuming component,
  * eg:
  *
- *      import { loader } from '@platform/ui.loader'
+ *      import { shell } from '@platform/ui.shell'
  *
  *      export class MyView extends React.PureComponent {
- *        public static contextType = loader.Context;
- *        public context!: loader.ReactContext
+ *        public static contextType = shell.Context;
+ *        public context!: shell.ReactContext
  *      }
  *
  * See:
  *    https://reactjs.org/docs/context.html
  */
-export const Context = React.createContext<t.ILoaderContext>({} as any);
-Context.displayName = '@platform/loader/Context';
+export const Context = React.createContext<t.IShellContext>({} as any);
+Context.displayName = '@platform/shell/Context';
 
 /**
  * Used to strongly type the [context] on a React component.
  * eg:
  *
- *      import { loader } from '@platform/ui.loader'
+ *      import { shell } from '@platform/ui.shell'
  *
  *      export class MyView extends React.PureComponent {
- *        public static contextType = loader.Context;
- *        public context!: loader.ReactContext
+ *        public static contextType = shell.Context;
+ *        public context!: shell.ReactContext
  *      }
  *
  */
@@ -40,17 +40,12 @@ export type ReactContext = React.ContextType<typeof Context>;
  * hierarchy to child components.
  */
 export function createProvider<P = {}>(args: {
-  loader: t.ILoader;
-  splash: t.ISplash;
-  theme: t.LoaderTheme;
-  ctx?: P;
+  ctx: t.IShellContext;
+  props?: P;
 }): React.FunctionComponent {
-  const { loader, splash, theme } = args;
-  const context: t.ILoaderContext = {
-    loader,
-    splash,
-    theme,
-    ...(args.ctx || {}), // Optional props to extend the context with.
+  const context: t.IShellContext = {
+    ...args.ctx,
+    ...(args.props || {}), // Optional props to extend the context with.
   };
   return (props: { children?: React.ReactNode } = {}) => (
     <Context.Provider value={context}>{props.children}</Context.Provider>

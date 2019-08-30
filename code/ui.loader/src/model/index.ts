@@ -1,7 +1,7 @@
-import { Loader } from './Loader';
+import { Loader } from './loader';
 
 export * from './types';
-export * from './Loader';
+export * from './loader';
 export * from './splash';
 
 export const singleton = Loader.create();
