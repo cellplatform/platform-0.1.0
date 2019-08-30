@@ -1,16 +1,26 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Test } from './Test';
-import { loader, t } from './common';
+import { shell, t } from './common';
 
-loader.singleton
+/**
+ * Configure loader.
+ */
+shell.loader
   //
   .context<t.IMyContext>(e => {
     return { foo: 'hello', bar: 123 };
+  })
+  .add('A', async () => {
+    const Component = (await import('./modules/A')).ComponentA;
+    return <Component />;
+  })
+  .add('B', async () => {
+    const Component = (await import('./modules/B')).ComponentB;
+    return <Component />;
   });
-// .add('Shell', async () => {
-//   const Shell = (await import('../components/Shell')).Shell;
-//   return <Shell />;
-// });
 
+/**
+ * Render into DOM.
+ */
 ReactDOM.render(<Test />, document.getElementById('root'));

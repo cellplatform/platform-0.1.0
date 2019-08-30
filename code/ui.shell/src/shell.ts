@@ -5,3 +5,5 @@ export * from './model';
 export * from './context';
 export * from './components/Loader';
 export * from './components/Shell';
+
+export { singleton as loader } from '@platform/ui.loader';

@@ -138,6 +138,7 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
       base: css({
         Absolute: 0,
         backgroundColor: this.isDark ? COLORS.DARK : COLORS.WHITE,
+        overflow: 'hidden',
       }),
     };
 

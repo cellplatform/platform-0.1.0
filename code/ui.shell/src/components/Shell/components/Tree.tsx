@@ -16,7 +16,7 @@ DARK.header = {
 const ROOT: t.ITreeNode = {
   id: 'ROOT',
   props: { label: 'Title' },
-  children: [{ id: 'one' }, { id: 'two' }, { id: 'three' }],
+  children: [{ id: 'one' }, { id: 'two' }],
 };
 
 export type ITreeProps = {};
@@ -42,8 +42,19 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const tree = TreeView.events(events$);
 
-    tree.mouse().click.node$.subscribe(e => {
-      log.info('🐷 CLICK from TreeEvents helper', e);
+    tree.mouse().click.node$.subscribe(async e => {
+      // TEMP 🐷
+      const { loader, shell } = this.context;
+
+      if (e.id === 'one') {
+        const el = (await this.context.loader.render('A')).element;
+        shell.body.el = el;
+      }
+
+      if (e.id === 'two') {
+        const el = (await this.context.loader.render('B')).element;
+        shell.aside.el = el;
+      }
     });
   }
 

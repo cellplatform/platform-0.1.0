@@ -14,7 +14,7 @@ export type ILoaderProps = {
 };
 
 export class Loader extends React.PureComponent<ILoaderProps> {
-  private loader = loader.Loader.create();
+  private loader = loader.singleton;
 
   /**
    * [Lifecycle]

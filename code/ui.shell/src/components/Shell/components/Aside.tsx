@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 
-import { color, Context, css, t } from '../../common';
+import { Context, css, t } from '../../common';
 
-export type IBodyProps = {};
-export type IBodyState = {};
+export type IAsideProps = {};
+export type IAsideState = {};
 
-export class Body extends React.PureComponent<IBodyProps, IBodyState> {
-  public state: IBodyState = {};
-  private state$ = new Subject<Partial<IBodyState>>();
+export class Aside extends React.PureComponent<IAsideProps, IAsideState> {
+  public state: IAsideState = {};
+  private state$ = new Subject<Partial<IAsideState>>();
   private unmounted$ = new Subject<{}>();
 
   public static contextType = Context;
@@ -18,13 +18,12 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IBodyProps) {
+  constructor(props: IAsideProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
   }
 
   public componentDidMount() {
-    console.log('mount');
     this.model.changed$
       .pipe(
         takeUntil(this.unmounted$),
@@ -42,7 +41,7 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
    * [Properties]
    */
   public get model() {
-    return this.context.shell.body as t.IObservableProps<t.IShellBody>;
+    return this.context.shell.aside as t.IObservableProps<t.IShellAside>;
   }
 
   /**
@@ -50,10 +49,7 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
    */
   public render() {
     const styles = {
-      base: css({
-        Absolute: 0,
-        backgroundColor: '#F8F9FA',
-      }),
+      base: css({ Absolute: 0 }),
     };
     return <div {...styles.base}>{this.model.el}</div>;
   }

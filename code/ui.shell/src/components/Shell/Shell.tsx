@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue, t, COLORS, loader, createProvider, model } from '../common';
 import { Tree } from './components/Tree';
 import { Body } from './components/Body';
-import { Right } from './components/Right';
+import { Aside } from './components/Aside';
 
 export type IShellProps = {
   theme?: t.ShellTheme;
@@ -16,7 +16,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public state: IShellState = {};
   private state$ = new Subject<Partial<IShellState>>();
   private unmounted$ = new Subject<{}>();
-  private model = model.shell.create({});
+  private model = model.shell.create();
 
   public static contextType = loader.Context;
   public context!: loader.ILoaderContext;
@@ -28,6 +28,10 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   constructor(props: IShellProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+  }
+
+  public componentDidMount() {
+    document.body.style.overflow = 'hidden'; // Prevent rubber-band.
   }
 
   public componentWillUnmount() {
@@ -60,6 +64,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       base: css({
         Absolute: 0,
         Flex: 'vertical-stretch-stretch',
+        boxSizing: 'border-box',
       }),
     };
     return (
@@ -89,7 +94,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         backgroundColor: COLORS.WHITE,
       }),
       right: css({
-        width: 250,
+        width: 300,
         position: 'relative',
         backgroundColor: COLORS.DARK,
       }),
@@ -103,7 +108,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
           <Body />
         </div>
         <div {...styles.right}>
-          <Right />
+          <Aside />
         </div>
       </div>
     );

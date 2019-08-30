@@ -1,7 +1,8 @@
 import { props, t } from '../common';
 
-const DEFAULT: t.IShell = {};
-
-export function create(initial: Partial<t.IShell>) {
-  return props.observable<t.IShell>({ ...DEFAULT, ...initial });
+export function create() {
+  return {
+    body: props.observable<t.IShellBody>({ el: undefined }),
+    aside: props.observable<t.IShellAside>({ el: undefined }),
+  };
 }
