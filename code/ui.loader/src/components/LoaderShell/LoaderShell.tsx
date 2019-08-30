@@ -1,27 +1,28 @@
 import * as React from 'react';
-import { Observable, Subject } from 'rxjs';
-import { filter, takeUntil, debounceTime, share } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { log, time, COLORS, css, GlamorValue, t } from '../../common';
-import { Splash } from '../Splash';
+import { COLORS, css, GlamorValue, log, t, time } from '../../common';
 import { createProvider } from '../../context/Context';
 import { createSplash } from '../../model';
+import { Splash } from '../Splash';
 
-export type ILoadShellProps = {
+export type ILoaderShellProps = {
   loader: t.ILoader;
-  loadDelay?: number;
   theme?: t.LoaderTheme;
   splash?: t.SplashFactory;
+  defaultModule?: number | string;
+  loadDelay?: number;
   style?: GlamorValue;
 };
-export type ILoadShellState = {
+export type ILoaderShellState = {
   isLoaded?: boolean;
   el?: JSX.Element;
 };
 
-export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellState> {
-  public state: ILoadShellState = {};
-  private state$ = new Subject<Partial<ILoadShellState>>();
+export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderShellState> {
+  public state: ILoaderShellState = {};
+  private state$ = new Subject<Partial<ILoaderShellState>>();
   private unmounted$ = new Subject<{}>();
 
   private splash = createSplash({ isVisible: false, isSpinning: true });
@@ -30,7 +31,7 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
   /**
    * [Lifecycle]
    */
-  constructor(props: ILoadShellProps) {
+  constructor(props: ILoaderShellProps) {
     super(props);
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
@@ -51,10 +52,10 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
         filter(e => e.type === 'LOADER/added'),
         filter(e => !this.state.isLoaded),
       )
-      .subscribe(() => this.load(0));
+      .subscribe(() => this.load(this.defaultModule));
 
     // Finish up.
-    this.load(0);
+    this.load(this.defaultModule);
   }
 
   public componentWillUnmount() {
@@ -68,6 +69,11 @@ export class LoadShell extends React.PureComponent<ILoadShellProps, ILoadShellSt
    */
   private get loader() {
     return this.props.loader;
+  }
+
+  private get defaultModule() {
+    const { defaultModule = 0 } = this.props;
+    return defaultModule;
   }
 
   private get theme() {
