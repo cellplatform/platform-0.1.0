@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil, debounceTime } from 'rxjs/operators';
 
-import { defaultValue, log, time, COLORS, css, GlamorValue, t } from '../../common';
+import { log, time, COLORS, css, GlamorValue, t } from '../../common';
 import { Splash } from '../Splash';
-import { createProvider } from '../Context';
+import { createProvider } from '../../Context';
 import { createSplash } from '../../model';
 
 export type ILoadShellProps = {

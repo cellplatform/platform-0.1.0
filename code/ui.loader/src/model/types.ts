@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { LoaderTheme } from '../types';
+import * as t from '../types';
 
 /**
  * Load exeution.
@@ -23,8 +23,8 @@ export type RenderModuleResponse = {
 export type IDynamicModule<T = any> = {
   id: string;
   load: LoadModule<T>;
+  loadCount: number; // Number of times loaded (invoked).
   isLoaded: boolean;
-  count: number; // Number of times invoked/loaded.
   timeout: number; // Milliseconds.
 };
 
@@ -36,9 +36,9 @@ export type ILoader = {
   length: number;
   modules: IDynamicModule[];
   loading: string[];
-  events$: Observable<LoaderEvent>;
+  events$: Observable<LoaderEvents>;
   add(moduleId: string, load: DynamicImport, options?: { timeout?: number }): ILoader;
-  context<P extends object = any>(fn: SetLoaderContext<P>): ILoader;
+  context<P extends object = any>(fn: t.LoaderContextUpdateProps<P>): ILoader;
   get<T = any>(moduleId: string | number): IDynamicModule<T> | undefined;
   exists(moduleId: string | number): boolean;
   count(moduleId: string | number): number;
@@ -48,16 +48,6 @@ export type ILoader = {
   render<P = {}>(moduleId: string | number, props?: P): Promise<RenderModuleResponse>;
   getContextProps<P extends object = any>(): P;
 };
-
-/**
- * The context object that is passed down through the React hierarchy.
- */
-export type ILoaderContext = {
-  loader: ILoader;
-  splash: ISplash;
-  theme: LoaderTheme;
-};
-export type SetLoaderContext<P extends object> = (args: { loader: ILoader; props: P }) => void;
 
 /**
  * Splash screen.
@@ -71,7 +61,7 @@ export type ISplash = {
 /**
  * [Events]
  */
-export type LoaderEvent = IModuleAddedEvent | IModuleLoadingEvent | IModuleLoadedEvent;
+export type LoaderEvents = IModuleAddedEvent | IModuleLoadingEvent | IModuleLoadedEvent;
 
 export type IModuleAddedEvent<T = any> = {
   type: 'LOADER/added';

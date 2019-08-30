@@ -33,12 +33,12 @@ export class Loader implements t.ILoader {
    */
   private _modules: Array<t.IDynamicModule<any>> = [];
   private _loading: string[] = [];
-  private _getContext: Array<t.SetLoaderContext<any>> = [];
+  private _getContext: Array<t.LoaderContextUpdateProps<any>> = [];
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
-  private readonly _events$ = new Subject<t.LoaderEvent>();
+  private readonly _events$ = new Subject<t.LoaderEvents>();
   public readonly events$ = this._events$.pipe(
     takeUntil(this.dispose$),
     share(),
@@ -77,7 +77,7 @@ export class Loader implements t.ILoader {
       id: moduleId,
       load: async (props: {} = {}) => this.invoke(item, load, props),
       timeout: defaultValue(options.timeout, DEFAULT.TIMEOUT),
-      count: 0,
+      loadCount: 0,
       isLoaded: false,
     };
     this._modules = [...this._modules, item];
@@ -87,7 +87,7 @@ export class Loader implements t.ILoader {
     return this;
   }
 
-  public context<P extends object = any>(fn: t.SetLoaderContext<P>) {
+  public context<P extends object = any>(fn: t.LoaderContextUpdateProps<P>) {
     this._getContext = [...this._getContext, fn];
     return this;
   }
@@ -109,7 +109,7 @@ export class Loader implements t.ILoader {
   public count(moduleId: string | number) {
     this.throwIfDisposed('count');
     const item = this.get(moduleId);
-    return item ? item.count : -1;
+    return item ? item.loadCount : -1;
   }
 
   public isLoading(moduleId?: string | number) {
@@ -186,7 +186,7 @@ export class Loader implements t.ILoader {
     }
   }
 
-  private fire(e: t.LoaderEvent) {
+  private fire(e: t.LoaderEvents) {
     this._events$.next(e);
   }
 
@@ -197,8 +197,8 @@ export class Loader implements t.ILoader {
 
     // Fire pre-event.
     const id = idUtil.shortid();
-    item.count++;
-    const count = item.count;
+    item.loadCount++;
+    const count = item.loadCount;
     this.fire({
       type: 'LOADER/loading',
       payload: { module: item.id, id, count },

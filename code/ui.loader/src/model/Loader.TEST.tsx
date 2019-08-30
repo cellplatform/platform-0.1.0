@@ -137,7 +137,7 @@ describe('Loader', () => {
       const loader = Loader.create().add('foo', async () => el);
       const item = loader.get('foo');
 
-      const events: t.LoaderEvent[] = [];
+      const events: t.LoaderEvents[] = [];
       loader.events$.subscribe(e => events.push(e as any));
 
       await loader.load('foo'); // Invoked via loader's method.
