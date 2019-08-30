@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { COLORS, css, GlamorValue, log, t, time } from '../../common';
+import { COLORS, log, t, time, constants } from '../../common';
 import { createProvider } from '../../context/Context';
 import { splash } from '../../model';
 import { Splash } from '../Splash';
@@ -13,12 +13,13 @@ export type ILoaderShellProps = {
   splash?: t.SplashFactory;
   defaultModule?: number | string;
   loadDelay?: number;
-  style?: GlamorValue;
 };
 export type ILoaderShellState = {
   isLoaded?: boolean;
   el?: JSX.Element;
 };
+
+const { CSS } = constants;
 
 export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderShellState> {
   public state: ILoaderShellState = {};
@@ -135,15 +136,15 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
    */
   public render() {
     const styles = {
-      base: css({
-        Absolute: 0,
+      base: {
+        ...CSS.ABSOLUTE,
         backgroundColor: this.isDark ? COLORS.DARK : COLORS.WHITE,
         overflow: 'hidden',
-      }),
+      },
     };
 
     return (
-      <div {...css(styles.base, this.props.style)} className={'loader'}>
+      <div style={styles.base as any} className={'loader'}>
         {this.renderBody()}
         {this.renderSplash()}
       </div>
@@ -165,11 +166,14 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
 
   private renderBody() {
     const styles = {
-      base: css({ Absolute: 0, Scroll: true }),
+      base: {
+        ...CSS.ABSOLUTE,
+        ...CSS.SCROLL,
+      },
     };
     return (
       <this.Provider>
-        <div {...styles.base} className={'loader-root'}>
+        <div style={styles.base as any} className={'loader-root'}>
           {this.state.el}
         </div>
       </this.Provider>
