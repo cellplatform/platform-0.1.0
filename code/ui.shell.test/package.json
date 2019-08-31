@@ -3,10 +3,10 @@
   "version": "0.1.3",
   "description": "Test module for ui.shell (and associated modules).",
   "scripts": {
-    "ssr": "cd sample.server && yarn ssr $@",
+    "ssr": "cd src.server && yarn ssr $@",
     "ui": "ui $@",
     "start": "ui start web $@",
-    "watch": "cd sample.server && yarn watch $@",
+    "watch": "cd src.server && yarn watch $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
@@ -14,8 +14,8 @@
     "build-test": "ts build --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare",
     "bundle": "ui bundle web",
-    "deploy": "cd sample.server && yarn deploy",
-    "nuke": "rm -rf node_modules && cd sample.server && rm -rf node_modules"
+    "deploy": "cd src.server && yarn deploy",
+    "nuke": "rm -rf node_modules && cd src.server && rm -rf node_modules"
   },
   "dependencies": {
     "@platform/react": "0.3.20",
@@ -33,5 +33,6 @@
     "!lib/sample",
     "!*.TEST.{js, mjs, d.ts}"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }
