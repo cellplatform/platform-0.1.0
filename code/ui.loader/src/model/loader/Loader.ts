@@ -31,7 +31,6 @@ export class Loader implements t.ILoader {
    */
   private _modules: Array<t.IDynamicModule<any>> = [];
   private _loading: string[] = [];
-  private _getContext: Array<t.LoaderContextUpdateProps<any>> = [];
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -64,7 +63,7 @@ export class Loader implements t.ILoader {
   /**
    * [Methods]
    */
-  public add(moduleId: string, load: t.DynamicImport, options: { timeout?: number } = {}) {
+  public add(moduleId: string, load: t.DynamicImporter, options: { timeout?: number } = {}) {
     this.throwIfDisposed('add');
     if (this.exists(moduleId)) {
       throw new Error(`A module with the id '${moduleId}' has already been added.`);
@@ -82,11 +81,6 @@ export class Loader implements t.ILoader {
 
     // Finish up.
     this.fire({ type: 'LOADER/added', payload: { module: item } });
-    return this;
-  }
-
-  public context<P extends object = any>(fn: t.LoaderContextUpdateProps<P>) {
-    this._getContext = [...this._getContext, fn];
     return this;
   }
 
@@ -168,18 +162,6 @@ export class Loader implements t.ILoader {
     return { ok, count, element, error, timedOut };
   }
 
-  public getContextProps<P extends object = any>() {
-    let props = {};
-    const loader = this; // tslint:disable-line
-    this._getContext.forEach(fn => {
-      const res = fn({ loader });
-      if (typeof res === 'object') {
-        props = { ...props, ...res };
-      }
-    });
-    return props as P;
-  }
-
   /**
    * [Helpers]
    */
@@ -193,7 +175,7 @@ export class Loader implements t.ILoader {
     this._events$.next(e);
   }
 
-  private async invoke(item: t.IDynamicModule, load: t.DynamicImport, props: {}) {
+  private async invoke(item: t.IDynamicModule, load: t.DynamicImporter, props: {}) {
     if (!this.isLoading(item.id)) {
       this._loading = [...this._loading, item.id];
     }
@@ -228,7 +210,7 @@ export class Loader implements t.ILoader {
     return response;
   }
 
-  private async invokeOrTimeout(item: t.IDynamicModule, load: t.DynamicImport, props: {}) {
+  private async invokeOrTimeout(item: t.IDynamicModule, load: t.DynamicImporter, props: {}) {
     return new Promise<{ timedOut: boolean; error?: Error; result?: any }>(resolve => {
       const done = (args: { result?: any; error?: Error; timedOut?: boolean }) => {
         clearTimeout(timeout);

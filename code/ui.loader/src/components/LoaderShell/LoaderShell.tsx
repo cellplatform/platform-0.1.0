@@ -97,7 +97,7 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
       const theme = this.theme;
       this._provider = createProvider({
         ctx: { loader, splash, theme },
-        props: loader.getContextProps(),
+        props: {}, // NB: Extended props if necessary (not used).
       });
     }
     return this._provider;

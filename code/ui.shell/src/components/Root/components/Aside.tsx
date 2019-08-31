@@ -41,7 +41,7 @@ export class Aside extends React.PureComponent<IAsideProps, IAsideState> {
    * [Properties]
    */
   public get model() {
-    return this.context.shell.aside as t.IObservableProps<t.IShellAside>;
+    return this.context.shell.state.aside as t.IObservableProps<t.IShellAsideState>;
   }
 
   /**

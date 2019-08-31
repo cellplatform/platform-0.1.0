@@ -44,17 +44,10 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
 
     tree.mouse().click.node$.subscribe(async e => {
       // TEMP 🐷
-      const { loader, shell } = this.context;
-
-      if (e.id === 'one') {
-        const el = (await this.context.loader.render('A')).element;
-        shell.body.el = el;
-      }
-
-      if (e.id === 'two') {
-        const el = (await this.context.loader.render('B')).element;
-        shell.aside.el = el;
-      }
+      log.group('Tree Click');
+      log.info(e);
+      log.info('context', this.context);
+      log.groupEnd();
     });
   }
 

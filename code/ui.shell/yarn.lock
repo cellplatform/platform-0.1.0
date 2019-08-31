@@ -1230,10 +1230,10 @@
   dependencies:
     "@platform/react" "0.3.20"
 
-"@platform/ui.loader@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@platform/ui.loader/-/ui.loader-0.1.5.tgz#c9a9412fb5e0b97fee589e920197ece7f4a51d55"
-  integrity sha512-rkb1EDUhQSYvGMPsb2Zf2OLShEp4NuMunhNry7cBFsq8ohF7O992M4b1t/8dXUcRL8HipJdTF8vSC4J6/N7ftA==
+"@platform/ui.loader@^0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@platform/ui.loader/-/ui.loader-0.1.7.tgz#1dc98628f20ca2c1f702cb09b0642618119951c7"
+  integrity sha512-JpLKKr3CRNsUEhY6VgAzzQv+OTR+SsT7DqqbAeml9s898EkTbRyKpdh37bF9gZpR3ssyFHj6xZgQ14ceXfNm+g==
   dependencies:
     "@platform/react" "0.3.20"
     "@platform/util.value" "0.4.11"

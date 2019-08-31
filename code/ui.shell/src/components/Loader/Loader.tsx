@@ -1,6 +1,5 @@
 import * as React from 'react';
-
-import { css, loader, t } from '../common';
+import { loader, t, Shell } from '../common';
 
 const DEFAULT = {
   MODULE: '.sys.shell',
@@ -13,18 +12,18 @@ export type ILoaderProps = {
 };
 
 export class Loader extends React.PureComponent<ILoaderProps> {
-  private loader = loader.singleton;
+  private shell = Shell.singleton;
 
   /**
    * [Lifecycle]
    */
   constructor(props: ILoaderProps) {
     super(props);
-    this.loader
-      // Configure the <Shell> as the default component.
+    this.shell.loader
+      // Configure the shell <Root> as the default component.
       .add(DEFAULT.MODULE, async e => {
-        const Shell = (await import('../Shell')).Shell;
-        return <Shell />;
+        const Root = (await import('../Root')).Root;
+        return <Root shell={this.shell} />;
       });
   }
 
@@ -34,7 +33,7 @@ export class Loader extends React.PureComponent<ILoaderProps> {
   public render() {
     return (
       <loader.LoaderShell
-        loader={this.loader}
+        loader={this.shell.loader}
         splash={this.props.splash}
         theme={this.props.theme}
         defaultModule={DEFAULT.MODULE}

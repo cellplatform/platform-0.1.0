@@ -1,9 +1,10 @@
+import { Shell } from './api';
+
 export { SplashFactory, SplashFactoryArgs } from '@platform/ui.loader/lib/types';
 
 export * from './types';
-export * from './model';
-export * from './context';
-export * from './components/Loader';
-export * from './components/Shell';
+export { Loader } from './components/Loader';
+export { Context } from './context';
 
-export { singleton as loader } from '@platform/ui.loader';
+const shell = Shell.singleton;
+export const register = shell.register;
