@@ -2,7 +2,12 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css } from '../../common';
+import { color, css, t, COLORS, shell } from '../common';
+
+export const init: t.ShellImportInit = async args => {
+  const { shell } = args;
+  shell.state.body.el = <ComponentA />;
+};
 
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
@@ -14,6 +19,9 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
   public state: IComponentAState = {};
   private state$ = new Subject<Partial<IComponentAState>>();
   private unmounted$ = new Subject<{}>();
+
+  public static contextType = shell.Context;
+  public context!: t.IShellContext;
 
   /**
    * [Lifecycle]
@@ -89,6 +97,10 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
       body: css({
         marginTop: 30,
       }),
+      link: css({
+        color: COLORS.BLUE,
+        cursor: 'pointer',
+      }),
     };
     return (
       <div {...styles.base}>
@@ -101,8 +113,18 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
           <p>{LOREM}</p>
           <p>{LOREM}</p>
           <p>{LOREM}</p>
+          <div {...styles.link} onClick={this.loadAside}>
+            Load sidebar
+          </div>
         </div>
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+  private loadAside = () => {
+    this.context.shell.load('B');
+  };
 }

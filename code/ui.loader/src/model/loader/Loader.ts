@@ -63,7 +63,7 @@ export class Loader implements t.ILoader {
   /**
    * [Methods]
    */
-  public add(moduleId: string, load: t.DynamicImport, options: { timeout?: number } = {}) {
+  public add(moduleId: string, load: t.DynamicImporter, options: { timeout?: number } = {}) {
     this.throwIfDisposed('add');
     if (this.exists(moduleId)) {
       throw new Error(`A module with the id '${moduleId}' has already been added.`);
@@ -175,7 +175,7 @@ export class Loader implements t.ILoader {
     this._events$.next(e);
   }
 
-  private async invoke(item: t.IDynamicModule, load: t.DynamicImport, props: {}) {
+  private async invoke(item: t.IDynamicModule, load: t.DynamicImporter, props: {}) {
     if (!this.isLoading(item.id)) {
       this._loading = [...this._loading, item.id];
     }
@@ -210,7 +210,7 @@ export class Loader implements t.ILoader {
     return response;
   }
 
-  private async invokeOrTimeout(item: t.IDynamicModule, load: t.DynamicImport, props: {}) {
+  private async invokeOrTimeout(item: t.IDynamicModule, load: t.DynamicImporter, props: {}) {
     return new Promise<{ timedOut: boolean; error?: Error; result?: any }>(resolve => {
       const done = (args: { result?: any; error?: Error; timedOut?: boolean }) => {
         clearTimeout(timeout);

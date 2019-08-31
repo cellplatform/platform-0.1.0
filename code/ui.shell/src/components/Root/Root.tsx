@@ -1,22 +1,32 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, t, COLORS, loader, createProvider, model } from '../common';
+import {
+  css,
+  color,
+  GlamorValue,
+  t,
+  COLORS,
+  loader,
+  createProvider,
+  state,
+  Shell,
+} from '../common';
 import { Tree } from './components/Tree';
 import { Body } from './components/Body';
 import { Aside } from './components/Aside';
 
-export type IShellProps = {
+export type IRootProps = {
+  shell: Shell;
   theme?: t.ShellTheme;
   style?: GlamorValue;
 };
-export type IShellState = {};
+export type IRootState = {};
 
-export class Shell extends React.PureComponent<IShellProps, IShellState> {
-  public state: IShellState = {};
-  private state$ = new Subject<Partial<IShellState>>();
+export class Root extends React.PureComponent<IRootProps, IRootState> {
+  public state: IRootState = {};
+  private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject<{}>();
-  private model = model.shell.create();
 
   public static contextType = loader.Context;
   public context!: loader.ILoaderContext;
@@ -25,13 +35,19 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IShellProps) {
+  constructor(props: IRootProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
   }
 
   public componentDidMount() {
-    document.body.style.overflow = 'hidden'; // Prevent rubber-band.
+    document.body.style.overflow = 'hidden'; // Prevent browser rubber-band.
+
+    // Load the default module.
+    const shell = this.shell;
+    if (shell.defaultModuleId) {
+      shell.load(shell.defaultModuleId);
+    }
   }
 
   public componentWillUnmount() {
@@ -42,14 +58,15 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   /**
    * [Properties]
    */
+  private get shell() {
+    return this.props.shell;
+  }
+
   private get Provider() {
     if (!this._provider) {
-      const shell = this.model;
-      const loader = this.context.loader;
-      const splash = this.context.splash;
-      const theme = this.context.theme;
+      const shell = this.shell;
       this._provider = createProvider({
-        ctx: { loader, shell, splash, theme },
+        ctx: { shell },
         props: {}, // NB: Extended props if necessary (not used).
       });
     }

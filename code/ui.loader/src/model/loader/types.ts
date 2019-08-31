@@ -1,5 +1,4 @@
 import { Observable } from 'rxjs';
-import * as t from '../../types';
 
 /**
  * Load exeution.
@@ -31,13 +30,13 @@ export type IDynamicModule<T = any> = {
 /**
  * Module loader.
  */
-export type DynamicImport<T = any, P = {}> = (props?: P) => Promise<T>;
+export type DynamicImporter<T = any, P = {}> = (props?: P) => Promise<T>;
 export type ILoader = {
   length: number;
   modules: IDynamicModule[];
   loading: string[];
   events$: Observable<LoaderEvents>;
-  add(moduleId: string, load: DynamicImport, options?: { timeout?: number }): ILoader;
+  add(moduleId: string, load: DynamicImporter, options?: { timeout?: number }): ILoader;
   get<T = any>(moduleId: string | number): IDynamicModule<T> | undefined;
   exists(moduleId: string | number): boolean;
   count(moduleId: string | number): number;
