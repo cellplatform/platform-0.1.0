@@ -4,9 +4,17 @@ import { takeUntil } from 'rxjs/operators';
 
 import { color, css, t, COLORS, shell } from '../common';
 
+// TEMP 🐷
+const ROOT: t.ITreeNode = {
+  id: 'ROOT',
+  props: { label: 'Title' },
+  children: [{ id: 'one' }, { id: 'two' }],
+};
+
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
   shell.state.body.el = <ComponentA />;
+  shell.state.tree.root = ROOT;
 };
 
 const LOREM =

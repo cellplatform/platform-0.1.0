@@ -5,7 +5,7 @@ import { css, color, GlamorValue, t } from '../../common';
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
-  shell.state.aside.el = <ComponentB />;
+  shell.state.sidepanel.el = <ComponentB />;
 };
 
 const LOREM =

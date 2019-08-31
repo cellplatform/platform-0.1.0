@@ -1,5 +1,7 @@
 import * as t from '../types';
+
 export * from '../types';
+export { ITreeNode } from '@platform/ui.tree/lib/types';
 
 /**
  * Extension point of the context passed down through

@@ -1,7 +1,7 @@
 import { themes, TreeView } from '@platform/ui.tree';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
 import { color, COLORS, Context, css, log, R, t } from '../../common';
 
@@ -12,18 +12,11 @@ DARK.header = {
   borderBottomColor: color.format(0.1) as string,
 };
 
-// TEMP 🐷
-const ROOT: t.ITreeNode = {
-  id: 'ROOT',
-  props: { label: 'Title' },
-  children: [{ id: 'one' }, { id: 'two' }],
-};
-
 export type ITreeProps = {};
-export type ITreeState = { root?: t.ITreeNode; current?: string };
+export type ITreeState = {};
 
 export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
-  public state: ITreeState = { root: ROOT };
+  public state: ITreeState = {};
   private state$ = new Subject<Partial<ITreeState>>();
   private unmounted$ = new Subject<{}>();
   private events$ = new Subject<t.TreeViewEvent>();
@@ -51,6 +44,15 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
     });
   }
 
+  public componentDidMount() {
+    this.model.changed$
+      .pipe(
+        takeUntil(this.unmounted$),
+        debounceTime(0),
+      )
+      .subscribe(() => this.forceUpdate());
+  }
+
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
@@ -59,6 +61,9 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
   /**
    * [Properties]
    */
+  public get model() {
+    return this.context.shell.state.tree as t.IObservableProps<t.IShellTreeState>;
+  }
 
   /**
    * [Render]
@@ -70,8 +75,8 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
     return (
       <div {...styles.base}>
         <TreeView
-          node={this.state.root}
-          current={this.state.current}
+          node={this.model.root}
+          current={this.model.current}
           theme={DARK}
           background={'NONE'}
           renderIcon={this.renderIcon}

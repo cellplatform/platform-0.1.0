@@ -4,12 +4,12 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
 
 import { Context, css, t } from '../../common';
 
-export type IAsideProps = {};
-export type IAsideState = {};
+export type ISidepanelProps = {};
+export type ISidepanelState = {};
 
-export class Aside extends React.PureComponent<IAsideProps, IAsideState> {
-  public state: IAsideState = {};
-  private state$ = new Subject<Partial<IAsideState>>();
+export class Sidepanel extends React.PureComponent<ISidepanelProps, ISidepanelState> {
+  public state: ISidepanelState = {};
+  private state$ = new Subject<Partial<ISidepanelState>>();
   private unmounted$ = new Subject<{}>();
 
   public static contextType = Context;
@@ -18,7 +18,7 @@ export class Aside extends React.PureComponent<IAsideProps, IAsideState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IAsideProps) {
+  constructor(props: ISidepanelProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
   }
@@ -41,7 +41,7 @@ export class Aside extends React.PureComponent<IAsideProps, IAsideState> {
    * [Properties]
    */
   public get model() {
-    return this.context.shell.state.aside as t.IObservableProps<t.IShellAsideState>;
+    return this.context.shell.state.sidepanel as t.IObservableProps<t.IShellSidepanelState>;
   }
 
   /**

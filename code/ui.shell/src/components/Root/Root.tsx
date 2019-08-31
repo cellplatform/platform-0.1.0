@@ -1,20 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import {
-  css,
-  color,
-  GlamorValue,
-  t,
-  COLORS,
-  loader,
-  createProvider,
-  state,
-  Shell,
-} from '../common';
+import { css, color, GlamorValue, t, COLORS, loader, createProvider, Shell } from '../common';
 import { Tree } from './components/Tree';
 import { Body } from './components/Body';
-import { Aside } from './components/Aside';
+import { Sidepanel } from './components/Sidepanel';
 
 export type IRootProps = {
   shell: Shell;
@@ -125,7 +115,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
           <Body />
         </div>
         <div {...styles.right}>
-          <Aside />
+          <Sidepanel />
         </div>
       </div>
     );
