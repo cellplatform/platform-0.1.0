@@ -1,2 +1,2 @@
-export * from './types'
-export * from './Shell'
+export * from './types';
+export * from './Shell';
