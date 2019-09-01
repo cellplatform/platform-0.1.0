@@ -86,7 +86,7 @@ export class Page extends React.PureComponent<IPageProps, IPageState> {
   private renderBody() {
     const styles = {
       base: css({
-        Absolute: [0, 0, 0, this.pageMargin.left + 16],
+        Absolute: [0, 0, 0, this.pageMargin.left + 22],
         paddingTop: 50,
         paddingRight: 45,
         paddingBottom: 50,

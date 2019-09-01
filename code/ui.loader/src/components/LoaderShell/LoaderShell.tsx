@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { COLORS, log, t, time, constants } from '../../common';
+import { defaultValue, COLORS, log, t, time, constants } from '../../common';
 import { createProvider } from '../../context/Context';
 import { splash } from '../../model';
 import { Splash } from '../Splash';
@@ -13,6 +13,7 @@ export type ILoaderShellProps = {
   splash?: t.SplashFactory;
   defaultModule?: number | string;
   loadDelay?: number;
+  hideSplashOnLoad?: boolean;
 };
 export type ILoaderShellState = {
   isLoaded?: boolean;
@@ -26,7 +27,7 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
   private state$ = new Subject<Partial<ILoaderShellState>>();
   private unmounted$ = new Subject<{}>();
 
-  private splash = splash.create({ isVisible: false, isSpinning: true });
+  private splash = splash.create({ isVisible: true, isSpinning: true });
   private _provider: React.FunctionComponent;
 
   /**
@@ -110,6 +111,7 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
   public async load(moduleId?: string | number) {
     const { loadDelay = 0 } = this.props;
     const loader = this.loader;
+    const hideSplashOnLoad = defaultValue(this.props.hideSplashOnLoad, true);
 
     if (this.state.isLoaded || loader.length === 0 || loader.isLoading(0)) {
       return;
@@ -123,8 +125,11 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
     const el = res.result;
     if (React.isValidElement(el)) {
       time.delay(loadDelay, () => {
-        this.splash.isSpinning = false;
         this.state$.next({ el });
+        if (hideSplashOnLoad) {
+          this.splash.isSpinning = false;
+          this.splash.isVisible = false;
+        }
       });
     } else {
       log.error(`LOADER: The default module did not render a JSX.Element`);

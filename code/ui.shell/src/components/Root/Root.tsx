@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, t, COLORS, loader, createProvider, Shell } from '../common';
-import { Tree } from './components/Tree';
+
+import { color, COLORS, createProvider, css, GlamorValue, loader, Shell, t } from '../common';
 import { Body } from './components/Body';
 import { Sidepanel } from './components/Sidepanel';
+import { Tree } from './components/Tree';
 
 export type IRootProps = {
   shell: Shell;
@@ -32,12 +33,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
   public componentDidMount() {
     document.body.style.overflow = 'hidden'; // Prevent browser rubber-band.
-
-    // Load the default module.
-    const shell = this.shell;
-    if (shell.defaultModuleId) {
-      shell.load(shell.defaultModuleId);
-    }
+    this.load(this.shell.defaultModuleId);
   }
 
   public componentWillUnmount() {
@@ -61,6 +57,21 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       });
     }
     return this._provider;
+  }
+
+  /**
+   * [Methods]
+   */
+  public async load(moduleId?: string) {
+    const shell = this.shell;
+    if (moduleId) {
+      const res = await shell.load(moduleId);
+      if (res.ok) {
+        this.context.splash.isVisible = false;
+      } else {
+        // TEMP 🐷 TODO: Show status somehow that the load failed.
+      }
+    }
   }
 
   /**

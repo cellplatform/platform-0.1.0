@@ -38,7 +38,10 @@ export class Loader extends React.PureComponent<ILoaderProps> {
         theme={this.props.theme}
         defaultModule={DEFAULT.MODULE}
         loadDelay={this.props.loadDelay}
+        hideSplashOnLoad={false}
       />
     );
   }
 }
+
+
