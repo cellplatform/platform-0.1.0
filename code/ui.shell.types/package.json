@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.shell.types",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Shared types used by ui.shell components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
