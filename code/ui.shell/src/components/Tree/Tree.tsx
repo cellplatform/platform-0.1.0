@@ -32,18 +32,6 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
   constructor(props: ITreeProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-
-    // Setup observables.
-    // const events$ = this.events$.pipe(takeUntil(this.unmounted$));
-    // const tree = TreeView.events(events$);
-
-    // tree.mouse().click.node$.subscribe(async e => {
-    //   // TEMP 🐷
-    //   log.group('Tree Click');
-    //   log.info(e);
-    //   log.info('context', this.context);
-    //   log.groupEnd();
-    // });
   }
 
   public componentDidMount() {

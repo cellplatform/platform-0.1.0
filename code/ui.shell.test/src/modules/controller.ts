@@ -17,3 +17,15 @@ export const init: t.ShellImportInit = async args => {
 
   // shell.ev
 };
+
+// Setup observables.
+// const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+// const tree = TreeView.events(events$);
+
+// tree.mouse().click.node$.subscribe(async e => {
+//   // TEMP 🐷
+//   log.group('Tree Click');
+//   log.info(e);
+//   log.info('context', this.context);
+//   log.groupEnd();
+// });
