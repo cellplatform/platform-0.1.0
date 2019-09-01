@@ -3,7 +3,7 @@ name: ui.shell
 
 web:
   port: 1234
-  entry: src/sample/entry.tsx
+  entry: src/entry.tsx
   head:
     stylesheets:
       - /static/css/normalize.css

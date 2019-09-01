@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { shell } from './common';
-import { Test } from './Test';
+import { App } from './App';
 
 shell
   // Register application modules.
@@ -13,4 +13,4 @@ shell
 /**
  * Render into DOM.
  */
-ReactDOM.render(<Test />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));

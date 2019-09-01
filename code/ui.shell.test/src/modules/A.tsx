@@ -1,8 +1,9 @@
+import { Page } from '@platform/ui.shell.doc';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, t, COLORS, shell } from '../common';
+import { color, COLORS, css, shell, t, Button } from '../common';
 
 // TEMP 🐷
 const ROOT: t.ITreeNode = {
@@ -64,67 +65,29 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
         Absolute: [8, 0, null, null],
         fontSize: 14,
         opacity: 0.4,
+        userSelect: 'none',
+      }),
+      page: css({
+        Absolute: [35, 0, 0, 0],
       }),
     };
     return (
       <div {...styles.base}>
         <div {...styles.inner}>
           <div {...styles.version}>version 0.1.2</div>
-          {this.renderPage()}
+          <Page style={styles.page}>{this.renderBody()}</Page>
         </div>
       </div>
     );
   }
 
-  private renderPage() {
-    const margin = 70;
-    const styles = {
-      base: css({
-        Absolute: [35, 0, 0, 0],
-        border: `solid 1px ${color.format(-0.15)}`,
-        borderBottom: 'none',
-        backgroundColor: color.format(1),
-        borderRadius: '3px 3px 0 0',
-        boxSizing: 'border-box',
-        boxShadow: `0 0 12px 0 ${color.format(-0.15)}`,
-        padding: 40,
-        paddingLeft: 90,
-      }),
-      margin: css({
-        Absolute: [0, null, 0, margin],
-        borderLeft: `solid 1px #FF257B`,
-        opacity: 0.25,
-      }),
-      header: css({
-        borderRadius: '3px 3px 0 0',
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
-        Absolute: [0, 0, null, 0],
-        height: 40,
-        backgroundColor: color.format(0.9),
-      }),
-      body: css({
-        marginTop: 30,
-      }),
-      link: css({
-        color: COLORS.BLUE,
-        cursor: 'pointer',
-      }),
-    };
+  private renderBody() {
+    const paras = Array.from({ length: 30 }).map((v, i) => <p key={i}>{LOREM}</p>);
     return (
-      <div {...styles.base}>
-        <div {...styles.margin} />
-        <div {...css(styles.margin, { left: margin + 2 })} />
-        <div {...styles.header}>
-          <div />
-        </div>
-        <div {...styles.body}>
-          <p>{LOREM}</p>
-          <p>{LOREM}</p>
-          <p>{LOREM}</p>
-          <div {...styles.link} onClick={this.loadAside}>
-            Load sidebar
-          </div>
-        </div>
+      <div>
+        <h1>My Title</h1>
+        <Button onClick={this.loadSidebar}>Load sidebar</Button>
+        {paras}
       </div>
     );
   }
@@ -132,7 +95,7 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
   /**
    * [Handlers]
    */
-  private loadAside = () => {
+  private loadSidebar = () => {
     this.context.shell.load('B');
   };
 }

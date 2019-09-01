@@ -1,1 +1,5 @@
-export const TEMP = 123;
+export const COLORS = {
+  WHITE: '#FFF',
+  DARK: '#293042', // Inky blue/black.
+  BLUE: '#4B89FF',
+};

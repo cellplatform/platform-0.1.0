@@ -1,2 +1,1 @@
-import { uniq } from 'ramda';
-export const R = { uniq };
+export { color, css, GlamorValue, is } from '@platform/react';

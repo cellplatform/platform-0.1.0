@@ -5,7 +5,6 @@ export const COLORS = {
 };
 
 const fadeSpeed = 300;
-
 const SHELL = {
   tree: { root: undefined, current: undefined },
   body: {
