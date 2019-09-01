@@ -58,6 +58,7 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
         width: 820,
         height: '100%',
         boxSizing: 'border-box',
+        MarginX: 30,
       }),
       version: css({
         Absolute: [8, 0, null, null],
