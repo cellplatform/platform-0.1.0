@@ -44,7 +44,10 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+
+  constructor(props: ISwitchProps) {
+    super(props);
+
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));

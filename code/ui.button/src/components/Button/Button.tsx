@@ -71,7 +71,9 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  constructor(props: IButtonProps) {
+    super(props);
+
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
