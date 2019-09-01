@@ -6,12 +6,12 @@ import { time, Context, css, GlamorValue, t } from '../common';
 
 export type IProgressProps = {
   height?: number;
-  color?: string;
   style?: GlamorValue;
 };
 export type IProgressState = {
   isRunning?: boolean;
   duration?: number; // msecs
+  color?: string;
 };
 
 export class Progress extends React.PureComponent<IProgressProps, IProgressState> {
@@ -52,17 +52,21 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
    * [Properties]
    */
   public get duration() {
-    return this.state.duration || 1500;
+    return this.state.duration || 1000;
+  }
+
+  public get color() {
+    return this.state.color || 'red';
   }
 
   /**
    * [Methods]
    */
-  public start(options: { duration?: number } = {}) {
+  public start(options: { duration?: number; color?: string } = {}) {
     this.stop();
     return new Promise(resolve => {
-      const { duration } = options;
-      this.state$.next({ duration });
+      const { duration, color } = options;
+      this.state$.next({ duration, color });
 
       // NB: Wait a tick after the duration is set to ensure the CSS duation time is updated.
       time.delay(0, () => {
@@ -98,7 +102,7 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
         width: `${isRunning ? 100 : 0}%`,
         height,
         transition: `width ${isRunning ? speed : 0}ms linear`,
-        backgroundColor: 'red',
+        backgroundColor: this.color,
       }),
     };
     return (

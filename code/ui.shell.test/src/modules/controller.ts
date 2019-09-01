@@ -18,10 +18,6 @@ export const init: t.ShellImportInit = async args => {
   onClick('doc', () => shell.load('A'));
   onClick('sheet', () => shell.load('C'));
 
-  onClick('progress:start', () => {
-    shell.progress.start({ duration: 3000 });
-  });
-  onClick('progress:stop', () => {
-    shell.progress.complete();
-  });
+  onClick('progress:start', () => shell.progress.start({ duration: 3000 }));
+  onClick('progress:stop', () => shell.progress.complete());
 };

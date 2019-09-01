@@ -25,7 +25,7 @@ export type IShellEvents = {
 };
 
 export type IShellProgress = {
-  start(options?: { duration?: number }): Promise<{}>;
+  start(options?: { duration?: number; color?: string }): Promise<{}>;
   complete(): void;
 };
 
@@ -96,7 +96,7 @@ export type IShellProgressStartEvent = {
   type: 'SHELL/progress/start';
   payload: IShellProgressStart;
 };
-export type IShellProgressStart = {};
+export type IShellProgressStart = { duration?: number; color?: string };
 
 export type IShellProgressCompleteEvent = {
   type: 'SHELL/progress/complete';

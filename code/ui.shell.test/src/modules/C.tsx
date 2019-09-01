@@ -3,10 +3,10 @@ import { COLORS, css, t } from '../common';
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
-  const { body, sidepanel } = shell.state;
+  const { body, sidebar } = shell.state;
   body.el = <ComponentC />;
-  sidepanel.el = undefined;
-  sidepanel.background = COLORS.DARK;
+  sidebar.el = undefined;
+  sidebar.background = COLORS.DARK;
 };
 
 export class ComponentC extends React.PureComponent {

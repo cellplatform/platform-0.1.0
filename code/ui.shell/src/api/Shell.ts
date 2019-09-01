@@ -55,16 +55,16 @@ export class Shell implements t.IShell {
 
   public get progress() {
     const api = {
-      start: (options: { duration?: number } = {}) => {
+      start: (options: { duration?: number; color?: string } = {}) => {
         return new Promise<{}>(resolve => {
-          const { duration = 1000 } = options;
+          const { duration, color } = options;
           timer(duration)
             .pipe(takeUntil(this.events.progress.complete$))
             .subscribe(e => {
               api.complete();
               resolve({});
             });
-          this.fire({ type: 'SHELL/progress/start', payload: { duration } });
+          this.fire({ type: 'SHELL/progress/start', payload: { duration, color } });
         });
       },
       complete: () => this.fire({ type: 'SHELL/progress/complete', payload: {} }),
