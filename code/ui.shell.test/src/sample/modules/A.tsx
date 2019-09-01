@@ -7,7 +7,7 @@ import { color, css, t, COLORS, shell } from '../common';
 // TEMP 🐷
 const ROOT: t.ITreeNode = {
   id: 'ROOT',
-  props: { label: 'Title' },
+  props: { label: 'ui.shell' },
   children: [{ id: 'one' }, { id: 'two' }],
 };
 
@@ -70,7 +70,6 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
       <div {...styles.base}>
         <div {...styles.inner}>
           <div {...styles.version}>version 0.1.2</div>
-
           {this.renderPage()}
         </div>
       </div>

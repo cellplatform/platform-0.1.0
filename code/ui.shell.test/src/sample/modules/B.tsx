@@ -5,7 +5,10 @@ import { css, color, GlamorValue, t } from '../common';
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
-  shell.state.sidepanel.el = <ComponentB />;
+  const sidepanel = shell.state.sidepanel;
+  sidepanel.el = <ComponentB />;
+  sidepanel.background = '#C3688C';
+  // sidepanel.background = { color: '#C3688C', fadeSpeed: 3500 };
 };
 
 const LOREM =
@@ -39,7 +42,6 @@ export class ComponentB extends React.PureComponent<IComponentBProps, IComponent
     const styles = {
       base: css({
         Absolute: 0,
-        backgroundColor: '#C3688C',
         color: 'white',
         padding: 12,
         fontSize: 14,

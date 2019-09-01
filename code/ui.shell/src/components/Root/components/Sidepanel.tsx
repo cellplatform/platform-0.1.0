@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 
-import { Context, css, t } from '../../common';
+import { Context, css, t, DEFAULT, util } from '../../common';
+const SHELL = DEFAULT.STATE.SHELL;
 
 export type ISidepanelProps = {};
 export type ISidepanelState = {};
@@ -44,12 +45,26 @@ export class Sidepanel extends React.PureComponent<ISidepanelProps, ISidepanelSt
     return this.context.shell.state.sidepanel as t.IObservableProps<t.IShellSidepanelState>;
   }
 
+  public get colors() {
+    const { sidepanel } = SHELL;
+    const foreground = util.toColor(this.model.foreground, sidepanel.foreground);
+    const background = util.toColor(this.model.background, sidepanel.background);
+    return { foreground, background };
+  }
+
   /**
    * [Render]
    */
   public render() {
+    const { foreground, background } = this.colors;
+    const transition = `color ${background.fadeSpeed}ms, background-color ${background.fadeSpeed}ms`;
     const styles = {
-      base: css({ Absolute: 0 }),
+      base: css({
+        Absolute: 0,
+        color: foreground.color,
+        backgroundColor: background.color,
+        transition,
+      }),
     };
     return <div {...styles.base}>{this.model.el}</div>;
   }
