@@ -3,19 +3,11 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, shell, t, Button } from '../common';
-
-// TEMP 🐷
-const ROOT: t.ITreeNode = {
-  id: 'ROOT',
-  props: { label: 'ui.shell' },
-  children: [{ id: 'one' }, { id: 'two' }],
-};
+import { Button, css, shell, t } from '../common';
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
   shell.state.body.el = <ComponentA />;
-  shell.state.tree.root = ROOT;
 };
 
 const LOREM =
