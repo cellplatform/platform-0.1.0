@@ -98,7 +98,7 @@
     rxjs "6.5.2"
     tslib "1.10.0"
 
-"@platform/react@0.3.20", "@platform/react@^0.3.20":
+"@platform/react@0.3.20":
   version "0.3.20"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.20.tgz#910c952017d27be41578c0c8c01e11f2796fc81d"
   integrity sha512-b+u7uPrNjTJGIS3f5h6s+aajkK/ENAgEru5KdOo8fNn2TurzYoJ05ytGyTRnCHkC26gh8wsowpbVfpoa85IOxA==
@@ -166,10 +166,10 @@
     "@platform/react" "0.3.20"
     "@platform/util.animate" "0.0.50"
 
-"@platform/ui.shell.types@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.0.tgz#d4ceaa2e383f4ef514d8778135e9d6300e719d85"
-  integrity sha512-tSoRVFc7F4tBo5RMXzlnTvT8zd8C2eX4pZXcLK/cfeO3jQJgDwxHuqKVDC69QUtlafDLlE0XFm5rHdaBgsCMvA==
+"@platform/ui.shell.types@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.1.tgz#01634c21786fd9faca28b682ab2b515490ead71a"
+  integrity sha512-6V8zyJsQJW6hw5OKgK5K7bJglg5KdDBfyyx5jaqdN/E7qbfiVrWm6oShO4o/rybHwob1rSDNIan4U+9iqhF0QA==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/ui.tree" "0.3.0"
