@@ -62,7 +62,7 @@ export type IShellLoadResponse = {
 export type IShellState = {
   readonly tree: IShellTreeState;
   readonly body: IShellBodyState;
-  readonly sidepanel: IShellSidepanelState;
+  readonly sidebar: IShellSidebarState;
 };
 
 export type IShellTreeState = {
@@ -76,12 +76,15 @@ export type IShellBodyState = {
   background: IShellColor | string | number;
 };
 
-export type IShellSidepanelState = {
+export type IShellSidebarState = {
   el?: JSX.Element;
   foreground: IShellColor | string | number;
   background: IShellColor | string | number;
 };
 
+/**
+ * Appearance
+ */
 export type IShellColor = { color: string; fadeSpeed: number };
 
 /**

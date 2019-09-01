@@ -2,15 +2,15 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 
-import { Context, css, t, DEFAULT, util } from '../../common';
+import { Context, css, t, DEFAULT, util } from '../common';
 const SHELL = DEFAULT.STATE.SHELL;
 
-export type ISidepanelProps = {};
-export type ISidepanelState = {};
+export type ISidebarProps = {};
+export type ISidebarState = {};
 
-export class Sidepanel extends React.PureComponent<ISidepanelProps, ISidepanelState> {
-  public state: ISidepanelState = {};
-  private state$ = new Subject<Partial<ISidepanelState>>();
+export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
+  public state: ISidebarState = {};
+  private state$ = new Subject<Partial<ISidebarState>>();
   private unmounted$ = new Subject<{}>();
 
   public static contextType = Context;
@@ -19,7 +19,7 @@ export class Sidepanel extends React.PureComponent<ISidepanelProps, ISidepanelSt
   /**
    * [Lifecycle]
    */
-  constructor(props: ISidepanelProps) {
+  constructor(props: ISidebarProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
   }
@@ -42,7 +42,7 @@ export class Sidepanel extends React.PureComponent<ISidepanelProps, ISidepanelSt
    * [Properties]
    */
   public get model() {
-    return this.context.shell.state.sidepanel as t.IObservableProps<t.IShellSidepanelState>;
+    return this.context.shell.state.sidebar as t.IObservableProps<t.IShellSidebarState>;
   }
 
   public get colors() {

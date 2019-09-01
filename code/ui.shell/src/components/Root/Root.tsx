@@ -3,8 +3,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, COLORS, createProvider, css, GlamorValue, loader, Shell, t } from '../common';
-import { Body } from './components/Body';
-import { Sidepanel } from './components/Sidepanel';
+import { Body } from '../Body';
+import { Sidebar } from '../Sidebar';
 import { Tree } from '../Tree';
 import { Progress } from '../Progress';
 
@@ -133,7 +133,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
           <Body />
         </div>
         <div {...styles.right}>
-          <Sidepanel />
+          <Sidebar />
         </div>
       </div>
     );

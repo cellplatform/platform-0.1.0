@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
+import { Subject, VirtualTimeScheduler } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { Context, css, GlamorValue, t } from '../common';
+import { time, Context, css, GlamorValue, t } from '../common';
 
 export type IProgressProps = {
   height?: number;
@@ -62,11 +62,16 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
     this.stop();
     return new Promise(resolve => {
       const { duration } = options;
-      this.state$.next({ isRunning: true, duration });
-      this.timeout = setTimeout(() => {
-        this.stop();
-        resolve();
-      }, this.duration);
+      this.state$.next({ duration });
+
+      // NB: Wait a tick after the duration is set to ensure the CSS duation time is updated.
+      time.delay(0, () => {
+        this.state$.next({ isRunning: true });
+        this.timeout = setTimeout(() => {
+          this.stop();
+          resolve();
+        }, this.duration);
+      });
     });
   }
 
