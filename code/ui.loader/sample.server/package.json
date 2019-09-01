@@ -1,6 +1,6 @@
 {
   "name": "sample.loader.server",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "scripts": {
     "ssr": "ssr $@",
     "now": "now dev --listen 8080",
@@ -9,7 +9,7 @@
     "watch": "nodemon --watch ../src -e ts,tsx --delay 2"
   },
   "dependencies": {
-    "@platform/react.ssr": "^1.1.3"
+    "@platform/react.ssr": "^1.1.4"
   },
   "devDependencies": {
     "ts-node": "^8.3.0"
