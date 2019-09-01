@@ -27,7 +27,7 @@ export class Store extends React.PureComponent<IStoreProps, IStoreState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const store$ = this.store.changed$.pipe(takeUntil(this.unmounted$));
 

@@ -22,7 +22,7 @@ export class Action extends React.PureComponent<IActionProps, IActionState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
   }

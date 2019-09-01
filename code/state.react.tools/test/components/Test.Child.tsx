@@ -19,7 +19,7 @@ export class Child extends React.PureComponent<IChildProps> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     const changed$ = this.store.changed$.pipe(takeUntil(this.unmounted$));
     changed$.subscribe(e => this.forceUpdate());
 

@@ -55,7 +55,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
     this.setValue(this.value);
