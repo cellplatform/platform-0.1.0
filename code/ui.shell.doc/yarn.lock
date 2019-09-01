@@ -166,12 +166,12 @@
     "@platform/react" "0.3.20"
     "@platform/util.animate" "0.0.50"
 
-"@platform/ui.shell.types@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.1.tgz#01634c21786fd9faca28b682ab2b515490ead71a"
-  integrity sha512-6V8zyJsQJW6hw5OKgK5K7bJglg5KdDBfyyx5jaqdN/E7qbfiVrWm6oShO4o/rybHwob1rSDNIan4U+9iqhF0QA==
+"@platform/ui.shell.types@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.2.tgz#cc80facbe6d200c3f2a63eececfaafc17d5d3102"
+  integrity sha512-w/H5av+gdCqlANAxNSB04PzajG00yNe8eHp0NhRDm/uIRO3wGSCfan/TilLXcWW3aiKTcydGhNBvHssqQ5fXyQ==
   dependencies:
-    "@platform/libs" "0.0.12"
+    "@platform/libs" "0.1.1"
     "@platform/ui.tree" "0.3.0"
 
 "@platform/ui.spinner@0.0.83":
