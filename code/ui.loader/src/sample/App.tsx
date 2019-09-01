@@ -1,25 +1,14 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { is, loader, log } from './common';
 import * as splash from './splash';
 
-export type ITestProps = {};
-export type ITestState = {};
-
-export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = {};
-  private state$ = new Subject<Partial<ITestState>>();
-  private unmounted$ = new Subject<{}>();
-
+export class App extends React.PureComponent {
   /**
    * [Lifecycle]
    */
-  constructor(props: ITestProps) {
+  constructor(props: {}) {
     super(props);
-    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
 
     log.group('LoadShell');
     log.info('dev', is.dev);
@@ -38,11 +27,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     //     return <Foo />;
     //   });
     // });
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
   }
 
   /**

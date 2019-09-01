@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { loader, t } from './common';
-import { Test } from './Test';
+import { App } from './App';
 
 /**
  * Configure loader.
@@ -20,4 +20,4 @@ loader.singleton
 /**
  * Render into DOM.
  */
-ReactDOM.render(<Test />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));

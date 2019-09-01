@@ -5,6 +5,6 @@
  */
 
 import * as React from 'react';
-import { Test } from './Test';
+import { App } from './App';
 
-export default [{ file: 'index.html', el: <Test /> }];
+export default [{ file: 'index.html', el: <App /> }];
