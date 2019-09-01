@@ -58,8 +58,7 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
   /**
    * [Lifecycle]
    */
-
-  public componentWillMount() {
+  public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
     // Set initial panel position (prior to first render).
@@ -67,9 +66,7 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
     const edge = Panel.edge({ index, current: previous });
     const offset = Panel.offset(edge);
     this.setState({ edge, offset });
-  }
 
-  public componentDidMount() {
     time.delay(0, () => {
       // NB:  Allow the first render to occur, which may have the panel off screen.
       //      Then re-calculate the position of the panel to allow it to slide

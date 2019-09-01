@@ -1248,10 +1248,10 @@
   dependencies:
     "@platform/react" "0.3.20"
 
-"@platform/ui.loader@0.1.7", "@platform/ui.loader@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@platform/ui.loader/-/ui.loader-0.1.7.tgz#1dc98628f20ca2c1f702cb09b0642618119951c7"
-  integrity sha512-JpLKKr3CRNsUEhY6VgAzzQv+OTR+SsT7DqqbAeml9s898EkTbRyKpdh37bF9gZpR3ssyFHj6xZgQ14ceXfNm+g==
+"@platform/ui.loader@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.loader/-/ui.loader-0.2.0.tgz#330cd85b7ac5273221e5226210cd4f9babc12a71"
+  integrity sha512-cs4Vb4FxL2EKgs2G8DmlSo4Ja5KjNhPmiZXAUrh0o8Vosh7opj1w3Qf9Y3DdmHDNADpVklaI+BNHedFBYWVB5A==
   dependencies:
     "@platform/react" "0.3.20"
     "@platform/util.value" "0.4.11"
@@ -1272,34 +1272,42 @@
     "@platform/react" "0.3.20"
     "@platform/util.animate" "0.0.50"
 
-"@platform/ui.shell.doc@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell.doc/-/ui.shell.doc-0.0.2.tgz#74481e3bbd3ce4d5580f5807250884e9a2bbfad4"
-  integrity sha512-mOroGPcbk8cw5RmLo8FGSLoPD7Ns8Bou1shfJpl2V9AhW2kgeq9JlY2DKW1VRPOGdo5T8c9oBnqLIq8Ikt75xg==
+"@platform/ui.panel@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.1.0.tgz#8a1be4b7555a3ff297823c3698fc0b03a34d7eea"
+  integrity sha512-YDKU2Ft3zoyK/7AuRv92DNdtbfNSnyfPjFVLTL8jizpGn5LVZCwZFSUXXxc5ROLz2cm6atccOEzZUnO8d7gMyw==
+  dependencies:
+    "@platform/react" "0.3.20"
+    "@platform/util.animate" "0.0.50"
+
+"@platform/ui.shell.doc@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell.doc/-/ui.shell.doc-0.0.5.tgz#f34eb9f209706f07fc8966fe5b0298e59520a7df"
+  integrity sha512-nH0PEMQg4CqaJ9b1kqBqBshh4ZDn66BApubzeW2T21GsTYUGG4A2W3QJ6BLzt78BI97vTUybVdOEwrH1nqiD2w==
   dependencies:
     "@platform/libs" "0.0.12"
     "@platform/react" "0.3.20"
-    "@platform/ui.shell.types" "0.0.1"
+    "@platform/ui.shell.types" "0.0.4"
 
-"@platform/ui.shell.types@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.1.tgz#01634c21786fd9faca28b682ab2b515490ead71a"
-  integrity sha512-6V8zyJsQJW6hw5OKgK5K7bJglg5KdDBfyyx5jaqdN/E7qbfiVrWm6oShO4o/rybHwob1rSDNIan4U+9iqhF0QA==
+"@platform/ui.shell.types@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.4.tgz#bf27fb70cdfd9e849dd3b442efb8f261ef1cb24c"
+  integrity sha512-R4/lnkevRvs/drbPtJu6H1BB+tuqugj4CEtyU7rvg9XGCmbSiIcTdJwU1gDXvuXjMmLJQIIkHRJs0EkLs9MYvg==
   dependencies:
-    "@platform/libs" "0.0.12"
-    "@platform/ui.tree" "0.3.0"
+    "@platform/libs" "0.1.1"
+    "@platform/ui.tree" "0.3.2"
 
-"@platform/ui.shell@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell/-/ui.shell-0.1.4.tgz#7c0ed743fdaa80b433d52a36744a2535a641fd51"
-  integrity sha512-AurVljYMrTJCst5l1ZaH/5gpCeBy8NbciaFq4OiMqTwteaOblJoGMnLnCX3kdYof0JqFjvph1LsE3pvMWkcPAA==
+"@platform/ui.shell@0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell/-/ui.shell-0.1.8.tgz#18d271c506a208339f3f2ca1c589f736f87c33ac"
+  integrity sha512-ljItExEduaDnJ+wR4lN4vkSByVD+LqE/Z8yj9nZltyA3ae3zpLNtkhUE29sDR1sH9OYdE9QqT0tCqlk5sh3EPQ==
   dependencies:
     "@platform/log" "0.0.140"
     "@platform/react" "0.3.20"
     "@platform/ui.icon" "0.0.84"
-    "@platform/ui.loader" "0.1.7"
-    "@platform/ui.shell.types" "0.0.1"
-    "@platform/ui.tree" "0.3.0"
+    "@platform/ui.loader" "0.2.0"
+    "@platform/ui.shell.types" "0.0.4"
+    "@platform/ui.tree" "0.3.2"
     "@platform/util.value" "0.4.11"
 
 "@platform/ui.spinner@0.0.83":
@@ -1331,15 +1339,15 @@
     "@platform/ui.text" "0.2.33"
     "@platform/util.animate" "^0.0.50"
 
-"@platform/ui.tree@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.3.0.tgz#8b66219bcdad668ea93759c7695822c9d23f400b"
-  integrity sha512-LhIyS1NOqNTT3B+QtDUNcHhBUMsOMt3mUqwKf5I/GYeRv3olHou6DCShHpCImlGizM7qxqZzoPUb2i+9PdeufA==
+"@platform/ui.tree@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.3.2.tgz#2aad5e41476ee68cad1bc91c2c8d8fc7c50400e7"
+  integrity sha512-W2HMFUrwG8JWmJ04YcBTQB9LP5FMOlrTLsnFws6VFI6pytl8dO1WDwGLIy1ZivlE40CNjLjldGhN3/oL8vnGKg==
   dependencies:
     "@platform/css" "0.1.34"
     "@platform/react" "0.3.20"
     "@platform/ui.icon" "0.0.84"
-    "@platform/ui.panel" "0.0.82"
+    "@platform/ui.panel" "0.1.0"
     "@platform/ui.spinner" "0.0.83"
     "@platform/ui.text" "0.2.33"
     "@platform/util.animate" "^0.0.50"

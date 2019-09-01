@@ -1408,6 +1408,14 @@
     "@platform/react" "0.3.20"
     "@platform/util.animate" "0.0.50"
 
+"@platform/ui.panel@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.1.0.tgz#8a1be4b7555a3ff297823c3698fc0b03a34d7eea"
+  integrity sha512-YDKU2Ft3zoyK/7AuRv92DNdtbfNSnyfPjFVLTL8jizpGn5LVZCwZFSUXXxc5ROLz2cm6atccOEzZUnO8d7gMyw==
+  dependencies:
+    "@platform/react" "0.3.20"
+    "@platform/util.animate" "0.0.50"
+
 "@platform/ui.spinner@0.0.83":
   version "0.0.83"
   resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.83.tgz#7bf17a86ae8287e5385f68c6ea1e259c82992d55"

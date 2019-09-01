@@ -3,6 +3,7 @@ import { IIcon } from '@platform/ui.icon';
 export * from './themes/types';
 export * from './components/TreeView/types';
 export * from './components/TreeNode/types';
+export * from './events/types';
 
 /**
  * A single node within the "tree"
@@ -44,10 +45,6 @@ export type ITreeNodeProps = {
   padding?: number | number[]; // [top, right, bottom left].
   marginTop?: number;
   marginBottom?: number;
-
-  // TEMP 🐷
-  // borderTop?: number | string | boolean; //    Color (true === theme color).
-  // borderBottom?: number | string | boolean; // Color (true === theme color).
 
   chevron?: {
     isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.

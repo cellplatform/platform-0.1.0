@@ -1,5 +1,10 @@
+import { TreeView, TreeViewEvent } from '@platform/ui.tree';
+import { Subject, timer } from 'rxjs';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
+
 import { loader, t } from '../common';
 import * as state from '../state';
+import * as events from './events';
 
 type IShellArgs = { loader: loader.ILoader };
 
@@ -15,12 +20,57 @@ export class Shell implements t.IShell {
     this.loader = args.loader;
   }
 
+  public dispose() {
+    this._dispose$.next();
+    this._dispose$.complete();
+  }
+
   /**
    * [Fields]
    */
   public readonly loader: loader.ILoader;
   public readonly state: t.IShellState = state.shell.create();
   public defaultModuleId: string;
+
+  private readonly _dispose$ = new Subject<{}>();
+  public readonly dispose$ = this._dispose$.pipe(share());
+
+  private readonly _events$ = new Subject<t.ShellEvent>();
+  private readonly events$ = this._events$.pipe(
+    takeUntil(this.dispose$),
+    share(),
+  );
+  private _events: t.IShellEvents;
+
+  /**
+   * [Properties]
+   */
+  public get isDisposed() {
+    return this._dispose$.isStopped;
+  }
+
+  public get events() {
+    return this._events || (this._events = events.init(this.events$, this.dispose$));
+  }
+
+  public get progress() {
+    const api = {
+      start: (options: { duration?: number; color?: string } = {}) => {
+        return new Promise<{}>(resolve => {
+          const { duration, color } = options;
+          timer(duration)
+            .pipe(takeUntil(this.events.progress.complete$))
+            .subscribe(e => {
+              api.complete();
+              resolve({});
+            });
+          this.fire({ type: 'SHELL/progress/start', payload: { duration, color } });
+        });
+      },
+      complete: () => this.fire({ type: 'SHELL/progress/complete', payload: {} }),
+    };
+    return api;
+  }
 
   /**
    * [Methods]
@@ -30,16 +80,20 @@ export class Shell implements t.IShell {
     importer: t.ShellImporter,
     options?: { timeout?: number },
   ) => {
+    this.throwIfDisposed('register');
     this.loader.add(moduleId, importer, options);
     return this;
   };
 
   public default(moduleId: string) {
+    this.throwIfDisposed('default');
     this.defaultModuleId = moduleId;
     return this;
   }
 
   public async load<P = {}>(moduleId: string | number, props?: P) {
+    this.throwIfDisposed('load');
+
     // Load the module.
     const res = await this.loader.load<t.ShellImporterResponse>(moduleId, props);
 
@@ -58,5 +112,22 @@ export class Shell implements t.IShell {
     // Finish up.
     const { ok, count, error, timedOut } = res;
     return { ok, count, error, timedOut };
+  }
+
+  /**
+   * [Internal]
+   */
+  public fire(e: t.ShellEvent) {
+    this._events$.next(e);
+  }
+
+  /**
+   * [Helpers]
+   */
+
+  private throwIfDisposed(action: string) {
+    if (this.isDisposed) {
+      throw new Error(`Cannot ${action} because Shell is disposed.`);
+    }
   }
 }

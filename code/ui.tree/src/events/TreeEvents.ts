@@ -9,7 +9,7 @@ type Target = t.TreeNodeMouseTarget;
 /**
  * Helpers for filtering different event streams for a tree with sensible defaults.
  */
-export class TreeEvents<N extends t.ITreeNode = any> {
+export class TreeEvents<N extends t.ITreeNode = any> implements t.ITreeEvents<N> {
   /**
    * [Lifecycle]
    */

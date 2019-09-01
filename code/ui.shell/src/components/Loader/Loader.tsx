@@ -43,5 +43,3 @@ export class Loader extends React.PureComponent<ILoaderProps> {
     );
   }
 }
-
-

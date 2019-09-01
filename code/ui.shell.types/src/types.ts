@@ -1,6 +1,33 @@
-import { ITreeNode } from '@platform/ui.tree/lib/types';
+import { ITreeNode, TreeViewEvent, ITreeEvents } from '@platform/ui.tree/lib/types';
+import { Observable } from 'rxjs';
 
 export type ShellTheme = 'LIGHT' | 'DARK';
+
+/**
+ * [Shell]
+ */
+export type IShell = {
+  events: IShellEvents;
+  state: IShellState;
+  register(moduleId: string, importer: ShellImporter, options?: { timeout?: number }): IShell;
+  default(moduleId: string): IShell;
+  load<P = {}>(moduleId: string | number, props?: P): Promise<IShellLoadResponse>;
+  progress: IShellProgress;
+};
+
+export type IShellEvents = {
+  events$: Observable<ShellEvent>;
+  tree: ITreeEvents;
+  progress: {
+    start$: Observable<IShellProgressStart>;
+    complete$: Observable<IShellProgressComplete>;
+  };
+};
+
+export type IShellProgress = {
+  start(options?: { duration?: number; color?: string }): Promise<{}>;
+  complete(): void;
+};
 
 /**
  * [Context]
@@ -17,13 +44,6 @@ export type ShellImporterResponse = { init: ShellImportInit };
 
 export type ShellImportInit = (args: ShellImportInitArgs) => Promise<any>;
 export type ShellImportInitArgs = { shell: IShell };
-
-export type IShell = {
-  state: IShellState;
-  register(moduleId: string, importer: ShellImporter, options?: { timeout?: number }): IShell;
-  default(moduleId: string): IShell;
-  load<P = {}>(moduleId: string | number, props?: P): Promise<IShellLoadResponse>;
-};
 
 export type IShellLoadResponse = {
   ok: boolean;
@@ -42,7 +62,7 @@ export type IShellLoadResponse = {
 export type IShellState = {
   readonly tree: IShellTreeState;
   readonly body: IShellBodyState;
-  readonly sidepanel: IShellSidepanelState;
+  readonly sidebar: IShellSidebarState;
 };
 
 export type IShellTreeState = {
@@ -52,17 +72,34 @@ export type IShellTreeState = {
 
 export type IShellBodyState = {
   el?: JSX.Element;
-  foreground: IColor | string | number;
-  background: IColor | string | number;
+  foreground: IShellColor | string | number;
+  background: IShellColor | string | number;
 };
 
-export type IShellSidepanelState = {
+export type IShellSidebarState = {
   el?: JSX.Element;
-  foreground: IColor | string | number;
-  background: IColor | string | number;
+  foreground: IShellColor | string | number;
+  background: IShellColor | string | number;
 };
 
 /**
- * Values
+ * Appearance
  */
-export type IColor = { color: string; fadeSpeed: number };
+export type IShellColor = { color: string; fadeSpeed: number };
+
+/**
+ * [Events]
+ */
+export type ShellEvent = TreeViewEvent | IShellProgressStartEvent | IShellProgressCompleteEvent;
+
+export type IShellProgressStartEvent = {
+  type: 'SHELL/progress/start';
+  payload: IShellProgressStart;
+};
+export type IShellProgressStart = { duration?: number; color?: string };
+
+export type IShellProgressCompleteEvent = {
+  type: 'SHELL/progress/complete';
+  payload: IShellProgressComplete;
+};
+export type IShellProgressComplete = {};

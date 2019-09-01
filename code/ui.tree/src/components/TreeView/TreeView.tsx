@@ -100,7 +100,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     // Setup observables.
     const focus$ = this.focus$.pipe(takeUntil(this.unmounted$));
 
@@ -133,9 +133,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         delay(0), // NB: Ensure the tabstrip is focused when any tab is clicked.
       )
       .subscribe(e => this.focus());
-  }
 
-  public componentDidMount() {
     this.updatePath();
   }
 

@@ -5,10 +5,10 @@ import { css, color, GlamorValue, t } from '../common';
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
-  const sidepanel = shell.state.sidepanel;
-  sidepanel.el = <ComponentB />;
-  sidepanel.background = '#EA4E7E';
-  // sidepanel.background = { color: '#C3688C', fadeSpeed: 3500 };
+  const sidebar = shell.state.sidebar;
+  sidebar.el = <ComponentB />;
+  sidebar.background = '#EA4E7E';
+  // sidebar.background = { color: '#C3688C', fadeSpeed: 3500 };
 };
 
 const LOREM =

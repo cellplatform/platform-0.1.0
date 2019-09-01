@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 
-import { Context, css, t, DEFAULT, util } from '../../common';
+import { Context, css, t, DEFAULT, util } from '../common';
 const SHELL = DEFAULT.STATE.SHELL;
 
 export type IBodyProps = {};

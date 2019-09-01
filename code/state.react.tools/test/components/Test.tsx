@@ -16,9 +16,13 @@ export class Test extends React.PureComponent<ITestProps> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
-    this.cli = cli.init({});
 
+  constructor(props: ITestProps) {
+    super(props);
+    this.cli = cli.init({});
+  }
+
+  public componentDidMount() {
     const changed$ = store.changed$.pipe(takeUntil(this.unmounted$));
     changed$.subscribe(e => this.forceUpdate());
   }
