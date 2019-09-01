@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.panel",
-  "version": "0.0.82",
+  "version": "0.1.0",
   "scripts": {
     "ui": "ui $@",
     "start": "ui start $@",

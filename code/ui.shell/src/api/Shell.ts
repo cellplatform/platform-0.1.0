@@ -12,6 +12,7 @@ import {
 } from 'rxjs/operators';
 import { loader, t } from '../common';
 import * as state from '../state';
+import { TreeView, TreeViewEvent } from '@platform/ui.tree';
 
 type IShellArgs = { loader: loader.ILoader };
 
@@ -43,16 +44,31 @@ export class Shell implements t.IShell {
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.ShellEvent>();
-  public readonly events$ = this._events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  private _events: t.IShellEvents;
 
   /**
    * [Properties]
    */
   public get isDisposed() {
     return this._dispose$.isStopped;
+  }
+
+  public get events() {
+    if (!this._events) {
+      const events$ = this._events$.pipe(
+        takeUntil(this.dispose$),
+        share(),
+      );
+      const tree$ = events$.pipe(
+        filter(e => e.type.startsWith('TREEVIEW/')),
+        map(e => e as TreeViewEvent),
+      );
+      this._events = {
+        events$: events$,
+        tree: TreeView.events(tree$, this.dispose$),
+      };
+    }
+    return this._events;
   }
 
   /**

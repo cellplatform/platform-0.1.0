@@ -158,21 +158,21 @@
   dependencies:
     "@platform/react" "0.3.20"
 
-"@platform/ui.panel@0.0.82":
-  version "0.0.82"
-  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.0.82.tgz#3c35788111a8cf302c75df5587dff942e179a897"
-  integrity sha512-q1NTfBwtDEwo2vFCk7d416Mt6K95xf/xkHz/+xZgIGt+m7GNJEuKMsQMUAaOSyKrMHqVzi8p579oqPvIAXT06w==
+"@platform/ui.panel@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.1.0.tgz#8a1be4b7555a3ff297823c3698fc0b03a34d7eea"
+  integrity sha512-YDKU2Ft3zoyK/7AuRv92DNdtbfNSnyfPjFVLTL8jizpGn5LVZCwZFSUXXxc5ROLz2cm6atccOEzZUnO8d7gMyw==
   dependencies:
     "@platform/react" "0.3.20"
     "@platform/util.animate" "0.0.50"
 
-"@platform/ui.shell.types@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.2.tgz#cc80facbe6d200c3f2a63eececfaafc17d5d3102"
-  integrity sha512-w/H5av+gdCqlANAxNSB04PzajG00yNe8eHp0NhRDm/uIRO3wGSCfan/TilLXcWW3aiKTcydGhNBvHssqQ5fXyQ==
+"@platform/ui.shell.types@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.4.tgz#bf27fb70cdfd9e849dd3b442efb8f261ef1cb24c"
+  integrity sha512-R4/lnkevRvs/drbPtJu6H1BB+tuqugj4CEtyU7rvg9XGCmbSiIcTdJwU1gDXvuXjMmLJQIIkHRJs0EkLs9MYvg==
   dependencies:
     "@platform/libs" "0.1.1"
-    "@platform/ui.tree" "0.3.0"
+    "@platform/ui.tree" "0.3.2"
 
 "@platform/ui.spinner@0.0.83":
   version "0.0.83"
@@ -190,15 +190,15 @@
     "@platform/react" "0.3.20"
     "@platform/util.value" "0.4.11"
 
-"@platform/ui.tree@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.3.0.tgz#8b66219bcdad668ea93759c7695822c9d23f400b"
-  integrity sha512-LhIyS1NOqNTT3B+QtDUNcHhBUMsOMt3mUqwKf5I/GYeRv3olHou6DCShHpCImlGizM7qxqZzoPUb2i+9PdeufA==
+"@platform/ui.tree@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.3.2.tgz#2aad5e41476ee68cad1bc91c2c8d8fc7c50400e7"
+  integrity sha512-W2HMFUrwG8JWmJ04YcBTQB9LP5FMOlrTLsnFws6VFI6pytl8dO1WDwGLIy1ZivlE40CNjLjldGhN3/oL8vnGKg==
   dependencies:
     "@platform/css" "0.1.34"
     "@platform/react" "0.3.20"
     "@platform/ui.icon" "0.0.84"
-    "@platform/ui.panel" "0.0.82"
+    "@platform/ui.panel" "0.1.0"
     "@platform/ui.spinner" "0.0.83"
     "@platform/ui.text" "0.2.33"
     "@platform/util.animate" "^0.0.50"

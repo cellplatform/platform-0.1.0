@@ -1,4 +1,4 @@
-import { ITreeNode, TreeViewEvent } from '@platform/ui.tree/lib/types';
+import { ITreeNode, TreeViewEvent, ITreeEvents } from '@platform/ui.tree/lib/types';
 import { Observable } from 'rxjs';
 
 export type ShellTheme = 'LIGHT' | 'DARK';
@@ -7,7 +7,7 @@ export type ShellTheme = 'LIGHT' | 'DARK';
  * [Shell]
  */
 export type IShell = {
-  events$: Observable<ShellEvent>;
+  events: IShellEvents;
   state: IShellState;
   register(moduleId: string, importer: ShellImporter, options?: { timeout?: number }): IShell;
   default(moduleId: string): IShell;
@@ -15,7 +15,8 @@ export type IShell = {
 };
 
 export type IShellEvents = {
-  // tree:
+  events$: Observable<ShellEvent>;
+  tree: ITreeEvents;
 };
 
 /**

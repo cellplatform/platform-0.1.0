@@ -8,6 +8,7 @@ shell
   .register('controller', () => import('./modules/controller'))
   .register('A', () => import('./modules/A'))
   .register('B', () => import('./modules/B'))
+  .register('C', () => import('./modules/C'))
   .default('controller');
 
 export class App extends React.PureComponent {

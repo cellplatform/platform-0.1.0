@@ -1,31 +1,20 @@
-import { shell, t } from '../common';
+import { filter } from 'rxjs/operators';
+import { t } from '../common';
 
-// TEMP 🐷
 const ROOT: t.ITreeNode = {
   id: 'ROOT',
   props: { label: 'ui.shell' },
-  children: [{ id: 'one' }, { id: 'two' }],
+  children: [{ id: 'doc' }, { id: 'sheet' }],
 };
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
   shell.state.tree.root = ROOT;
 
-  shell.events$.subscribe(e => {
-    console.log('e', e);
-  });
+  const click = shell.events.tree.mouse({ button: ['LEFT'] }).click;
+  const onClick = (id: string, fn: () => void) =>
+    click.node$.pipe(filter(e => e.id === id)).subscribe(e => fn());
 
-  // shell.ev
+  onClick('doc', () => shell.load('A'));
+  onClick('sheet', () => shell.load('C'));
 };
-
-// Setup observables.
-// const events$ = this.events$.pipe(takeUntil(this.unmounted$));
-// const tree = TreeView.events(events$);
-
-// tree.mouse().click.node$.subscribe(async e => {
-//   // TEMP 🐷
-//   log.group('Tree Click');
-//   log.info(e);
-//   log.info('context', this.context);
-//   log.groupEnd();
-// });
