@@ -8,13 +8,30 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type IHttpHeaders = { [key: string]: string };
 
 /**
- * Router
+ * Request
  */
-export type Request = IncomingMessage & { params: { [key: string]: string } };
+export type Request = IncomingMessage & {
+  params: { [key: string]: string };
+  body: RequestBody;
+};
+export type RequestBody = {
+  json<T>(options?: { default?: T; limit?: string | number; encoding?: string }): Promise<T>;
+};
+
+/**
+ * Response
+ */
 export type Response = ServerResponse;
 
+/**
+ * Handlers
+ */
 export type RequestHandler = (req: Request, res: Response) => any;
 export type RouteHandler = (req: Request) => Promise<RouteResponse | undefined>;
+
+/**
+ * Router
+ */
 export type RouteResponse = {
   status?: number;
   data?: any;

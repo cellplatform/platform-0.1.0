@@ -10,13 +10,13 @@ import { json as parse } from 'micro';
  */
 export async function json<T>(
   req: t.IncomingMessage,
-  defaultValue?: T,
-  options: { limit?: string | number; encoding?: string } = {},
+
+  options: { default?: T; limit?: string | number; encoding?: string } = {},
 ): Promise<T> {
   try {
     const body = await parse(req, options);
-    return (body === undefined ? defaultValue : body) as T;
+    return (body === undefined ? options.default : body) as T;
   } catch (error) {
-    return defaultValue as T;
+    return options.default as T;
   }
 }

@@ -18,7 +18,7 @@
     "@platform/log": "0.0.140",
     "micro": "9.3.4",
     "micro-cors": "0.1.1",
-    "path-to-regexp": "3.0.0"
+    "path-to-regexp": "3.1.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.61",
