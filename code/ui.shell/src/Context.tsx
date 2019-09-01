@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as t from '../common/types';
+import * as t from './common/types';
 
 /**
  * The React [Context] used to pass down common modules to components.

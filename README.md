@@ -79,7 +79,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/react.ssr](/code/react.ssr)
 - ui (primitives)
   - [@platform/ui.loader](/code/ui.loader)
-  - [@platform/ui.shell](/code/ui.shell)
   - [@platform/ui.button](/code/ui.button)
   - [@platform/ui.codemirror](/code/ui.codemirror)
   - [@platform/ui.editor](/code/ui.editor)
@@ -91,6 +90,9 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/ui.panel](/code/ui.panel)
   - [@platform/ui.spinner](/code/ui.spinner)
   - [@platform/ui.text](/code/ui.text)
+- ui.shell
+  - [@platform/ui.shell](/code/ui.shell)
+  - [@platform/ui.shell](/code/ui.doc)
 - state
   - [@platform/state](/code/state)
   - [@platform/state.react](/code/state.react)
