@@ -1,12 +1,16 @@
-import { props, t } from '../common';
+import { DEFAULT, props, t } from '../common';
+
+const SHELL = DEFAULT.STATE.SHELL;
 
 export function create() {
-  const body = props.observable<t.IShellBodyState>({ el: undefined });
-  const aside = props.observable<t.IShellAsideState>({ el: undefined });
+  const tree = props.observable<t.IShellTreeState>(SHELL.tree);
+  const body = props.observable<t.IShellBodyState>(SHELL.body);
+  const sidepanel = props.observable<t.IShellSidepanelState>(SHELL.sidepanel);
 
   const model: t.IShellState = {
+    tree,
     body,
-    aside,
+    sidepanel,
   };
   return model;
 }

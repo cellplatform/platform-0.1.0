@@ -127,16 +127,16 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/micro@0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.4.2.tgz#118c369b770f4f19a5302ab3b504abbcb19e451d"
-  integrity sha512-iOgy+XGlBSYBk02VUcBrJkEuBNIo62LMkrPhVpEQ9v48dNT8vBVt8iDcHF8JsJd4lIhuZO1rCdLfg9NU81KsUQ==
+"@platform/micro@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.5.0.tgz#9d27675b5c5d02e9cd6234912f7c5ff8398d06c8"
+  integrity sha512-9oMEVcG9LeXpOJJeCVEqpuahc2RNYutWn8XTGctGTTCg5uF1+I5bzbpHr6u3WbXpMAYn6MUHc84YH48Ih7vKag==
   dependencies:
     "@platform/libs" "0.1.1"
     "@platform/log" "0.0.140"
     micro "9.3.4"
     micro-cors "0.1.1"
-    path-to-regexp "3.0.0"
+    path-to-regexp "3.1.0"
 
 "@platform/npm@0.2.9":
   version "0.2.9"
@@ -1959,6 +1959,11 @@ path-to-regexp@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-3.0.0.tgz#c981a218f3df543fa28696be2f88e0c58d2e012a"
   integrity sha512-ZOtfhPttCrqp2M1PBBH4X13XlvnfhIwD7yCLx+GoGoXRPQyxGOTdQMpIzPSPKXAJT/JQrdfFrgdJOyAzvgpQ9A==
+
+path-to-regexp@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-3.1.0.tgz#f45a9cc4dc6331ae8f131e0ce4fde8607f802367"
+  integrity sha512-PtHLisEvUOepjc+sStXxJ/pDV/s5UBTOKWJY2SOz3e6E/iN/jLknY9WL72kTwRrwXDUbZTEAtSnJbz2fF127DA==
 
 pathval@^1.1.0:
   version "1.1.0"

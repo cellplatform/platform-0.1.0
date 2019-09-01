@@ -5,10 +5,10 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "ssr": "cd sample.server && yarn ssr $@",
+    "ssr": "cd src.server && yarn ssr $@",
     "ui": "ui $@",
     "start": "ui start web $@",
-    "watch": "cd sample.server && yarn watch $@",
+    "watch": "cd src.server && yarn watch $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
@@ -16,7 +16,7 @@
     "build-test": "ts build --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare",
     "bundle": "ui bundle web",
-    "deploy": "cd sample.server && yarn deploy"
+    "deploy": "cd src.server && yarn deploy"
   },
   "dependencies": {
     "@platform/react": "0.3.20",

@@ -1,5 +1,6 @@
 import { parse as parseUrl } from 'url';
 import { t, pathToRegex } from '../common';
+import * as body from '../body';
 
 export class Router implements t.IRouter {
   /**
@@ -39,6 +40,13 @@ export class Router implements t.IRouter {
       get params() {
         const url = incoming.url || '';
         return Router.params({ route, url });
+      },
+      get body() {
+        return {
+          async json<T>(options: { default?: T; limit?: string | number; encoding?: string } = {}) {
+            return body.json(incoming, { ...options });
+          },
+        };
       },
     };
 

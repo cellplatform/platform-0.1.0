@@ -136,7 +136,7 @@ export class MeasureSize extends React.PureComponent<IMeasureSizeProps> {
       }),
     };
     return (
-      <div className={'tdb.MeasureText'} {...css(this.props.style)}>
+      <div className={'platform.MeasureText'} {...css(this.props.style)}>
         <div {...styles.text}>{content}</div>
       </div>
     );

@@ -7,9 +7,9 @@ Modular application shell structure with tree navigation.
 
 <p>&nbsp;<p>
 
-#### Live Demo:
-https://shell.platform.uiharness.com
-
+## Live Demo:
+https://shell.platform.uiharness.com  
+See corresponding test module: [`ui.shell.test`](../ui.shell.test)
 
 <p>&nbsp;<p>
 

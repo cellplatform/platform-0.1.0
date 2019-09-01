@@ -19,7 +19,7 @@ export class Shell implements t.IShell {
    * [Fields]
    */
   public readonly loader: loader.ILoader;
-  public readonly state: state.IShellState = state.shell.create();
+  public readonly state: t.IShellState = state.shell.create();
   public defaultModuleId: string;
 
   /**
