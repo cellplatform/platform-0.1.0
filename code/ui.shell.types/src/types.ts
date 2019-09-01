@@ -1,6 +1,22 @@
-import { ITreeNode } from '@platform/ui.tree/lib/types';
+import { ITreeNode, TreeViewEvent } from '@platform/ui.tree/lib/types';
+import { Observable } from 'rxjs';
 
 export type ShellTheme = 'LIGHT' | 'DARK';
+
+/**
+ * [Shell]
+ */
+export type IShell = {
+  events$: Observable<ShellEvent>;
+  state: IShellState;
+  register(moduleId: string, importer: ShellImporter, options?: { timeout?: number }): IShell;
+  default(moduleId: string): IShell;
+  load<P = {}>(moduleId: string | number, props?: P): Promise<IShellLoadResponse>;
+};
+
+export type IShellEvents = {
+  // tree:
+};
 
 /**
  * [Context]
@@ -17,13 +33,6 @@ export type ShellImporterResponse = { init: ShellImportInit };
 
 export type ShellImportInit = (args: ShellImportInitArgs) => Promise<any>;
 export type ShellImportInitArgs = { shell: IShell };
-
-export type IShell = {
-  state: IShellState;
-  register(moduleId: string, importer: ShellImporter, options?: { timeout?: number }): IShell;
-  default(moduleId: string): IShell;
-  load<P = {}>(moduleId: string | number, props?: P): Promise<IShellLoadResponse>;
-};
 
 export type IShellLoadResponse = {
   ok: boolean;
@@ -52,17 +61,19 @@ export type IShellTreeState = {
 
 export type IShellBodyState = {
   el?: JSX.Element;
-  foreground: IColor | string | number;
-  background: IColor | string | number;
+  foreground: IShellColor | string | number;
+  background: IShellColor | string | number;
 };
 
 export type IShellSidepanelState = {
   el?: JSX.Element;
-  foreground: IColor | string | number;
-  background: IColor | string | number;
+  foreground: IShellColor | string | number;
+  background: IShellColor | string | number;
 };
 
+export type IShellColor = { color: string; fadeSpeed: number };
+
 /**
- * Values
+ * [Events]
  */
-export type IColor = { color: string; fadeSpeed: number };
+export type ShellEvent = TreeViewEvent;

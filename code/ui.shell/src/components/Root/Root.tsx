@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { color, COLORS, createProvider, css, GlamorValue, loader, Shell, t } from '../common';
 import { Body } from './components/Body';
 import { Sidepanel } from './components/Sidepanel';
-import { Tree } from './components/Tree';
+import { Tree } from '../Tree';
 
 export type IRootProps = {
   shell: Shell;
@@ -18,6 +18,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
   private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject<{}>();
+  private tree$ = new Subject<t.TreeViewEvent>();
 
   public static contextType = loader.Context;
   public context!: loader.ILoaderContext;
@@ -29,6 +30,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   constructor(props: IRootProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+
+    const tree$ = this.tree$.pipe(takeUntil(this.unmounted$));
+    tree$.subscribe(e => this.shell.fire(e));
   }
 
   public componentDidMount() {
@@ -120,7 +124,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
-          <Tree />
+          <Tree tree$={this.tree$} />
         </div>
         <div {...styles.middle}>
           <Body />
