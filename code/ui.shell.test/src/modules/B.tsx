@@ -7,7 +7,7 @@ export const init: t.ShellImportInit = async args => {
   const { shell } = args;
   const sidepanel = shell.state.sidepanel;
   sidepanel.el = <ComponentB />;
-  sidepanel.background = '#C3688C';
+  sidepanel.background = '#EA4E7E';
   // sidepanel.background = { color: '#C3688C', fadeSpeed: 3500 };
 };
 
@@ -44,18 +44,20 @@ export class ComponentB extends React.PureComponent<IComponentBProps, IComponent
         Absolute: 0,
         color: 'white',
         padding: 12,
+        paddingTop: 20,
         fontSize: 14,
         Scroll: true,
       }),
+      p: css({
+        lineHeight: '1.3em',
+        marginBottom: 25,
+      }),
     };
-    return (
-      <div {...css(styles.base, this.props.style)}>
-        <p>{LOREM}</p>
-        <p>{LOREM}</p>
-        <p>{LOREM}</p>
-        <p>{LOREM}</p>
-        <p>{LOREM}</p>
-      </div>
-    );
+    const paras = Array.from({ length: 30 }).map((v, i) => (
+      <p key={i} {...styles.p}>
+        {LOREM}
+      </p>
+    ));
+    return <div {...css(styles.base, this.props.style)}>{paras}</div>;
   }
 }
