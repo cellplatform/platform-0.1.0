@@ -12,11 +12,21 @@ export type IShell = {
   register(moduleId: string, importer: ShellImporter, options?: { timeout?: number }): IShell;
   default(moduleId: string): IShell;
   load<P = {}>(moduleId: string | number, props?: P): Promise<IShellLoadResponse>;
+  progress: IShellProgress;
 };
 
 export type IShellEvents = {
   events$: Observable<ShellEvent>;
   tree: ITreeEvents;
+  progress: {
+    start$: Observable<IShellProgressStart>;
+    complete$: Observable<IShellProgressComplete>;
+  };
+};
+
+export type IShellProgress = {
+  start(options?: { duration?: number }): Promise<{}>;
+  complete(): void;
 };
 
 /**
@@ -77,4 +87,16 @@ export type IShellColor = { color: string; fadeSpeed: number };
 /**
  * [Events]
  */
-export type ShellEvent = TreeViewEvent;
+export type ShellEvent = TreeViewEvent | IShellProgressStartEvent | IShellProgressCompleteEvent;
+
+export type IShellProgressStartEvent = {
+  type: 'SHELL/progress/start';
+  payload: IShellProgressStart;
+};
+export type IShellProgressStart = {};
+
+export type IShellProgressCompleteEvent = {
+  type: 'SHELL/progress/complete';
+  payload: IShellProgressComplete;
+};
+export type IShellProgressComplete = {};

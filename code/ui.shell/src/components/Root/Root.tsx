@@ -6,6 +6,7 @@ import { color, COLORS, createProvider, css, GlamorValue, loader, Shell, t } fro
 import { Body } from './components/Body';
 import { Sidepanel } from './components/Sidepanel';
 import { Tree } from '../Tree';
+import { Progress } from '../Progress';
 
 export type IRootProps = {
   shell: Shell;
@@ -88,12 +89,14 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         Flex: 'vertical-stretch-stretch',
         boxSizing: 'border-box',
       }),
+      progress: css({ Absolute: [0, 0, null, 0] }),
     };
     return (
       <this.Provider>
         <div {...styles.base}>
           {this.renderColumns()}
           {this.renderFooterBar()}
+          <Progress style={styles.progress} />
         </div>
       </this.Provider>
     );

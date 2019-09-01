@@ -21,7 +21,6 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
   public state: ITreeState = {};
   private state$ = new Subject<Partial<ITreeState>>();
   private unmounted$ = new Subject<{}>();
-  // private events$ = new Subject<t.TreeViewEvent>();
 
   public static contextType = Context;
   public context!: t.IShellContext;

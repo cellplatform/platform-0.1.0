@@ -1,18 +1,10 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { TreeView, TreeViewEvent } from '@platform/ui.tree';
+import { Subject, timer } from 'rxjs';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
+
 import { loader, t } from '../common';
 import * as state from '../state';
-import { TreeView, TreeViewEvent } from '@platform/ui.tree';
+import * as events from './events';
 
 type IShellArgs = { loader: loader.ILoader };
 
@@ -44,6 +36,10 @@ export class Shell implements t.IShell {
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.ShellEvent>();
+  private readonly events$ = this._events$.pipe(
+    takeUntil(this.dispose$),
+    share(),
+  );
   private _events: t.IShellEvents;
 
   /**
@@ -54,21 +50,26 @@ export class Shell implements t.IShell {
   }
 
   public get events() {
-    if (!this._events) {
-      const events$ = this._events$.pipe(
-        takeUntil(this.dispose$),
-        share(),
-      );
-      const tree$ = events$.pipe(
-        filter(e => e.type.startsWith('TREEVIEW/')),
-        map(e => e as TreeViewEvent),
-      );
-      this._events = {
-        events$: events$,
-        tree: TreeView.events(tree$, this.dispose$),
-      };
-    }
-    return this._events;
+    return this._events || (this._events = events.init(this.events$, this.dispose$));
+  }
+
+  public get progress() {
+    const api = {
+      start: (options: { duration?: number } = {}) => {
+        return new Promise<{}>(resolve => {
+          const { duration = 1000 } = options;
+          timer(duration)
+            .pipe(takeUntil(this.events.progress.complete$))
+            .subscribe(e => {
+              api.complete();
+              resolve({});
+            });
+          this.fire({ type: 'SHELL/progress/start', payload: { duration } });
+        });
+      },
+      complete: () => this.fire({ type: 'SHELL/progress/complete', payload: {} }),
+    };
+    return api;
   }
 
   /**

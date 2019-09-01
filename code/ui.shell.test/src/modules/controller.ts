@@ -1,10 +1,10 @@
 import { filter } from 'rxjs/operators';
-import { t } from '../common';
+import { t, time } from '../common';
 
 const ROOT: t.ITreeNode = {
   id: 'ROOT',
   props: { label: 'ui.shell' },
-  children: [{ id: 'doc' }, { id: 'sheet' }],
+  children: [{ id: 'doc' }, { id: 'sheet' }, { id: 'progress:start' }, { id: 'progress:stop' }],
 };
 
 export const init: t.ShellImportInit = async args => {
@@ -17,4 +17,11 @@ export const init: t.ShellImportInit = async args => {
 
   onClick('doc', () => shell.load('A'));
   onClick('sheet', () => shell.load('C'));
+
+  onClick('progress:start', () => {
+    shell.progress.start({ duration: 3000 });
+  });
+  onClick('progress:stop', () => {
+    shell.progress.complete();
+  });
 };
