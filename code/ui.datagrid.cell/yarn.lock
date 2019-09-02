@@ -1389,10 +1389,10 @@
     codemirror "5.48.4"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.5.8":
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.5.8.tgz#881cbb83ef6ddf0ece042b138dd1b95c3d42cec4"
-  integrity sha512-jph7FbruSP86rTYSE/1LUqY6sBZlM1rDQ28FfDLtzLfG4RxK6aLDBIpqVvNKvEB2QxxmBiCmVYd+nH81sLi6yA==
+"@platform/ui.datagrid.types@0.5.9":
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.5.9.tgz#9df98dcd863f8b8b7cb57a13a06da5af69c22dc3"
+  integrity sha512-FJJ5zQH1ufMm3yw+h8M8BPiBtOGxYsy6OS38ARySKdKNwBBC773VaYJGQ9QST4axycA5V1qCAoUz4EpDak3Gwg==
   dependencies:
     "@platform/react" "0.3.20"
     "@platform/util.value.cell" "0.9.8"

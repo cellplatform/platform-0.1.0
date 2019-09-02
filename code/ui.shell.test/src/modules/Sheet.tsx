@@ -1,11 +1,11 @@
 import '@platform/ui.datagrid/import.css';
 
+import datagrid from '@platform/ui.datagrid';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { t, css, color, GlamorValue } from '../common';
 
-import datagrid from '@platform/ui.datagrid';
+import { css, t } from '../common';
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
@@ -19,7 +19,7 @@ export class Sheet extends React.PureComponent<ISheetProps, ISheetState> {
   public state: ISheetState = {};
   private state$ = new Subject<Partial<ISheetState>>();
   private unmounted$ = new Subject<{}>();
-  private events$ = new Subject<t.GridEvent>();
+  private grid$ = new Subject<t.GridEvent>();
 
   private datagrid!: datagrid.DataGrid;
   private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
@@ -54,7 +54,7 @@ export class Sheet extends React.PureComponent<ISheetProps, ISheetState> {
           // values={this.state.values}
           // columns={this.state.columns}
           // rows={this.state.rows}
-          events$={this.events$}
+          events$={this.grid$}
           factory={this.factory}
           // Handsontable={Handsontable}
           initial={{ selection: 'A1' }}

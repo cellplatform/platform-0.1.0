@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.types",
-  "version": "0.5.8",
+  "version": "0.5.9",
   "description": "Abstract types for @platform/ui.datagrid",
   "main": "lib/index",
   "types": "lib/index.d.ts",
