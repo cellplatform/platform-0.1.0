@@ -1,29 +1,33 @@
 import { expect } from 'chai';
-import * as moment from 'moment';
 import { wait, delay } from './delay';
+
+const now = () => new Date().getTime();
 
 describe('delay', () => {
   it('delays then executes', async () => {
-    const startedAt = moment();
+    const startedAt = now();
     let count = 0;
-    expect(moment().diff(startedAt)).to.be.lessThan(8);
+
+    expect(now() - startedAt).to.be.lessThan(8);
     await delay(10, () => (count += 1));
-    expect(moment().diff(startedAt)).to.be.greaterThan(8);
+
+    expect(now() - startedAt).to.be.greaterThan(8);
+    expect(count).to.eql(1);
   });
 
   it('does not fail when no callback is specified', async () => {
-    const startedAt = moment();
-    expect(moment().diff(startedAt)).to.be.lessThan(8);
+    const startedAt = now();
+    expect(now() - startedAt).to.be.lessThan(8);
     await delay(10);
-    expect(moment().diff(startedAt)).to.be.greaterThan(8);
+    expect(now() - startedAt).to.be.greaterThan(8);
   });
 });
 
 describe('wait', () => {
   it('pauses for given time', async () => {
-    const startedAt = moment();
-    expect(moment().diff(startedAt)).to.be.lessThan(10);
+    const startedAt = now();
+    expect(now() - startedAt).to.be.lessThan(10);
     await wait(15);
-    expect(moment().diff(startedAt)).to.be.greaterThan(10);
+    expect(now() - startedAt).to.be.greaterThan(10);
   });
 });
