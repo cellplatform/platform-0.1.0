@@ -11,7 +11,10 @@ export type IShell = {
   state: IShellState;
   register(moduleId: string, importer: ShellImporter, options?: { timeout?: number }): IShell;
   default(moduleId: string): IShell;
-  load<P = {}>(moduleId: string | number, props?: P): Promise<IShellLoadResponse>;
+  load<P = {}>(
+    moduleId: string | number,
+    options?: IShellLoadOptions<P>,
+  ): Promise<IShellLoadResponse>;
   progress: IShellProgress;
 };
 
@@ -27,6 +30,12 @@ export type IShellEvents = {
 export type IShellProgress = {
   start(options?: { duration?: number; color?: string }): Promise<{}>;
   complete(): void;
+};
+
+export type IShellLoadOptions<P = {}> = {
+  props?: P;
+  progress?: number; // msecs (estimate for progress bar to complete).
+  simulateLatency?: number; // msecs (simulate load latency on localhost).
 };
 
 /**

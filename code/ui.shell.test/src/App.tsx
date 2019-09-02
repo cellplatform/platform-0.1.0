@@ -5,11 +5,11 @@ import * as splash from './splash';
 
 shell
   // Register application modules.
-  .register('app', () => import('./modules/app'))
   .register('A', () => import('./modules/A'))
   .register('B', () => import('./modules/B'))
   .register('sheet', () => import('./modules/Sheet'))
-  .default('app');
+  .register('controller', () => import('./modules/controller'))
+  .default('controller');
 
 export class App extends React.PureComponent {
   /**
