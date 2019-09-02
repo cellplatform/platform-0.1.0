@@ -1,5 +1,4 @@
-import { ITreeNode, TreeViewEvent, ITreeEvents } from '@platform/ui.tree/lib/types';
-import { Observable } from 'rxjs';
+import * as t from './libs';
 
 export type ShellTheme = 'LIGHT' | 'DARK';
 
@@ -19,11 +18,11 @@ export type IShell = {
 };
 
 export type IShellEvents = {
-  events$: Observable<ShellEvent>;
-  tree: ITreeEvents;
+  events$: t.Observable<ShellEvent>;
+  tree: t.ITreeEvents;
   progress: {
-    start$: Observable<IShellProgressStart>;
-    complete$: Observable<IShellProgressComplete>;
+    start$: t.Observable<IShellProgressStart>;
+    complete$: t.Observable<IShellProgressComplete>;
   };
 };
 
@@ -69,14 +68,16 @@ export type IShellLoadResponse = {
  * Model for controlling the <Shell>.
  */
 export type IShellState = {
+  readonly changed$: t.Observable<IShellStateChanged>;
   readonly tree: IShellTreeState;
   readonly body: IShellBodyState;
   readonly sidebar: IShellSidebarState;
 };
 
 export type IShellTreeState = {
-  root?: ITreeNode;
+  root?: t.ITreeNode;
   current?: string;
+  width: IShellSize | number;
 };
 
 export type IShellBodyState = {
@@ -89,17 +90,19 @@ export type IShellSidebarState = {
   el?: JSX.Element;
   foreground: IShellColor | string | number;
   background: IShellColor | string | number;
+  width: IShellSize | number;
 };
 
 /**
  * Appearance
  */
 export type IShellColor = { color: string; fadeSpeed: number };
+export type IShellSize = { value: number; speed: number };
 
 /**
  * [Events]
  */
-export type ShellEvent = TreeViewEvent | IShellProgressStartEvent | IShellProgressCompleteEvent;
+export type ShellEvent = t.TreeViewEvent | IShellProgressStartEvent | IShellProgressCompleteEvent;
 
 export type IShellProgressStartEvent = {
   type: 'SHELL/progress/start';
@@ -112,3 +115,7 @@ export type IShellProgressCompleteEvent = {
   payload: IShellProgressComplete;
 };
 export type IShellProgressComplete = {};
+
+export type IShellStateChanged = t.IPropChanged & {
+  field: 'tree' | 'body' | 'sidebar';
+};

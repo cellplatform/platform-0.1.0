@@ -93,22 +93,24 @@ export class Shell implements t.IShell {
   public async load<P = {}>(moduleId: string | number, options: t.IShellLoadOptions<P> = {}) {
     this.throwIfDisposed('load');
     const { props, progress, simulateLatency } = options;
+    const loadCount = this.loader.count(moduleId);
+    const showProgress = typeof progress === 'number' && loadCount < 1;
 
     // Start progress bar.
-    if (typeof progress === 'number') {
+    if (showProgress) {
       this.progress.start({ duration: progress });
-    }
-
-    // Simulate download latency (when developing).
-    if (typeof simulateLatency === 'number' && is.dev) {
-      await time.wait(simulateLatency);
     }
 
     // Load the module.
     const res = await this.loader.load<t.ShellImporterResponse>(moduleId, props);
 
+    // Simulate download latency (when developing).
+    if (is.dev && loadCount < 1 && typeof simulateLatency === 'number') {
+      await time.wait(simulateLatency);
+    }
+
     // Stop progress bar.
-    if (typeof progress === 'number') {
+    if (showProgress) {
       this.progress.complete();
     }
 

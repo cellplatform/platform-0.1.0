@@ -1,7 +1,7 @@
 import { filter } from 'rxjs/operators';
 import { t, time } from '../common';
 
-const ROOT: t.ITreeNode = {
+const TREE: t.ITreeNode = {
   id: 'ROOT',
   props: { label: 'ui.shell' },
   children: [
@@ -10,12 +10,14 @@ const ROOT: t.ITreeNode = {
     { id: 'progress:start' },
     { id: 'progress:stop' },
     { id: 'sidebar' },
+    { id: 'toggle:tree' },
+    { id: 'toggle:sidebar' },
   ],
 };
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
-  shell.state.tree.root = ROOT;
+  shell.state.tree.root = TREE;
 
   const click = shell.events.tree.mouse({ button: ['LEFT'] }).click;
   const onClick = (id: string, fn: () => void) =>
@@ -31,4 +33,12 @@ export const init: t.ShellImportInit = async args => {
   onClick('progress:stop', () => shell.progress.complete());
 
   onClick('sidebar', () => shell.load('B'));
+
+  onClick('toggle:tree', () => {
+    shell.state.tree.width = shell.state.tree.width ? 0 : 300;
+  });
+
+  onClick('toggle:sidebar', () => {
+    shell.state.sidebar.width = shell.state.sidebar.width ? 0 : 300;
+  });
 };

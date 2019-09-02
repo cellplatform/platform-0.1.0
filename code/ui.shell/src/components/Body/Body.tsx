@@ -25,12 +25,11 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
   }
 
   public componentDidMount() {
-    this.model.changed$
-      .pipe(
-        takeUntil(this.unmounted$),
-        debounceTime(0),
-      )
-      .subscribe(() => this.forceUpdate());
+    this.model.changed$.pipe(
+      takeUntil(this.unmounted$),
+      debounceTime(0),
+    )
+    .subscribe(() => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -46,9 +45,9 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
   }
 
   public get colors() {
-    const { sidepanel } = SHELL;
-    const foreground = util.toColor(this.model.foreground, sidepanel.foreground);
-    const background = util.toColor(this.model.background, sidepanel.background);
+    const { body } = SHELL;
+    const foreground = util.toColor(this.model.foreground, body.foreground);
+    const background = util.toColor(this.model.background, body.background);
     return { foreground, background };
   }
 
