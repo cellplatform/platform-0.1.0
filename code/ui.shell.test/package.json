@@ -1,6 +1,6 @@
 {
   "name": "ui.shell.test",
-  "version": "0.1.14-beta.0",
+  "version": "0.1.14-beta.1",
   "description": "Test module for ui.shell (and associated modules).",
   "scripts": {
     "ssr": "cd src.server && yarn ssr $@",
