@@ -1,6 +1,13 @@
 import { Dayjs, ConfigType } from 'dayjs';
 
-export type TimeDelay = (msecs: number, callback?: () => void) => Promise<{}>;
+export type TimeDelay<T = any> = (msecs: number, callback?: () => T) => TimeDelayPromise<T>;
+export type TimeDelayPromise<T = any> = Promise<T> & {
+  id: NodeJS.Timeout;
+  isCancelled: boolean;
+  cancel(): void;
+  result: T | undefined;
+};
+
 export type TimeWait = (msecs: number) => Promise<{}>;
 export type TimeElapsed = (
   from: DateInput,
