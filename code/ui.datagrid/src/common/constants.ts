@@ -1,5 +1,3 @@
-import { CSS as EDITOR_CSS } from '@platform/ui.editor';
-
 export { ROBOTO, MONOSPACE } from '@platform/ui.text/lib';
 
 export const COLORS = {
@@ -23,7 +21,7 @@ export const CSS = {
     CELL: {
       BASE: 'p-dg-cell',
       EDITOR: 'p-dg-cellEditor',
-      MARKDOWN: EDITOR_CSS.CLASS.MARKDOWN,
+      MARKDOWN: 'p-editor-markdown', // See [@platform/ui.editor/lib/common/constants]
     },
   },
 };
