@@ -4,7 +4,13 @@ import { t, time } from '../common';
 const ROOT: t.ITreeNode = {
   id: 'ROOT',
   props: { label: 'ui.shell' },
-  children: [{ id: 'doc' }, { id: 'sheet' }, { id: 'progress:start' }, { id: 'progress:stop' }],
+  children: [
+    { id: 'doc' },
+    { id: 'sheet' },
+    { id: 'progress:start' },
+    { id: 'progress:stop' },
+    { id: 'sidebar' },
+  ],
 };
 
 export const init: t.ShellImportInit = async args => {
@@ -16,8 +22,13 @@ export const init: t.ShellImportInit = async args => {
     click.node$.pipe(filter(e => e.id === id)).subscribe(e => fn());
 
   onClick('doc', () => shell.load('A'));
-  onClick('sheet', () => shell.load('C'));
+  onClick('sheet', () => {
+    shell.progress.start({ duration: 2500 });
+    shell.load('sheet');
+  });
 
   onClick('progress:start', () => shell.progress.start({ duration: 3000 }));
   onClick('progress:stop', () => shell.progress.complete());
+
+  onClick('sidebar', () => shell.load('B'));
 };

@@ -89,7 +89,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         Flex: 'vertical-stretch-stretch',
         boxSizing: 'border-box',
       }),
-      progress: css({ Absolute: [0, 0, null, 0] }),
+      progress: css({
+        Absolute: [0, 0, null, 0],
+        zIndex: 9999,
+      }),
     };
     return (
       <this.Provider>

@@ -1,0 +1,81 @@
+import '@platform/ui.datagrid/import.css';
+
+import * as React from 'react';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { t, css, color, GlamorValue } from '../common';
+
+import datagrid from '@platform/ui.datagrid';
+
+export const init: t.ShellImportInit = async args => {
+  const { shell } = args;
+  shell.state.body.el = <Sheet />;
+};
+
+export type ISheetProps = {};
+export type ISheetState = {};
+
+export class Sheet extends React.PureComponent<ISheetProps, ISheetState> {
+  public state: ISheetState = {};
+  private state$ = new Subject<Partial<ISheetState>>();
+  private unmounted$ = new Subject<{}>();
+  private events$ = new Subject<t.GridEvent>();
+
+  private datagrid!: datagrid.DataGrid;
+  private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
+
+  /**
+   * [Lifecycle]
+   */
+  constructor(props: ISheetProps) {
+    super(props);
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+  }
+
+  public componentWillUnmount() {
+    this.unmounted$.next();
+    this.unmounted$.complete();
+  }
+
+  /**
+   * [Render]
+   */
+  public render() {
+    const styles = {
+      base: css({ Absolute: 0, display: 'flex' }),
+      grid: css({ flex: 1 }),
+    };
+    // const totalColum
+    return (
+      <div {...styles.base}>
+        <datagrid.DataGrid
+          key={'test.grid'}
+          ref={this.datagridRef}
+          // values={this.state.values}
+          // columns={this.state.columns}
+          // rows={this.state.rows}
+          events$={this.events$}
+          factory={this.factory}
+          // Handsontable={Handsontable}
+          initial={{ selection: 'A1' }}
+          style={styles.grid}
+          canSelectAll={false}
+        />
+      </div>
+    );
+  }
+
+  private factory: t.GridFactory = req => {
+    switch (req.type) {
+      // case 'EDITOR':
+      //   return this.renderEditor();
+
+      // case 'CELL':
+      //   return formatValue(req.value);
+
+      default:
+        // console.log(`Factory type '${req.type}' not supported by test.`);
+        return null;
+    }
+  };
+}

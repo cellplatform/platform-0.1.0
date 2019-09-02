@@ -2,7 +2,7 @@ import { TreeView, TreeViewEvent } from '@platform/ui.tree';
 import { Subject, timer } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { loader, t } from '../common';
+import { loader, t, log } from '../common';
 import * as state from '../state';
 import * as events from './events';
 
@@ -107,6 +107,13 @@ export class Shell implements t.IShell {
         const args: t.ShellImportInitArgs = { shell };
         await res.result.init(args);
       }
+    }
+
+    if (!res.ok) {
+      log.group(`🐷 LOAD ERROR: ${moduleId}`);
+      log.error(res.error);
+      log.info(res);
+      log.groupEnd();
     }
 
     // Finish up.
