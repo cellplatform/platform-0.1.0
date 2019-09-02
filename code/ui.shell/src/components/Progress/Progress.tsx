@@ -97,6 +97,7 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
     const styles = {
       base: css({
         height,
+        pointerEvents: 'none',
       }),
       thumb: css({
         width: `${isRunning ? 100 : 0}%`,
