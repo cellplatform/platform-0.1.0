@@ -13,6 +13,7 @@ const graphql = new ApolloServer({
   context(e) {
     const headers = e.req.headers;
     log.info(`🌼  ${log.yellow('Headers:')}\n\n`, headers, '\n');
+    log.info('-------------------------------------------');
   },
 });
 
