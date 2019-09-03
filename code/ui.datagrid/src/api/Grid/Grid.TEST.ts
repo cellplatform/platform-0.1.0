@@ -15,7 +15,7 @@ const createGrid = (args: Partial<IGridArgs> = {}) => {
 
 describe('Grid', () => {
   it('constructs', () => {
-    const values = { A1: 123 };
+    const values = { A1: { value: 123 } };
     const columns = { A: { width: 200 } };
     const rows = { 10: { height: 200 } };
     const grid = createGrid({ totalColumns: 10, totalRows: 5, values, columns, rows });
@@ -61,30 +61,30 @@ describe('Grid', () => {
 
   describe('changeValues', () => {
     it('changes an existing value', () => {
-      const grid = createGrid({ values: { A1: 123 } });
+      const grid = createGrid({ values: { A1: { value: 123 } } });
       const values1 = grid.values;
-      expect(values1).to.eql({ A1: 123 });
+      expect(values1).to.eql({ A1: { value: 123 } });
 
-      grid.changeCells({ A1: 456 });
+      grid.changeCells({ A1: { value: 456 } });
       const values2 = grid.values;
       expect(values1).to.not.equal(values2);
-      expect(values2.A1).to.eql(456);
+      expect(values2.A1).to.eql({ value: 456 });
     });
 
     it('adds a new value', () => {
-      const grid = createGrid({ values: { A1: 123 } });
-      grid.changeCells({ B1: 'hello' });
-      expect(grid.values.A1).to.eql(123);
-      expect(grid.values.B1).to.eql('hello');
+      const grid = createGrid({ values: { A1: { value: 123 } } });
+      grid.changeCells({ B1: { value: 'hello' } });
+      expect(grid.values.A1).to.eql({ value: 123 });
+      expect(grid.values.B1).to.eql({ value: 'hello' });
     });
   });
 
   describe('selection', () => {
     const values = {
-      A1: 123,
-      A2: 456,
-      A3: 789,
-      A5: 'hello',
+      A1: { value: 123 },
+      A2: { value: 456 },
+      A3: { value: 789 },
+      A5: { value: 'hello' },
     };
 
     it('no selection', () => {

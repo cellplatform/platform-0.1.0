@@ -70,6 +70,7 @@ export type ITextEditorEnterKeyEvent = {
 };
 export type ITextEditorEnterKey = {
   isMeta: boolean;
+  isShift: boolean;
   isCancelled: boolean;
   cancel(): void;
 };

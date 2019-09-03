@@ -20,7 +20,8 @@ export type ICellEditorShadow = {
 export type CellEditorEvent =
   | ICellEditorChangedEvent
   | ICellEditorChangingEvent
-  | ICellEditorSizeEvent;
+  | ICellEditorSizeEvent
+  | ICellEditorEnterEvent;
 
 export type ICellEditorChangingEvent = {
   type: 'CELL_EDITOR/changing';
@@ -48,4 +49,13 @@ export type ICellEditorSize = {
   mode: CellEditorMode;
   from: t.ISize;
   to: t.ISize;
+};
+
+export type ICellEditorEnterEvent = {
+  type: 'CELL_EDITOR/enter';
+  payload: ICellEditorEnter;
+};
+export type ICellEditorEnter = {
+  isMeta: boolean;
+  isShift: boolean;
 };

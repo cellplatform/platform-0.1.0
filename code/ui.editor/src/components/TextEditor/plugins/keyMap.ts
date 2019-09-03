@@ -61,6 +61,7 @@ export function build(options: {
   mapKeys?: EditorKeyMap;
   allowEnter?: boolean;
   allowMetaEnter?: boolean;
+  allowShiftEnter?: boolean;
   allowHeadings?: boolean;
 }) {
   const { schema, events$, mapKeys } = options;
@@ -195,12 +196,13 @@ export function build(options: {
     return true;
   };
 
-  const fireEnter = (args: { isMeta?: boolean }) => {
+  const fireEnter = (args: { isMeta?: boolean; isShift?: boolean }) => {
     let isCancelled = false;
     events$.next({
       type: 'EDITOR/keydown/enter',
       payload: {
         isMeta: Boolean(args.isMeta),
+        isShift: Boolean(args.isShift),
         get isCancelled() {
           return isCancelled;
         },
@@ -212,16 +214,32 @@ export function build(options: {
     return { isCancelled };
   };
 
-  bind('Mod-Enter', (state, dispatch) => {
-    const { isCancelled } = fireEnter({ isMeta: true });
-    if (isCancelled || options.allowMetaEnter === false) {
-      return true; // Cancel further handlers.
-    }
-    return handleEnter(state, dispatch);
-  });
+  const bindEnterModifiers = (
+    key: string,
+    args: { isMeta?: boolean; isShift?: boolean },
+    ...isAllowed: Array<boolean | undefined>
+  ) => {
+    bind(key, (state, dispatch) => {
+      const { isMeta, isShift } = args;
+      const { isCancelled } = fireEnter({ isMeta, isShift });
+      if (isCancelled || isAllowed.some(flag => flag === false)) {
+        return true; // Cancel further handlers.
+      }
+      return handleEnter(state, dispatch);
+    });
+  };
+
+  bindEnterModifiers('Mod-Enter', { isMeta: true }, options.allowMetaEnter);
+  bindEnterModifiers('Shift-Enter', { isShift: true }, options.allowShiftEnter);
+  bindEnterModifiers(
+    'Mod-Shift-Enter',
+    { isMeta: true, isShift: true },
+    options.allowMetaEnter,
+    options.allowShiftEnter,
+  );
+
   bind('Enter', (state, dispatch) => {
     const { isCancelled } = fireEnter({});
-
     if (isCancelled || options.allowEnter === false) {
       return true; // Cancel further handlers.
     }

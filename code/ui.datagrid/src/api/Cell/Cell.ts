@@ -3,7 +3,7 @@ import { coord, R, t } from '../../common';
 /**
  * API for accessing and manipulating a cell.
  */
-export class Cell implements t.ICell {
+export class Cell<P = {}> implements t.ICell<P> {
   /**
    * [Static]
    */
@@ -47,7 +47,7 @@ export class Cell implements t.ICell {
     return { start, end };
   }
 
-  public static changeEvent(args: { cell: t.ICell; from?: t.CellValue; to?: t.CellValue }) {
+  public static changeEvent(args: { cell: t.ICell; from?: t.IGridCell; to?: t.IGridCell }) {
     const { cell, from, to } = args;
     const value = { from, to };
     const isChanged = !R.equals(value.from, value.to);
@@ -61,7 +61,7 @@ export class Cell implements t.ICell {
       cancel() {
         payload.isCancelled = true;
       },
-      modify(change: t.CellValue) {
+      modify(change: t.IGridCell) {
         value.to = change;
         payload.isModified = true;
       },
@@ -121,8 +121,18 @@ export class Cell implements t.ICell {
     return this.td.offsetHeight;
   }
 
-  public get value(): t.CellValue {
+  private get data() {
     return this._.table.getDataAtCell(this.row, this.column);
+  }
+
+  public get value(): t.CellValue {
+    const data = this.data;
+    return typeof data === 'object' ? data.value : undefined;
+  }
+
+  public get props(): P {
+    const data = this.data;
+    return typeof data === 'object' ? data.props : {};
   }
 
   public get siblings() {

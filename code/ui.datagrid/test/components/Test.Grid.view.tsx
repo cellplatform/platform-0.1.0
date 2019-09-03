@@ -31,13 +31,13 @@ export type ITestGridViewState = {
 
 const DEFAULT = {
   VALUES: {
-    A1: 'A1',
-    A2: 'A2',
-    // A2: '* one\n * two',
-    // A2: '# Heading\nhello',
-    A3: 'A3',
-    B1: 'locked',
-    B2: 'cancel',
+    A1: { value: 'A1' },
+    A2: { value: 'A2' },
+    // A2: {value:'* one\n * two'},
+    // A2: {value:'# Heading\nhello'},
+    A3: { value: 'A3' },
+    B1: { value: 'locked' },
+    B2: { value: 'cancel' },
   },
   COLUMNS: {
     A: { width: 300 },

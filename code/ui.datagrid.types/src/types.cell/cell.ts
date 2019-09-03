@@ -1,6 +1,6 @@
 import { t } from '../common';
 
-export type ICell = {
+export type ICell<P = {}> = {
   readonly row: number;
   readonly column: number;
   readonly key: string;
@@ -9,6 +9,7 @@ export type ICell = {
   readonly height: number;
   readonly siblings: ICellSiblings;
   readonly value: t.CellValue;
+  readonly props: P;
 };
 
 export type ICellSiblings = {

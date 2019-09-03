@@ -391,7 +391,8 @@ export class Sync implements t.IDisposable {
     const cells = await this.db.find(this.schema.db.all.cells);
     const values = cells.list.reduce((acc, next) => {
       const key = this.schema.grid.toCellKey(next.props.key);
-      acc[key] = next.value;
+      const value = next.value;
+      acc[key] = typeof value === 'object' ? value : { value };
       return acc;
     }, {});
 

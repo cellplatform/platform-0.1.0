@@ -57,7 +57,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
   public render() {
     return (
-      <CommandShell cli={this.cli} tree={{}}>
+      <CommandShell cli={this.cli}>
         <TestGrid editorType={this.editorType} />
       </CommandShell>
     );

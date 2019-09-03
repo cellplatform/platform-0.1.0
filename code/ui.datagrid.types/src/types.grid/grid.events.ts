@@ -85,7 +85,7 @@ export type IGridCellsChanged = {
 
 export type IGridCellChange = {
   cell: t.ICell;
-  value: { from?: t.CellValue; to?: t.CellValue };
+  value: { from?: t.IGridCell; to?: t.IGridCell };
   isCancelled: boolean;
   isChanged: boolean;
   isModified: boolean;
