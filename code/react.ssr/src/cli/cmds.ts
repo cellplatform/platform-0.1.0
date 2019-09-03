@@ -36,11 +36,16 @@ app
           alias: 'p',
           describe: 'Push the bundle to S3.',
           type: 'boolean',
+        })
+        .option('manifest', {
+          alias: 'm',
+          describe: 'Create the bundle manifest only.',
+          type: 'boolean',
         });
     },
     async argv => {
-      const { v: version, push } = argv;
-      return bundle.run({ version, push });
+      const { v: version, push, manifest } = argv;
+      return bundle.run({ version, push, manifest });
     },
   )
 

@@ -10,10 +10,10 @@
     "@platform/libs" "0.1.2"
     inquirer "7.0.0"
 
-"@platform/cli@0.3.11":
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.3.11.tgz#1794f1fa10881b206463184556960f7dc179a5c1"
-  integrity sha512-5NVpqGY5tcX56jnn9FB9bepCCpr5ytTQ6DaYYz93rg3tmmlW/RCeSr7numHQ8Pa/vEqO/RAVMzHZwfohK0XbhA==
+"@platform/cli@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.4.0.tgz#acb529df813842fc461a3f4ed39d356fa65e98df"
+  integrity sha512-m4QzHsPbPhht7LnaUe/B3D7FyMVXbQzj5laoY6H0TV90SS0c4oa6yRW/y53l12ixh8qDJykcf3d/Md6qv5rBgw==
   dependencies:
     "@platform/cli.prompt" "0.0.9"
     "@platform/exec" "0.2.29"
@@ -136,12 +136,12 @@
     inquirer "7.0.0"
     semver "6.3.0"
 
-"@platform/react.ssr@^1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-1.1.8.tgz#a56ce00c1e340888ce034d7589950e07fe72453c"
-  integrity sha512-fpZEJVcAJMWMCvfeiAnVKN1lpFu79KxZfxhrgYAMn/k/MWNeNzOO4kvxRKKpINi6iYgD7J7PjRnHoT9ThaLlIg==
+"@platform/react.ssr@^1.1.9":
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/@platform/react.ssr/-/react.ssr-1.1.9.tgz#980feb8fc3b6e43d6dd66fd743aa3a247256660c"
+  integrity sha512-xGf0uTc+G1X1jhbjbmZp1h4lJsAMM+QSvNHtBISpHVkJfApWzsHxFucv7w5RE78Kf+jcRsILAOuVU0EGciPWMQ==
   dependencies:
-    "@platform/cli" "0.3.11"
+    "@platform/cli" "0.4.0"
     "@platform/exec" "0.2.29"
     "@platform/fs" "0.3.2"
     "@platform/fs.s3" "0.3.5"
