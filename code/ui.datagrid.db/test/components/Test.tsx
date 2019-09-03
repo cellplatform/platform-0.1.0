@@ -4,18 +4,15 @@ import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/oper
 
 import * as cli from '../cli';
 import {
-  R,
   CellEditor,
   color,
   COLORS,
   CommandShell,
-  constants,
   css,
   datagrid,
   log,
   markdown,
   ObjectView,
-  renderer,
   Sync,
   t,
 } from '../common';
@@ -30,7 +27,9 @@ const storage = {
   },
 };
 
-export type ITestProps = {};
+export type ITestProps = {
+  db: t.IDb;
+};
 export type ITestState = t.ITestState & {
   db?: any;
   grid?: any;
@@ -48,9 +47,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private datagrid!: datagrid.DataGrid;
   private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
 
-  public static contextType = renderer.Context;
-  public context!: t.ILocalContext;
-
   /**
    * [Lifecycle]
    */
@@ -59,7 +55,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     super(props);
     this.cli = cli.init({
       state$: this.state$,
-      getDb: () => this.context.db,
+      getDb: () => this.db,
       getSync: () => this.sync,
       getState: () => this.state,
     });
@@ -96,7 +92,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       .subscribe(e => this.updateState());
 
     // Setup syncer.
-    const db = this.context.db;
+    const db = this.db;
     const grid = this.datagrid.grid;
     const events$ = this.sync$;
     this.sync = Sync.create({ db, grid, events$ });
@@ -118,6 +114,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return this.datagrid.grid;
   }
 
+  public get db() {
+    return this.props.db;
+  }
+
   /**
    * [Methods]
    */
@@ -133,7 +133,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
 
     // Database.
-    const db = (await this.context.db.find('**')).map;
+    const db = (await this.db.find('**')).map;
     processValues({ ...db });
 
     // Grid.

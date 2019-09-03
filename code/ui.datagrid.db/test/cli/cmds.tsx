@@ -1,5 +1,4 @@
 import { log, constants, Command, t } from '../common';
-const { shell } = require('electron').remote;
 
 type P = t.ICommandProps & {};
 

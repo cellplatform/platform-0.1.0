@@ -1,17 +1,16 @@
+import { NeDb } from '@platform/fsdb.nedb';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { log } from './common';
+
 import { Test } from './components/Test';
 
-import { NeDb } from '@platform/fsdb.nedb';
+const filename = 'tmp/datagrid.db.test';
+const db = NeDb.create({ filename });
 
-const db = NeDb.create({ filename: 'tmp/client.doc.db' });
+log.group('Database');
+log.info('filename:', filename, '(localstorage)');
+log.info('db:', db);
+log.groupEnd();
 
-console.log('db', db);
-
-/**
- * [Web] entry-point.
- *
- * Reference your component(s) here or pull in the [UIHarness]
- * visual testing host.
- */
 ReactDOM.render(<Test db={db} />, document.getElementById('root'));
