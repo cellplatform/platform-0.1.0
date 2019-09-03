@@ -355,7 +355,7 @@ describe('util.tree', () => {
     });
 
     it('sets the inline state of nodes to the given path (boolean)', () => {
-      const factory = (id: string) => ({ id, props: { inline: true } });
+      const factory: t.TreeNodePathFactory = id => ({ id, props: { inline: {} } });
       const root = util.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root as ITreeNode;
 
       const res = util.openToNode(root, 'foo/bar') as ITreeNode;
@@ -367,7 +367,7 @@ describe('util.tree', () => {
     });
 
     it('sets the inline state of nodes to the given path (object)', () => {
-      const factory = (id: string) => ({ id, props: { inline: {} } });
+      const factory: t.TreeNodePathFactory = id => ({ id, props: { inline: {} } });
       const root = util.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root;
 
       const res = util.openToNode(root, 'foo/bar') as ITreeNode;

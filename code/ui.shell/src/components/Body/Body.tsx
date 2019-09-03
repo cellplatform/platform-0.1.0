@@ -25,11 +25,12 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
   }
 
   public componentDidMount() {
-    this.model.changed$.pipe(
-      takeUntil(this.unmounted$),
-      debounceTime(0),
-    )
-    .subscribe(() => this.forceUpdate());
+    this.model.changed$
+      .pipe(
+        takeUntil(this.unmounted$),
+        debounceTime(0),
+      )
+      .subscribe(() => this.forceUpdate());
   }
 
   public componentWillUnmount() {

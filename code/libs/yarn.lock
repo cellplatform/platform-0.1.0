@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@types/ramda@0.26.19":
-  version "0.26.19"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.19.tgz#400580597566c016e9743f17c1c48bf4671cda81"
-  integrity sha512-lJuMZDXqZ8W2hl0Gz+wEPUhXcf/tZRuaO5vrxFD3Dv2XMqgTZVw+bvfS6iQAsio9XQV+uhkggtT4eLhDmUpI5g==
+"@types/ramda@0.26.21":
+  version "0.26.21"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.21.tgz#cfd552c679453d153a9e2fd89ffc5dd5aa93d2c9"
+  integrity sha512-zMYtIZMceA6BvH+or6LmewLBgojbXg5+FGCwjO8K+Z+d/ZWxILmhhASXkehW0PqJL+V0QbyDeeAHix0dvEKXfQ==
   dependencies:
-    ts-toolbelt "^3.2.22"
+    ts-toolbelt "^3.8.4"
 
 core-js@3.2.1:
   version "3.2.1"
@@ -31,17 +31,12 @@ rxjs@6.5.2:
   dependencies:
     tslib "^1.9.0"
 
-ts-toolbelt@^3.2.22:
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-3.8.0.tgz#bda726025341a5677d49be04fac536d82dfaaf61"
-  integrity sha512-Gjlx1VZR91Ll7FWT0vnJawC/RH6e4Uj7w6605QaIwC7djhkpR765ju1V+pZiejwjf3JFOzMJi78pZ0mfOzVjMg==
+ts-toolbelt@^3.8.4:
+  version "3.8.63"
+  resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-3.8.63.tgz#ee5a94a5d870f437bc6811f7428ea24c78821f6a"
+  integrity sha512-OlsFC8uF1mpN2O7DlvSkgnXzOvubO790eFhTvZBFI+WLge2BYzkQk73Q3yF0R8usxhkqbemLomqRhCGWasoIKw==
 
-tslib@1.10.0:
+tslib@1.10.0, tslib@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
-
-tslib@^1.9.0:
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
-  integrity sha512-4krF8scpejhaOgqzBEcGM7yDIEfi0/8+8zDRZhNZZ2kjmHJ4hv3zCbQWxoJGz1iw5U0Jl0nma13xzHXcncMavQ==
