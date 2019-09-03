@@ -1465,10 +1465,10 @@
     "@platform/libs" "^0.1.2"
     "@platform/react" "0.3.24"
 
-"@platform/ui.editor@0.1.42":
-  version "0.1.42"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.1.42.tgz#ba4b9f5da2360223963c5e07cde9a3b75c964b2a"
-  integrity sha512-C1cVx/fBp3KPoWcAdPMPZAV207VtGUzEXdwRN8tluo8ayPb9GO8mY2A2vi6HGQ0mmBshCXgl4WkBNTNSmVWHOg==
+"@platform/ui.editor@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.2.0.tgz#5867a95b310825c2f51b2bf151c248732f94c94e"
+  integrity sha512-ao7RO8CR9xp2a0ph2vR+/XcYf1TtDx0ABj/CckFNn5yGE9+seOwKSyodotODz79lgWobZY3DnFldxHecHjHz0g==
   dependencies:
     "@platform/css" "0.1.38"
     "@platform/react" "0.3.24"
