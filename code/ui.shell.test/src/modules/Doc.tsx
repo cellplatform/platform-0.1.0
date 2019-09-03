@@ -88,6 +88,6 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
    * [Handlers]
    */
   private loadSidebar = () => {
-    this.context.shell.load('B');
+    this.context.shell.load('sidebar');
   };
 }

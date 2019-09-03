@@ -3,14 +3,6 @@ import * as React from 'react';
 import { is, shell } from './common';
 import * as splash from './splash';
 
-shell
-  // Register application modules.
-  .main('main', () => import('./modules/main'))
-  .register('A', () => import('./modules/A'))
-  .register('B', () => import('./modules/B'))
-  .register('sheet', () => import('./modules/Sheet'));
-// .initial({ sidebar: { background: 'red' } });
-
 export class App extends React.PureComponent {
   /**
    * [Properties]

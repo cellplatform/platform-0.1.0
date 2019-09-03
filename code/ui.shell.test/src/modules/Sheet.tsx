@@ -19,7 +19,7 @@ export class Sheet extends React.PureComponent<ISheetProps, ISheetState> {
   public state: ISheetState = {};
   private state$ = new Subject<Partial<ISheetState>>();
   private unmounted$ = new Subject<{}>();
-  private grid$ = new Subject<t.GridEvent>();
+  private grid$ = new Subject<datagrid.GridEvent>();
 
   private datagrid!: datagrid.DataGrid;
   private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);

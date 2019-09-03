@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, t } from '../common';
+import { color, css, t } from '../common';
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
   const sidebar = shell.state.sidebar;
-  sidebar.el = <ComponentB />;
+  sidebar.el = <Sidebar />;
   sidebar.background = '#EA4E7E';
   // sidebar.background = { color: '#C3688C', fadeSpeed: 3500 };
 };
@@ -14,27 +12,7 @@ export const init: t.ShellImportInit = async args => {
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
 
-export type IComponentBProps = { style?: GlamorValue };
-export type IComponentBState = {};
-
-export class ComponentB extends React.PureComponent<IComponentBProps, IComponentBState> {
-  public state: IComponentBState = {};
-  private state$ = new Subject<Partial<IComponentBState>>();
-  private unmounted$ = new Subject<{}>();
-
-  /**
-   * [Lifecycle]
-   */
-  constructor(props: IComponentBProps) {
-    super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
-
+export class Sidebar extends React.PureComponent {
   /**
    * [Render]
    */
@@ -58,6 +36,6 @@ export class ComponentB extends React.PureComponent<IComponentBProps, IComponent
         {LOREM}
       </p>
     ));
-    return <div {...css(styles.base, this.props.style)}>{paras}</div>;
+    return <div {...styles.base}>{paras}</div>;
   }
 }

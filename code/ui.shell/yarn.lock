@@ -154,10 +154,10 @@
     "@platform/react" "0.3.24"
     "@platform/util.animate" "0.0.53"
 
-"@platform/ui.shell.types@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.11.tgz#c8724b8b4397f6804bbae11fb56add61e45a17a5"
-  integrity sha512-IsmOJC+rSnNERrZn32P/26EhraR3It52d5O01vZ/+I7IJTeARpxlo7FBAVqdFjfepxg+J6sOd9+m1aYmSiZ1iQ==
+"@platform/ui.shell.types@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.12.tgz#9ad26d2cd53103df526d049903b9d91da639b4c0"
+  integrity sha512-otZq/Dgdcctt7zqHCDzpuWRotzpwWVH9a/JNvzuOAzr0R8J3MVXErPL6UtvDovUpallq+6UvuDf3N7/H4qPZlA==
   dependencies:
     "@platform/libs" "0.1.2"
     "@platform/ui.tree" "0.3.6"
