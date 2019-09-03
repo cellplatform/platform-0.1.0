@@ -38,13 +38,6 @@ export const root = Command.create<P>('root', e => {
 })
   .add(db)
   .add(debug)
-  .add('open-folder', async e => {
-    const DB = constants.DB;
-    const dir = DB.DIR;
-    log.info(`database file: ${DB.FILE}`);
-    log.info(`opening folder: ${dir}`);
-    shell.showItemInFolder(dir);
-  })
   .add('find', async e => {
     const db = e.props.db;
     const res = await db.find('cell/**');
