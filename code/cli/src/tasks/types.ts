@@ -17,7 +17,10 @@ export type ITasks = {
   skip: AddTask;
   run(options?: IRunTasksOptions): Promise<IRunTasksResponse>;
 };
-export type AddTask = (title: string, task: Task) => ITasks;
+
+export type AddTask = (title: string, task: Task, options?: IAddTaskOptions) => ITasks;
+export type IAddTaskOptions = { skip?: boolean };
+
 export type IRunTasksOptions = {
   concurrent?: boolean;
   silent?: boolean;

@@ -27,8 +27,8 @@ app
     },
   )
   .command(
-    'spin',
-    'Sample spinning list',
+    'tasks',
+    'Sample spinning task list',
     yargs => yargs,
     async argv => {
       log.info();
