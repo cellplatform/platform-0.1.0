@@ -4,18 +4,15 @@ import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/oper
 
 import * as cli from '../cli';
 import {
-  R,
   CellEditor,
   color,
   COLORS,
   CommandShell,
-  constants,
   css,
   datagrid,
   log,
   markdown,
   ObjectView,
-  renderer,
   Sync,
   t,
 } from '../common';
@@ -30,7 +27,9 @@ const storage = {
   },
 };
 
-export type ITestProps = {};
+export type ITestProps = {
+  db: t.IDb;
+};
 export type ITestState = t.ITestState & {
   db?: any;
   grid?: any;
@@ -48,22 +47,21 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private datagrid!: datagrid.DataGrid;
   private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
 
-  public static contextType = renderer.Context;
-  public context!: t.ILocalContext;
-  private databases = this.context.databases;
-  private db = this.databases(constants.DB.FILE);
-
   /**
    * [Lifecycle]
    */
-  public async componentWillMount() {
+
+  constructor(props: ITestProps) {
+    super(props);
     this.cli = cli.init({
       state$: this.state$,
-      databases: this.databases,
+      getDb: () => this.db,
       getSync: () => this.sync,
       getState: () => this.state,
     });
+  }
 
+  public async componentDidMount() {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const sync$ = this.sync$.pipe(takeUntil(this.unmounted$));
@@ -92,9 +90,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       // Update debug state after changes.
       .pipe(debounceTime(200))
       .subscribe(e => this.updateState());
-  }
 
-  public async componentDidMount() {
     // Setup syncer.
     const db = this.db;
     const grid = this.datagrid.grid;
@@ -116,6 +112,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public get grid() {
     return this.datagrid.grid;
+  }
+
+  public get db() {
+    return this.props.db;
   }
 
   /**
@@ -227,7 +227,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         return formatValue(req.value);
 
       default:
-        console.log(`Factory type '${req.type}' not supported by test.`);
+        log.error(`Factory type '${req.type}' not supported by test.`);
         return null;
     }
   };

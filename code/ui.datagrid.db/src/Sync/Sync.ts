@@ -87,7 +87,6 @@ export class Sync implements t.IDisposable {
       filter(e => e.type === 'GRID/rows/changed'),
       map(e => e.payload as t.IGridRowsChanged),
     );
-
     const syncChange$ = events$.pipe(
       filter(e => e.type === 'SYNC/change'),
       map(e => e.payload as t.SyncChangeType),

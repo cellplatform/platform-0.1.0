@@ -1,32 +1,25 @@
 import { Subject } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 
-import { CommandState, constants, t, Sync } from '../common';
+import { CommandState, Sync, t } from '../common';
 import { root } from './cmds';
 
 export function init(args: {
   getSync: () => Sync;
   state$: Subject<Partial<t.ITestState>>;
-  databases: t.DbFactory;
+  getDb: () => t.IDb;
   getState: () => t.ITestState;
 }) {
-  const { state$, databases, getSync } = args;
-
-  let db: t.IDb | undefined;
-  const getDb = async () => {
-    db = db || (await databases(constants.DB.FILE));
-    return db;
-  };
+  const { state$, getDb: getDatabase, getSync } = args;
 
   return CommandState.create({
     root,
     beforeInvoke: async e => {
-      const db = await getDb();
       const props: t.ICommandProps = {
         ...e.props,
-        db,
         state$,
-        databases,
+        get db() {
+          return getDatabase();
+        },
         get sync() {
           return getSync();
         },

@@ -7,42 +7,49 @@ const client = GraphqlClient.create({
 
 type P = t.ICommandProps;
 
+const refresh = async (e: t.ICommandHandlerArgs<t.ICommandProps>) => {
+  const db = e.props.db;
+  const res = await db.find('**');
+  e.props.state$.next({ docs: res.map });
+};
+
 /**
  * Sample commands.
  */
-export const root = Command.create<P>('root')
+export const root = Command.create<P>('root', e => refresh(e))
   //
   .add('store', async e => {
-    const db = e.props.db;
+    const store = e.props.store;
     const name = 'foo';
     const value = e.param(0, 'my-value');
 
-    const res1 = await db.findOne({ name });
+    const res1 = await store.findOne({ name });
     log.info(`BEFORE insert`, res1);
 
-    await db.insert({ name, value });
+    await store.insert({ name, value });
 
-    const res2 = await db.findOne({ name });
+    const res2 = await store.findOne({ name });
     log.info(`AFTER insert`, res1);
   })
 
-  .add('compact', async e => {
-    const db = e.props.db;
-    await db.compact();
-  })
-
   .add('refresh', async e => {
-    const doc = e.props.doc;
-
-    // await doc.put('foo/bar', { msg: 'hello' });
-
-    const res = await doc.find('**');
-    const items = res.list;
-
-    e.props.state$.next({ docs: res.map });
+    await refresh(e);
   })
+
+  .add('put', async e => {
+    const db = e.props.db;
+    const value = (await db.getValue<number>('count')) || 0;
+    await db.put('count', value + 1);
+    await refresh(e);
+  })
+
+  .add('compact', async e => {
+    const store = e.props.store;
+    await store.compact();
+  })
+
   .add('pull', async e => {
-    const db = e.props.doc;
+    const db = e.props.db;
     const query = gql`
       query Read {
         read

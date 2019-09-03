@@ -23,5 +23,5 @@ export type ITestState = {
 };
 
 export type ILocalContext = IRendererContext & {
-  databases: DbFactory;
+  db: t.IDb;
 };

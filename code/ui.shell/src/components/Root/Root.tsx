@@ -35,7 +35,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   public componentDidMount() {
     document.body.style.overflow = 'hidden'; // Prevent browser rubber-band.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    this.load(this.shell.defaultModuleId);
+    this.load(this.shell.defaultModule);
   }
 
   public componentWillUnmount() {
