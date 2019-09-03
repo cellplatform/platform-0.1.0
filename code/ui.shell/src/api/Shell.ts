@@ -29,7 +29,7 @@ export class Shell implements t.IShell {
    */
   public readonly loader: loader.ILoader;
   public readonly state: t.IShellState = state.shell.create();
-  public defaultModuleId: string;
+  public defaultModule: string;
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -74,6 +74,15 @@ export class Shell implements t.IShell {
   /**
    * [Methods]
    */
+  public initial = (state: t.IShellPartialState) => {
+    Object.keys(state).forEach(k1 => {
+      Object.keys(state[k1]).forEach(k2 => {
+        this.state[k1][k2] = state[k1][k2];
+      });
+    });
+    return this;
+  };
+
   public register = (
     moduleId: string,
     importer: t.ShellImporter,
@@ -84,11 +93,11 @@ export class Shell implements t.IShell {
     return this;
   };
 
-  public default(moduleId: string) {
-    this.throwIfDisposed('default');
-    this.defaultModuleId = moduleId;
-    return this;
-  }
+  public main = (moduleId: string, importer: t.ShellImporter, options?: { timeout?: number }) => {
+    this.throwIfDisposed('main');
+    this.defaultModule = moduleId;
+    return this.register(moduleId, importer, options);
+  };
 
   public async load<P = {}>(moduleId: string | number, options: t.IShellLoadOptions<P> = {}) {
     this.throwIfDisposed('load');

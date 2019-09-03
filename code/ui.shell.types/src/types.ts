@@ -8,14 +8,21 @@ export type ShellTheme = 'LIGHT' | 'DARK';
 export type IShell = {
   events: IShellEvents;
   state: IShellState;
-  register(moduleId: string, importer: ShellImporter, options?: { timeout?: number }): IShell;
-  default(moduleId: string): IShell;
+  initial(state: IShellPartialState): IShell;
+  register: ShellRegisterModule;
+  main: ShellRegisterModule;
   load<P = {}>(
     moduleId: string | number,
     options?: IShellLoadOptions<P>,
   ): Promise<IShellLoadResponse>;
   progress: IShellProgress;
 };
+
+export type ShellRegisterModule = (
+  moduleId: string,
+  importer: ShellImporter,
+  options?: { timeout?: number },
+) => IShell;
 
 export type IShellEvents = {
   events$: t.Observable<ShellEvent>;
@@ -92,6 +99,12 @@ export type IShellSidebarState = {
   background: IShellColor | string | number;
   width: IShellSize | number;
 };
+
+export type IShellPartialState = Partial<{
+  tree: Partial<IShellTreeState>;
+  body: Partial<IShellBodyState>;
+  sidebar: Partial<IShellSidebarState>;
+}>;
 
 /**
  * Appearance
