@@ -79,8 +79,8 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     });
 
     markdown$.subscribe(e => {
-      // console.log('🌼 TEXT', e);
-      // // console.log("e.payload.size", e.payload.size)
+      // console.log('🌼 MARKDOWN', e);
+      // console.log("e.payload.size", e.payload.size)
     });
 
     formula$
@@ -162,6 +162,18 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         const value = { from, to };
         this.fireChanged({ mode: 'MARKDOWN', value });
         this.fireSize(e.size.from);
+      });
+
+    markdown$
+      .pipe(
+        filter(e => e.type === 'EDITOR/keydown/enter'),
+        filter(e => this.mode === 'MARKDOWN'),
+        map(e => e.payload as p.ITextEditorEnterKey),
+        filter(e => !e.isCancelled),
+      )
+      .subscribe(e => {
+        const { isMeta, isShift } = e;
+        this.fire({ type: 'CELL_EDITOR/enter', payload: { isMeta, isShift } });
       });
 
     // Finish up.

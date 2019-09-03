@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
+import { Subject, merge } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { GlamorValue, t, time } from '../../common';
@@ -59,14 +59,22 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
 
     // Handle keypresses.
     const keys$ = this.context.keys$.pipe(filter(() => isReady));
-    const enterKey$ = keys$.pipe(filter(e => e.isEnter));
-    enterKey$
-      .pipe(filter(e => (this.mode === 'MARKDOWN' ? !(e.metaKey || e.shiftKey) : true)))
-      .subscribe(e => {
-        const value = this.value;
-        const size = this.size;
-        this.context.set({ value, size }).complete();
-      });
+    const enter$ = merge(
+      keys$.pipe(
+        filter(e => e.isEnter),
+        filter(e => !(e.metaKey || e.shiftKey)),
+      ),
+      events$.pipe(
+        filter(e => e.type === 'CELL_EDITOR/enter'),
+        map(e => e.payload as t.ICellEditorEnter),
+        filter(e => !(e.isMeta || e.isShift)),
+      ),
+    );
+    enter$.pipe(filter(e => this.mode === 'MARKDOWN')).subscribe(e => {
+      const value = this.value;
+      const size = this.size;
+      this.context.set({ value, size }).complete();
+    });
 
     // Keep the local `value` state in sync with the editor view.
     events$
