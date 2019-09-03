@@ -105,11 +105,11 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    */
   public updateState() {
     const grid = this.grid;
-    const { selection, values, rows, columns } = grid;
+    const { selection, values, rows, columns, isEditing } = grid;
     const { editorType } = this.props;
     const data = {
       grid: {
-        isEditing: grid.isEditing,
+        isEditing,
         values,
         rows,
         columns,
