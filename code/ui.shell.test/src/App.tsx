@@ -5,7 +5,7 @@ import * as splash from './splash';
 
 shell
   // Register application modules.
-  .main('controller', () => import('./modules/controller'))
+  .main('main', () => import('./modules/main'))
   .register('A', () => import('./modules/A'))
   .register('B', () => import('./modules/B'))
   .register('sheet', () => import('./modules/Sheet'));
