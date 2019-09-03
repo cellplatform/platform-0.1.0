@@ -23,13 +23,14 @@ const { CELL, GRID } = CLASS;
 export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
   const CACHE: any = {};
 
-  function toHtml(args: { td: HTMLElement; row: number; column: number; value?: t.CellValue }) {
+  function toHtml(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCell }) {
     const el = toElement(args);
     return ReactDOMServer.renderToString(el);
   }
 
-  function toElement(args: { td: HTMLElement; row: number; column: number; value?: t.CellValue }) {
-    const { row, column, value } = args;
+  function toElement(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCell }) {
+    const { row, column, cell } = args;
+    const value = cell ? cell.value : undefined;
     const child: any = factory.cell({ row, column, value });
     const isHtml = typeof child === 'string' && child.startsWith('<');
 
@@ -49,10 +50,11 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
     td: HTMLElement;
     row: number;
     column: number;
-    value?: t.CellValue;
+    cell?: t.IGridCell;
   }) {
-    const { row, column: col, value } = args;
-    const key = `${row}:${col}/${value}`;
+    const { row, column } = args;
+    const value = args.cell ? args.cell.value : undefined;
+    const key = `${row}:${column}/${value || ''}`;
     if (CACHE[key]) {
       return CACHE[key];
     }
@@ -63,7 +65,7 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
 
   const fn: Renderer = (instance, td, row, column, prop, value, cellProps) => {
     if (!grid.isDisposed) {
-      td.innerHTML = toMemoizedHtml({ td, row, column, value });
+      td.innerHTML = toMemoizedHtml({ td, row, column, cell: value });
     }
     return td;
   };

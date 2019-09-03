@@ -50,9 +50,10 @@ export type IGridSelection = {
   readonly all?: boolean;
 };
 
-export type IGridValues = { [key: string]: t.CellValue };
 export type IGridColumns = { [key: string]: IGridColumn };
 export type IGridRows = { [key: string]: IGridRow };
+export type IGridValues = { [key: string]: IGridCell | undefined };
 
 export type IGridColumn = { width?: number };
 export type IGridRow = { height?: number };
+export type IGridCell = { value: t.CellValue };

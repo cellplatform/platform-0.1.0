@@ -105,7 +105,8 @@ export class Grid implements t.IGrid {
     editEnd$.subscribe(() => (this._.isEditing = false));
     editEnd$.pipe(filter(e => e.isChanged)).subscribe(e => {
       const key = e.cell.key;
-      this.changeCells({ [key]: e.value.to }, { source: 'EDIT' });
+      const value: t.IGridCell = { value: e.value.to };
+      this.changeCells({ [key]: value }, { source: 'EDIT' });
     });
     editEnd$
       .pipe(
