@@ -65,12 +65,11 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-  }
-
   public componentDidMount() {
     const { values, columns, rows } = this.props;
+
+    // State.
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
     // Create the table and corresponding API wrapper.
     const Table = this.props.Handsontable || TableLib;

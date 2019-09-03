@@ -46,9 +46,9 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
   }
 
   public get colors() {
-    const { sidepanel } = SHELL;
-    const foreground = util.toColor(this.model.foreground, sidepanel.foreground);
-    const background = util.toColor(this.model.background, sidepanel.background);
+    const { body } = SHELL;
+    const foreground = util.toColor(this.model.foreground, body.foreground);
+    const background = util.toColor(this.model.background, body.background);
     return { foreground, background };
   }
 

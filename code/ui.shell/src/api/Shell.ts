@@ -1,8 +1,7 @@
-import { TreeView, TreeViewEvent } from '@platform/ui.tree';
 import { Subject, timer } from 'rxjs';
-import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { share, takeUntil } from 'rxjs/operators';
 
-import { loader, t } from '../common';
+import { loader, log, t, is, time } from '../common';
 import * as state from '../state';
 import * as events from './events';
 
@@ -91,11 +90,29 @@ export class Shell implements t.IShell {
     return this;
   }
 
-  public async load<P = {}>(moduleId: string | number, props?: P) {
+  public async load<P = {}>(moduleId: string | number, options: t.IShellLoadOptions<P> = {}) {
     this.throwIfDisposed('load');
+    const { props, progress, simulateLatency } = options;
+    const loadCount = this.loader.count(moduleId);
+    const showProgress = typeof progress === 'number' && loadCount < 1;
+
+    // Start progress bar.
+    if (showProgress) {
+      this.progress.start({ duration: progress });
+    }
 
     // Load the module.
     const res = await this.loader.load<t.ShellImporterResponse>(moduleId, props);
+
+    // Simulate download latency (when developing).
+    if (is.dev && loadCount < 1 && typeof simulateLatency === 'number') {
+      await time.wait(simulateLatency);
+    }
+
+    // Stop progress bar.
+    if (showProgress) {
+      this.progress.complete();
+    }
 
     // Initialize the loaded module.
     if (res.ok && res.result) {
@@ -107,6 +124,14 @@ export class Shell implements t.IShell {
         const args: t.ShellImportInitArgs = { shell };
         await res.result.init(args);
       }
+    }
+
+    // Report error.
+    if (!res.ok) {
+      log.group(`🐷 LOAD ERROR: ${moduleId}`);
+      log.error(res.error);
+      log.info(res);
+      log.groupEnd();
     }
 
     // Finish up.

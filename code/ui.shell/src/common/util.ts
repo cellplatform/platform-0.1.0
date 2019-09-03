@@ -16,3 +16,15 @@ export function toColor(value: t.IShellColor | string | number, defaultValue: t.
     return { color, fadeSpeed };
   }
 }
+
+/**
+ * Convert loose size value into typed object.
+ */
+export function toSize(value: t.IShellSize | number, defaultValue: t.IShellSize) {
+  if (typeof value === 'object') {
+    return value;
+  } else {
+    const speed = defaultValue.speed;
+    return { value, speed };
+  }
+}

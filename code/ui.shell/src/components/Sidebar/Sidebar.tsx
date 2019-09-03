@@ -46,9 +46,9 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
   }
 
   public get colors() {
-    const { sidepanel } = SHELL;
-    const foreground = util.toColor(this.model.foreground, sidepanel.foreground);
-    const background = util.toColor(this.model.background, sidepanel.background);
+    const { sidebar } = SHELL;
+    const foreground = util.toColor(this.model.foreground, sidebar.foreground);
+    const background = util.toColor(this.model.background, sidebar.background);
     return { foreground, background };
   }
 

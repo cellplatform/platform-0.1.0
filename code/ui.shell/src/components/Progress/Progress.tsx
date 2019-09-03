@@ -9,7 +9,7 @@ export type IProgressProps = {
   style?: GlamorValue;
 };
 export type IProgressState = {
-  isRunning?: boolean;
+  inProgress?: boolean;
   duration?: number; // msecs
   color?: string;
 };
@@ -19,6 +19,7 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
   private state$ = new Subject<Partial<IProgressState>>();
   private unmounted$ = new Subject<{}>();
   private timeout: NodeJS.Timeout | undefined;
+  private stopId = -1;
 
   public static contextType = Context;
   public context!: t.IShellContext;
@@ -37,7 +38,7 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
     progress.start$
       .pipe(
         takeUntil(this.unmounted$),
-        filter(e => !this.state.isRunning),
+        filter(e => !this.state.inProgress),
       )
       .subscribe(e => this.start(e));
     progress.complete$.pipe(takeUntil(this.unmounted$)).subscribe(() => this.stop());
@@ -63,14 +64,25 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
    * [Methods]
    */
   public start(options: { duration?: number; color?: string } = {}) {
-    this.stop();
     return new Promise(resolve => {
       const { duration, color } = options;
       this.state$.next({ duration, color });
 
-      // NB: Wait a tick after the duration is set to ensure the CSS duation time is updated.
+      // Stop any current progress and keep a reference to the current "stop id".
+      this.stop();
+      this.stopId++;
+      const op = this.stopId;
+
+      // NB: Wait a tick after the duration is set to
+      //     ensure the CSS duation time is updated.
       time.delay(0, () => {
-        this.state$.next({ isRunning: true });
+        // If the operation has been stoped before the
+        // tick completed do not continue.
+        if (this.stopId !== op) {
+          return resolve();
+        }
+
+        this.state$.next({ inProgress: true });
         this.timeout = setTimeout(() => {
           this.stop();
           resolve();
@@ -80,7 +92,8 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
   }
 
   public stop() {
-    this.state$.next({ isRunning: false });
+    this.state$.next({ inProgress: false });
+    this.stopId++;
     if (this.timeout) {
       clearTimeout(this.timeout);
       this.timeout = undefined;
@@ -92,11 +105,12 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
    */
   public render() {
     const { height = 2 } = this.props;
-    const isRunning = this.state.isRunning;
+    const isRunning = this.state.inProgress;
     const speed = this.duration;
     const styles = {
       base: css({
         height,
+        pointerEvents: 'none',
       }),
       thumb: css({
         width: `${isRunning ? 100 : 0}%`,

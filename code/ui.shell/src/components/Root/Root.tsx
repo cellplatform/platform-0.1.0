@@ -3,14 +3,11 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, COLORS, createProvider, css, GlamorValue, loader, Shell, t } from '../common';
-import { Body } from '../Body';
-import { Sidebar } from '../Sidebar';
-import { Tree } from '../Tree';
 import { Progress } from '../Progress';
+import { RootColumns } from './Root.Columns';
 
 export type IRootProps = {
   shell: Shell;
-  theme?: t.ShellTheme;
   style?: GlamorValue;
 };
 export type IRootState = {};
@@ -30,7 +27,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
   constructor(props: IRootProps) {
     super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
     const tree$ = this.tree$.pipe(takeUntil(this.unmounted$));
     tree$.subscribe(e => this.shell.fire(e));
@@ -38,6 +34,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
   public componentDidMount() {
     document.body.style.overflow = 'hidden'; // Prevent browser rubber-band.
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     this.load(this.shell.defaultModuleId);
   }
 
@@ -51,6 +48,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
   private get shell() {
     return this.props.shell;
+  }
+
+  private get model() {
+    return this.shell.state;
   }
 
   private get Provider() {
@@ -74,7 +75,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       if (res.ok) {
         this.context.splash.isVisible = false;
       } else {
-        // TEMP 🐷 TODO: Show status somehow that the load failed.
+        // TEMP 🐷 TODO: Show status somehow (in splash) that the load failed.
       }
     }
   }
@@ -89,53 +90,19 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         Flex: 'vertical-stretch-stretch',
         boxSizing: 'border-box',
       }),
-      progress: css({ Absolute: [0, 0, null, 0] }),
+      progress: css({
+        Absolute: [0, 0, null, 0],
+        zIndex: 9999,
+      }),
     };
     return (
       <this.Provider>
         <div {...styles.base}>
-          {this.renderColumns()}
+          <RootColumns tree$={this.tree$} />
           {this.renderFooterBar()}
           <Progress style={styles.progress} />
         </div>
       </this.Provider>
-    );
-  }
-
-  public renderColumns() {
-    const styles = {
-      base: css({
-        flex: 1,
-        Flex: 'horizontal-stretch-stretch',
-      }),
-      left: css({
-        width: 250,
-        position: 'relative',
-        backgroundColor: COLORS.DARK,
-      }),
-      middle: css({
-        flex: 1,
-        position: 'relative',
-        backgroundColor: COLORS.WHITE,
-      }),
-      right: css({
-        width: 300,
-        position: 'relative',
-        backgroundColor: COLORS.DARK,
-      }),
-    };
-    return (
-      <div {...css(styles.base, this.props.style)}>
-        <div {...styles.left}>
-          <Tree tree$={this.tree$} />
-        </div>
-        <div {...styles.middle}>
-          <Body />
-        </div>
-        <div {...styles.right}>
-          <Sidebar />
-        </div>
-      </div>
     );
   }
 
