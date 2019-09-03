@@ -51,7 +51,7 @@ export function beforeKeyDownHandler(getGrid: () => Grid) {
       }
 
       // Deletion.
-      if (key === 'Backspace') {
+      if (key === 'Backspace' || key === 'Delete') {
         handleDelete({ grid, keydown: payload });
       }
     }
