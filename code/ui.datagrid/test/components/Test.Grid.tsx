@@ -173,7 +173,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         <Hr margin={5} />
         {this.button('values', () => (this.grid.values = { A1: { value: 'loaded value' } }))}
         {this.button('changeValues', () => this.grid.changeCells({ A1: { value: 'hello' } }))}
-        {this.button('change values (via prop)', () =>
+        {this.button('changeValues (props)', () =>
+          this.grid.changeCells({ A1: { value: 'hello', props: { bold: true } } }),
+        )}
+        {this.button('change values (via prop/state)', () =>
           this.test$.next({ values: { A1: { value: 'happy' } } }),
         )}
         {this.button('values (large)', () => {

@@ -52,8 +52,8 @@ export type IGridSelection = {
 
 export type IGridColumns = { [key: string]: IGridColumn };
 export type IGridRows = { [key: string]: IGridRow };
-export type IGridValues = { [key: string]: IGridCell | undefined };
+export type IGridValues<P = {}> = { [key: string]: IGridCell<P> | undefined };
 
 export type IGridColumn = { width?: number };
 export type IGridRow = { height?: number };
-export type IGridCell = { value: t.CellValue };
+export type IGridCell<P = {}> = { value: t.CellValue; props?: P };

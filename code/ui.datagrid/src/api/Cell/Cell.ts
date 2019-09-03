@@ -3,7 +3,7 @@ import { coord, R, t } from '../../common';
 /**
  * API for accessing and manipulating a cell.
  */
-export class Cell implements t.ICell {
+export class Cell<P = {}> implements t.ICell<P> {
   /**
    * [Static]
    */
@@ -121,8 +121,18 @@ export class Cell implements t.ICell {
     return this.td.offsetHeight;
   }
 
-  public get value(): t.CellValue {
+  private get data() {
     return this._.table.getDataAtCell(this.row, this.column);
+  }
+
+  public get value(): t.CellValue {
+    const data = this.data;
+    return typeof data === 'object' ? data.value : undefined;
+  }
+
+  public get props(): P {
+    const data = this.data;
+    return typeof data === 'object' ? data.props : {};
   }
 
   public get siblings() {
