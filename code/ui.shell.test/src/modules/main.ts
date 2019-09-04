@@ -19,6 +19,8 @@ export const init: t.ShellImportInit = async args => {
   const { shell } = args;
   shell.state.tree.root = TREE;
 
+  shell.load('Footer');
+
   console.log('INIT shell', shell);
 
   // const click = shell.events.tree.mouse({ button: ['LEFT'] }).click;

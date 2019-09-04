@@ -1104,14 +1104,14 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.1.38":
-  version "0.1.38"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.38.tgz#6a4983bc9b07b4c630f1ce934ef615506d9501c8"
-  integrity sha512-ZUmNqMpNzdPWojW0VCv0R1spBCk41eOpG4Vm3/cAlFXBmY/Wv7iTYb0Wj7QD55hJQXPm1VKsUFm4/71uujwe0Q==
+"@platform/css@0.1.40":
+  version "0.1.40"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.40.tgz#62fea879fff6e7a45ed4d61d93e81481804d624d"
+  integrity sha512-NFFuiaHAu8kNArFl/z3p9r5riCLl0u1P3GFvSc6z00vK7FemUcA79i++b0VrJ9wt9yMnwxnIYNj3NWzt32SC4g==
   dependencies:
-    "@platform/libs" "0.1.2"
-    "@platform/util.is" "0.0.92"
-    "@platform/util.value" "0.5.3"
+    "@platform/libs" "0.1.3"
+    "@platform/util.is" "0.0.94"
+    "@platform/util.value" "0.5.5"
     "@types/tinycolor2" "1.4.2"
     glamor "2.20.40"
     tinycolor2 "1.4.1"
@@ -1239,6 +1239,18 @@
     rxjs "6.5.2"
     tslib "1.10.0"
 
+"@platform/libs@0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.1.3.tgz#566287ee174a3cc6e6ff85233b234bf0b8b5da1b"
+  integrity sha512-dAgVtjZTctsL2xHDRKhZRuyQkp56uBmN14sSKteKlHuz9Kwq7N6h2hz6IgWvFq5wVBS1xy8bpU9j5/4+xhQrnA==
+  dependencies:
+    "@types/ramda" "0.26.21"
+    core-js "3.2.1"
+    ramda "0.26.1"
+    regenerator-runtime "0.13.3"
+    rxjs "6.5.3"
+    tslib "1.10.0"
+
 "@platform/log@0.0.139":
   version "0.0.139"
   resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.139.tgz#e4bccb945fd53c7f539e77f3b55b3bc609f1b355"
@@ -1306,13 +1318,13 @@
     react "16.9.0"
     react-dom "16.9.0"
 
-"@platform/react@0.3.24":
-  version "0.3.24"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.24.tgz#d74f0605d9b54ae0a2fd4286ed1339cc08500c42"
-  integrity sha512-hZb7gudsqvhWGzBa32OOcY36sWYhwS914JRl3gcrQWVN7SU1lZ5olg65X3xNfGj3p3ws/sqMvF9PVC5AGx5yFA==
+"@platform/react@0.3.26":
+  version "0.3.26"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.26.tgz#d044a44dfa61363b07fce0ce218a2b4c2aaaf5b1"
+  integrity sha512-Hca3BLGUEn5UUG93jaOV4rweTlSojvfGHPogaqokuElwW1vU7PIyvexgmAXIhcMAd+hiJIZWrPxqgLRkwvepuQ==
   dependencies:
-    "@platform/css" "0.1.38"
-    "@platform/util.is" "0.0.92"
+    "@platform/css" "0.1.40"
+    "@platform/util.is" "0.0.94"
     "@types/react" "16.9.2"
     "@types/react-dom" "16.9.0"
     react "16.9.0"
@@ -1356,6 +1368,11 @@
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.30.tgz#82de89a578f6f1759e9df71c4d1645d437cb10fc"
   integrity sha512-p7wW7QOOXinhjhC5QaYCC59Wd67hiToxb9KYOrIQX3ss9niJwrX7mQxfvZtr+oPGCvkaSf4l5/oe+OKST2vmog==
+
+"@platform/types@0.0.32":
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.32.tgz#ed64b33bd70d6491dfd1ac21eb0439f3e1f32a81"
+  integrity sha512-n/J2QSvVdpK3Q4tz5Pdxq3ouovIzKvKzBD0FH7brtZNlH6TspBu6LTS/VVb/JH0Opi0O5hqKVRAgHEtMuqmb7A==
 
 "@platform/ui.icon@0.0.84":
   version "0.0.84"
@@ -1440,6 +1457,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.92.tgz#ab9b2f822473087061539a24fa3e6eb255d5b66d"
   integrity sha512-Y0guIJGuzXJ8SLe4dkjioI7+sSu0/2akpTLZd6Hox2uaxpIHP0xuaT0CnaM4nInKUCwLJ9GnsS7QryrjlW5MFA==
 
+"@platform/util.is@0.0.94":
+  version "0.0.94"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.94.tgz#0042c7575a6c02fb2c09dd6cc371f688efc5a46d"
+  integrity sha512-uhlf3XfYEl79i+CxIfATcWGCdNaECH82398zGXcPbZtEk/UQmlwocyreeyqya5mjchERwPJiWj//qir3pCykSw==
+
 "@platform/util.local-storage@0.0.36":
   version "0.0.36"
   resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.36.tgz#d6653d112c06caf7a52fc1678e87a579e1238d79"
@@ -1491,6 +1513,19 @@
     "@platform/libs" "0.1.2"
     "@platform/types" "0.0.30"
     "@platform/util.is" "0.0.92"
+    "@types/semver" "6.0.1"
+    cuid "2.1.6"
+    dayjs "1.8.16"
+    semver "6.3.0"
+
+"@platform/util.value@0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.5.5.tgz#52bdd8bbefbc6d0b43f299fbdd688df719fdcd5c"
+  integrity sha512-/LUpMNNjQ8KIH6/lWBWB879Ie1hTVo36vEWXmTUHwBN1/VXoAIXzSEdoNCZ8VAsnHnrG5doPII8wUCzN5PyKvw==
+  dependencies:
+    "@platform/libs" "0.1.3"
+    "@platform/types" "0.0.32"
+    "@platform/util.is" "0.0.94"
     "@types/semver" "6.0.1"
     cuid "2.1.6"
     dayjs "1.8.16"
@@ -1565,10 +1600,10 @@
     "@types/node" "*"
     rxjs "^6.5.1"
 
-"@types/mapbox-gl@0.54.2":
-  version "0.54.2"
-  resolved "https://registry.yarnpkg.com/@types/mapbox-gl/-/mapbox-gl-0.54.2.tgz#989bfc70c7f58455e12757c5ebc5ba887eebaaee"
-  integrity sha512-F46GW9xeGSS1WQhWMPqiHF33zmHpL6ek+lLw/kQbMay4ZQ+fhK3uWDBF7AG0SYRoSmMBIYth03FR4GMpBy9Tyw==
+"@types/mapbox-gl@0.54.3":
+  version "0.54.3"
+  resolved "https://registry.yarnpkg.com/@types/mapbox-gl/-/mapbox-gl-0.54.3.tgz#6215fbf4dbb555d2ca6ce3be0b1de045eec0f967"
+  integrity sha512-/G06vUcV5ucNB7G9ka6J+VbGtffyUYvfe6A3oae/+csTlHIEHcvyJop3Ic4yeMDxycsQCmBvuwz+owseMuiQ3w==
   dependencies:
     "@types/geojson" "*"
 
@@ -4248,11 +4283,6 @@ escodegen@~1.9.0:
   optionalDependencies:
     source-map "~0.6.1"
 
-esm@~3.0.84:
-  version "3.0.84"
-  resolved "https://registry.yarnpkg.com/esm/-/esm-3.0.84.tgz#bb108989f4673b32d4f62406869c28eed3815a63"
-  integrity sha512-SzSGoZc17S7P+12R9cg21Bdb7eybX25RnIeRZ80xZs+VZ3kdQKzqTp2k4hZJjR7p9l0186TTXSgrxzlMDBktlw==
-
 esprima@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-3.1.3.tgz#fdca51cee6133895e3c88d535ce49dbff62a4633"
@@ -5896,10 +5926,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mapbox-gl@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-1.2.1.tgz#a91acb48e5ee57d40a09fa6b4c297e92690c5909"
-  integrity sha512-CO7uhTYtcreDokGr3W2LifIdCtHz0TO/BqnRtO5rQ4Rvm8P7ndUM5ZWwZvJJmNnlkMpVwNKSESsKYX32GXHXoQ==
+mapbox-gl@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-1.3.0.tgz#8bd807b44f395d1830fe3a202763b28b5f1ed299"
+  integrity sha512-mhxIXNQwyqqlFImVUuFucSydxXIeKS4ul/5ES6A5zA4loLvcEXOrlH1PewjqkGoYjfdRHjqsaxpP8czbVuHg3g==
   dependencies:
     "@mapbox/geojson-rewind" "^0.4.0"
     "@mapbox/geojson-types" "^1.0.2"
@@ -5912,7 +5942,6 @@ mapbox-gl@1.2.1:
     "@mapbox/whoots-js" "^3.1.0"
     csscolorparser "~1.0.2"
     earcut "^2.1.5"
-    esm "~3.0.84"
     geojson-vt "^3.2.1"
     gl-matrix "^3.0.0"
     grid-index "^1.1.0"
@@ -7788,6 +7817,13 @@ rxjs@6.5.2, rxjs@^6.3.3, rxjs@^6.4.0, rxjs@^6.5.1:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.2.tgz#2e35ce815cd46d84d02a209fb4e5921e051dbec7"
   integrity sha512-HUb7j3kvb7p7eCUHE3FqjoDsC1xfZQ4AHFWfTKSpZ+sAhhz5X1WX0ZuUqWbzB2QhSLp3DoLUG+hMdEDKqWo2Zg==
+  dependencies:
+    tslib "^1.9.0"
+
+rxjs@6.5.3:
+  version "6.5.3"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.3.tgz#510e26317f4db91a7eb1de77d9dd9ba0a4899a3a"
+  integrity sha512-wuYsAYYFdWTAnAaPoKGNhfpWwKZbJW+HgAJ+mImp+Epl7BG8oNWBCTyRM8gba9k4lk8BgWdoYm21Mo/RYhhbgA==
   dependencies:
     tslib "^1.9.0"
 

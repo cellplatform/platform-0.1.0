@@ -500,7 +500,7 @@ describe('NeDb', () => {
 
       const ts2 = await db.sys.timestamps();
       expect(ts2.createdAt).to.eql(ts1.createdAt);
-      expect(ts2.modifiedAt).to.be.within(now - 45, now + 60);
+      expect(ts2.modifiedAt).to.be.within(now - 50, now + 60);
 
       const res = await db.find('**');
       const ts3 = res.list.find(item => item.props.key === '~sys/timestamps');

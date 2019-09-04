@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { color, css, t } from '../common';
+import { color, css, t, shell } from '../common';
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
@@ -13,6 +13,9 @@ const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
 
 export class Sidebar extends React.PureComponent {
+  public static contextType = shell.Context;
+  public context!: t.IShellContext;
+
   /**
    * [Render]
    */

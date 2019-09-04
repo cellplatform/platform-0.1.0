@@ -1,9 +1,13 @@
 import * as t from './types';
+import { color as colorUtil } from './libs';
+
+const asColor = (value: number) => colorUtil.format(value) as string;
 
 export const COLORS = {
   WHITE: '#FFF',
   DARK: '#293042', // Inky blue/black.
   BLUE: '#4B89FF',
+  TRANSPARENT: 'transparent',
 };
 
 const fadeSpeed = 300;
@@ -23,6 +27,13 @@ const SHELL = {
     foreground: { color: COLORS.WHITE, fadeSpeed },
     background: { color: COLORS.DARK, fadeSpeed },
     width: { value: 300, speed: 200 },
+  },
+  footer: {
+    el: undefined,
+    height: { value: 28, speed: 200 },
+    foreground: { color: COLORS.WHITE, fadeSpeed },
+    background: { color: COLORS.TRANSPARENT, fadeSpeed },
+    border: { color: asColor(0.1), fadeSpeed },
   },
 };
 

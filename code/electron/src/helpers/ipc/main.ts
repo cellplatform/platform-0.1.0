@@ -68,7 +68,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   /**
    * Listen for messages coming in on the [main] IPC channel.
    */
-  ipcMain.on(client.channel, (e: Electron.Event, args: IpcEvent) => {
+  ipcMain.on(client.channel, (e: Electron.IpcMainEvent, args: IpcEvent) => {
     sendToWindows(e.sender.id, args);
   });
 
@@ -101,7 +101,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   /**
    * Echo's the ID of the sender of an event.
    */
-  ipcMain.on(GLOBAL.IPC.ID.REQUEST, async (e: Electron.Event) => {
+  ipcMain.on(GLOBAL.IPC.ID.REQUEST, async (e: Electron.IpcMainEvent) => {
     const id = e.sender.id;
     e.sender.send(GLOBAL.IPC.ID.RESPONSE, { id });
   });
