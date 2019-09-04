@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import { t, R, rx } from '../common';
+import { t, R, rx, removeMarkdownEncoding } from '../common';
 import { SyncSchema } from '../schema';
 
 export type ISyncArgs = {
@@ -489,9 +489,18 @@ export class Sync implements t.IDisposable {
     });
   }
 
-  private formatValue = (value?: any) => {
-    value = isEmptyValue(value) ? undefined : value;
-    return value;
+  private formatValue = (input?: any) => {
+    const format = (value: any) => {
+      value = isEmptyValue(input) ? undefined : value;
+      value = typeof value === 'string' ? removeMarkdownEncoding(value) : value;
+      return value;
+    };
+
+    if (typeof input === 'object') {
+      return { ...input, value: format(input.value) };
+    } else {
+      return format(input);
+    }
   };
 
   private isDefaultValue = (e: { kind: t.GridCellType; key: string; value?: any }) => {
