@@ -52,7 +52,7 @@ export type IShellContext = {
 };
 
 /**
- * [Module-Import]
+ * [Importer]
  */
 export type ShellImporter<P = {}> = (props?: P) => Promise<ShellImporterResponse>;
 export type ShellImporterResponse = { init: ShellImportInit };
@@ -79,7 +79,14 @@ export type IShellState = {
   readonly tree: IShellTreeState;
   readonly body: IShellBodyState;
   readonly sidebar: IShellSidebarState;
+  readonly footer: IShellFooterState;
 };
+export type IShellPartialState = Partial<{
+  tree: Partial<IShellTreeState>;
+  body: Partial<IShellBodyState>;
+  sidebar: Partial<IShellSidebarState>;
+  footer: Partial<IShellFooterState>;
+}>;
 
 export type IShellTreeState = {
   root?: t.ITreeNode;
@@ -100,11 +107,13 @@ export type IShellSidebarState = {
   width: IShellSize | number;
 };
 
-export type IShellPartialState = Partial<{
-  tree: Partial<IShellTreeState>;
-  body: Partial<IShellBodyState>;
-  sidebar: Partial<IShellSidebarState>;
-}>;
+export type IShellFooterState = {
+  el?: JSX.Element;
+  foreground: IShellColor | string | number;
+  background: IShellColor | string | number;
+  border: IShellColor | string | number;
+  height: IShellSize | number;
+};
 
 /**
  * Appearance

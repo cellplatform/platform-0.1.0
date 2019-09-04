@@ -57,7 +57,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
    */
   public render() {
     const { foreground, background } = this.colors;
-    const transition = `color ${background.fadeSpeed}ms, background-color ${background.fadeSpeed}ms`;
+    const transition = `color ${foreground.fadeSpeed}ms, background-color ${background.fadeSpeed}ms`;
     const styles = {
       base: css({
         Absolute: 0,

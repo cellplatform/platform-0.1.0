@@ -1,6 +1,5 @@
 name: ui.shell
 
-
 web:
   port: 1234
   entry: src/entry.tsx
@@ -15,7 +14,6 @@ web:
   bundle:
     output: bundle
     treeshake: false
-
 
 sourcemaps:
   strip:

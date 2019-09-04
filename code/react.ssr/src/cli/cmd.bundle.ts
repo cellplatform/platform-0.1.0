@@ -6,7 +6,9 @@ import * as push from './cmd.push';
 /**
  * Bundle script.
  */
-export async function run(args: { config?: Config; version?: string; push?: boolean } = {}) {
+export async function run(
+  args: { config?: Config; version?: string; push?: boolean; manifest?: boolean } = {},
+) {
   // Setup initial conditions.
   const config = args.config || (await Config.create());
   const { endpoint } = config.s3;
@@ -40,8 +42,8 @@ export async function run(args: { config?: Config; version?: string; push?: bool
   log.info();
   const tasks = cli
     .tasks()
-    .task('build', async e => execScript(pkg, e, 'build'))
-    .task('bundle', async e => execScript(pkg, e, 'bundle'))
+    .task('build', async e => execScript(pkg, e, 'build'), { skip: args.manifest })
+    .task('bundle', async e => execScript(pkg, e, 'bundle'), { skip: args.manifest })
     .task('manifest', async e => {
       const { entries, error } = await getEntries(config);
       if (error) {

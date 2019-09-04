@@ -9,6 +9,7 @@ export function create() {
   const tree = props.observable<t.IShellTreeState>(SHELL.tree);
   const body = props.observable<t.IShellBodyState>(SHELL.body);
   const sidebar = props.observable<t.IShellSidebarState>(SHELL.sidebar);
+  const footer = props.observable<t.IShellFooterState>(SHELL.footer);
 
   const toChanged = (
     field: t.IShellStateChanged['field'],
@@ -26,6 +27,7 @@ export function create() {
     tree,
     body,
     sidebar,
+    footer,
   };
   return model;
 }

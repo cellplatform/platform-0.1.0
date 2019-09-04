@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, COLORS, createProvider, css, GlamorValue, loader, Shell, t } from '../common';
+import { Footer } from '../Footer';
 import { Progress } from '../Progress';
 import { RootColumns } from './Root.Columns';
 
@@ -99,26 +100,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       <this.Provider>
         <div {...styles.base}>
           <RootColumns tree$={this.tree$} />
-          {this.renderFooterBar()}
+          <Footer />
           <Progress style={styles.progress} />
         </div>
       </this.Provider>
-    );
-  }
-
-  public renderFooterBar() {
-    const styles = {
-      base: css({
-        boxSizing: 'border-box',
-        backgroundColor: COLORS.DARK,
-        borderTop: `solid 1px ${color.format(0.1)}`,
-        height: 28,
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <div />
-      </div>
     );
   }
 }

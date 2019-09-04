@@ -6,18 +6,98 @@ type ITaskItem = { title: string; task: t.Task };
 /**
  * Initializes a list of spinner tasks.
  */
-export function tasks() {
-  let list: ITaskItem[] = [];
-  let errors: t.ITaskError[] = [];
+export function tasks(): t.ITasks {
+  return Tasks.create();
+}
 
-  const run = (index: number, title: string, task: t.Task) => {
+export class Tasks implements t.ITasks {
+  /**
+   * [Lifecycle]
+   */
+  public static create = () => new Tasks();
+  private constructor() {}
+
+  /**
+   * [Fields]
+   */
+  private list: ITaskItem[] = [];
+  private errors: t.ITaskError[] = [];
+
+  /**
+   * [Properties]
+   */
+  public get length() {
+    return this.list.length;
+  }
+
+  /**
+   * [Methods]
+   */
+
+  /**
+   * Add an execution task to the list.
+   */
+  public task(title: string, task: t.Task, options: t.IAddTaskOptions = {}) {
+    const { skip } = options;
+    if (!Boolean(skip)) {
+      this.list = [...this.list, { title, task }];
+    }
+    return this;
+  }
+
+  /**
+   * Debugging alternative that does not add the task.
+   */
+  public skip(title: string, task: t.Task, options: t.IAddTaskOptions = {}) {
+    log.info.yellow(`SKIPPED TASK: "${title}"`);
+    return this;
+  }
+
+  /**
+   * Executes the list of tasks.
+   */
+  public async run(
+    options: { concurrent?: boolean; silent?: boolean; exitOnError?: boolean } = {},
+  ) {
+    const renderer = options.silent ? 'silent' : 'default';
+    const { concurrent, exitOnError = false } = options;
+    const runner = new Listr(
+      this.list.map(({ title, task }, i) => {
+        return {
+          title,
+          task: () => this.invoke(i, title, task) as any,
+        };
+      }),
+      { renderer, concurrent, exitOnError },
+    );
+    try {
+      await runner.run();
+    } catch (err) {
+      // Ignore - errors are caught and returned below.
+    }
+
+    // Finish up.
+    const errors = this.errors;
+    const ok = errors.length === 0;
+    const code = ok ? 0 : 1;
+    const error = ok
+      ? undefined
+      : `Error while running tasks (${errors.length} of ${tasks.length} failed)`;
+    return { ok, code, error, errors };
+  }
+
+  /**
+   * [Helpers]
+   */
+
+  private invoke = (index: number, title: string, task: t.Task) => {
     const $ = new Subject<string>();
     const args: t.TaskArgs = {
       message: text => $.next(text),
       done: () => $.complete(),
       error: (err: Error | string) => {
         const error = typeof err === 'string' ? err : err.message;
-        errors = [...errors, { index, title, error }];
+        this.errors = [...this.errors, { index, title, error }];
         $.error(typeof err === 'string' ? new Error(err) : err);
       },
     };
@@ -39,58 +119,4 @@ export function tasks() {
     // Finish up.
     return $;
   };
-
-  const api: t.ITasks = {
-    get length() {
-      return list.length;
-    },
-
-    /**
-     * Add an execution task to the list.
-     */
-    task(title: string, task: t.Task) {
-      list = [...list, { title, task }];
-      return api;
-    },
-
-    /**
-     * Debugging alternative that does not add the task.
-     */
-    skip(title: string, task: t.Task) {
-      log.info.yellow(`SKIPPED TASK: "${title}"`);
-      return api;
-    },
-
-    /**
-     * Executes the list of tasks.
-     */
-    async run(options: { concurrent?: boolean; silent?: boolean; exitOnError?: boolean } = {}) {
-      const renderer = options.silent ? 'silent' : 'default';
-      const { concurrent, exitOnError = false } = options;
-      const runner = new Listr(
-        list.map(({ title, task }, i) => {
-          return {
-            title,
-            task: () => run(i, title, task) as any,
-          };
-        }),
-        { renderer, concurrent, exitOnError },
-      );
-      try {
-        await runner.run();
-      } catch (err) {
-        // Ignore - errors are caught and returned below.
-      }
-
-      // Finish up.
-      const ok = errors.length === 0;
-      const code = ok ? 0 : 1;
-      const error = ok
-        ? undefined
-        : `Error while running tasks (${errors.length} of ${tasks.length} failed)`;
-      return { ok, code, error, errors };
-    },
-  };
-
-  return api;
 }

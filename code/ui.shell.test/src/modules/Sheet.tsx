@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, t } from '../common';
+import { css, t, shell } from '../common';
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
@@ -19,7 +19,10 @@ export class Sheet extends React.PureComponent<ISheetProps, ISheetState> {
   public state: ISheetState = {};
   private state$ = new Subject<Partial<ISheetState>>();
   private unmounted$ = new Subject<{}>();
-  private grid$ = new Subject<t.GridEvent>();
+  private grid$ = new Subject<datagrid.GridEvent>();
+
+  public static contextType = shell.Context;
+  public context!: t.IShellContext;
 
   private datagrid!: datagrid.DataGrid;
   private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);

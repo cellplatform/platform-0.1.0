@@ -1,41 +1,20 @@
+import { Button } from '@platform/ui.button';
 import { Page } from '@platform/ui.shell.doc';
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
-import { Button, css, shell, t } from '../common';
+import { css, shell, t } from '../common';
 
 export const init: t.ShellImportInit = async args => {
   const { shell } = args;
-  shell.state.body.el = <ComponentA />;
+  shell.state.body.el = <Doc />;
 };
 
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
 
-export type IComponentAProps = {};
-export type IComponentAState = {};
-
-export class ComponentA extends React.PureComponent<IComponentAProps, IComponentAState> {
-  public state: IComponentAState = {};
-  private state$ = new Subject<Partial<IComponentAState>>();
-  private unmounted$ = new Subject<{}>();
-
+export class Doc extends React.PureComponent {
   public static contextType = shell.Context;
   public context!: t.IShellContext;
-
-  /**
-   * [Lifecycle]
-   */
-  constructor(props: IComponentAProps) {
-    super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
 
   /**
    * [Render]
@@ -88,6 +67,6 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
    * [Handlers]
    */
   private loadSidebar = () => {
-    this.context.shell.load('B');
+    this.context.shell.load('Sidebar');
   };
 }
