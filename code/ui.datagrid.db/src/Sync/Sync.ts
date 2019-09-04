@@ -182,11 +182,12 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           e.changes.forEach(change => {
             const key = this.schema.grid.toCellKey(change.cell.key);
+            const value = change.value.to || { value: undefined };
             this.fireSync({
               source: 'GRID',
               kind: 'CELL',
               key,
-              value: change.value.to,
+              value,
             });
           });
         });
@@ -199,11 +200,12 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(e => {
           const key = this.schema.grid.toCellKey(e.key);
+          const value = (typeof e.value === 'object' ? e.value : { value: e.value }) as t.IGridCell;
           this.fireSync({
             source: 'DB',
             kind: 'CELL',
             key,
-            value: e.value,
+            value,
           });
         });
 
@@ -215,7 +217,7 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.db.toCellKey(e.key);
-          const existing = await db.getValue(key);
+          const existing = (await db.getValue(key)) as t.IGridCell;
           if (!R.equals(existing, e.value)) {
             save$.next({ kind: 'CELL', key, value: e.value });
           }
@@ -279,7 +281,7 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.db.toColumnKey(e.key);
-          const existing = await db.getValue(key);
+          const existing = (await db.getValue(key)) as t.IGridCell;
           if (!R.equals(existing, e.value)) {
             save$.next({ kind: 'COLUMN', key, value: e.value });
           }
@@ -343,7 +345,7 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.db.toRowKey(e.key);
-          const existing = await db.getValue(key);
+          const existing = (await db.getValue(key)) as t.IGridCell;
           if (!R.equals(existing, e.value)) {
             save$.next({ kind: 'ROW', key, value: e.value });
           }
