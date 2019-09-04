@@ -27,8 +27,8 @@
   },
   "devDependencies": {
     "@platform/ts": "3.5.6",
-    "@uiharness/dev": "0.9.3",
-    "@uiharness/ui": "0.6.14",
+    "@uiharness/dev": "0.9.5",
+    "@uiharness/ui": "0.6.16",
     "electron": "6.0.7"
   },
   "files": [
