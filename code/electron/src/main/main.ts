@@ -68,7 +68,12 @@ export function ready() {
 function initLog(args: { ipc: IpcClient; dir?: string; appName?: string }) {
   // Initialize electron log directires.
   // https://electronjs.org/docs/api/app#appsetapplogspathpath
-  app.setAppLogsPath();
+  //
+  // NOTE: this is necessary when using electron 6.x
+  //       commented out here so as not to fail when consumers use 5.x
+  //       put this line prior to init in the calling code when working with 6.
+  //
+  // app.setAppLogsPath();
 
   // Setup the logger
   const { ipc } = args;
