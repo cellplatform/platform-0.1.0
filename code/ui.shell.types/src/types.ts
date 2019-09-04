@@ -76,22 +76,37 @@ export type IShellLoadResponse = {
  */
 export type IShellState = {
   readonly changed$: t.Observable<IShellStateChanged>;
+  readonly header: IShellHeaderState;
   readonly tree: IShellTreeState;
   readonly body: IShellBodyState;
   readonly sidebar: IShellSidebarState;
   readonly footer: IShellFooterState;
 };
 export type IShellPartialState = Partial<{
+  header: Partial<IShellHeaderState>;
   tree: Partial<IShellTreeState>;
   body: Partial<IShellBodyState>;
   sidebar: Partial<IShellSidebarState>;
   footer: Partial<IShellFooterState>;
 }>;
 
+export type IShellHeaderState = {
+  el?: JSX.Element;
+  foreground: IShellColor | string | number;
+  background: IShellColor | string | number;
+  border: IShellColor | string | number;
+  height: IShellSize | number;
+};
+
 export type IShellTreeState = {
   root?: t.ITreeNode;
   current?: string;
   width: IShellSize | number;
+  render?: {
+    node?: t.RenderTreeNodeBody;
+    icon?: t.RenderTreeIcon;
+    panel?: t.RenderTreePanel;
+  };
 };
 
 export type IShellBodyState = {
@@ -139,5 +154,5 @@ export type IShellProgressCompleteEvent = {
 export type IShellProgressComplete = {};
 
 export type IShellStateChanged = t.IPropChanged & {
-  field: 'tree' | 'body' | 'sidebar';
+  field: 'header' | 'footer' | 'tree' | 'body' | 'sidebar';
 };

@@ -5,12 +5,12 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
 import { Context, css, t, DEFAULT, util } from '../common';
 const SHELL = DEFAULT.STATE.SHELL;
 
-export type IFooterProps = {};
-export type IFooterState = {};
+export type IHeaderProps = {};
+export type IHeaderState = {};
 
-export class Footer extends React.PureComponent<IFooterProps, IFooterState> {
-  public state: IFooterState = {};
-  private state$ = new Subject<Partial<IFooterState>>();
+export class Header extends React.PureComponent<IHeaderProps, IHeaderState> {
+  public state: IHeaderState = {};
+  private state$ = new Subject<Partial<IHeaderState>>();
   private unmounted$ = new Subject<{}>();
 
   public static contextType = Context;
@@ -19,7 +19,7 @@ export class Footer extends React.PureComponent<IFooterProps, IFooterState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IFooterProps) {
+  constructor(props: IHeaderProps) {
     super(props);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
   }
@@ -42,19 +42,19 @@ export class Footer extends React.PureComponent<IFooterProps, IFooterState> {
    * [Properties]
    */
   public get model() {
-    return this.context.shell.state.footer as t.IObservableProps<t.IShellFooterState>;
+    return this.context.shell.state.header as t.IObservableProps<t.IShellHeaderState>;
   }
 
   public get height() {
-    return util.toSize(this.model.height, SHELL.footer.height);
+    return util.toSize(this.model.height, SHELL.header.height);
   }
 
   public get colors() {
     const model = this.model;
-    const { footer } = SHELL;
-    const foreground = util.toColor(model.foreground, footer.foreground);
-    const background = util.toColor(model.background, footer.background);
-    const border = util.toColor(model.border, footer.border);
+    const { header } = SHELL;
+    const foreground = util.toColor(model.foreground, header.foreground);
+    const background = util.toColor(model.background, header.background);
+    const border = util.toColor(model.border, header.border);
     return { foreground, background, border };
   }
 
@@ -77,7 +77,7 @@ export class Footer extends React.PureComponent<IFooterProps, IFooterState> {
         color: foreground.color,
         backgroundColor: background.color,
         height: height.value,
-        borderTop: height.value > 0 ? `solid 1px ${border.color}` : undefined,
+        borderBottom: height.value > 0 ? `solid 1px ${border.color}` : undefined,
         transition,
       }),
     };
