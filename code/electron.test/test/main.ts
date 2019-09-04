@@ -22,6 +22,8 @@ const config = require('../.uiharness/config.json') as uiharness.IRuntimeConfig;
   const { log, ipc, settings, windows } = await main.init<t.MyEvents>({ appName });
   const factory = new main.ScreenFactory<t.MyEvents>({ log, settings, ipc, windows });
 
+  console.log('start // test');
+
   const defaultFactory = factory.type({
     type: 'default',
     url: fromKey('default'),
