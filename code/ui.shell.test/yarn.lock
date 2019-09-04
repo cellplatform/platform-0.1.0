@@ -1416,33 +1416,33 @@
     "@platform/react" "0.3.26"
     "@platform/util.animate" "0.0.55"
 
-"@platform/ui.shell.doc@0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell.doc/-/ui.shell.doc-0.0.15.tgz#7c04694e5576e0057afbe8adf0024bf5fd57e9c6"
-  integrity sha512-2NJS09L8GZ9jnjRhtf0hpy1zzW7096m/A6izfDWyp3E6w76wfocBwFYVTB4khLp8MZHegIEg3y4S7UoT5QwunQ==
+"@platform/ui.shell.doc@0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell.doc/-/ui.shell.doc-0.0.16.tgz#38af7acfdc2800ccb2af19bae64a029d94960286"
+  integrity sha512-EFY7PzfUSEu2NgxFIQgNqezUjaQzL3O8YWZXM2APXgJL+Bg2Dt26tRHnRabadkXqnA2Vzct+h6TnBC026ML8Dw==
   dependencies:
     "@platform/libs" "0.1.3"
     "@platform/react" "0.3.26"
-    "@platform/ui.shell.types" "0.0.14"
+    "@platform/ui.shell.types" "0.0.15"
 
-"@platform/ui.shell.types@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.14.tgz#02af1cca06fc8929c28836a10850e0b37a5597a7"
-  integrity sha512-KbtcnYUmoxMc7FLOpY02FsNf5p9obWrCMpBRztA76ND2XVai2tjq5tmke3RjLvsgHm1vxCQsQRx6UP4FKKv5oA==
+"@platform/ui.shell.types@0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.0.15.tgz#af24d82bcc7cd28c6d2180425ffa04fda22054b4"
+  integrity sha512-hU/MZnGjNBri9txEW+KOR3zHk8FosAJgtCiohoEiNpm1rZGReprTngFNYsnFXHTXClMumwdfgvU91Hga741L2Q==
   dependencies:
     "@platform/libs" "0.1.3"
     "@platform/ui.tree" "0.3.8"
 
-"@platform/ui.shell@0.1.19":
-  version "0.1.19"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell/-/ui.shell-0.1.19.tgz#197db5918c1c10acff7d973e2a63196a97409300"
-  integrity sha512-wOdrCPaI//lad9cKkw3tOd/5uMmUkY26tZJIAgk9VyJgMSuj3iz9od8cLv7UTCSUfi84BFIwUfBTpKmE9jShzA==
+"@platform/ui.shell@0.1.20":
+  version "0.1.20"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell/-/ui.shell-0.1.20.tgz#6932da4c2cad52d399047cb7ac606946debe64f7"
+  integrity sha512-b3BbIoQs7WlXGNio6z9lrQhH1xKhEOSi9axh56uB1cn0Aa6Pr2kL0hQgjbRNMRACofqKty3cxaV7rUY45Cw59A==
   dependencies:
     "@platform/log" "0.0.145"
     "@platform/react" "0.3.26"
     "@platform/ui.icon" "0.0.90"
     "@platform/ui.loader" "0.2.6"
-    "@platform/ui.shell.types" "0.0.14"
+    "@platform/ui.shell.types" "0.0.15"
     "@platform/ui.tree" "0.3.8"
     "@platform/util.value" "0.5.5"
 
@@ -3769,9 +3769,9 @@ elegant-spinner@^1.0.1:
   integrity sha1-2wQ1IcldfjA/2PNFvtwzSc+wcp4=
 
 elliptic@^6.0.0:
-  version "6.5.0"
-  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.0.tgz#2b8ed4c891b7de3200e14412a5b8248c7af505ca"
-  integrity sha512-eFOJTMyCYb7xtE/caJ6JJu+bhi67WCYNbkGSknu20pmM8Ke/bqOfdnZWxyoGN26JgfxTbXrsCkEw4KheCT/KGg==
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.1.tgz#c380f5f909bf1b9b4428d028cd18d3b0efd6b52b"
+  integrity sha512-xvJINNLbTeWQjrl6X+7eQCrIy/YPv5XCpKW6kB5mKvtnGILoLDcySuwomfdzt0BMdLNVnuRNTuzKNHj0bva1Cg==
   dependencies:
     bn.js "^4.4.0"
     brorand "^1.0.1"
