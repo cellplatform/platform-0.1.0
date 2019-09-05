@@ -91,6 +91,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/ui.spinner](/code/ui.spinner)
   - [@platform/ui.text](/code/ui.text)
 - ui.shell
+  - [@platform/ui.shell](/code/ui.shell.types)
   - [@platform/ui.shell](/code/ui.shell)
   - [@platform/ui.shell](/code/ui.doc)
 - state
