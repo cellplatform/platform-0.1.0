@@ -14,7 +14,7 @@ const fadeSpeed = 300;
 const SHELL = {
   header: {
     el: undefined,
-    height: { value: 0, speed: 200 },
+    height: { value: 0, speed: 100 },
     foreground: { color: COLORS.WHITE, fadeSpeed },
     background: { color: COLORS.DARK, fadeSpeed },
     border: { color: asColor(0.1), fadeSpeed },
@@ -38,7 +38,7 @@ const SHELL = {
   },
   footer: {
     el: undefined,
-    height: { value: 28, speed: 200 },
+    height: { value: 28, speed: 100 },
     foreground: { color: COLORS.WHITE, fadeSpeed },
     background: { color: COLORS.TRANSPARENT, fadeSpeed },
     border: { color: asColor(0.1), fadeSpeed },

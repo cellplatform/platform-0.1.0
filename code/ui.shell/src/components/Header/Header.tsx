@@ -19,12 +19,8 @@ export class Header extends React.PureComponent<IHeaderProps, IHeaderState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IHeaderProps) {
-    super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-  }
-
   public componentDidMount() {
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     this.model.changed$
       .pipe(
         takeUntil(this.unmounted$),
@@ -68,7 +64,8 @@ export class Header extends React.PureComponent<IHeaderProps, IHeaderState> {
     let transition = '';
     transition += `color ${foreground.fadeSpeed}ms, `;
     transition += `background-color ${background.fadeSpeed}ms, `;
-    transition += `border ${border.fadeSpeed}ms`;
+    transition += `border ${border.fadeSpeed}ms, `;
+    transition += `height ${height.speed}ms`;
 
     const styles = {
       base: css({
