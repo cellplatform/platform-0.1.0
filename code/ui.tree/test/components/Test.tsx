@@ -39,6 +39,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
      * NB: Alternative helper for pealing off events.
      */
     const tree = TreeView.events(events$);
+
     tree.mouse().click.node$.subscribe(e => {
       log.info('🐷 CLICK from TreeEvents helper', e);
     });
@@ -48,7 +49,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     // Log events.
     events$.subscribe(e => {
-      log.info('🌳', e.type, e.payload);
+      // log.info('🌳', e.type, e.payload);
     });
 
     /**
