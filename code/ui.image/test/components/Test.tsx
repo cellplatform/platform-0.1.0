@@ -3,7 +3,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import * as cli from '../cli';
-import { log, Avatar, constants, css, CommandShell, t } from '../common';
+import { color, log, Avatar, constants, css, CommandShell, t, image, Hr } from '../common';
+
+const Owl = image({
+  x1: 'https://platform.sfo2.digitaloceanspaces.com/modules/ui.image/images/owl-big.png',
+  x2: 'https://platform.sfo2.digitaloceanspaces.com/modules/ui.image/images/owl-big@2x.png',
+  width: 449,
+  height: 599,
+});
 
 const PINK = '#CD638D';
 
@@ -51,12 +58,31 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         padding: 30,
       }),
     };
+
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
           <Avatar {...this.state} events$={this.events$} onClick={this.onClick} />
+          <Hr thickness={5} margin={[35, 0]} />
+          {this.renderImage()}
         </div>
       </CommandShell>
+    );
+  }
+
+  private renderImage() {
+    const styles = {
+      base: css({}),
+      image: css({
+        borderRadius: 8,
+        border: `solid 1px ${color.format(0.8)}`,
+      }),
+    };
+
+    return (
+      <div {...styles.base}>
+        <Owl style={styles.image} />
+      </div>
     );
   }
 
