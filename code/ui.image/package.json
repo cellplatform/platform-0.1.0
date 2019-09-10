@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.image",
-  "version": "0.1.38",
+  "version": "0.2.0",
   "description": "Image related components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

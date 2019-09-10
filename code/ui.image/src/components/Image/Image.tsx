@@ -4,7 +4,6 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { t, css, mouse, defaultValue } from '../../common';
 import * as loader from './loader';
 
-
 /**
  * Curry an image src into a JSX element.
  */

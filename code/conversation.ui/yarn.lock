@@ -1326,10 +1326,10 @@
   dependencies:
     "@platform/react" "0.3.26"
 
-"@platform/ui.image@0.1.38":
-  version "0.1.38"
-  resolved "https://registry.yarnpkg.com/@platform/ui.image/-/ui.image-0.1.38.tgz#72df2431399ad726a6d5a939784101b0f006a0c2"
-  integrity sha512-Qa3OptHbnS1NhHGqj6hAWLu735svL+/8tXdKa+5JKNQLXqZJtOKkbwfw/bkOHh0/kcP1W/b5UdGo9xae093NAg==
+"@platform/ui.image@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.image/-/ui.image-0.2.0.tgz#8b88f6750761afa2d444eb7a453e695dab75b025"
+  integrity sha512-PxsdeTzLvFvfi4WePot50BJVFhxmqfXxhm778gN5Je3t9RmwaX4fDEeS3ppK12EQMkCaAzUp5Wy4Mz1EwYD9Wg==
   dependencies:
     "@platform/react" "0.3.26"
     "@platform/ui.icon" "0.0.90"
