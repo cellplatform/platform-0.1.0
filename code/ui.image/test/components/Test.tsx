@@ -26,7 +26,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   };
   private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<t.ITestState>>();
-  private events$ = new Subject<t.AvatarEvent>();
+  private avatar$ = new Subject<t.AvatarEvent>();
+  private image$ = new Subject<t.ImageEvent>();
   private cli: t.ICommandState = cli.init({ state$: this.state$ });
 
   /**
@@ -34,11 +35,16 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    */
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    const avatar$ = this.avatar$.pipe(takeUntil(this.unmounted$));
+    const image$ = this.image$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
 
-    events$.subscribe(e => {
+    avatar$.subscribe(e => {
       log.info('👱‍', e.type, e.payload);
+    });
+
+    image$.subscribe(e => {
+      log.info('🐷', e.type, e.payload);
     });
   }
 
@@ -62,16 +68,16 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
-          <Avatar {...this.state} events$={this.events$} onClick={this.onAvatarClick} />
+          <Avatar {...this.state} events$={this.avatar$} onClick={this.onAvatarClick} />
           <Hr thickness={5} margin={[35, 0]} />
           {this.renderImage()}
-          {this.renderImage()}
+          {this.renderImage({ fadeIn: 3000 })}
         </div>
       </CommandShell>
     );
   }
 
-  private renderImage() {
+  private renderImage(props: Partial<t.IImageProps> = {}) {
     const styles = {
       image: css({
         borderRadius: 8,
@@ -79,7 +85,16 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         display: 'inline-block',
       }),
     };
-    return <Owl style={styles.image} scale={0.8} onLoad={this.onImageLoaded} />;
+    return (
+      <Owl
+        style={styles.image}
+        scale={0.8}
+        onLoaded={this.onImageLoaded}
+        onClick={this.onImageClick}
+        events$={this.image$}
+        {...props}
+      />
+    );
   }
 
   /**
@@ -91,5 +106,9 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
   private onImageLoaded = (e: t.IImageLoad) => {
     log.info('IMAGE/onLoad:', e);
+  };
+
+  private onImageClick = () => {
+    log.info('IMAGE/click');
   };
 }
