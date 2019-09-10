@@ -38,7 +38,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     state$.subscribe(e => this.setState(e));
 
     events$.subscribe(e => {
-      log.info('🐷', e.type, e.payload);
+      log.info('👱‍', e.type, e.payload);
     });
   }
 
@@ -62,8 +62,9 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     return (
       <CommandShell cli={this.cli} tree={{}} localStorage={true}>
         <div {...styles.base}>
-          <Avatar {...this.state} events$={this.events$} onClick={this.onClick} />
+          <Avatar {...this.state} events$={this.events$} onClick={this.onAvatarClick} />
           <Hr thickness={5} margin={[35, 0]} />
+          {this.renderImage()}
           {this.renderImage()}
         </div>
       </CommandShell>
@@ -72,25 +73,23 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
 
   private renderImage() {
     const styles = {
-      base: css({}),
       image: css({
         borderRadius: 8,
         border: `solid 1px ${color.format(0.8)}`,
+        display: 'inline-block',
       }),
     };
-
-    return (
-      <div {...styles.base}>
-        <Owl style={styles.image} />
-      </div>
-    );
+    return <Owl style={styles.image} scale={0.8} onLoad={this.onImageLoaded} />;
   }
 
   /**
    * [Handlers]
    */
+  private onAvatarClick = () => {
+    log.info('AVATAR/click');
+  };
 
-  private onClick = () => {
-    log.info('onClick');
+  private onImageLoaded = (e: t.IImageLoad) => {
+    log.info('IMAGE/onLoad:', e);
   };
 }

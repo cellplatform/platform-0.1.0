@@ -1,4 +1,4 @@
-export type AvatarLoadStatus = 'LOADING' | 'LOADED' | 'LOAD_FAILED';
+export type AvatarLoadStatus = 'LOADING' | 'LOADED' | 'FAILED';
 
 /**
  * [Events]
@@ -7,9 +7,11 @@ export type AvatarEvent = IAvatarLoadEvent;
 
 export type IAvatarLoadEvent = {
   type: 'AVATAR/load';
-  payload: {
-    src: string;
-    status: AvatarLoadStatus;
-    type?: 'IMAGE' | 'PLACEHOLDER';
-  };
+  payload: IAvatarLoad;
+};
+export type IAvatarLoad = {
+  src: string;
+  status: AvatarLoadStatus;
+  isLoaded: boolean;
+  type?: 'IMAGE' | 'PLACEHOLDER';
 };

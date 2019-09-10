@@ -169,7 +169,7 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
   private handleImageLoadError = () => {
     const src = this.src;
     this.state$.next({ isLoaded: null });
-    const status = src ? 'LOAD_FAILED' : 'LOADED'; // NB: If there is no src URL then it wasn't a actual fail.
+    const status = src ? 'FAILED' : 'LOADED'; // NB: If there is no src URL then it wasn't a actual fail.
     this.fireLoad(status);
   };
 
@@ -182,10 +182,14 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
     if (status === 'LOADED') {
       type = !src ? 'PLACEHOLDER' : 'IMAGE';
     }
-    if (status === 'LOAD_FAILED') {
+    if (status === 'FAILED') {
       type = 'PLACEHOLDER';
     }
     this.state$.next({ status });
-    this.fire({ type: 'AVATAR/load', payload: value.deleteUndefined({ status, src, type }) });
+    const isLoaded = status === 'LOADED';
+    this.fire({
+      type: 'AVATAR/load',
+      payload: value.deleteUndefined({ isLoaded, status, src, type }),
+    });
   }
 }
