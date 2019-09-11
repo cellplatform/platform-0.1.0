@@ -15,6 +15,7 @@ import { Spinner } from '../primitives';
 import { ITreeNodeProps, TreeNode, TreeNodeTwisty } from '../TreeNode';
 
 export type ITreeNodeListProps = {
+  rootId?: string;
   node: ITreeNode<any>;
   depth?: number;
   defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
@@ -252,6 +253,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
 
     return (
       <TreeNode
+        rootId={this.props.rootId}
         key={id}
         node={node}
         iconRight={iconRight}
@@ -274,6 +276,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     const theme = this.theme;
     return (
       <TreeNodeList
+        rootId={this.props.rootId}
         key={`children:${node.id}`}
         node={node}
         depth={this.depth + 1}

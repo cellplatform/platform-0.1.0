@@ -7,7 +7,7 @@ export {
   IMouseEvent,
   containsFocus,
 } from '@platform/react';
-export { value, is, defaultValue } from '@platform/util.value';
+export { value, is, defaultValue, time } from '@platform/util.value';
 
 /**
  * [Ramda]

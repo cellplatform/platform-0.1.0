@@ -79,6 +79,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
       .pipe(
         filter(e => e.type === 'DOUBLE_CLICK'),
         filter(e => e.target === 'NODE'),
+        filter(e => !Boolean(e.props.inline)),
+        filter(e => !Boolean(e.props.labelEditable)),
       )
       .subscribe(e => this.state$.next({ current: e.id }));
 
@@ -87,6 +89,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
         filter(e => e.type === 'DOUBLE_CLICK'),
         filter(e => e.target === 'NODE'),
         filter(e => Boolean(e.props.inline)),
+        filter(e => !Boolean(e.props.labelEditable)),
       )
       .subscribe(e => toggle(e.node));
 
