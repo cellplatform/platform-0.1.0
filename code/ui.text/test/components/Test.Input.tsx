@@ -80,7 +80,9 @@ export class TestInput extends React.PureComponent<ITestInputProps, ITestInputSt
    */
   public render() {
     const styles = {
-      base: css({}),
+      base: css({
+        // userSelect: 'none',
+      }),
       dark: css({
         boxSizing: 'border-box',
         backgroundColor: COLORS.DARK,
@@ -92,6 +94,7 @@ export class TestInput extends React.PureComponent<ITestInputProps, ITestInputSt
       <div {...styles.base}>
         <div>
           <this.Input focusOnLoad={true} placeholder={'placeholder'} />
+          <this.Input placeholder={'read-only'} isReadOnly={true} />
           <this.Input maxLength={5} placeholder={'max-length: 5'} />
         </div>
         <div {...styles.dark}>

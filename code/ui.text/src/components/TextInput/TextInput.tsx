@@ -134,9 +134,16 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
   }
 
   /**
+   * Determine whether the input currently contains a value.
+   */
+  public get hasValue() {
+    const { value = '' } = this.props;
+    return value.length > 0;
+  }
+
+  /**
    * [Methods]
    */
-
   public focus(isFocused?: boolean) {
     if (this.input) {
       if (defaultValue(isFocused, true)) {
@@ -198,11 +205,12 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
     const {
       value = '',
       isPassword = false,
+      isReadOnly = false,
       placeholder,
       valueStyle = DEFAULT.VALUE_STYLE,
       disabledOpacity = DEFAULT.DISABLED_OPACITY,
     } = this.props;
-    const hasValue = value.length > 0;
+    const hasValue = this.hasValue;
     const styles = {
       base: {
         position: 'relative',
@@ -216,47 +224,74 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
         Absolute: 0,
         opacity: isEnabled ? 1 : disabledOpacity,
         Flex: 'horizontal-center-start',
-        paddingLeft: 3, // Ensure the placeholder does not bump into the input-carret.
+        paddingLeft: 2, // Ensure the placeholder does not bump into the input-caret.
         whiteSpace: 'nowrap',
         overflow: 'hidden',
+        userSelect: 'none',
+      },
+      readonly: {
+        userSelect: 'auto',
+      },
+      input: {
+        visibility: isReadOnly ? 'hidden' : 'visible',
+        pointerEvents: isReadOnly ? 'none' : 'auto',
       },
     };
 
     const elPlaceholder = !hasValue && placeholder && (
-      <div {...css(placeholderStyle(this.props), styles.placeholder)}>{placeholder}</div>
+      <div
+        {...css(placeholderStyle(this.props), styles.placeholder)}
+        onDoubleClick={this.labelDblClickHandler('PLACEHOLDER')}
+        children={placeholder}
+      />
+    );
+
+    const elReadOnly = isReadOnly && !elPlaceholder && (
+      <div
+        {...css(valueStyle, styles.placeholder, styles.readonly)}
+        onDoubleClick={this.labelDblClickHandler('READ_ONLY')}
+        children={value}
+      />
+    );
+
+    const elInput = (
+      <HtmlInput
+        ref={this.inputRef}
+        style={styles.input}
+        className={this.props.className}
+        isEnabled={isEnabled}
+        isPassword={isPassword}
+        disabledOpacity={disabledOpacity}
+        value={value}
+        maxLength={this.props.maxLength}
+        mask={this.props.mask}
+        valueStyle={valueStyle}
+        focusOnLoad={this.props.focusOnLoad}
+        focusAction={this.props.focusAction}
+        onKeyPress={this.props.onKeyPress}
+        onKeyDown={this.props.onKeyDown}
+        onKeyUp={this.props.onKeyUp}
+        onFocus={this.props.onFocus}
+        onBlur={this.props.onBlur}
+        onChange={this.handleChange}
+        onEnter={this.props.onEnter}
+        onTab={this.props.onTab}
+        onDblClick={this.handleInputDblClick}
+        spellCheck={this.props.spellCheck}
+        autoCapitalize={this.props.autoCapitalize}
+        autoCorrect={this.props.autoCorrect}
+        autoComplete={this.props.autoComplete}
+        selectionBackground={this.props.selectionBackground}
+        events$={this.events$}
+      />
     );
 
     return (
       <div {...css(styles.base, this.props.style)} className={'p-TextInput'} {...this.mouse.events}>
         <div {...css(styles.inner)}>
           {elPlaceholder}
-          <HtmlInput
-            ref={this.inputRef}
-            className={this.props.className}
-            isEnabled={isEnabled}
-            isPassword={isPassword}
-            disabledOpacity={disabledOpacity}
-            value={this.props.value}
-            maxLength={this.props.maxLength}
-            mask={this.props.mask}
-            valueStyle={valueStyle}
-            focusOnLoad={this.props.focusOnLoad}
-            focusAction={this.props.focusAction}
-            onKeyPress={this.props.onKeyPress}
-            onKeyDown={this.props.onKeyDown}
-            onKeyUp={this.props.onKeyUp}
-            onFocus={this.props.onFocus}
-            onBlur={this.props.onBlur}
-            onChange={this.handleChange}
-            onEnter={this.props.onEnter}
-            onTab={this.props.onTab}
-            spellCheck={this.props.spellCheck}
-            autoCapitalize={this.props.autoCapitalize}
-            autoCorrect={this.props.autoCorrect}
-            autoComplete={this.props.autoComplete}
-            selectionBackground={this.props.selectionBackground}
-            events$={this.events$}
-          />
+          {elReadOnly}
+          {elInput}
         </div>
       </div>
     );
@@ -295,6 +330,31 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
     this.fire({ type: 'TEXT_INPUT/changed', payload: e });
     if (onChange) {
       onChange(e);
+    }
+  };
+
+  private labelDblClickHandler = (target: t.ITextInputLabelDblClick['target']) => {
+    return (e: React.MouseEvent) => {
+      this.fire({
+        type: 'TEXT_INPUT/label/dblClick',
+        payload: {
+          target,
+          type: 'DOUBLE_CLICK',
+          button: e.button === 2 ? 'LEFT' : 'RIGHT',
+          cancel: () => {
+            e.preventDefault();
+            e.stopPropagation();
+          },
+        },
+      });
+    };
+  };
+
+  private handleInputDblClick = (e: React.MouseEvent) => {
+    if (!this.hasValue) {
+      // NB: When the <input> is dbl-clicked and there is no value
+      //     it is deduced that the placeholder was clicked.
+      this.labelDblClickHandler('PLACEHOLDER')(e);
     }
   };
 }

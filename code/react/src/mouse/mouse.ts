@@ -177,8 +177,7 @@ export const handle: MouseHandlerFactory = args => {
  * [Helpers]
  */
 const toButton = (e: React.MouseEvent): MouseEvent['button'] => {
-  const button = e.button;
-  switch (button) {
+  switch (e.button) {
     case 2:
       return 'RIGHT';
 
