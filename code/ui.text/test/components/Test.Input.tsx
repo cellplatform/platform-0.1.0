@@ -91,27 +91,28 @@ export class TestInput extends React.PureComponent<ITestInputProps, ITestInputSt
     return (
       <div {...styles.base}>
         <div>
-          {this.renderInput({ focusOnLoad: true })}
-          {this.renderInput({ maxLength: 5, placeholder: 'maxLength: 5' })}
+          <this.Input focusOnLoad={true} placeholder={'placeholder'} />
+          <this.Input maxLength={5} placeholder={'max-length: 5'} />
         </div>
         <div {...styles.dark}>
-          {this.renderInput({
-            valueStyle: { color: COLORS.WHITE },
-            placeholderStyle: { color: color.format(0.2), italic: true },
-          })}
-          {this.renderInput({
-            isEnabled: false,
-            valueStyle: { color: 1, disabledColor: 1 },
-            disabledOpacity: 0.2,
-            placeholder: 'disabled',
-            placeholderStyle: { color: color.format(0.2), italic: true },
-          })}
+          <this.Input
+            valueStyle={{ color: COLORS.WHITE }}
+            placeholder={'placeholder'}
+            placeholderStyle={{ color: color.format(0.2), italic: true }}
+          />
+          <this.Input
+            isEnabled={false}
+            valueStyle={{ color: 1, disabledColor: 1 }}
+            disabledOpacity={0.2}
+            placeholder={'disabled'}
+            placeholderStyle={{ color: color.format(0.2), italic: true }}
+          />
         </div>
       </div>
     );
   }
 
-  private renderInput(props: Partial<ITextInputProps>) {
+  private Input = (props: Partial<ITextInputProps>) => {
     const styles = {
       base: css({
         marginBottom: 20,
@@ -131,5 +132,5 @@ export class TestInput extends React.PureComponent<ITestInputProps, ITestInputSt
         />
       </div>
     );
-  }
+  };
 }

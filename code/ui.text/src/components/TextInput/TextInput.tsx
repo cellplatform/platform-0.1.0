@@ -29,6 +29,7 @@ export type ITextInputProps = t.ITextInputFocusAction &
     events$?: Subject<t.TextInputEvent>;
     isEnabled?: boolean;
     isPassword?: boolean;
+    isReadOnly?: boolean;
     disabledOpacity?: number;
     width?: number | string;
     minWidth?: number;
