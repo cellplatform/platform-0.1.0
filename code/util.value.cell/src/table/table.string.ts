@@ -24,7 +24,7 @@ export function toString(args: {
   }
   const { delimiter = '\t' } = args;
 
-  // Clean up incoming list (sort, unique)
+  // Clean up incoming list (sort, unique).
   const items = R.uniqBy(R.prop('key'), cell.sort(args.items));
 
   // Get a complete square of keys as the given list by have holes in it.

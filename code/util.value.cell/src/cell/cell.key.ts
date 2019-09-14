@@ -239,6 +239,10 @@ export function toType(cell: CellInput): t.CoordCellType | undefined {
 
 /**
  * A cell sorter comparison.
+ * Result:
+ *    1: greater-than
+ *    0: same
+ *   -1: less-than
  */
 export const compare = {
   by: (axis: t.CoordAxis) => (axis === 'COLUMN' ? compare.byColumn : compare.byRow),
@@ -282,3 +286,35 @@ export function sort<T extends CellInput>(list: T[], options: { by?: t.CoordAxis
   const axis = options.by || 'COLUMN';
   return [...list].sort(compare.by(axis));
 }
+
+/**
+ * Min cell.
+ */
+export const min = {
+  by: (axis: t.CoordAxis, list: CellInput[]) => {
+    let res: t.ICoordCell | undefined;
+    list.forEach(item => {
+      const cell = toCell(item);
+      res = !res ? cell : comparer(cell, res, { axis }) < 0 ? cell : res;
+    });
+    return res ? toAxisIndex(axis, res) : -1;
+  },
+  row: (list: CellInput[]) => min.by('ROW', list),
+  column: (list: CellInput[]) => min.by('COLUMN', list),
+};
+
+/**
+ * Max cell.
+ */
+export const max = {
+  by: (axis: t.CoordAxis, list: CellInput[]) => {
+    let res: t.ICoordCell | undefined;
+    list.forEach(item => {
+      const cell = toCell(item);
+      res = !res ? cell : comparer(cell, res, { axis }) > 0 ? cell : res;
+    });
+    return res ? toAxisIndex(axis, res) : -1;
+  },
+  row: (list: CellInput[]) => max.by('ROW', list),
+  column: (list: CellInput[]) => max.by('COLUMN', list),
+};

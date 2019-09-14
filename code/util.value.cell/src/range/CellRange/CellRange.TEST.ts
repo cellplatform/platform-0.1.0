@@ -33,6 +33,7 @@ describe('CellRange', () => {
       test(['A1'], 'A1:A1');
       test([{ key: 'A1' }], 'A1:A1');
       test(['Z9', 'A1'], 'A1:Z9');
+      test(['A1', 'A2', 'B1'], 'A1:B2'); // NB: The square needs to add to the highest row.
     });
   });
 

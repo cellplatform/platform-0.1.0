@@ -254,6 +254,51 @@ describe('sort', () => {
   });
 });
 
+describe('min/max', () => {
+  const list = ['C1', 'B2', 'B1', 'C9', 'D3'];
+
+  it('min/max - undefined', () => {
+    const test = (input: CellInput[]) => {
+      expect(cell.min.row(input)).to.eql(-1);
+      expect(cell.min.column(input)).to.eql(-1);
+      expect(cell.max.row(input)).to.eql(-1);
+      expect(cell.max.column(input)).to.eql(-1);
+    };
+
+    test([]);
+    test(['']);
+    test([undefined as any, '']);
+  });
+
+  it('min.row', () => {
+    const res1 = cell.min.by('ROW', list);
+    const res2 = cell.min.row(list);
+    expect(res1 && res1).to.eql(0);
+    expect(res1).to.eql(res2);
+  });
+
+  it('min.column', () => {
+    const res1 = cell.min.by('COLUMN', list);
+    const res2 = cell.min.column(list);
+    expect(res1).to.eql(1);
+    expect(res1).to.eql(res2);
+  });
+
+  it('max.row', () => {
+    const res1 = cell.max.by('ROW', list);
+    const res2 = cell.max.row(list);
+    expect(res1 && res1).to.eql(8);
+    expect(res1).to.eql(res2);
+  });
+
+  it('max.column', () => {
+    const res1 = cell.max.by('COLUMN', list);
+    const res2 = cell.max.column(list);
+    expect(res1 && res1).to.eql(3);
+    expect(res1).to.eql(res2);
+  });
+});
+
 describe('to column/row', () => {
   it('toAxisIndex', () => {
     const test = (axis: t.CoordAxis, input: CellInput, output: number) => {
