@@ -1,12 +1,23 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil, throwIfEmpty } from 'rxjs/operators';
 
-import { COLORS, Button, color, css, Hr, ITextInputProps, log, t, TextInput } from '../common';
+import {
+  COLORS,
+  Button,
+  color,
+  css,
+  Hr,
+  ITextInputProps,
+  log,
+  t,
+  TextInput,
+  time,
+} from '../common';
 import { TestText } from './Test.Text';
 
 export type ITestInputProps = { value?: string };
-export type ITestInputState = { value?: string };
+export type ITestInputState = { value?: string; isClickableEditing?: boolean };
 
 export class TestInput extends React.PureComponent<ITestInputProps, ITestInputState> {
   public state: ITestInputState = {};
@@ -25,9 +36,14 @@ export class TestInput extends React.PureComponent<ITestInputProps, ITestInputSt
   }
 
   public componentDidMount() {
-    const input$ = this.input$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
+
+    const input$ = this.input$.pipe(takeUntil(this.unmounted$));
+    const keypress$ = input$.pipe(
+      filter(e => e.type === 'TEXT_INPUT/keypress'),
+      map(e => e.payload as t.ITextInputKeypress),
+    );
 
     input$.subscribe(e => {
       log.info('🌳', e);
@@ -49,6 +65,22 @@ export class TestInput extends React.PureComponent<ITestInputProps, ITestInputSt
       )
       .subscribe(e => {
         this.state$.next({ value: e.to });
+      });
+
+    /**
+     * Sample behavior for "dbl-click-to-edit"
+     */
+    input$.pipe(filter(e => e.type === 'TEXT_INPUT/label/dblClick')).subscribe(e => {
+      this.state$.next({ isClickableEditing: true });
+    });
+
+    keypress$
+      .pipe(
+        filter(e => e.isPressed === true && e.key === 'Enter'),
+        filter(e => Boolean(this.state.isClickableEditing)),
+      )
+      .subscribe(e => {
+        this.state$.next({ isClickableEditing: false });
       });
 
     // Finish up.
@@ -95,6 +127,12 @@ export class TestInput extends React.PureComponent<ITestInputProps, ITestInputSt
         <div>
           <this.Input focusOnLoad={true} placeholder={'placeholder'} />
           <this.Input placeholder={'read-only'} isReadOnly={true} />
+          <this.Input
+            placeholder={'dbl-click-to-edit'}
+            isReadOnly={!this.state.isClickableEditing}
+            focusOnLoad={true}
+            focusAction={'SELECT'}
+          />
           <this.Input maxLength={5} placeholder={'max-length: 5'} />
         </div>
         <div {...styles.dark}>
