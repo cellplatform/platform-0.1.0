@@ -34,7 +34,6 @@ const MARGIN = {
 };
 
 const NODE = constants.CLASS.NODE;
-const DOM_ID_PREFIX = 'TreeNode:';
 
 export { TreeNodeMouseEvent, TreeNodeMouseEventHandler, ITreeNode };
 
