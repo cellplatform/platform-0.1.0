@@ -18,6 +18,5 @@ describe('range', () => {
     };
     test(' A1:Z9', 'A1:Z9');
     test('  A1:B9  , B2:Z9', 'A1:B9, B2:Z9');
-    // test('  A1:B9  , Z9:B2', 'A1:B9, B2:Z9');
   });
 });
