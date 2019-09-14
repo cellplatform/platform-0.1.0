@@ -28,7 +28,7 @@ export function toString(args: {
   const items = R.uniqBy(R.prop('key'), cell.sort(args.items));
 
   // Get a complete square of keys as the given list by have holes in it.
-  const square = range.fromKey(`${items[0].key}:${items[items.length - 1].key}`).square;
+  const square = range.square(items);
   const list: ItemPosition[] = square.keys.map(key => {
     let item = items.find(item => item.key === key);
     item = item ? item : { key, value: undefined };
@@ -52,13 +52,14 @@ export function toString(args: {
   );
 
   // Collapse into string.
-  const text = rows.reduce((acc, next, i) => {
-    const line = next.map(m => m.value).join(delimiter);
+  const text = rows.reduce((acc, item, i) => {
+    const line = item.map(m => m.value).join(delimiter);
     const newline = i === 0 ? '' : '\n';
     return `${acc}${newline}${line}`;
   }, '');
 
-  return text;
+  // Finish up.
+  return text.replace(/\t$/, '');
 }
 
 /**

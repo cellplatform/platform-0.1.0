@@ -45,6 +45,17 @@ A3,B3`.substring(1);
       const res = table.toString({ items, delimiter: ',' });
       expect(res).to.eql(text);
     });
+
+    it('bottom-right cell empty', () => {
+      const keys = ['A1', 'A2', 'A3', 'B1', 'B2']; // NB: B3 (bottom-right) not present.
+      const items = keys.map(key => ({ key, value: key }));
+      const res = table.toString({ items });
+      const text = `
+A1	B1
+A2	B2
+A3`.substring(1);
+      expect(res).to.eql(text);
+    });
   });
 
   describe('fromString', () => {
