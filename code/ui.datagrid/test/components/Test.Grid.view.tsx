@@ -36,6 +36,7 @@ const DEFAULT = {
     // A2: {value:'* one\n * two'},
     // A2: {value:'# Heading\nhello'},
     A3: { value: 'A3' },
+    A5: { value: 'A5' },
     B1: { value: 'locked' },
     B2: { value: 'cancel' },
   },

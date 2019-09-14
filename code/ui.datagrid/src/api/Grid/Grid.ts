@@ -5,6 +5,7 @@ import { coord, defaultValue, R, t, value as valueUtil } from '../../common';
 import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
 import { keyboard } from './keyboard';
+import { commands } from '../../commands';
 
 export type IGridArgs = {
   table: Handsontable;
@@ -88,6 +89,11 @@ export class Grid implements t.IGrid {
       ...(args.keyBindings || []),
       ...DEFAULT.KEY_BINDINGS,
     ]);
+
+    /**
+     * Command controllers.
+     */
+    commands.init({ grid: this, fire: this.fire });
 
     /**
      * Debounced redraw.
@@ -415,7 +421,13 @@ export class Grid implements t.IGrid {
     options: { source?: t.GridCellChangeType; silent?: boolean } = {},
   ) {
     if (values) {
+      // Clone input object and remove any empty values.
       values = { ...values };
+      Object.keys(values).forEach(key => {
+        if (Cell.isEmpty(values[key])) {
+          delete values[key];
+        }
+      });
 
       // Fire change event.
       if (!options.silent) {
@@ -618,9 +630,7 @@ export class Grid implements t.IGrid {
   }
 
   /**
-   * [Internal]
+   * [INTERNAL]
    */
-  public fire(e: t.GridEvent) {
-    this._.events$.next(e);
-  }
+  public fire: t.FireGridEvent = e => this._.events$.next(e);
 }

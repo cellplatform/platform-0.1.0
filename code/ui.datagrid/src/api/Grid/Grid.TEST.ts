@@ -92,6 +92,18 @@ describe('Grid', () => {
       expect(grid.values.A1).to.eql({ value: 123 });
       expect(grid.values.B1).to.eql({ value: 'hello' });
     });
+
+    it('does not store empty values', () => {
+      const grid = createGrid();
+      expect(grid.values).to.eql({});
+      grid.changeCells({
+        A1: { value: '' },
+        A2: { value: undefined },
+        A3: { value: undefined, props: {} },
+        A4: { value: '', props: {} },
+      });
+      expect(grid.values).to.eql({});
+    });
   });
 
   describe('selection', () => {

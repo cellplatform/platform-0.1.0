@@ -70,6 +70,19 @@ export class Cell<P = {}> implements t.ICell<P> {
     return payload;
   }
 
+  public static isEmpty(cell?: t.IGridCell) {
+    if (!cell) {
+      return true;
+    }
+    const { value, props } = cell;
+    if (value === '' || value === undefined) {
+      if (!props || Object.keys(props).length === 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**
    * [Lifecycle]
    */
