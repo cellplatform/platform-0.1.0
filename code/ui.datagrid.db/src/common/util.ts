@@ -1,5 +1,4 @@
 import * as t from './types';
-export * from './util.encoding';
 
 type TransformKey = (key: string) => string;
 
