@@ -1334,10 +1334,10 @@
     "@platform/react" "0.3.26"
     "@platform/util.value.cell" "0.9.14"
 
-"@platform/ui.datagrid@0.5.17":
-  version "0.5.17"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.5.17.tgz#59fc33e88232c6e2a3cdf712508638c28b30c53a"
-  integrity sha512-fk1l4TY++869KirrUXTN6ElHYD+EcFEUAaEtyGzKaQckDlChny9R7Ff3J/sOkStqc2lGFqfIaxcXbNklCm3X8g==
+"@platform/ui.datagrid@0.5.18":
+  version "0.5.18"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.5.18.tgz#449aa17881570c98b5adc11b5eabae97d1480f17"
+  integrity sha512-vfFzEAgkHoAME4n81jM+umvjuD9Em9MDmbawx5eyt2ab4A32SF9vxrpaGWAXwgXxFW3c/FdTheVKuAVXvv3sSA==
   dependencies:
     "@babel/polyfill" "7.4.4"
     "@platform/libs" "0.1.3"
