@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { DefaultSettings } from 'handsontable';
 
 import { Grid, IGridArgs } from '.';
-import { Handsontable } from '../../common';
+import { Handsontable, constants } from '../../common';
 
 const createGrid = (args: Partial<IGridArgs> = {}) => {
   const el = document.createElement('div');
@@ -40,6 +40,21 @@ describe('Grid', () => {
 
     expect(grid.isDisposed).to.eql(true);
     expect(count).to.eql(1);
+  });
+
+  describe('keyBindings', () => {
+    it('default key bindings', () => {
+      const grid = createGrid();
+      expect(grid.keyBindings).to.eql(constants.DEFAULT.KEY_BINDINGS);
+    });
+
+    it('overrides key bindings (merged with defaults)', () => {
+      const grid = createGrid({ keyBindings: [{ command: 'PASTE', key: 'Shift+W' }] });
+      expect(grid.keyBindings).to.not.eql(constants.DEFAULT.KEY_BINDINGS);
+
+      const paste = grid.keyBindings.find(b => b.command === 'PASTE');
+      expect(paste && paste.key).to.eql('Shift+W');
+    });
   });
 
   describe('cell', () => {

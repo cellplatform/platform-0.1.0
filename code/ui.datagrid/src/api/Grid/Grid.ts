@@ -14,6 +14,7 @@ export type IGridArgs = {
   columns?: t.IGridColumns;
   rows?: t.IGridRows;
   defaults?: Partial<t.IGridDefaults>;
+  keyBindings?: t.KeyBindings<t.GridCommand>;
 };
 
 /**
@@ -79,6 +80,14 @@ export class Grid implements t.IGrid {
      * Keyboard controllers.
      */
     keyboard.clipboard({ grid: this, events$: this._.events$, dispose$: this.dispose$ });
+
+    /**
+     * Keyboard bindings.
+     */
+    this.keyBindings = R.uniqBy(R.prop('command'), [
+      ...(args.keyBindings || []),
+      ...DEFAULT.KEY_BINDINGS,
+    ]);
 
     /**
      * Debounced redraw.
@@ -168,6 +177,7 @@ export class Grid implements t.IGrid {
   public readonly totalColumns: number;
   public readonly totalRows: number;
   public readonly defaults: t.IGridDefaults;
+  public readonly keyBindings: t.KeyBindings<t.GridCommand>;
 
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
@@ -289,7 +299,7 @@ export class Grid implements t.IGrid {
   /**
    * Retrieves the currently selected key/value pairs.
    */
-  public get selectedValues(): t.IGridValues {
+  public get selectionValues(): t.IGridValues {
     const selection = this.selection;
     const values = this.values;
     if (selection.all) {

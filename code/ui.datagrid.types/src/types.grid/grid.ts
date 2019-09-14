@@ -1,4 +1,5 @@
 import { t, Observable } from '../common';
+import { KeyBindings } from '@platform/react/lib/types';
 
 export type IGrid = IGridProperties & IGridMethods;
 export type IGridProperties = {
@@ -9,9 +10,10 @@ export type IGridProperties = {
   readonly isReady: boolean;
   readonly isEditing: boolean;
   readonly selection: t.IGridSelection;
-  readonly selectedValues: t.IGridValues;
+  readonly selectionValues: t.IGridValues;
   readonly events$: Observable<t.GridEvent>;
   readonly keyboard$: Observable<t.IGridKeydown>;
+  readonly keyBindings: KeyBindings<t.GridCommand>;
   readonly defaults: IGridDefaults;
   values: t.IGridValues;
   columns: IGridColumns;

@@ -164,10 +164,11 @@ export type IGridClipboardEvent = {
   payload: IGridClipboard;
 };
 export type IGridClipboard = {
-  action: 'COPY' | 'CUT' | 'PASTE';
+  action: t.GridClipboardCommand;
   grid: t.IGrid;
   selection: t.IGridSelection;
   keys: string[];
+  values: t.IGridValues;
 };
 
 export type IGridUndoEvent = {

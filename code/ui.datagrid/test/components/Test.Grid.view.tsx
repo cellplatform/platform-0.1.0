@@ -67,11 +67,33 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
 
   public componentDidMount() {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
-    // const keys$ = this.grid.keys$;
+    const keyboard$ = this.grid.keyboard$;
 
     events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
       // console.log('🌳 EVENT', e.type, e.payload);
     });
+
+    keyboard$
+      .pipe(
+        filter(e => e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey),
+        filter(e => e.key.toUpperCase() === 'B'),
+      )
+      .subscribe(e => {
+        console.log('e', e);
+        // this.grid.changeCells({ A1: { value: 'hello', props: { bold: true } } });
+        const selection = this.grid.selection;
+        console.log('selection', selection);
+        if (selection && selection.cell) {
+          const cell = this.grid.cell(selection.cell);
+          const value = cell.value;
+          const props = (cell.props || {}) as any;
+          const bold = props.bold ? false : true;
+          const change = { [cell.key]: { value, props: { ...props, bold } } };
+          console.log('change', change);
+          this.grid.changeCells(change);
+          // cell.props = {...cell.props}
+        }
+      });
 
     events$
       .pipe(
@@ -148,6 +170,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         events$={this.events$}
         factory={this.factory}
         // defaults={{ rowHeight: 200 }}
+        // keyBindings={[{ command: 'COPY', key: 'CMD+D' }]}
         totalColumns={totalColumns}
         totalRows={totalRows}
         Handsontable={this.Table}

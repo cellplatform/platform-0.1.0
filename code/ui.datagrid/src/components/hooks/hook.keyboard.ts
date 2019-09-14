@@ -98,6 +98,6 @@ function handleDelete(args: { grid: Grid; keydown: t.IGridKeydown }) {
 
   // Delete the values from the grid.
   const deleted = {};
-  Object.keys(grid.selectedValues).forEach(key => (deleted[key] = undefined));
+  Object.keys(grid.selectionValues).forEach(key => (deleted[key] = undefined));
   grid.changeCells(deleted, { source: 'DELETE' });
 }

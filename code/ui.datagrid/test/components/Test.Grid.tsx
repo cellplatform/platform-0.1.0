@@ -81,11 +81,11 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     );
 
     clipboard$.subscribe(e => {
-      log.group('🐷 CLIPBOARD');
+      log.group('🐷 CLIPBOARD:', e.action);
       log.info('e', e);
-      log.info('selection', e.selection);
-      log.info('keys', e.keys);
-      log.info('selectedValues', e.grid.selectedValues);
+      log.info('e.selection', e.selection);
+      log.info('e.keys', e.keys);
+      log.info('e.values', e.values);
       log.groupEnd();
     });
   }

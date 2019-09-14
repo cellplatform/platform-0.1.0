@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { Keyboard, t, coord } from '../../common';
+import { Keyboard, t } from '../../common';
 
 /**
  * Manages clipboard operations
@@ -14,7 +14,7 @@ export function clipboard(args: {
   const { grid } = args;
 
   /**
-   * Setup observables.
+   * Setup observables (read key-commands from the grid keyboard-bindings).
    */
   const events$ = args.events$.pipe(takeUntil(args.dispose$));
   const keydown$ = events$.pipe(
@@ -23,27 +23,33 @@ export function clipboard(args: {
     filter(e => !grid.isEditing),
     map(e => e.payload as t.IGridKeydown),
   );
-  const copy$ = keydown$.pipe(filter(e => Keyboard.matchEvent('Meta+C', e)));
-  const cut$ = keydown$.pipe(filter(e => Keyboard.matchEvent('Meta+X', e)));
-  const paste$ = keydown$.pipe(filter(e => Keyboard.matchEvent('Meta+V', e)));
+
+  const is = (command: t.GridClipboardCommand, e: t.IGridKeydown) => {
+    const binding = grid.keyBindings.find(binding => binding.command === command);
+    return binding ? Keyboard.matchEvent(binding.key, e) : false;
+  };
+
+  const cut$ = keydown$.pipe(filter(e => is('CUT', e)));
+  const copy$ = keydown$.pipe(filter(e => is('COPY', e)));
+  const paste$ = keydown$.pipe(filter(e => is('PASTE', e)));
 
   /**
    * Fire clipboard events.
    */
-  copy$.subscribe(e => fire('COPY'));
-  cut$.subscribe(e => fire('CUT'));
-  paste$.subscribe(e => fire('PASTE'));
-
-  const fire = (action: t.IGridClipboard['action']) => {
+  const fire = (action: t.GridClipboardCommand, e: t.IGridKeydown) => {
     const selection = grid.selection;
-    let union: coord.range.CellRangeUnion | undefined;
+    let values: t.IGridValues | undefined;
+
     const payload: t.IGridClipboard = {
       action,
       grid,
       selection,
       get keys() {
-        union = union || coord.range.union(selection.ranges);
-        return union.keys;
+        return Object.keys(payload.values);
+      },
+      get values() {
+        values = values || grid.selectionValues;
+        return values;
       },
     };
 
@@ -52,4 +58,8 @@ export function clipboard(args: {
       payload,
     });
   };
+
+  cut$.subscribe(e => fire('CUT', e));
+  copy$.subscribe(e => fire('COPY', e));
+  paste$.subscribe(e => fire('PASTE', e));
 }
