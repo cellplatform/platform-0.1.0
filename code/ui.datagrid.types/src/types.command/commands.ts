@@ -11,16 +11,20 @@ export type GridCopyCommand = 'COPY';
 export type GridCutCommand = 'CUT';
 export type GridPasteCommand = 'PASTE';
 
+export type IGridClipboardCommand = IGridCommand<GridClipboardCommand, {}>;
+
 // Style
 export type GridStyleCommand = GridBoldCommand;
 export type GridBoldCommand = 'BOLD';
 
 /**
- * [Event]
+ * Event payload.
  */
-export type IGridCommand = {
-  command: t.GridCommand;
+export type IGridCommand<C = GridCommand, P = {}> = {
+  command: C;
   grid: t.IGrid;
+  selection: t.IGridSelection;
+  props: P;
   isCancelled: boolean;
   cancel(): void;
 };

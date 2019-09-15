@@ -33,9 +33,12 @@ export function clipboard(args: {
    * Fire clipboard events.
    */
   const fire = (command: t.GridClipboardCommand, e: t.IGridKeydown) => {
-    const payload: t.IGridCommand = {
+    const selection = grid.selection;
+    const payload: t.IGridClipboardCommand = {
       command,
+      selection,
       grid,
+      props: {},
       isCancelled: false,
       cancel: () => (payload.isCancelled = true),
     };
