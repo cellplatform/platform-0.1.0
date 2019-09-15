@@ -177,7 +177,9 @@ export type IGridClipboard = {
   range: string;
   selection: t.IGridSelection;
   text: string;
-  cells?: t.IGridValues;
+  cells: t.IGridValues;
+  rows: t.IGridRows;
+  columns: t.IGridColumns;
 };
 
 /**

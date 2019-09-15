@@ -20,8 +20,8 @@ export function init(args: {
     filter(e => !e.isCancelled),
     map(e => e.command),
   );
-  clipboard$.pipe(filter(e => e === 'CUT')).subscribe(e => read({ action: 'CUT', grid, fire }));
-  clipboard$.pipe(filter(e => e === 'COPY')).subscribe(e => read({ action: 'COPY', grid, fire }));
+  clipboard$.pipe(filter(e => e === 'CUT')).subscribe(e => read({ grid, fire, action: 'CUT' }));
+  clipboard$.pipe(filter(e => e === 'COPY')).subscribe(e => read({ grid, fire, action: 'COPY' }));
   clipboard$.pipe(filter(e => e === 'PASTE')).subscribe(e => write({ grid, fire }));
 }
 
@@ -59,12 +59,29 @@ async function read(args: { grid: t.IGrid; action: 'CUT' | 'COPY'; fire: t.FireG
   // Send text to clipboard.
   await navigator.clipboard.writeText(text);
 
-  // Determine the top-left cell.
-  console.log('items', items);
-  const range = coord.range.square(items.map(item => item.key)).key;
+  // Store data if full ROWs or COLUMNs are selected.
+  const getAxisData = <T extends t.IGridRows | t.IGridColumns>(
+    axis: coord.CoordAxis,
+    data: T,
+  ): T => {
+    return selection.ranges.reduce((acc, next) => {
+      if (coord.cell.isAxisRangeKey(next, axis)) {
+        const range = coord.range.fromKey(next);
+        range.axis(axis).keys.forEach(key => {
+          if (data[key]) {
+            acc[key] = data[key];
+          }
+        });
+      }
+      return acc;
+    }, {}) as T;
+  };
+  const columns = getAxisData('COLUMN', grid.columns);
+  const rows = getAxisData('ROW', grid.rows);
 
   // Alert listeners and store state.
-  const payload: t.IGridClipboard = { action, range, selection, text, cells };
+  const range = coord.range.square(items.map(item => item.key)).key;
+  const payload: t.IGridClipboard = { action, range, selection, text, cells, columns, rows };
   PENDING = payload;
   args.fire({ type: 'GRID/clipboard', payload });
 }
@@ -151,8 +168,12 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
     acc[next.key] = next.value;
     return acc;
   }, {});
+
+  const columns = {}; // TEMP 🐷
+  const rows = {}; // TEMP 🐷
+
   args.fire({
     type: 'GRID/clipboard',
-    payload: { action: 'PASTE', range: square.key, selection, text, cells },
+    payload: { action: 'PASTE', range: square.key, selection, text, cells, columns, rows },
   });
 }
