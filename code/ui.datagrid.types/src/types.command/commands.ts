@@ -5,17 +5,28 @@ import { t } from '../common';
  */
 export type GridCommand = GridClipboardCommand | GridStyleCommand;
 
-// Clipboard
+/**
+ * Clipboard
+ */
 export type GridClipboardCommand = GridCopyCommand | GridCutCommand | GridPasteCommand;
 export type GridCopyCommand = 'COPY';
 export type GridCutCommand = 'CUT';
 export type GridPasteCommand = 'PASTE';
 
-export type IGridClipboardCommand = IGridCommand<GridClipboardCommand, {}>;
+export type IGridClipboardCommand = IGridCommand<GridClipboardCommand>;
 
-// Style
-export type GridStyleCommand = GridBoldCommand;
-export type GridBoldCommand = 'BOLD';
+/**
+ * Style
+ */
+export type GridStyleCommand =
+  | GridStyleBoldCommand
+  | GridStyleItalicCommand
+  | GridStyleUnderlineCommand;
+export type GridStyleBoldCommand = 'BOLD';
+export type GridStyleItalicCommand = 'ITALIC';
+export type GridStyleUnderlineCommand = 'UNDERLINE';
+
+export type IGridStyleCommand = IGridCommand<GridStyleCommand>;
 
 /**
  * Event payload.

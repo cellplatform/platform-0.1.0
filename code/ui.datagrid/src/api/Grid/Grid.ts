@@ -4,7 +4,7 @@ import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 import { coord, defaultValue, R, t, value as valueUtil } from '../../common';
 import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
-import { keyboard } from './keyboard';
+import { keyboard } from '../../keyboard';
 import { commands } from '../../commands';
 
 export type IGridArgs = {
@@ -78,11 +78,6 @@ export class Grid implements t.IGrid {
       .subscribe(() => (this._.isReady = true));
 
     /**
-     * Keyboard controllers.
-     */
-    keyboard.clipboard({ grid: this, events$: this._.events$, dispose$: this.dispose$ });
-
-    /**
      * Keyboard bindings.
      */
     this.keyBindings = R.uniqBy(R.prop('command'), [
@@ -91,9 +86,11 @@ export class Grid implements t.IGrid {
     ]);
 
     /**
-     * Command controllers.
+     * Initialize controllers.
      */
-    commands.init({ grid: this, fire: this.fire });
+    const fire = this.fire;
+    keyboard.init({ grid: this, fire });
+    commands.init({ grid: this, fire });
 
     /**
      * Debounced redraw.

@@ -1,6 +1,6 @@
 import { t } from '../common';
 
-export type ICell<P = {}> = {
+export type ICell<P extends ICellProps = ICellProps> = {
   readonly row: number;
   readonly column: number;
   readonly key: string;
@@ -17,4 +17,17 @@ export type ICellSiblings = {
   readonly top?: ICell;
   readonly right?: ICell;
   readonly bottom?: ICell;
+};
+
+/**
+ * [Props]
+ */
+export type ICellProps = {
+  style?: ICellStyleProps;
+};
+
+export type ICellStyleProps = {
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
 };
