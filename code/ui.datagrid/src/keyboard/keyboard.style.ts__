@@ -11,6 +11,7 @@ export function init(args: { grid: t.IGrid; fire: t.FireGridKeyboardCommandEvent
   const monitor = (cmd: t.GridStyleCommand) =>
     bindings.monitor(cmd, e => {
       console.log(cmd, e);
+      args.fire(cmd, e);
     });
   monitor('BOLD');
   monitor('ITALIC');

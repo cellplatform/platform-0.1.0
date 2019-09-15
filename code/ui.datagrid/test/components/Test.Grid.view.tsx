@@ -32,10 +32,10 @@ export type ITestGridViewState = {
 const DEFAULT = {
   VALUES: {
     A1: { value: 'A1' },
-    A2: { value: 'A2', props: { bold: true } },
+    A2: { value: 'A2', props: { style: { bold: true } } },
     // A2: {value:'* one\n * two'},
     // A2: {value:'# Heading\nhello'},
-    A3: { value: 'A3' },
+    A3: { value: 'A3 `code`' },
     A5: { value: 'A5' },
     B1: { value: 'locked' },
     B2: { value: 'cancel' },
@@ -74,27 +74,27 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
       // console.log('🌳 EVENT', e.type, e.payload);
     });
 
-    keyboard$
-      .pipe(
-        filter(e => e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey),
-        filter(e => e.key.toUpperCase() === 'B'),
-      )
-      .subscribe(e => {
-        console.log('e', e);
-        // this.grid.changeCells({ A1: { value: 'hello', props: { bold: true } } });
-        const selection = this.grid.selection;
-        console.log('selection', selection);
-        if (selection && selection.cell) {
-          const cell = this.grid.cell(selection.cell);
-          const value = cell.value;
-          const props = (cell.props || {}) as any;
-          const bold = props.bold ? false : true;
-          const change = { [cell.key]: { value, props: { ...props, bold } } };
-          console.log('change', change);
-          this.grid.changeCells(change);
-          // cell.props = {...cell.props}
-        }
-      });
+    // keyboard$
+    //   .pipe(
+    //     filter(e => e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey),
+    //     filter(e => e.key.toUpperCase() === 'B'),
+    //   )
+    //   .subscribe(e => {
+    //     console.log('e', e);
+    //     // this.grid.changeCells({ A1: { value: 'hello', props: { bold: true } } });
+    //     const selection = this.grid.selection;
+    //     console.log('selection', selection);
+    //     if (selection && selection.cell) {
+    //       const cell = this.grid.cell(selection.cell);
+    //       const value = cell.value;
+    //       const props = (cell.props || {}) as any;
+    //       const bold = props.bold ? false : true;
+    //       const change = { [cell.key]: { value, props: { ...props, bold } } };
+    //       console.log('change', change);
+    //       this.grid.changeCells(change);
+    //       // cell.props = {...cell.props}
+    //     }
+    //   });
 
     events$
       .pipe(

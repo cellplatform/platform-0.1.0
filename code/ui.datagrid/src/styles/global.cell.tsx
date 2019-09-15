@@ -20,6 +20,7 @@ const STYLES = {
     [`.${CELL.BASE}.${GRID.FIRST.ROW}`]: {
       marginTop: 1,
     },
+    [`.${CELL.BOLD}`]: { fontWeight: 'bold' },
   },
 
   MARKDOWN: {

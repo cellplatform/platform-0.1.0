@@ -303,26 +303,7 @@ export class Grid implements t.IGrid {
    * Retrieves the currently selected key/value pairs.
    */
   public get selectionValues(): t.IGridValues {
-    const selection = this.selection;
-    const values = this.values;
-    if (selection.all) {
-      return values;
-    }
-
-    const ranges = coord.range.union(this.selection.ranges);
-    const res = Object.keys(values).reduce((acc, key) => {
-      const value = values[key];
-      if (value !== undefined && ranges.contains(key)) {
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
-
-    if (selection.cell && values[selection.cell] !== undefined) {
-      res[selection.cell] = values[selection.cell];
-    }
-
-    return res;
+    return this.toSelectionValues(this.selection);
   }
 
   /**
@@ -625,6 +606,31 @@ export class Grid implements t.IGrid {
     const row = R.clamp(0, this.totalRows - 1, pos.row);
     const column = R.clamp(0, this.totalColumns - 1, pos.column);
     return { row, column };
+  }
+
+  /**
+   * Retrieves the grid values that map to the given selection.
+   */
+  public toSelectionValues(selection: t.IGridSelection): t.IGridValues {
+    const values = this.values;
+    if (selection.all) {
+      return values;
+    }
+
+    const ranges = coord.range.union(this.selection.ranges);
+    const res = Object.keys(values).reduce((acc, key) => {
+      const value = values[key];
+      if (value !== undefined && ranges.contains(key)) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+
+    if (selection.cell && values[selection.cell] !== undefined) {
+      res[selection.cell] = values[selection.cell];
+    }
+
+    return res;
   }
 
   /**

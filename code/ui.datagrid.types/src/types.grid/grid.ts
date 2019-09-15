@@ -37,6 +37,7 @@ export type IGridMethods = {
   focus(): IGrid;
   redraw(): IGrid;
   toPosition(ref: t.CellRef): t.ICoord;
+  toSelectionValues(selection: t.IGridSelection): t.IGridValues;
 };
 
 export type IGridDefaults = {

@@ -23,10 +23,10 @@ export type ICellSiblings = {
  * [Props]
  */
 export type ICellProps = {
-  style?: ICellStyleProps;
+  style?: ICellPropsStyle;
 };
 
-export type ICellStyleProps = {
+export type ICellPropsStyle = {
   bold?: boolean;
   italic?: boolean;
   underline?: boolean;

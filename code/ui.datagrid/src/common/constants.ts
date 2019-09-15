@@ -23,7 +23,7 @@ export const CSS = {
       MARKDOWN: 'p-editor-markdown', // See [@platform/ui.editor/lib/common/constants]
       BASE: 'p-dg-cell',
       EDITOR: 'p-dg-cellEditor',
-      BOLD: 'p-db-cell-bold',
+      BOLD: 'p-dg-cell-bold',
     },
   },
 };

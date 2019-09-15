@@ -1,6 +1,5 @@
 import { t } from '../common';
-import * as clipboard from './keyboard.clipboard';
-import * as style from './keyboard.style';
+import { BindingMonitor } from './BindingMonitor';
 
 /**
  * Initialize all controller modules.
@@ -24,7 +23,17 @@ export function init(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
     args.fire({ type: 'GRID/command', payload });
   };
 
-  // Controllers.
-  clipboard.init({ grid, fire });
-  style.init({ grid, fire });
+  // Monitor keyboard commands.
+  const bindings = new BindingMonitor({ grid });
+  const monitor = (cmd: t.GridCommand) => bindings.monitor(cmd, e => fire(cmd, e));
+
+  // Clipboard.
+  monitor('CUT');
+  monitor('COPY');
+  monitor('PASTE');
+
+  // Style.
+  monitor('BOLD');
+  monitor('ITALIC');
+  monitor('UNDERLINE');
 }

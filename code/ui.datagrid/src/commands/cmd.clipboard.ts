@@ -11,6 +11,8 @@ type ClipboardItem = {
 const CLIPBOARD: t.GridClipboardCommand[] = ['CUT', 'COPY', 'PASTE'];
 let PENDING: t.IGridClipboard | undefined;
 
+console.log(`\nTODO 🐷  move PENDING state to IGrid state \n`)
+
 /**
  * Manage clipboard commands.
  */

@@ -72,7 +72,12 @@ export type IGridMouse = MouseEvent & {
 /**
  * Cell.
  */
-export type GridCellChangeType = 'EDIT' | 'DELETE' | 'CLIPBOARD/cut' | 'CLIPBOARD/paste';
+export type GridCellChangeType =
+  | 'EDIT'
+  | 'DELETE'
+  | 'CLIPBOARD/cut'
+  | 'CLIPBOARD/paste'
+  | 'COMMAND/style';
 
 export type IGridCellsChangedEvent = {
   type: 'GRID/cells/changed';
