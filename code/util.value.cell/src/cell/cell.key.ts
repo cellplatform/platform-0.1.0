@@ -120,6 +120,37 @@ export function isRangeKey(key: string) {
 }
 
 /**
+ * Determine if the key is an axis range (eg. "A:B" or "1:1").
+ */
+export function isAxisRangeKey(key: string, axis?: t.CoordAxis) {
+  const type = axisRangeType(key);
+  return axis ? type === axis : type !== undefined;
+}
+
+export function isColumnRangeKey(key: string) {
+  return axisRangeType(key) === 'COLUMN';
+}
+
+export function isRowRangeKey(key: string) {
+  return axisRangeType(key) === 'ROW';
+}
+
+export function axisRangeType(key: string): t.CoordAxis | undefined {
+  const parts = (key || '')
+    .trim()
+    .split(':')
+    .map(part => part.trim());
+  if (parts.length === 2) {
+    const left = toType(parts[0]);
+    const right = toType(parts[1]);
+    if (left === right && (left === 'COLUMN' || left === 'ROW')) {
+      return left;
+    }
+  }
+  return undefined;
+}
+
+/**
  * Converts a cell input into the index number for the given axis.
  * eg:
  *    COLUMN: "A3" => 0

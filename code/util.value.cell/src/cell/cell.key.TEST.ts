@@ -399,3 +399,60 @@ describe('to column/row', () => {
     test(1, '2:2');
   });
 });
+
+describe('is axis range', () => {
+  it('axisRangeType', () => {
+    const test = (input: string, expected?: t.CoordAxis) => {
+      expect(cell.axisRangeType(input)).to.eql(expected);
+    };
+    test('A:A', 'COLUMN');
+    test('A:B', 'COLUMN');
+    test('B:A', 'COLUMN');
+    test('1:10', 'ROW');
+
+    test('B1:Z9', undefined);
+    test('Z9', undefined);
+  });
+
+  it('isAxisRangeKey', () => {
+    const test = (input: string, axis: t.CoordAxis | undefined, expected: boolean) => {
+      expect(cell.isAxisRangeKey(input, axis)).to.eql(expected);
+    };
+    test('A:A', undefined, true);
+    test('A:B', undefined, true);
+    test('B:A', undefined, true);
+    test('1:10', undefined, true);
+
+    test('A:B', 'COLUMN', true);
+    test('1:10', 'ROW', true);
+
+    test('B1:Z9', undefined, false);
+    test('Z9', undefined, false);
+
+    test('A:B', 'ROW', false);
+    test('1:10', 'COLUMN', false);
+  });
+
+  it('isColumnRangeKey', () => {
+    const test = (input: string, expected: boolean) => {
+      expect(cell.isColumnRangeKey(input)).to.eql(expected);
+    };
+    test('A:A', true);
+    test('A:B', true);
+    test('1:10', false);
+
+    test('B1:Z9', false);
+    test('Z9', false);
+  });
+
+  it('isRowRangeKey', () => {
+    const test = (input: string, expected: boolean) => {
+      expect(cell.isRowRangeKey(input)).to.eql(expected);
+    };
+    test('A:B', false);
+    test('1:10', true);
+
+    test('B1:Z9', false);
+    test('Z9', false);
+  });
+});
