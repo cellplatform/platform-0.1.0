@@ -75,19 +75,23 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     //     e.cancel();
     //   });
 
-    const clipboard$ = events$.pipe(
-      filter(e => e.type === 'GRID/clipboard'),
-      map(e => e.payload as t.IGridClipboard),
+    const command$ = events$.pipe(
+      filter(e => e.type === 'GRID/command'),
+      map(e => e.payload as t.IGridCommand),
     );
 
-    clipboard$.subscribe(e => {
-      log.group('🐷 CLIPBOARD:', e.action);
-      log.info('e', e);
-      log.info('e.selection', e.selection);
-      log.info('e.keys', e.keys);
-      log.info('e.values', e.values);
-      log.groupEnd();
+    command$.subscribe(e => {
+      log.info('🐷 COMMAND:', e.command, e);
     });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/clipboard'),
+        map(e => e.payload as t.IGridClipboard),
+      )
+      .subscribe(e => {
+        console.log('CLIPBOARD', e);
+      });
   }
 
   public componentDidMount() {

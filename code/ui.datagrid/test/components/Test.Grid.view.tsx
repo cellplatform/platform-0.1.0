@@ -32,7 +32,7 @@ export type ITestGridViewState = {
 const DEFAULT = {
   VALUES: {
     A1: { value: 'A1' },
-    A2: { value: 'A2' },
+    A2: { value: 'A2', props: { bold: true } },
     // A2: {value:'* one\n * two'},
     // A2: {value:'# Heading\nhello'},
     A3: { value: 'A3' },

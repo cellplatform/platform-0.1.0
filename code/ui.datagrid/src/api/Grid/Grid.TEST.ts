@@ -104,6 +104,23 @@ describe('Grid', () => {
       });
       expect(grid.values).to.eql({});
     });
+
+    it('deletes empty values', () => {
+      const grid = createGrid({
+        values: {
+          A1: { value: 123 },
+          A2: { value: 456 },
+          A3: { value: 789 },
+        },
+      });
+      expect(grid.values).to.eql({ A1: { value: 123 }, A2: { value: 456 }, A3: { value: 789 } });
+      grid.changeCells({
+        A1: { value: '', props: {} },
+        A2: { value: undefined, props: { bold: true } }, // NB: Not empty because of props.
+        A3: undefined,
+      });
+      expect(grid.values).to.eql({ A2: { value: undefined, props: { bold: true } } });
+    });
   });
 
   describe('selection', () => {

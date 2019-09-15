@@ -1,4 +1,5 @@
 export * from './libs.Handsontable';
+export * from '@platform/ui.datagrid.types/lib/util';
 
 /**
  * Util.

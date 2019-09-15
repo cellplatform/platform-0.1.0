@@ -16,8 +16,9 @@ export type GridEvent =
   | IGridSelectionChangeEvent
   | IGridFocusEvent
   | IGridBlurEvent
-  | IGridClipboardEvent
-  | IGridUndoEvent;
+  | IGridCommandEvent
+  | IGridUndoEvent
+  | IGridClipboardEvent;
 
 export type IGridReadyEvent = {
   type: 'GRID/ready';
@@ -71,7 +72,7 @@ export type IGridMouse = MouseEvent & {
 /**
  * Cell.
  */
-export type GridCellChangeType = 'EDIT' | 'DELETE';
+export type GridCellChangeType = 'EDIT' | 'DELETE' | 'CUT' | 'PASTE';
 export type IGridCellsChangedEvent = {
   type: 'GRID/cells/changed';
   payload: IGridCellsChanged;
@@ -157,6 +158,14 @@ export type IGridBlurEvent = {
 };
 
 /**
+ * Commands.
+ */
+export type IGridCommandEvent = {
+  type: 'GRID/command';
+  payload: t.IGridCommand;
+};
+
+/**
  * Clipboard.
  */
 export type IGridClipboardEvent = {
@@ -165,12 +174,15 @@ export type IGridClipboardEvent = {
 };
 export type IGridClipboard = {
   action: t.GridClipboardCommand;
-  grid: t.IGrid;
+  range: string;
   selection: t.IGridSelection;
-  keys: string[];
-  values: t.IGridValues;
+  text: string;
+  cells?: t.IGridValues;
 };
 
+/**
+ * Undo/redo.
+ */
 export type IGridUndoEvent = {
   type: 'GRID/undo';
   payload: IGridUndo;

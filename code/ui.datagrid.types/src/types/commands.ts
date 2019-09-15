@@ -1,3 +1,5 @@
+import { t } from '../common';
+
 /**
  * Commands
  */
@@ -12,3 +14,13 @@ export type GridPasteCommand = 'PASTE';
 // Style
 export type GridStyleCommand = GridBoldCommand;
 export type GridBoldCommand = 'BOLD';
+
+/**
+ * [Event]
+ */
+export type IGridCommand = {
+  command: t.GridCommand;
+  grid: t.IGrid;
+  isCancelled: boolean;
+  cancel(): void;
+};

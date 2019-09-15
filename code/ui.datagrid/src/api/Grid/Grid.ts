@@ -421,13 +421,8 @@ export class Grid implements t.IGrid {
     options: { source?: t.GridCellChangeType; silent?: boolean } = {},
   ) {
     if (values) {
-      // Clone input object and remove any empty values.
+      // Clone input object.
       values = { ...values };
-      Object.keys(values).forEach(key => {
-        if (Cell.isEmpty(values[key])) {
-          delete values[key];
-        }
-      });
 
       // Fire change event.
       if (!options.silent) {
@@ -461,8 +456,14 @@ export class Grid implements t.IGrid {
           .forEach(change => (values[change.cell.key] = change.value.from));
       }
 
+      // Calculate the new updated value set (stripping any empty values)
+      const update = { ...this.values, ...values };
+      Object.keys(values)
+        .filter(key => Cell.isEmpty(update[key]))
+        .forEach(key => delete update[key]);
+
       // Update the UI.
-      this.values = { ...this.values, ...values };
+      this.values = update;
     }
     return this;
   }

@@ -14,7 +14,7 @@ export function clipboard(args: {
   const { grid } = args;
 
   /**
-   * Setup observables (read key-commands from the grid keyboard-bindings).
+   * Setup observables (read key-commands from the grid's keyboard-bindings).
    */
   const events$ = args.events$.pipe(takeUntil(args.dispose$));
   const keydown$ = events$.pipe(
@@ -29,37 +29,26 @@ export function clipboard(args: {
     return binding ? Keyboard.matchEvent(binding.key, e) : false;
   };
 
-  const cut$ = keydown$.pipe(filter(e => is('CUT', e)));
-  const copy$ = keydown$.pipe(filter(e => is('COPY', e)));
-  const paste$ = keydown$.pipe(filter(e => is('PASTE', e)));
-
   /**
    * Fire clipboard events.
    */
-  const fire = (action: t.GridClipboardCommand, e: t.IGridKeydown) => {
-    const selection = grid.selection;
-    let values: t.IGridValues | undefined;
-
-    const payload: t.IGridClipboard = {
-      action,
+  const fire = (command: t.GridClipboardCommand, e: t.IGridKeydown) => {
+    const payload: t.IGridCommand = {
+      command,
       grid,
-      selection,
-      get keys() {
-        return Object.keys(payload.values);
-      },
-      get values() {
-        values = values || grid.selectionValues;
-        return values;
-      },
+      isCancelled: false,
+      cancel: () => (payload.isCancelled = true),
     };
-
     args.events$.next({
-      type: 'GRID/clipboard',
+      type: 'GRID/command',
       payload,
     });
   };
 
-  cut$.subscribe(e => fire('CUT', e));
-  copy$.subscribe(e => fire('COPY', e));
-  paste$.subscribe(e => fire('PASTE', e));
+  const monitor = (cmd: t.GridClipboardCommand) =>
+    keydown$.pipe(filter(e => is(cmd, e))).subscribe(e => fire(cmd, e));
+
+  monitor('CUT');
+  monitor('COPY');
+  monitor('PASTE');
 }
