@@ -3,6 +3,11 @@ import { filter, map } from 'rxjs/operators';
 
 import { coord, removeMarkdownEncoding, t } from '../common';
 
+type ClipboardItem = {
+  key: string;
+  value?: t.IGridCell | t.IGridRow | t.IGridColumn;
+};
+
 const CLIPBOARD: t.GridClipboardCommand[] = ['CUT', 'COPY', 'PASTE'];
 let PENDING: t.IGridClipboard | undefined;
 
@@ -60,24 +65,8 @@ async function read(args: { grid: t.IGrid; action: 'CUT' | 'COPY'; fire: t.FireG
   await navigator.clipboard.writeText(text);
 
   // Store data if full ROWs or COLUMNs are selected.
-  const getAxisData = <T extends t.IGridRows | t.IGridColumns>(
-    axis: coord.CoordAxis,
-    data: T,
-  ): T => {
-    return selection.ranges.reduce((acc, next) => {
-      if (coord.cell.isAxisRangeKey(next, axis)) {
-        const range = coord.range.fromKey(next);
-        range.axis(axis).keys.forEach(key => {
-          if (data[key]) {
-            acc[key] = data[key];
-          }
-        });
-      }
-      return acc;
-    }, {}) as T;
-  };
-  const columns = getAxisData('COLUMN', grid.columns);
-  const rows = getAxisData('ROW', grid.rows);
+  const columns = getAxisData('COLUMN', selection, grid.columns);
+  const rows = getAxisData('ROW', selection, grid.rows);
 
   // Alert listeners and store state.
   const range = coord.range.square(items.map(item => item.key)).key;
@@ -92,10 +81,11 @@ async function read(args: { grid: t.IGrid; action: 'CUT' | 'COPY'; fire: t.FireG
 async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
   const { grid } = args;
   const selection = grid.selection;
-  const key = selection.cell;
-  if (!key) {
+  const targetCell = selection.cell;
+  if (!targetCell) {
     return;
   }
+  let redraw = false;
 
   // Read text from clipboard.
   const text = await navigator.clipboard.readText();
@@ -105,59 +95,64 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
   if (!isPendingLatest) {
     PENDING = undefined;
   }
+  const pending = PENDING;
 
   // Delete data if pending "cut" operation.
-  if (PENDING && PENDING.action === 'CUT') {
-    const range = coord.range.fromKey(PENDING.range);
+  if (pending && pending.action === 'CUT') {
+    const range = coord.range.fromKey(pending.range);
     const empty = range.keys.reduce((acc, key) => {
       acc[key] = { value: undefined };
       return acc;
     }, {});
-    grid.changeCells(empty, { source: 'CUT' });
+    grid.changeCells(empty, { source: 'CLIPBOARD/cut' });
   }
 
-  type ClipboardItem = { key: string; value?: t.IGridCell };
-
-  // Convert pending items (shifted to insertion point).
-  const fromPending = (args: { range: string; cells: t.IGridValues }): ClipboardItem[] => {
-    const range = coord.range.fromKey(args.range);
-    const pos = {
-      start: coord.cell.fromKey(range.left.key),
-      end: coord.cell.fromKey(key),
-    };
-    const diff = {
-      row: pos.end.row - pos.start.row,
-      column: pos.end.column - pos.start.column,
-    };
-
-    const cells = { ...args.cells };
-    return Object.keys(cells).map(cell => {
-      const pos = coord.cell.fromKey(cell);
-      const key = coord.cell.toKey(pos.column + diff.column, pos.row + diff.row);
-      return { key, value: cells[cell] };
-    });
-  };
-
   // Convert text to table items.
-  const fromString = (): ClipboardItem[] =>
-    coord.table.fromString({ key, text }).map(({ key, value }) => ({ key, value: { value } }));
+  const cellsFromString = (): ClipboardItem[] =>
+    coord.table
+      .fromString({ key: targetCell, text })
+      .map(({ key, value }) => ({ key, value: { value } }));
 
   // Derive the list of clipboard items.
-  const items =
-    PENDING && isPendingLatest
-      ? fromPending({ range: PENDING.range, cells: PENDING.cells || {} })
-      : fromString();
-
+  const items = pending
+    ? shiftCells({ targetCell, range: pending.range, data: pending.cells })
+    : cellsFromString();
   if (items.length === 0) {
     return;
   }
 
-  // Update change.
-  const changes = items.reduce((acc, next) => {
+  // Update cells.
+  const changedCells = items.reduce((acc, next) => {
     acc[next.key] = next.value;
     return acc;
   }, {});
-  grid.changeCells(changes, { source: 'PASTE' });
+  grid.changeCells(changedCells, { source: 'CLIPBOARD/paste' });
+
+  // Update row/column data.
+  const shiftedAxisData = <T extends t.IGridRows | t.IGridColumns>(
+    axis: coord.CoordAxis,
+    data: T,
+  ): T => {
+    if (!pending || Object.keys(data).length === 0) {
+      return {} as any;
+    }
+    const source = firstAxisRange(axis, pending.selection);
+    const target = firstAxisRange(axis, selection);
+    if (!source || !target) {
+      return {} as any;
+    }
+    return shiftAxisData<T>({ axis, source, target, data });
+  };
+  const columns = pending ? shiftedAxisData('COLUMN', pending.columns) : {};
+  const rows = pending ? shiftedAxisData('ROW', pending.rows) : {};
+  if (Object.keys(columns).length > 0) {
+    grid.changeColumns(columns, { source: 'CLIPBOARD/paste' });
+    redraw = true;
+  }
+  if (Object.keys(rows).length > 0) {
+    grid.changeRows(rows, { source: 'CLIPBOARD/paste' });
+    redraw = true;
+  }
 
   // Update grid selection.
   const square = coord.range.square(items.map(item => item.key));
@@ -169,11 +164,85 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
     return acc;
   }, {});
 
-  const columns = {}; // TEMP 🐷
-  const rows = {}; // TEMP 🐷
-
   args.fire({
     type: 'GRID/clipboard',
     payload: { action: 'PASTE', range: square.key, selection, text, cells, columns, rows },
   });
+
+  // Finish up.
+  if (redraw) {
+    grid.redraw();
+  }
+}
+
+/**
+ * [Helpers]
+ */
+function shiftCells(args: {
+  targetCell: string;
+  range: string;
+  data: t.IGridValues;
+}): ClipboardItem[] {
+  const range = coord.range.fromKey(args.range);
+  const pos = {
+    start: coord.cell.fromKey(range.left.key),
+    end: coord.cell.fromKey(args.targetCell),
+  };
+  const diff = {
+    row: pos.end.row - pos.start.row,
+    column: pos.end.column - pos.start.column,
+  };
+
+  const data = { ...args.data };
+  return Object.keys(data).map(cell => {
+    const pos = coord.cell.fromKey(cell);
+    const key = coord.cell.toKey(pos.column + diff.column, pos.row + diff.row);
+    return { key, value: data[cell] };
+  });
+}
+
+function shiftAxisData<T extends t.IGridRows | t.IGridColumns>(args: {
+  axis: coord.CoordAxis;
+  source: coord.range.CellRange;
+  target: coord.range.CellRange;
+  data: T;
+}): T {
+  const { axis } = args;
+  const pos = {
+    start: args.source.left,
+    end: args.target.left,
+  };
+  const diff = coord.cell.toAxisIndex(axis, pos.end) - coord.cell.toAxisIndex(axis, pos.start);
+  const data = { ...args.data };
+  return Object.keys(data).reduce((acc, next) => {
+    const index = coord.cell.toAxisIndex(axis, next) + diff;
+    const key = coord.cell.toAxisKey(axis, index);
+    if (key) {
+      acc[key] = data[next];
+    }
+    return acc;
+  }, {}) as T;
+}
+
+function getAxisData<T extends t.IGridRows | t.IGridColumns>(
+  axis: coord.CoordAxis,
+  selection: t.IGridSelection,
+  data: T,
+): T {
+  return selection.ranges.reduce((acc, next) => {
+    if (coord.cell.isAxisRangeKey(next, axis)) {
+      const range = coord.range.fromKey(next);
+      range.axis(axis).keys.forEach(key => {
+        if (data[key]) {
+          acc[key] = data[key];
+        }
+      });
+    }
+    return acc;
+  }, {}) as T;
+}
+
+function firstAxisRange(axis: coord.CoordAxis, selection: t.IGridSelection) {
+  const key = selection.ranges.find(key => coord.cell.isAxisRangeKey(key, axis));
+  return key ? coord.range.fromKey(key) : undefined;
 }

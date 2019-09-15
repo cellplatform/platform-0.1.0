@@ -72,7 +72,8 @@ export type IGridMouse = MouseEvent & {
 /**
  * Cell.
  */
-export type GridCellChangeType = 'EDIT' | 'DELETE' | 'CUT' | 'PASTE';
+export type GridCellChangeType = 'EDIT' | 'DELETE' | 'CLIPBOARD/cut' | 'CLIPBOARD/paste';
+
 export type IGridCellsChangedEvent = {
   type: 'GRID/cells/changed';
   payload: IGridCellsChanged;
@@ -97,6 +98,8 @@ export type IGridCellChange = {
 /**
  * Column.
  */
+export type GridColumnChangeType = 'UPDATE' | 'RESET' | 'RESET/doubleClick' | 'CLIPBOARD/paste';
+
 export type IGridColumnsChangedEvent = {
   type: 'GRID/columns/changed';
   payload: IGridColumnsChanged;
@@ -108,7 +111,7 @@ export type IGridColumnsChanged = {
 };
 export type IGridColumnChange = {
   column: string;
-  source: 'UPDATE' | 'RESET' | 'RESET/doubleClick';
+  source: t.GridColumnChangeType;
   from: t.IGridColumn;
   to: t.IGridColumn;
 };
@@ -116,6 +119,13 @@ export type IGridColumnChange = {
 /**
  * Row.
  */
+export type GridRowChangeType =
+  | 'UPDATE'
+  | 'UPDATE/cellEdited'
+  | 'RESET'
+  | 'RESET/doubleClick'
+  | 'CLIPBOARD/paste';
+
 export type IRowsChangedEvent = {
   type: 'GRID/rows/changed';
   payload: IGridRowsChanged;
@@ -127,7 +137,7 @@ export type IGridRowsChanged = {
 };
 export type IGridRowChange = {
   row: number;
-  source: 'UPDATE' | 'UPDATE/cellEdited' | 'RESET' | 'RESET/doubleClick';
+  source: t.GridRowChangeType;
   from: t.IGridRow;
   to: t.IGridRow;
 };
