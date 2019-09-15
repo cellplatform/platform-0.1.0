@@ -45,6 +45,8 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
     add(row === 0, GRID.FIRST.ROW);
     add(column === 0, GRID.FIRST.COLUMN);
     add(style.bold, CELL.BOLD);
+    add(style.italic, CELL.ITALIC);
+    add(style.underline, CELL.UNDERLINE);
 
     if (isHtml) {
       return <div className={className} dangerouslySetInnerHTML={{ __html: child }} />;

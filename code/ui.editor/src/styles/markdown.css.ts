@@ -57,6 +57,7 @@ export const styles: t.IEditorStyles = {
   code: {
     fontFamily: 'monospace',
     fontWeight: 'bold',
+    textDecoration: 'none',
   },
   pre: {
     fontSize: '0.85em',
@@ -68,6 +69,7 @@ export const styles: t.IEditorStyles = {
     paddingTop: '1.1em',
     marginTop: '1.4em',
     marginBottom: '1.8em',
+    textDecoration: 'none',
   },
   'p code': {
     fontSize: '0.85em',
@@ -78,6 +80,7 @@ export const styles: t.IEditorStyles = {
     borderRadius: 3,
     top: '-0.1em',
     position: 'relative',
+    textDecoration: 'none',
   },
 
   // Last child-resets
