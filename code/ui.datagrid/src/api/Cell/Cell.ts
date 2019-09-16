@@ -1,9 +1,9 @@
-import { coord, R, t } from '../../common';
+import { coord, R, t, defaultValue, diff } from '../../common';
 
 /**
  * API for accessing and manipulating a cell.
  */
-export class Cell<P = {}> implements t.ICell<P> {
+export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
   /**
    * [Static]
    */
@@ -70,6 +70,19 @@ export class Cell<P = {}> implements t.ICell<P> {
     return payload;
   }
 
+  public static props(input?: t.ICellProps) {
+    const props = input || {};
+    const style: t.ICellPropsStyle = props.style || {};
+    const merge: t.ICellPropsMerge = props.merge || {};
+    return { style, merge };
+  }
+
+  public static diff(left: t.IGridCell, right: t.IGridCell): t.ICellDiff {
+    const list = diff.compare(left, right) as Array<diff.Diff<t.IGridCell>>;
+    const isDifferent = list.length > 0;
+    return { left, right, isDifferent, list };
+  }
+
   public static isEmpty(cell?: t.IGridCell) {
     if (!cell) {
       return true;
@@ -81,6 +94,14 @@ export class Cell<P = {}> implements t.ICell<P> {
       }
     }
     return false;
+  }
+
+  public static isMergeChanged(left?: t.IGridCell, right?: t.IGridCell) {
+    const merge = {
+      left: left ? Cell.props(left.props).merge : undefined,
+      right: right ? Cell.props(right.props).merge : undefined,
+    };
+    return diff.compare(merge.left, merge.right).length > 0;
   }
 
   /**
@@ -135,7 +156,7 @@ export class Cell<P = {}> implements t.ICell<P> {
   }
 
   private get data() {
-    return this._.table.getDataAtCell(this.row, this.column);
+    return this._.table.getDataAtCell(this.row, this.column) || {};
   }
 
   public get value(): t.CellValue {
@@ -145,7 +166,7 @@ export class Cell<P = {}> implements t.ICell<P> {
 
   public get props(): P {
     const data = this.data;
-    return typeof data === 'object' ? data.props : {};
+    return typeof data === 'object' ? data.props || {} : {};
   }
 
   public get siblings() {
@@ -171,6 +192,14 @@ export class Cell<P = {}> implements t.ICell<P> {
         return row < 0 ? undefined : Cell.create({ table, column, row });
       },
     };
+  }
+
+  public get rowspan() {
+    return defaultValue(Cell.props(this.props).merge.rowspan, 1);
+  }
+
+  public get colspan() {
+    return defaultValue(Cell.props(this.props).merge.colspan, 1);
   }
 
   /**

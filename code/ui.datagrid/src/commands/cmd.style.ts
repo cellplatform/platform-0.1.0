@@ -17,7 +17,6 @@ export function init(args: {
   const style$ = command$.pipe(
     filter(e => STYLE.includes(e.command as any)),
     filter(e => !e.isCancelled),
-    // map(e => e.command),
   );
 
   const toggle = (

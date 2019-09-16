@@ -168,13 +168,17 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     }
     const { initial = {}, values = {} } = this.props;
     const grid = this.grid;
+
     grid.values = values;
+    grid.mergeCells({ values, init: true });
+
     if (initial.selection) {
       const selection =
         typeof initial.selection === 'string' ? { cell: initial.selection } : initial.selection;
       const { cell, ranges } = selection;
       grid.select({ cell, ranges });
     }
+
     grid.fire({ type: 'GRID/ready', payload: { grid } });
     this.forceUpdate();
   }

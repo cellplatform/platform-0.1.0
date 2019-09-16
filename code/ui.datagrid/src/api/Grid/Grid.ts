@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { coord, defaultValue, R, t, value as valueUtil } from '../../common';
+import { coord, defaultValue, R, t, value as valueUtil, diff } from '../../common';
 import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
 import { keyboard } from '../../keyboard';
@@ -213,13 +213,56 @@ export class Grid implements t.IGrid {
   }
   public set values(values: t.IGridValues) {
     values = { ...values };
-    const data = Grid.toDataArray({
-      values,
-      totalColumns: this.totalColumns,
-      totalRows: this.totalRows,
-    });
+    const totalColumns = this.totalColumns;
+    const totalRows = this.totalRows;
+    const data = Grid.toDataArray({ values, totalColumns, totalRows });
     this._.values = values;
     this._.table.loadData(data);
+  }
+
+  /**
+   * Merge cells.
+   * https://handsontable.com/docs/6.1.1/demo-merged-cells.html
+   */
+  public mergeCells(args: { values: t.IGridValues; init?: boolean }) {
+    type MergeCell = { row: number; col: number; rowspan: number; colspan: number };
+    type MergeCells = { [key: string]: MergeCell };
+
+    const { values } = args;
+
+    // Get the list of current values (or empty if `init` requested)/
+    const list: MergeCell[] = args.init
+      ? []
+      : (this._.table.getSettings().mergeCells as MergeCell[]) || [];
+
+    // Convert list into an object-map.
+    const map = list.reduce((acc, next) => {
+      const key = coord.cell.toKey(next.col, next.row);
+      acc[key] = next;
+      return acc;
+    }, {}) as MergeCells;
+
+    // Update the object-map with "cell-merge" props from the given values.
+    Object.keys(values).map(key => {
+      const item = values[key];
+      if (item) {
+        const props: t.ICellProps = item.props || {};
+        const merge = props.merge;
+        if (merge) {
+          const rowspan = Math.max(1, defaultValue(merge.rowspan, 1));
+          const colspan = Math.max(1, defaultValue(merge.colspan, 1));
+          const { row, column: col } = coord.cell.fromKey(key);
+          map[key] = { row, col, rowspan, colspan };
+        }
+      }
+    });
+
+    // Convert the object-map back into an array.
+    const mergeCells = Object.keys(map).map(key => map[key]);
+    this._.table.updateSettings({ mergeCells }, false);
+
+    // Finish up.
+    return this;
   }
 
   public get columns() {
@@ -411,7 +454,7 @@ export class Grid implements t.IGrid {
           const to = values[key];
           return Cell.changeEvent({ cell, from, to });
         });
-        const payload: t.IGridCellsChanged = {
+        const payload: t.IGridCellsChange = {
           source: defaultValue(options.source, 'EDIT'),
           changes,
           get isCancelled() {
@@ -421,7 +464,7 @@ export class Grid implements t.IGrid {
             changes.forEach(change => change.cancel());
           },
         };
-        this.fire({ type: 'GRID/cells/changed', payload });
+        this.fire({ type: 'GRID/cells/change', payload });
 
         // Adjust any modified values.
         changes
@@ -434,14 +477,31 @@ export class Grid implements t.IGrid {
           .forEach(change => (values[change.cell.key] = change.value.from));
       }
 
-      // Calculate the new updated value set (stripping any empty values)
-      const update = { ...this.values, ...values };
-      Object.keys(values)
-        .filter(key => Cell.isEmpty(update[key]))
-        .forEach(key => delete update[key]);
+      // Calculate the new updated value set.
+      const mergeChanges: t.IGridValues = {};
+      const updates = { ...this.values, ...values };
+      Object.keys(values).forEach(key => {
+        // Strip empty values.
+        if (Cell.isEmpty(updates[key])) {
+          delete updates[key];
+          return;
+        }
+
+        // Determine if any merge values have changed.
+        const current = this.values[key];
+        const update = updates[key];
+        if (Cell.isMergeChanged(current, update)) {
+          mergeChanges[key] = update;
+        }
+      });
+
+      // Update any cell-merge changes.
+      if (Object.keys(mergeChanges).length > 0) {
+        this.mergeCells({ values: mergeChanges });
+      }
 
       // Update the UI.
-      this.values = update;
+      this.values = updates;
     }
     return this;
   }
@@ -449,10 +509,7 @@ export class Grid implements t.IGrid {
   /**
    * Updates columns.
    */
-  public changeColumns(
-    columns: t.IGridColumns,
-    options: { source?: t.IGridColumnChange['source'] } = {},
-  ) {
+  public changeColumns(columns: t.IGridColumns, options: { source?: t.GridColumnChangeType } = {}) {
     const { source = 'UPDATE' } = options;
     const from = { ...this._.columns };
     const to = { ...from };
@@ -473,7 +530,7 @@ export class Grid implements t.IGrid {
     });
     this._.columns = to;
     if (!R.equals(from, to)) {
-      this.fire({ type: 'GRID/columns/changed', payload: { from, to, changes } });
+      this.fire({ type: 'GRID/columns/change', payload: { from, to, changes } });
     }
     return this;
   }
@@ -481,7 +538,7 @@ export class Grid implements t.IGrid {
   /**
    *  Updates rows.
    */
-  public changeRows(rows: t.IGridRows, options: { source?: t.IGridColumnChange['source'] } = {}) {
+  public changeRows(rows: t.IGridRows, options: { source?: t.GridColumnChangeType } = {}) {
     const { source = 'UPDATE' } = options;
     const from = { ...this._.rows };
     const to = { ...from };
@@ -505,7 +562,7 @@ export class Grid implements t.IGrid {
 
     if (!R.equals(from, to)) {
       this.fire({
-        type: 'GRID/rows/changed',
+        type: 'GRID/rows/change',
         payload: { from, to, changes },
       });
     }

@@ -6,7 +6,7 @@ import { DefaultSettings } from 'handsontable';
 import { Grid, IGridArgs } from '.';
 import { Handsontable, constants } from '../../common';
 
-const createGrid = (args: Partial<IGridArgs> = {}) => {
+export const createGrid = (args: Partial<IGridArgs> = {}) => {
   const el = document.createElement('div');
   const settings: DefaultSettings = {};
   const table = new Handsontable(el, settings);
@@ -74,7 +74,7 @@ describe('Grid', () => {
     });
   });
 
-  describe('changeValues', () => {
+  describe('changeCells', () => {
     it('changes an existing value', () => {
       const grid = createGrid({ values: { A1: { value: 123 } } });
       const values1 = grid.values;
