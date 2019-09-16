@@ -77,7 +77,7 @@ export type GridCellChangeType =
   | 'DELETE'
   | 'CLIPBOARD/cut'
   | 'CLIPBOARD/paste'
-  | 'COMMAND/style';
+  | 'PROPS/style';
 
 export type IGridCellsChangedEvent = {
   type: 'GRID/cells/changed';

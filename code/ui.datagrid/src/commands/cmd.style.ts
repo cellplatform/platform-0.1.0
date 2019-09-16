@@ -51,7 +51,7 @@ export function init(args: {
     }, {});
 
     // Update the grid.
-    grid.changeCells(changes, { source: 'COMMAND/style' });
+    grid.changeCells(changes, { source: 'PROPS/style' });
   });
 }
 
