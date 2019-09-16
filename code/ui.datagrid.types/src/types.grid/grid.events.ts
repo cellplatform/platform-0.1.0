@@ -10,9 +10,9 @@ export type GridEvent =
   | IGridRedrawEvent
   | IGridKeydownEvent
   | IGridMouseEvent
-  | IGridCellsChangedEvent
-  | IGridColumnsChangedEvent
-  | IRowsChangedEvent
+  | IGridCellsChangeEvent
+  | IGridColumnsChangeEvent
+  | IRowsChangeEvent
   | IGridSelectionChangeEvent
   | IGridFocusEvent
   | IGridBlurEvent
@@ -79,11 +79,11 @@ export type GridCellChangeType =
   | 'CLIPBOARD/paste'
   | 'PROPS/style';
 
-export type IGridCellsChangedEvent = {
-  type: 'GRID/cells/changed';
-  payload: IGridCellsChanged;
+export type IGridCellsChangeEvent = {
+  type: 'GRID/cells/change';
+  payload: IGridCellsChange;
 };
-export type IGridCellsChanged = {
+export type IGridCellsChange = {
   source: GridCellChangeType;
   changes: IGridCellChange[];
   isCancelled: boolean;
@@ -105,11 +105,11 @@ export type IGridCellChange = {
  */
 export type GridColumnChangeType = 'UPDATE' | 'RESET' | 'RESET/doubleClick' | 'CLIPBOARD/paste';
 
-export type IGridColumnsChangedEvent = {
-  type: 'GRID/columns/changed';
-  payload: IGridColumnsChanged;
+export type IGridColumnsChangeEvent = {
+  type: 'GRID/columns/change';
+  payload: IGridColumnsChange;
 };
-export type IGridColumnsChanged = {
+export type IGridColumnsChange = {
   from: t.IGridColumns;
   to: t.IGridColumns;
   changes: IGridColumnChange[];
@@ -131,11 +131,11 @@ export type GridRowChangeType =
   | 'RESET/doubleClick'
   | 'CLIPBOARD/paste';
 
-export type IRowsChangedEvent = {
-  type: 'GRID/rows/changed';
-  payload: IGridRowsChanged;
+export type IRowsChangeEvent = {
+  type: 'GRID/rows/change';
+  payload: IGridRowsChange;
 };
-export type IGridRowsChanged = {
+export type IGridRowsChange = {
   from: t.IGridRows;
   to: t.IGridRows;
   changes: IGridRowChange[];

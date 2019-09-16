@@ -76,16 +76,16 @@ export class Sync implements t.IDisposable {
 
     const grid$ = grid.events$.pipe(takeUntil(this.dispose$));
     const gridCellsChanges$ = grid$.pipe(
-      filter(e => e.type === 'GRID/cells/changed'),
-      map(e => e.payload as t.IGridCellsChanged),
+      filter(e => e.type === 'GRID/cells/change'),
+      map(e => e.payload as t.IGridCellsChange),
     );
     const gridColumnsChanges$ = grid$.pipe(
-      filter(e => e.type === 'GRID/columns/changed'),
-      map(e => e.payload as t.IGridColumnsChanged),
+      filter(e => e.type === 'GRID/columns/change'),
+      map(e => e.payload as t.IGridColumnsChange),
     );
     const gridRowsChanges$ = grid$.pipe(
-      filter(e => e.type === 'GRID/rows/changed'),
-      map(e => e.payload as t.IGridRowsChanged),
+      filter(e => e.type === 'GRID/rows/change'),
+      map(e => e.payload as t.IGridRowsChange),
     );
     const syncChange$ = events$.pipe(
       filter(e => e.type === 'SYNC/change'),

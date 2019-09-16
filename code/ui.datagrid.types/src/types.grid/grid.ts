@@ -29,13 +29,14 @@ export type IGridMethods = {
     columns: t.IGridColumns,
     options?: { source?: t.IGridColumnChange['source'] },
   ): IGrid;
-  changeRows(rows: t.IGridRows, options?: { source?: t.IGridRowChange['source'] }): IGrid;
+  changeRows(rows: t.IGridRows, options?: { source?: t.GridRowChangeType }): IGrid;
   cell(key: t.CellRef): t.ICell;
   scrollTo(args: { cell: t.CellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
   select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }): IGrid;
   deselect(): IGrid;
   focus(): IGrid;
   redraw(): IGrid;
+  mergeCells(args: { values: t.IGridValues; init?: boolean }): IGrid;
   toPosition(ref: t.CellRef): t.ICoord;
   toSelectionValues(selection: t.IGridSelection): t.IGridValues;
 };

@@ -50,8 +50,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     events$
       .pipe(
         filter(() => true),
-        filter(e => e.type === 'GRID/cells/changed'), // Filter
-        map(e => e.payload as t.IGridCellsChanged),
+        filter(e => e.type === 'GRID/cells/change'),
+        map(e => e.payload as t.IGridCellsChange),
       )
       .subscribe(e => {
         console.log('IGridCellsChanged', e);

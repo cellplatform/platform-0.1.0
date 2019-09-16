@@ -36,7 +36,7 @@ const DEFAULT = {
     // A2: {value:'* one\n * two'},
     // A2: {value:'# Heading\nhello'},
     A3: { value: 'A3 `code`' },
-    A5: { value: 'A5' },
+    A5: { value: 'A5', props: { merge: { colspan: 2 } } },
     B1: { value: 'locked' },
     B2: { value: 'cancel' },
   },
@@ -117,8 +117,8 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     });
 
     const change$ = events$.pipe(
-      filter(e => e.type === 'GRID/cells/changed'),
-      map(e => e.payload as t.IGridCellsChanged),
+      filter(e => e.type === 'GRID/cells/change'),
+      map(e => e.payload as t.IGridCellsChange),
     );
 
     const selection$ = events$.pipe(
