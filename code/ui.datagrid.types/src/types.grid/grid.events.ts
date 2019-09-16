@@ -85,19 +85,9 @@ export type IGridCellsChangeEvent = {
 };
 export type IGridCellsChange = {
   source: GridCellChangeType;
-  changes: IGridCellChange[];
+  changes: t.IGridCellChange[];
   isCancelled: boolean;
   cancel(): void;
-};
-
-export type IGridCellChange = {
-  cell: t.ICell;
-  value: { from?: t.IGridCell; to?: t.IGridCell };
-  isCancelled: boolean;
-  isChanged: boolean;
-  isModified: boolean;
-  cancel(): void;
-  modify(value: t.CellValue): void;
 };
 
 /**
