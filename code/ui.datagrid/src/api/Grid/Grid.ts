@@ -675,44 +675,32 @@ export class Grid implements t.IGrid {
       return values;
     }
 
-    // Add focus cell.
+    // Add focused cell value.
     const res: t.IGridValues = {};
     if (selection.cell) {
       res[selection.cell] = values[selection.cell];
     }
 
-    // Add ranges.
-    const all = Object.keys(values);
+    // Add values from ranges.
+    const filterAxisRange = (
+      field: 'column' | 'row',
+      start: number,
+      end: number,
+      coords: coord.ICoordCell[],
+    ) => {
+      return coords
+        .filter(cell => cell[field] >= start && cell[field] <= end)
+        .map(cell => cell.key);
+    };
+
     let keys: string[] = [];
+    const all = Object.keys(values).map(key => coord.cell.toCell(key));
     coord.range.union(this.selection.ranges).ranges.forEach(range => {
-      const isColumn = coord.cell.isColumnRangeKey(range.key);
-      const isRow = coord.cell.isRowRangeKey(range.key);
-
-      if (isColumn) {
-        keys = [
-          ...keys,
-          ...findKeys(
-            all,
-            range.left.column,
-            range.right.column,
-            index => new RegExp(`^${coord.cell.toColumnKey(index)}\\d+`),
-          ),
-        ];
-      }
-
-      if (isRow) {
-        keys = [
-          ...keys,
-          ...findKeys(
-            all,
-            range.left.row,
-            range.right.row,
-            index => new RegExp(`\\w${coord.cell.toRowKey(index)}$`),
-          ),
-        ];
-      }
-
-      if (!isColumn && !isRow) {
+      if (coord.cell.isColumnRangeKey(range.key)) {
+        keys = [...keys, ...filterAxisRange('column', range.left.column, range.right.column, all)];
+      } else if (coord.cell.isRowRangeKey(range.key)) {
+        keys = [...keys, ...filterAxisRange('row', range.left.row, range.right.row, all)];
+      } else {
         keys = [...keys, ...range.keys];
       }
     });
@@ -730,26 +718,3 @@ export class Grid implements t.IGrid {
    */
   public fire: t.FireGridEvent = e => this._.events$.next(e);
 }
-
-/**
- * [Helpers]
- */
-function indexRange(start: number, end: number) {
-  return Array.from({ length: end - start + 1 }).map((_, i) => start + i);
-}
-
-const findKeys = (
-  keys: string[],
-  start: number,
-  end: number,
-  toRegex: (index: number) => RegExp,
-) => {
-  return indexRange(start, end).reduce(
-    (acc, index) => {
-      const regex = toRegex(index);
-      keys.filter(key => regex.test(key)).forEach(key => acc.push(key));
-      return acc;
-    },
-    [] as string[],
-  );
-};

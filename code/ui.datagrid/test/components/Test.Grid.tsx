@@ -91,7 +91,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         map(e => e.payload as t.IGridClipboard),
       )
       .subscribe(e => {
-        console.log('CLIPBOARD', e);
+        log.info('📋 CLIPBOARD', e);
       });
   }
 

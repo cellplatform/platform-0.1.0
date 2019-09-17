@@ -3,13 +3,12 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import {
-  constants,
   CellEditor,
   datagrid,
   GlamorValue,
   Handsontable as HandsontableLib,
-  t,
   markdown,
+  t,
 } from '../common';
 import { DebugEditor } from './Debug.Editor';
 
@@ -39,6 +38,7 @@ const DEFAULT = {
     A5: { value: 'A5', props: { merge: { colspan: 2 } } },
     B1: { value: 'locked' },
     B2: { value: 'cancel' },
+    C5: { value: 'Hello', props: { merge: { rowspan: 2 } } },
   },
   COLUMNS: {
     A: { width: 300 },

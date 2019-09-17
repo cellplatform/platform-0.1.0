@@ -179,7 +179,6 @@ export type IGridClipboardEvent = {
 };
 export type IGridClipboard = {
   action: t.GridClipboardCommand;
-  range: string;
   selection: t.IGridSelection;
   text: string;
   cells: t.IGridValues;

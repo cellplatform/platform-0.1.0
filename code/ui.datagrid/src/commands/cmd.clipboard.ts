@@ -66,11 +66,8 @@ async function read(args: { grid: t.IGrid; action: 'CUT' | 'COPY'; fire: t.FireG
   const columns = getAxisData('COLUMN', selection, grid.columns);
   const rows = getAxisData('ROW', selection, grid.rows);
 
-  // Prepare state payload.
-  const range = coord.range.square(items.map(item => item.key)).key;
-  const payload: t.IGridClipboard = { action, range, selection, text, cells, columns, rows };
-
   // Alert listeners and store state.
+  const payload: t.IGridClipboard = { action, selection, text, cells, columns, rows };
   grid.clipboard = { ...payload, pasted: 0 };
   args.fire({ type: 'GRID/clipboard', payload });
 }
@@ -97,10 +94,9 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
   }
   const pending = grid.clipboard;
 
-  // Delete data if pending "cut" operation.
+  // Delete data if pending is a "cut" operation.
   if (pending && pending.action === 'CUT') {
-    const range = coord.range.fromKey(pending.range);
-    const empty = range.keys.reduce((acc, key) => {
+    const empty = Object.keys(pending.cells).reduce((acc, key) => {
       acc[key] = { value: undefined };
       return acc;
     }, {});
@@ -114,9 +110,14 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
       .map(({ key, value }) => ({ key, value: { value } }));
 
   // Derive the list of clipboard items.
-  const items = pending
-    ? shiftCells({ targetCell, range: pending.range, data: pending.cells })
-    : cellsFromString();
+  const items =
+    pending && pending.selection.cell
+      ? shiftCells({
+          sourceCell: pending.selection.cell,
+          targetCell,
+          data: pending.cells,
+        })
+      : cellsFromString();
   if (items.length === 0) {
     return;
   }
@@ -171,7 +172,7 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
 
   args.fire({
     type: 'GRID/clipboard',
-    payload: { action: 'PASTE', range: square.key, selection, text, cells, columns, rows },
+    payload: { action: 'PASTE', selection, text, cells, columns, rows },
   });
 
   // Finish up.
@@ -184,13 +185,12 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
  * [Helpers]
  */
 function shiftCells(args: {
+  sourceCell: string;
   targetCell: string;
-  range: string;
   data: t.IGridValues;
 }): ClipboardItem[] {
-  const range = coord.range.fromKey(args.range);
   const pos = {
-    start: coord.cell.fromKey(range.left.key),
+    start: coord.cell.fromKey(args.sourceCell),
     end: coord.cell.fromKey(args.targetCell),
   };
   const diff = {
