@@ -96,7 +96,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
     events$
       .pipe(
-        filter(e => e.type === 'GRID/clipboard/beforePaste'),
+        filter(e => e.type === 'GRID/clipboard/before/paste'),
         map(e => e.payload as t.IGridClipboardBeforePaste),
       )
       .subscribe(e => {

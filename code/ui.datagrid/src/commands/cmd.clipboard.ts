@@ -37,6 +37,23 @@ async function read(args: {
   fire: t.FireGridEvent;
 }) {
   const { grid, action } = args;
+
+  // Fire the BEFORE event, allowing any listeners to clean up the
+  // dataset before the clipboard is copied.
+  const wait: Array<Promise<any>> = [];
+  args.fire({
+    type: 'GRID/clipboard/before/read',
+    payload: {
+      action,
+      wait: promise => wait.push(promise),
+    },
+  });
+  if (wait.length > 0) {
+    console.log('wait', wait);
+    await Promise.all(wait);
+  }
+
+  // Prepare the clipboard state.
   const payload = toClipboard({ grid, action });
 
   // Send text to clipboard.
@@ -73,7 +90,7 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
       pending = { ...(change || {}), pasted: 0 };
     },
   };
-  args.fire({ type: 'GRID/clipboard/beforePaste', payload: before });
+  args.fire({ type: 'GRID/clipboard/before/paste', payload: before });
 
   // Determine if the clipboard text is the same as the in-memory pending object.
   const isPendingCurrent = pending ? pending.text === text : false;

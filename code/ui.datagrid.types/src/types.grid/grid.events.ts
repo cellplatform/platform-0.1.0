@@ -19,6 +19,7 @@ export type GridEvent =
   | IGridCommandEvent
   | IGridUndoEvent
   | IGridClipboardEvent
+  | IGridClipboardBeforeReadEvent
   | IGridClipboardBeforePasteEvent;
 
 export type IGridReadyEvent = {
@@ -187,8 +188,17 @@ export type IGridClipboard<A = t.GridClipboardCommand> = {
   columns: t.IGridColumns;
 };
 
+export type IGridClipboardBeforeReadEvent = {
+  type: 'GRID/clipboard/before/read';
+  payload: IGridClipboardBeforeRead;
+};
+export type IGridClipboardBeforeRead = {
+  action: t.GridClipboardReadCommand;
+  wait(promise: Promise<any>): void;
+};
+
 export type IGridClipboardBeforePasteEvent = {
-  type: 'GRID/clipboard/beforePaste';
+  type: 'GRID/clipboard/before/paste';
   payload: IGridClipboardBeforePaste;
 };
 export type IGridClipboardBeforePaste = {
