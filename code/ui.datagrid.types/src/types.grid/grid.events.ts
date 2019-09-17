@@ -18,7 +18,8 @@ export type GridEvent =
   | IGridBlurEvent
   | IGridCommandEvent
   | IGridUndoEvent
-  | IGridClipboardEvent;
+  | IGridClipboardEvent
+  | IGridClipboardBeforePasteEvent;
 
 export type IGridReadyEvent = {
   type: 'GRID/ready';
@@ -177,13 +178,24 @@ export type IGridClipboardEvent = {
   type: 'GRID/clipboard';
   payload: IGridClipboard;
 };
-export type IGridClipboard = {
-  action: t.GridClipboardCommand;
+export type IGridClipboard<A = t.GridClipboardCommand> = {
+  action: A;
   selection: t.IGridSelection;
   text: string;
   cells: t.IGridValues;
   rows: t.IGridRows;
   columns: t.IGridColumns;
+};
+
+export type IGridClipboardBeforePasteEvent = {
+  type: 'GRID/clipboard/beforePaste';
+  payload: IGridClipboardBeforePaste;
+};
+export type IGridClipboardBeforePaste = {
+  text: string;
+  pending?: IGridClipboard<t.GridClipboardReadCommand>;
+  isModified: boolean;
+  modify(change: IGridClipboard<t.GridClipboardReadCommand>): void;
 };
 
 /**

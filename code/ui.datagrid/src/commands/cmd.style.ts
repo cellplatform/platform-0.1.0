@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { t } from '../common';
+import { t, toSelectionValues } from '../common';
 
 const STYLE: t.GridStyleCommand[] = ['BOLD', 'ITALIC', 'UNDERLINE'];
 
@@ -33,7 +33,7 @@ export function init(args: {
   style$.subscribe(e => {
     const command = e.command as t.GridStyleCommand;
     const field = toField(command);
-    const values = grid.toSelectionValues(e.selection);
+    const values = toSelectionValues({ values: grid.values, selection: e.selection });
 
     // Converts values to the toggled style.
     let flag: boolean | undefined;

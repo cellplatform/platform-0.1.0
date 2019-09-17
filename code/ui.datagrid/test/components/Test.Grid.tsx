@@ -55,7 +55,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         map(e => e.payload as t.IGridCellsChange),
       )
       .subscribe(e => {
-        console.log('IGridCellsChanged', e);
+        log.info('🐷 IGridCellsChanged', e);
 
         // e.cancel();
         // e.changes[0].modify('foo');
@@ -92,6 +92,21 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       )
       .subscribe(e => {
         log.info('📋 CLIPBOARD', e);
+      });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/clipboard/beforePaste'),
+        map(e => e.payload as t.IGridClipboardBeforePaste),
+      )
+      .subscribe(e => {
+        if (e.pending) {
+          // Modify clipboard before paste.
+          // Can be used to inject and transfer clipboard between instances.
+          //
+          const cells = { ...e.pending.cells, A1: { value: 'boo' } };
+          // e.modify({ ...e.pending, cells });
+        }
       });
   }
 

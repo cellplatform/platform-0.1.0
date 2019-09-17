@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { coord, defaultValue, R, t, value as valueUtil } from '../../common';
+import { coord, defaultValue, R, t, value as valueUtil, toSelectionValues } from '../../common';
 import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
 import { keyboard } from '../../keyboard';
@@ -346,7 +346,9 @@ export class Grid implements t.IGrid {
    * Retrieves the currently selected key/value pairs.
    */
   public get selectionValues(): t.IGridValues {
-    return this.toSelectionValues(this.selection);
+    const values = this.values;
+    const selection = this.selection;
+    return toSelectionValues({ values, selection });
   }
 
   /**
@@ -663,53 +665,6 @@ export class Grid implements t.IGrid {
     const row = R.clamp(0, this.totalRows - 1, pos.row);
     const column = R.clamp(0, this.totalColumns - 1, pos.column);
     return { row, column };
-  }
-
-  /**
-   * Retrieves the grid values that map to the given selection.
-   */
-  public toSelectionValues(selection: t.IGridSelection): t.IGridValues {
-    const values = this.values;
-    if (selection.all) {
-      return values;
-    }
-
-    // Add focused cell value.
-    const res: t.IGridValues = {};
-    if (selection.cell) {
-      res[selection.cell] = values[selection.cell];
-    }
-
-    // Add values from ranges.
-    const filterAxisRange = (
-      field: 'column' | 'row',
-      start: number,
-      end: number,
-      coords: coord.ICoordCell[],
-    ) => {
-      return coords
-        .filter(cell => cell[field] >= start && cell[field] <= end)
-        .map(cell => cell.key);
-    };
-
-    let keys: string[] = [];
-    const all = Object.keys(values).map(key => coord.cell.toCell(key));
-    coord.range.union(this.selection.ranges).ranges.forEach(range => {
-      if (coord.cell.isColumnRangeKey(range.key)) {
-        keys = [...keys, ...filterAxisRange('column', range.left.column, range.right.column, all)];
-      } else if (coord.cell.isRowRangeKey(range.key)) {
-        keys = [...keys, ...filterAxisRange('row', range.left.row, range.right.row, all)];
-      } else {
-        keys = [...keys, ...range.keys];
-      }
-    });
-
-    // Construct return object.
-    return R.uniq(keys).reduce((acc, key) => {
-      const value = values[key] || { value: undefined };
-      acc[key] = value;
-      return acc;
-    }, res);
   }
 
   /**

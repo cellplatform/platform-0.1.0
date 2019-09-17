@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { coord, removeMarkdownEncoding, t } from '../common';
+import { coord, t, toClipboard } from '../common';
 
 type ClipboardItem = {
   key: string;
@@ -31,43 +31,18 @@ export function init(args: {
 /**
  * Read from the clipboard.
  */
-async function read(args: { grid: t.IGrid; action: 'CUT' | 'COPY'; fire: t.FireGridEvent }) {
+async function read(args: {
+  grid: t.IGrid;
+  action: t.GridClipboardReadCommand;
+  fire: t.FireGridEvent;
+}) {
   const { grid, action } = args;
-  const cells = grid.selectionValues;
-  const selection = grid.selection;
-
-  // Process the set of selected values.
-  const items = Object.keys(cells).map(key => {
-    let item = cells[key] as t.IGridCell;
-    item = typeof item !== 'object' ? { value: item } : item;
-    if (typeof item.value === 'string') {
-      item.value = removeMarkdownEncoding(item.value);
-    }
-    return { key, item };
-  });
-
-  if (items.length === 0) {
-    return;
-  }
-
-  // Produce a tab-delimited string from the table.
-  const text = coord.table.toString({
-    delimiter: '\t',
-    items: items.map(({ key, item }) => {
-      const value = item.value ? item.value.toString() : '';
-      return { key, value };
-    }),
-  });
+  const payload = toClipboard({ grid, action });
 
   // Send text to clipboard.
-  await navigator.clipboard.writeText(text);
-
-  // Store data if full ROWs or COLUMNs are selected.
-  const columns = getAxisData('COLUMN', selection, grid.columns);
-  const rows = getAxisData('ROW', selection, grid.rows);
+  await navigator.clipboard.writeText(payload.text);
 
   // Alert listeners and store state.
-  const payload: t.IGridClipboard = { action, selection, text, cells, columns, rows };
   grid.clipboard = { ...payload, pasted: 0 };
   args.fire({ type: 'GRID/clipboard', payload });
 }
@@ -87,12 +62,25 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
   // Read text from clipboard.
   const text = await navigator.clipboard.readText();
 
+  // Fire PRE event.
+  let pending = grid.clipboard;
+  const before: t.IGridClipboardBeforePaste = {
+    text,
+    pending,
+    isModified: false,
+    modify: change => {
+      before.isModified = true;
+      pending = { ...(change || {}), pasted: 0 };
+    },
+  };
+  args.fire({ type: 'GRID/clipboard/beforePaste', payload: before });
+
   // Determine if the clipboard text is the same as the in-memory pending object.
-  const isPendingCurrent = grid.clipboard ? grid.clipboard.text === text : false;
+  const isPendingCurrent = pending ? pending.text === text : false;
   if (!isPendingCurrent) {
     grid.clipboard = undefined; // Reset stored clipboard state if actual clipboard differs.
+    pending = undefined;
   }
-  const pending = grid.clipboard;
 
   // Delete data if pending is a "cut" operation.
   if (pending && pending.action === 'CUT') {
@@ -224,24 +212,6 @@ function shiftAxisData<T extends t.IGridRows | t.IGridColumns>(args: {
     const key = coord.cell.toAxisKey(axis, index);
     if (key) {
       acc[key] = data[next];
-    }
-    return acc;
-  }, {}) as T;
-}
-
-function getAxisData<T extends t.IGridRows | t.IGridColumns>(
-  axis: coord.CoordAxis,
-  selection: t.IGridSelection,
-  data: T,
-): T {
-  return selection.ranges.reduce((acc, next) => {
-    if (coord.cell.isAxisRangeKey(next, axis)) {
-      const range = coord.range.fromKey(next);
-      range.axis(axis).keys.forEach(key => {
-        if (data[key]) {
-          acc[key] = data[key];
-        }
-      });
     }
     return acc;
   }, {}) as T;
