@@ -1,5 +1,7 @@
 import { coord, R, t, defaultValue, diff } from '../../common';
 
+export type CellChangeField = keyof t.ICellProps | 'VALUE' | 'PROPS';
+
 /**
  * API for accessing and manipulating a cell.
  */
@@ -83,6 +85,39 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
     return { left, right, isDifferent, list };
   }
 
+  public static isChanged(
+    left: t.IGridCell | undefined,
+    right: t.IGridCell | undefined,
+    field?: CellChangeField | CellChangeField[],
+  ) {
+    // Convert incoming `field` flag to an array.
+    let fields: CellChangeField[] =
+      field === undefined ? ['VALUE', 'PROPS'] : Array.isArray(field) ? field : [field];
+
+    // Expand `PROPS` to actual props fields.
+    fields = R.flatten(
+      fields.map(field => (field === 'PROPS' ? ['style', 'merge'] : field)),
+    ) as CellChangeField[];
+
+    // Look for any matches.
+    return fields.some(field => {
+      let a: any;
+      let b: any;
+      if (field === 'VALUE') {
+        a = left ? left.value : undefined;
+        b = right ? right.value : undefined;
+      } else {
+        const props = {
+          left: (left ? left.props : undefined) || {},
+          right: (right ? right.props : undefined) || {},
+        };
+        a = props.left[field];
+        b = props.right[field];
+      }
+      return !R.equals(a, b);
+    });
+  }
+
   public static isEmpty(cell?: t.IGridCell) {
     if (!cell) {
       return true;
@@ -94,14 +129,6 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
       }
     }
     return false;
-  }
-
-  public static isMergeChanged(left?: t.IGridCell, right?: t.IGridCell) {
-    const merge = {
-      left: left ? Cell.props(left.props).merge : undefined,
-      right: right ? Cell.props(right.props).merge : undefined,
-    };
-    return diff.compare(merge.left, merge.right).length > 0;
   }
 
   /**

@@ -189,8 +189,9 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         })}
         {this.button('mergeCells (A5)', () => {
           this.grid.changeCells({
-            A5: { value: 'merged', props: { merge: { colspan: 3, rowspan: 2 } } },
+            A5: { value: 'merged', props: { merge: { colspan: 3, rowspan: 5 } } },
           });
+          this.grid.select({ cell: 'A5' });
         })}
 
         <Hr margin={5} />

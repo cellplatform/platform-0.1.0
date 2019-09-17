@@ -490,7 +490,7 @@ export class Grid implements t.IGrid {
         // Determine if any merge values have changed.
         const current = this.values[key];
         const update = updates[key];
-        if (Cell.isMergeChanged(current, update)) {
+        if (Cell.isChanged(current, update, 'merge')) {
           mergeChanges[key] = update;
         }
       });
