@@ -1,5 +1,4 @@
 export * from './libs.Handsontable';
-// export * from '@platform/ui.datagrid.types/lib/util';
 
 /**
  * Util.
@@ -7,6 +6,7 @@ export * from './libs.Handsontable';
 export { css, color, GlamorValue, events, containsFocus, Keyboard } from '@platform/react';
 export { value, time, defaultValue } from '@platform/util.value';
 export { log } from '@platform/log/lib/client';
+export { diff } from '@platform/util.diff';
 
 /**
  * Cell coords (eg "A1", "A1:C9")
