@@ -73,12 +73,16 @@ function initLog(args: { ipc: IpcClient; dir?: string; appName?: string }) {
   //       commented out here so as not to fail when consumers use 5.x
   //       put this line prior to init in the calling code when working with 6.
   //
-  // app.setAppLogsPath();
+  const major = parseInt((process.versions.electron || '0').split('.')[0], 10);
+  if (major >= 6) {
+    app.setAppLogsPath(args.dir);
+  }
+
+  // Determine app name and dir.
+  const { ipc } = args;
+  const name = (args.appName || app.getName()).replace(/\s/g, '-').toLowerCase();
+  const dir = args.dir || fs.join(fs.dirname(app.getPath('logs')), name);
 
   // Setup the logger
-  const { ipc } = args;
-  let appName = args.appName || app.getName();
-  appName = appName.replace(/\s/g, '-').toLowerCase();
-  const dir = args.dir || fs.join(fs.dirname(app.getPath('logs')), appName);
   return logger.init({ ipc, dir });
 }
