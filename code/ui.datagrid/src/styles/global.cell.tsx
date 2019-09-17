@@ -17,9 +17,15 @@ const STYLES = {
       color: color.format(-0.7),
       marginTop: 2,
     },
+
     [`.${CELL.BASE}.${GRID.FIRST.ROW}`]: {
       marginTop: 1,
     },
+
+    // Cell styles.
+    [`.${CELL.BOLD}`]: { fontWeight: 'bolder' },
+    [`.${CELL.ITALIC}`]: { fontStyle: 'italic' },
+    [`.${CELL.UNDERLINE}`]: { textDecoration: 'underline' },
   },
 
   MARKDOWN: {

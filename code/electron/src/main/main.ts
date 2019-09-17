@@ -29,19 +29,24 @@ export async function init<M extends IpcMessage = any, S extends t.SettingsJson 
   const { appName } = args;
   const id = MAIN_ID;
 
-  // Initiaize modules.
-  const ipc = args.ipc || initIpc<M>();
-  const settings = args.settings || initSettings<S>({ ipc });
-  const windows = args.windows || WindowsMain.instance({ ipc });
-  const log =
-    typeof args.log === 'object'
-      ? args.log // Logger already exists and was provided.
-      : initLog({ ipc, dir: args.log, appName }); // Initialize a new log.
-  devTools.listen({ ipc, windows });
+  try {
+    // Initiaize modules.
+    const ipc = args.ipc || initIpc<M>();
+    const settings = args.settings || initSettings<S>({ ipc });
+    const windows = args.windows || WindowsMain.instance({ ipc });
+    const log =
+      typeof args.log === 'object'
+        ? args.log // Logger already exists and was provided.
+        : initLog({ ipc, dir: args.log, appName }); // Initialize a new log.
+    devTools.listen({ ipc, windows });
 
-  // Finish up.
-  const main: t.IMain<M, S> = { id, ipc, log, settings, windows };
-  return main;
+    // Finish up.
+    const main: t.IMain<M, S> = { id, ipc, log, settings, windows };
+    return main;
+  } catch (error) {
+    console.log('MAIN/INIT:', error); // tslint:disable-line
+    throw error;
+  }
 }
 
 /**
@@ -61,6 +66,16 @@ export function ready() {
  * [Internal]
  */
 function initLog(args: { ipc: IpcClient; dir?: string; appName?: string }) {
+  // Initialize electron log directires.
+  // https://electronjs.org/docs/api/app#appsetapplogspathpath
+  //
+  // NOTE: this is necessary when using electron 6.x
+  //       commented out here so as not to fail when consumers use 5.x
+  //       put this line prior to init in the calling code when working with 6.
+  //
+  // app.setAppLogsPath();
+
+  // Setup the logger
   const { ipc } = args;
   let appName = args.appName || app.getName();
   appName = appName.replace(/\s/g, '-').toLowerCase();

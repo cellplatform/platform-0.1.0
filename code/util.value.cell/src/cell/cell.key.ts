@@ -120,6 +120,37 @@ export function isRangeKey(key: string) {
 }
 
 /**
+ * Determine if the key is an axis range (eg. "A:B" or "1:1").
+ */
+export function isAxisRangeKey(key: string, axis?: t.CoordAxis) {
+  const type = axisRangeType(key);
+  return axis ? type === axis : type !== undefined;
+}
+
+export function isColumnRangeKey(key: string) {
+  return axisRangeType(key) === 'COLUMN';
+}
+
+export function isRowRangeKey(key: string) {
+  return axisRangeType(key) === 'ROW';
+}
+
+export function axisRangeType(key: string): t.CoordAxis | undefined {
+  const parts = (key || '')
+    .trim()
+    .split(':')
+    .map(part => part.trim());
+  if (parts.length === 2) {
+    const left = toType(parts[0]);
+    const right = toType(parts[1]);
+    if (left === right && (left === 'COLUMN' || left === 'ROW')) {
+      return left;
+    }
+  }
+  return undefined;
+}
+
+/**
  * Converts a cell input into the index number for the given axis.
  * eg:
  *    COLUMN: "A3" => 0
@@ -239,6 +270,10 @@ export function toType(cell: CellInput): t.CoordCellType | undefined {
 
 /**
  * A cell sorter comparison.
+ * Result:
+ *    1: greater-than
+ *    0: same
+ *   -1: less-than
  */
 export const compare = {
   by: (axis: t.CoordAxis) => (axis === 'COLUMN' ? compare.byColumn : compare.byRow),
@@ -282,3 +317,35 @@ export function sort<T extends CellInput>(list: T[], options: { by?: t.CoordAxis
   const axis = options.by || 'COLUMN';
   return [...list].sort(compare.by(axis));
 }
+
+/**
+ * Min cell.
+ */
+export const min = {
+  by: (axis: t.CoordAxis, list: CellInput[]) => {
+    let res: t.ICoordCell | undefined;
+    list.forEach(item => {
+      const cell = toCell(item);
+      res = !res ? cell : comparer(cell, res, { axis }) < 0 ? cell : res;
+    });
+    return res ? toAxisIndex(axis, res) : -1;
+  },
+  row: (list: CellInput[]) => min.by('ROW', list),
+  column: (list: CellInput[]) => min.by('COLUMN', list),
+};
+
+/**
+ * Max cell.
+ */
+export const max = {
+  by: (axis: t.CoordAxis, list: CellInput[]) => {
+    let res: t.ICoordCell | undefined;
+    list.forEach(item => {
+      const cell = toCell(item);
+      res = !res ? cell : comparer(cell, res, { axis }) > 0 ? cell : res;
+    });
+    return res ? toAxisIndex(axis, res) : -1;
+  },
+  row: (list: CellInput[]) => max.by('ROW', list),
+  column: (list: CellInput[]) => max.by('COLUMN', list),
+};

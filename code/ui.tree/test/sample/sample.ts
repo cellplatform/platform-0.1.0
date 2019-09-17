@@ -18,7 +18,7 @@ export const SIMPLE: t.ITreeNode = {
 
 export const COMPREHENSIVE = (() => {
   const p = TreeView.util.props;
-  const root = createRoot([19, 5, 3, 2]);
+  const root = createRoot([21, 5, 3, 2]);
 
   const children = root.children as t.ITreeNode[];
   children.forEach(node => {
@@ -104,10 +104,18 @@ export const COMPREHENSIVE = (() => {
     bg: COLORS.BLUE,
   };
 
-  p(children[18]).inline = { isOpen: true };
-  p(children[18]).label = 'inline open';
-  p(children[18]).colors = { borderBottom: -0.1 }; // No bottom border by default.
-  p(children[18]).marginBottom = 80;
+  p(children[18]).label = 'editable';
+  p(children[18]).labelEditable = true;
+
+  p(children[19]).label = 'dbl-click to edit';
+  p(children[19]).labelEditable = 'DOUBLE_CLICK';
+
+  p(children[20]).inline = { isOpen: true };
+  p(children[20]).label = 'inline open';
+  p(children[20]).colors = { borderBottom: -0.1 }; // No bottom border by default.
+  p(children[20]).marginBottom = 80;
+
+  // p(children[18]).inline = { isOpen: true };
 
   return root;
 })();

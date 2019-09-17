@@ -10,14 +10,15 @@ export type GridEvent =
   | IGridRedrawEvent
   | IGridKeydownEvent
   | IGridMouseEvent
-  | IGridCellsChangedEvent
-  | IGridColumnsChangedEvent
-  | IRowsChangedEvent
+  | IGridCellsChangeEvent
+  | IGridColumnsChangeEvent
+  | IRowsChangeEvent
   | IGridSelectionChangeEvent
   | IGridFocusEvent
   | IGridBlurEvent
-  | IGridClipboardEvent
-  | IGridUndoEvent;
+  | IGridCommandEvent
+  | IGridUndoEvent
+  | IGridClipboardEvent;
 
 export type IGridReadyEvent = {
   type: 'GRID/ready';
@@ -71,43 +72,41 @@ export type IGridMouse = MouseEvent & {
 /**
  * Cell.
  */
-export type GridCellChangeType = 'EDIT' | 'DELETE';
-export type IGridCellsChangedEvent = {
-  type: 'GRID/cells/changed';
-  payload: IGridCellsChanged;
-};
-export type IGridCellsChanged = {
-  source: GridCellChangeType;
-  changes: IGridCellChange[];
-  isCancelled: boolean;
-  cancel(): void;
-};
+export type GridCellChangeType =
+  | 'EDIT'
+  | 'DELETE'
+  | 'CLIPBOARD/cut'
+  | 'CLIPBOARD/paste'
+  | 'PROPS/style';
 
-export type IGridCellChange = {
-  cell: t.ICell;
-  value: { from?: t.IGridCell; to?: t.IGridCell };
+export type IGridCellsChangeEvent = {
+  type: 'GRID/cells/change';
+  payload: IGridCellsChange;
+};
+export type IGridCellsChange = {
+  source: GridCellChangeType;
+  changes: t.IGridCellChange[];
   isCancelled: boolean;
-  isChanged: boolean;
-  isModified: boolean;
   cancel(): void;
-  modify(value: t.CellValue): void;
 };
 
 /**
  * Column.
  */
-export type IGridColumnsChangedEvent = {
-  type: 'GRID/columns/changed';
-  payload: IGridColumnsChanged;
+export type GridColumnChangeType = 'UPDATE' | 'RESET' | 'RESET/doubleClick' | 'CLIPBOARD/paste';
+
+export type IGridColumnsChangeEvent = {
+  type: 'GRID/columns/change';
+  payload: IGridColumnsChange;
 };
-export type IGridColumnsChanged = {
+export type IGridColumnsChange = {
   from: t.IGridColumns;
   to: t.IGridColumns;
   changes: IGridColumnChange[];
 };
 export type IGridColumnChange = {
   column: string;
-  source: 'UPDATE' | 'RESET' | 'RESET/doubleClick';
+  source: t.GridColumnChangeType;
   from: t.IGridColumn;
   to: t.IGridColumn;
 };
@@ -115,18 +114,25 @@ export type IGridColumnChange = {
 /**
  * Row.
  */
-export type IRowsChangedEvent = {
-  type: 'GRID/rows/changed';
-  payload: IGridRowsChanged;
+export type GridRowChangeType =
+  | 'UPDATE'
+  | 'UPDATE/cellEdited'
+  | 'RESET'
+  | 'RESET/doubleClick'
+  | 'CLIPBOARD/paste';
+
+export type IRowsChangeEvent = {
+  type: 'GRID/rows/change';
+  payload: IGridRowsChange;
 };
-export type IGridRowsChanged = {
+export type IGridRowsChange = {
   from: t.IGridRows;
   to: t.IGridRows;
   changes: IGridRowChange[];
 };
 export type IGridRowChange = {
   row: number;
-  source: 'UPDATE' | 'UPDATE/cellEdited' | 'RESET' | 'RESET/doubleClick';
+  source: t.GridRowChangeType;
   from: t.IGridRow;
   to: t.IGridRow;
 };
@@ -157,6 +163,14 @@ export type IGridBlurEvent = {
 };
 
 /**
+ * Commands.
+ */
+export type IGridCommandEvent = {
+  type: 'GRID/command';
+  payload: t.IGridCommand;
+};
+
+/**
  * Clipboard.
  */
 export type IGridClipboardEvent = {
@@ -164,12 +178,18 @@ export type IGridClipboardEvent = {
   payload: IGridClipboard;
 };
 export type IGridClipboard = {
-  action: 'COPY' | 'CUT' | 'PASTE';
-  grid: t.IGrid;
+  action: t.GridClipboardCommand;
+  range: string;
   selection: t.IGridSelection;
-  keys: string[];
+  text: string;
+  cells: t.IGridValues;
+  rows: t.IGridRows;
+  columns: t.IGridColumns;
 };
 
+/**
+ * Undo/redo.
+ */
 export type IGridUndoEvent = {
   type: 'GRID/undo';
   payload: IGridUndo;

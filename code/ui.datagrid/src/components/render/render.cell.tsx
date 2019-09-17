@@ -34,10 +34,19 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
     const child: any = factory.cell({ row, column, value });
     const isHtml = typeof child === 'string' && child.startsWith('<');
 
+    const props: t.ICellProps = cell ? cell.props || {} : {};
+    const style: t.ICellPropsStyle = props.style || {};
+
     let className = CELL.BASE;
-    className = isHtml ? `${CELL.MARKDOWN} ${className}` : className;
-    className = row === 0 ? `${className} ${GRID.FIRST.ROW}` : className;
-    className = column === 0 ? `${className} ${GRID.FIRST.COLUMN}` : className;
+    const add = (isRequired: boolean | undefined, value: string) =>
+      (className = isRequired ? `${className} ${value}` : className);
+
+    add(isHtml, CELL.MARKDOWN);
+    add(row === 0, GRID.FIRST.ROW);
+    add(column === 0, GRID.FIRST.COLUMN);
+    add(style.bold, CELL.BOLD);
+    add(style.italic, CELL.ITALIC);
+    add(style.underline, CELL.UNDERLINE);
 
     if (isHtml) {
       return <div className={className} dangerouslySetInnerHTML={{ __html: child }} />;
@@ -54,7 +63,8 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
   }) {
     const { row, column } = args;
     const value = args.cell ? args.cell.value : undefined;
-    const key = `${row}:${column}/${value || ''}`;
+    const props = args.cell ? JSON.stringify(args.cell.props) : undefined; // TEMP 🐷
+    const key = `${row}:${column}/${value || ''}:${props || ''}`;
     if (CACHE[key]) {
       return CACHE[key];
     }

@@ -67,6 +67,7 @@ describe('CellRangeUnion', () => {
       test('B2:A1,ZZ99:C1', 'A1:B2, C1:ZZ99');
     });
   });
+
   it('constructs consistent key from all unions', () => {
     const hasKey = (input: string, expected: string) => {
       const union = fromKey(input);

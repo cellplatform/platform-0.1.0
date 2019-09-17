@@ -8,22 +8,23 @@ import {
   clamp,
   descend,
   flatten,
+  identity,
+  memoizeWith,
   prop,
   sortWith,
   uniq,
   uniqBy,
-  memoizeWith,
-  identity,
 } from 'ramda';
+
 export const R = {
   ascend,
   clamp,
   descend,
   flatten,
+  identity,
+  memoizeWith,
   prop,
   sortWith,
   uniq,
   uniqBy,
-  memoizeWith,
-  identity,
 };

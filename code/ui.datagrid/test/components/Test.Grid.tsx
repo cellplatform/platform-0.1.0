@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil, debounceTime } from 'rxjs/operators';
 
 import {
   COLORS,
@@ -13,6 +13,7 @@ import {
   ObjectView,
   t,
   testData,
+  value,
 } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
@@ -50,8 +51,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     events$
       .pipe(
         filter(() => true),
-        filter(e => e.type === 'GRID/cells/changed'), // Filter
-        map(e => e.payload as t.IGridCellsChanged),
+        filter(e => e.type === 'GRID/cells/change'),
+        map(e => e.payload as t.IGridCellsChange),
       )
       .subscribe(e => {
         console.log('IGridCellsChanged', e);
@@ -75,24 +76,28 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     //     e.cancel();
     //   });
 
-    const clipboard$ = events$.pipe(
-      filter(e => e.type === 'GRID/clipboard'),
-      map(e => e.payload as t.IGridClipboard),
+    const command$ = events$.pipe(
+      filter(e => e.type === 'GRID/command'),
+      map(e => e.payload as t.IGridCommand),
     );
 
-    clipboard$.subscribe(e => {
-      log.group('🐷 CLIPBOARD');
-      log.info('e', e);
-      log.info('selection', e.selection);
-      log.info('keys', e.keys);
-      log.info('selectedValues', e.grid.selectedValues);
-      log.groupEnd();
+    command$.subscribe(e => {
+      log.info('🐷 COMMAND:', e.command, e);
     });
+
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/clipboard'),
+        map(e => e.payload as t.IGridClipboard),
+      )
+      .subscribe(e => {
+        console.log('CLIPBOARD', e);
+      });
   }
 
   public componentDidMount() {
     const gridEvents$ = this.grid.events$.pipe(takeUntil(this.unmounted$));
-    gridEvents$.subscribe(() => this.updateState());
+    gridEvents$.pipe(debounceTime(10)).subscribe(() => this.updateState());
     this.updateState();
   }
 
@@ -116,11 +121,18 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    */
   public updateState() {
     const grid = this.grid;
-    const { selection, values, rows, columns, isEditing } = grid;
+    const { selection, values, rows, columns, isEditing, clipboard } = grid;
     const { editorType } = this.props;
     const data = {
-      grid: { isEditing, values, rows, columns, selection },
       debug: { editorType },
+      grid: value.deleteUndefined({
+        isEditing,
+        values,
+        rows,
+        columns,
+        selection,
+        clipboard,
+      }),
     };
     this.state$.next({ data });
     return data;
@@ -172,16 +184,22 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         })}
         <Hr margin={5} />
         {this.button('values', () => (this.grid.values = { A1: { value: 'loaded value' } }))}
-        {this.button('changeValues', () => this.grid.changeCells({ A1: { value: 'hello' } }))}
-        {this.button('changeValues (props)', () =>
+        {this.button('changeCells', () => this.grid.changeCells({ A1: { value: 'hello' } }))}
+        {this.button('changeCells (props)', () =>
           this.grid.changeCells({ A1: { value: 'hello', props: { bold: true } } }),
         )}
-        {this.button('change values (via prop/state)', () =>
+        {this.button('change cells (via prop/state)', () =>
           this.test$.next({ values: { A1: { value: 'happy' } } }),
         )}
         {this.button('values (large)', () => {
           const data = testData({ totalColumns: 52, totalRows: 1000 });
           this.grid.values = data.values;
+        })}
+        {this.button('mergeCells (A5)', () => {
+          this.grid.changeCells({
+            A5: { value: 'merged', props: { merge: { colspan: 3, rowspan: 5 } } },
+          });
+          this.grid.select({ cell: 'A5' });
         })}
 
         <Hr margin={5} />
@@ -294,7 +312,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         <ObjectView
           name={'grid'}
           data={data.grid}
-          expandPaths={['$', '$', '$.selection', '$.selection.ranges', '$.values']}
+          expandPaths={['$', '$', '$.selection', '$.selection.ranges', '$.values', '$.clipboard']}
           theme={'DARK'}
         />
         <Hr color={1} />

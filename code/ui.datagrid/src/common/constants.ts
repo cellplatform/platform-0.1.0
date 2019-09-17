@@ -1,4 +1,5 @@
 export { ROBOTO, MONOSPACE } from '@platform/ui.text/lib';
+import * as t from './types';
 
 export const COLORS = {
   WHITE: '#fff',
@@ -19,14 +20,27 @@ export const CSS = {
       },
     },
     CELL: {
+      MARKDOWN: 'p-editor-markdown', // See [@platform/ui.editor/lib/common/constants]
       BASE: 'p-dg-cell',
       EDITOR: 'p-dg-cellEditor',
-      MARKDOWN: 'p-editor-markdown', // See [@platform/ui.editor/lib/common/constants]
+      BOLD: 'p-dg-cell-bold',
+      ITALIC: 'p-dg-cell-italic',
+      UNDERLINE: 'p-dg-cell-underline',
     },
   },
 };
 
+const KEY_BINDINGS: t.KeyBindings<t.GridCommand> = [
+  { command: 'CUT', key: 'Meta+X' },
+  { command: 'COPY', key: 'Meta+C' },
+  { command: 'PASTE', key: 'Meta+V' },
+  { command: 'BOLD', key: 'Meta+B' },
+  { command: 'ITALIC', key: 'Meta+I' },
+  { command: 'UNDERLINE', key: 'Meta+U' },
+];
+
 export const DEFAULT = {
+  KEY_BINDINGS,
   CELL_RENDERER: 'cell',
   TOTAL_COLUMNS: 52,
   TOTAL_ROWS: 1000,

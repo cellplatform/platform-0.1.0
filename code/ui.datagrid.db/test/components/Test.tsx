@@ -15,6 +15,7 @@ import {
   ObjectView,
   Sync,
   t,
+  Hr,
 } from '../common';
 
 const storage = {
@@ -194,12 +195,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       }),
     };
 
-    const data = { db: this.state.db, grid: this.state.grid };
+    const { db, grid } = this.state;
 
     return (
       <div {...styles.base}>
         <div {...styles.inner}>
-          <ObjectView name={'state'} data={data} expandLevel={2} theme={'DARK'} />
+          <ObjectView name={'db'} data={db} expandLevel={2} theme={'DARK'} />
+          <Hr color={COLORS.WHITE} />
+          <ObjectView name={'grid'} data={grid} expandLevel={2} theme={'DARK'} />
         </div>
       </div>
     );

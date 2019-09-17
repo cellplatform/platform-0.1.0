@@ -66,7 +66,8 @@ export type TextInputEvent =
   | ITextInputChangedEvent
   | ITextInputKeypressEvent
   | ITextInputMouseEvent
-  | ITextInputFocusEvent;
+  | ITextInputFocusEvent
+  | ITextInputLabelDblClickEvent;
 
 export type ITextInputChangingEvent = {
   type: 'TEXT_INPUT/changing';
@@ -102,6 +103,10 @@ export type ITextInputFocusEvent = {
   type: 'TEXT_INPUT/focus';
   payload: ITextInputFocus;
 };
-export type ITextInputFocus = {
-  isFocused: boolean;
+export type ITextInputFocus = { isFocused: boolean };
+
+export type ITextInputLabelDblClickEvent = {
+  type: 'TEXT_INPUT/label/dblClick';
+  payload: ITextInputLabelDblClick;
 };
+export type ITextInputLabelDblClick = t.MouseEvent & { target: 'READ_ONLY' | 'PLACEHOLDER' };

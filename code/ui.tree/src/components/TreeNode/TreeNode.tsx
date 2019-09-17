@@ -11,6 +11,7 @@ import {
   TreeNodeMouseEvent,
   TreeNodeMouseEventHandler,
   defaultValue,
+  constants,
 } from '../../common';
 import * as themes from '../../themes';
 import { Icons, IIcon } from '../Icons';
@@ -32,11 +33,14 @@ const MARGIN = {
   LABEL_RIGHT: 8,
 };
 
+const NODE = constants.CLASS.NODE;
+
 export { TreeNodeMouseEvent, TreeNodeMouseEventHandler, ITreeNode };
 
 export type TreeNodeTwisty = 'OPEN' | 'CLOSED' | null;
 
 export type ITreeNodeProps = {
+  rootId?: string;
   children?: React.ReactNode;
   node: ITreeNode;
   renderIcon?: t.RenderTreeIcon;
@@ -55,10 +59,72 @@ export type ITreeNodeProps = {
 
 export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   /**
+   * [Static]
+   */
+
+  /**
+   * The ID that identifies the node within the DOM.
+   */
+  public static elementId(nodeId: string, rootId?: string) {
+    const id = rootId ? `${rootId}:${nodeId}` : nodeId;
+    return `TreeView:${id}`;
+  }
+
+  /**
+   * The pixel bounds of a node in the DOM.
+   */
+  public static bounds(args: {
+    nodeId: string;
+    treeId?: string;
+    relativeTo?: Element;
+    target?: t.ITreeNodeBounds['target'];
+  }) {
+    const { target = 'ROOT' } = args;
+
+    const done = (el?: Element): t.ITreeNodeBounds | undefined => {
+      if (!el) {
+        return undefined;
+      }
+      const rect = el.getBoundingClientRect();
+      let { left, top } = rect;
+
+      if (args.relativeTo) {
+        const relativeBounds = args.relativeTo.getBoundingClientRect();
+        left -= relativeBounds.left;
+        top -= relativeBounds.top;
+      }
+
+      const { width, height } = rect;
+      return { node: args.nodeId, target, left, top, width, height };
+    };
+
+    const elementId = TreeNode.elementId(args.nodeId, args.treeId);
+    const elNode = document.getElementById(elementId);
+    if (!elNode) {
+      return done();
+    }
+
+    switch (target) {
+      case 'ROOT':
+        return done(elNode);
+      case 'CONTENT':
+        return done(elNode.getElementsByClassName(NODE.CONTENT)[0]);
+      case 'LABEL':
+        return done(elNode.getElementsByClassName(NODE.LABEL)[0]);
+      default:
+        throw new Error(`Target '${target}' not supported.`);
+    }
+  }
+
+  /**
    * [Properties]
    */
   public get id() {
     return this.props.node.id;
+  }
+
+  public get elementId() {
+    return TreeNode.elementId(this.id, this.props.rootId);
   }
 
   private get nodeProps() {
@@ -102,7 +168,6 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   /**
    * [Render]
    */
-
   public render() {
     const props = this.nodeProps;
     const isEnabled = this.isEnabled;
@@ -133,9 +198,9 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     const elIconRight = this.renderIconRight();
 
     return (
-      <Text style={css(styles.base, this.props.style)} {...this.nodeHandlers}>
+      <Text className={NODE.ROOT} style={css(styles.base, this.props.style)} {...this.nodeHandlers}>
         {elBorders}
-        <div {...styles.inner}>
+        <div id={this.elementId} {...styles.inner}>
           {elTwisty}
           {elIconLeft}
           {elContent}
@@ -272,11 +337,13 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
 
     return (
       <div {...styles.base}>
-        <div {...styles.contentOuter}>
-          {elLabel}
-          {elSuffix && <div {...styles.suffix}>{elSuffix}</div>}
+        <div className={NODE.CONTENT}>
+          <div className={NODE.LABEL} {...styles.contentOuter}>
+            {elLabel}
+            {elSuffix && <div {...styles.suffix}>{elSuffix}</div>}
+          </div>
+          {this.renderDescription()}
         </div>
-        {this.renderDescription()}
         {this.props.children}
       </div>
     );
@@ -303,6 +370,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
         fontWeight: props.isBold ? 'bold' : undefined,
       }),
     };
+
     return <div {...styles.label}>{label}</div>;
   }
 

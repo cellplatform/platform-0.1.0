@@ -54,8 +54,8 @@ export const remove = {
  * Shifts the given row/column in a table.
  */
 export function shift(args: {
-  axis: t.CoordAxis;
   table: t.ICoordTable;
+  axis: t.CoordAxis;
   index: number;
   by: number;
   emptyValue?: any; // The empty value that inserts are replaced with.
@@ -112,7 +112,7 @@ export function shift(args: {
  */
 
 /**
- * Overrites the range of values
+ * Overwrites the range of values.
  */
 function overwrite(args: {
   axis: t.CoordAxis;

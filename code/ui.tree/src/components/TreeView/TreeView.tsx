@@ -13,6 +13,7 @@ import {
 import {
   color,
   containsFocus,
+  constants,
   css,
   defaultValue,
   GlamorValue,
@@ -22,15 +23,19 @@ import {
   tree as treeUtil,
   TreeNodeMouseEvent,
   TreeNodeMouseEventHandler,
+  time,
 } from '../../common';
 import { TreeEvents } from '../../events';
 import * as themes from '../../themes';
 import { IStackPanel, StackPanel, StackPanelSlideEvent } from '../primitives';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
+import { TextInput } from '../Text';
+import { TreeNode } from '../TreeNode';
 
 export { TreeNodeMouseEvent, TreeNodeMouseEventHandler };
 export type ITreeViewProps = {
+  id?: string;
   node?: ITreeNode;
   defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
   current?: ITreeNode['id'];
@@ -134,7 +139,14 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
       )
       .subscribe(e => this.focus());
 
+    // Finish up.
     this.updatePath();
+
+    // TEMP 🐷
+    time.delay(0, () => {
+      console.log(`\nTODO 🐷  TEMP \n`);
+      this.forceUpdate();
+    });
   }
 
   public componentDidUpdate(prev: ITreeViewProps) {
@@ -240,6 +252,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
     return (
       <div
+        className={constants.CLASS.TREE.ROOT}
         ref={this.elRef}
         {...css(styles.base, this.props.style)}
         onFocus={this.handleFocusChange}
@@ -253,7 +266,38 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
           onSlide={this.handleSlide}
           duration={this.props.slideDuration}
         />
+        {this.TEMP()}
       </div>
+    );
+  }
+
+  private TEMP() {
+    // const elementId = TreeNode.elementId('root.1', this.props.id);
+    const rect = TreeNode.bounds({
+      nodeId: 'root.1',
+      treeId: this.props.id,
+      relativeTo: this.el,
+      target: 'LABEL',
+    });
+
+    console.log('rect', rect);
+
+    if (!rect) {
+      return;
+    }
+
+    const styles = {
+      base: css({
+        Absolute: [rect.top, null, null, rect.left],
+        width: rect.width,
+        height: rect.height,
+        zIndex: 999,
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+      }),
+    };
+
+    return (
+      <TextInput key={`input-${'TEMP'}`} value={'foo'} focusAction={'SELECT'} style={styles.base} />
     );
   }
 
@@ -302,6 +346,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
     return (
       <TreeNodeList
+        rootId={this.props.id}
         key={`list:${node.id}`}
         node={node}
         depth={depth}

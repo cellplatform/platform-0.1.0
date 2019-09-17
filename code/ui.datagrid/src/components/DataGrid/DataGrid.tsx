@@ -34,6 +34,7 @@ export type IDataGridProps = {
   defaults?: Partial<t.IGridDefaults>;
   Handsontable?: Handsontable;
   factory?: t.GridFactory;
+  keyBindings?: t.KeyBindings<t.GridCommand>;
   events$?: Subject<t.GridEvent>;
   initial?: t.IInitialGridState;
   canSelectAll?: boolean;
@@ -66,7 +67,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
    * [Lifecycle]
    */
   public componentDidMount() {
-    const { values, columns, rows } = this.props;
+    const { values, columns, rows, keyBindings } = this.props;
 
     // State.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
@@ -86,6 +87,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       columns,
       rows,
       defaults,
+      keyBindings,
     }));
     this.unmounted$.subscribe(() => grid.dispose());
 
@@ -166,13 +168,17 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     }
     const { initial = {}, values = {} } = this.props;
     const grid = this.grid;
+
     grid.values = values;
+    grid.mergeCells({ values, init: true });
+
     if (initial.selection) {
       const selection =
         typeof initial.selection === 'string' ? { cell: initial.selection } : initial.selection;
       const { cell, ranges } = selection;
       grid.select({ cell, ranges });
     }
+
     grid.fire({ type: 'GRID/ready', payload: { grid } });
     this.forceUpdate();
   }

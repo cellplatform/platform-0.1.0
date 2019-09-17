@@ -19,12 +19,8 @@ export class Footer extends React.PureComponent<IFooterProps, IFooterState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IFooterProps) {
-    super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-  }
-
   public componentDidMount() {
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     this.model.changed$
       .pipe(
         takeUntil(this.unmounted$),
@@ -68,7 +64,8 @@ export class Footer extends React.PureComponent<IFooterProps, IFooterState> {
     let transition = '';
     transition += `color ${foreground.fadeSpeed}ms, `;
     transition += `background-color ${background.fadeSpeed}ms, `;
-    transition += `border ${border.fadeSpeed}ms`;
+    transition += `border ${border.fadeSpeed}ms, `;
+    transition += `height ${height.speed}ms`;
 
     const styles = {
       base: css({
@@ -77,7 +74,7 @@ export class Footer extends React.PureComponent<IFooterProps, IFooterState> {
         color: foreground.color,
         backgroundColor: background.color,
         height: height.value,
-        borderTop: `solid 1px ${border.color}`,
+        borderTop: height.value > 0 ? `solid 1px ${border.color}` : undefined,
         transition,
       }),
     };

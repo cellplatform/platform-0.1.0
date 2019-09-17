@@ -1,4 +1,5 @@
 import { t, Observable } from '../common';
+import { KeyBindings } from '@platform/react/lib/types';
 
 export type IGrid = IGridProperties & IGridMethods;
 export type IGridProperties = {
@@ -9,10 +10,12 @@ export type IGridProperties = {
   readonly isReady: boolean;
   readonly isEditing: boolean;
   readonly selection: t.IGridSelection;
-  readonly selectedValues: t.IGridValues;
+  readonly selectionValues: t.IGridValues;
   readonly events$: Observable<t.GridEvent>;
   readonly keyboard$: Observable<t.IGridKeydown>;
+  readonly keyBindings: KeyBindings<t.GridCommand>;
   readonly defaults: IGridDefaults;
+  clipboard?: IGridClipboardPending;
   values: t.IGridValues;
   columns: IGridColumns;
   rows: IGridRows;
@@ -27,14 +30,16 @@ export type IGridMethods = {
     columns: t.IGridColumns,
     options?: { source?: t.IGridColumnChange['source'] },
   ): IGrid;
-  changeRows(rows: t.IGridRows, options?: { source?: t.IGridRowChange['source'] }): IGrid;
+  changeRows(rows: t.IGridRows, options?: { source?: t.GridRowChangeType }): IGrid;
   cell(key: t.CellRef): t.ICell;
   scrollTo(args: { cell: t.CellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
   select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }): IGrid;
   deselect(): IGrid;
   focus(): IGrid;
   redraw(): IGrid;
+  mergeCells(args: { values: t.IGridValues; init?: boolean }): IGrid;
   toPosition(ref: t.CellRef): t.ICoord;
+  toSelectionValues(selection: t.IGridSelection): t.IGridValues;
 };
 
 export type IGridDefaults = {
@@ -49,6 +54,8 @@ export type IGridSelection = {
   readonly ranges: t.GridCellRangeKey[];
   readonly all?: boolean;
 };
+
+export type IGridClipboardPending = t.IGridClipboard & { pasted: number };
 
 export type IGridColumns = { [key: string]: IGridColumn };
 export type IGridRows = { [key: string]: IGridRow };

@@ -5,12 +5,6 @@ import { R } from '../common';
 import { events } from '../events';
 import * as t from './types';
 
-export type KeyboardOptions<T extends t.KeyCommand> = {
-  bindings?: t.KeyBindings<T>;
-  keyPress$?: Observable<t.IKeypressEvent>;
-  dispose$?: Observable<any>;
-};
-
 const MODIFIERS = {
   META: 'metaKey',
   CTRL: 'ctrlKey',
@@ -27,11 +21,11 @@ const isModifierPressed = (e: t.IKeypressEvent) => {
 /**
  * Keyboard command manager.
  */
-export class Keyboard<T extends t.KeyCommand> {
+export class Keyboard<T extends t.KeyCommand> implements t.IKeyboard<T> {
   /**
    * [Static]
    */
-  public static create<T extends t.KeyCommand>(options: KeyboardOptions<T>) {
+  public static create<T extends t.KeyCommand>(options: t.IKeyboardArgs<T>) {
     return new Keyboard<T>(options);
   }
 
@@ -123,7 +117,7 @@ export class Keyboard<T extends t.KeyCommand> {
   /**
    * [Constructor]
    */
-  private constructor(options: KeyboardOptions<T>) {
+  private constructor(options: t.IKeyboardArgs<T>) {
     const bindingPress$ = new Subject<t.IKeyBindingEvent<T>>();
     this.bindingPress$ = bindingPress$.pipe(
       takeUntil(this._dispose$),
@@ -153,6 +147,13 @@ export class Keyboard<T extends t.KeyCommand> {
   public latest: t.IKeypressEvent | undefined;
 
   /**
+   * [Properties]
+   */
+  public get isDisposed() {
+    return this._dispose$.isStopped;
+  }
+
+  /**
    * [Methods]
    */
 
@@ -167,7 +168,7 @@ export class Keyboard<T extends t.KeyCommand> {
   /**
    * Creates a clone of the keyboard overriding the settings with the given options.
    */
-  public clone(options: Partial<KeyboardOptions<T>>) {
+  public clone(options: Partial<t.IKeyboardArgs<T>> = {}) {
     const dispose$ = options.dispose$;
     const keyPress$ = options.keyPress$ || this.keyPress$;
     const bindings = options.bindings || this.bindings;
@@ -190,7 +191,7 @@ export class Keyboard<T extends t.KeyCommand> {
   }
 
   /**
-   * [Internal]
+   * [Helpers]
    */
 
   /**
@@ -231,6 +232,10 @@ export class Keyboard<T extends t.KeyCommand> {
             preventDefault: () => event.preventDefault(),
             stopPropagation: () => event.stopPropagation(),
             stopImmediatePropagation: () => event.stopImmediatePropagation(),
+            cancel: () => {
+              event.preventDefault();
+              event.stopImmediatePropagation();
+            },
           });
         }
       });

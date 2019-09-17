@@ -65,6 +65,7 @@ export type ITreeNodeProps = {
   isBold?: boolean;
   isSpinning?: boolean;
   isSelected?: boolean;
+  labelEditable?: boolean | 'DOUBLE_CLICK';
 
   colors?: ITreeNodeColors;
   focusColors?: ITreeNodeColors;

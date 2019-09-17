@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, Button, color, css, Hr, ITextInputProps, log, t, TextInput } from '../common';
+import { Button, color, css, Hr } from '../common';
+import { TestInput } from './Test.Input';
 import { TestText } from './Test.Text';
 
 const LOREM =
@@ -10,49 +11,32 @@ const LOREM =
 
 export type ITestState = { value?: string };
 
-export class Test extends React.PureComponent<ITestState> {
+export class Test extends React.PureComponent<{}, ITestState> {
   public state: ITestState = {};
   private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestState>>();
-  private input$ = new Subject<t.TextInputEvent>();
 
-  private inputs: TextInput[] = [];
-  private inputRef = (ref: TextInput) => (this.inputs = ref ? [...this.inputs, ref] : this.inputs);
+  private inputs!: TestInput;
+  private inputsRef = (ref: TestInput) => (this.inputs = ref);
 
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
-    const input$ = this.input$.pipe(takeUntil(this.unmounted$));
+  public componentDidMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
-
-    input$.subscribe(e => {
-      log.info('🌳', e);
-    });
-
-    input$
-      .pipe(
-        filter(e => e.type === 'TEXT_INPUT/changing'),
-        map(e => e.payload as t.ITextInputChanging),
-      )
-      .subscribe(e => {
-        // e.cancel();
-      });
-
-    input$
-      .pipe(
-        filter(e => e.type === 'TEXT_INPUT/changed'),
-        map(e => e.payload as t.ITextInputChanged),
-      )
-      .subscribe(e => {
-        this.state$.next({ value: e.to });
-      });
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Methods]
+   */
+  public input(index: number) {
+    return this.inputs.inputs[index];
   }
 
   /**
@@ -85,10 +69,22 @@ export class Test extends React.PureComponent<ITestState> {
           {this.button('value: short', () => this.state$.next({ value: 'hello' }))}
           {this.button('value: long', () => this.state$.next({ value: LOREM }))}
           <Hr margin={5} />
-          {this.button('focus', () => this.inputs[0].focus())}
-          {this.button('selectAll', () => this.inputs[0].selectAll().focus())}
-          {this.button('cursorToStart', () => this.inputs[0].cursorToStart().focus())}
-          {this.button('cursorToEnd', () => this.inputs[0].cursorToEnd().focus())}
+          {this.button('focus', () => this.input(0).focus())}
+          {this.button('selectAll', () =>
+            this.input(0)
+              .selectAll()
+              .focus(),
+          )}
+          {this.button('cursorToStart', () =>
+            this.input(0)
+              .cursorToStart()
+              .focus(),
+          )}
+          {this.button('cursorToEnd', () =>
+            this.input(0)
+              .cursorToEnd()
+              .focus(),
+          )}
         </div>
         <div {...styles.right}>{this.renderMain()}</div>
       </div>
@@ -106,54 +102,11 @@ export class Test extends React.PureComponent<ITestState> {
         padding: 30,
         Scroll: true,
       }),
-      dark: css({
-        boxSizing: 'border-box',
-        backgroundColor: COLORS.DARK,
-        padding: 15,
-        marginTop: 20,
-      }),
     };
     return (
       <div {...styles.base}>
-        <div>
-          {this.renderInput({ focusOnLoad: true })}
-          {this.renderInput({ maxLength: 5, placeholder: 'maxLength: 5' })}
-        </div>
-        <div {...styles.dark}>
-          {this.renderInput({
-            valueStyle: { color: COLORS.WHITE },
-            placeholderStyle: { color: color.format(0.2), italic: true },
-          })}
-          {this.renderInput({
-            isEnabled: false,
-            valueStyle: { color: 1, disabledColor: 1 },
-            disabledOpacity: 0.2,
-            placeholderStyle: { color: color.format(0.2), italic: true },
-          })}
-        </div>
+        <TestInput ref={this.inputsRef} value={this.state.value} />
         <TestText />
-      </div>
-    );
-  }
-
-  private renderInput(props: Partial<ITextInputProps>) {
-    const styles = {
-      base: css({
-        marginBottom: 20,
-        ':last-child': { marginBottom: 0 },
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <TextInput
-          ref={this.inputRef}
-          value={this.state.value}
-          valueStyle={{ ...props.valueStyle }}
-          placeholder={'TextInput'}
-          placeholderStyle={{ color: color.format(-0.2), ...props.placeholderStyle }}
-          events$={this.input$}
-          {...props}
-        />
       </div>
     );
   }

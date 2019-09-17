@@ -123,7 +123,7 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
     };
 
     return (
-      <div style={styles.base as any} className={'FOO'}>
+      <div style={styles.base as any}>
         <div style={styles.circle} />
       </div>
     );

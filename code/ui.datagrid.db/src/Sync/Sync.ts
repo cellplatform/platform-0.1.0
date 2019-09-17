@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import { t, R, rx } from '../common';
+import { t, R, rx, removeMarkdownEncoding } from '../common';
 import { SyncSchema } from '../schema';
 
 export type ISyncArgs = {
@@ -76,16 +76,16 @@ export class Sync implements t.IDisposable {
 
     const grid$ = grid.events$.pipe(takeUntil(this.dispose$));
     const gridCellsChanges$ = grid$.pipe(
-      filter(e => e.type === 'GRID/cells/changed'),
-      map(e => e.payload as t.IGridCellsChanged),
+      filter(e => e.type === 'GRID/cells/change'),
+      map(e => e.payload as t.IGridCellsChange),
     );
     const gridColumnsChanges$ = grid$.pipe(
-      filter(e => e.type === 'GRID/columns/changed'),
-      map(e => e.payload as t.IGridColumnsChanged),
+      filter(e => e.type === 'GRID/columns/change'),
+      map(e => e.payload as t.IGridColumnsChange),
     );
     const gridRowsChanges$ = grid$.pipe(
-      filter(e => e.type === 'GRID/rows/changed'),
-      map(e => e.payload as t.IGridRowsChanged),
+      filter(e => e.type === 'GRID/rows/change'),
+      map(e => e.payload as t.IGridRowsChange),
     );
     const syncChange$ = events$.pipe(
       filter(e => e.type === 'SYNC/change'),
@@ -182,11 +182,12 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           e.changes.forEach(change => {
             const key = this.schema.grid.toCellKey(change.cell.key);
+            const value = change.value.to || { value: undefined };
             this.fireSync({
               source: 'GRID',
               kind: 'CELL',
               key,
-              value: change.value.to,
+              value,
             });
           });
         });
@@ -199,11 +200,12 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(e => {
           const key = this.schema.grid.toCellKey(e.key);
+          const value = (typeof e.value === 'object' ? e.value : { value: e.value }) as t.IGridCell;
           this.fireSync({
             source: 'DB',
             kind: 'CELL',
             key,
-            value: e.value,
+            value,
           });
         });
 
@@ -215,7 +217,7 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.db.toCellKey(e.key);
-          const existing = await db.getValue(key);
+          const existing = (await db.getValue(key)) as t.IGridCell;
           if (!R.equals(existing, e.value)) {
             save$.next({ kind: 'CELL', key, value: e.value });
           }
@@ -279,7 +281,7 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.db.toColumnKey(e.key);
-          const existing = await db.getValue(key);
+          const existing = (await db.getValue(key)) as t.IGridCell;
           if (!R.equals(existing, e.value)) {
             save$.next({ kind: 'COLUMN', key, value: e.value });
           }
@@ -343,7 +345,7 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.db.toRowKey(e.key);
-          const existing = await db.getValue(key);
+          const existing = (await db.getValue(key)) as t.IGridCell;
           if (!R.equals(existing, e.value)) {
             save$.next({ kind: 'ROW', key, value: e.value });
           }
@@ -489,9 +491,18 @@ export class Sync implements t.IDisposable {
     });
   }
 
-  private formatValue = (value?: any) => {
-    value = isEmptyValue(value) ? undefined : value;
-    return value;
+  private formatValue = (input?: any) => {
+    const format = (value: any) => {
+      value = isEmptyValue(input) ? undefined : value;
+      value = typeof value === 'string' ? removeMarkdownEncoding(value) : value;
+      return value;
+    };
+
+    if (typeof input === 'object') {
+      return { ...input, value: format(input.value) };
+    } else {
+      return format(input);
+    }
   };
 
   private isDefaultValue = (e: { kind: t.GridCellType; key: string; value?: any }) => {

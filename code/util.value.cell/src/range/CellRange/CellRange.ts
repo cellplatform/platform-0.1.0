@@ -33,8 +33,9 @@ export class CellRange {
       throw new Error(`To create a region-square at least one key must be passed.`);
     }
     let list = keys.map(item => (typeof item === 'string' ? item : item.key));
-    list = cell.sort(list);
-    return CellRange.fromKey(`${list[0]}:${list[list.length - 1]}`);
+    list = cell.sort(R.uniq(list));
+    const max = cell.toKey(cell.max.column(list), cell.max.row(list));
+    return CellRange.fromKey(`${list[0]}:${max}`);
   }
 
   /**

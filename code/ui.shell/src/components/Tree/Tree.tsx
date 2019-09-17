@@ -70,7 +70,7 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
           background={'NONE'}
           renderIcon={this.renderIcon}
           renderPanel={this.renderPanel}
-          renderNodeBody={this.renderNodeBody}
+          renderNodeBody={this.renderNode}
           events$={this.props.tree$}
           tabIndex={0}
         />
@@ -81,7 +81,19 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
   /**
    * [Handlers]
    */
-  private renderIcon: t.RenderTreeIcon = e => undefined; // Icons[e.icon];
-  private renderPanel: t.RenderTreePanel<t.ITreeNode> = e => undefined;
-  private renderNodeBody: t.RenderTreeNodeBody = e => undefined;
+
+  private renderIcon: t.RenderTreeIcon = e => {
+    const render = this.model.render;
+    return render && render.icon ? render.icon(e) : undefined;
+  };
+
+  private renderPanel: t.RenderTreePanel = e => {
+    const render = this.model.render;
+    return render && render.panel ? render.panel(e) : undefined;
+  };
+
+  private renderNode: t.RenderTreeNodeBody = e => {
+    const render = this.model.render;
+    return render && render.node ? render.node(e) : undefined;
+  };
 }

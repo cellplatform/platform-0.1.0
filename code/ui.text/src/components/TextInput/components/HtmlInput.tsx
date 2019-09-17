@@ -35,6 +35,7 @@ export interface IHtmlInputProps extends t.ITextInputFocusAction, t.ITextInputEv
   autoCapitalize?: boolean;
   autoCorrect?: boolean;
   autoComplete?: boolean;
+  onDblClick?: React.MouseEventHandler;
 }
 export interface IHtmlInputState {
   value?: string;
@@ -232,6 +233,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         onKeyPress={this.handleKeyPress}
         onKeyDown={this.handleKeydown}
         onKeyUp={this.handleKeyup}
+        onDoubleClick={this.props.onDblClick}
       />
     );
   }

@@ -1,4 +1,5 @@
 export * from './libs.Handsontable';
+export * from '@platform/ui.datagrid.types/lib/util';
 
 /**
  * Util.
@@ -8,13 +9,13 @@ export { value, time, defaultValue } from '@platform/util.value';
 export { log } from '@platform/log/lib/client';
 
 /**
- * Ramda.
- */
-import { equals, clamp, uniq, flatten } from 'ramda';
-export const R = { equals, clamp, uniq, flatten };
-
-/**
  * Cell coords (eg "A1", "A1:C9")
  */
 import * as coord from '@platform/util.value.cell';
 export { coord };
+
+/**
+ * Ramda.
+ */
+import { equals, clamp, uniq, flatten, uniqBy, prop } from 'ramda';
+export const R = { equals, clamp, uniq, flatten, uniqBy, prop };

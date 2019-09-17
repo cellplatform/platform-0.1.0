@@ -1,6 +1,6 @@
 {
   "extends": "@platform/ts/tslint.json",
   "rules": {
-    "no-console": false
+    "no-console": true
   }
 }

@@ -39,6 +39,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
      * NB: Alternative helper for pealing off events.
      */
     const tree = TreeView.events(events$);
+
     tree.mouse().click.node$.subscribe(e => {
       log.info('🐷 CLICK from TreeEvents helper', e);
     });
@@ -48,7 +49,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     // Log events.
     events$.subscribe(e => {
-      log.info('🌳', e.type, e.payload);
+      // log.info('🌳', e.type, e.payload);
     });
 
     /**
@@ -78,6 +79,8 @@ export class Test extends React.PureComponent<{}, ITestState> {
       .pipe(
         filter(e => e.type === 'DOUBLE_CLICK'),
         filter(e => e.target === 'NODE'),
+        filter(e => !Boolean(e.props.inline)),
+        filter(e => !Boolean(e.props.labelEditable)),
       )
       .subscribe(e => this.state$.next({ current: e.id }));
 
@@ -86,6 +89,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
         filter(e => e.type === 'DOUBLE_CLICK'),
         filter(e => e.target === 'NODE'),
         filter(e => Boolean(e.props.inline)),
+        filter(e => !Boolean(e.props.labelEditable)),
       )
       .subscribe(e => toggle(e.node));
 

@@ -1,10 +1,11 @@
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { coord, defaultValue, R, t, value as valueUtil } from '../../common';
+import { coord, defaultValue, R, t, value as valueUtil, diff } from '../../common';
 import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
-import { keyboard } from './keyboard';
+import { keyboard } from '../../keyboard';
+import { commands } from '../../commands';
 
 export type IGridArgs = {
   table: Handsontable;
@@ -14,6 +15,7 @@ export type IGridArgs = {
   columns?: t.IGridColumns;
   rows?: t.IGridRows;
   defaults?: Partial<t.IGridDefaults>;
+  keyBindings?: t.KeyBindings<t.GridCommand>;
 };
 
 /**
@@ -76,9 +78,19 @@ export class Grid implements t.IGrid {
       .subscribe(() => (this._.isReady = true));
 
     /**
-     * Keyboard controllers.
+     * Keyboard bindings.
      */
-    keyboard.clipboard({ grid: this, events$: this._.events$, dispose$: this.dispose$ });
+    this.keyBindings = R.uniqBy(R.prop('command'), [
+      ...(args.keyBindings || []),
+      ...DEFAULT.KEY_BINDINGS,
+    ]);
+
+    /**
+     * Initialize controllers.
+     */
+    const fire = this.fire;
+    keyboard.init({ grid: this, fire });
+    commands.init({ grid: this, fire });
 
     /**
      * Debounced redraw.
@@ -168,6 +180,8 @@ export class Grid implements t.IGrid {
   public readonly totalColumns: number;
   public readonly totalRows: number;
   public readonly defaults: t.IGridDefaults;
+  public readonly keyBindings: t.KeyBindings<t.GridCommand>;
+  public clipboard: t.IGridClipboardPending | undefined;
 
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
@@ -200,13 +214,56 @@ export class Grid implements t.IGrid {
   }
   public set values(values: t.IGridValues) {
     values = { ...values };
-    const data = Grid.toDataArray({
-      values,
-      totalColumns: this.totalColumns,
-      totalRows: this.totalRows,
-    });
+    const totalColumns = this.totalColumns;
+    const totalRows = this.totalRows;
+    const data = Grid.toDataArray({ values, totalColumns, totalRows });
     this._.values = values;
     this._.table.loadData(data);
+  }
+
+  /**
+   * Merge cells.
+   * https://handsontable.com/docs/6.1.1/demo-merged-cells.html
+   */
+  public mergeCells(args: { values: t.IGridValues; init?: boolean }) {
+    type MergeCell = { row: number; col: number; rowspan: number; colspan: number };
+    type MergeCells = { [key: string]: MergeCell };
+
+    const { values } = args;
+
+    // Get the list of current values (or empty if `init` requested)/
+    const list: MergeCell[] = args.init
+      ? []
+      : (this._.table.getSettings().mergeCells as MergeCell[]) || [];
+
+    // Convert list into an object-map.
+    const map = list.reduce((acc, next) => {
+      const key = coord.cell.toKey(next.col, next.row);
+      acc[key] = next;
+      return acc;
+    }, {}) as MergeCells;
+
+    // Update the object-map with "cell-merge" props from the given values.
+    Object.keys(values).map(key => {
+      const item = values[key];
+      if (item) {
+        const props: t.ICellProps = item.props || {};
+        const merge = props.merge;
+        if (merge) {
+          const rowspan = Math.max(1, defaultValue(merge.rowspan, 1));
+          const colspan = Math.max(1, defaultValue(merge.colspan, 1));
+          const { row, column: col } = coord.cell.fromKey(key);
+          map[key] = { row, col, rowspan, colspan };
+        }
+      }
+    });
+
+    // Convert the object-map back into an array.
+    const mergeCells = Object.keys(map).map(key => map[key]);
+    this._.table.updateSettings({ mergeCells }, false);
+
+    // Finish up.
+    return this;
   }
 
   public get columns() {
@@ -289,27 +346,8 @@ export class Grid implements t.IGrid {
   /**
    * Retrieves the currently selected key/value pairs.
    */
-  public get selectedValues(): t.IGridValues {
-    const selection = this.selection;
-    const values = this.values;
-    if (selection.all) {
-      return values;
-    }
-
-    const ranges = coord.range.union(this.selection.ranges);
-    const res = Object.keys(values).reduce((acc, key) => {
-      const value = values[key];
-      if (value !== undefined && ranges.contains(key)) {
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
-
-    if (selection.cell && values[selection.cell] !== undefined) {
-      res[selection.cell] = values[selection.cell];
-    }
-
-    return res;
+  public get selectionValues(): t.IGridValues {
+    return this.toSelectionValues(this.selection);
   }
 
   /**
@@ -405,6 +443,7 @@ export class Grid implements t.IGrid {
     options: { source?: t.GridCellChangeType; silent?: boolean } = {},
   ) {
     if (values) {
+      // Clone input object.
       values = { ...values };
 
       // Fire change event.
@@ -416,7 +455,7 @@ export class Grid implements t.IGrid {
           const to = values[key];
           return Cell.changeEvent({ cell, from, to });
         });
-        const payload: t.IGridCellsChanged = {
+        const payload: t.IGridCellsChange = {
           source: defaultValue(options.source, 'EDIT'),
           changes,
           get isCancelled() {
@@ -426,7 +465,7 @@ export class Grid implements t.IGrid {
             changes.forEach(change => change.cancel());
           },
         };
-        this.fire({ type: 'GRID/cells/changed', payload });
+        this.fire({ type: 'GRID/cells/change', payload });
 
         // Adjust any modified values.
         changes
@@ -439,8 +478,31 @@ export class Grid implements t.IGrid {
           .forEach(change => (values[change.cell.key] = change.value.from));
       }
 
+      // Calculate the new updated value set.
+      const mergeChanges: t.IGridValues = {};
+      const updates = { ...this.values, ...values };
+      Object.keys(values).forEach(key => {
+        // Strip empty values.
+        if (Cell.isEmpty(updates[key])) {
+          delete updates[key];
+          return;
+        }
+
+        // Determine if any merge values have changed.
+        const current = this.values[key];
+        const update = updates[key];
+        if (Cell.isChanged(current, update, 'merge')) {
+          mergeChanges[key] = update;
+        }
+      });
+
+      // Update any cell-merge changes.
+      if (Object.keys(mergeChanges).length > 0) {
+        this.mergeCells({ values: mergeChanges });
+      }
+
       // Update the UI.
-      this.values = { ...this.values, ...values };
+      this.values = updates;
     }
     return this;
   }
@@ -448,10 +510,7 @@ export class Grid implements t.IGrid {
   /**
    * Updates columns.
    */
-  public changeColumns(
-    columns: t.IGridColumns,
-    options: { source?: t.IGridColumnChange['source'] } = {},
-  ) {
+  public changeColumns(columns: t.IGridColumns, options: { source?: t.GridColumnChangeType } = {}) {
     const { source = 'UPDATE' } = options;
     const from = { ...this._.columns };
     const to = { ...from };
@@ -472,7 +531,7 @@ export class Grid implements t.IGrid {
     });
     this._.columns = to;
     if (!R.equals(from, to)) {
-      this.fire({ type: 'GRID/columns/changed', payload: { from, to, changes } });
+      this.fire({ type: 'GRID/columns/change', payload: { from, to, changes } });
     }
     return this;
   }
@@ -480,7 +539,7 @@ export class Grid implements t.IGrid {
   /**
    *  Updates rows.
    */
-  public changeRows(rows: t.IGridRows, options: { source?: t.IGridColumnChange['source'] } = {}) {
+  public changeRows(rows: t.IGridRows, options: { source?: t.GridColumnChangeType } = {}) {
     const { source = 'UPDATE' } = options;
     const from = { ...this._.rows };
     const to = { ...from };
@@ -504,7 +563,7 @@ export class Grid implements t.IGrid {
 
     if (!R.equals(from, to)) {
       this.fire({
-        type: 'GRID/rows/changed',
+        type: 'GRID/rows/change',
         payload: { from, to, changes },
       });
     }
@@ -608,9 +667,30 @@ export class Grid implements t.IGrid {
   }
 
   /**
+   * Retrieves the grid values that map to the given selection.
+   */
+  public toSelectionValues(selection: t.IGridSelection): t.IGridValues {
+    const values = this.values;
+    if (selection.all) {
+      return values;
+    }
+    // Add focus cell.
+    const res: t.IGridValues = {};
+    if (selection.cell) {
+      res[selection.cell] = values[selection.cell];
+    }
+
+    // Add ranges.
+    const ranges = coord.range.union(this.selection.ranges);
+    return ranges.keys.reduce((acc, key) => {
+      const value = values[key] || { value: undefined };
+      acc[key] = value;
+      return acc;
+    }, res);
+  }
+
+  /**
    * [Internal]
    */
-  public fire(e: t.GridEvent) {
-    this._.events$.next(e);
-  }
+  public fire: t.FireGridEvent = e => this._.events$.next(e);
 }

@@ -1,3 +1,3 @@
 export * from './types';
 export * from './table.shift';
-export * from './table.toString';
+export * from './table.string';

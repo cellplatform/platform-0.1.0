@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, createProvider, css, GlamorValue, loader, Shell, t } from '../common';
+import { createProvider, css, GlamorValue, loader, Shell, t } from '../common';
+import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Progress } from '../Progress';
 import { RootColumns } from './Root.Columns';
@@ -90,6 +91,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         Absolute: 0,
         Flex: 'vertical-stretch-stretch',
         boxSizing: 'border-box',
+        overflow: 'hidden',
       }),
       progress: css({
         Absolute: [0, 0, null, 0],
@@ -99,6 +101,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     return (
       <this.Provider>
         <div {...styles.base}>
+          <Header />
           <RootColumns tree$={this.tree$} />
           <Footer />
           <Progress style={styles.progress} />
