@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { coord, defaultValue, R, t, value as valueUtil, diff } from '../../common';
+import { coord, defaultValue, R, t, value as valueUtil } from '../../common';
 import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
 import { keyboard } from '../../keyboard';
@@ -53,8 +53,7 @@ export class Grid implements t.IGrid {
   }) {
     return Array.from({ length: args.totalRows }).map((v, row) =>
       Array.from({ length: args.totalColumns }).map((v, column) => {
-        const key = Cell.toKey({ row, column });
-        return args.values[key];
+        return args.values[Cell.toKey({ row, column })];
       }),
     );
   }
