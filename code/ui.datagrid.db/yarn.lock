@@ -1045,10 +1045,10 @@
     electron-window-state "5.0.3"
     minimist "1.2.0"
 
-"@platform/electron@0.7.16":
-  version "0.7.16"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.7.16.tgz#0a707224d2ee8f330a1542c0367dd7ec3583e7c8"
-  integrity sha512-tBtcj2BFW3zdiZlFHa7kcW2CBzIE/H0iKQCcjTCQY65aGBUYM2Wh+JIblI560gXWzt9G/WBze41vDnhdY4xK1Q==
+"@platform/electron@0.7.17":
+  version "0.7.17"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.7.17.tgz#4007e086a34fac16e766700421b2a01ec73d7346"
+  integrity sha512-s5fcwlF9RN6qrKpvjoh9oGLggfjPTogvHwqvUAtVfF5rdrkNI4lFWHNwoHioRrLVbxXYdeHqtiTQJWHesf/bKg==
   dependencies:
     "@platform/fs" "0.3.3"
     "@platform/libs" "0.1.3"
@@ -1089,12 +1089,12 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.electron@0.2.41":
-  version "0.2.41"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.electron/-/fsdb.electron-0.2.41.tgz#1f9fb44684cba7faff9038bdf07c563ad267fdce"
-  integrity sha512-kGtNCk0X0tWW9HAiKyTkYrBDSU8TwgcvZCeutsf5bV6gyCfQBKJm7wLnZyKDdM+EeH/BHzfhkxrXRyIpQMcbAQ==
+"@platform/fsdb.electron@0.2.42":
+  version "0.2.42"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.electron/-/fsdb.electron-0.2.42.tgz#1c1cb8f36be3da339972cde412b7d72c40677ae6"
+  integrity sha512-Ql0l8XYYBOMe90SguqfBFeOjSVCrQkW93DlLcPg23yDVy0znHgkkOVWqqqrnMHKGCyzi8QClnkb7/Pt80hM5QA==
   dependencies:
-    "@platform/electron" "0.7.16"
+    "@platform/electron" "0.7.17"
     "@platform/fsdb.file" "1.3.17"
     "@platform/fsdb.nedb" "1.3.17"
     "@platform/fsdb.types" "0.3.10"
