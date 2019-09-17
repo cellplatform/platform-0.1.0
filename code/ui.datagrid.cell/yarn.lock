@@ -1165,14 +1165,13 @@
     codemirror "5.48.4"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.2.tgz#ab5189b2d3ed4508b9b1ea5cec3684deb067c1cb"
-  integrity sha512-XwvNl9z/4xRrk672TLe8o1CPwA3zNxHvXx2K3lGuTh44RnT7I0gnKUVj4O3W445fKRHCHIWhhOaAY2Tb/l0DgQ==
+"@platform/ui.datagrid.types@0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.4.tgz#880baeb9e70df082b3261eda4cd22b2e2ee89928"
+  integrity sha512-jP9NLdaiJTyALVpjAjIOSIbQcd+jpf+25qIfsyaQd8B/Sv7IpojrYcjef0KnLbgF3V743ydxgJa/ZUt/RKKJ/g==
   dependencies:
     "@platform/react" "0.3.26"
     "@platform/util.value.cell" "0.10.0"
-    deep-diff "1.0.2"
 
 "@platform/ui.editor@0.2.3":
   version "0.2.3"
@@ -3212,11 +3211,6 @@ decompress-response@^3.3.0:
   integrity sha1-gKTdMjdIOEv6JICDYirt7Jgq3/M=
   dependencies:
     mimic-response "^1.0.0"
-
-deep-diff@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/deep-diff/-/deep-diff-1.0.2.tgz#afd3d1f749115be965e89c63edc7abb1506b9c26"
-  integrity sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==
 
 deep-eql@^3.0.1:
   version "3.0.1"

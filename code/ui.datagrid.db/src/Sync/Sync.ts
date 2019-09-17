@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import { t, R, rx, removeMarkdownEncoding, Cell, Grid } from '../common';
+import { t, R, rx, removeMarkdownEncoding, isDefaultGridValue, isEmptyCellValue } from '../common';
 import { SyncSchema } from '../schema';
 
 export type ISyncArgs = {
@@ -105,9 +105,9 @@ export class Sync implements t.IDisposable {
 
       // Extract distinct lists for delete/update operations.
       const deletes = latest
-        .filter(item => Cell.isEmptyValue(item.value))
+        .filter(item => isEmptyCellValue(item.value))
         .map(item => ({ key: item.key }));
-      const updates = latest.filter(item => !Cell.isEmptyValue(item.value));
+      const updates = latest.filter(item => !isEmptyCellValue(item.value));
 
       // Write to DB.
       if (deletes.length > 0) {
@@ -486,7 +486,7 @@ export class Sync implements t.IDisposable {
 
   private formatValue = (input?: any) => {
     const format = (value: any) => {
-      value = Cell.isEmptyValue(input) ? undefined : value;
+      value = isEmptyCellValue(input) ? undefined : value;
       value = typeof value === 'string' ? removeMarkdownEncoding(value) : value;
       return value;
     };
@@ -500,12 +500,12 @@ export class Sync implements t.IDisposable {
 
   private isDefaultValue = (args: { kind: t.GridCellType; value?: any }) => {
     const defaults = this.grid.defaults;
-    return Grid.isDefaultValue({ defaults, ...args });
+    return isDefaultGridValue({ defaults, ...args });
   };
 
   private isEmptyValue = (args: { kind: t.GridCellType; value?: any }) => {
     const { kind, value } = args;
-    return Cell.isEmptyValue(value) || this.isDefaultValue({ kind, value });
+    return isEmptyCellValue(value) || this.isDefaultValue({ kind, value });
   };
 }
 

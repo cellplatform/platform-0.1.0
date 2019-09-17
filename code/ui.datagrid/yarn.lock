@@ -1193,26 +1193,25 @@
     codemirror "5.48.4"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.cell@0.0.115":
-  version "0.0.115"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.115.tgz#81634ded9e453945935a7793ba5fed97da238e46"
-  integrity sha512-mcVa0wO13D2AR7AhvjP9WoixvnElwGc8C/y9CYTNsN2Nds0jSPKuFrGjB95cjv+CUAaWi6peAEtxRE9m0ls9XQ==
+"@platform/ui.datagrid.cell@0.0.117":
+  version "0.0.117"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.117.tgz#17a5ef107979af6e0dfd7e5cc3c24fe3848b19c1"
+  integrity sha512-lA5zCgy752tBkEoB/3+M6Bo2u1l7Kk6fx02GfH9J8MaYqnlLJGXiCzYcIgEzVuUMHa/5LbOYHaPv9SUmKmRROA==
   dependencies:
     "@platform/react" "0.3.26"
     "@platform/ui.codemirror" "0.0.90"
-    "@platform/ui.datagrid.types" "0.6.2"
+    "@platform/ui.datagrid.types" "0.6.4"
     "@platform/ui.editor" "0.2.3"
     "@platform/ui.text" "0.3.0"
     "@platform/util.markdown" "0.0.42"
 
-"@platform/ui.datagrid.types@0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.2.tgz#ab5189b2d3ed4508b9b1ea5cec3684deb067c1cb"
-  integrity sha512-XwvNl9z/4xRrk672TLe8o1CPwA3zNxHvXx2K3lGuTh44RnT7I0gnKUVj4O3W445fKRHCHIWhhOaAY2Tb/l0DgQ==
+"@platform/ui.datagrid.types@0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.4.tgz#880baeb9e70df082b3261eda4cd22b2e2ee89928"
+  integrity sha512-jP9NLdaiJTyALVpjAjIOSIbQcd+jpf+25qIfsyaQd8B/Sv7IpojrYcjef0KnLbgF3V743ydxgJa/ZUt/RKKJ/g==
   dependencies:
     "@platform/react" "0.3.26"
     "@platform/util.value.cell" "0.10.0"
-    deep-diff "1.0.2"
 
 "@platform/ui.editor@0.2.3":
   version "0.2.3"
@@ -1305,7 +1304,7 @@
     "@platform/libs" "0.1.3"
     dynamics.js "1.1.5"
 
-"@platform/util.diff@^0.0.0":
+"@platform/util.diff@0.0.0":
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@platform/util.diff/-/util.diff-0.0.0.tgz#130672bbc58d2e5a154755f99abb0482b1782b46"
   integrity sha512-Lt97GeHl5c+hluuTatHyv5zhF5++HJ/Y3PiyIx4JqHUCdf0xeI1oYAAVuhnJQB74p9dLBfYGW49l4t7bEdAwxQ==
@@ -1415,11 +1414,6 @@
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
   integrity sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
-
-"@types/deep-diff@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@types/deep-diff/-/deep-diff-1.0.0.tgz#7eba3202a99b3a207f758f351f7f86387269fc40"
-  integrity sha512-ENsJcujGbCU/oXhDfQ12mSo/mCBWodT2tpARZKmatoSrf8+cGRCPi0KVj3I0FORhYZfLXkewXu7AoIWqiBLkNw==
 
 "@types/estree@*":
   version "0.0.39"
@@ -3295,7 +3289,7 @@ decompress-response@^3.3.0:
   dependencies:
     mimic-response "^1.0.0"
 
-deep-diff@1.0.2, deep-diff@^1.0.2:
+deep-diff@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/deep-diff/-/deep-diff-1.0.2.tgz#afd3d1f749115be965e89c63edc7abb1506b9c26"
   integrity sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==

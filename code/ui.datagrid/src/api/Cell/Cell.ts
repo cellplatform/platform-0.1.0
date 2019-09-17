@@ -1,4 +1,13 @@
-import { coord, R, t, defaultValue, diff } from '../../common';
+import {
+  coord,
+  R,
+  t,
+  defaultValue,
+  diff,
+  isEmptyCell,
+  isEmptyCellProps,
+  isEmptyCellValue,
+} from '../../common';
 
 export type CellChangeField = keyof t.ICellProps | 'VALUE' | 'PROPS';
 
@@ -9,6 +18,10 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
   /**
    * [Static]
    */
+  public static isEmpty = isEmptyCell;
+  public static isEmptyProps = isEmptyCellProps;
+  public static isEmptyValue = isEmptyCellValue;
+
   public static create(args: { table: Handsontable; row: number; column: number }) {
     return new Cell(args);
   }
@@ -116,18 +129,6 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
       }
       return !R.equals(a, b);
     });
-  }
-
-  public static isEmpty(cell?: t.IGridCell) {
-    return cell ? Cell.isEmptyValue(cell.value) && Cell.isEmptyProps(cell.props) : true;
-  }
-
-  public static isEmptyValue(value?: t.CellValue) {
-    return value === '' || value === undefined;
-  }
-
-  public static isEmptyProps(props?: t.ICellProps) {
-    return typeof props === 'object' ? Object.keys(props).length === 0 : true;
   }
 
   /**

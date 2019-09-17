@@ -1,6 +1,5 @@
-import { coord } from './libs';
+import { coord, removeMarkdownEncoding } from './libs';
 import * as t from './types';
-import { removeMarkdownEncoding } from './util.encoding';
 
 /**
  * Create a clipboard object.

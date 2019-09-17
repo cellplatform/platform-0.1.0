@@ -1,7 +1,15 @@
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { coord, defaultValue, R, t, value as valueUtil, toSelectionValues } from '../../common';
+import {
+  coord,
+  defaultValue,
+  R,
+  t,
+  value as valueUtil,
+  toSelectionValues,
+  isDefaultGridValue,
+} from '../../common';
 import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
 import { keyboard } from '../../keyboard';
@@ -68,16 +76,7 @@ export class Grid implements t.IGrid {
   }) {
     const { kind, value } = args;
     const defaults = Grid.defaults(args.defaults);
-    switch (kind) {
-      case 'COLUMN':
-        return !value || R.equals(value, { width: defaults.columWidth });
-      case 'ROW':
-        return !value || R.equals(value, { height: defaults.rowHeight });
-      case 'CELL':
-        return Cell.isEmpty(value);
-      default:
-        throw new Error(`Kind '${kind}' not supported.`);
-    }
+    return isDefaultGridValue({ defaults, kind, value });
   }
 
   /**
