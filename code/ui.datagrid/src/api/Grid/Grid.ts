@@ -674,6 +674,7 @@ export class Grid implements t.IGrid {
     if (selection.all) {
       return values;
     }
+
     // Add focus cell.
     const res: t.IGridValues = {};
     if (selection.cell) {
@@ -681,8 +682,43 @@ export class Grid implements t.IGrid {
     }
 
     // Add ranges.
-    const ranges = coord.range.union(this.selection.ranges);
-    return ranges.keys.reduce((acc, key) => {
+    const { toColumnKey, toRowKey } = coord.cell;
+    const all = Object.keys(values);
+    let keys: string[] = [];
+    coord.range.union(this.selection.ranges).ranges.forEach(range => {
+      const isColumn = coord.cell.isColumnRangeKey(range.key);
+      const isRow = coord.cell.isRowRangeKey(range.key);
+
+      if (isColumn) {
+        keys = [
+          ...keys,
+          ...findKeys(
+            all,
+            range.left.column,
+            range.right.column,
+            index => new RegExp(`^${toColumnKey(index)}\\d+`),
+          ),
+        ];
+      }
+
+      if (isRow) {
+        keys = [
+          ...keys,
+          ...findKeys(
+            all,
+            range.left.row,
+            range.right.row,
+            index => new RegExp(`\\w${toRowKey(index)}$`),
+          ),
+        ];
+      }
+
+      if (!isColumn && !isRow) {
+        keys = [...keys, ...range.keys];
+      }
+    });
+
+    return R.uniq(keys).reduce((acc, key) => {
       const value = values[key] || { value: undefined };
       acc[key] = value;
       return acc;
@@ -694,3 +730,26 @@ export class Grid implements t.IGrid {
    */
   public fire: t.FireGridEvent = e => this._.events$.next(e);
 }
+
+/**
+ * [Helpers]
+ */
+function indexRange(start: number, end: number) {
+  return Array.from({ length: end - start + 1 }).map((_, i) => start + i);
+}
+
+const findKeys = (
+  keys: string[],
+  start: number,
+  end: number,
+  toRegex: (index: number) => RegExp,
+) => {
+  return indexRange(start, end).reduce(
+    (acc, index) => {
+      const regex = toRegex(index);
+      keys.filter(key => regex.test(key)).forEach(key => acc.push(key));
+      return acc;
+    },
+    [] as string[],
+  );
+};
