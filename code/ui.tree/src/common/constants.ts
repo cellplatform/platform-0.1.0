@@ -10,6 +10,6 @@ export const CLASS = {
   NODE: {
     ROOT: 'p-TreeNode',
     CONTENT: 'p-TreeNode-content',
-    LABEL:'p-TreeNode-label'
+    LABEL: 'p-TreeNode-label',
   },
 };
