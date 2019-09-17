@@ -682,7 +682,6 @@ export class Grid implements t.IGrid {
     }
 
     // Add ranges.
-    const { toColumnKey, toRowKey } = coord.cell;
     const all = Object.keys(values);
     let keys: string[] = [];
     coord.range.union(this.selection.ranges).ranges.forEach(range => {
@@ -696,7 +695,7 @@ export class Grid implements t.IGrid {
             all,
             range.left.column,
             range.right.column,
-            index => new RegExp(`^${toColumnKey(index)}\\d+`),
+            index => new RegExp(`^${coord.cell.toColumnKey(index)}\\d+`),
           ),
         ];
       }
@@ -708,7 +707,7 @@ export class Grid implements t.IGrid {
             all,
             range.left.row,
             range.right.row,
-            index => new RegExp(`\\w${toRowKey(index)}$`),
+            index => new RegExp(`\\w${coord.cell.toRowKey(index)}$`),
           ),
         ];
       }
@@ -718,6 +717,7 @@ export class Grid implements t.IGrid {
       }
     });
 
+    // Construct return object.
     return R.uniq(keys).reduce((acc, key) => {
       const value = values[key] || { value: undefined };
       acc[key] = value;
