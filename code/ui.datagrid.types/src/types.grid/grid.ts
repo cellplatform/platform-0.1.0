@@ -15,6 +15,7 @@ export type IGridProperties = {
   readonly keyboard$: Observable<t.IGridKeydown>;
   readonly keyBindings: KeyBindings<t.GridCommand>;
   readonly defaults: IGridDefaults;
+  clipboard?: IGridClipboardPending;
   values: t.IGridValues;
   columns: IGridColumns;
   rows: IGridRows;
@@ -53,6 +54,8 @@ export type IGridSelection = {
   readonly ranges: t.GridCellRangeKey[];
   readonly all?: boolean;
 };
+
+export type IGridClipboardPending = t.IGridClipboard & { pasted: number };
 
 export type IGridColumns = { [key: string]: IGridColumn };
 export type IGridRows = { [key: string]: IGridRow };

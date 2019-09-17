@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-
 import { coord, removeMarkdownEncoding, t } from '../common';
 
 type ClipboardItem = {
@@ -8,10 +7,7 @@ type ClipboardItem = {
   value?: t.IGridCell | t.IGridRow | t.IGridColumn;
 };
 
-const CLIPBOARD: t.GridClipboardCommand[] = ['CUT', 'COPY', 'PASTE'];
-let PENDING: t.IGridClipboard | undefined;
-
-console.log(`\nTODO 🐷  move PENDING state to IGrid state \n`)
+const CLIPBOARD_COMMANDS: t.GridClipboardCommand[] = ['CUT', 'COPY', 'PASTE'];
 
 /**
  * Manage clipboard commands.
@@ -23,7 +19,7 @@ export function init(args: {
 }) {
   const { grid, command$, fire } = args;
   const clipboard$ = command$.pipe(
-    filter(e => CLIPBOARD.includes(e.command as any)),
+    filter(e => CLIPBOARD_COMMANDS.includes(e.command as any)),
     filter(e => !e.isCancelled),
     map(e => e.command),
   );
@@ -70,10 +66,12 @@ async function read(args: { grid: t.IGrid; action: 'CUT' | 'COPY'; fire: t.FireG
   const columns = getAxisData('COLUMN', selection, grid.columns);
   const rows = getAxisData('ROW', selection, grid.rows);
 
-  // Alert listeners and store state.
+  // Prepare state payload.
   const range = coord.range.square(items.map(item => item.key)).key;
   const payload: t.IGridClipboard = { action, range, selection, text, cells, columns, rows };
-  PENDING = payload;
+
+  // Alert listeners and store state.
+  grid.clipboard = { ...payload, pasted: 0 };
   args.fire({ type: 'GRID/clipboard', payload });
 }
 
@@ -93,11 +91,11 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
   const text = await navigator.clipboard.readText();
 
   // Determine if the clipboard text is the same as the in-memory pending object.
-  const isPendingLatest = PENDING ? PENDING.text === text : false;
-  if (!isPendingLatest) {
-    PENDING = undefined;
+  const isPendingCurrent = grid.clipboard ? grid.clipboard.text === text : false;
+  if (!isPendingCurrent) {
+    grid.clipboard = undefined; // Reset stored clipboard state if actual clipboard differs.
   }
-  const pending = PENDING;
+  const pending = grid.clipboard;
 
   // Delete data if pending "cut" operation.
   if (pending && pending.action === 'CUT') {
@@ -159,6 +157,11 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
   // Update grid selection.
   const square = coord.range.square(items.map(item => item.key));
   grid.select({ cell: square.left.key, ranges: [square.key] });
+
+  // Increment the total pastes of this clipboard value in state.
+  if (grid.clipboard) {
+    grid.clipboard = { ...grid.clipboard, pasted: grid.clipboard.pasted + 1 };
+  }
 
   // Alert listeners.
   const cells = items.reduce((acc, next) => {

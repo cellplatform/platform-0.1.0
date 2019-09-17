@@ -181,6 +181,7 @@ export class Grid implements t.IGrid {
   public readonly totalRows: number;
   public readonly defaults: t.IGridDefaults;
   public readonly keyBindings: t.KeyBindings<t.GridCommand>;
+  public clipboard: t.IGridClipboardPending | undefined;
 
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(
@@ -673,25 +674,23 @@ export class Grid implements t.IGrid {
     if (selection.all) {
       return values;
     }
-
-    const ranges = coord.range.union(this.selection.ranges);
-    const res = Object.keys(values).reduce((acc, key) => {
-      const value = values[key];
-      if (value !== undefined && ranges.contains(key)) {
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
-
-    if (selection.cell && values[selection.cell] !== undefined) {
+    // Add focus cell.
+    const res: t.IGridValues = {};
+    if (selection.cell) {
       res[selection.cell] = values[selection.cell];
     }
 
-    return res;
+    // Add ranges.
+    const ranges = coord.range.union(this.selection.ranges);
+    return ranges.keys.reduce((acc, key) => {
+      const value = values[key] || { value: undefined };
+      acc[key] = value;
+      return acc;
+    }, res);
   }
 
   /**
-   * [INTERNAL]
+   * [Internal]
    */
   public fire: t.FireGridEvent = e => this._.events$.next(e);
 }

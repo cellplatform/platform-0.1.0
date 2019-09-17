@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil, debounceTime } from 'rxjs/operators';
 
 import {
   COLORS,
@@ -13,6 +13,7 @@ import {
   ObjectView,
   t,
   testData,
+  value,
 } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
@@ -96,7 +97,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
   public componentDidMount() {
     const gridEvents$ = this.grid.events$.pipe(takeUntil(this.unmounted$));
-    gridEvents$.subscribe(() => this.updateState());
+    gridEvents$.pipe(debounceTime(10)).subscribe(() => this.updateState());
     this.updateState();
   }
 
@@ -120,11 +121,18 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    */
   public updateState() {
     const grid = this.grid;
-    const { selection, values, rows, columns, isEditing } = grid;
+    const { selection, values, rows, columns, isEditing, clipboard } = grid;
     const { editorType } = this.props;
     const data = {
-      grid: { isEditing, values, rows, columns, selection },
       debug: { editorType },
+      grid: value.deleteUndefined({
+        isEditing,
+        values,
+        rows,
+        columns,
+        selection,
+        clipboard,
+      }),
     };
     this.state$.next({ data });
     return data;
@@ -304,7 +312,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         <ObjectView
           name={'grid'}
           data={data.grid}
-          expandPaths={['$', '$', '$.selection', '$.selection.ranges', '$.values']}
+          expandPaths={['$', '$', '$.selection', '$.selection.ranges', '$.values', '$.clipboard']}
           theme={'DARK'}
         />
         <Hr color={1} />
