@@ -16,9 +16,9 @@ export {
  * Calculate differences between to objects.
  */
 export function compare<LHS, RHS = LHS>(
-  lhs: LHS,
-  rhs: RHS,
+  left: LHS,
+  right: RHS,
   prefilter?: t.PreFilter<LHS, RHS>,
 ): Array<t.Diff<LHS, RHS>> {
-  return lib(lhs, rhs, prefilter) || [];
+  return lib(left, right, prefilter) || [];
 }
