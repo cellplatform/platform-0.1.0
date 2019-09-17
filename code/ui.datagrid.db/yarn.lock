@@ -1253,10 +1253,10 @@
     "@platform/util.value.cell" "0.10.0"
     deep-diff "1.0.2"
 
-"@platform/ui.datagrid@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.6.0.tgz#d5a9bbfb666b73e2720122f4c3339c5366fe8a4f"
-  integrity sha512-AjpFkylTPKIP/bpmRmxVMO24dP5PRV3ebsSmx6Zp2yXMrjQXJH61UDMxRrKPUTs9eRxmBTfU8Ywdt5dnP4WFdA==
+"@platform/ui.datagrid@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.6.1.tgz#820a463a870544a65f3ffb34b18897bc40d6e06a"
+  integrity sha512-jVEtrLEwuGhSgAFg3KD/YJsdEZOc9uCk4BRgtRi9goh/Sx2IbwGanx1hXSWDZ2vi65PpPKTB0uVNZKnYNLGN7w==
   dependencies:
     "@babel/polyfill" "7.4.4"
     "@platform/libs" "0.1.3"
