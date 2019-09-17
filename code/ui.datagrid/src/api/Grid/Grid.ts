@@ -59,6 +59,28 @@ export class Grid implements t.IGrid {
   }
 
   /**
+   * Determine if the given value is default.
+   */
+  public static isDefaultValue(args: {
+    defaults?: t.IGridDefaults;
+    kind: t.GridCellType;
+    value?: any;
+  }) {
+    const { kind, value } = args;
+    const defaults = Grid.defaults(args.defaults);
+    switch (kind) {
+      case 'COLUMN':
+        return !value || R.equals(value, { width: defaults.columWidth });
+      case 'ROW':
+        return !value || R.equals(value, { height: defaults.rowHeight });
+      case 'CELL':
+        return Cell.isEmpty(value);
+      default:
+        throw new Error(`Kind '${kind}' not supported.`);
+    }
+  }
+
+  /**
    * [Constructor]
    */
   private constructor(args: IGridArgs) {

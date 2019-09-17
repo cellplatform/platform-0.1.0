@@ -119,16 +119,15 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
   }
 
   public static isEmpty(cell?: t.IGridCell) {
-    if (!cell) {
-      return true;
-    }
-    const { value, props } = cell;
-    if (value === '' || value === undefined) {
-      if (!props || Object.keys(props).length === 0) {
-        return true;
-      }
-    }
-    return false;
+    return cell ? Cell.isEmptyValue(cell.value) && Cell.isEmptyProps(cell.props) : true;
+  }
+
+  public static isEmptyValue(value?: t.CellValue) {
+    return value === '' || value === undefined;
+  }
+
+  public static isEmptyProps(props?: t.ICellProps) {
+    return typeof props === 'object' ? Object.keys(props).length === 0 : true;
   }
 
   /**

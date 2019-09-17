@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { DefaultSettings } from 'handsontable';
 
 import { Grid, IGridArgs } from '.';
-import { Handsontable, constants } from '../../common';
+import { Handsontable, constants, t } from '../../common';
 
 export const createGrid = (args: Partial<IGridArgs> = {}) => {
   const el = document.createElement('div');
@@ -14,6 +14,31 @@ export const createGrid = (args: Partial<IGridArgs> = {}) => {
 };
 
 describe('Grid', () => {
+  describe('static', () => {
+    it('isDefaultValue', () => {
+      const defaults = Grid.defaults();
+      const test = (kind: t.GridCellType, value: any, expected: boolean) => {
+        const res = Grid.isDefaultValue({ defaults, kind, value });
+        expect(res).to.eql(expected);
+      };
+
+      test('CELL', undefined, true);
+      test('CELL', { value: 0 }, false);
+      test('CELL', { props: {} }, true);
+      test('CELL', { props: { style: { bold: true } } }, false);
+
+      test('COLUMN', undefined, true);
+      test('COLUMN', { width: defaults.columWidth }, true);
+      test('COLUMN', { width: 456 }, false);
+      test('COLUMN', { foo: true }, false);
+
+      test('ROW', undefined, true);
+      test('ROW', { height: defaults.rowHeight }, true);
+      test('ROW', { height: 456 }, false);
+      test('ROW', { foo: true }, false);
+    });
+  });
+
   it('constructs', () => {
     const values = { A1: { value: 123 } };
     const columns = { A: { width: 200 } };
