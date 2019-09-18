@@ -20,7 +20,7 @@ describe('util.cell', () => {
     test({ value: { foo: 123 } }, false);
     test({ value: true }, false);
     test({ value: false }, false);
-    test({ value: undefined, props: { foo: 123 } }, false); // NB: has props, therefore not empty.
+    test({ value: undefined, props: { value: 456 } }, false); // NB: has props, therefore not empty.
   });
 
   it('isEmptyCellValue', () => {

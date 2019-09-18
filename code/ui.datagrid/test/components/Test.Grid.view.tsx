@@ -211,13 +211,11 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
  * [Helpers]
  */
 function formatValue(cell?: t.IGridCell) {
-  // console.log('cell', cell);
   if (!cell) {
     return '';
   }
 
   let value = cell.props && cell.props.value ? cell.props.value : cell.value;
-  // let value = cell.value;
 
   value = typeof value === 'string' && !value.startsWith('=') ? markdown.toHtmlSync(value) : value;
   value = typeof value === 'object' ? JSON.stringify(value) : value;
