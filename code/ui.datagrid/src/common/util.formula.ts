@@ -1,7 +1,9 @@
 import * as t from './types';
 
-export function isFormula(input: t.CellValue) {
-  const text = typeof input === 'string' ? input : '';
-
-  return text[0] === '=';
+/**
+ * Determine if the given cell value represents a formula.
+ */
+export function isFormula(input?: t.IGridCell) {
+  const value = input ? input.value : undefined;
+  return (typeof value === 'string' ? value : '')[0] === '=';
 }

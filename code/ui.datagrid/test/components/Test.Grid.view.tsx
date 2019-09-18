@@ -36,6 +36,7 @@ const DEFAULT = {
     // A2: {value:'# Heading\nhello'},
     A3: { value: 'A3 `code`' },
     A5: { value: 'A5', props: { merge: { colspan: 2 } } },
+    A6: { value: '=SUM(1, 2, 3)' },
     B1: { value: 'locked' },
     B2: { value: 'cancel' },
     C5: { value: 'Hello', props: { merge: { rowspan: 2 } } },

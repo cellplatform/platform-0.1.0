@@ -9,7 +9,7 @@ import { Grid } from '../../api';
 import { RegisterRenderer, Renderer } from '../../types';
 import { FactoryManager } from '../factory';
 import * as css from '../../styles/global.cell';
-import { t, constants, hash } from '../../common';
+import { t, constants, hash, formula } from '../../common';
 
 const CLASS = css.CLASS;
 const { CELL, GRID } = CLASS;
@@ -32,6 +32,7 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     const { row, column, cell } = args;
     const child: any = factory.cell({ row, column, cell });
     const isHtml = typeof child === 'string' && child.startsWith('<');
+    const isFormula = formula.isFormula(cell);
 
     const props: t.ICellProps = cell ? cell.props || {} : {};
     const style: t.ICellPropsStyle = props.style || {};
@@ -46,6 +47,7 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     add(style.bold, CELL.BOLD);
     add(style.italic, CELL.ITALIC);
     add(style.underline, CELL.UNDERLINE);
+    add(formula.isFormula(cell), CELL.FORMULA);
 
     if (isHtml) {
       return <div className={className} dangerouslySetInnerHTML={{ __html: child }} />;
@@ -61,7 +63,7 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     cell?: t.IGridCell;
   }) {
     const { row, column } = args;
-    const key = `${row}:${column}/${hash(args.cell)}`;
+    const key = `${row}:${column}/${hash.sha256(args.cell)}`;
     if (CACHE[key]) {
       return CACHE[key];
     }

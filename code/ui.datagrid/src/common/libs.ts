@@ -7,6 +7,7 @@ export { css, color, GlamorValue, events, containsFocus, Keyboard } from '@platf
 export { value, time, defaultValue } from '@platform/util.value';
 export { log } from '@platform/log/lib/client';
 export { diff } from '@platform/util.diff';
+export { hash } from '@platform/util.hash';
 export * from '@platform/ui.datagrid.util';
 
 /**

@@ -12,7 +12,6 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.0.12",
     "@types/deep-diff": "1.0.0",
     "deep-diff": "1.0.2"
   },

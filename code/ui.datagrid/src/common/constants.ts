@@ -26,6 +26,7 @@ export const CSS = {
       BOLD: 'p-dg-cell-bold',
       ITALIC: 'p-dg-cell-italic',
       UNDERLINE: 'p-dg-cell-underline',
+      FORMULA: 'p-dg-cell-formula',
     },
   },
 };
