@@ -127,10 +127,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.94.tgz#0042c7575a6c02fb2c09dd6cc371f688efc5a46d"
   integrity sha512-uhlf3XfYEl79i+CxIfATcWGCdNaECH82398zGXcPbZtEk/UQmlwocyreeyqya5mjchERwPJiWj//qir3pCykSw==
 
-"@platform/util.value.cell@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.10.0.tgz#2207e462ef09cad264b8297c43ae89c4cd8c705c"
-  integrity sha512-dLS89CdyXciMD5TQBaAk9QBxpDnWuQw9W+gLON55SRmbtbcF4Jz0/GEmrrxIiVJJOtUzcCSxztnXfj9PBv5x7A==
+"@platform/util.value.cell@0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.10.1.tgz#9f40b665b03906acddbc340ff94249ee2ab2496e"
+  integrity sha512-huamRSmE1FfSeUhDq0zDR/dp/ApasVqKGaovVwJiPqZIeD/hvIlidQ8tLSXjoGEwJZVG/1gn2UB4w4hwILPP8g==
   dependencies:
     "@platform/util.value" "0.5.5"
     excel-formula-ast "1.1.1"
