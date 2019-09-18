@@ -14,6 +14,7 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
   public static isEmptyValue = util.isEmptyCellValue;
   public static isChanged = util.isCellChanged;
   public static diff = util.cellDiff;
+  public static props = util.toCellProps;
 
   public static create(args: { table: Handsontable; row: number; column: number }) {
     return new Cell(args);
@@ -76,13 +77,6 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
     };
 
     return payload;
-  }
-
-  public static props(input?: t.ICellProps) {
-    const props = input || {};
-    const style: t.ICellPropsStyle = props.style || {};
-    const merge: t.ICellPropsMerge = props.merge || {};
-    return { style, merge };
   }
 
   /**

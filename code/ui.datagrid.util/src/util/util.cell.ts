@@ -1,4 +1,4 @@
-import { t, R } from '../common';
+import { t, R, diff } from '../common';
 
 export type CellChangeField = keyof t.ICellProps | 'VALUE' | 'PROPS';
 
@@ -44,9 +44,18 @@ export function isEmptyCellProps(props?: t.ICellProps) {
 }
 
 /**
+ * Produces a uniform cell properties object.
+ */
+export function toCellProps(input?: t.ICellProps) {
+  const props = input || {};
+  const style: t.ICellPropsStyle = props.style || {};
+  const merge: t.ICellPropsMerge = props.merge || {};
+  return { style, merge };
+}
+
+/**
  * Determine if a cell's fields (value/props) has changed.
  */
-
 export function isCellChanged(
   left: t.IGridCell | undefined,
   right: t.IGridCell | undefined,
@@ -78,4 +87,20 @@ export function isCellChanged(
     }
     return !R.equals(a, b);
   });
+}
+
+/**
+ * Compare two cells.
+ */
+export function cellDiff(left: t.IGridCell, right: t.IGridCell): t.ICellDiff {
+  const list = diff.compare(left, right) as Array<diff.Diff<t.IGridCell>>;
+  const isDifferent = list.length > 0;
+  return { left, right, isDifferent, list };
+}
+
+/**
+ * Produces a uniform hash (SHA-256) of the given cell's value/props.
+ */
+export function cellHash(cell?: t.IGridCell): string {
+  return '';
 }

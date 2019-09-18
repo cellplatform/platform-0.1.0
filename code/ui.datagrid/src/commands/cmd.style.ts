@@ -40,7 +40,7 @@ export function init(args: {
     const changes = Object.keys(values).reduce((acc, key) => {
       const cell = grid.cell(key);
       const value = cell.value;
-      const props = (cell.props || {}) as t.ICellProps;
+      const props = cell.props;
 
       const style = toggle(field, props.style, flag);
       flag = style[field]; // NB: Stored so that all future toggles use the first derived value.

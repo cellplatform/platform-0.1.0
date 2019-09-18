@@ -111,4 +111,50 @@ describe('util.cell', () => {
       test({ value: 1 }, { value: 2 }, ['PROPS'], false);
     });
   });
+
+  describe('cellDiff', () => {
+    it('no difference', () => {
+      const cell: t.IGridCell = { value: 1, props: { style: { bold: true } } };
+      const res = util.cellDiff(cell, cell);
+      expect(res.left).to.eql(cell);
+      expect(res.right).to.eql(cell);
+      expect(res.isDifferent).to.eql(false);
+      expect(res.list.length).to.eql(0);
+    });
+
+    it('is different', () => {
+      const left: t.IGridCell = { value: 1, props: { style: { bold: true } } };
+      const right: t.IGridCell = { value: 2, props: { style: { bold: false } } };
+      const res = util.cellDiff(left, right);
+
+      expect(res.isDifferent).to.eql(true);
+      expect(res.list.length).to.eql(2);
+
+      expect((res.list[0].path || []).join('.')).to.eql('value');
+      expect((res.list[1].path || []).join('.')).to.eql('props.style.bold');
+    });
+  });
+
+  describe('toCellProps', () => {
+    it('has default props (empty {})', () => {
+      const test = (input?: any) => {
+        const res = util.toCellProps(input);
+        expect(res.merge).to.eql({});
+        expect(res.style).to.eql({});
+      };
+      test();
+      test(null);
+      test({});
+    });
+
+    it('props', () => {
+      const A2: t.IGridCell = {
+        value: 'Hello',
+        props: { style: { bold: true }, merge: { colspan: 3 } },
+      };
+      const res = util.toCellProps(A2.props);
+      expect(res.style.bold).to.eql(true);
+      expect(res.merge.colspan).to.eql(3);
+    });
+  });
 });
