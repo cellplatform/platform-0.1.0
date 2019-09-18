@@ -47,7 +47,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
 
     // Bubble events.
     if (this.props.events$) {
-      this.events$.subscribe(this.props.events$);
+      this.events$.subscribe(e => this.props.events$ && this.props.events$.next(e));
     }
 
     // Update state.
@@ -70,11 +70,14 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
         filter(e => !(e.isMeta || e.isShift)),
       ),
     );
-    enter$.pipe(filter(e => this.mode === 'MARKDOWN')).subscribe(e => {
-      const value = this.value;
-      const size = this.size;
-      this.context.set({ value, size }).complete();
-    });
+    enter$
+      // Complete edit on ENTER.
+      // .pipe(filter(e => this.mode === 'MARKDOWN'))
+      .subscribe(e => {
+        const value = this.value;
+        const size = this.size;
+        this.context.set({ value, size }).complete();
+      });
 
     // Keep the local `value` state in sync with the editor view.
     events$
