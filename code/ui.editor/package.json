@@ -45,8 +45,8 @@
     "@types/prosemirror-schema-list": "1.0.1",
     "@types/prosemirror-state": "1.2.3",
     "@types/prosemirror-view": "1.9.0",
-    "@uiharness/dev": "0.9.5",
-    "@uiharness/ui": "0.6.16",
+    "@uiharness/dev": "0.9.8",
+    "@uiharness/ui": "0.6.19",
     "electron": "6.0.7"
   },
   "files": [
