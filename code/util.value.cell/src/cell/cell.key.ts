@@ -240,16 +240,39 @@ export function toRowRangeKey(input: CellInput) {
 }
 
 /**
+ * Determines if the key represents a cell (eg "A1").
+ */
+export function isCell(input: CellInput) {
+  return toType(input) === 'CELL';
+}
+
+/**
+ * Determines if the key represents a column (eg "A").
+ */
+export function isColumn(input: CellInput) {
+  return toType(input) === 'COLUMN';
+}
+
+/**
+ * Determines if the key represents a row (eg "1").
+ */
+export function isRow(input: CellInput) {
+  return toType(input) === 'ROW';
+}
+
+/**
  * Converts the given key to a type.
  */
-export function toType(cell: CellInput): t.CoordCellType | undefined {
+export function toType(input: CellInput): t.CoordCellType | undefined {
+  const cell = input as t.ICoordCell;
   const type = typeof cell;
 
   if (!['string', 'number', 'object'].includes(type)) {
     return undefined;
   }
 
-  const coord = type === 'object' ? (cell as t.ICoord) : fromKey(cell.toString());
+  const coord =
+    type === 'object' ? (cell.key ? fromKey(cell.key) : cell) : fromKey(cell.toString());
   const column = defaultValue(coord.column, -1);
   const row = defaultValue(coord.row, -1);
 

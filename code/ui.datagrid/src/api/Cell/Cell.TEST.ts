@@ -1,7 +1,9 @@
 import '../../test/dom';
+
 import { expect } from 'chai';
+
 import { Cell, CellChangeField } from '.';
-import { t, R } from '../../common';
+import { t } from '../../common';
 import { createGrid } from '../Grid/Grid.TEST';
 
 describe('Cell', () => {
@@ -29,6 +31,23 @@ describe('Cell', () => {
       test({ value: true }, false);
       test({ value: false }, false);
       test({ value: undefined, props: { foo: 123 } }, false); // NB: has props, not empty.
+    });
+
+    it('isEmptyValue', () => {
+      const test = (input: t.CellValue | undefined, expected: boolean) => {
+        expect(Cell.isEmptyValue(input)).to.eql(expected);
+      };
+      test(undefined, true);
+      test('', true);
+
+      test(' ', false);
+      test(null, false);
+      test(0, false);
+      test(123, false);
+      test({}, false);
+      test([], false);
+      test(true, false);
+      test(false, false);
     });
   });
 

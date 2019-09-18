@@ -1,5 +1,5 @@
 import { t } from '../common';
-import { Diff } from 'deep-diff';
+import { Diff } from '@platform/util.diff/lib/types';
 
 export type ICell<P extends ICellProps = ICellProps> = {
   readonly row: number;

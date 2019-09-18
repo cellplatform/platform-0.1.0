@@ -148,6 +148,8 @@ describe('isRangeKey', () => {
       expect(cell.toType({ row: -1, column: 0 })).to.eql('COLUMN');
       expect(cell.toType({ column: 0 })).to.eql('COLUMN');
 
+      expect(cell.toType({ key: 'A1' })).to.eql('CELL');
+      expect(cell.toType({ key: 'A1', row: 0, column: 0 })).to.eql('CELL');
       expect(cell.toType({ row: 0, column: 0 })).to.eql('CELL');
       expect(cell.toType({ row: 123, column: 456 })).to.eql('CELL');
     });
@@ -397,6 +399,60 @@ describe('to column/row', () => {
     test('1', '1:1');
     test(0, '1:1');
     test(1, '2:2');
+  });
+});
+
+describe('is type', () => {
+  it('isCell', () => {
+    const test = (input: CellInput, expected?: boolean) => {
+      expect(cell.isCell(input)).to.eql(expected);
+    };
+    test('A1', true);
+    test({ key: 'A1' }, true);
+
+    test('A', false);
+    test('1', false);
+    test(2, false);
+    test({ key: 'A' }, false);
+
+    test('A:A', false);
+    test('1:1', false);
+    test('A1:A2', false);
+  });
+
+  it('isColumn', () => {
+    const test = (input: CellInput, expected?: boolean) => {
+      expect(cell.isColumn(input)).to.eql(expected);
+    };
+    test('A', true);
+    test({ key: 'A' }, true);
+
+    test('A1', false);
+    test('1', false);
+    test({ key: 'A1' }, false);
+    test({ key: '1' }, false);
+
+    test('A:A', false);
+    test('1:1', false);
+    test('A1:A2', false);
+  });
+
+  it('isRow', () => {
+    const test = (input: CellInput, expected?: boolean) => {
+      expect(cell.isRow(input)).to.eql(expected);
+    };
+    test(1, true);
+    test('1', true);
+    test({ key: '1' }, true);
+
+    test('A1', false);
+    test('A', false);
+    test({ key: 'A1' }, false);
+    test({ key: 'B' }, false);
+
+    test('A:A', false);
+    test('1:1', false);
+    test('A1:A2', false);
   });
 });
 

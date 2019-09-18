@@ -39,7 +39,6 @@ export type IGridMethods = {
   redraw(): IGrid;
   mergeCells(args: { values: t.IGridValues; init?: boolean }): IGrid;
   toPosition(ref: t.CellRef): t.ICoord;
-  toSelectionValues(selection: t.IGridSelection): t.IGridValues;
 };
 
 export type IGridDefaults = {
@@ -55,7 +54,9 @@ export type IGridSelection = {
   readonly all?: boolean;
 };
 
-export type IGridClipboardPending = t.IGridClipboard & { pasted: number };
+export type IGridClipboardPending = t.IGridClipboard<t.GridClipboardReadCommand> & {
+  pasted: number;
+};
 
 export type IGridColumns = { [key: string]: IGridColumn };
 export type IGridRows = { [key: string]: IGridRow };

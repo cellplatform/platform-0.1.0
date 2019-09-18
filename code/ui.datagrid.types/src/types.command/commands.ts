@@ -8,10 +8,12 @@ export type GridCommand = GridClipboardCommand | GridStyleCommand;
 /**
  * Clipboard
  */
-export type GridClipboardCommand = GridCopyCommand | GridCutCommand | GridPasteCommand;
-export type GridCopyCommand = 'COPY';
-export type GridCutCommand = 'CUT';
-export type GridPasteCommand = 'PASTE';
+export type GridClipboardCommand = GridClipboardReadCommand | GridClipboardPasteCommand;
+
+export type GridClipboardReadCommand = GridClipboardCutCommand | GridClipboardCopyCommand;
+export type GridClipboardCutCommand = 'CUT';
+export type GridClipboardCopyCommand = 'COPY';
+export type GridClipboardPasteCommand = 'PASTE';
 
 export type IGridClipboardCommand = IGridCommand<GridClipboardCommand>;
 

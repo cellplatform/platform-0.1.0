@@ -1,7 +1,15 @@
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { coord, defaultValue, R, t, value as valueUtil, diff } from '../../common';
+import {
+  coord,
+  defaultValue,
+  R,
+  t,
+  value as valueUtil,
+  toSelectionValues,
+  isDefaultGridValue,
+} from '../../common';
 import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
 import { keyboard } from '../../keyboard';
@@ -53,10 +61,22 @@ export class Grid implements t.IGrid {
   }) {
     return Array.from({ length: args.totalRows }).map((v, row) =>
       Array.from({ length: args.totalColumns }).map((v, column) => {
-        const key = Cell.toKey({ row, column });
-        return args.values[key];
+        return args.values[Cell.toKey({ row, column })];
       }),
     );
+  }
+
+  /**
+   * Determine if the given value is default.
+   */
+  public static isDefaultValue(args: {
+    defaults?: t.IGridDefaults;
+    kind: t.GridCellType;
+    value?: any;
+  }) {
+    const { kind, value } = args;
+    const defaults = Grid.defaults(args.defaults);
+    return isDefaultGridValue({ defaults, kind, value });
   }
 
   /**
@@ -347,7 +367,9 @@ export class Grid implements t.IGrid {
    * Retrieves the currently selected key/value pairs.
    */
   public get selectionValues(): t.IGridValues {
-    return this.toSelectionValues(this.selection);
+    const values = this.values;
+    const selection = this.selection;
+    return toSelectionValues({ values, selection });
   }
 
   /**
@@ -443,8 +465,13 @@ export class Grid implements t.IGrid {
     options: { source?: t.GridCellChangeType; silent?: boolean } = {},
   ) {
     if (values) {
-      // Clone input object.
+      // Process input object.
       values = { ...values };
+
+      // Ensure only cells (eg "A1") not rows/columns (eg "B" or "3").
+      Object.keys(values)
+        .filter(key => !coord.cell.isCell(key))
+        .forEach(key => delete values[key]);
 
       // Fire change event.
       if (!options.silent) {
@@ -664,29 +691,6 @@ export class Grid implements t.IGrid {
     const row = R.clamp(0, this.totalRows - 1, pos.row);
     const column = R.clamp(0, this.totalColumns - 1, pos.column);
     return { row, column };
-  }
-
-  /**
-   * Retrieves the grid values that map to the given selection.
-   */
-  public toSelectionValues(selection: t.IGridSelection): t.IGridValues {
-    const values = this.values;
-    if (selection.all) {
-      return values;
-    }
-    // Add focus cell.
-    const res: t.IGridValues = {};
-    if (selection.cell) {
-      res[selection.cell] = values[selection.cell];
-    }
-
-    // Add ranges.
-    const ranges = coord.range.union(this.selection.ranges);
-    return ranges.keys.reduce((acc, key) => {
-      const value = values[key] || { value: undefined };
-      acc[key] = value;
-      return acc;
-    }, res);
   }
 
   /**

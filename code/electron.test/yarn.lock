@@ -997,10 +997,26 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/electron@0.7.14":
-  version "0.7.14"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.7.14.tgz#1fe7ac20594296e81e98d86a2a3c697087c4e32e"
-  integrity sha512-Y3B940O46dBaWbk6/t+GDFMnx8cNpO4ye2ZTEYxPaOsFUMaxWS3agEn30o/e2fjCv9QS44X6kKmi6F6KU9290w==
+"@platform/electron@0.7.15":
+  version "0.7.15"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.7.15.tgz#91a533e4b9cbb8d360fe7865107f3d1e6edd2d3d"
+  integrity sha512-u9XuY9BqVQz6ruIN0b1pYjwONFf1Oj3JyWtxFbCd0dKRso0Y+fw9m3ucpRq+u5cJfROwEbTDMYyYdzmZZMZ6GA==
+  dependencies:
+    "@platform/fs" "0.3.3"
+    "@platform/libs" "0.1.3"
+    "@platform/log" "0.0.145"
+    "@platform/react" "0.3.26"
+    "@platform/types" "0.0.32"
+    "@types/app-root-path" "1.2.4"
+    app-root-path "2.2.1"
+    electron-log "3.0.7"
+    electron-window-state "5.0.3"
+    minimist "1.2.0"
+
+"@platform/electron@0.7.16":
+  version "0.7.16"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.7.16.tgz#0a707224d2ee8f330a1542c0367dd7ec3583e7c8"
+  integrity sha512-tBtcj2BFW3zdiZlFHa7kcW2CBzIE/H0iKQCcjTCQY65aGBUYM2Wh+JIblI560gXWzt9G/WBze41vDnhdY4xK1Q==
   dependencies:
     "@platform/fs" "0.3.3"
     "@platform/libs" "0.1.3"
@@ -1300,23 +1316,23 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@uiharness/dev@0.9.6":
-  version "0.9.6"
-  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.9.6.tgz#35416892749fb3be7e3aaa27ea1a9faea9b8cc43"
-  integrity sha512-6Ua58DePz6K0tmfg4IxpHekGVefHhffzwNY3/gaW9Pgdx/yq4qgupEPoXZSwnMfksjle38kWhP3+NRs3uQjEpQ==
+"@uiharness/dev@0.9.7":
+  version "0.9.7"
+  resolved "https://registry.yarnpkg.com/@uiharness/dev/-/dev-0.9.7.tgz#08eb73500830572c87380c305c0539229eec4539"
+  integrity sha512-0v2u7qoOp5PCrvW0cCnfR3hrig/W6egoESM5OZs4wwiOTCBp4jYpNVZAEPwAHEfSKCOQz3FioFl3wvrYWa/eAA==
   dependencies:
     "@babel/core" "7.5.5"
     "@babel/preset-env" "7.5.5"
     "@babel/preset-react" "7.0.0"
     "@babel/preset-typescript" "7.3.3"
     "@platform/cli" "0.4.2"
-    "@platform/electron" "0.7.14"
+    "@platform/electron" "0.7.15"
     "@platform/fs" "0.3.3"
     "@platform/npm" "^0.2.15"
     "@platform/ts" "3.5.6"
     "@platform/util.string" "0.3.12"
-    "@uiharness/electron" "0.6.6"
-    "@uiharness/types" "0.6.5"
+    "@uiharness/electron" "0.6.7"
+    "@uiharness/types" "0.6.6"
     create-tmpl "0.1.65"
     electron "6.0.7"
     electron-builder "21.2.0"
@@ -1324,24 +1340,24 @@
     parcel-bundler "1.12.3"
     serve "11.1.0"
 
-"@uiharness/electron@0.6.6":
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.6.6.tgz#b78c6c670eb8ad09a1751e6a8757f3e0980a14d8"
-  integrity sha512-rK99qrqXXMz/fqUAertcv3q+fx4L+hkeExUBc3IZb/125L+nNpDiQEIXN6AvllmrekivWcOrOGC33jnmVHmY1g==
+"@uiharness/electron@0.6.7":
+  version "0.6.7"
+  resolved "https://registry.yarnpkg.com/@uiharness/electron/-/electron-0.6.7.tgz#75bbc5845952ee129e66e7bf3e7d5823c47d0d04"
+  integrity sha512-9qEWhzgqnKBK8ctKPXrYbsKspOvRW3Y5kQiilZPrqufzS1tULkJrBhRPsO7cJQqOOi9Y7Pint8so0a1miepf6Q==
   dependencies:
-    "@platform/electron" "0.7.14"
+    "@platform/electron" "0.7.15"
     "@platform/log" "0.0.145"
     "@platform/react" "0.3.26"
     "@platform/ui.object" "0.0.146"
     "@platform/util.value" "0.5.5"
     "@types/app-root-path" "1.2.4"
-    "@uiharness/types" "0.6.5"
+    "@uiharness/types" "0.6.6"
     tslib "1.10.0"
 
-"@uiharness/types@0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.6.5.tgz#2160db7fd3402958ec2488ef03a2361d2e680831"
-  integrity sha512-ljgnbinPVW6hzXxIk+8qesj3kyQVWt/Z04VX9o1GFrDbGDsRMmCx6VSQTn0v2fmLq54AIFsWbAcJEOEy62TwFg==
+"@uiharness/types@0.6.6":
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/@uiharness/types/-/types-0.6.6.tgz#675fb2b2835cccf34c6828bab0e60a43e45e8347"
+  integrity sha512-IUB6XNOBS3mwI8X4FpuK/Bd4BGluUQCz12fnaslwvhbVl5U0TZBKl0rWufV33v2xApeaCbyYJSWzPMfb1IeIjg==
 
 "@zeit/schemas@2.6.0":
   version "2.6.0"
@@ -3194,6 +3210,15 @@ electron@6.0.7:
   version "6.0.7"
   resolved "https://registry.yarnpkg.com/electron/-/electron-6.0.7.tgz#cf3f02502aa58d1517f3befd9c2da2a95cd2eb46"
   integrity sha512-W0TFnJrBdYBUhzRnEqZt/CfYFmG9RwSnhhXBbOumn/qLQYr9e7kXb6z4y0XQQLhXKkDhuXp+dNqfzhtId5ZiQw==
+  dependencies:
+    "@types/node" "^10.12.18"
+    electron-download "^4.1.0"
+    extract-zip "^1.0.3"
+
+electron@6.0.9:
+  version "6.0.9"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-6.0.9.tgz#fea15e9fec329248db500b33ba6544a26fe025a3"
+  integrity sha512-lFpSmDNyjpvJFwEnK897Soone3DV7D3ASFUb315H2VTVZSbKib9Kbrsovxf4c+e1q5hTdaONsGIm3Lb4CXIW1g==
   dependencies:
     "@types/node" "^10.12.18"
     electron-download "^4.1.0"

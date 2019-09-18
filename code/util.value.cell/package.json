@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.value.cell",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "Data types for working with grid cell cooridnates (eg 'A1').",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -21,7 +21,10 @@
     "@platform/ts": "3.5.6"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"

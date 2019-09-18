@@ -1,4 +1,7 @@
-export const removeMarkdownEncoding = (value: string) => {
+/**
+ * Remove encoding put onto values via editor Markdown parsing.
+ */
+export function removeMarkdownEncoding(value: string) {
   // Example: "1/.2" => "1.2"
   value = replaceMatch(/^\d+\\\.\d+/, value, (value, encoded) => {
     value = value.substring(encoded.length);
@@ -9,8 +12,11 @@ export const removeMarkdownEncoding = (value: string) => {
   value = replaceMatch(/^\\\-/, value, (value, encoded) => value.replace(/^\\\-/, '-'));
 
   return value;
-};
+}
 
+/**
+ * [Helpers]
+ */
 const replaceMatch = (
   pattern: RegExp,
   value: string,

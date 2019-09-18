@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import { t, R, rx, removeMarkdownEncoding } from '../common';
+import { t, R, rx, removeMarkdownEncoding, isDefaultGridValue, isEmptyCellValue } from '../common';
 import { SyncSchema } from '../schema';
 
 export type ISyncArgs = {
@@ -105,9 +105,9 @@ export class Sync implements t.IDisposable {
 
       // Extract distinct lists for delete/update operations.
       const deletes = latest
-        .filter(item => isEmptyValue(item.value))
+        .filter(item => isEmptyCellValue(item.value))
         .map(item => ({ key: item.key }));
-      const updates = latest.filter(item => !isEmptyValue(item.value));
+      const updates = latest.filter(item => !isEmptyCellValue(item.value));
 
       // Write to DB.
       if (deletes.length > 0) {
@@ -448,26 +448,21 @@ export class Sync implements t.IDisposable {
   public async compact() {
     const getEmptyKeys = async (kind: t.GridCellType, query: string) => {
       const res = await this.db.find(query);
-      const empty = res.list.filter(
-        item =>
-          isEmptyValue(item.value) ||
-          this.isDefaultValue({
-            kind,
-            key: item.props.key,
-            value: item.value,
-          }),
-      );
+      const empty = res.list.filter(({ value }) => this.isEmptyValue({ kind, value }));
       return empty.map(item => item.props.key);
     };
 
+    const all = this.schema.db.all;
     const res = await Promise.all([
-      getEmptyKeys('CELL', this.schema.db.all.cells),
-      getEmptyKeys('ROW', this.schema.db.all.rows),
-      getEmptyKeys('COLUMN', this.schema.db.all.columns),
+      getEmptyKeys('CELL', all.cells),
+      getEmptyKeys('ROW', all.rows),
+      getEmptyKeys('COLUMN', all.columns),
     ]);
     const keys = R.flatten<string>(res);
 
-    await this.db.deleteMany(keys);
+    if (keys.length > 0) {
+      await this.db.deleteMany(keys);
+    }
     return { deleted: keys };
   }
 
@@ -480,10 +475,10 @@ export class Sync implements t.IDisposable {
   }
 
   private fireSync(payload: t.SyncChangeType) {
-    const { kind, key } = payload;
+    const { kind } = payload;
 
     let value = this.formatValue(payload.value);
-    value = this.isDefaultValue({ kind, key, value }) ? undefined : value;
+    value = this.isDefaultValue({ kind, value }) ? undefined : value;
 
     this.fire({
       type: 'SYNC/change',
@@ -493,7 +488,7 @@ export class Sync implements t.IDisposable {
 
   private formatValue = (input?: any) => {
     const format = (value: any) => {
-      value = isEmptyValue(input) ? undefined : value;
+      value = isEmptyCellValue(input) ? undefined : value;
       value = typeof value === 'string' ? removeMarkdownEncoding(value) : value;
       return value;
     };
@@ -505,18 +500,14 @@ export class Sync implements t.IDisposable {
     }
   };
 
-  private isDefaultValue = (e: { kind: t.GridCellType; key: string; value?: any }) => {
+  private isDefaultValue = (args: { kind: t.GridCellType; value?: any }) => {
     const defaults = this.grid.defaults;
-    switch (e.kind) {
-      case 'COLUMN':
-        return R.equals(e.value, { width: defaults.columWidth });
-      case 'ROW':
-        return R.equals(e.value, { height: defaults.rowHeight });
+    return isDefaultGridValue({ defaults, ...args });
+  };
 
-      case 'CELL':
-      default:
-        return isEmptyValue(e.value);
-    }
+  private isEmptyValue = (args: { kind: t.GridCellType; value?: any }) => {
+    const { kind, value } = args;
+    return isEmptyCellValue(value) || this.isDefaultValue({ kind, value });
   };
 }
 
@@ -543,7 +534,3 @@ const flags = <F>(): IActivityFlags<F> => {
     },
   };
 };
-
-function isEmptyValue(value?: any) {
-  return value === '' || value === undefined;
-}
