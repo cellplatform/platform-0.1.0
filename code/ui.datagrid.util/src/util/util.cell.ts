@@ -18,5 +18,25 @@ export function isEmptyCellValue(value?: t.CellValue) {
  * Determine if the given cell props is empty.
  */
 export function isEmptyCellProps(props?: t.ICellProps) {
-  return typeof props === 'object' ? Object.keys(props).length === 0 : true;
+  if (typeof props !== 'object') {
+    return true;
+  }
+
+  const keys = Object.keys(props);
+  if (keys.length === 0) {
+    return true;
+  }
+
+  for (const key of keys) {
+    const child = props[key];
+    if (typeof child === 'object') {
+      if (Object.keys(child).length > 0) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  return true;
 }
