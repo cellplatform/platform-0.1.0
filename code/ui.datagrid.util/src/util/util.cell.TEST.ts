@@ -157,4 +157,55 @@ describe('util.cell', () => {
       expect(res.merge.colspan).to.eql(3);
     });
   });
+
+  describe('cellHash', () => {
+    it('hashes a cell', () => {
+      const test = (input?: t.IGridCell, expected: string) => {
+        const res = util.cellHash('A1', input);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9');
+      test(
+        { value: undefined },
+        '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9',
+      );
+      test({ value: null }, 'e90b1e5185634ff7eb71ad1ed47c8d65e0a45b06e238bedac1007ff20a24fab2');
+      test({ value: 123 }, 'ffbabfe82d5db68798fc20b61ef3204cc7995b794230ccf58ade9369ec541a64');
+      test({ value: '' }, '2b2eb727231902b2b1e562e0e01ddb7d231e2858a40aafd246ed91021af884cb');
+      test({ value: 'hello' }, '5deefee8d6f76ff023111b545000074670a148074b3404ac1b886e70e02b22dc');
+      test(
+        { value: 'hello', props: {} },
+        '5deefee8d6f76ff023111b545000074670a148074b3404ac1b886e70e02b22dc',
+      );
+      test(
+        { value: 'hello', props: { style: { bold: true } } },
+        'b6477f70b3356b662eddba42de17ef1cf5ba12d94764201596fdc5a89d92c10e',
+      );
+    });
+
+    it('same hash for no param AND no cell-value', () => {
+      const HASH = '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9';
+      const test = (input?: t.IGridCell) => {
+        const res = util.cellHash('A1', input);
+        expect(res).to.eql(HASH);
+      };
+      test();
+      test(undefined);
+      test({ value: undefined });
+    });
+
+    it('returns same hash for equivalent props variants', () => {
+      const HASH = 'ffbabfe82d5db68798fc20b61ef3204cc7995b794230ccf58ade9369ec541a64';
+      const test = (props?: t.ICellProps) => {
+        const res = util.cellHash('A1', { value: 123, props });
+        expect(res).to.eql(HASH);
+      };
+      test();
+      test({});
+      test({ style: {} });
+      test({ merge: {} });
+      test({ style: {}, merge: {} });
+    });
+  });
 });

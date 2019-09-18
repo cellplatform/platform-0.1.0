@@ -9,7 +9,7 @@ import { Grid } from '../../api';
 import { RegisterRenderer, Renderer } from '../../types';
 import { FactoryManager } from '../factory';
 import * as css from '../../styles/global.cell';
-import { t, constants, hash, formula } from '../../common';
+import { t, constants, util, formula, coord } from '../../common';
 
 const CLASS = css.CLASS;
 const { CELL, GRID } = CLASS;
@@ -62,8 +62,12 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     column: number;
     cell?: t.IGridCell;
   }) {
-    const { row, column } = args;
-    const key = `${row}:${column}/${hash.sha256(args.cell)}`;
+    const { row, column, cell } = args;
+
+    // TEMP 🐷 - get hash as pre-calculated from t.IGridCell
+    const hash = util.cellHash(coord.cell.toKey(column, row), cell);
+
+    const key = `${row}:${column}/${hash}`;
     if (CACHE[key]) {
       return CACHE[key];
     }

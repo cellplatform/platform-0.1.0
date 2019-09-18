@@ -1,4 +1,4 @@
-import { t, R, diff } from '../common';
+import { t, R, diff, hash } from '../common';
 
 export type CellChangeField = keyof t.ICellProps | 'VALUE' | 'PROPS';
 
@@ -101,6 +101,8 @@ export function cellDiff(left: t.IGridCell, right: t.IGridCell): t.ICellDiff {
 /**
  * Produces a uniform hash (SHA-256) of the given cell's value/props.
  */
-export function cellHash(cell?: t.IGridCell): string {
-  return '';
+export function cellHash(key: string, data?: t.IGridCell): string {
+  const value = data ? data.value : undefined;
+  const props = toCellProps(data ? data.props : undefined);
+  return hash.sha256({ key, value, props });
 }
