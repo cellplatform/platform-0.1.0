@@ -460,7 +460,9 @@ export class Sync implements t.IDisposable {
     ]);
     const keys = R.flatten<string>(res);
 
-    await this.db.deleteMany(keys);
+    if (keys.length > 0) {
+      await this.db.deleteMany(keys);
+    }
     return { deleted: keys };
   }
 
