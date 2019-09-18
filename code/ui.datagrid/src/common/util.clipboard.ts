@@ -1,4 +1,4 @@
-import { coord, removeMarkdownEncoding } from './libs';
+import { coord, util } from './libs';
 import * as t from './types';
 
 /**
@@ -14,7 +14,7 @@ export function toClipboard(args: { grid: t.IGrid; action: t.GridClipboardReadCo
     let item = cells[key] as t.IGridCell;
     item = typeof item !== 'object' ? { value: item } : item;
     if (typeof item.value === 'string') {
-      item.value = removeMarkdownEncoding(item.value);
+      item.value = util.removeMarkdownEncoding(item.value);
     }
     return { key, item };
   });

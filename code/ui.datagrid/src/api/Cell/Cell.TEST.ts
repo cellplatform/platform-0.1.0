@@ -2,7 +2,7 @@ import '../../test/dom';
 
 import { expect } from 'chai';
 
-import { Cell, CellChangeField } from '.';
+import { Cell } from '.';
 import { t } from '../../common';
 import { createGrid } from '../Grid/Grid.TEST';
 
@@ -86,65 +86,6 @@ describe('Cell', () => {
 
       expect(res2.style.bold).to.eql(true);
       expect(res2.merge.colspan).to.eql(3);
-    });
-  });
-
-  describe('isChanged', () => {
-    type F = CellChangeField | CellChangeField[] | undefined;
-
-    const test = (
-      left: t.IGridCell | undefined,
-      right: t.IGridCell | undefined,
-      field: F,
-      expected: boolean,
-    ) => {
-      const res = Cell.isChanged(left, right, field);
-      expect(res).to.eql(expected);
-    };
-
-    const testProps = (left: t.ICellProps, right: t.ICellProps, field: F, expected: boolean) => {
-      test({ value: -1, props: left }, { value: -1, props: right }, field, expected);
-    };
-
-    it('undefined (no change)', () => {
-      test(undefined, undefined, undefined, false);
-      test(undefined, undefined, 'PROPS', false);
-      test(undefined, undefined, 'VALUE', false);
-      test(undefined, undefined, 'merge', false);
-      test(undefined, undefined, 'style', false);
-
-      test(undefined, undefined, [], false);
-      test(undefined, undefined, ['style', 'VALUE'], false);
-      test(undefined, undefined, ['PROPS', 'VALUE'], false);
-    });
-
-    it('isChanged: props', () => {
-      testProps({ style: { bold: true } }, { style: { bold: true } }, undefined, false);
-      testProps({ style: { bold: true } }, { style: { bold: true } }, 'PROPS', false);
-      testProps({ style: { bold: true } }, { style: { bold: false } }, 'PROPS', true);
-      testProps({ style: { bold: true } }, { style: { bold: false } }, undefined, true);
-      testProps(
-        { style: { bold: true }, merge: { rowspan: 2 } },
-        { style: { bold: true }, merge: { rowspan: 3 } },
-        'PROPS',
-        true,
-      );
-      testProps({ style: { bold: true } }, { style: { bold: false } }, 'merge', false); // Looking at merge.
-      testProps({ style: { bold: true } }, { style: { bold: false } }, ['VALUE', 'style'], true);
-      testProps({ style: { bold: true } }, { style: { bold: false } }, ['merge', 'style'], true);
-    });
-
-    it('isChanged: value', () => {
-      test({ value: 1 }, { value: 1 }, undefined, false);
-      test({ value: 1 }, { value: 1 }, 'VALUE', false);
-      test({ value: 1 }, { value: 2 }, 'PROPS', false);
-
-      test({ value: 1 }, { value: 2 }, undefined, true);
-      test({ value: 1 }, { value: 2 }, 'VALUE', true);
-
-      test({ value: 1 }, { value: 2 }, [], false);
-      test({ value: 1 }, { value: 2 }, ['VALUE', 'style'], true);
-      test({ value: 1 }, { value: 2 }, ['PROPS'], false);
     });
   });
 

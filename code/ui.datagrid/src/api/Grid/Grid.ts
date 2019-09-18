@@ -8,7 +8,7 @@ import {
   t,
   value as valueUtil,
   toSelectionValues,
-  isDefaultGridValue,
+  util,
 } from '../../common';
 import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
@@ -76,7 +76,7 @@ export class Grid implements t.IGrid {
   }) {
     const { kind, value } = args;
     const defaults = Grid.defaults(args.defaults);
-    return isDefaultGridValue({ defaults, kind, value });
+    return util.isDefaultGridValue({ defaults, kind, value });
   }
 
   /**
@@ -466,6 +466,7 @@ export class Grid implements t.IGrid {
   ) {
     if (values) {
       // Process input object.
+      const current = this.values;
       values = { ...values };
 
       // Ensure only cells (eg "A1") not rows/columns (eg "B" or "3").
@@ -475,7 +476,6 @@ export class Grid implements t.IGrid {
 
       // Fire change event.
       if (!options.silent) {
-        const current = this.values;
         const changes = Object.keys(values).map(key => {
           const cell = this.cell(key);
           const from = current[key];
