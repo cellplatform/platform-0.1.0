@@ -1254,13 +1254,21 @@
     "@platform/ui.text" "0.3.0"
     "@platform/util.markdown" "0.0.42"
 
-"@platform/ui.datagrid.types@0.6.5":
+"@platform/ui.datagrid.types@0.6.5", "@platform/ui.datagrid.types@^0.6.5":
   version "0.6.5"
   resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.5.tgz#37173547c8381c1e479e8544a52850dc4ce53933"
   integrity sha512-95B/L095Yqs10SJ4HEyLpDgQ5hwbbSqUmlwrzSfZbtNEgGSrEzsAL08+szP/eW8UF7sQL0hS37afPOPYkO8Mng==
   dependencies:
     "@platform/react" "0.3.26"
     "@platform/util.value.cell" "0.10.1"
+
+"@platform/ui.datagrid.util@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.0.0.tgz#21b7df8de977116ed135030fdbed532601d83a43"
+  integrity sha512-IilCLNlmGTdLziyK9H99V2UITky8GDXSaUg15gR3d+2vP0N7GtuzHotBwjC/RqxGhmft9izyuAj+FeQfqatvAA==
+  dependencies:
+    "@platform/libs" "0.1.3"
+    "@platform/ui.datagrid.types" "^0.6.5"
 
 "@platform/ui.datagrid@0.6.6":
   version "0.6.6"

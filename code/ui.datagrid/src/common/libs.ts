@@ -7,10 +7,10 @@ export { css, color, GlamorValue, events, containsFocus, Keyboard } from '@platf
 export { value, time, defaultValue } from '@platform/util.value';
 export { log } from '@platform/log/lib/client';
 export { diff } from '@platform/util.diff';
-export * from '@platform/ui.datagrid.types/lib/util';
+export * from '@platform/ui.datagrid.util';
 
 /**
- * Cell coords (eg "A1", "A1:C9")
+ * Cell coords (eg "A1", "A1:C9").
  */
 import * as coord from '@platform/util.value.cell';
 export { coord };

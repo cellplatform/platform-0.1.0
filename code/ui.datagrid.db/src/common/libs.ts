@@ -6,7 +6,7 @@ export {
   removeMarkdownEncoding,
   isEmptyCellValue,
   isDefaultGridValue,
-} from '@platform/ui.datagrid.types/lib/util';
+} from '@platform/ui.datagrid.util';
 
 /**
  * Ramda
