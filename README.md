@@ -53,7 +53,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - util
   - [@platform/util.animate](/code/util.animate)
   - [@platform/util.diff](/code/util.diff)
-  - [@platform/util.coordinate](/code/util.coordinate)  
+  - [@platform/util.hash](/code/util.hash)
   - [@platform/util.is](/code/util.is)
   - [@platform/util.local-storage](/code/util.local-storage)
   - [@platform/util.markdown](/code/util.markdown)
