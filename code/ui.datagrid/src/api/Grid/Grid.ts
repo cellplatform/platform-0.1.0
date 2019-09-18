@@ -465,8 +465,13 @@ export class Grid implements t.IGrid {
     options: { source?: t.GridCellChangeType; silent?: boolean } = {},
   ) {
     if (values) {
-      // Clone input object.
+      // Process input object.
       values = { ...values };
+
+      // Ensure only cells (eg "A1") not rows/columns (eg "B" or "3").
+      Object.keys(values)
+        .filter(key => !coord.cell.isCell(key))
+        .forEach(key => delete values[key]);
 
       // Fire change event.
       if (!options.silent) {

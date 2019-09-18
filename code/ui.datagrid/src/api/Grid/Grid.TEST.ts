@@ -146,6 +146,16 @@ describe('Grid', () => {
       });
       expect(grid.values).to.eql({ A2: { value: undefined, props: { bold: true } } });
     });
+
+    it('does nothing with column/row values', () => {
+      const grid = createGrid();
+      grid.changeCells({
+        A1: { value: 123 },
+        '1': { height: 250 }, // Not allowed (stripped off).
+        A: { width: 400 }, //    Not allowed (stripped off).
+      } as any);
+      expect(grid.values).to.eql({ A1: { value: 123 } });
+    });
   });
 
   describe('selection', () => {
