@@ -28,14 +28,14 @@ export class FactoryManager {
   /**
    * Generates a cell editor.
    */
-  public editor(args: { row: number; column: number; value: t.CellValue }) {
+  public editor(args: { row: number; column: number; cell?: t.IGridCell }) {
     return this.render({ ...args, type: 'EDITOR' });
   }
 
   /**
    * Generates the display for a single cell
    */
-  public cell(args: { row: number; column: number; value: t.CellValue }) {
+  public cell(args: { row: number; column: number; cell?: t.IGridCell }) {
     return this.render({ ...args, type: 'CELL' });
   }
 
@@ -46,10 +46,10 @@ export class FactoryManager {
     type: t.GridFactoryType;
     row: number;
     column: number;
-    value: t.CellValue;
+    cell?: t.IGridCell;
   }) {
-    const { type, row, column, value } = args;
+    const { type, row, column, cell } = args;
     const grid = this.grid;
-    return this.factory({ type, row, column, grid, value });
+    return this.factory({ type, row, column, grid, cell });
   }
 }

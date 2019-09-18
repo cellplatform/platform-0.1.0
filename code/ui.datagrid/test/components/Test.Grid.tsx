@@ -216,6 +216,11 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           });
           this.grid.select({ cell: 'A5' });
         })}
+        {this.button('props.value (A1)', () => {
+          this.grid.changeCells({
+            A1: { value: 'A1', props: { value: 'Display Value' } },
+          });
+        })}
 
         <Hr margin={5} />
         {this.button('columns (width) - A:200', () =>

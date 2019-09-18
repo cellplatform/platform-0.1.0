@@ -9,7 +9,7 @@ import { Grid } from '../../api';
 import { RegisterRenderer, Renderer } from '../../types';
 import { FactoryManager } from '../factory';
 import * as css from '../../styles/global.cell';
-import { t, constants } from '../../common';
+import { t, constants, hash } from '../../common';
 
 const CLASS = css.CLASS;
 const { CELL, GRID } = CLASS;
@@ -20,7 +20,7 @@ const { CELL, GRID } = CLASS;
  * See also:
  *   - /styles/global.cell.ts
  */
-export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
+export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
   const CACHE: any = {};
 
   function toHtml(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCell }) {
@@ -30,8 +30,7 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
 
   function toElement(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCell }) {
     const { row, column, cell } = args;
-    const value = cell ? cell.value : undefined;
-    const child: any = factory.cell({ row, column, value });
+    const child: any = factory.cell({ row, column, cell });
     const isHtml = typeof child === 'string' && child.startsWith('<');
 
     const props: t.ICellProps = cell ? cell.props || {} : {};
@@ -62,9 +61,7 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
     cell?: t.IGridCell;
   }) {
     const { row, column } = args;
-    const value = args.cell ? args.cell.value : undefined;
-    const props = args.cell ? JSON.stringify(args.cell.props) : undefined; // TEMP 🐷
-    const key = `${row}:${column}/${value || ''}:${props || ''}`;
+    const key = `${row}:${column}/${hash(args.cell)}`;
     if (CACHE[key]) {
       return CACHE[key];
     }

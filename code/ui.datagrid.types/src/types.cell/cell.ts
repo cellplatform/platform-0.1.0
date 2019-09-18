@@ -1,7 +1,7 @@
 import { t } from '../common';
 import { Diff } from '@platform/util.diff/lib/types';
 
-export type ICell<P extends ICellProps = ICellProps> = {
+export type ICell<P extends t.ICellProps = t.ICellProps> = {
   readonly row: number;
   readonly column: number;
   readonly key: string;
@@ -11,8 +11,8 @@ export type ICell<P extends ICellProps = ICellProps> = {
   readonly siblings: ICellSiblings;
   readonly value: t.CellValue;
   readonly props: P;
-  rowspan: number;
-  colspan: number;
+  readonly rowspan: number;
+  readonly colspan: number;
 };
 
 export type ICellSiblings = {
@@ -22,35 +22,17 @@ export type ICellSiblings = {
   readonly bottom?: ICell;
 };
 
-/**
- * Props
- */
-export type ICellProps = {
-  style?: ICellPropsStyle;
-  merge?: ICellPropsMerge;
-};
-
-export type ICellPropsStyle = {
-  bold?: boolean;
-  italic?: boolean;
-  underline?: boolean;
-};
-
-export type ICellPropsMerge = {
-  rowspan?: number;
-  colspan?: number;
-};
-
 export type ICellDiff = {
-  left: t.IGridCell;
-  right: t.IGridCell;
-  isDifferent: boolean;
-  list: Array<Diff<t.IGridCell>>;
+  readonly left: t.IGridCell;
+  readonly right: t.IGridCell;
+  readonly isDifferent: boolean;
+  readonly list: Array<Diff<t.IGridCell>>;
 };
 
 /**
- * Events
+ * [Events]
  */
+
 export type IGridCellChange = {
   cell: t.ICell;
   value: { from?: t.IGridCell; to?: t.IGridCell };
