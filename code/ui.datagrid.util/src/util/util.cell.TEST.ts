@@ -1,19 +1,24 @@
 import { expect } from 'chai';
+
 import { t } from '../common';
 import * as util from './util.cell';
 
 describe('util.cell', () => {
   it('isEmptyCell', () => {
+    const hash = '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9';
     const test = (input: t.IGridCell | undefined, expected: boolean) => {
       expect(util.isEmptyCell(input)).to.eql(expected);
     };
     test(undefined, true);
     test({ value: '' }, true);
     test({ value: undefined }, true);
+    test({ value: '', hash }, true);
+    test({ value: undefined, hash: 'abc123z' }, true);
     test({ value: undefined, props: {} }, true); // NB: props object is empty.
     test({ value: '', props: {} }, true);
 
     test({ value: ' ' }, false);
+    test({ value: ' ', hash }, false);
     test({ value: 0 }, false);
     test({ value: null }, false);
     test({ value: {} }, false);
