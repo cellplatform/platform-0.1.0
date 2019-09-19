@@ -123,7 +123,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Methods]
    */
   public async updateState() {
-    const processValues = (obj: object) => {
+    const processDbValues = (obj: object) => {
       Object.keys(obj).map(key => {
         const MAX = 15;
         const value = obj[key];
@@ -133,9 +133,18 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
     };
 
+    const processGridValues = (values: object) => {
+      Object.keys(values).map(key => {
+        const hash = values[key] ? (values[key] as any).hash : undefined;
+        if (hash) {
+          (values[key] as any).hash = `${hash.substring(0, 8)}..(SHA-256)`;
+        }
+      });
+    };
+
     // Database.
     const db = (await this.db.find('**')).map;
-    processValues({ ...db });
+    processDbValues({ ...db });
 
     // Grid.
     const grid = {
@@ -143,6 +152,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       ...this.grid.rows,
       ...this.grid.values,
     };
+    processGridValues(grid);
 
     // Finish up.
     this.state$.next({ db, grid });
@@ -227,7 +237,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         return <CellEditor />;
 
       case 'CELL':
-        return formatValue(req.value);
+        return req.cell ? formatValue(req.cell) : '';
 
       default:
         log.error(`Factory type '${req.type}' not supported by test.`);
@@ -239,7 +249,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 /**
  * [Helpers]
  */
-function formatValue(value: datagrid.CellValue) {
+function formatValue(cell: t.IGridCell) {
+  let value = cell.props && cell.props.value ? cell.props.value : cell.value;
   value = typeof value === 'string' && !value.startsWith('=') ? markdown.toHtmlSync(value) : value;
   value = typeof value === 'object' ? JSON.stringify(value) : value;
   return value;

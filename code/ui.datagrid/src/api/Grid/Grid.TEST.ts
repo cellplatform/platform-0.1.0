@@ -196,12 +196,23 @@ describe('Grid', () => {
       expect(values.A2.hash).to.eql(util.cellHash('A2', { value: 'hello' }));
     });
 
-    it('replaces values ("init")', () => {
+    it('replaces values (init:true)', () => {
       const grid = createGrid({ values: { A1: { value: 123 } } });
       grid.changeCells({ A2: { value: 456 } }, { init: true });
       const values = grid.values as any;
       expect(values.A1).to.eql(undefined);
       expect(values.A2.value).to.eql(456);
+    });
+
+    it('deletes empty props objects', () => {
+      const grid = createGrid({ values: { A1: { value: 123, props: {} } } });
+      let values = grid.values as any;
+      expect(values.A1.props).to.eql({});
+
+      grid.changeCells({ A1: { value: 456 } });
+
+      values = grid.values;
+      expect(values.A1.props).to.eql(undefined);
     });
   });
 

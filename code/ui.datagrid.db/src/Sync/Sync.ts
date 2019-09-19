@@ -160,13 +160,9 @@ export class Sync implements t.IDisposable {
       }
 
       // Pass changes to the grid.
-      const values = {
-        ...grid.values,
-        ...changes.columns,
-        ...changes.rows,
-        ...changes.cells,
-      };
-      grid.values = values;
+      grid.changeCells(changes.cells);
+      grid.changeColumns(changes.columns);
+      grid.changeColumns(changes.rows);
 
       // Alert listeners.
       this.fire({ type: 'SYNCED/grid', payload: { updates: e } });
@@ -398,7 +394,7 @@ export class Sync implements t.IDisposable {
       return acc;
     }, {});
 
-    this.grid.values = values;
+    this.grid.changeCells(values);
     this.is.loading.remove('CELLS');
   }
 

@@ -511,22 +511,28 @@ export class Grid implements t.IGrid {
       const mergeChanges: t.IGridValues = {};
       const updates = { ...current, ...values };
       Object.keys(values).forEach(key => {
+        const current = this.values[key];
+        const update = updates[key];
+
         // Strip empty values.
-        if (Cell.isEmpty(updates[key])) {
+        if (Cell.isEmpty(update)) {
           delete updates[key];
           return;
         }
 
+        // Strip any empty props.
+        if (update && Cell.isEmptyProps(update.props)) {
+          delete update.props;
+        }
+
         // Determine if any merge values have changed.
-        const current = this.values[key];
-        const update = updates[key];
         if (Cell.isChanged(current, update, 'merge')) {
           mergeChanges[key] = update;
         }
 
         // Updates the cell's hash.
-        if (updates[key]) {
-          const hash = util.cellHash(key, updates[key]);
+        if (update) {
+          const hash = util.cellHash(key, update);
           (updates[key] as any).hash = hash;
         }
       });
