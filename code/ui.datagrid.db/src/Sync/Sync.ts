@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import { t, R, rx, removeMarkdownEncoding, isDefaultGridValue, isEmptyCellValue } from '../common';
+import { t, R, rx, util } from '../common';
 import { SyncSchema } from '../schema';
 
 export type ISyncArgs = {
@@ -105,9 +105,9 @@ export class Sync implements t.IDisposable {
 
       // Extract distinct lists for delete/update operations.
       const deletes = latest
-        .filter(item => isEmptyCellValue(item.value))
+        .filter(item => util.isEmptyCellValue(item.value))
         .map(item => ({ key: item.key }));
-      const updates = latest.filter(item => !isEmptyCellValue(item.value));
+      const updates = latest.filter(item => !util.isEmptyCellValue(item.value));
 
       // Write to DB.
       if (deletes.length > 0) {
@@ -484,13 +484,16 @@ export class Sync implements t.IDisposable {
 
   private formatValue = (input?: any) => {
     const format = (value: any) => {
-      value = isEmptyCellValue(input) ? undefined : value;
-      value = typeof value === 'string' ? removeMarkdownEncoding(value) : value;
+      value = util.isEmptyCellValue(input) ? undefined : value;
+      value = typeof value === 'string' ? util.removeMarkdownEncoding(value) : value;
       return value;
     };
-
     if (typeof input === 'object') {
-      return { ...input, value: format(input.value) };
+      const res = { ...input, value: format(input.value) };
+      if (util.isEmptyCellProps(input.props)) {
+        delete res.props;
+      }
+      return res;
     } else {
       return format(input);
     }
@@ -498,12 +501,12 @@ export class Sync implements t.IDisposable {
 
   private isDefaultValue = (args: { kind: t.GridCellType; value?: any }) => {
     const defaults = this.grid.defaults;
-    return isDefaultGridValue({ defaults, ...args });
+    return util.isDefaultGridValue({ defaults, ...args });
   };
 
   private isEmptyValue = (args: { kind: t.GridCellType; value?: any }) => {
     const { kind, value } = args;
-    return isEmptyCellValue(value) || this.isDefaultValue({ kind, value });
+    return util.isEmptyCellValue(value) || this.isDefaultValue({ kind, value });
   };
 }
 
