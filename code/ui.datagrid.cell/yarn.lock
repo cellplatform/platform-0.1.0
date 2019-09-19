@@ -1281,10 +1281,10 @@
     codemirror "5.48.4"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.6.9":
-  version "0.6.9"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.9.tgz#8bff586497dacbd373e1f23492620134d7e9971e"
-  integrity sha512-cuIr9cZw+rKNtcB9wcLR2B2R9nUXXJfLXMvPIwm3qu+3SQIor7FCW1HltVJKoGcRaHYfTSmRiMZ0b1+OMXfVeg==
+"@platform/ui.datagrid.types@0.6.10":
+  version "0.6.10"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.10.tgz#c298afda0cfa4faa36401aa872c7a4ef1a74f5e8"
+  integrity sha512-RALE2jWKbjXUmvn41ux14nuHXsTRYSRCzk79Tfv2XAGFzuT7GOlYHaSRwr2ZyujxxNtpa0IMxZKKuqIwG/qYCg==
   dependencies:
     "@platform/react" "0.3.26"
     "@platform/util.diff" "^0.0.1"
