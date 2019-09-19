@@ -105,9 +105,9 @@ export class Sync implements t.IDisposable {
 
       // Extract distinct lists for delete/update operations.
       const deletes = latest
-        .filter(item => util.isEmptyCellValue(item.value))
+        .filter(item => util.isEmptyCell(item.value))
         .map(item => ({ key: item.key }));
-      const updates = latest.filter(item => !util.isEmptyCellValue(item.value));
+      const updates = latest.filter(item => !util.isEmptyCell(item.value));
 
       // Write to DB.
       if (deletes.length > 0) {
@@ -214,7 +214,8 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.db.toCellKey(e.key);
           const existing = (await db.getValue(key)) as t.IGridCell;
-          if (!R.equals(existing, e.value)) {
+          const isChanged = util.isCellChanged(existing, e.value as t.IGridCell);
+          if (isChanged) {
             save$.next({ kind: 'CELL', key, value: e.value });
           }
         });
@@ -228,7 +229,8 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.grid.toCellKey(e.key);
           const cell = grid.cell(key);
-          if (!R.equals(e.value, cell.value)) {
+          const isChanged = util.isCellChanged(cell, e.value as t.IGridCell);
+          if (isChanged) {
             changeGrid$.next({ type: 'CELL', key, value: e.value });
           }
         });
