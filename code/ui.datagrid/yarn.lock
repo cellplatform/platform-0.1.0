@@ -1230,10 +1230,10 @@
     "@platform/util.diff" "^0.0.1"
     "@platform/util.value.cell" "0.10.1"
 
-"@platform/ui.datagrid.util@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.0.5.tgz#c61ce0e6b3a0de79410af2be588201d8d448873d"
-  integrity sha512-6yMqZeDBhmC3wGNmKy0PO0620GwVF85LPrV1Kj79DH6kxH0SutNAjdp+r1zdrl/Q99KUZQz2Xc8mKO2URv4+CQ==
+"@platform/ui.datagrid.util@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.0.6.tgz#97714c61a6fb2fa99da568707b2d1d07df1fb88a"
+  integrity sha512-xmvetvwr66fITFIXJ92AIc0dqIF87rh71Po9vSZ3My12nVXPCgslWuLGUr2+VdtciqOX88R44MmYPtVZUxs56A==
   dependencies:
     "@platform/libs" "0.1.3"
     "@platform/ui.datagrid.types" "^0.6.10"
