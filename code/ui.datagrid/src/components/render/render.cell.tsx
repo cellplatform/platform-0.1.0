@@ -32,7 +32,6 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     const { row, column, cell } = args;
     const child: any = factory.cell({ row, column, cell });
     const isHtml = typeof child === 'string' && child.startsWith('<');
-    const isFormula = formula.isFormula(cell);
 
     const props: t.ICellProps = cell ? cell.props || {} : {};
     const style: t.ICellPropsStyle = props.style || {};
@@ -63,10 +62,7 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     cell?: t.IGridCell;
   }) {
     const { row, column, cell } = args;
-
-    // TEMP 🐷 - get hash as pre-calculated from t.IGridCell
-    const hash = util.cellHash(coord.cell.toKey(column, row), cell);
-
+    const hash = cell ? cell.hash || util.cellHash(coord.cell.toKey(column, row), cell) : '-';
     const key = `${row}:${column}/${hash}`;
     if (CACHE[key]) {
       return CACHE[key];

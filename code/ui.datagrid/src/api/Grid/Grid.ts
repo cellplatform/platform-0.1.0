@@ -521,6 +521,12 @@ export class Grid implements t.IGrid {
         if (Cell.isChanged(current, update, 'merge')) {
           mergeChanges[key] = update;
         }
+
+        // Updates the cell's hash.
+        if (updates[key]) {
+          const hash = util.cellHash(key, updates[key]);
+          (updates[key] as any).hash = hash;
+        }
       });
 
       // Update any cell-merge changes.
@@ -691,6 +697,32 @@ export class Grid implements t.IGrid {
     const row = R.clamp(0, this.totalRows - 1, pos.row);
     const column = R.clamp(0, this.totalColumns - 1, pos.column);
     return { row, column };
+  }
+
+  /**
+   * Updates the cell hash for each value.
+   */
+  public updateHashes(options: { force?: boolean } = {}) {
+    const force = defaultValue(options.force, true);
+    const values = { ...this.values };
+
+    let isChanged = false;
+    Object.keys(values).forEach(key => {
+      const value = values[key];
+      if (value) {
+        let hash = value.hash;
+        if (!hash || force) {
+          hash = util.cellHash(key, value);
+          values[key] = { ...value, hash };
+          isChanged = true;
+        }
+      }
+    });
+
+    if (isChanged) {
+      this.values = values;
+    }
+    return this;
   }
 
   /**

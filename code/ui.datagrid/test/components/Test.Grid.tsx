@@ -136,8 +136,17 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    */
   public updateState() {
     const grid = this.grid;
-    const { selection, values, rows, columns, isEditing, clipboard } = grid;
+    const { selection, rows, columns, isEditing, clipboard } = grid;
     const { editorType } = this.props;
+
+    const values = { ...grid.values };
+    Object.keys(values).forEach(key => {
+      const hash = values[key] ? (values[key] as any).hash : undefined;
+      if (hash) {
+        (values[key] as any).hash = `${hash.substring(0, 8)}..(SHA-256)`;
+      }
+    });
+
     const data = {
       debug: { editorType },
       grid: value.deleteUndefined({
@@ -196,6 +205,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             this.state$.next({ totalColumns: 5, totalRows: 5 });
           }
           // this.grid.focus();
+        })}
+        {this.button('updateHashes', () => {
+          this.grid.updateHashes();
+          this.updateState();
         })}
         <Hr margin={5} />
         {this.button('values', () => (this.grid.values = { A1: { value: 'loaded value' } }))}
@@ -256,6 +269,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
           }),
         )}
+
         {/* <Hr margin={5} />
             {this.button(
               'changeBorders - B2:D4 (red)',
@@ -332,7 +346,15 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         <ObjectView
           name={'grid'}
           data={data.grid}
-          expandPaths={['$', '$', '$.selection', '$.selection.ranges', '$.values', '$.clipboard']}
+          expandPaths={[
+            '$',
+            '$',
+            '$.selection',
+            '$.selection.ranges',
+            '$.values',
+            '$.values.A1',
+            '$.clipboard',
+          ]}
           theme={'DARK'}
         />
         <Hr color={1} />

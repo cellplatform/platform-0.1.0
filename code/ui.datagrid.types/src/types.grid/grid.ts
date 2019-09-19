@@ -39,6 +39,7 @@ export type IGridMethods = {
   redraw(): IGrid;
   mergeCells(args: { values: t.IGridValues; init?: boolean }): IGrid;
   toPosition(ref: t.CellRef): t.ICoord;
+  updateHashes(options?: { force?: boolean }): IGrid;
 };
 
 export type IGridDefaults = {
@@ -64,4 +65,4 @@ export type IGridValues<P = {}> = { [key: string]: IGridCell<P> | undefined };
 
 export type IGridColumn = { width?: number };
 export type IGridRow = { height?: number };
-export type IGridCell<P = t.ICellProps> = { value: t.CellValue; props?: P };
+export type IGridCell<P = t.ICellProps> = { value: t.CellValue; props?: P; hash?: string };
