@@ -1142,7 +1142,7 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/libs@0.1.3":
+"@platform/libs@0.1.3", "@platform/libs@^0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.1.3.tgz#566287ee174a3cc6e6ff85233b234bf0b8b5da1b"
   integrity sha512-dAgVtjZTctsL2xHDRKhZRuyQkp56uBmN14sSKteKlHuz9Kwq7N6h2hz6IgWvFq5wVBS1xy8bpU9j5/4+xhQrnA==
@@ -1242,50 +1242,50 @@
     codemirror "5.48.4"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.cell@0.0.121":
-  version "0.0.121"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.121.tgz#f69a3ad2b28969e051eb98dcdbf2e58bee4a7292"
-  integrity sha512-yxhNZW0M8t7MquDVqr2kH7XqPI8NJQU1M9NL93vPrg+HKIybmYQMaXsl9dp187aeiKW2a3hj1jx9ZgSqPDlZag==
+"@platform/ui.datagrid.cell@0.0.122":
+  version "0.0.122"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.122.tgz#c16659e55715cf4bab8a88c14c866835f541a225"
+  integrity sha512-yqQcfhuxDpljCo9GyttDQrdtRs3gf68vvRBDm3gxtsjIOEblo9SSJKOBE7ukSg6AQnBwgAEJTkptWWMZr3sQVA==
   dependencies:
     "@platform/react" "0.3.26"
     "@platform/ui.codemirror" "0.0.90"
-    "@platform/ui.datagrid.types" "0.6.8"
+    "@platform/ui.datagrid.types" "0.6.9"
     "@platform/ui.editor" "0.2.3"
     "@platform/ui.text" "0.3.0"
     "@platform/util.markdown" "0.0.42"
 
-"@platform/ui.datagrid.types@0.6.8", "@platform/ui.datagrid.types@^0.6.8":
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.8.tgz#1a67bff918a0bd9e479834d60e49df32ca089dc5"
-  integrity sha512-U1bkmne54OgZZyAwx0Egt80KKnNjILMFQb+S5eOgIsv0FZoUKY8pwxRkM+zp+cl+t6UrWNf3lZsQKHj/TqMgsA==
+"@platform/ui.datagrid.types@0.6.9", "@platform/ui.datagrid.types@^0.6.9":
+  version "0.6.9"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.9.tgz#8bff586497dacbd373e1f23492620134d7e9971e"
+  integrity sha512-cuIr9cZw+rKNtcB9wcLR2B2R9nUXXJfLXMvPIwm3qu+3SQIor7FCW1HltVJKoGcRaHYfTSmRiMZ0b1+OMXfVeg==
   dependencies:
     "@platform/react" "0.3.26"
     "@platform/util.diff" "^0.0.1"
     "@platform/util.value.cell" "0.10.1"
 
-"@platform/ui.datagrid.util@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.0.3.tgz#e7af192c98f4f208ea1f5235796f1a04bc124eb5"
-  integrity sha512-ZCDWpJxR5cORqkxvDLrABFZYqbcvMhBl+pXASI5Vm4WahQ+9n4BED91Z1hJJW41LMaljG/0fYRpihrG6aJXa0g==
+"@platform/ui.datagrid.util@0.0.4", "@platform/ui.datagrid.util@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.0.4.tgz#a14d155f1deac364b79c24ae3e86f3d5bd6a9876"
+  integrity sha512-W2l02k/6aVVYXQTquhVko1yKH1ZIMjOUeW6fNuQ4UE8wmLEkz8TkwY5ypU8OpM6A2HgiV0ueyNbbx/OENw+w6A==
   dependencies:
     "@platform/libs" "0.1.3"
-    "@platform/ui.datagrid.types" "^0.6.8"
+    "@platform/ui.datagrid.types" "^0.6.9"
+    "@platform/util.diff" "^0.0.1"
+    "@platform/util.hash" "^0.0.0"
 
-"@platform/ui.datagrid@0.6.9":
-  version "0.6.9"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.6.9.tgz#379b82c36c70adbc0bae1a29cfd610601e32a4da"
-  integrity sha512-iP1pepWgVWuOZu7PbKAXHkdhIhs4eviuApoSth0+tzuL/dy9xwUIMQbFtSkNn3r//AqRySKVy6m6jTJqLYegXg==
+"@platform/ui.datagrid@0.6.10":
+  version "0.6.10"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.6.10.tgz#aa1dee5646dd7d7f8019b22f09c85fbc397e61b8"
+  integrity sha512-IXawNkd4NsnXAw39STzo0RWL7G+PXgMMp2CF1FTlKLEOBcAJT0B+AyQkasyqkLU8MIsd87qiMEKysrEKT5PuHA==
   dependencies:
     "@babel/polyfill" "7.4.4"
     "@platform/libs" "0.1.3"
     "@platform/react" "0.3.26"
-    "@platform/ui.datagrid.types" "0.6.8"
-    "@platform/ui.datagrid.util" "^0.0.3"
+    "@platform/ui.datagrid.types" "0.6.9"
+    "@platform/ui.datagrid.util" "0.0.4"
     "@platform/ui.text" "0.3.0"
-    "@platform/util.diff" "0.0.1"
     "@platform/util.value.cell" "0.10.1"
     handsontable "6.2.2"
-    object-hash "^1.3.1"
 
 "@platform/ui.editor@0.2.3":
   version "0.2.3"
@@ -1369,7 +1369,7 @@
     "@platform/libs" "0.1.3"
     dynamics.js "1.1.5"
 
-"@platform/util.diff@0.0.1", "@platform/util.diff@^0.0.1":
+"@platform/util.diff@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@platform/util.diff/-/util.diff-0.0.1.tgz#b8df8ec8e6d560e8582b8db14066e0455f448d35"
   integrity sha512-bpphLDcfV8hn6ovzU4YL+fsL3HrIQbAVeqbZYEOeZwMFkCb/ftpoCruwgMX9HKYHW899evPoTBb3T5IqmXHQbA==
@@ -1377,6 +1377,14 @@
     "@platform/libs" "0.0.12"
     "@types/deep-diff" "1.0.0"
     deep-diff "1.0.2"
+
+"@platform/util.hash@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.hash/-/util.hash-0.0.0.tgz#273dc88874b3bd2a45e0bebc830ebf5737a8f741"
+  integrity sha512-YLrdAVYjiDGcouVoittHGxcvmGP4gdMl1GQgyARt+pO3tu2Sc6TrQtv+cI/wPsLQsYqTOuFHgj840mLe0nyVsw==
+  dependencies:
+    "@platform/libs" "^0.1.3"
+    js-sha256 "0.9.0"
 
 "@platform/util.is@0.0.94":
   version "0.0.94"
@@ -1608,9 +1616,9 @@
     "@types/underscore" "*"
 
 "@types/underscore@*":
-  version "1.9.2"
-  resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.9.2.tgz#2c4f7743287218f5c2d9a83db3806672aa48530d"
-  integrity sha512-KgOKTAD+9X+qvZnB5S1+onqKc4E+PZ+T6CM/NA5ohRPLHJXb+yCJMVf8pWOnvuBuKFNUAJW8N97IA6lba6mZGg==
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.9.3.tgz#d7d9dc5a5ff76fa3d001b29bc7cc95ab0ccfe85e"
+  integrity sha512-SwbHKB2DPIDlvYqtK5O+0LFtZAyrUSw4c0q+HWwmH1Ve3KMQ0/5PlV3RX97+3dP7yMrnNQ8/bCWWvQpPl03Mug==
 
 "@types/unist@^2.0.0", "@types/unist@^2.0.2":
   version "2.0.3"
@@ -3698,15 +3706,6 @@ electron-window-state@5.0.3:
     jsonfile "^4.0.0"
     mkdirp "^0.5.1"
 
-electron@6.0.7:
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-6.0.7.tgz#cf3f02502aa58d1517f3befd9c2da2a95cd2eb46"
-  integrity sha512-W0TFnJrBdYBUhzRnEqZt/CfYFmG9RwSnhhXBbOumn/qLQYr9e7kXb6z4y0XQQLhXKkDhuXp+dNqfzhtId5ZiQw==
-  dependencies:
-    "@types/node" "^10.12.18"
-    electron-download "^4.1.0"
-    extract-zip "^1.0.3"
-
 electron@6.0.9:
   version "6.0.9"
   resolved "https://registry.yarnpkg.com/electron/-/electron-6.0.9.tgz#fea15e9fec329248db500b33ba6544a26fe025a3"
@@ -5287,6 +5286,11 @@ js-levenshtein@^1.1.3:
   resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"
   integrity sha512-X2BB11YZtrRqY4EnQcLX5Rh373zbK4alC1FW7D7MBhL2gtcC17cTnr6DmfHZeS0s2rTHjUTMMHfG7gO8SSdw+g==
 
+js-sha256@0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/js-sha256/-/js-sha256-0.9.0.tgz#0b89ac166583e91ef9123644bd3c5334ce9d0966"
+  integrity sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -6268,11 +6272,6 @@ object-copy@^0.1.0:
     define-property "^0.2.5"
     kind-of "^3.0.3"
 
-object-hash@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-1.3.1.tgz#fde452098a951cb145f039bb7d455449ddc126df"
-  integrity sha512-OSuu/pU4ENM9kmREg0BdNrUDIl1heYa4mBZacJc+vVWz4GtAwu7jO8s4AIt2aGRUTqxykpWzI3Oqnsm13tTMDA==
-
 object-inspect@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.6.0.tgz#c70b6cbf72f274aab4c34c0c82f5167bf82cf15b"
@@ -6564,9 +6563,9 @@ parcel-bundler@1.12.3:
     ws "^5.1.1"
 
 parse-asn1@^5.0.0:
-  version "5.1.4"
-  resolved "https://registry.yarnpkg.com/parse-asn1/-/parse-asn1-5.1.4.tgz#37f6628f823fbdeb2273b4d540434a22f3ef1fcc"
-  integrity sha512-Qs5duJcuvNExRfFZ99HDD3z4mAi3r9Wl/FOjEOijlxwCZs7E7mW2vjTpgQ4J8LpTF8x5v+1Vn5UQFejmWT11aw==
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/parse-asn1/-/parse-asn1-5.1.5.tgz#003271343da58dc94cace494faef3d2147ecea0e"
+  integrity sha512-jkMYn1dcJqF6d5CpU689bq7w/b5ALS9ROVSpQDPrZsqqesUJii9qutvoT5ltGedNXMO2e16YUWIghG9KxaViTQ==
   dependencies:
     asn1.js "^4.0.0"
     browserify-aes "^1.0.0"

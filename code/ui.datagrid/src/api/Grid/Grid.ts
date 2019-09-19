@@ -705,15 +705,13 @@ export class Grid implements t.IGrid {
    * Updates the cell hash for each value.
    */
   public updateHashes(options: { force?: boolean } = {}) {
-    const force = defaultValue(options.force, true);
     const values = { ...this.values };
-
     let isChanged = false;
     Object.keys(values).forEach(key => {
       const value = values[key];
       if (value) {
         let hash = value.hash;
-        if (!hash || force) {
+        if (!hash || options.force) {
           hash = util.cellHash(key, value);
           values[key] = { ...value, hash };
           isChanged = true;

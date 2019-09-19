@@ -207,7 +207,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           // this.grid.focus();
         })}
         {this.button('updateHashes', () => {
-          this.grid.updateHashes();
+          this.grid.updateHashes({ force: true });
           this.updateState();
         })}
         <Hr margin={5} />

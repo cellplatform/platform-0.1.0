@@ -165,7 +165,7 @@ describe('util.cell', () => {
 
   describe('cellHash', () => {
     it('hashes a cell', () => {
-      const test = (input?: t.IGridCell, expected: string) => {
+      const test = (input: t.IGridCell | undefined, expected: string) => {
         const res = util.cellHash('A1', input);
         expect(res).to.eql(expected);
       };
