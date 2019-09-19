@@ -63,6 +63,7 @@ export type IGridColumns = { [key: string]: IGridColumn };
 export type IGridRows = { [key: string]: IGridRow };
 export type IGridValues<P = {}> = { [key: string]: IGridCell<P> | undefined };
 
+export type IGridAxis = IGridColumn | IGridRow;
 export type IGridColumn = { width?: number };
 export type IGridRow = { height?: number };
 export type IGridCell<P = t.ICellProps> = { value: t.CellValue; props?: P; hash?: string };
