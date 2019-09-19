@@ -189,7 +189,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         return this.renderEditor();
 
       case 'CELL':
-        return formatValue(req.cell);
+        return req.cell ? formatValue(req.cell) : '';
 
       default:
         console.log(`Factory type '${req.type}' not supported by test.`);
@@ -211,18 +211,9 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
 /**
  * [Helpers]
  */
-function formatValue(cell?: t.IGridCell) {
-  if (!cell) {
-    return '';
-  }
-
+function formatValue(cell: t.IGridCell) {
   let value = cell.props && cell.props.value ? cell.props.value : cell.value;
-
   value = typeof value === 'string' && !value.startsWith('=') ? markdown.toHtmlSync(value) : value;
   value = typeof value === 'object' ? JSON.stringify(value) : value;
-  // if (typeof value === 'string' && !value.includes('\n') && value.startsWith('<p>')) {
-  // Strip <P>
-  // value = value.replace(/^\<p\>/, '').replace(/\<\/p\>/, '');
-  // }
   return value;
 }

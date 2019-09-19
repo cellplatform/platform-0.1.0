@@ -15,16 +15,16 @@ export type IGridProperties = {
   readonly keyboard$: Observable<t.IGridKeydown>;
   readonly keyBindings: KeyBindings<t.GridCommand>;
   readonly defaults: IGridDefaults;
-  clipboard?: IGridClipboardPending;
-  values: t.IGridValues;
+  readonly values: t.IGridValues;
   columns: IGridColumns;
   rows: IGridRows;
+  clipboard?: IGridClipboardPending;
 };
 export type IGridMethods = {
   dispose(): void;
   changeCells(
     changes: t.IGridValues,
-    options?: { source?: t.GridCellChangeType; silent?: boolean },
+    options?: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean },
   ): IGrid;
   changeColumns(
     columns: t.IGridColumns,

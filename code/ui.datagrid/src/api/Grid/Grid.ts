@@ -234,7 +234,7 @@ export class Grid implements t.IGrid {
   public get values() {
     return this._.values;
   }
-  public set values(values: t.IGridValues) {
+  private setValues(values: t.IGridValues) {
     values = { ...values };
     const totalColumns = this.totalColumns;
     const totalRows = this.totalRows;
@@ -460,15 +460,15 @@ export class Grid implements t.IGrid {
   }
 
   /**
-   * Updates values.
+   * Updates cell values.
    */
   public changeCells(
     values: t.IGridValues,
-    options: { source?: t.GridCellChangeType; silent?: boolean } = {},
+    options: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean } = {},
   ) {
     if (values) {
       // Process input object.
-      const current = this.values;
+      const current = { ...(options.init ? {} : this.values) };
       values = { ...values };
 
       // Ensure only cells (eg "A1") not rows/columns (eg "B" or "3").
@@ -509,7 +509,7 @@ export class Grid implements t.IGrid {
 
       // Calculate the new updated value set.
       const mergeChanges: t.IGridValues = {};
-      const updates = { ...this.values, ...values };
+      const updates = { ...current, ...values };
       Object.keys(values).forEach(key => {
         // Strip empty values.
         if (Cell.isEmpty(updates[key])) {
@@ -537,7 +537,7 @@ export class Grid implements t.IGrid {
       }
 
       // Update the UI.
-      this.values = updates;
+      this.setValues(updates);
     }
     return this;
   }
@@ -718,9 +718,8 @@ export class Grid implements t.IGrid {
         }
       }
     });
-
     if (isChanged) {
-      this.values = values;
+      this.setValues(values);
     }
     return this;
   }
