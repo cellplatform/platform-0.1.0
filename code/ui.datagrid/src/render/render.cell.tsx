@@ -5,11 +5,10 @@
 import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
 
-import { Grid } from '../../api';
-import { RegisterRenderer, Renderer } from '../../types';
+import { Grid } from '../api';
 import { FactoryManager } from '../factory';
-import * as css from '../../styles/global.cell';
-import { t, constants, util, formula, coord } from '../../common';
+import * as css from '../styles/global.cell';
+import { t, constants, util, formula, coord } from '../common';
 
 const CLASS = css.CLASS;
 const { CELL, GRID } = CLASS;
@@ -72,7 +71,7 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     return html;
   }
 
-  const fn: Renderer = (instance, td, row, column, prop, value, cellProps) => {
+  const fn: t.Renderer = (instance, td, row, column, prop, value, cellProps) => {
     if (!grid.isDisposed) {
       td.innerHTML = toMemoizedHtml({ td, row, column, cell: value });
     }
@@ -86,6 +85,6 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
  */
 export function registerCellRenderer(Table: Handsontable, grid: Grid, factory: FactoryManager) {
   const renderers = (Table as any).renderers;
-  const fn: RegisterRenderer = renderers.registerRenderer;
+  const fn: t.RegisterRenderer = renderers.registerRenderer;
   fn(constants.DEFAULT.CELL_RENDERER, cellRenderer(grid, factory));
 }

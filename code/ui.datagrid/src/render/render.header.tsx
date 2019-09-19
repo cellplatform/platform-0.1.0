@@ -5,7 +5,7 @@
 import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
 
-import { COLORS, css } from '../../common';
+import { COLORS, css } from '../common';
 
 const styles = {
   header: css({}),

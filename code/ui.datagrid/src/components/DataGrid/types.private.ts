@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 
-import * as t from '../../types';
-import { FactoryManager } from '../factory';
+import { t } from '../../common';
+import { FactoryManager } from '../../factory';
 
 /**
  * Private references used internally that are attached

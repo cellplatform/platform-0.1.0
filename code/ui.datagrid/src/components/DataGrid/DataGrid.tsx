@@ -9,17 +9,15 @@ import {
   constants,
   containsFocus,
   css,
+  defaultValue,
   events,
   GlamorValue,
   Handsontable as TableLib,
   R,
   t,
-  time,
-  value,
-  defaultValue,
 } from '../../common';
-import { FactoryManager } from '../factory';
-import * as render from '../render';
+import { FactoryManager } from '../../factory';
+import * as render from '../../render';
 import { getSettings } from '../settings';
 import { IGridRefsPrivate } from './types.private';
 
