@@ -213,11 +213,7 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.db.toCellKey(e.key);
-          const existing = (await db.getValue(key)) as t.IGridCell;
-          const isChanged = util.isCellChanged(existing, e.value as t.IGridCell);
-          if (isChanged) {
-            save$.next({ kind: 'CELL', key, value: e.value });
-          }
+          save$.next({ kind: 'CELL', key, value: e.value });
         });
 
       syncChange$
