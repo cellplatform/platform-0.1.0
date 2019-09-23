@@ -18,7 +18,7 @@ describe('refs', () => {
       expect(res).to.eql([]);
     });
 
-    it('cell: A1 => A2', async () => {
+    it('REF: A1 => A2', async () => {
       const ctx = testContext({
         A1: { value: '=A$2' },
         A2: { value: 123 },
@@ -32,7 +32,7 @@ describe('refs', () => {
       expect(ref.param).to.eql(undefined);
     });
 
-    it('cell: A1 => A2 => A3', async () => {
+    it('REF: A1 => A2 => A3', async () => {
       const ctx = testContext({
         A1: { value: '=A$2' },
         A2: { value: '=$A3' },
@@ -46,7 +46,7 @@ describe('refs', () => {
       expect(ref.path).to.eql('A1/A2/A3');
     });
 
-    it('cell: A1 => A1 (circular ref)', async () => {
+    it('REF: A1 => A1 (circular ref)', async () => {
       const ctx = testContext({
         A1: { value: '=A1' },
       });
@@ -58,7 +58,7 @@ describe('refs', () => {
       expect(ref.error).to.eql('CIRCULAR');
     });
 
-    it('cell: A1 => A2 => A3 => A1 (circular ref)', async () => {
+    it('REF: A1 => A2 => A3 => A1 (circular ref)', async () => {
       const ctx = testContext({
         A1: { value: '=A2' },
         A2: { value: '=A3' },
@@ -72,7 +72,7 @@ describe('refs', () => {
       expect(ref.error).to.eql('CIRCULAR');
     });
 
-    it('cell: A1 => A2(func)', async () => {
+    it('REF: A1 => A2(func)', async () => {
       const ctx = testContext({
         A1: { value: '=A2' },
         A2: { value: '=SUM(1,2,3)' },
@@ -84,7 +84,7 @@ describe('refs', () => {
       expect(res[0].path).to.eql('A1/A2');
     });
 
-    it('func: =SUM(A2, 10, A3)', async () => {
+    it('FUNC: =SUM(A2, 10, A3)', async () => {
       const ctx = testContext({
         A1: { value: '=SUM(A2, 10, A3)' },
         A2: { value: 123 },
@@ -104,7 +104,7 @@ describe('refs', () => {
       expect(res[1].path).to.eql('A1/A3/A4');
     });
 
-    it('func to types: =SUM(..) => FUNC | VALUE | RANGE | FUNC', async () => {
+    it('FUNC to types: =SUM(..) => FUNC | VALUE | RANGE | FUNC', async () => {
       const ctx = testContext({
         A1: { value: '=SUM(999, A2, A3, A3:A4, A5)' },
         A2: { value: '=SUM(A3, 999)' },
@@ -133,11 +133,9 @@ describe('refs', () => {
       expect(res[3].param).to.eql(4);
     });
 
-    it.skip('func => range: (circular ref)', async () => {});
+    it.skip('FUNC => range: (circular ref)', async () => {});
 
-    it.skip('range: (circular ref)', async () => {});
-
-    it.skip('func (binary expression): =A2+5', async () => {
+    it.skip('FUNC (binary expression): =A2+5', async () => {
       const ctx = testContext({
         A1: { value: '=A2+5+8' },
         A2: { value: 3 },
@@ -149,7 +147,7 @@ describe('refs', () => {
       console.log('res', res);
     });
 
-    it.skip('func (binary expression): =A2+A3 => A3', async () => {
+    it.skip('FUNC (binary expression): =A2+A3 => A3', async () => {
       const ctx = testContext({
         A1: { value: '=A2+10+A3' },
         A2: { value: '=A3' },
@@ -159,7 +157,7 @@ describe('refs', () => {
       // const ref = res[0] as t.IRefOut;
     });
 
-    it.skip('func (binary expression): =1+2', async () => {
+    it.skip('FUNC (binary expression): =1+2', async () => {
       const ctx = testContext({
         A1: { value: '=1+2' },
       });
@@ -167,7 +165,7 @@ describe('refs', () => {
       // const ref = res[0] as t.IRefOut;
     });
 
-    it.skip('func (binary expression, immediate circular ref): =A1+5', async () => {
+    it.skip('FUNC (binary expression, immediate circular ref): =A1+5', async () => {
       const ctx = testContext({
         A1: { value: '=A1+5' },
       });
@@ -175,7 +173,7 @@ describe('refs', () => {
       // const ref = res[0] as t.IRefOut;
     });
 
-    it.skip('func (binary expression, immediate circular ref): =A1+5', async () => {
+    it.skip('FUNC (binary expression, immediate circular ref): =A1+5', async () => {
       const ctx = testContext({
         A1: { value: '=A2 + 5' },
         A2: { value: '=A1' },
@@ -184,7 +182,7 @@ describe('refs', () => {
       // const ref = res[0] as t.IRefOut;
     });
 
-    it('range: A1 => B1:B9', async () => {
+    it('REF/RANGE: A1 => B1:B9', async () => {
       const ctx = testContext({
         A1: { value: '=$B1:B$9' },
       });
@@ -195,5 +193,7 @@ describe('refs', () => {
       expect(res[0].target).to.eql('RANGE');
       expect(res[0].path).to.eql('A1/B1:B9');
     });
+
+    it.skip('REF/RANGE: (circular ref)', async () => {});
   });
 });

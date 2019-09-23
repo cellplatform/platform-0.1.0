@@ -1,4 +1,4 @@
-import { t, util, formula, coord, R } from '../../common';
+import { coord, formula, t, util } from '../../common';
 
 /**
  * Calculate outgoing refs for given cell.
