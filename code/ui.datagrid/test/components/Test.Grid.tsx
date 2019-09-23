@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil, debounceTime } from 'rxjs/operators';
+import { filter, map, takeUntil, debounceTime, delay } from 'rxjs/operators';
 
 import {
   COLORS,
@@ -14,6 +14,7 @@ import {
   t,
   testData,
   value,
+  coord,
 } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
@@ -44,6 +45,20 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
 
+    const temp = (key: string) => {
+      const cell = this.grid.cell(key);
+      const value = cell.value;
+      console.log('value', value);
+
+      // const parts = coord.parser.toParts()
+      if (typeof value === 'string') {
+        const tree = coord.ast.toTree(value);
+        const tokens = coord.ast.toTokens(value);
+        console.log('tree', tree);
+        console.log('tokens', tokens);
+      }
+    };
+
     /**
      * Grid events.
      */
@@ -53,9 +68,19 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         filter(() => true),
         filter(e => e.type === 'GRID/cells/change'),
         map(e => e.payload as t.IGridCellsChange),
+        delay(0),
       )
       .subscribe(e => {
         log.info('🐷 IGridCellsChanged', e);
+
+        //  const value = e.
+        e.changes.forEach(change => {
+          // change.cell.key /
+          // console.log('change.cell', change.cell);
+          console.group('🌳 ');
+          temp(change.cell.key);
+          console.groupEnd();
+        });
 
         // e.cancel();
         // e.changes[0].modify('foo');
@@ -143,7 +168,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     Object.keys(values).forEach(key => {
       const hash = values[key] ? (values[key] as any).hash : undefined;
       if (hash) {
-        (values[key] as any).hash = `${hash.substring(0, 8)}..(SHA-256)`;
+        (values[key] as any).hash = `${hash.substring(0, 12)}..(SHA-256)`;
       }
     });
 

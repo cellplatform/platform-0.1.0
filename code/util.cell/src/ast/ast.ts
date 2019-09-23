@@ -15,7 +15,15 @@ import { Token, tokenize } from 'excel-formula-tokenizer';
 
 import { value as valueUtil } from '../common';
 
-export { Token, NumberNode, BinaryExpressionNode, UnaryExpressionNode, LogicalNode, TextNode };
+export {
+  Token,
+  Node,
+  NumberNode,
+  BinaryExpressionNode,
+  UnaryExpressionNode,
+  LogicalNode,
+  TextNode,
+};
 
 export type EmptyNode = { type: 'empty' };
 export type ParseErrorNode = { type: 'parse-error' };
@@ -29,6 +37,7 @@ export type CellRangeNode = AstCellRangeNode & {
   right: CellNode;
 };
 export type FunctionNode = AstFunctionNode & { namespace?: string };
+
 export type TreeNode = Node | CellNode | EmptyNode | ParseErrorNode;
 
 /**

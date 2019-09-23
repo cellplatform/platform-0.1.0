@@ -1,7 +1,8 @@
 import * as t from '../types';
+export { KeyBindings } from '@platform/react/lib/types';
 
 export * from '../types';
-export { KeyBindings } from '@platform/react/lib/types';
+export * from '../api/Refs/types';
 
 /**
  * [INTERNAL]
