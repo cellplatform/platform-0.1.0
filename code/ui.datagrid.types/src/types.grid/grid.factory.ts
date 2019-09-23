@@ -16,5 +16,5 @@ export type IGridFactoryRequest = {
   row: number;
   column: number;
   grid: t.IGrid;
-  value: t.CellValue;
+  cell?: t.IGridCell;
 };

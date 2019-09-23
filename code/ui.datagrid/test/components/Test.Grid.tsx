@@ -136,8 +136,17 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    */
   public updateState() {
     const grid = this.grid;
-    const { selection, values, rows, columns, isEditing, clipboard } = grid;
+    const { selection, rows, columns, isEditing, clipboard } = grid;
     const { editorType } = this.props;
+
+    const values = { ...grid.values };
+    Object.keys(values).forEach(key => {
+      const hash = values[key] ? (values[key] as any).hash : undefined;
+      if (hash) {
+        (values[key] as any).hash = `${hash.substring(0, 8)}..(SHA-256)`;
+      }
+    });
+
     const data = {
       debug: { editorType },
       grid: value.deleteUndefined({
@@ -197,24 +206,32 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           }
           // this.grid.focus();
         })}
+        {this.button('updateHashes', () => {
+          this.grid.updateHashes({ force: true });
+          this.updateState();
+        })}
         <Hr margin={5} />
-        {this.button('values', () => (this.grid.values = { A1: { value: 'loaded value' } }))}
         {this.button('changeCells', () => this.grid.changeCells({ A1: { value: 'hello' } }))}
         {this.button('changeCells (props)', () =>
           this.grid.changeCells({ A1: { value: 'hello', props: { bold: true } } }),
         )}
-        {this.button('change cells (via prop/state)', () =>
+        {this.button('changeCells (via prop/state)', () =>
           this.test$.next({ values: { A1: { value: 'happy' } } }),
         )}
-        {this.button('values (large)', () => {
+        {this.button('changeCells (large)', () => {
           const data = testData({ totalColumns: 52, totalRows: 1000 });
-          this.grid.values = data.values;
+          this.grid.changeCells(data.values);
         })}
         {this.button('mergeCells (A5)', () => {
           this.grid.changeCells({
             A5: { value: 'merged', props: { merge: { colspan: 3, rowspan: 5 } } },
           });
           this.grid.select({ cell: 'A5' });
+        })}
+        {this.button('props.value (A1)', () => {
+          this.grid.changeCells({
+            A1: { value: 'A1', props: { value: 'Display Value' } },
+          });
         })}
 
         <Hr margin={5} />
@@ -251,6 +268,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
           }),
         )}
+
         {/* <Hr margin={5} />
             {this.button(
               'changeBorders - B2:D4 (red)',
@@ -327,7 +345,15 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         <ObjectView
           name={'grid'}
           data={data.grid}
-          expandPaths={['$', '$', '$.selection', '$.selection.ranges', '$.values', '$.clipboard']}
+          expandPaths={[
+            '$',
+            '$',
+            '$.selection',
+            '$.selection.ranges',
+            '$.values',
+            '$.values.A1',
+            '$.clipboard',
+          ]}
           theme={'DARK'}
         />
         <Hr color={1} />

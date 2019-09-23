@@ -19,7 +19,7 @@ export function getSettings(args: {
 
   const createColumns = (length: number) => {
     const col = {
-      renderer: DEFAULT.CELL_RENDERER,
+      renderer: DEFAULT.CELL.RENDERER,
       editor: Editor,
     };
     return Array.from({ length }).map(() => col);

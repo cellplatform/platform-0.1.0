@@ -23,18 +23,17 @@ export class MemoryCache<K extends string> {
   /**
    * [Methods]
    */
-
-  public isCached(key: K) {
+  public exists(key: K) {
     return Boolean(this.values[key] && this.values[key].value);
   }
 
-  public get<V>(key: K, defaultValue?: () => V) {
+  public get<V>(key: K, defaultValue?: () => V): V {
     let value = this.item<V>(key).value;
     if (value === undefined && typeof defaultValue === 'function') {
       value = defaultValue();
       this.put(key, value);
     }
-    return value;
+    return value as V;
   }
 
   public put<V>(key: K, value: V) {

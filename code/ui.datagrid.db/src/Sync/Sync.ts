@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import { t, R, rx, removeMarkdownEncoding, isDefaultGridValue, isEmptyCellValue } from '../common';
+
+import { R, rx, t, util } from '../common';
 import { SyncSchema } from '../schema';
 
 export type ISyncArgs = {
@@ -68,6 +69,11 @@ export class Sync implements t.IDisposable {
     }
 
     // Setup observables.
+    const syncChange$ = events$.pipe(
+      filter(e => e.type === 'SYNC/change'),
+      map(e => e.payload as t.SyncChangeType),
+    );
+
     const db$ = db.events$.pipe(takeUntil(this.dispose$));
     const dbChange$ = db$.pipe(
       filter(e => e.type === 'DOC/change'),
@@ -75,21 +81,17 @@ export class Sync implements t.IDisposable {
     );
 
     const grid$ = grid.events$.pipe(takeUntil(this.dispose$));
-    const gridCellsChanges$ = grid$.pipe(
+    const gridCellsChange$ = grid$.pipe(
       filter(e => e.type === 'GRID/cells/change'),
       map(e => e.payload as t.IGridCellsChange),
     );
-    const gridColumnsChanges$ = grid$.pipe(
+    const gridColumnsChange$ = grid$.pipe(
       filter(e => e.type === 'GRID/columns/change'),
       map(e => e.payload as t.IGridColumnsChange),
     );
-    const gridRowsChanges$ = grid$.pipe(
+    const gridRowsChange$ = grid$.pipe(
       filter(e => e.type === 'GRID/rows/change'),
       map(e => e.payload as t.IGridRowsChange),
-    );
-    const syncChange$ = events$.pipe(
-      filter(e => e.type === 'SYNC/change'),
-      map(e => e.payload as t.SyncChangeType),
     );
 
     /**
@@ -105,9 +107,9 @@ export class Sync implements t.IDisposable {
 
       // Extract distinct lists for delete/update operations.
       const deletes = latest
-        .filter(item => isEmptyCellValue(item.value))
+        .filter(item => util.isEmptyCell(item.value))
         .map(item => ({ key: item.key }));
-      const updates = latest.filter(item => !isEmptyCellValue(item.value));
+      const updates = latest.filter(item => !util.isEmptyCell(item.value));
 
       // Write to DB.
       if (deletes.length > 0) {
@@ -160,13 +162,9 @@ export class Sync implements t.IDisposable {
       }
 
       // Pass changes to the grid.
-      const values = {
-        ...grid.values,
-        ...changes.columns,
-        ...changes.rows,
-        ...changes.cells,
-      };
-      grid.values = values;
+      grid.changeCells(changes.cells);
+      grid.changeColumns(changes.columns);
+      grid.changeColumns(changes.rows);
 
       // Alert listeners.
       this.fire({ type: 'SYNCED/grid', payload: { updates: e } });
@@ -176,7 +174,7 @@ export class Sync implements t.IDisposable {
      * `Cell Sync`
      */
     (() => {
-      gridCellsChanges$
+      gridCellsChange$
         // Cells changed in Grid UI.
         .pipe(filter(e => !this.is.loading.currently('CELLS')))
         .subscribe(async e => {
@@ -217,10 +215,7 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.db.toCellKey(e.key);
-          const existing = (await db.getValue(key)) as t.IGridCell;
-          if (!R.equals(existing, e.value)) {
-            save$.next({ kind: 'CELL', key, value: e.value });
-          }
+          save$.next({ kind: 'CELL', key, value: e.value });
         });
 
       syncChange$
@@ -232,7 +227,8 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.grid.toCellKey(e.key);
           const cell = grid.cell(key);
-          if (!R.equals(e.value, cell.value)) {
+          const isChanged = util.isCellChanged(cell, e.value as t.IGridCell);
+          if (isChanged) {
             changeGrid$.next({ type: 'CELL', key, value: e.value });
           }
         });
@@ -242,7 +238,7 @@ export class Sync implements t.IDisposable {
      * `Column Sync`
      */
     (() => {
-      gridColumnsChanges$
+      gridColumnsChange$
         // Columns changed in Grid UI.
         .pipe(filter(e => !this.is.loading.currently('COLUMNS')))
         .subscribe(async e => {
@@ -281,8 +277,9 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.db.toColumnKey(e.key);
-          const existing = (await db.getValue(key)) as t.IGridCell;
-          if (!R.equals(existing, e.value)) {
+          const existing = (await db.getValue(key)) as t.IGridColumn;
+          const isChanged = util.isColumnChanged(existing, e.value as t.IGridColumn);
+          if (isChanged) {
             save$.next({ kind: 'COLUMN', key, value: e.value });
           }
         });
@@ -296,7 +293,8 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.grid.toColumnKey(e.key);
           const column = grid.columns[key];
-          if (!R.equals(e.value, column)) {
+          const isChanged = util.isColumnChanged(column, e.value as t.IGridColumn);
+          if (isChanged) {
             changeGrid$.next({ type: 'COLUMN', key, value: e.value });
           }
         });
@@ -306,7 +304,7 @@ export class Sync implements t.IDisposable {
      * `Row Sync`
      */
     (() => {
-      gridRowsChanges$
+      gridRowsChange$
         // Rows changed in Grid UI.
         .pipe(filter(e => !this.is.loading.currently('ROWS')))
         .subscribe(async e => {
@@ -345,8 +343,9 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.db.toRowKey(e.key);
-          const existing = (await db.getValue(key)) as t.IGridCell;
-          if (!R.equals(existing, e.value)) {
+          const existing = (await db.getValue(key)) as t.IGridRow;
+          const isChanged = util.isRowChanged(existing, e.value as t.IGridRow);
+          if (isChanged) {
             save$.next({ kind: 'ROW', key, value: e.value });
           }
         });
@@ -360,7 +359,8 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.grid.toRowKey(e.key);
           const row = grid.rows[key];
-          if (!R.equals(e.value, row)) {
+          const isChanged = util.isRowChanged(row, e.value as t.IGridRow);
+          if (isChanged) {
             changeGrid$.next({ type: 'ROW', key, value: e.value });
           }
         });
@@ -398,7 +398,7 @@ export class Sync implements t.IDisposable {
       return acc;
     }, {});
 
-    this.grid.values = values;
+    this.grid.changeCells(values);
     this.is.loading.remove('CELLS');
   }
 
@@ -488,13 +488,16 @@ export class Sync implements t.IDisposable {
 
   private formatValue = (input?: any) => {
     const format = (value: any) => {
-      value = isEmptyCellValue(input) ? undefined : value;
-      value = typeof value === 'string' ? removeMarkdownEncoding(value) : value;
+      value = util.isEmptyCellValue(input) ? undefined : value;
+      value = typeof value === 'string' ? util.removeMarkdownEncoding(value) : value;
       return value;
     };
-
     if (typeof input === 'object') {
-      return { ...input, value: format(input.value) };
+      const res = { ...input, value: format(input.value) };
+      if (util.isEmptyCellProps(input.props)) {
+        delete res.props;
+      }
+      return res;
     } else {
       return format(input);
     }
@@ -502,12 +505,12 @@ export class Sync implements t.IDisposable {
 
   private isDefaultValue = (args: { kind: t.GridCellType; value?: any }) => {
     const defaults = this.grid.defaults;
-    return isDefaultGridValue({ defaults, ...args });
+    return util.isDefaultGridValue({ defaults, ...args });
   };
 
   private isEmptyValue = (args: { kind: t.GridCellType; value?: any }) => {
     const { kind, value } = args;
-    return isEmptyCellValue(value) || this.isDefaultValue({ kind, value });
+    return util.isEmptyCellValue(value) || this.isDefaultValue({ kind, value });
   };
 }
 

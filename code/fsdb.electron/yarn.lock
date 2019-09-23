@@ -1166,10 +1166,10 @@
     "@platform/types" "0.0.32"
     "@platform/util.value" "0.5.5"
 
-"@platform/fsdb.nedb@1.3.17":
-  version "1.3.17"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.17.tgz#2be00cf8b39bbe9237f29aeba934f56ceb29dc1c"
-  integrity sha512-FXcdC//UdpKkDGEu23X98STFRh67ufGiez4inNKI3RPVKCmHXIN+KTPqCDffqKIJloRY0yZ4TlluuNjmEQOofQ==
+"@platform/fsdb.nedb@1.3.20":
+  version "1.3.20"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.20.tgz#e6659d6306eef595f1a70ae5801d92f3f7748da2"
+  integrity sha512-T/oCALDwdA1B5DIDt4hsBrnFj3d0Uv2UPu3+GYHrH1TXC4tKlHcXZ6nIBu8HIyDX4wEEctyn7iLTaqlfsR+j2A==
   dependencies:
     "@platform/fsdb.types" "0.3.10"
     "@platform/libs" "0.1.3"

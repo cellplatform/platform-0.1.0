@@ -2,11 +2,9 @@ import * as coord from '@platform/util.value.cell';
 export { coord };
 
 export { value, time, rx } from '@platform/util.value';
-export {
-  removeMarkdownEncoding,
-  isEmptyCellValue,
-  isDefaultGridValue,
-} from '@platform/ui.datagrid.util';
+
+import * as util from '@platform/ui.datagrid.util';
+export { util };
 
 /**
  * Ramda

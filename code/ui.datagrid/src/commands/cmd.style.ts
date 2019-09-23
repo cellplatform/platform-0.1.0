@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { t, toSelectionValues } from '../common';
+import { t, toSelectionValues, DEFAULT } from '../common';
 
 const STYLE: t.GridStyleCommand[] = ['BOLD', 'ITALIC', 'UNDERLINE'];
 
@@ -22,12 +22,19 @@ export function init(args: {
   const toggle = (
     field: keyof t.ICellPropsStyle,
     style: t.ICellPropsStyle | undefined,
+    defaults: t.ICellPropsStyle,
     value?: boolean,
   ) => {
     const props = style || {};
     const flag =
       typeof value === 'boolean' ? value : typeof props[field] === 'boolean' ? !props[field] : true;
-    return { ...props, [field]: flag };
+    const res = { ...props, [field]: flag };
+
+    if (res[field] === defaults[field]) {
+      delete res[field];
+    }
+
+    return res;
   };
 
   style$.subscribe(e => {
@@ -40,9 +47,9 @@ export function init(args: {
     const changes = Object.keys(values).reduce((acc, key) => {
       const cell = grid.cell(key);
       const value = cell.value;
-      const props = (cell.props || {}) as t.ICellProps;
+      const props = cell.props;
 
-      const style = toggle(field, props.style, flag);
+      const style = toggle(field, props.style, DEFAULT.CELL.PROPS.STYLE, flag);
       flag = style[field]; // NB: Stored so that all future toggles use the first derived value.
 
       acc[key] = { value, props: { ...props, style } };

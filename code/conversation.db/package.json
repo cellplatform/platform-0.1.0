@@ -1,6 +1,6 @@
 {
   "name": "@platform/conversation.db",
-  "version": "0.0.95",
+  "version": "0.0.98",
   "description": "Data persistence and server-side middleware for conversation threads.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,7 +16,7 @@
     "@platform/auth": "0.1.35",
     "@platform/conversation.types": "0.0.50",
     "@platform/fsdb.types": "0.3.10",
-    "@platform/graphql.server": "0.1.39",
+    "@platform/graphql.server": "0.1.42",
     "@platform/hyperdb.types": "0.2.19",
     "@platform/libs": "0.1.3"
   },
@@ -28,5 +28,6 @@
     "lib"
   ],
   "repository": "uiharness/platform",
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }

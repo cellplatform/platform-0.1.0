@@ -1,10 +1,12 @@
 import { alpha } from '../alpha';
 import { parser } from '../parser';
-import { t, defaultValue } from '../common';
+import { t, defaultValue, MemoryCache } from '../common';
 
 type ICellCoord = { column?: number; row?: number };
 type ICellKeyObject = { key: string };
 type CellInput = string | number | ICellCoord | ICellKeyObject;
+
+const cache = new MemoryCache();
 
 /**
  * Converts indexes into alpha-numeric cell code.
@@ -13,31 +15,33 @@ type CellInput = string | number | ICellCoord | ICellKeyObject;
  *    - -1,0  => A   (COLUMN)
  *    -  0,-1 => 1   (ROW)
  */
-export function toKey(column?: number, row?: number) {
-  // Setup initial conditions.
-  column = column === undefined ? -1 : column;
-  row = row === undefined ? -1 : row;
-  const cell = { column, row };
-  let result: string | undefined;
+export function toKey(column?: number, row?: number): string {
+  return cache.get(`toKey/${column}:${row}`, () => {
+    // Setup initial conditions.
+    column = column === undefined ? -1 : column;
+    row = row === undefined ? -1 : row;
+    const cell = { column, row };
+    let result: string | undefined;
 
-  // Convert cell.
-  if (cell.column <= -1 && cell.row <= -1) {
-    // ALL (wild card)
-    result = '*';
-  } else if (cell.column <= -1) {
-    // ROW
-    result = `${cell.row + 1}`;
-  } else if (cell.row <= -1) {
-    // COLUMN
-    const char = alpha.toCharacter(cell.column);
-    result = `${char}`;
-  } else {
-    // CELL
-    result = `${alpha.toCharacter(cell.column)}${cell.row + 1}`;
-  }
+    // Convert cell.
+    if (cell.column <= -1 && cell.row <= -1) {
+      // ALL (wild card)
+      result = '*';
+    } else if (cell.column <= -1) {
+      // ROW
+      result = `${cell.row + 1}`;
+    } else if (cell.row <= -1) {
+      // COLUMN
+      const char = alpha.toCharacter(cell.column);
+      result = `${char}`;
+    } else {
+      // CELL
+      result = `${alpha.toCharacter(cell.column)}${cell.row + 1}`;
+    }
 
-  // Finish up.
-  return result;
+    // Finish up.
+    return result;
+  });
 }
 
 /**
@@ -99,10 +103,12 @@ export function toRelative(key: string): string {
  * Attempts to parse the given cell key.
  */
 export function fromKey(key: string | number): t.ICoord {
-  const parts = parser.toParts((key || '').toString());
-  const row = parts.row.index;
-  const column = parts.column.index;
-  return { row, column };
+  return cache.get<t.ICoord>(`fromKey/${key}`, () => {
+    const parts = parser.toParts((key || '').toString());
+    const row = parts.row.index;
+    const column = parts.column.index;
+    return { row, column };
+  });
 }
 
 /**

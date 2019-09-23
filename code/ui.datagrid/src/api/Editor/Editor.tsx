@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
-import { constants, Handsontable, R, t, time } from '../../common';
+import { constants, Handsontable, R, t, time, coord } from '../../common';
 import { IGridRefsPrivate } from '../../components/DataGrid/types.private';
 import { createProvider } from './provider';
 
@@ -190,9 +190,10 @@ export class Editor extends editors.TextEditor {
 
     // Update the row-height of the grid.
     if (size) {
-      const index = this.row;
-      const row = { ...grid.rows[index], height: size.height };
-      const change = { [index]: row };
+      const key = coord.cell.toRowKey(this.row);
+      const change = {
+        [key]: { ...grid.rows[key], height: size.height },
+      };
       grid.changeRows(change, { source: 'UPDATE/cellEdited' }).redraw();
     }
 
@@ -329,8 +330,9 @@ export class Editor extends editors.TextEditor {
    * Renders the popup-editor within a <Provider> context.
    */
   private render(context: t.IEditorContext) {
-    const { row, column, value } = context.cell;
-    const el = this.refs.factory.editor({ row, column, value });
+    const { row, column, value, props } = context.cell;
+    const cell: t.IGridCell = { value, props };
+    const el = this.refs.factory.editor({ row, column, cell });
     if (!el) {
       return null;
     }

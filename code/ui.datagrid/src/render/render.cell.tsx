@@ -5,11 +5,10 @@
 import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
 
-import { Grid } from '../../api';
-import { RegisterRenderer, Renderer } from '../../types';
+import { Grid } from '../api';
 import { FactoryManager } from '../factory';
-import * as css from '../../styles/global.cell';
-import { t, constants } from '../../common';
+import * as css from '../styles/global.cell';
+import { t, constants, util, formula, coord } from '../common';
 
 const CLASS = css.CLASS;
 const { CELL, GRID } = CLASS;
@@ -20,7 +19,7 @@ const { CELL, GRID } = CLASS;
  * See also:
  *   - /styles/global.cell.ts
  */
-export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
+export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
   const CACHE: any = {};
 
   function toHtml(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCell }) {
@@ -30,8 +29,7 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
 
   function toElement(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCell }) {
     const { row, column, cell } = args;
-    const value = cell ? cell.value : undefined;
-    const child: any = factory.cell({ row, column, value });
+    const child: any = factory.cell({ row, column, cell });
     const isHtml = typeof child === 'string' && child.startsWith('<');
 
     const props: t.ICellProps = cell ? cell.props || {} : {};
@@ -47,6 +45,7 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
     add(style.bold, CELL.BOLD);
     add(style.italic, CELL.ITALIC);
     add(style.underline, CELL.UNDERLINE);
+    add(formula.isFormula(cell), CELL.FORMULA);
 
     if (isHtml) {
       return <div className={className} dangerouslySetInnerHTML={{ __html: child }} />;
@@ -61,10 +60,9 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
     column: number;
     cell?: t.IGridCell;
   }) {
-    const { row, column } = args;
-    const value = args.cell ? args.cell.value : undefined;
-    const props = args.cell ? JSON.stringify(args.cell.props) : undefined; // TEMP 🐷
-    const key = `${row}:${column}/${value || ''}:${props || ''}`;
+    const { row, column, cell } = args;
+    const hash = cell ? cell.hash || util.cellHash(coord.cell.toKey(column, row), cell) : '-';
+    const key = `${row}:${column}/${hash}`;
     if (CACHE[key]) {
       return CACHE[key];
     }
@@ -73,7 +71,7 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
     return html;
   }
 
-  const fn: Renderer = (instance, td, row, column, prop, value, cellProps) => {
+  const fn: t.Renderer = (instance, td, row, column, prop, value, cellProps) => {
     if (!grid.isDisposed) {
       td.innerHTML = toMemoizedHtml({ td, row, column, cell: value });
     }
@@ -87,6 +85,6 @@ export const cellRenderer = (grid: Grid, factory: FactoryManager) => {
  */
 export function registerCellRenderer(Table: Handsontable, grid: Grid, factory: FactoryManager) {
   const renderers = (Table as any).renderers;
-  const fn: RegisterRenderer = renderers.registerRenderer;
-  fn(constants.DEFAULT.CELL_RENDERER, cellRenderer(grid, factory));
+  const fn: t.RegisterRenderer = renderers.registerRenderer;
+  fn(constants.DEFAULT.CELL.RENDERER, cellRenderer(grid, factory));
 }

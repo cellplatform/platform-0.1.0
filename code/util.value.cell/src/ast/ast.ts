@@ -58,7 +58,7 @@ export function toTree<T extends TreeNode>(expr?: string): T {
 }
 
 /**
- * INTERNAL
+ * [Internal]
  */
 function parseTree(expr?: string): TreeNode {
   const tokens = expr ? toTokens(expr) : [];

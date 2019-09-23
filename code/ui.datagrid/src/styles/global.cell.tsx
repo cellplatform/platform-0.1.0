@@ -2,9 +2,13 @@ import { color, css, constants } from '../common';
 
 export const CLASS = constants.CSS.CLASS;
 const { CELL, GRID } = CLASS;
+const COLORS = constants.COLORS;
 
 const STYLES = {
   CELL: {
+    /**
+     * Cell stucture.
+     */
     [`.${CELL.BASE}`]: {
       // Reset CSS from handsontable.
       all: 'unset',
@@ -15,17 +19,27 @@ const STYLES = {
       pointerEvents: 'none',
       fontSize: 14,
       color: color.format(-0.7),
-      marginTop: 2,
+      marginTop: 3,
     },
-
     [`.${CELL.BASE}.${GRID.FIRST.ROW}`]: {
       marginTop: 1,
     },
 
-    // Cell styles.
+    /**
+     * Styles.
+     */
     [`.${CELL.BOLD}`]: { fontWeight: 'bolder' },
     [`.${CELL.ITALIC}`]: { fontStyle: 'italic' },
     [`.${CELL.UNDERLINE}`]: { textDecoration: 'underline' },
+
+    /**
+     * Formula.
+     */
+    [`.${CELL.FORMULA}`]: {
+      color: 'red', // TEMP 🐷
+      fontFamily: constants.MONOSPACE.FAMILY,
+      fontWeight: 'bolder',
+    },
   },
 
   MARKDOWN: {

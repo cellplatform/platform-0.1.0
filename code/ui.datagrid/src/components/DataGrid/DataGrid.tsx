@@ -9,17 +9,15 @@ import {
   constants,
   containsFocus,
   css,
+  defaultValue,
   events,
   GlamorValue,
   Handsontable as TableLib,
   R,
   t,
-  time,
-  value,
-  defaultValue,
 } from '../../common';
-import { FactoryManager } from '../factory';
-import * as render from '../render';
+import { FactoryManager } from '../../factory';
+import * as render from '../../render';
 import { getSettings } from '../settings';
 import { IGridRefsPrivate } from './types.private';
 
@@ -169,7 +167,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const { initial = {}, values = {} } = this.props;
     const grid = this.grid;
 
-    grid.values = values;
+    grid.changeCells(values, { silent: true, init: true });
     grid.mergeCells({ values, init: true });
 
     if (initial.selection) {
@@ -188,7 +186,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const grid = this.grid;
     let redraw = false;
     if (!R.equals(prev.values, next.values)) {
-      grid.values = next.values || {};
+      grid.changeCells(next.values || {}, { init: true, silent: true });
+
       redraw = true;
     }
     if (!R.equals(prev.columns, next.columns)) {

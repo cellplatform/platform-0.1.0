@@ -123,7 +123,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Methods]
    */
   public async updateState() {
-    const processValues = (obj: object) => {
+    const processDbValues = (obj: object) => {
       Object.keys(obj).map(key => {
         const MAX = 15;
         const value = obj[key];
@@ -133,9 +133,18 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
     };
 
+    const processGridValues = (values: object) => {
+      Object.keys(values).map(key => {
+        const hash = values[key] ? (values[key] as any).hash : undefined;
+        if (hash) {
+          (values[key] as any).hash = `${hash.substring(0, 8)}..(SHA-256)`;
+        }
+      });
+    };
+
     // Database.
     const db = (await this.db.find('**')).map;
-    processValues({ ...db });
+    processDbValues({ ...db });
 
     // Grid.
     const grid = {
@@ -143,6 +152,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       ...this.grid.rows,
       ...this.grid.values,
     };
+    processGridValues(grid);
 
     // Finish up.
     this.state$.next({ db, grid });
@@ -200,9 +210,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <div {...styles.inner}>
-          <ObjectView name={'db'} data={db} expandLevel={2} theme={'DARK'} />
+          <ObjectView
+            name={'db'}
+            data={db}
+            theme={'DARK'}
+            expandLevel={0}
+            expandPaths={['$', '$.cell/A1', '$.cell/A1.props', '$.cell/A1.props.style']}
+          />
           <Hr color={COLORS.WHITE} />
-          <ObjectView name={'grid'} data={grid} expandLevel={2} theme={'DARK'} />
+          <ObjectView name={'grid'} data={grid} expandLevel={1} theme={'DARK'} />
         </div>
       </div>
     );
@@ -214,7 +230,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         ref={this.datagridRef}
         events$={this.grid$}
         factory={this.factory}
-        initial={{ selection: 'A1' }}
+        initial={{ selection: { cell: 'A1', ranges: ['A1:E30'] } }}
         style={{ Absolute: 0 }}
         canSelectAll={false}
       />
@@ -227,7 +243,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         return <CellEditor />;
 
       case 'CELL':
-        return formatValue(req.value);
+        return req.cell ? formatValue(req.cell) : '';
 
       default:
         log.error(`Factory type '${req.type}' not supported by test.`);
@@ -239,7 +255,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 /**
  * [Helpers]
  */
-function formatValue(value: datagrid.CellValue) {
+function formatValue(cell: t.IGridCell) {
+  let value = cell.props && cell.props.value ? cell.props.value : cell.value;
   value = typeof value === 'string' && !value.startsWith('=') ? markdown.toHtmlSync(value) : value;
   value = typeof value === 'object' ? JSON.stringify(value) : value;
   return value;

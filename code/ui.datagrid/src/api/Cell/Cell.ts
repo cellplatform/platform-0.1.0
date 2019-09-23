@@ -1,13 +1,4 @@
-import {
-  coord,
-  R,
-  t,
-  defaultValue,
-  diff,
-  isEmptyCell,
-  isEmptyCellProps,
-  isEmptyCellValue,
-} from '../../common';
+import { coord, R, t, defaultValue, util } from '../../common';
 
 export type CellChangeField = keyof t.ICellProps | 'VALUE' | 'PROPS';
 
@@ -18,9 +9,12 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
   /**
    * [Static]
    */
-  public static isEmpty = isEmptyCell;
-  public static isEmptyProps = isEmptyCellProps;
-  public static isEmptyValue = isEmptyCellValue;
+  public static isEmpty = util.isEmptyCell;
+  public static isEmptyProps = util.isEmptyCellProps;
+  public static isEmptyValue = util.isEmptyCellValue;
+  public static isChanged = util.isCellChanged;
+  public static diff = util.cellDiff;
+  public static props = util.toCellProps;
 
   public static create(args: { table: Handsontable; row: number; column: number }) {
     return new Cell(args);
@@ -83,52 +77,6 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
     };
 
     return payload;
-  }
-
-  public static props(input?: t.ICellProps) {
-    const props = input || {};
-    const style: t.ICellPropsStyle = props.style || {};
-    const merge: t.ICellPropsMerge = props.merge || {};
-    return { style, merge };
-  }
-
-  public static diff(left: t.IGridCell, right: t.IGridCell): t.ICellDiff {
-    const list = diff.compare(left, right) as Array<diff.Diff<t.IGridCell>>;
-    const isDifferent = list.length > 0;
-    return { left, right, isDifferent, list };
-  }
-
-  public static isChanged(
-    left: t.IGridCell | undefined,
-    right: t.IGridCell | undefined,
-    field?: CellChangeField | CellChangeField[],
-  ) {
-    // Convert incoming `field` flag to an array.
-    let fields: CellChangeField[] =
-      field === undefined ? ['VALUE', 'PROPS'] : Array.isArray(field) ? field : [field];
-
-    // Expand `PROPS` to actual props fields.
-    fields = R.flatten(
-      fields.map(field => (field === 'PROPS' ? ['style', 'merge'] : field)),
-    ) as CellChangeField[];
-
-    // Look for any matches.
-    return fields.some(field => {
-      let a: any;
-      let b: any;
-      if (field === 'VALUE') {
-        a = left ? left.value : undefined;
-        b = right ? right.value : undefined;
-      } else {
-        const props = {
-          left: (left ? left.props : undefined) || {},
-          right: (right ? right.props : undefined) || {},
-        };
-        a = props.left[field];
-        b = props.right[field];
-      }
-      return !R.equals(a, b);
-    });
   }
 
   /**

@@ -15,16 +15,16 @@ export type IGridProperties = {
   readonly keyboard$: Observable<t.IGridKeydown>;
   readonly keyBindings: KeyBindings<t.GridCommand>;
   readonly defaults: IGridDefaults;
-  clipboard?: IGridClipboardPending;
-  values: t.IGridValues;
+  readonly values: t.IGridValues;
   columns: IGridColumns;
   rows: IGridRows;
+  clipboard?: IGridClipboardPending;
 };
 export type IGridMethods = {
   dispose(): void;
   changeCells(
     changes: t.IGridValues,
-    options?: { source?: t.GridCellChangeType; silent?: boolean },
+    options?: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean },
   ): IGrid;
   changeColumns(
     columns: t.IGridColumns,
@@ -39,6 +39,7 @@ export type IGridMethods = {
   redraw(): IGrid;
   mergeCells(args: { values: t.IGridValues; init?: boolean }): IGrid;
   toPosition(ref: t.CellRef): t.ICoord;
+  updateHashes(options?: { force?: boolean }): IGrid;
 };
 
 export type IGridDefaults = {
@@ -62,6 +63,7 @@ export type IGridColumns = { [key: string]: IGridColumn };
 export type IGridRows = { [key: string]: IGridRow };
 export type IGridValues<P = {}> = { [key: string]: IGridCell<P> | undefined };
 
+export type IGridAxis = IGridColumn | IGridRow;
 export type IGridColumn = { width?: number };
 export type IGridRow = { height?: number };
-export type IGridCell<P = {}> = { value: t.CellValue; props?: P };
+export type IGridCell<P = t.ICellProps> = { value: t.CellValue; props?: P; hash?: string };

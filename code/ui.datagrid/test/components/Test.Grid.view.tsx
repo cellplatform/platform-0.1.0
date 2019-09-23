@@ -36,6 +36,7 @@ const DEFAULT = {
     // A2: {value:'# Heading\nhello'},
     A3: { value: 'A3 `code`' },
     A5: { value: 'A5', props: { merge: { colspan: 2 } } },
+    A6: { value: '=SUM(1, 2, 3)' },
     B1: { value: 'locked' },
     B2: { value: 'cancel' },
     C5: { value: 'Hello', props: { merge: { rowspan: 2 } } },
@@ -188,7 +189,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         return this.renderEditor();
 
       case 'CELL':
-        return formatValue(req.value);
+        return req.cell ? formatValue(req.cell) : '';
 
       default:
         console.log(`Factory type '${req.type}' not supported by test.`);
@@ -210,12 +211,9 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
 /**
  * [Helpers]
  */
-function formatValue(value: datagrid.CellValue) {
+function formatValue(cell: t.IGridCell) {
+  let value = cell.props && cell.props.value ? cell.props.value : cell.value;
   value = typeof value === 'string' && !value.startsWith('=') ? markdown.toHtmlSync(value) : value;
   value = typeof value === 'object' ? JSON.stringify(value) : value;
-  // if (typeof value === 'string' && !value.includes('\n') && value.startsWith('<p>')) {
-  // Strip <P>
-  // value = value.replace(/^\<p\>/, '').replace(/\<\/p\>/, '');
-  // }
   return value;
 }

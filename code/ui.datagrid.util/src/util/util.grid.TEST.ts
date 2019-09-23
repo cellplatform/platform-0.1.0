@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { t } from '../common';
-import { isDefaultGridValue } from '.';
+import * as util from './util.grid';
 
 const defaults: t.IGridDefaults = {
   columWidth: 120,
@@ -12,7 +12,7 @@ const defaults: t.IGridDefaults = {
 describe('util.grid', () => {
   it('isDefaultValue', () => {
     const test = (kind: t.GridCellType, value: any, expected: boolean) => {
-      const res = isDefaultGridValue({ defaults, kind, value });
+      const res = util.isDefaultGridValue({ defaults, kind, value });
       expect(res).to.eql(expected);
     };
 

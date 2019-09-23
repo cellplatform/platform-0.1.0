@@ -12,7 +12,7 @@ export type GridEvent =
   | IGridMouseEvent
   | IGridCellsChangeEvent
   | IGridColumnsChangeEvent
-  | IRowsChangeEvent
+  | IGridRowsChangeEvent
   | IGridSelectionChangeEvent
   | IGridFocusEvent
   | IGridBlurEvent
@@ -123,7 +123,7 @@ export type GridRowChangeType =
   | 'RESET/doubleClick'
   | 'CLIPBOARD/paste';
 
-export type IRowsChangeEvent = {
+export type IGridRowsChangeEvent = {
   type: 'GRID/rows/change';
   payload: IGridRowsChange;
 };
