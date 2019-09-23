@@ -1,4 +1,4 @@
-import { coord, formula, t, util } from '../../common';
+import { R, coord, formula, t, util } from '../../common';
 
 /**
  * Calculate outgoing refs for given cell.
@@ -122,14 +122,38 @@ export async function outgoing(args: {
   /**
    * Binary expression (eg "=A1 + 5").
    */
+  const fromBinaryExpr = (node: coord.ast.BinaryExpressionNode, refs: t.IRefOut[]) => {
+    const addRef = (cellNode: coord.ast.CellNode) => {
+      // const param = refs.length + 1;
+
+      console.log(`\nTODO 🐷  binary-expression param on FUNC return \n`);
+
+      let ref: t.IRefOut = { target: 'FUNC', path: `${path}/${cellNode.key}` };
+      ref = error ? { ...ref, error } : ref;
+      refs = [...refs, ref];
+    };
+
+    const parseEdge = (node: coord.ast.Node) => {
+      if (node.type === 'cell') {
+        addRef(node);
+      }
+      if (node.type === 'binary-expression') {
+        refs = [...refs, ...fromBinaryExpr(node, refs)]; // <== RECURSION 🌳
+      }
+    };
+
+    parseEdge(node.left);
+    parseEdge(node.right);
+
+    // TEMP 🐷 FIX - don't use .uniq | should not be adding double-ups.
+
+    refs = R.uniq(refs);
+
+    return refs;
+  };
+
   if (tree.type === 'binary-expression') {
-    console.log('BINARY');
-
-    // console.log('tree', tree);
-
-    let ref: t.IRefOut = { target: 'FUNC', path };
-    ref = error ? { ...ref, error } : ref;
-    return [ref];
+    return fromBinaryExpr(tree, []);
   }
 
   /**

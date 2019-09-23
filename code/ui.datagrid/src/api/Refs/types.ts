@@ -15,6 +15,7 @@ export type ICellRefs = {
 };
 
 export type IRefOut = {
+  // source: 'REF' | 'FUNC' | 'RANGE';
   target: RefTarget;
   path: string;
   param?: number;
