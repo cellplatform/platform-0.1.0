@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@platform/react": "0.3.26",
-    "@platform/util.diff": "^0.0.1",
-    "@platform/util.value.cell": "0.10.3"
+    "@platform/util.diff": "0.0.1",
+    "@platform/util.cell": "0.0.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.64",

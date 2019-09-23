@@ -19,7 +19,7 @@
     "@platform/libs": "0.1.3",
     "@platform/ui.datagrid.types": "0.6.12",
     "@platform/ui.datagrid.util": "0.0.8",
-    "@platform/util.value.cell": "0.10.3"
+    "@platform/util.cell": "0.0.0"
   },
   "devDependencies": {
     "@platform/fsdb.electron": "0.2.45",
