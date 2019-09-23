@@ -58,6 +58,10 @@ export async function outgoing(args: {
     return done(await outgoingFunc({ node, ctx, path }));
   }
 
+  if (node.type === 'binary-expression') {
+    return done(await outgoingBinaryExpression({ node, ctx, path }));
+  }
+
   /**
    * Binary expression (eg "=A1 + 5").
    */
@@ -90,10 +94,6 @@ export async function outgoing(args: {
 
     return refs;
   };
-
-  if (node.type === 'binary-expression') {
-    return fromBinaryExpr(node, []);
-  }
 
   // No match.
   return [];
@@ -197,8 +197,6 @@ async function outgoingFunc(args: {
 
     // Argument points to a range (eg: "A1:B9").
     if (param.type === 'cell-range') {
-      // TEMP 🐷 Check for circular error in range.
-
       const cell = param as coord.ast.CellRangeNode;
       const left = cell.left.key;
       const right = cell.right.key;
@@ -212,8 +210,6 @@ async function outgoingFunc(args: {
           message: `Range contains a cell that leads back to itself. (${path})`,
         };
       }
-      // TEMP 🐷 Do something with the circular error
-
       const ref: t.IRefOut = { target: 'RANGE', path, param: i, error };
       return ref;
     }
@@ -255,6 +251,17 @@ async function outgoingFunc(args: {
   // Finish up.
   const refs = await Promise.all(wait);
   return refs.filter(e => e !== undefined) as t.IRefOut[];
+}
+
+/**
+ * Process an outgoing binary-expression (eg: "=A1+5")
+ */
+async function outgoingBinaryExpression(args: {
+  node: coord.ast.BinaryExpressionNode;
+  ctx: t.IRefContext;
+  path: string;
+}): Promise<t.IRefOut[]> {
+  return [];
 }
 
 /**
