@@ -97,11 +97,11 @@ describe('MemoryCache', () => {
     expect(cache.get('FOO')).to.eql(3);
   });
 
-  it('isCached', () => {
+  it('exists', () => {
     const cache = new MemoryCache<MyKey>();
-    expect(cache.isCached('FOO')).to.eql(false);
+    expect(cache.exists('FOO')).to.eql(false);
     cache.put('FOO', 123);
-    expect(cache.isCached('FOO')).to.eql(true);
+    expect(cache.exists('FOO')).to.eql(true);
   });
 });
 
