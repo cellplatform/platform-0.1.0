@@ -8,3 +8,4 @@ export * from '../types';
 
 export const COLORS = constants.COLORS;
 export const CSS = constants.CSS;
+export const DEFAULT = constants.DEFAULT;

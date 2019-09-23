@@ -86,5 +86,5 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
 export function registerCellRenderer(Table: Handsontable, grid: Grid, factory: FactoryManager) {
   const renderers = (Table as any).renderers;
   const fn: t.RegisterRenderer = renderers.registerRenderer;
-  fn(constants.DEFAULT.CELL_RENDERER, cellRenderer(grid, factory));
+  fn(constants.DEFAULT.CELL.RENDERER, cellRenderer(grid, factory));
 }

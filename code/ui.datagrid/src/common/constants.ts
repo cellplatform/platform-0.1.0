@@ -40,9 +40,18 @@ const KEY_BINDINGS: t.KeyBindings<t.GridCommand> = [
   { command: 'UNDERLINE', key: 'Meta+U' },
 ];
 
+const CELL_PROPS_STYLE: t.ICellPropsStyle = {
+  bold: false,
+  italic: false,
+  underline: false,
+};
+const CELL_PROPS_MERGE: t.ICellPropsMerge = {
+  rowspan: 1,
+  colspan: 1,
+};
+
 export const DEFAULT = {
   KEY_BINDINGS,
-  CELL_RENDERER: 'cell',
   TOTAL_COLUMNS: 52,
   TOTAL_ROWS: 1000,
   ROW: {
@@ -52,5 +61,12 @@ export const DEFAULT = {
   COLUMN: {
     WIDTH: 120,
     WIDTH_MIN: 5,
+  },
+  CELL: {
+    RENDERER: 'cell',
+    PROPS: {
+      STYLE: CELL_PROPS_STYLE,
+      MERGE: CELL_PROPS_MERGE,
+    },
   },
 };
