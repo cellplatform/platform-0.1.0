@@ -23,7 +23,7 @@ export type ITestGridViewProps = {
   Table?: Handsontable;
 };
 export type ITestGridViewState = {
-  values?: t.IGridValues;
+  values?: t.IGridCells;
   columns?: t.IGridColumns;
   rows?: t.IGridRows;
 };

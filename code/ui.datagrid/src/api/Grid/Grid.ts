@@ -20,7 +20,7 @@ export type IGridArgs = {
   table: Handsontable;
   totalColumns: number;
   totalRows: number;
-  values?: t.IGridValues;
+  values?: t.IGridCells;
   columns?: t.IGridColumns;
   rows?: t.IGridRows;
   defaults?: Partial<t.IGridDefaults>;
@@ -56,7 +56,7 @@ export class Grid implements t.IGrid {
    * Converts the values.
    */
   public static toDataArray(args: {
-    values: t.IGridValues;
+    values: t.IGridCells;
     totalColumns: number;
     totalRows: number;
   }) {
@@ -194,7 +194,7 @@ export class Grid implements t.IGrid {
     redraw$: new Subject(),
     isReady: false,
     isEditing: false,
-    values: ({} as unknown) as t.IGridValues,
+    values: ({} as unknown) as t.IGridCells,
     columns: ({} as unknown) as t.IGridColumns,
     rows: ({} as unknown) as t.IGridRows,
     lastSelection: (undefined as unknown) as t.IGridSelection,
@@ -236,7 +236,7 @@ export class Grid implements t.IGrid {
   public get values() {
     return this._.values;
   }
-  private setValues(values: t.IGridValues) {
+  private setValues(values: t.IGridCells) {
     values = { ...values };
     const totalColumns = this.totalColumns;
     const totalRows = this.totalRows;
@@ -249,7 +249,7 @@ export class Grid implements t.IGrid {
    * Merge cells.
    * https://handsontable.com/docs/6.1.1/demo-merged-cells.html
    */
-  public mergeCells(args: { values: t.IGridValues; init?: boolean }) {
+  public mergeCells(args: { values: t.IGridCells; init?: boolean }) {
     type MergeCell = { row: number; col: number; rowspan: number; colspan: number };
     type MergeCells = { [key: string]: MergeCell };
 
@@ -370,7 +370,7 @@ export class Grid implements t.IGrid {
   /**
    * Retrieves the currently selected key/value pairs.
    */
-  public get selectionValues(): t.IGridValues {
+  public get selectionValues(): t.IGridCells {
     const values = this.values;
     const selection = this.selection;
     return toSelectionValues({ values, selection });
@@ -465,7 +465,7 @@ export class Grid implements t.IGrid {
    * Updates cell values.
    */
   public changeCells(
-    values: t.IGridValues,
+    values: t.IGridCells,
     options: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean } = {},
   ) {
     if (values) {
@@ -510,7 +510,7 @@ export class Grid implements t.IGrid {
       }
 
       // Calculate the new updated value set.
-      const mergeChanges: t.IGridValues = {};
+      const mergeChanges: t.IGridCells = {};
       const updates = { ...current, ...values };
       Object.keys(values).forEach(key => {
         const current = this.values[key];
