@@ -9,6 +9,7 @@ import {
   value as valueUtil,
   toSelectionValues,
   util,
+  MemoryCache,
 } from '../../common';
 import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
@@ -186,6 +187,7 @@ export class Grid implements t.IGrid {
    * [Fields]
    */
   private readonly _ = {
+    cache: new MemoryCache(),
     table: (undefined as unknown) as Handsontable,
     dispose$: new Subject<{}>(),
     events$: new Subject<t.GridEvent>(),
@@ -622,7 +624,9 @@ export class Grid implements t.IGrid {
       msg = typeof key === 'string' ? `${msg} key: "${key}"` : msg;
       throw new Error(msg);
     }
-    return Cell.create({ table: this._.table, row, column });
+    return this._.cache.get<Cell<t.ICellProps>>(`cell/${column}:${row}`, () => {
+      return Cell.create({ table: this._.table, row, column });
+    });
   }
 
   /**
