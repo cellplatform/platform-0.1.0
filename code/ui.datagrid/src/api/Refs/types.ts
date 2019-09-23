@@ -4,12 +4,14 @@ import { t } from '../../common';
  * Retrieve data for calculating refs.
  */
 export type IRefContext = {
-  getCell: (key: string) => Promise<t.IGridCell>;
+  getCell: (key: string) => Promise<t.IGridCell | undefined>;
 };
 
 /**
- * Cell References
+ * References
  */
+export type RefTarget = 'VALUE' | 'FUNC' | 'RANGE' | 'UNKNOWN';
+
 export type ICellRefs = {
   out: IRefOut[];
 };
@@ -19,8 +21,14 @@ export type IRefOut = {
   target: RefTarget;
   path: string;
   param?: number;
-  error?: RefError;
+  error?: IRefError;
 };
 
-export type RefTarget = 'VALUE' | 'FUNC' | 'RANGE';
-export type RefError = 'CIRCULAR';
+/**
+ * Error
+ */
+export type RefError = 'CIRCULAR' | 'NAME';
+export type IRefError = {
+  type: RefError;
+  message: string;
+};

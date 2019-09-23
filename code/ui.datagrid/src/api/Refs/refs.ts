@@ -1,6 +1,14 @@
 import { R, coord, formula, t, util } from '../../common';
 
 /**
+ * TODO 🐷
+ * - source (type)
+ * - memory `cache` passed through `ctx`
+ * - check out `unary-express` - make sure not missing something.
+ * - `RefError` to object: => { type: '...', message: string }
+ */
+
+/**
  * Calculate outgoing refs for given cell.
  */
 export async function outgoing(args: {
@@ -11,53 +19,24 @@ export async function outgoing(args: {
   const { ctx } = args;
   const cell = await getCell(args);
   const value = cell.value;
-  let error: t.RefError | undefined;
+  let error: t.IRefError | undefined;
 
   if (typeof value !== 'string' || !formula.isFormula(cell.value)) {
     return [];
   }
 
-  let path = args.path ? `${args.path}` : args.key;
+  const path = args.path ? `${args.path}` : args.key;
   const tree = coord.ast.toTree(value);
 
-  const isCell = (node: coord.ast.Node) => node.type === 'cell' && coord.cell.isCell(node.key);
-
   /**
-   * Cell
+   * [Cell]
    */
-  if (tree.type === 'cell' && isCell(tree)) {
-    const targetKey = coord.cell.toRelative(tree.key);
-    const targetCell = await getCell({ ctx, key: targetKey });
-
-    const isCircular = path.split('/').includes(targetKey);
-    if (isCircular && !error) {
-      error = 'CIRCULAR';
-    }
-
-    let target: t.RefTarget = 'VALUE';
-    path = `${path}/${targetKey}`;
-
-    // Process the forumla (if it is one).
-    if (!isCircular && formula.isFormula(targetCell && targetCell.value)) {
-      const res = await outgoing({ ctx, key: targetKey, path }); // <== RECURSION 🌳
-      if (res.length > 0) {
-        path = res[0].path;
-        target = res[0].target;
-      } else {
-        target = 'FUNC';
-      }
-      if (res.some(item => item.error === 'CIRCULAR')) {
-        error = 'CIRCULAR';
-      }
-    }
-
-    // Prepare reference.
-    const ref: t.IRefOut = error ? { target, path, error } : { target, path };
-    return [ref];
+  if (tree.type === 'cell') {
+    return outgoingRef({ key: tree.key, ctx, path });
   }
 
   /**
-   * Function
+   * [Function]
    */
   if (tree.type === 'function') {
     const wait = tree.arguments.map(async (arg, i) => {
@@ -77,7 +56,10 @@ export async function outgoing(args: {
         const parts = path.split('/');
         const isCircular = parts.includes(left) || parts.includes(right);
         if (isCircular && !error) {
-          error = 'CIRCULAR';
+          error = {
+            type: 'CIRCULAR',
+            message: `Range contains a cell that leads back to itself.`,
+          };
         }
         // TEMP 🐷 Do something with the circular error
 
@@ -94,7 +76,10 @@ export async function outgoing(args: {
 
       const isCircular = path.split('/').includes(targetKey);
       if (isCircular && !error) {
-        error = 'CIRCULAR';
+        error = {
+          type: 'CIRCULAR',
+          message: `Function parameter ${i} contains a reference that leads back to itself (${path}).`,
+        };
       }
 
       // TEMP 🐷 Do something with the circular error
@@ -120,7 +105,7 @@ export async function outgoing(args: {
   }
 
   /**
-   * Binary expression (eg "=A1 + 5").
+   * [Binary] expression (eg "=A1 + 5").
    */
   const fromBinaryExpr = (node: coord.ast.BinaryExpressionNode, refs: t.IRefOut[]) => {
     const addRef = (cellNode: coord.ast.CellNode) => {
@@ -157,7 +142,7 @@ export async function outgoing(args: {
   }
 
   /**
-   * Range (eg "A1:B9")
+   * [Range] (eg "A1:B9")
    */
   if (tree.type === 'cell-range') {
     const range = coord.range.fromKey(value);
@@ -170,12 +155,60 @@ export async function outgoing(args: {
 }
 
 /**
+ * Process an outgoing cell reference (eg: "=A1").
+ */
+async function outgoingRef(args: { key: string; ctx: t.IRefContext; path: string }) {
+  const { ctx } = args;
+  let path = args.path;
+  let error: t.IRefError | undefined;
+  let target: t.RefTarget = 'VALUE';
+  const key = coord.cell.toRelative(args.key);
+
+  if (path.split('/').includes(key)) {
+    error = {
+      type: 'CIRCULAR',
+      message: `Cell reference leads back to itself (${path}).`,
+    };
+  }
+
+  if (!error && !coord.cell.isCell(key)) {
+    error = {
+      type: 'NAME',
+      message: `Unknown range: ${key}`,
+    };
+    target = 'UNKNOWN';
+  }
+
+  path = `${path}/${key}`;
+  const cell = !error ? await getCell({ ctx, key }) : undefined;
+
+  // Process the forumla (if it is one).
+  if (!error && cell && formula.isFormula(cell.value)) {
+    const res = await outgoing({ ctx, key, path }); // <== RECURSION 🌳
+    if (res.length > 0) {
+      path = res[0].path;
+      target = res[0].target;
+    } else {
+      target = 'FUNC';
+    }
+    const firstProblem = res.find(item => item.error);
+    if (firstProblem) {
+      error = firstProblem.error;
+    }
+  }
+
+  // Prepare resulting reference.
+  const ref: t.IRefOut = error ? { target, path, error } : { target, path };
+  return [ref];
+}
+
+/**
  * [Helpers]
  */
-
 async function getCell(args: { key: string; ctx: t.IRefContext }) {
-  const { key, ctx } = args;
-  let cell = await ctx.getCell(args.key);
+  const { ctx } = args;
+  const key = coord.cell.toRelative(args.key);
+  let cell = (await ctx.getCell(key)) || {};
   cell = cell.hash ? cell : { ...cell, hash: util.cellHash(key, cell) };
   return cell;
 }
