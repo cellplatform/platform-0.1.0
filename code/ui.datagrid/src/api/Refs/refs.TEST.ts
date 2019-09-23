@@ -152,8 +152,38 @@ describe.only('refs', () => {
         expect(res[3].param).to.eql(4);
       });
 
-      it.skip('param to range (ERROR/CIRCULAR)', async () => {
-        // TEMP 🐷
+      it('param to range (ERROR/CIRCULAR)', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(999, A2, A3)' },
+          A2: { value: 123 },
+          A3: { value: '=A1:B9' },
+        });
+        const res = await refs.outgoing({ key: 'A1', ctx });
+
+        expect(res.length).to.eql(2);
+
+        expect(res[1].target).to.eql('RANGE');
+        expect(res[1].path).to.eql('A1/A3/A1:B9');
+        expect(res[1].param).to.eql(2);
+
+        const error = res[1].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
+      });
+
+      it('param to range (immediate ERROR/CIRCULAR)', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(999, A1:B9)' },
+        });
+        const res = await refs.outgoing({ key: 'A1', ctx });
+
+        expect(res.length).to.eql(1);
+
+        expect(res[0].target).to.eql('RANGE');
+        expect(res[0].path).to.eql('A1/A1:B9');
+        expect(res[0].param).to.eql(1);
+
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
       });
     });
 
