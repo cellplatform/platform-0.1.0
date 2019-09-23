@@ -32,7 +32,7 @@ export type FunctionNode = AstFunctionNode & { namespace?: string };
 export type TreeNode = Node | CellNode | EmptyNode | ParseErrorNode;
 
 /**
- * Converts a forumula into token.
+ * Converts a forumula into tokens.
  */
 export function toTokens(expr: string) {
   return tokenize(expr) as Token[];
