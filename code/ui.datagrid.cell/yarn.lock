@@ -1050,6 +1050,13 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@platform/cache@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/cache/-/cache-0.1.0.tgz#12cdc548180cd1aa9b3c2bed7c36e3f004725bf2"
+  integrity sha512-qPL3k+luAu+/dyEpex4YnqUgbg7LIfxriSsHDIHVbIrK2trMl5A0jIIRn0hkMr4ObYtO5l+Cn7yN0+fo2pkVig==
+  dependencies:
+    "@platform/libs" "0.1.3"
+
 "@platform/cli.prompt@0.0.11", "@platform/cli.prompt@^0.0.11":
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.0.11.tgz#6e8be87199d91d57d2ce7a5bf33a0c530d7bd5e2"
@@ -1281,14 +1288,14 @@
     codemirror "5.48.4"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.6.10":
-  version "0.6.10"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.10.tgz#c298afda0cfa4faa36401aa872c7a4ef1a74f5e8"
-  integrity sha512-RALE2jWKbjXUmvn41ux14nuHXsTRYSRCzk79Tfv2XAGFzuT7GOlYHaSRwr2ZyujxxNtpa0IMxZKKuqIwG/qYCg==
+"@platform/ui.datagrid.types@0.6.12":
+  version "0.6.12"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.12.tgz#270d7a861c844f5383013f6bfee242e7a90aab87"
+  integrity sha512-POvvHw1rcAd6wg48UIIJzqADO9Tl35V8nBC1VpR+tHzaYXbgKpt3vQfFhmiSq7ieXUL7rJe+CQNdf60fuDENUQ==
   dependencies:
     "@platform/react" "0.3.26"
     "@platform/util.diff" "^0.0.1"
-    "@platform/util.value.cell" "0.10.1"
+    "@platform/util.value.cell" "0.10.3"
 
 "@platform/ui.editor@0.2.3":
   version "0.2.3"
@@ -1414,11 +1421,12 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value.cell@0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.10.1.tgz#9f40b665b03906acddbc340ff94249ee2ab2496e"
-  integrity sha512-huamRSmE1FfSeUhDq0zDR/dp/ApasVqKGaovVwJiPqZIeD/hvIlidQ8tLSXjoGEwJZVG/1gn2UB4w4hwILPP8g==
+"@platform/util.value.cell@0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.10.3.tgz#904ba3086981422d864acaa92ca6a0357536b136"
+  integrity sha512-X32+TLYtGLdeB3Ce/8yuTcCqr25SgRNUw0Kr2V0ut2Dqs1IyumrvZWRUCIhgqxFXjH9doAWxekkJCcEx5YemIw==
   dependencies:
+    "@platform/cache" "0.1.0"
     "@platform/util.value" "0.5.5"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"

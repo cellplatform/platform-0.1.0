@@ -30,7 +30,7 @@
     "@uiharness/dev": "0.9.8",
     "@uiharness/ui": "0.6.19",
     "apollo-server": "2.9.3",
-    "graphql": "14.5.4",
+    "graphql": "14.5.7",
     "electron": "6.0.7"
   },
   "files": [

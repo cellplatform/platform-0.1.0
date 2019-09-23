@@ -1,6 +1,6 @@
 {
   "name": "@platform/cache",
-  "version": "0.0.28",
+  "version": "0.1.0",
   "description": "Caching tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
