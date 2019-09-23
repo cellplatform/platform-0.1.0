@@ -210,9 +210,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <div {...styles.inner}>
-          <ObjectView name={'db'} data={db} expandLevel={2} theme={'DARK'} />
+          <ObjectView
+            name={'db'}
+            data={db}
+            theme={'DARK'}
+            expandLevel={0}
+            expandPaths={['$', '$.cell/A1', '$.cell/A1.props', '$.cell/A1.props.style']}
+          />
           <Hr color={COLORS.WHITE} />
-          <ObjectView name={'grid'} data={grid} expandLevel={2} theme={'DARK'} />
+          <ObjectView name={'grid'} data={grid} expandLevel={1} theme={'DARK'} />
         </div>
       </div>
     );
@@ -224,7 +230,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         ref={this.datagridRef}
         events$={this.grid$}
         factory={this.factory}
-        initial={{ selection: 'A1' }}
+        initial={{ selection: { cell: 'A1', ranges: ['A1:E30'] } }}
         style={{ Absolute: 0 }}
         canSelectAll={false}
       />

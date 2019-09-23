@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import { t, R, rx, util } from '../common';
+
+import { R, rx, t, util } from '../common';
 import { SyncSchema } from '../schema';
 
 export type ISyncArgs = {
@@ -68,6 +69,11 @@ export class Sync implements t.IDisposable {
     }
 
     // Setup observables.
+    const syncChange$ = events$.pipe(
+      filter(e => e.type === 'SYNC/change'),
+      map(e => e.payload as t.SyncChangeType),
+    );
+
     const db$ = db.events$.pipe(takeUntil(this.dispose$));
     const dbChange$ = db$.pipe(
       filter(e => e.type === 'DOC/change'),
@@ -75,21 +81,17 @@ export class Sync implements t.IDisposable {
     );
 
     const grid$ = grid.events$.pipe(takeUntil(this.dispose$));
-    const gridCellsChanges$ = grid$.pipe(
+    const gridCellsChange$ = grid$.pipe(
       filter(e => e.type === 'GRID/cells/change'),
       map(e => e.payload as t.IGridCellsChange),
     );
-    const gridColumnsChanges$ = grid$.pipe(
+    const gridColumnsChange$ = grid$.pipe(
       filter(e => e.type === 'GRID/columns/change'),
       map(e => e.payload as t.IGridColumnsChange),
     );
-    const gridRowsChanges$ = grid$.pipe(
+    const gridRowsChange$ = grid$.pipe(
       filter(e => e.type === 'GRID/rows/change'),
       map(e => e.payload as t.IGridRowsChange),
-    );
-    const syncChange$ = events$.pipe(
-      filter(e => e.type === 'SYNC/change'),
-      map(e => e.payload as t.SyncChangeType),
     );
 
     /**
@@ -172,7 +174,7 @@ export class Sync implements t.IDisposable {
      * `Cell Sync`
      */
     (() => {
-      gridCellsChanges$
+      gridCellsChange$
         // Cells changed in Grid UI.
         .pipe(filter(e => !this.is.loading.currently('CELLS')))
         .subscribe(async e => {
@@ -236,7 +238,7 @@ export class Sync implements t.IDisposable {
      * `Column Sync`
      */
     (() => {
-      gridColumnsChanges$
+      gridColumnsChange$
         // Columns changed in Grid UI.
         .pipe(filter(e => !this.is.loading.currently('COLUMNS')))
         .subscribe(async e => {
@@ -302,7 +304,7 @@ export class Sync implements t.IDisposable {
      * `Row Sync`
      */
     (() => {
-      gridRowsChanges$
+      gridRowsChange$
         // Rows changed in Grid UI.
         .pipe(filter(e => !this.is.loading.currently('ROWS')))
         .subscribe(async e => {

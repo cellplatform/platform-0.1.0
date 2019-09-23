@@ -1263,7 +1263,7 @@
     "@platform/util.diff" "^0.0.1"
     "@platform/util.value.cell" "0.10.1"
 
-"@platform/ui.datagrid.util@0.0.6", "@platform/ui.datagrid.util@^0.0.6":
+"@platform/ui.datagrid.util@0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.0.6.tgz#97714c61a6fb2fa99da568707b2d1d07df1fb88a"
   integrity sha512-xmvetvwr66fITFIXJ92AIc0dqIF87rh71Po9vSZ3My12nVXPCgslWuLGUr2+VdtciqOX88R44MmYPtVZUxs56A==
