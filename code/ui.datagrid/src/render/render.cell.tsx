@@ -45,7 +45,7 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     add(style.bold, CELL.BOLD);
     add(style.italic, CELL.ITALIC);
     add(style.underline, CELL.UNDERLINE);
-    add(formula.isFormula(cell), CELL.FORMULA);
+    add(formula.isFormula(cell && cell.value), CELL.FORMULA);
 
     if (isHtml) {
       return <div className={className} dangerouslySetInnerHTML={{ __html: child }} />;

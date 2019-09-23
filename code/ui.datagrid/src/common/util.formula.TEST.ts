@@ -3,9 +3,8 @@ import { t, formula } from '.';
 
 describe('util.formula', () => {
   it('isFormula', () => {
-    const test = (value: t.CellValue, expected: boolean) => {
-      const cell = { value };
-      expect(formula.isFormula(cell)).to.eql(expected);
+    const test = (value: t.CellValue | string, expected: boolean) => {
+      expect(formula.isFormula(value)).to.eql(expected);
     };
     test(undefined, false);
     test('', false);
