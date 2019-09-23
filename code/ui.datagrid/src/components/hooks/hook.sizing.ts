@@ -1,4 +1,4 @@
-import * as coord from '@platform/util.value.cell';
+import * as coord from '@platform/util.cell';
 
 import { Grid } from '../../api';
 import { constants } from '../../common';

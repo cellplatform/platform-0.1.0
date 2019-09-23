@@ -1288,14 +1288,14 @@
     codemirror "5.48.4"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.6.12":
-  version "0.6.12"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.12.tgz#270d7a861c844f5383013f6bfee242e7a90aab87"
-  integrity sha512-POvvHw1rcAd6wg48UIIJzqADO9Tl35V8nBC1VpR+tHzaYXbgKpt3vQfFhmiSq7ieXUL7rJe+CQNdf60fuDENUQ==
+"@platform/ui.datagrid.types@0.6.13":
+  version "0.6.13"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.13.tgz#b3202935b98a5e650d2d1b57dfccc909da0044af"
+  integrity sha512-Ua3zuM6fJGSGrZIx5IFjuaJRUWXn3xYHqK/+O4LJHGepILnHE5WDgHPFI65pXkblN5MnURaTqS8jH+JgJw0HWg==
   dependencies:
     "@platform/react" "0.3.26"
-    "@platform/util.diff" "^0.0.1"
-    "@platform/util.value.cell" "0.10.3"
+    "@platform/util.cell" "0.0.0"
+    "@platform/util.diff" "0.0.1"
 
 "@platform/ui.editor@0.2.3":
   version "0.2.3"
@@ -1379,7 +1379,17 @@
     "@platform/libs" "0.1.3"
     dynamics.js "1.1.5"
 
-"@platform/util.diff@^0.0.1":
+"@platform/util.cell@0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.cell/-/util.cell-0.0.0.tgz#6df905bbc70b158987b03f2c16da064f02065cb5"
+  integrity sha512-6kU1fW+on8fggqPsHRFhWjxc2XEGPO9spruOtSuc6+HFVa6cffrKiRTuoKILhQREP9Jr51VHf/RK/pxByLXpVA==
+  dependencies:
+    "@platform/cache" "0.1.0"
+    "@platform/util.value" "0.5.5"
+    excel-formula-ast "1.1.1"
+    excel-formula-tokenizer "2.3.0"
+
+"@platform/util.diff@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@platform/util.diff/-/util.diff-0.0.1.tgz#b8df8ec8e6d560e8582b8db14066e0455f448d35"
   integrity sha512-bpphLDcfV8hn6ovzU4YL+fsL3HrIQbAVeqbZYEOeZwMFkCb/ftpoCruwgMX9HKYHW899evPoTBb3T5IqmXHQbA==
@@ -1420,16 +1430,6 @@
     escape-string-regexp "2.0.0"
     fuzzy "0.1.3"
     underscore.string "3.3.5"
-
-"@platform/util.value.cell@0.10.3":
-  version "0.10.3"
-  resolved "https://registry.yarnpkg.com/@platform/util.value.cell/-/util.value.cell-0.10.3.tgz#904ba3086981422d864acaa92ca6a0357536b136"
-  integrity sha512-X32+TLYtGLdeB3Ce/8yuTcCqr25SgRNUw0Kr2V0ut2Dqs1IyumrvZWRUCIhgqxFXjH9doAWxekkJCcEx5YemIw==
-  dependencies:
-    "@platform/cache" "0.1.0"
-    "@platform/util.value" "0.5.5"
-    excel-formula-ast "1.1.1"
-    excel-formula-tokenizer "2.3.0"
 
 "@platform/util.value@0.5.5":
   version "0.5.5"

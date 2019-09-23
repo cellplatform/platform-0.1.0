@@ -1,4 +1,4 @@
-import * as coord from '@platform/util.value.cell';
+import * as coord from '@platform/util.cell';
 export { coord };
 
 export { value, time, rx } from '@platform/util.value';

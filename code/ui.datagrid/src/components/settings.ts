@@ -1,4 +1,4 @@
-import { cell as util } from '@platform/util.value.cell';
+import { cell as util } from '@platform/util.cell';
 
 import { Grid, Editor } from '../api';
 import * as hooks from './hooks';
