@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { t, coord } from '../../common';
+
 import { refs } from '.';
+import { t } from '../../common';
 
 const testContext = (cells: t.IGridCells): t.IRefContext => {
   return {
@@ -30,6 +31,8 @@ describe('refs.outgoing', () => {
       expect(ref.target).to.eql('VALUE');
       expect(ref.path).to.eql('A1/A2');
       expect(ref.param).to.eql(undefined);
+
+      console.log('res', res);
     });
 
     it('A1 => A2 => A3', async () => {

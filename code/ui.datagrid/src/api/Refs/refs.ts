@@ -4,8 +4,6 @@ import { R, coord, formula, t, util } from '../../common';
  * TODO 🐷
  * - source (type)
  * - memory `cache` passed through `ctx`
- * - check out `unary-express` - make sure not missing something.
- * - `RefError` to object: => { type: '...', message: string }
  */
 
 /**
@@ -19,18 +17,13 @@ export async function outgoing(args: {
   const { ctx } = args;
   const cell = await getCell(args);
   const value = cell.value;
-  let error: t.IRefError | undefined;
 
   const done = (refs: t.IRefOut[]) => {
-    refs.forEach(ref => {
-      if (!ref.error) {
-        delete ref.error;
-      }
-    });
+    refs = deleteUndefined('error', refs);
     return refs;
   };
 
-  if (typeof value !== 'string' || !formula.isFormula(cell.value)) {
+  if (typeof value !== 'string' || !formula.isFormula(value)) {
     return [];
   }
 
@@ -61,39 +54,6 @@ export async function outgoing(args: {
   if (node.type === 'binary-expression') {
     return done(await outgoingBinaryExpression({ node, ctx, path }));
   }
-
-  /**
-   * Binary expression (eg "=A1 + 5").
-   */
-  const fromBinaryExpr = (node: coord.ast.BinaryExpressionNode, refs: t.IRefOut[]) => {
-    const addRef = (cellNode: coord.ast.CellNode) => {
-      // const param = refs.length + 1;
-
-      console.log(`\nTODO 🐷  binary-expression param on FUNC return \n`);
-
-      let ref: t.IRefOut = { target: 'FUNC', path: `${path}/${cellNode.key}` };
-      ref = error ? { ...ref, error } : ref;
-      refs = [...refs, ref];
-    };
-
-    const parseEdge = (node: coord.ast.Node) => {
-      if (node.type === 'cell') {
-        addRef(node);
-      }
-      if (node.type === 'binary-expression') {
-        refs = [...refs, ...fromBinaryExpr(node, refs)]; // <== RECURSION 🌳
-      }
-    };
-
-    parseEdge(node.left);
-    parseEdge(node.right);
-
-    // TEMP 🐷 FIX - don't use .uniq | should not be adding double-ups.
-
-    refs = R.uniq(refs);
-
-    return refs;
-  };
 
   // No match.
   return [];
@@ -317,4 +277,13 @@ const VALUE_TYPES: Array<coord.ast.Node['type']> = [
 ];
 function isValueNode(node: coord.ast.Node) {
   return VALUE_TYPES.includes(node.type);
+}
+
+function deleteUndefined<T>(field: keyof T, items: T[]) {
+  items.forEach(ref => {
+    if (ref[field] === undefined) {
+      delete ref[field];
+    }
+  });
+  return items;
 }
