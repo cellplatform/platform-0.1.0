@@ -1,16 +1,19 @@
 import { Subject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import * as t from '../types';
 
+export type IMemoryCacheArgs = { ttl?: number };
 type CacheItem<V> = {
   value?: V;
   put$: Subject<{}>;
 };
 
-export class MemoryCache<K extends string> {
+export class MemoryCache<K extends string> implements t.IMemoryCache<K> {
   /**
    * [Lifecycle]
    */
-  public constructor(args: { ttl?: number } = {}) {
+  public static create = (args?: IMemoryCacheArgs) => new MemoryCache(args);
+  public constructor(args: IMemoryCacheArgs = {}) {
     this.ttl = args.ttl;
   }
 
