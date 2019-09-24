@@ -387,7 +387,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     return (
       <div {...styles.base}>
         <ObjectView
-          name={'grid'}
+          name={'ui.datagrid'}
           data={data.grid}
           expandPaths={[
             '$',
@@ -401,7 +401,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           theme={'DARK'}
         />
         <Hr color={1} />
-        <ObjectView name={'refs'} data={this.state.refs} expandLevel={3} theme={'DARK'} />
+        <ObjectView name={'util.cell.refs'} data={this.state.refs} expandLevel={3} theme={'DARK'} />
         <Hr color={1} />
         <ObjectView name={'debug'} data={data.debug} expandPaths={['$']} theme={'DARK'} />
       </div>
