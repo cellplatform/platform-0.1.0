@@ -44,14 +44,12 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const value = cell.value;
 
     if (typeof value === 'string') {
-      const ctx: coord.IRefContext = {
-        getValue: async (key: string) => {
-          const cell = this.grid.values[key];
-          return cell && typeof cell.value === 'string' ? cell.value : undefined;
-        },
+      const getValue: t.RefGetValue = async key => {
+        const cell = this.grid.values[key];
+        return cell && typeof cell.value === 'string' ? cell.value : undefined;
       };
 
-      const res = await coord.refs.outgoing({ key, ctx });
+      const res = await coord.refs.outgoing({ key, getValue });
 
       if (res.length > 0) {
         const refs = { ...(this.state.refs || {}), [key]: res };
