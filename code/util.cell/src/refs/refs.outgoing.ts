@@ -15,16 +15,19 @@ import { range } from '../range';
  */
 export async function outgoing(args: {
   key: string;
-  ctx: t.IRefContext;
+  getValue: t.RefGetValue;
   path?: string;
 }): Promise<t.IRefOut[]> {
-  const { ctx } = args;
-  const value = await getValue(args);
-
   const done = (refs: t.IRefOut[]) => {
     refs = deleteUndefined('error', refs);
     return refs;
   };
+
+  const getValue: t.RefGetValue = async key => {
+    const res = await args.getValue(cell.toRelative(key));
+    return typeof res === 'string' ? res : undefined;
+  };
+  const value = await getValue(args.key);
 
   if (typeof value !== 'string' || !formula.isFormula(value)) {
     return [];
@@ -37,25 +40,25 @@ export async function outgoing(args: {
    * Cell (eg "=A1").
    */
   if (node.type === 'cell') {
-    return done(await outgoingCell({ node, ctx, path }));
+    return done(await outgoingCell({ node, path, getValue }));
   }
 
   /**
    * Range (eg "=A1:B9").
    */
   if (node.type === 'cell-range') {
-    return done(await outgoingRange({ node: node as ast.CellRangeNode, ctx, path }));
+    return done(await outgoingRange({ node: node as ast.CellRangeNode, path, getValue }));
   }
 
   /**
    * Function (eg "=SUM(999, A1)").
    */
   if (node.type === 'function') {
-    return done(await outgoingFunc({ node, ctx, path }));
+    return done(await outgoingFunc({ node, path, getValue }));
   }
 
   if (node.type === 'binary-expression') {
-    return done(await outgoingBinaryExpression({ node, ctx, path }));
+    return done(await outgoingBinaryExpression({ node, path, getValue }));
   }
 
   // No match.
@@ -67,10 +70,10 @@ export async function outgoing(args: {
  */
 async function outgoingCell(args: {
   node: ast.CellNode;
-  ctx: t.IRefContext;
+  getValue: t.RefGetValue;
   path: string;
 }): Promise<t.IRefOut[]> {
-  const { node, ctx } = args;
+  const { node, getValue } = args;
 
   let path = args.path;
   let error: t.IRefError | undefined;
@@ -93,11 +96,11 @@ async function outgoingCell(args: {
   }
 
   path = `${path}/${key}`;
-  const value = !error ? await getValue({ ctx, key }) : undefined;
+  const value = !error ? await getValue(key) : undefined;
 
   // Process the forumla (if it is one).
   if (!error && value && formula.isFormula(value)) {
-    const res = await outgoing({ ctx, key, path }); // <== RECURSION 🌳
+    const res = await outgoing({ getValue, key, path }); // <== RECURSION 🌳
     if (res.length > 0) {
       path = res[0].path;
       target = res[0].target;
@@ -120,7 +123,7 @@ async function outgoingCell(args: {
  */
 async function outgoingRange(args: {
   node: ast.CellRangeNode;
-  ctx: t.IRefContext;
+  getValue: t.RefGetValue;
   path: string;
 }): Promise<t.IRefOut[]> {
   const { node } = args;
@@ -147,10 +150,10 @@ async function outgoingRange(args: {
  */
 async function outgoingFunc(args: {
   node: ast.FunctionNode;
-  ctx: t.IRefContext;
+  getValue: t.RefGetValue;
   path: string;
 }): Promise<t.IRefOut[]> {
-  const { node, ctx } = args;
+  const { node, getValue } = args;
   let error: t.IRefError | undefined;
 
   const wait = node.arguments.map(async (param, i) => {
@@ -181,7 +184,7 @@ async function outgoingFunc(args: {
     const cellNode = param as ast.CellNode;
     const path = `${args.path}/${cellNode.key}`;
     const targetKey = cell.toRelative(cellNode.key);
-    const targetValue = await getValue({ ctx, key: cellNode.key });
+    const targetValue = await getValue(cellNode.key);
     const targetTree = ast.toTree(targetValue);
 
     const isCircular = args.path.split('/').includes(targetKey);
@@ -199,7 +202,7 @@ async function outgoingFunc(args: {
       return ref;
     }
 
-    const res = await outgoing({ ctx, key: targetKey, path }); // <== RECURSION 🌳
+    const res = await outgoing({ key: targetKey, getValue, path }); // <== RECURSION 🌳
     if (res.length === 0) {
       const ref: t.IRefOut = { target: 'VALUE', path, param: i };
       return ref;
@@ -220,10 +223,10 @@ async function outgoingFunc(args: {
  */
 async function outgoingBinaryExpression(args: {
   node: ast.BinaryExpressionNode;
-  ctx: t.IRefContext;
+  getValue: t.RefGetValue;
   path: string;
 }): Promise<t.IRefOut[]> {
-  const { ctx, path } = args;
+  const { getValue, path } = args;
 
   let index = 0;
   const toParts = async (expr: ast.BinaryExpressionNode, path: string) => {
@@ -233,10 +236,10 @@ async function outgoingBinaryExpression(args: {
         parts = [...parts, ...(await toParts(node, path))]; // <== RECURSION 🌳
       } else {
         if (node.type === 'cell') {
-          const res = await outgoingCell({ ctx, node, path });
+          const res = await outgoingCell({ getValue, node, path });
           parts = res.length > 0 ? [...parts, { ...res[0], param: index }] : parts;
         } else if (node.type === 'cell-range') {
-          const res = await outgoingRange({ ctx, node: node as ast.CellRangeNode, path });
+          const res = await outgoingRange({ getValue, node: node as ast.CellRangeNode, path });
           parts = res.length > 0 ? [...parts, { ...res[0], param: index }] : parts;
         }
         index++;
@@ -253,12 +256,6 @@ async function outgoingBinaryExpression(args: {
 /**
  * [Helpers]
  */
-async function getValue(args: { key: string; ctx: t.IRefContext }) {
-  const { ctx } = args;
-  const key = cell.toRelative(args.key);
-  const res = await ctx.getValue(key);
-  return typeof res === 'string' ? res : undefined;
-}
 
 /**
  *  binary-expression    1+2
