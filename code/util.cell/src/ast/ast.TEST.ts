@@ -2,8 +2,9 @@ import { expect } from 'chai';
 import { ast } from '.';
 
 describe('ast.toTokens', () => {
-  it('converts to tokens', () => {
+  it('SUM(1, 23)', () => {
     const tokens = ast.toTokens('SUM(1, 23)');
+
     expect(tokens.length).to.eql(5);
     const first = tokens[0];
     const last = tokens[tokens.length - 1];
@@ -14,6 +15,29 @@ describe('ast.toTokens', () => {
 
     expect(last.type).to.eql('function');
     expect(last.subtype).to.eql('stop');
+  });
+
+  it('pads "+/-" with space (eg "x+y" and "x-y" => "x + y" and "x - y")', () => {
+    // NB: This is to that the value is correctly interpreted as a logical operator.
+    const test = (expr: string, expected: string[]) => {
+      const tokens = ast.toTokens(expr);
+      expect(tokens.length).to.eql(expected.length);
+      expected.forEach((item, i) => {
+        expect(tokens[i].value).to.eql(item);
+      });
+    };
+    test('1+2', ['1', '+', '2']);
+    test('1 + 2', ['1', '+', '2']);
+    test('1     +2', ['1', '+', '2']);
+    test('=1+2', ['1', '+', '2']);
+    test('=1 + 2', ['1', '+', '2']);
+
+    test('1-2', ['1', '-', '2']);
+    test('1 - 2', ['1', '-', '2']);
+    test('1-     2', ['1', '-', '2']);
+    test('1   -2', ['1', '-', '2']);
+    test('=1-2', ['1', '-', '2']);
+    test('=1 - 2', ['1', '-', '2']);
   });
 });
 
@@ -32,7 +56,7 @@ describe('ast.toTree', () => {
     expect(ast.toTree('&^%')).to.eql(ERROR);
   });
 
-  it('binary-expression', () => {
+  it('binary-expression (<)', () => {
     const tree = ast.toTree('1 < 3');
     expect(tree.type).to.eql('binary-expression');
     const res = tree as ast.BinaryExpressionNode;
@@ -43,7 +67,33 @@ describe('ast.toTree', () => {
     expect((res.right as ast.NumberNode).value).to.eql(3);
   });
 
-  it('unary-expression', () => {
+  it('binary-expression ("1+2", "1-2", no spaces)', () => {
+    const test = (expr: string, operator: string, left: number, right: number) => {
+      const tree = ast.toTree(expr);
+
+      expect(tree.type).to.eql('binary-expression');
+      const res = tree as ast.BinaryExpressionNode;
+      expect(res.operator).to.eql(operator);
+      expect(res.left.type).to.eql('number');
+      expect((res.left as ast.NumberNode).value).to.eql(left);
+      expect(res.right.type).to.eql('number');
+      expect((res.right as ast.NumberNode).value).to.eql(right);
+    };
+
+    // NB: These tests capture a fix to the tokensizer whereby +/- expresions
+    //      without spaces were being interpreted as ranges, not logical binary expressions.
+    test('1+2', '+', 1, 2);
+    test(' 1 + 2', '+', 1, 2);
+    test('1   +2', '+', 1, 2);
+    test('1+  2', '+', 1, 2);
+
+    test('1-2', '-', 1, 2);
+    test('1 - 2 ', '-', 1, 2);
+    test('1  -2', '-', 1, 2);
+    test('1-  2', '-', 1, 2);
+  });
+
+  it('unary-expression (-)', () => {
     const tree = ast.toTree('-TRUE');
     expect(tree.type).to.eql('unary-expression');
     const res = tree as ast.UnaryExpressionNode;

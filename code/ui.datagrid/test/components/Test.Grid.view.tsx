@@ -23,14 +23,14 @@ export type ITestGridViewProps = {
   Table?: Handsontable;
 };
 export type ITestGridViewState = {
-  values?: t.IGridValues;
+  values?: t.IGridCells;
   columns?: t.IGridColumns;
   rows?: t.IGridRows;
 };
 
 const DEFAULT = {
   VALUES: {
-    A1: { value: 'A1' },
+    A1: { value: '=A2' },
     A2: { value: 'A2', props: { style: { bold: true } } },
     // A2: {value:'* one\n * two'},
     // A2: {value:'# Heading\nhello'},

@@ -1,8 +1,6 @@
-import * as t from './types';
-
 /**
  * Determine if the given cell value represents a formula.
  */
-export function isFormula(input?: t.CellValue) {
+export function isFormula(input?: any) {
   return (typeof input === 'string' ? input : '')[0] === '=';
 }

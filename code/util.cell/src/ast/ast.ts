@@ -15,7 +15,15 @@ import { Token, tokenize } from 'excel-formula-tokenizer';
 
 import { value as valueUtil } from '../common';
 
-export { Token, NumberNode, BinaryExpressionNode, UnaryExpressionNode, LogicalNode, TextNode };
+export {
+  Token,
+  Node,
+  NumberNode,
+  BinaryExpressionNode,
+  UnaryExpressionNode,
+  LogicalNode,
+  TextNode,
+};
 
 export type EmptyNode = { type: 'empty' };
 export type ParseErrorNode = { type: 'parse-error' };
@@ -29,12 +37,18 @@ export type CellRangeNode = AstCellRangeNode & {
   right: CellNode;
 };
 export type FunctionNode = AstFunctionNode & { namespace?: string };
+
 export type TreeNode = Node | CellNode | EmptyNode | ParseErrorNode;
 
 /**
- * Converts a forumula into token.
+ * Converts a forumula into tokens.
  */
 export function toTokens(expr: string) {
+  expr = expr
+    // Pad +/- with space.
+    // NB: This fixes problem with tokenize misinterpreting logical expressions as ranges.
+    .replace(/\+/g, ' + ')
+    .replace(/\-/g, ' - ');
   return tokenize(expr) as Token[];
 }
 

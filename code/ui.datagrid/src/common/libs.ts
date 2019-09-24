@@ -14,7 +14,7 @@ export { MemoryCache } from '@platform/cache';
 /**
  * Cell coords (eg "A1", "A1:C9").
  */
-import * as coord from '@platform/util.value.cell';
+import * as coord from '@platform/util.cell';
 export { coord };
 
 /**

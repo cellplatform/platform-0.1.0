@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-import { t, formula } from '.';
+import { formula } from '.';
 
 describe('util.formula', () => {
   it('isFormula', () => {
-    const test = (value: t.CellValue | string, expected: boolean) => {
+    const test = (value: any, expected: boolean) => {
       expect(formula.isFormula(value)).to.eql(expected);
     };
     test(undefined, false);

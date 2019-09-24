@@ -137,7 +137,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       Object.keys(values).map(key => {
         const hash = values[key] ? (values[key] as any).hash : undefined;
         if (hash) {
-          (values[key] as any).hash = `${hash.substring(0, 8)}..(SHA-256)`;
+          (values[key] as any).hash = `${hash.substring(0, 12)}..(SHA-256)`;
         }
       });
     };

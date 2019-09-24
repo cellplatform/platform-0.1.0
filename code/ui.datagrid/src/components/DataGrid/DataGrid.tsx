@@ -26,7 +26,7 @@ const { DEFAULT, CSS } = constants;
 export type IDataGridProps = {
   totalColumns?: number;
   totalRows?: number;
-  values?: t.IGridValues;
+  values?: t.IGridCells;
   columns?: t.IGridColumns;
   rows?: t.IGridRows;
   defaults?: Partial<t.IGridDefaults>;

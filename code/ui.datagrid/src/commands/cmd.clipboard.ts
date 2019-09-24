@@ -192,7 +192,7 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
 function shiftCells(args: {
   sourceCell: string;
   targetCell: string;
-  data: t.IGridValues;
+  data: t.IGridCells;
 }): ClipboardItem[] {
   const pos = {
     start: coord.cell.fromKey(args.sourceCell),

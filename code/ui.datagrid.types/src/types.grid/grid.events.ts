@@ -183,7 +183,7 @@ export type IGridClipboard<A = t.GridClipboardCommand> = {
   action: A;
   selection: t.IGridSelection;
   text: string;
-  cells: t.IGridValues;
+  cells: t.IGridCells;
   rows: t.IGridRows;
   columns: t.IGridColumns;
 };
