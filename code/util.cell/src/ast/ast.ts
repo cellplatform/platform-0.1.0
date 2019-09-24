@@ -44,6 +44,11 @@ export type TreeNode = Node | CellNode | EmptyNode | ParseErrorNode;
  * Converts a forumula into tokens.
  */
 export function toTokens(expr: string) {
+  expr = expr
+    // Pad +/- with space.
+    // NB: This fixes problem with tokenize misinterpreting logical expressions as ranges.
+    .replace(/\+/g, ' + ')
+    .replace(/\-/g, ' - ');
   return tokenize(expr) as Token[];
 }
 
