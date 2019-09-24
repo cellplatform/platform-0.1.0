@@ -1,10 +1,8 @@
-import { t } from '../../common';
-
 /**
  * Retrieve data for calculating refs.
  */
 export type IRefContext = {
-  getCell: (key: string) => Promise<t.IGridCell | undefined>;
+  getValue: (key: string) => Promise<string | undefined>;
 };
 
 /**
@@ -17,7 +15,7 @@ export type ICellRefs = {
 };
 
 export type IRefOut = {
-  // source: 'REF' | 'FUNC' | 'RANGE';
+  // source: 'CELL' |  'RANGE' | 'FUNC';
   target: RefTarget;
   path: string;
   param?: number;

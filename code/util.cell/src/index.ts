@@ -7,3 +7,6 @@ export * from './parser';
 export * from './cell';
 export * from './range';
 export * from './table';
+
+export * from './formula';
+export * from './refs';

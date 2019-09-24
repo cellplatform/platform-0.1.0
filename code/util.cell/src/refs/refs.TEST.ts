@@ -1,11 +1,13 @@
 import { expect } from 'chai';
 
 import { refs } from '.';
-import { t } from '../../common';
+import { t } from '../common';
 
-const testContext = (cells: t.IGridCells): t.IRefContext => {
+type Table = t.ICoordTable<{ value: any }>;
+
+const testContext = (cells: Table): t.IRefContext => {
   return {
-    getCell: async (key: string) => cells[key],
+    getValue: async (key: string) => (cells[key] ? cells[key].value : undefined),
   };
 };
 
@@ -25,14 +27,11 @@ describe('refs.outgoing', () => {
         A2: { value: 123 },
       });
       const res = await refs.outgoing({ key: 'A1', ctx });
-      const ref = res[0] as t.IRefOut;
 
       expect(res.length).to.eql(1);
-      expect(ref.target).to.eql('VALUE');
-      expect(ref.path).to.eql('A1/A2');
-      expect(ref.param).to.eql(undefined);
-
-      console.log('res', res);
+      expect(res[0].target).to.eql('VALUE');
+      expect(res[0].path).to.eql('A1/A2');
+      expect(res[0].param).to.eql(undefined);
     });
 
     it('A1 => A2 => A3', async () => {
@@ -42,11 +41,10 @@ describe('refs.outgoing', () => {
         A3: { value: 123 },
       });
       const res = await refs.outgoing({ key: 'A1', ctx });
-      const ref = res[0] as t.IRefOut;
 
       expect(res.length).to.eql(1);
-      expect(ref.target).to.eql('VALUE');
-      expect(ref.path).to.eql('A1/A2/A3');
+      expect(res[0].target).to.eql('VALUE');
+      expect(res[0].path).to.eql('A1/A2/A3');
     });
 
     it('A1 => A1 (ERROR/CIRCULAR)', async () => {
