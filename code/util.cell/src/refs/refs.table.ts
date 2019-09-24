@@ -5,8 +5,13 @@ import { outgoing } from './refs.outgoing';
 const CellRange = range.CellRange;
 
 type IRefsTableArgs = {
-  range: string;
+  getKeys: t.RefGetKeys;
   getValue: t.RefGetValue;
+};
+
+type Cache = {
+  refs: t.IRefs;
+  ranges: { [key: string]: range.CellRange };
 };
 
 /**
@@ -21,28 +26,35 @@ class RefsTable implements t.IRefsTable {
    * [Lifecycle]
    */
   constructor(args: IRefsTableArgs) {
-    this.range = validRange(args.range);
+    this.getKeys = args.getKeys;
     this.getValue = args.getValue;
   }
 
   /**
    * [Fields]
    */
-  private readonly range: range.CellRange;
+  private readonly getKeys: t.RefGetKeys;
   private readonly getValue: t.RefGetValue;
-  private cache: t.IRefs = { in: {}, out: {} };
+
+  private cache: Cache = {
+    refs: { in: {}, out: {} },
+    ranges: {},
+  };
 
   /**
    * [Methods]
    */
   public async outgoing(args: { range?: string; force?: boolean } = {}): Promise<t.IRefsOut> {
     const getValue = this.getValue;
-    const range = args.range ? validRange(args.range) : this.range;
+    const cache = this.cache.refs.out;
 
-    const cache = this.cache.out;
     const res: t.IRefsOut = {};
+    const keys = await this.keys({ range: args.range });
+    if (keys.length === 0) {
+      return res;
+    }
 
-    const wait = range.keys.map(async key => {
+    const wait = keys.map(async key => {
       if (!cache[key] || args.force) {
         const refs = await outgoing({ key, getValue });
         if (refs.length > 0) {
@@ -59,19 +71,34 @@ class RefsTable implements t.IRefsTable {
   }
 
   public reset() {
-    this.cache = { in: {}, out: {} };
+    this.cache.refs = { in: {}, out: {} };
+    this.cache.ranges = {};
     return this;
   }
-}
 
-/**
- * [Helpers]
- */
+  /**
+   * [Internal]
+   */
 
-function validRange(input: string) {
-  const range = CellRange.fromKey(input);
-  if (range.type !== 'CELL' || !range.isValid) {
-    throw new Error(`Table range must be a valid cell range (eg "A1:AZ99").`);
+  private async keys(args: { range?: string }) {
+    const keys = await this.getKeys();
+    if (args.range) {
+      return this.validRange(args.range).keys.filter(key => keys.includes(key));
+    } else {
+      return keys;
+    }
   }
-  return range.square;
+
+  private validRange(input: string): range.CellRange {
+    if (this.cache.ranges[input]) {
+      return this.cache.ranges[input];
+    }
+
+    const range = CellRange.fromKey(input);
+    if (range.type !== 'CELL' || !range.isValid) {
+      throw new Error(`Table range must be a valid cell range (eg "A1:AZ99").`);
+    }
+
+    return (this.cache.ranges[input] = range.square);
+  }
 }

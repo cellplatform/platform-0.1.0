@@ -4,6 +4,7 @@ export type RefTarget = 'VALUE' | 'FUNC' | 'RANGE' | 'UNKNOWN';
  * Retrieve data for calculating refs.
  */
 export type RefGetValue = (key: string) => Promise<string | undefined>;
+export type RefGetKeys = () => Promise<string[]>;
 
 /**
  * References.
@@ -18,7 +19,7 @@ export type IRefs = {
  */
 export type IRefsTable = {
   outgoing(args?: { range?: string; force?: boolean }): Promise<IRefsOut>;
-  reset(): IRefsTable
+  reset(): IRefsTable;
 };
 
 /**

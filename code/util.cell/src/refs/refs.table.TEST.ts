@@ -1,52 +1,35 @@
-import { expect } from 'chai';
+import { expect, expectError } from '@platform/test';
 import { refs } from '.';
 import { t } from '../common';
 
 type Table = t.ICoordTable<{ value: any }>;
 const testContext = (cells: Table) => {
-  return async (key: string) => {
+  const getValue: t.RefGetValue = async (key: string) => {
     const cell = cells[key];
     return cell ? cell.value : undefined;
   };
+
+  const getKeys: t.RefGetKeys = async () => Object.keys(cells);
+
+  return { getKeys, getValue };
 };
 
-describe('refs.table', () => {
-  describe('constructor', () => {
-    it('constructs', () => {
-      const getValue = testContext({});
-      const table = refs.table({ range: 'A1:D10', getValue });
-    });
-
-    it('throws on invalid range', () => {
-      const getValue = testContext({});
-      const fail = (range: string) => {
-        const fn = () => refs.table({ range, getValue });
-        expect(fn).to.throw(/must be a valid cell range/);
-      };
-      fail('A1');
-      fail('A');
-      fail('1');
-      fail('A1:*');
-      fail('*');
-      fail('*:*');
-    });
-  });
-
+describe.only('refs.table', () => {
   describe('outgoing', () => {
     it('empty', async () => {
-      const getValue = testContext({});
-      const table = refs.table({ range: 'A1:B3', getValue });
+      const ctx = testContext({});
+      const table = refs.table({ ...ctx });
       const res = await table.outgoing();
       expect(res).to.eql({});
     });
 
     it('calculate all (default)', async () => {
-      const getValue = testContext({
+      const ctx = testContext({
         A1: { value: '=SUM(A2,D5)' },
         A2: { value: '=D5' },
         D5: { value: 456 },
       });
-      const table = refs.table({ range: 'A1:D5', getValue });
+      const table = refs.table({ ...ctx });
 
       const res = await table.outgoing();
       expect(Object.keys(res)).to.eql(['A2', 'A1']);
@@ -57,27 +40,42 @@ describe('refs.table', () => {
     });
 
     it('calculate subset (range)', async () => {
-      const getValue = testContext({
+      const ctx = testContext({
         A1: { value: '=SUM(A2,D5)' },
         A2: { value: 123 },
         D5: { value: '=A2' },
       });
-      const table = refs.table({ range: 'A1:D9', getValue });
+      const table = refs.table({ ...ctx });
 
       const res1 = await table.outgoing();
-      const res2 = await table.outgoing({ range: 'A1:A9' });
+      const res2 = await table.outgoing({ range: 'A1:A99' });
 
       expect(Object.keys(res1)).to.eql(['D5', 'A1']);
       expect(Object.keys(res2)).to.eql(['A1']);
     });
 
+    it('throws on invalid range', async () => {
+      const ctx = testContext({});
+      const fail = async (range: string) => {
+        const table = refs.table({ ...ctx });
+        const fn = async () => table.outgoing({ range });
+        return expectError(fn);
+      };
+      await fail('A1');
+      await fail('A');
+      await fail('1');
+      await fail('A1:*');
+      await fail('*');
+      await fail('*:*');
+    });
+
     it('caching', async () => {
-      const getValue = testContext({
+      const ctx = testContext({
         A1: { value: '=SUM(A2,C3)' },
         A2: { value: 123 },
         C3: { value: '=A2' },
       });
-      const table = refs.table({ range: 'A1:C3', getValue });
+      const table = refs.table({ ...ctx });
 
       const res1 = await table.outgoing();
       const res2 = await table.outgoing();
@@ -105,12 +103,12 @@ describe('refs.table', () => {
     });
 
     it('cache reset', async () => {
-      const getValue = testContext({
+      const ctx = testContext({
         A1: { value: '=SUM(A2,C3)' },
         A2: { value: 123 },
         C3: { value: '=A2' },
       });
-      const table = refs.table({ range: 'A1:C3', getValue });
+      const table = refs.table({ ...ctx });
 
       const res1 = await table.outgoing();
       const res2 = await table.reset().outgoing();
