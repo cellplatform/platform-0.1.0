@@ -41,7 +41,7 @@ export async function outgoing(args: {
    * Cell (eg "=A1").
    */
   if (node.type === 'cell') {
-    return done(await outgoingRef({ node, ctx, path }));
+    return done(await outgoingCell({ node, ctx, path }));
   }
 
   /**
@@ -102,7 +102,7 @@ export async function outgoing(args: {
 /**
  * Process an outgoing cell reference (eg: "=A1")
  */
-async function outgoingRef(args: {
+async function outgoingCell(args: {
   node: coord.ast.CellNode;
   ctx: t.IRefContext;
   path: string;
@@ -261,7 +261,31 @@ async function outgoingBinaryExpression(args: {
   ctx: t.IRefContext;
   path: string;
 }): Promise<t.IRefOut[]> {
-  return [];
+  const { ctx, path } = args;
+
+  let index = 0;
+  const toParts = async (expr: coord.ast.BinaryExpressionNode, path: string) => {
+    let parts: t.IRefOut[] = [];
+    const parseEdge = async (node: coord.ast.Node, path: string) => {
+      if (node.type === 'binary-expression') {
+        parts = [...parts, ...(await toParts(node, path))]; // <== RECURSION 🌳
+      } else {
+        if (node.type === 'cell') {
+          const res = await outgoingCell({ ctx, node, path });
+          parts = res.length > 0 ? [...parts, { ...res[0], param: index }] : parts;
+        } else if (node.type === 'cell-range') {
+          const res = await outgoingRange({ ctx, node: node as coord.ast.CellRangeNode, path });
+          parts = res.length > 0 ? [...parts, { ...res[0], param: index }] : parts;
+        }
+        index++;
+      }
+    };
+    await parseEdge(expr.left, path);
+    await parseEdge(expr.right, path);
+    return parts;
+  };
+
+  return toParts(args.node, path);
 }
 
 /**
