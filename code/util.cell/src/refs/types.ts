@@ -1,3 +1,5 @@
+export type RefTarget = 'VALUE' | 'FUNC' | 'RANGE' | 'UNKNOWN';
+
 /**
  * Retrieve data for calculating refs.
  */
@@ -6,14 +8,17 @@ export type IRefContext = {
 };
 
 /**
- * References
+ * Table references.
  */
-export type RefTarget = 'VALUE' | 'FUNC' | 'RANGE' | 'UNKNOWN';
-
-export type ICellRefs = {
-  out: IRefOut[];
+export type IRefs = {
+  out: IRefsOut;
+  in: IRefsIn;
 };
 
+/**
+ * Outgoing
+ */
+export type IRefsOut = { [key: string]: IRefOut };
 export type IRefOut = {
   // source: 'CELL' |  'RANGE' | 'FUNC';
   target: RefTarget;
@@ -21,6 +26,12 @@ export type IRefOut = {
   param?: number;
   error?: IRefError;
 };
+
+/**
+ * Incoming
+ */
+export type IRefsIn = { [key: string]: IRefIn };
+export type IRefIn = {};
 
 /**
  * Error

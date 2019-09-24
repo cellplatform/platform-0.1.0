@@ -296,7 +296,7 @@ describe('refs.outgoing', () => {
   });
 
   describe('RANGE', () => {
-    it('A1 => B1:B9', async () => {
+    it('=B1:B9', async () => {
       const ctx = testContext({
         A1: { value: '=$B1:B$9' },
       });
@@ -304,6 +304,18 @@ describe('refs.outgoing', () => {
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('RANGE');
       expect(res[0].path).to.eql('A1/B1:B9');
+      expect(res[0].error).to.eql(undefined);
+    });
+
+    it('A1 => B1:B9', async () => {
+      const ctx = testContext({
+        A1: { value: '=A2' },
+        A2: { value: '=$B1:B$9' },
+      });
+      const res = await refs.outgoing({ key: 'A1', ctx });
+      expect(res.length).to.eql(1);
+      expect(res[0].target).to.eql('RANGE');
+      expect(res[0].path).to.eql('A1/A2/B1:B9');
       expect(res[0].error).to.eql(undefined);
     });
 
