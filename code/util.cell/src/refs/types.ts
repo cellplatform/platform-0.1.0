@@ -3,22 +3,28 @@ export type RefTarget = 'VALUE' | 'FUNC' | 'RANGE' | 'UNKNOWN';
 /**
  * Retrieve data for calculating refs.
  */
-export type IRefContext = {
-  getValue: (key: string) => Promise<string | undefined>;
+export type RefGetValue = (key: string) => Promise<string | undefined>;
+
+/**
+ * References.
+ */
+export type IRefs = {
+  in: IRefsIn;
+  out: IRefsOut;
 };
 
 /**
- * Table references.
+ * Table
  */
-export type IRefs = {
-  out: IRefsOut;
-  in: IRefsIn;
+export type IRefsTable = {
+  outgoing(args?: { range?: string; force?: boolean }): Promise<IRefsOut>;
+  reset(): IRefsTable
 };
 
 /**
  * Outgoing
  */
-export type IRefsOut = { [key: string]: IRefOut };
+export type IRefsOut = { [key: string]: IRefOut[] };
 export type IRefOut = {
   // source: 'CELL' |  'RANGE' | 'FUNC';
   target: RefTarget;
@@ -30,7 +36,7 @@ export type IRefOut = {
 /**
  * Incoming
  */
-export type IRefsIn = { [key: string]: IRefIn };
+export type IRefsIn = { [key: string]: IRefIn[] };
 export type IRefIn = {};
 
 /**
