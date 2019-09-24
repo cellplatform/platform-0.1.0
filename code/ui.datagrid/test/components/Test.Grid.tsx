@@ -24,6 +24,7 @@ export type ITestGridProps = {
 };
 export type ITestGridState = {
   data?: any;
+  refs?: any; // TEMP 🐷
   totalColumns?: number;
   totalRows?: number;
 };
@@ -37,6 +38,36 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   private testGrid!: TestGridView;
   private testGridRef = (ref: TestGridView) => (this.testGrid = ref);
 
+  // TEMP 🐷
+  private calcRefTemp = async (key: string) => {
+    const cell = this.grid.cell(key);
+    const value = cell.value;
+
+    if (typeof value === 'string') {
+      const ctx: coord.IRefContext = {
+        getValue: async (key: string) => {
+          const cell = this.grid.values[key];
+          return cell && typeof cell.value === 'string' ? cell.value : undefined;
+        },
+      };
+
+      const res = await coord.refs.outgoing({ key, ctx });
+
+      if (res.length > 0) {
+        const refs = { ...(this.state.refs || {}), [key]: res };
+        this.state$.next({ refs });
+      }
+    }
+  };
+
+  // TEMP 🐷
+  private calcRefsTemp = () => {
+    const values = this.grid.values;
+    Object.keys(values).forEach(key => {
+      this.calcRefTemp(key);
+    });
+  };
+
   /**
    * [Lifecycle]
    */
@@ -44,20 +75,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     // Update state.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
-
-    const temp = (key: string) => {
-      const cell = this.grid.cell(key);
-      const value = cell.value;
-      console.log('value', value);
-
-      // const parts = coord.parser.toParts()
-      if (typeof value === 'string') {
-        const tree = coord.ast.toTree(value);
-        const tokens = coord.ast.toTokens(value);
-        console.log('tree', tree);
-        console.log('tokens', tokens);
-      }
-    };
 
     /**
      * Grid events.
@@ -78,7 +95,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           // change.cell.key /
           // console.log('change.cell', change.cell);
           console.group('🌳 ');
-          temp(change.cell.key);
+          this.calcRefTemp(change.cell.key);
           console.groupEnd();
         });
 
@@ -139,6 +156,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const gridEvents$ = this.grid.events$.pipe(takeUntil(this.unmounted$));
     gridEvents$.pipe(debounceTime(10)).subscribe(() => this.updateState());
     this.updateState();
+    this.calcRefsTemp();
   }
 
   public componentWillUnmount() {
@@ -365,6 +383,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       }),
     };
     // const expand = ['$', '$.grid', '$.grid.selection', '$.grid.selection.ranges'];
+
     return (
       <div {...styles.base}>
         <ObjectView
@@ -375,12 +394,14 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             '$',
             '$.selection',
             '$.selection.ranges',
-            '$.values',
-            '$.values.A1',
+            // '$.values',
+            // '$.values.A1',
             '$.clipboard',
           ]}
           theme={'DARK'}
         />
+        <Hr color={1} />
+        <ObjectView name={'refs'} data={this.state.refs} expandLevel={3} theme={'DARK'} />
         <Hr color={1} />
         <ObjectView name={'debug'} data={data.debug} expandPaths={['$']} theme={'DARK'} />
       </div>
