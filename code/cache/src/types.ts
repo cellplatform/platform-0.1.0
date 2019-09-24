@@ -1,4 +1,4 @@
-export type IMemoryCache<K extends string> = {
+export type IMemoryCache<K extends string = string> = {
   ttl: number | undefined;
   exists(key: K): boolean;
   get<V>(key: K, defaultValue?: () => V): V;

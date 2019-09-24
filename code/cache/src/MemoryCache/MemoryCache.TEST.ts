@@ -4,8 +4,13 @@ import { MemoryCache } from './MemoryCache';
 describe('MemoryCache', () => {
   type MyKey = 'FOO' | 'BAR';
 
+  it('loose key type (not defined)', async () => {
+    const cache = new MemoryCache();
+    expect(cache.get('FOO')).to.eql(undefined);
+  });
+
   it('does not have value', () => {
-    const cache = new MemoryCache<MyKey>();
+    const cache = MemoryCache.create<MyKey>();
     expect(cache.get('FOO')).to.eql(undefined);
     expect(cache.get('BAR')).to.eql(undefined);
   });

@@ -8,11 +8,13 @@ type CacheItem<V> = {
   put$: Subject<{}>;
 };
 
-export class MemoryCache<K extends string> implements t.IMemoryCache<K> {
+export class MemoryCache<K extends string = string> implements t.IMemoryCache<K> {
   /**
    * [Lifecycle]
    */
-  public static create = (args?: IMemoryCacheArgs) => new MemoryCache(args);
+  public static create<K extends string = string>(args?: IMemoryCacheArgs) {
+    return new MemoryCache<K>(args);
+  }
   public constructor(args: IMemoryCacheArgs = {}) {
     this.ttl = args.ttl;
   }
