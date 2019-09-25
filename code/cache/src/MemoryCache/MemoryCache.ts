@@ -39,7 +39,9 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
     return Boolean(this.values[key] && this.values[key].value);
   }
 
-  public get<V>(key: K, defaultValue?: () => V): V {
+  public get<V>(key: K, args?: t.MemoryCacheDefault<V> | t.IMemoryCacheGetOptions<V>): V {
+    const defaultValue = typeof args === 'function' ? args : args ? args.defaultValue : undefined;
+
     let value = this.item<V>(key).value;
     if (value === undefined && typeof defaultValue === 'function') {
       value = defaultValue();

@@ -20,10 +20,21 @@ describe('MemoryCache', () => {
     expect(cache.get('FOO', () => 123)).to.eql(123);
   });
 
-  it('caches a default value', () => {
+  it('caches a default value (via func)', () => {
     const cache = MemoryCache.create<MyKey>();
     const res1 = cache.get('FOO');
     const res2 = cache.get('FOO', () => 123);
+    const res3 = cache.get('FOO');
+
+    expect(res1).to.eql(undefined);
+    expect(res2).to.eql(123);
+    expect(res3).to.eql(123);
+  });
+
+  it('caches a default value (via args { func })', () => {
+    const cache = MemoryCache.create<MyKey>();
+    const res1 = cache.get('FOO');
+    const res2 = cache.get('FOO', { defaultValue: () => 123 });
     const res3 = cache.get('FOO');
 
     expect(res1).to.eql(undefined);
