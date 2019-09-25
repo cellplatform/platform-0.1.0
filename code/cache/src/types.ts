@@ -3,6 +3,7 @@ export type MemoryCacheDefault<V> = () => V;
 
 export type IMemoryCacheGetOptions<V> = {
   defaultValue?: MemoryCacheDefault<V>;
+  force?: boolean;
 };
 
 export type IMemoryCache<K extends string = string> = {

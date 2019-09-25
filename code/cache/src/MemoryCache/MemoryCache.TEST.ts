@@ -42,6 +42,27 @@ describe('MemoryCache', () => {
     expect(res3).to.eql(123);
   });
 
+  it('forces new retrieval of value (via args { force })', () => {
+    let count = 0;
+    const defaultValue = () => {
+      count++;
+      return count;
+    };
+
+    const cache = MemoryCache.create<MyKey>();
+
+    expect(cache.get('FOO', { defaultValue })).to.eql(1);
+    expect(cache.get('FOO', { defaultValue })).to.eql(1);
+    expect(cache.get('FOO', { defaultValue })).to.eql(1);
+    expect(count).to.eql(1);
+
+    expect(cache.get('FOO', { defaultValue, force: true })).to.eql(2);
+    expect(count).to.eql(2);
+
+    expect(cache.get('FOO', { defaultValue })).to.eql(2);
+    expect(count).to.eql(2);
+  });
+
   it('does not retreive default value', () => {
     const cache = MemoryCache.create<MyKey>();
     cache.put('FOO', 888);
