@@ -1,6 +1,6 @@
 import { ast } from '../ast';
 import { cell } from '../cell';
-import { t, MemoryCache } from '../common';
+import { t } from '../common';
 import { formula } from '../formula';
 import { range } from '../range';
 import * as util from './util';
@@ -11,22 +11,31 @@ export type IOutgoingArgs = {
   cache?: t.IMemoryCache;
 };
 
+const CACHE_PREFIX = 'REFS/out/';
+
 /**
  * Calculate outgoing refs for given cell.
  */
-export async function outgoing(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[]> {
-  // Check if value has been cached.
+export async function outgoing(args: IOutgoingArgs): Promise<t.IRefOut[]> {
   const { cache } = args;
-  const cacheKey = `REFS/out/${args.key}`;
+  const cacheKey = `${CACHE_PREFIX}${args.key}`;
   if (cache && cache.exists(cacheKey)) {
     return cache.get(cacheKey);
   }
+  const refs = await find(args);
+  if (cache) {
+    cache.put(cacheKey, refs);
+  }
+  return refs;
+}
 
+/**
+ * [Internal]
+ */
+
+async function find(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[]> {
   const done = (refs: t.IRefOut[]) => {
     refs = util.deleteUndefined('error', refs);
-    if (cache) {
-      cache.put(cacheKey, refs);
-    }
     return refs;
   };
 
@@ -107,7 +116,7 @@ async function outgoingCell(args: {
 
   // Process the forumla (if it is one).
   if (!error && value && formula.isFormula(value)) {
-    const res = await outgoing({ getValue, key, path }); // <== RECURSION 🌳
+    const res = await find({ getValue, key, path }); // <== RECURSION 🌳
     if (res.length > 0) {
       path = res[0].path;
       target = res[0].target;
@@ -209,7 +218,7 @@ async function outgoingFunc(args: {
       return ref;
     }
 
-    const res = await outgoing({ key: targetKey, getValue, path }); // <== RECURSION 🌳
+    const res = await find({ key: targetKey, getValue, path }); // <== RECURSION 🌳
     if (res.length === 0) {
       const ref: t.IRefOut = { target: 'VALUE', path, param: i };
       return ref;

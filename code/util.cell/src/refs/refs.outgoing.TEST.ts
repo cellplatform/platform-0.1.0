@@ -16,7 +16,7 @@ const outgoing = (args: refs.IOutgoingArgs) => {
   return refs.outgoing(args);
 };
 
-describe.only('refs.outgoing', () => {
+describe('refs.outgoing', () => {
   it('undefined (not a formula)', async () => {
     const getValue = testContext({
       A2: { value: 123 },
@@ -374,10 +374,11 @@ describe.only('refs.outgoing', () => {
       const res2 = await outgoing({ key: 'A1', getValue, cache });
       const res3 = await outgoing({ key: 'A1', getValue, cache });
 
+      // Cached instance comparison.
       expect(res1).to.not.equal(res2);
-      expect(res2).to.equal(res3); // Same instance from cache.
+      expect(res2).to.equal(res3); // NB: Cached.
 
-      // While different instances, same resulting values.
+      // Cached value comparison.
       expect(res1).to.eql(res2);
       expect(res2).to.eql(res3);
     });
