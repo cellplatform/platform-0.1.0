@@ -34,7 +34,7 @@ describe('MemoryCache', () => {
   it('caches a default value (via args { func })', () => {
     const cache = MemoryCache.create<MyKey>();
     const res1 = cache.get('FOO');
-    const res2 = cache.get('FOO', { defaultValue: () => 123 });
+    const res2 = cache.get('FOO', { getValue: () => 123 });
     const res3 = cache.get('FOO');
 
     expect(res1).to.eql(undefined);
@@ -44,22 +44,22 @@ describe('MemoryCache', () => {
 
   it('forces new retrieval of value (via args { force })', () => {
     let count = 0;
-    const defaultValue = () => {
+    const getValue = () => {
       count++;
       return count;
     };
 
     const cache = MemoryCache.create<MyKey>();
 
-    expect(cache.get('FOO', { defaultValue })).to.eql(1);
-    expect(cache.get('FOO', { defaultValue })).to.eql(1);
-    expect(cache.get('FOO', { defaultValue })).to.eql(1);
+    expect(cache.get('FOO', { getValue })).to.eql(1);
+    expect(cache.get('FOO', { getValue })).to.eql(1);
+    expect(cache.get('FOO', { getValue })).to.eql(1);
     expect(count).to.eql(1);
 
-    expect(cache.get('FOO', { defaultValue, force: true })).to.eql(2);
+    expect(cache.get('FOO', { getValue, force: true })).to.eql(2);
     expect(count).to.eql(2);
 
-    expect(cache.get('FOO', { defaultValue })).to.eql(2);
+    expect(cache.get('FOO', { getValue })).to.eql(2);
     expect(count).to.eql(2);
   });
 

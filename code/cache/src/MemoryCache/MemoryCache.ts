@@ -39,13 +39,13 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
     return Boolean(this.values[key] && this.values[key].value);
   }
 
-  public get<V>(key: K, args?: t.MemoryCacheDefault<V> | t.IMemoryCacheGetOptions<V>): V {
-    const defaultValue = typeof args === 'function' ? args : args ? args.defaultValue : undefined;
+  public get<V>(key: K, args?: t.MemoryCacheGetValue<V> | t.IMemoryCacheGetOptions<V>): V {
+    const getValue = typeof args === 'function' ? args : args ? args.getValue : undefined;
     const force = typeof args === 'object' ? args.force : false;
 
     let value = this.item<V>(key).value;
-    if (typeof defaultValue === 'function' && (force || value === undefined)) {
-      value = defaultValue();
+    if (typeof getValue === 'function' && (force || value === undefined)) {
+      value = getValue();
       this.put(key, value);
     }
     return value as V;
