@@ -48,9 +48,13 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
   // TEMP 🐷
   private calcRefsTemp = async () => {
-    const out = await this.refTable.outgoing({ force: false });
+    const table = this.refTable;
 
-    const refs = { ...(this.state.refs || {}), out };
+    const refs = {
+      ...(this.state.refs || {}),
+      out: await table.outgoing({ force: false }),
+      in: await table.incoming({ force: false }),
+    };
     this.state$.next({ refs });
   };
 

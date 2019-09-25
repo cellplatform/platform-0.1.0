@@ -12,16 +12,19 @@ type IRefsTableArgs = {
 
 const CACHE = {
   PREFIX: {
+    IN: 'REFS/table/in/',
     OUT: 'REFS/table/out/',
     RANGE: 'REFS/table/range/',
   },
   key: {
+    in: (suffix: string) => `${CACHE.PREFIX.IN}${suffix}`,
     out: (suffix: string) => `${CACHE.PREFIX.OUT}${suffix}`,
     range: (suffix: string) => `${CACHE.PREFIX.RANGE}${suffix}`,
   },
   isPrefix(key: string) {
-    const prefixes = [CACHE.PREFIX.OUT, CACHE.PREFIX.RANGE];
-    return prefixes.some(prefix => key.startsWith(prefix));
+    return Object.keys(CACHE.PREFIX)
+      .map(key => CACHE.PREFIX[key])
+      .some(prefix => key.startsWith(prefix));
   },
 };
 
@@ -94,7 +97,7 @@ class RefsTable implements t.IRefsTable {
 
     const wait = keys.map(async key => {
       const getValue = () => incoming({ key, getValue: this.getValue, getKeys });
-      const refs = await cache.getAsync(CACHE.key.out(key), { getValue, force });
+      const refs = await cache.getAsync(CACHE.key.in(key), { getValue, force });
       if (refs.length > 0) {
         res[key] = refs;
       }
