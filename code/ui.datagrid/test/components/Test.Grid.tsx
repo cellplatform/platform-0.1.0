@@ -46,18 +46,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     },
   });
 
-  // TEMP 🐷
-  private calcRefsTemp = async () => {
-    const table = this.refTable;
-
-    const refs = {
-      ...(this.state.refs || {}),
-      out: await table.outgoing({ force: false }),
-      in: await table.incoming({ force: false }),
-    };
-    this.state$.next({ refs });
-  };
-
   /**
    * [Lifecycle]
    */
@@ -81,18 +69,25 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         log.info('🐷 IGridCellsChanged', e);
 
         //  const value = e.
+        // Update refs for individual change.
         const wait = e.changes.map(async change => {
           const key = change.cell.key;
-          const out = await this.refTable.outgoing({ force: true, range: `${key}:${key}` });
+
+          const table = this.refTable;
+          const range = `${key}:${key}`;
+          const outgoing = await table.outgoing({ force: true, range });
+          const incoming = await table.incoming({ force: true, range });
 
           // NB: From here figure out how to re-calculate the cascade of references.
 
           console.group('🌳 ');
           console.log('change', change);
+          console.log('refs.outgoing', outgoing);
+          console.log('refs.incoming', incoming);
           console.groupEnd();
         });
         await Promise.all(wait);
-        this.calcRefsTemp(); // TEMP 🐷
+        this.updateRefs(); // TEMP 🐷
 
         // e.cancel();
         // e.changes[0].modify('foo');
@@ -151,7 +146,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const gridEvents$ = this.grid.events$.pipe(takeUntil(this.unmounted$));
     gridEvents$.pipe(debounceTime(10)).subscribe(() => this.updateState());
     this.updateState();
-    this.calcRefsTemp();
+    this.updateRefs();
   }
 
   public componentWillUnmount() {
@@ -172,7 +167,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   /**
    * [Methods]
    */
-  public updateState() {
+  public async updateState() {
     const grid = this.grid;
     const { selection, rows, columns, isEditing, clipboard } = grid;
     const { editorType } = this.props;
@@ -197,8 +192,23 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       }),
     };
     this.state$.next({ data });
+
+    await this.updateRefs();
+
     return data;
   }
+
+  private updateRefs = async (args: { force?: boolean } = {}) => {
+    const { force } = args;
+    const table = this.refTable;
+
+    const refs = {
+      ...(this.state.refs || {}),
+      out: await table.outgoing({ force }),
+      in: await table.incoming({ force }),
+    };
+    this.state$.next({ refs });
+  };
 
   /**
    * [Render]
@@ -234,6 +244,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     };
     return (
       <div {...styles.base}>
+        {this.button('updateRefs', () => this.updateRefs({ force: true }))}
         {this.button('redraw', () => this.grid.redraw())}
         {this.button('focus', () => this.grid.focus())}
         {this.button('total row/columns', () => {
@@ -379,6 +390,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     };
     // const expand = ['$', '$.grid', '$.grid.selection', '$.grid.selection.ranges'];
 
+    const refs = this.state.refs || {};
+
     return (
       <div {...styles.base}>
         <ObjectView
@@ -396,7 +409,9 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           theme={'DARK'}
         />
         <Hr color={1} />
-        <ObjectView name={'util.cell.refs'} data={this.state.refs} expandLevel={5} theme={'DARK'} />
+        <ObjectView name={'refs.in'} data={refs.in} expandLevel={5} theme={'DARK'} />
+        <Hr color={1} />
+        <ObjectView name={'refs.out'} data={refs.out} expandLevel={5} theme={'DARK'} />
         <Hr color={1} />
         <ObjectView name={'debug'} data={data.debug} expandPaths={['$']} theme={'DARK'} />
       </div>
