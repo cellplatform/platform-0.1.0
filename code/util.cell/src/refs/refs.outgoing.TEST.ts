@@ -1,19 +1,27 @@
 import { expect } from 'chai';
 
 import { refs } from '.';
-import { t } from '../common';
+import { t, MemoryCache } from '../common';
 
 type Table = t.ICoordTable<{ value: any }>;
 const testContext = (cells: Table) => {
-  return async (key: string) => (cells[key] ? cells[key].value : undefined);
+  return async (key: string) => {
+    const cell = cells[key];
+    const value = cell ? cell.value : undefined;
+    return typeof value === 'function' ? value() : value;
+  };
 };
 
-describe('refs.outgoing', () => {
+const outgoing = (args: refs.IOutgoingArgs) => {
+  return refs.outgoing(args);
+};
+
+describe.only('refs.outgoing', () => {
   it('undefined (not a formula)', async () => {
     const getValue = testContext({
       A2: { value: 123 },
     });
-    const res = await refs.outgoing({ key: 'A2', getValue });
+    const res = await outgoing({ key: 'A2', getValue });
     expect(res).to.eql([]);
   });
 
@@ -23,7 +31,7 @@ describe('refs.outgoing', () => {
         A1: { value: '=A$2' },
         A2: { value: 123 },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('VALUE');
@@ -37,7 +45,7 @@ describe('refs.outgoing', () => {
         A2: { value: '=$A3' },
         A3: { value: 123 },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('VALUE');
@@ -48,7 +56,7 @@ describe('refs.outgoing', () => {
       const getValue = testContext({
         A1: { value: '=A1' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
       const error = res[0].error as t.IRefError;
 
       expect(res.length).to.eql(1);
@@ -62,7 +70,7 @@ describe('refs.outgoing', () => {
         A2: { value: '=A3' },
         A3: { value: '=A1' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
       const error = res[0].error as t.IRefError;
 
       expect(res.length).to.eql(1);
@@ -75,7 +83,7 @@ describe('refs.outgoing', () => {
         A1: { value: '=A2' },
         A2: { value: '=B' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
       const error = res[0].error as t.IRefError;
 
       expect(res.length).to.eql(1);
@@ -91,7 +99,7 @@ describe('refs.outgoing', () => {
         A1: { value: '=A2' },
         A2: { value: '=SUM(1,2,3)' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('FUNC');
@@ -107,7 +115,7 @@ describe('refs.outgoing', () => {
         A3: { value: '=A4' },
         A4: { value: 456 },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(2);
 
@@ -128,7 +136,7 @@ describe('refs.outgoing', () => {
         A4: { value: 2 },
         A5: { value: '=A4+2' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(4);
 
@@ -155,7 +163,7 @@ describe('refs.outgoing', () => {
         A2: { value: 123 },
         A3: { value: '=A1:B9' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(2);
 
@@ -171,7 +179,7 @@ describe('refs.outgoing', () => {
       const getValue = testContext({
         A1: { value: '=SUM(999, A1:B9)' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(1);
 
@@ -193,7 +201,7 @@ describe('refs.outgoing', () => {
         A4: { value: 2 },
         A5: { value: '=SUM(1, 99)' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(5);
 
@@ -220,7 +228,7 @@ describe('refs.outgoing', () => {
       const getValue = testContext({
         A1: { value: '=5 + B1:B9' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('RANGE');
@@ -233,7 +241,7 @@ describe('refs.outgoing', () => {
         const getValue = testContext({
           A1: { value: expr },
         });
-        const res = await refs.outgoing({ key: 'A1', getValue });
+        const res = await outgoing({ key: 'A1', getValue });
         expect(res).to.eql([]);
       };
 
@@ -252,7 +260,7 @@ describe('refs.outgoing', () => {
       const getValue = testContext({
         A1: { value: '=5 + A1:B9' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('RANGE');
@@ -266,7 +274,7 @@ describe('refs.outgoing', () => {
       const getValue = testContext({
         A1: { value: '=A1+5' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('VALUE');
@@ -281,7 +289,7 @@ describe('refs.outgoing', () => {
         A1: { value: '=A2 + 5' },
         A2: { value: '=A1' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('VALUE');
@@ -297,7 +305,7 @@ describe('refs.outgoing', () => {
       const getValue = testContext({
         A1: { value: '=$B1:B$9' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('RANGE');
       expect(res[0].path).to.eql('A1/B1:B9');
@@ -309,7 +317,7 @@ describe('refs.outgoing', () => {
         A1: { value: '=A2' },
         A2: { value: '=$B1:B$9' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('RANGE');
       expect(res[0].path).to.eql('A1/A2/B1:B9');
@@ -321,7 +329,7 @@ describe('refs.outgoing', () => {
         A1: { value: '=B$2' },
         B2: { value: '=A1:B$9' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('RANGE');
@@ -338,7 +346,7 @@ describe('refs.outgoing', () => {
       const getValue = testContext({
         A1: { value: '=A1:B9' },
       });
-      const res = await refs.outgoing({ key: 'A1', getValue });
+      const res = await outgoing({ key: 'A1', getValue });
 
       expect(res.length).to.eql(1);
       expect(res[0].target).to.eql('RANGE');
@@ -349,6 +357,29 @@ describe('refs.outgoing', () => {
       expect(error.message).to.include(
         'Range contains a cell that leads back to itself. (A1/A1:B9)',
       );
+    });
+  });
+
+  describe('cache', () => {
+    it('uses memory cache', async () => {
+      const cache = MemoryCache.create();
+      const getValue = testContext({
+        A1: { value: '=A4 + A2 / (8 + A3 - A5 * 2 +A2)' },
+        A2: { value: 1 },
+        A3: { value: '=A4' },
+        A4: { value: 2 },
+        A5: { value: '=SUM(1, 99)' },
+      });
+      const res1 = await outgoing({ key: 'A1', getValue });
+      const res2 = await outgoing({ key: 'A1', getValue, cache });
+      const res3 = await outgoing({ key: 'A1', getValue, cache });
+
+      expect(res1).to.not.equal(res2);
+      expect(res2).to.equal(res3); // Same instance from cache.
+
+      // While different instances, same resulting values.
+      expect(res1).to.eql(res2);
+      expect(res2).to.eql(res3);
     });
   });
 });

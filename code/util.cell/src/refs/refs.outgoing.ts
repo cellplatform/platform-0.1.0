@@ -1,20 +1,32 @@
 import { ast } from '../ast';
 import { cell } from '../cell';
-import { t } from '../common';
+import { t, MemoryCache } from '../common';
 import { formula } from '../formula';
 import { range } from '../range';
 import * as util from './util';
 
+export type IOutgoingArgs = {
+  key: string;
+  getValue: t.RefGetValue;
+  cache?: MemoryCache;
+};
+
 /**
  * Calculate outgoing refs for given cell.
  */
-export async function outgoing(args: {
-  key: string;
-  getValue: t.RefGetValue;
-  path?: string;
-}): Promise<t.IRefOut[]> {
+export async function outgoing(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[]> {
+  // Check if value has been cached.
+  const { cache } = args;
+  const cacheKey = `REFS/out/${args.key}`;
+  if (cache && cache.exists(cacheKey)) {
+    return cache.get(cacheKey);
+  }
+
   const done = (refs: t.IRefOut[]) => {
     refs = util.deleteUndefined('error', refs);
+    if (cache) {
+      cache.put(cacheKey, refs);
+    }
     return refs;
   };
 

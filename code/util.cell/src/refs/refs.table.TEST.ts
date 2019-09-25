@@ -9,13 +9,11 @@ const testContext = (cells: Table) => {
     const value = cell ? cell.value : undefined;
     return typeof value === 'function' ? value() : value;
   };
-
   const getKeys: t.RefGetKeys = async () => Object.keys(cells);
-
   return { getKeys, getValue };
 };
 
-describe.only('refs.table', () => {
+describe('refs.table', () => {
   describe('outgoing', () => {
     it('empty', async () => {
       const ctx = testContext({});
