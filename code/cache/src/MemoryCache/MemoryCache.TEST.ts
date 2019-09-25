@@ -42,6 +42,21 @@ describe('MemoryCache', () => {
     expect(res3).to.eql(123);
   });
 
+  it('cached default value (getAsync)', async () => {
+    const cache = MemoryCache.create<MyKey>();
+    const res1 = await cache.getAsync('FOO', async () => 123);
+    const res2 = await cache.getAsync('BAR', { getValue: async () => 456 });
+
+    expect(res1).to.eql(123);
+    expect(res2).to.eql(456);
+
+    const res3 = cache.get('FOO');
+    const res4 = cache.get('BAR');
+
+    expect(res3).to.eql(123); // NB: Actual value stored, not the {Promise}.
+    expect(res4).to.eql(456);
+  });
+
   it('forces new retrieval of value (via args { force })', () => {
     let count = 0;
     const getValue = () => {
