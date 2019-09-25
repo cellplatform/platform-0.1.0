@@ -968,10 +968,10 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/cache@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/cache/-/cache-0.1.1.tgz#2d22cb77036d17b59b9f5ff6f6d7beb553016832"
-  integrity sha512-33mg25J0j03FL3joPY4qPaeGmlCh41mAEKNjSAckfjOP06cbM+h9HgpbHn0RXblZnENNWkIOiva4XeWZ5kYpgg==
+"@platform/cache@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/cache/-/cache-0.2.0.tgz#1112019633e2ba13f1c636a6c0c8530cede11c3b"
+  integrity sha512-7dq3Fvobo3XU6iu8irMywWDHjQjllBMsFVs0hdwZ86luod0+5crYc7LcFgWIfeVKbPe3ePItzL0gv/Jpg9coMg==
   dependencies:
     "@platform/libs" "0.1.3"
 
@@ -1216,34 +1216,34 @@
     codemirror "5.48.4"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.cell@0.0.128":
-  version "0.0.128"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.128.tgz#35a9b8c245ee91c85bee3ccf9f56dd4d02651215"
-  integrity sha512-JmbNsAZrwavd3ZphrCBNaUUuVo/lvyjaahjZ95L/Q+ueseDXjauY55By3+mVfpyhAx+TR0rWZLQFuhnWwgQpEQ==
+"@platform/ui.datagrid.cell@0.0.131":
+  version "0.0.131"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.cell/-/ui.datagrid.cell-0.0.131.tgz#071b21caae5741b699ed98c872d11c26196cf7f4"
+  integrity sha512-25hwHjBt7l18UDMvGeNXdN/lNxOMEJ9rosoXzblFjnrksyzgO9ootMSQpDfqec6a3Rvq/XDAC0j0hOEZHeegBA==
   dependencies:
     "@platform/react" "0.3.26"
     "@platform/ui.codemirror" "0.0.90"
-    "@platform/ui.datagrid.types" "0.6.15"
+    "@platform/ui.datagrid.types" "0.6.18"
     "@platform/ui.editor" "0.2.3"
     "@platform/ui.text" "0.3.0"
     "@platform/util.markdown" "0.0.42"
 
-"@platform/ui.datagrid.types@0.6.15", "@platform/ui.datagrid.types@^0.6.15":
-  version "0.6.15"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.15.tgz#9935a5414ec893ceeb5a79617d52a3fa96b47d8f"
-  integrity sha512-MtsHJFbI6ZmoKwM5qtcGUuVDD+qBTAJyZspDmHtRqNZ+3NTEAtD6bPJzr12RlAo4BtYL9YqGe0VYP6ixmXaJfg==
+"@platform/ui.datagrid.types@0.6.18", "@platform/ui.datagrid.types@^0.6.18":
+  version "0.6.18"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.18.tgz#f38789518001742bd68fbae70438bc67d3f48703"
+  integrity sha512-Bprk7mP9zxYf607hF4bBjziOzVvEWZO2qj/XBY8ptijFjE3Mxi3WqLRjom/1a9XwKUIuexvOpa/euLdmZI55Qg==
   dependencies:
     "@platform/react" "0.3.26"
-    "@platform/util.cell" "0.1.1"
+    "@platform/util.cell" "0.2.0"
     "@platform/util.diff" "0.0.1"
 
-"@platform/ui.datagrid.util@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.0.11.tgz#106585620dff7ee58b563272dcf7436457e90810"
-  integrity sha512-NveITAy83PugBM0Mz69cLO+238h7wNgDLXxJkdWdu/teBepZFg/0Irt5/gmvkdg8Opmk/3vcudVguxhXqBoiYg==
+"@platform/ui.datagrid.util@0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.0.14.tgz#124754fbe0934f41f116ac439e2cbc6052a5d449"
+  integrity sha512-Iz3IDdP4iUNxkkGjFluC6JERrGuGYWR13vtfeHk1GdoXWpYQcnFeDhHFHW6D1UJOAy8wCMc6CI+8BpbDiCRW4A==
   dependencies:
     "@platform/libs" "0.1.3"
-    "@platform/ui.datagrid.types" "^0.6.15"
+    "@platform/ui.datagrid.types" "^0.6.18"
     "@platform/util.diff" "^0.0.1"
     "@platform/util.hash" "^0.0.0"
 
@@ -1329,12 +1329,12 @@
     "@platform/libs" "0.1.3"
     dynamics.js "1.1.5"
 
-"@platform/util.cell@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.cell/-/util.cell-0.1.1.tgz#ddc49fe175e597e924005f5e36ae187323ff2fc1"
-  integrity sha512-gaWivImTf9mjmppoklkJKGXlQo5XY8cV5mmtb+9MgOxbSbGD4XMZOqlRvFnuoR+fVd8kpxJ3ts6ZmPKmRmEH5Q==
+"@platform/util.cell@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.cell/-/util.cell-0.2.0.tgz#981a28865fcd1bab73afc70439e09c5b6aca6291"
+  integrity sha512-bCgiPRFa0QbdJ9ETjuQj5ercRFuFyXCKE2ZpKRsP6K2yFJHPZxe9l/LAeOra2XBuiroKbD/dfWM2cedYRqisZQ==
   dependencies:
-    "@platform/cache" "0.1.1"
+    "@platform/cache" "0.2.0"
     "@platform/util.value" "0.5.5"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"

@@ -1062,10 +1062,10 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/cache@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/cache/-/cache-0.1.1.tgz#2d22cb77036d17b59b9f5ff6f6d7beb553016832"
-  integrity sha512-33mg25J0j03FL3joPY4qPaeGmlCh41mAEKNjSAckfjOP06cbM+h9HgpbHn0RXblZnENNWkIOiva4XeWZ5kYpgg==
+"@platform/cache@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/cache/-/cache-0.2.0.tgz#1112019633e2ba13f1c636a6c0c8530cede11c3b"
+  integrity sha512-7dq3Fvobo3XU6iu8irMywWDHjQjllBMsFVs0hdwZ86luod0+5crYc7LcFgWIfeVKbPe3ePItzL0gv/Jpg9coMg==
   dependencies:
     "@platform/libs" "0.1.3"
 
@@ -1182,12 +1182,12 @@
     "@platform/libs" "0.1.3"
     "@platform/types" "0.0.32"
 
-"@platform/graphql.server@0.1.43":
-  version "0.1.43"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.43.tgz#fe8270291336547888218e67841ad26e059f77ea"
-  integrity sha512-Dli4kDMUXC3H4eRsrFMKMxDjkt3qzb4ej99xSRCdzS/D6umubndlJQKwGpfAwDbIta110ItYIdYocB0jKaJ2xA==
+"@platform/graphql.server@0.1.45":
+  version "0.1.45"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.45.tgz#4a237e421564002c33b205f39e182f699b4decc7"
+  integrity sha512-UX4JoboCej8yHOhqdJpJfaQszAvz42Bj8uH+l2MsFZdQUXWdaumkKG/X4+ySvjS/On0iDN1xSKaNa3XfKTyljQ==
   dependencies:
-    "@platform/cache" "0.1.1"
+    "@platform/cache" "0.2.0"
     "@platform/graphql" "0.2.41"
     "@platform/libs" "0.1.3"
     "@platform/log" "0.0.145"
