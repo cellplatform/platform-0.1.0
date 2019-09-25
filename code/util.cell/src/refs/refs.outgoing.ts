@@ -8,7 +8,7 @@ import * as util from './util';
 export type IOutgoingArgs = {
   key: string;
   getValue: t.RefGetValue;
-  cache?: MemoryCache;
+  cache?: t.IMemoryCache;
 };
 
 /**

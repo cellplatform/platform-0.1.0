@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/cache@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/cache/-/cache-0.1.0.tgz#12cdc548180cd1aa9b3c2bed7c36e3f004725bf2"
-  integrity sha512-qPL3k+luAu+/dyEpex4YnqUgbg7LIfxriSsHDIHVbIrK2trMl5A0jIIRn0hkMr4ObYtO5l+Cn7yN0+fo2pkVig==
+"@platform/cache@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/cache/-/cache-0.1.1.tgz#2d22cb77036d17b59b9f5ff6f6d7beb553016832"
+  integrity sha512-33mg25J0j03FL3joPY4qPaeGmlCh41mAEKNjSAckfjOP06cbM+h9HgpbHn0RXblZnENNWkIOiva4XeWZ5kYpgg==
   dependencies:
     "@platform/libs" "0.1.3"
 
@@ -139,21 +139,21 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.32.tgz#ed64b33bd70d6491dfd1ac21eb0439f3e1f32a81"
   integrity sha512-n/J2QSvVdpK3Q4tz5Pdxq3ouovIzKvKzBD0FH7brtZNlH6TspBu6LTS/VVb/JH0Opi0O5hqKVRAgHEtMuqmb7A==
 
-"@platform/ui.datagrid.types@^0.6.14":
-  version "0.6.14"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.14.tgz#abd87ca0d5676a9a3b13b8ada562185fd9e5eae1"
-  integrity sha512-L/qksfj1F2Yib5GnnlYwycJoJorEzWK+q0y49WqBRP2nUpWjCk/PZrGGCiPm/unBm+hxjyJ4hXxMTnZO40V/DA==
+"@platform/ui.datagrid.types@^0.6.15":
+  version "0.6.15"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.15.tgz#9935a5414ec893ceeb5a79617d52a3fa96b47d8f"
+  integrity sha512-MtsHJFbI6ZmoKwM5qtcGUuVDD+qBTAJyZspDmHtRqNZ+3NTEAtD6bPJzr12RlAo4BtYL9YqGe0VYP6ixmXaJfg==
   dependencies:
     "@platform/react" "0.3.26"
-    "@platform/util.cell" "0.1.0"
+    "@platform/util.cell" "0.1.1"
     "@platform/util.diff" "0.0.1"
 
-"@platform/util.cell@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/util.cell/-/util.cell-0.1.0.tgz#721fcc6662cce3611df0693ff502ed8c71d83ec7"
-  integrity sha512-fvR1u30np7qQ+NApRGZP7P5pkBV6krObWiMnGaZc6W3kIzOB/2OaYXX+LVdzZw9A4NWhco3mYR8z2NE/X2x2+Q==
+"@platform/util.cell@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.cell/-/util.cell-0.1.1.tgz#ddc49fe175e597e924005f5e36ae187323ff2fc1"
+  integrity sha512-gaWivImTf9mjmppoklkJKGXlQo5XY8cV5mmtb+9MgOxbSbGD4XMZOqlRvFnuoR+fVd8kpxJ3ts6ZmPKmRmEH5Q==
   dependencies:
-    "@platform/cache" "0.1.0"
+    "@platform/cache" "0.1.1"
     "@platform/util.value" "0.5.5"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"

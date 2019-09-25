@@ -10,7 +10,7 @@ export type IIncomingArgs = {
   key: string;
   getValue: t.RefGetValue;
   getKeys: t.RefGetKeys;
-  cache?: MemoryCache;
+  cache?: t.IMemoryCache;
   // path?: string;
 };
 
