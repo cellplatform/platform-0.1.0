@@ -57,7 +57,9 @@ class RefsTable implements t.IRefsTable {
     const wait = keys.map(async key => {
       if (!cache[key] || args.force) {
         const refs = await outgoing({ key, getValue });
-        if (refs.length > 0) {
+        if (refs.length === 0) {
+          delete cache[key];
+        } else {
           cache[key] = refs;
         }
       }

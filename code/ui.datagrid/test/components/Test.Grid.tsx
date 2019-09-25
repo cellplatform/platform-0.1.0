@@ -38,32 +38,20 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   private testGrid!: TestGridView;
   private testGridRef = (ref: TestGridView) => (this.testGrid = ref);
 
-  // TEMP 🐷
-  private calcRefTemp = async (key: string) => {
-    const cell = this.grid.cell(key);
-    const value = cell.value;
-
-    if (typeof value === 'string') {
-      const getValue: t.RefGetValue = async key => {
-        const cell = this.grid.values[key];
-        return cell && typeof cell.value === 'string' ? cell.value : undefined;
-      };
-
-      const res = await coord.refs.outgoing({ key, getValue });
-
-      if (res.length > 0) {
-        const refs = { ...(this.state.refs || {}), [key]: res };
-        this.state$.next({ refs });
-      }
-    }
-  };
+  private refTable = coord.refs.table({
+    getKeys: async () => Object.keys(this.grid.values),
+    getValue: async key => {
+      const cell = this.grid.values[key];
+      return cell && typeof cell.value === 'string' ? cell.value : undefined;
+    },
+  });
 
   // TEMP 🐷
-  private calcRefsTemp = () => {
-    const values = this.grid.values;
-    Object.keys(values).forEach(key => {
-      this.calcRefTemp(key);
-    });
+  private calcRefsTemp = async () => {
+    const out = await this.refTable.outgoing({ force: false });
+
+    const refs = { ...(this.state.refs || {}), out };
+    this.state$.next({ refs });
   };
 
   /**
@@ -85,17 +73,22 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         map(e => e.payload as t.IGridCellsChange),
         delay(0),
       )
-      .subscribe(e => {
+      .subscribe(async e => {
         log.info('🐷 IGridCellsChanged', e);
 
         //  const value = e.
-        e.changes.forEach(change => {
-          // change.cell.key /
-          // console.log('change.cell', change.cell);
+        const wait = e.changes.map(async change => {
+          const key = change.cell.key;
+          const out = await this.refTable.outgoing({ force: true, range: `${key}:${key}` });
+
+          // NB: From here figure out how to re-calculate the cascade of references.
+
           console.group('🌳 ');
-          this.calcRefTemp(change.cell.key);
+          console.log('change', change);
           console.groupEnd();
         });
+        await Promise.all(wait);
+        this.calcRefsTemp(); // TEMP 🐷
 
         // e.cancel();
         // e.changes[0].modify('foo');
@@ -399,7 +392,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           theme={'DARK'}
         />
         <Hr color={1} />
-        <ObjectView name={'util.cell.refs'} data={this.state.refs} expandLevel={3} theme={'DARK'} />
+        <ObjectView name={'util.cell.refs'} data={this.state.refs} expandLevel={5} theme={'DARK'} />
         <Hr color={1} />
         <ObjectView name={'debug'} data={data.debug} expandPaths={['$']} theme={'DARK'} />
       </div>

@@ -6,7 +6,8 @@ type Table = t.ICoordTable<{ value: any }>;
 const testContext = (cells: Table) => {
   const getValue: t.RefGetValue = async (key: string) => {
     const cell = cells[key];
-    return cell ? cell.value : undefined;
+    const value = cell ? cell.value : undefined;
+    return typeof value === 'function' ? value() : value;
   };
 
   const getKeys: t.RefGetKeys = async () => Object.keys(cells);
@@ -69,55 +70,80 @@ describe.only('refs.table', () => {
       await fail('*:*');
     });
 
-    it('caching', async () => {
-      const ctx = testContext({
-        A1: { value: '=SUM(A2,C3)' },
-        A2: { value: 123 },
-        C3: { value: '=A2' },
+    describe('caching', () => {
+      it('read', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(A2,C3)' },
+          A2: { value: 123 },
+          C3: { value: '=A2' },
+        });
+        const table = refs.table({ ...ctx });
+
+        const res1 = await table.outgoing();
+        const res2 = await table.outgoing();
+
+        expect(res1).to.not.equal(res2); //   NB: Different root object.
+        expect(res1.A1).to.equal(res2.A1); // NB: Same ref instances (cached)
+        expect(res1.C3).to.equal(res2.C3);
+
+        // Force re-calculate.
+        const res3 = await table.outgoing({ force: true });
+        expect(res3.A1).to.not.equal(res1.A1); // NB: Different ref instances (force reset)
+        expect(res3.C3).to.not.equal(res1.C3);
+
+        expect(res1.A1).to.eql(res3.A1); // NB: Equivalent values.
+        expect(res1.C3).to.eql(res3.C3);
+
+        // Force re-calculate subset only.
+        const res4 = await table.outgoing({ range: 'A1:A1', force: true });
+        expect(res4.A1).to.not.equal(res3.A1);
+        expect(res4.C3).to.eql(undefined);
+
+        // Requery (pulls from cache).
+        const res5 = await table.outgoing();
+        expect(res5.A1).to.equal(res4.A1);
+        expect(res5.A1).to.not.equal(res3.A1);
       });
-      const table = refs.table({ ...ctx });
 
-      const res1 = await table.outgoing();
-      const res2 = await table.outgoing();
+      it('removed when cell updated', async () => {
+        let A1 = '=SUM(A2,C3)';
+        const ctx = testContext({
+          A1: { value: () => A1 },
+          A2: { value: 123 },
+          C3: { value: '=A2' },
+        });
+        const table = refs.table({ ...ctx });
 
-      expect(res1).to.not.equal(res2); //   NB: Different root object.
-      expect(res1.A1).to.equal(res2.A1); // NB: Same ref instances (cached)
-      expect(res1.C3).to.equal(res2.C3);
+        const res1 = await table.outgoing();
+        expect(res1.A1.length).to.eql(2);
 
-      // Force re-calculate.
-      const res3 = await table.outgoing({ force: true });
-      expect(res3.A1).to.not.equal(res1.A1); // NB: Different ref instances (force reset)
-      expect(res3.C3).to.not.equal(res1.C3);
+        A1 = '=C3';
+        const res2 = await table.outgoing({ range: 'A1:A1', force: true });
+        expect(res2.A1.length).to.eql(1);
+        expect(res2.A1[0].path).to.eql('A1/C3/A2');
 
-      expect(res1.A1).to.eql(res3.A1); // NB: Equivalent values.
-      expect(res1.C3).to.eql(res3.C3);
-
-      // Force re-calculate subset only.
-      const res4 = await table.outgoing({ range: 'A1:A1', force: true });
-      expect(res4.A1).to.not.equal(res3.A1);
-      expect(res4.C3).to.eql(undefined);
-
-      const res5 = await table.outgoing();
-      expect(res5.A1).to.equal(res4.A1);
-      expect(res5.A1).to.not.equal(res3.A1);
-    });
-
-    it('cache reset', async () => {
-      const ctx = testContext({
-        A1: { value: '=SUM(A2,C3)' },
-        A2: { value: 123 },
-        C3: { value: '=A2' },
+        A1 = 'hello';
+        const res3 = await table.outgoing({ range: 'A1:A1', force: true });
+        expect(res3).to.eql({});
       });
-      const table = refs.table({ ...ctx });
 
-      const res1 = await table.outgoing();
-      const res2 = await table.reset().outgoing();
+      it('reset (method)', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(A2,C3)' },
+          A2: { value: 123 },
+          C3: { value: '=A2' },
+        });
+        const table = refs.table({ ...ctx });
 
-      expect(res1.A1).to.not.equal(res2.A1);
-      expect(res1.A1).to.eql(res2.A1);
+        const res1 = await table.outgoing();
+        const res2 = await table.reset().outgoing();
 
-      expect(res1.C3).to.not.equal(res2.C3);
-      expect(res1.C3).to.eql(res2.C3);
+        expect(res1.A1).to.not.equal(res2.A1);
+        expect(res1.A1).to.eql(res2.A1);
+
+        expect(res1.C3).to.not.equal(res2.C3);
+        expect(res1.C3).to.eql(res2.C3);
+      });
     });
   });
 });
