@@ -187,7 +187,7 @@ export class Grid implements t.IGrid {
    * [Fields]
    */
   private readonly _ = {
-    cache: new MemoryCache(),
+    cache: MemoryCache.create(),
     table: (undefined as unknown) as Handsontable,
     dispose$: new Subject<{}>(),
     events$: new Subject<t.GridEvent>(),

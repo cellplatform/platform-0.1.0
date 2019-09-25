@@ -93,8 +93,7 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
 
   public clone() {
     const values = Object.keys(this.values).reduce((acc, key) => {
-      const item = this.values[key];
-      acc[key] = { ...item };
+      acc[key] = { ...this.values[key] };
       return acc;
     }, {});
     return new MemoryCache({ ttl: this.ttl, values });

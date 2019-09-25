@@ -206,7 +206,7 @@ describe('MemoryCache', () => {
     cache2.put('bar', 777);
     cache2.put('zoo', 111);
 
-    // Cached have diverged.
+    // Caches have diverged.
 
     expect(cache2.get('foo')).to.eql(888);
     expect(cache2.get('bar')).to.eql(777);

@@ -1,6 +1,6 @@
 import { MemoryCache } from '../common';
 
-const cache = new MemoryCache();
+const cache = MemoryCache.create();
 
 /**
  * Converts a number to an alphabetic character.
