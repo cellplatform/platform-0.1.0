@@ -65,8 +65,15 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
     return this;
   }
 
-  public clear() {
-    this.values = {};
+  public clear(args: { filter?: t.MemoryCacheFilter } = {}) {
+    const { filter } = args;
+    if (filter) {
+      Object.keys(this.values)
+        .filter(filter)
+        .forEach(key => delete this.values[key]);
+    } else {
+      this.values = {};
+    }
     return this;
   }
 

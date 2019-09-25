@@ -92,6 +92,17 @@ describe('MemoryCache', () => {
     expect(cache.get('BAR')).to.eql(undefined);
   });
 
+  it('clears subset (filter)', () => {
+    const cache = MemoryCache.create();
+    cache
+      .put('FOO/1', 1)
+      .put('FOO/2', 2)
+      .put('BAR/1', 1);
+    expect(cache.keys).to.eql(['FOO/1', 'FOO/2', 'BAR/1']);
+    cache.clear({ filter: key => key.startsWith('FOO/') });
+    expect(cache.keys).to.eql(['BAR/1']);
+  });
+
   it('expires values', async () => {
     const cache = new MemoryCache<MyKey>({ ttl: 5 });
 
