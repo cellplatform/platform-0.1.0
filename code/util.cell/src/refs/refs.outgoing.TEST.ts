@@ -338,7 +338,7 @@ describe('refs.outgoing', () => {
       const error = res[0].error as t.IRefError;
       expect(error.type).to.eql('CIRCULAR');
       expect(error.message).to.include(
-        'Range contains a cell that leads back to itself. (A1/B2/A1:B9)',
+        'Range contains a cell that leads back to itself (A1/B2/A1:B9)',
       );
     });
 
@@ -355,7 +355,7 @@ describe('refs.outgoing', () => {
       const error = res[0].error as t.IRefError;
       expect(error.type).to.eql('CIRCULAR');
       expect(error.message).to.include(
-        'Range contains a cell that leads back to itself. (A1/A1:B9)',
+        'Range contains a cell that leads back to itself (A1/A1:B9)',
       );
     });
   });
