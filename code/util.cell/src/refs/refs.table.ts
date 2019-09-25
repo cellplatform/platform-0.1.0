@@ -1,6 +1,7 @@
 import { t, MemoryCache } from '../common';
 import { range } from '../range';
 import { outgoing } from './refs.outgoing';
+import { incoming } from './refs.incoming';
 
 const CellRange = range.CellRange;
 
@@ -80,8 +81,28 @@ class RefsTable implements t.IRefsTable {
   /**
    * Calculate incoming references.
    */
-  public async incoming() {
-    // TEMP 🐷 todo
+  public async incoming(args: { range?: string; force?: boolean } = {}): Promise<t.IRefsIn> {
+    const { force } = args;
+    const cache = this.cache;
+    const getKeys = this.getKeys;
+
+    const res: t.IRefsIn = {};
+    const keys = await this.keys({ range: args.range });
+    if (keys.length === 0) {
+      return res;
+    }
+
+    const wait = keys.map(async key => {
+      const getValue = () => incoming({ key, getValue: this.getValue, getKeys });
+      const refs = await cache.getAsync(CACHE.key.out(key), { getValue, force });
+      if (refs.length > 0) {
+        res[key] = refs;
+      }
+      return refs;
+    });
+
+    await Promise.all(wait);
+    return res;
   }
 
   /**

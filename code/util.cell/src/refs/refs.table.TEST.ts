@@ -144,4 +144,55 @@ describe('refs.table', () => {
       });
     });
   });
+
+  describe('incoming', () => {
+    it('empty', async () => {
+      const ctx = testContext({});
+      const table = refs.table({ ...ctx });
+      const res = await table.incoming();
+      expect(res).to.eql({});
+    });
+
+    it('calculate references', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+      const res = await table.incoming();
+
+      expect(Object.keys(res)).to.eql(['A2', 'C3']);
+
+      expect(res.A2[0].cell).to.eql('C3');
+      expect(res.A2[1].cell).to.eql('A1');
+      expect(res.C3[0].cell).to.eql('A1');
+    });
+
+    it('cache', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+
+      const table = refs.table({ ...ctx });
+      const res1 = await table.incoming();
+      const res2 = await table.incoming();
+      const res3 = await table.incoming({ force: true });
+
+      expect(res1.A2).to.not.eql(undefined);
+
+      expect(res1.A2).to.equal(res2.A2);
+      expect(res2.A2).to.not.equal(res3.A2); // Different instance - forced from cache.
+
+      const res4 = await table.incoming();
+      expect(res3.A2).to.equal(res4.A2);
+
+      table.reset();
+
+      const res5 = await table.incoming();
+      expect(res4.A2).to.not.equal(res5.A2);
+    });
+  });
 });

@@ -1,7 +1,6 @@
 import { expect } from 'chai';
-
 import { refs } from '.';
-import { t } from '../common';
+import { t, MemoryCache } from '../common';
 
 type Table = t.ICoordTable<{ value: any }>;
 const testContext = (cells: Table) => {
@@ -14,23 +13,50 @@ const testContext = (cells: Table) => {
   return { getKeys, getValue };
 };
 
-describe.only('refs.incoming', () => {
+describe('refs.incoming', () => {
   it('empty', async () => {
-    const ctx = testContext({});
+    const ctx = testContext({
+      D5: { value: 123 },
+    });
     const res = await refs.incoming({ key: 'A1', ...ctx });
     expect(res).to.eql([]);
   });
 
-  it.only('calculate all', async () => {
+  it('calculate all', async () => {
     const ctx = testContext({
       A1: { value: '=SUM(A2,D5)' },
       A2: { value: '=D5' },
-      D5: { value: 456 },
+      D5: { value: 123 },
+      D6: { value: 456 },
     });
 
-    const res = await refs.incoming({ key: 'D5', ...ctx });
+    const res1 = await refs.incoming({ key: 'A1', ...ctx });
+    const res2 = await refs.incoming({ key: 'A2', ...ctx });
+    const res3 = await refs.incoming({ key: 'D5', ...ctx });
 
-    console.log('-------------------------------------------');
-    console.log('res', res);
+    expect(res1).to.eql([]);
+    expect(res2.map(ref => ref.cell)).to.eql(['A1']);
+    expect(res3.map(ref => ref.cell)).to.eql(['A2', 'A1']);
+  });
+
+  it('cache', async () => {
+    const ctx = testContext({
+      A1: { value: '=SUM(A2,D5)' },
+      A2: { value: '=D5' },
+      D5: { value: 123 },
+    });
+
+    const cache = MemoryCache.create();
+    const res1 = await refs.incoming({ key: 'D5', ...ctx });
+    const res2 = await refs.incoming({ key: 'D5', ...ctx, cache });
+    const res3 = await refs.incoming({ key: 'D5', ...ctx, cache });
+
+    // Cached instance comparison.
+    expect(res1).to.not.equal(res2);
+    expect(res2).to.equal(res3); // NB: Cached.
+
+    // Cached value comparison.
+    expect(res1).to.eql(res2);
+    expect(res2).to.eql(res3);
   });
 });

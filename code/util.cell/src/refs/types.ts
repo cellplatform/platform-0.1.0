@@ -19,6 +19,7 @@ export type IRefs = {
  */
 export type IRefsTable = {
   outgoing(args?: { range?: string; force?: boolean }): Promise<IRefsOut>;
+  incoming(args?: { range?: string; force?: boolean }): Promise<IRefsIn>;
   reset(): IRefsTable;
 };
 
@@ -38,7 +39,7 @@ export type IRefOut = {
  * Incoming
  */
 export type IRefsIn = { [key: string]: IRefIn[] };
-export type IRefIn = { path: string };
+export type IRefIn = { cell: string };
 
 /**
  * Error

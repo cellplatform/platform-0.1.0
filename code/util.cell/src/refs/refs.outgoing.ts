@@ -11,14 +11,16 @@ export type IOutgoingArgs = {
   cache?: t.IMemoryCache;
 };
 
-const CACHE_PREFIX = 'REFS/out/';
+const CACHE = {
+  PREFIX: 'REFS/out/',
+};
 
 /**
  * Calculate outgoing refs for given cell.
  */
 export async function outgoing(args: IOutgoingArgs): Promise<t.IRefOut[]> {
   const { cache } = args;
-  const cacheKey = `${CACHE_PREFIX}${args.key}`;
+  const cacheKey = `${CACHE.PREFIX}${args.key}`;
   if (cache && cache.exists(cacheKey)) {
     return cache.get(cacheKey);
   }
