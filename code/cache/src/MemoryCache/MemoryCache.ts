@@ -3,6 +3,9 @@ import { takeUntil } from 'rxjs/operators';
 import * as t from '../types';
 
 export type IMemoryCacheArgs = { ttl?: number };
+
+type CacheValues = { [key: string]: CacheItem<any> };
+
 type CacheItem<V> = {
   value?: V;
   put$: Subject<{}>;
@@ -15,14 +18,15 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
   public static create<K extends string = string>(args?: IMemoryCacheArgs): t.IMemoryCache<K> {
     return new MemoryCache<K>(args);
   }
-  public constructor(args: IMemoryCacheArgs = {}) {
+  private constructor(args: IMemoryCacheArgs & { values?: CacheValues } = {}) {
     this.ttl = args.ttl;
+    this.values = args.values || {};
   }
 
   /**
    * [Fields]
    */
-  private values: { [key: string]: CacheItem<any> } = {};
+  private values: CacheValues;
   public readonly ttl: number | undefined;
 
   /**
@@ -85,6 +89,15 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
       this.values = {};
     }
     return this;
+  }
+
+  public clone() {
+    const values = Object.keys(this.values).reduce((acc, key) => {
+      const item = this.values[key];
+      acc[key] = { ...item };
+      return acc;
+    }, {});
+    return new MemoryCache({ ttl: this.ttl, values });
   }
 
   /**

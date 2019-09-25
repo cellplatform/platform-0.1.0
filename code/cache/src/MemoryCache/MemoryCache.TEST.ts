@@ -5,7 +5,7 @@ describe('MemoryCache', () => {
   type MyKey = 'FOO' | 'BAR';
 
   it('loose key type (not defined)', async () => {
-    const cache = new MemoryCache();
+    const cache = MemoryCache.create();
     expect(cache.get('FOO')).to.eql(undefined);
   });
 
@@ -151,7 +151,7 @@ describe('MemoryCache', () => {
   });
 
   it('expires values', async () => {
-    const cache = new MemoryCache<MyKey>({ ttl: 5 });
+    const cache = MemoryCache.create<MyKey>({ ttl: 5 });
 
     cache.put('FOO', 1).put('BAR', 2);
     expect(cache.get('FOO')).to.eql(1);
@@ -163,7 +163,7 @@ describe('MemoryCache', () => {
   });
 
   it('clears expiry timer when putting new value', async () => {
-    const cache = new MemoryCache<MyKey>({ ttl: 10 });
+    const cache = MemoryCache.create<MyKey>({ ttl: 10 });
 
     cache.put('FOO', 1);
     await wait(5);
@@ -182,6 +182,39 @@ describe('MemoryCache', () => {
     expect(cache.exists('FOO')).to.eql(false);
     cache.put('FOO', 123);
     expect(cache.exists('FOO')).to.eql(true);
+  });
+
+  it('clones', () => {
+    const cache1 = MemoryCache.create({ ttl: 999 }).put('foo', 123);
+    const cache2 = cache1.clone();
+
+    expect(cache1).to.not.equal(cache2);
+
+    expect(cache2.ttl).to.eql(999);
+    expect(cache2.keys).to.eql(cache1.keys);
+
+    cache1.put('foo', 'changed');
+    cache1.put('bar', 456);
+
+    expect(cache1.keys).to.eql(['foo', 'bar']);
+    expect(cache2.keys).to.eql(['foo']);
+
+    expect(cache1.get('foo')).to.eql('changed');
+    expect(cache2.get('foo')).to.eql(123);
+
+    cache2.put('foo', 888);
+    cache2.put('bar', 777);
+    cache2.put('zoo', 111);
+
+    // Cached have diverged.
+
+    expect(cache2.get('foo')).to.eql(888);
+    expect(cache2.get('bar')).to.eql(777);
+    expect(cache2.get('zoo')).to.eql(111);
+
+    expect(cache1.get('foo')).to.eql('changed');
+    expect(cache1.get('bar')).to.eql(456);
+    expect(cache1.get('zoo')).to.eql(undefined);
   });
 });
 

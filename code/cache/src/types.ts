@@ -15,4 +15,5 @@ export type IMemoryCache<K extends string = string> = {
   put<V>(key: K, value: V): IMemoryCache<K>;
   delete(key: K): IMemoryCache<K>;
   clear(args?: { filter?: MemoryCacheFilter }): IMemoryCache<K>;
+  clone(): IMemoryCache<K>;
 };
