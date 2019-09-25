@@ -12,7 +12,7 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
   /**
    * [Lifecycle]
    */
-  public static create<K extends string = string>(args?: IMemoryCacheArgs) {
+  public static create<K extends string = string>(args?: IMemoryCacheArgs): t.IMemoryCache<K> {
     return new MemoryCache<K>(args);
   }
   public constructor(args: IMemoryCacheArgs = {}) {
@@ -22,8 +22,15 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
   /**
    * [Fields]
    */
-  private readonly values: { [key: string]: CacheItem<any> } = {};
+  private values: { [key: string]: CacheItem<any> } = {};
   public readonly ttl: number | undefined;
+
+  /**
+   * [Properties]
+   */
+  public get keys() {
+    return Object.keys(this.values);
+  }
 
   /**
    * [Methods]
@@ -59,7 +66,7 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
   }
 
   public clear() {
-    Object.keys(this.values).forEach(key => delete this.values[key]);
+    this.values = {};
     return this;
   }
 

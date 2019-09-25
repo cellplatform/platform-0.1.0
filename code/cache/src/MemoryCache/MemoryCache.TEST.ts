@@ -16,12 +16,12 @@ describe('MemoryCache', () => {
   });
 
   it('retrieves default value', () => {
-    const cache = new MemoryCache<MyKey>();
+    const cache = MemoryCache.create<MyKey>();
     expect(cache.get('FOO', () => 123)).to.eql(123);
   });
 
   it('caches a default value', () => {
-    const cache = new MemoryCache<MyKey>();
+    const cache = MemoryCache.create<MyKey>();
     const res1 = cache.get('FOO');
     const res2 = cache.get('FOO', () => 123);
     const res3 = cache.get('FOO');
@@ -32,13 +32,13 @@ describe('MemoryCache', () => {
   });
 
   it('does not retreive default value', () => {
-    const cache = new MemoryCache<MyKey>();
+    const cache = MemoryCache.create<MyKey>();
     cache.put('FOO', 888);
     expect(cache.get('FOO', () => 123)).to.eql(888);
   });
 
   it('retrieves cached value', () => {
-    const cache = new MemoryCache<MyKey>();
+    const cache = MemoryCache.create<MyKey>();
 
     cache
       .put('FOO', 1)
@@ -49,8 +49,25 @@ describe('MemoryCache', () => {
     expect(cache.get('BAR')).to.eql(3);
   });
 
+  it('keys', () => {
+    const cache = MemoryCache.create<MyKey>();
+    expect(cache.keys).to.eql([]);
+
+    expect(cache.get('FOO', () => 123)).to.eql(123);
+    expect(cache.keys).to.eql(['FOO']);
+
+    cache.put('BAR', 456);
+    expect(cache.keys).to.eql(['FOO', 'BAR']);
+
+    cache.delete('FOO');
+    expect(cache.keys).to.eql(['BAR']);
+
+    cache.clear();
+    expect(cache.keys).to.eql([]);
+  });
+
   it('deletes cached value', () => {
-    const cache = new MemoryCache<MyKey>();
+    const cache = MemoryCache.create<MyKey>();
     cache.put('FOO', 1).put('BAR', 2);
     expect(cache.get('FOO')).to.eql(1);
     expect(cache.get('BAR')).to.eql(2);
@@ -65,7 +82,7 @@ describe('MemoryCache', () => {
   });
 
   it('clears cache', () => {
-    const cache = new MemoryCache<MyKey>();
+    const cache = MemoryCache.create<MyKey>();
     cache.put('FOO', 1).put('BAR', 2);
     expect(cache.get('FOO')).to.eql(1);
     expect(cache.get('BAR')).to.eql(2);
@@ -103,7 +120,7 @@ describe('MemoryCache', () => {
   });
 
   it('exists', () => {
-    const cache = new MemoryCache<MyKey>();
+    const cache = MemoryCache.create<MyKey>();
     expect(cache.exists('FOO')).to.eql(false);
     cache.put('FOO', 123);
     expect(cache.exists('FOO')).to.eql(true);

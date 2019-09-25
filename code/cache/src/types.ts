@@ -1,5 +1,6 @@
 export type IMemoryCache<K extends string = string> = {
-  ttl: number | undefined;
+  readonly ttl: number | undefined;
+  readonly keys: string[];
   exists(key: K): boolean;
   get<V>(key: K, defaultValue?: () => V): V;
   put<V>(key: K, value: V): IMemoryCache<K>;
