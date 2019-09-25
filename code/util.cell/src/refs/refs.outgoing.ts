@@ -1,14 +1,9 @@
-import { R, t } from '../common';
-import { formula } from '../formula';
 import { ast } from '../ast';
 import { cell } from '../cell';
+import { t } from '../common';
+import { formula } from '../formula';
 import { range } from '../range';
-
-/**
- * TODO 🐷
- * - source (type)
- * - memory `cache` passed through `ctx`
- */
+import * as util from './util';
 
 /**
  * Calculate outgoing refs for given cell.
@@ -19,7 +14,7 @@ export async function outgoing(args: {
   path?: string;
 }): Promise<t.IRefOut[]> {
   const done = (refs: t.IRefOut[]) => {
-    refs = deleteUndefined('error', refs);
+    refs = util.deleteUndefined('error', refs);
     return refs;
   };
 
@@ -157,7 +152,7 @@ async function outgoingFunc(args: {
   let error: t.IRefError | undefined;
 
   const wait = node.arguments.map(async (param, i) => {
-    if (isValueNode(param)) {
+    if (util.isValueNode(param)) {
       return undefined; // An actual value, not a reference!
     }
 
@@ -229,11 +224,14 @@ async function outgoingBinaryExpression(args: {
   const { getValue, path } = args;
 
   let index = 0;
-  const toParts = async (expr: ast.BinaryExpressionNode, path: string) => {
+  const toRefs = async (expr: ast.BinaryExpressionNode, path: string) => {
     let parts: t.IRefOut[] = [];
     const parseEdge = async (node: ast.Node, path: string) => {
       if (node.type === 'binary-expression') {
-        parts = [...parts, ...(await toParts(node, path))]; // <== RECURSION 🌳
+        parts = [
+          ...parts,
+          ...(await toRefs(node, path)), // <== RECURSION 🌳
+        ];
       } else {
         if (node.type === 'cell') {
           const res = await outgoingCell({ getValue, node, path });
@@ -250,33 +248,5 @@ async function outgoingBinaryExpression(args: {
     return parts;
   };
 
-  return toParts(args.node, path);
-}
-
-/**
- * [Helpers]
- */
-
-/**
- *  binary-expression    1+2
- *  cell                 =A1
- *  cell-range           A1:B9
- *  function             =SUM(1,2,3)
- *  logical              TRUE/FALSE
- *  number               123
- *  text                 "hello"
- *  unary-expression     -TRUE
- */
-const VALUE_TYPES: Array<ast.Node['type']> = ['number', 'text', 'logical', 'unary-expression'];
-function isValueNode(node: ast.Node) {
-  return VALUE_TYPES.includes(node.type);
-}
-
-function deleteUndefined<T>(field: keyof T, items: T[]) {
-  items.forEach(ref => {
-    if (ref[field] === undefined) {
-      delete ref[field];
-    }
-  });
-  return items;
+  return toRefs(args.node, path);
 }

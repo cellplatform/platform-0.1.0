@@ -38,7 +38,7 @@ export type IRefOut = {
  * Incoming
  */
 export type IRefsIn = { [key: string]: IRefIn[] };
-export type IRefIn = {};
+export type IRefIn = { path: string };
 
 /**
  * Error

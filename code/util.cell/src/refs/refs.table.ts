@@ -44,6 +44,10 @@ class RefsTable implements t.IRefsTable {
   /**
    * [Methods]
    */
+
+  /**
+   * Calculate outgoing references.
+   */
   public async outgoing(args: { range?: string; force?: boolean } = {}): Promise<t.IRefsOut> {
     const getValue = this.getValue;
     const cache = this.cache.refs.out;
@@ -72,6 +76,16 @@ class RefsTable implements t.IRefsTable {
     return res;
   }
 
+  /**
+   * Calculate incoming references.
+   */
+  public async incoming() {
+    // TEMP 🐷 todo
+  }
+
+  /**
+   * Clear the cache.
+   */
   public reset() {
     this.cache.refs = { in: {}, out: {} };
     this.cache.ranges = {};
