@@ -101,7 +101,7 @@ async function outgoingCell(args: {
   if (path.split('/').includes(key)) {
     error = {
       type: 'CIRCULAR',
-      message: `Cell reference leads back to itself (${path}).`,
+      message: `Cell reference leads back to itself (${path})`,
     };
   }
 
@@ -155,7 +155,7 @@ async function outgoingRange(args: {
   if (isCircular) {
     ref.error = {
       type: 'CIRCULAR',
-      message: `Range contains a cell that leads back to itself. (${path})`,
+      message: `Range contains a cell that leads back to itself (${path})`,
     };
   }
 
@@ -191,7 +191,7 @@ async function outgoingFunc(args: {
       if (isCircular && !error) {
         error = {
           type: 'CIRCULAR',
-          message: `Range contains a cell that leads back to itself. (${path})`,
+          message: `Range contains a cell that leads back to itself (${path})`,
         };
       }
       const ref: t.IRefOut = { target: 'RANGE', path, param: i, error };
@@ -209,7 +209,7 @@ async function outgoingFunc(args: {
     if (isCircular && !error) {
       error = {
         type: 'CIRCULAR',
-        message: `Function parameter ${i} contains a reference that leads back to itself. (${path})`,
+        message: `Function parameter ${i} contains a reference that leads back to itself (${path})`,
       };
     }
 
