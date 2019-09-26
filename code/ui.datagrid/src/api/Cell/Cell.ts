@@ -59,12 +59,14 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
   public static changeEvent(args: { cell: t.ICell; from?: t.IGridCell; to?: t.IGridCell }) {
     const { cell, from, to } = args;
     const value = { from, to };
-    const isChanged = !R.equals(value.from, value.to);
+    let isChanged: boolean | undefined;
 
     const payload: t.IGridCellChange = {
       cell,
       value,
-      isChanged,
+      get isChanged() {
+        return isChanged === undefined ? (isChanged = !R.equals(value.from, value.to)) : isChanged;
+      },
       isCancelled: false,
       isModified: false,
       cancel() {
