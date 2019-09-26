@@ -14,6 +14,21 @@ const testContext = (cells: Table) => {
 };
 
 describe('refs.table', () => {
+  describe('refs', () => {
+    it.only('both incoming/outgoing', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3,Z9)' },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+      const res = await table.refs();
+
+      expect(Object.keys(res.in)).to.eql(['A2', 'C3', 'Z9']); // NB: "Z9" included even though does not exist in the grid.
+      expect(Object.keys(res.out)).to.eql(['C3', 'A1']);
+    });
+  });
+
   describe('outgoing', () => {
     it('empty', async () => {
       const ctx = testContext({});
@@ -185,6 +200,24 @@ describe('refs.table', () => {
       expect(Object.keys(res2)).to.eql(['C3', 'A2']);
     });
 
+    it('incoming ref to undefined cell (hints from passed in `outgoing` param)', async () => {
+      const ctx = testContext({
+        A1: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = await table.incoming();
+      expect(res1).to.eql({}); // NB: The undefined cell (A2) was not picked up (because it was not returned by `getKeys`).
+
+      // Pass in a set of `outgoing-refs` to include in key evaluation.
+      const outRefs = await table.outgoing();
+      const res2 = await table.incoming({ outRefs, force: true });
+
+      expect(Object.keys(res2)).to.eql(['A2']);
+      expect(res2.A2.length).to.eql(1);
+      expect(res2.A2[0].cell).to.eql('A1');
+    });
+
     it('cache', async () => {
       let A1 = '=SUM(A2,C3)';
       const ctx = testContext({
@@ -224,7 +257,74 @@ describe('refs.table', () => {
     });
   });
 
-  describe('reset (cache)', () => {
+  describe('cache', () => {
+    it('not cached', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = table.cached({ key: 'A1' });
+      const res2 = table.cached('A2');
+      const res3 = table.cached('A3');
+
+      expect(res1).to.eql([]);
+      expect(res2).to.eql([]);
+      expect(res3).to.eql([]);
+    });
+
+    it('is cached', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      // Cache empty.
+      expect(table.cached('A1')).to.eql([]);
+      expect(table.cached('A2')).to.eql([]);
+      expect(table.cached('C3')).to.eql([]);
+      expect(table.cached('Z9')).to.eql([]);
+
+      // OUTGOING items cached.
+      await table.outgoing();
+      expect(table.cached('A1')).to.eql(['OUT']);
+      expect(table.cached('A2')).to.eql(['OUT']);
+      expect(table.cached('C3')).to.eql(['OUT']);
+      expect(table.cached('Z9')).to.eql([]);
+
+      // Cache empty.
+      table.reset();
+      expect(table.cached('A1')).to.eql([]);
+      expect(table.cached('A2')).to.eql([]);
+      expect(table.cached('C3')).to.eql([]);
+      expect(table.cached('Z9')).to.eql([]);
+
+      // INCOMING items cached.
+      await table.incoming();
+      expect(table.cached('A1')).to.eql(['IN']);
+      expect(table.cached('A2')).to.eql(['IN']);
+      expect(table.cached('C3')).to.eql(['IN']);
+      expect(table.cached('Z9')).to.eql([]);
+
+      // Cache empty.
+      table.reset();
+      expect(table.cached('A1')).to.eql([]);
+      expect(table.cached('A2')).to.eql([]);
+      expect(table.cached('C3')).to.eql([]);
+      expect(table.cached('Z9')).to.eql([]);
+
+      // INCOMING/OUTGOING items cached.
+      await table.refs();
+      expect(table.cached('A1')).to.eql(['IN', 'OUT']);
+      expect(table.cached('A2')).to.eql(['IN', 'OUT']);
+      expect(table.cached('C3')).to.eql(['IN', 'OUT']);
+      expect(table.cached('Z9')).to.eql([]);
+    });
+
     it('.reset() - everything', async () => {
       const ctx = testContext({
         A1: { value: '=SUM(A2,C3)' },

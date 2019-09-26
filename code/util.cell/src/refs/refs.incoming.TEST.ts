@@ -39,6 +39,14 @@ describe('refs.incoming', () => {
     expect(res3.map(ref => ref.cell)).to.eql(['A2', 'A1']);
   });
 
+  it('incoming ref to undefined cell', async () => {
+    const ctx = testContext({
+      A1: { value: '=A4' },
+    });
+    const res = await refs.incoming({ key: 'A4', ...ctx });
+    expect(res.map(ref => ref.cell)).to.eql(['A1']);
+  });
+
   it('cache', async () => {
     const ctx = testContext({
       A1: { value: '=SUM(A2,D5)' },

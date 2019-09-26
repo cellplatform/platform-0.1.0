@@ -1,4 +1,4 @@
-import { t, MemoryCache } from '../common';
+import { t, MemoryCache, R } from '../common';
 import { range } from '../range';
 import { outgoing } from './refs.outgoing';
 import { incoming } from './refs.incoming';
@@ -66,22 +66,29 @@ class RefsTable implements t.IRefsTable {
    * Calculate incoming/outgoing references.
    */
   public async refs(args: { range?: string; force?: boolean } = {}): Promise<t.IRefs> {
+    const outRefs = await this.outgoing(args);
+    const inRefs = await this.incoming({ ...args, outRefs });
+
     return {
-      in: await this.incoming(args),
-      out: await this.outgoing(args),
+      in: inRefs,
+      out: outRefs,
     };
   }
 
   /**
    * Calculate incoming references.
    */
-  public async incoming(args: { range?: string; force?: boolean } = {}): Promise<t.IRefsIn> {
+  public async incoming(
+    args: { range?: string; force?: boolean; outRefs?: t.IRefsOut } = {},
+  ): Promise<t.IRefsIn> {
+    const { range, outRefs } = args;
     const getValue = this.getValue;
-    const getKeys = this.getKeys;
+    const keys = await this.keys({ range, outRefs });
     return this.calc<t.IRefIn>({
       ...args,
+      keys,
       cache: key => CACHE.key('IN', key),
-      find: key => incoming({ key, getValue, getKeys }),
+      find: key => incoming({ key, getValue, getKeys: async () => keys }),
     });
   }
 
@@ -89,9 +96,12 @@ class RefsTable implements t.IRefsTable {
    * Calculate outgoing references.
    */
   public async outgoing(args: { range?: string; force?: boolean } = {}): Promise<t.IRefsOut> {
+    const { range } = args;
     const getValue = this.getValue;
+    const keys = await this.keys({ range });
     return this.calc<t.IRefOut>({
       ...args,
+      keys,
       cache: key => CACHE.key('OUT', key),
       find: key => outgoing({ key, getValue }),
     });
@@ -107,19 +117,28 @@ class RefsTable implements t.IRefsTable {
   }
 
   /**
+   * Determines if refs for the specified cell is cached.
+   */
+  public cached(args: { key: string }) {
+    const { key } = typeof args === 'object' ? args : { key: args };
+    return [
+      this.cache.exists(CACHE.key('IN', key)) ? 'IN' : undefined,
+      this.cache.exists(CACHE.key('OUT', key)) ? 'OUT' : undefined,
+    ].filter(e => Boolean(e)) as t.RefDirection[];
+  }
+
+  /**
    * [Internal]
    */
 
   private async calc<T>(args: {
+    keys: string[];
     cache: (key: string) => string;
     find: (key: string) => Promise<T[]>;
-    range?: string;
     force?: boolean;
   }): Promise<{ [key: string]: T[] }> {
-    const { force, range } = args;
+    const { keys, force } = args;
     const res: { [key: string]: T[] } = {};
-
-    const keys = await this.keys({ range });
     if (keys.length === 0) {
       return res;
     }
@@ -137,13 +156,25 @@ class RefsTable implements t.IRefsTable {
     return res;
   }
 
-  private async keys(args: { range?: string }) {
-    const keys = await this.getKeys();
-    if (args.range) {
-      return this.validRange(args.range).keys.filter(key => keys.includes(key));
-    } else {
-      return keys;
+  private async keys(args: { range?: string; outRefs?: t.IRefsOut }) {
+    const { range, outRefs } = args;
+    let keys = await this.getKeys();
+    if (range) {
+      // Narrow on range (if given).
+      keys = this.validRange(range).keys.filter(key => keys.includes(key));
     }
+    if (outRefs) {
+      // Merge in keys from outgoing-refs (if given).
+      Object.keys(outRefs)
+        .map(key => outRefs[key])
+        .forEach(items => {
+          items.forEach(item => {
+            keys = [...keys, ...item.path.split('/')];
+          });
+        });
+      keys = R.uniq(keys);
+    }
+    return keys;
   }
 
   private validRange(input: string): range.CellRange {

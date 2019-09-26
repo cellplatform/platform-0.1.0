@@ -21,8 +21,9 @@ export type IRefs = {
 export type IRefsTable = {
   refs(args?: { range?: string; force?: boolean }): Promise<IRefs>;
   outgoing(args?: { range?: string; force?: boolean }): Promise<IRefsOut>;
-  incoming(args?: { range?: string; force?: boolean }): Promise<IRefsIn>;
+  incoming(args?: { range?: string; force?: boolean; outRefs?: IRefsOut }): Promise<IRefsIn>;
   reset(args?: { cache?: RefDirection[] }): IRefsTable;
+  cached(args: string | { key: string }): RefDirection[];
 };
 
 /**
