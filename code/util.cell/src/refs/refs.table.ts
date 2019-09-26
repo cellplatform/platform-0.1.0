@@ -119,13 +119,14 @@ class RefsTable implements t.IRefsTable {
   /**
    * Determines if refs for the specified cell is cached.
    */
-  public cached(args: { key: string }) {
-    const { key } = typeof args === 'object' ? args : { key: args };
-    return [
-      this.cache.exists(CACHE.key('IN', key)) ? 'IN' : undefined,
-      this.cache.exists(CACHE.key('OUT', key)) ? 'OUT' : undefined,
-    ].filter(e => Boolean(e)) as t.RefDirection[];
-  }
+  // TEMP 🐷 - DELETE
+  // public cached(args: { key: string }) {
+  //   const { key } = typeof args === 'object' ? args : { key: args };
+  //   return [
+  //     this.cache.exists(CACHE.key('IN', key)) ? 'IN' : undefined,
+  //     this.cache.exists(CACHE.key('OUT', key)) ? 'OUT' : undefined,
+  //   ].filter(e => Boolean(e)) as t.RefDirection[];
+  // }
 
   /**
    * [Internal]

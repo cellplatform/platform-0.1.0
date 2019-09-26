@@ -23,7 +23,9 @@ export type IRefsTable = {
   outgoing(args?: { range?: string; force?: boolean }): Promise<IRefsOut>;
   incoming(args?: { range?: string; force?: boolean; outRefs?: IRefsOut }): Promise<IRefsIn>;
   reset(args?: { cache?: RefDirection[] }): IRefsTable;
-  cached(args: string | { key: string }): RefDirection[];
+
+  // TEMP 🐷
+  // cached(args: string | { key: string }): RefDirection[];
 };
 
 /**
