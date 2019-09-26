@@ -1,4 +1,4 @@
-import { expect, expectError } from '@platform/test';
+import { expect } from '@platform/test';
 import { refs } from '.';
 import { t } from '../common';
 
@@ -53,7 +53,7 @@ describe('refs.table', () => {
       expect(res.A2[0].path).to.eql('A2/D5');
     });
 
-    it('calculate subset (range)', async () => {
+    it('calculate subset (range: "A:A")', async () => {
       const ctx = testContext({
         A1: { value: '=SUM(A2,D5)' },
         A2: { value: 123 },
@@ -62,10 +62,56 @@ describe('refs.table', () => {
       const table = refs.table({ ...ctx });
 
       const res1 = await table.outgoing();
-      const res2 = await table.outgoing({ range: 'A1:A99' });
+      const res2 = await table.outgoing({ range: 'A1:A99', force: true });
+      const res3 = await table.outgoing({ range: 'A:A', force: true }); // NB: Range input variants.
+      const res4 = await table.outgoing({ range: 'A', force: true });
 
       expect(Object.keys(res1)).to.eql(['D5', 'A1']);
       expect(Object.keys(res2)).to.eql(['A1']);
+      expect(Object.keys(res3)).to.eql(['A1']);
+      expect(Object.keys(res4)).to.eql(['A1']);
+
+      // Everything.
+      expect(res1.A1[0].path).to.eql('A1/A2');
+      expect(res1.A1[1].path).to.eql('A1/D5/A2');
+      expect(res1.D5[0].path).to.eql('D5/A2');
+
+      // Subset range (column "A").
+      expect(res2.A1[0].path).to.eql('A1/A2');
+      expect(res2.A1[1].path).to.eql('A1/D5/A2');
+      expect(res2.D5).to.eql(undefined);
+    });
+
+    it('calculate subset (range by key: ["A1", "A2"])', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,D5)' },
+        A2: { value: 123 },
+        D5: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      // Everything.
+      const res1 = await table.outgoing();
+      expect(Object.keys(res1)).to.eql(['D5', 'A1']);
+      expect(res1.A1[0].path).to.eql('A1/A2');
+      expect(res1.A1[1].path).to.eql('A1/D5/A2');
+      expect(res1.D5[0].path).to.eql('D5/A2');
+
+      // Subset by key.
+      const res2 = await table.outgoing({ range: 'A1', force: true });
+      const res3 = await table.outgoing({ range: ['A1', 'A2'], force: true });
+      expect(res2).to.eql(res3);
+      expect(res3.A1[0].path).to.eql('A1/A2');
+      expect(res3.A1[1].path).to.eql('A1/D5/A2');
+      expect(res3.D5).to.eql(undefined);
+
+      const res4 = await table.outgoing({ range: ['D5'], force: true });
+      expect(res4.A1).to.eql(undefined);
+      expect(res4.D5[0].path).to.eql('D5/A2');
+
+      // Everything (by key).
+      const res5 = await table.outgoing({ range: ['A1', 'A2', 'D5'], force: true });
+      expect(res1).to.eql(res5);
     });
 
     describe('caching', () => {
@@ -169,7 +215,7 @@ describe('refs.table', () => {
       expect(res.C3[0].cell).to.eql('A1');
     });
 
-    it('calculate subset (range: A:A)', async () => {
+    it('calculate subset (range: "A:A")', async () => {
       const A1 = '=SUM(A2,C3)';
       const ctx = testContext({
         A1: { value: () => A1 },
@@ -196,7 +242,7 @@ describe('refs.table', () => {
       expect(res3.A2.map(m => m.cell)).to.eql(['A1']);
     });
 
-    it('calculate subset (range: ["A1", "A2"])', async () => {
+    it('calculate subset (range by key: ["A1", "A2"])', async () => {
       const A1 = '=SUM(A2,C3)';
       const ctx = testContext({
         A1: { value: () => A1 },
