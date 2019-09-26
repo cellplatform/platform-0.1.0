@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil, debounceTime, delay } from 'rxjs/operators';
 
 import {
+  R,
   COLORS,
   Button,
   color,
@@ -15,6 +16,7 @@ import {
   testData,
   value,
   coord,
+  time,
 } from '../common';
 import { TestGridView } from './Test.Grid.view';
 
@@ -68,26 +70,126 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       .subscribe(async e => {
         log.info('🐷 IGridCellsChanged', e);
 
+        /**
+         * update({key: 'A1' })
+         * - 1. get cached incoming/outgoing cell refs.
+         * - 2. recalculate outgoing on A1
+         * - 3. combine new out-refs with (1).
+         * - 4. recalculate list.
+         *
+         */
+        const update = async (args: { key: string; table: t.IRefsTable }) => {
+          const { key, table } = args;
+          const range = `${key}:${key}`;
+
+          // type Response = { in: string[]; out: string };
+          // const updated = { in: [], out: key };
+
+          const pathToKeys = (path?: string) => (path || '').split('/').filter(part => part);
+          const incomingToKeys = (refs: t.IRefIn[] = []) => R.uniq(refs.map(ref => ref.cell));
+          const outgoingToKeys = (refs: t.IRefOut[] = []) =>
+            R.pipe(
+              R.flatten,
+              R.uniq,
+            )(refs.map(ref => pathToKeys(ref.path)));
+
+          // Retrieve cached references prior to the update.
+          const before = {
+            in: incomingToKeys((await table.incoming({ range }))[key]),
+            out: outgoingToKeys((await table.outgoing({ range }))[key]),
+          };
+          let refresh: string[] = [...before.in, ...before.out];
+
+          // Perform update of OUTGOING refs of the given cell.
+          const outRefs = await table.outgoing({ range, force: true });
+          Object.keys(outRefs).forEach(key => {
+            outRefs[key].forEach(item => {
+              console.log('OUT', pathToKeys(item.path));
+              refresh = [...refresh, ...pathToKeys(item.path)];
+            });
+          });
+
+          // Perform update of INCOMING reference to cells effected by this change.
+          refresh = R.uniq(refresh);
+          const wait = refresh.map(async key => {
+            const range = `${key}:${key}`;
+            const inRefs = await table.incoming({ range, outRefs, force: true });
+
+            // console.log('inRefs', inRefs);
+
+            Object.keys(inRefs).forEach(key => {
+              console.log('IN', key);
+              // inRefs[key].forEach(item => (updated.in = addToKeys(updated.in, item.cell)));
+            });
+
+            // return inRefs;
+          });
+          await Promise.all(wait);
+
+          const res = {
+            changed: key,
+            refs: refresh.filter(k => k !== key),
+          };
+
+          console.log('-------------------------------------------');
+          await Promise.all(
+            refresh.map(async key => {
+              const range = `${key}:${key}`;
+              console.log('range', range);
+              const inRefs = await table.incoming({ range, outRefs, force: true });
+            }),
+          );
+
+          console.group('🌳 UPDATE ', key);
+          // console.log('updated.in', updated.in);
+          // console.log('updated.out', updated.out);
+
+          console.log('refreshed', refresh);
+          console.log('res', res);
+          console.log('res.changed', res.changed);
+          console.log('res.refs', res.refs);
+
+          // console.log('cached', cached);
+          console.log('before', before);
+          console.log('before.in', before.in);
+          console.log('before.out', before.out);
+
+          console.groupEnd();
+        };
+
         //  const value = e.
         // Update refs for individual change.
-        const wait = e.changes.map(async change => {
-          const key = change.cell.key;
+        const wait = e.changes
+          .filter(e => e.isChanged)
+          .map(async change => {
+            const key = change.cell.key;
 
-          const table = this.refTable;
-          const range = `${key}:${key}`;
-          const refs = await table.refs({ range, force: true });
-          // const outgoing = await table.outgoing({ range, force: true });
-          // const incoming = await table.incoming({ range, force: true });
+            const table = this.refTable;
+            // const range = `${key}:${key}`;
+            // const refs = await table.refs({ range, force: true });
+            // const outgoing = await table.outgoing({ range, force: true });
+            // const incoming = await table.incoming({ range, force: true });
 
-          // NB: From here figure out how to re-calculate the cascade of references.
+            // NB: From here figure out how to re-calculate the cascade of references.
 
-          console.group('🌳 ');
-          console.log('change', change);
-          console.log('refs', refs);
-          console.groupEnd();
-        });
+            console.group('🌳 ', key);
+            console.log('change', change);
+            console.log('change.isChanged', change.isChanged);
+            console.log('change.value', change.value);
+            const eq = R.equals(change.value.from, change.value.to);
+            console.log('eq', eq);
+
+            console.groupEnd();
+            await update({ key, table });
+            // this.updateRefs(); // TEMP 🐷
+          });
         await Promise.all(wait);
         this.updateRefs(); // TEMP 🐷
+
+        time.delay(1000, () => {
+          console.log('-------------------------------------------');
+          // this.updateRefs({ force: true }); // TEMP 🐷
+        });
 
         // e.cancel();
         // e.changes[0].modify('foo');
@@ -97,16 +199,16 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         // change.modify('hello');
       });
 
-    // events$
-    //   .pipe(
-    //     filter(() => true),
-    //     filter(e => e.type === 'GRID/EDITOR/end'), // Filter
-    //     map(e => e.payload as t.IEndEditing),
-    //   )
-    //   .subscribe(e => {
-    //     console.log('cancel edit');
-    //     e.cancel();
-    //   });
+    events$
+      .pipe(
+        filter(() => true),
+        filter(e => e.type === 'GRID/EDITOR/end'), // Filter
+        map(e => e.payload as t.IEndEditing),
+      )
+      .subscribe(e => {
+        // console.log('cancel edit');
+        // e.cancel();
+      });
 
     const command$ = events$.pipe(
       filter(e => e.type === 'GRID/command'),
@@ -172,7 +274,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const { selection, rows, columns, isEditing, clipboard } = grid;
     const { editorType } = this.props;
 
-    const values = { ...grid.values };
+    const values = R.clone(grid.values);
     Object.keys(values).forEach(key => {
       const hash = values[key] ? (values[key] as any).hash : undefined;
       if (hash) {
@@ -238,7 +340,9 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     };
     return (
       <div {...styles.base}>
-        {this.button('updateRefs', () => this.updateRefs({ force: true }))}
+        {this.button('updateRefs', () => this.updateRefs({ force: false }))}
+        {this.button('updateRefs(force)', () => this.updateRefs({ force: true }))}
+        <Hr margin={5} />
         {this.button('redraw', () => this.grid.redraw())}
         {this.button('focus', () => this.grid.focus())}
         {this.button('total row/columns', () => {
