@@ -19,7 +19,7 @@ export type IRefs = {
  * Table
  */
 export type IRefsTable = {
-  refs(args?: { range?: string; force?: boolean }): Promise<IRefs>;
+  refs(args?: { range?: string | string[]; force?: boolean }): Promise<IRefs>;
   outgoing(args?: { range?: string | string[]; force?: boolean }): Promise<IRefsOut>;
   incoming(args?: {
     range?: string | string[];

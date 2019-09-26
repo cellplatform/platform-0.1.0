@@ -132,7 +132,7 @@ describe('refs.table', () => {
 
         // Force re-calculate.
         const res3 = await table.outgoing({ force: true });
-        expect(res3.A1).to.not.equal(res1.A1); // NB: Different ref instances (force reset)
+        expect(res3.A1).to.not.equal(res1.A1); // NB: Different ref instances (force reset).
         expect(res3.C3).to.not.equal(res1.C3);
 
         expect(res1.A1).to.eql(res3.A1); // NB: Equivalent values.

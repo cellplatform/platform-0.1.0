@@ -80,10 +80,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
          */
         const update = async (args: { key: string; table: t.IRefsTable }) => {
           const { key, table } = args;
-          const range = `${key}:${key}`;
-
-          // type Response = { in: string[]; out: string };
-          // const updated = { in: [], out: key };
 
           const pathToKeys = (path?: string) => (path || '').split('/').filter(part => part);
           const incomingToKeys = (refs: t.IRefIn[] = []) => R.uniq(refs.map(ref => ref.cell));
@@ -95,65 +91,33 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
           // Retrieve cached references prior to the update.
           const before = {
-            in: incomingToKeys((await table.incoming({ range }))[key]),
-            out: outgoingToKeys((await table.outgoing({ range }))[key]),
+            in: incomingToKeys((await table.incoming({ range: key }))[key]),
+            out: outgoingToKeys((await table.outgoing({ range: key }))[key]),
           };
           let refresh: string[] = [...before.in, ...before.out];
 
           // Perform update of OUTGOING refs of the given cell.
-          const outRefs = await table.outgoing({ range, force: true });
+          const outRefs = await table.outgoing({ range: key, force: true });
           Object.keys(outRefs).forEach(key => {
             outRefs[key].forEach(item => {
-              console.log('OUT', pathToKeys(item.path));
               refresh = [...refresh, ...pathToKeys(item.path)];
             });
           });
-
-          // Perform update of INCOMING reference to cells effected by this change.
           refresh = R.uniq(refresh);
-          const wait = refresh.map(async key => {
-            const range = `${key}:${key}`;
-            const inRefs = await table.incoming({ range, outRefs, force: true });
 
-            // console.log('inRefs', inRefs);
-
-            Object.keys(inRefs).forEach(key => {
-              console.log('IN', key);
-              // inRefs[key].forEach(item => (updated.in = addToKeys(updated.in, item.cell)));
-            });
-
-            // return inRefs;
-          });
-          await Promise.all(wait);
+          // Perform update of all INCOMING/OUTGOING refs implicated in the change.
+          await table.refs({ range: refresh, force: true });
 
           const res = {
             changed: key,
             refs: refresh.filter(k => k !== key),
           };
 
-          console.log('-------------------------------------------');
-          await Promise.all(
-            refresh.map(async key => {
-              const range = `${key}:${key}`;
-              console.log('range', range);
-              const inRefs = await table.incoming({ range, outRefs, force: true });
-            }),
-          );
-
           console.group('🌳 UPDATE ', key);
-          // console.log('updated.in', updated.in);
-          // console.log('updated.out', updated.out);
-
           console.log('refreshed', refresh);
           console.log('res', res);
           console.log('res.changed', res.changed);
           console.log('res.refs', res.refs);
-
-          // console.log('cached', cached);
-          console.log('before', before);
-          console.log('before.in', before.in);
-          console.log('before.out', before.out);
-
           console.groupEnd();
         };
 
@@ -163,12 +127,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           .filter(e => e.isChanged)
           .map(async change => {
             const key = change.cell.key;
-
             const table = this.refTable;
-            // const range = `${key}:${key}`;
-            // const refs = await table.refs({ range, force: true });
-            // const outgoing = await table.outgoing({ range, force: true });
-            // const incoming = await table.incoming({ range, force: true });
 
             // NB: From here figure out how to re-calculate the cascade of references.
 
@@ -185,11 +144,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           });
         await Promise.all(wait);
         this.updateRefs(); // TEMP 🐷
-
-        time.delay(1000, () => {
-          console.log('-------------------------------------------');
-          // this.updateRefs({ force: true }); // TEMP 🐷
-        });
 
         // e.cancel();
         // e.changes[0].modify('foo');
@@ -302,7 +256,48 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   private updateRefs = async (args: { force?: boolean } = {}) => {
     const { force } = args;
     const table = this.refTable;
-    const refs = await table.refs({ force });
+    const res = await table.refs({ force });
+
+    const pathToKeys = (path?: string) => (path || '').split('/').filter(part => part);
+
+    const sortKeys = (obj: { [key: string]: any }) => {
+      return coord.cell.sort(Object.keys(obj)).reduce((acc, key) => {
+        acc[key] = obj[key];
+        return acc;
+      }, {});
+    };
+
+    // Prepare display versions of data.
+    const incoming = Object.keys(res.in)
+      .map(key => ({ key, refs: res.in[key] }))
+      .reduce((acc, next) => {
+        acc[next.key] = next.refs.map((ref: t.IRefIn) => ref.cell).join(',');
+        return acc;
+      }, {});
+
+    const outgoing = Object.keys(res.out)
+      .map(key => ({ key, refs: res.out[key] }))
+      .reduce((acc, next) => {
+        let err = '';
+        const keys = R.pipe(
+          R.flatten,
+          R.uniq,
+        )(
+          next.refs.map((ref: t.IRefOut) => {
+            const keys = pathToKeys(ref.path);
+            err = ref.error ? '(err)' : err;
+            return keys;
+          }),
+        );
+        acc[next.key] = `${keys.filter(keys => keys !== next.key).join(',')}${err}`;
+        return acc;
+      }, {});
+
+    // Update state.
+    const refs = {
+      data: res,
+      display: { in: sortKeys(incoming), out: sortKeys(outgoing) },
+    };
     this.state$.next({ refs });
   };
 
@@ -351,7 +346,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           } else {
             this.state$.next({ totalColumns: 5, totalRows: 5 });
           }
-          // this.grid.focus();
         })}
         {this.button('updateHashes', () => {
           this.grid.updateHashes({ force: true });
@@ -486,15 +480,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         borderBottom: `solid 1px ${color.format(0.1)}`,
       }),
     };
-    // const expand = ['$', '$.grid', '$.grid.selection', '$.grid.selection.ranges'];
 
     const refs = this.state.refs || {};
-    const incoming = Object.keys(refs.in || {})
-      .map(key => ({ key, refs: refs.in[key] }))
-      .reduce((acc, next) => {
-        acc[next.key] = next.refs.map((ref: t.IRefIn) => ref.cell).join(',');
-        return acc;
-      }, {});
+    const refsDisplay = refs.display || {};
+    const hr = <Hr color={1} margin={12} />;
 
     return (
       <div {...styles.base}>
@@ -512,11 +501,13 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           ]}
           theme={'DARK'}
         />
-        <Hr color={1} />
-        <ObjectView name={'refs.out'} data={refs.out} expandLevel={5} theme={'DARK'} />
-        <Hr color={1} />
-        <ObjectView name={'refs.in'} data={incoming} expandLevel={5} theme={'DARK'} />
-        <Hr color={1} />
+        {hr}
+        <ObjectView name={'refs'} data={refs.data} expandLevel={1} theme={'DARK'} />
+        {hr}
+        <ObjectView name={'refs.in'} data={refsDisplay.in} expandLevel={5} theme={'DARK'} />
+        {hr}
+        <ObjectView name={'refs.out'} data={refsDisplay.out} expandLevel={5} theme={'DARK'} />
+        {hr}
         <ObjectView name={'debug'} data={data.debug} expandPaths={['$']} theme={'DARK'} />
       </div>
     );

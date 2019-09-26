@@ -66,10 +66,9 @@ class RefsTable implements t.IRefsTable {
   /**
    * Calculate incoming/outgoing references.
    */
-  public async refs(args: { range?: string; force?: boolean } = {}): Promise<t.IRefs> {
+  public async refs(args: { range?: string | string[]; force?: boolean } = {}): Promise<t.IRefs> {
     const outRefs = await this.outgoing(args);
     const inRefs = await this.incoming({ ...args, outRefs });
-
     return {
       in: inRefs,
       out: outRefs,
@@ -96,7 +95,9 @@ class RefsTable implements t.IRefsTable {
   /**
    * Calculate outgoing references.
    */
-  public async outgoing(args: { range?: string; force?: boolean } = {}): Promise<t.IRefsOut> {
+  public async outgoing(
+    args: { range?: string | string[]; force?: boolean } = {},
+  ): Promise<t.IRefsOut> {
     const { range } = args;
     const getValue = this.getValue;
     const keys = await this.filterKeys({ range });
