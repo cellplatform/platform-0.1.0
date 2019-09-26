@@ -94,8 +94,10 @@ export class CellRange {
    * [Lifecycle]
    */
   private constructor(options: { key: string }) {
-    // Setup initial conditions.
+    // Prepare key.
     const key = options.key.replace(/^[\s\=\!]*/, '').trimRight();
+
+    // Store state.
     this._.key = key;
     this.isValid = true;
 

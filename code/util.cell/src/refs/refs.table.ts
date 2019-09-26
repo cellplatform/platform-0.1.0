@@ -2,6 +2,7 @@ import { t, MemoryCache, R } from '../common';
 import { range } from '../range';
 import { outgoing } from './refs.outgoing';
 import { incoming } from './refs.incoming';
+import { cell } from '../cell';
 
 const CellRange = range.CellRange;
 
@@ -79,11 +80,11 @@ class RefsTable implements t.IRefsTable {
    * Calculate incoming references.
    */
   public async incoming(
-    args: { range?: string; force?: boolean; outRefs?: t.IRefsOut } = {},
+    args: { range?: string | string[]; force?: boolean; outRefs?: t.IRefsOut } = {},
   ): Promise<t.IRefsIn> {
     const { range, outRefs } = args;
     const getValue = this.getValue;
-    const keys = await this.keys({ range, outRefs });
+    const keys = await this.filterKeys({ range, outRefs });
     return this.calc<t.IRefIn>({
       ...args,
       keys,
@@ -98,7 +99,7 @@ class RefsTable implements t.IRefsTable {
   public async outgoing(args: { range?: string; force?: boolean } = {}): Promise<t.IRefsOut> {
     const { range } = args;
     const getValue = this.getValue;
-    const keys = await this.keys({ range });
+    const keys = await this.filterKeys({ range });
     return this.calc<t.IRefOut>({
       ...args,
       keys,
@@ -157,15 +158,32 @@ class RefsTable implements t.IRefsTable {
     return res;
   }
 
-  private async keys(args: { range?: string; outRefs?: t.IRefsOut }) {
+  private async filterKeys(args: { range?: string | string[]; outRefs?: t.IRefsOut }) {
     const { range, outRefs } = args;
-    let keys = await this.getKeys();
-    if (range) {
-      // Narrow on range (if given).
-      keys = this.validRange(range).keys.filter(key => keys.includes(key));
+    const keys = await this.getKeys();
+    const cache = this.cache;
+    return RefsTable.filterKeys({ keys, range, outRefs, cache });
+  }
+  public static filterKeys(args: {
+    keys: string[];
+    range?: string | string[];
+    outRefs?: t.IRefsOut;
+    cache?: t.IMemoryCache;
+  }) {
+    const { outRefs } = args;
+    let keys = args.keys;
+
+    // Narrow on range (if given).
+    if (args.range) {
+      const rangeKeys = (Array.isArray(args.range) ? args.range : [args.range]).map(key => {
+        return cell.isCell(key) || cell.isColumn(key) || cell.isRow(key) ? `${key}:${key}` : key;
+      });
+      const union = toRangeUnion(rangeKeys, args.cache);
+      keys = keys.filter(key => union.contains(key));
     }
+
+    // Merge in keys from outgoing-refs (if given).
     if (outRefs) {
-      // Merge in keys from outgoing-refs (if given).
       Object.keys(outRefs)
         .map(key => outRefs[key])
         .forEach(items => {
@@ -175,16 +193,17 @@ class RefsTable implements t.IRefsTable {
         });
       keys = R.uniq(keys);
     }
+
+    // Finish up.
     return keys;
   }
+}
 
-  private validRange(input: string): range.CellRange {
-    return this.cache.get(CACHE.key('RANGE', input), () => {
-      const range = CellRange.fromKey(input);
-      if (range.type !== 'CELL' || !range.isValid) {
-        throw new Error(`Table range must be a valid cell range (eg "A1:AZ99").`);
-      }
-      return range.square;
-    });
-  }
+/**
+ * [Helpers]
+ */
+function toRangeUnion(keys: string[], cache?: t.IMemoryCache) {
+  const create = () => range.union(keys);
+  const cacheKey = CACHE.key('RANGE', keys.join(','));
+  return cache ? cache.get(cacheKey, create) : create();
 }

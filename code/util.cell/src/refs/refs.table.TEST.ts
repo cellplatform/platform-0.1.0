@@ -15,7 +15,7 @@ const testContext = (cells: Table) => {
 
 describe('refs.table', () => {
   describe('refs', () => {
-    it.only('both incoming/outgoing', async () => {
+    it('both incoming/outgoing', async () => {
       const ctx = testContext({
         A1: { value: '=SUM(A2,C3,Z9)' },
         A2: { value: 123 },
@@ -66,21 +66,6 @@ describe('refs.table', () => {
 
       expect(Object.keys(res1)).to.eql(['D5', 'A1']);
       expect(Object.keys(res2)).to.eql(['A1']);
-    });
-
-    it('throws on invalid range', async () => {
-      const ctx = testContext({});
-      const fail = async (range: string) => {
-        const table = refs.table({ ...ctx });
-        const fn = async () => table.outgoing({ range });
-        return expectError(fn);
-      };
-      await fail('A1');
-      await fail('A');
-      await fail('1');
-      await fail('A1:*');
-      await fail('*');
-      await fail('*:*');
     });
 
     describe('caching', () => {
@@ -184,7 +169,7 @@ describe('refs.table', () => {
       expect(res.C3[0].cell).to.eql('A1');
     });
 
-    it('calculate subset (range)', async () => {
+    it('calculate subset (range: A:A)', async () => {
       const A1 = '=SUM(A2,C3)';
       const ctx = testContext({
         A1: { value: () => A1 },
@@ -193,14 +178,55 @@ describe('refs.table', () => {
       });
       const table = refs.table({ ...ctx });
 
-      const res1 = await table.incoming({ range: 'C1:D9' });
-      const res2 = await table.incoming();
+      // Everything.
+      const res1 = await table.incoming();
+      expect(Object.keys(res1)).to.eql(['A2', 'C3']);
+      expect(res1.A2.map(m => m.cell)).to.eql(['C3', 'A1']);
+      expect(res1.C3.map(m => m.cell)).to.eql(['A1']);
 
-      expect(Object.keys(res1)).to.eql(['C3']);
-      expect(Object.keys(res2)).to.eql(['C3', 'A2']);
+      // Subset range ("A" column only).
+      const res2 = await table.incoming({ range: 'A:A', force: true });
+      expect(Object.keys(res2)).to.eql(['A2']);
+      expect(res2.A2.map(m => m.cell)).to.eql(['A1']); // NB: Does not contain other "C3" incoming ref.
+
+      // Same range, but declared with single value.
+      // NB: Converted to a range internally.
+      const res3 = await table.incoming({ range: 'A', force: true });
+      expect(Object.keys(res3)).to.eql(['A2']); // NB: Same as above.
+      expect(res3.A2.map(m => m.cell)).to.eql(['A1']);
     });
 
-    it('incoming ref to undefined cell (hints from passed in `outgoing` param)', async () => {
+    it('calculate subset (range: ["A1", "A2"])', async () => {
+      const A1 = '=SUM(A2,C3)';
+      const ctx = testContext({
+        A1: { value: () => A1 },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      // Everything.
+      const res1 = await table.incoming();
+      expect(Object.keys(res1)).to.eql(['A2', 'C3']);
+      expect(res1.A2.map(m => m.cell)).to.eql(['C3', 'A1']);
+      expect(res1.C3.map(m => m.cell)).to.eql(['A1']);
+
+      // Subset ranges by single keys.
+      const res2 = await table.incoming({ range: 'A1', force: true });
+      const res3 = await table.incoming({ range: ['A1', 'A2'], force: true });
+
+      expect(res2).to.eql({});
+      expect(Object.keys(res3)).to.eql(['A2']);
+      expect(res3.A2.map(m => m.cell)).to.eql(['A1']); // NB: Does not contain other "C3" incoming ref.
+
+      // Everything (by keys).
+      const res4 = await table.incoming({ range: ['A1', 'A2', 'C3'], force: true });
+      expect(Object.keys(res4)).to.eql(['A2', 'C3']);
+      expect(res4.A2.map(m => m.cell)).to.eql(['C3', 'A1']);
+      expect(res4.C3.map(m => m.cell)).to.eql(['A1']);
+    });
+
+    it('include ref to [undefined] cell (data from passed `outRefs` param)', async () => {
       const ctx = testContext({
         A1: { value: '=A2' },
       });
@@ -257,8 +283,74 @@ describe('refs.table', () => {
     });
   });
 
-  // TEMP 🐷
-  describe.skip('cache', () => {
+  describe('cache', () => {
+    it('.reset() - everything', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = await table.refs();
+      const res2 = await table.refs();
+
+      // Cached instances.
+      expect(res1.in.A2).to.equal(res2.in.A2);
+      expect(res1.out.A1).to.equal(res2.out.A1);
+
+      table.reset();
+      const res3 = await table.refs();
+      expect(res2.in.A2).to.not.equal(res3.in.A2);
+      expect(res2.out.A1).to.not.equal(res3.out.A1);
+    });
+
+    it('.reset({ cache:IN/OUT })', async () => {
+      const A1 = '=SUM(A2,C3)';
+      const ctx = testContext({
+        A1: { value: () => A1 },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = await table.refs();
+      const res2 = await table.refs();
+
+      // Cached instances.
+      expect(res1.in.A2).to.equal(res2.in.A2);
+      expect(res1.out.A1).to.equal(res2.out.A1);
+
+      // Reset INCOMING only.
+      table.reset({ cache: ['IN'] });
+      const res3 = await table.refs();
+      expect(res2.in.A2).to.not.equal(res3.in.A2); //   New instance.
+      expect(res2.out.A1).to.equal(res3.out.A1); //     No change.
+
+      // Re-query, everything cached again.
+      const res4 = await table.refs();
+      expect(res3.in.A2).to.equal(res4.in.A2);
+      expect(res3.out.A1).to.equal(res4.out.A1);
+
+      // Reset OUTGOING only.
+      table.reset({ cache: ['OUT'] });
+      const res5 = await table.refs();
+      expect(res4.in.A2).to.equal(res5.in.A2); //       No change.
+      expect(res4.out.A1).to.not.equal(res5.out.A1); // New instance.
+
+      // Re-query, everything cached again.
+      const res6 = await table.refs();
+      expect(res5.in.A2).to.equal(res6.in.A2);
+      expect(res5.out.A1).to.equal(res6.out.A1);
+
+      // Reset entire cache.
+      table.reset({ cache: ['IN', 'OUT'] }); // NB: with params (default).
+      const res7 = await table.refs();
+      expect(res6.in.A2).to.not.equal(res7.in.A2);
+      expect(res6.out.A1).to.not.equal(res7.out.A1);
+    });
+
+    // TEMP 🐷
     // it('not cached', async () => {
     //   const ctx = testContext({
     //     A1: { value: '=SUM(A2,C3)' },
@@ -325,71 +417,5 @@ describe('refs.table', () => {
     //   expect(table.cached('C3')).to.eql(['IN', 'OUT']);
     //   expect(table.cached('Z9')).to.eql([]);
     // });
-
-    it('.reset() - everything', async () => {
-      const ctx = testContext({
-        A1: { value: '=SUM(A2,C3)' },
-        A2: { value: 123 },
-        C3: { value: '=A2' },
-      });
-      const table = refs.table({ ...ctx });
-
-      const res1 = await table.refs();
-      const res2 = await table.refs();
-
-      // Cached instances.
-      expect(res1.in.A2).to.equal(res2.in.A2);
-      expect(res1.out.A1).to.equal(res2.out.A1);
-
-      table.reset();
-      const res3 = await table.refs();
-      expect(res2.in.A2).to.not.equal(res3.in.A2);
-      expect(res2.out.A1).to.not.equal(res3.out.A1);
-    });
-
-    it('.reset({ cache:IN/OUT })', async () => {
-      const A1 = '=SUM(A2,C3)';
-      const ctx = testContext({
-        A1: { value: () => A1 },
-        A2: { value: 123 },
-        C3: { value: '=A2' },
-      });
-      const table = refs.table({ ...ctx });
-
-      const res1 = await table.refs();
-      const res2 = await table.refs();
-
-      // Cached instances.
-      expect(res1.in.A2).to.equal(res2.in.A2);
-      expect(res1.out.A1).to.equal(res2.out.A1);
-
-      // Reset INCOMING only.
-      table.reset({ cache: ['IN'] });
-      const res3 = await table.refs();
-      expect(res2.in.A2).to.not.equal(res3.in.A2); //   New instance.
-      expect(res2.out.A1).to.equal(res3.out.A1); //     No change.
-
-      // Re-query, everything cached again.
-      const res4 = await table.refs();
-      expect(res3.in.A2).to.equal(res4.in.A2);
-      expect(res3.out.A1).to.equal(res4.out.A1);
-
-      // Reset OUTGOING only.
-      table.reset({ cache: ['OUT'] });
-      const res5 = await table.refs();
-      expect(res4.in.A2).to.equal(res5.in.A2); //       No change.
-      expect(res4.out.A1).to.not.equal(res5.out.A1); // New instance.
-
-      // Re-query, everything cached again.
-      const res6 = await table.refs();
-      expect(res5.in.A2).to.equal(res6.in.A2);
-      expect(res5.out.A1).to.equal(res6.out.A1);
-
-      // Reset entire cache.
-      table.reset({ cache: ['IN', 'OUT'] }); // NB: with params (default).
-      const res7 = await table.refs();
-      expect(res6.in.A2).to.not.equal(res7.in.A2);
-      expect(res6.out.A1).to.not.equal(res7.out.A1);
-    });
   });
 });

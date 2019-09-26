@@ -25,6 +25,17 @@ describe('CellRange', () => {
       test('A1', 'B2', 'A1:B2');
     });
 
+    it('fromKey', () => {
+      const test = (input: string, output: string) => {
+        const res = CellRange.fromKey(input);
+        expect(res.key).to.eql(output);
+        expect(res.isValid).to.eql(true);
+      };
+      test('A1:A2', 'A1:A2');
+      test('A:A', 'A:A');
+      test('1:1', '1:1');
+    });
+
     it('square', () => {
       const test = (keys: Array<string | { key: string }>, output: string) => {
         const res = CellRange.square(keys);
