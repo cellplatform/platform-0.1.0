@@ -30,13 +30,13 @@ export type ITestGridViewState = {
 
 const DEFAULT = {
   VALUES: {
-    A1: { value: '=A2' },
+    A1: { value: '=A5' },
     A2: { value: 'A2', props: { style: { bold: true } } },
     // A2: {value:'* one\n * two'},
     // A2: {value:'# Heading\nhello'},
     A3: { value: 'A3 `code`' },
-    A5: { value: 'A5', props: { merge: { colspan: 2 } } },
-    A6: { value: '=SUM(1, 2, 3)' },
+    A5: { value: '=A2', props: { merge: { colspan: 2 } } },
+    A6: { value: '=SUM(1, A5, C5)' },
     B1: { value: 'locked' },
     B2: { value: 'cancel' },
     C5: { value: 'Hello', props: { merge: { rowspan: 2 } } },

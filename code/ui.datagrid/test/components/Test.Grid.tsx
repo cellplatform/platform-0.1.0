@@ -75,15 +75,15 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
           const table = this.refTable;
           const range = `${key}:${key}`;
-          const outgoing = await table.outgoing({ force: true, range });
-          const incoming = await table.incoming({ force: true, range });
+          const refs = await table.refs({ range, force: true });
+          // const outgoing = await table.outgoing({ range, force: true });
+          // const incoming = await table.incoming({ range, force: true });
 
           // NB: From here figure out how to re-calculate the cascade of references.
 
           console.group('🌳 ');
           console.log('change', change);
-          console.log('refs.outgoing', outgoing);
-          console.log('refs.incoming', incoming);
+          console.log('refs', refs);
           console.groupEnd();
         });
         await Promise.all(wait);
@@ -194,19 +194,13 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     this.state$.next({ data });
 
     await this.updateRefs();
-
     return data;
   }
 
   private updateRefs = async (args: { force?: boolean } = {}) => {
     const { force } = args;
     const table = this.refTable;
-
-    const refs = {
-      ...(this.state.refs || {}),
-      out: await table.outgoing({ force }),
-      in: await table.incoming({ force }),
-    };
+    const refs = await table.refs({ force });
     this.state$.next({ refs });
   };
 
@@ -391,6 +385,12 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     // const expand = ['$', '$.grid', '$.grid.selection', '$.grid.selection.ranges'];
 
     const refs = this.state.refs || {};
+    const incoming = Object.keys(refs.in || {})
+      .map(key => ({ key, refs: refs.in[key] }))
+      .reduce((acc, next) => {
+        acc[next.key] = next.refs.map((ref: t.IRefIn) => ref.cell).join(',');
+        return acc;
+      }, {});
 
     return (
       <div {...styles.base}>
@@ -409,9 +409,9 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           theme={'DARK'}
         />
         <Hr color={1} />
-        <ObjectView name={'refs.in'} data={refs.in} expandLevel={5} theme={'DARK'} />
-        <Hr color={1} />
         <ObjectView name={'refs.out'} data={refs.out} expandLevel={5} theme={'DARK'} />
+        <Hr color={1} />
+        <ObjectView name={'refs.in'} data={incoming} expandLevel={5} theme={'DARK'} />
         <Hr color={1} />
         <ObjectView name={'debug'} data={data.debug} expandPaths={['$']} theme={'DARK'} />
       </div>
