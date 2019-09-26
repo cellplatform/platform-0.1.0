@@ -1,4 +1,5 @@
 export type RefTarget = 'VALUE' | 'FUNC' | 'RANGE' | 'UNKNOWN';
+export type RefDirection = 'IN' | 'OUT';
 
 /**
  * Retrieve data for calculating refs.
@@ -18,9 +19,10 @@ export type IRefs = {
  * Table
  */
 export type IRefsTable = {
+  refs(args?: { range?: string; force?: boolean }): Promise<IRefs>;
   outgoing(args?: { range?: string; force?: boolean }): Promise<IRefsOut>;
   incoming(args?: { range?: string; force?: boolean }): Promise<IRefsIn>;
-  reset(): IRefsTable;
+  reset(args?: { cache?: RefDirection[] }): IRefsTable;
 };
 
 /**

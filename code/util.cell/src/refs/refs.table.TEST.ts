@@ -153,7 +153,7 @@ describe('refs.table', () => {
       expect(res).to.eql({});
     });
 
-    it('calculate references', async () => {
+    it('calculate all', async () => {
       const ctx = testContext({
         A1: { value: '=SUM(A2,C3)' },
         A2: { value: 123 },
@@ -169,9 +169,26 @@ describe('refs.table', () => {
       expect(res.C3[0].cell).to.eql('A1');
     });
 
-    it('cache', async () => {
+    it('calculate subset (range)', async () => {
+      const A1 = '=SUM(A2,C3)';
       const ctx = testContext({
-        A1: { value: '=SUM(A2,C3)' },
+        A1: { value: () => A1 },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = await table.incoming({ range: 'C1:D9' });
+      const res2 = await table.incoming();
+
+      expect(Object.keys(res1)).to.eql(['C3']);
+      expect(Object.keys(res2)).to.eql(['C3', 'A2']);
+    });
+
+    it('cache', async () => {
+      let A1 = '=SUM(A2,C3)';
+      const ctx = testContext({
+        A1: { value: () => A1 },
         A2: { value: 123 },
         C3: { value: '=A2' },
       });
@@ -189,10 +206,89 @@ describe('refs.table', () => {
       const res4 = await table.incoming();
       expect(res3.A2).to.equal(res4.A2);
 
+      // Cache reset.
       table.reset();
-
       const res5 = await table.incoming();
       expect(res4.A2).to.not.equal(res5.A2);
+
+      // Changed value.
+      A1 = '=SUM(123, A2)';
+      const res6 = await table.incoming();
+      const res7 = await table.incoming({ force: true });
+
+      expect(res6).to.eql(res5); // NB: Cached value (no change).
+      expect(res7).to.not.eql(res6);
+
+      expect(Object.keys(res6)).to.eql(['A2', 'C3']);
+      expect(Object.keys(res7)).to.eql(['A2']);
+    });
+  });
+
+  describe('reset (cache)', () => {
+    it('.reset() - everything', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = await table.refs();
+      const res2 = await table.refs();
+
+      // Cached instances.
+      expect(res1.in.A2).to.equal(res2.in.A2);
+      expect(res1.out.A1).to.equal(res2.out.A1);
+
+      table.reset();
+      const res3 = await table.refs();
+      expect(res2.in.A2).to.not.equal(res3.in.A2);
+      expect(res2.out.A1).to.not.equal(res3.out.A1);
+    });
+
+    it('.reset({ cache:IN/OUT })', async () => {
+      const A1 = '=SUM(A2,C3)';
+      const ctx = testContext({
+        A1: { value: () => A1 },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = await table.refs();
+      const res2 = await table.refs();
+
+      // Cached instances.
+      expect(res1.in.A2).to.equal(res2.in.A2);
+      expect(res1.out.A1).to.equal(res2.out.A1);
+
+      // Reset INCOMING only.
+      table.reset({ cache: ['IN'] });
+      const res3 = await table.refs();
+      expect(res2.in.A2).to.not.equal(res3.in.A2); //   New instance.
+      expect(res2.out.A1).to.equal(res3.out.A1); //     No change.
+
+      // Re-query, everything cached again.
+      const res4 = await table.refs();
+      expect(res3.in.A2).to.equal(res4.in.A2);
+      expect(res3.out.A1).to.equal(res4.out.A1);
+
+      // Reset OUTGOING only.
+      table.reset({ cache: ['OUT'] });
+      const res5 = await table.refs();
+      expect(res4.in.A2).to.equal(res5.in.A2); //       No change.
+      expect(res4.out.A1).to.not.equal(res5.out.A1); // New instance.
+
+      // Re-query, everything cached again.
+      const res6 = await table.refs();
+      expect(res5.in.A2).to.equal(res6.in.A2);
+      expect(res5.out.A1).to.equal(res6.out.A1);
+
+      // Reset entire cache.
+      table.reset({ cache: ['IN', 'OUT'] }); // NB: with params (default).
+      const res7 = await table.refs();
+      expect(res6.in.A2).to.not.equal(res7.in.A2);
+      expect(res6.out.A1).to.not.equal(res7.out.A1);
     });
   });
 });

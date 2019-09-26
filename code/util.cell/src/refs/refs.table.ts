@@ -10,21 +10,26 @@ type IRefsTableArgs = {
   getValue: t.RefGetValue;
 };
 
+type CacheKeyType = t.RefDirection | 'RANGE';
+
 const CACHE = {
   PREFIX: {
     IN: 'REFS/table/in/',
     OUT: 'REFS/table/out/',
     RANGE: 'REFS/table/range/',
   },
-  key: {
-    in: (suffix: string) => `${CACHE.PREFIX.IN}${suffix}`,
-    out: (suffix: string) => `${CACHE.PREFIX.OUT}${suffix}`,
-    range: (suffix: string) => `${CACHE.PREFIX.RANGE}${suffix}`,
+  prefix(type: CacheKeyType) {
+    const prefix = CACHE.PREFIX[type];
+    if (!prefix) {
+      throw new Error(`Cache key type '${type}' not supported.`);
+    }
+    return prefix;
   },
-  isPrefix(key: string) {
-    return Object.keys(CACHE.PREFIX)
-      .map(key => CACHE.PREFIX[key])
-      .some(prefix => key.startsWith(prefix));
+  key(type: CacheKeyType, suffix: string) {
+    return `${CACHE.prefix(type)}${suffix}`;
+  },
+  isPrefix(types: CacheKeyType[], key: string) {
+    return types.map(type => CACHE.prefix(type)).some(prefix => key.startsWith(prefix));
   },
 };
 
@@ -56,48 +61,70 @@ class RefsTable implements t.IRefsTable {
    */
 
   /**
-   * Calculate outgoing references.
+   * Calculate incoming/outgoing references.
    */
-  public async outgoing(args: { range?: string; force?: boolean } = {}): Promise<t.IRefsOut> {
-    const { force } = args;
-    const cache = this.cache;
-
-    const res: t.IRefsOut = {};
-    const keys = await this.keys({ range: args.range });
-    if (keys.length === 0) {
-      return res;
-    }
-
-    const wait = keys.map(async key => {
-      const getValue = () => outgoing({ key, getValue: this.getValue });
-      const refs = await cache.getAsync(CACHE.key.out(key), { getValue, force });
-      if (refs.length > 0) {
-        res[key] = refs;
-      }
-      return refs;
-    });
-
-    await Promise.all(wait);
-    return res;
+  public async refs(args: { range?: string; force?: boolean } = {}): Promise<t.IRefs> {
+    return {
+      in: await this.incoming(args),
+      out: await this.outgoing(args),
+    };
   }
 
   /**
    * Calculate incoming references.
    */
   public async incoming(args: { range?: string; force?: boolean } = {}): Promise<t.IRefsIn> {
-    const { force } = args;
-    const cache = this.cache;
+    const getValue = this.getValue;
     const getKeys = this.getKeys;
+    return this.calc<t.IRefIn>({
+      ...args,
+      cache: key => CACHE.key('IN', key),
+      find: key => incoming({ key, getValue, getKeys }),
+    });
+  }
 
-    const res: t.IRefsIn = {};
-    const keys = await this.keys({ range: args.range });
+  /**
+   * Calculate outgoing references.
+   */
+  public async outgoing(args: { range?: string; force?: boolean } = {}): Promise<t.IRefsOut> {
+    const getValue = this.getValue;
+    return this.calc<t.IRefOut>({
+      ...args,
+      cache: key => CACHE.key('OUT', key),
+      find: key => outgoing({ key, getValue }),
+    });
+  }
+
+  /**
+   * Clear the cache.
+   */
+  public reset(args: { cache?: t.RefDirection[] } = {}) {
+    const types = args.cache || ['IN', 'OUT'];
+    this.cache.clear({ filter: key => CACHE.isPrefix(types, key) });
+    return this;
+  }
+
+  /**
+   * [Internal]
+   */
+
+  private async calc<T>(args: {
+    cache: (key: string) => string;
+    find: (key: string) => Promise<T[]>;
+    range?: string;
+    force?: boolean;
+  }): Promise<{ [key: string]: T[] }> {
+    const { force, range } = args;
+    const res: { [key: string]: T[] } = {};
+
+    const keys = await this.keys({ range });
     if (keys.length === 0) {
       return res;
     }
 
     const wait = keys.map(async key => {
-      const getValue = () => incoming({ key, getValue: this.getValue, getKeys });
-      const refs = await cache.getAsync(CACHE.key.in(key), { getValue, force });
+      const getValue = () => args.find(key);
+      const refs = await this.cache.getAsync(args.cache(key), { getValue, force });
       if (refs.length > 0) {
         res[key] = refs;
       }
@@ -107,18 +134,6 @@ class RefsTable implements t.IRefsTable {
     await Promise.all(wait);
     return res;
   }
-
-  /**
-   * Clear the cache.
-   */
-  public reset() {
-    this.cache.clear({ filter: CACHE.isPrefix });
-    return this;
-  }
-
-  /**
-   * [Internal]
-   */
 
   private async keys(args: { range?: string }) {
     const keys = await this.getKeys();
@@ -130,7 +145,7 @@ class RefsTable implements t.IRefsTable {
   }
 
   private validRange(input: string): range.CellRange {
-    return this.cache.get(CACHE.key.range(input), () => {
+    return this.cache.get(CACHE.key('RANGE', input), () => {
       const range = CellRange.fromKey(input);
       if (range.type !== 'CELL' || !range.isValid) {
         throw new Error(`Table range must be a valid cell range (eg "A1:AZ99").`);
