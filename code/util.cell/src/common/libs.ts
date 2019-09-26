@@ -15,6 +15,7 @@ import {
   sortWith,
   uniq,
   uniqBy,
+  pipe,
 } from 'ramda';
 
 export const R = {
@@ -28,4 +29,6 @@ export const R = {
   sortWith,
   uniq,
   uniqBy,
+  pipe
 };
+
