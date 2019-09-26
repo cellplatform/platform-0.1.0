@@ -8,6 +8,7 @@ const CellRange = range.CellRange;
 type IRefsTableArgs = {
   getKeys: t.RefGetKeys;
   getValue: t.RefGetValue;
+  cache?: t.IMemoryCache;
 };
 
 type CacheKeyType = t.RefDirection | 'RANGE';
@@ -47,6 +48,7 @@ class RefsTable implements t.IRefsTable {
   constructor(args: IRefsTableArgs) {
     this.getKeys = args.getKeys;
     this.getValue = args.getValue;
+    this.cache = args.cache || MemoryCache.create();
   }
 
   /**
@@ -54,7 +56,7 @@ class RefsTable implements t.IRefsTable {
    */
   private readonly getKeys: t.RefGetKeys;
   private readonly getValue: t.RefGetValue;
-  private readonly cache = MemoryCache.create();
+  private readonly cache: t.IMemoryCache;
 
   /**
    * [Methods]
