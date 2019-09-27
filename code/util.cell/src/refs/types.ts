@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export type RefTarget = 'VALUE' | 'FUNC' | 'RANGE' | 'UNKNOWN';
 export type RefDirection = 'IN' | 'OUT';
 
@@ -19,6 +21,7 @@ export type IRefs = {
  * Table
  */
 export type IRefsTable = {
+  events$: Observable<RefsTableEvent>;
   refs(args?: { range?: string | string[]; force?: boolean }): Promise<IRefs>;
   outgoing(args?: { range?: string | string[]; force?: boolean }): Promise<IRefsOut>;
   incoming(args?: {
@@ -54,4 +57,30 @@ export type RefError = 'CIRCULAR' | 'NAME';
 export type IRefError = {
   type: RefError;
   message: string;
+};
+
+/**
+ * [Events]
+ */
+export type RefsTableEvent = IRefsTableGetKeysEvent | IRefsTableGetValueEvent;
+
+export type IRefsTableGetKeysEvent = {
+  type: 'REFS/table/getKeys';
+  payload: IRefsTableGetKeys;
+};
+export type IRefsTableGetKeys = {
+  keys: string[];
+  isModified: boolean;
+  modify(keys: string[]): void;
+};
+
+export type IRefsTableGetValueEvent = {
+  type: 'REFS/table/getValue';
+  payload: IRefsTableGetValue;
+};
+export type IRefsTableGetValue = {
+  key: string;
+  value?: string;
+  isModified: boolean;
+  modify(value?: string): void;
 };

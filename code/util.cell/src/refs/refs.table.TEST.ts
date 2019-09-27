@@ -1,4 +1,6 @@
 import { expect } from '@platform/test';
+import { filter, map } from 'rxjs/operators';
+
 import { refs } from '.';
 import { t } from '../common';
 
@@ -394,6 +396,87 @@ describe('refs.table', () => {
       const res7 = await table.refs();
       expect(res6.in.A2).to.not.equal(res7.in.A2);
       expect(res6.out.A1).to.not.equal(res7.out.A1);
+    });
+  });
+
+  describe('events', () => {
+    it('REFS/table/getKeys', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const getKeys$ = table.events$.pipe(
+        filter(e => e.type === 'REFS/table/getKeys'),
+        map(e => e.payload as t.IRefsTableGetKeys),
+      );
+
+      let count = 0;
+      let modify = false;
+      getKeys$.subscribe(e => count++);
+
+      const res1 = await table.refs();
+      expect(Object.keys(res1.in)).to.eql(['A2', 'C3']);
+      expect(Object.keys(res1.out)).to.eql(['C3', 'A1']);
+      expect(count).to.eql(2); // NB: IN/OUT.
+
+      getKeys$.pipe(filter(e => modify)).subscribe(e => {
+        expect(e.isModified).to.eql(false);
+        e.modify([]);
+        expect(e.isModified).to.eql(true);
+      });
+
+      count = 0;
+      modify = true;
+      const res2 = await table.refs();
+      expect(res2.in).to.eql({});
+      expect(res2.out).to.eql({});
+      expect(count).to.eql(2);
+    });
+
+    it('REFS/table/getValue', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const getValue$ = table.events$.pipe(
+        filter(e => e.type === 'REFS/table/getValue'),
+        map(e => e.payload as t.IRefsTableGetValue),
+      );
+
+      let count = 0;
+      let modify = false;
+      getValue$.subscribe(e => count++);
+
+      getValue$.pipe(filter(e => modify)).subscribe(e => {
+        if (e.key === 'A1' || e.key === 'C3') {
+          e.modify('hello');
+          expect(e.isModified).to.eql(true);
+          expect(e.value).to.eql('hello');
+        }
+      });
+
+      const res1 = await table.refs();
+      expect(Object.keys(res1.in)).to.eql(['A2', 'C3']);
+      expect(Object.keys(res1.out)).to.eql(['C3', 'A1']);
+      expect(count).to.greaterThan(2);
+
+      // Recall - everything is cached.
+      count = 0;
+      await table.refs(); // NB: default {force:false}.
+      await table.refs({ force: false });
+      expect(count).to.eql(0); // NB: Cached, no more calls to `getValue`.
+
+      // Modify values.
+      modify = true;
+      const res2 = await table.refs({ force: true });
+      expect(res2.in).to.eql({});
+      expect(res2.out).to.eql({});
     });
   });
 });

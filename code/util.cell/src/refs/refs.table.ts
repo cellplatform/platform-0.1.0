@@ -1,8 +1,11 @@
-import { t, MemoryCache, R } from '../common';
-import { range } from '../range';
-import { outgoing } from './refs.outgoing';
-import { incoming } from './refs.incoming';
+import { Subject } from 'rxjs';
+import { filter, share, takeUntil } from 'rxjs/operators';
+
 import { cell } from '../cell';
+import { MemoryCache, R, t } from '../common';
+import { range } from '../range';
+import { incoming } from './refs.incoming';
+import { outgoing } from './refs.outgoing';
 
 const CellRange = range.CellRange;
 
@@ -47,17 +50,39 @@ class RefsTable implements t.IRefsTable {
    * [Lifecycle]
    */
   constructor(args: IRefsTableArgs) {
-    this.getKeys = args.getKeys;
-    this.getValue = args.getValue;
-    this.cache = args.cache || MemoryCache.create();
+    this._getKeys = args.getKeys;
+    this._getValue = args.getValue;
+    this._cache = args.cache || MemoryCache.create();
+  }
+
+  public dispose() {
+    this._dispose$.next();
+    this._dispose$.complete();
   }
 
   /**
    * [Fields]
    */
-  private readonly getKeys: t.RefGetKeys;
-  private readonly getValue: t.RefGetValue;
-  private readonly cache: t.IMemoryCache;
+
+  private readonly _getKeys: t.RefGetKeys;
+  private readonly _getValue: t.RefGetValue;
+  private readonly _cache: t.IMemoryCache;
+
+  private readonly _dispose$ = new Subject<{}>();
+  public readonly dispose$ = this._dispose$.pipe(share());
+
+  private readonly _events$ = new Subject<t.RefsTableEvent>();
+  public readonly events$ = this._events$.pipe(
+    takeUntil(this.dispose$),
+    share(),
+  );
+
+  /**
+   * [Properties]
+   */
+  public get isDisposed() {
+    return this._dispose$.isStopped;
+  }
 
   /**
    * [Methods]
@@ -67,6 +92,7 @@ class RefsTable implements t.IRefsTable {
    * Calculate incoming/outgoing references.
    */
   public async refs(args: { range?: string | string[]; force?: boolean } = {}): Promise<t.IRefs> {
+    this.throwIfDisposed('refs');
     const outRefs = await this.outgoing(args);
     const inRefs = await this.incoming({ ...args, outRefs });
     return {
@@ -81,6 +107,7 @@ class RefsTable implements t.IRefsTable {
   public async incoming(
     args: { range?: string | string[]; force?: boolean; outRefs?: t.IRefsOut } = {},
   ): Promise<t.IRefsIn> {
+    this.throwIfDisposed('incoming');
     const { range, outRefs } = args;
     const getValue = this.getValue;
     const keys = await this.filterKeys({ range, outRefs });
@@ -98,6 +125,7 @@ class RefsTable implements t.IRefsTable {
   public async outgoing(
     args: { range?: string | string[]; force?: boolean } = {},
   ): Promise<t.IRefsOut> {
+    this.throwIfDisposed('outgoing');
     const { range } = args;
     const getValue = this.getValue;
     const keys = await this.filterKeys({ range });
@@ -113,26 +141,57 @@ class RefsTable implements t.IRefsTable {
    * Clear the cache.
    */
   public reset(args: { cache?: t.RefDirection[] } = {}) {
+    this.throwIfDisposed('reset');
     const types = args.cache || ['IN', 'OUT'];
-    this.cache.clear({ filter: key => CACHE.isPrefix(types, key) });
+    this._cache.clear({ filter: key => CACHE.isPrefix(types, key) });
     return this;
   }
 
   /**
-   * Determines if refs for the specified cell is cached.
-   */
-  // TEMP 🐷 - DELETE
-  // public cached(args: { key: string }) {
-  //   const { key } = typeof args === 'object' ? args : { key: args };
-  //   return [
-  //     this.cache.exists(CACHE.key('IN', key)) ? 'IN' : undefined,
-  //     this.cache.exists(CACHE.key('OUT', key)) ? 'OUT' : undefined,
-  //   ].filter(e => Boolean(e)) as t.RefDirection[];
-  // }
-
-  /**
    * [Internal]
    */
+  private throwIfDisposed(action: string) {
+    if (this.isDisposed) {
+      throw new Error(`Cannot ${action} because RefsTable is disposed.`);
+    }
+  }
+
+  private fire(e: t.RefsTableEvent) {
+    this._events$.next(e);
+  }
+
+  private getKeys: t.RefGetKeys = async () => {
+    let keys = await this._getKeys();
+    const payload: t.IRefsTableGetKeys = {
+      get keys() {
+        return keys;
+      },
+      isModified: false,
+      modify(change: string[]) {
+        payload.isModified = true;
+        keys = change;
+      },
+    };
+    this.fire({ type: 'REFS/table/getKeys', payload });
+    return keys;
+  };
+
+  private getValue: t.RefGetValue = async (key: string) => {
+    let value = await this._getValue(key);
+    const payload: t.IRefsTableGetValue = {
+      key,
+      get value() {
+        return value;
+      },
+      isModified: false,
+      modify(change?: string) {
+        payload.isModified = true;
+        value = change;
+      },
+    };
+    this.fire({ type: 'REFS/table/getValue', payload });
+    return value;
+  };
 
   private async calc<T>(args: {
     keys: string[];
@@ -148,7 +207,7 @@ class RefsTable implements t.IRefsTable {
 
     const wait = keys.map(async key => {
       const getValue = () => args.find(key);
-      const refs = await this.cache.getAsync(args.cache(key), { getValue, force });
+      const refs = await this._cache.getAsync(args.cache(key), { getValue, force });
       if (refs.length > 0) {
         res[key] = refs;
       }
@@ -162,7 +221,7 @@ class RefsTable implements t.IRefsTable {
   private async filterKeys(args: { range?: string | string[]; outRefs?: t.IRefsOut }) {
     const { range, outRefs } = args;
     const keys = await this.getKeys();
-    const cache = this.cache;
+    const cache = this._cache;
     return RefsTable.filterKeys({ keys, range, outRefs, cache });
   }
   public static filterKeys(args: {
