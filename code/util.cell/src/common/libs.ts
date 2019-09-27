@@ -16,6 +16,7 @@ import {
   uniq,
   uniqBy,
   pipe,
+  equals,
 } from 'ramda';
 
 export const R = {
@@ -30,4 +31,5 @@ export const R = {
   uniq,
   uniqBy,
   pipe,
+  equals,
 };

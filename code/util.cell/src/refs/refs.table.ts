@@ -1,13 +1,12 @@
 import { Subject } from 'rxjs';
-import { filter, share, takeUntil } from 'rxjs/operators';
+import { share, takeUntil } from 'rxjs/operators';
 
 import { cell } from '../cell';
 import { MemoryCache, R, t } from '../common';
 import { range } from '../range';
 import { incoming } from './refs.incoming';
 import { outgoing } from './refs.outgoing';
-
-const CellRange = range.CellRange;
+import { formula } from '../formula';
 
 type IRefsTableArgs = {
   getKeys: t.RefGetKeys;
@@ -151,11 +150,26 @@ class RefsTable implements t.IRefsTable {
    * Recalculate the table for the given change(s).
    */
   public async update(args: t.IRefsUpdateArgs | t.IRefsUpdateArgs[]) {
-    const changes: t.IRefsUpdateArgs[] = Array.isArray(args) ? args : [args];
+    let changes: t.IRefsUpdateArgs[] = Array.isArray(args) ? args : [args];
+    changes = changes
+      .filter(({ from, to }) => !R.equals(from, to))
+      .filter(({ from, to }) => formula.isFormula(from) || formula.isFormula(to));
     const keys = R.uniq(changes.map(change => change.key));
 
     // Get the current set of refs (prior to any updates).
     const beforeRefs = await this.refs(); // NB: Not forced, pick up from cache.
+
+    // Short circuit if there are no actual changes.
+    if (changes.length === 0) {
+      const res: t.RefsUpdate = {
+        ok: true,
+        changed: changes,
+        keys: [],
+        refs: beforeRefs,
+        errors: [],
+      };
+      return res;
+    }
 
     // Calculate set of existing refs (IN/OUT) prior to any updates.
     const refsToKeys = (refs: t.IRefs) => {
@@ -334,45 +348,3 @@ const util = {
       util.outgoing.listToKeys(util.outgoing.refsToFlatList(refs)),
   },
 };
-
-// /**
-//  * Helpers for evaluating INCOMING refs.
-//  */
-// export class RefsIn {
-//   /**
-//    * [Lifecycle]
-//    */
-//   constructor(args: { refs: t.IRefsIn }) {
-//     this.refs = args.refs;
-//   }
-
-//   /**
-//    * [Fields]
-//    */
-//   public readonly refs: t.IRefsIn;
-
-//   /**
-//    * [Methods]
-//    */
-// }
-
-// /**
-//  * Helpers for evaluating INCOMING refs.
-//  */
-// export class RefOut {
-//   /**
-//    * [Lifecycle]
-//    */
-//   constructor(args: { refs: t.IRefsOut }) {
-//     this.refs = args.refs;
-//   }
-
-//   /**
-//    * [Fields]
-//    */
-//   public readonly refs: t.IRefsOut;
-
-//   /**
-//    * [Methods]
-//    */
-// }
