@@ -29,6 +29,5 @@ export const R = {
   sortWith,
   uniq,
   uniqBy,
-  pipe
+  pipe,
 };
-

@@ -493,7 +493,7 @@ describe('refs.table', () => {
       const res1 = await table.refs();
 
       A1 = 'hello';
-      const res2 = await table.update({ key: 'C3', from: '=A2', to: 'hello' });
+      const res2 = await table.update({ key: 'C3', from: '=A2', to: A1 });
 
       expect(res2.ok).to.eql(true);
       expect(res2.updated).to.eql('C3');
