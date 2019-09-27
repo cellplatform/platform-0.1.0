@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.cell",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Data types for working with grid cell cooridnates (eg 'A1').",
   "main": "lib/index",
   "types": "lib/index.d.ts",
