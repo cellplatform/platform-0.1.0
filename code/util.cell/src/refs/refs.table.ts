@@ -150,7 +150,7 @@ class RefsTable implements t.IRefsTable {
   /**
    * Recalculate the table for the given change(s).
    */
-  public async update(args: t.IRefsUpdateArgs) {
+  public async update(args: t.IRefsUpdateArgs | t.IRefsUpdateArgs[]) {
     const changes: t.IRefsUpdateArgs[] = Array.isArray(args) ? args : [args];
     const keys = R.uniq(changes.map(change => change.key));
 
@@ -178,7 +178,7 @@ class RefsTable implements t.IRefsTable {
     await Promise.all(keys.map(key => updateOutRefs(key)));
     refreshKeys = R.uniq(refreshKeys);
 
-    // 🌳 Perform a refresh of all referenced cells implicated in the change(s).
+    // 🌳 Perform a refresh of all referenced cells implicated in the change.
     const refs = await this.refs({ range: refreshKeys, force: true });
 
     // Read out any errors that may exist after the update.

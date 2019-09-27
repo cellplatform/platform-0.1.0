@@ -39,7 +39,7 @@ export type IRefsTable = {
     outRefs?: IRefsOut;
   }): Promise<IRefsIn>;
   reset(args?: { cache?: RefDirection[] }): IRefsTable;
-  update(args: IRefsUpdateArgs): Promise<RefsUpdate>;
+  update(args: IRefsUpdateArgs | IRefsUpdateArgs[]): Promise<RefsUpdate>;
 };
 
 /**
