@@ -102,6 +102,7 @@ async function outgoingCell(args: {
     error = {
       type: 'CIRCULAR',
       message: `Cell reference leads back to itself (${path})`,
+      key,
     };
   }
 
@@ -110,6 +111,7 @@ async function outgoingCell(args: {
     error = {
       type: 'NAME',
       message: `Unknown range: ${key}`,
+      key,
     };
   }
 
@@ -156,6 +158,7 @@ async function outgoingRange(args: {
     ref.error = {
       type: 'CIRCULAR',
       message: `Range contains a cell that leads back to itself (${path})`,
+      key: cells.key,
     };
   }
 
@@ -184,7 +187,8 @@ async function outgoingFunc(args: {
       const cell = param as ast.CellRangeNode;
       const left = cell.left.key;
       const right = cell.right.key;
-      const path = `${args.path}/${left}:${right}`;
+      const range = `${left}:${right}`;
+      const path = `${args.path}/${range}`;
 
       const parts = args.path.split('/');
       const isCircular = parts.includes(left) || parts.includes(right);
@@ -192,6 +196,7 @@ async function outgoingFunc(args: {
         error = {
           type: 'CIRCULAR',
           message: `Range contains a cell that leads back to itself (${path})`,
+          key: range,
         };
       }
       const ref: t.IRefOut = { target: 'RANGE', path, param: i, error };
@@ -200,9 +205,10 @@ async function outgoingFunc(args: {
 
     // Lookup the reference the parameter points to.
     const cellNode = param as ast.CellNode;
-    const path = `${args.path}/${cellNode.key}`;
-    const targetKey = cell.toRelative(cellNode.key);
-    const targetValue = await getValue(cellNode.key);
+    const key = cellNode.key;
+    const path = `${args.path}/${key}`;
+    const targetKey = cell.toRelative(key);
+    const targetValue = await getValue(key);
     const targetTree = ast.toTree(targetValue);
 
     const isCircular = args.path.split('/').includes(targetKey);
@@ -210,6 +216,7 @@ async function outgoingFunc(args: {
       error = {
         type: 'CIRCULAR',
         message: `Function parameter ${i} contains a reference that leads back to itself (${path})`,
+        key,
       };
     }
 

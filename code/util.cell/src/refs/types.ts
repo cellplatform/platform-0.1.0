@@ -38,6 +38,7 @@ export type IRefsTable = {
     outRefs?: IRefsOut;
   }): Promise<IRefsIn>;
   reset(args?: { cache?: RefDirection[] }): IRefsTable;
+  update(args: { key: string; from?: string; to?: string }): Promise<RefsUpdateResponse>;
 };
 
 /**
@@ -65,7 +66,7 @@ export type RefError = 'CIRCULAR' | 'NAME';
 export type IRefError = {
   type: RefError;
   message: string;
-  // key:string
+  key: string;
 };
 
 /**

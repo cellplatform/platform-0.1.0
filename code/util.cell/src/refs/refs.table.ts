@@ -149,6 +149,64 @@ class RefsTable implements t.IRefsTable {
   }
 
   /**
+   * Recalculate the table for the given change.
+   */
+  public async update(args: { key: string; from?: string; to?: string }) {
+    const { key } = args;
+
+    // Calculate set of existing refs (IN/OUT) prior to any updates.
+    const pathToKeys = (path?: string) => (path || '').split('/').filter(part => part);
+    const incomingToKeys = (refs: t.IRefIn[] = []) => refs.map(ref => ref.cell);
+    const outgoingToKeys = (refs: t.IRefOut[] = []) =>
+      R.flatten(refs.map(ref => pathToKeys(ref.path)));
+
+    const refsToKeys = (refs: t.IRefs) => {
+      const inKeys = Object.keys(refs.in)
+        .map(key => ({ key, refs: incomingToKeys(refs.in[key]) }))
+        .filter(e => e.refs.includes(args.key))
+        .map(e => e.key);
+      const outRefs = R.flatten(Object.keys(refs.out).map(key => refs.out[key]));
+      const outKeys = outgoingToKeys(outRefs);
+      return R.uniq([...inKeys, ...outKeys]);
+    };
+
+    const beforeRefs = await this.refs(); // NB: Not forced, pick up from cache.
+    let refresh: string[] = refsToKeys(beforeRefs);
+
+    // Perform update of OUTGOING refs of the given cell.
+    const outRefs = await this.outgoing({ range: key, force: true });
+
+    // Add all OUTGOING keys derived from the update.
+    Object.keys(outRefs).forEach(key => {
+      outRefs[key].forEach(item => {
+        refresh = [...refresh, ...pathToKeys(item.path)];
+      });
+    });
+    refresh = R.uniq(refresh);
+
+    // Perform a forced update of all INCOMING/OUTGOING refs implicated in the change.
+    const refs = await this.refs({ range: refresh, force: true });
+
+    // Read out any errors that may exist after the update.
+    const errors: t.IRefError[] = R.flatten(
+      Object.keys(refs.out)
+        .map(key => refs.out[key])
+        .map(refs => refs.map(ref => ref.error as t.IRefError)),
+    ).filter(err => err);
+    const ok = errors.length === 0;
+
+    // Finish up.
+    const res: t.RefsUpdateResponse = {
+      ok,
+      updated: key,
+      keys: refresh,
+      refs,
+      errors,
+    };
+    return res;
+  }
+
+  /**
    * [Internal]
    */
   private throwIfDisposed(action: string) {
