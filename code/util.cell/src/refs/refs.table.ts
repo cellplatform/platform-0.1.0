@@ -110,6 +110,7 @@ class RefsTable implements t.IRefsTable {
     this.throwIfDisposed('incoming');
     const { range, outRefs } = args;
     const getValue = this.getValue;
+    // const getKeys: t.RefGetKeys = () => this.filterKeys({ range, outRefs });
     const keys = await this.filterKeys({ range, outRefs });
     return this.calc<t.IRefIn>({
       ...args,
@@ -169,7 +170,7 @@ class RefsTable implements t.IRefsTable {
       isModified: false,
       modify(change: string[]) {
         payload.isModified = true;
-        keys = change;
+        keys = R.uniq(change);
       },
     };
     this.fire({ type: 'REFS/table/getKeys', payload });

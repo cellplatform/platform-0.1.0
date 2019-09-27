@@ -28,7 +28,7 @@ export type ITestGridViewState = {
   rows?: t.IGridRows;
 };
 
-const DEFAULT = {
+export const DEFAULT = {
   VALUES: {
     A1: { value: '=A5' },
     A2: { value: 'A2', props: { style: { bold: true } } },

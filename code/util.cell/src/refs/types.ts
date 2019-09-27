@@ -17,6 +17,14 @@ export type IRefs = {
   out: IRefsOut;
 };
 
+export type RefsUpdateResponse = {
+  ok: boolean;
+  updated: string;
+  keys: string[];
+  refs: IRefs;
+  errors: IRefError[];
+};
+
 /**
  * Table
  */
@@ -57,6 +65,7 @@ export type RefError = 'CIRCULAR' | 'NAME';
 export type IRefError = {
   type: RefError;
   message: string;
+  // key:string
 };
 
 /**
