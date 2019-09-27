@@ -1,10 +1,11 @@
 import * as t from '../types';
 export { KeyBindings } from '@platform/react/lib/types';
+export * from '@platform/util.cell/lib/types';
 
 export * from '../types';
 
 /**
- * [INTERNAL]
+ * [Internal]
  */
 export type FireGridEvent = (e: t.GridEvent) => void;
 

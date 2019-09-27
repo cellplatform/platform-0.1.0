@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { formula } from '.';
 
-describe('util.formula', () => {
+describe('formula', () => {
   it('isFormula', () => {
     const test = (value: any, expected: boolean) => {
       expect(formula.isFormula(value)).to.eql(expected);

@@ -6,7 +6,7 @@ type ICellCoord = { column?: number; row?: number };
 type ICellKeyObject = { key: string };
 type CellInput = string | number | ICellCoord | ICellKeyObject;
 
-const cache = new MemoryCache();
+const cache = MemoryCache.create();
 
 /**
  * Converts indexes into alpha-numeric cell code.

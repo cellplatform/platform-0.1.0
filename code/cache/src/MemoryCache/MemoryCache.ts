@@ -1,24 +1,40 @@
 import { Subject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import * as t from '../types';
+
+export type IMemoryCacheArgs = { ttl?: number };
+
+type CacheValues = { [key: string]: CacheItem<any> };
 
 type CacheItem<V> = {
   value?: V;
   put$: Subject<{}>;
 };
 
-export class MemoryCache<K extends string> {
+export class MemoryCache<K extends string = string> implements t.IMemoryCache<K> {
   /**
    * [Lifecycle]
    */
-  public constructor(args: { ttl?: number } = {}) {
+  public static create<K extends string = string>(args?: IMemoryCacheArgs): t.IMemoryCache<K> {
+    return new MemoryCache<K>(args);
+  }
+  private constructor(args: IMemoryCacheArgs & { values?: CacheValues } = {}) {
     this.ttl = args.ttl;
+    this.values = args.values || {};
   }
 
   /**
    * [Fields]
    */
-  private readonly values: { [key: string]: CacheItem<any> } = {};
+  private values: CacheValues;
   public readonly ttl: number | undefined;
+
+  /**
+   * [Properties]
+   */
+  public get keys() {
+    return Object.keys(this.values);
+  }
 
   /**
    * [Methods]
@@ -27,13 +43,23 @@ export class MemoryCache<K extends string> {
     return Boolean(this.values[key] && this.values[key].value);
   }
 
-  public get<V>(key: K, defaultValue?: () => V): V {
-    let value = this.item<V>(key).value;
-    if (value === undefined && typeof defaultValue === 'function') {
-      value = defaultValue();
-      this.put(key, value);
+  public get<V>(key: K, args?: t.MemoryCacheGetValue<V> | t.IMemoryCacheGetOptions<V>): V {
+    const res = this.getItem<V>(key, args);
+    if (res.retrieved) {
+      this.put(key, res.value);
     }
-    return value as V;
+    return res.value;
+  }
+
+  public async getAsync<V>(
+    key: K,
+    args?: t.MemoryCacheGetValue<V> | t.IMemoryCacheGetOptions<V>,
+  ): Promise<V> {
+    const res = this.getItem<V>(key, args);
+    if (res.retrieved) {
+      this.put(key, isPromise(res.value) ? await res.value : res.value);
+    }
+    return res.value;
   }
 
   public put<V>(key: K, value: V) {
@@ -53,13 +79,28 @@ export class MemoryCache<K extends string> {
     return this;
   }
 
-  public clear() {
-    Object.keys(this.values).forEach(key => delete this.values[key]);
+  public clear(args: { filter?: t.MemoryCacheFilter } = {}) {
+    const { filter } = args;
+    if (filter) {
+      Object.keys(this.values)
+        .filter(filter)
+        .forEach(key => delete this.values[key]);
+    } else {
+      this.values = {};
+    }
     return this;
   }
 
+  public clone() {
+    const values = Object.keys(this.values).reduce((acc, key) => {
+      acc[key] = { ...this.values[key] };
+      return acc;
+    }, {});
+    return new MemoryCache({ ttl: this.ttl, values });
+  }
+
   /**
-   * [Helpers]
+   * [Internal]
    */
   private item<V>(key: K): CacheItem<V> {
     if (!this.values[key]) {
@@ -67,4 +108,24 @@ export class MemoryCache<K extends string> {
     }
     return this.values[key];
   }
+
+  private getItem<V>(key: K, args?: t.MemoryCacheGetValue<V> | t.IMemoryCacheGetOptions<V>) {
+    const getValue = typeof args === 'function' ? args : args ? args.getValue : undefined;
+    const force = typeof args === 'object' ? args.force : false;
+    let value: any = this.item<V>(key).value;
+    const retrieved = typeof getValue === 'function' && (force || value === undefined);
+    if (retrieved && typeof getValue === 'function') {
+      value = getValue();
+    }
+
+    return { value, retrieved };
+  }
+}
+
+/**
+ * [Helpers]
+ */
+
+function isPromise(value: any) {
+  return typeof value === 'object' && typeof (value as any).then === 'function';
 }

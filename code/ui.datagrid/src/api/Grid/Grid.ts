@@ -10,6 +10,7 @@ import {
   toSelectionValues,
   util,
   MemoryCache,
+  IGridCell,
 } from '../../common';
 import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
@@ -187,7 +188,7 @@ export class Grid implements t.IGrid {
    * [Fields]
    */
   private readonly _ = {
-    cache: new MemoryCache(),
+    cache: MemoryCache.create(),
     table: (undefined as unknown) as Handsontable,
     dispose$: new Subject<{}>(),
     events$: new Subject<t.GridEvent>(),
@@ -468,6 +469,21 @@ export class Grid implements t.IGrid {
     values: t.IGridCells,
     options: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean } = {},
   ) {
+    const done = () => this;
+
+    const format = (key: string, to?: t.IGridCell) => {
+      if (Cell.isEmpty(to)) {
+        return undefined;
+      }
+      if (to) {
+        to = { ...to, hash: util.cellHash(key, to) };
+        if (Cell.isEmptyProps(to.props)) {
+          delete to.props; // Strip any empty props or props with default values.
+        }
+      }
+      return to;
+    };
+
     if (values) {
       // Process input object.
       const current = { ...(options.init ? {} : this.values) };
@@ -478,14 +494,31 @@ export class Grid implements t.IGrid {
         .filter(key => !coord.cell.isCell(key))
         .forEach(key => delete values[key]);
 
+      // Format incoming values ensuring they are clean and structurally consistent.
+      type Values = { [key: string]: { from?: t.IGridCell; to?: IGridCell } };
+      const formatted: Values = Object.keys(values).reduce((acc, key) => {
+        acc[key] = {
+          from: format(key, current[key]),
+          to: format(key, values[key]),
+        };
+        return acc;
+      }, {});
+
+      // Calculate the set of change events.
+      const changes = Object.keys(values).map(key => {
+        const cell = this.cell(key);
+        const { from, to } = formatted[key];
+        return Cell.changeEvent({ cell, from, to });
+      });
+
+      // Exit out if no values have changed.
+      const isChanged = changes.some(e => e.isChanged);
+      if (!isChanged) {
+        return done();
+      }
+
       // Fire change event.
       if (!options.silent) {
-        const changes = Object.keys(values).map(key => {
-          const cell = this.cell(key);
-          const from = current[key];
-          const to = values[key];
-          return Cell.changeEvent({ cell, from, to });
-        });
         const payload: t.IGridCellsChange = {
           source: defaultValue(options.source, 'EDIT'),
           changes,
@@ -511,31 +544,25 @@ export class Grid implements t.IGrid {
 
       // Calculate the new updated value set.
       const mergeChanges: t.IGridCells = {};
-      const updates = { ...current, ...values };
-      Object.keys(values).forEach(key => {
-        const current = this.values[key];
-        const update = updates[key];
+      const updates = {
+        ...current,
+        ...Object.keys(formatted).reduce((acc, key) => {
+          acc[key] = formatted[key].to;
+          return acc;
+        }, {}),
+      };
+      Object.keys(formatted).forEach(key => {
+        const { from, to } = formatted[key];
 
         // Strip empty values.
-        if (Cell.isEmpty(update)) {
+        if (Cell.isEmpty(to)) {
           delete updates[key];
           return;
         }
 
-        // Strip any empty props.
-        if (update && Cell.isEmptyProps(update.props)) {
-          delete update.props;
-        }
-
         // Determine if any merge values have changed.
-        if (Cell.isChanged(current, update, 'merge')) {
-          mergeChanges[key] = update;
-        }
-
-        // Updates the cell's hash.
-        if (update) {
-          const hash = util.cellHash(key, update);
-          (updates[key] as any).hash = hash;
+        if (Cell.isChanged(from, to, 'merge')) {
+          mergeChanges[key] = to;
         }
       });
 
@@ -547,7 +574,9 @@ export class Grid implements t.IGrid {
       // Update the UI.
       this.setValues(updates);
     }
-    return this;
+
+    // Finish up.
+    return done();
   }
 
   /**
