@@ -17,9 +17,10 @@ export type IRefs = {
   out: IRefsOut;
 };
 
-export type RefsUpdateResponse = {
+export type IRefsUpdateArgs = { key: string; from?: string; to?: string };
+export type RefsUpdate = {
   ok: boolean;
-  updated: string;
+  changed: IRefsUpdateArgs[];
   keys: string[];
   refs: IRefs;
   errors: IRefError[];
@@ -38,7 +39,7 @@ export type IRefsTable = {
     outRefs?: IRefsOut;
   }): Promise<IRefsIn>;
   reset(args?: { cache?: RefDirection[] }): IRefsTable;
-  update(args: { key: string; from?: string; to?: string }): Promise<RefsUpdateResponse>;
+  update(args: IRefsUpdateArgs): Promise<RefsUpdate>;
 };
 
 /**
