@@ -67,7 +67,7 @@ export type RefError = 'CIRCULAR' | 'NAME';
 export type IRefError = {
   type: RefError;
   message: string;
-  key: string;
+  path: string;
 };
 
 /**

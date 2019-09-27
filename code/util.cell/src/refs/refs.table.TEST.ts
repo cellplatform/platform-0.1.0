@@ -581,7 +581,32 @@ describe('refs.table', () => {
       expect(Object.keys(res2.refs.out).sort()).to.eql(['A1', 'A2', 'A3']);
     });
 
-    it.skip('error', async () => {});
+    it('error', async () => {
+      let A2 = '123';
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: () => A2 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+      const res1 = await table.refs();
+
+      A2 = '=D9';
+      const res2 = await table.update({ key: 'A2', from: '123', to: '=A1' });
+      expect(res2.ok).to.eql(true);
+      expect(res2.errors).to.eql([]);
+
+      A2 = '=A1';
+      const res3 = await table.update({ key: 'A2', from: '123', to: '=A1' });
+      expect(res3.ok).to.eql(false);
+      expect(res3.errors.length).to.eql(4);
+      expect(res3.errors.map(err => err.path).sort()).to.eql([
+        'A1/A2',
+        'A1/C3/A2',
+        'A2/A1/A2',
+        'C3/A2/A1/A2',
+      ]);
+    });
 
     it.skip('events', async () => {});
   });

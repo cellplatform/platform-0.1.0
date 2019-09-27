@@ -102,7 +102,7 @@ async function outgoingCell(args: {
     error = {
       type: 'CIRCULAR',
       message: `Cell reference leads back to itself (${path})`,
-      key,
+      path,
     };
   }
 
@@ -111,7 +111,7 @@ async function outgoingCell(args: {
     error = {
       type: 'NAME',
       message: `Unknown range: ${key}`,
-      key,
+      path,
     };
   }
 
@@ -158,7 +158,7 @@ async function outgoingRange(args: {
     ref.error = {
       type: 'CIRCULAR',
       message: `Range contains a cell that leads back to itself (${path})`,
-      key: cells.key,
+      path,
     };
   }
 
@@ -196,7 +196,7 @@ async function outgoingFunc(args: {
         error = {
           type: 'CIRCULAR',
           message: `Range contains a cell that leads back to itself (${path})`,
-          key: range,
+          path,
         };
       }
       const ref: t.IRefOut = { target: 'RANGE', path, param: i, error };
@@ -216,7 +216,7 @@ async function outgoingFunc(args: {
       error = {
         type: 'CIRCULAR',
         message: `Function parameter ${i} contains a reference that leads back to itself (${path})`,
-        key,
+        path,
       };
     }
 
