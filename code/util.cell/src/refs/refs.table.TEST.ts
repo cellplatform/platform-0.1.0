@@ -481,7 +481,40 @@ describe('refs.table', () => {
   });
 
   describe('update', () => {
-    it('updates', async () => {
+    it('no change ("from/to" the same, "from/to" not a REF)', async () => {
+      let A2 = '123';
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: () => A2 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = await table.refs();
+      expect(Object.keys(res1.in).sort()).to.eql(['A2', 'C3']);
+      expect(Object.keys(res1.out).sort()).to.eql(['A1', 'C3']);
+
+      // Same value (no change).
+      A2 = '123';
+      const res2 = await table.update({ key: 'C3', from: '123', to: '123' });
+      expect(res2.ok).to.eql(true);
+      expect(res2.changed).to.eql([]);
+      expect(res2.keys).to.eql([]);
+      expect(res2.errors).to.eql([]);
+      expect(res2.refs).to.eql(res1);
+
+      // Different value (no change, because to/from is not a formula).
+      A2 = '456';
+      const res3 = await table.update({ key: 'C3', from: '123', to: '456' });
+
+      expect(res3.ok).to.eql(true);
+      expect(res3.changed).to.eql([]);
+      expect(res3.keys).to.eql([]);
+      expect(res3.errors).to.eql([]);
+      expect(res3.refs).to.eql(res1);
+    });
+
+    it('single change: FUNC(args) => VALUE', async () => {
       let A1 = '=SUM(A2,C3)';
       const ctx = testContext({
         A1: { value: () => A1 },
@@ -491,24 +524,183 @@ describe('refs.table', () => {
       const table = refs.table({ ...ctx });
 
       const res1 = await table.refs();
+      expect(Object.keys(res1.in).sort()).to.eql(['A2', 'C3']);
+      expect(Object.keys(res1.out).sort()).to.eql(['A1', 'C3']);
 
       A1 = 'hello';
-      const res2 = await table.update({ key: 'C3', from: '=A2', to: A1 });
+      const res2 = await table.update({ key: 'C3', from: '=A2', to: 'hello' });
 
       expect(res2.ok).to.eql(true);
-      expect(res2.updated).to.eql('C3');
-      expect(res2.keys).to.eql(['A2', 'A1', 'C3']);
+      expect(res2.errors).to.eql([]);
+      expect(res2.changed).to.eql([{ key: 'C3', from: '=A2', to: 'hello' }]);
+      expect(res2.keys.sort()).to.eql(['A1', 'A2', 'C3']);
 
       const res3 = await table.refs();
-
       expect(res1).to.not.eql(res2.refs);
       expect(res2.refs).to.eql(res3);
 
-      expect(Object.keys(res1.in)).to.eql(['A2', 'C3']);
-      expect(Object.keys(res1.out)).to.eql(['C3', 'A1']);
-
       expect(Object.keys(res2.refs.in)).to.eql(['A2']);
       expect(Object.keys(res2.refs.out)).to.eql(['C3']);
+    });
+
+    it('single change: VALUE => FUNC(args)', async () => {
+      let A1 = 'hello';
+      const ctx = testContext({
+        A1: { value: () => A1 },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = await table.refs();
+      expect(Object.keys(res1.in)).to.eql(['A2']);
+      expect(Object.keys(res1.out)).to.eql(['C3']);
+
+      A1 = '=SUM(A2,C3)';
+      const res2 = await table.update({ key: 'A1', from: 'hello', to: '=SUM(A2,C3)' });
+
+      expect(res2.ok).to.eql(true);
+      expect(res2.errors).to.eql([]);
+      expect(res2.changed).to.eql([{ key: 'A1', from: 'hello', to: '=SUM(A2,C3)' }]);
+      expect(res2.keys.sort()).to.eql(['A1', 'A2', 'C3']);
+
+      const res3 = await table.refs();
+      expect(res1).to.not.eql(res2.refs);
+      expect(res2.refs).to.eql(res3);
+
+      expect(Object.keys(res2.refs.in).sort()).to.eql(['A2', 'C3']);
+      expect(Object.keys(res2.refs.out).sort()).to.eql(['A1', 'C3']);
+    });
+
+    it('single change: VALUE => REF', async () => {
+      let A1 = 'hello';
+      const ctx = testContext({
+        A1: { value: () => A1 },
+        A2: { value: 123 },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = await table.refs();
+      expect(Object.keys(res1.in)).to.eql([]);
+      expect(Object.keys(res1.out)).to.eql([]);
+
+      A1 = '=A2';
+      const res2 = await table.update({ key: 'A1', from: 'hello', to: '=A2' });
+
+      expect(res2.ok).to.eql(true);
+      expect(res2.errors).to.eql([]);
+      expect(res2.changed).to.eql([{ key: 'A1', from: 'hello', to: '=A2' }]);
+      expect(res2.keys.sort()).to.eql(['A1', 'A2']);
+
+      const res3 = await table.refs();
+      expect(res1).to.not.eql(res2.refs);
+      expect(res2.refs).to.eql(res3);
+
+      expect(Object.keys(res2.refs.in).sort()).to.eql(['A2']);
+      expect(Object.keys(res2.refs.out).sort()).to.eql(['A1']);
+    });
+
+    it('multi change', async () => {
+      const A1 = '=SUM(A2,A4)';
+      let A2 = '123';
+      let A3 = '456';
+      const ctx = testContext({
+        A1: { value: () => A1 },
+        A2: { value: () => A2 },
+        A3: { value: () => A3 },
+        A4: { value: '999' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = await table.refs();
+      expect(Object.keys(res1.in).sort()).to.eql(['A2', 'A4']);
+      expect(Object.keys(res1.out).sort()).to.eql(['A1']);
+
+      A2 = '=A3';
+      A3 = '=SUM(A4,100)';
+      const res2 = await table.update([
+        { key: 'A2', from: '123', to: '=A3' },
+        { key: 'A3', from: '456', to: '=SUM(A4,100)' },
+      ]);
+
+      expect(res2.ok).to.eql(true);
+      expect(res2.errors).to.eql([]);
+      expect(res2.changed).to.eql([
+        { key: 'A2', from: '123', to: '=A3' },
+        { key: 'A3', from: '456', to: '=SUM(A4,100)' },
+      ]);
+      expect(res2.keys.sort()).to.eql(['A1', 'A2', 'A3', 'A4']);
+
+      const res3 = await table.refs();
+      expect(res1).to.not.eql(res2.refs);
+      expect(res2.refs).to.eql(res3);
+
+      expect(Object.keys(res2.refs.in).sort()).to.eql(['A2', 'A3', 'A4']);
+      expect(Object.keys(res2.refs.out).sort()).to.eql(['A1', 'A2', 'A3']);
+    });
+
+    it('error', async () => {
+      let A2 = '123';
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: () => A2 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      A2 = '=D9';
+      const res2 = await table.update({ key: 'A2', from: '123', to: '=A1' });
+      expect(res2.ok).to.eql(true);
+      expect(res2.errors).to.eql([]);
+
+      A2 = '=A1';
+      const res3 = await table.update({ key: 'A2', from: '123', to: '=A1' });
+      expect(res3.ok).to.eql(false);
+      expect(res3.errors.length).to.eql(4);
+      expect(res3.errors.map(err => err.path).sort()).to.eql([
+        'A1/A2',
+        'A1/C3/A2',
+        'A2/A1/A2',
+        'C3/A2/A1/A2',
+      ]);
+    });
+
+    it('events', async () => {
+      let A1 = '=SUM(A2,C3)';
+      let A2 = '123';
+      const ctx = testContext({
+        A1: { value: () => A1 },
+        A2: { value: () => A2 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const update$ = table.events$.pipe(
+        filter(e => e.type === 'REFS/table/update'),
+        map(e => e.payload as t.RefsTableUpdate),
+      );
+
+      const events: t.RefsTableUpdate[] = [];
+      update$.subscribe(e => events.push(e));
+
+      // No change (no event).
+      A2 = '456';
+      const res2 = await table.update({ key: 'A2', from: '123', to: '456' });
+      expect(res2.changed.length).to.eql(0);
+      expect(res2.keys.length).to.eql(0);
+      expect(events.length).to.eql(0);
+
+      // Change (event fired).
+      A1 = '=SUM(C3,D9)';
+      A2 = '=D9';
+      const res3 = await table.update([
+        { key: 'A1', from: '456', to: A1 },
+        { key: 'A2', from: '456', to: A2 },
+      ]);
+      expect(res3.changed.length).to.eql(2);
+      expect(res3.keys.length).to.eql(4);
+      expect(events.length).to.eql(1);
+      expect(events[0]).to.eql(res3);
     });
   });
 });

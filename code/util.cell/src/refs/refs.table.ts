@@ -1,13 +1,12 @@
 import { Subject } from 'rxjs';
-import { filter, share, takeUntil } from 'rxjs/operators';
+import { share, takeUntil } from 'rxjs/operators';
 
 import { cell } from '../cell';
 import { MemoryCache, R, t } from '../common';
 import { range } from '../range';
 import { incoming } from './refs.incoming';
 import { outgoing } from './refs.outgoing';
-
-const CellRange = range.CellRange;
+import { formula } from '../formula';
 
 type IRefsTableArgs = {
   getKeys: t.RefGetKeys;
@@ -110,7 +109,6 @@ class RefsTable implements t.IRefsTable {
     this.throwIfDisposed('incoming');
     const { range, outRefs } = args;
     const getValue = this.getValue;
-    // const getKeys: t.RefGetKeys = () => this.filterKeys({ range, outRefs });
     const keys = await this.filterKeys({ range, outRefs });
     return this.calc<t.IRefIn>({
       ...args,
@@ -149,43 +147,53 @@ class RefsTable implements t.IRefsTable {
   }
 
   /**
-   * Recalculate the table for the given change.
+   * Recalculate the table for the given change(s).
    */
-  public async update(args: { key: string; from?: string; to?: string }) {
-    const { key } = args;
+  public async update(args: t.IRefsUpdateArgs | t.IRefsUpdateArgs[]) {
+    let changes: t.IRefsUpdateArgs[] = Array.isArray(args) ? args : [args];
+    changes = changes
+      .filter(({ from, to }) => !R.equals(from, to))
+      .filter(({ from, to }) => formula.isFormula(from) || formula.isFormula(to));
+    const keys = R.uniq(changes.map(change => change.key));
+
+    // Get the current set of refs (prior to any updates).
+    const beforeRefs = await this.refs(); // NB: Not forced, pick up from cache.
+
+    // Short circuit if there are no actual changes.
+    if (changes.length === 0) {
+      const res: t.RefsTableUpdate = {
+        ok: true,
+        changed: changes,
+        keys: [],
+        refs: beforeRefs,
+        errors: [],
+      };
+      return res;
+    }
 
     // Calculate set of existing refs (IN/OUT) prior to any updates.
-    const pathToKeys = (path?: string) => (path || '').split('/').filter(part => part);
-    const incomingToKeys = (refs: t.IRefIn[] = []) => refs.map(ref => ref.cell);
-    const outgoingToKeys = (refs: t.IRefOut[] = []) =>
-      R.flatten(refs.map(ref => pathToKeys(ref.path)));
-
     const refsToKeys = (refs: t.IRefs) => {
-      const inKeys = Object.keys(refs.in)
-        .map(key => ({ key, refs: incomingToKeys(refs.in[key]) }))
-        .filter(e => e.refs.includes(args.key))
+      const inKeys = util.incoming
+        .refsToKeyList(refs.in)
+        .map(({ key, refs }) => ({ key, refs: util.incoming.listToKeys(refs) }))
+        .filter(e => e.refs.some(key => keys.includes(key)))
         .map(e => e.key);
-      const outRefs = R.flatten(Object.keys(refs.out).map(key => refs.out[key]));
-      const outKeys = outgoingToKeys(outRefs);
+      const outKeys = util.outgoing.refsToAllKeys(refs.out);
       return R.uniq([...inKeys, ...outKeys]);
     };
+    let refreshKeys: string[] = refsToKeys(beforeRefs);
 
-    const beforeRefs = await this.refs(); // NB: Not forced, pick up from cache.
-    let refresh: string[] = refsToKeys(beforeRefs);
+    // Perform an OUTGOING update of the given cell and include the resulting
+    // outgoing-refs in the set of cells that need to be refreshed.
+    const updateOutRefs = async (key: string) => {
+      const outRefs = await this.outgoing({ range: key, force: true });
+      refreshKeys = [...refreshKeys, ...util.outgoing.refsToAllKeys(outRefs)];
+    };
+    await Promise.all(keys.map(key => updateOutRefs(key)));
+    refreshKeys = R.uniq(refreshKeys);
 
-    // Perform update of OUTGOING refs of the given cell.
-    const outRefs = await this.outgoing({ range: key, force: true });
-
-    // Add all OUTGOING keys derived from the update.
-    Object.keys(outRefs).forEach(key => {
-      outRefs[key].forEach(item => {
-        refresh = [...refresh, ...pathToKeys(item.path)];
-      });
-    });
-    refresh = R.uniq(refresh);
-
-    // Perform a forced update of all INCOMING/OUTGOING refs implicated in the change.
-    const refs = await this.refs({ range: refresh, force: true });
+    // 🌳 Perform a refresh of all referenced cells implicated in the change.
+    const refs = await this.refs({ range: refreshKeys, force: true });
 
     // Read out any errors that may exist after the update.
     const errors: t.IRefError[] = R.flatten(
@@ -193,17 +201,17 @@ class RefsTable implements t.IRefsTable {
         .map(key => refs.out[key])
         .map(refs => refs.map(ref => ref.error as t.IRefError)),
     ).filter(err => err);
-    const ok = errors.length === 0;
 
     // Finish up.
-    const res: t.RefsUpdateResponse = {
-      ok,
-      updated: key,
-      keys: refresh,
+    const payload: t.RefsTableUpdate = {
+      ok: errors.length === 0,
+      changed: changes,
+      keys: refreshKeys,
       refs,
       errors,
     };
-    return res;
+    this.fire({ type: 'REFS/table/update', payload });
+    return payload;
   }
 
   /**
@@ -326,3 +334,18 @@ function toRangeUnion(keys: string[], cache?: t.IMemoryCache) {
   const cacheKey = CACHE.key('RANGE', keys.join(','));
   return cache ? cache.get(cacheKey, create) : create();
 }
+
+const util = {
+  pathToKeys: (path?: string) => (path || '').split('/').filter(part => part),
+  incoming: {
+    listToKeys: (list: t.IRefIn[]) => list.map(ref => ref.cell),
+    refsToKeyList: (refs: t.IRefsIn) => Object.keys(refs).map(key => ({ key, refs: refs[key] })),
+  },
+  outgoing: {
+    listToKeys: (list: t.IRefOut[]) => R.flatten(list.map(ref => util.pathToKeys(ref.path))),
+    refsToKeyList: (refs: t.IRefsOut) => Object.keys(refs).map(key => ({ key, refs: refs[key] })),
+    refsToFlatList: (refs: t.IRefsOut) => R.flatten(Object.keys(refs).map(key => refs[key])),
+    refsToAllKeys: (refs: t.IRefsOut) =>
+      util.outgoing.listToKeys(util.outgoing.refsToFlatList(refs)),
+  },
+};
