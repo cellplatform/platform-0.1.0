@@ -18,7 +18,7 @@ export type IRefs = {
 };
 
 export type IRefsUpdateArgs = { key: string; from?: string; to?: string };
-export type RefsUpdate = {
+export type RefsTableUpdate = {
   ok: boolean;
   changed: IRefsUpdateArgs[];
   keys: string[];
@@ -39,7 +39,7 @@ export type IRefsTable = {
     outRefs?: IRefsOut;
   }): Promise<IRefsIn>;
   reset(args?: { cache?: RefDirection[] }): IRefsTable;
-  update(args: IRefsUpdateArgs | IRefsUpdateArgs[]): Promise<RefsUpdate>;
+  update(args: IRefsUpdateArgs | IRefsUpdateArgs[]): Promise<RefsTableUpdate>;
 };
 
 /**
@@ -73,7 +73,10 @@ export type IRefError = {
 /**
  * [Events]
  */
-export type RefsTableEvent = IRefsTableGetKeysEvent | IRefsTableGetValueEvent;
+export type RefsTableEvent =
+  | IRefsTableGetKeysEvent
+  | IRefsTableGetValueEvent
+  | IRefsTableUpdateEvent;
 
 export type IRefsTableGetKeysEvent = {
   type: 'REFS/table/getKeys';
@@ -94,4 +97,9 @@ export type IRefsTableGetValue = {
   value?: string;
   isModified: boolean;
   modify(value?: string): void;
+};
+
+export type IRefsTableUpdateEvent = {
+  type: 'REFS/table/update';
+  payload: RefsTableUpdate;
 };

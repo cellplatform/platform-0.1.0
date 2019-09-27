@@ -161,7 +161,7 @@ class RefsTable implements t.IRefsTable {
 
     // Short circuit if there are no actual changes.
     if (changes.length === 0) {
-      const res: t.RefsUpdate = {
+      const res: t.RefsTableUpdate = {
         ok: true,
         changed: changes,
         keys: [],
@@ -203,14 +203,15 @@ class RefsTable implements t.IRefsTable {
     ).filter(err => err);
 
     // Finish up.
-    const res: t.RefsUpdate = {
+    const payload: t.RefsTableUpdate = {
       ok: errors.length === 0,
       changed: changes,
       keys: refreshKeys,
       refs,
       errors,
     };
-    return res;
+    this.fire({ type: 'REFS/table/update', payload });
+    return payload;
   }
 
   /**

@@ -647,7 +647,6 @@ describe('refs.table', () => {
         C3: { value: '=A2' },
       });
       const table = refs.table({ ...ctx });
-      const res1 = await table.refs();
 
       A2 = '=D9';
       const res2 = await table.update({ key: 'A2', from: '123', to: '=A1' });
@@ -666,6 +665,42 @@ describe('refs.table', () => {
       ]);
     });
 
-    it.skip('events', async () => {});
+    it('events', async () => {
+      let A1 = '=SUM(A2,C3)';
+      let A2 = '123';
+      const ctx = testContext({
+        A1: { value: () => A1 },
+        A2: { value: () => A2 },
+        C3: { value: '=A2' },
+      });
+      const table = refs.table({ ...ctx });
+
+      const update$ = table.events$.pipe(
+        filter(e => e.type === 'REFS/table/update'),
+        map(e => e.payload as t.RefsTableUpdate),
+      );
+
+      const events: t.RefsTableUpdate[] = [];
+      update$.subscribe(e => events.push(e));
+
+      // No change (no event).
+      A2 = '456';
+      const res2 = await table.update({ key: 'A2', from: '123', to: '456' });
+      expect(res2.changed.length).to.eql(0);
+      expect(res2.keys.length).to.eql(0);
+      expect(events.length).to.eql(0);
+
+      // Change (event fired).
+      A1 = '=SUM(C3,D9)';
+      A2 = '=D9';
+      const res3 = await table.update([
+        { key: 'A1', from: '456', to: A1 },
+        { key: 'A2', from: '456', to: A2 },
+      ]);
+      expect(res3.changed.length).to.eql(2);
+      expect(res3.keys.length).to.eql(4);
+      expect(events.length).to.eql(1);
+      expect(events[0]).to.eql(res3);
+    });
   });
 });
