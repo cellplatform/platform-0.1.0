@@ -600,7 +600,7 @@ describe('refs.table', () => {
       expect(Object.keys(res2.refs.out).sort()).to.eql(['A1']);
     });
 
-    it('multi change', async () => {
+    it('multiple changes', async () => {
       const A1 = '=SUM(A2,A4)';
       let A2 = '123';
       let A3 = '456';

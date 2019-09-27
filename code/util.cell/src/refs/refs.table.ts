@@ -7,6 +7,7 @@ import { range } from '../range';
 import { incoming } from './refs.incoming';
 import { outgoing } from './refs.outgoing';
 import { formula } from '../formula';
+import * as util from './util';
 
 type IRefsTableArgs = {
   getKeys: t.RefGetKeys;
@@ -195,14 +196,8 @@ class RefsTable implements t.IRefsTable {
     // 🌳 Perform a refresh of all referenced cells implicated in the change.
     const refs = await this.refs({ range: refreshKeys, force: true });
 
-    // Read out any errors that may exist after the update.
-    const errors: t.IRefError[] = R.flatten(
-      Object.keys(refs.out)
-        .map(key => refs.out[key])
-        .map(refs => refs.map(ref => ref.error as t.IRefError)),
-    ).filter(err => err);
-
     // Finish up.
+    const errors = util.toErrors(refs);
     const payload: t.RefsTableUpdate = {
       ok: errors.length === 0,
       changed: changes,
@@ -334,18 +329,3 @@ function toRangeUnion(keys: string[], cache?: t.IMemoryCache) {
   const cacheKey = CACHE.key('RANGE', keys.join(','));
   return cache ? cache.get(cacheKey, create) : create();
 }
-
-const util = {
-  pathToKeys: (path?: string) => (path || '').split('/').filter(part => part),
-  incoming: {
-    listToKeys: (list: t.IRefIn[]) => list.map(ref => ref.cell),
-    refsToKeyList: (refs: t.IRefsIn) => Object.keys(refs).map(key => ({ key, refs: refs[key] })),
-  },
-  outgoing: {
-    listToKeys: (list: t.IRefOut[]) => R.flatten(list.map(ref => util.pathToKeys(ref.path))),
-    refsToKeyList: (refs: t.IRefsOut) => Object.keys(refs).map(key => ({ key, refs: refs[key] })),
-    refsToFlatList: (refs: t.IRefsOut) => R.flatten(Object.keys(refs).map(key => refs[key])),
-    refsToAllKeys: (refs: t.IRefsOut) =>
-      util.outgoing.listToKeys(util.outgoing.refsToFlatList(refs)),
-  },
-};
