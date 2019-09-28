@@ -12,7 +12,7 @@ describe.only('formula', () => {
 
     const res = formula.create({ text: '=SUM(1,A2,3)' });
 
-    console.log('-------------------------------------------');
-    console.log('res', res);
+    // console.log('-------------------------------------------');
+    // console.log('res', res);
   });
 });

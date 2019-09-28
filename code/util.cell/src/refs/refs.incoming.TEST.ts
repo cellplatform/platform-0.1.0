@@ -1,7 +1,6 @@
 import { expect, testContext } from './TEST';
 import { refs } from '.';
-import {  MemoryCache } from '../common';
-
+import { MemoryCache } from '../common';
 
 describe('refs.incoming', () => {
   it('empty', async () => {

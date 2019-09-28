@@ -7,7 +7,7 @@ export function create(args: { text: string }) {
 
   const tree = ast.toTree(text);
 
-  console.log('tree', tree);
+  // console.log('tree', tree);
 
   const formula: t.IFormula = {
     text,
