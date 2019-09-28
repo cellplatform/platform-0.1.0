@@ -1,19 +1,8 @@
-import { expect } from '@platform/test';
+import { expect, testContext } from './TEST';
 import { filter, map } from 'rxjs/operators';
 
 import { refs } from '.';
 import { t } from '../common';
-
-type Table = t.ICoordTable<{ value: any }>;
-const testContext = (cells: Table) => {
-  const getValue: t.RefGetValue = async (key: string) => {
-    const cell = cells[key];
-    const value = cell ? cell.value : undefined;
-    return typeof value === 'function' ? value() : value;
-  };
-  const getKeys: t.RefGetKeys = async () => Object.keys(cells);
-  return { getKeys, getValue };
-};
 
 describe('refs.table', () => {
   describe('refs', () => {
