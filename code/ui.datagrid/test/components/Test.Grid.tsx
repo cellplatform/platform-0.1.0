@@ -19,6 +19,7 @@ import {
   time,
 } from '../common';
 import { TestGridView, DEFAULT } from './Test.Grid.view';
+import { calc, getFunc } from './calc';
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;
@@ -40,12 +41,14 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   private testGrid!: TestGridView;
   private testGridRef = (ref: TestGridView) => (this.testGrid = ref);
 
+  private getValue: t.RefGetValue = async key => {
+    const cell = this.grid.values[key];
+    return cell && typeof cell.value === 'string' ? cell.value : undefined;
+  };
+
   private refTable = coord.refs.table({
     getKeys: async () => Object.keys(this.grid.values),
-    getValue: async key => {
-      const cell = this.grid.values[key];
-      return cell && typeof cell.value === 'string' ? cell.value : undefined;
-    },
+    getValue: this.getValue,
   });
 
   /**
@@ -89,7 +92,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             console.groupEnd();
           });
         await Promise.all(wait);
+
+        // TEMP 🐷
         this.updateRefs(); // TEMP 🐷
+        this.updateFuncsTemp();
 
         // e.cancel();
         // e.changes[0].modify('foo');
@@ -247,6 +253,40 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     this.state$.next({ refs });
   };
 
+  private async updateFuncsTemp() {
+    // TEMP 🐷
+
+    const changes: t.IGridCells = {};
+    const table = this.refTable;
+    const getValue = this.getValue;
+
+    const calculate = async (key: string) => {
+      const refs = await table.refs();
+      const res = await calc({ key, refs, getValue, getFunc });
+      console.log('-------------------------------------------');
+      console.log('res', res);
+      const value = res.data ? res.data : undefined;
+
+      let cell = this.grid.values[key];
+      cell = { ...cell, props: { ...cell.props, value } };
+      changes[key] = cell;
+    };
+
+    const keys = [
+      //
+      'A6',
+      'A8',
+      'A9',
+      'A10',
+      'A11',
+    ];
+    const wait = keys.map(key => calculate(key));
+    await Promise.all(wait);
+
+    // const key = 'A8';
+    this.grid.changeCells(changes);
+  }
+
   /**
    * [Render]
    */
@@ -281,6 +321,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     };
     return (
       <div {...styles.base}>
+        {this.button('calc', async () => this.updateFuncsTemp())}
         {this.button('reset', async () => {
           this.grid.changeCells(DEFAULT.VALUES);
           await this.updateRefs({ force: true });
@@ -445,8 +486,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             '$',
             '$.selection',
             '$.selection.ranges',
-            // '$.values',
-            // '$.values.A1',
+            '$.values',
+            '$.values.A8',
             '$.clipboard',
           ]}
           theme={'DARK'}

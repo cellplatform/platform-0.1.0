@@ -178,7 +178,7 @@ async function outgoingFunc(args: {
   let error: t.IRefError | undefined;
 
   const wait = node.arguments.map(async (param, i) => {
-    if (util.isValueNode(param)) {
+    if (ast.isValueNode(param)) {
       return undefined; // An actual value, not a reference!
     }
 

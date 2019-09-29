@@ -146,6 +146,7 @@ describe('util.cell', () => {
         const res = util.toCellProps(input);
         expect(res.merge).to.eql({});
         expect(res.style).to.eql({});
+        expect(res.value).to.eql(undefined);
       };
       test();
       test(null);
@@ -155,11 +156,16 @@ describe('util.cell', () => {
     it('props', () => {
       const A2: t.IGridCell = {
         value: 'Hello',
-        props: { style: { bold: true }, merge: { colspan: 3 } },
+        props: {
+          value: 456, // NB: Display value.
+          style: { bold: true },
+          merge: { colspan: 3 },
+        },
       };
-      const res = util.toCellProps(A2.props);
-      expect(res.style.bold).to.eql(true);
-      expect(res.merge.colspan).to.eql(3);
+      const props = util.toCellProps(A2.props);
+      expect(props.style.bold).to.eql(true);
+      expect(props.merge.colspan).to.eql(3);
+      expect(props.value).to.eql(456);
     });
   });
 
