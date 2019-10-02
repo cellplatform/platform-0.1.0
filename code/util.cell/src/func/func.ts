@@ -1,3 +1,3 @@
 export * from './types';
-export * from './calc';
+export * from './func.calculate';
 export { isFormula } from './util';

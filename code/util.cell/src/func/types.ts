@@ -3,6 +3,7 @@ import * as t from '../common/types';
 export type FuncParam = t.Json | undefined;
 export type FuncResponse = any;
 export type FuncInvoker = (args: { params: FuncParam[] }) => Promise<FuncResponse>;
+
 export type GetFunc = (args: {
   namespace: string;
   name: string;
@@ -22,7 +23,7 @@ export type IFuncResponse<T = any> = {
 /**
  * Error.
  */
-export type FuncError = 'NOT_FORMULA';
+export type FuncError = 'NOT_FORMULA' | 'NOT_FOUND';
 export type IFuncError = {
   type: FuncError;
   message: string;

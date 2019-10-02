@@ -269,7 +269,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
     const calculate = async (key: string) => {
       const refs = await table.refs();
-      const res = await coord.func.calculate({ key, refs, getValue, getFunc });
+      const res = await coord.func.calculate({ cell: key, refs, getValue, getFunc });
       console.log('-------------------------------------------');
       console.log('res', res);
       const value = res.data ? res.data : undefined;
@@ -291,7 +291,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     //   // 'A10',
     //   // 'A11',
     // ];
-    
+
     const keys = Object.keys(this.grid.values);
     const wait = keys.map(key => calculate(key));
     await Promise.all(wait);
