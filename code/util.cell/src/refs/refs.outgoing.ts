@@ -98,7 +98,10 @@ async function outgoingCell(args: {
   let target: t.RefTarget = 'VALUE';
   const key = cell.toRelative(node.key);
 
-  if (path.split('/').includes(key)) {
+  const isCircular = util.isCircularPath(path, key);
+  path = `${path}/${key}`;
+
+  if (isCircular) {
     error = {
       type: 'CIRCULAR',
       message: `Cell reference leads back to itself (${path})`,
@@ -115,11 +118,12 @@ async function outgoingCell(args: {
     };
   }
 
-  path = `${path}/${key}`;
-  const value = !error ? await getValue(key) : undefined;
+  const value = await getValue(key);
+  const isFormula = func.isFormula(value);
+  target = isFormula ? 'FUNC' : target;
 
   // Process the forumla (if it is one).
-  if (!error && value && func.isFormula(value)) {
+  if (!error && value && isFormula) {
     const res = await find({ getValue, key, path }); // <== RECURSION 🌳
     if (res.length > 0) {
       path = res[0].path;
@@ -175,7 +179,15 @@ async function outgoingFunc(args: {
   path: string;
 }): Promise<t.IRefOut[]> {
   const { node, getValue } = args;
+
   let error: t.IRefError | undefined;
+  const setCircularError = (index: number, path: string) => {
+    error = {
+      type: 'CIRCULAR',
+      message: `Function parameter ${index} contains a reference that leads back to itself (${path})`,
+      path,
+    };
+  };
 
   const wait = node.arguments.map(async (param, i) => {
     if (ast.isValueNode(param)) {
@@ -206,41 +218,60 @@ async function outgoingFunc(args: {
     // Lookup the reference the parameter points to.
     const cellNode = param as ast.CellNode;
     const key = cellNode.key;
-    const path = `${args.path}/${key}`;
+    let path = `${args.path}/${key}`;
     const targetKey = cell.toRelative(key);
     const targetValue = await getValue(key);
     const targetTree = ast.toTree(targetValue);
 
-    const isCircular = args.path.split('/').includes(targetKey);
+    // Check for circular reference loop.
+    let isCircular = util.isCircularPath(args.path, targetKey);
     if (isCircular && !error) {
-      error = {
-        type: 'CIRCULAR',
-        message: `Function parameter ${i} contains a reference that leads back to itself (${path})`,
-        path,
-      };
+      setCircularError(i, path);
     }
 
-    // TEMP 🐷 Do something with the circular error
+    // Check that the referenced function does not loop back to this cell.
+    if (!isCircular && !error && targetTree.type === 'function') {
+      const res = await outgoingFunc({ node: targetTree, getValue, path });
+      const err = res
+        .filter(ref => ref.error && ref.error.type === 'CIRCULAR')
+        .map(ref => ref.error as t.IRefError)
+        .find(err => util.isCircularPath(err.path, targetKey));
+      if (err) {
+        isCircular = true;
+        path = err.path;
+        setCircularError(i, path);
+      }
+    }
 
     if (targetTree.type === 'function' || targetTree.type === 'binary-expression') {
-      const ref: t.IRefOut = { target: 'FUNC', path, param: i };
+      const ref: t.IRefOut = { target: 'FUNC', path, param: i, error };
       return ref;
     }
 
-    const res = await find({ key: targetKey, getValue, path }); // <== RECURSION 🌳
+    const res = isCircular ? [] : await find({ key: targetKey, getValue, path }); // <== RECURSION 🌳
     if (res.length === 0) {
-      const ref: t.IRefOut = { target: 'VALUE', path, param: i };
+      const ref: t.IRefOut = { target: 'VALUE', path, param: i, error };
       return ref;
     } else {
-      const parts = res[0].path.split('/');
+      const ref = res[0];
+      const parts = ref.path.split('/');
       const end = parts[parts.length - 1];
-      return { ...res[0], path: `${path}/${end}`, param: i };
+      return { ...ref, path: `${path}/${end}`, param: i, error: ref.error || error };
     }
   });
 
   // Finish up.
-  const refs = await Promise.all(wait);
-  return refs.filter(e => e !== undefined) as t.IRefOut[];
+  const refs = (await Promise.all(wait)) as t.IRefOut[];
+  return refs
+    .filter(e => e !== undefined)
+    .map(ref => {
+      if (ref.error && ref.error.type === 'CIRCULAR') {
+        // NB:  Circular errors will return recursively deeper paths,
+        //      ensure the deeper path is used.
+        return { ...ref, path: ref.error.path };
+      }
+      return ref;
+    });
 }
 
 /**

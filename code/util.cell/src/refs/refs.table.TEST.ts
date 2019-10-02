@@ -646,9 +646,10 @@ describe('refs.table', () => {
       const res3 = await table.update({ key: 'A2', from: '123', to: '=A1' });
       expect(res3.ok).to.eql(false);
       expect(res3.errors.length).to.eql(4);
+
       expect(res3.errors.map(err => err.path).sort()).to.eql([
-        'A1/A2',
-        'A1/C3/A2',
+        'A1/A2/A1',
+        'A1/C3/A2/A1',
         'A2/A1/A2',
         'C3/A2/A1/A2',
       ]);
