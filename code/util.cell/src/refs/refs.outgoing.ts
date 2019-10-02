@@ -1,7 +1,7 @@
 import { ast } from '../ast';
 import { cell } from '../cell';
 import { t } from '../common';
-import { formula } from '../formula';
+import { func } from '../func';
 import { range } from '../range';
 import * as util from './util';
 
@@ -47,7 +47,7 @@ async function find(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[
   };
   const value = await getValue(args.key);
 
-  if (typeof value !== 'string' || !formula.isFormula(value)) {
+  if (typeof value !== 'string' || !func.isFormula(value)) {
     return [];
   }
 
@@ -119,7 +119,7 @@ async function outgoingCell(args: {
   const value = !error ? await getValue(key) : undefined;
 
   // Process the forumla (if it is one).
-  if (!error && value && formula.isFormula(value)) {
+  if (!error && value && func.isFormula(value)) {
     const res = await find({ getValue, key, path }); // <== RECURSION 🌳
     if (res.length > 0) {
       path = res[0].path;

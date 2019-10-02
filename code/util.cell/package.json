@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@platform/cache": "0.2.0",
+    "@platform/types": "^0.0.32",
     "@platform/util.value": "0.5.5",
     "excel-formula-ast": "1.1.1",
     "excel-formula-tokenizer": "2.3.0",
@@ -25,6 +26,7 @@
   "files": [
     "lib",
     "!lib/test",
+    "TEST.{js, mjs, d.ts}",
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],

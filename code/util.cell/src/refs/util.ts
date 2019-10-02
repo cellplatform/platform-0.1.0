@@ -1,7 +1,6 @@
 import { ast } from '../ast';
 import { R, t, toposort } from '../common';
 
-
 /**
  * Removed `undefined` values of the given field from a list of items.
  */

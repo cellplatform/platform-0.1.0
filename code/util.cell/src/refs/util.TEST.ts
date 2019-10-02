@@ -1,5 +1,5 @@
-import { expect, testContext } from './TEST';
 import { refs } from '.';
+import { expect, testContext } from './TEST';
 import * as util from './util';
 
 describe('refs.util', () => {
@@ -38,7 +38,7 @@ describe('refs.util', () => {
         A2: { value: '123' },
         A3: { value: '=A4' },
         A4: { value: 'abc' },
-        A5: { value: '=A1' }, // => A2 (double hop)
+        A5: { value: '=A1' }, // => A2 (double hop).
         A6: { value: '=SUM(A5, A1, A4)' },
         A7: { value: '=SUM(A6, 1)' },
       });

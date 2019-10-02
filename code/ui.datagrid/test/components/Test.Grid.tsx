@@ -18,8 +18,9 @@ import {
   coord,
   time,
 } from '../common';
+
 import { TestGridView, DEFAULT } from './Test.Grid.view';
-import { calc, getFunc } from './calc';
+import { getFunc } from '@platform/util.cell/lib/func/TEST';
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;
@@ -262,15 +263,13 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   private async updateFuncsTemp(args: { keys?: string[] }) {
     // TEMP 🐷
 
-    const { keys = Object.keys(this.grid.values) } = args;
-
     const changes: t.IGridCells = {};
     const table = this.refTable;
     const getValue = this.getValue;
 
     const calculate = async (key: string) => {
       const refs = await table.refs();
-      const res = await calc({ key, refs, getValue, getFunc });
+      const res = await coord.func.calculate({ key, refs, getValue, getFunc });
       console.log('-------------------------------------------');
       console.log('res', res);
       const value = res.data ? res.data : undefined;
@@ -280,15 +279,20 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       changes[key] = cell;
     };
 
+    // const { keys = Object.keys(this.grid.values) } = args;
+    // const keys = args.keys || Object.keys(this.grid.values);
+
     // const keys = [
     //   //
-    //   'A6',
-    //   'A8',
-    //   'A9',
-    //   'A10',
-    //   'A11',
+    //   'A3',
+    //   // 'A6',
+    //   // 'A8',
+    //   // 'A9',
+    //   // 'A10',
+    //   // 'A11',
     // ];
-    // const keys = Object.keys(this.grid.values);
+    
+    const keys = Object.keys(this.grid.values);
     const wait = keys.map(key => calculate(key));
     await Promise.all(wait);
 
