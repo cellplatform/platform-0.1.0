@@ -32,6 +32,13 @@ export function toErrors(refs: t.IRefs) {
 }
 
 /**
+ * Determine if the given path contains a circular reference.
+ */
+export function isCircularPath(path: string, key: string) {
+  return path.split('/').includes(key);
+}
+
+/**
  * Determine if a circular-error exists.
  */
 export function hasCircularError(refs: t.IRefs, key?: string) {

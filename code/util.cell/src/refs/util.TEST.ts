@@ -48,7 +48,7 @@ describe('refs.util', () => {
 
       expect(sorted.ok).to.eql(true);
       expect(sorted.errors).to.eql([]);
-      expect(sorted.keys).to.eql(['A2', 'A1', 'A5', 'A4', 'A6', 'A7', 'A3']);
+      expect(sorted.keys).to.eql(['A2', 'A1', 'A5', 'A4', 'A6', 'A3', 'A7']);
     });
 
     it('circular-ref error', async () => {
@@ -62,8 +62,9 @@ describe('refs.util', () => {
 
       expect(sorted.ok).to.eql(false);
       expect(sorted.errors.length).to.eql(3);
+
       expect(sorted.errors.map(err => err.path).sort()).to.eql([
-        'A1/A2',
+        'A1/A2/A1',
         'A2/A1/A2',
         'C3/A2/A1/A2',
       ]);
