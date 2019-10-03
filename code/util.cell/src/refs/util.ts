@@ -73,7 +73,7 @@ export function isFunc(input?: string | ast.TreeNode) {
 
 export function toRefTarget(
   input: string | ast.TreeNode | undefined,
-  defaultValue?: t.RefTarget = 'UNKNOWN',
+  defaultValue: t.RefTarget = 'UNKNOWN',
 ): t.RefTarget {
   if (input) {
     const node = typeof input === 'object' ? input : ast.toTree(input);

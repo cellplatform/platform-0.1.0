@@ -47,10 +47,9 @@ export type IRefsTable = {
  */
 export type IRefsOut = { [key: string]: IRefOut[] };
 export type IRefOut = {
-  // source: 'CELL' |  'RANGE' | 'FUNC';
   target: RefTarget;
   path: string;
-  param?: number;
+  param?: string;
   error?: IRefError;
 };
 
