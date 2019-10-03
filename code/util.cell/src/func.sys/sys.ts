@@ -20,18 +20,16 @@ export const getFunc: t.GetFunc = async args => {
  * Add a series of numbers.
  */
 const sum: t.FuncInvoker = async args => {
-  const params = (args.params || []).map((item, i) => {
-    if (typeof item === 'string') {
-      item = value.toNumber(item);
-    }
-    if (!(typeof item === 'number' || typeof item === 'bigint')) {
-      return 0; // NB: Add 0 (no change).
-
-      // const err = `SUM: parameter [${i}] of type '${typeof item}' is not valid. Must be a number. ("${item}")`;
-      // throw new Error(err);
-    }
-    return item as number;
-  });
+  const params = (args.params || [])
+    .reduce(
+      (acc, next) => {
+        acc = Array.isArray(next) ? [...acc, ...next] : [...acc, next];
+        return acc;
+      },
+      [] as any[],
+    )
+    .map(param => (typeof param === 'string' ? value.toNumber(param) : param) as number)
+    .map(param => (typeof param === 'number' || typeof param === 'bigint' ? param : 0)); // NB: Add 0 (no change)
 
   return params.reduce((acc, next) => acc + next, 0);
 };

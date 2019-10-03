@@ -1,6 +1,7 @@
 import { ast } from '../ast';
 import { t } from '../common';
 import * as util from './util';
+import { CellRange } from '../range/CellRange';
 
 /**
  * Calculate.
@@ -60,36 +61,6 @@ const getExprFunc = async (getFunc: t.GetFunc, operator: ast.BinaryExpressionNod
   return undefined;
 };
 
-const getCellRefValue = async (args: {
-  cell: string;
-  node: ast.CellNode;
-  refs: t.IRefs;
-  getValue: t.RefGetValue;
-  getFunc: t.GetFunc;
-}) => {
-  const { cell, refs, getValue, getFunc } = args;
-  util.throwIfCircular({ cell, refs });
-
-  // Read the current cell value for the node.
-  const targetKey = args.node.key;
-  let value = (await getValue(targetKey)) || '';
-
-  // Calculate formulas into final values.
-  if (util.isFormula(value)) {
-    value = await evalNode({
-      node: ast.toTree(value) as ast.BinaryExpressionNode | ast.FunctionNode,
-      cell: targetKey,
-      formula: value,
-      refs,
-      getValue,
-      getFunc,
-    }); // <== RECURSION 🌳
-  }
-
-  // Finish up.
-  return value;
-};
-
 const evalNode = async (args: {
   cell: string;
   formula: string;
@@ -113,32 +84,14 @@ const evalNode = async (args: {
     return getCellRefValue({ cell, refs, node, getValue, getFunc }); // <== RECURSION 🌳
   }
   if (node.type === 'cell-range') {
-    return evaluateRange({
+    return getRangeValues({
       cell,
-      formula,
       node: node as ast.CellRangeNode,
       refs,
       getValue,
       getFunc,
     }); // <== RECURSION 🌳
   }
-};
-
-/**
- * Execute a function that contains a range.
- */
-const evaluateRange = async (args: {
-  cell: string;
-  formula: string;
-  node: ast.CellRangeNode;
-  refs: t.IRefs;
-  getValue: t.RefGetValue;
-  getFunc: t.GetFunc;
-}) => {
-  const { cell, formula, node, refs, getValue, getFunc } = args;
-  util.throwIfCircular({ cell, refs });
-
-  console.log('range', node);
 };
 
 /**
@@ -209,4 +162,60 @@ const evalFunc = async (args: {
   // Invoke the function.
   const res: t.FuncResponse = await func({ params });
   return res;
+};
+
+/**
+ * Lookup a cell REF (eg =A1) and return it's evaluated value.
+ */
+const getCellRefValue = async (args: {
+  cell: string;
+  node: ast.CellNode;
+  refs: t.IRefs;
+  getValue: t.RefGetValue;
+  getFunc: t.GetFunc;
+}) => {
+  const { cell, refs, getValue, getFunc } = args;
+  util.throwIfCircular({ cell, refs });
+
+  // Read the current cell value for the node.
+  const targetKey = args.node.key;
+  let value = (await getValue(targetKey)) || '';
+
+  // Calculate formulas into final values.
+  if (util.isFormula(value)) {
+    value = await evalNode({
+      node: ast.toTree(value) as ast.BinaryExpressionNode | ast.FunctionNode,
+      cell: targetKey,
+      formula: value,
+      refs,
+      getValue,
+      getFunc,
+    }); // <== RECURSION 🌳
+  }
+
+  // Finish up.
+  return value;
+};
+
+/**
+ * Execute a function that contains a range.
+ */
+const getRangeValues = async (args: {
+  cell: string;
+  node: ast.CellRangeNode;
+  refs: t.IRefs;
+  getValue: t.RefGetValue;
+  getFunc: t.GetFunc;
+}) => {
+  const { cell, node, refs, getValue, getFunc } = args;
+  util.throwIfCircular({ cell, refs });
+
+  const range = CellRange.fromKey(`${node.left.key}:${node.right.key}`);
+  const keys = range.keys;
+
+  const wait = range.keys.map(async cell => {
+    const value = await getValue(cell);
+    return util.isFormula(value) ? calculate({ cell, refs, getValue, getFunc }) : value;
+  });
+  return (await Promise.all(wait)) as any[];
 };
