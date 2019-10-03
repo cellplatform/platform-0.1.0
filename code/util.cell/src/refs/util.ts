@@ -14,10 +14,24 @@ export function deleteUndefined<T>(field: keyof T, items: T[]) {
 }
 
 /**
- * Convert a path (eg "A1/D5/C3") to individual keys.
+ * Helpers for working with a path (eg "A1/D5/C3").
  */
-export function pathToKeys(path?: string) {
-  return (path || '').split('/').filter(part => part);
+export function path(input?: string) {
+  let keys: string[] | undefined;
+  const path = input || '';
+  const res = {
+    path,
+    get keys() {
+      return keys || (keys = path.split('/').filter(part => part));
+    },
+    get first() {
+      return res.keys[0];
+    },
+    get last() {
+      return res.keys[res.keys.length - 1];
+    },
+  };
+  return res;
 }
 
 /**
@@ -34,8 +48,10 @@ export function toErrors(refs: t.IRefs) {
 /**
  * Determine if the given path contains a circular reference.
  */
-export function isCircularPath(path: string, key: string) {
-  return path.split('/').includes(key);
+export function isCircularPath(path: string, key: string | string[]) {
+  const keys = Array.isArray(key) ? key : [key];
+  const parts = path.split('/');
+  return keys.some(key => parts.includes(key));
 }
 
 /**
@@ -105,7 +121,7 @@ export const incoming = {
  * Outgoing specific helpers.
  */
 export const outgoing = {
-  listToKeys: (list: t.IRefOut[]) => R.flatten(list.map(ref => pathToKeys(ref.path))),
+  listToKeys: (list: t.IRefOut[]) => R.flatten(list.map(ref => path(ref.path).keys)),
   refsToKeyList: (refs: t.IRefsOut) => Object.keys(refs).map(key => ({ key, refs: refs[key] })),
   refsToFlatList: (refs: t.IRefsOut) => R.flatten(Object.keys(refs).map(key => refs[key])),
   refsToAllKeys: (refs: t.IRefsOut) => outgoing.listToKeys(outgoing.refsToFlatList(refs)),

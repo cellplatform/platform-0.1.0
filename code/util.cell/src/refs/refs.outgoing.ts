@@ -132,10 +132,9 @@ async function outgoingCellRef(args: {
       path = res[0].path;
       target = res[0].target;
     }
-
-    const firstError = res.find(item => item.error);
-    if (firstError) {
-      error = firstError.error;
+    const first = res.find(item => item.error);
+    if (first) {
+      error = first.error;
     }
   }
 
@@ -205,9 +204,7 @@ async function outgoingFunc(args: {
       const right = cell.right.key;
       const range = `${left}:${right}`;
       const path = `${args.path}/${range}`;
-      const parts = args.path.split('/');
-      const isCircular = parts.includes(left) || parts.includes(right);
-
+      const isCircular = util.isCircularPath(args.path, [left, right]);
       if (isCircular && !error) {
         error = {
           type: 'CIRCULAR',
@@ -223,7 +220,10 @@ async function outgoingFunc(args: {
     if (paramNode.type === 'binary-expression') {
       const path = args.path;
       const res = await outgoingBinaryExpression({ node: paramNode, getValue, path });
-      return res.map(ref => ({ ...ref, param: `${param}/${ref.param || 0}`, error }));
+      return res.map(ref => ({
+        ...ref,
+        param: `${param}/${ref.param || 0}`,
+      }));
     }
 
     // Lookup the reference the parameter points to.
@@ -264,7 +264,7 @@ async function outgoingFunc(args: {
     const res = isCircular ? [] : await find({ key: targetKey, getValue, path }); // <== RECURSION 🌳
     if (res.length === 0) {
       const target = util.toRefTarget(targetValue);
-      const ref: t.IRefOut = { target, path, error, param: i.toString() };
+      const ref: t.IRefOut = { target, path, error, param };
       return ref;
     } else {
       const ref = res[0];
@@ -272,8 +272,8 @@ async function outgoingFunc(args: {
       const end = parts[parts.length - 1];
       return {
         ...ref,
+        param,
         path: `${path}/${end}`,
-        param: i.toString(),
         error: ref.error || error,
       };
     }

@@ -6,7 +6,7 @@ const outgoing = (args: refs.IOutgoingArgs) => {
   return refs.outgoing(args);
 };
 
-describe.only('refs.outgoing', () => {
+describe('refs.outgoing', () => {
   it('undefined (not a formula)', async () => {
     const ctx = testContext({
       A2: { value: 123 },
@@ -435,6 +435,78 @@ describe.only('refs.outgoing', () => {
         const error = res[0].error as t.IRefError;
         expect(error.type).to.eql('CIRCULAR');
         expect(error.path).to.eql('A1/A2/A1');
+      });
+
+      it('deep wrapping (embedded func)', async () => {
+        const ctx = testContext({
+          A1: { value: '=5 + SUM(A2,A3 + A5)' },
+          A2: { value: 2 },
+          A3: { value: '=A1' },
+          A4: { value: 4 },
+          A5: { value: '=SUM(1,A1)' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
+
+        const error1 = res[0].error as t.IRefError;
+        const error2 = res[1].error as t.IRefError;
+        const error3 = res[2].error as t.IRefError;
+
+        expect(res.length).to.eql(3);
+
+        expect(res[0].target).to.eql('VALUE');
+        expect(res[1].target).to.eql('REF');
+        expect(res[2].target).to.eql('FUNC');
+
+        expect(res[0].path).to.eql('A1/A2');
+        expect(res[1].path).to.eql('A1/A3');
+        expect(res[2].path).to.eql('A1/A5');
+
+        expect(res[0].param).to.eql('1/0');
+        expect(res[1].param).to.eql('1/1/0');
+        expect(res[2].param).to.eql('1/1/1');
+
+        expect(error1).to.eql(undefined);
+        expect(error2.type).to.eql('CIRCULAR');
+        expect(error3.type).to.eql('CIRCULAR');
+
+        expect(error2.path).to.eql('A1/A3/A1');
+        expect(error3.path).to.eql('A1/A5/A1');
+      });
+
+      it('deep wrapping (embedded expression)', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(A2,A3 + A5)' },
+          A2: { value: 2 },
+          A3: { value: '=A1' },
+          A4: { value: 4 },
+          A5: { value: '=SUM(1,A1)' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
+
+        const error1 = res[0].error as t.IRefError;
+        const error2 = res[1].error as t.IRefError;
+        const error3 = res[2].error as t.IRefError;
+
+        expect(res.length).to.eql(3);
+
+        expect(res[0].target).to.eql('VALUE');
+        expect(res[1].target).to.eql('REF');
+        expect(res[2].target).to.eql('FUNC');
+
+        expect(res[0].path).to.eql('A1/A2');
+        expect(res[1].path).to.eql('A1/A3');
+        expect(res[2].path).to.eql('A1/A5');
+
+        expect(res[0].param).to.eql('0');
+        expect(res[1].param).to.eql('1/0');
+        expect(res[2].param).to.eql('1/1');
+
+        expect(error1).to.eql(undefined);
+        expect(error2.type).to.eql('CIRCULAR');
+        expect(error3.type).to.eql('CIRCULAR');
+
+        expect(error2.path).to.eql('A1/A3/A1');
+        expect(error3.path).to.eql('A1/A5/A1');
       });
     });
   });
