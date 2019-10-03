@@ -1,4 +1,8 @@
-export { path, getCircularError } from '../refs/util';
+import { t } from '../common';
+import { getCircularError } from '../refs/util';
+
+export { getCircularError };
+export { path } from '../refs/util';
 
 /**
  * Determine if the given cell value represents a formula.
@@ -6,3 +10,36 @@ export { path, getCircularError } from '../refs/util';
 export function isFormula(input?: any) {
   return (typeof input === 'string' ? input : '')[0] === '=';
 }
+
+/**
+ * Convert an object an `Error` with corresponding func/props.
+ */
+export const toError = (args: t.IFuncError): t.IFuncError => {
+  const error = (new Error(args.message) as unknown) as t.IFuncError;
+  error.cell = args.cell;
+  error.type = args.type;
+  return error;
+};
+
+/**
+ * Convert an incoming `Error` to a simple `IFuncError` object.
+ */
+export const fromError = (err: any): t.IFuncError => {
+  if (err.type) {
+    const { type, message, cell } = err as t.IFuncError;
+    return { type, message, cell };
+  } else {
+    const error = err instanceof Error ? err : new Error(`Error object not provided.`);
+    throw error;
+  }
+};
+
+/**
+ * If a CIRCULAR reference error exists throw it.
+ */
+export const throwIfCircular = (args: { cell: string; refs: t.IRefs }) => {
+  const err = getCircularError(args.refs, args.cell);
+  if (err) {
+    throw err;
+  }
+};

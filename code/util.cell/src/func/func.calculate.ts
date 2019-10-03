@@ -20,16 +20,11 @@ const getCellRefValue = async (args: {
   getFunc: t.GetFunc;
 }) => {
   const { cell, refs, getValue, getFunc } = args;
+  util.throwIfCircular({ cell, refs });
 
   // Read the current cell value for the node.
   const targetKey = args.node.key;
   let value = (await getValue(targetKey)) || '';
-
-  // Bail out if there is a circular reference error related to the cell.
-  const err = util.getCircularError(refs, cell);
-  if (err) {
-    throw err;
-  }
 
   // Calculate formulas into final values.
   if (util.isFormula(value)) {
@@ -70,10 +65,34 @@ const evaluateNode = async (args: {
     return getCellRefValue({ cell, refs, node, getValue, getFunc }); // <== RECURSION 🌳
   }
   if (node.type === 'cell-range') {
-    // TEMP 🐷 TODO - look up RANGE
+    return evaluateRange({
+      cell,
+      formula,
+      node: node as ast.CellRangeNode,
+      refs,
+      getValue,
+      getFunc,
+    }); // <== RECURSION 🌳
   }
 };
 
+const evaluateRange = async (args: {
+  cell: string;
+  formula: string;
+  node: ast.CellRangeNode;
+  refs: t.IRefs;
+  getValue: t.RefGetValue;
+  getFunc: t.GetFunc;
+}) => {
+  const { cell, formula, node, refs, getValue, getFunc } = args;
+  util.throwIfCircular({ cell, refs });
+
+  console.log('range', node);
+};
+
+/**
+ * Execute a binary-expression (eg "=A+A1").
+ */
 const evaluateExpr = async (args: {
   cell: string;
   formula: string;
@@ -106,6 +125,9 @@ const evaluateExpr = async (args: {
   return res;
 };
 
+/**
+ * Execute a function (eg "=SUM(1,A1)").
+ */
 const evaluateFunc = async (args: {
   cell: string;
   formula: string;
@@ -115,14 +137,14 @@ const evaluateFunc = async (args: {
   getFunc: t.GetFunc;
   level?: number;
 }) => {
-  const { cell, formula, node, refs, getValue, getFunc, level = 0 } = args;
+  const { cell, formula, node, refs, getValue, getFunc } = args;
   const name = node.name;
   const namespace = node.namespace || 'sys';
 
   // Lookup the function.
   const func = await getFunc({ name, namespace });
   if (!func) {
-    throw toError({
+    throw util.toError({
       type: 'NOT_FOUND',
       message: `The function [${namespace}.${name}] was not found.`,
       cell: { key: cell, value: formula },
@@ -141,21 +163,6 @@ const evaluateFunc = async (args: {
   return res;
 };
 
-const toError = (args: t.IFuncError): t.IFuncError => {
-  const error = (new Error(args.message) as unknown) as t.IFuncError;
-  error.cell = args.cell;
-  error.type = args.type;
-  return error;
-};
-const fromError = (err: any): t.IFuncError => {
-  if (err.type) {
-    const { type, message, cell } = err as t.IFuncError;
-    return { type, message, cell };
-  } else {
-    throw err;
-  }
-};
-
 /**
  * Calculate.
  */
@@ -171,7 +178,7 @@ export async function calculate<D = any>(args: {
 
   // Ensure the node is a function/expression.
   if (!node || !(node.type === 'function' || node.type === 'binary-expression')) {
-    const error = toError({
+    const error = util.toError({
       type: 'NOT_FORMULA',
       message: `The value of cell ${cell} is not a formula. Must start with "=".`,
       cell: { key: cell, value: formula },
@@ -191,7 +198,7 @@ export async function calculate<D = any>(args: {
       data = await evaluateFunc({ cell, formula, node, refs, getValue, getFunc });
     }
   } catch (err) {
-    error = fromError(err);
+    error = util.fromError(err);
   }
 
   // Finish up.
