@@ -31,10 +31,10 @@ export async function calculate<D = any>(args: {
   let error: t.IFuncError | undefined;
   try {
     if (node.type === 'binary-expression') {
-      data = await evaluateExpr({ cell, formula, node, refs, getValue, getFunc });
+      data = await evalExpr({ cell, formula, node, refs, getValue, getFunc });
     }
     if (node.type === 'function') {
-      data = await evaluateFunc({ cell, formula, node, refs, getValue, getFunc });
+      data = await evalFunc({ cell, formula, node, refs, getValue, getFunc });
     }
   } catch (err) {
     error = util.fromError(err);
@@ -76,7 +76,7 @@ const getCellRefValue = async (args: {
 
   // Calculate formulas into final values.
   if (util.isFormula(value)) {
-    value = await evaluateNode({
+    value = await evalNode({
       node: ast.toTree(value) as ast.BinaryExpressionNode | ast.FunctionNode,
       cell: targetKey,
       formula: value,
@@ -90,7 +90,7 @@ const getCellRefValue = async (args: {
   return value;
 };
 
-const evaluateNode = async (args: {
+const evalNode = async (args: {
   cell: string;
   formula: string;
   node: ast.Node;
@@ -104,10 +104,10 @@ const evaluateNode = async (args: {
     return (node as any).value;
   }
   if (node.type === 'binary-expression') {
-    return evaluateExpr({ cell, formula, node, refs, getValue, getFunc }); // <== RECURSION 🌳
+    return evalExpr({ cell, formula, node, refs, getValue, getFunc }); // <== RECURSION 🌳
   }
   if (node.type === 'function') {
-    return evaluateFunc({ cell, formula, node, refs, getValue, getFunc }); // <== RECURSION 🌳
+    return evalFunc({ cell, formula, node, refs, getValue, getFunc }); // <== RECURSION 🌳
   }
   if (node.type === 'cell') {
     return getCellRefValue({ cell, refs, node, getValue, getFunc }); // <== RECURSION 🌳
@@ -144,7 +144,7 @@ const evaluateRange = async (args: {
 /**
  * Execute a binary-expression (eg "=A+A1").
  */
-const evaluateExpr = async (args: {
+const evalExpr = async (args: {
   cell: string;
   formula: string;
   node: ast.BinaryExpressionNode;
@@ -162,8 +162,8 @@ const evaluateExpr = async (args: {
 
   const toValue = async (node: ast.Node) => {
     return node.type === 'binary-expression'
-      ? evaluateExpr({ cell, formula, refs, getValue, getFunc, node, level: level + 1 }) // <== RECURSION 🌳
-      : evaluateNode({ cell, formula, node, getValue, getFunc, refs });
+      ? evalExpr({ cell, formula, refs, getValue, getFunc, node, level: level + 1 }) // <== RECURSION 🌳
+      : evalNode({ cell, formula, node, getValue, getFunc, refs });
   };
 
   // Retrieve left/right parameters.
@@ -179,7 +179,7 @@ const evaluateExpr = async (args: {
 /**
  * Execute a function (eg "=SUM(1,A1)").
  */
-const evaluateFunc = async (args: {
+const evalFunc = async (args: {
   cell: string;
   formula: string;
   node: ast.FunctionNode;
@@ -203,11 +203,8 @@ const evaluateFunc = async (args: {
   }
 
   // Calculate parameter values.
-  const params = await Promise.all(
-    node.arguments.map(async node =>
-      evaluateNode({ cell, formula, node, getValue, getFunc, refs }),
-    ),
-  );
+  const getParam = (node: ast.Node) => evalNode({ cell, formula, node, refs, getValue, getFunc });
+  const params = await Promise.all(node.arguments.map(node => getParam(node)));
 
   // Invoke the function.
   const res: t.FuncResponse = await func({ params });
