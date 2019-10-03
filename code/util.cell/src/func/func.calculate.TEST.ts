@@ -148,8 +148,8 @@ describe('func.calculate', () => {
 
       // TEMP 🐷
 
-      console.log('-------------------------------------------');
-      console.log('res', res);
+      // console.log('-------------------------------------------');
+      // console.log('res', res);
     });
   });
 
