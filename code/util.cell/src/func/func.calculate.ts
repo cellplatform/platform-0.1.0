@@ -1,6 +1,54 @@
 import { ast } from '../ast';
-import { t, value } from '../common';
+import { t } from '../common';
 import * as util from './util';
+
+/**
+ * Calculate.
+ */
+export async function calculate<D = any>(args: {
+  cell: string;
+  refs: t.IRefs;
+  getValue: t.RefGetValue;
+  getFunc: t.GetFunc;
+}): Promise<t.IFuncResponse<D>> {
+  const { cell, refs, getValue, getFunc } = args;
+  const formula = (await getValue(cell)) || '';
+  const node = util.isFormula(formula) ? ast.toTree(formula) : undefined;
+
+  // Ensure the node is a function/expression.
+  if (!node || !(node.type === 'function' || node.type === 'binary-expression')) {
+    const error = util.toError({
+      type: 'NOT_FORMULA',
+      message: `The value of cell ${cell} is not a formula. Must start with "=".`,
+      cell: { key: cell, value: formula },
+    });
+    const res: t.IFuncResponse = { ok: false, cell, formula, error };
+    return res;
+  }
+
+  // Evaluate the function/expression.
+  let data: any;
+  let error: t.IFuncError | undefined;
+  try {
+    if (node.type === 'binary-expression') {
+      data = await evaluateExpr({ cell, formula, node, refs, getValue, getFunc });
+    }
+    if (node.type === 'function') {
+      data = await evaluateFunc({ cell, formula, node, refs, getValue, getFunc });
+    }
+  } catch (err) {
+    error = util.fromError(err);
+  }
+
+  // Finish up.
+  const ok = !error;
+  const res: t.IFuncResponse<D> = { ok, cell, formula, data };
+  return error ? { ...res, error } : res;
+}
+
+/**
+ * [Internal]
+ */
 
 const getExprFunc = async (getFunc: t.GetFunc, operator: ast.BinaryExpressionNode['operator']) => {
   if (operator === '+') {
@@ -76,6 +124,9 @@ const evaluateNode = async (args: {
   }
 };
 
+/**
+ * Execute a function that contains a range.
+ */
 const evaluateRange = async (args: {
   cell: string;
   formula: string;
@@ -162,47 +213,3 @@ const evaluateFunc = async (args: {
   const res: t.FuncResponse = await func({ params });
   return res;
 };
-
-/**
- * Calculate.
- */
-export async function calculate<D = any>(args: {
-  cell: string;
-  refs: t.IRefs;
-  getValue: t.RefGetValue;
-  getFunc: t.GetFunc;
-}): Promise<t.IFuncResponse<D>> {
-  const { cell, refs, getValue, getFunc } = args;
-  const formula = (await getValue(cell)) || '';
-  const node = util.isFormula(formula) ? ast.toTree(formula) : undefined;
-
-  // Ensure the node is a function/expression.
-  if (!node || !(node.type === 'function' || node.type === 'binary-expression')) {
-    const error = util.toError({
-      type: 'NOT_FORMULA',
-      message: `The value of cell ${cell} is not a formula. Must start with "=".`,
-      cell: { key: cell, value: formula },
-    });
-    const res: t.IFuncResponse = { ok: false, cell: cell, formula, error };
-    return res;
-  }
-
-  // Evaluate the function/expression.
-  let data: any;
-  let error: t.IFuncError | undefined;
-  try {
-    if (node.type === 'binary-expression') {
-      data = await evaluateExpr({ cell, formula, node, refs, getValue, getFunc });
-    }
-    if (node.type === 'function') {
-      data = await evaluateFunc({ cell, formula, node, refs, getValue, getFunc });
-    }
-  } catch (err) {
-    error = util.fromError(err);
-  }
-
-  // Finish up.
-  const ok = !error;
-  const res: t.IFuncResponse<D> = { ok, cell, formula, data, error };
-  return value.deleteUndefined(res);
-}
