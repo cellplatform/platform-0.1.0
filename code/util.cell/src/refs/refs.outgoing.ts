@@ -42,8 +42,10 @@ async function find(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[
   };
 
   const getValue: t.RefGetValue = async key => {
-    const res = await args.getValue(cell.toRelative(key));
-    return typeof res === 'string' ? res : undefined;
+    let res: any = await args.getValue(cell.toRelative(key));
+    res = typeof res === 'number' ? res.toString() : res;
+    res = typeof res === 'string' ? res : undefined;
+    return res;
   };
   const value = await getValue(args.key);
 
@@ -58,7 +60,7 @@ async function find(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[
    * Cell (eg "=A1").
    */
   if (node.type === 'cell') {
-    return done(await outgoingCell({ node, path, getValue }));
+    return done(await outgoingCellRef({ node, path, getValue }));
   }
 
   /**
@@ -84,9 +86,9 @@ async function find(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[
 }
 
 /**
- * Process an outgoing cell reference (eg: "=A1")
+ * Process an outgoing cell reference (eg: "=A1").
  */
-async function outgoingCell(args: {
+async function outgoingCellRef(args: {
   node: ast.CellNode;
   getValue: t.RefGetValue;
   path: string;
@@ -95,7 +97,6 @@ async function outgoingCell(args: {
 
   let path = args.path;
   let error: t.IRefError | undefined;
-  let target: t.RefTarget = 'VALUE';
   const key = cell.toRelative(node.key);
 
   const isCircular = util.isCircularPath(path, key);
@@ -109,6 +110,9 @@ async function outgoingCell(args: {
     };
   }
 
+  const value = await getValue(key);
+  let target = util.toRefTarget(value, 'VALUE');
+
   if (!error && !cell.isCell(key)) {
     target = 'UNKNOWN';
     error = {
@@ -118,22 +122,33 @@ async function outgoingCell(args: {
     };
   }
 
-  const value = await getValue(key);
-  const isFormula = func.isFormula(value);
-  target = isFormula ? 'FUNC' : target;
-
   // Process the forumla (if it is one).
-  if (!error && value && isFormula) {
-    const res = await find({ getValue, key, path }); // <== RECURSION 🌳
-    if (res.length > 0) {
+  if (!isCircular && value && func.isFormula(value)) {
+    const isFunc = util.isFunc(value);
+    // target = isFunc ? 'FUNC' : target;
+    const res = await find({ key, path, getValue }); // <== RECURSION 🌳
+
+    // console.log('res', res);
+    // const targetNode = ast.toTree(value);
+    // console.log('value', value);
+    // console.log('res', res);
+    // console.log('targetNode.type', targetNode.type);
+    // console.log('isFunc', isFunc);
+
+    if (!isFunc && res.length > 0) {
       path = res[0].path;
       target = res[0].target;
-    } else {
-      target = 'FUNC';
+      // target = res[0].target;
+      // } else {
+      //   // target = 'FUNC';
     }
-    const firstProblem = res.find(item => item.error);
-    if (firstProblem) {
-      error = firstProblem.error;
+
+    // if (!isFunc && res.length > 0) {
+    // }
+
+    const firstError = res.find(item => item.error);
+    if (firstError) {
+      error = firstError.error;
     }
   }
 
@@ -218,10 +233,10 @@ async function outgoingFunc(args: {
     // Lookup the reference the parameter points to.
     const cellNode = param as ast.CellNode;
     const key = cellNode.key;
-    let path = `${args.path}/${key}`;
+    const path = `${args.path}/${key}`;
     const targetKey = cell.toRelative(key);
     const targetValue = await getValue(key);
-    const targetTree = ast.toTree(targetValue);
+    const targetNode = ast.toTree(targetValue);
 
     // Check for circular reference loop.
     let isCircular = util.isCircularPath(args.path, targetKey);
@@ -230,48 +245,47 @@ async function outgoingFunc(args: {
     }
 
     // Check that the referenced function does not loop back to this cell.
-    if (!isCircular && !error && targetTree.type === 'function') {
-      const res = await outgoingFunc({ node: targetTree, getValue, path });
+    if (!isCircular && !error && targetNode.type === 'function') {
+      const res = await outgoingFunc({ node: targetNode, getValue, path });
       const err = res
         .filter(ref => ref.error && ref.error.type === 'CIRCULAR')
         .map(ref => ref.error as t.IRefError)
         .find(err => util.isCircularPath(err.path, targetKey));
       if (err) {
         isCircular = true;
-        path = err.path;
-        setCircularError(i, path);
+        setCircularError(i, err.path);
       }
     }
 
-    if (targetTree.type === 'function' || targetTree.type === 'binary-expression') {
-      const ref: t.IRefOut = { target: 'FUNC', path, param: i, error };
+    // If the target is a function (eg "=SUM(...)") or binary-expression (eg "=1+A1")
+    // then stop at this point and return as a FUNC reference.
+    if (util.isFunc(targetNode)) {
+      const ref: t.IRefOut = { target: 'FUNC', path, error, param: i };
       return ref;
     }
 
+    // Lookup the reference.
     const res = isCircular ? [] : await find({ key: targetKey, getValue, path }); // <== RECURSION 🌳
     if (res.length === 0) {
-      const ref: t.IRefOut = { target: 'VALUE', path, param: i, error };
+      const target = util.toRefTarget(targetValue);
+      const ref: t.IRefOut = { target, path, error, param: i };
       return ref;
     } else {
       const ref = res[0];
       const parts = ref.path.split('/');
       const end = parts[parts.length - 1];
-      return { ...ref, path: `${path}/${end}`, param: i, error: ref.error || error };
+      return {
+        ...ref,
+        path: `${path}/${end}`,
+        param: i,
+        error: ref.error || error,
+      };
     }
   });
 
   // Finish up.
   const refs = (await Promise.all(wait)) as t.IRefOut[];
-  return refs
-    .filter(e => e !== undefined)
-    .map(ref => {
-      if (ref.error && ref.error.type === 'CIRCULAR') {
-        // NB:  Circular errors will return recursively deeper paths,
-        //      ensure the deeper path is used.
-        return { ...ref, path: ref.error.path };
-      }
-      return ref;
-    });
+  return refs.filter(e => e !== undefined);
 }
 
 /**
@@ -295,8 +309,19 @@ async function outgoingBinaryExpression(args: {
         ];
       } else {
         if (node.type === 'cell') {
-          const res = await outgoingCell({ getValue, node, path });
-          parts = res.length > 0 ? [...parts, { ...res[0], param: index }] : parts;
+          const res = await outgoingCellRef({ getValue, node, path });
+          if (res.length > 0) {
+            let ref = res[0];
+            if (ref.error && ref.error.type === 'CIRCULAR') {
+              const value = await getValue(node.key);
+              ref = {
+                ...ref,
+                target: util.toRefTarget(value),
+                path: ref.error.path.substring(0, ref.error.path.lastIndexOf('/')),
+              };
+            }
+            parts = [...parts, { ...ref, param: index }];
+          }
         } else if (node.type === 'cell-range') {
           const res = await outgoingRange({ getValue, node: node as ast.CellRangeNode, path });
           parts = res.length > 0 ? [...parts, { ...res[0], param: index }] : parts;

@@ -6,7 +6,7 @@ const outgoing = (args: refs.IOutgoingArgs) => {
   return refs.outgoing(args);
 };
 
-describe('refs.outgoing', () => {
+describe.only('refs.outgoing', () => {
   it('undefined (not a formula)', async () => {
     const ctx = testContext({
       A2: { value: 123 },
@@ -122,7 +122,7 @@ describe('refs.outgoing', () => {
       const ctx = testContext({
         A1: { value: '=SUM(999, A2, A3, A3:A4, A5)' },
         A2: { value: '=SUM(A3, 999)' },
-        A3: { value: 1 },
+        A3: { value: '1' },
         A4: { value: 2 },
         A5: { value: '=A4+2' },
       });
@@ -147,87 +147,88 @@ describe('refs.outgoing', () => {
       expect(res[3].param).to.eql(4);
     });
 
-    it('param to range (ERROR/CIRCULAR)', async () => {
-      const ctx = testContext({
-        A1: { value: '=SUM(999, A2, A3)' },
-        A2: { value: 123 },
-        A3: { value: '=A1:B9' },
+    describe('circular error', () => {
+      it('param to range', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(999, A2, A3)' },
+          A2: { value: 123 },
+          A3: { value: '=A1:B9' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
+
+        expect(res.length).to.eql(2);
+
+        expect(res[1].target).to.eql('RANGE');
+        expect(res[1].path).to.eql('A1/A3/A1:B9');
+        expect(res[1].param).to.eql(2);
+
+        const error = res[1].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
       });
-      const res = await outgoing({ key: 'A1', ...ctx });
 
-      expect(res.length).to.eql(2);
+      it('param to range (immediate)', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(999, A1:B9)' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
 
-      expect(res[1].target).to.eql('RANGE');
-      expect(res[1].path).to.eql('A1/A3/A1:B9');
-      expect(res[1].param).to.eql(2);
+        expect(res.length).to.eql(1);
 
-      const error = res[1].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-    });
+        expect(res[0].target).to.eql('RANGE');
+        expect(res[0].path).to.eql('A1/A1:B9');
+        expect(res[0].param).to.eql(1);
 
-    it('param to range (immediate ERROR/CIRCULAR)', async () => {
-      const ctx = testContext({
-        A1: { value: '=SUM(999, A1:B9)' },
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.path).to.eql('A1/A1:B9');
       });
-      const res = await outgoing({ key: 'A1', ...ctx });
 
-      expect(res.length).to.eql(1);
+      it('func param reference self (immediate)', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(999, A1)' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
 
-      expect(res[0].target).to.eql('RANGE');
-      expect(res[0].path).to.eql('A1/A1:B9');
-      expect(res[0].param).to.eql(1);
+        expect(res[0].target).to.eql('FUNC');
+        expect(res[0].path).to.eql('A1/A1');
+        expect(res[0].param).to.eql(1);
 
-      const error = res[0].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-      expect(error.path).to.eql('A1/A1:B9');
-    });
-
-    it('func param reference self (immediate ERROR/CIRCULAR)', async () => {
-      const ctx = testContext({
-        A1: { value: '=SUM(999, A1)' },
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.path).to.eql('A1/A1');
       });
-      const res = await outgoing({ key: 'A1', ...ctx });
 
-      expect(res[0].target).to.eql('FUNC');
-      expect(res[0].path).to.eql('A1/A1');
-      expect(res[0].param).to.eql(1);
+      it('func => func', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(999, A2)' },
+          A2: { value: '=SUM(A1, 888)' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
+        expect(res[0].target).to.eql('FUNC');
+        expect(res[0].path).to.eql('A1/A2');
+        expect(res[0].param).to.eql(1);
 
-      const error = res[0].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-      expect(error.path).to.eql('A1/A1');
-    });
-
-    it('func => func (ERROR/CIRCULAR)', async () => {
-      const ctx = testContext({
-        A1: { value: '=SUM(999, A2)' },
-        A2: { value: '=SUM(A1, 888)' },
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.path).to.eql('A1/A2/A1');
       });
-      const res = await outgoing({ key: 'A1', ...ctx });
 
-      expect(res[0].target).to.eql('FUNC');
-      expect(res[0].path).to.eql('A1/A2/A1');
-      expect(res[0].param).to.eql(1);
+      it('FUNC => REF => FUNC', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(999, A2)' },
+          A2: { value: '=A3' },
+          A3: { value: '=SUM(999, A1)' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
 
-      const error = res[0].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-      expect(error.path).to.eql('A1/A2/A1');
-    });
+        expect(res[0].target).to.eql('FUNC');
+        expect(res[0].path).to.eql('A1/A2/A3');
+        expect(res[0].param).to.eql(1);
 
-    it('func => ref => func (ERROR/CIRCULAR)', async () => {
-      const ctx = testContext({
-        A1: { value: '=SUM(999, A2)' },
-        A2: { value: '=A3' },
-        A3: { value: '=SUM(999, A1)' },
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.path).to.eql('A1/A2/A3/A1');
       });
-      const res = await outgoing({ key: 'A1', ...ctx });
-
-      expect(res[0].target).to.eql('FUNC');
-      expect(res[0].path).to.eql('A1/A2/A3/A1');
-      expect(res[0].param).to.eql(1);
-
-      const error = res[0].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-      expect(error.path).to.eql('A1/A2/A3/A1');
     });
   });
 
@@ -263,7 +264,37 @@ describe('refs.outgoing', () => {
       expect(res[4].param).to.eql(6);
     });
 
-    it('=5 + A1:B9 (range)', async () => {
+    it('=5 + SUM(A2,A3) + A2 (FUNC/REF)', async () => {
+      const ctx = testContext({
+        A1: { value: '=5 + SUM(A2,A3) + A2' },
+        A2: { value: 2 },
+        A3: { value: 3 },
+      });
+      const res = await outgoing({ key: 'A1', ...ctx });
+
+      console.log('res', res);
+
+      // expect(res.length).to.eql(1);
+      // expect(res[0].target).to.eql('RANGE');
+      // expect(res[0].path).to.eql('A1/B1:B9');
+      // expect(res[0].param).to.eql(1);
+    });
+
+    it('REF => FUNC', async () => {
+      const ctx = testContext({
+        A1: { value: '=A2' },
+        A2: { value: '=SUM(A3,999,A4)' },
+        A3: { value: 3 },
+        A4: { value: 4 },
+      });
+      const res = await outgoing({ key: 'A1', ...ctx });
+
+      expect(res.length).to.eql(1);
+      expect(res[0].target).to.eql('FUNC');
+      expect(res[0].path).to.eql('A1/A2');
+    });
+
+    it('"=5 + A1:B9" (RANGE => self)', async () => {
       const ctx = testContext({
         A1: { value: '=5 + B1:B9' },
       });
@@ -275,7 +306,7 @@ describe('refs.outgoing', () => {
       expect(res[0].param).to.eql(1);
     });
 
-    it('=1+2 (no refs)', async () => {
+    it('"=1+2" (no refs)', async () => {
       const test = async (expr: string) => {
         const ctx = testContext({
           A1: { value: expr },
@@ -295,81 +326,67 @@ describe('refs.outgoing', () => {
       await test('=1- 2');
     });
 
-    it('=5 + A1:B9 (RANGE, ERROR/CIRCULAR)', async () => {
-      const ctx = testContext({
-        A1: { value: '=5 + A1:B9' },
-      });
-      const res = await outgoing({ key: 'A1', ...ctx });
+    describe('circular error', () => {
+      it('=5 + A1:B9 (RANGE)', async () => {
+        const ctx = testContext({
+          A1: { value: '=5 + A1:B9' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
 
-      expect(res.length).to.eql(1);
-      expect(res[0].target).to.eql('RANGE');
-      expect(res[0].path).to.eql('A1/A1:B9');
+        expect(res.length).to.eql(1);
+        expect(res[0].target).to.eql('RANGE');
+        expect(res[0].path).to.eql('A1/A1:B9');
 
-      const error = res[0].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-    });
-
-    it('=A1+5 (immediate ERROR/CIRCULAR)', async () => {
-      const ctx = testContext({
-        A1: { value: '=A1+5' },
-      });
-      const res = await outgoing({ key: 'A1', ...ctx });
-
-      expect(res.length).to.eql(1);
-      expect(res[0].target).to.eql('FUNC');
-      expect(res[0].path).to.eql('A1/A1');
-
-      const error = res[0].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-    });
-
-    it('=A2 + 5 => A1 (ERROR/CIRCULAR)', async () => {
-      const ctx = testContext({
-        A1: { value: '=A2 + 5' },
-        A2: { value: '=A1' },
-      });
-      const res = await outgoing({ key: 'A1', ...ctx });
-
-      expect(res.length).to.eql(1);
-      expect(res[0].target).to.eql('FUNC');
-      expect(res[0].path).to.eql('A1/A2/A1');
-
-      const error = res[0].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-      expect(error.path).to.eql('A1/A2/A1');
-    });
-
-    it('=A1 + 1 | expr => self (ERROR/CIRCULAR)', async () => {
-      const ctx = testContext({
-        A1: { value: '=A1 + 1' },
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
       });
 
-      const res = await outgoing({ key: 'A1', ...ctx });
+      it('=A1+5 => self (immediate)', async () => {
+        const ctx = testContext({
+          A1: { value: '=A1+5' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
 
-      expect(res.length).to.eql(1);
-      expect(res[0].target).to.eql('FUNC');
-      expect(res[0].path).to.eql('A1/A1');
+        expect(res.length).to.eql(1);
+        expect(res[0].target).to.eql('FUNC');
+        expect(res[0].path).to.eql('A1');
 
-      const error = res[0].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-      expect(error.path).to.eql('A1/A1');
-    });
-
-    it('=A1 + 1 | expr => self (ERROR/CIRCULAR)', async () => {
-      const ctx = testContext({
-        A1: { value: '=A2 + 1' },
-        A2: { value: '=SUM(A1, A1)' },
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
       });
 
-      const res = await outgoing({ key: 'A1', ...ctx });
+      it('"=A2 + 5" => REF => self ', async () => {
+        const ctx = testContext({
+          A1: { value: '=A2 + 5' },
+          A2: { value: '=A1' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
 
-      expect(res.length).to.eql(1);
-      expect(res[0].target).to.eql('FUNC');
-      expect(res[0].path).to.eql('A1/A2/A1');
+        expect(res.length).to.eql(1);
+        expect(res[0].target).to.eql('REF');
+        expect(res[0].path).to.eql('A1/A2');
 
-      const error = res[0].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-      expect(error.path).to.eql('A1/A2/A1');
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.path).to.eql('A1/A2/A1');
+      });
+
+      it('"=A2 + 1" => FUNC => self ', async () => {
+        const ctx = testContext({
+          A1: { value: '=A2 + 1' },
+          A2: { value: '=SUM(A1, A1)' },
+        });
+
+        const res = await outgoing({ key: 'A1', ...ctx });
+
+        expect(res.length).to.eql(1);
+        expect(res[0].target).to.eql('FUNC');
+        expect(res[0].path).to.eql('A1/A2');
+
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.path).to.eql('A1/A2/A1');
+      });
     });
   });
 
