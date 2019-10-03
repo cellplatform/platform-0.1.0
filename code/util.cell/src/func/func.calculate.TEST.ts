@@ -29,21 +29,22 @@ describe('func.calculate', () => {
       expect(res.data).to.eql(16);
     });
 
-    it.only('mixed: =1 + SUM(4,A3)', async () => {
+    it('mixed: =1 + SUM(4,A3)', async () => {
       const ctx = await testContext({
         A1: { value: '=1 + SUM(4,5)' },
         A2: { value: '=1 + SUM(2,Z9)' },
         A3: { value: '=1 + SUM(2,Z9+1)' },
         Z9: { value: 5 },
       });
-      const res1 = await func.calculate<number>({ cell: 'A1', ...ctx });
-      expect(res1.data).to.eql(10);
 
-      const res2 = await func.calculate<number>({ cell: 'A2', ...ctx });
-      expect(res2.data).to.eql(8);
+      const test = async (cell: string, expected: number) => {
+        const res = await func.calculate<number>({ cell, ...ctx });
+        expect(res.data).to.eql(expected);
+      };
 
-      const res3 = await func.calculate<number>({ cell: 'A3', ...ctx });
-      expect(res3.data).to.eql(9);
+      await test('A1', 10);
+      await test('A2', 8);
+      await test('A3', 9);
     });
   });
 
@@ -80,31 +81,28 @@ describe('func.calculate', () => {
       expect(res.data).to.eql(16);
     });
 
-    it.only('mixed: =SUM(1, 2+A3)', async () => {
+    it('mixed: =SUM(1, 2+A3)', async () => {
       const ctx = await testContext({
         A1: { value: '=SUM(1, 2+3)' },
         A2: { value: '=SUM(1, 5+Z9)' },
-        A3: { value: '=SUM(1, SUM(1,Z9))' }, // TEMP 🐷 ERROR
-        A4: { value: '=SUM(1, 5+Z9+SUM(1,2))' }, // TEMP 🐷 ERROR
-        A5: { value: '=SUM(1, 5+Z9+SUM(1,2+Z9))' }, // TEMP 🐷 ERROR
+        A3: { value: '=SUM(1, SUM(1,2))' },
+        A4: { value: '=SUM(1, SUM(1,Z9))' },
+        A5: { value: '=SUM(1, 5+Z9+SUM(1,2))' },
+        A6: { value: '=SUM(1, 5+Z9+SUM(1,2+Z9))' },
         Z9: { value: 10 },
       });
-      // const res1 = await func.calculate<number>({ cell: 'A1', ...ctx });
-      // const res2 = await func.calculate<number>({ cell: 'A2', ...ctx });
-      const res3 = await func.calculate<number>({ cell: 'A3', ...ctx });
-      // const res4 = await func.calculate<number>({ cell: 'A4', ...ctx });
-      // const res5 = await func.calculate<number>({ cell: 'A5', ...ctx });
 
-      // console.log('-------------------------------------------');
-      // console.log('res1', res1);
-      // console.log('res2', res2);
-      console.log('res3', res3);
-      // console.log('res4', res4);
-      // console.log('res5', res5);
+      const test = async (cell: string, expected: number) => {
+        const res = await func.calculate<number>({ cell, ...ctx });
+        expect(res.data).to.eql(expected);
+      };
 
-      //
-      // expect(res1.data).to.eql(6);
-      // expect(res2.data).to.eql(16);
+      await test('A1', 6);
+      await test('A2', 16);
+      await test('A3', 4);
+      await test('A4', 12);
+      await test('A5', 19);
+      await test('A6', 29);
     });
 
     it('FUNC => FUNC => REF', async () => {
@@ -114,19 +112,6 @@ describe('func.calculate', () => {
         A3: { value: 5 },
       });
       const res = await func.calculate<number>({ cell: 'A1', ...ctx });
-
-      console.log('-------------------------------------------');
-      console.log('res', res);
-
-      /**
-       * TEMP 🐷
-       * - cache (pass around)
-       * - tests for circular-refs
-       * - IGrid : values => cells
-       */
-
-      // const res2 = await func.calculate<number>({ key: 'A2', ...ctx });
-      // expect(res1.data).to.eql(6);
       expect(res.data).to.eql(15);
     });
 
@@ -139,6 +124,12 @@ describe('func.calculate', () => {
         B5: { value: 4 },
       });
       const res = await func.calculate<number>({ cell: 'A1', ...ctx });
+
+      /**
+       * TEMP 🐷
+       * - cache (pass around)
+       * - IGrid : values => cells
+       */
 
       // TEMP 🐷
 

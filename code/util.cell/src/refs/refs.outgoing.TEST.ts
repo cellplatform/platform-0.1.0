@@ -323,6 +323,7 @@ describe('refs.outgoing', () => {
         A3: { value: '=A4' },
         A4: { value: 4 },
         A5: { value: '=SUM(1,2)' },
+        A6: { value: '=SUM(1, SUM(1,A2))' },
       });
       const res = await outgoing({ key: 'A1', ...ctx });
 
@@ -341,6 +342,39 @@ describe('refs.outgoing', () => {
       expect(res[1].path).to.eql('A1/A5');
       expect(res[2].path).to.eql('A1/A2');
       expect(res[3].path).to.eql('A1/A5');
+    });
+
+    it('deep wrapping of expr => REF (3)', async () => {
+      const ctx = testContext({
+        A1: { value: '=1 + (1 + (1 + Z9))' },
+        Z9: { value: 10 },
+      });
+      const res = await outgoing({ key: 'A1', ...ctx });
+
+      expect(res.length).to.eql(1);
+      expect(res[0].target).to.eql('VALUE');
+      expect(res[0].param).to.eql('3');
+      expect(res[0].path).to.eql('A1/Z9');
+    });
+
+    it('deep wrapping of func/func => REF (3)', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(1, SUM(1,2,Z9,3,Z9))' },
+        A2: { value: '=SUM(1, SUM(1,SUM(1,SUM(Z9,999,Z9))))' },
+        A3: { value: '=SUM(1, 5+Z10+SUM(1,Z9,2))' },
+        Z9: { value: 10 },
+        Z10: { value: '=Z9' },
+      });
+
+      const test = async (key: string, paths: string[], params: string[]) => {
+        const res = await outgoing({ key, ...ctx });
+        paths.forEach((path, i) => expect(res[i].path).to.eql(path));
+        params.forEach((param, i) => expect(res[i].param).to.eql(param));
+      };
+
+      await test('A1', ['A1/Z9', 'A1/Z9'], ['1/2', '1/4']);
+      await test('A2', ['A2/Z9', 'A2/Z9'], ['1/1/1/0', '1/1/1/2']);
+      await test('A3', ['A3/Z10/Z9', 'A3/Z9'], ['1/1', '1/2/1']);
     });
 
     it('=5 + A1:B9  |  (RANGE => self)', async () => {
@@ -376,7 +410,7 @@ describe('refs.outgoing', () => {
     });
 
     describe('circular error', () => {
-      it('=5 + A1:B9 (RANGE)', async () => {
+      it('error: =5 + A1:B9 (RANGE)', async () => {
         const ctx = testContext({
           A1: { value: '=5 + A1:B9' },
         });
@@ -390,7 +424,7 @@ describe('refs.outgoing', () => {
         expect(error.type).to.eql('CIRCULAR');
       });
 
-      it('=A1+5 => self (immediate)', async () => {
+      it('error: =A1+5 => self (immediate)', async () => {
         const ctx = testContext({
           A1: { value: '=A1+5' },
         });
@@ -404,7 +438,7 @@ describe('refs.outgoing', () => {
         expect(error.type).to.eql('CIRCULAR');
       });
 
-      it('=A2+5 => REF => self ', async () => {
+      it('error: =A2+5 => REF => self ', async () => {
         const ctx = testContext({
           A1: { value: '=A2 + 5' },
           A2: { value: '=A1' },
@@ -420,7 +454,7 @@ describe('refs.outgoing', () => {
         expect(error.path).to.eql('A1/A2/A1');
       });
 
-      it('=A2+1 => FUNC => self ', async () => {
+      it('error: =A2+1 => FUNC => self ', async () => {
         const ctx = testContext({
           A1: { value: '=A2 + 1' },
           A2: { value: '=SUM(A1, A1)' },
@@ -437,7 +471,7 @@ describe('refs.outgoing', () => {
         expect(error.path).to.eql('A1/A2/A1');
       });
 
-      it('deep wrapping (embedded func)', async () => {
+      it('error: deep wrapping (embedded func)', async () => {
         const ctx = testContext({
           A1: { value: '=5 + SUM(A2,A3 + A5)' },
           A2: { value: 2 },
@@ -473,13 +507,14 @@ describe('refs.outgoing', () => {
         expect(error3.path).to.eql('A1/A5/A1');
       });
 
-      it('deep wrapping (embedded expression)', async () => {
+      it('error: deep wrapping (embedded expression)', async () => {
         const ctx = testContext({
           A1: { value: '=SUM(A2,A3 + A5)' },
           A2: { value: 2 },
           A3: { value: '=A1' },
           A4: { value: 4 },
           A5: { value: '=SUM(1,A1)' },
+          A6: { value: '=SUM(1, SUM(1,SUM(1,SUM(999,A1))))' },
         });
         const res = await outgoing({ key: 'A1', ...ctx });
 
@@ -507,6 +542,26 @@ describe('refs.outgoing', () => {
 
         expect(error2.path).to.eql('A1/A3/A1');
         expect(error3.path).to.eql('A1/A5/A1');
+      });
+
+      it('error: deep wrapping (embedded func)', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(1, SUM(1,SUM(1,SUM(999,A1))))' },
+          A2: { value: '=SUM(1, SUM(1,SUM(1,SUM(Z9,999))))' },
+          A3: { value: '=SUM(1, 5+Z9+SUM(1,2))' },
+          Z9: { value: '=A2' },
+        });
+
+        const test = async (key: string, param: string, errorPath: string) => {
+          const res = await outgoing({ key, ...ctx });
+          expect(res.length).to.eql(1);
+          expect(res[0].param).to.eql(param);
+          expect((res[0].error as t.IRefError).path).to.eql(errorPath);
+        };
+
+        await test('A1', '1/1/1/1', 'A1/A1');
+        await test('A2', '1/1/1/0', 'A2/Z9/A2');
+        await test('A3', '1/1', 'A3/Z9/A2/Z9');
       });
     });
   });

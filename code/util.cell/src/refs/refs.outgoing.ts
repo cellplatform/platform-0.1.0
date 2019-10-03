@@ -226,6 +226,16 @@ async function outgoingFunc(args: {
       }));
     }
 
+    // Argument is an embedded function (eg "SUM(1,2)").
+    if (paramNode.type === 'function') {
+      const path = args.path;
+      const res = await outgoingFunc({ node: paramNode, getValue, path });
+      return res.map(ref => ({
+        ...ref,
+        param: `${param}/${ref.param || 0}`,
+      }));
+    }
+
     // Lookup the reference the parameter points to.
     const cellNode = paramNode as ast.CellNode;
     const key = cellNode.key;
