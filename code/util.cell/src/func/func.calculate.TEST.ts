@@ -143,8 +143,7 @@ describe('func.calculate', () => {
        * - cache (pass around)
        * - IGrid : values => cells
        * - Test: error thrown in func (expected, eg throw new Error("foo"))
-       * - Test: circular-ref within range.
-       * - Test: range in binary-expr
+       * - Look up FUNC refs from somewhere else.
        */
 
       // TEMP 🐷
