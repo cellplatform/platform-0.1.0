@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-export type RefTarget = 'VALUE' | 'FUNC' | 'RANGE' | 'UNKNOWN';
+export type RefTarget = 'VALUE' | 'FUNC' | 'REF' | 'RANGE' | 'UNKNOWN';
 export type RefDirection = 'IN' | 'OUT';
 
 /**

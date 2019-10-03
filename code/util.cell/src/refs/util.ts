@@ -65,6 +65,35 @@ export function isCircularError(error?: t.IRefError) {
 }
 
 /**
+ * Determine if the given input represents a "function" or "binary-expression"
+ */
+export function isFunc(input?: string | ast.TreeNode) {
+  return toRefTarget(input) === 'FUNC';
+}
+
+export function toRefTarget(
+  input: string | ast.TreeNode | undefined,
+  defaultValue?: t.RefTarget = 'UNKNOWN',
+): t.RefTarget {
+  if (input) {
+    const node = typeof input === 'object' ? input : ast.toTree(input);
+    switch (node.type) {
+      case 'function':
+      case 'binary-expression':
+        return 'FUNC';
+      case 'cell':
+        return 'REF';
+      case 'cell-range':
+        return 'RANGE';
+      default:
+        return 'VALUE';
+    }
+  } else {
+    return defaultValue;
+  }
+}
+
+/**
  * Incoming specific helpers.
  */
 export const incoming = {
