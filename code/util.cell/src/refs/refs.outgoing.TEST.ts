@@ -265,7 +265,7 @@ describe.only('refs.outgoing', () => {
       expect(res[4].param).to.eql('6');
     });
 
-    it('"=5 + SUM(A2,A3)" (FUNC with two out-bound refs)', async () => {
+    it('=5 + SUM(A2,A3)  |  FUNC with two out-bound refs)', async () => {
       const ctx = testContext({
         A1: { value: '=5 + SUM(A2,A3,999,A5) + A3' },
         A2: { value: 2 },
@@ -343,7 +343,7 @@ describe.only('refs.outgoing', () => {
       expect(res[3].path).to.eql('A1/A5');
     });
 
-    it('"=5 + A1:B9" (RANGE => self)', async () => {
+    it('=5 + A1:B9  |  (RANGE => self)', async () => {
       const ctx = testContext({
         A1: { value: '=5 + B1:B9' },
       });
@@ -355,7 +355,7 @@ describe.only('refs.outgoing', () => {
       expect(res[0].param).to.eql('1');
     });
 
-    it('"=1+2" (no refs)', async () => {
+    it('=1+2  |  no refs', async () => {
       const test = async (expr: string) => {
         const ctx = testContext({
           A1: { value: expr },
@@ -404,7 +404,7 @@ describe.only('refs.outgoing', () => {
         expect(error.type).to.eql('CIRCULAR');
       });
 
-      it('"=A2 + 5" => REF => self ', async () => {
+      it('=A2+5 => REF => self ', async () => {
         const ctx = testContext({
           A1: { value: '=A2 + 5' },
           A2: { value: '=A1' },
@@ -420,7 +420,7 @@ describe.only('refs.outgoing', () => {
         expect(error.path).to.eql('A1/A2/A1');
       });
 
-      it('"=A2 + 1" => FUNC => self ', async () => {
+      it('=A2+1 => FUNC => self ', async () => {
         const ctx = testContext({
           A1: { value: '=A2 + 1' },
           A2: { value: '=SUM(A1, A1)' },
