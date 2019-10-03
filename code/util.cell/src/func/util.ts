@@ -2,14 +2,7 @@ import { t } from '../common';
 import { getCircularError } from '../refs/util';
 
 export { getCircularError };
-export { path } from '../refs/util';
-
-/**
- * Determine if the given cell value represents a formula.
- */
-export function isFormula(input?: any) {
-  return (typeof input === 'string' ? input : '')[0] === '=';
-}
+export { path, isFormula } from '../refs/util';
 
 /**
  * Convert an object an `Error` with corresponding func/props.

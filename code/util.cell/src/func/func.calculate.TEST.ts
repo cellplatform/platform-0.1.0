@@ -155,7 +155,7 @@ describe('func.calculate', () => {
   });
 
   describe('errors', () => {
-    it('not an formula', async () => {
+    it('error: not an formula', async () => {
       const ctx = await testContext({
         A1: { value: '123' },
       });
@@ -169,7 +169,7 @@ describe('func.calculate', () => {
       expect(error.message).to.include('cell A1 is not a formula');
     });
 
-    it('function not found', async () => {
+    it('error: function not found', async () => {
       const ctx = await testContext({
         A1: { value: '=NO_EXIST()' },
       });
@@ -183,7 +183,7 @@ describe('func.calculate', () => {
       expect(error.message).to.include('function [sys.NO_EXIST] was not found');
     });
 
-    it('ERROR: circular', async () => {
+    it('error: circular', async () => {
       const ctx = await testContext({
         A1: { value: '=SUM(1, A1)' }, // NB: Reference self in param.
         B1: { value: '=SUM(1, B2)' }, // NB: Reference back to self via another cell.
@@ -193,7 +193,7 @@ describe('func.calculate', () => {
         C2: { value: '=123 + C3' },
         C3: { value: '=C2' },
         D1: { value: '=99 + A1' },
-        D2: { value: '=99 + SUM(A1,3)' }, // TEMP 🐷 Not reporting error
+        D2: { value: '=99 + SUM(A1,3)' },
       });
 
       const test = async (cell: string, expectPath: string) => {
@@ -209,6 +209,30 @@ describe('func.calculate', () => {
       await test('C2', 'C2/C3/C2');
       await test('D1', 'D1/A1/A1');
       await test('D2', 'D2/A1/A1');
+    });
+
+    it.skip('error: circular range', async () => {
+      const ctx = await testContext({
+        A1: { value: '=SUM(1, A1:A5)' }, //         NB: Reference self in range.
+        A2: { value: '=1 + A1:A5' }, //             NB: Reference self in range.
+        A3: { value: '=SUM(1, A1:A5, Z5:Z15)' }, // NB: Reference from one range into another.
+        B1: { value: 1 },
+        B2: { value: 'hello' },
+        B3: { value: 3 },
+        Z9: { value: '=A1' },
+      });
+
+      const test = async (cell: string, expectPath: string) => {
+        const res = await func.calculate<number>({ cell, ...ctx });
+        console.log('res', res);
+        // const error = res.error as t.IFuncError;
+        // expect(error.type).to.eql('CIRCULAR');
+        // expect(error.message).to.include(`leads back to itself (${expectPath})`);
+      };
+
+      // await test('A1', 'A1/A1:A5');
+      // await test('A2', 'A2/A1:A5');
+      await test('A3', 'A2/A1:A5');
     });
   });
 });

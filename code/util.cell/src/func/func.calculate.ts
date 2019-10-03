@@ -1,7 +1,7 @@
 import { ast } from '../ast';
 import { t } from '../common';
-import * as util from './util';
 import { CellRange } from '../range/CellRange';
+import * as util from './util';
 
 /**
  * Calculate.
@@ -209,13 +209,12 @@ const getRangeValues = async (args: {
 }) => {
   const { cell, node, refs, getValue, getFunc } = args;
   util.throwIfCircular({ cell, refs });
-
-  const range = CellRange.fromKey(`${node.left.key}:${node.right.key}`);
-  const keys = range.keys;
-
+  const range = CellRange.fromCells(node.left.key, node.right);
   const wait = range.keys.map(async cell => {
     const value = await getValue(cell);
-    return util.isFormula(value) ? calculate({ cell, refs, getValue, getFunc }) : value;
+    return util.isFormula(value)
+      ? calculate({ cell, refs, getValue, getFunc }) // <== RECURSION 🌳
+      : value;
   });
   return (await Promise.all(wait)) as any[];
 };
