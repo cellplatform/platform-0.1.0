@@ -149,7 +149,7 @@ describe('refs.outgoing', () => {
     });
 
     describe('circular error', () => {
-      it('param to range', async () => {
+      it('error: param to RANGE', async () => {
         const ctx = testContext({
           A1: { value: '=SUM(999, A2, A3)' },
           A2: { value: 123 },
@@ -167,7 +167,7 @@ describe('refs.outgoing', () => {
         expect(error.type).to.eql('CIRCULAR');
       });
 
-      it('param to range (immediate)', async () => {
+      it('error: param to RANGE (direct)', async () => {
         const ctx = testContext({
           A1: { value: '=SUM(999, A1:B9)' },
         });
@@ -184,7 +184,52 @@ describe('refs.outgoing', () => {
         expect(error.path).to.eql('A1/A1:B9');
       });
 
-      it('func param reference self (immediate)', async () => {
+      it('error: param => RANGE (indirect)', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(999, B1:B9)' },
+          B3: { value: '=C1' },
+          C1: { value: '=A1' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
+        const error = res[0].error as t.IRefError;
+
+        expect(res.length).to.eql(1);
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.path).to.eql('A1/B1:B9');
+        expect(error.message).to.include('Range contains a cell that leads back to itself');
+      });
+
+      it('error: param => RANGE => RANGE (indirect)', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(999, B1:B9)' },
+          B3: { value: '=C1:C9' },
+          C5: { value: '=A1' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
+        const error = res[0].error as t.IRefError;
+
+        expect(res.length).to.eql(1);
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.path).to.eql('A1/B1:B9');
+        expect(error.message).to.include('Range contains a cell that leads back to itself');
+      });
+
+      it('error: param => RANGE => expr => RANGE (indirect)', async () => {
+        const ctx = testContext({
+          A1: { value: '=SUM(999, 4 + (3 + B1:B9))' },
+          B3: { value: '=C1:C9' },
+          C5: { value: '=A1' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
+        const error = res[0].error as t.IRefError;
+
+        expect(res.length).to.eql(1);
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.path).to.eql('A1/B1:B9');
+        expect(error.message).to.include('Range contains a cell that leads back to itself');
+      });
+
+      it('error: FUNC param => self (direct)', async () => {
         const ctx = testContext({
           A1: { value: '=SUM(999, A1)' },
         });
@@ -199,7 +244,7 @@ describe('refs.outgoing', () => {
         expect(error.path).to.eql('A1/A1');
       });
 
-      it('func => func', async () => {
+      it('error: FUNC => FUNC', async () => {
         const ctx = testContext({
           A1: { value: '=SUM(999, A2)' },
           A2: { value: '=SUM(A1, 888)' },
@@ -214,7 +259,7 @@ describe('refs.outgoing', () => {
         expect(error.path).to.eql('A1/A2/A1');
       });
 
-      it('FUNC => REF => FUNC', async () => {
+      it('error: FUNC => REF => FUNC', async () => {
         const ctx = testContext({
           A1: { value: '=SUM(999, A2)' },
           A2: { value: '=A3' },
@@ -415,16 +460,34 @@ describe('refs.outgoing', () => {
           A1: { value: '=5 + A1:B9' },
         });
         const res = await outgoing({ key: 'A1', ...ctx });
+        const error = res[0].error as t.IRefError;
 
         expect(res.length).to.eql(1);
         expect(res[0].target).to.eql('RANGE');
         expect(res[0].path).to.eql('A1/A1:B9');
+        expect(res[0].param).to.eql('1');
 
-        const error = res[0].error as t.IRefError;
         expect(error.type).to.eql('CIRCULAR');
       });
 
-      it('error: =A1+5 => self (immediate)', async () => {
+      it('error: =5 + A1:B9 (RANGE => RANGE)', async () => {
+        const ctx = testContext({
+          A1: { value: '=5 + B1:B9' },
+          B2: { value: '=C1:C9' },
+          C3: { value: '=A1' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
+        const error = res[0].error as t.IRefError;
+
+        expect(res.length).to.eql(1);
+        expect(res[0].target).to.eql('RANGE');
+        expect(res[0].path).to.eql('A1/B1:B9');
+        expect(res[0].param).to.eql('1');
+
+        expect(error.type).to.eql('CIRCULAR');
+      });
+
+      it('error: =A1+5 => self (direct)', async () => {
         const ctx = testContext({
           A1: { value: '=A1+5' },
         });
@@ -590,39 +653,41 @@ describe('refs.outgoing', () => {
       expect(res[0].error).to.eql(undefined);
     });
 
-    it('ERROR/CIRCULAR', async () => {
-      const ctx = testContext({
-        A1: { value: '=B$2' },
-        B2: { value: '=A1:B$9' },
+    describe('circular error', () => {
+      it('error: direct (self)', async () => {
+        const ctx = testContext({
+          A1: { value: '=A1:B9' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
+
+        expect(res.length).to.eql(1);
+        expect(res[0].target).to.eql('RANGE');
+        expect(res[0].path).to.eql('A1/A1:B9');
+
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.message).to.include(
+          'Range contains a cell that leads back to itself (A1/A1:B9)',
+        );
       });
-      const res = await outgoing({ key: 'A1', ...ctx });
 
-      expect(res.length).to.eql(1);
-      expect(res[0].target).to.eql('RANGE');
-      expect(res[0].path).to.eql('A1/B2/A1:B9');
+      it('error: indirect', async () => {
+        const ctx = testContext({
+          A1: { value: '=B$2' },
+          B2: { value: '=A1:B$9' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
 
-      const error = res[0].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-      expect(error.message).to.include(
-        'Range contains a cell that leads back to itself (A1/B2/A1:B9)',
-      );
-    });
+        expect(res.length).to.eql(1);
+        expect(res[0].target).to.eql('RANGE');
+        expect(res[0].path).to.eql('A1/B2/A1:B9');
 
-    it('ERROR/CIRCULAR (immediate)', async () => {
-      const ctx = testContext({
-        A1: { value: '=A1:B9' },
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.message).to.include(
+          'Range contains a cell that leads back to itself (A1/B2/A1:B9)',
+        );
       });
-      const res = await outgoing({ key: 'A1', ...ctx });
-
-      expect(res.length).to.eql(1);
-      expect(res[0].target).to.eql('RANGE');
-      expect(res[0].path).to.eql('A1/A1:B9');
-
-      const error = res[0].error as t.IRefError;
-      expect(error.type).to.eql('CIRCULAR');
-      expect(error.message).to.include(
-        'Range contains a cell that leads back to itself (A1/A1:B9)',
-      );
     });
   });
 

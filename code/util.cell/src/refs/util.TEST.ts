@@ -3,6 +3,20 @@ import { expect, testContext } from './TEST';
 import * as util from './util';
 
 describe('refs.util', () => {
+  it('isFormula', () => {
+    const test = (value: any, expected: boolean) => {
+      expect(util.isFormula(value)).to.eql(expected);
+    };
+    test(undefined, false);
+    test('', false);
+    test(' =', false);
+    test({}, false);
+    test(123, false);
+
+    test('=', true);
+    test('=SUM(1,2,3)', true);
+  });
+
   describe('sort', () => {
     it('no refs', async () => {
       const ctx = testContext({

@@ -30,6 +30,10 @@ export function path(input?: string) {
     get last() {
       return res.keys[res.keys.length - 1];
     },
+    isCircular(key: string | string[]) {
+      const keys = Array.isArray(key) ? key : [key];
+      return keys.some(key => res.keys.includes(key));
+    },
   };
   return res;
 }
@@ -43,15 +47,6 @@ export function toErrors(refs: t.IRefs) {
       .map(key => refs.out[key])
       .map(refs => refs.map(ref => ref.error as t.IRefError)),
   ).filter(err => err);
-}
-
-/**
- * Determine if the given path contains a circular reference.
- */
-export function isCircularPath(path: string, key: string | string[]) {
-  const keys = Array.isArray(key) ? key : [key];
-  const parts = path.split('/');
-  return keys.some(key => parts.includes(key));
 }
 
 /**
@@ -81,12 +76,37 @@ export function isCircularError(error?: t.IRefError) {
 }
 
 /**
+ * Determine if the given cell value represents a formula.
+ */
+export function isFormula(input?: any) {
+  return (typeof input === 'string' ? input : '')[0] === '=';
+}
+
+/**
  * Determine if the given input represents a "function" or "binary-expression"
+ * (eg "=SUM(1,A1)" or "=1+A1")
  */
 export function isFunc(input?: string | ast.TreeNode) {
   return toRefTarget(input) === 'FUNC';
 }
 
+/**
+ * Determine if the given input represents a cell reference (eg "=A1")
+ */
+export function isRef(input?: string | ast.TreeNode) {
+  return toRefTarget(input) === 'REF';
+}
+
+/**
+ * Determine if the given input represents a cell reference (eg "=A1:Z9")
+ */
+export function isRange(input?: string | ast.TreeNode) {
+  return toRefTarget(input) === 'RANGE';
+}
+
+/**
+ * Determine the type of reference-target the given value is.
+ */
 export function toRefTarget(
   input: string | ast.TreeNode | undefined,
   defaultValue: t.RefTarget = 'UNKNOWN',
