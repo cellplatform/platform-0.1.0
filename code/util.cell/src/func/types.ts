@@ -23,7 +23,7 @@ export type IFuncResponse<T = any> = {
 /**
  * Error.
  */
-export type FuncError = 'NOT_FORMULA' | 'NOT_FOUND';
+export type FuncError = 'NOT_FORMULA' | 'NOT_FOUND' | 'CIRCULAR' | 'REF';
 export type IFuncError = {
   type: FuncError;
   message: string;

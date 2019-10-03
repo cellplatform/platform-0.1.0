@@ -1,3 +1,5 @@
+export { path } from '../refs/util';
+
 /**
  * Determine if the given cell value represents a formula.
  */

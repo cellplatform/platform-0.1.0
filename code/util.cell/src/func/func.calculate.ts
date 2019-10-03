@@ -1,6 +1,6 @@
 import { ast } from '../ast';
-import { t, value } from '../common';
-import { isFormula } from './util';
+import { t, value, defaultValue } from '../common';
+import * as util from './util';
 
 const getExprFunc = async (getFunc: t.GetFunc, operator: ast.BinaryExpressionNode['operator']) => {
   if (operator === '+') {
@@ -14,59 +14,91 @@ const getExprFunc = async (getFunc: t.GetFunc, operator: ast.BinaryExpressionNod
 
 const getParamRefValue = async (args: {
   cell: string;
-  index: number;
+  paramIndex: number;
   refs: t.IRefs;
   getValue: t.RefGetValue;
+  getFunc: t.GetFunc;
 }) => {
-  const { cell, index, refs, getValue } = args;
-  const outRefs = refs.out[cell] || [];
-  const ref = outRefs.find(ref => ref.param === index);
+  const { cell, paramIndex, refs, getValue, getFunc } = args;
+  const param = defaultValue(paramIndex, -1).toString();
 
+  // Lookup the ref.
+  const outRefs = refs.out[cell] || [];
+  const ref = outRefs.find(ref => util.path(ref.param).last === param);
   if (!ref) {
     return undefined;
   }
 
-  if (ref) {
-    const parts = ref.path.split('/');
-    const targetKey = parts[parts.length - 1];
-
-    console.log('targetKey', targetKey);
-    const res = await getValue(targetKey); // TEMP 🐷 TODO - perform FUNC calculation on value if necessary.
-    console.log('f', res);
-    return res;
-    // const res = await calc({ key: targetKey, refs, getFunc, getValue });
-    // console.log('res', res);
+  // Bail out if the ref is in an error state.
+  if (ref.error) {
+    throw toError({
+      type: ref.error.type === 'CIRCULAR' ? 'CIRCULAR' : 'REF',
+      message: ref.error.message,
+      cell: { key: cell, value: (await getValue(cell)) || '' },
+    });
   }
 
-  return undefined;
+  // Read the current cell value for the REF.
+  const parts = ref.path.split('/');
+  const targetKey = parts[parts.length - 1];
+
+  // Calculate formulas into final values.
+  let value = await getValue(targetKey);
+  if (util.isFormula(value)) {
+    const formula = value || '';
+    const node = ast.toTree(value) as ast.BinaryExpressionNode | ast.FunctionNode;
+    value = await evaluate({ cell: targetKey, formula, node, refs, getValue, getFunc }); // <== RECURSION 🌳
+  }
+
+  // Finish up.
+  return value;
 };
 
 const toParamValue = async (args: {
   cell: string;
   formula: string;
   node: ast.Node;
-  index: number;
+  paramIndex: number;
   refs: t.IRefs;
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
 }) => {
-  const { node, cell, formula, refs, getValue, getFunc, index } = args;
+  const { node, cell, formula, refs, getValue, getFunc, paramIndex } = args;
 
   if (ast.isValueNode(node)) {
     return (node as any).value;
   }
   if (node.type === 'binary-expression') {
-    return evaluateExpr({ cell, formula, refs, getValue, getFunc, node });
+    return evaluateExpr({ cell, formula, node, refs, getValue, getFunc }); // <== RECURSION 🌳
   }
   if (node.type === 'function') {
-    return evaluateFunc({ cell, formula, refs, getValue, getFunc, node });
+    return evaluateFunc({ cell, formula, node, refs, getValue, getFunc }); // <== RECURSION 🌳
   }
   if (node.type === 'cell') {
-    return getParamRefValue({ cell, refs, getValue, index });
+    return getParamRefValue({ cell, refs, paramIndex, getValue, getFunc }); // <== RECURSION 🌳
   }
   if (node.type === 'cell-range') {
     // TEMP 🐷 TODO - look up RANGE
   }
+};
+
+const evaluate = async (args: {
+  cell: string;
+  formula: string;
+  node: ast.BinaryExpressionNode | ast.FunctionNode;
+  refs: t.IRefs;
+  getValue: t.RefGetValue;
+  getFunc: t.GetFunc;
+  level?: number;
+}) => {
+  const { cell, formula, node, refs, getValue, getFunc, level = 0 } = args;
+  if (node.type === 'binary-expression') {
+    return evaluateExpr({ cell, formula, node, refs, getValue, getFunc, level });
+  }
+  if (node.type === 'function') {
+    return evaluateFunc({ cell, formula, node, refs, getValue, getFunc, level });
+  }
+  return;
 };
 
 const evaluateExpr = async (args: {
@@ -86,10 +118,10 @@ const evaluateExpr = async (args: {
     throw new Error(err);
   }
 
-  const toValue = async (node: ast.Node, param: number) => {
+  const toValue = async (node: ast.Node, paramIndex: number) => {
     return node.type === 'binary-expression'
       ? evaluateExpr({ cell, formula, refs, getValue, getFunc, node, level: level + 1 }) // <== RECURSION 🌳
-      : toParamValue({ cell, formula, node, index: param, getValue, getFunc, refs });
+      : toParamValue({ cell, formula, node, paramIndex, getValue, getFunc, refs });
   };
 
   // Retrieve left/right parameters.
@@ -127,8 +159,8 @@ const evaluateFunc = async (args: {
 
   // Calculate parameter values.
   const params = await Promise.all(
-    node.arguments.map(async (node, index) =>
-      toParamValue({ cell, formula, node, index, getValue, getFunc, refs }),
+    node.arguments.map(async (node, paramIndex) =>
+      toParamValue({ cell, formula, node, paramIndex, getValue, getFunc, refs }),
     ),
   );
 
@@ -163,8 +195,9 @@ export async function calculate<D = any>(args: {
 }): Promise<t.IFuncResponse<D>> {
   const { cell, refs, getValue, getFunc } = args;
   const formula = (await getValue(cell)) || '';
-  const node = isFormula(formula) ? ast.toTree(formula) : undefined;
+  const node = util.isFormula(formula) ? ast.toTree(formula) : undefined;
 
+  // Ensure the node is a function/expression.
   if (!node || !(node.type === 'function' || node.type === 'binary-expression')) {
     const error = toError({
       type: 'NOT_FORMULA',
@@ -175,15 +208,11 @@ export async function calculate<D = any>(args: {
     return res;
   }
 
+  // Evaluate the function/expression.
   let data: any;
   let error: t.IFuncError | undefined;
   try {
-    if (node.type === 'binary-expression') {
-      data = await evaluateExpr({ cell, formula, node, refs, getValue, getFunc });
-    }
-    if (node.type === 'function') {
-      data = await evaluateFunc({ cell, formula, node, refs, getValue, getFunc });
-    }
+    data = await evaluate({ cell, formula, node, refs, getValue, getFunc });
   } catch (err) {
     error = fromError(err);
   }
