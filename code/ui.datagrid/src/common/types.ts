@@ -2,6 +2,8 @@ import * as t from '../types';
 export { KeyBindings } from '@platform/react/lib/types';
 export * from '@platform/util.cell/lib/types';
 
+export { Json } from '@platform/types';
+
 export * from '../types';
 
 /**

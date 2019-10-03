@@ -41,6 +41,25 @@ export type FunctionNode = AstFunctionNode & { namespace?: string };
 export type TreeNode = Node | CellNode | EmptyNode | ParseErrorNode;
 
 /**
+ *  binary-expression    1+2
+ *  cell                 =A1
+ *  cell-range           A1:B9
+ *  function             =SUM(1,2,3)
+ *  logical              TRUE/FALSE
+ *  number               123
+ *  text                 "hello"
+ *  unary-expression     -TRUE
+ */
+const VALUE_TYPES: Array<Node['type']> = ['number', 'text', 'logical', 'unary-expression'];
+
+/**
+ * Determine if the given node represents a concrete value.
+ */
+export function isValueNode(node: Node) {
+  return VALUE_TYPES.includes(node.type);
+}
+
+/**
  * Converts a forumula into tokens.
  */
 export function toTokens(expr: string) {

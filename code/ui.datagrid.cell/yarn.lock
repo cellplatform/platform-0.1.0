@@ -1288,13 +1288,13 @@
     codemirror "5.48.4"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.6.20":
-  version "0.6.20"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.20.tgz#7c0a6171e6e18adb9b7cdb9b9dcad310955a075e"
-  integrity sha512-+Kfsl5X4PLaHdTn/txlxM5Yd8P11IU+KhchSvxjr5csiefyyiwvEKvtrw1WE5cUlf9eMfyOxa8xmlNYzBbXfPw==
+"@platform/ui.datagrid.types@0.6.21":
+  version "0.6.21"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.21.tgz#d50cbeb19c0ac016bbdf3e387051ec043957e204"
+  integrity sha512-6JcUTGxi+oXOYG0g6tOodee0mRRSGHfg/gW7kLJCYIvMoqZV8U4RV0L06Gl1LIj9k/17CXR/KR40czhAiH0Bvg==
   dependencies:
     "@platform/react" "0.3.26"
-    "@platform/util.cell" "0.3.1"
+    "@platform/util.cell" "0.3.2"
     "@platform/util.diff" "0.0.1"
 
 "@platform/ui.editor@0.2.3":
@@ -1379,15 +1379,16 @@
     "@platform/libs" "0.1.3"
     dynamics.js "1.1.5"
 
-"@platform/util.cell@0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.cell/-/util.cell-0.3.1.tgz#18bf1ec2c58606dd528063fb812ea8b33a2a4d1d"
-  integrity sha512-ueiCfEQGCfwPA00wYvsikQK2T3Ly/PaV7H9kxzHPW91FFongz4wwD/Km41cTu8SeuJmBW3+1aGuPjnO457+Egw==
+"@platform/util.cell@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.cell/-/util.cell-0.3.2.tgz#96d5d891759e31bb84678319c35a4bdca7fafaa7"
+  integrity sha512-vm/tRlp6qxtPGsb3+raXqLxhSZZOGsu5T53RKhJBSKK70nKkPl+vRVPE3pWAP6u+5pXCbfDNclSuef5m0gwQ0A==
   dependencies:
     "@platform/cache" "0.2.0"
     "@platform/util.value" "0.5.5"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
+    toposort "2.0.2"
 
 "@platform/util.diff@0.0.1":
   version "0.0.1"
@@ -8659,6 +8660,11 @@ toidentifier@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
+
+toposort@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/toposort/-/toposort-2.0.2.tgz#ae21768175d1559d48bef35420b2f4962f09c330"
+  integrity sha1-riF2gXXRVZ1IvvNUILL0li8JwzA=
 
 tough-cookie@^2.3.3, tough-cookie@^2.5.0:
   version "2.5.0"

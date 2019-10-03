@@ -1,8 +1,8 @@
 import { ast } from '../ast';
 import { cell } from '../cell';
-import { t } from '../common';
-import { formula } from '../formula';
-import { range } from '../range';
+import { R, t } from '../common';
+import { func } from '../func';
+import { CellRange } from '../range/CellRange';
 import * as util from './util';
 
 export type IOutgoingArgs = {
@@ -42,12 +42,14 @@ async function find(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[
   };
 
   const getValue: t.RefGetValue = async key => {
-    const res = await args.getValue(cell.toRelative(key));
-    return typeof res === 'string' ? res : undefined;
+    let res: any = await args.getValue(cell.toRelative(key));
+    res = typeof res === 'number' ? res.toString() : res;
+    res = typeof res === 'string' ? res : undefined;
+    return res;
   };
   const value = await getValue(args.key);
 
-  if (typeof value !== 'string' || !formula.isFormula(value)) {
+  if (typeof value !== 'string' || !func.isFormula(value)) {
     return [];
   }
 
@@ -58,7 +60,7 @@ async function find(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[
    * Cell (eg "=A1").
    */
   if (node.type === 'cell') {
-    return done(await outgoingCell({ node, path, getValue }));
+    return done(await outgoingCellRef({ node, path, getValue }));
   }
 
   /**
@@ -75,6 +77,9 @@ async function find(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[
     return done(await outgoingFunc({ node, path, getValue }));
   }
 
+  /**
+   * Binary expression (eg "=1+A1").
+   */
   if (node.type === 'binary-expression') {
     return done(await outgoingBinaryExpression({ node, path, getValue }));
   }
@@ -84,9 +89,9 @@ async function find(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[
 }
 
 /**
- * Process an outgoing cell reference (eg: "=A1")
+ * Process an outgoing cell reference (eg: "=A1").
  */
-async function outgoingCell(args: {
+async function outgoingCellRef(args: {
   node: ast.CellNode;
   getValue: t.RefGetValue;
   path: string;
@@ -95,16 +100,21 @@ async function outgoingCell(args: {
 
   let path = args.path;
   let error: t.IRefError | undefined;
-  let target: t.RefTarget = 'VALUE';
   const key = cell.toRelative(node.key);
 
-  if (path.split('/').includes(key)) {
+  const isCircular = util.path(path).isCircular(key);
+  path = `${path}/${key}`;
+
+  if (isCircular) {
     error = {
       type: 'CIRCULAR',
       message: `Cell reference leads back to itself (${path})`,
       path,
     };
   }
+
+  const value = await getValue(key);
+  let target = util.toRefTarget(value, 'VALUE');
 
   if (!error && !cell.isCell(key)) {
     target = 'UNKNOWN';
@@ -115,21 +125,16 @@ async function outgoingCell(args: {
     };
   }
 
-  path = `${path}/${key}`;
-  const value = !error ? await getValue(key) : undefined;
-
   // Process the forumla (if it is one).
-  if (!error && value && formula.isFormula(value)) {
-    const res = await find({ getValue, key, path }); // <== RECURSION 🌳
-    if (res.length > 0) {
+  if (!isCircular && value && func.isFormula(value)) {
+    const res = await find({ key, path, getValue }); // <== RECURSION 🌳
+    if (!util.isFunc(value) && res.length > 0) {
       path = res[0].path;
       target = res[0].target;
-    } else {
-      target = 'FUNC';
     }
-    const firstProblem = res.find(item => item.error);
-    if (firstProblem) {
-      error = firstProblem.error;
+    const first = res.find(item => item.error);
+    if (first) {
+      error = first.error;
     }
   }
 
@@ -145,25 +150,80 @@ async function outgoingRange(args: {
   node: ast.CellRangeNode;
   getValue: t.RefGetValue;
   path: string;
+  param?: string;
 }): Promise<t.IRefOut[]> {
-  const { node } = args;
-  const cells = range.fromCells(node.left.key, node.right.key);
-  const path = `${args.path}/${cells.key}`;
-  const ref: t.IRefOut = { target: 'RANGE', path };
+  const { node, param, getValue } = args;
+  const range = CellRange.fromCells(node.left.key, node.right.key);
+  const path = `${args.path}/${range.key}`;
+  let error: t.IRefError | undefined;
 
   // Check for circular-reference error.
-  const parts = args.path.split('/');
-  const isCircular = parts.some(key => cells.contains(key));
+  const isCircular = await isRangeCircular({ range, path, getValue });
   if (isCircular) {
-    ref.error = {
+    error = {
       type: 'CIRCULAR',
       message: `Range contains a cell that leads back to itself (${path})`,
       path,
     };
   }
 
+  // Construct reference.
+  let ref: t.IRefOut = { target: 'RANGE', path };
+  ref = error ? { ...ref, error } : ref;
+  ref = param ? { ...ref, param } : ref;
+
   // Finish up.
   return [ref];
+}
+
+/**
+ * Determine if the given range contains a circular reference to itself.
+ */
+async function isRangeCircular(args: { path: string; range: CellRange; getValue: t.RefGetValue }) {
+  const { path, getValue } = args;
+
+  const isKeyContained = (range: CellRange, keys: string[]) => {
+    return keys.some(key => range.contains(key));
+  };
+
+  // Check for immediate self-reference within range.
+  if (isKeyContained(args.range, args.path.split('/'))) {
+    return true;
+  }
+
+  const getValues = async (range: CellRange) => {
+    const wait = range.keys.map(async key => {
+      const value = (await args.getValue(key)) as string;
+      return { key, value };
+    });
+    return (await Promise.all(wait)).filter(({ value }) => typeof value === 'string');
+  };
+
+  // Lookup values in the range.
+  const values = (await getValues(args.range))
+    .filter(({ value }) => value !== undefined)
+    .filter(({ value }) => util.isFormula(value));
+
+  // Check if referenced REF's exist within the range.
+  const refValues = values.filter(({ value }) => util.isRef(value));
+  if (isKeyContained(args.range, refValues.map(({ key }) => key))) {
+    return true;
+  }
+
+  // Check if referenced RANGE's refer back to this range.
+  const rangeValues = values.filter(({ value }) => util.isRange(value));
+  for (const item of rangeValues) {
+    if (item.key !== args.range.key) {
+      const range = CellRange.fromKey(item.value);
+      const isChildRangeContained = await isRangeCircular({ range, path, getValue }); // <== RECURSION 🌳
+      if (isChildRangeContained) {
+        return true;
+      }
+    }
+  }
+
+  // Not circular.
+  return false;
 }
 
 /**
@@ -175,72 +235,106 @@ async function outgoingFunc(args: {
   path: string;
 }): Promise<t.IRefOut[]> {
   const { node, getValue } = args;
-  let error: t.IRefError | undefined;
 
-  const wait = node.arguments.map(async (param, i) => {
-    if (util.isValueNode(param)) {
+  let error: t.IRefError | undefined;
+  const setCircularError = (index: number, path: string) => {
+    error = {
+      type: 'CIRCULAR',
+      message: `Function parameter ${index} contains a reference that leads back to itself (${path})`,
+      path,
+    };
+  };
+
+  const wait = node.arguments.map(async (paramNode, i) => {
+    const param = i.toString();
+
+    if (ast.isValueNode(paramNode)) {
       return undefined; // An actual value, not a reference!
     }
 
     // Argument points to a range (eg: "A1:B9").
-    if (param.type === 'cell-range') {
-      const cell = param as ast.CellRangeNode;
-      const left = cell.left.key;
-      const right = cell.right.key;
-      const range = `${left}:${right}`;
-      const path = `${args.path}/${range}`;
+    if (paramNode.type === 'cell-range') {
+      const rangeNode = paramNode as ast.CellRangeNode;
+      const res = await outgoingRange({ node: rangeNode, getValue, path: args.path, param });
+      return res[0];
+    }
 
-      const parts = args.path.split('/');
-      const isCircular = parts.includes(left) || parts.includes(right);
-      if (isCircular && !error) {
-        error = {
-          type: 'CIRCULAR',
-          message: `Range contains a cell that leads back to itself (${path})`,
-          path,
-        };
-      }
-      const ref: t.IRefOut = { target: 'RANGE', path, param: i, error };
-      return ref;
+    // Argument is an embedded expression (eg "1+A1").
+    if (paramNode.type === 'binary-expression') {
+      const path = args.path;
+      const res = await outgoingBinaryExpression({ node: paramNode, getValue, path });
+      return res.map(ref => ({
+        ...ref,
+        param: `${param}/${ref.param || 0}`,
+      }));
+    }
+
+    // Argument is an embedded function (eg "SUM(1,2)").
+    if (paramNode.type === 'function') {
+      const path = args.path;
+      const res = await outgoingFunc({ node: paramNode, getValue, path });
+      return res.map(ref => ({
+        ...ref,
+        param: `${param}/${ref.param || 0}`,
+      }));
     }
 
     // Lookup the reference the parameter points to.
-    const cellNode = param as ast.CellNode;
+    const cellNode = paramNode as ast.CellNode;
     const key = cellNode.key;
     const path = `${args.path}/${key}`;
     const targetKey = cell.toRelative(key);
     const targetValue = await getValue(key);
-    const targetTree = ast.toTree(targetValue);
+    const targetNode = ast.toTree(targetValue);
 
-    const isCircular = args.path.split('/').includes(targetKey);
+    // Check for circular reference loop.
+    let isCircular = util.path(args.path).isCircular(targetKey);
     if (isCircular && !error) {
-      error = {
-        type: 'CIRCULAR',
-        message: `Function parameter ${i} contains a reference that leads back to itself (${path})`,
-        path,
-      };
+      setCircularError(i, path);
     }
 
-    // TEMP 🐷 Do something with the circular error
+    // Check that the referenced function does not loop back to this cell.
+    if (!isCircular && !error && targetNode.type === 'function') {
+      const res = await outgoingFunc({ node: targetNode, getValue, path });
+      const err = res
+        .filter(ref => ref.error && ref.error.type === 'CIRCULAR')
+        .map(ref => ref.error as t.IRefError)
+        .find(err => util.path(err.path).isCircular(targetKey));
+      if (err) {
+        isCircular = true;
+        setCircularError(i, err.path);
+      }
+    }
 
-    if (targetTree.type === 'function' || targetTree.type === 'binary-expression') {
-      const ref: t.IRefOut = { target: 'FUNC', path, param: i };
+    // If the target is a function (eg "=SUM(...)") or binary-expression (eg "=1+A1")
+    // then stop at this point and return as a FUNC reference.
+    if (util.isFunc(targetNode)) {
+      const ref: t.IRefOut = { target: 'FUNC', path, error, param };
       return ref;
     }
 
-    const res = await find({ key: targetKey, getValue, path }); // <== RECURSION 🌳
+    // Lookup the reference.
+    const res = isCircular ? [] : await find({ key: targetKey, getValue, path }); // <== RECURSION 🌳
     if (res.length === 0) {
-      const ref: t.IRefOut = { target: 'VALUE', path, param: i };
+      const target = util.toRefTarget(targetValue);
+      const ref: t.IRefOut = { target, path, error, param };
       return ref;
     } else {
-      const parts = res[0].path.split('/');
+      const ref = res[0];
+      const parts = ref.path.split('/');
       const end = parts[parts.length - 1];
-      return { ...res[0], path: `${path}/${end}`, param: i };
+      return {
+        ...ref,
+        param,
+        path: `${path}/${end}`,
+        error: ref.error || error,
+      };
     }
   });
 
   // Finish up.
-  const refs = await Promise.all(wait);
-  return refs.filter(e => e !== undefined) as t.IRefOut[];
+  const refs = (await Promise.all(wait)) as t.IRefOut[];
+  return R.flatten(refs).filter(e => e !== undefined);
 }
 
 /**
@@ -253,22 +347,50 @@ async function outgoingBinaryExpression(args: {
 }): Promise<t.IRefOut[]> {
   const { getValue, path } = args;
 
+  const parseCellRef = async (args: { node: ast.CellNode; path: string; param: string }) => {
+    const { node, path, param } = args;
+    const res = await outgoingCellRef({ getValue, node, path });
+    let ref = res[0];
+    if (!ref) {
+      return;
+    }
+    if (ref.error && ref.error.type === 'CIRCULAR') {
+      const value = await getValue(node.key);
+      ref = {
+        ...ref,
+        target: util.toRefTarget(value),
+        path: ref.error.path.substring(0, ref.error.path.lastIndexOf('/')),
+      };
+    }
+    return { ...ref, param };
+  };
+
   let index = 0;
-  const toRefs = async (expr: ast.BinaryExpressionNode, path: string) => {
+  const toRefs = async (expr: ast.BinaryExpressionNode, path: string, level = 0) => {
     let parts: t.IRefOut[] = [];
+
     const parseEdge = async (node: ast.Node, path: string) => {
+      const param = index.toString();
       if (node.type === 'binary-expression') {
         parts = [
           ...parts,
-          ...(await toRefs(node, path)), // <== RECURSION 🌳
+          ...(await toRefs(node, path, level + 1)), // <== RECURSION 🌳
         ];
       } else {
         if (node.type === 'cell') {
-          const res = await outgoingCell({ getValue, node, path });
-          parts = res.length > 0 ? [...parts, { ...res[0], param: index }] : parts;
-        } else if (node.type === 'cell-range') {
-          const res = await outgoingRange({ getValue, node: node as ast.CellRangeNode, path });
-          parts = res.length > 0 ? [...parts, { ...res[0], param: index }] : parts;
+          const ref = await parseCellRef({ node, path, param });
+          parts = ref ? [...parts, ref] : parts;
+        }
+        if (node.type === 'cell-range') {
+          const res = await outgoingRange({ getValue, node: node as ast.CellRangeNode, path }); // <== RECURSION 🌳
+          parts = res.length > 0 ? [...parts, { ...res[0], param }] : parts;
+        }
+        if (node.type === 'function') {
+          let res = await outgoingFunc({ getValue, node: node as ast.FunctionNode, path }); // <== RECURSION 🌳
+          if (res.length > 0) {
+            res = res.map(ref => ({ ...ref, param: `${param}/${ref.param || 0}` }));
+            parts = [...parts, ...res];
+          }
         }
         index++;
       }

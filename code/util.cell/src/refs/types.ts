@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-export type RefTarget = 'VALUE' | 'FUNC' | 'RANGE' | 'UNKNOWN';
+export type RefTarget = 'VALUE' | 'FUNC' | 'REF' | 'RANGE' | 'UNKNOWN';
 export type RefDirection = 'IN' | 'OUT';
 
 /**
@@ -47,10 +47,9 @@ export type IRefsTable = {
  */
 export type IRefsOut = { [key: string]: IRefOut[] };
 export type IRefOut = {
-  // source: 'CELL' |  'RANGE' | 'FUNC';
   target: RefTarget;
   path: string;
-  param?: number;
+  param?: string;
   error?: IRefError;
 };
 

@@ -18,7 +18,9 @@ import {
   coord,
   time,
 } from '../common';
+
 import { TestGridView, DEFAULT } from './Test.Grid.view';
+import { getFunc } from '@platform/util.cell/lib/func/TEST';
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;
@@ -40,12 +42,14 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   private testGrid!: TestGridView;
   private testGridRef = (ref: TestGridView) => (this.testGrid = ref);
 
+  private getValue: t.RefGetValue = async key => {
+    const cell = this.grid.values[key];
+    return cell && typeof cell.value === 'string' ? cell.value : undefined;
+  };
+
   private refTable = coord.refs.table({
     getKeys: async () => Object.keys(this.grid.values),
-    getValue: async key => {
-      const cell = this.grid.values[key];
-      return cell && typeof cell.value === 'string' ? cell.value : undefined;
-    },
+    getValue: this.getValue,
   });
 
   /**
@@ -83,13 +87,18 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             const to = toValue(change.value.to);
             const update = await table.update({ key, from, to });
 
+            await this.updateFuncsTemp({ keys: [key] });
+
             console.group('🌳 ', key);
             console.log('change', change);
             console.log('update', update);
             console.groupEnd();
           });
         await Promise.all(wait);
+
+        // TEMP 🐷
         this.updateRefs(); // TEMP 🐷
+        // this.updateFuncsTemp();
 
         // e.cancel();
         // e.changes[0].modify('foo');
@@ -242,10 +251,54 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     // Update state.
     const refs = {
       data: res,
-      display: { in: sortKeys(incoming), out: sortKeys(outgoing) },
+      display: {
+        in: sortKeys(incoming),
+        out: sortKeys(outgoing),
+        topological: coord.refs.sort({ refs: res }).keys,
+      },
     };
     this.state$.next({ refs });
   };
+
+  private async updateFuncsTemp(args: { keys?: string[] }) {
+    // TEMP 🐷
+
+    const changes: t.IGridCells = {};
+    const table = this.refTable;
+    const getValue = this.getValue;
+
+    const calculate = async (key: string) => {
+      const refs = await table.refs();
+      const res = await coord.func.calculate({ cell: key, refs, getValue, getFunc });
+      console.log('-------------------------------------------');
+      console.log('res', res);
+      const value = res.data ? res.data : undefined;
+
+      let cell = this.grid.values[key];
+      cell = cell ? { ...cell, props: { ...cell.props, value } } : cell;
+      changes[key] = cell;
+    };
+
+    // const { keys = Object.keys(this.grid.values) } = args;
+    // const keys = args.keys || Object.keys(this.grid.values);
+
+    // const keys = [
+    //   //
+    //   'A3',
+    //   // 'A6',
+    //   // 'A8',
+    //   // 'A9',
+    //   // 'A10',
+    //   // 'A11',
+    // ];
+
+    const keys = Object.keys(this.grid.values);
+    const wait = keys.map(key => calculate(key));
+    await Promise.all(wait);
+
+    // const key = 'A8';
+    this.grid.changeCells(changes);
+  }
 
   /**
    * [Render]
@@ -281,6 +334,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     };
     return (
       <div {...styles.base}>
+        {this.button('calc', async () => this.updateFuncsTemp({}))}
         {this.button('reset', async () => {
           this.grid.changeCells(DEFAULT.VALUES);
           await this.updateRefs({ force: true });
@@ -422,12 +476,16 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     }
     const styles = {
       base: css({
+        position: 'relative',
         backgroundColor: COLORS.DARK,
         width: 300,
+        borderBottom: `solid 1px ${color.format(0.1)}`,
+      }),
+      inner: css({
+        Absolute: 0,
         padding: 8,
         paddingLeft: 12,
         Scroll: true,
-        borderBottom: `solid 1px ${color.format(0.1)}`,
       }),
     };
 
@@ -437,28 +495,37 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
     return (
       <div {...styles.base}>
-        <ObjectView
-          name={'ui.datagrid'}
-          data={data.grid}
-          expandPaths={[
-            '$',
-            '$',
-            '$.selection',
-            '$.selection.ranges',
-            // '$.values',
-            // '$.values.A1',
-            '$.clipboard',
-          ]}
-          theme={'DARK'}
-        />
-        {hr}
-        <ObjectView name={'refs'} data={refs.data} expandLevel={1} theme={'DARK'} />
-        {hr}
-        <ObjectView name={'refs.in'} data={refsDisplay.in} expandLevel={5} theme={'DARK'} />
-        {hr}
-        <ObjectView name={'refs.out'} data={refsDisplay.out} expandLevel={5} theme={'DARK'} />
-        {hr}
-        <ObjectView name={'debug'} data={data.debug} expandPaths={['$']} theme={'DARK'} />
+        <div {...styles.inner}>
+          <ObjectView
+            name={'ui.datagrid'}
+            data={data.grid}
+            expandPaths={[
+              '$',
+              '$',
+              '$.selection',
+              '$.selection.ranges',
+              // '$.values',
+              // '$.values.A8',
+              '$.clipboard',
+            ]}
+            theme={'DARK'}
+          />
+          {hr}
+          <ObjectView name={'refs'} data={refs.data} expandLevel={1} theme={'DARK'} />
+          {hr}
+          <ObjectView name={'refs.in'} data={refsDisplay.in} expandLevel={5} theme={'DARK'} />
+          {hr}
+          <ObjectView name={'refs.out'} data={refsDisplay.out} expandLevel={5} theme={'DARK'} />
+          {hr}
+          <ObjectView
+            name={'topological order'}
+            data={refsDisplay.topological}
+            expandLevel={5}
+            theme={'DARK'}
+          />
+          {hr}
+          <ObjectView name={'debug'} data={data.debug} expandPaths={['$']} theme={'DARK'} />
+        </div>
       </div>
     );
   }

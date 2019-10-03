@@ -1,17 +1,6 @@
-import { expect } from 'chai';
+import { expect, testContext } from './TEST';
 import { refs } from '.';
-import { t, MemoryCache } from '../common';
-
-type Table = t.ICoordTable<{ value: any }>;
-const testContext = (cells: Table) => {
-  const getValue: t.RefGetValue = async (key: string) => {
-    const cell = cells[key];
-    const value = cell ? cell.value : undefined;
-    return typeof value === 'function' ? value() : value;
-  };
-  const getKeys: t.RefGetKeys = async () => Object.keys(cells);
-  return { getKeys, getValue };
-};
+import { MemoryCache } from '../common';
 
 describe('refs.incoming', () => {
   it('empty', async () => {

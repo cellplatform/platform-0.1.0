@@ -1,19 +1,8 @@
-import { expect } from '@platform/test';
+import { expect, testContext } from './TEST';
 import { filter, map } from 'rxjs/operators';
 
 import { refs } from '.';
 import { t } from '../common';
-
-type Table = t.ICoordTable<{ value: any }>;
-const testContext = (cells: Table) => {
-  const getValue: t.RefGetValue = async (key: string) => {
-    const cell = cells[key];
-    const value = cell ? cell.value : undefined;
-    return typeof value === 'function' ? value() : value;
-  };
-  const getKeys: t.RefGetKeys = async () => Object.keys(cells);
-  return { getKeys, getValue };
-};
 
 describe('refs.table', () => {
   describe('refs', () => {
@@ -600,7 +589,7 @@ describe('refs.table', () => {
       expect(Object.keys(res2.refs.out).sort()).to.eql(['A1']);
     });
 
-    it('multi change', async () => {
+    it('multiple changes', async () => {
       const A1 = '=SUM(A2,A4)';
       let A2 = '123';
       let A3 = '456';
@@ -657,9 +646,10 @@ describe('refs.table', () => {
       const res3 = await table.update({ key: 'A2', from: '123', to: '=A1' });
       expect(res3.ok).to.eql(false);
       expect(res3.errors.length).to.eql(4);
+
       expect(res3.errors.map(err => err.path).sort()).to.eql([
-        'A1/A2',
-        'A1/C3/A2',
+        'A1/A2/A1',
+        'A1/C3/A2/A1',
         'A2/A1/A2',
         'C3/A2/A1/A2',
       ]);
