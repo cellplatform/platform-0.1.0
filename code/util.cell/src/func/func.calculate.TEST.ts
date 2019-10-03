@@ -46,6 +46,18 @@ describe('func.calculate', () => {
       await test('A2', 8);
       await test('A3', 9);
     });
+
+    it('range: =1 + B1:B5', async () => {
+      const ctx = await testContext({
+        A1: { value: '=1 + B1:B5' },
+        B1: { value: 1 },
+        B2: { value: 'hello' },
+        B3: { value: 3 },
+        B5: { value: 5 },
+      });
+      const res = await func.calculate<number>({ cell: 'A1', ...ctx });
+      expect(res.data).to.eql(10);
+    });
   });
 
   describe('function', () => {
@@ -115,12 +127,12 @@ describe('func.calculate', () => {
       expect(res.data).to.eql(15);
     });
 
-    it.only('=SUM(1, B1:B5)', async () => {
+    it('range: =SUM(1, B1:B5)', async () => {
       const ctx = await testContext({
         A1: { value: '=SUM(1, B1:B10)' },
         B1: { value: 1 },
         B2: { value: 'hello' },
-        B3: { value: 3 }, // NB: B4 not present.
+        B3: { value: 3 },
         B5: { value: 5 },
       });
       const res = await func.calculate<number>({ cell: 'A1', ...ctx });
