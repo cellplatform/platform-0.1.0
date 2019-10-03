@@ -38,7 +38,7 @@ export async function calculate<D = any>(args: {
       data = await evalFunc({ cell, formula, node, refs, getValue, getFunc });
     }
   } catch (err) {
-    error = util.fromError(err);
+    error = util.fromError(err, { cell: { key: cell, value: formula } });
   }
 
   // Finish up.

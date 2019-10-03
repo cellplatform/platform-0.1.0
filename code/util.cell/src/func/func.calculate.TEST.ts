@@ -200,6 +200,7 @@ describe('func.calculate', () => {
         const res = await func.calculate<number>({ cell, ...ctx });
         const error = res.error as t.IFuncError;
         expect(error.type).to.eql('CIRCULAR');
+        expect(error.cell.key).to.eql(cell);
         expect(error.message).to.include(`leads back to itself (${expectPath})`);
       };
 
@@ -211,7 +212,7 @@ describe('func.calculate', () => {
       await test('D2', 'D2/A1/A1');
     });
 
-    it.skip('error: circular range', async () => {
+    it('error: circular range', async () => {
       const ctx = await testContext({
         A1: { value: '=SUM(1, A1:A5)' }, //         NB: Reference self in range.
         A2: { value: '=1 + A1:A5' }, //             NB: Reference self in range.
@@ -224,15 +225,15 @@ describe('func.calculate', () => {
 
       const test = async (cell: string, expectPath: string) => {
         const res = await func.calculate<number>({ cell, ...ctx });
-        console.log('res', res);
-        // const error = res.error as t.IFuncError;
-        // expect(error.type).to.eql('CIRCULAR');
-        // expect(error.message).to.include(`leads back to itself (${expectPath})`);
+        const error = res.error as t.IFuncError;
+        expect(error.cell.key).to.eql(cell);
+        expect(error.type).to.eql('CIRCULAR');
+        expect(error.message).to.include(`leads back to itself (${expectPath})`);
       };
 
-      // await test('A1', 'A1/A1:A5');
-      // await test('A2', 'A2/A1:A5');
-      await test('A3', 'A2/A1:A5');
+      await test('A1', 'A1/A1:A5');
+      await test('A2', 'A2/A1:A5');
+      await test('A3', 'A3/A1:A5');
     });
   });
 });

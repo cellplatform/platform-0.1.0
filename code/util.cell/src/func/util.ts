@@ -17,10 +17,13 @@ export const toError = (args: t.IFuncError): t.IFuncError => {
 /**
  * Convert an incoming `Error` to a simple `IFuncError` object.
  */
-export const fromError = (err: any): t.IFuncError => {
+export const fromError = (
+  err: any,
+  options: { cell?: t.IFuncError['cell'] } = {},
+): t.IFuncError => {
   if (err.type) {
     const { type, message, cell } = err as t.IFuncError;
-    return { type, message, cell };
+    return { type, message, cell: cell || options.cell };
   } else {
     const error = err instanceof Error ? err : new Error(`Error object not provided.`);
     throw error;
