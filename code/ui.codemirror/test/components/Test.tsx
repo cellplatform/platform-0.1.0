@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { FormulaInput, IFormulaInputProps } from '../../src';
-import { color, css, GlamorValue, t, Button, Hr } from './common';
+import { color, css, GlamorValue, t, Button, Hr } from '../common';
 
 export type ITestProps = { style?: GlamorValue };
 export type ITestState = {
@@ -48,8 +48,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     events$
       .pipe(
-        filter(e => e.type === 'INPUT/formula/newLine'),
-        map(e => e.payload as t.IFormulaInputNewLine),
+        filter(e => e.type === 'INPUT/formula/enter'),
+        map(e => e.payload as t.IFormulaInputEnter),
       )
       .subscribe(e => {
         // Example: Only allow new-line when SHIFT modifier key is pressed.
@@ -142,7 +142,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         {this.renderInput('maxLength (4)', { maxLength: 4 })}
         {this.renderInput('fontSize (16)', { fontSize: 16 })}
         {this.renderInput('fontSize (8)', { fontSize: 8 })}
-        {this.renderInput('multiline', { multiline: true, height: 120 })}
+        {this.renderInput('multiline (SHIFT + ENTER)', { multiline: true, height: 120 })}
       </div>
     );
   }

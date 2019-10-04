@@ -5,10 +5,7 @@ import {
 } from '@platform/ui.text/lib/components/TextInput';
 
 export { ITextModifierKeys };
-
-export type IFormulaInputTab = TextInputTabEvent & {
-  isCancelled: boolean;
-};
+export type IFormulaInputTab = TextInputTabEvent & { isCancelled: boolean };
 
 /**
  * [Events]
@@ -19,7 +16,7 @@ export type FormulaInputEvent =
   | IFormulaInputTabEvent
   | IFormulaInputFocusEvent
   | ICodeMirrorFormulaBlurEvent
-  | IFormulaInputNewLineEvent;
+  | IFormulaInputEnterEvent;
 
 export type IFormulaInputChangingEvent = {
   type: 'INPUT/formula/changing';
@@ -47,12 +44,12 @@ export type ICodeMirrorFormulaBlurEvent = {
   payload: {};
 };
 
-export type IFormulaInputNewLineEvent = {
-  type: 'INPUT/formula/newLine';
-  payload: IFormulaInputNewLine;
+export type IFormulaInputEnterEvent = {
+  type: 'INPUT/formula/enter';
+  payload: IFormulaInputEnter;
 };
-export type IFormulaInputNewLine = {
+export type IFormulaInputEnter = {
+  modifierKeys: ITextModifierKeys;
   isCancelled: boolean;
   cancel(): void;
-  modifierKeys: ITextModifierKeys;
 };
