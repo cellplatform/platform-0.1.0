@@ -74,15 +74,21 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     const markdown$ = this.markdown$.pipe(takeUntil(this.unmounted$));
     const text$ = this.text$.pipe(takeUntil(this.unmounted$));
 
+    text$.subscribe(e => {
+      // console.log('🐶 TEXT', e);
+    });
+
     formula$.subscribe(e => {
       // console.log('🌳 FORMULA', e);
     });
 
     markdown$.subscribe(e => {
       // console.log('🌼 MARKDOWN', e);
-      // console.log("e.payload.size", e.payload.size)
     });
 
+    /**
+     * Formula.
+     */
     formula$
       .pipe(
         filter(e => e.type === 'INPUT/formula/changing'),
@@ -109,6 +115,22 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         this.fireChanged({ mode: 'FORMULA', value });
       });
 
+    formula$
+      .pipe(
+        filter(e => e.type === 'INPUT/formula/enter'),
+        filter(e => this.mode === 'FORMULA'),
+        map(e => e.payload as p.IFormulaInputEnter),
+      )
+      .subscribe(e => {
+        const { modifierKeys } = e;
+        const isShift = modifierKeys.shift;
+        const isMeta = modifierKeys.meta;
+        this.fire({ type: 'CELL_EDITOR/enter', payload: { isMeta, isShift } });
+      });
+
+    /**
+     * Plain text.
+     */
     text$
       .pipe(
         filter(e => e.type === 'TEXT_INPUT/changing'),
@@ -135,6 +157,22 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
         this.fireChanged({ mode: 'TEXT', value });
       });
 
+    const textKeydown$ = text$.pipe(
+      filter(e => e.type === 'TEXT_INPUT/keypress'),
+      filter(e => this.mode === 'TEXT'),
+      map(e => e.payload as p.ITextInputKeypress),
+      filter(e => e.isPressed),
+    );
+
+    textKeydown$.pipe(filter(e => e.key === 'Enter')).subscribe(e => {
+      const isShift = e.event.shiftKey;
+      const isMeta = e.event.metaKey;
+      this.fire({ type: 'CELL_EDITOR/enter', payload: { isMeta, isShift } });
+    });
+
+    /**
+     * Rich text (markdown).
+     */
     markdown$
       .pipe(
         filter(e => e.type === 'EDITOR/changing'),
