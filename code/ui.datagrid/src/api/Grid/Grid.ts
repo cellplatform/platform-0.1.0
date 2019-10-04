@@ -195,7 +195,7 @@ export class Grid implements t.IGrid {
     redraw$: new Subject(),
     isReady: false,
     isEditing: false,
-    values: ({} as unknown) as t.IGridCells,
+    values: ({} as unknown) as t.IGrid['values'],
     columns: ({} as unknown) as t.IGridColumns,
     rows: ({} as unknown) as t.IGridRows,
     lastSelection: (undefined as unknown) as t.IGridSelection,
