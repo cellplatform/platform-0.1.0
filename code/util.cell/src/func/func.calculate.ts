@@ -35,6 +35,8 @@ export async function calculate<D = any>(args: {
   }
 
   // Disallow RANGE types.
+  // NB: Ranges can be used as parameters, but a range on it's own (eg "=A1:Z9")
+  //     makes no sense from this context of calculating something.
   if (type === 'RANGE') {
     const error = `The cell ${cell} is a range which is not supported.`;
     return fail('NOT_SUPPORTED/RANGE', error);
@@ -229,7 +231,7 @@ const getRangeValues = async (args: {
   const wait = range.keys.map(async cell => {
     const value = await getValue(cell);
     return util.isFormula(value)
-      ? calculate({ cell, refs, getValue, getFunc }) // <== RECURSION 🌳
+      ? (await calculate({ cell, refs, getValue, getFunc })).data // <== RECURSION 🌳
       : value;
   });
   return (await Promise.all(wait)) as any[];
