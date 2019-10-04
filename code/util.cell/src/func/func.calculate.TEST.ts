@@ -34,7 +34,7 @@ describe('func.calculate', () => {
       expect(res.data).to.eql(123);
     });
 
-    it.only('=A2 (value not found)', async () => {
+    it('=A2 (value not found)', async () => {
       const ctx = await testContext({
         A1: { value: '=A2' },
       });
@@ -142,18 +142,7 @@ describe('func.calculate', () => {
       const res = await func.calculate<number>({ cell: 'A1', ...ctx });
       expect(res.data).to.eql(10);
 
-      /**
-       * TEMP 🐷
-       * - cache (pass around)
-       * - IGrid : values => cells
-       * - Test: error thrown in func (expected, eg throw new Error("foo"))
-       * - Look up FUNC refs from somewhere else.
-       */
 
-      // TEMP 🐷
-
-      // console.log('-------------------------------------------');
-      // console.log('res', res);
     });
   });
 

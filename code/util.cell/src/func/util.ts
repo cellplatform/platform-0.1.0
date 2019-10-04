@@ -2,7 +2,7 @@ import { t } from '../common';
 import { getCircularError } from '../refs/util';
 
 export { getCircularError };
-export { path, isFormula , toRefTarget} from '../refs/util';
+export { path, isFormula, toRefTarget, sort } from '../refs/util';
 
 /**
  * Convert an object an `Error` with corresponding func/props.

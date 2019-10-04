@@ -154,26 +154,25 @@ export const outgoing = {
  * Order:
  *    LEAST-dependent => MOST-dependent
  */
-export function sort(args: { refs: t.IRefs }) {
+export function sort(args: { refs: t.IRefs; keys?: string[] }) {
   let errors: t.IRefError[] = [];
+  const graph: string[][] = [];
+
+  const add = (to: string, from: string) => {
+    // Check for error.
+    const error = getCircularError(args.refs, to);
+    if (error) {
+      errors.push(error);
+    }
+    // NB: Circular-ref will cause `toposort` to fail so don't include it.
+    graph.push([to, error ? '' : from]);
+  };
 
   // Build input list of [to:from] key pairs.
-  const graph: string[][] = incoming.refsToKeyList(args.refs.in).reduce(
-    (acc, { key, refs }) => {
-      refs.forEach(ref => {
-        // Check for error.
-        // NB: Circular-ref will cause `toposort` to fail, don't include it.
-        const error = getCircularError(args.refs, key);
-        if (error) {
-          errors.push(error);
-        }
-        const from = error ? '' : ref.cell;
-        acc.push([key, from]);
-      });
-      return acc;
-    },
-    [] as string[][],
-  );
+  incoming
+    .refsToKeyList(args.refs.in)
+    .filter(e => (args.keys ? args.keys.includes(e.key) : true))
+    .forEach(({ key, refs }) => refs.forEach(ref => add(key, ref.cell)));
 
   // Run the topological sort.
   const keys = toposort(graph).filter(key => key); // NB: Filter out any "empty" circular-ref entries.

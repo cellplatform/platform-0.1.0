@@ -46,7 +46,7 @@ describe('refs.util', () => {
       expect(sorted.keys).to.eql(['A2', 'C3', 'Z9', 'A1']);
     });
 
-    it('complex', async () => {
+    it('complex (1)', async () => {
       const ctx = testContext({
         A1: { value: '=A2' },
         A2: { value: '123' },
@@ -65,7 +65,38 @@ describe('refs.util', () => {
       expect(sorted.keys).to.eql(['A2', 'A1', 'A5', 'A4', 'A6', 'A3', 'A7']);
     });
 
-    it('circular-ref error', async () => {
+    it('complex (2)', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,A3)' },
+        A2: { value: '=C1' },
+        A3: { value: '=A2 + 2' },
+        C1: { value: 5 },
+        Z9: { value: 'hello' }, // NB: Not involved.
+      });
+      const table = refs.table({ ...ctx });
+      const sorted = util.sort({ refs: await table.refs() });
+      expect(sorted.keys).to.eql(['C1', 'A2', 'A3', 'A1']);
+    });
+
+    it('complex (subset)', async () => {
+      const ctx = testContext({
+        A1: { value: '=A2' },
+        A2: { value: '123' },
+        A3: { value: '=A4' },
+        A4: { value: 'abc' },
+        A5: { value: '=A1' }, // => A2 (double hop).
+        A6: { value: '=SUM(A5, A1, A4)' },
+        A7: { value: '=SUM(A6, 1)' },
+      });
+      const table = refs.table({ ...ctx });
+      const base = util.sort({ refs: await table.refs() });
+      const subset = util.sort({ refs: await table.refs(), keys: ['A1'] });
+
+      expect(base.keys).to.not.eql(subset.keys);
+      expect(subset.keys).to.eql(['A1', 'A5', 'A6']);
+    });
+
+    it('error: circular-ref', async () => {
       const ctx = testContext({
         A1: { value: '=SUM(A2,C3,Z9)' },
         A2: { value: '=A1' },
