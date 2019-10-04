@@ -14,6 +14,7 @@ export type GetFunc = (args: {
  */
 export type IFuncResponse<T = any> = {
   ok: boolean;
+  type: t.RefTarget;
   cell: string;
   formula: string;
   data?: T;
@@ -23,7 +24,7 @@ export type IFuncResponse<T = any> = {
 /**
  * Error.
  */
-export type FuncError = 'NOT_FORMULA' | 'NOT_FOUND' | 'CIRCULAR' | 'REF';
+export type FuncError = 'NOT_FORMULA' | 'NOT_FOUND' | 'NOT_SUPPORTED/RANGE' | 'CIRCULAR' | 'REF';
 export type IFuncError = {
   type: FuncError;
   message: string;
