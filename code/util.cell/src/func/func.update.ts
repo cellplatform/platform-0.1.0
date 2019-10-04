@@ -6,12 +6,13 @@ import { calculate } from './func.calculate';
  * Calculate changes across a range of cells within a table.
  */
 export async function update(args: {
-  cells: string[];
+  cells: string | string[];
   refs: t.IRefs;
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
 }) {
-  const { cells, refs, getValue, getFunc } = args;
+  const { refs, getValue, getFunc } = args;
+  const cells = Array.isArray(args.cells) ? args.cells : [args.cells];
 
   // Build complete list of cell implicated in the update.
   let keys: string[] = cells;
@@ -30,6 +31,15 @@ export async function update(args: {
   //
   keys = util.sort({ refs, keys: R.uniq(keys) }).keys;
   const isKeyOfFormula = async (key: string) => util.isFormula(await getValue(key));
+
+  // Add the originally specified keys back in if they
+  // 1) are formulas, and
+  // 2) have been removed (above) because they have no refs (eg "=1+2").
+  for (const key of cells) {
+    if (!keys.includes(key) && (await isKeyOfFormula(key))) {
+      keys.unshift(key);
+    }
+  }
 
   // Calculate each cell that is a formula.
   const list: t.IFuncResponse[] = [];
