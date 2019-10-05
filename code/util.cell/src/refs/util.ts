@@ -1,5 +1,6 @@
 import { ast } from '../ast';
 import { R, t, toposort } from '../common';
+import { CellRange } from '../range/CellRange';
 
 /**
  * Removed `undefined` values of the given field from a list of items.
@@ -17,18 +18,22 @@ export function deleteUndefined<T>(field: keyof T, items: T[]) {
  * Helpers for working with a path (eg "A1/D5/C3").
  */
 export function path(input?: string) {
+  let parts: string[] | undefined;
   let keys: string[] | undefined;
   const path = input || '';
   const res = {
     path,
+    get parts() {
+      return parts || (parts = path.split('/').filter(part => part));
+    },
     get keys() {
-      return keys || (keys = path.split('/').filter(part => part));
+      return keys || (keys = partsToKeys(res.parts));
     },
     get first() {
-      return res.keys[0];
+      return res.keys[0] || '';
     },
     get last() {
-      return res.keys[res.keys.length - 1];
+      return res.keys[res.keys.length - 1] || '';
     },
     isCircular(key: string | string[]) {
       const keys = Array.isArray(key) ? key : [key];
@@ -37,6 +42,21 @@ export function path(input?: string) {
   };
   return res;
 }
+
+const partsToKeys = (parts: string[]) => {
+  const keys = parts.reduce(
+    (acc, next) => {
+      if (CellRange.isRangeKey(next)) {
+        acc = [...acc, ...CellRange.fromKey(next).keys];
+      } else {
+        acc.push(next);
+      }
+      return acc;
+    },
+    [] as string[],
+  );
+  return R.uniq(keys);
+};
 
 /**
  * Extract all errors from a set of references.
