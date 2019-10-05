@@ -78,6 +78,26 @@ export function getSettings(args: {
     modifyColWidth,
     modifyRowHeight,
 
+    /**
+     * Fill handle.
+     * - https://handsontable.com/docs/6.2.2/demo-auto-fill.html
+     */
+    fillHandle: true,
+
+    beforeAutofill(...args) {
+      console.log('beforeAutofill', args);
+      return false;
+    },
+
+    beforeAutofillInsidePopulate(...args) {
+      console.log('beforeAutofillInsidePopulate', args);
+      return false;
+    },
+
+    // modifyAutofillRange(...args) {
+    //   console.log('modifyAutofillRange', args);
+    // },
+
     // Mouse.
     beforeOnCellMouseDown: hooks.mouseCell(getGrid, 'DOWN'),
     beforeOnCellMouseUp: hooks.mouseCell(getGrid, 'UP'),
