@@ -131,6 +131,7 @@ describe('refs.util', () => {
       test('A1', 'A1', 'A1');
       test('A1/A2', 'A1', 'A2');
       test('A1/A2/A3', 'A1', 'A3');
+      test('A1/A2/B1:Z9', 'A1', 'B1:Z9');
 
       test(undefined, '', '');
       test('', '', '');
@@ -166,10 +167,10 @@ describe('refs.util', () => {
       test('A1/A1:A3/A3/A1:A3', ['A1', 'A2', 'A3']); // NB: De-duped.
     });
 
-    it('isCircular', () => {
+    it('includes', () => {
       const test = (input: string | undefined, key: string | string[], isCircular: boolean) => {
         const path = util.path(input);
-        expect(path.isCircular(key)).to.eql(isCircular);
+        expect(path.includes(key)).to.eql(isCircular);
       };
 
       test(undefined, [], false);
@@ -177,13 +178,16 @@ describe('refs.util', () => {
       test('', [], false);
       test('', '', false);
       test('A1', 'B1', false);
+      test('A1', ['B1', 'Z9'], false);
       test('A1/B1:C5', 'B6', false);
       test('A1/B1:C5', 'C6', false);
 
       test('A1', 'A1', true);
+      test('A1', ['A1'], true);
       test('A1/B1', 'B1', true);
       test('A1/C1/B1', 'B1', true);
       test('A1/B1/C1', 'B1', true);
+      test('A1/B1/C1', ['Z9', 'B1'], true);
 
       test('A1/B1:C5', 'A1', true);
       test('A1/B1:C5', 'B1', true);

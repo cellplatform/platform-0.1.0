@@ -30,14 +30,18 @@ export function path(input?: string) {
       return keys || (keys = partsToKeys(res.parts));
     },
     get first() {
-      return res.keys[0] || '';
+      return res.parts[0] || '';
     },
     get last() {
-      return res.keys[res.keys.length - 1] || '';
+      return res.parts[res.parts.length - 1] || '';
     },
-    isCircular(key: string | string[]) {
+    includes(key: string | string[]) {
       const keys = Array.isArray(key) ? key : [key];
-      return keys.some(key => res.keys.includes(key));
+      return keys.some(key => {
+        return res.parts.some(part => {
+          return CellRange.isRangeKey(part) ? CellRange.fromKey(part).contains(key) : key === part;
+        });
+      });
     },
   };
   return res;

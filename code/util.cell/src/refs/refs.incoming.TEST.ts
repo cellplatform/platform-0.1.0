@@ -28,12 +28,43 @@ describe('refs.incoming', () => {
     expect(res3.map(ref => ref.cell)).to.eql(['A2', 'A1']);
   });
 
-  it('incoming ref to undefined cell', async () => {
+  it('incoming REF to undefined cell', async () => {
     const ctx = testContext({
       A1: { value: '=A4' },
     });
     const res = await refs.incoming({ key: 'A4', ...ctx });
     expect(res.map(ref => ref.cell)).to.eql(['A1']);
+  });
+
+  it('incoming REF from RANGE', async () => {
+    const ctx = testContext({
+      A1: { value: '=B1:B9' },
+      B1: { value: 1 },
+      B5: { value: 5 },
+      C1: { value: 'hello' },
+    });
+    const res1 = await refs.incoming({ key: 'B1', ...ctx });
+    const res2 = await refs.incoming({ key: 'B5', ...ctx });
+    const res3 = await refs.incoming({ key: 'C1', ...ctx });
+
+    expect(res1.map(ref => ref.cell)).to.eql(['A1']);
+    expect(res2.map(ref => ref.cell)).to.eql(['A1']);
+    expect(res3).to.eql([]);
+  });
+
+  it('incoming REF from RANGE(param)', async () => {
+    const ctx = testContext({
+      A1: { value: '=SUM(B1:B9)' },
+      B1: { value: 1 },
+      B5: { value: 5 },
+    });
+    const res1 = await refs.incoming({ key: 'B1', ...ctx });
+    const res2 = await refs.incoming({ key: 'B5', ...ctx });
+    const res3 = await refs.incoming({ key: 'C1', ...ctx });
+
+    expect(res1.map(ref => ref.cell)).to.eql(['A1']);
+    expect(res2.map(ref => ref.cell)).to.eql(['A1']);
+    expect(res3).to.eql([]);
   });
 
   it('cache', async () => {

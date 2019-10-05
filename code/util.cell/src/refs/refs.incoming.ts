@@ -1,5 +1,6 @@
 import { MemoryCache, R, t } from '../common';
 import { outgoing } from './refs.outgoing';
+import * as util from './util';
 
 export type IIncomingArgs = {
   key: string;
@@ -24,11 +25,6 @@ export async function incoming(args: IIncomingArgs): Promise<t.IRefIn[]> {
     return args.cache.get(cacheKey);
   }
 
-  const keys = await args.getKeys();
-  if (keys.length === 0) {
-    return [];
-  }
-
   const done = (refs: t.IRefIn[]) => {
     if (args.cache) {
       args.cache.put(cacheKey, refs);
@@ -36,8 +32,14 @@ export async function incoming(args: IIncomingArgs): Promise<t.IRefIn[]> {
     return refs;
   };
 
+  // Retrieve the set of keys to retrieve.
+  const keys = await args.getKeys();
+  if (keys.length === 0) {
+    return done([]);
+  }
+
   // Walk list of keys finding incoming references.
-  const isMatch = (path: string) => path.includes(`/${args.key}/`) || path.endsWith(`/${args.key}`);
+  const isMatch = (input: string) => util.path(input).includes(args.key);
   const res: t.IRefIn[] = [];
   const wait = keys.map(async cell => {
     if (cell !== args.key) {

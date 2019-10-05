@@ -41,21 +41,21 @@ describe('func.changes', () => {
     expect(res.map.A1.data).to.eql(14);
   });
 
-  it.skip('range: update referenced value (includes incoming range)', async () => {
+  it('range: update referenced value (includes incoming range)', async () => {
     const ctx = await testContext({
       A1: { value: '=SUM(B1:B10)' },
       B1: { value: '=1+C1' },
+      B2: { value: 3 },
       C1: { value: 5 },
     });
     const res = await func.update({ cells: 'C1', ...ctx });
-
-    console.log('-------------------------------------------');
-    console.log('res', res);
     const cells = res.list.map(e => e.cell);
-    console.log('keys', cells);
 
     expect(cells.includes('B1')).to.eql(true);
     expect(cells.includes('A1')).to.eql(true);
+
+    expect(res.map.A1.data).to.eql(9);
+    expect(res.map.B1.data).to.eql(6);
 
     /**
      * TEMP 🐷
