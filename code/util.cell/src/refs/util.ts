@@ -1,5 +1,6 @@
 import { ast } from '../ast';
 import { R, t, toposort } from '../common';
+import { CellRange } from '../range/CellRange';
 
 /**
  * Removed `undefined` values of the given field from a list of items.
@@ -17,26 +18,49 @@ export function deleteUndefined<T>(field: keyof T, items: T[]) {
  * Helpers for working with a path (eg "A1/D5/C3").
  */
 export function path(input?: string) {
+  let parts: string[] | undefined;
   let keys: string[] | undefined;
   const path = input || '';
   const res = {
     path,
+    get parts() {
+      return parts || (parts = path.split('/').filter(part => part));
+    },
     get keys() {
-      return keys || (keys = path.split('/').filter(part => part));
+      return keys || (keys = partsToKeys(res.parts));
     },
     get first() {
-      return res.keys[0];
+      return res.parts[0] || '';
     },
     get last() {
-      return res.keys[res.keys.length - 1];
+      return res.parts[res.parts.length - 1] || '';
     },
-    isCircular(key: string | string[]) {
+    includes(key: string | string[]) {
       const keys = Array.isArray(key) ? key : [key];
-      return keys.some(key => res.keys.includes(key));
+      return keys.some(key => {
+        return res.parts.some(part => {
+          return CellRange.isRangeKey(part) ? CellRange.fromKey(part).contains(key) : key === part;
+        });
+      });
     },
   };
   return res;
 }
+
+const partsToKeys = (parts: string[]) => {
+  const keys = parts.reduce(
+    (acc, next) => {
+      if (CellRange.isRangeKey(next)) {
+        acc = [...acc, ...CellRange.fromKey(next).keys];
+      } else {
+        acc.push(next);
+      }
+      return acc;
+    },
+    [] as string[],
+  );
+  return R.uniq(keys);
+};
 
 /**
  * Extract all errors from a set of references.
@@ -154,26 +178,25 @@ export const outgoing = {
  * Order:
  *    LEAST-dependent => MOST-dependent
  */
-export function sort(args: { refs: t.IRefs }) {
+export function sort(args: { refs: t.IRefs; keys?: string[] }) {
   let errors: t.IRefError[] = [];
+  const graph: string[][] = [];
+
+  const add = (to: string, from: string) => {
+    // Check for error.
+    const error = getCircularError(args.refs, to);
+    if (error) {
+      errors.push(error);
+    }
+    // NB: Circular-ref will cause `toposort` to fail so don't include it.
+    graph.push([to, error ? '' : from]);
+  };
 
   // Build input list of [to:from] key pairs.
-  const graph: string[][] = incoming.refsToKeyList(args.refs.in).reduce(
-    (acc, { key, refs }) => {
-      refs.forEach(ref => {
-        // Check for error.
-        // NB: Circular-ref will cause `toposort` to fail, don't include it.
-        const error = getCircularError(args.refs, key);
-        if (error) {
-          errors.push(error);
-        }
-        const from = error ? '' : ref.cell;
-        acc.push([key, from]);
-      });
-      return acc;
-    },
-    [] as string[][],
-  );
+  incoming
+    .refsToKeyList(args.refs.in)
+    .filter(e => (args.keys ? args.keys.includes(e.key) : true))
+    .forEach(({ key, refs }) => refs.forEach(ref => add(key, ref.cell)));
 
   // Run the topological sort.
   const keys = toposort(graph).filter(key => key); // NB: Filter out any "empty" circular-ref entries.

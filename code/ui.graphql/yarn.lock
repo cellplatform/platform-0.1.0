@@ -1286,17 +1286,16 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.32.tgz#ed64b33bd70d6491dfd1ac21eb0439f3e1f32a81"
   integrity sha512-n/J2QSvVdpK3Q4tz5Pdxq3ouovIzKvKzBD0FH7brtZNlH6TspBu6LTS/VVb/JH0Opi0O5hqKVRAgHEtMuqmb7A==
 
-"@platform/ui.codemirror@0.0.90":
-  version "0.0.90"
-  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.0.90.tgz#df46edcb6d559c15ad118ba669f27c63e2bb4fc6"
-  integrity sha512-Zfa2b2k6MUeUMxPQ4rUGzN3ygLzPMRqy/KpI2SXwOC2ZZGeGXBW7mfrqsXoTyorw+ZQ7++4iW+2ZQEUIL7FmiQ==
+"@platform/ui.codemirror@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.1.0.tgz#fd79b117758637e44b693c5dc20686afc75e3f3d"
+  integrity sha512-MEp5/j6m/hHt+31wBHhBViYi407SFj4dK/VnouEu0Vt/Igh+smCHgw3ygAjs36OOJHWEN8sQIWfoEhjLQ355dg==
   dependencies:
     "@platform/libs" "0.1.3"
     "@platform/react" "0.3.26"
     "@platform/ui.text" "0.3.0"
-    "@types/codemirror" "0.0.76"
-    "@uiharness/electron" "0.6.5"
-    codemirror "5.48.4"
+    "@types/codemirror" "0.0.78"
+    codemirror "5.49.0"
     react-codemirror2 "6.0.0"
 
 "@platform/ui.icon@0.0.90":
@@ -1434,6 +1433,13 @@
   version "0.0.76"
   resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.76.tgz#c52719878056a216bc05889b46a41d4eb1434423"
   integrity sha512-k/hpUb+Ebyn9z63qM8IbsRiW0eYHZ+pi/1e2reGzBKAZJzkjWmNTXXqLLiNv5d9ekyxkajxRBr5Hu2WZq/nokw==
+  dependencies:
+    "@types/tern" "*"
+
+"@types/codemirror@0.0.78":
+  version "0.0.78"
+  resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.78.tgz#75a8eabda268c8e734855fb24e8c86192e2e18ad"
+  integrity sha512-QpMQUpEL+ZNcpEhjvYM/H6jqDx9nNcJqymA2kbkNthFS2I7ekL7ofEZ7+MoQAFTBuJers91K0FGCMpL7MwC9TQ==
   dependencies:
     "@types/tern" "*"
 
@@ -2820,7 +2826,12 @@ codemirror-graphql@^0.9.0:
     graphql-language-service-interface "^2.1.0"
     graphql-language-service-parser "^1.3.0"
 
-codemirror@5.48.4, codemirror@^5.47.0:
+codemirror@5.49.0:
+  version "5.49.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.49.0.tgz#adedbffcc81091e4a0334bcb96b1ae3b7ada5e3f"
+  integrity sha512-Hyzr0HToBdZpLBN9dYFO/KlJAsKH37/cXVHPAqa+imml0R92tb9AkmsvjnXL+SluEvjjdfkDgRjc65NG5jnMYA==
+
+codemirror@^5.47.0:
   version "5.48.4"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.48.4.tgz#4210fbe92be79a88f0eea348fab3ae78da85ce47"
   integrity sha512-pUhZXDQ6qXSpWdwlgAwHEkd4imA0kf83hINmUEzJpmG80T/XLtDDEzZo8f6PQLuRCcUQhmzqqIo3ZPTRaWByRA==

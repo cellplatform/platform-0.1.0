@@ -14,17 +14,32 @@ export async function calculate<D = any>(args: {
 }): Promise<t.IFuncResponse<D>> {
   const { cell, refs, getValue, getFunc } = args;
   const formula = (await getValue(cell)) || '';
-  const node = util.isFormula(formula) ? ast.toTree(formula) : undefined;
+  const isFormula = util.isFormula(formula);
+  const node = isFormula ? ast.toTree(formula) : undefined;
+  const type = util.toRefTarget(formula);
+
+  const fail = (errorType: t.FuncError, message: string) => {
+    const error: t.IFuncError = {
+      type: errorType,
+      message,
+      cell: { key: cell, value: formula },
+    };
+    const res: t.IFuncResponse<D> = { ok: false, type, cell, formula, error };
+    return res;
+  };
 
   // Ensure the node is a function/expression.
-  if (!node || !(node.type === 'function' || node.type === 'binary-expression')) {
-    const error = util.toError({
-      type: 'NOT_FORMULA',
-      message: `The value of cell ${cell} is not a formula. Must start with "=".`,
-      cell: { key: cell, value: formula },
-    });
-    const res: t.IFuncResponse = { ok: false, cell, formula, error };
-    return res;
+  if (!node || !isFormula) {
+    const error = `The value of cell ${cell} is not a formula. Must start with "=".`;
+    return fail('NOT_FORMULA', error);
+  }
+
+  // Disallow RANGE types.
+  // NB: Ranges can be used as parameters, but a range on it's own (eg "=A1:Z9")
+  //     makes no sense from this context of calculating something.
+  if (type === 'RANGE') {
+    const error = `The cell ${cell} is a range which is not supported.`;
+    return fail('NOT_SUPPORTED/RANGE', error);
   }
 
   // Evaluate the function/expression.
@@ -37,13 +52,16 @@ export async function calculate<D = any>(args: {
     if (node.type === 'function') {
       data = await evalFunc({ cell, formula, node, refs, getValue, getFunc });
     }
+    if (node.type === 'cell') {
+      data = await getCellRefValue({ cell, node, refs, getValue, getFunc });
+    }
   } catch (err) {
     error = util.fromError(err, { cell: { key: cell, value: formula } });
   }
 
   // Finish up.
   const ok = !error;
-  const res: t.IFuncResponse<D> = { ok, cell, formula, data };
+  const res: t.IFuncResponse<D> = { ok, type, cell, formula, data };
   return error ? { ...res, error } : res;
 }
 
@@ -213,7 +231,7 @@ const getRangeValues = async (args: {
   const wait = range.keys.map(async cell => {
     const value = await getValue(cell);
     return util.isFormula(value)
-      ? calculate({ cell, refs, getValue, getFunc }) // <== RECURSION 🌳
+      ? (await calculate({ cell, refs, getValue, getFunc })).data // <== RECURSION 🌳
       : value;
   });
   return (await Promise.all(wait)) as any[];

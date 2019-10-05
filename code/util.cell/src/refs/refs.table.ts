@@ -310,7 +310,7 @@ class RefsTable implements t.IRefsTable {
         .map(key => outRefs[key])
         .forEach(items => {
           items.forEach(item => {
-            keys = [...keys, ...item.path.split('/')];
+            keys = [...keys, ...util.path(item.path).keys];
           });
         });
       keys = R.uniq(keys);

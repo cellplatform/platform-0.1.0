@@ -14,13 +14,14 @@ import {
   ObjectView,
   t,
   testData,
-  value,
+  value as valueUtil,
   coord,
   time,
 } from '../common';
 
-import { TestGridView, DEFAULT } from './Test.Grid.view';
+import { TestGridView } from './Test.Grid.view';
 import { getFunc } from '@platform/util.cell/lib/func/TEST';
+import { SAMPLE } from './SAMPLE';
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;
@@ -87,12 +88,12 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             const to = toValue(change.value.to);
             const update = await table.update({ key, from, to });
 
-            await this.updateFuncsTemp({ keys: [key] });
+            await this.updateFuncsTemp({ cells: key });
 
-            console.group('🌳 ', key);
-            console.log('change', change);
-            console.log('update', update);
-            console.groupEnd();
+            // console.group('🌳 ', key);
+            // console.log('change', change);
+            // console.log('update', update);
+            // console.groupEnd();
           });
         await Promise.all(wait);
 
@@ -193,7 +194,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
     const data = {
       debug: { editorType },
-      grid: value.deleteUndefined({
+      grid: valueUtil.deleteUndefined({
         isEditing,
         values,
         rows,
@@ -260,44 +261,31 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     this.state$.next({ refs });
   };
 
-  private async updateFuncsTemp(args: { keys?: string[] }) {
-    // TEMP 🐷
+  private async updateFuncsTemp(args: { cells: string | string[] }) {
+    const { cells } = args;
 
-    const changes: t.IGridCells = {};
+    // Calculate updates.
     const table = this.refTable;
+    const refs = await table.refs({});
     const getValue = this.getValue;
+    const res = await coord.func.update({ cells, refs, getValue, getFunc });
 
-    const calculate = async (key: string) => {
-      const refs = await table.refs();
-      const res = await coord.func.calculate({ cell: key, refs, getValue, getFunc });
-      console.log('-------------------------------------------');
-      console.log('res', res);
-      const value = res.data ? res.data : undefined;
-
+    // Prepare grid update set.
+    const changes: t.IGridCells = {};
+    const addChange = (key: string, value: any) => {
       let cell = this.grid.values[key];
-      cell = cell ? { ...cell, props: { ...cell.props, value } } : cell;
-      changes[key] = cell;
+      if (cell) {
+        const props = value === undefined ? cell.props : { ...cell.props, value };
+        cell = { ...cell, props };
+        changes[key] = cell;
+      }
     };
 
-    // const { keys = Object.keys(this.grid.values) } = args;
-    // const keys = args.keys || Object.keys(this.grid.values);
-
-    // const keys = [
-    //   //
-    //   'A3',
-    //   // 'A6',
-    //   // 'A8',
-    //   // 'A9',
-    //   // 'A10',
-    //   // 'A11',
-    // ];
-
-    const keys = Object.keys(this.grid.values);
-    const wait = keys.map(key => calculate(key));
-    await Promise.all(wait);
-
-    // const key = 'A8';
+    // Update grid.
+    res.list.forEach(item => addChange(item.cell, item.data));
     this.grid.changeCells(changes);
+
+    console.log('res', res);
   }
 
   /**
@@ -334,9 +322,12 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     };
     return (
       <div {...styles.base}>
-        {this.button('calc', async () => this.updateFuncsTemp({}))}
+        {this.button('calc', async () => {
+          const cells = Object.keys(this.grid.values);
+          this.updateFuncsTemp({ cells });
+        })}
         {this.button('reset', async () => {
-          this.grid.changeCells(DEFAULT.VALUES);
+          this.grid.changeCells(SAMPLE.CELLS);
           await this.updateRefs({ force: true });
         })}
         {this.button('updateRefs', () => this.updateRefs())}

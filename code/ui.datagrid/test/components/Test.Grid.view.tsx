@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
+import { SAMPLE } from './SAMPLE';
 
 import {
   CellEditor,
@@ -28,37 +29,11 @@ export type ITestGridViewState = {
   rows?: t.IGridRows;
 };
 
-export const DEFAULT = {
-  VALUES: {
-    A1: { value: '=A5' },
-    A2: { value: 'A2', props: { style: { bold: true } } },
-    // A2: {value:'* one\n * two'},
-    // A2: {value:'# Heading\nhello'},
-    A3: { value: 'A3 `code`' },
-    A5: { value: '=A2', props: { merge: { colspan: 2 } } },
-    A6: { value: '=SUM(1, A5, C4)' },
-    A8: { value: '=SUM(1,2)' },
-    A9: { value: '=1+2+5' },
-    A10: { value: '=1+B10+B10' },
-    B10: { value: '5' },
-    A11: { value: '=SUM(1,B11,B11)' },
-    B11: { value: '10' },
-    B1: { value: 'locked' },
-    B2: { value: 'cancel' },
-    C4: { value: 'Hello' },
-    C5: { value: 'Hello', props: { merge: { rowspan: 2 } } },
-  },
-  COLUMNS: {
-    A: { width: 300 },
-  },
-  ROWS: {},
-};
-
 export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestGridViewState> {
   public state: ITestGridViewState = {
-    values: DEFAULT.VALUES,
-    columns: DEFAULT.COLUMNS,
-    rows: DEFAULT.ROWS,
+    values: SAMPLE.CELLS,
+    columns: SAMPLE.COLUMNS,
+    rows: SAMPLE.ROWS,
   };
   public state$ = new Subject<Partial<ITestGridViewState>>();
   private unmounted$ = new Subject<{}>();

@@ -1,62 +1,67 @@
 import { expect, testContext, t } from './TEST';
 import { func } from '.';
 
-describe('func.calculate', () => {
-  describe('binary-expression', () => {
-    it('=1+2+3', async () => {
-      const ctx = await testContext({
-        A1: { value: '=1+2+3' },
-      });
+describe('func.calculate', function() {
+  this.timeout(5000);
 
+  describe('errors', () => {
+    it('error: not an formula (VALUE)', async () => {
+      const ctx = await testContext({
+        A1: { value: '123' },
+      });
+      const res = await func.calculate<number>({ cell: 'A1', ...ctx });
+      const error = res.error as t.IFuncError;
+
+      expect(res.ok).to.eql(false);
+      expect(error.cell.key).to.eql('A1');
+      expect(error.cell.value).to.eql('123');
+      expect(error.type).to.eql('NOT_FORMULA');
+      expect(error.message).to.include('cell A1 is not a formula');
+    });
+  });
+
+  describe('cell reference', () => {
+    it('=A2', async () => {
+      const ctx = await testContext({
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+      });
       const res = await func.calculate<number>({ cell: 'A1', ...ctx });
 
       expect(res.ok).to.eql(true);
+      expect(res.type).to.eql('REF');
       expect(res.cell).to.eql('A1');
-      expect(res.formula).to.eql('=1+2+3');
+      expect(res.formula).to.eql('=A2');
       expect(res.error).to.eql(undefined);
-      expect(res.data).to.eql(6);
+      expect(res.data).to.eql(123);
     });
 
-    it('=1+A2+A3', async () => {
+    it('=A2 (value not found)', async () => {
       const ctx = await testContext({
-        A1: { value: '=1+A2+A3' },
-        A2: { value: 5 },
-        A3: { value: '=A4' },
-        A4: { value: 10 },
+        A1: { value: '=A2' },
       });
       const res = await func.calculate<number>({ cell: 'A1', ...ctx });
-      expect(res.ok).to.eql(true);
-      expect(res.data).to.eql(16);
+      expect(res.data).to.eql('');
     });
 
-    it('mixed: =1 + SUM(4,A3)', async () => {
+    it('error: =A1:Z9 (NOT_SUPPORTED)', async () => {
       const ctx = await testContext({
-        A1: { value: '=1 + SUM(4,5)' },
-        A2: { value: '=1 + SUM(2,Z9)' },
-        A3: { value: '=1 + SUM(2,Z9+1)' },
-        Z9: { value: 5 },
-      });
-
-      const test = async (cell: string, expected: number) => {
-        const res = await func.calculate<number>({ cell, ...ctx });
-        expect(res.data).to.eql(expected);
-      };
-
-      await test('A1', 10);
-      await test('A2', 8);
-      await test('A3', 9);
-    });
-
-    it('range: =1 + B1:B5', async () => {
-      const ctx = await testContext({
-        A1: { value: '=1 + B1:B5' },
-        B1: { value: 1 },
-        B2: { value: 'hello' },
-        B3: { value: 3 },
-        B5: { value: 5 },
+        A1: { value: '=A1:Z9' },
+        A2: { value: 123 },
       });
       const res = await func.calculate<number>({ cell: 'A1', ...ctx });
-      expect(res.data).to.eql(10);
+      const error = res.error as t.IFuncError;
+
+      expect(res.ok).to.eql(false);
+      expect(res.type).to.eql('RANGE');
+      expect(res.cell).to.eql('A1');
+      expect(res.formula).to.eql('=A1:Z9');
+      expect(res.data).to.eql(undefined);
+
+      expect(error.type).to.eql('NOT_SUPPORTED/RANGE');
+      expect(error.message).to.include('cell A1 is a range which is not supported');
+      expect(error.cell.key).to.eql('A1');
+      expect(error.cell.value).to.eql('=A1:Z9');
     });
   });
 
@@ -68,6 +73,7 @@ describe('func.calculate', () => {
       const res = await func.calculate<number>({ cell: 'A1', ...ctx });
       expect(res.ok).to.eql(true);
       expect(res.cell).to.eql('A1');
+      expect(res.type).to.eql('FUNC');
       expect(res.formula).to.eql('=SUM(1,2,3)');
       expect(res.error).to.eql(undefined);
       expect(res.data).to.eql(6);
@@ -127,7 +133,7 @@ describe('func.calculate', () => {
       expect(res.data).to.eql(15);
     });
 
-    it('range: =SUM(1, B1:B5)', async () => {
+    it('range: =SUM(1, B1:B10)', async () => {
       const ctx = await testContext({
         A1: { value: '=SUM(1, B1:B10)' },
         B1: { value: 1 },
@@ -137,37 +143,21 @@ describe('func.calculate', () => {
       });
       const res = await func.calculate<number>({ cell: 'A1', ...ctx });
       expect(res.data).to.eql(10);
+    });
 
-      /**
-       * TEMP 🐷
-       * - cache (pass around)
-       * - IGrid : values => cells
-       * - Test: error thrown in func (expected, eg throw new Error("foo"))
-       * - Look up FUNC refs from somewhere else.
-       */
-
-      // TEMP 🐷
-
-      // console.log('-------------------------------------------');
-      // console.log('res', res);
+    it('range: =SUM(B1:B10) - range contains FUNCs', async () => {
+      const ctx = await testContext({
+        A1: { value: '=SUM(B1:B10)' },
+        B1: { value: 1 },
+        B2: { value: '=1+B3' },
+        B3: { value: '=SUM(1,2)' },
+      });
+      const res = await func.calculate<number>({ cell: 'A1', ...ctx });
+      expect(res.data).to.eql(8);
     });
   });
 
   describe('errors', () => {
-    it('error: not an formula', async () => {
-      const ctx = await testContext({
-        A1: { value: '123' },
-      });
-      const res = await func.calculate<number>({ cell: 'A1', ...ctx });
-      const error = res.error as t.IFuncError;
-
-      expect(res.ok).to.eql(false);
-      expect(error.cell.key).to.eql('A1');
-      expect(error.cell.value).to.eql('123');
-      expect(error.type).to.eql('NOT_FORMULA');
-      expect(error.message).to.include('cell A1 is not a formula');
-    });
-
     it('error: function not found', async () => {
       const ctx = await testContext({
         A1: { value: '=NO_EXIST()' },
@@ -233,6 +223,65 @@ describe('func.calculate', () => {
       await test('A1', 'A1/A1:A5');
       await test('A2', 'A2/A1:A5');
       await test('A3', 'A3/A1:A5');
+    });
+  });
+
+  describe('binary-expression', () => {
+    it('=1+2+3', async () => {
+      const ctx = await testContext({
+        A1: { value: '=1+2+3' },
+      });
+
+      const res = await func.calculate<number>({ cell: 'A1', ...ctx });
+
+      expect(res.ok).to.eql(true);
+      expect(res.type).to.eql('FUNC');
+      expect(res.cell).to.eql('A1');
+      expect(res.formula).to.eql('=1+2+3');
+      expect(res.error).to.eql(undefined);
+      expect(res.data).to.eql(6);
+    });
+
+    it('=1+A2+A3', async () => {
+      const ctx = await testContext({
+        A1: { value: '=1+A2+A3' },
+        A2: { value: 5 },
+        A3: { value: '=A4' },
+        A4: { value: 10 },
+      });
+      const res = await func.calculate<number>({ cell: 'A1', ...ctx });
+      expect(res.ok).to.eql(true);
+      expect(res.data).to.eql(16);
+    });
+
+    it('mixed: =1 + SUM(4,A3)', async () => {
+      const ctx = await testContext({
+        A1: { value: '=1 + SUM(4,5)' },
+        A2: { value: '=1 + SUM(2,Z9)' },
+        A3: { value: '=1 + SUM(2,Z9+1)' },
+        Z9: { value: 5 },
+      });
+
+      const test = async (cell: string, expected: number) => {
+        const res = await func.calculate<number>({ cell, ...ctx });
+        expect(res.data).to.eql(expected);
+      };
+
+      await test('A1', 10);
+      await test('A2', 8);
+      await test('A3', 9);
+    });
+
+    it('range: =1 + B1:B5', async () => {
+      const ctx = await testContext({
+        A1: { value: '=1 + B1:B5' },
+        B1: { value: 1 },
+        B2: { value: 'hello' },
+        B3: { value: 3 },
+        B5: { value: 5 },
+      });
+      const res = await func.calculate<number>({ cell: 'A1', ...ctx });
+      expect(res.data).to.eql(10);
     });
   });
 });

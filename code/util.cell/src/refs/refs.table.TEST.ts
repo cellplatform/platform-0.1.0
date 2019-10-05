@@ -18,6 +18,24 @@ describe('refs.table', () => {
       expect(Object.keys(res.in)).to.eql(['A2', 'C3', 'Z9']); // NB: "Z9" included even though does not exist in the grid.
       expect(Object.keys(res.out)).to.eql(['C3', 'A1']);
     });
+
+    it('contains ranges (incoming intersection)', async () => {
+      const ctx = testContext({
+        A1: { value: '=B1:B3' },
+        A2: { value: '=SUM(B2:D2)' },
+      });
+      const table = refs.table({ ...ctx });
+      const res = await table.refs();
+
+      expect(Object.keys(res.out)).to.eql(['A1', 'A2']);
+
+      expect(Object.keys(res.in)).to.eql(['B1', 'B2', 'B3', 'C2', 'D2']);
+      expect(res.in.B1.map(e => e.cell)).to.eql(['A1']);
+      expect(res.in.B2.map(e => e.cell)).to.eql(['A1', 'A2']);
+      expect(res.in.B3.map(e => e.cell)).to.eql(['A1']);
+      expect(res.in.C2.map(e => e.cell)).to.eql(['A2']);
+      expect(res.in.D2.map(e => e.cell)).to.eql(['A2']);
+    });
   });
 
   describe('outgoing', () => {
@@ -206,7 +224,35 @@ describe('refs.table', () => {
       expect(res.C3[0].cell).to.eql('A1');
     });
 
-    it('calculate subset (range: "A:A")', async () => {
+    it('incoming from RANGE', async () => {
+      const ctx = testContext({
+        A1: { value: '=B1:B9' },
+        B1: { value: 1 },
+        B5: { value: 5 },
+      });
+
+      const table = refs.table({ ...ctx });
+      const res = await table.incoming();
+
+      expect(res.B1[0].cell).to.eql('A1');
+      expect(res.B5[0].cell).to.eql('A1');
+    });
+
+    it('incoming from RANGE(param)', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(B1:B9)' },
+        B1: { value: 1 },
+        B5: { value: 5 },
+      });
+
+      const table = refs.table({ ...ctx });
+      const res = await table.incoming();
+
+      expect(res.B1[0].cell).to.eql('A1');
+      expect(res.B5[0].cell).to.eql('A1');
+    });
+
+    it('calculate subset ("A:A")', async () => {
       const A1 = '=SUM(A2,C3)';
       const ctx = testContext({
         A1: { value: () => A1 },

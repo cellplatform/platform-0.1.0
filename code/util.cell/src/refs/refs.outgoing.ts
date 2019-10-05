@@ -102,7 +102,7 @@ async function outgoingCellRef(args: {
   let error: t.IRefError | undefined;
   const key = cell.toRelative(node.key);
 
-  const isCircular = util.path(path).isCircular(key);
+  const isCircular = util.path(path).includes(key);
   path = `${path}/${key}`;
 
   if (isCircular) {
@@ -187,7 +187,7 @@ async function isRangeCircular(args: { path: string; range: CellRange; getValue:
   };
 
   // Check for immediate self-reference within range.
-  if (isKeyContained(args.range, args.path.split('/'))) {
+  if (isKeyContained(args.range, util.path(args.path).parts)) {
     return true;
   }
 
@@ -288,7 +288,7 @@ async function outgoingFunc(args: {
     const targetNode = ast.toTree(targetValue);
 
     // Check for circular reference loop.
-    let isCircular = util.path(args.path).isCircular(targetKey);
+    let isCircular = util.path(args.path).includes(targetKey);
     if (isCircular && !error) {
       setCircularError(i, path);
     }
@@ -299,7 +299,7 @@ async function outgoingFunc(args: {
       const err = res
         .filter(ref => ref.error && ref.error.type === 'CIRCULAR')
         .map(ref => ref.error as t.IRefError)
-        .find(err => util.path(err.path).isCircular(targetKey));
+        .find(err => util.path(err.path).includes(targetKey));
       if (err) {
         isCircular = true;
         setCircularError(i, err.path);
@@ -321,8 +321,7 @@ async function outgoingFunc(args: {
       return ref;
     } else {
       const ref = res[0];
-      const parts = ref.path.split('/');
-      const end = parts[parts.length - 1];
+      const end = util.path(ref.path).last;
       return {
         ...ref,
         param,
@@ -338,7 +337,7 @@ async function outgoingFunc(args: {
 }
 
 /**
- * Process an outgoing binary-expression (eg: "=A1+5")
+ * Process an outgoing binary-expression (eg: "=A1+5").
  */
 async function outgoingBinaryExpression(args: {
   node: ast.BinaryExpressionNode;

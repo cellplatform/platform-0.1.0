@@ -275,45 +275,35 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     const modifierKeys = { ...this.modifierKeys };
 
     if (char.includes('\t')) {
-      let isCancelled = false;
-      this.fire({
-        type: 'INPUT/formula/tab',
-        payload: {
-          get isCancelled() {
-            return isCancelled;
-          },
-          cancel() {
-            isCancelled = true;
-          },
-          modifierKeys,
+      const payload: t.IFormulaInputTab = {
+        modifierKeys,
+        isCancelled: false,
+        cancel() {
+          payload.isCancelled = true;
         },
-      });
-      if (isCancelled) {
+      };
+      this.fire({ type: 'INPUT/formula/tab', payload });
+      if (payload.isCancelled) {
         return;
       }
     }
 
-    if (!isMultiLine) {
-      const wasCancelled = singleLineOnly(change);
-      if (wasCancelled) {
+    if (isNewLine(change)) {
+      const payload: t.IFormulaInputEnter = {
+        modifierKeys,
+        isCancelled: Boolean(singleLineOnly(change)), // NB: Cancelled by default if single-line.
+        cancel() {
+          payload.isCancelled = true;
+        },
+      };
+      this.fire({ type: 'INPUT/formula/enter', payload });
+      if (payload.isCancelled) {
         return; // No need to continue - a new-line request was cancelled.
       }
     }
 
-    if (isNewLine(change)) {
-      let isCancelled = false;
-      this.fire({
-        type: 'INPUT/formula/newLine',
-        payload: {
-          get isCancelled() {
-            return isCancelled;
-          },
-          cancel() {
-            isCancelled = true;
-          },
-          modifierKeys,
-        },
-      });
+    if (!isMultiLine) {
+      const isCancelled = Boolean(singleLineOnly(change));
       if (isCancelled) {
         return; // No need to continue - a new-line request was cancelled.
       }

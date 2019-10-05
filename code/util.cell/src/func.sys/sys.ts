@@ -2,7 +2,7 @@ import { t, value } from '../common';
 
 /**
  * Get system functions.
- * Expressions:
+ * Binay expressions:
  *    '>' | '<' | '=' | '>=' | '<=' | '+' | '-' | '&'
  */
 export const getFunc: t.GetFunc = async args => {
@@ -11,6 +11,9 @@ export const getFunc: t.GetFunc = async args => {
     switch (name) {
       case 'SUM':
         return sum;
+      case 'AVG':
+      case 'AVERAGE':
+        return average;
     }
   }
   return undefined;
@@ -20,7 +23,24 @@ export const getFunc: t.GetFunc = async args => {
  * Add a series of numbers.
  */
 const sum: t.FuncInvoker = async args => {
-  const params = (args.params || [])
+  const params = paramsToNumbers(args.params);
+  return params.reduce((acc, next) => acc + next, 0);
+};
+
+/**
+ * Retrieves the average (arithmetic mean).
+ */
+const average: t.FuncInvoker = async args => {
+  const params = paramsToNumbers(args.params);
+  return params.reduce((acc, next) => acc + next, 0) / params.length;
+};
+
+/**
+ * [Helpers]
+ */
+
+function paramsToNumbers(input?: t.FuncParam[]) {
+  return (input || [])
     .reduce(
       (acc, next) => {
         acc = Array.isArray(next) ? [...acc, ...next] : [...acc, next];
@@ -28,8 +48,7 @@ const sum: t.FuncInvoker = async args => {
       },
       [] as any[],
     )
-    .map(param => (typeof param === 'string' ? value.toNumber(param) : param) as number)
-    .map(param => (typeof param === 'number' || typeof param === 'bigint' ? param : 0)); // NB: Add 0 (no change)
-
-  return params.reduce((acc, next) => acc + next, 0);
-};
+    .map(p => (typeof p === 'string' ? value.toNumber(p) : p) as number)
+    .map(p => (typeof p === 'number' || typeof p === 'bigint' ? p : undefined))
+    .filter(p => p !== undefined) as number[];
+}
