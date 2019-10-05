@@ -20,6 +20,7 @@ import { FactoryManager } from '../../factory';
 import * as render from '../../render';
 import { getSettings } from '../settings';
 import { IGridRefsPrivate } from './types.private';
+import * as behavior from '../behavior';
 
 const { DEFAULT, CSS } = constants;
 
@@ -32,6 +33,7 @@ export type IDataGridProps = {
   defaults?: Partial<t.IGridDefaults>;
   Handsontable?: Handsontable;
   factory?: t.GridFactory;
+  getFunc?: t.GetFunc;
   keyBindings?: t.KeyBindings<t.GridCommand>;
   events$?: Subject<t.GridEvent>;
   initial?: t.IInitialGridState;
@@ -97,7 +99,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     // NOTE:
     //    This is referenced within the [Editor] class.
     const refs: IGridRefsPrivate = {
-      grid: grid,
+      grid,
       editorEvents$: new Subject<t.EditorEvent>(), // NB: This ferries events back from the [Editor].
       factory: this.factory,
     };
@@ -106,6 +108,9 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     // Setup observables.
     const { events$, keyboard$ } = grid;
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
+
+    // Setup behaviors.
+    behavior.manageUpdates({ getFunc: this.props.getFunc, grid });
 
     // Bubble events.
     if (this.props.events$) {

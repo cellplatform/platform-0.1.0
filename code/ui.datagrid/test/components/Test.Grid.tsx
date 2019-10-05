@@ -88,7 +88,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             const to = toValue(change.value.to);
             const update = await table.update({ key, from, to });
 
-            await this.updateFuncsTemp({ cells: key });
+            // await this.updateFuncsTemp({ cells: key });
 
             // console.group('🌳 ', key);
             // console.log('change', change);
@@ -98,8 +98,12 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         await Promise.all(wait);
 
         // TEMP 🐷
-        this.updateRefs(); // TEMP 🐷
-        // this.updateFuncsTemp();
+        const keys = e.changes.map(change => change.cell.key);
+        console.log('e', e);
+        console.log('keys', keys);
+        // this.updateFuncsTemp({ cells: Object.keys(this.grid.values) });
+        // // this.updateFuncsTemp({ cells: e.changes.map(change => change.cell.key) });
+        this.updateDisplayRefs(); // TEMP 🐷
 
         // e.cancel();
         // e.changes[0].modify('foo');
@@ -112,11 +116,23 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     events$
       .pipe(
         filter(() => true),
-        filter(e => e.type === 'GRID/EDITOR/end'), // Filter
+        filter(e => e.type === 'GRID/EDITOR/end'),
         map(e => e.payload as t.IEndEditing),
       )
-      .subscribe(e => {
+      .subscribe(async e => {
         // console.log('cancel edit');
+        // e.cancel();
+        const key = e.cell.key;
+        const value = e.value.to;
+
+        // NB: Ensure change is reflected in grid before the editor is hidden.
+        // this.grid.changeCells({ [key]: { value } });
+        // this.updateFuncsTemp({ cells: key });
+
+        console.group('🌳 EDIT END');
+        console.log('e', e);
+        console.groupEnd();
+
         // e.cancel();
       });
 
@@ -158,7 +174,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const gridEvents$ = this.grid.events$.pipe(takeUntil(this.unmounted$));
     gridEvents$.pipe(debounceTime(10)).subscribe(() => this.updateState());
     this.updateState();
-    this.updateRefs();
+    this.updateDisplayRefs();
   }
 
   public componentWillUnmount() {
@@ -205,11 +221,11 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     };
     this.state$.next({ data });
 
-    await this.updateRefs();
+    await this.updateDisplayRefs();
     return data;
   }
 
-  private updateRefs = async (args: { force?: boolean } = {}) => {
+  private updateDisplayRefs = async (args: { force?: boolean } = {}) => {
     const { force } = args;
     const table = this.refTable;
     const res = await table.refs({ force });
@@ -262,30 +278,38 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   };
 
   private async updateFuncsTemp(args: { cells: string | string[] }) {
-    const { cells } = args;
 
-    // Calculate updates.
-    const table = this.refTable;
-    const refs = await table.refs({});
-    const getValue = this.getValue;
-    const res = await coord.func.update({ cells, refs, getValue, getFunc });
+    console.log('DELETE - updateFuncsTemp')
+    /**
+     * TEMP - delete 🐷
+     * // MOVED to `/beahvior/calc.ts`
+     */
 
-    // Prepare grid update set.
-    const changes: t.IGridCells = {};
-    const addChange = (key: string, value: any) => {
-      let cell = this.grid.values[key];
-      if (cell) {
-        const props = value === undefined ? cell.props : { ...cell.props, value };
-        cell = { ...cell, props };
-        changes[key] = cell;
-      }
-    };
+    // const { cells } = args;
 
-    // Update grid.
-    res.list.forEach(item => addChange(item.cell, item.data));
-    this.grid.changeCells(changes);
+    // // Calculate updates.
+    // const table = this.refTable;
+    // await table.refs({ range: cells, force: true });
+    // const refs = await table.refs({});
+    // const getValue = this.getValue;
+    // const res = await coord.func.update({ cells, refs, getValue, getFunc });
 
-    console.log('res', res);
+    // // Prepare grid update set.
+    // const changes: t.IGridCells = {};
+    // const addChange = (key: string, value: any) => {
+    //   let cell = this.grid.values[key];
+    //   if (cell) {
+    //     const props = value === undefined ? cell.props : { ...cell.props, value };
+    //     cell = { ...cell, props };
+    //     changes[key] = cell;
+    //   }
+    // };
+
+    // // Update grid.
+    // res.list.forEach(item => addChange(item.cell, item.data));
+    // this.grid.changeCells(changes);
+
+    // console.log('res', res);
   }
 
   /**
@@ -328,10 +352,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         })}
         {this.button('reset', async () => {
           this.grid.changeCells(SAMPLE.CELLS);
-          await this.updateRefs({ force: true });
+          await this.updateDisplayRefs({ force: true });
         })}
-        {this.button('updateRefs', () => this.updateRefs())}
-        {this.button('updateRefs(force)', () => this.updateRefs({ force: true }))}
+        {this.button('updateRefs', () => this.updateDisplayRefs())}
+        {this.button('updateRefs(force)', () => this.updateDisplayRefs({ force: true }))}
         <Hr margin={5} />
         {this.button('redraw', () => this.grid.redraw())}
         {this.button('focus', () => this.grid.focus())}
@@ -450,6 +474,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           <TestGridView
             ref={this.testGridRef}
             style={styles.grid}
+            getFunc={getFunc}
             editorType={this.props.editorType}
             events$={this.events$}
             totalColumns={this.state.totalColumns}

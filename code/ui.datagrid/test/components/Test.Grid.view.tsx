@@ -20,6 +20,7 @@ export type ITestGridViewProps = {
   editorType: t.TestEditorType;
   totalColumns?: number;
   totalRows?: number;
+  getFunc?: t.GetFunc;
   style?: GlamorValue;
   Table?: Handsontable;
 };
@@ -153,6 +154,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         rows={this.state.rows}
         events$={this.events$}
         factory={this.factory}
+        getFunc={this.props.getFunc}
         // defaults={{ rowHeight: 200 }}
         // keyBindings={[{ command: 'COPY', key: 'CMD+D' }]}
         totalColumns={totalColumns}
