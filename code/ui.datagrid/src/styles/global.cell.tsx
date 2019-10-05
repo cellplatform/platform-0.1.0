@@ -36,7 +36,7 @@ const STYLES = {
      * Formula.
      */
     [`.${CELL.FORMULA}`]: {
-      color: 'red', // TEMP 🐷
+      color: '#7ED321', // Green - TEMP 🐷
       fontFamily: constants.MONOSPACE.FAMILY,
       fontWeight: 'bolder',
     },

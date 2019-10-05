@@ -1,7 +1,9 @@
 import { expect, testContext, t } from './TEST';
 import { func } from '.';
 
-describe('func.calculate', () => {
+describe('func.calculate', function() {
+  this.timeout(5000);
+
   describe('errors', () => {
     it('error: not an formula (VALUE)', async () => {
       const ctx = await testContext({
