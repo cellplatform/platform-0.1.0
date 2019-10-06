@@ -140,7 +140,10 @@ export class Grid implements t.IGrid {
     editEnd$.pipe(filter(e => e.isChanged)).subscribe(e => {
       const key = e.cell.key;
       const value = e.value.to;
-      const props = this.cell(key).props;
+      const props = {
+        ...this.cell(key).props,
+        value: undefined, // NB: Reset the calculated "display value" as this will be overriden by the new value.
+      };
       const cell: t.IGridCell = { value, props };
       this.changeCells({ [key]: cell }, { source: 'EDIT' });
     });
