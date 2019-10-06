@@ -69,6 +69,7 @@ export type IGridCalculateResponse = {
   from: IGridCells;
   to: IGridCells;
   func: IFuncUpdateResponse;
+  cells: string[];
 };
 
 export type IGridColumns = { [key: string]: IGridColumn };

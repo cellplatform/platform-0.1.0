@@ -36,6 +36,22 @@ describe('func.calc.cell (one)', function() {
       expect(res.data).to.eql(123);
     });
 
+    it('=$A$2 (absolute)', async () => {
+      const test = async (A1: string) => {
+        const ctx = await testContext({
+          A1: { value: A1 },
+          A2: { value: 123 },
+        });
+        const res = await calculate({ cell: 'A1', ...ctx });
+        expect(res.data).to.eql(123);
+      };
+
+      await test('=A2');
+      await test('=$A2');
+      await test('=A$2');
+      await test('=$A$2');
+    });
+
     it('=A2 (value not found)', async () => {
       const ctx = await testContext({
         A1: { value: '=A2' },

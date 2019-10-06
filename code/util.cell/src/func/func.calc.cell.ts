@@ -2,6 +2,7 @@ import { ast } from '../ast';
 import { t } from '../common';
 import { CellRange } from '../range/CellRange';
 import * as util from './util';
+import { cell as cellUtil } from '../cell';
 
 /**
  * Calculate.
@@ -196,7 +197,7 @@ const getCellRefValue = async (args: {
   util.throwIfCircular({ cell, refs });
 
   // Read the current cell value for the node.
-  const targetKey = args.node.key;
+  const targetKey = cellUtil.toRelative(args.node.key);
   let value = (await getValue(targetKey)) || '';
 
   // Calculate formulas into final values.
