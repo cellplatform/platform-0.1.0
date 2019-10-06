@@ -174,6 +174,122 @@ describe('util.cell', () => {
     });
   });
 
+  describe('setCellProp', () => {
+    const defaults: t.ICellPropsStyleAll = { bold: false, italic: false, underline: false };
+
+    it('no change', () => {
+      const res1 = util.setCellProp<'style'>({
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+
+      const res2 = util.setCellProp<'style'>({
+        defaults,
+        props: { style: { bold: true } },
+        section: 'style',
+        field: 'bold',
+        value: true,
+      });
+      expect(res1).to.eql(undefined);
+      expect(res2).to.eql({ style: { bold: true } });
+    });
+
+    it('from undefined props (generates new object)', () => {
+      const res1 = util.setCellProp<'style'>({
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: true,
+      });
+      const res2 = util.setCellProp<'style'>({
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+      expect(res1).to.eql({ style: { bold: true } });
+      expect(res2).to.eql(undefined); // NB: All default props shake out to be nothing (undefined).
+    });
+
+    it('deletes default property value', () => {
+      const res1 = util.setCellProp<'style'>({
+        props: { style: { bold: true, italic: false } },
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+      const res2 = util.setCellProp<'style'>({
+        props: { style: { bold: true, italic: true } },
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+
+      const res3 = util.setCellProp<'style'>({
+        defaults,
+        props: res2,
+        section: 'style',
+        field: 'italic',
+        value: false,
+      });
+
+      const res4 = util.setCellProp<'style'>({
+        props: { style: { bold: true }, merge: { colspan: 2 } },
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+
+      expect(res1).to.eql(undefined); // NB: All default props shake out to be nothing (undefined).
+      expect(res2).to.eql({ style: { italic: true } });
+      expect(res3).to.eql(undefined); // NB: Italic flipped to default (false).
+      expect(res4).to.eql({ merge: { colspan: 2 } });
+    });
+  });
+
+  describe('toggleCellProp', () => {
+    const defaults: t.ICellPropsStyleAll = { bold: false, italic: false, underline: false };
+
+    it('non-boolean values ignored', () => {
+      const style = { bold: { msg: 'NEVER' } } as any;
+      const props = { style };
+      const res = util.toggleCellProp<'style'>({
+        defaults,
+        section: 'style',
+        field: 'bold',
+        props,
+      });
+      expect(res).to.eql(props); // Non boolean field value ignored.
+    });
+
+    it('toggle sequence', () => {
+      const section = 'style';
+      const field = 'bold';
+
+      const res1 = util.toggleCellProp<'style'>({ defaults, section, field });
+      const res2 = util.toggleCellProp<'style'>({ defaults, props: res1, section, field });
+      const res3 = util.toggleCellProp<'style'>({ defaults, props: res2, section, field });
+      const res4 = util.toggleCellProp<'style'>({
+        defaults,
+        props: res3,
+        section,
+        field: 'italic',
+      });
+      const res5 = util.toggleCellProp<'style'>({ defaults, props: res4, section, field });
+
+      expect(res1).to.eql({ style: { bold: true } }); // Nothing => true (default)
+      expect(res2).to.eql(undefined); // True to nothing
+      expect(res3).to.eql({ style: { bold: true } }); // Nothing => true (default)
+      expect(res4).to.eql({ style: { bold: true, italic: true } });
+      expect(res5).to.eql({ style: { italic: true } });
+    });
+  });
+
   describe('cellHash', () => {
     it('hashes a cell', () => {
       const test = (input: t.IGridCell | undefined, expected: string) => {

@@ -66,6 +66,61 @@ export function toCellProps(input?: t.ICellProps) {
 }
 
 /**
+ * Toggles the given boolean property field, removing it from the object
+ * if it is the default value.
+ */
+export function toggleCellProp<S extends keyof t.ICellProps>(args: {
+  props?: t.ICellProps;
+  defaults: t.ICellProps[S];
+  section: S;
+  field: keyof t.ICellPropsAll[S];
+}): t.ICellProps | undefined {
+  const props = args.props || {};
+  const field = args.field as string;
+  const section = (props[args.section] || {}) as {};
+  const value = section[field];
+  if (!(value === undefined || typeof value === 'boolean')) {
+    return props; // NB: non-supported value type for toggling.
+  }
+  const toggled: any = typeof value === 'boolean' ? !value : true;
+  return setCellProp<S>({ ...args, value: toggled });
+}
+
+/**
+ * Assignes a property field to props, removing it from the object
+ * if it is the default value.
+ */
+export function setCellProp<S extends keyof t.ICellProps>(args: {
+  props?: t.ICellProps;
+  defaults: t.ICellProps[S];
+  section: S;
+  field: keyof t.ICellPropsAll[S];
+  value?: t.ICellPropsAll[S][keyof t.ICellPropsAll[S]];
+}): t.ICellProps | undefined {
+  const props = args.props || {};
+  const defaults = args.defaults;
+  const field = args.field as string;
+  const section: t.ICellProps[S] = { ...(props[args.section] || {}), [field]: args.value };
+
+  // Strip default values from the property section.
+  if (defaults && typeof defaults === 'object') {
+    Object.keys(defaults as object)
+      .filter(key => section[key] === defaults[key])
+      .forEach(key => delete section[key]);
+  }
+
+  // Remove the section from the root props if empty.
+  const res = { ...props, [args.section]: section };
+  const isEmptySection = Object.keys(section as object).length === 0;
+  if (isEmptySection) {
+    delete res[args.section];
+  }
+
+  // Finish up.
+  return isEmptyCellProps(res) ? undefined : res;
+}
+
+/**
  * Determine if a cell's fields (value/props) has changed.
  */
 export function isCellChanged(
