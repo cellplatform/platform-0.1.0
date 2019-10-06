@@ -25,6 +25,7 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
   };
 
   const table = coord.refs.table({ getKeys, getValue });
+  const calculate = coord.func.calculate({ getValue, getFunc });
 
   const changes: t.IGridCalculate['changes'] = async (args: { cells?: string | string[] } = {}) => {
     const cells = args.cells || (await getKeys());
@@ -32,7 +33,7 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
     // Calculate updates.
     await table.refs({ range: cells, force: true });
     const refs = await table.refs({});
-    const func = await coord.func.update({ cells, refs, getValue, getFunc });
+    const func = await calculate.many({ refs, cells });
 
     // Prepare grid update set.
     const from: t.IGridCells = {};
@@ -61,6 +62,3 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
   // Finish up.
   return { changes, update };
 }
-
-
-

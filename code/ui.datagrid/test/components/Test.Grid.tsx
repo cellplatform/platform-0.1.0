@@ -186,7 +186,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   }
 
   private get selectedValue() {
-    const cell = this.grid.selection.cell;
+    const cell = this.grid.selection.cell || '';
     const value = this.getValueSync(cell) || '';
     const max = 30;
     const text = value.length > max ? `${value.substring(0, max)}...` : value;
