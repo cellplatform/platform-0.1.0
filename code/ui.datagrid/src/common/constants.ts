@@ -40,14 +40,15 @@ const KEY_BINDINGS: t.KeyBindings<t.GridCommand> = [
   { command: 'UNDERLINE', key: 'Meta+U' },
 ];
 
-const CELL_PROPS_STYLE: t.ICellPropsStyle = {
-  bold: false,
-  italic: false,
-  underline: false,
+type CellPropDefaults = {
+  style: t.ICellPropsStyleAll;
+  merge: t.ICellPropsMergeAll;
+  view: t.ICellPropsViewAll;
 };
-const CELL_PROPS_MERGE: t.ICellPropsMerge = {
-  rowspan: 1,
-  colspan: 1,
+const CELL_PROPS: CellPropDefaults = {
+  style: { bold: false, italic: false, underline: false },
+  merge: { rowspan: 1, colspan: 1 },
+  view: { type: 'DEFAULT' },
 };
 
 export const DEFAULT = {
@@ -64,9 +65,6 @@ export const DEFAULT = {
   },
   CELL: {
     RENDERER: 'cell',
-    PROPS: {
-      STYLE: CELL_PROPS_STYLE,
-      MERGE: CELL_PROPS_MERGE,
-    },
+    PROPS: CELL_PROPS,
   },
 };
