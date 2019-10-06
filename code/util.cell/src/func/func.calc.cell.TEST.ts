@@ -1,7 +1,7 @@
 import { expect, testContext, t } from './TEST';
 import { calculate } from './func.calc.cell';
 
-describe('calculate', function() {
+describe('func.calc.cell (one)', function() {
   this.timeout(5000);
 
   describe('errors', () => {

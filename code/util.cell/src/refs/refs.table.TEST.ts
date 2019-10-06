@@ -19,6 +19,25 @@ describe('refs.table', () => {
       expect(Object.keys(res.out)).to.eql(['C3', 'A1']);
     });
 
+    it('narrow on range', async () => {
+      const ctx = testContext({
+        A1: { value: '=SUM(A2,C3)' },
+        A2: { value: 123 },
+        C3: { value: '=A2' },
+        Z9: { value: 'hello' },
+      });
+      const table = refs.table({ ...ctx });
+      const res1 = await table.refs({});
+      const res2 = await table.refs({ range: 'A1' });
+
+      expect(Object.keys(res1.out)).to.eql(['C3', 'A1']);
+      expect(Object.keys(res2.out)).to.eql(['A1']);
+
+      expect(res1.in.A2.map(ref => ref.cell)).to.eql(['C3', 'A1']);
+      expect(res1.in.C3.map(ref => ref.cell)).to.eql(['A1']);
+      expect(res1.in).to.eql(res2.in);
+    });
+
     it('contains ranges (incoming intersection)', async () => {
       const ctx = testContext({
         A1: { value: '=B1:B3' },

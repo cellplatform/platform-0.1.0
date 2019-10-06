@@ -16,6 +16,7 @@ import { DEFAULT } from '../../common/constants';
 import { Cell } from '../Cell';
 import { keyboard } from '../../keyboard';
 import { commands } from '../../commands';
+import { calc } from './Grid.calc';
 
 export type IGridArgs = {
   table: Handsontable;
@@ -26,6 +27,7 @@ export type IGridArgs = {
   rows?: t.IGridRows;
   defaults?: Partial<t.IGridDefaults>;
   keyBindings?: t.KeyBindings<t.GridCommand>;
+  getFunc?: t.GetFunc;
 };
 
 /**
@@ -91,6 +93,7 @@ export class Grid implements t.IGrid {
     this._.values = args.values || {};
     this._.columns = args.columns || {};
     this._.rows = args.rows || {};
+    this._.calc = calc({ grid: this, getFunc: args.getFunc });
 
     this.id = `grid/${(this._.table as any).guid.replace(/^ht_/, '')}`;
     this.defaults = Grid.defaults(args.defaults);
@@ -185,6 +188,20 @@ export class Grid implements t.IGrid {
         filter(e => Boolean(e.from.cell) && !Boolean(e.to.cell)),
       )
       .subscribe(e => this.fire({ type: 'GRID/blur', payload: { grid: this } }));
+
+    /**
+     * Recalculate grid when cells change.
+     */
+    this.events$
+      .pipe(
+        filter(e => (this._.isReady = true)),
+        filter(e => e.type === 'GRID/cells/change'),
+        map(e => e.payload as t.IGridCellsChange),
+      )
+      .subscribe(async e => {
+        const cells = e.changes.map(change => change.cell.key);
+        await this.calc.update({ cells });
+      });
   }
 
   /**
@@ -202,6 +219,7 @@ export class Grid implements t.IGrid {
     columns: ({} as unknown) as t.IGridColumns,
     rows: ({} as unknown) as t.IGridRows,
     lastSelection: (undefined as unknown) as t.IGridSelection,
+    calc: (undefined as unknown) as t.IGridCalculate,
   };
 
   public readonly id: string;
@@ -247,6 +265,10 @@ export class Grid implements t.IGrid {
     const data = Grid.toDataArray({ values, totalColumns, totalRows });
     this._.values = values;
     this._.table.loadData(data);
+  }
+
+  public get calc(): t.IGridCalculate {
+    return this._.calc;
   }
 
   /**

@@ -1,6 +1,6 @@
 import { R, t } from '../common';
-import * as util from './util';
 import { calculate as calculateCell } from './func.calc.cell';
+import * as util from './util';
 
 /**
  * Calculate changes across a range of cells within a table.

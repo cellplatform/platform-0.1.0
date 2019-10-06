@@ -1,7 +1,9 @@
-import { expect, testContext, t } from './TEST';
 import { calculate } from './func.calc.cells';
+import { expect, testContext } from './TEST';
 
-describe('func.changes', () => {
+describe('func.calc.cells (many)', function() {
+  this.timeout(5000);
+
   it('single cell update involving: FUNC/REF/binary-expr', async () => {
     const ctx = await testContext({
       A1: { value: '=SUM(A2,A3)' },
