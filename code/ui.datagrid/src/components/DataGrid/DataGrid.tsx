@@ -162,7 +162,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     this.init();
   }
 
-  private init() {
+  private async init() {
     if (this.isDisposed) {
       return;
     }
@@ -178,6 +178,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       const { cell, ranges } = selection;
       grid.select({ cell, ranges });
     }
+
+    await grid.calc.update();
 
     grid.fire({ type: 'GRID/ready', payload: { grid } });
     this.forceUpdate();
