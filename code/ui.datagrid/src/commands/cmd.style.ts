@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { t, toSelectionValues, DEFAULT } from '../common';
+import { t, toSelectionValues, DEFAULT, util } from '../common';
 
 const STYLE: t.GridStyleCommand[] = ['BOLD', 'ITALIC', 'UNDERLINE'];
 
@@ -19,40 +19,23 @@ export function init(args: {
     filter(e => !e.isCancelled),
   );
 
-  const toggle = (
-    field: keyof t.ICellPropsStyle,
-    style: t.ICellPropsStyle | undefined,
-    defaults: t.ICellPropsStyle,
-    value?: boolean,
-  ) => {
-    const props = style || {};
-    const flag =
-      typeof value === 'boolean' ? value : typeof props[field] === 'boolean' ? !props[field] : true;
-    const res = { ...props, [field]: flag };
-
-    if (res[field] === defaults[field]) {
-      delete res[field];
-    }
-
-    return res;
-  };
-
   style$.subscribe(e => {
     const command = e.command as t.GridStyleCommand;
     const field = toField(command);
     const values = toSelectionValues({ values: grid.values, selection: e.selection });
+    const defaults = DEFAULT.CELL.PROPS.STYLE;
 
     // Converts values to the toggled style.
-    let flag: boolean | undefined;
     const changes = Object.keys(values).reduce((acc, key) => {
       const cell = grid.cell(key);
       const value = cell.value;
-      const props = cell.props;
-
-      const style = toggle(field, props.style, DEFAULT.CELL.PROPS.STYLE, flag);
-      flag = style[field]; // NB: Stored so that all future toggles use the first derived value.
-
-      acc[key] = { value, props: { ...props, style } };
+      const props = util.toggleCellProp<'style'>({
+        defaults,
+        props: cell.props,
+        section: 'style',
+        field,
+      });
+      acc[key] = { value, props };
       return acc;
     }, {});
 
