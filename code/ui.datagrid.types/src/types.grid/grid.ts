@@ -1,5 +1,6 @@
 import { t, Observable } from '../common';
 import { KeyBindings } from '@platform/react/lib/types';
+import { IFuncUpdateResponse } from '@platform/util.cell/lib/types';
 
 export type IGrid = IGridProperties & IGridMethods;
 export type IGridProperties = {
@@ -16,6 +17,7 @@ export type IGridProperties = {
   readonly keyBindings: KeyBindings<t.GridCommand>;
   readonly defaults: IGridDefaults;
   readonly values: t.IGridCells<t.ICellProps>;
+  readonly calc: IGridCalculate;
   columns: IGridColumns;
   rows: IGridRows;
   clipboard?: IGridClipboardPending;
@@ -59,6 +61,16 @@ export type IGridClipboardPending = t.IGridClipboard<t.GridClipboardReadCommand>
   pasted: number;
 };
 
+export type IGridCalculate = {
+  changes(args?: { cells?: string | string[] }): Promise<IGridCalculateResponse>;
+  update(args?: { cells?: string | string[] }): Promise<IGridCalculateResponse>;
+};
+export type IGridCalculateResponse = {
+  from: IGridCells;
+  to: IGridCells;
+  func: IFuncUpdateResponse;
+};
+
 export type IGridColumns = { [key: string]: IGridColumn };
 export type IGridRows = { [key: string]: IGridRow };
 export type IGridCells<P = {}> = { [key: string]: IGridCell<P> | undefined };
@@ -66,4 +78,6 @@ export type IGridCells<P = {}> = { [key: string]: IGridCell<P> | undefined };
 export type IGridAxis = IGridColumn | IGridRow;
 export type IGridColumn = { width?: number };
 export type IGridRow = { height?: number };
+
 export type IGridCell<P = t.ICellProps> = { value?: t.CellValue; props?: P; hash?: string };
+export type GridGetCell<P = t.ICellProps> = (key: string) => Promise<IGridCell<P> | undefined>;

@@ -52,7 +52,7 @@ export async function update(args: {
   // Finish up.
   const ok = !list.some(item => !item.ok);
   let map: t.IFuncUpdateMap;
-  return {
+  const res: t.IFuncUpdateResponse = {
     ok,
     list,
     get map() {
@@ -65,4 +65,5 @@ export async function update(args: {
       return map;
     },
   };
+  return res;
 }

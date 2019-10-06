@@ -2,7 +2,7 @@ import '../../styles';
 
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { map, debounceTime, filter, takeUntil } from 'rxjs/operators';
 
 import { Grid } from '../../api';
 import {
@@ -20,7 +20,6 @@ import { FactoryManager } from '../../factory';
 import * as render from '../../render';
 import { getSettings } from '../settings';
 import { IGridRefsPrivate } from './types.private';
-import * as behavior from '../behavior';
 
 const { DEFAULT, CSS } = constants;
 
@@ -67,7 +66,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
    * [Lifecycle]
    */
   public componentDidMount() {
-    const { values, columns, rows, keyBindings } = this.props;
+    const { values, columns, rows, keyBindings, getFunc } = this.props;
 
     // State.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
@@ -88,6 +87,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       rows,
       defaults,
       keyBindings,
+      getFunc,
     }));
     this.unmounted$.subscribe(() => grid.dispose());
 
@@ -108,9 +108,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     // Setup observables.
     const { events$, keyboard$ } = grid;
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
-
-    // Setup behaviors.
-    behavior.manageUpdates({ getFunc: this.props.getFunc, grid });
 
     // Bubble events.
     if (this.props.events$) {
@@ -141,18 +138,11 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     this.updateSize();
     events.resize$.pipe(takeUntil(this.unmounted$)).subscribe(() => this.redraw());
 
-    // Dispose on HMR.
+    // Dispose on HMR (see ParcelJS).
     const hot = (module as any).hot;
     if (hot) {
       hot.dispose(() => this.dispose());
     }
-
-    // Setup initial state.
-    // NB:  Running init after a tick prevents unnecessary work if the component
-    //      is caught in a reload loop which may happen with HMR.  In which case the
-    //      component will be `disposed` by the time `init` is called and hence bypassed.
-    // time.delay(0, () => this.init());
-    this.init();
 
     // Clear selection when another element outside the grid receives focus.
     events.focus$
@@ -163,6 +153,13 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
         filter(e => !containsFocus(this)),
       )
       .subscribe(e => this.grid.deselect());
+
+    // Setup initial state.
+    // NB:  Running init after a tick prevents unnecessary work if the component
+    //      is caught in a reload loop which may happen with HMR.  In which case the
+    //      component will be `disposed` by the time `init` is called and hence bypassed.
+    // time.delay(0, () => this.init());
+    this.init();
   }
 
   private init() {

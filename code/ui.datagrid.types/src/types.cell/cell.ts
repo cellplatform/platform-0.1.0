@@ -1,6 +1,7 @@
 import { t } from '../common';
 import { Diff } from '@platform/util.diff/lib/types';
 
+
 export type ICell<P extends t.ICellProps = t.ICellProps> = {
   readonly row: number;
   readonly column: number;
@@ -34,7 +35,7 @@ export type ICellDiff = {
  */
 
 export type IGridCellChange = {
-  cell: t.ICell;
+  cell: t.ICoordCell;
   value: { from?: t.IGridCell; to?: t.IGridCell };
   isCancelled: boolean;
   isChanged: boolean;

@@ -60,9 +60,10 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
     const { cell, from, to } = args;
     const value = { from, to };
     let isChanged: boolean | undefined;
+    const { key, row, column } = cell;
 
     const payload: t.IGridCellChange = {
-      cell,
+      cell: { key, row, column },
       value,
       get isChanged() {
         return isChanged === undefined ? (isChanged = !R.equals(value.from, value.to)) : isChanged;
