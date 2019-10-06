@@ -21,6 +21,6 @@ export type ICellPropsMerge = {
 /**
  * The details of a view to display for the cell.
  */
-export type ICellPropsView<V extends string = any> = {
-  type: V;
+export type ICellPropsView<V extends string = string> = {
+  type?: V;
 };

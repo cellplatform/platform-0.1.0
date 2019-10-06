@@ -53,9 +53,11 @@ describe('util.cell', () => {
     test({}, true);
     test({ style: {} }, true);
     test({ style: {}, merge: {} }, true);
+    test({ style: {}, merge: {}, view: {} }, true);
 
     test({ style: { bold: true } }, false);
     test({ style: { bold: true }, merge: {} }, false);
+    test({ view: { type: 'DEFAULT' } }, false);
   });
 
   describe('isChanged', () => {
@@ -144,9 +146,10 @@ describe('util.cell', () => {
     it('has default props (empty {})', () => {
       const test = (input?: any) => {
         const res = util.toCellProps(input);
+        expect(res.value).to.eql(undefined);
         expect(res.merge).to.eql({});
         expect(res.style).to.eql({});
-        expect(res.value).to.eql(undefined);
+        expect(res.view).to.eql({});
       };
       test();
       test(null);
@@ -160,43 +163,45 @@ describe('util.cell', () => {
           value: 456, // NB: Display value.
           style: { bold: true },
           merge: { colspan: 3 },
+          view: { type: 'SHOP' },
         },
       };
       const props = util.toCellProps(A2.props);
       expect(props.style.bold).to.eql(true);
       expect(props.merge.colspan).to.eql(3);
       expect(props.value).to.eql(456);
+      expect(props.view.type).to.eql('SHOP');
     });
   });
 
   describe('cellHash', () => {
     it('hashes a cell', () => {
       const test = (input: t.IGridCell | undefined, expected: string) => {
-        const res = util.cellHash('A1', input);
-        expect(res).to.eql(expected);
+        const hash = util.cellHash('A1', input);
+        expect(hash).to.eql(expected);
       };
 
-      test(undefined, '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9');
+      test(undefined, '7b7e3362bbbcc8baf036f1f1ded64fa23836e4b389a23c00d33a7473cf8dda72');
       test(
         { value: undefined },
-        '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9',
+        '7b7e3362bbbcc8baf036f1f1ded64fa23836e4b389a23c00d33a7473cf8dda72',
       );
-      test({ value: null }, 'e90b1e5185634ff7eb71ad1ed47c8d65e0a45b06e238bedac1007ff20a24fab2');
-      test({ value: 123 }, 'ffbabfe82d5db68798fc20b61ef3204cc7995b794230ccf58ade9369ec541a64');
-      test({ value: '' }, '2b2eb727231902b2b1e562e0e01ddb7d231e2858a40aafd246ed91021af884cb');
-      test({ value: 'hello' }, '5deefee8d6f76ff023111b545000074670a148074b3404ac1b886e70e02b22dc');
+      test({ value: null }, 'd9533a1f95b3a5ea64315d235161edff661ffcf8bc5b92ace02e9b19ba505b3a');
+      test({ value: 123 }, '6be869f659d8562edd4491ef804e0b90d6e56a37349614eaee7facb2b882d949');
+      test({ value: '' }, '6ffb4dfc7fee470f754150ee33c356b65de71f062ab12b0cc1a8cf47ac4bc0e5');
+      test({ value: 'hello' }, '7435a542af4a3f7d425c18a87693b04100845dbe86fb7c896d364bd8a27f4dd2');
       test(
         { value: 'hello', props: {} },
-        '5deefee8d6f76ff023111b545000074670a148074b3404ac1b886e70e02b22dc',
+        '7435a542af4a3f7d425c18a87693b04100845dbe86fb7c896d364bd8a27f4dd2',
       );
       test(
         { value: 'hello', props: { style: { bold: true } } },
-        'b6477f70b3356b662eddba42de17ef1cf5ba12d94764201596fdc5a89d92c10e',
+        '577bd1b1b605485a09fc953c1658d6319930433c0f4ab677aafd33db96ab6aa9',
       );
     });
 
     it('same hash for no param AND no cell-value', () => {
-      const HASH = '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9';
+      const HASH = '7b7e3362bbbcc8baf036f1f1ded64fa23836e4b389a23c00d33a7473cf8dda72';
       const test = (input?: t.IGridCell) => {
         const res = util.cellHash('A1', input);
         expect(res).to.eql(HASH);
@@ -207,7 +212,7 @@ describe('util.cell', () => {
     });
 
     it('returns same hash for equivalent props variants', () => {
-      const HASH = 'ffbabfe82d5db68798fc20b61ef3204cc7995b794230ccf58ade9369ec541a64';
+      const HASH = '6be869f659d8562edd4491ef804e0b90d6e56a37349614eaee7facb2b882d949';
       const test = (props?: t.ICellProps) => {
         const res = util.cellHash('A1', { value: 123, props });
         expect(res).to.eql(HASH);

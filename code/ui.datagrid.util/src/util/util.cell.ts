@@ -50,15 +50,17 @@ export function toCellProps(input?: t.ICellProps) {
   const props = input || {};
   const style: t.ICellPropsStyle = props.style || {};
   const merge: t.ICellPropsMerge = props.merge || {};
+  const view: t.ICellPropsView = props.view || {};
   const value: t.CellValue = props.value;
 
   type Props = {
     style: t.ICellPropsStyle;
     merge: t.ICellPropsMerge;
+    view: t.ICellPropsView;
     value?: t.CellValue;
   };
 
-  let res: Props = { style, merge };
+  let res: Props = { style, merge, view };
   res = value !== undefined ? { ...res, value } : res;
   return res;
 }
