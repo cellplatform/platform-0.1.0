@@ -13,10 +13,9 @@ import {
   t,
   value as valueUtil,
 } from '../../common';
-import { ObjectView } from '../primitives';
+import { ObjectView, Button, IButtonProps } from '../primitives';
 
 const { deleteUndefined } = valueUtil;
-const MAGENTA = '#DC6FEC';
 
 export type IDebugProps = {
   grid: t.IGrid;
@@ -63,10 +62,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       this.updateGrid();
     });
 
-    // events$.subscribe(e => {
-    //   console.log('|||||', e);
-    // });
-
     change$.subscribe(e => {
       console.log('change', e);
       this.updateState();
@@ -96,19 +91,28 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const key = this.grid.selection.cell || '';
     const value = this.getValueSync(key) || '';
     const isEmpty = !Boolean(value);
+    const isFormula = coord.func.isFormula(value);
+
+    // Display string.
     const MAX = 30;
     let display = value.length > MAX ? `${value.substring(0, MAX)}...` : value;
     display = isEmpty ? '<empty>' : display;
-    return { key, value, display, isEmpty };
+
+    // Formula.
+    const ast = isFormula ? coord.ast.toTree(value) : undefined;
+
+    // Finish up.
+    return { key, value, display, isEmpty, isFormula, ast };
   }
 
   /**
    * [Methods]
    */
 
-  private async updateState() {
+  private async updateState(args: { force?: boolean } = {}) {
+    const { force } = args;
     await this.updateGrid();
-    await this.updateRefs();
+    await this.updateRefs({ force });
   }
 
   public async getDataGrid() {
@@ -190,14 +194,63 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   public render() {
     const styles = {
       base: css({
+        Absolute: 0,
         color: COLORS.WHITE,
+        Flex: 'vertical-stretch-stretch',
+      }),
+      body: css({
+        flex: 1,
+        Scroll: true,
       }),
     };
 
-    // const data = this.dataGrid;
-
     return (
       <div {...css(styles.base, this.props.style)}>
+        {this.renderToolbar()}
+        <div {...styles.body}>{this.renderBody()}</div>
+      </div>
+    );
+  }
+
+  private renderToolbar() {
+    const styles = {
+      base: css({
+        borderBottom: `solid 1px ${color.format(0.2)}`,
+        Flex: 'horizontal-center-spaceBetween',
+        height: 32,
+        PaddingX: 12,
+        fontSize: 14,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div>{/* left */}</div>
+        <div>
+          <LinkButton label={'Refresh'} onClick={this.handleRefresh} />
+        </div>
+      </div>
+    );
+  }
+
+  private renderBody() {
+    const styles = {
+      base: css({ padding: 12, marginBottom: 50 }),
+    };
+
+    const selectedCell = this.selectedCell;
+    const elFormula = selectedCell.ast && (
+      <div>
+        <Hr />
+        {this.renderObject({
+          name: 'formula (AST)',
+          data: selectedCell.ast,
+          expandLevel: 3,
+        })}
+      </div>
+    );
+
+    return (
+      <div {...styles.base}>
         {this.renderSelection()}
         <Hr />
         {this.renderObject({ name: 'ui.datagrid', data: this.state.grid })}
@@ -213,6 +266,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
           },
           expandPaths: ['$', '$.in', '$.out'],
         })}
+        {elFormula}
       </div>
     );
   }
@@ -249,7 +303,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       }),
       key: css({
         marginRight: 5,
-        color: MAGENTA,
+        color: COLORS.CLI.PINK,
       }),
       value: css({
         opacity: selection.isEmpty ? 0.3 : 1,
@@ -271,6 +325,13 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+  private handleRefresh = () => {
+    this.updateState();
+  };
 }
 
 /**
@@ -282,8 +343,17 @@ const STYLES = {
     margin: 0,
     MarginY: 12,
     border: 'none',
-    borderTop: `solid 1px ${color.format(0.1)}`,
+    borderTop: `solid 3px ${color.format(0.06)}`,
   }),
 };
 
 const Hr = () => <hr {...STYLES.hr} />;
+
+const LinkButton = (props: IButtonProps) => {
+  const styles = {
+    base: css({
+      color: COLORS.CLI.CYAN,
+    }),
+  };
+  return <Button {...props} style={styles.base} />;
+};

@@ -378,30 +378,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         width: 300,
         borderBottom: `solid 1px ${color.format(0.1)}`,
       }),
-      inner: css({
-        Absolute: 0,
-        padding: 8,
-        paddingLeft: 12,
-        Scroll: true,
-      }),
-      selectedValue: css({
-        fontSize: 12,
-        color: COLORS.WHITE,
-        fontFamily: constants.MONOSPACE.FAMILY,
-        minHeight: 15,
-        Flex: 'center-start',
-      }),
     };
-
-    const hr = <Hr color={1} margin={[12, 0, 12, 0]} />;
-
     return (
       <div {...styles.base}>
-        <div {...styles.inner}>
-          <datagrid.Debug grid={this.grid} />
-          {hr}
-          <ObjectView name={'debug'} data={data.debug} expandPaths={['$']} theme={'DARK'} />
-        </div>
+        <datagrid.Debug grid={this.grid} />
       </div>
     );
   }
