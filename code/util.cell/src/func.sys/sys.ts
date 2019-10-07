@@ -1,54 +1,41 @@
 import { t, value } from '../common';
+import * as arithmetic from './sys.arithmetic';
+import * as stats from './sys.stats';
+import { FuncName } from './types';
+
+export { arithmetic, stats };
+export * from './types';
 
 /**
  * Get system functions.
  * Binay expressions:
- *    '>' | '<' | '=' | '>=' | '<=' | '+' | '-' | '&'
+ *    '>' | '<' | '=' | '>=' | '<=' | '+' | '*' | '-' | '&'
  */
 export const getFunc: t.GetFunc = async args => {
   const { namespace, name } = args;
   if (namespace === 'sys') {
-    switch (name) {
+    switch (name as FuncName) {
+      /**
+       * Arithemtic
+       */
       case 'SUM':
-        return sum;
+        return arithmetic.sum;
+      case 'SUBTRACT':
+        return arithmetic.subtract;
+      case 'MULTIPLY':
+        return arithmetic.multiply;
+      case 'DIVIDE':
+        return arithmetic.divide;
+
+      /**
+       * Statistics.
+       */
       case 'AVG':
       case 'AVERAGE':
-        return average;
+        return stats.average;
     }
   }
+
+  // Not found.
   return undefined;
 };
-
-/**
- * Add a series of numbers.
- */
-const sum: t.FuncInvoker = async args => {
-  const params = paramsToNumbers(args.params);
-  return params.reduce((acc, next) => acc + next, 0);
-};
-
-/**
- * Retrieves the average (arithmetic mean).
- */
-const average: t.FuncInvoker = async args => {
-  const params = paramsToNumbers(args.params);
-  return params.reduce((acc, next) => acc + next, 0) / params.length;
-};
-
-/**
- * [Helpers]
- */
-
-function paramsToNumbers(input?: t.FuncParam[]) {
-  return (input || [])
-    .reduce(
-      (acc, next) => {
-        acc = Array.isArray(next) ? [...acc, ...next] : [...acc, next];
-        return acc;
-      },
-      [] as any[],
-    )
-    .map(p => (typeof p === 'string' ? value.toNumber(p) : p) as number)
-    .map(p => (typeof p === 'number' || typeof p === 'bigint' ? p : undefined))
-    .filter(p => p !== undefined) as number[];
-}
