@@ -2,7 +2,7 @@ import { t } from '../common';
 
 export type ICellProps = Partial<ICellPropsAll>;
 export type ICellPropsAll = {
-  readonly value: t.CellValue; // The calculated display value if different from the raw cell value.
+  readonly value?: t.CellValue; // The calculated display value if different from the raw cell value.
   readonly style: ICellPropsStyle;
   readonly merge: ICellPropsMerge;
   readonly view: ICellPropsView;

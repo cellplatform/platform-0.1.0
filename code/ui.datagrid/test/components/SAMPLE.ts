@@ -15,6 +15,7 @@ export const SAMPLE = {
     B11: { value: '10' },
     B1: { value: 'locked' },
     B2: { value: 'cancel' },
+    C1: { value: 'Yo', props: { view: { type: 'FOO' } } },
     C4: { value: 'Hello' },
     C5: { value: 'Hello', props: { merge: { rowspan: 2 } } },
   },

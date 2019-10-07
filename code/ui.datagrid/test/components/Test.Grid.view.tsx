@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { SAMPLE } from './SAMPLE';
 
 import {
   CellEditor,
+  css,
   datagrid,
   GlamorValue,
   Handsontable as HandsontableLib,
@@ -12,6 +12,7 @@ import {
   t,
 } from '../common';
 import { DebugEditor } from './Debug.Editor';
+import { SAMPLE } from './SAMPLE';
 
 export type DataGrid = datagrid.DataGrid;
 
@@ -173,7 +174,15 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         return this.renderEditor();
 
       case 'CELL':
-        return req.cell ? formatValue(req.cell) : '';
+        const view = req.cell.props.view;
+        if (!view.type) {
+          return formatValue(req.cell.data);
+        } else {
+          const styles = {
+            base: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' }),
+          };
+          return <div {...styles.base}>CUSTOM: {view.type}</div>;
+        }
 
       default:
         console.log(`Factory type '${req.type}' not supported by test.`);
