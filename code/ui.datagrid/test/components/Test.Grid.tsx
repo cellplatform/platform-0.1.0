@@ -486,7 +486,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     return (
       <div {...styles.base}>
         <div {...styles.inner}>
-          <div {...styles.selectedValue}>{this.selectedValue}</div>
+          <div {...styles.selectedValue}>{this.selectedValue || 'no selection'}</div>
           {hr}
           <ObjectView
             name={'ui.datagrid'}
