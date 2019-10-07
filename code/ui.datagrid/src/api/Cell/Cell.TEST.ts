@@ -74,7 +74,7 @@ describe('Cell', () => {
           props: {
             style: { bold: true },
             merge: { colspan: 3 },
-            view: { type: 'FOO' },
+            view: { type: 'FOO', className: 'my-class' },
           },
         },
       });
@@ -87,11 +87,12 @@ describe('Cell', () => {
       expect(A1.props).to.eql({});
       expect(res1.style).to.eql({});
       expect(res1.merge).to.eql({});
-      expect(res1.view).to.eql({ type: 'DEFAULT' });
+      expect(res1.view).to.eql({});
 
       expect(res2.style.bold).to.eql(true);
       expect(res2.merge.colspan).to.eql(3);
       expect(res2.view.type).to.eql('FOO');
+      expect(res2.view.className).to.eql('my-class');
     });
   });
 

@@ -1,28 +1,24 @@
+import { getFunc } from '@platform/util.cell/lib/func/TEST';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil, debounceTime, delay } from 'rxjs/operators';
+import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';
 
 import {
-  R,
-  COLORS,
   Button,
   color,
+  COLORS,
+  constants,
+  coord,
   css,
+  datagrid,
   GlamorValue,
   Hr,
   log,
   ObjectView,
   t,
   testData,
-  value as valueUtil,
-  coord,
-  time,
-  constants,
 } from '../common';
-
 import { TestGridView } from './Test.Grid.view';
-import { getFunc } from '@platform/util.cell/lib/func/TEST';
-import { SAMPLE } from './SAMPLE';
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;
@@ -30,7 +26,6 @@ export type ITestGridProps = {
 };
 export type ITestGridState = {
   data?: any;
-  refs?: any; // TEMP 🐷
   totalColumns?: number;
   totalRows?: number;
 };
@@ -95,8 +90,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             // console.groupEnd();
           });
         await Promise.all(wait);
-
-        this.updateDisplayRefs();
 
         // e.cancel();
         // e.changes[0].modify('foo');
@@ -167,7 +160,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const gridEvents$ = this.grid.events$.pipe(takeUntil(this.unmounted$));
     gridEvents$.pipe(debounceTime(10)).subscribe(() => this.updateState());
     this.updateState();
-    this.updateDisplayRefs();
   }
 
   public componentWillUnmount() {
@@ -197,86 +189,14 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
    * [Methods]
    */
   public async updateState() {
-    const grid = this.grid;
-    const { selection, rows, columns, isEditing, clipboard } = grid;
     const { editorType } = this.props;
-
-    const values = R.clone(grid.values);
-    Object.keys(values).forEach(key => {
-      const hash = values[key] ? (values[key] as any).hash : undefined;
-      if (hash) {
-        (values[key] as any).hash = `${hash.substring(0, 12)}..(SHA-256)`;
-      }
-    });
-
     const data = {
       debug: { editorType },
-      grid: valueUtil.deleteUndefined({
-        isEditing,
-        values,
-        rows,
-        columns,
-        selection,
-        clipboard,
-      }),
     };
     this.state$.next({ data });
 
-    await this.updateDisplayRefs();
     return data;
   }
-
-  private updateDisplayRefs = async (args: { force?: boolean } = {}) => {
-    const { force } = args;
-    const table = this.refTable;
-    const res = await table.refs({ force });
-
-    const pathToKeys = (path?: string) => (path || '').split('/').filter(part => part);
-
-    const sortKeys = (obj: { [key: string]: any }) => {
-      return coord.cell.sort(Object.keys(obj)).reduce((acc, key) => {
-        acc[key] = obj[key];
-        return acc;
-      }, {});
-    };
-
-    // Prepare display versions of data.
-    const incoming = Object.keys(res.in)
-      .map(key => ({ key, refs: res.in[key] }))
-      .reduce((acc, next) => {
-        acc[next.key] = next.refs.map((ref: t.IRefIn) => ref.cell).join(',');
-        return acc;
-      }, {});
-
-    const outgoing = Object.keys(res.out)
-      .map(key => ({ key, refs: res.out[key] }))
-      .reduce((acc, next) => {
-        let err = '';
-        const keys = R.pipe(
-          R.flatten,
-          R.uniq,
-        )(
-          next.refs.map((ref: t.IRefOut) => {
-            const keys = pathToKeys(ref.path);
-            err = ref.error ? '(err)' : err;
-            return keys;
-          }),
-        );
-        acc[next.key] = `${keys.filter(keys => keys !== next.key).join(',')}${err}`;
-        return acc;
-      }, {});
-
-    // Update state.
-    const refs = {
-      data: res,
-      display: {
-        in: sortKeys(incoming),
-        out: sortKeys(outgoing),
-        topological: coord.refs.sort({ refs: res }).keys,
-      },
-    };
-    this.state$.next({ refs });
-  };
 
   /**
    * [Render]
@@ -316,12 +236,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           const cells = Object.keys(this.grid.values);
           this.grid.calc.update({ cells });
         })}
-        {this.button('reset', async () => {
-          this.grid.changeCells(SAMPLE.CELLS);
-          await this.updateDisplayRefs({ force: true });
-        })}
-        {this.button('updateRefs', () => this.updateDisplayRefs())}
-        {this.button('updateRefs(force)', () => this.updateDisplayRefs({ force: true }))}
         <Hr margin={5} />
         {this.button('redraw', () => this.grid.redraw())}
         {this.button('focus', () => this.grid.focus())}
@@ -479,42 +393,12 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       }),
     };
 
-    const refs = this.state.refs || {};
-    const refsDisplay = refs.display || {};
     const hr = <Hr color={1} margin={[12, 0, 12, 0]} />;
 
     return (
       <div {...styles.base}>
         <div {...styles.inner}>
-          <div {...styles.selectedValue}>{this.selectedValue || 'no selection'}</div>
-          {hr}
-          <ObjectView
-            name={'ui.datagrid'}
-            data={data.grid}
-            expandPaths={[
-              '$',
-              '$',
-              '$.selection',
-              '$.selection.ranges',
-              // '$.values',
-              // '$.values.A8',
-              '$.clipboard',
-            ]}
-            theme={'DARK'}
-          />
-          {hr}
-          <ObjectView name={'refs'} data={refs.data} expandLevel={1} theme={'DARK'} />
-          {hr}
-          <ObjectView name={'refs.in'} data={refsDisplay.in} expandLevel={5} theme={'DARK'} />
-          {hr}
-          <ObjectView name={'refs.out'} data={refsDisplay.out} expandLevel={5} theme={'DARK'} />
-          {hr}
-          <ObjectView
-            name={'topological order'}
-            data={refsDisplay.topological}
-            expandLevel={5}
-            theme={'DARK'}
-          />
+          <datagrid.Debug grid={this.grid} />
           {hr}
           <ObjectView name={'debug'} data={data.debug} expandPaths={['$']} theme={'DARK'} />
         </div>
