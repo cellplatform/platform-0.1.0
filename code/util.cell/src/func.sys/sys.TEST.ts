@@ -42,5 +42,30 @@ describe.only('func.sys', () => {
         await test('DIVIDE', [3, 0], 5);
       });
     });
+
+    it.skip('>', async () => {
+      //
+    });
+    it.skip('>=', async () => {
+      //
+    });
+    it.skip('<', async () => {
+      //
+    });
+    it.skip('<=', async () => {
+      //
+    });
+    it.skip('&', async () => {
+      //
+    });
+    it.skip('=', async () => {
+      //
+    });
+  });
+
+  describe('sys.stats', () => {
+    it.skip('AVERAGE (AVG)', async () => {
+      //
+    });
   });
 });
