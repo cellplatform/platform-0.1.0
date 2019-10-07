@@ -52,8 +52,7 @@ export function toCellProps(input?: t.ICellProps): t.ICellPropsAll {
   const merge: t.ICellPropsMerge = props.merge || {};
   const view: t.ICellPropsView = props.view || {};
   const value: t.CellValue = props.value;
-  const res: t.ICellPropsAll = { style, merge, view };
-  return value === undefined ? res : { ...res, value };
+  return { style, merge, view, value };
 }
 
 /**

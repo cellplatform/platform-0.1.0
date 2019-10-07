@@ -297,27 +297,27 @@ describe('util.cell', () => {
         expect(hash).to.eql(expected);
       };
 
-      test(undefined, '7b7e3362bbbcc8baf036f1f1ded64fa23836e4b389a23c00d33a7473cf8dda72');
+      test(undefined, 'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1');
       test(
         { value: undefined },
-        '7b7e3362bbbcc8baf036f1f1ded64fa23836e4b389a23c00d33a7473cf8dda72',
+        'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1',
       );
-      test({ value: null }, 'd9533a1f95b3a5ea64315d235161edff661ffcf8bc5b92ace02e9b19ba505b3a');
-      test({ value: 123 }, '6be869f659d8562edd4491ef804e0b90d6e56a37349614eaee7facb2b882d949');
-      test({ value: '' }, '6ffb4dfc7fee470f754150ee33c356b65de71f062ab12b0cc1a8cf47ac4bc0e5');
-      test({ value: 'hello' }, '7435a542af4a3f7d425c18a87693b04100845dbe86fb7c896d364bd8a27f4dd2');
+      test({ value: null }, 'cf2c26de25cb119316c7963e8ba8e92a9f5d06eeddcbb7d622368fa38c0a780b');
+      test({ value: 123 }, '7ba09a3711b0408bb18bcefc9c9d46c29e68c38f43ff68073c1a334b84973b9f');
+      test({ value: '' }, '39aae42e27b6aecbf7f709b865b4d7ea5ba9a79211314ef8b88a564b31e784b0');
+      test({ value: 'hello' }, 'ae8b1b48a7ee66bc33eb4724faea76446d477ca5eb9abe511e5f8cbf38494af6');
       test(
         { value: 'hello', props: {} },
-        '7435a542af4a3f7d425c18a87693b04100845dbe86fb7c896d364bd8a27f4dd2',
+        'ae8b1b48a7ee66bc33eb4724faea76446d477ca5eb9abe511e5f8cbf38494af6',
       );
       test(
         { value: 'hello', props: { style: { bold: true } } },
-        '577bd1b1b605485a09fc953c1658d6319930433c0f4ab677aafd33db96ab6aa9',
+        '06f576fe62119f830b7680bcee942f424f250a49915a458c9cd26e8ea102dafb',
       );
     });
 
     it('same hash for no param AND no cell-value', () => {
-      const HASH = '7b7e3362bbbcc8baf036f1f1ded64fa23836e4b389a23c00d33a7473cf8dda72';
+      const HASH = 'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1';
       const test = (input?: t.IGridCell) => {
         const res = util.cellHash('A1', input);
         expect(res).to.eql(HASH);
@@ -328,7 +328,7 @@ describe('util.cell', () => {
     });
 
     it('returns same hash for equivalent props variants', () => {
-      const HASH = '6be869f659d8562edd4491ef804e0b90d6e56a37349614eaee7facb2b882d949';
+      const HASH = '7ba09a3711b0408bb18bcefc9c9d46c29e68c38f43ff68073c1a334b84973b9f';
       const test = (props?: t.ICellProps) => {
         const res = util.cellHash('A1', { value: 123, props });
         expect(res).to.eql(HASH);
