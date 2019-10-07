@@ -22,6 +22,7 @@ export const CSS = {
     CELL: {
       MARKDOWN: 'p-editor-markdown', // See [@platform/ui.editor/lib/common/constants]
       BASE: 'p-dg-cell',
+      DEFAULT: 'p-dg-cell-default',
       EDITOR: 'p-dg-cellEditor',
       BOLD: 'p-dg-cell-bold',
       ITALIC: 'p-dg-cell-italic',
@@ -48,7 +49,7 @@ type CellPropDefaults = {
 const CELL_PROPS: CellPropDefaults = {
   style: { bold: false, italic: false, underline: false },
   merge: { rowspan: 1, colspan: 1 },
-  view: { type: 'DEFAULT' },
+  view: { type: 'DEFAULT', className: CSS.CLASS.CELL.DEFAULT },
 };
 
 export const DEFAULT = {

@@ -179,7 +179,12 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
           return formatValue(req.cell.data);
         } else {
           const styles = {
-            base: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' }),
+            base: css({
+              Absolute: 0,
+              backgroundColor: 'rgba(255, 0, 0, 0.1)',
+              fontSize: 11,
+              Flex: 'center-center',
+            }),
           };
           return <div {...styles.base}>CUSTOM: {view.type}</div>;
         }

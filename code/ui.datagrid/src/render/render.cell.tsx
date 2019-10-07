@@ -34,10 +34,11 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
 
     const props: t.ICellProps = cell ? cell.props || {} : {};
     const style: t.ICellPropsStyle = props.style || {};
+    const view: t.ICellPropsView = props.view || constants.DEFAULT.CELL.PROPS.view;
 
     let className = CELL.BASE;
-    const add = (isRequired: boolean | undefined, value: string) =>
-      (className = isRequired ? `${className} ${value}` : className);
+    const add = (isRequired: boolean | undefined, value?: string) =>
+      (className = isRequired && value ? `${className} ${value}` : className);
 
     add(isHtml, CELL.MARKDOWN);
     add(row === 0, GRID.FIRST.ROW);
@@ -46,6 +47,7 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     add(style.italic, CELL.ITALIC);
     add(style.underline, CELL.UNDERLINE);
     add(coord.func.isFormula(cell && cell.value), CELL.FORMULA);
+    add(Boolean(view.className), view.className);
 
     if (isHtml) {
       return <div className={className} dangerouslySetInnerHTML={{ __html: child }} />;
