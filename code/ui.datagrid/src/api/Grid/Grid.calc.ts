@@ -1,11 +1,6 @@
-import { filter, map } from 'rxjs/operators';
 import { coord, t } from '../../common';
 
 const defaultGetFunc: t.GetFunc = async args => undefined; // NB: Empty stub.
-
-/**
- * Manage keeping the grid calculations up-to-date.
- */
 
 /**
  * API for calculating updates to grid references/functions.
