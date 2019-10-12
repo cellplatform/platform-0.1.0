@@ -16,7 +16,7 @@ export const getFunc: t.GetFunc = async args => {
   if (namespace === 'sys') {
     switch (name as FuncName) {
       /**
-       * Arithemtic
+       * Arithmetic.
        */
       case 'SUM':
         return arithmetic.sum;

@@ -11,10 +11,10 @@ const test = async (name: string, params: any, expected?: number) => {
   }
 };
 
-describe.only('func.sys', () => {
+describe('func.sys', () => {
   describe('sys.arithmetic', () => {
     it('SUM', async () => {
-      await test('SUM', [], undefined);
+      await test('SUM', [], 0);
       await test('SUM', [[], 0, []], 0);
       await test('SUM', [1, undefined, 2], 3);
       await test('SUM', [[1, undefined, 2], 3], 6);
