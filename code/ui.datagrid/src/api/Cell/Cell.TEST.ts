@@ -51,41 +51,48 @@ describe('Cell', () => {
     });
   });
 
-  describe('data', () => {
-    it('has key', () => {
-      const grid = createGrid();
-      const cell = grid.cell('A1');
-      expect(cell.key).to.eql('A1');
-    });
-
+  describe('cell.value', () => {
     it('has default value (undefined)', () => {
       const grid = createGrid();
       const cell = grid.cell('A1');
+      expect(cell.key).to.eql('A1');
       expect(cell.value).to.eql(undefined);
     });
+  });
 
+  describe('cell.props', () => {
     it('has default props (empty {})', () => {
       const grid = createGrid();
       const cell = grid.cell('A1');
       expect(cell.props).to.eql({});
     });
 
-    it('props', () => {
+    it('Cell.props (default values)', () => {
       const grid = createGrid().changeCells({
-        A2: { value: 'A2', props: { style: { bold: true }, merge: { colspan: 3 } } },
+        A2: {
+          value: 'A2',
+          props: {
+            style: { bold: true },
+            merge: { colspan: 3 },
+            view: { type: 'FOO', className: 'my-class' },
+          },
+        },
       });
       const A1 = grid.cell('A1');
       const A2 = grid.cell('A2');
 
-      const res1 = Cell.props(A1.props);
+      const res1 = Cell.props(A1.props); // NB: Default values (no actual data in grid).
       const res2 = Cell.props(A2.props);
 
       expect(A1.props).to.eql({});
       expect(res1.style).to.eql({});
       expect(res1.merge).to.eql({});
+      expect(res1.view).to.eql({});
 
       expect(res2.style.bold).to.eql(true);
       expect(res2.merge.colspan).to.eql(3);
+      expect(res2.view.type).to.eql('FOO');
+      expect(res2.view.className).to.eql('my-class');
     });
   });
 

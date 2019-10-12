@@ -2,6 +2,8 @@ import { ast } from '../ast';
 import { t } from '../common';
 import { CellRange } from '../range/CellRange';
 import * as util from './util';
+import { cell as cellUtil } from '../cell';
+import { getExprFunc } from './func.expressionMap';
 
 /**
  * Calculate.
@@ -68,16 +70,6 @@ export async function calculate<D = any>(args: {
 /**
  * [Internal]
  */
-
-const getExprFunc = async (getFunc: t.GetFunc, operator: ast.BinaryExpressionNode['operator']) => {
-  if (operator === '+') {
-    return getFunc({ name: 'SUM', namespace: 'sys' });
-  }
-
-  // TEMP 🐷 TODO - all the other expressions: '>' | '<' | '=' | '>=' | '<=' | '+' | '-' | '&'
-
-  return undefined;
-};
 
 const evalNode = async (args: {
   cell: string;
@@ -196,7 +188,7 @@ const getCellRefValue = async (args: {
   util.throwIfCircular({ cell, refs });
 
   // Read the current cell value for the node.
-  const targetKey = args.node.key;
+  const targetKey = cellUtil.toRelative(args.node.key);
   let value = (await getValue(targetKey)) || '';
 
   // Calculate formulas into final values.

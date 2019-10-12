@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t, coord, util } from '../common';
 import { Grid } from '../api';
 
 const defaultFactory: t.GridFactory = req => null;
@@ -48,8 +48,15 @@ export class FactoryManager {
     column: number;
     cell?: t.IGridCell;
   }) {
-    const { type, row, column, cell } = args;
+    const { type, row, column } = args;
+    const key = coord.cell.toKey(column, row);
     const grid = this.grid;
-    return this.factory({ type, row, column, grid, cell });
+
+    const props = util.toCellProps(args.cell ? args.cell.props : {});
+    const data: t.IGridCell<t.ICellPropsAll> = { ...args.cell, props };
+    const cell: t.IGridFactoryRequest['cell'] = { key, data, props };
+
+    const req: t.IGridFactoryRequest = { type, grid, cell };
+    return this.factory(req);
   }
 }

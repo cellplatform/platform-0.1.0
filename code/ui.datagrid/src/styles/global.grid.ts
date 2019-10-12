@@ -13,9 +13,6 @@ const COMMON = {
     borderRightColor: BLUE,
     borderBottomColor: BLUE,
   },
-  cellBorder: {
-    borderColor: color.format(-0.15),
-  },
 };
 
 /**
@@ -52,10 +49,16 @@ const STYLES = {
   '.manualRowResizerGuide': COMMON.resizerGuide,
 
   /**
-   * Cell borders.
+   * Cells.
    */
-  th: COMMON.cellBorder,
-  td: COMMON.cellBorder,
+  th: {
+    borderColor: color.format(-0.15),
+  },
+  td: {
+    position: 'relative',
+    borderColor: color.format(-0.1),
+    padding: 0,
+  },
 
   /**
    * Turn off top/left border on table.

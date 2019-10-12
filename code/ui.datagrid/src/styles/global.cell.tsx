@@ -19,10 +19,23 @@ const STYLES = {
       pointerEvents: 'none',
       fontSize: 14,
       color: color.format(-0.7),
-      marginTop: 3,
+      // marginTop: 3,
     },
     [`.${CELL.BASE}.${GRID.FIRST.ROW}`]: {
-      marginTop: 1,
+      // marginTop: 1,
+    },
+
+    /**
+     * Default cell renderer.
+     */
+    [`.${CELL.DEFAULT}`]: {
+      paddingLeft: 4,
+      paddingRight: 4,
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
     },
 
     /**

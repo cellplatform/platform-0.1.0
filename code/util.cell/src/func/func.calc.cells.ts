@@ -1,11 +1,11 @@
 import { R, t } from '../common';
+import { calculate as calculateCell } from './func.calc.cell';
 import * as util from './util';
-import { calculate } from './func.calculate';
 
 /**
  * Calculate changes across a range of cells within a table.
  */
-export async function update(args: {
+export async function calculate(args: {
   cells: string | string[];
   refs: t.IRefs;
   getValue: t.RefGetValue;
@@ -45,14 +45,14 @@ export async function update(args: {
   const list: t.IFuncResponse[] = [];
   for (const cell of keys) {
     if (await isKeyOfFormula(cell)) {
-      list.push(await calculate({ cell, refs, getValue, getFunc }));
+      list.push(await calculateCell({ cell, refs, getValue, getFunc }));
     }
   }
 
   // Finish up.
   const ok = !list.some(item => !item.ok);
   let map: t.IFuncUpdateMap;
-  return {
+  const res: t.IFuncUpdateResponse = {
     ok,
     list,
     get map() {
@@ -65,4 +65,5 @@ export async function update(args: {
       return map;
     },
   };
+  return res;
 }

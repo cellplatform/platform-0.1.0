@@ -1271,13 +1271,13 @@
     codemirror "5.49.0"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.6.23":
-  version "0.6.23"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.23.tgz#9582ae7453a17b0cf9c1fd9cc7f711a284d05c4e"
-  integrity sha512-AsOpzRB1Kkif/rm1QDimKeSwkujevZe9fNCMjI9864qpjrw0WDIOt0OZz0+LvppZ5o+6fvi99UtN/YFJlYMeYg==
+"@platform/ui.datagrid.types@0.6.26":
+  version "0.6.26"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.6.26.tgz#b5f5b5897b46a45d9e197cae26f5976bfe79c55c"
+  integrity sha512-Qjwp2fCBoqIcFJAX1dRUzNw+P1v4T4gmtZa8YMdKhtquFi9clfCv+HOvZaxr3meaRpLYmu9TWNmtzu8O36vA0Q==
   dependencies:
     "@platform/react" "0.3.26"
-    "@platform/util.cell" "0.4.1"
+    "@platform/util.cell" "0.5.0"
     "@platform/util.diff" "0.0.1"
 
 "@platform/ui.editor@0.2.3":
@@ -1362,10 +1362,10 @@
     "@platform/libs" "0.1.3"
     dynamics.js "1.1.5"
 
-"@platform/util.cell@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.cell/-/util.cell-0.4.1.tgz#4fd48a1510aa79f86421a5b8c97ca0c67d96794b"
-  integrity sha512-EAebit4F7lKj76uIfnnbxkUl3EUbvk0H2J/l3QV8nJL4xl+7KiW7t1ndRAgKKs7DmlSdxQBj8mV2ppeTjiz4xQ==
+"@platform/util.cell@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.cell/-/util.cell-0.5.0.tgz#083b04c22e2614b0284228ae4fe3010d5291d471"
+  integrity sha512-LjWwHQOiLkuvivFiTm+kqpQYfhqeDt183EaokrmOC+eQVeSiqAapbZVdiDhQ+sieXgk+AF0KtkI2nz/Z5/Ud1Q==
   dependencies:
     "@platform/cache" "0.2.0"
     "@platform/types" "^0.0.32"
