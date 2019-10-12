@@ -1220,6 +1220,14 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.32.tgz#ed64b33bd70d6491dfd1ac21eb0439f3e1f32a81"
   integrity sha512-n/J2QSvVdpK3Q4tz5Pdxq3ouovIzKvKzBD0FH7brtZNlH6TspBu6LTS/VVb/JH0Opi0O5hqKVRAgHEtMuqmb7A==
 
+"@platform/ui.button@0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.3.6.tgz#eb377e2d0ab7b4ed1b979336c47d588dc5263c50"
+  integrity sha512-JzK5Y1BYjuP4XramiF5GOvGAk0nk8Ge1FF7Au09Rc+DixD1Ekqm4Z6Mfr2ti6hmqi8+MVObEQ4ZwMmih/5NeOw==
+  dependencies:
+    "@platform/libs" "^0.1.3"
+    "@platform/react" "0.3.26"
+
 "@platform/ui.codemirror@0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.1.0.tgz#fd79b117758637e44b693c5dc20686afc75e3f3d"
@@ -1263,15 +1271,16 @@
     "@platform/util.diff" "0.0.1"
     "@platform/util.hash" "0.0.0"
 
-"@platform/ui.datagrid@0.6.30":
-  version "0.6.30"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.6.30.tgz#606ac48c3eadf9a37805050b238a7ac1cef8b1dd"
-  integrity sha512-cSoIyn+t3qxMrPo+369Sty8vBhBiT3XPOxL/5bNmFPVtKaDIErn+rDuZSPqcJafXxMNxI83WJLTylpLDUUSlEA==
+"@platform/ui.datagrid@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.7.0.tgz#8fbafbd06d228e097304c913e850589acb1e80c0"
+  integrity sha512-j1aTNpq4tv4Ga3k1djOKlpI9UKe+3xS0VCyMD4fVGYsBhUOkIU5H2j25QILeg8W8q0XnxWp/1SxQZZa2969sJA==
   dependencies:
     "@babel/polyfill" "7.6.0"
     "@platform/cache" "0.2.0"
     "@platform/libs" "0.1.3"
     "@platform/react" "0.3.26"
+    "@platform/ui.button" "0.3.6"
     "@platform/ui.datagrid.types" "0.6.26"
     "@platform/ui.datagrid.util" "0.1.4"
     "@platform/ui.object" "0.0.146"
