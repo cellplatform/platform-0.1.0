@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/cell.types@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.2.tgz#616edc1aac598ed051c7bb0dbf4d6c9497b91586"
-  integrity sha512-B8yXUI0hWH4QBLdGsX1IoCXoR0iODih9xhwD3GbG16JC/MGkivGdx0H0VCq0vZzdQa/B1ICAtxawOrzjAwrfIA==
+"@platform/cell.types@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.4.tgz#ade50a0490cab1d1e5431ba6faa19239d61578ee"
+  integrity sha512-1VpKvUmA41S6J80RaIYBamgBpu51K8rB9ymcIQ5FXUyn0fyxIdIucb858ZdUxpiGD5Er8gf00WSU8yUX/dQVDg==
   dependencies:
     "@platform/libs" "0.1.3"
 

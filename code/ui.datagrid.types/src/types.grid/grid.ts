@@ -1,6 +1,5 @@
 import { t, Observable } from '../common';
 import { KeyBindings } from '@platform/react/lib/types';
-import { IFuncUpdateResponse } from '@platform/util.cell/lib/types';
 
 export type IGrid = IGridProperties & IGridMethods;
 export type IGridProperties = {
@@ -68,7 +67,7 @@ export type IGridCalculate = {
 export type IGridCalculateResponse = {
   from: IGridCells;
   to: IGridCells;
-  func: IFuncUpdateResponse;
+  func: t.IFuncUpdateResponse;
   cells: string[];
 };
 

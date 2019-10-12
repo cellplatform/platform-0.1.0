@@ -1,7 +1,9 @@
-import { expect, testContext, t } from './TEST';
-import { func } from '.';
+import { calculate } from './func.calc.cells';
+import { expect, testContext } from './TEST';
 
-describe('func.changes', () => {
+describe('func.calc.cells (many)', function() {
+  this.timeout(5000);
+
   it('single cell update involving: FUNC/REF/binary-expr', async () => {
     const ctx = await testContext({
       A1: { value: '=SUM(A2,A3)' },
@@ -10,7 +12,7 @@ describe('func.changes', () => {
       C1: { value: 5 },
       Z9: { value: 'hello' }, // NB: Not involved.
     });
-    const res = await func.update({ cells: 'C1', ...ctx });
+    const res = await calculate({ cells: 'C1', ...ctx });
 
     expect(res.list.map(({ cell }) => cell)).to.eql(['A2', 'A3', 'A1']);
     expect(res.map.A1.data).to.eql(12);
@@ -24,7 +26,7 @@ describe('func.changes', () => {
       A2: { value: '=3+4' },
       Z9: { value: 'hello' }, // NB: Not involved.
     });
-    const res = await func.update({ cells: ['A1', 'A2'], ...ctx });
+    const res = await calculate({ cells: ['A1', 'A2'], ...ctx });
     expect(res.map.A1.data).to.eql(3);
     expect(res.map.A2.data).to.eql(7);
   });
@@ -36,7 +38,7 @@ describe('func.changes', () => {
       B2: { value: 5 },
       B3: { value: 3 },
     });
-    const res = await func.update({ cells: 'A1', ...ctx });
+    const res = await calculate({ cells: 'A1', ...ctx });
     expect(res.list.length).to.eql(1);
     expect(res.map.A1.data).to.eql(14);
   });
@@ -48,7 +50,7 @@ describe('func.changes', () => {
       B2: { value: 3 },
       C1: { value: 5 },
     });
-    const res = await func.update({ cells: 'C1', ...ctx });
+    const res = await calculate({ cells: 'C1', ...ctx });
     const cells = res.list.map(e => e.cell);
 
     expect(cells.includes('B1')).to.eql(true);
@@ -74,7 +76,7 @@ describe('func.changes', () => {
       A2: { value: '=1+2' },
       A3: { value: '=A1' },
     });
-    const res = await func.update({ cells: ['A1'], ...ctx });
+    const res = await calculate({ cells: ['A1'], ...ctx });
     expect(res.ok).to.eql(false);
   });
 });
