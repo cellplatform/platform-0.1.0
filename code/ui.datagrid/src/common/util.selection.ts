@@ -5,18 +5,18 @@ import { coord, R } from './libs';
  * Retrieves the grid values that map to the given selection.
  */
 export function toSelectionValues(args: {
-  values: t.IGridCells;
+  cells: t.IGridCells;
   selection: t.IGridSelection;
 }): t.IGridCells {
-  const { values, selection } = args;
+  const { cells, selection } = args;
   if (selection.all) {
-    return values;
+    return cells;
   }
 
   // Add focused cell value.
   const res: t.IGridCells = {};
   if (selection.cell) {
-    res[selection.cell] = values[selection.cell];
+    res[selection.cell] = cells[selection.cell];
   }
 
   // Add values from ranges.
@@ -30,7 +30,7 @@ export function toSelectionValues(args: {
   };
 
   let keys: string[] = [];
-  const all = Object.keys(values).map(key => coord.cell.toCell(key));
+  const all = Object.keys(cells).map(key => coord.cell.toCell(key));
   coord.range.union(selection.ranges).ranges.forEach(range => {
     if (coord.cell.isColumnRangeKey(range.key)) {
       keys = [...keys, ...filterAxisRange('column', range.left.column, range.right.column, all)];
@@ -43,7 +43,7 @@ export function toSelectionValues(args: {
 
   // Construct return object.
   return R.uniq(keys).reduce((acc, key) => {
-    const value = values[key] || { value: undefined };
+    const value = cells[key] || { value: undefined };
     acc[key] = value;
     return acc;
   }, res);

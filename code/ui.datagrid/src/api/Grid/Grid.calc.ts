@@ -9,12 +9,12 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
   const { grid } = args;
   const getFunc = args.getFunc || defaultGetFunc;
 
-  const getKeys: t.RefGetKeys = async () => Object.keys(grid.values);
+  const getKeys: t.RefGetKeys = async () => Object.keys(grid.cells);
 
-  const getCell: t.GridGetCell = async (key: string) => grid.values[key];
+  const getCell: t.GridGetCell = async (key: string) => grid.cells[key];
 
   const getValue: t.RefGetValue = async key => {
-    const cell = grid.values[key];
+    const cell = grid.cells[key];
     const value = cell ? cell.value : undefined;
     return typeof value === 'function' ? value() : value;
   };

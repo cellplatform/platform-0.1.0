@@ -47,7 +47,7 @@ describe('Grid', () => {
     expect(grid.isEditing).to.eql(false);
     expect(grid.totalColumns).to.eql(10);
     expect(grid.totalRows).to.eql(5);
-    expect(grid.values).to.eql(values);
+    expect(grid.cells).to.eql(values);
     expect(grid.columns).to.eql(columns);
     expect(grid.rows).to.eql(rows);
   });
@@ -71,10 +71,10 @@ describe('Grid', () => {
     it('force: true', () => {
       let values = { A1: { value: 123 }, A2: { value: 456 } } as any;
       const grid = createGrid({ values });
-      expect(grid.values).to.eql(values);
+      expect(grid.cells).to.eql(values);
 
       grid.updateHashes({ force: true });
-      values = grid.values;
+      values = grid.cells;
       expect(values.A1.hash).to.eql(util.cellHash('A1', { value: 123 }));
       expect(values.A2.hash).to.eql(util.cellHash('A2', { value: 456 }));
     });
@@ -82,10 +82,10 @@ describe('Grid', () => {
     it('force: false (default)', () => {
       let values = { A1: { value: 123, hash: 'foo' }, A2: { value: 456 } } as any;
       const grid = createGrid({ values });
-      expect(grid.values).to.eql(values);
+      expect(grid.cells).to.eql(values);
 
       grid.updateHashes();
-      values = grid.values;
+      values = grid.cells;
       expect(values.A1.hash).to.eql('foo');
       expect(values.A2.hash).to.eql(util.cellHash('A2', { value: 456 }));
     });
@@ -126,12 +126,12 @@ describe('Grid', () => {
   describe('changeCells', () => {
     it('changes an existing value', () => {
       const grid = createGrid({ values: { A1: { value: 123 } } });
-      const res1 = grid.values;
-      expect(res1).to.equal(grid.values);
+      const res1 = grid.cells;
+      expect(res1).to.equal(grid.cells);
       expect(res1).to.eql({ A1: { value: 123 } });
 
       grid.changeCells({ A1: { value: 456 } });
-      const res2 = grid.values as any;
+      const res2 = grid.cells as any;
       expect(res1).to.not.equal(res2);
       expect(res2.A1.value).to.eql(456);
     });
@@ -139,21 +139,21 @@ describe('Grid', () => {
     it('adds a new value', () => {
       const grid = createGrid({ values: { A1: { value: 123 } } });
       grid.changeCells({ B1: { value: 'hello' } });
-      const values = grid.values as any;
+      const values = grid.cells as any;
       expect(values.A1.value).to.eql(123);
       expect(values.B1.value).to.eql('hello');
     });
 
     it('does not store empty values', () => {
       const grid = createGrid();
-      expect(grid.values).to.eql({});
+      expect(grid.cells).to.eql({});
       grid.changeCells({
         A1: { value: '' },
         A2: { value: undefined },
         A3: { value: undefined, props: {} },
         A4: { value: '', props: {} },
       });
-      expect(grid.values).to.eql({});
+      expect(grid.cells).to.eql({});
     });
 
     it('deletes empty values', () => {
@@ -164,13 +164,13 @@ describe('Grid', () => {
           A3: { value: 789 },
         },
       });
-      expect(Object.keys(grid.values)).to.eql(['A1', 'A2', 'A3']);
+      expect(Object.keys(grid.cells)).to.eql(['A1', 'A2', 'A3']);
       grid.changeCells({
         A1: { value: '', props: {} },
         A2: { value: undefined, props: { bold: true } }, // NB: Not empty because of props.
         A3: undefined,
       });
-      expect(Object.keys(grid.values)).to.eql(['A2']);
+      expect(Object.keys(grid.cells)).to.eql(['A2']);
     });
 
     it('does nothing with column/row values', () => {
@@ -180,17 +180,17 @@ describe('Grid', () => {
         '1': { height: 250 }, // Not allowed (stripped off).
         A: { width: 400 }, //    Not allowed (stripped off).
       } as any);
-      const values = grid.values as any;
+      const values = grid.cells as any;
       expect(Object.keys(values)).to.eql(['A1']);
       expect(values.A1.value).to.eql(123);
     });
 
     it('assigns hash (to changed values)', () => {
       const grid = createGrid({ values: { A1: { value: 123 } } });
-      expect(grid.values).to.eql({ A1: { value: 123 } });
+      expect(grid.cells).to.eql({ A1: { value: 123 } });
       grid.changeCells({ A2: { value: 'hello' } });
 
-      const values = grid.values as any;
+      const values = grid.cells as any;
       expect(values.A1).to.eql({ value: 123 });
       expect(values.A2.value).to.eql('hello');
       expect(values.A2.hash).to.eql(util.cellHash('A2', { value: 'hello' }));
@@ -199,19 +199,19 @@ describe('Grid', () => {
     it('replaces values (init:true)', () => {
       const grid = createGrid({ values: { A1: { value: 123 } } });
       grid.changeCells({ A2: { value: 456 } }, { init: true });
-      const values = grid.values as any;
+      const values = grid.cells as any;
       expect(values.A1).to.eql(undefined);
       expect(values.A2.value).to.eql(456);
     });
 
     it('deletes empty props objects', () => {
       const grid = createGrid({ values: { A1: { value: 123, props: {} } } });
-      let values = grid.values as any;
+      let values = grid.cells as any;
       expect(values.A1.props).to.eql({});
 
       grid.changeCells({ A1: { value: 456 } });
 
-      values = grid.values;
+      values = grid.cells;
       expect(values.A1.props).to.eql(undefined);
     });
   });

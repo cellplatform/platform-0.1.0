@@ -40,13 +40,13 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   private testGridRef = (ref: TestGridView) => (this.testGrid = ref);
 
   private getValueSync = (key: string) => {
-    const cell = this.grid.values[key];
+    const cell = this.grid.cells[key];
     return cell && typeof cell.value === 'string' ? cell.value : undefined;
   };
   private getValue: t.RefGetValue = async key => this.getValueSync(key);
 
   private refTable = coord.refs.table({
-    getKeys: async () => Object.keys(this.grid.values),
+    getKeys: async () => Object.keys(this.grid.cells),
     getValue: this.getValue,
   });
 
@@ -233,7 +233,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     return (
       <div {...styles.base}>
         {this.button('calc (all)', async () => {
-          const cells = Object.keys(this.grid.values);
+          const cells = Object.keys(this.grid.cells);
           this.grid.calc.update({ cells });
         })}
         <Hr margin={5} />

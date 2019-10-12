@@ -90,7 +90,7 @@ export class Grid implements t.IGrid {
     this.totalColumns = args.totalColumns;
     this.totalRows = args.totalRows;
     this._.table = args.table;
-    this._.values = args.values || {};
+    this._.cells = args.values || {};
     this._.columns = args.columns || {};
     this._.rows = args.rows || {};
     this._.calc = calc({ grid: this, getFunc: args.getFunc });
@@ -215,7 +215,7 @@ export class Grid implements t.IGrid {
     redraw$: new Subject(),
     isReady: false,
     isEditing: false,
-    values: ({} as unknown) as t.IGrid['values'],
+    cells: ({} as unknown) as t.IGrid['cells'],
     columns: ({} as unknown) as t.IGridColumns,
     rows: ({} as unknown) as t.IGridRows,
     lastSelection: (undefined as unknown) as t.IGridSelection,
@@ -255,15 +255,15 @@ export class Grid implements t.IGrid {
     return this._.isEditing;
   }
 
-  public get values() {
-    return this._.values;
+  public get cells() {
+    return this._.cells;
   }
   private setValues(values: t.IGridCells) {
     values = { ...values };
     const totalColumns = this.totalColumns;
     const totalRows = this.totalRows;
     const data = Grid.toDataArray({ values, totalColumns, totalRows });
-    this._.values = values;
+    this._.cells = values;
     this._.table.loadData(data);
   }
 
@@ -397,9 +397,9 @@ export class Grid implements t.IGrid {
    * Retrieves the currently selected key/value pairs.
    */
   public get selectionValues(): t.IGridCells {
-    const values = this.values;
+    const values = this.cells;
     const selection = this.selection;
-    return toSelectionValues({ values, selection });
+    return toSelectionValues({ cells: values, selection });
   }
 
   /**
@@ -511,7 +511,7 @@ export class Grid implements t.IGrid {
 
     if (values) {
       // Process input object.
-      const current = { ...(options.init ? {} : this.values) };
+      const current = { ...(options.init ? {} : this.cells) };
       values = { ...values };
 
       // Ensure only cells (eg "A1") not rows/columns (eg "B" or "3").
@@ -769,7 +769,7 @@ export class Grid implements t.IGrid {
    * Updates the cell hash for each value.
    */
   public updateHashes(options: { force?: boolean } = {}) {
-    const values = { ...this.values };
+    const values = { ...this.cells };
     let isChanged = false;
     Object.keys(values).forEach(key => {
       const value = values[key];
