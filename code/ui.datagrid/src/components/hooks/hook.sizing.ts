@@ -1,7 +1,5 @@
-import * as coord from '@platform/util.cell';
-
 import { Grid } from '../../api';
-import { constants } from '../../common';
+import { constants, coord } from '../../common';
 
 const { DEFAULT } = constants;
 

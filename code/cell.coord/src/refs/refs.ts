@@ -1,4 +1,4 @@
-export * from './types';
+export * from '@platform/cell.types/lib/types.refs';
 export * from './refs.incoming';
 export * from './refs.outgoing';
 export * from './refs.table';
