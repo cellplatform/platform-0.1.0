@@ -1,8 +1,6 @@
-import { cell as util } from '@platform/util.cell';
-
 import { Grid, Editor } from '../api';
 import * as hooks from './hooks';
-import { constants, t } from '../common';
+import { constants, t, coord } from '../common';
 
 const { DEFAULT } = constants;
 
@@ -39,7 +37,7 @@ export function getSettings(args: {
     const grid = getGrid();
     let width = defaults.columWidth;
     if (grid) {
-      const key = util.toKey(index);
+      const key = coord.cell.toKey(index);
       const column = grid.columns[key];
       width = column && column.width !== undefined ? column.width : width;
     }

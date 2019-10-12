@@ -1,4 +1,4 @@
-import { getFunc } from '@platform/util.cell/lib/func/TEST';
+import { getFunc } from '@platform/cell.coord/lib/func/TEST';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';

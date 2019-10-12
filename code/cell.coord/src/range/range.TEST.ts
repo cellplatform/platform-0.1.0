@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import * as coord from '..';
+import { coord } from '..';
 
 describe('range', () => {
   it('range', () => {

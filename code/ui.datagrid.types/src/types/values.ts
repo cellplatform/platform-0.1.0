@@ -1,5 +1,5 @@
-import { ICoord, ICoordCell } from '@platform/util.cell/lib/types';
-export { ICoord, ICoordCell };
+import { ICoord } from '@platform/cell.types';
+export { ICoord };
 
 export type ISize = { width: number; height: number };
 

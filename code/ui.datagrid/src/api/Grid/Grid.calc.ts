@@ -22,6 +22,8 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
   const table = coord.refs.table({ getKeys, getValue });
   const calculate = coord.func.calculate({ getValue, getFunc });
 
+  // coord.func.update
+
   /**
    * Calculate a set of changes.
    */

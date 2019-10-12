@@ -1,5 +1,4 @@
 import * as util from '@platform/ui.datagrid.util';
-import * as coord from '@platform/util.cell';
 
 export * from './libs.Handsontable';
 
@@ -15,7 +14,7 @@ export { MemoryCache } from '@platform/cache';
 /**
  * Cell coords (eg "A1", "A1:C9").
  */
-export { coord };
+export { coord } from '@platform/cell.coord';
 
 /**
  * Ramda.
