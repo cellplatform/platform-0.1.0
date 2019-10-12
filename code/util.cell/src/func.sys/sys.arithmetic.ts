@@ -7,7 +7,7 @@ import * as util from './util';
 export const sum: t.FuncInvoker = async args => {
   const params = util.paramsToNumbers(args.params);
   return params.length === 0
-    ? undefined
+    ? 0
     : params.reduce((acc, next, i) => (i === 0 ? next : acc + next), 0);
 };
 
