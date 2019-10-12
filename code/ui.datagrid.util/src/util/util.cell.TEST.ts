@@ -53,9 +53,11 @@ describe('util.cell', () => {
     test({}, true);
     test({ style: {} }, true);
     test({ style: {}, merge: {} }, true);
+    test({ style: {}, merge: {}, view: {} }, true);
 
     test({ style: { bold: true } }, false);
     test({ style: { bold: true }, merge: {} }, false);
+    test({ view: { type: 'DEFAULT' } }, false);
   });
 
   describe('isChanged', () => {
@@ -144,9 +146,10 @@ describe('util.cell', () => {
     it('has default props (empty {})', () => {
       const test = (input?: any) => {
         const res = util.toCellProps(input);
+        expect(res.value).to.eql(undefined);
         expect(res.merge).to.eql({});
         expect(res.style).to.eql({});
-        expect(res.value).to.eql(undefined);
+        expect(res.view).to.eql({});
       };
       test();
       test(null);
@@ -160,43 +163,161 @@ describe('util.cell', () => {
           value: 456, // NB: Display value.
           style: { bold: true },
           merge: { colspan: 3 },
+          view: { type: 'SHOP' },
         },
       };
       const props = util.toCellProps(A2.props);
       expect(props.style.bold).to.eql(true);
       expect(props.merge.colspan).to.eql(3);
       expect(props.value).to.eql(456);
+      expect(props.view.type).to.eql('SHOP');
+    });
+  });
+
+  describe('setCellProp', () => {
+    const defaults: t.ICellPropsStyleAll = { bold: false, italic: false, underline: false };
+
+    it('no change', () => {
+      const res1 = util.setCellProp<'style'>({
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+
+      const res2 = util.setCellProp<'style'>({
+        defaults,
+        props: { style: { bold: true } },
+        section: 'style',
+        field: 'bold',
+        value: true,
+      });
+      expect(res1).to.eql(undefined);
+      expect(res2).to.eql({ style: { bold: true } });
+    });
+
+    it('from undefined props (generates new object)', () => {
+      const res1 = util.setCellProp<'style'>({
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: true,
+      });
+      const res2 = util.setCellProp<'style'>({
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+      expect(res1).to.eql({ style: { bold: true } });
+      expect(res2).to.eql(undefined); // NB: All default props shake out to be nothing (undefined).
+    });
+
+    it('deletes default property value', () => {
+      const res1 = util.setCellProp<'style'>({
+        props: { style: { bold: true, italic: false } },
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+      const res2 = util.setCellProp<'style'>({
+        props: { style: { bold: true, italic: true } },
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+
+      const res3 = util.setCellProp<'style'>({
+        defaults,
+        props: res2,
+        section: 'style',
+        field: 'italic',
+        value: false,
+      });
+
+      const res4 = util.setCellProp<'style'>({
+        props: { style: { bold: true }, merge: { colspan: 2 } },
+        defaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+
+      expect(res1).to.eql(undefined); // NB: All default props shake out to be nothing (undefined).
+      expect(res2).to.eql({ style: { italic: true } });
+      expect(res3).to.eql(undefined); // NB: Italic flipped to default (false).
+      expect(res4).to.eql({ merge: { colspan: 2 } });
+    });
+  });
+
+  describe('toggleCellProp', () => {
+    const defaults: t.ICellPropsStyleAll = { bold: false, italic: false, underline: false };
+
+    it('non-boolean values ignored', () => {
+      const style = { bold: { msg: 'NEVER' } } as any;
+      const props = { style };
+      const res = util.toggleCellProp<'style'>({
+        defaults,
+        section: 'style',
+        field: 'bold',
+        props,
+      });
+      expect(res).to.eql(props); // Non boolean field value ignored.
+    });
+
+    it('toggle sequence', () => {
+      const section = 'style';
+      const field = 'bold';
+
+      const res1 = util.toggleCellProp<'style'>({ defaults, section, field });
+      const res2 = util.toggleCellProp<'style'>({ defaults, props: res1, section, field });
+      const res3 = util.toggleCellProp<'style'>({ defaults, props: res2, section, field });
+      const res4 = util.toggleCellProp<'style'>({
+        defaults,
+        props: res3,
+        section,
+        field: 'italic',
+      });
+      const res5 = util.toggleCellProp<'style'>({ defaults, props: res4, section, field });
+
+      expect(res1).to.eql({ style: { bold: true } }); // Nothing => true (default)
+      expect(res2).to.eql(undefined); // True to nothing
+      expect(res3).to.eql({ style: { bold: true } }); // Nothing => true (default)
+      expect(res4).to.eql({ style: { bold: true, italic: true } });
+      expect(res5).to.eql({ style: { italic: true } });
     });
   });
 
   describe('cellHash', () => {
     it('hashes a cell', () => {
       const test = (input: t.IGridCell | undefined, expected: string) => {
-        const res = util.cellHash('A1', input);
-        expect(res).to.eql(expected);
+        const hash = util.cellHash('A1', input);
+        expect(hash).to.eql(expected);
       };
 
-      test(undefined, '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9');
+      test(undefined, 'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1');
       test(
         { value: undefined },
-        '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9',
+        'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1',
       );
-      test({ value: null }, 'e90b1e5185634ff7eb71ad1ed47c8d65e0a45b06e238bedac1007ff20a24fab2');
-      test({ value: 123 }, 'ffbabfe82d5db68798fc20b61ef3204cc7995b794230ccf58ade9369ec541a64');
-      test({ value: '' }, '2b2eb727231902b2b1e562e0e01ddb7d231e2858a40aafd246ed91021af884cb');
-      test({ value: 'hello' }, '5deefee8d6f76ff023111b545000074670a148074b3404ac1b886e70e02b22dc');
+      test({ value: null }, 'cf2c26de25cb119316c7963e8ba8e92a9f5d06eeddcbb7d622368fa38c0a780b');
+      test({ value: 123 }, '7ba09a3711b0408bb18bcefc9c9d46c29e68c38f43ff68073c1a334b84973b9f');
+      test({ value: '' }, '39aae42e27b6aecbf7f709b865b4d7ea5ba9a79211314ef8b88a564b31e784b0');
+      test({ value: 'hello' }, 'ae8b1b48a7ee66bc33eb4724faea76446d477ca5eb9abe511e5f8cbf38494af6');
       test(
         { value: 'hello', props: {} },
-        '5deefee8d6f76ff023111b545000074670a148074b3404ac1b886e70e02b22dc',
+        'ae8b1b48a7ee66bc33eb4724faea76446d477ca5eb9abe511e5f8cbf38494af6',
       );
       test(
         { value: 'hello', props: { style: { bold: true } } },
-        'b6477f70b3356b662eddba42de17ef1cf5ba12d94764201596fdc5a89d92c10e',
+        '06f576fe62119f830b7680bcee942f424f250a49915a458c9cd26e8ea102dafb',
       );
     });
 
     it('same hash for no param AND no cell-value', () => {
-      const HASH = '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9';
+      const HASH = 'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1';
       const test = (input?: t.IGridCell) => {
         const res = util.cellHash('A1', input);
         expect(res).to.eql(HASH);
@@ -207,7 +328,7 @@ describe('util.cell', () => {
     });
 
     it('returns same hash for equivalent props variants', () => {
-      const HASH = 'ffbabfe82d5db68798fc20b61ef3204cc7995b794230ccf58ade9369ec541a64';
+      const HASH = '7ba09a3711b0408bb18bcefc9c9d46c29e68c38f43ff68073c1a334b84973b9f';
       const test = (props?: t.ICellProps) => {
         const res = util.cellHash('A1', { value: 123, props });
         expect(res).to.eql(HASH);

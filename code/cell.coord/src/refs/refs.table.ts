@@ -94,7 +94,7 @@ class RefsTable implements t.IRefsTable {
   public async refs(args: { range?: string | string[]; force?: boolean } = {}): Promise<t.IRefs> {
     this.throwIfDisposed('refs');
     const outRefs = await this.outgoing(args);
-    const inRefs = await this.incoming({ ...args, outRefs });
+    const inRefs = await this.incoming({ ...args, range: undefined, outRefs });
     return {
       in: inRefs,
       out: outRefs,

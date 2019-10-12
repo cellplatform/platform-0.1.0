@@ -34,7 +34,7 @@ export type ICellDiff = {
  */
 
 export type IGridCellChange = {
-  cell: t.ICell;
+  cell: t.ICoordCell;
   value: { from?: t.IGridCell; to?: t.IGridCell };
   isCancelled: boolean;
   isChanged: boolean;

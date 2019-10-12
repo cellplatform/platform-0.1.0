@@ -4,9 +4,17 @@ import * as t from './types';
 export const COLORS = {
   WHITE: '#fff',
   DARK: '#293042', // Inky blue/black.
-  YELLOW: '#FBC72F',
   BLUE: '#4B89FF',
-  PINK: '#FF0048',
+  CLI: {
+    BLUE: '#477AF7',
+    YELLOW: '#FBC72F',
+    MAGENTA: '#FE0064',
+    CYAN: '#67D9EF',
+    LIME: '#A6E130',
+    DARK_RED: '#CB352F',
+    PURPLE: '#8F2298',
+    PINK: '#DC6FEC',
+  },
 };
 
 export const CSS = {
@@ -22,6 +30,7 @@ export const CSS = {
     CELL: {
       MARKDOWN: 'p-editor-markdown', // See [@platform/ui.editor/lib/common/constants]
       BASE: 'p-dg-cell',
+      DEFAULT: 'p-dg-cell-default',
       EDITOR: 'p-dg-cellEditor',
       BOLD: 'p-dg-cell-bold',
       ITALIC: 'p-dg-cell-italic',
@@ -40,14 +49,15 @@ const KEY_BINDINGS: t.KeyBindings<t.GridCommand> = [
   { command: 'UNDERLINE', key: 'Meta+U' },
 ];
 
-const CELL_PROPS_STYLE: t.ICellPropsStyle = {
-  bold: false,
-  italic: false,
-  underline: false,
+type CellPropDefaults = {
+  style: t.ICellPropsStyleAll;
+  merge: t.ICellPropsMergeAll;
+  view: t.ICellPropsViewAll;
 };
-const CELL_PROPS_MERGE: t.ICellPropsMerge = {
-  rowspan: 1,
-  colspan: 1,
+const CELL_PROPS: CellPropDefaults = {
+  style: { bold: false, italic: false, underline: false },
+  merge: { rowspan: 1, colspan: 1 },
+  view: { type: 'DEFAULT', className: CSS.CLASS.CELL.DEFAULT },
 };
 
 export const DEFAULT = {
@@ -64,9 +74,6 @@ export const DEFAULT = {
   },
   CELL: {
     RENDERER: 'cell',
-    PROPS: {
-      STYLE: CELL_PROPS_STYLE,
-      MERGE: CELL_PROPS_MERGE,
-    },
+    PROPS: CELL_PROPS,
   },
 };
