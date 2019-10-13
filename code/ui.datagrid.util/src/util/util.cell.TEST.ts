@@ -360,11 +360,10 @@ describe('util.cell', () => {
   });
 
   describe('cellHash', () => {
-    it.only('hashes a cell', () => {
+    it('hashes a cell', () => {
       const test = (input: t.IGridCell | undefined, expected: string) => {
         const hash = util.cellHash('A1', input);
-        console.log(hash);
-        // expect(hash).to.eql(expected);
+        expect(hash).to.eql(expected);
       };
 
       test(undefined, 'sha256/e68b3a4b54915defb00c6c038e76a9f807fc3b1440d88181eeecef3e61556906');
@@ -399,7 +398,7 @@ describe('util.cell', () => {
     });
 
     it('same hash for no param AND no cell-value', () => {
-      const HASH = 'sha256/e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1';
+      const HASH = 'sha256/e68b3a4b54915defb00c6c038e76a9f807fc3b1440d88181eeecef3e61556906';
       const test = (input?: t.IGridCell) => {
         const res = util.cellHash('A1', input);
         expect(res).to.eql(HASH);
@@ -410,7 +409,7 @@ describe('util.cell', () => {
     });
 
     it('returns same hash for equivalent props variants', () => {
-      const HASH = 'sha256/7ba09a3711b0408bb18bcefc9c9d46c29e68c38f43ff68073c1a334b84973b9f';
+      const HASH = 'sha256/f2b1b79c36d5687b099d88daeb8d43655d5572516583e9ebdb9e70eccfdec350';
       const test = (props?: t.ICellProps) => {
         const res = util.cellHash('A1', { value: 123, props });
         expect(res).to.eql(HASH);
