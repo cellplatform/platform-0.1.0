@@ -297,27 +297,39 @@ describe('util.cell', () => {
         expect(hash).to.eql(expected);
       };
 
-      test(undefined, 'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1');
+      test(undefined, 'sha256/e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1');
       test(
         { value: undefined },
-        'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1',
+        'sha256/e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1',
       );
-      test({ value: null }, 'cf2c26de25cb119316c7963e8ba8e92a9f5d06eeddcbb7d622368fa38c0a780b');
-      test({ value: 123 }, '7ba09a3711b0408bb18bcefc9c9d46c29e68c38f43ff68073c1a334b84973b9f');
-      test({ value: '' }, '39aae42e27b6aecbf7f709b865b4d7ea5ba9a79211314ef8b88a564b31e784b0');
-      test({ value: 'hello' }, 'ae8b1b48a7ee66bc33eb4724faea76446d477ca5eb9abe511e5f8cbf38494af6');
+      test(
+        { value: null },
+        'sha256/cf2c26de25cb119316c7963e8ba8e92a9f5d06eeddcbb7d622368fa38c0a780b',
+      );
+      test(
+        { value: 123 },
+        'sha256/7ba09a3711b0408bb18bcefc9c9d46c29e68c38f43ff68073c1a334b84973b9f',
+      );
+      test(
+        { value: '' },
+        'sha256/39aae42e27b6aecbf7f709b865b4d7ea5ba9a79211314ef8b88a564b31e784b0',
+      );
+      test(
+        { value: 'hello' },
+        'sha256/ae8b1b48a7ee66bc33eb4724faea76446d477ca5eb9abe511e5f8cbf38494af6',
+      );
       test(
         { value: 'hello', props: {} },
-        'ae8b1b48a7ee66bc33eb4724faea76446d477ca5eb9abe511e5f8cbf38494af6',
+        'sha256/ae8b1b48a7ee66bc33eb4724faea76446d477ca5eb9abe511e5f8cbf38494af6',
       );
       test(
         { value: 'hello', props: { style: { bold: true } } },
-        '06f576fe62119f830b7680bcee942f424f250a49915a458c9cd26e8ea102dafb',
+        'sha256/06f576fe62119f830b7680bcee942f424f250a49915a458c9cd26e8ea102dafb',
       );
     });
 
     it('same hash for no param AND no cell-value', () => {
-      const HASH = 'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1';
+      const HASH = 'sha256/e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1';
       const test = (input?: t.IGridCell) => {
         const res = util.cellHash('A1', input);
         expect(res).to.eql(HASH);
@@ -328,7 +340,7 @@ describe('util.cell', () => {
     });
 
     it('returns same hash for equivalent props variants', () => {
-      const HASH = '7ba09a3711b0408bb18bcefc9c9d46c29e68c38f43ff68073c1a334b84973b9f';
+      const HASH = 'sha256/7ba09a3711b0408bb18bcefc9c9d46c29e68c38f43ff68073c1a334b84973b9f';
       const test = (props?: t.ICellProps) => {
         const res = util.cellHash('A1', { value: 123, props });
         expect(res).to.eql(HASH);

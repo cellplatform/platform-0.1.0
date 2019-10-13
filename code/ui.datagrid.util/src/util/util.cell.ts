@@ -161,5 +161,6 @@ export function cellDiff(left: t.IGridCell, right: t.IGridCell): t.ICellDiff {
 export function cellHash(key: string, data?: t.IGridCell): string {
   const value = data ? data.value : undefined;
   const props = toCellProps(data ? data.props : undefined);
-  return hash.sha256({ key, value, props });
+  const sha256 = hash.sha256({ key, value, props });
+  return `sha256/${sha256}`;
 }
