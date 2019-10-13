@@ -1,23 +1,9 @@
-import { getFunc } from '@platform/cell.coord/lib/func/TEST';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';
 
-import {
-  Button,
-  color,
-  COLORS,
-  constants,
-  coord,
-  css,
-  datagrid,
-  GlamorValue,
-  Hr,
-  log,
-  ObjectView,
-  t,
-  testData,
-} from '../common';
+import { Button, color, COLORS, coord, css, datagrid, GlamorValue, Hr, log, t } from '../common';
+import { testData, getFunc } from '../data';
 import { TestGridView } from './Test.Grid.view';
 
 export type ITestGridProps = {

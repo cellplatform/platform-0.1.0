@@ -987,7 +987,15 @@
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.types@0.0.5":
+"@platform/cell.func@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/cell.func/-/cell.func-0.0.5.tgz#0d99204913c70109356645e58addde38f9b50130"
+  integrity sha512-aIJ86VNjQpmlrpJg4CiEJffKlNNkzPjUS8G8lPMUIqidbRddrzTRphRYiJ+piaJWT/XmkecD0vgXIa31m1rQOg==
+  dependencies:
+    "@platform/cell.types" "^0.0.5"
+    "@platform/libs" "0.1.3"
+
+"@platform/cell.types@0.0.5", "@platform/cell.types@^0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.5.tgz#2fe2362030ab2ec221e6ba453504454c98376f2d"
   integrity sha512-zaGtOkcwSYSRFaXKiR4KyJvida0NwItMb6C/SHzgtWS29TdkfSFK0AN5phK/W5AB+fOKwnFboTZbRRB2L0etNA==
@@ -1214,7 +1222,7 @@
     "@platform/libs" "^0.1.3"
     "@platform/react" "0.3.26"
 
-"@platform/ui.codemirror@0.1.0", "@platform/ui.codemirror@^0.1.0":
+"@platform/ui.codemirror@0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.1.0.tgz#fd79b117758637e44b693c5dc20686afc75e3f3d"
   integrity sha512-MEp5/j6m/hHt+31wBHhBViYi407SFj4dK/VnouEu0Vt/Igh+smCHgw3ygAjs36OOJHWEN8sQIWfoEhjLQ355dg==

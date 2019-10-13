@@ -12,7 +12,7 @@ import {
   t,
 } from '../common';
 import { DebugEditor } from './Debug.Editor';
-import { SAMPLE } from './SAMPLE';
+import { SAMPLE } from '../data';
 
 export type DataGrid = datagrid.DataGrid;
 
