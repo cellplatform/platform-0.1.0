@@ -25,23 +25,23 @@
   dependencies:
     "@platform/libs" "0.1.3"
 
-"@platform/cell.coord@0.5.7":
-  version "0.5.7"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.5.7.tgz#bde11c999c65054c4ad43768bea38276052e7735"
-  integrity sha512-KVukHfKSF9zE635uJUVgQu9xy8j3bhyYhxMAyMCY7BIxseM+z8CjZvbW7sNzFchmYjUfb4E0tBzlvd+PrG6p1A==
+"@platform/cell.coord@0.5.8":
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.5.8.tgz#4471d6699098522cb512149f7847bf7dce3c62f7"
+  integrity sha512-1XBskmgyrLIx6SNnpOu7Vv4zQBGawk5HHiTGDGJwt++7caKiofSIHNKHBxPSrJTKhbKTl9PKNoNrmOz29W+krg==
   dependencies:
     "@platform/cache" "0.2.0"
-    "@platform/cell.types" "0.0.5"
+    "@platform/cell.types" "0.0.6"
     "@platform/types" "0.0.32"
     "@platform/util.value" "0.5.5"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.types@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.5.tgz#2fe2362030ab2ec221e6ba453504454c98376f2d"
-  integrity sha512-zaGtOkcwSYSRFaXKiR4KyJvida0NwItMb6C/SHzgtWS29TdkfSFK0AN5phK/W5AB+fOKwnFboTZbRRB2L0etNA==
+"@platform/cell.types@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.6.tgz#422c25c0be45fcc61c5b09a795343c2c6fb0c076"
+  integrity sha512-o+ZUhBnu5ir3uEfFSJmy5ZsLykbnYgGUbpqdjkj+CDyU5FG5L1pkvlDsMubQWrrKXFXvzDrMA96UVNRfbi4R2Q==
   dependencies:
     "@platform/libs" "0.1.3"
 
@@ -130,7 +130,7 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.94.tgz#0042c7575a6c02fb2c09dd6cc371f688efc5a46d"
   integrity sha512-uhlf3XfYEl79i+CxIfATcWGCdNaECH82398zGXcPbZtEk/UQmlwocyreeyqya5mjchERwPJiWj//qir3pCykSw==
 
-"@platform/util.value@0.5.5", "@platform/util.value@^0.5.5":
+"@platform/util.value@0.5.5":
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.5.5.tgz#52bdd8bbefbc6d0b43f299fbdd688df719fdcd5c"
   integrity sha512-/LUpMNNjQ8KIH6/lWBWB879Ie1hTVo36vEWXmTUHwBN1/VXoAIXzSEdoNCZ8VAsnHnrG5doPII8wUCzN5PyKvw==
