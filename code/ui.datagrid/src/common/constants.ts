@@ -36,6 +36,7 @@ export const CSS = {
       ITALIC: 'p-dg-cell-italic',
       UNDERLINE: 'p-dg-cell-underline',
       FORMULA: 'p-dg-cell-formula',
+      ERROR: 'p-dg-cell-error',
     },
   },
 };
@@ -53,11 +54,13 @@ type CellPropDefaults = {
   style: t.ICellPropsStyleAll;
   merge: t.ICellPropsMergeAll;
   view: t.ICellPropsViewAll;
+  status: t.ICellPropsStatusAll;
 };
 const CELL_PROPS: CellPropDefaults = {
   style: { bold: false, italic: false, underline: false },
   merge: { rowspan: 1, colspan: 1 },
   view: { type: 'DEFAULT', className: CSS.CLASS.CELL.DEFAULT },
+  status: {},
 };
 
 export const DEFAULT = {

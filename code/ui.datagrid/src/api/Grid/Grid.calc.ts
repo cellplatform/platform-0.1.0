@@ -1,4 +1,4 @@
-import { coord, t } from '../../common';
+import { coord, t, util } from '../../common';
 
 const defaultGetFunc: t.GetFunc = async args => undefined; // NB: Empty stub.
 
@@ -22,8 +22,6 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
   const table = coord.refs.table({ getKeys, getValue });
   const calculate = coord.func.calculate({ getValue, getFunc });
 
-  // coord.func.update
-
   /**
    * Calculate a set of changes.
    */
@@ -38,15 +36,26 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
     // Prepare grid update set.
     const from: t.IGridCells = {};
     const to: t.IGridCells = {};
-    const addChange = async (key: string, value: any) => {
+    const addChange = async (key: string, value: any, error?: t.IFuncError) => {
       const cell = await getCell(key);
       if (cell) {
-        const props = value === undefined ? cell.props : { ...cell.props, value };
+        let props: t.ICellProps | undefined =
+          value === undefined ? { ...cell.props } : { ...cell.props, value };
+        if (error) {
+          const { type, message } = error;
+          props = util.setCellProp({
+            props,
+            defaults: {},
+            section: 'status',
+            field: 'error',
+            value: { type, message },
+          });
+        }
         from[key] = cell;
         to[key] = { ...cell, props };
       }
     };
-    await Promise.all(func.list.map(item => addChange(item.cell, item.data)));
+    await Promise.all(func.list.map(item => addChange(item.cell, item.data, item.error)));
 
     // Finish up.
     return {

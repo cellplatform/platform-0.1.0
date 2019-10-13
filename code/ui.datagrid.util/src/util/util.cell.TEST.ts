@@ -16,6 +16,10 @@ describe('util.cell', () => {
     test({ value: undefined, hash: 'abc123z' }, true);
     test({ value: undefined, props: {} }, true); // NB: props object is empty.
     test({ value: '', props: {} }, true);
+    test({ value: '', props: { status: {} } }, true);
+    test({ value: '', props: { status: {}, style: {}, view: {}, merge: {} } }, true);
+    test({ value: undefined, props: { status: {}, style: {}, view: {}, merge: {} } }, true);
+    test({ props: { status: {}, style: {}, view: {}, merge: {} } }, true);
 
     test({ value: ' ' }, false);
     test({ value: ' ', hash }, false);
@@ -54,10 +58,12 @@ describe('util.cell', () => {
     test({ style: {} }, true);
     test({ style: {}, merge: {} }, true);
     test({ style: {}, merge: {}, view: {} }, true);
+    test({ status: {} }, true);
 
     test({ style: { bold: true } }, false);
     test({ style: { bold: true }, merge: {} }, false);
     test({ view: { type: 'DEFAULT' } }, false);
+    test({ status: { error: { message: 'Fail', type: 'UNKNOWN' } } }, false);
   });
 
   describe('isChanged', () => {
@@ -150,6 +156,7 @@ describe('util.cell', () => {
         expect(res.merge).to.eql({});
         expect(res.style).to.eql({});
         expect(res.view).to.eql({});
+        expect(res.status).to.eql({});
       };
       test();
       test(null);
@@ -164,6 +171,9 @@ describe('util.cell', () => {
           style: { bold: true },
           merge: { colspan: 3 },
           view: { type: 'SHOP' },
+          status: {
+            error: { message: 'Fail', type: 'UNKNOWN' },
+          },
         },
       };
       const props = util.toCellProps(A2.props);
@@ -171,6 +181,7 @@ describe('util.cell', () => {
       expect(props.merge.colspan).to.eql(3);
       expect(props.value).to.eql(456);
       expect(props.view.type).to.eql('SHOP');
+      expect(props.status.error).to.eql({ message: 'Fail', type: 'UNKNOWN' });
     });
   });
 
@@ -297,30 +308,42 @@ describe('util.cell', () => {
         expect(hash).to.eql(expected);
       };
 
-      test(undefined, 'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1');
+      test(undefined, 'sha256/5cbb07f7321efddf98f0b4f7f977600e11adbc5d169f1a86ee291b75dce7d925');
       test(
         { value: undefined },
-        'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1',
+        'sha256/5cbb07f7321efddf98f0b4f7f977600e11adbc5d169f1a86ee291b75dce7d925',
       );
-      test({ value: null }, 'cf2c26de25cb119316c7963e8ba8e92a9f5d06eeddcbb7d622368fa38c0a780b');
-      test({ value: 123 }, '7ba09a3711b0408bb18bcefc9c9d46c29e68c38f43ff68073c1a334b84973b9f');
-      test({ value: '' }, '39aae42e27b6aecbf7f709b865b4d7ea5ba9a79211314ef8b88a564b31e784b0');
-      test({ value: 'hello' }, 'ae8b1b48a7ee66bc33eb4724faea76446d477ca5eb9abe511e5f8cbf38494af6');
+      test(
+        { value: null },
+        'sha256/633eb1b77771279367d454543dbb5ab72b7da3c768111f3fa9f69dd0f81985db',
+      );
+      test(
+        { value: 123 },
+        'sha256/60f4dcd1605d8baf2b0b6e10cc69e2f59529e74748e87a231891ec43d940212c',
+      );
+      test(
+        { value: '' },
+        'sha256/af0ce5cb55e5258904d90208d224fc69497a1d9e3cbf42521aede8e27c43b85e',
+      );
+      test(
+        { value: 'hello' },
+        'sha256/1daa685764a45ec179e81dacada8a5871b3ee97b7ae7f2e1f37d8ae128ad3bc3',
+      );
       test(
         { value: 'hello', props: {} },
-        'ae8b1b48a7ee66bc33eb4724faea76446d477ca5eb9abe511e5f8cbf38494af6',
+        'sha256/1daa685764a45ec179e81dacada8a5871b3ee97b7ae7f2e1f37d8ae128ad3bc3',
       );
       test(
         { value: 'hello', props: { style: { bold: true } } },
-        '06f576fe62119f830b7680bcee942f424f250a49915a458c9cd26e8ea102dafb',
+        'sha256/82c58d318c23e0fac89bd6d9634eee0354f814e370005c28631f9b9a1cd4512e',
       );
     });
 
     it('same hash for no param AND no cell-value', () => {
-      const HASH = 'e770e829aeb6c3467cefdefa4f32418269e3987f94855e70d65ae8cf3e575fe1';
+      const HASH = 'sha256/5cbb07f7321efddf98f0b4f7f977600e11adbc5d169f1a86ee291b75dce7d925';
       const test = (input?: t.IGridCell) => {
-        const res = util.cellHash('A1', input);
-        expect(res).to.eql(HASH);
+        const hash = util.cellHash('A1', input);
+        expect(hash).to.eql(HASH);
       };
       test();
       test(undefined);
@@ -328,10 +351,10 @@ describe('util.cell', () => {
     });
 
     it('returns same hash for equivalent props variants', () => {
-      const HASH = '7ba09a3711b0408bb18bcefc9c9d46c29e68c38f43ff68073c1a334b84973b9f';
+      const HASH = 'sha256/60f4dcd1605d8baf2b0b6e10cc69e2f59529e74748e87a231891ec43d940212c';
       const test = (props?: t.ICellProps) => {
-        const res = util.cellHash('A1', { value: 123, props });
-        expect(res).to.eql(HASH);
+        const hash = util.cellHash('A1', { value: 123, props });
+        expect(hash).to.eql(HASH);
       };
       test();
       test({});

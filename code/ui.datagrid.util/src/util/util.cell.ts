@@ -48,32 +48,12 @@ export function isEmptyCellProps(props?: t.ICellProps) {
  */
 export function toCellProps(input?: t.ICellProps): t.ICellPropsAll {
   const props = input || {};
+  const value: t.CellValue = props.value;
   const style: t.ICellPropsStyle = props.style || {};
   const merge: t.ICellPropsMerge = props.merge || {};
   const view: t.ICellPropsView = props.view || {};
-  const value: t.CellValue = props.value;
-  return { style, merge, view, value };
-}
-
-/**
- * Toggles the given boolean property field, removing it from the object
- * if it is the default value.
- */
-export function toggleCellProp<S extends keyof t.ICellProps>(args: {
-  props?: t.ICellProps;
-  defaults: t.ICellProps[S];
-  section: S;
-  field: keyof t.ICellPropsAll[S];
-}): t.ICellProps | undefined {
-  const props = args.props || {};
-  const field = args.field as string;
-  const section = (props[args.section] || {}) as {};
-  const value = section[field];
-  if (!(value === undefined || typeof value === 'boolean')) {
-    return props; // NB: non-supported value type for toggling.
-  }
-  const toggled: any = typeof value === 'boolean' ? !value : true;
-  return setCellProp<S>({ ...args, value: toggled });
+  const status: t.ICellPropsStatus = props.status || {};
+  return { value, style, merge, view, status };
 }
 
 /**
@@ -95,7 +75,7 @@ export function setCellProp<S extends keyof t.ICellProps>(args: {
   // Strip default values from the property section.
   if (defaults && typeof defaults === 'object') {
     Object.keys(defaults as object)
-      .filter(key => section[key] === defaults[key])
+      .filter(key => R.equals(section[key], defaults[key]))
       .forEach(key => delete section[key]);
   }
 
@@ -108,6 +88,27 @@ export function setCellProp<S extends keyof t.ICellProps>(args: {
 
   // Finish up.
   return isEmptyCellProps(res) ? undefined : res;
+}
+
+/**
+ * Toggles the given boolean property field, removing it from the object
+ * if it is the default value.
+ */
+export function toggleCellProp<S extends keyof t.ICellProps>(args: {
+  props?: t.ICellProps;
+  defaults: t.ICellProps[S];
+  section: S;
+  field: keyof t.ICellPropsAll[S];
+}): t.ICellProps | undefined {
+  const props = args.props || {};
+  const field = args.field as string;
+  const section = (props[args.section] || {}) as {};
+  const value = section[field];
+  if (!(value === undefined || typeof value === 'boolean')) {
+    return props; // NB: non-supported value type for toggling.
+  }
+  const toggled: any = typeof value === 'boolean' ? !value : true;
+  return setCellProp<S>({ ...args, value: toggled });
 }
 
 /**
@@ -161,5 +162,6 @@ export function cellDiff(left: t.IGridCell, right: t.IGridCell): t.ICellDiff {
 export function cellHash(key: string, data?: t.IGridCell): string {
   const value = data ? data.value : undefined;
   const props = toCellProps(data ? data.props : undefined);
-  return hash.sha256({ key, value, props });
+  const sha256 = hash.sha256({ key, value, props });
+  return `sha256/${sha256}`;
 }
