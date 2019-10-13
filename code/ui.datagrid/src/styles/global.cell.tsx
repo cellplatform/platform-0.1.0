@@ -53,6 +53,13 @@ const STYLES = {
       fontFamily: constants.MONOSPACE.FAMILY,
       fontWeight: 'bolder',
     },
+
+    /**
+     * Error.
+     */
+    [`.${CELL.ERROR}`]: {
+      color: '#E30000', // Red - TEMP 🐷
+    },
   },
 
   MARKDOWN: {

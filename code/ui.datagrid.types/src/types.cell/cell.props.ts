@@ -6,7 +6,7 @@ export type ICellPropsAll = {
   style: ICellPropsStyle;
   merge: ICellPropsMerge;
   view: ICellPropsView;
-  error: ICellPropsErrors;
+  status: ICellPropsStatus;
 };
 
 export type ICellPropsStyle = Partial<ICellPropsStyleAll>;
@@ -32,10 +32,11 @@ export type ICellPropsViewAll<V extends string = string> = {
 };
 
 /**
- * Errors associated with the cell.
+ * Status and error-state associated with the cell.
  */
-export type ICellPropsErrors<E extends ICellPropsError = ICellPropsError> = Partial<
-  ICellPropsErrorsAll<E>
->;
-export type ICellPropsErrorsAll<E extends ICellPropsError = ICellPropsError> = { list: E[] };
-export type ICellPropsError = { message: string };
+export type ICellPropsStatus = Partial<ICellPropsStatusAll>;
+export type ICellPropsStatusAll = { error?: ICellPropsError };
+export type ICellPropsError<T extends string = any> = {
+  type: T;
+  message: string;
+};

@@ -24,10 +24,6 @@ export function isEmptyCellProps(props?: t.ICellProps) {
     return true;
   }
 
-  if (props.error && props.error.list && props.error.list.length === 0) {
-    delete props.error;
-  }
-
   const keys = Object.keys(props);
   if (keys.length === 0) {
     return true;
@@ -56,9 +52,8 @@ export function toCellProps(input?: t.ICellProps): t.ICellPropsAll {
   const style: t.ICellPropsStyle = props.style || {};
   const merge: t.ICellPropsMerge = props.merge || {};
   const view: t.ICellPropsView = props.view || {};
-  const error: t.ICellPropsErrors = props.error || { list: [] };
-  error.list = error.list || [];
-  return { value, style, merge, view, error };
+  const status: t.ICellPropsStatus = props.status || {};
+  return { value, style, merge, view, status };
 }
 
 /**
@@ -80,7 +75,7 @@ export function setCellProp<S extends keyof t.ICellProps>(args: {
   // Strip default values from the property section.
   if (defaults && typeof defaults === 'object') {
     Object.keys(defaults as object)
-      .filter(key => section[key] === defaults[key])
+      .filter(key => R.equals(section[key], defaults[key]))
       .forEach(key => delete section[key]);
   }
 
@@ -114,41 +109,6 @@ export function toggleCellProp<S extends keyof t.ICellProps>(args: {
   }
   const toggled: any = typeof value === 'boolean' ? !value : true;
   return setCellProp<S>({ ...args, value: toggled });
-}
-
-/**
- * API for adding/removing cell errors
- */
-export function cellErrorProp(props?: t.ICellProps) {
-  let res: t.ICellProps = props || {};
-  const api = {
-    get props(): t.ICellProps | undefined {
-      return isEmptyCellProps(res) ? undefined : res;
-    },
-    get error(): t.ICellPropsErrorsAll {
-      const props = api.props || {};
-      const error = props.error ? (props.error as t.ICellPropsErrorsAll) : { list: [] };
-      error.list = error.list || [];
-      return error;
-    },
-    add(error: t.ICellPropsError | t.ICellPropsError[]) {
-      const errors = Array.isArray(error) ? error : [error];
-      const list = [...(res.error ? res.error.list || [] : []), ...errors];
-      res = { ...res, error: { ...res.error, list } };
-      return api;
-    },
-    replace(error: t.ICellPropsError | t.ICellPropsError[]) {
-      const list = Array.isArray(error) ? error : [error];
-      res = { ...res, error: { ...res.error, list } };
-      return api;
-    },
-    clear() {
-      res = { ...res };
-      delete res.error;
-      return api;
-    },
-  };
-  return api;
 }
 
 /**

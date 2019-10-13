@@ -16,6 +16,10 @@ describe('util.cell', () => {
     test({ value: undefined, hash: 'abc123z' }, true);
     test({ value: undefined, props: {} }, true); // NB: props object is empty.
     test({ value: '', props: {} }, true);
+    test({ value: '', props: { status: {} } }, true);
+    test({ value: '', props: { status: {}, style: {}, view: {}, merge: {} } }, true);
+    test({ value: undefined, props: { status: {}, style: {}, view: {}, merge: {} } }, true);
+    test({ props: { status: {}, style: {}, view: {}, merge: {} } }, true);
 
     test({ value: ' ' }, false);
     test({ value: ' ', hash }, false);
@@ -54,12 +58,12 @@ describe('util.cell', () => {
     test({ style: {} }, true);
     test({ style: {}, merge: {} }, true);
     test({ style: {}, merge: {}, view: {} }, true);
-    test({ error: { list: [] } }, true);
+    test({ status: {} }, true);
 
     test({ style: { bold: true } }, false);
     test({ style: { bold: true }, merge: {} }, false);
     test({ view: { type: 'DEFAULT' } }, false);
-    test({ error: { list: [{ message: 'FAIL' }] } }, false);
+    test({ status: { error: { message: 'Fail', type: 'UNKNOWN' } } }, false);
   });
 
   describe('isChanged', () => {
@@ -152,7 +156,7 @@ describe('util.cell', () => {
         expect(res.merge).to.eql({});
         expect(res.style).to.eql({});
         expect(res.view).to.eql({});
-        expect(res.error).to.eql({ list: [] });
+        expect(res.status).to.eql({});
       };
       test();
       test(null);
@@ -167,7 +171,9 @@ describe('util.cell', () => {
           style: { bold: true },
           merge: { colspan: 3 },
           view: { type: 'SHOP' },
-          error: { list: [{ message: 'Fail' }] },
+          status: {
+            error: { message: 'Fail', type: 'UNKNOWN' },
+          },
         },
       };
       const props = util.toCellProps(A2.props);
@@ -175,7 +181,7 @@ describe('util.cell', () => {
       expect(props.merge.colspan).to.eql(3);
       expect(props.value).to.eql(456);
       expect(props.view.type).to.eql('SHOP');
-      expect(props.error.list && props.error.list[0].message).to.eql('Fail');
+      expect(props.status.error).to.eql({ message: 'Fail', type: 'UNKNOWN' });
     });
   });
 
@@ -257,70 +263,6 @@ describe('util.cell', () => {
     });
   });
 
-  describe('cellErrorProp', () => {
-    it('creation (props)', () => {
-      const res1 = util.cellErrorProp();
-      const res2 = util.cellErrorProp({ style: { bold: true } });
-      expect(res1.props).to.eql(undefined);
-      expect(res2.props).to.eql({ style: { bold: true } });
-    });
-
-    it('add', () => {
-      const res1 = util.cellErrorProp();
-      const props1 = res1.props;
-      expect(res1.props).to.eql(undefined);
-      expect(res1.error.list).to.eql([]);
-
-      const res2 = res1.add({ message: 'err-1' });
-      const props2 = res2.props;
-      expect(res2.error.list).to.eql([{ message: 'err-1' }]);
-
-      const res3 = res1.add([{ message: 'err-2' }, { message: 'err-3' }]);
-      const props3 = res3.props;
-      expect(res3.error.list).to.eql([
-        { message: 'err-1' },
-        { message: 'err-2' },
-        { message: 'err-3' },
-      ]);
-
-      expect(res1.props).to.eql(props3);
-      expect(res2.props).to.eql(props3);
-      expect(res3.props).to.eql(props3);
-
-      expect(props1).to.eql(undefined);
-      expect(props2 && props2.error && props2.error.list).to.eql([{ message: 'err-1' }]);
-      expect(props3 && props3.error && props3.error.list).to.eql([
-        { message: 'err-1' },
-        { message: 'err-2' },
-        { message: 'err-3' },
-      ]);
-    });
-
-    it('replace', () => {
-      const res1 = util.cellErrorProp({
-        error: {
-          list: [{ message: 'err-1' }, { message: 'err-2' }, { message: 'err-3' }],
-        },
-      });
-
-      const res2 = res1.replace([{ message: 'err-4' }, { message: 'err-5' }]);
-      expect(res2.error.list.map(err => err.message)).to.eql(['err-4', 'err-5']);
-
-      const res3 = res1.replace({ message: 'err-6' });
-      expect(res3.error.list.map(err => err.message)).to.eql(['err-6']);
-    });
-
-    it('clear', () => {
-      const res1 = util.cellErrorProp({ error: { list: [{ message: 'err-1' }] } });
-      expect(res1.error.list[0].message).to.eql('err-1');
-      expect(res1.props).to.not.eql(undefined);
-
-      const res2 = res1.clear();
-      expect(res2.error.list).to.eql([]);
-      expect(res2.props).to.eql(undefined);
-    });
-  });
-
   describe('toggleCellProp', () => {
     const defaults: t.ICellPropsStyleAll = { bold: false, italic: false, underline: false };
 
@@ -366,42 +308,42 @@ describe('util.cell', () => {
         expect(hash).to.eql(expected);
       };
 
-      test(undefined, 'sha256/e68b3a4b54915defb00c6c038e76a9f807fc3b1440d88181eeecef3e61556906');
+      test(undefined, 'sha256/5cbb07f7321efddf98f0b4f7f977600e11adbc5d169f1a86ee291b75dce7d925');
       test(
         { value: undefined },
-        'sha256/e68b3a4b54915defb00c6c038e76a9f807fc3b1440d88181eeecef3e61556906',
+        'sha256/5cbb07f7321efddf98f0b4f7f977600e11adbc5d169f1a86ee291b75dce7d925',
       );
       test(
         { value: null },
-        'sha256/7c2243ab491b23e29a6216a14f3ae0c21971294d10cd498fcb206c40ef09f561',
+        'sha256/633eb1b77771279367d454543dbb5ab72b7da3c768111f3fa9f69dd0f81985db',
       );
       test(
         { value: 123 },
-        'sha256/f2b1b79c36d5687b099d88daeb8d43655d5572516583e9ebdb9e70eccfdec350',
+        'sha256/60f4dcd1605d8baf2b0b6e10cc69e2f59529e74748e87a231891ec43d940212c',
       );
       test(
         { value: '' },
-        'sha256/3b2d9b1f4b35a36214d38d98e0bd974c3496e408557bd2cf175b088add6294a0',
+        'sha256/af0ce5cb55e5258904d90208d224fc69497a1d9e3cbf42521aede8e27c43b85e',
       );
       test(
         { value: 'hello' },
-        'sha256/257e842fca2b6e43bf5eef803d2a8acca6740c72aac5ba0741a0baa600108b26',
+        'sha256/1daa685764a45ec179e81dacada8a5871b3ee97b7ae7f2e1f37d8ae128ad3bc3',
       );
       test(
         { value: 'hello', props: {} },
-        'sha256/257e842fca2b6e43bf5eef803d2a8acca6740c72aac5ba0741a0baa600108b26',
+        'sha256/1daa685764a45ec179e81dacada8a5871b3ee97b7ae7f2e1f37d8ae128ad3bc3',
       );
       test(
         { value: 'hello', props: { style: { bold: true } } },
-        'sha256/109218aec515f79292f6c1731ef668cd7642cef4921a5a577594784d968391c1',
+        'sha256/82c58d318c23e0fac89bd6d9634eee0354f814e370005c28631f9b9a1cd4512e',
       );
     });
 
     it('same hash for no param AND no cell-value', () => {
-      const HASH = 'sha256/e68b3a4b54915defb00c6c038e76a9f807fc3b1440d88181eeecef3e61556906';
+      const HASH = 'sha256/5cbb07f7321efddf98f0b4f7f977600e11adbc5d169f1a86ee291b75dce7d925';
       const test = (input?: t.IGridCell) => {
-        const res = util.cellHash('A1', input);
-        expect(res).to.eql(HASH);
+        const hash = util.cellHash('A1', input);
+        expect(hash).to.eql(HASH);
       };
       test();
       test(undefined);
@@ -409,10 +351,10 @@ describe('util.cell', () => {
     });
 
     it('returns same hash for equivalent props variants', () => {
-      const HASH = 'sha256/f2b1b79c36d5687b099d88daeb8d43655d5572516583e9ebdb9e70eccfdec350';
+      const HASH = 'sha256/60f4dcd1605d8baf2b0b6e10cc69e2f59529e74748e87a231891ec43d940212c';
       const test = (props?: t.ICellProps) => {
-        const res = util.cellHash('A1', { value: 123, props });
-        expect(res).to.eql(HASH);
+        const hash = util.cellHash('A1', { value: 123, props });
+        expect(hash).to.eql(HASH);
       };
       test();
       test({});
