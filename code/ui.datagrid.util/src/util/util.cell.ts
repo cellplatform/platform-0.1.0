@@ -24,6 +24,10 @@ export function isEmptyCellProps(props?: t.ICellProps) {
     return true;
   }
 
+  if (props.error && props.error.list && props.error.list.length === 0) {
+    delete props.error;
+  }
+
   const keys = Object.keys(props);
   if (keys.length === 0) {
     return true;
@@ -48,32 +52,13 @@ export function isEmptyCellProps(props?: t.ICellProps) {
  */
 export function toCellProps(input?: t.ICellProps): t.ICellPropsAll {
   const props = input || {};
+  const value: t.CellValue = props.value;
   const style: t.ICellPropsStyle = props.style || {};
   const merge: t.ICellPropsMerge = props.merge || {};
   const view: t.ICellPropsView = props.view || {};
-  const value: t.CellValue = props.value;
-  return { style, merge, view, value };
-}
-
-/**
- * Toggles the given boolean property field, removing it from the object
- * if it is the default value.
- */
-export function toggleCellProp<S extends keyof t.ICellProps>(args: {
-  props?: t.ICellProps;
-  defaults: t.ICellProps[S];
-  section: S;
-  field: keyof t.ICellPropsAll[S];
-}): t.ICellProps | undefined {
-  const props = args.props || {};
-  const field = args.field as string;
-  const section = (props[args.section] || {}) as {};
-  const value = section[field];
-  if (!(value === undefined || typeof value === 'boolean')) {
-    return props; // NB: non-supported value type for toggling.
-  }
-  const toggled: any = typeof value === 'boolean' ? !value : true;
-  return setCellProp<S>({ ...args, value: toggled });
+  const error: t.ICellPropsErrors = props.error || { list: [] };
+  error.list = error.list || [];
+  return { value, style, merge, view, error };
 }
 
 /**
@@ -108,6 +93,62 @@ export function setCellProp<S extends keyof t.ICellProps>(args: {
 
   // Finish up.
   return isEmptyCellProps(res) ? undefined : res;
+}
+
+/**
+ * Toggles the given boolean property field, removing it from the object
+ * if it is the default value.
+ */
+export function toggleCellProp<S extends keyof t.ICellProps>(args: {
+  props?: t.ICellProps;
+  defaults: t.ICellProps[S];
+  section: S;
+  field: keyof t.ICellPropsAll[S];
+}): t.ICellProps | undefined {
+  const props = args.props || {};
+  const field = args.field as string;
+  const section = (props[args.section] || {}) as {};
+  const value = section[field];
+  if (!(value === undefined || typeof value === 'boolean')) {
+    return props; // NB: non-supported value type for toggling.
+  }
+  const toggled: any = typeof value === 'boolean' ? !value : true;
+  return setCellProp<S>({ ...args, value: toggled });
+}
+
+/**
+ * API for adding/removing cell errors
+ */
+export function cellErrorProp(props?: t.ICellProps) {
+  let res: t.ICellProps = props || {};
+  const api = {
+    get props(): t.ICellProps | undefined {
+      return isEmptyCellProps(res) ? undefined : res;
+    },
+    get error(): t.ICellPropsErrorsAll {
+      const props = api.props || {};
+      const error = props.error ? (props.error as t.ICellPropsErrorsAll) : { list: [] };
+      error.list = error.list || [];
+      return error;
+    },
+    add(error: t.ICellPropsError | t.ICellPropsError[]) {
+      const errors = Array.isArray(error) ? error : [error];
+      const list = [...(res.error ? res.error.list || [] : []), ...errors];
+      res = { ...res, error: { ...res.error, list } };
+      return api;
+    },
+    replace(error: t.ICellPropsError | t.ICellPropsError[]) {
+      const list = Array.isArray(error) ? error : [error];
+      res = { ...res, error: { ...res.error, list } };
+      return api;
+    },
+    clear() {
+      res = { ...res };
+      delete res.error;
+      return api;
+    },
+  };
+  return api;
 }
 
 /**
