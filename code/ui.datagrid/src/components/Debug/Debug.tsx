@@ -123,7 +123,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     Object.keys(cells).forEach(key => {
       const hash = cells[key] ? (cells[key] as any).hash : undefined;
       if (hash) {
-        (cells[key] as any).hash = `${hash.substring(0, 12)}..(SHA-256)`;
+        (cells[key] as any).hash = `${hash.substring(0, 15)}..${hash.substring(hash.length - 5)}`;
       }
     });
 
