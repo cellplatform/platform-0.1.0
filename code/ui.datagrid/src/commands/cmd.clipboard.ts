@@ -49,7 +49,6 @@ async function read(args: {
     },
   });
   if (wait.length > 0) {
-    console.log('wait', wait);
     await Promise.all(wait);
   }
 
