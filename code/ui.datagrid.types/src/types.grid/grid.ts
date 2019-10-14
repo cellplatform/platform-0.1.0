@@ -24,7 +24,7 @@ export type IGridProperties = {
 export type IGridMethods = {
   dispose(): void;
   changeCells(
-    changes: t.IGridCells,
+    cells: t.IGridCells,
     options?: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean },
   ): IGrid;
   changeColumns(
@@ -38,7 +38,7 @@ export type IGridMethods = {
   deselect(): IGrid;
   focus(): IGrid;
   redraw(): IGrid;
-  mergeCells(args: { values: t.IGridCells; init?: boolean }): IGrid;
+  mergeCells(args: { cells: t.IGridCells; init?: boolean }): IGrid;
   toPosition(ref: t.CellRef): t.ICoord;
   updateHashes(options?: { force?: boolean }): IGrid;
 };

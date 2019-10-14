@@ -275,11 +275,11 @@ export class Grid implements t.IGrid {
    * Merge cells.
    * https://handsontable.com/docs/6.1.1/demo-merged-cells.html
    */
-  public mergeCells(args: { values: t.IGridCells; init?: boolean }) {
+  public mergeCells(args: { cells: t.IGridCells; init?: boolean }) {
     type MergeCell = { row: number; col: number; rowspan: number; colspan: number };
     type MergeCells = { [key: string]: MergeCell };
 
-    const { values } = args;
+    const { cells } = args;
 
     // Get the list of current values (or empty if `init` requested)/
     const list: MergeCell[] = args.init
@@ -294,8 +294,8 @@ export class Grid implements t.IGrid {
     }, {}) as MergeCells;
 
     // Update the object-map with "cell-merge" props from the given values.
-    Object.keys(values).map(key => {
-      const item = values[key];
+    Object.keys(cells).map(key => {
+      const item = cells[key];
       if (item) {
         const props: t.ICellProps = item.props || {};
         const merge = props.merge;
@@ -491,7 +491,7 @@ export class Grid implements t.IGrid {
    * Updates cell values.
    */
   public changeCells(
-    values: t.IGridCells,
+    cells: t.IGridCells,
     options: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean } = {},
   ) {
     const done = () => this;
@@ -509,28 +509,34 @@ export class Grid implements t.IGrid {
       return to;
     };
 
-    if (values) {
+    // NB: If initializing, and no initial values, ensure the grid is loaded.
+    if (options.init && cells && Object.keys(cells).length === 0) {
+      this.setValues({});
+      return done();
+    }
+
+    if (cells) {
       // Process input object.
       const current = { ...(options.init ? {} : this.cells) };
-      values = { ...values };
+      cells = { ...cells };
 
       // Ensure only cells (eg "A1") not rows/columns (eg "B" or "3").
-      Object.keys(values)
+      Object.keys(cells)
         .filter(key => !coord.cell.isCell(key))
-        .forEach(key => delete values[key]);
+        .forEach(key => delete cells[key]);
 
       // Format incoming values ensuring they are clean and structurally consistent.
       type Values = { [key: string]: { from?: t.IGridCell; to?: IGridCell } };
-      const formatted: Values = Object.keys(values).reduce((acc, key) => {
+      const formatted: Values = Object.keys(cells).reduce((acc, key) => {
         acc[key] = {
           from: format(key, current[key]),
-          to: format(key, values[key]),
+          to: format(key, cells[key]),
         };
         return acc;
       }, {});
 
       // Calculate the set of change events.
-      const changes = Object.keys(values).map(key => {
+      const changes = Object.keys(cells).map(key => {
         const cell = this.cell(key);
         const { from, to } = formatted[key];
         return Cell.changeEvent({ cell, from, to });
@@ -559,12 +565,12 @@ export class Grid implements t.IGrid {
         // Adjust any modified values.
         changes
           .filter(change => change.isModified)
-          .forEach(change => (values[change.cell.key] = change.value.to));
+          .forEach(change => (cells[change.cell.key] = change.value.to));
 
         // Revert any cancelled events.
         changes
           .filter(change => change.isCancelled)
-          .forEach(change => (values[change.cell.key] = change.value.from));
+          .forEach(change => (cells[change.cell.key] = change.value.from));
       }
 
       // Calculate the new updated value set.
@@ -593,7 +599,7 @@ export class Grid implements t.IGrid {
 
       // Update any cell-merge changes.
       if (Object.keys(mergeChanges).length > 0) {
-        this.mergeCells({ values: mergeChanges });
+        this.mergeCells({ cells: mergeChanges });
       }
 
       // Update the UI.

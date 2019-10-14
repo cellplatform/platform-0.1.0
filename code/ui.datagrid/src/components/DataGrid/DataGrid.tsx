@@ -26,7 +26,7 @@ const { DEFAULT, CSS } = constants;
 export type IDataGridProps = {
   totalColumns?: number;
   totalRows?: number;
-  values?: t.IGridCells;
+  cells?: t.IGridCells;
   columns?: t.IGridColumns;
   rows?: t.IGridRows;
   defaults?: Partial<t.IGridDefaults>;
@@ -66,7 +66,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
    * [Lifecycle]
    */
   public componentDidMount() {
-    const { values, columns, rows, keyBindings, getFunc } = this.props;
+    const { cells: values, columns, rows, keyBindings, getFunc } = this.props;
 
     // State.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
@@ -166,12 +166,14 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     if (this.isDisposed) {
       return;
     }
-    const { initial = {}, values = {} } = this.props;
+    const { initial = {}, cells = {} } = this.props;
     const grid = this.grid;
 
-    grid.changeCells(values, { silent: true, init: true });
-    grid.mergeCells({ values, init: true });
+    // Assign data.
+    grid.changeCells(cells, { silent: true, init: true });
+    grid.mergeCells({ cells, init: true });
 
+    // Assign selection.
     if (initial.selection) {
       const selection =
         typeof initial.selection === 'string' ? { cell: initial.selection } : initial.selection;
@@ -179,8 +181,10 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       grid.select({ cell, ranges });
     }
 
+    // Calculate functions.
     await grid.calc.update();
 
+    // Finish up.
     grid.fire({ type: 'GRID/ready', payload: { grid } });
     this.forceUpdate();
   }
@@ -189,8 +193,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const next = this.props;
     const grid = this.grid;
     let redraw = false;
-    if (!R.equals(prev.values, next.values)) {
-      grid.changeCells(next.values || {}, { init: true, silent: true });
+    if (!R.equals(prev.cells, next.cells)) {
+      grid.changeCells(next.cells || {}, { init: true, silent: true });
 
       redraw = true;
     }
