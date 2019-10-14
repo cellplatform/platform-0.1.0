@@ -31,12 +31,18 @@ export function isEmptyCellProps(props?: t.ICellProps) {
 
   for (const key of keys) {
     const child = props[key];
-    if (typeof child === 'object') {
-      if (Object.keys(child).length > 0) {
+    if (key === 'value') {
+      if (child !== undefined) {
         return false;
       }
     } else {
-      return false;
+      if (typeof child === 'object') {
+        if (Object.keys(child).length > 0) {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
   }
 
@@ -57,7 +63,7 @@ export function toCellProps(input?: t.ICellProps): t.ICellPropsAll {
 }
 
 /**
- * Assignes a property field to props, removing it from the object
+ * Assigns a property field to props, removing it from the object
  * if it is the default value.
  */
 export function setCellProp<S extends keyof t.ICellProps>(args: {

@@ -20,6 +20,7 @@ describe('util.cell', () => {
     test({ value: '', props: { status: {}, style: {}, view: {}, merge: {} } }, true);
     test({ value: undefined, props: { status: {}, style: {}, view: {}, merge: {} } }, true);
     test({ props: { status: {}, style: {}, view: {}, merge: {} } }, true);
+    test({ value: undefined, props: { value: undefined } }, true);
 
     test({ value: ' ' }, false);
     test({ value: ' ', hash }, false);
@@ -59,6 +60,7 @@ describe('util.cell', () => {
     test({ style: {}, merge: {} }, true);
     test({ style: {}, merge: {}, view: {} }, true);
     test({ status: {} }, true);
+    test({ value: undefined }, true);
 
     test({ style: { bold: true } }, false);
     test({ style: { bold: true }, merge: {} }, false);
