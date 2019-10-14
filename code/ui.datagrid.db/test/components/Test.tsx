@@ -137,7 +137,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       Object.keys(values).map(key => {
         const hash = values[key] ? (values[key] as any).hash : undefined;
         if (hash) {
-          (values[key] as any).hash = `${hash.substring(0, 12)}..(SHA-256)`;
+          (values[key] as any).hash = `${hash.substring(0, 15)}..`;
         }
       });
     };
@@ -150,7 +150,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const grid = {
       ...this.grid.columns,
       ...this.grid.rows,
-      ...this.grid.values,
+      ...this.grid.cells,
     };
     processGridValues(grid);
 
@@ -215,7 +215,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             data={db}
             theme={'DARK'}
             expandLevel={0}
-            expandPaths={['$', '$.cell/A1', '$.cell/A1.props', '$.cell/A1.props.style']}
+            // expandPaths={['$', '$.cell/A1', '$.cell/A1.props', '$.cell/A1.props.style']}
           />
           <Hr color={COLORS.WHITE} />
           <ObjectView name={'grid'} data={grid} expandLevel={1} theme={'DARK'} />
@@ -243,7 +243,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         return <CellEditor />;
 
       case 'CELL':
-        return req.cell ? formatValue(req.cell) : '';
+        return req.cell ? formatValue(req.cell.data) : '';
 
       default:
         log.error(`Factory type '${req.type}' not supported by test.`);

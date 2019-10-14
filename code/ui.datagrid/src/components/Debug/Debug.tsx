@@ -63,7 +63,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     });
 
     change$.subscribe(e => {
-      console.log('change', e);
       this.updateState();
     });
 

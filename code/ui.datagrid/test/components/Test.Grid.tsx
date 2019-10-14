@@ -79,7 +79,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
         // e.cancel();
         // e.changes[0].modify('foo');
-
         // console.log('🌳', e.type, e.payload);
         // const change = e.payload as t.IGridCellChange;
         // change.modify('hello');

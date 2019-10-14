@@ -150,7 +150,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
       <datagrid.DataGrid
         key={'test.grid'}
         ref={this.datagridRef}
-        values={this.state.values}
+        cells={this.state.values}
         columns={this.state.columns}
         rows={this.state.rows}
         events$={this.events$}
