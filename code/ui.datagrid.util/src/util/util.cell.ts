@@ -85,6 +85,13 @@ export function setCellProp<S extends keyof t.ICellProps>(args: {
       .forEach(key => delete section[key]);
   }
 
+  // Strip undefined values from property section.
+  if (typeof section === 'object') {
+    Object.keys(section as object)
+      .filter(key => section[key] === undefined)
+      .forEach(key => delete section[key]);
+  }
+
   // Remove the section from the root props if empty.
   const res = { ...props, [args.section]: section };
   const isEmptySection = Object.keys(section as object).length === 0;
