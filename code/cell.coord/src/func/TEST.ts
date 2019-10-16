@@ -25,7 +25,7 @@ export const getFunc: t.GetFunc = async args => {
 };
 
 /**
- * `Dummy system functions.
+ * Dummy system functions.
  */
 export const sys = (() => {
   const sum: t.FuncInvoker = async args => {

@@ -129,6 +129,7 @@ class RefsTable implements t.IRefsTable {
     const { range } = args;
     const getValue = this.getValue;
     const keys = await this.filterKeys({ range });
+
     return this.calc<t.IRefOut>({
       ...args,
       keys,
@@ -263,6 +264,7 @@ class RefsTable implements t.IRefsTable {
   }): Promise<{ [key: string]: T[] }> {
     const { keys, force } = args;
     const res: { [key: string]: T[] } = {};
+
     if (keys.length === 0) {
       return res;
     }
