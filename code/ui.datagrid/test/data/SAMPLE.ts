@@ -12,6 +12,7 @@ export const SAMPLE = {
     A10: { value: '=1+B10+B10' },
     A14: { value: '=A15' },
     A15: { value: '=A14' },
+    A16: { value: '=A15' },
     B10: { value: '5' },
     A11: { value: '=SUM(1,B11,B11)' },
     B11: { value: '10' },
