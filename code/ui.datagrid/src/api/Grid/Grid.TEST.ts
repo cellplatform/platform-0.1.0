@@ -6,10 +6,14 @@ import { DefaultSettings } from 'handsontable';
 import { Grid, IGridArgs } from '.';
 import { Handsontable, constants, t, util } from '../../common';
 
-export const createGrid = (args: Partial<IGridArgs> = {}) => {
+export const createTable = () => {
   const el = document.createElement('div');
   const settings: DefaultSettings = {};
-  const table = new Handsontable(el, settings);
+  return new Handsontable(el, settings);
+};
+
+export const createGrid = (args: Partial<IGridArgs> = {}) => {
+  const table = createTable();
   return Grid.create({ table, totalColumns: 3, totalRows: 5, ...args });
 };
 
@@ -39,17 +43,32 @@ describe('Grid', () => {
     });
   });
 
-  it('constructs', () => {
+  it('constructs (initialized)', () => {
     const values = { A1: { value: 123 } };
     const columns = { A: { width: 200 } };
     const rows = { 10: { height: 200 } };
     const grid = createGrid({ totalColumns: 10, totalRows: 5, values, columns, rows });
+    expect(grid.isInitialized).to.eql(true);
     expect(grid.isEditing).to.eql(false);
     expect(grid.totalColumns).to.eql(10);
     expect(grid.totalRows).to.eql(5);
     expect(grid.cells).to.eql(values);
     expect(grid.columns).to.eql(columns);
     expect(grid.rows).to.eql(rows);
+  });
+
+  it('constructs without table (isInitialized: false)', () => {
+    const table = createTable();
+    const grid1 = Grid.create({ totalColumns: 3, totalRows: 5 });
+
+    expect(grid1.isInitialized).to.eql(false);
+    expect(grid1.id).to.eql('');
+
+    const grid2 = grid1.init({ table });
+    expect(grid2).to.equal(grid1);
+
+    expect(grid1.isInitialized).to.eql(true);
+    expect(grid1.id.startsWith('grid/')).to.eql(true);
   });
 
   it('dispose', () => {
