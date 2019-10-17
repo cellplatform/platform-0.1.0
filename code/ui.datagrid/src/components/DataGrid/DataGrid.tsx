@@ -2,7 +2,7 @@ import '../../styles';
 
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { map, debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
 import { Grid } from '../../api';
 import {

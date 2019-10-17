@@ -275,6 +275,47 @@ describe('util.cell', () => {
     });
   });
 
+  describe('setCellError', () => {
+    it('no error and no props', () => {
+      const res = util.setCellError({});
+      expect(res).to.eql(undefined);
+    });
+
+    it('assigns an error (existing props)', () => {
+      const error: t.ICellPropsError = { type: 'FAIL', message: 'Derp' };
+      const res1 = util.setCellError({ error });
+      const res2 = util.setCellError({ props: {}, error });
+      const res3 = util.setCellError({ props: { status: {} }, error });
+      const res4 = util.setCellError({
+        props: { status: { error: { type: 'TMP', message: 'Foo' } } },
+        error,
+      });
+      const props = { status: { error } };
+      expect(res1).to.eql(props);
+      expect(res2).to.eql(props);
+      expect(res3).to.eql(props);
+      expect(res4).to.eql(props);
+    });
+
+    it('removes error', () => {
+      const res1 = util.setCellError({
+        error: undefined,
+        props: {
+          status: { error: { type: 'TMP', message: 'Foo' } },
+        },
+      });
+      const res2 = util.setCellError({
+        error: undefined,
+        props: {
+          style: { bold: true },
+          status: { error: { type: 'TMP', message: 'Foo' } },
+        },
+      });
+      expect(res1).to.eql(undefined);
+      expect(res2).to.eql({ style: { bold: true } });
+    });
+  });
+
   describe('toggleCellProp', () => {
     const defaults: t.ICellPropsStyleAll = { bold: false, italic: false, underline: false };
 

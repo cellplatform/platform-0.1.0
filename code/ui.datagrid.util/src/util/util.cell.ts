@@ -104,6 +104,23 @@ export function setCellProp<S extends keyof t.ICellProps>(args: {
 }
 
 /**
+ * Assigns (or removes) a cell error on `props.status.error`.
+ */
+export function setCellError(args: {
+  props?: t.ICellProps;
+  error?: t.ICellPropsError;
+}): t.ICellProps | undefined {
+  const { props, error } = args;
+  return setCellProp({
+    props,
+    defaults: {},
+    section: 'status',
+    field: 'error',
+    value: error,
+  });
+}
+
+/**
  * Toggles the given boolean property field, removing it from the object
  * if it is the default value.
  */

@@ -29,41 +29,40 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
     const cells = args.cells || (await getKeys());
 
     // Calculate updates.
+    const beforeRefs = await table.refs(); // NB: Current from cache.
     await table.refs({ range: cells, force: true });
-    const refs = await table.refs({});
-    const func = await calculate.many({ refs, cells });
+    const afterRefs = await table.refs();
+    const func = await calculate.many({ refs: afterRefs, cells });
 
     // Prepare grid update set.
     const from: t.IGridCells = {};
     const to: t.IGridCells = {};
-    const addChange = async (key: string, value: any, error?: t.IFuncError) => {
+
+    const addChange = async (key: string, value: any, error: t.IFuncError | undefined) => {
       const cell = await getCell(key);
       if (cell) {
-        let props: t.ICellProps | undefined =
-          value === undefined ? { ...cell.props } : { ...cell.props, value };
-        if (error) {
-          const { type, message } = error;
-          props = util.setCellProp({
-            props,
-            defaults: {},
-            section: 'status',
-            field: 'error',
-            value: { type, message },
-          });
-        }
+        const props = util.setCellError({
+          props: value === undefined ? { ...cell.props } : { ...cell.props, value },
+          error,
+        });
         from[key] = cell;
         to[key] = { ...cell, props };
       }
     };
     await Promise.all(func.list.map(item => addChange(item.cell, item.data, item.error)));
 
+    // Update cells that are no longer refs.
+    const removedOutRefs = removedKeys(beforeRefs.out, afterRefs.out);
+    await Promise.all(
+      removedOutRefs.map(async key => {
+        const value = await getValue(key);
+        const error = undefined;
+        return addChange(key, value, error);
+      }),
+    );
+
     // Finish up.
-    return {
-      func,
-      from,
-      to,
-      cells: func.list.map(f => f.cell),
-    };
+    return { func, from, to, cells: func.list.map(f => f.cell) };
   };
 
   /**
@@ -78,4 +77,13 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
 
   // Finish up.
   return { changes, update };
+}
+
+/**
+ * [Helpers]
+ */
+
+function removedKeys(before: object, after: object) {
+  const keys = Object.keys(after);
+  return Object.keys(before).filter(key => !keys.includes(key));
 }
