@@ -74,7 +74,7 @@ export class Header extends React.PureComponent<IHeaderProps, IHeaderState> {
         color: foreground.color,
         backgroundColor: background.color,
         height: height.value,
-        borderBottom: height.value > 0 ? `solid 1px ${border.color}` : undefined,
+        borderBottom: height.value > 0 ? util.toBorder(border.color) : undefined,
         transition,
       }),
     };

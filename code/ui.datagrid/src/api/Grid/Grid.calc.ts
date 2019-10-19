@@ -1,4 +1,4 @@
-import { coord, t, util } from '../../common';
+import { coord, func, t, util } from '../../common';
 
 const defaultGetFunc: t.GetFunc = async args => undefined; // NB: Empty stub.
 
@@ -20,7 +20,7 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
   };
 
   const table = coord.refs.table({ getKeys, getValue });
-  const calculate = coord.func.calculate({ getValue, getFunc });
+  const calculate = func.calculate({ getValue, getFunc });
 
   /**
    * Calculate a set of changes.
@@ -28,11 +28,13 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
   const changes: t.IGridCalculate['changes'] = async (args: { cells?: string | string[] } = {}) => {
     const cells = args.cells || (await getKeys());
 
-    // Calculate updates.
+    // Calculate cell refs.
     const beforeRefs = await table.refs(); // NB: Current from cache.
     await table.refs({ range: cells, force: true });
     const afterRefs = await table.refs();
-    const func = await calculate.many({ refs: afterRefs, cells });
+
+    // Calculate functions.
+    const res = await calculate.many({ refs: afterRefs, cells });
 
     // Prepare grid update set.
     const from: t.IGridCells = {};
@@ -49,7 +51,7 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
         to[key] = { ...cell, props };
       }
     };
-    await Promise.all(func.list.map(item => addChange(item.cell, item.data, item.error)));
+    await Promise.all(res.list.map(item => addChange(item.cell, item.data, item.error)));
 
     // Update cells that are no longer refs.
     const removedOutRefs = removedKeys(beforeRefs.out, afterRefs.out);
@@ -62,7 +64,7 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
     );
 
     // Finish up.
-    return { func, from, to, cells: func.list.map(f => f.cell) };
+    return { func: res, from, to, cells: res.list.map(f => f.cell) };
   };
 
   /**

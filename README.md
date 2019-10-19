@@ -59,13 +59,10 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/util.markdown](/code/util.markdown)
   - [@platform/util.string](/code/util.string)
   - [@platform/util.value](/code/util.value)
-  - [@platform/util.value.cell](/code/util.value.cell)
 - fs
   - [@platform/fs](/code/fs)
   - [@platform/fs.watch](/code/fs.watch)
   - [@platform/fs.s3](/code/fs.s3)
-- model
-  - [@platform/model.proj](/code/model.proj)
 - fsdb
   - [@platform/fsdb.types](/code/fsdb.types)
   - [@platform/fsdb.file](/code/fsdb.file)
@@ -76,6 +73,12 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - network
   - [@platform/http](/code/http)
   - [@platform/graphql](/code/graphql)
+- cell
+  - [@platform/cell](/code/cell)
+  - [@platform/cell.types](/code/cell.types)
+  - [@platform/cell.coord](/code/cell.coord)
+  - [@platform/cell.func](/code/cell.func)
+  - [@platform/cell.func.sys](/code/cell.func.sys)
 - ui
   - [@platform/css](/code/css)
   - [@platform/react](/code/react)

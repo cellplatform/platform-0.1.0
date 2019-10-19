@@ -8,5 +8,4 @@ export * from './cell';
 export * from './range';
 export * from './table';
 
-export * from './func';
 export * from './refs';

@@ -1,8 +1,11 @@
-import { t } from '../common';
-import { getCircularError } from '../refs/util';
+import { t, coord } from '../common';
 
-export { getCircularError };
-export { path, isFormula, toRefTarget, sort } from '../refs/util';
+const refs = coord.refs;
+export const path = refs.path;
+export const isFormula = refs.isFormula;
+export const sort = refs.sort;
+export const toRefTarget = refs.toRefTarget;
+export const getCircularError = refs.getCircularError;
 
 /**
  * Convert an object an `Error` with corresponding func/props.

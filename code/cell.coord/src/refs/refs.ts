@@ -2,4 +2,13 @@ export * from '@platform/cell.types/lib/types.refs';
 export * from './refs.incoming';
 export * from './refs.outgoing';
 export * from './refs.table';
-export { sort, path, isFormula, isFunc, isRef, isRange } from './util';
+export {
+  sort,
+  path,
+  isFormula,
+  isFunc,
+  isRef,
+  isRange,
+  toRefTarget,
+  getCircularError,
+} from './util';

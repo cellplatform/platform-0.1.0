@@ -159,8 +159,10 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       grid.select({ cell, ranges });
     }
 
-    // Calculate functions.
+    // Prepare view.
     await grid.calc.update();
+    grid.changeCells(grid.cells, { init: true, silent: true });
+    grid.mergeCells({ cells: grid.cells, init: true });
 
     // Finish up.
     grid.fire({ type: 'GRID/ready', payload: { grid } });

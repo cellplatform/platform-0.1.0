@@ -6,9 +6,9 @@ import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
 
 import { Grid } from '../api';
+import { constants, coord, func, t, util } from '../common';
 import { FactoryManager } from '../factory';
 import * as css from '../styles/global.cell';
-import { t, constants, util, coord } from '../common';
 
 const CLASS = css.CLASS;
 const { CELL, GRID } = CLASS;
@@ -46,7 +46,7 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     add(style.bold, CELL.BOLD);
     add(style.italic, CELL.ITALIC);
     add(style.underline, CELL.UNDERLINE);
-    add(coord.func.isFormula(cell && cell.value), CELL.FORMULA);
+    add(func.isFormula(cell && cell.value), CELL.FORMULA);
     add(Boolean(view.className), view.className);
     add(Boolean(props.status && props.status.error), CELL.ERROR);
 

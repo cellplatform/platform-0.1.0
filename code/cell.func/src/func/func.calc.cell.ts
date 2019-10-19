@@ -1,8 +1,7 @@
-import { ast } from '../ast';
-import { t } from '../common';
-import { CellRange } from '../range/CellRange';
+import { t, coord } from '../common';
 import * as util from './util';
-import { cell as cellUtil } from '../cell';
+
+const CellRange = coord.range.CellRange;
 
 /**
  * Calculate.
@@ -16,7 +15,7 @@ export async function calculate<D = any>(args: {
   const { cell, refs, getValue, getFunc } = args;
   const formula = (await getValue(cell)) || '';
   const isFormula = util.isFormula(formula);
-  const node = isFormula ? ast.toTree(formula) : undefined;
+  const node = isFormula ? coord.ast.toTree(formula) : undefined;
   const type = util.toRefTarget(formula);
 
   const fail = (errorType: t.FuncError, message: string) => {
@@ -70,7 +69,10 @@ export async function calculate<D = any>(args: {
  * [Internal]
  */
 
-const getExprFunc = async (getFunc: t.GetFunc, operator: ast.BinaryExpressionNode['operator']) => {
+const getExprFunc = async (
+  getFunc: t.GetFunc,
+  operator: coord.ast.BinaryExpressionNode['operator'],
+) => {
   if (operator === '+') {
     return getFunc({ name: 'SUM', namespace: 'sys' });
   }
@@ -83,14 +85,14 @@ const getExprFunc = async (getFunc: t.GetFunc, operator: ast.BinaryExpressionNod
 const evalNode = async (args: {
   cell: string;
   formula: string;
-  node: ast.Node;
+  node: coord.ast.Node;
   refs: t.IRefs;
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
 }) => {
   const { node, cell, formula, refs, getValue, getFunc } = args;
 
-  if (ast.isValueNode(node)) {
+  if (coord.ast.isValueNode(node)) {
     return (node as any).value;
   }
   if (node.type === 'binary-expression') {
@@ -100,12 +102,12 @@ const evalNode = async (args: {
     return evalFunc({ cell, formula, node, refs, getValue, getFunc }); // <== RECURSION 🌳
   }
   if (node.type === 'cell') {
-    return getCellRefValue({ cell, refs, node, getValue, getFunc }); // <== RECURSION 🌳
+    return getCellRefValue({ cell, refs, node, getValue, getFunc }); //   <== RECURSION 🌳
   }
   if (node.type === 'cell-range') {
     return getRangeValues({
       cell,
-      node: node as ast.CellRangeNode,
+      node: node as coord.ast.CellRangeNode,
       refs,
       getValue,
       getFunc,
@@ -119,7 +121,7 @@ const evalNode = async (args: {
 const evalExpr = async (args: {
   cell: string;
   formula: string;
-  node: ast.BinaryExpressionNode;
+  node: coord.ast.BinaryExpressionNode;
   refs: t.IRefs;
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
@@ -132,7 +134,7 @@ const evalExpr = async (args: {
     throw new Error(err);
   }
 
-  const toValue = async (node: ast.Node) => {
+  const toValue = async (node: coord.ast.Node) => {
     return node.type === 'binary-expression'
       ? evalExpr({ cell, formula, refs, getValue, getFunc, node, level: level + 1 }) // <== RECURSION 🌳
       : evalNode({ cell, formula, node, getValue, getFunc, refs });
@@ -154,7 +156,7 @@ const evalExpr = async (args: {
 const evalFunc = async (args: {
   cell: string;
   formula: string;
-  node: ast.FunctionNode;
+  node: coord.ast.FunctionNode;
   refs: t.IRefs;
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
@@ -175,7 +177,8 @@ const evalFunc = async (args: {
   }
 
   // Calculate parameter values.
-  const getParam = (node: ast.Node) => evalNode({ cell, formula, node, refs, getValue, getFunc });
+  const getParam = (node: coord.ast.Node) =>
+    evalNode({ cell, formula, node, refs, getValue, getFunc });
   const params = await Promise.all(node.arguments.map(node => getParam(node)));
 
   // Invoke the function.
@@ -188,7 +191,7 @@ const evalFunc = async (args: {
  */
 const getCellRefValue = async (args: {
   cell: string;
-  node: ast.CellNode;
+  node: coord.ast.CellNode;
   refs: t.IRefs;
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
@@ -197,13 +200,13 @@ const getCellRefValue = async (args: {
   util.throwIfCircular({ cell, refs });
 
   // Read the current cell value for the node.
-  const targetKey = cellUtil.toRelative(args.node.key);
+  const targetKey = coord.cell.toRelative(args.node.key);
   let value = (await getValue(targetKey)) || '';
 
   // Calculate formulas into final values.
   if (util.isFormula(value)) {
     value = await evalNode({
-      node: ast.toTree(value) as ast.BinaryExpressionNode | ast.FunctionNode,
+      node: coord.ast.toTree(value) as coord.ast.BinaryExpressionNode | coord.ast.FunctionNode,
       cell: targetKey,
       formula: value,
       refs,
@@ -221,7 +224,7 @@ const getCellRefValue = async (args: {
  */
 const getRangeValues = async (args: {
   cell: string;
-  node: ast.CellRangeNode;
+  node: coord.ast.CellRangeNode;
   refs: t.IRefs;
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;

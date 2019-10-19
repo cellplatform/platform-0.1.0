@@ -6,7 +6,6 @@ import { MemoryCache, R, t } from '../common';
 import { range } from '../range';
 import { incoming } from './refs.incoming';
 import { outgoing } from './refs.outgoing';
-import { func } from '../func';
 import * as util from './util';
 
 type IRefsTableArgs = {
@@ -155,7 +154,7 @@ class RefsTable implements t.IRefsTable {
     let changes: t.IRefsUpdateArgs[] = Array.isArray(args) ? args : [args];
     changes = changes
       .filter(({ from, to }) => !R.equals(from, to))
-      .filter(({ from, to }) => func.isFormula(from) || func.isFormula(to));
+      .filter(({ from, to }) => util.isFormula(from) || util.isFormula(to));
     const keys = R.uniq(changes.map(change => change.key));
 
     // Get the current set of refs (prior to any updates).

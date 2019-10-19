@@ -24,8 +24,7 @@ export class Sheet extends React.PureComponent<ISheetProps, ISheetState> {
   public static contextType = shell.Context;
   public context!: t.IShellContext;
 
-  private datagrid!: datagrid.DataGrid;
-  private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
+  private grid = datagrid.Grid.create({});
 
   /**
    * [Lifecycle]
@@ -52,11 +51,7 @@ export class Sheet extends React.PureComponent<ISheetProps, ISheetState> {
     return (
       <div {...styles.base}>
         <datagrid.DataGrid
-          key={'test.grid'}
-          ref={this.datagridRef}
-          // values={this.state.values}
-          // columns={this.state.columns}
-          // rows={this.state.rows}
+          grid={this.grid}
           events$={this.grid$}
           factory={this.factory}
           // Handsontable={Handsontable}

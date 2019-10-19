@@ -7,7 +7,7 @@ export function sizeHandlers(grid: Grid) {
    * - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterColumnResize
    */
   function afterColumnResize(index: number, width: number, isDoubleClick: boolean) {
-    if (grid) {
+    if (grid.isInitialized) {
       const key = coord.cell.toKey(index, undefined);
       let column = grid.columns[key];
       width = isDoubleClick
@@ -28,7 +28,7 @@ export function sizeHandlers(grid: Grid) {
    * - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterRowResize
    */
   function afterRowResize(index: number, height: number, isDoubleClick: boolean) {
-    if (grid) {
+    if (grid.isInitialized) {
       const key = coord.cell.toKey(undefined, index);
       let row = grid.rows[key];
       height = isDoubleClick
@@ -49,7 +49,7 @@ export function sizeHandlers(grid: Grid) {
    * - https://handsontable.com/docs/6.2.2/Hooks.html#event:modifyColWidth
    */
   function modifyColWidth(width: number, index: number) {
-    if (grid) {
+    if (grid.isInitialized) {
       const key = coord.cell.toKey(index, undefined);
       const column = grid.columns[key];
       width = column && column.width !== undefined ? column.width : grid.defaults.columWidth;

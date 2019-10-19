@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { t, value } from '../common';
-import { refs } from '../refs';
+import { t, value, coord } from '../common';
+
+const refs = coord.refs;
 
 /**
  * Shared test helpers.

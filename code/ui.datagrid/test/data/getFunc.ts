@@ -1,5 +1,5 @@
 import { t } from '../common';
-import { sys } from '@platform/cell.func/lib/func.sys';
+import { sys } from '@platform/cell.func.sys';
 
 export const getFunc: t.GetFunc = async key => {
   /**
