@@ -8,7 +8,7 @@ import { t } from '../../common';
  *   - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterSelection
  *
  */
-export function afterSelectionHandler(getGrid: () => Grid) {
+export function afterSelectionHandler(grid: Grid) {
   let from: t.IGridSelection = { cell: undefined, ranges: [] };
 
   const afterSelection = (
@@ -19,7 +19,6 @@ export function afterSelectionHandler(getGrid: () => Grid) {
     preventScrolling: { value?: boolean },
     selectionLayerLevel: number,
   ) => {
-    const grid = getGrid();
     const to = grid.selection;
     grid.fire({
       type: 'GRID/selection',
@@ -29,7 +28,6 @@ export function afterSelectionHandler(getGrid: () => Grid) {
   };
 
   const afterDeselect = () => {
-    const grid = getGrid();
     const to = grid.selection;
     grid.fire({
       type: 'GRID/selection',

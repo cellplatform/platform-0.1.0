@@ -17,11 +17,9 @@ import { SAMPLE } from '../data';
 export type DataGrid = datagrid.DataGrid;
 
 export type ITestGridViewProps = {
+  grid: datagrid.Grid;
   events$?: Subject<t.GridEvent>;
   editorType: t.TestEditorType;
-  totalColumns?: number;
-  totalRows?: number;
-  getFunc?: t.GetFunc;
   style?: GlamorValue;
   Table?: Handsontable;
 };
@@ -41,9 +39,6 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
   private unmounted$ = new Subject<{}>();
   private events$ = this.props.events$ || new Subject<t.GridEvent>();
 
-  public datagrid!: datagrid.DataGrid;
-  private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
-
   /**
    * [Lifecycle]
    */
@@ -53,7 +48,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
 
   public componentDidMount() {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
-    const keyboard$ = this.grid.keyboard$;
+    const keyboard$ = this.props.grid.keyboard$;
 
     events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
       // console.log('🌳 EVENT', e.type, e.payload);
@@ -136,31 +131,19 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     return Table as Handsontable;
   }
 
-  public get grid() {
-    return this.datagrid.grid;
-  }
-
   /**
    * [Render]
    */
   public render() {
-    const { totalColumns, totalRows } = this.props;
-
     return (
       <datagrid.DataGrid
-        key={'test.grid'}
-        ref={this.datagridRef}
+        grid={this.props.grid}
+        factory={this.factory}
+        Handsontable={this.Table}
         cells={this.state.values}
         columns={this.state.columns}
         rows={this.state.rows}
         events$={this.events$}
-        factory={this.factory}
-        getFunc={this.props.getFunc}
-        // defaults={{ rowHeight: 200 }}
-        // keyBindings={[{ command: 'COPY', key: 'CMD+D' }]}
-        totalColumns={totalColumns}
-        totalRows={totalRows}
-        Handsontable={this.Table}
         initial={{ selection: 'A1' }}
         style={this.props.style}
         canSelectAll={false}

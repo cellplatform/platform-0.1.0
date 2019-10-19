@@ -10,9 +10,8 @@ import { t, coord } from '../../common';
  *    top-left row/column box (row:-1, column:-1).
  *
  */
-export function mouseCell(getGrid: () => Grid, type: t.IGridMouse['type']) {
+export function mouseCell(grid: Grid, type: t.IGridMouse['type']) {
   return function(e: MouseEvent, coords: { row: number; col: number }, td: Element) {
-    const grid = getGrid();
     const { row, col: column } = coords;
 
     // Fire mouse event.

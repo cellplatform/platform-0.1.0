@@ -10,11 +10,10 @@ import { t } from '../../common';
  *   - https://forum.handsontable.com/t/keyboard-cycling/2802/4
  *
  */
-export function beforeKeyDownHandler(getGrid: () => Grid) {
+export function beforeKeyDownHandler(grid: Grid) {
   return function(e: Event) {
     // @ts-ignore
     const table = this as Handsontable;
-    const grid = getGrid();
     const payload = toKeydownPayload(e, grid);
     const { cancel, key } = payload;
 

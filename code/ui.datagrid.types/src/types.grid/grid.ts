@@ -44,6 +44,8 @@ export type IGridMethods = {
 };
 
 export type IGridDefaults = {
+  totalColumns: number;
+  totalRows: number;
   columWidth: number;
   columnWidthMin: number;
   rowHeight: number;

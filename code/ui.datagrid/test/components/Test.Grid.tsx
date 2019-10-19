@@ -10,17 +10,21 @@ export type ITestGridProps = {
   editorType: t.TestEditorType;
   style?: GlamorValue;
 };
-export type ITestGridState = {
-  data?: any;
-  totalColumns?: number;
-  totalRows?: number;
-};
+export type ITestGridState = { data?: any };
 
 export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState> {
   public state: ITestGridState = {};
   private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ITestGridState>>();
   private events$ = new Subject<t.GridEvent>();
+
+  public grid = datagrid.Grid.create({
+    totalColumns: 52,
+    totalRows: 1000,
+    getFunc,
+    // keyBindings: [{ command: 'COPY', key: 'CMD+D' }],
+    // defaults: { rowHeight: 200 },
+  });
 
   private testGrid!: TestGridView;
   private testGridRef = (ref: TestGridView) => (this.testGrid = ref);
@@ -154,10 +158,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   /**
    * [Properties]
    */
-  public get grid() {
-    return this.testGrid.datagrid.grid;
-  }
-
   private get test$() {
     return this.testGrid.state$;
   }
@@ -224,13 +224,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         <Hr margin={5} />
         {this.button('redraw', () => this.grid.redraw())}
         {this.button('focus', () => this.grid.focus())}
-        {this.button('total row/columns', () => {
-          if (typeof this.state.totalColumns === 'number') {
-            this.state$.next({ totalColumns: undefined, totalRows: undefined });
-          } else {
-            this.state$.next({ totalColumns: 5, totalRows: 5 });
-          }
-        })}
         {this.button('updateHashes', () => {
           this.grid.updateHashes({ force: true });
           this.updateState();
@@ -243,10 +236,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         {this.button('changeCells (via prop/state)', () =>
           this.test$.next({ values: { A1: { value: 'happy' } } }),
         )}
-        {this.button('changeCells (large)', () => {
-          const data = testData({ totalColumns: 52, totalRows: 1000 });
-          this.grid.changeCells(data.values);
-        })}
         {this.button('mergeCells (A5)', () => {
           this.grid.changeCells({
             A5: { value: 'merged', props: { merge: { colspan: 3, rowspan: 5 } } },
@@ -275,11 +264,11 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         {this.button('select: A1 and range', () =>
           this.grid.select({ cell: 'A1', ranges: ['B2:C4', 'C2:D7'] }),
         )}
-        {this.button('select: bottom/right', () =>
+        {this.button('select: bottom/right', () => {
           this.grid.select({
             cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
-          }),
-        )}
+          });
+        })}
         {this.button('select column: B:B', () => this.grid.select({ cell: 'B1', ranges: ['B:B'] }))}
         {this.button('select row: 3:3', () => this.grid.select({ cell: 'A3', ranges: ['3:3'] }))}
         {this.button('select row and column', () =>
@@ -288,11 +277,11 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         <Hr margin={5} />
         {this.button('scrollTo: A1', () => this.grid.scrollTo({ cell: 'A1' }))}
         {this.button('scrollTo: B5', () => this.grid.scrollTo({ cell: 'B5' }))}
-        {this.button('scrollTo: bottom/right', () =>
+        {this.button('scrollTo: bottom/right', () => {
           this.grid.scrollTo({
             cell: { row: this.grid.totalRows, column: this.grid.totalColumns },
-          }),
-        )}
+          });
+        })}
 
         {/* <Hr margin={5} />
             {this.button(
@@ -339,11 +328,9 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           <TestGridView
             ref={this.testGridRef}
             style={styles.grid}
-            getFunc={getFunc}
+            grid={this.grid}
             editorType={this.props.editorType}
             events$={this.events$}
-            totalColumns={this.state.totalColumns}
-            totalRows={this.state.totalRows}
           />
         </div>
       </div>

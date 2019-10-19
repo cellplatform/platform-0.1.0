@@ -1,15 +1,12 @@
 import { Grid } from '../../api';
-import { constants, coord } from '../../common';
+import { coord } from '../../common';
 
-const { DEFAULT } = constants;
-
-export function sizeHandlers(getGrid: () => Grid) {
+export function sizeHandlers(grid: Grid) {
   /**
    * Store the `column width` data after a manual resize.
    * - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterColumnResize
    */
   function afterColumnResize(index: number, width: number, isDoubleClick: boolean) {
-    const grid = getGrid();
     if (grid) {
       const key = coord.cell.toKey(index, undefined);
       let column = grid.columns[key];
@@ -31,7 +28,6 @@ export function sizeHandlers(getGrid: () => Grid) {
    * - https://handsontable.com/docs/6.2.2/Hooks.html#event:afterRowResize
    */
   function afterRowResize(index: number, height: number, isDoubleClick: boolean) {
-    const grid = getGrid();
     if (grid) {
       const key = coord.cell.toKey(undefined, index);
       let row = grid.rows[key];
@@ -53,7 +49,6 @@ export function sizeHandlers(getGrid: () => Grid) {
    * - https://handsontable.com/docs/6.2.2/Hooks.html#event:modifyColWidth
    */
   function modifyColWidth(width: number, index: number) {
-    const grid = getGrid();
     if (grid) {
       const key = coord.cell.toKey(index, undefined);
       const column = grid.columns[key];
@@ -67,12 +62,9 @@ export function sizeHandlers(getGrid: () => Grid) {
    * - https://handsontable.com/docs/6.2.2/Hooks.html#event:modifyRowHeight
    */
   function modifyRowHeight(height: number, index: number) {
-    const grid = getGrid();
-    if (grid) {
-      const key = coord.cell.toKey(undefined, index);
-      const row = grid.rows[key];
-      height = row && row.height !== undefined ? row.height : grid.defaults.rowHeight;
-    }
+    const key = coord.cell.toKey(undefined, index);
+    const row = grid.rows[key];
+    height = row && row.height !== undefined ? row.height : grid.defaults.rowHeight;
     return height;
   }
 

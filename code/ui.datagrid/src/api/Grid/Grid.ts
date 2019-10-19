@@ -1,28 +1,28 @@
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
+import { commands } from '../../commands';
 import {
   coord,
   defaultValue,
+  IGridCell,
+  MemoryCache,
   R,
   t,
-  value as valueUtil,
   toSelectionValues,
   util,
-  MemoryCache,
-  IGridCell,
+  value as valueUtil,
 } from '../../common';
 import { DEFAULT } from '../../common/constants';
-import { Cell } from '../Cell';
 import { keyboard } from '../../keyboard';
-import { commands } from '../../commands';
+import { Cell } from '../Cell';
 import { calc } from './Grid.calc';
 
 export type IGridArgs = {
   table?: Handsontable;
-  totalColumns: number;
-  totalRows: number;
-  values?: t.IGridCells;
+  totalColumns?: number;
+  totalRows?: number;
+  cells?: t.IGridCells;
   columns?: t.IGridColumns;
   rows?: t.IGridRows;
   defaults?: Partial<t.IGridDefaults>;
@@ -48,6 +48,8 @@ export class Grid implements t.IGrid {
   public static defaults(input?: Partial<t.IGridDefaults>): t.IGridDefaults {
     const partial = input || {};
     return {
+      totalColumns: defaultValue(partial.totalColumns, DEFAULT.TOTAL_COLUMNS),
+      totalRows: defaultValue(partial.totalRows, DEFAULT.TOTAL_ROWS),
       columWidth: defaultValue(partial.columWidth, DEFAULT.COLUMN.WIDTH),
       columnWidthMin: defaultValue(partial.columnWidthMin, DEFAULT.COLUMN.WIDTH_MIN),
       rowHeight: defaultValue(partial.rowHeight, DEFAULT.ROW.HEIGHT),
@@ -91,13 +93,14 @@ export class Grid implements t.IGrid {
   }
 
   private _init(args: IGridArgs) {
-    this._.totalColumns = args.totalColumns;
-    this._.totalRows = args.totalRows;
-    this._.cells = args.values || {};
+    const defaults = (this._.defaults = Grid.defaults(args.defaults));
+
+    this._.totalColumns = defaultValue(args.totalColumns, defaults.totalColumns);
+    this._.totalRows = defaultValue(args.totalRows, defaults.totalRows);
+    this._.cells = args.cells || {};
     this._.columns = args.columns || {};
     this._.rows = args.rows || {};
     this._.calc = calc({ grid: this, getFunc: args.getFunc });
-    this._.defaults = Grid.defaults(args.defaults);
 
     this.events$
       .pipe(filter(e => e.type === 'GRID/ready'))
@@ -114,14 +117,14 @@ export class Grid implements t.IGrid {
     // Finish up.
     const { table } = args;
     if (table) {
-      this.init({ table });
+      this.initialize({ table });
     }
   }
 
   /**
    * Initialize the API with a working table (DOM).
    */
-  public init(args: { table: Handsontable }) {
+  public initialize(args: { table: Handsontable }) {
     const { table } = args;
     this._.table = table;
     this._.id = `grid/${(table as any).guid.replace(/^ht_/, '')}`;
