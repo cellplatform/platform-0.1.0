@@ -29,9 +29,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     rows: SAMPLE.ROWS,
   });
 
-  private testGrid!: TestGridView;
-  private testGridRef = (ref: TestGridView) => (this.testGrid = ref);
-
   private getValueSync = (key: string) => {
     const cell = this.grid.cells[key];
     return cell && typeof cell.value === 'string' ? cell.value : undefined;
@@ -313,7 +310,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       <div {...styles.base}>
         <div {...styles.inner}>
           <TestGridView
-            ref={this.testGridRef}
             style={styles.grid}
             grid={this.grid}
             editorType={this.props.editorType}
