@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';
 
 import { Button, color, COLORS, coord, css, datagrid, GlamorValue, Hr, log, t } from '../common';
-import { testData, getFunc } from '../data';
+import { getFunc, SAMPLE } from '../data';
 import { TestGridView } from './Test.Grid.view';
 
 export type ITestGridProps = {
@@ -24,6 +24,9 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     getFunc,
     // keyBindings: [{ command: 'COPY', key: 'CMD+D' }],
     // defaults: { rowHeight: 200 },
+    cells: SAMPLE.CELLS,
+    columns: SAMPLE.COLUMNS,
+    rows: SAMPLE.ROWS,
   });
 
   private testGrid!: TestGridView;
@@ -158,17 +161,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   /**
    * [Properties]
    */
-  private get test$() {
-    return this.testGrid.state$;
-  }
-
-  private get selectedValue() {
-    const cell = this.grid.selection.cell || '';
-    const value = this.getValueSync(cell) || '';
-    const max = 30;
-    const text = value.length > max ? `${value.substring(0, max)}...` : value;
-    return cell ? `${cell}: ${text}` : '';
-  }
 
   /**
    * [Methods]
@@ -233,9 +225,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         {this.button('changeCells (props)', () =>
           this.grid.changeCells({ A1: { value: 'hello', props: { bold: true } } }),
         )}
-        {this.button('changeCells (via prop/state)', () =>
-          this.test$.next({ values: { A1: { value: 'happy' } } }),
-        )}
         {this.button('mergeCells (A5)', () => {
           this.grid.changeCells({
             A5: { value: 'merged', props: { merge: { colspan: 3, rowspan: 5 } } },
@@ -250,15 +239,13 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
         <Hr margin={5} />
         {this.button('columns (width) - A:200', () =>
-          this.test$.next({ columns: { A: { width: 200 } } }),
+          this.grid.changeColumns({ A: { width: 200 } }),
         )}
         {this.button('columns (width) - A:300', () =>
-          this.test$.next({ columns: { A: { width: 300 } } }),
+          this.grid.changeColumns({ A: { width: 300 } }),
         )}
-        {this.button('rows (height) - 1:0', () => this.test$.next({ rows: { 1: { height: 0 } } }))}
-        {this.button('rows (height) - 1:120', () =>
-          this.test$.next({ rows: { 1: { height: 120 } } }),
-        )}
+        {this.button('rows (height) - 1:0', () => this.grid.changeRows({ '1': { height: 0 } }))}
+        {this.button('rows (height) - 1:120', () => this.grid.changeRows({ '1': { height: 120 } }))}
         <Hr margin={5} />
         {this.button('select: A1', () => this.grid.select({ cell: 'A1' }))}
         {this.button('select: A1 and range', () =>

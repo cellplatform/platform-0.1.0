@@ -23,7 +23,7 @@ export const SAMPLE = {
     C5: { value: 'Hello', props: { merge: { rowspan: 2 } } },
   },
   COLUMNS: {
-    A: { width: 300 },
+    A: { width: 250 },
   },
   ROWS: {},
 };

@@ -13,7 +13,6 @@ import {
   events,
   GlamorValue,
   Handsontable as TableLib,
-  R,
   t,
 } from '../../common';
 import { FactoryManager } from '../../factory';
@@ -27,10 +26,6 @@ export type IDataGridProps = {
   grid: Grid;
   factory: t.GridFactory;
   Handsontable?: Handsontable;
-
-  cells?: t.IGridCells;
-  columns?: t.IGridColumns;
-  rows?: t.IGridRows;
 
   events$?: Subject<t.GridEvent>;
   initial?: t.IInitialGridState;
@@ -153,12 +148,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     if (this.isDisposed) {
       return;
     }
-    const { initial = {}, cells = {} } = this.props;
+    const { initial = {} } = this.props;
     const grid = this.grid;
-
-    // Assign data.
-    grid.changeCells(cells, { silent: true, init: true });
-    grid.mergeCells({ cells, init: true });
 
     // Assign selection.
     if (initial.selection) {
@@ -174,28 +165,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     // Finish up.
     grid.fire({ type: 'GRID/ready', payload: { grid } });
     this.forceUpdate();
-  }
-
-  public componentDidUpdate(prev: IDataGridProps) {
-    const next = this.props;
-    const grid = this.grid;
-    let redraw = false;
-    if (!R.equals(prev.cells, next.cells)) {
-      grid.changeCells(next.cells || {}, { init: true, silent: true });
-      redraw = true;
-    }
-    if (!R.equals(prev.columns, next.columns)) {
-      grid.columns = next.columns || {};
-      redraw = true;
-    }
-    if (!R.equals(prev.rows, next.rows)) {
-      grid.rows = next.rows || {};
-      redraw = true;
-    }
-
-    if (redraw) {
-      this.redraw();
-    }
   }
 
   public componentWillUnmount() {

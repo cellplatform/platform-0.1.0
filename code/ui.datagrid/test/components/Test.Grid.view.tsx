@@ -12,7 +12,6 @@ import {
   t,
 } from '../common';
 import { DebugEditor } from './Debug.Editor';
-import { SAMPLE } from '../data';
 
 export type DataGrid = datagrid.DataGrid;
 
@@ -23,19 +22,11 @@ export type ITestGridViewProps = {
   style?: GlamorValue;
   Table?: Handsontable;
 };
-export type ITestGridViewState = {
-  values?: t.IGridCells;
-  columns?: t.IGridColumns;
-  rows?: t.IGridRows;
-};
+export type ITestGridViewState = {};
 
 export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestGridViewState> {
-  public state: ITestGridViewState = {
-    values: SAMPLE.CELLS,
-    columns: SAMPLE.COLUMNS,
-    rows: SAMPLE.ROWS,
-  };
-  public state$ = new Subject<Partial<ITestGridViewState>>();
+  public state: ITestGridViewState = {};
+  private state$ = new Subject<Partial<ITestGridViewState>>();
   private unmounted$ = new Subject<{}>();
   private events$ = this.props.events$ || new Subject<t.GridEvent>();
 
@@ -140,9 +131,6 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         grid={this.props.grid}
         factory={this.factory}
         Handsontable={this.Table}
-        cells={this.state.values}
-        columns={this.state.columns}
-        rows={this.state.rows}
         events$={this.events$}
         initial={{ selection: 'A1' }}
         style={this.props.style}
