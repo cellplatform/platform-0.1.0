@@ -28,6 +28,7 @@
     "handsontable": "6.2.2"
   },
   "devDependencies": {
+    "@platform/cell.func.sys": "^0.0.0",
     "@platform/cli.spec": "0.1.61",
     "@platform/test": "0.0.64",
     "@platform/test.dom": "0.0.54",
