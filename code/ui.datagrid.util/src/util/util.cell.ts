@@ -31,12 +31,18 @@ export function isEmptyCellProps(props?: t.ICellProps) {
 
   for (const key of keys) {
     const child = props[key];
-    if (typeof child === 'object') {
-      if (Object.keys(child).length > 0) {
+    if (key === 'value') {
+      if (child !== undefined) {
         return false;
       }
     } else {
-      return false;
+      if (typeof child === 'object') {
+        if (Object.keys(child).length > 0) {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
   }
 
@@ -57,7 +63,7 @@ export function toCellProps(input?: t.ICellProps): t.ICellPropsAll {
 }
 
 /**
- * Assignes a property field to props, removing it from the object
+ * Assigns a property field to props, removing it from the object
  * if it is the default value.
  */
 export function setCellProp<S extends keyof t.ICellProps>(args: {
@@ -79,6 +85,13 @@ export function setCellProp<S extends keyof t.ICellProps>(args: {
       .forEach(key => delete section[key]);
   }
 
+  // Strip undefined values from property section.
+  if (typeof section === 'object') {
+    Object.keys(section as object)
+      .filter(key => section[key] === undefined)
+      .forEach(key => delete section[key]);
+  }
+
   // Remove the section from the root props if empty.
   const res = { ...props, [args.section]: section };
   const isEmptySection = Object.keys(section as object).length === 0;
@@ -88,6 +101,23 @@ export function setCellProp<S extends keyof t.ICellProps>(args: {
 
   // Finish up.
   return isEmptyCellProps(res) ? undefined : res;
+}
+
+/**
+ * Assigns (or removes) a cell error on `props.status.error`.
+ */
+export function setCellError(args: {
+  props?: t.ICellProps;
+  error?: t.ICellPropsError;
+}): t.ICellProps | undefined {
+  const { props, error } = args;
+  return setCellProp({
+    props,
+    defaults: {},
+    section: 'status',
+    field: 'error',
+    value: error,
+  });
 }
 
 /**

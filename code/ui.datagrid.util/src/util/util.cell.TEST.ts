@@ -20,6 +20,7 @@ describe('util.cell', () => {
     test({ value: '', props: { status: {}, style: {}, view: {}, merge: {} } }, true);
     test({ value: undefined, props: { status: {}, style: {}, view: {}, merge: {} } }, true);
     test({ props: { status: {}, style: {}, view: {}, merge: {} } }, true);
+    test({ value: undefined, props: { value: undefined } }, true);
 
     test({ value: ' ' }, false);
     test({ value: ' ', hash }, false);
@@ -59,6 +60,7 @@ describe('util.cell', () => {
     test({ style: {}, merge: {} }, true);
     test({ style: {}, merge: {}, view: {} }, true);
     test({ status: {} }, true);
+    test({ value: undefined }, true);
 
     test({ style: { bold: true } }, false);
     test({ style: { bold: true }, merge: {} }, false);
@@ -186,18 +188,18 @@ describe('util.cell', () => {
   });
 
   describe('setCellProp', () => {
-    const defaults: t.ICellPropsStyleAll = { bold: false, italic: false, underline: false };
+    const styleDefaults: t.ICellPropsStyleAll = { bold: false, italic: false, underline: false };
 
     it('no change', () => {
       const res1 = util.setCellProp<'style'>({
-        defaults,
+        defaults: styleDefaults,
         section: 'style',
         field: 'bold',
         value: false,
       });
 
       const res2 = util.setCellProp<'style'>({
-        defaults,
+        defaults: styleDefaults,
         props: { style: { bold: true } },
         section: 'style',
         field: 'bold',
@@ -209,13 +211,13 @@ describe('util.cell', () => {
 
     it('from undefined props (generates new object)', () => {
       const res1 = util.setCellProp<'style'>({
-        defaults,
+        defaults: styleDefaults,
         section: 'style',
         field: 'bold',
         value: true,
       });
       const res2 = util.setCellProp<'style'>({
-        defaults,
+        defaults: styleDefaults,
         section: 'style',
         field: 'bold',
         value: false,
@@ -224,24 +226,25 @@ describe('util.cell', () => {
       expect(res2).to.eql(undefined); // NB: All default props shake out to be nothing (undefined).
     });
 
-    it('deletes default property value', () => {
+    it('deletes default property value (style)', () => {
       const res1 = util.setCellProp<'style'>({
         props: { style: { bold: true, italic: false } },
-        defaults,
+        defaults: styleDefaults,
         section: 'style',
         field: 'bold',
         value: false,
       });
+
       const res2 = util.setCellProp<'style'>({
         props: { style: { bold: true, italic: true } },
-        defaults,
+        defaults: styleDefaults,
         section: 'style',
         field: 'bold',
         value: false,
       });
 
       const res3 = util.setCellProp<'style'>({
-        defaults,
+        defaults: styleDefaults,
         props: res2,
         section: 'style',
         field: 'italic',
@@ -250,16 +253,66 @@ describe('util.cell', () => {
 
       const res4 = util.setCellProp<'style'>({
         props: { style: { bold: true }, merge: { colspan: 2 } },
-        defaults,
+        defaults: styleDefaults,
         section: 'style',
         field: 'bold',
         value: false,
+      });
+
+      const res5 = util.setCellProp<'status'>({
+        props: { status: { error: { message: 'FAIL', type: 'UNKNOWN' } } },
+        defaults: {},
+        section: 'status',
+        field: 'error',
+        value: undefined,
       });
 
       expect(res1).to.eql(undefined); // NB: All default props shake out to be nothing (undefined).
       expect(res2).to.eql({ style: { italic: true } });
       expect(res3).to.eql(undefined); // NB: Italic flipped to default (false).
       expect(res4).to.eql({ merge: { colspan: 2 } });
+      expect(res5).to.eql(undefined);
+    });
+  });
+
+  describe('setCellError', () => {
+    it('no error and no props', () => {
+      const res = util.setCellError({});
+      expect(res).to.eql(undefined);
+    });
+
+    it('assigns an error (existing props)', () => {
+      const error: t.ICellPropsError = { type: 'FAIL', message: 'Derp' };
+      const res1 = util.setCellError({ error });
+      const res2 = util.setCellError({ props: {}, error });
+      const res3 = util.setCellError({ props: { status: {} }, error });
+      const res4 = util.setCellError({
+        props: { status: { error: { type: 'TMP', message: 'Foo' } } },
+        error,
+      });
+      const props = { status: { error } };
+      expect(res1).to.eql(props);
+      expect(res2).to.eql(props);
+      expect(res3).to.eql(props);
+      expect(res4).to.eql(props);
+    });
+
+    it('removes error', () => {
+      const res1 = util.setCellError({
+        error: undefined,
+        props: {
+          status: { error: { type: 'TMP', message: 'Foo' } },
+        },
+      });
+      const res2 = util.setCellError({
+        error: undefined,
+        props: {
+          style: { bold: true },
+          status: { error: { type: 'TMP', message: 'Foo' } },
+        },
+      });
+      expect(res1).to.eql(undefined);
+      expect(res2).to.eql({ style: { bold: true } });
     });
   });
 

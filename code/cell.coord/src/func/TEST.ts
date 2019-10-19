@@ -1,7 +1,5 @@
 import { expect } from 'chai';
-
-import { t } from '../common';
-import { sys } from '../func.sys';
+import { t, value } from '../common';
 import { refs } from '../refs';
 
 /**
@@ -25,3 +23,43 @@ export const getFunc: t.GetFunc = async args => {
   // NB: Inject other functions here.
   return res ? res : undefined;
 };
+
+/**
+ * Dummy system functions.
+ */
+export const sys = (() => {
+  const sum: t.FuncInvoker = async args => {
+    const params = paramsToNumbers(args.params);
+    return params.length === 0
+      ? 0
+      : params.reduce((acc, next, i) => (i === 0 ? next : acc + next), 0);
+  };
+
+  function paramsToNumbers(input?: t.FuncParam[]) {
+    return (input || [])
+      .reduce(
+        (acc, next) => {
+          acc = Array.isArray(next) ? [...acc, ...next] : [...acc, next];
+          return acc;
+        },
+        [] as any[],
+      )
+      .map(p => (typeof p === 'string' ? value.toNumber(p) : p) as number)
+      .map(p => (typeof p === 'number' || typeof p === 'bigint' ? p : undefined))
+      .filter(p => p !== undefined) as number[];
+  }
+
+  const getFunc: t.GetFunc = async args => {
+    const { namespace, name } = args;
+    if (namespace === 'sys') {
+      switch (name) {
+        case 'SUM':
+          return sum;
+      }
+    }
+    return undefined;
+  };
+
+  // Finish up.
+  return { sum, getFunc };
+})();

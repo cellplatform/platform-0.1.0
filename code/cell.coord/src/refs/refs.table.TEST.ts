@@ -142,6 +142,37 @@ describe('refs.table', () => {
       expect(res1).to.eql(res5);
     });
 
+    it('recalculate: error => value => REF', async () => {
+      let A2 = '=A1';
+      const ctx = testContext({
+        A1: { value: '=A2' },
+        A2: { value: () => A2 },
+      });
+      const table = refs.table({ ...ctx });
+
+      const res1 = await table.refs();
+      const res2 = await table.refs();
+
+      expect(res1.out.A1[0].error).to.be.an('object');
+      expect(res1.out.A2[0].error).to.be.an('object');
+      expect(res1).to.eql(res2);
+
+      // Error removed.
+      A2 = '=A10';
+      await table.refs({ range: ['A2'], force: true }); // NB: force update on subset of cells.
+      const res3 = await table.refs(); // NB: Query of all refs pulled from cache.
+
+      expect(res3.out.A2.length).to.eql(1);
+      expect(res3.out.A2[0].error).to.eql(undefined);
+      expect(res3.out.A2[0].path).to.eql('A2/A10');
+
+      // Value (REF removed).
+      A2 = '123';
+      await table.refs({ range: ['A2'], force: true }); // NB: force update on subset of cells.
+      const res4 = await table.refs(); // NB: Query of all refs pulled from cache.
+      expect(res4.out.A2).to.eql(undefined);
+    });
+
     describe('caching', () => {
       it('read', async () => {
         const ctx = testContext({

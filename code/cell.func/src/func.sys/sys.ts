@@ -1,4 +1,4 @@
-import { t, value } from '../common';
+import { t } from '../common';
 import * as arithmetic from './sys.arithmetic';
 import * as stats from './sys.stats';
 import { FuncName } from './types';

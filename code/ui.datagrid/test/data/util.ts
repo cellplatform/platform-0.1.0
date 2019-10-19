@@ -1,4 +1,4 @@
-import { R, coord } from './libs';
+import { R, coord } from '../common';
 
 /**
  * Generates test data at the given size.

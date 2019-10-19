@@ -6,6 +6,5 @@ import * as t from './types';
 
 export * from '../../src/common';
 export * from './libs';
-export * from './testData';
 
 export { t, datagrid };

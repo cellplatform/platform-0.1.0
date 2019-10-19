@@ -1,4 +1,4 @@
-import { t, value } from '../common';
+import { t } from '../common';
 import * as util from './util';
 
 /**

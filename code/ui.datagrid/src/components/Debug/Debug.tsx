@@ -63,7 +63,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     });
 
     change$.subscribe(e => {
-      console.log('change', e);
       this.updateState();
     });
 
@@ -185,7 +184,12 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const order = coord.refs.sort({ refs }).keys;
 
     // Finish up.
-    this.state$.next({ refs, incoming, outgoing, order });
+    this.state$.next({
+      refs,
+      incoming: sortKeys(incoming),
+      outgoing: sortKeys(outgoing),
+      order,
+    });
   }
 
   /**
@@ -215,18 +219,27 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   private renderToolbar() {
     const styles = {
       base: css({
-        borderBottom: `solid 1px ${color.format(0.2)}`,
+        backgroundColor: color.format(-0.2),
         Flex: 'horizontal-center-spaceBetween',
         height: 32,
         PaddingX: 12,
         fontSize: 14,
       }),
+      edge: css({
+        Flex: 'horizontal',
+      }),
+      brace: css({ MarginX: 3, opacity: 0.5 }),
     };
+    const elOpen = <div {...styles.brace}>(</div>;
+    const elClose = <div {...styles.brace}>)</div>;
     return (
       <div {...styles.base}>
-        <div>{/* left */}</div>
-        <div>
-          <LinkButton label={'Refresh'} onClick={this.handleRefresh} />
+        <div {...styles.edge}>{/* left */}</div>
+        <div {...styles.edge}>
+          <LinkButton label={'refresh'} onClick={this.refreshHandler({ force: false })} />
+          {elOpen}
+          <LinkButton label={'force'} onClick={this.refreshHandler({ force: true })} />
+          {elClose}
         </div>
       </div>
     );
@@ -329,8 +342,11 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   /**
    * [Handlers]
    */
-  private handleRefresh = () => {
-    this.updateState();
+  private refreshHandler = (args: { force?: boolean }) => {
+    return () => {
+      const { force } = args;
+      this.updateState({ force });
+    };
   };
 }
 

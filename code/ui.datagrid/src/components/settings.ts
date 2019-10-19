@@ -1,19 +1,15 @@
-import { Grid, Editor } from '../api';
+import { Editor, Grid } from '../api';
+import { constants, coord } from '../common';
 import * as hooks from './hooks';
-import { constants, t, coord } from '../common';
 
 const { DEFAULT } = constants;
 
 /**
  * Retrieves `handsontable` settings for a grid.
  */
-export function getSettings(args: {
-  totalColumns: number;
-  defaults: t.IGridDefaults;
-  getGrid: () => Grid;
-}) {
-  const { getGrid, totalColumns, defaults } = args;
-  const selectionHandler = hooks.afterSelectionHandler(getGrid);
+export function getSettings(args: { grid: Grid }) {
+  const { grid } = args;
+  const selectionHandler = hooks.afterSelectionHandler(grid);
 
   const createColumns = (length: number) => {
     const col = {
@@ -24,8 +20,7 @@ export function getSettings(args: {
   };
 
   const rowHeights: any = (index: number) => {
-    const grid = getGrid();
-    let height = defaults.rowHeight;
+    let height = grid.defaults.rowHeight;
     if (grid) {
       const row = grid.rows[index];
       height = row && row.height !== undefined ? row.height : height;
@@ -34,8 +29,7 @@ export function getSettings(args: {
   };
 
   const colWidths: any = (index: number) => {
-    const grid = getGrid();
-    let width = defaults.columWidth;
+    let width = grid.defaults.columWidth;
     if (grid) {
       const key = coord.cell.toKey(index);
       const column = grid.columns[key];
@@ -44,7 +38,7 @@ export function getSettings(args: {
     return width;
   };
 
-  const size = hooks.sizeHandlers(getGrid);
+  const size = hooks.sizeHandlers(grid);
   const { afterColumnResize, afterRowResize, modifyColWidth, modifyRowHeight } = size;
   const { afterSelection, afterDeselect } = selectionHandler;
 
@@ -56,7 +50,7 @@ export function getSettings(args: {
 
     colHeaders: true,
     colWidths,
-    columns: createColumns(totalColumns),
+    columns: createColumns(grid.totalColumns),
 
     viewportRowRenderingOffset: 20,
     manualRowResize: true,
@@ -68,7 +62,7 @@ export function getSettings(args: {
      * Event Hooks.
      * - https://handsontable.com/docs/6.2.2/Hooks.html
      */
-    beforeKeyDown: hooks.beforeKeyDownHandler(getGrid),
+    beforeKeyDown: hooks.beforeKeyDownHandler(grid),
     afterSelection,
     afterDeselect,
     afterColumnResize,
@@ -97,16 +91,16 @@ export function getSettings(args: {
     // },
 
     // Mouse.
-    beforeOnCellMouseDown: hooks.mouseCell(getGrid, 'DOWN'),
-    beforeOnCellMouseUp: hooks.mouseCell(getGrid, 'UP'),
-    beforeOnCellMouseOver: hooks.mouseCell(getGrid, 'ENTER'),
-    beforeOnCellMouseOut: hooks.mouseCell(getGrid, 'LEAVE'),
+    beforeOnCellMouseDown: hooks.mouseCell(grid, 'DOWN'),
+    beforeOnCellMouseUp: hooks.mouseCell(grid, 'UP'),
+    beforeOnCellMouseOver: hooks.mouseCell(grid, 'ENTER'),
+    beforeOnCellMouseOut: hooks.mouseCell(grid, 'LEAVE'),
 
     // Undo.
-    beforeUndo: hooks.undo(getGrid, 'BEFORE', 'UNDO'),
-    afterUndo: hooks.undo(getGrid, 'AFTER', 'UNDO'),
-    beforeRedo: hooks.undo(getGrid, 'BEFORE', 'REDO'),
-    afterRedo: hooks.undo(getGrid, 'AFTER', 'REDO'),
+    beforeUndo: hooks.undo(grid, 'BEFORE', 'UNDO'),
+    afterUndo: hooks.undo(grid, 'AFTER', 'UNDO'),
+    beforeRedo: hooks.undo(grid, 'BEFORE', 'REDO'),
+    afterRedo: hooks.undo(grid, 'AFTER', 'REDO'),
   };
 
   return settings;

@@ -12,37 +12,23 @@ import {
   t,
 } from '../common';
 import { DebugEditor } from './Debug.Editor';
-import { SAMPLE } from './SAMPLE';
 
 export type DataGrid = datagrid.DataGrid;
 
 export type ITestGridViewProps = {
+  grid: datagrid.Grid;
   events$?: Subject<t.GridEvent>;
   editorType: t.TestEditorType;
-  totalColumns?: number;
-  totalRows?: number;
-  getFunc?: t.GetFunc;
   style?: GlamorValue;
   Table?: Handsontable;
 };
-export type ITestGridViewState = {
-  values?: t.IGridCells;
-  columns?: t.IGridColumns;
-  rows?: t.IGridRows;
-};
+export type ITestGridViewState = {};
 
 export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestGridViewState> {
-  public state: ITestGridViewState = {
-    values: SAMPLE.CELLS,
-    columns: SAMPLE.COLUMNS,
-    rows: SAMPLE.ROWS,
-  };
-  public state$ = new Subject<Partial<ITestGridViewState>>();
+  public state: ITestGridViewState = {};
+  private state$ = new Subject<Partial<ITestGridViewState>>();
   private unmounted$ = new Subject<{}>();
   private events$ = this.props.events$ || new Subject<t.GridEvent>();
-
-  public datagrid!: datagrid.DataGrid;
-  private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
 
   /**
    * [Lifecycle]
@@ -53,7 +39,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
 
   public componentDidMount() {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
-    const keyboard$ = this.grid.keyboard$;
+    const keyboard$ = this.props.grid.keyboard$;
 
     events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
       // console.log('🌳 EVENT', e.type, e.payload);
@@ -136,31 +122,16 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     return Table as Handsontable;
   }
 
-  public get grid() {
-    return this.datagrid.grid;
-  }
-
   /**
    * [Render]
    */
   public render() {
-    const { totalColumns, totalRows } = this.props;
-
     return (
       <datagrid.DataGrid
-        key={'test.grid'}
-        ref={this.datagridRef}
-        values={this.state.values}
-        columns={this.state.columns}
-        rows={this.state.rows}
-        events$={this.events$}
+        grid={this.props.grid}
         factory={this.factory}
-        getFunc={this.props.getFunc}
-        // defaults={{ rowHeight: 200 }}
-        // keyBindings={[{ command: 'COPY', key: 'CMD+D' }]}
-        totalColumns={totalColumns}
-        totalRows={totalRows}
         Handsontable={this.Table}
+        events$={this.events$}
         initial={{ selection: 'A1' }}
         style={this.props.style}
         canSelectAll={false}

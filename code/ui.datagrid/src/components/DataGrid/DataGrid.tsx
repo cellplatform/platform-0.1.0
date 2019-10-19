@@ -2,7 +2,7 @@ import '../../styles';
 
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { map, debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
 import { Grid } from '../../api';
 import {
@@ -13,7 +13,6 @@ import {
   events,
   GlamorValue,
   Handsontable as TableLib,
-  R,
   t,
 } from '../../common';
 import { FactoryManager } from '../../factory';
@@ -21,19 +20,13 @@ import * as render from '../../render';
 import { getSettings } from '../settings';
 import { IGridRefsPrivate } from './types.private';
 
-const { DEFAULT, CSS } = constants;
+const { CSS } = constants;
 
 export type IDataGridProps = {
-  totalColumns?: number;
-  totalRows?: number;
-  values?: t.IGridCells;
-  columns?: t.IGridColumns;
-  rows?: t.IGridRows;
-  defaults?: Partial<t.IGridDefaults>;
+  grid: Grid;
+  factory: t.GridFactory;
   Handsontable?: Handsontable;
-  factory?: t.GridFactory;
-  getFunc?: t.GetFunc;
-  keyBindings?: t.KeyBindings<t.GridCommand>;
+
   events$?: Subject<t.GridEvent>;
   initial?: t.IInitialGridState;
   canSelectAll?: boolean;
@@ -66,30 +59,18 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
    * [Lifecycle]
    */
   public componentDidMount() {
-    const { values, columns, rows, keyBindings, getFunc } = this.props;
+    const grid = (this.grid = this.props.grid);
+    this.unmounted$.subscribe(() => grid.dispose());
 
     // State.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
-    // Create the table and corresponding API wrapper.
+    // Create the DOM table.
+    const settings = getSettings({ grid });
+
     const Table = this.props.Handsontable || TableLib;
-    const totalColumns = this.totalColumns;
-    const totalRows = this.totalRows;
-    const defaults = Grid.defaults(this.props.defaults);
-    const settings = getSettings({ totalColumns, defaults, getGrid: () => this.grid });
     const table = (this.table = new Table(this.el as Element, settings));
-    const grid = (this.grid = Grid.create({
-      table,
-      totalColumns,
-      totalRows,
-      values,
-      columns,
-      rows,
-      defaults,
-      keyBindings,
-      getFunc,
-    }));
-    this.unmounted$.subscribe(() => grid.dispose());
+    grid.initialize({ table });
 
     // Initialize factories.
     const factory = (this.factory = new FactoryManager({ grid, factory: this.props.factory }));
@@ -110,8 +91,9 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     const editor$ = refs.editorEvents$.pipe(takeUntil(this.unmounted$));
 
     // Bubble events.
-    if (this.props.events$) {
-      events$.subscribe(this.props.events$);
+    const bubble$ = this.props.events$;
+    if (bubble$) {
+      events$.subscribe(e => bubble$.next(e));
     }
 
     // Ferry editor events to the [Grid] API.
@@ -166,12 +148,10 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     if (this.isDisposed) {
       return;
     }
-    const { initial = {}, values = {} } = this.props;
+    const { initial = {} } = this.props;
     const grid = this.grid;
 
-    grid.changeCells(values, { silent: true, init: true });
-    grid.mergeCells({ values, init: true });
-
+    // Assign selection.
     if (initial.selection) {
       const selection =
         typeof initial.selection === 'string' ? { cell: initial.selection } : initial.selection;
@@ -179,33 +159,12 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       grid.select({ cell, ranges });
     }
 
+    // Calculate functions.
     await grid.calc.update();
 
+    // Finish up.
     grid.fire({ type: 'GRID/ready', payload: { grid } });
     this.forceUpdate();
-  }
-
-  public componentDidUpdate(prev: IDataGridProps) {
-    const next = this.props;
-    const grid = this.grid;
-    let redraw = false;
-    if (!R.equals(prev.values, next.values)) {
-      grid.changeCells(next.values || {}, { init: true, silent: true });
-
-      redraw = true;
-    }
-    if (!R.equals(prev.columns, next.columns)) {
-      grid.columns = next.columns || {};
-      redraw = true;
-    }
-    if (!R.equals(prev.rows, next.rows)) {
-      grid.rows = next.rows || {};
-      redraw = true;
-    }
-
-    if (redraw) {
-      this.redraw();
-    }
   }
 
   public componentWillUnmount() {
@@ -230,14 +189,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
   public get events$() {
     return this.grid.events$;
-  }
-
-  public get totalColumns() {
-    return defaultValue(this.props.totalColumns, DEFAULT.TOTAL_COLUMNS);
-  }
-
-  public get totalRows() {
-    return defaultValue(this.props.totalRows, DEFAULT.TOTAL_ROWS);
   }
 
   /**
