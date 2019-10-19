@@ -63,8 +63,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/fs](/code/fs)
   - [@platform/fs.watch](/code/fs.watch)
   - [@platform/fs.s3](/code/fs.s3)
-- model
-  - [@platform/model.proj](/code/model.proj)
 - fsdb
   - [@platform/fsdb.types](/code/fsdb.types)
   - [@platform/fsdb.file](/code/fsdb.file)
