@@ -5,8 +5,8 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "node .",
-    "watch": "nodemon .",
+    "start": "cd src.sample/server && yarn start $@",
+    "watch": "cd src.sample/server && yarn watch $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
