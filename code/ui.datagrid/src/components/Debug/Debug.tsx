@@ -3,17 +3,18 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import {
-  coord,
-  R,
   color,
   COLORS,
   constants,
+  coord,
   css,
+  func,
   GlamorValue,
+  R,
   t,
   value as valueUtil,
 } from '../../common';
-import { ObjectView, Button, IButtonProps } from '../primitives';
+import { Button, IButtonProps, ObjectView } from '../primitives';
 
 const { deleteUndefined } = valueUtil;
 
@@ -90,7 +91,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const key = this.grid.selection.cell || '';
     const value = this.getValueSync(key) || '';
     const isEmpty = !Boolean(value);
-    const isFormula = coord.func.isFormula(value);
+    const isFormula = func.isFormula(value);
 
     // Display string.
     const MAX = 30;

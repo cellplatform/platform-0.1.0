@@ -15,9 +15,10 @@ export { MemoryCache } from '@platform/cache';
  * Cell coords (eg "A1", "A1:C9").
  */
 export { coord } from '@platform/cell.coord';
+export { func } from '@platform/cell.func';
 
 /**
  * Ramda.
  */
-import { clamp, clone, equals, flatten, prop, uniq, uniqBy, pipe } from 'ramda';
+import { clamp, clone, equals, flatten, pipe, prop, uniq, uniqBy } from 'ramda';
 export const R = { clamp, clone, equals, flatten, prop, uniq, uniqBy, pipe };

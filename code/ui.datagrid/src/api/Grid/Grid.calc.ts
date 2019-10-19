@@ -1,4 +1,4 @@
-import { coord, t, util } from '../../common';
+import { coord, func, t, util } from '../../common';
 
 const defaultGetFunc: t.GetFunc = async args => undefined; // NB: Empty stub.
 
@@ -20,7 +20,7 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
   };
 
   const table = coord.refs.table({ getKeys, getValue });
-  const calculate = coord.func.calculate({ getValue, getFunc });
+  const calculate = func.calculate({ getValue, getFunc });
 
   /**
    * Calculate a set of changes.
