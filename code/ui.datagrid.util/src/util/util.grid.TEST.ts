@@ -3,6 +3,8 @@ import { t } from '../common';
 import * as util from './util.grid';
 
 const defaults: t.IGridDefaults = {
+  totalColumns: 52,
+  totalRows: 1000,
   columWidth: 120,
   columnWidthMin: 26,
   rowHeight: 26,
