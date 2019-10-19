@@ -74,7 +74,7 @@ export class Footer extends React.PureComponent<IFooterProps, IFooterState> {
         color: foreground.color,
         backgroundColor: background.color,
         height: height.value,
-        borderTop: height.value > 0 ? `solid 1px ${border.color}` : undefined,
+        borderTop: height.value > 0 ? util.toBorder(border.color) : undefined,
         transition,
       }),
     };

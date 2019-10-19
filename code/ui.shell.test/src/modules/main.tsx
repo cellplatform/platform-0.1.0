@@ -18,6 +18,7 @@ const TREE: t.ITreeNode = {
     { id: 'toggle:header' },
     { id: 'toggle:footer' },
     { id: 'customBody', props: { body: 'FOO' } },
+    { id: 'footer:border:0' },
   ],
 };
 
@@ -79,6 +80,10 @@ export const init: t.ShellImportInit = async args => {
 
   onClick('toggle:footer', () => {
     shell.state.footer.height = toSize(shell.state.footer.height) ? 0 : 28;
+  });
+
+  onClick('footer:border:0', () => {
+    shell.state.footer.border = 0;
   });
 };
 
