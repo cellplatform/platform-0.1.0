@@ -1,7 +1,6 @@
 import { ast } from '../ast';
 import { cell } from '../cell';
 import { R, t } from '../common';
-import { func } from '../func';
 import { CellRange } from '../range/CellRange';
 import * as util from './util';
 
@@ -49,7 +48,7 @@ async function find(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[
   };
   const value = await getValue(args.key);
 
-  if (typeof value !== 'string' || !func.isFormula(value)) {
+  if (typeof value !== 'string' || !util.isFormula(value)) {
     return [];
   }
 
@@ -126,7 +125,7 @@ async function outgoingCellRef(args: {
   }
 
   // Process the forumla (if it is one).
-  if (!isCircular && value && func.isFormula(value)) {
+  if (!isCircular && value && util.isFormula(value)) {
     const res = await find({ key, path, getValue }); // <== RECURSION 🌳
     if (!util.isFunc(value) && res.length > 0) {
       path = res[0].path;
