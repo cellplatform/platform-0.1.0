@@ -12,7 +12,7 @@
     "@platform/fsdb.types" "0.3.10"
     "@platform/libs" "0.1.3"
 
-"@platform/cell.http@^0.0.0":
+"@platform/cell.http@0.0.0":
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.0.0.tgz#7221f307bae63373a13f5e6aa8981492311da7b4"
   integrity sha512-Gyx7osR9DT3U23ez9u2pOLkFdXxI1P7233dWPUfnsf53lMO2dkBeFpdxwhe0EWhq08Y3vEkfOD5r+shMCM9UmQ==
@@ -68,7 +68,7 @@
     chalk "2.4.2"
     cli-table "0.3.1"
 
-"@platform/micro@0.5.5", "@platform/micro@^0.5.5":
+"@platform/micro@0.5.5":
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.5.5.tgz#207d482a3414f6bd9aaf96481216f942cce870c7"
   integrity sha512-RJ2ZDwHWqXqX+QJ/0MR6Ps25C9O412vwGwLXvz+k5M57UISlLFI9LjrO5+1GibEqY1acV+BbmDHyL/eLylSmyA==
