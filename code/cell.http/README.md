@@ -8,3 +8,13 @@ HTTP cloud server for CellOS.
 ## Setup
 
     yarn add @platform/cell.http
+
+## Development
+
+Example web server instances in the form of a [micro](../micro) http server
+and [zeit/now](https://zeit.co) exist within the `/src.server/` folder.  
+From the root, see scripts:
+
+    yarn start
+    yarn watch
+    yarn now
