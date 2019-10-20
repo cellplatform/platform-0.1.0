@@ -1,21 +1,24 @@
-import { micro } from '@platform/micro';
-import { log } from '@platform/log/lib/server';
+import { app } from './common';
+app.listen({ port: 8080 });
 
-const PKG = require('../package.json') as { name: string; version: string };
+// import { micro } from '@platform/micro';
+// import { log } from '@platform/log/lib/server';
 
-export const app = micro.init({
-  cors: true,
-  log: {
-    package: log.white(PKG.name),
-    version: PKG.version,
-  },
-});
+// const PKG = require('../package.json') as { name: string; version: string };
 
-app.router.get('/foo', async req => {
-  log.info('GET', req.url);
-  return {
-    status: 200,
-    headers: { 'x-foo': 'hello' },
-    data: { message: 'hello' },
-  };
-});
+// export const app = micro.init({
+//   cors: true,
+//   log: {
+//     package: log.white(PKG.name),
+//     version: PKG.version,
+//   },
+// });
+
+// app.router.get('/foo', async req => {
+//   log.info('GET', req.url);
+//   return {
+//     status: 200,
+//     headers: { 'x-foo': 'hello' },
+//     data: { message: 'hello' },
+//   };
+// });
