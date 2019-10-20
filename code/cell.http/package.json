@@ -1,21 +1,24 @@
 {
-  "name": "@platform/cell.db",
+  "name": "@platform/cell.http",
   "version": "0.0.0",
-  "description": "Persistent state management for cells.",
+  "description": "HTTP cloud server for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
+    "start": "cd src.sample && yarn start $@",
+    "watch": "cd src.sample && yarn watch $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "deploy": "cd src.sample && yarn deploy"
   },
   "dependencies": {
+    "@platform/cell.db": "0.0.0",
     "@platform/cell.types": "0.0.7",
-    "@platform/fsdb.model": "0.1.24",
-    "@platform/fsdb.types": "0.3.10",
-    "@platform/libs": "0.1.3"
+    "@platform/libs": "0.1.3",
+    "@platform/micro": "0.5.5"
   },
   "devDependencies": {
     "@platform/fsdb.nedb": "1.3.23",
