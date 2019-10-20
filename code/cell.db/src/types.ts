@@ -1,1 +1,1 @@
-export type TEMP = string;
+export type DB_TEMP = string;
