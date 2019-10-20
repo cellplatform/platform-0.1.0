@@ -3,20 +3,20 @@ import { KeyBindings } from '@platform/react/lib/types';
 
 export type IGrid = IGridProperties & IGridMethods;
 export type IGridProperties = {
-  readonly id: string;
-  readonly totalColumns: number;
-  readonly totalRows: number;
-  readonly isDisposed: boolean;
-  readonly isReady: boolean;
-  readonly isEditing: boolean;
-  readonly selection: t.IGridSelection;
-  readonly selectionValues: t.IGridCells;
-  readonly events$: Observable<t.GridEvent>;
-  readonly keyboard$: Observable<t.IGridKeydown>;
-  readonly keyBindings: KeyBindings<t.GridCommand>;
-  readonly defaults: IGridDefaults;
-  readonly cells: t.IGridCells<t.ICellProps>;
-  readonly calc: IGridCalculate;
+  id: string;
+  totalColumns: number;
+  totalRows: number;
+  isDisposed: boolean;
+  isReady: boolean;
+  isEditing: boolean;
+  selection: t.IGridSelection;
+  selectionValues: t.IGridCells;
+  events$: Observable<t.GridEvent>;
+  keyboard$: Observable<t.IGridKeydown>;
+  keyBindings: KeyBindings<t.GridCommand>;
+  defaults: IGridDefaults;
+  calc: IGridCalculate;
+  cells: t.IGridCells<t.ICellProps>;
   columns: IGridColumns;
   rows: IGridRows;
   clipboard?: IGridClipboardPending;
@@ -53,9 +53,9 @@ export type IGridDefaults = {
 };
 
 export type IGridSelection = {
-  readonly cell?: t.GridCellKey;
-  readonly ranges: t.GridCellRangeKey[];
-  readonly all?: boolean;
+  cell?: t.GridCellKey;
+  ranges: t.GridCellRangeKey[];
+  all?: boolean;
 };
 
 export type IGridClipboardPending = t.IGridClipboard<t.GridClipboardReadCommand> & {
