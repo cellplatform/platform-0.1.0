@@ -229,7 +229,7 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.grid.toCellKey(e.key);
           const cell = grid.cell(key);
-          const data =cell.data;
+          const data = cell.data;
           const diff = util.cell.value.cellDiff(
             { value: data.value, props: data.props },
             e.value as t.IGridCellData,

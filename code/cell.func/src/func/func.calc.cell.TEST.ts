@@ -204,7 +204,7 @@ describe('func.calc.cell (one)', function() {
       const test = async (cell: string, expectPath: string) => {
         const res = await calculate<number>({ cell, ...ctx });
         const error = res.error as t.IFuncError;
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.cell.key).to.eql(cell);
         expect(error.message).to.include(`leads back to itself (${expectPath})`);
       };
@@ -232,7 +232,7 @@ describe('func.calc.cell (one)', function() {
         const res = await calculate<number>({ cell, ...ctx });
         const error = res.error as t.IFuncError;
         expect(error.cell.key).to.eql(cell);
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.message).to.include(`leads back to itself (${expectPath})`);
       };
 
