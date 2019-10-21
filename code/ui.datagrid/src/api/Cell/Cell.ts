@@ -136,24 +136,32 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
     return this.td.offsetHeight;
   }
 
-  private get data() {
-    return this._.table.getDataAtCell(this.row, this.column) || {};
+  public get data(): t.ICellData<P> {
+    const data = this._.table.getDataAtCell(this.row, this.column) || {};
+    if (typeof data === 'object') {
+      const value = data.value;
+      const props = data.props || {};
+      const error = data.error;
+      return { value, props, error };
+    } else {
+      return {};
+    }
   }
 
-  public get value(): t.CellValue {
-    const data = this.data;
-    return typeof data === 'object' ? data.value : undefined;
-  }
+  // public get value(): t.CellValue {
+  //   const data = this.data;
+  //   return typeof data === 'object' ? data.value : undefined;
+  // }
 
-  public get props(): P {
-    const data = this.data;
-    return typeof data === 'object' ? data.props || {} : {};
-  }
+  // public get props(): P {
+  //   const data = this.data;
+  //   return typeof data === 'object' ? data.props || {} : {};
+  // }
 
-  public get error(): t.IError {
-    const data = this.data;
-    return typeof data === 'object' ? data.error : {};
-  }
+  // public get error(): t.IError {
+  //   const data = this.data;
+  //   return typeof data === 'object' ? data.error : {};
+  // }
 
   public get siblings() {
     const table = this._.table;
@@ -181,11 +189,11 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
   }
 
   public get rowspan() {
-    return defaultValue(Cell.props(this.props).merge.rowspan, 1);
+    return defaultValue(Cell.props(this.data.props).merge.rowspan, 1);
   }
 
   public get colspan() {
-    return defaultValue(Cell.props(this.props).merge.colspan, 1);
+    return defaultValue(Cell.props(this.data.props).merge.colspan, 1);
   }
 
   /**

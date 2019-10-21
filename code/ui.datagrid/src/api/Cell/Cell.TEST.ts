@@ -56,7 +56,7 @@ describe('Cell', () => {
       const grid = createGrid();
       const cell = grid.cell('A1');
       expect(cell.key).to.eql('A1');
-      expect(cell.value).to.eql(undefined);
+      expect(cell.data.value).to.eql(undefined);
     });
   });
 
@@ -64,7 +64,7 @@ describe('Cell', () => {
     it('has default props (empty {})', () => {
       const grid = createGrid();
       const cell = grid.cell('A1');
-      expect(cell.props).to.eql({});
+      expect(cell.data.props).to.eql({});
     });
 
     it('Cell.props (default values)', () => {
@@ -81,10 +81,10 @@ describe('Cell', () => {
       const A1 = grid.cell('A1');
       const A2 = grid.cell('A2');
 
-      const res1 = Cell.props(A1.props); // NB: Default values (no actual data in grid).
-      const res2 = Cell.props(A2.props);
+      const res1 = Cell.props(A1.data.props); // NB: Default values (no actual data in grid).
+      const res2 = Cell.props(A2.data.props);
 
-      expect(A1.props).to.eql({});
+      expect(A1.data.props).to.eql({});
       expect(res1.style).to.eql({});
       expect(res1.merge).to.eql({});
       expect(res1.view).to.eql({});

@@ -116,7 +116,7 @@ export class Editor extends editors.TextEditor {
     }
 
     const grid = this.grid;
-    const initial = initialValue === null ? this.cell.value : '';
+    const initial = initialValue === null ? this.cell.data.value : '';
     const context = this.createContext({ initial });
     const el = this.render(context);
     if (!el) {
@@ -330,7 +330,8 @@ export class Editor extends editors.TextEditor {
    * Renders the popup-editor within a <Provider> context.
    */
   private render(context: t.IEditorContext) {
-    const { row, column, value, props } = context.cell;
+    const { row, column } = context.cell;
+    const { value, props } = context.cell.data;
     const cell: t.IGridCellData = { value, props };
     const el = this.refs.factory.editor({ row, column, cell });
     if (!el) {

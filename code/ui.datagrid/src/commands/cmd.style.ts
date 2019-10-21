@@ -28,11 +28,11 @@ export function init(args: {
     // Converts values to the toggled style.
     const changes = Object.keys(values).reduce((acc, key) => {
       const cell = grid.cell(key);
-      const value = cell.value;
-      const error = cell.error;
+      const value = cell.data.value;
+      const error = cell.data.error;
       const props = util.cell.value.toggleCellProp<t.IGridCellPropsAll, 'style'>({
         defaults,
-        props: cell.props,
+        props: cell.data.props,
         section: 'style',
         field,
       });

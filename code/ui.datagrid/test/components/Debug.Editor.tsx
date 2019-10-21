@@ -52,7 +52,7 @@ export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEd
     });
 
     // Set initial values.
-    const value = this.context.cell.value;
+    const value = this.context.cell.data.value;
     this.state$.next({ value });
 
     // Manage cancelling manually.

@@ -8,8 +8,7 @@ export type IGridCell<P extends t.IGridCellProps = t.IGridCellProps> = {
   readonly width: number;
   readonly height: number;
   readonly siblings: ICellSiblings;
-  readonly value: t.CellValue;
-  readonly props: P;
+  readonly data: t.ICellData<P>;
   readonly rowspan: number;
   readonly colspan: number;
 };

@@ -162,7 +162,7 @@ export class Grid implements t.IGrid {
       const key = e.cell.key;
       const value = e.value.to;
       const props = {
-        ...this.cell(key).props,
+        ...this.cell(key).data.props,
         value: undefined, // NB: Reset the calculated "display value" as this will be overriden by the new value.
       };
       const cell: t.IGridCellData = { value, props };
