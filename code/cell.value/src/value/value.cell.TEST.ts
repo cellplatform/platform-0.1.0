@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { t } from '../common';
-import * as value from '.';
+import { value } from '.';
 
 describe('cell', () => {
   it('isEmptyCell', () => {

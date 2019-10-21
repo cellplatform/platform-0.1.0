@@ -1,1 +1,2 @@
-export * from './cell';
+import * as value from './value';
+export { value };

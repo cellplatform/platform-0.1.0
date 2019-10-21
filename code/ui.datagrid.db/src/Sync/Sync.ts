@@ -280,7 +280,7 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.db.toColumnKey(e.key);
           const existing = (await db.getValue(key)) as t.IGridColumnData;
-          const isChanged = util.isColumnChanged(existing, e.value as t.IGridColumnData);
+          const isChanged = util.cell.value.isColumnChanged(existing, e.value as t.IGridColumnData);
           if (isChanged) {
             save$.next({ kind: 'COLUMN', key, value: e.value });
           }
@@ -295,7 +295,7 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.grid.toColumnKey(e.key);
           const column = grid.columns[key];
-          const isChanged = util.isColumnChanged(column, e.value as t.IGridColumnData);
+          const isChanged = util.cell.value.isColumnChanged(column, e.value as t.IGridColumnData);
           if (isChanged) {
             changeGrid$.next({ type: 'COLUMN', key, value: e.value });
           }
@@ -346,7 +346,7 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.db.toRowKey(e.key);
           const existing = (await db.getValue(key)) as t.IGridRowData;
-          const isChanged = util.isRowChanged(existing, e.value as t.IGridRowData);
+          const isChanged = util.cell.value.isRowChanged(existing, e.value as t.IGridRowData);
           if (isChanged) {
             save$.next({ kind: 'ROW', key, value: e.value });
           }
@@ -361,7 +361,7 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.grid.toRowKey(e.key);
           const row = grid.rows[key];
-          const isChanged = util.isRowChanged(row, e.value as t.IGridRowData);
+          const isChanged = util.cell.value.isRowChanged(row, e.value as t.IGridRowData);
           if (isChanged) {
             changeGrid$.next({ type: 'ROW', key, value: e.value });
           }
