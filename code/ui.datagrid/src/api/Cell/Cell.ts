@@ -150,6 +150,11 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
     return typeof data === 'object' ? data.props || {} : {};
   }
 
+  public get error(): t.IError {
+    const data = this.data;
+    return typeof data === 'object' ? data.error : {};
+  }
+
   public get siblings() {
     const table = this._.table;
     const cell = this; // tslint:disable-line
