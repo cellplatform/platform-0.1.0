@@ -40,3 +40,5 @@ export type IFuncError = {
   message: string;
   cell: { key: string; value: string };
 };
+
+// const F: t.IEr

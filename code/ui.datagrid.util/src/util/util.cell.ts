@@ -12,8 +12,7 @@ export function toCellProps(input?: t.IGridCellProps): t.IGridCellPropsAll {
   const style: t.IGridCellPropsStyle = props.style || {};
   const merge: t.ICellPropsMerge = props.merge || {};
   const view: t.IGridCellPropsView = props.view || {};
-  const status: t.IGridCellPropsStatus = props.status || {};
-  return { value, style, merge, view, status };
+  return { value, style, merge, view };
 }
 
 /**

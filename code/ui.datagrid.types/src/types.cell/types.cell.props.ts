@@ -5,7 +5,6 @@ export type IGridCellPropsAll = t.ICellProps & {
   style: IGridCellPropsStyle;
   merge: ICellPropsMerge;
   view: IGridCellPropsView;
-  status: IGridCellPropsStatus;
 };
 
 export type IGridCellPropsStyle = Partial<IGridCellPropsStyleAll>;
@@ -28,14 +27,4 @@ export type IGridCellPropsView<V extends string = string> = Partial<ICellPropsVi
 export type ICellPropsViewAll<V extends string = string> = {
   type: V;
   className: string;
-};
-
-/**
- * Status and error-state associated with the cell.
- */
-export type IGridCellPropsStatus = Partial<IGridCellPropsStatusAll>;
-export type IGridCellPropsStatusAll = { error?: IGridCellPropsError };
-export type IGridCellPropsError<T extends string = any> = {
-  type: T;
-  message: string;
 };
