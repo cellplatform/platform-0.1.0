@@ -81,42 +81,4 @@ describe('util.cell', () => {
       expect(res2).to.eql({ style: { bold: true } });
     });
   });
-
-  describe('toggleCellProp', () => {
-    const defaults: t.IGridCellPropsStyleAll = { bold: false, italic: false, underline: false };
-
-    it('non-boolean values ignored', () => {
-      const style = { bold: { msg: 'NEVER' } } as any;
-      const props = { style };
-      const res = util.toggleCellProp<'style'>({
-        defaults,
-        section: 'style',
-        field: 'bold',
-        props,
-      });
-      expect(res).to.eql(props); // Non boolean field value ignored.
-    });
-
-    it('toggle sequence', () => {
-      const section = 'style';
-      const field = 'bold';
-
-      const res1 = util.toggleCellProp<'style'>({ defaults, section, field });
-      const res2 = util.toggleCellProp<'style'>({ defaults, props: res1, section, field });
-      const res3 = util.toggleCellProp<'style'>({ defaults, props: res2, section, field });
-      const res4 = util.toggleCellProp<'style'>({
-        defaults,
-        props: res3,
-        section,
-        field: 'italic',
-      });
-      const res5 = util.toggleCellProp<'style'>({ defaults, props: res4, section, field });
-
-      expect(res1).to.eql({ style: { bold: true } }); // Nothing => true (default)
-      expect(res2).to.eql(undefined); // True to nothing
-      expect(res3).to.eql({ style: { bold: true } }); // Nothing => true (default)
-      expect(res4).to.eql({ style: { bold: true, italic: true } });
-      expect(res5).to.eql({ style: { italic: true } });
-    });
-  });
 });

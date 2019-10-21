@@ -241,4 +241,42 @@ describe('cell', () => {
       expect(res5).to.eql(undefined);
     });
   });
+
+  describe('toggleCellProp', () => {
+    const defaults = { bold: false, italic: false, underline: false };
+
+    it('non-boolean values ignored', () => {
+      const style = { bold: { msg: 'NEVER' } } as any;
+      const props = { style };
+      const res = value.toggleCellProp<P, 'style'>({
+        defaults,
+        section: 'style',
+        field: 'bold',
+        props,
+      });
+      expect(res).to.eql(props); // Non boolean field value ignored.
+    });
+
+    it('toggle sequence', () => {
+      const section = 'style';
+      const field = 'bold';
+
+      const res1 = value.toggleCellProp<P, 'style'>({ defaults, section, field });
+      const res2 = value.toggleCellProp<P, 'style'>({ defaults, props: res1, section, field });
+      const res3 = value.toggleCellProp<P, 'style'>({ defaults, props: res2, section, field });
+      const res4 = value.toggleCellProp<P, 'style'>({
+        defaults,
+        props: res3,
+        section,
+        field: 'italic',
+      });
+      const res5 = value.toggleCellProp<P, 'style'>({ defaults, props: res4, section, field });
+
+      expect(res1).to.eql({ style: { bold: true } }); // Nothing => true (default)
+      expect(res2).to.eql(undefined); // True to nothing
+      expect(res3).to.eql({ style: { bold: true } }); // Nothing => true (default)
+      expect(res4).to.eql({ style: { bold: true, italic: true } });
+      expect(res5).to.eql({ style: { italic: true } });
+    });
+  });
 });

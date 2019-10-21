@@ -29,7 +29,7 @@ export function init(args: {
     const changes = Object.keys(values).reduce((acc, key) => {
       const cell = grid.cell(key);
       const value = cell.value;
-      const props = util.toggleCellProp<'style'>({
+      const props = util.cell.value.toggleCellProp<t.IGridCellPropsAll, 'style'>({
         defaults,
         props: cell.props,
         section: 'style',

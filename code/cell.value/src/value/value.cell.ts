@@ -125,3 +125,24 @@ export function setCellProp<P extends t.ICellProps, K extends keyof P>(args: {
   // Finish up.
   return isEmptyCellProps(res) ? undefined : (res as P);
 }
+
+/**
+ * Toggles the given boolean property field, removing it from the object
+ * if it is the default value.
+ */
+export function toggleCellProp<P extends t.ICellProps, K extends keyof P>(args: {
+  props?: Partial<P>;
+  defaults: P[K];
+  section: K;
+  field: keyof P[K];
+}): P | undefined {
+  const props = args.props || {};
+  const field = args.field as string;
+  const section = (props[args.section as string] || {}) as {};
+  const value = section[field];
+  if (!(value === undefined || typeof value === 'boolean')) {
+    return props as P; // NB: non-supported value type for toggling.
+  }
+  const toggled: any = typeof value === 'boolean' ? !value : true;
+  return setCellProp<P, K>({ ...args, value: toggled });
+}

@@ -73,24 +73,3 @@ export function setCellError(args: {
     value: error,
   });
 }
-
-/**
- * Toggles the given boolean property field, removing it from the object
- * if it is the default value.
- */
-export function toggleCellProp<S extends keyof t.IGridCellProps>(args: {
-  props?: t.IGridCellProps;
-  defaults: t.IGridCellProps[S];
-  section: S;
-  field: keyof t.IGridCellPropsAll[S];
-}): t.IGridCellProps | undefined {
-  const props = args.props || {};
-  const field = args.field as string;
-  const section = (props[args.section] || {}) as {};
-  const value = section[field];
-  if (!(value === undefined || typeof value === 'boolean')) {
-    return props; // NB: non-supported value type for toggling.
-  }
-  const toggled: any = typeof value === 'boolean' ? !value : true;
-  return setCellProp<S>({ ...args, value: toggled });
-}
