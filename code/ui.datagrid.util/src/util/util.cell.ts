@@ -1,6 +1,6 @@
 import { t, R, diff, hash } from '../common';
 
-export type CellChangeField = keyof t.ICellProps | 'VALUE' | 'PROPS';
+export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';
 
 /**
  * Determine if the given cell is empty (no value, no props).
@@ -19,7 +19,7 @@ export function isEmptyCellValue(value?: t.CellValue) {
 /**
  * Determine if the given cell props is empty.
  */
-export function isEmptyCellProps(props?: t.ICellProps) {
+export function isEmptyCellProps(props?: t.IGridCellProps) {
   if (typeof props !== 'object') {
     return true;
   }
@@ -52,13 +52,13 @@ export function isEmptyCellProps(props?: t.ICellProps) {
 /**
  * Produces a uniform cell properties object.
  */
-export function toCellProps(input?: t.ICellProps): t.ICellPropsAll {
+export function toCellProps(input?: t.IGridCellProps): t.IGridCellPropsAll {
   const props = input || {};
   const value: t.CellValue = props.value;
-  const style: t.ICellPropsStyle = props.style || {};
+  const style: t.IGridCellPropsStyle = props.style || {};
   const merge: t.ICellPropsMerge = props.merge || {};
-  const view: t.ICellPropsView = props.view || {};
-  const status: t.ICellPropsStatus = props.status || {};
+  const view: t.IGridCellPropsView = props.view || {};
+  const status: t.IGridCellPropsStatus = props.status || {};
   return { value, style, merge, view, status };
 }
 
@@ -66,17 +66,17 @@ export function toCellProps(input?: t.ICellProps): t.ICellPropsAll {
  * Assigns a property field to props, removing it from the object
  * if it is the default value.
  */
-export function setCellProp<S extends keyof t.ICellProps>(args: {
-  props?: t.ICellProps;
-  defaults: t.ICellProps[S];
+export function setCellProp<S extends keyof t.IGridCellProps>(args: {
+  props?: t.IGridCellProps;
+  defaults: t.IGridCellProps[S];
   section: S;
-  field: keyof t.ICellPropsAll[S];
-  value?: t.ICellPropsAll[S][keyof t.ICellPropsAll[S]];
-}): t.ICellProps | undefined {
+  field: keyof t.IGridCellPropsAll[S];
+  value?: t.IGridCellPropsAll[S][keyof t.IGridCellPropsAll[S]];
+}): t.IGridCellProps | undefined {
   const props = args.props || {};
   const defaults = args.defaults;
   const field = args.field as string;
-  const section: t.ICellProps[S] = { ...(props[args.section] || {}), [field]: args.value };
+  const section: t.IGridCellProps[S] = { ...(props[args.section] || {}), [field]: args.value };
 
   // Strip default values from the property section.
   if (defaults && typeof defaults === 'object') {
@@ -107,9 +107,9 @@ export function setCellProp<S extends keyof t.ICellProps>(args: {
  * Assigns (or removes) a cell error on `props.status.error`.
  */
 export function setCellError(args: {
-  props?: t.ICellProps;
-  error?: t.ICellPropsError;
-}): t.ICellProps | undefined {
+  props?: t.IGridCellProps;
+  error?: t.IGridCellPropsError;
+}): t.IGridCellProps | undefined {
   const { props, error } = args;
   return setCellProp({
     props,
@@ -124,12 +124,12 @@ export function setCellError(args: {
  * Toggles the given boolean property field, removing it from the object
  * if it is the default value.
  */
-export function toggleCellProp<S extends keyof t.ICellProps>(args: {
-  props?: t.ICellProps;
-  defaults: t.ICellProps[S];
+export function toggleCellProp<S extends keyof t.IGridCellProps>(args: {
+  props?: t.IGridCellProps;
+  defaults: t.IGridCellProps[S];
   section: S;
-  field: keyof t.ICellPropsAll[S];
-}): t.ICellProps | undefined {
+  field: keyof t.IGridCellPropsAll[S];
+}): t.IGridCellProps | undefined {
   const props = args.props || {};
   const field = args.field as string;
   const section = (props[args.section] || {}) as {};

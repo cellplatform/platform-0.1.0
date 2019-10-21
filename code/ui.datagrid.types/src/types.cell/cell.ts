@@ -1,7 +1,7 @@
 import { t } from '../common';
 import { Diff } from '@platform/util.diff/lib/types';
 
-export type ICell<P extends t.ICellProps = t.ICellProps> = {
+export type ICell<P extends t.IGridCellProps = t.IGridCellProps> = {
   readonly row: number;
   readonly column: number;
   readonly key: string;

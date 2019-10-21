@@ -51,10 +51,10 @@ const KEY_BINDINGS: t.KeyBindings<t.GridCommand> = [
 ];
 
 type CellPropDefaults = {
-  style: t.ICellPropsStyleAll;
+  style: t.IGridCellPropsStyleAll;
   merge: t.ICellPropsMergeAll;
   view: t.ICellPropsViewAll;
-  status: t.ICellPropsStatusAll;
+  status: t.IGridCellPropsStatusAll;
 };
 const CELL_PROPS: CellPropDefaults = {
   style: { bold: false, italic: false, underline: false },

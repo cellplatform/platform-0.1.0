@@ -48,7 +48,7 @@ export function init(args: {
  * [Helpers]
  */
 
-const toField = (command: t.GridStyleCommand): keyof t.ICellPropsStyle => {
+const toField = (command: t.GridStyleCommand): keyof t.IGridCellPropsStyle => {
   switch (command) {
     case 'BOLD':
       return 'bold';

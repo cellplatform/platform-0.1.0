@@ -32,9 +32,9 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     const child: any = factory.cell({ row, column, cell });
     const isHtml = typeof child === 'string' && child.startsWith('<');
 
-    const props: t.ICellProps = cell ? cell.props || {} : {};
-    const style: t.ICellPropsStyle = props.style || {};
-    const view: t.ICellPropsView = props.view || constants.DEFAULT.CELL.PROPS.view;
+    const props: t.IGridCellProps = cell ? cell.props || {} : {};
+    const style: t.IGridCellPropsStyle = props.style || {};
+    const view: t.IGridCellPropsView = props.view || constants.DEFAULT.CELL.PROPS.view;
 
     let className = CELL.BASE;
     const add = (isRequired: boolean | undefined, value?: string) =>

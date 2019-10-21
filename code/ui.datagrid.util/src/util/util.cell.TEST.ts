@@ -51,7 +51,7 @@ describe('util.cell', () => {
   });
 
   it('isEmptyCellProps', () => {
-    const test = (input: t.ICellProps | undefined, expected: boolean) => {
+    const test = (input: t.IGridCellProps | undefined, expected: boolean) => {
       expect(util.isEmptyCellProps(input)).to.eql(expected);
     };
     test(undefined, true);
@@ -81,7 +81,12 @@ describe('util.cell', () => {
       expect(res).to.eql(expected);
     };
 
-    const testProps = (left: t.ICellProps, right: t.ICellProps, field: F, expected: boolean) => {
+    const testProps = (
+      left: t.IGridCellProps,
+      right: t.IGridCellProps,
+      field: F,
+      expected: boolean,
+    ) => {
       test({ value: -1, props: left }, { value: -1, props: right }, field, expected);
     };
 
@@ -188,7 +193,11 @@ describe('util.cell', () => {
   });
 
   describe('setCellProp', () => {
-    const styleDefaults: t.ICellPropsStyleAll = { bold: false, italic: false, underline: false };
+    const styleDefaults: t.IGridCellPropsStyleAll = {
+      bold: false,
+      italic: false,
+      underline: false,
+    };
 
     it('no change', () => {
       const res1 = util.setCellProp<'style'>({
@@ -282,7 +291,7 @@ describe('util.cell', () => {
     });
 
     it('assigns an error (existing props)', () => {
-      const error: t.ICellPropsError = { type: 'FAIL', message: 'Derp' };
+      const error: t.IGridCellPropsError = { type: 'FAIL', message: 'Derp' };
       const res1 = util.setCellError({ error });
       const res2 = util.setCellError({ props: {}, error });
       const res3 = util.setCellError({ props: { status: {} }, error });
@@ -317,7 +326,7 @@ describe('util.cell', () => {
   });
 
   describe('toggleCellProp', () => {
-    const defaults: t.ICellPropsStyleAll = { bold: false, italic: false, underline: false };
+    const defaults: t.IGridCellPropsStyleAll = { bold: false, italic: false, underline: false };
 
     it('non-boolean values ignored', () => {
       const style = { bold: { msg: 'NEVER' } } as any;
@@ -405,7 +414,7 @@ describe('util.cell', () => {
 
     it('returns same hash for equivalent props variants', () => {
       const HASH = 'sha256/60f4dcd1605d8baf2b0b6e10cc69e2f59529e74748e87a231891ec43d940212c';
-      const test = (props?: t.ICellProps) => {
+      const test = (props?: t.IGridCellProps) => {
         const hash = util.cellHash('A1', { value: 123, props });
         expect(hash).to.eql(HASH);
       };

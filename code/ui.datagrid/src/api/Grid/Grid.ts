@@ -514,7 +514,7 @@ export class Grid implements t.IGrid {
     Object.keys(cells).map(key => {
       const item = cells[key];
       if (item) {
-        const props: t.ICellProps = item.props || {};
+        const props: t.IGridCellProps = item.props || {};
         const merge = props.merge;
         if (merge) {
           const rowspan = Math.max(1, defaultValue(merge.rowspan, 1));
@@ -730,7 +730,7 @@ export class Grid implements t.IGrid {
       msg = typeof key === 'string' ? `${msg} key: "${key}"` : msg;
       throw new Error(msg);
     }
-    return this._.cache.get<Cell<t.ICellProps>>(`cell/${column}:${row}`, () => {
+    return this._.cache.get<Cell<t.IGridCellProps>>(`cell/${column}:${row}`, () => {
       return Cell.create({ table: this._.table, row, column });
     });
   }

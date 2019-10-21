@@ -14,5 +14,5 @@ export type GridFactoryType = 'EDITOR' | 'CELL';
 export type IGridFactoryRequest = {
   type: GridFactoryType;
   grid: t.IGrid;
-  cell: { key: string; data: t.IGridCell; props: t.ICellPropsAll };
+  cell: { key: string; data: t.IGridCell; props: t.IGridCellPropsAll };
 };

@@ -16,7 +16,7 @@ export type IGridProperties = {
   keyBindings: KeyBindings<t.GridCommand>;
   defaults: IGridDefaults;
   calc: IGridCalculate;
-  cells: t.IGridCells<t.ICellProps>;
+  cells: t.IGridCells<t.IGridCellProps>;
   columns: IGridColumns;
   rows: IGridRows;
   clipboard?: IGridClipboardPending;
@@ -81,5 +81,5 @@ export type IGridAxis = IGridColumn | IGridRow;
 export type IGridColumn = { width?: number };
 export type IGridRow = { height?: number };
 
-export type IGridCell<P = t.ICellProps> = { value?: t.CellValue; props?: P; hash?: string };
-export type GridGetCell<P = t.ICellProps> = (key: string) => Promise<IGridCell<P> | undefined>;
+export type IGridCell<P = t.IGridCellProps> = { value?: t.CellValue; props?: P; hash?: string };
+export type GridGetCell<P = t.IGridCellProps> = (key: string) => Promise<IGridCell<P> | undefined>;

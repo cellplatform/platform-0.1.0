@@ -1,11 +1,11 @@
 import { coord, R, t, defaultValue, util } from '../../common';
 
-export type CellChangeField = keyof t.ICellProps | 'VALUE' | 'PROPS';
+export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';
 
 /**
  * API for accessing and manipulating a cell.
  */
-export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
+export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.ICell<P> {
   /**
    * [Static]
    */
