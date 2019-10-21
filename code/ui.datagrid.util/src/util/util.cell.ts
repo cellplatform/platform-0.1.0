@@ -51,7 +51,10 @@ export function setCellProp<S extends keyof t.IGridCellProps>(args: {
   }
 
   // Remove the section from the root props if empty.
-  const res = { ...props, [args.section]: section };
+  const res = {
+    ...props,
+    [args.section]: section,
+  };
   const isEmptySection = Object.keys(section as object).length === 0;
   if (isEmptySection) {
     delete res[args.section as string];

@@ -1,3 +1,4 @@
+import { t } from './common';
 import { Diff } from '@platform/util.diff/lib/types';
 
 /**
@@ -13,6 +14,7 @@ export type ICellData<P extends ICellProps = ICellProps> = {
   value?: CellValue;
   props?: P;
   hash?: string;
+  error?: t.IError;
 };
 
 export type ICellDiff<P extends ICellProps = ICellProps> = {
@@ -26,10 +28,18 @@ export type ICellDiff<P extends ICellProps = ICellProps> = {
  * Column
  */
 export type IColumnProps = {};
-export type IColumnData<P extends IColumnProps = IColumnProps> = { props?: P; hash?: string };
+export type IColumnData<P extends IColumnProps = IColumnProps> = {
+  props?: P;
+  hash?: string;
+  error?: t.IError;
+};
 
 /**
  * Row
  */
 export type IRowProps = {};
-export type IRowData<P extends IRowProps = IRowProps> = { props?: P; hash?: string };
+export type IRowData<P extends IRowProps = IRowProps> = {
+  props?: P;
+  hash?: string;
+  error?: t.IError;
+};
