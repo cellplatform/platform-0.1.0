@@ -18,7 +18,7 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/cell.types@0.0.8":
+"@platform/cell.types@0.0.8", "@platform/cell.types@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.8.tgz#28b3922ac186f2300b9d8a477c95b8679dd13e1a"
   integrity sha512-2Z15W+GDWJjzpmmEeGnCs8S45qW/ZOmfPXA3DosEC71ZeHn0PZ5ZLXZkxV8dOvleipX8GPwKpnFAXBMRhqWW3Q==

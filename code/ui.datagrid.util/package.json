@@ -12,6 +12,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/cell.types": "0.0.8",
     "@platform/libs": "0.1.3",
     "@platform/ui.datagrid.types": "0.7.6",
     "@platform/util.diff": "0.0.1",
