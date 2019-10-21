@@ -27,6 +27,10 @@ export function setCellProp<S extends keyof t.IGridCellProps>(args: {
   field: keyof t.IGridCellPropsAll[S];
   value?: t.IGridCellPropsAll[S][keyof t.IGridCellPropsAll[S]];
 }): t.IGridCellProps | undefined {
+  console.log(`\nTODO 🐷 use the version in [cell.value]  \n`);
+
+  // cell.value.setCellProp<t.IGridCellPropsAll, S>(args)
+
   const props = args.props || {};
   const defaults = args.defaults;
   const field = args.field as string;
@@ -64,6 +68,8 @@ export function setCellError(args: {
   props?: t.IGridCellProps;
   error?: t.IGridCellPropsError;
 }): t.IGridCellProps | undefined {
+  console.log(`\nTODO 🐷  make Errors a first class concept on CellData - move to [cell.value] \n`);
+
   const { props, error } = args;
   return setCellProp({
     props,
