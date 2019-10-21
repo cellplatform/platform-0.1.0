@@ -94,8 +94,8 @@ describe('Grid', () => {
 
       grid.updateHashes({ force: true });
       cells = grid.cells;
-      expect(cells.A1.hash).to.eql(util.cellHash('A1', { value: 123 }));
-      expect(cells.A2.hash).to.eql(util.cellHash('A2', { value: 456 }));
+      expect(cells.A1.hash).to.eql(util.cell.value.cellHash('A1', { value: 123 }));
+      expect(cells.A2.hash).to.eql(util.cell.value.cellHash('A2', { value: 456 }));
     });
 
     it('force: false (default)', () => {
@@ -106,7 +106,7 @@ describe('Grid', () => {
       grid.updateHashes();
       cells = grid.cells;
       expect(cells.A1.hash).to.eql('foo');
-      expect(cells.A2.hash).to.eql(util.cellHash('A2', { value: 456 }));
+      expect(cells.A2.hash).to.eql(util.cell.value.cellHash('A2', { value: 456 }));
     });
   });
 
@@ -212,7 +212,7 @@ describe('Grid', () => {
       const cells = grid.cells as any;
       expect(cells.A1).to.eql({ value: 123 });
       expect(cells.A2.value).to.eql('hello');
-      expect(cells.A2.hash).to.eql(util.cellHash('A2', { value: 'hello' }));
+      expect(cells.A2.hash).to.eql(util.cell.value.cellHash('A2', { value: 'hello' }));
     });
 
     it('replaces values (init:true)', () => {

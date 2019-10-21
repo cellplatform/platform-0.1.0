@@ -69,7 +69,9 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     cell?: t.IGridCellData;
   }) {
     const { row, column, cell } = args;
-    const hash = cell ? cell.hash || util.cellHash(coord.cell.toKey(column, row), cell) : '-';
+    const hash = cell
+      ? cell.hash || util.cell.value.cellHash(coord.cell.toKey(column, row), cell)
+      : '-';
     const key = `${row}:${column}/${hash}`;
     if (CACHE[key]) {
       return CACHE[key];

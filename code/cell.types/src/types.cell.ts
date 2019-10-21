@@ -1,3 +1,5 @@
+import { Diff } from '@platform/util.diff/lib/types';
+
 /**
  * Cell
  */
@@ -11,6 +13,13 @@ export type ICellData<P extends ICellProps = ICellProps> = {
   value?: CellValue;
   props?: P;
   hash?: string;
+};
+
+export type ICellDiff<P extends ICellProps = ICellProps> = {
+  readonly left: ICellData<P>;
+  readonly right: ICellData<P>;
+  readonly isDifferent: boolean;
+  readonly list: Array<Diff<ICellData<P>>>;
 };
 
 /**

@@ -546,7 +546,7 @@ export class Grid implements t.IGrid {
         return undefined;
       }
       if (to) {
-        to = { ...to, hash: util.cellHash(key, to) };
+        to = { ...to, hash: util.cell.value.cellHash(key, to) };
         if (Cell.isEmptyProps(to.props)) {
           delete to.props; // Strip any empty props or props with default values.
         }
@@ -834,7 +834,7 @@ export class Grid implements t.IGrid {
       if (value) {
         let hash = value.hash;
         if (!hash || options.force) {
-          hash = util.cellHash(key, value);
+          hash = util.cell.value.cellHash(key, value);
           values[key] = { ...value, hash };
           isChanged = true;
         }

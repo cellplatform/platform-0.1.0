@@ -68,28 +68,28 @@ describe('util.cell', () => {
     });
   });
 
-  describe('cellDiff', () => {
-    it('no difference', () => {
-      const cell: t.IGridCellData = { value: 1, props: { style: { bold: true } } };
-      const res = util.cellDiff(cell, cell);
-      expect(res.left).to.eql(cell);
-      expect(res.right).to.eql(cell);
-      expect(res.isDifferent).to.eql(false);
-      expect(res.list.length).to.eql(0);
-    });
+  // describe('cellDiff', () => {
+  //   it('no difference', () => {
+  //     const cell: t.ICellData<{}> = { value: 1, props: { style: { bold: true } } };
+  //     const res = util.cellDiff(cell, cell);
+  //     expect(res.left).to.eql(cell);
+  //     expect(res.right).to.eql(cell);
+  //     expect(res.isDifferent).to.eql(false);
+  //     expect(res.list.length).to.eql(0);
+  //   });
 
-    it('is different', () => {
-      const left: t.IGridCellData = { value: 1, props: { style: { bold: true } } };
-      const right: t.IGridCellData = { value: 2, props: { style: { bold: false } } };
-      const res = util.cellDiff(left, right);
+  //   it('is different', () => {
+  //     const left: t.ICellData<{}> = { value: 1, props: { style: { bold: true } } };
+  //     const right: t.ICellData<{}> = { value: 2, props: { style: { bold: false } } };
+  //     const res = util.cellDiff(left, right);
 
-      expect(res.isDifferent).to.eql(true);
-      expect(res.list.length).to.eql(2);
+  //     expect(res.isDifferent).to.eql(true);
+  //     expect(res.list.length).to.eql(2);
 
-      expect((res.list[0].path || []).join('.')).to.eql('value');
-      expect((res.list[1].path || []).join('.')).to.eql('props.style.bold');
-    });
-  });
+  //     expect((res.list[0].path || []).join('.')).to.eql('value');
+  //     expect((res.list[1].path || []).join('.')).to.eql('props.style.bold');
+  //   });
+  // });
 
   describe('toCellProps', () => {
     it('default props (empty {})', () => {
@@ -296,69 +296,6 @@ describe('util.cell', () => {
       expect(res3).to.eql({ style: { bold: true } }); // Nothing => true (default)
       expect(res4).to.eql({ style: { bold: true, italic: true } });
       expect(res5).to.eql({ style: { italic: true } });
-    });
-  });
-
-  describe('cellHash', () => {
-    it('hashes a cell', () => {
-      const test = (input: t.IGridCellData | undefined, expected: string) => {
-        const hash = util.cellHash('A1', input);
-        expect(hash).to.eql(expected);
-      };
-
-      test(undefined, 'sha256/5cbb07f7321efddf98f0b4f7f977600e11adbc5d169f1a86ee291b75dce7d925');
-      test(
-        { value: undefined },
-        'sha256/5cbb07f7321efddf98f0b4f7f977600e11adbc5d169f1a86ee291b75dce7d925',
-      );
-      test(
-        { value: null },
-        'sha256/633eb1b77771279367d454543dbb5ab72b7da3c768111f3fa9f69dd0f81985db',
-      );
-      test(
-        { value: 123 },
-        'sha256/60f4dcd1605d8baf2b0b6e10cc69e2f59529e74748e87a231891ec43d940212c',
-      );
-      test(
-        { value: '' },
-        'sha256/af0ce5cb55e5258904d90208d224fc69497a1d9e3cbf42521aede8e27c43b85e',
-      );
-      test(
-        { value: 'hello' },
-        'sha256/1daa685764a45ec179e81dacada8a5871b3ee97b7ae7f2e1f37d8ae128ad3bc3',
-      );
-      test(
-        { value: 'hello', props: {} },
-        'sha256/1daa685764a45ec179e81dacada8a5871b3ee97b7ae7f2e1f37d8ae128ad3bc3',
-      );
-      test(
-        { value: 'hello', props: { style: { bold: true } } },
-        'sha256/82c58d318c23e0fac89bd6d9634eee0354f814e370005c28631f9b9a1cd4512e',
-      );
-    });
-
-    it('same hash for no param AND no cell-value', () => {
-      const HASH = 'sha256/5cbb07f7321efddf98f0b4f7f977600e11adbc5d169f1a86ee291b75dce7d925';
-      const test = (input?: t.IGridCellData) => {
-        const hash = util.cellHash('A1', input);
-        expect(hash).to.eql(HASH);
-      };
-      test();
-      test(undefined);
-      test({ value: undefined });
-    });
-
-    it('returns same hash for equivalent props variants', () => {
-      const HASH = 'sha256/60f4dcd1605d8baf2b0b6e10cc69e2f59529e74748e87a231891ec43d940212c';
-      const test = (props?: t.IGridCellProps) => {
-        const hash = util.cellHash('A1', { value: 123, props });
-        expect(hash).to.eql(HASH);
-      };
-      test();
-      test({});
-      test({ style: {} });
-      test({ merge: {} });
-      test({ style: {}, merge: {} });
     });
   });
 });

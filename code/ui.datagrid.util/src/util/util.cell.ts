@@ -1,4 +1,4 @@
-import { diff, hash, R, t, cell } from '../common';
+import { R, t, cell } from '../common';
 
 export { cell };
 export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';
@@ -130,46 +130,3 @@ export function isCellChanged(
     return !R.equals(a, b);
   });
 }
-
-/**
- * Compare two cells.
- */
-export function cellDiff(left: t.ICellData, right: t.ICellData): t.ICellDiff {
-  const list = diff.compare(left, right) as Array<diff.Diff<t.ICellData>>;
-  const isDifferent = list.length > 0;
-  return { left, right, isDifferent, list };
-}
-
-/**
- * Produces a uniform hash (SHA-256) of the given cell's value/props.
- */
-export function cellHash(key: string, data?: t.ICellData): string {
-  const value = data ? data.value : undefined;
-  const props = toCellProps(data ? data.props : undefined);
-  const sha256 = hash.sha256({ key, value, props });
-  return `sha256/${sha256}`;
-}
-
-/**
- * TEMP 🐷
- */
-
-// /**
-//  * Produces a uniform hash (SHA-256) of the given cell's value/props.
-//  */
-// export function rowHash(key: string, data?: t.IGridCellData): string {
-//   const value = data ? data.value : undefined;
-//   const props = toCellProps(data ? data.props : undefined);
-//   const sha256 = hash.sha256({ key, value, props });
-//   return `sha256/${sha256}`;
-// }
-
-// /**
-//  * Produces a uniform hash (SHA-256) of the given cell's value/props.
-//  */
-// export function columnHash(key: string, data?: t.IGridRowData): string {
-//   const value = data ? data.value : undefined;
-//   const props = toCellProps(data ? data.props : undefined);
-//   const sha256 = hash.sha256({ key, value, props });
-//   return `sha256/${sha256}`;
-// }
