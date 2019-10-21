@@ -14,11 +14,13 @@ export type ICellData<P extends ICellProps = ICellProps> = {
 };
 
 /**
- * Axis (Row/Column)
+ * Column
  */
-
 export type IColumnProps = {};
 export type IColumnData<P extends IColumnProps = IColumnProps> = { props?: P; hash?: string };
 
+/**
+ * Row
+ */
 export type IRowProps = {};
 export type IRowData<P extends IRowProps = IRowProps> = { props?: P; hash?: string };

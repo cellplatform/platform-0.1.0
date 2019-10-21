@@ -1,10 +1,10 @@
 import { t } from '../common';
 import { Diff } from '@platform/util.diff/lib/types';
 
-export type ICell<P extends t.IGridCellProps = t.IGridCellProps> = {
+export type IGridCell<P extends t.IGridCellProps = t.IGridCellProps> = {
+  readonly key: string;
   readonly row: number;
   readonly column: number;
-  readonly key: string;
   readonly size: t.ISize;
   readonly width: number;
   readonly height: number;
@@ -16,10 +16,10 @@ export type ICell<P extends t.IGridCellProps = t.IGridCellProps> = {
 };
 
 export type ICellSiblings = {
-  readonly left?: ICell;
-  readonly top?: ICell;
-  readonly right?: ICell;
-  readonly bottom?: ICell;
+  readonly left?: IGridCell;
+  readonly top?: IGridCell;
+  readonly right?: IGridCell;
+  readonly bottom?: IGridCell;
 };
 
 export type ICellDiff = {

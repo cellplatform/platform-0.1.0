@@ -1,11 +1,11 @@
-import { t, R, diff, hash, defaultValue } from '../common';
+import { diff, hash, R, t } from '../common';
 
 export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';
 
 /**
  * Determine if the given cell is empty (no value, no props).
  */
-export function isEmptyCell(cell?: t.IGridCellData) {
+export function isEmptyCell(cell?: t.ICellData) {
   return cell ? isEmptyCellValue(cell.value) && isEmptyCellProps(cell.props) : true;
 }
 
@@ -19,7 +19,7 @@ export function isEmptyCellValue(value?: t.CellValue) {
 /**
  * Determine if the given cell props is empty.
  */
-export function isEmptyCellProps(props?: t.IGridCellProps) {
+export function isEmptyCellProps(props?: t.ICellProps) {
   if (typeof props !== 'object') {
     return true;
   }
@@ -60,24 +60,6 @@ export function toCellProps(input?: t.IGridCellProps): t.IGridCellPropsAll {
   const view: t.IGridCellPropsView = props.view || {};
   const status: t.IGridCellPropsStatus = props.status || {};
   return { value, style, merge, view, status };
-}
-
-/**
- * Produces a uniform row properties object.
- */
-export function toRowProps(input?: t.IGridRowProps): t.IGridRowPropsAll {
-  const props: t.IGridRowProps = input || {};
-  const height = defaultValue(props.height, -1);
-  return { height };
-}
-
-/**
- * Produces a uniform column properties object.
- */
-export function toColumnProps(input?: t.IGridColumnProps): t.IGridColumnPropsAll {
-  const props: t.IGridColumnProps = input || {};
-  const width = defaultValue(props.width, -1);
-  return { width };
 }
 
 /**

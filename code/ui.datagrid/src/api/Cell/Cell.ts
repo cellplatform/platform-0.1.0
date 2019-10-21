@@ -5,7 +5,7 @@ export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';
 /**
  * API for accessing and manipulating a cell.
  */
-export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.ICell<P> {
+export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IGridCell<P> {
   /**
    * [Static]
    */
@@ -56,7 +56,11 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IC
     return { start, end };
   }
 
-  public static changeEvent(args: { cell: t.ICell; from?: t.IGridCellData; to?: t.IGridCellData }) {
+  public static changeEvent(args: {
+    cell: t.ICoordCell;
+    from?: t.IGridCellData;
+    to?: t.IGridCellData;
+  }) {
     const { cell, from, to } = args;
     const value = { from, to };
     let isChanged: boolean | undefined;

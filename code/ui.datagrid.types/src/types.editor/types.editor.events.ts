@@ -10,7 +10,7 @@ export type IBeginEditingEvent = {
   payload: IBeginEditing;
 };
 export type IBeginEditing = {
-  readonly cell: t.ICell;
+  readonly cell: t.IGridCell;
   cancel(): void;
 };
 
@@ -19,7 +19,7 @@ export type IEndEditingEvent = {
   payload: IEndEditing;
 };
 export type IEndEditing = {
-  cell: t.ICell;
+  cell: t.IGridCell;
   isCancelled: boolean;
   isChanged: boolean;
   value: { from?: t.CellValue; to?: t.CellValue };

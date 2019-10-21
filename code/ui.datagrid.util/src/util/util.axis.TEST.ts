@@ -40,4 +40,40 @@ describe('axis (column/row)', () => {
       false,
     );
   });
+
+  describe('toRowProps', () => {
+    it('default props (empty {})', () => {
+      const test = (input?: any) => {
+        const res = util.toRowProps(input);
+        expect(res.height).to.eql(-1);
+      };
+      test();
+      test(null);
+      test({});
+    });
+
+    it('props', () => {
+      const row: t.IGridRowData = { props: { height: 123 } };
+      const props = util.toRowProps(row.props);
+      expect(props.height).to.eql(123);
+    });
+  });
+
+  describe('toColumnProps', () => {
+    it('default props (empty {})', () => {
+      const test = (input?: any) => {
+        const res = util.toColumnProps(input);
+        expect(res.width).to.eql(-1);
+      };
+      test();
+      test(null);
+      test({});
+    });
+
+    it('props', () => {
+      const column: t.IGridColumnData = { props: { width: 123 } };
+      const props = util.toColumnProps(column.props);
+      expect(props.width).to.eql(123);
+    });
+  });
 });

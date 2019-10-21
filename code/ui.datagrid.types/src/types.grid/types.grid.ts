@@ -32,7 +32,7 @@ export type IGridMethods = {
     options?: { source?: t.IGridColumnChange['source'] },
   ): IGrid;
   changeRows(rows: t.IGridRowsData, options?: { source?: t.GridRowChangeType }): IGrid;
-  cell(key: t.GridCellRef): t.ICell;
+  cell(key: t.GridCellRef): t.IGridCell;
   scrollTo(args: { cell: t.GridCellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
   select(args: {
     cell: t.GridCellRef;
