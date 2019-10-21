@@ -18,7 +18,7 @@ export type ICellData<P extends ICellProps = ICellProps> = {
  */
 
 export type IColumnProps = {};
-export type IColumnData<P extends IColumnProps = IColumnProps> = { props?: P };
+export type IColumnData<P extends IColumnProps = IColumnProps> = { props?: P; hash?: string };
 
 export type IRowProps = {};
-export type IRowData<P extends IRowProps = IRowProps> = { props?: P };
+export type IRowData<P extends IRowProps = IRowProps> = { props?: P; hash?: string };

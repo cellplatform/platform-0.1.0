@@ -1,4 +1,4 @@
-import { t, R, diff, hash } from '../common';
+import { t, R, diff, hash, defaultValue } from '../common';
 
 export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';
 
@@ -60,6 +60,15 @@ export function toCellProps(input?: t.IGridCellProps): t.IGridCellPropsAll {
   const view: t.IGridCellPropsView = props.view || {};
   const status: t.IGridCellPropsStatus = props.status || {};
   return { value, style, merge, view, status };
+}
+
+/**
+ * Produces a uniform row properties object.
+ */
+export function toRowProps(input?: t.IGridRowProps): t.IGridRowPropsAll {
+  const props: t.IGridRowProps = input || {};
+  const height = defaultValue(props.height, -1);
+  return { height };
 }
 
 /**

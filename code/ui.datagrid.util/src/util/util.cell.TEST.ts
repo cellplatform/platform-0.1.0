@@ -155,8 +155,22 @@ describe('util.cell', () => {
     });
   });
 
+  describe('toRowProps', () => {
+    it('default props (empty {})', () => {
+      const test = (input?: any) => {
+        const res = util.toRowProps(input);
+        expect(res.height).to.eql(-1);
+      };
+      test();
+      test(null);
+      test({});
+    });
+
+    it.skip('props', () => {});
+  });
+
   describe('toCellProps', () => {
-    it('has default props (empty {})', () => {
+    it('default props (empty {})', () => {
       const test = (input?: any) => {
         const res = util.toCellProps(input);
         expect(res.value).to.eql(undefined);
