@@ -15,27 +15,29 @@ describe('axis (column/row)', () => {
     };
 
     test(undefined, undefined, false);
-    test({ width: 123 }, { width: 123 }, false);
-    test({ height: 10 }, { height: 10 }, false);
+    test({ props: { width: 123 } }, { props: { width: 123 } }, false);
+    test({ props: { height: 10 } }, { props: { height: 10 } }, false);
 
-    test({ width: 0 }, { width: 1 }, true);
-    test({ height: 0 }, { height: 1 }, true);
+    test({ props: { width: 0 } }, { props: { width: 1 } }, true);
+    test({ props: { height: 0 } }, { props: { height: 1 } }, true);
 
-    test(undefined, { width: 1 }, true);
-    test({ height: 1 }, undefined, true);
+    test(undefined, { props: { width: 1 } }, true);
+    test({ props: { height: 1 } }, undefined, true);
   });
 
   it('isRowChanged', () => {
     expect(util.isRowChanged(undefined, undefined)).to.eql(false);
-    expect(util.isRowChanged(undefined, { height: 1 })).to.eql(true);
-    expect(util.isRowChanged({ height: 123 }, { height: 456 })).to.eql(true);
-    expect(util.isRowChanged({ height: 123 }, { height: 123 })).to.eql(false);
+    expect(util.isRowChanged(undefined, { props: { height: 1 } })).to.eql(true);
+    expect(util.isRowChanged({ props: { height: 123 } }, { props: { height: 456 } })).to.eql(true);
+    expect(util.isRowChanged({ props: { height: 123 } }, { props: { height: 123 } })).to.eql(false);
   });
 
   it('isColumnChanged', () => {
     expect(util.isColumnChanged(undefined, undefined)).to.eql(false);
-    expect(util.isColumnChanged(undefined, { width: 1 })).to.eql(true);
-    expect(util.isColumnChanged({ width: 123 }, { width: 456 })).to.eql(true);
-    expect(util.isColumnChanged({ width: 123 }, { width: 123 })).to.eql(false);
+    expect(util.isColumnChanged(undefined, { props: { width: 1 } })).to.eql(true);
+    expect(util.isColumnChanged({ props: { width: 123 } }, { props: { width: 456 } })).to.eql(true);
+    expect(util.isColumnChanged({ props: { width: 123 } }, { props: { width: 123 } })).to.eql(
+      false,
+    );
   });
 });

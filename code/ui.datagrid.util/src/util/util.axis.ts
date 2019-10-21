@@ -1,5 +1,7 @@
 import { t, R } from '../common';
 
+type AxisData = t.IGridColumnData | t.IGridRowData;
+
 /**
  * Determine if a row's fields has changed.
  */
@@ -17,6 +19,8 @@ export function isColumnChanged(left?: t.IGridColumnData, right?: t.IGridColumnD
 /**
  * Determine if the given row/column's fields has changed.
  */
-export function isAxisChanged<T = t.IGridColumnData | t.IGridRowData>(left?: T, right?: T) {
-  return !R.equals(left, right);
+export function isAxisChanged<T extends AxisData = AxisData>(left?: T, right?: T) {
+  const propsLeft = left ? left.props : undefined;
+  const propsRight = right ? right.props : undefined;
+  return !R.equals(propsLeft, propsRight);
 }

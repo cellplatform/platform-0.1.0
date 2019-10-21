@@ -166,7 +166,9 @@ describe('util.cell', () => {
       test({});
     });
 
-    it.skip('props', () => {});
+    it.skip('props', () => {
+      //
+    });
   });
 
   describe('toCellProps', () => {

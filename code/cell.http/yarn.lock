@@ -18,20 +18,20 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/cell.db@0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.0.0.tgz#854e5d915f4c75a74c04fb20e1e985443f5d5306"
-  integrity sha512-BIeXgg5cT7lEgThc04YilsvqvtV+iCKVXhH9HhFrKxRqRIudMlLGc8PkWnw7vSAOGy2lDTQQ0BXbh6iXENy0Rg==
+"@platform/cell.db@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.0.1.tgz#f7f824f95252903897e9abc4b1ad64a91789ab69"
+  integrity sha512-9jBeUiqFfK5pgWLAw9Xnu/rPgLNeVBZTSVMTLOeI6bq8e8SYMxO+b2DoYioInDJO4rnvm0f846TP5wQINixjQQ==
   dependencies:
-    "@platform/cell.types" "0.0.7"
+    "@platform/cell.types" "0.0.8"
     "@platform/fsdb.model" "0.1.24"
     "@platform/fsdb.types" "0.3.10"
     "@platform/libs" "0.1.3"
 
-"@platform/cell.types@0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.7.tgz#a150608d8339814b95657aabd4706dc00e67ec1b"
-  integrity sha512-GF94pz5njfwjkFjssfBCdZI0nW/LGbyxWuZK5ZGE/N+awKyUZJ7UPawFp30C561W7HQWSSAEB+FseKpjROvr4Q==
+"@platform/cell.types@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.8.tgz#28b3922ac186f2300b9d8a477c95b8679dd13e1a"
+  integrity sha512-2Z15W+GDWJjzpmmEeGnCs8S45qW/ZOmfPXA3DosEC71ZeHn0PZ5ZLXZkxV8dOvleipX8GPwKpnFAXBMRhqWW3Q==
   dependencies:
     "@platform/libs" "0.1.3"
 
