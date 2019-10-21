@@ -2,6 +2,12 @@ import { expect } from 'chai';
 import { t } from '../common';
 import { value } from '.';
 
+type P = t.ICellProps & {
+  style: { bold?: boolean; italic?: boolean };
+  status: { error?: { message: string } };
+  merge?: { colspan?: number; rowspan?: number };
+};
+
 describe('cell', () => {
   it('isEmptyCell', () => {
     const hash = '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9';
@@ -68,7 +74,7 @@ describe('cell', () => {
   });
 
   it('squashProps', () => {
-    const test = (props?: {}, expected?: any) => {
+    const test = (props?: Partial<P>, expected?: any) => {
       const res = value.squashProps(props);
       expect(res).to.eql(expected);
     };
@@ -144,62 +150,95 @@ describe('cell', () => {
     });
   });
 
-  describe('isCellChanged', () => {
-    type F = value.CellChangeField | value.CellChangeField[] | undefined;
-
-    const test = (
-      left: t.ICellData<{}> | undefined,
-      right: t.ICellData<{}> | undefined,
-      field: F,
-      expected: boolean,
-    ) => {
-      const res = value.isCellChanged(left, right, field);
-      expect(res).to.eql(expected);
+  describe('setCellProp', () => {
+    const styleDefaults = {
+      bold: false,
+      italic: false,
+      underline: false,
     };
 
-    const testProps = (left: {}, right: {}, field: F, expected: boolean) => {
-      test({ value: -1, props: left }, { value: -1, props: right }, field, expected);
-    };
+    it('no change', () => {
+      const res1 = value.setCellProp<P, 'style'>({
+        defaults: styleDefaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
 
-    it('undefined (no change)', () => {
-      test(undefined, undefined, undefined, false);
-      test(undefined, undefined, 'PROPS', false);
-      test(undefined, undefined, 'VALUE', false);
-      test(undefined, undefined, 'merge', false);
-      test(undefined, undefined, 'style', false);
-
-      test(undefined, undefined, [], false);
-      test(undefined, undefined, ['style', 'VALUE'], false);
-      test(undefined, undefined, ['PROPS', 'VALUE'], false);
+      const res2 = value.setCellProp<P, 'style'>({
+        defaults: styleDefaults,
+        props: { style: { bold: true } },
+        section: 'style',
+        field: 'bold',
+        value: true,
+      });
+      expect(res1).to.eql(undefined);
+      expect(res2).to.eql({ style: { bold: true } });
     });
 
-    it('isChanged: props', () => {
-      testProps({ style: { bold: true } }, { style: { bold: true } }, undefined, false);
-      testProps({ style: { bold: true } }, { style: { bold: true } }, 'PROPS', false);
-      testProps({ style: { bold: true } }, { style: { bold: false } }, 'PROPS', true);
-      testProps({ style: { bold: true } }, { style: { bold: false } }, undefined, true);
-      testProps(
-        { style: { bold: true }, merge: { rowspan: 2 } },
-        { style: { bold: true }, merge: { rowspan: 3 } },
-        'PROPS',
-        true,
-      );
-      testProps({ style: { bold: true } }, { style: { bold: false } }, 'merge', false); // Looking at merge.
-      testProps({ style: { bold: true } }, { style: { bold: false } }, ['VALUE', 'style'], true);
-      testProps({ style: { bold: true } }, { style: { bold: false } }, ['merge', 'style'], true);
+    it('from undefined props (generates new object)', () => {
+      const res1 = value.setCellProp<P, 'style'>({
+        defaults: styleDefaults,
+        section: 'style',
+        field: 'bold',
+        value: true,
+      });
+      const res2 = value.setCellProp<P, 'style'>({
+        defaults: styleDefaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+      expect(res1).to.eql({ style: { bold: true } });
+      expect(res2).to.eql(undefined); // NB: All default props shake out to be nothing (undefined).
     });
 
-    it('isChanged: value', () => {
-      test({ value: 1 }, { value: 1 }, undefined, false);
-      test({ value: 1 }, { value: 1 }, 'VALUE', false);
-      test({ value: 1 }, { value: 2 }, 'PROPS', false);
+    it('deletes default property value (style)', () => {
+      const res1 = value.setCellProp<P, 'style'>({
+        props: { style: { bold: true, italic: false } },
+        defaults: styleDefaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
 
-      test({ value: 1 }, { value: 2 }, undefined, true);
-      test({ value: 1 }, { value: 2 }, 'VALUE', true);
+      const res2 = value.setCellProp<P, 'style'>({
+        props: { style: { bold: true, italic: true } },
+        defaults: styleDefaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
 
-      test({ value: 1 }, { value: 2 }, [], false);
-      test({ value: 1 }, { value: 2 }, ['VALUE', 'style'], true);
-      test({ value: 1 }, { value: 2 }, ['PROPS'], false);
+      const res3 = value.setCellProp<P, 'style'>({
+        defaults: styleDefaults,
+        props: res2,
+        section: 'style',
+        field: 'italic',
+        value: false,
+      });
+
+      const res4 = value.setCellProp<P, 'style'>({
+        props: { style: { bold: true }, merge: { colspan: 2 } },
+        defaults: styleDefaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+
+      const res5 = value.setCellProp<P, 'status'>({
+        props: { status: { error: { message: 'FAIL' } } },
+        defaults: {},
+        section: 'status',
+        field: 'error',
+        value: undefined,
+      });
+
+      expect(res1).to.eql(undefined); // NB: All default props shake out to be nothing (undefined).
+      expect(res2).to.eql({ style: { italic: true } });
+      expect(res3).to.eql(undefined); // NB: Italic flipped to default (false).
+      expect(res4).to.eql({ merge: { colspan: 2 } });
+      expect(res5).to.eql(undefined);
     });
   });
 });

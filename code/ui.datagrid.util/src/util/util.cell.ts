@@ -94,3 +94,39 @@ export function toggleCellProp<S extends keyof t.IGridCellProps>(args: {
   const toggled: any = typeof value === 'boolean' ? !value : true;
   return setCellProp<S>({ ...args, value: toggled });
 }
+
+/**
+ * Determine if a cell's fields (value/props) has changed.
+ */
+export function isCellChanged(
+  left: t.IGridCellData | undefined,
+  right: t.IGridCellData | undefined,
+  field?: CellChangeField | CellChangeField[],
+) {
+  // Convert incoming `field` flag to an array.
+  let fields: CellChangeField[] =
+    field === undefined ? ['VALUE', 'PROPS'] : Array.isArray(field) ? field : [field];
+
+  // Expand `PROPS` to actual props fields.
+  fields = R.flatten(
+    fields.map(field => (field === 'PROPS' ? ['style', 'merge'] : field)),
+  ) as CellChangeField[];
+
+  // Look for any matches.
+  return fields.some(field => {
+    let a: any;
+    let b: any;
+    if (field === 'VALUE') {
+      a = left ? left.value : undefined;
+      b = right ? right.value : undefined;
+    } else {
+      const props = {
+        left: (left ? left.props : undefined) || {},
+        right: (right ? right.props : undefined) || {},
+      };
+      a = props.left[field];
+      b = props.right[field];
+    }
+    return !R.equals(a, b);
+  });
+}

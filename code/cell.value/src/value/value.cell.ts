@@ -1,6 +1,6 @@
 import { t, hash, diff, R } from '../common';
 
-export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';
+export type CellChangeField = 'VALUE' | 'PROPS';
 
 /**
  * Determine if the given cell is empty (no value, no props).
@@ -86,37 +86,42 @@ export function cellDiff(left: t.ICellData, right: t.ICellData): t.ICellDiff {
 }
 
 /**
- * Determine if a cell's fields (value/props) has changed.
+ * Assigns a property field to props, removing it from the object
+ * if it is the default value.
  */
-export function isCellChanged(
-  left: t.ICellData | undefined,
-  right: t.ICellData | undefined,
-  field?: CellChangeField | CellChangeField[],
-) {
-  // Convert incoming `field` flag to an array.
-  let fields: CellChangeField[] =
-    field === undefined ? ['VALUE', 'PROPS'] : Array.isArray(field) ? field : [field];
+export function setCellProp<P extends t.ICellProps, K extends keyof P>(args: {
+  props?: Partial<P>;
+  defaults: P[K];
+  section: K;
+  field: keyof P[K];
+  value?: P[K][keyof P[K]];
+}): P | undefined {
+  const props = args.props || {};
+  const defaults = args.defaults;
+  const field = args.field as string;
+  const section: P[K] = { ...(props[args.section as string] || {}), [field]: args.value };
 
-  // Expand `PROPS` to actual props fields.
-  fields = R.flatten(
-    fields.map(field => (field === 'PROPS' ? ['style', 'merge'] : field)),
-  ) as CellChangeField[];
+  // Strip default values from the property section.
+  if (defaults && typeof defaults === 'object') {
+    Object.keys((defaults as unknown) as object)
+      .filter(key => R.equals(section[key], defaults[key]))
+      .forEach(key => delete section[key]);
+  }
 
-  // Look for any matches.
-  return fields.some(field => {
-    let a: any;
-    let b: any;
-    if (field === 'VALUE') {
-      a = left ? left.value : undefined;
-      b = right ? right.value : undefined;
-    } else {
-      const props = {
-        left: (left ? left.props : undefined) || {},
-        right: (right ? right.props : undefined) || {},
-      };
-      a = props.left[field];
-      b = props.right[field];
-    }
-    return !R.equals(a, b);
-  });
+  // Strip undefined values from property section.
+  if (typeof section === 'object') {
+    Object.keys((section as unknown) as object)
+      .filter(key => section[key] === undefined)
+      .forEach(key => delete section[key]);
+  }
+
+  // Remove the section from the root props if empty.
+  const res = { ...props, [args.section]: section };
+  const isEmptySection = Object.keys((section as unknown) as object).length === 0;
+  if (isEmptySection) {
+    delete res[args.section as string];
+  }
+
+  // Finish up.
+  return isEmptyCellProps(res) ? undefined : (res as P);
 }
