@@ -1,5 +1,3 @@
-// import { t } from './common';
-
 export type CellValue = string | boolean | number | object | null | undefined;
 
 export type ICellProps = {

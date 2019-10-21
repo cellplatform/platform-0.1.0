@@ -6,4 +6,4 @@ export type ISize = { width: number; height: number };
 export type GridCellType = 'CELL' | 'COLUMN' | 'ROW';
 export type GridCellKey = string;
 export type GridCellRangeKey = string;
-export type CellRef = ICoord | GridCellKey;
+export type GridCellRef = ICoord | GridCellKey;

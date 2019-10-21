@@ -34,7 +34,7 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IC
     return coord.cell.fromKey(cellKey);
   }
 
-  public static toPosition(ref: t.CellRef) {
+  public static toPosition(ref: t.GridCellRef) {
     return typeof ref === 'string' ? Cell.fromKey(ref) : ref;
   }
 

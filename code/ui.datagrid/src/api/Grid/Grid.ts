@@ -741,7 +741,7 @@ export class Grid implements t.IGrid {
    * Scroll the grids view-port to the given column/row coordinates.
    */
   public scrollTo(args: {
-    cell: t.CellRef;
+    cell: t.GridCellRef;
     snapToBottom?: boolean; // (false) If true, viewport is scrolled to show the cell on the bottom of the table.
     snapToRight?: boolean; //  (false) If true, viewport is scrolled to show the cell on the right side of the table.
   }) {
@@ -754,7 +754,11 @@ export class Grid implements t.IGrid {
   /**
    * Selects the specific cell(s).
    */
-  public select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }) {
+  public select(args: {
+    cell: t.GridCellRef;
+    ranges?: t.GridCellRangeKey[];
+    scrollToCell?: boolean;
+  }) {
     const totalColumns = this.totalColumns;
     const totalRows = this.totalRows;
     const table = this._.table;
@@ -812,7 +816,7 @@ export class Grid implements t.IGrid {
   /**
    * Retrieve the row/column position, clamped to the size of the grid.
    */
-  public toPosition(ref: t.CellRef) {
+  public toPosition(ref: t.GridCellRef) {
     const pos = Cell.toPosition(ref);
     const row = R.clamp(0, this.totalRows - 1, pos.row);
     const column = R.clamp(0, this.totalColumns - 1, pos.column);

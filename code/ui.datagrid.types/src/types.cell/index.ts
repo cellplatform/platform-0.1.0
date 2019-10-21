@@ -1,2 +1,2 @@
-export * from './cell';
-export * from './cell.props';
+export * from './types.cell';
+export * from './types.cell.props';

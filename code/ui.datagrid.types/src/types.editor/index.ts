@@ -1,3 +1,3 @@
-export * from './editor';
-export * from './editor.events';
-export * from './editor.context';
+export * from './types.editor';
+export * from './types.editor.events';
+export * from './types.editor.context';

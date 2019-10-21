@@ -12,7 +12,7 @@ export type IInitialGridState = {
   selection?:
     | string
     | {
-        cell: t.CellRef;
+        cell: t.GridCellRef;
         ranges?: t.GridCellRangeKey[];
       };
 };

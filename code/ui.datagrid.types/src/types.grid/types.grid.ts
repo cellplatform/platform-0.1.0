@@ -32,14 +32,18 @@ export type IGridMethods = {
     options?: { source?: t.IGridColumnChange['source'] },
   ): IGrid;
   changeRows(rows: t.IGridRowsData, options?: { source?: t.GridRowChangeType }): IGrid;
-  cell(key: t.CellRef): t.ICell;
-  scrollTo(args: { cell: t.CellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
-  select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }): IGrid;
+  cell(key: t.GridCellRef): t.ICell;
+  scrollTo(args: { cell: t.GridCellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
+  select(args: {
+    cell: t.GridCellRef;
+    ranges?: t.GridCellRangeKey[];
+    scrollToCell?: boolean;
+  }): IGrid;
   deselect(): IGrid;
   focus(): IGrid;
   redraw(): IGrid;
   mergeCells(args: { cells: t.IGridCellsData; init?: boolean }): IGrid;
-  toPosition(ref: t.CellRef): t.ICoord;
+  toPosition(ref: t.GridCellRef): t.ICoord;
   updateHashes(options?: { force?: boolean }): IGrid;
 };
 
