@@ -229,7 +229,7 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.grid.toCellKey(e.key);
           const cell = grid.cell(key);
-          const isChanged = util.isCellChanged(cell, e.value as t.IGridCellData);
+          const isChanged = util.cell.value.isCellChanged(cell, e.value as t.IGridCellData);
           if (isChanged) {
             changeGrid$.next({ type: 'CELL', key, value: e.value });
           }

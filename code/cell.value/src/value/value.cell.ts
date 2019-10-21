@@ -1,4 +1,6 @@
-import { t, hash, diff } from '../common';
+import { t, hash, diff, R } from '../common';
+
+export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';
 
 /**
  * Determine if the given cell is empty (no value, no props).
@@ -64,6 +66,8 @@ export function squashProps(props?: t.ICellProps) {
   if (!props) {
     return undefined;
   } else {
+    const isNil = (value: any) =>
+      value === undefined || (typeof value === 'object' && Object.keys(value).length === 0);
     const res = { ...props };
     Object.keys(res)
       .filter(key => isNil(res[key]))
@@ -81,5 +85,38 @@ export function cellDiff(left: t.ICellData, right: t.ICellData): t.ICellDiff {
   return { left, right, isDifferent, list };
 }
 
-const isNil = (value: any) =>
-  value === undefined || (typeof value === 'object' && Object.keys(value).length === 0);
+/**
+ * Determine if a cell's fields (value/props) has changed.
+ */
+export function isCellChanged(
+  left: t.ICellData | undefined,
+  right: t.ICellData | undefined,
+  field?: CellChangeField | CellChangeField[],
+) {
+  // Convert incoming `field` flag to an array.
+  let fields: CellChangeField[] =
+    field === undefined ? ['VALUE', 'PROPS'] : Array.isArray(field) ? field : [field];
+
+  // Expand `PROPS` to actual props fields.
+  fields = R.flatten(
+    fields.map(field => (field === 'PROPS' ? ['style', 'merge'] : field)),
+  ) as CellChangeField[];
+
+  // Look for any matches.
+  return fields.some(field => {
+    let a: any;
+    let b: any;
+    if (field === 'VALUE') {
+      a = left ? left.value : undefined;
+      b = right ? right.value : undefined;
+    } else {
+      const props = {
+        left: (left ? left.props : undefined) || {},
+        right: (right ? right.props : undefined) || {},
+      };
+      a = props.left[field];
+      b = props.right[field];
+    }
+    return !R.equals(a, b);
+  });
+}
