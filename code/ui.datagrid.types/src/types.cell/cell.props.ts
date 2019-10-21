@@ -1,8 +1,7 @@
 import { t } from '../common';
 
 export type IGridCellProps = Partial<IGridCellPropsAll>;
-export type IGridCellPropsAll = {
-  value: t.CellValue; // The calculated display value if different from the raw cell value.
+export type IGridCellPropsAll = t.ICellProps & {
   style: IGridCellPropsStyle;
   merge: ICellPropsMerge;
   view: IGridCellPropsView;

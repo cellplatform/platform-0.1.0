@@ -79,8 +79,7 @@ export type IGridCellsData<P = {}> = { [key: string]: IGridCellData<P> | undefin
 
 export type IGridColumnData = { width?: number };
 export type IGridRowData = { height?: number };
-
-export type IGridCellData<P = t.IGridCellProps> = { value?: t.CellValue; props?: P; hash?: string };
+export type IGridCellData<P extends t.ICellProps = t.IGridCellProps> = t.ICellData<P>;
 
 export type GetGridCell<P = t.IGridCellProps> = (
   key: string,
