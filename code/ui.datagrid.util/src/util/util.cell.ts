@@ -63,22 +63,3 @@ export function setCellProp<S extends keyof t.IGridCellProps>(args: {
   // Finish up.
   return cell.value.isEmptyCellProps(res) ? undefined : res;
 }
-
-/**
- * Assigns (or removes) a cell error on `props.status.error`.
- */
-export function setCellError(args: {
-  props?: t.IGridCellProps;
-  error?: t.IGridCellPropsError;
-}): t.IGridCellProps | undefined {
-  console.log(`\nTODO 🐷  make Errors a first class concept on CellData - move to [cell.value] \n`);
-
-  const { props, error } = args;
-  return setCellProp({
-    props,
-    defaults: {},
-    section: 'status',
-    field: 'error',
-    value: error,
-  });
-}

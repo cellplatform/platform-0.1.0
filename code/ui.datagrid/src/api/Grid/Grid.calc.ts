@@ -43,12 +43,8 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
     const addChange = async (key: string, value: any, error: t.IFuncError | undefined) => {
       const cell = await getCell(key);
       if (cell) {
-        const props = util.setCellError({
-          props: value === undefined ? { ...cell.props } : { ...cell.props, value },
-          error,
-        });
         from[key] = cell;
-        to[key] = { ...cell, props };
+        to[key] = util.cell.value.setError(cell, error);
       }
     };
     await Promise.all(res.list.map(item => addChange(item.cell, item.data, item.error)));
