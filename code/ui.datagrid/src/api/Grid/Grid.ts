@@ -637,7 +637,11 @@ export class Grid implements t.IGrid {
         }
 
         // Determine if any merge values have changed.
-        if (Cell.isChanged(from, to, 'merge')) {
+        const isMergeChanged = !R.equals(
+          ((from || {}).props || {}).merge,
+          ((to || {}).props || {}).merge,
+        );
+        if (isMergeChanged) {
           mergeChanges[key] = to;
         }
       });
