@@ -7,8 +7,8 @@ export type SyncChangeType = ISyncChangeCell | ISyncChangeColumn | ISyncChangeRo
 
 export type ISyncChange<V = any> = { source: 'DB' | 'GRID'; key: string; value: V };
 export type ISyncChangeCell = { kind: 'CELL' } & ISyncChange<t.IGridCellData>;
-export type ISyncChangeColumn = { kind: 'COLUMN' } & ISyncChange<t.IGridColumn>;
-export type ISyncChangeRow = { kind: 'ROW' } & ISyncChange<t.IGridRow>;
+export type ISyncChangeColumn = { kind: 'COLUMN' } & ISyncChange<t.IGridColumnData>;
+export type ISyncChangeRow = { kind: 'ROW' } & ISyncChange<t.IGridRowData>;
 
 /**
  * [Events]

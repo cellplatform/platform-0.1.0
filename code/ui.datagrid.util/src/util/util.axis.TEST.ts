@@ -5,7 +5,7 @@ import * as util from './util.axis';
 
 describe('axis (column/row)', () => {
   it('isAxisChanged', () => {
-    const test = <T = t.IGridAxis>(
+    const test = <T = t.IGridAxisData>(
       left: T | undefined,
       right: T | undefined,
       expected: boolean,

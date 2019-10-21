@@ -73,13 +73,13 @@ export type IGridCalculateResponse = {
   cells: string[];
 };
 
-export type IGridColumns = { [key: string]: IGridColumn };
-export type IGridRows = { [key: string]: IGridRow };
+export type IGridColumns = { [key: string]: IGridColumnData };
+export type IGridRows = { [key: string]: IGridRowData };
 export type IGridCells<P = {}> = { [key: string]: IGridCellData<P> | undefined };
 
-export type IGridAxis = IGridColumn | IGridRow;
-export type IGridColumn = { width?: number };
-export type IGridRow = { height?: number };
+export type IGridAxisData = IGridColumnData | IGridRowData;
+export type IGridColumnData = { width?: number };
+export type IGridRowData = { height?: number };
 
 export type IGridCellData<P = t.IGridCellProps> = { value?: t.CellValue; props?: P; hash?: string };
 

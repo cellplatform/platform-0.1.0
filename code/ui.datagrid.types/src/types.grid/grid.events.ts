@@ -109,8 +109,8 @@ export type IGridColumnsChange = {
 export type IGridColumnChange = {
   column: string;
   source: t.GridColumnChangeType;
-  from: t.IGridColumn;
-  to: t.IGridColumn;
+  from: t.IGridColumnData;
+  to: t.IGridColumnData;
 };
 
 /**
@@ -135,8 +135,8 @@ export type IGridRowsChange = {
 export type IGridRowChange = {
   row: number;
   source: t.GridRowChangeType;
-  from: t.IGridRow;
-  to: t.IGridRow;
+  from: t.IGridRowData;
+  to: t.IGridRowData;
 };
 
 /**
