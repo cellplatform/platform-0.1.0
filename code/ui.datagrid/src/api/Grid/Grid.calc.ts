@@ -11,7 +11,7 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
 
   const getKeys: t.RefGetKeys = async () => Object.keys(grid.cells);
 
-  const getCell: t.GridGetCell = async (key: string) => grid.cells[key];
+  const getCell: t.GetGridCell = async (key: string) => grid.cells[key];
 
   const getValue: t.RefGetValue = async key => {
     const cell = grid.cells[key];
