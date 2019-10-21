@@ -5,16 +5,16 @@ import { coord, R } from './libs';
  * Retrieves the grid values that map to the given selection.
  */
 export function toSelectionValues(args: {
-  cells: t.IGridCells;
+  cells: t.IGridCellsData;
   selection: t.IGridSelection;
-}): t.IGridCells {
+}): t.IGridCellsData {
   const { cells, selection } = args;
   if (selection.all) {
     return cells;
   }
 
   // Add focused cell value.
-  const res: t.IGridCells = {};
+  const res: t.IGridCellsData = {};
   if (selection.cell) {
     res[selection.cell] = cells[selection.cell];
   }

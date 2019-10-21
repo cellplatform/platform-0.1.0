@@ -102,8 +102,8 @@ export type IGridColumnsChangeEvent = {
   payload: IGridColumnsChange;
 };
 export type IGridColumnsChange = {
-  from: t.IGridColumns;
-  to: t.IGridColumns;
+  from: t.IGridColumnsData;
+  to: t.IGridColumnsData;
   changes: IGridColumnChange[];
 };
 export type IGridColumnChange = {
@@ -128,8 +128,8 @@ export type IGridRowsChangeEvent = {
   payload: IGridRowsChange;
 };
 export type IGridRowsChange = {
-  from: t.IGridRows;
-  to: t.IGridRows;
+  from: t.IGridRowsData;
+  to: t.IGridRowsData;
   changes: IGridRowChange[];
 };
 export type IGridRowChange = {
@@ -183,9 +183,9 @@ export type IGridClipboard<A = t.GridClipboardCommand> = {
   action: A;
   selection: t.IGridSelection;
   text: string;
-  cells: t.IGridCells;
-  rows: t.IGridRows;
-  columns: t.IGridColumns;
+  cells: t.IGridCellsData;
+  rows: t.IGridRowsData;
+  columns: t.IGridColumnsData;
 };
 
 export type IGridClipboardBeforeReadEvent = {

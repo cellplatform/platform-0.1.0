@@ -17,6 +17,6 @@ export function isColumnChanged(left?: t.IGridColumnData, right?: t.IGridColumnD
 /**
  * Determine if the given row/column's fields has changed.
  */
-export function isAxisChanged<T = t.IGridAxisData>(left?: T, right?: T) {
+export function isAxisChanged<T = t.IGridColumnData | t.IGridRowData>(left?: T, right?: T) {
   return !R.equals(left, right);
 }

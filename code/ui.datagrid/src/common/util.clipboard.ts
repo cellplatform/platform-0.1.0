@@ -48,7 +48,7 @@ export function toClipboard(args: { grid: t.IGrid; action: t.GridClipboardReadCo
  * [Helpers]
  */
 
-function getAxisData<T extends t.IGridRows | t.IGridColumns>(
+function getAxisData<T extends t.IGridRowsData | t.IGridColumnsData>(
   axis: coord.CoordAxis,
   selection: t.IGridSelection,
   data: T,

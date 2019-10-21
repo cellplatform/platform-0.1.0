@@ -21,9 +21,9 @@ export type IGridArgs = {
   table?: Handsontable;
   totalColumns?: number;
   totalRows?: number;
-  cells?: t.IGridCells;
-  columns?: t.IGridColumns;
-  rows?: t.IGridRows;
+  cells?: t.IGridCellsData;
+  columns?: t.IGridColumnsData;
+  rows?: t.IGridRowsData;
   defaults?: Partial<t.IGridDefaults>;
   keyBindings?: t.KeyBindings<t.GridCommand>;
   getFunc?: t.GetFunc;
@@ -60,7 +60,7 @@ export class Grid implements t.IGrid {
    * Converts the values.
    */
   public static toDataArray(args: {
-    values: t.IGridCells;
+    values: t.IGridCellsData;
     totalColumns: number;
     totalRows: number;
   }) {
@@ -242,8 +242,8 @@ export class Grid implements t.IGrid {
     isReady: false,
     isEditing: false,
     cells: ({} as unknown) as t.IGrid['cells'],
-    columns: ({} as unknown) as t.IGridColumns,
-    rows: ({} as unknown) as t.IGridRows,
+    columns: ({} as unknown) as t.IGridColumnsData,
+    rows: ({} as unknown) as t.IGridRowsData,
     lastSelection: (undefined as unknown) as t.IGridSelection,
     calc: (undefined as unknown) as t.IGridCalculate,
   };
@@ -279,7 +279,7 @@ export class Grid implements t.IGrid {
   public get columns() {
     return this._.columns;
   }
-  public set columns(value: t.IGridColumns) {
+  public set columns(value: t.IGridColumnsData) {
     this._.columns = {}; // Reset.
     this.changeColumns(value, { source: 'RESET' });
   }
@@ -287,7 +287,7 @@ export class Grid implements t.IGrid {
   public get rows() {
     return this._.rows;
   }
-  public set rows(value: t.IGridRows) {
+  public set rows(value: t.IGridRowsData) {
     this._.rows = {}; // Reset.
     this.changeRows(value, { source: 'RESET' });
   }
@@ -319,7 +319,7 @@ export class Grid implements t.IGrid {
   public get cells() {
     return this._.cells;
   }
-  private setValues(values: t.IGridCells) {
+  private setValues(values: t.IGridCellsData) {
     values = { ...values };
     const totalColumns = this.totalColumns;
     const totalRows = this.totalRows;
@@ -396,7 +396,7 @@ export class Grid implements t.IGrid {
   /**
    * Retrieves the currently selected key/value pairs.
    */
-  public get selectionValues(): t.IGridCells {
+  public get selectionValues(): t.IGridCellsData {
     const values = this.cells;
     const selection = this.selection;
     return toSelectionValues({ cells: values, selection });
@@ -491,7 +491,7 @@ export class Grid implements t.IGrid {
    * Merge cells.
    * https://handsontable.com/docs/6.1.1/demo-merged-cells.html
    */
-  public mergeCells(args: { cells: t.IGridCells; init?: boolean }) {
+  public mergeCells(args: { cells: t.IGridCellsData; init?: boolean }) {
     type MergeCell = { row: number; col: number; rowspan: number; colspan: number };
     type MergeCells = { [key: string]: MergeCell };
 
@@ -536,7 +536,7 @@ export class Grid implements t.IGrid {
    * Updates cell values.
    */
   public changeCells(
-    cells: t.IGridCells,
+    cells: t.IGridCellsData,
     options: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean } = {},
   ) {
     const done = () => this;
@@ -619,7 +619,7 @@ export class Grid implements t.IGrid {
       }
 
       // Calculate the new updated value set.
-      const mergeChanges: t.IGridCells = {};
+      const mergeChanges: t.IGridCellsData = {};
       const updates = {
         ...current,
         ...Object.keys(formatted).reduce((acc, key) => {
@@ -658,7 +658,10 @@ export class Grid implements t.IGrid {
   /**
    * Updates columns.
    */
-  public changeColumns(columns: t.IGridColumns, options: { source?: t.GridColumnChangeType } = {}) {
+  public changeColumns(
+    columns: t.IGridColumnsData,
+    options: { source?: t.GridColumnChangeType } = {},
+  ) {
     const { source = 'UPDATE' } = options;
     const from = { ...this._.columns };
     const to = { ...from };
@@ -687,7 +690,7 @@ export class Grid implements t.IGrid {
   /**
    *  Updates rows.
    */
-  public changeRows(rows: t.IGridRows, options: { source?: t.GridColumnChangeType } = {}) {
+  public changeRows(rows: t.IGridRowsData, options: { source?: t.GridColumnChangeType } = {}) {
     const { source = 'UPDATE' } = options;
     const from = { ...this._.rows };
     const to = { ...from };

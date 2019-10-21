@@ -10,35 +10,35 @@ export type IGridProperties = {
   isReady: boolean;
   isEditing: boolean;
   selection: t.IGridSelection;
-  selectionValues: t.IGridCells;
+  selectionValues: t.IGridCellsData;
   events$: Observable<t.GridEvent>;
   keyboard$: Observable<t.IGridKeydown>;
   keyBindings: KeyBindings<t.GridCommand>;
   defaults: IGridDefaults;
   calc: IGridCalculate;
-  cells: t.IGridCells<t.IGridCellProps>;
-  columns: IGridColumns;
-  rows: IGridRows;
+  cells: t.IGridCellsData<t.IGridCellProps>;
+  columns: IGridColumnsData;
+  rows: IGridRowsData;
   clipboard?: IGridClipboardPending;
 };
 export type IGridMethods = {
   dispose(): void;
   changeCells(
-    cells: t.IGridCells,
+    cells: t.IGridCellsData,
     options?: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean },
   ): IGrid;
   changeColumns(
-    columns: t.IGridColumns,
+    columns: t.IGridColumnsData,
     options?: { source?: t.IGridColumnChange['source'] },
   ): IGrid;
-  changeRows(rows: t.IGridRows, options?: { source?: t.GridRowChangeType }): IGrid;
+  changeRows(rows: t.IGridRowsData, options?: { source?: t.GridRowChangeType }): IGrid;
   cell(key: t.CellRef): t.ICell;
   scrollTo(args: { cell: t.CellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
   select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }): IGrid;
   deselect(): IGrid;
   focus(): IGrid;
   redraw(): IGrid;
-  mergeCells(args: { cells: t.IGridCells; init?: boolean }): IGrid;
+  mergeCells(args: { cells: t.IGridCellsData; init?: boolean }): IGrid;
   toPosition(ref: t.CellRef): t.ICoord;
   updateHashes(options?: { force?: boolean }): IGrid;
 };
@@ -67,17 +67,16 @@ export type IGridCalculate = {
   update(args?: { cells?: string | string[] }): Promise<IGridCalculateResponse>;
 };
 export type IGridCalculateResponse = {
-  from: IGridCells;
-  to: IGridCells;
+  from: IGridCellsData;
+  to: IGridCellsData;
   func: t.IFuncUpdateResponse;
   cells: string[];
 };
 
-export type IGridColumns = { [key: string]: IGridColumnData };
-export type IGridRows = { [key: string]: IGridRowData };
-export type IGridCells<P = {}> = { [key: string]: IGridCellData<P> | undefined };
+export type IGridColumnsData = { [key: string]: IGridColumnData };
+export type IGridRowsData = { [key: string]: IGridRowData };
+export type IGridCellsData<P = {}> = { [key: string]: IGridCellData<P> | undefined };
 
-export type IGridAxisData = IGridColumnData | IGridRowData;
 export type IGridColumnData = { width?: number };
 export type IGridRowData = { height?: number };
 
