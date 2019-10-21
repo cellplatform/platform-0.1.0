@@ -44,7 +44,7 @@ describe('axis (column/row)', () => {
   describe('toRowProps', () => {
     it('default props (empty {})', () => {
       const test = (input?: any) => {
-        const res = util.toRowProps(input);
+        const res = util.toGridRowProps(input);
         expect(res.height).to.eql(-1);
       };
       test();
@@ -54,7 +54,7 @@ describe('axis (column/row)', () => {
 
     it('props', () => {
       const row: t.IGridRowData = { props: { height: 123 } };
-      const props = util.toRowProps(row.props);
+      const props = util.toGridRowProps(row.props);
       expect(props.height).to.eql(123);
     });
   });
@@ -62,7 +62,7 @@ describe('axis (column/row)', () => {
   describe('toColumnProps', () => {
     it('default props (empty {})', () => {
       const test = (input?: any) => {
-        const res = util.toColumnProps(input);
+        const res = util.toGridColumnProps(input);
         expect(res.width).to.eql(-1);
       };
       test();
@@ -72,7 +72,7 @@ describe('axis (column/row)', () => {
 
     it('props', () => {
       const column: t.IGridColumnData = { props: { width: 123 } };
-      const props = util.toColumnProps(column.props);
+      const props = util.toGridColumnProps(column.props);
       expect(props.width).to.eql(123);
     });
   });

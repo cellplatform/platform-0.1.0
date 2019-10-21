@@ -13,7 +13,7 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
   public static isEmptyProps = util.cell.value.isEmptyCellProps;
   public static isEmptyValue = util.cell.value.isEmptyCellValue;
   public static diff = util.cell.value.cellDiff;
-  public static props = util.toCellProps;
+  public static props = util.toGridCellProps;
 
   public static create(args: { table: Handsontable; row: number; column: number }) {
     return new Cell(args);

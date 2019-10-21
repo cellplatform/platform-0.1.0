@@ -7,7 +7,7 @@ describe('util.cell', () => {
   describe('toCellProps', () => {
     it('default props (empty {})', () => {
       const test = (input?: any) => {
-        const res = util.toCellProps(input);
+        const res = util.toGridCellProps(input);
         expect(res.value).to.eql(undefined);
         expect(res.merge).to.eql({});
         expect(res.style).to.eql({});
@@ -28,7 +28,7 @@ describe('util.cell', () => {
           view: { type: 'SHOP' },
         },
       };
-      const props = util.toCellProps(A2.props);
+      const props = util.toGridCellProps(A2.props);
       expect(props.style.bold).to.eql(true);
       expect(props.merge.colspan).to.eql(3);
       expect(props.value).to.eql(456);
