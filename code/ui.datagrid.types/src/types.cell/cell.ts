@@ -23,10 +23,10 @@ export type ICellSiblings = {
 };
 
 export type ICellDiff = {
-  readonly left: t.IGridCell;
-  readonly right: t.IGridCell;
+  readonly left: t.IGridCellData;
+  readonly right: t.IGridCellData;
   readonly isDifferent: boolean;
-  readonly list: Array<Diff<t.IGridCell>>;
+  readonly list: Array<Diff<t.IGridCellData>>;
 };
 
 /**
@@ -35,7 +35,7 @@ export type ICellDiff = {
 
 export type IGridCellChange = {
   cell: t.ICoordCell;
-  value: { from?: t.IGridCell; to?: t.IGridCell };
+  value: { from?: t.IGridCellData; to?: t.IGridCellData };
   isCancelled: boolean;
   isChanged: boolean;
   isModified: boolean;

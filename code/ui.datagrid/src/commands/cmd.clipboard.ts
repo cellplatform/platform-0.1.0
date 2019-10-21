@@ -4,7 +4,7 @@ import { coord, t, toClipboard } from '../common';
 
 type ClipboardItem = {
   key: string;
-  value?: t.IGridCell | t.IGridRow | t.IGridColumn;
+  value?: t.IGridCellData | t.IGridRow | t.IGridColumn;
 };
 
 const CLIPBOARD_COMMANDS: t.GridClipboardCommand[] = ['CUT', 'COPY', 'PASTE'];

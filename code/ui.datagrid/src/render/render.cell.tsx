@@ -22,12 +22,17 @@ const { CELL, GRID } = CLASS;
 export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
   const CACHE: any = {};
 
-  function toHtml(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCell }) {
+  function toHtml(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCellData }) {
     const el = toElement(args);
     return ReactDOMServer.renderToString(el);
   }
 
-  function toElement(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCell }) {
+  function toElement(args: {
+    td: HTMLElement;
+    row: number;
+    column: number;
+    cell?: t.IGridCellData;
+  }) {
     const { row, column, cell } = args;
     const child: any = factory.cell({ row, column, cell });
     const isHtml = typeof child === 'string' && child.startsWith('<');
@@ -61,7 +66,7 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     td: HTMLElement;
     row: number;
     column: number;
-    cell?: t.IGridCell;
+    cell?: t.IGridCellData;
   }) {
     const { row, column, cell } = args;
     const hash = cell ? cell.hash || util.cellHash(coord.cell.toKey(column, row), cell) : '-';

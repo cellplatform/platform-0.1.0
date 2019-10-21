@@ -56,7 +56,7 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IC
     return { start, end };
   }
 
-  public static changeEvent(args: { cell: t.ICell; from?: t.IGridCell; to?: t.IGridCell }) {
+  public static changeEvent(args: { cell: t.ICell; from?: t.IGridCellData; to?: t.IGridCellData }) {
     const { cell, from, to } = args;
     const value = { from, to };
     let isChanged: boolean | undefined;
@@ -73,7 +73,7 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IC
       cancel() {
         payload.isCancelled = true;
       },
-      modify(change: t.IGridCell) {
+      modify(change: t.IGridCellData) {
         value.to = change;
         payload.isModified = true;
       },

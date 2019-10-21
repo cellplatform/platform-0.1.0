@@ -331,7 +331,7 @@ export class Editor extends editors.TextEditor {
    */
   private render(context: t.IEditorContext) {
     const { row, column, value, props } = context.cell;
-    const cell: t.IGridCell = { value, props };
+    const cell: t.IGridCellData = { value, props };
     const el = this.refs.factory.editor({ row, column, cell });
     if (!el) {
       return null;

@@ -11,7 +11,7 @@ export function toClipboard(args: { grid: t.IGrid; action: t.GridClipboardReadCo
 
   // Process the set of selected values.
   const items = Object.keys(cells).map(key => {
-    let item = cells[key] as t.IGridCell;
+    let item = cells[key] as t.IGridCellData;
     item = typeof item !== 'object' ? { value: item } : item;
     if (typeof item.value === 'string') {
       item.value = util.removeMarkdownEncoding(item.value);

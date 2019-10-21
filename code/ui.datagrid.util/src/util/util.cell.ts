@@ -5,7 +5,7 @@ export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';
 /**
  * Determine if the given cell is empty (no value, no props).
  */
-export function isEmptyCell(cell?: t.IGridCell) {
+export function isEmptyCell(cell?: t.IGridCellData) {
   return cell ? isEmptyCellValue(cell.value) && isEmptyCellProps(cell.props) : true;
 }
 
@@ -145,8 +145,8 @@ export function toggleCellProp<S extends keyof t.IGridCellProps>(args: {
  * Determine if a cell's fields (value/props) has changed.
  */
 export function isCellChanged(
-  left: t.IGridCell | undefined,
-  right: t.IGridCell | undefined,
+  left: t.IGridCellData | undefined,
+  right: t.IGridCellData | undefined,
   field?: CellChangeField | CellChangeField[],
 ) {
   // Convert incoming `field` flag to an array.
@@ -180,8 +180,8 @@ export function isCellChanged(
 /**
  * Compare two cells.
  */
-export function cellDiff(left: t.IGridCell, right: t.IGridCell): t.ICellDiff {
-  const list = diff.compare(left, right) as Array<diff.Diff<t.IGridCell>>;
+export function cellDiff(left: t.IGridCellData, right: t.IGridCellData): t.ICellDiff {
+  const list = diff.compare(left, right) as Array<diff.Diff<t.IGridCellData>>;
   const isDifferent = list.length > 0;
   return { left, right, isDifferent, list };
 }
@@ -189,7 +189,7 @@ export function cellDiff(left: t.IGridCell, right: t.IGridCell): t.ICellDiff {
 /**
  * Produces a uniform hash (SHA-256) of the given cell's value/props.
  */
-export function cellHash(key: string, data?: t.IGridCell): string {
+export function cellHash(key: string, data?: t.IGridCellData): string {
   const value = data ? data.value : undefined;
   const props = toCellProps(data ? data.props : undefined);
   const sha256 = hash.sha256({ key, value, props });

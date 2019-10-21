@@ -14,7 +14,7 @@ describe('Cell', () => {
     });
 
     it('isEmpty', () => {
-      const test = (input: t.IGridCell | undefined, expected: boolean) => {
+      const test = (input: t.IGridCellData | undefined, expected: boolean) => {
         expect(Cell.isEmpty(input)).to.eql(expected);
       };
       test(undefined, true);
@@ -98,7 +98,7 @@ describe('Cell', () => {
 
   describe('diff', () => {
     it('no difference', () => {
-      const cell: t.IGridCell = { value: 1, props: { style: { bold: true } } };
+      const cell: t.IGridCellData = { value: 1, props: { style: { bold: true } } };
       const res = Cell.diff(cell, cell);
       expect(res.left).to.eql(cell);
       expect(res.right).to.eql(cell);
@@ -107,8 +107,8 @@ describe('Cell', () => {
     });
 
     it('is different', () => {
-      const left: t.IGridCell = { value: 1, props: { style: { bold: true } } };
-      const right: t.IGridCell = { value: 2, props: { style: { bold: false } } };
+      const left: t.IGridCellData = { value: 1, props: { style: { bold: true } } };
+      const right: t.IGridCellData = { value: 2, props: { style: { bold: false } } };
       const res = Cell.diff(left, right);
 
       expect(res.isDifferent).to.eql(true);

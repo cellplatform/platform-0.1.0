@@ -198,7 +198,9 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(e => {
           const key = this.schema.grid.toCellKey(e.key);
-          const value = (typeof e.value === 'object' ? e.value : { value: e.value }) as t.IGridCell;
+          const value = (typeof e.value === 'object'
+            ? e.value
+            : { value: e.value }) as t.IGridCellData;
           this.fireSync({
             source: 'DB',
             kind: 'CELL',
@@ -227,7 +229,7 @@ export class Sync implements t.IDisposable {
         .subscribe(async e => {
           const key = this.schema.grid.toCellKey(e.key);
           const cell = grid.cell(key);
-          const isChanged = util.isCellChanged(cell, e.value as t.IGridCell);
+          const isChanged = util.isCellChanged(cell, e.value as t.IGridCellData);
           if (isChanged) {
             changeGrid$.next({ type: 'CELL', key, value: e.value });
           }

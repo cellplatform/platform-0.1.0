@@ -5,7 +5,6 @@ import { commands } from '../../commands';
 import {
   coord,
   defaultValue,
-  IGridCell,
   MemoryCache,
   R,
   t,
@@ -166,7 +165,7 @@ export class Grid implements t.IGrid {
         ...this.cell(key).props,
         value: undefined, // NB: Reset the calculated "display value" as this will be overriden by the new value.
       };
-      const cell: t.IGridCell = { value, props };
+      const cell: t.IGridCellData = { value, props };
       this.changeCells({ [key]: cell }, { source: 'EDIT' });
     });
     editEnd$
@@ -542,7 +541,7 @@ export class Grid implements t.IGrid {
   ) {
     const done = () => this;
 
-    const format = (key: string, to?: t.IGridCell) => {
+    const format = (key: string, to?: t.IGridCellData) => {
       if (Cell.isEmpty(to)) {
         return undefined;
       }
@@ -572,7 +571,7 @@ export class Grid implements t.IGrid {
         .forEach(key => delete cells[key]);
 
       // Format incoming values ensuring they are clean and structurally consistent.
-      type Values = { [key: string]: { from?: t.IGridCell; to?: IGridCell } };
+      type Values = { [key: string]: { from?: t.IGridCellData; to?: t.IGridCellData } };
       const formatted: Values = Object.keys(cells).reduce((acc, key) => {
         acc[key] = {
           from: format(key, current[key]),

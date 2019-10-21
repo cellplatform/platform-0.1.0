@@ -6,7 +6,7 @@ import * as util from './util.cell';
 describe('util.cell', () => {
   it('isEmptyCell', () => {
     const hash = '346854e8420ee165a8146d0c385eb148f172c7cabb3a3b76d542252890cd0cf9';
-    const test = (input: t.IGridCell | undefined, expected: boolean) => {
+    const test = (input: t.IGridCellData | undefined, expected: boolean) => {
       expect(util.isEmptyCell(input)).to.eql(expected);
     };
     test(undefined, true);
@@ -72,8 +72,8 @@ describe('util.cell', () => {
     type F = util.CellChangeField | util.CellChangeField[] | undefined;
 
     const test = (
-      left: t.IGridCell | undefined,
-      right: t.IGridCell | undefined,
+      left: t.IGridCellData | undefined,
+      right: t.IGridCellData | undefined,
       field: F,
       expected: boolean,
     ) => {
@@ -134,7 +134,7 @@ describe('util.cell', () => {
 
   describe('cellDiff', () => {
     it('no difference', () => {
-      const cell: t.IGridCell = { value: 1, props: { style: { bold: true } } };
+      const cell: t.IGridCellData = { value: 1, props: { style: { bold: true } } };
       const res = util.cellDiff(cell, cell);
       expect(res.left).to.eql(cell);
       expect(res.right).to.eql(cell);
@@ -143,8 +143,8 @@ describe('util.cell', () => {
     });
 
     it('is different', () => {
-      const left: t.IGridCell = { value: 1, props: { style: { bold: true } } };
-      const right: t.IGridCell = { value: 2, props: { style: { bold: false } } };
+      const left: t.IGridCellData = { value: 1, props: { style: { bold: true } } };
+      const right: t.IGridCellData = { value: 2, props: { style: { bold: false } } };
       const res = util.cellDiff(left, right);
 
       expect(res.isDifferent).to.eql(true);
@@ -171,7 +171,7 @@ describe('util.cell', () => {
     });
 
     it('props', () => {
-      const A2: t.IGridCell = {
+      const A2: t.IGridCellData = {
         value: 'Hello',
         props: {
           value: 456, // NB: Display value.
@@ -365,7 +365,7 @@ describe('util.cell', () => {
 
   describe('cellHash', () => {
     it('hashes a cell', () => {
-      const test = (input: t.IGridCell | undefined, expected: string) => {
+      const test = (input: t.IGridCellData | undefined, expected: string) => {
         const hash = util.cellHash('A1', input);
         expect(hash).to.eql(expected);
       };
@@ -403,7 +403,7 @@ describe('util.cell', () => {
 
     it('same hash for no param AND no cell-value', () => {
       const HASH = 'sha256/5cbb07f7321efddf98f0b4f7f977600e11adbc5d169f1a86ee291b75dce7d925';
-      const test = (input?: t.IGridCell) => {
+      const test = (input?: t.IGridCellData) => {
         const hash = util.cellHash('A1', input);
         expect(hash).to.eql(HASH);
       };

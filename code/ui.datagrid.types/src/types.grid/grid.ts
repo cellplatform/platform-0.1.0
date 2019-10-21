@@ -75,11 +75,14 @@ export type IGridCalculateResponse = {
 
 export type IGridColumns = { [key: string]: IGridColumn };
 export type IGridRows = { [key: string]: IGridRow };
-export type IGridCells<P = {}> = { [key: string]: IGridCell<P> | undefined };
+export type IGridCells<P = {}> = { [key: string]: IGridCellData<P> | undefined };
 
 export type IGridAxis = IGridColumn | IGridRow;
 export type IGridColumn = { width?: number };
 export type IGridRow = { height?: number };
 
-export type IGridCell<P = t.IGridCellProps> = { value?: t.CellValue; props?: P; hash?: string };
-export type GetGridCell<P = t.IGridCellProps> = (key: string) => Promise<IGridCell<P> | undefined>;
+export type IGridCellData<P = t.IGridCellProps> = { value?: t.CellValue; props?: P; hash?: string };
+
+export type GetGridCell<P = t.IGridCellProps> = (
+  key: string,
+) => Promise<IGridCellData<P> | undefined>;
