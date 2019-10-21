@@ -72,6 +72,15 @@ export function toRowProps(input?: t.IGridRowProps): t.IGridRowPropsAll {
 }
 
 /**
+ * Produces a uniform column properties object.
+ */
+export function toColumnProps(input?: t.IGridColumnProps): t.IGridColumnPropsAll {
+  const props: t.IGridColumnProps = input || {};
+  const width = defaultValue(props.width, -1);
+  return { width };
+}
+
+/**
  * Assigns a property field to props, removing it from the object
  * if it is the default value.
  */
