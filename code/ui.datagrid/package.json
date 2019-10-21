@@ -19,6 +19,7 @@
     "@platform/cell.coord": "0.5.11",
     "@platform/cell.func": "0.0.9",
     "@platform/cell.types": "0.0.8",
+    "@platform/cell.value0.0.0",
     "@platform/libs": "0.1.3",
     "@platform/react": "0.3.26",
     "@platform/ui.button": "0.3.6",
@@ -28,7 +29,7 @@
     "handsontable": "6.2.2"
   },
   "devDependencies": {
-    "@platform/cell.func.sys": "^0.0.2",
+    "@platform/cell.func.sys": "0.0.2",
     "@platform/cli.spec": "0.1.61",
     "@platform/test": "0.0.64",
     "@platform/test.dom": "0.0.54",

@@ -14,8 +14,9 @@ export { MemoryCache } from '@platform/cache';
 /**
  * Cell coords (eg "A1", "A1:C9").
  */
-export { coord } from '@platform/cell.coord';
-export { func } from '@platform/cell.func';
+import * as cell from './libs.cell';
+export { cell };
+export * from './libs.cell';
 
 /**
  * Ramda.

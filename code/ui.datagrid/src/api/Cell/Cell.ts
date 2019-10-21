@@ -9,9 +9,9 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
   /**
    * [Static]
    */
-  public static isEmpty = util.isEmptyCell;
-  public static isEmptyProps = util.isEmptyCellProps;
-  public static isEmptyValue = util.isEmptyCellValue;
+  public static isEmpty = util.cell.value.isEmptyCell;
+  public static isEmptyProps = util.cell.value.isEmptyCellProps;
+  public static isEmptyValue = util.cell.value.isEmptyCellValue;
   public static isChanged = util.isCellChanged;
   public static diff = util.cellDiff;
   public static props = util.toCellProps;

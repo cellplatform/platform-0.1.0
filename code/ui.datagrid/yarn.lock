@@ -1013,6 +1013,15 @@
   dependencies:
     "@platform/libs" "0.1.3"
 
+"@platform/cell.value@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.0.0.tgz#1566b9dd73520e3932da3509792f54a005735b13"
+  integrity sha512-B0IzPw50YVnd9HHoeVPSOgeQLUUCD7hB2kCJjrytUPsxIvq2eKyqNdjyl3ogzp+MZKEo4yWmIPiQ1/YRihbpBw==
+  dependencies:
+    "@platform/cell.types" "0.0.8"
+    "@platform/libs" "0.1.3"
+    "@platform/util.value" "0.5.5"
+
 "@platform/cli.prompt@0.0.11", "@platform/cli.prompt@^0.0.11":
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.0.11.tgz#6e8be87199d91d57d2ce7a5bf33a0c530d7bd5e2"

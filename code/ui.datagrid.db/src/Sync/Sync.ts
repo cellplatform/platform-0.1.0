@@ -107,9 +107,9 @@ export class Sync implements t.IDisposable {
 
       // Extract distinct lists for delete/update operations.
       const deletes = latest
-        .filter(item => util.isEmptyCell(item.value))
+        .filter(item => util.cell.value.isEmptyCell(item.value))
         .map(item => ({ key: item.key }));
-      const updates = latest.filter(item => !util.isEmptyCell(item.value));
+      const updates = latest.filter(item => !util.cell.value.isEmptyCell(item.value));
 
       // Write to DB.
       if (deletes.length > 0) {
@@ -490,13 +490,13 @@ export class Sync implements t.IDisposable {
 
   private formatValue = (input?: any) => {
     const format = (value: any) => {
-      value = util.isEmptyCellValue(input) ? undefined : value;
+      value = util.cell.value.isEmptyCellValue(input) ? undefined : value;
       value = typeof value === 'string' ? util.removeMarkdownEncoding(value) : value;
       return value;
     };
     if (typeof input === 'object') {
       const res = { ...input, value: format(input.value) };
-      if (util.isEmptyCellProps(input.props)) {
+      if (util.cell.value.isEmptyCellProps(input.props)) {
         delete res.props;
       }
       return res;
@@ -512,7 +512,7 @@ export class Sync implements t.IDisposable {
 
   private isEmptyValue = (args: { kind: t.GridCellType; value?: any }) => {
     const { kind, value } = args;
-    return util.isEmptyCellValue(value) || this.isDefaultValue({ kind, value });
+    return util.cell.value.isEmptyCellValue(value) || this.isDefaultValue({ kind, value });
   };
 }
 
