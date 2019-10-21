@@ -81,8 +81,12 @@ export type IGridColumnsData = { [key: string]: IGridColumnData };
 export type IGridRowsData = { [key: string]: IGridRowData };
 export type IGridCellsData<P = {}> = { [key: string]: IGridCellData<P> | undefined };
 
-export type IGridColumnData = { width?: number };
-export type IGridRowData = { height?: number };
+export type IGridColumnProps = t.IColumnProps & { width?: number };
+export type IGridColumnData = t.IColumnData<IGridColumnProps>;
+
+export type IGridRowProps = t.IRowProps & { height?: number };
+export type IGridRowData = t.IRowData<IGridRowProps>;
+
 export type IGridCellData<P extends t.ICellProps = t.IGridCellProps> = t.ICellData<P>;
 
 export type GetGridCell<P = t.IGridCellProps> = (

@@ -45,8 +45,8 @@ describe('Grid', () => {
 
   it('constructs (initialized)', () => {
     const cells = { A1: { value: 123 } };
-    const columns = { A: { width: 200 } };
-    const rows = { 10: { height: 200 } };
+    const columns = { A: { props: { width: 200 } } };
+    const rows = { '10': { props: { height: 200 } } };
     const grid = createGrid({ totalColumns: 10, totalRows: 5, cells, columns, rows });
     expect(grid.isInitialized).to.eql(true);
     expect(grid.isEditing).to.eql(false);
