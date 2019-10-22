@@ -13,33 +13,40 @@ export async function calculate<D = any>(args: {
   getFunc: t.GetFunc;
 }): Promise<t.IFuncResponse<D>> {
   const { cell, refs, getValue, getFunc } = args;
+  const path = cell;
   const formula = (await getValue(cell)) || '';
   const isFormula = util.isFormula(formula);
   const node = isFormula ? coord.ast.toTree(formula) : undefined;
   const type = util.toRefTarget(formula);
 
-  const fail = (errorType: t.FuncError, message: string) => {
-    const error: t.IFuncError = {
-      type: errorType,
-      message,
-      cell: { key: cell, value: formula },
-    };
+  const fail = (error: t.IFuncError) => {
     const res: t.IFuncResponse<D> = { ok: false, type, cell, formula, error };
     return res;
   };
 
   // Ensure the node is a function/expression.
   if (!node || !isFormula) {
-    const error = `The value of cell ${cell} is not a formula. Must start with "=".`;
-    return fail('NOT_FORMULA', error);
+    const error: t.IFuncErrorNotFormula = {
+      type: 'FUNC/notFormula',
+      message: `The value of cell ${cell} is not a formula. Must start with "=".`,
+      path,
+      formula,
+    };
+    return fail(error);
   }
 
   // Disallow RANGE types.
   // NB: Ranges can be used as parameters, but a range on it's own (eg "=A1:Z9")
   //     makes no sense from this context of calculating something.
   if (type === 'RANGE') {
-    const error = `The cell ${cell} is a range which is not supported.`;
-    return fail('NOT_SUPPORTED/RANGE', error);
+    const error: t.IFuncErrorNotSupportedRange = {
+      type: 'FUNC/notSupported/range',
+      message: `The cell ${cell} is a range which is not supported.`,
+      path,
+      formula,
+    };
+    // const error = `The cell ${cell} is a range which is not supported.`;
+    return fail(error);
   }
 
   // Evaluate the function/expression.
@@ -56,7 +63,7 @@ export async function calculate<D = any>(args: {
       data = await getCellRefValue({ cell, node, refs, getValue, getFunc });
     }
   } catch (err) {
-    error = util.fromError(err, { cell: { key: cell, value: formula } });
+    error = util.fromErrorObject(err, { path, formula });
   }
 
   // Finish up.
@@ -169,10 +176,11 @@ const evalFunc = async (args: {
   // Lookup the function.
   const func = await getFunc({ name, namespace });
   if (!func) {
-    throw util.toError({
-      type: 'NOT_FOUND',
+    throw util.toErrorObject({
+      type: 'FUNC/notFound',
       message: `The function [${namespace}.${name}] was not found.`,
-      cell: { key: cell, value: formula },
+      path: cell,
+      formula,
     });
   }
 

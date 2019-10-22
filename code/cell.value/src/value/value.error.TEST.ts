@@ -13,7 +13,7 @@ describe('error', () => {
   });
 
   it('assigns error', () => {
-    const err: t.IError = { type: 'FAIL', message: 'Derp' };
+    const err: t.IError = { type: 'FAIL', message: 'Derp', path: 'A1' };
     const target: Parent = { count: 123 };
     const res = value.setError(target, err);
     expect(res.count).to.eql(123);
@@ -22,14 +22,20 @@ describe('error', () => {
   });
 
   it('replaces error', () => {
-    const err: t.IError = { type: 'FAIL', message: 'Derp' };
-    const target: Parent = { count: 123, error: { type: 'FOO', message: 'Previous error.' } };
+    const err: t.IError = { type: 'FAIL', message: 'Derp', path: 'A1' };
+    const target: Parent = {
+      count: 123,
+      error: { type: 'FOO', message: 'Previous error.', path: 'A1' },
+    };
     const res = value.setError(target, err);
     expect(res.error).to.eql(err);
   });
 
   it('removes error (undefined)', () => {
-    const target: Parent = { count: 123, error: { type: 'FOO', message: 'Previous error.' } };
+    const target: Parent = {
+      count: 123,
+      error: { type: 'FOO', message: 'Previous error.', path: 'A1' },
+    };
     const res = value.setError(target);
     expect(res.count).to.eql(123);
     expect(res.error).to.eql(undefined);
