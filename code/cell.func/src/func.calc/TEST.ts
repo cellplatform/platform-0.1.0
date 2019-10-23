@@ -8,6 +8,7 @@ const refs = coord.refs;
  */
 export { expect, t };
 export type TestTable = t.ITableMap<{ value: any }>;
+
 export const testContext = async (cells: TestTable) => {
   const getValue: t.RefGetValue = async (key: string) => {
     const cell = cells[key];

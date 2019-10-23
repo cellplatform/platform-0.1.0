@@ -1,6 +1,5 @@
-import { R, t } from '../common';
-import { one } from './func.calc.one';
-import * as util from './util';
+import { R, t, util } from '../common';
+import { one } from './calculate.one';
 
 /**
  * Calculate changes across a range of cells within a table.

@@ -1,4 +1,5 @@
-import { t, coord } from '../common';
+import { coord } from './libs';
+import * as t from './types';
 
 const refs = coord.refs;
 export const path = refs.path;

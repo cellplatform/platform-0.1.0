@@ -1,5 +1,5 @@
 import { expect, testContext, t } from './TEST';
-import { one } from './func.calc.one';
+import { one } from './calculate.one';
 
 describe('func.calc.cell (one)', function() {
   this.timeout(5000);

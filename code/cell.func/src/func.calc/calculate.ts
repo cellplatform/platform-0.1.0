@@ -1,6 +1,6 @@
 import { t } from '../common';
-import { one } from './func.calc.one';
-import { many } from './func.calc.many';
+import { one } from './calculate.one';
+import { many } from './calculate.many';
 
 /**
  * Calculate references/cells.

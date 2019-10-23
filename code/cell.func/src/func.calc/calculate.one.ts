@@ -1,5 +1,4 @@
-import { t, coord } from '../common';
-import * as util from './util';
+import { t, coord, util } from '../common';
 
 const CellRange = coord.range.CellRange;
 

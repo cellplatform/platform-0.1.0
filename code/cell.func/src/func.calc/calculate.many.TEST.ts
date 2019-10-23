@@ -1,4 +1,4 @@
-import { many } from './func.calc.many';
+import { many } from './calculate.many';
 import { expect, testContext } from './TEST';
 
 describe('func.calc.cells (many)', function() {
