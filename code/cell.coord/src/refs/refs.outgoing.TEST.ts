@@ -42,7 +42,7 @@ describe('refs.outgoing', () => {
       expect(res[0].path).to.eql('A1/A2/A3');
     });
 
-    it('A1 => A1 (ERROR/CIRCULAR)', async () => {
+    it('A1 => A1 (ERROR: REF/circular)', async () => {
       const ctx = testContext({
         A1: { value: '=A1' },
       });
@@ -51,10 +51,10 @@ describe('refs.outgoing', () => {
 
       expect(res.length).to.eql(1);
       expect(res[0].path).to.eql('A1/A1');
-      expect(error.type).to.eql('CIRCULAR');
+      expect(error.type).to.eql('REF/circular');
     });
 
-    it('A1 => A2 => A3 => A1 (ERROR/CIRCULAR)', async () => {
+    it('A1 => A2 => A3 => A1 (ERROR: REF/circular)', async () => {
       const ctx = testContext({
         A1: { value: '=A2' },
         A2: { value: '=A3' },
@@ -65,10 +65,10 @@ describe('refs.outgoing', () => {
 
       expect(res.length).to.eql(1);
       expect(res[0].path).to.eql('A1/A2/A3/A1');
-      expect(error.type).to.eql('CIRCULAR');
+      expect(error.type).to.eql('REF/circular');
     });
 
-    it('A1 => B (ERROR/NAME)', async () => {
+    it('A1 => B (ERROR: REF/name)', async () => {
       const ctx = testContext({
         A1: { value: '=A2' },
         A2: { value: '=B' },
@@ -80,7 +80,7 @@ describe('refs.outgoing', () => {
       expect(res[0].path).to.eql('A1/A2/B');
       expect(res[0].target).to.eql('UNKNOWN');
 
-      expect(error.type).to.eql('NAME');
+      expect(error.type).to.eql('REF/name');
       expect(error.message).to.include('Unknown range: B');
     });
 
@@ -164,7 +164,7 @@ describe('refs.outgoing', () => {
         expect(res[1].param).to.eql('2');
 
         const error = res[1].error as t.IRefError;
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
       });
 
       it('error: param to RANGE (direct)', async () => {
@@ -180,7 +180,7 @@ describe('refs.outgoing', () => {
         expect(res[0].param).to.eql('1');
 
         const error = res[0].error as t.IRefError;
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/A1:B9');
       });
 
@@ -194,7 +194,7 @@ describe('refs.outgoing', () => {
         const error = res[0].error as t.IRefError;
 
         expect(res.length).to.eql(1);
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/B1:B9');
         expect(error.message).to.include('Range contains a cell that leads back to itself');
       });
@@ -209,7 +209,7 @@ describe('refs.outgoing', () => {
         const error = res[0].error as t.IRefError;
 
         expect(res.length).to.eql(1);
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/B1:B9');
         expect(error.message).to.include('Range contains a cell that leads back to itself');
       });
@@ -224,7 +224,7 @@ describe('refs.outgoing', () => {
         const error = res[0].error as t.IRefError;
 
         expect(res.length).to.eql(1);
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/B1:B9');
         expect(error.message).to.include('Range contains a cell that leads back to itself');
       });
@@ -240,7 +240,7 @@ describe('refs.outgoing', () => {
         expect(res[0].param).to.eql('1');
 
         const error = res[0].error as t.IRefError;
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/A1');
       });
 
@@ -255,7 +255,7 @@ describe('refs.outgoing', () => {
         expect(res[0].param).to.eql('1');
 
         const error = res[0].error as t.IRefError;
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/A2/A1');
       });
 
@@ -272,7 +272,7 @@ describe('refs.outgoing', () => {
         expect(res[0].param).to.eql('1');
 
         const error = res[0].error as t.IRefError;
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/A2/A3/A1');
       });
     });
@@ -467,7 +467,7 @@ describe('refs.outgoing', () => {
         expect(res[0].path).to.eql('A1/A1:B9');
         expect(res[0].param).to.eql('1');
 
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
       });
 
       it('error: =5 + A1:B9 (RANGE => RANGE)', async () => {
@@ -484,7 +484,7 @@ describe('refs.outgoing', () => {
         expect(res[0].path).to.eql('A1/B1:B9');
         expect(res[0].param).to.eql('1');
 
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
       });
 
       it('error: =A1+5 => self (direct)', async () => {
@@ -498,7 +498,7 @@ describe('refs.outgoing', () => {
         expect(res[0].path).to.eql('A1');
 
         const error = res[0].error as t.IRefError;
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
       });
 
       it('error: =A2+5 => REF => self ', async () => {
@@ -513,7 +513,7 @@ describe('refs.outgoing', () => {
         expect(res[0].path).to.eql('A1/A2');
 
         const error = res[0].error as t.IRefError;
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/A2/A1');
       });
 
@@ -530,7 +530,7 @@ describe('refs.outgoing', () => {
         expect(res[0].path).to.eql('A1/A2');
 
         const error = res[0].error as t.IRefError;
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/A2/A1');
       });
 
@@ -563,8 +563,8 @@ describe('refs.outgoing', () => {
         expect(res[2].param).to.eql('1/1/1');
 
         expect(error1).to.eql(undefined);
-        expect(error2.type).to.eql('CIRCULAR');
-        expect(error3.type).to.eql('CIRCULAR');
+        expect(error2.type).to.eql('REF/circular');
+        expect(error3.type).to.eql('REF/circular');
 
         expect(error2.path).to.eql('A1/A3/A1');
         expect(error3.path).to.eql('A1/A5/A1');
@@ -600,8 +600,8 @@ describe('refs.outgoing', () => {
         expect(res[2].param).to.eql('1/1');
 
         expect(error1).to.eql(undefined);
-        expect(error2.type).to.eql('CIRCULAR');
-        expect(error3.type).to.eql('CIRCULAR');
+        expect(error2.type).to.eql('REF/circular');
+        expect(error3.type).to.eql('REF/circular');
 
         expect(error2.path).to.eql('A1/A3/A1');
         expect(error3.path).to.eql('A1/A5/A1');
@@ -665,7 +665,7 @@ describe('refs.outgoing', () => {
         expect(res[0].path).to.eql('A1/A1:B9');
 
         const error = res[0].error as t.IRefError;
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.message).to.include(
           'Range contains a cell that leads back to itself (A1/A1:B9)',
         );
@@ -683,7 +683,7 @@ describe('refs.outgoing', () => {
         expect(res[0].path).to.eql('A1/B2/A1:B9');
 
         const error = res[0].error as t.IRefError;
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.type).to.eql('REF/circular');
         expect(error.message).to.include(
           'Range contains a cell that leads back to itself (A1/B2/A1:B9)',
         );

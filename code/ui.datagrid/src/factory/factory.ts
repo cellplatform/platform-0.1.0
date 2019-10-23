@@ -28,14 +28,14 @@ export class FactoryManager {
   /**
    * Generates a cell editor.
    */
-  public editor(args: { row: number; column: number; cell?: t.IGridCell }) {
+  public editor(args: { row: number; column: number; cell?: t.IGridCellData }) {
     return this.render({ ...args, type: 'EDITOR' });
   }
 
   /**
    * Generates the display for a single cell
    */
-  public cell(args: { row: number; column: number; cell?: t.IGridCell }) {
+  public cell(args: { row: number; column: number; cell?: t.IGridCellData }) {
     return this.render({ ...args, type: 'CELL' });
   }
 
@@ -46,14 +46,14 @@ export class FactoryManager {
     type: t.GridFactoryType;
     row: number;
     column: number;
-    cell?: t.IGridCell;
+    cell?: t.IGridCellData;
   }) {
     const { type, row, column } = args;
     const key = coord.cell.toKey(column, row);
     const grid = this.grid;
 
-    const props = util.toCellProps(args.cell ? args.cell.props : {});
-    const data: t.IGridCell<t.ICellPropsAll> = { ...args.cell, props };
+    const props = util.toGridCellProps(args.cell ? args.cell.props : {});
+    const data: t.IGridCellData<t.IGridCellPropsAll> = { ...args.cell, props };
     const cell: t.IGridFactoryRequest['cell'] = { key, data, props };
 
     const req: t.IGridFactoryRequest = { type, grid, cell };

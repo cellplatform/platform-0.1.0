@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "name": "sample.cell.server",
+  "alias": "cell.platform.uiharness.com",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/src/now.ts"
+    }
+  ],
+  "builds": [
+    {
+      "src": "**/*.{ts,tsx}",
+      "use": "@now/node",
+      "config": {
+        "includeFiles": ["*.yml", "*.json"]
+      }
+    }
+  ]
+}

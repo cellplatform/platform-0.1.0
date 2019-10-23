@@ -1,5 +1,5 @@
 import { Grid } from '../../api';
-import { coord } from '../../common';
+import { coord, t } from '../../common';
 
 export function sizeHandlers(grid: Grid) {
   /**
@@ -9,14 +9,12 @@ export function sizeHandlers(grid: Grid) {
   function afterColumnResize(index: number, width: number, isDoubleClick: boolean) {
     if (grid.isInitialized) {
       const key = coord.cell.toKey(index, undefined);
-      let column = grid.columns[key];
       width = isDoubleClick
         ? grid.defaults.columWidth
         : Math.max(grid.defaults.columnWidthMin, width);
-      column = { ...(column || {}), width };
       grid
         .changeColumns(
-          { [key]: { ...(column || {}), width } },
+          { [key]: toColumn(grid.columns[key], { width }) },
           { source: isDoubleClick ? 'RESET/doubleClick' : 'UPDATE' },
         )
         .redraw();
@@ -30,14 +28,12 @@ export function sizeHandlers(grid: Grid) {
   function afterRowResize(index: number, height: number, isDoubleClick: boolean) {
     if (grid.isInitialized) {
       const key = coord.cell.toKey(undefined, index);
-      let row = grid.rows[key];
       height = isDoubleClick
         ? grid.defaults.rowHeight
         : Math.max(grid.defaults.rowHeightMin, height);
-      row = { ...(row || {}), height };
       grid
         .changeRows(
-          { [key]: { ...(row || {}), height } },
+          { [key]: toRow(grid.rows[key], { height }) },
           { source: isDoubleClick ? 'RESET/doubleClick' : 'UPDATE' },
         )
         .redraw();
@@ -52,7 +48,8 @@ export function sizeHandlers(grid: Grid) {
     if (grid.isInitialized) {
       const key = coord.cell.toKey(index, undefined);
       const column = grid.columns[key];
-      width = column && column.width !== undefined ? column.width : grid.defaults.columWidth;
+      const props = column ? column.props : undefined;
+      width = props && props.width !== undefined ? props.width : grid.defaults.columWidth;
     }
     return width;
   }
@@ -64,7 +61,8 @@ export function sizeHandlers(grid: Grid) {
   function modifyRowHeight(height: number, index: number) {
     const key = coord.cell.toKey(undefined, index);
     const row = grid.rows[key];
-    height = row && row.height !== undefined ? row.height : grid.defaults.rowHeight;
+    const props = row ? row.props : undefined;
+    height = props && props.height !== undefined ? props.height : grid.defaults.rowHeight;
     return height;
   }
 
@@ -75,3 +73,16 @@ export function sizeHandlers(grid: Grid) {
     modifyRowHeight,
   };
 }
+
+/**
+ * [Helpers]
+ */
+const toColumn = (input?: t.IColumnData, props?: t.IColumnProps) => {
+  const res = { ...(input || {}) };
+  return { ...res, props: { ...(res.props || {}), ...props } };
+};
+
+const toRow = (input?: t.IRowData, props?: t.IRowProps) => {
+  const row = { ...(input || {}) };
+  return { ...row, props: { ...(row.props || {}), ...props } };
+};

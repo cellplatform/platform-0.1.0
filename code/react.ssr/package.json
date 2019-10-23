@@ -8,8 +8,8 @@
     "ssr": "lib/bin.js"
   },
   "scripts": {
-    "ssr": "cd sample/server && yarn ssr $@",
-    "watch": "cd sample/server && yarn watch $@",
+    "ssr": "cd src.sample/server && yarn ssr $@",
+    "watch": "cd src.sample/server && yarn watch $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",

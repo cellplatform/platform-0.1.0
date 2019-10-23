@@ -8,25 +8,32 @@ export const toRefTarget = refs.toRefTarget;
 export const getCircularError = refs.getCircularError;
 
 /**
- * Convert an object an `Error` with corresponding func/props.
+ * Convert an object `Error` with corresponding func/props.
  */
-export const toError = (args: t.IFuncError): t.IFuncError => {
-  const error = (new Error(args.message) as unknown) as t.IFuncError;
-  error.cell = args.cell;
-  error.type = args.type;
+export const toErrorObject = (input: t.IFuncError): t.IFuncError => {
+  const error = (new Error(input.message) as unknown) as t.IFuncError;
+  error.type = input.type;
+  error.path = input.path;
+  error.formula = input.formula;
   return error;
 };
 
 /**
  * Convert an incoming `Error` to a simple `IFuncError` object.
  */
-export const fromError = (
+export const fromErrorObject = (
   err: any,
-  options: { cell?: t.IFuncError['cell'] } = {},
+  options: { path?: t.IFuncError['path']; formula?: t.IFuncError['formula'] } = {},
 ): t.IFuncError => {
   if (err.type) {
-    const { type, message, cell } = err as t.IFuncError;
-    return { type, message, cell: cell || options.cell };
+    const { type, message, path, formula } = err as t.IFuncError;
+    const res = {
+      type,
+      message,
+      path: path || options.path || '',
+      formula: formula || options.formula || '',
+    };
+    return res as t.IFuncError;
   } else {
     const error = err instanceof Error ? err : new Error(`Error object not provided.`);
     throw error;

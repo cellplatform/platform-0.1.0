@@ -1,3 +1,3 @@
-export * from './grid';
-export * from './grid.events';
-export * from './grid.factory';
+export * from './types.grid';
+export * from './types.grid.events';
+export * from './types.grid.factory';

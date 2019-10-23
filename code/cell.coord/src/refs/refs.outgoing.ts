@@ -105,11 +105,12 @@ async function outgoingCellRef(args: {
   path = `${path}/${key}`;
 
   if (isCircular) {
-    error = {
-      type: 'CIRCULAR',
+    const refError: t.IRefErrorCircular = {
+      type: 'REF/circular',
       message: `Cell reference leads back to itself (${path})`,
       path,
     };
+    error = refError;
   }
 
   const value = await getValue(key);
@@ -117,11 +118,12 @@ async function outgoingCellRef(args: {
 
   if (!error && !cell.isCell(key)) {
     target = 'UNKNOWN';
-    error = {
-      type: 'NAME',
+    const refError: t.IRefErrorName = {
+      type: 'REF/name',
       message: `Unknown range: ${key}`,
       path,
     };
+    error = refError;
   }
 
   // Process the forumla (if it is one).
@@ -159,11 +161,12 @@ async function outgoingRange(args: {
   // Check for circular-reference error.
   const isCircular = await isRangeCircular({ range, path, getValue });
   if (isCircular) {
-    error = {
-      type: 'CIRCULAR',
+    const refError: t.IRefErrorCircular = {
+      type: 'REF/circular',
       message: `Range contains a cell that leads back to itself (${path})`,
       path,
     };
+    error = refError;
   }
 
   // Construct reference.
@@ -237,11 +240,12 @@ async function outgoingFunc(args: {
 
   let error: t.IRefError | undefined;
   const setCircularError = (index: number, path: string) => {
-    error = {
-      type: 'CIRCULAR',
+    const refError: t.IRefErrorCircular = {
+      type: 'REF/circular',
       message: `Function parameter ${index} contains a reference that leads back to itself (${path})`,
       path,
     };
+    error = refError;
   };
 
   const wait = node.arguments.map(async (paramNode, i) => {
@@ -296,7 +300,7 @@ async function outgoingFunc(args: {
     if (!isCircular && !error && targetNode.type === 'function') {
       const res = await outgoingFunc({ node: targetNode, getValue, path });
       const err = res
-        .filter(ref => ref.error && ref.error.type === 'CIRCULAR')
+        .filter(ref => ref.error && ref.error.type === 'REF/circular')
         .map(ref => ref.error as t.IRefError)
         .find(err => util.path(err.path).includes(targetKey));
       if (err) {
@@ -352,7 +356,7 @@ async function outgoingBinaryExpression(args: {
     if (!ref) {
       return;
     }
-    if (ref.error && ref.error.type === 'CIRCULAR') {
+    if (ref.error && ref.error.type === 'REF/circular') {
       const value = await getValue(node.key);
       ref = {
         ...ref,

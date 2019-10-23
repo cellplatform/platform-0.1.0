@@ -22,20 +22,21 @@ export function init(args: {
   style$.subscribe(e => {
     const command = e.command as t.GridStyleCommand;
     const field = toField(command);
-    const values = toSelectionValues({ cells: grid.cells, selection: e.selection });
+    const values = toSelectionValues({ cells: grid.data.cells, selection: e.selection });
     const defaults = DEFAULT.CELL.PROPS.style;
 
     // Converts values to the toggled style.
     const changes = Object.keys(values).reduce((acc, key) => {
       const cell = grid.cell(key);
-      const value = cell.value;
-      const props = util.toggleCellProp<'style'>({
+      const value = cell.data.value;
+      const error = cell.data.error;
+      const props = util.cell.value.toggleCellProp<t.IGridCellPropsAll, 'style'>({
         defaults,
-        props: cell.props,
+        props: cell.data.props,
         section: 'style',
         field,
       });
-      acc[key] = { value, props };
+      acc[key] = { value, props, error };
       return acc;
     }, {});
 
@@ -48,7 +49,7 @@ export function init(args: {
  * [Helpers]
  */
 
-const toField = (command: t.GridStyleCommand): keyof t.ICellPropsStyle => {
+const toField = (command: t.GridStyleCommand): keyof t.IGridCellPropsStyle => {
   switch (command) {
     case 'BOLD':
       return 'bold';

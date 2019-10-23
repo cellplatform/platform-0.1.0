@@ -18,7 +18,7 @@ export type IFuncResponse<T = any> = {
   cell: string;
   formula: string;
   data?: T;
-  error?: IFuncError;
+  error?: t.IFuncError;
 };
 
 /**
@@ -29,14 +29,4 @@ export type IFuncUpdateResponse = {
   ok: boolean;
   list: t.IFuncResponse[];
   map: IFuncUpdateMap;
-};
-
-/**
- * Error.
- */
-export type FuncError = 'NOT_FORMULA' | 'NOT_FOUND' | 'NOT_SUPPORTED/RANGE' | 'CIRCULAR' | 'REF';
-export type IFuncError = {
-  type: FuncError;
-  message: string;
-  cell: { key: string; value: string };
 };

@@ -13,9 +13,9 @@ describe('func.calc.cell (one)', function() {
       const error = res.error as t.IFuncError;
 
       expect(res.ok).to.eql(false);
-      expect(error.cell.key).to.eql('A1');
-      expect(error.cell.value).to.eql('123');
-      expect(error.type).to.eql('NOT_FORMULA');
+      expect(error.path).to.eql('A1');
+      expect(error.formula).to.eql('123');
+      expect(error.type).to.eql('FUNC/notFormula');
       expect(error.message).to.include('cell A1 is not a formula');
     });
   });
@@ -74,10 +74,10 @@ describe('func.calc.cell (one)', function() {
       expect(res.formula).to.eql('=A1:Z9');
       expect(res.data).to.eql(undefined);
 
-      expect(error.type).to.eql('NOT_SUPPORTED/RANGE');
+      expect(error.type).to.eql('FUNC/notSupported/range');
       expect(error.message).to.include('cell A1 is a range which is not supported');
-      expect(error.cell.key).to.eql('A1');
-      expect(error.cell.value).to.eql('=A1:Z9');
+      expect(error.path).to.eql('A1');
+      expect(error.formula).to.eql('=A1:Z9');
     });
   });
 
@@ -182,9 +182,9 @@ describe('func.calc.cell (one)', function() {
       const error = res.error as t.IFuncError;
 
       expect(res.ok).to.eql(false);
-      expect(error.cell.key).to.eql('A1');
-      expect(error.cell.value).to.eql('=NO_EXIST()');
-      expect(error.type).to.eql('NOT_FOUND');
+      expect(error.path).to.eql('A1');
+      expect(error.formula).to.eql('=NO_EXIST()');
+      expect(error.type).to.eql('FUNC/notFound');
       expect(error.message).to.include('function [sys.NO_EXIST] was not found');
     });
 
@@ -204,8 +204,8 @@ describe('func.calc.cell (one)', function() {
       const test = async (cell: string, expectPath: string) => {
         const res = await calculate<number>({ cell, ...ctx });
         const error = res.error as t.IFuncError;
-        expect(error.type).to.eql('CIRCULAR');
-        expect(error.cell.key).to.eql(cell);
+        expect(error.type).to.eql('REF/circular');
+        expect(error.path).to.eql(expectPath);
         expect(error.message).to.include(`leads back to itself (${expectPath})`);
       };
 
@@ -231,8 +231,8 @@ describe('func.calc.cell (one)', function() {
       const test = async (cell: string, expectPath: string) => {
         const res = await calculate<number>({ cell, ...ctx });
         const error = res.error as t.IFuncError;
-        expect(error.cell.key).to.eql(cell);
-        expect(error.type).to.eql('CIRCULAR');
+        expect(error.path).to.eql(expectPath);
+        expect(error.type).to.eql('REF/circular');
         expect(error.message).to.include(`leads back to itself (${expectPath})`);
       };
 

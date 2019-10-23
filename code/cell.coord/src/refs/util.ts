@@ -87,16 +87,18 @@ export function hasCircularError(refs: t.IRefs, key?: string) {
 /**
  * Gets a circular error for the given key.
  */
-export function getCircularError(refs: t.IRefs, key: string) {
+export function getCircularError(refs: t.IRefs, key: string): t.IRefErrorCircular | undefined {
   const outRefs = refs.out[key];
-  return outRefs ? outRefs.map(ref => ref.error).find(error => isCircularError(error)) : undefined;
+  return outRefs
+    ? (outRefs.map(ref => ref.error).find(err => isCircularError(err)) as t.IRefErrorCircular)
+    : undefined;
 }
 
 /**
  * Determine if the given error is a circular-reference error.
  */
-export function isCircularError(error?: t.IRefError) {
-  return error && error.type === 'CIRCULAR';
+export function isCircularError(error?: t.IError) {
+  return error && error.type === 'REF/circular';
 }
 
 /**

@@ -1,45 +1,49 @@
 import { t, Observable } from '../common';
 import { KeyBindings } from '@platform/react/lib/types';
 
+export type IGridData = t.ITableData<t.IGridCellData, IGridColumnData, IGridRowData>;
+
 export type IGrid = IGridProperties & IGridMethods;
 export type IGridProperties = {
   readonly id: string;
+  readonly data: IGridData;
   readonly totalColumns: number;
   readonly totalRows: number;
   readonly isDisposed: boolean;
   readonly isReady: boolean;
   readonly isEditing: boolean;
   readonly selection: t.IGridSelection;
-  readonly selectionValues: t.IGridCells;
+  readonly selectionValues: t.IGridData['cells'];
   readonly events$: Observable<t.GridEvent>;
   readonly keyboard$: Observable<t.IGridKeydown>;
   readonly keyBindings: KeyBindings<t.GridCommand>;
   readonly defaults: IGridDefaults;
-  readonly cells: t.IGridCells<t.ICellProps>;
   readonly calc: IGridCalculate;
-  columns: IGridColumns;
-  rows: IGridRows;
   clipboard?: IGridClipboardPending;
 };
 export type IGridMethods = {
   dispose(): void;
   changeCells(
-    cells: t.IGridCells,
+    cells: t.IGridData['cells'],
     options?: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean },
   ): IGrid;
   changeColumns(
-    columns: t.IGridColumns,
+    columns: t.IGridData['columns'],
     options?: { source?: t.IGridColumnChange['source'] },
   ): IGrid;
-  changeRows(rows: t.IGridRows, options?: { source?: t.GridRowChangeType }): IGrid;
-  cell(key: t.CellRef): t.ICell;
-  scrollTo(args: { cell: t.CellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
-  select(args: { cell: t.CellRef; ranges?: t.GridCellRangeKey[]; scrollToCell?: boolean }): IGrid;
+  changeRows(rows: t.IGridData['rows'], options?: { source?: t.GridRowChangeType }): IGrid;
+  cell(key: t.GridCellRef): t.IGridCell;
+  scrollTo(args: { cell: t.GridCellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
+  select(args: {
+    cell: t.GridCellRef;
+    ranges?: t.GridCellRangeKey[];
+    scrollToCell?: boolean;
+  }): IGrid;
   deselect(): IGrid;
   focus(): IGrid;
   redraw(): IGrid;
-  mergeCells(args: { cells: t.IGridCells; init?: boolean }): IGrid;
-  toPosition(ref: t.CellRef): t.ICoord;
+  mergeCells(args: { cells: t.IGridData['cells']; init?: boolean }): IGrid;
+  toPosition(ref: t.GridCellRef): t.ICoord;
   updateHashes(options?: { force?: boolean }): IGrid;
 };
 
@@ -53,9 +57,9 @@ export type IGridDefaults = {
 };
 
 export type IGridSelection = {
-  readonly cell?: t.GridCellKey;
-  readonly ranges: t.GridCellRangeKey[];
-  readonly all?: boolean;
+  cell?: t.GridCellKey;
+  ranges: t.GridCellRangeKey[];
+  all?: boolean;
 };
 
 export type IGridClipboardPending = t.IGridClipboard<t.GridClipboardReadCommand> & {
@@ -67,19 +71,26 @@ export type IGridCalculate = {
   update(args?: { cells?: string | string[] }): Promise<IGridCalculateResponse>;
 };
 export type IGridCalculateResponse = {
-  from: IGridCells;
-  to: IGridCells;
+  from: IGridData['cells'];
+  to: IGridData['cells'];
   func: t.IFuncUpdateResponse;
   cells: string[];
 };
 
-export type IGridColumns = { [key: string]: IGridColumn };
-export type IGridRows = { [key: string]: IGridRow };
-export type IGridCells<P = {}> = { [key: string]: IGridCell<P> | undefined };
+// export type IGridColumnsData = { [key: string]: IGridColumnData };
+// export type IGridRowsData = { [key: string]: IGridRowData };
+// export type IGridCellsData<P = {}> = { [key: string]: IGridCellData<P> | undefined };
 
-export type IGridAxis = IGridColumn | IGridRow;
-export type IGridColumn = { width?: number };
-export type IGridRow = { height?: number };
+export type IGridColumnPropsAll = t.IColumnProps & { width: number };
+export type IGridColumnProps = Partial<IGridColumnPropsAll>;
+export type IGridColumnData = t.IColumnData<IGridColumnProps>;
 
-export type IGridCell<P = t.ICellProps> = { value?: t.CellValue; props?: P; hash?: string };
-export type GridGetCell<P = t.ICellProps> = (key: string) => Promise<IGridCell<P> | undefined>;
+export type IGridRowPropsAll = t.IRowProps & { height: number };
+export type IGridRowProps = Partial<IGridRowPropsAll>;
+export type IGridRowData = t.IRowData<IGridRowProps>;
+
+export type IGridCellData<P extends t.ICellProps = t.IGridCellProps> = t.ICellData<P>;
+
+export type GetGridCell<P = t.IGridCellProps> = (
+  key: string,
+) => Promise<IGridCellData<P> | undefined>;

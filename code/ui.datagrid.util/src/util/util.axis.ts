@@ -1,22 +1,19 @@
-import { t, R } from '../common';
+import { t, defaultValue } from '../common';
 
 /**
- * Determine if a row's fields has changed.
+ * Produces a uniform row properties object.
  */
-export function isRowChanged(left?: t.IGridRow, right?: t.IGridRow) {
-  return isAxisChanged(left, right);
+export function toGridRowProps(input?: t.IGridRowProps): t.IGridRowPropsAll {
+  const props: t.IGridRowProps = input || {};
+  const height = defaultValue(props.height, -1);
+  return { height };
 }
 
 /**
- * Determine if a column's fields has changed.
+ * Produces a uniform column properties object.
  */
-export function isColumnChanged(left?: t.IGridColumn, right?: t.IGridColumn) {
-  return isAxisChanged(left, right);
-}
-
-/**
- * Determine if the given row/column's fields has changed.
- */
-export function isAxisChanged<T = t.IGridAxis>(left?: T, right?: T) {
-  return !R.equals(left, right);
+export function toGridColumnProps(input?: t.IGridColumnProps): t.IGridColumnPropsAll {
+  const props: t.IGridColumnProps = input || {};
+  const width = defaultValue(props.width, -1);
+  return { width };
 }

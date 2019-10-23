@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { t } from './common';
 
 export type RefTarget = 'VALUE' | 'FUNC' | 'REF' | 'RANGE' | 'UNKNOWN';
 export type RefDirection = 'IN' | 'OUT';
@@ -23,7 +24,7 @@ export type RefsTableUpdate = {
   changed: IRefsUpdateArgs[];
   keys: string[];
   refs: IRefs;
-  errors: IRefError[];
+  errors: t.IRefError[];
 };
 
 /**
@@ -50,7 +51,7 @@ export type IRefOut = {
   target: RefTarget;
   path: string;
   param?: string;
-  error?: IRefError;
+  error?: t.IRefError;
 };
 
 /**
@@ -60,18 +61,9 @@ export type IRefsIn = { [key: string]: IRefIn[] };
 export type IRefIn = { cell: string };
 
 /**
- * Error
- */
-export type RefError = 'CIRCULAR' | 'NAME';
-export type IRefError = {
-  type: RefError;
-  message: string;
-  path: string;
-};
-
-/**
  * [Events]
  */
+
 export type RefsTableEvent =
   | IRefsTableGetKeysEvent
   | IRefsTableGetValueEvent

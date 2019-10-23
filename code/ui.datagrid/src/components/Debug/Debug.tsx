@@ -38,12 +38,12 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
   private getValue: t.RefGetValue = async key => this.getValueSync(key);
   private getValueSync = (key: string) => {
-    const cell = this.grid.cells[key];
+    const cell = this.grid.data.cells[key];
     return cell && typeof cell.value === 'string' ? cell.value : undefined;
   };
 
   private refTable = coord.refs.table({
-    getKeys: async () => Object.keys(this.grid.cells),
+    getKeys: async () => Object.keys(this.grid.data.cells),
     getValue: this.getValue,
   });
 
@@ -117,9 +117,10 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
   public async getDataGrid() {
     const grid = this.grid;
-    const { selection, rows, columns, isEditing, clipboard } = grid;
+    const { selection, isEditing, clipboard } = grid;
+    const { rows, columns } = grid.data;
 
-    const cells = R.clone(grid.cells);
+    const cells = R.clone(grid.data.cells);
     Object.keys(cells).forEach(key => {
       const hash = cells[key] ? (cells[key] as any).hash : undefined;
       if (hash) {

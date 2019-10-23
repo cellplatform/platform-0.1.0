@@ -1,21 +1,20 @@
 {
-  "name": "sample.ssr.server",
-  "version": "0.0.22",
+  "name": "sample.cell.server",
+  "version": "0.0.4",
   "scripts": {
-    "ssr": "ssr $@",
     "now": "now dev --listen 8080",
     "deploy": "now --prod",
     "start": "ts-node -T src/server",
-    "watch": "nodemon --watch ../../src -e ts,tsx --delay 2"
+    "watch": "nodemon --watch ../src --watch ../../cell.db/src -e ts,tsx --delay 2"
   },
   "dependencies": {
-    "@platform/react.ssr": "^1.1.11"
+    "@platform/cell.http": "0.0.4"
   },
   "devDependencies": {
-    "ts-node": "^8.3.0"
+    "ts-node": "8.4.1"
   },
   "engines": {
-    "node": "10.x"
+    "node": ">=10.x"
   },
   "license": "MIT",
   "private": true

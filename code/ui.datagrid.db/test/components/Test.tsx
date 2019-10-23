@@ -45,6 +45,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private cli!: t.ICommandState;
   private sync!: Sync;
 
+  public grid = datagrid.Grid.create({});
   private datagrid!: datagrid.DataGrid;
   private datagridRef = (ref: datagrid.DataGrid) => (this.datagrid = ref);
 
@@ -111,10 +112,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Properties]
    */
-  public get grid() {
-    return this.datagrid.grid;
-  }
-
   public get db() {
     return this.props.db;
   }
@@ -228,6 +225,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <datagrid.DataGrid
         ref={this.datagridRef}
+        grid={this.grid}
         events$={this.grid$}
         factory={this.factory}
         initial={{ selection: { cell: 'A1', ranges: ['A1:E30'] } }}
@@ -255,7 +253,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 /**
  * [Helpers]
  */
-function formatValue(cell: t.IGridCell) {
+function formatValue(cell: t.IGridCellData) {
   let value = cell.props && cell.props.value ? cell.props.value : cell.value;
   value = typeof value === 'string' && !value.startsWith('=') ? markdown.toHtmlSync(value) : value;
   value = typeof value === 'object' ? JSON.stringify(value) : value;

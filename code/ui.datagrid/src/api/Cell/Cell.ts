@@ -1,20 +1,19 @@
 import { coord, R, t, defaultValue, util } from '../../common';
 
-export type CellChangeField = keyof t.ICellProps | 'VALUE' | 'PROPS';
+export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';
 
 /**
  * API for accessing and manipulating a cell.
  */
-export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
+export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IGridCell<P> {
   /**
    * [Static]
    */
-  public static isEmpty = util.isEmptyCell;
-  public static isEmptyProps = util.isEmptyCellProps;
-  public static isEmptyValue = util.isEmptyCellValue;
-  public static isChanged = util.isCellChanged;
-  public static diff = util.cellDiff;
-  public static props = util.toCellProps;
+  public static isEmpty = util.cell.value.isEmptyCell;
+  public static isEmptyProps = util.cell.value.isEmptyCellProps;
+  public static isEmptyValue = util.cell.value.isEmptyCellValue;
+  public static diff = util.cell.value.cellDiff;
+  public static props = util.toGridCellProps;
 
   public static create(args: { table: Handsontable; row: number; column: number }) {
     return new Cell(args);
@@ -34,7 +33,7 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
     return coord.cell.fromKey(cellKey);
   }
 
-  public static toPosition(ref: t.CellRef) {
+  public static toPosition(ref: t.GridCellRef) {
     return typeof ref === 'string' ? Cell.fromKey(ref) : ref;
   }
 
@@ -56,7 +55,11 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
     return { start, end };
   }
 
-  public static changeEvent(args: { cell: t.ICell; from?: t.IGridCell; to?: t.IGridCell }) {
+  public static changeEvent(args: {
+    cell: t.ICoordCell;
+    from?: t.IGridCellData;
+    to?: t.IGridCellData;
+  }) {
     const { cell, from, to } = args;
     const value = { from, to };
     let isChanged: boolean | undefined;
@@ -73,7 +76,7 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
       cancel() {
         payload.isCancelled = true;
       },
-      modify(change: t.IGridCell) {
+      modify(change: t.IGridCellData) {
         value.to = change;
         payload.isModified = true;
       },
@@ -133,19 +136,32 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
     return this.td.offsetHeight;
   }
 
-  private get data() {
-    return this._.table.getDataAtCell(this.row, this.column) || {};
+  public get data(): t.ICellData<P> {
+    const data = this._.table.getDataAtCell(this.row, this.column) || {};
+    if (typeof data === 'object') {
+      const value = data.value;
+      const props = data.props || {};
+      const error = data.error;
+      return { value, props, error };
+    } else {
+      return {};
+    }
   }
 
-  public get value(): t.CellValue {
-    const data = this.data;
-    return typeof data === 'object' ? data.value : undefined;
-  }
+  // public get value(): t.CellValue {
+  //   const data = this.data;
+  //   return typeof data === 'object' ? data.value : undefined;
+  // }
 
-  public get props(): P {
-    const data = this.data;
-    return typeof data === 'object' ? data.props || {} : {};
-  }
+  // public get props(): P {
+  //   const data = this.data;
+  //   return typeof data === 'object' ? data.props || {} : {};
+  // }
+
+  // public get error(): t.IError {
+  //   const data = this.data;
+  //   return typeof data === 'object' ? data.error : {};
+  // }
 
   public get siblings() {
     const table = this._.table;
@@ -173,11 +189,11 @@ export class Cell<P extends t.ICellProps = t.ICellProps> implements t.ICell<P> {
   }
 
   public get rowspan() {
-    return defaultValue(Cell.props(this.props).merge.rowspan, 1);
+    return defaultValue(Cell.props(this.data.props).merge.rowspan, 1);
   }
 
   public get colspan() {
-    return defaultValue(Cell.props(this.props).merge.colspan, 1);
+    return defaultValue(Cell.props(this.data.props).merge.colspan, 1);
   }
 
   /**

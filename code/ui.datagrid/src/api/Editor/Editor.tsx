@@ -116,7 +116,7 @@ export class Editor extends editors.TextEditor {
     }
 
     const grid = this.grid;
-    const initial = initialValue === null ? this.cell.value : '';
+    const initial = initialValue === null ? this.cell.data.value : '';
     const context = this.createContext({ initial });
     const el = this.render(context);
     if (!el) {
@@ -191,8 +191,8 @@ export class Editor extends editors.TextEditor {
     // Update the row-height of the grid.
     if (size) {
       const key = coord.cell.toRowKey(this.row);
-      const change = {
-        [key]: { ...grid.rows[key], height: size.height },
+      const change: t.IGridData['rows'] = {
+        [key]: { ...grid.data.rows[key], props: { height: size.height } },
       };
       grid.changeRows(change, { source: 'UPDATE/cellEdited' }).redraw();
     }
@@ -330,8 +330,9 @@ export class Editor extends editors.TextEditor {
    * Renders the popup-editor within a <Provider> context.
    */
   private render(context: t.IEditorContext) {
-    const { row, column, value, props } = context.cell;
-    const cell: t.IGridCell = { value, props };
+    const { row, column } = context.cell;
+    const { value, props } = context.cell.data;
+    const cell: t.IGridCellData = { value, props };
     const el = this.refs.factory.editor({ row, column, cell });
     if (!el) {
       return null;

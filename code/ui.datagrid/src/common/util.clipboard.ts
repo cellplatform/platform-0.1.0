@@ -11,7 +11,7 @@ export function toClipboard(args: { grid: t.IGrid; action: t.GridClipboardReadCo
 
   // Process the set of selected values.
   const items = Object.keys(cells).map(key => {
-    let item = cells[key] as t.IGridCell;
+    let item = cells[key] as t.IGridCellData;
     item = typeof item !== 'object' ? { value: item } : item;
     if (typeof item.value === 'string') {
       item.value = util.removeMarkdownEncoding(item.value);
@@ -29,8 +29,9 @@ export function toClipboard(args: { grid: t.IGrid; action: t.GridClipboardReadCo
   });
 
   // Prepare payload.
-  const columns = getAxisData('COLUMN', selection, grid.columns);
-  const rows = getAxisData('ROW', selection, grid.rows);
+  const data = grid.data;
+  const columns = getAxisData('COLUMN', selection, data.columns);
+  const rows = getAxisData('ROW', selection, data.rows);
   const payload: t.IGridClipboard<t.GridClipboardReadCommand> = {
     action,
     selection,
@@ -48,7 +49,7 @@ export function toClipboard(args: { grid: t.IGrid; action: t.GridClipboardReadCo
  * [Helpers]
  */
 
-function getAxisData<T extends t.IGridRows | t.IGridColumns>(
+function getAxisData<T extends t.IGridData['rows'] | t.IGridData['columns']>(
   axis: coord.CoordAxis,
   selection: t.IGridSelection,
   data: T,

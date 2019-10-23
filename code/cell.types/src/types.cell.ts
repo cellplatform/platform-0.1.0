@@ -1,35 +1,45 @@
+import { t } from './common';
+import { Diff } from '@platform/util.diff/lib/types';
+
 /**
  * Cell
  */
-export type CoordAxis = 'COLUMN' | 'ROW';
-export type CoordCellType = 'CELL' | CoordAxis;
-export type ICoord = {
-  column: number;
-  row: number;
+export type CellValue = string | boolean | number | object | null | undefined;
+
+export type ICellProps = {
+  value?: CellValue; // The calculated display value if different from the raw cell value.
 };
-export type ICoordCell = {
-  key: string;
-  column: number;
-  row: number;
+
+export type ICellData<P extends ICellProps = ICellProps> = {
+  value?: CellValue;
+  props?: P;
+  hash?: string;
+  error?: t.IError;
+};
+
+export type ICellDiff<P extends ICellProps = ICellProps> = {
+  readonly left: ICellData<P>;
+  readonly right: ICellData<P>;
+  readonly isDifferent: boolean;
+  readonly list: Array<Diff<ICellData<P>>>;
 };
 
 /**
- * Siblings
+ * Column
  */
-export interface ICoordSiblings {
-  cell: string;
-  top?: string;
-  right?: string;
-  bottom?: string;
-  left?: string;
-  toString: () => string;
-}
-
-export type CoordEdge = 'TOP' | 'RIGHT' | 'BOTTOM' | 'LEFT';
-
-export type ICoordOffsetOptions = {
-  totalColumns?: number;
-  totalRows?: number;
-  clamp?: boolean; // Always return siblings, clipped to the edges (eg. [0,0] or [totalColumns,totalRows])
+export type IColumnProps = {};
+export type IColumnData<P extends IColumnProps = IColumnProps> = {
+  props?: P;
+  hash?: string;
+  error?: t.IError;
 };
-export type ICoordSiblingOptions = ICoordOffsetOptions & { offset?: number };
+
+/**
+ * Row
+ */
+export type IRowProps = {};
+export type IRowData<P extends IRowProps = IRowProps> = {
+  props?: P;
+  hash?: string;
+  error?: t.IError;
+};

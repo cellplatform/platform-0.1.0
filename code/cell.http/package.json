@@ -1,0 +1,36 @@
+{
+  "name": "@platform/cell.http",
+  "version": "0.0.4",
+  "description": "HTTP cloud server for CellOS.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "cd src.sample && yarn start $@",
+    "watch": "cd src.sample && yarn watch $@",
+    "now": "cd src.sample && yarn now $@",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare",
+    "deploy": "cd src.sample && yarn deploy"
+  },
+  "dependencies": {
+    "@platform/cell.db": "0.0.4",
+    "@platform/cell.types": "0.0.11",
+    "@platform/libs": "0.1.3",
+    "@platform/micro": "0.5.5"
+  },
+  "devDependencies": {
+    "@platform/fsdb.nedb": "1.3.23",
+    "@platform/test": "0.0.64",
+    "@platform/ts": "3.5.6"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}

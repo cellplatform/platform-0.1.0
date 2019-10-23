@@ -1,5 +1,5 @@
 import { R, t } from '../common';
-import { isEmptyCell } from './util.cell';
+import { cell } from './util.cell';
 
 /**
  * Determine if the given value is default.
@@ -17,7 +17,7 @@ export function isDefaultGridValue(args: {
     case 'ROW':
       return !value || R.equals(value, { height: defaults.rowHeight });
     case 'CELL':
-      return isEmptyCell(value);
+      return cell.value.isEmptyCell(value);
     default:
       throw new Error(`Kind '${kind}' not supported.`);
   }

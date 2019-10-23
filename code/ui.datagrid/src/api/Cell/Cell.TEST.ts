@@ -14,7 +14,7 @@ describe('Cell', () => {
     });
 
     it('isEmpty', () => {
-      const test = (input: t.IGridCell | undefined, expected: boolean) => {
+      const test = (input: t.IGridCellData | undefined, expected: boolean) => {
         expect(Cell.isEmpty(input)).to.eql(expected);
       };
       test(undefined, true);
@@ -56,7 +56,7 @@ describe('Cell', () => {
       const grid = createGrid();
       const cell = grid.cell('A1');
       expect(cell.key).to.eql('A1');
-      expect(cell.value).to.eql(undefined);
+      expect(cell.data.value).to.eql(undefined);
     });
   });
 
@@ -64,7 +64,7 @@ describe('Cell', () => {
     it('has default props (empty {})', () => {
       const grid = createGrid();
       const cell = grid.cell('A1');
-      expect(cell.props).to.eql({});
+      expect(cell.data.props).to.eql({});
     });
 
     it('Cell.props (default values)', () => {
@@ -81,10 +81,10 @@ describe('Cell', () => {
       const A1 = grid.cell('A1');
       const A2 = grid.cell('A2');
 
-      const res1 = Cell.props(A1.props); // NB: Default values (no actual data in grid).
-      const res2 = Cell.props(A2.props);
+      const res1 = Cell.props(A1.data.props); // NB: Default values (no actual data in grid).
+      const res2 = Cell.props(A2.data.props);
 
-      expect(A1.props).to.eql({});
+      expect(A1.data.props).to.eql({});
       expect(res1.style).to.eql({});
       expect(res1.merge).to.eql({});
       expect(res1.view).to.eql({});
@@ -98,7 +98,7 @@ describe('Cell', () => {
 
   describe('diff', () => {
     it('no difference', () => {
-      const cell: t.IGridCell = { value: 1, props: { style: { bold: true } } };
+      const cell: t.IGridCellData = { value: 1, props: { style: { bold: true } } };
       const res = Cell.diff(cell, cell);
       expect(res.left).to.eql(cell);
       expect(res.right).to.eql(cell);
@@ -107,8 +107,8 @@ describe('Cell', () => {
     });
 
     it('is different', () => {
-      const left: t.IGridCell = { value: 1, props: { style: { bold: true } } };
-      const right: t.IGridCell = { value: 2, props: { style: { bold: false } } };
+      const left: t.IGridCellData = { value: 1, props: { style: { bold: true } } };
+      const right: t.IGridCellData = { value: 2, props: { style: { bold: false } } };
       const res = Cell.diff(left, right);
 
       expect(res.isDifferent).to.eql(true);
@@ -133,9 +133,10 @@ describe('Cell', () => {
         B2: { value: 'B2', props: { merge: { colspan: 3, rowspan: 5 } } },
       };
       const grid = createGrid().changeCells(values1);
-      expect((grid.cells as any).A1.props.merge.colspan).to.eql(2);
-      expect((grid.cells as any).B2.props.merge.colspan).to.eql(3);
-      expect((grid.cells as any).B2.props.merge.rowspan).to.eql(5);
+      const cells = grid.data.cells as any;
+      expect(cells.A1.props.merge.colspan).to.eql(2);
+      expect(cells.B2.props.merge.colspan).to.eql(3);
+      expect(cells.B2.props.merge.rowspan).to.eql(5);
     });
   });
 });

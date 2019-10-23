@@ -51,16 +51,14 @@ const KEY_BINDINGS: t.KeyBindings<t.GridCommand> = [
 ];
 
 type CellPropDefaults = {
-  style: t.ICellPropsStyleAll;
+  style: t.IGridCellPropsStyleAll;
   merge: t.ICellPropsMergeAll;
   view: t.ICellPropsViewAll;
-  status: t.ICellPropsStatusAll;
 };
 const CELL_PROPS: CellPropDefaults = {
   style: { bold: false, italic: false, underline: false },
   merge: { rowspan: 1, colspan: 1 },
   view: { type: 'DEFAULT', className: CSS.CLASS.CELL.DEFAULT },
-  status: {},
 };
 
 export const DEFAULT = {

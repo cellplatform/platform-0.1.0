@@ -22,19 +22,24 @@ const { CELL, GRID } = CLASS;
 export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
   const CACHE: any = {};
 
-  function toHtml(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCell }) {
+  function toHtml(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCellData }) {
     const el = toElement(args);
     return ReactDOMServer.renderToString(el);
   }
 
-  function toElement(args: { td: HTMLElement; row: number; column: number; cell?: t.IGridCell }) {
+  function toElement(args: {
+    td: HTMLElement;
+    row: number;
+    column: number;
+    cell?: t.IGridCellData;
+  }) {
     const { row, column, cell } = args;
     const child: any = factory.cell({ row, column, cell });
     const isHtml = typeof child === 'string' && child.startsWith('<');
 
-    const props: t.ICellProps = cell ? cell.props || {} : {};
-    const style: t.ICellPropsStyle = props.style || {};
-    const view: t.ICellPropsView = props.view || constants.DEFAULT.CELL.PROPS.view;
+    const props: t.IGridCellProps = cell ? cell.props || {} : {};
+    const style: t.IGridCellPropsStyle = props.style || {};
+    const view: t.IGridCellPropsView = props.view || constants.DEFAULT.CELL.PROPS.view;
 
     let className = CELL.BASE;
     const add = (isRequired: boolean | undefined, value?: string) =>
@@ -48,7 +53,7 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     add(style.underline, CELL.UNDERLINE);
     add(func.isFormula(cell && cell.value), CELL.FORMULA);
     add(Boolean(view.className), view.className);
-    add(Boolean(props.status && props.status.error), CELL.ERROR);
+    add(Boolean(cell && cell.error), CELL.ERROR);
 
     if (isHtml) {
       return <div className={className} dangerouslySetInnerHTML={{ __html: child }} />;
@@ -61,10 +66,12 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
     td: HTMLElement;
     row: number;
     column: number;
-    cell?: t.IGridCell;
+    cell?: t.IGridCellData;
   }) {
     const { row, column, cell } = args;
-    const hash = cell ? cell.hash || util.cellHash(coord.cell.toKey(column, row), cell) : '-';
+    const hash = cell
+      ? cell.hash || util.cell.value.cellHash(coord.cell.toKey(column, row), cell)
+      : '-';
     const key = `${row}:${column}/${hash}`;
     if (CACHE[key]) {
       return CACHE[key];
