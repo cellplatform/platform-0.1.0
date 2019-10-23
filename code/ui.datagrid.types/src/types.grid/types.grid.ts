@@ -6,6 +6,7 @@ export type IGridData = t.ITableData<t.IGridCellData, IGridColumnData, IGridRowD
 export type IGrid = IGridProperties & IGridMethods;
 export type IGridProperties = {
   readonly id: string;
+  readonly data: IGridData;
   readonly totalColumns: number;
   readonly totalRows: number;
   readonly isDisposed: boolean;
@@ -18,7 +19,6 @@ export type IGridProperties = {
   readonly keyBindings: KeyBindings<t.GridCommand>;
   readonly defaults: IGridDefaults;
   readonly calc: IGridCalculate;
-  readonly data: IGridData;
   clipboard?: IGridClipboardPending;
 };
 export type IGridMethods = {
