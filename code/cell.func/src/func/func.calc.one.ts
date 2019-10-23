@@ -6,7 +6,7 @@ const CellRange = coord.range.CellRange;
 /**
  * Calculate.
  */
-export async function calculate<D = any>(args: {
+export async function one<D = any>(args: {
   cell: string;
   refs: t.IRefs;
   getValue: t.RefGetValue;
@@ -243,7 +243,7 @@ const getRangeValues = async (args: {
   const wait = range.keys.map(async cell => {
     const value = await getValue(cell);
     return util.isFormula(value)
-      ? (await calculate({ cell, refs, getValue, getFunc })).data // <== RECURSION 🌳
+      ? (await one({ cell, refs, getValue, getFunc })).data // <== RECURSION 🌳
       : value;
   });
   return (await Promise.all(wait)) as any[];

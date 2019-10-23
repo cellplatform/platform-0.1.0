@@ -1,5 +1,5 @@
 import { expect, testContext, t } from './TEST';
-import { calculate } from './func.calc.cell';
+import { one } from './func.calc.one';
 
 describe('func.calc.cell (one)', function() {
   this.timeout(5000);
@@ -9,7 +9,7 @@ describe('func.calc.cell (one)', function() {
       const ctx = await testContext({
         A1: { value: '123' },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       const error = res.error as t.IFuncError;
 
       expect(res.ok).to.eql(false);
@@ -26,7 +26,7 @@ describe('func.calc.cell (one)', function() {
         A1: { value: '=A2' },
         A2: { value: 123 },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
 
       expect(res.ok).to.eql(true);
       expect(res.type).to.eql('REF');
@@ -42,7 +42,7 @@ describe('func.calc.cell (one)', function() {
           A1: { value: A1 },
           A2: { value: 123 },
         });
-        const res = await calculate({ cell: 'A1', ...ctx });
+        const res = await one({ cell: 'A1', ...ctx });
         expect(res.data).to.eql(123);
       };
 
@@ -56,7 +56,7 @@ describe('func.calc.cell (one)', function() {
       const ctx = await testContext({
         A1: { value: '=A2' },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       expect(res.data).to.eql('');
     });
 
@@ -65,7 +65,7 @@ describe('func.calc.cell (one)', function() {
         A1: { value: '=A1:Z9' },
         A2: { value: 123 },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       const error = res.error as t.IFuncError;
 
       expect(res.ok).to.eql(false);
@@ -86,7 +86,7 @@ describe('func.calc.cell (one)', function() {
       const ctx = await testContext({
         A1: { value: '=SUM(1,2,3)' },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       expect(res.ok).to.eql(true);
       expect(res.cell).to.eql('A1');
       expect(res.type).to.eql('FUNC');
@@ -99,7 +99,7 @@ describe('func.calc.cell (one)', function() {
       const ctx = await testContext({
         A1: { value: '=SUM()' },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       expect(res.data).to.eql(0);
     });
 
@@ -110,7 +110,7 @@ describe('func.calc.cell (one)', function() {
         A3: { value: '=A4' },
         A4: { value: 10 },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       expect(res.ok).to.eql(true);
       expect(res.data).to.eql(16);
     });
@@ -127,7 +127,7 @@ describe('func.calc.cell (one)', function() {
       });
 
       const test = async (cell: string, expected: number) => {
-        const res = await calculate<number>({ cell, ...ctx });
+        const res = await one<number>({ cell, ...ctx });
         expect(res.data).to.eql(expected);
       };
 
@@ -145,7 +145,7 @@ describe('func.calc.cell (one)', function() {
         A2: { value: '=SUM(4,5,A3)' },
         A3: { value: 5 },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       expect(res.data).to.eql(15);
     });
 
@@ -157,7 +157,7 @@ describe('func.calc.cell (one)', function() {
         B3: { value: 3 },
         B5: { value: 5 },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       expect(res.data).to.eql(10);
     });
 
@@ -168,7 +168,7 @@ describe('func.calc.cell (one)', function() {
         B2: { value: '=1+B3' },
         B3: { value: '=SUM(1,2)' },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       expect(res.data).to.eql(8);
     });
   });
@@ -178,7 +178,7 @@ describe('func.calc.cell (one)', function() {
       const ctx = await testContext({
         A1: { value: '=NO_EXIST()' },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       const error = res.error as t.IFuncError;
 
       expect(res.ok).to.eql(false);
@@ -202,7 +202,7 @@ describe('func.calc.cell (one)', function() {
       });
 
       const test = async (cell: string, expectPath: string) => {
-        const res = await calculate<number>({ cell, ...ctx });
+        const res = await one<number>({ cell, ...ctx });
         const error = res.error as t.IFuncError;
         expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql(expectPath);
@@ -229,7 +229,7 @@ describe('func.calc.cell (one)', function() {
       });
 
       const test = async (cell: string, expectPath: string) => {
-        const res = await calculate<number>({ cell, ...ctx });
+        const res = await one<number>({ cell, ...ctx });
         const error = res.error as t.IFuncError;
         expect(error.path).to.eql(expectPath);
         expect(error.type).to.eql('REF/circular');
@@ -248,7 +248,7 @@ describe('func.calc.cell (one)', function() {
         A1: { value: '=1+2+3' },
       });
 
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
 
       expect(res.ok).to.eql(true);
       expect(res.type).to.eql('FUNC');
@@ -265,7 +265,7 @@ describe('func.calc.cell (one)', function() {
         A3: { value: '=A4' },
         A4: { value: 10 },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       expect(res.ok).to.eql(true);
       expect(res.data).to.eql(16);
     });
@@ -279,7 +279,7 @@ describe('func.calc.cell (one)', function() {
       });
 
       const test = async (cell: string, expected: number) => {
-        const res = await calculate<number>({ cell, ...ctx });
+        const res = await one<number>({ cell, ...ctx });
         expect(res.data).to.eql(expected);
       };
 
@@ -296,7 +296,7 @@ describe('func.calc.cell (one)', function() {
         B3: { value: 3 },
         B5: { value: 5 },
       });
-      const res = await calculate<number>({ cell: 'A1', ...ctx });
+      const res = await one<number>({ cell: 'A1', ...ctx });
       expect(res.data).to.eql(10);
     });
   });
