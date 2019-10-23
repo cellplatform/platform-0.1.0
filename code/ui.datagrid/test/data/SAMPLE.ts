@@ -1,6 +1,6 @@
 import { t } from '../common';
 
-const CELLS: t.IGridCellsData = {
+const CELLS: t.IGridData['cells'] = {
   A1: { value: '=A5' },
   A2: { value: '123', props: { style: { bold: true } } },
   // A2: {value:'* one\n * two'},
@@ -24,11 +24,11 @@ const CELLS: t.IGridCellsData = {
   C5: { value: 'Hello', props: { merge: { rowspan: 2 } } },
 };
 
-const COLUMNS: t.IGridColumnsData = {
+const COLUMNS: t.IGridData['columns'] = {
   A: { props: { width: 250 } },
 };
 
-const ROWS: t.IGridRowsData = {
+const ROWS: t.IGridData['rows'] = {
   A: { props: {} },
 };
 

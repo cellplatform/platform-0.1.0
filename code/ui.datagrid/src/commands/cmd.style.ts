@@ -22,7 +22,7 @@ export function init(args: {
   style$.subscribe(e => {
     const command = e.command as t.GridStyleCommand;
     const field = toField(command);
-    const values = toSelectionValues({ cells: grid.cells, selection: e.selection });
+    const values = toSelectionValues({ cells: grid.data.cells, selection: e.selection });
     const defaults = DEFAULT.CELL.PROPS.style;
 
     // Converts values to the toggled style.

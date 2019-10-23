@@ -30,13 +30,13 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   });
 
   private getValueSync = (key: string) => {
-    const cell = this.grid.cells[key];
+    const cell = this.grid.data.cells[key];
     return cell && typeof cell.value === 'string' ? cell.value : undefined;
   };
   private getValue: t.RefGetValue = async key => this.getValueSync(key);
 
   private refTable = coord.refs.table({
-    getKeys: async () => Object.keys(this.grid.cells),
+    getKeys: async () => Object.keys(this.grid.data.cells),
     getValue: this.getValue,
   });
 
@@ -207,7 +207,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     return (
       <div {...styles.base}>
         {this.button('calc (all)', async () => {
-          const cells = Object.keys(this.grid.cells);
+          const cells = Object.keys(this.grid.data.cells);
           this.grid.calc.update({ cells });
         })}
         <Hr margin={5} />
@@ -220,7 +220,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         <Hr margin={5} />
         {this.button('changeCells', () => this.grid.changeCells({ A1: { value: 'hello' } }))}
         {this.button('changeCells (props)', () =>
-          this.grid.changeCells({ A1: { value: 'hello', props: { bold: true } } }),
+          this.grid.changeCells({ A1: { value: 'hello', props: { style: { bold: true } } } }),
         )}
         {this.button('mergeCells (A5)', () => {
           this.grid.changeCells({

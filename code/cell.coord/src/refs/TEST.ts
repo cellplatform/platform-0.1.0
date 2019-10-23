@@ -1,6 +1,3 @@
-import { refs } from '.';
-import * as util from './util';
-
 import { expect } from 'chai';
 import { t } from '../common';
 
@@ -8,7 +5,7 @@ import { t } from '../common';
  * Shared test helpers.
  */
 export { expect, t };
-export type TestTable = t.ICoordTable<{ value: any }>;
+export type TestTable = t.ITableMap<{ value: any }>;
 export const testContext = (cells: TestTable) => {
   const getValue: t.RefGetValue = async (key: string) => {
     const cell = cells[key];

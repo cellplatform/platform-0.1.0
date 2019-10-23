@@ -191,8 +191,8 @@ export class Editor extends editors.TextEditor {
     // Update the row-height of the grid.
     if (size) {
       const key = coord.cell.toRowKey(this.row);
-      const change = {
-        [key]: { ...grid.rows[key], height: size.height },
+      const change: t.IGridData['rows'] = {
+        [key]: { ...grid.data.rows[key], props: { height: size.height } },
       };
       grid.changeRows(change, { source: 'UPDATE/cellEdited' }).redraw();
     }

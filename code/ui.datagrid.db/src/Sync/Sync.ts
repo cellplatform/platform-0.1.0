@@ -298,7 +298,7 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.grid.toColumnKey(e.key);
-          const column = grid.columns[key];
+          const column = grid.data.columns[key];
           const isChanged = util.cell.value.isColumnChanged(column, e.value as t.IGridColumnData);
           if (isChanged) {
             changeGrid$.next({ type: 'COLUMN', key, value: e.value });
@@ -364,7 +364,7 @@ export class Sync implements t.IDisposable {
         )
         .subscribe(async e => {
           const key = this.schema.grid.toRowKey(e.key);
-          const row = grid.rows[key];
+          const row = grid.data.rows[key];
           const isChanged = util.cell.value.isRowChanged(row, e.value as t.IGridRowData);
           if (isChanged) {
             changeGrid$.next({ type: 'ROW', key, value: e.value });
@@ -421,7 +421,7 @@ export class Sync implements t.IDisposable {
       return acc;
     }, {});
 
-    this.grid.columns = values;
+    this.grid.data.columns = values;
     this.is.loading.remove('COLUMNS');
   }
 
@@ -444,7 +444,7 @@ export class Sync implements t.IDisposable {
       return acc;
     }, {});
 
-    this.grid.rows = values;
+    this.grid.data.rows = values;
     this.is.loading.remove('ROWS');
   }
 

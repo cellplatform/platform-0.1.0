@@ -21,9 +21,9 @@ export type IGridArgs = {
   table?: Handsontable;
   totalColumns?: number;
   totalRows?: number;
-  cells?: t.IGridCellsData;
-  columns?: t.IGridColumnsData;
-  rows?: t.IGridRowsData;
+  cells?: t.IGridData['cells'];
+  columns?: t.IGridData['columns'];
+  rows?: t.IGridData['rows'];
   defaults?: Partial<t.IGridDefaults>;
   keyBindings?: t.KeyBindings<t.GridCommand>;
   getFunc?: t.GetFunc;
@@ -60,13 +60,13 @@ export class Grid implements t.IGrid {
    * Converts the values.
    */
   public static toDataArray(args: {
-    values: t.IGridCellsData;
+    cells: t.IGridData['cells'];
     totalColumns: number;
     totalRows: number;
   }) {
     return Array.from({ length: args.totalRows }).map((v, row) =>
       Array.from({ length: args.totalColumns }).map((v, column) => {
-        return args.values[Cell.toKey({ row, column })];
+        return args.cells[Cell.toKey({ row, column })];
       }),
     );
   }
@@ -241,9 +241,9 @@ export class Grid implements t.IGrid {
     redraw$: new Subject(),
     isReady: false,
     isEditing: false,
-    cells: ({} as unknown) as t.IGrid['cells'],
-    columns: ({} as unknown) as t.IGridColumnsData,
-    rows: ({} as unknown) as t.IGridRowsData,
+    cells: ({} as unknown) as t.IGridData['cells'],
+    columns: ({} as unknown) as t.IGridData['columns'],
+    rows: ({} as unknown) as t.IGridData['rows'],
     lastSelection: (undefined as unknown) as t.IGridSelection,
     calc: (undefined as unknown) as t.IGridCalculate,
   };
@@ -276,22 +276,6 @@ export class Grid implements t.IGrid {
     return this._.totalRows;
   }
 
-  public get columns() {
-    return this._.columns;
-  }
-  public set columns(value: t.IGridColumnsData) {
-    this._.columns = {}; // Reset.
-    this.changeColumns(value, { source: 'RESET' });
-  }
-
-  public get rows() {
-    return this._.rows;
-  }
-  public set rows(value: t.IGridRowsData) {
-    this._.rows = {}; // Reset.
-    this.changeRows(value, { source: 'RESET' });
-  }
-
   public get defaults() {
     return this._.defaults;
   }
@@ -316,15 +300,27 @@ export class Grid implements t.IGrid {
     return this._.isEditing;
   }
 
-  public get cells() {
-    return this._.cells;
+  public get data() {
+    const cells = this._.cells;
+    const columns = this._.columns;
+    const rows = this._.rows;
+    return { cells, columns, rows };
   }
-  private setValues(values: t.IGridCellsData) {
-    values = { ...values };
+
+  public get columns() {
+    return this._.columns;
+  }
+
+  public get rows() {
+    return this._.rows;
+  }
+
+  private setCells(cells: t.IGridData['cells']) {
+    cells = { ...cells };
     const totalColumns = this.totalColumns;
     const totalRows = this.totalRows;
-    const data = Grid.toDataArray({ values, totalColumns, totalRows });
-    this._.cells = values;
+    const data = Grid.toDataArray({ cells, totalColumns, totalRows });
+    this._.cells = cells;
     this._.table.loadData(data);
   }
 
@@ -396,10 +392,10 @@ export class Grid implements t.IGrid {
   /**
    * Retrieves the currently selected key/value pairs.
    */
-  public get selectionValues(): t.IGridCellsData {
-    const values = this.cells;
+  public get selectionValues(): t.IGridData['cells'] {
+    const cells = this.data.cells;
     const selection = this.selection;
-    return toSelectionValues({ cells: values, selection });
+    return toSelectionValues({ cells, selection });
   }
 
   /**
@@ -491,7 +487,7 @@ export class Grid implements t.IGrid {
    * Merge cells.
    * https://handsontable.com/docs/6.1.1/demo-merged-cells.html
    */
-  public mergeCells(args: { cells: t.IGridCellsData; init?: boolean }) {
+  public mergeCells(args: { cells: t.IGridData['cells']; init?: boolean }) {
     type MergeCell = { row: number; col: number; rowspan: number; colspan: number };
     type MergeCells = { [key: string]: MergeCell };
 
@@ -536,7 +532,7 @@ export class Grid implements t.IGrid {
    * Updates cell values.
    */
   public changeCells(
-    cells: t.IGridCellsData,
+    cells: t.IGridData['cells'],
     options: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean } = {},
   ) {
     const done = () => this;
@@ -556,13 +552,13 @@ export class Grid implements t.IGrid {
 
     // NB: If initializing, and no initial values, ensure the grid is loaded.
     if (options.init && cells && Object.keys(cells).length === 0) {
-      this.setValues({});
+      this.setCells({});
       return done();
     }
 
     if (cells) {
       // Process input object.
-      const current = { ...(options.init ? {} : this.cells) };
+      const current = { ...(options.init ? {} : this.data.cells) };
       cells = { ...cells };
 
       // Ensure only cells (eg "A1") not rows/columns (eg "B" or "3").
@@ -619,7 +615,7 @@ export class Grid implements t.IGrid {
       }
 
       // Calculate the new updated value set.
-      const mergeChanges: t.IGridCellsData = {};
+      const mergeChanges: t.IGridData['cells'] = {};
       const updates = {
         ...current,
         ...Object.keys(formatted).reduce((acc, key) => {
@@ -652,7 +648,7 @@ export class Grid implements t.IGrid {
       }
 
       // Update the UI.
-      this.setValues(updates);
+      this.setCells(updates);
     }
 
     // Finish up.
@@ -663,7 +659,7 @@ export class Grid implements t.IGrid {
    * Updates columns.
    */
   public changeColumns(
-    columns: t.IGridColumnsData,
+    columns: t.IGridData['columns'],
     options: { source?: t.GridColumnChangeType } = {},
   ) {
     const { source = 'UPDATE' } = options;
@@ -694,7 +690,7 @@ export class Grid implements t.IGrid {
   /**
    *  Updates rows.
    */
-  public changeRows(rows: t.IGridRowsData, options: { source?: t.GridColumnChangeType } = {}) {
+  public changeRows(rows: t.IGridData['rows'], options: { source?: t.GridColumnChangeType } = {}) {
     const { source = 'UPDATE' } = options;
     const from = { ...this._.rows };
     const to = { ...from };
@@ -831,21 +827,21 @@ export class Grid implements t.IGrid {
    * Updates the cell hash for each value.
    */
   public updateHashes(options: { force?: boolean } = {}) {
-    const values = { ...this.cells };
+    const cells = { ...this.data.cells };
     let isChanged = false;
-    Object.keys(values).forEach(key => {
-      const value = values[key];
+    Object.keys(cells).forEach(key => {
+      const value = cells[key];
       if (value) {
         let hash = value.hash;
         if (!hash || options.force) {
           hash = util.cell.value.cellHash(key, value);
-          values[key] = { ...value, hash };
+          cells[key] = { ...value, hash };
           isChanged = true;
         }
       }
     });
     if (isChanged) {
-      this.setValues(values);
+      this.setCells(cells);
     }
     return this;
   }

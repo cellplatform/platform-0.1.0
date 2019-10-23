@@ -1,37 +1,37 @@
 import { t, Observable } from '../common';
 import { KeyBindings } from '@platform/react/lib/types';
 
+export type IGridData = t.ITableData<t.IGridCellData, IGridColumnData, IGridRowData>;
+
 export type IGrid = IGridProperties & IGridMethods;
 export type IGridProperties = {
-  id: string;
-  totalColumns: number;
-  totalRows: number;
-  isDisposed: boolean;
-  isReady: boolean;
-  isEditing: boolean;
-  selection: t.IGridSelection;
-  selectionValues: t.IGridCellsData;
-  events$: Observable<t.GridEvent>;
-  keyboard$: Observable<t.IGridKeydown>;
-  keyBindings: KeyBindings<t.GridCommand>;
-  defaults: IGridDefaults;
-  calc: IGridCalculate;
-  cells: t.IGridCellsData<t.IGridCellProps>;
-  columns: IGridColumnsData;
-  rows: IGridRowsData;
+  readonly id: string;
+  readonly totalColumns: number;
+  readonly totalRows: number;
+  readonly isDisposed: boolean;
+  readonly isReady: boolean;
+  readonly isEditing: boolean;
+  readonly selection: t.IGridSelection;
+  readonly selectionValues: t.IGridData['cells'];
+  readonly events$: Observable<t.GridEvent>;
+  readonly keyboard$: Observable<t.IGridKeydown>;
+  readonly keyBindings: KeyBindings<t.GridCommand>;
+  readonly defaults: IGridDefaults;
+  readonly calc: IGridCalculate;
+  readonly data: IGridData;
   clipboard?: IGridClipboardPending;
 };
 export type IGridMethods = {
   dispose(): void;
   changeCells(
-    cells: t.IGridCellsData,
+    cells: t.IGridData['cells'],
     options?: { source?: t.GridCellChangeType; silent?: boolean; init?: boolean },
   ): IGrid;
   changeColumns(
-    columns: t.IGridColumnsData,
+    columns: t.IGridData['columns'],
     options?: { source?: t.IGridColumnChange['source'] },
   ): IGrid;
-  changeRows(rows: t.IGridRowsData, options?: { source?: t.GridRowChangeType }): IGrid;
+  changeRows(rows: t.IGridData['rows'], options?: { source?: t.GridRowChangeType }): IGrid;
   cell(key: t.GridCellRef): t.IGridCell;
   scrollTo(args: { cell: t.GridCellRef; snapToBottom?: boolean; snapToRight?: boolean }): IGrid;
   select(args: {
@@ -42,7 +42,7 @@ export type IGridMethods = {
   deselect(): IGrid;
   focus(): IGrid;
   redraw(): IGrid;
-  mergeCells(args: { cells: t.IGridCellsData; init?: boolean }): IGrid;
+  mergeCells(args: { cells: t.IGridData['cells']; init?: boolean }): IGrid;
   toPosition(ref: t.GridCellRef): t.ICoord;
   updateHashes(options?: { force?: boolean }): IGrid;
 };
@@ -71,15 +71,15 @@ export type IGridCalculate = {
   update(args?: { cells?: string | string[] }): Promise<IGridCalculateResponse>;
 };
 export type IGridCalculateResponse = {
-  from: IGridCellsData;
-  to: IGridCellsData;
+  from: IGridData['cells'];
+  to: IGridData['cells'];
   func: t.IFuncUpdateResponse;
   cells: string[];
 };
 
-export type IGridColumnsData = { [key: string]: IGridColumnData };
-export type IGridRowsData = { [key: string]: IGridRowData };
-export type IGridCellsData<P = {}> = { [key: string]: IGridCellData<P> | undefined };
+// export type IGridColumnsData = { [key: string]: IGridColumnData };
+// export type IGridRowsData = { [key: string]: IGridRowData };
+// export type IGridCellsData<P = {}> = { [key: string]: IGridCellData<P> | undefined };
 
 export type IGridColumnPropsAll = t.IColumnProps & { width: number };
 export type IGridColumnProps = Partial<IGridColumnPropsAll>;

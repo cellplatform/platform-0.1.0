@@ -134,7 +134,7 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
   grid.changeCells(changedCells, { source: 'CLIPBOARD/paste' });
 
   // Update row/column data.
-  const shiftedAxisData = <T extends t.IGridRowsData | t.IGridColumnsData>(
+  const shiftedAxisData = <T extends t.IGridData['rows'] | t.IGridData['columns']>(
     axis: coord.CoordAxis,
     data: T,
   ): T => {
@@ -191,7 +191,7 @@ async function write(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
 function shiftCells(args: {
   sourceCell: string;
   targetCell: string;
-  data: t.IGridCellsData;
+  data: t.IGridData['cells'];
 }): ClipboardItem[] {
   const pos = {
     start: coord.cell.fromKey(args.sourceCell),
@@ -210,7 +210,7 @@ function shiftCells(args: {
   });
 }
 
-function shiftAxisData<T extends t.IGridRowsData | t.IGridColumnsData>(args: {
+function shiftAxisData<T extends t.IGridData['rows'] | t.IGridData['columns']>(args: {
   axis: coord.CoordAxis;
   source: coord.range.CellRange;
   target: coord.range.CellRange;

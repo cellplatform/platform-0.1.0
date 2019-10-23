@@ -133,9 +133,10 @@ describe('Cell', () => {
         B2: { value: 'B2', props: { merge: { colspan: 3, rowspan: 5 } } },
       };
       const grid = createGrid().changeCells(values1);
-      expect((grid.cells as any).A1.props.merge.colspan).to.eql(2);
-      expect((grid.cells as any).B2.props.merge.colspan).to.eql(3);
-      expect((grid.cells as any).B2.props.merge.rowspan).to.eql(5);
+      const cells = grid.data.cells as any;
+      expect(cells.A1.props.merge.colspan).to.eql(2);
+      expect(cells.B2.props.merge.colspan).to.eql(3);
+      expect(cells.B2.props.merge.rowspan).to.eql(5);
     });
   });
 });

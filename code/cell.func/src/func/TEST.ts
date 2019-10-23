@@ -7,7 +7,7 @@ const refs = coord.refs;
  * Shared test helpers.
  */
 export { expect, t };
-export type TestTable = t.ICoordTable<{ value: any }>;
+export type TestTable = t.ITableMap<{ value: any }>;
 export const testContext = async (cells: TestTable) => {
   const getValue: t.RefGetValue = async (key: string) => {
     const cell = cells[key];

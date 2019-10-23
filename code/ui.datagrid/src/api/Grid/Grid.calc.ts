@@ -9,12 +9,12 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
   const { grid } = args;
   const getFunc = args.getFunc || defaultGetFunc;
 
-  const getKeys: t.RefGetKeys = async () => Object.keys(grid.cells);
+  const getKeys: t.RefGetKeys = async () => Object.keys(grid.data.cells);
 
-  const getCell: t.GetGridCell = async (key: string) => grid.cells[key];
+  const getCell: t.GetGridCell = async (key: string) => grid.data.cells[key];
 
   const getValue: t.RefGetValue = async key => {
-    const cell = grid.cells[key];
+    const cell = grid.data.cells[key];
     const value = cell ? cell.value : undefined;
     return typeof value === 'function' ? value() : value;
   };
@@ -37,8 +37,8 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
     const res = await calculate.many({ refs: afterRefs, cells });
 
     // Prepare grid update set.
-    const from: t.IGridCellsData = {};
-    const to: t.IGridCellsData = {};
+    const from: t.IGridData['cells'] = {};
+    const to: t.IGridData['cells'] = {};
 
     const addChange = async (key: string, value: any, error: t.IFuncError | undefined) => {
       const cell = await getCell(key);
