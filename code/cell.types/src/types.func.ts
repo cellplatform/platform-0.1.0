@@ -29,7 +29,7 @@ export type IFuncResponse<T = any> = {
 export type IFuncResponseMap = { [key: string]: t.IFuncResponse };
 export type IFuncManyResponse = {
   ok: boolean;
-  eid: string; //     "execution" identifier.
+  eid: string; // "execution" identifier.
   elapsed: number; // msecs.
   list: t.IFuncResponse[];
   map: IFuncResponseMap;
@@ -52,3 +52,24 @@ export type IFuncTableResponse = {
   from: t.ICellTable;
   to: t.ICellTable;
 };
+
+/**
+ * [Events]
+ */
+export type FuncEvent = IFuncBeginEvent | IFuncEndEvent;
+
+export type IFuncBeginEvent = {
+  type: 'FUNC/begin';
+  payload: IFuncBegin;
+};
+export type IFuncBegin = {
+  eid: string; // "execution" identifier.
+  cell: string;
+  formula: string;
+};
+
+export type IFuncEndEvent = {
+  type: 'FUNC/end';
+  payload: IFuncEnd;
+};
+export type IFuncEnd = IFuncResponse;

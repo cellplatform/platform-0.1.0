@@ -45,7 +45,7 @@ describe('func.table', () => {
       expect(res.from).to.eql({ A2: { value: '=A1+1' }, A3: { value: '=A2+1' } });
       expect(res.list.every(item => item.eid === res.eid)).to.eql(true);
 
-      // console.log('TODO', 'res.to test');
+      console.log('TODO', 'res.to test');
 
       // res.to
     });

@@ -1,4 +1,5 @@
-import { t, coord, util, time } from '../common';
+import { Subject } from 'rxjs';
+import { coord, t, time, util } from '../common';
 
 const CellRange = coord.range.CellRange;
 
@@ -11,15 +12,26 @@ export async function one<D = any>(args: {
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
   eid?: string; // "execution" identifier.
+  events$?: Subject<t.FuncEvent>;
 }): Promise<t.IFuncResponse<D>> {
   const timer = time.timer();
   const eid = args.eid || util.id.shortid();
   const { cell, refs, getValue, getFunc } = args;
-  const path = cell;
   const formula = (await getValue(cell)) || '';
+
+  // Fire PRE event.
+  if (args.events$) {
+    args.events$.next({
+      type: 'FUNC/begin',
+      payload: { eid, cell, formula },
+    });
+  }
+
+  // Prepare formula.
   const isFormula = util.isFormula(formula);
   const node = isFormula ? coord.ast.toTree(formula) : undefined;
   const type = util.toRefTarget(formula);
+  const path = cell;
 
   const fail = (error: t.IFuncError) => {
     const elapsed = timer.elapsed.msec;
@@ -68,11 +80,17 @@ export async function one<D = any>(args: {
     error = util.fromErrorObject(err, { path, formula });
   }
 
-  // Finish up.
+  // Prepare response.
   const ok = !error;
   const elapsed = timer.elapsed.msec;
-  const res: t.IFuncResponse<D> = { ok, type, eid, elapsed, cell, formula, data };
-  return error ? { ...res, error } : res;
+  let payload: t.IFuncResponse<D> = { ok, type, eid, elapsed, cell, formula, data };
+  payload = error ? { ...payload, error } : payload;
+
+  // Finish up.
+  if (args.events$) {
+    args.events$.next({ type: 'FUNC/end', payload });
+  }
+  return payload;
 }
 
 /**

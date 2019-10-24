@@ -1,8 +1,10 @@
-import { expect, toContext, t } from '../test';
+import { Subject } from 'rxjs';
+
+import { expect, t, time, toContext } from '../test';
 import { one } from './calculate.one';
 
-export const testContext = async (cells: t.ICellTable) => {
-  const { refs, getValue, getFunc } = await toContext(cells);
+export const testContext = async (cells: t.ICellTable, options: { getFunc?: t.GetFunc } = {}) => {
+  const { refs, getValue, getFunc } = await toContext(cells, options);
   return { refs, getValue, getFunc };
 };
 
@@ -52,6 +54,44 @@ describe('func.calc.cell (one)', function() {
       const res = await one<number>({ cell: 'A1', ...ctx, eid: 'foo' });
       expect(res.elapsed).to.be.a('number');
       expect(res.eid).to.eql('foo');
+    });
+  });
+
+  describe('events (observable)', () => {
+    it('fires start/end events', async () => {
+      const ctx = await testContext(
+        {
+          A1: { value: '=A2+1' },
+          A2: { value: 123 },
+        },
+        {
+          getFunc: async args => {
+            return async args => {
+              await time.wait(10); // NB: Pause to test for START event before END event.
+              return 888;
+            };
+          },
+        },
+      );
+
+      const events: t.FuncEvent[] = [];
+      const events$ = new Subject<t.FuncEvent>();
+      events$.subscribe(e => events.push(e));
+
+      const wait = one<number>({ cell: 'A1', events$, ...ctx });
+      await time.wait(0);
+
+      expect(events.length).to.eql(1);
+      expect(events[0].type).to.eql('FUNC/begin');
+      expect(events[0].payload.cell).to.eql('A1');
+      expect(events[0].payload.formula).to.eql('=A2+1');
+
+      const res = await wait;
+
+      expect(events.length).to.eql(2);
+      expect(events[0].payload.eid).to.eql(res.eid);
+      expect(events[1].type).to.eql('FUNC/end');
+      expect(events[1].payload).to.eql(res);
     });
   });
 

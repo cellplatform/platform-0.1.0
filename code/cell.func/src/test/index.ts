@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { t, valueUtil, coord } from '../common';
+export * from '../common';
 
 const refs = coord.refs;
 
@@ -8,7 +9,7 @@ const refs = coord.refs;
  */
 export { expect, t, coord };
 
-export const toContext = async (cells: t.ICellTable) => {
+export const toContext = async (cells: t.ICellTable, options: { getFunc?: t.GetFunc } = {}) => {
   const getCells: t.GetCells = async () => cells;
 
   const getValue: t.RefGetValue = async (key: string) => {
@@ -17,11 +18,12 @@ export const toContext = async (cells: t.ICellTable) => {
     return typeof value === 'function' ? value() : value;
   };
   const getKeys: t.RefGetKeys = async () => Object.keys(cells);
+
   const refsTable = refs.table({ getKeys, getValue });
   return {
     cells,
     getValue,
-    getFunc,
+    getFunc: (options.getFunc || getFunc) as t.GetFunc,
     getCells,
     refsTable,
     refs: await refsTable.refs(),
