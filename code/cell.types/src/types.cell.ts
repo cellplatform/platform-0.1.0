@@ -24,8 +24,6 @@ export type ICellDiff<P extends ICellProps = ICellProps> = {
   readonly list: Array<Diff<ICellData<P>>>;
 };
 
-
-
 /**
  * Column
  */

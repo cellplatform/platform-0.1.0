@@ -44,7 +44,7 @@ describe.only('func.table', () => {
       expect(res.list.length).to.eql(2);
       expect(res.from).to.eql({ A2: { value: '=A1+1' }, A3: { value: '=A2+1' } });
 
-      console.log('TODO', 'res.to test');
+      // console.log('TODO', 'res.to test');
 
       // res.to
     });
@@ -52,7 +52,6 @@ describe.only('func.table', () => {
     it.skip('recalculate: keys removed', async () => {
       //
     });
-
 
     it.skip('subset (range)', async () => {
       //

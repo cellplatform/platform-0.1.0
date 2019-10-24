@@ -32,7 +32,7 @@ export function table(args: {
     refsTable,
     getFunc,
     async calculate(args = {}): Promise<t.IFuncTableResponse> {
-      const cells = args.range ? toKeys(args.range) : await getKeys();
+      const cells = args.cells || (await getKeys());
 
       // Calculate cell refs.
       const beforeRefs = await refsTable.refs(); // NB: Current from cache.
@@ -75,12 +75,6 @@ export function table(args: {
 /**
  * [Helpers]
  */
-
-function toKeys(rangeKeys: string | string[]) {
-  const range = coord.range.CellRangeUnion.fromKey(rangeKeys);
-  return range.keys;
-}
-
 function removedKeys(before: object, after: object) {
   const keys = Object.keys(after);
   return Object.keys(before).filter(key => !keys.includes(key));

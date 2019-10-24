@@ -45,5 +45,5 @@ export type IFuncTable = {
   getCells: t.GetCells;
   refsTable: t.IRefsTable;
   getFunc: t.GetFunc;
-  calculate(args?: { range?: string | string[] }): Promise<t.IFuncTableResponse>;
+  calculate(args?: { cells?: string | string[] }): Promise<t.IFuncTableResponse>;
 };
