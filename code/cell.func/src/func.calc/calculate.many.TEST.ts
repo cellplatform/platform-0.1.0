@@ -86,4 +86,14 @@ describe('func.calc.cells (many)', function() {
     expect(res.ok).to.eql(false);
     expect(res.elapsed).to.be.a('number');
   });
+
+  it('has consistent eid ("execution" identifier) across all child funcs', async () => {
+    const ctx = await testContext({
+      A1: { value: '=SUM(1,2)' },
+      A2: { value: '=3+4' },
+      Z9: { value: 'hello' }, // NB: Not involved.
+    });
+    const res = await many({ cells: ['A1', 'A2'], ...ctx });
+    expect(res.list.every(item => item.eid === res.eid)).to.eql(true);
+  });
 });

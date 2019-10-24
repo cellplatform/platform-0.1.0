@@ -1,7 +1,7 @@
 import { coord } from './libs';
 import * as t from './types';
 
-export { value } from './libs';
+export { value, id } from './libs';
 
 const refs = coord.refs;
 export const path = refs.path;

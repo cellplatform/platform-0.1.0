@@ -67,9 +67,9 @@ export function table(args: {
       );
 
       // Finish up.
-      const { ok, list } = res;
+      const { ok, list, eid } = res;
       const elapsed = timer.elapsed.msec;
-      return { ok, elapsed, list, from, to };
+      return { ok, eid, elapsed, list, from, to };
     },
   };
 }

@@ -37,17 +37,26 @@ describe('func.table', () => {
       });
 
       const table = func.table({ ...ctx });
-
       const res = await table.calculate();
 
       expect(res.ok).to.eql(true);
       expect(res.elapsed).to.be.a('number');
       expect(res.list.length).to.eql(2);
       expect(res.from).to.eql({ A2: { value: '=A1+1' }, A3: { value: '=A2+1' } });
+      expect(res.list.every(item => item.eid === res.eid)).to.eql(true);
 
       // console.log('TODO', 'res.to test');
 
       // res.to
+    });
+
+    it('has consistent eid ("execution" identifier) across all child funcs', async () => {
+      const ctx = await testContext({
+        A1: { value: '=SUM(1,2)' },
+        A2: { value: '=3+4' },
+        Z9: { value: 'hello' }, // NB: Not involved.
+      });
+      // const res = await many({ cells: ['A1', 'A2'], ...ctx });
     });
 
     it.skip('recalculate: keys removed', async () => {

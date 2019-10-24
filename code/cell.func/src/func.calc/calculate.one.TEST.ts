@@ -25,6 +25,36 @@ describe('func.calc.cell (one)', function() {
     });
   });
 
+  describe('response', () => {
+    it('has elapsed time', async () => {
+      const ctx = await testContext({
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+      });
+      const res = await one<number>({ cell: 'A1', ...ctx });
+      expect(res.elapsed).to.be.a('number');
+    });
+
+    it('has execution identifier (eid) - generated', async () => {
+      const ctx = await testContext({
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+      });
+      const res = await one<number>({ cell: 'A1', ...ctx });
+      expect(res.eid.length).to.greaterThan(3);
+    });
+
+    it('has execution identifier (eid) - specified', async () => {
+      const ctx = await testContext({
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+      });
+      const res = await one<number>({ cell: 'A1', ...ctx, eid: 'foo' });
+      expect(res.elapsed).to.be.a('number');
+      expect(res.eid).to.eql('foo');
+    });
+  });
+
   describe('cell reference', () => {
     it('=A2', async () => {
       const ctx = await testContext({
@@ -36,6 +66,7 @@ describe('func.calc.cell (one)', function() {
       expect(res.ok).to.eql(true);
       expect(res.type).to.eql('REF');
       expect(res.elapsed).to.be.a('number');
+      expect(res.eid.length).to.greaterThan(3);
       expect(res.cell).to.eql('A1');
       expect(res.formula).to.eql('=A2');
       expect(res.error).to.eql(undefined);
@@ -95,6 +126,7 @@ describe('func.calc.cell (one)', function() {
       const res = await one<number>({ cell: 'A1', ...ctx });
       expect(res.ok).to.eql(true);
       expect(res.elapsed).to.be.a('number');
+      expect(res.eid.length).to.greaterThan(3);
       expect(res.cell).to.eql('A1');
       expect(res.type).to.eql('FUNC');
       expect(res.formula).to.eql('=SUM(1,2,3)');
@@ -191,6 +223,7 @@ describe('func.calc.cell (one)', function() {
       expect(res.ok).to.eql(false);
       expect(error.path).to.eql('A1');
       expect(res.elapsed).to.be.a('number');
+      expect(res.eid.length).to.greaterThan(3);
       expect(error.formula).to.eql('=NO_EXIST()');
       expect(error.type).to.eql('FUNC/notFound');
       expect(error.message).to.include('function [sys.NO_EXIST] was not found');

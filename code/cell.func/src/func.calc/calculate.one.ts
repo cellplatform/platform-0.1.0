@@ -10,8 +10,10 @@ export async function one<D = any>(args: {
   refs: t.IRefs;
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
+  eid?: string; // "execution" identifier.
 }): Promise<t.IFuncResponse<D>> {
   const timer = time.timer();
+  const eid = args.eid || util.id.shortid();
   const { cell, refs, getValue, getFunc } = args;
   const path = cell;
   const formula = (await getValue(cell)) || '';
@@ -21,7 +23,7 @@ export async function one<D = any>(args: {
 
   const fail = (error: t.IFuncError) => {
     const elapsed = timer.elapsed.msec;
-    const res: t.IFuncResponse<D> = { ok: false, elapsed, type, cell, formula, error };
+    const res: t.IFuncResponse<D> = { ok: false, eid, elapsed, type, cell, formula, error };
     return res;
   };
 
@@ -69,7 +71,7 @@ export async function one<D = any>(args: {
   // Finish up.
   const ok = !error;
   const elapsed = timer.elapsed.msec;
-  const res: t.IFuncResponse<D> = { ok, type, elapsed, cell, formula, data };
+  const res: t.IFuncResponse<D> = { ok, type, eid, elapsed, cell, formula, data };
   return error ? { ...res, error } : res;
 }
 

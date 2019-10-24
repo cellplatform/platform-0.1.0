@@ -14,6 +14,7 @@ export type GetFunc = (args: {
  */
 export type IFuncResponse<T = any> = {
   ok: boolean;
+  eid: string; // "execution" identifier.
   elapsed: number; // msecs.
   type: t.RefTarget;
   cell: string;
@@ -28,6 +29,7 @@ export type IFuncResponse<T = any> = {
 export type IFuncResponseMap = { [key: string]: t.IFuncResponse };
 export type IFuncManyResponse = {
   ok: boolean;
+  eid: string; //     "execution" identifier.
   elapsed: number; // msecs.
   list: t.IFuncResponse[];
   map: IFuncResponseMap;
@@ -44,6 +46,7 @@ export type IFuncTable = {
 };
 export type IFuncTableResponse = {
   ok: boolean;
+  eid: string; // "execution" identifier.
   elapsed: number; // msecs.
   list: t.IFuncResponse[];
   from: t.ICellTable;

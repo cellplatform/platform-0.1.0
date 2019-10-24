@@ -11,6 +11,7 @@ export async function many(args: {
   getFunc: t.GetFunc;
 }) {
   const timer = time.timer();
+  const eid = util.id.shortid();
   const { refs, getValue, getFunc } = args;
   const cells = Array.isArray(args.cells) ? args.cells : [args.cells];
 
@@ -45,7 +46,7 @@ export async function many(args: {
   const list: t.IFuncResponse[] = [];
   for (const cell of keys) {
     if (await isKeyOfFormula(cell)) {
-      list.push(await one({ cell, refs, getValue, getFunc }));
+      list.push(await one({ cell, eid, refs, getValue, getFunc }));
     }
   }
 
@@ -55,6 +56,7 @@ export async function many(args: {
   let map: t.IFuncResponseMap;
   const res: t.IFuncManyResponse = {
     ok,
+    eid,
     list,
     elapsed,
     get map() {
