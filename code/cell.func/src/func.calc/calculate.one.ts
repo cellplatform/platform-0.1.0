@@ -1,4 +1,4 @@
-import { t, coord, util } from '../common';
+import { t, coord, util, time } from '../common';
 
 const CellRange = coord.range.CellRange;
 
@@ -11,6 +11,7 @@ export async function one<D = any>(args: {
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
 }): Promise<t.IFuncResponse<D>> {
+  const timer = time.timer();
   const { cell, refs, getValue, getFunc } = args;
   const path = cell;
   const formula = (await getValue(cell)) || '';
@@ -19,7 +20,8 @@ export async function one<D = any>(args: {
   const type = util.toRefTarget(formula);
 
   const fail = (error: t.IFuncError) => {
-    const res: t.IFuncResponse<D> = { ok: false, type, cell, formula, error };
+    const elapsed = timer.elapsed.msec;
+    const res: t.IFuncResponse<D> = { ok: false, elapsed, type, cell, formula, error };
     return res;
   };
 
@@ -44,7 +46,6 @@ export async function one<D = any>(args: {
       path,
       formula,
     };
-    // const error = `The cell ${cell} is a range which is not supported.`;
     return fail(error);
   }
 
@@ -67,7 +68,8 @@ export async function one<D = any>(args: {
 
   // Finish up.
   const ok = !error;
-  const res: t.IFuncResponse<D> = { ok, type, cell, formula, data };
+  const elapsed = timer.elapsed.msec;
+  const res: t.IFuncResponse<D> = { ok, type, elapsed, cell, formula, data };
   return error ? { ...res, error } : res;
 }
 

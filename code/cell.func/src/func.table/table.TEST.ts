@@ -6,7 +6,7 @@ export const testContext = async (cells: t.ICellTable) => {
   return { getValue, getFunc, getCells, refsTable };
 };
 
-describe.only('func.table', () => {
+describe('func.table', () => {
   it('creates REFs table', async () => {
     const ctx = await testContext({
       A1: { value: '123' },
@@ -41,6 +41,7 @@ describe.only('func.table', () => {
       const res = await table.calculate();
 
       expect(res.ok).to.eql(true);
+      expect(res.elapsed).to.be.a('number');
       expect(res.list.length).to.eql(2);
       expect(res.from).to.eql({ A2: { value: '=A1+1' }, A3: { value: '=A2+1' } });
 

@@ -1,4 +1,4 @@
-import { R, t, util } from '../common';
+import { R, t, util, time } from '../common';
 import { one } from './calculate.one';
 
 /**
@@ -10,6 +10,7 @@ export async function many(args: {
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
 }) {
+  const timer = time.timer();
   const { refs, getValue, getFunc } = args;
   const cells = Array.isArray(args.cells) ? args.cells : [args.cells];
 
@@ -50,10 +51,12 @@ export async function many(args: {
 
   // Finish up.
   const ok = !list.some(item => !item.ok);
+  const elapsed = timer.elapsed.msec;
   let map: t.IFuncResponseMap;
   const res: t.IFuncManyResponse = {
     ok,
     list,
+    elapsed,
     get map() {
       if (!map) {
         map = list.reduce((acc, next) => {

@@ -18,6 +18,7 @@ describe('func.calc.cells (many)', function() {
       Z9: { value: 'hello' }, // NB: Not involved.
     });
     const res = await many({ cells: 'C1', ...ctx });
+    expect(res.elapsed).to.be.a('number');
 
     expect(res.list.map(({ cell }) => cell)).to.eql(['A2', 'A3', 'A1']);
     expect(res.map.A1.data).to.eql(12);
@@ -83,5 +84,6 @@ describe('func.calc.cells (many)', function() {
     });
     const res = await many({ cells: ['A1'], ...ctx });
     expect(res.ok).to.eql(false);
+    expect(res.elapsed).to.be.a('number');
   });
 });

@@ -14,6 +14,7 @@ export type GetFunc = (args: {
  */
 export type IFuncResponse<T = any> = {
   ok: boolean;
+  elapsed: number; // msecs.
   type: t.RefTarget;
   cell: string;
   formula: string;
@@ -27,6 +28,7 @@ export type IFuncResponse<T = any> = {
 export type IFuncResponseMap = { [key: string]: t.IFuncResponse };
 export type IFuncManyResponse = {
   ok: boolean;
+  elapsed: number; // msecs.
   list: t.IFuncResponse[];
   map: IFuncResponseMap;
 };
@@ -34,16 +36,16 @@ export type IFuncManyResponse = {
 /**
  * Table calculations.
  */
-export type IFuncTableResponse = {
-  ok: boolean;
-  list: t.IFuncResponse[];
-  from: t.ICellTable;
-  to: t.ICellTable;
-};
-
 export type IFuncTable = {
   getCells: t.GetCells;
   refsTable: t.IRefsTable;
   getFunc: t.GetFunc;
   calculate(args?: { cells?: string | string[] }): Promise<t.IFuncTableResponse>;
+};
+export type IFuncTableResponse = {
+  ok: boolean;
+  elapsed: number; // msecs.
+  list: t.IFuncResponse[];
+  from: t.ICellTable;
+  to: t.ICellTable;
 };

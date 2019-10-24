@@ -1,4 +1,4 @@
-import { t, coord, util } from '../common';
+import { t, coord, util, time } from '../common';
 import { calculate as init } from '../func.calc';
 
 const defaultGetFunc: t.GetFunc = async args => undefined; // NB: Empty stub.
@@ -32,6 +32,7 @@ export function table(args: {
     refsTable,
     getFunc,
     async calculate(args = {}): Promise<t.IFuncTableResponse> {
+      const timer = time.timer();
       const cells = args.cells || (await getKeys());
 
       // Calculate cell refs.
@@ -67,7 +68,8 @@ export function table(args: {
 
       // Finish up.
       const { ok, list } = res;
-      return { ok, list, from, to };
+      const elapsed = timer.elapsed.msec;
+      return { ok, elapsed, list, from, to };
     },
   };
 }
