@@ -110,18 +110,12 @@ describe('func.calc.cells (many)', function() {
 
     await many({ cells: ['A1'], events$, ...ctx });
 
-    expect(events.length).to.eql(4);
+    expect(events.length).to.eql(6);
 
-    expect(events[0].type).to.eql('FUNC/begin');
-    expect(events[0].payload.cell).to.eql('A3');
+    expect(events[0].type).to.eql('FUNC/many/begin');
+    expect(events[1].type).to.eql('FUNC/begin');
 
-    expect(events[1].type).to.eql('FUNC/end');
-    expect(events[1].payload.cell).to.eql('A3');
-
-    expect(events[2].type).to.eql('FUNC/begin');
-    expect(events[2].payload.cell).to.eql('A1');
-
-    expect(events[3].type).to.eql('FUNC/end');
-    expect(events[3].payload.cell).to.eql('A1');
+    expect(events[events.length - 2].type).to.eql('FUNC/end');
+    expect(events[events.length - 1].type).to.eql('FUNC/many/end');
   });
 });

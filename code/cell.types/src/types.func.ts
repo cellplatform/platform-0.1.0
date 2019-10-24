@@ -1,3 +1,4 @@
+import { Subject } from 'rxjs';
 import { t } from './common';
 
 export type FuncParam = t.Json | undefined;
@@ -42,7 +43,10 @@ export type IFuncTable = {
   getCells: t.GetCells;
   refsTable: t.IRefsTable;
   getFunc: t.GetFunc;
-  calculate(args?: { cells?: string | string[] }): Promise<t.IFuncTableResponse>;
+  calculate(args?: {
+    cells?: string | string[];
+    events$?: Subject<FuncEvent>;
+  }): Promise<t.IFuncTableResponse>;
 };
 export type IFuncTableResponse = {
   ok: boolean;
@@ -56,7 +60,9 @@ export type IFuncTableResponse = {
 /**
  * [Events]
  */
-export type FuncEvent = IFuncBeginEvent | IFuncEndEvent;
+export type FuncEvent = FuncOneEvent | FuncManyEvent;
+export type FuncOneEvent = IFuncBeginEvent | IFuncEndEvent;
+export type FuncManyEvent = IFuncManyBeginEvent | IFuncManyEndEvent;
 
 export type IFuncBeginEvent = {
   type: 'FUNC/begin';
@@ -73,3 +79,18 @@ export type IFuncEndEvent = {
   payload: IFuncEnd;
 };
 export type IFuncEnd = IFuncResponse;
+
+export type IFuncManyBeginEvent = {
+  type: 'FUNC/many/begin';
+  payload: IFuncManyBegin;
+};
+export type IFuncManyBegin = {
+  eid: string; // "execution" identifier.
+  cells: string[];
+};
+
+export type IFuncManyEndEvent = {
+  type: 'FUNC/many/end';
+  payload: IFuncManyEnd;
+};
+export type IFuncManyEnd = IFuncManyResponse;

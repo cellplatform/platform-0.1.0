@@ -72,9 +72,9 @@ describe('func.calc.cell (one)', function() {
         },
       );
 
-      const events: t.FuncEvent[] = [];
+      const events: t.FuncOneEvent[] = [];
       const events$ = new Subject<t.FuncEvent>();
-      events$.subscribe(e => events.push(e));
+      events$.subscribe(e => events.push(e as t.FuncOneEvent));
 
       const wait = one<number>({ cell: 'A1', events$, ...ctx });
       await time.wait(0);

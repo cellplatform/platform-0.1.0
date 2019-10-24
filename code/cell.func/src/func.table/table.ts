@@ -1,4 +1,5 @@
-import { t, coord, util, time } from '../common';
+import { Subject } from 'rxjs';
+import { coord, t, time, util } from '../common';
 import { calculate as init } from '../func.calc';
 
 const defaultGetFunc: t.GetFunc = async args => undefined; // NB: Empty stub.
@@ -10,7 +11,10 @@ export function table(args: {
   getCells: t.GetCells;
   getFunc?: t.GetFunc;
   refsTable?: t.IRefsTable;
+  events$?: Subject<t.FuncEvent>;
 }): t.IFuncTable {
+  const { events$ } = args;
+
   // Prepare data retrieval factories.
   const getFunc = args.getFunc || defaultGetFunc;
   const getCells = args.getCells;
@@ -24,7 +28,7 @@ export function table(args: {
 
   // Prepare calculators.
   const refsTable = args.refsTable || coord.refs.table({ getKeys, getValue });
-  const calculate = init({ getValue, getFunc });
+  const calculate = init({ getValue, getFunc, events$ });
 
   // Finish up.
   return {

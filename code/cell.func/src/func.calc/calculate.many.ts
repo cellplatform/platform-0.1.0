@@ -17,6 +17,14 @@ export async function many(args: {
   const { refs, getValue, getFunc, events$ } = args;
   const cells = Array.isArray(args.cells) ? args.cells : [args.cells];
 
+  // Fire PRE event.
+  if (args.events$) {
+    args.events$.next({
+      type: 'FUNC/many/begin',
+      payload: { eid, cells },
+    });
+  }
+
   // Build complete list of cell implicated in the update.
   let keys: string[] = cells;
   const addIncoming = (cells: string[]) => {
@@ -52,11 +60,11 @@ export async function many(args: {
     }
   }
 
-  // Finish up.
+  // Prepare response.
   const ok = !list.some(item => !item.ok);
   const elapsed = timer.elapsed.msec;
   let map: t.IFuncResponseMap;
-  const res: t.IFuncManyResponse = {
+  const payload: t.IFuncManyResponse = {
     ok,
     eid,
     list,
@@ -71,5 +79,10 @@ export async function many(args: {
       return map;
     },
   };
-  return res;
+
+  // Finish up.
+  if (args.events$) {
+    args.events$.next({ type: 'FUNC/many/end', payload });
+  }
+  return payload;
 }
