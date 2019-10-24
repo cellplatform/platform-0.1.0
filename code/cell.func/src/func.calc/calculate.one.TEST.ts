@@ -1,6 +1,4 @@
-import { Subject } from 'rxjs';
-
-import { expect, t, time, toContext } from '../test';
+import { expect, t, time, toContext, Subject } from '../test';
 import { one } from './calculate.one';
 
 export const testContext = async (cells: t.ICellTable, options: { getFunc?: t.GetFunc } = {}) => {
@@ -380,6 +378,12 @@ describe('func.calc.cell (one)', function() {
       });
       const res = await one<number>({ cell: 'A1', ...ctx });
       expect(res.data).to.eql(10);
+    });
+  });
+
+  describe('async', () => {
+    it.skip('returns result from async func ', async () => {
+      //
     });
   });
 });

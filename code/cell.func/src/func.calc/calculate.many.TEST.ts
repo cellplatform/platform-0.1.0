@@ -1,8 +1,8 @@
-import { expect, t, toContext } from '../test';
+import { expect, t, toContext, time, Subject } from '../test';
 import { many } from './calculate.many';
 
-export const testContext = async (cells: t.ICellTable) => {
-  const { refs, getValue, getFunc } = await toContext(cells);
+export const testContext = async (cells: t.ICellTable, options: { getFunc?: t.GetFunc } = {}) => {
+  const { refs, getValue, getFunc } = await toContext(cells, options);
   return { refs, getValue, getFunc };
 };
 
@@ -95,5 +95,33 @@ describe('func.calc.cells (many)', function() {
     });
     const res = await many({ cells: ['A1', 'A2'], ...ctx });
     expect(res.list.every(item => item.eid === res.eid)).to.eql(true);
+  });
+
+  it('events: FUNC/begin | FUNC/end', async () => {
+    const ctx = await testContext({
+      A1: { value: '=SUM(A2:A10)' },
+      A2: { value: '=1+2' },
+      A3: { value: '=A1' },
+    });
+
+    const events: t.FuncEvent[] = [];
+    const events$ = new Subject<t.FuncEvent>();
+    events$.subscribe(e => events.push(e));
+
+    await many({ cells: ['A1'], events$, ...ctx });
+
+    expect(events.length).to.eql(4);
+
+    expect(events[0].type).to.eql('FUNC/begin');
+    expect(events[0].payload.cell).to.eql('A3');
+
+    expect(events[1].type).to.eql('FUNC/end');
+    expect(events[1].payload.cell).to.eql('A3');
+
+    expect(events[2].type).to.eql('FUNC/begin');
+    expect(events[2].payload.cell).to.eql('A1');
+
+    expect(events[3].type).to.eql('FUNC/end');
+    expect(events[3].payload.cell).to.eql('A1');
   });
 });

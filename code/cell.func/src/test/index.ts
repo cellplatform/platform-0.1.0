@@ -8,6 +8,7 @@ const refs = coord.refs;
  * Shared test helpers.
  */
 export { expect, t, coord };
+export { Observable, Subject } from 'rxjs';
 
 export const toContext = async (cells: t.ICellTable, options: { getFunc?: t.GetFunc } = {}) => {
   const getCells: t.GetCells = async () => cells;

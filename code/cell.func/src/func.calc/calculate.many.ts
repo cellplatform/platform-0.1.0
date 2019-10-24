@@ -1,4 +1,5 @@
-import { R, t, util, time } from '../common';
+import { Subject } from 'rxjs';
+import { R, t, time, util } from '../common';
 import { one } from './calculate.one';
 
 /**
@@ -9,10 +10,11 @@ export async function many(args: {
   refs: t.IRefs;
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
+  events$?: Subject<t.FuncEvent>;
 }) {
   const timer = time.timer();
   const eid = util.id.shortid();
-  const { refs, getValue, getFunc } = args;
+  const { refs, getValue, getFunc, events$ } = args;
   const cells = Array.isArray(args.cells) ? args.cells : [args.cells];
 
   // Build complete list of cell implicated in the update.
@@ -46,7 +48,7 @@ export async function many(args: {
   const list: t.IFuncResponse[] = [];
   for (const cell of keys) {
     if (await isKeyOfFormula(cell)) {
-      list.push(await one({ cell, eid, refs, getValue, getFunc }));
+      list.push(await one({ cell, eid, refs, getValue, getFunc, events$ }));
     }
   }
 
