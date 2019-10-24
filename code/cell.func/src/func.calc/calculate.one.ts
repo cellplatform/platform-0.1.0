@@ -6,91 +6,101 @@ const CellRange = coord.range.CellRange;
 /**
  * Calculate.
  */
-export async function one<D = any>(args: {
+export function one<D = any>(args: {
   cell: string;
   refs: t.IRefs;
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
   eid?: string; // "execution" identifier.
   events$?: Subject<t.FuncEvent>;
-}): Promise<t.IFuncResponse<D>> {
-  const timer = time.timer();
+}): t.FuncPromise<t.IFuncResponse<D>> {
   const eid = args.eid || util.id.shortid();
-  const { cell, refs, getValue, getFunc } = args;
-  const formula = (await getValue(cell)) || '';
+  const promise = new Promise<t.IFuncResponse<D>>(async (resolve, reject) => {
+    const timer = time.timer();
+    const { cell, refs, getValue, getFunc } = args;
+    const formula = (await getValue(cell)) || '';
 
-  // Fire PRE event.
-  if (args.events$) {
-    args.events$.next({
-      type: 'FUNC/begin',
-      payload: { eid, cell, formula },
-    });
-  }
+    // Fire PRE event.
+    if (args.events$) {
+      args.events$.next({
+        type: 'FUNC/begin',
+        payload: { eid, cell, formula },
+      });
+    }
 
-  // Prepare formula.
-  const isFormula = util.isFormula(formula);
-  const node = isFormula ? coord.ast.toTree(formula) : undefined;
-  const type = util.toRefTarget(formula);
-  const path = cell;
+    // Prepare formula.
+    const isFormula = util.isFormula(formula);
+    const node = isFormula ? coord.ast.toTree(formula) : undefined;
+    const type = util.toRefTarget(formula);
+    const path = cell;
 
-  const fail = (error: t.IFuncError) => {
+    const fail = (error: t.IFuncError) => {
+      const elapsed = timer.elapsed.msec;
+      const res: t.IFuncResponse<D> = { ok: false, eid, elapsed, type, cell, formula, error };
+      return resolve(res);
+    };
+
+    // Ensure the node is a function/expression.
+    if (!node || !isFormula) {
+      const error: t.IFuncErrorNotFormula = {
+        type: 'FUNC/notFormula',
+        message: `The value of cell ${cell} is not a formula. Must start with "=".`,
+        path,
+        formula,
+      };
+      return fail(error);
+    }
+
+    // Disallow RANGE types.
+    // NB: Ranges can be used as parameters, but a range on it's own (eg "=A1:Z9")
+    //     makes no sense from this context of calculating something.
+    if (type === 'RANGE') {
+      const error: t.IFuncErrorNotSupportedRange = {
+        type: 'FUNC/notSupported/range',
+        message: `The cell ${cell} is a range which is not supported.`,
+        path,
+        formula,
+      };
+      return fail(error);
+    }
+
+    // Evaluate the function/expression.
+    let data: any;
+    let error: t.IFuncError | undefined;
+    try {
+      if (node.type === 'binary-expression') {
+        data = await evalExpr({ cell, formula, node, refs, getValue, getFunc });
+      }
+      if (node.type === 'function') {
+        data = await evalFunc({ cell, formula, node, refs, getValue, getFunc });
+      }
+      if (node.type === 'cell') {
+        data = await getCellRefValue({ cell, node, refs, getValue, getFunc });
+      }
+    } catch (err) {
+      error = util.fromErrorObject(err, { path, formula });
+    }
+
+    // Prepare response.
+    const ok = !error;
     const elapsed = timer.elapsed.msec;
-    const res: t.IFuncResponse<D> = { ok: false, eid, elapsed, type, cell, formula, error };
-    return res;
-  };
+    let payload: t.IFuncResponse<D> = { ok, type, eid, elapsed, cell, formula, data };
+    payload = error ? { ...payload, error } : payload;
 
-  // Ensure the node is a function/expression.
-  if (!node || !isFormula) {
-    const error: t.IFuncErrorNotFormula = {
-      type: 'FUNC/notFormula',
-      message: `The value of cell ${cell} is not a formula. Must start with "=".`,
-      path,
-      formula,
-    };
-    return fail(error);
-  }
-
-  // Disallow RANGE types.
-  // NB: Ranges can be used as parameters, but a range on it's own (eg "=A1:Z9")
-  //     makes no sense from this context of calculating something.
-  if (type === 'RANGE') {
-    const error: t.IFuncErrorNotSupportedRange = {
-      type: 'FUNC/notSupported/range',
-      message: `The cell ${cell} is a range which is not supported.`,
-      path,
-      formula,
-    };
-    return fail(error);
-  }
-
-  // Evaluate the function/expression.
-  let data: any;
-  let error: t.IFuncError | undefined;
-  try {
-    if (node.type === 'binary-expression') {
-      data = await evalExpr({ cell, formula, node, refs, getValue, getFunc });
+    // Finish up.
+    if (args.events$) {
+      args.events$.next({
+        type: 'FUNC/end',
+        payload,
+      });
     }
-    if (node.type === 'function') {
-      data = await evalFunc({ cell, formula, node, refs, getValue, getFunc });
-    }
-    if (node.type === 'cell') {
-      data = await getCellRefValue({ cell, node, refs, getValue, getFunc });
-    }
-  } catch (err) {
-    error = util.fromErrorObject(err, { path, formula });
-  }
+    resolve(payload);
+  });
 
-  // Prepare response.
-  const ok = !error;
-  const elapsed = timer.elapsed.msec;
-  let payload: t.IFuncResponse<D> = { ok, type, eid, elapsed, cell, formula, data };
-  payload = error ? { ...payload, error } : payload;
-
-  // Finish up.
-  if (args.events$) {
-    args.events$.next({ type: 'FUNC/end', payload });
-  }
-  return payload;
+  // Assign initial properties to the returned
+  // promise for use prior to resolving.
+  (promise as any).eid = eid;
+  return promise as t.FuncPromise<t.IFuncResponse<D>>;
 }
 
 /**

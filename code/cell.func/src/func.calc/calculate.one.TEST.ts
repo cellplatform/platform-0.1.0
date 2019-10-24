@@ -43,8 +43,12 @@ describe('func.calc.cell (one)', function() {
         A1: { value: '=A2' },
         A2: { value: 123 },
       });
-      const res = await one<number>({ cell: 'A1', ...ctx });
+      const wait = one<number>({ cell: 'A1', ...ctx });
+      expect(wait.eid.length).to.greaterThan(3);
+
+      const res = await wait;
       expect(res.eid.length).to.greaterThan(3);
+      expect(res.eid).to.eql(wait.eid);
     });
 
     it('has execution identifier (eid) - specified', async () => {
@@ -52,9 +56,13 @@ describe('func.calc.cell (one)', function() {
         A1: { value: '=A2' },
         A2: { value: 123 },
       });
-      const res = await one<number>({ cell: 'A1', ...ctx, eid: 'foo' });
+      const wait = one<number>({ cell: 'A1', ...ctx, eid: 'foo' });
+      expect(wait.eid).to.eql('foo');
+
+      const res = await wait;
       expect(res.elapsed).to.be.a('number');
       expect(res.eid).to.eql('foo');
+      expect(res.eid).to.eql(wait.eid);
     });
   });
 
@@ -65,13 +73,7 @@ describe('func.calc.cell (one)', function() {
           A1: { value: '=A2+1' },
           A2: { value: 123 },
         },
-        {
-          delay: 10,
-          // getFunc: async args => {
-          //   await time.wait(10); // NB: Pause to test for START event before END event.
-          //   return getFunc(args);
-          // },
-        },
+        { delay: 10 },
       );
 
       const events: t.FuncOneEvent[] = [];

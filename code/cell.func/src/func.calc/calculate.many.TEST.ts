@@ -12,6 +12,19 @@ export const testContext = async (
 describe('func.calc.cells (many)', function() {
   this.timeout(5000);
 
+  it('response (promise)', async () => {
+    const ctx = await testContext({
+      A1: { value: '=SUM(1,2)' },
+      A2: { value: '=3+4' },
+    });
+    const wait = many({ cells: ['A1', 'A2'], ...ctx });
+    expect(wait.eid.length).to.greaterThan(3);
+
+    const res = await wait;
+    expect(res.eid.length).to.greaterThan(3);
+    expect(res.eid).to.eql(wait.eid);
+  });
+
   it('single cell update involving: FUNC/REF/binary-expr', async () => {
     const ctx = await testContext({
       A1: { value: '=SUM(A2,A3)' },
@@ -29,7 +42,7 @@ describe('func.calc.cells (many)', function() {
     expect(res.map.A3.data).to.eql(7);
   });
 
-  it('multi cell update (FUNCS with no REFs)', async () => {
+  it('multi-cell update (FUNCS with no REFs)', async () => {
     const ctx = await testContext({
       A1: { value: '=SUM(1,2)' },
       A2: { value: '=3+4' },

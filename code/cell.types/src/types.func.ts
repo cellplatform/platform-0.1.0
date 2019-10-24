@@ -8,6 +8,8 @@ export type FuncInvoker = (args: { params: FuncParam[] }) => Promise<FuncRespons
 export type GetFunc = (args: IGetFuncArgs) => Promise<FuncInvoker | undefined>;
 export type IGetFuncArgs = { namespace: string; name: string };
 
+export type FuncPromise<T> = Promise<T> & { eid: string };
+
 /**
  * Response from calculating a single cell function.
  */
