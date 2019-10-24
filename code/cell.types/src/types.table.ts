@@ -17,5 +17,3 @@ export type ITableData<
   columns: ITableMap<C>;
   rows: ITableMap<R>;
 };
-
-

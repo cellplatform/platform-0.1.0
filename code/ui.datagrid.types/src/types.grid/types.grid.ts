@@ -67,15 +67,15 @@ export type IGridClipboardPending = t.IGridClipboard<t.GridClipboardReadCommand>
 };
 
 export type IGridCalculate = {
-  changes(args?: { cells?: string | string[] }): Promise<IGridCalculateResponse>;
-  update(args?: { cells?: string | string[] }): Promise<IGridCalculateResponse>;
+  changes(args?: { cells?: string | string[] }): Promise<t.IFuncTableResponse>;
+  update(args?: { cells?: string | string[] }): Promise<t.IFuncTableResponse>;
 };
-export type IGridCalculateResponse = {
-  from: IGridData['cells'];
-  to: IGridData['cells'];
-  func: t.IFuncUpdateResponse;
-  cells: string[];
-};
+// export type IGridCalculateResponse = {
+//   from: IGridData['cells'];
+//   to: IGridData['cells'];
+//   func: t.IFuncUpdateResponse;
+//   cells: string[];
+// };
 
 export type IGridColumnPropsAll = t.IColumnProps & { width: number };
 export type IGridColumnProps = Partial<IGridColumnPropsAll>;

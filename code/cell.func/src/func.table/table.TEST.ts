@@ -49,6 +49,11 @@ describe.only('func.table', () => {
       // res.to
     });
 
+    it.skip('recalculate: keys removed', async () => {
+      //
+    });
+
+
     it.skip('subset (range)', async () => {
       //
     });
