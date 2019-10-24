@@ -1,7 +1,10 @@
-import { expect, t, time, toContext, Subject } from '../test';
+import { expect, t, time, toContext, Subject, getFunc } from '../test';
 import { one } from './calculate.one';
 
-export const testContext = async (cells: t.ICellTable, options: { getFunc?: t.GetFunc } = {}) => {
+export const testContext = async (
+  cells: t.ICellTable,
+  options: { getFunc?: t.GetFunc; delay?: number } = {},
+) => {
   const { refs, getValue, getFunc } = await toContext(cells, options);
   return { refs, getValue, getFunc };
 };
@@ -63,12 +66,11 @@ describe('func.calc.cell (one)', function() {
           A2: { value: 123 },
         },
         {
-          getFunc: async args => {
-            return async args => {
-              await time.wait(10); // NB: Pause to test for START event before END event.
-              return 888;
-            };
-          },
+          delay: 10,
+          // getFunc: async args => {
+          //   await time.wait(10); // NB: Pause to test for START event before END event.
+          //   return getFunc(args);
+          // },
         },
       );
 
@@ -382,8 +384,17 @@ describe('func.calc.cell (one)', function() {
   });
 
   describe('async', () => {
-    it.skip('returns result from async func ', async () => {
-      //
+    it('returns result from async func ', async () => {
+      const ctx = await testContext(
+        {
+          A1: { value: '=1+A2' },
+          A2: { value: 4 },
+        },
+        { delay: 10 },
+      );
+      const wait = one<number>({ cell: 'A1', ...ctx });
+      const res = await wait;
+      expect(res.data).to.eql(5);
     });
   });
 });

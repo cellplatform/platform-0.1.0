@@ -1,7 +1,10 @@
-import { expect, t, toContext, time, Subject } from '../test';
+import { expect, Subject, t, toContext } from '../test';
 import { many } from './calculate.many';
 
-export const testContext = async (cells: t.ICellTable, options: { getFunc?: t.GetFunc } = {}) => {
+export const testContext = async (
+  cells: t.ICellTable,
+  options: { getFunc?: t.GetFunc; delay?: number } = {},
+) => {
   const { refs, getValue, getFunc } = await toContext(cells, options);
   return { refs, getValue, getFunc };
 };

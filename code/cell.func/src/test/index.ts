@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { t, valueUtil, coord } from '../common';
+import { t, valueUtil, coord, time } from '../common';
 export * from '../common';
 
 const refs = coord.refs;
@@ -10,7 +10,10 @@ const refs = coord.refs;
 export { expect, t, coord };
 export { Observable, Subject } from 'rxjs';
 
-export const toContext = async (cells: t.ICellTable, options: { getFunc?: t.GetFunc } = {}) => {
+export const toContext = async (
+  cells: t.ICellTable,
+  options: { getFunc?: t.GetFunc; delay?: number } = {},
+) => {
   const getCells: t.GetCells = async () => cells;
 
   const getValue: t.RefGetValue = async (key: string) => {
@@ -24,7 +27,13 @@ export const toContext = async (cells: t.ICellTable, options: { getFunc?: t.GetF
   return {
     cells,
     getValue,
-    getFunc: (options.getFunc || getFunc) as t.GetFunc,
+    getFunc: async (args: t.IGetFuncArgs) => {
+      const res = (options.getFunc || getFunc) as t.GetFunc;
+      if (typeof options.delay === 'number') {
+        await time.wait(options.delay);
+      }
+      return res(args);
+    },
     getCells,
     refsTable,
     refs: await refsTable.refs(),
@@ -33,7 +42,7 @@ export const toContext = async (cells: t.ICellTable, options: { getFunc?: t.GetF
 
 export const getFunc: t.GetFunc = async args => {
   const res = await sys.getFunc(args);
-  // NB: Inject other functions here.
+  // NB: Inject other functions here 🌳
   return res ? res : undefined;
 };
 

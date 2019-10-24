@@ -5,10 +5,8 @@ export type FuncParam = t.Json | undefined;
 export type FuncResponse = any;
 export type FuncInvoker = (args: { params: FuncParam[] }) => Promise<FuncResponse>;
 
-export type GetFunc = (args: {
-  namespace: string;
-  name: string;
-}) => Promise<FuncInvoker | undefined>;
+export type GetFunc = (args: IGetFuncArgs) => Promise<FuncInvoker | undefined>;
+export type IGetFuncArgs = { namespace: string; name: string };
 
 /**
  * Response from calculating a single cell function.
