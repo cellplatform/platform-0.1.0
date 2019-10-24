@@ -46,6 +46,17 @@
     "@platform/libs" "0.1.3"
     "@platform/util.diff" "0.0.1"
 
+"@platform/cell.value@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.0.3.tgz#4ffc4fc9e7852363f32a7046c85036a2df5d301a"
+  integrity sha512-/+YRzyqrVUI7gvoPormyQM/6vsMIaizJJvhUSwVDkIvH4exbt9M2ClSws3avopMqXefYyE3d8fmn8FYKs0JHjg==
+  dependencies:
+    "@platform/cell.types" "0.0.11"
+    "@platform/libs" "0.1.3"
+    "@platform/util.diff" "0.0.1"
+    "@platform/util.hash" "0.0.0"
+    "@platform/util.value" "0.5.5"
+
 "@platform/exec@0.2.31":
   version "0.2.31"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.31.tgz#3769683dfa2806900458d0260c4bda3478d77e4c"
@@ -84,7 +95,7 @@
     rxjs "6.4.0"
     tslib "1.9.3"
 
-"@platform/libs@0.1.3":
+"@platform/libs@0.1.3", "@platform/libs@^0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.1.3.tgz#566287ee174a3cc6e6ff85233b234bf0b8b5da1b"
   integrity sha512-dAgVtjZTctsL2xHDRKhZRuyQkp56uBmN14sSKteKlHuz9Kwq7N6h2hz6IgWvFq5wVBS1xy8bpU9j5/4+xhQrnA==
@@ -144,6 +155,14 @@
     "@platform/libs" "0.0.12"
     "@types/deep-diff" "1.0.0"
     deep-diff "1.0.2"
+
+"@platform/util.hash@0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.hash/-/util.hash-0.0.0.tgz#273dc88874b3bd2a45e0bebc830ebf5737a8f741"
+  integrity sha512-YLrdAVYjiDGcouVoittHGxcvmGP4gdMl1GQgyARt+pO3tu2Sc6TrQtv+cI/wPsLQsYqTOuFHgj840mLe0nyVsw==
+  dependencies:
+    "@platform/libs" "^0.1.3"
+    js-sha256 "0.9.0"
 
 "@platform/util.is@0.0.94":
   version "0.0.94"
@@ -1029,6 +1048,11 @@ isexe@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=
+
+js-sha256@0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/js-sha256/-/js-sha256-0.9.0.tgz#0b89ac166583e91ef9123644bd3c5334ce9d0966"
+  integrity sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==
 
 js-tokens@^4.0.0:
   version "4.0.0"

@@ -1,5 +1,10 @@
-import { expect, testContext, t } from './TEST';
+import { expect, toContext, t } from '../test';
 import { one } from './calculate.one';
+
+export const testContext = async (cells: t.ICellTable) => {
+  const { refs, getValue, getFunc } = await toContext(cells);
+  return { refs, getValue, getFunc };
+};
 
 describe('func.calc.cell (one)', function() {
   this.timeout(5000);

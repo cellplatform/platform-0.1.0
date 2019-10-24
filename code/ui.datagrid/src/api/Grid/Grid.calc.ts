@@ -39,7 +39,6 @@ export function calc(args: { getFunc?: t.GetFunc; grid: t.IGrid }): t.IGridCalcu
     // Prepare grid update set.
     const from: t.IGridData['cells'] = {};
     const to: t.IGridData['cells'] = {};
-
     const addChange = async (key: string, value: any, error: t.IFuncError | undefined) => {
       const cell = await getCell(key);
       if (cell) {

@@ -24,9 +24,26 @@ export type IFuncResponse<T = any> = {
 /**
  * Response from updating a set of cell functions.
  */
-export type IFuncUpdateMap = { [key: string]: t.IFuncResponse };
-export type IFuncUpdateResponse = {
+export type IFuncResponseMap = { [key: string]: t.IFuncResponse };
+export type IFuncManyResponse = {
   ok: boolean;
   list: t.IFuncResponse[];
-  map: IFuncUpdateMap;
+  map: IFuncResponseMap;
+};
+
+/**
+ * Table calculations.
+ */
+export type IFuncTableResponse = {
+  ok: boolean;
+  list: t.IFuncResponse[];
+  from: t.ICellTable;
+  to: t.ICellTable;
+};
+
+export type IFuncTable = {
+  getCells: t.GetCells;
+  refsTable: t.IRefsTable;
+  getFunc: t.GetFunc;
+  calculate(args?: { range?: string | string[] }): Promise<t.IFuncTableResponse>;
 };

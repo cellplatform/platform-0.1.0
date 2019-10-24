@@ -32,8 +32,8 @@ export async function many(args: {
   const isKeyOfFormula = async (key: string) => util.isFormula(await getValue(key));
 
   // Add the originally specified keys back in if they
-  // 1) are formulas, and
-  // 2) have been removed (above) because they have no refs (eg "=1+2").
+  //    1) are formulas, and
+  //    2) have been removed (above) because they have no refs (eg "=1+2").
   for (const key of cells) {
     if (!keys.includes(key) && (await isKeyOfFormula(key))) {
       keys.unshift(key);
@@ -50,8 +50,8 @@ export async function many(args: {
 
   // Finish up.
   const ok = !list.some(item => !item.ok);
-  let map: t.IFuncUpdateMap;
-  const res: t.IFuncUpdateResponse = {
+  let map: t.IFuncResponseMap;
+  const res: t.IFuncManyResponse = {
     ok,
     list,
     get map() {

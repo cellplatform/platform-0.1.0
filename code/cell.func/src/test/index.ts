@@ -1,23 +1,31 @@
 import { expect } from 'chai';
-import { t, value, coord } from '../common';
+import { t, valueUtil, coord } from '../common';
 
 const refs = coord.refs;
 
 /**
  * Shared test helpers.
  */
-export { expect, t };
-export type TestTable = t.ITableMap<{ value: any }>;
+export { expect, t, coord };
 
-export const testContext = async (cells: TestTable) => {
+export const toContext = async (cells: t.ICellTable) => {
+  const getCells: t.GetCells = async () => cells;
+
   const getValue: t.RefGetValue = async (key: string) => {
     const cell = cells[key];
     const value = cell ? cell.value : undefined;
     return typeof value === 'function' ? value() : value;
   };
   const getKeys: t.RefGetKeys = async () => Object.keys(cells);
-  const table = refs.table({ getKeys, getValue });
-  return { getValue, getFunc, refs: await table.refs() };
+  const refsTable = refs.table({ getKeys, getValue });
+  return {
+    cells,
+    getValue,
+    getFunc,
+    getCells,
+    refsTable,
+    refs: await refsTable.refs(),
+  };
 };
 
 export const getFunc: t.GetFunc = async args => {
@@ -46,7 +54,7 @@ export const sys = (() => {
         },
         [] as any[],
       )
-      .map(p => (typeof p === 'string' ? value.toNumber(p) : p) as number)
+      .map(p => (typeof p === 'string' ? valueUtil.toNumber(p) : p) as number)
       .map(p => (typeof p === 'number' || typeof p === 'bigint' ? p : undefined))
       .filter(p => p !== undefined) as number[];
   }

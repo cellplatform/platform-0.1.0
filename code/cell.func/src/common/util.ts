@@ -1,6 +1,8 @@
 import { coord } from './libs';
 import * as t from './types';
 
+export { value } from './libs';
+
 const refs = coord.refs;
 export const path = refs.path;
 export const isFormula = refs.isFormula;
