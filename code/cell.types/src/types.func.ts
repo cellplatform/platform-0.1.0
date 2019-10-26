@@ -40,6 +40,7 @@ export type IFuncManyResponse = {
  * Table calculations.
  */
 export type IFuncTable = {
+  cache: t.IMemoryCache;
   getCells: t.GetCells;
   refsTable: t.IRefsTable;
   getFunc: t.GetFunc;

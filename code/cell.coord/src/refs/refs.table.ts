@@ -51,7 +51,7 @@ class RefsTable implements t.IRefsTable {
   constructor(args: IRefsTableArgs) {
     this._getKeys = args.getKeys;
     this._getValue = args.getValue;
-    this._cache = args.cache || MemoryCache.create();
+    this.cache = args.cache || MemoryCache.create();
   }
 
   public dispose() {
@@ -65,7 +65,7 @@ class RefsTable implements t.IRefsTable {
 
   private readonly _getKeys: t.RefGetKeys;
   private readonly _getValue: t.RefGetValue;
-  private readonly _cache: t.IMemoryCache;
+  public readonly cache: t.IMemoryCache;
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -143,7 +143,7 @@ class RefsTable implements t.IRefsTable {
   public reset(args: { cache?: t.RefDirection[] } = {}) {
     this.throwIfDisposed('reset');
     const types = args.cache || ['IN', 'OUT'];
-    this._cache.clear({ filter: key => CACHE.isPrefix(types, key) });
+    this.cache.clear({ filter: key => CACHE.isPrefix(types, key) });
     return this;
   }
 
@@ -270,7 +270,7 @@ class RefsTable implements t.IRefsTable {
 
     const wait = keys.map(async key => {
       const getValue = () => args.find(key);
-      const refs = await this._cache.getAsync(args.cache(key), { getValue, force });
+      const refs = await this.cache.getAsync(args.cache(key), { getValue, force });
       if (refs.length > 0) {
         res[key] = refs;
       }
@@ -284,7 +284,7 @@ class RefsTable implements t.IRefsTable {
   private async filterKeys(args: { range?: string | string[]; outRefs?: t.IRefsOut }) {
     const { range, outRefs } = args;
     const keys = await this.getKeys();
-    const cache = this._cache;
+    const cache = this.cache;
     return RefsTable.filterKeys({ keys, range, outRefs, cache });
   }
   public static filterKeys(args: {
