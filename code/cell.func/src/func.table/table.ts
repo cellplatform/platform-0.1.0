@@ -99,7 +99,9 @@ export function table(args: {
           removedOutRefs.map(async key => {
             const value = await getValue(key);
             const error = undefined;
-            return addChange({ key, value, error });
+            if (value === undefined) {
+              return addChange({ key, value, error });
+            }
           }),
         );
 

@@ -1,8 +1,11 @@
-import { expect, toContext, t, coord } from '../test';
+import { expect, toContext, t, util } from '../test';
 import { func } from '..';
 
-export const testContext = async (cells: t.ICellTable | (() => t.ICellTable)) => {
-  const { getValue, getFunc, getCells, refsTable } = await toContext(cells);
+export const testContext = async (
+  cells: t.ICellTable | (() => t.ICellTable),
+  options: { getFunc?: t.GetFunc; delay?: number } = {},
+) => {
+  const { getValue, getFunc, getCells, refsTable } = await toContext(cells, options);
   return { getValue, getFunc, getCells, refsTable };
 };
 
@@ -43,8 +46,30 @@ describe('func.table', () => {
       expect(res.elapsed).to.be.a('number');
       expect(res.list.length).to.eql(2);
 
-      // expect(res.from).to.eql({ A2: { value: '=A1+1' }, A3: { value: '=A2+1' } });
-      // TEMP 🐷 res.to
+      expect(util.value.cellPropValue(res.map.A2)).to.eql(124);
+      expect(util.value.cellPropValue(res.map.A3)).to.eql(125);
+    });
+
+    it('calculates with delay', async () => {
+      const cells: t.ICellTable = {
+        A1: { value: '123' },
+        A2: { value: '=A1+1' },
+        A3: { value: '=A2+1' },
+      };
+      const ctx1 = await testContext(cells, {});
+      const ctx2 = await testContext(cells, { delay: 10 });
+
+      const table1 = func.table({ ...ctx1 });
+      const table2 = func.table({ ...ctx2 });
+
+      const res1 = await table1.calculate();
+      const res2 = await table2.calculate();
+
+      expect(util.value.cellPropValue(res1.map.A2)).to.eql(124);
+      expect(util.value.cellPropValue(res1.map.A3)).to.eql(125);
+
+      expect(res1.elapsed).to.lessThan(20);
+      expect(res2.elapsed).to.greaterThan(20);
     });
 
     it('has consistent eid ("execution" identifier) across all child funcs', async () => {
@@ -145,19 +170,43 @@ describe('func.table', () => {
       const table = func.table({ ...ctx });
 
       const res1 = await table.calculate({ cells: ['A1'] });
+      expect(util.value.cellPropValue(res1.map.A1)).to.eql(124);
 
-      console.log('=============');
       cells = cells2;
       const res2 = await table.calculate({ cells: 'A1' });
-
-      // console.log('res1.to', res1.to);
-      console.log('res2.map', res2.map);
-
-      //
+      expect(util.value.cellPropValue(res2.map.A1)).to.eql(3);
     });
 
-    it.skip('fails (with error)', async () => {
-      //
+    it('fails (with error)', async () => {
+      let count = 0;
+      const ctx = await testContext(
+        {
+          A1: { value: '123' },
+          A2: { value: '=A1+1' },
+          A3: { value: '=A2+1' },
+        },
+        {
+          getFunc: async args => {
+            count++;
+            return async args => {
+              if (count > 2) {
+                throw new Error('Fail');
+              }
+              return 888;
+            };
+          },
+        },
+      );
+      const table = func.table({ ...ctx });
+      const res = await table.calculate();
+      expect((res.map.A2 as any).error).to.eql(undefined);
+
+      const A3 = res.map.A3 as any;
+      const error: t.IFuncError = A3.error;
+      expect(error.type).to.eql('FUNC/invoke');
+      expect(error.message).to.eql('Fail');
+      expect(error.path).to.eql('A3');
+      expect(error.formula).to.eql('=A2+1');
     });
 
     it.skip('calculates parallel paths at the same time', async () => {
