@@ -146,3 +146,10 @@ export function toggleCellProp<P extends t.ICellProps, K extends keyof P>(args: 
   const toggled: any = typeof value === 'boolean' ? !value : true;
   return setCellProp<P, K>({ ...args, value: toggled });
 }
+
+/**
+ * Retrieves the property value from the given cell.
+ */
+export function cellPropValue(cell?: t.ICellData): t.CellValue {
+  return cell && cell.props ? cell.props.value : undefined;
+}

@@ -279,4 +279,27 @@ describe('cell', () => {
       expect(res5).to.eql({ style: { italic: true } });
     });
   });
+
+  describe('cellPropValue', () => {
+    const test = (cell?: t.ICellData<any>, expected?: t.CellValue) => {
+      const res = value.cellPropValue(cell);
+      expect(res).to.eql(expected);
+    };
+
+    it('undefined', () => {
+      test();
+      test(undefined, undefined);
+      test({}, undefined);
+      test({ value: 123 }, undefined);
+      test({ props: {} }, undefined);
+      test({ props: { style: { bold: true } } }, undefined);
+      test({ props: { value: undefined } }, undefined);
+    });
+
+    it('value', () => {
+      test({ props: { value: 123 } }, 123);
+      test({ props: { value: {} } }, {});
+      test({ props: { value: 'hello' } }, 'hello');
+    });
+  });
 });
