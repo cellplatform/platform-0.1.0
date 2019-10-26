@@ -5,8 +5,9 @@ export const testContext = async (
   cells: t.ICellTable | (() => t.ICellTable),
   options: { getFunc?: t.GetFunc; delay?: number } = {},
 ) => {
-  const { refs, getValue, getFunc } = await toContext(cells, options);
-  return { refs, getValue, getFunc };
+  const { getValue, getFunc, refsTable } = await toContext(cells, options);
+  const refs = await refsTable.refs();
+  return { getValue, getFunc, refs };
 };
 
 describe('func.calc.cell (one)', function() {
@@ -139,9 +140,9 @@ describe('func.calc.cell (one)', function() {
       expect(res.data).to.eql('');
     });
 
-    it('error: =A1:Z9 (NOT_SUPPORTED)', async () => {
+    it('error: =A1:B5 (NOT_SUPPORTED)', async () => {
       const ctx = await testContext({
-        A1: { value: '=A1:Z9' },
+        A1: { value: '=A1:B5' },
         A2: { value: 123 },
       });
       const res = await one<number>({ cell: 'A1', ...ctx });
@@ -150,13 +151,13 @@ describe('func.calc.cell (one)', function() {
       expect(res.ok).to.eql(false);
       expect(res.type).to.eql('RANGE');
       expect(res.cell).to.eql('A1');
-      expect(res.formula).to.eql('=A1:Z9');
+      expect(res.formula).to.eql('=A1:B5');
       expect(res.data).to.eql(undefined);
 
       expect(error.type).to.eql('FUNC/notSupported/range');
       expect(error.message).to.include('cell A1 is a range which is not supported');
       expect(error.path).to.eql('A1');
-      expect(error.formula).to.eql('=A1:Z9');
+      expect(error.formula).to.eql('=A1:B5');
     });
   });
 

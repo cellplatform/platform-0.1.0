@@ -5,7 +5,8 @@ export const testContext = async (
   cells: t.ICellTable,
   options: { getFunc?: t.GetFunc; delay?: number } = {},
 ) => {
-  const { refs, getValue, getFunc } = await toContext(cells, options);
+  const { getValue, getFunc, refsTable } = await toContext(cells, options);
+  const refs = await refsTable.refs();
   return { refs, getValue, getFunc };
 };
 

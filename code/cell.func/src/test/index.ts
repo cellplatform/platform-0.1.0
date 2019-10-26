@@ -36,7 +36,6 @@ export const toContext = async (
     },
     getCells,
     refsTable,
-    refs: await refsTable.refs(),
   };
 };
 
