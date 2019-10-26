@@ -1,4 +1,7 @@
-import { t, coord } from '../common';
+import { coord, id } from './libs';
+import * as t from './types';
+
+export { value } from './libs';
 
 const refs = coord.refs;
 export const path = refs.path;
@@ -6,6 +9,13 @@ export const isFormula = refs.isFormula;
 export const sort = refs.sort;
 export const toRefTarget = refs.toRefTarget;
 export const getCircularError = refs.getCircularError;
+
+/**
+ * Generate an `eid` (execution ID).
+ */
+export function eid() {
+  return id.shortid();
+}
 
 /**
  * Convert an object `Error` with corresponding func/props.
@@ -25,18 +35,32 @@ export const fromErrorObject = (
   err: any,
   options: { path?: t.IFuncError['path']; formula?: t.IFuncError['formula'] } = {},
 ): t.IFuncError => {
+  const toObject = (args: {
+    type: t.IFuncError['type'];
+    message: string;
+    path?: string;
+    formula?: string;
+  }) => {
+    const res = {
+      type: args.type,
+      message: args.message,
+      path: args.path || options.path || '',
+      formula: args.formula || options.formula || '',
+    };
+    return res as t.IFuncError;
+  };
+
   if (err.type) {
     const { type, message, path, formula } = err as t.IFuncError;
-    const res = {
+    return toObject({
       type,
       message,
       path: path || options.path || '',
       formula: formula || options.formula || '',
-    };
-    return res as t.IFuncError;
+    });
   } else {
-    const error = err instanceof Error ? err : new Error(`Error object not provided.`);
-    throw error;
+    const message = err instanceof Error ? err.message : `Error object not provided.`;
+    return toObject({ type: 'FUNC/invoke', message });
   }
 };
 

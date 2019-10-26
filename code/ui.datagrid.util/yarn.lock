@@ -25,43 +25,44 @@
   dependencies:
     "@platform/libs" "0.1.3"
 
-"@platform/cell.coord@0.5.14":
-  version "0.5.14"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.5.14.tgz#43d75fd3cd153ec5574df3a9165b3072364b4f89"
-  integrity sha512-1O+sI1cORX1it/jWxPJkTmDdl1LtHbGrto3Cb46JAi6vZhsU1MYwEiv44XWTPuhWP73i1m480ogLKcxR9EuflA==
+"@platform/cell.coord@0.5.16":
+  version "0.5.16"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.5.16.tgz#f6e39f2b9673181ebb9953cb533c634bd22c34e5"
+  integrity sha512-zWe0eXD+5+Ngzvvni4C6l15Vfdjq038GaY3sA2x7JowlVsslHQl8x0z9cv3mqforgwX7IsvrD022WGncgrrygQ==
   dependencies:
     "@platform/cache" "0.2.0"
-    "@platform/cell.types" "0.0.11"
+    "@platform/cell.types" "0.0.13"
     "@platform/types" "0.0.32"
     "@platform/util.value" "0.5.5"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.func@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@platform/cell.func/-/cell.func-0.0.12.tgz#173b1bbf8c0140792ca4b49f05867edc4dd915c7"
-  integrity sha512-rQ17Qnys+8Kko4gQUccB9KY7Tr4yzVxfmMyCY2iHXZ9h/ZrcoU/cMhDopTymi31WI+Jq521SP0glGaq2g8i9BQ==
+"@platform/cell.func@0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@platform/cell.func/-/cell.func-0.0.14.tgz#7c7ae62b4de7845ca80b02f944e94fd288b49b48"
+  integrity sha512-wkxb6K0Ij7F/xGN6saYN3BcGwf6V4EGCWK12+LnWEuUWXt+3s8mORmAVCR3RBJlZV5yJcji4P94n/T1SIjZdzg==
   dependencies:
-    "@platform/cell.coord" "0.5.14"
-    "@platform/cell.types" "0.0.11"
+    "@platform/cell.coord" "0.5.16"
+    "@platform/cell.types" "0.0.13"
+    "@platform/cell.value" "^0.0.5"
     "@platform/libs" "0.1.3"
     "@platform/util.value" "0.5.5"
 
-"@platform/cell.types@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.11.tgz#0c75ce2f6059c0ad05192d0099d6af8a4b6c39dd"
-  integrity sha512-zA4O8WhoakrPGIu5e/rooN3nbf+gkR8A9B+h1Y7HHI2+FzyDPX0A2zIOHYTKycZkcpNvIQXM4X3kJ32ebC1KBg==
+"@platform/cell.types@0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.13.tgz#1211f87440bc7aab6e4dd73494fc8cae94c071ed"
+  integrity sha512-fx2MTckWGUBDqnBeo72LuEthec5cbtHy4XuzkJiU5CxBkEjMHQvrJDPmxAuQgYCoIytBYVBxuMiJ0XcXfN5P3A==
   dependencies:
     "@platform/libs" "0.1.3"
     "@platform/util.diff" "0.0.1"
 
-"@platform/cell.value@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.0.3.tgz#4ffc4fc9e7852363f32a7046c85036a2df5d301a"
-  integrity sha512-/+YRzyqrVUI7gvoPormyQM/6vsMIaizJJvhUSwVDkIvH4exbt9M2ClSws3avopMqXefYyE3d8fmn8FYKs0JHjg==
+"@platform/cell.value@0.0.5", "@platform/cell.value@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.0.5.tgz#c6023dc2654fec3b8f31444a918dd15b8de43856"
+  integrity sha512-vPIudlZxiasnKmSdohMdAi4okYT6k2dP5mmgobaw9K7+jmxNJnalD9uLafLgNeCWZMC+mAaDn1KtJd8YI0SLYQ==
   dependencies:
-    "@platform/cell.types" "0.0.11"
+    "@platform/cell.types" "0.0.13"
     "@platform/libs" "0.1.3"
     "@platform/util.diff" "0.0.1"
     "@platform/util.hash" "0.0.0"
@@ -181,12 +182,12 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.32.tgz#ed64b33bd70d6491dfd1ac21eb0439f3e1f32a81"
   integrity sha512-n/J2QSvVdpK3Q4tz5Pdxq3ouovIzKvKzBD0FH7brtZNlH6TspBu6LTS/VVb/JH0Opi0O5hqKVRAgHEtMuqmb7A==
 
-"@platform/ui.datagrid.types@0.7.9":
-  version "0.7.9"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.9.tgz#fa57ecae2476f03a2b39351d6a62e790c4d56246"
-  integrity sha512-wHg6100Of+3TOz4JvQWK0aztbAvoVHB2Le6/KANTYqkDDphs2fRl37UJqIYDv9UqYC9OctodWjMdfgNG0x19Tw==
+"@platform/ui.datagrid.types@0.7.11":
+  version "0.7.11"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.11.tgz#712e46734824d5e2bb06254f55a65da6d9784fd8"
+  integrity sha512-skcGkUmvItw42JUJiC7jlEqblFr7gHRcEaNipv7pjYu4ccgJNbtpmtmipb7jsPgXS6/dot3RLjDI9nB/Lgvm+Q==
   dependencies:
-    "@platform/cell.types" "0.0.11"
+    "@platform/cell.types" "0.0.13"
     "@platform/react" "0.3.26"
     "@platform/util.diff" "0.0.1"
 

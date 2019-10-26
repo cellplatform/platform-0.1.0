@@ -25,10 +25,16 @@ export type IRefErrorName = t.IError<'REF/name'>;
  * Func errors
  */
 export type FuncError = IFuncError['type'];
-export type IFuncError = IFuncErrorNotFormula | IFuncErrorNotFound | IFuncErrorNotSupported;
+export type IFuncError =
+  | IFuncErrorNotFormula
+  | IFuncErrorNotFound
+  | IFuncErrorNotSupported
+  | IFuncErrorInvoke;
 
 export type IFuncErrorNotFormula = t.IError<'FUNC/notFormula'> & { formula: string };
 export type IFuncErrorNotFound = t.IError<'FUNC/notFound'> & { formula: string };
 
 export type IFuncErrorNotSupported = IFuncErrorNotSupportedRange;
 export type IFuncErrorNotSupportedRange = t.IError<'FUNC/notSupported/range'> & { formula: string };
+
+export type IFuncErrorInvoke = t.IError<'FUNC/invoke'> & { formula: string };
