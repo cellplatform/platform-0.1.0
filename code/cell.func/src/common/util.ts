@@ -1,7 +1,7 @@
-import { coord } from './libs';
+import { coord, id } from './libs';
 import * as t from './types';
 
-export { value, id } from './libs';
+export { value } from './libs';
 
 const refs = coord.refs;
 export const path = refs.path;
@@ -9,6 +9,13 @@ export const isFormula = refs.isFormula;
 export const sort = refs.sort;
 export const toRefTarget = refs.toRefTarget;
 export const getCircularError = refs.getCircularError;
+
+/**
+ * Generate an `eid` (execution ID).
+ */
+export function eid() {
+  return id.shortid();
+}
 
 /**
  * Convert an object `Error` with corresponding func/props.

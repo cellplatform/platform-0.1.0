@@ -14,7 +14,8 @@ export function calculate(args: {
 }) {
   const base = args;
   return {
-    one: (args: { cell: string; refs: t.IRefs }) => one({ ...base, ...args }),
-    many: (args: { cells: string | string[]; refs: t.IRefs }) => many({ ...base, ...args }),
+    one: (args: { cell: string; refs: t.IRefs; eid?: string }) => one({ ...base, ...args }),
+    many: (args: { cells: string | string[]; refs: t.IRefs; eid?: string }) =>
+      many({ ...base, ...args }),
   };
 }

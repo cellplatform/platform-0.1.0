@@ -14,10 +14,10 @@ export function one<D = any>(args: {
   eid?: string; // "execution" identifier.
   events$?: Subject<t.FuncEvent>;
 }): t.FuncPromise<t.IFuncResponse<D>> {
-  const eid = args.eid || util.id.shortid();
+  const timer = time.timer();
+  const { cell, refs, getValue, getFunc } = args;
+  const eid = args.eid || util.eid();
   const promise = new Promise<t.IFuncResponse<D>>(async (resolve, reject) => {
-    const timer = time.timer();
-    const { cell, refs, getValue, getFunc } = args;
     const formula = (await getValue(cell)) || '';
 
     // Fire PRE event.

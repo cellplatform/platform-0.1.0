@@ -11,17 +11,17 @@ export { expect, t, coord };
 export { Observable, Subject } from 'rxjs';
 
 export const toContext = async (
-  cells: t.ICellTable,
+  cells: t.ICellTable | (() => t.ICellTable),
   options: { getFunc?: t.GetFunc; delay?: number } = {},
 ) => {
-  const getCells: t.GetCells = async () => cells;
+  const getCells: t.GetCells = async () => (typeof cells === 'function' ? cells() : cells);
 
   const getValue: t.RefGetValue = async (key: string) => {
-    const cell = cells[key];
+    const cell = (await getCells())[key];
     const value = cell ? cell.value : undefined;
     return typeof value === 'function' ? value() : value;
   };
-  const getKeys: t.RefGetKeys = async () => Object.keys(cells);
+  const getKeys: t.RefGetKeys = async () => Object.keys(await getCells());
 
   const refsTable = refs.table({ getKeys, getValue });
   return {

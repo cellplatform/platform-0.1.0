@@ -71,15 +71,25 @@ describe('func.calc.cells (many)', function() {
       B1: { value: '=1+C1' },
       B2: { value: 3 },
       C1: { value: 5 },
+      D1: { value: '=1+B2' },
     });
-    const res = await many({ cells: 'C1', ...ctx });
-    const cells = res.list.map(e => e.cell);
+    const res1 = await many({ cells: 'C1', ...ctx });
+    const res2 = await many({ cells: ['C1', 'D1'], ...ctx });
 
-    expect(cells.includes('B1')).to.eql(true);
-    expect(cells.includes('A1')).to.eql(true);
+    const cells1 = res1.list.map(e => e.cell);
+    const cells2 = res2.list.map(e => e.cell);
 
-    expect(res.map.A1.data).to.eql(9);
-    expect(res.map.B1.data).to.eql(6);
+    expect(cells1.length).to.eql(2);
+    expect(cells1.includes('B1')).to.eql(true);
+    expect(cells1.includes('A1')).to.eql(true);
+
+    expect(res1.map.A1.data).to.eql(9);
+    expect(res1.map.B1.data).to.eql(6);
+
+    expect(cells2.length).to.eql(3);
+    expect(cells2.includes('B1')).to.eql(true);
+    expect(cells2.includes('A1')).to.eql(true);
+    expect(cells2.includes('D1')).to.eql(true);
 
     /**
      * TEMP 🐷

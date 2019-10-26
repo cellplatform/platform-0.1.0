@@ -11,8 +11,9 @@ export function many(args: {
   getValue: t.RefGetValue;
   getFunc: t.GetFunc;
   events$?: Subject<t.FuncEvent>;
+  eid?: string;
 }): t.FuncPromise<t.IFuncManyResponse> {
-  const eid = util.id.shortid();
+  const eid = args.eid || util.eid();
   const promise = new Promise<t.IFuncManyResponse>(async (resolve, reject) => {
     const timer = time.timer();
     const { refs, getValue, getFunc, events$ } = args;

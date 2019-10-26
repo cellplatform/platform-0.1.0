@@ -46,15 +46,14 @@ export type IFuncTable = {
   calculate(args?: {
     cells?: string | string[];
     events$?: Subject<FuncEvent>;
-  }): Promise<t.IFuncTableResponse>;
+  }): t.FuncPromise<t.IFuncTableResponse>;
 };
 export type IFuncTableResponse = {
   ok: boolean;
   eid: string; // "execution" identifier.
   elapsed: number; // msecs.
   list: t.IFuncResponse[];
-  from: t.ICellTable;
-  to: t.ICellTable;
+  map: t.ICellTable;
 };
 
 /**
