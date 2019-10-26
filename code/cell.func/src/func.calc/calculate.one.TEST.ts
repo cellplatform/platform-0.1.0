@@ -324,6 +324,44 @@ describe('func.calc.cell (one)', function() {
       await test('A2', 'A2/A1:A5');
       await test('A3', 'A3/A1:A5');
     });
+
+    it('error within evaluating func', async () => {
+      const ctx = await testContext(
+        { A1: { value: '=SUM(1,2)' } },
+        {
+          getFunc: async args => {
+            return async args => {
+              throw new Error('Derp');
+            };
+          },
+        },
+      );
+      const res = await one<number>({ cell: 'A1', ...ctx });
+      const error = res.error as t.IFuncError;
+
+      expect(error.type).to.eql('FUNC/invoke');
+      expect(error.message).to.eql('Derp');
+      expect(error.path).to.eql('A1');
+      expect(error.formula).to.eql('=SUM(1,2)');
+    });
+
+    it('error within finding func (getFunc)', async () => {
+      const ctx = await testContext(
+        { A1: { value: '=SUM(1,2)' } },
+        {
+          getFunc: async args => {
+            throw new Error('Not found');
+          },
+        },
+      );
+      const res = await one<number>({ cell: 'A1', ...ctx });
+      const error = res.error as t.IFuncError;
+
+      expect(error.type).to.eql('FUNC/invoke');
+      expect(error.message).to.eql('Not found');
+      expect(error.path).to.eql('A1');
+      expect(error.formula).to.eql('=SUM(1,2)');
+    });
   });
 
   describe('binary-expression', () => {

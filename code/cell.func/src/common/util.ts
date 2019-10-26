@@ -35,18 +35,32 @@ export const fromErrorObject = (
   err: any,
   options: { path?: t.IFuncError['path']; formula?: t.IFuncError['formula'] } = {},
 ): t.IFuncError => {
+  const toObject = (args: {
+    type: t.IFuncError['type'];
+    message: string;
+    path?: string;
+    formula?: string;
+  }) => {
+    const res = {
+      type: args.type,
+      message: args.message,
+      path: args.path || options.path || '',
+      formula: args.formula || options.formula || '',
+    };
+    return res as t.IFuncError;
+  };
+
   if (err.type) {
     const { type, message, path, formula } = err as t.IFuncError;
-    const res = {
+    return toObject({
       type,
       message,
       path: path || options.path || '',
       formula: formula || options.formula || '',
-    };
-    return res as t.IFuncError;
+    });
   } else {
-    const error = err instanceof Error ? err : new Error(`Error object not provided.`);
-    throw error;
+    const message = err instanceof Error ? err.message : `Error object not provided.`;
+    return toObject({ type: 'FUNC/invoke', message });
   }
 };
 
