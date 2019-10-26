@@ -92,14 +92,16 @@ describe('func.table', () => {
         A2: { value: '=3+A3' },
         A3: { value: 5 },
         D1: { value: '=1+A3' },
+        Z1: { value: 'not involved' },
+        Z9: { value: '=Z1' },
       });
 
       const table = func.table({ ...ctx });
       const res1 = await table.calculate();
       const res2 = await table.calculate({ cells: 'A1' });
 
-      expect(Object.keys(res1.map).sort()).to.eql(['A1', 'A2', 'D1']);
-      expect(Object.keys(res2.map).sort()).to.eql(['A1']);
+      expect(Object.keys(res1.map).sort()).to.eql(['A1', 'A2', 'D1', 'Z9']);
+      expect(Object.keys(res2.map).sort()).to.eql(['A1', 'A2', 'D1']); // NB: This could probably trimmed down, it includes cells that ref the same thing, but are not part of the calculation.
     });
 
     it('recalculate: REF removed (calculate all)', async () => {
@@ -117,27 +119,30 @@ describe('func.table', () => {
       const ctx = await testContext(() => cells);
       const table = func.table({ ...ctx });
 
-      const res1 = await table.calculate({});
+      const res1 = await table.calculate();
 
       cells = cells2;
-      const res2 = await table.calculate({});
+      const res2 = await table.calculate();
 
       expect(Object.keys(res1.map).sort()).to.eql(['A1', 'A2']);
       expect(res2.map).to.eql({
-        A1: {}, // NB: Empty object signifies removal.
         A2: { value: '=A3', props: { value: 456 } },
       });
     });
 
     it('recalculate: REF removed (calculate subset)', async () => {
-      const cells1: t.ICellTable = {
+      const cells1: t.ICellTable<any> = {
         A1: { value: '=A2' },
         A2: { value: '=A3' },
         A3: { value: 123 },
+        A4: { value: '=A1', props: { style: { bold: true } } },
+        Z9: { value: 'Z9' },
       };
-      const cells2: t.ICellTable = {
+      const cells2: t.ICellTable<any> = {
         A2: { value: '=A3' },
         A3: { value: 456 },
+        A4: { value: '=A1', props: { value: 123, style: { bold: true } } },
+        Z9: { value: 'Z9' },
       };
 
       let cells = cells1;
@@ -145,12 +150,14 @@ describe('func.table', () => {
       const table = func.table({ ...ctx });
 
       const res1 = await table.calculate({ cells: 'A1' });
+      expect(Object.keys(res1.map).sort()).to.eql(['A1', 'A2', 'A4']);
 
       cells = cells2;
       const res2 = await table.calculate({ cells: 'A1' });
+      const A4 = res2.map.A4 as t.ICellData;
 
-      expect(Object.keys(res1.map)).to.eql(['A1']);
-      expect(res2.map).to.eql({ A1: {} }); // NB: Empty object signifies removal.
+      expect(Object.keys(res2.map).sort()).to.eql(['A4']);
+      expect(A4.props).to.eql({ style: { bold: true } });
     });
 
     it('recalculate: REF changed', async () => {

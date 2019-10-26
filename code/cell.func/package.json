@@ -14,6 +14,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/cache": "0.2.0",
     "@platform/cell.coord": "0.5.16",
     "@platform/cell.types": "0.0.13",
     "@platform/cell.value": "^0.0.5",

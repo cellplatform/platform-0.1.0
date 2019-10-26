@@ -14,6 +14,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/cache": "0.2.0",
     "@platform/libs": "0.1.3",
     "@platform/util.diff": "0.0.1"
   },
