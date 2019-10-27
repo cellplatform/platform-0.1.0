@@ -6,7 +6,6 @@ export type TabstripAxis = 'x' | 'y';
 export type TabFactory<D = any> = (e: TabFactoryArgs<D>) => React.ReactNode;
 export type TabFactoryArgs<D = any> = {
   index: number;
-  collection?: string | number;
   data: D;
   axis: TabstripAxis;
   isVertical: boolean;
@@ -67,6 +66,7 @@ export type ITabMouse<D = any> = {
   button: 'LEFT' | 'RIGHT';
   data: D;
   axis: TabstripAxis;
+  isCancelled: boolean;
   cancel: () => void;
 };
 
