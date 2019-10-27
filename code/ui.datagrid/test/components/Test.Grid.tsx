@@ -273,6 +273,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         <Hr margin={5} />
         {this.button('screen: none', () => this.state$.next({ fullScreenCell: undefined }))}
         {this.button('screen: A3', () => this.state$.next({ fullScreenCell: 'A3' }))}
+        {this.button('screen: Z9 (none)', () => this.state$.next({ fullScreenCell: 'Z9' }))}
 
         {/* <Hr margin={5} />
             {this.button(
