@@ -40,9 +40,11 @@ export const CSS = {
       // SCREEN: 'p-dg-cell-error',
     },
     EDITOR: {
+      BASE: 'p-dg-cellEditor',
       DEFAULT: 'p-dg-cellEditor-default',
     },
     SCREEN: {
+      BASE: 'p-dg-cellScreen',
       DEFAULT: 'p-dg-cellScreen-default',
     },
   },

@@ -14,6 +14,7 @@ import {
   GlamorValue,
   Handsontable as TableLib,
   t,
+  util,
 } from '../../common';
 import { FactoryManager } from '../../factory';
 import * as render from '../../render';
@@ -26,6 +27,8 @@ export type IDataGridProps = {
   grid: Grid;
   factory: t.GridFactory;
   Handsontable?: Handsontable;
+
+  fullScreenCell?: string; // Key of the cell that defines a "full screen" view.
 
   events$?: Subject<t.GridEvent>;
   initial?: t.IInitialGridState;
@@ -194,6 +197,16 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     return this.grid.events$;
   }
 
+  public get screenView() {
+    const { fullScreenCell } = this.props;
+    const cell = fullScreenCell ? this.grid.data.cells[fullScreenCell] : undefined;
+    const props = cell ? util.toGridCellProps(cell.props) : undefined;
+    // const screen
+    const screen = props && props.view ? props.view.screen : undefined;
+
+    return screen && cell ? { screen, cell } : undefined;
+  }
+
   /**
    * [Methods]
    */
@@ -234,16 +247,52 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       base: css({
         position: 'relative',
         overflow: 'hidden',
+      }),
+      grid: css({
+        Absolute: 0,
         userSelect: 'none',
         visibility: this.isReady ? 'visible' : 'hidden',
       }),
     };
     return (
-      <div
-        ref={this.elRef}
-        className={CSS.CLASS.GRID.BASE}
-        {...css(styles.base, this.props.style)}
-      />
+      <div {...css(styles.base, this.props.style)}>
+        <div ref={this.elRef} className={CSS.CLASS.GRID.BASE} {...styles.grid} />
+        {this.renderFullScreen()}
+      </div>
+    );
+  }
+
+  private renderFullScreen() {
+    const grid = this.grid;
+    const { factory, fullScreenCell: key } = this.props;
+    const view = this.screenView;
+    if (!key || !view || !factory) {
+      return null;
+    }
+
+    const data = view.cell;
+    const props = util.toGridCellProps(data.props);
+    const req: t.IGridFactoryRequest = {
+      type: 'SCREEN',
+      grid,
+      cell: { key, data, props },
+    };
+
+    const styles = {
+      base: css({
+        Absolute: 0,
+        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0)', // NB: Invisible mask
+        zIndex: 9999,
+      }),
+    };
+
+    const className = `${CSS.CLASS.SCREEN.BASE} ${view.screen.className || ''}`;
+
+    return (
+      <div {...styles.base} className={className}>
+        {factory(req)}
+      </div>
     );
   }
 }
