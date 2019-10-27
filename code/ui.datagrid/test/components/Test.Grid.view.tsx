@@ -9,6 +9,7 @@ import {
   GlamorValue,
   Handsontable as HandsontableLib,
   markdown,
+  color,
   t,
 } from '../common';
 import { DebugEditor } from './Debug.Editor';
@@ -142,7 +143,8 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
   }
 
   private factory: t.GridFactory = req => {
-    const view = req.cell.props.view;
+    const cell = req.cell;
+    const view = cell.props.view;
     if (req.type === 'EDITOR') {
       return this.renderEditor(req);
     }
@@ -168,12 +170,26 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
       const type = view.screen.type;
       const styles = {
         base: css({
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: 'rgba(255, 255, 255, 0.6)',
           flex: 1,
+        }),
+        inner: css({
+          Absolute: 40,
+          border: `solid 1px ${color.format(-0.2)}`,
           Flex: 'center-center',
+          backgroundColor: color.format(1),
+          boxShadow: `0 0 8px 0 ${color.format(-0.1)}`,
         }),
       };
-      return <div {...styles.base}>{type}</div>;
+      return (
+        <div {...styles.base}>
+          <div {...styles.inner}>
+            <div>
+              {type}: {cell.key}
+            </div>
+          </div>
+        </div>
+      );
     }
 
     console.log(`Factory type '${req.type}' not supported by test.`);
