@@ -227,21 +227,13 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         PaddingX: 12,
         fontSize: 14,
       }),
-      edge: css({
-        Flex: 'horizontal',
-      }),
-      brace: css({ MarginX: 3, opacity: 0.5 }),
+      edge: css({ Flex: 'horizontal' }),
     };
-    const elOpen = <div {...styles.brace}>(</div>;
-    const elClose = <div {...styles.brace}>)</div>;
     return (
       <div {...styles.base}>
         <div {...styles.edge}>{/* left */}</div>
         <div {...styles.edge}>
-          <LinkButton label={'refresh'} onClick={this.refreshHandler({ force: false })} />
-          {elOpen}
-          <LinkButton label={'force'} onClick={this.refreshHandler({ force: true })} />
-          {elClose}
+          <LinkButton label={'refresh'} onClick={this.refreshHandler({ force: true })} />
         </div>
       </div>
     );

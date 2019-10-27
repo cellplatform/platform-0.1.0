@@ -3,7 +3,7 @@ import { t } from '../common';
 export type IGridCellProps = Partial<IGridCellPropsAll>;
 export type IGridCellPropsAll = t.ICellProps & {
   style: IGridCellPropsStyle;
-  merge: ICellPropsMerge;
+  merge: IGridCellPropsMerge;
   view: IGridCellPropsView;
 };
 
@@ -14,8 +14,8 @@ export type IGridCellPropsStyleAll = {
   underline: boolean;
 };
 
-export type ICellPropsMerge = Partial<ICellPropsMergeAll>;
-export type ICellPropsMergeAll = {
+export type IGridCellPropsMerge = Partial<IGridCellPropsMergeAll>;
+export type IGridCellPropsMergeAll = {
   rowspan: number;
   colspan: number;
 };
@@ -23,8 +23,13 @@ export type ICellPropsMergeAll = {
 /**
  * The details of a view to display for the cell.
  */
-export type IGridCellPropsView<V extends string = string> = Partial<ICellPropsViewAll<V>>;
-export type ICellPropsViewAll<V extends string = string> = {
+export type IGridCellPropsView = Partial<IGridCellPropsViewAll>;
+export type IGridCellPropsViewAll = {
+  cell: ICellView;
+  editor: ICellView;
+  screen: ICellView;
+};
+export type ICellView<V extends string = string> = {
   type: V;
-  className: string;
+  className?: string;
 };

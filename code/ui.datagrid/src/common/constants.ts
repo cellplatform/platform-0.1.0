@@ -37,6 +37,15 @@ export const CSS = {
       UNDERLINE: 'p-dg-cell-underline',
       FORMULA: 'p-dg-cell-formula',
       ERROR: 'p-dg-cell-error',
+      // SCREEN: 'p-dg-cell-error',
+    },
+    EDITOR: {
+      BASE: 'p-dg-cellEditor',
+      DEFAULT: 'p-dg-cellEditor-default',
+    },
+    SCREEN: {
+      BASE: 'p-dg-cellScreen',
+      DEFAULT: 'p-dg-cellScreen-default',
     },
   },
 };
@@ -52,13 +61,17 @@ const KEY_BINDINGS: t.KeyBindings<t.GridCommand> = [
 
 type CellPropDefaults = {
   style: t.IGridCellPropsStyleAll;
-  merge: t.ICellPropsMergeAll;
-  view: t.ICellPropsViewAll;
+  merge: t.IGridCellPropsMergeAll;
+  view: t.IGridCellPropsViewAll;
 };
 const CELL_PROPS: CellPropDefaults = {
   style: { bold: false, italic: false, underline: false },
   merge: { rowspan: 1, colspan: 1 },
-  view: { type: 'DEFAULT', className: CSS.CLASS.CELL.DEFAULT },
+  view: {
+    cell: { type: 'DEFAULT', className: CSS.CLASS.CELL.DEFAULT },
+    editor: { type: 'DEFAULT', className: CSS.CLASS.EDITOR.DEFAULT },
+    screen: { type: 'DEFAULT', className: CSS.CLASS.SCREEN.DEFAULT },
+  },
 };
 
 export const DEFAULT = {

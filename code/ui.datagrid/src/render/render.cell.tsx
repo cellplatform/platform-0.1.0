@@ -39,7 +39,8 @@ export const cellRenderer = (grid: t.IGrid, factory: FactoryManager) => {
 
     const props: t.IGridCellProps = cell ? cell.props || {} : {};
     const style: t.IGridCellPropsStyle = props.style || {};
-    const view: t.IGridCellPropsView = props.view || constants.DEFAULT.CELL.PROPS.view;
+    const view: t.ICellView =
+      (props.view && props.view.cell) || constants.DEFAULT.CELL.PROPS.view.cell;
 
     let className = CELL.BASE;
     const add = (isRequired: boolean | undefined, value?: string) =>

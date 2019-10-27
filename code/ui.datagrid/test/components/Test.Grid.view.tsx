@@ -17,6 +17,7 @@ export type DataGrid = datagrid.DataGrid;
 
 export type ITestGridViewProps = {
   grid: datagrid.Grid;
+  fullScreenCell?: string;
   events$?: Subject<t.GridEvent>;
   editorType: t.TestEditorType;
   style?: GlamorValue;
@@ -130,6 +131,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
       <datagrid.DataGrid
         grid={this.props.grid}
         factory={this.factory}
+        fullScreenCell={this.props.fullScreenCell}
         Handsontable={this.Table}
         events$={this.events$}
         initial={{ selection: 'A1' }}
@@ -140,33 +142,45 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
   }
 
   private factory: t.GridFactory = req => {
-    switch (req.type) {
-      case 'EDITOR':
-        return this.renderEditor();
-
-      case 'CELL':
-        const view = req.cell.props.view;
-        if (!view.type) {
-          return formatValue(req.cell.data);
-        } else {
-          const styles = {
-            base: css({
-              Absolute: 0,
-              backgroundColor: 'rgba(255, 0, 0, 0.1)',
-              fontSize: 11,
-              Flex: 'center-center',
-            }),
-          };
-          return <div {...styles.base}>CUSTOM: {view.type}</div>;
-        }
-
-      default:
-        console.log(`Factory type '${req.type}' not supported by test.`);
-        return null;
+    const view = req.cell.props.view;
+    if (req.type === 'EDITOR') {
+      return this.renderEditor(req);
     }
+
+    if (req.type === 'CELL') {
+      if (!view.cell || !view.cell.type) {
+        // Default view.
+        return formatValue(req.cell.data);
+      } else {
+        const styles = {
+          base: css({
+            Absolute: 0,
+            backgroundColor: 'rgba(255, 0, 0, 0.1)',
+            fontSize: 11,
+            Flex: 'center-center',
+          }),
+        };
+        return <div {...styles.base}>CUSTOM: {view.cell.type}</div>;
+      }
+    }
+
+    if (req.type === 'SCREEN' && view.screen) {
+      const type = view.screen.type;
+      const styles = {
+        base: css({
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          flex: 1,
+          Flex: 'center-center',
+        }),
+      };
+      return <div {...styles.base}>{type}</div>;
+    }
+
+    console.log(`Factory type '${req.type}' not supported by test.`);
+    return null;
   };
 
-  private renderEditor = () => {
+  private renderEditor = (req: datagrid.IGridFactoryRequest) => {
     switch (this.props.editorType) {
       case 'default':
         return <CellEditor />;
