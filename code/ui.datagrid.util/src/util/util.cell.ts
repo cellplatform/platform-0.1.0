@@ -10,7 +10,7 @@ export function toGridCellProps(input?: t.IGridCellProps): t.IGridCellPropsAll {
   const props = input || {};
   const value: t.CellValue = props.value;
   const style: t.IGridCellPropsStyle = props.style || {};
-  const merge: t.ICellPropsMerge = props.merge || {};
+  const merge: t.IGridCellPropsMerge = props.merge || {};
   const view: t.IGridCellPropsView = props.view || {};
   return { value, style, merge, view };
 }
