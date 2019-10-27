@@ -142,11 +142,12 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
   private factory: t.GridFactory = req => {
     switch (req.type) {
       case 'EDITOR':
-        return this.renderEditor();
+        return this.renderEditor(req);
 
       case 'CELL':
-        const view = req.cell.props.view;
-        if (!view.type) {
+        const view = req.cell.props.view.cell;
+        if (!view || !view.type) {
+          // Default view.
           return formatValue(req.cell.data);
         } else {
           const styles = {
@@ -160,13 +161,16 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
           return <div {...styles.base}>CUSTOM: {view.type}</div>;
         }
 
+      case 'SCREEN':
+        return <div>Screen</div>;
+
       default:
         console.log(`Factory type '${req.type}' not supported by test.`);
         return null;
     }
   };
 
-  private renderEditor = () => {
+  private renderEditor = (req: datagrid.IGridFactoryRequest) => {
     switch (this.props.editorType) {
       case 'default':
         return <CellEditor />;

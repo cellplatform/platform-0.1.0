@@ -5,7 +5,7 @@ import { t } from '../common';
  * A factory function that produces a visual component for display within the grid.
  */
 export type GridFactory = (req: IGridFactoryRequest) => ReactNode | null;
-export type GridFactoryType = 'EDITOR' | 'CELL';
+export type GridFactoryType = 'CELL' | 'EDITOR' | 'SCREEN';
 
 /**
  * Arguments used to determine what and how to produce the visual

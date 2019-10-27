@@ -25,14 +25,14 @@ describe('util.cell', () => {
           value: 456, // NB: Display value.
           style: { bold: true },
           merge: { colspan: 3 },
-          view: { type: 'SHOP' },
+          view: { screen: { type: 'SHOP' } },
         },
       };
       const props = util.toGridCellProps(A2.props);
       expect(props.style.bold).to.eql(true);
       expect(props.merge.colspan).to.eql(3);
       expect(props.value).to.eql(456);
-      expect(props.view.type).to.eql('SHOP');
+      expect(props.view.screen && props.view.screen.type).to.eql('SHOP');
     });
   });
 });
