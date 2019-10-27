@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 
 import { css, s, t } from '../../common';
 
-export type IElement<V = any> = s.SortableElementProps & { value: V };
+export type IElement<V = any> = s.SortableElementProps & { value: V; tabIndex: number };
 export type IContainer<V = any> = s.SortableContainerProps & { items: V[] };
 
 export function sortable(args: {
@@ -30,7 +30,9 @@ export function sortable(args: {
         data,
         button,
         axis,
+        isCancelled: false,
         cancel() {
+          payload.isCancelled = true;
           e.preventDefault();
           e.stopPropagation();
         },
@@ -42,11 +44,12 @@ export function sortable(args: {
   /**
    * Single item within a list.
    */
+  const styles = {
+    base: css({ position: 'relative' }),
+  };
   const Item = s.SortableElement((e: IElement) => {
-    const styles = {
-      base: css({ position: 'relative' }),
-    };
-    const { index, value: data, collection } = e;
+    const data = e.value;
+    const index = e.tabIndex;
     const isFirst = index === 0;
     const isLast = index === total - 1;
     const isDragging = getDraggingTabIndex() === index;
@@ -56,7 +59,6 @@ export function sortable(args: {
       axis,
       index,
       data,
-      collection,
       isVertical,
       isHorizontal,
       isFirst,
@@ -94,7 +96,7 @@ export function sortable(args: {
     return (
       <div {...styles.base}>
         {e.items.map((value, index) => (
-          <Item key={`tab-${index}`} index={index} value={value} />
+          <Item key={`tab-${index}`} index={index} tabIndex={index} value={value} />
         ))}
       </div>
     );
