@@ -11,6 +11,7 @@ import {
   markdown,
   color,
   t,
+  util,
 } from '../common';
 import { DebugEditor } from './Debug.Editor';
 import { MyScreen } from './MyScreen';
@@ -143,15 +144,16 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
 
   private factory: t.GridFactory = req => {
     const cell = req.cell;
-    const view = cell.props.view;
+
     if (req.type === 'EDITOR') {
       return this.renderEditor(req);
     }
 
-    if (req.type === 'CELL') {
-      if (!view.cell || !view.cell.type) {
+    if (cell && req.type === 'CELL') {
+      const view = cell ? cell.props.view : undefined;
+      if (view && (!view.cell || !view.cell.type)) {
         // Default view.
-        return formatValue(req.cell.data);
+        return formatValue(cell.data);
       } else {
         const styles = {
           base: css({
@@ -161,13 +163,16 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
             Flex: 'center-center',
           }),
         };
-        return <div {...styles.base}>CUSTOM: {view.cell.type}</div>;
+        const type = view && view.cell ? view.cell.type : 'Unknown';
+        return <div {...styles.base}>CUSTOM: {type}</div>;
       }
     }
 
-    if (req.type === 'SCREEN' && view.screen) {
-      const type = view.screen.type;
-      return <MyScreen cell={cell.key} />;
+    if (req.type === 'SCREEN') {
+      const view = cell ? cell.props.view : undefined;
+      if (view && view.screen && view.screen.type === 'MyScreen') {
+        return <MyScreen />;
+      }
     }
 
     console.log(`Factory type '${req.type}' not supported by test.`);

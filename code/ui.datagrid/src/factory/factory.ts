@@ -54,7 +54,7 @@ export class FactoryManager {
 
     const props = util.toGridCellProps(args.cell ? args.cell.props : {});
     const data: t.IGridCellData<t.IGridCellPropsAll> = { ...args.cell, props };
-    const cell: t.IGridFactoryRequest['cell'] = { key, data, props };
+    const cell: t.IGridFactoryRequest['cell'] = { key, props, data };
 
     const req: t.IGridFactoryRequest = { type, grid, cell };
     return this.factory(req);
