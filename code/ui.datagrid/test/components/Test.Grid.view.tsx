@@ -149,8 +149,8 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
       return this.renderEditor(req);
     }
 
-    if (cell && req.type === 'CELL') {
-      const view = cell ? cell.props.view : undefined;
+    if (req.type === 'CELL') {
+      const view = cell.props.view;
       if (view && (!view.cell || !view.cell.type)) {
         // Default view.
         return formatValue(cell.data);
@@ -169,13 +169,13 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     }
 
     if (req.type === 'SCREEN') {
-      const view = cell ? cell.props.view : undefined;
+      const view = cell.props.view;
       if (view && view.screen && view.screen.type === 'MyScreen') {
         return <MyScreen />;
       }
     }
 
-    console.log(`Factory type '${req.type}' not supported by test.`);
+    console.log(`Factory type '${req.type}' not supported by test.`, req);
     return null;
   };
 
