@@ -11,7 +11,7 @@ import * as t from './common/types';
  *
  *      export class MyView extends React.PureComponent {
  *        public static contextType = shell.Context;
- *        public context!: shell.ReactContext
+ *        public context!: shell.IShellContext
  *      }
  *
  * See:
@@ -28,7 +28,7 @@ Context.displayName = '@platform/shell/Context';
  *
  *      export class MyView extends React.PureComponent {
  *        public static contextType = shell.Context;
- *        public context!: shell.ReactContext
+ *        public context!: shell.IShellContext
  *      }
  *
  */
