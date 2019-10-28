@@ -8,8 +8,8 @@ export function init(args: { grid: t.IGrid }) {
   const { grid } = args;
 
   // Common command-event-firing helper.
-  const fire = (command: t.GridCommand, e: t.IGridKeydown) => {
-    grid.command({ command, cancel: () => e.cancel() });
+  const fire = (command: t.GridCommand, e: t.IGridKeydown, props: {} = {}) => {
+    grid.command({ command, props, cancel: () => e.cancel() });
   };
 
   // Monitor keyboard commands.

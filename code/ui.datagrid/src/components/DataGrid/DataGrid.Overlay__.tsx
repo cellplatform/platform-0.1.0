@@ -3,20 +3,20 @@ import * as React from 'react';
 import { css, GlamorValue, t, util, constants, createProvider } from '../common';
 const CSS = constants.CSS;
 
-export type IDataGridScreenProps = {
+export type IDataGridOverlayProps = {
   grid: t.IGrid;
   factory: t.GridFactory;
   screenCell: string;
   style?: GlamorValue;
 };
 
-export class DataGridScreen extends React.PureComponent<IDataGridScreenProps> {
+export class DataGridOverlay extends React.PureComponent<IDataGridOverlayProps> {
   private Provider!: React.FunctionComponent;
 
   /**
    * [Lifecycle]
    */
-  constructor(props: IDataGridScreenProps) {
+  constructor(props: IDataGridOverlayProps) {
     super(props);
 
     const ctx: t.ICellContext = { cell: this.cell };

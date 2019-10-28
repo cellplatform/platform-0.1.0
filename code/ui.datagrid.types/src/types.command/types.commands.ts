@@ -3,13 +3,13 @@ import { t } from '../common';
 /**
  * Commands
  */
-export type GridCommand = GridClipboardCommand | GridStyleCommand;
+export type GridCommand = GridClipboardCommand | GridStyleCommand | GridOverlayCommand;
 
 /**
  * Overlay (screen)
  */
 export type GridOverlayCommand = 'OVERLAY';
-export type IGridOverlayCommand = IGridCommand<GridOverlayCommand, { screen: t.ICellScreenView }>;
+export type IGridOverlayCommand = IGridCommand<GridOverlayCommand, { screen?: t.ICellScreenView }>;
 
 /**
  * Clipboard

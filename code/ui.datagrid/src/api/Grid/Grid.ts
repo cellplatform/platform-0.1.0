@@ -207,6 +207,20 @@ export class Grid implements t.IGrid {
       .subscribe(e => this.fire({ type: 'GRID/blur', payload: { grid: this } }));
 
     /**
+     * Manage command events.
+     */
+    const command$ = this.events$.pipe(
+      filter(e => e.type === 'GRID/command'),
+      map(e => e.payload as t.IGridCommand),
+    );
+    command$
+      .pipe(
+        filter(e => e.command === 'OVERLAY'),
+        map(e => e as t.IGridOverlayCommand),
+      )
+      .subscribe(e => (this._.overlay = e.props.screen));
+
+    /**
      * Recalculate grid when cells change.
      */
     this.events$
@@ -245,6 +259,7 @@ export class Grid implements t.IGrid {
     rows: ({} as unknown) as t.IGridData['rows'],
     lastSelection: (undefined as unknown) as t.IGridSelection,
     calc: (undefined as unknown) as t.IGridCalculate,
+    overlay: undefined as t.ICellScreenView | undefined,
   };
 
   public clipboard: t.IGridClipboardPending | undefined;
@@ -395,6 +410,14 @@ export class Grid implements t.IGrid {
     const cells = this.data.cells;
     const selection = this.selection;
     return toSelectionValues({ cells, selection });
+  }
+
+  /**
+   * Retrieves the current overlay screen.
+   * Set via `GRID/command`: [OVERLAY]
+   */
+  public get overlay(): t.ICellScreenView | undefined {
+    return this._.overlay;
   }
 
   /**

@@ -19,7 +19,6 @@ export type DataGrid = datagrid.DataGrid;
 
 export type ITestGridViewProps = {
   grid: datagrid.Grid;
-  screenCell?: string;
   events$?: Subject<t.GridEvent>;
   editorType: t.TestEditorType;
   style?: GlamorValue;
@@ -133,7 +132,6 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
       <datagrid.DataGrid
         grid={this.props.grid}
         factory={this.factory}
-        screenCell={this.props.screenCell}
         Handsontable={this.Table}
         events$={this.events$}
         initial={{ selection: 'A1' }}

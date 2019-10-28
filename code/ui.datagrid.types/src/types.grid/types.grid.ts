@@ -19,6 +19,7 @@ export type IGridProperties = {
   readonly keyBindings: KeyBindings<t.GridCommand>;
   readonly defaults: IGridDefaults;
   readonly calc: IGridCalculate;
+  readonly overlay: t.ICellScreenView | undefined;
   clipboard?: IGridClipboardPending;
 };
 export type IGridMethods = {
@@ -50,10 +51,10 @@ export type IGridMethods = {
 };
 
 export type GridFireEvent = (e: t.GridEvent) => IGrid;
-export type GridFireCommand = <P = {}>(args: GridFireCommandArgs<P>) => IGrid;
-export type GridFireCommandArgs<P = {}> = {
-  command: t.GridCommand;
-  props?: P;
+export type GridFireCommand = <C extends t.IGridCommand>(args: GridFireCommandArgs<C>) => IGrid;
+export type GridFireCommandArgs<C extends t.IGridCommand> = {
+  command: C['command'];
+  props: C['props'];
   cancel?: () => void;
 };
 
