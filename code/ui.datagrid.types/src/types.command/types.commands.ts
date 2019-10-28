@@ -6,6 +6,12 @@ import { t } from '../common';
 export type GridCommand = GridClipboardCommand | GridStyleCommand;
 
 /**
+ * Overlay (screen)
+ */
+export type GridOverlayCommand = 'OVERLAY';
+export type IGridOverlayCommand = IGridCommand<GridOverlayCommand, { screen: t.ICellScreenView }>;
+
+/**
  * Clipboard
  */
 export type GridClipboardCommand = GridClipboardReadCommand | GridClipboardPasteCommand;
@@ -31,7 +37,7 @@ export type GridStyleUnderlineCommand = 'UNDERLINE';
 export type IGridStyleCommand = IGridCommand<GridStyleCommand>;
 
 /**
- * Event payload.
+ * Event Payload
  */
 export type IGridCommand<C = GridCommand, P = {}> = {
   command: C;

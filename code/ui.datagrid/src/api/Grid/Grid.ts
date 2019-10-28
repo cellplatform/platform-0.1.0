@@ -129,11 +129,10 @@ export class Grid implements t.IGrid {
     this._.id = `grid/${(table as any).guid.replace(/^ht_/, '')}`;
 
     /**
-     * Initialize controllers.
+     * Initialize behavior controllers.
      */
-    const fire = this.fire;
-    keyboard.init({ grid: this, fire });
-    commands.init({ grid: this, fire });
+    keyboard.init({ grid: this });
+    commands.init({ grid: this, fire: this.fire });
 
     /**
      * Debounced redraw.
@@ -846,8 +845,26 @@ export class Grid implements t.IGrid {
     return this;
   }
 
-  /**
-   * [Internal]
-   */
-  public fire: t.FireGridEvent = e => this._.events$.next(e);
+  public command: t.GridFireCommand = args => {
+    const payload: t.IGridCommand = {
+      command: args.command,
+      grid: this,
+      selection: this.selection,
+      props: args.props || {},
+      isCancelled: false,
+      cancel: () => {
+        payload.isCancelled = true;
+        if (args.cancel) {
+          args.cancel();
+        }
+      },
+    };
+    this.fire({ type: 'GRID/command', payload });
+    return this;
+  };
+
+  public fire: t.GridFireEvent = e => {
+    this._.events$.next(e);
+    return this;
+  };
 }

@@ -4,28 +4,17 @@ import { BindingMonitor } from './BindingMonitor';
 /**
  * Initialize all controller modules.
  */
-export function init(args: { grid: t.IGrid; fire: t.FireGridEvent }) {
+export function init(args: { grid: t.IGrid }) {
   const { grid } = args;
 
   // Common command-event-firing helper.
-  const fire: t.FireGridKeyboardCommandEvent = (command, e, props) => {
-    const payload: t.IGridCommand = {
-      command,
-      grid,
-      selection: grid.selection,
-      props: props || {},
-      isCancelled: false,
-      cancel: () => {
-        payload.isCancelled = true;
-        e.cancel();
-      },
-    };
-    args.fire({ type: 'GRID/command', payload });
+  const fire = (command: t.GridCommand, e: t.IGridKeydown) => {
+    grid.command({ command, cancel: () => e.cancel() });
   };
 
   // Monitor keyboard commands.
   const bindings = new BindingMonitor({ grid });
-  const monitor = (cmd: t.GridCommand) => bindings.monitor(cmd, e => fire(cmd, e));
+  const monitor = (command: t.GridCommand) => bindings.monitor(command, e => fire(command, e));
 
   // Clipboard.
   monitor('CUT');
