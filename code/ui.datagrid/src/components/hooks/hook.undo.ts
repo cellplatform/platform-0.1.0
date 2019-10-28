@@ -1,5 +1,5 @@
 import { Grid } from '../../api';
-import { t, coord } from '../../common';
+import { t, coord } from '../common';
 
 /**
  * Handles bubbling mouse events.

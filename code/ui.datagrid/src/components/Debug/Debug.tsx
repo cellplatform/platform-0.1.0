@@ -13,7 +13,7 @@ import {
   R,
   t,
   value as valueUtil,
-} from '../../common';
+} from '../common';
 import { Button, IButtonProps, ObjectView } from '../primitives';
 
 const { deleteUndefined } = valueUtil;

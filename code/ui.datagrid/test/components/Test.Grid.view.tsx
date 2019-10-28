@@ -19,7 +19,7 @@ export type DataGrid = datagrid.DataGrid;
 
 export type ITestGridViewProps = {
   grid: datagrid.Grid;
-  fullScreenCell?: string | boolean;
+  screenCell?: string;
   events$?: Subject<t.GridEvent>;
   editorType: t.TestEditorType;
   style?: GlamorValue;
@@ -133,7 +133,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
       <datagrid.DataGrid
         grid={this.props.grid}
         factory={this.factory}
-        fullScreenCell={this.props.fullScreenCell}
+        screenCell={this.props.screenCell}
         Handsontable={this.Table}
         events$={this.events$}
         initial={{ selection: 'A1' }}

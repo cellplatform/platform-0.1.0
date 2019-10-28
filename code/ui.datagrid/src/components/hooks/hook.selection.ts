@@ -1,5 +1,5 @@
 import { Grid } from '../../api';
-import { t } from '../../common';
+import { t } from '../common';
 
 /**
  * Factory for creating a grid's `afterSelection` handler.
