@@ -5,6 +5,8 @@ import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
 import { Grid } from '../../api';
+import { FactoryManager } from '../../factory';
+import * as render from '../../render';
 import {
   constants,
   containsFocus,
@@ -14,11 +16,9 @@ import {
   GlamorValue,
   Handsontable as TableLib,
   t,
-  util,
-} from '../../common';
-import { FactoryManager } from '../../factory';
-import * as render from '../../render';
+} from '../common';
 import { getSettings } from '../settings';
+import { DataGridScreen } from './DataGrid.Screen';
 import { IGridRefsPrivate } from './types.private';
 
 const { CSS } = constants;
@@ -28,7 +28,7 @@ export type IDataGridProps = {
   factory: t.GridFactory;
   Handsontable?: Handsontable;
 
-  fullScreenCell?: string | boolean; // Key of the cell that defines a "full screen" view. True === the currently selected cell
+  screenCell?: string; // Key of the cell that defines a "full screen" view.
 
   events$?: Subject<t.GridEvent>;
   initial?: t.IInitialGridState;
@@ -197,16 +197,6 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     return this.grid.events$;
   }
 
-  public get screenView() {
-    const { fullScreenCell } = this.props;
-    const selectedCell = this.grid.selection.cell;
-    const key = fullScreenCell === true && selectedCell ? selectedCell : (fullScreenCell as string);
-    const cell = key ? this.grid.data.cells[key] : undefined;
-    const props = cell ? util.toGridCellProps(cell.props) : undefined;
-    const screen = props && props.view ? props.view.screen : undefined;
-    return screen && cell ? { key, screen, cell } : undefined;
-  }
-
   /**
    * [Methods]
    */
@@ -243,6 +233,8 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
    */
 
   public render() {
+    const { factory, screenCell } = this.props;
+    const grid = this.grid;
     const styles = {
       base: css({
         position: 'relative',
@@ -254,49 +246,11 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
         visibility: this.isReady ? 'visible' : 'hidden',
       }),
     };
+
     return (
       <div {...css(styles.base, this.props.style)}>
         <div ref={this.elRef} className={CSS.CLASS.GRID.BASE} {...styles.grid} />
-        {this.renderFullScreen()}
-      </div>
-    );
-  }
-
-  private renderFullScreen() {
-    const { factory, fullScreenCell } = this.props;
-    if (!this.grid || !fullScreenCell || !factory) {
-      return null;
-    }
-
-    const grid = this.grid;
-    const view = this.screenView;
-    if (!view) {
-      return null;
-    }
-
-    const key = view.key;
-    const data = view.cell;
-    const props = util.toGridCellProps(data.props);
-    const req: t.IGridFactoryRequest = {
-      type: 'SCREEN',
-      grid,
-      cell: { key, data, props },
-    };
-
-    const styles = {
-      base: css({
-        Absolute: 0,
-        display: 'flex',
-        backgroundColor: 'rgba(0, 0, 0, 0)', // NB: Invisible mask
-        zIndex: 9999,
-      }),
-    };
-
-    const className = `${CSS.CLASS.SCREEN.BASE} ${view.screen.className || ''}`;
-
-    return (
-      <div {...styles.base} className={className}>
-        {factory(req)}
+        {grid && <DataGridScreen grid={grid} factory={factory} screenCell={screenCell} />}
       </div>
     );
   }
