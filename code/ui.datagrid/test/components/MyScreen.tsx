@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, COLORS, GlamorValue, ObjectView } from '../common';
+import { css, color, COLORS, GlamorValue, ObjectView, t, cell } from '../common';
 
 export type IMyScreenProps = {
   cell?: string;
@@ -13,6 +13,9 @@ export class MyScreen extends React.PureComponent<IMyScreenProps, IMyScreenState
   public state: IMyScreenState = {};
   private state$ = new Subject<Partial<IMyScreenState>>();
   private unmounted$ = new Subject<{}>();
+
+  public static contextType = cell.Context;
+  public context!: t.ICellContext;
 
   /**
    * [Lifecycle]
@@ -45,7 +48,6 @@ export class MyScreen extends React.PureComponent<IMyScreenProps, IMyScreenState
       }),
       title: css({
         borderBottom: `solid 6px ${color.format(-0.1)}`,
-        // paddingBottom: 5,
         marginBottom: 8,
         Flex: 'horizontal-center-start',
       }),
@@ -59,7 +61,7 @@ export class MyScreen extends React.PureComponent<IMyScreenProps, IMyScreenState
       }),
     };
 
-    const context = { foo: 123 };
+    const context = this.context;
 
     return (
       <div {...styles.base}>

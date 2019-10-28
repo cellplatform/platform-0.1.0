@@ -250,7 +250,9 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     return (
       <div {...css(styles.base, this.props.style)}>
         <div ref={this.elRef} className={CSS.CLASS.GRID.BASE} {...styles.grid} />
-        {grid && <DataGridScreen grid={grid} factory={factory} screenCell={screenCell} />}
+        {grid && screenCell && (
+          <DataGridScreen grid={grid} factory={factory} screenCell={screenCell} />
+        )}
       </div>
     );
   }

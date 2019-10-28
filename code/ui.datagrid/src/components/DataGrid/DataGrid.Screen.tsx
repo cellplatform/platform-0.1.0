@@ -1,29 +1,41 @@
 import * as React from 'react';
 
-import { css, GlamorValue, t, util, constants } from '../common';
+import { css, GlamorValue, t, util, constants, createProvider } from '../common';
 const CSS = constants.CSS;
 
 export type IDataGridScreenProps = {
   grid: t.IGrid;
   factory: t.GridFactory;
-  screenCell?: string;
+  screenCell: string;
   style?: GlamorValue;
 };
 
 export class DataGridScreen extends React.PureComponent<IDataGridScreenProps> {
+  private Provider!: React.FunctionComponent;
+
+  /**
+   * [Lifecycle]
+   */
+  constructor(props: IDataGridScreenProps) {
+    super(props);
+
+    const ctx: t.ICellContext = { foo: 88899 };
+    this.Provider = createProvider({ ctx });
+  }
+
   /**
    * [Properties]
    */
-  public get view() {
+  private get view() {
     const { grid } = this.props;
-    const key = this.props.screenCell as string;
+    const key = this.props.screenCell;
     const cell = key ? grid.data.cells[key] : undefined;
     const props = cell ? util.toGridCellProps(cell.props) : undefined;
     const screen = props && props.view ? props.view.screen : undefined;
     return screen && cell && key ? { key, screen, cell } : undefined;
   }
 
-  public get ctx() {
+  private get request() {
     const view = this.view;
     if (!view) {
       return undefined;
@@ -45,8 +57,8 @@ export class DataGridScreen extends React.PureComponent<IDataGridScreenProps> {
    */
   public render() {
     const { factory } = this.props;
-    const ctx = this.ctx;
-    if (!ctx) {
+    const request = this.request;
+    if (!request) {
       return null;
     }
 
@@ -59,11 +71,11 @@ export class DataGridScreen extends React.PureComponent<IDataGridScreenProps> {
       }),
     };
 
-    const className = `${CSS.CLASS.SCREEN.BASE} ${ctx.view.screen.className || ''}`;
+    const className = `${CSS.CLASS.SCREEN.BASE} ${request.view.screen.className || ''}`;
 
     return (
       <div {...css(styles.base, this.props.style)} className={className}>
-        {factory(ctx.req)}
+        <this.Provider>{factory(request.req)}</this.Provider>
       </div>
     );
   }
