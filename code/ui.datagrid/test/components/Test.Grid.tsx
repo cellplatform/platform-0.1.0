@@ -10,7 +10,7 @@ export type ITestGridProps = {
   editorType: t.TestEditorType;
   style?: GlamorValue;
 };
-export type ITestGridState = { data?: any; fullScreenCell?: string };
+export type ITestGridState = { data?: any; fullScreenCell?: string | true };
 
 export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState> {
   public state: ITestGridState = {};
@@ -272,6 +272,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         })}
         <Hr margin={5} />
         {this.button('screen: none', () => this.state$.next({ fullScreenCell: undefined }))}
+        {this.button('screen: true (selected)', () => {
+          this.grid.focus();
+          this.state$.next({ fullScreenCell: true });
+        })}
         {this.button('screen: A3', () => this.state$.next({ fullScreenCell: 'A3' }))}
         {this.button('screen: Z9 (none)', () => this.state$.next({ fullScreenCell: 'Z9' }))}
 

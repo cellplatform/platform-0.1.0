@@ -28,7 +28,7 @@ export type IDataGridProps = {
   factory: t.GridFactory;
   Handsontable?: Handsontable;
 
-  fullScreenCell?: string; // Key of the cell that defines a "full screen" view.
+  fullScreenCell?: string | boolean; // Key of the cell that defines a "full screen" view. True === the currently selected cell
 
   events$?: Subject<t.GridEvent>;
   initial?: t.IInitialGridState;
@@ -199,12 +199,12 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
   public get screenView() {
     const { fullScreenCell } = this.props;
-    const cell = fullScreenCell ? this.grid.data.cells[fullScreenCell] : undefined;
+    const selectedCell = this.grid.selection.cell;
+    const key = fullScreenCell === true && selectedCell ? selectedCell : (fullScreenCell as string);
+    const cell = key ? this.grid.data.cells[key] : undefined;
     const props = cell ? util.toGridCellProps(cell.props) : undefined;
-    // const screen
     const screen = props && props.view ? props.view.screen : undefined;
-
-    return screen && cell ? { screen, cell } : undefined;
+    return screen && cell ? { key, screen, cell } : undefined;
   }
 
   /**
@@ -263,13 +263,18 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
   }
 
   private renderFullScreen() {
+    const { factory, fullScreenCell } = this.props;
     const grid = this.grid;
-    const { factory, fullScreenCell: key } = this.props;
-    const view = this.screenView;
-    if (!key || !view || !factory) {
+    if (!grid || !fullScreenCell || !factory) {
       return null;
     }
 
+    const view = this.screenView;
+    if (!view) {
+      return null;
+    }
+
+    const key = view.key;
     const data = view.cell;
     const props = util.toGridCellProps(data.props);
     const req: t.IGridFactoryRequest = {

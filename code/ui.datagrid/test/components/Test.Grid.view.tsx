@@ -13,12 +13,13 @@ import {
   t,
 } from '../common';
 import { DebugEditor } from './Debug.Editor';
+import { MyScreen } from './MyScreen';
 
 export type DataGrid = datagrid.DataGrid;
 
 export type ITestGridViewProps = {
   grid: datagrid.Grid;
-  fullScreenCell?: string;
+  fullScreenCell?: string | boolean;
   events$?: Subject<t.GridEvent>;
   editorType: t.TestEditorType;
   style?: GlamorValue;
@@ -168,28 +169,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
 
     if (req.type === 'SCREEN' && view.screen) {
       const type = view.screen.type;
-      const styles = {
-        base: css({
-          backgroundColor: 'rgba(255, 255, 255, 0.6)',
-          flex: 1,
-        }),
-        inner: css({
-          Absolute: 40,
-          border: `solid 1px ${color.format(-0.2)}`,
-          Flex: 'center-center',
-          backgroundColor: color.format(1),
-          boxShadow: `0 0 8px 0 ${color.format(-0.1)}`,
-        }),
-      };
-      return (
-        <div {...styles.base}>
-          <div {...styles.inner}>
-            <div>
-              {type}: {cell.key}
-            </div>
-          </div>
-        </div>
-      );
+      return <MyScreen cell={cell.key} />;
     }
 
     console.log(`Factory type '${req.type}' not supported by test.`);
