@@ -1017,6 +1017,15 @@
     "@platform/libs" "0.1.3"
     "@platform/util.diff" "0.0.1"
 
+"@platform/cell.ui@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.0.1.tgz#5436980436149f24f7b3627f79376a6b608c001d"
+  integrity sha512-ssCpUq6Qh9cuHoR+Ln02pVLk6zHcnyxDbsS4wMpS/IxSRVCWTDhV8FwxUdU9zYliU4V7Cepe01uwChMLGWws8A==
+  dependencies:
+    "@platform/cell.types" "0.0.16"
+    "@platform/libs" "0.1.3"
+    "@platform/react" "0.3.26"
+
 "@platform/cell.value@0.0.8", "@platform/cell.value@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.0.8.tgz#1813f5c547ef03d313356c591d9980c48c37bdf1"
