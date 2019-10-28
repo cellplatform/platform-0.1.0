@@ -43,7 +43,7 @@ export class MyScreen extends React.PureComponent<IMyScreenProps, IMyScreenState
   private renderDebug() {
     const styles = {
       base: css({
-        minWidth: 350,
+        width: 380,
         marginBottom: '8%',
       }),
       title: css({

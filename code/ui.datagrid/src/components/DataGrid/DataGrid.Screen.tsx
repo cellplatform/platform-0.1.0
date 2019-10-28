@@ -19,20 +19,24 @@ export class DataGridScreen extends React.PureComponent<IDataGridScreenProps> {
   constructor(props: IDataGridScreenProps) {
     super(props);
 
-    const ctx: t.ICellContext = { foo: 88899 };
+    const ctx: t.ICellContext = { cell: this.cell };
     this.Provider = createProvider({ ctx });
   }
 
   /**
    * [Properties]
    */
-  private get view() {
-    const { grid } = this.props;
+  private get cell() {
     const key = this.props.screenCell;
-    const cell = key ? grid.data.cells[key] : undefined;
+    return this.props.grid.data.cells[key] as t.ICellData;
+  }
+
+  private get view() {
+    const cell = this.cell;
+    const key = this.props.screenCell;
     const props = cell ? util.toGridCellProps(cell.props) : undefined;
     const screen = props && props.view ? props.view.screen : undefined;
-    return screen && cell && key ? { key, screen, cell } : undefined;
+    return cell && screen ? { key, screen, cell } : undefined;
   }
 
   private get request() {

@@ -1,3 +1,5 @@
+import { t } from './common';
+
 /**
  * The React [Context] used to pass down common modules to components.
  *
@@ -14,4 +16,6 @@
  * See:
  *    https://reactjs.org/docs/context.html
  */
-export type ICellContext = {};
+export type ICellContext = {
+  cell: t.ICellData;
+};
