@@ -264,11 +264,11 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
 
   private renderFullScreen() {
     const { factory, fullScreenCell } = this.props;
-    const grid = this.grid;
-    if (!grid || !fullScreenCell || !factory) {
+    if (!this.grid || !fullScreenCell || !factory) {
       return null;
     }
 
+    const grid = this.grid;
     const view = this.screenView;
     if (!view) {
       return null;

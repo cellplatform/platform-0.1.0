@@ -1,4 +1,5 @@
 export * from './types.cell';
+export * from './types.context';
 export * from './types.coord';
 export * from './types.error';
 export * from './types.func';
