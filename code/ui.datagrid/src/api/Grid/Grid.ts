@@ -49,7 +49,7 @@ export class Grid implements t.IGrid {
     return {
       totalColumns: defaultValue(partial.totalColumns, DEFAULT.TOTAL_COLUMNS),
       totalRows: defaultValue(partial.totalRows, DEFAULT.TOTAL_ROWS),
-      columWidth: defaultValue(partial.columWidth, DEFAULT.COLUMN.WIDTH),
+      columnWidth: defaultValue(partial.columnWidth, DEFAULT.COLUMN.WIDTH),
       columnWidthMin: defaultValue(partial.columnWidthMin, DEFAULT.COLUMN.WIDTH_MIN),
       rowHeight: defaultValue(partial.rowHeight, DEFAULT.ROW.HEIGHT),
       rowHeightMin: defaultValue(partial.rowHeightMin, DEFAULT.ROW.HEIGHT_MIN),
@@ -691,8 +691,8 @@ export class Grid implements t.IGrid {
 
     Object.keys(columns).forEach(key => {
       const prev = from[key] || { props: { width: -1 } };
-      const next = columns[key] || { props: { width: this.defaults.columWidth } };
-      const isDefault = (next.props || {}).width === this.defaults.columWidth;
+      const next = columns[key] || { props: { width: this.defaults.columnWidth } };
+      const isDefault = (next.props || {}).width === this.defaults.columnWidth;
       if (isDefault) {
         delete to[key];
       } else {

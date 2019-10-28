@@ -299,7 +299,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
               screen: { type: 'MyScreen', className: 'my-custom' },
             },
           });
-          // this.overlayFromCell('A3');
         })}
 
         {/* <Hr margin={5} />
