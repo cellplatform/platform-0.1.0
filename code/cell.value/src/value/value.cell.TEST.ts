@@ -103,7 +103,7 @@ describe('cell', () => {
     });
 
     it('same hash for no param AND no cell-value', () => {
-      const HASH = 'sha256/2d7331843f6bcc32bf4c166f4afaeae595d304e202ed0c5ae3ad99ab80c5c112';
+      const HASH = 'sha256-2d7331843f6bcc32bf4c166f4afaeae595d304e202ed0c5ae3ad99ab80c5c112';
       const test = (input?: t.ICellData) => {
         const hash = value.cellHash('A1', input);
         expect(hash).to.eql(HASH);
@@ -114,7 +114,7 @@ describe('cell', () => {
     });
 
     it('returns same hash for equivalent props variants', () => {
-      const HASH = 'sha256/08be796d228342a967d0c5117165e9027ffa9a31fe9a69d97a2fff6750f400a9';
+      const HASH = 'sha256-08be796d228342a967d0c5117165e9027ffa9a31fe9a69d97a2fff6750f400a9';
       const test = (props?: {}) => {
         const hash = value.cellHash('A1', { value: 123, props });
         expect(hash).to.eql(HASH);

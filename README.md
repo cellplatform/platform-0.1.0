@@ -81,6 +81,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/cell.func.sys](/code/cell.func.sys)
   - [@platform/cell.db](/code/cell.db)
   - [@platform/cell.http](/code/cell.http)
+  - [@platform/cell.ui](/code/cell.ui)
 - ui
   - [@platform/css](/code/css)
   - [@platform/react](/code/react)

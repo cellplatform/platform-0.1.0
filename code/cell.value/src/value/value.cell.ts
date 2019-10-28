@@ -56,7 +56,7 @@ export function cellHash(key: string, data?: t.ICellData): string {
   const value = data ? data.value : undefined;
   const props = squashProps(data ? data.props : undefined);
   const sha256 = hash.sha256({ key, value, props });
-  return `sha256/${sha256}`;
+  return `sha256-${sha256}`;
 }
 
 /**

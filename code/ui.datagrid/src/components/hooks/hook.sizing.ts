@@ -1,5 +1,5 @@
 import { Grid } from '../../api';
-import { coord, t } from '../../common';
+import { coord, t } from '../common';
 
 export function sizeHandlers(grid: Grid) {
   /**
