@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.coord",
-  "version": "0.5.19",
+  "version": "0.5.20",
   "description": "Data types for working with grid cell cooridnates (eg 'A1').",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@platform/cache": "0.2.0",
-    "@platform/cell.types": "0.0.16",
+    "@platform/cell.types": "0.0.17",
     "@platform/types": "0.0.32",
     "@platform/util.value": "0.5.5",
     "excel-formula-ast": "1.1.1",
