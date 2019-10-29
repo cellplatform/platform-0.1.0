@@ -4,7 +4,7 @@ import { expect, getTestDb, R } from '../test';
 
 describe('model.Ns (Namespace)', () => {
   it('creates (with child cells)', async () => {
-    const db = await getTestDb({ file: true, reset: true });
+    const db = await getTestDb({ file: true });
 
     const id = 'abc';
     const schema = Schema.ns(id);

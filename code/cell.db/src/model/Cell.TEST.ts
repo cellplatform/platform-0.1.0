@@ -7,16 +7,24 @@ import { getTestDb, Model, t } from '../test';
  */
 
 describe('model.Cell', () => {
-  it.skip('TMP', async () => {
-    const db = await getTestDb({ file: true, reset: true });
+  it('create (new)', async () => {
+    const db = await getTestDb({ file: true });
 
-    const id = 'ns1';
-    const schema = Schema.ns(id);
+    const res = await model.Cell.create({ db });
 
-    await db.put(schema.cell().path, { key: 'A1' });
-    await db.put(schema.cell('456').path, { key: 'A2' });
+    console.log('-------------------------------------------');
+    console.log('res', res);
 
-    const m = model.Ns.create({ db, id });
+
+    const r = await res.load()
+
+    // const id = 'ns1';
+    // const schema = Schema.ns(id);
+
+    // await db.put(schema.cell().path, { key: 'A1' });
+    // await db.put(schema.cell('456').path, { key: 'A2' });
+
+    // const m = model.Ns.create({ db, id });
 
     // const children: t.IModelChildrenDefs<t.IModelNsChildren> = {
     //   cells: { query: Schema.query.cells, factory: model.Cell.factory },
@@ -41,11 +49,11 @@ describe('model.Cell', () => {
     // await db.compact();
 
     // console.log('m', ns.toObject());
-    const c = await m.children.cells;
-    console.log('children', c.map(c => c.toObject()));
+    // const c = await m.children.cells;
+    // console.log('children', c.map(c => c.toObject()));
 
-    const all = await db.find('**');
-    console.log('-------------------------------------------');
-    console.log('ff', all.map);
+    // const all = await db.find('**');
+    // console.log('-------------------------------------------');
+    // console.log('ff', all.map);
   });
 });

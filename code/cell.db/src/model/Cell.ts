@@ -1,4 +1,6 @@
-import { t, Model } from '../common';
+import { t, Model, coord } from '../common';
+import { Schema } from '../schema';
+const Uri = coord.Uri;
 
 const initial: t.IModelCellProps = { key: '' };
 
@@ -8,9 +10,13 @@ export class Cell {
   };
 
   public static create(args: { db: t.IDb; uri?: string }) {
-    // const { id, db } = args;
-    // const ns = Schema.ns(id);
-    // const path = ns.path;
-    // return Ns.factory({ db, path });
+    const { db } = args;
+    const uri = Uri.parse<t.ICellUri>(args.uri || Uri.generate.cell());
+    if (uri.error) {
+      throw new Error(uri.error.message);
+    }
+    const ns = Schema.ns(uri.data.ns);
+    const path = ns.cell(uri.data.cell).path;
+    return Cell.factory({ db, path });
   }
 }
