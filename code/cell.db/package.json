@@ -12,10 +12,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/cell.coord": "0.5.21",
     "@platform/cell.types": "0.0.18",
     "@platform/fsdb.model": "0.1.24",
     "@platform/fsdb.types": "0.3.10",
-    "@platform/libs": "0.1.3"
+    "@platform/libs": "0.1.3",
+    "@platform/util.value": "0.5.5"
   },
   "devDependencies": {
     "@platform/fsdb.nedb": "1.3.23",
