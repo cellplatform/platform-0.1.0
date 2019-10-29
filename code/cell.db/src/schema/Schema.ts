@@ -1,11 +1,17 @@
-import { id as generate, coord } from '../common';
+import { id as generate } from '../common';
 
-export type SchemaCoordType = 'cell' | 'col' | 'row';
+export type SchemaCoordType = 'CELL' | 'COL' | 'ROW';
 
 /**
  * Schema of DB paths.
  */
 export class Schema {
+  public static query = {
+    cells: '/CELL/*',
+    rows: '/ROW/*',
+    columns: '/COL/*',
+  };
+
   public static ns = (id?: string) => new SchemaNamespace({ id });
 }
 
@@ -26,15 +32,15 @@ export class SchemaNamespace {
    * [Methods]
    */
   public cell(id?: string) {
-    return new SchemaCoord({ type: 'cell', ns: this, id });
+    return new SchemaCoord({ type: 'CELL', ns: this, id });
   }
 
   public column(id?: string) {
-    return new SchemaCoord({ type: 'col', ns: this, id });
+    return new SchemaCoord({ type: 'COL', ns: this, id });
   }
 
   public row(id?: string) {
-    return new SchemaCoord({ type: 'row', ns: this, id });
+    return new SchemaCoord({ type: 'ROW', ns: this, id });
   }
 }
 
