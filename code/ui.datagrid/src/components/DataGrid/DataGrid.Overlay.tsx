@@ -103,8 +103,8 @@ export class DataGridOverlay extends React.PureComponent<
   /**
    * [Methods]
    */
-  public getData(key: string) {
-    return this.props.grid.data.cells[key];
+  public getData(key: string): t.IGridCellData {
+    return this.props.grid.data.cells[key] || {};
   }
 
   public show(args: { key: string; screen: t.ICellScreenView }) {

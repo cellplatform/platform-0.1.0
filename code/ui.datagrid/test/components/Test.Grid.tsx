@@ -304,7 +304,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           this.grid.command({
             command: 'OVERLAY/show',
             props: {
-              cell: 'A2',
+              cell: 'C2',
               screen: { type: 'MyScreen', className: 'my-custom' },
             },
           });
