@@ -15,7 +15,7 @@ after(() => fs.remove(dir)); // Clean up after all tests.
  * Constructs a DB for the purposes of testing.
  */
 export async function getTestDb(options: { file?: boolean } = {}) {
-  let filename;
+  let filename: string | undefined;
   if (options.file) {
     count++;
     const file = `test-${count}.db`;

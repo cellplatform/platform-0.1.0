@@ -23,17 +23,17 @@ export type IModelArgs<
  * single conceptual "model", and it's relationships.
  *
  *  - data (doc)
- *  - links (JOIN relationships)
  *  - children (path descendent relationships)
+ *  - links (JOIN relationships)
  *  - read|write (change management)
  *  - caching
  *
  */
 export class Model<
-  P extends object,
-  D extends P = P,
-  L extends t.IModelLinksSchema = any,
-  C extends t.IModelChildrenSchema = any
+  P extends object, //                          Properties.
+  D extends P = P, //                           Document properties (if additional to props, ie hidden values).
+  L extends t.IModelLinksSchema = any, //       Link references.
+  C extends t.IModelChildrenSchema = any //     Child documents.
 > implements t.IModel<P, D, L, C> {
   /**
    * [Lifecycle]

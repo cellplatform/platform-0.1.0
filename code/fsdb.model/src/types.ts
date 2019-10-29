@@ -40,7 +40,7 @@ export type IModelMethods<P extends object> = {
   toObject(): P;
 };
 
-export type ModelFactory = (args: ModelFactoryArgs) => IModel;
+export type ModelFactory<M extends IModel = IModel> = (args: ModelFactoryArgs) => M;
 export type ModelFactoryArgs = { path: string; db: IDb };
 
 /**
