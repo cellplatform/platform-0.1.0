@@ -3,7 +3,26 @@ import { t } from '../common';
 /**
  * Commands
  */
-export type GridCommand = GridClipboardCommand | GridStyleCommand;
+export type GridCommand = GridClipboardCommand | GridStyleCommand | GridOverlayCommand;
+
+/**
+ * Overlay (screen)
+ */
+export type GridOverlayCommand = GridOverlayShowCommand | GridOverlayHideCommand;
+export type GridOverlayShowCommand = 'OVERLAY/show';
+export type GridOverlayHideCommand = 'OVERLAY/hide';
+
+export type IGridOverlayCommand = IGridOverlayShowCommand | IGridOverlayHideCommand;
+
+export type IGridOverlayShowCommand = IGridCommand<
+  GridOverlayShowCommand,
+  {
+    cell: string;
+    screen: t.ICellScreenView;
+  }
+>;
+
+export type IGridOverlayHideCommand = IGridCommand<GridOverlayHideCommand>;
 
 /**
  * Clipboard
@@ -31,7 +50,7 @@ export type GridStyleUnderlineCommand = 'UNDERLINE';
 export type IGridStyleCommand = IGridCommand<GridStyleCommand>;
 
 /**
- * Event payload.
+ * Event Payload
  */
 export type IGridCommand<C = GridCommand, P = {}> = {
   command: C;

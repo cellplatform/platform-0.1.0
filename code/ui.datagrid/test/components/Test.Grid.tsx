@@ -2,7 +2,19 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';
 
-import { Button, color, COLORS, coord, css, datagrid, GlamorValue, Hr, log, t } from '../common';
+import {
+  Button,
+  color,
+  COLORS,
+  coord,
+  css,
+  datagrid,
+  GlamorValue,
+  Hr,
+  log,
+  t,
+  util,
+} from '../common';
 import { getFunc, SAMPLE } from '../data';
 import { TestGridView } from './Test.Grid.view';
 
@@ -10,7 +22,7 @@ export type ITestGridProps = {
   editorType: t.TestEditorType;
   style?: GlamorValue;
 };
-export type ITestGridState = { data?: any; screenCell?: string };
+export type ITestGridState = { data?: any };
 
 export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState> {
   public state: ITestGridState = {};
@@ -168,8 +180,21 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       debug: { editorType },
     };
     this.state$.next({ data });
-
     return data;
+  }
+
+  public overlayFromCell(cell?: string) {
+    const data = this.grid.data.cells[cell || ''];
+    const view = data && data.props ? util.toGridCellProps(data.props).view : {};
+    const screen = view ? view.screen : undefined;
+    if (data && screen && cell) {
+      this.grid.command<t.IGridOverlayShowCommand>({
+        command: 'OVERLAY/show',
+        props: { screen, cell },
+      });
+    } else {
+      this.grid.command<t.IGridOverlayHideCommand>({ command: 'OVERLAY/hide', props: {} });
+    }
   }
 
   /**
@@ -197,7 +222,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const styles = {
       base: css({
         position: 'relative',
-        width: 200,
+        width: 230,
         padding: 10,
         Scroll: true,
         fontSize: 13,
@@ -271,9 +296,20 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           });
         })}
         <Hr margin={5} />
-        {this.button('screen: none', () => this.state$.next({ screenCell: undefined }))}
-        {this.button('screen: A3', () => this.state$.next({ screenCell: 'A3' }))}
-        {this.button('screen: Z9 (none)', () => this.state$.next({ screenCell: 'Z9' }))}
+        {this.button('screen: hide', () =>
+          this.grid.command({ command: 'OVERLAY/hide', props: {} }),
+        )}
+        {this.button('screen: A1 (none defined)', () => this.overlayFromCell('A1'))}
+        {this.button('screen: A3 (via cell def)', () => this.overlayFromCell('A3'))}
+        {this.button('screen: A5 (via explicit command)', () => {
+          this.grid.command({
+            command: 'OVERLAY/show',
+            props: {
+              cell: 'A5',
+              screen: { type: 'MyScreen', className: 'my-custom' },
+            },
+          });
+        })}
 
         {/* <Hr margin={5} />
             {this.button(
@@ -320,7 +356,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           <TestGridView
             style={styles.grid}
             grid={this.grid}
-            screenCell={this.state.screenCell}
             editorType={this.props.editorType}
             events$={this.events$}
           />

@@ -14,8 +14,15 @@ after(() => fs.remove(dir)); // Clean up after all tests.
 /**
  * Constructs a DB for the purposes of testing.
  */
-export async function getTestDb(options: { file?: boolean } = {}) {
+export async function getTestDb(
+  options: { file?: boolean; reset?: boolean; compact?: boolean } = {},
+) {
   let filename: string | undefined;
+
+  if (options.reset) {
+    await fs.remove(dir);
+  }
+
   if (options.file) {
     count++;
     const file = `test-${count}.db`;
@@ -23,5 +30,10 @@ export async function getTestDb(options: { file?: boolean } = {}) {
     filename = fs.join(dir, file);
   }
   const db = NeDb.create({ filename });
+
+  if (options.compact) {
+    await db.compact();
+  }
+
   return db;
 }

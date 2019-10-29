@@ -17,5 +17,6 @@ import { t } from './common';
  *    https://reactjs.org/docs/context.html
  */
 export type ICellContext = {
+  uri: string;
   cell: t.ICellData;
 };

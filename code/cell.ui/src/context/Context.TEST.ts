@@ -7,7 +7,7 @@ describe('Context', () => {
   });
 
   it('creates provider', () => {
-    const ctx: cell.ICellContext = { cell: { value: '=A2' } };
+    const ctx: cell.ICellContext = { uri: 'A1', cell: { value: '=A2' } };
     const res1 = cell.createProvider({ ctx });
     const res2 = cell.createProvider({ ctx, props: { foo: 123 } });
 

@@ -25,11 +25,14 @@ export type IGridCellPropsMergeAll = {
  */
 export type IGridCellPropsView = Partial<IGridCellPropsViewAll>;
 export type IGridCellPropsViewAll = {
-  cell: ICellView;
-  editor: ICellView;
-  screen: ICellView;
+  cell: ICellInlineView; // The cell rendered "inline" within the grid.
+  screen: ICellScreenView; // "Full-screen" overlay (or full-screen app for the cell).
+  editor: ICellEditorView; // Custom editor to use when modifying the cell.
 };
 export type ICellView<V extends string = string> = {
   type: V;
   className?: string;
 };
+export type ICellInlineView<V extends string = string> = ICellView<V> & {};
+export type ICellScreenView<V extends string = string> = ICellView<V> & {};
+export type ICellEditorView<V extends string = string> = ICellView<V> & {};

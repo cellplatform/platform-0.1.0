@@ -32,7 +32,7 @@ describe('Grid', () => {
       test('CELL', { props: { style: { bold: true } } }, false);
 
       test('COLUMN', undefined, true);
-      test('COLUMN', { width: defaults.columWidth }, true);
+      test('COLUMN', { width: defaults.columnWidth }, true);
       test('COLUMN', { width: 456 }, false);
       test('COLUMN', { foo: true }, false);
 

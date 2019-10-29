@@ -45,12 +45,22 @@ export type IGridMethods = {
   mergeCells(args: { cells: t.IGridData['cells']; init?: boolean }): IGrid;
   toPosition(ref: t.GridCellRef): t.ICoord;
   updateHashes(options?: { force?: boolean }): IGrid;
+  fire: GridFireEvent;
+  command: GridFireCommand;
+};
+
+export type GridFireEvent = (e: t.GridEvent) => IGrid;
+export type GridFireCommand = <C extends t.IGridCommand>(args: GridFireCommandArgs<C>) => IGrid;
+export type GridFireCommandArgs<C extends t.IGridCommand> = {
+  command: C['command'];
+  props: C['props'];
+  cancel?: () => void;
 };
 
 export type IGridDefaults = {
   totalColumns: number;
   totalRows: number;
-  columWidth: number;
+  columnWidth: number;
   columnWidthMin: number;
   rowHeight: number;
   rowHeightMin: number;

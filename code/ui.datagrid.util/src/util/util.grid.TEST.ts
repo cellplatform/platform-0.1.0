@@ -5,7 +5,7 @@ import * as util from './util.grid';
 const defaults: t.IGridDefaults = {
   totalColumns: 52,
   totalRows: 1000,
-  columWidth: 120,
+  columnWidth: 120,
   columnWidthMin: 26,
   rowHeight: 26,
   rowHeightMin: 26,
@@ -24,7 +24,7 @@ describe('util.grid', () => {
     test('CELL', { props: { style: { bold: true } } }, false);
 
     test('COLUMN', undefined, true);
-    test('COLUMN', { width: defaults.columWidth }, true);
+    test('COLUMN', { width: defaults.columnWidth }, true);
     test('COLUMN', { width: 456 }, false);
     test('COLUMN', { foo: true }, false);
 

@@ -30,7 +30,7 @@ export function getSettings(args: { grid: Grid }) {
   };
 
   const colWidths: any = (index: number) => {
-    let width = grid.defaults.columWidth;
+    let width = grid.defaults.columnWidth;
     if (grid.isInitialized) {
       const key = coord.cell.toKey(index);
       const column = grid.columns[key];

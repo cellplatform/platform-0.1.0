@@ -4,7 +4,6 @@ import { takeUntil } from 'rxjs/operators';
 import { css, color, COLORS, GlamorValue, ObjectView, t, cell } from '../common';
 
 export type IMyScreenProps = {
-  cell?: string;
   style?: GlamorValue;
 };
 export type IMyScreenState = {};
@@ -62,11 +61,12 @@ export class MyScreen extends React.PureComponent<IMyScreenProps, IMyScreenState
     };
 
     const context = this.context;
+    const cellKey = context.uri;
 
     return (
       <div {...styles.base}>
         <div {...styles.title}>
-          <div {...styles.cell}>{this.props.cell || 'UNKNOWN_CELL'}</div>
+          <div {...styles.cell}>{cellKey}</div>
           <div>type: "MyScreen"</div>
         </div>
         <ObjectView name={'context (env)'} data={context} />

@@ -18,7 +18,7 @@ import {
   t,
 } from '../common';
 import { getSettings } from '../settings';
-import { DataGridScreen } from './DataGrid.Screen';
+import { DataGridOverlay } from './DataGrid.Overlay';
 import { IGridRefsPrivate } from './types.private';
 
 const { CSS } = constants;
@@ -27,9 +27,6 @@ export type IDataGridProps = {
   grid: Grid;
   factory: t.GridFactory;
   Handsontable?: Handsontable;
-
-  screenCell?: string; // Key of the cell that defines a "full screen" view.
-
   events$?: Subject<t.GridEvent>;
   initial?: t.IInitialGridState;
   canSelectAll?: boolean;
@@ -233,7 +230,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
    */
 
   public render() {
-    const { factory, screenCell } = this.props;
+    const { factory } = this.props;
     const grid = this.grid;
     const styles = {
       base: css({
@@ -250,9 +247,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     return (
       <div {...css(styles.base, this.props.style)}>
         <div ref={this.elRef} className={CSS.CLASS.GRID.BASE} {...styles.grid} />
-        {grid && screenCell && (
-          <DataGridScreen grid={grid} factory={factory} screenCell={screenCell} />
-        )}
+        {grid && <DataGridOverlay grid={grid} factory={factory} />}
       </div>
     );
   }

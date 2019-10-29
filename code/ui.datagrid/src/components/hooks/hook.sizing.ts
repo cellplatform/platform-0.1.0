@@ -10,7 +10,7 @@ export function sizeHandlers(grid: Grid) {
     if (grid.isInitialized) {
       const key = coord.cell.toKey(index, undefined);
       width = isDoubleClick
-        ? grid.defaults.columWidth
+        ? grid.defaults.columnWidth
         : Math.max(grid.defaults.columnWidthMin, width);
       grid
         .changeColumns(
@@ -49,7 +49,7 @@ export function sizeHandlers(grid: Grid) {
       const key = coord.cell.toKey(index, undefined);
       const column = grid.columns[key];
       const props = column ? column.props : undefined;
-      width = props && props.width !== undefined ? props.width : grid.defaults.columWidth;
+      width = props && props.width !== undefined ? props.width : grid.defaults.columnWidth;
     }
     return width;
   }
