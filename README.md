@@ -84,6 +84,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - ui
     - [@platform/cell.ui](/code/cell.ui)
     - [@platform/cell.ui.props](/code/cell.ui.props)
+    - [@platform/cell.ui.info](/code/cell.ui.info)
 - ui
   - [@platform/css](/code/css)
   - [@platform/react](/code/react)

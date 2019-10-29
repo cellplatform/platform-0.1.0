@@ -1,7 +1,7 @@
 {
-  "name": "@platform/cell.ui.props",
+  "name": "@platform/cell.ui.info",
   "version": "0.0.0",
-  "description": "An extensible property editor for cells.",
+  "description": "Editor for meta-data info about a cell.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
