@@ -6,7 +6,6 @@ import { t } from './common';
 export type IError<T extends string = any> = {
   type: T;
   message: string;
-  path: string;
   children?: IError[];
 };
 
@@ -18,8 +17,9 @@ export type IErrorParent<T extends string = any> = { error?: IError<T> };
 export type RefError = IRefError['type'];
 export type IRefError = IRefErrorCircular | IRefErrorName;
 
-export type IRefErrorCircular = t.IError<'REF/circular'>;
-export type IRefErrorName = t.IError<'REF/name'>;
+type RefErrorProps = { path: string };
+export type IRefErrorCircular = t.IError<'REF/circular'> & RefErrorProps;
+export type IRefErrorName = t.IError<'REF/name'> & RefErrorProps;
 
 /**
  * Func errors
@@ -31,10 +31,18 @@ export type IFuncError =
   | IFuncErrorNotSupported
   | IFuncErrorInvoke;
 
-export type IFuncErrorNotFormula = t.IError<'FUNC/notFormula'> & { formula: string };
-export type IFuncErrorNotFound = t.IError<'FUNC/notFound'> & { formula: string };
+type FuncErrorProps = { formula: string; path: string };
+export type IFuncErrorNotFormula = t.IError<'FUNC/notFormula'> & FuncErrorProps;
+export type IFuncErrorNotFound = t.IError<'FUNC/notFound'> & FuncErrorProps;
 
 export type IFuncErrorNotSupported = IFuncErrorNotSupportedRange;
-export type IFuncErrorNotSupportedRange = t.IError<'FUNC/notSupported/range'> & { formula: string };
+export type IFuncErrorNotSupportedRange = t.IError<'FUNC/notSupported/range'> & FuncErrorProps;
 
-export type IFuncErrorInvoke = t.IError<'FUNC/invoke'> & { formula: string };
+export type IFuncErrorInvoke = t.IError<'FUNC/invoke'> & FuncErrorProps;
+
+/**
+ * URI errors
+ */
+
+type UriErrorProps = { uri: string };
+export type IUriError = t.IError<'URI'> & UriErrorProps;

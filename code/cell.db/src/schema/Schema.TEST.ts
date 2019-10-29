@@ -30,7 +30,7 @@ describe('schema', () => {
     it('generated id', () => {
       const ns = Schema.ns('abc');
       const res = ns.cell();
-      expect(res.id.length).to.eql(8);
+      expect(res.id.length).to.greaterThan(6);
       expect(res.path).to.eql(`NS/abc/CELL/${res.id}`);
     });
   });

@@ -1,6 +1,6 @@
 export * from '../types';
 
-export { Namespace } from './Namespace';
+export { Ns } from './Ns';
 export { Cell } from './Cell';
 export { Column } from './Column';
 export { Row } from './Row';

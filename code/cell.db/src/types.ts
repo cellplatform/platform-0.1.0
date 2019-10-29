@@ -30,3 +30,16 @@ export type IModelRowProps = { key: string };
  */
 export type IModelColumn = IModel<IModelColumnProps>;
 export type IModelColumnProps = { key: string };
+
+/**
+ * URI
+ */
+export type UriType = IUri['type'];
+export type IUri = INsUri | IUriCoord | IUnknownUri;
+export type IUriCoord = ICellUri | IRowUri | IColumnUri;
+
+export type INsUri = { type: 'ns'; id: string };
+export type ICellUri = { type: 'cell'; id: string; ns: string };
+export type IRowUri = { type: 'row'; id: string; ns: string };
+export type IColumnUri = { type: 'col'; id: string; ns: string };
+export type IUnknownUri = { type: 'UNKNOWN' };

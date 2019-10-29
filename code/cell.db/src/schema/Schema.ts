@@ -1,4 +1,4 @@
-import { id as generate } from '../common';
+import { id as generate, t } from '../common';
 
 export type SchemaCoordType = 'CELL' | 'COL' | 'ROW';
 
@@ -12,14 +12,14 @@ export class Schema {
     columns: '/COL/*',
   };
 
-  public static ns = (id?: string) => new SchemaNamespace({ id });
+  public static ns = (id?: string) => new NsSchema({ id });
 }
 
 /**
  * Schema for `namespace`
  * (a set of logically associated cells, aka a "sheet").
  */
-export class SchemaNamespace {
+export class NsSchema {
   public readonly id: string;
   public readonly path: string;
 
@@ -32,28 +32,28 @@ export class SchemaNamespace {
    * [Methods]
    */
   public cell(id?: string) {
-    return new SchemaCoord({ type: 'CELL', ns: this, id });
+    return new CoordSchema({ type: 'CELL', ns: this, id });
   }
 
   public column(id?: string) {
-    return new SchemaCoord({ type: 'COL', ns: this, id });
+    return new CoordSchema({ type: 'COL', ns: this, id });
   }
 
   public row(id?: string) {
-    return new SchemaCoord({ type: 'ROW', ns: this, id });
+    return new CoordSchema({ type: 'ROW', ns: this, id });
   }
 }
 
 /**
  * Schema for a NS coordinate such as a `cell`, `column` or `row`.
  */
-export class SchemaCoord {
-  public readonly ns: SchemaNamespace;
+export class CoordSchema {
+  public readonly ns: NsSchema;
   public readonly id: string;
   public readonly path: string;
   public readonly type: SchemaCoordType;
 
-  constructor(args: { type: SchemaCoordType; ns: SchemaNamespace; id?: string }) {
+  constructor(args: { type: SchemaCoordType; ns: NsSchema; id?: string }) {
     this.ns = args.ns;
     this.id = args.id || generate.shortid();
     this.type = args.type;
