@@ -2,25 +2,6 @@ import { expect, getTestDb, id, Model, t, time } from '../test';
 import { Schema } from '../schema';
 import { IRowProps, IColumnProps } from '../common/types';
 
-export type IModelNs = t.IModel<IModelNsProps, IModelNsDoc, IModelNsLinks, IModelNsChildren>;
-export type IModelNsProps = { name?: string };
-export type IModelNsDoc = IModelNsProps & {};
-export type IModelNsLinks = {};
-export type IModelNsChildren = {
-  cells: IModelCell[];
-  rows: IModelRow[];
-  columns: IModelColumn[];
-};
-
-export type IModelCell = t.IModel<IModelCellProps>;
-export type IModelCellProps = { key: string };
-
-export type IModelRow = t.IModel<IModelRowProps>;
-export type IModelRowProps = { key: string };
-
-export type IModelColumn = t.IModel<IModelColumnProps>;
-export type IModelColumnProps = { key: string };
-
 /**
  *   NS/<cuid>/cell
  */
@@ -29,7 +10,7 @@ export type IModelColumnProps = { key: string };
 // }
 
 const cellFactory: t.ModelFactory = ({ path, db }) =>
-  Model.create<IModelCellProps>({ db, path, initial: { key: '' } });
+  Model.create<t.IModelCellProps>({ db, path, initial: { key: '' } });
 
 const rowFactory: t.ModelFactory = ({ path, db }) =>
   Model.create<IRowProps>({ db, path, initial: { key: '' } });
@@ -46,13 +27,13 @@ describe('db.cell', () => {
     await db.put(schema.cell().path, { key: 'A1' });
     await db.put(schema.cell('456').path, { key: 'A2' });
 
-    const children: t.IModelChildrenDefs<IModelNsChildren> = {
+    const children: t.IModelChildrenDefs<t.IModelNsChildren> = {
       cells: { query: Schema.query.cells, factory: cellFactory },
       rows: { query: Schema.query.rows, factory: rowFactory },
       columns: { query: Schema.query.columns, factory: columnFactory },
     };
 
-    const ns = Model.create<IModelNsProps, IModelNsDoc, IModelNsLinks, IModelNsChildren>({
+    const ns = Model.create<t.IModelNsProps, t.IModelNsDoc, t.IModelNsLinks, t.IModelNsChildren>({
       db,
       path: schema.path,
       children,
