@@ -66,11 +66,17 @@ export type Listen = (options?: {
   port?: number;
   log?: ILogProps;
   silent?: boolean;
-}) => Promise<IMicro>;
+}) => Promise<IMicroService>;
 
 export type IMicro = {
-  listen: Listen;
   server: Server;
   router: IRouter;
   handler: RequestHandler;
+  listen: Listen;
+};
+
+export type IMicroService = {
+  port: number;
+  isRunning: boolean;
+  close(): Promise<{}>;
 };

@@ -24,4 +24,14 @@ app.router
     return { data: { method: req.method, body } };
   });
 
-app.listen({ port: 8080 });
+(async () => {
+  const service = await app.listen({ port: 8080 });
+
+  log.info('service:');
+  log.info('- isRunning:', service.isRunning);
+  log.info('- port:     ', service.port);
+  log.info();
+
+  // Example: stop the service.
+  // setTimeout(() => service.close(), 1500);
+})();
