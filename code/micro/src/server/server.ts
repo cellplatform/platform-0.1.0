@@ -15,6 +15,7 @@ const NOT_FOUND: t.RouteResponse = {
  * Initialize the [server].
  */
 export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } = {}) {
+  // Setup initial conditions.
   const router = Router.create();
   let handler = requestHandler(router);
   handler = args.cors ? cors(handler) : handler;
@@ -23,27 +24,48 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
   /**
    * [Start] the server listening for requests.
    */
-  const listen: t.Listen = async (options = {}) => {
-    const port = options.port || args.port || 3000;
-    await server.listen({ port });
+  const listen: t.Listen = (options = {}) => {
+    const promise = new Promise<t.IMicroService>((resolve, reject) => {
+      const port = options.port || args.port || 3000;
 
-    if (!options.silent) {
-      const url = log.cyan(`http://localhost:${log.magenta(port)}`);
-      const props = { ...(options.log || args.log || {}), prod: IS_PROD };
+      if (!options.silent) {
+        const url = log.cyan(`http://localhost:${log.magenta(port)}`);
+        const props = { ...(options.log || args.log || {}), prod: IS_PROD };
+        const keys = Object.keys(props);
+        const max = keys.reduce((acc, next) => (next.length > acc ? next.length : acc), 0) + 2;
 
-      const keys = Object.keys(props);
-      const max = keys.reduce((acc, next) => (next.length > acc ? next.length : acc), 0) + 2;
+        log.info();
+        log.info.gray(`👋  Running on ${url}`);
+        log.info();
+        keys.forEach(key => {
+          const prefix = `${key}:${' '.repeat(10)}`.substring(0, max);
+          log.info.gray(`   - ${prefix} ${props[key].toString()}`);
+        });
+        log.info();
+      }
 
-      log.info();
-      log.info.gray(`👋  Running on ${url}`);
-      log.info();
-      keys.forEach(key => {
-        const prefix = `${key}:${' '.repeat(10)}`.substring(0, max);
-        log.info.gray(`   - ${prefix} ${props[key].toString()}`);
-      });
-      log.info();
-    }
-    return api;
+      const close: t.IMicroService['close'] = () => {
+        return new Promise(async (resolve, reject) => {
+          if (!instance.isRunning) {
+            return resolve(); // Already stopped.
+          } else {
+            instance.isRunning = false;
+            service.close(err => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+          }
+        });
+      };
+
+      const instance: t.IMicroService = { isRunning: true, port, close };
+      const service = server.listen({ port }, () => resolve(instance));
+    });
+
+    return promise;
   };
 
   // Finish up.

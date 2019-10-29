@@ -15,6 +15,7 @@ import {
   value as valueUtil,
 } from '../common';
 import { Button, IButtonProps, ObjectView } from '../primitives';
+import { DebugProps } from './Debug.Props';
 
 const { deleteUndefined } = valueUtil;
 
@@ -271,9 +272,11 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
             out: this.state.outgoing,
             'topological order': this.state.order,
           },
-          expandPaths: ['$', '$.in', '$.out'],
+          // expandPaths: ['$', '$.in', '$.out'],
         })}
         {elFormula}
+        <Hr />
+        <DebugProps />
       </div>
     );
   }

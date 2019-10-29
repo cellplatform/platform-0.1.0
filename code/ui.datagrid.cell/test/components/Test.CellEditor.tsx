@@ -34,7 +34,7 @@ export class TestCellEditor extends React.PureComponent<
    * [Lifecycle]
    */
 
-  public componentWillMount() {
+  public componentDidMount() {
     const { mode } = this.props;
 
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));

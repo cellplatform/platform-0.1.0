@@ -55,7 +55,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     // Update state.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
@@ -155,9 +155,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           // e.modify({ ...e.pending, cells });
         }
       });
-  }
 
-  public componentDidMount() {
+    // Finish up.
     const gridEvents$ = this.grid.events$.pipe(takeUntil(this.unmounted$));
     gridEvents$.pipe(debounceTime(10)).subscribe(() => this.updateState());
     this.updateState();

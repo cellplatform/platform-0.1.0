@@ -20,8 +20,8 @@ An extensible property editor for cells.
     * TEMP 🐷
     *
     * - cell.ui.props
-    * - cell.ui.s3
     * - cell.ui.info
+    * - cell.ui.s3
     * - cell.ui.style
     * - cell.ui.grid (colspan/rowspan etc)
     */
