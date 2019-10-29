@@ -45,7 +45,7 @@ describe('db.cell', () => {
 
     // await db.compact();
 
-    console.log('m', ns.toObject());
+    // console.log('m', ns.toObject());
     const c = await ns.children.cells;
     console.log('children', c.map(c => c.toObject()));
 
