@@ -16,7 +16,10 @@ export type IGridOverlayCommand = IGridOverlayShowCommand | IGridOverlayHideComm
 
 export type IGridOverlayShowCommand = IGridCommand<
   GridOverlayShowCommand,
-  { cell: string; screen: t.ICellScreenView }
+  {
+    cell: string;
+    screen: t.ICellScreenView;
+  }
 >;
 
 export type IGridOverlayHideCommand = IGridCommand<GridOverlayHideCommand>;
