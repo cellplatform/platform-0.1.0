@@ -1,25 +1,13 @@
-import { expect, getTestDb, id, Model, t, time } from '../test';
+import { model } from '.';
 import { Schema } from '../schema';
-import { IRowProps, IColumnProps } from '../common/types';
+import { getTestDb, Model, t } from '../test';
 
 /**
  *   NS/<cuid>/cell
  */
 
-// const nsFactory: t.ModelFactory<IModelNs> = ({path, db}) => {
-// }
-
-const cellFactory: t.ModelFactory = ({ path, db }) =>
-  Model.create<t.IModelCellProps>({ db, path, initial: { key: '' } });
-
-const rowFactory: t.ModelFactory = ({ path, db }) =>
-  Model.create<IRowProps>({ db, path, initial: { key: '' } });
-
-const columnFactory: t.ModelFactory = ({ path, db }) =>
-  Model.create<IColumnProps>({ db, path, initial: { key: '' } });
-
 describe('db.cell', () => {
-  it.only('TMP', async () => {
+  it('TMP', async () => {
     const db = await getTestDb({ file: true, reset: true });
 
     const schema = Schema.ns();
@@ -28,9 +16,9 @@ describe('db.cell', () => {
     await db.put(schema.cell('456').path, { key: 'A2' });
 
     const children: t.IModelChildrenDefs<t.IModelNsChildren> = {
-      cells: { query: Schema.query.cells, factory: cellFactory },
-      rows: { query: Schema.query.rows, factory: rowFactory },
-      columns: { query: Schema.query.columns, factory: columnFactory },
+      cells: { query: Schema.query.cells, factory: model.Cell.factory },
+      rows: { query: Schema.query.rows, factory: model.Row.factory },
+      columns: { query: Schema.query.columns, factory: model.Column.factory },
     };
 
     const ns = Model.create<t.IModelNsProps, t.IModelNsDoc, t.IModelNsLinks, t.IModelNsChildren>({
@@ -40,6 +28,8 @@ describe('db.cell', () => {
       initial: { name: undefined },
       // load: true,
     });
+
+    // ns.children.
 
     await ns.save();
 

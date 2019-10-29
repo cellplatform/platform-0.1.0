@@ -51,10 +51,12 @@ export class SchemaCoord {
   public readonly ns: SchemaNamespace;
   public readonly id: string;
   public readonly path: string;
+  public readonly type: SchemaCoordType;
 
   constructor(args: { type: SchemaCoordType; ns: SchemaNamespace; id?: string }) {
     this.ns = args.ns;
     this.id = args.id || generate.shortid();
+    this.type = args.type;
     this.path = `${args.ns.path}/${args.type}/${this.id}`;
   }
 }

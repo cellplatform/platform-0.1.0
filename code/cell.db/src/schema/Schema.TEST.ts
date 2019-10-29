@@ -24,14 +24,14 @@ describe('schema', () => {
       const ns = Schema.ns('abc');
       const res = ns.cell('123');
       expect(res.id).to.eql('123');
-      expect(res.path).to.eql('NS/abc/cell/123');
+      expect(res.path).to.eql('NS/abc/CELL/123');
     });
 
     it('generated id', () => {
       const ns = Schema.ns('abc');
       const res = ns.cell();
       expect(res.id.length).to.eql(8);
-      expect(res.path).to.eql(`NS/abc/cell/${res.id}`);
+      expect(res.path).to.eql(`NS/abc/CELL/${res.id}`);
     });
   });
 
@@ -40,14 +40,15 @@ describe('schema', () => {
       const ns = Schema.ns('abc');
       const res = ns.column('123');
       expect(res.id).to.eql('123');
-      expect(res.path).to.eql('NS/abc/col/123');
+      expect(res.path).to.eql('NS/abc/COL/123');
     });
 
     it('generated id', () => {
       const ns = Schema.ns('abc');
       const res = ns.column();
-      expect(res.id.length).to.eql(8);
-      expect(res.path).to.eql(`NS/abc/col/${res.id}`);
+      expect(res.id.length).to.greaterThan(6);
+      expect(res.path).to.eql(`NS/abc/COL/${res.id}`);
+      expect(res.type).to.eql('COL');
     });
   });
 
@@ -56,14 +57,15 @@ describe('schema', () => {
       const ns = Schema.ns('abc');
       const res = ns.row('123');
       expect(res.id).to.eql('123');
-      expect(res.path).to.eql('NS/abc/row/123');
+      expect(res.path).to.eql('NS/abc/ROW/123');
     });
 
     it('generated id', () => {
       const ns = Schema.ns('abc');
       const res = ns.row();
-      expect(res.id.length).to.eql(8);
-      expect(res.path).to.eql(`NS/abc/row/${res.id}`);
+      expect(res.id.length).to.greaterThan(6);
+      expect(res.path).to.eql(`NS/abc/ROW/${res.id}`);
+      expect(res.type).to.eql('ROW');
     });
   });
 });
