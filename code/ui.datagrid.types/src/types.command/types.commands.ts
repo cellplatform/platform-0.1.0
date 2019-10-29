@@ -8,8 +8,18 @@ export type GridCommand = GridClipboardCommand | GridStyleCommand | GridOverlayC
 /**
  * Overlay (screen)
  */
-export type GridOverlayCommand = 'OVERLAY';
-export type IGridOverlayCommand = IGridCommand<GridOverlayCommand, { screen?: t.ICellScreenView }>;
+export type GridOverlayCommand = GridOverlayShowCommand | GridOverlayHideCommand;
+export type GridOverlayShowCommand = 'OVERLAY/show';
+export type GridOverlayHideCommand = 'OVERLAY/hide';
+
+export type IGridOverlayCommand = IGridOverlayShowCommand | IGridOverlayHideCommand;
+
+export type IGridOverlayShowCommand = IGridCommand<
+  GridOverlayShowCommand,
+  { cell: string; screen: t.ICellScreenView }
+>;
+
+export type IGridOverlayHideCommand = IGridCommand<GridOverlayHideCommand>;
 
 /**
  * Clipboard

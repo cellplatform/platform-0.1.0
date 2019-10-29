@@ -61,9 +61,7 @@ export class MyScreen extends React.PureComponent<IMyScreenProps, IMyScreenState
     };
 
     const context = this.context;
-
-    // context.cell.
-    const cellKey = 'TEMP';
+    const cellKey = context.uri;
 
     return (
       <div {...styles.base}>

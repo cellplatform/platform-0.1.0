@@ -19,7 +19,6 @@ export type IGridProperties = {
   readonly keyBindings: KeyBindings<t.GridCommand>;
   readonly defaults: IGridDefaults;
   readonly calc: IGridCalculate;
-  readonly overlay: t.ICellScreenView | undefined;
   clipboard?: IGridClipboardPending;
 };
 export type IGridMethods = {

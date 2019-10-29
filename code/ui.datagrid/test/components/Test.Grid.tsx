@@ -183,11 +183,18 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     return data;
   }
 
-  public overlayFromCell(key?: string) {
-    const cell = this.grid.data.cells[key || ''];
-    const view = cell && cell.props ? util.toGridCellProps(cell.props).view : {};
+  public overlayFromCell(cell?: string) {
+    const data = this.grid.data.cells[cell || ''];
+    const view = data && data.props ? util.toGridCellProps(data.props).view : {};
     const screen = view ? view.screen : undefined;
-    this.grid.command({ command: 'OVERLAY', props: { screen } });
+    if (data && screen && cell) {
+      this.grid.command<t.IGridOverlayShowCommand>({
+        command: 'OVERLAY/show',
+        props: { screen, cell },
+      });
+    } else {
+      this.grid.command<t.IGridOverlayHideCommand>({ command: 'OVERLAY/hide', props: {} });
+    }
   }
 
   /**
@@ -215,7 +222,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const styles = {
       base: css({
         position: 'relative',
-        width: 200,
+        width: 230,
         padding: 10,
         Scroll: true,
         fontSize: 13,
@@ -289,13 +296,16 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           });
         })}
         <Hr margin={5} />
-        {this.button('screen: none', () => this.overlayFromCell())}
-        {this.button('screen: A1 (none)', () => this.overlayFromCell('A1'))}
+        {this.button('screen: hide', () =>
+          this.grid.command({ command: 'OVERLAY/hide', props: {} }),
+        )}
+        {this.button('screen: A1 (none defined)', () => this.overlayFromCell('A1'))}
         {this.button('screen: A3 (via cell def)', () => this.overlayFromCell('A3'))}
-        {this.button('screen: via explicit def', () => {
+        {this.button('screen: A5 (via explicit command)', () => {
           this.grid.command({
-            command: 'OVERLAY',
+            command: 'OVERLAY/show',
             props: {
+              cell: 'A5',
               screen: { type: 'MyScreen', className: 'my-custom' },
             },
           });

@@ -169,10 +169,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     }
 
     if (req.type === 'SCREEN') {
-      const view = cell.props.view;
-      if (view && view.screen && view.screen.type === 'MyScreen') {
-        return <MyScreen />;
-      }
+      return <MyScreen />;
     }
 
     console.log(`Factory type '${req.type}' not supported by test.`, req);

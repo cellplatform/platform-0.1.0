@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { css, GlamorValue, t, util, constants, createProvider, R } from '../common';
 
-import { css, GlamorValue, R, t } from '../../common';
+const CSS = constants.CSS;
 
 export type IDataGridOverlayProps = {
   grid: t.IGrid;
@@ -10,7 +11,9 @@ export type IDataGridOverlayProps = {
   style?: GlamorValue;
 };
 export type IDataGridOverlayState = {
+  key?: string;
   screen?: t.ICellScreenView;
+  Provider?: React.FunctionComponent;
 };
 
 export class DataGridOverlay extends React.PureComponent<
@@ -36,24 +39,28 @@ export class DataGridOverlay extends React.PureComponent<
       filter(e => e.type === 'GRID/command'),
       map(e => e.payload as t.IGridCommand),
     );
-    const overlay$ = command$.pipe(
-      filter(e => e.command === 'OVERLAY'),
-      map(e => e as t.IGridOverlayCommand),
-    );
 
     // Redraw when overlay changed.
-    overlay$
-      .pipe(distinctUntilChanged((prev, next) => R.equals(prev.props.screen, next.props.screen)))
+    command$
+      .pipe(
+        filter(e => e.command === 'OVERLAY/show'),
+        map(e => e as t.IGridOverlayShowCommand),
+        filter(e => !R.equals(e.props.screen, this.state.screen)),
+      )
       .subscribe(e => {
-        console.group('🌳 OVERLAY.tsx');
-        console.log('e', e);
-        console.log('grid.overlay', grid.overlay);
-        console.groupEnd();
-        this.updateState();
+        const key = e.props.cell;
+        const screen = e.props.screen;
+        if (key && screen) {
+          this.show({ key, screen });
+        }
       });
 
-    // Finish up.
-    this.updateState();
+    command$
+      .pipe(
+        filter(e => e.command === 'OVERLAY/hide'),
+        filter(() => this.isShowing),
+      )
+      .subscribe(e => this.hide());
   }
 
   public componentWillUnmount() {
@@ -62,33 +69,89 @@ export class DataGridOverlay extends React.PureComponent<
   }
 
   /**
+   * [Properties]
+   */
+  public get isShowing() {
+    return Boolean(this.state.screen);
+  }
+
+  private get key() {
+    return this.state.key as string;
+  }
+
+  private get data() {
+    return this.getData(this.key);
+  }
+
+  public get request() {
+    const { screen } = this.state;
+    const key = this.key;
+    const data = this.data;
+    if (!screen || !data || !key) {
+      return undefined;
+    } else {
+      const props = util.toGridCellProps(data.props);
+      const req: t.IGridFactoryRequest = {
+        type: 'SCREEN',
+        grid: this.props.grid,
+        cell: { key, data, props },
+      };
+      return req;
+    }
+  }
+
+  /**
    * [Methods]
    */
-  public updateState() {
-    const { grid } = this.props;
-    const screen = grid.overlay;
-    this.state$.next({ screen });
+  public getData(key: string) {
+    return this.props.grid.data.cells[key];
+  }
+
+  public show(args: { key: string; screen: t.ICellScreenView }) {
+    const { key, screen } = args;
+    const cell = this.getData(key);
+
+    let Provider: React.FunctionComponent | undefined;
+    if (cell) {
+      const ctx: t.ICellContext = { uri: key, cell };
+      Provider = createProvider({ ctx });
+    }
+    this.state$.next({ key, screen, Provider });
+  }
+
+  public hide() {
+    this.state$.next({
+      key: undefined,
+      screen: undefined,
+      Provider: undefined,
+    });
   }
 
   /**
    * [Render]
    */
   public render() {
-    const { screen } = this.state;
-    if (!screen) {
+    const req = this.request;
+    const { screen, Provider } = this.state;
+    const { factory } = this.props;
+    if (!req || !screen || !Provider) {
       return null;
     }
 
     const styles = {
       base: css({
         Absolute: 0,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0)', // NB: Invisible click mask, prevent interaction with background grid.
         zIndex: 9999,
       }),
     };
+
+    const className = `${CSS.CLASS.SCREEN.BASE} ${screen.className || ''}`;
+
     return (
-      <div {...css(styles.base, this.props.style)}>
-        <div>DataGridOverlay</div>
+      <div {...css(styles.base, this.props.style)} className={className}>
+        <Provider>{factory(req)}</Provider>
       </div>
     );
   }
