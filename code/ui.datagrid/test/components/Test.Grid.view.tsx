@@ -36,11 +36,8 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-  }
-
   public componentDidMount() {
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const keyboard$ = this.props.grid.keyboard$;
 

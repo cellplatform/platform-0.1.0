@@ -63,13 +63,11 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     if (this.props.events$) {
       this.events$.subscribe(this.props.events$);
     }
-  }
 
-  public componentDidMount() {
     const formula$ = this.formula$.pipe(takeUntil(this.unmounted$));
     const markdown$ = this.markdown$.pipe(takeUntil(this.unmounted$));
     const text$ = this.text$.pipe(takeUntil(this.unmounted$));
