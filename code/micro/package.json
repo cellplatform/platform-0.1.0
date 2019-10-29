@@ -1,6 +1,6 @@
 {
   "name": "@platform/micro",
-  "version": "0.5.5",
+  "version": "0.6.0",
   "description": "Wrapper and helpers around micro.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "HTTP cloud server for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "@platform/cell.db": "0.0.12",
     "@platform/cell.types": "0.0.19",
     "@platform/libs": "0.1.3",
-    "@platform/micro": "0.5.5"
+    "@platform/micro": "0.6.0"
   },
   "devDependencies": {
     "@platform/fsdb.nedb": "1.3.23",
