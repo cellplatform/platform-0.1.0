@@ -5,10 +5,7 @@ const CELLS: t.IGridData['cells'] = {
   A2: { value: '123', props: { style: { bold: true } } },
   // A2: {value:'* one\n * two'},
   // A2: {value:'# Heading\nhello'},
-  A3: {
-    value: 'A3 `code`',
-    props: { view: { screen: { type: 'MyScreen', className: 'my-screen' } } },
-  },
+  A3: { value: 'A3 `code`' },
   A5: { value: '=A2', props: { merge: { colspan: 2 } } },
   A6: { value: '=SUM(1, A5, C4)' },
   A8: { value: '=SUM(1,2)' },
@@ -24,7 +21,12 @@ const CELLS: t.IGridData['cells'] = {
   B2: { value: 'cancel' },
   C1: {
     value: 'Yo',
-    props: { view: { cell: { type: 'MyView', className: 'my-foo' } } },
+    props: {
+      view: {
+        cell: { type: 'MyView', className: 'my-foo' },
+        screen: { type: 'MyScreen', className: 'my-screen' },
+      },
+    },
   },
   C4: { value: 'Hello' },
   C5: { value: 'Hello', props: { merge: { rowspan: 2 } } },
