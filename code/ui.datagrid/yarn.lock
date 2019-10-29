@@ -1032,6 +1032,14 @@
     "@platform/libs" "0.1.3"
     "@platform/util.diff" "0.0.1"
 
+"@platform/cell.ui.props@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui.props/-/cell.ui.props-0.0.0.tgz#1e4b7b8e2ad39302780b5267a1029c52c4251efb"
+  integrity sha512-0t531eiUM/Syuimd4wawF9OBFjH3X9o2FNxpDzIiRWkxY7MrEQrovWUlNBJlItG+4M7tKszUZvqu9qaNDhQ6Ow==
+  dependencies:
+    "@platform/libs" "0.1.3"
+    "@platform/react" "0.3.26"
+
 "@platform/cell.ui@0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.0.3.tgz#148e6368d16d9847307c52d9088c4b1f1c968510"
