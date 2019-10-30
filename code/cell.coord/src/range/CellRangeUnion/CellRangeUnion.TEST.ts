@@ -85,7 +85,7 @@ describe('CellRangeUnion', () => {
 
   describe('contains', () => {
     const tester = (result: boolean) => {
-      return (cell: t.ICoord | string, rangeKeys: string[]) => {
+      return (cell: t.ICoordPosition | string, rangeKeys: string[]) => {
         const union = fromKey(rangeKeys);
         expect(union.contains(cell)).to.eql(result, `cell "${cell}", rangeKeys: ${rangeKeys} `);
       };

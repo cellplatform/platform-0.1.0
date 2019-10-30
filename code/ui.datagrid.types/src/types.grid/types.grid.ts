@@ -43,7 +43,7 @@ export type IGridMethods = {
   focus(): IGrid;
   redraw(): IGrid;
   mergeCells(args: { cells: t.IGridData['cells']; init?: boolean }): IGrid;
-  toPosition(ref: t.GridCellRef): t.ICoord;
+  toPosition(ref: t.GridCellRef): t.ICoordPosition;
   updateHashes(options?: { force?: boolean }): IGrid;
   fire: GridFireEvent;
   command: GridFireCommand;

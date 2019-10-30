@@ -3,7 +3,7 @@
  */
 export type CoordAxis = 'COLUMN' | 'ROW';
 export type CoordType = 'CELL' | CoordAxis;
-export type ICoord = {
+export type ICoordPosition = {
   column: number;
   row: number;
 };

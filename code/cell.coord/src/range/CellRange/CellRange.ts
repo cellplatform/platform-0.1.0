@@ -211,7 +211,7 @@ export class CellRange {
       return result;
     };
 
-    const toKeys = (min: t.ICoord, max: t.ICoord): string[] => {
+    const toKeys = (min: t.ICoordPosition, max: t.ICoordPosition): string[] => {
       const totalColumns = max.column - min.column + 1;
       const totalRows = max.row - min.row + 1;
       const result = Array.from({ length: totalColumns })
@@ -409,21 +409,21 @@ export class CellRange {
     const start = this.left;
     const end = this.right;
 
-    const columnContains = (cell: t.ICoord) => {
+    const columnContains = (cell: t.ICoordPosition) => {
       const index = cell.column;
       return start.column === undefined || end.column === undefined
         ? false
         : index >= start.column && index <= end.column;
     };
 
-    const rowContains = (cell: t.ICoord) => {
+    const rowContains = (cell: t.ICoordPosition) => {
       const index = cell.row;
       return start.row === undefined || end.row === undefined
         ? false
         : index >= start.row && index <= end.row;
     };
 
-    const cellsContain = (cell: t.ICoord) => {
+    const cellsContain = (cell: t.ICoordPosition) => {
       if (!columnContains(cell)) {
         return false;
       }
@@ -433,7 +433,7 @@ export class CellRange {
       return true;
     };
 
-    const patialColumnContains = (cell: t.ICoord) => {
+    const patialColumnContains = (cell: t.ICoordPosition) => {
       if (!columnContains(cell)) {
         return false;
       }
@@ -441,7 +441,7 @@ export class CellRange {
       return start.row === undefined ? false : index >= start.row;
     };
 
-    const patialRowContains = (cell: t.ICoord) => {
+    const patialRowContains = (cell: t.ICoordPosition) => {
       if (!rowContains(cell)) {
         return false;
       }
@@ -449,7 +449,7 @@ export class CellRange {
       return start.column === undefined ? false : index >= start.column;
     };
 
-    const partialAllContains = (cell: t.ICoord) => {
+    const partialAllContains = (cell: t.ICoordPosition) => {
       if (start.key === '*') {
         // Top/left to cell.
         return cell.column <= end.column && cell.row <= end.row;
@@ -494,7 +494,7 @@ export class CellRange {
   /**
    * Retrieves the edge(s) the given cell is on.
    */
-  public edge(input: string | t.ICoord): t.CoordEdge[] {
+  public edge(input: string | t.ICoordPosition): t.CoordEdge[] {
     const { column, row } = cell.toCell(input);
 
     let result: t.CoordEdge[] = [];

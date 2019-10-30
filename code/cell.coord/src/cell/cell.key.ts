@@ -102,8 +102,8 @@ export function toRelative(key: string): string {
 /**
  * Attempts to parse the given cell key.
  */
-export function fromKey(key: string | number): t.ICoord {
-  return cache.get<t.ICoord>(`fromKey/${key}`, () => {
+export function fromKey(key: string | number): t.ICoordPosition {
+  return cache.get<t.ICoordPosition>(`fromKey/${key}`, () => {
     const parts = parser.toParts((key || '').toString());
     const row = parts.row.index;
     const column = parts.column.index;
