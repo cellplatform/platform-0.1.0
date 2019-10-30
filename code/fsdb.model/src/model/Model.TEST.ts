@@ -337,6 +337,36 @@ describe('model', () => {
       expect(model.doc).to.eql(org.doc); // No change to underlying doc.
     });
 
+    it('set (via method)', async () => {
+      const model = await (await createOrg({ put: true })).ready;
+
+      expect(model.props.name).to.eql('MyOrg');
+      expect(model.props.id).to.eql('123');
+      expect(model.isChanged).to.eql(false);
+
+      model.set({ name: 'Foo' });
+
+      expect(model.isChanged).to.eql(true);
+      expect(model.changes.length).to.eql(1);
+      expect(model.props.name).to.eql('Foo');
+      expect(model.props.id).to.eql('123');
+
+      model.set({ name: 'Bar', id: '456' });
+
+      expect(model.isChanged).to.eql(true);
+      expect(model.changes.length).to.eql(3);
+      expect(model.props.name).to.eql('Bar');
+      expect(model.props.id).to.eql('456');
+
+      await model.save();
+      await model.load();
+
+      expect(model.props.name).to.eql('Bar');
+      expect(model.props.id).to.eql('456');
+      expect(model.isChanged).to.eql(false);
+      expect(model.changes.length).to.eql(0);
+    });
+
     it('changed event', async () => {
       const model = await createOrg({ put: true });
       await model.ready;

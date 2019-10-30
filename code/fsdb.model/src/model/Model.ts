@@ -284,6 +284,17 @@ export class Model<
     this._item = undefined;
     this._linkCache = {};
     this._childrenCache = {};
+    return this;
+  }
+
+  /**
+   * Set the given props.
+   */
+  public set(props: Partial<P>) {
+    if (typeof props === 'object') {
+      Object.keys(props).forEach(key => (this.props[key] = props[key]));
+    }
+    return this;
   }
 
   /**
