@@ -2,11 +2,22 @@ import { alpha } from '../alpha';
 import { parser } from '../parser';
 import { t, defaultValue, MemoryCache } from '../common';
 
-type IRowCol = { column?: number; row?: number };
-type IKeyObject = { key: string };
-type CellInput = string | number | IRowCol | IKeyObject;
+type IRowCol = { column?: number; row?: number; ns?: string };
+type IKeyObject = { key: string; ns?: string };
+export type CellInput = string | number | IRowCol | IKeyObject;
 
 const cache = MemoryCache.create();
+const parse = (input: string | number) => {
+  return cache.get(`parse/${input}`, () => {
+    const parts = parser.toParts((input || '').toString());
+    const ns = parts.sheet;
+    const key = parts.cell;
+    const row = parts.row.index;
+    const column = parts.column.index;
+    const res: t.ICoord = { row, column, key, ns };
+    return res;
+  });
+};
 
 /**
  * Converts indexes into alpha-numeric cell code.
@@ -49,18 +60,20 @@ export function toKey(column?: number, row?: number): string {
  */
 export function toCell(input: CellInput, options: { relative?: boolean } = {}): t.ICoord {
   let key = '';
+  let ns = '';
   let column = -1;
   let row = -1;
 
   // Wrangle input into values.
   if (typeof input === 'object') {
     const keys = Object.keys(input);
-    if (keys.includes('key')) {
+    if (keys.includes('key') && typeof (input as IKeyObject).key === 'string') {
       //
       // Type: { key }.
       //
       const obj = input as IKeyObject;
       key = obj.key;
+      ns = typeof obj.ns === 'string' ? obj.ns : ns;
       const pos = fromKey(key);
       row = pos.row;
       column = pos.column;
@@ -70,6 +83,7 @@ export function toCell(input: CellInput, options: { relative?: boolean } = {}): 
       //
       const obj = input as IRowCol;
       key = toKey(obj.column, obj.row);
+      ns = typeof obj.ns === 'string' ? obj.ns : ns;
       column = obj.column === undefined ? -1 : obj.column;
       row = obj.row === undefined ? -1 : obj.row;
     } else {
@@ -80,16 +94,23 @@ export function toCell(input: CellInput, options: { relative?: boolean } = {}): 
     // Type: string/number.
     //
     key = typeof input === 'number' ? (input + 1).toString() : input;
-    const pos = fromKey(key);
-    row = pos.row;
-    column = pos.column;
+    const parts = parse(key);
+    row = parts.row;
+    column = parts.column;
+    ns = parts.ns ? parts.ns : ns;
+    key = parts.key;
   }
 
   // Strip absolute "$" characters (if required).
   key = options.relative ? toRelative(key) : key;
 
+  // Clean up namespace.
+  if (ns) {
+    ns = ns.trim().replace(/\!$/, '');
+  }
+
   // Finish up.
-  return { key, row, column };
+  return { key, ns, row, column };
 }
 
 /**
@@ -103,12 +124,8 @@ export function toRelative(key: string): string {
  * Attempts to parse the given cell key.
  */
 export function fromKey(key: string | number): t.ICoordPosition {
-  return cache.get<t.ICoordPosition>(`fromKey/${key}`, () => {
-    const parts = parser.toParts((key || '').toString());
-    const row = parts.row.index;
-    const column = parts.column.index;
-    return { row, column };
-  });
+  const { row, column } = parse(key);
+  return { row, column };
 }
 
 /**

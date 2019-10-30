@@ -100,8 +100,10 @@ describe('Uri', () => {
       expect(res.data.id).to.eql('123456');
     });
 
-    it.only('cell', () => {
+    it.skip('cell', () => {
       const res = Uri.parse<t.ICellUri>('cell:123456789:abc');
+
+      // TEMP 🐷 convert :abc => !A1
 
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);

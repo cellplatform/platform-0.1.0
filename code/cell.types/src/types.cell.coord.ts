@@ -4,9 +4,8 @@
 export type CoordAxis = 'COLUMN' | 'ROW';
 export type CoordType = 'CELL' | CoordAxis;
 export type ICoordPosition = { column: number; row: number };
-export type ICoord = ICoordPosition & {
-  key: string;
-};
+export type ICoordAddress = { key: string; ns: string };
+export type ICoord = ICoordPosition & ICoordAddress;
 
 /**
  * Siblings
