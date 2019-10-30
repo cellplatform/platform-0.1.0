@@ -2,9 +2,9 @@ import { alpha } from '../alpha';
 import { parser } from '../parser';
 import { t, defaultValue, MemoryCache } from '../common';
 
-type ICellCoord = { column?: number; row?: number };
-type ICellKeyObject = { key: string };
-type CellInput = string | number | ICellCoord | ICellKeyObject;
+type IRowCol = { column?: number; row?: number };
+type IKeyObject = { key: string };
+type CellInput = string | number | IRowCol | IKeyObject;
 
 const cache = MemoryCache.create();
 
@@ -59,7 +59,7 @@ export function toCell(input: CellInput, options: { relative?: boolean } = {}): 
       //
       // Type: { key }.
       //
-      const obj = input as ICellKeyObject;
+      const obj = input as IKeyObject;
       key = obj.key;
       const pos = fromKey(key);
       row = pos.row;
@@ -68,7 +68,7 @@ export function toCell(input: CellInput, options: { relative?: boolean } = {}): 
       //
       // Type: { row, column }.
       //
-      const obj = input as ICellCoord;
+      const obj = input as IRowCol;
       key = toKey(obj.column, obj.row);
       column = obj.column === undefined ? -1 : obj.column;
       row = obj.row === undefined ? -1 : obj.row;
