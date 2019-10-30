@@ -100,14 +100,15 @@ describe('Uri', () => {
       expect(res.data.id).to.eql('123456');
     });
 
-    it('cell', () => {
-      const res = Uri.parse<t.ICellUri>('cell:123456789:abcd');
+    it.only('cell', () => {
+      const res = Uri.parse<t.ICellUri>('cell:123456789:abc');
+
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
       expect(res.data.type).to.eql('cell');
-      expect(res.data.id).to.eql('123456789:abcd');
       expect(res.data.ns).to.eql('123456789');
-      expect(res.data.cell).to.eql('abcd');
+      expect(res.data.cell).to.eql('abc');
+      expect(res.data.id).to.eql('123456789:abc');
     });
 
     it('row', () => {

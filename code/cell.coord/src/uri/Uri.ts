@@ -1,4 +1,5 @@
 import { t, id } from '../common';
+import { cell } from '../cell';
 
 export type IUriParseResponse<D extends t.IUri = t.IUri> = {
   ok: boolean;
@@ -37,6 +38,12 @@ export class Uri {
         const parts = id.split(':');
         const ns = parts[0];
         const coordId = parts[1];
+
+        // TEMP 🐷 - TODO, convert to "<ns>!A1" format
+        // const res = cell.toCell(right);
+        // console.log('res', res);
+        // console.log('right', right);
+
         setError(!id, `ID of '${type}' not found`);
         setError(!coordId, `ID part suffix of '${type}' not found`);
         data = { type, id, ns, [field]: coordId } as any;

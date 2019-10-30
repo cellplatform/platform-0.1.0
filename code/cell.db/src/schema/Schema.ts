@@ -35,7 +35,7 @@ export class NsSchema {
 
   constructor(args: { id?: string }) {
     let id = args.id || generate.cuid();
-    if (Uri.isUri(id)) {
+    if (Uri.is.uri(id)) {
       const uri = Uri.parse(id);
       if (uri.error) {
         throw new Error(uri.error.message);
