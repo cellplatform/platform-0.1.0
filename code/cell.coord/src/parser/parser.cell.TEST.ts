@@ -8,7 +8,6 @@ describe('parser.toParts', () => {
     expect(parts.isValid).to.eql(true);
     expect(parts.error).to.eql('');
     expect(parts.type).to.eql('CELL');
-    expect(parts.space).to.eql('');
     expect(parts.key).to.eql('A1');
     expect(parts.column.value).to.eql('A');
     expect(parts.row.value).to.eql('1');
@@ -25,7 +24,6 @@ describe('parser.toParts', () => {
     expect(parts.isValid).to.eql(true);
     expect(parts.error).to.eql('');
     expect(parts.type).to.eql('COLUMN');
-    expect(parts.space).to.eql('');
     expect(parts.key).to.eql('A');
     expect(parts.column.value).to.eql('A');
     expect(parts.row.value).to.eql('');
@@ -42,7 +40,6 @@ describe('parser.toParts', () => {
     expect(parts.isValid).to.eql(true);
     expect(parts.error).to.eql('');
     expect(parts.type).to.eql('ROW');
-    expect(parts.space).to.eql('');
     expect(parts.key).to.eql('1');
     expect(parts.column.value).to.eql('');
     expect(parts.row.value).to.eql('1');
@@ -72,7 +69,6 @@ describe('parser.toParts', () => {
       expect(parts.isValid).to.eql(true);
       expect(parts.key).to.eql('A1');
       expect(parts.ns).to.eql(sheet);
-      expect(parts.space).to.eql(space);
     };
     test('uri:cell:A1', '', '');
     test('uri:cell:Sheet1!A1', 'Sheet1', '');
@@ -107,20 +103,6 @@ describe('parser.toParts', () => {
     const parts = parser.toParts('A$1');
     expect(parts.column.isRelative).to.eql(true);
     expect(parts.row.isRelative).to.eql(false);
-  });
-
-  it('space', () => {
-    const test = (input: string, space: string, cell: string, sheet: string = '') => {
-      const parts = parser.toParts(input);
-      expect(parts.isValid).to.eql(true);
-      expect(parts.space).to.eql(space);
-      expect(parts.key).to.eql(cell);
-      expect(parts.ns).to.eql(sheet);
-    };
-    test('A1', '', 'A1');
-    test('Sheet1.sys!A1', 'sys', 'A1', 'Sheet1');
-    test('Sheet1.foo!A1', 'foo', 'A1', 'Sheet1');
-    test('.sys!A1', 'sys', 'A1');
   });
 
   it('valid', () => {
@@ -189,8 +171,6 @@ describe('parser.toParts', () => {
     invalid('A-12');
     invalid('A1-2');
     invalid('Sheet1.!A1');
-    invalid('Sheet1.sys.!A1');
-    invalid('Sheet1.sy.s!A1');
     invalid('Sheet1!');
     invalid('***');
     invalid('Sheet1!***');

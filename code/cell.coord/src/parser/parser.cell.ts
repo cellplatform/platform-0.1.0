@@ -10,7 +10,6 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
   const result = {
     input,
     type: 'CELL' as t.CoordType,
-    space: '', // TEMP 🐷 Obsolete concept DO NOT USE (remove this from the code).
     ns: '',
     key: '',
     error: '',
@@ -75,17 +74,13 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
 
   result.key = (wildcard ? wildcard : node.key) || parts[1];
   result.ns = node.sheet || '';
-  result.space = node.space || '';
 
   // Ensure sheet value is valid.
-  if (!result.ns && !result.space && input.includes('!')) {
-    return done(`Includes "!" character but no sheet-id.`);
+  if (!result.ns && input.includes('!')) {
+    return done(`Includes "!" character but no namespace.`);
   }
   if (result.ns && result.ns.includes('.')) {
-    return done(`Sheet-id cannot contain "." character.`);
-  }
-  if (result.space && result.space.includes('.')) {
-    return done(`Space cannot contain "." character.`);
+    return done(`Namespace cannot contain "." character.`);
   }
 
   // Parse the cell-key.
