@@ -63,9 +63,32 @@ export class Uri {
   }
 
   /**
+   * Helpers for evalutating boolean conditions about a URI.
+   */
+  public static is = {
+    /**
+     * Determine if the given value is a recognized URI.
+     */
+    uri: (input?: string) => Uri.parse(input).ok,
+
+    /**
+     * Determine if the URI is of a specific type.
+     */
+    type: (type: t.UriType, input?: string) => Uri.parse(input).data.type === type,
+    ns: (input?: string) => Uri.is.type('ns', input),
+    cell: (input?: string) => Uri.is.type('cell', input),
+    row: (input?: string) => Uri.is.type('row', input),
+    column: (input?: string) => Uri.is.type('col', input),
+  };
+
+  /**
    * Generate new URIs.
    */
   public static generate = {
+    ns(args: { ns?: string } = {}) {
+      const ns = args.ns || id.cuid();
+      return `ns:${ns}`;
+    },
     cell(args: { ns?: string; cell?: string } = {}) {
       const ns = args.ns || id.cuid();
       const cell = args.cell || id.shortid();
