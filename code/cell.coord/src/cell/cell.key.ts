@@ -10,8 +10,8 @@ const cache = MemoryCache.create();
 const parse = (input: string | number) => {
   return cache.get(`parse/${input}`, () => {
     const parts = parser.toParts((input || '').toString());
-    const ns = parts.sheet;
-    const key = parts.cell;
+    const ns = parts.ns;
+    const key = parts.key;
     const row = parts.row.index;
     const column = parts.column.index;
     const res: t.ICoord = { row, column, key, ns };

@@ -105,17 +105,17 @@ export class CellRange {
     const rangeParts = parser.toRangeParts(key);
     const leftParts = parser.toParts(rangeParts.left);
     const rightParts = parser.toParts(rangeParts.right);
-    const leftSheet = leftParts.sheet || rightParts.sheet;
-    const rightSheet = rightParts.sheet || leftParts.sheet;
+    const leftNs = leftParts.ns || rightParts.ns;
+    const rightNs = rightParts.ns || leftParts.ns;
 
-    // Ensure sheet value is the same left and right.
-    if (leftSheet !== rightSheet) {
-      this.setError(`Ranges can only exist on a single sheet.`);
+    // Ensure namespace value is the same left and right.
+    if (leftNs !== rightNs) {
+      this.setError(`Ranges can only exist on a single sheet (namespace).`);
     }
 
     // Store values.
-    const left = (this.left = cell.toCell(leftParts.cell, { relative: true }));
-    const right = (this.right = cell.toCell(rightParts.cell, { relative: true }));
+    const left = (this.left = cell.toCell(leftParts.key, { relative: true }));
+    const right = (this.right = cell.toCell(rightParts.key, { relative: true }));
     this.key = `${this.left.key}:${this.right.key}`; // NB: Stripped of "$" chars.
 
     // Derive the category of range.

@@ -9,12 +9,12 @@ describe('parser.toParts', () => {
     expect(parts.error).to.eql('');
     expect(parts.type).to.eql('CELL');
     expect(parts.space).to.eql('');
-    expect(parts.cell).to.eql('A1');
+    expect(parts.key).to.eql('A1');
     expect(parts.column.value).to.eql('A');
     expect(parts.row.value).to.eql('1');
     expect(parts.column.index).to.eql(0);
     expect(parts.row.index).to.eql(0);
-    expect(parts.sheet).to.eql('Sheet1');
+    expect(parts.ns).to.eql('Sheet1');
     expect(parts.column.isRelative).to.eql(true);
     expect(parts.row.isRelative).to.eql(true);
     expect(parts.isWildcard).to.eql(false);
@@ -26,13 +26,13 @@ describe('parser.toParts', () => {
     expect(parts.error).to.eql('');
     expect(parts.type).to.eql('COLUMN');
     expect(parts.space).to.eql('');
-    expect(parts.cell).to.eql('A');
+    expect(parts.key).to.eql('A');
     expect(parts.column.value).to.eql('A');
     expect(parts.row.value).to.eql('');
     expect(parts.type).to.eql('COLUMN');
     expect(parts.column.index).to.eql(0);
     expect(parts.row.index).to.eql(-1);
-    expect(parts.sheet).to.eql('Sheet1');
+    expect(parts.ns).to.eql('Sheet1');
     expect(parts.column.isRelative).to.eql(true);
     expect(parts.row.isRelative).to.eql(undefined);
   });
@@ -43,13 +43,13 @@ describe('parser.toParts', () => {
     expect(parts.error).to.eql('');
     expect(parts.type).to.eql('ROW');
     expect(parts.space).to.eql('');
-    expect(parts.cell).to.eql('1');
+    expect(parts.key).to.eql('1');
     expect(parts.column.value).to.eql('');
     expect(parts.row.value).to.eql('1');
     expect(parts.type).to.eql('ROW');
     expect(parts.column.index).to.eql(-1);
     expect(parts.row.index).to.eql(0);
-    expect(parts.sheet).to.eql('Sheet1');
+    expect(parts.ns).to.eql('Sheet1');
     expect(parts.column.isRelative).to.eql(undefined);
     expect(parts.row.isRelative).to.eql(true);
   });
@@ -58,8 +58,8 @@ describe('parser.toParts', () => {
     const noSheet = (key: string) => {
       const parts = parser.toParts(key);
       expect(parts.isValid).to.eql(true);
-      expect(parts.cell).to.eql(key);
-      expect(parts.sheet).to.eql('');
+      expect(parts.key).to.eql(key);
+      expect(parts.ns).to.eql('');
     };
     noSheet('A1');
     noSheet('A');
@@ -70,8 +70,8 @@ describe('parser.toParts', () => {
     const test = (input: string, sheet: string, space: string, uriPrefix?: string) => {
       const parts = parser.toParts(input, { uriPrefix });
       expect(parts.isValid).to.eql(true);
-      expect(parts.cell).to.eql('A1');
-      expect(parts.sheet).to.eql(sheet);
+      expect(parts.key).to.eql('A1');
+      expect(parts.ns).to.eql(sheet);
       expect(parts.space).to.eql(space);
     };
     test('uri:cell:A1', '', '');
@@ -83,8 +83,8 @@ describe('parser.toParts', () => {
   it('large', () => {
     const parts = parser.toParts('SheetWithAVeryLongName!ABCDEFGHIJKLMNOP123456789');
     expect(parts.isValid).to.eql(true);
-    expect(parts.sheet).to.eql('SheetWithAVeryLongName');
-    expect(parts.cell).to.eql('ABCDEFGHIJKLMNOP123456789');
+    expect(parts.ns).to.eql('SheetWithAVeryLongName');
+    expect(parts.key).to.eql('ABCDEFGHIJKLMNOP123456789');
     expect(parts.column.value).to.eql('ABCDEFGHIJKLMNOP');
     expect(parts.row.value).to.eql('123456789');
     expect(parts.column.index).to.eql(alpha.fromCharacter('ABCDEFGHIJKLMNOP'));
@@ -114,8 +114,8 @@ describe('parser.toParts', () => {
       const parts = parser.toParts(input);
       expect(parts.isValid).to.eql(true);
       expect(parts.space).to.eql(space);
-      expect(parts.cell).to.eql(cell);
-      expect(parts.sheet).to.eql(sheet);
+      expect(parts.key).to.eql(cell);
+      expect(parts.ns).to.eql(sheet);
     };
     test('A1', '', 'A1');
     test('Sheet1.sys!A1', 'sys', 'A1', 'Sheet1');
@@ -202,8 +202,8 @@ describe('parser.toParts', () => {
       const parts = parser.toParts(input);
       expect(parts.isValid).to.eql(true);
       expect(parts.isWildcard).to.eql(true);
-      expect(parts.sheet).to.eql(sheet);
-      expect(parts.cell).to.eql(cell);
+      expect(parts.ns).to.eql(sheet);
+      expect(parts.key).to.eql(cell);
       expect(parts.column.value).to.eql(cell);
       expect(parts.column.index).to.eql(-1);
       expect(parts.column.isRelative).to.eql(undefined);

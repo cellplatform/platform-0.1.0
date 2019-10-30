@@ -11,8 +11,8 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
     input,
     type: 'CELL' as t.CoordType,
     space: '', // TEMP 🐷 Obsolete concept DO NOT USE (remove this from the code).
-    sheet: '',
-    cell: '',
+    ns: '',
+    key: '',
     error: '',
     isValid: true,
     isWildcard: false,
@@ -53,7 +53,7 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
     result.isWildcard = true;
     result.column.value = cellKey;
     result.row.value = cellKey;
-    result.sheet = parts.length > 1 ? parts[0] : '';
+    result.ns = parts.length > 1 ? parts[0] : '';
   }
 
   // Parse AST.
@@ -73,15 +73,15 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
       return done('Not a cell.');
   }
 
-  result.cell = (wildcard ? wildcard : node.key) || parts[1];
-  result.sheet = node.sheet || '';
+  result.key = (wildcard ? wildcard : node.key) || parts[1];
+  result.ns = node.sheet || '';
   result.space = node.space || '';
 
   // Ensure sheet value is valid.
-  if (!result.sheet && !result.space && input.includes('!')) {
+  if (!result.ns && !result.space && input.includes('!')) {
     return done(`Includes "!" character but no sheet-id.`);
   }
-  if (result.sheet && result.sheet.includes('.')) {
+  if (result.ns && result.ns.includes('.')) {
     return done(`Sheet-id cannot contain "." character.`);
   }
   if (result.space && result.space.includes('.')) {

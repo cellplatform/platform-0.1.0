@@ -579,6 +579,9 @@ export class Grid implements t.IGrid {
       const changes = Object.keys(cells).map(key => {
         const cell = this.cell(key);
         const { from, to } = formatted[key];
+
+        // TEMP 🐷 TODO - change "cell" to a URI string (cell:...)
+
         return Cell.changeEvent({ cell, from, to });
       });
 
