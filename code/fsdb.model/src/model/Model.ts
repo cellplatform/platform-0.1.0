@@ -273,7 +273,7 @@ export class Model<
     }
 
     // Finish up.
-    return this;
+    return this.props;
   }
 
   /**

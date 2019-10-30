@@ -11,7 +11,7 @@ export type IModel<
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
-> = IModelProps<P, D, L, C> & IModelMethods<P, D, L, C>;
+> = IModelProps<P, D, L, C> & IModelMethods<P>;
 
 export type IModelProps<
   P extends object,
@@ -33,17 +33,8 @@ export type IModelProps<
   readonly links: IModelLinks<L>; // Relationships (JOINs).
   readonly children: IModelChildren<C>; // Relationships (path descendents).
 };
-export type IModelMethods<
-  P extends object,
-  D extends P,
-  L extends IModelLinksSchema,
-  C extends IModelChildrenSchema = any
-> = {
-  load(options?: {
-    force?: boolean;
-    links?: boolean;
-    silent?: boolean;
-  }): Promise<IModel<P, D, L, C>>;
+export type IModelMethods<P extends object> = {
+  load(options?: { force?: boolean; links?: boolean; silent?: boolean }): Promise<P>;
   reset(): void;
   save(): Promise<{ saved: boolean }>;
   toObject(): P;

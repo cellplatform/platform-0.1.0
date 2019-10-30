@@ -139,17 +139,6 @@ describe('model', () => {
   });
 
   describe('load', () => {
-    it('load returns model', async () => {
-      const model = await Model.create<IMyOrgProps>({
-        db,
-        path: org.path,
-        initial: org.initial,
-        load: false,
-      }).load();
-      expect(model.path).to.eql(org.path);
-      expect(model.isLoaded).to.eql(true);
-    });
-
     it('not loaded → load → loaded', async () => {
       const model = Model.create<IMyOrgProps>({
         db,
