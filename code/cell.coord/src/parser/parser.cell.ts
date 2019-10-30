@@ -10,7 +10,7 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
   const result = {
     input,
     type: 'CELL' as t.CoordCellType,
-    space: '',
+    space: '', // TEMP 🐷 Obsolete concept DO NOT USE (remove this from the code).
     sheet: '',
     cell: '',
     error: '',
