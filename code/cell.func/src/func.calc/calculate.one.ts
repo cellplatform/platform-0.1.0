@@ -202,7 +202,7 @@ const evalFunc = async (args: {
 }) => {
   const { cell, formula, node, refs, getValue, getFunc } = args;
   const name = node.name;
-  const namespace = node.namespace || 'sys';
+  const namespace = node.ns || 'sys';
 
   // Lookup the function.
   const func = await getFunc({ name, namespace });
