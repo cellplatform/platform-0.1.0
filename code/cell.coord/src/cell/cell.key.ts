@@ -47,7 +47,7 @@ export function toKey(column?: number, row?: number): string {
 /**
  * Converts various input types to a cell data-type.
  */
-export function toCell(input: CellInput, options: { relative?: boolean } = {}): t.ICoordCell {
+export function toCell(input: CellInput, options: { relative?: boolean } = {}): t.ICoord {
   let key = '';
   let column = -1;
   let row = -1;
@@ -270,7 +270,7 @@ export function isRow(input: CellInput) {
  * Converts the given key to a type.
  */
 export function toType(input: CellInput): t.CoordType | undefined {
-  const cell = input as t.ICoordCell;
+  const cell = input as t.ICoord;
   const type = typeof cell;
 
   if (!['string', 'number', 'object'].includes(type)) {
@@ -352,7 +352,7 @@ export function sort<T extends CellInput>(list: T[], options: { by?: t.CoordAxis
  */
 export const min = {
   by: (axis: t.CoordAxis, list: CellInput[]) => {
-    let res: t.ICoordCell | undefined;
+    let res: t.ICoord | undefined;
     list.forEach(item => {
       const cell = toCell(item);
       res = !res ? cell : comparer(cell, res, { axis }) < 0 ? cell : res;
@@ -368,7 +368,7 @@ export const min = {
  */
 export const max = {
   by: (axis: t.CoordAxis, list: CellInput[]) => {
-    let res: t.ICoordCell | undefined;
+    let res: t.ICoord | undefined;
     list.forEach(item => {
       const cell = toCell(item);
       res = !res ? cell : comparer(cell, res, { axis }) > 0 ? cell : res;

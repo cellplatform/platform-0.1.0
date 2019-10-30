@@ -3,14 +3,9 @@
  */
 export type CoordAxis = 'COLUMN' | 'ROW';
 export type CoordType = 'CELL' | CoordAxis;
-export type ICoordPosition = {
-  column: number;
-  row: number;
-};
-export type ICoordCell = {
+export type ICoordPosition = { column: number; row: number };
+export type ICoord = ICoordPosition & {
   key: string;
-  column: number;
-  row: number;
 };
 
 /**

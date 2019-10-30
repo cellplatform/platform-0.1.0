@@ -66,12 +66,12 @@ export class CellRange {
   /**
    * The left side Cell of the range.
    */
-  public readonly left: t.ICoordCell;
+  public readonly left: t.ICoord;
 
   /**
    * The right side Cell of the range.
    */
-  public readonly right: t.ICoordCell;
+  public readonly right: t.ICoord;
 
   /**
    * Flag indicating if the range is valid.
@@ -119,11 +119,7 @@ export class CellRange {
     this.key = `${this.left.key}:${this.right.key}`; // NB: Stripped of "$" chars.
 
     // Derive the category of range.
-    const getType = (
-      rangeKey: string,
-      left: t.ICoordCell,
-      right: t.ICoordCell,
-    ): t.CoordRangeType => {
+    const getType = (rangeKey: string, left: t.ICoord, right: t.ICoord): t.CoordRangeType => {
       if (rangeKey === '*:*') {
         return 'ALL';
       }

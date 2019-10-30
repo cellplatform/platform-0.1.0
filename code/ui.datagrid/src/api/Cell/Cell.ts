@@ -56,7 +56,7 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
   }
 
   public static changeEvent(args: {
-    cell: t.ICoordCell;
+    cell: t.ICoord;
     from?: t.IGridCellData;
     to?: t.IGridCellData;
   }) {

@@ -25,7 +25,7 @@ export type ICellSiblings = {
  */
 
 export type IGridCellChange = {
-  cell: t.ICoordCell;
+  cell: t.ICoord;
   value: { from?: t.IGridCellData; to?: t.IGridCellData };
   isCancelled: boolean;
   isChanged: boolean;
