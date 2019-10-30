@@ -24,9 +24,9 @@ export class Ns {
     });
   };
 
-  public static create(args: { db: t.IDb; id?: string }) {
-    const { id, db } = args;
-    const ns = Schema.ns(id);
+  public static create(args: { db: t.IDb; uri?: string }) {
+    const { uri, db } = args;
+    const ns = Schema.ns(uri);
     const path = ns.path;
     return Ns.factory({ db, path });
   }

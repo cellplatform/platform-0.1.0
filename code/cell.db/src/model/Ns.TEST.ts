@@ -6,13 +6,20 @@ describe('model.Ns (Namespace)', () => {
   it('creates (with child cells)', async () => {
     const db = await getTestDb({ file: true });
 
-    const id = 'abc';
-    const schema = Schema.ns(id);
+    const uri = {
+      ns: 'ns:abc',
+    };
+    const schema = Schema.ns(uri.ns);
 
-    await db.put(schema.cell().path, { key: 'A1' });
-    await db.put(schema.cell('456').path, { key: 'A2' });
+    await model.Cell.create({ db, uri: schema.cell().uri })
+      .set({ key: 'A1' })
+      .save();
 
-    const ns = model.Ns.create({ db, id });
+    await model.Cell.create({ db, uri: schema.cell('456').uri })
+      .set({ key: 'A2' })
+      .save();
+
+    const ns = model.Ns.create({ db, uri: uri.ns });
 
     expect(ns.props.name).to.eql(undefined);
 
