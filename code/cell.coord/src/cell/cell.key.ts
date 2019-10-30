@@ -269,7 +269,7 @@ export function isRow(input: CellInput) {
 /**
  * Converts the given key to a type.
  */
-export function toType(input: CellInput): t.CoordCellType | undefined {
+export function toType(input: CellInput): t.CoordType | undefined {
   const cell = input as t.ICoordCell;
   const type = typeof cell;
 

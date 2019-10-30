@@ -9,7 +9,7 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
   const DEFAULT_RELATIVE = true as boolean | undefined;
   const result = {
     input,
-    type: 'CELL' as t.CoordCellType,
+    type: 'CELL' as t.CoordType,
     space: '', // TEMP 🐷 Obsolete concept DO NOT USE (remove this from the code).
     sheet: '',
     cell: '',
@@ -106,7 +106,7 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
 function parseCellKey(cellKey: string = '') {
   const DEFAULT_RELATIVE = true as boolean | undefined;
   const result = {
-    type: 'CELL' as t.CoordCellType,
+    type: 'CELL' as t.CoordType,
     error: '',
     column: { value: '', index: -1, isRelative: DEFAULT_RELATIVE },
     row: { value: '', index: -1, isRelative: DEFAULT_RELATIVE },

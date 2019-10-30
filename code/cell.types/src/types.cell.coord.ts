@@ -2,7 +2,7 @@
  * Cell
  */
 export type CoordAxis = 'COLUMN' | 'ROW';
-export type CoordCellType = 'CELL' | CoordAxis;
+export type CoordType = 'CELL' | CoordAxis;
 export type ICoord = {
   column: number;
   row: number;
