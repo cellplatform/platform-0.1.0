@@ -1,11 +1,11 @@
-import { R, value, t } from '../common';
+import { R, value, t, defaultValue } from '../common';
 import { alpha } from '../alpha';
 import { ast } from '../ast';
 
 export const toParts = R.memoizeWith(R.identity, parse);
 
 function parse(input: string, options: { uriPrefix?: string } = {}) {
-  const { uriPrefix = 'uri' } = options;
+  const uriPrefix = options.uriPrefix || 'cell';
   const DEFAULT_RELATIVE = true as boolean | undefined;
   const result = {
     input,
@@ -36,7 +36,7 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
 
   // Prepare the input.
   input = input.replace(/^[\s\=\!]*/, '').trimRight();
-  input = input.replace(new RegExp(`^${uriPrefix}\:cell\:`), ''); // Strip the URI prefix.
+  input = input.replace(new RegExp(`^${uriPrefix}\:`), ''); // Strip the URI prefix.
 
   // Extract key.
   let parts = input.split('!');
@@ -73,14 +73,11 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
   }
 
   result.key = (wildcard ? wildcard : node.key) || parts[1];
-  result.ns = node.sheet || '';
+  result.ns = node.ns || '';
 
   // Ensure sheet value is valid.
   if (!result.ns && input.includes('!')) {
     return done(`Includes "!" character but no namespace.`);
-  }
-  if (result.ns && result.ns.includes('.')) {
-    return done(`Namespace cannot contain "." character.`);
   }
 
   // Parse the cell-key.
