@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { cell } from '.';
 import { t } from '../common';
 
-describe.only('cell', () => {
+describe('cell', () => {
   describe('toKey', () => {
     it('CELL (0, 0) => "A1"', () => {
       expect(cell.toKey(0, 0)).to.eql('A1');

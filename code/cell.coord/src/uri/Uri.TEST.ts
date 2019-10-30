@@ -10,9 +10,9 @@ describe('Uri', () => {
       };
 
       test('ns:123456', true);
-      test('cell:123456!A1', true);
-      test('row:123456!1', true);
-      test('col:123456!A', true);
+      test('cell:123456:A1', true);
+      test('row:123456:1', true);
+      test('col:123456:A', true);
 
       test(undefined, false);
       test('', false);
