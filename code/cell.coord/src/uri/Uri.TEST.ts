@@ -193,8 +193,8 @@ describe('Uri', () => {
     });
 
     it('cell', () => {
-      const res1 = Uri.generate.cell({ cell: 'A1' });
-      const res2 = Uri.generate.cell({ ns: 'abcd', cell: 'A1' });
+      const res1 = Uri.generate.cell({ key: 'A1' });
+      const res2 = Uri.generate.cell({ ns: 'abcd', key: 'A1' });
 
       expect(res2).to.eql('cell:abcd!A1');
 
@@ -213,8 +213,8 @@ describe('Uri', () => {
     });
 
     it('row', () => {
-      const res1 = Uri.generate.row({ row: '1' });
-      const res2 = Uri.generate.row({ ns: 'abcd', row: '1' });
+      const res1 = Uri.generate.row({ key: '1' });
+      const res2 = Uri.generate.row({ ns: 'abcd', key: '1' });
 
       expect(res2).to.eql('row:abcd!1');
 
@@ -233,8 +233,8 @@ describe('Uri', () => {
     });
 
     it('column', () => {
-      const res1 = Uri.generate.column({ column: 'A' });
-      const res2 = Uri.generate.column({ ns: 'abcd', column: 'A' });
+      const res1 = Uri.generate.column({ key: 'A' });
+      const res2 = Uri.generate.column({ ns: 'abcd', key: 'A' });
 
       expect(res2).to.eql('col:abcd!A');
 

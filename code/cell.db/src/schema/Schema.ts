@@ -54,22 +54,22 @@ export class NsSchema {
   /**
    * [Methods]
    */
-  public cell(id?: string) {
-    id = id || generate.shortid();
-    const uri = Uri.generate.cell({ ns: this.id, cell: id });
-    return new CoordSchema({ type: 'CELL', ns: this, id, uri });
+  public cell(key?: string) {
+    key = key || generate.shortid();
+    const uri = Uri.generate.cell({ ns: this.id, key });
+    return new CoordSchema({ type: 'CELL', ns: this, id: key, uri });
   }
 
-  public column(id?: string) {
-    id = id || generate.shortid();
-    const uri = Uri.generate.column({ ns: this.id, column: id });
-    return new CoordSchema({ type: 'COL', ns: this, id, uri });
+  public column(key?: string) {
+    key = key || generate.shortid();
+    const uri = Uri.generate.column({ ns: this.id, key });
+    return new CoordSchema({ type: 'COL', ns: this, id: key, uri });
   }
 
-  public row(id?: string) {
-    id = id || generate.shortid();
-    const uri = Uri.generate.row({ ns: this.id, row: id });
-    return new CoordSchema({ type: 'ROW', ns: this, id, uri });
+  public row(key?: string) {
+    key = key || generate.shortid();
+    const uri = Uri.generate.row({ ns: this.id, key });
+    return new CoordSchema({ type: 'ROW', ns: this, id: key, uri });
   }
 
   public static uri(args: { path: string }) {
@@ -107,16 +107,16 @@ export class CoordSchema {
     const parts = args.path.split('/');
     const ns = parts[1];
     const type = parts[2] as SchemaCoordType;
-    const id = parts[3];
+    const key = parts[3];
 
     if (type === 'CELL') {
-      return Uri.generate.cell({ ns, cell: id });
+      return Uri.generate.cell({ ns, key });
     }
     if (type === 'ROW') {
-      return Uri.generate.row({ ns, row: id });
+      return Uri.generate.row({ ns, key });
     }
     if (type === 'COL') {
-      return Uri.generate.column({ ns, column: id });
+      return Uri.generate.column({ ns, key });
     }
 
     throw new Error(`Model path could not be converted to URI ("${args.path}")`);

@@ -1,12 +1,10 @@
 import { t, Observable } from '../common';
 import { KeyBindings } from '@platform/react/lib/types';
 
-export type IGridData = t.ITableData<t.IGridCellData, IGridColumnData, IGridRowData>;
-
 export type IGrid = IGridProperties & IGridMethods;
 export type IGridProperties = {
   readonly id: string;
-  readonly data: IGridData;
+  readonly data: t.IGridData;
   readonly totalColumns: number;
   readonly totalRows: number;
   readonly isDisposed: boolean;
@@ -81,16 +79,3 @@ export type IGridCalculate = {
   update(args?: { cells?: string | string[] }): Promise<t.IFuncTableResponse>;
 };
 
-export type IGridColumnPropsAll = t.IColumnProps & { width: number };
-export type IGridColumnProps = Partial<IGridColumnPropsAll>;
-export type IGridColumnData = t.IColumnData<IGridColumnProps>;
-
-export type IGridRowPropsAll = t.IRowProps & { height: number };
-export type IGridRowProps = Partial<IGridRowPropsAll>;
-export type IGridRowData = t.IRowData<IGridRowProps>;
-
-export type IGridCellData<P extends t.ICellProps = t.IGridCellProps> = t.ICellData<P>;
-
-export type GetGridCell<P = t.IGridCellProps> = (
-  key: string,
-) => Promise<IGridCellData<P> | undefined>;

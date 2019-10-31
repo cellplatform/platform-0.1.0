@@ -99,20 +99,20 @@ export class Uri {
       const ns = args.ns || id.cuid();
       return `ns:${ns}`;
     },
-    cell(args: { cell: string; ns?: string }) {
+    cell(args: { key: string; ns?: string }) {
       const ns = args.ns || id.cuid();
-      const cell = args.cell || id.shortid();
-      return `cell:${ns}!${cell}`;
+      const key = args.key || id.shortid();
+      return `cell:${ns}!${key}`;
     },
-    row(args: { row: string; ns?: string }) {
+    row(args: { key: string; ns?: string }) {
       const ns = args.ns || id.cuid();
-      const row = args.row || id.shortid();
-      return `row:${ns}!${row}`;
+      const key = args.key || id.shortid();
+      return `row:${ns}!${key}`;
     },
-    column(args: { column: string; ns?: string }) {
+    column(args: { key: string; ns?: string }) {
       const ns = args.ns || id.cuid();
-      const col = args.column || id.shortid();
-      return `col:${ns}!${col}`;
+      const key = args.key || id.shortid();
+      return `col:${ns}!${key}`;
     },
   };
 }

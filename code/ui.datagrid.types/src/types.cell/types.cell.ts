@@ -1,6 +1,7 @@
 import { t } from '../common';
 
 export type IGridCell<P extends t.IGridCellProps = t.IGridCellProps> = {
+  readonly ns: string;
   readonly key: string;
   readonly row: number;
   readonly column: number;

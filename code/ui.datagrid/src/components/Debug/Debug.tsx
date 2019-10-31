@@ -26,6 +26,7 @@ export type IDebugProps = {
 };
 export type IDebugState = {
   grid?: any;
+  data?: any;
   refs?: any;
   incoming?: any;
   outgoing?: any;
@@ -116,10 +117,27 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     await this.updateRefs({ force });
   }
 
-  public async getDataGrid() {
+  public async updateGrid() {
+    this.state$.next({
+      grid: await this.getGridProps(),
+      data: await this.getGridData(),
+    });
+  }
+
+  public async getGridProps() {
     const grid = this.grid;
     const { selection, isEditing, clipboard } = grid;
-    const { rows, columns } = grid.data;
+
+    return deleteUndefined({
+      isEditing,
+      selection,
+      clipboard,
+    });
+  }
+
+  public async getGridData() {
+    const grid = this.grid;
+    const { ns, rows, columns } = grid.data;
 
     const cells = R.clone(grid.data.cells);
     Object.keys(cells).forEach(key => {
@@ -129,20 +147,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       }
     });
 
-    return deleteUndefined({
-      isEditing,
-      cells,
-      rows,
-      columns,
-      selection,
-      clipboard,
-    });
-  }
-
-  public async updateGrid() {
-    this.state$.next({
-      grid: await this.getDataGrid(),
-    });
+    return deleteUndefined({ ns, cells, rows, columns });
   }
 
   public async updateRefs(args: { force?: boolean } = {}) {
@@ -262,6 +267,8 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         {this.renderSelection()}
         <Hr />
         {this.renderObject({ name: 'ui.datagrid', data: this.state.grid })}
+        <Hr />
+        {this.renderObject({ name: 'data', data: this.state.data })}
         <Hr />
         {this.renderObject({ name: 'refs', data: this.state.refs })}
         <Hr />

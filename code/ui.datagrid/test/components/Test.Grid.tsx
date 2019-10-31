@@ -36,6 +36,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     getFunc,
     // keyBindings: [{ command: 'COPY', key: 'CMD+D' }],
     // defaults: { rowHeight: 200 },
+    ns: SAMPLE.NS,
     cells: SAMPLE.CELLS,
     columns: SAMPLE.COLUMNS,
     rows: SAMPLE.ROWS,
