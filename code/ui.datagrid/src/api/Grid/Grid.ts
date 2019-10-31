@@ -94,7 +94,7 @@ export class Grid implements t.IGrid {
 
   private _init(args: IGridArgs) {
     const defaults = (this._.defaults = Grid.defaults(args.defaults));
-    const ns = coord.Uri.parse<t.INsUri>(args.ns).data.id
+    const ns = coord.Uri.parse<t.INsUri>(args.ns).data.id;
 
     this._.totalColumns = defaultValue(args.totalColumns, defaults.totalColumns);
     this._.totalRows = defaultValue(args.totalRows, defaults.totalRows);

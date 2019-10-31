@@ -78,4 +78,3 @@ export type IGridCalculate = {
   changes(args?: { cells?: string | string[] }): Promise<t.IFuncTableResponse>;
   update(args?: { cells?: string | string[] }): Promise<t.IFuncTableResponse>;
 };
-
