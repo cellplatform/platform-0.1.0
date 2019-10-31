@@ -262,6 +262,12 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       </div>
     );
 
+    const refsKeys = {
+      in: this.state.incoming,
+      out: this.state.outgoing,
+      'topological order': this.state.order,
+    };
+
     return (
       <div {...styles.base}>
         {this.renderSelection()}
@@ -274,12 +280,8 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         <Hr />
         {this.renderObject({
           name: 'refs (keys)',
-          data: {
-            in: this.state.incoming,
-            out: this.state.outgoing,
-            'topological order': this.state.order,
-          },
-          // expandPaths: ['$', '$.in', '$.out'],
+          data: refsKeys,
+          expandPaths: ['$', '$.in', '$.out'],
         })}
         {elFormula}
         <Hr />

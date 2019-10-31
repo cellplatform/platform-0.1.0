@@ -149,6 +149,37 @@ describe('refs.outgoing', () => {
     });
 
     describe('circular error', () => {
+      it('error: A1 => REF(A2) => REF(A1)', async () => {
+        const ctx = testContext({
+          A1: { value: '=A2' },
+          A2: { value: '=A1' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
+
+        expect(res.length).to.eql(1);
+        expect(res[0].target).to.eql('REF');
+        expect(res[0].path).to.eql('A1/A2/A1');
+
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('REF/circular');
+        expect(error.path).to.eql('A1/A2/A1');
+      });
+
+      it('error: A1 => REF(A1)', async () => {
+        const ctx = testContext({
+          A1: { value: '=A1' },
+        });
+        const res = await outgoing({ key: 'A1', ...ctx });
+
+        expect(res.length).to.eql(1);
+        expect(res[0].target).to.eql('REF');
+        expect(res[0].path).to.eql('A1/A1');
+
+        const error = res[0].error as t.IRefError;
+        expect(error.type).to.eql('REF/circular');
+        expect(error.path).to.eql('A1/A1');
+      });
+
       it('error: param to RANGE', async () => {
         const ctx = testContext({
           A1: { value: '=SUM(999, A2, A3)' },
@@ -158,7 +189,6 @@ describe('refs.outgoing', () => {
         const res = await outgoing({ key: 'A1', ...ctx });
 
         expect(res.length).to.eql(2);
-
         expect(res[1].target).to.eql('RANGE');
         expect(res[1].path).to.eql('A1/A3/A1:B9');
         expect(res[1].param).to.eql('2');
