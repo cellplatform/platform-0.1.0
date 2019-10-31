@@ -249,6 +249,7 @@ export class Grid implements t.IGrid {
     rows: ({} as unknown) as t.IGridData['rows'],
     lastSelection: (undefined as unknown) as t.IGridSelection,
     calc: (undefined as unknown) as t.IGridCalculate,
+    refs: (undefined as unknown) as t.IRefsTable,
   };
 
   public clipboard: t.IGridClipboardPending | undefined;
@@ -308,12 +309,8 @@ export class Grid implements t.IGrid {
     return { ns, cells, columns, rows };
   }
 
-  public get columns() {
-    return this._.columns;
-  }
-
-  public get rows() {
-    return this._.rows;
+  public get refs() {
+    return this._.refs;
   }
 
   private setCells(cells: t.IGridData['cells']) {
