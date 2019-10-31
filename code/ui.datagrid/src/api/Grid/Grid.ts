@@ -21,6 +21,7 @@ export type IGridArgs = {
   table?: Handsontable;
   totalColumns?: number;
   totalRows?: number;
+  ns?: t.IGridData['ns'];
   cells?: t.IGridData['cells'];
   columns?: t.IGridData['columns'];
   rows?: t.IGridData['rows'];
@@ -93,9 +94,11 @@ export class Grid implements t.IGrid {
 
   private _init(args: IGridArgs) {
     const defaults = (this._.defaults = Grid.defaults(args.defaults));
+    const ns = coord.Uri.parse<t.INsUri>(args.ns).data.id;
 
     this._.totalColumns = defaultValue(args.totalColumns, defaults.totalColumns);
     this._.totalRows = defaultValue(args.totalRows, defaults.totalRows);
+    this._.ns = ns || 'UNKNOWN';
     this._.cells = args.cells || {};
     this._.columns = args.columns || {};
     this._.rows = args.rows || {};
@@ -240,6 +243,7 @@ export class Grid implements t.IGrid {
     redraw$: new Subject(),
     isReady: false,
     isEditing: false,
+    ns: '' as t.IGridData['ns'],
     cells: ({} as unknown) as t.IGridData['cells'],
     columns: ({} as unknown) as t.IGridData['columns'],
     rows: ({} as unknown) as t.IGridData['rows'],
@@ -300,10 +304,8 @@ export class Grid implements t.IGrid {
   }
 
   public get data() {
-    const cells = this._.cells;
-    const columns = this._.columns;
-    const rows = this._.rows;
-    return { cells, columns, rows };
+    const { ns, cells, columns, rows } = this._;
+    return { ns, cells, columns, rows };
   }
 
   public get columns() {
@@ -579,6 +581,9 @@ export class Grid implements t.IGrid {
       const changes = Object.keys(cells).map(key => {
         const cell = this.cell(key);
         const { from, to } = formatted[key];
+
+        // TEMP 🐷 TODO - change "cell" to a URI string (cell:...)
+
         return Cell.changeEvent({ cell, from, to });
       });
 
@@ -731,8 +736,11 @@ export class Grid implements t.IGrid {
       msg = typeof key === 'string' ? `${msg} key: "${key}"` : msg;
       throw new Error(msg);
     }
-    return this._.cache.get<Cell<t.IGridCellProps>>(`cell/${column}:${row}`, () => {
-      return Cell.create({ table: this._.table, row, column });
+    const ns = this.data.ns;
+    const cacheKey = `${ns}:cell/${column}:${row}`;
+    return this._.cache.get<Cell<t.IGridCellProps>>(cacheKey, () => {
+      const table = this._.table;
+      return Cell.create({ ns, table, row, column });
     });
   }
 

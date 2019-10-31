@@ -36,6 +36,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     getFunc,
     // keyBindings: [{ command: 'COPY', key: 'CMD+D' }],
     // defaults: { rowHeight: 200 },
+    ns: SAMPLE.NS,
     cells: SAMPLE.CELLS,
     columns: SAMPLE.COLUMNS,
     rows: SAMPLE.ROWS,
@@ -299,12 +300,12 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           this.grid.command({ command: 'OVERLAY/hide', props: {} }),
         )}
         {this.button('screen: A1 (none defined)', () => this.overlayFromCell('A1'))}
-        {this.button('screen: A3 (via cell def)', () => this.overlayFromCell('A3'))}
-        {this.button('screen: A5 (via explicit command)', () => {
+        {this.button('screen: C1 (via cell def)', () => this.overlayFromCell('C1'))}
+        {this.button('screen: C2 (via explicit command)', () => {
           this.grid.command({
             command: 'OVERLAY/show',
             props: {
-              cell: 'A5',
+              cell: 'C2',
               screen: { type: 'MyScreen', className: 'my-custom' },
             },
           });

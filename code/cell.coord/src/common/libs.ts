@@ -1,4 +1,4 @@
-export { value, defaultValue } from '@platform/util.value';
+export { value, defaultValue, id } from '@platform/util.value';
 export { MemoryCache } from '@platform/cache';
 
 /**

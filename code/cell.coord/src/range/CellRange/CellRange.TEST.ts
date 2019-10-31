@@ -224,7 +224,7 @@ describe('CellRange', () => {
     it('error: range spans different sheets', () => {
       const range = fromKey('Sheet1!A1:Sheet2!B5');
       expect(range.isValid).to.eql(false);
-      expect(range.error).to.contain(`Ranges can only exist on a single sheet.`);
+      expect(range.error).to.contain(`Ranges can only exist on a single sheet (namespace)`);
     });
   });
 

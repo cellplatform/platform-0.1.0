@@ -4,15 +4,17 @@ import { ast } from '../ast';
 
 export const toParts = R.memoizeWith(R.identity, parse);
 
+const removeUriPrefix = (input: string, prefix?: string) => {
+  return prefix ? input.replace(new RegExp(`^${prefix}\:`), '') : input;
+};
+
 function parse(input: string, options: { uriPrefix?: string } = {}) {
-  const { uriPrefix = 'uri' } = options;
   const DEFAULT_RELATIVE = true as boolean | undefined;
   const result = {
     input,
-    type: 'CELL' as t.CoordCellType,
-    space: '',
-    sheet: '',
-    cell: '',
+    type: 'CELL' as t.CoordType,
+    ns: '',
+    key: '',
     error: '',
     isValid: true,
     isWildcard: false,
@@ -37,7 +39,8 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
 
   // Prepare the input.
   input = input.replace(/^[\s\=\!]*/, '').trimRight();
-  input = input.replace(new RegExp(`^${uriPrefix}\:cell\:`), ''); // Strip the URI prefix.
+  input = removeUriPrefix(input, options.uriPrefix);
+  ['ns', 'cell', 'row', 'col'].forEach(prefix => (input = removeUriPrefix(input, prefix)));
 
   // Extract key.
   let parts = input.split('!');
@@ -53,7 +56,7 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
     result.isWildcard = true;
     result.column.value = cellKey;
     result.row.value = cellKey;
-    result.sheet = parts.length > 1 ? parts[0] : '';
+    result.ns = parts.length > 1 ? parts[0] : '';
   }
 
   // Parse AST.
@@ -73,19 +76,12 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
       return done('Not a cell.');
   }
 
-  result.cell = (wildcard ? wildcard : node.key) || parts[1];
-  result.sheet = node.sheet || '';
-  result.space = node.space || '';
+  result.key = (wildcard ? wildcard : node.key) || parts[1];
+  result.ns = node.ns || '';
 
   // Ensure sheet value is valid.
-  if (!result.sheet && !result.space && input.includes('!')) {
-    return done(`Includes "!" character but no sheet-id.`);
-  }
-  if (result.sheet && result.sheet.includes('.')) {
-    return done(`Sheet-id cannot contain "." character.`);
-  }
-  if (result.space && result.space.includes('.')) {
-    return done(`Space cannot contain "." character.`);
+  if (!result.ns && input.includes('!')) {
+    return done(`Includes "!" character but no namespace.`);
   }
 
   // Parse the cell-key.
@@ -106,7 +102,7 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
 function parseCellKey(cellKey: string = '') {
   const DEFAULT_RELATIVE = true as boolean | undefined;
   const result = {
-    type: 'CELL' as t.CoordCellType,
+    type: 'CELL' as t.CoordType,
     error: '',
     column: { value: '', index: -1, isRelative: DEFAULT_RELATIVE },
     row: { value: '', index: -1, isRelative: DEFAULT_RELATIVE },

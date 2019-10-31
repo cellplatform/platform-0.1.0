@@ -13,6 +13,7 @@ export type ITableData<
   C extends t.IColumnData = t.IColumnData,
   R extends t.IRowData = t.IRowData
 > = {
+  ns: string;
   cells: ITableMap<V>;
   columns: ITableMap<C>;
   rows: ITableMap<R>;

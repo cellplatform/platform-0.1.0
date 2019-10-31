@@ -47,14 +47,21 @@ describe('Grid', () => {
     const cells = { A1: { value: 123 } };
     const columns = { A: { props: { width: 200 } } };
     const rows = { '10': { props: { height: 200 } } };
-    const grid = createGrid({ totalColumns: 10, totalRows: 5, cells, columns, rows });
+    const ns = 'ns:foo';
+    const grid = createGrid({ totalColumns: 10, totalRows: 5, ns, cells, columns, rows });
     expect(grid.isInitialized).to.eql(true);
     expect(grid.isEditing).to.eql(false);
     expect(grid.totalColumns).to.eql(10);
     expect(grid.totalRows).to.eql(5);
+    expect(grid.data.ns).to.eql('foo'); // NB: the "ns:" uri prefix is stripped.
     expect(grid.data.cells).to.eql(cells);
     expect(grid.data.columns).to.eql(columns);
     expect(grid.data.rows).to.eql(rows);
+  });
+
+  it('constructs (without namespace)', () => {
+    const grid = Grid.create({ totalColumns: 3, totalRows: 5 });
+    expect(grid.data.ns).to.eql('UNKNOWN');
   });
 
   it('constructs without table (isInitialized: false)', () => {

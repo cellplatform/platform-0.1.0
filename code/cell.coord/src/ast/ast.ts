@@ -27,17 +27,13 @@ export {
 
 export type EmptyNode = { type: 'empty' };
 export type ParseErrorNode = { type: 'parse-error' };
-export type CellNode = AstCellNode & {
-  sheet?: string;
-  space?: string;
-};
+export type CellNode = AstCellNode & { ns?: string };
 export type CellRangeNode = AstCellRangeNode & {
   sheet?: string;
   left: CellNode;
   right: CellNode;
 };
-export type FunctionNode = AstFunctionNode & { namespace?: string };
-
+export type FunctionNode = AstFunctionNode & { ns?: string };
 export type TreeNode = Node | CellNode | EmptyNode | ParseErrorNode;
 
 /**
@@ -98,38 +94,25 @@ function parseTree(expr?: string): TreeNode {
   return tokens.length === 0 ? { type: 'empty' } : buildTree(tokens);
 }
 
-function parseCellSheetSpace(cell: CellNode) {
-  const sheet = cell.sheet as string;
-  const index = sheet ? sheet.indexOf('.') : -1;
-
-  // Assign the space if there is one.
-  cell.space = index > -1 ? sheet.substr(index + 1) : undefined;
-
-  // Remove the suffix from the sheet.
-  cell.sheet = cell.space ? sheet.substr(0, index) : cell.sheet;
-}
-
-function parseCellSheet(cell: CellNode) {
+function parseCellNamespace(cell: CellNode) {
   const key = cell.key;
   const index = key.indexOf('!'); // Look for a (!) which indicates a sheet reference.
 
   // Update sheet.
   if (index > -1) {
     const node = parseTree(key.substr(index + 1)) as CellNode;
-    cell.sheet = key.substr(0, index).trim();
+    cell.ns = key.substr(0, index).trim();
     cell.refType = node.refType;
     cell.key = node.key;
   }
 
-  parseCellSheetSpace(cell);
-
-  if (cell.sheet === '') {
-    delete cell.sheet;
+  if (cell.ns === '') {
+    delete cell.ns;
   }
 }
 
 function parseCell(cell: CellNode) {
-  parseCellSheet(cell);
+  parseCellNamespace(cell);
 }
 
 function parseRange(range: CellRangeNode) {
@@ -163,7 +146,7 @@ function parseFuncNamespace(func: FunctionNode) {
 
   // Update the function.
   func.name = parts[parts.length - 1];
-  func.namespace = parts.slice(0, parts.length - 1).join('.');
+  func.ns = parts.slice(0, parts.length - 1).join('.');
 }
 
 function parseFuncArguments(func: FunctionNode) {

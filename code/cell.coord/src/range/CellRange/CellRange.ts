@@ -66,12 +66,12 @@ export class CellRange {
   /**
    * The left side Cell of the range.
    */
-  public readonly left: t.ICoordCell;
+  public readonly left: t.ICoord;
 
   /**
    * The right side Cell of the range.
    */
-  public readonly right: t.ICoordCell;
+  public readonly right: t.ICoord;
 
   /**
    * Flag indicating if the range is valid.
@@ -105,25 +105,21 @@ export class CellRange {
     const rangeParts = parser.toRangeParts(key);
     const leftParts = parser.toParts(rangeParts.left);
     const rightParts = parser.toParts(rangeParts.right);
-    const leftSheet = leftParts.sheet || rightParts.sheet;
-    const rightSheet = rightParts.sheet || leftParts.sheet;
+    const leftNs = leftParts.ns || rightParts.ns;
+    const rightNs = rightParts.ns || leftParts.ns;
 
-    // Ensure sheet value is the same left and right.
-    if (leftSheet !== rightSheet) {
-      this.setError(`Ranges can only exist on a single sheet.`);
+    // Ensure namespace value is the same left and right.
+    if (leftNs !== rightNs) {
+      this.setError(`Ranges can only exist on a single sheet (namespace).`);
     }
 
     // Store values.
-    const left = (this.left = cell.toCell(leftParts.cell, { relative: true }));
-    const right = (this.right = cell.toCell(rightParts.cell, { relative: true }));
+    const left = (this.left = cell.toCell(leftParts.key, { relative: true }));
+    const right = (this.right = cell.toCell(rightParts.key, { relative: true }));
     this.key = `${this.left.key}:${this.right.key}`; // NB: Stripped of "$" chars.
 
     // Derive the category of range.
-    const getType = (
-      rangeKey: string,
-      left: t.ICoordCell,
-      right: t.ICoordCell,
-    ): t.CoordRangeType => {
+    const getType = (rangeKey: string, left: t.ICoord, right: t.ICoord): t.CoordRangeType => {
       if (rangeKey === '*:*') {
         return 'ALL';
       }
@@ -211,7 +207,7 @@ export class CellRange {
       return result;
     };
 
-    const toKeys = (min: t.ICoord, max: t.ICoord): string[] => {
+    const toKeys = (min: t.ICoordPosition, max: t.ICoordPosition): string[] => {
       const totalColumns = max.column - min.column + 1;
       const totalRows = max.row - min.row + 1;
       const result = Array.from({ length: totalColumns })
@@ -409,21 +405,21 @@ export class CellRange {
     const start = this.left;
     const end = this.right;
 
-    const columnContains = (cell: t.ICoord) => {
+    const columnContains = (cell: t.ICoordPosition) => {
       const index = cell.column;
       return start.column === undefined || end.column === undefined
         ? false
         : index >= start.column && index <= end.column;
     };
 
-    const rowContains = (cell: t.ICoord) => {
+    const rowContains = (cell: t.ICoordPosition) => {
       const index = cell.row;
       return start.row === undefined || end.row === undefined
         ? false
         : index >= start.row && index <= end.row;
     };
 
-    const cellsContain = (cell: t.ICoord) => {
+    const cellsContain = (cell: t.ICoordPosition) => {
       if (!columnContains(cell)) {
         return false;
       }
@@ -433,7 +429,7 @@ export class CellRange {
       return true;
     };
 
-    const patialColumnContains = (cell: t.ICoord) => {
+    const patialColumnContains = (cell: t.ICoordPosition) => {
       if (!columnContains(cell)) {
         return false;
       }
@@ -441,7 +437,7 @@ export class CellRange {
       return start.row === undefined ? false : index >= start.row;
     };
 
-    const patialRowContains = (cell: t.ICoord) => {
+    const patialRowContains = (cell: t.ICoordPosition) => {
       if (!rowContains(cell)) {
         return false;
       }
@@ -449,7 +445,7 @@ export class CellRange {
       return start.column === undefined ? false : index >= start.column;
     };
 
-    const partialAllContains = (cell: t.ICoord) => {
+    const partialAllContains = (cell: t.ICoordPosition) => {
       if (start.key === '*') {
         // Top/left to cell.
         return cell.column <= end.column && cell.row <= end.row;
@@ -494,7 +490,7 @@ export class CellRange {
   /**
    * Retrieves the edge(s) the given cell is on.
    */
-  public edge(input: string | t.ICoord): t.CoordEdge[] {
+  public edge(input: string | t.ICoordPosition): t.CoordEdge[] {
     const { column, row } = cell.toCell(input);
 
     let result: t.CoordEdge[] = [];

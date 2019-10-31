@@ -25,23 +25,23 @@
   dependencies:
     "@platform/libs" "0.1.3"
 
-"@platform/cell.coord@0.5.22":
-  version "0.5.22"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.5.22.tgz#5be609d5f03f0cefe4a99d7c91cc1f8f1eeefeb0"
-  integrity sha512-BRY3Kv2un/2EaJ8PDiMsAnEDc1BrMe8BpLoihind+NemEl2nBLS637CEKODSOquFI//1jmLMyivjF9h3OsEAuA==
+"@platform/cell.coord@0.5.24":
+  version "0.5.24"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.5.24.tgz#a6c0b40b7ea26d475507fa5b25f76c8c11c5c4b8"
+  integrity sha512-g9UZFQBdMkD9rC8vpoarSpZhJSZQgoUAvUpZ4DeAY0yqLh83T4+qvfexHl0lFTnbpEbh6eeoup5/sOKJE0K54A==
   dependencies:
     "@platform/cache" "0.2.0"
-    "@platform/cell.types" "0.0.19"
+    "@platform/cell.types" "0.0.21"
     "@platform/types" "0.0.32"
     "@platform/util.value" "0.5.5"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.types@0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.19.tgz#06f78e6645aa6d5f38e0f091b0e22f0ddf838044"
-  integrity sha512-jk+46PnxWmhUx4TaiBRI9PZyOYBkcXWFRhE8g/P7P0BgiZzD0kPtRy8NJ4BROq/pjAb1EICfvTPk9lG6lKOWOw==
+"@platform/cell.types@0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.21.tgz#b11f3115b65fe5ad63164305c43fd4932e1ee185"
+  integrity sha512-LLVsM3Yfx5qThwgdWDeDxnt2q+tqcWlyGcAXYyeD6PYGzTpN6vXqFMa1YwO3DwQDJFyszKh4HDIw1sHpTyerAA==
   dependencies:
     "@platform/cache" "0.2.0"
     "@platform/libs" "0.1.3"
@@ -87,10 +87,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.model@0.1.24":
-  version "0.1.24"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.1.24.tgz#1b1bef976b3f38cd3d29cf00587cffb7c7ca389f"
-  integrity sha512-PYhxfan/pu/0yKpgA/dNJGaQm7KROykm7W/LqZmEai8/JxvgnYEwovpxteG9b3xOJy9TTxgLrQbuty+slIWRsg==
+"@platform/fsdb.model@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.2.0.tgz#16d1cce6937ace82b1ef78aad381ee1ef23fa864"
+  integrity sha512-vkK9nCffR8NRC4vkfJBPSGlicwshIm/iIPOKhDhM2dKy9zyVQuh+aO1v3UrRI77GCinogG3UuX36/BHdW7p+UA==
   dependencies:
     "@platform/fsdb.types" "0.3.10"
     "@platform/libs" "0.1.3"

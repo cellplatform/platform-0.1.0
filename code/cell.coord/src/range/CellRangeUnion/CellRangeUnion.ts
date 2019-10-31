@@ -25,7 +25,7 @@ export class CellRangeUnion {
   /**
    * Determines whether the given cell is contained within the given set.
    */
-  public static contains(ranges: CellRange[], cell: t.ICoord | string) {
+  public static contains(ranges: CellRange[], cell: t.ICoordPosition | string) {
     const key = cellUtil.toCell(cell).key;
     return ranges.some(range => range.contains(key));
   }
@@ -118,14 +118,14 @@ export class CellRangeUnion {
   /**
    * Determines whether the given cell is contained within the set.
    */
-  public contains(cell: t.ICoord | string): boolean {
+  public contains(cell: t.ICoordPosition | string): boolean {
     return CellRangeUnion.contains(this.ranges, cell);
   }
 
   /**
    * Retrieves the edge(s) the given cell is on.
    */
-  public edge(cell: string | t.ICoord): t.CoordEdge[] {
+  public edge(cell: string | t.ICoordPosition): t.CoordEdge[] {
     const cellAddress = cellUtil.toCell(cell);
     if (!this.contains(cellAddress)) {
       return [];

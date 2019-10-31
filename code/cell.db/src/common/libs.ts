@@ -1,5 +1,5 @@
-import { uniq } from 'ramda';
-export const R = { uniq };
+import { uniq, prop, sortBy } from 'ramda';
+export const R = { uniq, prop, sortBy };
 
 export { value, id } from '@platform/util.value';
 export { Model } from '@platform/fsdb.model';

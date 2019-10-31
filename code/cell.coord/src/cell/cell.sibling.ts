@@ -5,7 +5,7 @@ import { fromKey, toKey } from './cell.key';
  * Retrieves the contiguous cells.
  */
 export function siblings(
-  cell: string | t.ICoord,
+  cell: string | t.ICoordPosition,
   options: t.ICoordSiblingOptions = {},
 ): t.ICoordSiblings {
   const top = sibling(cell, 'TOP', options);
@@ -36,7 +36,7 @@ export function siblings(
  * Retrives the contiguous cell on the given edge.
  */
 export function sibling(
-  cell: string | t.ICoord,
+  cell: string | t.ICoordPosition,
   edge: t.CoordEdge,
   options: t.ICoordSiblingOptions = {},
 ): string | undefined {
@@ -59,7 +59,7 @@ export function sibling(
  * Retrieves the cell at the given offset to the current cell.
  */
 export function offset(
-  cell: string | t.ICoord,
+  cell: string | t.ICoordPosition,
   columnOffset: number,
   rowOffset: number,
   options: t.ICoordOffsetOptions = {},

@@ -1,6 +1,7 @@
 import { t } from '../common';
 
 export type IGridCell<P extends t.IGridCellProps = t.IGridCellProps> = {
+  readonly ns: string;
   readonly key: string;
   readonly row: number;
   readonly column: number;
@@ -25,7 +26,7 @@ export type ICellSiblings = {
  */
 
 export type IGridCellChange = {
-  cell: t.ICoordCell;
+  cell: t.ICoord;
   value: { from?: t.IGridCellData; to?: t.IGridCellData };
   isCancelled: boolean;
   isChanged: boolean;

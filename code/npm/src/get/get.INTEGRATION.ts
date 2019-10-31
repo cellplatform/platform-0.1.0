@@ -23,7 +23,7 @@ describe('util.npm (integration)', function() {
     log.info('getVersion:', res);
   });
 
-  it.skip('getVersion', async () => {
+  it('getVersion', async () => {
     const res = await npm.getVersion('create-tmpl');
     log.info('getVersion:', res);
   });

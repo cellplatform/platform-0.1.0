@@ -8,13 +8,12 @@ describe('parser.toParts', () => {
     expect(parts.isValid).to.eql(true);
     expect(parts.error).to.eql('');
     expect(parts.type).to.eql('CELL');
-    expect(parts.space).to.eql('');
-    expect(parts.cell).to.eql('A1');
+    expect(parts.key).to.eql('A1');
     expect(parts.column.value).to.eql('A');
     expect(parts.row.value).to.eql('1');
     expect(parts.column.index).to.eql(0);
     expect(parts.row.index).to.eql(0);
-    expect(parts.sheet).to.eql('Sheet1');
+    expect(parts.ns).to.eql('Sheet1');
     expect(parts.column.isRelative).to.eql(true);
     expect(parts.row.isRelative).to.eql(true);
     expect(parts.isWildcard).to.eql(false);
@@ -25,14 +24,13 @@ describe('parser.toParts', () => {
     expect(parts.isValid).to.eql(true);
     expect(parts.error).to.eql('');
     expect(parts.type).to.eql('COLUMN');
-    expect(parts.space).to.eql('');
-    expect(parts.cell).to.eql('A');
+    expect(parts.key).to.eql('A');
     expect(parts.column.value).to.eql('A');
     expect(parts.row.value).to.eql('');
     expect(parts.type).to.eql('COLUMN');
     expect(parts.column.index).to.eql(0);
     expect(parts.row.index).to.eql(-1);
-    expect(parts.sheet).to.eql('Sheet1');
+    expect(parts.ns).to.eql('Sheet1');
     expect(parts.column.isRelative).to.eql(true);
     expect(parts.row.isRelative).to.eql(undefined);
   });
@@ -42,49 +40,66 @@ describe('parser.toParts', () => {
     expect(parts.isValid).to.eql(true);
     expect(parts.error).to.eql('');
     expect(parts.type).to.eql('ROW');
-    expect(parts.space).to.eql('');
-    expect(parts.cell).to.eql('1');
+    expect(parts.key).to.eql('1');
     expect(parts.column.value).to.eql('');
     expect(parts.row.value).to.eql('1');
     expect(parts.type).to.eql('ROW');
     expect(parts.column.index).to.eql(-1);
     expect(parts.row.index).to.eql(0);
-    expect(parts.sheet).to.eql('Sheet1');
+    expect(parts.ns).to.eql('Sheet1');
     expect(parts.column.isRelative).to.eql(undefined);
     expect(parts.row.isRelative).to.eql(true);
   });
 
-  it('without sheet', () => {
-    const noSheet = (key: string) => {
-      const parts = parser.toParts(key);
+  it('without namespace', () => {
+    const test = (input: string) => {
+      const parts = parser.toParts(input);
       expect(parts.isValid).to.eql(true);
-      expect(parts.cell).to.eql(key);
-      expect(parts.sheet).to.eql('');
+      expect(parts.key).to.eql(input);
+      expect(parts.ns).to.eql('');
     };
-    noSheet('A1');
-    noSheet('A');
-    noSheet('1');
+    test('A1');
+    test('A');
+    test('1');
   });
 
-  it('from URI', () => {
-    const test = (input: string, sheet: string, space: string, uriPrefix?: string) => {
-      const parts = parser.toParts(input, { uriPrefix });
+  it('with namespace', () => {
+    const test = (input: string, ns: string) => {
+      const parts = parser.toParts(input);
       expect(parts.isValid).to.eql(true);
-      expect(parts.cell).to.eql('A1');
-      expect(parts.sheet).to.eql(sheet);
-      expect(parts.space).to.eql(space);
+      expect(parts.ns).to.eql(ns);
     };
-    test('uri:cell:A1', '', '');
-    test('uri:cell:Sheet1!A1', 'Sheet1', '');
-    test('uri:cell:Sheet1.sys!A1', 'Sheet1', 'sys');
-    test('myuri:cell:Sheet1.sys!A1', 'Sheet1', 'sys', 'myuri');
+    test('abc!A1', 'abc');
+    test('abc.foo!A1', 'abc.foo');
+  });
+
+  it('from uri', () => {
+    const test = (input: string, key: string, ns: string, uriPrefix?: string) => {
+      const options = { uriPrefix };
+      const parts = parser.toParts(input, options);
+      expect(parts.isValid).to.eql(true);
+      expect(parts.key).to.eql(key);
+      expect(parts.ns).to.eql(ns);
+    };
+    test('cell:A1', 'A1', '', '');
+    test('cell:abc!A1', 'A1', 'abc');
+    test('cell:abc!A1', 'A1', 'abc', '');
+    test('cell:abc!A1', 'A1', 'abc', '   ');
+
+    test('row:abc!1', '1', 'abc');
+    test('col:abc!A', 'A', 'abc');
+
+    test('myuri:abc!A1', 'A1', 'abc', 'myuri');
+    test('myuri:cell:abc!A1', 'A1', 'abc', 'myuri');
+    test('myuri:row:abc!1', '1', 'abc', 'myuri');
+    test('myuri:col:abc!A', 'A', 'abc', 'myuri');
   });
 
   it('large', () => {
-    const parts = parser.toParts('SheetWithAVeryLongName!ABCDEFGHIJKLMNOP123456789');
+    const parts = parser.toParts('SheetWithAVeryLongNamespace!ABCDEFGHIJKLMNOP123456789');
     expect(parts.isValid).to.eql(true);
-    expect(parts.sheet).to.eql('SheetWithAVeryLongName');
-    expect(parts.cell).to.eql('ABCDEFGHIJKLMNOP123456789');
+    expect(parts.ns).to.eql('SheetWithAVeryLongNamespace');
+    expect(parts.key).to.eql('ABCDEFGHIJKLMNOP123456789');
     expect(parts.column.value).to.eql('ABCDEFGHIJKLMNOP');
     expect(parts.row.value).to.eql('123456789');
     expect(parts.column.index).to.eql(alpha.fromCharacter('ABCDEFGHIJKLMNOP'));
@@ -109,26 +124,11 @@ describe('parser.toParts', () => {
     expect(parts.row.isRelative).to.eql(false);
   });
 
-  it('space', () => {
-    const test = (input: string, space: string, cell: string, sheet: string = '') => {
-      const parts = parser.toParts(input);
-      expect(parts.isValid).to.eql(true);
-      expect(parts.space).to.eql(space);
-      expect(parts.cell).to.eql(cell);
-      expect(parts.sheet).to.eql(sheet);
-    };
-    test('A1', '', 'A1');
-    test('Sheet1.sys!A1', 'sys', 'A1', 'Sheet1');
-    test('Sheet1.foo!A1', 'foo', 'A1', 'Sheet1');
-    test('.sys!A1', 'sys', 'A1');
-  });
-
   it('valid', () => {
     const valid = (key: string) => {
       const parts = parser.toParts(key);
       expect(parts.isValid).to.eql(true, `key '${key}' should be valid.`);
     };
-
     valid('A1');
     valid('=A1');
     valid(' =A1 ');
@@ -144,8 +144,7 @@ describe('parser.toParts', () => {
     valid('  1 ');
     valid('$1');
 
-    valid('uri:cell:A1');
-    valid('uri:cell:Sheet1!A1');
+    valid('cell:Sheet1!A1');
 
     valid('!A1');
     valid(' ! A1');
@@ -166,6 +165,7 @@ describe('parser.toParts', () => {
     valid('Sheet1!**');
     valid('Sheet1.sys!*');
     valid('Sheet1.sys!**');
+    valid('Sheet1.!A1');
   });
 
   it('invalid', () => {
@@ -188,13 +188,12 @@ describe('parser.toParts', () => {
     invalid(':');
     invalid('A-12');
     invalid('A1-2');
-    invalid('Sheet1.!A1');
-    invalid('Sheet1.sys.!A1');
-    invalid('Sheet1.sy.s!A1');
     invalid('Sheet1!');
     invalid('***');
     invalid('Sheet1!***');
-    invalid('sheet-1!A1'); // Hyphen in sheet not allowed.
+    invalid('sheet-1!A1'); // Hyphen in namespace not allowed.
+    invalid('123!A1'); // Number as ns.
+    invalid('uri:cell:A1');
   });
 
   describe('wildcard', () => {
@@ -202,8 +201,8 @@ describe('parser.toParts', () => {
       const parts = parser.toParts(input);
       expect(parts.isValid).to.eql(true);
       expect(parts.isWildcard).to.eql(true);
-      expect(parts.sheet).to.eql(sheet);
-      expect(parts.cell).to.eql(cell);
+      expect(parts.ns).to.eql(sheet);
+      expect(parts.key).to.eql(cell);
       expect(parts.column.value).to.eql(cell);
       expect(parts.column.index).to.eql(-1);
       expect(parts.column.isRelative).to.eql(undefined);
@@ -215,13 +214,13 @@ describe('parser.toParts', () => {
     it('Sheet1!* (Wildcard)', () => {
       testWildcard('*', '*');
       testWildcard('Sheet1!*', '*', 'Sheet1');
-      testWildcard('Sheet1.sys!*', '*', 'Sheet1');
+      testWildcard('Sheet1.sys!*', '*', 'Sheet1.sys');
     });
 
     it('Sheet1!** (Double wildcard)', () => {
       testWildcard('**', '**');
       testWildcard('Sheet1!**', '**', 'Sheet1');
-      testWildcard('Sheet1.sys!**', '**', 'Sheet1');
+      testWildcard('Sheet1.sys!**', '**', 'Sheet1.sys');
     });
   });
 });

@@ -7,6 +7,7 @@ describe('cell.offset', () => {
     columnOffset: number,
     rowOffset: number,
     result: undefined | string,
+    // options?: cell.ICoordOffsetOptions,
     options?: cell.ICoordOffsetOptions,
   ) => {
     const res = cell.offset(cellKey, columnOffset, rowOffset, options);

@@ -2,16 +2,10 @@
  * Cell
  */
 export type CoordAxis = 'COLUMN' | 'ROW';
-export type CoordCellType = 'CELL' | CoordAxis;
-export type ICoord = {
-  column: number;
-  row: number;
-};
-export type ICoordCell = {
-  key: string;
-  column: number;
-  row: number;
-};
+export type CoordType = 'CELL' | CoordAxis;
+export type ICoordPosition = { column: number; row: number };
+export type ICoordAddress = { key: string; ns: string };
+export type ICoord = ICoordPosition & ICoordAddress;
 
 /**
  * Siblings

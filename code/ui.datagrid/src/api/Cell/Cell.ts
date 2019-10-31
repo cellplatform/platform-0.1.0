@@ -15,14 +15,14 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
   public static diff = util.cell.value.cellDiff;
   public static props = util.toGridCellProps;
 
-  public static create(args: { table: Handsontable; row: number; column: number }) {
+  public static create(args: { table: Handsontable; ns: string; row: number; column: number }) {
     return new Cell(args);
   }
 
-  public static createFromKey(args: { table: Handsontable; cellKey: string }) {
-    const { table, cellKey } = args;
+  public static createFromKey(args: { table: Handsontable; ns: string; cellKey: string }) {
+    const { table, ns, cellKey } = args;
     const { row, column } = coord.cell.fromKey(cellKey);
-    return new Cell({ table, row, column });
+    return new Cell({ table, ns, row, column });
   }
 
   public static toKey(args: { row: number; column: number }) {
@@ -56,17 +56,16 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
   }
 
   public static changeEvent(args: {
-    cell: t.ICoordCell;
+    cell: t.ICoord;
     from?: t.IGridCellData;
     to?: t.IGridCellData;
   }) {
     const { cell, from, to } = args;
     const value = { from, to };
     let isChanged: boolean | undefined;
-    const { key, row, column } = cell;
 
     const payload: t.IGridCellChange = {
-      cell: { key, row, column },
+      cell,
       value,
       get isChanged() {
         return isChanged === undefined ? (isChanged = !R.equals(value.from, value.to)) : isChanged;
@@ -88,8 +87,9 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
   /**
    * [Lifecycle]
    */
-  private constructor(args: { table: Handsontable; row: number; column: number }) {
+  private constructor(args: { table: Handsontable; ns: string; row: number; column: number }) {
     this._.table = args.table;
+    this.ns = args.ns;
     this.row = args.row;
     this.column = args.column;
   }
@@ -101,6 +101,7 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
   /**
    * [Fields]
    */
+  public readonly ns: string;
   public readonly row: number;
   public readonly column: number;
   private readonly _ = {
@@ -148,42 +149,26 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
     }
   }
 
-  // public get value(): t.CellValue {
-  //   const data = this.data;
-  //   return typeof data === 'object' ? data.value : undefined;
-  // }
-
-  // public get props(): P {
-  //   const data = this.data;
-  //   return typeof data === 'object' ? data.props || {} : {};
-  // }
-
-  // public get error(): t.IError {
-  //   const data = this.data;
-  //   return typeof data === 'object' ? data.error : {};
-  // }
-
   public get siblings() {
     const table = this._.table;
     const cell = this; // tslint:disable-line
-    const row = cell.row;
-    const column = cell.column;
+    const { ns, row, column } = cell;
     return {
       get left() {
         const column = cell.column - 1;
-        return column < 0 ? undefined : Cell.create({ table, row, column });
+        return column < 0 ? undefined : Cell.create({ table, ns, row, column });
       },
       get right() {
         const column = cell.column + 1;
-        return column > table.countCols() - 1 ? undefined : Cell.create({ table, row, column });
+        return column > table.countCols() - 1 ? undefined : Cell.create({ table, ns, row, column });
       },
       get top() {
         const row = cell.row - 1;
-        return row < 0 ? undefined : Cell.create({ table, row, column });
+        return row < 0 ? undefined : Cell.create({ table, ns, row, column });
       },
       get bottom() {
         const row = cell.row + 1;
-        return row < 0 ? undefined : Cell.create({ table, column, row });
+        return row < 0 ? undefined : Cell.create({ table, ns, row, column });
       },
     };
   }
@@ -204,6 +189,6 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
    * Display string representation of the cell.
    */
   public toString() {
-    return `[Cell|${this.key}]`;
+    coord.Uri.generate.cell({ key: this.key, ns: this.ns });
   }
 }
