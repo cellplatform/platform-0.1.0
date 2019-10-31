@@ -74,18 +74,25 @@ describe('parser.toParts', () => {
   });
 
   it('from uri', () => {
-    const test = (input: string, ns: string, uriPrefix?: string) => {
+    const test = (input: string, key: string, ns: string, uriPrefix?: string) => {
       const options = { uriPrefix };
       const parts = parser.toParts(input, options);
       expect(parts.isValid).to.eql(true);
-      expect(parts.key).to.eql('A1');
+      expect(parts.key).to.eql(key);
       expect(parts.ns).to.eql(ns);
     };
-    test('cell:A1', '', '');
-    test('cell:Sheet1!A1', 'Sheet1');
-    test('cell:Sheet1!A1', 'Sheet1', '');
-    test('cell:Sheet1!A1', 'Sheet1', '   ');
-    test('myuri:Sheet1!A1', 'Sheet1', 'myuri');
+    test('cell:A1', 'A1', '', '');
+    test('cell:abc!A1', 'A1', 'abc');
+    test('cell:abc!A1', 'A1', 'abc', '');
+    test('cell:abc!A1', 'A1', 'abc', '   ');
+
+    test('row:abc!1', '1', 'abc');
+    test('col:abc!A', 'A', 'abc');
+
+    test('myuri:abc!A1', 'A1', 'abc', 'myuri');
+    test('myuri:cell:abc!A1', 'A1', 'abc', 'myuri');
+    test('myuri:row:abc!1', '1', 'abc', 'myuri');
+    test('myuri:col:abc!A', 'A', 'abc', 'myuri');
   });
 
   it('large', () => {

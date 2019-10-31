@@ -5,7 +5,7 @@ describe('model.Row', () => {
   it('create', async () => {
     const db = await getTestDb({ file: true });
 
-    const uri = 'row:123456:abc';
+    const uri = 'row:abcd!1';
     const res1 = await Row.create({ db, uri }).ready;
 
     await res1.set({ key: '1' }).save();

@@ -8,14 +8,14 @@ export class Row {
     return Model.create<t.IModelRowProps>({ db, path, initial });
   };
 
-  public static create(args: { db: t.IDb; uri?: string }) {
+  public static create(args: { db: t.IDb; uri: string }) {
     const { db } = args;
-    const uri = Uri.parse<t.IRowUri>(args.uri || Uri.generate.row());
+    const uri = Uri.parse<t.IRowUri>(args.uri);
     if (uri.error) {
       throw new Error(uri.error.message);
     }
     const ns = Schema.ns(uri.data.ns);
-    const path = ns.row(uri.data.row).path;
+    const path = ns.row(uri.data.key).path;
     return Row.factory({ db, path });
   }
 }

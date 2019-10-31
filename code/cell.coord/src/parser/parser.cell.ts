@@ -1,11 +1,14 @@
-import { R, value, t, defaultValue } from '../common';
+import { R, value, t } from '../common';
 import { alpha } from '../alpha';
 import { ast } from '../ast';
 
 export const toParts = R.memoizeWith(R.identity, parse);
 
+const removeUriPrefix = (input: string, prefix?: string) => {
+  return prefix ? input.replace(new RegExp(`^${prefix}\:`), '') : input;
+};
+
 function parse(input: string, options: { uriPrefix?: string } = {}) {
-  const uriPrefix = options.uriPrefix || 'cell';
   const DEFAULT_RELATIVE = true as boolean | undefined;
   const result = {
     input,
@@ -36,7 +39,8 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
 
   // Prepare the input.
   input = input.replace(/^[\s\=\!]*/, '').trimRight();
-  input = input.replace(new RegExp(`^${uriPrefix}\:`), ''); // Strip the URI prefix.
+  input = removeUriPrefix(input, options.uriPrefix);
+  ['ns', 'cell', 'row', 'col'].forEach(prefix => (input = removeUriPrefix(input, prefix)));
 
   // Extract key.
   let parts = input.split('!');

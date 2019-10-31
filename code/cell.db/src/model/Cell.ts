@@ -8,14 +8,14 @@ export class Cell {
     return Model.create<t.IModelCellProps>({ db, path, initial });
   };
 
-  public static create(args: { db: t.IDb; uri?: string }) {
+  public static create(args: { db: t.IDb; uri: string }) {
     const { db } = args;
-    const uri = Uri.parse<t.ICellUri>(args.uri || Uri.generate.cell());
+    const uri = Uri.parse<t.ICellUri>(args.uri);
     if (uri.error) {
       throw new Error(uri.error.message);
     }
     const ns = Schema.ns(uri.data.ns);
-    const path = ns.cell(uri.data.cell).path;
+    const path = ns.cell(uri.data.key).path;
     return Cell.factory({ db, path });
   }
 }

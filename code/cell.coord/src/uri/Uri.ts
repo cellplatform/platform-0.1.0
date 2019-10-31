@@ -33,20 +33,23 @@ export class Uri {
       const left = text.substring(0, index);
       const right = text.substring(index + 1).trim();
 
-      const setCoord = (type: t.IUriCoord['type'], field: 'cell' | 'row' | 'column') => {
-        const id = right;
-        const parts = id.split(':');
-        const ns = parts[0];
-        const coordId = parts[1];
-
-        // TEMP 🐷 - TODO, convert to "<ns>!A1" format
-        // const res = cell.toCell(right);
-        // console.log('res', res);
-        // console.log('right', right);
-
+      const setCoord = (type: t.ICoordUri['type']) => {
+        const id = right || '';
         setError(!id, `ID of '${type}' not found`);
-        setError(!coordId, `ID part suffix of '${type}' not found`);
-        data = { type, id, ns, [field]: coordId } as any;
+
+        let key = '';
+        let ns = '';
+        if (!id.includes('!')) {
+          setError(true, `The '${type}' URI does not contain a "!" character.`);
+        } else {
+          const parts = cell.toCell(id);
+          key = parts.key;
+          ns = parts.ns;
+          setError(!key, `Coordinate key of '${type}' not found`);
+          setError(!ns, `Coordinate namespace of '${type}' not found`);
+        }
+
+        data = { type, id, ns, key } as any;
       };
 
       if (left === 'ns') {
@@ -55,11 +58,11 @@ export class Uri {
         const ns: t.INsUri = { type: 'ns', id };
         data = ns;
       } else if (left === 'cell') {
-        setCoord('cell', 'cell');
+        setCoord('cell');
       } else if (left === 'row') {
-        setCoord('row', 'row');
+        setCoord('row');
       } else if (left === 'col') {
-        setCoord('col', 'column');
+        setCoord('col');
       }
     }
 
@@ -96,20 +99,20 @@ export class Uri {
       const ns = args.ns || id.cuid();
       return `ns:${ns}`;
     },
-    cell(args: { ns?: string; cell?: string } = {}) {
+    cell(args: { cell: string; ns?: string }) {
       const ns = args.ns || id.cuid();
       const cell = args.cell || id.shortid();
-      return `cell:${ns}:${cell}`;
+      return `cell:${ns}!${cell}`;
     },
-    row(args: { ns?: string; row?: string } = {}) {
+    row(args: { row: string; ns?: string }) {
       const ns = args.ns || id.cuid();
       const row = args.row || id.shortid();
-      return `row:${ns}:${row}`;
+      return `row:${ns}!${row}`;
     },
-    column(args: { ns?: string; column?: string } = {}) {
+    column(args: { column: string; ns?: string }) {
       const ns = args.ns || id.cuid();
       const col = args.column || id.shortid();
-      return `col:${ns}:${col}`;
+      return `col:${ns}!${col}`;
     },
   };
 }
