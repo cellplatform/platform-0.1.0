@@ -103,6 +103,10 @@ export class Grid implements t.IGrid {
     this._.columns = args.columns || {};
     this._.rows = args.rows || {};
     this._.calc = calc({ grid: this, getFunc: args.getFunc });
+    this._.refs = coord.refs.table({
+      getKeys: async () => Object.keys(this.data.cells),
+      getValue: this.getValue,
+    });
 
     this.events$
       .pipe(filter(e => e.type === 'GRID/ready'))
@@ -578,9 +582,6 @@ export class Grid implements t.IGrid {
       const changes = Object.keys(cells).map(key => {
         const cell = this.cell(key);
         const { from, to } = formatted[key];
-
-        // TEMP 🐷 TODO - change "cell" to a URI string (cell:...)
-
         return Cell.changeEvent({ cell, from, to });
       });
 
@@ -871,5 +872,15 @@ export class Grid implements t.IGrid {
   public fire: t.GridFireEvent = e => {
     this._.events$.next(e);
     return this;
+  };
+
+  /**
+   * [Internal]
+   */
+
+  private getValue: t.RefGetValue = async key => this.getValueSync(key);
+  private getValueSync = (key: string) => {
+    const cell = this.data.cells[key];
+    return cell && typeof cell.value === 'string' ? cell.value : undefined;
   };
 }
