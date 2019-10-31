@@ -74,10 +74,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     return this.props.grid;
   }
 
-  public get refsTable() {
-    return this.grid.refs;
-  }
-
   public get theme() {
     return this.props.theme || 'DARK';
   }
@@ -149,12 +145,13 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   }
 
   public async updateRefs(args: { force?: boolean } = {}) {
-    if (!this.refsTable) {
+    const refsTable = this.grid.refsTable;
+    if (!refsTable) {
       return;
     }
 
     const { force } = args;
-    const refs = await this.refsTable.refs({ force });
+    const refs = await refsTable.refs({ force });
 
     const pathToKeys = (path?: string) => (path || '').split('/').filter(part => part);
 

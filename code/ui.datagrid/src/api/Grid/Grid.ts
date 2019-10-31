@@ -103,10 +103,6 @@ export class Grid implements t.IGrid {
     this._.columns = args.columns || {};
     this._.rows = args.rows || {};
     this._.calc = calc({ grid: this, getFunc: args.getFunc });
-    this._.refs = coord.refs.table({
-      getKeys: async () => Object.keys(this.data.cells),
-      getValue: this.getValue,
-    });
 
     this.events$
       .pipe(filter(e => e.type === 'GRID/ready'))
@@ -224,7 +220,8 @@ export class Grid implements t.IGrid {
       )
       .subscribe(async e => {
         const cells = e.changes.map(change => change.cell.key);
-        await this.calc.update({ cells });
+        console.log('cells', cells);
+        const res = await this.calc.update({ cells });
       });
 
     // Finish up.
@@ -269,6 +266,15 @@ export class Grid implements t.IGrid {
     share(),
   );
 
+  private getValueSync = (key: string) => {
+    const cell = this.data.cells[key];
+    return cell && typeof cell.value === 'string' ? cell.value : undefined;
+  };
+  public readonly refsTable = coord.refs.table({
+    getKeys: async () => Object.keys(this.data.cells),
+    getValue: async key => this.getValueSync(key),
+  });
+
   /**
    * [Properties]
    */
@@ -311,10 +317,6 @@ export class Grid implements t.IGrid {
   public get data() {
     const { ns, cells, columns, rows } = this._;
     return { ns, cells, columns, rows };
-  }
-
-  public get refs() {
-    return this._.refs;
   }
 
   private setCells(cells: t.IGridData['cells']) {
@@ -872,15 +874,5 @@ export class Grid implements t.IGrid {
   public fire: t.GridFireEvent = e => {
     this._.events$.next(e);
     return this;
-  };
-
-  /**
-   * [Internal]
-   */
-
-  private getValue: t.RefGetValue = async key => this.getValueSync(key);
-  private getValueSync = (key: string) => {
-    const cell = this.data.cells[key];
-    return cell && typeof cell.value === 'string' ? cell.value : undefined;
   };
 }

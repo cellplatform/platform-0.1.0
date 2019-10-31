@@ -5,8 +5,10 @@ import { func, t } from '../../common';
  */
 export function calc(args: { grid: t.IGrid; getFunc?: t.GetFunc }): t.IGridCalculate {
   const { grid, getFunc } = args;
+  const refsTable = grid.refsTable;
+
   const getCells: t.GetCells = async () => grid.data.cells;
-  const table = func.table({ getCells, getFunc, refsTable: grid.refs });
+  const table = func.table({ getCells, getFunc, refsTable });
 
   /**
    * Calculate a set of changes.
@@ -23,6 +25,9 @@ export function calc(args: { grid: t.IGrid; getFunc?: t.GetFunc }): t.IGridCalcu
   const update: t.IGridCalculate['update'] = async (args: { cells?: string | string[] } = {}) => {
     const { cells } = args;
     const res = await changes({ cells });
+
+    console.log('res', res);
+
     grid.changeCells(res.map);
     return res;
   };
