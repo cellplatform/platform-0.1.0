@@ -57,6 +57,27 @@ describe('refs.table', () => {
     });
   });
 
+  describe('refs (errors)', () => {
+    it('circular: A1 => A1 (after change)', async () => {
+      let A1 = '123';
+      const ctx = testContext({
+        A1: { value: () => A1 },
+        A2: { value: '456' },
+      });
+
+      const table = refs.table({ ...ctx });
+      const res1 = await table.refs();
+      expect(res1.out).to.eql({});
+
+      A1 = '=A1';
+      const res2 = await table.refs({ range: 'A1', force: true });
+      const ref = res2.out.A1[0];
+      expect(ref.path).to.eql('A1/A1');
+      expect(ref.error && ref.error.type).to.eql('REF/circular');
+      expect(ref.error && ref.error.path).to.eql('A1/A1');
+    });
+  });
+
   describe('outgoing', () => {
     it('empty', async () => {
       const ctx = testContext({});
