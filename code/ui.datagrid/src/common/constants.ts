@@ -1,6 +1,8 @@
 export { ROBOTO, MONOSPACE } from '@platform/ui.text/lib';
 import * as t from './types';
 
+export const UNKNOWN = 'UNKNOWN';
+
 export const COLORS = {
   WHITE: '#fff',
   DARK: '#293042', // Inky blue/black.
@@ -74,7 +76,10 @@ const CELL_PROPS: CellPropDefaults = {
   },
 };
 
+const NS: t.INs = { id: UNKNOWN };
+
 export const DEFAULT = {
+  NS,
   KEY_BINDINGS,
   TOTAL_COLUMNS: 52,
   TOTAL_ROWS: 1000,

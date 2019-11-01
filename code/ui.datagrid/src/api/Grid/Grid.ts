@@ -21,7 +21,7 @@ export type IGridArgs = {
   table?: Handsontable;
   totalColumns?: number;
   totalRows?: number;
-  ns?: t.IGridData['ns'];
+  ns?: t.INs | string;
   cells?: t.IGridData['cells'];
   columns?: t.IGridData['columns'];
   rows?: t.IGridData['rows'];
@@ -48,6 +48,7 @@ export class Grid implements t.IGrid {
   public static defaults(input?: Partial<t.IGridDefaults>): t.IGridDefaults {
     const partial = input || {};
     return {
+      ns: defaultValue(partial.ns, DEFAULT.NS),
       totalColumns: defaultValue(partial.totalColumns, DEFAULT.TOTAL_COLUMNS),
       totalRows: defaultValue(partial.totalRows, DEFAULT.TOTAL_ROWS),
       columnWidth: defaultValue(partial.columnWidth, DEFAULT.COLUMN.WIDTH),
@@ -70,6 +71,15 @@ export class Grid implements t.IGrid {
         return args.cells[Cell.toKey({ row, column })];
       }),
     );
+  }
+
+  /**
+   * Converts generic input into a strongly typed INs
+   */
+  public static toNs(input?: t.INs | string): t.INs {
+    const ns = input === undefined ? DEFAULT.NS : typeof input === 'string' ? { id: input } : input;
+    ns.id = ns.id.trim().replace(/^ns\:/, '');
+    return ns;
   }
 
   /**
@@ -97,7 +107,7 @@ export class Grid implements t.IGrid {
 
     this._.totalColumns = defaultValue(args.totalColumns, defaults.totalColumns);
     this._.totalRows = defaultValue(args.totalRows, defaults.totalRows);
-    this._.ns = (args.ns || 'UNKNOWN').replace(/^ns\:/, '');
+    this._.ns = Grid.toNs(args.ns);
     this._.cells = args.cells || {};
     this._.columns = args.columns || {};
     this._.rows = args.rows || {};
@@ -242,7 +252,7 @@ export class Grid implements t.IGrid {
     redraw$: new Subject(),
     isReady: false,
     isEditing: false,
-    ns: '' as t.IGridData['ns'],
+    ns: DEFAULT.NS,
     cells: ({} as unknown) as t.IGridData['cells'],
     columns: ({} as unknown) as t.IGridData['columns'],
     rows: ({} as unknown) as t.IGridData['rows'],
@@ -734,7 +744,7 @@ export class Grid implements t.IGrid {
       msg = typeof key === 'string' ? `${msg} key: "${key}"` : msg;
       throw new Error(msg);
     }
-    const ns = this.data.ns;
+    const ns = this.data.ns.id;
     const cacheKey = `${ns}:cell/${column}:${row}`;
     return this._.cache.get<Cell<t.IGridCellProps>>(cacheKey, () => {
       const table = this._.table;

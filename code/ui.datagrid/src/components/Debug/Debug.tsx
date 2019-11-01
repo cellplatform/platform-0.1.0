@@ -280,7 +280,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         <div {...styles.label}>t.IGrid</div>
         {this.renderObject({ name: 'ui.datagrid', data: this.state.grid })}
         <Hr />
-        <div {...styles.label}>t.ITableData</div>
+        <div {...styles.label}>t.INsData</div>
         {this.renderObject({ name: 'data', data: this.state.data })}
         <Hr />
         <div {...styles.label}>t.IRefs</div>
