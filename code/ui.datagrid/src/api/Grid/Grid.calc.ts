@@ -25,9 +25,6 @@ export function calc(args: { grid: t.IGrid; getFunc?: t.GetFunc }): t.IGridCalcu
   const update: t.IGridCalculate['update'] = async (args: { cells?: string | string[] } = {}) => {
     const { cells } = args;
     const res = await changes({ cells });
-
-    console.log('res', res);
-
     grid.changeCells(res.map);
     return res;
   };
