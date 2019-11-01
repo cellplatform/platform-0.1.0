@@ -87,25 +87,35 @@ describe('cell', () => {
   });
 
   describe('cellHash', () => {
+    it('throw if URI not passed', () => {
+      const fn = () => value.cellHash('A1', { value: 123 });
+      expect(fn).to.throw(/Hashing requires a valid cell URI/);
+    });
+
     it('hashes a cell', () => {
+      // const lastChars = (length: number, text: string) => text.substr(text.length - length);
       const test = (input: {} | undefined, expected: string) => {
-        const hash = value.cellHash('A1', input);
+        const hash = value.cellHash('cell:abcd:A1', input);
         expect(hash.endsWith(expected)).to.eql(true);
+        // console.log(lastChars(20, hash));
       };
 
-      test(undefined, 'd304e202ed0c5ae3ad99ab80c5c112');
-      test({ value: undefined }, 'd304e202ed0c5ae3ad99ab80c5c112');
-      test({ value: null }, 'ab3b5367a7f46f42555c20b29d5a2a');
-      test({ value: 123 }, 'fa9a31fe9a69d97a2fff6750f400a9');
-      test({ value: 'hello' }, 'fd41a0fb0320500ab7db00b12c43a8');
-      test({ value: 'hello', props: {} }, 'fd41a0fb0320500ab7db00b12c43a8');
-      test({ value: 'hello', props: { style: { bold: true } } }, '595d0855352286bccc32f701a2b823');
+      test(undefined, 'ebda571c96e44b37128a');
+      test({ value: undefined }, 'ebda571c96e44b37128a');
+      test({ value: null }, 'ebda571c96e44b37128a');
+      test({ value: 123 }, 'd5648106e98ac7d1f8e8');
+      test({ value: 'hello' }, '9834b7a2583ba0144801');
+      test({ value: 'hello', props: {} }, '9834b7a2583ba0144801');
+      test({ value: 'hello', props: { style: { bold: true } } }, 'af5e02a409ff0c537ffb');
+
+      const error: t.IRefErrorCircular = { type: 'REF/circular', path: 'A1/A1', message: 'Fail' };
+      test({ value: 'hello', error }, '1beccb1e90f84f01a3c4');
     });
 
     it('same hash for no param AND no cell-value', () => {
-      const HASH = 'sha256-2d7331843f6bcc32bf4c166f4afaeae595d304e202ed0c5ae3ad99ab80c5c112';
+      const HASH = 'sha256-822b291ee43cc2cd8d258471010b55cfb3e67bba3ebfebda571c96e44b37128a';
       const test = (input?: t.ICellData) => {
-        const hash = value.cellHash('A1', input);
+        const hash = value.cellHash('cell:abcd:A1', input);
         expect(hash).to.eql(HASH);
       };
       test();
@@ -114,9 +124,9 @@ describe('cell', () => {
     });
 
     it('returns same hash for equivalent props variants', () => {
-      const HASH = 'sha256-08be796d228342a967d0c5117165e9027ffa9a31fe9a69d97a2fff6750f400a9';
+      const HASH = 'sha256-4b3640ce563efa431406a23c8cb3683e9fe714349f07d5648106e98ac7d1f8e8';
       const test = (props?: {}) => {
-        const hash = value.cellHash('A1', { value: 123, props });
+        const hash = value.cellHash('cell:abcd:A1', { value: 123, props });
         expect(hash).to.eql(HASH);
       };
       test();
