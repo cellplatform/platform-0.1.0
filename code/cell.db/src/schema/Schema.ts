@@ -54,20 +54,17 @@ export class NsSchema {
   /**
    * [Methods]
    */
-  public cell(key?: string) {
-    key = key || generate.shortid();
+  public cell(key: string) {
     const uri = Uri.generate.cell({ ns: this.id, key });
     return new CoordSchema({ type: 'CELL', ns: this, id: key, uri });
   }
 
-  public column(key?: string) {
-    key = key || generate.shortid();
+  public column(key: string) {
     const uri = Uri.generate.column({ ns: this.id, key });
     return new CoordSchema({ type: 'COL', ns: this, id: key, uri });
   }
 
-  public row(key?: string) {
-    key = key || generate.shortid();
+  public row(key: string) {
     const uri = Uri.generate.row({ ns: this.id, key });
     return new CoordSchema({ type: 'ROW', ns: this, id: key, uri });
   }

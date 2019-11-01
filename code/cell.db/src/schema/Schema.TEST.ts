@@ -30,58 +30,32 @@ describe('schema', () => {
   });
 
   describe('cell', () => {
-    it('existing id', () => {
+    it('cell:A1', () => {
       const ns = Schema.ns('abc');
       const res = ns.cell('A1');
       expect(res.id).to.eql('A1');
       expect(res.path).to.eql('NS/abc/CELL/A1');
       expect(res.uri).to.eql('cell:abc!A1');
     });
-
-    it('generated id', () => {
-      const ns = Schema.ns('abc');
-      const res = ns.cell();
-      expect(res.id.length).to.greaterThan(6);
-      expect(res.path).to.eql(`NS/abc/CELL/${res.id}`);
-      expect(res.uri).to.eql(`cell:abc!${res.id}`);
-    });
   });
 
   describe('col', () => {
-    it('existing id', () => {
+    it('column:A', () => {
       const ns = Schema.ns('abc');
       const res = ns.column('A');
       expect(res.id).to.eql('A');
       expect(res.path).to.eql('NS/abc/COL/A');
       expect(res.uri).to.eql('col:abc!A');
     });
-
-    it('generated id', () => {
-      const ns = Schema.ns('abc');
-      const res = ns.column();
-      expect(res.id.length).to.greaterThan(6);
-      expect(res.path).to.eql(`NS/abc/COL/${res.id}`);
-      expect(res.type).to.eql('COL');
-      expect(res.uri).to.eql(`col:abc!${res.id}`);
-    });
   });
 
   describe('row', () => {
-    it('existing id', () => {
+    it('row:1', () => {
       const ns = Schema.ns('abc');
       const res = ns.row('1');
       expect(res.id).to.eql('1');
       expect(res.path).to.eql('NS/abc/ROW/1');
       expect(res.uri).to.eql('row:abc!1');
-    });
-
-    it('generated id', () => {
-      const ns = Schema.ns('abc');
-      const res = ns.row();
-      expect(res.id.length).to.greaterThan(6);
-      expect(res.path).to.eql(`NS/abc/ROW/${res.id}`);
-      expect(res.type).to.eql('ROW');
-      expect(res.uri).to.eql(`row:abc!${res.id}`);
     });
   });
 
