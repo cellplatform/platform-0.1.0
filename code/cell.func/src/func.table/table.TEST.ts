@@ -257,7 +257,7 @@ describe('func.table', () => {
         expect((res2.list[0].error as t.IFuncErrorCircularRef).type).to.eql('REF/circular');
         expect((res2.list[1].error as t.IFuncErrorCircularRef).type).to.eql('REF/circular');
 
-        const res3 = await table.calculate({ cells: 'A2' });
+        const res3 = await table.calculate({ cells: ['A2'] });
         const list = res3.list;
 
         expect(res3.ok).to.eql(false);
