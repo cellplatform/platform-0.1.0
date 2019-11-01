@@ -1,6 +1,6 @@
 import { expect, getTestDb } from '../test';
 import { Schema } from '.';
-import { model } from '../model';
+import { model } from '..';
 
 describe('schema', () => {
   describe('namespace', () => {

@@ -247,6 +247,12 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   private renderBody() {
     const styles = {
       base: css({ padding: 12, marginBottom: 50 }),
+      label: css({
+        fontSize: 14,
+        opacity: 0.3,
+        marginBottom: 6,
+        fontFamily: constants.MONOSPACE.FAMILY,
+      }),
     };
 
     const selectedCell = this.selectedCell;
@@ -271,10 +277,13 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       <div {...styles.base}>
         {this.renderSelection()}
         <Hr />
+        <div {...styles.label}>t.IGrid</div>
         {this.renderObject({ name: 'ui.datagrid', data: this.state.grid })}
         <Hr />
+        <div {...styles.label}>t.ITableData</div>
         {this.renderObject({ name: 'data', data: this.state.data })}
         <Hr />
+        <div {...styles.label}>t.IRefs</div>
         {this.renderObject({ name: 'refs', data: this.state.refs })}
         <Hr />
         {this.renderObject({
