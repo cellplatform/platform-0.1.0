@@ -94,11 +94,10 @@ export class Grid implements t.IGrid {
 
   private _init(args: IGridArgs) {
     const defaults = (this._.defaults = Grid.defaults(args.defaults));
-    const ns = coord.Uri.parse<t.INsUri>(args.ns).data.id;
 
     this._.totalColumns = defaultValue(args.totalColumns, defaults.totalColumns);
     this._.totalRows = defaultValue(args.totalRows, defaults.totalRows);
-    this._.ns = ns || 'UNKNOWN';
+    this._.ns = (args.ns || 'UNKNOWN').replace(/^ns\:/, '');
     this._.cells = args.cells || {};
     this._.columns = args.columns || {};
     this._.rows = args.rows || {};
@@ -220,8 +219,7 @@ export class Grid implements t.IGrid {
       )
       .subscribe(async e => {
         const cells = e.changes.map(change => change.cell.key);
-        console.log('cells', cells);
-        const res = await this.calc.update({ cells });
+        await this.calc.update({ cells });
       });
 
     // Finish up.
@@ -546,7 +544,7 @@ export class Grid implements t.IGrid {
         return undefined;
       }
       if (to) {
-        to = { ...to, hash: util.cell.value.cellHash(key, to) };
+        to = { ...to, hash: util.gridCellHash(this, key, to) };
         if (Cell.isEmptyProps(to.props)) {
           delete to.props; // Strip any empty props or props with default values.
         }
@@ -834,15 +832,17 @@ export class Grid implements t.IGrid {
    * Updates the cell hash for each value.
    */
   public updateHashes(options: { force?: boolean } = {}) {
-    const cells = { ...this.data.cells };
+    const data = this.data;
+    const cells = { ...data.cells };
+
     let isChanged = false;
     Object.keys(cells).forEach(key => {
-      const value = cells[key];
-      if (value) {
-        let hash = value.hash;
+      const cell = cells[key];
+      if (cell) {
+        let hash = cell.hash;
         if (!hash || options.force) {
-          hash = util.cell.value.cellHash(key, value);
-          cells[key] = { ...value, hash };
+          hash = util.gridCellHash(this, key, cell);
+          cells[key] = { ...cell, hash };
           isChanged = true;
         }
       }

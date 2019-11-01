@@ -96,24 +96,25 @@ describe('Grid', () => {
   describe('updateHashes', () => {
     it('force: true', () => {
       let cells = { A1: { value: 123 }, A2: { value: 456 } } as any;
-      const grid = createGrid({ cells });
+      const grid = createGrid({ cells, ns: 'abc' });
       expect(grid.data.cells).to.eql(cells);
 
       grid.updateHashes({ force: true });
       cells = grid.data.cells;
-      expect(cells.A1.hash).to.eql(util.cell.value.cellHash('A1', { value: 123 }));
-      expect(cells.A2.hash).to.eql(util.cell.value.cellHash('A2', { value: 456 }));
+
+      expect(cells.A1.hash).to.eql(util.cell.value.cellHash('cell:abc!A1', { value: 123 }));
+      expect(cells.A2.hash).to.eql(util.cell.value.cellHash('cell:abc!A2', { value: 456 }));
     });
 
     it('force: false (default)', () => {
       let cells = { A1: { value: 123, hash: 'foo' }, A2: { value: 456 } } as any;
-      const grid = createGrid({ cells });
+      const grid = createGrid({ cells, ns: 'abc' });
       expect(grid.data.cells).to.eql(cells);
 
       grid.updateHashes();
       cells = grid.data.cells;
       expect(cells.A1.hash).to.eql('foo');
-      expect(cells.A2.hash).to.eql(util.cell.value.cellHash('A2', { value: 456 }));
+      expect(cells.A2.hash).to.eql(util.cell.value.cellHash('cell:abc!A2', { value: 456 }));
     });
   });
 
@@ -212,14 +213,14 @@ describe('Grid', () => {
     });
 
     it('assigns hash (to changed values)', () => {
-      const grid = createGrid({ cells: { A1: { value: 123 } } });
+      const grid = createGrid({ cells: { A1: { value: 123 } }, ns: 'abc' });
       expect(grid.data.cells).to.eql({ A1: { value: 123 } });
       grid.changeCells({ A2: { value: 'hello' } });
 
       const cells = grid.data.cells as any;
       expect(cells.A1).to.eql({ value: 123 });
       expect(cells.A2.value).to.eql('hello');
-      expect(cells.A2.hash).to.eql(util.cell.value.cellHash('A2', { value: 'hello' }));
+      expect(cells.A2.hash).to.eql(util.cell.value.cellHash('cell:abc!A2', { value: 'hello' }));
     });
 
     it('replaces values (init:true)', () => {
