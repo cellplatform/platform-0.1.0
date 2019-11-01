@@ -38,7 +38,6 @@ describe('func.table', () => {
         A2: { value: '=A1+1' },
         A3: { value: '=A2+1' },
       });
-
       const table = func.table({ ...ctx });
       const res = await table.calculate();
 
@@ -184,40 +183,88 @@ describe('func.table', () => {
       expect(util.value.cellPropValue(res2.map.A1)).to.eql(3);
     });
 
-    it('fails (with error)', async () => {
-      let count = 0;
-      const ctx = await testContext(
-        {
-          A1: { value: '123' },
-          A2: { value: '=A1+1' },
-          A3: { value: '=A2+1' },
-        },
-        {
-          getFunc: async args => {
-            count++;
-            return async args => {
-              if (count > 2) {
-                throw new Error('Fail');
-              }
-              return 888;
-            };
-          },
-        },
-      );
-      const table = func.table({ ...ctx });
-      const res = await table.calculate();
-      expect((res.map.A2 as any).error).to.eql(undefined);
-
-      const A3 = res.map.A3 as any;
-      const error: t.IFuncError = A3.error;
-      expect(error.type).to.eql('FUNC/invoke');
-      expect(error.message).to.eql('Fail');
-      expect(error.path).to.eql('A3');
-      expect(error.formula).to.eql('=A2+1');
-    });
-
     it.skip('calculates parallel paths at the same time', async () => {
       //
+    });
+
+    describe('error', () => {
+      it('error: getFunc throws', async () => {
+        let count = 0;
+        const ctx = await testContext(
+          {
+            A1: { value: '123' },
+            A2: { value: '=A1+1' },
+            A3: { value: '=A2+1' },
+          },
+          {
+            getFunc: async args => {
+              count++;
+              return async args => {
+                if (count > 2) {
+                  throw new Error('Fail');
+                }
+                return 888;
+              };
+            },
+          },
+        );
+        const table = func.table({ ...ctx });
+        const res = await table.calculate();
+        expect((res.map.A2 as any).error).to.eql(undefined);
+
+        const A3 = res.map.A3 as any;
+        const error: t.IFuncError = A3.error;
+        expect(error.type).to.eql('FUNC/invoke');
+        expect(error.message).to.eql('Fail');
+        expect(error.path).to.eql('A3');
+        expect(error.formula).to.eql('=A2+1');
+      });
+
+      it('error: circular ref (self: A1 => A1)', async () => {
+        let A1 = '123';
+        const ctx = await testContext({
+          A1: { value: () => A1 },
+        });
+
+        const table = func.table({ ...ctx });
+        const res1 = await table.calculate();
+        expect(res1.list).to.eql([]);
+
+        A1 = '=A1';
+        const res2 = await table.calculate({ cells: ['A1'] });
+
+        const error = res2.list[0].error as t.IFuncErrorCircularRef;
+        expect(error.type).to.eql('REF/circular');
+        expect(error.path).to.eql('A1/A1');
+        expect(error.formula).to.eql('=A1');
+      });
+
+      it('error: circular ref (A2 => [A1 => A1])', async () => {
+        let A2 = '123';
+        const ctx = await testContext({
+          A1: { value: '=A1' },
+          A2: { value: () => A2 },
+        });
+
+        const table = func.table({ ...ctx });
+        const res1 = await table.calculate();
+        expect((res1.list[0].error as t.IFuncErrorCircularRef).type).to.eql('REF/circular');
+
+        A2 = '=A1';
+
+        const res2 = await table.calculate();
+        expect(res2.list.length).to.eql(2);
+        expect((res2.list[0].error as t.IFuncErrorCircularRef).type).to.eql('REF/circular');
+        expect((res2.list[1].error as t.IFuncErrorCircularRef).type).to.eql('REF/circular');
+
+        const res3 = await table.calculate({ cells: 'A2' });
+        const list = res3.list;
+
+        expect(res3.ok).to.eql(false);
+        expect(list.length).to.eql(2);
+        expect(list.every(({ ok }) => ok === false)).to.eql(true);
+        expect(list.every(({ error }) => error && error.type === 'REF/circular')).to.eql(true);
+      });
     });
   });
 });

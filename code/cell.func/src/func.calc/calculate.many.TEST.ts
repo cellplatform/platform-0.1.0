@@ -3,10 +3,10 @@ import { many } from './calculate.many';
 
 export const testContext = async (
   cells: t.ICellTable,
-  options: { getFunc?: t.GetFunc; delay?: number } = {},
+  options: { getFunc?: t.GetFunc; delay?: number; refsRange?: string | string[] } = {},
 ) => {
   const { getValue, getFunc, refsTable } = await toContext(cells, options);
-  const refs = await refsTable.refs();
+  const refs = await refsTable.refs({ range: options.refsRange });
   return { refs, getValue, getFunc };
 };
 
@@ -103,17 +103,6 @@ describe('func.calc.cells (many)', function() {
      */
   });
 
-  it('error: circular-ref', async () => {
-    const ctx = await testContext({
-      A1: { value: '=SUM(A2:A10)' },
-      A2: { value: '=1+2' },
-      A3: { value: '=A1' },
-    });
-    const res = await many({ cells: ['A1'], ...ctx });
-    expect(res.ok).to.eql(false);
-    expect(res.elapsed).to.be.a('number');
-  });
-
   it('has consistent eid ("execution" identifier) across all child funcs', async () => {
     const ctx = await testContext({
       A1: { value: '=SUM(1,2)' },
@@ -144,5 +133,38 @@ describe('func.calc.cells (many)', function() {
 
     expect(events[events.length - 2].type).to.eql('FUNC/end');
     expect(events[events.length - 1].type).to.eql('FUNC/many/end');
+  });
+
+  describe('error', () => {
+    it('error: circular-ref (via FUNC => PARAM => RANGE)', async () => {
+      const ctx = await testContext({
+        A1: { value: '=SUM(A2:A10)' },
+        A2: { value: '=1+2' },
+        A3: { value: '=A1' },
+      });
+      const res = await many({ cells: ['A1'], ...ctx });
+      const list = res.list;
+
+      expect(res.ok).to.eql(false);
+      expect(list.every(({ ok }) => ok === false)).to.eql(true);
+      expect(list.every(({ error }) => error && error.type === 'REF/circular')).to.eql(true);
+    });
+
+    it('error: circular ref (A2 => [A1 => A1])', async () => {
+      const ctx = await testContext(
+        {
+          A1: { value: '=A1' },
+          A2: { value: '=A1' },
+        },
+        { refsRange: 'A2' }, // NB: Narrow the REFs recalculation to simulate the narrowest recalculation based on cell-input change.
+      );
+
+      const res = await many({ cells: ['A2'], ...ctx });
+      const list = res.list;
+
+      expect(res.ok).to.eql(false);
+      expect(list.every(({ ok }) => ok === false)).to.eql(true);
+      expect(list.every(({ error }) => error && error.type === 'REF/circular')).to.eql(true);
+    });
   });
 });

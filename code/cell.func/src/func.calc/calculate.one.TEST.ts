@@ -3,10 +3,10 @@ import { one } from './calculate.one';
 
 export const testContext = async (
   cells: t.ICellTable | (() => t.ICellTable),
-  options: { getFunc?: t.GetFunc; delay?: number } = {},
+  options: { getFunc?: t.GetFunc; delay?: number; refsRange?: string | string[] } = {},
 ) => {
   const { getValue, getFunc, refsTable } = await toContext(cells, options);
-  const refs = await refsTable.refs();
+  const refs = await refsTable.refs({ range: options.refsRange });
   return { getValue, getFunc, refs };
 };
 
@@ -22,10 +22,32 @@ describe('func.calc.cell (one)', function() {
       const error = res.error as t.IFuncError;
 
       expect(res.ok).to.eql(false);
+      expect(error.type).to.eql('FUNC/notFormula');
       expect(error.path).to.eql('A1');
       expect(error.formula).to.eql('123');
-      expect(error.type).to.eql('FUNC/notFormula');
       expect(error.message).to.include('cell A1 is not a formula');
+    });
+
+    it('error: circular ref', async () => {
+      const ctx = await testContext(
+        {
+          A1: { value: '=A1' },
+          A2: { value: '=A1' },
+        },
+        { refsRange: 'A2' }, // NB: Narrow the REFs recalculation to simulate the narrowest recalculation based on cell-input change.
+      );
+      const res = await one<number>({ cell: 'A2', ...ctx });
+      const error = res.error as t.IFuncError;
+
+      expect(res.ok).to.eql(false);
+      expect(error.type).to.eql('REF/circular');
+      expect(error.path).to.eql('A2/A1/A1');
+      expect(error.formula).to.eql('=A1');
+
+      expect(error.children && error.children.length).to.eql(1);
+      const child = (error.children || [])[0] as t.IRefErrorCircular;
+      expect(child.type).to.eql('REF/circular');
+      expect(child.path).to.eql('A2/A1/A1');
     });
   });
 
@@ -291,7 +313,7 @@ describe('func.calc.cell (one)', function() {
         expect(res.elapsed).to.be.a('number');
         expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql(expectPath);
-        expect(error.message).to.include(`leads back to itself (${expectPath})`);
+        expect(error.message).to.include(`circular reference (${expectPath})`);
       };
 
       await test('A1', 'A1/A1');
@@ -318,7 +340,7 @@ describe('func.calc.cell (one)', function() {
         const error = res.error as t.IFuncError;
         expect(error.path).to.eql(expectPath);
         expect(error.type).to.eql('REF/circular');
-        expect(error.message).to.include(`leads back to itself (${expectPath})`);
+        expect(error.message).to.include(`circular reference (${expectPath})`);
       };
 
       await test('A1', 'A1/A1:A5');

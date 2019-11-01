@@ -56,8 +56,9 @@ export function table(args: {
 
       // Invoke the functions.
       const res = await calc.many({ cells, refs, eid });
-      const map: t.ICellTable = {};
 
+      // Added calculated changes to result set.
+      const map: t.ICellTable = {};
       const addChange = async (args: {
         current?: t.ICellData;
         key: string;
@@ -69,12 +70,20 @@ export function table(args: {
         const currentProps = args.current ? args.current.props : undefined;
         const props = util.value.squashProps({ ...currentProps, value });
 
+        // Prepare the return cell.
         let cell: t.ICellData = args.current ? { ...args.current, props } : { props };
         cell = util.value.setError(cell, error);
         if (cell.props === undefined) {
           delete cell.props;
         }
 
+        // NB: If the cell value is a function, invoke it to convert it to a simple value.
+        //     This may be a function when:
+        //       - running in a unit-test, and values are being dynamically swapped to rest purposes.
+        //       - some future scenario where values are dynamically returned.
+        cell.value = typeof cell.value === 'function' ? await cell.value() : cell.value;
+
+        // Assign to map object.
         map[key] = cell;
       };
 

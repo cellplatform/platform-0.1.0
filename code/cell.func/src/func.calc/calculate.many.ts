@@ -47,7 +47,7 @@ export function many(args: {
     keys = util.sort({ refs, keys: R.uniq(keys) }).keys;
     const isKeyOfFormula = async (key: string) => util.isFormula(await getValue(key));
 
-    // Add the originally specified keys back in if they
+    // Add the originally specified keys back in if they:
     //    1) are formulas, and
     //    2) have been removed (above) because they have no refs (eg "=1+2").
     for (const key of cells) {
@@ -75,7 +75,7 @@ export function many(args: {
       elapsed,
       get map() {
         if (!map) {
-          map = list.reduce((acc, next) => {
+          map = list.reduce((acc, next, i) => {
             acc[next.cell] = next;
             return acc;
           }, {});
