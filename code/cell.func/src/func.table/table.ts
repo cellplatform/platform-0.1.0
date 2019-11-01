@@ -58,7 +58,7 @@ export function table(args: {
       const res = await calc.many({ cells, refs, eid });
 
       // Added calculated changes to result set.
-      const map: t.ICellTable = {};
+      const map: t.ICellMap = {};
       const addChange = async (args: {
         current?: t.ICellData;
         key: string;

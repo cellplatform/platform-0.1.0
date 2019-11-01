@@ -11,7 +11,7 @@ export { expect, t, coord };
 export { Observable, Subject } from 'rxjs';
 
 export const toContext = async (
-  cells: t.ICellTable | (() => t.ICellTable),
+  cells: t.ICellMap | (() => t.ICellMap),
   options: { getFunc?: t.GetFunc; delay?: number } = {},
 ) => {
   const getCells: t.GetCells = async () => (typeof cells === 'function' ? cells() : cells);

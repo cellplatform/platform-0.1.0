@@ -2,7 +2,7 @@ import { expect, toContext, t, util } from '../test';
 import { func } from '..';
 
 export const testContext = async (
-  cells: t.ICellTable | (() => t.ICellTable),
+  cells: t.ICellMap | (() => t.ICellMap),
   options: { getFunc?: t.GetFunc; delay?: number } = {},
 ) => {
   const { getValue, getFunc, getCells, refsTable } = await toContext(cells, options);
@@ -50,7 +50,7 @@ describe('func.table', () => {
     });
 
     it('calculates with delay', async () => {
-      const cells: t.ICellTable = {
+      const cells: t.ICellMap = {
         A1: { value: '123' },
         A2: { value: '=A1+1' },
         A3: { value: '=A2+1' },
@@ -104,12 +104,12 @@ describe('func.table', () => {
     });
 
     it('recalculate: REF removed (calculate all)', async () => {
-      const cells1: t.ICellTable = {
+      const cells1: t.ICellMap = {
         A1: { value: '=A2' },
         A2: { value: '=A3' },
         A3: { value: 123 },
       };
-      const cells2: t.ICellTable = {
+      const cells2: t.ICellMap = {
         A2: { value: '=A3' },
         A3: { value: 456 },
       };
@@ -130,14 +130,14 @@ describe('func.table', () => {
     });
 
     it('recalculate: REF removed (calculate subset)', async () => {
-      const cells1: t.ICellTable<any> = {
+      const cells1: t.ICellMap<any> = {
         A1: { value: '=A2' },
         A2: { value: '=A3' },
         A3: { value: 123 },
         A4: { value: '=A1', props: { style: { bold: true } } },
         Z9: { value: 'Z9' },
       };
-      const cells2: t.ICellTable<any> = {
+      const cells2: t.ICellMap<any> = {
         A2: { value: '=A3' },
         A3: { value: 456 },
         A4: { value: '=A1', props: { value: 123, style: { bold: true } } },
@@ -160,12 +160,12 @@ describe('func.table', () => {
     });
 
     it('recalculate: REF changed', async () => {
-      const cells1: t.ICellTable = {
+      const cells1: t.ICellMap = {
         A1: { value: '=SUM(A2, 1)' },
         A2: { value: '=A3' },
         A3: { value: 123 },
       };
-      const cells2: t.ICellTable = {
+      const cells2: t.ICellMap = {
         A1: { value: '=SUM(2, 1)' },
         A2: { value: '66' },
         A3: { value: 456 },

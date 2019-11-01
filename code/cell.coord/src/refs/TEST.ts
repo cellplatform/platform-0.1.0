@@ -5,7 +5,7 @@ import { t } from '../common';
  * Shared test helpers.
  */
 export { expect, t };
-export type TestTable = t.ITableMap<{ value: any }>;
+export type TestTable = t.IMap<{ value: any }>;
 
 export const testContext = (cells: TestTable) => {
   const getValue: t.RefGetValue = async (key: string) => {

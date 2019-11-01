@@ -54,7 +54,7 @@ export type IFuncTableResponse = {
   eid: string; // "execution" identifier.
   elapsed: number; // msecs.
   list: t.IFuncResponse[];
-  map: t.ICellTable;
+  map: t.ICellMap;
 };
 
 /**
