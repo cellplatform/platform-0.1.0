@@ -96,23 +96,31 @@ export class Uri {
    */
   public static generate = {
     ns(args: { ns?: string } = {}) {
-      const ns = args.ns || id.cuid();
+      const ns = trimInput('ns', args.ns || id.cuid());
       return `ns:${ns}`;
     },
     cell(args: { key: string; ns?: string }) {
-      const ns = args.ns || id.cuid();
+      const ns = trimInput('ns', args.ns || id.cuid());
       const key = args.key || id.shortid();
       return `cell:${ns}!${key}`;
     },
     row(args: { key: string; ns?: string }) {
-      const ns = args.ns || id.cuid();
+      const ns = trimInput('ns', args.ns || id.cuid());
       const key = args.key || id.shortid();
       return `row:${ns}!${key}`;
     },
     column(args: { key: string; ns?: string }) {
-      const ns = args.ns || id.cuid();
+      const ns = trimInput('ns', args.ns || id.cuid());
       const key = args.key || id.shortid();
       return `col:${ns}!${key}`;
     },
   };
+}
+
+/**
+ * [Helpers]
+ */
+function trimInput(prefix: string, input: string) {
+  const regex = new RegExp(`^${prefix}\:`);
+  return input.trim().replace(regex, '');
 }
