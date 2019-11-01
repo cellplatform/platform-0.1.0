@@ -4,7 +4,12 @@ const Uri = coord.Uri;
 
 export class Cell {
   public static factory: t.ModelFactory<t.IModelCell> = ({ path, db }) => {
-    const initial: t.IModelCellProps = { key: '' };
+    const initial: t.IModelCellProps = {
+      value: undefined,
+      props: undefined,
+      hash: undefined,
+      error: undefined,
+    };
     return Model.create<t.IModelCellProps>({ db, path, initial });
   };
 

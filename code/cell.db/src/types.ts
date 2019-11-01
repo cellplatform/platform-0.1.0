@@ -1,3 +1,4 @@
+import { t } from './common';
 import { IModel } from '@platform/fsdb.model/lib/types';
 
 /**
@@ -17,7 +18,11 @@ export type IModelNsChildren = {
  * Cell
  */
 export type IModelCell = IModel<IModelCellProps>;
-export type IModelCellProps = { key: string };
+
+export type IModelCellProps = t.ICellData<IModelCellDataProps> & {};
+export type IModelCellDataProps = t.ICellProps & { [key: string]: any };
+
+
 
 /**
  * Row

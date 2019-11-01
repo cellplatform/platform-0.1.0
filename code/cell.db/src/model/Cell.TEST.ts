@@ -8,9 +8,10 @@ describe('model.Cell', () => {
     const uri = 'cell:abcd!A1';
     const res1 = await Cell.create({ db, uri }).ready;
 
-    await res1.set({ key: 'A1' }).save();
+    const props = { style: { bold: true } };
+    await res1.set({ props }).save();
 
     const res2 = await Cell.create({ db, uri }).ready;
-    expect(res2.props.key).to.eql('A1');
+    expect(res2.props.props).to.eql({ style: { bold: true } });
   });
 });
