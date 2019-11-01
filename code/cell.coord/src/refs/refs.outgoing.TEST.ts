@@ -226,7 +226,7 @@ describe('refs.outgoing', () => {
         expect(res.length).to.eql(1);
         expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/B1:B9');
-        expect(error.message).to.include('Range contains a cell that leads back to itself');
+        expect(error.message).to.include('Range contains a circular reference');
       });
 
       it('error: param => RANGE => RANGE (indirect)', async () => {
@@ -241,7 +241,7 @@ describe('refs.outgoing', () => {
         expect(res.length).to.eql(1);
         expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/B1:B9');
-        expect(error.message).to.include('Range contains a cell that leads back to itself');
+        expect(error.message).to.include('Range contains a circular reference');
       });
 
       it('error: param => RANGE => expr => RANGE (indirect)', async () => {
@@ -256,7 +256,7 @@ describe('refs.outgoing', () => {
         expect(res.length).to.eql(1);
         expect(error.type).to.eql('REF/circular');
         expect(error.path).to.eql('A1/B1:B9');
-        expect(error.message).to.include('Range contains a cell that leads back to itself');
+        expect(error.message).to.include('Range contains a circular reference');
       });
 
       it('error: FUNC param => self (direct)', async () => {
@@ -696,9 +696,7 @@ describe('refs.outgoing', () => {
 
         const error = res[0].error as t.IRefError;
         expect(error.type).to.eql('REF/circular');
-        expect(error.message).to.include(
-          'Range contains a cell that leads back to itself (A1/A1:B9)',
-        );
+        expect(error.message).to.include('Range contains a circular reference (A1/A1:B9)');
       });
 
       it('error: indirect', async () => {
@@ -714,9 +712,7 @@ describe('refs.outgoing', () => {
 
         const error = res[0].error as t.IRefError;
         expect(error.type).to.eql('REF/circular');
-        expect(error.message).to.include(
-          'Range contains a cell that leads back to itself (A1/B2/A1:B9)',
-        );
+        expect(error.message).to.include('Range contains a circular reference (A1/B2/A1:B9)');
       });
     });
   });
