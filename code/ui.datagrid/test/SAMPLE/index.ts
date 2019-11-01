@@ -1,3 +1,3 @@
-export * from './SAMPLE';
+export * from './DATA';
 export * from './getFunc';
 export * from './util';

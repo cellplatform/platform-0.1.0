@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.0.16",
+  "version": "0.0.18",
   "description": "HTTP cloud server for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,8 +16,8 @@
     "deploy": "cd src.sample && yarn deploy"
   },
   "dependencies": {
-    "@platform/cell.db": "0.0.15",
-    "@platform/cell.types": "0.0.21",
+    "@platform/cell.db": "0.0.17",
+    "@platform/cell.types": "0.0.23",
     "@platform/libs": "0.1.3",
     "@platform/micro": "0.6.0"
   },

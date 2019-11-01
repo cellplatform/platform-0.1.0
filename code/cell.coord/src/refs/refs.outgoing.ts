@@ -107,7 +107,7 @@ async function outgoingCellRef(args: {
   if (isCircular) {
     const refError: t.IRefErrorCircular = {
       type: 'REF/circular',
-      message: `Cell reference leads back to itself (${path})`,
+      message: `The cell ${cell} contains a circular reference (${path}).`,
       path,
     };
     error = refError;
@@ -163,7 +163,7 @@ async function outgoingRange(args: {
   if (isCircular) {
     const refError: t.IRefErrorCircular = {
       type: 'REF/circular',
-      message: `Range contains a cell that leads back to itself (${path})`,
+      message: `Range contains a circular reference (${path})`,
       path,
     };
     error = refError;
@@ -242,7 +242,7 @@ async function outgoingFunc(args: {
   const setCircularError = (index: number, path: string) => {
     const refError: t.IRefErrorCircular = {
       type: 'REF/circular',
-      message: `Function parameter ${index} contains a reference that leads back to itself (${path})`,
+      message: `Function parameter ${index} contains a circular reference (${path})`,
       path,
     };
     error = refError;

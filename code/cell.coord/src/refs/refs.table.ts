@@ -110,7 +110,7 @@ class RefsTable implements t.IRefsTable {
     const { range, outRefs } = args;
     const getValue = this.getValue;
     const keys = await this.filterKeys({ range, outRefs });
-    return this.calc<t.IRefIn>({
+    return this.calculateRefs<t.IRefIn>({
       ...args,
       keys,
       cache: key => CACHE.key('IN', key),
@@ -129,7 +129,7 @@ class RefsTable implements t.IRefsTable {
     const getValue = this.getValue;
     const keys = await this.filterKeys({ range });
 
-    return this.calc<t.IRefOut>({
+    return this.calculateRefs<t.IRefOut>({
       ...args,
       keys,
       cache: key => CACHE.key('OUT', key),
@@ -255,7 +255,7 @@ class RefsTable implements t.IRefsTable {
     return value;
   };
 
-  private async calc<T>(args: {
+  private async calculateRefs<T>(args: {
     keys: string[];
     cache: (key: string) => string;
     find: (key: string) => Promise<T[]>;

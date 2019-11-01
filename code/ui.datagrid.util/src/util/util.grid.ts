@@ -22,3 +22,12 @@ export function isDefaultGridValue(args: {
       throw new Error(`Kind '${kind}' not supported.`);
   }
 }
+
+/**
+ * Generates a hash for the given cell.
+ */
+export function gridCellHash(grid: t.IGrid, key: string, data?: t.ICellData) {
+  const ns = grid.data.ns;
+  const uri = cell.coord.Uri.generate.cell({ ns, key });
+  return cell.value.cellHash(uri, data);
+}

@@ -52,10 +52,25 @@ export function isEmptyCellProps(props?: t.ICellProps) {
 /**
  * Produces a uniform hash (SHA-256) of the given cell's value/props.
  */
-export function cellHash(key: string, data?: t.ICellData): string {
+export function cellHash(uri: string, data?: t.ICellData): string {
+  if (!uri.startsWith('cell:')) {
+    throw new Error(`Hashing requires a valid cell URI. Given uri "${uri}".`);
+  }
+
   const value = data ? data.value : undefined;
   const props = squashProps(data ? data.props : undefined);
-  const sha256 = hash.sha256({ key, value, props });
+  const error = data ? data.error : undefined;
+  const obj: any = { uri };
+  if (value) {
+    obj.value = value;
+  }
+  if (props) {
+    obj.props = props;
+  }
+  if (error) {
+    obj.error = error;
+  }
+  const sha256 = hash.sha256(obj);
   return `sha256-${sha256}`;
 }
 

@@ -15,7 +15,7 @@ import {
   t,
   util,
 } from '../common';
-import { getFunc, SAMPLE } from '../data';
+import { getFunc, SAMPLE } from '../SAMPLE';
 import { TestGridView } from './Test.Grid.view';
 
 export type ITestGridProps = {

@@ -94,11 +94,10 @@ export class Grid implements t.IGrid {
 
   private _init(args: IGridArgs) {
     const defaults = (this._.defaults = Grid.defaults(args.defaults));
-    const ns = coord.Uri.parse<t.INsUri>(args.ns).data.id;
 
     this._.totalColumns = defaultValue(args.totalColumns, defaults.totalColumns);
     this._.totalRows = defaultValue(args.totalRows, defaults.totalRows);
-    this._.ns = ns || 'UNKNOWN';
+    this._.ns = (args.ns || 'UNKNOWN').replace(/^ns\:/, '');
     this._.cells = args.cells || {};
     this._.columns = args.columns || {};
     this._.rows = args.rows || {};
@@ -249,6 +248,7 @@ export class Grid implements t.IGrid {
     rows: ({} as unknown) as t.IGridData['rows'],
     lastSelection: (undefined as unknown) as t.IGridSelection,
     calc: (undefined as unknown) as t.IGridCalculate,
+    refs: (undefined as unknown) as t.IRefsTable,
   };
 
   public clipboard: t.IGridClipboardPending | undefined;
@@ -263,6 +263,15 @@ export class Grid implements t.IGrid {
     map(e => e.payload as t.IGridKeydown),
     share(),
   );
+
+  private getValueSync = (key: string) => {
+    const cell = this.data.cells[key];
+    return cell && typeof cell.value === 'string' ? cell.value : undefined;
+  };
+  public readonly refsTable = coord.refs.table({
+    getKeys: async () => Object.keys(this.data.cells),
+    getValue: async key => this.getValueSync(key),
+  });
 
   /**
    * [Properties]
@@ -306,14 +315,6 @@ export class Grid implements t.IGrid {
   public get data() {
     const { ns, cells, columns, rows } = this._;
     return { ns, cells, columns, rows };
-  }
-
-  public get columns() {
-    return this._.columns;
-  }
-
-  public get rows() {
-    return this._.rows;
   }
 
   private setCells(cells: t.IGridData['cells']) {
@@ -543,7 +544,7 @@ export class Grid implements t.IGrid {
         return undefined;
       }
       if (to) {
-        to = { ...to, hash: util.cell.value.cellHash(key, to) };
+        to = { ...to, hash: util.gridCellHash(this, key, to) };
         if (Cell.isEmptyProps(to.props)) {
           delete to.props; // Strip any empty props or props with default values.
         }
@@ -581,9 +582,6 @@ export class Grid implements t.IGrid {
       const changes = Object.keys(cells).map(key => {
         const cell = this.cell(key);
         const { from, to } = formatted[key];
-
-        // TEMP 🐷 TODO - change "cell" to a URI string (cell:...)
-
         return Cell.changeEvent({ cell, from, to });
       });
 
@@ -834,15 +832,17 @@ export class Grid implements t.IGrid {
    * Updates the cell hash for each value.
    */
   public updateHashes(options: { force?: boolean } = {}) {
-    const cells = { ...this.data.cells };
+    const data = this.data;
+    const cells = { ...data.cells };
+
     let isChanged = false;
     Object.keys(cells).forEach(key => {
-      const value = cells[key];
-      if (value) {
-        let hash = value.hash;
+      const cell = cells[key];
+      if (cell) {
+        let hash = cell.hash;
         if (!hash || options.force) {
-          hash = util.cell.value.cellHash(key, value);
-          cells[key] = { ...value, hash };
+          hash = util.gridCellHash(this, key, cell);
+          cells[key] = { ...cell, hash };
           isChanged = true;
         }
       }

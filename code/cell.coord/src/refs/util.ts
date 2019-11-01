@@ -1,6 +1,9 @@
 import { ast } from '../ast';
 import { R, t, toposort } from '../common';
 import { CellRange } from '../range/CellRange';
+import { getCircularErrors } from './util.error';
+
+export * from './util.error';
 
 /**
  * Removed `undefined` values of the given field from a list of items.
@@ -61,45 +64,6 @@ const partsToKeys = (parts: string[]) => {
   );
   return R.uniq(keys);
 };
-
-/**
- * Extract all errors from a set of references.
- */
-export function toErrors(refs: t.IRefs) {
-  return R.flatten(
-    Object.keys(refs.out)
-      .map(key => refs.out[key])
-      .map(refs => refs.map(ref => ref.error as t.IRefError)),
-  ).filter(err => err);
-}
-
-/**
- * Determine if a circular-error exists.
- */
-export function hasCircularError(refs: t.IRefs, key?: string) {
-  if (key) {
-    return Boolean(getCircularError(refs, key));
-  } else {
-    return toErrors(refs).some(err => isCircularError(err));
-  }
-}
-
-/**
- * Gets a circular error for the given key.
- */
-export function getCircularError(refs: t.IRefs, key: string): t.IRefErrorCircular | undefined {
-  const outRefs = refs.out[key];
-  return outRefs
-    ? (outRefs.map(ref => ref.error).find(err => isCircularError(err)) as t.IRefErrorCircular)
-    : undefined;
-}
-
-/**
- * Determine if the given error is a circular-reference error.
- */
-export function isCircularError(error?: t.IError) {
-  return error && error.type === 'REF/circular';
-}
 
 /**
  * Determine if the given cell value represents a formula.
@@ -186,12 +150,12 @@ export function sort(args: { refs: t.IRefs; keys?: string[] }) {
 
   const add = (to: string, from: string) => {
     // Check for error.
-    const error = getCircularError(args.refs, to);
-    if (error) {
-      errors.push(error);
-    }
+    const circular = getCircularErrors(args.refs, to);
+    circular.forEach(err => errors.push(err));
+    const hasError = circular.length > 0;
+
     // NB: Circular-ref will cause `toposort` to fail so don't include it.
-    graph.push([to, error ? '' : from]);
+    graph.push([to, hasError ? '' : from]);
   };
 
   // Build input list of [to:from] key pairs.

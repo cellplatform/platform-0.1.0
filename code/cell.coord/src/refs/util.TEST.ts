@@ -106,13 +106,10 @@ describe('refs.util', () => {
       const sorted = util.sort({ refs: await table.refs() });
 
       expect(sorted.ok).to.eql(false);
-      expect(sorted.errors.length).to.eql(3);
+      expect(sorted.errors.length).to.eql(4);
 
-      expect(sorted.errors.map(err => err.path).sort()).to.eql([
-        'A1/A2/A1',
-        'A2/A1/A2',
-        'C3/A2/A1/A2',
-      ]);
+      const errorPaths = sorted.errors.map(err => err.path).sort();
+      expect(errorPaths).to.eql(['A1/A2/A1', 'A1/C3/A2/A1', 'A2/A1/A2', 'C3/A2/A1/A2']);
       expect(sorted.keys).to.eql(['C3', 'A2', 'Z9', 'A1']);
     });
   });

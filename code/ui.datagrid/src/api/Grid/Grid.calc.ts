@@ -3,12 +3,10 @@ import { func, t } from '../../common';
 /**
  * API for calculating updates to grid references/functions.
  */
-export function calc(args: {
-  grid: t.IGrid;
-  getFunc?: t.GetFunc;
-  refsTable?: t.IRefsTable;
-}): t.IGridCalculate {
-  const { grid, getFunc, refsTable } = args;
+export function calc(args: { grid: t.IGrid; getFunc?: t.GetFunc }): t.IGridCalculate {
+  const { grid, getFunc } = args;
+  const refsTable = grid.refsTable;
+
   const getCells: t.GetCells = async () => grid.data.cells;
   const table = func.table({ getCells, getFunc, refsTable });
 

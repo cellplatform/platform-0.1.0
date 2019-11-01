@@ -10,5 +10,5 @@ export {
   isRef,
   isRange,
   toRefTarget,
-  getCircularError,
+  getCircularErrors,
 } from './util';

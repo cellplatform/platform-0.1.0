@@ -14,7 +14,7 @@ export function sizeHandlers(grid: Grid) {
         : Math.max(grid.defaults.columnWidthMin, width);
       grid
         .changeColumns(
-          { [key]: toColumn(grid.columns[key], { width }) },
+          { [key]: toColumn(grid.data.columns[key], { width }) },
           { source: isDoubleClick ? 'RESET/doubleClick' : 'UPDATE' },
         )
         .redraw();
@@ -33,7 +33,7 @@ export function sizeHandlers(grid: Grid) {
         : Math.max(grid.defaults.rowHeightMin, height);
       grid
         .changeRows(
-          { [key]: toRow(grid.rows[key], { height }) },
+          { [key]: toRow(grid.data.rows[key], { height }) },
           { source: isDoubleClick ? 'RESET/doubleClick' : 'UPDATE' },
         )
         .redraw();
@@ -47,7 +47,7 @@ export function sizeHandlers(grid: Grid) {
   function modifyColWidth(width: number, index: number) {
     if (grid.isInitialized) {
       const key = coord.cell.toKey(index, undefined);
-      const column = grid.columns[key];
+      const column = grid.data.columns[key];
       const props = column ? column.props : undefined;
       width = props && props.width !== undefined ? props.width : grid.defaults.columnWidth;
     }
@@ -60,7 +60,7 @@ export function sizeHandlers(grid: Grid) {
    */
   function modifyRowHeight(height: number, index: number) {
     const key = coord.cell.toKey(undefined, index);
-    const row = grid.rows[key];
+    const row = grid.data.rows[key];
     const props = row ? row.props : undefined;
     height = props && props.height !== undefined ? props.height : grid.defaults.rowHeight;
     return height;

@@ -17,16 +17,21 @@ export function one<D = any>(args: {
   const timer = time.timer();
   const { cell, refs, getValue, getFunc } = args;
   const eid = args.eid || util.eid();
-  const promise = new Promise<t.IFuncResponse<D>>(async (resolve, reject) => {
+
+  const fire = (e: t.IFuncBeginEvent | t.IFuncEndEvent) => {
+    if (args.events$) {
+      args.events$.next(e);
+    }
+  };
+
+  const promise = new Promise<t.IFuncResponse<D>>(async resolve => {
     const formula = (await getValue(cell)) || '';
 
     // Fire PRE event.
-    if (args.events$) {
-      args.events$.next({
-        type: 'FUNC/begin',
-        payload: { eid, cell, formula },
-      });
-    }
+    fire({
+      type: 'FUNC/begin',
+      payload: { eid, cell, formula },
+    });
 
     // Prepare formula.
     const isFormula = util.isFormula(formula);
@@ -37,8 +42,27 @@ export function one<D = any>(args: {
     const fail = (error: t.IFuncError) => {
       const elapsed = timer.elapsed.msec;
       const res: t.IFuncResponse<D> = { ok: false, eid, elapsed, type, cell, formula, error };
+      fire({ type: 'FUNC/end', payload });
       return resolve(res);
     };
+
+    // Ensure the node is not part of a circular-ref sequence.
+    if (type === 'REF' || type === 'FUNC') {
+      const errors = util.getCircularErrors(refs);
+      const isCircular = errors.some(err => err.path.split('/').includes(cell));
+      if (isCircular) {
+        const match = errors.find(err => err.path.startsWith(cell));
+        const circularPath = match ? match.path : path;
+        const error: t.IFuncErrorCircularRef = {
+          type: 'REF/circular',
+          message: `The cell ${cell} contains a circular reference (${circularPath}).`,
+          path: circularPath,
+          formula,
+          children: errors,
+        };
+        return fail(error);
+      }
+    }
 
     // Ensure the node is a function/expression.
     if (!node || !isFormula) {
@@ -88,12 +112,7 @@ export function one<D = any>(args: {
     payload = error ? { ...payload, error } : payload;
 
     // Finish up.
-    if (args.events$) {
-      args.events$.next({
-        type: 'FUNC/end',
-        payload,
-      });
-    }
+    fire({ type: 'FUNC/end', payload });
     resolve(payload);
   });
 

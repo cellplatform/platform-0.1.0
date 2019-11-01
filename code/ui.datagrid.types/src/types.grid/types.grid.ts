@@ -16,6 +16,7 @@ export type IGridProperties = {
   readonly keyboard$: Observable<t.IGridKeydown>;
   readonly keyBindings: KeyBindings<t.GridCommand>;
   readonly defaults: IGridDefaults;
+  readonly refsTable: t.IRefsTable;
   readonly calc: IGridCalculate;
   clipboard?: IGridClipboardPending;
 };

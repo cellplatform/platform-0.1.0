@@ -8,7 +8,7 @@ export const path = refs.path;
 export const isFormula = refs.isFormula;
 export const sort = refs.sort;
 export const toRefTarget = refs.toRefTarget;
-export const getCircularError = refs.getCircularError;
+export const getCircularErrors = refs.getCircularErrors;
 
 /**
  * Generate an `eid` (execution ID).
@@ -68,8 +68,8 @@ export const fromErrorObject = (
  * If a CIRCULAR reference error exists throw it.
  */
 export const throwIfCircular = (args: { cell: string; refs: t.IRefs }) => {
-  const err = getCircularError(args.refs, args.cell);
-  if (err) {
-    throw err;
+  const errors = getCircularErrors(args.refs, args.cell);
+  if (errors.length > 0) {
+    throw errors[0];
   }
 };

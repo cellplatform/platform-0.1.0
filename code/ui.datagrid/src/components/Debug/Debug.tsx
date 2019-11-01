@@ -38,17 +38,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   private state$ = new Subject<Partial<IDebugState>>();
   private unmounted$ = new Subject<{}>();
 
-  private getValue: t.RefGetValue = async key => this.getValueSync(key);
-  private getValueSync = (key: string) => {
-    const cell = this.grid.data.cells[key];
-    return cell && typeof cell.value === 'string' ? cell.value : undefined;
-  };
-
-  private refTable = coord.refs.table({
-    getKeys: async () => Object.keys(this.grid.data.cells),
-    getValue: this.getValue,
-  });
-
   /**
    * [Lifecycle]
    */
@@ -110,6 +99,11 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   /**
    * [Methods]
    */
+  public getValue: t.RefGetValue = async key => this.getValueSync(key);
+  private getValueSync = (key: string) => {
+    const cell = this.grid.data.cells[key];
+    return cell && typeof cell.value === 'string' ? cell.value : undefined;
+  };
 
   private async updateState(args: { force?: boolean } = {}) {
     const { force } = args;
@@ -151,8 +145,13 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   }
 
   public async updateRefs(args: { force?: boolean } = {}) {
+    const refsTable = this.grid.refsTable;
+    if (!refsTable) {
+      return;
+    }
+
     const { force } = args;
-    const refs = await this.refTable.refs({ force });
+    const refs = await refsTable.refs({ force });
 
     const pathToKeys = (path?: string) => (path || '').split('/').filter(part => part);
 
@@ -262,6 +261,12 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       </div>
     );
 
+    const refsKeys = {
+      in: this.state.incoming,
+      out: this.state.outgoing,
+      'topological order': this.state.order,
+    };
+
     return (
       <div {...styles.base}>
         {this.renderSelection()}
@@ -274,12 +279,8 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         <Hr />
         {this.renderObject({
           name: 'refs (keys)',
-          data: {
-            in: this.state.incoming,
-            out: this.state.outgoing,
-            'topological order': this.state.order,
-          },
-          // expandPaths: ['$', '$.in', '$.out'],
+          data: refsKeys,
+          expandPaths: ['$', '$.in', '$.out'],
         })}
         {elFormula}
         <Hr />
