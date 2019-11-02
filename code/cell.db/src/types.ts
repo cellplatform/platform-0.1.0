@@ -30,7 +30,9 @@ export type IDbModelCell<P extends object = any> = IModel<
 >;
 export type IDbModelCellProps<P extends object = any> = t.ICellData<IDbModelCellDataProps<P>>;
 export type IDbModelCellDataProps<P extends object = any> = t.ICellProps & P;
-export type IDbModelCellDoc<P extends object = any> = IDbModelCellProps<P> & { nsRefs?: string[] };
+export type IDbModelCellDoc<P extends object = any> = IDbModelCellProps<P> & {
+  linkRefs?: string[];
+};
 export type IDbModelCellLinks = { namespaces: IDbModelNs[] };
 export type IDbModelCellChilden = {};
 
