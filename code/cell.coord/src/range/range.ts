@@ -1,4 +1,4 @@
-export * from '@platform/cell.types/lib/types.range';
+export * from '@platform/cell.types/lib/types/types.range';
 
 import { CellRange } from './CellRange';
 import { CellRangeUnion } from './CellRangeUnion';
