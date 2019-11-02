@@ -134,8 +134,8 @@ export function cellDiff(left: t.ICellData, right: t.ICellData): t.ICellDiff {
 }
 
 /**
- * Assigns a property field to props, removing it from the object
- * if it is the default value.
+ * Assigns a property field to {props}, removing it from the object
+ * if it's the default value.
  */
 export function setCellProp<P extends t.ICellProps, K extends keyof P>(args: {
   props?: Partial<P>;
@@ -196,10 +196,24 @@ export function toggleCellProp<P extends t.ICellProps, K extends keyof P>(args: 
 }
 
 /**
- * Retrieves the property value from the given cell.
+ * Helpers for reading/writing to cell data.
  */
-export function cellPropValue(cell?: t.ICellData): t.CellValue {
-  return cell && cell.props ? cell.props.value : undefined;
+export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellData<P>) {
+  return {
+    /**
+     * Retrieves the property value from the given cell.
+     */
+    getValue() {
+      return cell && cell.props ? cell.props.value : undefined;
+    },
+
+    /**
+     * Assigns a new value to the cell (immutable).
+     */
+    setValue(value: t.CellValue): t.ICellData<P> {
+      return squash.cell({ ...(cell || {}), value });
+    },
+  };
 }
 
 /**
