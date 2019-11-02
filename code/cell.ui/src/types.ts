@@ -1,1 +1,1 @@
-export * from '@platform/cell.types/lib/types.context';
+export * from '@platform/cell.types/lib/types/types.context';
