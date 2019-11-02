@@ -15,6 +15,7 @@ export type ICellData<P extends ICellProps = ICellProps> = {
   props?: P;
   hash?: string;
   error?: t.IError;
+  links?: t.IUriMap;
 };
 
 export type ICellDiff<P extends ICellProps = ICellProps> = {
