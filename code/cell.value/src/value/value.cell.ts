@@ -198,7 +198,7 @@ export function toggleCellProp<P extends t.ICellProps, K extends keyof P>(args: 
 /**
  * Helpers for reading/writing to cell data.
  */
-export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellData<P>) {
+export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellData<Partial<P>>) {
   return {
     /**
      * Retrieves the property value from the given cell.
@@ -212,6 +212,19 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
      */
     setValue(value: t.CellValue): t.ICellData<P> {
       return squash.cell({ ...(cell || {}), value });
+    },
+
+    /**
+     * Assign a property to the cell.
+     */
+    setProp<K extends keyof P>(args: {
+      defaults: P[K];
+      section: K;
+      field: keyof P[K];
+      value?: P[K][keyof P[K]];
+    }) {
+      const props = setCellProp({ ...args, props: cell ? cell.props : undefined });
+      return squash.cell(cell ? { ...cell, props } : { props });
     },
   };
 }

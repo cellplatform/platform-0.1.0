@@ -3,9 +3,15 @@ import { t } from '../common';
 import { value } from '.';
 
 type P = t.ICellProps & {
-  style: { bold?: boolean; italic?: boolean };
+  style: { bold?: boolean; italic?: boolean; underline?: boolean };
   status: { error?: { message: string } };
   merge?: { colspan?: number; rowspan?: number };
+};
+
+const styleDefaults: P['style'] = {
+  bold: false,
+  italic: false,
+  underline: false,
 };
 
 describe('cell', () => {
@@ -201,12 +207,6 @@ describe('cell', () => {
   });
 
   describe('setCellProp', () => {
-    const styleDefaults = {
-      bold: false,
-      italic: false,
-      underline: false,
-    };
-
     it('no change', () => {
       const res1 = value.setCellProp<P, 'style'>({
         defaults: styleDefaults,
@@ -331,38 +331,75 @@ describe('cell', () => {
   });
 
   describe('cellData', () => {
-    describe('getValue / setValue', () => {
-      it('get', () => {
-        const test = (cell?: t.ICellData<any>, expected?: t.CellValue) => {
-          const res = value.cellData(cell).getValue();
-          expect(res).to.eql(expected);
-        };
-        test();
-        test(undefined, undefined);
-        test({}, undefined);
-        test({ value: 123 }, undefined);
-        test({ props: {} }, undefined);
-        test({ props: { style: { bold: true } } }, undefined);
-        test({ props: { value: undefined } }, undefined);
+    it('getValue', () => {
+      const test = (cell?: t.ICellData<any>, expected?: t.CellValue) => {
+        const res = value.cellData(cell).getValue();
+        expect(res).to.eql(expected);
+      };
+      test();
+      test(undefined, undefined);
+      test({}, undefined);
+      test({ value: 123 }, undefined);
+      test({ props: {} }, undefined);
+      test({ props: { style: { bold: true } } }, undefined);
+      test({ props: { value: undefined } }, undefined);
 
-        test({ props: { value: 123 } }, 123);
-        test({ props: { value: {} } }, {});
-        test({ props: { value: 'hello' } }, 'hello');
+      test({ props: { value: 123 } }, 123);
+      test({ props: { value: {} } }, {});
+      test({ props: { value: 'hello' } }, 'hello');
+    });
+
+    it('setValue', () => {
+      const test = (cell?: t.ICellData<any>, to?: t.CellValue) => {
+        const data = value.cellData(cell);
+        const res = data.setValue(to);
+        expect(res ? res.value : undefined).to.eql(to);
+        if (cell) {
+          expect(res).to.not.equal(cell); // NB: Different instance.
+        }
+      };
+      test();
+      test({}, 'hello');
+      test({ value: 123 }, { foo: 456 });
+    });
+
+    it('setProp', () => {
+      const res1 = value.cellData<P>().setProp<'style'>({
+        defaults: styleDefaults,
+        section: 'style',
+        field: 'bold',
+        value: true,
       });
 
-      it('set', () => {
-        const test = (cell?: t.ICellData<any>, to?: t.CellValue) => {
-          const data = value.cellData(cell);
-          const res = data.setValue(to);
-          expect(res ? res.value : undefined).to.eql(to);
-          if (cell) {
-            expect(res).to.not.equal(cell); // NB: Different instance.
-          }
-        };
-        test();
-        test({}, 'hello');
-        test({ value: 123 }, { foo: 456 });
+      const res2 = value
+        .cellData<P>({ value: '123', props: { style: { underline: true } } })
+        .setProp<'style'>({
+          defaults: styleDefaults,
+          section: 'style',
+          field: 'bold',
+          value: true,
+        });
+
+      const res3 = value.cellData<P>({ props: { style: { bold: true } } }).setProp<'style'>({
+        defaults: styleDefaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
       });
+
+      const res4 = value
+        .cellData<P>({ value: 123, props: { style: { bold: true } } })
+        .setProp<'style'>({
+          defaults: styleDefaults,
+          section: 'style',
+          field: 'bold',
+          value: false,
+        });
+
+      expect(res1).to.eql({ props: { style: { bold: true } } });
+      expect(res2).to.eql({ value: '123', props: { style: { underline: true, bold: true } } });
+      expect(res3).to.eql(undefined);
+      expect(res4).to.eql({ value: 123 });
     });
   });
 });
