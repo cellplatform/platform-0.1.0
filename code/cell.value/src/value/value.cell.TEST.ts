@@ -26,6 +26,7 @@ describe('cell', () => {
     test({ value: undefined, props: { status: {}, style: {}, view: {}, merge: {} } }, true);
     test({ props: { status: {}, style: {}, view: {}, merge: {} } }, true);
     test({ value: undefined, props: { value: undefined } }, true);
+    test({ links: {} }, true);
 
     test({ value: ' ' }, false);
     test({ value: ' ', hash }, false);
@@ -36,6 +37,7 @@ describe('cell', () => {
     test({ value: true }, false);
     test({ value: false }, false);
     test({ value: undefined, props: { value: 456 } }, false); // NB: has props, therefore not empty.
+    test({ links: { foo: 'ns:abc' } }, false);
   });
 
   it('isEmptyCellValue', () => {
@@ -73,17 +75,49 @@ describe('cell', () => {
     test({ status: { error: { message: 'Fail', type: 'UNKNOWN' } } }, false);
   });
 
-  it('squashProps', () => {
-    const test = (props?: Partial<P>, expected?: any) => {
-      const res = value.squashProps(props);
-      expect(res).to.eql(expected);
+  it('isEmptyCellLinks', () => {
+    const test = (input: {} | undefined, expected: boolean) => {
+      expect(value.isEmptyCellLinks(input)).to.eql(expected);
     };
-    test();
-    test({});
-    test({ style: {} });
-    test({ merge: {} });
-    test({ style: {}, merge: {} });
-    test({ style: { bold: true }, merge: {} }, { style: { bold: true } });
+    test(undefined, true);
+    test({}, true);
+    test({ foo: 'ns:abc' }, false);
+  });
+
+  describe('squash', () => {
+    it('squash.props', () => {
+      const test = (props?: Partial<P>, expected?: any) => {
+        const res = value.squash.props(props);
+        expect(res).to.eql(expected);
+      };
+      test();
+      test({});
+      test({ style: {} });
+      test({ merge: {} });
+      test({ style: {}, merge: {} });
+      test({ style: { bold: true }, merge: {} }, { style: { bold: true } });
+    });
+
+    it('squash.cell', () => {
+      const test = (cell?: t.ICellData, expected?: any, empty?: any) => {
+        const res = value.squash.cell(cell, { empty });
+        expect(res).to.eql(expected);
+      };
+      test();
+      test({});
+      test({ value: undefined });
+      test({ value: null }, { value: null });
+      test({ value: 123 }, { value: 123 });
+      test({ value: 123, links: {} }, { value: 123 });
+      test({ value: 0, links: {} }, { value: 0 });
+      test({ hash: 'cell:abc!A1' }, { hash: 'cell:abc!A1' });
+      test(
+        { value: undefined, error: { type: 'UNKNOWN', message: 'Fail' } },
+        { error: { type: 'UNKNOWN', message: 'Fail' } },
+      );
+
+      test({ value: undefined }, {}, {}); // NB: Squash to {} not undefined.
+    });
   });
 
   describe('cellHash', () => {
@@ -93,11 +127,15 @@ describe('cell', () => {
     });
 
     it('hashes a cell', () => {
-      // const lastChars = (length: number, text: string) => text.substr(text.length - length);
+      let index = -1;
       const test = (input: {} | undefined, expected: string) => {
         const hash = value.cellHash('cell:abcd!A1', input);
-        expect(hash.endsWith(expected)).to.eql(true);
-        // console.log(lastChars(20, hash));
+
+        index++;
+        const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
+
+        expect(hash.startsWith('sha256-')).to.eql(true);
+        expect(hash.endsWith(expected)).to.eql(true, err);
       };
 
       test(undefined, '74cbb77a4112ea85f3a3');
@@ -107,6 +145,7 @@ describe('cell', () => {
       test({ value: 'hello' }, 'b3813001a7b30883363c');
       test({ value: 'hello', props: {} }, 'b3813001a7b30883363c');
       test({ value: 'hello', props: { style: { bold: true } } }, 'fab8857189a788c7af8e');
+      test({ links: { main: 'ns:abc' } }, '921f26767a2d39629');
 
       const error: t.IRefErrorCircular = { type: 'REF/circular', path: 'A1/A1', message: 'Fail' };
       test({ value: 'hello', error }, '92a8675656f6818ec330');

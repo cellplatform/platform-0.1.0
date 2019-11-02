@@ -1,4 +1,4 @@
-import { t, hash, diff, R } from '../common';
+import { t, hash, diff, R, defaultValue } from '../common';
 
 export type CellChangeField = 'VALUE' | 'PROPS';
 
@@ -6,7 +6,9 @@ export type CellChangeField = 'VALUE' | 'PROPS';
  * Determine if the given cell is empty (no value, no props).
  */
 export function isEmptyCell(cell?: t.ICellData) {
-  return cell ? isEmptyCellValue(cell.value) && isEmptyCellProps(cell.props) : true;
+  return cell
+    ? isEmptyCellValue(cell.value) && isEmptyCellProps(cell.props) && isEmptyCellLinks(cell.links)
+    : true;
 }
 
 /**
@@ -17,7 +19,14 @@ export function isEmptyCellValue(value?: t.CellValue) {
 }
 
 /**
- * Determine if the given cell props is empty.
+ * Determine if the given cell's links are empty.
+ */
+export function isEmptyCellLinks(links?: t.ICellData['links']) {
+  return typeof links !== 'object' ? true : !squash.object(links);
+}
+
+/**
+ * Determine if the given cell's props are empty.
  */
 export function isEmptyCellProps(props?: t.ICellProps) {
   if (typeof props !== 'object') {
@@ -58,8 +67,10 @@ export function cellHash(uri: string, data?: t.ICellData): string {
   }
 
   const value = data ? data.value : undefined;
-  const props = squashProps(data ? data.props : undefined);
+  const props = squash.props(data ? data.props : undefined);
   const error = data ? data.error : undefined;
+  const links = data ? data.links : undefined;
+
   const obj: any = { uri };
   if (value) {
     obj.value = value;
@@ -70,26 +81,48 @@ export function cellHash(uri: string, data?: t.ICellData): string {
   if (error) {
     obj.error = error;
   }
+  if (links) {
+    obj.links = links;
+  }
+
   const sha256 = hash.sha256(obj);
   return `sha256-${sha256}`;
 }
 
 /**
- * Collapses empty props.
+ * Collapses empty values on data objects.
  */
-export function squashProps(props?: t.ICellProps) {
-  if (!props) {
-    return undefined;
-  } else {
-    const isNil = (value: any) =>
-      value === undefined || (typeof value === 'object' && Object.keys(value).length === 0);
-    const res = { ...props };
-    Object.keys(res)
-      .filter(key => isNil(res[key]))
-      .forEach(key => delete res[key]);
-    return isNil(res) ? undefined : res;
-  }
-}
+export const squash = {
+  props(props?: t.ICellProps) {
+    return squash.object(props);
+  },
+
+  cell(cell?: t.ICellData, options: { empty?: undefined | {} } = {}) {
+    const empty = defaultValue(options.empty, undefined);
+    if (!cell) {
+      return empty;
+    } else {
+      const res = { ...cell };
+      Object.keys(res)
+        .filter(key => isUndefinedOrEmptyObject(res[key]))
+        .forEach(key => delete res[key]);
+      return squash.object(res, options);
+    }
+  },
+
+  object(obj?: object, options: { empty?: undefined | {} } = {}) {
+    const empty = defaultValue(options.empty, undefined);
+    if (!obj) {
+      return empty;
+    } else {
+      const res = { ...obj };
+      Object.keys(res)
+        .filter(key => isUndefinedOrEmptyObject(res[key]))
+        .forEach(key => delete res[key]);
+      return isUndefinedOrEmptyObject(res) ? empty : res;
+    }
+  },
+};
 
 /**
  * Compare two cells.
@@ -168,3 +201,14 @@ export function toggleCellProp<P extends t.ICellProps, K extends keyof P>(args: 
 export function cellPropValue(cell?: t.ICellData): t.CellValue {
   return cell && cell.props ? cell.props.value : undefined;
 }
+
+/**
+ * [Helpers]
+ */
+const isUndefinedOrEmptyObject = (value: any) => {
+  if (value === null) {
+    return false;
+  } else {
+    return value === undefined || (typeof value === 'object' && Object.keys(value).length === 0);
+  }
+};
