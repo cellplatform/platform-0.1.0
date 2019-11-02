@@ -65,7 +65,7 @@ describe('schema', () => {
       const uri = 'ns:abc';
       const path = Schema.ns(uri).path;
 
-      const test = (input: string | t.IModelNs) => {
+      const test = (input: string | t.IDbModelNs) => {
         const res = Schema.from.ns(input);
         expect(res.uri).to.eql(uri);
         expect(res.toString()).to.eql(uri);
@@ -83,7 +83,7 @@ describe('schema', () => {
       const uri = 'cell:abc!A1';
       const path = Schema.ns(ns).cell('A1').path;
 
-      const test = (input: string | t.IModelCell) => {
+      const test = (input: string | t.IDbModelCell) => {
         const res = Schema.from.cell(input);
         expect(res.uri).to.eql(uri);
         expect(res.toString()).to.eql(uri);
@@ -101,7 +101,7 @@ describe('schema', () => {
       const uri = 'row:abc!1';
       const path = Schema.ns(ns).row('1').path;
 
-      const test = (input: string | t.IModelRow) => {
+      const test = (input: string | t.IDbModelRow) => {
         const res = Schema.from.row(input);
         expect(res.uri).to.eql(uri);
         expect(res.toString()).to.eql(uri);
@@ -119,7 +119,7 @@ describe('schema', () => {
       const uri = 'col:abc!A';
       const path = Schema.ns(ns).column('A').path;
 
-      const test = (input: string | t.IModelColumn) => {
+      const test = (input: string | t.IDbModelColumn) => {
         const res = Schema.from.column(input);
         expect(res.uri).to.eql(uri);
         expect(res.toString()).to.eql(uri);

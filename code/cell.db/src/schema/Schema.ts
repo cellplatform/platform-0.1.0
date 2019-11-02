@@ -22,14 +22,14 @@ export class Schema {
   };
 
   public static from = {
-    ns(input: string | t.IModelNs) {
+    ns(input: string | t.IDbModelNs) {
       return from<t.INsUri>({
         input,
         toUri: path => NsSchema.uri({ path }),
         toPath: uri => Schema.ns(uri).path,
       });
     },
-    cell(input: string | t.IModelCell) {
+    cell(input: string | t.IDbModelCell) {
       return from<t.ICellUri>({
         input,
         toUri: path => CoordSchema.uri({ path }),
@@ -39,7 +39,7 @@ export class Schema {
         },
       });
     },
-    row(input: string | t.IModelRow) {
+    row(input: string | t.IDbModelRow) {
       return from<t.IRowUri>({
         input,
         toUri: path => CoordSchema.uri({ path }),
@@ -49,7 +49,7 @@ export class Schema {
         },
       });
     },
-    column(input: string | t.IModelColumn) {
+    column(input: string | t.IDbModelColumn) {
       return from<t.IColumnUri>({
         input,
         toUri: path => CoordSchema.uri({ path }),

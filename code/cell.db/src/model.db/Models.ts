@@ -10,10 +10,10 @@ const Uri = coord.Uri;
  * Represents a logical collection of cells (aka a "sheet").
  */
 export class Ns {
-  public static factory: t.ModelFactory<t.IModelNs> = ({ db, path }) => {
+  public static factory: t.ModelFactory<t.IDbModelNs> = ({ db, path }) => {
     const query = Schema.query;
 
-    const children: t.IModelChildrenDefs<t.IModelNsChildren> = {
+    const children: t.IModelChildrenDefs<t.IDbModelNsChildren> = {
       cells: { query: query.cells, factory: Cell.factory },
       rows: { query: query.rows, factory: Row.factory },
       columns: { query: query.columns, factory: Column.factory },
@@ -21,9 +21,14 @@ export class Ns {
 
     const uri = Schema.from.ns(path);
     const id = uri.parts.id;
-    const initial: t.IModelNsProps = { id, props: { name: undefined } };
+    const initial: t.IDbModelNsProps = { id, props: { name: undefined } };
 
-    return Model.create<t.IModelNsProps, t.IModelNsDoc, t.IModelNsLinks, t.IModelNsChildren>({
+    return Model.create<
+      t.IDbModelNsProps,
+      t.IDbModelNsDoc,
+      t.IDbModelNsLinks,
+      t.IDbModelNsChildren
+    >({
       db,
       path,
       children,
@@ -43,15 +48,15 @@ export class Ns {
  * Represetns a single cell within a namespace.
  */
 export class Cell {
-  public static factory: t.ModelFactory<t.IModelCell> = ({ path, db }) => {
-    const initial: t.IModelCellProps = {
+  public static factory: t.ModelFactory<t.IDbModelCell> = ({ path, db }) => {
+    const initial: t.IDbModelCellProps = {
       value: undefined,
       props: undefined,
       hash: undefined,
       error: undefined,
     };
 
-    const links: t.IModelLinkDefs<t.IModelCellLinks> = {
+    const links: t.IModelLinkDefs<t.IDbModelCellLinks> = {
       namespaces: {
         relationship: '1:*',
         field: 'nsRefs',
@@ -59,14 +64,17 @@ export class Cell {
       },
     };
 
-    return Model.create<t.IModelCellProps, t.IModelCellDoc, t.IModelCellLinks, t.IModelCellChilden>(
-      {
-        db,
-        path,
-        initial,
-        links,
-      },
-    );
+    return Model.create<
+      t.IDbModelCellProps,
+      t.IDbModelCellDoc,
+      t.IDbModelCellLinks,
+      t.IDbModelCellChilden
+    >({
+      db,
+      path,
+      initial,
+      links,
+    });
   };
 
   public static create(args: { db: t.IDb; uri: string }) {
