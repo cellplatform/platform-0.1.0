@@ -1,9 +1,6 @@
 import { t, Model, coord } from '../common';
 import { Schema } from '../schema';
 
-// import { Row } from './Row';
-// import { Column } from './Column';
-
 const Uri = coord.Uri;
 
 /**
