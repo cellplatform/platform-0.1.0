@@ -92,21 +92,17 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const value = this.getValueSync(key) || '';
     const cell = this.grid.data.cells[key];
     const isEmpty = !Boolean(value);
-    const isFormula = func.isFormula(value);
 
     // Display string.
     const MAX = 30;
     let display = value.length > MAX ? `${value.substring(0, MAX)}...` : value;
     display = isEmpty ? '<empty>' : display;
 
-    // Formula.
-    const ast = isFormula ? coord.ast.toTree(value) : undefined;
-
     // Finish up.
-    return { key, value, cell, display, isEmpty, isFormula, ast };
+    return { key, value, cell, display, isEmpty };
   }
 
-  public get lastSelection() {
+  public get lastSelection(): t.IGridSelection {
     return this.state.lastSelection || { ranges: [] };
   }
 
@@ -267,18 +263,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       base: css({ padding: 12, marginBottom: 50 }),
     };
 
-    const selection = this.selectedCell;
-    const elFormula = selection.ast && (
-      <div>
-        <Hr />
-        {this.renderObject({
-          name: 'formula (AST)',
-          data: selection.ast,
-          expandLevel: 3,
-        })}
-      </div>
-    );
-
     const refsKeys = {
       in: this.state.incoming,
       out: this.state.outgoing,
@@ -305,7 +289,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
           data: refsKeys,
           // expandPaths: ['$', '$.in', '$.out'],
         })}
-        {elFormula}
         <Hr />
         <DebugProps />
       </div>
@@ -371,23 +354,31 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const last = this.lastSelection;
     const current = this.grid.selection;
     const isCurrent = last.cell === current.cell;
-    const title = `selected cell ${!isCurrent ? '(last)' : ''}`;
+    const title = `cell ${!isCurrent ? '(last)' : ''}`;
 
     const key = last.cell || current.cell || '';
     const cell = this.grid.data.cells[key] || undefined;
-
     if (cell) {
       cell.hash = this.formatHash(cell.hash);
     }
 
-    const styles = {
-      base: css({}),
-    };
+    const value = this.getValueSync(key) || '';
+    const isFormula = func.isFormula(value);
+    const ast = isFormula ? coord.ast.toTree(value) : undefined;
+
+    let data: any = key ? { 't.ICellData': cell } : {};
+    data = ast ? { ...data, ast } : data;
+
+    const styles = { base: css({}) };
 
     return (
       <div {...styles.base}>
         <Label>{title}</Label>
-        {this.renderObject({ name: 'cell', data: cell })}
+        {this.renderObject({
+          name: key || 'none',
+          data,
+          // expandPaths: ['$', '$."t.ICellData"'],
+        })}
       </div>
     );
   }
