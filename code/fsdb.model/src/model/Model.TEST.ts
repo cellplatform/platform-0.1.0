@@ -3,7 +3,7 @@ import { Model } from '.';
 import { expect, getTestDb, t, time } from '../test';
 
 type IMyThingProps = { count: number };
-type IMyOrgProps = { id: string; name: string };
+type IMyOrgProps = { id: string; name: string; region?: string };
 
 type IMyThing = t.IModel<IMyThingProps>;
 type IMyOrgChildren = { things: IMyThing[]; subthings: IMyThing[]; all: IMyThing[] };
@@ -17,7 +17,7 @@ describe('model', () => {
   const org = {
     path: 'ORG/123',
     doc: { id: '123', name: 'MyOrg' },
-    initial: { id: '', name: '' },
+    initial: { id: '', name: '', region: undefined },
   };
 
   const thingFactory: t.ModelFactory<IMyThing> = ({ path, db }) =>
@@ -177,7 +177,7 @@ describe('model', () => {
       expect(model.doc).to.eql(org.doc);
       expect(model.props.id).to.eql(org.doc.id); // Strongly typed.
       expect(model.props.name).to.eql(org.doc.name); // Strongly typed.
-      expect(model.toObject()).to.eql(org.doc);
+      expect(model.toObject()).to.eql({ id: '123', name: 'MyOrg', region: undefined });
     });
 
     it('default loading on creation', async () => {
@@ -335,6 +335,18 @@ describe('model', () => {
       expect(model.changes.map).to.eql({ name: 'Foo' });
 
       expect(model.doc).to.eql(org.doc); // No change to underlying doc.
+    });
+
+    it('changes property that is underfined on {initial} object', async () => {
+      const model = await (await createOrg({ put: true })).ready;
+      model.props.region = 'US/west'; // NB: Defined within {initial} configuration.
+      model.props.name = 'Acme';
+
+      expect(model.changes.length).to.eql(2);
+
+      const fields = model.changes.list.map(c => c.field);
+      expect(fields).to.include('name');
+      expect(fields).to.include('region');
     });
 
     it('set (via method)', async () => {
@@ -510,7 +522,7 @@ describe('model', () => {
       const res2 = await model.save();
       expect(res2.saved).to.eql(true);
 
-      expect(model.doc).to.eql({ id: '123', name: 'Hello' });
+      expect(model.doc).to.eql({ id: '123', name: 'Hello', region: undefined });
       expect(model.props.id).to.eql('123');
       expect(model.props.name).to.eql('Hello');
 

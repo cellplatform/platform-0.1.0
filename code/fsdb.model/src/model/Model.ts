@@ -319,7 +319,11 @@ export class Model<
 
     // Finish up.
     const typename = this.typename;
-    this.fire({ type: 'MODEL/saved', typename, payload: { model: this, changes } });
+    this.fire({
+      type: 'MODEL/saved',
+      typename,
+      payload: { model: this, changes },
+    });
     return { saved: true };
   }
 
