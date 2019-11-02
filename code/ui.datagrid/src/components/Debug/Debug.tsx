@@ -81,6 +81,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   public get selectedCell() {
     const key = this.grid.selection.cell || '';
     const value = this.getValueSync(key) || '';
+    const cell = this.grid.data.cells[key];
     const isEmpty = !Boolean(value);
     const isFormula = func.isFormula(value);
 
@@ -93,7 +94,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const ast = isFormula ? coord.ast.toTree(value) : undefined;
 
     // Finish up.
-    return { key, value, display, isEmpty, isFormula, ast };
+    return { key, value, cell, display, isEmpty, isFormula, ast };
   }
 
   /**
@@ -255,13 +256,13 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       }),
     };
 
-    const selectedCell = this.selectedCell;
-    const elFormula = selectedCell.ast && (
+    const selection = this.selectedCell;
+    const elFormula = selection.ast && (
       <div>
         <Hr />
         {this.renderObject({
           name: 'formula (AST)',
-          data: selectedCell.ast,
+          data: selection.ast,
           expandLevel: 3,
         })}
       </div>
@@ -289,7 +290,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         {this.renderObject({
           name: 'refs (keys)',
           data: refsKeys,
-          expandPaths: ['$', '$.in', '$.out'],
+          // expandPaths: ['$', '$.in', '$.out'],
         })}
         {elFormula}
         <Hr />
@@ -314,14 +315,18 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
   private renderSelection() {
     const selection = this.selectedCell;
+    const cell = selection.cell;
     const styles = {
       base: css({
         fontSize: 12,
         color: COLORS.WHITE,
         fontFamily: constants.MONOSPACE.FAMILY,
-        minHeight: 15,
-        Flex: 'center-start',
       }),
+      compact: css({
+        Flex: 'center-start',
+        minHeight: 15,
+      }),
+
       noSelection: css({
         opacity: 0.3,
       }),
@@ -347,8 +352,11 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
     return (
       <div {...styles.base}>
-        {elNoSelection}
-        {elSelection}
+        <div {...styles.compact}>
+          {elNoSelection}
+          {elSelection}
+        </div>
+        {/* <ObjectView data={cell} theme={this.theme} /> */}
       </div>
     );
   }
