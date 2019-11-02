@@ -1,8 +1,8 @@
 import { t, Model, coord } from '../common';
 import { Schema } from '../schema';
 
-import { Row } from './Row';
-import { Column } from './Column';
+// import { Row } from './Row';
+// import { Column } from './Column';
 
 const Uri = coord.Uri;
 
@@ -45,7 +45,7 @@ export class Ns {
 }
 
 /**
- * Represetns a single cell within a namespace.
+ * Represetns a single [cell] within a namespace.
  */
 export class Cell {
   public static factory: t.ModelFactory<t.IDbModelCell> = ({ path, db }) => {
@@ -86,5 +86,47 @@ export class Cell {
     const ns = Schema.ns(uri.parts.ns);
     const path = ns.cell(uri.parts.key).path;
     return Cell.factory({ db, path });
+  }
+}
+
+/**
+ * Represetns a single [row] within a namespace.
+ */
+export class Row {
+  public static factory: t.ModelFactory<t.IDbModelRow> = ({ path, db }) => {
+    const initial: t.IDbModelRowProps = { key: '' };
+    return Model.create<t.IDbModelRowProps>({ db, path, initial });
+  };
+
+  public static create(args: { db: t.IDb; uri: string }) {
+    const { db } = args;
+    const uri = Uri.parse<t.IRowUri>(args.uri);
+    if (uri.error) {
+      throw new Error(uri.error.message);
+    }
+    const ns = Schema.ns(uri.parts.ns);
+    const path = ns.row(uri.parts.key).path;
+    return Row.factory({ db, path });
+  }
+}
+
+/**
+ * Represetns a single [column] within a namespace.
+ */
+export class Column {
+  public static factory: t.ModelFactory<t.IDbModelColumn> = ({ path, db }) => {
+    const initial: t.IDbModelColumnProps = { key: '' };
+    return Model.create<t.IDbModelColumnProps>({ db, path, initial });
+  };
+
+  public static create(args: { db: t.IDb; uri: string }) {
+    const { db } = args;
+    const uri = Uri.parse<t.IColumnUri>(args.uri);
+    if (uri.error) {
+      throw new Error(uri.error.message);
+    }
+    const ns = Schema.ns(uri.parts.ns);
+    const path = ns.column(uri.parts.key).path;
+    return Column.factory({ db, path });
   }
 }
