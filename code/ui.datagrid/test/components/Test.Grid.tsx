@@ -221,7 +221,6 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     if (cellKey) {
       const cell = this.grid.data.cells[cellKey];
       const res = util.cell.value.cellData(cell).setLink(key, uri);
-      console.log('res', res);
       this.grid.changeCells({ [cellKey]: res });
     }
   };

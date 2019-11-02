@@ -50,6 +50,7 @@ export class Cell {
       props: undefined,
       hash: undefined,
       error: undefined,
+      links: undefined,
     };
 
     const links: t.IModelLinkDefs<t.IDbModelCellLinks> = {

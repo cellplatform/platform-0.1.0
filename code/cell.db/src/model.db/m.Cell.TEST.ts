@@ -2,19 +2,33 @@ import { Cell, Ns } from '.';
 import { expect, getTestDb } from '../test';
 
 describe('model.Cell', () => {
-  it('create', async () => {
+  it('saves', async () => {
     const db = await getTestDb({});
     const uri = 'cell:abcd!A1';
-    const res1 = await Cell.create({ db, uri }).ready;
 
+    const res1 = await Cell.create({ db, uri }).ready;
+    expect(res1.props.value).to.eql(undefined);
+    expect(res1.props.props).to.eql(undefined);
+    expect(res1.props.links).to.eql(undefined);
+    expect(res1.props.error).to.eql(undefined);
+    expect(res1.props.hash).to.eql(undefined);
+
+    const hash = 'sha256-abc123';
+    const value = '=A2';
+    const error = { type: 'FAIL', message: 'Boo' };
+    const links = { main: 'ns:foo' };
     const props = { style: { bold: true } };
-    await res1.set({ props }).save();
+    await res1.set({ value, props, links, error, hash }).save();
 
     const res2 = await Cell.create({ db, uri }).ready;
-    expect(res2.props.props).to.eql({ style: { bold: true } });
+    expect(res2.props.value).to.eql(value);
+    expect(res2.props.props).to.eql(props);
+    expect(res2.props.links).to.eql(links);
+    expect(res2.props.error).to.eql(error);
+    expect(res2.props.hash).to.eql(hash);
   });
 
-  describe('namespaces (links)', () => {
+  describe.skip('namespaces (links)', () => {
     it('add', async () => {
       const db = await getTestDb({});
       // const uri = 'cell:abcd!A1';
