@@ -226,6 +226,16 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
       const props = setCellProp({ ...args, props: cell ? cell.props : undefined });
       return squash.cell(cell ? { ...cell, props } : { props });
     },
+
+    /**
+     * Assign a link URI to the cell.
+     */
+    setLink(key: string, uri?: string) {
+      uri = (uri || '').trim();
+      uri = !uri ? undefined : uri;
+      const links = squash.object({ ...((cell || {}).links || {}), [key]: uri });
+      return squash.cell(cell ? { ...cell, links } : { links });
+    },
   };
 }
 

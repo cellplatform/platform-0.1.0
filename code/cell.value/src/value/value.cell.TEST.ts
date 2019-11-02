@@ -401,5 +401,32 @@ describe('cell', () => {
       expect(res3).to.eql(undefined);
       expect(res4).to.eql({ value: 123 });
     });
+
+    it('setLink', () => {
+      const test = (
+        cell: t.ICellData<any> | undefined,
+        key: string,
+        uri?: string,
+        expected?: any,
+      ) => {
+        const data = value.cellData(cell);
+        const res = data.setLink(key, uri);
+        expect(res).to.eql(expected);
+      };
+      test(undefined, 'foo', undefined, undefined);
+      test({}, 'foo', 'ns:abc', { links: { foo: 'ns:abc' } });
+
+      test({ links: {} }, 'foo', 'ns:abc', { links: { foo: 'ns:abc' } });
+      test({ links: {} }, 'foo', '  ns:abc    ', { links: { foo: 'ns:abc' } });
+      test({ links: { foo: 'ns:abc', bar: 'ns:yo' } }, 'foo', 'ns:def', {
+        links: { foo: 'ns:def', bar: 'ns:yo' },
+      });
+
+      // Remove.
+      test({ links: { foo: 'ns:abc' } }, 'foo', undefined, undefined);
+      test({ links: { foo: 'ns:abc' } }, 'foo', '', undefined);
+      test({ links: { foo: 'ns:abc' } }, 'foo', '  ', undefined);
+      test({ value: 123, links: { foo: 'ns:abc' } }, 'foo', undefined, { value: 123 });
+    });
   });
 });
