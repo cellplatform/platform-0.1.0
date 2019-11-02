@@ -14,7 +14,7 @@ describe('model.Cell', () => {
     expect(res2.props.props).to.eql({ style: { bold: true } });
   });
 
-  describe.only('namespaces (links)', () => {
+  describe('namespaces (links)', () => {
     it('add', async () => {
       const db = await getTestDb({});
       // const uri = 'cell:abcd!A1';

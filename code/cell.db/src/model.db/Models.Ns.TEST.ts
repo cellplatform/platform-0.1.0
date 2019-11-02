@@ -20,7 +20,7 @@ describe('model.Ns (Namespace)', () => {
       .save();
 
     const ns = model.Ns.create({ db, uri: uri.ns });
-    expect(ns.props.name).to.eql(undefined);
+    expect((ns.props.props || {}).name).to.eql(undefined);
 
     const cells = (await ns.children.cells).map(c => c.toObject());
     expect(cells.length).to.eql(2);

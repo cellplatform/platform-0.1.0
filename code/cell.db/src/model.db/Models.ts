@@ -19,7 +19,9 @@ export class Ns {
       columns: { query: query.columns, factory: Column.factory },
     };
 
-    const initial: t.IModelNsProps = { name: undefined };
+    const uri = Schema.from.ns(path);
+    const id = uri.parts.id;
+    const initial: t.IModelNsProps = { id, props: { name: undefined } };
 
     return Model.create<t.IModelNsProps, t.IModelNsDoc, t.IModelNsLinks, t.IModelNsChildren>({
       db,
@@ -73,8 +75,8 @@ export class Cell {
     if (uri.error) {
       throw new Error(uri.error.message);
     }
-    const ns = Schema.ns(uri.data.ns);
-    const path = ns.cell(uri.data.key).path;
+    const ns = Schema.ns(uri.parts.ns);
+    const path = ns.cell(uri.parts.key).path;
     return Cell.factory({ db, path });
   }
 }

@@ -1,4 +1,4 @@
-import { expect, getTestDb } from '../test';
+import { expect, t, getTestDb } from '../test';
 import { Schema } from '.';
 import { model } from '..';
 
@@ -21,7 +21,7 @@ describe('schema', () => {
       expect(ns.path).to.eql('NS/abc');
     });
 
-    it('from URI', () => {
+    it('from uri', () => {
       const ns = Schema.ns('ns:abc');
       expect(ns.id).to.eql('abc');
       expect(ns.path).to.eql('NS/abc');
@@ -59,33 +59,76 @@ describe('schema', () => {
     });
   });
 
-  describe('URI from model', () => {
-    it('from ns', async () => {
+  describe('Schema.from', () => {
+    it('ns', async () => {
       const db = await getTestDb({});
-      const uri = 'ns:1234';
-      const ns = await model.Ns.create({ db, uri }).ready;
-      expect(Schema.uri.fromNs(ns)).to.eql(uri);
+      const uri = 'ns:abc';
+      const path = Schema.ns(uri).path;
+
+      const test = (input: string | t.IModelNs) => {
+        const res = Schema.from.ns(input);
+        expect(res.uri).to.eql(uri);
+        expect(res.toString()).to.eql(uri);
+        expect(res.parts.id).to.eql('abc');
+        expect(res.path).to.eql(path);
+      };
+      test(path);
+      test(uri);
+      test(await model.Ns.create({ db, uri }).ready);
     });
 
-    it('from cell', async () => {
+    it('cell', async () => {
       const db = await getTestDb({});
-      const uri = 'cell:abcd!A1';
-      const cell = await model.Cell.create({ db, uri }).ready;
-      expect(Schema.uri.fromCell(cell)).to.eql(uri);
+      const ns = 'ns:abc';
+      const uri = 'cell:abc!A1';
+      const path = Schema.ns(ns).cell('A1').path;
+
+      const test = (input: string | t.IModelCell) => {
+        const res = Schema.from.cell(input);
+        expect(res.uri).to.eql(uri);
+        expect(res.toString()).to.eql(uri);
+        expect(res.parts.id).to.eql('abc!A1');
+        expect(res.path).to.eql(path);
+      };
+      test(path);
+      test(uri);
+      test(await model.Cell.create({ db, uri }).ready);
     });
 
-    it('from row', async () => {
+    it('row', async () => {
       const db = await getTestDb({});
-      const uri = 'row:abcd!1';
-      const row = await model.Row.create({ db, uri }).ready;
-      expect(Schema.uri.fromRow(row)).to.eql(uri);
+      const ns = 'ns:abc';
+      const uri = 'row:abc!1';
+      const path = Schema.ns(ns).row('1').path;
+
+      const test = (input: string | t.IModelRow) => {
+        const res = Schema.from.row(input);
+        expect(res.uri).to.eql(uri);
+        expect(res.toString()).to.eql(uri);
+        expect(res.parts.id).to.eql('abc!1');
+        expect(res.path).to.eql(path);
+      };
+      test(path);
+      test(uri);
+      test(await model.Row.create({ db, uri }).ready);
     });
 
-    it('from column', async () => {
+    it('column', async () => {
       const db = await getTestDb({});
-      const uri = 'col:abcd!A';
-      const column = await model.Column.create({ db, uri }).ready;
-      expect(Schema.uri.fromColumn(column)).to.eql(uri);
+      const ns = 'ns:abc';
+      const uri = 'col:abc!A';
+      const path = Schema.ns(ns).column('A').path;
+
+      const test = (input: string | t.IModelColumn) => {
+        const res = Schema.from.column(input);
+        expect(res.uri).to.eql(uri);
+        expect(res.toString()).to.eql(uri);
+        expect(res.parts.id).to.eql('abc!A');
+        expect(res.path).to.eql(path);
+      };
+      test(path);
+      test(uri);
+      test(await model.Column.create({ db, uri }).ready);
     });
   });
 });

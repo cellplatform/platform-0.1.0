@@ -14,8 +14,8 @@ export class Column {
     if (uri.error) {
       throw new Error(uri.error.message);
     }
-    const ns = Schema.ns(uri.data.ns);
-    const path = ns.column(uri.data.key).path;
+    const ns = Schema.ns(uri.parts.ns);
+    const path = ns.column(uri.parts.key).path;
     return Column.factory({ db, path });
   }
 }

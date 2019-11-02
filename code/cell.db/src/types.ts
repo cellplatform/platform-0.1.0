@@ -5,7 +5,7 @@ import { IModel } from '@platform/fsdb.model/lib/types';
  * Namespace.
  */
 export type IModelNs = IModel<IModelNsProps, IModelNsDoc, IModelNsLinks, IModelNsChildren>;
-export type IModelNsProps = { name?: string };
+export type IModelNsProps = t.INs & {};
 export type IModelNsDoc = IModelNsProps & {};
 export type IModelNsLinks = {};
 export type IModelNsChildren = { cells: IModelCell[]; columns: IModelColumn[]; rows: IModelRow[] };
