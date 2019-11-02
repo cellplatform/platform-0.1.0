@@ -87,6 +87,10 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     return this.props.theme || 'DARK';
   }
 
+  public get lastSelection(): t.IGridSelection {
+    return this.state.lastSelection || { ranges: [] };
+  }
+
   public get selectedCell() {
     const key = this.grid.selection.cell || '';
     const value = this.getValueSync(key) || '';
@@ -100,10 +104,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
     // Finish up.
     return { key, value, cell, display, isEmpty };
-  }
-
-  public get lastSelection(): t.IGridSelection {
-    return this.state.lastSelection || { ranges: [] };
   }
 
   /**
@@ -449,10 +449,8 @@ const Label = (props: { children?: React.ReactNode; tooltip?: string; style?: Gl
       fontFamily: constants.MONOSPACE.FAMILY,
     }),
   };
-
   return (
     <div {...css(styles.base, props.style)} title={props.tooltip}>
-      {' '}
       {props.children}
     </div>
   );

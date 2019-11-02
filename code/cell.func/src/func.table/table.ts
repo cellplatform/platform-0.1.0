@@ -68,7 +68,7 @@ export function table(args: {
         const { key, error } = args;
         const value = util.value.isEmptyCellValue(args.value) ? undefined : args.value;
         const currentProps = args.current ? args.current.props : undefined;
-        const props = util.value.squashProps({ ...currentProps, value });
+        const props = util.value.squash.props({ ...currentProps, value });
 
         // Prepare the return cell.
         let cell: t.ICellData = args.current ? { ...args.current, props } : { props };

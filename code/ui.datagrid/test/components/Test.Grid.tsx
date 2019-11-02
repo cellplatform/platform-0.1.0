@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';
 
 import {
+  constants,
   Button,
   color,
   COLORS,
@@ -22,7 +23,10 @@ export type ITestGridProps = {
   editorType: t.TestEditorType;
   style?: GlamorValue;
 };
-export type ITestGridState = { data?: any };
+export type ITestGridState = {
+  data?: any;
+  lastSelection?: t.IGridSelection;
+};
 
 export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState> {
   public state: ITestGridState = {};
@@ -65,6 +69,18 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
      * Grid events.
      */
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/selection'),
+        map(e => e.payload as t.IGridSelectionChange),
+      )
+      .subscribe(e => {
+        if (e.to.cell || !this.state.lastSelection) {
+          this.state$.next({ lastSelection: e.to });
+        }
+      });
+
     events$
       .pipe(
         filter(() => true),
@@ -170,6 +186,9 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   /**
    * [Properties]
    */
+  public get lastSelection(): t.IGridSelection {
+    return this.state.lastSelection || { ranges: [] };
+  }
 
   /**
    * [Methods]
@@ -196,6 +215,16 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       this.grid.command<t.IGridOverlayHideCommand>({ command: 'OVERLAY/hide', props: {} });
     }
   }
+
+  private setLink = (key: string, uri?: string, cellKey?: string) => {
+    cellKey = cellKey || this.lastSelection.cell || '';
+    if (cellKey) {
+      const cell = this.grid.data.cells[cellKey];
+      const res = util.cell.value.cellData(cell).setLink(key, uri);
+      console.log('res', res);
+      this.grid.changeCells({ [cellKey]: res });
+    }
+  };
 
   /**
    * [Render]
@@ -311,32 +340,11 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           });
         })}
 
-        {/* <Hr margin={5} />
-            {this.button(
-              'changeBorders - B2:D4 (red)',
-              () => (this.grid.borders = [{ range: 'B2:D4', style: { width: 2, color: 'red' } }]),
-            )}
-            {this.button(
-              'changeBorders - B2:D4 (orange)',
-              () =>
-                (this.grid.borders = [{ range: 'B2:D4', style: { width: 2, color: 'orange' } }]),
-            )}
-            {this.button(
-              'changeBorders (different edges)',
-              () =>
-                (this.grid.borders = [
-                  {
-                    range: 'C8:E12',
-                    style: {
-                      top: { width: 2, color: 'red' },
-                      right: { width: 2, color: 'blue' },
-                      bottom: { width: 2, color: 'orange' },
-                      left: { width: 2, color: 'green' },
-                    },
-                  },
-                ]),
-            )}
-            {this.button('changeBorders (clear)', () => (this.grid.borders = []))} */}
+        <Hr margin={5} />
+        <Label>links</Label>
+        {this.button('main:"ns:abc"', () => this.setLink('main', 'ns:abc'))}
+        {this.button('main:"ns:def"', () => this.setLink('main', 'ns:def'))}
+        {this.button('main: undefined', () => this.setLink('main', undefined))}
       </div>
     );
   }
@@ -392,3 +400,23 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     return <Button label={label} onClick={handler} block={true} />;
   };
 }
+
+/**
+ * [Helpers]
+ */
+
+const Label = (props: { children?: React.ReactNode; tooltip?: string; style?: GlamorValue }) => {
+  const styles = {
+    base: css({
+      fontSize: 12,
+      opacity: 0.4,
+      marginBottom: 2,
+      fontFamily: constants.MONOSPACE.FAMILY,
+    }),
+  };
+  return (
+    <div {...css(styles.base, props.style)} title={props.tooltip}>
+      {props.children}
+    </div>
+  );
+};
