@@ -357,23 +357,37 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const title = `cell ${!isCurrent ? '(last)' : ''}`;
 
     const key = last.cell || current.cell || '';
-    const cell = this.grid.data.cells[key] || undefined;
+    const cell = { ...this.grid.data.cells[key] } || undefined;
+    const hash = cell ? cell.hash : undefined;
     if (cell) {
-      cell.hash = this.formatHash(cell.hash);
+      delete cell.hash;
     }
 
     const value = this.getValueSync(key) || '';
     const isFormula = func.isFormula(value);
     const ast = isFormula ? coord.ast.toTree(value) : undefined;
 
+    const styles = {
+      base: css({}),
+      title: css({ Flex: 'horizontal-center-spaceBetween' }),
+      hash: css({}),
+    };
+
     let data: any = key ? { 't.ICellData': cell } : {};
     data = ast ? { ...data, ast } : data;
 
-    const styles = { base: css({}) };
+    const elHash = hash && (
+      <Label tooltip={hash} style={styles.hash}>
+        {this.formatHash(hash)}
+      </Label>
+    );
 
     return (
       <div {...styles.base}>
-        <Label>{title}</Label>
+        <div {...styles.title}>
+          <Label>{title}</Label>
+          {elHash}
+        </div>
         {this.renderObject({
           name: key || 'none',
           data,
@@ -418,7 +432,7 @@ const LinkButton = (props: IButtonProps) => {
   return <Button {...props} style={styles.base} />;
 };
 
-const Label = (props: { children?: React.ReactNode; style?: GlamorValue }) => {
+const Label = (props: { children?: React.ReactNode; tooltip?: string; style?: GlamorValue }) => {
   const styles = {
     base: css({
       fontSize: 12,
@@ -428,5 +442,10 @@ const Label = (props: { children?: React.ReactNode; style?: GlamorValue }) => {
     }),
   };
 
-  return <div {...css(styles.base, props.style)}>{props.children}</div>;
+  return (
+    <div {...css(styles.base, props.style)} title={props.tooltip}>
+      {' '}
+      {props.children}
+    </div>
+  );
 };
