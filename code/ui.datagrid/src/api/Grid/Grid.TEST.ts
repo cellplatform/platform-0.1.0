@@ -53,7 +53,7 @@ describe('Grid', () => {
     expect(grid.isEditing).to.eql(false);
     expect(grid.totalColumns).to.eql(10);
     expect(grid.totalRows).to.eql(5);
-    expect(grid.data.ns).to.eql('foo'); // NB: the "ns:" uri prefix is stripped.
+    expect(grid.data.ns.id).to.eql('foo'); // NB: the "ns:" uri prefix is stripped.
     expect(grid.data.cells).to.eql(cells);
     expect(grid.data.columns).to.eql(columns);
     expect(grid.data.rows).to.eql(rows);
@@ -61,7 +61,7 @@ describe('Grid', () => {
 
   it('constructs (without namespace)', () => {
     const grid = Grid.create({ totalColumns: 3, totalRows: 5 });
-    expect(grid.data.ns).to.eql('UNKNOWN');
+    expect(grid.data.ns.id).to.eql('UNKNOWN');
   });
 
   it('constructs without table (isInitialized: false)', () => {

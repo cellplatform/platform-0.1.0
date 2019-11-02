@@ -1,32 +1,47 @@
+import { t } from './common';
 import { IModel } from '@platform/fsdb.model/lib/types';
 
 /**
  * Namespace.
  */
-export type IModelNs = IModel<IModelNsProps, IModelNsDoc, IModelNsLinks, IModelNsChildren>;
-export type IModelNsProps = { name?: string };
-export type IModelNsDoc = IModelNsProps & {};
-export type IModelNsLinks = {};
-export type IModelNsChildren = {
-  cells: IModelCell[];
-  rows: IModelRow[];
-  columns: IModelColumn[];
+export type IDbModelNs = IModel<
+  IDbModelNsProps,
+  IDbModelNsDoc,
+  IDbModelNsLinks,
+  IDbModelNsChildren
+>;
+export type IDbModelNsProps = t.INs & {};
+export type IDbModelNsDoc = IDbModelNsProps & {};
+export type IDbModelNsLinks = {};
+export type IDbModelNsChildren = {
+  cells: IDbModelCell[];
+  columns: IDbModelColumn[];
+  rows: IDbModelRow[];
 };
 
 /**
  * Cell
  */
-export type IModelCell = IModel<IModelCellProps>;
-export type IModelCellProps = { key: string };
+export type IDbModelCell = IModel<
+  IDbModelCellProps,
+  IDbModelCellDoc,
+  IDbModelCellLinks,
+  IDbModelCellChilden
+>;
+export type IDbModelCellProps = t.ICellData<IDbModelCellDataProps> & {};
+export type IDbModelCellDataProps = t.ICellProps & { [key: string]: any };
+export type IDbModelCellDoc = IDbModelCellProps & { nsRefs?: string[] };
+export type IDbModelCellLinks = { namespaces: IDbModelNs[] };
+export type IDbModelCellChilden = {};
 
 /**
  * Row
  */
-export type IModelRow = IModel<IModelRowProps>;
-export type IModelRowProps = { key: string };
+export type IDbModelRow = IModel<IDbModelRowProps>;
+export type IDbModelRowProps = { key: string }; // TEMP 🐷
 
 /**
  * Column
  */
-export type IModelColumn = IModel<IModelColumnProps>;
-export type IModelColumnProps = { key: string };
+export type IDbModelColumn = IModel<IDbModelColumnProps>;
+export type IDbModelColumnProps = { key: string }; // TEMP 🐷

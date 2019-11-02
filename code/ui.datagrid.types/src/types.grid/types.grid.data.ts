@@ -1,6 +1,6 @@
 import { t } from '../common';
 
-export type IGridData = t.ITableData<t.IGridCellData, t.IGridColumnData, t.IGridRowData>;
+export type IGridData = t.INsData<t.IGridCellData, t.IGridColumnData, t.IGridRowData>;
 
 /**
  * Cell

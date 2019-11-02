@@ -1,9 +1,25 @@
+import { t } from './common';
+
+/**
+ * URI Parts (parsed).
+ */
+export type IUriParts<P extends t.IUri = t.IUri> = {
+  ok: boolean;
+  uri: string;
+  parts: P;
+  error?: t.IUriError;
+  toString(): string;
+};
+
 /**
  * URI
  */
 export type UriType = IUri['type'];
 export type IUri = INsUri | ICoordUri | IUnknownUri;
 
+/**
+ * Types
+ */
 export type IUnknownUri = { type: 'UNKNOWN' };
 export type INsUri = { type: 'ns'; id: string };
 

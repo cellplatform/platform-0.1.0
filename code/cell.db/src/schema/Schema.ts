@@ -4,6 +4,11 @@ const { Uri } = coord;
 
 export type SchemaCoordType = 'CELL' | 'COL' | 'ROW';
 
+export type SchemaType<T extends t.IUri> = t.IUriParts<T> & { path: string };
+
+export type PathString = string;
+export type UriString = string;
+
 /**
  * Schema of DB paths.
  */
@@ -16,11 +21,44 @@ export class Schema {
     columns: '/COL/*',
   };
 
-  public static uri = {
-    fromNs: (ns: t.IModelNs) => NsSchema.uri({ path: ns.path }),
-    fromCell: (cell: t.IModelCell) => CoordSchema.uri({ path: cell.path }),
-    fromRow: (row: t.IModelRow) => CoordSchema.uri({ path: row.path }),
-    fromColumn: (column: t.IModelColumn) => CoordSchema.uri({ path: column.path }),
+  public static from = {
+    ns(input: string | t.IDbModelNs) {
+      return from<t.INsUri>({
+        input,
+        toUri: path => NsSchema.uri({ path }),
+        toPath: uri => Schema.ns(uri).path,
+      });
+    },
+    cell(input: string | t.IDbModelCell) {
+      return from<t.ICellUri>({
+        input,
+        toUri: path => CoordSchema.uri({ path }),
+        toPath: uri => {
+          const { parts } = Uri.parse<t.ICellUri>(uri);
+          return Schema.ns(parts.ns).cell(parts.key).path;
+        },
+      });
+    },
+    row(input: string | t.IDbModelRow) {
+      return from<t.IRowUri>({
+        input,
+        toUri: path => CoordSchema.uri({ path }),
+        toPath: uri => {
+          const { parts } = Uri.parse<t.IRowUri>(uri);
+          return Schema.ns(parts.ns).row(parts.key).path;
+        },
+      });
+    },
+    column(input: string | t.IDbModelColumn) {
+      return from<t.IColumnUri>({
+        input,
+        toUri: path => CoordSchema.uri({ path }),
+        toPath: uri => {
+          const { parts } = Uri.parse<t.IColumnUri>(uri);
+          return Schema.ns(parts.ns).column(parts.key).path;
+        },
+      });
+    },
   };
 }
 
@@ -40,10 +78,10 @@ export class NsSchema {
       if (uri.error) {
         throw new Error(uri.error.message);
       }
-      if (uri.data.type !== 'ns') {
-        throw new Error(`The given URI does not represent a namespace ("${uri.text}").`);
+      if (uri.parts.type !== 'ns') {
+        throw new Error(`The given URI does not represent a namespace ("${uri.toString()}").`);
       }
-      id = uri.data.id;
+      id = uri.parts.id;
     }
 
     this.id = id;
@@ -54,20 +92,17 @@ export class NsSchema {
   /**
    * [Methods]
    */
-  public cell(key?: string) {
-    key = key || generate.shortid();
+  public cell(key: string) {
     const uri = Uri.generate.cell({ ns: this.id, key });
     return new CoordSchema({ type: 'CELL', ns: this, id: key, uri });
   }
 
-  public column(key?: string) {
-    key = key || generate.shortid();
+  public column(key: string) {
     const uri = Uri.generate.column({ ns: this.id, key });
     return new CoordSchema({ type: 'COL', ns: this, id: key, uri });
   }
 
-  public row(key?: string) {
-    key = key || generate.shortid();
+  public row(key: string) {
     const uri = Uri.generate.row({ ns: this.id, key });
     return new CoordSchema({ type: 'ROW', ns: this, id: key, uri });
   }
@@ -122,3 +157,40 @@ export class CoordSchema {
     throw new Error(`Model path could not be converted to URI ("${args.path}")`);
   }
 }
+
+/**
+ * [Helpers]
+ */
+
+const from = <T extends t.IUri>(args: {
+  input: PathString | UriString | { path: string };
+  toUri: (path: string) => string;
+  toPath: (uri: string) => string;
+}): SchemaType<T> => {
+  let path = '';
+  let uri = '';
+
+  if (typeof args.input === 'object') {
+    path = args.input.path;
+    uri = args.toUri(path);
+  } else {
+    if (Uri.is.uri(args.input)) {
+      uri = args.input;
+      path = args.toPath(uri);
+    } else {
+      path = args.input;
+      uri = args.toUri(path);
+    }
+  }
+
+  if (!path) {
+    throw new Error(`Model schema [path] could not be derived.`);
+  }
+
+  if (!uri) {
+    throw new Error(`Model [uri] could not be derived.`);
+  }
+
+  const parts = Uri.parse<T>(uri);
+  return { ...parts, path };
+};

@@ -85,38 +85,46 @@ describe('Uri', () => {
       const res = Uri.parse<t.INsUri>('ns:abcd');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
-      expect(res.data.type).to.eql('ns');
-      expect(res.data.id).to.eql('abcd');
+      expect(res.parts.type).to.eql('ns');
+      expect(res.parts.id).to.eql('abcd');
+      expect(res.uri).to.eql('ns:abcd');
+      expect(res.toString()).to.eql(res.uri);
     });
 
     it('cell', () => {
       const res = Uri.parse<t.ICellUri>('cell:abc!A1');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
-      expect(res.data.type).to.eql('cell');
-      expect(res.data.id).to.eql('abc!A1');
-      expect(res.data.ns).to.eql('abc');
-      expect(res.data.key).to.eql('A1');
+      expect(res.parts.type).to.eql('cell');
+      expect(res.parts.id).to.eql('abc!A1');
+      expect(res.parts.ns).to.eql('abc');
+      expect(res.parts.key).to.eql('A1');
+      expect(res.uri).to.eql('cell:abc!A1');
+      expect(res.toString()).to.eql(res.uri);
     });
 
     it('row', () => {
       const res = Uri.parse<t.IRowUri>('row:abc!1');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
-      expect(res.data.type).to.eql('row');
-      expect(res.data.id).to.eql('abc!1');
-      expect(res.data.ns).to.eql('abc');
-      expect(res.data.key).to.eql('1');
+      expect(res.parts.type).to.eql('row');
+      expect(res.parts.id).to.eql('abc!1');
+      expect(res.parts.ns).to.eql('abc');
+      expect(res.parts.key).to.eql('1');
+      expect(res.uri).to.eql('row:abc!1');
+      expect(res.toString()).to.eql(res.uri);
     });
 
     it('col', () => {
       const res = Uri.parse<t.IColumnUri>('col:abc!A');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
-      expect(res.data.type).to.eql('col');
-      expect(res.data.id).to.eql('abc!A');
-      expect(res.data.ns).to.eql('abc');
-      expect(res.data.key).to.eql('A');
+      expect(res.parts.type).to.eql('col');
+      expect(res.parts.id).to.eql('abc!A');
+      expect(res.parts.ns).to.eql('abc');
+      expect(res.parts.key).to.eql('A');
+      expect(res.uri).to.eql('col:abc!A');
+      expect(res.toString()).to.eql(res.uri);
     });
 
     describe('error', () => {
@@ -124,8 +132,8 @@ describe('Uri', () => {
         const test = (input: string | undefined) => {
           const res = Uri.parse(input);
           expect(res.ok).to.eql(false);
-          expect(res.data.type).to.eql('UNKNOWN');
-          expect(res.text).to.eql((input || '').trim());
+          expect(res.parts.type).to.eql('UNKNOWN');
+          expect(res.uri).to.eql((input || '').trim());
           expect(res.error && res.error.message).to.contain('URI not specified');
         };
         test(undefined);
@@ -165,8 +173,8 @@ describe('Uri', () => {
           const res = Uri.parse<t.ICellUri>(input);
           expect(res.ok).to.eql(false);
           expect(res.error && res.error.message).to.contain(`URI does not contain a "!" character`);
-          expect(res.data.key).to.eql('');
-          expect(res.data.ns).to.eql('');
+          expect(res.parts.key).to.eql('');
+          expect(res.parts.ns).to.eql('');
         };
         test('cell:abcd', 'cell');
         test('row:abcd', 'row');
@@ -179,77 +187,95 @@ describe('Uri', () => {
     it('ns', () => {
       const res1 = Uri.generate.ns();
       const res2 = Uri.generate.ns({ ns: 'abcd' });
+      const res3 = Uri.generate.ns({ ns: '  ns:abcd  ' });
 
       const uri1 = Uri.parse<t.INsUri>(res1);
       const uri2 = Uri.parse<t.INsUri>(res2);
+      const uri3 = Uri.parse<t.INsUri>(res3);
 
-      expect(uri1.data.type).to.eql('ns');
-      expect(uri2.data.type).to.eql('ns');
+      expect(uri1.parts.type).to.eql('ns');
+      expect(uri2.parts.type).to.eql('ns');
 
-      expect(uri1.data.id.startsWith('c')).to.eql(true);
-      expect(uri1.data.id.length).to.greaterThan(20);
+      expect(uri1.parts.id.startsWith('c')).to.eql(true);
+      expect(uri1.parts.id.length).to.greaterThan(20);
 
-      expect(uri2.data.id).to.eql('abcd');
+      expect(uri2.parts.id).to.eql('abcd');
+      expect(uri3.parts.id).to.eql('abcd');
     });
 
     it('cell', () => {
       const res1 = Uri.generate.cell({ key: 'A1' });
       const res2 = Uri.generate.cell({ ns: 'abcd', key: 'A1' });
+      const res3 = Uri.generate.cell({ ns: '  ns:abcd   ', key: 'A1' });
 
       expect(res2).to.eql('cell:abcd!A1');
 
       const uri1 = Uri.parse<t.ICellUri>(res1);
       const uri2 = Uri.parse<t.ICellUri>(res2);
+      const uri3 = Uri.parse<t.ICellUri>(res3);
 
-      expect(uri1.data.type).to.eql('cell');
-      expect(uri2.data.type).to.eql('cell');
+      expect(uri1.parts.type).to.eql('cell');
+      expect(uri2.parts.type).to.eql('cell');
 
-      expect(uri1.data.ns.startsWith('c')).to.eql(true);
-      expect(uri1.data.ns.length).to.greaterThan(20);
-      expect(uri1.data.key).to.eql('A1');
+      expect(uri1.parts.ns.startsWith('c')).to.eql(true);
+      expect(uri1.parts.ns.length).to.greaterThan(20);
+      expect(uri1.parts.key).to.eql('A1');
 
-      expect(uri2.data.ns).to.eql('abcd');
-      expect(uri2.data.key).to.eql('A1');
+      expect(uri2.parts.ns).to.eql('abcd');
+      expect(uri2.parts.key).to.eql('A1');
+
+      expect(uri3.parts.ns).to.eql('abcd');
+      expect(uri3.parts.key).to.eql('A1');
     });
 
     it('row', () => {
       const res1 = Uri.generate.row({ key: '1' });
       const res2 = Uri.generate.row({ ns: 'abcd', key: '1' });
+      const res3 = Uri.generate.row({ ns: '  ns:abcd  ', key: '1' });
 
       expect(res2).to.eql('row:abcd!1');
 
       const uri1 = Uri.parse<t.IRowUri>(res1);
       const uri2 = Uri.parse<t.IRowUri>(res2);
+      const uri3 = Uri.parse<t.IRowUri>(res3);
 
-      expect(uri1.data.type).to.eql('row');
-      expect(uri2.data.type).to.eql('row');
+      expect(uri1.parts.type).to.eql('row');
+      expect(uri2.parts.type).to.eql('row');
 
-      expect(uri1.data.ns.startsWith('c')).to.eql(true);
-      expect(uri1.data.ns.length).to.greaterThan(20);
-      expect(uri1.data.key).to.eql('1');
+      expect(uri1.parts.ns.startsWith('c')).to.eql(true);
+      expect(uri1.parts.ns.length).to.greaterThan(20);
+      expect(uri1.parts.key).to.eql('1');
 
-      expect(uri2.data.ns).to.eql('abcd');
-      expect(uri2.data.key).to.eql('1');
+      expect(uri2.parts.ns).to.eql('abcd');
+      expect(uri2.parts.key).to.eql('1');
+
+      expect(uri3.parts.ns).to.eql('abcd');
+      expect(uri3.parts.key).to.eql('1');
     });
 
     it('column', () => {
       const res1 = Uri.generate.column({ key: 'A' });
       const res2 = Uri.generate.column({ ns: 'abcd', key: 'A' });
+      const res3 = Uri.generate.column({ ns: '  ns:abcd  ', key: 'A' });
 
       expect(res2).to.eql('col:abcd!A');
 
       const uri1 = Uri.parse<t.IColumnUri>(res1);
       const uri2 = Uri.parse<t.IColumnUri>(res2);
+      const uri3 = Uri.parse<t.IColumnUri>(res3);
 
-      expect(uri1.data.type).to.eql('col');
-      expect(uri2.data.type).to.eql('col');
+      expect(uri1.parts.type).to.eql('col');
+      expect(uri2.parts.type).to.eql('col');
 
-      expect(uri1.data.ns.startsWith('c')).to.eql(true);
-      expect(uri1.data.ns.length).to.greaterThan(20);
-      expect(uri1.data.key).to.eql('A');
+      expect(uri1.parts.ns.startsWith('c')).to.eql(true);
+      expect(uri1.parts.ns.length).to.greaterThan(20);
+      expect(uri1.parts.key).to.eql('A');
 
-      expect(uri2.data.ns).to.eql('abcd');
-      expect(uri2.data.key).to.eql('A');
+      expect(uri2.parts.ns).to.eql('abcd');
+      expect(uri2.parts.key).to.eql('A');
+
+      expect(uri3.parts.ns).to.eql('abcd');
+      expect(uri3.parts.key).to.eql('A');
     });
   });
 });

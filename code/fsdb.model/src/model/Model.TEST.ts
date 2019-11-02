@@ -8,7 +8,7 @@ type IMyOrgProps = { id: string; name: string };
 type IMyThing = t.IModel<IMyThingProps>;
 type IMyOrgChildren = { things: IMyThing[]; subthings: IMyThing[]; all: IMyThing[] };
 type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
-type IMyOrgDoc = IMyOrgProps & { ref?: string; refs?: [] };
+type IMyOrgDoc = IMyOrgProps & { ref?: string; refs?: string[] };
 
 describe('model', () => {
   let db: t.IDb;

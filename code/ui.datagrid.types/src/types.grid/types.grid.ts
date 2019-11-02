@@ -57,6 +57,7 @@ export type GridFireCommandArgs<C extends t.IGridCommand> = {
 };
 
 export type IGridDefaults = {
+  ns: t.INs;
   totalColumns: number;
   totalRows: number;
   columnWidth: number;
