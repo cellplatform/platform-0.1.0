@@ -266,7 +266,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const refsKeys = {
       in: this.state.incoming,
       out: this.state.outgoing,
-      'topological order': this.state.order,
+      'sorted (topological)': this.state.order,
     };
 
     return (
@@ -283,7 +283,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         <Hr />
         <Label>t.IRefs</Label>
         {this.renderObject({ name: 'refs', data: this.state.refs })}
-        <Hr />
+        <HrDashed />
         {this.renderObject({
           name: 'refs (keys)',
           data: refsKeys,
@@ -419,9 +419,17 @@ const STYLES = {
     border: 'none',
     borderTop: `solid 3px ${color.format(0.06)}`,
   }),
+  hrDashed: css({
+    margin: 0,
+    MarginY: 6,
+    marginLeft: 12,
+    border: 'none',
+    borderTop: `dashed 1px ${color.format(0.2)}`,
+  }),
 };
 
 const Hr = () => <hr {...STYLES.hr} />;
+const HrDashed = () => <hr {...STYLES.hrDashed} />;
 
 const LinkButton = (props: IButtonProps) => {
   const styles = {

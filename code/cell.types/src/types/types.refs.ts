@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { t } from './common';
+import { t } from '../common';
 
 export type RefTarget = 'VALUE' | 'FUNC' | 'REF' | 'RANGE' | 'UNKNOWN';
 export type RefDirection = 'IN' | 'OUT';
