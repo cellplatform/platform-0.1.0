@@ -1,18 +1,11 @@
 import { t, id } from '../common';
 import { cell } from '../cell';
 
-export type IUriParseResponse<D extends t.IUri = t.IUri> = {
-  ok: boolean;
-  text: string;
-  data: D;
-  error?: t.IUriError;
-};
-
 export class Uri {
   /**
    * Parse a URI into it's constituent pieces.
    */
-  public static parse<D extends t.IUri>(input?: string): IUriParseResponse<D> {
+  public static parse<D extends t.IUri>(input?: string): t.IUriParts<D> {
     const text = (input || '').trim();
 
     let data: t.IUri = { type: 'UNKNOWN' };
@@ -68,7 +61,7 @@ export class Uri {
 
     // Finish up.
     const ok = !Boolean(error) && data.type !== 'UNKNOWN';
-    const res: IUriParseResponse<D> = { ok, text, data: data as D };
+    const res: t.IUriParts<D> = { ok, uri: text, parts: data as D, toString: () => text };
     return error ? { ...res, error } : res;
   }
 
@@ -84,7 +77,7 @@ export class Uri {
     /**
      * Determine if the URI is of a specific type.
      */
-    type: (type: t.UriType, input?: string) => Uri.parse(input).data.type === type,
+    type: (type: t.UriType, input?: string) => Uri.parse(input).parts.type === type,
     ns: (input?: string) => Uri.is.type('ns', input),
     cell: (input?: string) => Uri.is.type('cell', input),
     row: (input?: string) => Uri.is.type('row', input),
