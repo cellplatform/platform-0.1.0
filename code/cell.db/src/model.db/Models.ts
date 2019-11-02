@@ -2,14 +2,13 @@ import { t, Model, coord } from '../common';
 import { Schema } from '../schema';
 
 const Uri = coord.Uri;
+const query = Schema.query;
 
 /**
  * Represents a logical collection of cells (aka a "sheet").
  */
 export class Ns {
   public static factory: t.ModelFactory<t.IDbModelNs> = ({ db, path }) => {
-    const query = Schema.query;
-
     const children: t.IModelChildrenDefs<t.IDbModelNsChildren> = {
       cells: { query: query.cells, factory: Cell.factory },
       rows: { query: query.rows, factory: Row.factory },
@@ -18,7 +17,7 @@ export class Ns {
 
     const uri = Schema.from.ns(path);
     const id = uri.parts.id;
-    const initial: t.IDbModelNsProps = { id, props: { name: undefined } };
+    const initial: t.IDbModelNsProps = { id, props: undefined, hash: undefined };
 
     return Model.create<
       t.IDbModelNsProps,
@@ -91,7 +90,11 @@ export class Cell {
  */
 export class Row {
   public static factory: t.ModelFactory<t.IDbModelRow> = ({ path, db }) => {
-    const initial: t.IDbModelRowProps = { key: '' };
+    const initial: t.IDbModelRowProps = {
+      props: undefined,
+      hash: undefined,
+      error: undefined,
+    };
     return Model.create<t.IDbModelRowProps>({ db, path, initial });
   };
 
@@ -112,7 +115,11 @@ export class Row {
  */
 export class Column {
   public static factory: t.ModelFactory<t.IDbModelColumn> = ({ path, db }) => {
-    const initial: t.IDbModelColumnProps = { key: '' };
+    const initial: t.IDbModelColumnProps = {
+      props: undefined,
+      hash: undefined,
+      error: undefined,
+    };
     return Model.create<t.IDbModelColumnProps>({ db, path, initial });
   };
 
