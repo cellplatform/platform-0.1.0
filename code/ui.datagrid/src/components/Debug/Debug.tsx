@@ -31,6 +31,7 @@ export type IDebugState = {
   incoming?: any;
   outgoing?: any;
   order?: any;
+  lastSelection?: t.IGridSelection;
 };
 
 export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
@@ -50,9 +51,17 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       map(e => e.payload as t.IGridCellsChange),
     );
 
-    events$.pipe(filter(e => e.type === 'GRID/selection')).subscribe(() => {
-      this.updateGrid();
-    });
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/selection'),
+        map(e => e.payload as t.IGridSelectionChange),
+      )
+      .subscribe(e => {
+        this.updateGrid();
+        if (e.to.cell || !this.state.lastSelection) {
+          this.state$.next({ lastSelection: e.to });
+        }
+      });
 
     change$.subscribe(e => {
       this.updateState();
@@ -97,6 +106,10 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     return { key, value, cell, display, isEmpty, isFormula, ast };
   }
 
+  public get lastSelection() {
+    return this.state.lastSelection || { ranges: [] };
+  }
+
   /**
    * [Methods]
    */
@@ -112,14 +125,14 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     await this.updateRefs({ force });
   }
 
-  public async updateGrid() {
+  private async updateGrid() {
     this.state$.next({
       grid: await this.getGridProps(),
       data: await this.getGridData(),
     });
   }
 
-  public async getGridProps() {
+  private async getGridProps() {
     const grid = this.grid;
     const { selection, isEditing, clipboard } = grid;
 
@@ -130,7 +143,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     });
   }
 
-  public async getGridData() {
+  private async getGridData() {
     const grid = this.grid;
     const { ns, rows, columns } = grid.data;
 
@@ -138,14 +151,18 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     Object.keys(cells).forEach(key => {
       const hash = cells[key] ? (cells[key] as any).hash : undefined;
       if (hash) {
-        (cells[key] as any).hash = `${hash.substring(0, 15)}..${hash.substring(hash.length - 5)}`;
+        (cells[key] as any).hash = this.formatHash(hash);
       }
     });
 
     return deleteUndefined({ ns, cells, rows, columns });
   }
 
-  public async updateRefs(args: { force?: boolean } = {}) {
+  private formatHash(hash?: string) {
+    return hash ? `${hash.substring(0, 12)}..${hash.substring(hash.length - 5)}` : hash;
+  }
+
+  private async updateRefs(args: { force?: boolean } = {}) {
     const refsTable = this.grid.refsTable;
     if (!refsTable) {
       return;
@@ -248,12 +265,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   private renderBody() {
     const styles = {
       base: css({ padding: 12, marginBottom: 50 }),
-      label: css({
-        fontSize: 14,
-        opacity: 0.3,
-        marginBottom: 6,
-        fontFamily: constants.MONOSPACE.FAMILY,
-      }),
     };
 
     const selection = this.selectedCell;
@@ -278,13 +289,15 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       <div {...styles.base}>
         {this.renderSelection()}
         <Hr />
-        <div {...styles.label}>t.IGrid</div>
+        {this.renderLastSelection()}
+        <Hr />
+        <Label>t.IGrid</Label>
         {this.renderObject({ name: 'ui.datagrid', data: this.state.grid })}
         <Hr />
-        <div {...styles.label}>t.INsData</div>
+        <Label>t.INsData</Label>
         {this.renderObject({ name: 'data', data: this.state.data })}
         <Hr />
-        <div {...styles.label}>t.IRefs</div>
+        <Label>t.IRefs</Label>
         {this.renderObject({ name: 'refs', data: this.state.refs })}
         <Hr />
         {this.renderObject({
@@ -315,20 +328,16 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
   private renderSelection() {
     const selection = this.selectedCell;
-    const cell = selection.cell;
     const styles = {
       base: css({
         fontSize: 12,
         color: COLORS.WHITE,
         fontFamily: constants.MONOSPACE.FAMILY,
-      }),
-      compact: css({
         Flex: 'center-start',
         minHeight: 15,
       }),
-
       noSelection: css({
-        opacity: 0.3,
+        opacity: 0.35,
       }),
       selection: css({
         Flex: 'horizontal',
@@ -352,11 +361,33 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
     return (
       <div {...styles.base}>
-        <div {...styles.compact}>
-          {elNoSelection}
-          {elSelection}
-        </div>
-        {/* <ObjectView data={cell} theme={this.theme} /> */}
+        {elNoSelection}
+        {elSelection}
+      </div>
+    );
+  }
+
+  private renderLastSelection() {
+    const last = this.lastSelection;
+    const current = this.grid.selection;
+    const isCurrent = last.cell === current.cell;
+    const title = `selected cell ${!isCurrent ? '(last)' : ''}`;
+
+    const key = last.cell || current.cell || '';
+    const cell = this.grid.data.cells[key] || undefined;
+
+    if (cell) {
+      cell.hash = this.formatHash(cell.hash);
+    }
+
+    const styles = {
+      base: css({}),
+    };
+
+    return (
+      <div {...styles.base}>
+        <Label>{title}</Label>
+        {this.renderObject({ name: 'cell', data: cell })}
       </div>
     );
   }
@@ -394,4 +425,17 @@ const LinkButton = (props: IButtonProps) => {
     }),
   };
   return <Button {...props} style={styles.base} />;
+};
+
+const Label = (props: { children?: React.ReactNode; style?: GlamorValue }) => {
+  const styles = {
+    base: css({
+      fontSize: 12,
+      opacity: 0.35,
+      marginBottom: 6,
+      fontFamily: constants.MONOSPACE.FAMILY,
+    }),
+  };
+
+  return <div {...css(styles.base, props.style)}>{props.children}</div>;
 };
