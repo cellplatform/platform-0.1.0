@@ -3,9 +3,15 @@ import { t } from '../common';
 import { value } from '.';
 
 type P = t.ICellProps & {
-  style: { bold?: boolean; italic?: boolean };
+  style: { bold?: boolean; italic?: boolean; underline?: boolean };
   status: { error?: { message: string } };
   merge?: { colspan?: number; rowspan?: number };
+};
+
+const styleDefaults: P['style'] = {
+  bold: false,
+  italic: false,
+  underline: false,
 };
 
 describe('cell', () => {
@@ -26,6 +32,7 @@ describe('cell', () => {
     test({ value: undefined, props: { status: {}, style: {}, view: {}, merge: {} } }, true);
     test({ props: { status: {}, style: {}, view: {}, merge: {} } }, true);
     test({ value: undefined, props: { value: undefined } }, true);
+    test({ links: {} }, true);
 
     test({ value: ' ' }, false);
     test({ value: ' ', hash }, false);
@@ -36,6 +43,7 @@ describe('cell', () => {
     test({ value: true }, false);
     test({ value: false }, false);
     test({ value: undefined, props: { value: 456 } }, false); // NB: has props, therefore not empty.
+    test({ links: { foo: 'ns:abc' } }, false);
   });
 
   it('isEmptyCellValue', () => {
@@ -73,17 +81,49 @@ describe('cell', () => {
     test({ status: { error: { message: 'Fail', type: 'UNKNOWN' } } }, false);
   });
 
-  it('squashProps', () => {
-    const test = (props?: Partial<P>, expected?: any) => {
-      const res = value.squashProps(props);
-      expect(res).to.eql(expected);
+  it('isEmptyCellLinks', () => {
+    const test = (input: {} | undefined, expected: boolean) => {
+      expect(value.isEmptyCellLinks(input)).to.eql(expected);
     };
-    test();
-    test({});
-    test({ style: {} });
-    test({ merge: {} });
-    test({ style: {}, merge: {} });
-    test({ style: { bold: true }, merge: {} }, { style: { bold: true } });
+    test(undefined, true);
+    test({}, true);
+    test({ foo: 'ns:abc' }, false);
+  });
+
+  describe('squash', () => {
+    it('squash.props', () => {
+      const test = (props?: Partial<P>, expected?: any) => {
+        const res = value.squash.props(props);
+        expect(res).to.eql(expected);
+      };
+      test();
+      test({});
+      test({ style: {} });
+      test({ merge: {} });
+      test({ style: {}, merge: {} });
+      test({ style: { bold: true }, merge: {} }, { style: { bold: true } });
+    });
+
+    it('squash.cell', () => {
+      const test = (cell?: t.ICellData, expected?: any, empty?: any) => {
+        const res = value.squash.cell(cell, { empty });
+        expect(res).to.eql(expected);
+      };
+      test();
+      test({});
+      test({ value: undefined });
+      test({ value: null }, { value: null });
+      test({ value: 123 }, { value: 123 });
+      test({ value: 123, links: {} }, { value: 123 });
+      test({ value: 0, links: {} }, { value: 0 });
+      test({ hash: 'cell:abc!A1' }, { hash: 'cell:abc!A1' });
+      test(
+        { value: undefined, error: { type: 'UNKNOWN', message: 'Fail' } },
+        { error: { type: 'UNKNOWN', message: 'Fail' } },
+      );
+
+      test({ value: undefined }, {}, {}); // NB: Squash to {} not undefined.
+    });
   });
 
   describe('cellHash', () => {
@@ -93,11 +133,15 @@ describe('cell', () => {
     });
 
     it('hashes a cell', () => {
-      // const lastChars = (length: number, text: string) => text.substr(text.length - length);
+      let index = -1;
       const test = (input: {} | undefined, expected: string) => {
         const hash = value.cellHash('cell:abcd!A1', input);
-        expect(hash.endsWith(expected)).to.eql(true);
-        // console.log(lastChars(20, hash));
+
+        index++;
+        const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
+
+        expect(hash.startsWith('sha256-')).to.eql(true);
+        expect(hash.endsWith(expected)).to.eql(true, err);
       };
 
       test(undefined, '74cbb77a4112ea85f3a3');
@@ -107,6 +151,7 @@ describe('cell', () => {
       test({ value: 'hello' }, 'b3813001a7b30883363c');
       test({ value: 'hello', props: {} }, 'b3813001a7b30883363c');
       test({ value: 'hello', props: { style: { bold: true } } }, 'fab8857189a788c7af8e');
+      test({ links: { main: 'ns:abc' } }, '921f26767a2d39629');
 
       const error: t.IRefErrorCircular = { type: 'REF/circular', path: 'A1/A1', message: 'Fail' };
       test({ value: 'hello', error }, '92a8675656f6818ec330');
@@ -162,12 +207,6 @@ describe('cell', () => {
   });
 
   describe('setCellProp', () => {
-    const styleDefaults = {
-      bold: false,
-      italic: false,
-      underline: false,
-    };
-
     it('no change', () => {
       const res1 = value.setCellProp<P, 'style'>({
         defaults: styleDefaults,
@@ -291,13 +330,12 @@ describe('cell', () => {
     });
   });
 
-  describe('cellPropValue', () => {
-    const test = (cell?: t.ICellData<any>, expected?: t.CellValue) => {
-      const res = value.cellPropValue(cell);
-      expect(res).to.eql(expected);
-    };
-
-    it('undefined', () => {
+  describe('cellData', () => {
+    it('getValue', () => {
+      const test = (cell?: t.ICellData<any>, expected?: t.CellValue) => {
+        const res = value.cellData(cell).getValue();
+        expect(res).to.eql(expected);
+      };
       test();
       test(undefined, undefined);
       test({}, undefined);
@@ -305,12 +343,166 @@ describe('cell', () => {
       test({ props: {} }, undefined);
       test({ props: { style: { bold: true } } }, undefined);
       test({ props: { value: undefined } }, undefined);
-    });
 
-    it('value', () => {
       test({ props: { value: 123 } }, 123);
       test({ props: { value: {} } }, {});
       test({ props: { value: 'hello' } }, 'hello');
+    });
+
+    it('setValue', () => {
+      const test = (cell?: t.ICellData<any>, to?: t.CellValue) => {
+        const data = value.cellData(cell);
+        const res = data.setValue(to);
+        expect(res ? res.value : undefined).to.eql(to);
+        if (cell) {
+          expect(res).to.not.equal(cell); // NB: Different instance.
+        }
+      };
+      test();
+      test({}, 'hello');
+      test({ value: 123 }, { foo: 456 });
+    });
+
+    it('setProp', () => {
+      const res1 = value.cellData<P>().setProp<'style'>({
+        defaults: styleDefaults,
+        section: 'style',
+        field: 'bold',
+        value: true,
+      });
+
+      const res2 = value
+        .cellData<P>({ value: '123', props: { style: { underline: true } } })
+        .setProp<'style'>({
+          defaults: styleDefaults,
+          section: 'style',
+          field: 'bold',
+          value: true,
+        });
+
+      const res3 = value.cellData<P>({ props: { style: { bold: true } } }).setProp<'style'>({
+        defaults: styleDefaults,
+        section: 'style',
+        field: 'bold',
+        value: false,
+      });
+
+      const res4 = value
+        .cellData<P>({ value: 123, props: { style: { bold: true } } })
+        .setProp<'style'>({
+          defaults: styleDefaults,
+          section: 'style',
+          field: 'bold',
+          value: false,
+        });
+
+      expect(res1).to.eql({ props: { style: { bold: true } } });
+      expect(res2).to.eql({ value: '123', props: { style: { underline: true, bold: true } } });
+      expect(res3).to.eql(undefined);
+      expect(res4).to.eql({ value: 123 });
+    });
+
+    it('setLink', () => {
+      const test = (
+        cell: t.ICellData<any> | undefined,
+        key: string,
+        uri?: string,
+        expected?: any,
+      ) => {
+        const data = value.cellData(cell);
+        const res = data.setLink(key, uri);
+        expect(res).to.eql(expected);
+      };
+      test(undefined, 'foo', undefined, undefined);
+      test({}, 'foo', 'ns:abc', { links: { foo: 'ns:abc' } });
+
+      test({ links: {} }, 'foo', 'ns:abc', { links: { foo: 'ns:abc' } });
+      test({ links: {} }, 'foo', '  ns:abc    ', { links: { foo: 'ns:abc' } });
+
+      // Changed
+      test({ links: { foo: 'ns:foo' } }, 'foo', 'ns:abc', { links: { foo: 'ns:abc' } });
+      test({ links: { foo: 'ns:abc', bar: 'ns:yo' } }, 'foo', 'ns:def', {
+        links: { foo: 'ns:def', bar: 'ns:yo' },
+      });
+
+      // Remove.
+      test({ links: { foo: 'ns:abc' } }, 'foo', undefined, undefined);
+      test({ links: { foo: 'ns:abc' } }, 'foo', '', undefined);
+      test({ links: { foo: 'ns:abc' } }, 'foo', '  ', undefined);
+      test({ value: 123, links: { foo: 'ns:abc' } }, 'foo', undefined, { value: 123 });
+    });
+
+    it('mergeLinks', () => {
+      const test = (
+        cell: t.ICellData<any> | undefined,
+        links?: { [key: string]: string | undefined },
+        expected?: any,
+      ) => {
+        const data = value.cellData(cell);
+        const res = data.mergeLinks(links);
+        expect(res).to.eql(expected);
+      };
+      test(undefined, {}, undefined);
+      test({}, { foo: 'ns:foo' }, { links: { foo: 'ns:foo' } });
+      test({}, { foo: 'ns:foo', bar: 'ns:bar' }, { links: { foo: 'ns:foo', bar: 'ns:bar' } });
+      test({ links: {} }, { foo: 'ns:abc' }, { links: { foo: 'ns:abc' } });
+      test({ links: {} }, { foo: '  ns:abc    ' }, { links: { foo: 'ns:abc' } });
+
+      test(
+        { links: { foo: 'ns:abc', bar: 'ns:yo' } },
+        { foo: 'ns:def' },
+        {
+          links: { foo: 'ns:def', bar: 'ns:yo' },
+        },
+      );
+
+      // Change.
+      test({ links: { foo: 'ns:foo' } }, { foo: 'ns:bar' }, { links: { foo: 'ns:bar' } });
+
+      // Remove.
+      test({ links: { foo: 'ns:abc' } }, { foo: undefined }, undefined);
+      test({ value: 123, links: { foo: 'ns:abc' } }, { foo: undefined }, { value: 123 });
+
+      test(
+        { links: { foo: 'ns:foo-1', bar: 'ns:bar' } },
+        { foo: 'ns:foo-2', bar: undefined },
+        { links: { foo: 'ns:foo-2' } },
+      );
+
+      // Clear all.
+      test(
+        { links: { foo: 'ns:foo', bar: 'ns:bar' } },
+        { foo: undefined, bar: undefined },
+        undefined,
+      );
+    });
+
+    it('mergeLinks: delete undefined', () => {
+      const before = {
+        value: '=A2',
+        props: undefined,
+        links: { foo: 'ns:foo', bar: 'ns:bar', baz: 'data:random' },
+      };
+
+      const links1 = before.links || {};
+      expect(links1.foo).to.eql('ns:foo');
+      expect(links1.bar).to.eql('ns:bar');
+      expect(links1.baz).to.eql('data:random'); // Unchanged.
+
+      const after = value.cellData(before).mergeLinks({
+        foo: 'ns:foobar', // Changed.
+        bar: undefined, //   Removed.
+        zoo: 'ns:zoo', //    Added.
+      }) as t.ICellData;
+
+      const links2 = after.links || {};
+
+      expect(after.value).to.eql('=A2');
+
+      expect(links2.foo).to.eql('ns:foobar'); //    Changed.
+      expect(links2.bar).to.eql(undefined); //      Removed.
+      expect(links2.baz).to.eql('data:random'); //  Unchanged.
+      expect(links2.zoo).to.eql('ns:zoo'); //       Added.
     });
   });
 });

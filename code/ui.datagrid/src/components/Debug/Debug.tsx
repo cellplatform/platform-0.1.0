@@ -31,6 +31,7 @@ export type IDebugState = {
   incoming?: any;
   outgoing?: any;
   order?: any;
+  lastSelection?: t.IGridSelection;
 };
 
 export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
@@ -50,9 +51,17 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       map(e => e.payload as t.IGridCellsChange),
     );
 
-    events$.pipe(filter(e => e.type === 'GRID/selection')).subscribe(() => {
-      this.updateGrid();
-    });
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/selection'),
+        map(e => e.payload as t.IGridSelectionChange),
+      )
+      .subscribe(e => {
+        this.updateGrid();
+        if (e.to.cell || !this.state.lastSelection) {
+          this.state$.next({ lastSelection: e.to });
+        }
+      });
 
     change$.subscribe(e => {
       this.updateState();
@@ -78,22 +87,23 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     return this.props.theme || 'DARK';
   }
 
+  public get lastSelection(): t.IGridSelection {
+    return this.state.lastSelection || { ranges: [] };
+  }
+
   public get selectedCell() {
     const key = this.grid.selection.cell || '';
     const value = this.getValueSync(key) || '';
+    const cell = this.grid.data.cells[key];
     const isEmpty = !Boolean(value);
-    const isFormula = func.isFormula(value);
 
     // Display string.
     const MAX = 30;
     let display = value.length > MAX ? `${value.substring(0, MAX)}...` : value;
     display = isEmpty ? '<empty>' : display;
 
-    // Formula.
-    const ast = isFormula ? coord.ast.toTree(value) : undefined;
-
     // Finish up.
-    return { key, value, display, isEmpty, isFormula, ast };
+    return { key, value, cell, display, isEmpty };
   }
 
   /**
@@ -111,14 +121,14 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     await this.updateRefs({ force });
   }
 
-  public async updateGrid() {
+  private async updateGrid() {
     this.state$.next({
       grid: await this.getGridProps(),
       data: await this.getGridData(),
     });
   }
 
-  public async getGridProps() {
+  private async getGridProps() {
     const grid = this.grid;
     const { selection, isEditing, clipboard } = grid;
 
@@ -129,7 +139,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     });
   }
 
-  public async getGridData() {
+  private async getGridData() {
     const grid = this.grid;
     const { ns, rows, columns } = grid.data;
 
@@ -137,14 +147,18 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     Object.keys(cells).forEach(key => {
       const hash = cells[key] ? (cells[key] as any).hash : undefined;
       if (hash) {
-        (cells[key] as any).hash = `${hash.substring(0, 15)}..${hash.substring(hash.length - 5)}`;
+        (cells[key] as any).hash = this.formatHash(hash);
       }
     });
 
     return deleteUndefined({ ns, cells, rows, columns });
   }
 
-  public async updateRefs(args: { force?: boolean } = {}) {
+  private formatHash(hash?: string) {
+    return hash ? `${hash.substring(0, 12)}..${hash.substring(hash.length - 5)}` : hash;
+  }
+
+  private async updateRefs(args: { force?: boolean } = {}) {
     const refsTable = this.grid.refsTable;
     if (!refsTable) {
       return;
@@ -247,51 +261,34 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   private renderBody() {
     const styles = {
       base: css({ padding: 12, marginBottom: 50 }),
-      label: css({
-        fontSize: 14,
-        opacity: 0.3,
-        marginBottom: 6,
-        fontFamily: constants.MONOSPACE.FAMILY,
-      }),
     };
-
-    const selectedCell = this.selectedCell;
-    const elFormula = selectedCell.ast && (
-      <div>
-        <Hr />
-        {this.renderObject({
-          name: 'formula (AST)',
-          data: selectedCell.ast,
-          expandLevel: 3,
-        })}
-      </div>
-    );
 
     const refsKeys = {
       in: this.state.incoming,
       out: this.state.outgoing,
-      'topological order': this.state.order,
+      'sorted (topological)': this.state.order,
     };
 
     return (
       <div {...styles.base}>
         {this.renderSelection()}
         <Hr />
-        <div {...styles.label}>t.IGrid</div>
+        {this.renderLastSelection()}
+        <Hr />
+        <Label>t.IGrid</Label>
         {this.renderObject({ name: 'ui.datagrid', data: this.state.grid })}
         <Hr />
-        <div {...styles.label}>t.INsData</div>
+        <Label>t.INsData</Label>
         {this.renderObject({ name: 'data', data: this.state.data })}
         <Hr />
-        <div {...styles.label}>t.IRefs</div>
+        <Label>t.IRefs</Label>
         {this.renderObject({ name: 'refs', data: this.state.refs })}
-        <Hr />
+        <HrDashed />
         {this.renderObject({
           name: 'refs (keys)',
           data: refsKeys,
-          expandPaths: ['$', '$.in', '$.out'],
+          // expandPaths: ['$', '$.in', '$.out'],
         })}
-        {elFormula}
         <Hr />
         <DebugProps />
       </div>
@@ -319,11 +316,11 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         fontSize: 12,
         color: COLORS.WHITE,
         fontFamily: constants.MONOSPACE.FAMILY,
-        minHeight: 15,
         Flex: 'center-start',
+        minHeight: 15,
       }),
       noSelection: css({
-        opacity: 0.3,
+        opacity: 0.35,
       }),
       selection: css({
         Flex: 'horizontal',
@@ -353,6 +350,53 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     );
   }
 
+  private renderLastSelection() {
+    const last = this.lastSelection;
+    const current = this.grid.selection;
+    const isCurrent = last.cell === current.cell;
+    const title = `cell ${!isCurrent ? '(last)' : ''}`;
+
+    const key = last.cell || current.cell || '';
+    const cell = { ...this.grid.data.cells[key] } || undefined;
+    const hash = cell ? cell.hash : undefined;
+    if (cell) {
+      delete cell.hash;
+    }
+
+    const value = this.getValueSync(key) || '';
+    const isFormula = func.isFormula(value);
+    const ast = isFormula ? coord.ast.toTree(value) : undefined;
+
+    const styles = {
+      base: css({}),
+      title: css({ Flex: 'horizontal-center-spaceBetween' }),
+      hash: css({}),
+    };
+
+    let data: any = key ? { 't.ICellData': cell } : {};
+    data = ast ? { ...data, ast } : data;
+
+    const elHash = hash && (
+      <Label tooltip={hash} style={styles.hash}>
+        {this.formatHash(hash)}
+      </Label>
+    );
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.title}>
+          <Label>{title}</Label>
+          {elHash}
+        </div>
+        {this.renderObject({
+          name: key || 'none',
+          data,
+          // expandPaths: ['$', '$."t.ICellData"'],
+        })}
+      </div>
+    );
+  }
+
   /**
    * [Handlers]
    */
@@ -375,9 +419,17 @@ const STYLES = {
     border: 'none',
     borderTop: `solid 3px ${color.format(0.06)}`,
   }),
+  hrDashed: css({
+    margin: 0,
+    MarginY: 6,
+    marginLeft: 12,
+    border: 'none',
+    borderTop: `dashed 1px ${color.format(0.2)}`,
+  }),
 };
 
 const Hr = () => <hr {...STYLES.hr} />;
+const HrDashed = () => <hr {...STYLES.hrDashed} />;
 
 const LinkButton = (props: IButtonProps) => {
   const styles = {
@@ -386,4 +438,20 @@ const LinkButton = (props: IButtonProps) => {
     }),
   };
   return <Button {...props} style={styles.base} />;
+};
+
+const Label = (props: { children?: React.ReactNode; tooltip?: string; style?: GlamorValue }) => {
+  const styles = {
+    base: css({
+      fontSize: 12,
+      opacity: 0.35,
+      marginBottom: 6,
+      fontFamily: constants.MONOSPACE.FAMILY,
+    }),
+  };
+  return (
+    <div {...css(styles.base, props.style)} title={props.tooltip}>
+      {props.children}
+    </div>
+  );
 };

@@ -3,7 +3,7 @@ import { Model } from '.';
 import { expect, getTestDb, t, time } from '../test';
 
 type IMyThingProps = { count: number };
-type IMyOrgProps = { id: string; name: string };
+type IMyOrgProps = { id: string; name: string; region?: string };
 
 type IMyThing = t.IModel<IMyThingProps>;
 type IMyOrgChildren = { things: IMyThing[]; subthings: IMyThing[]; all: IMyThing[] };
@@ -17,7 +17,7 @@ describe('model', () => {
   const org = {
     path: 'ORG/123',
     doc: { id: '123', name: 'MyOrg' },
-    initial: { id: '', name: '' },
+    initial: { id: '', name: '', region: undefined },
   };
 
   const thingFactory: t.ModelFactory<IMyThing> = ({ path, db }) =>
@@ -42,11 +42,18 @@ describe('model', () => {
     all: { query: '**', factory: thingFactory },
   };
 
-  const createOrg = async (options: { put?: boolean } = {}) => {
+  const createOrg = async (
+    options: { put?: boolean; beforeSave?: t.BeforeModelSave<IMyOrgProps> } = {},
+  ) => {
     if (options.put) {
       await db.put(org.path, org.doc);
     }
-    return Model.create<IMyOrgProps, IMyOrgDoc>({ db, path: org.path, initial: org.initial });
+    return Model.create<IMyOrgProps, IMyOrgDoc>({
+      db,
+      path: org.path,
+      initial: org.initial,
+      beforeSave: options.beforeSave,
+    });
   };
 
   const createOrgWithLinks = async (
@@ -177,7 +184,7 @@ describe('model', () => {
       expect(model.doc).to.eql(org.doc);
       expect(model.props.id).to.eql(org.doc.id); // Strongly typed.
       expect(model.props.name).to.eql(org.doc.name); // Strongly typed.
-      expect(model.toObject()).to.eql(org.doc);
+      expect(model.toObject()).to.eql({ id: '123', name: 'MyOrg', region: undefined });
     });
 
     it('default loading on creation', async () => {
@@ -337,6 +344,18 @@ describe('model', () => {
       expect(model.doc).to.eql(org.doc); // No change to underlying doc.
     });
 
+    it('changes property that is underfined on {initial} object', async () => {
+      const model = await (await createOrg({ put: true })).ready;
+      model.props.region = 'US/west'; // NB: Defined within {initial} configuration.
+      model.props.name = 'Acme';
+
+      expect(model.changes.length).to.eql(2);
+
+      const fields = model.changes.list.map(c => c.field);
+      expect(fields).to.include('name');
+      expect(fields).to.include('region');
+    });
+
     it('set (via method)', async () => {
       const model = await (await createOrg({ put: true })).ready;
 
@@ -365,6 +384,23 @@ describe('model', () => {
       expect(model.props.id).to.eql('456');
       expect(model.isChanged).to.eql(false);
       expect(model.changes.length).to.eql(0);
+    });
+
+    it('change not registered if value is current', async () => {
+      const model = await createOrg({ put: true });
+      await model.ready;
+      await model.set({ name: 'foo', region: 'US/west' }).save();
+      expect(model.isChanged).to.eql(false);
+
+      model.props.name = 'foo'; //         Same as current.
+      model.set({ region: 'US/west' }); // Same as current.
+
+      expect(model.changes.length).to.eql(2); // NB: Changes are registered, but all values are current.
+      expect(model.isChanged).to.eql(false);
+
+      await model.save();
+      expect(model.changes.length).to.eql(0); // Saving resets the changes.
+      expect(model.isChanged).to.eql(false);
     });
 
     it('changed event', async () => {
@@ -478,7 +514,7 @@ describe('model', () => {
       expect(events.length).to.eql(1);
       expect(events[0].type).to.eql('MODEL/saved');
 
-      const e = events[0].payload as t.IModelSaved;
+      const e = events[0].payload as t.IModelSave;
       expect(e.model).to.equal(model);
       expect(e.changes).to.eql(changes);
     });
@@ -510,12 +546,75 @@ describe('model', () => {
       const res2 = await model.save();
       expect(res2.saved).to.eql(true);
 
-      expect(model.doc).to.eql({ id: '123', name: 'Hello' });
+      expect(model.doc).to.eql({ id: '123', name: 'Hello', region: undefined });
       expect(model.props.id).to.eql('123');
       expect(model.props.name).to.eql('Hello');
 
       expect((await db.getValue<IMyOrgProps>(org.path)).id).to.eql('123');
       expect((await db.getValue<IMyOrgProps>(org.path)).name).to.eql('Hello');
+    });
+  });
+
+  describe('beforeSave', () => {
+    it('fires [beforeSave] event via [save] method', async () => {
+      let count = 0;
+      const beforeSave: t.BeforeModelSave = async args => count++;
+
+      const model = await (await createOrg({ put: false, beforeSave })).ready;
+      model.set({ region: 'US/west' });
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
+      await model.save();
+      expect(count).to.eql(1);
+
+      expect(events.length).to.eql(2);
+      expect(events[0].type).to.eql('MODEL/beforeSave');
+      expect(events[1].type).to.eql('MODEL/saved');
+    });
+
+    it('does not run [beforeSave] when handler not given to model', async () => {
+      const model = await (await createOrg({ put: false })).ready;
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
+      await model.beforeSave();
+      expect(events.length).to.eql(0);
+    });
+
+    it('does not run [beforeSave] when no changes made', async () => {
+      let count = 0;
+      const beforeSave: t.BeforeModelSave = async args => count++;
+
+      const model = await (await createOrg({ put: false, beforeSave })).ready;
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
+      await model.beforeSave();
+      expect(events.length).to.eql(0);
+      expect(count).to.eql(0);
+    });
+
+    it('changes props before saving', async () => {
+      const model1 = await (await createOrg({
+        put: false,
+        beforeSave: async args => {
+          if (args.changes.map.region) {
+            // NB:  The region has been changed.
+            //      Make a modification to it.
+            args.model.props.region = `${args.model.props.region}-1`;
+          }
+        },
+      })).ready;
+
+      model1.props.region = 'US/west';
+      await model1.save();
+
+      const model2 = await (await createOrg({ put: false })).ready;
+      expect(model2.toObject().region).to.eql('US/west-1'); // NB: Modified value.
     });
   });
 
@@ -719,7 +818,7 @@ describe('model', () => {
       const things = model.links.things;
       things.link(['THING/2']);
       things.link(['THING/2']);
-      things.link(['THING/2']);
+      things.link(['THING/2']); // De-duped
 
       expect(model.changes.length).to.eql(1); // Called 3-times, only one change registered.
       expect(model.isChanged).to.eql(true);
@@ -730,7 +829,7 @@ describe('model', () => {
 
       things.link(['THING/2', 'THING/1']); // Existing ref not duplicated. Change registered.
       expect(model.changes.length).to.eql(2);
-      expect((await model.links.things).map(m => m.path)).to.eql(['THING/2', 'THING/1']);
+      expect((await model.links.things).map(m => m.path)).to.eql(['THING/1', 'THING/2']);
 
       things.link(['THING/2', 'THING/1']); // No change.
       things.link(['THING/1', 'THING/2']); // No change.
@@ -748,10 +847,10 @@ describe('model', () => {
       expect((await db.getValue<any>(org.path)).refs).to.eql(undefined);
       expect((await model.save()).saved).to.eql(true);
       expect((await model.save()).saved).to.eql(false);
-      expect((await db.getValue<any>(org.path)).refs).to.eql(['THING/2', 'THING/1', 'THING/3']);
-      expect(model.doc.refs).to.eql(['THING/2', 'THING/1', 'THING/3']);
+      expect((await db.getValue<any>(org.path)).refs).to.eql(['THING/1', 'THING/2', 'THING/3']);
+      expect(model.doc.refs).to.eql(['THING/1', 'THING/2', 'THING/3']);
       expect(model.isChanged).to.eql(false);
-      expect((await model.links.things).map(m => m.path)).to.eql(['THING/2', 'THING/1', 'THING/3']);
+      expect((await model.links.things).map(m => m.path)).to.eql(['THING/1', 'THING/2', 'THING/3']);
 
       /**
        * Unlink: single
@@ -761,7 +860,7 @@ describe('model', () => {
       expect(model.changes.map).to.eql({ refs: ['THING/1', 'THING/3'] });
       expect((await model.links.things).map(m => m.path)).to.eql(['THING/1', 'THING/3']);
 
-      expect(model.doc.refs).to.eql(['THING/2', 'THING/1', 'THING/3']); // Change not commited yet.
+      expect(model.doc.refs).to.eql(['THING/1', 'THING/2', 'THING/3']); // Change not commited yet.
 
       await model.save();
       expect(model.doc.refs).to.eql(['THING/1', 'THING/3']);
@@ -784,6 +883,23 @@ describe('model', () => {
       expect((await db.getValue<any>(org.path)).refs).to.eql(undefined);
       expect(await model.links.things).to.eql([]);
       expect(model.isChanged).to.eql(false);
+    });
+
+    it('link and unlink (no saving)', async () => {
+      const model = await createOrgWithLinks();
+      const things = model.links.things;
+
+      things.link(['THING/2', 'THING/1', 'THING/3', 'THING/4']);
+      expect(model.changes.map.refs).to.eql(['THING/1', 'THING/2', 'THING/3', 'THING/4']);
+
+      things.unlink(['THING/2']);
+      expect(model.changes.map.refs).to.eql(['THING/1', 'THING/3', 'THING/4']);
+
+      things.unlink(['THING/3', 'THING/1', 'XXX']);
+      expect(model.changes.map.refs).to.eql(['THING/4']);
+
+      things.unlink(['THING/4']);
+      expect(model.changes.map.refs).to.eql(undefined);
     });
   });
 

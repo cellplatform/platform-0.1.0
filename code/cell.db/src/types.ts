@@ -4,14 +4,14 @@ import { IModel } from '@platform/fsdb.model/lib/types';
 /**
  * Namespace.
  */
-export type IDbModelNs = IModel<
-  IDbModelNsProps,
-  IDbModelNsDoc,
+export type IDbModelNs<P extends object = any> = IModel<
+  IDbModelNsProps<P>,
+  IDbModelNsDoc<P>,
   IDbModelNsLinks,
   IDbModelNsChildren
 >;
-export type IDbModelNsProps = t.INs & {};
-export type IDbModelNsDoc = IDbModelNsProps & {};
+export type IDbModelNsProps<P extends object = any> = t.INs & P;
+export type IDbModelNsDoc<P extends object = any> = IDbModelNsProps<P> & {};
 export type IDbModelNsLinks = {};
 export type IDbModelNsChildren = {
   cells: IDbModelCell[];
@@ -22,26 +22,30 @@ export type IDbModelNsChildren = {
 /**
  * Cell
  */
-export type IDbModelCell = IModel<
-  IDbModelCellProps,
-  IDbModelCellDoc,
+export type IDbModelCell<P extends object = any> = IModel<
+  IDbModelCellProps<P>,
+  IDbModelCellDoc<P>,
   IDbModelCellLinks,
   IDbModelCellChilden
 >;
-export type IDbModelCellProps = t.ICellData<IDbModelCellDataProps> & {};
-export type IDbModelCellDataProps = t.ICellProps & { [key: string]: any };
-export type IDbModelCellDoc = IDbModelCellProps & { nsRefs?: string[] };
+export type IDbModelCellProps<P extends object = any> = t.ICellData<IDbModelCellDataProps<P>>;
+export type IDbModelCellDataProps<P extends object = any> = t.ICellProps & P;
+export type IDbModelCellDoc<P extends object = any> = IDbModelCellProps<P> & {
+  nsRefs?: string[];
+};
 export type IDbModelCellLinks = { namespaces: IDbModelNs[] };
 export type IDbModelCellChilden = {};
 
 /**
  * Row
  */
-export type IDbModelRow = IModel<IDbModelRowProps>;
-export type IDbModelRowProps = { key: string }; // TEMP 🐷
+export type IDbModelRow<P extends object = any> = IModel<IDbModelRowProps<P>>;
+export type IDbModelRowProps<P extends object = any> = t.IRowData<IDbModelRowDataProps<P>>;
+export type IDbModelRowDataProps<P extends object = any> = t.IRowProps & P;
 
 /**
  * Column
  */
-export type IDbModelColumn = IModel<IDbModelColumnProps>;
-export type IDbModelColumnProps = { key: string }; // TEMP 🐷
+export type IDbModelColumn<P extends object = {}> = IModel<IDbModelColumnProps<P>>;
+export type IDbModelColumnProps<P extends object = {}> = t.IColumnData<IDbModelColumnDataProps<P>>;
+export type IDbModelColumnDataProps<P extends object = {}> = t.IColumnProps & P;

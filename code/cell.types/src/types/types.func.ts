@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { t } from './common';
+import { t } from '../common';
 
 export type FuncParam = t.Json | undefined;
 export type FuncResponse = any;

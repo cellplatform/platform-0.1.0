@@ -42,12 +42,20 @@ export type IModelMethods<
   load(options?: { force?: boolean; links?: boolean; silent?: boolean }): Promise<P>;
   reset(): IModel<P, D, L, C>;
   set(props: Partial<P>): IModel<P, D, L, C>;
+  beforeSave(): Promise<{}>;
   save(): Promise<{ saved: boolean }>;
   toObject(): P;
 };
 
 export type ModelFactory<M extends IModel = IModel> = (args: ModelFactoryArgs) => M;
 export type ModelFactoryArgs = { path: string; db: IDb };
+
+export type BeforeModelSave<
+  P extends object = {},
+  D extends P = P,
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
+> = (args: IModelSave<P, D, L, C>) => Promise<any>;
 
 /**
  * [Children]
@@ -117,6 +125,7 @@ export type ModelEvent =
   | IModelReadPropEvent
   | IModelChangingEvent
   | IModelChangedEvent
+  | IModelBeforeSaveEvent
   | IModelSavedEvent;
 
 /**
@@ -208,6 +217,27 @@ export type IModelChangedEvent<
 /**
  * Save.
  */
+export type IModelSave<
+  P extends object = {},
+  D extends P = P,
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
+> = {
+  model: IModel<P, D, L>;
+  changes: IModelChanges<P, D, L, C>;
+};
+
+export type IModelBeforeSaveEvent<
+  P extends object = {},
+  D extends P = P,
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
+> = {
+  type: 'MODEL/beforeSave';
+  typename: string;
+  payload: IModelSave<P, D, L, C>;
+};
+
 export type IModelSavedEvent<
   P extends object = {},
   D extends P = P,
@@ -216,14 +246,5 @@ export type IModelSavedEvent<
 > = {
   type: 'MODEL/saved';
   typename: string;
-  payload: IModelSaved<P, D, L, C>;
-};
-export type IModelSaved<
-  P extends object = {},
-  D extends P = P,
-  L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
-> = {
-  model: IModel<P, D, L>;
-  changes: IModelChanges<P, D, L, C>;
+  payload: IModelSave<P, D, L, C>;
 };

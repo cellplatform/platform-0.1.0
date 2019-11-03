@@ -16,6 +16,8 @@ export type IModelArgs<
   events$?: Subject<t.ModelEvent>;
   links?: t.IModelLinkDefs<L>;
   children?: t.IModelChildrenDefs<C>;
+  beforeSave?: t.BeforeModelSave<P, D, L, C>;
+  // beforeSave?: t.BeforeModelSave;
 };
 
 /**
@@ -109,7 +111,13 @@ export class Model<
   }
 
   public get isChanged() {
-    return (this._changes || []).length > 0;
+    const list = this._changes || [];
+    if (list.length === 0) {
+      return false;
+    } else {
+      // Ensure registered changes differ from current values.
+      return list.every(change => !R.equals(this.doc[change.field], change.value.to));
+    }
   }
 
   public get exists() {
@@ -288,7 +296,8 @@ export class Model<
   }
 
   /**
-   * Set the given props.
+   * Set the given set of property values.
+   * NB: Same as calling `model.props.xxx = xyz` individually on each property.
    */
   public set(props: Partial<P>) {
     if (typeof props === 'object') {
@@ -298,13 +307,42 @@ export class Model<
   }
 
   /**
+   * Runs the `beforeSave` handler (if one was given to the constructor)
+   * which prepares the model for saving.
+   */
+  public async beforeSave() {
+    const changes = this.changes;
+    const typename = this.typename;
+    const { beforeSave } = this._args;
+    if (!beforeSave || changes.length === 0) {
+      return {};
+    }
+
+    // Invoke handler.
+    const payload: t.IModelSave<P, D, L, C> = { model: this, changes };
+    await beforeSave(payload);
+
+    // Finish up.
+    this.fire({
+      type: 'MODEL/beforeSave',
+      typename,
+      payload,
+    });
+    return {};
+  }
+
+  /**
    * Persists changes to the underlying store.
    */
   public async save() {
     this.throwIfDisposed('save');
     if (this.exists && !this.isChanged) {
+      this._changes = [];
       return { saved: false };
     }
+
+    // Run BEFORE operation.
+    await this.beforeSave();
 
     // Save to the DB.
     const changes = this.changes;
@@ -319,7 +357,11 @@ export class Model<
 
     // Finish up.
     const typename = this.typename;
-    this.fire({ type: 'MODEL/saved', typename, payload: { model: this, changes } });
+    this.fire({
+      type: 'MODEL/saved',
+      typename,
+      payload: { model: this, changes },
+    });
     return { saved: true };
   }
 
@@ -397,31 +439,43 @@ export class Model<
     // Add and remove API for model-relationship links.
     if (isOne) {
       promise.link = (path: string) => this.changeField('LINK', key, path);
-      promise.unlink = () => this.changeField('LINK', key, undefined);
+      promise.unlink = () => {
+        this.changeField('LINK', key, undefined);
+      };
     }
     if (isMany) {
-      const getChanges = (field: string, paths?: string[]) => {
+      const getChanges = (op: 'LINK' | 'UNLINK', field: string, paths?: string[]) => {
         const changes = this.changes;
         const changeExists = Object.keys(this.changes.map).includes(field);
-        const current = this.currentValue<string[]>(field) || [];
+        const current = [...(this.currentValue<string[]>(field) || [])].sort();
         const isChanged =
           changeExists && Array.isArray(paths)
-            ? !paths.every(path => current.includes(path))
+            ? op === 'LINK'
+              ? !paths.every(path => current.includes(path))
+              : paths.some(path => current.includes(path))
             : true;
-        return { changes, isChanged, current, paths: R.uniq([...current, ...(paths || [])]) };
+        return {
+          changes,
+          isChanged,
+          current,
+          paths: R.uniq([...current, ...(paths || [])]).sort(),
+        };
       };
 
       promise.link = (paths: string[]) => {
+        paths = [...paths].sort();
         if ((paths || []).length > 0) {
-          const changes = getChanges(key, paths);
+          const changes = getChanges('LINK', key, paths);
           if (changes.isChanged) {
             this.changeField('LINK', key, changes.paths);
           }
         }
       };
+
       promise.unlink = (paths?: string[]) => {
+        paths = [...(paths || [])].sort();
         paths = (paths || []).length === 0 ? undefined : paths;
-        const changes = getChanges(key, paths);
+        const changes = getChanges('UNLINK', key, paths);
         if (Array.isArray(paths)) {
           if (changes.isChanged) {
             // Remove specific links.

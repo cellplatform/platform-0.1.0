@@ -1,18 +1,15 @@
 import { t, Model, coord } from '../common';
 import { Schema } from '../schema';
-
-import { Row } from './Row';
-import { Column } from './Column';
+import * as rules from './rules';
 
 const Uri = coord.Uri;
+const query = Schema.query;
 
 /**
  * Represents a logical collection of cells (aka a "sheet").
  */
 export class Ns {
   public static factory: t.ModelFactory<t.IDbModelNs> = ({ db, path }) => {
-    const query = Schema.query;
-
     const children: t.IModelChildrenDefs<t.IDbModelNsChildren> = {
       cells: { query: query.cells, factory: Cell.factory },
       rows: { query: query.rows, factory: Row.factory },
@@ -21,7 +18,7 @@ export class Ns {
 
     const uri = Schema.from.ns(path);
     const id = uri.parts.id;
-    const initial: t.IDbModelNsProps = { id, props: { name: undefined } };
+    const initial: t.IDbModelNsProps = { id, props: undefined, hash: undefined };
 
     return Model.create<
       t.IDbModelNsProps,
@@ -45,7 +42,7 @@ export class Ns {
 }
 
 /**
- * Represetns a single cell within a namespace.
+ * Represetns a single [cell] within a namespace.
  */
 export class Cell {
   public static factory: t.ModelFactory<t.IDbModelCell> = ({ path, db }) => {
@@ -54,6 +51,7 @@ export class Cell {
       props: undefined,
       hash: undefined,
       error: undefined,
+      links: undefined,
     };
 
     const links: t.IModelLinkDefs<t.IDbModelCellLinks> = {
@@ -74,6 +72,7 @@ export class Cell {
       path,
       initial,
       links,
+      beforeSave: rules.beforeCellSave,
     });
   };
 
@@ -86,5 +85,55 @@ export class Cell {
     const ns = Schema.ns(uri.parts.ns);
     const path = ns.cell(uri.parts.key).path;
     return Cell.factory({ db, path });
+  }
+}
+
+/**
+ * Represetns a single [row] within a namespace.
+ */
+export class Row {
+  public static factory: t.ModelFactory<t.IDbModelRow> = ({ path, db }) => {
+    const initial: t.IDbModelRowProps = {
+      props: undefined,
+      hash: undefined,
+      error: undefined,
+    };
+    return Model.create<t.IDbModelRowProps>({ db, path, initial });
+  };
+
+  public static create(args: { db: t.IDb; uri: string }) {
+    const { db } = args;
+    const uri = Uri.parse<t.IRowUri>(args.uri);
+    if (uri.error) {
+      throw new Error(uri.error.message);
+    }
+    const ns = Schema.ns(uri.parts.ns);
+    const path = ns.row(uri.parts.key).path;
+    return Row.factory({ db, path });
+  }
+}
+
+/**
+ * Represetns a single [column] within a namespace.
+ */
+export class Column {
+  public static factory: t.ModelFactory<t.IDbModelColumn> = ({ path, db }) => {
+    const initial: t.IDbModelColumnProps = {
+      props: undefined,
+      hash: undefined,
+      error: undefined,
+    };
+    return Model.create<t.IDbModelColumnProps>({ db, path, initial });
+  };
+
+  public static create(args: { db: t.IDb; uri: string }) {
+    const { db } = args;
+    const uri = Uri.parse<t.IColumnUri>(args.uri);
+    if (uri.error) {
+      throw new Error(uri.error.message);
+    }
+    const ns = Schema.ns(uri.parts.ns);
+    const path = ns.column(uri.parts.key).path;
+    return Column.factory({ db, path });
   }
 }

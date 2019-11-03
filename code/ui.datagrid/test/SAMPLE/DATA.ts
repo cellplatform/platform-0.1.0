@@ -1,7 +1,7 @@
 import { t } from '../common';
 
 const CELLS: t.IGridData['cells'] = {
-  A1: { value: '=A5' },
+  A1: { value: '=A5', links: { main: 'ns:abc' } },
   A2: { value: '123', props: { style: { bold: true } } },
   A3: { value: 'A3 `code`' },
   A5: { value: '=A2', props: { merge: { colspan: 2 } } },

@@ -45,8 +45,8 @@ describe('func.table', () => {
       expect(res.elapsed).to.be.a('number');
       expect(res.list.length).to.eql(2);
 
-      expect(util.value.cellPropValue(res.map.A2)).to.eql(124);
-      expect(util.value.cellPropValue(res.map.A3)).to.eql(125);
+      expect(util.value.cellData(res.map.A2).getValue()).to.eql(124);
+      expect(util.value.cellData(res.map.A3).getValue()).to.eql(125);
     });
 
     it('calculates with delay', async () => {
@@ -64,8 +64,8 @@ describe('func.table', () => {
       const res1 = await table1.calculate();
       const res2 = await table2.calculate();
 
-      expect(util.value.cellPropValue(res1.map.A2)).to.eql(124);
-      expect(util.value.cellPropValue(res1.map.A3)).to.eql(125);
+      expect(util.value.cellData(res1.map.A2).getValue()).to.eql(124);
+      expect(util.value.cellData(res1.map.A3).getValue()).to.eql(125);
 
       expect(res1.elapsed).to.lessThan(20);
       expect(res2.elapsed).to.greaterThan(20);
@@ -176,11 +176,11 @@ describe('func.table', () => {
       const table = func.table({ ...ctx });
 
       const res1 = await table.calculate({ cells: ['A1'] });
-      expect(util.value.cellPropValue(res1.map.A1)).to.eql(124);
+      expect(util.value.cellData(res1.map.A1).getValue()).to.eql(124);
 
       cells = cells2;
       const res2 = await table.calculate({ cells: 'A1' });
-      expect(util.value.cellPropValue(res2.map.A1)).to.eql(3);
+      expect(util.value.cellData(res2.map.A1).getValue()).to.eql(3);
     });
 
     it.skip('calculates parallel paths at the same time', async () => {
