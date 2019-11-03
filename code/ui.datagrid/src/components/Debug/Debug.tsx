@@ -16,7 +16,6 @@ import {
   value as valueUtil,
 } from '../common';
 import { Button, IButtonProps, ObjectView } from '../primitives';
-import { DebugProps } from './Debug.Props';
 
 const { deleteUndefined } = valueUtil;
 
@@ -291,7 +290,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         {last && this.renderCellPanel()}
         {this.renderNsPanel()}
         {this.renderUiPanel()}
-        <DebugProps />
       </div>
     );
   }
@@ -400,13 +398,15 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       </Label>
     );
 
-    const emptyTitle = key ? `${key}: <empty>` : `<none>`;
-    const title = `${isEmpty ? emptyTitle : 't.ICellData'} ${!isCurrent ? '(last)' : ''}`;
-    const name = isEmpty ? '<none>' : key || '<none>';
+    const emptyTitle = key ? `${key}${isCurrent ? '' : ' (previous)'}: <empty>` : `<none>`;
+    const valueTitle = `t.ICellData${isCurrent ? '' : ' (previous)'}`;
+    const title = isEmpty ? emptyTitle : valueTitle;
+
+    const objectName = isEmpty ? '<none>' : key || '<none>';
     const elObject =
       !isEmpty &&
       this.renderObject({
-        name,
+        name: objectName,
         data,
         // expandPaths: ['$', '$."t.ICellData"'],
       });

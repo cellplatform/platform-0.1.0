@@ -21,7 +21,7 @@ export type DataGrid = datagrid.DataGrid;
 export type ITestGridViewProps = {
   grid: datagrid.Grid;
   events$?: Subject<t.GridEvent>;
-  editorType: t.TestEditorType;
+  editorType?: t.TestEditorType;
   style?: GlamorValue;
   Table?: Handsontable;
 };
@@ -174,12 +174,11 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
   };
 
   private renderEditor = (req: datagrid.IGridFactoryRequest) => {
-    switch (this.props.editorType) {
-      case 'default':
-        return <CellEditor />;
-
-      default:
-        return <DebugEditor />;
+    const { editorType = 'default' } = this.props;
+    if (editorType === 'default') {
+      return <CellEditor />;
+    } else {
+      return <DebugEditor />;
     }
   };
 }

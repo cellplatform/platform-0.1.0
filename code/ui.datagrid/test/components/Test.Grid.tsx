@@ -241,7 +241,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       <div {...styles.base}>
         {this.renderLeft()}
         {this.renderMain()}
-        {this.renderState()}
+        {this.renderRight()}
       </div>
     );
   }
@@ -371,7 +371,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     );
   }
 
-  private renderState() {
+  private renderRight() {
     const data = this.state.data;
     if (!data) {
       return null;
@@ -381,7 +381,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         position: 'relative',
         backgroundColor: COLORS.DARK,
         color: COLORS.WHITE,
-        width: 350,
+        width: 370,
         borderBottom: `solid 1px ${color.format(0.1)}`,
       }),
     };
