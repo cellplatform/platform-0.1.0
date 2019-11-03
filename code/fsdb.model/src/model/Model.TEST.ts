@@ -42,11 +42,18 @@ describe('model', () => {
     all: { query: '**', factory: thingFactory },
   };
 
-  const createOrg = async (options: { put?: boolean } = {}) => {
+  const createOrg = async (
+    options: { put?: boolean; beforeSave?: t.BeforeModelSave<IMyOrgProps> } = {},
+  ) => {
     if (options.put) {
       await db.put(org.path, org.doc);
     }
-    return Model.create<IMyOrgProps, IMyOrgDoc>({ db, path: org.path, initial: org.initial });
+    return Model.create<IMyOrgProps, IMyOrgDoc>({
+      db,
+      path: org.path,
+      initial: org.initial,
+      beforeSave: options.beforeSave,
+    });
   };
 
   const createOrgWithLinks = async (
@@ -490,7 +497,7 @@ describe('model', () => {
       expect(events.length).to.eql(1);
       expect(events[0].type).to.eql('MODEL/saved');
 
-      const e = events[0].payload as t.IModelSaved;
+      const e = events[0].payload as t.IModelSave;
       expect(e.model).to.equal(model);
       expect(e.changes).to.eql(changes);
     });
@@ -528,6 +535,70 @@ describe('model', () => {
 
       expect((await db.getValue<IMyOrgProps>(org.path)).id).to.eql('123');
       expect((await db.getValue<IMyOrgProps>(org.path)).name).to.eql('Hello');
+    });
+  });
+
+  describe('beforeSave', () => {
+    it('fires [beforeSave] event via [save] method', async () => {
+      let count = 0;
+      const beforeSave: t.BeforeModelSave = async args => count++;
+
+      const model = await (await createOrg({ put: false, beforeSave })).ready;
+      model.set({ region: 'US/west' });
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
+      await model.save();
+      expect(count).to.eql(1);
+
+      expect(events.length).to.eql(2);
+      expect(events[0].type).to.eql('MODEL/beforeSave');
+      expect(events[1].type).to.eql('MODEL/saved');
+    });
+
+    it('does not run [beforeSave] when handler not given to model', async () => {
+      const model = await (await createOrg({ put: false })).ready;
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
+      await model.beforeSave();
+      expect(events.length).to.eql(0);
+    });
+
+    it('does not run [beforeSave] when no changes made', async () => {
+      let count = 0;
+      const beforeSave: t.BeforeModelSave = async args => count++;
+
+      const model = await (await createOrg({ put: false, beforeSave })).ready;
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
+      await model.beforeSave();
+      expect(events.length).to.eql(0);
+      expect(count).to.eql(0);
+    });
+
+    it('changes props before saving', async () => {
+      const model1 = await (await createOrg({
+        put: false,
+        beforeSave: async args => {
+          if (args.changes.map.region) {
+            // NB:  The region has been changed.
+            //      Make a modification to it.
+            args.model.props.region = `${args.model.props.region}-1`;
+          }
+        },
+      })).ready;
+
+      model1.props.region = 'US/west';
+      await model1.save();
+
+      const model2 = await (await createOrg({ put: false })).ready;
+      const o = model2.toObject();
+      expect(model2.toObject().region).to.eql('US/west-1'); // NB: Modified value.
     });
   });
 

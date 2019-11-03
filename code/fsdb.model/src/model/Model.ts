@@ -16,6 +16,8 @@ export type IModelArgs<
   events$?: Subject<t.ModelEvent>;
   links?: t.IModelLinkDefs<L>;
   children?: t.IModelChildrenDefs<C>;
+  beforeSave?: t.BeforeModelSave<P, D, L, C>;
+  // beforeSave?: t.BeforeModelSave;
 };
 
 /**
@@ -288,13 +290,39 @@ export class Model<
   }
 
   /**
-   * Set the given props.
+   * Set the given set of property values.
+   * NB: Same as calling `model.props.xxx = xyz` individually on each property.
    */
   public set(props: Partial<P>) {
     if (typeof props === 'object') {
       Object.keys(props).forEach(key => (this.props[key] = props[key]));
     }
     return this;
+  }
+
+  /**
+   * Runs the `beforeSave` handler (if one was given to the constructor)
+   * which prepares the model for saving.
+   */
+  public async beforeSave() {
+    const changes = this.changes;
+    const typename = this.typename;
+    const { beforeSave } = this._args;
+    if (!beforeSave || changes.length === 0) {
+      return {};
+    }
+
+    // Invoke handler.
+    const payload: t.IModelSave<P, D, L, C> = { model: this, changes };
+    await beforeSave(payload);
+
+    // Finish up.
+    this.fire({
+      type: 'MODEL/beforeSave',
+      typename,
+      payload,
+    });
+    return {};
   }
 
   /**
@@ -305,6 +333,9 @@ export class Model<
     if (this.exists && !this.isChanged) {
       return { saved: false };
     }
+
+    // Run BEFORE operation.
+    await this.beforeSave();
 
     // Save to the DB.
     const changes = this.changes;
