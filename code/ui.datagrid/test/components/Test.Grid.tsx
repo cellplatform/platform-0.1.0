@@ -338,6 +338,15 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
             },
           });
         })}
+        {this.button('screen: C2 (child ns)', () => {
+          this.grid.command({
+            command: 'OVERLAY/show',
+            props: {
+              cell: 'C2',
+              screen: { type: 'Namespace' },
+            },
+          });
+        })}
 
         <Hr margin={5} />
         <Label>links</Label>

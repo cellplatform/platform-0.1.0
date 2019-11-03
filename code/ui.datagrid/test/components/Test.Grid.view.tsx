@@ -2,19 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import {
-  CellEditor,
-  css,
-  datagrid,
-  GlamorValue,
-  Handsontable as HandsontableLib,
-  markdown,
-  color,
-  t,
-  util,
-} from '../common';
-import { DebugEditor } from './Debug.Editor';
-import { MyScreen } from './MyScreen';
+import { datagrid, GlamorValue, Handsontable as HandsontableLib, t } from '../common';
+import { factory } from '../SAMPLE';
 
 export type DataGrid = datagrid.DataGrid;
 
@@ -44,28 +33,6 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
       // console.log('🌳 EVENT', e.type, e.payload);
     });
-
-    // keyboard$
-    //   .pipe(
-    //     filter(e => e.metaKey && !e.shiftKey && !e.altKey && !e.ctrlKey),
-    //     filter(e => e.key.toUpperCase() === 'B'),
-    //   )
-    //   .subscribe(e => {
-    //     console.log('e', e);
-    //     // this.grid.changeCells({ A1: { value: 'hello', props: { bold: true } } });
-    //     const selection = this.grid.selection;
-    //     console.log('selection', selection);
-    //     if (selection && selection.cell) {
-    //       const cell = this.grid.cell(selection.cell);
-    //       const value = cell.value;
-    //       const props = (cell.props || {}) as any;
-    //       const bold = props.bold ? false : true;
-    //       const change = { [cell.key]: { value, props: { ...props, bold } } };
-    //       console.log('change', change);
-    //       this.grid.changeCells(change);
-    //       // cell.props = {...cell.props}
-    //     }
-    //   });
 
     events$
       .pipe(
@@ -129,7 +96,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
     return (
       <datagrid.DataGrid
         grid={this.props.grid}
-        factory={this.factory}
+        factory={factory}
         Handsontable={this.Table}
         events$={this.events$}
         initial={{ selection: 'A1' }}
@@ -138,57 +105,4 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
       />
     );
   }
-
-  private factory: t.GridFactory = req => {
-    const cell = req.cell;
-
-    if (req.type === 'EDITOR') {
-      return this.renderEditor(req);
-    }
-
-    if (req.type === 'CELL') {
-      const view = cell.props.view;
-      if (view && (!view.cell || !view.cell.type)) {
-        // Default view.
-        return formatValue(cell.data);
-      } else {
-        const styles = {
-          base: css({
-            Absolute: 0,
-            backgroundColor: 'rgba(255, 0, 0, 0.1)',
-            fontSize: 11,
-            Flex: 'center-center',
-          }),
-        };
-        const type = view && view.cell ? view.cell.type : 'Unknown';
-        return <div {...styles.base}>CUSTOM: {type}</div>;
-      }
-    }
-
-    if (req.type === 'SCREEN') {
-      return <MyScreen />;
-    }
-
-    console.log(`Factory type '${req.type}' not supported by test.`, req);
-    return null;
-  };
-
-  private renderEditor = (req: datagrid.IGridFactoryRequest) => {
-    const { editorType = 'default' } = this.props;
-    if (editorType === 'default') {
-      return <CellEditor />;
-    } else {
-      return <DebugEditor />;
-    }
-  };
-}
-
-/**
- * [Helpers]
- */
-function formatValue(cell: t.IGridCellData) {
-  let value = cell.props && cell.props.value ? cell.props.value : cell.value;
-  value = typeof value === 'string' && !value.startsWith('=') ? markdown.toHtmlSync(value) : value;
-  value = typeof value === 'object' ? JSON.stringify(value) : value;
-  return value;
 }
