@@ -386,6 +386,23 @@ describe('model', () => {
       expect(model.changes.length).to.eql(0);
     });
 
+    it('change not registered if value is current', async () => {
+      const model = await createOrg({ put: true });
+      await model.ready;
+      await model.set({ name: 'foo', region: 'US/west' }).save();
+      expect(model.isChanged).to.eql(false);
+
+      model.props.name = 'foo'; //         Same as current.
+      model.set({ region: 'US/west' }); // Same as current.
+
+      expect(model.changes.length).to.eql(2); // NB: Changes are registered, but all values are current.
+      expect(model.isChanged).to.eql(false);
+
+      await model.save();
+      expect(model.changes.length).to.eql(0); // Saving resets the changes.
+      expect(model.isChanged).to.eql(false);
+    });
+
     it('changed event', async () => {
       const model = await createOrg({ put: true });
       await model.ready;
@@ -597,7 +614,6 @@ describe('model', () => {
       await model1.save();
 
       const model2 = await (await createOrg({ put: false })).ready;
-      const o = model2.toObject();
       expect(model2.toObject().region).to.eql('US/west-1'); // NB: Modified value.
     });
   });

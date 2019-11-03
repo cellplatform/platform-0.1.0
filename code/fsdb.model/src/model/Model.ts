@@ -111,7 +111,13 @@ export class Model<
   }
 
   public get isChanged() {
-    return (this._changes || []).length > 0;
+    const list = this._changes || [];
+    if (list.length === 0) {
+      return false;
+    } else {
+      // Ensure registered changes differ from current values.
+      return list.every(change => !R.equals(this.doc[change.field], change.value.to));
+    }
   }
 
   public get exists() {
@@ -331,6 +337,7 @@ export class Model<
   public async save() {
     this.throwIfDisposed('save');
     if (this.exists && !this.isChanged) {
+      this._changes = [];
       return { saved: false };
     }
 
