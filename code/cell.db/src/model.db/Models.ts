@@ -1,5 +1,6 @@
 import { t, Model, coord } from '../common';
 import { Schema } from '../schema';
+import * as rules from './rules';
 
 const Uri = coord.Uri;
 const query = Schema.query;
@@ -71,6 +72,7 @@ export class Cell {
       path,
       initial,
       links,
+      beforeSave: rules.beforeCellSave,
     });
   };
 

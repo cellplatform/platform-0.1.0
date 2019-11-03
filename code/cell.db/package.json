@@ -14,6 +14,7 @@
   "dependencies": {
     "@platform/cell.coord": "0.5.27",
     "@platform/cell.types": "0.0.24",
+    "@platform/cell.value": "0.0.16",
     "@platform/fsdb.model": "0.2.1",
     "@platform/fsdb.types": "0.3.10",
     "@platform/libs": "0.1.3",

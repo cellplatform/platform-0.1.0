@@ -818,7 +818,7 @@ describe('model', () => {
       const things = model.links.things;
       things.link(['THING/2']);
       things.link(['THING/2']);
-      things.link(['THING/2']);
+      things.link(['THING/2']); // De-duped
 
       expect(model.changes.length).to.eql(1); // Called 3-times, only one change registered.
       expect(model.isChanged).to.eql(true);
@@ -829,7 +829,7 @@ describe('model', () => {
 
       things.link(['THING/2', 'THING/1']); // Existing ref not duplicated. Change registered.
       expect(model.changes.length).to.eql(2);
-      expect((await model.links.things).map(m => m.path)).to.eql(['THING/2', 'THING/1']);
+      expect((await model.links.things).map(m => m.path)).to.eql(['THING/1', 'THING/2']);
 
       things.link(['THING/2', 'THING/1']); // No change.
       things.link(['THING/1', 'THING/2']); // No change.
@@ -847,10 +847,10 @@ describe('model', () => {
       expect((await db.getValue<any>(org.path)).refs).to.eql(undefined);
       expect((await model.save()).saved).to.eql(true);
       expect((await model.save()).saved).to.eql(false);
-      expect((await db.getValue<any>(org.path)).refs).to.eql(['THING/2', 'THING/1', 'THING/3']);
-      expect(model.doc.refs).to.eql(['THING/2', 'THING/1', 'THING/3']);
+      expect((await db.getValue<any>(org.path)).refs).to.eql(['THING/1', 'THING/2', 'THING/3']);
+      expect(model.doc.refs).to.eql(['THING/1', 'THING/2', 'THING/3']);
       expect(model.isChanged).to.eql(false);
-      expect((await model.links.things).map(m => m.path)).to.eql(['THING/2', 'THING/1', 'THING/3']);
+      expect((await model.links.things).map(m => m.path)).to.eql(['THING/1', 'THING/2', 'THING/3']);
 
       /**
        * Unlink: single
@@ -860,7 +860,7 @@ describe('model', () => {
       expect(model.changes.map).to.eql({ refs: ['THING/1', 'THING/3'] });
       expect((await model.links.things).map(m => m.path)).to.eql(['THING/1', 'THING/3']);
 
-      expect(model.doc.refs).to.eql(['THING/2', 'THING/1', 'THING/3']); // Change not commited yet.
+      expect(model.doc.refs).to.eql(['THING/1', 'THING/2', 'THING/3']); // Change not commited yet.
 
       await model.save();
       expect(model.doc.refs).to.eql(['THING/1', 'THING/3']);
@@ -883,6 +883,17 @@ describe('model', () => {
       expect((await db.getValue<any>(org.path)).refs).to.eql(undefined);
       expect(await model.links.things).to.eql([]);
       expect(model.isChanged).to.eql(false);
+    });
+
+    it('link and unlink (before saving)', async () => {
+      const model = await createOrgWithLinks();
+      const things = model.links.things;
+      things.link(['THING/2', 'THING/1', 'THING/3']);
+
+      expect(model.changes.map.refs).to.eql(['THING/1', 'THING/2', 'THING/3']);
+      things.unlink(['THING/2']);
+
+      expect(model.changes.map.refs).to.eql(['THING/1', 'THING/3']);
     });
   });
 

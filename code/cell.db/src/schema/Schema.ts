@@ -13,6 +13,8 @@ export type UriString = string;
  * Schema of DB paths.
  */
 export class Schema {
+  public static Uri = Uri;
+
   public static ns = (id?: string) => new NsSchema({ id });
 
   public static query = {

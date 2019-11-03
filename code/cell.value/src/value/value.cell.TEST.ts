@@ -418,6 +418,9 @@ describe('cell', () => {
 
       test({ links: {} }, 'foo', 'ns:abc', { links: { foo: 'ns:abc' } });
       test({ links: {} }, 'foo', '  ns:abc    ', { links: { foo: 'ns:abc' } });
+
+      // Changed
+      test({ links: { foo: 'ns:foo' } }, 'foo', 'ns:abc', { links: { foo: 'ns:abc' } });
       test({ links: { foo: 'ns:abc', bar: 'ns:yo' } }, 'foo', 'ns:def', {
         links: { foo: 'ns:def', bar: 'ns:yo' },
       });
@@ -427,6 +430,79 @@ describe('cell', () => {
       test({ links: { foo: 'ns:abc' } }, 'foo', '', undefined);
       test({ links: { foo: 'ns:abc' } }, 'foo', '  ', undefined);
       test({ value: 123, links: { foo: 'ns:abc' } }, 'foo', undefined, { value: 123 });
+    });
+
+    it('mergeLinks', () => {
+      const test = (
+        cell: t.ICellData<any> | undefined,
+        links?: { [key: string]: string | undefined },
+        expected?: any,
+      ) => {
+        const data = value.cellData(cell);
+        const res = data.mergeLinks(links);
+        expect(res).to.eql(expected);
+      };
+      test(undefined, {}, undefined);
+      test({}, { foo: 'ns:foo' }, { links: { foo: 'ns:foo' } });
+      test({}, { foo: 'ns:foo', bar: 'ns:bar' }, { links: { foo: 'ns:foo', bar: 'ns:bar' } });
+      test({ links: {} }, { foo: 'ns:abc' }, { links: { foo: 'ns:abc' } });
+      test({ links: {} }, { foo: '  ns:abc    ' }, { links: { foo: 'ns:abc' } });
+
+      test(
+        { links: { foo: 'ns:abc', bar: 'ns:yo' } },
+        { foo: 'ns:def' },
+        {
+          links: { foo: 'ns:def', bar: 'ns:yo' },
+        },
+      );
+
+      // Change.
+      test({ links: { foo: 'ns:foo' } }, { foo: 'ns:bar' }, { links: { foo: 'ns:bar' } });
+
+      // Remove.
+      test({ links: { foo: 'ns:abc' } }, { foo: undefined }, undefined);
+      test({ value: 123, links: { foo: 'ns:abc' } }, { foo: undefined }, { value: 123 });
+
+      test(
+        { links: { foo: 'ns:foo-1', bar: 'ns:bar' } },
+        { foo: 'ns:foo-2', bar: undefined },
+        { links: { foo: 'ns:foo-2' } },
+      );
+
+      // Clear all.
+      test(
+        { links: { foo: 'ns:foo', bar: 'ns:bar' } },
+        { foo: undefined, bar: undefined },
+        undefined,
+      );
+    });
+
+    it('mergeLinks: delete undefined', () => {
+      const before = {
+        value: '=A2',
+        props: undefined,
+        links: { foo: 'ns:foo', bar: 'ns:bar', baz: 'data:random' },
+      };
+
+      const links1 = before.links || {};
+      expect(links1.foo).to.eql('ns:foo');
+      expect(links1.bar).to.eql('ns:bar');
+      expect(links1.baz).to.eql('data:random'); // Unchanged.
+
+      const after = value.cellData(before).mergeLinks({
+        foo: 'ns:foobar', // Changed.
+        bar: undefined, //   Removed.
+        zoo: 'ns:zoo', //    Added.
+      }) as t.ICellData;
+
+      const links2 = after.links || {};
+
+      expect(after.value).to.eql('=A2');
+
+      expect(links2.foo).to.eql('ns:foobar'); //    Changed.
+      expect(links2.bar).to.eql(undefined); //      Removed.
+      expect(links2.baz).to.eql('data:random'); //  Unchanged.
+      expect(links2.zoo).to.eql('ns:zoo'); //       Added.
     });
   });
 });

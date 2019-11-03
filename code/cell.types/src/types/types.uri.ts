@@ -1,6 +1,6 @@
 import { t } from '../common';
 
-export type IUriMap = t.IMap<string>;
+export type IUriMap = { [key: string]: string };
 
 /**
  * URI Parts (parsed).

@@ -439,31 +439,42 @@ export class Model<
     // Add and remove API for model-relationship links.
     if (isOne) {
       promise.link = (path: string) => this.changeField('LINK', key, path);
-      promise.unlink = () => this.changeField('LINK', key, undefined);
+      promise.unlink = () => {
+        this.changeField('LINK', key, undefined);
+      };
     }
     if (isMany) {
-      const getChanges = (field: string, paths?: string[]) => {
+      const getChanges = (op: 'LINK' | 'UNLINK', field: string, paths?: string[]) => {
         const changes = this.changes;
         const changeExists = Object.keys(this.changes.map).includes(field);
-        const current = this.currentValue<string[]>(field) || [];
+        const current = [...(this.currentValue<string[]>(field) || [])].sort();
         const isChanged =
           changeExists && Array.isArray(paths)
-            ? !paths.every(path => current.includes(path))
+            ? op === 'LINK'
+              ? !paths.every(path => current.includes(path))
+              : !R.equals(current, paths.sort())
             : true;
-        return { changes, isChanged, current, paths: R.uniq([...current, ...(paths || [])]) };
+        return {
+          changes,
+          isChanged,
+          current,
+          paths: R.uniq([...current, ...(paths || [])]).sort(),
+        };
       };
 
       promise.link = (paths: string[]) => {
+        paths = [...paths].sort();
         if ((paths || []).length > 0) {
-          const changes = getChanges(key, paths);
+          const changes = getChanges('LINK', key, paths);
           if (changes.isChanged) {
             this.changeField('LINK', key, changes.paths);
           }
         }
       };
       promise.unlink = (paths?: string[]) => {
+        paths = [...(paths || [])].sort();
         paths = (paths || []).length === 0 ? undefined : paths;
-        const changes = getChanges(key, paths);
+        const changes = getChanges('UNLINK', key, paths);
         if (Array.isArray(paths)) {
           if (changes.isChanged) {
             // Remove specific links.

@@ -1,5 +1,5 @@
-import { Row } from '.';
-import { expect, getTestDb } from '../test';
+import { Row } from '..';
+import { expect, getTestDb } from '../../test';
 
 describe('model.Row', () => {
   it('create', async () => {
