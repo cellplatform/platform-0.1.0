@@ -278,42 +278,19 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   }
 
   private renderBody() {
-    const styles = {
-      base: css({ padding: 12, marginBottom: 50 }),
-    };
-
-    const refsKeys = {
-      out: this.state.outgoing,
-      in: this.state.incoming,
-      'sorted (topological)': this.state.order,
-    };
-
     const last = this.selectedCell.last;
-    const elLast = last && <Panel title={'Cell'}>{this.renderLastCell()}</Panel>;
-
+    const styles = {
+      base: css({
+        padding: 12,
+        marginBottom: 50,
+      }),
+    };
     return (
       <div {...styles.base}>
         {this.renderSelection()}
-        {elLast}
-
-        <Panel title={'Namespace'}>
-          <Label>t.INsData</Label>
-          {this.renderObject({ name: 'data', data: this.state.data })}
-          <Hr />
-          <Label>t.IRefs</Label>
-          {this.renderObject({ name: 'refs', data: this.state.refs })}
-          <HrDashed />
-          {this.renderObject({
-            name: 'refs (keys)',
-            data: refsKeys,
-            // expandPaths: ['$', '$.in', '$.out'],
-          })}
-        </Panel>
-
-        <Panel title={'UI'}>
-          {/* <Label>t.IGrid</Label> */}
-          {this.renderObject({ name: 't.IGrid', data: this.state.grid, expandLevel: 0 })}
-        </Panel>
+        {last && this.renderCellPanel()}
+        {this.renderNsPanel()}
+        {this.renderUiPanel()}
         <DebugProps />
       </div>
     );
@@ -374,7 +351,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     );
   }
 
-  private renderLastCell() {
+  private renderCellPanel() {
     const last = this.selectedCell.last;
     if (!last || !last.key) {
       // return null;
@@ -435,13 +412,48 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       });
 
     return (
-      <div {...styles.base}>
+      <Panel style={styles.base} title={'Cell'}>
         <div {...styles.title}>
           <Label color={isEmpty ? 0.3 : 0.5}>{title}</Label>
           {elHash}
         </div>
         {elObject}
-      </div>
+      </Panel>
+    );
+  }
+
+  private renderNsPanel() {
+    const refsKeys = {
+      out: this.state.outgoing,
+      in: this.state.incoming,
+      'sorted (topological)': this.state.order,
+    };
+    return (
+      <Panel title={'Namespace'}>
+        <Label>t.INsData</Label>
+        {this.renderObject({ name: 'data', data: this.state.data })}
+        <Hr />
+        <Label>t.IRefs</Label>
+        {this.renderObject({ name: 'refs', data: this.state.refs })}
+        <HrDashed />
+        {this.renderObject({
+          name: 'refs (keys)',
+          data: refsKeys,
+          // expandPaths: ['$', '$.in', '$.out'],
+        })}
+      </Panel>
+    );
+  }
+
+  private renderUiPanel() {
+    return (
+      <Panel title={'UI'}>
+        {this.renderObject({
+          name: 't.IGrid',
+          data: this.state.grid,
+          expandLevel: 0,
+        })}
+      </Panel>
     );
   }
 
@@ -532,7 +544,7 @@ const Badge = (props: {
   return <div {...css(styles.base, props.style)}>{props.children}</div>;
 };
 
-const Panel = (props: { title?: string; children?: React.ReactNode }) => {
+const Panel = (props: { title?: string; children?: React.ReactNode; style?: GlamorValue }) => {
   const styles = {
     base: css({
       position: 'relative',
@@ -559,7 +571,7 @@ const Panel = (props: { title?: string; children?: React.ReactNode }) => {
     }),
   };
   return (
-    <div {...styles.base}>
+    <div {...css(styles.base, props.style)}>
       <div {...styles.title}>
         <div />
 
