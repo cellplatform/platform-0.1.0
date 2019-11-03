@@ -328,25 +328,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           this.grid.command({ command: 'OVERLAY/hide', props: {} }),
         )}
         {this.button('screen: A1 (none defined)', () => this.overlayFromCell('A1'))}
-        {this.button('screen: C1 (via cell def)', () => this.overlayFromCell('C1'))}
-        {this.button('screen: C2 (via explicit command)', () => {
-          this.grid.command({
-            command: 'OVERLAY/show',
-            props: {
-              cell: 'C2',
-              screen: { type: 'MyScreen', className: 'my-custom' },
-            },
-          });
-        })}
-        {this.button('screen: C2 (child ns)', () => {
-          this.grid.command({
-            command: 'OVERLAY/show',
-            props: {
-              cell: 'C2',
-              screen: { type: 'Namespace' },
-            },
-          });
-        })}
+        {this.button('screen: C1 (sample)', () => this.overlayFromCell('C1'))}
+        {this.button('screen: C2 (child namespace)', () => this.overlayFromCell('C2'))}
 
         <Hr margin={5} />
         <Label>links</Label>

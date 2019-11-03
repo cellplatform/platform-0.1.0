@@ -31,6 +31,12 @@ const CELLS: t.IGridData['cells'] = {
       },
     },
   },
+  C2: {
+    value: 'Child Namespace',
+    props: {
+      view: { screen: { type: 'GRID' } },
+    },
+  },
   C4: { value: 'Hello' },
   C5: { value: 'Hello', props: { merge: { rowspan: 2 } } },
 };
