@@ -885,15 +885,21 @@ describe('model', () => {
       expect(model.isChanged).to.eql(false);
     });
 
-    it('link and unlink (before saving)', async () => {
+    it('link and unlink (no saving)', async () => {
       const model = await createOrgWithLinks();
       const things = model.links.things;
-      things.link(['THING/2', 'THING/1', 'THING/3']);
 
-      expect(model.changes.map.refs).to.eql(['THING/1', 'THING/2', 'THING/3']);
+      things.link(['THING/2', 'THING/1', 'THING/3', 'THING/4']);
+      expect(model.changes.map.refs).to.eql(['THING/1', 'THING/2', 'THING/3', 'THING/4']);
+
       things.unlink(['THING/2']);
+      expect(model.changes.map.refs).to.eql(['THING/1', 'THING/3', 'THING/4']);
 
-      expect(model.changes.map.refs).to.eql(['THING/1', 'THING/3']);
+      things.unlink(['THING/3', 'THING/1', 'XXX']);
+      expect(model.changes.map.refs).to.eql(['THING/4']);
+
+      things.unlink(['THING/4']);
+      expect(model.changes.map.refs).to.eql(undefined);
     });
   });
 

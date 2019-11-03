@@ -452,7 +452,7 @@ export class Model<
           changeExists && Array.isArray(paths)
             ? op === 'LINK'
               ? !paths.every(path => current.includes(path))
-              : !R.equals(current, paths.sort())
+              : paths.some(path => current.includes(path))
             : true;
         return {
           changes,
@@ -471,6 +471,7 @@ export class Model<
           }
         }
       };
+
       promise.unlink = (paths?: string[]) => {
         paths = [...(paths || [])].sort();
         paths = (paths || []).length === 0 ? undefined : paths;

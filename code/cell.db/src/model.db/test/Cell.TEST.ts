@@ -65,5 +65,21 @@ describe('model.Cell', () => {
     // Reload.
     const model2 = await Cell.create({ db, uri }).ready;
     expect(model2.doc.nsRefs).to.eql(['NS/foobar', 'NS/zoo']);
+
+    // Clear all links.
+    model2.set({
+      links: (
+        util.cellData(model2.toObject()).mergeLinks({
+          foo: undefined,
+          zoo: undefined,
+          bazza: undefined, // NB: Random field, does not actually exist (no effect).
+        }) || {}
+      ).links,
+    });
+    await model2.save();
+
+    // Reload.
+    const model3 = await Cell.create({ db, uri }).ready;
+    expect(model3.doc.nsRefs).to.eql(undefined);
   });
 });
