@@ -352,9 +352,13 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
   private renderLastSelection() {
     const last = this.lastSelection;
+
+    if (!last) {
+      return null;
+    }
+
     const current = this.grid.selection;
     const isCurrent = last.cell === current.cell;
-    const title = `cell ${!isCurrent ? '(last)' : ''}`;
 
     const key = last.cell || current.cell || '';
     const cell = { ...this.grid.data.cells[key] } || undefined;
@@ -363,6 +367,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       delete cell.hash;
     }
 
+    const isEmpty = cell ? Object.keys(cell).length === 0 : false;
     const value = this.getValueSync(key) || '';
     const isFormula = func.isFormula(value);
     const ast = isFormula ? coord.ast.toTree(value) : undefined;
@@ -370,7 +375,9 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const styles = {
       base: css({}),
       title: css({ Flex: 'horizontal-center-spaceBetween' }),
-      hash: css({}),
+      hash: css({
+        color: COLORS.CLI.YELLOW,
+      }),
     };
 
     let data: any = key ? { 't.ICellData': cell } : {};
@@ -382,17 +389,23 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       </Label>
     );
 
+    const title = `${isEmpty ? 'cell: none' : 't.ICellData'} ${!isCurrent ? '(last)' : ''}`;
+    const name = isEmpty ? '<none>' : key || '<none>';
+    const elObject =
+      !isEmpty &&
+      this.renderObject({
+        name,
+        data,
+        // expandPaths: ['$', '$."t.ICellData"'],
+      });
+
     return (
       <div {...styles.base}>
         <div {...styles.title}>
           <Label>{title}</Label>
           {elHash}
         </div>
-        {this.renderObject({
-          name: key || 'none',
-          data,
-          // expandPaths: ['$', '$."t.ICellData"'],
-        })}
+        {elObject}
       </div>
     );
   }
@@ -444,7 +457,7 @@ const Label = (props: { children?: React.ReactNode; tooltip?: string; style?: Gl
   const styles = {
     base: css({
       fontSize: 12,
-      opacity: 0.35,
+      color: color.format(0.5),
       marginBottom: 6,
       fontFamily: constants.MONOSPACE.FAMILY,
     }),

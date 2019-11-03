@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, GlamorValue } from '../../common';
 
-import { Props } from '@platform/cell.ui.props';
+// import { Props } from '@platform/cell.ui.props';
 
 export type IDebugPropsProps = { style?: GlamorValue };
 export type IDebugPropsState = {};
@@ -36,7 +36,7 @@ export class DebugProps extends React.PureComponent<IDebugPropsProps, IDebugProp
     const styles = { base: css({}) };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <Props />
+        <div>Props</div>
       </div>
     );
   }
