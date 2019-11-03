@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import {
+  defaultValue,
   color,
   COLORS,
   constants,
@@ -87,24 +88,39 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     return this.props.theme || 'DARK';
   }
 
-  public get lastSelection(): t.IGridSelection {
-    return this.state.lastSelection || { ranges: [] };
-  }
-
   public get selectedCell() {
-    const key = this.grid.selection.cell || '';
+    const self = this; // tslint:disable-line
+    const formatSelection = this.formatSelection;
+    return {
+      get current() {
+        return formatSelection(self.grid.selection);
+      },
+      get last() {
+        const selection: t.IGridSelection = self.state.lastSelection || { ranges: [] };
+        return formatSelection(selection);
+      },
+    };
+  }
+  private formatSelection = (
+    selection: t.IGridSelection,
+    options: { maxValueLength?: number } = {},
+  ) => {
+    const { maxValueLength = 30 } = options;
+
+    const ranges = selection.ranges;
+    const key = selection.cell || '';
     const value = this.getValueSync(key) || '';
     const cell = this.grid.data.cells[key];
     const isEmpty = !Boolean(value);
 
     // Display string.
-    const MAX = 30;
+    const MAX = maxValueLength;
     let display = value.length > MAX ? `${value.substring(0, MAX)}...` : value;
     display = isEmpty ? '<empty>' : display;
 
     // Finish up.
-    return { key, value, cell, display, isEmpty };
-  }
+    return { key, value, cell, display, isEmpty, ranges };
+  };
 
   /**
    * [Methods]
@@ -154,8 +170,11 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     return deleteUndefined({ ns, cells, rows, columns });
   }
 
-  private formatHash(hash?: string) {
-    return hash ? `${hash.substring(0, 12)}..${hash.substring(hash.length - 5)}` : hash;
+  private formatHash(hash?: string, options: { trimPrefix?: string } = {}) {
+    const { trimPrefix } = options;
+    hash = hash && trimPrefix ? hash.replace(new RegExp(`^${trimPrefix}`), '') : hash;
+    const length = trimPrefix ? 5 : 12;
+    return hash ? `${hash.substring(0, length)}..${hash.substring(hash.length - 5)}` : hash;
   }
 
   private async updateRefs(args: { force?: boolean } = {}) {
@@ -264,32 +283,37 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     };
 
     const refsKeys = {
-      in: this.state.incoming,
       out: this.state.outgoing,
+      in: this.state.incoming,
       'sorted (topological)': this.state.order,
     };
+
+    const last = this.selectedCell.last;
+    const elLast = last && <Panel title={'Cell'}>{this.renderLastCell()}</Panel>;
 
     return (
       <div {...styles.base}>
         {this.renderSelection()}
-        <Hr />
-        {this.renderLastSelection()}
-        <Hr />
-        <Label>t.IGrid</Label>
-        {this.renderObject({ name: 'ui.datagrid', data: this.state.grid })}
-        <Hr />
-        <Label>t.INsData</Label>
-        {this.renderObject({ name: 'data', data: this.state.data })}
-        <Hr />
-        <Label>t.IRefs</Label>
-        {this.renderObject({ name: 'refs', data: this.state.refs })}
-        <HrDashed />
-        {this.renderObject({
-          name: 'refs (keys)',
-          data: refsKeys,
-          // expandPaths: ['$', '$.in', '$.out'],
-        })}
-        <Hr />
+        {elLast}
+
+        <Panel title={'Namespace'}>
+          <Label>t.INsData</Label>
+          {this.renderObject({ name: 'data', data: this.state.data })}
+          <Hr />
+          <Label>t.IRefs</Label>
+          {this.renderObject({ name: 'refs', data: this.state.refs })}
+          <HrDashed />
+          {this.renderObject({
+            name: 'refs (keys)',
+            data: refsKeys,
+            // expandPaths: ['$', '$.in', '$.out'],
+          })}
+        </Panel>
+
+        <Panel title={'UI'}>
+          {/* <Label>t.IGrid</Label> */}
+          {this.renderObject({ name: 't.IGrid', data: this.state.grid, expandLevel: 0 })}
+        </Panel>
         <DebugProps />
       </div>
     );
@@ -310,7 +334,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   }
 
   private renderSelection() {
-    const selection = this.selectedCell;
+    const selection = this.selectedCell.current;
     const styles = {
       base: css({
         fontSize: 12,
@@ -350,17 +374,16 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     );
   }
 
-  private renderLastSelection() {
-    const last = this.lastSelection;
-
-    if (!last) {
-      return null;
+  private renderLastCell() {
+    const last = this.selectedCell.last;
+    if (!last || !last.key) {
+      // return null;
     }
 
-    const current = this.grid.selection;
-    const isCurrent = last.cell === current.cell;
+    const current = this.selectedCell.current;
+    const isCurrent = last.key === current.key;
 
-    const key = last.cell || current.cell || '';
+    const key = last.key || '';
     const cell = { ...this.grid.data.cells[key] } || undefined;
     const hash = cell ? cell.hash : undefined;
     if (cell) {
@@ -374,22 +397,34 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
     const styles = {
       base: css({}),
-      title: css({ Flex: 'horizontal-center-spaceBetween' }),
+      title: css({
+        position: 'relative',
+        cursor: 'default',
+      }),
       hash: css({
         color: COLORS.CLI.YELLOW,
+        Absolute: [0, 0, null, null],
       }),
     };
 
-    let data: any = key ? { 't.ICellData': cell } : {};
+    const refs = {
+      out: this.state.outgoing,
+      in: this.state.incoming,
+    };
+    let data: any = key ? { 't.ICellData': cell, refs } : {};
     data = ast ? { ...data, ast } : data;
 
     const elHash = hash && (
       <Label tooltip={hash} style={styles.hash}>
-        {this.formatHash(hash)}
+        <Badge backgroundColor={COLORS.CLI.YELLOW} color={COLORS.DARK}>
+          sha256
+        </Badge>
+        {this.formatHash(hash, { trimPrefix: 'sha256-' })}
       </Label>
     );
 
-    const title = `${isEmpty ? 'cell: none' : 't.ICellData'} ${!isCurrent ? '(last)' : ''}`;
+    const emptyTitle = key ? `${key}: <empty>` : `<none>`;
+    const title = `${isEmpty ? emptyTitle : 't.ICellData'} ${!isCurrent ? '(last)' : ''}`;
     const name = isEmpty ? '<none>' : key || '<none>';
     const elObject =
       !isEmpty &&
@@ -402,7 +437,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     return (
       <div {...styles.base}>
         <div {...styles.title}>
-          <Label>{title}</Label>
+          <Label color={isEmpty ? 0.3 : 0.5}>{title}</Label>
           {elHash}
         </div>
         {elObject}
@@ -453,18 +488,86 @@ const LinkButton = (props: IButtonProps) => {
   return <Button {...props} style={styles.base} />;
 };
 
-const Label = (props: { children?: React.ReactNode; tooltip?: string; style?: GlamorValue }) => {
+const Label = (props: {
+  children?: React.ReactNode;
+  tooltip?: string;
+  color?: string | number;
+  style?: GlamorValue;
+}) => {
   const styles = {
     base: css({
-      fontSize: 12,
-      color: color.format(0.5),
-      marginBottom: 6,
       fontFamily: constants.MONOSPACE.FAMILY,
+      fontSize: 12,
+      color: color.format(defaultValue(props.color, 0.5)),
+      marginBottom: 6,
+      boxSizing: 'border-box',
     }),
   };
   return (
     <div {...css(styles.base, props.style)} title={props.tooltip}>
       {props.children}
+    </div>
+  );
+};
+
+const Badge = (props: {
+  children?: React.ReactNode;
+  color: string;
+  backgroundColor: string;
+  style?: GlamorValue;
+}) => {
+  const styles = {
+    base: css({
+      boxSizing: 'border-box',
+      display: 'inline-block',
+      color: props.color,
+      backgroundColor: props.backgroundColor,
+      borderRadius: 2,
+      marginRight: 5,
+      PaddingX: 3,
+      PaddignY: 2,
+      border: `solid 1px ${color.format(0.2)}`,
+    }),
+  };
+  return <div {...css(styles.base, props.style)}>{props.children}</div>;
+};
+
+const Panel = (props: { title?: string; children?: React.ReactNode }) => {
+  const styles = {
+    base: css({
+      position: 'relative',
+      boxSizing: 'border-box',
+      borderRadius: 4,
+      backgroundColor: color.format(-0.1),
+      MarginY: 15,
+      boxShadow: `inset 0 0 10px 0 ${color.format(-0.3)}`,
+      border: `solid 1px ${color.format(-0.4)}`,
+    }),
+    title: css({
+      fontSize: 12,
+      marginBottom: 10,
+      paddingBottom: 3,
+      PaddingY: 8,
+      Flex: 'center-spaceBetween',
+      borderBottom: `solid 1px ${color.format(-0.3)}`,
+      color: color.format(0.5),
+      backgroundColor: color.format(-0.1),
+    }),
+    children: css({
+      padding: 10,
+      paddingTop: 0,
+    }),
+  };
+  return (
+    <div {...styles.base}>
+      <div {...styles.title}>
+        <div />
+
+        {props.title || 'Untitled'}
+
+        <div />
+      </div>
+      <div {...styles.children}>{props.children}</div>
     </div>
   );
 };

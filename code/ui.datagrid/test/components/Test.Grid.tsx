@@ -381,7 +381,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         position: 'relative',
         backgroundColor: COLORS.DARK,
         color: COLORS.WHITE,
-        width: 300,
+        width: 350,
         borderBottom: `solid 1px ${color.format(0.1)}`,
       }),
     };
