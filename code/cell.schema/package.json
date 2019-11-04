@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.schema",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "URI and database schemas for the `cell.os`.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -29,6 +29,5 @@
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }
