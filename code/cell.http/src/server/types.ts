@@ -11,3 +11,7 @@ export type IResNs = {
 export type IResNsData = IResNs & {
   data: t.INsData;
 };
+
+export type IReqNsData = {
+  data?: Partial<t.INsData>;
+};

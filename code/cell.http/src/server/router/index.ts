@@ -16,11 +16,16 @@ export function init(args: { db: t.IDb; router: t.IRouter; title?: string }) {
    * Wildcard (404).
    */
   router.get('*', async req => {
-    const { url } = req;
+    const { url, method } = req;
     const status = 404;
     return {
       status,
-      data: { status, message: 'Not found', url },
+      data: {
+        status,
+        method,
+        message: 'Not found',
+        url,
+      },
     };
   });
 }
