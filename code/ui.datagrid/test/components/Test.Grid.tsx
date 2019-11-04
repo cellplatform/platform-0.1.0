@@ -332,6 +332,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         {this.button('screen: A1 (none defined)', () => this.overlayFromCell('A1'))}
         {this.button('screen: C1 (sample)', () => this.overlayFromCell('C1'))}
         {this.button('screen: C2 (child namespace)', () => this.overlayFromCell('C2'))}
+        {this.button('screen: selection', () => {
+          const cell = this.lastSelection.cell;
+          this.overlayFromCell(cell);
+        })}
 
         <Hr margin={5} />
         <Label>links</Label>
