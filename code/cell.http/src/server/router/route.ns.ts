@@ -3,6 +3,8 @@ import { t, cell } from '../common';
 const { Uri, model, Schema } = cell;
 const { Ns } = model.db;
 
+import { ns } from '../model';
+
 /**
  * Namespace routes.
  */
@@ -27,46 +29,6 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     return { model, response, uri };
   };
 
-  const getCells = async (model: t.IDbModelNs) => {
-    const models = await model.children.cells;
-    return models.reduce((acc, next) => {
-      const { parts } = Schema.from.cell(next);
-      acc[parts.key] = cell.value.squash.cell(next.toObject());
-      return acc;
-    }, {}) as t.ICellMap;
-  };
-
-  const getRows = async (model: t.IDbModelNs) => {
-    const models = await model.children.rows;
-    return models.reduce((acc, next) => {
-      const { parts } = Schema.from.row(next);
-      acc[parts.key] = cell.value.squash.object(next.toObject());
-      return acc;
-    }, {}) as t.ICellMap;
-  };
-
-  const getColumns = async (model: t.IDbModelNs) => {
-    const models = await model.children.columns;
-    return models.reduce((acc, next) => {
-      const { parts } = Schema.from.column(next);
-      acc[parts.key] = cell.value.squash.object(next.toObject());
-      return acc;
-    }, {}) as t.ICellMap;
-  };
-
-  const toData = async (model: t.IDbModelNs) => {
-    const wait = [
-      { field: 'cells', method: getCells },
-      { field: 'rows', method: getRows },
-      { field: 'columns', method: getColumns },
-    ].map(async ({ field, method }) => ({ field, value: await method(model) }));
-
-    return (await Promise.all(wait)).reduce((acc, next) => {
-      acc[next.field] = next.value;
-      return acc;
-    }, {}) as t.INsCoordData;
-  };
-
   /**
    * Root: info
    */
@@ -84,7 +46,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
 
     const data = {
       ns: { id },
-      ...(await toData(model)),
+      ...(await ns.childData(model)),
     };
 
     const res: t.IResNsData = {
