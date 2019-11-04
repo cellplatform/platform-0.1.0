@@ -1316,10 +1316,10 @@
     "@platform/react" "0.3.26"
     "@platform/util.diff" "0.0.1"
 
-"@platform/ui.datagrid.util@0.1.33":
-  version "0.1.33"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.1.33.tgz#26fdeb0f2a491f634eb294fd1d849a9e05aa27e7"
-  integrity sha512-7F9AZsIXSDUT6itnisMXgSil0RZ54VX4XnkyoMN8i/NqxrTO4Zw9lvklVPpCiAL7A6pfAVW9Qt9Nnsh/++Xb+w==
+"@platform/ui.datagrid.util@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.2.0.tgz#484b7a35b83622a068b4795741d5dd4a4d880b7c"
+  integrity sha512-nrZcZnRPutVwH9XRTVLc8pnEU8y7afsYLeBeuMBl2xV0ZWCFevBtqMRWCjtniB+FYugXdP5T4OmXPwAAD2sv4g==
   dependencies:
     "@platform/cell.coord" "0.5.29"
     "@platform/cell.func" "0.0.27"
