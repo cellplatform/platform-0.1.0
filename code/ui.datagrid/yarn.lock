@@ -1037,10 +1037,10 @@
     "@platform/libs" "0.1.3"
     "@platform/util.value" "0.5.5"
 
-"@platform/cell.http@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.1.1.tgz#d82f44e1e205d60c28e36f8a75dd30ff311eba06"
-  integrity sha512-qmmRZFuDQqOcYIgx0qpjd2CAXt6J8VtdhqA5gTcTIpFlkfPnQ5LaomDxxbJvkfQuScFCXNEqfY1SMx70eAVPfA==
+"@platform/cell.http@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.1.2.tgz#3465f9c876b1ea20c417974d464eed0379716d00"
+  integrity sha512-OMkJTvTwtbjzJgR1KpHikAdXvlf93BJZ4ZkLyKn7dBomypRviiv3iEOMCYFp6VoYq4uTxi4fwLgkEMfnRt9YFQ==
   dependencies:
     "@platform/cell.db" "0.0.28"
     "@platform/cell.schema" "0.0.5"
@@ -1048,7 +1048,7 @@
     "@platform/cell.value" "0.0.21"
     "@platform/fs" "0.3.3"
     "@platform/fsdb.types" "0.4.0"
-    "@platform/http" "^0.4.11"
+    "@platform/http" "0.4.11"
     "@platform/libs" "0.1.3"
     "@platform/micro" "0.6.0"
 
@@ -1227,7 +1227,7 @@
     "@platform/libs" "0.1.3"
     "@platform/types" "0.0.32"
 
-"@platform/http@^0.4.11":
+"@platform/http@0.4.11":
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.11.tgz#554ca6c92ac299ee7a5f79a69093015f13b4fb35"
   integrity sha512-r97ughQp+N4GSh3teK5tQbVdvgY6CQPSt+nt75kWN4hyC5YXjaEHYmw5ub3DHT/5t/x78tZ0MDoX/SkL9sBb6g==
