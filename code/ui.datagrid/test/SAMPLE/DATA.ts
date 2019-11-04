@@ -1,7 +1,7 @@
 import { t } from '../common';
 
 const CELLS: t.IGridData['cells'] = {
-  A1: { value: '=A5', links: { main: 'ns:abc' } },
+  A1: { value: '=A5' },
   A2: { value: '123', props: { style: { bold: true } } },
   A3: { value: 'A3 `code`' },
   A5: { value: '=A2', props: { merge: { colspan: 2 } } },
@@ -24,6 +24,7 @@ const CELLS: t.IGridData['cells'] = {
   B2: { value: 'cancel' },
   C1: {
     value: 'Yo',
+    links: { main: 'ns:sample2' },
     props: {
       view: {
         cell: { type: 'MyView', className: 'my-foo' },
@@ -50,7 +51,7 @@ const ROWS: t.IGridData['rows'] = {
 };
 
 export const SAMPLE = {
-  NS: 'ns:24FPqPC', // NB: the "ns:" uri prefix is stripped.
+  NS: 'ns:sample1', // NB: the "ns:" uri prefix is stripped.
   CELLS,
   COLUMNS,
   ROWS,

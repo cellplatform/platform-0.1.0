@@ -11,8 +11,13 @@ export type INsData<
   V extends t.ICellData = t.ICellData,
   C extends t.IColumnData = t.IColumnData,
   R extends t.IRowData = t.IRowData
+> = INsCoordData<V, C, R> & { ns: INs };
+
+export type INsCoordData<
+  V extends t.ICellData = t.ICellData,
+  C extends t.IColumnData = t.IColumnData,
+  R extends t.IRowData = t.IRowData
 > = {
-  ns: INs;
   cells: t.IMap<V>;
   columns: t.IMap<C>;
   rows: t.IMap<R>;

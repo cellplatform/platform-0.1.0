@@ -38,10 +38,10 @@
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.schema@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.0.3.tgz#305349d2d2d45302c4e5082eac79fa8ab9de93e8"
-  integrity sha512-5ttrbU2tTV7OcalSmGIkq6JYs2Ujre10DrgodLVY91MgPjXu6raY3c8H429PT1zqwG0v2DHFNo3qGbZwKaq4sw==
+"@platform/cell.schema@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.0.4.tgz#089a7651c3d0f55aba07fda82939fbdb5d480042"
+  integrity sha512-8hFSdXNVgDy+w9/QMQboQ1GZVTIEUL0ayqqkqzHLJC/i5AgP9jP7eRFbOivgGXBhyPmTIjQjXEo/SVuXv64aRw==
   dependencies:
     "@platform/cell.coord" "0.5.31"
     "@platform/cell.types" "0.1.0"
