@@ -1,6 +1,5 @@
 import { model } from '..';
-import { Schema } from '../../schema';
-import { expect, getTestDb, R } from '../../test';
+import { expect, getTestDb, Schema } from '../../test';
 
 describe('model.Ns (Namespace)', () => {
   it('creates (with child cells)', async () => {

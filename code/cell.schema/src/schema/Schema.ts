@@ -1,4 +1,4 @@
-import { id as generate, t, coord } from '../common';
+import { cuid, t, coord } from '../common';
 
 const { Uri } = coord;
 
@@ -74,7 +74,7 @@ export class NsSchema {
   public readonly uri: string;
 
   constructor(args: { id?: string }) {
-    let id = args.id || generate.cuid();
+    let id = args.id || cuid();
     if (Uri.is.uri(id)) {
       const uri = Uri.parse(id);
       if (uri.error) {

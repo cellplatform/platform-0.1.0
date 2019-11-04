@@ -1,23 +1,10 @@
-export { ROBOTO, MONOSPACE } from '@platform/ui.text/lib';
+import { COLORS as COLORS_UTIL } from '@platform/ui.datagrid.util/lib/common/constants';
+export const COLORS = { ...COLORS_UTIL };
+
+export { ROBOTO, MONOSPACE } from '@platform/ui.text/lib/common/constants';
 import * as t from './types';
 
 export const UNKNOWN = 'UNKNOWN';
-
-export const COLORS = {
-  WHITE: '#fff',
-  DARK: '#293042', // Inky blue/black.
-  BLUE: '#4B89FF',
-  CLI: {
-    BLUE: '#477AF7',
-    YELLOW: '#FBC72F',
-    MAGENTA: '#FE0064',
-    CYAN: '#67D9EF',
-    LIME: '#A6E130',
-    DARK_RED: '#CB352F',
-    PURPLE: '#8F2298',
-    PINK: '#DC6FEC',
-  },
-};
 
 export const CSS = {
   CLASS: {

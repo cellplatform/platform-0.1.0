@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';
 
+import { Debug } from '@platform/ui.datagrid.debug';
+
 import {
   constants,
   Button,
@@ -241,7 +243,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       <div {...styles.base}>
         {this.renderLeft()}
         {this.renderMain()}
-        {this.renderState()}
+        {this.renderRight()}
       </div>
     );
   }
@@ -328,16 +330,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           this.grid.command({ command: 'OVERLAY/hide', props: {} }),
         )}
         {this.button('screen: A1 (none defined)', () => this.overlayFromCell('A1'))}
-        {this.button('screen: C1 (via cell def)', () => this.overlayFromCell('C1'))}
-        {this.button('screen: C2 (via explicit command)', () => {
-          this.grid.command({
-            command: 'OVERLAY/show',
-            props: {
-              cell: 'C2',
-              screen: { type: 'MyScreen', className: 'my-custom' },
-            },
-          });
-        })}
+        {this.button('screen: C1 (sample)', () => this.overlayFromCell('C1'))}
+        {this.button('screen: C2 (child namespace)', () => this.overlayFromCell('C2'))}
 
         <Hr margin={5} />
         <Label>links</Label>
@@ -371,7 +365,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     );
   }
 
-  private renderState() {
+  private renderRight() {
     const data = this.state.data;
     if (!data) {
       return null;
@@ -381,13 +375,13 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         position: 'relative',
         backgroundColor: COLORS.DARK,
         color: COLORS.WHITE,
-        width: 300,
+        width: 370,
         borderBottom: `solid 1px ${color.format(0.1)}`,
       }),
     };
     return (
       <div {...styles.base}>
-        <datagrid.Debug grid={this.grid} />
+        <Debug grid={this.grid} />
       </div>
     );
   }

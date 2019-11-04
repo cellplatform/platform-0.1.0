@@ -1,5 +1,4 @@
-import { t, Model, coord } from '../common';
-import { Schema } from '../schema';
+import { t, Model, coord, Schema } from '../common';
 import * as rules from './rules';
 
 const Uri = coord.Uri;

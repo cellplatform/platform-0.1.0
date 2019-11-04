@@ -1,6 +1,5 @@
-import { expect, t, getTestDb } from '../test';
+import { expect, t } from '../test';
 import { Schema } from '.';
-import { model } from '..';
 
 describe('schema', () => {
   describe('namespace', () => {
@@ -61,7 +60,6 @@ describe('schema', () => {
 
   describe('Schema.from', () => {
     it('ns', async () => {
-      const db = await getTestDb({});
       const uri = 'ns:abc';
       const path = Schema.ns(uri).path;
 
@@ -74,11 +72,12 @@ describe('schema', () => {
       };
       test(path);
       test(uri);
-      test(await model.Ns.create({ db, uri }).ready);
+
+      const model: any = { path };
+      test(model);
     });
 
     it('cell', async () => {
-      const db = await getTestDb({});
       const ns = 'ns:abc';
       const uri = 'cell:abc!A1';
       const path = Schema.ns(ns).cell('A1').path;
@@ -92,11 +91,12 @@ describe('schema', () => {
       };
       test(path);
       test(uri);
-      test(await model.Cell.create({ db, uri }).ready);
+
+      const model: any = { path };
+      test(model);
     });
 
     it('row', async () => {
-      const db = await getTestDb({});
       const ns = 'ns:abc';
       const uri = 'row:abc!1';
       const path = Schema.ns(ns).row('1').path;
@@ -110,11 +110,12 @@ describe('schema', () => {
       };
       test(path);
       test(uri);
-      test(await model.Row.create({ db, uri }).ready);
+
+      const model: any = { path };
+      test(model);
     });
 
     it('column', async () => {
-      const db = await getTestDb({});
       const ns = 'ns:abc';
       const uri = 'col:abc!A';
       const path = Schema.ns(ns).column('A').path;
@@ -128,7 +129,9 @@ describe('schema', () => {
       };
       test(path);
       test(uri);
-      test(await model.Column.create({ db, uri }).ready);
+
+      const model: any = { path };
+      test(model);
     });
   });
 });

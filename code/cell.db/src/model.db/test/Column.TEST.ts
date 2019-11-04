@@ -1,5 +1,5 @@
 import { Column } from '..';
-import { expect, t, getTestDb, time } from '../../test';
+import { expect, getTestDb } from '../../test';
 
 describe('model.Column', () => {
   it('create', async () => {

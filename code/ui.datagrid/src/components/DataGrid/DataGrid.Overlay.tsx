@@ -91,10 +91,12 @@ export class DataGridOverlay extends React.PureComponent<
       return undefined;
     } else {
       const props = util.toGridCellProps(data.props);
+      const view = props.view;
       const req: t.IGridFactoryRequest = {
         type: 'SCREEN',
         grid: this.props.grid,
         cell: { key, data, props },
+        view,
       };
       return req;
     }
