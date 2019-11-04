@@ -69,7 +69,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
 
     const { response, uri } = await getNsModelDataResponse(db, id, true);
 
-    log.info(`${log.cyan('POST')}${log.magenta('/data')}`, uri);
+    log.info(`${log.cyan('POST')} ${log.magenta('/data')}`, `uri:${uri}`);
 
     // Finish up.
     return { status: 200, data: response };
