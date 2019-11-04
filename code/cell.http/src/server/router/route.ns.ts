@@ -11,29 +11,12 @@ import { ns } from '../model';
 export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   const { db, router } = args;
 
-  const getModel = async (id: string) => {
-    const uri = Uri.generate.ns({ ns: id });
-    const model = await Ns.create({ db, uri }).ready;
-    const exists = Boolean(model.exists);
-    const hash = '-'; // TEMP 🐷
-    const { createdAt, modifiedAt } = model;
-
-    const response: t.IResNs = {
-      uri,
-      exists,
-      createdAt,
-      modifiedAt,
-      hash,
-    };
-
-    return { model, response, uri };
-  };
-
   /**
    * Root: info
    */
   router.get(`/ns\::id(.*)/`, async req => {
-    const { response } = await getModel(req.params.id);
+    const id = req.params.id;
+    const { response } = await getNsModel(db, id);
     return { status: 200, data: response };
   });
 
@@ -42,7 +25,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
    */
   router.get(`/ns\::id(.*)/data`, async req => {
     const id = req.params.id;
-    const { model, response } = await getModel(id);
+    const { model, response } = await getNsModel(db, id);
 
     const data = {
       ns: { id },
@@ -57,3 +40,25 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     return { status: 200, data: res };
   });
 }
+
+/**
+ * [Helpers]
+ */
+
+const getNsModel = async (db: t.IDb, id: string) => {
+  const uri = Uri.generate.ns({ ns: id });
+  const model = await Ns.create({ db, uri }).ready;
+  const exists = Boolean(model.exists);
+  const hash = '-'; // TEMP 🐷
+  const { createdAt, modifiedAt } = model;
+
+  const response: t.IResNs = {
+    uri,
+    exists,
+    createdAt,
+    modifiedAt,
+    hash,
+  };
+
+  return { model, response, uri };
+};
