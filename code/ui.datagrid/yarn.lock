@@ -1307,6 +1307,22 @@
     "@platform/ui.text" "0.3.0"
     "@platform/util.markdown" "0.0.42"
 
+"@platform/ui.datagrid.debug@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.debug/-/ui.datagrid.debug-0.0.1.tgz#796b5a2c0186f54c03f29a8b3ed1131bc000ede7"
+  integrity sha512-+kNwmqhplXfEtEZysEq5xxb8XZzFVBr/m/bs8bB1Ze4pzY8U1MzLNMtL5k1wSp3zEWpGOLpcMebVDqtcY+l5qA==
+  dependencies:
+    "@platform/cell.coord" "0.5.29"
+    "@platform/cell.types" "0.0.26"
+    "@platform/libs" "0.1.3"
+    "@platform/react" "0.3.26"
+    "@platform/ui.button" "0.3.6"
+    "@platform/ui.datagrid.types" "0.7.24"
+    "@platform/ui.datagrid.util" "0.2.0"
+    "@platform/ui.icon" "0.0.90"
+    "@platform/ui.object" "0.0.146"
+    "@platform/ui.text" "0.3.0"
+
 "@platform/ui.datagrid.types@0.7.24":
   version "0.7.24"
   resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.24.tgz#bfff73d10211de7154dbc3afc7e4c5bf97a628b9"

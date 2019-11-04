@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';
 
+import { Debug } from '@platform/ui.datagrid.debug';
+
 import {
   constants,
   Button,
@@ -379,7 +381,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     };
     return (
       <div {...styles.base}>
-        <datagrid.Debug grid={this.grid} />
+        <Debug grid={this.grid} />
       </div>
     );
   }
