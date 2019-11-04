@@ -1,6 +1,6 @@
 import { t, cell } from '../common';
 
-const { Uri, model, Schema } = cell;
+const { Uri, model } = cell;
 const { Ns } = model.db;
 
 import { ns } from '../model';
