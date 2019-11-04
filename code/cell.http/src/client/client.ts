@@ -13,16 +13,9 @@ export function init(args: { host: string; port: number }) {
 
   // Namespace methods.
   const ns = {
-    async postData(uri: string, body: t.IReqNsData) {
+    postData(uri: string, body: t.IReqNsData) {
       const url = `${origin}/${uri}/data`;
-
-      console.log('POST url', url);
-
-      const res = await http.post(url, body);
-
-      console.log('res', res);
-
-      return res;
+      return http.post(url, body);
     },
   };
 

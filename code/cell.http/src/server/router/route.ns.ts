@@ -67,7 +67,8 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
      * - more efficient response (ie. don't re-query DB)
      */
 
-    const { response, uri } = await getNsModelDataResponse(db, id);
+    const { response, uri } = await getNsModelDataResponse(db, id, true);
+
     log.info(`${log.cyan('POST')}${log.magenta('/data')}`, uri);
 
     // Finish up.
@@ -79,9 +80,24 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
  * [Helpers]
  */
 
-const getNsModelResponse = async (db: t.IDb, id: string) => {
+const getNsModelResponse = async (db: t.IDb, id: string, modify?: boolean) => {
   const uri = Uri.generate.ns({ ns: id });
   const model = await Ns.create({ db, uri }).ready;
+
+  if (modify) {
+    // model.props.id
+    model.props.id = id;
+    await model.save();
+
+    /**
+     * TODO 🐷
+     * -  This will not acutally force a save after the iniital save
+     *    because the ID does not change.
+     *    - Add a way for models to update their modififed date, without an actual prop change.
+     * - Update the hash on the NS (ACTUALLY this would have the effect of fixing above)
+     */
+  }
+
   const exists = Boolean(model.exists);
   const hash = '-'; // TEMP 🐷
   const { createdAt, modifiedAt } = model;
@@ -97,8 +113,8 @@ const getNsModelResponse = async (db: t.IDb, id: string) => {
   return { model, response, uri };
 };
 
-const getNsModelDataResponse = async (db: t.IDb, id: string) => {
-  const { model, response, uri } = await getNsModelResponse(db, id);
+const getNsModelDataResponse = async (db: t.IDb, id: string, modify?: boolean) => {
+  const { model, response, uri } = await getNsModelResponse(db, id, modify);
   const res: t.IResNsData = {
     ...response,
     data: {

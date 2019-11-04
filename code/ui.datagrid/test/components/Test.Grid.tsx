@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';
+import { debounceTime, delay, filter, map, takeUntil, debounce } from 'rxjs/operators';
 
 import { Debug } from '@platform/ui.datagrid.debug';
 
@@ -84,41 +84,45 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         }
       });
 
-    events$
-      .pipe(
-        filter(() => true),
-        filter(e => e.type === 'GRID/cells/change'),
-        map(e => e.payload as t.IGridCellsChange),
-        delay(0),
-      )
-      .subscribe(async e => {
-        log.info('🐷 IGridCellsChanged', e);
+    const cellsChange$ = events$.pipe(
+      filter(e => e.type === 'GRID/cells/change'),
+      map(e => e.payload as t.IGridCellsChange),
+    );
 
-        // Update refs for individual change.
-        const wait = e.changes
-          .filter(e => e.isChanged)
-          .map(async change => {
-            const key = change.cell.key;
+    cellsChange$.pipe(debounceTime(1500)).subscribe(async e => {
+      console.log('🌼 POST (save)', e);
+      const res = await this.postData();
+      console.log('SAVED', res);
+    });
 
-            const toValue = (data?: t.IGridCellData) =>
-              data && data.value ? data.value.toString() : undefined;
-            const from = toValue(change.value.from);
-            const to = toValue(change.value.to);
-            await this.refTable.update({ key, from, to });
+    cellsChange$.pipe(delay(0)).subscribe(async e => {
+      log.info('🐷 IGridCellsChanged', e);
 
-            // console.group('🌳 ', key);
-            // console.log('change', change);
-            // console.log('update', update);
-            // console.groupEnd();
-          });
-        await Promise.all(wait);
+      // Update refs for individual change.
+      const wait = e.changes
+        .filter(e => e.isChanged)
+        .map(async change => {
+          const key = change.cell.key;
 
-        // e.cancel();
-        // e.changes[0].modify('foo');
-        // console.log('🌳', e.type, e.payload);
-        // const change = e.payload as t.IGridCellChange;
-        // change.modify('hello');
-      });
+          const toValue = (data?: t.IGridCellData) =>
+            data && data.value ? data.value.toString() : undefined;
+          const from = toValue(change.value.from);
+          const to = toValue(change.value.to);
+          await this.refTable.update({ key, from, to });
+
+          // console.group('🌳 ', key);
+          // console.log('change', change);
+          // console.log('update', update);
+          // console.groupEnd();
+        });
+      await Promise.all(wait);
+
+      // e.cancel();
+      // e.changes[0].modify('foo');
+      // console.log('🌳', e.type, e.payload);
+      // const change = e.payload as t.IGridCellChange;
+      // change.modify('hello');
+    });
 
     events$
       .pipe(
@@ -226,6 +230,12 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       const res = util.cell.value.cellData(cell).setLink(key, uri);
       this.grid.changeCells({ [cellKey]: res });
     }
+  };
+
+  private postData = async () => {
+    const data = this.grid.data;
+    const uri = http.Uri.generate.ns({ ns: data.ns.id });
+    await http.ns.postData(uri, { data });
   };
 
   /**
@@ -346,16 +356,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
         <Hr margin={5} />
         <Label>http (localhost)</Label>
-        {this.button('post', async () => {
-          const data = this.grid.data;
-          const uri = http.Uri.generate.ns({ ns: data.ns.id });
-
-          console.log('uri', uri);
-
-          const res = await http.ns.postData(uri, { data });
-
-          console.log('res', res);
-        })}
+        {this.button('post current data', () => this.postData())}
       </div>
     );
   }
