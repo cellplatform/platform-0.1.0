@@ -25,12 +25,13 @@
   dependencies:
     "@platform/libs" "0.1.3"
 
-"@platform/cell.types@0.0.26":
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.0.26.tgz#5a7badae20e27286141d5546cd757d5dd8b3ddf6"
-  integrity sha512-V4hr2lj7+JJkaA4BZGnPHD1tjf2KAi7tpkbR2ibpyv7xfRyMeDL5p9jWANvGfkZenyGsXhkmUHTAQ8fsmejiuw==
+"@platform/cell.types@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.1.0.tgz#a121d60b63845f919c8ddf50dd08d2854dbf3267"
+  integrity sha512-5eq2GqJyf+l+GhVWuiqgq18xi1AHSmaMNzQyUrAERGVGW3JJwt8/BwDHK6epXP+J2vD2JojgBBdkvqQoi4K1Bw==
   dependencies:
     "@platform/cache" "0.2.0"
+    "@platform/fsdb.types" "0.4.0"
     "@platform/libs" "0.1.3"
     "@platform/util.diff" "0.0.1"
 
@@ -73,6 +74,14 @@
     glob "7.1.4"
     js-yaml "3.13.1"
     minimatch "3.0.4"
+
+"@platform/fsdb.types@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.4.0.tgz#9d4564f1438cf3e4274183003834370b033b2b40"
+  integrity sha512-i6tAoB8I/8U0M768PbFQOQl8vHhwclWj2GUXqGI80EM/rn/FAAwkPKoiC7caqiZhNTYTKxUXKmF2vnq3M5bxTA==
+  dependencies:
+    "@platform/libs" "0.1.3"
+    "@platform/types" "0.0.32"
 
 "@platform/libs@0.0.12":
   version "0.0.12"
