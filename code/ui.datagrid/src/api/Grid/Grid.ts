@@ -881,7 +881,7 @@ export class Grid implements t.IGrid {
     return this;
   };
 
-  public fire: t.GridFireEvent = e => {
+  public fire: t.GridFire = e => {
     this._.events$.next(e);
     return this;
   };

@@ -11,7 +11,7 @@ const STYLE: t.GridStyleCommand[] = ['BOLD', 'ITALIC', 'UNDERLINE'];
 export function init(args: {
   grid: t.IGrid;
   command$: Observable<t.IGridCommand>;
-  fire: t.GridFireEvent;
+  fire: t.GridFire;
 }) {
   const { grid, command$ } = args;
   const style$ = command$.pipe(

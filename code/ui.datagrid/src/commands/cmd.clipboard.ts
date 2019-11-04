@@ -15,7 +15,7 @@ const CLIPBOARD_COMMANDS: t.GridClipboardCommand[] = ['CUT', 'COPY', 'PASTE'];
 export function init(args: {
   grid: t.IGrid;
   command$: Observable<t.IGridCommand>;
-  fire: t.GridFireEvent;
+  fire: t.GridFire;
 }) {
   const { grid, command$, fire } = args;
   const clipboard$ = command$.pipe(
@@ -31,11 +31,7 @@ export function init(args: {
 /**
  * Read from the clipboard.
  */
-async function read(args: {
-  grid: t.IGrid;
-  action: t.GridClipboardReadCommand;
-  fire: t.GridFireEvent;
-}) {
+async function read(args: { grid: t.IGrid; action: t.GridClipboardReadCommand; fire: t.GridFire }) {
   const { grid, action } = args;
 
   // Fire the BEFORE event, allowing any listeners to clean up the
@@ -66,7 +62,7 @@ async function read(args: {
 /**
  * Write to the clipboard.
  */
-async function write(args: { grid: t.IGrid; fire: t.GridFireEvent }) {
+async function write(args: { grid: t.IGrid; fire: t.GridFire }) {
   const { grid } = args;
   const selection = grid.selection;
   const targetCell = selection.cell;
