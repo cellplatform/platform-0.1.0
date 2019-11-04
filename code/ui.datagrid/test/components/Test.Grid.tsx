@@ -84,45 +84,57 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         }
       });
 
-    const cellsChange$ = events$.pipe(
-      filter(e => e.type === 'GRID/cells/change'),
-      map(e => e.payload as t.IGridCellsChange),
-    );
+    events$
+      .pipe(
+        filter(
+          e =>
+            e.type === 'GRID/cells/change' ||
+            e.type === 'GRID/rows/change' ||
+            e.type === 'GRID/columns/change',
+        ),
+        map(e => e.payload as t.IGridCellsChange),
+        debounceTime(1500),
+      )
+      .subscribe(async e => {
+        console.log('🌼 POST (save)', e);
+        const res = await this.postData();
+        console.log('SAVED', res);
+      });
 
-    cellsChange$.pipe(debounceTime(1500)).subscribe(async e => {
-      console.log('🌼 POST (save)', e);
-      const res = await this.postData();
-      console.log('SAVED', res);
-    });
+    events$
+      .pipe(
+        filter(e => e.type === 'GRID/cells/change'),
+        map(e => e.payload as t.IGridCellsChange),
+        delay(0),
+      )
+      .subscribe(async e => {
+        log.info('🐷 IGridCellsChanged', e);
 
-    cellsChange$.pipe(delay(0)).subscribe(async e => {
-      log.info('🐷 IGridCellsChanged', e);
+        // Update refs for individual change.
+        const wait = e.changes
+          .filter(e => e.isChanged)
+          .map(async change => {
+            const key = change.cell.key;
 
-      // Update refs for individual change.
-      const wait = e.changes
-        .filter(e => e.isChanged)
-        .map(async change => {
-          const key = change.cell.key;
+            const toValue = (data?: t.IGridCellData) =>
+              data && data.value ? data.value.toString() : undefined;
+            const from = toValue(change.value.from);
+            const to = toValue(change.value.to);
+            await this.refTable.update({ key, from, to });
 
-          const toValue = (data?: t.IGridCellData) =>
-            data && data.value ? data.value.toString() : undefined;
-          const from = toValue(change.value.from);
-          const to = toValue(change.value.to);
-          await this.refTable.update({ key, from, to });
+            // console.group('🌳 ', key);
+            // console.log('change', change);
+            // console.log('update', update);
+            // console.groupEnd();
+          });
+        await Promise.all(wait);
 
-          // console.group('🌳 ', key);
-          // console.log('change', change);
-          // console.log('update', update);
-          // console.groupEnd();
-        });
-      await Promise.all(wait);
-
-      // e.cancel();
-      // e.changes[0].modify('foo');
-      // console.log('🌳', e.type, e.payload);
-      // const change = e.payload as t.IGridCellChange;
-      // change.modify('hello');
-    });
+        // e.cancel();
+        // e.changes[0].modify('foo');
+        // console.log('🌳', e.type, e.payload);
+        // const change = e.payload as t.IGridCellChange;
+        // change.modify('hello');
+      });
 
     events$
       .pipe(
