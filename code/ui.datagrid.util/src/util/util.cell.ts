@@ -1,4 +1,4 @@
-import { R, t, cell } from '../common';
+import { t, cell } from '../common';
 
 export { cell };
 export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';

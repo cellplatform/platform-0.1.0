@@ -2,7 +2,6 @@ import { color, css, constants } from '../common';
 
 export const CLASS = constants.CSS.CLASS;
 const { CELL, GRID } = CLASS;
-const COLORS = constants.COLORS;
 
 const STYLES = {
   CELL: {

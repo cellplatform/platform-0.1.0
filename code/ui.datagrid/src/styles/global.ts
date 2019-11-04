@@ -1,7 +1,7 @@
 import './global.grid';
 import './global.headers';
 import './global.cell';
-import { constants, css } from '../common';
+import { css } from '../common';
 
 /**
  * Ensure required CSS style sheets are in the <head>.
