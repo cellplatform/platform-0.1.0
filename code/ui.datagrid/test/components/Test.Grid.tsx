@@ -5,6 +5,7 @@ import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';
 import { Debug } from '@platform/ui.datagrid.debug';
 
 import {
+  http,
   constants,
   Button,
   color,
@@ -342,6 +343,19 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         {this.button('main:"ns:abc"', () => this.setLink('main', 'ns:abc'))}
         {this.button('main:"ns:def"', () => this.setLink('main', 'ns:def'))}
         {this.button('main: undefined', () => this.setLink('main', undefined))}
+
+        <Hr margin={5} />
+        <Label>http (localhost)</Label>
+        {this.button('post', async () => {
+          const data = this.grid.data;
+          const uri = http.Uri.generate.ns({ ns: data.ns.id });
+
+          console.log('uri', uri);
+
+          const res = await http.ns.postData(uri, { data });
+
+          console.log('res', res);
+        })}
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import { t } from './common';
+import * as t from '@platform/cell.types';
 
 export type IResNs = {
   uri: string;
