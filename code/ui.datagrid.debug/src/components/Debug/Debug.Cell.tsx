@@ -168,13 +168,13 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
         // expandPaths: ['$', '$."t.ICellData"'],
       });
 
+    const elHideChildren = <LinkButton label={'hide'} onClick={this.hideOverlay} />;
+
     const elChildren = key && (
       <div>
-        <PanelTitle center={'Children'} />
+        <PanelTitle left={'Children'} right={elHideChildren} />
         <div {...styles.content}>
           <LinkButton label={'main'} onClick={this.showChildHandler('main')} />
-          <HrDashed />
-          <LinkButton label={'hide'} onClick={this.hideOverlay} />
         </div>
       </div>
     );

@@ -117,6 +117,7 @@ export const PanelTitle = (props: {
       marginBottom: 10,
       paddingBottom: 3,
       PaddingY: 8,
+      PaddingX: 8,
       Flex: 'center-spaceBetween',
       borderBottom: `solid 1px ${color.format(-0.3)}`,
       color: color.format(0.5),
@@ -128,7 +129,7 @@ export const PanelTitle = (props: {
   return (
     <div {...css(styles.base, props.style)}>
       <div>{props.left}</div>
-      <div>{props.center || 'Untitled'}</div>
+      <div>{props.center}</div>
       <div>{props.right}</div>
     </div>
   );
