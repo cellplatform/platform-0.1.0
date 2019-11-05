@@ -1,22 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
-import {
-  util,
-  color,
-  COLORS,
-  constants,
-  coord,
-  css,
-  func,
-  GlamorValue,
-  R,
-  t,
-  value,
-} from '../common';
+import { color, COLORS, coord, css, func, GlamorValue, t, util, value } from '../common';
 import { ObjectView } from '../primitives';
-import { Badge, Hr, HrDashed, Label, LinkButton, Panel } from '../widgets';
+import { Badge, Label, Panel, PanelTitle, LinkButton } from '../widgets';
 
 export type IDebugCellProps = {
   grid: t.IGrid;
@@ -50,10 +38,6 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
   }
 
   /**
-   * [Properties]
-   */
-
-  /**
    * [Render]
    */
   public render() {
@@ -74,6 +58,11 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
       title: css({
         position: 'relative',
         cursor: 'default',
+      }),
+      content: css({
+        padding: 10,
+        paddingTop: 0,
+        // paddingBottom: 5,
       }),
       hash: css({
         color: COLORS.CLI.YELLOW,
@@ -107,12 +96,19 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
       });
 
     return (
-      <Panel style={styles.base} title={'Cell'}>
-        <div {...styles.title}>
-          <Label color={isEmpty ? 0.3 : 0.5}>{title}</Label>
-          {elHash}
+      <Panel style={styles.base} title={'Cell'} padding={0}>
+        <div {...styles.content}>
+          <div {...styles.title}>
+            <Label color={isEmpty ? 0.3 : 0.5}>{title}</Label>
+            {elHash}
+          </div>
+          {elObject}
         </div>
-        {elObject}
+
+        <PanelTitle center={'Children'} />
+        <div {...styles.content}>
+          <LinkButton label={'main'} onClick={this.handleChildMain} />
+        </div>
       </Panel>
     );
   }
@@ -130,4 +126,11 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
       />
     );
   }
+
+  /**
+   * [Handlers]
+   */
+  private handleChildMain = () => {
+    console.log('main');
+  };
 }

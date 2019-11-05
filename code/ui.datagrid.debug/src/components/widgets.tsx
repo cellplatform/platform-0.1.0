@@ -26,6 +26,7 @@ export const LinkButton = (props: IButtonProps) => {
   const styles = {
     base: css({
       color: COLORS.CLI.CYAN,
+      fontSize: 12,
     }),
   };
   return <Button {...props} style={styles.base} />;
@@ -78,6 +79,7 @@ export const Badge = (props: {
 export const Panel = (props: {
   title?: string;
   children?: React.ReactNode;
+  padding?: number;
   style?: GlamorValue;
 }) => {
   const styles = {
@@ -91,13 +93,13 @@ export const Panel = (props: {
       border: `solid 1px ${color.format(-0.4)}`,
     }),
     children: css({
-      padding: 10,
+      padding: defaultValue(props.padding, 10),
       paddingTop: 0,
     }),
   };
   return (
     <div {...css(styles.base, props.style)}>
-      <PanelTitle center={props.title || 'Untitled'} />
+      <PanelTitle center={props.title} />
       <div {...styles.children}>{props.children}</div>
     </div>
   );
