@@ -90,7 +90,27 @@ export const Panel = (props: {
       boxShadow: `inset 0 0 10px 0 ${color.format(-0.3)}`,
       border: `solid 1px ${color.format(-0.4)}`,
     }),
-    title: css({
+    children: css({
+      padding: 10,
+      paddingTop: 0,
+    }),
+  };
+  return (
+    <div {...css(styles.base, props.style)}>
+      <PanelTitle center={props.title || 'Untitled'} />
+      <div {...styles.children}>{props.children}</div>
+    </div>
+  );
+};
+
+export const PanelTitle = (props: {
+  left?: React.ReactNode;
+  center?: React.ReactNode;
+  right?: React.ReactNode;
+  style?: GlamorValue;
+}) => {
+  const styles = {
+    base: css({
       fontSize: 12,
       marginBottom: 10,
       paddingBottom: 3,
@@ -100,21 +120,13 @@ export const Panel = (props: {
       color: color.format(0.5),
       backgroundColor: color.format(-0.1),
     }),
-    children: css({
-      padding: 10,
-      paddingTop: 0,
-    }),
   };
+
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.title}>
-        <div />
-
-        {props.title || 'Untitled'}
-
-        <div />
-      </div>
-      <div {...styles.children}>{props.children}</div>
+      <div>{props.left}</div>
+      <div>{props.center || 'Untitled'}</div>
+      <div>{props.right}</div>
     </div>
   );
 };
