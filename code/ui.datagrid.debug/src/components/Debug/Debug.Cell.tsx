@@ -137,6 +137,9 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
         paddingTop: 0,
         // paddingBottom: 5,
       }),
+      children: css({
+        Flex: 'vertical-start-start',
+      }),
       hash: css({
         color: COLORS.CLI.YELLOW,
         Absolute: [0, 0, null, null],
@@ -173,8 +176,9 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
     const elChildren = key && (
       <div>
         <PanelTitle left={'Children'} right={elHideChildren} />
-        <div {...styles.content}>
-          <LinkButton label={'main'} onClick={this.showChildHandler('main')} />
+        <div {...css(styles.content, styles.children)}>
+          <LinkButton label={'main'} onClick={this.showChildHandler('main')} block={true} />
+          <LinkButton label={'etc'} onClick={this.showChildHandler('etc')} block={true} />
         </div>
       </div>
     );

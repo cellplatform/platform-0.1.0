@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.debug",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "Debug UI components for the ui.datagrid",
   "main": "lib/index",
   "types": "lib/index.d.ts",
