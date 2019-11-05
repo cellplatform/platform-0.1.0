@@ -1,4 +1,5 @@
 import * as t from './types';
+export * from '@platform/ui.datagrid.util';
 
 /**
  * Convert a grid selection into debug data.
@@ -37,7 +38,6 @@ export function getValueSync(args: { grid: t.IGrid; key: string }) {
 /**
  * Format a hash for display.
  */
-
 export function formatHash(hash?: string, options: { trimPrefix?: string | boolean } = {}) {
   const trimPrefix = typeof options.trimPrefix === 'boolean' ? 'sha256-' : options.trimPrefix;
   hash = hash && trimPrefix ? hash.replace(new RegExp(`^${trimPrefix}`), '') : hash;

@@ -229,7 +229,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         backgroundColor: color.format(-0.2),
         Flex: 'horizontal-center-spaceBetween',
         height: 32,
-        PaddingX: 12,
+        PaddingX: 14,
         fontSize: 14,
       }),
       edge: css({ Flex: 'horizontal' }),

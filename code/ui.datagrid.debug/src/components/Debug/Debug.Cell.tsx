@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, coord, css, func, GlamorValue, t, util, value } from '../common';
+import { color, COLORS, coord, css, func, GlamorValue, t, util, value, cell } from '../common';
 import { ObjectView } from '../primitives';
 import { Badge, Label, Panel, PanelTitle, LinkButton } from '../widgets';
 
@@ -38,18 +38,44 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
   }
 
   /**
+   * [Properties]
+   */
+  public get key() {
+    return this.props.cellKey || '';
+  }
+
+  public get grid() {
+    return this.props.grid;
+  }
+
+  /**
+   * [Methods]
+   */
+
+  public showOverlay(field: string) {
+    const data = this.grid.data.cells[this.key];
+    const view = data && data.props ? util.toGridCellProps(data.props).view : {};
+    const screen = view ? view.screen : undefined;
+
+    // console.log('field', field);
+    // console.log('screen', screen);
+  }
+
+  /**
    * [Render]
    */
   public render() {
-    const { cellKey = '', refs, grid, isCurrent } = this.props;
-    const cell = { ...grid.data.cells[cellKey] } || undefined;
+    const { refs, isCurrent } = this.props;
+    const key = this.key;
+    const grid = this.grid;
+    const cell = { ...grid.data.cells[key] } || undefined;
     const hash = cell ? cell.hash : undefined;
     if (cell) {
       delete cell.hash;
     }
 
     const isEmpty = cell ? Object.keys(cell).length === 0 : false;
-    const value = util.getValueSync({ grid, key: cellKey }) || '';
+    const value = util.getValueSync({ grid, key }) || '';
     const isFormula = func.isFormula(value);
     const ast = isFormula ? coord.ast.toTree(value) : undefined;
 
@@ -70,7 +96,7 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
       }),
     };
 
-    let data: any = cellKey ? { 't.ICellData': cell, refs } : {};
+    let data: any = key ? { 't.ICellData': cell, refs } : {};
     data = ast ? { ...data, ast } : data;
 
     const elHash = hash && (
@@ -82,11 +108,11 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
       </Label>
     );
 
-    const emptyTitle = cellKey ? `${cellKey}${isCurrent ? '' : ' (previous)'}: <empty>` : `<none>`;
+    const emptyTitle = key ? `${key}${isCurrent ? '' : ' (previous)'}: <empty>` : `<none>`;
     const valueTitle = `t.ICellData${isCurrent ? '' : ' (previous)'}`;
     const title = isEmpty ? emptyTitle : valueTitle;
 
-    const objectName = isEmpty ? '<none>' : cellKey || '<none>';
+    const objectName = isEmpty ? '<none>' : key || '<none>';
     const elObject =
       !isEmpty &&
       this.renderObject({
@@ -107,7 +133,7 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
 
         <PanelTitle center={'Children'} />
         <div {...styles.content}>
-          <LinkButton label={'main'} onClick={this.handleChildMain} />
+          <LinkButton label={'main'} onClick={this.showChildHandler('main')} />
         </div>
       </Panel>
     );
@@ -130,7 +156,7 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
   /**
    * [Handlers]
    */
-  private handleChildMain = () => {
-    console.log('main');
+  private showChildHandler = (field: string) => {
+    return () => this.showOverlay(field);
   };
 }

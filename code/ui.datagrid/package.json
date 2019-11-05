@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid",
-  "version": "0.7.40",
+  "version": "0.7.41",
   "description": "Isolated tabular DataGrid.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -38,7 +38,7 @@
     "@platform/test.dom": "0.0.54",
     "@platform/ts": "3.5.6",
     "@platform/ui.datagrid.cell": "0.1.26",
-    "@platform/ui.datagrid.debug": "0.0.4",
+    "@platform/ui.datagrid.debug": "0.0.5",
     "@uiharness/dev": "0.9.8",
     "@uiharness/ui": "0.6.19",
     "electron": "7.0.0"

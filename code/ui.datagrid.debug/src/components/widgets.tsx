@@ -121,6 +121,7 @@ export const PanelTitle = (props: {
       borderBottom: `solid 1px ${color.format(-0.3)}`,
       color: color.format(0.5),
       backgroundColor: color.format(-0.1),
+      userSelect: 'none',
     }),
   };
 
