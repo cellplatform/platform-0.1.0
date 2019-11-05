@@ -2,9 +2,22 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, constants, coord, css, func, GlamorValue, R, t, value } from '../common';
+import {
+  util,
+  color,
+  COLORS,
+  constants,
+  coord,
+  css,
+  func,
+  GlamorValue,
+  R,
+  t,
+  value,
+} from '../common';
 import { ObjectView } from '../primitives';
 import { Badge, Hr, HrDashed, Label, LinkButton, Panel } from '../widgets';
+import { DebugCell } from './Debug.Cell';
 
 export type IDebugProps = {
   grid: t.IGrid;
@@ -38,6 +51,8 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       map(e => e.payload as t.IGridCellsChange),
     );
 
+    change$.subscribe(e => this.updateState());
+
     events$
       .pipe(
         filter(e => e.type === 'GRID/selection'),
@@ -49,10 +64,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
           this.state$.next({ lastSelection: e.to });
         }
       });
-
-    change$.subscribe(e => {
-      this.updateState();
-    });
 
     // Finish up.
     this.updateState();
@@ -76,46 +87,23 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
   public get selectedCell() {
     const self = this; // tslint:disable-line
-    const formatSelection = this.formatSelection;
+    const grid = this.grid;
     return {
       get current() {
-        return formatSelection(self.grid.selection);
+        return util.formatSelection({ grid, selection: self.grid.selection });
       },
       get last() {
         const selection: t.IGridSelection = self.state.lastSelection || { ranges: [] };
-        return formatSelection(selection);
+        return util.formatSelection({ grid, selection });
       },
     };
   }
-  private formatSelection = (
-    selection: t.IGridSelection,
-    options: { maxValueLength?: number } = {},
-  ) => {
-    const { maxValueLength = 30 } = options;
-
-    const ranges = selection.ranges;
-    const key = selection.cell || '';
-    const value = this.getValueSync(key) || '';
-    const cell = this.grid.data.cells[key];
-    const isEmpty = !Boolean(value);
-
-    // Display string.
-    const MAX = maxValueLength;
-    let display = value.length > MAX ? `${value.substring(0, MAX)}...` : value;
-    display = isEmpty ? '<empty>' : display;
-
-    // Finish up.
-    return { key, value, cell, display, isEmpty, ranges };
-  };
 
   /**
    * [Methods]
    */
   public getValue: t.RefGetValue = async key => this.getValueSync(key);
-  private getValueSync = (key: string) => {
-    const cell = this.grid.data.cells[key];
-    return cell && typeof cell.value === 'string' ? cell.value : undefined;
-  };
+  private getValueSync = (key: string) => util.getValueSync({ grid: this.grid, key });
 
   private async updateState(args: { force?: boolean } = {}) {
     const { force } = args;
@@ -149,18 +137,11 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     Object.keys(cells).forEach(key => {
       const hash = cells[key] ? (cells[key] as any).hash : undefined;
       if (hash) {
-        (cells[key] as any).hash = this.formatHash(hash);
+        (cells[key] as any).hash = util.formatHash(hash);
       }
     });
 
     return value.deleteUndefined({ ns, cells, rows, columns });
-  }
-
-  private formatHash(hash?: string, options: { trimPrefix?: string } = {}) {
-    const { trimPrefix } = options;
-    hash = hash && trimPrefix ? hash.replace(new RegExp(`^${trimPrefix}`), '') : hash;
-    const length = trimPrefix ? 5 : 12;
-    return hash ? `${hash.substring(0, length)}..${hash.substring(hash.length - 5)}` : hash;
   }
 
   private async updateRefs(args: { force?: boolean } = {}) {
@@ -340,68 +321,23 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const last = this.selectedCell.last;
     const current = this.selectedCell.current;
     const isCurrent = last.key === current.key;
-
     const key = last.key || '';
-    const cell = { ...this.grid.data.cells[key] } || undefined;
-    const hash = cell ? cell.hash : undefined;
-    if (cell) {
-      delete cell.hash;
-    }
-
-    const isEmpty = cell ? Object.keys(cell).length === 0 : false;
-    const value = this.getValueSync(key) || '';
-    const isFormula = func.isFormula(value);
-    const ast = isFormula ? coord.ast.toTree(value) : undefined;
-
-    const styles = {
-      base: css({}),
-      title: css({
-        position: 'relative',
-        cursor: 'default',
-      }),
-      hash: css({
-        color: COLORS.CLI.YELLOW,
-        Absolute: [0, 0, null, null],
-      }),
-    };
 
     const refs = {
       out: this.state.outgoing,
       in: this.state.incoming,
     };
-    let data: any = key ? { 't.ICellData': cell, refs } : {};
-    data = ast ? { ...data, ast } : data;
-
-    const elHash = hash && (
-      <Label tooltip={hash} style={styles.hash}>
-        <Badge backgroundColor={COLORS.CLI.YELLOW} color={COLORS.DARK}>
-          sha256
-        </Badge>
-        {this.formatHash(hash, { trimPrefix: 'sha256-' })}
-      </Label>
-    );
-
-    const emptyTitle = key ? `${key}${isCurrent ? '' : ' (previous)'}: <empty>` : `<none>`;
-    const valueTitle = `t.ICellData${isCurrent ? '' : ' (previous)'}`;
-    const title = isEmpty ? emptyTitle : valueTitle;
-
-    const objectName = isEmpty ? '<none>' : key || '<none>';
-    const elObject =
-      !isEmpty &&
-      this.renderObject({
-        name: objectName,
-        data,
-        // expandPaths: ['$', '$."t.ICellData"'],
-      });
 
     return (
-      <Panel style={styles.base} title={'Cell'}>
-        <div {...styles.title}>
-          <Label color={isEmpty ? 0.3 : 0.5}>{title}</Label>
-          {elHash}
-        </div>
-        {elObject}
-      </Panel>
+      <div>
+        <DebugCell
+          grid={this.grid}
+          cellKey={key}
+          isCurrent={isCurrent}
+          refs={refs}
+          theme={this.theme}
+        />
+      </div>
     );
   }
 
