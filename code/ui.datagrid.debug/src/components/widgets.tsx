@@ -13,7 +13,7 @@ const STYLES = {
   hrDashed: css({
     margin: 0,
     MarginY: 6,
-    marginLeft: 12,
+    // marginLeft: 12,
     border: 'none',
     borderTop: `dashed 1px ${color.format(0.2)}`,
   }),

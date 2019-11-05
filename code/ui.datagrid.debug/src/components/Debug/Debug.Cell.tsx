@@ -2,9 +2,22 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, coord, css, func, GlamorValue, t, util, value, cell } from '../common';
+import {
+  color,
+  COLORS,
+  coord,
+  css,
+  func,
+  GlamorValue,
+  Uri,
+  t,
+  util,
+  value,
+  cell,
+  cuid,
+} from '../common';
 import { ObjectView } from '../primitives';
-import { Badge, Label, Panel, PanelTitle, LinkButton } from '../widgets';
+import { Badge, Label, Panel, PanelTitle, LinkButton, HrDashed } from '../widgets';
 
 export type IDebugCellProps = {
   grid: t.IGrid;
@@ -51,15 +64,49 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
   /**
    * [Methods]
    */
+  private showOverlay = (field: string) => {
+    const grid = this.grid;
+    const cell = this.key;
+    let data = grid.data.cells[cell];
 
-  public showOverlay(field: string) {
-    const data = this.grid.data.cells[this.key];
+    /**
+     * TODO 🐷
+     * - turn into command (show/add link)
+     * - only add link (and change grid) if not already the same.
+     */
+
+    data = util.value.cellData(data).setProp<'view'>({
+      defaults: {},
+      section: 'view',
+      field: 'screen',
+      value: { type: 'GRID' },
+    });
+
     const view = data && data.props ? util.toGridCellProps(data.props).view : {};
     const screen = view ? view.screen : undefined;
 
-    // console.log('field', field);
-    // console.log('screen', screen);
-  }
+    if (data && !data.links) {
+      const uri = Uri.generate.ns();
+      data = util.value.cellData(data).setLink('main', uri);
+    }
+
+    if (data) {
+      grid.changeCells({ [cell]: data });
+      if (screen && cell) {
+        this.grid.command<t.IGridOverlayShowCommand>({
+          command: 'OVERLAY/show',
+          props: { screen, cell },
+        });
+      }
+    }
+  };
+
+  private hideOverlay = () => {
+    this.grid.command<t.IGridOverlayHideCommand>({
+      command: 'OVERLAY/hide',
+      props: {},
+    });
+  };
 
   /**
    * [Render]
@@ -121,6 +168,17 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
         // expandPaths: ['$', '$."t.ICellData"'],
       });
 
+    const elChildren = key && (
+      <div>
+        <PanelTitle center={'Children'} />
+        <div {...styles.content}>
+          <LinkButton label={'main'} onClick={this.showChildHandler('main')} />
+          <HrDashed />
+          <LinkButton label={'hide'} onClick={this.hideOverlay} />
+        </div>
+      </div>
+    );
+
     return (
       <Panel style={styles.base} title={'Cell'} padding={0}>
         <div {...styles.content}>
@@ -131,10 +189,7 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
           {elObject}
         </div>
 
-        <PanelTitle center={'Children'} />
-        <div {...styles.content}>
-          <LinkButton label={'main'} onClick={this.showChildHandler('main')} />
-        </div>
+        {elChildren}
       </Panel>
     );
   }

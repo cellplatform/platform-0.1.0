@@ -1,6 +1,8 @@
 import * as t from './types';
 export * from '@platform/ui.datagrid.util';
 
+export { value } from './libs.cell';
+
 /**
  * Convert a grid selection into debug data.
  */
