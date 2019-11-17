@@ -13,7 +13,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   const { db, router } = args;
 
   /**
-   * GET info (root).
+   * GET root namespace info (meta-data).
    */
   router.get(ROUTES.NS.INFO, async req => {
     const id = req.params.id;

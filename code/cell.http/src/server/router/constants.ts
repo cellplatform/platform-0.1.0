@@ -6,7 +6,7 @@ export const ROUTES = {
     WILDCARD: '*',
   },
   NS: {
-    INFO: `/ns\::id(.*)/`,
-    DATA: `/ns\::id(.*)/data`,
+    INFO: `/ns\::id([A-Z0-9]*)(/?)`,
+    DATA: `/ns\::id([A-Z0-9]*)/data(/?)`,
   },
 };
