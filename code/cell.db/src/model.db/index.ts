@@ -1,4 +1,4 @@
-import * as model from './model';
+import * as db from './db';
 
-export { model };
-export * from './model';
+export { db };
+export * from './db';

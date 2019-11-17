@@ -1,7 +1,7 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.0.26",
-  "description": "HTTP cloud server for CellOS.",
+  "version": "0.1.2",
+  "description": "HTTP cloud server, and client tools, for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -13,11 +13,17 @@
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare",
-    "deploy": "cd src.sample && yarn deploy"
+    "deploy": "cd src.sample && yarn deploy",
+    "reset": "ts-node -T scripts/reset"
   },
   "dependencies": {
-    "@platform/cell.db": "0.0.25",
-    "@platform/cell.types": "0.1.0",
+    "@platform/cell.db": "0.0.28",
+    "@platform/cell.schema": "0.0.5",
+    "@platform/cell.types": "0.1.1",
+    "@platform/cell.value": "0.0.21",
+    "@platform/fs": "0.3.3",
+    "@platform/fsdb.types": "0.4.0",
+    "@platform/http": "0.4.11",
     "@platform/libs": "0.1.3",
     "@platform/micro": "0.6.0"
   },

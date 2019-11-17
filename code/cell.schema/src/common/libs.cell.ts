@@ -1,2 +1,4 @@
-export { coord } from '@platform/cell.coord';
-// export { value } from '@platform/cell.value';
+import { coord } from '@platform/cell.coord';
+
+export { coord };
+export const Uri = coord.Uri;

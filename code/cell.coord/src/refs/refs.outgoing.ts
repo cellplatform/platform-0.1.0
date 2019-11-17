@@ -107,7 +107,7 @@ async function outgoingCellRef(args: {
   if (isCircular) {
     const refError: t.IRefErrorCircular = {
       type: 'REF/circular',
-      message: `The cell ${cell} contains a circular reference (${path}).`,
+      message: `The cell ${key} contains a circular reference (${path}).`,
       path,
     };
     error = refError;

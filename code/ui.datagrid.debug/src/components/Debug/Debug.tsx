@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import {
-  defaultValue,
+  util,
   color,
   COLORS,
   constants,
@@ -13,11 +13,11 @@ import {
   GlamorValue,
   R,
   t,
-  value as valueUtil,
+  value,
 } from '../common';
-import { Button, IButtonProps, ObjectView } from '../primitives';
-
-const { deleteUndefined } = valueUtil;
+import { ObjectView } from '../primitives';
+import { Badge, Hr, HrDashed, Label, LinkButton, Panel } from '../widgets';
+import { DebugCell } from './Debug.Cell';
 
 export type IDebugProps = {
   grid: t.IGrid;
@@ -51,6 +51,8 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       map(e => e.payload as t.IGridCellsChange),
     );
 
+    change$.subscribe(e => this.updateState());
+
     events$
       .pipe(
         filter(e => e.type === 'GRID/selection'),
@@ -62,10 +64,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
           this.state$.next({ lastSelection: e.to });
         }
       });
-
-    change$.subscribe(e => {
-      this.updateState();
-    });
 
     // Finish up.
     this.updateState();
@@ -89,46 +87,23 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
   public get selectedCell() {
     const self = this; // tslint:disable-line
-    const formatSelection = this.formatSelection;
+    const grid = this.grid;
     return {
       get current() {
-        return formatSelection(self.grid.selection);
+        return util.formatSelection({ grid, selection: self.grid.selection });
       },
       get last() {
         const selection: t.IGridSelection = self.state.lastSelection || { ranges: [] };
-        return formatSelection(selection);
+        return util.formatSelection({ grid, selection });
       },
     };
   }
-  private formatSelection = (
-    selection: t.IGridSelection,
-    options: { maxValueLength?: number } = {},
-  ) => {
-    const { maxValueLength = 30 } = options;
-
-    const ranges = selection.ranges;
-    const key = selection.cell || '';
-    const value = this.getValueSync(key) || '';
-    const cell = this.grid.data.cells[key];
-    const isEmpty = !Boolean(value);
-
-    // Display string.
-    const MAX = maxValueLength;
-    let display = value.length > MAX ? `${value.substring(0, MAX)}...` : value;
-    display = isEmpty ? '<empty>' : display;
-
-    // Finish up.
-    return { key, value, cell, display, isEmpty, ranges };
-  };
 
   /**
    * [Methods]
    */
   public getValue: t.RefGetValue = async key => this.getValueSync(key);
-  private getValueSync = (key: string) => {
-    const cell = this.grid.data.cells[key];
-    return cell && typeof cell.value === 'string' ? cell.value : undefined;
-  };
+  private getValueSync = (key: string) => util.getValueSync({ grid: this.grid, key });
 
   private async updateState(args: { force?: boolean } = {}) {
     const { force } = args;
@@ -147,7 +122,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const grid = this.grid;
     const { selection, isEditing, clipboard } = grid;
 
-    return deleteUndefined({
+    return value.deleteUndefined({
       isEditing,
       selection,
       clipboard,
@@ -162,18 +137,11 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     Object.keys(cells).forEach(key => {
       const hash = cells[key] ? (cells[key] as any).hash : undefined;
       if (hash) {
-        (cells[key] as any).hash = this.formatHash(hash);
+        (cells[key] as any).hash = util.formatHash(hash);
       }
     });
 
-    return deleteUndefined({ ns, cells, rows, columns });
-  }
-
-  private formatHash(hash?: string, options: { trimPrefix?: string } = {}) {
-    const { trimPrefix } = options;
-    hash = hash && trimPrefix ? hash.replace(new RegExp(`^${trimPrefix}`), '') : hash;
-    const length = trimPrefix ? 5 : 12;
-    return hash ? `${hash.substring(0, length)}..${hash.substring(hash.length - 5)}` : hash;
+    return value.deleteUndefined({ ns, cells, rows, columns });
   }
 
   private async updateRefs(args: { force?: boolean } = {}) {
@@ -261,7 +229,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         backgroundColor: color.format(-0.2),
         Flex: 'horizontal-center-spaceBetween',
         height: 32,
-        PaddingX: 12,
+        PaddingX: 14,
         fontSize: 14,
       }),
       edge: css({ Flex: 'horizontal' }),
@@ -351,74 +319,25 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
   private renderCellPanel() {
     const last = this.selectedCell.last;
-    if (!last || !last.key) {
-      // return null;
-    }
-
     const current = this.selectedCell.current;
     const isCurrent = last.key === current.key;
-
     const key = last.key || '';
-    const cell = { ...this.grid.data.cells[key] } || undefined;
-    const hash = cell ? cell.hash : undefined;
-    if (cell) {
-      delete cell.hash;
-    }
-
-    const isEmpty = cell ? Object.keys(cell).length === 0 : false;
-    const value = this.getValueSync(key) || '';
-    const isFormula = func.isFormula(value);
-    const ast = isFormula ? coord.ast.toTree(value) : undefined;
-
-    const styles = {
-      base: css({}),
-      title: css({
-        position: 'relative',
-        cursor: 'default',
-      }),
-      hash: css({
-        color: COLORS.CLI.YELLOW,
-        Absolute: [0, 0, null, null],
-      }),
-    };
 
     const refs = {
       out: this.state.outgoing,
       in: this.state.incoming,
     };
-    let data: any = key ? { 't.ICellData': cell, refs } : {};
-    data = ast ? { ...data, ast } : data;
-
-    const elHash = hash && (
-      <Label tooltip={hash} style={styles.hash}>
-        <Badge backgroundColor={COLORS.CLI.YELLOW} color={COLORS.DARK}>
-          sha256
-        </Badge>
-        {this.formatHash(hash, { trimPrefix: 'sha256-' })}
-      </Label>
-    );
-
-    const emptyTitle = key ? `${key}${isCurrent ? '' : ' (previous)'}: <empty>` : `<none>`;
-    const valueTitle = `t.ICellData${isCurrent ? '' : ' (previous)'}`;
-    const title = isEmpty ? emptyTitle : valueTitle;
-
-    const objectName = isEmpty ? '<none>' : key || '<none>';
-    const elObject =
-      !isEmpty &&
-      this.renderObject({
-        name: objectName,
-        data,
-        // expandPaths: ['$', '$."t.ICellData"'],
-      });
 
     return (
-      <Panel style={styles.base} title={'Cell'}>
-        <div {...styles.title}>
-          <Label color={isEmpty ? 0.3 : 0.5}>{title}</Label>
-          {elHash}
-        </div>
-        {elObject}
-      </Panel>
+      <div>
+        <DebugCell
+          grid={this.grid}
+          cellKey={key}
+          isCurrent={isCurrent}
+          refs={refs}
+          theme={this.theme}
+        />
+      </div>
     );
   }
 
@@ -468,118 +387,118 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   };
 }
 
-/**
- * [Helpers]
- */
+// /**
+//  * [Helpers]
+//  */
 
-const STYLES = {
-  hr: css({
-    margin: 0,
-    MarginY: 12,
-    border: 'none',
-    borderTop: `solid 3px ${color.format(0.06)}`,
-  }),
-  hrDashed: css({
-    margin: 0,
-    MarginY: 6,
-    marginLeft: 12,
-    border: 'none',
-    borderTop: `dashed 1px ${color.format(0.2)}`,
-  }),
-};
+// const STYLES = {
+//   hr: css({
+//     margin: 0,
+//     MarginY: 12,
+//     border: 'none',
+//     borderTop: `solid 3px ${color.format(0.06)}`,
+//   }),
+//   hrDashed: css({
+//     margin: 0,
+//     MarginY: 6,
+//     marginLeft: 12,
+//     border: 'none',
+//     borderTop: `dashed 1px ${color.format(0.2)}`,
+//   }),
+// };
 
-const Hr = () => <hr {...STYLES.hr} />;
-const HrDashed = () => <hr {...STYLES.hrDashed} />;
+// const Hr = () => <hr {...STYLES.hr} />;
+// const HrDashed = () => <hr {...STYLES.hrDashed} />;
 
-const LinkButton = (props: IButtonProps) => {
-  const styles = {
-    base: css({
-      color: COLORS.CLI.CYAN,
-    }),
-  };
-  return <Button {...props} style={styles.base} />;
-};
+// const LinkButton = (props: IButtonProps) => {
+//   const styles = {
+//     base: css({
+//       color: COLORS.CLI.CYAN,
+//     }),
+//   };
+//   return <Button {...props} style={styles.base} />;
+// };
 
-const Label = (props: {
-  children?: React.ReactNode;
-  tooltip?: string;
-  color?: string | number;
-  style?: GlamorValue;
-}) => {
-  const styles = {
-    base: css({
-      fontFamily: constants.MONOSPACE.FAMILY,
-      fontSize: 12,
-      color: color.format(defaultValue(props.color, 0.5)),
-      marginBottom: 6,
-      boxSizing: 'border-box',
-    }),
-  };
-  return (
-    <div {...css(styles.base, props.style)} title={props.tooltip}>
-      {props.children}
-    </div>
-  );
-};
+// const Label = (props: {
+//   children?: React.ReactNode;
+//   tooltip?: string;
+//   color?: string | number;
+//   style?: GlamorValue;
+// }) => {
+//   const styles = {
+//     base: css({
+//       fontFamily: constants.MONOSPACE.FAMILY,
+//       fontSize: 12,
+//       color: color.format(defaultValue(props.color, 0.5)),
+//       marginBottom: 6,
+//       boxSizing: 'border-box',
+//     }),
+//   };
+//   return (
+//     <div {...css(styles.base, props.style)} title={props.tooltip}>
+//       {props.children}
+//     </div>
+//   );
+// };
 
-const Badge = (props: {
-  children?: React.ReactNode;
-  color: string;
-  backgroundColor: string;
-  style?: GlamorValue;
-}) => {
-  const styles = {
-    base: css({
-      boxSizing: 'border-box',
-      display: 'inline-block',
-      color: props.color,
-      backgroundColor: props.backgroundColor,
-      borderRadius: 2,
-      marginRight: 5,
-      PaddingX: 3,
-      PaddignY: 2,
-      border: `solid 1px ${color.format(0.2)}`,
-    }),
-  };
-  return <div {...css(styles.base, props.style)}>{props.children}</div>;
-};
+// const Badge = (props: {
+//   children?: React.ReactNode;
+//   color: string;
+//   backgroundColor: string;
+//   style?: GlamorValue;
+// }) => {
+//   const styles = {
+//     base: css({
+//       boxSizing: 'border-box',
+//       display: 'inline-block',
+//       color: props.color,
+//       backgroundColor: props.backgroundColor,
+//       borderRadius: 2,
+//       marginRight: 5,
+//       PaddingX: 3,
+//       PaddignY: 2,
+//       border: `solid 1px ${color.format(0.2)}`,
+//     }),
+//   };
+//   return <div {...css(styles.base, props.style)}>{props.children}</div>;
+// };
 
-const Panel = (props: { title?: string; children?: React.ReactNode; style?: GlamorValue }) => {
-  const styles = {
-    base: css({
-      position: 'relative',
-      boxSizing: 'border-box',
-      borderRadius: 4,
-      backgroundColor: color.format(-0.1),
-      MarginY: 15,
-      boxShadow: `inset 0 0 10px 0 ${color.format(-0.3)}`,
-      border: `solid 1px ${color.format(-0.4)}`,
-    }),
-    title: css({
-      fontSize: 12,
-      marginBottom: 10,
-      paddingBottom: 3,
-      PaddingY: 8,
-      Flex: 'center-spaceBetween',
-      borderBottom: `solid 1px ${color.format(-0.3)}`,
-      color: color.format(0.5),
-      backgroundColor: color.format(-0.1),
-    }),
-    children: css({
-      padding: 10,
-      paddingTop: 0,
-    }),
-  };
-  return (
-    <div {...css(styles.base, props.style)}>
-      <div {...styles.title}>
-        <div />
+// const Panel = (props: { title?: string; children?: React.ReactNode; style?: GlamorValue }) => {
+//   const styles = {
+//     base: css({
+//       position: 'relative',
+//       boxSizing: 'border-box',
+//       borderRadius: 4,
+//       backgroundColor: color.format(-0.1),
+//       MarginY: 15,
+//       boxShadow: `inset 0 0 10px 0 ${color.format(-0.3)}`,
+//       border: `solid 1px ${color.format(-0.4)}`,
+//     }),
+//     title: css({
+//       fontSize: 12,
+//       marginBottom: 10,
+//       paddingBottom: 3,
+//       PaddingY: 8,
+//       Flex: 'center-spaceBetween',
+//       borderBottom: `solid 1px ${color.format(-0.3)}`,
+//       color: color.format(0.5),
+//       backgroundColor: color.format(-0.1),
+//     }),
+//     children: css({
+//       padding: 10,
+//       paddingTop: 0,
+//     }),
+//   };
+//   return (
+//     <div {...css(styles.base, props.style)}>
+//       <div {...styles.title}>
+//         <div />
 
-        {props.title || 'Untitled'}
+//         {props.title || 'Untitled'}
 
-        <div />
-      </div>
-      <div {...styles.children}>{props.children}</div>
-    </div>
-  );
-};
+//         <div />
+//       </div>
+//       <div {...styles.children}>{props.children}</div>
+//     </div>
+//   );
+// };

@@ -1,2 +1,4 @@
 export * from './types';
-export * from './model.db';
+
+import * as model from './model';
+export { model };

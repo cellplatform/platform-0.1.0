@@ -6,7 +6,7 @@ import * as style from './cmd.style';
 /**
  * Initialize command controllers.
  */
-export function init(args: { grid: t.IGrid; fire: t.GridFireEvent }) {
+export function init(args: { grid: t.IGrid; fire: t.GridFire }) {
   const { grid, fire } = args;
 
   const command$ = grid.events$.pipe(

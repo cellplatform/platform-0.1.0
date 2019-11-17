@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';
+import { debounceTime, delay, filter, map, takeUntil, debounce } from 'rxjs/operators';
 
 import { Debug } from '@platform/ui.datagrid.debug';
 
 import {
+  http,
   constants,
   Button,
   color,
@@ -85,7 +86,23 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
     events$
       .pipe(
-        filter(() => true),
+        filter(
+          e =>
+            e.type === 'GRID/cells/change' ||
+            e.type === 'GRID/rows/change' ||
+            e.type === 'GRID/columns/change',
+        ),
+        map(e => e.payload as t.IGridCellsChange),
+        debounceTime(1500),
+      )
+      .subscribe(async e => {
+        console.log('🌼 POST (save)', e);
+        const res = await this.postData();
+        console.log('SAVED', res);
+      });
+
+    events$
+      .pipe(
         filter(e => e.type === 'GRID/cells/change'),
         map(e => e.payload as t.IGridCellsChange),
         delay(0),
@@ -227,6 +244,12 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     }
   };
 
+  private postData = async () => {
+    const data = this.grid.data;
+    const uri = http.Uri.generate.ns({ ns: data.ns.id });
+    await http.ns.postData(uri, { data });
+  };
+
   /**
    * [Render]
    */
@@ -326,9 +349,13 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
           });
         })}
         <Hr margin={5} />
-        {this.button('screen: hide', () =>
-          this.grid.command({ command: 'OVERLAY/hide', props: {} }),
-        )}
+        {this.button('screen: hide', () => {
+          this.grid.command({ command: 'OVERLAY/hide', props: {} });
+        })}
+        {this.button('screen: current selection', () => {
+          const cell = this.lastSelection.cell;
+          this.overlayFromCell(cell);
+        })}
         {this.button('screen: A1 (none defined)', () => this.overlayFromCell('A1'))}
         {this.button('screen: C1 (sample)', () => this.overlayFromCell('C1'))}
         {this.button('screen: C2 (child namespace)', () => this.overlayFromCell('C2'))}
@@ -338,6 +365,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         {this.button('main:"ns:abc"', () => this.setLink('main', 'ns:abc'))}
         {this.button('main:"ns:def"', () => this.setLink('main', 'ns:def'))}
         {this.button('main: undefined', () => this.setLink('main', undefined))}
+
+        <Hr margin={5} />
+        <Label>http (localhost)</Label>
+        {this.button('post current data', () => this.postData())}
       </div>
     );
   }

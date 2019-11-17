@@ -1,4 +1,4 @@
-import { expect, t, time, toContext, Subject, getFunc } from '../test';
+import { expect, t, time, toContext, Subject } from '../test';
 import { one } from './calculate.one';
 
 export const testContext = async (
