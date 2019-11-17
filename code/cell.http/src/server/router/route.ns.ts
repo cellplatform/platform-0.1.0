@@ -1,14 +1,10 @@
 import { t, cell, log } from '../common';
+import { ROUTES } from './constants';
 
 const { Uri, model } = cell;
 const { Ns, Cell } = model.db;
 
 import { ns } from '../model';
-
-const ROUTE = {
-  INFO: `/ns\::id(.*)/`,
-  DATA: `/ns\::id(.*)/data`,
-};
 
 /**
  * Namespace routes.
@@ -19,7 +15,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   /**
    * GET info (root).
    */
-  router.get(ROUTE.INFO, async req => {
+  router.get(ROUTES.NS.INFO, async req => {
     const id = req.params.id;
     const { response } = await getNsModelResponse(db, id);
     return { status: 200, data: response };
@@ -28,7 +24,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   /**
    * GET namespace data.
    */
-  router.get(ROUTE.DATA, async req => {
+  router.get(ROUTES.NS.DATA, async req => {
     const id = req.params.id;
     const { response } = await getNsModelDataResponse(db, id);
     return { status: 200, data: response };
@@ -38,7 +34,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
    * POST namespace data.
    *      Persists data for the namespace to the DB.
    */
-  router.post(ROUTE.DATA, async req => {
+  router.post(ROUTES.NS.DATA, async req => {
     const id = req.params.id;
 
     // Retrieve body data.

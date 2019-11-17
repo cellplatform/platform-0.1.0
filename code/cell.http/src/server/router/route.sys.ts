@@ -1,5 +1,6 @@
-import { t, constants } from '../common';
-const { PKG } = constants;
+import { t } from '../common';
+import { PKG, ROUTES } from './constants';
+
 const DEPS = PKG.dependencies;
 
 const MODULE = {
@@ -13,9 +14,9 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   const { router } = args;
 
   /**
-   * Info
+   * System info.
    */
-  router.get('/', async req => {
+  router.get(ROUTES.SYS.INFO, async req => {
     const version = {
       [PKG.name]: PKG.version,
       [MODULE.SCHEMA]: DEPS[MODULE.SCHEMA],
