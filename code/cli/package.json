@@ -20,10 +20,10 @@
     "@platform/log": "0.0.145",
     "@platform/util.value": "0.5.5",
     "@types/inquirer": "6.5.0",
-    "@types/yargs": "13.0.2",
+    "@types/yargs": "13.0.3",
     "inquirer": "7.0.0",
     "listr": "0.14.3",
-    "yargs": "14.0.0"
+    "yargs": "15.0.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.64",

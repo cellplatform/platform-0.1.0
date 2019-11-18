@@ -16,8 +16,8 @@
     "deep-diff": "1.0.2"
   },
   "devDependencies": {
-    "@platform/test": "0.0.50",
-    "@platform/ts": "3.4.17"
+    "@platform/test": "0.0.64",
+    "@platform/ts": "3.5.6"
   },
   "files": [
     "lib",

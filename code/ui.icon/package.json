@@ -17,14 +17,14 @@
     "@platform/react": "0.3.26"
   },
   "peerDependencies": {
-    "react-icons": "3.7.0"
+    "react-icons": "3.8.0"
   },
   "devDependencies": {
     "@platform/ts": "3.5.6",
     "@uiharness/dev": "0.9.8",
     "@uiharness/ui": "0.6.19",
-    "react-icons": "3.7.0",
-    "electron": "6.0.7"
+    "react-icons": "3.8.0",
+    "electron": "7.1.1"
   },
   "files": [
     "lib"

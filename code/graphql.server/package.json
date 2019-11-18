@@ -21,14 +21,14 @@
     "@platform/log": "0.0.145",
     "@platform/util.is": "0.0.94",
     "@platform/util.value": "0.5.5",
-    "@types/dotenv": "6.1.1",
-    "@types/express": "4.17.1",
+    "@types/dotenv": "8.2.0",
+    "@types/express": "4.17.2",
     "@types/graphql": "14.5.0",
-    "apollo-server-express": "2.9.3",
-    "dotenv": "8.1.0",
+    "apollo-server-express": "2.9.9",
+    "dotenv": "8.2.0",
     "express": "4.17.1",
-    "graphql": "14.5.7",
-    "graphql-tools": "4.0.5"
+    "graphql": "14.5.8",
+    "graphql-tools": "4.0.6"
   },
   "devDependencies": {
     "@platform/auth": "0.1.35",

@@ -248,10 +248,10 @@
   dependencies:
     chalk "*"
 
-"@types/cheerio@0.22.13":
-  version "0.22.13"
-  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.13.tgz#5eecda091a24514185dcba99eda77e62bf6523e6"
-  integrity sha512-OZd7dCUOUkiTorf97vJKwZnSja/DmHfuBAroe1kREZZTCf/tlFecwHhsOos3uVHxeKGZDwzolIrCUApClkdLuA==
+"@types/cheerio@0.22.14":
+  version "0.22.14"
+  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.14.tgz#d150889891e7db892c6a0b16bd5583cc70b3fc44"
+  integrity sha512-SVtcP2fvPYrebTwpyqxjxb7K5v3ZOAdH409yAEWFPpZThCSGa1K2IFfx6Rg6ttvThCBQXP4fU9WF94sqLoiQGg==
   dependencies:
     "@types/node" "*"
 
@@ -334,6 +334,11 @@
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-6.0.1.tgz#a984b405c702fa5a7ec6abc56b37f2ba35ef5af6"
   integrity sha512-ffCdcrEE5h8DqVxinQjo+2d1q+FV5z7iNtPofw3JsrltSoSVlOGaW0rY8XxtO9XukdTn8TaCGWmk2VFGhI70mg==
+
+"@types/semver@6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-6.2.0.tgz#d688d574400d96c5b0114968705366f431831e1a"
+  integrity sha512-1OzrNb4RuAzIT7wHSsgZRlMBlNsJl+do6UblR7JMW4oB7bbR+uBEYtUh7gEc/jM84GGilh68lSOokyM/zNUlBA==
 
 "@types/through@*":
   version "0.0.29"
@@ -508,10 +513,15 @@ boolbase@~1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-bowser@*, bowser@2.5.4:
+bowser@*:
   version "2.5.4"
   resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.5.4.tgz#850fccfebde92165440279b5ab19be3c7f05cfe1"
   integrity sha512-74GGwfc2nzYD19JCiA0RwCxdq7IY5jHeEaSrrgm/5kusEuK+7UK0qDG3gyzN47c4ViNyO4osaKtZE+aSV6nlpQ==
+
+bowser@2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.7.0.tgz#96eab1fa07fab08c1ec4c75977a7c8ddf8e0fe1f"
+  integrity sha512-aIlMvstvu8x+34KEiOHD3AsBgdrzg6sxALYiukOWhFvGMbQI6TRP/iY0LMhUrHs56aD6P1G0Z7h45PUJaa5m9w==
 
 bowser@^1.7.3:
   version "1.9.4"
@@ -1951,6 +1961,11 @@ path-to-regexp@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-3.1.0.tgz#f45a9cc4dc6331ae8f131e0ce4fde8607f802367"
   integrity sha512-PtHLisEvUOepjc+sStXxJ/pDV/s5UBTOKWJY2SOz3e6E/iN/jLknY9WL72kTwRrwXDUbZTEAtSnJbz2fF127DA==
+
+path-to-regexp@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-5.0.0.tgz#e56dd58778b9dc06e76f0f3e39e741bbddc0bd26"
+  integrity sha512-VOQVA+0mivusQfaveeWlrW7ddXKuStHMTdovn/1epf7cEpUL4dpzGl7eq8ho96H9w90/q66yJLsqn84jSCfkmQ==
 
 pathval@^1.1.0:
   version "1.1.0"

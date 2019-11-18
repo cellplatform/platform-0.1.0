@@ -9,14 +9,14 @@
     "prepare": "yarn build && yarn lint"
   },
   "dependencies": {
-    "@types/node": "12.7.4",
-    "prettier": "1.18.2",
-    "ts-node": "8.3.0",
+    "@types/node": "12.12.8",
+    "prettier": "1.19.1",
+    "ts-node": "8.5.2",
     "tslib": "1.10.0",
-    "tslint": "5.19.0",
+    "tslint": "5.20.1",
     "tslint-config-prettier": "1.18.0",
-    "tslint-react": "4.0.0",
-    "typescript": "3.6.2"
+    "tslint-react": "4.1.0",
+    "typescript": "3.7.2"
   },
   "files": [
     "*.sh",

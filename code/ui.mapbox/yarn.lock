@@ -1454,10 +1454,10 @@
     "@types/node" "*"
     rxjs "^6.5.1"
 
-"@types/mapbox-gl@0.54.3":
-  version "0.54.3"
-  resolved "https://registry.yarnpkg.com/@types/mapbox-gl/-/mapbox-gl-0.54.3.tgz#6215fbf4dbb555d2ca6ce3be0b1de045eec0f967"
-  integrity sha512-/G06vUcV5ucNB7G9ka6J+VbGtffyUYvfe6A3oae/+csTlHIEHcvyJop3Ic4yeMDxycsQCmBvuwz+owseMuiQ3w==
+"@types/mapbox-gl@1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@types/mapbox-gl/-/mapbox-gl-1.5.2.tgz#fe908e7c602d67ce8658948e317e2b7599bb1047"
+  integrity sha512-R7b60uDU2DA355cgTL5LugEGoNaMz+v5SAEOIbViIFsa9TDqQHVIaRG8Z2OdZjurGgfHG3UoMhoyVYPzApp3nQ==
   dependencies:
     "@types/geojson" "*"
 
@@ -3888,10 +3888,10 @@ dynamics.js@1.1.5:
   resolved "https://registry.yarnpkg.com/dynamics.js/-/dynamics.js-1.1.5.tgz#b90bdc33605cefe652b8416e701f79bf6eefce32"
   integrity sha1-uQvcM2Bc7+ZSuEFucB95v27vzjI=
 
-earcut@^2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/earcut/-/earcut-2.1.5.tgz#829280a9a3a0f5fee0529f0a47c3e4eff09b21e4"
-  integrity sha512-QFWC7ywTVLtvRAJTVp8ugsuuGQ5mVqNmJ1cRYeLrSHgP3nycr2RHTJob9OtM0v8ujuoKN0NY1a93J/omeTL1PA==
+earcut@^2.2.0:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/earcut/-/earcut-2.2.1.tgz#3bae0b1b6fec41853b56b126f03a42a34b28f1d5"
+  integrity sha512-5jIMi2RB3HtGPHcYd9Yyl0cczo84y+48lgKPxMijliNQaKAHEZJbdzLmKmdxG/mCdS/YD9DQ1gihL8mxzR0F9w==
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
@@ -5748,10 +5748,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mapbox-gl@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-1.3.0.tgz#8bd807b44f395d1830fe3a202763b28b5f1ed299"
-  integrity sha512-mhxIXNQwyqqlFImVUuFucSydxXIeKS4ul/5ES6A5zA4loLvcEXOrlH1PewjqkGoYjfdRHjqsaxpP8czbVuHg3g==
+mapbox-gl@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/mapbox-gl/-/mapbox-gl-1.5.0.tgz#d531dcecc01b4e209466f03ffd3d0209fe248123"
+  integrity sha512-seTQUttE7XaL93on+zfLv06HmROsIdTh3riEPrBdbylSirLmBRnofG+iV873ZbJQElf+d2USyHpWAJm37RehEQ==
   dependencies:
     "@mapbox/geojson-rewind" "^0.4.0"
     "@mapbox/geojson-types" "^1.0.2"
@@ -5763,13 +5763,13 @@ mapbox-gl@1.3.0:
     "@mapbox/vector-tile" "^1.3.1"
     "@mapbox/whoots-js" "^3.1.0"
     csscolorparser "~1.0.2"
-    earcut "^2.1.5"
+    earcut "^2.2.0"
     geojson-vt "^3.2.1"
     gl-matrix "^3.0.0"
     grid-index "^1.1.0"
     minimist "0.0.8"
     murmurhash-js "^1.0.0"
-    pbf "^3.0.5"
+    pbf "^3.2.1"
     potpack "^1.0.1"
     quickselect "^2.0.0"
     rw "^1.3.3"
@@ -6590,6 +6590,14 @@ pbf@^3.0.5:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/pbf/-/pbf-3.2.0.tgz#e76f9f5114e395c25077ad6fe463b3507d6877fc"
   integrity sha512-98Eh7rsJNJF/Im6XYMLaOW3cLnNyedlOd6hu3iWMD5I7FZGgpw8yN3vQBrmLbLodu7G784Irb9Qsv2yFrxSAGw==
+  dependencies:
+    ieee754 "^1.1.12"
+    resolve-protobuf-schema "^2.1.0"
+
+pbf@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/pbf/-/pbf-3.2.1.tgz#b4c1b9e72af966cd82c6531691115cc0409ffe2a"
+  integrity sha512-ClrV7pNOn7rtmoQVF4TS1vyU0WhYRnP92fzbfF75jAIwpnzdJXf8iTd4CMEqO4yUenH6NDqLiwjqlh6QgZzgLQ==
   dependencies:
     ieee754 "^1.1.12"
     resolve-protobuf-schema "^2.1.0"

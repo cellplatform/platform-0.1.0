@@ -17,13 +17,13 @@
   "dependencies": {
     "@platform/react": "0.3.26",
     "@platform/ui.icon": "0.0.90",
-    "gravatar-url": "3.0.1",
-    "react-icons": "3.7.0"
+    "gravatar-url": "3.1.0",
+    "react-icons": "3.8.0"
   },
   "devDependencies": {
     "@uiharness/dev": "0.9.8",
     "@uiharness/ui": "0.6.19",
-    "electron": "6.0.8"
+    "electron": "7.1.1"
   },
   "files": [
     "lib"

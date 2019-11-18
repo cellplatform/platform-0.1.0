@@ -25,15 +25,15 @@
     "apollo-link-batch-http": "1.2.13",
     "apollo-link-error": "1.1.12",
     "apollo-link-http": "1.5.16",
-    "graphql": "14.5.7",
+    "graphql": "14.5.8",
     "graphql-tag": "2.10.1"
   },
   "devDependencies": {
     "@platform/test": "0.0.64",
     "@uiharness/dev": "0.9.8",
     "@uiharness/ui": "0.6.19",
-    "apollo-server-micro": "2.9.3",
-    "electron": "6.0.7"
+    "apollo-server-micro": "2.9.9",
+    "electron": "7.1.1"
   },
   "files": [
     "lib"

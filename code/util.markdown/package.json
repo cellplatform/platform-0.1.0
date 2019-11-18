@@ -12,11 +12,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "rehype-format": "2.3.2",
-    "rehype-stringify": "6.0.0",
-    "remark-parse": "7.0.1",
+    "rehype-format": "3.0.0",
+    "rehype-stringify": "6.0.1",
+    "remark-parse": "7.0.2",
     "remark-rehype": "5.0.0",
-    "unified": "8.3.2"
+    "unified": "8.4.2"
   },
   "devDependencies": {
     "@platform/test": "0.0.64",
