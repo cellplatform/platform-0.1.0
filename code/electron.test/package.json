@@ -20,8 +20,8 @@
   },
   "devDependencies": {
     "@platform/ts": "3.7.0",
-    "@uiharness/dev": "0.9.8",
-    "@uiharness/electron": "0.6.8",
+    "@uiharness/dev": "0.9.9",
+    "@uiharness/electron": "0.6.9",
     "electron": "7.1.1"
   },
   "repository": "uiharness/platform",

@@ -21,7 +21,7 @@
     "@platform/ui.codemirror": "0.1.3",
     "@platform/util.value": "0.5.8",
     "@types/codemirror": "0.0.80",
-    "@uiharness/electron": "0.6.8",
+    "@uiharness/electron": "0.6.9",
     "graphiql": "0.16.0",
     "hjson": "3.2.1"
   },
@@ -29,8 +29,8 @@
     "@platform/test": "0.0.65",
     "@platform/ts": "3.7.0",
     "@types/hjson": "2.4.1",
-    "@uiharness/dev": "0.9.8",
-    "@uiharness/ui": "0.6.19",
+    "@uiharness/dev": "0.9.9",
+    "@uiharness/ui": "0.6.20",
     "electron": "7.1.1"
   },
   "files": [

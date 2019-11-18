@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@platform/ts": "3.7.0",
-    "@uiharness/dev": "0.9.8",
+    "@uiharness/dev": "0.9.9",
     "electron": "7.1.1"
   },
   "files": [

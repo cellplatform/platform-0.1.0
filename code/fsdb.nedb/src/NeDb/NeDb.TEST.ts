@@ -79,7 +79,10 @@ describe('NeDb', () => {
 
     it('stores [path] in [_id] field', async () => {
       await db.put('FOO/1', 1);
-      await db.putMany([{ key: 'FOO/2', value: 2 }, { key: 'FOO/3', value: 3 }]);
+      await db.putMany([
+        { key: 'FOO/2', value: 2 },
+        { key: 'FOO/3', value: 3 },
+      ]);
 
       const store = (db as any).store as NedbStore;
       const docs = await store.find({});
@@ -197,7 +200,10 @@ describe('NeDb', () => {
     });
 
     it('putMany => getMany', async () => {
-      const items = [{ key: 'FOO/1', value: 123 }, { key: 'FOO/2', value: 456 }];
+      const items = [
+        { key: 'FOO/1', value: 123 },
+        { key: 'FOO/2', value: 456 },
+      ];
       const keys = items.map(item => item.key);
 
       const res1 = await db.getMany(keys);
@@ -232,7 +238,10 @@ describe('NeDb', () => {
     });
 
     it('putMany => deleteMany', async () => {
-      const items = [{ key: 'FOO/1', value: 123 }, { key: 'FOO/2', value: 456 }];
+      const items = [
+        { key: 'FOO/1', value: 123 },
+        { key: 'FOO/2', value: 456 },
+      ];
       const keys = items.map(item => item.key);
 
       await db.putMany(items);
@@ -496,7 +505,10 @@ describe('NeDb', () => {
       expect(ts1.modifiedAt).to.eql(ts1.createdAt);
 
       await time.wait(50);
-      await db.putMany([{ key: 'foo', value: 456 }, { key: 'bar', value: 789 }]);
+      await db.putMany([
+        { key: 'foo', value: 456 },
+        { key: 'bar', value: 789 },
+      ]);
 
       const ts2 = await db.sys.timestamps();
       expect(ts2.createdAt).to.eql(ts1.createdAt);

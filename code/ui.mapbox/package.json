@@ -20,8 +20,8 @@
     "mapbox-gl": "1.5.0"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.9.8",
-    "@uiharness/ui": "0.6.19",
+    "@uiharness/dev": "0.9.9",
+    "@uiharness/ui": "0.6.20",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0"
   },

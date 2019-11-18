@@ -21,8 +21,8 @@
   },
   "devDependencies": {
     "@platform/ts": "3.7.0",
-    "@uiharness/dev": "0.9.8",
-    "@uiharness/ui": "0.6.19",
+    "@uiharness/dev": "0.9.9",
+    "@uiharness/ui": "0.6.20",
     "react-icons": "3.8.0",
     "electron": "7.1.1"
   },
