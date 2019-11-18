@@ -1,16 +1,25 @@
-import { expect, dotenv } from '../test';
+import { expect, fs } from '../test';
 import { MongoDb } from '.';
+import { MongoStore, IMongoStoreArgs } from '../store';
 
-dotenv.config();
+const filename = fs.basename(__filename);
 
-const testDb = () => {
-  const uri = process.env.MONGO_TEST || '';
-  return MongoDb.create({
-    uri,
-    db: 'test',
-    collection: 'test.MongoDb',
-  });
+const DB: IMongoStoreArgs = {
+  uri: process.env.MONGO_TEST || '',
+  db: 'test@platform',
+  collection: `fsdb.mongo/MongoDb`,
 };
+const testDb = () => MongoDb.create(DB);
+
+const drop = async () => {
+  const store = MongoStore.create(DB);
+  await store.drop();
+  store.dispose();
+};
+
+after(async () => {
+  await drop();
+});
 
 describe.only('MongoDb', function() {
   this.timeout(20000);
@@ -18,10 +27,11 @@ describe.only('MongoDb', function() {
   it('put => get => dispose', async () => {
     const db = testDb();
 
-    await db.put('foo', 123);
+    const message = `My value (file: ${filename})`;
+    await db.put('foo', message);
     const res = await db.get('foo');
 
-    expect(res.value).to.eql(123);
+    expect(res.value).to.eql(message);
     expect(res.props.key).to.eql('foo');
     expect(res.props.exists).to.eql(true);
 

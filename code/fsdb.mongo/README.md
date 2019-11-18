@@ -5,9 +5,25 @@
 
 Standard `IDb` abstraction over [mongodb](https://github.com/mongodb/node-mongodb-native).
 
+<p>&nbsp;<p>
+
 ## Setup
 
     yarn add @platform/fsdb.mongo
+
+<p>&nbsp;<p>
+
+## Test
+
+To run integration tests against a live [mongo database](https://www.mongodb.com/cloud/atlas) instance add a `.env` file to the root with:
+
+```.env
+MONGO_TEST="<connection-string>"
+```
+
+The run the integration tests:
+
+    yarn run test:integration
 
 <p>&nbsp;<p>
 <p>&nbsp;<p>
