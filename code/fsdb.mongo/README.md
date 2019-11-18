@@ -15,7 +15,7 @@ Standard `IDb` abstraction over [mongodb](https://github.com/mongodb/node-mongod
 
 ## Test
 
-To run integration tests against a live [mongo database](https://www.mongodb.com/cloud/atlas) instance add a `.env` file to the root with:
+To run integration tests against a live [mongo database](https://www.mongodb.com/cloud/atlas) add a `.env` file to the root with:
 
 ```.env
 MONGO_TEST="<connection-string>"

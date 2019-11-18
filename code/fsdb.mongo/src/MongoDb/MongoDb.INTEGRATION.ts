@@ -6,7 +6,7 @@ const filename = fs.basename(__filename);
 
 const DB: IMongoStoreArgs = {
   uri: process.env.MONGO_TEST || '',
-  db: 'test@platform',
+  db: 'test',
   collection: `fsdb.mongo/MongoDb`,
 };
 const testDb = () => MongoDb.create(DB);

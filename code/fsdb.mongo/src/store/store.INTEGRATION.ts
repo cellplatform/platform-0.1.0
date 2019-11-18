@@ -3,7 +3,7 @@ import { MongoStore } from '.';
 
 dotenv.config();
 const uri = process.env.MONGO_TEST as string;
-const db = 'test@platform';
+const db = 'test';
 const collection = 'fsdb.mongo/store';
 
 describe('Store (Mongo)', function() {
@@ -30,12 +30,9 @@ describe('Store (Mongo)', function() {
     expect((res as any)._id).to.not.eql(undefined);
   });
 
-  it('insertMany', async () => {
+  it.only('insertMany', async () => {
     await drop();
-    const docs = [
-      { name: 'insertMany', count: 1 },
-      { name: 'insertMany', count: 2 },
-    ];
+    const docs = [{ name: 'insertMany', count: 1 }, { name: 'insertMany', count: 2 }];
     const res = await store.insertMany(docs);
 
     expect(res[0].count).to.eql(1);

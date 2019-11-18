@@ -96,7 +96,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
   }
 
   /**
-   * - https://docs.mongodb.com/manual/reference/method/db.collection.createIndex
+   * - https://docs.mongodb.com/manual/reference/method/db.collection.insertMany
    */
   public insertMany<T extends G>(docs: T[], options: { escapeKeys?: boolean } = {}) {
     this.throwIfDisposed('insertMany');
@@ -109,7 +109,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
         if (err) {
           reject(err);
         } else {
-          resolve(res.ops);
+          resolve((res.ops as unknown) as T[]);
         }
       });
     });
