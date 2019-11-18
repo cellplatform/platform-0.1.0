@@ -1,5 +1,6 @@
-import { t, constants } from '../common';
-const { PKG } = constants;
+import { t, fs } from '../common';
+import { PKG, ROUTES } from './constants';
+
 const DEPS = PKG.dependencies;
 
 const MODULE = {
@@ -11,11 +12,12 @@ const MODULE = {
  */
 export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   const { router } = args;
+  const region = fs.env.value('NOW_REGION') || 'local';
 
   /**
-   * Info
+   * System info.
    */
-  router.get('/', async req => {
+  router.get(ROUTES.SYS.INFO, async req => {
     const version = {
       [PKG.name]: PKG.version,
       [MODULE.SCHEMA]: DEPS[MODULE.SCHEMA],
@@ -24,7 +26,8 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
       status: 200,
       data: {
         provider: args.title || 'Untitled',
-        'cell.os': version,
+        region,
+        version,
       },
     };
   });

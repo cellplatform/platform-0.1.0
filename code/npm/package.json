@@ -15,7 +15,7 @@
     "pv": "ts-node -T scripts/prompt-version.ts"
   },
   "dependencies": {
-    "@platform/cli.prompt": "^0.0.11",
+    "@platform/cli.prompt": "0.0.11",
     "@platform/exec": "0.2.31",
     "@platform/fs": "0.3.3",
     "@platform/log": "0.0.145",

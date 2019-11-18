@@ -5,6 +5,11 @@
 
 Persistent state management for cells.
 
+<p>&nbsp;</p>
+
 ## Setup
 
     yarn add @platform/cell.db
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>

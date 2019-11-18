@@ -4,7 +4,7 @@ import { MongoStore } from '.';
 dotenv.config();
 const uri = process.env.MONGO_TEST as string;
 const db = 'test';
-const collection = 'test.store';
+const collection = 'fsdb.mongo/store';
 
 describe('Store (Mongo)', function() {
   this.timeout(20000);
@@ -30,7 +30,7 @@ describe('Store (Mongo)', function() {
     expect((res as any)._id).to.not.eql(undefined);
   });
 
-  it('insertMany', async () => {
+  it.only('insertMany', async () => {
     await drop();
     const docs = [{ name: 'insertMany', count: 1 }, { name: 'insertMany', count: 2 }];
     const res = await store.insertMany(docs);
