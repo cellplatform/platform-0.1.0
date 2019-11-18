@@ -21,19 +21,22 @@ after(async () => {
   await drop();
 });
 
-describe.only('MongoDb', function() {
+describe('MongoDb', function() {
   this.timeout(20000);
 
   it('put => get => dispose', async () => {
     const db = testDb();
-
     const message = `My value (file: ${filename})`;
-    await db.put('foo', message);
-    const res = await db.get('foo');
 
-    expect(res.value).to.eql(message);
-    expect(res.props.key).to.eql('foo');
-    expect(res.props.exists).to.eql(true);
+    const res1 = await db.put('foo', message);
+    expect(res1.value).to.eql(message);
+    expect(res1.props.key).to.eql('foo');
+    expect(res1.props.exists).to.eql(true);
+
+    const res2 = await db.get('foo');
+    expect(res2.value).to.eql(message);
+    expect(res2.props.key).to.eql('foo');
+    expect(res2.props.exists).to.eql(true);
 
     db.dispose();
   });
