@@ -10,7 +10,7 @@ const SIZE = {
   BACK_BUTTON: 24,
 };
 
-export interface ITreeHeaderProps {
+export type ITreeHeaderProps = {
   node: ITreeNode;
   height: number;
   title?: string;
@@ -20,7 +20,7 @@ export interface ITreeHeaderProps {
   isFocused: boolean;
   style?: GlamorValue;
   onMouseParent?: TreeNodeMouseEventHandler;
-}
+};
 
 export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
   private get theme() {

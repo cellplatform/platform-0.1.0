@@ -1,4 +1,5 @@
-import { fs, http, t, util, pathToRegex, cheerio } from '../common';
+import { fs, http, t, util, cheerio } from '../common';
+import { pathToRegexp } from 'path-to-regexp';
 
 export type IRouteArgs = { site: t.ISiteManifest; route: t.ISiteManifestRoute };
 
@@ -107,7 +108,7 @@ export class Route {
    */
   public isMatch(path: string) {
     if (!this._regexps) {
-      this._regexps = this.paths.map(pattern => pathToRegex(pattern));
+      this._regexps = this.paths.map(pattern => pathToRegexp(pattern));
     }
     return this._regexps.some(regex => Boolean(regex.exec(path)));
   }

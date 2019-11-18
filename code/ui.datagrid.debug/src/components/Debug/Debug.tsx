@@ -174,17 +174,13 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
       .map(key => ({ key, refs: refs.out[key] }))
       .reduce((acc, next) => {
         let err = '';
-        const keys = R.pipe(
-          R.flatten,
-          R.uniq,
-        )(
-          next.refs.map((ref: t.IRefOut) => {
-            const keys = pathToKeys(ref.path);
-            err = ref.error ? '(err)' : err;
-            return keys;
-          }),
-        );
-        acc[next.key] = `${keys.filter(keys => keys !== next.key).join(',')}${err}`;
+        const list = next.refs.map((ref: t.IRefOut) => {
+          const keys = pathToKeys(ref.path);
+          err = ref.error ? '(err)' : err;
+          return keys;
+        });
+        const keys = R.uniq(R.flatten(list));
+        acc[next.key] = `${keys.filter(key => key !== next.key).join(',')}${err}`;
         return acc;
       }, {});
 

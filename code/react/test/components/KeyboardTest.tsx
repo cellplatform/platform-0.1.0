@@ -18,13 +18,13 @@ const bindings: KeyBindings<MyCommands> = [
 ];
 const keyboard = Keyboard.create({ bindings });
 
-export interface IKeyboardTestProps {
+export type IKeyboardTestProps = {
   keyboard?: Keyboard<MyCommands>;
-}
-export interface IKeyboardTestState {
+};
+export type IKeyboardTestState = {
   keyPress?: IKeypressEvent;
   bindingPress?: IKeyBindingEvent<MyCommands>;
-}
+};
 
 export class KeyboardTest extends React.PureComponent<IKeyboardTestProps, IKeyboardTestState> {
   public state: IKeyboardTestState = {};

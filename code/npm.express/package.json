@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm.express",
-  "version": "0.1.63",
+  "version": "0.1.66",
   "description": "Express middleware for working with NPM.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -18,19 +18,19 @@
     "example": "sh sh/example.sh"
   },
   "dependencies": {
-    "@platform/exec": "0.2.31",
-    "@platform/npm": "0.2.15",
-    "@types/express": "4.17.1",
+    "@platform/exec": "0.2.33",
+    "@platform/npm": "0.2.18",
+    "@types/express": "4.17.2",
     "body-parser": "1.19.0",
     "express": "4.17.1",
-    "filesize": "4.1.2",
+    "filesize": "6.0.1",
     "minimist": "1.2.0"
   },
   "devDependencies": {
-    "@platform/test": "0.0.64",
-    "@platform/ts": "3.5.6",
+    "@platform/test": "0.0.65",
+    "@platform/ts": "3.7.0",
     "@types/body-parser": "1.17.1",
-    "@types/filesize": "4.1.0",
+    "@types/filesize": "5.0.0",
     "@types/minimist": "1.2.0"
   },
   "files": [

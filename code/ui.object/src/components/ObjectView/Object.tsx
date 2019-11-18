@@ -10,7 +10,7 @@ import { Editor } from './Editor';
 
 import { ReactInspector, ObjectLabel, ObjectRootLabel, ObjectName, THEME } from './libs';
 
-export interface IObjectViewProps {
+export type IObjectViewProps = {
   data: any;
   name?: string;
   expandLevel?: number;
@@ -19,20 +19,20 @@ export interface IObjectViewProps {
   fontSize?: number;
   theme?: 'LIGHT' | 'DARK';
   style?: GlamorValue;
-}
+};
 
-export interface IObjectViewState {
+export type IObjectViewState = {
   data?: any;
   isLoading?: boolean;
-}
+};
 
-interface INodeRendererOptions {
+type INodeRendererOptions = {
   depth: number;
   name: string;
   data: any;
   isNonenumerable: boolean;
   expanded: boolean;
-}
+};
 
 /**
  * Views an Object as a visual tree.

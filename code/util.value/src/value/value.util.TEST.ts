@@ -19,7 +19,9 @@ describe('defaultValue', () => {
     expect(defaultValue(undefined, 1)).to.eql(1);
     expect(defaultValue<string>(undefined, 'bar')).to.eql('bar');
     expect(defaultValue<string>('' || undefined, 'bar')).to.eql('bar');
-    expect(defaultValue<{ foo: number }>(undefined, { foo: 123 })).to.eql({
+    expect(
+      defaultValue<{ foo: number }>(undefined, { foo: 123 }),
+    ).to.eql({
       foo: 123,
     });
     expect(defaultValue<boolean>(undefined, false)).to.eql(false);

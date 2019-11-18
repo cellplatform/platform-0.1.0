@@ -50,7 +50,7 @@ export async function getVersionHistory(
  * eg `{ dependences }` on a package.json file.
  */
 export async function getVersions(
-  modules: ({ [moduleName: string]: string }) | string[],
+  modules: { [moduleName: string]: string } | string[],
   options: INpmVersionOptions & INpmInfoOptions = {},
 ) {
   const deps = Array.isArray(modules)

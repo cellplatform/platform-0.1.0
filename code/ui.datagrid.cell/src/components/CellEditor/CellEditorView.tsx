@@ -55,10 +55,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   private textRef = (ref: p.TextInput) => (this.text = ref);
 
   private _events$ = new Subject<t.CellEditorEvent>();
-  public events$ = this._events$.pipe(
-    takeUntil(this.unmounted$),
-    share(),
-  );
+  public events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
 
   /**
    * [Lifecycle]

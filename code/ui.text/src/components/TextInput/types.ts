@@ -7,20 +7,18 @@ export type ITextModifierKeys = {
   meta: boolean;
 };
 
-export interface ITextInputFocusAction {
+export type ITextInputFocusAction = {
   focusOnLoad?: boolean;
   focusAction?: 'SELECT' | 'END';
-}
+};
 
-export interface ITextInputMask {
+export type ITextInputMask = {
   text: string;
   char: string;
-}
+};
 export type TextInputMaskHandler = (e: ITextInputMask) => boolean; // True - OK, False - disallow.
 
-export interface ITextInputStyle extends t.ITextStyle {
-  disabledColor?: number | string;
-}
+export type ITextInputStyle = t.ITextStyle & { disabledColor?: number | string };
 
 /**
  * [Events]
@@ -47,7 +45,7 @@ export type TextInputKeyEvent = React.KeyboardEvent<HTMLInputElement> & {
 };
 export type TextInputKeyEventHandler = (e: TextInputKeyEvent) => void;
 
-export interface ITextInputEvents {
+export type ITextInputEvents = {
   onChange?: TextInputChangeEventHandler;
   onKeyPress?: TextInputKeyEventHandler;
   onKeyDown?: TextInputKeyEventHandler;
@@ -56,7 +54,7 @@ export interface ITextInputEvents {
   onTab?: TextInputTabEventHandler;
   onFocus?: React.EventHandler<React.FocusEvent<HTMLInputElement>>;
   onBlur?: React.EventHandler<React.FocusEvent<HTMLInputElement>>;
-}
+};
 
 /**
  * [Events]

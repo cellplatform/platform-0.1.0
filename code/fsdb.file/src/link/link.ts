@@ -145,7 +145,10 @@ export function manyToMany<A extends { id: string }, B extends { id: string }>(a
       let { modelA, modelB } = prep;
       modelA = { ...modelA, [a.field]: R.uniq([...refsA, modelB.id]) };
       modelB = { ...modelB, [b.field]: R.uniq([...refsB, modelA.id]) };
-      await db.putMany([{ key: keyA, value: modelA }, { key: keyB, value: modelB }]);
+      await db.putMany([
+        { key: keyA, value: modelA },
+        { key: keyB, value: modelB },
+      ]);
       return { a: modelA, b: modelB };
     },
 
@@ -159,7 +162,10 @@ export function manyToMany<A extends { id: string }, B extends { id: string }>(a
 
       modelA = { ...modelA, [a.field]: refsA.filter(ref => ref !== modelB.id) };
       modelB = { ...modelB, [b.field]: refsB.filter(ref => ref !== modelA.id) };
-      await db.putMany([{ key: keyA, value: modelA }, { key: keyB, value: modelB }]);
+      await db.putMany([
+        { key: keyA, value: modelA },
+        { key: keyB, value: modelB },
+      ]);
       return { a: modelA, b: modelB };
     },
   };
@@ -218,7 +224,10 @@ export function oneToOne<A extends { id: string }, B extends { id: string }>(arg
     delete modelA[a.field];
     delete modelB[b.field];
 
-    await db.putMany([{ key: prep.keyA, value: modelA }, { key: prep.keyB, value: modelB }]);
+    await db.putMany([
+      { key: prep.keyA, value: modelA },
+      { key: prep.keyB, value: modelB },
+    ]);
     return { a: modelA, b: modelB };
   };
 

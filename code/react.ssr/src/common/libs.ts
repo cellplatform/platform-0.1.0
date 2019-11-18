@@ -2,10 +2,9 @@ import * as Bowser from 'bowser';
 import * as cheerio from 'cheerio';
 import * as jsYaml from 'js-yaml';
 import * as Listr from 'listr';
-import * as pathToRegex from 'path-to-regexp';
 import * as semver from 'semver';
 
-export { Bowser, cheerio, jsYaml, Listr, pathToRegex, semver };
+export { Bowser, cheerio, jsYaml, Listr, semver };
 
 export { fs, S3, S3Bucket } from '@platform/fs.s3';
 export { log } from '@platform/log/lib/server';

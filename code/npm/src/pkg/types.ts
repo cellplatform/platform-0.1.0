@@ -1,10 +1,10 @@
 export { INpmPackageJson } from '../types';
 
-export interface INpmInfo {
+export type INpmInfo = {
   name: string;
   latest: string;
   json: { [key: string]: any };
-}
+};
 
 export type INpmPackageFields = { [key: string]: string };
 export type NpmPackageFieldsKey = 'scripts' | 'resolutions' | NpmDepenciesFieldKey;

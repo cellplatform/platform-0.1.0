@@ -1,7 +1,7 @@
 // tslint:disable
 
 import { exec } from '..';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 
 export async function run() {
   const colorNames = ['cyan', 'magenta'];

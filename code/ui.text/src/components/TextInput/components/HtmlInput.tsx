@@ -16,30 +16,32 @@ export const DEFAULT_TEXT_STYLE: t.ITextInputStyle = {
   lineHeight: undefined,
 };
 
-export interface IInputValue {
+export type IInputValue = {
   value?: string;
   maxLength?: number;
   mask?: t.TextInputMaskHandler;
-}
+};
 
-export interface IHtmlInputProps extends t.ITextInputFocusAction, t.ITextInputEvents, IInputValue {
-  events$: Subject<t.TextInputEvent>;
-  className?: string;
-  isEnabled?: boolean;
-  isPassword?: boolean;
-  disabledOpacity?: number;
-  style?: GlamorValue;
-  valueStyle?: t.ITextInputStyle;
-  selectionBackground?: number | string;
-  spellCheck?: boolean;
-  autoCapitalize?: boolean;
-  autoCorrect?: boolean;
-  autoComplete?: boolean;
-  onDblClick?: React.MouseEventHandler;
-}
-export interface IHtmlInputState {
+export type IHtmlInputProps = t.ITextInputFocusAction &
+  t.ITextInputEvents &
+  IInputValue & {
+    events$: Subject<t.TextInputEvent>;
+    className?: string;
+    isEnabled?: boolean;
+    isPassword?: boolean;
+    disabledOpacity?: number;
+    style?: GlamorValue;
+    valueStyle?: t.ITextInputStyle;
+    selectionBackground?: number | string;
+    spellCheck?: boolean;
+    autoCapitalize?: boolean;
+    autoCorrect?: boolean;
+    autoComplete?: boolean;
+    onDblClick?: React.MouseEventHandler;
+  };
+export type IHtmlInputState = {
   value?: string;
-}
+};
 
 /**
  * A raw <input> element used within a <TextInput>.

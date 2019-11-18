@@ -39,17 +39,14 @@ export function toString(args: {
 
   // Convert the sorted list into distinct rows.
   let row = -1;
-  const rows = cell.sort(list, { by: 'ROW' }).reduce(
-    (acc, next) => {
-      if (row !== next.row) {
-        row = next.row;
-        acc.push([]); // Next row.
-      }
-      acc[acc.length - 1].push(next);
-      return acc;
-    },
-    [] as ItemPosition[][],
-  );
+  const rows = cell.sort(list, { by: 'ROW' }).reduce((acc, next) => {
+    if (row !== next.row) {
+      row = next.row;
+      acc.push([]); // Next row.
+    }
+    acc[acc.length - 1].push(next);
+    return acc;
+  }, [] as ItemPosition[][]);
 
   // Collapse into string.
   const text = rows.reduce((acc, item, i) => {

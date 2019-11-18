@@ -57,10 +57,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.ScreenEvent>();
-  public readonly events$ = this._events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  public readonly events$ = this._events$.pipe(takeUntil(this.dispose$), share());
 
   public readonly change$ = this.events$.pipe(
     filter(e => e.type === '@platform/SCREEN/window/change'),

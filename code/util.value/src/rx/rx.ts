@@ -9,9 +9,6 @@ import { buffer, debounceTime, publishReplay, refCount } from 'rxjs/operators';
  *    http://jsbin.com/pubowum/7/edit?js,console,output
  */
 export function debounceBuffer<T>(ob$: Observable<T>, debounce: number = 0) {
-  const shared$ = ob$.pipe(
-    publishReplay(1),
-    refCount(),
-  );
+  const shared$ = ob$.pipe(publishReplay(1), refCount());
   return shared$.pipe(buffer(shared$.pipe(debounceTime(debounce))));
 }

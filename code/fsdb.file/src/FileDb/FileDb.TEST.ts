@@ -261,7 +261,10 @@ describe('FileDb', () => {
 
     it('putMany', async () => {
       const db = testDb();
-      await db.putMany([{ key: 'foo', value: 10 }, { key: 'bar', value: 20 }]);
+      await db.putMany([
+        { key: 'foo', value: 10 },
+        { key: 'bar', value: 20 },
+      ]);
       const res = await db.getMany(['foo', 'bar']);
       expect(res.length).to.eql(2);
       expect(res[0].value).to.eql(10);
@@ -270,7 +273,10 @@ describe('FileDb', () => {
 
     it('deleteMany', async () => {
       const db = testDb();
-      await db.putMany([{ key: 'foo', value: 100 }, { key: 'bar', value: 200 }]);
+      await db.putMany([
+        { key: 'foo', value: 100 },
+        { key: 'bar', value: 200 },
+      ]);
       const res0 = await db.getMany(['foo', 'bar']);
       expect(res0[0].props.exists).to.eql(true);
       expect(res0[1].props.exists).to.eql(true);

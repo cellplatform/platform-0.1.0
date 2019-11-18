@@ -599,16 +599,18 @@ describe('model', () => {
     });
 
     it('changes props before saving', async () => {
-      const model1 = await (await createOrg({
-        put: false,
-        beforeSave: async args => {
-          if (args.changes.map.region) {
-            // NB:  The region has been changed.
-            //      Make a modification to it.
-            args.model.props.region = `${args.model.props.region}-1`;
-          }
-        },
-      })).ready;
+      const model1 = await (
+        await createOrg({
+          put: false,
+          beforeSave: async args => {
+            if (args.changes.map.region) {
+              // NB:  The region has been changed.
+              //      Make a modification to it.
+              args.model.props.region = `${args.model.props.region}-1`;
+            }
+          },
+        })
+      ).ready;
 
       model1.props.region = 'US/west';
       await model1.save();

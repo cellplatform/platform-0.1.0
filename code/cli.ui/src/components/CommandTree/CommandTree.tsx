@@ -20,10 +20,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
   private state$ = new Subject<Partial<ICommandTreeState>>();
 
   private _events$ = new Subject<t.CommandTreeEvent>();
-  public events$ = this._events$.pipe(
-    takeUntil(this.unmounted$),
-    share(),
-  );
+  public events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
 
   /**
    * [Lifecycle]

@@ -28,10 +28,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
   private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<ICellEditorState>>();
   private _events$ = new Subject<t.CellEditorEvent>();
-  public events$ = this._events$.pipe(
-    takeUntil(this.unmounted$),
-    share(),
-  );
+  public events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
 
   private view!: CellEditorView;
   private viewRef = (ref: CellEditorView) => (this.view = ref);

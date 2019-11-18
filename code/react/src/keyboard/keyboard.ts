@@ -119,10 +119,7 @@ export class Keyboard<T extends t.KeyCommand> implements t.IKeyboard<T> {
    */
   private constructor(options: t.IKeyboardArgs<T>) {
     const bindingPress$ = new Subject<t.IKeyBindingEvent<T>>();
-    this.bindingPress$ = bindingPress$.pipe(
-      takeUntil(this._dispose$),
-      share(),
-    );
+    this.bindingPress$ = bindingPress$.pipe(takeUntil(this._dispose$), share());
     let keyPress$ = options.keyPress$ || events.keyPress$;
     this.keyPress$ = keyPress$ = keyPress$.pipe(takeUntil(this._dispose$));
     this.bindings = options.bindings || [];

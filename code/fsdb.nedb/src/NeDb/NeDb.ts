@@ -218,7 +218,10 @@ export class NeDb implements t.INeDb {
     }
 
     // Retrieve result set.
-    const result = await this.getMany(items.map(item => item.key), { silent: true });
+    const result = await this.getMany(
+      items.map(item => item.key),
+      { silent: true },
+    );
 
     // Fire events.
     if (!options.silent) {

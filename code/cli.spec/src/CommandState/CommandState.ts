@@ -56,10 +56,7 @@ export class CommandState implements t.ICommandState {
   };
 
   public readonly dispose$ = this._.dispose$.pipe(share());
-  public readonly events$ = this._.events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  public readonly events$ = this._.events$.pipe(takeUntil(this.dispose$), share());
   public readonly changing$ = this.events$.pipe(
     filter(e => e.type === 'COMMAND_STATE/changing'),
     map(e => e.payload as t.ICommandStateChanging),

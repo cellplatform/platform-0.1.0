@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { css, GlamorValue } from '../common';
 
-export interface IMeasureSizeStyle {
+export type IMeasureSizeStyle = {
   width?: number;
   fontFamily?: string;
   fontSize?: string | number;
@@ -10,12 +10,12 @@ export interface IMeasureSizeStyle {
   fontStyle?: string;
   lineHeight?: string | number;
   letterSpacing?: string | number;
-}
+};
 
-export interface IMeasureSizeProps extends IMeasureSizeStyle {
+export type IMeasureSizeProps = IMeasureSizeStyle & {
   content?: React.ReactNode;
   style?: GlamorValue;
-}
+};
 
 const HIDDEN = {
   position: 'absolute',

@@ -35,10 +35,7 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
 
   public componentDidMount() {
     this.model.changed$
-      .pipe(
-        takeUntil(this.unmounted$),
-        debounceTime(0),
-      )
+      .pipe(takeUntil(this.unmounted$), debounceTime(0))
       .subscribe(() => this.forceUpdate());
   }
 

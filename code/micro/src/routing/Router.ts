@@ -1,6 +1,8 @@
 import { parse as parseUrl } from 'url';
-import { t, pathToRegex } from '../common';
+import { t } from '../common';
 import * as body from '../body';
+
+import { pathToRegexp, parse as pathToTokens } from 'path-to-regexp';
 
 export class Router implements t.IRouter {
   /**
@@ -78,10 +80,10 @@ export class Router implements t.IRouter {
       path,
       handler,
       get regex() {
-        return regex ? regex : (regex = pathToRegex(path));
+        return regex ? regex : (regex = pathToRegexp(path));
       },
       get tokens() {
-        return tokens ? tokens : (tokens = pathToRegex.parse(path));
+        return tokens ? tokens : (tokens = pathToTokens(path));
       },
     };
     this.routes = [...this.routes, route];

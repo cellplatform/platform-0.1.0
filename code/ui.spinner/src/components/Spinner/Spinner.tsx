@@ -4,14 +4,14 @@ import { css, GlamorValue, color as colorUtil } from '../../common';
 import { RenderStyleOnce } from './Style';
 import { SpinnerConfig } from './types';
 
-export interface ISpinnerProps {
+type ISpinnerProps = {
   color?: string | number;
   size?: 12 | 18 | 22 | 32;
   style?: GlamorValue;
-}
-export interface ISpinnerState {
+};
+type ISpinnerState = {
   started?: number;
-}
+};
 
 const SUPPORTED = {
   SIZE: [12, 18, 22, 32],

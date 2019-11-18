@@ -79,10 +79,7 @@ export class GraphqlClient implements t.IGqlClient {
   };
 
   public readonly dispose$ = this._.dispose$.pipe(share());
-  public readonly events$ = this._.events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  public readonly events$ = this._.events$.pipe(takeUntil(this.dispose$), share());
   public readonly headers$ = this.events$.pipe(
     filter(e => e.type === 'GRAPHQL/http/headers'),
     map(e => e.payload as t.IGqlHttpHeaders),

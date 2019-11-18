@@ -125,10 +125,7 @@ export class WebAuth {
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.WebAuthEvent>();
-  public readonly events$ = this._events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  public readonly events$ = this._events$.pipe(takeUntil(this.dispose$), share());
   public readonly changed$ = this.events$.pipe(
     filter(e => e.type === 'AUTH0/WebAuth/changed'),
     map(e => e.payload as t.IWebAuthChange),

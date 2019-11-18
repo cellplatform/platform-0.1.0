@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { css, color, FONT_FAMILY, DEFAULTS } from '../../common';
 
-export interface IEditorProps {
+export type IEditorProps = {
   fontSize?: number;
-}
+};
 
 /**
  * An editor input for an object value.

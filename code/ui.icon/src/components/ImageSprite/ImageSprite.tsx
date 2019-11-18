@@ -4,7 +4,7 @@ import { css, GlamorValue } from '../../common';
 
 const MEDIA_QUERY_RETINA = `@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)`;
 
-export interface IImageSpriteProps {
+export type IImageSpriteProps = {
   image1x: string;
   image2x: string;
   width: number;
@@ -14,7 +14,7 @@ export interface IImageSpriteProps {
   y?: number;
   tooltip?: string;
   style?: GlamorValue;
-}
+};
 
 /**
  * A collection of images combined into one.

@@ -40,7 +40,11 @@ export function decodeObjectKeys<T extends object>(input: T | T[]): T | T[] {
  * Ensures keys are prefixed.
  */
 export function prefixFilterKeys<T extends object>(prefix: string, input: T) {
-  return changeObjectKeys(input, key => !key.startsWith('$'), key => `${prefix}.${key}`);
+  return changeObjectKeys(
+    input,
+    key => !key.startsWith('$'),
+    key => `${prefix}.${key}`,
+  );
 }
 
 /**

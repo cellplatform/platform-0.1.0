@@ -87,10 +87,7 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
   const response = promise as ICommandPromise;
   response.cwd = cwd;
   response.complete$ = complete$.pipe(share());
-  response.output$ = output$.pipe(
-    takeUntil(complete$),
-    share(),
-  );
+  response.output$ = output$.pipe(takeUntil(complete$), share());
   response.stdout$ = response.output$.pipe(
     filter(e => e.type === 'stdout'),
     map(e => e.text),
