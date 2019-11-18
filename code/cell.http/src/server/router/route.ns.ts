@@ -1,5 +1,5 @@
 import { t, cell, log } from '../common';
-import { ROUTES } from './constants';
+import { ROUTES } from './ROUTES';
 
 const { Uri, model } = cell;
 const { Ns, Cell } = model.db;
