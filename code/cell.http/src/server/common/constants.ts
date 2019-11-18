@@ -5,5 +5,3 @@ type Package = {
 };
 
 export const PKG = require('../../../package.json') as Package;
-
-

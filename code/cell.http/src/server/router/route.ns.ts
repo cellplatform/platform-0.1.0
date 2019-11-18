@@ -45,7 +45,6 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const wait = Object.keys(cells).map(async key => {
       const cell = cells[key];
       if (typeof cell === 'object') {
-        // const m = model.
         const uri = Uri.generate.cell({ ns: id, key });
         const model = Cell.create({ db, uri }).set(cell);
         await model.save();
