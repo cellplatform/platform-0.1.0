@@ -1,6 +1,6 @@
 import { fs } from '@platform/fs';
 import { expect } from 'chai';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 
 import { exec } from '.';
 

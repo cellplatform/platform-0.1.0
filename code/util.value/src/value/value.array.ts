@@ -8,10 +8,7 @@ import { R } from '../common';
  *   - empty-string ('')
  */
 export function compact<T>(list: T[]) {
-  return R.pipe(
-    R.reject(R.isNil),
-    R.reject(R.isEmpty),
-  )(list) as T[];
+  return R.pipe(R.reject(R.isNil), R.reject(R.isEmpty))(list) as T[];
 }
 
 /**

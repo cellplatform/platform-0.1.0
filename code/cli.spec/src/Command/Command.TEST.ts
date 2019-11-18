@@ -28,7 +28,10 @@ describe('Command', () => {
     it('takes params in constructor', () => {
       const cmd = Command.create({
         name: 'child',
-        params: [{ name: 'foo', type: 'string' }, { name: 'bar', type: [1, 2, 3] }],
+        params: [
+          { name: 'foo', type: 'string' },
+          { name: 'bar', type: [1, 2, 3] },
+        ],
       });
       const params = cmd.params;
       expect(params.length).to.eql(2);

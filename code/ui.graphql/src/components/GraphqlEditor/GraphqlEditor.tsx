@@ -30,10 +30,7 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
   private _result: t.IJsonMap | undefined;
   private _schema: t.IJsonMap | undefined;
   private _events$ = new Subject<GraphqlEditorEvent>();
-  public events$ = this._events$.pipe(
-    takeUntil(this.unmounted$),
-    share(),
-  );
+  public events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
 
   private graphiql!: any;
   private graphiqlRef = (ref: any) => (this.graphiql = ref);

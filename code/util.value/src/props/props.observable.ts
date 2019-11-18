@@ -28,10 +28,7 @@ export function observable<P extends t.IProps>(
   // Observables.
   const dispose$ = new Subject();
   const _events$ = new Subject<t.PropEvent>();
-  const events$ = _events$.pipe(
-    takeUntil(dispose$),
-    share(),
-  );
+  const events$ = _events$.pipe(takeUntil(dispose$), share());
   const changing$ = events$.pipe(
     filter(e => e.type === 'PROP/setting'),
     map(e => e.payload as t.IPropChanging),

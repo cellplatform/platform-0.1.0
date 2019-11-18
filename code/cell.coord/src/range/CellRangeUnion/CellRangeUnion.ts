@@ -99,14 +99,11 @@ export class CellRangeUnion {
    * Creates a range enclosing all ranges in the union (top-left to bottom-right).
    */
   public get square() {
-    let keys = this.ranges.reduce(
-      (acc, next) => {
-        acc.push(next.left.key);
-        acc.push(next.right.key);
-        return acc;
-      },
-      [] as string[],
-    );
+    let keys = this.ranges.reduce((acc, next) => {
+      acc.push(next.left.key);
+      acc.push(next.right.key);
+      return acc;
+    }, [] as string[]);
     keys = cell.sort(keys);
     return keys.length === 0 ? undefined : CellRange.fromCells(keys[0], keys[keys.length - 1]);
   }
@@ -230,7 +227,7 @@ export class CellRangeUnion {
        * Retrieves the ROW or COLUMN keys represented by the ranges (de-duped).
        */
       get keys(): string[] {
-        const keys = R.flatten<string>(self.ranges.map(range => range.axis(axis).keys));
+        const keys = R.flatten(self.ranges.map(range => range.axis(axis).keys));
         return R.uniq(keys);
       },
     };

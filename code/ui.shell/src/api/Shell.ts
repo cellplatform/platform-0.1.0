@@ -35,10 +35,7 @@ export class Shell implements t.IShell {
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.ShellEvent>();
-  private readonly events$ = this._events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  private readonly events$ = this._events$.pipe(takeUntil(this.dispose$), share());
   private _events: t.IShellEvents;
 
   /**

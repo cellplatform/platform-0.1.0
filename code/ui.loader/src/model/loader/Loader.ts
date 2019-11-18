@@ -36,10 +36,7 @@ export class Loader implements t.ILoader {
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.LoaderEvents>();
-  public readonly events$ = this._events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  public readonly events$ = this._events$.pipe(takeUntil(this.dispose$), share());
 
   /**
    * [Properties]

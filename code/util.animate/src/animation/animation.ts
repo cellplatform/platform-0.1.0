@@ -16,7 +16,7 @@ export type MoveType =
 
 export type MoveObservable = Observable<MoveTargetProps>;
 export type MoveTargetProps = { [key: string]: number | string };
-export interface IMoveOptions {
+export type IMoveOptions = {
   type: MoveType;
   duration: number;
   frequency?: number;
@@ -25,12 +25,12 @@ export interface IMoveOptions {
   delay?: number;
   anticipationSize?: number;
   anticipationStrength?: number;
-}
+};
 
-export interface IMoveObservableOptions extends IMoveOptions {
+export type IMoveObservableOptions = IMoveOptions & {
   target: MoveTargetProps;
   current: () => object;
-}
+};
 
 /**
  * Animates an HtmlElement or object to the given set of property values.

@@ -94,10 +94,7 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
     tree: (undefined as unknown) as t.ITreeMethods | undefined,
   };
   public readonly dispose$ = this._.dispose$.pipe(share());
-  public readonly events$ = this._.events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  public readonly events$ = this._.events$.pipe(takeUntil(this.dispose$), share());
 
   /**
    * [Properties]
@@ -177,7 +174,7 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
   ): Command<P, A>;
 
   public add<P1 extends object = P, A1 extends t.CommandArgsOptions = A>(
-    args: Command<P1, A1> | Partial<ICommandArgs<P1, A1>> & { name: string },
+    args: Command<P1, A1> | (Partial<ICommandArgs<P1, A1>> & { name: string }),
   ): Command<P, A>;
 
   public add(...input: any): Command<P, A> {

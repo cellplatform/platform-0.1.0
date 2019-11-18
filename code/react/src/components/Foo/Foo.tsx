@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { css, color, GlamorValue } from '../../common';
 
-export interface IFooProps {
+export type IFooProps = {
   children?: any;
   background?: number | string | boolean;
   padding?: number | string;
@@ -16,7 +16,7 @@ export interface IFooProps {
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;
-}
+};
 
 /**
  * A dummy placeholder component.

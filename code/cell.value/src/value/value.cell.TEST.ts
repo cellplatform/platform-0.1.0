@@ -380,12 +380,14 @@ describe('cell', () => {
           value: true,
         });
 
-      const res3 = value.cellData<P>({ props: { style: { bold: true } } }).setProp<'style'>({
-        defaults: styleDefaults,
-        section: 'style',
-        field: 'bold',
-        value: false,
-      });
+      const res3 = value
+        .cellData<P>({ props: { style: { bold: true } } })
+        .setProp<'style'>({
+          defaults: styleDefaults,
+          section: 'style',
+          field: 'bold',
+          value: false,
+        });
 
       const res4 = value
         .cellData<P>({ value: 123, props: { style: { bold: true } } })

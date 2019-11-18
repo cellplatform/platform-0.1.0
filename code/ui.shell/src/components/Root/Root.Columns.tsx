@@ -33,10 +33,7 @@ export class RootColumns extends React.PureComponent<IRootColumnsProps, IRootCol
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     this.model.changed$
-      .pipe(
-        takeUntil(this.unmounted$),
-        debounceTime(0),
-      )
+      .pipe(takeUntil(this.unmounted$), debounceTime(0))
       .subscribe(e => this.forceUpdate());
   }
 

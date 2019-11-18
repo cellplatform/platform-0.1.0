@@ -150,10 +150,7 @@ export class Grid implements t.IGrid {
      * Debounced redraw.
      */
     this._.redraw$
-      .pipe(
-        takeUntil(this.dispose$),
-        debounceTime(0),
-      )
+      .pipe(takeUntil(this.dispose$), debounceTime(0))
       .subscribe(e => this.fire({ type: 'GRID/redraw', payload: {} }));
 
     /**
@@ -264,10 +261,7 @@ export class Grid implements t.IGrid {
   public clipboard: t.IGridClipboardPending | undefined;
 
   public readonly dispose$ = this._.dispose$.pipe(share());
-  public readonly events$ = this._.events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  public readonly events$ = this._.events$.pipe(takeUntil(this.dispose$), share());
   public readonly keyboard$ = this._.events$.pipe(
     filter(e => e.type === 'GRID/keydown'),
     map(e => e.payload as t.IGridKeydown),

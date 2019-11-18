@@ -89,10 +89,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   private focus$ = new Subject<boolean>();
 
   private _events$ = new Subject<t.TreeViewEvent>();
-  public readonly events$ = this._events$.pipe(
-    takeUntil(this.unmounted$),
-    share(),
-  );
+  public readonly events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
   public readonly mouse$ = this.events$.pipe(
     filter(e => e.type === 'TREEVIEW/mouse'),
     map(e => e.payload as t.TreeNodeMouseEvent),

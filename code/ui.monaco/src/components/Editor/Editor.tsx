@@ -5,14 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil, share } from 'rxjs/operators';
 import { Monaco } from './components/Monaco';
 
-import {
-  css,
-  events,
-  GlamorValue,
-  IEditorSettings,
-  value,
-  ISize,
-} from '../../common';
+import { css, events, GlamorValue, IEditorSettings, value, ISize } from '../../common';
 import * as themes from '../../themes';
 
 const BG = {
@@ -25,9 +18,9 @@ export type IEditorProps = {
   style?: GlamorValue;
 };
 
-export interface IEditorState {
+export type IEditorState = {
   size?: ISize;
-}
+};
 
 /**
  * Code editor.
@@ -40,10 +33,7 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
    */
   private unmounted$ = new Subject<{}>();
   private _size$ = new Subject<ISize>();
-  private size$ = this._size$.pipe(
-    share(),
-    takeUntil(this.unmounted$),
-  );
+  private size$ = this._size$.pipe(share(), takeUntil(this.unmounted$));
 
   private el: HTMLDivElement | undefined;
   private elRef = (ref: HTMLDivElement) => (this.el = ref);

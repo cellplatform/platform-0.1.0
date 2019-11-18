@@ -67,10 +67,7 @@ export class NodeProcess {
     events$: new Subject<t.NodeProcessEvent>(),
   };
   public readonly dispose$ = this._.dispose$.pipe(share());
-  public readonly events$ = this._.events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  public readonly events$ = this._.events$.pipe(takeUntil(this.dispose$), share());
 
   /**
    * [Properties]

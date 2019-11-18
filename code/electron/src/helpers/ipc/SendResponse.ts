@@ -89,11 +89,7 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
       cancel$,
       timeout$,
       isTimedOut: false,
-      $: response$.pipe(
-        takeUntil(timeout$),
-        takeUntil(cancel$),
-        share(),
-      ),
+      $: response$.pipe(takeUntil(timeout$), takeUntil(cancel$), share()),
     };
 
     /**
@@ -202,11 +198,7 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
   }
 
   public get timeout$() {
-    return this._.timeout$.pipe(
-      takeUntil(this.cancel$),
-      takeUntil(this.complete$),
-      share(),
-    );
+    return this._.timeout$.pipe(takeUntil(this.cancel$), takeUntil(this.complete$), share());
   }
 
   public get complete$() {

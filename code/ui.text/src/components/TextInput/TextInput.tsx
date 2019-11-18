@@ -405,5 +405,6 @@ function toInitialWidth(props: ITextInputProps) {
 function placeholderStyle(props: ITextInputProps) {
   const isEnabled = defaultValue(props.isEnabled, true);
   const { valueStyle = DEFAULT.VALUE_STYLE, placeholderStyle } = props;
-  return util.toTextInputCss(isEnabled, R.merge(R.clone(valueStyle), placeholderStyle));
+  const styles = { ...R.clone(valueStyle), ...placeholderStyle };
+  return util.toTextInputCss(isEnabled, styles);
 }

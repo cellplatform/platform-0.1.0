@@ -208,7 +208,12 @@ async function isRangeCircular(args: { path: string; range: CellRange; getValue:
 
   // Check if referenced REF's exist within the range.
   const refValues = values.filter(({ value }) => util.isRef(value));
-  if (isKeyContained(args.range, refValues.map(({ key }) => key))) {
+  if (
+    isKeyContained(
+      args.range,
+      refValues.map(({ key }) => key),
+    )
+  ) {
     return true;
   }
 

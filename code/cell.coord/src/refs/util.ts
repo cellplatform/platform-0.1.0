@@ -51,17 +51,14 @@ export function path(input?: string) {
 }
 
 const partsToKeys = (parts: string[]) => {
-  const keys = parts.reduce(
-    (acc, next) => {
-      if (CellRange.isRangeKey(next)) {
-        acc = [...acc, ...CellRange.fromKey(next).keys];
-      } else {
-        acc.push(next);
-      }
-      return acc;
-    },
-    [] as string[],
-  );
+  const keys = parts.reduce((acc, next) => {
+    if (CellRange.isRangeKey(next)) {
+      acc = [...acc, ...CellRange.fromKey(next).keys];
+    } else {
+      acc.push(next);
+    }
+    return acc;
+  }, [] as string[]);
   return R.uniq(keys);
 };
 

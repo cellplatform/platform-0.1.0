@@ -71,10 +71,7 @@ class RefsTable implements t.IRefsTable {
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.RefsTableEvent>();
-  public readonly events$ = this._events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  public readonly events$ = this._events$.pipe(takeUntil(this.dispose$), share());
 
   /**
    * [Properties]

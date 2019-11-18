@@ -43,10 +43,7 @@ export class Sync implements t.IDisposable {
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.SyncEvent>();
-  public readonly events$ = this._events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  public readonly events$ = this._events$.pipe(takeUntil(this.dispose$), share());
 
   /**
    * [Lifecycle]
@@ -464,8 +461,8 @@ export class Sync implements t.IDisposable {
       getEmptyKeys('ROW', all.rows),
       getEmptyKeys('COLUMN', all.columns),
     ]);
-    const keys = R.flatten<string>(res);
 
+    const keys = R.flatten(res);
     if (keys.length > 0) {
       await this.db.deleteMany(keys);
     }

@@ -10,14 +10,14 @@ export type ICoord = ICoordPosition & ICoordAddress;
 /**
  * Siblings
  */
-export interface ICoordSiblings {
+export type ICoordSiblings = {
   cell: string;
   top?: string;
   right?: string;
   bottom?: string;
   left?: string;
   toString: () => string;
-}
+};
 
 export type CoordEdge = 'TOP' | 'RIGHT' | 'BOTTOM' | 'LEFT';
 

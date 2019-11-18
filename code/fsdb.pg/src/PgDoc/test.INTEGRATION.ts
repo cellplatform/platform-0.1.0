@@ -25,7 +25,7 @@ describe('PgDoc (integration)', () => {
     expect(await db.getValue(key)).to.eql(undefined);
   });
 
-  it("put (escaped ' character)", async () => {
+  it('put (escaped \' character)', async () => {
     const key = 'FOO/char';
     const msg = `'"?<>\`~:\\/!@#$%^&*()_-+=`;
     await db.put(key, { msg });
@@ -130,7 +130,10 @@ describe('PgDoc (integration)', () => {
   });
 
   it('putMany => getMany', async () => {
-    const items = [{ key: 'FOO/1', value: 123 }, { key: 'FOO/2', value: 456 }];
+    const items = [
+      { key: 'FOO/1', value: 123 },
+      { key: 'FOO/2', value: 456 },
+    ];
     const keys = items.map(item => item.key);
 
     const res1 = await db.getMany(keys);
@@ -165,7 +168,10 @@ describe('PgDoc (integration)', () => {
   });
 
   it('putMany => deleteMany', async () => {
-    const items = [{ key: 'FOO/1', value: 123 }, { key: 'FOO/2', value: 456 }];
+    const items = [
+      { key: 'FOO/1', value: 123 },
+      { key: 'FOO/2', value: 456 },
+    ];
     const keys = items.map(item => item.key);
 
     await db.putMany(items);

@@ -32,7 +32,10 @@ describe('Store (Mongo)', function() {
 
   it.only('insertMany', async () => {
     await drop();
-    const docs = [{ name: 'insertMany', count: 1 }, { name: 'insertMany', count: 2 }];
+    const docs = [
+      { name: 'insertMany', count: 1 },
+      { name: 'insertMany', count: 2 },
+    ];
     const res = await store.insertMany(docs);
 
     expect(res[0].count).to.eql(1);

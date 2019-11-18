@@ -2,17 +2,17 @@ import * as React from 'react';
 import { css, color as colorUtil, mouse } from '../../common';
 import * as types from './types';
 
-export interface IReactIconBase {
+type IReactIconBase = {
   size: number;
   color?: string;
-}
+};
 
 export type IconBase = React.StatelessComponent<IReactIconBase>;
-export interface IIconPropsInternal extends types.IIconProps {
+type IIconPropsInternal = types.IIconProps & {
   type: IconBase;
   tabIndex?: number;
   isGreyscale?: boolean;
-}
+};
 
 /**
  * An individual SVG icon.

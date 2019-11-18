@@ -14,7 +14,7 @@ if (is.browser) {
 }
 export type FormulaInputMode = 'spreadsheet';
 
-export interface IFormulaInputProps {
+export type IFormulaInputProps = {
   value?: string;
   mode?: FormulaInputMode;
   fontSize?: number;
@@ -26,11 +26,11 @@ export interface IFormulaInputProps {
   height?: number;
   events$?: Subject<t.FormulaInputEvent>;
   style?: GlamorValue;
-}
+};
 
-export interface IFormulaInputState {
+export type IFormulaInputState = {
   isLoaded?: boolean;
-}
+};
 
 /**
  * Color coded formula input.
@@ -47,10 +47,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
   private editorRef = (ref: any) => (this.editor = ref && ref.editor);
 
   private readonly _events$ = new Subject<t.FormulaInputEvent>();
-  public readonly events$ = this._events$.pipe(
-    takeUntil(this.unmounted$),
-    share(),
-  );
+  public readonly events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
 
   private readonly execCommand$ = new ReplaySubject<string>();
 

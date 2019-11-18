@@ -16,7 +16,10 @@ export async function run(args: { type?: PayloadType; silent?: boolean } = {}) {
   if (type === undefined) {
     type = await cli.prompt.list<PayloadType>({
       message: 'type',
-      items: [{ name: 'bundle', value: 'BUNDLE' }, { name: 'manifest', value: 'MANIFEST' }],
+      items: [
+        { name: 'bundle', value: 'BUNDLE' },
+        { name: 'manifest', value: 'MANIFEST' },
+      ],
     });
   }
 

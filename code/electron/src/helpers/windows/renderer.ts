@@ -30,10 +30,7 @@ export class WindowsRenderer implements IWindows {
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<WindowsEvent>();
-  public readonly events$ = this._events$.pipe(
-    takeUntil(this.dispose$),
-    share(),
-  );
+  public readonly events$ = this._events$.pipe(takeUntil(this.dispose$), share());
 
   public readonly change$ = this.events$.pipe(
     filter(e => e.type === '@platform/WINDOW/change'),
