@@ -1,6 +1,5 @@
-import { expect } from 'chai';
+import { expect, t } from '../test';
 import { Router } from '.';
-import { t } from '../common';
 
 const handler: t.RouteHandler = async req => undefined;
 
