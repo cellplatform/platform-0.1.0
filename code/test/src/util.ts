@@ -1,3 +1,4 @@
+import { exec } from 'child_process';
 import { expect } from './libs';
 
 /**
@@ -7,7 +8,7 @@ import { expect } from './libs';
  *
  *        it('should throw', () =>
  *            expectError(async () => {
- *              // ...code that throws here...
+ *              ! ...code that throws here...
  *          }, 'my error message'));
  *
  */
@@ -49,3 +50,19 @@ export const delay = (msecs: number, callback: () => any) => {
  * Pause for the given number of milliseconds with a promise.
  */
 export const wait = (msecs: number) => delay(msecs, () => false);
+
+/**
+ * Kills the TCP given port.
+ */
+export function kill(port: number) {
+  return new Promise((resolve, reject) => {
+    const cmd = `lsof -t -i tcp:${port} | xargs kill`;
+    exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
