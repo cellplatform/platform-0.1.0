@@ -1,5 +1,5 @@
 import { parse as parseUrl } from 'url';
-import { t } from '../common';
+import { t, value } from '../common';
 import * as body from '../body';
 
 import { pathToRegexp, parse as pathToTokens } from 'path-to-regexp';
@@ -8,16 +8,22 @@ export class Router implements t.IRouter {
   /**
    * [Static]
    */
-  public static params(args: { route: t.IRoute; url: string }) {
-    const { route, url } = args;
-    const { tokens, regex } = route;
-    const parts = regex.exec(url) || [];
-    return tokens.reduce((acc, next, i) => {
-      if (typeof next === 'object') {
-        acc[next.name] = parts[i];
-      }
+  public static params<T extends object>(args: { route: t.IRoute; path: string }): Partial<T> {
+    const { route } = args;
+    const { regex, keys } = route;
+    const path = normalizePathname((args.path || '').split('?')[0]);
+
+    const parts = regex.exec(path) || [];
+    if (parts.length === 0) {
+      return {};
+    }
+
+    const res = keys.reduce((acc, key, i) => {
+      acc[key.name] = value.toType(parts[i + 1]);
       return acc;
     }, {});
+
+    return value.deleteUndefined(res);
   }
 
   /**
@@ -39,9 +45,12 @@ export class Router implements t.IRouter {
 
     const req = {
       ...incoming,
+
+      // TODO - query
+
       get params() {
         const url = incoming.url || '';
-        return Router.params({ route, url });
+        return Router.params({ route, path: url });
       },
       get body() {
         return {
@@ -71,16 +80,28 @@ export class Router implements t.IRouter {
       throw new Error(`A ${method} route for path '${path}' already exists.`);
     }
 
-    // Lazy create path pattern matchers.
+    // Lazily create path pattern matchers.
     let regex: RegExp | undefined;
     let tokens: t.Token[] | undefined;
+    const keys: t.Key[] = [];
+
+    const parse = () => {
+      if (!regex) {
+        regex = pathToRegexp(path, keys);
+      }
+    };
 
     const route: t.IRoute = {
       method,
       path,
       handler,
       get regex() {
-        return regex ? regex : (regex = pathToRegexp(path));
+        parse();
+        return regex as RegExp;
+      },
+      get keys() {
+        parse();
+        return keys;
       },
       get tokens() {
         return tokens ? tokens : (tokens = pathToTokens(path));
@@ -109,3 +130,23 @@ export class Router implements t.IRouter {
  * [Helpers]
  */
 const toPath = (url?: string) => parseUrl(url || '', false).pathname || '';
+
+/**
+ * Normalize a pathname for matching, replaces multiple slashes with a single
+ * slash and normalizes unicode characters to "NFC". When using this method,
+ * `decode` should be an identity function so you don't decode strings twice.
+ *
+ * See:
+ *    https://github.com/pillarjs/path-to-regexp#normalize-pathname
+ *
+ */
+const normalizePathname = (pathname: string) => {
+  return (
+    decodeURI(pathname)
+      // Replaces repeated slashes in the URL.
+      .replace(/\/+/g, '/')
+      // Reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+      // Note: Missing native IE support, may want to skip this step.
+      .normalize()
+  );
+};
