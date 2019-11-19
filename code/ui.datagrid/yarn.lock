@@ -1079,10 +1079,10 @@
     "@platform/libs" "0.1.4"
     "@platform/util.value" "0.5.8"
 
-"@platform/cell.http@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.1.7.tgz#1801af132af58d7a2ec406cfd5bd6407f7a0a49f"
-  integrity sha512-XwiCfcDbMqTCoEjHJr72kw9N9TiV63n5cIEvEpnDajho6bvG1q5DRU123/OnYHgX+ugPiEJEUlX51/BRPZ5DLQ==
+"@platform/cell.http@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.1.8.tgz#e1a0bde8702ad9cc8247061707fd5758b788a69e"
+  integrity sha512-bOfKulasoeLgYzoG5e29j6zNKLqh9TyziyKdh4huejjsfOeroZz7UN2NYYkfldgDoOH2nMSsP8gal47Ha6rFsQ==
   dependencies:
     "@platform/cell.db" "0.0.31"
     "@platform/cell.schema" "0.0.8"
@@ -1090,9 +1090,8 @@
     "@platform/cell.value" "0.0.24"
     "@platform/fs" "0.3.4"
     "@platform/fsdb.types" "0.4.3"
-    "@platform/http" "0.4.14"
     "@platform/libs" "0.1.4"
-    "@platform/micro" "0.6.3"
+    "@platform/micro" "0.7.0"
 
 "@platform/cell.schema@0.0.8":
   version "0.0.8"
@@ -1322,17 +1321,6 @@
     "@platform/libs" "0.1.4"
     "@platform/types" "0.0.35"
 
-"@platform/http@0.4.14":
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.14.tgz#692ca291f594eb7e09e3c8df17d78f9a6647006d"
-  integrity sha512-iXBnaqjjUYYv2zQz3sPu6L1GfXPC+M0pPKEpEwiNLW6X9cTsrkRZo6+yFcF7rawfvXRWlq+RoDSkHyewew4QqQ==
-  dependencies:
-    "@platform/fs" "0.3.4"
-    "@platform/types" "0.0.35"
-    "@platform/util.value" "0.5.8"
-    "@types/isomorphic-fetch" "0.0.35"
-    isomorphic-fetch "2.2.1"
-
 "@platform/libs@0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.1.3.tgz#566287ee174a3cc6e6ff85233b234bf0b8b5da1b"
@@ -1375,13 +1363,14 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.6.3.tgz#aad5ccc525f4e1be10de3c4f76022654a8dd12a8"
-  integrity sha512-FKTrKqpneCM2JSoznEzsbuh3OUA+yHele27xjUBvGPpuJpoki/zaTfuoshCMYdC2+kX0J1A5ZNqjhLch68+RmA==
+"@platform/micro@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.7.0.tgz#f8424bcd21af882c260f653ee996eea0c5c9b899"
+  integrity sha512-vzUv+aLo8ukNT4fgBnibXNEw7ibzoeP3TvfFTKGD4KHlO6iItIk1lyynJV+GnWOqGBUHa1yaD0fBput/+XLPiQ==
   dependencies:
     "@platform/libs" "0.1.4"
     "@platform/log" "0.0.148"
+    "@platform/util.value" "0.5.8"
     micro "9.3.4"
     micro-cors "0.1.1"
     path-to-regexp "5.0.0"
@@ -1798,11 +1787,6 @@
   dependencies:
     "@types/through" "*"
     rxjs "^6.4.0"
-
-"@types/isomorphic-fetch@0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.35.tgz#c1c0d402daac324582b6186b91f8905340ea3361"
-  integrity sha512-DaZNUvLDCAnCTjgwxgiL1eQdxIKEpNLOlTNtAgnZc50bG2copGhRrFN9/PxPBuJe+tZVLCbQ7ls0xveXVRPkvw==
 
 "@types/js-yaml@3.12.1":
   version "3.12.1"
@@ -5724,7 +5708,7 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-isomorphic-fetch@2.2.1, isomorphic-fetch@^2.1.1:
+isomorphic-fetch@^2.1.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
   integrity sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=

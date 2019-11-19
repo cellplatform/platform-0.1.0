@@ -26,7 +26,8 @@ export function init(args: { router: t.IRouter; getManifest: t.GetManifest }) {
    */
   router.get('/.manifest/summary/:site', async req => {
     const manifest = await getManifest();
-    const site = manifest.site.byName(req.params.site);
+    const name = (req.params.site || '').toString();
+    const site = manifest.site.byName(name);
     if (site) {
       return {
         status: 200,
