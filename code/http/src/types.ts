@@ -1,5 +1,3 @@
-import { Json } from '@platform/types';
-
 export type IHttpHeaders = { [key: string]: string | number };
 
 export type IFetchOptions = {
@@ -13,5 +11,5 @@ export type IHttpResponse = {
   ok: boolean;
   headers: IHttpHeaders;
   body: string;
-  json<T extends Json = any>(): T;
+  json<T = any>(): T;
 };
