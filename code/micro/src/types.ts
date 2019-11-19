@@ -12,9 +12,13 @@ export type IHttpHeaders = { [key: string]: string };
  */
 export type Request = IncomingMessage & {
   params: RequestParams;
+  query: RequestQuery;
   body: RequestBody;
 };
 export type RequestParams = { [key: string]: string | number | boolean };
+export type RequestQuery = {
+  [key: string]: string | number | boolean | Array<string | number | boolean>;
+};
 
 export type RequestBody = {
   json<T>(options?: { default?: T; limit?: string | number; encoding?: string }): Promise<T>;

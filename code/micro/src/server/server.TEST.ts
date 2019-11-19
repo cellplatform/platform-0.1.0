@@ -1,5 +1,5 @@
-import { expect, http, t } from './test';
-import { micro } from '.';
+import { expect, http, t } from '../test';
+import { micro } from '..';
 
 describe('micro (server)', () => {
   it('200', async () => {
@@ -36,9 +36,10 @@ describe('micro (server)', () => {
 
     let count = 0;
     const params: t.RequestParams[] = [];
-
+    const queries: t.RequestQuery[] = [];
     app.router.get('/ns::id([A-Z0-9]*)(/?)', async req => {
       params.push(req.params);
+      queries.push(req.query);
       count++;
       return { data: { count } };
     });
@@ -47,7 +48,7 @@ describe('micro (server)', () => {
     const res1 = await http.get(`${domain}/ns:foo`);
     const res2 = await http.get(`${domain}/ns:foo/`);
     const res3 = await http.get(`${domain}/ns:foo?data=123`);
-    const res4 = await http.get(`${domain}/ns:foo/?data=123`);
+    const res4 = await http.get(`${domain}/ns:foo/?count=123&count=456`);
 
     await instance.close();
 
@@ -56,11 +57,16 @@ describe('micro (server)', () => {
     expect(await res3.json()).to.eql({ count: 3 });
     expect(await res4.json()).to.eql({ count: 4 });
 
+    expect(params.length).to.eql(4);
     expect(params[0].id).to.eql('foo');
     expect(params[1].id).to.eql('foo');
     expect(params[2].id).to.eql('foo');
     expect(params[3].id).to.eql('foo');
 
-    // TODO - query string
+    expect(queries.length).to.eql(4);
+    expect(queries[0]).to.eql({});
+    expect(queries[1]).to.eql({});
+    expect(queries[2]).to.eql({ data: 123 });
+    expect(queries[3]).to.eql({ count: [123, 456] });
   });
 });

@@ -1,29 +1,55 @@
+import { parse as pathToTokens, pathToRegexp } from 'path-to-regexp';
+import * as querystring from 'querystring';
 import { parse as parseUrl } from 'url';
-import { t, value } from '../common';
-import * as body from '../body';
 
-import { pathToRegexp, parse as pathToTokens } from 'path-to-regexp';
+import * as body from '../body';
+import { t, value } from '../common';
+
+const { toType } = value;
 
 export class Router implements t.IRouter {
   /**
    * [Static]
    */
-  public static params<T extends object>(args: { route: t.IRoute; path: string }): Partial<T> {
+
+  /**
+   * Parse URL parameters.
+   */
+  public static params<T extends object>(args: { route: t.IRoute; path: string }): T {
     const { route } = args;
     const { regex, keys } = route;
-    const path = normalizePathname((args.path || '').split('?')[0]);
 
+    const path = normalizePathname((args.path || '').split('?')[0]);
     const parts = regex.exec(path) || [];
-    if (parts.length === 0) {
-      return {};
-    }
 
     const res = keys.reduce((acc, key, i) => {
-      acc[key.name] = value.toType(parts[i + 1]);
+      acc[key.name] = toType(parts[i + 1]);
       return acc;
     }, {});
 
-    return value.deleteUndefined(res);
+    return value.deleteUndefined(res) as T;
+  }
+
+  /**
+   * Parse a query string.
+   */
+  public static query<T extends object>(args: { path: string }): T {
+    const { path = '' } = args;
+    const index = path.indexOf('?');
+
+    if (index < 0) {
+      const empty = {};
+      return empty as T;
+    }
+
+    const query: any = querystring.parse(path.substring(index + 1));
+    Object.keys(query).forEach(key => {
+      const value = query[key];
+      query[key] = Array.isArray(value) ? value.map(item => toType(item)) : toType(value);
+    });
+
+    const res = { ...query }; // NB: Ensure is is a simple object.
+    return res as T;
   }
 
   /**
@@ -43,15 +69,27 @@ export class Router implements t.IRouter {
       return { status: 404, data: { status: 404, message: 'Not found.' } };
     }
 
+    let params: t.RequestParams | undefined;
+    let query: t.RequestQuery | undefined;
+    const path = incoming.url || '';
+
     const req = {
       ...incoming,
 
-      // TODO - query
-
       get params() {
-        const url = incoming.url || '';
-        return Router.params({ route, path: url });
+        if (!params) {
+          params = Router.params<t.RequestParams>({ route, path });
+        }
+        return params;
       },
+
+      get query() {
+        if (!query) {
+          query = Router.query<t.RequestQuery>({ path });
+        }
+        return query;
+      },
+
       get body() {
         return {
           async json<T>(options: { default?: T; limit?: string | number; encoding?: string } = {}) {
