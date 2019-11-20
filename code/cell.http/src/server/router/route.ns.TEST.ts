@@ -53,7 +53,7 @@ describe('route: namespace', () => {
 
       await test.dispose();
 
-      console.log(res);
+      // console.log(res);
       console.log('res.json', res.json());
     });
 

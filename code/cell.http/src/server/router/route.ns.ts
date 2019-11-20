@@ -73,7 +73,10 @@ async function getNsResponse(args: { db: t.IDb; id: string; dataQuery?: t.ReqNsQ
 }
 
 async function getNsData(args: { model: t.IDbModelNs; data: t.ReqNsQueryData }) {
-  // ns.childData(model)
+  const { model, data } = args;
+  const f = await ns.childData(model);
+
+  console.log('f', f);
 
   return {};
 }
@@ -127,4 +130,8 @@ async function postNsResponse(args: {
    */
 
   return getNsResponse({ db, id, dataQuery });
+}
+
+export function parseQueryData(query: t.ReqNsQueryData) {
+  // todo
 }

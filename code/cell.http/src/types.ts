@@ -4,10 +4,12 @@ import * as t from '@platform/cell.types';
  * Namespace
  */
 export type ReqNsQueryCoord = string; // Eg: "A1", "A", "1", "A2,B,10,C1:C9"
-export type ReqNsQueryData = 'cells' | 'columns' | 'rows' | 'ns' | true | ReqNsQueryCoord;
+export type ReqNsQueryData = boolean | string; // true (everything) or comma seperated eg: "cells" | "ns,cell,columns,row" | "A2,B,10,C1:C9"
 
 export type IReqNsParams = { id: string };
-export type IReqNsQuery = { data?: ReqNsQueryData };
+export type IReqNsQuery = {
+  data?: ReqNsQueryData;
+};
 
 /**
  * Namespace: GET
