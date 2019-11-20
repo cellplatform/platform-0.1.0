@@ -1,5 +1,4 @@
 import { expect, http, t, mockServer } from '../test';
-import { micro } from '..';
 
 describe('micro (server)', () => {
   it('200', async () => {
@@ -19,6 +18,8 @@ describe('micro (server)', () => {
   it('404 (default)', async () => {
     const mock = await mockServer();
     const res = await http.get(mock.url('/foo'));
+    await mock.dispose();
+
     expect(res.status).to.eql(404);
     expect(await res.json()).to.eql({ status: 404, message: 'Not found.' });
   });
