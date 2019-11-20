@@ -1,15 +1,7 @@
-import * as nock from 'nock';
-
-export { nock };
 export { expect, expectError } from '@platform/test';
+import { mock } from './mock';
+
+export { mock };
 export * from '../server/common';
 
-/**
- * Helpers
- */
-
-export const mock = {
-  DOMAIN: 'https://domain.com',
-  server: (domain?: string) => nock(domain || mock.DOMAIN),
-  url: (path: string) => `${mock.DOMAIN}/${path.replace(/^\/*/, '')}`,
-};
+before(async () => mock.reset());
