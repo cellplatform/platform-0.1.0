@@ -229,6 +229,13 @@ describe('Uri', () => {
       expect(() => Uri.string.ns(':')).to.throw();
       expect(() => Uri.string.ns('ns:')).to.throw();
       expect(() => Uri.string.ns('  ns:  ')).to.throw();
+
+      // Illegal characters.
+      const ILLEGAL = '~`!@#$%^&*()_-+=,./?;|[]{}';
+      ILLEGAL.split('').forEach(char => {
+        const id = `ns:abc${char}def`;
+        expect(() => Uri.string.ns(id)).to.throw();
+      });
     });
 
     it('throws: cell', () => {

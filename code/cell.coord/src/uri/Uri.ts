@@ -110,6 +110,8 @@ export class Uri {
 /**
  * [Helpers]
  */
+const validIdRegex = new RegExp(/^[a-z0-9]+$/i); // NB: alpha-numeric.
+
 function trimPrefix(prefix: string, input: string) {
   const regex = new RegExp(`^${prefix}\:+`);
   return input.trim().replace(regex, '');
@@ -129,6 +131,9 @@ function toUri(prefix: 'ns' | 'col' | 'row' | 'cell', id: string, suffix?: strin
   }
   if (!id) {
     throw new Error(`The "${prefix}" URI was not supplied with an ID.`);
+  }
+  if (!validIdRegex.test(id)) {
+    throw new Error(`The "${prefix}" URI contains an invalid ID, must be alpha-numeric ("${id}").`);
   }
   if (typeof suffix === 'string') {
     suffix = suffix.replace(/^\!*/, '');
