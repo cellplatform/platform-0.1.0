@@ -17,7 +17,6 @@ export type IModelArgs<
   links?: t.IModelLinkDefs<L>;
   children?: t.IModelChildrenDefs<C>;
   beforeSave?: t.BeforeModelSave<P, D, L, C>;
-  // beforeSave?: t.BeforeModelSave;
 };
 
 /**

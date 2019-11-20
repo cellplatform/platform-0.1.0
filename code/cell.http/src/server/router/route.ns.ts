@@ -1,10 +1,9 @@
-import { t, cell, log } from '../common';
+import { cell, log, t } from '../common';
+import { ns } from '../model';
 import { ROUTES } from './ROUTES';
 
 const { Uri, model } = cell;
 const { Ns, Cell } = model.db;
-
-import { ns } from '../model';
 
 /**
  * Namespace routes.
@@ -12,62 +11,40 @@ import { ns } from '../model';
 export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   const { db, router } = args;
 
-  /**
-   * GET root namespace info (meta-data).
-   */
-  router.get(ROUTES.NS.INFO, async req => {
-    const id = req.params.id;
-    const { response } = await getNsModelResponse(db, id);
-    return { status: 200, data: response };
-  });
+  const getRequestId = (req: t.Request) => {
+    const params = req.params as t.IReqNsParams;
+    const id = params.id.toString();
+    if (id) {
+      return { status: 200, id };
+    } else {
+      const error: t.IError = {
+        type: 'HTTP/malformed',
+        message: `Malformed namespace URI, does not contain an ID ("${req.url}").`,
+      };
+      return { status: 400, error };
+    }
+  };
 
   /**
    * GET namespace data.
    */
-  router.get(ROUTES.NS.DATA, async req => {
-    const id = req.params.id;
-    const { response } = await getNsModelDataResponse(db, id);
-    return { status: 200, data: response };
+  router.get(ROUTES.NS, async req => {
+    const query = req.query as t.IReqNsQuery;
+    const { status, id, error } = getRequestId(req);
+    const dataQuery = query.data;
+    return !id ? { status, data: { error } } : getNsResponse({ db, id, dataQuery });
   });
 
   /**
    * POST namespace data.
    *      Persists data for the namespace to the DB.
    */
-  router.post(ROUTES.NS.DATA, async req => {
-    const id = req.params.id;
-
-    // Retrieve body data.
-    const body = (await req.body.json<t.IReqNsData>()) || {};
-    const cells = (body.data || {}).cells || {};
-
-    // Save cells.
-    const wait = Object.keys(cells).map(async key => {
-      const cell = cells[key];
-      if (typeof cell === 'object') {
-        const uri = Uri.generate.cell({ ns: id, key });
-        const model = Cell.create({ db, uri }).set(cell);
-        await model.save();
-      }
-    });
-
-    await Promise.all(wait);
-    // const { model, response } = await getNsModelResponse(db, id);
-
-    /**
-     * TODO 🐷
-     * - check that id is valid (long enough, cuuid, alpha-numeric)
-     * - handle all data types within the NS (not just cells).
-     * - error handling on model creation/save
-     * - more efficient response (ie. don't re-query DB)
-     */
-
-    const { response, uri } = await getNsModelDataResponse(db, id, true);
-
-    log.info(`${log.cyan('POST')} ${log.magenta('/data')}`, `uri:${uri}`);
-
-    // Finish up.
-    return { status: 200, data: response };
+  router.post(ROUTES.NS, async req => {
+    const query = req.query as t.IReqNsQuery;
+    const { status, id, error } = getRequestId(req);
+    const dataQuery = query.data;
+    const body = (await req.body.json<t.IPostNsBody>()) || {};
+    return !id ? { status, data: { error } } : postNsResponse({ db, id, body, dataQuery });
   });
 }
 
@@ -75,12 +52,61 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
  * [Helpers]
  */
 
-const getNsModelResponse = async (db: t.IDb, id: string, modify?: boolean) => {
-  const uri = Uri.generate.ns({ ns: id });
+async function getNsResponse(args: { db: t.IDb; id: string; dataQuery?: t.ReqNsQueryData }) {
+  const { db, id } = args;
+  const uri = Uri.string.ns(id);
   const model = await Ns.create({ db, uri }).ready;
 
-  if (modify) {
-    // model.props.id
+  const hash = '-'; // TODO 🐷
+
+  const exists = Boolean(model.exists);
+  const { createdAt, modifiedAt } = model;
+  const data: t.IGetNsResponse = {
+    uri,
+    exists,
+    createdAt,
+    modifiedAt,
+    hash,
+    data: args.dataQuery ? await getNsData({ model, data: args.dataQuery }) : {},
+  };
+  return { status: 200, data };
+}
+
+async function getNsData(args: { model: t.IDbModelNs; data: t.ReqNsQueryData }) {
+  // ns.childData(model)
+
+  return {};
+}
+
+async function postNsResponse(args: {
+  db: t.IDb;
+  id: string;
+  body: t.IPostNsBody;
+  dataQuery?: t.ReqNsQueryData;
+}) {
+  const { db, id, body, dataQuery } = args;
+  const cells = (body.data || {}).cells || {};
+  let isChanged = false;
+
+  // Save cells.
+  const wait = Object.keys(cells).map(async key => {
+    const cell = cells[key];
+    if (typeof cell === 'object') {
+      const uri = Uri.string.cell(id, key);
+      const model = (await Cell.create({ db, uri }).ready).set(cell);
+      if (model.isChanged) {
+        isChanged = true;
+        await model.save();
+      }
+    }
+  });
+
+  await Promise.all(wait);
+
+  // Ensure NS time-stamps are updated.
+  if (isChanged) {
+    const uri = Uri.string.ns(id);
+    const model = await Ns.create({ db, uri }).ready;
     model.props.id = id;
     await model.save();
 
@@ -93,29 +119,12 @@ const getNsModelResponse = async (db: t.IDb, id: string, modify?: boolean) => {
      */
   }
 
-  const exists = Boolean(model.exists);
-  const hash = '-'; // TEMP 🐷
-  const { createdAt, modifiedAt } = model;
+  /**
+   * TODO 🐷
+   * - handle all data types within the NS (not just cells).
+   * - error handling on model creation/save
+   * - more efficient response (ie. don't re-query DB)
+   */
 
-  const response: t.IResNs = {
-    uri,
-    exists,
-    createdAt,
-    modifiedAt,
-    hash,
-  };
-
-  return { model, response, uri };
-};
-
-const getNsModelDataResponse = async (db: t.IDb, id: string, modify?: boolean) => {
-  const { model, response, uri } = await getNsModelResponse(db, id, modify);
-  const res: t.IResNsData = {
-    ...response,
-    data: {
-      ns: { id },
-      ...(await ns.childData(model)),
-    },
-  };
-  return { model, response: res, uri };
-};
+  return getNsResponse({ db, id, dataQuery });
+}

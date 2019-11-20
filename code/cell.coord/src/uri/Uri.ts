@@ -140,14 +140,12 @@ function toUri(prefix: 'ns' | 'col' | 'row' | 'cell', id: string, suffix?: strin
     if (!suffix) {
       throw new Error(`The "${prefix}" URI was not supplied with a suffix key.`);
     }
-
     const type = cell.toType(suffix);
     if (PREFIX_MAP[prefix] !== type) {
       throw new Error(
         `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${suffix}").`,
       );
     }
-
     suffix = `!${suffix}`;
   }
   return `${prefix}:${id}${suffix || ''}`;

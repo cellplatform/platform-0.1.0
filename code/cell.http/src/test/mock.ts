@@ -36,6 +36,7 @@ const create = async (args: { port?: number } = {}) => {
   const instance = await app.listen({ port, silent: true });
 
   return {
+    db,
     port,
     app,
     instance,
