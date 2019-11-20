@@ -8,7 +8,7 @@ export type ReqNsQueryData = boolean | string; // true (everything) or comma sep
 
 export type IReqNsParams = { id: string };
 export type IReqNsQuery = {
-  data?: ReqNsQueryData;
+  // data?: ReqNsQueryData;
 };
 
 /**
@@ -19,9 +19,9 @@ export type IGetNsResponse = {
   exists: boolean;
   createdAt: number;
   modifiedAt: number;
-  hash: string;
-  data: Partial<t.INsData>;
+  data: IGetNsResponseData;
 };
+export type IGetNsResponseData = { ns: t.INs } & Partial<t.INsCoordData>;
 
 /**
  * Namespace: POST

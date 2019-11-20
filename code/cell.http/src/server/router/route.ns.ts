@@ -31,8 +31,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   router.get(ROUTES.NS, async req => {
     const query = req.query as t.IReqNsQuery;
     const { status, id, error } = getRequestId(req);
-    const dataQuery = query.data;
-    return !id ? { status, data: { error } } : getNsResponse({ db, id, dataQuery });
+    return !id ? { status, data: { error } } : getNsResponse({ db, id, query });
   });
 
   /**
@@ -42,9 +41,8 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   router.post(ROUTES.NS, async req => {
     const query = req.query as t.IReqNsQuery;
     const { status, id, error } = getRequestId(req);
-    const dataQuery = query.data;
     const body = (await req.body.json<t.IPostNsBody>()) || {};
-    return !id ? { status, data: { error } } : postNsResponse({ db, id, body, dataQuery });
+    return !id ? { status, data: { error } } : postNsResponse({ db, id, body, query });
   });
 }
 
@@ -52,8 +50,8 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
  * [Helpers]
  */
 
-async function getNsResponse(args: { db: t.IDb; id: string; dataQuery?: t.ReqNsQueryData }) {
-  const { db, id } = args;
+async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery }) {
+  const { db, id, query } = args;
   const uri = Uri.string.ns(id);
   const model = await Ns.create({ db, uri }).ready;
 
@@ -61,19 +59,30 @@ async function getNsResponse(args: { db: t.IDb; id: string; dataQuery?: t.ReqNsQ
 
   const exists = Boolean(model.exists);
   const { createdAt, modifiedAt } = model;
-  const data: t.IGetNsResponse = {
+
+  // model.props;
+  // model.props
+
+  // const ns: t.INs = { id, hash, props: model.toObject() };
+  const ns: t.INs = model.toObject();
+
+  // ns.
+  const data: t.IGetNsResponseData = { ns, ...(await getNsData({ model, query })) };
+
+  // data: args.dataQuery ? await getNsData({ model, data: args.dataQuery }) : {},
+
+  const res: t.IGetNsResponse = {
     uri,
     exists,
     createdAt,
     modifiedAt,
-    hash,
-    data: args.dataQuery ? await getNsData({ model, data: args.dataQuery }) : {},
+    data,
   };
-  return { status: 200, data };
+  return { status: 200, data: res };
 }
 
-async function getNsData(args: { model: t.IDbModelNs; data: t.ReqNsQueryData }) {
-  const { model, data } = args;
+async function getNsData(args: { model: t.IDbModelNs; query: t.IReqNsQuery }) {
+  const { model, query } = args;
   const f = await ns.childData(model);
 
   console.log('f', f);
@@ -85,9 +94,9 @@ async function postNsResponse(args: {
   db: t.IDb;
   id: string;
   body: t.IPostNsBody;
-  dataQuery?: t.ReqNsQueryData;
+  query: t.IReqNsQuery;
 }) {
-  const { db, id, body, dataQuery } = args;
+  const { db, id, body, query } = args;
   const cells = (body.data || {}).cells || {};
   let isChanged = false;
 
@@ -129,7 +138,7 @@ async function postNsResponse(args: {
    * - more efficient response (ie. don't re-query DB)
    */
 
-  return getNsResponse({ db, id, dataQuery });
+  return getNsResponse({ db, id, query });
 }
 
 export function parseQueryData(query: t.ReqNsQueryData) {

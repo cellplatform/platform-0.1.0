@@ -20,7 +20,7 @@ describe('model', () => {
     initial: { id: '', name: '', region: undefined },
   };
 
-  const thingFactory: t.ModelFactory<IMyThing> = ({ path, db }) =>
+  const thingFactory: t.ModelFactory = ({ path, db }) =>
     Model.create<IMyThingProps>({ db, path, initial: { count: -1 } });
 
   const links: t.IModelLinkDefs<IMyOrgLinks> = {
