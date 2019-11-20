@@ -183,11 +183,84 @@ describe('Uri', () => {
     });
   });
 
+  describe('string', () => {
+    it('ns', () => {
+      const test = (id: string, expected: string) => {
+        const res = Uri.string.ns(id);
+        expect(res).to.eql(expected);
+      };
+      test('foo', 'ns:foo');
+      test('ns:foo', 'ns:foo');
+      test(' ns::foo ', 'ns:foo');
+      test('ns', 'ns:ns');
+    });
+
+    it('cell', () => {
+      const test = (ns: string, key: string, expected: string) => {
+        const res = Uri.string.cell(ns, key);
+        expect(res).to.eql(expected);
+      };
+      test('foo', 'A1', 'cell:foo!A1');
+      test('foo', '!A1', 'cell:foo!A1');
+      test('foo', '!!A1', 'cell:foo!A1');
+    });
+
+    it('row', () => {
+      const test = (ns: string, key: string, expected: string) => {
+        const res = Uri.string.row(ns, key);
+        expect(res).to.eql(expected);
+      };
+      test('foo', '1', 'row:foo!1');
+      test('foo', '!1', 'row:foo!1');
+      test('foo', '!!1', 'row:foo!1');
+    });
+
+    it('column', () => {
+      const test = (ns: string, key: string, expected: string) => {
+        const res = Uri.string.column(ns, key);
+        expect(res).to.eql(expected);
+      };
+      test('foo', 'A', 'col:foo!A');
+      test('foo', '!A', 'col:foo!A');
+      test('foo', '!!A', 'col:foo!A');
+    });
+
+    it('throws: ns', () => {
+      expect(() => Uri.string.ns(':')).to.throw();
+      expect(() => Uri.string.ns('ns:')).to.throw();
+      expect(() => Uri.string.ns('  ns:  ')).to.throw();
+    });
+
+    it('throws: cell', () => {
+      expect(() => Uri.string.cell('', 'A1')).to.throw();
+      expect(() => Uri.string.cell('foo', '')).to.throw();
+      expect(() => Uri.string.cell('foo', '!')).to.throw();
+      expect(() => Uri.string.cell('foo', 'A')).to.throw();
+      expect(() => Uri.string.cell('foo', '1')).to.throw();
+    });
+
+    it('throws: column', () => {
+      expect(() => Uri.string.column('', 'A')).to.throw();
+      expect(() => Uri.string.column('foo', '')).to.throw();
+      expect(() => Uri.string.column('foo', '!')).to.throw();
+      expect(() => Uri.string.column('foo', 'A1')).to.throw();
+      expect(() => Uri.string.column('foo', '1')).to.throw();
+    });
+
+    it('throws: row', () => {
+      expect(() => Uri.string.row('', '1')).to.throw();
+      expect(() => Uri.string.row('foo', '')).to.throw();
+      expect(() => Uri.string.row('foo', '!')).to.throw();
+      expect(() => Uri.string.row('foo', 'A1')).to.throw();
+      expect(() => Uri.string.row('foo', 'A')).to.throw();
+    });
+  });
+
   describe('generate', () => {
     it('ns', () => {
       const res1 = Uri.generate.ns();
-      const res2 = Uri.generate.ns({ ns: 'abcd' });
-      const res3 = Uri.generate.ns({ ns: '  ns:abcd  ' });
+      const res2 = Uri.generate.ns('abcd');
+      const res3 = Uri.generate.ns('  ns:abcd  ');
 
       const uri1 = Uri.parse<t.INsUri>(res1);
       const uri2 = Uri.parse<t.INsUri>(res2);
@@ -204,9 +277,9 @@ describe('Uri', () => {
     });
 
     it('cell', () => {
-      const res1 = Uri.generate.cell({ key: 'A1' });
-      const res2 = Uri.generate.cell({ ns: 'abcd', key: 'A1' });
-      const res3 = Uri.generate.cell({ ns: '  ns:abcd   ', key: 'A1' });
+      const res1 = Uri.generate.cell('A1');
+      const res2 = Uri.generate.cell('A1', 'abcd');
+      const res3 = Uri.generate.cell('A1', '  ns:abcd   ');
 
       expect(res2).to.eql('cell:abcd!A1');
 
@@ -229,9 +302,9 @@ describe('Uri', () => {
     });
 
     it('row', () => {
-      const res1 = Uri.generate.row({ key: '1' });
-      const res2 = Uri.generate.row({ ns: 'abcd', key: '1' });
-      const res3 = Uri.generate.row({ ns: '  ns:abcd  ', key: '1' });
+      const res1 = Uri.generate.row('1');
+      const res2 = Uri.generate.row('1', 'abcd');
+      const res3 = Uri.generate.row('1', '  ns:abcd  ');
 
       expect(res2).to.eql('row:abcd!1');
 
@@ -254,9 +327,9 @@ describe('Uri', () => {
     });
 
     it('column', () => {
-      const res1 = Uri.generate.column({ key: 'A' });
-      const res2 = Uri.generate.column({ ns: 'abcd', key: 'A' });
-      const res3 = Uri.generate.column({ ns: '  ns:abcd  ', key: 'A' });
+      const res1 = Uri.generate.column('A');
+      const res2 = Uri.generate.column('A', 'abcd');
+      const res3 = Uri.generate.column('A', '  ns:abcd  ');
 
       expect(res2).to.eql('col:abcd!A');
 
