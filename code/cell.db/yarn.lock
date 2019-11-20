@@ -25,10 +25,10 @@
   dependencies:
     "@platform/libs" "0.1.4"
 
-"@platform/cell.coord@0.5.35":
-  version "0.5.35"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.5.35.tgz#a9f357406dcdce36750eedeba0a0256f930b04ea"
-  integrity sha512-Ilyjwf8Ljpxr+C0q/Z4xy9fiS93TkVG84WMX/6oSry13eMJFOV1pxj4je4pQBih8O4x5x8TZ2veUfpF96GIACQ==
+"@platform/cell.coord@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.6.0.tgz#d15ad792bc4d5e0142dd94080ed3d6c4fcabbdee"
+  integrity sha512-dvwouaWUj70cpTZCRDgKJmjSNI39SJnK+r/Y2KbYuf+wxhKhFk/mbQkqEI9IcdE96NGazLBfhlkpI/2XWa7kJA==
   dependencies:
     "@platform/cache" "0.2.3"
     "@platform/cell.types" "0.1.4"
@@ -38,12 +38,12 @@
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.schema@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.0.8.tgz#95c806e652be66ee6336f611b97d938f7350ef92"
-  integrity sha512-2iapABjWu9h1hGCkrCJ0myFgtc7hMQq+eG7Qs52fpoh6UroGhJERQMU1IfvfUV163IBniXz64BU3Hg0ZOJAVqg==
+"@platform/cell.schema@0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.0.9.tgz#6fb051ecf53f12ff24758b15eb25196359ce82f2"
+  integrity sha512-errNW1IouKZGCdealDv+dc3OO2hiSzd3eaFtNdPbWVpgzWNCYnJ2DNdFWnZHR6ucu5uNeTy8cGHKfy9HMrTHdA==
   dependencies:
-    "@platform/cell.coord" "0.5.35"
+    "@platform/cell.coord" "0.6.0"
     "@platform/cell.types" "0.1.4"
     "@platform/fsdb.types" "0.4.3"
     "@platform/libs" "0.1.4"
@@ -110,20 +110,20 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.model@0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.2.6.tgz#ab2c2f24470b9d50aa30cfb3481146cce68b04bd"
-  integrity sha512-ajYyRXxS/gygV6HqY7HNN0vEH6+1RuSuKJgeJpfTnENeQZoTAT6KA/2GNsMRmhNiYslEU1ohHJIOT7411Slqgg==
+"@platform/fsdb.model@0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.2.7.tgz#33361e358792d15c6aead61aa564ecfffc315494"
+  integrity sha512-eUpuG91xnUL1uppHSO4poQ6PZ2A1lOUlz5xpSp7KR3HWeqfOfSzwoJyW7ZVAftVVkcX+neK8Z7kbuV5tk8+9bQ==
   dependencies:
     "@platform/fsdb.types" "0.4.3"
     "@platform/libs" "0.1.4"
     "@platform/types" "0.0.35"
     "@platform/util.value" "0.5.8"
 
-"@platform/fsdb.nedb@1.3.27":
-  version "1.3.27"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.27.tgz#2462b0d5bc754b3192e0def253c9fd9b0eb4489f"
-  integrity sha512-wUHmEMSFGVy0iCy+Hv8VRpG4fYqc8til/1PFdMGQG4N/4bZKLO+6uqUNsF3xK6aFoXy6nfGPjK4aa0avuwev3g==
+"@platform/fsdb.nedb@1.3.28":
+  version "1.3.28"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.28.tgz#0aef5cd9fad882b2f4371643e8506b062ce193a4"
+  integrity sha512-nsSTAgQ6Rx279TPRKaPNY/OegcAi8Xpy6NDqHnLye5m/8/nzgyOr98ZV/c5Gb+SpJt03sDRyrcwZ3PFH4Huzzw==
   dependencies:
     "@platform/fsdb.types" "0.4.3"
     "@platform/libs" "0.1.4"

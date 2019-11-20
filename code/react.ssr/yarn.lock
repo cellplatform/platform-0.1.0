@@ -95,10 +95,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http@0.4.14":
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.14.tgz#692ca291f594eb7e09e3c8df17d78f9a6647006d"
-  integrity sha512-iXBnaqjjUYYv2zQz3sPu6L1GfXPC+M0pPKEpEwiNLW6X9cTsrkRZo6+yFcF7rawfvXRWlq+RoDSkHyewew4QqQ==
+"@platform/http@0.4.15":
+  version "0.4.15"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.15.tgz#e1bd6b7b527645ffd6c9e4fec477dcf7df1f71ac"
+  integrity sha512-oaTbudr9craj4jLNIU1fTDjK2x579SHrBMRMs5NZUyradBCbjRKtVerVhal76qYO132djj3b/baz9GVnXx5WQA==
   dependencies:
     "@platform/fs" "0.3.4"
     "@platform/types" "0.0.35"
@@ -127,10 +127,10 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.7.0.tgz#f8424bcd21af882c260f653ee996eea0c5c9b899"
-  integrity sha512-vzUv+aLo8ukNT4fgBnibXNEw7ibzoeP3TvfFTKGD4KHlO6iItIk1lyynJV+GnWOqGBUHa1yaD0fBput/+XLPiQ==
+"@platform/micro@0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.7.1.tgz#777181406560b684f28e190553435b1a68615156"
+  integrity sha512-OliVw/NI7WkRkB0ERdL/VGFDLJ0rmW/UCZAJNvwyNrJaUXGP0Q2xqn9ahnOk3KfC5txrjlK27ffzRrvuJLFlxg==
   dependencies:
     "@platform/libs" "0.1.4"
     "@platform/log" "0.0.148"
