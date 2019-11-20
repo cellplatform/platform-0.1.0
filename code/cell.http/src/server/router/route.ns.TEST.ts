@@ -27,7 +27,7 @@ describe('route: namespace', () => {
     expect(body.exists).to.eql(false);
     expect(body.createdAt).to.eql(-1);
     expect(body.modifiedAt).to.eql(-1);
-    expect(body.data).to.eql({}); // NB: No data by default (requires query-string).
+    expect(body.data).to.eql({ ns: {} }); // NB: No data by default (requires query-string).
 
     // TODO - hash
   });

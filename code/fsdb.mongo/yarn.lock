@@ -78,6 +78,14 @@
     "@platform/libs" "0.1.4"
     "@platform/types" "0.0.35"
 
+"@platform/fsdb.types@0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.4.4.tgz#d101db291033b223966020324735155538de397b"
+  integrity sha512-PeZP/F3lZOhJEgeESen/vFZ7IfWvOAw8qes1KleiA6OSCLAubdn0rw4aqlwJWIk+rfCgrZbjy+um7GjG3fiOUg==
+  dependencies:
+    "@platform/libs" "0.1.4"
+    "@platform/types" "0.0.35"
+
 "@platform/libs@0.1.4":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.1.4.tgz#cc40645f2d79d0d0dd6711456464951cf78da6cb"
