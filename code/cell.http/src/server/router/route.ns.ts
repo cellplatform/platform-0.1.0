@@ -60,7 +60,7 @@ async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery
   const exists = Boolean(model.exists);
   const { createdAt, modifiedAt } = model;
 
-  // model.props;
+  // model.props
   // model.props
 
   // const ns: t.INs = { id, hash, props: model.toObject() };
