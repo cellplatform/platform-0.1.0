@@ -1079,10 +1079,10 @@
     "@platform/libs" "0.1.4"
     "@platform/util.value" "0.5.8"
 
-"@platform/cell.http@^0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.1.11.tgz#329ed47a42087693dbe85890558692058d7d9ed7"
-  integrity sha512-AV10ta327r8eUv5fsi0gOxYEpZnjhS0MI2arxnc/Vknw6Z8jn8ty/ikV8jk2PWYsREgnVURp70N5A/JLAcbaVA==
+"@platform/cell.http@^0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.1.12.tgz#4e46c3ef4023f64924ce8f9b7e5bee71fab38855"
+  integrity sha512-0UnIt3DUqtWvPGuanRPQ9qnCGJmAmyFnajmlsQJWbfXGYvBARPpW3oEEm5p2bOSswvSN0C9YzByqxfOxSJUeog==
   dependencies:
     "@platform/cell.db" "0.0.33"
     "@platform/cell.schema" "0.0.9"
@@ -1091,7 +1091,7 @@
     "@platform/fs" "0.3.4"
     "@platform/fsdb.types" "0.4.3"
     "@platform/libs" "0.1.4"
-    "@platform/micro" "0.7.2"
+    "@platform/micro" "0.7.3"
 
 "@platform/cell.schema@0.0.9":
   version "0.0.9"
@@ -1363,10 +1363,10 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.7.2":
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.7.2.tgz#a384780acbb3e213863ac5be846d431d6da3511b"
-  integrity sha512-N0qYff/3bEKux2fom1dGoDXQJwiLSMfdAB8H6u2hHpyx2jmR6aGf99MIMFotKs1HMFDksH7j5eUjBNhEH5hdJg==
+"@platform/micro@0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.7.3.tgz#5d82beaceba3b02257cdf9b25bcadb0261b215f5"
+  integrity sha512-VARbnYM+AXbEYmxTm/tMLQzf55TItqzM6wpSqVQr2UPbZuO1YCbIZDDwGiXW52243/zuYiggS8m++L9/y13VWg==
   dependencies:
     "@platform/libs" "0.1.4"
     "@platform/log" "0.0.148"

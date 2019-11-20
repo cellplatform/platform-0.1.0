@@ -1468,10 +1468,10 @@
     "@platform/ui.datagrid.types" "0.7.30"
     "@platform/util.value" "0.5.8"
 
-"@platform/ui.datagrid@0.7.51":
-  version "0.7.51"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.7.51.tgz#f77b926850a9a6fa3f6ea02ac545578b444824bd"
-  integrity sha512-kmZaydfWwvMlD3APGj767JJPqe3RLSVx/0oVcm+JqTyMGzc+bI9XV+uE92427Zw+kBmTzsrvLCWLczsUAU2tcw==
+"@platform/ui.datagrid@0.7.52":
+  version "0.7.52"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid/-/ui.datagrid-0.7.52.tgz#c2363b00259af21161341a7ee43d23259ae2ebff"
+  integrity sha512-n6kCkGcG4rJgi4eahen7vjMW1wK32JTEcX5ts+31CSdpT8WTdOEskykd5DhiR7jISS1vCN0qsdJmqrG+Wrj48w==
   dependencies:
     "@babel/polyfill" "7.7.0"
     "@platform/cache" "0.2.3"
