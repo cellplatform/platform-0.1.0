@@ -104,23 +104,22 @@ export const squash = {
     } else {
       const res = { ...cell };
       Object.keys(res)
-        .filter(key => isUndefinedOrEmptyObject(res[key]))
+        .filter(key => isNilOrEmptyObject(res[key]))
         .forEach(key => delete res[key]);
       return squash.object(res, options);
     }
   },
 
-  object(obj?: object, options: { empty?: undefined | {}; removeNull?: boolean } = {}) {
-    const { removeNull } = options;
+  object(obj?: object, options: { empty?: undefined | {} } = {}) {
     const empty = defaultValue(options.empty, undefined);
     if (!obj) {
       return empty;
     } else {
       const res = { ...obj };
       Object.keys(res)
-        .filter(key => isUndefinedOrEmptyObject(res[key]) || (removeNull && res[key] === null))
+        .filter(key => isNilOrEmptyObject(res[key]))
         .forEach(key => delete res[key]);
-      return isUndefinedOrEmptyObject(res) ? empty : res;
+      return isNilOrEmptyObject(res) ? empty : res;
     }
   },
 };
@@ -277,9 +276,9 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
 /**
  * [Helpers]
  */
-const isUndefinedOrEmptyObject = (value: any) => {
+const isNilOrEmptyObject = (value: any) => {
   if (value === null) {
-    return false;
+    return true;
   } else {
     return value === undefined || (typeof value === 'object' && Object.keys(value).length === 0);
   }

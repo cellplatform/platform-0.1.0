@@ -112,7 +112,7 @@ describe('cell', () => {
       test();
       test({});
       test({ value: undefined });
-      test({ value: null }, { value: null });
+      test({ value: null });
       test({ value: 123 }, { value: 123 });
       test({ value: 123, links: {} }, { value: 123 });
       test({ value: 0, links: {} }, { value: 0 });
@@ -126,20 +126,14 @@ describe('cell', () => {
     });
 
     it('squash.object', () => {
-      const test = (
-        obj?: object,
-        expected?: any,
-        options?: { empty?: undefined | {}; removeNull?: boolean },
-      ) => {
+      const test = (obj?: object, expected?: any, options?: { empty?: undefined | {} }) => {
         const res = value.squash.object(obj, options);
         expect(res).to.eql(expected);
       };
-
       test();
       test({});
       test({ foo: undefined });
-      test({ foo: null }, { foo: null });
-      test({ foo: null }, undefined, { removeNull: true });
+      test({ foo: null });
     });
   });
 

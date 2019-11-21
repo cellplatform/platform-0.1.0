@@ -37,7 +37,6 @@ describe('route: namespace', () => {
       const mock = await createMock();
       const url = mock.url('ns:foo?cells');
 
-      //
       const cells = { A1: { value: 'hello' } };
       const payload: t.IPostNsBody = {
         data: { cells },
@@ -55,6 +54,26 @@ describe('route: namespace', () => {
       expect(json.data.cells).to.eql(cells);
       expect(json.data.rows).to.eql(undefined);
       expect(json.data.columns).to.eql(undefined);
+    });
+
+    it('GET squashes null values ()', async () => {
+      const mock = await createMock();
+
+      const data: any = {
+        cells: { A1: { value: 'hello', props: null } },
+        rows: { 1: { props: null } },
+        columns: { A: { props: null } },
+      };
+      const payload: t.IPostNsBody = { data };
+      await http.post(mock.url('ns:foo'), payload);
+
+      const url = mock.url('ns:foo/data');
+      const res = await http.get(url);
+
+      const json = res.json();
+      expect(json.data.cells).to.eql({ A1: { value: 'hello' } });
+      expect(json.data.rows).to.eql({});
+      expect(json.data.columns).to.eql({});
     });
 
     it('GET (selective data via query-string flags)', async () => {
