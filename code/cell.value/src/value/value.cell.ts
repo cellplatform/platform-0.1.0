@@ -1,4 +1,4 @@
-import { t, hash, diff, R, defaultValue } from '../common';
+import { t, sha256, diff, R, defaultValue } from '../common';
 
 export type CellChangeField = 'VALUE' | 'PROPS';
 
@@ -85,8 +85,7 @@ export function cellHash(uri: string, data?: t.ICellData): string {
     obj.links = links;
   }
 
-  const sha256 = hash.sha256(obj);
-  return `sha256-${sha256}`;
+  return sha256(obj);
 }
 
 /**
