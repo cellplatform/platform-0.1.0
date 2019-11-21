@@ -59,10 +59,10 @@
     "@platform/libs" "0.1.4"
     "@platform/util.diff" "0.0.4"
 
-"@platform/cell.value@0.0.26":
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.0.26.tgz#61d89caf111405e74bd671920b59027dc3a8b7e2"
-  integrity sha512-SvK+wP6LWWMx5Td26HeFSJZi+RLfp6fh72qjH694GBuYUEiqFq8nurZXMc/py+miGBbyjcBu6qxEcQEcuyYOEQ==
+"@platform/cell.value@0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.0.27.tgz#7d80d3258e042d95c24bcc7d65a68a325df19447"
+  integrity sha512-U7GcN9RMqmWhPgeMz/BTaiHU3lUJH8Kd2SvMNAcwpPWSmTMgbF1nmnELwKHLFObQ/R9r5TFDtLI45j2HRwGLzQ==
   dependencies:
     "@platform/cell.types" "0.1.6"
     "@platform/libs" "0.1.4"

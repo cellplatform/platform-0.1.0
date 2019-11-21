@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.debug",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Debug UI components for the ui.datagrid",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -20,7 +20,7 @@
     "@platform/react": "0.3.29",
     "@platform/ui.button": "0.3.9",
     "@platform/ui.datagrid.types": "0.7.31",
-    "@platform/ui.datagrid.util": "0.2.8",
+    "@platform/ui.datagrid.util": "0.2.9",
     "@platform/ui.icon": "0.0.93",
     "@platform/ui.object": "0.0.149",
     "@platform/ui.text": "0.3.3"
