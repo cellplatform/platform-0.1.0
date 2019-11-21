@@ -58,30 +58,22 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.nedb@1.3.28":
-  version "1.3.28"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.28.tgz#0aef5cd9fad882b2f4371643e8506b062ce193a4"
-  integrity sha512-nsSTAgQ6Rx279TPRKaPNY/OegcAi8Xpy6NDqHnLye5m/8/nzgyOr98ZV/c5Gb+SpJt03sDRyrcwZ3PFH4Huzzw==
+"@platform/fsdb.nedb@1.3.30":
+  version "1.3.30"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.30.tgz#69c6e60a5fd1494e9ba28b3263c9768fff29ea8d"
+  integrity sha512-rxgMkp/RUU97Qno3Hw+0I3of7W7RRZoNRhVbKSSY/bhqBITwwC5bXzWWRDBVgzi1kJ5AAcZ2xGBsB0I9lHit/g==
   dependencies:
-    "@platform/fsdb.types" "0.4.3"
+    "@platform/fsdb.types" "0.4.5"
     "@platform/libs" "0.1.4"
     "@platform/react" "0.3.29"
     "@platform/types" "0.0.35"
     "@platform/util.value" "0.5.8"
     nedb "1.8.0"
 
-"@platform/fsdb.types@0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.4.3.tgz#489f45032a6d42d6859cc6e33cb6bfb8fa41ad13"
-  integrity sha512-miV8oLz2c595Ss0mUraUxGc0pNZNt2De7eHUaWrDsEq5djNX60kGKmxT9v+s8w4+V7gg+5QhTlvAC6dq7aVoHw==
-  dependencies:
-    "@platform/libs" "0.1.4"
-    "@platform/types" "0.0.35"
-
-"@platform/fsdb.types@0.4.4":
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.4.4.tgz#d101db291033b223966020324735155538de397b"
-  integrity sha512-PeZP/F3lZOhJEgeESen/vFZ7IfWvOAw8qes1KleiA6OSCLAubdn0rw4aqlwJWIk+rfCgrZbjy+um7GjG3fiOUg==
+"@platform/fsdb.types@0.4.5":
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.4.5.tgz#2173070ecbc05b2ee9ddcae16d0c0496cdecdf59"
+  integrity sha512-0zz732w8CEwqWSkWs73zWgLRnSFMlqi53eifhx0ndwMGvw3vtdbsMYYeeevFksyX+NZbzQkgYTaWYPf4tUcUkQ==
   dependencies:
     "@platform/libs" "0.1.4"
     "@platform/types" "0.0.35"
