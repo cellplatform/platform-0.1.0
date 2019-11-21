@@ -10,11 +10,12 @@ export const mock = {
   async reset() {
     await fs.remove(TMP);
   },
-
   async create() {
     return create();
   },
 };
+
+export const createMock = mock.create;
 
 /**
  * Helpers.

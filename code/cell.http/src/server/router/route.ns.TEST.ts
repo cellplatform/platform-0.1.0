@@ -1,11 +1,11 @@
-import { t, expect, http, mock } from '../../test';
+import { t, expect, http, createMock } from '../../test';
 
 describe('route: namespace', () => {
   it('invalid "ns" URI (no id)', async () => {
-    const test = await mock.create();
-    const url = test.url('/ns:');
+    const mock = await createMock();
+    const url = mock.url('/ns:');
     const res = await http.get(url);
-    await test.dispose();
+    await mock.dispose();
 
     expect(res.status).to.eql(400);
 
@@ -15,10 +15,10 @@ describe('route: namespace', () => {
   });
 
   it('does not yet exist', async () => {
-    const test = await mock.create();
-    const url = test.url('ns:foo');
+    const mock = await createMock();
+    const url = mock.url('ns:foo');
     const res = await http.get(url);
-    await test.dispose();
+    await mock.dispose();
 
     expect(res.status).to.eql(200);
 
@@ -34,42 +34,80 @@ describe('route: namespace', () => {
 
   describe('data', () => {
     it('POST change data', async () => {
-      const test = await mock.create();
-      const url = test.url('ns:foo');
+      const mock = await createMock();
+      const url = mock.url('ns:foo?cells');
 
+      const cells = { A1: { value: 'hello' } };
       const payload: t.IPostNsBody = {
-        data: {
-          cells: {
-            A1: { value: 'hello' },
-          },
-        },
+        data: { cells },
       };
 
       const res = await http.post(url, payload);
-      const res2 = await http.post(url, payload);
+      await mock.dispose();
 
-      console.log('-------------------------------------------');
-      console.log('url:', url);
-
-      await test.dispose();
-
-      // console.log(res);
-      console.log('res.json', res.json());
+      const json = res.json<t.IPostNsResponse>();
+      expect(json.uri).to.eql('ns:foo');
+      expect(json.exists).to.eql(true);
+      expect(json.createdAt).to.not.eql(-1);
+      expect(json.modifiedAt).to.not.eql(-1);
+      expect(json.data.ns).to.eql({ id: 'foo' });
+      expect(json.data.cells).to.eql(cells);
     });
 
-    it('returns data (selective)', async () => {
-      //
+    it('returns data (selective query-string)', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: 'A1' },
+        B2: { value: 'B2' },
+        C1: { value: 'C1' },
+      };
+      const columns = {
+        A: { props: { height: 80 } },
+        C: { props: { height: 120 } },
+      };
+      const rows = {
+        1: { props: { width: 350 } },
+        3: { props: { width: 256 } },
+      };
+      const payload: t.IPostNsBody = { data: { cells, columns, rows } };
+      await http.post(mock.url('ns:foo'), payload);
+
+      const test = async (path: string, expected?: any) => {
+        const url = mock.url(path);
+        const res = await http.get(url);
+
+        // Prepare a subset of the return data to compare with expected result-set.
+        const json = res.json<t.IPostNsResponse>().data;
+        delete json.ns;
+        expect(json).to.eql(expected);
+      };
+
+      await test('ns:foo', {});
+      await test('ns:foo?cells=false&rows=false&columns=false', {}); // Same as default (line above).
+
+      await test('ns:foo?cells', { cells });
+      await test('ns:foo?cells=true', { cells });
+      await test('ns:foo?cells=A1', { cells: { A1: cells.A1 } });
+      await test('ns:foo?cells=A1,B1:B10&cells=C9', { cells: { A1: cells.A1, B2: cells.B2 } });
+      await test('ns:foo?cells=A1:Z9', { cells });
+
+      await test('ns:foo?rows', { rows });
+      await test('ns:foo?rows=true', { rows });
+      await test('ns:foo?rows=1', { rows: { 1: rows['1'] } });
+      await test('ns:foo?rows=1:2', { rows: { 1: rows['1'] } });
+      await test('ns:foo?rows=1:9', { rows });
+      await test('ns:foo?rows=1,2:5', { rows });
+      await test('ns:foo?rows=2:5', { rows: { 3: rows['3'] } });
+
+      await test('ns:foo?columns', { columns });
+      await test('ns:foo?columns=true', { columns });
+      await test('ns:foo?columns=A', { columns: { A: columns.A } });
+      await test('ns:foo?columns=A:B', { columns: { A: columns.A } });
+      await test('ns:foo?columns=A:D', { columns });
+      await test('ns:foo?columns=B:D', { columns: { C: columns.C } });
+      await test('ns:foo?columns=B:D,A', { columns });
+
+      await mock.dispose();
     });
   });
-
-  // it('returns data (selective)', async () => {
-  //   const test = await mock.create();
-  //   const url = test.url('ns:foo');
-
-  //   // await kill(8080);
-
-  //   console.log('url', url);
-
-  //   await test.dispose();
-  // });
 });

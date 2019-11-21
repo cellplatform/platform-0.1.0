@@ -55,21 +55,15 @@ async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery
   const uri = Uri.string.ns(id);
   const model = await Ns.create({ db, uri }).ready;
 
-  const hash = '-'; // TODO 🐷
+  // const hash = '-'; // TODO 🐷
 
   const exists = Boolean(model.exists);
   const { createdAt, modifiedAt } = model;
 
-  // model.props
-  // model.props
-
-  // const ns: t.INs = { id, hash, props: model.toObject() };
-  const ns: t.INs = model.toObject();
-
-  // ns.
-  const data: t.IGetNsResponseData = { ns, ...(await getNsData({ model, query })) };
-
-  // data: args.dataQuery ? await getNsData({ model, data: args.dataQuery }) : {},
+  const data: t.IGetNsResponseData = {
+    ns: model.toObject(),
+    ...(await getNsData({ model, query })),
+  };
 
   const res: t.IGetNsResponse = {
     uri,
@@ -78,16 +72,41 @@ async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery
     modifiedAt,
     data,
   };
+
   return { status: 200, data: res };
 }
 
-async function getNsData(args: { model: t.IDbModelNs; query: t.IReqNsQuery }) {
+async function getNsData(args: {
+  model: t.IDbModelNs;
+  query: t.IReqNsQuery;
+}): Promise<Partial<t.INsCoordData>> {
   const { model, query } = args;
-  const f = await ns.childData(model);
+  if (Object.keys(query).length === 0) {
+    return {};
+  }
 
-  console.log('f', f);
+  const formatQueryArray = (input: Array<string | boolean>) => {
+    if (input.some(item => item === true)) {
+      // NB: Any occurance of `true` negates narrower string ranges
+      //     so default to a blunt [true] so everything is returned.
+      return true;
+    } else {
+      const flat = input.filter(item => typeof item === 'string').join(',');
+      return flat ? flat : undefined;
+    }
+  };
 
-  return {};
+  const formatQuery = (
+    input?: boolean | string | Array<string | boolean>,
+  ): string | boolean | undefined => {
+    return Array.isArray(input) ? formatQueryArray(input) : input;
+  };
+
+  const cells = formatQuery(query.cells);
+  const columns = formatQuery(query.columns);
+  const rows = formatQuery(query.rows);
+
+  return ns.getChildData(model, { cells, columns, rows });
 }
 
 async function postNsResponse(args: {
@@ -97,23 +116,10 @@ async function postNsResponse(args: {
   query: t.IReqNsQuery;
 }) {
   const { db, id, body, query } = args;
-  const cells = (body.data || {}).cells || {};
-  let isChanged = false;
+  const data: Partial<t.INsCoordData> = body.data || {};
 
-  // Save cells.
-  const wait = Object.keys(cells).map(async key => {
-    const cell = cells[key];
-    if (typeof cell === 'object') {
-      const uri = Uri.string.cell(id, key);
-      const model = (await Cell.create({ db, uri }).ready).set(cell);
-      if (model.isChanged) {
-        isChanged = true;
-        await model.save();
-      }
-    }
-  });
-
-  await Promise.all(wait);
+  const res = await ns.setChildData({ db, id, data });
+  const isChanged = res.isChanged;
 
   // Ensure NS time-stamps are updated.
   if (isChanged) {
@@ -139,8 +145,4 @@ async function postNsResponse(args: {
    */
 
   return getNsResponse({ db, id, query });
-}
-
-export function parseQueryData(query: t.ReqNsQueryData) {
-  // todo
 }

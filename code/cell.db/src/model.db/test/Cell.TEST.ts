@@ -1,12 +1,14 @@
 import { Cell } from '..';
 import { expect, getTestDb, util } from '../../test';
 
+type P = { style?: { bold?: boolean } };
+
 describe('model.Cell', () => {
   it('saves', async () => {
     const db = await getTestDb({});
     const uri = 'cell:abcd!A1';
 
-    const res1 = await Cell.create({ db, uri }).ready;
+    const res1 = await Cell.create<P>({ db, uri }).ready;
     expect(res1.props.value).to.eql(undefined);
     expect(res1.props.props).to.eql(undefined);
     expect(res1.props.links).to.eql(undefined);

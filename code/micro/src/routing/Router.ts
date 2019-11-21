@@ -5,8 +5,6 @@ import { parse as parseUrl } from 'url';
 import * as body from '../body';
 import { t, value } from '../common';
 
-const { toType } = value;
-
 export class Router implements t.IRouter {
   /**
    * [Static]
@@ -23,7 +21,7 @@ export class Router implements t.IRouter {
     const parts = regex.exec(path) || [];
 
     const res = keys.reduce((acc, key, i) => {
-      acc[key.name] = toType(parts[i + 1]);
+      acc[key.name] = value.toType(parts[i + 1]);
       return acc;
     }, {});
 
@@ -42,13 +40,18 @@ export class Router implements t.IRouter {
       return empty as T;
     }
 
+    const parseType = (input: any) => {
+      input = input === '' ? true : input; // NB: existence of key into flag, eg: `/foo?q` => `/foo?q=true`
+      return value.toType(input);
+    };
+
     const query: any = querystring.parse(path.substring(index + 1));
     Object.keys(query).forEach(key => {
       const value = query[key];
-      query[key] = Array.isArray(value) ? value.map(item => toType(item)) : toType(value);
+      query[key] = Array.isArray(value) ? value.map(item => parseType(item)) : parseType(value);
     });
 
-    const res = { ...query }; // NB: Ensure is is a simple object.
+    const res = { ...query }; // NB: Ensure a simple object is returned.
     return res as T;
   }
 

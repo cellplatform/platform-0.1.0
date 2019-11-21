@@ -47,7 +47,7 @@ export type IModelMethods<
   toObject(): P;
 };
 
-export type ModelFactory = (args: ModelFactoryArgs) => IModel;
+export type ModelFactory<M extends IModel = IModel> = (args: ModelFactoryArgs) => M;
 export type ModelFactoryArgs = { path: string; db: t.IDb };
 
 export type BeforeModelSave<
