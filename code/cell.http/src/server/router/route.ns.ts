@@ -3,7 +3,7 @@ import { ns } from '../model';
 import { ROUTES } from './ROUTES';
 
 const { Uri, model } = cell;
-const { Ns, Cell } = model.db;
+const { Ns } = model.db;
 
 /**
  * Namespace routes.
@@ -26,19 +26,37 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   };
 
   /**
-   * GET namespace data.
+   * GET namespace (root).
+   *     Data can be retrieved selectively using query-string.
+   *     eg:
+   *        - /ns:foo
+   *        - /ns:foo?cells
+   *        - /ns:foo?cells=A1:A5
+   *        - /ns:foo?cells=A1:A5,C3
+   *        - /ns:foo?cells&rows&columns   [NB: Same format for rows/columns query flags].
    */
-  router.get(ROUTES.NS, async req => {
+  router.get(ROUTES.NS.BASE, async req => {
     const query = req.query as t.IReqNsQuery;
     const { status, id, error } = getRequestId(req);
     return !id ? { status, data: { error } } : getNsResponse({ db, id, query });
   });
 
   /**
-   * POST namespace data.
-   *      Persists data for the namespace to the DB.
+   * GET namespace (all data).
+   *     Same as calling the base URL with all data query-string flags
+   *     eg:
+   *         -/ns:<id>?cells&rows&column
    */
-  router.post(ROUTES.NS, async req => {
+  router.get(ROUTES.NS.DATA, async req => {
+    const query: t.IReqNsQuery = { cells: true, rows: true, columns: true };
+    const { status, id, error } = getRequestId(req);
+    return !id ? { status, data: { error } } : getNsResponse({ db, id, query });
+  });
+
+  /**
+   * POST namespace data (save to database).
+   */
+  router.post(ROUTES.NS.BASE, async req => {
     const query = req.query as t.IReqNsQuery;
     const { status, id, error } = getRequestId(req);
     const body = (await req.body.json<t.IPostNsBody>()) || {};

@@ -5,5 +5,8 @@ export const ROUTES = {
     INFO: '/',
     WILDCARD: '*',
   },
-  NS: `/ns\::id([A-Za-z0-9]*)(/?)`,
+  NS: {
+    BASE: `/ns\::id([A-Za-z0-9]*)(/?)`,
+    DATA: `/ns\::id([A-Za-z0-9]*)/data(/?)`,
+  },
 };

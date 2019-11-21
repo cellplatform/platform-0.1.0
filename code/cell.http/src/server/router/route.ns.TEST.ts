@@ -54,7 +54,7 @@ describe('route: namespace', () => {
       expect(json.data.cells).to.eql(cells);
     });
 
-    it('returns data (selective query-string)', async () => {
+    it('GET (selective data via query-string flags)', async () => {
       const mock = await createMock();
       const cells = {
         A1: { value: 'A1' },
@@ -69,7 +69,8 @@ describe('route: namespace', () => {
         1: { props: { width: 350 } },
         3: { props: { width: 256 } },
       };
-      const payload: t.IPostNsBody = { data: { cells, columns, rows } };
+      const data = { cells, columns, rows };
+      const payload: t.IPostNsBody = { data };
       await http.post(mock.url('ns:foo'), payload);
 
       const test = async (path: string, expected?: any) => {
@@ -106,6 +107,43 @@ describe('route: namespace', () => {
       await test('ns:foo?columns=A:D', { columns });
       await test('ns:foo?columns=B:D', { columns: { C: columns.C } });
       await test('ns:foo?columns=B:D,A', { columns });
+
+      await test('ns:foo?cells&rows&columns', data);
+
+      await mock.dispose();
+    });
+
+    it('GET /data (all data)', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: 'A1' },
+        B2: { value: 'B2' },
+        C1: { value: 'C1' },
+      };
+      const columns = {
+        A: { props: { height: 80 } },
+        C: { props: { height: 120 } },
+      };
+      const rows = {
+        1: { props: { width: 350 } },
+        3: { props: { width: 256 } },
+      };
+      const data = { cells, columns, rows };
+      const payload: t.IPostNsBody = { data };
+      await http.post(mock.url('ns:foo'), payload);
+
+      const test = async (path: string, expected?: any) => {
+        const url = mock.url(path);
+        const res = await http.get(url);
+
+        // Prepare a subset of the return data to compare with expected result-set.
+        const json = res.json<t.IPostNsResponse>().data;
+        delete json.ns;
+        expect(json).to.eql(expected);
+      };
+
+      await test('ns:foo', {});
+      await test('ns:foo/data', data);
 
       await mock.dispose();
     });
