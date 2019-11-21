@@ -4,6 +4,7 @@ import { ROUTES } from './ROUTES';
 
 const { Uri, model } = cell;
 const { Ns } = model.db;
+const squash = cell.value.squash;
 
 /**
  * Namespace routes.
@@ -79,7 +80,7 @@ async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery
   const { createdAt, modifiedAt } = model;
 
   const data: t.IGetNsResponseData = {
-    ns: model.toObject(),
+    ns: squash.object(model.toObject()) as t.INs,
     ...(await getNsData({ model, query })),
   };
 
