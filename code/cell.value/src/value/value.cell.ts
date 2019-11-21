@@ -59,36 +59,6 @@ export function isEmptyCellProps(props?: t.ICellProps) {
 }
 
 /**
- * Produces a uniform hash (SHA-256) of the given cell's value/props.
- */
-export function cellHash(uri: string, data?: t.ICellData): string {
-  if (!uri.startsWith('cell:')) {
-    throw new Error(`Hashing requires a valid cell URI. Given uri "${uri}".`);
-  }
-
-  const value = data ? data.value : undefined;
-  const props = squash.props(data ? data.props : undefined);
-  const error = data ? data.error : undefined;
-  const links = data ? data.links : undefined;
-
-  const obj: any = { uri };
-  if (value) {
-    obj.value = value;
-  }
-  if (props) {
-    obj.props = props;
-  }
-  if (error) {
-    obj.error = error;
-  }
-  if (links) {
-    obj.links = links;
-  }
-
-  return sha256(obj);
-}
-
-/**
  * Collapses empty values on data objects.
  */
 export const squash = {

@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from '../test';
 import { t } from '../common';
 import { value } from '.';
 
@@ -138,62 +138,6 @@ describe('cell', () => {
     });
   });
 
-  describe('cellHash', () => {
-    it('throw if URI not passed', () => {
-      const fn = () => value.cellHash('A1', { value: 123 });
-      expect(fn).to.throw(/Hashing requires a valid cell URI/);
-    });
-
-    it('hashes a cell', () => {
-      let index = -1;
-      const test = (input: {} | undefined, expected: string) => {
-        const hash = value.cellHash('cell:abcd!A1', input);
-
-        index++;
-        const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
-
-        expect(hash.startsWith('sha256-')).to.eql(true);
-        expect(hash.endsWith(expected)).to.eql(true, err);
-      };
-
-      test(undefined, '74cbb77a4112ea85f3a3');
-      test({ value: undefined }, '74cbb77a4112ea85f3a3');
-      test({ value: null }, '74cbb77a4112ea85f3a3');
-      test({ value: 123 }, 'd53be0bdbce2a25b2a36');
-      test({ value: 'hello' }, 'b3813001a7b30883363c');
-      test({ value: 'hello', props: {} }, 'b3813001a7b30883363c');
-      test({ value: 'hello', props: { style: { bold: true } } }, 'fab8857189a788c7af8e');
-      test({ links: { main: 'ns:abc' } }, '921f26767a2d39629');
-
-      const error: t.IRefErrorCircular = { type: 'REF/circular', path: 'A1/A1', message: 'Fail' };
-      test({ value: 'hello', error }, '92a8675656f6818ec330');
-    });
-
-    it('same hash for no param AND no cell-value', () => {
-      const HASH = 'sha256-77f00fd1a859e597968d1987608778ac197505ea97d174cbb77a4112ea85f3a3';
-      const test = (input?: t.ICellData) => {
-        const hash = value.cellHash('cell:abcd!A1', input);
-        expect(hash).to.eql(HASH);
-      };
-      test();
-      test(undefined);
-      test({ value: undefined });
-    });
-
-    it('returns same hash for equivalent props variants', () => {
-      const HASH = 'sha256-4b3640ce563efa431406a23c8cb3683e9fe714349f07d5648106e98ac7d1f8e8';
-      const test = (props?: {}) => {
-        const hash = value.cellHash('cell:abcd:A1', { value: 123, props });
-        // console.log('hash', hash);
-        expect(hash).to.eql(HASH);
-      };
-      test();
-      test({});
-      test({ style: {} });
-      test({ merge: {} });
-      test({ style: {}, merge: {} });
-    });
-  });
 
   describe('cellDiff', () => {
     it('no difference', () => {
