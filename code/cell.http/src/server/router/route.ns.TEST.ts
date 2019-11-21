@@ -69,6 +69,7 @@ describe('route: namespace', () => {
 
       const url = mock.url('ns:foo/data');
       const res = await http.get(url);
+      await mock.dispose();
 
       const json = res.json();
       expect(json.data.cells).to.eql({ A1: { value: 'hello' } });
