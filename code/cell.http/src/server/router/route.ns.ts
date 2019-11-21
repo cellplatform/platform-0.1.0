@@ -159,7 +159,8 @@ async function postNsResponse(args: {
    * TODO 🐷
    * - handle all data types within the NS (not just cells).
    * - error handling on model creation/save
-   * - more efficient response (ie. don't re-query DB)
+   * - more efficient response (ie. don't re-query DB).
+   * - return change summary (model: changes).
    */
 
   return getNsResponse({ db, id, query });

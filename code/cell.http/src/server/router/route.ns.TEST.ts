@@ -37,6 +37,7 @@ describe('route: namespace', () => {
       const mock = await createMock();
       const url = mock.url('ns:foo?cells');
 
+      //
       const cells = { A1: { value: 'hello' } };
       const payload: t.IPostNsBody = {
         data: { cells },
@@ -52,6 +53,8 @@ describe('route: namespace', () => {
       expect(json.modifiedAt).to.not.eql(-1);
       expect(json.data.ns).to.eql({ id: 'foo' });
       expect(json.data.cells).to.eql(cells);
+      expect(json.data.rows).to.eql(undefined);
+      expect(json.data.columns).to.eql(undefined);
     });
 
     it('GET (selective data via query-string flags)', async () => {
