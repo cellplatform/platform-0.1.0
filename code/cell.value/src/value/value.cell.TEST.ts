@@ -124,6 +124,23 @@ describe('cell', () => {
 
       test({ value: undefined }, {}, {}); // NB: Squash to {} not undefined.
     });
+
+    it('squash.object', () => {
+      const test = (
+        obj?: object,
+        expected?: any,
+        options?: { empty?: undefined | {}; removeNull?: boolean },
+      ) => {
+        const res = value.squash.object(obj, options);
+        expect(res).to.eql(expected);
+      };
+
+      test();
+      test({});
+      test({ foo: undefined });
+      test({ foo: null }, { foo: null });
+      test({ foo: null }, undefined, { removeNull: true });
+    });
   });
 
   describe('cellHash', () => {

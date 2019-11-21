@@ -110,14 +110,15 @@ export const squash = {
     }
   },
 
-  object(obj?: object, options: { empty?: undefined | {} } = {}) {
+  object(obj?: object, options: { empty?: undefined | {}; removeNull?: boolean } = {}) {
+    const { removeNull } = options;
     const empty = defaultValue(options.empty, undefined);
     if (!obj) {
       return empty;
     } else {
       const res = { ...obj };
       Object.keys(res)
-        .filter(key => isUndefinedOrEmptyObject(res[key]))
+        .filter(key => isUndefinedOrEmptyObject(res[key]) || (removeNull && res[key] === null))
         .forEach(key => delete res[key]);
       return isUndefinedOrEmptyObject(res) ? empty : res;
     }
