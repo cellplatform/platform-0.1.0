@@ -1,10 +1,8 @@
-import { cell, log, t } from '../common';
-import { ns } from '../model';
+import { cell, t } from '../common';
+import { models } from '../models';
 import { ROUTES } from './ROUTES';
 
-const { Uri, model } = cell;
-const { Ns } = model.db;
-const squash = cell.value.squash;
+const { Uri } = cell;
 
 /**
  * Namespace routes.
@@ -44,7 +42,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
 
   /**
    * GET namespace (all data).
-   *     Same as calling the base URL with all data query-string flags
+   *     Same as calling the base URL with all data query-string flags.
    *     eg:
    *         -/ns:<id>?cells&rows&column
    */
@@ -72,7 +70,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
 async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery }) {
   const { db, id, query } = args;
   const uri = Uri.string.ns(id);
-  const model = await Ns.create({ db, uri }).ready;
+  const model = await models.Ns.create({ db, uri }).ready;
 
   // const hash = '-'; // TODO 🐷
 
@@ -80,7 +78,7 @@ async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery
   const { createdAt, modifiedAt } = model;
 
   const data: t.IGetNsResponseData = {
-    ns: squash.object(model.toObject()) as t.INs,
+    ns: await models.ns.toObject(model),
     ...(await getNsData({ model, query })),
   };
 
@@ -121,11 +119,11 @@ async function getNsData(args: {
     return Array.isArray(input) ? formatQueryArray(input) : input;
   };
 
-  const cells = formatQuery(query.cells);
-  const columns = formatQuery(query.columns);
-  const rows = formatQuery(query.rows);
+  const cells = query.data ? true : formatQuery(query.cells);
+  const columns = query.data ? true : formatQuery(query.columns);
+  const rows = query.data ? true : formatQuery(query.rows);
 
-  return ns.getChildData(model, { cells, columns, rows });
+  return models.ns.getChildData(model, { cells, columns, rows });
 }
 
 async function postNsResponse(args: {
@@ -137,13 +135,13 @@ async function postNsResponse(args: {
   const { db, id, body, query } = args;
   const data: Partial<t.INsCoordData> = body.data || {};
 
-  const res = await ns.setChildData({ db, id, data });
+  const res = await models.ns.setChildData({ db, id, data });
   const isChanged = res.isChanged;
 
   // Ensure NS time-stamps are updated.
   if (isChanged) {
     const uri = Uri.string.ns(id);
-    const model = await Ns.create({ db, uri }).ready;
+    const model = await models.Ns.create({ db, uri }).ready;
     model.props.id = id;
     await model.save();
 

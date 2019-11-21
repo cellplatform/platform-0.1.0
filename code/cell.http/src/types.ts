@@ -8,6 +8,7 @@ export type ReqNsQueryData = boolean | string; // true (everything) or comma sep
 
 export type IReqNsParams = { id: string };
 export type IReqNsQuery = {
+  data?: boolean; // true: all (cells/rows/columns) - overrides other fields.
   cells?: boolean | string; // true: all | string: key or range, eg "A1", "A1:C10"
   columns?: boolean | string;
   rows?: boolean | string;

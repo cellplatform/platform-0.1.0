@@ -1,5 +1,13 @@
 import { t, expect, http, createMock } from '../../test';
 
+const post = async (url: string, data: t.IPostNsBody['data']) => {
+  const mock = await createMock();
+  const res = await http.post(mock.url(url), { data });
+  const json = res.json<t.IPostNsResponse>();
+  await mock.dispose();
+  return { res, json, data: json.data };
+};
+
 describe('route: namespace', () => {
   it('invalid "ns" URI (no id)', async () => {
     const mock = await createMock();
@@ -23,34 +31,47 @@ describe('route: namespace', () => {
     expect(res.status).to.eql(200);
 
     const body = res.json<t.IGetNsResponse>();
+    const ns = body.data.ns;
+
     expect(body.uri).to.eql('ns:foo');
     expect(body.exists).to.eql(false);
     expect(body.createdAt).to.eql(-1);
     expect(body.modifiedAt).to.eql(-1);
-    expect(body.data).to.eql({ ns: {} }); // NB: No data by default (requires query-string).
 
-    // TODO - hash
+    expect(ns.id).to.eql('foo');
+    expect(ns.hash).to.eql('-'); // NB: default when does not exist.
+
+    // NB: No cell data by default (requires query-string).
+    expect(body.data.cells).to.eql(undefined);
+    expect(body.data.rows).to.eql(undefined);
+    expect(body.data.columns).to.eql(undefined);
+  });
+
+  describe('hash', () => {
+    it.only('generates NS hash', async () => {
+      const cells = { A1: { value: 123 } };
+      const { data, json } = await post('ns:foo?cells', { cells });
+
+      console.log('json', json);
+      console.log('hash:', data.ns.hash);
+
+      /**
+       * TODO 🐷
+       */
+    });
   });
 
   describe('data', () => {
     it('POST change data', async () => {
-      const mock = await createMock();
-      const url = mock.url('ns:foo?cells');
-
       const cells = { A1: { value: 'hello' } };
-      const payload: t.IPostNsBody = {
-        data: { cells },
-      };
+      const { res, json } = await post('ns:foo?cells', { cells });
 
-      const res = await http.post(url, payload);
-      await mock.dispose();
-
-      const json = res.json<t.IPostNsResponse>();
+      expect(res.status).to.eql(200);
       expect(json.uri).to.eql('ns:foo');
-      expect(json.exists).to.eql(true);
+      expect(json.exists).to.eql(true); // NB: Model exists after first save.
       expect(json.createdAt).to.not.eql(-1);
       expect(json.modifiedAt).to.not.eql(-1);
-      expect(json.data.ns).to.eql({ id: 'foo' });
+      expect(json.data.ns.id).to.eql('foo');
       expect(json.data.cells).to.eql(cells);
       expect(json.data.rows).to.eql(undefined);
       expect(json.data.columns).to.eql(undefined);
@@ -132,6 +153,9 @@ describe('route: namespace', () => {
       await test('ns:foo?columns=B:D,A', { columns });
 
       await test('ns:foo?cells&rows&columns', data);
+      await test('ns:foo?data', data);
+      await test('ns:foo?data=true', data);
+      await test('ns:foo?data=false', {});
 
       await mock.dispose();
     });

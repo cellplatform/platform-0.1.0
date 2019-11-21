@@ -134,6 +134,7 @@ describe('cell', () => {
       test({});
       test({ foo: undefined });
       test({ foo: null });
+      test({ foo: { value: null } }, { foo: { value: null } }); // NB: null only squashed on root keys.
     });
   });
 

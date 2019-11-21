@@ -1,13 +1,40 @@
 import { cell, t } from '../common';
+import { Cell, Column, Row } from './libs';
 
-const { Schema, Uri, model } = cell;
+const { Schema, Uri } = cell;
 const squash = cell.value.squash;
-const { Cell, Row, Column } = model.db;
+
+/**
+ * Render the model into a simple [t.INS] object.
+ */
+export async function toObject(model: t.IDbModelNs) {
+  const id = toId(model);
+  const res: t.INs = {
+    id,
+    hash: '-', // Default (if does not exist, otherwise should be on the DB data object).
+    ...squash.object(model.toObject()),
+  };
+  return res;
+}
+
+/**
+ * Retrieve the ID of the given Namespace model.
+ */
+export function toId(model: t.IDbModelNs) {
+  return toUri(model).parts.id;
+}
+
+/**
+ * Retrieve the URI of the given Namespace model.
+ */
+export function toUri(model: t.IDbModelNs) {
+  return Schema.from.ns(model.path);
+}
 
 /**
  * Get the child [cells] of the given namespace.
  */
-export const getChildCells = async (args: { model: t.IDbModelNs; range?: string }) => {
+export async function getChildCells(args: { model: t.IDbModelNs; range?: string }) {
   const models = await args.model.children.cells;
   const union = toRangeUnion(args.range);
   return models.reduce((acc, next) => {
@@ -17,12 +44,12 @@ export const getChildCells = async (args: { model: t.IDbModelNs; range?: string 
     }
     return acc;
   }, {}) as t.ICellMap;
-};
+}
 
 /**
  * Get the child [rows] of the given namespace.
  */
-export const getChildRows = async (args: { model: t.IDbModelNs; range?: string }) => {
+export async function getChildRows(args: { model: t.IDbModelNs; range?: string }) {
   const models = await args.model.children.rows;
   const union = toRangeUnion(args.range);
   return models.reduce((acc, next) => {
@@ -32,12 +59,12 @@ export const getChildRows = async (args: { model: t.IDbModelNs; range?: string }
     }
     return acc;
   }, {}) as t.ICellMap;
-};
+}
 
 /**
  * Get the child [columns] of the given namespace.
  */
-export const getChildColumns = async (args: { model: t.IDbModelNs; range?: string }) => {
+export async function getChildColumns(args: { model: t.IDbModelNs; range?: string }) {
   const models = await args.model.children.columns;
   const union = toRangeUnion(args.range);
   return models.reduce((acc, next) => {
@@ -47,19 +74,19 @@ export const getChildColumns = async (args: { model: t.IDbModelNs; range?: strin
     }
     return acc;
   }, {}) as t.ICellMap;
-};
+}
 
 /**
  * Retrieve the child data.
  */
-export const getChildData = async (
+export async function getChildData(
   model: t.IDbModelNs,
   options: {
     cells?: boolean | string; // true: <all> | string: key or range, eg "A1", "A1:C10"
     rows?: boolean | string;
     columns?: boolean | string;
   } = {},
-) => {
+) {
   const wait = [
     { field: 'cells', fn: getChildCells },
     { field: 'rows', fn: getChildRows },
@@ -79,7 +106,7 @@ export const getChildData = async (
     acc[next.field] = next.value;
     return acc;
   }, {}) as t.INsCoordData;
-};
+}
 
 /**
  * Saves child cell data.
