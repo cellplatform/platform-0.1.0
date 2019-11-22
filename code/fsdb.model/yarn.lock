@@ -58,22 +58,22 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.nedb@1.3.31":
-  version "1.3.31"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.31.tgz#0a08c17f9ce3d4056b3c18c56038c7848e72b746"
-  integrity sha512-z4q2O5Wrv/Th2paFrmTkLYf6KXTUIkKdQyv+D7QjPs+jlEMRR9Vtg3nS5q2So7nx6+mGhVEs0MR7vCoiIjgTDQ==
+"@platform/fsdb.nedb@1.3.32":
+  version "1.3.32"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.32.tgz#1fded68678018f9c1cd0e23fc68ccf2c363d8839"
+  integrity sha512-MpTWab0qlCF9w6pq+c/WivbTNAthbSK9B8fDepg/NkuZjPG9vg+0VsKDLyduYHw7a67w9GKKO+p2LIWKC+2l5g==
   dependencies:
-    "@platform/fsdb.types" "0.4.6"
+    "@platform/fsdb.types" "0.5.0"
     "@platform/libs" "0.1.4"
     "@platform/react" "0.3.29"
     "@platform/types" "0.0.35"
     "@platform/util.value" "0.5.8"
     nedb "1.8.0"
 
-"@platform/fsdb.types@0.4.6":
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.4.6.tgz#838d39f3a1124df49dfacd407a8283454cc870c4"
-  integrity sha512-K5S9GYVNXV6uFSgDBNq/bkWzvo/aM3tmqJaGmq8ezr9dOjUoynW6pPDZWbO+of6lnbj2XVWil5y9HPnEUO+N4Q==
+"@platform/fsdb.types@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.5.0.tgz#f134b458c301e0b9fab560188a742ac2255397ac"
+  integrity sha512-HlfNATnM9rVVFgn9ugxPIbHKVlRbsYqbIXUBZgaMEL6pclA4QQNzpoyAcgSrbjfMmSFNYQ2F7So3o0Q52ckzoA==
   dependencies:
     "@platform/libs" "0.1.4"
     "@platform/types" "0.0.35"

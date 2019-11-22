@@ -1194,10 +1194,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.types@0.4.5":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.4.5.tgz#2173070ecbc05b2ee9ddcae16d0c0496cdecdf59"
-  integrity sha512-0zz732w8CEwqWSkWs73zWgLRnSFMlqi53eifhx0ndwMGvw3vtdbsMYYeeevFksyX+NZbzQkgYTaWYPf4tUcUkQ==
+"@platform/fsdb.types@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.5.0.tgz#f134b458c301e0b9fab560188a742ac2255397ac"
+  integrity sha512-HlfNATnM9rVVFgn9ugxPIbHKVlRbsYqbIXUBZgaMEL6pclA4QQNzpoyAcgSrbjfMmSFNYQ2F7So3o0Q52ckzoA==
   dependencies:
     "@platform/libs" "0.1.4"
     "@platform/types" "0.0.35"
