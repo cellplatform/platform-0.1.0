@@ -306,23 +306,29 @@ export class Model<
    * Runs the `beforeSave` handler (if one was given to the constructor)
    * which prepares the model for saving.
    */
-  public async beforeSave() {
-    const changes = this.changes;
-    const typename = this.typename;
+  public async beforeSave(options: { force?: boolean } = {}) {
+    this.throwIfDisposed('beforeSave');
     const { beforeSave } = this._args;
     if (!beforeSave) {
       return {};
     }
+    
+    const { force = false } = options;
+    const typename = this.typename;
+    let changes = this.changes;
+    let isChanged = changes.length > 0;
 
     // Invoke handler.
-    const payload: t.IModelSave<P, D, L, C> = { model: this, changes };
+    const payload: t.IModelSave<P, D, L, C> = { force, isChanged, model: this, changes };
     await beforeSave(payload);
 
     // Finish up.
+    changes = this.changes;
+    isChanged = changes.length > 0;
     this.fire({
       type: 'MODEL/beforeSave',
       typename,
-      payload,
+      payload: { ...payload, changes, isChanged },
     });
     return {};
   }
@@ -332,11 +338,12 @@ export class Model<
    */
   public async save(options: { force?: boolean } = {}) {
     this.throwIfDisposed('save');
+    const { force = false } = options;
 
     // Run BEFORE operation.
     await this.beforeSave();
 
-    if (!options.force && this.exists && !this.isChanged) {
+    if (!force && this.exists && !this.isChanged) {
       this._changes = [];
       return { saved: false };
     }
@@ -353,11 +360,12 @@ export class Model<
     await this.load({ force: true, silent: true });
 
     // Finish up.
+    const isChanged = changes.length > 0;
     const typename = this.typename;
     this.fire({
       type: 'MODEL/saved',
       typename,
-      payload: { model: this, changes },
+      payload: { force, isChanged, model: this, changes },
     });
     return { saved: true };
   }

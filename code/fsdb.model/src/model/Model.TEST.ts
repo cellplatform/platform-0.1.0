@@ -518,6 +518,8 @@ describe('model', () => {
       const e = events[0].payload as t.IModelSave;
       expect(e.model).to.equal(model);
       expect(e.changes).to.eql(changes);
+      expect(e.force).to.eql(false);
+      expect(e.isChanged).to.eql(true);
     });
 
     it('saves when not changed, but `force` flag is passed', async () => {
@@ -539,8 +541,12 @@ describe('model', () => {
       expect(res2.saved).to.eql(true);
 
       expect(events.length).to.eql(1);
-      expect(events[0].type).to.eql('MODEL/saved');
       expect(model.modifiedAt).to.greaterThan(modifiedAt);
+
+      expect(events[0].type).to.eql('MODEL/saved');
+      const e = events[0].payload as t.IModelSave;
+      expect(e.force).to.eql(true);
+      expect(e.isChanged).to.eql(false);
     });
 
     it('initial save (new instance, default values)', async () => {
@@ -598,7 +604,7 @@ describe('model', () => {
       expect(events[1].type).to.eql('MODEL/saved');
     });
 
-    it('does not run [beforeSave] when handler not given to model', async () => {
+    it('does not run [beforeSave] when handler not provided to model', async () => {
       const model = await (await createOrg({ put: false })).ready;
 
       const events: t.ModelEvent[] = [];
@@ -625,11 +631,22 @@ describe('model', () => {
       expect(model.isChanged).to.eql(false);
       expect(count).to.eql(1);
 
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
       makeChange = true;
       await model.save();
 
-      expect(model.isChanged).to.eql(false); // NB: Change made within `beforeSave` handler.
       expect(count).to.eql(2);
+      expect(model.props.name).to.eql('Something else');
+
+      const saveEvents = events
+        .filter(e => e.type === 'MODEL/saved')
+        .map(e => e.payload as t.IModelSave);
+
+      const e = saveEvents[0];
+      expect(e.force).to.eql(false);
+      expect(e.isChanged).to.eql(true); // NB: Changed within `beforeSave` handler.
     });
 
     it('changes props before saving', async () => {
