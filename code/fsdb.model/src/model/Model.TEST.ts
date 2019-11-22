@@ -520,6 +520,29 @@ describe('model', () => {
       expect(e.changes).to.eql(changes);
     });
 
+    it('saves when not changed, but `force` flag is passed', async () => {
+      const model = await createOrg({ put: true });
+      await model.ready;
+      expect(model.exists).to.eql(true);
+      const modifiedAt = model.modifiedAt;
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
+      const res1 = await model.save();
+      expect(res1.saved).to.eql(false);
+      expect(events.length).to.eql(0);
+
+      await time.wait(10);
+
+      const res2 = await model.save({ force: true });
+      expect(res2.saved).to.eql(true);
+
+      expect(events.length).to.eql(1);
+      expect(events[0].type).to.eql('MODEL/saved');
+      expect(model.modifiedAt).to.greaterThan(modifiedAt);
+    });
+
     it('initial save (new instance, default values)', async () => {
       const model = await createOrg({ put: false });
 

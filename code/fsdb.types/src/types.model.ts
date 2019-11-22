@@ -43,7 +43,7 @@ export type IModelMethods<
   reset(): IModel<P, D, L, C>;
   set(props: Partial<P>): IModel<P, D, L, C>;
   beforeSave(): Promise<{}>;
-  save(): Promise<{ saved: boolean }>;
+  save(options?: { force?: boolean }): Promise<{ saved: boolean }>;
   toObject(): P;
 };
 

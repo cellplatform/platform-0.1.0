@@ -330,13 +330,13 @@ export class Model<
   /**
    * Persists changes to the underlying store.
    */
-  public async save() {
+  public async save(options: { force?: boolean } = {}) {
     this.throwIfDisposed('save');
 
     // Run BEFORE operation.
     await this.beforeSave();
 
-    if (this.exists && !this.isChanged) {
+    if (!options.force && this.exists && !this.isChanged) {
       this._changes = [];
       return { saved: false };
     }
