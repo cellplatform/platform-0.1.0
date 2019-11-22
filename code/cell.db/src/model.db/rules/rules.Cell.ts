@@ -1,4 +1,4 @@
-import { t, Schema } from '../../common';
+import { t, Schema, util } from '../../common';
 
 /**
  * Invoked before a [Cell] is persisted to the DB.
@@ -27,6 +27,13 @@ export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async args
         model.links.namespaces.unlink([path]);
       }
     });
+  }
+
+  // Update hash.
+  if (changes.length > 0) {
+    const uri = Schema.from.cell(model.path).uri;
+    const data = { ...model.toObject(), hash: undefined };
+    model.props.hash = util.hash.cell({ uri, data });
   }
 };
 

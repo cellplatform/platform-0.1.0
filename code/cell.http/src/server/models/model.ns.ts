@@ -26,13 +26,13 @@ export async function toObject(model: t.IDbModelNs) {
  * Retrieve the ID of the given Namespace model.
  */
 export function toId(model: t.IDbModelNs) {
-  return toUri(model).parts.id;
+  return toSchema(model).parts.id;
 }
 
 /**
  * Retrieve the URI of the given Namespace model.
  */
-export function toUri(model: t.IDbModelNs) {
+export function toSchema(model: t.IDbModelNs) {
   return Schema.from.ns(model.path);
 }
 
