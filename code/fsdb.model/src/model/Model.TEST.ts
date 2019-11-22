@@ -3,12 +3,13 @@ import { Model } from '.';
 import { expect, getTestDb, t, time } from '../test';
 
 type IMyThingProps = { count: number };
-type IMyOrgProps = { id: string; name: string; region?: string };
-
 type IMyThing = t.IModel<IMyThingProps>;
-type IMyOrgChildren = { things: IMyThing[]; subthings: IMyThing[]; all: IMyThing[] };
-type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
+
+type IMyOrgProps = { id: string; name: string; region?: string };
 type IMyOrgDoc = IMyOrgProps & { ref?: string; refs?: string[] };
+type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
+type IMyOrgChildren = { things: IMyThing[]; subthings: IMyThing[]; all: IMyThing[] };
+type IMyOrgModel = t.IModel<IMyOrgProps, IMyOrgDoc, IMyOrgLinks, IMyOrgChildren>;
 
 describe('model', () => {
   let db: t.IDb;
@@ -584,18 +585,28 @@ describe('model', () => {
       expect(events.length).to.eql(0);
     });
 
-    it('does not run [beforeSave] when no changes made', async () => {
+    it('runs [beforeSave] even if no changes made', async () => {
       let count = 0;
-      const beforeSave: t.BeforeModelSave = async args => count++;
+      let makeChange = false;
+      const beforeSave: t.BeforeModelSave = async args => {
+        count++;
+        if (makeChange) {
+          const model = args.model as IMyOrgModel;
+          model.props.name = 'Something else';
+        }
+      };
 
       const model = await (await createOrg({ put: false, beforeSave })).ready;
 
-      const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
+      await model.save();
+      expect(model.isChanged).to.eql(false);
+      expect(count).to.eql(1);
 
-      await model.beforeSave();
-      expect(events.length).to.eql(0);
-      expect(count).to.eql(0);
+      makeChange = true;
+      await model.save();
+
+      expect(model.isChanged).to.eql(false); // NB: Change made within `beforeSave` handler.
+      expect(count).to.eql(2);
     });
 
     it('changes props before saving', async () => {

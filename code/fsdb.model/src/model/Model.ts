@@ -310,7 +310,7 @@ export class Model<
     const changes = this.changes;
     const typename = this.typename;
     const { beforeSave } = this._args;
-    if (!beforeSave || changes.length === 0) {
+    if (!beforeSave) {
       return {};
     }
 
@@ -332,13 +332,14 @@ export class Model<
    */
   public async save() {
     this.throwIfDisposed('save');
+
+    // Run BEFORE operation.
+    await this.beforeSave();
+
     if (this.exists && !this.isChanged) {
       this._changes = [];
       return { saved: false };
     }
-
-    // Run BEFORE operation.
-    await this.beforeSave();
 
     // Save to the DB.
     const changes = this.changes;
