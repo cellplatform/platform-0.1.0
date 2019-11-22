@@ -1,4 +1,4 @@
-import { t, hash, diff, R, defaultValue } from '../common';
+import { t, sha256, diff, R, defaultValue } from '../common';
 
 export type CellChangeField = 'VALUE' | 'PROPS';
 
@@ -59,37 +59,6 @@ export function isEmptyCellProps(props?: t.ICellProps) {
 }
 
 /**
- * Produces a uniform hash (SHA-256) of the given cell's value/props.
- */
-export function cellHash(uri: string, data?: t.ICellData): string {
-  if (!uri.startsWith('cell:')) {
-    throw new Error(`Hashing requires a valid cell URI. Given uri "${uri}".`);
-  }
-
-  const value = data ? data.value : undefined;
-  const props = squash.props(data ? data.props : undefined);
-  const error = data ? data.error : undefined;
-  const links = data ? data.links : undefined;
-
-  const obj: any = { uri };
-  if (value) {
-    obj.value = value;
-  }
-  if (props) {
-    obj.props = props;
-  }
-  if (error) {
-    obj.error = error;
-  }
-  if (links) {
-    obj.links = links;
-  }
-
-  const sha256 = hash.sha256(obj);
-  return `sha256-${sha256}`;
-}
-
-/**
  * Collapses empty values on data objects.
  */
 export const squash = {
@@ -104,7 +73,7 @@ export const squash = {
     } else {
       const res = { ...cell };
       Object.keys(res)
-        .filter(key => isUndefinedOrEmptyObject(res[key]))
+        .filter(key => isNilOrEmptyObject(res[key]))
         .forEach(key => delete res[key]);
       return squash.object(res, options);
     }
@@ -117,9 +86,9 @@ export const squash = {
     } else {
       const res = { ...obj };
       Object.keys(res)
-        .filter(key => isUndefinedOrEmptyObject(res[key]))
+        .filter(key => isNilOrEmptyObject(res[key]))
         .forEach(key => delete res[key]);
-      return isUndefinedOrEmptyObject(res) ? empty : res;
+      return isNilOrEmptyObject(res, { ignoreHash: true }) ? empty : res;
     }
   },
 };
@@ -276,10 +245,20 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
 /**
  * [Helpers]
  */
-const isUndefinedOrEmptyObject = (value: any) => {
+const isNilOrEmptyObject = (value: any, options: { ignoreHash?: boolean } = {}) => {
   if (value === null) {
-    return false;
+    return true;
   } else {
-    return value === undefined || (typeof value === 'object' && Object.keys(value).length === 0);
+    return value === undefined || isEmptyObject(value, options);
   }
+};
+
+const isEmptyObject = (value: any, options: { ignoreHash?: boolean } = {}) => {
+  if (typeof value !== 'object') {
+    return false;
+  }
+  const keys = options.ignoreHash
+    ? Object.keys(value).filter(key => key !== 'hash')
+    : Object.keys(value);
+  return keys.length === 0;
 };

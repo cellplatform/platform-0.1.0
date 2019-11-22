@@ -1,4 +1,4 @@
 export * from './types';
 
-import * as model from './model';
-export { model };
+import * as models from './models';
+export { models };

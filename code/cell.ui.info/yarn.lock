@@ -25,22 +25,22 @@
   dependencies:
     "@platform/libs" "0.1.4"
 
-"@platform/cell.types@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.1.4.tgz#39057c061ee4ea610e62a9015aab446e105e9521"
-  integrity sha512-QoKU+xnJlZqzKmDP6AmYaisoNffRTCTg4GvmsGoegK/0s5tDuu+dy+fw3HxvXRcX3q63nAG1RqIEcOZ/tcT+kA==
+"@platform/cell.types@0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.1.9.tgz#bfec1a2f81b8ff4be486779ba8dc4b973ba356b7"
+  integrity sha512-ySZiQ/c+XjZeygEqx3nrTRYErqIkIrdZQS4+opCi8C+csiaIZfJOaNEFweruE/EGkenGF/joFdq2PkDafRXenQ==
   dependencies:
     "@platform/cache" "0.2.3"
-    "@platform/fsdb.types" "0.4.3"
+    "@platform/fsdb.types" "0.5.0"
     "@platform/libs" "0.1.4"
     "@platform/util.diff" "0.0.4"
 
-"@platform/cell.ui@0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.0.17.tgz#02e554411276899108f187e78a3710399e264c64"
-  integrity sha512-ELHH7mHJFz1g0aTwIlBPfKUiSUAH1kl5mTQOOzHpNcn7jmRQxsniavVX6jcckgNSIiwHGcWgiWp2ulIAlQvLmQ==
+"@platform/cell.ui@0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.0.22.tgz#481b1e1752255b5fe8b6f2e20306a2fdf91c47d5"
+  integrity sha512-GGCJQkFifdd0Y70vMnzi1A7/7re4SUBd3phACykyznEmmNkmKHQbAqi63m0cUVB6+Edc4YQK2u02RWEUOnT4vw==
   dependencies:
-    "@platform/cell.types" "0.1.4"
+    "@platform/cell.types" "0.1.9"
     "@platform/libs" "0.1.4"
     "@platform/react" "0.3.29"
 
@@ -84,10 +84,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.types@0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.4.3.tgz#489f45032a6d42d6859cc6e33cb6bfb8fa41ad13"
-  integrity sha512-miV8oLz2c595Ss0mUraUxGc0pNZNt2De7eHUaWrDsEq5djNX60kGKmxT9v+s8w4+V7gg+5QhTlvAC6dq7aVoHw==
+"@platform/fsdb.types@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.5.0.tgz#f134b458c301e0b9fab560188a742ac2255397ac"
+  integrity sha512-HlfNATnM9rVVFgn9ugxPIbHKVlRbsYqbIXUBZgaMEL6pclA4QQNzpoyAcgSrbjfMmSFNYQ2F7So3o0Q52ckzoA==
   dependencies:
     "@platform/libs" "0.1.4"
     "@platform/types" "0.0.35"

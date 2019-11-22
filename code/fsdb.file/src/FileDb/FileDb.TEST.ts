@@ -144,7 +144,7 @@ describe('FileDb', () => {
     await time.wait(100);
     const res4 = await db.put(key, 456);
     expect(res4.props.createdAt).to.eql(res2.props.createdAt);
-    expect(res4.props.modifiedAt).to.be.within(now + 90, now + 120);
+    expect(res4.props.modifiedAt).to.be.within(now + 90, now + 130);
   });
 
   it('put (custom timestamps)', async () => {

@@ -1,6 +1,7 @@
-import { t, fs } from '../common';
-import { PKG, ROUTES } from './constants';
+import { t, fs, constants } from '../common';
+import { ROUTES } from './ROUTES';
 
+const PKG = constants.PKG;
 const DEPS = PKG.dependencies;
 
 const MODULE = {

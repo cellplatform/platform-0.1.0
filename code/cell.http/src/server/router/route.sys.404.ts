@@ -1,5 +1,5 @@
 import { t } from '../common';
-import { ROUTES } from './constants';
+import { ROUTES } from './ROUTES';
 
 /**
  * Wildcard (404).

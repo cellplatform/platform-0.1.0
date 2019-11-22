@@ -13,7 +13,7 @@ export function init(args: { host: string; port: number }) {
 
   // Namespace methods.
   const ns = {
-    postData(uri: string, body: t.IReqNsData) {
+    postData(uri: string, body: t.IPostNsBody) {
       const url = `${origin}/${uri}/data`;
       return http.post(url, body);
     },

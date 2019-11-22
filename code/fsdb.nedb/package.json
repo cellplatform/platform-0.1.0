@@ -1,6 +1,6 @@
 {
   "name": "@platform/fsdb.nedb",
-  "version": "1.3.27",
+  "version": "1.3.32",
   "description": "Standard IDb abstraction over nedb.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "tmp": "ts-node -T scripts/tmp $@"
   },
   "dependencies": {
-    "@platform/fsdb.types": "0.4.3",
+    "@platform/fsdb.types": "0.5.0",
     "@platform/libs": "0.1.4",
     "@platform/react": "0.3.29",
     "@platform/types": "0.0.35",
@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@platform/fs": "0.3.4",
-    "@platform/graphql.server": "0.1.48",
+    "@platform/graphql.server": "0.1.50",
     "@platform/test": "0.0.65",
     "@types/nedb": "1.8.9",
     "@uiharness/dev": "0.9.9",

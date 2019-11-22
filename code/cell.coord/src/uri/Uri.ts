@@ -1,6 +1,8 @@
 import { t, id } from '../common';
 import { cell } from '../cell';
 
+const { cuid } = id;
+
 export class Uri {
   /**
    * Parse a URI into it's constituent pieces.
@@ -85,35 +87,66 @@ export class Uri {
   };
 
   /**
+   * Construct a URI string from arguments.
+   */
+  public static string = {
+    ns: (id: string) => toUri('ns', id),
+    cell: (ns: string, key: string) => toUri('cell', ns, key),
+    row: (ns: string, key: string) => toUri('row', ns, key),
+    column: (ns: string, key: string) => toUri('col', ns, key),
+  };
+
+  /**
    * Generate new URIs.
    */
   public static generate = {
-    ns(args: { ns?: string } = {}) {
-      const ns = trimInput('ns', args.ns || id.cuid());
-      return `ns:${ns}`;
-    },
-    cell(args: { key: string; ns?: string }) {
-      const ns = trimInput('ns', args.ns || id.cuid());
-      const key = args.key || id.shortid();
-      return `cell:${ns}!${key}`;
-    },
-    row(args: { key: string; ns?: string }) {
-      const ns = trimInput('ns', args.ns || id.cuid());
-      const key = args.key || id.shortid();
-      return `row:${ns}!${key}`;
-    },
-    column(args: { key: string; ns?: string }) {
-      const ns = trimInput('ns', args.ns || id.cuid());
-      const key = args.key || id.shortid();
-      return `col:${ns}!${key}`;
-    },
+    ns: (id?: string) => Uri.string.ns(id || cuid()),
+    cell: (key: string, ns?: string) => Uri.string.cell(ns || cuid(), key),
+    row: (key: string, ns?: string) => Uri.string.row(ns || cuid(), key),
+    column: (key: string, ns?: string) => Uri.string.column(ns || cuid(), key),
   };
 }
 
 /**
  * [Helpers]
  */
-function trimInput(prefix: string, input: string) {
-  const regex = new RegExp(`^${prefix}\:`);
+const validIdRegex = new RegExp(/^[a-z0-9]+$/i); // NB: alpha-numeric.
+
+function trimPrefix(prefix: string, input: string) {
+  const regex = new RegExp(`^${prefix}\:+`);
   return input.trim().replace(regex, '');
+}
+
+const PREFIX_MAP: { [key: string]: t.CoordType } = {
+  cell: 'CELL',
+  col: 'COLUMN',
+  row: 'ROW',
+};
+
+function toUri(prefix: 'ns' | 'col' | 'row' | 'cell', id: string, suffix?: string) {
+  id = id.trim();
+  id = id === ':' ? '' : id;
+  if (id) {
+    ['ns', 'col', 'row', 'cell'].forEach(prefix => (id = trimPrefix(prefix, id)));
+  }
+  if (!id) {
+    throw new Error(`The "${prefix}" URI was not supplied with an ID.`);
+  }
+  if (!validIdRegex.test(id)) {
+    throw new Error(`The "${prefix}" URI contains an invalid ID, must be alpha-numeric ("${id}").`);
+  }
+  if (typeof suffix === 'string') {
+    suffix = suffix.replace(/^\!*/, '');
+    if (!suffix) {
+      throw new Error(`The "${prefix}" URI was not supplied with a suffix key.`);
+    }
+    const type = cell.toType(suffix);
+    if (PREFIX_MAP[prefix] !== type) {
+      throw new Error(
+        `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${suffix}").`,
+      );
+    }
+    suffix = `!${suffix}`;
+  }
+  return `${prefix}:${id}${suffix || ''}`;
 }

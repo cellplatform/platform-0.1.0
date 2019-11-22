@@ -29,14 +29,15 @@ export class Ns {
       path,
       children,
       initial,
+      beforeSave: rules.beforeNsSave,
     });
   };
 
-  public static create(args: { db: t.IDb; uri?: string }) {
+  public static create<P extends object = {}>(args: { db: t.IDb; uri?: string }) {
     const { uri, db } = args;
     const ns = Schema.ns(uri);
     const path = ns.path;
-    return Ns.factory({ db, path });
+    return Ns.factory({ db, path }) as t.IDbModelNs<P>;
   }
 }
 
@@ -75,7 +76,7 @@ export class Cell {
     });
   };
 
-  public static create(args: { db: t.IDb; uri: string }) {
+  public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
     const { db } = args;
     const uri = Uri.parse<t.ICellUri>(args.uri);
     if (uri.error) {
@@ -83,7 +84,7 @@ export class Cell {
     }
     const ns = Schema.ns(uri.parts.ns);
     const path = ns.cell(uri.parts.key).path;
-    return Cell.factory({ db, path });
+    return Cell.factory({ db, path }) as t.IDbModelCell<P>;
   }
 }
 
@@ -97,10 +98,15 @@ export class Row {
       hash: undefined,
       error: undefined,
     };
-    return Model.create<t.IDbModelRowProps>({ db, path, initial });
+    return Model.create<t.IDbModelRowProps>({
+      db,
+      path,
+      initial,
+      beforeSave: rules.beforeRowSave,
+    }) as t.IDbModelRow;
   };
 
-  public static create(args: { db: t.IDb; uri: string }) {
+  public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
     const { db } = args;
     const uri = Uri.parse<t.IRowUri>(args.uri);
     if (uri.error) {
@@ -108,7 +114,7 @@ export class Row {
     }
     const ns = Schema.ns(uri.parts.ns);
     const path = ns.row(uri.parts.key).path;
-    return Row.factory({ db, path });
+    return Row.factory({ db, path }) as t.IDbModelRow<P>;
   }
 }
 
@@ -122,10 +128,15 @@ export class Column {
       hash: undefined,
       error: undefined,
     };
-    return Model.create<t.IDbModelColumnProps>({ db, path, initial });
+    return Model.create<t.IDbModelColumnProps>({
+      db,
+      path,
+      initial,
+      beforeSave: rules.beforeColumnSave,
+    });
   };
 
-  public static create(args: { db: t.IDb; uri: string }) {
+  public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
     const { db } = args;
     const uri = Uri.parse<t.IColumnUri>(args.uri);
     if (uri.error) {
@@ -133,6 +144,6 @@ export class Column {
     }
     const ns = Schema.ns(uri.parts.ns);
     const path = ns.column(uri.parts.key).path;
-    return Column.factory({ db, path });
+    return Column.factory({ db, path }) as t.IDbModelColumn<P>;
   }
 }

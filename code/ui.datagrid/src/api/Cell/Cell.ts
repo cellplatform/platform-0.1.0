@@ -189,6 +189,6 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
    * Display string representation of the cell.
    */
   public toString() {
-    coord.Uri.generate.cell({ key: this.key, ns: this.ns });
+    coord.Uri.string.cell(this.ns, this.key);
   }
 }

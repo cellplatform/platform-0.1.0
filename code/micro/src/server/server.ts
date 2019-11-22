@@ -76,6 +76,7 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
 /**
  * [Helpers]
  */
+
 function redirect(res: t.ServerResponse, statusCode: number, location: string) {
   if (!location) {
     throw new Error('Redirect location required');

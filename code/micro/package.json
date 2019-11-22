@@ -1,6 +1,6 @@
 {
   "name": "@platform/micro",
-  "version": "0.6.3",
+  "version": "0.8.1",
   "description": "Wrapper and helpers around micro.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,11 +16,13 @@
   "dependencies": {
     "@platform/libs": "0.1.4",
     "@platform/log": "0.0.148",
+    "@platform/util.value": "0.5.8",
     "micro": "9.3.4",
     "micro-cors": "0.1.1",
     "path-to-regexp": "5.0.0"
   },
   "devDependencies": {
+    "@platform/http": "0.4.16",
     "@platform/test": "0.0.65",
     "@platform/ts": "3.7.0",
     "@types/micro": "7.3.3"

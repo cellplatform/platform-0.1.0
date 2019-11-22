@@ -95,10 +95,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http@0.4.14":
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.14.tgz#692ca291f594eb7e09e3c8df17d78f9a6647006d"
-  integrity sha512-iXBnaqjjUYYv2zQz3sPu6L1GfXPC+M0pPKEpEwiNLW6X9cTsrkRZo6+yFcF7rawfvXRWlq+RoDSkHyewew4QqQ==
+"@platform/http@0.4.16":
+  version "0.4.16"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.16.tgz#9d8396dbec53508d099b310ff5378bd938630df5"
+  integrity sha512-oI72a6QDt06u07v6fhWYzfjmhCa13HXF/0jWvHByeLDH9csGZ9emsiPmWcUHOMdgRUVbjbdKZQIastg0/56sYw==
   dependencies:
     "@platform/fs" "0.3.4"
     "@platform/types" "0.0.35"
@@ -127,13 +127,14 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.6.3.tgz#aad5ccc525f4e1be10de3c4f76022654a8dd12a8"
-  integrity sha512-FKTrKqpneCM2JSoznEzsbuh3OUA+yHele27xjUBvGPpuJpoki/zaTfuoshCMYdC2+kX0J1A5ZNqjhLch68+RmA==
+"@platform/micro@0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.8.1.tgz#2375a11d0b0d01cd64a60e95a76141f94f3a6883"
+  integrity sha512-OEAlOap8j59zoVs+AIEBxUc8+PP5laO7vOA/CMtei1RldsoMPiKkQfPnA6cPPskdd75wjHPFqfMOgHJZ69W5Mw==
   dependencies:
     "@platform/libs" "0.1.4"
     "@platform/log" "0.0.148"
+    "@platform/util.value" "0.5.8"
     micro "9.3.4"
     micro-cors "0.1.1"
     path-to-regexp "5.0.0"

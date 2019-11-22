@@ -42,8 +42,8 @@ export type IModelMethods<
   load(options?: { force?: boolean; links?: boolean; silent?: boolean }): Promise<P>;
   reset(): IModel<P, D, L, C>;
   set(props: Partial<P>): IModel<P, D, L, C>;
-  beforeSave(): Promise<{}>;
-  save(): Promise<{ saved: boolean }>;
+  beforeSave(options?: { force?: boolean }): Promise<{}>;
+  save(options?: { force?: boolean }): Promise<{ saved: boolean }>;
   toObject(): P;
 };
 
@@ -223,6 +223,8 @@ export type IModelSave<
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
 > = {
+  force: boolean;
+  isChanged: boolean;
   model: IModel<P, D, L>;
   changes: IModelChanges<P, D, L, C>;
 };

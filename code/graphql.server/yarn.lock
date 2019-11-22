@@ -73,12 +73,12 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/graphql@0.2.44":
-  version "0.2.44"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.44.tgz#e9b6ea678445477629c7df99aa081cd665769dab"
-  integrity sha512-9DlNr55OpyIlULQt683Bs7uK36faLUJjafGapCo5On5Wdu1GmKtU8HlEDIJZKU0nKvdtX+z+n6bf2TmF6+y4Ow==
+"@platform/graphql@0.2.46":
+  version "0.2.46"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.46.tgz#f04a47a3f8f92db414b103ad4dbba1567bdd91d7"
+  integrity sha512-LrVwOxVRbIHYLKCO2lPXvZ+pROCoo1sTduQPpbxyDhhIsjjwvGwvubnQ3KkoKjB/LJEt8bP427pgQiLVzNummg==
   dependencies:
-    "@platform/http" "0.4.14"
+    "@platform/http" "0.4.16"
     "@platform/libs" "0.1.4"
     "@types/graphql" "14.5.0"
     apollo-cache-inmemory "1.6.3"
@@ -90,10 +90,10 @@
     graphql "14.5.8"
     graphql-tag "2.10.1"
 
-"@platform/http@0.4.14":
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.14.tgz#692ca291f594eb7e09e3c8df17d78f9a6647006d"
-  integrity sha512-iXBnaqjjUYYv2zQz3sPu6L1GfXPC+M0pPKEpEwiNLW6X9cTsrkRZo6+yFcF7rawfvXRWlq+RoDSkHyewew4QqQ==
+"@platform/http@0.4.16":
+  version "0.4.16"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.16.tgz#9d8396dbec53508d099b310ff5378bd938630df5"
+  integrity sha512-oI72a6QDt06u07v6fhWYzfjmhCa13HXF/0jWvHByeLDH9csGZ9emsiPmWcUHOMdgRUVbjbdKZQIastg0/56sYw==
   dependencies:
     "@platform/fs" "0.3.4"
     "@platform/types" "0.0.35"

@@ -3,12 +3,13 @@ import { Model } from '.';
 import { expect, getTestDb, t, time } from '../test';
 
 type IMyThingProps = { count: number };
-type IMyOrgProps = { id: string; name: string; region?: string };
-
 type IMyThing = t.IModel<IMyThingProps>;
-type IMyOrgChildren = { things: IMyThing[]; subthings: IMyThing[]; all: IMyThing[] };
-type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
+
+type IMyOrgProps = { id: string; name: string; region?: string };
 type IMyOrgDoc = IMyOrgProps & { ref?: string; refs?: string[] };
+type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
+type IMyOrgChildren = { things: IMyThing[]; subthings: IMyThing[]; all: IMyThing[] };
+type IMyOrgModel = t.IModel<IMyOrgProps, IMyOrgDoc, IMyOrgLinks, IMyOrgChildren>;
 
 describe('model', () => {
   let db: t.IDb;
@@ -20,7 +21,7 @@ describe('model', () => {
     initial: { id: '', name: '', region: undefined },
   };
 
-  const thingFactory: t.ModelFactory<IMyThing> = ({ path, db }) =>
+  const thingFactory: t.ModelFactory = ({ path, db }) =>
     Model.create<IMyThingProps>({ db, path, initial: { count: -1 } });
 
   const links: t.IModelLinkDefs<IMyOrgLinks> = {
@@ -162,11 +163,12 @@ describe('model', () => {
       expect(model.toObject()).to.eql({});
 
       // Load while there is no data for the model in the DB.
+      const EMPTY = { id: undefined, name: undefined, region: undefined };
       await model.load();
       expect(model.isLoaded).to.eql(true);
       expect(model.exists).to.eql(false);
       expect(model.doc).to.eql({});
-      expect(model.toObject()).to.eql({}); // NB: Default empty object, even though no backing data yet.
+      expect(model.toObject()).to.eql(EMPTY); // NB: Default empty object, even though no backing data yet.
 
       // Load again, with data in DB, but not `force` reload.
       await db.put(org.path, org.doc);
@@ -174,7 +176,7 @@ describe('model', () => {
       expect(model.isLoaded).to.eql(true);
       expect(model.exists).to.eql(false);
       expect(model.doc).to.eql({});
-      expect(model.toObject()).to.eql({});
+      expect(model.toObject()).to.eql(EMPTY);
 
       // Load again after force refresh - data actually loaded now.
       await model.load({ force: true });
@@ -517,6 +519,35 @@ describe('model', () => {
       const e = events[0].payload as t.IModelSave;
       expect(e.model).to.equal(model);
       expect(e.changes).to.eql(changes);
+      expect(e.force).to.eql(false);
+      expect(e.isChanged).to.eql(true);
+    });
+
+    it('saves when not changed, but `force` flag is passed', async () => {
+      const model = await createOrg({ put: true });
+      await model.ready;
+      expect(model.exists).to.eql(true);
+      const modifiedAt = model.modifiedAt;
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
+      const res1 = await model.save();
+      expect(res1.saved).to.eql(false);
+      expect(events.length).to.eql(0);
+
+      await time.wait(10);
+
+      const res2 = await model.save({ force: true });
+      expect(res2.saved).to.eql(true);
+
+      expect(events.length).to.eql(1);
+      expect(model.modifiedAt).to.greaterThan(modifiedAt);
+
+      expect(events[0].type).to.eql('MODEL/saved');
+      const e = events[0].payload as t.IModelSave;
+      expect(e.force).to.eql(true);
+      expect(e.isChanged).to.eql(false);
     });
 
     it('initial save (new instance, default values)', async () => {
@@ -574,7 +605,7 @@ describe('model', () => {
       expect(events[1].type).to.eql('MODEL/saved');
     });
 
-    it('does not run [beforeSave] when handler not given to model', async () => {
+    it('does not run [beforeSave] when handler not provided to model', async () => {
       const model = await (await createOrg({ put: false })).ready;
 
       const events: t.ModelEvent[] = [];
@@ -584,18 +615,39 @@ describe('model', () => {
       expect(events.length).to.eql(0);
     });
 
-    it('does not run [beforeSave] when no changes made', async () => {
+    it('runs [beforeSave] even if no changes made', async () => {
       let count = 0;
-      const beforeSave: t.BeforeModelSave = async args => count++;
+      let makeChange = false;
+      const beforeSave: t.BeforeModelSave = async args => {
+        count++;
+        if (makeChange) {
+          const model = args.model as IMyOrgModel;
+          model.props.name = 'Something else';
+        }
+      };
 
       const model = await (await createOrg({ put: false, beforeSave })).ready;
+
+      await model.save();
+      expect(model.isChanged).to.eql(false);
+      expect(count).to.eql(1);
 
       const events: t.ModelEvent[] = [];
       model.events$.subscribe(e => events.push(e));
 
-      await model.beforeSave();
-      expect(events.length).to.eql(0);
-      expect(count).to.eql(0);
+      makeChange = true;
+      await model.save();
+
+      expect(count).to.eql(2);
+      expect(model.props.name).to.eql('Something else');
+
+      const saveEvents = events
+        .filter(e => e.type === 'MODEL/saved')
+        .map(e => e.payload as t.IModelSave);
+
+      const e = saveEvents[0];
+      expect(e.force).to.eql(false);
+      expect(e.isChanged).to.eql(true); // NB: Changed within `beforeSave` handler.
     });
 
     it('changes props before saving', async () => {
