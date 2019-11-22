@@ -17,7 +17,7 @@
     "@platform/cache": "0.2.3",
     "@platform/cell.coord": "0.6.4",
     "@platform/cell.types": "0.1.8",
-    "@platform/cell.value": "^0.0.29",
+    "@platform/cell.value": "0.0.29",
     "@platform/libs": "0.1.4",
     "@platform/util.value": "0.5.8"
   },

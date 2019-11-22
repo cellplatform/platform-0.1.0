@@ -9,7 +9,7 @@ describe('model.Column', () => {
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-4f98f14a90ea65d79f879cc36f0f1c9419f7b713714687207bc22fedbec566c5',
+      after: 'sha256-1bcd59adb53a292e84018b78f95707add8b3c3aab4eab6c79e089644946390a2',
     };
 
     await res1.set({ props: { foo: 123 }, hash: HASH.before }).save();
@@ -31,5 +31,18 @@ describe('model.Column', () => {
 
     const model2 = await Column.create({ db, uri }).ready;
     expect(model2.toObject().hash).to.eql(model1.props.hash);
+
+    const before = model2.props.hash;
+    await model2.set({ props: { width: 251 } }).save();
+    expect(model2.props.hash).to.not.eql(before);
+
+    const model3 = await Column.create({ db, uri }).ready;
+    expect(model3.toObject().hash).to.eql(model2.props.hash);
+
+    await (async () => {
+      const before = model3.props.hash;
+      await model3.save({ force: true });
+      expect(model3.props.hash).to.eql(before); // NB: No change.
+    })();
   });
 });

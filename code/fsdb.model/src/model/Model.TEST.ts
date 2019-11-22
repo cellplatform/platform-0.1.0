@@ -163,11 +163,12 @@ describe('model', () => {
       expect(model.toObject()).to.eql({});
 
       // Load while there is no data for the model in the DB.
+      const EMPTY = { id: undefined, name: undefined, region: undefined };
       await model.load();
       expect(model.isLoaded).to.eql(true);
       expect(model.exists).to.eql(false);
       expect(model.doc).to.eql({});
-      expect(model.toObject()).to.eql({}); // NB: Default empty object, even though no backing data yet.
+      expect(model.toObject()).to.eql(EMPTY); // NB: Default empty object, even though no backing data yet.
 
       // Load again, with data in DB, but not `force` reload.
       await db.put(org.path, org.doc);
@@ -175,7 +176,7 @@ describe('model', () => {
       expect(model.isLoaded).to.eql(true);
       expect(model.exists).to.eql(false);
       expect(model.doc).to.eql({});
-      expect(model.toObject()).to.eql({});
+      expect(model.toObject()).to.eql(EMPTY);
 
       // Load again after force refresh - data actually loaded now.
       await model.load({ force: true });

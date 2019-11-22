@@ -116,7 +116,8 @@ describe('cell', () => {
       test({ value: 123 }, { value: 123 });
       test({ value: 123, links: {} }, { value: 123 });
       test({ value: 0, links: {} }, { value: 0 });
-      test({ hash: 'cell:abc!A1' }, { hash: 'cell:abc!A1' });
+      test({ hash: 'sha256...' }); // NB: Hash ignored on empty object.
+      test({ value: 123, hash: 'sha256...' }, { value: 123, hash: 'sha256...' });
       test(
         { value: undefined, error: { type: 'UNKNOWN', message: 'Fail' } },
         { error: { type: 'UNKNOWN', message: 'Fail' } },
@@ -132,6 +133,9 @@ describe('cell', () => {
       };
       test();
       test({});
+      test({ hash: 'sha256...' }); // NB: Hash ignored on empty object.
+      test({ foo: undefined, hash: 'sha256...' });
+      test({ foo: 123, hash: 'sha256...' }, { foo: 123, hash: 'sha256...' });
       test({ foo: undefined });
       test({ foo: null });
       test({ foo: { value: null } }, { foo: { value: null } }); // NB: null only squashed on root keys.

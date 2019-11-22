@@ -1,4 +1,4 @@
-import { t, expect, http, createMock } from '../../test';
+import { t, expect, http, createMock, stripHashes } from '../../test';
 
 const post = async (url: string, data: t.IPostNsBody['data']) => {
   const mock = await createMock();
@@ -48,36 +48,65 @@ describe('route: namespace', () => {
   });
 
   describe('hash', () => {
-    it.only('generates NS hash', async () => {
-      const cells = { A1: { value: 123 } };
-      const { data, json } = await post('ns:foo?cells', { cells });
+    it('generates ns-hash on POST', async () => {
+      const res = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
+      const hash = res.data.ns.hash;
+      expect(hash).to.match(/^sha256-/);
+      expect(hash && hash.length).to.greaterThan(20);
+    });
 
-      console.log('json', json);
-      console.log('hash:', data.ns.hash);
+    it('updates ns-hash on change', async () => {
+      const res1 = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
+      expect(res1.data.ns.hash).to.match(/^sha256-/);
 
-      /**
-       * TODO 🐷
-       */
+      const res2 = await post('ns:foo?cells', { cells: { A1: { value: 124 } } });
+      expect(res2.data.ns.hash).to.match(/^sha256-/);
+      expect(res1.data.ns.hash).to.not.eql(res2.data.ns.hash);
+    });
+
+    it('updates cells-hashes on POST', async () => {
+      const res1 = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
+      const res2 = await post('ns:foo?cells', { cells: { A1: { value: 124 } } });
+      const cells1 = res1.data.cells || {};
+      const cells2 = res2.data.cells || {};
+      expect(cells1.A1 && cells1.A1.hash).to.not.eql(cells2.A1 && cells2.A1.hash);
+    });
+
+    it('updates rows-hashes on POST', async () => {
+      const res1 = await post('ns:foo?rows', { rows: { 1: { props: { height: 60 } } } });
+      const res2 = await post('ns:foo?rows', { rows: { 1: { props: { height: 61 } } } });
+      const rows1 = res1.data.rows || {};
+      const rows2 = res2.data.rows || {};
+      expect(rows1['1'] && rows1['1'].hash).to.not.eql(rows2['1'] && rows2['1'].hash);
+    });
+
+    it('updates columns-hashes on POST', async () => {
+      const res1 = await post('ns:foo?columns', { columns: { A: { props: { width: 160 } } } });
+      const res2 = await post('ns:foo?columns', { columns: { A: { props: { width: 161 } } } });
+      const cols1 = res1.data.columns || {};
+      const cols2 = res2.data.columns || {};
+      expect(cols1.A && cols1.A.hash).to.not.eql(cols2.A && cols2.A.hash);
     });
   });
 
   describe('data', () => {
     it('POST change data', async () => {
-      const cells = { A1: { value: 'hello' } };
-      const { res, json } = await post('ns:foo?cells', { cells });
+      const { res, json, data } = await post('ns:foo?cells', { cells: { A1: { value: 'hello' } } });
+      const cells = data.cells || {};
 
       expect(res.status).to.eql(200);
       expect(json.uri).to.eql('ns:foo');
       expect(json.exists).to.eql(true); // NB: Model exists after first save.
       expect(json.createdAt).to.not.eql(-1);
       expect(json.modifiedAt).to.not.eql(-1);
-      expect(json.data.ns.id).to.eql('foo');
-      expect(json.data.cells).to.eql(cells);
+      expect(data.ns.id).to.eql('foo');
+      expect(data.ns.hash).to.not.eql('-'); // NB: hash calculation tested seperately.
+      expect(cells.A1 && cells.A1.value).to.eql('hello');
       expect(json.data.rows).to.eql(undefined);
       expect(json.data.columns).to.eql(undefined);
     });
 
-    it('GET squashes null values ()', async () => {
+    it('GET squashes null values', async () => {
       const mock = await createMock();
 
       const data: any = {
@@ -93,6 +122,8 @@ describe('route: namespace', () => {
       await mock.dispose();
 
       const json = res.json();
+      stripHashes(json.data); // NB: Ignore calculated hash values for the purposes of this test.
+
       expect(json.data.cells).to.eql({ A1: { value: 'hello' } });
       expect(json.data.rows).to.eql({});
       expect(json.data.columns).to.eql({});
@@ -124,6 +155,7 @@ describe('route: namespace', () => {
         // Prepare a subset of the return data to compare with expected result-set.
         const json = res.json<t.IPostNsResponse>().data;
         delete json.ns;
+        stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
         expect(json).to.eql(expected);
       };
 
@@ -186,6 +218,7 @@ describe('route: namespace', () => {
         // Prepare a subset of the return data to compare with expected result-set.
         const json = res.json<t.IPostNsResponse>().data;
         delete json.ns;
+        stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
         expect(json).to.eql(expected);
       };
 

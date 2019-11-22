@@ -22,6 +22,7 @@
     "@platform/cell.types": "0.1.8",
     "@platform/cell.value": "0.0.29",
     "@platform/fs": "0.3.4",
+    "@platform/fsdb.model": "0.3.1",
     "@platform/fsdb.types": "0.4.6",
     "@platform/http": "0.4.16",
     "@platform/libs": "0.1.4",

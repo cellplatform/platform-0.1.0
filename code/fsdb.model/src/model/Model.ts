@@ -312,7 +312,7 @@ export class Model<
     if (!beforeSave) {
       return {};
     }
-    
+
     const { force = false } = options;
     const typename = this.typename;
     let changes = this.changes;
@@ -341,7 +341,7 @@ export class Model<
     const { force = false } = options;
 
     // Run BEFORE operation.
-    await this.beforeSave();
+    await this.beforeSave({ force });
 
     if (!force && this.exists && !this.isChanged) {
       this._changes = [];
@@ -375,7 +375,7 @@ export class Model<
    */
   public toObject(): P {
     this.throwIfDisposed('toObject');
-    if (!this.isLoaded || !this.exists) {
+    if (!this.isLoaded) {
       return ({} as any) as P;
     }
     const props = this.props;

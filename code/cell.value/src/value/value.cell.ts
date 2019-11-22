@@ -88,7 +88,7 @@ export const squash = {
       Object.keys(res)
         .filter(key => isNilOrEmptyObject(res[key]))
         .forEach(key => delete res[key]);
-      return isNilOrEmptyObject(res) ? empty : res;
+      return isNilOrEmptyObject(res, { ignoreHash: true }) ? empty : res;
     }
   },
 };
@@ -245,14 +245,20 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
 /**
  * [Helpers]
  */
-const isNilOrEmptyObject = (value: any) => {
+const isNilOrEmptyObject = (value: any, options: { ignoreHash?: boolean } = {}) => {
   if (value === null) {
     return true;
   } else {
-    return value === undefined || isEmptyObject(value);
+    return value === undefined || isEmptyObject(value, options);
   }
 };
 
-const isEmptyObject = (value: any) => {
-  return (typeof value === 'object' && Object.keys(value).length === 0) || false;
+const isEmptyObject = (value: any, options: { ignoreHash?: boolean } = {}) => {
+  if (typeof value !== 'object') {
+    return false;
+  }
+  const keys = options.ignoreHash
+    ? Object.keys(value).filter(key => key !== 'hash')
+    : Object.keys(value);
+  return keys.length === 0;
 };

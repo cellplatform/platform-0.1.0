@@ -1,4 +1,4 @@
-import { Schema, t, util } from '../../common';
+import { Schema, t, util, value } from '../../common';
 import * as models from '../../model.helpers';
 
 /**
@@ -15,9 +15,9 @@ export const beforeNsSave: t.BeforeModelSave<t.IDbModelNsProps> = async args => 
   }
 
   // Update hash.
-  if (changes.length > 0) {
+  if (args.force || args.isChanged) {
     const uri = schema.uri;
-    const ns: t.INs = { id: schema.parts.id, ...model.toObject(), hash: undefined };
+    const ns: t.INs = { ...value.deleteUndefined(model.toObject()), hash: undefined };
     const data = await models.ns.getChildData({ model, cells: true, rows: true, columns: true });
     model.props.hash = util.hash.ns({ uri, ns, data });
   }

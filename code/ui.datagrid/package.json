@@ -31,8 +31,8 @@
   },
   "devDependencies": {
     "@platform/cell.func.sys": "0.0.30",
-    "@platform/cell.http": "^0.1.23",
-    "@platform/cell.ui.props": "^0.0.18",
+    "@platform/cell.http": "0.1.23",
+    "@platform/cell.ui.props": "0.0.18",
     "@platform/cli.spec": "0.1.64",
     "@platform/test": "0.0.65",
     "@platform/test.dom": "0.0.57",

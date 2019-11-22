@@ -73,13 +73,37 @@ describe('model.db.Ns (Namespace)', () => {
     await children['1'].save();
 
     // Test the namespace.
-    const model1 = await Ns.create({ db, uri }).ready;
-    expect(model1.props.hash).to.eql(undefined);
+    const ns1 = await Ns.create({ db, uri }).ready;
+    expect(ns1.props.hash).to.eql(undefined);
 
-    await model1.set({ props: { name: 'My Sheet' } }).save();
-    expect(model1.props.hash).to.not.eql(undefined);
+    await ns1.set({ props: { name: 'My Sheet' } }).save();
+    expect(ns1.props.hash).to.not.eql(undefined);
 
-    const model2 = await Ns.create({ db, uri }).ready;
-    expect(model2.toObject().hash).to.eql(model1.props.hash);
+    const ns2 = await Ns.create({ db, uri }).ready;
+    expect(ns2.toObject().hash).to.eql(ns1.props.hash);
+
+    // Force save the NS (causing the hash to update).
+    await (async () => {
+      const before = ns2.props.hash;
+      expect(ns2.isChanged).to.eql(false);
+      await ns2.save({ force: true });
+      expect(ns2.props.hash).to.eql(before);
+    })();
+
+    // Change children.
+    await (async () => {
+      const { A1 } = children;
+      const before = A1.props.hash;
+      await A1.set({ value: 124 }).save();
+      expect(A1.props.hash).to.not.eql(before); // A1 hash changed.
+    })();
+
+    // Force save the NS (causing the hash to update).
+    await (async () => {
+      const before = ns2.props.hash;
+      expect(ns2.isChanged).to.eql(false);
+      await ns2.save({ force: true });
+      expect(ns2.props.hash).to.not.eql(before); // NS hash changed.
+    })();
   });
 });

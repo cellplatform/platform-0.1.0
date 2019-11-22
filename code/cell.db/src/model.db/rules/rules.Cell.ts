@@ -1,4 +1,4 @@
-import { Schema, t, util } from '../../common';
+import { Schema, t, util, value } from '../../common';
 
 /**
  * Invoked before a [Cell] is persisted to the DB.
@@ -6,6 +6,7 @@ import { Schema, t, util } from '../../common';
 export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async args => {
   const { changes } = args;
   const model = args.model as t.IDbModelCell;
+  const schema = Schema.from.cell(model.path);
 
   // Update cell namespace {links:{..}} to document-joins.
   if (changes.map.links) {
@@ -30,10 +31,10 @@ export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async args
   }
 
   // Update hash.
-  if (changes.length > 0) {
-    const uri = Schema.from.cell(model.path).uri;
-    const data = { ...model.toObject(), hash: undefined };
-    model.props.hash = util.hash.cell({ uri, data });
+  if (args.force || args.isChanged) {
+    const data = { ...value.deleteUndefined(model.toObject()) };
+    delete data.hash;
+    model.props.hash = util.hash.cell({ uri: schema.uri, data });
   }
 };
 

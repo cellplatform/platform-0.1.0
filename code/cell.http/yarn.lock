@@ -124,7 +124,7 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.model@0.3.1":
+"@platform/fsdb.model@0.3.1", "@platform/fsdb.model@^0.3.1":
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.3.1.tgz#61747242d8f60ee1c0641299d2c3f0fe0facea8e"
   integrity sha512-gzuq5gYOiVq4EXn5E4zBT+CRkOtCTbuQT3qIRydZs+a+5cDnJ6H+TxLopGiLJFGLeP78vpajIHdyG538SUrt1A==

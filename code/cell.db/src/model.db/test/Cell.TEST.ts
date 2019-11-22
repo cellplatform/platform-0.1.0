@@ -17,7 +17,7 @@ describe('model.Cell', () => {
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-77f00fd1a859e597968d1987608778ac197505ea97d174cbb77a4112ea85f3a3',
+      after: 'sha256-59dd1b8ef637ae9c3c7c700ea162fc1f677eef29523944749488c60858e8927a',
     };
 
     const value = '=A2';
@@ -102,5 +102,18 @@ describe('model.Cell', () => {
 
     const model2 = await Cell.create({ db, uri }).ready;
     expect(model2.toObject().hash).to.eql(model1.props.hash);
+
+    const before = model2.props.hash;
+    await model2.set({ value: 123 }).save();
+    expect(model2.props.hash).to.not.eql(before);
+
+    const model3 = await Cell.create({ db, uri }).ready;
+    expect(model3.toObject().hash).to.eql(model2.props.hash);
+
+    await (async () => {
+      const before = model3.props.hash;
+      await model3.save({ force: true });
+      expect(model3.props.hash).to.eql(before); // NB: No change.
+    })();
   });
 });
