@@ -138,7 +138,6 @@ describe('cell', () => {
     });
   });
 
-
   describe('cellDiff', () => {
     it('no difference', () => {
       const cell: t.ICellData<{}> = { value: 1, props: { style: { bold: true } } };
