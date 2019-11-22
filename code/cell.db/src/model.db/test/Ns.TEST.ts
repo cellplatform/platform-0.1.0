@@ -1,4 +1,4 @@
-import { Ns, Cell } from '..';
+import { Ns, Cell, Column, Row } from '..';
 import { expect, getTestDb, Schema, t } from '../../test';
 
 describe('model.db.Ns (Namespace)', () => {
@@ -42,10 +42,37 @@ describe('model.db.Ns (Namespace)', () => {
     expect((ns2.props.props || {}).name).to.eql('My Namespace');
   });
 
-  it('updates hash on save', async () => {
+  it('stores id (auto)', async () => {
+    const db = await getTestDb({ file: true });
+    const uri = 'ns:abc';
+
+    const ns1 = await Ns.create({ db, uri }).ready;
+    expect(ns1.props.id).to.eql(undefined);
+
+    await ns1.save(); // NB: the ID is auto-inserted on beforeSave handler.
+    expect(ns1.props.id).to.eql('abc');
+
+    const ns2 = await Ns.create({ db, uri }).ready;
+    expect(ns2.props.id).to.eql('abc');
+    expect(ns2.toObject().id).to.eql('abc');
+  });
+
+  it('updates hash on save (auto)', async () => {
     const db = await getTestDb({});
     const uri = 'ns:abc';
 
+    // Save child data.
+    // NB: hashes on child data auto-generated on save.
+    const children = {
+      A1: (await Cell.create({ db, uri: 'cell:abc!A1' }).ready).set({ value: 123 }),
+      A: (await Column.create({ db, uri: 'col:abc!A' }).ready).set({ props: { width: 500 } }),
+      1: (await Row.create({ db, uri: 'row:abc!1' }).ready).set({ props: { height: 80 } }),
+    };
+    await children.A1.save();
+    await children.A.save();
+    await children['1'].save();
+
+    // Test the namespace.
     const model1 = await Ns.create({ db, uri }).ready;
     expect(model1.props.hash).to.eql(undefined);
 

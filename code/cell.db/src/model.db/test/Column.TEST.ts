@@ -19,7 +19,7 @@ describe('model.Column', () => {
     expect(res2.props.props).to.eql({ foo: 123 });
   });
 
-  it('updates hash on save', async () => {
+  it('updates hash on save (auto)', async () => {
     const db = await getTestDb({});
     const uri = 'col:abcd!A';
 

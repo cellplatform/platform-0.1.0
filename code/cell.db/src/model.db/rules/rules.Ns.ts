@@ -1,4 +1,5 @@
 import { Schema, t, util } from '../../common';
+import * as models from '../../model.helpers';
 
 /**
  * Invoked before an [Ns] is persisted to the DB.
@@ -6,12 +7,18 @@ import { Schema, t, util } from '../../common';
 export const beforeNsSave: t.BeforeModelSave<t.IDbModelNsProps> = async args => {
   const { changes } = args;
   const model = args.model as t.IDbModelNs;
+  const schema = Schema.from.ns(model.path);
+
+  // Ensure the namespace id exists on the props.
+  if (!model.props.id) {
+    model.props.id = schema.parts.id;
+  }
 
   // Update hash.
   if (changes.length > 0) {
-    const uri = Schema.from.ns(model.path).uri;
-    const data = { ...model.toObject(), hash: undefined };
-    console.log('data', data);
-    // model.props.hash = util.hash.cell({ uri, data });
+    const uri = schema.uri;
+    const ns: t.INs = { id: schema.parts.id, ...model.toObject(), hash: undefined };
+    const data = await models.ns.getChildData({ model, cells: true, rows: true, columns: true });
+    model.props.hash = util.hash.ns({ uri, ns, data });
   }
 };

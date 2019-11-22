@@ -90,7 +90,7 @@ describe('model.Cell', () => {
     expect(model3.doc.nsRefs).to.eql(undefined);
   });
 
-  it('updates hash on save', async () => {
+  it('updates hash on save (auto)', async () => {
     const db = await getTestDb({});
     const uri = 'cell:abcd!A1';
 
