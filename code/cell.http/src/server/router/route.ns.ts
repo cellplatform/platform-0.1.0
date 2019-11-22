@@ -71,8 +71,6 @@ async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery
   const uri = Uri.string.ns(id);
   const model = await models.Ns.create({ db, uri }).ready;
 
-  // const hash = '-'; // TODO 🐷
-
   const exists = Boolean(model.exists);
   const { createdAt, modifiedAt } = model;
 
@@ -137,20 +135,11 @@ async function postNsResponse(args: {
   const res = await models.ns.setChildData({ db, id, data });
   const isChanged = res.isChanged;
 
-  // Ensure NS time-stamps are updated.
+  // Ensure NS timestamps and hash are updated.
   if (isChanged) {
     const uri = Uri.string.ns(id);
     const model = await models.Ns.create({ db, uri }).ready;
-    model.props.id = id;
-    await model.save();
-
-    /**
-     * TODO 🐷
-     * -  This will not acutally force a save after the iniital save
-     *    because the ID does not change.
-     *    - Add a way for models to update their modififed date, without an actual prop change.
-     * - Update the hash on the NS (ACTUALLY this would have the effect of fixing above)
-     */
+    await model.save({ force: true });
   }
 
   /**
