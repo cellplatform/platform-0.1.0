@@ -44,21 +44,13 @@ describe('hash', () => {
     it('child hashes', () => {
       const ns: t.INs = { id: 'foo' };
 
-      test(
-        ns,
-        {
-          cells: { A1: { value: 123, hash: 'HASH-A1a' } },
-        },
-        'dbdd2ad1de0fe4e279',
-      );
+      // NB: Fake hash values on cell/row/column data.
+      //     The `hash.ns` function does not calculate hashes on child data, just
+      //     tallies up the child data hashes if they exist.
+      //     Make sure to pre-calculate the hashes.
 
-      test(
-        ns,
-        {
-          cells: { A1: { value: 124, hash: 'HASH-A1b' } },
-        },
-        '33138a4244ea71fc',
-      );
+      test(ns, { cells: { A1: { value: 123, hash: 'HASH-A1a' } } }, 'dbdd2ad1de0fe4e279');
+      test(ns, { cells: { A1: { value: 124, hash: 'HASH-A1b' } } }, '33138a4244ea71fc');
 
       test(
         ns,
