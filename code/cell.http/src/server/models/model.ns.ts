@@ -5,6 +5,11 @@ const { Schema, Uri } = cell;
 const squash = cell.value.squash;
 
 /**
+ * TODO 🐷
+ *    - Move to `cell.db` module.
+ */
+
+/**
  * Render the model into a simple [t.INS] object.
  */
 export async function toObject(model: t.IDbModelNs) {

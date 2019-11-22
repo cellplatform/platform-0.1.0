@@ -20,7 +20,8 @@ describe('model.Cell', () => {
     const error = { type: 'FAIL', message: 'Boo' };
     const links = { main: 'ns:foo' };
     const props = { style: { bold: true } };
-    await res1.set({ value, props, links, error, hash }).save();
+    const data = { value, props, links, error, hash };
+    await res1.set(data).save();
 
     const res2 = await Cell.create({ db, uri }).ready;
     expect(res2.props.value).to.eql(value);
