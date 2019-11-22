@@ -29,6 +29,7 @@ export class Ns {
       path,
       children,
       initial,
+      beforeSave: rules.beforeNsSave,
     });
   };
 
@@ -97,7 +98,12 @@ export class Row {
       hash: undefined,
       error: undefined,
     };
-    return Model.create<t.IDbModelRowProps>({ db, path, initial }) as t.IDbModelRow;
+    return Model.create<t.IDbModelRowProps>({
+      db,
+      path,
+      initial,
+      beforeSave: rules.beforeRowSave,
+    }) as t.IDbModelRow;
   };
 
   public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
@@ -122,7 +128,12 @@ export class Column {
       hash: undefined,
       error: undefined,
     };
-    return Model.create<t.IDbModelColumnProps>({ db, path, initial });
+    return Model.create<t.IDbModelColumnProps>({
+      db,
+      path,
+      initial,
+      beforeSave: rules.beforeColumnSave,
+    });
   };
 
   public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
