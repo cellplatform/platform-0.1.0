@@ -1,4 +1,4 @@
-import { t, Schema, util } from '../../common';
+import { Schema, t, util } from '../../common';
 
 /**
  * Invoked before a [Cell] is persisted to the DB.

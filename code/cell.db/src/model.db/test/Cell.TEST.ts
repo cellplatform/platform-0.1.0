@@ -15,8 +15,8 @@ describe('model.Cell', () => {
     expect(res1.props.error).to.eql(undefined);
     expect(res1.props.hash).to.eql(undefined);
 
-    const hash = {
-      before: 'MY-OLD-HASH',
+    const HASH = {
+      before: 'PREVIOUS-HASH',
       after: 'sha256-77f00fd1a859e597968d1987608778ac197505ea97d174cbb77a4112ea85f3a3',
     };
 
@@ -24,7 +24,7 @@ describe('model.Cell', () => {
     const error = { type: 'FAIL', message: 'Boo' };
     const links = { main: 'ns:foo' };
     const props = { style: { bold: true } };
-    const data = { value, props, links, error, hash: hash.before };
+    const data = { value, props, links, error, hash: HASH.before };
     await res1.set(data).save();
 
     const res2 = await Cell.create({ db, uri }).ready;
@@ -32,7 +32,7 @@ describe('model.Cell', () => {
     expect(res2.props.props).to.eql(props);
     expect(res2.props.links).to.eql(links);
     expect(res2.props.error).to.eql(error);
-    expect(res2.props.hash).to.eql(hash.after); // NB: Auto-updated on save.
+    expect(res2.props.hash).to.eql(HASH.after); // NB: Auto-updated on save.
   });
 
   it('updates DB namespace doc-links before saving', async () => {
@@ -90,7 +90,7 @@ describe('model.Cell', () => {
     expect(model3.doc.nsRefs).to.eql(undefined);
   });
 
-  it('updates hash before saving', async () => {
+  it('updates hash on save', async () => {
     const db = await getTestDb({});
     const uri = 'cell:abcd!A1';
 
