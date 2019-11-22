@@ -1,13 +1,7 @@
-import { cell, t } from '../common';
-import { Cell, Column, Row } from './libs';
+import { t, Schema, Uri, util, coord } from '../common';
+import { Cell, Column, Row } from '../model.db';
 
-const { Schema, Uri } = cell;
-const squash = cell.value.squash;
-
-/**
- * TODO 🐷
- *    - Move to `cell.db` module.
- */
+const squash = util.cell.value.squash;
 
 /**
  * Render the model into a simple [t.INS] object.
@@ -84,23 +78,22 @@ export async function getChildColumns(args: { model: t.IDbModelNs; range?: strin
 /**
  * Retrieve the child data.
  */
-export async function getChildData(
-  model: t.IDbModelNs,
-  options: {
-    cells?: boolean | string; // true: <all> | string: key or range, eg "A1", "A1:C10"
-    rows?: boolean | string;
-    columns?: boolean | string;
-  } = {},
-) {
+export async function getChildData(args: {
+  model: t.IDbModelNs;
+  cells?: boolean | string; // true: <all> | string: key or range, eg "A1", "A1:C10"
+  rows?: boolean | string;
+  columns?: boolean | string;
+}) {
+  const { model } = args;
   const wait = [
     { field: 'cells', fn: getChildCells },
     { field: 'rows', fn: getChildRows },
     { field: 'columns', fn: getChildColumns },
   ]
-    .filter(item => Boolean(options[item.field]))
+    .filter(item => Boolean(args[item.field]))
     .map(async ({ field, fn }) => {
-      const type = typeof options[field];
-      const range = type === 'string' || type === 'number' ? options[field].toString() : undefined;
+      const type = typeof args[field];
+      const range = type === 'string' || type === 'number' ? args[field].toString() : undefined;
       return {
         field,
         value: await fn({ model, range }),
@@ -189,10 +182,10 @@ function toRangeUnion(input?: string) {
     return undefined;
   }
   const ranges = input.split(',').map(key => (key.includes(':') ? key : `${key}:${key}`));
-  return cell.coord.range.union(ranges);
+  return coord.range.union(ranges);
 }
 
-function includeKey(key: string, union?: cell.coord.range.CellRangeUnion) {
+function includeKey(key: string, union?: coord.range.CellRangeUnion) {
   return union ? union.contains(key) : true;
 }
 

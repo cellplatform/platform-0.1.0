@@ -1,5 +1,4 @@
-import { cell, t } from '../common';
-import { models } from '../models';
+import { cell, t, models } from '../common';
 import { ROUTES } from './ROUTES';
 
 const { Uri } = cell;
@@ -123,7 +122,7 @@ async function getNsData(args: {
   const columns = query.data ? true : formatQuery(query.columns);
   const rows = query.data ? true : formatQuery(query.rows);
 
-  return models.ns.getChildData(model, { cells, columns, rows });
+  return models.ns.getChildData({ model, cells, columns, rows });
 }
 
 async function postNsResponse(args: {

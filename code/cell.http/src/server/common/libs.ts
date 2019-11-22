@@ -9,3 +9,4 @@ export { value } from '@platform/util.value';
 
 import * as cell from './libs.cell';
 export { cell };
+export const models = cell.models;
