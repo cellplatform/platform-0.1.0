@@ -1,8 +1,8 @@
 import { t, expect, http, createMock, stripHashes } from '../../test';
 
-const post = async (url: string, data: t.IPostNsBody['data']) => {
+const post = async (url: string, body: t.IPostNsBody) => {
   const mock = await createMock();
-  const res = await http.post(mock.url(url), { data });
+  const res = await http.post(mock.url(url), body);
   const json = res.json<t.IPostNsResponse>();
   await mock.dispose();
   return { res, json, data: json.data };
@@ -40,6 +40,17 @@ describe('route: namespace', () => {
     });
 
     it.skip('POST updates sheet name', async () => {
+      const test = async (ns: Partial<t.INs>, expected?: any) => {
+        const data = { ns };
+        // const res = await post('ns:foo?data', { data });
+      };
+
+      /**
+       * TODO 🐷
+       */
+
+      // await test();
+
       //
     });
   });
@@ -115,12 +126,11 @@ describe('route: namespace', () => {
     it('GET squashes null values', async () => {
       const mock = await createMock();
 
-      const data: any = {
-        cells: { A1: { value: 'hello', props: null } },
-        rows: { 1: { props: null } },
-        columns: { A: { props: null } },
+      const payload: t.IPostNsBody = {
+        cells: { A1: { value: 'hello', props: null } } as any, // NB: [any] because `null` is an illegal type.
+        rows: { 1: { props: null } } as any,
+        columns: { A: { props: null } } as any,
       };
-      const payload: t.IPostNsBody = { data };
       await http.post(mock.url('ns:foo'), payload);
 
       const url = mock.url('ns:foo/data');
@@ -150,9 +160,8 @@ describe('route: namespace', () => {
         1: { props: { width: 350 } },
         3: { props: { width: 256 } },
       };
-      const data = { cells, columns, rows };
-      const payload: t.IPostNsBody = { data };
-      await http.post(mock.url('ns:foo'), payload);
+      const body: t.IPostNsBody = { cells, columns, rows };
+      await http.post(mock.url('ns:foo'), body);
 
       const test = async (path: string, expected?: any) => {
         const url = mock.url(path);
@@ -190,9 +199,9 @@ describe('route: namespace', () => {
       await test('ns:foo?columns=B:D', { columns: { C: columns.C } });
       await test('ns:foo?columns=B:D,A', { columns });
 
-      await test('ns:foo?cells&rows&columns', data);
-      await test('ns:foo?data', data);
-      await test('ns:foo?data=true', data);
+      await test('ns:foo?cells&rows&columns', body);
+      await test('ns:foo?data', body);
+      await test('ns:foo?data=true', body);
       await test('ns:foo?data=false', {});
 
       await mock.dispose();
@@ -213,9 +222,8 @@ describe('route: namespace', () => {
         1: { props: { width: 350 } },
         3: { props: { width: 256 } },
       };
-      const data = { cells, columns, rows };
-      const payload: t.IPostNsBody = { data };
-      await http.post(mock.url('ns:foo'), payload);
+      const body: t.IPostNsBody = { cells, columns, rows };
+      await http.post(mock.url('ns:foo'), body);
 
       const test = async (path: string, expected?: any) => {
         const url = mock.url(path);
@@ -229,7 +237,7 @@ describe('route: namespace', () => {
       };
 
       await test('ns:foo', {});
-      await test('ns:foo/data', data);
+      await test('ns:foo/data', body);
 
       await mock.dispose();
     });

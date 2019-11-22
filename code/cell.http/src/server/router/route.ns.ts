@@ -130,9 +130,17 @@ async function postNsResponse(args: {
   query: t.IReqNsQuery;
 }) {
   const { db, id, body, query } = args;
-  const data: Partial<t.INsCoordData> = body.data || {};
+  // const data: Partial<t.INsCoordData> = body.data || {};
 
-  const res = await models.ns.setChildData({ db, id, data });
+  const res = await models.ns.setChildData({
+    db,
+    id,
+    data: {
+      cells: body.cells,
+      rows: body.rows,
+      columns: body.columns,
+    },
+  });
   const isChanged = res.isChanged;
 
   // Ensure NS timestamps and hash are updated.
@@ -144,7 +152,6 @@ async function postNsResponse(args: {
 
   /**
    * TODO 🐷
-   * - handle all data types within the NS (not just cells).
    * - error handling on model creation/save
    * - more efficient response (ie. don't re-query DB).
    * - return change summary (model: changes).
