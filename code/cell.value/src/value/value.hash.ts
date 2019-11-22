@@ -6,12 +6,46 @@ import { squash } from './value.cell';
  */
 export const hash = {
   /**
-   * Generate a uniform hash (SHA-256) of the given cell's value/props.
+   * Generate a uniform hash (SHA-256) of the given NS data.
+   * NOTE:
+   *  Ensure cell/row/column data already has hashes calculated.
+   */
+  ns(args: { uri: string; ns: t.INs; data?: Partial<t.INsCoordData> }): string {
+    const uri = args.uri.trim();
+    if (!uri.startsWith('ns:')) {
+      throw new Error(`Hashing requires a valid ns URI. Given uri "${uri}".`);
+    }
+
+    // Format NS object.
+    const ns = { ...args.ns };
+    delete ns.hash; // NB: Any existing hash is excluded (this is a calculation of current value only).
+
+    // Build list of child hashes.
+    let children: string[] = [];
+    const { data = {} } = args;
+    const { cells, rows, columns } = data;
+
+    if (cells && !isEmptyObject(cells)) {
+      children = [...children, ...getHashes(cells)];
+    }
+    if (rows && !isEmptyObject(rows)) {
+      children = [...children, ...getHashes(rows)];
+    }
+    if (columns && !isEmptyObject(columns)) {
+      children = [...children, ...getHashes(columns)];
+    }
+
+    const obj = { uri, ns, children };
+    return sha256(obj);
+  },
+
+  /**
+   * Generate a uniform hash (SHA-256) of the given cell.
    */
   cell(args: { uri: string; data?: t.ICellData }): string {
     const uri = args.uri.trim();
     if (!uri.startsWith('cell:')) {
-      throw new Error(`Hashing requires a valid cell URI. Given uri "${uri}".`);
+      throw new Error(`Hashing a cell requires a valid URI. Given "${uri}".`);
     }
 
     const { data } = args;
@@ -38,34 +72,62 @@ export const hash = {
   },
 
   /**
-   * Generate a uniform hash (SHA-256) of the given NS data.
+   * Generate a uniform hash (SHA-256) of the given row.
    */
-  ns(args: { uri: string; ns: t.INs; data?: Partial<t.INsCoordData> }): string {
-    const uri = args.uri.trim();
-    if (!uri.startsWith('ns:')) {
-      throw new Error(`Hashing requires a valid ns URI. Given uri "${uri}".`);
-    }
-
-    // Format NS object.
-    const ns = { ...args.ns };
-    delete ns.hash;
-
-    // Round up child hashes.
-    const children: string[] = [];
-    const { data = {} } = args;
-    const { cells, rows, columns } = data;
-
-    if (cells) {
-      Object.keys(cells).forEach(key => {
-        const cell = cells[key];
-        if (cell) {
-          const f = cell.hash;
-        }
-      });
-    }
-
-    const obj: any = { uri, ns, children };
-
-    return sha256(obj);
+  row(args: { uri: string; data?: t.IRowData }): string {
+    const { uri, data } = args;
+    return hashAxis({ axis: 'row', uriPrefix: 'row', uri, data });
   },
+
+  /**
+   * Generate a uniform hash (SHA-256) of the given column.
+   */
+  column(args: { uri: string; data?: t.IColumnData }): string {
+    const { uri, data } = args;
+    return hashAxis({ axis: 'column', uriPrefix: 'col', uri, data });
+  },
+};
+
+/**
+ * [Helpers]
+ */
+
+function hashAxis(args: {
+  axis: 'row' | 'column';
+  uriPrefix: 'row' | 'col';
+  uri: string;
+  data?: t.IRowData | t.IColumnData;
+}) {
+  const uri = (args.uri || '').trim();
+  if (!uri.startsWith(`${args.uriPrefix}:`)) {
+    throw new Error(`Hashing a ${args.axis} requires a valid URI. Given "${uri}".`);
+  }
+
+  const { data } = args;
+  const props = squash.props(data ? data.props : undefined);
+  const error = data ? data.error : undefined;
+
+  const obj: any = { uri };
+  if (props) {
+    obj.props = props;
+  }
+  if (error) {
+    obj.error = error;
+  }
+
+  return sha256(obj);
+}
+
+const getHashes = (map: t.IMap<{ hash?: string }>) => {
+  return Object.keys(map).reduce((acc, key) => {
+    const item = map[key];
+    if (item && item.hash && item.hash !== '-') {
+      acc.push(item.hash);
+    }
+    return acc;
+  }, [] as string[]);
+};
+
+const isEmptyObject = (value?: any) => {
+  return (typeof value === 'object' && Object.keys(value).length === 0) || false;
 };

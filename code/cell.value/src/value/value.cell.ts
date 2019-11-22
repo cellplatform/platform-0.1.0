@@ -249,6 +249,10 @@ const isNilOrEmptyObject = (value: any) => {
   if (value === null) {
     return true;
   } else {
-    return value === undefined || (typeof value === 'object' && Object.keys(value).length === 0);
+    return value === undefined || isEmptyObject(value);
   }
+};
+
+const isEmptyObject = (value: any) => {
+  return (typeof value === 'object' && Object.keys(value).length === 0) || false;
 };
