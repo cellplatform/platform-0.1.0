@@ -10,4 +10,13 @@ export const ROUTES = {
     BASE: `/ns\::id([A-Za-z0-9]*)(/?)`,
     DATA: `/ns\::id([A-Za-z0-9]*)/data(/?)`,
   },
+  CELL: {
+    BASE: `/cell\::id([A-Za-z0-9]*)\!([A-Z]+)([0-9]+)(/?)`,
+  },
+  ROW: {
+    BASE: `/row\::id([A-Za-z0-9]*)\!([0-9]+)(/?)`,
+  },
+  COLUMN: {
+    BASE: `/col\::id([A-Za-z0-9]*)\!([A-Z]+)(/?)`,
+  },
 };
