@@ -40,11 +40,17 @@ describe('helpers: model.ns', () => {
 
     const res2 = await models.ns.setProps({ ns, data: { name: 'MySheet' } });
     const hash = ns.props.hash;
-    expect(hash).to.not.eql(undefined);
     expect(res2.changes.map(c => c.field)).to.eql(['props', 'id', 'hash']);
+    expect(hash).to.not.eql(undefined);
+    expect(ns.props.props && ns.props.props.name).to.eql('MySheet');
 
     const res3 = await models.ns.setProps({ ns, data: { name: 'Foo' } });
-    expect(ns.props.hash).to.not.eql(hash);
     expect(res3.changes.map(c => c.field)).to.eql(['props', 'hash']);
+    expect(ns.props.hash).to.not.eql(hash);
+    expect(ns.props.props && ns.props.props.name).to.eql('Foo');
+
+    const res4 = await models.ns.setProps({ ns, data: { name: undefined } });
+    expect(res4.changes.map(c => c.field)).to.eql(['props', 'hash']);
+    expect(ns.props.props && ns.props.props.name).to.eql(undefined);
   });
 });
