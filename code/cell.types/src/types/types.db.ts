@@ -4,8 +4,8 @@ import { IModel } from '@platform/fsdb.types';
 export type IDbModelChange = {
   uri: string;
   field: string;
-  from: any;
-  to: any;
+  from?: any;
+  to?: any;
 };
 
 /**

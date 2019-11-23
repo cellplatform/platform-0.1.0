@@ -169,5 +169,8 @@ async function postNsResponse(args: {
    * - GET /cuid
    */
 
-  return getNsResponse({ db, id, query });
+  const res = await getNsResponse({ db, id, query });
+  const data: t.IPostNsResponse = { ...res.data, changes };
+  const status = res.status;
+  return { status, data };
 }

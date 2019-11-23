@@ -15,8 +15,8 @@ export function toDbModelChanges(
   uri: string,
   changes: t.IModelChanges<any, any>,
 ): t.IDbModelChange[] {
-  return changes.list.map(c => {
-    const { field, value } = c;
+  return changes.list.map(change => {
+    const { field, value } = change;
     const { from, to } = value;
     return { uri, field, from, to };
   });

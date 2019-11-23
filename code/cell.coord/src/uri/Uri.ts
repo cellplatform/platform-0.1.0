@@ -124,7 +124,7 @@ const PREFIX_MAP: { [key: string]: t.CoordType } = {
 };
 
 function toUri(prefix: 'ns' | 'col' | 'row' | 'cell', id: string, suffix?: string) {
-  id = id.trim();
+  id = (id || '').trim();
   id = id === ':' ? '' : id;
   if (id) {
     ['ns', 'col', 'row', 'cell'].forEach(prefix => (id = trimPrefix(prefix, id)));

@@ -35,8 +35,17 @@ describe('route: namespace', () => {
       expect(data.ns.id).to.eql('foo');
       expect(data.ns.hash).to.not.eql('-'); // NB: hash calculation tested seperately.
       expect(cells.A1 && cells.A1.value).to.eql('hello');
-      expect(json.data.rows).to.eql(undefined);
-      expect(json.data.columns).to.eql(undefined);
+      expect(data.rows).to.eql(undefined);
+      expect(data.columns).to.eql(undefined);
+
+      expect(json.changes.length).to.eql(2);
+      expect(json.changes.map(c => c.field)).to.eql(['value', 'hash']);
+
+      const change = json.changes[0];
+      expect(change.uri).to.eql('cell:foo!A1');
+      expect(change.field).to.eql('value');
+      expect(change.from).to.eql(undefined);
+      expect(change.to).to.eql('hello');
     });
 
     it('POST namespace props ("name", etc)', async () => {

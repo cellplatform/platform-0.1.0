@@ -44,6 +44,12 @@ describe('helpers: model.ns', () => {
     expect(hash).to.not.eql(undefined);
     expect(ns.props.props && ns.props.props.name).to.eql('MySheet');
 
+    const change = res2.changes[0];
+    expect(change.uri).to.eql('ns:foo');
+    expect(change.field).to.eql('props');
+    expect(change.from).to.eql(undefined);
+    expect(change.to).to.eql({ name: 'MySheet' });
+
     const res3 = await models.ns.setProps({ ns, data: { name: 'Foo' } });
     expect(res3.changes.map(c => c.field)).to.eql(['props', 'hash']);
     expect(ns.props.hash).to.not.eql(hash);

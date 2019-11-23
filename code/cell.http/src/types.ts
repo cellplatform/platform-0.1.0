@@ -35,4 +35,4 @@ export type IPostNsBody = {
   columns?: t.IMap<t.IColumnData>;
   rows?: t.IMap<t.IRowData>;
 };
-export type IPostNsResponse = IGetNsResponse;
+export type IPostNsResponse = IGetNsResponse & { changes: t.IDbModelChange[] };
