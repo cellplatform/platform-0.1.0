@@ -186,8 +186,7 @@ async function postNsResponse(args: {
   if (!isNsChanged && changes.length > 0) {
     const res = await ns.save({ force: true });
     if (res.isChanged) {
-      const changes = models.toChanges(uri, res.changes);
-      changes.forEach(change => changes.push(change));
+      models.toChanges(uri, res.changes).forEach(change => changes.push(change));
     }
   }
 
