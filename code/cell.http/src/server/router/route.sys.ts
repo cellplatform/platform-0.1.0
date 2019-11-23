@@ -1,4 +1,4 @@
-import { t, fs, constants } from '../common';
+import { t, fs, constants, id } from '../common';
 import { ROUTES } from './ROUTES';
 
 const PKG = constants.PKG;
@@ -30,6 +30,17 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
         region,
         version,
       },
+    };
+  });
+
+  /**
+   * CUID
+   * "Collision-resistant ids optimized for horizontal scaling and performance"
+   */
+  router.get(ROUTES.SYS.CUID, async req => {
+    return {
+      status: 200,
+      data: { cuid: id.cuid() },
     };
   });
 }
