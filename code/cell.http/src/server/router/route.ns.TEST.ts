@@ -38,8 +38,8 @@ describe('route: namespace', () => {
       expect(data.rows).to.eql(undefined);
       expect(data.columns).to.eql(undefined);
 
-      expect(json.changes.length).to.eql(2);
-      expect(json.changes.map(c => c.field)).to.eql(['value', 'hash']);
+      expect(json.changes.length).to.eql(4);
+      expect(json.changes.map(c => c.field)).to.eql(['value', 'hash', 'id', 'hash']);
 
       const change = json.changes[0];
       expect(change.uri).to.eql('cell:foo!A1');
