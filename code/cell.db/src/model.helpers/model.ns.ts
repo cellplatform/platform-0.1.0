@@ -118,9 +118,10 @@ export async function getChildData(args: {
  */
 export async function setProps(args: { ns: t.IDbModelNs; data?: Partial<t.INsProps> }) {
   const { ns, data } = args;
+  let changes: t.IDbModelChange[] = [];
 
   if (isNilOrEmptyObject(data, { ignoreHash: true })) {
-    return { changes: [] };
+    return { changes, isChanged: false };
   }
 
   const uri = toSchema(ns).uri;
@@ -128,8 +129,9 @@ export async function setProps(args: { ns: t.IDbModelNs; data?: Partial<t.INsPro
   const res = await ns.set({ props }).save();
 
   // Finish up.
-  const changes = util.toDbModelChanges(uri, res.changes);
-  return { changes };
+  changes = util.toDbModelChanges(uri, res.changes);
+  const isChanged = changes.length > 0;
+  return { changes, isChanged };
 }
 
 /**
@@ -137,9 +139,10 @@ export async function setProps(args: { ns: t.IDbModelNs; data?: Partial<t.INsPro
  */
 export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.INsCoordData> }) {
   const { ns } = args;
+  let changes: t.IDbModelChange[] = [];
   const saved = { cells: 0, rows: 0, columns: 0 };
   if (!args.data) {
-    return { isChanged: false, saved };
+    return { isChanged: false, saved, changes };
   }
 
   const wait = [
@@ -150,13 +153,14 @@ export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.IN
     const data = args.data ? args.data[field] : undefined;
     if (data) {
       const res = await fn({ ns, data });
-      saved[field] += res.saved;
+      changes = [...changes, ...res.changes];
+      saved[field] += res.total;
     }
   });
   await Promise.all(wait);
 
-  const isChanged = saved.cells > 0 || saved.columns > 0 || saved.rows > 0;
-  return { isChanged, saved };
+  const isChanged = changes.length > 0;
+  return { isChanged, saved, changes };
 }
 
 /**
@@ -166,9 +170,11 @@ export async function setChildCells(args: { ns: t.IDbModelNs; data?: t.IMap<t.IC
   const { data } = args;
   const id = toId(args.ns);
   const db = args.ns.db;
+  const getUri = (key: string) => Uri.string.cell(id, key);
   return setChildren({
-    data: data,
-    getModel: key => Cell.create({ db, uri: Uri.string.cell(id, key) }),
+    data,
+    getUri,
+    getModel: key => Cell.create({ db, uri: getUri(key) }),
   });
 }
 
@@ -179,9 +185,11 @@ export async function setChildRows(args: { ns: t.IDbModelNs; data?: t.IMap<t.IRo
   const { data } = args;
   const id = toId(args.ns);
   const db = args.ns.db;
+  const getUri = (key: string) => Uri.string.row(id, key);
   return setChildren({
-    data: data,
-    getModel: key => Row.create({ db, uri: Uri.string.row(id, key) }),
+    data,
+    getUri,
+    getModel: key => Row.create({ db, uri: getUri(key) }),
   });
 }
 
@@ -192,9 +200,11 @@ export async function setChildColumns(args: { ns: t.IDbModelNs; data?: t.IMap<t.
   const { data } = args;
   const id = toId(args.ns);
   const db = args.ns.db;
+  const getUri = (key: string) => Uri.string.column(id, key);
   return setChildren({
-    data: data,
-    getModel: key => Column.create({ db, uri: Uri.string.column(id, key) }),
+    data,
+    getUri,
+    getModel: key => Column.create({ db, uri: getUri(key) }),
   });
 }
 
@@ -215,13 +225,15 @@ function includeKey(key: string, union?: coord.range.CellRangeUnion) {
 
 async function setChildren(args: {
   data: t.IMap<object> | undefined;
+  getUri: (key: string) => string;
   getModel: (key: string) => t.IModel;
 }) {
   const { data } = args;
-  let saved = 0;
+  let total = 0;
+  let changes: t.IDbModelChange[] = [];
 
   if (!data) {
-    return { saved };
+    return { total, changes, isChanged: changes.length > 0 };
   }
 
   const wait = Object.keys(data).map(async key => {
@@ -229,12 +241,15 @@ async function setChildren(args: {
     if (typeof props === 'object') {
       const model = (await args.getModel(key).ready).set(props);
       if (model.isChanged) {
-        saved++;
-        await model.save();
+        total++;
+        const res = await model.save();
+        const uri = args.getUri(key);
+        changes = [...changes, ...util.toDbModelChanges(uri, res.changes)];
       }
     }
   });
 
   await Promise.all(wait);
-  return { saved };
+
+  return { total, changes, isChanged: changes.length > 0 };
 }

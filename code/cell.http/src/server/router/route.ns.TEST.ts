@@ -39,19 +39,20 @@ describe('route: namespace', () => {
       expect(json.data.columns).to.eql(undefined);
     });
 
-    it.skip('POST updates sheet name', async () => {
-      const test = async (ns: Partial<t.INs>, expected?: any) => {
-        const data = { ns };
-        // const res = await post('ns:foo?data', { data });
-      };
+    it('POST namespace props ("name", etc)', async () => {
+      const res1 = await post('ns:foo?ns', {});
+      expect(res1.data.ns.hash).to.eql('-');
+      expect(res1.data.ns.id).to.eql('foo');
+      expect(res1.data.ns.props).to.eql(undefined);
 
-      /**
-       * TODO 🐷
-       */
+      const res2 = await post('ns:foo?ns', { ns: { name: 'MySheet' } });
 
-      // await test();
+      expect(res2.data.ns.hash).to.not.eql(res1.data.ns.hash); // Hash updated.
+      expect((res2.data.ns.props || {}).name).to.eql('MySheet');
 
-      //
+      const res3 = await post('ns:foo?ns', { ns: { name: undefined } });
+      expect(res3.data.ns.hash).to.not.eql(res2.data.ns.hash); // Hash updated.
+      expect(res3.data.ns.props).to.eql(undefined); // NB: Squashed.
     });
   });
 
