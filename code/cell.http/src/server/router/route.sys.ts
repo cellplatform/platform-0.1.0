@@ -16,7 +16,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   const region = fs.env.value('NOW_REGION') || 'local';
 
   /**
-   * System info.
+   * GET: System info.
    */
   router.get(ROUTES.SYS.INFO, async req => {
     const version = {
@@ -34,13 +34,13 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   });
 
   /**
-   * CUID
+   * GET: /uid
    * "Collision-resistant ids optimized for horizontal scaling and performance"
    */
-  router.get(ROUTES.SYS.CUID, async req => {
+  router.get(ROUTES.SYS.UID, async req => {
     return {
       status: 200,
-      data: { cuid: id.cuid() },
+      data: { id: id.cuid() },
     };
   });
 }
