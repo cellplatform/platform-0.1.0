@@ -1,5 +1,6 @@
 import { cell, t, models } from '../common';
 import { ROUTES } from './ROUTES';
+import { toErrorPayload } from './util';
 
 const { Uri } = cell;
 
@@ -9,18 +10,19 @@ const { Uri } = cell;
 export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   const { db, router } = args;
 
-  const getRequestId = (req: t.Request) => {
+  const getParams = (req: t.Request) => {
     const params = req.params as t.IReqNsParams;
-    const id = params.id.toString();
-    if (id) {
-      return { status: 200, id };
-    } else {
+    const id = (params.id || '').toString();
+
+    if (!id) {
       const error: t.IError = {
-        type: 'HTTP/malformed',
-        message: `Malformed namespace URI, does not contain an ID ("${req.url}").`,
+        type: 'HTTP/uri/malformed',
+        message: `Malformed "ns:" URI, does not contain an ID ("${req.url}").`,
       };
       return { status: 400, error };
     }
+
+    return { status: 200, id };
   };
 
   /**
@@ -35,7 +37,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
    */
   router.get(ROUTES.NS.BASE, async req => {
     const query = req.query as t.IReqNsQuery;
-    const { status, id, error } = getRequestId(req);
+    const { status, id, error } = getParams(req);
     return !id ? { status, data: { error } } : getNsResponse({ db, id, query });
   });
 
@@ -47,7 +49,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
    */
   router.get(ROUTES.NS.DATA, async req => {
     const query: t.IReqNsQuery = { cells: true, rows: true, columns: true };
-    const { status, id, error } = getRequestId(req);
+    const { status, id, error } = getParams(req);
     return !id ? { status, data: { error } } : getNsResponse({ db, id, query });
   });
 
@@ -56,7 +58,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
    */
   router.post(ROUTES.NS.BASE, async req => {
     const query = req.query as t.IReqNsQuery;
-    const { status, id, error } = getRequestId(req);
+    const { status, id, error } = getParams(req);
     const body = (await req.body.json<t.IPostNsBody>()) || {};
     return !id ? { status, data: { error } } : postNsResponse({ db, id, body, query });
   });
@@ -93,34 +95,38 @@ async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery
 async function getNsData(args: {
   model: t.IDbModelNs;
   query: t.IReqNsQuery;
-}): Promise<Partial<t.INsCoordData>> {
-  const { model, query } = args;
-  if (Object.keys(query).length === 0) {
-    return {};
-  }
-
-  const formatQueryArray = (input: Array<string | boolean>) => {
-    if (input.some(item => item === true)) {
-      // NB: Any occurance of `true` negates narrower string ranges
-      //     so default to a blunt [true] so everything is returned.
-      return true;
-    } else {
-      const flat = input.filter(item => typeof item === 'string').join(',');
-      return flat ? flat : undefined;
+}): Promise<Partial<t.INsCoordData> | t.IErrorPayload> {
+  try {
+    const { model, query } = args;
+    if (Object.keys(query).length === 0) {
+      return {};
     }
-  };
 
-  const formatQuery = (
-    input?: boolean | string | Array<string | boolean>,
-  ): string | boolean | undefined => {
-    return Array.isArray(input) ? formatQueryArray(input) : input;
-  };
+    const formatQueryArray = (input: Array<string | boolean>) => {
+      if (input.some(item => item === true)) {
+        // NB: Any occurance of `true` negates narrower string ranges
+        //     so default to a blunt [true] so everything is returned.
+        return true;
+      } else {
+        const flat = input.filter(item => typeof item === 'string').join(',');
+        return flat ? flat : undefined;
+      }
+    };
 
-  const cells = query.data ? true : formatQuery(query.cells);
-  const columns = query.data ? true : formatQuery(query.columns);
-  const rows = query.data ? true : formatQuery(query.rows);
+    const formatQuery = (
+      input?: boolean | string | Array<string | boolean>,
+    ): string | boolean | undefined => {
+      return Array.isArray(input) ? formatQueryArray(input) : input;
+    };
 
-  return models.ns.getChildData({ model, cells, columns, rows });
+    const cells = query.data ? true : formatQuery(query.cells);
+    const columns = query.data ? true : formatQuery(query.columns);
+    const rows = query.data ? true : formatQuery(query.rows);
+
+    return models.ns.getChildData({ model, cells, columns, rows });
+  } catch (err) {
+    return toErrorPayload(err);
+  }
 }
 
 async function postNsResponse(args: {

@@ -1,7 +1,17 @@
 import { NeDb } from '@platform/fsdb.nedb';
 
 import { server } from '../server';
-import { fs, value } from '../server/common';
+import { fs, value, t } from '../server/common';
+
+export type IMock = {
+  db: t.IDb;
+  port: number;
+  app: t.IMicro;
+  instance: t.IMicroService;
+  filename: string;
+  url: (path: string) => string;
+  dispose(args?: { delete?: boolean }): Promise<void>;
+};
 
 const TMP = fs.resolve('tmp');
 let count = 0;
@@ -36,7 +46,7 @@ const create = async (args: { port?: number } = {}) => {
   const app = server.init({ title: 'Test', db });
   const instance = await app.listen({ port, silent: true });
 
-  return {
+  const mock: IMock = {
     db,
     port,
     app,
@@ -51,6 +61,7 @@ const create = async (args: { port?: number } = {}) => {
       }
     },
   };
+  return mock;
 };
 
 const tryIgnore = async (fn: () => any) => {

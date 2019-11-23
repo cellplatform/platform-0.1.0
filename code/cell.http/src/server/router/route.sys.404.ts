@@ -8,16 +8,16 @@ export function init(args: { router: t.IRouter }) {
   const { router } = args;
 
   router.get(ROUTES.SYS.WILDCARD, async req => {
-    const { url, method } = req;
+    const { url = '' } = req;
     const status = 404;
-    return {
+
+    const data: t.INotFoundResponse = {
+      url,
       status,
-      data: {
-        status,
-        method,
-        message: 'Not found',
-        url,
-      },
+      type: 'HTTP/404',
+      message: 'Not found',
     };
+
+    return { status, data };
   });
 }

@@ -1,6 +1,21 @@
 import * as t from '@platform/cell.types';
 
 /**
+ * TODO 🐷 Move to `cell.types`
+ */
+
+export type IErrorPayload = { status: number; data: t.IHttpError };
+export type INotFoundResponse = t.IHttpError<'HTTP/404'> & { status: 404; url: string };
+
+export type IGetResponse<D> = {
+  uri: string;
+  exists: boolean;
+  createdAt: number;
+  modifiedAt: number;
+  data: D;
+};
+
+/**
  * Namespace
  */
 export type ReqNsQueryCoord = string; // Eg: "A1", "A", "1", "A2,B,10,C1:C9"
@@ -15,19 +30,13 @@ export type IReqNsQuery = {
 };
 
 /**
- * Namespace: GET
+ * GET
  */
-export type IGetNsResponse = {
-  uri: string;
-  exists: boolean;
-  createdAt: number;
-  modifiedAt: number;
-  data: IGetNsResponseData;
-};
+export type IGetNsResponse = IGetResponse<IGetNsResponseData>;
 export type IGetNsResponseData = { ns: t.INs } & Partial<t.INsCoordData>;
 
 /**
- * Namespace: POST
+ * POST
  */
 export type IPostNsBody = {
   ns?: Partial<t.INsProps>;
@@ -37,3 +46,23 @@ export type IPostNsBody = {
   calc?: boolean; // perform calcuations.
 };
 export type IPostNsResponse = IGetNsResponse & { changes: t.IDbModelChange[] };
+
+/**
+ * Coord: cell|row|col
+ */
+export type IReqCoordParams = { id: string; key: string };
+export type IReqCoordQuery = {};
+
+/**
+ * GET
+ */
+export type IGetCoordResponse = IGetCellResponse | IGetRowResponse | IGetColumnResponse;
+
+export type IGetCellResponse = IGetResponse<IGetCellResponseData>;
+export type IGetCellResponseData = t.ICellData;
+
+export type IGetRowResponse = IGetResponse<IGetRowResponseData>;
+export type IGetRowResponseData = t.IRowData;
+
+export type IGetColumnResponse = IGetResponse<IGetColumnResponseData>;
+export type IGetColumnResponseData = t.IColumnData;

@@ -1,30 +1,35 @@
-import { t, expect, http, createMock, stripHashes } from '../../test';
+import { t, expect, http, createMock, stripHashes, post } from '../../test';
 
-const post = async (url: string, body: t.IPostNsBody) => {
-  const mock = await createMock();
-  const res = await http.post(mock.url(url), body);
-  const json = res.json<t.IPostNsResponse>();
-  await mock.dispose();
-  return { res, json, data: json.data };
-};
+/**
+ * TODO 🐷
+ * - query: hash (optional)
+ * - refactor hash (lazy eval)
+ * - POST: changes (optional flag)
+ * - calculations on POST
+ */
 
 describe('route: namespace', () => {
-  it('invalid "ns" URI (no id)', async () => {
-    const mock = await createMock();
-    const url = mock.url('/ns:');
-    const res = await http.get(url);
-    await mock.dispose();
+  describe('invalid URI', () => {
+    it('malformed: no id', async () => {
+      const mock = await createMock();
+      const url = mock.url('/ns:');
+      const res = await http.get(url);
+      await mock.dispose();
 
-    expect(res.status).to.eql(400);
+      expect(res.status).to.eql(400);
 
-    const body = res.json();
-    expect(body.error.type).to.eql('HTTP/malformed');
-    expect(body.error.message).to.contain('Malformed namespace URI, does not contain an ID');
+      const body = res.json();
+      expect(body.error.type).to.eql('HTTP/uri/malformed');
+      expect(body.error.message).to.contain('Malformed');
+      expect(body.error.message).to.contain('does not contain an ID');
+    });
   });
 
   describe('POST', () => {
     it('POST data', async () => {
-      const { res, json, data } = await post('ns:foo?cells', { cells: { A1: { value: 'hello' } } });
+      const { res, json, data } = await post.ns('ns:foo?cells', {
+        cells: { A1: { value: 'hello' } },
+      });
       const cells = data.cells || {};
 
       expect(res.status).to.eql(200);
@@ -49,17 +54,17 @@ describe('route: namespace', () => {
     });
 
     it('POST namespace props ("name", etc)', async () => {
-      const res1 = await post('ns:foo?ns', {});
+      const res1 = await post.ns('ns:foo?ns', {});
       expect(res1.data.ns.hash).to.eql('-');
       expect(res1.data.ns.id).to.eql('foo');
       expect(res1.data.ns.props).to.eql(undefined);
 
-      const res2 = await post('ns:foo?ns', { ns: { name: 'MySheet' } });
+      const res2 = await post.ns('ns:foo?ns', { ns: { name: 'MySheet' } });
 
       expect(res2.data.ns.hash).to.not.eql(res1.data.ns.hash); // Hash updated.
       expect((res2.data.ns.props || {}).name).to.eql('MySheet');
 
-      const res3 = await post('ns:foo?ns', { ns: { name: undefined } });
+      const res3 = await post.ns('ns:foo?ns', { ns: { name: undefined } });
       expect(res3.data.ns.hash).to.not.eql(res2.data.ns.hash); // Hash updated.
       expect(res3.data.ns.props).to.eql(undefined); // NB: Squashed.
     });
@@ -67,40 +72,40 @@ describe('route: namespace', () => {
 
   describe('POST hash updates (SHA256)', () => {
     it('generate namespace hash', async () => {
-      const res = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
+      const res = await post.ns('ns:foo?cells', { cells: { A1: { value: 123 } } });
       const hash = res.data.ns.hash;
       expect(hash).to.match(/^sha256-/);
       expect(hash && hash.length).to.greaterThan(20);
     });
 
     it('recalculate hash on namespace (cells changed)', async () => {
-      const res1 = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
+      const res1 = await post.ns('ns:foo?cells', { cells: { A1: { value: 123 } } });
       expect(res1.data.ns.hash).to.match(/^sha256-/);
 
-      const res2 = await post('ns:foo?cells', { cells: { A1: { value: 124 } } });
+      const res2 = await post.ns('ns:foo?cells', { cells: { A1: { value: 124 } } });
       expect(res2.data.ns.hash).to.match(/^sha256-/);
       expect(res1.data.ns.hash).to.not.eql(res2.data.ns.hash);
     });
 
     it('recalculate hashes on cells', async () => {
-      const res1 = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
-      const res2 = await post('ns:foo?cells', { cells: { A1: { value: 124 } } });
+      const res1 = await post.ns('ns:foo?cells', { cells: { A1: { value: 123 } } });
+      const res2 = await post.ns('ns:foo?cells', { cells: { A1: { value: 124 } } });
       const cells1 = res1.data.cells || {};
       const cells2 = res2.data.cells || {};
       expect(cells1.A1 && cells1.A1.hash).to.not.eql(cells2.A1 && cells2.A1.hash);
     });
 
     it('recalculate hashes on rows', async () => {
-      const res1 = await post('ns:foo?rows', { rows: { 1: { props: { height: 60 } } } });
-      const res2 = await post('ns:foo?rows', { rows: { 1: { props: { height: 61 } } } });
+      const res1 = await post.ns('ns:foo?rows', { rows: { 1: { props: { height: 60 } } } });
+      const res2 = await post.ns('ns:foo?rows', { rows: { 1: { props: { height: 61 } } } });
       const rows1 = res1.data.rows || {};
       const rows2 = res2.data.rows || {};
       expect(rows1['1'] && rows1['1'].hash).to.not.eql(rows2['1'] && rows2['1'].hash);
     });
 
     it('recalculate hashes on columns', async () => {
-      const res1 = await post('ns:foo?columns', { columns: { A: { props: { width: 160 } } } });
-      const res2 = await post('ns:foo?columns', { columns: { A: { props: { width: 161 } } } });
+      const res1 = await post.ns('ns:foo?columns', { columns: { A: { props: { width: 160 } } } });
+      const res2 = await post.ns('ns:foo?columns', { columns: { A: { props: { width: 161 } } } });
       const cols1 = res1.data.columns || {};
       const cols2 = res2.data.columns || {};
       expect(cols1.A && cols1.A.hash).to.not.eql(cols2.A && cols2.A.hash);
