@@ -13,7 +13,7 @@
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare",
-    "deploy": "cd src.sample && yarn deploy",
+    "deploy": "cd src.sample && yarn deploy $@",
     "reset": "ts-node -T scripts/reset"
   },
   "dependencies": {

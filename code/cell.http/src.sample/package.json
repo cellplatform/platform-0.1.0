@@ -3,7 +3,7 @@
   "version": "0.0.62",
   "scripts": {
     "now": "now dev --listen 8080",
-    "deploy": "now --prod",
+    "deploy": "now --prod $@",
     "start": "ts-node -T src/server",
     "watch": "nodemon --watch ../src --watch ../../cell.db/src -e ts,tsx --delay 2"
   },
