@@ -1,3 +1,5 @@
+export type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH';
+
 export type IHttpHeaders = { [key: string]: string | number };
 
 export type IFetchOptions = {
@@ -6,9 +8,9 @@ export type IFetchOptions = {
 };
 
 export type IHttpResponse = {
+  ok: boolean;
   status: number;
   statusText: string;
-  ok: boolean;
   headers: IHttpHeaders;
   body: string;
   json<T = any>(): T;
