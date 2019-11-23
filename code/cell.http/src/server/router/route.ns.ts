@@ -130,25 +130,47 @@ async function postNsResponse(args: {
   query: t.IReqNsQuery;
 }) {
   const { db, id, body, query } = args;
-  const data: Partial<t.INsCoordData> = body.data || {};
+  const uri = Uri.string.ns(id);
+  const ns = await models.Ns.create({ db, uri }).ready;
 
-  const res = await models.ns.setChildData({ db, id, data });
-  const isChanged = res.isChanged;
+  const changes: t.IDbModelChange[] = [];
+  let isNsChanged = false;
 
-  // Ensure NS timestamps and hash are updated.
-  if (isChanged) {
-    const uri = Uri.string.ns(id);
-    const model = await models.Ns.create({ db, uri }).ready;
-    await model.save({ force: true });
+  const saveChildData = async () => {
+    const { cells, rows, columns } = body;
+    if (cells || rows || columns) {
+      const data = { cells, rows, columns };
+      const res = await models.ns.setChildData({ ns, data });
+      res.changes.forEach(change => changes.push(change));
+    }
+  };
+
+  const saveNsData = async () => {
+    const res = await models.ns.setProps({ ns, data: body.ns });
+    if (res.isChanged) {
+      isNsChanged = true;
+      res.changes.forEach(change => changes.push(change));
+    }
+  };
+
+  await saveChildData();
+  await saveNsData();
+
+  // Ensure timestamp and hash are updated if the namespace was
+  // not directly updated (ie. cells/rows/columns only changed).
+  if (!isNsChanged && changes.length > 0) {
+    await ns.save({ force: true });
   }
 
   /**
    * TODO 🐷
-   * - handle all data types within the NS (not just cells).
    * - error handling on model creation/save
-   * - more efficient response (ie. don't re-query DB).
    * - return change summary (model: changes).
+   * - GET /cuid
    */
 
-  return getNsResponse({ db, id, query });
+  const res = await getNsResponse({ db, id, query });
+  const data: t.IPostNsResponse = { ...res.data, changes };
+  const status = res.status;
+  return { status, data };
 }

@@ -1,4 +1,4 @@
-import { t, fs, constants } from '../common';
+import { t, fs, constants, id } from '../common';
 import { ROUTES } from './ROUTES';
 
 const PKG = constants.PKG;
@@ -16,7 +16,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   const region = fs.env.value('NOW_REGION') || 'local';
 
   /**
-   * System info.
+   * GET: System info.
    */
   router.get(ROUTES.SYS.INFO, async req => {
     const version = {
@@ -30,6 +30,17 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
         region,
         version,
       },
+    };
+  });
+
+  /**
+   * GET: /uid
+   * "Collision-resistant ids optimized for horizontal scaling and performance"
+   */
+  router.get(ROUTES.SYS.UID, async req => {
+    return {
+      status: 200,
+      data: { id: id.cuid() },
     };
   });
 }

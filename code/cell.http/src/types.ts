@@ -29,5 +29,10 @@ export type IGetNsResponseData = { ns: t.INs } & Partial<t.INsCoordData>;
 /**
  * Namespace: POST
  */
-export type IPostNsBody = { data?: Partial<t.INsData> };
-export type IPostNsResponse = IGetNsResponse;
+export type IPostNsBody = {
+  ns?: Partial<t.INsProps>;
+  cells?: t.IMap<t.ICellData>;
+  columns?: t.IMap<t.IColumnData>;
+  rows?: t.IMap<t.IRowData>;
+};
+export type IPostNsResponse = IGetNsResponse & { changes: t.IDbModelChange[] };

@@ -1,8 +1,8 @@
 import { t, expect, http, createMock, stripHashes } from '../../test';
 
-const post = async (url: string, data: t.IPostNsBody['data']) => {
+const post = async (url: string, body: t.IPostNsBody) => {
   const mock = await createMock();
-  const res = await http.post(mock.url(url), { data });
+  const res = await http.post(mock.url(url), body);
   const json = res.json<t.IPostNsResponse>();
   await mock.dispose();
   return { res, json, data: json.data };
@@ -22,75 +22,8 @@ describe('route: namespace', () => {
     expect(body.error.message).to.contain('Malformed namespace URI, does not contain an ID');
   });
 
-  it('does not yet exist', async () => {
-    const mock = await createMock();
-    const url = mock.url('ns:foo');
-    const res = await http.get(url);
-    await mock.dispose();
-
-    expect(res.status).to.eql(200);
-
-    const body = res.json<t.IGetNsResponse>();
-    const ns = body.data.ns;
-
-    expect(body.uri).to.eql('ns:foo');
-    expect(body.exists).to.eql(false);
-    expect(body.createdAt).to.eql(-1);
-    expect(body.modifiedAt).to.eql(-1);
-
-    expect(ns.id).to.eql('foo');
-    expect(ns.hash).to.eql('-'); // NB: default when does not exist.
-
-    // NB: No cell data by default (requires query-string).
-    expect(body.data.cells).to.eql(undefined);
-    expect(body.data.rows).to.eql(undefined);
-    expect(body.data.columns).to.eql(undefined);
-  });
-
-  describe('hash', () => {
-    it('generates ns-hash on POST', async () => {
-      const res = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
-      const hash = res.data.ns.hash;
-      expect(hash).to.match(/^sha256-/);
-      expect(hash && hash.length).to.greaterThan(20);
-    });
-
-    it('updates ns-hash on change', async () => {
-      const res1 = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
-      expect(res1.data.ns.hash).to.match(/^sha256-/);
-
-      const res2 = await post('ns:foo?cells', { cells: { A1: { value: 124 } } });
-      expect(res2.data.ns.hash).to.match(/^sha256-/);
-      expect(res1.data.ns.hash).to.not.eql(res2.data.ns.hash);
-    });
-
-    it('updates cells-hashes on POST', async () => {
-      const res1 = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
-      const res2 = await post('ns:foo?cells', { cells: { A1: { value: 124 } } });
-      const cells1 = res1.data.cells || {};
-      const cells2 = res2.data.cells || {};
-      expect(cells1.A1 && cells1.A1.hash).to.not.eql(cells2.A1 && cells2.A1.hash);
-    });
-
-    it('updates rows-hashes on POST', async () => {
-      const res1 = await post('ns:foo?rows', { rows: { 1: { props: { height: 60 } } } });
-      const res2 = await post('ns:foo?rows', { rows: { 1: { props: { height: 61 } } } });
-      const rows1 = res1.data.rows || {};
-      const rows2 = res2.data.rows || {};
-      expect(rows1['1'] && rows1['1'].hash).to.not.eql(rows2['1'] && rows2['1'].hash);
-    });
-
-    it('updates columns-hashes on POST', async () => {
-      const res1 = await post('ns:foo?columns', { columns: { A: { props: { width: 160 } } } });
-      const res2 = await post('ns:foo?columns', { columns: { A: { props: { width: 161 } } } });
-      const cols1 = res1.data.columns || {};
-      const cols2 = res2.data.columns || {};
-      expect(cols1.A && cols1.A.hash).to.not.eql(cols2.A && cols2.A.hash);
-    });
-  });
-
-  describe('data', () => {
-    it('POST change data', async () => {
+  describe('POST', () => {
+    it('POST data', async () => {
       const { res, json, data } = await post('ns:foo?cells', { cells: { A1: { value: 'hello' } } });
       const cells = data.cells || {};
 
@@ -102,19 +35,112 @@ describe('route: namespace', () => {
       expect(data.ns.id).to.eql('foo');
       expect(data.ns.hash).to.not.eql('-'); // NB: hash calculation tested seperately.
       expect(cells.A1 && cells.A1.value).to.eql('hello');
-      expect(json.data.rows).to.eql(undefined);
-      expect(json.data.columns).to.eql(undefined);
+      expect(data.rows).to.eql(undefined);
+      expect(data.columns).to.eql(undefined);
+
+      expect(json.changes.length).to.eql(2);
+      expect(json.changes.map(c => c.field)).to.eql(['value', 'hash']);
+
+      const change = json.changes[0];
+      expect(change.uri).to.eql('cell:foo!A1');
+      expect(change.field).to.eql('value');
+      expect(change.from).to.eql(undefined);
+      expect(change.to).to.eql('hello');
+    });
+
+    it('POST namespace props ("name", etc)', async () => {
+      const res1 = await post('ns:foo?ns', {});
+      expect(res1.data.ns.hash).to.eql('-');
+      expect(res1.data.ns.id).to.eql('foo');
+      expect(res1.data.ns.props).to.eql(undefined);
+
+      const res2 = await post('ns:foo?ns', { ns: { name: 'MySheet' } });
+
+      expect(res2.data.ns.hash).to.not.eql(res1.data.ns.hash); // Hash updated.
+      expect((res2.data.ns.props || {}).name).to.eql('MySheet');
+
+      const res3 = await post('ns:foo?ns', { ns: { name: undefined } });
+      expect(res3.data.ns.hash).to.not.eql(res2.data.ns.hash); // Hash updated.
+      expect(res3.data.ns.props).to.eql(undefined); // NB: Squashed.
+    });
+  });
+
+  describe('POST hash updates (SHA256)', () => {
+    it('generate namespace hash', async () => {
+      const res = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
+      const hash = res.data.ns.hash;
+      expect(hash).to.match(/^sha256-/);
+      expect(hash && hash.length).to.greaterThan(20);
+    });
+
+    it('recalculate hash on namespace (cells changed)', async () => {
+      const res1 = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
+      expect(res1.data.ns.hash).to.match(/^sha256-/);
+
+      const res2 = await post('ns:foo?cells', { cells: { A1: { value: 124 } } });
+      expect(res2.data.ns.hash).to.match(/^sha256-/);
+      expect(res1.data.ns.hash).to.not.eql(res2.data.ns.hash);
+    });
+
+    it('recalculate hashes on cells', async () => {
+      const res1 = await post('ns:foo?cells', { cells: { A1: { value: 123 } } });
+      const res2 = await post('ns:foo?cells', { cells: { A1: { value: 124 } } });
+      const cells1 = res1.data.cells || {};
+      const cells2 = res2.data.cells || {};
+      expect(cells1.A1 && cells1.A1.hash).to.not.eql(cells2.A1 && cells2.A1.hash);
+    });
+
+    it('recalculate hashes on rows', async () => {
+      const res1 = await post('ns:foo?rows', { rows: { 1: { props: { height: 60 } } } });
+      const res2 = await post('ns:foo?rows', { rows: { 1: { props: { height: 61 } } } });
+      const rows1 = res1.data.rows || {};
+      const rows2 = res2.data.rows || {};
+      expect(rows1['1'] && rows1['1'].hash).to.not.eql(rows2['1'] && rows2['1'].hash);
+    });
+
+    it('recalculate hashes on columns', async () => {
+      const res1 = await post('ns:foo?columns', { columns: { A: { props: { width: 160 } } } });
+      const res2 = await post('ns:foo?columns', { columns: { A: { props: { width: 161 } } } });
+      const cols1 = res1.data.columns || {};
+      const cols2 = res2.data.columns || {};
+      expect(cols1.A && cols1.A.hash).to.not.eql(cols2.A && cols2.A.hash);
+    });
+  });
+
+  describe('GET', () => {
+    it('GET does not exist', async () => {
+      const mock = await createMock();
+      const url = mock.url('ns:foo');
+      const res = await http.get(url);
+      await mock.dispose();
+
+      expect(res.status).to.eql(200);
+
+      const body = res.json<t.IGetNsResponse>();
+      const ns = body.data.ns;
+
+      expect(body.uri).to.eql('ns:foo');
+      expect(body.exists).to.eql(false);
+      expect(body.createdAt).to.eql(-1);
+      expect(body.modifiedAt).to.eql(-1);
+
+      expect(ns.id).to.eql('foo');
+      expect(ns.hash).to.eql('-'); // NB: default when does not exist.
+
+      // NB: No cell data by default (requires query-string).
+      expect(body.data.cells).to.eql(undefined);
+      expect(body.data.rows).to.eql(undefined);
+      expect(body.data.columns).to.eql(undefined);
     });
 
     it('GET squashes null values', async () => {
       const mock = await createMock();
 
-      const data: any = {
-        cells: { A1: { value: 'hello', props: null } },
-        rows: { 1: { props: null } },
-        columns: { A: { props: null } },
+      const payload: t.IPostNsBody = {
+        cells: { A1: { value: 'hello', props: null } } as any, // NB: [any] because `null` is an illegal type.
+        rows: { 1: { props: null } } as any,
+        columns: { A: { props: null } } as any,
       };
-      const payload: t.IPostNsBody = { data };
       await http.post(mock.url('ns:foo'), payload);
 
       const url = mock.url('ns:foo/data');
@@ -129,7 +155,7 @@ describe('route: namespace', () => {
       expect(json.data.columns).to.eql({});
     });
 
-    it('GET (selective data via query-string flags)', async () => {
+    it('GET selective data via query-string (boolean|ranges)', async () => {
       const mock = await createMock();
       const cells = {
         A1: { value: 'A1' },
@@ -144,9 +170,8 @@ describe('route: namespace', () => {
         1: { props: { width: 350 } },
         3: { props: { width: 256 } },
       };
-      const data = { cells, columns, rows };
-      const payload: t.IPostNsBody = { data };
-      await http.post(mock.url('ns:foo'), payload);
+      const body: t.IPostNsBody = { cells, columns, rows };
+      await http.post(mock.url('ns:foo'), body);
 
       const test = async (path: string, expected?: any) => {
         const url = mock.url(path);
@@ -184,15 +209,15 @@ describe('route: namespace', () => {
       await test('ns:foo?columns=B:D', { columns: { C: columns.C } });
       await test('ns:foo?columns=B:D,A', { columns });
 
-      await test('ns:foo?cells&rows&columns', data);
-      await test('ns:foo?data', data);
-      await test('ns:foo?data=true', data);
+      await test('ns:foo?cells&rows&columns', body);
+      await test('ns:foo?data', body);
+      await test('ns:foo?data=true', body);
       await test('ns:foo?data=false', {});
 
       await mock.dispose();
     });
 
-    it('GET /data (all data)', async () => {
+    it('GET all data (/data)', async () => {
       const mock = await createMock();
       const cells = {
         A1: { value: 'A1' },
@@ -207,9 +232,8 @@ describe('route: namespace', () => {
         1: { props: { width: 350 } },
         3: { props: { width: 256 } },
       };
-      const data = { cells, columns, rows };
-      const payload: t.IPostNsBody = { data };
-      await http.post(mock.url('ns:foo'), payload);
+      const body: t.IPostNsBody = { cells, columns, rows };
+      await http.post(mock.url('ns:foo'), body);
 
       const test = async (path: string, expected?: any) => {
         const url = mock.url(path);
@@ -223,7 +247,7 @@ describe('route: namespace', () => {
       };
 
       await test('ns:foo', {});
-      await test('ns:foo/data', data);
+      await test('ns:foo/data', body);
 
       await mock.dispose();
     });

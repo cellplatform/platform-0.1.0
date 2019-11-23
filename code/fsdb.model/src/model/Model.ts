@@ -86,7 +86,7 @@ export class Model<
   private _children: t.IModelChildren<C>;
   private _linkCache = {};
   private _childrenCache = {};
-  private _changes: Array<t.IModelChange<P, D, L, C>> = [];
+  private _changes: Array<t.IModelChange<P, D>> = [];
   private _typename: string;
 
   private readonly _dispose$ = new Subject<{}>();
@@ -155,7 +155,7 @@ export class Model<
     return this._item ? this._item.props.modifiedAt : -1;
   }
 
-  public get changes(): t.IModelChanges<P, D, L, C> {
+  public get changes(): t.IModelChanges<P, D> {
     this.throwIfDisposed('changes');
     const list = this._changes || [];
     const length = list.length;
@@ -165,7 +165,7 @@ export class Model<
       get map() {
         return list.reduce((acc, next) => {
           return { ...acc, [next.field]: next.value.to };
-        }, {}) as t.IModelChanges<P, D, L, C>['map'];
+        }, {}) as t.IModelChanges<P, D>['map'];
       },
     };
   }
@@ -336,7 +336,7 @@ export class Model<
   /**
    * Persists changes to the underlying store.
    */
-  public async save(options: { force?: boolean } = {}) {
+  public async save(options: { force?: boolean } = {}): Promise<t.IModelSaveResponse<P, D, L, C>> {
     this.throwIfDisposed('save');
     const { force = false } = options;
 
@@ -345,7 +345,9 @@ export class Model<
 
     if (!force && this.exists && !this.isChanged) {
       this._changes = [];
-      return { saved: false };
+      const changes = this.changes;
+      const isChanged = changes.length > 0;
+      return { saved: false, isChanged, changes };
     }
 
     // Save to the DB.
@@ -367,7 +369,7 @@ export class Model<
       typename,
       payload: { force, isChanged, model: this, changes },
     });
-    return { saved: true };
+    return { saved: true, isChanged, changes };
   }
 
   /**
@@ -607,12 +609,12 @@ export class Model<
     }
   }
 
-  private getChange(kind: t.ModelValueKind, field: string, value: any): t.IModelChange<P, D, L, C> {
+  private getChange(kind: t.ModelValueKind, field: string, value: any): t.IModelChange<P, D> {
     const to = { ...this.doc, [field]: value };
     return {
       kind,
       field,
-      model: this,
+      path: this.path,
       doc: { from: { ...this.doc }, to },
       modifiedAt: time.now.timestamp,
       value: { from: this.doc[field], to: value },
