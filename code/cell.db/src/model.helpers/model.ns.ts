@@ -1,5 +1,6 @@
 import { t, Schema, Uri, util, coord } from '../common';
 import { Cell, Column, Row } from '../model.db';
+import { toChanges } from './util';
 
 const { squash, isNilOrEmptyObject } = util.value;
 
@@ -129,7 +130,7 @@ export async function setProps(args: { ns: t.IDbModelNs; data?: Partial<t.INsPro
   const res = await ns.set({ props }).save();
 
   // Finish up.
-  changes = util.toDbModelChanges(uri, res.changes);
+  changes = toChanges(uri, res.changes);
   const isChanged = changes.length > 0;
   return { changes, isChanged };
 }
@@ -244,7 +245,7 @@ async function setChildren(args: {
         total++;
         const res = await model.save();
         const uri = args.getUri(key);
-        changes = [...changes, ...util.toDbModelChanges(uri, res.changes)];
+        changes = [...changes, ...toChanges(uri, res.changes)];
       }
     }
   });

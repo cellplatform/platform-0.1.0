@@ -34,5 +34,6 @@ export type IPostNsBody = {
   cells?: t.IMap<t.ICellData>;
   columns?: t.IMap<t.IColumnData>;
   rows?: t.IMap<t.IRowData>;
+  calc?: boolean; // perform calcuations.
 };
 export type IPostNsResponse = IGetNsResponse & { changes: t.IDbModelChange[] };

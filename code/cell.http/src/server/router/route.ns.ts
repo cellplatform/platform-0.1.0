@@ -136,6 +136,31 @@ async function postNsResponse(args: {
   const changes: t.IDbModelChange[] = [];
   let isNsChanged = false;
 
+  /**
+   * TODO 🐷 calculate updates
+   */
+
+  // if (query.calc) {
+  //   // const cells = data.cells || {}
+  //   const getCells: t.GetCells = async () => data.cells || {};
+  //   const getFunc: t.GetFunc = async () => undefined;
+  //   const refsTable = cell.coord.refs.table({
+  //     getKeys: async () => Object.keys(await getCells()),
+  //     getValue: async key => {
+  //       const cell = (await getCells())[key];
+  //       return cell && typeof cell.value === 'string' ? cell.value : undefined;
+  //     },
+  //   });
+
+  //   const table = cell.func.table({ getCells, getFunc, refsTable });
+
+  //   console.log('CALC');
+  //   console.log('-------------------------------------------');
+
+  //   const r = await table.calculate({ cells: undefined });
+  //   console.log('r', r);
+  // }
+
   const saveChildData = async () => {
     const { cells, rows, columns } = body;
     if (cells || rows || columns) {
@@ -159,7 +184,11 @@ async function postNsResponse(args: {
   // Ensure timestamp and hash are updated if the namespace was
   // not directly updated (ie. cells/rows/columns only changed).
   if (!isNsChanged && changes.length > 0) {
-    await ns.save({ force: true });
+    const res = await ns.save({ force: true });
+    if (res.isChanged) {
+      const changes = models.toChanges(uri, res.changes);
+      changes.forEach(change => changes.push(change));
+    }
   }
 
   /**
