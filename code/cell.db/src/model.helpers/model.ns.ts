@@ -1,7 +1,7 @@
 import { t, Schema, Uri, util, coord } from '../common';
 import { Cell, Column, Row } from '../model.db';
 
-const squash = util.cell.value.squash;
+const { squash, isNilOrEmptyObject } = util.value;
 
 /**
  * Render the model into a simple [t.INS] object.
@@ -17,17 +17,24 @@ export async function toObject(model: t.IDbModelNs) {
 }
 
 /**
- * Retrieve the ID of the given Namespace model.
+ * Retrieve the ID of the given Namespace model or URI or DB path.
  */
-export function toId(model: t.IDbModelNs) {
-  return toSchema(model).parts.id;
+export function toId(input: t.IDbModelNs | string) {
+  if (typeof input === 'string' && !(input.includes(':') || input.includes('/'))) {
+    return input;
+  } else {
+    return toSchema(input).parts.id;
+  }
 }
 
 /**
- * Retrieve the URI of the given Namespace model.
+ * Retrieve the URI of the given Namespace model or URI or DB path.
  */
-export function toSchema(model: t.IDbModelNs) {
-  return Schema.from.ns(model.path);
+export function toSchema(input: t.IDbModelNs | string) {
+  if (typeof input === 'string' && !(input.includes(':') || input.includes('/'))) {
+    input = `ns:${input.trim()}`;
+  }
+  return Schema.from.ns(typeof input === 'string' ? input : input.path);
 }
 
 /**
@@ -107,51 +114,29 @@ export async function getChildData(args: {
 }
 
 /**
- * Saves child cell data.
+ * Update the Namespace props.
  */
-export async function setChildCells(args: { db: t.IDb; id: string; data?: t.IMap<t.ICellData> }) {
-  const { db, id, data } = args;
-  return setChildren({
-    data: data,
-    getModel: key => Cell.create({ db, uri: Uri.string.cell(id, key) }),
-  });
-}
+export async function setProps(args: { ns: t.IDbModelNs; data?: Partial<t.INsProps> }) {
+  const { ns, data } = args;
 
-/**
- * Saves child row data.
- */
-export async function setChildRows(args: { db: t.IDb; id: string; data?: t.IMap<t.IRowData> }) {
-  const { db, id, data } = args;
-  return setChildren({
-    data: data,
-    getModel: key => Row.create({ db, uri: Uri.string.row(id, key) }),
-  });
-}
+  if (isNilOrEmptyObject(data, { ignoreHash: true })) {
+    return { changes: [] };
+  }
 
-/**
- * Saves child column data.
- */
-export async function setChildColumns(args: {
-  db: t.IDb;
-  id: string;
-  data?: t.IMap<t.IColumnData>;
-}) {
-  const { db, id, data } = args;
-  return setChildren({
-    data: data,
-    getModel: key => Column.create({ db, uri: Uri.string.column(id, key) }),
-  });
+  const uri = toSchema(ns).uri;
+  const props = { ...(ns.props.props || {}), ...data };
+  const res = await ns.set({ props }).save();
+
+  // Finish up.
+  const changes = util.toDbModelChanges(uri, res.changes);
+  return { changes };
 }
 
 /**
  * Save child data (cells|rows|columns).
  */
-export async function setChildData(args: {
-  db: t.IDb;
-  id: string;
-  data?: Partial<t.INsCoordData>;
-}) {
-  const { db, id } = args;
+export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.INsCoordData> }) {
+  const { ns } = args;
   const saved = { cells: 0, rows: 0, columns: 0 };
   if (!args.data) {
     return { isChanged: false, saved };
@@ -164,7 +149,7 @@ export async function setChildData(args: {
   ].map(async ({ field, fn }) => {
     const data = args.data ? args.data[field] : undefined;
     if (data) {
-      const res = await fn({ db, id, data });
+      const res = await fn({ ns, data });
       saved[field] += res.saved;
     }
   });
@@ -172,6 +157,45 @@ export async function setChildData(args: {
 
   const isChanged = saved.cells > 0 || saved.columns > 0 || saved.rows > 0;
   return { isChanged, saved };
+}
+
+/**
+ * Saves child cell data.
+ */
+export async function setChildCells(args: { ns: t.IDbModelNs; data?: t.IMap<t.ICellData> }) {
+  const { data } = args;
+  const id = toId(args.ns);
+  const db = args.ns.db;
+  return setChildren({
+    data: data,
+    getModel: key => Cell.create({ db, uri: Uri.string.cell(id, key) }),
+  });
+}
+
+/**
+ * Saves child row data.
+ */
+export async function setChildRows(args: { ns: t.IDbModelNs; data?: t.IMap<t.IRowData> }) {
+  const { data } = args;
+  const id = toId(args.ns);
+  const db = args.ns.db;
+  return setChildren({
+    data: data,
+    getModel: key => Row.create({ db, uri: Uri.string.row(id, key) }),
+  });
+}
+
+/**
+ * Saves child column data.
+ */
+export async function setChildColumns(args: { ns: t.IDbModelNs; data?: t.IMap<t.IColumnData> }) {
+  const { data } = args;
+  const id = toId(args.ns);
+  const db = args.ns.db;
+  return setChildren({
+    data: data,
+    getModel: key => Column.create({ db, uri: Uri.string.column(id, key) }),
+  });
 }
 
 /**
