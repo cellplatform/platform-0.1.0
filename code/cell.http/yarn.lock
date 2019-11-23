@@ -52,6 +52,18 @@
     "@platform/libs" "0.1.4"
     "@platform/util.value" "0.5.8"
 
+"@platform/cell.func@0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@platform/cell.func/-/cell.func-0.0.42.tgz#2389a213af0889eb5ae5ceedc3cb0a0b437376cf"
+  integrity sha512-HAxkPPlPHYdWrW7ZqYKAwU+QifID451THltlpSq8pKOETM+kQViChFnJrLKO2r5cSdBCw17oi2mxFgccbApNsQ==
+  dependencies:
+    "@platform/cache" "0.2.3"
+    "@platform/cell.coord" "0.6.6"
+    "@platform/cell.types" "0.1.10"
+    "@platform/cell.value" "0.1.2"
+    "@platform/libs" "0.1.4"
+    "@platform/util.value" "0.5.8"
+
 "@platform/cell.schema@0.0.15":
   version "0.0.15"
   resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.0.15.tgz#c874a3629d1166ebab041e1c50fa460294bed002"

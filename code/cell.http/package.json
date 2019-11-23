@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@platform/cell.db": "0.1.0",
+    "@platform/cell.func": "0.0.42",
     "@platform/cell.schema": "0.0.15",
     "@platform/cell.types": "0.1.10",
     "@platform/cell.value": "0.1.2",
