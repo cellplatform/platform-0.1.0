@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "HTTP cloud server, and client tools, for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,7 +17,7 @@
     "reset": "ts-node -T scripts/reset"
   },
   "dependencies": {
-    "@platform/cell.db": "0.1.0",
+    "@platform/cell.db": "0.1.1",
     "@platform/cell.func": "0.0.42",
     "@platform/cell.schema": "0.0.15",
     "@platform/cell.types": "0.1.10",
