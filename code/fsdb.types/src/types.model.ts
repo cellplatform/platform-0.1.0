@@ -23,9 +23,10 @@ export type IModelProps<
   readonly isDisposed: boolean;
   readonly isLoaded: boolean;
   readonly isChanged: boolean;
+  readonly db: t.IDb;
   readonly exists: boolean | undefined;
   readonly ready: Promise<IModel<P, D, L, C>>;
-  readonly changes: IModelChanges<P, D, L, C>;
+  readonly changes: IModelChanges<P, D>;
   readonly dispose$: Observable<{}>;
   readonly events$: Observable<ModelEvent>;
   readonly doc: D; // Raw DB document.
@@ -43,9 +44,16 @@ export type IModelMethods<
   reset(): IModel<P, D, L, C>;
   set(props: Partial<P>): IModel<P, D, L, C>;
   beforeSave(options?: { force?: boolean }): Promise<{}>;
-  save(options?: { force?: boolean }): Promise<{ saved: boolean }>;
+  save(options?: { force?: boolean }): Promise<IModelSaveResponse<P, D, L, C>>;
   toObject(): P;
 };
+
+export type IModelSaveResponse<
+  P extends object,
+  D extends P,
+  L extends IModelLinksSchema,
+  C extends IModelChildrenSchema = any
+> = { saved: boolean; isChanged: boolean; changes: IModelChanges<P, D> };
 
 export type ModelFactory<M extends IModel = IModel> = (args: ModelFactoryArgs) => M;
 export type ModelFactoryArgs = { path: string; db: t.IDb };
@@ -91,24 +99,14 @@ export type IModelLinkDef = {
 /**
  * [Changes]
  */
-export type IModelChanges<
-  P extends object,
-  D extends P,
-  L extends IModelLinksSchema,
-  C extends IModelChildrenSchema
-> = {
+export type IModelChanges<P extends object, D extends P> = {
   length: number;
-  list: Array<IModelChange<P, D, L, C>>;
+  list: Array<IModelChange<P, D>>;
   map: { [K in keyof D]: D[K] };
 };
-export type IModelChange<
-  P extends object,
-  D extends P,
-  L extends IModelLinksSchema,
-  C extends IModelChildrenSchema
-> = {
-  model: IModel<P, D, L, C>;
+export type IModelChange<P extends object, D extends P> = {
   kind: ModelValueKind;
+  path: string;
   field: string;
   value: { from?: any; to?: any };
   doc: { from: D; to: D };
@@ -182,36 +180,21 @@ export type IModelReadProp<
 /**
  * Changes.
  */
-export type IModelChangingEvent<
-  P extends object = {},
-  D extends P = P,
-  L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
-> = {
+export type IModelChangingEvent<P extends object = {}, D extends P = P> = {
   type: 'MODEL/changing';
   typename: string;
-  payload: IModelChanging<P, D, L, C>;
+  payload: IModelChanging<P, D>;
 };
-export type IModelChanging<
-  P extends object = {},
-  D extends P = P,
-  L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
-> = {
-  change: IModelChange<P, D, L, C>;
+export type IModelChanging<P extends object = {}, D extends P = P> = {
+  change: IModelChange<P, D>;
   isCancelled: boolean;
   cancel(): void;
 };
 
-export type IModelChangedEvent<
-  P extends object = {},
-  D extends P = P,
-  L extends IModelLinksSchema = any,
-  C extends IModelChildrenSchema = any
-> = {
+export type IModelChangedEvent<P extends object = {}, D extends P = P> = {
   type: 'MODEL/changed';
   typename: string;
-  payload: IModelChange<P, D, L, C>;
+  payload: IModelChange<P, D>;
 };
 
 /**
@@ -225,8 +208,8 @@ export type IModelSave<
 > = {
   force: boolean;
   isChanged: boolean;
-  model: IModel<P, D, L>;
-  changes: IModelChanges<P, D, L, C>;
+  model: IModel<P, D, L, C>;
+  changes: IModelChanges<P, D>;
 };
 
 export type IModelBeforeSaveEvent<

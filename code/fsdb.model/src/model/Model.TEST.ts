@@ -330,7 +330,7 @@ describe('model', () => {
       expect(list[0].field).to.eql('name');
       expect(list[0].value.from).to.eql('MyOrg');
       expect(list[0].value.to).to.eql('Acme');
-      expect(list[0].model).to.equal(model);
+      expect(list[0].path).to.equal(model.path);
       expect(list[0].doc.from).to.eql(org.doc);
       expect(list[0].doc.to).to.eql({ ...org.doc, name: 'Acme' });
       expect(list[0].modifiedAt).to.be.within(now - 5, now + 10);
@@ -492,6 +492,10 @@ describe('model', () => {
 
       const res = await model.save();
       expect(res.saved).to.eql(false);
+      expect(res.isChanged).to.eql(false);
+      expect(res.changes.length).to.eql(0);
+      expect(res.changes.list).to.eql([]);
+      expect(res.changes.map).to.eql({});
     });
 
     it('saves when changed (already exists in DB)', async () => {
@@ -506,8 +510,12 @@ describe('model', () => {
       model.events$.subscribe(e => events.push(e));
 
       expect(model.isChanged).to.eql(true);
+
       const res = await model.save();
       expect(res.saved).to.eql(true);
+      expect(res.isChanged).to.eql(true);
+      expect(res.changes.length).to.eql(1);
+
       expect(model.isChanged).to.eql(false);
 
       const dbValue = await db.getValue<IMyOrgProps>(org.path);
