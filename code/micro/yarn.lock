@@ -113,7 +113,7 @@
     "@platform/libs" "0.1.4"
     "@platform/ts.libs" "3.7.0"
 
-"@platform/types@0.0.35":
+"@platform/types@0.0.35", "@platform/types@^0.0.35":
   version "0.0.35"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.35.tgz#5f8f96a188b4585fe0a31cbab144cb4f2c624c96"
   integrity sha512-ePSL7SmqtPt4jt18p8WKakyNTF7ttqj5Lq5C/8NxxUXk8WvPfFqUNaYcLq1bEv1SkJcPQIUH4dL5yElQFzaqdw==

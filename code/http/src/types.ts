@@ -1,5 +1,3 @@
-export type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH';
-
 export type IHttpHeaders = { [key: string]: string | number };
 
 export type IFetchOptions = {

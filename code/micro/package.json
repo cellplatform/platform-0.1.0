@@ -16,6 +16,7 @@
   "dependencies": {
     "@platform/libs": "0.1.4",
     "@platform/log": "0.0.148",
+    "@platform/types": "0.0.35",
     "@platform/util.value": "0.5.8",
     "micro": "9.3.4",
     "micro-cors": "0.1.1",
