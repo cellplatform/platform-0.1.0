@@ -251,5 +251,22 @@ describe('route: namespace', () => {
 
       await mock.dispose();
     });
+
+    it.skip('GET ?calc-true (run calculations)', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: '=A2' },
+        A2: { value: '123' },
+      };
+      await http.post(mock.url('ns:foo'), { cells });
+
+      const res = await http.get(mock.url('ns:foo?cells&calc'));
+      const data = res.json().data;
+
+      mock.dispose();
+
+      console.log('-------------------------------------------');
+      console.log('data', data);
+    });
   });
 });
