@@ -1,6 +1,6 @@
 {
   "name": "@platform/micro",
-  "version": "0.8.1",
+  "version": "0.8.5",
   "description": "Wrapper and helpers around micro.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,18 +14,18 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.1.4",
-    "@platform/log": "0.0.148",
-    "@platform/types": "0.0.35",
-    "@platform/util.value": "0.5.8",
+    "@platform/libs": "0.1.5",
+    "@platform/log": "0.0.150",
+    "@platform/types": "0.1.1",
+    "@platform/util.value": "0.5.11",
     "micro": "9.3.4",
     "micro-cors": "0.1.1",
     "path-to-regexp": "6.1.0"
   },
   "devDependencies": {
-    "@platform/http": "0.4.16",
-    "@platform/test": "0.0.65",
-    "@platform/ts": "3.7.0",
+    "@platform/http": "0.4.19",
+    "@platform/test": "0.0.66",
+    "@platform/ts": "3.7.2",
     "@types/micro": "7.3.3"
   },
   "files": [

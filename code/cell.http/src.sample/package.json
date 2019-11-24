@@ -1,16 +1,17 @@
 {
   "name": "@platform/cell.http.sample",
-  "version": "0.0.63",
+  "version": "0.0.69",
   "scripts": {
     "now": "now dev --listen 8080",
-    "deploy": "now --prod $@",
+    "deploy": "now --prod --force $@",
     "start": "ts-node -T src/server",
     "watch": "nodemon --watch ../src --watch ../../cell.db/src -e ts,tsx --delay 2"
   },
   "dependencies": {
-    "@platform/cell.http": "0.2.1",
-    "@platform/fsdb.mongo": "0.0.38",
-    "@platform/fsdb.nedb": "1.3.33"
+    "@platform/cell.db": "^0.1.4",
+    "@platform/cell.http": "0.2.9",
+    "@platform/fsdb.mongo": "0.0.41",
+    "@platform/fsdb.nedb": "1.3.36"
   },
   "devDependencies": {
     "ts-node": "8.5.2"

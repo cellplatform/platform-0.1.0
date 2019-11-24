@@ -1,6 +1,6 @@
 {
   "name": "@platform/libs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Common external toolbelt libs used accross modules.",
   "scripts": {
     "test": "echo no-op"

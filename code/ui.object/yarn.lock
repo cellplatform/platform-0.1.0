@@ -1079,6 +1079,18 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
+"@platform/css@0.1.46":
+  version "0.1.46"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.46.tgz#1b54fff1db79ae892b2454efd4752a0ccea2dec8"
+  integrity sha512-e8Hf6ONL1c/+VawAxLxYQlfQx6mjdgL7q5QhDBl0WqS4Hc6HDZhoEKUdMXUArWDGSmkKzmxc9AKzfsCVDq8gPQ==
+  dependencies:
+    "@platform/libs" "0.1.5"
+    "@platform/util.is" "0.0.99"
+    "@platform/util.value" "0.5.11"
+    "@types/tinycolor2" "1.4.2"
+    glamor "2.20.40"
+    tinycolor2 "1.4.1"
+
 "@platform/electron@0.7.20":
   version "0.7.20"
   resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.7.20.tgz#6dba2d5961587828f96a817d6be7b0abb710cfd6"
@@ -1119,6 +1131,18 @@
     chalk "3.0.0"
     listr "0.14.3"
 
+"@platform/exec@0.2.35":
+  version "0.2.35"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.35.tgz#97d964bd74de506dad3d62cd45ac9381c5a24549"
+  integrity sha512-j31OW2ONQwHItEw6JfGRZc2Wx2vrA41L229odBLSq60DJUttHqYJB+fDMVNk1BMC3cv4lnKwtcASizGaZMR4VQ==
+  dependencies:
+    "@platform/libs" "0.1.5"
+    "@types/chalk" "2.2.0"
+    "@types/listr" "0.14.2"
+    ansi-regex "5.0.0"
+    chalk "3.0.0"
+    listr "0.14.3"
+
 "@platform/fs@0.3.3":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.3.3.tgz#ca0bbba0568ba5041fe74af5a03f66166eac06f7"
@@ -1151,6 +1175,22 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
+"@platform/fs@0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.3.5.tgz#e3a9242dc46b38381ffcdc9b84d206746111a148"
+  integrity sha512-lkjq1z5wjDx2NHW0wra8mAn34oD1l246HKWBDh5bV1FwkiIe383ZUIpZX2YjjgqpJCIHKrZVh2lj3NsoiBHTbQ==
+  dependencies:
+    "@types/fs-extra" "8.0.1"
+    "@types/js-yaml" "3.12.1"
+    archiver "3.1.1"
+    dotenv "8.2.0"
+    extract-zip "1.6.7"
+    filesize "6.0.1"
+    fs-extra "8.1.0"
+    glob "7.1.6"
+    js-yaml "3.13.1"
+    minimatch "3.0.4"
+
 "@platform/libs@0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.1.3.tgz#566287ee174a3cc6e6ff85233b234bf0b8b5da1b"
@@ -1170,6 +1210,18 @@
   dependencies:
     "@types/ramda" "0.26.34"
     core-js "3.4.1"
+    ramda "0.26.1"
+    regenerator-runtime "0.13.3"
+    rxjs "6.5.3"
+    tslib "1.10.0"
+
+"@platform/libs@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.1.5.tgz#fed211c5162b8af76611af8604ca9ee7451ceb6e"
+  integrity sha512-q65CkaqFVVicFSV0OjZEQcU+jLBF6fdUOuGBy2h5LR4IFaZ7G6t3m0KDbYnodyHxt8gCBFShgTyAE66DJxhaNw==
+  dependencies:
+    "@types/ramda" "0.26.36"
+    core-js "3.4.2"
     ramda "0.26.1"
     regenerator-runtime "0.13.3"
     rxjs "6.5.3"
@@ -1233,12 +1285,38 @@
     react "16.12.0"
     react-dom "16.12.0"
 
+"@platform/react@0.3.32":
+  version "0.3.32"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.32.tgz#df5f07c58732996eb810799bdb27f92465f491ac"
+  integrity sha512-ZupKBnOCSAvWYUlGex8SiiBp+eWhjwIyAnqsY5p6vjfSBEjHFGeT6ALOi38fUFZyDbdixraUn1UheM7+flJVVA==
+  dependencies:
+    "@platform/css" "0.1.46"
+    "@platform/util.is" "0.0.99"
+    "@types/react" "16.9.13"
+    "@types/react-dom" "16.9.4"
+    react "16.12.0"
+    react-dom "16.12.0"
+
 "@platform/ts.libs@3.7.0":
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.7.0.tgz#bd9a1fc6c64e8de3b9bee68acf2bc3c998d09dd3"
   integrity sha512-86Yhy42h3KVsHWjMdAYXMJQUQjirdLPosCJOwfNVywdovJCwXtiip+TJ/csl1gGl/5bB3Xd4X6eUl1oSTcZXeA==
   dependencies:
     "@types/node" "12.12.8"
+    prettier "1.19.1"
+    ts-node "8.5.2"
+    tslib "1.10.0"
+    tslint "5.20.1"
+    tslint-config-prettier "1.18.0"
+    tslint-react "4.1.0"
+    typescript "3.7.2"
+
+"@platform/ts.libs@3.7.1":
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.7.1.tgz#30ee1aeef6c7c1ea8d642b9ee5efcdbc997c2c08"
+  integrity sha512-wltOkd5iTiNDAxcyiWm0lxtlTpJ9HmsYMshlnl7K8q/yfxv8EhDvBDWs2rTW+P5koG8OdYkRJB/PMAgzS9maGQ==
+  dependencies:
+    "@types/node" "12.12.12"
     prettier "1.19.1"
     ts-node "8.5.2"
     tslib "1.10.0"
@@ -1257,6 +1335,16 @@
     "@platform/libs" "0.1.4"
     "@platform/ts.libs" "3.7.0"
 
+"@platform/ts@3.7.2":
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.7.2.tgz#982e8d8d58b667876a00c4062a22712d61d46688"
+  integrity sha512-Qw11UsVXk8TxArK5D8sVAxopJAUnvtSR0LNuOYOYGiGrsjIxnWFRpAQW1w/RrTwK7Xq8GcEy3jXgmtXQ+VATaw==
+  dependencies:
+    "@platform/exec" "0.2.35"
+    "@platform/fs" "0.3.5"
+    "@platform/libs" "0.1.5"
+    "@platform/ts.libs" "3.7.1"
+
 "@platform/types@0.0.32":
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.32.tgz#ed64b33bd70d6491dfd1ac21eb0439f3e1f32a81"
@@ -1266,6 +1354,11 @@
   version "0.0.35"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.0.35.tgz#5f8f96a188b4585fe0a31cbab144cb4f2c624c96"
   integrity sha512-ePSL7SmqtPt4jt18p8WKakyNTF7ttqj5Lq5C/8NxxUXk8WvPfFqUNaYcLq1bEv1SkJcPQIUH4dL5yElQFzaqdw==
+
+"@platform/types@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.1.1.tgz#9613c0a136b6b6416db84cebb9b6daa1fed8471a"
+  integrity sha512-6f8+94oiZeUWqZEjVqZzFg6xCNMtudr8LFNkAa1cswqSFqr7uhyDpSCfm3QYQFBAxWjOte06JilyS2Vw4YPdxQ==
 
 "@platform/ui.object@0.0.149":
   version "0.0.149"
@@ -1285,6 +1378,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.97.tgz#ca10c18c0032c3287a5a28e65ee2de5117c0f640"
   integrity sha512-+twGNI5s8NB9F+5XDFppSKLBYhomBysXlEqxE+Tu49XQhjawn99AXTk2rY3FbK5Wb9PmBUhWz1js8soPNmZuWw==
 
+"@platform/util.is@0.0.99":
+  version "0.0.99"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.99.tgz#cec6784f9d33bd2ca44f5f1a67e05a0ba8148be7"
+  integrity sha512-MVxN93c54YG3M+bDkW9mChte9uvxTQ0T0aOCSRuC9PQwcDHxFyepOCfqSSq3yQSEKRv+Op0K1kdgJMMRYxvAnw==
+
 "@platform/util.string@0.3.15":
   version "0.3.15"
   resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.3.15.tgz#da7db0837907ae0d2678e3b8f156e7121b323066"
@@ -1294,6 +1392,19 @@
     escape-string-regexp "2.0.0"
     fuzzy "0.1.3"
     underscore.string "3.3.5"
+
+"@platform/util.value@0.5.11":
+  version "0.5.11"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.5.11.tgz#d729981e842eca2de0d7a05fb4262b23a4026229"
+  integrity sha512-I8eoLRcSOKi50CkecXwnsYjRPXeC6JLgdV4i4RJypTIDPaC/IEtenpVLI/GXbpeDmSHtw9NjASK/qLnYDKe1jg==
+  dependencies:
+    "@platform/libs" "0.1.5"
+    "@platform/types" "0.1.1"
+    "@platform/util.is" "0.0.99"
+    "@types/semver" "6.2.0"
+    cuid "2.1.6"
+    dayjs "1.8.17"
+    semver "6.3.0"
 
 "@platform/util.value@0.5.5":
   version "0.5.5"
@@ -1402,6 +1513,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.3.tgz#27b3f40addaf2f580459fdb405222685542f907a"
   integrity sha512-3SiLAIBkDWDg6vFo0+5YJyHPWU9uwu40Qe+v+0MH8wRKYBimHvvAOyk3EzMrD/TrIlLYfXrqDqrg913PynrMJQ==
 
+"@types/node@12.12.12":
+  version "12.12.12"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.12.tgz#529bc3e73dbb35dd9e90b0a1c83606a9d3264bdb"
+  integrity sha512-MGuvYJrPU0HUwqF7LqvIj50RZUX23Z+m583KBygKYUZLlZ88n6w28XRNJRJgsHukLEnLz6w6SvxZoLgbr5wLqQ==
+
 "@types/node@12.12.8", "@types/node@^12.0.12":
   version "12.12.8"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.8.tgz#dab418655af39ce2fa99286a0bed21ef8072ac9d"
@@ -1431,6 +1547,13 @@
   dependencies:
     ts-toolbelt "^4.10.7"
 
+"@types/ramda@0.26.36":
+  version "0.26.36"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.26.36.tgz#094f495c04f8876f583597ae73dce7eac94fc6ba"
+  integrity sha512-uo22Nf32Cc3EURp9tYlFttY8MVQZ1zoVum+D+yQ2jm4IqQFxDtwCQlP/WMwbuj4ey5kw1rJ7v6OacDszfWiqLA==
+  dependencies:
+    ts-toolbelt "^4.10.7"
+
 "@types/react-dom@16.9.4":
   version "16.9.4"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.4.tgz#0b58df09a60961dcb77f62d4f1832427513420df"
@@ -1450,6 +1573,14 @@
   version "16.9.11"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.11.tgz#70e0b7ad79058a7842f25ccf2999807076ada120"
   integrity sha512-UBT4GZ3PokTXSWmdgC/GeCGEJXE5ofWyibCcecRLUVN2ZBpXQGVgQGtG2foS7CrTKFKlQVVswLvf7Js6XA/CVQ==
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^2.2.0"
+
+"@types/react@16.9.13":
+  version "16.9.13"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.13.tgz#b3ea5dd443f4a680599e2abba8cc66f5e1ce0059"
+  integrity sha512-LikzRslbiufJYHyzbHSW0GrAiff8QYLMBFeZmSxzCYGXKxi8m/1PHX+rsVOwhr7mJNq+VIu2Dhf7U6mjFERK6w==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -2772,6 +2903,11 @@ core-js@3.4.1, core-js@^3.4.0:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.4.1.tgz#76dd6828412900ab27c8ce0b22e6114d7ce21b18"
   integrity sha512-KX/dnuY/J8FtEwbnrzmAjUYgLqtk+cxM86hfG60LGiW3MmltIc2yAmDgBgEkfm0blZhUrdr1Zd84J2Y14mLxzg==
+
+core-js@3.4.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.4.2.tgz#ee2b1a60b50388d8ddcda8cdb44a92c7a9ea76df"
+  integrity sha512-bUTfqFWtNKWp73oNIfRkqwYZJeNT3lstzZcAkhhiuvDraRSgOH1/+F9ZklbpR4zpdKuo4cpXN8tKP7s61yjX+g==
 
 core-js@^1.0.0:
   version "1.2.7"

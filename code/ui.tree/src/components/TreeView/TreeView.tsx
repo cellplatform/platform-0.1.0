@@ -12,8 +12,8 @@ import {
 
 import {
   color,
-  containsFocus,
   constants,
+  containsFocus,
   css,
   defaultValue,
   GlamorValue,
@@ -23,15 +23,14 @@ import {
   tree as treeUtil,
   TreeNodeMouseEvent,
   TreeNodeMouseEventHandler,
-  time,
 } from '../../common';
 import { TreeEvents } from '../../events';
 import * as themes from '../../themes';
 import { IStackPanel, StackPanel, StackPanelSlideEvent } from '../primitives';
-import { TreeHeader } from '../TreeHeader';
-import { TreeNodeList } from '../TreeNodeList';
 import { TextInput } from '../Text';
+import { TreeHeader } from '../TreeHeader';
 import { TreeNode } from '../TreeNode';
+import { TreeNodeList } from '../TreeNodeList';
 
 export { TreeNodeMouseEvent, TreeNodeMouseEventHandler };
 export type ITreeViewProps = {
@@ -138,12 +137,6 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
     // Finish up.
     this.updatePath();
-
-    // TEMP 🐷
-    time.delay(0, () => {
-      console.log(`\nTODO 🐷  TEMP \n`);
-      this.forceUpdate();
-    });
   }
 
   public componentDidUpdate(prev: ITreeViewProps) {
@@ -277,7 +270,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
       target: 'LABEL',
     });
 
-    console.log('rect', rect);
+    // console.log('rect', rect);
 
     if (!rect) {
       return;
