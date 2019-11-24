@@ -8,9 +8,9 @@ export const hash = {
   /**
    * Generate a uniform hash (SHA-256) of the given NS data.
    * NOTE:
-   *  Ensure cell/row/column data already has hashes calculated.
+   *    Ensure [cell/row/column] data already has hashes calculated.
    */
-  ns(args: { uri: string; ns: t.INs; data?: Partial<t.INsCoordData> }): string {
+  ns(args: { uri: string; ns: t.INs; data?: Partial<t.INsDataCoord> }): string {
     const uri = args.uri.trim();
     if (!uri.startsWith('ns:')) {
       throw new Error(`Hashing requires a valid ns URI. Given uri "${uri}".`);

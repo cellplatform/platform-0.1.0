@@ -33,7 +33,7 @@ export type IReqNsQuery = {
  * GET
  */
 export type IGetNsResponse = IGetResponse<IGetNsResponseData>;
-export type IGetNsResponseData = { ns: t.INs } & Partial<t.INsCoordData>;
+export type IGetNsResponseData = { ns: t.INs } & Partial<t.INsDataCoord>;
 
 /**
  * POST

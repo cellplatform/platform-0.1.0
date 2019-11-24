@@ -111,7 +111,7 @@ export async function getChildData(args: {
   return (await Promise.all(wait)).reduce((acc, next) => {
     acc[next.field] = next.value;
     return acc;
-  }, {}) as t.INsCoordData;
+  }, {}) as t.INsDataCoord;
 }
 
 /**
@@ -138,7 +138,7 @@ export async function setProps(args: { ns: t.IDbModelNs; data?: Partial<t.INsPro
 /**
  * Save child data (cells|rows|columns).
  */
-export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.INsCoordData> }) {
+export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.INsDataCoord> }) {
   const { ns } = args;
   let changes: t.IDbModelChange[] = [];
   const saved = { cells: 0, rows: 0, columns: 0 };

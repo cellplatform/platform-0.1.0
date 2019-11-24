@@ -11,9 +11,9 @@ export type INsData<
   V extends t.ICellData = t.ICellData,
   C extends t.IColumnData = t.IColumnData,
   R extends t.IRowData = t.IRowData
-> = INsCoordData<V, C, R> & { ns: INs };
+> = INsDataCoord<V, C, R> & { ns: INs };
 
-export type INsCoordData<
+export type INsDataCoord<
   V extends t.ICellData = t.ICellData,
   C extends t.IColumnData = t.IColumnData,
   R extends t.IRowData = t.IRowData

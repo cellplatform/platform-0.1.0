@@ -95,7 +95,7 @@ async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery
 async function getNsData(args: {
   model: t.IDbModelNs;
   query: t.IReqNsQuery;
-}): Promise<Partial<t.INsCoordData> | t.IErrorPayload> {
+}): Promise<Partial<t.INsDataCoord> | t.IErrorPayload> {
   try {
     const { model, query } = args;
     if (Object.keys(query).length === 0) {
@@ -141,6 +141,10 @@ async function postNsResponse(args: {
 
   const changes: t.IDbModelChange[] = [];
   let isNsChanged = false;
+
+  // query.
+
+  // body.calc
 
   /**
    * TODO 🐷 calculate updates
