@@ -1,5 +1,7 @@
-import { server, log, fs } from './common';
+import { t, server, log, fs, now } from './common';
 import { MongoDb } from '@platform/fsdb.mongo';
+
+// server.config()
 
 const region = fs.env.value('NOW_REGION');
 const isCloud = typeof region === 'string' && region.length > 0 && !region.startsWith('dev');
@@ -18,7 +20,7 @@ log.info(`Mongo Connection: process.env.${KEY}`);
 /**
  * Connection to a hosted Mongo database.
  */
-const db = MongoDb.create({
+const db: t.IDb = MongoDb.create({
   uri,
   db: isDev ? 'dev' : 'test',
   collection: `cell.http`,

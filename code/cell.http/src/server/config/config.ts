@@ -17,10 +17,10 @@ export const DEFAULT: t.IHttpConfig = {
 /**
  * Loads the configuration [file: "cell.http.yml"]
  */
-export async function load(args: ILoadArgs = {}) {
+export function loadSync(args: ILoadArgs = {}) {
   // Path.
   const path = args.path ? fs.resolve(args.path) : fs.resolve('config.yml');
-  const exists = await fs.pathExists(path);
+  const exists = fs.pathExistsSync(path);
   if (!exists && args.throw) {
     throw new Error(`Config file does not exist: ${path}`);
   }
@@ -28,7 +28,7 @@ export async function load(args: ILoadArgs = {}) {
   // Load file.
   let data = DEFAULT;
   if (exists) {
-    const yaml = await fs.file.loadAndParse<t.IHttpConfig>(path, DEFAULT);
+    const yaml = fs.file.loadAndParseSync<t.IHttpConfig>(path, DEFAULT);
     data = R.mergeDeepRight(data, yaml);
   }
 

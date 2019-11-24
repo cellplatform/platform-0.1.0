@@ -64,9 +64,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
       getUri: (id, key) => Uri.string.cell(id, key),
     });
     const getModel: GetModel = () => models.Cell.create({ db, uri }).ready;
-    return error
-      ? { status, data: { error } }
-      : getCoordResponse<t.IResGetCell>({ uri, getModel });
+    return error ? { status, data: { error } } : getCoordResponse<t.IResGetCell>({ uri, getModel });
   });
 
   /**
@@ -80,9 +78,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
       getUri: (id, key) => Uri.string.row(id, key),
     });
     const getModel: GetModel = () => models.Row.create({ db, uri }).ready;
-    return error
-      ? { status, data: { error } }
-      : getCoordResponse<t.IResGetRow>({ uri, getModel });
+    return error ? { status, data: { error } } : getCoordResponse<t.IResGetRow>({ uri, getModel });
   });
 
   /**
@@ -96,9 +92,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
       getUri: (id, key) => Uri.string.column(id, key),
     });
     const getModel: GetModel = () => models.Column.create({ db, uri }).ready;
-    return error
-      ? { status, data: { error } }
-      : getCoordResponse<t.IResGetRow>({ uri, getModel });
+    return error ? { status, data: { error } } : getCoordResponse<t.IResGetRow>({ uri, getModel });
   });
 }
 
