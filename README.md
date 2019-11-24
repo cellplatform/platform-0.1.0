@@ -82,6 +82,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/cell.db](/code/cell.db)
   - [@platform/cell.schema](/code/cell.schema)
   - [@platform/cell.http](/code/cell.http)
+  - [@platform/cell.fs](/code/cell.fs)
   - ui
     - [@platform/cell.ui](/code/cell.ui)
     - [@platform/cell.ui.props](/code/cell.ui.props)
