@@ -6,7 +6,7 @@ describe('hash', () => {
     beforeEach(() => (index = -1));
 
     let index = -1;
-    const test = (ns: t.INs, data: Partial<t.INsCoordData> | undefined, expected: string) => {
+    const test = (ns: t.INs, data: Partial<t.INsDataCoord> | undefined, expected: string) => {
       const hash = value.hash.ns({ uri: 'ns:foo', ns, data });
 
       index++;

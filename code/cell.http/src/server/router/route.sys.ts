@@ -40,7 +40,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
   router.get(ROUTES.SYS.UID, async req => {
     return {
       status: 200,
-      data: { id: id.cuid() },
+      data: { id: id.cuid(), type: 'cuid' },
     };
   });
 }

@@ -3,13 +3,13 @@ import { t } from '../common';
 /**
  * Error
  */
-export type IError<T extends string = any> = {
+export type IError<T extends string = string> = {
   type: T;
   message: string;
   children?: IError[];
 };
-
-export type IErrorParent<T extends string = any> = { error?: IError<T> };
+export type IErrorParent<T extends string = string> = { error?: IError<T> };
+export type IHttpError<T extends string = string> = IError<T> & { status: number };
 
 /**
  * Ref errors

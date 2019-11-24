@@ -1,5 +1,6 @@
 import { t, Schema, Uri, util, coord } from '../common';
 import { Cell, Column, Row } from '../model.db';
+import { toChanges } from './util';
 
 const { squash, isNilOrEmptyObject } = util.value;
 
@@ -110,7 +111,7 @@ export async function getChildData(args: {
   return (await Promise.all(wait)).reduce((acc, next) => {
     acc[next.field] = next.value;
     return acc;
-  }, {}) as t.INsCoordData;
+  }, {}) as t.INsDataCoord;
 }
 
 /**
@@ -129,7 +130,7 @@ export async function setProps(args: { ns: t.IDbModelNs; data?: Partial<t.INsPro
   const res = await ns.set({ props }).save();
 
   // Finish up.
-  changes = util.toDbModelChanges(uri, res.changes);
+  changes = toChanges(uri, res.changes);
   const isChanged = changes.length > 0;
   return { changes, isChanged };
 }
@@ -137,7 +138,7 @@ export async function setProps(args: { ns: t.IDbModelNs; data?: Partial<t.INsPro
 /**
  * Save child data (cells|rows|columns).
  */
-export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.INsCoordData> }) {
+export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.INsDataCoord> }) {
   const { ns } = args;
   let changes: t.IDbModelChange[] = [];
   const saved = { cells: 0, rows: 0, columns: 0 };
@@ -244,7 +245,7 @@ async function setChildren(args: {
         total++;
         const res = await model.save();
         const uri = args.getUri(key);
-        changes = [...changes, ...util.toDbModelChanges(uri, res.changes)];
+        changes = [...changes, ...toChanges(uri, res.changes)];
       }
     }
   });

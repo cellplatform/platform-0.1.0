@@ -1,10 +1,10 @@
 import { IncomingMessage, ServerResponse, Server } from 'http';
 import { Token, Key } from 'path-to-regexp';
+import { HttpMethod } from '@platform/types';
 
 /**
  * HTTP
  */
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type IHttpHeaders = { [key: string]: string };
 
 /**

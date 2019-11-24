@@ -71,7 +71,8 @@ async function toResponse(url: string, res: Response) {
         try {
           json = JSON.parse(result.body) as T;
         } catch (error) {
-          throw new Error(`Failed while parsing JSON for '${url}'. ${error.message}`);
+          const msg = `Failed while parsing JSON for '${url}'.\nParse Error: ${error.message}\nBody: ${result.body}`;
+          throw new Error(msg);
         }
       }
       return json;
