@@ -30,7 +30,7 @@ describe('route: coord (cell|row|col)', () => {
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
-      const body = res.json() as t.IGetCoordResponse;
+      const body = res.json() as t.IResGetCoord;
 
       expect(body.uri).to.eql(uri);
       expect(body.exists).to.eql(false);
@@ -61,7 +61,7 @@ describe('route: coord (cell|row|col)', () => {
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
-      const body = res.json() as t.IGetCellResponse;
+      const body = res.json() as t.IResGetCell;
       const data = body.data;
 
       expect(body.uri).to.eql(uri);
@@ -81,7 +81,7 @@ describe('route: coord (cell|row|col)', () => {
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
-      const body = res.json() as t.IGetColumnResponse;
+      const body = res.json() as t.IResGetColumn;
       const data = body.data;
 
       expect(body.uri).to.eql(uri);
@@ -101,7 +101,7 @@ describe('route: coord (cell|row|col)', () => {
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
-      const body = res.json() as t.IGetRowResponse;
+      const body = res.json() as t.IResGetRow;
       const data = body.data;
 
       expect(body.uri).to.eql(uri);

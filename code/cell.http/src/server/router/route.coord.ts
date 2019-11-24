@@ -66,7 +66,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const getModel: GetModel = () => models.Cell.create({ db, uri }).ready;
     return error
       ? { status, data: { error } }
-      : getCoordResponse<t.IGetCellResponse>({ uri, getModel });
+      : getCoordResponse<t.IResGetCell>({ uri, getModel });
   });
 
   /**
@@ -82,7 +82,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const getModel: GetModel = () => models.Row.create({ db, uri }).ready;
     return error
       ? { status, data: { error } }
-      : getCoordResponse<t.IGetRowResponse>({ uri, getModel });
+      : getCoordResponse<t.IResGetRow>({ uri, getModel });
   });
 
   /**
@@ -98,7 +98,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const getModel: GetModel = () => models.Column.create({ db, uri }).ready;
     return error
       ? { status, data: { error } }
-      : getCoordResponse<t.IGetRowResponse>({ uri, getModel });
+      : getCoordResponse<t.IResGetRow>({ uri, getModel });
   });
 }
 

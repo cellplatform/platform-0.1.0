@@ -37,7 +37,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
    *        - /ns:foo?cells&rows&columns   [NB: Same format for rows/columns query flags].
    */
   router.get(ROUTES.NS.BASE, async req => {
-    const query = req.query as t.IReqNsQuery;
+    const query = req.query as t.IReqGetNsQuery;
     const { status, id, error } = getParams(req);
     return !id ? { status, data: { error } } : getNsResponse({ db, id, query });
   });
@@ -49,7 +49,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
    *         -/ns:<id>?cells&rows&column
    */
   router.get(ROUTES.NS.DATA, async req => {
-    const query: t.IReqNsQuery = { cells: true, rows: true, columns: true };
+    const query: t.IReqGetNsQuery = { cells: true, rows: true, columns: true };
     const { status, id, error } = getParams(req);
     return !id ? { status, data: { error } } : getNsResponse({ db, id, query });
   });
@@ -58,9 +58,9 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
    * POST namespace data (save to database).
    */
   router.post(ROUTES.NS.BASE, async req => {
-    const query = req.query as t.IReqNsQuery;
+    const query = req.query as t.IReqPostNsQuery;
     const { status, id, error } = getParams(req);
-    const body = (await req.body.json<t.IPostNsBody>()) || {};
+    const body = (await req.body.json<t.IReqPostNsBody>()) || {};
     return !id ? { status, data: { error } } : postNsResponse({ db, id, body, query });
   });
 }
@@ -69,7 +69,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
  * [Helpers]
  */
 
-async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery }) {
+async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqGetNsQuery }) {
   const { db, id, query } = args;
   const uri = Uri.string.ns(id);
   const model = await models.Ns.create({ db, uri }).ready;
@@ -77,12 +77,12 @@ async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery
   const exists = Boolean(model.exists);
   const { createdAt, modifiedAt } = model;
 
-  const data: t.IGetNsResponseData = {
+  const data: t.IResGetNsData = {
     ns: await models.ns.toObject(model),
     ...(await getNsData({ model, query })),
   };
 
-  const res: t.IGetNsResponse = {
+  const res: t.IResGetNs = {
     uri,
     exists,
     createdAt,
@@ -95,7 +95,7 @@ async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqNsQuery
 
 async function getNsData(args: {
   model: t.IDbModelNs;
-  query: t.IReqNsQuery;
+  query: t.IReqGetNsQuery;
 }): Promise<Partial<t.INsDataCoord> | t.IErrorPayload> {
   try {
     const { model, query } = args;
@@ -133,8 +133,8 @@ async function getNsData(args: {
 async function postNsResponse(args: {
   db: t.IDb;
   id: string;
-  body: t.IPostNsBody;
-  query: t.IReqNsQuery;
+  body: t.IReqPostNsBody;
+  query: t.IReqPostNsQuery;
 }) {
   try {
     const { db, id, query } = args;
@@ -145,7 +145,7 @@ async function postNsResponse(args: {
     const changes: t.IDbModelChange[] = [];
     let isNsChanged = false;
 
-    if (body.cells && body.calc) {
+    if (body.cells && query.calc === true) {
       const cells = await models.ns.getChildCells({ model: ns });
       const getCells: t.GetCells = async () => ({ ...cells, ...(body.cells || {}) });
       const calc = func.calc({ getCells });
@@ -153,7 +153,7 @@ async function postNsResponse(args: {
       body = { ...body, cells: { ...(body.cells || {}), ...res.map } };
     }
 
-    const saveChildData = async (body: t.IPostNsBody) => {
+    const saveChildData = async (body: t.IReqPostNsBody) => {
       const { cells, rows, columns } = body;
       if (cells || rows || columns) {
         const data = { cells, rows, columns };
@@ -162,7 +162,7 @@ async function postNsResponse(args: {
       }
     };
 
-    const saveNsData = async (body: t.IPostNsBody) => {
+    const saveNsData = async (body: t.IReqPostNsBody) => {
       const res = await models.ns.setProps({ ns, data: body.ns });
       if (res.isChanged) {
         isNsChanged = true;
@@ -182,7 +182,7 @@ async function postNsResponse(args: {
       }
     }
     const res = await getNsResponse({ db, id, query });
-    const data: t.IPostNsResponse = { ...res.data, changes };
+    const data: t.IResPostNs = { ...res.data, changes };
     const status = res.status;
     return { status, data };
   } catch (err) {

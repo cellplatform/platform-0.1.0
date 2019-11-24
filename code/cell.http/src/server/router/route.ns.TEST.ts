@@ -119,7 +119,9 @@ describe('route: namespace', () => {
         A2: { value: '123' },
       };
       const res1 = await post.ns('ns:foo?cells', { cells }); // Default: calc=false
-      const res2 = await post.ns('ns:foo?cells', { cells, calc: true });
+      const res2 = await post.ns('ns:foo?cells&calc', { cells });
+      const res3 = await post.ns('ns:foo?cells&calc=true', { cells });
+      const res4 = await post.ns('ns:foo?cells&calc=false', { cells });
 
       const cells1 = res1.data.cells || {};
       const cells2 = res2.data.cells || {};
@@ -130,6 +132,9 @@ describe('route: namespace', () => {
       expect(A1a.props).to.eql(undefined);
       expect(A1b.props && A1b.props.value).to.eql('123'); // NB: calculated REF value of A2.
       expect(A1a.hash).to.not.eql(A1b.hash); // NB: Hashes differ.
+
+      expect(res3.data).to.eql(res2.data); // Calculates.
+      expect(res4.data).to.eql(res1.data); // No calcuation.
     });
 
     it('REF re-calculate', async () => {
@@ -138,10 +143,10 @@ describe('route: namespace', () => {
         A1: { value: '=A2' },
         A2: { value: 123 },
       };
-      const res1 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+      const res1 = await post.ns('ns:foo?cells&calc', { cells }, { mock });
 
       cells.A2.value = 456;
-      const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+      const res2 = await post.ns('ns:foo?cells&calc', { cells }, { mock });
 
       mock.dispose();
 
@@ -166,7 +171,7 @@ describe('route: namespace', () => {
 
       expect(res.status).to.eql(200);
 
-      const body = res.json<t.IGetNsResponse>();
+      const body = res.json<t.IResGetNs>();
       const ns = body.data.ns;
 
       expect(body.uri).to.eql('ns:foo');
@@ -186,7 +191,7 @@ describe('route: namespace', () => {
     it('GET squashes null values', async () => {
       const mock = await createMock();
 
-      const payload: t.IPostNsBody = {
+      const payload: t.IReqPostNsBody = {
         cells: { A1: { value: 'hello', props: null } } as any, // NB: [any] because `null` is an illegal type.
         rows: { 1: { props: null } } as any,
         columns: { A: { props: null } } as any,
@@ -220,7 +225,7 @@ describe('route: namespace', () => {
         1: { props: { width: 350 } },
         3: { props: { width: 256 } },
       };
-      const body: t.IPostNsBody = { cells, columns, rows };
+      const body: t.IReqPostNsBody = { cells, columns, rows };
       await http.post(mock.url('ns:foo'), body);
 
       const test = async (path: string, expected?: any) => {
@@ -228,7 +233,7 @@ describe('route: namespace', () => {
         const res = await http.get(url);
 
         // Prepare a subset of the return data to compare with expected result-set.
-        const json = res.json<t.IPostNsResponse>().data;
+        const json = res.json<t.IResPostNs>().data;
         delete json.ns;
         stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
         expect(json).to.eql(expected);
@@ -282,7 +287,7 @@ describe('route: namespace', () => {
         1: { props: { width: 350 } },
         3: { props: { width: 256 } },
       };
-      const body: t.IPostNsBody = { cells, columns, rows };
+      const body: t.IReqPostNsBody = { cells, columns, rows };
       await http.post(mock.url('ns:foo'), body);
 
       const test = async (path: string, expected?: any) => {
@@ -290,7 +295,7 @@ describe('route: namespace', () => {
         const res = await http.get(url);
 
         // Prepare a subset of the return data to compare with expected result-set.
-        const json = res.json<t.IPostNsResponse>().data;
+        const json = res.json<t.IResPostNs>().data;
         delete json.ns;
         stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
         expect(json).to.eql(expected);

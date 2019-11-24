@@ -18,9 +18,6 @@ export type IGetResponse<D> = {
 /**
  * Namespace
  */
-export type ReqNsQueryCoord = string; // Eg: "A1", "A", "1", "A2,B,10,C1:C9"
-export type ReqNsQueryData = boolean | string; // true (everything) or comma seperated eg: "cells" | "ns,cell,columns,row" | "A2,B,10,C1:C9"
-
 export type IReqNsParams = { id: string };
 export type IReqNsQuery = {
   data?: boolean; // true: all (cells/rows/columns) - overrides other fields.
@@ -30,22 +27,26 @@ export type IReqNsQuery = {
 };
 
 /**
- * GET
+ * Namespace: GET
  */
-export type IGetNsResponse = IGetResponse<IGetNsResponseData>;
-export type IGetNsResponseData = { ns: t.INs } & Partial<t.INsDataCoord>;
+export type IReqGetNsQuery = IReqNsQuery;
+export type IResGetNs = IGetResponse<IResGetNsData>;
+export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
 
 /**
- * POST
+ * Namespace: POST
  */
-export type IPostNsBody = {
+export type IReqPostNsQuery = IReqNsQuery & {
+  calc?: boolean; // perform calcuations.
+};
+
+export type IReqPostNsBody = {
   ns?: Partial<t.INsProps>;
   cells?: t.IMap<t.ICellData>;
   columns?: t.IMap<t.IColumnData>;
   rows?: t.IMap<t.IRowData>;
-  calc?: boolean; // perform calcuations.
 };
-export type IPostNsResponse = IGetNsResponse & { changes: t.IDbModelChange[] };
+export type IResPostNs = IResGetNs & { changes: t.IDbModelChange[] };
 
 /**
  * Coord: cell|row|col
@@ -56,13 +57,13 @@ export type IReqCoordQuery = {};
 /**
  * GET
  */
-export type IGetCoordResponse = IGetCellResponse | IGetRowResponse | IGetColumnResponse;
+export type IResGetCoord = IResGetCell | IResGetRow | IResGetColumn;
 
-export type IGetCellResponse = IGetResponse<IGetCellResponseData>;
-export type IGetCellResponseData = t.ICellData;
+export type IResGetCell = IGetResponse<IResGetCellData>;
+export type IResGetCellData = t.ICellData;
 
-export type IGetRowResponse = IGetResponse<IGetRowResponseData>;
-export type IGetRowResponseData = t.IRowData;
+export type IResGetRow = IGetResponse<IResGetRowData>;
+export type IResGetRowData = t.IRowData;
 
-export type IGetColumnResponse = IGetResponse<IGetColumnResponseData>;
-export type IGetColumnResponseData = t.IColumnData;
+export type IResGetColumn = IGetResponse<IResGetColumnData>;
+export type IResGetColumnData = t.IColumnData;

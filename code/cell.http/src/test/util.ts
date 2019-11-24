@@ -18,10 +18,10 @@ export const post = {
   /**
    * POST namespace data.
    */
-  async ns(url: string, body: t.IPostNsBody, options: { mock?: IMock } = {}) {
+  async ns(url: string, body: t.IReqPostNsBody, options: { mock?: IMock } = {}) {
     const mock = options.mock || (await createMock());
     const res = await http.post(mock.url(url), body);
-    const json = res.json<t.IPostNsResponse>();
+    const json = res.json<t.IResPostNs>();
     if (!options.mock) {
       await mock.dispose();
     }
