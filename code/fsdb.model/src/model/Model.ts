@@ -107,12 +107,13 @@ export class Model<
   }
 
   public get isChanged() {
-    const list = this._changes || [];
-    if (list.length === 0) {
+    const changes = this.changes;
+    if (changes.list.length === 0) {
       return false;
     } else {
       // Ensure registered changes differ from current values.
-      return list.every(change => !R.equals(this.doc[change.field], change.value.to));
+      const map = changes.map;
+      return Object.keys(map).some(key => !R.equals(this.doc[key], map[key]));
     }
   }
 
@@ -159,13 +160,17 @@ export class Model<
     this.throwIfDisposed('changes');
     const list = this._changes || [];
     const length = list.length;
+    let map: t.IModelChanges<P, D>['map'] | undefined;
     return {
       length,
       list,
       get map() {
-        return list.reduce((acc, next) => {
-          return { ...acc, [next.field]: next.value.to };
-        }, {}) as t.IModelChanges<P, D>['map'];
+        if (!map) {
+          map = list.reduce((acc, next) => {
+            return { ...acc, [next.field]: next.value.to };
+          }, {}) as t.IModelChanges<P, D>['map'];
+        }
+        return map;
       },
     };
   }
