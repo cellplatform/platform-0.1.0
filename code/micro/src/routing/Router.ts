@@ -136,7 +136,8 @@ export class Router implements t.IRouter {
 
     const parse = () => {
       if (!regex) {
-        regex = pathToRegexp(path, keys);
+        const pattern = path === '*' ? /.*/ : path; // NB: Match anything if wildcard ("*").
+        regex = pathToRegexp(pattern, keys);
       }
     };
 

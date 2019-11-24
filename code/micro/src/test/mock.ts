@@ -9,10 +9,12 @@ export async function mockServer(args: { port?: number; silent?: boolean } = {})
   const app = micro.init();
   const silent = value.defaultValue(args.silent, true);
   const instance = await app.listen({ port, silent });
+  const router = app.router;
   return {
     port,
     app,
     instance,
+    router,
     url: (path: string) => `http://localhost:${port}/${path.replace(/^\/*/, '')}`,
     async dispose() {
       await instance.close();

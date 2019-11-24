@@ -4,7 +4,7 @@ describe('micro (server)', () => {
   it('200', async () => {
     const mock = await mockServer();
 
-    mock.app.router.get('/foo', async req => {
+    mock.router.get('/foo', async req => {
       return { data: { msg: 'hello' } };
     });
 
@@ -21,14 +21,31 @@ describe('micro (server)', () => {
     await mock.dispose();
 
     expect(res.status).to.eql(404);
-    expect(await res.json()).to.eql({ status: 404, message: 'Not found.' });
+
+    const json = res.json();
+    expect(json.status).to.eql(404);
+    expect(json.message).to.contain('Not found');
+  });
+
+  it('* (wildcard)', async () => {
+    const mock = await mockServer();
+
+    mock.router.get('/foo', async req => ({ data: { url: req.url } }));
+    mock.router.get('*', async req => ({ data: { wildcard: true } }));
+
+    const res1 = await http.get(mock.url('/foo'));
+    const res2 = await http.get(mock.url('/bar'));
+    await mock.dispose();
+
+    expect(res1.json()).to.eql({ url: '/foo' });
+    expect(res2.json()).to.eql({ wildcard: true });
   });
 
   it('has params', async () => {
     const test = async (route: string, path: string, expected: any) => {
       const mock = await mockServer();
       let params: t.RequestParams | undefined;
-      mock.app.router.get(route, async req => {
+      mock.router.get(route, async req => {
         params = req.params;
         return { status: 200, data: {} };
       });
@@ -48,7 +65,7 @@ describe('micro (server)', () => {
     const test = async (path: string, expected: any) => {
       const mock = await mockServer();
       let query: t.RequestQuery | undefined;
-      mock.app.router.get('/foo', async req => {
+      mock.router.get('/foo', async req => {
         query = req.query;
         return { status: 200, data: {} };
       });
@@ -71,7 +88,7 @@ describe('micro (server)', () => {
     const params: t.RequestParams[] = [];
     const queries: t.RequestQuery[] = [];
 
-    mock.app.router.get(`/ns\\::id([A-Za-z0-9]*)(/?)`, async req => {
+    mock.router.get(`/ns\\::id([A-Za-z0-9]*)(/?)`, async req => {
       params.push(req.params);
       queries.push(req.query);
       count++;
