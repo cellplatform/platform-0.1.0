@@ -27,7 +27,7 @@
     "@platform/ts": "3.7.0",
     "@uiharness/dev": "0.9.9",
     "@uiharness/ui": "0.6.20",
-    "electron": "7.1.1"
+    "electron": "7.1.2"
   },
   "files": [
     "lib",

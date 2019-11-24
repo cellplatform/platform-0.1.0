@@ -32,8 +32,8 @@
     "@platform/test": "0.0.65",
     "@uiharness/dev": "0.9.9",
     "@uiharness/ui": "0.6.20",
-    "apollo-server-micro": "2.9.9",
-    "electron": "7.1.1"
+    "apollo-server-micro": "2.9.12",
+    "electron": "7.1.2"
   },
   "files": [
     "lib"

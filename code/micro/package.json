@@ -20,7 +20,7 @@
     "@platform/util.value": "0.5.8",
     "micro": "9.3.4",
     "micro-cors": "0.1.1",
-    "path-to-regexp": "5.0.0"
+    "path-to-regexp": "6.1.0"
   },
   "devDependencies": {
     "@platform/http": "0.4.16",

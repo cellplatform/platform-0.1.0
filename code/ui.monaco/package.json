@@ -20,7 +20,7 @@
     "@platform/test": "0.0.65",
     "@platform/ts": "3.7.0",
     "@uiharness/dev": "0.9.9",
-    "electron": "7.1.1"
+    "electron": "7.1.2"
   },
   "files": [
     "lib"

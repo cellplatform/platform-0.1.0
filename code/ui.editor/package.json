@@ -16,20 +16,20 @@
   "dependencies": {
     "@platform/css": "0.1.43",
     "@platform/react": "0.3.29",
-    "prosemirror-commands": "1.1.0",
-    "prosemirror-dropcursor": "1.3.0",
-    "prosemirror-gapcursor": "1.1.0",
-    "prosemirror-history": "1.1.0",
-    "prosemirror-inputrules": "1.1.0",
-    "prosemirror-keymap": "1.1.1",
-    "prosemirror-markdown": "1.4.0",
-    "prosemirror-menu": "1.1.0",
-    "prosemirror-schema-basic": "1.1.0",
-    "prosemirror-schema-list": "1.1.0",
-    "prosemirror-state": "1.3.0",
+    "prosemirror-commands": "1.1.2",
+    "prosemirror-dropcursor": "1.3.2",
+    "prosemirror-gapcursor": "1.1.2",
+    "prosemirror-history": "1.1.2",
+    "prosemirror-inputrules": "1.1.2",
+    "prosemirror-keymap": "1.1.3",
+    "prosemirror-markdown": "1.4.2",
+    "prosemirror-menu": "1.1.1",
+    "prosemirror-schema-basic": "1.1.2",
+    "prosemirror-schema-list": "1.1.2",
+    "prosemirror-state": "1.3.2",
     "prosemirror-tables": "0.9.5",
     "prosemirror-utils": "0.9.6",
-    "prosemirror-view": "1.13.2"
+    "prosemirror-view": "1.13.4"
   },
   "devDependencies": {
     "@platform/ts": "3.7.0",
@@ -47,7 +47,7 @@
     "@types/prosemirror-view": "1.11.2",
     "@uiharness/dev": "0.9.9",
     "@uiharness/ui": "0.6.20",
-    "electron": "7.1.1"
+    "electron": "7.1.2"
   },
   "files": [
     "lib"

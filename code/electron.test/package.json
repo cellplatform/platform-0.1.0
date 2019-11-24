@@ -22,7 +22,7 @@
     "@platform/ts": "3.7.0",
     "@uiharness/dev": "0.9.9",
     "@uiharness/electron": "0.6.9",
-    "electron": "7.1.1"
+    "electron": "7.1.2"
   },
   "repository": "uiharness/platform",
   "license": "MIT",

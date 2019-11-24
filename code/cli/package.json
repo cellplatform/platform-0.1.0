@@ -23,7 +23,7 @@
     "@types/yargs": "13.0.3",
     "inquirer": "7.0.0",
     "listr": "0.14.3",
-    "yargs": "15.0.1"
+    "yargs": "15.0.2"
   },
   "devDependencies": {
     "@platform/test": "0.0.65",

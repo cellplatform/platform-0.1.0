@@ -19,7 +19,7 @@
     "@platform/log": "0.0.148",
     "@platform/types": "0.0.35",
     "@platform/util.value": "0.5.8",
-    "aws-sdk": "2.573.0"
+    "aws-sdk": "2.578.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.65",
