@@ -116,12 +116,14 @@ async function getCoordResponse<T extends t.IGetResponse<any>>(args: {
     const exists = Boolean(model.exists);
     const { createdAt, modifiedAt } = model;
 
+    const data = cell.value.squash.object(model.toObject()) || {};
+
     const res = {
       uri,
       exists,
       createdAt,
       modifiedAt,
-      data: model.toObject(),
+      data,
     };
 
     return { status: 200, data: res as T };

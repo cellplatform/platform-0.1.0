@@ -113,7 +113,7 @@ describe('route: namespace', () => {
   });
 
   describe('POST calculate', () => {
-    it('REF calculations', async () => {
+    it('REF', async () => {
       const cells = {
         A1: { value: '=A2' },
         A2: { value: '123' },
@@ -129,6 +129,30 @@ describe('route: namespace', () => {
 
       expect(A1a.props).to.eql(undefined);
       expect(A1b.props && A1b.props.value).to.eql('123'); // NB: calculated REF value of A2.
+      expect(A1a.hash).to.not.eql(A1b.hash); // NB: Hashes differ.
+    });
+
+    it('REF re-calculate', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+      };
+      const res1 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+
+      cells.A2.value = 456;
+      const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+
+      mock.dispose();
+
+      const cells1 = res1.data.cells || {};
+      const cells2 = res2.data.cells || {};
+
+      const A1a = cells1.A1 || {};
+      const A1b = cells2.A1 || {};
+
+      expect(A1a.props && A1a.props.value).to.eql(123); // NB: calculated REF value of A2.
+      expect(A1b.props && A1b.props.value).to.eql(456); // NB: calculated REF value of A2.
       expect(A1a.hash).to.not.eql(A1b.hash); // NB: Hashes differ.
     });
   });

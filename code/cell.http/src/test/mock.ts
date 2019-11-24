@@ -7,6 +7,7 @@ export type IMock = {
   db: t.IDb;
   port: number;
   app: t.IMicro;
+  router: t.IRouter;
   instance: t.IMicroService;
   filename: string;
   url: (path: string) => string;
@@ -37,19 +38,21 @@ const randomPort = () => {
   );
 };
 
-const create = async (args: { port?: number } = {}) => {
+const create = async (args: { port?: number } = {}): Promise<IMock> => {
   count++;
   const filename = fs.join(TMP, `mock/test-${count}.db`);
   const port = args.port || randomPort();
 
   const db = NeDb.create({ filename });
   const app = server.init({ title: 'Test', db });
+  const router = app.router;
   const instance = await app.listen({ port, silent: true });
 
   const mock: IMock = {
     db,
     port,
     app,
+    router,
     instance,
     filename,
     url: (path: string) => `http://localhost:${port}/${path.replace(/^\/*/, '')}`,

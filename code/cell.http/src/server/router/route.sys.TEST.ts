@@ -1,7 +1,7 @@
 import { createMock, expect, http, t } from '../../test';
 
 describe('route: sys', () => {
-  describe('error', () => {
+  describe('errors', () => {
     it('GET: 404', async () => {
       const mock = await createMock();
       const url = mock.url('NO_EXIST');
