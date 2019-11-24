@@ -38,16 +38,16 @@
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.db@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.1.4.tgz#c955dbb0d92053605d8d0f107d79868a322c7847"
-  integrity sha512-nHxPAbQ2d435VW5Vyn7KoQlpuCcQ2v4+Nwji+oyB3UEHz51Rw21hNgWqWVq6a3991DLxWdsevJBRwx656omqEA==
+"@platform/cell.db@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.1.5.tgz#45a153f9e96449d419c7f1a9c24995ed72d6434f"
+  integrity sha512-L/bj7pP9ZlxAnhnT7k/3hmYnYA2dQezpWIFKuymPkqu2sEDcGIWUglhm6jwqwoeUXha87ZdgMk8Z93USlH2pLQ==
   dependencies:
     "@platform/cell.coord" "0.6.9"
     "@platform/cell.schema" "0.0.18"
     "@platform/cell.types" "0.1.13"
     "@platform/cell.value" "0.1.5"
-    "@platform/fsdb.model" "0.4.3"
+    "@platform/fsdb.model" "0.4.4"
     "@platform/fsdb.types" "0.5.4"
     "@platform/libs" "0.1.5"
     "@platform/util.value" "0.5.11"
@@ -136,10 +136,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.model@0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.4.3.tgz#34aeacfd027581386fde44af2b6b055ff890d413"
-  integrity sha512-ajfhhkDXwuexDLxQtBjG/KlLgolqIN1WcZIfq4I+Q+9hzb7rKLeyvCNK2T4uHc2nvgUBAO2SEZqNGZlX47L+DA==
+"@platform/fsdb.model@0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.4.4.tgz#78bb3d31e15c267412353a89c1abf62ae11c9875"
+  integrity sha512-o6BH1OOA+UHn9fZ54ecWcUSGH9sy/s5ZUMeXAz8D3LAlX+i1NwQx9Qa6KNFqM/7XAxv09siSL6131jl8242ThQ==
   dependencies:
     "@platform/fsdb.types" "0.5.4"
     "@platform/libs" "0.1.5"

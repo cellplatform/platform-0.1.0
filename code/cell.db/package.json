@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.db",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Persistent state management for cells.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,7 +16,7 @@
     "@platform/cell.schema": "0.0.18",
     "@platform/cell.types": "0.1.13",
     "@platform/cell.value": "0.1.5",
-    "@platform/fsdb.model": "0.4.3",
+    "@platform/fsdb.model": "0.4.4",
     "@platform/fsdb.types": "0.5.4",
     "@platform/libs": "0.1.5",
     "@platform/util.value": "0.5.11"

@@ -110,10 +110,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.model@0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.4.3.tgz#34aeacfd027581386fde44af2b6b055ff890d413"
-  integrity sha512-ajfhhkDXwuexDLxQtBjG/KlLgolqIN1WcZIfq4I+Q+9hzb7rKLeyvCNK2T4uHc2nvgUBAO2SEZqNGZlX47L+DA==
+"@platform/fsdb.model@0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.4.4.tgz#78bb3d31e15c267412353a89c1abf62ae11c9875"
+  integrity sha512-o6BH1OOA+UHn9fZ54ecWcUSGH9sy/s5ZUMeXAz8D3LAlX+i1NwQx9Qa6KNFqM/7XAxv09siSL6131jl8242ThQ==
   dependencies:
     "@platform/fsdb.types" "0.5.4"
     "@platform/libs" "0.1.5"
