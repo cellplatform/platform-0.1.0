@@ -112,6 +112,27 @@ describe('route: namespace', () => {
     });
   });
 
+  describe('POST calculate', () => {
+    it('REF calculations', async () => {
+      const cells = {
+        A1: { value: '=A2' },
+        A2: { value: '123' },
+      };
+      const res1 = await post.ns('ns:foo?cells', { cells }); // Default: calc=false
+      const res2 = await post.ns('ns:foo?cells', { cells, calc: true });
+
+      const cells1 = res1.data.cells || {};
+      const cells2 = res2.data.cells || {};
+
+      const A1a = cells1.A1 || {};
+      const A1b = cells2.A1 || {};
+
+      expect(A1a.props).to.eql(undefined);
+      expect(A1b.props && A1b.props.value).to.eql('123'); // NB: calculated REF value of A2.
+      expect(A1a.hash).to.not.eql(A1b.hash); // NB: Hashes differ.
+    });
+  });
+
   describe('GET', () => {
     it('GET does not exist', async () => {
       const mock = await createMock();
@@ -255,23 +276,6 @@ describe('route: namespace', () => {
       await test('ns:foo/data', body);
 
       await mock.dispose();
-    });
-
-    it.skip('GET ?calc-true (run calculations)', async () => {
-      const mock = await createMock();
-      const cells = {
-        A1: { value: '=A2' },
-        A2: { value: '123' },
-      };
-      await http.post(mock.url('ns:foo'), { cells });
-
-      const res = await http.get(mock.url('ns:foo?cells&calc'));
-      const data = res.json().data;
-
-      mock.dispose();
-
-      console.log('-------------------------------------------');
-      console.log('data', data);
     });
   });
 });

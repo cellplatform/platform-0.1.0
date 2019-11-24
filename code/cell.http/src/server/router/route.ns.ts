@@ -1,6 +1,7 @@
 import { cell, t, models } from '../common';
 import { ROUTES } from './ROUTES';
 import { toErrorPayload } from './util';
+import { func } from '../func';
 
 const { Uri } = cell;
 
@@ -135,80 +136,55 @@ async function postNsResponse(args: {
   body: t.IPostNsBody;
   query: t.IReqNsQuery;
 }) {
-  const { db, id, body, query } = args;
-  const uri = Uri.string.ns(id);
-  const ns = await models.Ns.create({ db, uri }).ready;
+  try {
+    const { db, id, body, query } = args;
+    const uri = Uri.string.ns(id);
+    const ns = await models.Ns.create({ db, uri }).ready;
 
-  const changes: t.IDbModelChange[] = [];
-  let isNsChanged = false;
+    const changes: t.IDbModelChange[] = [];
+    let isNsChanged = false;
 
-  // query.
-
-  // body.calc
-
-  /**
-   * TODO 🐷 calculate updates
-   */
-
-  // if (query.calc) {
-  //   // const cells = data.cells || {}
-  //   const getCells: t.GetCells = async () => data.cells || {};
-  //   const getFunc: t.GetFunc = async () => undefined;
-  //   const refsTable = cell.coord.refs.table({
-  //     getKeys: async () => Object.keys(await getCells()),
-  //     getValue: async key => {
-  //       const cell = (await getCells())[key];
-  //       return cell && typeof cell.value === 'string' ? cell.value : undefined;
-  //     },
-  //   });
-
-  //   const table = cell.func.table({ getCells, getFunc, refsTable });
-
-  //   console.log('CALC');
-  //   console.log('-------------------------------------------');
-
-  //   const r = await table.calculate({ cells: undefined });
-  //   console.log('r', r);
-  // }
-
-  const saveChildData = async () => {
-    const { cells, rows, columns } = body;
-    if (cells || rows || columns) {
-      const data = { cells, rows, columns };
-      const res = await models.ns.setChildData({ ns, data });
-      res.changes.forEach(change => changes.push(change));
+    if (body.cells && body.calc) {
+      const getCells: t.GetCells = async () => body.cells || {};
+      const calc = func.calc({ getCells });
+      const res = await calc.changes({});
+      body.cells = { ...(body.cells || {}), ...res.map };
     }
-  };
 
-  const saveNsData = async () => {
-    const res = await models.ns.setProps({ ns, data: body.ns });
-    if (res.isChanged) {
-      isNsChanged = true;
-      res.changes.forEach(change => changes.push(change));
+    const saveChildData = async () => {
+      const { cells, rows, columns } = body;
+      if (cells || rows || columns) {
+        const data = { cells, rows, columns };
+        const res = await models.ns.setChildData({ ns, data });
+        res.changes.forEach(change => changes.push(change));
+      }
+    };
+
+    const saveNsData = async () => {
+      const res = await models.ns.setProps({ ns, data: body.ns });
+      if (res.isChanged) {
+        isNsChanged = true;
+        res.changes.forEach(change => changes.push(change));
+      }
+    };
+
+    await saveChildData();
+    await saveNsData();
+
+    // Ensure timestamp and hash are updated if the namespace was
+    // not directly updated (ie. cells/rows/columns only changed).
+    if (!isNsChanged && changes.length > 0) {
+      const res = await ns.save({ force: true });
+      if (res.isChanged) {
+        models.toChanges(uri, res.changes).forEach(change => changes.push(change));
+      }
     }
-  };
 
-  await saveChildData();
-  await saveNsData();
-
-  // Ensure timestamp and hash are updated if the namespace was
-  // not directly updated (ie. cells/rows/columns only changed).
-  if (!isNsChanged && changes.length > 0) {
-    const res = await ns.save({ force: true });
-    if (res.isChanged) {
-      models.toChanges(uri, res.changes).forEach(change => changes.push(change));
-    }
+    const res = await getNsResponse({ db, id, query });
+    const data: t.IPostNsResponse = { ...res.data, changes };
+    const status = res.status;
+    return { status, data };
+  } catch (err) {
+    return toErrorPayload(err);
   }
-
-  /**
-   * TODO 🐷
-   * - error handling on model creation/save
-   * - return change summary (model: changes).
-   * - GET /cuid
-   */
-
-  const res = await getNsResponse({ db, id, query });
-  const data: t.IPostNsResponse = { ...res.data, changes };
-  const status = res.status;
-  return { status, data };
 }
