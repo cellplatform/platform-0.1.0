@@ -64,13 +64,14 @@ describe('micro (server)', () => {
     await test('/foo?q=123&q=hello', { q: [123, 'hello'] });
   });
 
-  it('complex route and query string', async () => {
+  it('complex route and query-string', async () => {
     const mock = await mockServer();
 
     let count = 0;
     const params: t.RequestParams[] = [];
     const queries: t.RequestQuery[] = [];
-    mock.app.router.get('/ns::id([A-Z0-9]*)(/?)', async req => {
+
+    mock.app.router.get(`/ns\\::id([A-Za-z0-9]*)(/?)`, async req => {
       params.push(req.params);
       queries.push(req.query);
       count++;
