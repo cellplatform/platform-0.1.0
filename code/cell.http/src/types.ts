@@ -4,9 +4,26 @@ import * as t from '@platform/cell.types';
  * TODO 🐷 Move to `cell.types`
  */
 
+/**
+ * Config
+ */
+
+export type IHttpConfig = {
+  title: string;
+  collection: string;
+  db: {
+    dev: string; //     database name: "development"  (local developer machine)
+    test: string; //    database name: "test"         (cloud test instance)
+    staging: string; // database name: "staging"      (cloud staging instance)
+    prod: string; //    database name: "production"   (cloud production)
+  };
+};
+
+/**
+ * Payloads
+ */
 export type IErrorPayload = { status: number; data: t.IHttpError };
 export type INotFoundResponse = t.IHttpError<'HTTP/404'> & { status: 404; url: string };
-
 export type IGetResponse<D> = {
   uri: string;
   exists: boolean;

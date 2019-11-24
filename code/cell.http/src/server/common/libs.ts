@@ -1,5 +1,5 @@
-import { uniq } from 'ramda';
-export const R = { uniq };
+import { uniq, mergeDeepRight } from 'ramda';
+export const R = { uniq, mergeDeepRight };
 
 export { micro } from '@platform/micro';
 export { log } from '@platform/log/lib/server';

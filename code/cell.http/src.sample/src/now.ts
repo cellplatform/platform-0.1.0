@@ -27,5 +27,5 @@ const db = MongoDb.create({
 /**
  * Initialise the HTTP server.
  */
-const app = server.init({ title: 'Platform Sample', db });
+const app = server.init({ title: 'Platform (Sample)', db });
 export default app.server;
