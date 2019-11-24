@@ -8,7 +8,7 @@ const cors = require('micro-cors')();
 const IS_PROD = process.env.NODE_ENV === 'production';
 const NOT_FOUND: t.RouteResponse = {
   status: 404,
-  data: { status: 404, message: 'Not found.' },
+  data: { status: 404, message: 'Not found' },
 };
 
 /**

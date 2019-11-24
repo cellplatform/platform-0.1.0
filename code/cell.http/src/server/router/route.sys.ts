@@ -6,6 +6,7 @@ const DEPS = PKG.dependencies;
 
 const MODULE = {
   SCHEMA: '@platform/cell.schema',
+  DB: '@platform/cell.db',
 };
 
 /**
@@ -20,8 +21,9 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
    */
   router.get(ROUTES.SYS.INFO, async req => {
     const version = {
-      [PKG.name]: PKG.version,
       [MODULE.SCHEMA]: DEPS[MODULE.SCHEMA],
+      [PKG.name]: PKG.version,
+      [MODULE.DB]: DEPS[MODULE.DB],
     };
     return {
       status: 200,

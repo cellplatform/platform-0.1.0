@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.types",
-  "version": "0.7.35",
+  "version": "0.7.38",
   "description": "Abstract types for @platform/ui.datagrid",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,13 +12,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.1.10",
-    "@platform/react": "0.3.29",
-    "@platform/util.diff": "0.0.4"
+    "@platform/cell.types": "0.1.13",
+    "@platform/react": "0.3.32",
+    "@platform/util.diff": "0.0.6"
   },
   "devDependencies": {
-    "@platform/test": "0.0.65",
-    "@platform/ts": "3.7.0"
+    "@platform/test": "0.0.66",
+    "@platform/ts": "3.7.2"
   },
   "files": [
     "lib"

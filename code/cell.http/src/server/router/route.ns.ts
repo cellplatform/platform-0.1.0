@@ -137,7 +137,8 @@ async function postNsResponse(args: {
   query: t.IReqNsQuery;
 }) {
   try {
-    const { db, id, body, query } = args;
+    const { db, id, query } = args;
+    let body = { ...args.body };
     const uri = Uri.string.ns(id);
     const ns = await models.Ns.create({ db, uri }).ready;
 
@@ -145,13 +146,14 @@ async function postNsResponse(args: {
     let isNsChanged = false;
 
     if (body.cells && body.calc) {
-      const getCells: t.GetCells = async () => body.cells || {};
+      const cells = await models.ns.getChildCells({ model: ns });
+      const getCells: t.GetCells = async () => ({ ...cells, ...(body.cells || {}) });
       const calc = func.calc({ getCells });
-      const res = await calc.changes({});
-      body.cells = { ...(body.cells || {}), ...res.map };
+      const res = await calc.changes({ cells: Object.keys(body.cells) });
+      body = { ...body, cells: { ...(body.cells || {}), ...res.map } };
     }
 
-    const saveChildData = async () => {
+    const saveChildData = async (body: t.IPostNsBody) => {
       const { cells, rows, columns } = body;
       if (cells || rows || columns) {
         const data = { cells, rows, columns };
@@ -160,7 +162,7 @@ async function postNsResponse(args: {
       }
     };
 
-    const saveNsData = async () => {
+    const saveNsData = async (body: t.IPostNsBody) => {
       const res = await models.ns.setProps({ ns, data: body.ns });
       if (res.isChanged) {
         isNsChanged = true;
@@ -168,8 +170,8 @@ async function postNsResponse(args: {
       }
     };
 
-    await saveChildData();
-    await saveNsData();
+    await saveChildData(body);
+    await saveNsData(body);
 
     // Ensure timestamp and hash are updated if the namespace was
     // not directly updated (ie. cells/rows/columns only changed).
@@ -179,7 +181,6 @@ async function postNsResponse(args: {
         models.toChanges(uri, res.changes).forEach(change => changes.push(change));
       }
     }
-
     const res = await getNsResponse({ db, id, query });
     const data: t.IPostNsResponse = { ...res.data, changes };
     const status = res.status;

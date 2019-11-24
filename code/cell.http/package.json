@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.2.1",
+  "version": "0.2.10",
   "description": "HTTP cloud server, and client tools, for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,23 +17,23 @@
     "reset": "ts-node -T scripts/reset"
   },
   "dependencies": {
-    "@platform/cell.db": "0.1.1",
-    "@platform/cell.func": "0.0.42",
-    "@platform/cell.schema": "0.0.15",
-    "@platform/cell.types": "0.1.10",
-    "@platform/cell.value": "0.1.2",
-    "@platform/fs": "0.3.4",
-    "@platform/fsdb.model": "0.4.0",
-    "@platform/fsdb.types": "0.5.1",
-    "@platform/http": "0.4.16",
-    "@platform/libs": "0.1.4",
-    "@platform/micro": "0.8.1",
-    "@platform/types": "0.0.35"
+    "@platform/cell.db": "0.1.5",
+    "@platform/cell.func": "0.0.45",
+    "@platform/cell.schema": "0.0.18",
+    "@platform/cell.types": "0.1.13",
+    "@platform/cell.value": "0.1.5",
+    "@platform/fs": "0.3.5",
+    "@platform/fsdb.model": "0.4.4",
+    "@platform/fsdb.types": "0.5.4",
+    "@platform/http": "0.4.19",
+    "@platform/libs": "0.1.5",
+    "@platform/micro": "0.8.5",
+    "@platform/types": "0.1.1"
   },
   "devDependencies": {
-    "@platform/fsdb.nedb": "1.3.33",
-    "@platform/test": "0.0.65",
-    "@platform/ts": "3.7.0"
+    "@platform/fsdb.nedb": "1.3.36",
+    "@platform/test": "0.0.66",
+    "@platform/ts": "3.7.2"
   },
   "files": [
     "lib",

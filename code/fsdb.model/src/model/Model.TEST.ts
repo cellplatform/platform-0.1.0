@@ -5,7 +5,7 @@ import { expect, getTestDb, t, time } from '../test';
 type IMyThingProps = { count: number };
 type IMyThing = t.IModel<IMyThingProps>;
 
-type IMyOrgProps = { id: string; name: string; region?: string };
+type IMyOrgProps = { id: string; name: string; region?: string; obj?: t.IJsonMap };
 type IMyOrgDoc = IMyOrgProps & { ref?: string; refs?: string[] };
 type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
 type IMyOrgChildren = { things: IMyThing[]; subthings: IMyThing[]; all: IMyThing[] };
@@ -18,7 +18,7 @@ describe('model', () => {
   const org = {
     path: 'ORG/123',
     doc: { id: '123', name: 'MyOrg' },
-    initial: { id: '', name: '', region: undefined },
+    initial: { id: '', name: '', region: undefined, obj: undefined },
   };
 
   const thingFactory: t.ModelFactory = ({ path, db }) =>
@@ -163,7 +163,7 @@ describe('model', () => {
       expect(model.toObject()).to.eql({});
 
       // Load while there is no data for the model in the DB.
-      const EMPTY = { id: undefined, name: undefined, region: undefined };
+      const EMPTY = { id: undefined, name: undefined, region: undefined, obj: undefined };
       await model.load();
       expect(model.isLoaded).to.eql(true);
       expect(model.exists).to.eql(false);
@@ -186,7 +186,12 @@ describe('model', () => {
       expect(model.doc).to.eql(org.doc);
       expect(model.props.id).to.eql(org.doc.id); // Strongly typed.
       expect(model.props.name).to.eql(org.doc.name); // Strongly typed.
-      expect(model.toObject()).to.eql({ id: '123', name: 'MyOrg', region: undefined });
+      expect(model.toObject()).to.eql({
+        id: '123',
+        name: 'MyOrg',
+        region: undefined,
+        obj: undefined,
+      });
     });
 
     it('default loading on creation', async () => {
@@ -344,6 +349,59 @@ describe('model', () => {
       expect(model.changes.map).to.eql({ name: 'Foo' });
 
       expect(model.doc).to.eql(org.doc); // No change to underlying doc.
+    });
+
+    it('changes prop multiple times (string)', async () => {
+      const model = await createOrg({});
+      await model.ready;
+
+      model.props.name = '1';
+      expect(model.props.name).to.eql('1');
+
+      model.set({ name: undefined });
+      expect(model.props.name).to.eql(undefined);
+
+      model.props.name = '2';
+      expect(model.props.name).to.eql('2');
+    });
+
+    it('changes prop multiple times (object)', async () => {
+      const model = await createOrg({});
+      await model.ready;
+
+      model.props.obj = { foo: 123 };
+      expect(model.props.obj).to.eql({ foo: 123 });
+      expect(model.isChanged).to.eql(true);
+      expect(model.changes.length).to.eql(1);
+
+      model.props.obj = undefined;
+      expect(model.props.obj).to.eql(undefined);
+      expect(model.changes.length).to.eql(2);
+
+      model.set({ obj: { foo: 456 } });
+      expect(model.props.obj).to.eql({ foo: 456 });
+      expect(model.changes.length).to.eql(3);
+    });
+
+    it('registers change when object is different', async () => {
+      const model = await createOrg({});
+      await model.ready;
+
+      expect(model.isChanged).to.eql(false);
+      expect(model.changes.length).to.eql(0);
+
+      model.props.obj = { foo: 123 };
+      expect(model.props.obj).to.eql({ foo: 123 });
+      expect(model.isChanged).to.eql(true);
+      expect(model.changes.length).to.eql(1);
+
+      model.set({ obj: undefined });
+      expect(model.props.obj).to.eql(undefined);
+      expect(model.isChanged).to.eql(false);
+      expect(model.changes.length).to.eql(2);
+
+      model.set({ obj: { foo: 456 } });
+      expect(model.changes.length).to.eql(3);
     });
 
     it('changes property that is underfined on {initial} object', async () => {
@@ -585,7 +643,7 @@ describe('model', () => {
       const res2 = await model.save();
       expect(res2.saved).to.eql(true);
 
-      expect(model.doc).to.eql({ id: '123', name: 'Hello', region: undefined });
+      expect(model.doc).to.eql({ id: '123', name: 'Hello', region: undefined, obj: undefined });
       expect(model.props.id).to.eql('123');
       expect(model.props.name).to.eql('Hello');
 

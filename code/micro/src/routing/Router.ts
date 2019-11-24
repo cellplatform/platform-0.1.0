@@ -67,42 +67,50 @@ export class Router implements t.IRouter {
   public routes: t.IRoute[] = [];
 
   public handler: t.RouteHandler = async incoming => {
-    const route = this.find(incoming) as t.IRoute;
-    if (!route) {
-      return { status: 404, data: { status: 404, message: 'Not found.' } };
+    try {
+      const route = this.find(incoming) as t.IRoute;
+      if (!route) {
+        return { status: 404, data: { status: 404, message: 'Not found.' } };
+      }
+
+      let params: t.RequestParams | undefined;
+      let query: t.RequestQuery | undefined;
+      const path = incoming.url || '';
+
+      const req = {
+        ...incoming,
+
+        get params() {
+          if (!params) {
+            params = Router.params<t.RequestParams>({ route, path });
+          }
+          return params;
+        },
+
+        get query() {
+          if (!query) {
+            query = Router.query<t.RequestQuery>({ path });
+          }
+          return query;
+        },
+
+        get body() {
+          return {
+            async json<T>(
+              options: { default?: T; limit?: string | number; encoding?: string } = {},
+            ) {
+              return body.json(incoming, { ...options });
+            },
+          };
+        },
+      };
+
+      return route.handler(req as t.Request);
+    } catch (err) {
+      const url = incoming.url;
+      const message = `Failed while finding handler for url "${url}". ${err.message}`;
+      throw new Error(message);
     }
-
-    let params: t.RequestParams | undefined;
-    let query: t.RequestQuery | undefined;
-    const path = incoming.url || '';
-
-    const req = {
-      ...incoming,
-
-      get params() {
-        if (!params) {
-          params = Router.params<t.RequestParams>({ route, path });
-        }
-        return params;
-      },
-
-      get query() {
-        if (!query) {
-          query = Router.query<t.RequestQuery>({ path });
-        }
-        return query;
-      },
-
-      get body() {
-        return {
-          async json<T>(options: { default?: T; limit?: string | number; encoding?: string } = {}) {
-            return body.json(incoming, { ...options });
-          },
-        };
-      },
-    };
-
-    return route.handler(req as t.Request);
   };
 
   /**
@@ -128,7 +136,8 @@ export class Router implements t.IRouter {
 
     const parse = () => {
       if (!regex) {
-        regex = pathToRegexp(path, keys);
+        const pattern = path === '*' ? /.*/ : path; // NB: Match anything if wildcard ("*").
+        regex = pathToRegexp(pattern, keys);
       }
     };
 
